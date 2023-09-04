@@ -1,11 +1,11 @@
 import React from 'react';
 import TextEditor from '../TextEditor/TextEditor';
-import { Container } from './styled';
+import * as St from './styled';
 
 export default function Input(props) {
   return (
-    <Container>
+    <St.RootContainer>
       <TextEditor type="input" {...props} />
-    </Container>
+    </St.RootContainer>
   );
 }

@@ -5,9 +5,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
 import {
   WORKFLOW_LIBRARY_PATH,
-  USERS_PATH,
+  // USERS_PATH,
   SUBS_SETTINGS_PATH,
   USERS_SETTINGS_PATH,
+  CUSTOM_PROFILES_PATH,
 } from 'routing/helpers/paths';
 import Spacing from 'components/common/Spacing';
 import {
@@ -42,7 +43,7 @@ import AccessRestrictor, {
   CAN_ACCESS_EDUCATION_CENTER_PAGE,
   CAN_ACCESS_HOME_PAGE,
   CAN_ACCESS_MEMBER_LIST_PAGE,
-  CAN_ACCESS_PEOPLE_LIST_PAGE,
+  // CAN_ACCESS_PEOPLE_LIST_PAGE,
   CAN_ACCESS_SEARCH_PAGE,
   CAN_ACCESS_SETTINGS_PAGE,
   CAN_ACCESS_TASK_LIST_PAGE,
@@ -53,6 +54,7 @@ import ChatIcon from 'views/chat/Icons/ChatIcon';
 import { openPopover } from 'actions/sendbird-actions';
 import OrganizationSubmenu from './SubMenuComponents/OrganizationSubmenu';
 import ProfileSubmenu from './SubMenuComponents/ProfileSubmenu';
+import CustomProfilesSubmenu from './SubMenuComponents/CustomProfilesSubmenu';
 import EducationCenterSubmenu from './SubMenuComponents/EducationCenterSubmenu';
 import SettingsSubmenu from './SubMenuComponents/SettingsSubmenu';
 import ListsSubmenu from './SubMenuComponents/ListsSubmenu';
@@ -74,6 +76,7 @@ export const SubmenuKey = {
   ORGANIZATION: 'ORGANIZATION',
   PROFILE: 'PROFILE',
   LISTS: 'LISTS',
+  CUSTOM_PROFILES: 'CUSTOM_PROFILES',
   PATIENTS: 'PATIENTS',
   USER_GROUPS: 'USER_GROUPS',
   SETTINGS: 'SETTINGS',
@@ -86,6 +89,7 @@ const SubmenuComponents = {
   [SubmenuKey.ORGANIZATION]: OrganizationSubmenu,
   [SubmenuKey.PROFILE]: ProfileSubmenu,
   [SubmenuKey.LISTS]: ListsSubmenu,
+  [SubmenuKey.CUSTOM_PROFILES]: CustomProfilesSubmenu,
   [SubmenuKey.USER_GROUPS]: UserGroupsSubmenu,
   [SubmenuKey.PATIENTS]: PatientsSubmenu,
   [SubmenuKey.SETTINGS]: SettingsSubmenu,
@@ -242,6 +246,19 @@ const NavigationSidebar = () => {
               />
             </AccessRestrictor>
             {!embeddedMode && (
+              <AccessRestrictor>
+                <IconNavigationItem
+                  name="Profiles"
+                  icon={PeopleIcon}
+                  path={CUSTOM_PROFILES_PATH}
+                  subMenuKey={SubmenuKey.CUSTOM_PROFILES}
+                  subMenuOpen={openedSubMenuKey === SubmenuKey.CUSTOM_PROFILES}
+                  onItemClick={handleNavigationItemClick}
+                  navSelectedColor={navSelectedColorItem?.value}
+                />
+              </AccessRestrictor>
+            )}
+            {/* {!embeddedMode && (
               <AccessRestrictor required={[CAN_ACCESS_PEOPLE_LIST_PAGE]}>
                 <IconNavigationItem
                   name="People"
@@ -253,7 +270,7 @@ const NavigationSidebar = () => {
                   navSelectedColor={navSelectedColorItem?.value}
                 />
               </AccessRestrictor>
-            )}
+            )} */}
             {!embeddedMode && (
               <AccessRestrictor required={[CAN_ACCESS_MEMBER_LIST_PAGE]}>
                 <IconNavigationItem

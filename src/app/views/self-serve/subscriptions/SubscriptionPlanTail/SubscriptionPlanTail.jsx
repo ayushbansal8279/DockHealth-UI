@@ -4,6 +4,7 @@ import {
   SubscriptionPlan,
 } from 'helpers/subscription-helper';
 import React from 'react';
+import Spacing from 'components/common/Spacing';
 import palette from 'styles/palette';
 import {
   Container,
@@ -45,6 +46,7 @@ const SubscriptionPlanTail = (props) => {
     featuresDescription,
     features,
     comingSoonFeatures,
+    disclaimers,
     subscriptionPlan,
   } = plan;
 
@@ -121,6 +123,10 @@ const SubscriptionPlanTail = (props) => {
       ))}
       {comingSoonFeatures?.map((feature) => (
         <SubscriptionPlanFeature comingSoon feature={feature} />
+      ))}
+      <Spacing vertical={1} />
+      {disclaimers?.map((disclaimer) => (
+        <FeatureText>{disclaimer}</FeatureText>
       ))}
     </Container>
   );

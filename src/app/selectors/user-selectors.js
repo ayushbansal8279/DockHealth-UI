@@ -1,4 +1,5 @@
 import { createSelector } from 'reselect';
+import { SubscriptionPlan } from 'helpers/subscription-helper';
 
 export const userStateSelector = (state) => state.userState;
 export const userViewSetupSelector = (state) => state.userState.userViewSetup;
@@ -135,10 +136,16 @@ export const userHasDockGuestFeatureSelector = createSelector(
     organizationAvailableFeatures?.includes('DOCK_GUEST'),
 );
 
-export const userHasDockLiteFeatureSelector = createSelector(
+// export const userHasDockLiteFeatureSelector = createSelector(
+//   userProfileSelector,
+//   ({ organizationAvailableFeatures }) =>
+//     organizationAvailableFeatures?.includes('DOCK_LITE'),
+// );
+
+export const userHasCustomProfilesFeatureSelector = createSelector(
   userProfileSelector,
   ({ organizationAvailableFeatures }) =>
-    organizationAvailableFeatures?.includes('DOCK_LITE'),
+    organizationAvailableFeatures?.includes('CUSTOM_PROFILES'),
 );
 
 export const userSetupClientViewSelector = createSelector(
@@ -153,4 +160,27 @@ export const selectedUserOrganizationSelector = createSelector(
       ({ organizationIdentifier }) =>
         organizationIdentifier === selectedOrgIdentifier,
     ) || null,
+);
+
+export const userSubscriptionIsStandardSelector = createSelector(
+  userProfileSelector,
+  ({ subscription }) =>
+    subscription?.subscriptionPlan === SubscriptionPlan.STANDARD,
+);
+
+export const userSubscriptionIsPremiumSelector = createSelector(
+  userProfileSelector,
+  ({ subscription }) =>
+    subscription?.subscriptionPlan === SubscriptionPlan.PREMIUM,
+);
+
+export const userSubscriptionIsProSelector = createSelector(
+  userProfileSelector,
+  ({ subscription }) => subscription?.subscriptionPlan === SubscriptionPlan.PRO,
+);
+
+export const userSubscriptionIsEnterpriseSelector = createSelector(
+  userProfileSelector,
+  ({ subscription }) =>
+    subscription?.subscriptionPlan === SubscriptionPlan.ENTERPRISE,
 );

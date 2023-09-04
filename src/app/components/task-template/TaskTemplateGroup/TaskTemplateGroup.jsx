@@ -39,7 +39,6 @@ const TaskTemplateGroup = ({
   iconColorActive,
   origin,
   highlightedValue,
-  // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const templateGroup = useSelector((state) => {
     return taskLookupSelector(state, origin, pullGroup);
@@ -52,7 +51,7 @@ const TaskTemplateGroup = ({
     parentTaskGroupIdentifier,
     taskListIdentifier,
     isFetchingTasks,
-  } = templateGroup || {};
+  } = templateGroup ?? {};
 
   const { SHOW_WORKFLOW_DETAILS, SHOW_WORKFLOW_COMPLETED_TASKS } =
     viewSetup || {};

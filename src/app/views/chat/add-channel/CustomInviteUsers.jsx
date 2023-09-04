@@ -1,49 +1,48 @@
 import React, { useState, useCallback } from 'react';
-import { useCreateChannelContext } from '@sendbird/uikit-react/CreateChannel/context';
-import useSendbirdStateContext from '@sendbird/uikit-react/useSendbirdStateContext';
-import sendbirdSelectors from '@sendbird/uikit-react/sendbirdSelectors';
 import Modal from '@sendbird/uikit-react/ui/Modal';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectChannel } from 'actions/sendbird-actions';
 import { userProfileSelector } from 'selectors/user-selectors';
+import { organizationSelector } from 'selectors/organization-selectors';
+import { useSendbirdStateContext } from '@sendbird/uikit-react';
 import MultiAssignChatInviteMembersList from './MultiAssignChatInviteList';
 
-const InviteUsers = ({ onCancel }) => {
-  const { createChannel } = useCreateChannelContext();
-
-  const globalStore = useSendbirdStateContext();
-  const sdkInstance = sendbirdSelectors.getSdk(globalStore);
+const InviteUsersToChannelModal = ({ onClose }) => {
+  const sendBirdContext = useSendbirdStateContext();
 
   const { identifier: currentUserId } = useSelector(userProfileSelector);
+  const { organizationIdentifier } = useSelector(organizationSelector);
 
   const dispatch = useDispatch();
 
   const [selectedMembers, setSelectedMembers] = useState([]);
 
   const onSubmit = useCallback(() => {
-    const parameters = new sdkInstance.GroupChannelParams();
-    parameters.isPublic = false;
-    parameters.isEphemeral = false;
-    parameters.isDistinct = true;
-    parameters.addUserIds(
-      selectedMembers.map((member) => {
+    const parameters = {
+      isPublic: false,
+      isEphemeral: false,
+      isDistinct: true,
+      invitedUserIds: selectedMembers.map((member) => {
         return member.identifier;
       }),
-    );
-    parameters.operatorUserIds = [currentUserId];
-    parameters.name = '';
+      operatorUserIds: [currentUserId],
+      name: '',
+      customType: organizationIdentifier,
+    };
 
-    createChannel(parameters).then((channel) => {
-      dispatch(selectChannel(channel));
-    });
+    sendBirdContext.stores.sdkStore.sdk.groupChannel
+      .createChannel(parameters)
+      .then((channel) => {
+        dispatch(selectChannel(channel));
+      });
 
-    onCancel();
+    onClose();
   }, [
-    sdkInstance.GroupChannelParams,
     selectedMembers,
     currentUserId,
-    createChannel,
-    onCancel,
+    organizationIdentifier,
+    sendBirdContext.stores.sdkStore.sdk.groupChannel,
+    onClose,
     dispatch,
   ]);
 
@@ -52,7 +51,9 @@ const InviteUsers = ({ onCancel }) => {
       titleText="Create New Conversation"
       submitText="Submit"
       type="PRIMARY"
-      onCancel={onCancel}
+      onCancel={() => {
+        onClose();
+      }}
       onSubmit={onSubmit}
     >
       <MultiAssignChatInviteMembersList
@@ -65,4 +66,4 @@ const InviteUsers = ({ onCancel }) => {
   );
 };
 
-export default InviteUsers;
+export default InviteUsersToChannelModal;

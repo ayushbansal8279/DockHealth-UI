@@ -7,6 +7,7 @@ import { ChannelListProvider } from '@sendbird/uikit-react/ChannelList/context';
 import { useSelector } from 'react-redux';
 import { selectedChatChannelSelector } from 'selectors/sendbird-selectors';
 import { userHasDockChatFeatureSelector } from 'selectors/user-selectors';
+import { organizationSelector } from 'selectors/organization-selectors';
 import ChatConversation from './channel/ChatConversation';
 import ChatChannelList from './ChatChannelList';
 import ShowSettingsContext from './ShowSettingsContext';
@@ -32,12 +33,20 @@ const ChatView = () => {
     history.push(`/core/home`);
   }
 
+  const { organizationIdentifier } = useSelector(organizationSelector);
+
   return (
     <ViewLayout header={<BasicLayoutHeader title="Chat" isChat />}>
       <Container>
         <div className="full-view-chat sendbird-app__wrap">
           <ShowSettingsContext.Provider value={showSettingsValue}>
-            <ChannelListProvider>
+            <ChannelListProvider
+              queries={{
+                channelListQuery: {
+                  customTypesFilter: [organizationIdentifier],
+                },
+              }}
+            >
               <ChatChannelList className="full-view-chat" isFullView />
             </ChannelListProvider>
             <ChatConversation currentChannelUrl={selectedChannel?.url} />

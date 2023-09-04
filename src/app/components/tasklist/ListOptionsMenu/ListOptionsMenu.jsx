@@ -3,7 +3,7 @@ import React, { useCallback } from 'react';
 import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
 import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { isUserGuest, isUserViewOnly } from 'helpers/user-helper';
+import { isUserGuestOrDockLite, isUserViewOnly } from 'helpers/user-helper';
 import {
   onTaskListDeleted,
   onTaskListInvitationRejected,
@@ -22,6 +22,9 @@ import palette from 'styles/palette';
 import ColorPicker from 'components/common/ColorPicker/ColorPicker';
 import { isMemberAdmin } from 'helpers/list-members-helper';
 
+const MASTER_ROLES = new Set(['ADMIN', 'OWNER']);
+const PRIVILEGE_ROLES = new Set(['ADMIN', 'OWNER', 'MEMBER']);
+
 const ListOptionsMenu = (props) => {
   const { list, children, moreOptions } = props;
   const dispatch = useDispatch();
@@ -31,8 +34,6 @@ const ListOptionsMenu = (props) => {
   const activeTaskListIdentifier = useSelector(
     currentTaskListIdentifierSelector,
   );
-  const MASTER_ROLES = ['ADMIN', 'OWNER'];
-  const PRIVILEGE_ROLES = [...MASTER_ROLES, 'MEMBER'];
 
   const currentUserMember = list?.listUsers?.find(
     (u) => u.identifier === currentUser?.identifier,
@@ -148,10 +149,7 @@ const ListOptionsMenu = (props) => {
 
   const getMenuItems = useCallback(
     (targetList) => {
-      if (
-        MASTER_ROLES.includes(targetList?.role) &&
-        isListArchived(targetList)
-      ) {
+      if (MASTER_ROLES.has(targetList?.role) && isListArchived(targetList)) {
         return [
           {
             name: 'Unarchive list',
@@ -177,10 +175,13 @@ const ListOptionsMenu = (props) => {
       }
 
       if (
-        PRIVILEGE_ROLES.includes(targetList?.role) &&
+        PRIVILEGE_ROLES.has(targetList?.role) &&
         targetList?.listType !== 'INBOX'
       ) {
-        if (!isUserGuest(currentUser) && !isUserViewOnly(currentUser)) {
+        if (
+          !isUserGuestOrDockLite(currentUser) &&
+          !isUserViewOnly(currentUser)
+        ) {
           baseList = [
             ...baseList,
             {
@@ -191,7 +192,7 @@ const ListOptionsMenu = (props) => {
         }
 
         if (
-          MASTER_ROLES.includes(targetList?.role) &&
+          MASTER_ROLES.has(targetList?.role) &&
           targetList?.listType !== 'INBOX'
         ) {
           baseList = [
@@ -203,7 +204,7 @@ const ListOptionsMenu = (props) => {
           ];
         }
 
-        if (MASTER_ROLES.includes(targetList?.role)) {
+        if (MASTER_ROLES.has(targetList?.role)) {
           baseList = [
             ...baseList,
             {
@@ -215,7 +216,7 @@ const ListOptionsMenu = (props) => {
           ];
         }
         if (
-          MASTER_ROLES.includes(targetList?.role) &&
+          MASTER_ROLES.has(targetList?.role) &&
           targetList?.listType !== 'INBOX'
         ) {
           baseList = [
@@ -243,9 +244,7 @@ const ListOptionsMenu = (props) => {
       return baseList;
     },
     [
-      MASTER_ROLES,
       isListArchived,
-      PRIVILEGE_ROLES,
       handleUnarchiveList,
       openLeaveListModal,
       currentUser,

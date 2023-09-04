@@ -10,7 +10,6 @@ import {
   onEnterListDetailsView,
   onLeaveListDetailsView,
 } from './TemplateCoreSubscriptionPlan/ListDetails';
-
 const UsersView = lazy(() => import('views/self-serve/users/UsersView'));
 const Contacts = lazy(() => import('views/Contacts/Contacts'));
 const Templates = lazy(() => import('views/Templates/Templates'));
@@ -128,6 +127,19 @@ const GlobalSearchView = lazy(() =>
 );
 const TaskTourView = lazy(() => import('views/TaskTour/TaskTourView'));
 const PatientsView = lazy(() => import('components/patients/PatientsView'));
+const CustomProfileList = lazy(() =>
+  import('components/patients/CustomProfilesList/CustomProfileList'),
+);
+const CustomProfileView = lazy(() =>
+  import('components/patients/CustomProfilesList/CustomProfileView'),
+);
+
+const ProfilesAndCustomFieldsView = lazy(() =>
+  import('views/custom-fields/profiles-and-custom-fields/ProfilesView'),
+);
+const TaskCustomizationsView = lazy(() =>
+  import('views/custom-fields/task-customizations/TaskCustomizationsView'),
+);
 
 const {
   CAN_ACCESS_HOME_PAGE,
@@ -187,8 +199,18 @@ export const SETTINGS_ROUTES = [
     RouteComponent: SubscriptionExpiredView,
   },
   {
-    path: '/custom-fields/:tabName?',
+    path: '/custom-fields/:tabName/:identifier?',
     RouteComponent: CustomFieldsView,
+    permissions: [CAN_ACCESS_SETTINGS_PAGE],
+  },
+  {
+    path: '/profiles',
+    RouteComponent: ProfilesAndCustomFieldsView,
+    permissions: [CAN_ACCESS_SETTINGS_PAGE],
+  },
+  {
+    path: '/task-customizations',
+    RouteComponent: TaskCustomizationsView,
     permissions: [CAN_ACCESS_SETTINGS_PAGE],
   },
   {
@@ -228,6 +250,18 @@ export const TEMPLATE_CORE_SUBSCRIPTION_PLAN_ROUTES = [
   {
     path: '/search',
     RouteComponent: GlobalSearchView,
+    onLeave: onLeaveGlobalSearch,
+    permissions: [CAN_ACCESS_SEARCH_PAGE],
+  },
+  {
+    path: '/custom-profiles/:name/:profileTypeIdentifier/:profileIdentifier',
+    RouteComponent: CustomProfileView,
+    onLeave: onLeaveGlobalSearch,
+    permissions: [CAN_ACCESS_SEARCH_PAGE],
+  },
+  {
+    path: '/custom-profiles/:name/:profileTypeIdentifier',
+    RouteComponent: CustomProfileList,
     onLeave: onLeaveGlobalSearch,
     permissions: [CAN_ACCESS_SEARCH_PAGE],
   },

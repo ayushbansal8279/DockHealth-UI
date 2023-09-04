@@ -70,32 +70,37 @@ export const renderRoleItem = ({
   key,
   label,
   description,
+  disabled = false,
   onSelect,
   isSelected,
   isDisabled,
   isLimitedAccess,
   onSave,
 }) => (
-  <RoleItem
-    key={key}
-    onClick={() => {
-      if (!isDisabled && !isSelected)
-        onSelect({ key, label, description, onSave });
-    }}
-    isDisabled={isDisabled}
-    isSelected={isSelected}
-  >
-    <img src={isSelected ? CircleCompleted : Circle} alt="circle" />
-    <div>
-      <RoleItemLabel isSelected={isSelected}>
-        {label}
-        {isLimitedAccess && (
-          <LimitedAccessLabel>*Limited Access</LimitedAccessLabel>
-        )}
-      </RoleItemLabel>
-      <RoleItemDescription>{description}</RoleItemDescription>
-    </div>
-  </RoleItem>
+  <>
+    {!disabled && (
+      <RoleItem
+        key={key}
+        onClick={() => {
+          if (!isDisabled && !isSelected)
+            onSelect({ key, label, description, onSave });
+        }}
+        isDisabled={isDisabled}
+        isSelected={isSelected}
+      >
+        <img src={isSelected ? CircleCompleted : Circle} alt="circle" />
+        <div>
+          <RoleItemLabel isSelected={isSelected}>
+            {label}
+            {isLimitedAccess && (
+              <LimitedAccessLabel>*Limited Access</LimitedAccessLabel>
+            )}
+          </RoleItemLabel>
+          <RoleItemDescription>{description}</RoleItemDescription>
+        </div>
+      </RoleItem>
+    )}
+  </>
 );
 
 const RoleSelectionPopover = ({

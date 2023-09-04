@@ -178,9 +178,12 @@ const SelectDropdown = React.forwardRef(
         <ListItem key={option.key}>
           <ListItemButton
             type="button"
-            isHovered={hoveredItemIndex === index}
-            onMouseDown={() => handleOptionSelect(option)}
-            onMouseEnter={() => setHoveredItemIndex(index)}
+            {...(!option.readOnly && {
+              isHovered: hoveredItemIndex === index,
+              onMouseDown: () => handleOptionSelect(option),
+              onMouseEnter: () => setHoveredItemIndex(index),
+            })}
+            readOnly={option.readOnly}
           >
             {typeof option.label === 'function'
               ? option.label({ searchValue: inputValue })

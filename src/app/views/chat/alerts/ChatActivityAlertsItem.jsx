@@ -29,7 +29,7 @@ const ChatAlertItem = ({
   const {
     message: messageContent,
     createdAt,
-    _sender: { nickname: senderNickname },
+    sender: { nickname: senderNickname },
   } = messageAlert;
   const { members } = channel;
   const nickNames = members.map((member) => member.nickname).join(', ');

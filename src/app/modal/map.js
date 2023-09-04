@@ -1,3 +1,4 @@
+import InviteUsersToChannelModal from 'views/chat/add-channel/CustomInviteUsers';
 import CompleteAllTasksModal from './components/CompleteAllTasksModal/CompleteAllTasksModal';
 import CompleteAllFieldsModal from './components/ComplateAllFieldsModal/CompleteAllFieldsModal';
 import AttachmentsDuplicateModal from './components/AttachmentsDuplicateModal/AttachmentsDuplicateModal';
@@ -69,6 +70,7 @@ import SendEmailFromTaskModal from './components/SendMessageFromTaskModals/SendE
 import SendFaxFromTaskModal from './components/SendMessageFromTaskModals/SendFaxFromTaskModal/SendFaxFromTaskModal';
 import SendESignFromTaskModal from './components/SendMessageFromTaskModals/SendESignFromTaskModal/SendESignFromTaskModal';
 import EditTemplateModal from './components/EditTemplateModal/EditTemplateModal';
+import CreateProfileModal from './components/CreateProfileModal/CreateProfileModal';
 import SendEmrNoteFromTaskModal from './components/SendMessageFromTaskModals/SendEmrNoteFromTaskModal/SendEmrNoteFromTaskModal';
 import SendSmsFromTaskModal from './components/SendMessageFromTaskModals/SendSmsFromTaskModal/SendSmsFromTaskModal';
 import SendSecureMessageFromTaskModal from './components/SendMessageFromTaskModals/SendSecureMessageFromTaskModal/SendSecureMessageFromTaskModal';
@@ -150,12 +152,14 @@ const MODAL_MAP = {
   SendEmailFromTask: SendEmailFromTaskModal,
   SendESignFromTask: SendESignFromTaskModal,
   EditTemplate: EditTemplateModal,
+  CreateProfile: CreateProfileModal,
   SendEmrFromTask: SendEmrNoteFromTaskModal,
   SendSmsFromTask: SendSmsFromTaskModal,
   SendSecureMessageFromTask: SendSecureMessageFromTaskModal,
   EditContact: EditContactModal,
   AnchorDateChangeConfirmation: AnchorDateChangeConfirmationModal,
   EditPatient: EditPatientModal,
+  InviteUsersToChannel: InviteUsersToChannelModal,
 };
 
 export default MODAL_MAP;

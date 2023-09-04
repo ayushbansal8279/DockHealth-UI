@@ -117,6 +117,7 @@ const PatientLabels = ({ isPatientBulk, disableFocusOnRender = false }) => {
   const labels = useSelector(patientLabelsSelector) || [];
   const [inputValue, setInputValue] = useState('');
   const [currentEditableOption, setCurrentEditableOption] = useState(null);
+  const [isOpen, setIsOpen] = useState(false);
   const optionReferences = useRef({});
   const inputReference = useRef(null);
 
@@ -126,7 +127,6 @@ const PatientLabels = ({ isPatientBulk, disableFocusOnRender = false }) => {
   const dispatch = useDispatch();
 
   const [selectedLabels, setSelectedLabels] = useState([]);
-
   useEffect(() => {
     if (selectedPatients) {
       setSelectedLabels([]);
@@ -206,6 +206,12 @@ const PatientLabels = ({ isPatientBulk, disableFocusOnRender = false }) => {
         onSaveEdit: (value) => saveEditLabel(option?.labelIdentifier, value),
         onDelete: () => deleteLabel(option),
         onClick: () => {
+          if (
+            currentEditableOption &&
+            currentEditableOption !== option?.labelIdentifier
+          ) {
+            setCurrentEditableOption(null);
+          }
           setSelectedLabels((previousLabels) => {
             if (
               previousLabels.some(
@@ -266,6 +272,7 @@ const PatientLabels = ({ isPatientBulk, disableFocusOnRender = false }) => {
 
   return (
     <Autocomplete
+      isOpen={isOpen}
       autoFocus={!disableFocusOnRender}
       limitTags={2}
       options={labels}
@@ -273,14 +280,13 @@ const PatientLabels = ({ isPatientBulk, disableFocusOnRender = false }) => {
       placeholder={
         selectedLabels.length > 0 ? '' : "Are there labels you'd like to add?"
       }
-      getOptionSelected={(option, value) => {
-        return option.labelIdentifier === value.labelIdentifier;
-      }}
+      isOptionEqualToValue={(option, value) =>
+        option.labelIdentifier === value.labelIdentifier
+      }
       disablePortal={!isPatientBulk}
-      // disableCloseOnSelect={!!currentEditableOption}
       getInputReference={getInputReference}
       getOptionLabel={(option) => option?.labelName}
-      // isDisabled={!!currentEditableOption}
+      isDisabled={!!currentEditableOption}
       renderOption={renderOptionCallback}
       renderTags={renderTagsCallback}
       onInputChange={setInputValue}
@@ -295,7 +301,11 @@ const PatientLabels = ({ isPatientBulk, disableFocusOnRender = false }) => {
         },
       }}
       noOptionsText={noOptionText}
-      onOpen={refreshLabels}
+      onOpen={() => {
+        refreshLabels();
+        setIsOpen(true);
+      }}
+      onClose={() => !currentEditableOption && setIsOpen(false)}
       isLoading={isFetchingLabels}
       // onChange={(values, reason) => {
       //   if (reason !== 'select-option') {
@@ -314,6 +324,7 @@ const PatientLabels = ({ isPatientBulk, disableFocusOnRender = false }) => {
       // }}
       multiple
       disableClearable
+      disableCloseOnSelect
     />
   );
 };

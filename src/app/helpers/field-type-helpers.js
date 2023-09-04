@@ -14,6 +14,7 @@ export const FieldType = {
   NUMBER: 'NUMBER',
   DROPDOWN_MULTI: 'MULTI_SELECT',
   HYPERLINK: 'HYPERLINK',
+  RELATIONSHIP: 'RELATIONSHIP',
 };
 
 export const FieldCharakterLimit = {
@@ -31,6 +32,7 @@ export const CustomFieldWidthConfig = {
   [FieldType.NUMBER]: '164',
   [FieldType.DROPDOWN_MULTI]: '164',
   [FieldType.HYPERLINK]: '164',
+  [FieldType.RELATIONSHIP]: '164',
 };
 
 export const FieldTypeLabel = {
@@ -42,6 +44,7 @@ export const FieldTypeLabel = {
   [FieldType.NUMBER]: 'Number',
   [FieldType.DROPDOWN_MULTI]: 'Dropdown Multi-Selection',
   [FieldType.HYPERLINK]: 'Link',
+  [FieldType.RELATIONSHIP]: 'Relationship',
 };
 
 export const FIELD_TYPE_OPTIONS = [
@@ -76,6 +79,10 @@ export const FIELD_TYPE_OPTIONS = [
   {
     value: FieldType.BOOL,
     label: FieldTypeLabel[FieldType.BOOL],
+  },
+  {
+    value: FieldType.RELATIONSHIP,
+    label: FieldTypeLabel[FieldType.RELATIONSHIP],
   },
 ];
 
@@ -129,5 +136,11 @@ export const FIELD_TYPES = [
     image: FieldTypeToggleImg,
     title: FieldTypeLabel[FieldType.BOOL],
     description: 'Choose from two options yes or no',
+  },
+  {
+    key: FieldType.RELATIONSHIP,
+    image: FieldTypeLink,
+    title: FieldTypeLabel[FieldType.RELATIONSHIP],
+    description: 'Link to other custom profiles',
   },
 ];

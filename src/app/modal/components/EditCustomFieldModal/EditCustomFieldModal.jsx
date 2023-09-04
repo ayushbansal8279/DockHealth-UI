@@ -22,7 +22,11 @@ import FormInput from 'components/common/Input/FormInput';
 import Input from 'components/common/Input/Input';
 import Button from 'components/common/Button/Button';
 import FormSelect from 'components/common/Select/FormSelect';
+import ColorPicker from 'components/common/ColorPicker/ColorPicker';
+import { getAllProfileTypes } from 'api/profile-type-api';
 import { ORGANIZATION_TILE_COLORS } from 'styles/organization-tile-colors';
+import * as ProfileTypeFieldsApi from 'api/profile-type-field-api';
+import { getAllTaskListCustomFields } from 'api/custom-fields-api';
 import FiledTypeStep from './FieldTypeStep';
 import { CloseIconButton, CloseIcon } from '../styled';
 import {
@@ -34,7 +38,6 @@ import {
 } from './styled';
 import AdditionalOptions from './AdditionalOptions';
 import { getAdditionalOptions } from './helpers';
-import { getAllTaskListCustomFields } from '../../../api/custom-fields-api';
 import {
   SelectOptionColor,
   SelectParentDropdown,
@@ -50,6 +53,7 @@ const EditCustomFieldModal = ({
   onUpdated,
   options: { type },
   taskListIdentifier,
+  profileTypeIdentifier,
 }) => {
   const [displayOptionsState, setDisplayOptionsState] = useState({
     displayOptions: customField?.displayOptions || [],
@@ -102,6 +106,8 @@ const EditCustomFieldModal = ({
           }),
         )
         .nullable(),
+
+      // profileTypeIdentifier: string().nullable(),
       ...(type === 'TASK'
         ? {}
         : { fieldCategoryType: string().required(REQUIRED_MESSAGE) }),
@@ -111,9 +117,22 @@ const EditCustomFieldModal = ({
   const formMethods = useForm({
     resolver: yupResolver(validationSchema),
     mode: 'onSubmit',
-    defaultValues: isCreatingNewField
-      ? { fieldCategoryType: Category.OTHER_INFO }
-      : customField,
+    defaultValues: useMemo(() => {
+      const baseCustomField = isCreatingNewField
+        ? { fieldCategoryType: Category.OTHER_INFO }
+        : {
+            ...customField,
+            relatedProfileType: customField.relatedProfileType?.identifier,
+          };
+      if (customField?.relatedProfileType) {
+        const {
+          relatedProfileType: { identifier: value },
+        } = customField;
+
+        return { ...baseCustomField, relatedProfileType: value };
+      }
+      return baseCustomField;
+    }, [customField, isCreatingNewField]),
   });
   const { register, unregister, handleSubmit, setValue, watch, errors } =
     formMethods;
@@ -178,7 +197,7 @@ const EditCustomFieldModal = ({
   };
 
   // eslint-disable-next-line unicorn/consistent-function-scoping,sonarjs/no-identical-functions
-  const handleOptionColorChange = optionId => event => {
+  const handleOptionColorChange = (optionId) => (event) => {
     setValue(
       'options',
       optionsValue.map((o) =>
@@ -191,7 +210,7 @@ const EditCustomFieldModal = ({
   const handleParentDropdownChange = (optionId) => (event) => {
     setValue(
       'options',
-      optionsValue.map(o =>
+      optionsValue.map((o) =>
         o.identifier === optionId
           ? { ...o, linkedCustomFieldIdentifier: event.target.value }
           : o,
@@ -204,7 +223,7 @@ const EditCustomFieldModal = ({
     setValue(
       'options',
       // eslint-disable-next-line sonarjs/no-identical-functions
-      optionsValue.map(o =>
+      optionsValue.map((o) =>
         o.identifier === optionId
           ? { ...o, linkedCustomFieldOptionIdentifier: event.target.value }
           : o,
@@ -226,41 +245,137 @@ const EditCustomFieldModal = ({
     );
   };
 
+  const [profileTypeOptions, setProfileTypeOptions] = useState([]);
+  const [selectedProfileType, setSelectedProfileType] = useState(null);
+
+  useEffect(() => {
+    async function fetchData() {
+      // You can await here
+      const response = await getAllProfileTypes();
+      const profileTypes = response.map(({ identifier, name }) => ({
+        label: name,
+        value: identifier,
+      }));
+      setProfileTypeOptions(profileTypes);
+    }
+    fetchData();
+  }, []);
+
   const handleEditSubmit = (data) => {
     setIsSaving(true);
-    const updatedField = {
-      ...customField,
-      ...data,
-      ...displayOptionsState,
-    };
-    CustomFieldsApi.updateCustomField(updatedField, type, taskListIdentifier)
-      .then(() => {
-        onUpdated(updatedField);
-        setIsSaving(false);
-        closeModal();
-      })
-      .catch(() => {
-        dispatch(showGlobalErrorAlert());
-        setIsSaving(false);
-      });
+    if (type === 'PROFILE') {
+      const updatedField = {
+        contextType: 'CUSTOM',
+        ...data,
+        ...displayOptionsState,
+        fieldCategoryType: 'PROFILE',
+        // relatedProfileType: {
+        //   identifier: profileTypeIdentifier,
+        // },
+        // profileType: {
+        //   identifier: data.identifier,
+        // },
+      };
+
+      delete updatedField.updatedDateTime;
+      delete updatedField.active;
+      delete updatedField.createdDateTime;
+      delete updatedField.identifier;
+      delete updatedField.sortIndex;
+
+      ProfileTypeFieldsApi.editProfileFieldType(data.identifier, updatedField)
+        .then(() => {
+          onUpdated({
+            ...updatedField,
+            relatedProfileTypeName: selectedProfileType,
+          });
+          setIsSaving(false);
+          closeModal();
+        })
+        .catch((error) => {
+          console.error(error);
+          dispatch(showGlobalErrorAlert());
+          setIsSaving(false);
+        });
+    } else {
+      const updatedField = {
+        ...customField,
+        ...data,
+        ...displayOptionsState,
+        targetType: type,
+        contextType: 'CUSTOM',
+        profileTypeIdentifier: {
+          identifier: data.profileTypeIdentifier,
+        },
+        relatedProfileType: {
+          identifier: data.relatedProfileType,
+        },
+      };
+      CustomFieldsApi.updateCustomField(updatedField, type, taskListIdentifier)
+        .then(() => {
+          onUpdated({ ...updatedField, selectedProfileType });
+          setIsSaving(false);
+          closeModal();
+        })
+        .catch(() => {
+          dispatch(showGlobalErrorAlert());
+          setIsSaving(false);
+        });
+    }
   };
 
   const handleAddSubmit = (data) => {
     setIsSaving(true);
-    CustomFieldsApi.addCustomField(
-      { ...data, ...displayOptionsState },
-      type,
-      taskListIdentifier,
-    )
-      .then((addedField) => {
-        onAdded(addedField);
-        setIsSaving(false);
-        closeModal();
+    if (type === 'PROFILE') {
+      ProfileTypeFieldsApi.createProfileFieldType({
+        ...data,
+        ...displayOptionsState,
+        contextType: 'CUSTOM',
+        fieldCategoryType: 'PROFILE',
+        targetType: 'PROFILE',
+        relatedProfileType: {
+          identifier: data.relatedProfileType,
+        },
+        profileType: {
+          identifier: profileTypeIdentifier,
+        },
       })
-      .catch(() => {
-        dispatch(showGlobalErrorAlert());
-        setIsSaving(false);
-      });
+        .then((addedField) => {
+          onAdded({ ...addedField, selectedProfileType });
+          setIsSaving(false);
+          closeModal();
+        })
+        .catch(() => {
+          dispatch(showGlobalErrorAlert());
+          setIsSaving(false);
+        });
+    } else {
+      CustomFieldsApi.addCustomField(
+        {
+          ...data,
+          ...displayOptionsState,
+          targetType: type,
+          contextType: 'CUSTOM',
+          profileTypeIdentifier: {
+            identifier: data.profileTypeIdentifier,
+          },
+          relatedProfileType: {
+            identifier: data.relatedProfileType,
+          },
+        },
+        type,
+        taskListIdentifier,
+      )
+        .then((addedField) => {
+          onAdded(addedField);
+          setIsSaving(false);
+          closeModal();
+        })
+        .catch(() => {
+          dispatch(showGlobalErrorAlert());
+          setIsSaving(false);
+        });
+    }
   };
 
   return (
@@ -309,7 +424,7 @@ const EditCustomFieldModal = ({
                         options={FIELD_TYPE_OPTIONS}
                       />
                     </Grid>
-                    {type !== 'TASK' && type !== 'PROVIDER' && (
+                    {type === 'PATIENT' && (
                       <Grid item xs={6}>
                         <FormSelect
                           required
@@ -319,13 +434,33 @@ const EditCustomFieldModal = ({
                         />
                       </Grid>
                     )}
-                    {type !== 'PROVIDER' && type !== 'PATIENT' && (
+                    {type === 'TASK' && (
                       <Grid item xs={6}>
                         <FormSelect
                           required
                           label="Category"
                           name="fieldCategoryType"
                           options={TASK_CATEGORY_OPTIONS}
+                        />
+                      </Grid>
+                    )}
+                    {type !== 'TASK' && type !== 'PROVIDER' && (
+                      <Grid item xs={6} />
+                    )}
+                    {fieldTypeValue === FieldType.RELATIONSHIP && (
+                      <Grid item xs={6}>
+                        <FormSelect
+                          required
+                          label="Profile Type"
+                          name="relatedProfileType"
+                          options={profileTypeOptions}
+                          onChange={(event) =>
+                            setSelectedProfileType(
+                              profileTypeOptions.find(
+                                ({ value }) => value === event,
+                              ),
+                            )
+                          }
                         />
                       </Grid>
                     )}
@@ -399,20 +534,18 @@ const EditCustomFieldModal = ({
                                     )}
                                   />
                                   <SelectParentDropdown
-                                    required
                                     label="Parent Dropdown"
                                     name={`selectParentDropdown[${identifier}]`}
                                     value={linkedCustomFieldIdentifier}
                                     onChange={handleParentDropdownChange(
                                       identifier,
                                     )}
-                                    options={customFields.map(field => ({
+                                    options={customFields.map((field) => ({
                                       label: field.name,
                                       value: field.identifier,
                                     }))}
                                   />
                                   <SelectParentOption
-                                    required
                                     label="Parent Option"
                                     name={`selectParentOption[${identifier}]`}
                                     value={linkedCustomFieldOptionIdentifier}

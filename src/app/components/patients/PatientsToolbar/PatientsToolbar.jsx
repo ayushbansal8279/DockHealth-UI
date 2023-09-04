@@ -7,7 +7,7 @@ import AddButton, {
 } from 'components/common/AddButton/AddButton';
 import { useDispatch, useSelector } from 'react-redux';
 import * as PatientsActions from 'actions/patients-actions';
-import { isUserGuest, isUserViewOnly } from 'helpers/user-helper';
+// import { isUserGuestOrDockLite, isUserViewOnly } from 'helpers/user-helper';
 import ToolbarSelect from 'components/tasklist/ToolbarSelect/ToolbarSelect';
 import TasksStatusSwitchIcon from 'img/tasks-status-switch-icon.svg';
 import {
@@ -81,8 +81,8 @@ const PatientsToolbar = () => {
   const customerTypeLabel = getCustomerTypeLabel(currentUser);
   const { listIdentifier: listIdentifierParameter } = useParams();
 
-  const isGuest = isUserGuest(currentUser);
-  const isViewOnly = isUserViewOnly(currentUser);
+  // const isGuestOrDockLite = isUserGuestOrDockLite(currentUser);
+  // const isViewOnly = isUserViewOnly(currentUser);
 
   // const [importPopupOpen, setImportPopupOpen] = useState(false);
 

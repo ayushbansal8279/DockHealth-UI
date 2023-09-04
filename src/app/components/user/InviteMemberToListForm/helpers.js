@@ -53,7 +53,7 @@ export const getMenuOptionsForMember = (
           },
         ];
       }
-      if (orgUserRole === 'GUEST') {
+      if (orgUserRole === 'GUEST' || orgUserRole === 'DOCK_LITE') {
         return [
           {
             name: 'Remove From This List',

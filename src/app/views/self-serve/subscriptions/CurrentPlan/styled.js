@@ -9,7 +9,7 @@ export const PlanContainer = styled.div`
   grid-gap: 1rem;
   grid-template-columns: 1fr auto;
   height: min-content;
-  padding: 1.5rem;
+  padding: 1rem;
   width: 100%;
 `;
 

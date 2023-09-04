@@ -19,7 +19,8 @@ import {
   ColorIndicator,
 } from './styled';
 
-const { ADMIN, OWNER, MEMBER, GUEST, EXTERNAL } = UserOrganizationRole;
+const { ADMIN, OWNER, MEMBER, GUEST, DOCK_LITE, EXTERNAL } =
+  UserOrganizationRole;
 
 const LayoutHeader = (props) => {
   const { children, horizontalSticky } = props;
@@ -43,7 +44,7 @@ const LayoutHeader = (props) => {
         </Box>
         <Box mx={1} />
         <AccessRestrictor
-          allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST, EXTERNAL]}
+          allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST, DOCK_LITE, EXTERNAL]}
         >
           <ActivityAlerts
             patientIdentifier={patientDetails?.patientIdentifier}

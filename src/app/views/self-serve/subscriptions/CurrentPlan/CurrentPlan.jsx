@@ -18,6 +18,7 @@ import { PlanColumnLink, PlanContainer } from './styled';
 const CurrentPlan = ({ currentSubscriptionPlan }) => {
   const {
     activeUserCount,
+    activeDockLiteUserCount,
     annualEstimate,
     monthlyEstimate,
     subscriptionDetails,
@@ -94,7 +95,11 @@ const CurrentPlan = ({ currentSubscriptionPlan }) => {
                 )}
               </span>
               {Boolean(activeUserCount) && (
-                <span>({activeUserCount} users) </span>
+                <span>
+                  {activeDockLiteUserCount > 0
+                    ? `(${activeUserCount} standard user, ${activeDockLiteUserCount} Dock Lite user) `
+                    : `(${activeUserCount} user) `}
+                </span>
               )}
               <PlanColumnLink to="/settings/billing">
                 View billing

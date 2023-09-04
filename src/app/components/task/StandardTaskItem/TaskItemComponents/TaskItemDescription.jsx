@@ -10,6 +10,7 @@ import React, {
 import { Box, IconButton } from '@mui/material';
 import { useDispatch } from 'react-redux';
 import moment from 'moment';
+import Highlighter from 'react-highlight-words';
 import {
   storeAsCurrentTask,
   updateTaskDescription,
@@ -36,7 +37,7 @@ import {
 const TaskItemDescription = ({
   task,
   // isCompletedGroup,
-  // highlightedValue,
+  highlightedValue,
   hasParentTaskLabel,
   isEditing,
   setEditing,
@@ -149,9 +150,26 @@ const TaskItemDescription = ({
               whiteSpace: 'nowrap',
             }}
           >
-            {ReactHtmlParser(
-              linkifyTextWithMentions(descriptionState, taskMentions),
-            )}
+            {descriptionState
+              .split('/s/')
+              .map((word) =>
+                word.includes('[http') || word.includes('http') ? (
+                  ReactHtmlParser(
+                    linkifyTextWithMentions(`${word} `, taskMentions),
+                  )
+                ) : (
+                  <Highlighter
+                    highlightClassName="list-highlight"
+                    searchWords={
+                      highlightedValue
+                        ? highlightedValue?.toLowerCase().split(/\s+/)
+                        : []
+                    }
+                    autoEscape
+                    textToHighlight={`${word} `}
+                  />
+                ),
+              )}
           </div>
         )}
         {!isCompleted && (
