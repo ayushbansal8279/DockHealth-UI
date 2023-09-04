@@ -29,7 +29,7 @@ const UserRoleStep = ({ navigateToPreviousStep, disabled }) => {
   const viewOnlyRoleAvailable = useSelector(userHasViewOnlyFeatureSelector);
   const guestRoleAvailable = useSelector(userHasDockGuestFeatureSelector);
   const email = watch('email');
-  const dockProEnabled = !email.includes('@dock.health');
+  const dockProEnabled = email.includes('@dock.health');
 
   return (
     <RoleFormWrapper
