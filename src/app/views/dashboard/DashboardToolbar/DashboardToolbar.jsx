@@ -51,7 +51,7 @@ const DASHBOARD_BASE_COLUMNS_CONFIG = {
   [TaskItemColumn.ORG_NAME]: true,
 };
 
-const { ADMIN, OWNER, MEMBER, GUEST } = UserOrganizationRole;
+const { ADMIN, OWNER, MEMBER, GUEST, DOCK_LITE } = UserOrganizationRole;
 
 const DashboardToolbar = ({ iconColorFilterActive, iconColorActive }) => {
   const history = useHistory();
@@ -151,7 +151,9 @@ const DashboardToolbar = ({ iconColorFilterActive, iconColorActive }) => {
     <ToolbarContainer container direction="row" justifyContent="space-between">
       <Grid item md={6} sm={12}>
         <DashboardTabsContainer>
-          <AccessRestrictor allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST]}>
+          <AccessRestrictor
+            allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST, DOCK_LITE]}
+          >
             <DashboardTab
               label="My Tasks"
               setHighlightPosition={setHighlightPosition}
@@ -200,7 +202,9 @@ const DashboardToolbar = ({ iconColorFilterActive, iconColorActive }) => {
         {viewType !== ViewType.CALENDAR_VIEW && (
           <>
             <Spacing horizontal={4} />
-            <AccessRestrictor allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST]}>
+            <AccessRestrictor
+              allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST, DOCK_LITE]}
+            >
               <CustomizeToolbarButton
                 showCustomColumnCreate={false}
                 additionalOptionsTitle="Groups"

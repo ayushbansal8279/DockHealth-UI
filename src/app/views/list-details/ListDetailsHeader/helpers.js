@@ -11,7 +11,9 @@ export const determineTaskCounts = ({
     ? tasks?.reduce(
         (counter, task) =>
           counter +
-          task.subtasks?.filter((x) => x.status === status).length +
+          (task?.subtasks
+            ? task?.subtasks?.filter((x) => x.status === status).length
+            : 0) +
           1,
         0,
       ) || 0

@@ -5,7 +5,7 @@ import Button from 'components/common/Button/Button';
 import { UserOrganizationRole } from 'helpers/user-helper';
 import { useSelector } from 'react-redux';
 import {
-  // userHasViewOnlyFeatureSelector,
+  userHasViewOnlyFeatureSelector,
   userHasDockGuestFeatureSelector,
 } from 'selectors/user-selectors';
 import {
@@ -26,8 +26,10 @@ const UserRoleStep = ({ navigateToPreviousStep, disabled }) => {
   const { watch, setValue } = useFormContext();
 
   const roleValue = watch('userRole');
-  // const viewOnlyRoleAvailable = useSelector(userHasViewOnlyFeatureSelector);
+  const viewOnlyRoleAvailable = useSelector(userHasViewOnlyFeatureSelector);
   const guestRoleAvailable = useSelector(userHasDockGuestFeatureSelector);
+  const email = watch('email');
+  const dockProEnabled = email.includes('@dock.health');
 
   return (
     <RoleFormWrapper
@@ -90,50 +92,87 @@ const UserRoleStep = ({ navigateToPreviousStep, disabled }) => {
           </>
         )}
         <input
-          id="DockPro"
+          id="DockLite"
           type="radio"
           name="userRole"
-          value={DOCK_PRO}
-          checked={roleValue === DOCK_PRO}
+          value="DOCK_LITE"
+          checked={roleValue === 'DOCK_LITE'}
           onChange={(event) => setValue(event.target.name, event.target.value)}
         />
         <RoleOptionLabel
-          isSelected={roleValue === 'DOCK_PRO'}
-          htmlFor="DockPro"
+          isSelected={roleValue === 'DOCK_LITE'}
+          htmlFor="DockLite"
         >
           <RoleOptionHeaderWrapper>
-            <RoleOptionHeader>Dock Pro</RoleOptionHeader>
+            <RoleOptionHeader>Dock Lite</RoleOptionHeader>
             <RoleOptionHeaderAdditionalInfo>
               *Limited Access
             </RoleOptionHeaderAdditionalInfo>
           </RoleOptionHeaderWrapper>
           <RoleOptionDescription>
-            A Dock Pro user will only have access to the workflow library and
-            can help with building out Workflows and Smartflows for your team.
+            A limited use member of your organization or an outside collaborator
+            you can invite into a single list, who will only have access to the
+            tasks, patients/clients and people who are part of that list.
           </RoleOptionDescription>
         </RoleOptionLabel>
         <Divider />
-        <input
-          id="ViewOnly"
-          type="radio"
-          name="userRole"
-          value={VIEW_ONLY}
-          checked={roleValue === VIEW_ONLY}
-          onChange={(event) => setValue(event.target.name, event.target.value)}
-        />
-        <RoleOptionLabel
-          isSelected={roleValue === VIEW_ONLY}
-          htmlFor="ViewOnly"
-        >
-          <RoleOptionHeaderWrapper>
-            <RoleOptionHeader>View Only</RoleOptionHeader>
-            <RoleOptionHeaderAdditionalInfo>
-              *Limited Access
-            </RoleOptionHeaderAdditionalInfo>
-          </RoleOptionHeaderWrapper>
-          <RoleOptionDescription />
-        </RoleOptionLabel>
-        <Divider />
+        {dockProEnabled && (
+          <>
+            <input
+              id="DockPro"
+              type="radio"
+              name="userRole"
+              value={DOCK_PRO}
+              checked={roleValue === DOCK_PRO}
+              onChange={(event) =>
+                setValue(event.target.name, event.target.value)
+              }
+            />
+            <RoleOptionLabel
+              isSelected={roleValue === 'DOCK_PRO'}
+              htmlFor="DockPro"
+            >
+              <RoleOptionHeaderWrapper>
+                <RoleOptionHeader>Dock Crew</RoleOptionHeader>
+                <RoleOptionHeaderAdditionalInfo>
+                  *Limited Access
+                </RoleOptionHeaderAdditionalInfo>
+              </RoleOptionHeaderWrapper>
+              <RoleOptionDescription>
+                Dock Crew user will help configure your account and with
+                building out Workflows and Smartflows for your team.
+              </RoleOptionDescription>
+            </RoleOptionLabel>
+            <Divider />
+          </>
+        )}
+        {viewOnlyRoleAvailable && (
+          <>
+            <input
+              id="ViewOnly"
+              type="radio"
+              name="userRole"
+              value={VIEW_ONLY}
+              checked={roleValue === VIEW_ONLY}
+              onChange={(event) =>
+                setValue(event.target.name, event.target.value)
+              }
+            />
+            <RoleOptionLabel
+              isSelected={roleValue === VIEW_ONLY}
+              htmlFor="ViewOnly"
+            >
+              <RoleOptionHeaderWrapper>
+                <RoleOptionHeader>View Only</RoleOptionHeader>
+                <RoleOptionHeaderAdditionalInfo>
+                  *Limited Access
+                </RoleOptionHeaderAdditionalInfo>
+              </RoleOptionHeaderWrapper>
+              <RoleOptionDescription />
+            </RoleOptionLabel>
+            <Divider />
+          </>
+        )}
       </RoleSelectionWrapper>
       <Grid container item direction="row" justifyContent="center" spacing={2}>
         <Grid item xs={3}>

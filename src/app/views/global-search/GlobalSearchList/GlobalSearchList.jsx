@@ -136,6 +136,7 @@ const GlobalSearchList = ({
                 showTasksWithGroup={false}
                 iconColorActive={iconColorActiveItem?.value}
                 origin={TaskOrigin.GLOBAL}
+                highlightedValue={highlightedValue}
               />
             )}
           </>

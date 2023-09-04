@@ -193,7 +193,7 @@ const TaskItem = React.memo(
     } = task || {};
 
     const patient = taskPatient ?? parentTask?.patient ?? parentPatient;
-    
+
     const { columns } = useTaskListColumnsConfig();
     const { listName, taskListIdentifier } = taskList || {};
     const isTemplateTask = checkIfTemplateTask(task);
@@ -243,7 +243,8 @@ const TaskItem = React.memo(
     );
     const isSelected =
       useSelector((state) => isTaskSelectedSelector(state, taskIdentifier)) ||
-      isSelectedByHighlighted || isTaskBulkSelected;
+      isSelectedByHighlighted ||
+      isTaskBulkSelected;
 
     const [taskDecisionError, setTaskDecisionError] = useState(false);
     const [contextMenu, setContextMenu] = useState(null);
@@ -817,6 +818,7 @@ const TaskItem = React.memo(
           dragAndDropDisabled={isCompletedGroup || dragAndDropDisabled}
           iconColorActive={iconColorActiveItem?.value}
           origin={origin}
+          highlightedValue={highlightedValue}
         />
       );
     }

@@ -29,7 +29,7 @@ import ListOptionsMenu from 'components/tasklist/ListOptionsMenu/ListOptionsMenu
 import HeaderSearch from 'components/template/HeaderSearch/HeaderSearch';
 import { Box } from '@mui/material';
 import InviteMemberButton from 'components/user/InviteMemberButton/InviteMemberButton';
-import { isUserGuest, isUserViewOnly } from 'helpers/user-helper';
+import { isUserGuestOrDockLite, isUserViewOnly } from 'helpers/user-helper';
 import {
   selectQuickFilter,
   showAddQuickFilterOption,
@@ -233,7 +233,7 @@ const ListDetailsHeader = (props) => {
               />
             </Box>
           )}
-          {!isUserGuest(currentUser) &&
+          {!isUserGuestOrDockLite(currentUser) &&
             !isUserViewOnly(currentUser) &&
             listType &&
             listType !== 'INBOX' && (

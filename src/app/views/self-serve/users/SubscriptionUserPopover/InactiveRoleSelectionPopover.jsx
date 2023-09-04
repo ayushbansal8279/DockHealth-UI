@@ -22,7 +22,7 @@ import {
 const USER_TYPES = new Proxy(
   {
     OWNER: {
-      label: 'Owner',
+      label: 'Owner/Admin',
       selectable: true,
       changeable: true,
       description:
@@ -43,13 +43,21 @@ const USER_TYPES = new Proxy(
       description:
         'An outside collaborator you can invite into selected lists, who will only have access to the tasks, patients/clients and people who are part of those lists.',
     },
-    DOCK_PRO: {
-      label: 'Dock Pro',
+    DOCK_LITE: {
+      label: 'Dock Lite',
       selectable: true,
       changeable: true,
       isLimitedAccess: true,
       description:
-        'A Dock Pro user will have admin access to setup the configurations and workflows for your team.',
+        'A limited use member of your organization or an outside collaborator you can invite into a single list, who will only have access to the tasks, patients/clients and people who are part of that list.',
+    },
+    DOCK_PRO: {
+      label: 'Dock Crew',
+      selectable: true,
+      changeable: true,
+      isLimitedAccess: true,
+      description:
+        'Dock Crew user will help configure your account and with building out Workflows and Smartflows for your team.',
     },
   },
   {

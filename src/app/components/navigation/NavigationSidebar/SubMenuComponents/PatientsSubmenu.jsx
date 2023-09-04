@@ -27,7 +27,7 @@ import {
   userHasPatientCustomListsFeatureSelector,
 } from 'selectors/user-selectors';
 import { locationParametersSelector } from 'location/selectors';
-import { isUserGuest, isUserViewOnly } from 'helpers/user-helper';
+import { isUserGuestOrDockLite, isUserViewOnly } from 'helpers/user-helper';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import { capitalize } from 'helpers/capitalize';
 import UpgradePlan from 'components/common/UpgradePlan/UpgradePlan';
@@ -52,7 +52,7 @@ const PatientsSubmenu = () => {
     locationParametersSelector,
   );
   const currentUser = useSelector(userProfileSelector);
-  const isGuest = isUserGuest(currentUser);
+  const isGuestOrDockLite = isUserGuestOrDockLite(currentUser);
   const isViewOnly = isUserViewOnly(currentUser);
 
   const isInitialListFetching = isFetching && !defaultPatientsLists;
@@ -144,7 +144,7 @@ const PatientsSubmenu = () => {
           </>
         )}
       </DrawerListsList>
-      {!isGuest && customListsAvailable && (
+      {!isGuestOrDockLite && customListsAvailable && (
         <>
           <Box m={6} flexShrink={0} />
           <DrawerMyListsLabel>

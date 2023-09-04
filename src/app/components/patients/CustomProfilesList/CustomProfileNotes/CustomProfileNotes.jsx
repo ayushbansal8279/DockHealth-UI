@@ -22,7 +22,7 @@ import { ClickAwayListener } from '@mui/material';
 import { checkIfUserIsOrganizationAdmin } from 'helpers/user-helper';
 import RichTextEditor from 'components/common/RichTextEditor/RichTextEditor';
 // import ProfileNote from '../ProfileNote/ProfileNote';
-// import PatientNotesLoader from '../PatientNotesLoader/PatientNotesLoader';
+// import ProfileNotesLoader from '../ProfileNotesLoader/ProfileNotesLoader';
 import ProfileNote from 'components/patients/CustomProfilesList/CustomProfileNotes/ProfileNote/ProfileNote';
 import { note } from 'api/profile-api';
 import {
@@ -172,7 +172,7 @@ const CustomProfileNotes = ({ profileIdentifier }) => {
 
   return (
     <PatientNotesWrapper>
-      {isFetching ? null : ( // <PatientNotesLoader />
+      {isFetching ? null : ( // <ProfileNotesLoader />
         <>
           {pinnedNotes?.length > 0 && (
             <PinnedNotesWrapper>

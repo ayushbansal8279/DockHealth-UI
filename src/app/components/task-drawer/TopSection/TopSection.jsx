@@ -18,6 +18,7 @@ import {
   userHasSendESignFeatureSelector,
   userHasPostEMRNoteFeatureSelector,
   userHasShareTaskFeatureSelector,
+  userSubscriptionIsProSelector,
 } from 'selectors/user-selectors';
 import { useDispatch, useSelector } from 'react-redux';
 import { openModal } from 'modal/actions';
@@ -63,6 +64,7 @@ const TopSection = ({
   const sendESignAvailable = useSelector(userHasSendESignFeatureSelector);
   const postToEMRAvailable = useSelector(userHasPostEMRNoteFeatureSelector);
   const shareTaskAvailable = useSelector(userHasShareTaskFeatureSelector);
+  const userSubscriptionIsPro = useSelector(userSubscriptionIsProSelector);
 
   const handleMarkAsUnRead = useCallback(() => {
     dispatch(markTaskAsUnRead(selectedTask.taskIdentifier));
@@ -110,10 +112,6 @@ const TopSection = ({
           name: 'Send Email',
           onClick: () => dispatch(openModal('SendEmailFromTask')),
         },
-        sendFaxAvailable && {
-          name: 'Send FAX',
-          onClick: () => dispatch(openModal('SendFaxFromTask')),
-        },
         sendSmsAvailable && {
           name: 'Send SMS',
           onClick: () => dispatch(openModal('SendSmsFromTask')),
@@ -122,9 +120,17 @@ const TopSection = ({
           name: 'Send Patient Message',
           onClick: () => dispatch(openModal('SendSecureMessageFromTask')),
         },
-        sendESignAvailable && {
+        (userSubscriptionIsPro || sendFaxAvailable) && {
+          name: 'Send FAX',
+          onClick: () => dispatch(openModal('SendFaxFromTask')),
+          disabled: !sendFaxAvailable,
+          description: '*Contact Dock Crew',
+        },
+        (userSubscriptionIsPro || sendESignAvailable) && {
           name: 'Send for ESign',
           onClick: () => dispatch(openModal('SendESignFromTask')),
+          disabled: !sendESignAvailable,
+          description: '*Contact Dock Crew',
         },
         postToEMRAvailable && {
           name: 'Post Note to EHR',
@@ -145,6 +151,7 @@ const TopSection = ({
       isTemplateTask,
       handleShareTask,
       handleCopyLink,
+      userSubscriptionIsPro,
       sendEmailAvailable,
       sendFaxAvailable,
       sendSmsAvailable,
@@ -160,7 +167,7 @@ const TopSection = ({
   );
 
   const allowedOptions = useMemo(
-    () => options.filter(o => !o.restriction || o.restriction === false),
+    () => options.filter((o) => !o.restriction || o.restriction === false),
     [options],
   );
 

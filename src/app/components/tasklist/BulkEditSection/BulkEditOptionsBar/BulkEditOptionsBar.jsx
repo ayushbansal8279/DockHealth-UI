@@ -49,7 +49,7 @@ import BulkEditDueDateOption from './BulkEditDueDateOption';
 import BulkEditWorkflowStatusOption from './BulkEditWorkflowStatusOption';
 import { Button } from './styled';
 
-const { ADMIN, OWNER, MEMBER, GUEST } = UserOrganizationRole;
+const { ADMIN, OWNER, MEMBER, GUEST, DOCK_LITE } = UserOrganizationRole;
 
 const BULK_EDIT_BASE_CONFIG = {
   [BulkEditOptionsConfig.DUPLICATE_OPTION]: true,
@@ -712,12 +712,11 @@ const BulkEditOptionsBar = ({
             .then(({ transactionIdentifier }) => {
               dispatch(getTasksGroupsList());
               dispatch(getListDetailsTaskCounters(taskListIdentifier));
-              if (
-                allSelectedWorkflowIdentifiers &&
-                allSelectedWorkflowIdentifiers.length > 0
-              ) {
+
+              if (refreshTasks && typeof refreshTasks === 'function') {
                 refreshTasks();
               }
+
               dispatch(
                 AlertActions.showGlobalAlertWithUndo(
                   allSelectedTasksLength > 1
@@ -737,14 +736,6 @@ const BulkEditOptionsBar = ({
                   },
                 ),
               );
-
-              if (
-                shouldRefreshTasksEveryTime &&
-                refreshTasks &&
-                typeof refreshTasks === 'function'
-              ) {
-                refreshTasks();
-              }
 
               dispatch(closeModal());
               if (onClose && typeof onClose === 'function') {
@@ -790,7 +781,9 @@ const BulkEditOptionsBar = ({
     >
       <>
         {mergedConfig[BulkEditOptionsConfig.DUPLICATE_OPTION] && (
-          <AccessRestrictor allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST]}>
+          <AccessRestrictor
+            allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST, DOCK_LITE]}
+          >
             <Button
               type="button"
               onClick={handleDuplicateTasks}
@@ -805,7 +798,9 @@ const BulkEditOptionsBar = ({
           </AccessRestrictor>
         )}
         {mergedConfig[BulkEditOptionsConfig.MOVE_OPTION] && (
-          <AccessRestrictor allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST]}>
+          <AccessRestrictor
+            allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST, DOCK_LITE]}
+          >
             <Tooltip
               placement="top"
               title={
@@ -848,7 +843,9 @@ const BulkEditOptionsBar = ({
           />
         )}
         {mergedConfig[BulkEditOptionsConfig.DUE_DATE_OPTION] && (
-          <AccessRestrictor allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST]}>
+          <AccessRestrictor
+            allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST, DOCK_LITE]}
+          >
             <BulkEditDueDateOption
               handleChangeDateTasks={handleChangeDateTasks}
               isDisabled={isDisabled}
@@ -856,7 +853,9 @@ const BulkEditOptionsBar = ({
           </AccessRestrictor>
         )}
         {mergedConfig[BulkEditOptionsConfig.ASSIGN_OPTION] && (
-          <AccessRestrictor allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST]}>
+          <AccessRestrictor
+            allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST, DOCK_LITE]}
+          >
             <BulkEditAssignToOption
               selectedTaskListIdentifiers={allSelectedTaskListIdentifiers}
               handleChangeAssigneTasks={handleChangeAssigneeTasks}
@@ -866,7 +865,9 @@ const BulkEditOptionsBar = ({
           </AccessRestrictor>
         )}
         {mergedConfig[BulkEditOptionsConfig.DELETE_OPTION] && (
-          <AccessRestrictor allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST]}>
+          <AccessRestrictor
+            allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST, DOCK_LITE]}
+          >
             <Button
               type="button"
               onClick={handleDeleteTasks}

@@ -3,6 +3,7 @@ export const UserOrganizationRole = {
   OWNER: 'OWNER',
   MEMBER: 'MEMBER',
   GUEST: 'GUEST',
+  DOCK_LITE: 'DOCK_LITE',
   EXTERNAL: 'EXTERNAL',
   DOCK_PRO: 'DOCK_PRO',
   VIEW_ONLY: 'VIEW_ONLY',
@@ -11,7 +12,7 @@ export const UserOrganizationRole = {
 export const getOrgRole = (roleKey) => {
   switch (roleKey) {
     case UserOrganizationRole.OWNER: {
-      return 'Owner';
+      return 'Owner/Admin';
     }
     case UserOrganizationRole.ADMIN: {
       return 'Admin';
@@ -22,8 +23,11 @@ export const getOrgRole = (roleKey) => {
     case UserOrganizationRole.GUEST: {
       return 'Guest';
     }
+    case UserOrganizationRole.DOCK_LITE: {
+      return 'Dock Lite';
+    }
     case UserOrganizationRole.DOCK_PRO: {
-      return 'Dock Pro';
+      return 'Dock Crew';
     }
     default: {
       return '';
@@ -40,6 +44,17 @@ export const checkIfUserIsOrganizationAdmin = (user) =>
 
 export function isUserGuest(user) {
   return user?.orgUserRole === UserOrganizationRole.GUEST;
+}
+
+export function isUserDockLite(user) {
+  return user?.orgUserRole === UserOrganizationRole.DOCK_LITE;
+}
+
+export function isUserGuestOrDockLite(user) {
+  return (
+    user?.orgUserRole === UserOrganizationRole.GUEST ||
+    user?.orgUserRole === UserOrganizationRole.DOCK_LITE
+  );
 }
 
 export function isUserViewOnly(user) {

@@ -23,11 +23,12 @@ import {
 import {
   userProfileSelector,
   userHasUserGroupsFeatureSelector,
+  userHasCustomProfilesFeatureSelector,
 } from 'selectors/user-selectors';
 import { locationParametersSelector } from 'location/selectors';
 import {
   checkIfUserIsOrganizationAdmin,
-  isUserGuest,
+  isUserGuestOrDockLite,
   isUserViewOnly,
 } from 'helpers/user-helper';
 import {
@@ -67,6 +68,9 @@ const CustomProfilesSubmenu = () => {
   const groups = useSelector(userGroupsSelector);
   const isFetching = useSelector(isFetchingUserGroupsSelector);
   const userGroupsAvailable = useSelector(userHasUserGroupsFeatureSelector);
+  const userHasCustomProfilesAvailable = useSelector(
+    userHasCustomProfilesFeatureSelector,
+  );
   const { groupIdentifier: groupIdentifierUrlParameter } = useSelector(
     locationParametersSelector,
   );
@@ -76,7 +80,7 @@ const CustomProfilesSubmenu = () => {
     groupIdentifierUrlParameter,
   );
   const currentUser = useSelector(userProfileSelector);
-  const isGuest = isUserGuest(currentUser);
+  const isGuestOrDockLite = isUserGuestOrDockLite(currentUser);
   const isViewOnly = isUserViewOnly(currentUser);
 
   const isOrganizationAdmin = checkIfUserIsOrganizationAdmin(currentUser);
@@ -143,7 +147,9 @@ const CustomProfilesSubmenu = () => {
           </>
         ) : (
           <>
-            {profileTypes && renderListItems(profileTypes)}
+            {userHasCustomProfilesAvailable && (
+              <>{profileTypes && renderListItems(profileTypes)}</>
+            )}
             {defaultGroups?.map(({ identifier, name, usersCount }) => (
               <DrawerListsItem key={identifier}>
                 <ListNameText
@@ -164,15 +170,17 @@ const CustomProfilesSubmenu = () => {
                 </DrawerItemOptions>
               </DrawerListsItem>
             ))}
-            <DrawerListsItem>
-              <ListNameText>
-                <MenuLink to="/settings/contacts">Contacts</MenuLink>
-              </ListNameText>
-            </DrawerListsItem>
+            {!isGuestOrDockLite && (
+              <DrawerListsItem>
+                <ListNameText>
+                  <MenuLink to="/settings/contacts">Contacts</MenuLink>
+                </ListNameText>
+              </DrawerListsItem>
+            )}
           </>
         )}
       </DrawerListsList>
-      {!isGuest && userGroupsAvailable && (
+      {!isGuestOrDockLite && userGroupsAvailable && (
         <>
           <Box m={6} flexShrink={0} />
           <DrawerMyListsLabel>
@@ -247,7 +255,7 @@ const CustomProfilesSubmenu = () => {
             iconImage={<img src={UserGroupsIcon} alt="Custom User Groups" />}
           />
         </UpgradePlanContainer>
-      )}      
+      )}
     </>
   );
 };

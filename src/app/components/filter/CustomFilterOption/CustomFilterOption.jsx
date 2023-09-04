@@ -95,7 +95,7 @@ const CustomFilterOption = (props) => {
       <Input
         onKeyPress={handleKeyPress}
         inputRef={inputReference}
-        disabled={disabled}
+        readOnly={disabled}
         value={value}
         onChange={(event) => setValue(event.target.value)}
         InputProps={{ disableUnderline: true }}
