@@ -33,7 +33,6 @@ export const SUBSCRIPTION_PLANS = [
       'Standard BAA (Business Associate Agreement)',
       'Unlimited task lists',
       'Unlimited patient profiles',
-      'Unlimited users',
       'Unlimited workflow templates',
       'Configurable task statuses',
       'Patient labels/tags',
@@ -96,7 +95,7 @@ export const SUBSCRIPTION_PLANS = [
       'Enhanced support and implementation',
     ],
     comingSoonFeatures: [],
-    disclaimers: ['*Requires third-party source'],
+    disclaimers: ['*Third-party source and professional services required'],
   },
   {
     key: SubscriptionPlan.ENTERPRISE,
@@ -129,7 +128,8 @@ export const SUBSCRIPTION_PLANS = [
 export const DockLite = {
   key: 'DOCK_LITE',
   label: 'Dock Lite',
-  description: 'HIPAA-compliant task management with Dock Chat for web and iOS',
+  description:
+    'Add-on to any Dock subscription with this streamlined experience for internal/external colleagues and collaborators.',
   color: '#0e244a',
   annualMonthlyPrice: 7,
   annualPrice: 84,
