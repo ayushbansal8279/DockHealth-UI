@@ -53,6 +53,7 @@ import {
   ReactFlowProvider,
   MarkerType,
   useNodesInitialized,
+  useReactFlow,
 } from 'reactflow';
 import TaskDrawer from 'components/task-drawer/TaskDrawer/TaskDrawer';
 import {
@@ -130,9 +131,9 @@ const DEFAULT_EDGE = {
 const SmartFlowBuilderView = () => {
   const delayPeriodOptionReference = useRef(null);
   const builderWrapperReference = useRef(null);
-  const reactFlowInstance = useRef(null);
+  const reactFlowInstance = useReactFlow();
   const nodesInitialized = useNodesInitialized({ includeHiddenNodes: false });
-  const reactFlowInitialized = useRef(false);
+  const [reactFlowInitialized, setReactFlowInitialized] = useState(false);
   const [elements, setElements] = useState([]);
   const [draggedEdgeSourceId, setDraggedEdgeSourceId] = useState(null);
   const [, setHoveredTargetHandle] = useState(Position.Top);
@@ -157,10 +158,6 @@ const SmartFlowBuilderView = () => {
     () => elements.filter((element) => element.selected),
     [elements],
   );
-
-  useEffect(() => {
-    reactFlowInitialized.current = false;
-  }, []);
 
   useEffect(() => {
     if (smartFlowsAvailable === false && templateType === 'SMARTFLOW') {
@@ -203,21 +200,22 @@ const SmartFlowBuilderView = () => {
   }, [draggedEdgeSourceId, identifier, layout, tasks, temporaryElements]);
 
   useEffect(() => {
-    if (
-      !reactFlowInitialized.current &&
-      reactFlowInstance.current &&
-      nodesInitialized
-    ) {
-      reactFlowInstance.current.fitView();
-      reactFlowInitialized.current = true;
+    if (nodesInitialized) {
+      setReactFlowInitialized(true);
     }
-  }, [nodesInitialized, reactFlowInitialized.current]);
+  }, [nodesInitialized]);
+
+  useEffect(() => {
+    if (reactFlowInitialized && reactFlowInstance) {
+      reactFlowInstance.fitView();
+    }
+  }, [reactFlowInitialized, reactFlowInstance]);
 
   const centerViewToElement = (elementPosition) => {
     const { x, y } = elementPosition;
     const { offsetWidth, offsetHeight } = builderWrapperReference.current;
 
-    reactFlowInstance.current.setTransform({
+    reactFlowInstance.setTransform({
       x: -x + offsetWidth / 2 - TASK_NODE_WIDTH / 2,
       y: -y + offsetHeight / 2,
       zoom: 1,
@@ -445,7 +443,7 @@ const SmartFlowBuilderView = () => {
     const reactFlowBounds =
       builderWrapperReference.current.getBoundingClientRect();
     const type = event.dataTransfer.getData('application/reactflow');
-    const position = reactFlowInstance.current.project({
+    const position = reactFlowInstance.project({
       x: event.clientX - reactFlowBounds.left,
       y: event.clientY - reactFlowBounds.top,
     });
@@ -471,10 +469,6 @@ const SmartFlowBuilderView = () => {
     }
   };
 
-  const handleLoad = (_reactFlowInstance) => {
-    reactFlowInstance.current = _reactFlowInstance;
-  };
-
   // eslint-disable-next-line unicorn/consistent-function-scoping
   const resetSelection = () => {
     // resetting selection by creating click event on react flow panel
@@ -487,7 +481,7 @@ const SmartFlowBuilderView = () => {
     const autoLayout = await getAutoLayout(tasks);
     dispatch(saveTaskTemplateLayoutToHistory());
     dispatch(saveTaskTemplateLayout(autoLayout));
-    setTimeout(reactFlowInstance.current.fitView, 0);
+    setTimeout(reactFlowInstance.fitView, 0);
     dispatch(
       AlertActions.showGlobalAlertWithUndo(
         'AUTO ALIGNMENT',
@@ -610,7 +604,6 @@ const SmartFlowBuilderView = () => {
               }}
               onSelectionDragStop={handleSelectionDragStop}
               onNodeDragStop={handleNodeDragStop}
-              onLoad={handleLoad}
               multiSelectionKeyCode={91}
               nodesDraggable={isCurrentUserEditor}
               nodesConnectable={isCurrentUserEditor}
