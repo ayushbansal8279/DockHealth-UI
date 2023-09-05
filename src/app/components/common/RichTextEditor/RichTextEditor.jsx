@@ -24,6 +24,7 @@ import 'tributejs/dist/tribute.css';
 import './styles.css';
 
 const md = new MarkdownIt({
+  html: true,
   breaks: true,
   linkify: true,
 }).use(markdownItUnderline);
@@ -107,8 +108,8 @@ const processMarkdownValue = (value, mentions) => {
   if (!value || value === '') {
     return value;
   }
-  let htmlValue = md.render(value || '');
-  htmlValue = htmlValue.replace(/\n/g, '<p><br></p>');
+  const mdValue = value.replace(/\n {2}\n/g, '<p><br/></p>');
+  const htmlValue = md.render(mdValue || '');
   let processedValue = htmlValue;
   if (mentions && value !== '') {
     for (const mentionInfo of mentions) {

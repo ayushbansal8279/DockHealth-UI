@@ -13,9 +13,11 @@ import {
 } from 'actions/user-groups-actions';
 import {
   Box,
-  Checkbox,
   FormControlLabel,
   FormGroup,
+  ListItemText,
+  MenuItem,
+  // Checkbox,
   Stack,
 } from '@mui/material';
 import { getAllProfiles } from 'api/profile-api';
@@ -34,6 +36,7 @@ import Toolbar from 'ui-toolkit/Composite/Toolbar';
 import { Paper } from 'ui-toolkit/Element';
 import CustomizeIcon from 'img/customize-icon.svg';
 import { CustomizeImg } from 'components/patients/CustomizeToolbarButton/styled';
+import Checkbox from 'components/common/Checkbox/Checkbox';
 
 const CustomProfileList = () => {
   const dispatch = useDispatch();
@@ -117,14 +120,11 @@ const CustomProfileList = () => {
     setPopoverOpen(false);
   };
 
-  const handleFilterChange = (field) => (event) => {
-    const checkbox = event.target;
-    if (checkbox) {
-      if (checkbox.checked) {
-        setFilters([...filters, field.identifier]);
-      } else {
-        setFilters(filters.filter((filter) => filter !== field.identifier));
-      }
+  const handleFilterChange = (field) => () => {
+    if (filters.includes(field.identifier)) {
+      setFilters(filters.filter((filter) => filter !== field.identifier));
+    } else {
+      setFilters([...filters, field.identifier]);
     }
   };
 
@@ -181,20 +181,24 @@ const CustomProfileList = () => {
                 horizontal: 'left',
               }}
             >
-              <Paper>
+              <Paper
+                sx={{
+                  p: 2,
+                }}
+              >
                 <FormGroup>
                   {profileTypes.map((field) => {
                     return (
-                      <FormControlLabel
+                      <MenuItem
                         key={field.identifier}
-                        control={
-                          <Checkbox
-                            checked={filters.includes(field.identifier)}
-                            onClick={handleFilterChange(field)}
-                          />
-                        }
-                        label={field.name}
-                      />
+                        onClick={handleFilterChange(field)}
+                      >
+                        <Checkbox
+                          isChecked={filters.includes(field.identifier)}
+                        />
+                        <Box mx={0.5} />
+                        <ListItemText>{field.name}</ListItemText>
+                      </MenuItem>
                     );
                   })}
                 </FormGroup>

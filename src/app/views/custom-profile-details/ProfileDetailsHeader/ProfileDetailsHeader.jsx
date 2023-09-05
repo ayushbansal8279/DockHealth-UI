@@ -92,23 +92,23 @@ const ProfileDetailsHeader = () => {
     [profile],
   );
 
-  const profileHeader = useMemo(
-    () =>
-      Object.fromEntries(
-        profile?.fields
-          .filter((field) =>
-            field?.profileTypeField?.displayOptions?.includes('PROFILE_HEADER'),
-          )
-          .map((field) => {
-            return [
-              field.profileTypeField.name,
-              field.values?.[0].value ||
-                field.values?.[0]?.customFieldOption.name,
-            ];
-          }) || [],
-      ),
-    [profile],
-  );
+  // const profileHeader = useMemo(
+  //   () =>
+  //     Object.fromEntries(
+  //       profile?.fields
+  //         .filter((field) =>
+  //           field?.profileTypeField?.displayOptions?.includes('PROFILE_HEADER'),
+  //         )
+  //         .map((field) => {
+  //           return [
+  //             field.profileTypeField.name,
+  //             field.values?.[0].value ||
+  //               field.values?.[0]?.customFieldOption.name,
+  //           ];
+  //         }) || [],
+  //     ),
+  //   [profile],
+  // );
 
   useEffect(() => {
     fetchProfileTypes();
