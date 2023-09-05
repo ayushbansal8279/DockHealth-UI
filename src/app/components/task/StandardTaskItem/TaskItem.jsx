@@ -36,6 +36,7 @@ import ThreeDotsIcon from 'img/three-dots.svg';
 import {
   userProfileSelector,
   selectedUserOrganizationSelector,
+  userHasMultiOrgViewFeatureSelector,
 } from 'selectors/user-selectors';
 import { BulkEditContext } from 'components/tasklist/BulkEditSection/BulkEditSection';
 import {
@@ -221,6 +222,10 @@ const TaskItem = React.memo(
 
     const isDependencyEmptyOrCompleted =
       dependencyTasksCount === dependencyTasksCompletedCount;
+
+    const userHasMultiOrgViewAvailable = useSelector(
+      userHasMultiOrgViewFeatureSelector,
+    );
 
     const {
       matchAssignedTo,
@@ -1667,32 +1672,37 @@ const TaskItem = React.memo(
                 )}
               </>
             )}
-            {isColumnChecked(columns, TaskItemColumn.ORG_NAME) && (
-              <>
-                {randerFirstColumnCoverIfNecessary(
-                  <TaskItemCell
-                    isSubtask={isSubtask}
-                    key={`list_${taskIdentifier}`}
-                    width={
-                      columns?.find(
-                        ({ identifier }) =>
-                          identifier === TaskItemColumn.ORG_NAME,
-                      )?.columnWidth
-                    }
-                    order={getColumnOrder(TaskItemColumn.ORG_NAME)}
-                  >
-                    <TaskItemOrganization
-                      organizationName={organization?.organizationName}
-                      organizationIdentifier={organization?.organizationIdentifier}
-                      organizationInitials={organization?.organizationInitials}
-                      organizationProfileColor={
-                        organization?.organizationProfileColor
+            {userHasMultiOrgViewAvailable &&
+              isColumnChecked(columns, TaskItemColumn.ORG_NAME) && (
+                <>
+                  {randerFirstColumnCoverIfNecessary(
+                    <TaskItemCell
+                      isSubtask={isSubtask}
+                      key={`list_${taskIdentifier}`}
+                      width={
+                        columns?.find(
+                          ({ identifier }) =>
+                            identifier === TaskItemColumn.ORG_NAME,
+                        )?.columnWidth
                       }
-                    />
-                  </TaskItemCell>,
-                  getColumnOrder(TaskItemColumn.ORG_NAME),
-                )}
-              </>
+                      order={getColumnOrder(TaskItemColumn.ORG_NAME)}
+                    >
+                      <TaskItemOrganization
+                        organizationName={organization?.organizationName}
+                        organizationIdentifier={
+                          organization?.organizationIdentifier
+                        }
+                        organizationInitials={
+                          organization?.organizationInitials
+                        }
+                        organizationProfileColor={
+                          organization?.organizationProfileColor
+                        }
+                      />
+                    </TaskItemCell>,
+                    getColumnOrder(TaskItemColumn.ORG_NAME),
+                  )}
+                </>
             )}
             {isColumnChecked(columns, TaskItemColumn.TASK_DETAILS) && (
               <>

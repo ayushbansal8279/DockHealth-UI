@@ -27,6 +27,7 @@ import {
   selectedUserOrganizationSelector,
   userProfileSelector,
   userHasShareTaskFeatureSelector,
+  userHasMultiOrgViewFeatureSelector,
 } from 'selectors/user-selectors';
 import TaskViewTypeToolbarSelect from 'components/tasklist/TaskViewTypeToolbarSelect/TaskViewTypeToolbarSelect';
 import CustomizeToolbarButton from 'components/tasklist/CustomizeToolbarButton/CustomizeToolbarButton';
@@ -48,7 +49,6 @@ import {
 const DASHBOARD_BASE_COLUMNS_CONFIG = {
   ...TASK_ITEM_BASE_COLUMN_CONFIG,
   [TaskItemColumn.LIST_NAME]: true,
-  [TaskItemColumn.ORG_NAME]: true,
 };
 
 const { ADMIN, OWNER, MEMBER, GUEST, DOCK_LITE } = UserOrganizationRole;
@@ -75,6 +75,9 @@ const DashboardToolbar = ({ iconColorFilterActive, iconColorActive }) => {
 
   const currentOrganization = useSelector(selectedUserOrganizationSelector);
   const { orgUserRole } = useSelector(userProfileSelector);
+  const userHasMultiOrgViewAvailable = useSelector(
+    userHasMultiOrgViewFeatureSelector,
+  );
   const allTasksForMemberEnabledItem =
     currentOrganization?.themeSettings?.find(
       ({ name }) => name === 'constraint.allTasksForMember.enabled',
@@ -130,8 +133,15 @@ const DashboardToolbar = ({ iconColorFilterActive, iconColorActive }) => {
   }, [groupList, groupsPreferences, updateGroupsPreferences]);
 
   useEffect(() => {
-    setViewSpecificConfig(DASHBOARD_BASE_COLUMNS_CONFIG);
-  }, [setViewSpecificConfig]);
+    let columnsConfig = DASHBOARD_BASE_COLUMNS_CONFIG;
+    if (userHasMultiOrgViewAvailable) {
+      columnsConfig = {
+        ...DASHBOARD_BASE_COLUMNS_CONFIG,
+        [TaskItemColumn.ORG_NAME]: true,
+      };
+    }
+    setViewSpecificConfig(columnsConfig);
+  }, [setViewSpecificConfig, userHasMultiOrgViewAvailable]);
 
   const handleChangeViewType = useCallback(
     (event) => {

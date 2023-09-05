@@ -10,7 +10,7 @@ const TaskItemOrganization = ({
   organizationProfileColor,
 }) => {
   return organizationName && organizationIdentifier ? (
-    <ListLink to={`/core/tasks/${organizationIdentifier}`}>
+    <div>
       <Grid
         container
         direction="row"
@@ -25,7 +25,7 @@ const TaskItemOrganization = ({
         &nbsp;&nbsp;
         {organizationName}
       </Grid>
-    </ListLink>
+    </div>
   ) : (
     'Unfiled'
   );
