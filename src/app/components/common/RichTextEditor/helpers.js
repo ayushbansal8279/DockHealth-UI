@@ -39,7 +39,8 @@ export const htmlToMarkdown = (html) => {
 export const markdowntoHTML = (markdownText, preserveNewLines) => {
   let htmlValue = md.render(markdownText || '');
   if (preserveNewLines) {
-    htmlValue = htmlValue.replace(/\n/g, '<p><br></p>');
+    const mdValue = markdownText?.replace(/\n {2}\n/g, '<p><br/></p>');
+    htmlValue = md.render(mdValue || '');
   }
   return htmlValue || '';
 };
@@ -51,7 +52,8 @@ export const markdowntoHTMLWithMentions = (
 ) => {
   let htmlValue = md.render(markdownText || '');
   if (preserveNewLines) {
-    htmlValue = htmlValue.replace(/\n/g, '<p><br></p>');
+    const mdValue = markdownText?.replace(/\n {2}\n/g, '<p><br/></p>');
+    htmlValue = md.render(mdValue || '');
   }
   let processedValue = htmlValue;
   if (mentions && markdownText !== '') {
