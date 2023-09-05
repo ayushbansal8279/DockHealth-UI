@@ -21,6 +21,7 @@ export const TaskHeaderColumn = {
   ASSIGNED: 'ASSIGNED_TO',
   SHARED: 'SHARED',
   LIST_NAME: 'LIST_NAME',
+  ORG_NAME: 'ORG_NAME',
   PRIORITY: 'PRIORITY',
   PATIENT_GENDER: 'PATIENT_GENDER',
   PATIENT_DOB: 'PATIENT_DOB',
@@ -186,6 +187,12 @@ export const getTaskHeaderOptions = (
     {
       identifier: TaskHeaderColumn.LIST_NAME,
       label: 'List',
+      draggable: true,
+      hidden: restrictions?.listName !== DISABLED,
+    },
+    {
+      identifier: TaskHeaderColumn.ORG_NAME,
+      label: 'Org',
       draggable: true,
       hidden: restrictions?.listName !== DISABLED,
     },

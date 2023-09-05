@@ -4,6 +4,7 @@ import isNil from 'ramda/src/isNil';
 export const FilterOptionsCategory = {
   ASSIGNED_TO: 'assignedTo',
   PATIENTS: 'patients',
+  ORGANIZATIONS: 'organizations',
   TASK_LISTS: 'taskLists',
   ASSIGNED_BY: 'assignedBy',
   DUE_DATE: 'taskDueDateOptions',
@@ -17,11 +18,12 @@ export const FilterOptionsCategory = {
 
 const FilterOptionsLabel = {
   [FilterOptionsCategory.ASSIGNED_TO]: 'Assigned to',
-  [FilterOptionsCategory.PATIENTS]: 'Patients',
-  [FilterOptionsCategory.TASK_LISTS]: 'Task lists',
+  [FilterOptionsCategory.PATIENTS]: 'Patient',
+  [FilterOptionsCategory.ORGANIZATIONS]: 'Organization',
+  [FilterOptionsCategory.TASK_LISTS]: 'Task List',
   [FilterOptionsCategory.ASSIGNED_BY]: 'Assigned by',
   [FilterOptionsCategory.DUE_DATE]: 'Due date',
-  [FilterOptionsCategory.LABELS]: 'Labels',
+  [FilterOptionsCategory.LABELS]: 'Label',
   [FilterOptionsCategory.WORKFLOW_STATUS]: 'Workflow status',
   [FilterOptionsCategory.PRIORITY]: 'Priority',
   [FilterOptionsCategory.COMPLETE_DATE]: 'Task completed date',
