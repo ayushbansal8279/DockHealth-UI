@@ -21,7 +21,7 @@ export const ListItem = styled.li`
 
 export const ListItemButton = styled.button`
   width: 100%;
-  cursor: pointer
+  cursor: pointer;
   font-family: 'Roboto Condensed', sans-serif;
 
   ${({ isHovered }) => isHovered && `background: ${palette.blueGrey};`}

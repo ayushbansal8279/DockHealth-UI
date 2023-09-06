@@ -17,6 +17,7 @@ import { noop } from 'helpers/utility-functions';
 import AddRecordOption from 'components/common/AddRecordOption/AddRecordOption';
 
 import { userProfileSelector } from 'selectors/user-selectors';
+import PatientSelectItem from '../PatientSelectItem/PatientSelectItem';
 import {
   Input,
   InputBox,
@@ -301,6 +302,11 @@ const PatientList = ({
               refine search!
             </RefineSearchRow>
           )}
+          <Row key="header-label" readOnly>
+            <PatientSelectItem
+              patient={{ name: 'Name', dob: 'Dob', mrn: 'Mrn' }}
+            />
+          </Row>
           {!isLoadingPatients &&
             patients?.length !== 0 &&
             patients.map(renderRow)}
@@ -309,5 +315,4 @@ const PatientList = ({
     </>
   );
 };
-
 export default PatientList;
