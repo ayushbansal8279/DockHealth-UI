@@ -622,10 +622,10 @@ const SmartFlowBuilderView = () => {
   );
 };
 
-const SmartFlowBuilderViewWithProvider = () => (
+const SmartFlowBuilderViewWithReactFlow = () => (
   <ReactFlowProvider>
     <SmartFlowBuilderView />
   </ReactFlowProvider>
 );
 
-export default SmartFlowBuilderViewWithProvider;
+export default SmartFlowBuilderViewWithReactFlow;
