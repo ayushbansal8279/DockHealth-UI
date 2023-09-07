@@ -28,8 +28,9 @@ import {
 import { getAllProfileFieldTypes } from 'api/profile-type-field-api';
 import { showGlobalErrorAlert } from 'alert/actions';
 import { getAllProfiles } from 'api/profile-api';
-import PatientDetailsDrawer from 'views/custom-profile-details/ProfileDetailsDrawer/ProfileDetailsDrawer';
+import ProfileDetailsDrawer from 'views/custom-profile-details/ProfileDetailsDrawer/ProfileDetailsDrawer';
 import ProfileDetailsLoader from 'views/custom-profile-details/ProfileDetailsLoader/ProfileDetailsLoader';
+import ProfileDrawer from 'components/patients/CustomProfilesList/ProfileDrawer';
 import {
   ProfileDetailsContainer,
   ProfileName,
@@ -214,41 +215,41 @@ const ProfileDetailsHeader = () => {
                 {/* </Box> */}
               </Grid>
             </Box>
-          {/*   <ContactContainer> */}
-          {/*     {email && ( */}
-          {/*       <Tooltip title={email} placement="bottom"> */}
-          {/*         <IconWrapper href={`mailto:${email}`}> */}
-          {/*           <img */}
-          {/*             src={EmailIcon} */}
-          {/*             alt="email icon" */}
-          {/*             style={{ height: '16px' }} */}
-          {/*           /> */}
-          {/*         </IconWrapper> */}
-          {/*       </Tooltip> */}
-          {/*     )} */}
-          {/*     {phoneHome && ( */}
-          {/*       <Tooltip title={phoneHome} placement="bottom"> */}
-          {/*         <IconWrapper href={`tel:${phoneHome}`}> */}
-          {/*           <img */}
-          {/*             src={PhoneIcon} */}
-          {/*             alt="phone icon" */}
-          {/*             style={{ height: '16px' }} */}
-          {/*           /> */}
-          {/*         </IconWrapper> */}
-          {/*       </Tooltip> */}
-          {/*     )} */}
-          {/*     {phoneMobile && ( */}
-          {/*       <Tooltip title={phoneMobile} placement="bottom"> */}
-          {/*         <IconWrapper href={`tel:${phoneMobile}`}> */}
-          {/*           <img */}
-          {/*             src={MobileIcon} */}
-          {/*             alt="mobile phon icon" */}
-          {/*             style={{ height: '16px' }} */}
-          {/*           /> */}
-          {/*         </IconWrapper> */}
-          {/*       </Tooltip> */}
-          {/*     )} */}
-          {/*   </ContactContainer> */}
+            {/*   <ContactContainer> */}
+            {/*     {email && ( */}
+            {/*       <Tooltip title={email} placement="bottom"> */}
+            {/*         <IconWrapper href={`mailto:${email}`}> */}
+            {/*           <img */}
+            {/*             src={EmailIcon} */}
+            {/*             alt="email icon" */}
+            {/*             style={{ height: '16px' }} */}
+            {/*           /> */}
+            {/*         </IconWrapper> */}
+            {/*       </Tooltip> */}
+            {/*     )} */}
+            {/*     {phoneHome && ( */}
+            {/*       <Tooltip title={phoneHome} placement="bottom"> */}
+            {/*         <IconWrapper href={`tel:${phoneHome}`}> */}
+            {/*           <img */}
+            {/*             src={PhoneIcon} */}
+            {/*             alt="phone icon" */}
+            {/*             style={{ height: '16px' }} */}
+            {/*           /> */}
+            {/*         </IconWrapper> */}
+            {/*       </Tooltip> */}
+            {/*     )} */}
+            {/*     {phoneMobile && ( */}
+            {/*       <Tooltip title={phoneMobile} placement="bottom"> */}
+            {/*         <IconWrapper href={`tel:${phoneMobile}`}> */}
+            {/*           <img */}
+            {/*             src={MobileIcon} */}
+            {/*             alt="mobile phon icon" */}
+            {/*             style={{ height: '16px' }} */}
+            {/*           /> */}
+            {/*         </IconWrapper> */}
+            {/*       </Tooltip> */}
+            {/*     )} */}
+            {/*   </ContactContainer> */}
           </Box>
           {/* <PatientDetails> */}
           {/*   <PatientDetailsInformation> */}
@@ -353,10 +354,19 @@ const ProfileDetailsHeader = () => {
           {/*     )} */}
           {/*   </PatientDetailsInformation> */}
           {/* </PatientDetails> */}
-          <PatientDetailsDrawer
+          {/* <ProfileDetailsDrawer */}
+          {/*   open={isDrawerOpen} */}
+          {/*   profileTypeIdentifier={profileTypeIdentifier} */}
+          {/*   profile={profile} */}
+          {/*   profileName={profileName} */}
+          {/*   types={profileTypeFields} */}
+          {/*   onClose={() => setIsDrawerOpen(false)} */}
+          {/* /> */}
+          <ProfileDrawer
             open={isDrawerOpen}
             profileTypeIdentifier={profileTypeIdentifier}
             profile={profile}
+            profileName={profileName}
             types={profileTypeFields}
             onClose={() => setIsDrawerOpen(false)}
           />
