@@ -49,6 +49,7 @@ function makeLabelToSend(value, patientId) {
 
 const renderOption = ({
   isEditable,
+  disabled,
   option,
   registerOption,
   onEdit,
@@ -57,9 +58,14 @@ const renderOption = ({
   onDelete,
   onClick,
 }) => (
-  <OptionContainer key={option?.labelIdentifier} isEditable={isEditable}>
+  <OptionContainer
+    key={option?.labelIdentifier}
+    isEditable={isEditable}
+    disabled={disabled}
+  >
     <OptionButtonsInput
       ref={registerOption}
+      greyed={disabled}
       defaultValue={option?.labelName}
       onBlur={(event) => {
         event.stopPropagation();
@@ -189,9 +195,13 @@ const PatientLabels = ({ isPatientBulk, disableFocusOnRender = false }) => {
   );
 
   const renderOptionCallback = useCallback(
-    (_, option) =>
-      renderOption({
+    (_, option) => {
+      const disabled = selectedLabels.some(
+        (label) => label.labelIdentifier === option.labelIdentifier,
+      );
+      return renderOption({
         option,
+        disabled,
         registerOption: (element) => {
           if (element) {
             optionReferences.current[option?.labelIdentifier] = element;
@@ -224,7 +234,8 @@ const PatientLabels = ({ isPatientBulk, disableFocusOnRender = false }) => {
             return [...previousLabels, option];
           });
         },
-      }),
+      });
+    },
     [deleteLabel, saveEditLabel, saveHandler],
   );
 
