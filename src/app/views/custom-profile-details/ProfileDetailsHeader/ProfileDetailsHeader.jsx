@@ -28,7 +28,7 @@ import {
 import { getAllProfileFieldTypes } from 'api/profile-type-field-api';
 import { showGlobalErrorAlert } from 'alert/actions';
 import { getAllProfiles } from 'api/profile-api';
-import PatientDetailsDrawer from 'views/custom-profile-details/ProfileDetailsDrawer/ProfileDetailsDrawer';
+import ProfileDetailsDrawer from 'views/custom-profile-details/ProfileDetailsDrawer/ProfileDetailsDrawer';
 import ProfileDetailsLoader from 'views/custom-profile-details/ProfileDetailsLoader/ProfileDetailsLoader';
 import {
   ProfileDetailsContainer,
@@ -353,13 +353,14 @@ const ProfileDetailsHeader = () => {
           {/*     )} */}
           {/*   </PatientDetailsInformation> */}
           {/* </PatientDetails> */}
-          <PatientDetailsDrawer
-            open={isDrawerOpen}
-            profileTypeIdentifier={profileTypeIdentifier}
-            profile={profile}
-            types={profileTypeFields}
-            onClose={() => setIsDrawerOpen(false)}
-          />
+          {/* <ProfileDetailsDrawer */}
+          {/*   open={isDrawerOpen} */}
+          {/*   profileTypeIdentifier={profileTypeIdentifier} */}
+          {/*   profile={profile} */}
+          {/*   profileName={profileName} */}
+          {/*   types={profileTypeFields} */}
+          {/*   onClose={() => setIsDrawerOpen(false)} */}
+          {/* /> */}
         </>
       )}
     </ProfileDetailsContainer>
