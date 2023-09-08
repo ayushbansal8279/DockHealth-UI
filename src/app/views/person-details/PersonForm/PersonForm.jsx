@@ -82,7 +82,7 @@ const PersonForm = forwardRef(
     );
 
     const handleAddButtonClick = () =>
-      history.push(`${CUSTOM_FIELDS_SETTINGS_PATH}/provider`);
+      history.push(`${CUSTOM_FIELDS_SETTINGS_PATH}/users`);
 
     return (
       <form

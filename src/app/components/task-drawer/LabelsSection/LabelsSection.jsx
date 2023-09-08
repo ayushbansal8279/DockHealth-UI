@@ -25,6 +25,7 @@ import {
 
 const renderOption = ({
   isEditable,
+  disabled,
   option,
   registerOption,
   onEdit,
@@ -36,10 +37,12 @@ const renderOption = ({
   <OptionContainer
     key={option?.labelIdentifier}
     isEditable={isEditable}
+    disabled={disabled}
     labelIdentifier={option?.labelIdentifier}
   >
     <OptionButtonsInput
       ref={registerOption}
+      greyed={disabled}
       defaultValue={option?.labelName}
       onClick={onClick}
       onBlur={(event) => {
@@ -137,9 +140,13 @@ const LabelsSection = ({ selectedTask, onTaskUpdate }) => {
   const getInputReference = (element) => setInputReference(element);
 
   const renderOptionCallback = useCallback(
-    (_, option) =>
-      renderOption({
+    (_, option) => {
+      const disabled = selectedLabels.some(
+        (label) => label.labelIdentifier === option.labelIdentifier,
+      );
+      return renderOption({
         option,
+        disabled,
         registerOption: (element) => {
           if (element) {
             optionReferences.current[option?.labelIdentifier] = element;
@@ -180,7 +187,8 @@ const LabelsSection = ({ selectedTask, onTaskUpdate }) => {
             return [...previousLabels, option];
           });
         },
-      }),
+      });
+    },
     [deleteLabel, saveEditLabel, saveAddLabel],
   );
 
