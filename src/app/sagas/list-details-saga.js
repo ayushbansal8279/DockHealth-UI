@@ -264,7 +264,7 @@ function* createTaskListGroup({ groupName }) {
       }),
     ]);
   } catch {
-    yield put(showGlobalErrorAlert());
+    yield put(showGlobalErrorAlert('A group with that name already exists.'));
   }
 }
 
