@@ -61,19 +61,6 @@ const PatientSection = ({
     ) || {};
 
   const formattedPatients = getFormattedPatients({ patients });
-  const formattedPatientsWithHeaders = [
-    {
-      key: 'header-label',
-      value: 'header-label',
-      label: () => (
-        <PatientSelectItem patient={{ name: 'Name', dob: 'Dob', mrn: 'Mrn' }} />
-      ),
-      displayLabel: 'Name',
-      patient: { name: 'Name', dob: 'Dob', mrn: 'Mrn' },
-      readOnly: true,
-    },
-    ...formattedPatients,
-  ];
   const customerTypeLabel = getCustomerTypeLabel(currentUser);
   const customerTypeLabelCapitalized = capitalize(customerTypeLabel);
 
@@ -320,7 +307,10 @@ const PatientSection = ({
       }
       disabled={disabled}
       selectedOption={assignedPatient}
-      options={formattedPatientsWithHeaders}
+      options={formattedPatients}
+      headerOption={
+        <PatientSelectItem patient={{ name: 'Name', dob: 'Dob', mrn: 'Mrn' }} />
+      }
       isLoadingOptions={isLoadingPatients}
       onInputChange={onPatientInputChange}
       onOptionSelect={handlePatientSelect}

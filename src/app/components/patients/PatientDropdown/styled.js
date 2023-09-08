@@ -59,6 +59,7 @@ export const Row = styled.button`
   color: ${palette.coolGrey1};
   font-family: 'Roboto Condensed', sans-serif;
   ${({ isHovered }) => isHovered && `background: ${palette.blueGrey};`}
+  ${({ readOnly }) => readOnly && `pointer-events: none;`}
 
   &:not(:last-of-type) {
     margin-bottom: ${spacing.tiny};

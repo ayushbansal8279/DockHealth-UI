@@ -609,7 +609,8 @@ const SmartFlowBuilderView = () => {
                 onSelectionDragStop={handleSelectionDragStop}
                 onNodeDragStop={handleNodeDragStop}
                 onLoad={handleLoad}
-                multiSelectionKeyCode={91}
+                selectionKeyCode={['Meta', 'Shift']}
+                multiSelectionKeyCode={['Meta', 'Shift']}
                 nodesDraggable={isCurrentUserEditor}
                 nodesConnectable={isCurrentUserEditor}
                 elementsSelectable={isCurrentUserEditor}
