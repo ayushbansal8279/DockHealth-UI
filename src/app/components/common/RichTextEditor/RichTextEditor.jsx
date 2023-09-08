@@ -108,7 +108,8 @@ const processMarkdownValue = (value, mentions) => {
   if (!value || value === '') {
     return value;
   }
-  const mdValue = value.replace(/\n {2}\n/g, '<p><br/></p>');
+  let mdValue = value.replace(/\\+\*/g, '*');
+  mdValue = mdValue.replace(/\n {2}\n/g, '<p><br/></p>');
   const htmlValue = md.render(mdValue || '');
   let processedValue = htmlValue;
   if (mentions && value !== '') {
