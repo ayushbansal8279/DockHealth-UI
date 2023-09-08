@@ -21,7 +21,7 @@ const CustomProfileDetailsHeader = ({
   header,
   profileTypeName,
   profileTypeIdentifier,
-  children
+  children,
 }) => {
   const handleViewDetailsClick = () => {
     onViewDetailsClick();

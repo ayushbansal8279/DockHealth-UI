@@ -36,6 +36,8 @@ import { Paper } from 'ui-toolkit/Element';
 import CustomizeIcon from 'img/customize-icon.svg';
 import { CustomizeImg } from 'components/patients/CustomizeToolbarButton/styled';
 import Checkbox from 'components/common/Checkbox/Checkbox';
+import AddButton from 'components/common/AddButton/AddButton';
+import Button from "components/common/Button/Button";
 
 const CustomProfileList = () => {
   const dispatch = useDispatch();
@@ -152,11 +154,17 @@ const CustomProfileList = () => {
           justifyContent="space-between"
           sx={{ m: '16px 32px 0px 32px ' }}
         >
-          <Box display="flex" alignItems="center">
+          <Box display="flex" alignItems="center" width="300px">
             <SearchInput onValueChange={handleSearchInputChange} />
           </Box>
-          <Box m={1} />
-          <Box display="flex" alignItems="center">
+          <Box mx={1} />
+          <Box display="flex" my={2.5}>
+            <Button fullWidth onClick={() => null} size="small">
+              Search
+            </Button>
+          </Box>
+          <Box mx={1} />
+          <Box display="flex" flex="1 1 auto" alignItems="start" my={2}>
             <Toolbar>
               <Toolbar.Button ref={buttonReference} onClick={handlePopoverOpen}>
                 <CustomizeImg
@@ -164,6 +172,7 @@ const CustomProfileList = () => {
                   alt="view type icon"
                   iconColorFilterActive={isPopoverOpen}
                 />
+                <Box mr={1} />
                 Customize
               </Toolbar.Button>
             </Toolbar>
@@ -182,9 +191,10 @@ const CustomProfileList = () => {
             >
               <Paper
                 sx={{
-                  p: 2,
+                  p: 1,
                 }}
               >
+                <strong>Custom Columns</strong>
                 <FormGroup>
                   {profileTypes.map((field) => {
                     return (
@@ -207,12 +217,9 @@ const CustomProfileList = () => {
           <Box m={1} />
           <Box display="flex" alignItems="center">
             <Box m={1} />
-            <AdornedButton
-              adornment={<AddIcon />}
-              onClick={handleProfileAddClick}
-            >
-              ADD A PROVIDER
-            </AdornedButton>
+            <AddButton onClick={handleProfileAddClick}>
+              ADD A {name.toUpperCase()}
+            </AddButton>
           </Box>
         </Stack>
         <DataGrid
