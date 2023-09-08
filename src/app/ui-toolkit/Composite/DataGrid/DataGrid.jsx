@@ -71,23 +71,29 @@ export default function DataGrid({
   const [definitions, setDefinitions] = useState([]);
   const [columnVisibilityModel, setColumnVisibilityModel] = useState({});
 
-  const register = useCallback(
-    (data) => {
-      if (!definitions.some((header) => header.name === data.name)) {
-        setDefinitions((currentValue) => [...currentValue, data]);
+  const register = useCallback((definition) => {
+    setDefinitions((currentValue) => {
+      if (!currentValue.some(({ field }) => field === definition.field)) {
+        return [...currentValue, definition];
       }
-    },
-    [definitions],
-  );
+      return currentValue;
+    });
+  }, []);
 
   const unregister = useCallback((field) => {
-    setDefinitions((currentValue) =>
-      currentValue.filter((value) => value.field !== field),
-    );
+    setDefinitions((currentValue) => {
+      const found = currentValue.find(
+        (definition) => definition.field === field,
+      );
+      if (found) {
+        return currentValue.filter((definition) => definition !== found);
+      }
+      return currentValue;
+    });
   }, []);
 
   useEffect(() => {
-    if (!definitions.includes(({ field }) => field === 'id')) {
+    if (!definitions.some(({ field }) => field === 'id')) {
       register({
         field: 'id',
         name: 'Identifier',

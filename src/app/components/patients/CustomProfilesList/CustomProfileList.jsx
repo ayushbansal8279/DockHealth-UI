@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import DataGrid, {
   Data,
   useController,
@@ -13,7 +13,6 @@ import {
 } from 'actions/user-groups-actions';
 import {
   Box,
-  FormControlLabel,
   FormGroup,
   ListItemText,
   MenuItem,
@@ -73,7 +72,7 @@ const CustomProfileList = () => {
   const [profiles, setProfiles] = useState([]);
   const [searchPhrase, setSearchPhrase] = useState('');
 
-  const fetchProfileTypes = () => {
+  const fetchProfileTypes = useCallback(() => {
     getAllProfileFieldTypes(profileTypeIdentifier)
       .then((data) => {
         setProfileTypes(data);
@@ -82,9 +81,9 @@ const CustomProfileList = () => {
       .catch(() => {
         dispatch(showGlobalErrorAlert());
       });
-  };
+  }, [dispatch, profileTypeIdentifier]);
 
-  const fetchProfiles = () => {
+  const fetchProfiles = useCallback(() => {
     getAllProfiles(profileTypeIdentifier)
       .then((data) => {
         setProfiles(data);
@@ -92,7 +91,7 @@ const CustomProfileList = () => {
       .catch(() => {
         dispatch(showGlobalErrorAlert());
       });
-  };
+  }, [dispatch, profileTypeIdentifier]);
 
   useEffect(() => {
     fetchProfileTypes();
