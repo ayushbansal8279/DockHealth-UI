@@ -127,7 +127,6 @@ const CustomFieldRichTextEditor = React.forwardRef(
           <RichTextEditor
             ref={reference}
             value={updatedValue}
-            defaultValue={value}
             readonly={readOnly}
             placeholder={placeholder}
             onBlur={handleBlur}
