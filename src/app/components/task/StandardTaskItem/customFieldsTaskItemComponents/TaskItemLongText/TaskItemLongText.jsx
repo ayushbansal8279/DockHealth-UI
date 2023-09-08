@@ -9,10 +9,12 @@ import { Text, LongTextBox, Divider } from './styled';
 
 const TaskItemLongText = ({ value = '', onChange, openDrawer }) => {
   const [rawDetails, setRawDetails] = useState(null);
+  const [unformattedDetails, setUnformattedDetails] = useState(null);
 
   useEffect(() => {
+    setRawDetails(value);
     const rawTextUnFormatted = convertToSimpleString(value);
-    setRawDetails(rawTextUnFormatted);
+    setUnformattedDetails(rawTextUnFormatted);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value]);
 
@@ -22,17 +24,21 @@ const TaskItemLongText = ({ value = '', onChange, openDrawer }) => {
   };
 
   // eslint-disable-next-line no-shadow
-  const handleBlur = (closePopover) => (value) => {
+  const handleBlur = (closePopover) => (updatedValue) => {
     // console.log(`handleBlur: ${value}`);
     // blur not invoked if clicked outside popover
-    onChange(value);
+    if (updatedValue !== value) {
+      onChange(updatedValue);
+    }
     // close the popover if blur is invoked when close button is clicked
     closePopover();
   };
 
   const handleOnClose = () => {
     // console.log('handleOnClose');
-    onChange(rawDetails);
+    if (rawDetails !== value) {
+      onChange(rawDetails);
+    }
   };
 
   // eslint-disable-next-line unicorn/consistent-function-scoping
@@ -97,11 +103,11 @@ const TaskItemLongText = ({ value = '', onChange, openDrawer }) => {
                   wordBreak: 'keep-all',
                 }}
               >
-                {rawDetails}
+                {unformattedDetails}
               </pre>
             }
           >
-            <Text>{rawDetails}</Text>
+            <Text>{unformattedDetails}</Text>
           </Tooltip>
         </LongTextBox>
       </TaskItemPopover>
