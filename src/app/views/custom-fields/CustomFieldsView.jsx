@@ -53,7 +53,7 @@ const CustomFieldsView = () => {
           {selectedTab === 0 && <PatientCustomFieldsView />}
           {selectedTab === 1 && <TaskCustomFieldsView editable />}
           {selectedTab === 2 && <UserCustomFieldsView editable />}
-          {!selectedTab && (
+          {!selectedTab && selectedTab !== 0 && (
             <ProfilesCustomFieldsView
               editable
               profileTypeIdentifier={identifier}

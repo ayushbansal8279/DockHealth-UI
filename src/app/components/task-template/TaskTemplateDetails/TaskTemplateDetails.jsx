@@ -23,12 +23,12 @@ const TaskTemplateDetails = ({ workflow, readOnly }) => {
 
   const dispatch = useDispatch();
   const [details, setDetails] = useState(workflow?.tokenizedDescription);
-  const [rawDetails, setRawDetails] = useState(null);
+  const [unformattedDetails, setUnformattedDetails] = useState(null);
 
   useEffect(() => {
     setDetails(workflow?.tokenizedDescription);
     const rawTextUnFormatted = convertToSimpleString(workflow?.description);
-    setRawDetails(rawTextUnFormatted);
+    setUnformattedDetails(rawTextUnFormatted);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [workflow]);
 
@@ -149,11 +149,11 @@ const TaskTemplateDetails = ({ workflow, readOnly }) => {
                   wordBreak: 'keep-all',
                 }}
               >
-                {rawDetails}
+                {unformattedDetails}
               </pre>
             }
           >
-            <Text>{details}</Text>
+            <Text>{unformattedDetails}</Text>
           </Tooltip>
         </LongTextBox>
       </TaskItemPopover>
