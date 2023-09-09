@@ -19,7 +19,6 @@ export const BulkContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  position: absolute;
   left: 24px;
 `;
 
