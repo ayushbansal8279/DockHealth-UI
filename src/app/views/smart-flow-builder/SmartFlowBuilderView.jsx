@@ -91,6 +91,8 @@ import BulkEditContainer from './BulkEditContainer/BulkEditContainer';
 import Hotkeys from './Hotkeys/Hotkeys';
 import NestedFlowNode from './NestedFlow/NestedFlowNode/NestedFlowNode';
 import NewNestedFlowNode from './NestedFlow/NewNestedFlowNode/NewNestedFlowNode';
+import { string } from 'prop-types';
+import { event } from 'react-ga';
 
 const nodeTypes = {
   [NodeType.NEW_STANDARD]: NewTaskNode,
@@ -498,10 +500,38 @@ const SmartFlowBuilderView = () => {
         ?.map(path(['data', 'task'])),
     [selectedElements],
   );
+
+  const viewBoxReference = useRef(null);
+
+  const onSelectStart = (event_) => {
+    if (
+      event_.target?.innerText ||
+      [...event_.target?.classList].includes('react-flow__selection')
+    ) {
+      event_.preventDefault();
+      event_.stopImmediatePropagation();
+    }
+  };
+
+  useEffect(() => {
+    const cleanupTarget = viewBoxReference.current;
+    if (viewBoxReference && viewBoxReference.current) {
+      viewBoxReference.current.addEventListener('selectstart', onSelectStart);
+    }
+    return () =>
+      cleanupTarget.removeEventListener('selectstart', onSelectStart);
+  }, [viewBoxReference]);
+
   return (
     <div style={{ display: 'flex', width: '100vw', height: '100vh' }}>
       <ReactFlowProvider>
-        <Box position="relative" display="flex" height="100%" width="100%">
+        <Box
+          position="relative"
+          display="flex"
+          height="100%"
+          width="100%"
+          ref={viewBoxReference}
+        >
           <ElementsSidebar>
             <Box>
               <SidebarTitle>SmartFlow Toolkit</SidebarTitle>
