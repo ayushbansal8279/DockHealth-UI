@@ -314,7 +314,7 @@ const TaskTemplateReducer = (state = initialState, action) => {
     case ActionTypes.ADD_TASK_TO_TEMPLATE_SUCCESS: {
       const { taskTemplateIdentifier } = action.task;
 
-      return {
+      const updatedState = {
         ...state,
         taskTemplateDetails: updateTaskTemplateDetailsState(
           taskTemplateIdentifier,
@@ -328,6 +328,8 @@ const TaskTemplateReducer = (state = initialState, action) => {
           },
         ),
       };
+
+      return updateTasksStateCallback(updatedState, action.task);
     }
 
     case ActionTypes.CLOSE_ALL_TASK_TEMPLATES: {
