@@ -503,7 +503,7 @@ const SmartFlowBuilderView = () => {
 
   const viewBoxReference = useRef(null);
 
-  const onSelectStart = (event_) => {
+  const preventExcessiveSelection = (event_) => {
     if (event_.target.nodeType !== Node.TEXT_NODE) {
       event_.preventDefault();
       event_.stopImmediatePropagation();
@@ -513,10 +513,16 @@ const SmartFlowBuilderView = () => {
   useEffect(() => {
     const cleanupTarget = viewBoxReference.current;
     if (viewBoxReference && viewBoxReference.current) {
-      viewBoxReference.current.addEventListener('selectstart', onSelectStart);
+      viewBoxReference.current.addEventListener(
+        'selectstart',
+        preventExcessiveSelection,
+      );
     }
     return () =>
-      cleanupTarget.removeEventListener('selectstart', onSelectStart);
+      cleanupTarget.removeEventListener(
+        'selectstart',
+        preventExcessiveSelection,
+      );
   }, [viewBoxReference]);
 
   return (
