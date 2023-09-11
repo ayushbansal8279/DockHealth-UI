@@ -504,10 +504,7 @@ const SmartFlowBuilderView = () => {
   const viewBoxReference = useRef(null);
 
   const onSelectStart = (event_) => {
-    if (
-      event_.target?.innerText ||
-      [...event_.target?.classList].includes('react-flow__selection')
-    ) {
+    if (event_.target.nodeType !== Node.TEXT_NODE) {
       event_.preventDefault();
       event_.stopImmediatePropagation();
     }
