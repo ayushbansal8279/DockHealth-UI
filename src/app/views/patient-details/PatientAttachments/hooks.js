@@ -271,14 +271,18 @@ const useInitializeAttachmentsSectionHooks = () => {
   };
 
   const downloadAllFiles = useCallback(async () => {
+    let timeout = 0;
     attachments.map(async ({ attachmentIdentifier, fileName }) => {
-      const { data } = await getMemoPatientAttachment(attachmentIdentifier);
-      const url = window.URL.createObjectURL(new Blob([data]));
-      const link = document.createElement('a');
-      link.href = url;
-      link.setAttribute('download', fileName);
-      document.body.append(link);
-      link.click();
+      timeout += 500;
+      setTimeout(async () => {
+        const { data } = await getMemoPatientAttachment(attachmentIdentifier);
+        const url = window.URL.createObjectURL(new Blob([data]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', fileName);
+        document.body.append(link);
+        link.click();
+      }, timeout);
     });
   }, [attachments]);
 

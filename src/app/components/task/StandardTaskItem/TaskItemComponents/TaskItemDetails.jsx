@@ -30,7 +30,7 @@ const TaskItemDetails = ({ task, onClick, readOnly }) => {
   const dispatch = useDispatch();
 
   const [details, setDetails] = useState(task?.tokenizedDetails);
-  const [rawDetails, setRawDetails] = useState(null);
+  const [unformattedDetails, setUnformattedDetails] = useState(null);
 
   const handleOpenDrawer = useCallback(() => {
     dispatch(openDrawer());
@@ -40,7 +40,7 @@ const TaskItemDetails = ({ task, onClick, readOnly }) => {
   useEffect(() => {
     setDetails(task?.tokenizedDetails);
     const rawTextUnFormatted = convertToSimpleString(task?.details);
-    setRawDetails(rawTextUnFormatted);
+    setUnformattedDetails(rawTextUnFormatted);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [task]);
 
@@ -148,11 +148,11 @@ const TaskItemDetails = ({ task, onClick, readOnly }) => {
                   wordBreak: 'keep-all',
                 }}
               >
-                {rawDetails}
+                {unformattedDetails}
               </pre>
             }
           >
-            <Text>{rawDetails}</Text>
+            <Text>{unformattedDetails}</Text>
           </Tooltip>
         </LongTextBox>
       </TaskItemPopover>

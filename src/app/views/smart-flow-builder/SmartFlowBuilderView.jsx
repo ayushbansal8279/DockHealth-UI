@@ -91,6 +91,7 @@ import BulkEditContainer from './BulkEditContainer/BulkEditContainer';
 import Hotkeys from './Hotkeys/Hotkeys';
 import NestedFlowNode from './NestedFlow/NestedFlowNode/NestedFlowNode';
 import NewNestedFlowNode from './NestedFlow/NewNestedFlowNode/NewNestedFlowNode';
+import { event } from 'react-ga';
 
 const nodeTypes = {
   [NodeType.NEW_STANDARD]: NewTaskNode,
@@ -498,11 +499,38 @@ const SmartFlowBuilderView = () => {
         ?.map(path(['data', 'task'])),
     [selectedElements],
   );
+  const elementSidebarReference = useRef(null);
+
+  const preventTextSelection = (event_) => {
+    if (event_.target === elementSidebarReference.current && event_.shiftKey) {
+      document?.getSelection()?.removeAllRanges();
+      event_.preventDefault();
+    }
+  };
+
+  useEffect(() => {
+    const cleanupTarget = elementSidebarReference.current;
+    if (elementSidebarReference && elementSidebarReference.current) {
+      elementSidebarReference.current.addEventListener(
+        'mousedown',
+        preventTextSelection,
+      );
+      elementSidebarReference.current.addEventListener(
+        'mouseenter',
+        preventTextSelection,
+      );
+    }
+    return () => {
+      cleanupTarget.removeEventListener('mousedown', preventTextSelection);
+      cleanupTarget.removeEventListener('mouseenter', preventTextSelection);
+    };
+  }, [elementSidebarReference]);
+
   return (
     <div style={{ display: 'flex', width: '100vw', height: '100vh' }}>
       <ReactFlowProvider>
         <Box position="relative" display="flex" height="100%" width="100%">
-          <ElementsSidebar>
+          <ElementsSidebar ref={elementSidebarReference}>
             <Box>
               <SidebarTitle>SmartFlow Toolkit</SidebarTitle>
               {isCurrentUserEditor &&
@@ -609,7 +637,8 @@ const SmartFlowBuilderView = () => {
                 onSelectionDragStop={handleSelectionDragStop}
                 onNodeDragStop={handleNodeDragStop}
                 onLoad={handleLoad}
-                multiSelectionKeyCode={91}
+                selectionKeyCode={['Meta', 'Shift']}
+                multiSelectionKeyCode={['Meta', 'Shift']}
                 nodesDraggable={isCurrentUserEditor}
                 nodesConnectable={isCurrentUserEditor}
                 elementsSelectable={isCurrentUserEditor}

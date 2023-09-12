@@ -307,7 +307,7 @@ const PatientLabels = ({ isPatientBulk, disableFocusOnRender = false }) => {
             event.stopPropagation();
             event.preventDefault();
             event?.target?.blur();
-            saveHandler({ inputValue });
+            saveHandler({ labelName: inputValue });
           }
         },
       }}

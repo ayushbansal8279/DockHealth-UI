@@ -574,7 +574,8 @@ export function findIncompleteRequiredFields(customFields, task) {
     ?.filter((lbl) => lbl.labelName.indexOf('Required_') === 0)
     .map((lbl) => lbl.labelName.replace('Required_', ''));
 
-  return customFields?.filter((field) => {
+  // eslint-disable-next-line sonarjs/prefer-immediate-return
+  let incompleteCustomFields = customFields?.filter((field) => {
     const taskMetaData = task?.taskMetaData;
     const taskFieldIdentifier = field?.identifier;
     const matchingMetaData = taskMetaData?.find(
@@ -592,4 +593,18 @@ export function findIncompleteRequiredFields(customFields, task) {
         ))
     );
   });
+
+  // check for attachment
+  const attachmentRequired = task?.labels?.find(
+    (lbl) => lbl.labelName.indexOf('Required_Attachment') === 0,
+  );
+  if (attachmentRequired && task?.attachments?.length === 0) {
+    incompleteCustomFields = incompleteCustomFields?.concat([
+      {
+        name: 'Task Attachment',
+      },
+    ]);
+  }
+
+  return incompleteCustomFields;
 }
