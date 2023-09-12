@@ -8,5 +8,5 @@ export const Drawer = styled(Paper)`
   right: 0;
   min-width: 475px;
   height: 100%;
-  padding: 16px;
+  padding: 0;
 `;

@@ -20,6 +20,7 @@ import Select from 'components/common/Select/Select';
 import { closeModal, openModal } from 'modal/actions';
 
 const ProfileDrawer = ({
+  title,
   open,
   profileTypeIdentifier,
   profile,
@@ -34,7 +35,7 @@ const ProfileDrawer = ({
 
   const editProfile = useCallback(
     (data) => {
-      editProfileType(profile.identifier, {
+      editProfileType(profile?.identifier, {
         fields: Object.entries(data).map(([identifier, value]) => {
           const type = types.find(
             (fieldType) => fieldType.identifier === identifier,
@@ -90,16 +91,24 @@ const ProfileDrawer = ({
     setCollapsed(!isCollapsed);
   };
 
-  const handleClickAway = () => {
-    dispatch(
-      openModal('InterruptEdit', {
-        description: 'Are you sure to delete this profile?',
-        confirm: () => {
-          editProfile(getValues());
-          dispatch(closeModal());
-        },
-      }),
-    );
+  const handleClose = () => {
+    if (editMode) {
+      dispatch(
+        openModal('InterruptEdit', {
+          description: 'Are you sure to delete this profile?',
+          confirm: () => {
+            editProfile(getValues());
+            dispatch(closeModal());
+            onClose();
+          },
+          onClose: () => {
+            onClose();
+          },
+        }),
+      );
+    } else {
+      onClose();
+    }
   };
 
   const menu = useMemo(
@@ -124,14 +133,14 @@ const ProfileDrawer = ({
   );
 
   return (
-    <Drawer open={open} onClickAway={handleClickAway}>
+    <Drawer open={open} onClickAway={handleClose}>
       <StickyHeader>
-        <TitleName>{profile?.name}</TitleName>
+        <TitleName>{title}</TitleName>
         <MoreActinsWrapper>
           <OptionsMenu options={menu} customButtonComponent={IconButton}>
             <MoreVertIcon />
           </OptionsMenu>
-          <IconButton onClick={onClose}>
+          <IconButton onClick={handleClose}>
             <CloseIcon />
           </IconButton>
         </MoreActinsWrapper>
@@ -157,7 +166,7 @@ const ProfileDrawer = ({
                         <Input
                           key={field.identifier}
                           name={field.identifier}
-                          readOnly={profile && !editMode}
+                          readOnly={!editMode}
                           label={field.name}
                           defaultValue={record ? record.values[0]?.value : ''}
                           placeholder={field.placeholder}
@@ -169,7 +178,7 @@ const ProfileDrawer = ({
                       return (
                         <Select
                           name={field.identifier}
-                          readOnly={profile && !editMode}
+                          readOnly={!editMode}
                           label={field.name}
                           defaultValue={
                             record

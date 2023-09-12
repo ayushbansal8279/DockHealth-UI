@@ -14,7 +14,7 @@ import {
   userProfileSelector,
   selectedUserOrganizationSelector,
 } from 'selectors/user-selectors';
-import { PATIENTS_LIST_ALL } from 'routing/helpers/paths';
+import { CUSTOM_PROFILES_PATH } from 'routing/helpers/paths';
 import { organizationSelector } from 'selectors/organization-selectors';
 import {
   patientSelector,
@@ -156,7 +156,8 @@ const ProfileDetailsHeader = () => {
     if (cameFrom) {
       history.push(cameFrom);
     } else {
-      history.push(PATIENTS_LIST_ALL);
+      console.log("location", location);
+      history.push(`${CUSTOM_PROFILES_PATH}/${name}/${profileTypeIdentifier}`);
     }
   }, [cameFrom, history]);
 
@@ -363,6 +364,11 @@ const ProfileDetailsHeader = () => {
           {/*   onClose={() => setIsDrawerOpen(false)} */}
           {/* /> */}
           <ProfileDrawer
+            title={[
+              `${profileName?.[1]},`,
+              profileName?.[0],
+              profileName?.[2],
+            ].join(' ')}
             open={isDrawerOpen}
             profileTypeIdentifier={profileTypeIdentifier}
             profile={profile}
