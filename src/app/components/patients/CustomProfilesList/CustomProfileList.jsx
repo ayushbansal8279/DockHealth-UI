@@ -144,6 +144,7 @@ const CustomProfileList = () => {
         }
       >
         <ProfileDrawer
+          title={name}
           open={open}
           profileTypeIdentifier={profileTypeIdentifier}
           types={profileTypes}
