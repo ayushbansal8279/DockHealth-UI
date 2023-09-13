@@ -117,6 +117,7 @@ const UsersTable = ({
     currentSearch,
     setCurrentSearch,
     getAllUsers,
+    changeUserRole,
   } = initializeMembersTableHooks();
   const [userSubscriptionStatus, setUserSubscriptionStatus] = useState(
     UserSubscriptionStatus.ALL,
@@ -192,6 +193,7 @@ const UsersTable = ({
               isInvited={userStatus === 'INVITED'}
               userIdentifier={userIdentifier}
               selectedUsers={selectedUsers}
+              changeUserRole={changeUserRole}
               {...row}
             />
           );

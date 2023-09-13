@@ -1,9 +1,8 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import pathEq from 'ramda/src/pathEq';
 import SelectorPopover from 'components/common/SelectorPopover/SelectorPopover';
 import Button from 'components/common/Button/Button';
-import { changeUserOrganizationRole } from 'actions/organization-actions';
 import Circle from 'img/circle.svg';
 import CircleCompleted from 'img/circle-completed.svg';
 import { openModal } from 'modal/actions';
@@ -115,18 +114,13 @@ const RoleSelectionPopover = ({
   removeSubscriptionWithNewOwnerFlow,
   userHasSubscription,
   orgUserRole,
+  changeUserRole,
   userStatus,
   ownersCount,
   currentActiveUsers,
 }) => {
   const [selectedRole, setSelectedRole] = useState({});
   const dispatch = useDispatch();
-
-  const changeUserRole = useCallback(
-    ({ userIdentifier: id, role }) =>
-      dispatch(changeUserOrganizationRole(id, role)),
-    [dispatch],
-  );
 
   const isInactive = userStatus === 'INACTIVE';
 
