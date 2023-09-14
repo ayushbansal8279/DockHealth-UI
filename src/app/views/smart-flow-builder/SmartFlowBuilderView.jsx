@@ -91,7 +91,6 @@ import BulkEditContainer from './BulkEditContainer/BulkEditContainer';
 import Hotkeys from './Hotkeys/Hotkeys';
 import NestedFlowNode from './NestedFlow/NestedFlowNode/NestedFlowNode';
 import NewNestedFlowNode from './NestedFlow/NewNestedFlowNode/NewNestedFlowNode';
-import { event } from 'react-ga';
 
 const nodeTypes = {
   [NodeType.NEW_STANDARD]: NewTaskNode,
