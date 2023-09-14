@@ -27,6 +27,10 @@ export const ElementsSidebar = styled.div`
   font-size: ${fontSizes.smallPlus};
   color: ${palette.mediumGrey};
   text-align: left;
+
+  & > * {
+    user-select: none;
+  }
 `;
 
 export const SidebarTitle = styled.p`
@@ -34,6 +38,7 @@ export const SidebarTitle = styled.p`
   font-size: inherit;
   font-weight: ${fontWeights.bold};
   text-transform: uppercase;
+  user-select: none;
 `;
 
 export const ElementButton = styled.button`
@@ -91,6 +96,10 @@ export const BuilderHeader = styled.div`
   padding: 16px;
   align-items: center;
   z-index: 5;
+
+  & > * {
+    user-select: none;
+  }
 `;
 export const EditIconWrapper = styled.div`
   opacity: 0;
