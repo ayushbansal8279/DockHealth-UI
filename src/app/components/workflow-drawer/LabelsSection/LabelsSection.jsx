@@ -215,7 +215,7 @@ const LabelsSection = ({ disabled: disabledProperty }) => {
 
   const renderOptionCallback = useCallback(
     (_, option) => {
-      const disabled = !!selectedLabels.find(
+      const disabled = selectedLabels.some(
         (label) => label.labelIdentifier === option.labelIdentifier,
       );
       return renderOption({

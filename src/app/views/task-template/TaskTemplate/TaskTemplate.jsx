@@ -393,20 +393,33 @@ const TaskTemplate = ({
                       {...droppableProvided.droppableProps}
                       ref={droppableProvided.innerRef}
                     >
-                      {tasks?.map((taskIdentifier, index) => {
+                      {tasks?.map((taskOrIdentifier, index) => {
                         return (
                           <Draggable
-                            key={taskIdentifier}
-                            draggableId={taskIdentifier}
+                            key={
+                              taskOrIdentifier?.taskIdentifier ||
+                              taskOrIdentifier
+                            }
+                            draggableId={String(
+                              taskOrIdentifier?.taskIdentifier ||
+                                taskOrIdentifier,
+                            )}
                             index={index}
                           >
                             {(draggableProvided, draggableSnapshot) => (
                               <StandardTaskItemContainer
-                                isStartedDnD={draggableId === taskIdentifier}
+                                isStartedDnD={
+                                  draggableId ===
+                                  (taskOrIdentifier?.taskIdentifier ||
+                                    taskOrIdentifier)
+                                }
                                 isDragging={draggableSnapshot.isDragging}
                                 draggableProvided={draggableProvided}
                                 isDraggable
-                                taskIdentifier={taskIdentifier}
+                                taskIdentifier={
+                                  taskOrIdentifier?.taskIdentifier ||
+                                  taskOrIdentifier
+                                }
                                 isFullView={isFullView}
                                 multipleAssigneesContext={
                                   containsMultipleAssignees

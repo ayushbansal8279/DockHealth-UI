@@ -29,10 +29,18 @@ const Hotkeys = () => {
                 <HotkeyDescription>Remove task or link</HotkeyDescription>
               </div>
               <div>
-                <Hotkey>Shift</Hotkey>
+                <Hotkey>Command/Ctrl</Hotkey>
               </div>
               <div>
-                <HotkeyDescription>Multi-Select cards</HotkeyDescription>
+                <HotkeyDescription>
+                  Multi-select individual tasks
+                </HotkeyDescription>
+              </div>
+              <div>
+                <Hotkey>Shift+Drag</Hotkey>
+              </div>
+              <div>
+                <HotkeyDescription>Multi-select tasks</HotkeyDescription>
               </div>
             </HotkeysElements>
           </Box>

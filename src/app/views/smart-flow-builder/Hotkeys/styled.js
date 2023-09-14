@@ -3,7 +3,7 @@ import { fontSizes, fontWeights } from 'styles/font';
 import palette from 'styles/palette';
 
 export const HotkeysPopover = styled.div`
-  width: 230px;
+  width: 330px;
   display: none;
   position: absolute;
   bottom: 100%;
@@ -23,7 +23,7 @@ export const HotkeysContainer = styled.div`
   position: relative;
   display: flex;
   align-items: center;
-  color: ${palette.coolGrey2};
+  color: ${palette.coolGrey1};
   cursor: help;
 
   &:hover ${HotkeysPopover} {
@@ -35,6 +35,7 @@ export const HotkeysText = styled.p`
   margin-left: 4px;
   margin-bottom: 0;
   font-size: inherit;
+  color: ${palette.coolGrey1};
   cursor: inherit;
 `;
 
