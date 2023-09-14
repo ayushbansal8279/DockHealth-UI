@@ -27,10 +27,7 @@ export const ElementsSidebar = styled.div`
   font-size: ${fontSizes.smallPlus};
   color: ${palette.mediumGrey};
   text-align: left;
-
-  & > * {
-    user-select: none;
-  }
+  user-select: none;
 `;
 
 export const SidebarTitle = styled.p`
@@ -96,10 +93,7 @@ export const BuilderHeader = styled.div`
   padding: 16px;
   align-items: center;
   z-index: 5;
-
-  & > * {
-    user-select: none;
-  }
+  user-select: none;
 `;
 export const EditIconWrapper = styled.div`
   opacity: 0;
