@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { userProfileSelector } from 'selectors/user-selectors';
+import { organizationSelector } from 'selectors/organization-selectors';
 import {
   onTaskDrawerPatientAdded,
   onTaskDrawerTaskPatientChanged,
@@ -47,6 +48,7 @@ const PatientSection = ({
   }, [selectedPatient]);
   const [isLoadingPatients, setIsLoadingPatients] = useState(true);
   const currentUser = useSelector(userProfileSelector);
+  const { emrIntegrationType } = useSelector(organizationSelector) || {};
   const { templateBundleIdentifier } = useSelector(selectedTaskSelector) || {};
 
   const currentOrganizationIdentifier = sessionStorage.getItem(
@@ -59,19 +61,6 @@ const PatientSection = ({
     ) || {};
 
   const formattedPatients = getFormattedPatients({ patients });
-  const formattedPatientsWithHeaders = [
-    {
-      key: 'header-label',
-      value: 'header-label',
-      label: () => (
-        <PatientSelectItem patient={{ name: 'Name', dob: 'Dob', mrn: 'Mrn' }} />
-      ),
-      displayLabel: 'Name',
-      patient: { name: 'Name', dob: 'Dob', mrn: 'Mrn' },
-      readOnly: true,
-    },
-    ...formattedPatients,
-  ];
   const customerTypeLabel = getCustomerTypeLabel(currentUser);
   const customerTypeLabelCapitalized = capitalize(customerTypeLabel);
 
@@ -311,12 +300,17 @@ const PatientSection = ({
       name={PATIENT_IDENTIFIER_FIELD_NAME}
       label={customerTypeLabelCapitalized}
       placeholder={
-        placeholder ||
-        `Who is the ${customerTypeLabel}? (first last or last, first)`
+        emrIntegrationType === 'FHIR'
+          ? `Who is the ${customerTypeLabel}? (MRN #)`
+          : placeholder ||
+            `Who is the ${customerTypeLabel}? (first last or last, first)`
       }
       disabled={disabled}
       selectedOption={assignedPatient}
-      options={formattedPatientsWithHeaders}
+      options={formattedPatients}
+      headerOption={
+        <PatientSelectItem patient={{ name: 'Name', dob: 'Dob', mrn: 'Mrn' }} />
+      }
       isLoadingOptions={isLoadingPatients}
       onInputChange={onPatientInputChange}
       onOptionSelect={handlePatientSelect}

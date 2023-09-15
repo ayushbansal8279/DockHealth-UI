@@ -24,6 +24,7 @@ import 'tributejs/dist/tribute.css';
 import './styles.css';
 
 const md = new MarkdownIt({
+  html: true,
   breaks: true,
   linkify: true,
 }).use(markdownItUnderline);
@@ -107,8 +108,9 @@ const processMarkdownValue = (value, mentions) => {
   if (!value || value === '') {
     return value;
   }
-  let htmlValue = md.render(value || '');
-  htmlValue = htmlValue.replace(/\n/g, '<p><br></p>');
+  let mdValue = value.replace(/\\+\*/g, '*');
+  mdValue = mdValue.replace(/\n {2}\n/g, '<p><br/></p>');
+  const htmlValue = md.render(mdValue || '');
   let processedValue = htmlValue;
   if (mentions && value !== '') {
     for (const mentionInfo of mentions) {
@@ -125,7 +127,6 @@ const RichTextEditor = React.forwardRef(
   (
     {
       value: initialValue, // initial value
-      defaultValue,
       height = 100,
       // maxHeight,
       disableToolbar = false,
@@ -159,6 +160,17 @@ const RichTextEditor = React.forwardRef(
 
     useEffect(() => {
       if (
+        (editorState === undefined || editorState === '') &&
+        initialValue !== undefined &&
+        initialValue !== null &&
+        initialValue !== ''
+      ) {
+        setEditorState(processMarkdownValue(initialValue || '', mentions));
+      }
+    }, [editorState, initialValue, mentions]);
+
+    useEffect(() => {
+      if (
         editorState !== '' &&
         initialValue !== undefined &&
         initialValue === ''
@@ -166,12 +178,6 @@ const RichTextEditor = React.forwardRef(
         setEditorState('');
       }
     }, [editorState, initialValue]);
-
-    useEffect(() => {
-      if (defaultValue !== undefined && defaultValue !== '') {
-        setEditorState(processMarkdownValue(defaultValue || '', mentions));
-      }
-    }, [defaultValue, mentions]);
 
     useEffect(() => {
       if (reset) {

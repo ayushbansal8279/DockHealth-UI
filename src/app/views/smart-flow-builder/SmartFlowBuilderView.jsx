@@ -494,6 +494,7 @@ const SmartFlowBuilderView = () => {
         ?.map(path(['data', 'task'])),
     [selectedElements],
   );
+
   return (
     <div style={{ display: 'flex', width: '100vw', height: '100vh' }}>
       <Box position="relative" display="flex" height="100%" width="100%">
@@ -599,7 +600,8 @@ const SmartFlowBuilderView = () => {
               }}
               onSelectionDragStop={handleSelectionDragStop}
               onNodeDragStop={handleNodeDragStop}
-              multiSelectionKeyCode={91}
+              selectionKeyCode={['Meta', 'Shift']}
+              multiSelectionKeyCode={['Meta', 'Shift']}
               nodesDraggable={isCurrentUserEditor}
               nodesConnectable={isCurrentUserEditor}
               elementsSelectable={isCurrentUserEditor}

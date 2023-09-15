@@ -148,6 +148,12 @@ export const userHasCustomProfilesFeatureSelector = createSelector(
     organizationAvailableFeatures?.includes('CUSTOM_PROFILES'),
 );
 
+export const userHasMultiOrgViewFeatureSelector = createSelector(
+  userProfileSelector,
+  ({ organizationAvailableFeatures }) =>
+    organizationAvailableFeatures?.includes('MULTI_ORG_VIEW'),
+);
+
 export const userSetupClientViewSelector = createSelector(
   userViewSetupSelector,
   ({ mainSetup }) => mainSetup,

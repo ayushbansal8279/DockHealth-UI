@@ -11,4 +11,5 @@ export const Label = styled.div`
   border-radius: 15px;
   background-color: ${palette.brightBlue};
   color: ${palette.white};
+  user-select: none;
 `;

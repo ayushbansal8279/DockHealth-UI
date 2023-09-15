@@ -32,6 +32,7 @@ const SelectDropdown = React.forwardRef(
       placeholder,
       disabled,
       options,
+      headerOption,
       selectedOption,
       isLoadingOptions,
       onInputChange,
@@ -240,6 +241,13 @@ const SelectDropdown = React.forwardRef(
               width || inputContainerReference?.current?.clientWidth || 300
             }
           >
+            {headerOption && (
+              <ListItem key="header-option">
+                <ListItemButton type="button" readOnly>
+                  {headerOption}
+                </ListItemButton>
+              </ListItem>
+            )}
             {isLoadingOptions ? (
               <Grid container justifyContent="center" alignItems="center">
                 <Spacing vertical={3} />
