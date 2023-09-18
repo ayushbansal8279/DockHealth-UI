@@ -16,7 +16,7 @@ const TaskDetails = ({ readOnly }) => {
   const [details, setDetails] = useState(selectedTask?.tokenizedDetails);
 
   useEffect(() => {
-    setDetails(selectedTask?.details);
+    setDetails(selectedTask?.tokenizedDetails);
   }, [selectedTask]);
 
   const handleAutoSave = debounce((value) => {
@@ -32,6 +32,7 @@ const TaskDetails = ({ readOnly }) => {
 
   const handleChange = (value) => {
     setDetails(value);
+    handleAutoSave.cancel();
     handleAutoSave(value);
   };
 
@@ -43,9 +44,10 @@ const TaskDetails = ({ readOnly }) => {
             tokenizedDetails: value || '',
           }),
         );
+        handleAutoSave.cancel();
       }
     },
-    [dispatch, selectedTask],
+    [dispatch, handleAutoSave, selectedTask],
   );
 
   return (
