@@ -16,9 +16,8 @@ const DescriptionSection = ({ readOnly }) => {
     selectedWorkflow?.tokenizedDescription,
   );
 
-  const handleChange = debounce((value) => {
-    setDescription(value);
-    if (value !== description) {
+  const handleAutoSave = debounce((value) => {
+    if (value !== selectedWorkflow?.tokenizedDescription || '') {
       dispatch(
         updatePartialWorkflow(selectedWorkflow?.identifier, {
           description: value,
@@ -26,20 +25,28 @@ const DescriptionSection = ({ readOnly }) => {
         }),
       );
     }
-  }, 3000);
+    // eslint-disable-next-line unicorn/numeric-separators-style
+  }, 10000);
+
+  const handleChange = (value) => {
+    setDescription(value);
+    handleAutoSave.cancel();
+    handleAutoSave(value);
+  };
 
   const handleBlur = useCallback(
     (value) => {
-      if (value !== description) {
+      if (value !== selectedWorkflow?.tokenizedDescription || '') {
         dispatch(
           updatePartialWorkflow(selectedWorkflow?.identifier, {
-            description,
-            descriptionCleared: description.length === 0,
+            description: value,
+            descriptionCleared: !value,
           }),
         );
+        handleAutoSave.cancel();
       }
     },
-    [dispatch, selectedWorkflow, description],
+    [dispatch, handleAutoSave, selectedWorkflow],
   );
 
   return (

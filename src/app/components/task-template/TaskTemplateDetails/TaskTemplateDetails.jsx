@@ -54,27 +54,32 @@ const TaskTemplateDetails = ({ workflow, readOnly }) => {
     }
   });
 
-  const handleAutoSave = debounce((value) => {
-    updateWorkflowDetails(value);
-    // eslint-disable-next-line unicorn/numeric-separators-style
-  }, 10000);
+  const handleAutoSave = React.useRef(
+    debounce((value) => {
+      updateWorkflowDetails(value);
+      // eslint-disable-next-line unicorn/numeric-separators-style
+    }, 10000),
+  ).current;
 
   const handleChange = (value) => {
     setDetails(value);
-    handleAutoSave();
+    handleAutoSave.cancel();
+    handleAutoSave(value);
   };
 
   const handleBlur = useCallback(
     (closePopover) => (value) => {
       updateWorkflowDetails(value);
+      handleAutoSave.cancel();
       closePopover();
     },
-    [updateWorkflowDetails],
+    [handleAutoSave, updateWorkflowDetails],
   );
 
   // eslint-disable-next-line unicorn/consistent-function-scoping
   const handleOnClose = () => {
     updateWorkflowDetails(details);
+    handleAutoSave.cancel();
   };
 
   // eslint-disable-next-line unicorn/consistent-function-scoping
