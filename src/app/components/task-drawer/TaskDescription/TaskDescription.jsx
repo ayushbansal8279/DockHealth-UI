@@ -18,9 +18,9 @@ import RichTextEditor from 'components/common/RichTextEditor/RichTextEditor';
 import CustomTextEditor from 'components/common/CustomTextEditor/CustomTextEditor';
 import { DescriptionTextContainer, DescriptionError } from './styled';
 
-const TaskDescription = ({ selectedTask, readOnly, disableMentions }) => {
+const TaskDescription = ({ selectedTask, readOnly }) => {
   const {
-    description,
+    // description,
     tokenizedDescription,
     status,
     // parentTaskIdentifier,
@@ -31,7 +31,8 @@ const TaskDescription = ({ selectedTask, readOnly, disableMentions }) => {
   const firstRender = useRef(true);
   const descriptionReference = useRef(null);
   const [isFocused, setFocused, unsetFocused] = useBoolean(false);
-  const [descriptionState, setDescriptionState] = useState(tokenizedDescription);
+  const [descriptionState, setDescriptionState] =
+    useState(tokenizedDescription);
   // const [descriptionErrorState, setDescriptionErrorState] = useState(false);
 
   // const isSubtask = !!parentTaskIdentifier;
@@ -85,6 +86,7 @@ const TaskDescription = ({ selectedTask, readOnly, disableMentions }) => {
             multiline={false}
             taskListIdentifier={selectedTask?.taskList?.taskListIdentifier}
             mentions={selectedTask?.taskMentions}
+            readonly={readOnly}
           />
         </CustomTextEditor>
       </DescriptionTextContainer>
