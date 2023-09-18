@@ -420,8 +420,12 @@ const TaskItem = React.memo(
       return (
         nonAssigneeCompleteDisabledItem &&
         nonAssigneeCompleteDisabledItem?.value === 'false' &&
-        assignedToUsers?.filter(
-          (user) => user.identifier === currentUser.identifier,
+        assignedToUsers?.filter((user) =>
+          user.itemType === 'USER'
+            ? user.identifier === currentUser.identifier
+            : user?.users?.filter(
+                (u) => u.identifier === currentUser.identifier,
+              ).length !== 0,
         ).length === 0 &&
         !isListAdmin &&
         !isCreator
@@ -1722,7 +1726,7 @@ const TaskItem = React.memo(
                       task={task}
                       fieldIdentifier={TaskItemColumn.TASK_DETAILS}
                       onClick={onClickTaskItem}
-                      readOnly={restrictions?.taskDetails === READ_ONLY}
+                      readOnly={restrictions?.description === READ_ONLY}
                     />
                   </TaskItemCell>,
                   getColumnOrder(TaskItemColumn.TASK_DETAILS),
