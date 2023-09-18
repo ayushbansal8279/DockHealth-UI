@@ -1312,7 +1312,7 @@ const TaskTemplateGroupHeader = ({
                     ? templateGroup
                     : workFlowData
                 }
-                readOnly={restrictions?.taskDetails === READ_ONLY}
+                readOnly={restrictions?.description === READ_ONLY}
               />
             </TaskItemCell>,
             getColumnOrder(TaskItemColumn.TASK_DETAILS),

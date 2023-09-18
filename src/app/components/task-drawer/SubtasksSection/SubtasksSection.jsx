@@ -17,7 +17,12 @@ import QuickAddSubtask from '../QuickAddSubtask/QuickAddSubtask';
 
 const { READ_ONLY } = SINGLE_TASK_RESTRICTIONS_OPTIONS;
 
-const SubtasksSection = ({ selectedTask, restrictions: isReadOnly }) => {
+const SubtasksSection = ({
+  selectedTask,
+  restrictions: isReadOnly,
+  taskRestrictions,
+  taskListRestrictions,
+}) => {
   const dispatch = useDispatch();
 
   const currentUser = useSelector(userProfileSelector);
@@ -48,6 +53,10 @@ const SubtasksSection = ({ selectedTask, restrictions: isReadOnly }) => {
 
   const renderDraggableItem = ({
     task,
+    // eslint-disable-next-line no-shadow
+    taskRestrictions,
+    // eslint-disable-next-line no-shadow
+    taskListRestrictions,
     draggableInnerReference,
     draggableProps,
     dragHandleProps,
@@ -56,6 +65,8 @@ const SubtasksSection = ({ selectedTask, restrictions: isReadOnly }) => {
       <DrawerTask
         key={task.taskIdentifier}
         task={task}
+        taskRestrictions={taskRestrictions}
+        taskListRestrictions={taskListRestrictions}
         currentUser={currentUser}
         dragHandleProps={dragHandleProps}
       />
@@ -92,6 +103,8 @@ const SubtasksSection = ({ selectedTask, restrictions: isReadOnly }) => {
                           ? ReactDOM.createPortal(
                               renderDraggableItem({
                                 task,
+                                taskRestrictions,
+                                taskListRestrictions,
                                 draggableInnerReference,
                                 draggableProps,
                                 dragHandleProps,
@@ -100,6 +113,8 @@ const SubtasksSection = ({ selectedTask, restrictions: isReadOnly }) => {
                             )
                           : renderDraggableItem({
                               task,
+                              taskRestrictions,
+                              taskListRestrictions,
                               draggableInnerReference,
                               draggableProps,
                               dragHandleProps,

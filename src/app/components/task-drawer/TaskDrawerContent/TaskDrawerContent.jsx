@@ -426,7 +426,7 @@ const TaskDrawerContent = (props) => {
         )}
         <Grid item xs={12} style={styleFullRow(isMobile)}>
           <TaskDetails
-            readOnly={restrictions?.taskDetails === READ_ONLY}
+            readOnly={restrictions?.description === READ_ONLY}
             disableMentions={restrictMentions}
           />
         </Grid>
@@ -538,6 +538,8 @@ const TaskDrawerContent = (props) => {
           <Grid item xs={12}>
             <SubtasksSection
               restrictions={restrictions?.subtasks}
+              taskRestrictions={restrictions}
+              taskListRestrictions={taskListRestrictions}
               selectedTask={selectedTask}
             />
           </Grid>
