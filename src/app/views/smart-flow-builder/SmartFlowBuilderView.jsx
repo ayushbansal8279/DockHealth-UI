@@ -498,6 +498,7 @@ const SmartFlowBuilderView = () => {
         ?.map(path(['data', 'task'])),
     [selectedElements],
   );
+
   return (
     <div style={{ display: 'flex', width: '100vw', height: '100vh' }}>
       <ReactFlowProvider>

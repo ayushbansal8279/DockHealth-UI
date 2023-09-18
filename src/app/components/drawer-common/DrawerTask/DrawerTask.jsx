@@ -2,7 +2,7 @@
 /* eslint-disable import/extensions */
 import moment from 'moment';
 import React, { useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import pluck from 'ramda/src/pluck';
 import Circle from 'img/circle.svg';
 import CircleCompleted from 'img/circle-completed.svg';
@@ -25,9 +25,9 @@ import {
 import MultiAssignMembersList from 'components/task/MultiAssignPopover/MultiAssignMembersList';
 import { openDrawer } from 'actions/task-drawer-actions';
 import TaskItemPopover from 'components/task/TaskItemPopover/TaskItemPopover';
-import TextEditor from 'components/common/TextEditor/TextEditor';
-import { convertToEditorState } from 'components/common/TextEditor/helpers';
-import { useMentionsEditorState } from 'components/common/TextEditor/use-mentions-editor-state';
+// import TextEditor from 'components/common/TextEditor/TextEditor';
+// import { convertToEditorState } from 'components/common/TextEditor/helpers';
+// import { useMentionsEditorState } from 'components/common/TextEditor/use-mentions-editor-state';
 import MemberGroup from 'components/user/MemberGroup/MemberGroup';
 import TaskIcon from 'components/task/TaskIcon/TaskIcon';
 import AssignMemberIcon from 'components/user/AssignMemberIcon/AssingMemberIcon';
@@ -42,11 +42,11 @@ import {
   isDueDateOverdue,
   ReminderType,
 } from 'helpers/task-helpers';
-import { userProfileSelector } from 'selectors/user-selectors';
-import { DrawerFieldEnum } from 'helpers/task-drawer-helpers';
+// import { userProfileSelector } from 'selectors/user-selectors';
+// import { DrawerFieldEnum } from 'helpers/task-drawer-helpers';
 import {
   SINGLE_TASK_RESTRICTIONS_OPTIONS,
-  SINGLE_TASK_RESTRICTIONS_PROFILES,
+  // SINGLE_TASK_RESTRICTIONS_PROFILES,
 } from 'restrictions/task-restrictions';
 import {
   Container,
@@ -65,17 +65,22 @@ import {
 const { DISABLED, READ_ONLY } = SINGLE_TASK_RESTRICTIONS_OPTIONS;
 
 const DrawerTask = (props) => {
-  const { task, currentUser, dragHandleProps } = props;
+  const {
+    task,
+    taskRestrictions,
+    taskListRestrictions,
+    currentUser,
+    dragHandleProps,
+  } = props;
   const dispatch = useDispatch();
-  const { orgUserRole } = useSelector(userProfileSelector);
-  const restrictions = SINGLE_TASK_RESTRICTIONS_PROFILES[orgUserRole];
+  const restrictions = taskRestrictions;
 
   const {
     taskIdentifier,
     status,
     description,
-    tokenizedDescription,
-    taskMentions,
+    // tokenizedDescription,
+    // taskMentions,
     assignedToUsers,
     dueDate,
     comments,
@@ -94,14 +99,14 @@ const DrawerTask = (props) => {
   const isCompleted = status === 'COMPLETE';
   const isTemplateTask = checkIfTemplateTask(task);
 
-  const [descriptionState, setDescriptionState] = useMentionsEditorState(
-    convertToEditorState({
-      rawText: description,
-      tokenizedText: tokenizedDescription,
-      mentions: taskMentions,
-      handleRichText: false,
-    }),
-  );
+  // const [descriptionState, setDescriptionState] = useMentionsEditorState(
+  //   convertToEditorState({
+  //     rawText: description,
+  //     tokenizedText: tokenizedDescription,
+  //     mentions: taskMentions,
+  //     handleRichText: false,
+  //   }),
+  // );
 
   const isDecisionTask = task.intentType === 'DECISION';
   const isDecisionSelected = task.taskOutcomes?.reduce(
@@ -134,14 +139,17 @@ const DrawerTask = (props) => {
     [dispatch, task.taskIdentifier],
   );
 
+  // eslint-disable-next-line unicorn/consistent-function-scoping
   const handleCommentIconClick = () => {
     // dispatch(openDrawer(DrawerFieldEnum.COMMENT));
   };
 
+  // eslint-disable-next-line unicorn/consistent-function-scoping
   const handleLabelIconClick = () => {
     // dispatch(openDrawer(DrawerFieldEnum.LABEL));
   };
 
+  // eslint-disable-next-line unicorn/consistent-function-scoping
   const handleAttachmentIconClick = () => {
     // dispatch(openDrawer(DrawerFieldEnum.ATTACHMENT));
   };
@@ -164,17 +172,24 @@ const DrawerTask = (props) => {
         src={isCompleted ? CircleCompleted : Circle}
         isCompleted={isCompleted}
         isClickable={
-          !isTaskStatusTogglingDisabled && isDependencyEmptyOrCompleted
+          !isTaskStatusTogglingDisabled &&
+          isDependencyEmptyOrCompleted &&
+          taskListRestrictions?.completeTask !== DISABLED
         }
-        onClick={(event) => {
-          event.stopPropagation();
-          if (!isTaskStatusTogglingDisabled && isDependencyEmptyOrCompleted) {
-            (isCompleted
-              ? onTaskDrawerSubtaskReActivated
-              : onTaskDrawerSubtaskCompleted)();
-            dispatch(toggleCompleteTask(task, currentUser));
-          }
-        }}
+        onClick={
+          // eslint-disable-next-line unicorn/no-negated-condition
+          !isTaskStatusTogglingDisabled &&
+          isDependencyEmptyOrCompleted &&
+          taskListRestrictions?.completeTask !== DISABLED
+            ? (event) => {
+                event.stopPropagation();
+                (isCompleted
+                  ? onTaskDrawerSubtaskReActivated
+                  : onTaskDrawerSubtaskCompleted)();
+                dispatch(toggleCompleteTask(task, currentUser));
+              }
+            : () => {}
+        }
       />
       <DescriptionContainer
         onClick={() => {
@@ -239,49 +254,47 @@ const DrawerTask = (props) => {
           </Tooltip>
         </IconContainer>
       </IconsSection>
-      {restrictions?.dueDate !== DISABLED && (
-        <DueDateContainer>
-          <TaskItemPopover
-            disabled={isTemplateTask}
-            placement="top-end"
-            content={({ closePopover }) => (
-              <DueDatePicker
-                taskIdentifier={taskIdentifier}
-                selectedDate={dueDate}
-                onDateChange={handleDueDateChange}
-                recurring={hasRecurringSchedule}
-                onCloseClick={closePopover}
-              />
-            )}
-          >
-            {dueDate ? (
-              <Tooltip placement="top" title="Edit due date">
-                <DueDateBasicLabel isOverdue={isDueDateOverdue(task)}>
-                  <DueDateText>{moment(dueDate).format('MM/DD')}</DueDateText>
-                  {reminderType && reminderType !== ReminderType.NONE && (
-                    <>
-                      <Spacing horizontal={2} />
-                      <ReminderIcon />
-                    </>
-                  )}
-                  {hasRecurringSchedule && (
-                    <>
-                      <Spacing horizontal={2} />
-                      <RecurringIcon />
-                    </>
-                  )}
-                </DueDateBasicLabel>
-              </Tooltip>
-            ) : (
-              <Tooltip placement="top" title="Add due date">
-                <div>
-                  <TaskIcon type="calendar" />
-                </div>
-              </Tooltip>
-            )}
-          </TaskItemPopover>
-        </DueDateContainer>
-      )}
+      <DueDateContainer>
+        <TaskItemPopover
+          disabled={isTemplateTask || restrictions?.dueDate === DISABLED}
+          placement="top-end"
+          content={({ closePopover }) => (
+            <DueDatePicker
+              taskIdentifier={taskIdentifier}
+              selectedDate={dueDate}
+              onDateChange={handleDueDateChange}
+              recurring={hasRecurringSchedule}
+              onCloseClick={closePopover}
+            />
+          )}
+        >
+          {dueDate ? (
+            <Tooltip placement="top" title="Edit due date">
+              <DueDateBasicLabel isOverdue={isDueDateOverdue(task)}>
+                <DueDateText>{moment(dueDate).format('MM/DD')}</DueDateText>
+                {reminderType && reminderType !== ReminderType.NONE && (
+                  <>
+                    <Spacing horizontal={2} />
+                    <ReminderIcon />
+                  </>
+                )}
+                {hasRecurringSchedule && (
+                  <>
+                    <Spacing horizontal={2} />
+                    <RecurringIcon />
+                  </>
+                )}
+              </DueDateBasicLabel>
+            </Tooltip>
+          ) : (
+            <Tooltip placement="top" title="Add due date">
+              <div>
+                <TaskIcon type="calendar" />
+              </div>
+            </Tooltip>
+          )}
+        </TaskItemPopover>
+      </DueDateContainer>
       <AssigneeContainer>
         <TaskItemPopover
           disabled={restrictions?.assigment === READ_ONLY}

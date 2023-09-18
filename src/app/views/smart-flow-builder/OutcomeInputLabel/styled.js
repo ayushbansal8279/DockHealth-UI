@@ -19,6 +19,7 @@ export const EdgeLabel = styled.div`
   font-family: 'Roboto Condensed', sans-serif;
   font-size: ${fontSizes.smallPlus};
   font-weight: ${fontWeights.regular};
+  user-select: none;
 `;
 
 export const OutcomeInput = styled.input`

@@ -6,4 +6,5 @@ export const AnimatedContainer = styled(motion.div)`
   left: 50%;
   bottom: 0;
   z-index: 1000;
+  user-select: none;
 `;

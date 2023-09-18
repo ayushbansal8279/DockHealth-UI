@@ -44,7 +44,8 @@ const TaskItemDetails = ({ task, onClick, readOnly }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [task]);
 
-  const updateTaskDetails = (value) => {
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const updateTaskDetails = useCallback((value) => {
     if (value && value !== (task?.tokenizedDetails || '')) {
       if (isWorkflow) {
         dispatch(
@@ -56,26 +57,34 @@ const TaskItemDetails = ({ task, onClick, readOnly }) => {
         dispatch(partialUpdateTask(identifier, { details: value }));
       }
     }
-  };
+  });
 
-  const handleAutoSave = debounce((value) => {
-    updateTaskDetails(value);
-    // eslint-disable-next-line unicorn/numeric-separators-style
-  }, 10000);
+  const handleAutoSave = React.useRef(
+    debounce((value) => {
+      updateTaskDetails(value);
+      // eslint-disable-next-line unicorn/numeric-separators-style
+    }, 10000),
+  ).current;
 
   const handleChange = (value) => {
     setDetails(value);
-    handleAutoSave();
+    handleAutoSave.cancel();
+    handleAutoSave(value);
   };
 
-  const handleBlur = (closePopover) => (value) => {
-    updateTaskDetails(value);
-    closePopover();
-  };
+  const handleBlur = useCallback(
+    (closePopover) => (value) => {
+      updateTaskDetails(value);
+      handleAutoSave.cancel();
+      closePopover();
+    },
+    [handleAutoSave, updateTaskDetails],
+  );
 
   // eslint-disable-next-line unicorn/consistent-function-scoping
   const handleOnClose = () => {
     updateTaskDetails(details);
+    handleAutoSave.cancel();
   };
 
   // eslint-disable-next-line unicorn/consistent-function-scoping
