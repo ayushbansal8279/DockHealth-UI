@@ -361,6 +361,7 @@ const PatientTasksListView = () => {
                   isFullView={isFullView}
                   taskIdentifier={task.identifier}
                   taskGroupIdentifier={taskGroupIdentifier}
+                  patient={patient}
                   isCompletedGroup={completeTasksVisible}
                   onTaskUpdate={updatePatientTaskInList}
                   updateWorkflowStatus={updatePatientTaskWorkflowStatus}
@@ -406,6 +407,7 @@ const PatientTasksListView = () => {
       addingNewSubtaskParentId,
       viewSetup,
       tasksStatus,
+      patient,
     ],
   );
 

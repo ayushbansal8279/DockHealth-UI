@@ -23,6 +23,7 @@ import QuickAddSubtask from './QuickAddSubtask';
 const Task = React.memo(
   ({
     taskIdentifier: taskItemIdentifier,
+    patient: parentPatient,
     isCompletedGroup,
     isFullView,
     isStartedDnD,
@@ -171,6 +172,7 @@ const Task = React.memo(
         <div ref={innerRef}>
           <TaskItem
             taskItemIdentifier={task?.identifier}
+            patient={parentPatient}
             isOpen={areSubtasksOpen}
             switchOpen={handleSetSubtasksOpen}
             dragHandleProps={dragHandleProps}

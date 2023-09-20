@@ -193,7 +193,7 @@ const TaskItem = React.memo(
       priority,
     } = task || {};
 
-    const patient = taskPatient ?? parentTask?.patient ?? parentPatient;
+    const patient = parentPatient ?? taskPatient ?? parentTask?.patient;
 
     const { columns } = useTaskListColumnsConfig();
     const { listName, taskListIdentifier } = taskList || {};
@@ -1745,7 +1745,7 @@ const TaskItem = React.memo(
                     (f) => f?.customFieldIdentifier === field.identifier,
                   );
                   const patientCustomFieldValue =
-                    task?.patient?.patientMetaData?.find(
+                    parentPatient?.patientMetaData?.find(
                       (f) => f?.customFieldIdentifier === field.identifier,
                     );
                   const customFieldValue =
