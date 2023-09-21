@@ -1745,7 +1745,7 @@ const TaskItem = React.memo(
                     (f) => f?.customFieldIdentifier === field.identifier,
                   );
                   const patientCustomFieldValue =
-                    parentPatient?.patientMetaData?.find(
+                    patient?.patientMetaData?.find(
                       (f) => f?.customFieldIdentifier === field.identifier,
                     );
                   const customFieldValue =
