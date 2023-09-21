@@ -47,7 +47,11 @@ const BulkEditAssignToOption = ({
       content={({ closePopover }) => (
         <MultiAssignMembersList
           taskListIdentifiers={selectedTaskListIdentifiers}
-          selectedMembers={joinedSelectedMembers}
+          selectedMembers={
+            selectedTasks?.parentTasks?.length === 1
+              ? joinedSelectedMembers
+              : []
+          }
           onSelect={handleChangeAssigneTasks}
           isDisabled={isDisabled}
           onError={closePopover}
