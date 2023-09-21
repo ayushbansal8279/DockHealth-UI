@@ -93,7 +93,7 @@ const TaskItemLongText = ({ value = '', onChange, openDrawer }) => {
       >
         <LongTextBox>
           <Tooltip
-            placement="top"
+            placement="right-end"
             title={
               <pre
                 style={{
