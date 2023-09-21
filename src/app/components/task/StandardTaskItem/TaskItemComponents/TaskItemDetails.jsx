@@ -147,7 +147,7 @@ const TaskItemDetails = ({ task, onClick, readOnly }) => {
       >
         <LongTextBox>
           <Tooltip
-            placement="top"
+            placement="right-end"
             title={
               <pre
                 style={{
