@@ -693,7 +693,8 @@ const TaskTemplateReducer = (state = initialState, action) => {
       }
       if (
         state.taskTemplateDetails &&
-        state.taskTemplateDetails !== undefined
+        state.taskTemplateDetails !== undefined &&
+        Object.keys(state.taskTemplateDetails).length > 0
       ) {
         return TaskBaseReducer(
           state,
