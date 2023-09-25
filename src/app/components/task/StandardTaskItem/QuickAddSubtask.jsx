@@ -26,6 +26,7 @@ const QuickAddSubtask = ({
   const [hasInputValue, setHasInputValue] = useState(false);
   const [error, setError] = useState(null);
   const [isDisabled, setDisabled] = useState(false);
+  const [isValueReset, setValueReset] = useState(false);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -36,7 +37,8 @@ const QuickAddSubtask = ({
     setDisabled(false);
     setHasInputValue(false);
 
-    setCurrentValue('');
+    // setCurrentValue('');
+    setValueReset(true);
     editorReference.current?.focus();
   };
 
@@ -82,6 +84,7 @@ const QuickAddSubtask = ({
             placeholder="Subtask description"
             ref={editorReference}
             value={currentValue}
+            reset={isValueReset}
             onBlur={onBlurTextEditor}
             onChange={handleTextEditorChange}
             onKeyEnter={handleTextEditorKeyEnter}
