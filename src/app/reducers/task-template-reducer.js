@@ -172,6 +172,7 @@ const TaskTemplateReducer = (state = initialState, action) => {
         taskTemplates: action.workflows || [],
         parent: null,
         isFetching: false,
+        taskTemplateDetails: {},
       };
     }
 
@@ -693,7 +694,8 @@ const TaskTemplateReducer = (state = initialState, action) => {
       }
       if (
         state.taskTemplateDetails &&
-        state.taskTemplateDetails !== undefined
+        state.taskTemplateDetails !== undefined &&
+        Object.keys(state.taskTemplateDetails).length > 0
       ) {
         return TaskBaseReducer(
           state,

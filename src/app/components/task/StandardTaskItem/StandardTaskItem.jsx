@@ -70,7 +70,8 @@ const Task = React.memo(
     const { matchingCommentIdentifiers = [] } = searchMetaData;
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    const renderedSubtasks = addingNewSubtask ? [...subtasks, {}] : subtasks;
+    // const renderedSubtasks = addingNewSubtask ? [...subtasks, {}] : subtasks;
+    const renderedSubtasks = subtasks;
 
     const dispatch = useDispatch();
 

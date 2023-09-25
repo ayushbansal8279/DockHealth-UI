@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import usePrevious from 'hooks/use-previous';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
@@ -15,7 +15,11 @@ import {
   TASK_LIST_RESTRICTIONS_OPTIONS,
   TASK_LIST_RESTRICTIONS_PROFILES,
 } from 'restrictions/task-restrictions';
-import { taskLookupSelector } from 'selectors/task-details-selectors';
+import { TaskStatus } from 'helpers/task-helpers';
+import {
+  taskLookupSelector,
+  multipleTaskLookupSelector,
+} from 'selectors/task-details-selectors';
 import {
   TaskTemplateGroupContainer,
   TaskTemplateGroupList,
@@ -45,13 +49,19 @@ const TaskTemplateGroup = ({
   });
 
   const {
-    tasks, // task identifiers
+    tasks: taskIdentifiers, // task identifiers
     identifier,
     patient,
     parentTaskGroupIdentifier,
     taskListIdentifier,
     isFetchingTasks,
   } = templateGroup ?? {};
+
+  const tasks = useSelector((state) => {
+    return taskIdentifiers
+      ? multipleTaskLookupSelector(state, origin, taskIdentifiers)
+      : [];
+  });
 
   const { SHOW_WORKFLOW_DETAILS, SHOW_WORKFLOW_COMPLETED_TASKS } =
     viewSetup || {};
@@ -106,17 +116,17 @@ const TaskTemplateGroup = ({
     [dispatch, identifier, taskListIdentifier, patient],
   );
 
-  // const filteredTasks = useMemo(
-  //   () =>
-  //     tasks.filter(
-  //       isCompletedTab
-  //         ? (task) => showIncompleteTasks || task.status === TaskStatus.COMPLETE
-  //         : (task) => showCompletedTasks || task.status !== TaskStatus.COMPLETE,
-  //     ),
-  //   [showCompletedTasks, showIncompleteTasks, tasks, isCompletedTab],
-  // );
+  const filteredTasksByStatus = useMemo(
+    () =>
+      tasks.filter(
+        isCompletedTab
+          ? (task) => showIncompleteTasks || task.status === TaskStatus.COMPLETE
+          : (task) => showCompletedTasks || task.status !== TaskStatus.COMPLETE,
+      ),
+    [showCompletedTasks, showIncompleteTasks, tasks, isCompletedTab],
+  );
 
-  const filteredTasks = tasks;
+  const filteredTasks = filteredTasksByStatus.map((t) => t.identifier);
 
   return (
     <TaskTemplateGroupContainer
@@ -125,6 +135,7 @@ const TaskTemplateGroup = ({
       <TaskTemplateGroupHeader
         isFetchingTasks={isFetchingTasks}
         templateGroup={templateGroup}
+        templateTasks={tasks}
         groupHasMultipleAssignees={groupHasMultipleAssignees}
         dragHandleProps={dragHandleProps}
         groupDragAndDropDisabled={groupDragAndDropDisabled}

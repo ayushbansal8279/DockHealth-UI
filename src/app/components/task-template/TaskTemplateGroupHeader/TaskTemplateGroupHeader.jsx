@@ -14,7 +14,7 @@ import {
   isTaskItemSelectedSelector,
   isTaskItemsSelectedSelector,
 } from 'selectors/task-items-selectors';
-import { multipleTaskLookupSelector } from 'selectors/task-details-selectors';
+// import { multipleTaskLookupSelector } from 'selectors/task-details-selectors';
 import { useDispatch, useSelector } from 'react-redux';
 import { formatPhoneNumber } from 'helpers/utility-functions';
 import ThreeDotsIcon from 'img/three-dots.svg';
@@ -94,6 +94,7 @@ import TaskTemplateDetails from '../TaskTemplateDetails/TaskTemplateDetails';
 
 const TaskTemplateGroupHeader = ({
   templateGroup = {},
+  templateTasks,
   groupHasMultipleAssignees,
   dragHandleProps = {},
   groupDragAndDropDisabled,
@@ -111,7 +112,7 @@ const TaskTemplateGroupHeader = ({
   showTasksWithGroup = true,
   iconColorActive,
   highlightedValue,
-  origin,
+  // origin,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const {
@@ -146,11 +147,11 @@ const TaskTemplateGroupHeader = ({
   // const templateTasks = taskIdentifiers || [];
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const templateTasks = useSelector((state) => {
-    return taskIdentifiers
-      ? multipleTaskLookupSelector(state, origin, taskIdentifiers)
-      : [];
-  });
+  // const templateTasks = useSelector((state) => {
+  //   return taskIdentifiers
+  //     ? multipleTaskLookupSelector(state, origin, taskIdentifiers)
+  //     : [];
+  // });
 
   let restrictions =
     SINGLE_TASK_RESTRICTIONS_PROFILES[currentUser?.orgUserRole];

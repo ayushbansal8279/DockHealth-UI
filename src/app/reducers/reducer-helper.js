@@ -1,5 +1,6 @@
 import { TaskItemType } from 'helpers/task-helpers';
 
+// eslint-disable-next-line sonarjs/cognitive-complexity
 function updateTaskItemSubTasks(state, tasksMap, taskItem) {
   const updatedMap = tasksMap;
   const taskIdentifier = taskItem.identifier ?? taskItem.taskIdentifier;
@@ -12,7 +13,7 @@ function updateTaskItemSubTasks(state, tasksMap, taskItem) {
   if (taskItem?.parentTaskIdentifier) {
     // if subtask is added
     let parentTask = state.tasksMap[taskItem.parentTaskIdentifier];
-    if (taskItem?.parentTask) {
+    if (taskItem?.parentTask && !parentTask) {
       parentTask = taskItem?.parentTask;
       updatedMap[taskItem.parentTaskIdentifier] = parentTask;
     }
