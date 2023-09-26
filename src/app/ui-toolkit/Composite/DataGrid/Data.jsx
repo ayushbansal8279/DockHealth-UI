@@ -64,20 +64,29 @@ export default function Data({
         return data;
       },
     });
-  }, [register, field, type, name, value, hidden, editable, unsortable, flex]);
 
-  useEffect(() => {
     return () => {
       unregister(
         field ??
           name
+            .toLowerCase()
             .split(' ')
             .join('_')
-            .replace(/[^\d:A-Za-z]/, '')
-            .toUpperCase(),
+            .replace(/[^\d:A-Za-z]/, ''),
       );
     };
-  }, [field, name, unregister]);
+  }, [
+    register,
+    unregister,
+    field,
+    type,
+    name,
+    value,
+    hidden,
+    editable,
+    unsortable,
+    flex,
+  ]);
 
   return null;
 }

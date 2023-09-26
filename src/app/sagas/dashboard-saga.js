@@ -134,32 +134,32 @@ function* getDashboardGroups() {
   try {
     const tabName = yield select(dashboardTabNameSelector);
 
-    if (tabName === DashboardTasksTab.SHARED_TASKS) {
-      const dashboardGroups = [
-        {
-          groupName: 'Shared',
-          groupType: 'SHARED',
-          metricName: 'INCOMPLETE_TASKS_COUNT',
-          metricValue: 0,
-          defaultOpen: true,
-        },
-      ];
+    // if (tabName === DashboardTasksTab.SHARED_TASKS) {
+    //   const dashboardGroups = [
+    //     {
+    //       groupName: 'Shared',
+    //       groupType: 'SHARED',
+    //       metricName: 'INCOMPLETE_TASKS_COUNT',
+    //       metricValue: 0,
+    //       defaultOpen: true,
+    //     },
+    //   ];
 
-      yield put({
-        type: ActionTypes.GET_DASHBOARD_GROUPS_SUCCESS,
-        tasksList: dashboardGroups,
-      });
-    } else {
-      const dashboardGroups = yield call(
-        getDashboardTaskStasForImplicitGroups,
-        tabName,
-      );
+    //   yield put({
+    //     type: ActionTypes.GET_DASHBOARD_GROUPS_SUCCESS,
+    //     tasksList: dashboardGroups,
+    //   });
+    // } else {
+    const dashboardGroups = yield call(
+      getDashboardTaskStasForImplicitGroups,
+      tabName,
+    );
 
-      yield put({
-        type: ActionTypes.GET_DASHBOARD_GROUPS_SUCCESS,
-        tasksList: dashboardGroups,
-      });
-    }
+    yield put({
+      type: ActionTypes.GET_DASHBOARD_GROUPS_SUCCESS,
+      tasksList: dashboardGroups,
+    });
+    // }
   } catch {
     yield put(showGlobalErrorAlert());
     yield put({ type: ActionTypes.GET_DASHBOARD_GROUPS_FAILURE });
