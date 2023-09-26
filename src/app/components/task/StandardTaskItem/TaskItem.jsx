@@ -1443,6 +1443,7 @@ const TaskItem = React.memo(
                       assignedToUsers={assignedToUsers}
                       handleReasignTask={handleReasignTask}
                       matchAssignedTo={matchAssignedTo}
+                      additionalUsers={sharedWithUsers || []}
                     />
                   </TaskItemCell>,
                   getColumnOrder(TaskItemColumn.ASSIGNED),
