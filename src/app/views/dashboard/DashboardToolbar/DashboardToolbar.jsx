@@ -29,6 +29,7 @@ import {
   userHasShareTaskFeatureSelector,
   userHasMultiOrgViewFeatureSelector,
 } from 'selectors/user-selectors';
+import * as DashboardApi from 'api/dashboard-api';
 import TaskViewTypeToolbarSelect from 'components/tasklist/TaskViewTypeToolbarSelect/TaskViewTypeToolbarSelect';
 import CustomizeToolbarButton from 'components/tasklist/CustomizeToolbarButton/CustomizeToolbarButton';
 import { useTaskListColumnsConfig } from 'context-api/columns-config-context';
@@ -87,6 +88,16 @@ const DashboardToolbar = ({ iconColorFilterActive, iconColorActive }) => {
       allTasksForMemberEnabledItem?.value === 'false') ||
     false;
   const shareTaskAvailable = useSelector(userHasShareTaskFeatureSelector);
+
+  const [sharedTasksCount, setSharedTasksCount] = useState(0);
+
+  useEffect(() => {
+    DashboardApi.getTasksAssignedToUserByImplicitGroup('SHARED', 0, 0).then(
+      (data) => {
+        const taskCount = data?.taskGroups?.[0]?.tasks?.length;
+        setSharedTasksCount(taskCount);
+    });
+  }, [setSharedTasksCount]);
 
   useEffect(() => {
     if (
@@ -175,7 +186,7 @@ const DashboardToolbar = ({ iconColorFilterActive, iconColorActive }) => {
           </AccessRestrictor>
           {shareTaskAvailable && (
             <DashboardTab
-              label="Shared With Me"
+              label={`Shared With Me (${sharedTasksCount})`}
               setHighlightPosition={setHighlightPosition}
               onClick={() => {
                 history.push(`${HOME_SHARED_PATH}`);
