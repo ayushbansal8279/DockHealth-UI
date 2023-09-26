@@ -1,0 +1,32 @@
+.List {
+  position: relative;
+  display: block;
+}
+
+.ListHeader {
+  position: sticky;
+  top: 0;
+  display: flex;
+  font-size: 13px;
+  font-weight: bold;
+  text-transform: uppercase;
+  line-height: 40px;
+  height: 40px;
+  // temp hack
+  width: calc(7 * 180px);
+  //
+  margin-bottom: 4px;
+  background-color: white;
+  border: 1px solid rgb(229, 233, 242);
+  z-index: 10;
+}
+
+.ListContent {
+  position: relative;
+
+  // <ul/> reset
+  display: block;
+  margin-left: 0;
+  line-height: 1;
+  list-style-type: none;
+}

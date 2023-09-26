@@ -1,0 +1,686 @@
+[
+  {
+    "id": "1000",
+    "name": "Luke Skywalker",
+    "age": "32",
+    "race": "Human",
+    "alignment": "Light Side",
+    "sex": "Male",
+    "lightsaber_color": "Blue"
+  },
+  {
+    "id": "1001",
+    "name": "Darth Vader",
+    "age": "45",
+    "race": "Human",
+    "alignment": "Dark Side",
+    "sex": "Male",
+    "lightsaber_color": "Red"
+  },
+  {
+    "id": "1002",
+    "name": "Princess Leia",
+    "age": "28",
+    "race": "Human",
+    "alignment": "Light Side",
+    "sex": "Female",
+    "lightsaber_color": "None"
+  },
+  {
+    "id": "1003",
+    "name": "Han Solo",
+    "age": "34",
+    "race": "Human",
+    "alignment": "Neutral",
+    "sex": "Male",
+    "lightsaber_color": "None"
+  },
+  {
+    "id": "1004",
+    "name": "Yoda",
+    "age": "900",
+    "race": "Yoda's species",
+    "alignment": "Light Side",
+    "sex": "Male",
+    "lightsaber_color": "Green"
+  },
+  {
+    "id": "1005",
+    "name": "Obi-Wan Kenobi",
+    "age": "57",
+    "race": "Human",
+    "alignment": "Light Side",
+    "sex": "Male",
+    "lightsaber_color": "Blue"
+  },
+  {
+    "id": "1006",
+    "name": "Chewbacca",
+    "age": "200",
+    "race": "Wookiee",
+    "alignment": "Light Side",
+    "sex": "Male",
+    "lightsaber_color": "None"
+  },
+  {
+    "id": "1007",
+    "name": "Darth Maul",
+    "age": "35",
+    "race": "Dathomirian Zabrak",
+    "alignment": "Dark Side",
+    "sex": "Male",
+    "lightsaber_color": "Red"
+  },
+  {
+    "id": "1008",
+    "name": "Padmé Amidala",
+    "age": "27",
+    "race": "Human",
+    "alignment": "Light Side",
+    "sex": "Female",
+    "lightsaber_color": "None"
+  },
+  {
+    "id": "1009",
+    "name": "R2-D2",
+    "age": "Unknown",
+    "race": "Astromech Droid",
+    "alignment": "Neutral",
+    "sex": "N/A",
+    "lightsaber_color": "None"
+  },
+  {
+    "id": "1010",
+    "name": "C-3PO",
+    "age": "Unknown",
+    "race": "Protocol Droid",
+    "alignment": "Neutral",
+    "sex": "N/A",
+    "lightsaber_color": "None"
+  },
+  {
+    "id": "1011",
+    "name": "Boba Fett",
+    "age": "Unknown",
+    "race": "Human",
+    "alignment": "Neutral",
+    "sex": "Male",
+    "lightsaber_color": "None"
+  },
+  {
+    "id": "1012",
+    "name": "Mace Windu",
+    "age": "53",
+    "race": "Human",
+    "alignment": "Light Side",
+    "sex": "Male",
+    "lightsaber_color": "Purple"
+  },
+  {
+    "id": "1013",
+    "name": "Ahsoka Tano",
+    "age": "Unknown",
+    "race": "Togruta",
+    "alignment": "Light Side",
+    "sex": "Female",
+    "lightsaber_color": "Blue"
+  },
+  {
+    "id": "1014",
+    "name": "Emperor Palpatine",
+    "age": "Unknown",
+    "race": "Human",
+    "alignment": "Dark Side",
+    "sex": "Male",
+    "lightsaber_color": "None"
+  },
+  {
+    "id": "1015",
+    "name": "Darth Sidious",
+    "age": "Unknown",
+    "race": "Human",
+    "alignment": "Dark Side",
+    "sex": "Male",
+    "lightsaber_color": "None"
+  },
+  {
+    "id": "1016",
+    "name": "Lando Calrissian",
+    "age": "43",
+    "race": "Human",
+    "alignment": "Neutral",
+    "sex": "Male",
+    "lightsaber_color": "None"
+  },
+  {
+    "id": "1017",
+    "name": "Count Dooku",
+    "age": "83",
+    "race": "Human",
+    "alignment": "Dark Side",
+    "sex": "Male",
+    "lightsaber_color": "Red"
+  },
+  {
+    "id": "1018",
+    "name": "Anakin Skywalker",
+    "age": "23",
+    "race": "Human",
+    "alignment": "Light Side",
+    "sex": "Male",
+    "lightsaber_color": "Blue"
+  },
+  {
+    "id": "1019",
+    "name": "Qui-Gon Jinn",
+    "age": "60",
+    "race": "Human",
+    "alignment": "Light Side",
+    "sex": "Male",
+    "lightsaber_color": "Green"
+  },
+  {
+    "id": "1020",
+    "name": "Greedo",
+    "age": "44",
+    "race": "Rodian",
+    "alignment": "Neutral",
+    "sex": "Male",
+    "lightsaber_color": "None"
+  },
+  {
+    "id": "1021",
+    "name": "Bail Organa",
+    "age": "56",
+    "race": "Human",
+    "alignment": "Light Side",
+    "sex": "Male",
+    "lightsaber_color": "None"
+  },
+  {
+    "id": "1022",
+    "name": "Wedge Antilles",
+    "age": "35",
+    "race": "Human",
+    "alignment": "Light Side",
+    "sex": "Male",
+    "lightsaber_color": "None"
+  },
+  {
+    "id": "1023",
+    "name": "Aayla Secura",
+    "age": "31",
+    "race": "Twi'lek",
+    "alignment": "Light Side",
+    "sex": "Female",
+    "lightsaber_color": "Blue"
+  },
+  {
+    "id": "1024",
+    "name": "Poe Dameron",
+    "age": "32",
+    "race": "Human",
+    "alignment": "Light Side",
+    "sex": "Male",
+    "lightsaber_color": "None"
+  },
+  {
+    "id": "1025",
+    "name": "Rey",
+    "age": "Unknown",
+    "race": "Human",
+    "alignment": "Light Side",
+    "sex": "Female",
+    "lightsaber_color": "Blue"
+  },
+  {
+    "id": "1026",
+    "name": "Kylo Ren",
+    "age": "30",
+    "race": "Human",
+    "alignment": "Dark Side",
+    "sex": "Male",
+    "lightsaber_color": "Red"
+  },
+  {
+    "id": "1027",
+    "name": "Captain Phasma",
+    "age": "Unknown",
+    "race": "Human",
+    "alignment": "Dark Side",
+    "sex": "Female",
+    "lightsaber_color": "None"
+  },
+  {
+    "id": "1028",
+    "name": "General Grievous",
+    "age": "Unknown",
+    "race": "Kaleesh",
+    "alignment": "Dark Side",
+    "sex": "Male",
+    "lightsaber_color": "None"
+  },
+  {
+    "id": "1029",
+    "name": "Jango Fett",
+    "age": "Unknown",
+    "race": "Human",
+    "alignment": "Neutral",
+    "sex": "Male",
+    "lightsaber_color": "None"
+  },
+  {
+    "id": "1030",
+    "name": "Aurra Sing",
+    "age": "Unknown",
+    "race": "Near-Human",
+    "alignment": "Neutral",
+    "sex": "Female",
+    "lightsaber_color": "None"
+  },
+  {
+    "id": "1031",
+    "name": "Kit Fisto",
+    "age": "Unknown",
+    "race": "Nautolan",
+    "alignment": "Light Side",
+    "sex": "Male",
+    "lightsaber_color": "Green"
+  },
+  {
+    "id": "1032",
+    "name": "Luminara Unduli",
+    "age": "58",
+    "race": "Mirialan",
+    "alignment": "Light Side",
+    "sex": "Female",
+    "lightsaber_color": "Blue"
+  },
+  {
+    "id": "1033",
+    "name": "Ki-Adi-Mundi",
+    "age": "92",
+    "race": "Cerean",
+    "alignment": "Light Side",
+    "sex": "Male",
+    "lightsaber_color": "Blue"
+  },
+  {
+    "id": "1034",
+    "name": "Shaak Ti",
+    "age": "Unknown",
+    "race": "Togruta",
+    "alignment": "Light Side",
+    "sex": "Female",
+    "lightsaber_color": "Blue"
+  },
+  {
+    "id": "1035",
+    "name": "Asajj Ventress",
+    "age": "Unknown",
+    "race": "Dathomirian",
+    "alignment": "Dark Side",
+    "sex": "Female",
+    "lightsaber_color": "Red"
+  },
+  {
+    "id": "1036",
+    "name": "Plo Koon",
+    "age": "Unknown",
+    "race": "Kel Dor",
+    "alignment": "Light Side",
+    "sex": "Male",
+    "lightsaber_color": "Blue"
+  },
+  {
+    "id": "1037",
+    "name": "Dengar",
+    "age": "Unknown",
+    "race": "Human",
+    "alignment": "Neutral",
+    "sex": "Male",
+    "lightsaber_color": "None"
+  },
+  {
+    "id": "1038",
+    "name": "Admiral Ackbar",
+    "age": "62",
+    "race": "Mon Calamari",
+    "alignment": "Light Side",
+    "sex": "Male",
+    "lightsaber_color": "None"
+  },
+  {
+    "id": "1039",
+    "name": "Watto",
+    "age": "Unknown",
+    "race": "Toydarian",
+    "alignment": "Neutral",
+    "sex": "Male",
+    "lightsaber_color": "None"
+  },
+  {
+    "id": "1040",
+    "name": "Nien Nunb",
+    "age": "Unknown",
+    "race": "Sullustan",
+    "alignment": "Light Side",
+    "sex": "Male",
+    "lightsaber_color": "None"
+  },
+  {
+    "id": "1041",
+    "name": "Griphook",
+    "age": "Unknown",
+    "race": "Goblin",
+    "alignment": "Neutral",
+    "sex": "Male",
+    "lightsaber_color": "None"
+  },
+  {
+    "id": "1042",
+    "name": "Salacious B. Crumb",
+    "age": "Unknown",
+    "race": "Kowakian Monkey-Lizard",
+    "alignment": "Neutral",
+    "sex": "Male",
+    "lightsaber_color": "None"
+  },
+  {
+    "id": "1043",
+    "name": "Jabba the Hutt",
+    "age": "604",
+    "race": "Hutt",
+    "alignment": "Neutral",
+    "sex": "Male",
+    "lightsaber_color": "None"
+  },
+  {
+    "id": "1044",
+    "name": "Bib Fortuna",
+    "age": "Unknown",
+    "race": "Twi'lek",
+    "alignment": "Neutral",
+    "sex": "Male",
+    "lightsaber_color": "None"
+  },
+  {
+    "id": "1045",
+    "name": "Porgs",
+    "age": "Unknown",
+    "race": "Porg",
+    "alignment": "Light Side",
+    "sex": "N/A",
+    "lightsaber_color": "None"
+  },
+  {
+    "id": "1046",
+    "name": "Jyn Erso",
+    "age": "Unknown",
+    "race": "Human",
+    "alignment": "Light Side",
+    "sex": "Female",
+    "lightsaber_color": "None"
+  },
+  {
+    "id": "1047",
+    "name": "Saw Gerrera",
+    "age": "Unknown",
+    "race": "Human",
+    "alignment": "Light Side",
+    "sex": "Male",
+    "lightsaber_color": "None"
+  },
+  {
+    "id": "1048",
+    "name": "Rose Tico",
+    "age": "Unknown",
+    "race": "Human",
+    "alignment": "Light Side",
+    "sex": "Female",
+    "lightsaber_color": "None"
+  },
+  {
+    "id": "1049",
+    "name": "Supreme Leader Snoke",
+    "age": "Unknown",
+    "race": "Unknown",
+    "alignment": "Dark Side",
+    "sex": "Male",
+    "lightsaber_color": "None"
+  },
+  {
+    "id": "1050",
+    "name": "Moff Gideon",
+    "age": "Unknown",
+    "race": "Human",
+    "alignment": "Dark Side",
+    "sex": "Male",
+    "lightsaber_color": "None"
+  },
+  {
+    "id": "1051",
+    "name": "Barriss Offee",
+    "age": "Unknown",
+    "race": "Mirialan",
+    "alignment": "Dark Side",
+    "sex": "Female",
+    "lightsaber_color": "Red"
+  },
+  {
+    "id": "1052",
+    "name": "Wicket W. Warrick",
+    "age": "Unknown",
+    "race": "Ewok",
+    "alignment": "Light Side",
+    "sex": "Male",
+    "lightsaber_color": "None"
+  },
+  {
+    "id": "1053",
+    "name": "Sebulba",
+    "age": "Unknown",
+    "race": "Dug",
+    "alignment": "Neutral",
+    "sex": "Male",
+    "lightsaber_color": "None"
+  },
+  {
+    "id": "1054",
+    "name": "Maz Kanata",
+    "age": "Unknown",
+    "race": "Unknown",
+    "alignment": "Light Side",
+    "sex": "Female",
+    "lightsaber_color": "None"
+  },
+  {
+    "id": "1055",
+    "name": "Hera Syndulla",
+    "age": "Unknown",
+    "race": "Twilek",
+    "alignment": "Light Side",
+    "sex": "Female",
+    "lightsaber_color": "None"
+  },
+  {
+    "id": "1056",
+    "name": "Ezra Bridger",
+    "age": "Unknown",
+    "race": "Human",
+    "alignment": "Light Side",
+    "sex": "Male",
+    "lightsaber_color": "None"
+  },
+  {
+    "id": "1057",
+    "name": "Sabine Wren",
+    "age": "Unknown",
+    "race": "Human",
+    "alignment": "Light Side",
+    "sex": "Female",
+    "lightsaber_color": "None"
+  },
+  {
+    "id": "1058",
+    "name": "Kanan Jarrus",
+    "age": "Unknown",
+    "race": "Human",
+    "alignment": "Light Side",
+    "sex": "Male",
+    "lightsaber_color": "Blue"
+  },
+  {
+    "id": "1059",
+    "name": "Hondo Ohnaka",
+    "age": "Unknown",
+    "race": "Weequay",
+    "alignment": "Neutral",
+    "sex": "Male",
+    "lightsaber_color": "None"
+  },
+  {
+    "id": "1060",
+    "name": "Lobot",
+    "age": "Unknown",
+    "race": "Human",
+    "alignment": "Neutral",
+    "sex": "Male",
+    "lightsaber_color": "None"
+  },
+  {
+    "id": "1061",
+    "name": "IG-88",
+    "age": "Unknown",
+    "race": "Assassin Droid",
+    "alignment": "Neutral",
+    "sex": "N/A",
+    "lightsaber_color": "None"
+  },
+  {
+    "id": "1062",
+    "name": "Darth Plagueis",
+    "age": "Unknown",
+    "race": "Muun",
+    "alignment": "Dark Side",
+    "sex": "Male",
+    "lightsaber_color": "None"
+  },
+  {
+    "id": "1063",
+    "name": "Jango Fett",
+    "age": "Unknown",
+    "race": "Human",
+    "alignment": "Neutral",
+    "sex": "Male",
+    "lightsaber_color": "None"
+  },
+  {
+    "id": "1064",
+    "name": "Admiral Piett",
+    "age": "Unknown",
+    "race": "Human",
+    "alignment": "Dark Side",
+    "sex": "Male",
+    "lightsaber_color": "None"
+  },
+  {
+    "id": "1065",
+    "name": "Mon Mothma",
+    "age": "Unknown",
+    "race": "Human",
+    "alignment": "Light Side",
+    "sex": "Female",
+    "lightsaber_color": "None"
+  },
+  {
+    "id": "1066",
+    "name": "General Veers",
+    "age": "Unknown",
+    "race": "Human",
+    "alignment": "Dark Side",
+    "sex": "Male",
+    "lightsaber_color": "None"
+  },
+  {
+    "id": "1067",
+    "name": "Mara Jade",
+    "age": "Unknown",
+    "race": "Human",
+    "alignment": "Dark Side",
+    "sex": "Female",
+    "lightsaber_color": "Purple"
+  },
+  {
+    "id": "1068",
+    "name": "Moff Tarkin",
+    "age": "Unknown",
+    "race": "Human",
+    "alignment": "Dark Side",
+    "sex": "Male",
+    "lightsaber_color": "None"
+  },
+  {
+    "id": "1069",
+    "name": "Ahsoka Tano",
+    "age": "Unknown",
+    "race": "Togruta",
+    "alignment": "Light Side",
+    "sex": "Female",
+    "lightsaber_color": "White"
+  },
+  {
+    "id": "1070",
+    "name": "Admiral Thrawn",
+    "age": "Unknown",
+    "race": "Chiss",
+    "alignment": "Neutral",
+    "sex": "Male",
+    "lightsaber_color": "None"
+  },
+  {
+    "id": "1071",
+    "name": "Chirrut Îmwe",
+    "age": "Unknown",
+    "race": "Human",
+    "alignment": "Light Side",
+    "sex": "Male",
+    "lightsaber_color": "None"
+  },
+  {
+    "id": "1072",
+    "name": "Baze Malbus",
+    "age": "Unknown",
+    "race": "Human",
+    "alignment": "Light Side",
+    "sex": "Male",
+    "lightsaber_color": "None"
+  },
+  {
+    "id": "1073",
+    "name": "Grand Moff Tarkin",
+    "age": "Unknown",
+    "race": "Human",
+    "alignment": "Dark Side",
+    "sex": "Male",
+    "lightsaber_color": "None"
+  },
+  {
+    "id": "1074",
+    "name": "General Hux",
+    "age": "Unknown",
+    "race": "Human",
+    "alignment": "Dark Side",
+    "sex": "Male",
+    "lightsaber_color": "None"
+  },
+  {
+    "id": "1075",
+    "name": "Jannah",
+    "age": "Unknown",
+    "race": "Human",
+    "alignment": "Light Side",
+    "sex": "Female",
+    "lightsaber_color": "None"
+  }
+]

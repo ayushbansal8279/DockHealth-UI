@@ -140,6 +140,9 @@ const ProfilesAndCustomFieldsView = lazy(() =>
 const TaskCustomizationsView = lazy(() =>
   import('views/custom-fields/task-customizations/TaskCustomizationsView'),
 );
+const TasksView = lazy(() =>
+  import('views/TasksView/TasksView.jsx'),
+);
 
 const {
   CAN_ACCESS_HOME_PAGE,
@@ -262,6 +265,12 @@ export const TEMPLATE_CORE_SUBSCRIPTION_PLAN_ROUTES = [
   {
     path: '/custom-profiles/:name/:profileTypeIdentifier',
     RouteComponent: CustomProfileList,
+    onLeave: onLeaveGlobalSearch,
+    permissions: [CAN_ACCESS_SEARCH_PAGE],
+  },
+  {
+    path: '/poc',
+    RouteComponent: TasksView,
     onLeave: onLeaveGlobalSearch,
     permissions: [CAN_ACCESS_SEARCH_PAGE],
   },
