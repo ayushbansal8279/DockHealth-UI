@@ -47,6 +47,7 @@ const MultiAssignMembersList = ({
   onSelect,
   onError,
   enableLazyLoading: enabled,
+  additionalMembers,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const { emrIntegrationEnabled } = useSelector(organizationSelector);
@@ -138,7 +139,9 @@ const MultiAssignMembersList = ({
         setIsFetchingMembers(true);
         try {
           const members = await getUsersByName(searchValue);
-          setMembersOptions(members);
+          setMembersOptions(
+            additionalMembers ? members.concat(additionalMembers) : members,
+          );
         } catch (error) {
           if (typeof onError === 'function') onError(error);
         }
@@ -153,6 +156,7 @@ const MultiAssignMembersList = ({
     searchValue,
     isValueSendable,
     taskListIdentifiers,
+    additionalMembers,
   ]);
 
   useEffect(() => {
@@ -168,7 +172,11 @@ const MultiAssignMembersList = ({
             const joinedMembers = await collectJoinedListMembers(
               includeTaskListIdentifers,
             );
-            setMembersOptions(joinedMembers);
+            setMembersOptions(
+              additionalMembers
+                ? joinedMembers.concat(additionalMembers)
+                : joinedMembers,
+            );
           } else {
             const organizationMembers =
               await OrganizationApi.getOrganizationUsersAndUserGroups();
@@ -391,6 +399,15 @@ MultiAssignMembersList.propTypes = {
   ).isRequired,
   onSelect: func.isRequired,
   onError: func,
+  additionalMembers: arrayOf(
+    shape({
+      identifier: string,
+      firstName: string,
+      lastName: string,
+      initials: string,
+      profileThumbnailPictureHash: string,
+    }),
+  ),
 };
 
 MultiAssignMembersList.defaultProps = {
