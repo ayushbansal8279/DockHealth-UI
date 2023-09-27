@@ -17,16 +17,14 @@
 
  */
 
-import React, { createContext, useContext, useEffect, useMemo, useRef } from "react";
+import React, { createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
 import cx from "./TasksView.module.scss";
-import debounce from "lodash.debounce";
 import throttle from "lodash.throttle";
 import { uniqueId } from "lodash";
 import AutoSizer from "react-virtualized-auto-sizer";
-import {
-  FixedSizeTree
-}from "react-vtree";
-import List2 from "./List/List"
+import { FixedSizeTree } from "react-vtree";
+import List2 from "./List/List";
+import items from "./data.json";
 
 const definition = {
   "id": {
@@ -59,27 +57,153 @@ const definition = {
   }
 };
 
-import items from "./data.json";
 const items2 = [
   ...items,
-  ...items.map(item => ({ ...item, id: item.id + 76 })),
-  ...items.map(item => ({ ...item, id: item.id + 76 * 2 })),
-  ...items.map(item => ({ ...item, id: item.id + 76 * 3 })),
-  ...items.map(item => ({ ...item, id: item.id + 76 * 4 })),
-  ...items.map(item => ({ ...item, id: item.id + 76 * 5 })),
-  ...items.map(item => ({ ...item, id: item.id + 76 * 6 })),
-  ...items.map(item => ({ ...item, id: item.id + 76 * 7 })),
-  ...items.map(item => ({ ...item, id: item.id + 76 * 8 })),
-  ...items.map(item => ({ ...item, id: item.id + 76 * 9 })),
+  ...items.map(item => ({ ...item, id: +item.id + 76 })),
+  ...items.map(item => ({ ...item, id: +item.id + 76 * 2 })),
+  ...items.map(item => ({ ...item, id: +item.id + 76 * 3 })),
+  ...items.map(item => ({ ...item, id: +item.id + 76 * 4 })),
+  ...items.map(item => ({ ...item, id: +item.id + 76 * 5 })),
+  ...items.map(item => ({ ...item, id: +item.id + 76 * 6 })),
+  ...items.map(item => ({ ...item, id: +item.id + 76 * 7 })),
+  ...items.map(item => ({ ...item, id: +item.id + 76 * 8 })),
+  ...items.map(item => ({ ...item, id: +item.id + 76 * 9 })),
 ]
 
+
+const taskDefinition = {
+  "id": {
+    name: "ID",
+    order: 0
+  },
+  "name": {
+    name: "Name",
+    order: 1
+  },
+  "details": {
+    name: "Details",
+    order: 2
+  },
+  "due-date": {
+    name: "Due Date",
+    order: 3
+  },
+  "start-date": {
+    name: "Start Date",
+    order: 4
+  },
+  "creator": {
+    name: "Creator",
+    order: 5,
+    value: ({ firstName, lastName }) => `${firstName} ${lastName}`
+  }
+};
+
+
+const convertTask = (task) => {
+  return {
+    "id": task.identifier,
+    "name": task.description ?? "",
+    "details": task.details ?? "",
+    "due-date": task.dueDate ?? "",
+    "start-date": task.startDate ?? "",
+    "creator": task.creator ?? "",
+    "children": task.subtasks && task.subtasks.length
+      ? task.subtasks.map(subtask => convertTask(subtask))
+      : []
+  }
+}
+
+const fetcher = (i) => {
+  return fetch(`https://api-dev.dockhealth.app/heydoc-services/task/findListTasksByTaskGroup/73baa05a-a77d-11eb-9858-0e3d2d599b61/7f2c0488-a77d-11eb-9858-0e3d2d599b61?status=INCOMPLETE&startPosition=${30 * i}&endPosition=0`, {
+    method: "GET",
+    headers: {
+      "Authorization": "Bearer eyJraWQiOiJOcENrVDNtS1wvOXlwNUFUTFRzaVR2WkNFZ0JSNDBjbVB2T3dSUTY5eEFEVT0iLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiIyMzg5ZmI1OC05ZTdhLTQ4NmYtODg3My0zYjMyZjY1NmFiYmUiLCJkZXZpY2Vfa2V5IjoidXMtZWFzdC0xXzk1MjlhYTBjLTI4YjMtNDY0ZS04MjE5LTJmMTBmZmRiMDQwNCIsInRva2VuX3VzZSI6ImFjY2VzcyIsInNjb3BlIjoiYXdzLmNvZ25pdG8uc2lnbmluLnVzZXIuYWRtaW4iLCJhdXRoX3RpbWUiOjE2OTM4MzY0NzEsImlzcyI6Imh0dHBzOlwvXC9jb2duaXRvLWlkcC51cy1lYXN0LTEuYW1hem9uYXdzLmNvbVwvdXMtZWFzdC0xX1hQbTZnZTFBbCIsImV4cCI6MTY5NTg0NDc4NSwiaWF0IjoxNjk1ODAxNTg1LCJqdGkiOiI1NDlkY2JlMy0zNjhmLTRkMTAtYjdlMy1kOWM5YTk0MTNlYTMiLCJjbGllbnRfaWQiOiI2dG05OW5yamM1Z3RuNW5oc29scmE4YzNxbiIsInVzZXJuYW1lIjoibWF0ZXVzei5waWV0cnpha0BodGRldmVsb3BlcnMuY29tIn0.awVP9UwFLI2WDSQPoLnyRz69X4TFq1NRZzC4mruVjkW_Fq3fO8hRhLoXX-2ZOVboo3vOv5q4YFnNCJX74DZuTqb8Tafg1gU0uAs1mcYt43snrNA_clQK4v-cuSDPdyVntuaO3NMLAWM8E87uKb5ELEQ7elDpl3A3DsrNuHloDMun1KclkRKmTGs71w-NfnsOngp3cTujbKWZ5wmeGFXSWBaRVlPcGIi5a7pDYa7nx2eFwGUL7tABWsqYznqzCOj2zyGv4d1oGLWNuArWPB8tCW_xHQZxNhwv2g0RUokp1RiS7m9vZl48gqZbCgFUXgSrbE7PTHMjwNjY-rIB-yiVgA"
+    }
+  })
+    .then(response => response.json())
+}
+
+const fetchSubtasks = (taskIdentifier) => {
+  return fetch(`https://api-dev.dockhealth.app/heydoc-services/task/${taskIdentifier}`, {
+    method: "GET",
+    headers: {
+      "Authorization": "Bearer eyJraWQiOiJOcENrVDNtS1wvOXlwNUFUTFRzaVR2WkNFZ0JSNDBjbVB2T3dSUTY5eEFEVT0iLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiIyMzg5ZmI1OC05ZTdhLTQ4NmYtODg3My0zYjMyZjY1NmFiYmUiLCJkZXZpY2Vfa2V5IjoidXMtZWFzdC0xXzk1MjlhYTBjLTI4YjMtNDY0ZS04MjE5LTJmMTBmZmRiMDQwNCIsInRva2VuX3VzZSI6ImFjY2VzcyIsInNjb3BlIjoiYXdzLmNvZ25pdG8uc2lnbmluLnVzZXIuYWRtaW4iLCJhdXRoX3RpbWUiOjE2OTM4MzY0NzEsImlzcyI6Imh0dHBzOlwvXC9jb2duaXRvLWlkcC51cy1lYXN0LTEuYW1hem9uYXdzLmNvbVwvdXMtZWFzdC0xX1hQbTZnZTFBbCIsImV4cCI6MTY5NTg0NDc4NSwiaWF0IjoxNjk1ODAxNTg1LCJqdGkiOiI1NDlkY2JlMy0zNjhmLTRkMTAtYjdlMy1kOWM5YTk0MTNlYTMiLCJjbGllbnRfaWQiOiI2dG05OW5yamM1Z3RuNW5oc29scmE4YzNxbiIsInVzZXJuYW1lIjoibWF0ZXVzei5waWV0cnpha0BodGRldmVsb3BlcnMuY29tIn0.awVP9UwFLI2WDSQPoLnyRz69X4TFq1NRZzC4mruVjkW_Fq3fO8hRhLoXX-2ZOVboo3vOv5q4YFnNCJX74DZuTqb8Tafg1gU0uAs1mcYt43snrNA_clQK4v-cuSDPdyVntuaO3NMLAWM8E87uKb5ELEQ7elDpl3A3DsrNuHloDMun1KclkRKmTGs71w-NfnsOngp3cTujbKWZ5wmeGFXSWBaRVlPcGIi5a7pDYa7nx2eFwGUL7tABWsqYznqzCOj2zyGv4d1oGLWNuArWPB8tCW_xHQZxNhwv2g0RUokp1RiS7m9vZl48gqZbCgFUXgSrbE7PTHMjwNjY-rIB-yiVgA",
+      "Currentorganizationidentifier": "160f8db5-40c2-11ea-a4e8-124feabd863a"
+    }
+  })
+    .then(response => response.json())
+}
+
+const invokeUltimateFetcher = () => {
+  const fetches = []
+  for (let i = 0; i < 11; i++) {
+    fetches.push(fetcher(i))
+  }
+
+  return Promise.all(fetches)
+    .then((data) => {
+      return data.reduce((accumulator, data) => {
+        accumulator.push(...data.taskGroups[0].tasks)
+        return accumulator
+      }, [])
+    })
+    .then((tasks) => {
+      const ids = []
+      return tasks
+        .filter((task) => {
+          if (task.identifier === undefined) {
+            return false
+          }
+          if (ids.includes(task.identifier)) {
+            return false
+          }
+          ids.push(task.identifier)
+          return true
+      })
+    })
+    .then((tasks) => {
+      const tasksWithSubtasksPromises = tasks
+        .filter(task => task.subTasksCount > 0)
+        .map(task => fetchSubtasks(task.identifier))
+      return Promise.all(tasksWithSubtasksPromises).then((tasksWithSubtasks) => {
+        const tasksWithSubtasksIds = tasksWithSubtasks.map(tasksWithSubtask => tasksWithSubtask.identifier)
+        return tasks.map(task => {
+          if (tasksWithSubtasksIds.includes(task.identifier)) {
+            return tasksWithSubtasks
+                .find(tasksWithSubtask => tasksWithSubtask.identifier === task.identifier)
+          }
+          return task
+        })
+      })
+        .then((tasks) => {
+          return tasks.map((task) => {
+            return convertTask(task);
+          })
+        })
+    })
+}
+
+
+
 export default function TasksView() {
+  const [isLoading, setLoading] = useState(true)
+  const [tasks, setTasks] = useState([])
+
+  useEffect(() => {
+    invokeUltimateFetcher()
+      .then(tasks => {
+        console.log(tasks);
+        setTasks(tasks)
+        setLoading(false)
+      })
+  }, [])
   return (
     <View>
-      <List2
-        // definition={definition}
-        // items={items}
-      />
+      {!isLoading && <List2
+        definition={taskDefinition  }
+        items={tasks}
+      />}
       {/* <TreePresenter itemSize={40}/> */}
     </View>
   );

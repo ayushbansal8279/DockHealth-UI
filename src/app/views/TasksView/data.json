@@ -6,7 +6,27 @@
     "race": "Human",
     "alignment": "Light Side",
     "sex": "Male",
-    "lightsaber_color": "Blue"
+    "lightsaber_color": "Blue",
+    "children": [
+      {
+        "id": "10001",
+        "name": "Darth Vader",
+        "age": "45",
+        "race": "Human",
+        "alignment": "Dark Side",
+        "sex": "Male",
+        "lightsaber_color": "Red"
+      },
+      {
+        "id": "10002",
+        "name": "Princess Leia",
+        "age": "28",
+        "race": "Human",
+        "alignment": "Light Side",
+        "sex": "Female",
+        "lightsaber_color": "None"
+      }
+    ]
   },
   {
     "id": "1001",

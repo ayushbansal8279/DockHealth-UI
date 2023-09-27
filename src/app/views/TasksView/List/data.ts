@@ -7,6 +7,7 @@ export const items = [
     "alignment": "Light Side",
     "sex": "Male",
     "lightsaber_color": "Blue"
+    , "children": [{ "id": "2000" }, { "id": "2001" }]
   },
   {
     "id": "1001",
@@ -16,6 +17,7 @@ export const items = [
     "alignment": "Dark Side",
     "sex": "Male",
     "lightsaber_color": "Red"
+    , "children": [{ "id": "2000" }, { "id": "2001" }]
   },
   {
     "id": "1002",
@@ -25,6 +27,7 @@ export const items = [
     "alignment": "Light Side",
     "sex": "Female",
     "lightsaber_color": "None"
+    , "children": [{ "id": "2000" }, { "id": "2001" }]
   },
   {
     "id": "1003",
@@ -34,6 +37,7 @@ export const items = [
     "alignment": "Neutral",
     "sex": "Male",
     "lightsaber_color": "None"
+    , "children": [{ "id": "2000" }, { "id": "2001" }]
   },
   {
     "id": "1004",
@@ -43,6 +47,7 @@ export const items = [
     "alignment": "Light Side",
     "sex": "Male",
     "lightsaber_color": "Green"
+    , "children": [{ "id": "2000" }, { "id": "2001" }]
   },
   {
     "id": "1005",
@@ -52,6 +57,7 @@ export const items = [
     "alignment": "Light Side",
     "sex": "Male",
     "lightsaber_color": "Blue"
+    , "children": [{ "id": "2000" }, { "id": "2001" }]
   },
   {
     "id": "1006",
@@ -61,6 +67,7 @@ export const items = [
     "alignment": "Light Side",
     "sex": "Male",
     "lightsaber_color": "None"
+    , "children": [{ "id": "2000" }, { "id": "2001" }]
   },
   {
     "id": "1007",
@@ -70,6 +77,7 @@ export const items = [
     "alignment": "Dark Side",
     "sex": "Male",
     "lightsaber_color": "Red"
+    , "children": [{ "id": "2000" }, { "id": "2001" }]
   },
   {
     "id": "1008",
@@ -79,6 +87,7 @@ export const items = [
     "alignment": "Light Side",
     "sex": "Female",
     "lightsaber_color": "None"
+    , "children": [{ "id": "2000" }, { "id": "2001" }]
   },
   {
     "id": "1009",
@@ -88,6 +97,7 @@ export const items = [
     "alignment": "Neutral",
     "sex": "N/A",
     "lightsaber_color": "None"
+    , "children": [{ "id": "2000" }, { "id": "2001" }]
   },
   {
     "id": "1010",
@@ -97,6 +107,7 @@ export const items = [
     "alignment": "Neutral",
     "sex": "N/A",
     "lightsaber_color": "None"
+    , "children": [{ "id": "2000" }, { "id": "2001" }]
   },
   {
     "id": "1011",
@@ -106,6 +117,7 @@ export const items = [
     "alignment": "Neutral",
     "sex": "Male",
     "lightsaber_color": "None"
+    , "children": [{ "id": "2000" }, { "id": "2001" }]
   },
   {
     "id": "1012",
@@ -115,6 +127,7 @@ export const items = [
     "alignment": "Light Side",
     "sex": "Male",
     "lightsaber_color": "Purple"
+    , "children": [{ "id": "2000" }, { "id": "2001" }]
   },
   {
     "id": "1013",
@@ -124,6 +137,7 @@ export const items = [
     "alignment": "Light Side",
     "sex": "Female",
     "lightsaber_color": "Blue"
+    , "children": [{ "id": "2000" }, { "id": "2001" }]
   },
   {
     "id": "1014",
@@ -133,6 +147,7 @@ export const items = [
     "alignment": "Dark Side",
     "sex": "Male",
     "lightsaber_color": "None"
+    , "children": [{ "id": "2000" }, { "id": "2001" }]
   },
   {
     "id": "1015",
@@ -142,6 +157,7 @@ export const items = [
     "alignment": "Dark Side",
     "sex": "Male",
     "lightsaber_color": "None"
+    , "children": [{ "id": "2000" }, { "id": "2001" }]
   },
   {
     "id": "1016",
@@ -151,6 +167,7 @@ export const items = [
     "alignment": "Neutral",
     "sex": "Male",
     "lightsaber_color": "None"
+    , "children": [{ "id": "2000" }, { "id": "2001" }]
   },
   {
     "id": "1017",
@@ -160,6 +177,7 @@ export const items = [
     "alignment": "Dark Side",
     "sex": "Male",
     "lightsaber_color": "Red"
+    , "children": [{ "id": "2000" }, { "id": "2001" }]
   },
   {
     "id": "1018",
@@ -169,6 +187,7 @@ export const items = [
     "alignment": "Light Side",
     "sex": "Male",
     "lightsaber_color": "Blue"
+    , "children": [{ "id": "2000" }, { "id": "2001" }]
   },
   {
     "id": "1019",
@@ -178,6 +197,7 @@ export const items = [
     "alignment": "Light Side",
     "sex": "Male",
     "lightsaber_color": "Green"
+    , "children": [{ "id": "2000" }, { "id": "2001" }]
   },
   {
     "id": "1020",
@@ -187,6 +207,7 @@ export const items = [
     "alignment": "Neutral",
     "sex": "Male",
     "lightsaber_color": "None"
+    , "children": [{ "id": "2000" }, { "id": "2001" }]
   },
   {
     "id": "1021",
@@ -196,6 +217,7 @@ export const items = [
     "alignment": "Light Side",
     "sex": "Male",
     "lightsaber_color": "None"
+    , "children": [{ "id": "2000" }, { "id": "2001" }]
   },
   {
     "id": "1022",
@@ -205,6 +227,7 @@ export const items = [
     "alignment": "Light Side",
     "sex": "Male",
     "lightsaber_color": "None"
+    , "children": [{ "id": "2000" }, { "id": "2001" }]
   },
   {
     "id": "1023",
@@ -214,6 +237,7 @@ export const items = [
     "alignment": "Light Side",
     "sex": "Female",
     "lightsaber_color": "Blue"
+    , "children": [{ "id": "2000" }, { "id": "2001" }]
   },
   {
     "id": "1024",
@@ -223,6 +247,7 @@ export const items = [
     "alignment": "Light Side",
     "sex": "Male",
     "lightsaber_color": "None"
+    , "children": [{ "id": "2000" }, { "id": "2001" }]
   },
   {
     "id": "1025",
@@ -232,6 +257,7 @@ export const items = [
     "alignment": "Light Side",
     "sex": "Female",
     "lightsaber_color": "Blue"
+    , "children": [{ "id": "2000" }, { "id": "2001" }]
   },
   {
     "id": "1026",
@@ -241,6 +267,7 @@ export const items = [
     "alignment": "Dark Side",
     "sex": "Male",
     "lightsaber_color": "Red"
+    , "children": [{ "id": "2000" }, { "id": "2001" }]
   },
   {
     "id": "1027",
@@ -250,6 +277,7 @@ export const items = [
     "alignment": "Dark Side",
     "sex": "Female",
     "lightsaber_color": "None"
+    , "children": [{ "id": "2000" }, { "id": "2001" }]
   },
   {
     "id": "1028",
@@ -259,6 +287,7 @@ export const items = [
     "alignment": "Dark Side",
     "sex": "Male",
     "lightsaber_color": "None"
+    , "children": [{ "id": "2000" }, { "id": "2001" }]
   },
   {
     "id": "1029",
@@ -268,6 +297,7 @@ export const items = [
     "alignment": "Neutral",
     "sex": "Male",
     "lightsaber_color": "None"
+    , "children": [{ "id": "2000" }, { "id": "2001" }]
   },
   {
     "id": "1030",
@@ -277,6 +307,7 @@ export const items = [
     "alignment": "Neutral",
     "sex": "Female",
     "lightsaber_color": "None"
+    , "children": [{ "id": "2000" }, { "id": "2001" }]
   },
   {
     "id": "1031",
@@ -286,6 +317,7 @@ export const items = [
     "alignment": "Light Side",
     "sex": "Male",
     "lightsaber_color": "Green"
+    , "children": [{ "id": "2000" }, { "id": "2001" }]
   },
   {
     "id": "1032",
@@ -295,6 +327,7 @@ export const items = [
     "alignment": "Light Side",
     "sex": "Female",
     "lightsaber_color": "Blue"
+    , "children": [{ "id": "2000" }, { "id": "2001" }]
   },
   {
     "id": "1033",
@@ -304,6 +337,7 @@ export const items = [
     "alignment": "Light Side",
     "sex": "Male",
     "lightsaber_color": "Blue"
+    , "children": [{ "id": "2000" }, { "id": "2001" }]
   },
   {
     "id": "1034",
@@ -313,6 +347,7 @@ export const items = [
     "alignment": "Light Side",
     "sex": "Female",
     "lightsaber_color": "Blue"
+    , "children": [{ "id": "2000" }, { "id": "2001" }]
   },
   {
     "id": "1035",
@@ -322,6 +357,7 @@ export const items = [
     "alignment": "Dark Side",
     "sex": "Female",
     "lightsaber_color": "Red"
+    , "children": [{ "id": "2000" }, { "id": "2001" }]
   },
   {
     "id": "1036",
@@ -331,6 +367,7 @@ export const items = [
     "alignment": "Light Side",
     "sex": "Male",
     "lightsaber_color": "Blue"
+    , "children": [{ "id": "2000" }, { "id": "2001" }]
   },
   {
     "id": "1037",
@@ -340,6 +377,7 @@ export const items = [
     "alignment": "Neutral",
     "sex": "Male",
     "lightsaber_color": "None"
+    , "children": [{ "id": "2000" }, { "id": "2001" }]
   },
   {
     "id": "1038",
@@ -349,6 +387,7 @@ export const items = [
     "alignment": "Light Side",
     "sex": "Male",
     "lightsaber_color": "None"
+    , "children": [{ "id": "2000" }, { "id": "2001" }]
   },
   {
     "id": "1039",
@@ -358,6 +397,7 @@ export const items = [
     "alignment": "Neutral",
     "sex": "Male",
     "lightsaber_color": "None"
+    , "children": [{ "id": "2000" }, { "id": "2001" }]
   },
   {
     "id": "1040",
@@ -367,6 +407,7 @@ export const items = [
     "alignment": "Light Side",
     "sex": "Male",
     "lightsaber_color": "None"
+    , "children": [{ "id": "2000" }, { "id": "2001" }]
   },
   {
     "id": "1041",
@@ -376,6 +417,7 @@ export const items = [
     "alignment": "Neutral",
     "sex": "Male",
     "lightsaber_color": "None"
+    , "children": [{ "id": "2000" }, { "id": "2001" }]
   },
   {
     "id": "1042",
@@ -385,6 +427,7 @@ export const items = [
     "alignment": "Neutral",
     "sex": "Male",
     "lightsaber_color": "None"
+    , "children": [{ "id": "2000" }, { "id": "2001" }]
   },
   {
     "id": "1043",
@@ -394,6 +437,7 @@ export const items = [
     "alignment": "Neutral",
     "sex": "Male",
     "lightsaber_color": "None"
+    , "children": [{ "id": "2000" }, { "id": "2001" }]
   },
   {
     "id": "1044",
@@ -403,6 +447,7 @@ export const items = [
     "alignment": "Neutral",
     "sex": "Male",
     "lightsaber_color": "None"
+    , "children": [{ "id": "2000" }, { "id": "2001" }]
   },
   {
     "id": "1045",
@@ -412,6 +457,7 @@ export const items = [
     "alignment": "Light Side",
     "sex": "N/A",
     "lightsaber_color": "None"
+    , "children": [{ "id": "2000" }, { "id": "2001" }]
   },
   {
     "id": "1046",
@@ -421,6 +467,7 @@ export const items = [
     "alignment": "Light Side",
     "sex": "Female",
     "lightsaber_color": "None"
+    , "children": [{ "id": "2000" }, { "id": "2001" }]
   },
   {
     "id": "1047",
@@ -430,6 +477,7 @@ export const items = [
     "alignment": "Light Side",
     "sex": "Male",
     "lightsaber_color": "None"
+    , "children": [{ "id": "2000" }, { "id": "2001" }]
   },
   {
     "id": "1048",
@@ -439,6 +487,7 @@ export const items = [
     "alignment": "Light Side",
     "sex": "Female",
     "lightsaber_color": "None"
+    , "children": [{ "id": "2000" }, { "id": "2001" }]
   },
   {
     "id": "1049",
@@ -448,6 +497,7 @@ export const items = [
     "alignment": "Dark Side",
     "sex": "Male",
     "lightsaber_color": "None"
+    , "children": [{ "id": "2000" }, { "id": "2001" }]
   },
   {
     "id": "1050",
@@ -457,6 +507,7 @@ export const items = [
     "alignment": "Dark Side",
     "sex": "Male",
     "lightsaber_color": "None"
+    , "children": [{ "id": "2000" }, { "id": "2001" }]
   },
   {
     "id": "1051",
@@ -466,6 +517,7 @@ export const items = [
     "alignment": "Dark Side",
     "sex": "Female",
     "lightsaber_color": "Red"
+    , "children": [{ "id": "2000" }, { "id": "2001" }]
   },
   {
     "id": "1052",
@@ -475,6 +527,7 @@ export const items = [
     "alignment": "Light Side",
     "sex": "Male",
     "lightsaber_color": "None"
+    , "children": [{ "id": "2000" }, { "id": "2001" }]
   },
   {
     "id": "1053",
@@ -484,6 +537,7 @@ export const items = [
     "alignment": "Neutral",
     "sex": "Male",
     "lightsaber_color": "None"
+    , "children": [{ "id": "2000" }, { "id": "2001" }]
   },
   {
     "id": "1054",
@@ -493,6 +547,7 @@ export const items = [
     "alignment": "Light Side",
     "sex": "Female",
     "lightsaber_color": "None"
+    , "children": [{ "id": "2000" }, { "id": "2001" }]
   },
   {
     "id": "1055",
@@ -502,6 +557,7 @@ export const items = [
     "alignment": "Light Side",
     "sex": "Female",
     "lightsaber_color": "None"
+    , "children": [{ "id": "2000" }, { "id": "2001" }]
   },
   {
     "id": "1056",
@@ -511,6 +567,7 @@ export const items = [
     "alignment": "Light Side",
     "sex": "Male",
     "lightsaber_color": "None"
+    , "children": [{ "id": "2000" }, { "id": "2001" }]
   },
   {
     "id": "1057",
@@ -520,6 +577,7 @@ export const items = [
     "alignment": "Light Side",
     "sex": "Female",
     "lightsaber_color": "None"
+    , "children": [{ "id": "2000" }, { "id": "2001" }]
   },
   {
     "id": "1058",
@@ -529,6 +587,7 @@ export const items = [
     "alignment": "Light Side",
     "sex": "Male",
     "lightsaber_color": "Blue"
+    , "children": [{ "id": "2000" }, { "id": "2001" }]
   },
   {
     "id": "1059",
@@ -538,6 +597,7 @@ export const items = [
     "alignment": "Neutral",
     "sex": "Male",
     "lightsaber_color": "None"
+    , "children": [{ "id": "2000" }, { "id": "2001" }]
   },
   {
     "id": "1060",
@@ -547,6 +607,7 @@ export const items = [
     "alignment": "Neutral",
     "sex": "Male",
     "lightsaber_color": "None"
+    , "children": [{ "id": "2000" }, { "id": "2001" }]
   },
   {
     "id": "1061",
@@ -556,6 +617,7 @@ export const items = [
     "alignment": "Neutral",
     "sex": "N/A",
     "lightsaber_color": "None"
+    , "children": [{ "id": "2000" }, { "id": "2001" }]
   },
   {
     "id": "1062",
@@ -565,6 +627,7 @@ export const items = [
     "alignment": "Dark Side",
     "sex": "Male",
     "lightsaber_color": "None"
+    , "children": [{ "id": "2000" }, { "id": "2001" }]
   },
   {
     "id": "1063",
@@ -574,6 +637,7 @@ export const items = [
     "alignment": "Neutral",
     "sex": "Male",
     "lightsaber_color": "None"
+    , "children": [{ "id": "2000" }, { "id": "2001" }]
   },
   {
     "id": "1064",
@@ -583,6 +647,7 @@ export const items = [
     "alignment": "Dark Side",
     "sex": "Male",
     "lightsaber_color": "None"
+    , "children": [{ "id": "2000" }, { "id": "2001" }]
   },
   {
     "id": "1065",
@@ -592,6 +657,7 @@ export const items = [
     "alignment": "Light Side",
     "sex": "Female",
     "lightsaber_color": "None"
+    , "children": [{ "id": "2000" }, { "id": "2001" }]
   },
   {
     "id": "1066",
@@ -601,6 +667,7 @@ export const items = [
     "alignment": "Dark Side",
     "sex": "Male",
     "lightsaber_color": "None"
+    , "children": [{ "id": "2000" }, { "id": "2001" }]
   },
   {
     "id": "1067",
@@ -610,6 +677,7 @@ export const items = [
     "alignment": "Dark Side",
     "sex": "Female",
     "lightsaber_color": "Purple"
+    , "children": [{ "id": "2000" }, { "id": "2001" }]
   },
   {
     "id": "1068",
@@ -619,6 +687,7 @@ export const items = [
     "alignment": "Dark Side",
     "sex": "Male",
     "lightsaber_color": "None"
+    , "children": [{ "id": "2000" }, { "id": "2001" }]
   },
   {
     "id": "1069",
@@ -628,6 +697,7 @@ export const items = [
     "alignment": "Light Side",
     "sex": "Female",
     "lightsaber_color": "White"
+    , "children": [{ "id": "2000" }, { "id": "2001" }]
   },
   {
     "id": "1070",
@@ -637,6 +707,7 @@ export const items = [
     "alignment": "Neutral",
     "sex": "Male",
     "lightsaber_color": "None"
+    , "children": [{ "id": "2000" }, { "id": "2001" }]
   },
   {
     "id": "1071",
@@ -646,6 +717,7 @@ export const items = [
     "alignment": "Light Side",
     "sex": "Male",
     "lightsaber_color": "None"
+    , "children": [{ "id": "2000" }, { "id": "2001" }]
   },
   {
     "id": "1072",
@@ -655,6 +727,7 @@ export const items = [
     "alignment": "Light Side",
     "sex": "Male",
     "lightsaber_color": "None"
+    , "children": [{ "id": "2000" }, { "id": "2001" }]
   },
   {
     "id": "1073",
@@ -664,6 +737,7 @@ export const items = [
     "alignment": "Dark Side",
     "sex": "Male",
     "lightsaber_color": "None"
+    , "children": [{ "id": "2000" }, { "id": "2001" }]
   },
   {
     "id": "1074",
@@ -673,6 +747,7 @@ export const items = [
     "alignment": "Dark Side",
     "sex": "Male",
     "lightsaber_color": "None"
+    , "children": [{ "id": "2000" }, { "id": "2001" }]
   },
   {
     "id": "1075",
@@ -682,5 +757,6 @@ export const items = [
     "alignment": "Light Side",
     "sex": "Female",
     "lightsaber_color": "None"
+    , "children": [{ "id": "2000" }, { "id": "2001" }]
   }
-]
+];

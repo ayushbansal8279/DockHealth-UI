@@ -4,41 +4,28 @@ import Cell from "../Cell/Cell"
 import { definition } from "views/TasksView/definition"
 import useMergedRef from "views/TasksView/List/hooks/useMergedRef";
 
-function Item({ data: { isLeaf, name, nestingLevel, record }, isOpen, style, setOpen }: any, ref: ForwardedRef<HTMLLIElement>) {
-  const [ element, merger ] = useMergedRef<HTMLLIElement>(null, ref);
+export interface Props {
 
-  useEffect(() => {
-    requestAnimationFrame(() => {
-      element.current?.classList.add(cx.visible)
-    })
-  }, [])
+}
 
-  const {
-    position,
-    left,
-    top
-  } = style
+function Item({ definition, record, level }: any, ref: ForwardedRef<HTMLLIElement>) {
   return (
-    <li
-      ref={merger}
-      className={cx.Item}
-      style={{ position, top, left }}
-    >
+    <>
       {Object.entries(record).map(([field, value]) => {
-        const descriptor = (definition as any)[field];
+        const descriptor = definition[field];
         if (descriptor) {
-          const { order } = (definition as any)[field];
+          // const { order } = definition[field];
           return (
             <Cell
               key={`${record.id}/${field}`}
               // order={order}
             >
-              {value as any}
+              {descriptor.value ? descriptor.value(value) : value}
             </Cell>
           );
         }
       })}
-    </li>
+    </>
   )
 }
 
