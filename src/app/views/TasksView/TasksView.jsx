@@ -115,21 +115,29 @@ const convertTask = (task) => {
 }
 
 const fetcher = (i) => {
+  const currentAccessToken = sessionStorage.getItem('accessToken');
+  const currentOrganizationIdentifier = sessionStorage.getItem(
+    'currentOrganizationIdentifier',
+  );
   return fetch(`https://api-dev.dockhealth.app/heydoc-services/task/findListTasksByTaskGroup/73baa05a-a77d-11eb-9858-0e3d2d599b61/7f2c0488-a77d-11eb-9858-0e3d2d599b61?status=INCOMPLETE&startPosition=${30 * i}&endPosition=0`, {
     method: "GET",
     headers: {
-      "Authorization": "Bearer eyJraWQiOiJOcENrVDNtS1wvOXlwNUFUTFRzaVR2WkNFZ0JSNDBjbVB2T3dSUTY5eEFEVT0iLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiIyMzg5ZmI1OC05ZTdhLTQ4NmYtODg3My0zYjMyZjY1NmFiYmUiLCJkZXZpY2Vfa2V5IjoidXMtZWFzdC0xXzk1MjlhYTBjLTI4YjMtNDY0ZS04MjE5LTJmMTBmZmRiMDQwNCIsInRva2VuX3VzZSI6ImFjY2VzcyIsInNjb3BlIjoiYXdzLmNvZ25pdG8uc2lnbmluLnVzZXIuYWRtaW4iLCJhdXRoX3RpbWUiOjE2OTM4MzY0NzEsImlzcyI6Imh0dHBzOlwvXC9jb2duaXRvLWlkcC51cy1lYXN0LTEuYW1hem9uYXdzLmNvbVwvdXMtZWFzdC0xX1hQbTZnZTFBbCIsImV4cCI6MTY5NTg0NDc4NSwiaWF0IjoxNjk1ODAxNTg1LCJqdGkiOiI1NDlkY2JlMy0zNjhmLTRkMTAtYjdlMy1kOWM5YTk0MTNlYTMiLCJjbGllbnRfaWQiOiI2dG05OW5yamM1Z3RuNW5oc29scmE4YzNxbiIsInVzZXJuYW1lIjoibWF0ZXVzei5waWV0cnpha0BodGRldmVsb3BlcnMuY29tIn0.awVP9UwFLI2WDSQPoLnyRz69X4TFq1NRZzC4mruVjkW_Fq3fO8hRhLoXX-2ZOVboo3vOv5q4YFnNCJX74DZuTqb8Tafg1gU0uAs1mcYt43snrNA_clQK4v-cuSDPdyVntuaO3NMLAWM8E87uKb5ELEQ7elDpl3A3DsrNuHloDMun1KclkRKmTGs71w-NfnsOngp3cTujbKWZ5wmeGFXSWBaRVlPcGIi5a7pDYa7nx2eFwGUL7tABWsqYznqzCOj2zyGv4d1oGLWNuArWPB8tCW_xHQZxNhwv2g0RUokp1RiS7m9vZl48gqZbCgFUXgSrbE7PTHMjwNjY-rIB-yiVgA"
-    }
+      "Authorization": `Bearer ${currentAccessToken}`,
+      "Currentorganizationidentifier": currentOrganizationIdentifier    }
   })
     .then(response => response.json())
 }
 
 const fetchSubtasks = (taskIdentifier) => {
+  const currentAccessToken = sessionStorage.getItem('accessToken');
+  const currentOrganizationIdentifier = sessionStorage.getItem(
+    'currentOrganizationIdentifier',
+  );
   return fetch(`https://api-dev.dockhealth.app/heydoc-services/task/${taskIdentifier}`, {
     method: "GET",
     headers: {
-      "Authorization": "Bearer eyJraWQiOiJOcENrVDNtS1wvOXlwNUFUTFRzaVR2WkNFZ0JSNDBjbVB2T3dSUTY5eEFEVT0iLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiIyMzg5ZmI1OC05ZTdhLTQ4NmYtODg3My0zYjMyZjY1NmFiYmUiLCJkZXZpY2Vfa2V5IjoidXMtZWFzdC0xXzk1MjlhYTBjLTI4YjMtNDY0ZS04MjE5LTJmMTBmZmRiMDQwNCIsInRva2VuX3VzZSI6ImFjY2VzcyIsInNjb3BlIjoiYXdzLmNvZ25pdG8uc2lnbmluLnVzZXIuYWRtaW4iLCJhdXRoX3RpbWUiOjE2OTM4MzY0NzEsImlzcyI6Imh0dHBzOlwvXC9jb2duaXRvLWlkcC51cy1lYXN0LTEuYW1hem9uYXdzLmNvbVwvdXMtZWFzdC0xX1hQbTZnZTFBbCIsImV4cCI6MTY5NTg0NDc4NSwiaWF0IjoxNjk1ODAxNTg1LCJqdGkiOiI1NDlkY2JlMy0zNjhmLTRkMTAtYjdlMy1kOWM5YTk0MTNlYTMiLCJjbGllbnRfaWQiOiI2dG05OW5yamM1Z3RuNW5oc29scmE4YzNxbiIsInVzZXJuYW1lIjoibWF0ZXVzei5waWV0cnpha0BodGRldmVsb3BlcnMuY29tIn0.awVP9UwFLI2WDSQPoLnyRz69X4TFq1NRZzC4mruVjkW_Fq3fO8hRhLoXX-2ZOVboo3vOv5q4YFnNCJX74DZuTqb8Tafg1gU0uAs1mcYt43snrNA_clQK4v-cuSDPdyVntuaO3NMLAWM8E87uKb5ELEQ7elDpl3A3DsrNuHloDMun1KclkRKmTGs71w-NfnsOngp3cTujbKWZ5wmeGFXSWBaRVlPcGIi5a7pDYa7nx2eFwGUL7tABWsqYznqzCOj2zyGv4d1oGLWNuArWPB8tCW_xHQZxNhwv2g0RUokp1RiS7m9vZl48gqZbCgFUXgSrbE7PTHMjwNjY-rIB-yiVgA",
-      "Currentorganizationidentifier": "160f8db5-40c2-11ea-a4e8-124feabd863a"
+      "Authorization": `Bearer ${currentAccessToken}`,
+      "Currentorganizationidentifier": currentOrganizationIdentifier
     }
   })
     .then(response => response.json())
