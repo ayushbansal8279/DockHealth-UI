@@ -67,7 +67,12 @@ function updateBundleInState(bundleIdentifier, updatedData, state) {
     [bundleIdentifier]: {
       ...state.tasksMap[bundleIdentifier],
       ...updatedData,
-      tasks: updatedData?.tasks.map((task) => task.identifier),
+      tasks: [
+        ...new Set([
+          ...(state.tasksMap[bundleIdentifier]?.tasks || []),
+          ...updatedData?.tasks.map((task) => task.identifier),
+        ]),
+      ],
     },
   };
 
@@ -602,7 +607,7 @@ const ListDetailsReducer = (state = initialState, action) => {
           bundleIdentifier,
           {
             ...bundle,
-            tasks: [...(bundle.tasks || []), addedTask],
+            tasks: [addedTask],
           },
           state,
         );
