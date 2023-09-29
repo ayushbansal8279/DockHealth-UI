@@ -1,19 +1,19 @@
 import React, { useCallback, useEffect, useState, useContext } from 'react';
 import { useFormContext } from 'react-hook-form';
 // import { EditorState } from 'draft-js';
-import { useDispatch } from 'react-redux';
-import { partialUpdateTask } from 'actions/task-actions';
-import { updatePartialWorkflow } from 'actions/task-template-actions';
-import { TaskItemType } from 'helpers/task-helpers';
-import { showGlobalAlert } from 'alert/actions';
-import AlertMessages from 'alert/AlertMessages';
-import { formatMetaDataOutput } from 'components/task-drawer/CustomFieldsSection/helpers';
-import CustomTextEditor from 'components/common/CustomTextEditor/CustomTextEditor';
+// import { useDispatch } from 'react-redux';
+// import { partialUpdateTask } from 'actions/task-actions';
+// import { updatePartialWorkflow } from 'actions/task-template-actions';
+// import { TaskItemType } from 'helpers/task-helpers';
+// import { showGlobalAlert } from 'alert/actions';
+// import AlertMessages from 'alert/AlertMessages';
+// import { formatMetaDataOutput } from 'components/task-drawer/CustomFieldsSection/helpers';
+// import CustomTextEditor from 'components/common/CustomTextEditor/CustomTextEditor';
 import { getAllProfiles, getProfileDetails } from 'api/profile-api';
-import TextInput from '../TextInput/TextInput';
-import { CustomTextEditorContainer } from './styled';
+// import TextInput from '../TextInput/TextInput';
+// import { CustomTextEditorContainer } from './styled';
 // import { createMentionEntities } from '../TextEditor/create-mention-entities';
-import CustomFieldErrorContext from './CustomFieldErrorContext';
+// import CustomFieldErrorContext from './CustomFieldErrorContext';
 import Autocomplete from '../Autocomplete/Autocomplete';
 
 const CustomFieldAutoComplete = React.forwardRef(
@@ -45,7 +45,6 @@ const CustomFieldAutoComplete = React.forwardRef(
       unregister,
     } = useFormContext();
 
-    console.log(`name from server: ${JSON.stringify(name)}`);
     // const value = watch(name);
 
     useEffect(() => {
@@ -60,9 +59,6 @@ const CustomFieldAutoComplete = React.forwardRef(
     useEffect(() => {
       getAllProfiles(relatedProfileType.identifier)
         .then((data) => {
-          console.log(`related profiles`);
-          console.log(data);
-
           setProfiles(
             data.map((profile) => ({
               ...profile,
