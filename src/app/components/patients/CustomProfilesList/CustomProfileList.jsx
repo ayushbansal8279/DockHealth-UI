@@ -19,6 +19,7 @@ import {
   // Checkbox,
   Stack,
 } from '@mui/material';
+import { getAllProfileTypes } from 'api/profile-type-api';
 import { getAllProfiles } from 'api/profile-api';
 import { getAllProfileFieldTypes } from 'api/profile-type-field-api';
 import { showGlobalErrorAlert } from 'alert/actions';
@@ -26,8 +27,8 @@ import LayoutHeader from 'components/template/LayoutHeader/LayoutHeader';
 import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
 import MoreVert from '@mui/icons-material/MoreVert';
 import ViewLayout from 'components/template/ViewLayout/ViewLayout';
-import { Add as AddIcon } from '@mui/icons-material';
-import AdornedButton from 'components/common/AdornedButton/AdornedButton';
+// import { Add as AddIcon } from '@mui/icons-material';
+// import AdornedButton from 'components/common/AdornedButton/AdornedButton';
 import ProfileDrawer from 'components/patients/CustomProfilesList/ProfileDrawer';
 import SearchInput from 'components/common/SearchInput/SearchInput';
 import Popover from 'ui-toolkit/Element/Popover';
@@ -37,14 +38,13 @@ import CustomizeIcon from 'img/customize-icon.svg';
 import { CustomizeImg } from 'components/patients/CustomizeToolbarButton/styled';
 import Checkbox from 'components/common/Checkbox/Checkbox';
 import AddButton from 'components/common/AddButton/AddButton';
-import Button from "components/common/Button/Button";
+import Button from 'components/common/Button/Button';
 
 const CustomProfileList = () => {
   const dispatch = useDispatch();
   const history = useHistory();
   const {
     groupIdentifier: groupIdentifierUrlParameter,
-    name,
     profileTypeIdentifier,
   } = useParams();
   const groupIdentifier = getUserGroupIdentifierByUrlParameter(
@@ -60,7 +60,7 @@ const CustomProfileList = () => {
 
   const handleRecordClick = (event, { id }) => {
     // setOpen(id);
-    history.push(`/custom-profiles/${name}/${profileTypeIdentifier}/${id}`);
+    history.push(`/custom-profiles/${profileTypeIdentifier}/${id}`);
   };
 
   const [open, setOpen] = useState(null);
@@ -70,14 +70,30 @@ const CustomProfileList = () => {
   };
 
   const [profileTypes, setProfileTypes] = useState([]);
+  const [profileTypeFields, setProfileTypeFields] = useState([]);
+  const [currentProfileType, setCurrentProfileType] = useState('');
   const [filters, setFilters] = useState([]);
   const [profiles, setProfiles] = useState([]);
   const [searchPhrase, setSearchPhrase] = useState('');
 
   const fetchProfileTypes = useCallback(() => {
-    getAllProfileFieldTypes(profileTypeIdentifier)
+    getAllProfileTypes()
       .then((data) => {
         setProfileTypes(data);
+        const selectedProfileType = data.find(
+          (profileType) => profileType.identifier === profileTypeIdentifier,
+        );
+        setCurrentProfileType(selectedProfileType);
+      })
+      .catch(() => {
+        dispatch(showGlobalErrorAlert());
+      });
+  }, [dispatch, profileTypeIdentifier]);
+
+  const fetchProfileTypeFields = useCallback(() => {
+    getAllProfileFieldTypes(profileTypeIdentifier)
+      .then((data) => {
+        setProfileTypeFields(data);
         setFilters(data.map((profileType) => profileType.identifier));
       })
       .catch(() => {
@@ -97,6 +113,7 @@ const CustomProfileList = () => {
 
   useEffect(() => {
     fetchProfileTypes();
+    fetchProfileTypeFields();
     fetchProfiles();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -139,15 +156,18 @@ const CustomProfileList = () => {
                 <MoreVert color="primary" />
               </OptionsMenu>
             </Box>
-            <LayoutHeader.Title title={name} description="Some description" />
+            <LayoutHeader.Title
+              title={currentProfileType?.name}
+              description={currentProfileType?.description}
+            />
           </LayoutHeader>
         }
       >
         <ProfileDrawer
-          title={name}
+          title={currentProfileType?.name}
           open={open}
           profileTypeIdentifier={profileTypeIdentifier}
-          types={profileTypes}
+          types={profileTypeFields}
           onClose={handleClose}
         />
         <Stack
@@ -197,7 +217,7 @@ const CustomProfileList = () => {
               >
                 <strong>Custom Columns</strong>
                 <FormGroup>
-                  {profileTypes.map((field) => {
+                  {profileTypeFields.map((field) => {
                     return (
                       <MenuItem
                         key={field.identifier}
@@ -219,7 +239,7 @@ const CustomProfileList = () => {
           <Box display="flex" alignItems="center">
             <Box m={1} />
             <AddButton onClick={handleProfileAddClick}>
-              ADD A {name.toUpperCase()}
+              ADD A {currentProfileType?.name?.toUpperCase()}
             </AddButton>
           </Box>
         </Stack>
@@ -235,25 +255,34 @@ const CustomProfileList = () => {
           )}
           onRecordClick={handleRecordClick}
         >
-          {profileTypes
-            .filter((profileType) => filters.includes(profileType.identifier))
+          {profileTypeFields
+            .filter((profileTypeField) =>
+              filters.includes(profileTypeField.identifier),
+            )
             .map((field) => (
               <Data
                 key={field.identifier}
                 name={field.name}
                 value={(data) => {
                   const record = data.fields?.find(
-                    ({ profileTypeField }) =>
-                      field.identifier === profileTypeField.identifier,
+                    (profileField) =>
+                      field.identifier ===
+                      profileField.profileTypeFieldIdentifier,
                   );
 
                   if (record) {
                     switch (field.fieldType) {
                       case 'TEXT': {
-                        return record.values?.[0].value;
+                        return (
+                          record.values?.[0] || record.values?.[0]?.value || ''
+                        );
                       }
                       case 'PICK_LIST': {
-                        return record.values?.[0].customFieldOption?.name;
+                        return (
+                          record.values?.[0] ||
+                          record.values?.[0]?.customFieldOption?.name ||
+                          ''
+                        );
                       }
                       default: {
                         return '';

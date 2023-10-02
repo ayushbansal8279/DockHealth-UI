@@ -136,7 +136,7 @@ const Routes = () => {
           )}
         />
         <SecuredRoute
-          path="/core/custom-profiles/:name/:profileIdentifier"
+          path="/core/custom-profiles/:profileIdentifier"
           render={() => (
             <TemplateCoreSubscriptionPlan
               childRoutes={TEMPLATE_CORE_SUBSCRIPTION_PLAN_ROUTES}

@@ -155,8 +155,9 @@ const ProfileDrawer = ({
             >
               {types?.map((field) => {
                 const record = profile?.fields?.find(
-                  ({ profileTypeField }) =>
-                    field.identifier === profileTypeField.identifier,
+                  (profileField) =>
+                    field.identifier ===
+                    profileField.profileTypeFieldIdentifier,
                 );
 
                 const render = () => {
@@ -168,7 +169,11 @@ const ProfileDrawer = ({
                           name={field.identifier}
                           readOnly={!editMode}
                           label={field.name}
-                          defaultValue={record ? record.values[0]?.value : ''}
+                          defaultValue={
+                            record
+                              ? record.values?.[0] || record.values?.[0]?.value
+                              : ''
+                          }
                           placeholder={field.placeholder}
                           {...register(field.identifier)}
                         />
@@ -182,7 +187,8 @@ const ProfileDrawer = ({
                           label={field.name}
                           defaultValue={
                             record
-                              ? record.values[0]?.customFieldOption.name
+                              ? record.values?.[0] ||
+                                record.values?.[0]?.customFieldOption.name
                               : ''
                           }
                           options={field.options.map((option) => ({

@@ -29,10 +29,8 @@ const CustomProfileDetailsHeader = ({
 
   const history = useHistory();
   const goBack = useCallback(() => {
-    history.push(
-      `/custom-profiles/${profileTypeName}/${profileTypeIdentifier}`,
-    );
-  }, [history, profileTypeIdentifier, profileTypeName]);
+    history.push(`/custom-profiles/${profileTypeIdentifier}`);
+  }, [history, profileTypeIdentifier]);
 
   return (
     <ProfileDetailsContainer>
