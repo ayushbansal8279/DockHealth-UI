@@ -19,47 +19,46 @@ import {
   Redirect,
   useParams,
 } from 'react-router-dom';
-import * as PatientDetailsActions from 'actions/patient-details-actions';
+// import * as PatientDetailsActions from 'actions/patient-details-actions';
 import { initializePusher } from 'helpers/pusher-instance';
-import { isFetchingPatientsListsSelector } from 'selectors/patients-selectors';
-import {
-  availableFiltersInInMegaFilterSelector,
-  selectedFiltersInMegaFilterSelector,
-  addQuickFilterOptionSelector,
-  quickFiltersSelector,
-  selectedQuickFilterSelector,
-} from 'selectors/mega-filter-selectors';
+// import { isFetchingPatientsListsSelector } from 'selectors/patients-selectors';
+// import {
+//   availableFiltersInInMegaFilterSelector,
+//   selectedFiltersInMegaFilterSelector,
+//   addQuickFilterOptionSelector,
+//   quickFiltersSelector,
+//   selectedQuickFilterSelector,
+// } from 'selectors/mega-filter-selectors';
 import {
   userProfileSelector,
   selectedUserOrganizationSelector,
 } from 'selectors/user-selectors';
-import { setPatientTaskSearch } from 'sagas/patient-details-saga';
-import { onSearchChanged } from 'helpers/ga-event-helper';
-import { RouteWrapper } from 'routing/components';
-import MegaFilter from 'components/tasklist/MegaFilter/MegaFilter';
+// import { setPatientTaskSearch } from 'sagas/patient-details-saga';
+// import { onSearchChanged } from 'helpers/ga-event-helper';
+// import { RouteWrapper } from 'routing/components';
+// import MegaFilter from 'components/tasklist/MegaFilter/MegaFilter';
 import * as TaskActions from 'actions/task-actions';
 import LayoutHeader from 'components/template/LayoutHeader/LayoutHeader';
-import HeaderSearch from 'components/template/HeaderSearch/HeaderSearch';
-import { getPatientFilterOptions } from 'actions/patient-details-actions';
-import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
-import { capitalize } from 'helpers/capitalize';
+// import HeaderSearch from 'components/template/HeaderSearch/HeaderSearch';
+// import { getPatientFilterOptions } from 'actions/patient-details-actions';
+// import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
+// import { capitalize } from 'helpers/capitalize';
 import { ColumnsConfigProvider } from 'context-api/columns-config-context';
-import { getPatientWidgets } from 'api/patient-api';
 import HorizontallyScrolledViewLayout from 'components/template/HorizontallyScrolledViewLayout/HorizontallyScrolledViewLayout';
 import StickyContainer from 'components/common/HorizontalScroll/StickyContainer';
-import {
-  showAddQuickFilterOption,
-  createQuickFilter,
-  updateQuickFilter,
-  deleteQuickFilter,
-  getQuickFilters,
-  selectQuickFilter,
-} from 'actions/mega-filter-actions';
+// import {
+//   showAddQuickFilterOption,
+//   createQuickFilter,
+//   updateQuickFilter,
+//   deleteQuickFilter,
+//   getQuickFilters,
+//   selectQuickFilter,
+// } from 'actions/mega-filter-actions';
 // import ProfileTasksList from 'views/custom-profile-details/ProfileTasksList/ProfileTasksList';
 import ProfileNotes from 'views/custom-profile-details/ProfileNotes/ProfileNotes';
-import ProfileTasksListView from 'views/custom-profile-details/ProfileTasksList/PatientTasksList';
+import ProfileTasksListView from 'views/custom-profile-details/ProfileTasksList/ProfileTasksList';
 import ProfileDetailsHeader from 'views/custom-profile-details/ProfileDetailsHeader/ProfileDetailsHeader';
-import ProfileWidget from 'views/custom-profile-details/ProfileWidget/ProfileWidget';
+// import ProfileWidget from 'views/custom-profile-details/ProfileWidget/ProfileWidget';
 // import { DEFAULT_TAB, DEFAULT_TABS_CONFIG, TABS_CONFIG } from './helpers';
 import {
   ProfileDetailsContainer,
@@ -68,23 +67,23 @@ import {
 } from './styled';
 
 const ProfileDetailsView = () => {
-  const { name, profileTypeIdentifier, profileIdentifier } = useParams();
+  const { profileTypeIdentifier, profileIdentifier } = useParams();
   const { patientIdentifier } = useParams();
-  const [searchValue, setSearchValue] = useState('');
+  // const [searchValue, setSearchValue] = useState('');
   const dispatch = useDispatch();
   const history = useHistory();
   const { path, url } = useRouteMatch();
   const { pathname } = useLocation();
   const currentUser = useSelector(userProfileSelector);
   const { userIdentifier: currentUserIdentifier } = currentUser || {};
-  const isFetchingLists = useSelector(isFetchingPatientsListsSelector);
-  const filters = useSelector(availableFiltersInInMegaFilterSelector);
-  const selectedFilters = useSelector(selectedFiltersInMegaFilterSelector);
+  // const isFetchingLists = useSelector(isFetchingPatientsListsSelector);
+  // const filters = useSelector(availableFiltersInInMegaFilterSelector);
+  // const selectedFilters = useSelector(selectedFiltersInMegaFilterSelector);
   const pusher = useRef(initializePusher());
   // const customerTypeLabel = getCustomerTypeLabel(currentUser);
-  const quickFiltersList = useSelector(quickFiltersSelector);
-  const addQuickFilterOption = useSelector(addQuickFilterOptionSelector);
-  const selectedQuickFilter = useSelector(selectedQuickFilterSelector);
+  // const quickFiltersList = useSelector(quickFiltersSelector);
+  // const addQuickFilterOption = useSelector(addQuickFilterOptionSelector);
+  // const selectedQuickFilter = useSelector(selectedQuickFilterSelector);
   const [currentTab, setCurrentTab] = useState(0);
   const handleTabChange = (_, value) => {
     setCurrentTab(value);
@@ -114,14 +113,14 @@ const ProfileDetailsView = () => {
     [],
   );
 
-  useEffect(() => {
-    dispatch(PatientDetailsActions.initializePatientState(patientIdentifier));
+  // useEffect(() => {
+  //   dispatch(PatientDetailsActions.initializePatientState(patientIdentifier));
 
-    return () => {
-      dispatch(PatientDetailsActions.clearPatientState());
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [patientIdentifier]);
+  //   return () => {
+  //     dispatch(PatientDetailsActions.clearPatientState());
+  //   };
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [patientIdentifier]);
 
   // useEffect(() => {
   //   (async () => {
@@ -227,85 +226,85 @@ const ProfileDetailsView = () => {
   // };
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const onSearchChangedWithDebounce = useCallback(
-    debounce((value) => {
-      dispatch(setPatientTaskSearch(value));
-      onSearchChanged();
-    }, 500),
-    [setPatientTaskSearch, onSearchChanged],
-  );
+  // const onSearchChangedWithDebounce = useCallback(
+  //   debounce((value) => {
+  //     dispatch(setPatientTaskSearch(value));
+  //     onSearchChanged();
+  //   }, 500),
+  //   [setPatientTaskSearch, onSearchChanged],
+  // );
 
-  const handleSearchValueChange = (newValue) => {
-    setSearchValue(newValue);
-    onSearchChangedWithDebounce(newValue);
-  };
+  // const handleSearchValueChange = (newValue) => {
+  //   setSearchValue(newValue);
+  //   onSearchChangedWithDebounce(newValue);
+  // };
 
-  const handleFilterChange = compose(
-    dispatch,
-    PatientDetailsActions.changePatientTasksFilters,
-  );
+  // const handleFilterChange = compose(
+  //   dispatch,
+  //   PatientDetailsActions.changePatientTasksFilters,
+  // );
 
-  const handleSelectQuickFilter = useCallback(
-    (id, filtersSetup) => {
-      dispatch(selectQuickFilter(id));
-      dispatch(PatientDetailsActions.changePatientTasksFilters(filtersSetup));
-    },
-    [dispatch],
-  );
+  // // const handleSelectQuickFilter = useCallback(
+  // //   (id, filtersSetup) => {
+  // //     dispatch(selectQuickFilter(id));
+  // //     dispatch(PatientDetailsActions.changePatientTasksFilters(filtersSetup));
+  // //   },
+  // //   [dispatch],
+  // // );
 
-  const handleSaveQuickFilter = useCallback(
-    () =>
-      dispatch(
-        updateQuickFilter(
-          selectedQuickFilter,
-          {
-            selectedOptions: selectedFilters,
-          },
-          { patientIdentifier },
-        ),
-      ),
-    [dispatch, patientIdentifier, selectedFilters, selectedQuickFilter],
-  );
+  // const handleSaveQuickFilter = useCallback(
+  //   () =>
+  //     dispatch(
+  //       updateQuickFilter(
+  //         selectedQuickFilter,
+  //         {
+  //           selectedOptions: selectedFilters,
+  //         },
+  //         { patientIdentifier },
+  //       ),
+  //     ),
+  //   [dispatch, patientIdentifier, selectedFilters, selectedQuickFilter],
+  // );
 
-  const handleSaveAsQuickFilter = useCallback(
-    () => dispatch(showAddQuickFilterOption()),
-    [dispatch],
-  );
+  // const handleSaveAsQuickFilter = useCallback(
+  //   () => dispatch(showAddQuickFilterOption()),
+  //   [dispatch],
+  // );
 
-  const wasChangedFilters = useMemo(
-    () =>
-      !equals(
-        selectedFilters,
-        quickFiltersList?.find(
-          (f) => f.quickFilterIdentifier === selectedQuickFilter,
-        )?.selectedOptions,
-      ),
-    [quickFiltersList, selectedFilters, selectedQuickFilter],
-  );
+  // const wasChangedFilters = useMemo(
+  //   () =>
+  //     !equals(
+  //       selectedFilters,
+  //       quickFiltersList?.find(
+  //         (f) => f.quickFilterIdentifier === selectedQuickFilter,
+  //       )?.selectedOptions,
+  //     ),
+  //   [quickFiltersList, selectedFilters, selectedQuickFilter],
+  // );
 
-  const handleQuickFilterCreate = useCallback(
-    (name) =>
-      dispatch(createQuickFilter(name, { patientIdentifier }, selectedFilters)),
-    [dispatch, patientIdentifier, selectedFilters],
-  );
+  // const handleQuickFilterCreate = useCallback(
+  //   (name) =>
+  //     dispatch(createQuickFilter(name, { patientIdentifier }, selectedFilters)),
+  //   [dispatch, patientIdentifier, selectedFilters],
+  // );
 
-  const handleQuickFilterUpdate = useCallback(
-    (quickFilterIdentifier, name) =>
-      dispatch(
-        updateQuickFilter(
-          quickFilterIdentifier,
-          { name },
-          { patientIdentifier },
-        ),
-      ),
-    [dispatch, patientIdentifier],
-  );
+  // const handleQuickFilterUpdate = useCallback(
+  //   (quickFilterIdentifier, name) =>
+  //     dispatch(
+  //       updateQuickFilter(
+  //         quickFilterIdentifier,
+  //         { name },
+  //         { patientIdentifier },
+  //       ),
+  //     ),
+  //   [dispatch, patientIdentifier],
+  // );
 
-  const handleQuickFilterDelete = useCallback(
-    (quickFilterIdentifier) =>
-      dispatch(deleteQuickFilter(quickFilterIdentifier)),
-    [dispatch],
-  );
+  // const handleQuickFilterDelete = useCallback(
+  //   (quickFilterIdentifier) =>
+  //     dispatch(deleteQuickFilter(quickFilterIdentifier)),
+  //   [dispatch],
+  // );
 
   return (
     <HorizontallyScrolledViewLayout
@@ -346,7 +345,7 @@ const ProfileDetailsView = () => {
       <ColumnsConfigProvider>
         <StickyContainer>
           <ProfileDetailsHeader
-            // onViewDetailsClick={handleDrawerOpen}
+          // onViewDetailsClick={handleDrawerOpen}
           />
           <ProfileDetailsTabsContainer>
             <Grid container>

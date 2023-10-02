@@ -274,10 +274,7 @@ const ProfileTasksListView = ({ profileIdentifier }) => {
         quickAddTask={quickAddTask}
         iconColorActive={iconColorActiveItem?.value}
       >
-        <EmptyListView
-          title={`This ${customerTypeLabel} has no tasks`}
-          description={`Add tasks for this ${customerTypeLabel} above.`}
-        />
+        <EmptyListView title="No tasks" description="Add tasks above." />
       </EmptyListViewWithQuickAddTask>
     );
   };
