@@ -1,0 +1,57 @@
+.List {
+  margin: 64px 32px 0 32px;
+  padding: 8px 16px;
+  background-color: gainsboro;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+}
+
+.Item {
+  margin: 0 32px;
+  padding: 2px 8px;
+  background-color: gainsboro;
+
+  & > div {
+    padding: 8px 16px;
+    background-color: ghostwhite;
+  }
+}
+
+.Subitem {
+  margin: 0 32px;
+  padding: 2px 8px;
+  background-color: gainsboro;
+
+  & > div {
+    margin-left: 32px;
+    padding: 8px 16px;
+    background-color: floralwhite;
+  }
+}
+
+.ListFooter {
+  margin: 0 32px 0 32px;
+  padding: 0 8px 6px 8px;
+  background-color: gainsboro;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+
+  & > div {
+    margin-top: -2px;
+    margin-bottom: 8px;
+    padding: 2px;
+    background-color: ghostwhite;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+  }
+}
+
+.LoadMore {
+  display: block;
+  text-align: center;
+  padding: 4px 8px;
+
+  & button:hover {
+    color: cornflowerblue !important;
+  }
+}

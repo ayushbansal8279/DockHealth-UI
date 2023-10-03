@@ -25,6 +25,7 @@ import AutoSizer from "react-virtualized-auto-sizer";
 import { FixedSizeTree } from "react-vtree";
 import List2 from "./List/List";
 import items from "./data.json";
+import Virtualized from "views/TasksView/Virtualized/Virtualized";
 
 const definition = {
   "id": {
@@ -212,10 +213,11 @@ export default function TasksView() {
         definition={taskDefinition  }
         items={tasks}
       />}
-      {/* <TreePresenter itemSize={40}/> */}
     </View>
   );
 }
+
+
 
 function View({ children }) {
   return (
@@ -224,6 +226,7 @@ function View({ children }) {
     </main>
   );
 }
+
 
 // const Context = createContext({
 //   cell: {
@@ -797,3 +800,18 @@ const TreePresenter = ({ itemSize }) => (
     )}
   </AutoSizer>
 );
+
+
+
+/*
+  const data = [
+    {
+
+    }
+  ]
+
+  Virtualized
+    View
+    Node
+
+ */
