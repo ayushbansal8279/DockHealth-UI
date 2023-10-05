@@ -19,7 +19,7 @@ import {
   FixedWidthButtonWrapper,
 } from '../styled';
 
-const InterruptEditModal = ({ closeModal, confirm }) => {
+const InterruptEditModal = ({ closeModal, confirm, profileTypeName = null }) => {
   const currentUser = useSelector(userProfileSelector);
   const customerTypeLabel = getCustomerTypeLabel(currentUser);
 
@@ -29,7 +29,7 @@ const InterruptEditModal = ({ closeModal, confirm }) => {
         <ModalIconContainer>
           <ModalMainIcon src={DownArrow} alt="Task" />
           <Typography variant="body1">
-            YOU HAVE UNSAVED CHANGES TO THE {customerTypeLabel.toUpperCase()}
+            YOU HAVE UNSAVED CHANGES TO THE {profileTypeName ?? customerTypeLabel.toUpperCase()}
             &apos;S PROFILE
           </Typography>
         </ModalIconContainer>

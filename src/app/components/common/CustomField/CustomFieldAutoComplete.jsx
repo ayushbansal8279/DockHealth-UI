@@ -58,7 +58,7 @@ const CustomFieldAutoComplete = React.forwardRef(
     const [profiles, setProfiles] = useState(null);
 
     useEffect(() => {
-      getAllProfiles(relatedProfileType.identifier)
+      getAllProfiles(relatedProfileType?.identifier)
         .then((data) => {
           console.log(`related profiles`);
           console.log(data);
@@ -82,7 +82,7 @@ const CustomFieldAutoComplete = React.forwardRef(
           console.error('error getting profile types');
           console.error(error);
         });
-    }, [relatedProfileType.identifier]);
+    }, [relatedProfileType?.identifier]);
 
     const error = errors?.[name]?.message;
 
