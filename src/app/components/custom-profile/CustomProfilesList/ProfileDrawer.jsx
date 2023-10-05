@@ -51,7 +51,7 @@ const ProfileDrawer = ({
                   }
                 : {
                     customFieldOption: {
-                      name: value,
+                      identifier: value,
                     },
                   },
             ],
@@ -188,7 +188,7 @@ const ProfileDrawer = ({
                           defaultValue={
                             record
                               ? record.values?.[0] ||
-                                record.values?.[0]?.customFieldOption.name
+                                record.values?.[0]?.customFieldOption.identifier
                               : ''
                           }
                           options={field.options.map((option) => ({

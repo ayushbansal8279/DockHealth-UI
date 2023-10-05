@@ -1,22 +1,22 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import React, {
-  useCallback,
+  // useCallback,
   useEffect,
   useMemo,
   useRef,
   useState,
 } from 'react';
 import { Tabs, Grid } from '@mui/material';
-import compose from 'ramda/src/compose';
-import equals from 'ramda/src/equals';
+// import compose from 'ramda/src/compose';
+// import equals from 'ramda/src/equals';
 import { useDispatch, useSelector } from 'react-redux';
-import debounce from 'lodash.debounce';
+// import debounce from 'lodash.debounce';
 import {
-  useHistory,
-  useRouteMatch,
-  Switch,
-  useLocation,
-  Redirect,
+  // useHistory,
+  // useRouteMatch,
+  // Switch,
+  // useLocation,
+  // Redirect,
   useParams,
 } from 'react-router-dom';
 // import * as PatientDetailsActions from 'actions/patient-details-actions';
@@ -71,9 +71,9 @@ const ProfileDetailsView = () => {
   const { patientIdentifier } = useParams();
   // const [searchValue, setSearchValue] = useState('');
   const dispatch = useDispatch();
-  const history = useHistory();
-  const { path, url } = useRouteMatch();
-  const { pathname } = useLocation();
+  // const history = useHistory();
+  // const { path, url } = useRouteMatch();
+  // const { pathname } = useLocation();
   const currentUser = useSelector(userProfileSelector);
   const { userIdentifier: currentUserIdentifier } = currentUser || {};
   // const isFetchingLists = useSelector(isFetchingPatientsListsSelector);

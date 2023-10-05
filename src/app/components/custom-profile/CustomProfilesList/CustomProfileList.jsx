@@ -29,7 +29,7 @@ import MoreVert from '@mui/icons-material/MoreVert';
 import ViewLayout from 'components/template/ViewLayout/ViewLayout';
 // import { Add as AddIcon } from '@mui/icons-material';
 // import AdornedButton from 'components/common/AdornedButton/AdornedButton';
-import ProfileDrawer from 'components/patients/CustomProfilesList/ProfileDrawer';
+import ProfileDrawer from 'components/custom-profile/CustomProfilesList/ProfileDrawer';
 import SearchInput from 'components/common/SearchInput/SearchInput';
 import Popover from 'ui-toolkit/Element/Popover';
 import Toolbar from 'ui-toolkit/Composite/Toolbar';

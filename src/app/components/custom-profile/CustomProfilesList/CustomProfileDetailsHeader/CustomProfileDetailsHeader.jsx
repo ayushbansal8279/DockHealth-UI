@@ -15,11 +15,9 @@ import {
 
 const CustomProfileDetailsHeader = ({
   onViewDetailsClick = () => {},
-  firstName,
-  lastName,
-  middleName,
+  profileName,
   header,
-  profileTypeName,
+  // profileTypeName,
   profileTypeIdentifier,
   children,
 }) => {
@@ -47,12 +45,10 @@ const CustomProfileDetailsHeader = ({
                   />
                 </button>
               </Box>
-              <ProfileName>
-                {[`${lastName},`, firstName, middleName].join(' ')}
-              </ProfileName>
+              <ProfileName>{profileName}</ProfileName>
               <Box mx={1} />
               <ButtonContainer onClick={handleViewDetailsClick}>
-                <ProfileDetailsLabel>View details</ProfileDetailsLabel>
+                <ProfileDetailsLabel>View details ...</ProfileDetailsLabel>
               </ButtonContainer>
             </Grid>
           </Box>
