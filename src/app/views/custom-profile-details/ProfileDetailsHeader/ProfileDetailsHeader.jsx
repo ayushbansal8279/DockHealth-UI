@@ -1,14 +1,8 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useLocation, useParams } from 'react-router-dom';
-import { useBoolean } from 'hooks/useBoolean';
-import moment from 'moment';
-import EmailIcon from 'img/email-icon.svg';
-import PhoneIcon from 'img/phone-icon.svg';
-import MobileIcon from 'img/mobile-icon.svg';
 import ArrowLeftIcon from 'img/arrow-left.svg';
 import { Box, Chip, Grid, Typography } from '@mui/material';
-import { getCustomerUniqueIDShortLabel } from 'helpers/customer-type-helper';
 import Tooltip from 'components/common/Tooltip/Tooltip';
 import {
   userProfileSelector,
@@ -16,10 +10,6 @@ import {
 } from 'selectors/user-selectors';
 import { CUSTOM_PROFILES_PATH } from 'routing/helpers/paths';
 import { organizationSelector } from 'selectors/organization-selectors';
-import {
-  patientSelector,
-  isFetchingPatientSelector,
-} from 'selectors/patient-details-selectors';
 import { FieldType } from 'helpers/field-type-helpers';
 import {
   TASK_LIST_RESTRICTIONS_OPTIONS,
@@ -28,21 +18,16 @@ import {
 import { getAllProfileFieldTypes } from 'api/profile-type-field-api';
 import { showGlobalErrorAlert } from 'alert/actions';
 import { getAllProfiles } from 'api/profile-api';
-import ProfileDetailsDrawer from 'views/custom-profile-details/ProfileDetailsDrawer/ProfileDetailsDrawer';
 import ProfileDetailsLoader from 'views/custom-profile-details/ProfileDetailsLoader/ProfileDetailsLoader';
-import ProfileDrawer from 'components/patients/CustomProfilesList/ProfileDrawer';
+import ProfileDrawer from 'components/custom-profile/CustomProfilesList/ProfileDrawer';
 import {
   ProfileDetailsContainer,
   ProfileName,
   ProfileInfo,
   ProfileInfoDivider,
   ProfileDetailsInformation,
-  PatientDetails,
   ProfileDetailsLabel,
   ButtonContainer,
-  IconWrapper,
-  ContactContainer,
-  ProfileMRNAnchor,
 } from './styled';
 
 const { DISABLED } = TASK_LIST_RESTRICTIONS_OPTIONS;
@@ -54,7 +39,7 @@ const ProfileDetailsHeader = () => {
   const [profileTypeFields, setProfileTypeFields] = useState([]);
   const [profiles, setProfiles] = useState([]);
 
-  const fetchProfileTypes = () => {
+  const fetchProfileTypeFields = () => {
     getAllProfileFieldTypes(profileTypeIdentifier)
       .then((data) => {
         setProfileTypeFields(data);
@@ -82,15 +67,20 @@ const ProfileDetailsHeader = () => {
   const profileName = useMemo(
     () =>
       profile?.fields
-        .filter((field) =>
-          field?.profileTypeField?.displayOptions?.includes('PROFILE_NAME'),
-        )
+        .filter((field) => {
+          const profileTypeField = profileTypeFields?.find(
+            (ptField) =>
+              ptField.identifier === field?.profileTypeFieldIdentifier,
+          );
+          return profileTypeField?.displayOptions?.includes('PROFILE_NAME');
+        })
         .map(
           (field) =>
+            field.values?.[0] ||
             field.values?.[0].value ||
-            field.values?.[0]?.customFieldOption.name,
+            field.values?.[0]?.customFieldOption?.name,
         ),
-    [profile],
+    [profile, profileTypeFields],
   );
 
   // const profileHeader = useMemo(
@@ -112,7 +102,7 @@ const ProfileDetailsHeader = () => {
   // );
 
   useEffect(() => {
-    fetchProfileTypes();
+    fetchProfileTypeFields();
     fetchProfiles();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -121,45 +111,21 @@ const ProfileDetailsHeader = () => {
   const location = useLocation();
   // const [isDrawerOpen, setIsDrawerOpen, unsetIsDrawerOpen] = useBoolean(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const patient = useSelector(patientSelector);
-  const {
-    firstName,
-    middleName,
-    lastName,
-    email,
-    phoneMobile,
-    phoneHome,
-    age,
-    dob,
-    mrn,
-    gender,
-    genderIdentity,
-  } = patient || {};
-  const isFetchingPatient = useSelector(isFetchingPatientSelector);
   const currentUser = useSelector(userProfileSelector);
   const currentOrganization = useSelector(selectedUserOrganizationSelector);
-  const uniqueIdentifierLabel = getCustomerUniqueIDShortLabel(
-    currentUser,
-    currentOrganization,
-  );
   const organization = useSelector(organizationSelector);
-  const emrPatientLink = organization?.emrPatientLink;
-  const isLoadingDetails = isFetchingPatient || !patient;
   const [cameFrom, setCameFrom] = useState();
   const taskListRestrictions =
     TASK_LIST_RESTRICTIONS_PROFILES[currentUser?.orgUserRole];
-  const genderIdentityDisabled =
-    currentOrganization?.disabledFeatures?.includes('PATIENT_GENDER') || false;
   const embeddedMode = sessionStorage.getItem('EmbeddedMode') || false;
 
   const goBack = useCallback(() => {
     if (cameFrom) {
       history.push(cameFrom);
     } else {
-      console.log("location", location);
-      history.push(`${CUSTOM_PROFILES_PATH}/${name}/${profileTypeIdentifier}`);
+      history.push(`${CUSTOM_PROFILES_PATH}/${profileTypeIdentifier}`);
     }
-  }, [cameFrom, history]);
+  }, [cameFrom, history, profileTypeIdentifier]);
 
   useEffect(() => {
     if (location?.state?.from) setCameFrom(location.state.from);
@@ -189,7 +155,7 @@ const ProfileDetailsHeader = () => {
                 </Box>
                 <ProfileName>
                   {[
-                    `${profileName?.[1]},`,
+                    `${profileName?.[1] || ''},`,
                     profileName?.[0],
                     profileName?.[2],
                   ].join(' ')}
