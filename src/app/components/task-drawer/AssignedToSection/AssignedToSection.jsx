@@ -69,6 +69,7 @@ const AssignedToSection = ({ selectedTask = {}, onSave, disabled }) => {
           enableLazyLoading={
             taskList?.listType === 'PUBLIC' || taskList?.listType === 'TEMPLATE'
           }
+          additionalMembers={selectedTask?.sharedWithUsers || []}
         />
       )}
     >

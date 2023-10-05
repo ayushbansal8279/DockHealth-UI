@@ -422,12 +422,14 @@ function* shareTask({
 
     yield all([
       put({ type: ActionTypes.SHARE_TASK_SUCCESS, taskIdentifier }),
+      put(TaskActions.refreshTask(taskIdentifier)),
       put(showGlobalAlert(AlertMessages.SHARED)),
       put(closeModal()),
     ]);
   } catch {
     yield all([
       put({ type: ActionTypes.SHARE_TASK_FAILURE, taskIdentifier }),
+      put(TaskActions.refreshTask(taskIdentifier)),
       put(showGlobalErrorAlert()),
     ]);
   }

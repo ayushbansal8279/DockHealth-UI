@@ -15,11 +15,9 @@ import {
 
 const CustomProfileDetailsHeader = ({
   onViewDetailsClick = () => {},
-  firstName,
-  lastName,
-  middleName,
+  profileName,
   header,
-  profileTypeName,
+  // profileTypeName,
   profileTypeIdentifier,
   children,
 }) => {
@@ -29,10 +27,8 @@ const CustomProfileDetailsHeader = ({
 
   const history = useHistory();
   const goBack = useCallback(() => {
-    history.push(
-      `/custom-profiles/${profileTypeName}/${profileTypeIdentifier}`,
-    );
-  }, [history, profileTypeIdentifier, profileTypeName]);
+    history.push(`/custom-profiles/${profileTypeIdentifier}`);
+  }, [history, profileTypeIdentifier]);
 
   return (
     <ProfileDetailsContainer>
@@ -49,12 +45,10 @@ const CustomProfileDetailsHeader = ({
                   />
                 </button>
               </Box>
-              <ProfileName>
-                {[`${lastName},`, firstName, middleName].join(' ')}
-              </ProfileName>
+              <ProfileName>{profileName}</ProfileName>
               <Box mx={1} />
               <ButtonContainer onClick={handleViewDetailsClick}>
-                <ProfileDetailsLabel>View details</ProfileDetailsLabel>
+                <ProfileDetailsLabel>View details ...</ProfileDetailsLabel>
               </ButtonContainer>
             </Grid>
           </Box>

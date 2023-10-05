@@ -14,7 +14,7 @@ import { ClickAwayListener } from '@mui/material';
 import { checkIfUserIsOrganizationAdmin } from 'helpers/user-helper';
 import RichTextEditor from 'components/common/RichTextEditor/RichTextEditor';
 import { note } from 'api/profile-api';
-import ProfileNote from 'components/patients/CustomProfilesList/CustomProfileNotes/ProfileNote/ProfileNote';
+import ProfileNote from 'components/custom-profile/CustomProfilesList/CustomProfileNotes/ProfileNote/ProfileNote';
 import {
   ProfileNotesWrapper,
   PinnedNotesWrapper,

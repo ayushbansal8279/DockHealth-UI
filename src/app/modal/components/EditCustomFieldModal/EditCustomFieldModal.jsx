@@ -269,12 +269,12 @@ const EditCustomFieldModal = ({
         ...data,
         ...displayOptionsState,
         fieldCategoryType: 'PROFILE',
-        // relatedProfileType: {
-        //   identifier: profileTypeIdentifier,
-        // },
-        // profileType: {
-        //   identifier: data.identifier,
-        // },
+        relatedProfileType: {
+          identifier: data.relatedProfileType,
+        },
+        profileType: {
+          identifier: profileTypeIdentifier,
+        },
       };
 
       delete updatedField.updatedDateTime;

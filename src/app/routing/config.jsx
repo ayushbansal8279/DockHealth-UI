@@ -128,10 +128,10 @@ const GlobalSearchView = lazy(() =>
 const TaskTourView = lazy(() => import('views/TaskTour/TaskTourView'));
 const PatientsView = lazy(() => import('components/patients/PatientsView'));
 const CustomProfileList = lazy(() =>
-  import('components/patients/CustomProfilesList/CustomProfileList'),
+  import('components/custom-profile/CustomProfilesList/CustomProfileList'),
 );
 const CustomProfileView = lazy(() =>
-  import('components/patients/CustomProfilesList/CustomProfileView'),
+  import('components/custom-profile/CustomProfilesList/CustomProfileView'),
 );
 
 const ProfilesAndCustomFieldsView = lazy(() =>
@@ -254,13 +254,13 @@ export const TEMPLATE_CORE_SUBSCRIPTION_PLAN_ROUTES = [
     permissions: [CAN_ACCESS_SEARCH_PAGE],
   },
   {
-    path: '/custom-profiles/:name/:profileTypeIdentifier/:profileIdentifier',
+    path: '/custom-profiles/:profileTypeIdentifier/:profileIdentifier',
     RouteComponent: CustomProfileView,
     onLeave: onLeaveGlobalSearch,
     permissions: [CAN_ACCESS_SEARCH_PAGE],
   },
   {
-    path: '/custom-profiles/:name/:profileTypeIdentifier',
+    path: '/custom-profiles/:profileTypeIdentifier',
     RouteComponent: CustomProfileList,
     onLeave: onLeaveGlobalSearch,
     permissions: [CAN_ACCESS_SEARCH_PAGE],

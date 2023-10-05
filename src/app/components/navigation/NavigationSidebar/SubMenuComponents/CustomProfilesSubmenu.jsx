@@ -53,9 +53,7 @@ const renderListItems = (list) =>
   list?.map(({ name, identifier }) => (
     <DrawerListsItem>
       <ListNameText>
-        <MenuLink to={`/custom-profiles/${name}/${identifier}`}>
-          {name}
-        </MenuLink>
+        <MenuLink to={`/custom-profiles/${identifier}`}>{name}</MenuLink>
       </ListNameText>
     </DrawerListsItem>
   ));
