@@ -85,7 +85,8 @@ const AlertItem = ({ itemAlert, onClearAlert, withCrossIcon, closeAlerts }) => {
 
       if (organizationIdentifier === currentOrganizationIdentifier) {
         closeAlerts();
-        const newPath = `/core/tasks/${taskListIdentifier}/${status}/${taskIdentifier}`;
+        // const newPath = `/core/tasks/${taskListIdentifier}/${status}/${taskIdentifier}`;
+        const newPath = `/core/task/${taskIdentifier}`;
         if (location.pathname === newPath) {
           dispatch(storeAsCurrentTask(task));
           dispatch(openDrawer());
@@ -97,7 +98,8 @@ const AlertItem = ({ itemAlert, onClearAlert, withCrossIcon, closeAlerts }) => {
         closeAlerts();
         selectCurrentOrganizationWithRedirection(
           organizationIdentifier,
-          `#/core/tasks/${taskListIdentifier}/${status}/${taskIdentifier}`,
+          // `#/core/tasks/${taskListIdentifier}/${status}/${taskIdentifier}`,
+          `#/core/task/${taskIdentifier}`,
         );
       }
     };
