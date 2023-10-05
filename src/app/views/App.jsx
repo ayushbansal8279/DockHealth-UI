@@ -29,7 +29,7 @@ import { node } from 'prop-types';
 import React, { PureComponent } from 'react';
 import isEmpty from 'ramda/src/isEmpty';
 import { connect } from 'react-redux';
-// import IdleTimer from 'react-idle-timer';
+import { IdleTimer } from './IdleTimer';
 import { withRouter } from 'react-router-dom';
 import styled from 'styled-components';
 import ReactModal from 'react-modal';
@@ -205,10 +205,13 @@ class App extends PureComponent {
     UserAuthApi.logout(history)
       .then(() => {
         sessionStorage.setItem('refreshOrgMemo', true);
+        history.replace("/auth/login");
       })
-      .catch(() => {});
+      .catch(() => {
+        history.replace('/auth/login');
+      });
 
-    history.push('/auth/login');
+    history.replace('/auth/login');
   };
 
   onAction = () => {};
@@ -218,7 +221,7 @@ class App extends PureComponent {
   onIdle = () => {
     const { openModal: openModalAction } = this.props;
     // log out after 5min from showing modal
-    const logoutTimeout = setTimeout(this.logout, 300_000);
+    const logoutTimeout = setTimeout(this.logout, 5_000);
 
     openModalAction('AutoLogout', {
       onClose: () => {
@@ -257,24 +260,24 @@ class App extends PureComponent {
       userState: { userProfile },
     } = this.props;
 
-    // const userOrganizations = userProfile?.userOrganizations;
-    // const selectedOrgIdentifier = userProfile?.organizationIdentifier;
-    // const currentOrganization =
-    //   userOrganizations?.find(
-    //     ({ organizationIdentifier }) =>
-    //       organizationIdentifier === selectedOrgIdentifier,
-    //   ) || null;
-    // const logoutTimeoutItem =
-    //   currentOrganization?.themeSettings?.find(
-    //     ({ name }) => name === 'logout.timeout',
-    //   ) || {};
-    // const logoutTimeout = parseInt(logoutTimeoutItem?.value, 10);
+    const userOrganizations = userProfile?.userOrganizations;
+    const selectedOrgIdentifier = userProfile?.organizationIdentifier;
+    const currentOrganization =
+      userOrganizations?.find(
+        ({ organizationIdentifier }) =>
+          organizationIdentifier === selectedOrgIdentifier,
+      ) || null;
+    const logoutTimeoutItem =
+      currentOrganization?.themeSettings?.find(
+        ({ name }) => name === 'logout.timeout',
+      ) || {};
+    const logoutTimeout = parseInt(logoutTimeoutItem?.value, 10);
 
-    // const systemTimeout =
-    //   logoutTimeout > 0
-    //     ? logoutTimeout
-    //     : parseInt(import.meta.env.VITE_SYSTEM_TIMEOUT, 10);
-    // const idleTimeout = systemTimeout / 2;
+    const systemTimeout =
+      logoutTimeout > 0
+            ? logoutTimeout
+            : parseInt(import.meta.env.VITE_SYSTEM_TIMEOUT, 10);
+    const idleTimeout = systemTimeout / 2;
 
     const { children } = this.props;
     // const isLessThen1024 = window?.innerWidth < 1024;
@@ -286,15 +289,15 @@ class App extends PureComponent {
     //   );
     const showRotateScreenPage = false;
 
-    // const mountIdleTimer =
-    //   userProfile &&
-    //   !isEmpty(userProfile) &&
-    //   userOrganizations &&
-    //   !isEmpty(userOrganizations);
+    const mountIdleTimer =
+      userProfile &&
+      !isEmpty(userProfile) &&
+      userOrganizations &&
+      !isEmpty(userOrganizations);
     // eslint-disable-next-line unicorn/consistent-function-scoping
-    // const idleTimerReference = (reference) => {
-    //   this.idleTimerForPresence = reference;
-    // };
+    const idleTimerReference = (reference) => {
+      this.idleTimerForPresence = reference;
+    };
     const organizationAvailableFeatures =
       userProfile?.organizationAvailableFeatures;
     const dockChatAvailable =
@@ -328,7 +331,7 @@ class App extends PureComponent {
 
               <ChatActivityAlertsToasts />
               <div className="new-task" />
-              {/* {mountIdleTimer && (
+              {mountIdleTimer && (
                 <IdleTimer
                   ref={(reference) => {
                     this.idleTimer = reference;
@@ -348,7 +351,7 @@ class App extends PureComponent {
                 onIdle={this.onIdleForPresence}
                 debounce={250}
                 timeout={idleTimeout}
-              /> */}
+              /> 
               <MainContainer>{children}</MainContainer>
               <Notification />
             </SendbirdProvider>
