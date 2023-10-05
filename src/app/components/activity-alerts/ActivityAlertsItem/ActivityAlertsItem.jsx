@@ -71,6 +71,7 @@ const AlertItem = ({ itemAlert, onClearAlert, withCrossIcon, closeAlerts }) => {
 
   if (
     activityAlertType === 'ASSIGN_TASK' ||
+    activityAlertType === 'SHARE_TASK' ||
     activityAlertType === 'CREATE_COMMENT' ||
     activityAlertType === 'MARK_COMPLETE' ||
     activityAlertType === 'MENTION_TASK' ||
