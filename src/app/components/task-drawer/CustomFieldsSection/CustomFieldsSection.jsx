@@ -50,23 +50,23 @@ const CustomFieldsSection = ({ disabled, fieldCategoryType }) => {
     taskCustomFieldsSelector,
   );
 
-  const filteredCustomFields = useMemo(() => {
+  const customFields = useMemo(() => {
     // eslint-disable-next-line sonarjs/prefer-immediate-return
     const filtered = unfilteredCustomFields.filter((unfilteredCustomField) => {
       if (fieldCategoryType)
         return unfilteredCustomField?.fieldCategoryType === fieldCategoryType;
       return true;
     });
-    return filtered;
-  }, [fieldCategoryType, unfilteredCustomFields]);
 
-  const customFields = (
-    filteredCustomFields.filter((cf) => cf.taskListIdentifier === undefined) ||
-    []
-  ).concat(
-    filteredCustomFields.filter((cf) => cf.taskListIdentifier !== undefined) ||
-      [],
-  );
+    // eslint-disable-next-line sonarjs/prefer-immediate-return
+    const filteredAndSorted = (
+      filtered.filter((cf) => cf.taskListIdentifier === undefined) || []
+    ).concat(
+      filtered.filter((cf) => cf.taskListIdentifier !== undefined) || [],
+    );
+
+    return filteredAndSorted;
+  }, [fieldCategoryType, unfilteredCustomFields]);
 
   const { 0: emptyVisible, 3: toggleEmptyVisible } = useBoolean(false);
 
