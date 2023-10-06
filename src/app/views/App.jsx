@@ -209,9 +209,7 @@ class App extends PureComponent {
       })
       .catch(() => {
         history.replace('/auth/login');
-      });
-
-    history.replace('/auth/login');
+      })
   };
 
   onAction = () => {};
@@ -273,7 +271,7 @@ class App extends PureComponent {
       ) || {};
     const logoutTimeout = parseInt(logoutTimeoutItem?.value, 10);
 
-    const systemTimeout =
+    const systemTimeout = 
       logoutTimeout > 0
             ? logoutTimeout
             : parseInt(import.meta.env.VITE_SYSTEM_TIMEOUT, 10);
