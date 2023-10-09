@@ -28,7 +28,7 @@ import { AUTH_BASE_STATES } from 'reducers/auth-base-reducer';
 import palette from 'styles/palette';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import ConfirmEmailHeaderCheck from 'img/checked-circle.svg';
-import Button from 'components/common/Button/Button';
+import Button from 'components/common/v2/Button/Button';
 import { ThemeProvider as MuiThemeProvider } from '@mui/material/styles';
 import envelope from 'img/modals/envelope-red.svg';
 import { redTheme } from 'modal/themes/red-theme';
@@ -41,6 +41,7 @@ import {
   FixedWidthButtonWrapper,
 } from 'modal/components/styled';
 import DockHeaderLogo from 'img/dock-header-logo.svg';
+import { Title, Subtitle } from 'components/auth/Title';
 import {
   OnboardingDialog,
   OnboardingHeader,
@@ -88,6 +89,7 @@ const onSubmit =
     try {
       const firstName = sessionStorage.getItem('firstName');
       const lastName = sessionStorage.getItem('lastName');
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const organization = sessionStorage.getItem('organization');
       await registerAction({
         username: email,
@@ -280,20 +282,21 @@ const CompleteCreateAccount = (props) => {
               <Spacing vertical={4} />
             </>
           )}
-          <MontserratTypography
-            variant={hasTrialReferral || hasCustomPageTitle ? 'h4' : 'h2'}
-            weight="bold"
-            align="center"
-          >
-            Finish Creating Account...
-          </MontserratTypography>
+          <Title variant={hasTrialReferral || hasCustomPageTitle ? 'h4' : 'h2'}>
+            Almost done...
+          </Title>
+          <Spacing vertical={3} />
+          <Subtitle variant="p">
+            Sign up here for full trial access to Dock’s time-saving templates
+            for online task management.
+          </Subtitle>
           <Spacing vertical={5} />
           <FormInput disabled={externalUserMode} name="email" label="Email" />
           <Spacing vertical={5} />
           <FormInput name="password" label="Password" type="password" />
           <Spacing vertical={3} />
           <MontserratTypography variant="h5">
-            Eight characters • One capital letter • One number
+            * 8 characters • 1 capital • 1 number
           </MontserratTypography>
           <Spacing vertical={5} />
           <FormInput
@@ -307,7 +310,7 @@ const CompleteCreateAccount = (props) => {
             label="Your Mobile Phone Number"
             customShrinkCondition
           />
-          <Spacing vertical={5} />
+          <Spacing vertical={3} />
           <MontserratTypography variant="h5">
             This must be a mobile phone number as we are required to send a
             secondary authentication code

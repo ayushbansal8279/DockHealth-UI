@@ -12,6 +12,7 @@ import DockHeaderLogo from 'img/dock-header-logo.svg';
 import styled from 'styled-components';
 import { Grid } from '@mui/material';
 import Spacing from 'components/common/Spacing';
+import SSOOptions from 'components/auth/SSOOptions';
 
 const onSubmit = (form, history) => {
   const { username } = form;
@@ -95,6 +96,10 @@ const LoginUser = (props) => {
       </Grid>
       <Grid item xs={12} alignItems="center" alignContent="center">
         <LoginFormUsername onSubmit={(form) => onSubmit(form, history)} />
+      </Grid>
+      <Grid item xs={12} alignItems="center">
+        <Spacing vertical={2} />
+        <SSOOptions />
       </Grid>
     </Grid>
   );

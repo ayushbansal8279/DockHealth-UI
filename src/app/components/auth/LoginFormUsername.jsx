@@ -5,15 +5,15 @@ import { useMount } from 'react-use';
 import { object, string } from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as UserAuthApi from 'api/user-auth-api';
-import FormInput from 'components/common/Input/FormInput';
+import FormInput from 'components/common/v2/Input/FormInput';
 import Loader, { LoaderSizes } from 'components/common/Loader/Loader';
 import Spacing from 'components/common/Spacing';
-import Button from 'components/common/Button/Button';
+import Button from 'components/common/v2/Button/Button';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import { showAlert } from 'helpers/utility-functions';
 import palette from 'styles/palette';
 import { StyledForm, StyledHyperLink } from './AuthComponents.styled';
-import SSOOptions from './SSOOptions';
+import { Title, Subtitle } from './Title';
 
 const validationSchema = object().shape({
   username: string()
@@ -75,13 +75,9 @@ const LoginFormUsername = (props) => {
       <FormProvider {...formMethods}>
         {!showLoginMessage && (
           <>
-            <MontserratTypography variant="h2" weight="bold">
-              {titleContent}
-            </MontserratTypography>
+            <Title>{titleContent}</Title>
             <Spacing vertical={4} />
-            <MontserratTypography variant="h3">
-              Please sign in
-            </MontserratTypography>
+            <Subtitle>Please sign in</Subtitle>
             <Spacing vertical={4} />
             <FormInput
               name="username"
@@ -104,8 +100,6 @@ const LoginFormUsername = (props) => {
             >
               Continue
             </Button>
-            <Spacing vertical={2} />
-            <SSOOptions />
           </>
         )}
         {showLoginMessage && (

@@ -1,7 +1,7 @@
 import React from 'react';
 import { useMount } from 'react-use';
 import { MontserratTypography } from 'styles/theme-montserrat';
-import FormInput from 'components/common/Input/FormInput';
+import FormInput from 'components/common/v2/Input/FormInput';
 import { object, string } from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { FormProvider, useForm } from 'react-hook-form';
@@ -10,8 +10,9 @@ import DockHeaderLogo from 'img/dock-header-logo.svg';
 import styled from 'styled-components';
 import palette from 'styles/palette';
 import Spacing from 'components/common/Spacing';
-import Button from '../common/Button/Button';
+import Button from '../common/v2/Button/Button';
 import { StyledLink } from './AuthComponents.styled';
+import { Title } from './Title';
 
 const validationSchema = object().shape({
   username: string()
@@ -57,9 +58,7 @@ const ResendCodeForm = (props) => {
           }}
         >
           <FormProvider {...formMethods}>
-            <MontserratTypography weight="bold" variant="h3" align="center">
-              Resend confirmation code
-            </MontserratTypography>
+            <Title>Resend confirmation code</Title>
             <Spacing vertical={5} />
             <FormInput name="username" type="text" label="Email" autoFocus />
             <Spacing vertical={5} />

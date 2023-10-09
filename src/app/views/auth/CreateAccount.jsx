@@ -12,13 +12,12 @@ import { setAuthBaseState } from 'actions/auth-base-actions';
 import * as organizationApi from 'api/organization-api';
 import { StyledLink } from 'components/auth/AuthComponents.styled';
 import Spacing from 'components/common/Spacing';
-import FormInput from 'components/common/Input/FormInput';
 import { useBoolean } from 'hooks/useBoolean';
 import { AUTH_BASE_STATES } from 'reducers/auth-base-reducer';
 import palette from 'styles/palette';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import ConfirmEmailHeaderCheck from 'img/checked-circle.svg';
-import Button from 'components/common/Button/Button';
+import Button from 'components/common/v2/Button/Button';
 import { ThemeProvider as MuiThemeProvider } from '@mui/material/styles';
 import envelope from 'img/modals/envelope-red.svg';
 import { redTheme } from 'modal/themes/red-theme';
@@ -32,6 +31,8 @@ import {
 } from 'modal/components/styled';
 import SSOOptions from 'components/auth/SSOOptions';
 import DockHeaderLogo from 'img/dock-header-logo.svg';
+import FormInput from 'components/common/v2/Input/FormInput';
+import { Title, Subtitle } from 'components/auth/Title';
 import {
   OnboardingDialog,
   OnboardingHeader,
@@ -125,6 +126,13 @@ const CreateAccount = (props) => {
     if (oname) setValue('organization', oname);
     if (external === 'true') setExternalUserMode(true);
 
+    if (sessionStorage.getItem('firstName'))
+      setValue('firstName', sessionStorage.getItem('firstName'));
+    if (sessionStorage.getItem('lastName'))
+      setValue('lastName', sessionStorage.getItem('lastName'));
+    if (sessionStorage.getItem('organization'))
+      setValue('organization', sessionStorage.getItem('organization'));
+
     setAuthBaseState({
       authBaseState: AUTH_BASE_STATES.DEFAULT,
     })(dispatch);
@@ -190,19 +198,13 @@ const CreateAccount = (props) => {
                 <Spacing vertical={4} />
               </>
             )}
-            <MontserratTypography
-              variant={hasTrialReferral || hasCustomPageTitle ? 'h4' : 'h2'}
-              weight="bold"
-              align="center"
-            >
-              Please create an account
-            </MontserratTypography>
+            <Title>Please create an account</Title>
+            <Spacing vertical={3} />
+            <Subtitle variant="p">
+              Sign up here for full trial access to Dock’s time-saving templates
+              for online task management.
+            </Subtitle>
             <Spacing vertical={4} />
-            <MontserratTypography variant="h5">
-              <span style={{ color: palette.error }}>*</span>
-              <span> All fields required</span>
-            </MontserratTypography>
-            <Spacing vertical={5} />
             <FormInput name="firstName" label="First Name" />
             <Spacing vertical={5} />
             <FormInput name="lastName" label="Last Name" />
