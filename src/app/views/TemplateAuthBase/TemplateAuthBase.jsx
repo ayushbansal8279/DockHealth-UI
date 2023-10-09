@@ -16,6 +16,7 @@ import {
   RightSideMainContainer,
   RightSideMaxWidthContainer,
 } from './TemplateAuthBase.styled';
+import TemplateAuthBaseLoginContent from './TemplateAuthBase.Login';
 
 const getLeftSideContent = ({ currentAuthBaseState }) => {
   switch (currentAuthBaseState) {
@@ -30,6 +31,9 @@ const getLeftSideContent = ({ currentAuthBaseState }) => {
     }
     case AUTH_BASE_STATES.APPROVE_DISAPPROVE: {
       return <TemplateAuthBaseApproveDisapproveContent />;
+    }
+    case AUTH_BASE_STATES.LOGIN: {
+      return <TemplateAuthBaseLoginContent />;
     }
     default: {
       return null;

@@ -12,6 +12,7 @@ const palette = {
   orange: '#ef8a23',
   darkOrange: '#d97e22',
   newDarkBlue: '#0e244a',
+  brightOrange: '#da5a47',
 
   // secondary
   purplePassion: '#553bbe',

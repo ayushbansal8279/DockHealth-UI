@@ -1,7 +1,5 @@
 import styled from 'styled-components';
-import palette, { opacify } from 'styles/palette';
-import AuthTemplateTopBackgroundTop from 'img/bubble-pattern-top.svg';
-import AuthTemplateTopBackgroundBottom from 'img/bubble-pattern-bottom.svg';
+import palette from 'styles/palette';
 
 const mdBreakpoint = 960;
 
@@ -18,14 +16,7 @@ export const MainContainer = styled.div`
 
 export const LeftSideMainContainer = styled.div`
   align-items: center;
-  background-color: ${palette.midnightBlue};
-  background-image: linear-gradient(
-      to bottom,
-      ${opacify(palette.midnightBlue, 0.5)},
-      ${opacify(palette.midnightBlue, 0.5)}
-    ),
-    url(${AuthTemplateTopBackgroundTop}),
-    url(${AuthTemplateTopBackgroundBottom});
+  background-color: #fbfaf9;
   background-repeat: repeat-x;
   background-position: bottom, top;
   display: flex;
@@ -35,6 +26,13 @@ export const LeftSideMainContainer = styled.div`
   padding-right: 7rem;
   padding-bottom: 0;
   width: 50%;
+
+  @media screen and (max-width: 600px) {
+    && {
+      display: none;
+      padding: 0;
+    }
+  }
 
   @media screen and (max-width: ${mdBreakpoint}px) {
     max-width: unset;
@@ -55,6 +53,7 @@ export const LeftSideContentContainer = styled.div`
   @media screen and (min-width: ${mdBreakpoint}px) {
     max-width: 525px;
   }
+
 `;
 
 export const RightSideMainContainer = styled.div`

@@ -7,9 +7,9 @@ import { object, string } from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { openModal } from 'modal/actions';
 import * as UserAuthApi from 'api/user-auth-api';
-import FormInput from 'components/common/Input/FormInput';
+import FormInput from 'components/common/v2/Input/FormInput';
 import Spacing from 'components/common/Spacing';
-import Button from 'components/common/Button/Button';
+import Button from 'components/common/v2/Button/Button';
 import {
   StyledForm,
   HelperText,

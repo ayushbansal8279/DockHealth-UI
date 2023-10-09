@@ -114,6 +114,9 @@ const ForgotPassword = lazy(() => import('views/auth/ForgotPassword'));
 const EmailSent = lazy(() => import('views/auth/EmailSent'));
 const DashboardView = lazy(() => import('views/dashboard/DashboardView'));
 const CreateAccount = lazy(() => import('views/auth/CreateAccount'));
+const CompleteCreateAccount = lazy(() =>
+  import('views/auth/CompleteCreateAccount'),
+);
 const ConfirmRegistrationSuccess = lazy(() =>
   import('views/auth/ConfirmRegistrationSuccess'),
 );
@@ -392,6 +395,10 @@ export const AUTH_ROUTES = [
   {
     path: '/create-account',
     RouteComponent: CreateAccount,
+  },
+  {
+    path: '/complete-create-account',
+    RouteComponent: CompleteCreateAccount,
   },
   {
     path: '/login',

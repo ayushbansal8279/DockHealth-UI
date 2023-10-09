@@ -2,12 +2,12 @@ import { Grid } from '@mui/material';
 import React from 'react';
 import styled from 'styled-components';
 import Spacing from 'components/common/Spacing';
-import TranscriptPng from 'img/auth-transcript.png';
+import LoginImg from 'img/login.png';
 import { MontserratTypography } from 'styles/theme-montserrat';
 
 const TranscriptImage = styled.img.attrs({
-  src: TranscriptPng,
-  alt: 'transcript',
+  src: LoginImg,
+  alt: 'dock-health',
 })`
   object-fit: contain;
 `;
@@ -18,7 +18,7 @@ const StyledGrid = styled(Grid)`
   }
 `;
 
-const TemplateAuthBaseDefaultContent = () => {
+const TemplateAuthBaseLoginContent = () => {
   return (
     <StyledGrid
       container
@@ -35,7 +35,7 @@ const TemplateAuthBaseDefaultContent = () => {
           color="black"
           align="center"
         >
-          Bye bye Post-It Notes.
+          Collaboration built by healthcare professionals
         </MontserratTypography>
         <MontserratTypography
           weight="bold"
@@ -43,7 +43,7 @@ const TemplateAuthBaseDefaultContent = () => {
           color="black"
           align="center"
         >
-          Hello efficiency.
+          for healthcare professionals.
         </MontserratTypography>
         <Spacing vertical={3} />
         <MontserratTypography
@@ -52,12 +52,12 @@ const TemplateAuthBaseDefaultContent = () => {
           color="rgba(0, 0, 0, 0.6)"
           align="center"
         >
-          Save time, work better with HIPAA-compliant task management and
-          workflow automation from <br /> Dock Health.
+          Make your communication contextual with the one <br /> administrative
+          tool you need to get healthcare done.
         </MontserratTypography>
       </Grid>
     </StyledGrid>
   );
 };
 
-export default TemplateAuthBaseDefaultContent;
+export default TemplateAuthBaseLoginContent;

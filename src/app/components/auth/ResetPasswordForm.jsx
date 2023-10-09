@@ -3,9 +3,11 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { object, string } from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { MontserratTypography } from 'styles/theme-montserrat';
-import Button from 'components/common/Button/Button';
-import FormInput from 'components/common/Input/FormInput';
+import Button from 'components/common/v2/Button/Button';
+import FormInput from 'components/common/v2/Input/FormInput';
 import Spacing from 'components/common/Spacing';
+import palette from 'styles/palette';
+import { Title } from './Title';
 
 const MIN_PASSWORD_LENGTH = 8;
 
@@ -32,9 +34,7 @@ const ResetPasswordForm = ({ authTokenReceived, onSubmit }) => {
   return (
     <form style={{ width: '100%' }} onSubmit={handleSubmit(onSubmit)}>
       <FormProvider {...formMethods}>
-        <MontserratTypography variant="h2">
-          Let’s set a new password
-        </MontserratTypography>
+        <Title>Let’s set a new password</Title>
         {!authTokenReceived && (
           <>
             <Spacing vertical={4} />
@@ -62,8 +62,19 @@ const ResetPasswordForm = ({ authTokenReceived, onSubmit }) => {
           type="password"
           label="Enter a new password"
         />
+        <Spacing vertical={3} />
+        <MontserratTypography variant="h5">
+          * 8 characters • 1 capital • 1 number
+        </MontserratTypography>
         <Spacing vertical={5} />
-        <Button active id="loginButton" size="large" type="submit">
+        <Button
+          active
+          id="loginButton"
+          size="large"
+          type="submit"
+          color={palette.brightOrange}
+          secondaryColor={palette.oPlusRed}
+        >
           Continue
         </Button>
       </FormProvider>

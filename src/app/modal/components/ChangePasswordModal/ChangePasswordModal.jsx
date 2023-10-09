@@ -8,8 +8,8 @@ import LockIcon from 'img/modals/lock.svg';
 import * as UserAuthApi from 'api/user-auth-api';
 import { openModal } from 'modal/actions';
 import Spacing from 'components/common/Spacing';
-import FormInput from 'components/common/Input/FormInput';
-import Button from 'components/common/Button/Button';
+import FormInput from 'components/common/v2/Input/FormInput';
+import Button from 'components/common/v2/Button/Button';
 import { validPasswordSchema } from 'helpers/validation-helper';
 import {
   ChangePasswordModalContainer,

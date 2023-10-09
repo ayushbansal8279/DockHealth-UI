@@ -3,6 +3,7 @@ import { useHistory } from 'react-router-dom';
 import Button from 'components/common/Button/Button';
 import Spacing from 'components/common/Spacing';
 import { MontserratTypography } from 'styles/theme-montserrat';
+import palette from 'styles/palette';
 
 const redirectToLogout = (history) => {
   history.replace('/auth/logout');
@@ -28,7 +29,13 @@ const UnEnrolledUser = () => {
         <a href="mailto:support@dock.health">support@dock.health</a>
       </MontserratTypography>
       <Spacing vertical={5} />
-      <Button onClick={() => redirectToLogout(history)}>Logout here</Button>
+      <Button
+        onClick={() => redirectToLogout(history)}
+        color={palette.brightOrange}
+        secondaryColor={palette.oPlusRed}
+      >
+        Logout here
+      </Button>
     </div>
   );
 };

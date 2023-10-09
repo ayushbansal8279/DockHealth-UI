@@ -7,7 +7,6 @@ import { useSmallScreen } from 'helpers/utility-functions';
 import { useBoolean } from 'hooks/useBoolean';
 import Spacing from 'components/common/Spacing';
 import FormPhoneNumberInput from 'components/common/PhoneNumberInput/FormPhoneNumberInput';
-import { MontserratTypography } from 'styles/theme-montserrat';
 import Button from 'components/common/Button/Button';
 import {
   OnboardingDialog,
@@ -17,6 +16,8 @@ import {
   OnboardingSpacing2,
   OnboardingSpacing4,
 } from 'views/onboarding/OnboardingTemplate.Components';
+import palette from 'styles/palette';
+import { Title, Subtitle } from './Title';
 
 const REQUIRED_MESSAGE = 'This field is required';
 
@@ -59,13 +60,9 @@ const ChangePhoneNumberForm = () => {
         onSubmit({ showDialog, setDialogTitle, setDialogMessage }),
       )}
     >
-      <MontserratTypography variant="h2">
-        Change Phone Number
-      </MontserratTypography>
+      <Title>Change Phone Number</Title>
       <Spacing vertical={4} />
-      <MontserratTypography variant="h4">
-        Please enter your correct mobile phone number.
-      </MontserratTypography>
+      <Subtitle>Please enter your correct mobile phone number.</Subtitle>
       <Spacing vertical={4} />
       <FormProvider {...formMethods}>
         <FormPhoneNumberInput
@@ -76,7 +73,12 @@ const ChangePhoneNumberForm = () => {
         />
       </FormProvider>
       <Spacing vertical={5} />
-      <Button type="submit" size="large">
+      <Button
+        type="submit"
+        size="large"
+        color={palette.brightOrange}
+        secondaryColor={palette.oPlusRed}
+      >
         Continue
       </Button>
       <OnboardingDialog

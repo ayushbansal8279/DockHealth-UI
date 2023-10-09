@@ -17,11 +17,12 @@ const StyledButton = styled(MuiButton)`
   &&& {
     &.MuiButton-root {
       width: ${({ width }) => `${width}`};
-      font-weight: ${fontWeights.regularPlus};
+      font-weight: ${fontWeights.regular};
       font-family: 'Montserrat', sans-serif;
       outline: none;
       min-width: 0;
       min-height: '30px';
+      border-radius: 10px;
       height: ${({ size }) => {
         switch (size) {
           case 'small': {
@@ -74,7 +75,7 @@ const StyledButton = styled(MuiButton)`
       color: ${palette.white};
       background-color: ${({ backgroundColor }) =>
         `${backgroundColor ?? palette.darkBlue}`};
-      border-radius: 4px;
+      border-radius: 10px;
 
       &:hover:not(:disabled) {
         background-color: ${({ secondaryColor }) =>
@@ -92,7 +93,7 @@ const StyledButton = styled(MuiButton)`
     &.MuiButton-containedSecondary {
       color: ${palette.white};
       background: ${palette.oPlusRed};
-      border-radius: 4px;
+      border-radius: 10px;
 
       &:hover:not(:disabled) {
         background: ${palette.oPlusRed};
@@ -129,7 +130,7 @@ const StyledButton = styled(MuiButton)`
       color: ${palette.oPlusRed};
       background: none;
       border: 2px solid ${palette.oPlusRed};
-      border-radius: 4px;
+      border-radius: 10px;
 
       &:hover:not(:disabled) {
         color: ${palette.oPlusRed};
