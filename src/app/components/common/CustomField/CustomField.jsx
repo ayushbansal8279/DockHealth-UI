@@ -37,7 +37,7 @@ const CustomField = ({
   const containerReference = useRef(null);
   const { identifier, name, placeholder, fieldType, options, displayOptions } =
     field;
-  const isRequired = displayOptions.includes('TASK_REQUIRED');
+  const isRequired = displayOptions?.includes('TASK_REQUIRED');
   const inputReference = useRef(null);
   const componentReference = useRef(null);
   const { setValue, watch, setError, clearErrors } = useFormContext();
