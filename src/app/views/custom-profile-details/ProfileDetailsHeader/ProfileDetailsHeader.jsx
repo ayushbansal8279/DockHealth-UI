@@ -3,29 +3,29 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useLocation, useParams } from 'react-router-dom';
 import ArrowLeftIcon from 'img/arrow-left.svg';
 import { Box, Chip, Grid, Typography } from '@mui/material';
-import Tooltip from 'components/common/Tooltip/Tooltip';
+// import Tooltip from 'components/common/Tooltip/Tooltip';
 import {
   userProfileSelector,
   selectedUserOrganizationSelector,
 } from 'selectors/user-selectors';
 import { CUSTOM_PROFILES_PATH } from 'routing/helpers/paths';
 import { organizationSelector } from 'selectors/organization-selectors';
-import { FieldType } from 'helpers/field-type-helpers';
+// import { FieldType } from 'helpers/field-type-helpers';
 import {
   TASK_LIST_RESTRICTIONS_OPTIONS,
   TASK_LIST_RESTRICTIONS_PROFILES,
 } from 'restrictions/task-restrictions';
 import { getAllProfileFieldTypes } from 'api/profile-type-field-api';
 import { showGlobalErrorAlert } from 'alert/actions';
-import { getAllProfiles } from 'api/profile-api';
+import { getProfileDetails } from 'api/profile-api';
 import ProfileDetailsLoader from 'views/custom-profile-details/ProfileDetailsLoader/ProfileDetailsLoader';
 import ProfileDrawer from 'components/custom-profile/CustomProfilesList/ProfileDrawer';
 import {
   ProfileDetailsContainer,
   ProfileName,
-  ProfileInfo,
-  ProfileInfoDivider,
-  ProfileDetailsInformation,
+  // ProfileInfo,
+  // ProfileInfoDivider,
+  // ProfileDetailsInformation,
   ProfileDetailsLabel,
   ButtonContainer,
 } from './styled';
@@ -37,7 +37,7 @@ const ProfileDetailsHeader = () => {
   const dispatch = useDispatch();
   const { name, profileTypeIdentifier, profileIdentifier } = useParams();
   const [profileTypeFields, setProfileTypeFields] = useState([]);
-  const [profiles, setProfiles] = useState([]);
+  const [profile, setProfile] = useState([]);
 
   const fetchProfileTypeFields = () => {
     getAllProfileFieldTypes(profileTypeIdentifier)
@@ -49,25 +49,25 @@ const ProfileDetailsHeader = () => {
       });
   };
 
-  const fetchProfiles = () => {
-    getAllProfiles(profileTypeIdentifier)
+  const fetchProfile = () => {
+    getProfileDetails(profileIdentifier)
       .then((data) => {
-        setProfiles(data);
+        setProfile(data);
       })
       .catch(() => {
         dispatch(showGlobalErrorAlert());
       });
   };
 
-  const profile = useMemo(
-    () => profiles.find(({ identifier }) => identifier === profileIdentifier),
-    [profiles, profileIdentifier],
-  );
+  // const profile = useMemo(
+  //   () => profiles.find(({ identifier }) => identifier === profileIdentifier),
+  //   [profiles, profileIdentifier],
+  // );
 
   const profileName = useMemo(
     () =>
       profile?.fields
-        .filter((field) => {
+        ?.filter((field) => {
           const profileTypeField = profileTypeFields?.find(
             (ptField) =>
               ptField.identifier === field?.profileTypeFieldIdentifier,
@@ -103,7 +103,7 @@ const ProfileDetailsHeader = () => {
 
   useEffect(() => {
     fetchProfileTypeFields();
-    fetchProfiles();
+    fetchProfile();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
