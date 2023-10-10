@@ -218,8 +218,8 @@ class App extends PureComponent {
 
   onIdle = () => {
     const { openModal: openModalAction } = this.props;
-    // log out after 5min from showing modal
-    const logoutTimeout = setTimeout(this.logout, 5_000);
+    // log out after 2 min from showing modal
+    const logoutTimeout = setTimeout(this.logout, 120_000);
 
     openModalAction('AutoLogout', {
       onClose: () => {
