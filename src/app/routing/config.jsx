@@ -148,6 +148,11 @@ const TasksView2 = lazy(() =>
   import('views/TasksView/TasksView2.jsx'),
 );
 
+const TasksView3 = lazy(() =>
+  import('../../pages/core/tasks.page'),
+);
+
+
 const {
   CAN_ACCESS_HOME_PAGE,
   CAN_ACCESS_SEARCH_PAGE,
@@ -281,6 +286,12 @@ export const TEMPLATE_CORE_SUBSCRIPTION_PLAN_ROUTES = [
   {
     path: '/poc2',
     RouteComponent: TasksView2,
+    onLeave: onLeaveGlobalSearch,
+    permissions: [CAN_ACCESS_SEARCH_PAGE],
+  },
+  {
+    path: '/poc3',
+    RouteComponent: TasksView3,
     onLeave: onLeaveGlobalSearch,
     permissions: [CAN_ACCESS_SEARCH_PAGE],
   },

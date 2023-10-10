@@ -1,5 +1,11 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { useState, useCallback, useMemo, useContext } from 'react';
+import React, {
+  useState,
+  useCallback,
+  useMemo,
+  useContext,
+  useEffect,
+} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import isEmpty from 'ramda/src/isEmpty';
@@ -53,6 +59,7 @@ import {
   TASK_LIST_RESTRICTIONS_PROFILES,
 } from 'restrictions/task-restrictions';
 import { hasFiltersAppliedSelector } from 'selectors/mega-filter-selectors';
+import VirtualTaskList from 'views/list-details/VirtualTaskList/VirtualTaskList';
 import {
   TaskGroupsContainer,
   DroppablePlaceholder,
@@ -63,6 +70,7 @@ const ListDetailsTasks = ({
   onTaskUpdate,
   updateWorkflowStatus,
   loadTasksForTaskGroup,
+  __switchVirtualTaskListEnabled = () => {},
 }) => {
   const groupedTasks = useSelector(groupTasksSelector);
   const areFiltersApplied = useSelector(hasFiltersAppliedSelector);
@@ -119,7 +127,7 @@ const ListDetailsTasks = ({
   const taskList = useSelector(currentTaskListSelector);
   const { restrictCustomization } = taskList || {};
   const currentUserMember = taskList?.listUsers.find(
-    u => u.identifier === currentUser?.identifier,
+    (u) => u.identifier === currentUser?.identifier,
   );
   const isListAdmin = isMemberAdmin(currentUserMember);
   const restrictCustomizationFeatures = restrictCustomization && !isListAdmin;
@@ -264,6 +272,23 @@ const ListDetailsTasks = ({
     },
     [dispatch],
   );
+
+  const [isVirtualTaskListEnabled, setIsVirtualTaskListEnabled] = useState(
+    window.enabledVirtualTaskList,
+  );
+  useEffect(() => {
+    window.enableVirtualTaskList = () => {
+      setIsVirtualTaskListEnabled(true);
+      window.enabledVirtualTaskList = true;
+      __switchVirtualTaskListEnabled();
+    };
+  }, [__switchVirtualTaskListEnabled]);
+
+  const renderVirtualizedTasks = () => {
+    return (
+      <VirtualTaskList tasksToMap={tasksToMap} groupedTasks={groupedTasks} />
+    );
+  };
 
   const renderTasks = useCallback(
     () =>
@@ -525,8 +550,11 @@ const ListDetailsTasks = ({
             onBeforeDragStart={showClearSortFiltersModal}
             onDragEnd={isSortApplied ? () => {} : onDragEnd}
           >
-            {renderTasks()}
-            {!!createTaskGroupList &&
+            {isVirtualTaskListEnabled
+              ? renderVirtualizedTasks()
+              : renderTasks()}
+            {!isVirtualTaskListEnabled &&
+              !!createTaskGroupList &&
               !isSearchApplied &&
               !areFiltersApplied && (
                 <StickyContainer left={24} decreaseWidth={2 * 24}>
@@ -535,7 +563,7 @@ const ListDetailsTasks = ({
                       restrictions?.createGroup !== DISABLED &&
                       !restrictCustomizationFeatures
                         ? onGroupNameClick
-                        : () => undefined
+                        : () => {}
                     }
                     placeholder={messages.placeholder}
                     closeOnEnter

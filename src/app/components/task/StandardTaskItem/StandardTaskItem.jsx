@@ -191,7 +191,7 @@ const Task = React.memo(
             {...restProps}
           />
         </div>
-        {showComments && (
+        {showComments && !window.enabledVirtualTaskList && (
           <TaskComments
             isOpen={isFullView}
             comments={comments}
@@ -199,7 +199,7 @@ const Task = React.memo(
             onClickComment={onClickComment}
           />
         )}
-        {showSubtasks && (
+        {showSubtasks && !window.enabledVirtualTaskList && (
           <SubtasksWrapper>
             <Subtasks
               isFetchingSubTasks={task?.isFetchingSubTasks}

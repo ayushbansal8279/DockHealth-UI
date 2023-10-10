@@ -310,6 +310,7 @@ export default function Virtualized() {
 }
 
 const Segment = React.forwardRef<any, any>((props, ref) => {
+  console.log("Segment", props);
   const Component = props.item.type
   return (
     <Component

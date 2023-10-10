@@ -457,6 +457,13 @@ const ListDetailsTableView = () => {
     },
   ];
 
+  const [isVirtualTaskListEnabled, setIsVirtualTaskListEnabled] = useState(
+    window.enabledVirtualTaskList,
+  );
+  const handleSwitchVirtualTaskListEnabled = () => {
+    setIsVirtualTaskListEnabled(true);
+  };
+
   return (
     <HorizontallyScrolledViewLayout
       header={
@@ -481,18 +488,23 @@ const ListDetailsTableView = () => {
         disabled={bulkEditIsDisabled}
         searchValue={searchValue}
       >
-        <div>
+        <div style={{ height: '100%' }}>
           <TaskViewContainer>
-            <StickyContainer>
-              <ListDetailsToolbar
-                additionalOptions={additionalToolbarOptions}
-              />
-            </StickyContainer>
+            {!isVirtualTaskListEnabled && (
+              <StickyContainer>
+                <ListDetailsToolbar
+                  additionalOptions={additionalToolbarOptions}
+                />
+              </StickyContainer>
+            )}
             <TasksView
               viewSetup={displayListPreferences}
               onTaskUpdate={handleTaskUpdate}
               updateWorkflowStatus={handleUpdateWorkflowStatus}
               loadTasksForTaskGroup={loadTasksForTaskGroup}
+              __switchVirtualTaskListEnabled={
+                handleSwitchVirtualTaskListEnabled
+              }
             />
           </TaskViewContainer>
           <TaskDrawer
