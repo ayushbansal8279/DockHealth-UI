@@ -20,6 +20,8 @@ import {
   workflowSelector,
   workflowAutofocusFieldSelector,
 } from 'selectors/workflow-drawer-selectors';
+import { organizationCustomFieldsSelector } from 'selectors/organization-selectors';
+import { listCustomFieldsSelector } from 'selectors/list-details-selectors';
 import { FieldType } from 'helpers/field-type-helpers';
 // import { log } from 'helpers/log';
 import { formatMetaDataOutput } from './helpers';
@@ -46,9 +48,18 @@ const CustomFieldsSection = ({ disabled, fieldCategoryType }) => {
 
   const isMobile = useMediaQuery((theme) => theme.breakpoints.down('sm'));
 
-  const { templates: unfilteredCustomFields } = useSelector(
-    taskCustomFieldsSelector,
+  const organizationCustomFields = useSelector(
+    organizationCustomFieldsSelector,
   );
+  const listCustomFields = useSelector(listCustomFieldsSelector);
+  const workflowCustomFields = organizationCustomFields
+    ? organizationCustomFields.concat(listCustomFields)
+    : listCustomFields;
+
+  const { templates: taskCustomFields } = useSelector(taskCustomFieldsSelector);
+  const unfilteredTemplates = taskCustomFields?.length
+    ? taskCustomFields
+    : workflowCustomFields;
 
   const customFields = useMemo(() => {
     // eslint-disable-next-line sonarjs/prefer-immediate-return

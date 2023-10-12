@@ -10,6 +10,7 @@ import TaskItemDueDate from 'components/task/StandardTaskItem/TaskItemComponents
 import TaskItemSubtasks from 'components/task/StandardTaskItem/TaskItemComponents/TaskItemSubtasks';
 import TaskItemMembers from 'components/task/StandardTaskItem/TaskItemComponents/TaskItemMembers';
 import { userProfileSelector } from 'selectors/user-selectors';
+import { taskLookupSelector } from 'selectors/task-details-selectors';
 import { partialUpdateTask, storeAsCurrentTask } from 'actions/task-actions';
 import { openDrawer } from 'actions/task-drawer-actions';
 import { openDrawer as openWorkflowDrawer } from 'actions/workflow-drawer-actions';
@@ -30,9 +31,18 @@ import {
   WorkflowActionsContainer,
 } from './styled';
 
-const BoardColumnTask = ({ task, index, taskContextMenuOptions }) => {
+const BoardColumnTask = ({
+  task: taskItemIdentifier,
+  index,
+  taskContextMenuOptions,
+}) => {
   const dispatch = useDispatch();
   const currentUser = useSelector(userProfileSelector);
+
+  const task = useSelector((state) => {
+    return taskLookupSelector(state, origin, taskItemIdentifier);
+  });
+
   const {
     identifier,
     description,

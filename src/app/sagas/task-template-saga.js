@@ -240,7 +240,8 @@ function* updatePartialWorkflow({ taskWorkflowIdentifier, dataToUpdate }) {
       taskWorkflowIdentifier,
     });
     yield put(showGlobalAlert(AlertMessages.UPDATED));
-  } catch {
+  } catch (error) {
+    log(error);
     yield put(showGlobalErrorAlert());
     yield put({
       type: ActionTypes.UPDATE_PARTIAL_WORKFLOW_FAILURE,
