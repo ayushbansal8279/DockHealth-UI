@@ -215,7 +215,15 @@ const TaskItemDescription = ({
         )}
         {linkedTaskTemplate && !isCompleted && !isDecisionTask && (
           <TaskContext>
-            <span>Triggers: {linkedTaskTemplate.name}</span>
+            <span
+              style={{
+                textOverflow: 'ellipsis',
+                overflow: 'hidden',
+                whiteSpace: 'nowrap',
+              }}
+            >
+              Triggers: {linkedTaskTemplate.name}
+            </span>
           </TaskContext>
         )}
         {linkedTaskTemplate && !isCompleted && isDecisionTask && (
