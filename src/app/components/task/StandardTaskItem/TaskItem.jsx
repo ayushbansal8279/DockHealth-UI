@@ -315,8 +315,11 @@ const TaskItem = React.memo(
     }, [currentUser, currentTasklist]);
 
     const isCreator = useMemo(() => {
-      return creator?.identifier === currentUser?.identifier;
-    }, [currentUser, creator]);
+      return (
+        (!templateBundleIdentifier || templateBundleIdentifier === '') &&
+        creator?.identifier === currentUser?.identifier
+      );
+    }, [templateBundleIdentifier, creator, currentUser]);
 
     if (!restrictions) {
       restrictions = {};

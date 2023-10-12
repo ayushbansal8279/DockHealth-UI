@@ -149,8 +149,11 @@ const TaskDrawerContent = (props) => {
   }, [currentUser, currentTasklist]);
 
   const isCreator = useMemo(() => {
-    return selectedTask?.creator?.identifier === currentUser?.identifier;
-  }, [currentUser, selectedTask]);
+    return (
+      !parentBundle &&
+      selectedTask?.creator?.identifier === currentUser?.identifier
+    );
+  }, [currentUser, selectedTask, parentBundle]);
 
   if (!restrictions) {
     restrictions = {};
