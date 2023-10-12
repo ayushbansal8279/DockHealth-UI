@@ -54,11 +54,11 @@ const TaskItemCustomField = ({
         const patientMetaData =
           (task?.patient?.patientMetaData || [])
             ?.filter(
-              pmd =>
+              (pmd) =>
                 pmd?.customFieldIdentifier !== field.identifier &&
                 (pmd?.value || pmd?.values),
             )
-            ?.map(pmd => createMetaDataObjectToSend(pmd)) ?? [];
+            ?.map((pmd) => createMetaDataObjectToSend(pmd)) ?? [];
         if (Array.isArray(newValue)) {
           patientMetaData.push({
             customFieldIdentifier: field.identifier,
@@ -77,11 +77,11 @@ const TaskItemCustomField = ({
       const taskMetaData =
         task?.taskMetaData
           ?.filter(
-            tmd =>
+            (tmd) =>
               tmd?.customFieldIdentifier !== field.identifier &&
               (tmd?.value || tmd?.values),
           )
-          ?.map(tmd => createMetaDataObjectToSend(tmd)) ?? [];
+          ?.map((tmd) => createMetaDataObjectToSend(tmd)) ?? [];
       if (Array.isArray(newValue)) {
         taskMetaData.push({
           customFieldIdentifier: field.identifier,

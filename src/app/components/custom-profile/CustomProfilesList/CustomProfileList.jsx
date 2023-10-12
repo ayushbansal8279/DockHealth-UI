@@ -169,6 +169,7 @@ const CustomProfileList = () => {
           profileTypeIdentifier={profileTypeIdentifier}
           types={profileTypeFields}
           onClose={handleClose}
+          addMode
         />
         <Stack
           direction="row"
