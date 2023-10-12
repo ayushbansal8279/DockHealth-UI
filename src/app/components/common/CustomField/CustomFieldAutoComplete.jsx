@@ -9,7 +9,7 @@ import { useFormContext } from 'react-hook-form';
 // import AlertMessages from 'alert/AlertMessages';
 // import { formatMetaDataOutput } from 'components/task-drawer/CustomFieldsSection/helpers';
 // import CustomTextEditor from 'components/common/CustomTextEditor/CustomTextEditor';
-import { getAllProfiles, getProfileDetails } from 'api/profile-api';
+// import { getAllProfiles, getProfileDetails } from 'api/profile-api';
 // import TextInput from '../TextInput/TextInput';
 // import { CustomTextEditorContainer } from './styled';
 // import { createMentionEntities } from '../TextEditor/create-mention-entities';
@@ -57,31 +57,31 @@ const CustomFieldAutoComplete = React.forwardRef(
 
     const [profiles, setProfiles] = useState(null);
 
-    useEffect(() => {
-      getAllProfiles(relatedProfileType.identifier)
-        .then((data) => {
-          setProfiles(
-            data.map((profile) => ({
-              ...profile,
-              label: `${
-                profile?.fields?.[0].values?.[0] ||
-                profile?.fields?.[0].values?.[0].value ||
-                profile?.fields?.[0].values?.[0]?.customFieldOption?.name
-              } ${
-                profile?.fields?.[1].values?.[0] ||
-                profile?.fields?.[1].values?.[0].value ||
-                profile?.fields?.[1].values?.[0]?.customFieldOption?.name
-              }`,
-            })),
-          );
+    // useEffect(() => {
+    //   getAllProfiles(relatedProfileType.identifier)
+    //     .then((data) => {
+    //       setProfiles(
+    //         data.map((profile) => ({
+    //           ...profile,
+    //           label: `${
+    //             profile?.fields?.[0].values?.[0] ||
+    //             profile?.fields?.[0].values?.[0].value ||
+    //             profile?.fields?.[0].values?.[0]?.customFieldOption?.name
+    //           } ${
+    //             profile?.fields?.[1].values?.[0] ||
+    //             profile?.fields?.[1].values?.[0].value ||
+    //             profile?.fields?.[1].values?.[0]?.customFieldOption?.name
+    //           }`,
+    //         })),
+    //       );
 
-          //   setProfileIdentifiers(data.map((profile) => profile.identifier));
-        })
-        .catch((error) => {
-          console.error('error getting profile types');
-          console.error(error);
-        });
-    }, [relatedProfileType.identifier]);
+    //       //   setProfileIdentifiers(data.map((profile) => profile.identifier));
+    //     })
+    //     .catch((error) => {
+    //       console.error('error getting profile types');
+    //       console.error(error);
+    //     });
+    // }, [relatedProfileType.identifier]);
 
     const error = errors?.[name]?.message;
 
