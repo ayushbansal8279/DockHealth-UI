@@ -57,7 +57,7 @@ const CustomFieldsSection = ({ disabled, fieldCategoryType }) => {
     : listCustomFields;
 
   const { templates: taskCustomFields } = useSelector(taskCustomFieldsSelector);
-  const unfilteredTemplates = taskCustomFields?.length
+  const unfilteredCustomFields = taskCustomFields?.length
     ? taskCustomFields
     : workflowCustomFields;
 
