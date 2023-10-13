@@ -1,5 +1,12 @@
-import React, { useCallback, useMemo, useState, useRef } from 'react';
+import React, {
+  useCallback,
+  useMemo,
+  useState,
+  useRef,
+  useEffect,
+} from 'react';
 import { useDispatch } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import { Box, IconButton, Stack } from '@mui/material';
 import Drawer from 'ui-toolkit/Navigation/Drawer/Drawer';
 import { createProfile, editProfileType, deleteProfile } from 'api/profile-api';
@@ -18,6 +25,8 @@ import LabeledCollapse from 'components/common/LabeledCollapse/LabeledCollapse';
 import Button from 'components/common/Button/Button';
 // import Select from 'components/common/Select/Select';
 import CustomField from 'components/common/CustomField/CustomField';
+import { showGlobalAlert } from 'alert/actions';
+import AlertMessages from 'alert/AlertMessages';
 import { closeModal, openModal } from 'modal/actions';
 
 const ProfileDrawer = ({
@@ -27,9 +36,11 @@ const ProfileDrawer = ({
   profile,
   types,
   onClose,
+  onUpdate,
   addMode = false,
 }) => {
   const dispatch = useDispatch();
+  const history = useHistory();
   // const { register, handleSubmit, getValues } = useForm();
   const formMethods = useForm({
     reValidateMode: 'onSubmit',
@@ -39,6 +50,12 @@ const ProfileDrawer = ({
 
   const [isCollapsed, setCollapsed] = useState(true);
   const [editMode, setEditMode] = useState(addMode);
+
+  useEffect(() => {
+    if (addMode && !profile) {
+      setEditMode(true);
+    }
+  }, [addMode, profile]);
 
   const editProfile = useCallback(
     (data) => {
@@ -64,10 +81,15 @@ const ProfileDrawer = ({
                     },
               ],
             };
-        }),
+          },
+        ),
+        // eslint-disable-next-line no-shadow
+      }).then((data) => {
+        dispatch(showGlobalAlert(AlertMessages.SAVED));
+        onUpdate(data);
       });
     },
-    [profile?.identifier, types],
+    [dispatch, onUpdate, profile, types],
   );
 
   const onSubmit = (data) => {
@@ -92,6 +114,10 @@ const ProfileDrawer = ({
         profileType: {
           identifier: profileTypeIdentifier,
         },
+        // eslint-disable-next-line no-shadow
+      }).then((data) => {
+        dispatch(showGlobalAlert(AlertMessages.SAVED));
+        onUpdate(data);
       });
     }
     onClose();
@@ -109,17 +135,23 @@ const ProfileDrawer = ({
           confirm: () => {
             editProfile(getValues());
             dispatch(closeModal());
-            setEditMode(false);
+            if (!addMode && profile) {
+              setEditMode(false);
+            }
             onClose();
           },
           onClose: () => {
-            setEditMode(false);
+            if (!addMode && profile) {
+              setEditMode(false);
+            }
             onClose();
           },
         }),
       );
     } else {
-      setEditMode(false);
+      if (!addMode && profile) {
+        setEditMode(false);
+      }
       onClose();
     }
   };
@@ -134,7 +166,10 @@ const ProfileDrawer = ({
             openModal('DeleteConfirmation', {
               description: 'Are you sure to delete this profile?',
               confirm: () => {
-                deleteProfile(profile.identifier);
+                deleteProfile(profile.identifier).then(() => {
+                  dispatch(showGlobalAlert(AlertMessages.DELETED));
+                  history.push(`/custom-profiles/${profileTypeIdentifier}`);
+                });
                 dispatch(closeModal());
               },
             }),
@@ -142,7 +177,7 @@ const ProfileDrawer = ({
         },
       },
     ],
-    [dispatch, profile?.identifier],
+    [dispatch, history, profile, profileTypeIdentifier],
   );
 
   return (

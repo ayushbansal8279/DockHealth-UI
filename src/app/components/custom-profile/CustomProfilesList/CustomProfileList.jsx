@@ -169,6 +169,9 @@ const CustomProfileList = () => {
           profileTypeIdentifier={profileTypeIdentifier}
           types={profileTypeFields}
           onClose={handleClose}
+          onUpdate={() => {
+            fetchProfiles();
+          }}
           addMode
         />
         <Stack
