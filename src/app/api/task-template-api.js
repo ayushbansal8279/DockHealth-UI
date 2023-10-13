@@ -11,11 +11,11 @@ export function moveTemplateToFolder(identifier, parentTaskWorkflowIdentifier) {
 
 export function copyWorkflowToOrganization(
   identifier,
-  targetOrganizationIdentifier,
+  targetOrganizationIdentifiers,
 ) {
   return axios
     .patch(`task/template/copyToOrg`, {
-      targetOrganizationIdentifiers: [targetOrganizationIdentifier],
+      targetOrganizationIdentifiers: [...targetOrganizationIdentifiers],
       identifier,
     })
     .then(response => {
