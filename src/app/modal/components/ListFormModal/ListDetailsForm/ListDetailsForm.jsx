@@ -91,8 +91,8 @@ const ListDetailsForm = ({
     defaultValues: {
       listName: list?.listName,
       listDescription: list?.listDescription,
-      restrictCustomization: list ? !!list?.restrictCustomization : true,
-      discoveryEnabled: list ? !!list?.discoveryEnabled : true,
+      restrictCustomization: list ? list?.restrictCustomization : true,
+      discoveryEnabled: list ? list?.discoveryEnabled : false,
     },
     reValidateMode: 'onSubmit',
   });
