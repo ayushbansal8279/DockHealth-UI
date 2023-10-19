@@ -184,7 +184,7 @@ const EditOrganizationModal = ({ closeModal, userProfile, onSuccess }) => {
               </InitialsError>
             </>
           )}
-          <Spacing vertical={5} />
+          <Spacing vertical={3} />
           <ColorPickerHeader>Choose your theme color</ColorPickerHeader>
           <Spacing vertical={3} />
           <ColorPicker
@@ -195,7 +195,10 @@ const EditOrganizationModal = ({ closeModal, userProfile, onSuccess }) => {
             }}
             value={organizationProfileColorValue}
           />
-          <Spacing vertical={6} />
+          <Spacing vertical={4} />
+          <TileSettingsHeader>
+            What do you call your customers?
+          </TileSettingsHeader>
           <CustomerTypeDropDown
             name="clientType"
             value={customerTypeLabel.toUpperCase()}
@@ -206,7 +209,7 @@ const EditOrganizationModal = ({ closeModal, userProfile, onSuccess }) => {
               options: customerTypesList,
             }}
           />
-          <Spacing vertical={3} />
+          <Spacing vertical={4} />
           <Grid
             container
             direction="row"
