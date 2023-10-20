@@ -1,8 +1,9 @@
-import React, { useMemo } from "react";
-import Virtualized, { Node } from "views/list-details/modules/Virtualized";
-import Group from "views/list-details/modules/List/Group/Group";
-import Item from "views/list-details/modules/List/Item/Item";
-import { useSelector } from "react-redux";
+import React, { useMemo } from 'react';
+import { useSelector } from 'react-redux';
+import Virtualized, { Node } from 'views/list-details/modules/Virtualized';
+import VListGroup from 'views/list-details/VirtualTaskList/VirtualSegment/VListGroup/VListGroup';
+import VTask from "views/list-details/VirtualTaskList/VirtualSegment/VTask/VTask";
+import VSubtask from "views/list-details/VirtualTaskList/VirtualSegment/VSubtask/VSubtask";
 
 export interface Props {
   tasksToMap: any[]
@@ -12,34 +13,10 @@ export interface Props {
 function VirtualTaskList({ tasksToMap, groupedTasks }: Props) {
   // @ts-ignore
   const tasksMap = useSelector(state => state.listDetails.tasksMap)
-
-  // const nodes: Node[] = useMemo(() => {
-  //   return groupedTasks
-  //     ?.map((taskGroup: any) => {
-  //       return {
-  //         id: taskGroup.groupIdentifier,
-  //         type: Group,
-  //         collapsed: false,
-  //         data: { name: taskGroup.groupName },
-  //         children: taskGroup.tasks?.map((taskIdentifier: string) => {
-  //           const task = tasksMap[taskIdentifier]
-  //           console.log("task", task);
-  //           return {
-  //             id: taskIdentifier,
-  //             type: Item,
-  //             collapsed: false,
-  //             children: []
-  //           }
-  //         })
-  //       }
-  //     })
-  // }, [groupedTasks, tasksMap])
-
   const nodes: Node[] = useMemo(() => {
-    console.log("RERENDER!", { groupedTasks, tasksMap })
     return groupedTasks.map(group => convert(
       group.groupIdentifier,
-      Group,
+      VListGroup,
       { name: group.groupName },
       group.tasks.map((taskIdentifier: string) => {
         const task = tasksMap[taskIdentifier]
@@ -48,10 +25,17 @@ function VirtualTaskList({ tasksToMap, groupedTasks }: Props) {
           : task.tasks
         return convert(
           taskIdentifier,
-          Item,
+          VTask,
           {},
           children.map((child: any) => {
-            return convert(child.taskIdentifier, Item, {}, [])
+            return convert(
+              child.taskIdentifier,
+              task.itemType === "TASK"
+                ? VSubtask
+                : VTask,
+              {},
+              []
+            );
           })
         )
       })
