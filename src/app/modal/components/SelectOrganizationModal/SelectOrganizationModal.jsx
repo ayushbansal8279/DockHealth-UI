@@ -18,11 +18,11 @@ const SelectOrganizationModal = ({
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   // const dispatch = useDispatch();
-  const [selectedOrganization, setSelectedOrganization] = useState(null);
+  const [selectedOrganizations, setSelectedOrganizations] = useState(new Set());
 
   const handleConfirm = useCallback(() => {
     const responseData = {
-      organization: selectedOrganization,
+      organizations: Array.from(selectedOrganizations),
     };
 
     if (typeof confirm === 'function') {
@@ -31,7 +31,7 @@ const SelectOrganizationModal = ({
     } else {
       console.warn('You have to provide confirm callback');
     }
-  }, [selectedOrganization, confirm, preventClosingModal, closeModal]);
+  }, [selectedOrganizations, confirm, preventClosingModal, closeModal]);
 
   const handleConfirmWrapper = useCallback(async () => {
     handleConfirm();
@@ -45,8 +45,8 @@ const SelectOrganizationModal = ({
       <Container>
         <StepsContainer stepIndex={0}>
           <OrganizationSelectStep
-            selectedOrganization={selectedOrganization}
-            setSelectedOrganization={setSelectedOrganization}
+            selectedOrganizations={selectedOrganizations}
+            setSelectedOrganizations={setSelectedOrganizations}
             closeModal={closeModal}
           />
         </StepsContainer>
@@ -67,7 +67,7 @@ const SelectOrganizationModal = ({
         <FlexButtonWrapper>
           <Button
             fullWidth
-            disabled={!selectedOrganization}
+            disabled={!selectedOrganizations}
             onClick={handleConfirmWrapper}
             size="small"
           >

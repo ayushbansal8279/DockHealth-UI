@@ -74,14 +74,14 @@ function* moveWorkflowToFolder({ parentTaskWorkflowIdentifier, identifier }) {
 }
 
 function* copyWorkflowToOrganization({
-  targetOrganizationIdentifier,
+  targetOrganizationIdentifiers,
   identifier,
 }) {
   try {
     yield call(
       TaskTemplateApi.copyWorkflowToOrganization,
       identifier,
-      targetOrganizationIdentifier,
+      targetOrganizationIdentifiers,
     );
     yield put({
       type: ActionTypes.COPY_WORKFLOW_TO_ORGANIZATION_SUCCESS,
@@ -92,7 +92,7 @@ function* copyWorkflowToOrganization({
     yield put({
       type: ActionTypes.COPY_WORKFLOW_TO_ORGANIZATION_FAILURE,
       identifier,
-      targetOrganizationIdentifier,
+      targetOrganizationIdentifiers,
     });
   }
 }
