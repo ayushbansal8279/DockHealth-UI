@@ -49,9 +49,6 @@ export const Title = styled.div`
 `;
 
 export const QuestionContainer = styled.div`
-  font-size: 48px;
-  font-weight: 700;
-  font-family: Montserrat;
   color: #0f1c2e;
 `;
 

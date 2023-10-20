@@ -10,6 +10,7 @@ import {
   onEnterListDetailsView,
   onLeaveListDetailsView,
 } from './TemplateCoreSubscriptionPlan/ListDetails';
+
 const UsersView = lazy(() => import('views/self-serve/users/UsersView'));
 const Contacts = lazy(() => import('views/Contacts/Contacts'));
 const Templates = lazy(() => import('views/Templates/Templates'));
@@ -142,6 +143,10 @@ const ProfilesAndCustomFieldsView = lazy(() =>
 );
 const TaskCustomizationsView = lazy(() =>
   import('views/custom-fields/task-customizations/TaskCustomizationsView'),
+);
+
+const CreateList = lazy(() =>
+  import('views/OnboardingTutorial/CreateList/CreateList'),
 );
 
 const {
@@ -380,6 +385,13 @@ export const ONBOARDING_ROUTES = [
   {
     path: '/customer-preference',
     RouteComponent: OnboardingSelectCustomerTypeView,
+  },
+];
+
+export const ONBOARDING_TUTORIAL_ROUTES = [
+  {
+    path: '/create-list',
+    RouteComponent: CreateList,
   },
 ];
 

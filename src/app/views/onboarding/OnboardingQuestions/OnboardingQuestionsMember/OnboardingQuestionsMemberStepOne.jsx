@@ -2,6 +2,7 @@
 import React, { useState, useRef, useMemo } from 'react';
 import Spacing from 'components/common/Spacing';
 import Button from 'components/common/Button/Button';
+import { MontserratTypography } from 'styles/theme-montserrat';
 import OnboardingQuestionsPicker from '../OnboardingQuestionsPicker';
 import { ROLE_OPTIONS } from '../options';
 import { Option, QuestionContainer } from '../styled';
@@ -21,7 +22,7 @@ const OnboardingQuestionsOwnerGuest = ({
   const openPicker = (field) => setActiveOption(field);
 
   const onSelectOption = (option) =>
-    roleOptions.some((opt) => opt === option)
+    roleOptions.includes(option)
       ? setRoleOptions(roleOptions.filter((opt) => opt !== option))
       : setRoleOptions([...roleOptions, option]);
 
@@ -43,27 +44,29 @@ const OnboardingQuestionsOwnerGuest = ({
 
   return (
     <div>
-      <QuestionContainer>
-        I&apos;m a{' '}
-        <Option
-          ref={roleReference}
-          onClick={openRolePicker}
-          hasSelectedOption={roleOptions.length !== 0}
-        >
-          {roleText}
-        </Option>{' '}
-        working in {organizationName}.
-      </QuestionContainer>
-      <OnboardingQuestionsPicker
-        isOpen={!!activeOption}
-        questionReference={roleReference}
-        onClose={onClosePicker}
-        options={options}
-        onSelect={onSelectOption}
-        selectedOptions={roleOptions}
-        positionGlobal
-        topOffset={65}
-      />
+      <MontserratTypography>
+        <QuestionContainer>
+          My domain of care is:
+          <Option
+            ref={roleReference}
+            onClick={openRolePicker}
+            hasSelectedOption={roleOptions.length > 0}
+          >
+            {roleText}
+          </Option>{' '}
+          working in {organizationName}.
+        </QuestionContainer>
+        <OnboardingQuestionsPicker
+          isOpen={!!activeOption}
+          questionReference={roleReference}
+          onClose={onClosePicker}
+          options={options}
+          onSelect={onSelectOption}
+          selectedOptions={roleOptions}
+          positionGlobal
+          topOffset={65}
+        />
+      </MontserratTypography>
       <Spacing vertical={5} />
       <Spacing vertical={6} />
       <Button

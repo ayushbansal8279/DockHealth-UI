@@ -9,9 +9,9 @@ import Checkbox from 'components/common/Checkbox/Checkbox';
 import Button from 'components/common/Button/Button';
 import { useSmallScreen } from 'helpers/utility-functions';
 import { MontserratTypography } from 'styles/theme-montserrat';
-import { RobotoTypography } from 'styles/theme';
 import { downloadBAADocument } from 'api/organization-api';
 import { userProfileSelector } from 'selectors/user-selectors';
+import palette from 'styles/palette';
 import { OnboardingAnchor } from '../OnboardingTemplate.Components';
 
 const OnboardingEulaView = () => {
@@ -35,18 +35,19 @@ const OnboardingEulaView = () => {
   return (
     <div>
       <Spacing vertical={3} />
-      <MontserratTypography weight="600" variant="h2">
+      <MontserratTypography weight="700" variant="h4">
         LET&apos;S GET STARTED
       </MontserratTypography>
       <Spacing vertical={5} />
-      <MontserratTypography variant="h3">
-        Securing patient data, being HIPAA-compliant, and getting your team
-        ready to work better. Sounds like the start of a great relationship.
-      </MontserratTypography>
-      <Spacing vertical={5} />
-      <MontserratTypography variant="h4">
-        To get you and your team set up to be HIPAA-complaint, please agree to
-        the terms below..
+      <MontserratTypography
+        weight="500"
+        variant="h3"
+        textDecoration={{ lineHeight: 2 }}
+      >
+        Review our end user agreement and privacy policy <br /> and confirm your
+        Business Associate Agreement
+        <br />
+        (BAA) for HIPAA-compliance.
       </MontserratTypography>
       <Spacing vertical={5} />
       <Grid container>
@@ -54,10 +55,12 @@ const OnboardingEulaView = () => {
           <Checkbox
             isChecked={isEulaAccepted}
             onClick={toggleEulaAccepted}
-            size={20}
+            size={25}
+            isCircle
+            borderHeight="4px"
           />
           <Spacing horizontal={3} />
-          <RobotoTypography variant="h4">
+          <MontserratTypography variant="h4" weight="500">
             <span>I have read and agree to the </span>
             <OnboardingAnchor
               href="https://www.dock.health/end-user-license-agreement"
@@ -72,7 +75,7 @@ const OnboardingEulaView = () => {
             >
               Privacy Statement
             </OnboardingAnchor>
-          </RobotoTypography>
+          </MontserratTypography>
         </Grid>
         <Spacing vertical={4} />
         {!userProfile?.baaSigned && (
@@ -80,10 +83,12 @@ const OnboardingEulaView = () => {
             <Checkbox
               isChecked={isBaaAccepted}
               onClick={toggleBaaAccepted}
-              size={20}
+              size={25}
+              isCircle
+              borderHeight="4px"
             />
             <Spacing horizontal={3} />
-            <RobotoTypography variant="h4">
+            <MontserratTypography variant="h4" weight="500">
               <span>I have read and agree to the </span>
               <OnboardingAnchor
                 onClick={() => {
@@ -92,19 +97,23 @@ const OnboardingEulaView = () => {
               >
                 Business Associate Agreement (BAA)
               </OnboardingAnchor>
-            </RobotoTypography>
+            </MontserratTypography>
           </Grid>
         )}
         <Spacing vertical={isSmallScreen ? 4 : 6} />
-        <Grid item sm={12} container justifyContent="flex-end">
+        <Grid item sm={12} container justifyContent="flex-left">
           <Grid item xs={12} sm={12} md={4}>
             <Button
               disabled={continueButtonDisabled}
               variant="primary"
               onClick={onAgreeClick}
               fullWidth
+              color={palette.brightOrange}
+              secondaryColor={palette.oPlusRed}
             >
-              Agree & Continue
+              <MontserratTypography weight="700" variant="h4">
+                Agree & Continue
+              </MontserratTypography>
             </Button>
           </Grid>
         </Grid>

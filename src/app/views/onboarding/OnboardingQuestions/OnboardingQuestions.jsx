@@ -3,14 +3,13 @@ import { userProfileSelector } from 'selectors/user-selectors';
 import { useSelector } from 'react-redux';
 import Spacing from 'components/common/Spacing';
 import OnboardingIndicator from 'components/common/OnboardingIndicator/OnboardingIndicator';
+import { MontserratTypography } from 'styles/theme-montserrat';
 import OnboardingQuestionsOwner from './OnboardingQuestionsOwner/OnboardingQuestionsOwner';
 import OnboardingQuestionsMember from './OnboardingQuestionsMember/OnboardingQuestionsMember';
 import OnboardingQuestionsGuest from './OnboardingQuestionsGuest/OnboardingQuestionsGuest';
 
-import { Title } from './styled';
-
 const ONBOARDING_TITLE =
-  'Welcome to Dock health. Let’s customize your space to your needs';
+  'Select a few quick customizations for a better experience.';
 
 const OnboardingQuestions = () => {
   const { orgUserRole, organizationName } = useSelector(userProfileSelector);
@@ -26,7 +25,10 @@ const OnboardingQuestions = () => {
         completedSteps={step}
       />
       <Spacing vertical={5} />
-      <Title>{ONBOARDING_TITLE}</Title>
+      <MontserratTypography variant="h3" weight="700">
+        {ONBOARDING_TITLE}
+      </MontserratTypography>
+      <Spacing vertical={5} />
       {orgUserRole === 'OWNER' && (
         <OnboardingQuestionsOwner
           clickNextStep={clickNextStep}

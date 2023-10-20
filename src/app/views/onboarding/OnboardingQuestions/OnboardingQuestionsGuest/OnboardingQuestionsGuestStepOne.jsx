@@ -6,6 +6,25 @@ import Button from 'components/common/Button/Button';
 import OnboardingQuestionsPicker from '../OnboardingQuestionsPicker';
 import { ROLE_OPTIONS, DOMAIN_OPTIONS } from '../options';
 import { Option, QuestionContainer } from '../styled';
+import { MontserratTypography } from 'styles/theme-montserrat';
+Autocomplete;
+import palette from 'styles/palette';
+import Autocomplete from 'components/common/Autocomplete/Autocomplete';
+import { styled } from '@mui/material/styles';
+
+const StandardAutocompleteMUI = styled(Autocomplete)`
+  &&& {
+    &.MuiAutocomplete-option {
+      padding: 0;
+    }
+    &.MuiAutocomplete-listbox {
+      padding: 0;
+    }
+    &.MuiAutocomplete-noOption {
+      padding: 0;
+    }
+  }
+`;
 
 const OnboardingQuestionsGuest = ({
   roleOptions,
@@ -95,7 +114,6 @@ const OnboardingQuestionsGuest = ({
     const availableOptions = getOptions();
 
     if (selectedOptions.length === 0) return availableOptions;
-
     return [...new Set([...availableOptions, ...selectedOptions])];
   }, [getOptions, selectedOptions]);
 
@@ -108,33 +126,38 @@ const OnboardingQuestionsGuest = ({
       ? roleOptions.length === 1
         ? roleOptions[0]
         : roleOptions.join(', ')
-      : 'Clinician, Admin…';
+      : ROLE_OPTIONS[0];
 
-  const domainText = domainOption[0] || 'Mental Health, Internal Medicine…';
+  const domainText = domainOption[0] || DOMAIN_OPTIONS[0];
 
   const closeOnSelect = activeOption === 'DOMAIN';
 
   return (
     <div>
-      <QuestionContainer>
-        I&apos;m a{' '}
-        <Option
-          ref={roleReference}
-          onClick={openRolePicker}
-          hasSelectedOption={roleOptions.length > 0}
-        >
-          {roleText}
-        </Option>{' '}
-        working in{' '}
-        <Option
-          ref={domainReference}
-          onClick={openDomainPicker}
-          hasSelectedOption={domainOption.length > 0}
-        >
-          {domainText}
-        </Option>
-        .
-      </QuestionContainer>
+      <MontserratTypography
+        variant="h1"
+        weight="700"
+        textDecoration={{ lineHeight: '82px' }}
+      >
+        <QuestionContainer>
+          My domain of care is:{' '}
+          <Option
+            ref={roleReference}
+            onClick={openRolePicker}
+            hasSelectedOption={roleOptions.length > 0}
+          >
+            {roleText}
+          </Option>
+          <Option
+            ref={domainReference}
+            onClick={openDomainPicker}
+            hasSelectedOption={domainOption.length > 0}
+          >
+            <br />
+            My role is: {domainText}
+          </Option>
+        </QuestionContainer>
+      </MontserratTypography>
       <OnboardingQuestionsPicker
         isOpen={!!activeOption}
         questionReference={questionReference}
@@ -147,12 +170,13 @@ const OnboardingQuestionsGuest = ({
         topOffset={65}
       />
       <Spacing vertical={5} />
-      <Spacing vertical={6} />
       <Button
         onClick={clickNextStep}
         type="button"
         disabled={isDisabledButton}
         width="265px"
+        color={palette.brightOrange}
+        secondaryColor={palette.oPlusRed}
       >
         Next Step
       </Button>

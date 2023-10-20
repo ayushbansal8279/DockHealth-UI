@@ -3,6 +3,7 @@
 import React, { useState, useRef, useMemo, useCallback } from 'react';
 import Spacing from 'components/common/Spacing';
 import Button from 'components/common/Button/Button';
+import { MontserratTypography } from 'styles/theme-montserrat';
 import OnboardingQuestionsPicker from '../OnboardingQuestionsPicker';
 import { ROLE_OPTIONS, DOMAIN_OPTIONS } from '../options';
 import { Option, QuestionContainer } from '../styled';
@@ -24,40 +25,44 @@ const OnboardingQuestionsOwnerStepOne = ({
 
   const questionReference = useMemo(() => {
     switch (activeOption) {
-      case 'ROLE':
+      case 'ROLE': {
         return roleReference;
+      }
 
-      case 'DOMAIN':
+      case 'DOMAIN': {
         return domainReference;
-
-      default:
+      }
+      default: {
         return null;
+      }
     }
   }, [activeOption]);
 
   const getOptions = useCallback(() => {
     switch (activeOption) {
-      case 'ROLE':
+      case 'ROLE': {
         return ROLE_OPTIONS;
-
-      case 'DOMAIN':
+      }
+      case 'DOMAIN': {
         return DOMAIN_OPTIONS;
-
-      default:
+      }
+      default: {
         return [];
+      }
     }
   }, [activeOption]);
 
   const getSelectedOptions = useCallback(() => {
     switch (activeOption) {
-      case 'ROLE':
+      case 'ROLE': {
         return roleOptions;
-
-      case 'DOMAIN':
+      }
+      case 'DOMAIN': {
         return domainOption;
-
-      default:
+      }
+      default: {
         return [];
+      }
     }
   }, [activeOption, domainOption, roleOptions]);
 
@@ -65,17 +70,18 @@ const OnboardingQuestionsOwnerStepOne = ({
 
   const onSelectOption = useMemo(() => {
     switch (activeOption) {
-      case 'ROLE':
+      case 'ROLE': {
         return (option) =>
-          roleOptions.some((opt) => opt === option)
+          roleOptions.includes(option)
             ? setRoleOptions(roleOptions.filter((opt) => opt !== option))
             : setRoleOptions([...roleOptions, option]);
-
-      case 'DOMAIN':
+      }
+      case 'DOMAIN': {
         return (option) => setDomainOption([option]);
-
-      default:
+      }
+      default: {
         return null;
+      }
     }
   }, [activeOption, roleOptions, setDomainOption, setRoleOptions]);
 
@@ -104,36 +110,38 @@ const OnboardingQuestionsOwnerStepOne = ({
 
   return (
     <div>
-      <QuestionContainer>
-        I&apos;m a{' '}
-        <Option
-          ref={roleReference}
-          onClick={openRolePicker}
-          hasSelectedOption={roleOptions.length !== 0}
-        >
-          {roleText}
-        </Option>{' '}
-        working in{' '}
-        <Option
-          ref={domainReference}
-          onClick={openDomainPicker}
-          hasSelectedOption={domainOption.length !== 0}
-        >
-          {domainText}
-        </Option>
-        .
-      </QuestionContainer>
-      <OnboardingQuestionsPicker
-        isOpen={!!activeOption}
-        questionReference={questionReference}
-        onClose={onClosePicker}
-        options={options}
-        onSelect={onSelectOption}
-        isSingleChoice={isSingleChoice}
-        selectedOptions={selectedOptions}
-        positionGlobal
-        topOffset={65}
-      />
+      <MontserratTypography>
+        <QuestionContainer>
+          My domain of care is:
+          <Option
+            ref={roleReference}
+            onClick={openRolePicker}
+            hasSelectedOption={roleOptions.length > 0}
+          >
+            {roleText}
+          </Option>{' '}
+          working in{' '}
+          <Option
+            ref={domainReference}
+            onClick={openDomainPicker}
+            hasSelectedOption={domainOption.length > 0}
+          >
+            {domainText}
+          </Option>
+          .
+        </QuestionContainer>
+        <OnboardingQuestionsPicker
+          isOpen={!!activeOption}
+          questionReference={questionReference}
+          onClose={onClosePicker}
+          options={options}
+          onSelect={onSelectOption}
+          isSingleChoice={isSingleChoice}
+          selectedOptions={selectedOptions}
+          positionGlobal
+          topOffset={65}
+        />
+      </MontserratTypography>
       <Spacing vertical={5} />
       <Spacing vertical={6} />
       <Button
