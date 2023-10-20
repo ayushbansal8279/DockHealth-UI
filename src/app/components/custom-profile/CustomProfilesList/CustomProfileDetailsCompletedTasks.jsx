@@ -127,7 +127,7 @@ const CustomProfileDetailsCompletedTasks = ({
                 quickAddTask={(task) => {
                   handleQuickAddTask(task);
                   setTimeout(() => {
-                    quickAddTaskInputReference.current.focus();
+                    quickAddTaskInputReference?.current?.focus();
                   }, 0);
                 }}
                 listNameVisible
