@@ -23,6 +23,7 @@ const UserTypeOptions = ({
   openRemoveSubscriptionModal,
   organizationMembers,
   isInvited,
+  changeUserRole,
 }) => {
   const [isPopoverOpen, openPopover, closePopover] = useBoolean(false);
 
@@ -103,6 +104,7 @@ const UserTypeOptions = ({
       isDisabledRemovingSubscription={isDisabledRemovingSubscription}
       userStatus={userStatus}
       isInvited={isInvited}
+      changeUserRole={changeUserRole}
       userHasSubscription={
         !!isUserSelected({
           userIdentifier,

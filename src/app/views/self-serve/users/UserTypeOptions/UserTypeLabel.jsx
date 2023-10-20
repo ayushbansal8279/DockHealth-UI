@@ -38,6 +38,7 @@ const UserTypeLabel = ({
   displayName,
   ownersCount,
   currentActiveUsers,
+  changeUserRole,
 }) => {
   const labelReference = useRef(null);
 
@@ -108,6 +109,7 @@ const UserTypeLabel = ({
             userHasSubscription,
             isDisabledRemovingSubscription,
             orgUserRole,
+            changeUserRole,
             labelReference,
             isPopoverOpen,
             displayName,
