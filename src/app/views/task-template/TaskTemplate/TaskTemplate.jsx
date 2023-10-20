@@ -180,11 +180,11 @@ const TaskTemplate = ({
           dispatch(
             ModalActions.openModal('SelectOrganization', {
               confirmText: 'Copy',
-              confirm: (selectedItem) => {
+              confirm: (selectedItems) => {
                 dispatch(
                   copyWorkflowToOrganization(
                     identifier,
-                    selectedItem?.organization?.organizationIdentifier,
+                    selectedItems?.organizations,
                   ),
                 );
               },
