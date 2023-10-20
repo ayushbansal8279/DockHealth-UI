@@ -58,366 +58,367 @@ import {
   DroppablePlaceholder,
 } from '../ListDetailsTableView/styled';
 
-const ListDetailsTasks = ({
-  viewSetup,
-  onTaskUpdate,
-  updateWorkflowStatus,
-  loadTasksForTaskGroup,
-}) => {
-  const groupedTasks = useSelector(groupTasksSelector);
-  const areFiltersApplied = useSelector(hasFiltersAppliedSelector);
-  const groupList = useSelector(listDetailsGroupsSelector);
-  const areGroupsInitialized = useSelector(areGroupsInitializedSelector);
-  const isFetchingGroups = useSelector(isFetchingGroupsSelector);
-  const searchValue = useSelector(searchTermSelector);
-  const isFetchingData = isFetchingGroups && !areGroupsInitialized;
-  const isSearchApplied = !!searchValue;
+const ListDetailsTasks = React.memo(
+  ({
+    viewSetup,
+    onTaskUpdate,
+    updateWorkflowStatus,
+    loadTasksForTaskGroup,
+  }) => {
+    const groupedTasks = useSelector(groupTasksSelector);
+    const areFiltersApplied = useSelector(hasFiltersAppliedSelector);
+    const groupList = useSelector(listDetailsGroupsSelector);
+    const areGroupsInitialized = useSelector(areGroupsInitializedSelector);
+    const isFetchingGroups = useSelector(isFetchingGroupsSelector);
+    const searchValue = useSelector(searchTermSelector);
+    const isFetchingData = isFetchingGroups && !areGroupsInitialized;
+    const isSearchApplied = !!searchValue;
 
-  const [draggedId, setDraggableId] = useState(null);
-  const dispatch = useDispatch();
-  const { taskListIdentifier, tabName } = useParams();
-  const listUniqueKey = taskListIdentifier;
-  const isCompletedView = tabName?.toUpperCase() === TaskStatus.COMPLETE;
+    const [draggedId, setDraggableId] = useState(null);
+    const dispatch = useDispatch();
+    const { taskListIdentifier, tabName } = useParams();
+    const listUniqueKey = taskListIdentifier;
+    const isCompletedView = tabName?.toUpperCase() === TaskStatus.COMPLETE;
 
-  const currentUser = useSelector(userProfileSelector);
-  const taskCounters = useSelector(taskCountersSelector);
+    const currentUser = useSelector(userProfileSelector);
+    const taskCounters = useSelector(taskCountersSelector);
 
-  const createTaskGroupList = useCallback(
-    (groupName) => {
-      dispatch(ListDetailsActions?.createTaskListGroup(groupName));
-    },
-    [dispatch],
-  );
-
-  const quickAddTask = useCallback(
-    (task) => {
-      if (task?.description) {
-        const payload = {
-          ...task,
-          autoOpenDrawer: taskCounters?.incomplete === 0,
-        };
-
-        dispatch(createTask(payload));
-      }
-    },
-    [dispatch, taskCounters],
-  );
-
-  const sort = useSelector(taskDetailsSortSelector);
-  const onSortChange = compose(
-    dispatch,
-    ListDetailsActions.sortListDetailsTasks,
-  );
-  const resetSort = useCallback(() => {
-    dispatch(ListDetailsActions.sortListDetailsTasks(null, null));
-  }, [dispatch]);
-
-  const restrictions =
-    TASK_LIST_RESTRICTIONS_PROFILES[currentUser?.orgUserRole];
-  const { DISABLED } = TASK_LIST_RESTRICTIONS_OPTIONS;
-
-  const taskList = useSelector(currentTaskListSelector);
-  const { restrictCustomization } = taskList || {};
-  const currentUserMember = taskList?.listUsers.find(
-    u => u.identifier === currentUser?.identifier,
-  );
-  const isListAdmin = isMemberAdmin(currentUserMember);
-  const restrictCustomizationFeatures = restrictCustomization && !isListAdmin;
-
-  const currentOrganization = useSelector(selectedUserOrganizationSelector);
-
-  const iconColorActiveItem = useMemo(
-    () =>
-      currentOrganization?.themeSettings?.find(
-        ({ name }) => name === 'icon.active.color',
-      ) || {},
-    [currentOrganization?.themeSettings],
-  );
-  const defaultGroupNameItem = useMemo(
-    () =>
-      currentOrganization?.themeSettings?.find(
-        ({ name }) => name === 'content.label.default.group',
-      ) || {},
-    [currentOrganization?.themeSettings],
-  );
-  const userSortingSupportEnabledItem = useMemo(
-    () =>
-      currentOrganization?.themeSettings?.find(
-        ({ name }) => name === 'list.tasks.user.sort.enabled',
-      ) || {},
-    [currentOrganization?.themeSettings],
-  );
-  const userSortingSupportEnabled =
-    userSortingSupportEnabledItem?.value !== 'false';
-
-  const renderEmptyState = () => {
-    if (isSearchApplied) return <NoSearchResultsView />;
-
-    if (areFiltersApplied) return <NoFilterResultsView />;
-
-    if (quickAddTask) {
-      return (
-        <EmptyTaskAddView
-          quickAddTask={quickAddTask}
-          taskListIdentifier={taskListIdentifier}
-          iconColorActive={iconColorActiveItem?.value}
-        >
-          {taskCounters?.complete > 0 ? (
-            <EmptyListView
-              title={['Way to go!', 'You’ve completed all of your tasks.']}
-              description="Take a breather, tomorrow is a new day full of possibilities."
-            />
-          ) : (
-            <EmptyListView
-              title="This list has no tasks"
-              description="Be the first to add a task to this list!"
-            />
-          )}
-        </EmptyTaskAddView>
-      );
-    }
-
-    return (
-      <EmptyListView
-        title="This list has no tasks"
-        description="Be the first to add a task to this list!"
-      />
+    const createTaskGroupList = useCallback(
+      (groupName) => {
+        dispatch(ListDetailsActions?.createTaskListGroup(groupName));
+      },
+      [dispatch],
     );
-  };
 
-  const onDragEnd = useCallback(
-    ({ destination, source }) => {
-      setDraggableId(null);
-      onTaskOrderChanged();
+    const quickAddTask = useCallback(
+      (task) => {
+        if (task?.description) {
+          const payload = {
+            ...task,
+            autoOpenDrawer: taskCounters?.incomplete === 0,
+          };
 
-      if (!destination) return;
+          dispatch(createTask(payload));
+        }
+      },
+      [dispatch, taskCounters],
+    );
 
-      if (source?.droppableId === destination?.droppableId) {
-        dispatch(reorderTasksInGroup({ destination, source }));
-      } else {
-        dispatch(reassignTasksToAnotherGroup({ destination, source }));
+    const sort = useSelector(taskDetailsSortSelector);
+    const onSortChange = compose(
+      dispatch,
+      ListDetailsActions.sortListDetailsTasks,
+    );
+    const resetSort = useCallback(() => {
+      dispatch(ListDetailsActions.sortListDetailsTasks(null, null));
+    }, [dispatch]);
+
+    const restrictions =
+      TASK_LIST_RESTRICTIONS_PROFILES[currentUser?.orgUserRole];
+    const { DISABLED } = TASK_LIST_RESTRICTIONS_OPTIONS;
+
+    const taskList = useSelector(currentTaskListSelector);
+    const { restrictCustomization } = taskList || {};
+    const currentUserMember = taskList?.listUsers.find(
+      (u) => u.identifier === currentUser?.identifier,
+    );
+    const isListAdmin = isMemberAdmin(currentUserMember);
+    const restrictCustomizationFeatures = restrictCustomization && !isListAdmin;
+
+    const currentOrganization = useSelector(selectedUserOrganizationSelector);
+
+    const iconColorActiveItem = useMemo(
+      () =>
+        currentOrganization?.themeSettings?.find(
+          ({ name }) => name === 'icon.active.color',
+        ) || {},
+      [currentOrganization?.themeSettings],
+    );
+    const defaultGroupNameItem = useMemo(
+      () =>
+        currentOrganization?.themeSettings?.find(
+          ({ name }) => name === 'content.label.default.group',
+        ) || {},
+      [currentOrganization?.themeSettings],
+    );
+    const userSortingSupportEnabledItem = useMemo(
+      () =>
+        currentOrganization?.themeSettings?.find(
+          ({ name }) => name === 'list.tasks.user.sort.enabled',
+        ) || {},
+      [currentOrganization?.themeSettings],
+    );
+    const userSortingSupportEnabled =
+      userSortingSupportEnabledItem?.value !== 'false';
+
+    const renderEmptyState = () => {
+      if (isSearchApplied) return <NoSearchResultsView />;
+
+      if (areFiltersApplied) return <NoFilterResultsView />;
+
+      if (quickAddTask) {
+        return (
+          <EmptyTaskAddView
+            quickAddTask={quickAddTask}
+            taskListIdentifier={taskListIdentifier}
+            iconColorActive={iconColorActiveItem?.value}
+          >
+            {taskCounters?.complete > 0 ? (
+              <EmptyListView
+                title={['Way to go!', 'You’ve completed all of your tasks.']}
+                description="Take a breather, tomorrow is a new day full of possibilities."
+              />
+            ) : (
+              <EmptyListView
+                title="This list has no tasks"
+                description="Be the first to add a task to this list!"
+              />
+            )}
+          </EmptyTaskAddView>
+        );
       }
-    },
-    [dispatch],
-  );
 
-  const onBeforeCapture = useCallback(({ draggableId }) => {
-    setDraggableId(draggableId);
-  }, []);
-
-  const onGroupNameClick = useCallback(
-    (groupName) => createTaskGroupList(groupName),
-    [createTaskGroupList],
-  );
-
-  const hasAnyTask = useMemo(() => {
-    return groupedTasks?.some(({ tasks }) => tasks?.length > 0) || false;
-  }, [groupedTasks]);
-
-  const { bulkEditIsActive } = useContext(BulkEditContext);
-
-  const dragAndDropDisabled = bulkEditIsActive || !userSortingSupportEnabled;
-
-  const isSortApplied = !!sort?.key && !!sort?.order;
-
-  const showClearSortFiltersModal = useCallback(() => {
-    if (isSortApplied) {
-      setDraggableId(null);
-      dispatch(
-        openModalAction('ClearSortFilters', {
-          confirm: () => {
-            resetSort();
-          },
-          closeOnConfirm: true,
-        }),
+      return (
+        <EmptyListView
+          title="This list has no tasks"
+          description="Be the first to add a task to this list!"
+        />
       );
-    }
-  }, [isSortApplied, dispatch, resetSort]);
+    };
 
-  const applyTemplate = useCallback(
-    ({ taskTemplateIdentifier, taskGroupIdentifier }) =>
-      dispatch(
-        applyTaskTemplate({
-          taskTemplateIdentifier,
-          taskListIdentifier,
-          taskGroupIdentifier,
-        }),
-      ),
-    [dispatch, taskListIdentifier],
-  );
+    const onDragEnd = useCallback(
+      ({ destination, source }) => {
+        setDraggableId(null);
+        onTaskOrderChanged();
 
-  const tasksToMap = useMemo(
-    () =>
-      groupList?.filter(
-        ({ taskGroupIdentifier }) =>
-          (!isSearchApplied && !areFiltersApplied) ||
-          groupedTasks?.find((g) => g.groupIdentifier === taskGroupIdentifier)
-            ?.tasks?.length > 0,
-      ),
-    [areFiltersApplied, groupList, groupedTasks, isSearchApplied],
-  );
+        if (!destination) return;
 
-  const moveGroup = useCallback(
-    (index, direction) => {
-      const factor = direction === 'up' ? -1 : 1;
-      dispatch(reorderTaskListGroups(index, index + factor));
-    },
-    [dispatch],
-  );
+        if (source?.droppableId === destination?.droppableId) {
+          dispatch(reorderTasksInGroup({ destination, source }));
+        } else {
+          dispatch(reassignTasksToAnotherGroup({ destination, source }));
+        }
+      },
+      [dispatch],
+    );
 
-  const renderTasks = useCallback(
-    () =>
-      tasksToMap.map(
-        ({ groupName, taskGroupIdentifier, metricValue }, index) => {
-          const group = groupedTasks?.find(
-            (g) => g.groupIdentifier === taskGroupIdentifier,
-          );
-          const isLoadingGroup = group?.isLoadingGroup;
+    const onBeforeCapture = useCallback(({ draggableId }) => {
+      setDraggableId(draggableId);
+    }, []);
 
-          return (
-            <TasksGroup
-              isCompletedGroup={isCompletedView}
-              key={taskGroupIdentifier}
-              isDefaultGroup={groupName === 'DEFAULT'}
-              groupName={
-                groupName === 'DEFAULT'
-                  ? defaultGroupNameItem?.value || 'New tasks'
-                  : groupName
-              }
-              groupTaskCounts={metricValue}
-              quickAddTask={quickAddTask}
-              moveGroupUp={() => moveGroup(index, 'up')}
-              moveGroupDown={() => moveGroup(index, 'down')}
-              isFirstGroup={index === 0}
-              isLastGroup={index === groupList?.length - 1}
-              tasks={group?.tasks || []}
-              isLoadingGroup={isLoadingGroup}
-              isFetchingMoreTasks={group?.isFetchingMoreTasks || false}
-              taskGroupIdentifier={taskGroupIdentifier}
-              onTaskUpdate={onTaskUpdate}
-              draggedId={draggedId}
-              updateWorkflowStatus={updateWorkflowStatus}
-              isSearchApplied={isSearchApplied}
-              listUniqueKey={listUniqueKey}
-              areFiltersApplied={areFiltersApplied}
-              groupPagination
-              hasMoreTasks={group?.hasMore || false}
-              showMoreTasks={() => {
-                loadTasksForTaskGroup({
-                  taskGroupIdentifier,
-                  startPosition: group?.moreTasksIndex || 0,
-                  refresh: false,
-                });
-              }}
-              onTaskGroupViewModeChange={(viewMode) => {
-                loadTasksForTaskGroup({
-                  taskGroupIdentifier,
-                  startPosition: 0,
-                  viewMode,
-                  refresh: true,
-                });
-              }}
-              taskListIdentifier={taskListIdentifier}
-              sort={sort}
-              onSortChange={onSortChange}
-              applyTemplate={applyTemplate}
-              iconColorActive={iconColorActiveItem?.value}
-              restrictCustomizationFeatures={restrictCustomizationFeatures}
-            >
-              {({
-                isFetchingMoreTasks,
-                isCompletedGroup,
-                isFullView,
-                tasks,
-                addingNewSubtaskParentId,
-                groupHasMultipleAssignees,
-                isListFlattened,
-                highlightedTasksParentIdentifier,
-                highlightTasksOfTheSameParent,
-                groupPagination,
-                hasMoreTasks,
-                showMoreTasks,
-              }) => (
-                <>
-                  {(!isLoadingGroup || isFetchingMoreTasks) && (
-                    <Droppable
-                      droppableId={taskGroupIdentifier}
-                      isDropDisabled={isCompletedGroup || isSortApplied}
-                    >
-                      {(providedDroppable, snapshot) => {
-                        return (
-                          <DroppablePlaceholder
-                            isDraggingOverGroup={snapshot?.isDraggingOver}
-                            ref={providedDroppable.innerRef}
-                            {...providedDroppable.droppableProps}
-                          >
-                            {
-                              // eslint-disable-next-line no-shadow
-                              tasks?.map((taskIdentifier, index) => (
-                                <Draggable
-                                  key={taskIdentifier}
-                                  draggableId={taskIdentifier}
-                                  index={index}
-                                  isDragDisabled={
-                                    isCompletedGroup ||
-                                    dragAndDropDisabled ||
-                                    restrictions?.createGroup === DISABLED
-                                  }
-                                >
-                                  {(draggableProvided, { isDragging }) => (
-                                    <>
-                                      {/* {task?.itemType === TaskItemType.TASK ? ( */}
-                                      <StandardTaskItem
-                                        key={taskIdentifier}
-                                        isFullView={isFullView}
-                                        isDragging={isDragging}
-                                        isStartedDnD={
-                                          draggedId === taskIdentifier
-                                        }
-                                        taskIdentifier={taskIdentifier}
-                                        taskGroupIdentifier={
-                                          taskGroupIdentifier
-                                        }
-                                        draggableProvided={draggableProvided}
-                                        isCompletedGroup={isCompletedGroup}
-                                        onTaskUpdate={onTaskUpdate}
-                                        updateWorkflowStatus={
-                                          updateWorkflowStatus
-                                        }
-                                        dragAndDropDisabled={
-                                          isCompletedGroup ||
-                                          dragAndDropDisabled
-                                        }
-                                        isDraggable
-                                        addingNewSubtask={
-                                          addingNewSubtaskParentId ===
-                                          taskIdentifier
-                                        }
-                                        subtasksDisabled={isListFlattened}
-                                        areFiltersApplied={areFiltersApplied}
-                                        isSearchApplied={isSearchApplied}
-                                        shouldShowBlockModalOnDrag={
-                                          isSortApplied
-                                        }
-                                        showClearSortFiltersModal={
-                                          showClearSortFiltersModal
-                                        }
-                                        multipleAssigneesContext={
-                                          groupHasMultipleAssignees
-                                        }
-                                        highlightedTasksParentIdentifier={
-                                          highlightedTasksParentIdentifier
-                                        }
-                                        highlightTasksOfTheSameParent={
-                                          highlightTasksOfTheSameParent
-                                        }
-                                        iconColorActive={
-                                          iconColorActiveItem?.value
-                                        }
-                                        origin={TaskOrigin.LIST}
-                                        viewSetup={viewSetup}
-                                      />
-                                      {/* ) : (
+    const onGroupNameClick = useCallback(
+      (groupName) => createTaskGroupList(groupName),
+      [createTaskGroupList],
+    );
+
+    const hasAnyTask = useMemo(() => {
+      return groupedTasks?.some(({ tasks }) => tasks?.length > 0) || false;
+    }, [groupedTasks]);
+
+    const { bulkEditIsActive } = useContext(BulkEditContext);
+
+    const dragAndDropDisabled = bulkEditIsActive || !userSortingSupportEnabled;
+
+    const isSortApplied = !!sort?.key && !!sort?.order;
+
+    const showClearSortFiltersModal = useCallback(() => {
+      if (isSortApplied) {
+        setDraggableId(null);
+        dispatch(
+          openModalAction('ClearSortFilters', {
+            confirm: () => {
+              resetSort();
+            },
+            closeOnConfirm: true,
+          }),
+        );
+      }
+    }, [isSortApplied, dispatch, resetSort]);
+
+    const applyTemplate = useCallback(
+      ({ taskTemplateIdentifier, taskGroupIdentifier }) =>
+        dispatch(
+          applyTaskTemplate({
+            taskTemplateIdentifier,
+            taskListIdentifier,
+            taskGroupIdentifier,
+          }),
+        ),
+      [dispatch, taskListIdentifier],
+    );
+
+    const tasksToMap = useMemo(
+      () =>
+        groupList?.filter(
+          ({ taskGroupIdentifier }) =>
+            (!isSearchApplied && !areFiltersApplied) ||
+            groupedTasks?.find((g) => g.groupIdentifier === taskGroupIdentifier)
+              ?.tasks?.length > 0,
+        ),
+      [areFiltersApplied, groupList, groupedTasks, isSearchApplied],
+    );
+
+    const moveGroup = useCallback(
+      (index, direction) => {
+        const factor = direction === 'up' ? -1 : 1;
+        dispatch(reorderTaskListGroups(index, index + factor));
+      },
+      [dispatch],
+    );
+
+    const renderTasks = useCallback(
+      () =>
+        tasksToMap.map(
+          ({ groupName, taskGroupIdentifier, metricValue }, index) => {
+            const group = groupedTasks?.find(
+              (g) => g.groupIdentifier === taskGroupIdentifier,
+            );
+            const isLoadingGroup = group?.isLoadingGroup;
+
+            return (
+              <TasksGroup
+                isCompletedGroup={isCompletedView}
+                key={taskGroupIdentifier}
+                isDefaultGroup={groupName === 'DEFAULT'}
+                groupName={
+                  groupName === 'DEFAULT'
+                    ? defaultGroupNameItem?.value || 'New tasks'
+                    : groupName
+                }
+                groupTaskCounts={metricValue}
+                quickAddTask={quickAddTask}
+                moveGroupUp={() => moveGroup(index, 'up')}
+                moveGroupDown={() => moveGroup(index, 'down')}
+                isFirstGroup={index === 0}
+                isLastGroup={index === groupList?.length - 1}
+                tasks={group?.tasks || []}
+                isLoadingGroup={isLoadingGroup}
+                isFetchingMoreTasks={group?.isFetchingMoreTasks || false}
+                taskGroupIdentifier={taskGroupIdentifier}
+                onTaskUpdate={onTaskUpdate}
+                draggedId={draggedId}
+                updateWorkflowStatus={updateWorkflowStatus}
+                isSearchApplied={isSearchApplied}
+                listUniqueKey={listUniqueKey}
+                areFiltersApplied={areFiltersApplied}
+                groupPagination
+                hasMoreTasks={group?.hasMore || false}
+                showMoreTasks={() => {
+                  loadTasksForTaskGroup({
+                    taskGroupIdentifier,
+                    startPosition: group?.moreTasksIndex || 0,
+                    refresh: false,
+                  });
+                }}
+                onTaskGroupViewModeChange={(viewMode) => {
+                  loadTasksForTaskGroup({
+                    taskGroupIdentifier,
+                    startPosition: 0,
+                    viewMode,
+                    refresh: true,
+                  });
+                }}
+                taskListIdentifier={taskListIdentifier}
+                sort={sort}
+                onSortChange={onSortChange}
+                applyTemplate={applyTemplate}
+                iconColorActive={iconColorActiveItem?.value}
+                restrictCustomizationFeatures={restrictCustomizationFeatures}
+              >
+                {({
+                  isFetchingMoreTasks,
+                  isCompletedGroup,
+                  isFullView,
+                  tasks,
+                  addingNewSubtaskParentId,
+                  groupHasMultipleAssignees,
+                  isListFlattened,
+                  highlightedTasksParentIdentifier,
+                  highlightTasksOfTheSameParent,
+                  groupPagination,
+                  hasMoreTasks,
+                  showMoreTasks,
+                }) => (
+                  <>
+                    {(!isLoadingGroup || isFetchingMoreTasks) && (
+                      <Droppable
+                        droppableId={taskGroupIdentifier}
+                        isDropDisabled={isCompletedGroup || isSortApplied}
+                      >
+                        {(providedDroppable, snapshot) => {
+                          return (
+                            <DroppablePlaceholder
+                              isDraggingOverGroup={snapshot?.isDraggingOver}
+                              ref={providedDroppable.innerRef}
+                              {...providedDroppable.droppableProps}
+                            >
+                              {
+                                // eslint-disable-next-line no-shadow
+                                tasks?.map((taskIdentifier, index) => (
+                                  <Draggable
+                                    key={taskIdentifier}
+                                    draggableId={taskIdentifier}
+                                    index={index}
+                                    isDragDisabled={
+                                      isCompletedGroup ||
+                                      dragAndDropDisabled ||
+                                      restrictions?.createGroup === DISABLED
+                                    }
+                                  >
+                                    {(draggableProvided, { isDragging }) => (
+                                      <>
+                                        {/* {task?.itemType === TaskItemType.TASK ? ( */}
+                                        <StandardTaskItem
+                                          key={taskIdentifier}
+                                          isFullView={isFullView}
+                                          isDragging={isDragging}
+                                          isStartedDnD={
+                                            draggedId === taskIdentifier
+                                          }
+                                          taskIdentifier={taskIdentifier}
+                                          taskGroupIdentifier={
+                                            taskGroupIdentifier
+                                          }
+                                          draggableProvided={draggableProvided}
+                                          isCompletedGroup={isCompletedGroup}
+                                          onTaskUpdate={onTaskUpdate}
+                                          updateWorkflowStatus={
+                                            updateWorkflowStatus
+                                          }
+                                          dragAndDropDisabled={
+                                            isCompletedGroup ||
+                                            dragAndDropDisabled
+                                          }
+                                          isDraggable
+                                          addingNewSubtask={
+                                            addingNewSubtaskParentId ===
+                                            taskIdentifier
+                                          }
+                                          subtasksDisabled={isListFlattened}
+                                          areFiltersApplied={areFiltersApplied}
+                                          isSearchApplied={isSearchApplied}
+                                          shouldShowBlockModalOnDrag={
+                                            isSortApplied
+                                          }
+                                          showClearSortFiltersModal={
+                                            showClearSortFiltersModal
+                                          }
+                                          multipleAssigneesContext={
+                                            groupHasMultipleAssignees
+                                          }
+                                          highlightedTasksParentIdentifier={
+                                            highlightedTasksParentIdentifier
+                                          }
+                                          highlightTasksOfTheSameParent={
+                                            highlightTasksOfTheSameParent
+                                          }
+                                          iconColorActive={
+                                            iconColorActiveItem?.value
+                                          }
+                                          origin={TaskOrigin.LIST}
+                                          viewSetup={viewSetup}
+                                        />
+                                        {/* ) : (
                                         <TaskTemplateGroup
                                           isCompletedTab={isCompletedView}
                                           viewSetup={viewSetup}
@@ -440,116 +441,119 @@ const ListDetailsTasks = ({
                                           origin={TaskOrigin.LIST}
                                         />
                                       )} */}
-                                    </>
-                                  )}
-                                </Draggable>
-                              ))
-                            }
-                            {providedDroppable.placeholder}
-                          </DroppablePlaceholder>
-                        );
-                      }}
-                    </Droppable>
-                  )}
-                  {(isLoadingGroup || isFetchingMoreTasks) && (
-                    <TasksSkeletonLoader rows={4} />
-                  )}
-                  {groupPagination && hasMoreTasks && !areFiltersApplied && (
-                    <StickyContainer left={24} decreaseWidth={2 * 24}>
-                      <LoadMoreSection>
-                        {group?.moreTasksIndex &&
-                          group?.moreTasksIndex !== 0 &&
-                          !isLoadingGroup && (
-                            <LoadMoreButton onClick={showMoreTasks} />
+                                      </>
+                                    )}
+                                  </Draggable>
+                                ))
+                              }
+                              {providedDroppable.placeholder}
+                            </DroppablePlaceholder>
+                          );
+                        }}
+                      </Droppable>
+                    )}
+                    {(isLoadingGroup || isFetchingMoreTasks) && (
+                      <TasksSkeletonLoader rows={4} />
+                    )}
+                    {groupPagination && hasMoreTasks && !areFiltersApplied && (
+                      <StickyContainer left={24} decreaseWidth={2 * 24}>
+                        <LoadMoreSection>
+                          {group?.moreTasksIndex &&
+                            group?.moreTasksIndex !== 0 &&
+                            !isLoadingGroup && (
+                              <LoadMoreButton onClick={showMoreTasks} />
+                            )}
+                        </LoadMoreSection>
+                      </StickyContainer>
+                    )}
+                    {groupPagination && hasMoreTasks && areFiltersApplied && (
+                      <StickyContainer left={24} decreaseWidth={2 * 24}>
+                        <LoadMoreSection>
+                          {(!group?.moreTasksIndex ||
+                            group?.moreTasksIndex === 0) && (
+                            <span>Limiting results. Please refine filter.</span>
                           )}
-                      </LoadMoreSection>
-                    </StickyContainer>
-                  )}
-                  {groupPagination && hasMoreTasks && areFiltersApplied && (
-                    <StickyContainer left={24} decreaseWidth={2 * 24}>
-                      <LoadMoreSection>
-                        {(!group?.moreTasksIndex ||
-                          group?.moreTasksIndex === 0) && (
-                          <span>Limiting results. Please refine filter.</span>
+                        </LoadMoreSection>
+                      </StickyContainer>
+                    )}
+                  </>
+                )}
+              </TasksGroup>
+            );
+          },
+        ),
+      [
+        tasksToMap,
+        groupedTasks,
+        isCompletedView,
+        defaultGroupNameItem?.value,
+        quickAddTask,
+        groupList?.length,
+        onTaskUpdate,
+        draggedId,
+        updateWorkflowStatus,
+        isSearchApplied,
+        listUniqueKey,
+        areFiltersApplied,
+        taskListIdentifier,
+        sort,
+        onSortChange,
+        applyTemplate,
+        iconColorActiveItem?.value,
+        restrictCustomizationFeatures,
+        moveGroup,
+        loadTasksForTaskGroup,
+        isSortApplied,
+        dragAndDropDisabled,
+        restrictions?.createGroup,
+        DISABLED,
+        showClearSortFiltersModal,
+        viewSetup,
+      ],
+    );
+
+    if (isFetchingData || isEmpty(groupList))
+      return <GroupedListSkeletonLoader />;
+
+    return (
+      <TaskGroupsContainer>
+        {isSearchApplied && !hasAnyTask ? (
+          renderEmptyState()
+        ) : (
+          <>
+            <DragDropContext
+              onBeforeCapture={onBeforeCapture}
+              onBeforeDragStart={showClearSortFiltersModal}
+              onDragEnd={isSortApplied ? () => {} : onDragEnd}
+            >
+              {renderTasks()}
+              {!!createTaskGroupList &&
+                !isSearchApplied &&
+                !areFiltersApplied && (
+                  <StickyContainer left={24} decreaseWidth={2 * 24}>
+                    <GroupNameSection
+                      onEnterClick={
+                        restrictions?.createGroup !== DISABLED &&
+                        !restrictCustomizationFeatures
+                          ? onGroupNameClick
+                          : () => {}
+                      }
+                      placeholder={messages.placeholder}
+                      closeOnEnter
+                    >
+                      {restrictions?.createGroup !== DISABLED &&
+                        !restrictCustomizationFeatures && (
+                          <AddGroupNameButton />
                         )}
-                      </LoadMoreSection>
-                    </StickyContainer>
-                  )}
-                </>
-              )}
-            </TasksGroup>
-          );
-        },
-      ),
-    [
-      tasksToMap,
-      groupedTasks,
-      isCompletedView,
-      defaultGroupNameItem?.value,
-      quickAddTask,
-      groupList?.length,
-      onTaskUpdate,
-      draggedId,
-      updateWorkflowStatus,
-      isSearchApplied,
-      listUniqueKey,
-      areFiltersApplied,
-      taskListIdentifier,
-      sort,
-      onSortChange,
-      applyTemplate,
-      iconColorActiveItem?.value,
-      restrictCustomizationFeatures,
-      moveGroup,
-      loadTasksForTaskGroup,
-      isSortApplied,
-      dragAndDropDisabled,
-      restrictions?.createGroup,
-      DISABLED,
-      showClearSortFiltersModal,
-      viewSetup,
-    ],
-  );
-
-  if (isFetchingData || isEmpty(groupList))
-    return <GroupedListSkeletonLoader />;
-
-  return (
-    <TaskGroupsContainer>
-      {isSearchApplied && !hasAnyTask ? (
-        renderEmptyState()
-      ) : (
-        <>
-          <DragDropContext
-            onBeforeCapture={onBeforeCapture}
-            onBeforeDragStart={showClearSortFiltersModal}
-            onDragEnd={isSortApplied ? () => {} : onDragEnd}
-          >
-            {renderTasks()}
-            {!!createTaskGroupList &&
-              !isSearchApplied &&
-              !areFiltersApplied && (
-                <StickyContainer left={24} decreaseWidth={2 * 24}>
-                  <GroupNameSection
-                    onEnterClick={
-                      restrictions?.createGroup !== DISABLED &&
-                      !restrictCustomizationFeatures
-                        ? onGroupNameClick
-                        : () => undefined
-                    }
-                    placeholder={messages.placeholder}
-                    closeOnEnter
-                  >
-                    {restrictions?.createGroup !== DISABLED &&
-                      !restrictCustomizationFeatures && <AddGroupNameButton />}
-                  </GroupNameSection>
-                </StickyContainer>
-              )}
-          </DragDropContext>
-        </>
-      )}
-    </TaskGroupsContainer>
-  );
-};
+                    </GroupNameSection>
+                  </StickyContainer>
+                )}
+            </DragDropContext>
+          </>
+        )}
+      </TaskGroupsContainer>
+    );
+  },
+);
 
 export default ListDetailsTasks;

@@ -686,6 +686,12 @@ const TaskTemplateGroupHeader = ({
     [patient, dispatch],
   );
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const handleWorkflowUpdate = useCallback(
+    compose(dispatch, updatePartialWorkflow),
+    [dispatch, updatePartialWorkflow, compose],
+  );
+
   return (
     <TaskTemplateGroupHeaderContainer isSelected={isBundleSelected}>
       {randerFirstColumnCoverIfNecessary(
@@ -960,7 +966,7 @@ const TaskTemplateGroupHeader = ({
             >
               <TemplateItemWorkflowStatus
                 workflow={templateGroup}
-                onWorkflowUpdate={compose(dispatch, updatePartialWorkflow)}
+                onWorkflowUpdate={handleWorkflowUpdate}
                 highlightedValue={highlightedValue}
                 readOnly={restrictions?.status === READ_ONLY}
               />
