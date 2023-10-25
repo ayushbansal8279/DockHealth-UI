@@ -159,7 +159,7 @@ const OnboardingQuestionsGuest = ({
         secondaryColor={palette.oPlusRed}
         style={{ marginTop: '25px' }}
       >
-        Continue To Dashboard
+        Continue
       </Button>
     </div>
   );

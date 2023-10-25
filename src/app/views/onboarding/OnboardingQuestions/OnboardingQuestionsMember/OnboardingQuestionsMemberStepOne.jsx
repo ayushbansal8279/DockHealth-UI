@@ -76,7 +76,7 @@ const OnboardingQuestionsOwnerGuest = ({
         width="265px"
         style={{ marginTop: '25px' }}
       >
-        Continue To Dashboard
+        Continue
       </Button>
     </div>
   );

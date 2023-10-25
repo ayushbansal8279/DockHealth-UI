@@ -2,6 +2,7 @@ import React from 'react';
 import Spacing from 'components/common/Spacing';
 import Button from 'components/common/Button/Button';
 import { MontserratTypography } from 'styles/theme-montserrat';
+import palette from 'styles/palette';
 import {
   Option,
   QuestionContainer,
@@ -18,7 +19,7 @@ const OnboardingQuestionsGuest = ({
 }) => (
   <div>
     <QuestionContainer>
-      <MontserratTypography>
+      <MontserratTypography variant="h2" weight={500}>
         I&apos;d like to learn more about how to optimize Dock with a 1:1 info
         session with the Dock team{' '}
         <TutorialOptionsContainer>
@@ -63,6 +64,8 @@ const OnboardingQuestionsGuest = ({
         onClick={onSendAnswers}
         type="button"
         disabled={isDisabledButton}
+        color={palette.brightOrange}
+        secondaryColor={palette.oPlusRed}
         width="265px"
       >
         Next Step

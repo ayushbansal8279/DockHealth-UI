@@ -3,6 +3,8 @@
 import React, { useState, useRef, useMemo, useCallback } from 'react';
 import Spacing from 'components/common/Spacing';
 import Button from 'components/common/Button/Button';
+import { MontserratTypography } from 'styles/theme-montserrat';
+import palette from 'styles/palette';
 import OnboardingQuestionsPicker from '../OnboardingQuestionsPicker';
 import { HEALTH_RECORD_OPTIONS, SOFTWARE_OPTIONS } from '../options';
 import { Option, QuestionContainer, ButtonContainer } from '../styled';
@@ -25,40 +27,49 @@ const OnboardingQuestionsOwnerStepTwo = ({
 
   const questionReference = useMemo(() => {
     switch (activeOption) {
-      case 'HEALTH_RECORD':
+      case 'HEALTH_RECORD': {
         return healthRecordReference;
+      }
 
-      case 'SOFTWARE':
+      case 'SOFTWARE': {
         return softwareReference;
+      }
 
-      default:
+      default: {
         return null;
+      }
     }
   }, [activeOption]);
 
   const getOptions = useCallback(() => {
     switch (activeOption) {
-      case 'HEALTH_RECORD':
+      case 'HEALTH_RECORD': {
         return HEALTH_RECORD_OPTIONS;
+      }
 
-      case 'SOFTWARE':
+      case 'SOFTWARE': {
         return SOFTWARE_OPTIONS;
+      }
 
-      default:
+      default: {
         return [];
+      }
     }
   }, [activeOption]);
 
   const getSelectedOptions = useCallback(() => {
     switch (activeOption) {
-      case 'HEALTH_RECORD':
+      case 'HEALTH_RECORD': {
         return healthRecordOptions;
+      }
 
-      case 'SOFTWARE':
+      case 'SOFTWARE': {
         return softwareOptions;
+      }
 
-      default:
+      default: {
         return [];
+      }
     }
   }, [activeOption, healthRecordOptions, softwareOptions]);
 
@@ -66,24 +77,25 @@ const OnboardingQuestionsOwnerStepTwo = ({
 
   const onSelectOption = useMemo(() => {
     switch (activeOption) {
-      case 'HEALTH_RECORD':
+      case 'HEALTH_RECORD': {
         return (option) =>
-          healthRecordOptions.some((opt) => opt === option)
+          healthRecordOptions.includes((opt) => opt === option)
             ? setHealthRecordOptions(
                 healthRecordOptions.filter((opt) => opt !== option),
               )
             : setHealthRecordOptions([...healthRecordOptions, option]);
-
-      case 'SOFTWARE':
+      }
+      case 'SOFTWARE': {
         return (option) =>
-          softwareOptions.some((opt) => opt === option)
+          softwareOptions.includes(option)
             ? setSoftwareOptions(
                 softwareOptions.filter((opt) => opt !== option),
               )
             : setSoftwareOptions([...softwareOptions, option]);
-
-      default:
+      }
+      default: {
         return null;
+      }
     }
   }, [
     activeOption,
@@ -122,23 +134,25 @@ const OnboardingQuestionsOwnerStepTwo = ({
   return (
     <div>
       <QuestionContainer>
-        We use{' '}
-        <Option
-          ref={healthRecordReference}
-          onClick={openHealthRecordPicker}
-          hasSelectedOption={healthRecordOptions.length !== 0}
-        >
-          {healthRecordText}
-        </Option>{' '}
-        as our electronic health record and{' '}
-        <Option
-          ref={softwareReference}
-          onClick={openSoftwarePicker}
-          hasSelectedOption={softwareOptions.length !== 0}
-        >
-          {softwareText}
-        </Option>{' '}
-        in the practice.
+        <MontserratTypography variant="h2" weight={500}>
+          We use{' '}
+          <Option
+            ref={healthRecordReference}
+            onClick={openHealthRecordPicker}
+            hasSelectedOption={healthRecordOptions.length > 0}
+          >
+            {healthRecordText}
+          </Option>{' '}
+          as our electronic health record and{' '}
+          <Option
+            ref={softwareReference}
+            onClick={openSoftwarePicker}
+            hasSelectedOption={softwareOptions.length > 0}
+          >
+            {softwareText}
+          </Option>{' '}
+          in the practice.
+        </MontserratTypography>
       </QuestionContainer>
       <OnboardingQuestionsPicker
         isOpen={!!activeOption}
@@ -164,6 +178,8 @@ const OnboardingQuestionsOwnerStepTwo = ({
           onClick={onSendAnswers}
           type="button"
           disabled={isDisabledButton}
+          color={palette.brightOrange}
+          secondaryColor={palette.oPlusRed}
           width="265px"
         >
           Next Step

@@ -2,6 +2,7 @@ import React from 'react';
 import Spacing from 'components/common/Spacing';
 import Button from 'components/common/Button/Button';
 import { MontserratTypography } from 'styles/theme-montserrat';
+import palette from 'styles/palette';
 import {
   Option,
   QuestionContainer,
@@ -64,6 +65,8 @@ const OnboardingQuestionsOwnerGuest = ({
         type="button"
         disabled={isDisabledButton}
         width="265px"
+        color={palette.brightOrange}
+        secondaryColor={palette.oPlusRed}
       >
         Next Step
       </Button>
