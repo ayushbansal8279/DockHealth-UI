@@ -81,18 +81,26 @@ const OnboardingGrid = () => {
                 '&:first-child td': { width: `50px` },
               }}
             >
-              <TableCell sx={{ width: 75, border: 1, borderColor: '#E5E9F2' }}>
-                <CircleIcon src={Circle} isCompleted={false} />
-              </TableCell>
               <TableCell
                 sx={{ border: 1, borderColor: '#E5E9F2' }}
                 style={{ height: 'inherit' }}
               >
-                {row?.description && row?.description !== '' ? (
-                  <>{row?.description}</>
-                ) : (
-                  <BlankCellContent />
-                )}
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '10px',
+                  }}
+                >
+                  <div>
+                    <CircleIcon src={Circle} isCompleted={false} />
+                  </div>
+                  {row?.description && row?.description !== '' ? (
+                    <>{row?.description}</>
+                  ) : (
+                    <BlankCellContent />
+                  )}
+                </div>
               </TableCell>
               <TableCell
                 sx={{ border: 1, borderColor: '#E5E9F2', height: 'inherit' }}

@@ -3,28 +3,11 @@
 import React, { useState, useRef, useMemo, useCallback } from 'react';
 import Spacing from 'components/common/Spacing';
 import Button from 'components/common/Button/Button';
-import OnboardingQuestionsPicker from '../OnboardingQuestionsPicker';
+import { MontserratTypography } from 'styles/theme-montserrat';
+import palette from 'styles/palette';
 import { ROLE_OPTIONS, DOMAIN_OPTIONS } from '../options';
 import { Option, QuestionContainer } from '../styled';
-import { MontserratTypography } from 'styles/theme-montserrat';
-Autocomplete;
-import palette from 'styles/palette';
-import Autocomplete from 'components/common/Autocomplete/Autocomplete';
-import { styled } from '@mui/material/styles';
-
-const StandardAutocompleteMUI = styled(Autocomplete)`
-  &&& {
-    &.MuiAutocomplete-option {
-      padding: 0;
-    }
-    &.MuiAutocomplete-listbox {
-      padding: 0;
-    }
-    &.MuiAutocomplete-noOption {
-      padding: 0;
-    }
-  }
-`;
+import OnboardingQuestionsPicker from '../OnboardingQuestionsPicker';
 
 const OnboardingQuestionsGuest = ({
   roleOptions,
@@ -134,11 +117,7 @@ const OnboardingQuestionsGuest = ({
 
   return (
     <div>
-      <MontserratTypography
-        variant="h1"
-        weight="700"
-        textDecoration={{ lineHeight: '82px' }}
-      >
+      <MontserratTypography variant="h1" weight="700">
         <QuestionContainer>
           My domain of care is:{' '}
           <Option
@@ -148,6 +127,7 @@ const OnboardingQuestionsGuest = ({
           >
             {roleText}
           </Option>
+          <Spacing vertical={1} />
           <Option
             ref={domainReference}
             onClick={openDomainPicker}
@@ -177,8 +157,9 @@ const OnboardingQuestionsGuest = ({
         width="265px"
         color={palette.brightOrange}
         secondaryColor={palette.oPlusRed}
+        style={{ marginTop: '25px' }}
       >
-        Next Step
+        Continue To Dashboard
       </Button>
     </div>
   );

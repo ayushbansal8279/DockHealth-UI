@@ -1,6 +1,7 @@
 import React from 'react';
 import Spacing from 'components/common/Spacing';
 import Button from 'components/common/Button/Button';
+import { MontserratTypography } from 'styles/theme-montserrat';
 import {
   Option,
   QuestionContainer,
@@ -17,24 +18,26 @@ const OnboardingQuestionsOwnerGuest = ({
 }) => (
   <div>
     <QuestionContainer>
-      I&apos;d like to learn more about how to optimize Dock with a 1:1 info
-      session with the Dock team{' '}
-      <TutorialOptionsContainer>
-        <Option
-          onClick={() => setTutorialOption('yes')}
-          hasSelectedOption={tutorialOption === 'yes'}
-        >
-          Yes
-        </Option>
-        {' / '}
-        <Option
-          onClick={() => setTutorialOption('no')}
-          hasSelectedOption={tutorialOption === 'no'}
-        >
-          No
-        </Option>
-      </TutorialOptionsContainer>
-      .
+      <MontserratTypography variant="h2">
+        I&apos;d like to learn more about how to optimize Dock with a 1:1 info
+        session with the Dock team{' '}
+        <TutorialOptionsContainer>
+          <Option
+            onClick={() => setTutorialOption('yes')}
+            hasSelectedOption={tutorialOption === 'yes'}
+          >
+            Yes
+          </Option>
+          {' / '}
+          <Option
+            onClick={() => setTutorialOption('no')}
+            hasSelectedOption={tutorialOption === 'no'}
+          >
+            No
+          </Option>
+        </TutorialOptionsContainer>
+        .
+      </MontserratTypography>
     </QuestionContainer>
     <Spacing vertical={5} />
     {tutorialOption === 'yes' && (

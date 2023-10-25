@@ -44,7 +44,7 @@ const OnboardingQuestionsOwnerGuest = ({
 
   return (
     <div>
-      <MontserratTypography>
+      <MontserratTypography variant="h1" weight="700">
         <QuestionContainer>
           My domain of care is:
           <Option
@@ -74,8 +74,9 @@ const OnboardingQuestionsOwnerGuest = ({
         type="button"
         disabled={isDisabledButton}
         width="265px"
+        style={{ marginTop: '25px' }}
       >
-        Next Step
+        Continue To Dashboard
       </Button>
     </div>
   );

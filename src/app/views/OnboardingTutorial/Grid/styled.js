@@ -27,7 +27,8 @@ export const CircleIcon = styled.img`
 
 export const BlankCellContent = styled.div`
   background-color: #e5e9f2;
-  height: 100%;
+  height: 25px;
+  width: 100%;
 `;
 
 export const AvatarIconContainer = styled.div`

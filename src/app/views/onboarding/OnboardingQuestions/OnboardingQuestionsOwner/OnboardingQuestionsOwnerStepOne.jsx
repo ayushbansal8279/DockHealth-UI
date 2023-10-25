@@ -4,6 +4,7 @@ import React, { useState, useRef, useMemo, useCallback } from 'react';
 import Spacing from 'components/common/Spacing';
 import Button from 'components/common/Button/Button';
 import { MontserratTypography } from 'styles/theme-montserrat';
+import palette from 'styles/palette';
 import OnboardingQuestionsPicker from '../OnboardingQuestionsPicker';
 import { ROLE_OPTIONS, DOMAIN_OPTIONS } from '../options';
 import { Option, QuestionContainer } from '../styled';
@@ -110,7 +111,7 @@ const OnboardingQuestionsOwnerStepOne = ({
 
   return (
     <div>
-      <MontserratTypography>
+      <MontserratTypography variant="h1" weight="700">
         <QuestionContainer>
           My domain of care is:
           <Option
@@ -149,8 +150,11 @@ const OnboardingQuestionsOwnerStepOne = ({
         type="button"
         disabled={isDisabledButton}
         width="265px"
+        color={palette.brightOrange}
+        secondaryColor={palette.oPlusRed}
+        style={{ marginTop: '25px' }}
       >
-        Next Step
+        Continue To Dashboard
       </Button>
     </div>
   );
