@@ -30,7 +30,7 @@ const Task = React.memo(
     isDragging,
     draggableProvided = {},
     isDraggable,
-    addingNewSubtask,
+    // addingNewSubtask,
     subtasksDisabled,
     areFiltersApplied,
     isSearchApplied,
