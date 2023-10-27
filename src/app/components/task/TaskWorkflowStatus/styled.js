@@ -64,7 +64,7 @@ export const StatusList = styled.div`
       return 280;
     }
 
-    return 420;
+    return 550;
   }}px;
   max-height: ${10 * 32}px;
   margin: ${spacing.small} 0;
