@@ -40,7 +40,7 @@ import { makeFaxNumber, renderAddOrEdit, validateFaxInput } from '../helpers';
 const SendFaxFromTaskModal = () => {
   const dispatch = useDispatch();
   const [message, setMessage] = useState(null);
-  const [defaultValue, setDefaultValue] = useState('');
+  const [isValueReset, setValueReset] = useState(false);
 
   const [faxError, setFaxError] = useState(false);
   const [contact, setContact] = useState(null);
@@ -85,6 +85,7 @@ const SendFaxFromTaskModal = () => {
   // };
 
   const handleContactsOnChange = useCallback((_event, newValue, reason) => {
+    console.log(newValue);
     if (reason === 'clear') {
       setContact(null);
       return;
@@ -100,7 +101,7 @@ const SendFaxFromTaskModal = () => {
     } else {
       setContact(newValue);
     }
-  });
+  }, []);
 
   const isValidToSend = !!(
     validateFaxInput(contact?.value ?? '') &&
@@ -161,7 +162,7 @@ const SendFaxFromTaskModal = () => {
                   const updatedValue = message
                     ? `${message} ${data?.details ?? ''}`
                     : data?.details ?? '';
-                  setDefaultValue(updatedValue);
+                  setValueReset(true);
                   setMessage(updatedValue);
                 },
               );
@@ -172,7 +173,7 @@ const SendFaxFromTaskModal = () => {
             <CustomTextEditor label="Fax Cover Message">
               <RichTextEditor
                 value={message}
-                defaultValue={defaultValue}
+                reset={isValueReset}
                 readOnly={false}
                 placeholder="Fax Message"
                 onChange={handleTextEditorChange}
