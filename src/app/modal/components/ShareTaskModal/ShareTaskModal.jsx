@@ -4,14 +4,18 @@ import { useDispatch } from 'react-redux';
 import Button from 'components/common/Button/Button';
 import * as TaskActions from 'actions/task-actions';
 import { string } from 'yup';
+import Spacing from 'components/common/Spacing';
+import Checkbox from 'components/common/Checkbox/Checkbox';
 import {
   ModalWrapperWithPadding,
   CloseIconButton,
   CloseIcon,
   ModalHeader,
   ModalDescription,
+  CheckboxContainer,
+  CheckboxDescription,
 } from '../styled';
-import { MessageTextarea } from './styled';
+// import { MessageTextarea } from './styled';
 import AddExternalUser from './AddExternalUser/AddExternalUser';
 import UsersSelect from './UsersSelect/UsersSelect';
 
@@ -22,6 +26,7 @@ const ShareTaskModal = (props) => {
     useState(null);
   const [selectedUsers, setSelectedUsers] = useState([]);
   const [messageValue, setMessageValue] = useState('');
+  const [assignTask, setAssignTask] = useState(false);
 
   const addSelectedUser = (user) => {
     setSelectedUsers((u) => [...u, user]);
@@ -75,6 +80,7 @@ const ShareTaskModal = (props) => {
         userIdentifiers,
         externalUsers,
         messageValue,
+        assignTask,
       ),
     );
   };
@@ -113,6 +119,22 @@ const ShareTaskModal = (props) => {
               onChange={(event) => setMessageValue(event?.target?.value || '')}
             />
           )} */}
+          <Box
+            display="flex"
+            width="100%"
+            justifyContent="flex-start"
+            mt="16px"
+          >
+            <CheckboxContainer>
+              <Checkbox
+                size={16}
+                onClick={() => setAssignTask(!assignTask)}
+                isChecked={assignTask}
+              />
+              <Spacing horizontal={3} />
+              <CheckboxDescription>Assign Task</CheckboxDescription>
+            </CheckboxContainer>
+          </Box>
           <Box display="flex" width="100%" justifyContent="flex-end" mt="16px">
             <Button
               type="button"

@@ -63,7 +63,7 @@ const SendEmailFromTaskModal = () => {
   const [isTaskCommentsIncluded, setIsTaskCommentsIncluded] = useState(false);
 
   const [detailsState, setDetailsState] = useState('');
-  const [defaultValue, setDefaultValue] = useState('');
+  const [isValueReset, setValueReset] = useState(false);
 
   const [attachmentsToSend, setAttachmentsToSend] = useState([]);
   const insertTextFromTask = useCallback(
@@ -73,7 +73,7 @@ const SendEmailFromTaskModal = () => {
       const updatedValue = detailsState
         ? `${detailsState} \n\r ${meta?.tokenized ?? ''}`
         : meta?.tokenized ?? '';
-      setDefaultValue(updatedValue);
+      setValueReset(true);
       setDetailsState(updatedValue);
     },
     [detailsState],
@@ -100,8 +100,8 @@ const SendEmailFromTaskModal = () => {
     setIsTaskCommentsIncluded(false);
     setIsTaskDescriptionIncluded(false);
     setIsTaskDetailsIncluded(false);
+    setValueReset(true);
     setDetailsState('');
-    setDefaultValue('');
   }, []);
 
   const addAttachmentHandler = useCallback(
@@ -201,7 +201,7 @@ const SendEmailFromTaskModal = () => {
                   const updatedValue = detailsState
                     ? `${detailsState} ${data?.details ?? ''}`
                     : data?.details ?? '';
-                  setDefaultValue(updatedValue);
+                  setValueReset(true);
                   setDetailsState(updatedValue);
                   setSubject(data?.shortMessage ?? '');
                 },
@@ -239,7 +239,7 @@ const SendEmailFromTaskModal = () => {
           <CustomTextEditor label="Email body">
             <RichTextEditor
               value={detailsState}
-              defaultValue={defaultValue}
+              reset={isValueReset}
               readOnly={false}
               placeholder="Email Body"
               onChange={handleTextEditorChange}
