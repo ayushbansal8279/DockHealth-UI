@@ -160,3 +160,17 @@ export const InfoHeaderTextStyled = styled.p`
   font-weight: 600;
   margin: 0;
 `;
+
+export const CheckboxContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding-left: 10px;
+`;
+
+export const CheckboxDescription = styled.label`
+  display: inline;
+  font-family: 'Roboto Condensed', sans-serif;
+  font-size: ${fontSizes.regular};
+  color: ${palette.mediumGrey};
+`;
