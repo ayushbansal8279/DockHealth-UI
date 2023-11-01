@@ -8,8 +8,9 @@ import React, {
   useMemo,
   useEffect,
 } from 'react';
+import { renderToString } from 'react-dom/server';
 // import { useSelector } from 'react-redux';
-// import debounce from 'lodash.debounce';
+import debounce from 'lodash.debounce';
 import palette from 'styles/palette';
 import { fontSizes, fontWeights } from 'styles/font';
 import { getPatientsByCriteria } from 'api/patients-api';
@@ -22,6 +23,11 @@ import { markdownItUnderline } from './helpers';
 // import { Avatar } from './styled';
 import 'tributejs/dist/tribute.css';
 import './styles.css';
+import {
+  SUGGESTIONS_PLACEHOLDER,
+  mapPatientsToSuggestions,
+} from '../TextEditor/helpers';
+import PatientsSuggestionsPopover from '../TextEditor/PatientsSuggestionsPopover/PatientsSuggestionsPopover';
 
 const md = new MarkdownIt({
   html: true,
@@ -64,21 +70,19 @@ turndownService = turndownService.addRule('underline', {
 const FROALA_PRODUCT_KEY =
   'MZC1rE1D4D3I4A16B11D8jF1QUg1Xc2OZE1ABVJRDRNGGUH1ITrA1C7A6D5E1D4D4E1B10D7==';
 
-//   const fetchPatientsWithDebounce = debounce(
-//     (value, setPatientSuggestions, areSuggestionsOpened) => {
-//       getPatientsByCriteria(value).then((fetchedPatients) => {
-//         if (areSuggestionsOpened.current) {
-//           const formattedPatients = mapPatientsToSuggestions(fetchedPatients);
-//           setPatientSuggestions(
-//             formattedPatients.length > 0
-//               ? formattedPatients
-//               : [SUGGESTIONS_PLACEHOLDER],
-//           );
-//         }
-//       });
-//     },
-//     300,
-//   );
+const fetchPatientsWithDebounce = debounce((value, setPatientSuggestions) => {
+  console.log(`inside of debounce:`, value);
+  getPatientsByCriteria(value).then((fetchedPatients) => {
+    console.log(`returned value from debounce:`, fetchedPatients);
+
+    const formattedPatients = mapPatientsToSuggestions(fetchedPatients);
+    setPatientSuggestions(
+      formattedPatients.length > 0
+        ? formattedPatients
+        : [SUGGESTIONS_PLACEHOLDER],
+    );
+  });
+}, 300);
 
 const toolbarOptions = [
   'bold',
@@ -200,66 +204,71 @@ const RichTextEditor = React.forwardRef(
     // const showToolbarInline = !showToolbar;
 
     const tribute = new Tribute({
-      trigger: '@',
-      // eslint-disable-next-line func-names, object-shorthand, unicorn/prevent-abbreviations
-      values: function (mentionString, cb) {
-        if (taskListIdentifier && mentionString) {
-          getListMembersByName(taskListIdentifier, mentionString).then(
-            (fetchedUsers) => {
-              // fetchedUsers.map((user) => {
-              //   images[user.identifier] =
-              //     getUserAvatarThumbnailUrl(user) ||
-              //     (isUserGroup(user)
-              //       ? user.initials?.[0].toUpperCase()
-              //       : user.initials?.toLowerCase());
-              // });
-              cb(fetchedUsers);
-            },
-          );
-        }
-      },
-      menuShowMinLength: 0,
-      allowSpaces: true,
-      requireLeadingSpace: false,
-      lookup: 'name',
-      searchOpts: {
-        skip: true, // true will skip local search, useful if doing server-side search
-      },
-      containerClass: 'tribute-container', // class added to the menu container
-      itemClass: '', // class added to each list item
-      selectClass: 'highlight', // class added in the flyout menu for active item
-      // eslint-disable-next-line func-names, object-shorthand
-      menuItemTemplate: function (item) {
-        const option = item.original;
-        // return `<span className="text">${option.name}</span>`;
-        // return renderToString(
-        //   <MenuItem
-        //     key={option.identifier}
-        //     ref={option.setRefElement}
-        //     role="option"
-        //     // aria-selected={isSelected}
-        //     // id={`typeahead-item-${index}`}
-        //   >
-        //     {/* <Avatar $color={option.color}>
-        //       {option.picture?.length > 2 ? (
-        //         <img src={option.picture} alt="avatar" />
-        //       ) : (
-        //         option.picture
-        //       )}
-        //     </Avatar> */}
-        //     {/* <span className="text">
-        //       {option.name} - {option.identifier}
-        //     </span> */}
-        //     <UserMention mention={option} />
-        //   </MenuItem>,
-        // );
-        return `<div>
+      collection: [
+        {
+          trigger: '@',
+          // eslint-disable-next-line func-names, object-shorthand, unicorn/prevent-abbreviations
+          values: function (mentionString, cb) {
+            console.log(`mention string: ${mentionString}`);
+            if (taskListIdentifier && mentionString) {
+              getListMembersByName(taskListIdentifier, mentionString).then(
+                (fetchedUsers) => {
+                  console.log(`fetched users:`, fetchedUsers);
+                  // fetchedUsers.map((user) => {
+                  //   images[user.identifier] =
+                  //     getUserAvatarThumbnailUrl(user) ||
+                  //     (isUserGroup(user)
+                  //       ? user.initials?.[0].toUpperCase()
+                  //       : user.initials?.toLowerCase());
+                  // });
+                  cb(fetchedUsers);
+                },
+              );
+            }
+          },
+          menuShowMinLength: 0,
+          allowSpaces: true,
+          requireLeadingSpace: false,
+          lookup: 'name',
+          searchOpts: {
+            skip: true, // true will skip local search, useful if doing server-side search
+          },
+          containerClass: 'tribute-container', // class added to the menu container
+          itemClass: '', // class added to each list item
+          selectClass: 'highlight', // class added in the flyout menu for active item
+          // eslint-disable-next-line func-names, object-shorthand
+          menuItemTemplate: function (item) {
+            console.log(`menu template item:`, item);
+            const option = item.original;
+            // return `<span className="text">${option.name}</span>`;
+            // return renderToString(
+            //   <MenuItem
+            //     key={option.identifier}
+            //     ref={option.setRefElement}
+            //     role="option"
+            //     // aria-selected={isSelected}
+            //     // id={`typeahead-item-${index}`}
+            //   >
+            //     {/* <Avatar $color={option.color}>
+            //       {option.picture?.length > 2 ? (
+            //         <img src={option.picture} alt="avatar" />
+            //       ) : (
+            //         option.picture
+            //       )}
+            //     </Avatar> */}
+            //     {/* <span className="text">
+            //       {option.name} - {option.identifier}
+            //     </span> */}
+            //     <UserMention mention={option} />
+            //   </MenuItem>,
+            // );
+            return `<div>
           <div class="profile">
               <img src=${
                 import.meta.env.VITE_HEYDOC_SERVICES_BASE_URL
               }user/profilePicture/${
-          option.identifier
-        }?UserPictureType=PROFILE_THUMBNAIL alt="" />
+              option.identifier
+            }?UserPictureType=PROFILE_THUMBNAIL alt="" />
           </div>
           <p 
             style="margin-bottom: 0;
@@ -272,15 +281,86 @@ const RichTextEditor = React.forwardRef(
             ${option.name}
           </p>
         </div>`;
-      },
-      // eslint-disable-next-line func-names, object-shorthand
-      // noMatchTemplate: function () {
-      //   return '<span>@People</span>';
-      // },
-      // eslint-disable-next-line func-names, object-shorthand
-      selectTemplate: function (item) {
-        return `<span class="fr-deletable fr-tribute" data-people-mention="${item?.original.identifier}"><a>@${item?.original.name}</a></span>`;
-      },
+          },
+          // eslint-disable-next-line func-names, object-shorthand
+          // noMatchTemplate: function () {
+          //   return '<span>@People</span>';
+          // },
+          // eslint-disable-next-line func-names, object-shorthand
+          selectTemplate: function (item) {
+            console.log(`select template called ${item}`);
+            return `<span class="fr-deletable fr-tribute" data-people-mention="${item?.original.identifier}"><a>@${item?.original.name}</a></span>`;
+          },
+        },
+        {
+          trigger: '#',
+          // eslint-disable-next-line func-names, object-shorthand, unicorn/prevent-abbreviations
+          values: function (mentionString, cb) {
+            console.log(`#mention string: ${mentionString}`);
+            if (mentionString) {
+              fetchPatientsWithDebounce(mentionString, cb);
+            }
+          },
+          menuShowMinLength: 0,
+          allowSpaces: true,
+          requireLeadingSpace: false,
+          lookup: 'name',
+          searchOpts: {
+            skip: true, // true will skip local search, useful if doing server-side search
+          },
+          containerClass: 'tribute-container', // class added to the menu container
+          itemClass: '', // class added to each list item
+          selectClass: 'highlight', // class added in the flyout menu for active item
+          // eslint-disable-next-line func-names, object-shorthand
+          menuItemTemplate: function (item) {
+            const option = item.original;
+            // return `<span className="text">${option.name}</span>`;
+            // return renderToString(
+            //   <MenuItem
+            //     key={option.identifier}
+            //     ref={option.setRefElement}
+            //     role="option"
+            //     // aria-selected={isSelected}
+            //     // id={`typeahead-item-${index}`}
+            //   >
+            //     {/* <Avatar $color={option.color}>
+            //       {option.picture?.length > 2 ? (
+            //         <img src={option.picture} alt="avatar" />
+            //       ) : (
+            //         option.picture
+            //       )}
+            //     </Avatar> */}
+            //     {/* <span className="text">
+            //       {option.name} - {option.identifier}
+            //     </span> */}
+            //     <UserMention mention={option} />
+            //   </MenuItem>,
+            // );
+
+            return `<div>
+          <p 
+            style="margin-bottom: 0;
+            color: ${palette.mediumGrey};
+            font-size: ${fontSizes.regular};
+            font-weight: ${fontWeights.light};
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;">
+            ${option.name}
+          </p>
+        </div>`;
+          },
+          // eslint-disable-next-line func-names, object-shorthand
+          // noMatchTemplate: function () {
+          //   return '<span>@People</span>';
+          // },
+          // eslint-disable-next-line func-names, object-shorthand
+          selectTemplate: function (item) {
+            console.log(`select template called ${item}`);
+            return `<span class="fr-deletable fr-tribute" data-people-mention="${item?.original.identifier}"><#>@${item?.original.name}</a></span>`;
+          },
+        },
+      ],
     });
 
     const config = {
@@ -296,7 +376,7 @@ const RichTextEditor = React.forwardRef(
       toolbarButtons: disableToolbar ? [] : toolbarOptions,
       events: {
         // eslint-disable-next-line prettier/prettier, func-names
-        'initialized' : function() {
+        initialized() {
           if (readonly) {
             // eslint-disable-next-line react/no-this-in-sfc, no-shadow
             this.edit.off();
@@ -317,16 +397,15 @@ const RichTextEditor = React.forwardRef(
           );
         },
         // eslint-disable-next-line prettier/prettier, func-names
-        'edit.off': function () {
-        },
+        'edit.off': function () {},
         // eslint-disable-next-line prettier/prettier, func-names
-        'focus': function () {
+        focus() {
           // eslint-disable-next-line react/no-this-in-sfc, no-shadow
           // const value = this.html.get();
           // console.log(`focus: ${value}`);
         },
         // eslint-disable-next-line prettier/prettier, func-names
-        'blur': function (event) {
+        blur(event) {
           // eslint-disable-next-line react/no-this-in-sfc, no-shadow
           const value = this.html.get();
           // console.log(`blur: ${value}`);
@@ -338,7 +417,7 @@ const RichTextEditor = React.forwardRef(
           }
         },
         // eslint-disable-next-line prettier/prettier, func-names
-        'contentChanged': function () {
+        contentChanged() {
           // eslint-disable-next-line react/no-this-in-sfc, no-shadow
           const value = this.html.get();
           // console.log(`change: ${value}`);
@@ -348,7 +427,7 @@ const RichTextEditor = React.forwardRef(
           }
         },
         // eslint-disable-next-line prettier/prettier, func-names
-        'keydown': function (keydownEvent) {
+        keydown(keydownEvent) {
           if (keydownEvent.keyCode === 13) {
             if (
               !(keydownEvent.shiftKey || keydownEvent.ctrlKey) &&
@@ -374,7 +453,7 @@ const RichTextEditor = React.forwardRef(
           // this is the editor instance.
           // console.log('url.linked: '+this);
         },
-        'click': function (clickEvent) {
+        click(clickEvent) {
           // Do something here.
           // this is the editor instance.
           // console.log(this);
