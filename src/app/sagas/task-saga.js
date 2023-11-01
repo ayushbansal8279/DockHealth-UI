@@ -410,6 +410,7 @@ function* shareTask({
   userIdentifiers,
   externalUsers,
   message,
+  assignTask,
 }) {
   try {
     yield call(
@@ -418,6 +419,7 @@ function* shareTask({
       userIdentifiers,
       externalUsers,
       message,
+      assignTask,
     );
 
     yield all([

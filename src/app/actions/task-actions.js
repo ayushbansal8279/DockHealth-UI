@@ -1067,6 +1067,7 @@ export function shareTask(
   userIdentifiers,
   externalUsers,
   message,
+  assignTask,
 ) {
   return {
     type: ActionTypes.SHARE_TASK,
@@ -1074,5 +1075,6 @@ export function shareTask(
     userIdentifiers,
     externalUsers,
     message,
+    assignTask,
   };
 }
