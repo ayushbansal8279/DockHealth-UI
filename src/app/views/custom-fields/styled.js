@@ -36,6 +36,9 @@ export const CustomFieldItem = styled.div`
       if (!editable) return '2fr 1fr 1fr 1fr';
       return '2fr 1fr 1fr 1fr auto auto';
     }
+    if (type === 'PROVIDER') {
+      return '1fr 1.75fr 1fr 1fr 1fr auto';
+    }
     return '2fr 1fr 1fr 1fr 1fr auto auto';
   }};
   align-items: center;
@@ -47,7 +50,7 @@ export const CustomFieldItem = styled.div`
 `;
 
 export const CustomFieldCell = styled.div`
-  padding: 0px 4px;
+  padding: 0px 8px;
   overflow: hidden;
 
   &:first-of-type {
