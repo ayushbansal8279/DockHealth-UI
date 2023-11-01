@@ -1,7 +1,13 @@
 import React, { useEffect, useRef } from 'react';
-import { StyledDashboardTab } from './styled';
+import { StyledDashboardTab, NewTasksIndicator } from './styled';
 
-const DashboardTab = ({ label, setHighlightPosition, isSelected, onClick }) => {
+const DashboardTab = ({
+  label,
+  setHighlightPosition,
+  isSelected,
+  onClick,
+  showNewIndicator,
+}) => {
   const labelReference = useRef(null);
 
   useEffect(() => {
@@ -19,6 +25,7 @@ const DashboardTab = ({ label, setHighlightPosition, isSelected, onClick }) => {
       onClick={onClick}
       isSelected={isSelected}
     >
+      {showNewIndicator && <NewTasksIndicator />}
       {label}
     </StyledDashboardTab>
   );
