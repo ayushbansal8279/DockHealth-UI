@@ -4,16 +4,16 @@ import StandardTaskItem from 'components/task/StandardTaskItem/StandardTaskItem'
 import * as Sc from './styled';
 
 export interface Props extends Segment {
-  text: string;
-  definition: any;
+  isTaskTemplate: boolean;
 }
 
-function VTask({ metadata, register, definition, ...record }: Props, ref: ForwardedRef<HTMLDivElement>) {
+function VTask({ metadata, register, isTaskTemplate, ...record }: Props, ref: ForwardedRef<HTMLDivElement>) {
   return (
     <Sc.VTask
       ref={ref}
       {...register}
       $subitem={metadata.level > 1}
+      $template={isTaskTemplate}
     >
       {/* @ts-ignore */}
       <StandardTaskItem taskIdentifier={metadata.id}/>

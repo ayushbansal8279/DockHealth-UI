@@ -43,6 +43,7 @@ import {
   TASK_LIST_RESTRICTIONS_OPTIONS,
   TASK_LIST_RESTRICTIONS_PROFILES,
 } from 'restrictions/task-restrictions';
+import { useTaskListColumnsConfig } from 'context-api/columns-config-context';
 import {
   TasksGroupContainer,
   TasksGroupHeader,
@@ -262,8 +263,21 @@ const TasksGroup = ({
     ],
   );
 
+  const { columns } = useTaskListColumnsConfig();
+
   return (
-    <TasksGroupContainer>
+    <TasksGroupContainer
+      $width={
+        window.enabledVirtualTaskList
+          ? columns
+              .filter((f) => f.isChecked)
+              .reduce((accumulator, column) => {
+                console.log('columnWidth', column, column.columnWidth);
+                return accumulator + column.columnWidth;
+              }, 0)
+          : null
+      }
+    >
       <StickyContainer left={24} decreaseWidth={2 * 24}>
         <TasksGroupHeader>
           {!isCompletedGroup && !restrictCustomizationFeatures && (

@@ -125,6 +125,8 @@ const TaskTemplateGroupHeader = ({
     creator,
   } = templateGroup;
 
+  console.log("TaskTemplateGroupHeader", templateGroup);
+
   const { bulkEditIsActive } = useContext(BulkEditContext);
   const { bulkEditEnabled } = useContext(BulkEditContext);
   const [isEditing, setIsEditing] = useState(false);
@@ -691,6 +693,7 @@ const TaskTemplateGroupHeader = ({
       {randerFirstColumnCoverIfNecessary(
         <>
           <TaskItemCell
+            data-foo={3}
             key={`task_description_${identifier}`}
             width={
               columns?.find(

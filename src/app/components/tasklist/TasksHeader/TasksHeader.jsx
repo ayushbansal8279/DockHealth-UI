@@ -36,6 +36,15 @@ const TasksHeader = ({
   onGroupSelect,
   pageBackground,
 }) => {
+  console.log(
+    'TasksHeader',
+    bulkEditEnabled,
+    sort,
+    onSortChange,
+    isGroupSelected,
+    onGroupSelect,
+    pageBackground,
+  );
   const taskList = useSelector(currentTaskListSelector);
   const currentUser = useSelector(userProfileSelector);
   const currentOrganization = useSelector(selectedUserOrganizationSelector);
@@ -110,6 +119,7 @@ const TasksHeader = ({
 
   const renderColumn = useCallback(
     (f, index, snapshot) => {
+      console.log('renderColumn', f, index, snapshot);
       const isRegular = f._customFieldType === CUSTOM_FIELD_TYPES.REGULAR;
       const customFieldDefaultPrintWidth = CustomFieldWidthConfig[f.fieldType];
       const regularFieldDefaultPrintWidth =
@@ -162,7 +172,20 @@ const TasksHeader = ({
         direction="horizontal"
       >
         {(provided, snapshot) => (
-          <SortHeaderRow ref={provided.innerRef} {...provided.droppableProps}>
+          <SortHeaderRow
+            ref={provided.innerRef}
+            {...provided.droppableProps}
+            $width={
+              window.enabledVirtualTaskList
+                ? columns
+                    .filter((f) => f.isChecked)
+                    .reduce(
+                      (accumulator, column) => accumulator + column.columnWidth,
+                      0,
+                    )
+                : null
+            }
+          >
             <StickyColumnContainer
               backgroundColor={pageBackground}
               customWidthExists
@@ -176,15 +199,13 @@ const TasksHeader = ({
                 </BulkContainer>
               )}
               {!bulkEditEnabled && (
-                <BulkContainer style={{width: '66px'}}>
-                  &nbsp;
-                </BulkContainer>
+                <BulkContainer style={{ width: '66px' }}>&nbsp;</BulkContainer>
               )}
               {renderColumn(
                 getTaskHeaderOptions(
                   customerTypeLabel,
                   uniqueIdentifierLabel,
-                  columns.filter(f => f.isChecked)?.[0],
+                  columns.find((f) => f.isChecked),
                   restrictions,
                 ),
                 0,

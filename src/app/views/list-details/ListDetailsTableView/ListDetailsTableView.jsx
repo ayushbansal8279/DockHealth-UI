@@ -490,13 +490,11 @@ const ListDetailsTableView = () => {
       >
         <div style={{ height: '100%' }}>
           <TaskViewContainer>
-            {!isVirtualTaskListEnabled && (
-              <StickyContainer>
-                <ListDetailsToolbar
-                  additionalOptions={additionalToolbarOptions}
-                />
-              </StickyContainer>
-            )}
+            <StickyContainer>
+              <ListDetailsToolbar
+                additionalOptions={additionalToolbarOptions}
+              />
+            </StickyContainer>
             <TasksView
               viewSetup={displayListPreferences}
               onTaskUpdate={handleTaskUpdate}
