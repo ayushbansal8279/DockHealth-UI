@@ -10,7 +10,7 @@ import { DrawerFieldEnum } from 'helpers/task-drawer-helpers';
 import {
   changeTasksSelectedState,
   addTask,
-  findTasksByProfileGroupedByTaskList,
+  getTasksForProfile,
 } from 'actions/task-actions';
 // import { createPatientDetailsListPath } from 'routing/helpers/paths';
 import TaskListHeader from 'views/patient-details/TaskListHeader/TaskListHeader';
@@ -103,7 +103,7 @@ const ProfileTasksListView = ({ profileIdentifier }) => {
   // const sort = useSelector(patientTasksSortSelector);
   const lists = useSelector(profileTaskListsSelector);
   // const completeTasksVisible = useSelector(completeTasksVisibilitySelector);
-  const currentUser = useSelector(userProfileSelector);
+  // const currentUser = useSelector(userProfileSelector);
   // const taskSearch = useSelector(patientTaskSearchSelector);
   const areFiltersApplied = useSelector(hasFiltersAppliedSelector);
   const selectedFilters = useSelector(selectedFiltersInMegaFilterSelector);
@@ -120,12 +120,21 @@ const ProfileTasksListView = ({ profileIdentifier }) => {
   const profileTasks = useSelector(profileAllTasksSelector);
 
   useEffect(() => {
-    dispatch(findTasksByProfileGroupedByTaskList(profileIdentifier));
-  }, [dispatch, profileIdentifier]);
+    if (profileIdentifier) {
+      dispatch(getTasksForProfile(profileIdentifier));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [profileIdentifier]);
 
   useEffect(() => {
-    console.log('!! tasks', profileTasks);
+    // console.log('!! tasks', profileTasks);
   }, [profileTasks]);
+
+  const refreshTasks = useCallback(() => {
+    if (profileIdentifier) {
+      dispatch(getTasksForProfile(profileIdentifier));
+    }
+  }, [dispatch, profileIdentifier]);
 
   // const history = useHistory();
 
@@ -242,7 +251,7 @@ const ProfileTasksListView = ({ profileIdentifier }) => {
     (updatedTask) => {
       // dispatch(getPatientFilterOptions(patientIdentifier));
       if (!checkIfTaskMatchesFilters(updatedTask, selectedFilters)) {
-        dispatch(findTasksByProfileGroupedByTaskList(profileIdentifier));
+        dispatch(getTasksForProfile(profileIdentifier));
       }
     },
     [dispatch, selectedFilters, profileIdentifier],
@@ -467,12 +476,7 @@ const ProfileTasksListView = ({ profileIdentifier }) => {
                       <TaskListHeader
                         list={isAllTasksView ? null : activeList}
                         viewSetup={viewSetup}
-                        refreshView={compose(
-                          dispatch,
-                          findTasksByProfileGroupedByTaskList(
-                            profileIdentifier,
-                          ),
-                        )}
+                        refreshView={refreshTasks}
                       />
                     </StickyContainer>
                     {isAllTasksView ? (
