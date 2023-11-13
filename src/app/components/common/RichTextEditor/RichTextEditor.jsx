@@ -41,6 +41,11 @@ turndownService = turndownService.addRule('people-mention', {
       const alteredValue = `@{${node.attributes['data-people-mention'].nodeValue}}`;
       return alteredValue;
     }
+    if (node.attributes['data-patient-mention']) {
+      // eslint-disable-next-line sonarjs/prefer-immediate-return
+      const alteredValue = `#{${node.attributes['data-patient-mention'].nodeValue}}`;
+      return alteredValue;
+    }
     return content;
   },
 });
@@ -117,6 +122,10 @@ const processMarkdownValue = (value, mentions) => {
       processedValue = processedValue.replace(
         `@{${mentionInfo.identifier}}`,
         `<span class="fr-deletable fr-tribute" data-people-mention="${mentionInfo.identifier}"><a>@${mentionInfo.name}</a></span>`,
+      );
+      processedValue = processedValue.replace(
+        `#{${mentionInfo.identifier}}`,
+        `<span class="fr-deletable fr-tribute" data-patient-mention="${mentionInfo.identifier}"><a>#${mentionInfo.name}</a></span>`,
       );
     }
   }
