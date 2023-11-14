@@ -5,11 +5,12 @@ import React, {
   useRef,
   useEffect,
 } from 'react';
+import { useUnmount } from 'react-use';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { Box, IconButton, Stack } from '@mui/material';
 import Drawer from 'ui-toolkit/Navigation/Drawer/Drawer';
-import { createProfile, editProfileType, deleteProfile } from 'api/profile-api';
+import { createProfile, editProfileDetails, deleteProfile } from 'api/profile-api';
 import { FormProvider, useForm } from 'react-hook-form';
 import {
   ContentWrapper,
@@ -25,7 +26,7 @@ import LabeledCollapse from 'components/common/LabeledCollapse/LabeledCollapse';
 import Button from 'components/common/Button/Button';
 // import Select from 'components/common/Select/Select';
 import CustomField from 'components/common/CustomField/CustomField';
-import { showGlobalAlert } from 'alert/actions';
+import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
 import { closeModal, openModal } from 'modal/actions';
 
@@ -57,9 +58,13 @@ const ProfileDrawer = ({
     }
   }, [addMode, profile]);
 
+  useUnmount(() => {
+    setEditMode(false);
+  });
+
   const editProfile = useCallback(
     (data) => {
-      editProfileType(profile?.identifier, {
+      editProfileDetails(profile?.identifier, {
         fields: Object.entries(data?.profileMetaData)?.map(
           ([identifier, value]) => {
             const type = types.find(
@@ -69,25 +74,39 @@ const ProfileDrawer = ({
               profileTypeField: {
                 identifier,
               },
-              values: [
-                type.fieldType === '"PICK_LIST"'
-                  ? {
-                      customFieldOption: {
-                        identifier: value,
-                      },
-                    }
-                  : {
-                      value,
-                    },
-              ],
+              values: Array.isArray(value)
+                ? value?.map((selectedValue) => {
+                    return {
+                      value: selectedValue,
+                    };
+                  })
+                : [
+                    type.fieldType === '"PICK_LIST"'
+                      ? {
+                          customFieldOption: {
+                            identifier: value,
+                          },
+                        }
+                      : {
+                          value,
+                        },
+                  ],
             };
           },
         ),
         // eslint-disable-next-line no-shadow
-      }).then((data) => {
-        dispatch(showGlobalAlert(AlertMessages.SAVED));
-        onUpdate(data);
-      });
+      })
+        // eslint-disable-next-line no-shadow
+        .then((data) => {
+          setEditMode(false);
+          dispatch(showGlobalAlert(AlertMessages.SAVED));
+          onUpdate(data);
+        })
+        .catch((error) => {
+          dispatch(
+            showGlobalErrorAlert(error?.message ?? 'Error saving details!'),
+          );
+        });
     },
     [dispatch, onUpdate, profile, types],
   );
@@ -103,11 +122,17 @@ const ProfileDrawer = ({
               profileTypeField: {
                 identifier,
               },
-              values: [
-                {
-                  value,
-                },
-              ],
+              values: Array.isArray(value)
+                ? value?.map((selectedValue) => {
+                    return {
+                      value: selectedValue,
+                    };
+                  })
+                : [
+                    {
+                      value,
+                    },
+                  ],
             };
           },
         ),
@@ -115,10 +140,18 @@ const ProfileDrawer = ({
           identifier: profileTypeIdentifier,
         },
         // eslint-disable-next-line no-shadow
-      }).then((data) => {
-        dispatch(showGlobalAlert(AlertMessages.SAVED));
-        onUpdate(data);
-      });
+      })
+        // eslint-disable-next-line no-shadow
+        .then((data) => {
+          setEditMode(false);
+          dispatch(showGlobalAlert(AlertMessages.SAVED));
+          onUpdate(data);
+        })
+        .catch((error) => {
+          dispatch(
+            showGlobalErrorAlert(error?.message ?? 'Error saving details!'),
+          );
+        });
     }
     onClose();
   };

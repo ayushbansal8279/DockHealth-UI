@@ -78,10 +78,10 @@ const CustomFieldAutoComplete = React.forwardRef(
       (event) => {
         if (error) clearErrors(name);
         // setValue(name, event.target.value);
-        setValue(
-          name,
-          event?.map((value) => value?.profile?.identifier),
+        const selectedValues = event?.map(
+          (value) => value?.profile?.identifier,
         );
+        setValue(name, selectedValues);
         // if (typeof onChange === 'function') onChange(event.target.value);
         if (typeof onChange === 'function') onChange(event);
       },
