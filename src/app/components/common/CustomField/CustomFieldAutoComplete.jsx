@@ -1,19 +1,10 @@
 import React, { useCallback, useEffect, useState, useContext } from 'react';
 import { useFormContext } from 'react-hook-form';
-// import { EditorState } from 'draft-js';
-// import { useDispatch } from 'react-redux';
-// import { partialUpdateTask } from 'actions/task-actions';
-// import { updatePartialWorkflow } from 'actions/task-template-actions';
-// import { TaskItemType } from 'helpers/task-helpers';
-// import { showGlobalAlert } from 'alert/actions';
-// import AlertMessages from 'alert/AlertMessages';
-// import { formatMetaDataOutput } from 'components/task-drawer/CustomFieldsSection/helpers';
-// import CustomTextEditor from 'components/common/CustomTextEditor/CustomTextEditor';
-// import { getAllProfiles, getProfileDetails } from 'api/profile-api';
-// import TextInput from '../TextInput/TextInput';
-// import { CustomTextEditorContainer } from './styled';
-// import { createMentionEntities } from '../TextEditor/create-mention-entities';
-// import CustomFieldErrorContext from './CustomFieldErrorContext';
+import { useDispatch } from 'react-redux';
+import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
+import { getAllProfileFieldTypes } from 'api/profile-type-field-api';
+import { getAllProfiles, getProfileDetails } from 'api/profile-api';
+import { getProfileName } from 'views/custom-profile-details/helpers';
 import Autocomplete from '../Autocomplete/Autocomplete';
 
 const CustomFieldAutoComplete = React.forwardRef(
@@ -35,7 +26,7 @@ const CustomFieldAutoComplete = React.forwardRef(
     },
     reference,
   ) => {
-    // const dispatch = useDispatch();
+    const dispatch = useDispatch();
     const {
       register,
       clearErrors,
@@ -57,31 +48,29 @@ const CustomFieldAutoComplete = React.forwardRef(
 
     const [profiles, setProfiles] = useState(null);
 
-    // useEffect(() => {
-    //   getAllProfiles(relatedProfileType.identifier)
-    //     .then((data) => {
-    //       setProfiles(
-    //         data.map((profile) => ({
-    //           ...profile,
-    //           label: `${
-    //             profile?.fields?.[0].values?.[0] ||
-    //             profile?.fields?.[0].values?.[0].value ||
-    //             profile?.fields?.[0].values?.[0]?.customFieldOption?.name
-    //           } ${
-    //             profile?.fields?.[1].values?.[0] ||
-    //             profile?.fields?.[1].values?.[0].value ||
-    //             profile?.fields?.[1].values?.[0]?.customFieldOption?.name
-    //           }`,
-    //         })),
-    //       );
-
-    //       //   setProfileIdentifiers(data.map((profile) => profile.identifier));
-    //     })
-    //     .catch((error) => {
-    //       console.error('error getting profile types');
-    //       console.error(error);
-    //     });
-    // }, [relatedProfileType.identifier]);
+    useEffect(() => {
+      if (relatedProfileType) {
+        getAllProfileFieldTypes(relatedProfileType?.identifier)
+          .then((profileTypeFields) => {
+            getAllProfiles(relatedProfileType.identifier)
+              .then((data) => {
+                // eslint-disable-next-line no-shadow
+                const profiles = data.map((profile) => ({
+                  profile,
+                  label: getProfileName(profileTypeFields, profile)?.join(' '),
+                }));
+                setProfiles(profiles);
+              })
+              .catch((error) => {
+                console.error('error getting profile types');
+                console.error(error);
+              });
+          })
+          .catch(() => {
+            dispatch(showGlobalErrorAlert());
+          });
+      }
+    }, [dispatch, relatedProfileType]);
 
     const error = errors?.[name]?.message;
 
@@ -89,7 +78,10 @@ const CustomFieldAutoComplete = React.forwardRef(
       (event) => {
         if (error) clearErrors(name);
         // setValue(name, event.target.value);
-        setValue(name, event);
+        const selectedValues = event?.map(
+          (value) => value?.profile?.identifier,
+        );
+        setValue(name, selectedValues);
         // if (typeof onChange === 'function') onChange(event.target.value);
         if (typeof onChange === 'function') onChange(event);
       },

@@ -11,15 +11,24 @@ const initial = {
 export default (state = initial, action) => {
   // eslint-disable-next-line sonarjs/no-small-switch
   switch (action.type) {
+    case ActionTypes.GET_CURRENT_PROFILE_TASKS: {
+      return {
+        ...state,
+        lists: [],
+        tasksMap: {},
+        isFetching: true,
+      };
+    }
+
     case ActionTypes.FIND_TASKS_BY_PROFILE_GROUPED_BY_TASK_LIST_SUCCESS: {
       const newMap = { ...state.tasksMap };
-      for (const task of action.payload.flatMap((taskList) => taskList.tasks)) {
+      for (const task of action.lists?.flatMap((taskList) => taskList.tasks)) {
         newMap[task.identifier] = task;
       }
 
       return {
         ...state,
-        lists: action.lists,
+        lists: action.lists || [],
         tasksMap: newMap,
         isFetching: false,
       };

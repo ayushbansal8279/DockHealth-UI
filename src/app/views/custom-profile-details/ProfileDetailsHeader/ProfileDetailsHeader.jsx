@@ -21,6 +21,7 @@ import { getProfileDetails } from 'api/profile-api';
 import ProfileDetailsLoader from 'views/custom-profile-details/ProfileDetailsLoader/ProfileDetailsLoader';
 import ProfileDrawer from 'components/custom-profile/CustomProfilesList/ProfileDrawer';
 import { FieldType } from 'helpers/field-type-helpers';
+import { getProfileName } from 'views/custom-profile-details/helpers';
 import {
   ProfileDetailsContainer,
   ProfileName,
@@ -91,19 +92,7 @@ const ProfileDetailsHeader = () => {
   }, []);
 
   useEffect(() => {
-    const profileNameInfo = profile?.fields
-      ?.filter((field) => {
-        const profileTypeField = profileTypeFields?.find(
-          (ptField) => ptField.identifier === field?.profileTypeFieldIdentifier,
-        );
-        return profileTypeField?.displayOptions?.includes('PROFILE_NAME');
-      })
-      .map(
-        (field) =>
-          field.values?.[0] ||
-          field.values?.[0].value ||
-          field.values?.[0]?.customFieldOption?.name,
-      );
+    const profileNameInfo = getProfileName(profileTypeFields, profile);
     setProfileName(profileNameInfo);
   }, [profile, profileTypeFields]);
 

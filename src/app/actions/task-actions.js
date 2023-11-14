@@ -1044,21 +1044,10 @@ export function bulkEditDuplicateTasksSuccess(duplicatedTasks) {
     duplicatedTasks,
   };
 }
-
-export function findTasksByProfileGroupedByTaskList(profileIdentifier) {
-  return (dispatch) => {
-    TaskApi.findTasksByProfileGroupedByTaskList(profileIdentifier)
-      .then((data) => {
-        dispatch({
-          type: ActionTypes.FIND_TASKS_BY_PROFILE_GROUPED_BY_TASK_LIST_SUCCESS,
-          payload: data,
-        });
-      })
-      .catch(() => {
-        dispatch({
-          type: ActionTypes.FIND_TASKS_BY_PROFILE_GROUPED_BY_TASK_LIST_FAILURE,
-        });
-      });
+export function getTasksForProfile(profileIdentifier) {
+  return {
+    type: ActionTypes.GET_CURRENT_PROFILE_TASKS,
+    profileIdentifier,
   };
 }
 
