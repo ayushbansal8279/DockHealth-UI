@@ -50,7 +50,7 @@ export const MaterialDrawer = styled(Drawer)`
     transform: ${({ $isNavbarVisible }) =>
       $isNavbarVisible ? 'translateX(0px)' : 'translateX(-100%)'};
     background-color: ${({ $navBackgroundColor }) =>
-      $navBackgroundColor || palette.midnightBlue};
+      $navBackgroundColor || palette.newDarkBlue};
     border: 0;
     overflow: initial;
     width: auto;
