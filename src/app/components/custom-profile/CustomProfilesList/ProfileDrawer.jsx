@@ -10,7 +10,11 @@ import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { Box, IconButton, Stack } from '@mui/material';
 import Drawer from 'ui-toolkit/Navigation/Drawer/Drawer';
-import { createProfile, editProfileDetails, deleteProfile } from 'api/profile-api';
+import {
+  createProfile,
+  editProfileDetails,
+  deleteProfile,
+} from 'api/profile-api';
 import { FormProvider, useForm } from 'react-hook-form';
 import {
   ContentWrapper,
