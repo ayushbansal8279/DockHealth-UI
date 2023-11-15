@@ -139,8 +139,7 @@ const PatientDetailsDrawer = ({ patient, isOpenedDetails, closeDetails }) => {
         name: 'Edit',
         onClick: setActive,
       },
-      !emrIntegrationEnabled &&
-        !isActive && {
+      !isActive && {
           name: 'Merge',
           onClick: () => {
             dispatch(
@@ -171,8 +170,7 @@ const PatientDetailsDrawer = ({ patient, isOpenedDetails, closeDetails }) => {
             closeDetails();
           },
         },
-      !emrIntegrationEnabled &&
-        patientStatus === 'ACTIVE' && {
+      patientStatus === 'ACTIVE' && {
           name: 'Archive',
           onClick: archivePatient,
         },
