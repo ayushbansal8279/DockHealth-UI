@@ -3,6 +3,7 @@ import { Segment } from 'views/list-details/modules/Virtualized';
 import StandardTaskItem from 'components/task/StandardTaskItem/StandardTaskItem';
 import { getSubtaskStylingLink } from "components/task/StandardTaskItem/helpers";
 import * as Sc from './styled';
+import { Draggable, DraggableProvided, DraggableStateSnapshot } from "react-beautiful-dnd";
 
 export interface Props extends Segment {
   task: any
@@ -18,16 +19,24 @@ function VSubtask({ metadata, register, task, ...record }: Props, ref: Forwarded
     return false
   }
   return (
-    <Sc.VSubtask
-      ref={ref}
-      {...register}
-      $subitem={metadata.level > 1}
-    >
-      {getSubtaskStylingLink(isLast())}
-      {/* @ts-ignore */}
-      <StandardTaskItem taskIdentifier={metadata.id}/>
-    </Sc.VSubtask>
-  );
+    <Draggable draggableId={metadata.id} index={metadata.index} key={metadata.id}>
+      {(provided: DraggableProvided, snapshot: DraggableStateSnapshot) => (
+        <Sc.VSubtask
+          ref={ref}
+          {...register}
+          $subitem={metadata.level > 1}
+        >
+          {getSubtaskStylingLink(isLast())}
+          <StandardTaskItem
+            // @ts-ignore
+            taskIdentifier={metadata.id}
+            draggableProvided={provided}
+            isDraggable={true}
+            isDragging={snapshot.isDragging}
+          />
+        </Sc.VSubtask>
+      )}</Draggable>
+  )
 }
 
 export default forwardRef(VSubtask);

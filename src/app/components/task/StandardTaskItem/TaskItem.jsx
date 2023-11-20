@@ -739,7 +739,7 @@ const TaskItem = React.memo(
           >
             {taskListRestrictions?.createTask !== DISABLED && (
               <DotsContainer
-                showDraggableDots={showDraggableDots}
+                showDraggableDots={true}
                 dragHandleProps={dragHandleProps}
               />
             )}

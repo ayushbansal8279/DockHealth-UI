@@ -23,11 +23,13 @@ function VirtualTaskList({ tasksToMap, groupedTasks }: Props) {
     return groupedTasks.map(group => convert(
       group.groupIdentifier,
       VListGroup,
+      "ListGroup",
       { name: group.groupName },
       [
         convert(
           uniqueId().toString(),
           VQuickAddTask,
+          "QuickAddTask",
           {
             taskGroupIdentifier: group.groupIdentifier
           },
@@ -37,6 +39,7 @@ function VirtualTaskList({ tasksToMap, groupedTasks }: Props) {
         convert(
           uniqueId().toString(),
           VTaskHeader,
+          "TaskHeader",
           {},
           [],
           true
@@ -50,6 +53,7 @@ function VirtualTaskList({ tasksToMap, groupedTasks }: Props) {
           return convert(
             taskIdentifier,
             VTask,
+            "Task",
             { task },
             children.map((child: any) => {
               return convert(
@@ -57,13 +61,14 @@ function VirtualTaskList({ tasksToMap, groupedTasks }: Props) {
                 task.itemType === "TASK"
                   ? VSubtask
                   : VTask,
+                task.itemType === "TASK" ? "Subtask" : "TaskOfBundle",
                 { isTaskTemplate: true },
                 !!tasksMap[child]?.subtasks.length
                   ? tasksMap[child].subtasks.map((subtask: any) => {
-                    console.log("!!?:", child, subtask);
                     return convert(
                       subtask.taskIdentifier,
                       VSubtask,
+                       "Subtask",
                       { task: subtask },
                       []
                     );
@@ -74,7 +79,7 @@ function VirtualTaskList({ tasksToMap, groupedTasks }: Props) {
           );
         }))
       , true)).concat(
-      convert(uniqueId().toString(), VAddGroup, {}, [], true)
+      convert(uniqueId().toString(), VAddGroup, "AddGroup", {}, [], true)
     )
   }, [groupedTasks, tasksMap])
 
@@ -96,20 +101,23 @@ function VirtualTaskList({ tasksToMap, groupedTasks }: Props) {
     >
       <Virtualized
         nodes={nodes}
+        tasksMap={tasksMap}
       />
     </div>
   )
 }
 
 // @ts-ignore
-const convert = (id, type, data, children, phantom = false): Node => {
+const convert = (id, type, kind, data, children, phantom = false, handlers = {}): Node => {
   return {
     id,
     phantom,
     type,
+    kind,
     collapsed: false,
     data,
-    children
+    children,
+    handlers
   }
 }
 

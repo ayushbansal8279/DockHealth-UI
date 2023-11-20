@@ -21,18 +21,23 @@ export type Node = {
   id: string
   phantom: boolean
   type: FunctionComponent<any & Segment>
+  kind: string
   collapsed: boolean
   children: Node[]
   data: Record<string, unknown>
+  handlers: Record<string, (...varargs: any[]) => void>
 }
 
 export type FlatNode = {
   id: string
+  phantom: boolean
   type: FunctionComponent<Segment>
+  kind: string
   index: number | null
   level: number
   parent: FlatNode | null
   collapsed: boolean
   data: Record<string, unknown>
   children: string[]
+  handlers: Record<string, (...varargs: any[]) => void>
 }

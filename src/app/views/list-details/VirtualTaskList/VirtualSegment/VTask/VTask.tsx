@@ -9,21 +9,22 @@ export interface Props extends Segment {
 }
 
 function VTask({ metadata, register, isTaskTemplate, ...record }: Props, ref: ForwardedRef<HTMLDivElement>) {
-  console.log('VTask', metadata);
   return (
       <Draggable draggableId={metadata.id} index={metadata.index} key={metadata.id}>
         {(provided: DraggableProvided, snapshot: DraggableStateSnapshot) => (
           <Sc.VTask
-            {...provided.draggableProps}
-            {...provided.dragHandleProps}
-            ref={provided.innerRef}
-            style={provided.draggableProps.style}
             {...register}
             $subitem={metadata.level > 1}
             $template={isTaskTemplate}
+            data-dupa={metadata.index}
           >
-            {/* @ts-ignore */}
-            <StandardTaskItem taskIdentifier={metadata.id}/>
+            <StandardTaskItem
+              // @ts-ignore
+              taskIdentifier={metadata.id}
+              draggableProvided={provided}
+              isDraggable={true}
+              isDragging={snapshot.isDragging}
+            />
           </Sc.VTask>
         )}
       </Draggable>
