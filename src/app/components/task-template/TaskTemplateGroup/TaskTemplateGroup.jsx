@@ -157,7 +157,7 @@ const TaskTemplateGroup = ({
         highlightedValue={highlightedValue}
         origin={origin}
       />
-      {!isStartedDnD && !window.enabledVirtualTaskList && (
+      {!isStartedDnD && window.disabledVirtualTaskList && (
         <TaskTemplateGroupList timeout={150} in={isOpen && !isStartedDnD}>
           {isFetchingTasks ? (
             <TasksSkeletonLoader rows={3} />

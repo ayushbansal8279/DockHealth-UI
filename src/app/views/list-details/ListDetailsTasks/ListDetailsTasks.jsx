@@ -274,13 +274,13 @@ const ListDetailsTasks = ({
   );
 
   const [isVirtualTaskListEnabled, setIsVirtualTaskListEnabled] = useState(
-    window.enabledVirtualTaskList,
+    !window.disabledVirtualTaskList,
   );
   useEffect(() => {
-    window.enableVirtualTaskList = () => {
-      setIsVirtualTaskListEnabled(true);
-      window.enabledVirtualTaskList = true;
-      __switchVirtualTaskListEnabled();
+    __switchVirtualTaskListEnabled();
+    window.disableVirtualTaskList = () => {
+      setIsVirtualTaskListEnabled(false);
+      window.disabledVirtualTaskList = true;
     };
   }, [__switchVirtualTaskListEnabled]);
 

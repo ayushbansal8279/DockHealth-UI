@@ -458,7 +458,7 @@ const ListDetailsTableView = () => {
   ];
 
   const [isVirtualTaskListEnabled, setIsVirtualTaskListEnabled] = useState(
-    window.enabledVirtualTaskList,
+    !window.disabledVirtualTaskList,
   );
   const handleSwitchVirtualTaskListEnabled = () => {
     setIsVirtualTaskListEnabled(true);

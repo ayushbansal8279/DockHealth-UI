@@ -176,7 +176,7 @@ const TasksHeader = ({
             ref={provided.innerRef}
             {...provided.droppableProps}
             $width={
-              window.enabledVirtualTaskList
+              !window.disabledVirtualTaskList
                 ? columns
                     .filter((f) => f.isChecked)
                     .reduce(

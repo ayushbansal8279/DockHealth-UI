@@ -62,7 +62,7 @@ function VQuickAddTask({ taskGroupIdentifier, metadata, register }: Props, ref: 
       {...register}
       $width={
         // @ts-ignore
-        window.enabledVirtualTaskList
+        !window.disabledVirtualTaskList
           ? columns
             // @ts-ignore
             .filter((f) => f.isChecked)

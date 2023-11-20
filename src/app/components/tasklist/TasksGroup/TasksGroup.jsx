@@ -268,7 +268,7 @@ const TasksGroup = ({
   return (
     <TasksGroupContainer
       $width={
-        window.enabledVirtualTaskList
+        !window.disabledVirtualTaskList
           ? columns
               .filter((f) => f.isChecked)
               .reduce((accumulator, column) => {
