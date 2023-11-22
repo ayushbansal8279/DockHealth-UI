@@ -86,6 +86,7 @@ const QuickAddSubtask = () => {
           disableToolbar
           showToolbarInline
           initOnClick
+          taskListIdentifier={taskList?.taskListIdentifier}
         />
       </Box>
     </QuickAddTaskInputWrapper>
