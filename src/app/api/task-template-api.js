@@ -18,7 +18,7 @@ export function copyWorkflowToOrganization(
       targetOrganizationIdentifiers: [...targetOrganizationIdentifiers],
       identifier,
     })
-    .then(response => {
+    .then((response) => {
       return response.data;
     });
 }
@@ -31,7 +31,7 @@ export function getAllTemplatesForOrganization() {
 
 export function getTemplates() {
   return axios
-    .get(`task/template/getRootTemplatesForOrganization`)
+    .get(`task/template/getRootTemplatesForOrganization?includeAll=false`)
     .then((response) => response.data);
 }
 
