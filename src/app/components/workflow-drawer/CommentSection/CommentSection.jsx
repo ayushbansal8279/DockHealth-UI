@@ -62,6 +62,7 @@ const CommentSection = ({ disabled }) => {
           currentUser={currentUser}
           onUpdate={handleUpdateComment}
           onDelete={handleDeleteComment}
+          mentions={comment.commentMentions}
         />
       ))}
     </>
