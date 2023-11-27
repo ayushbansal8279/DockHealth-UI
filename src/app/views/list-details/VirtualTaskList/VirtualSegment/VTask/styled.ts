@@ -7,4 +7,8 @@ export const VTask = styled("div")`
   height: 40px;
   border-left: 1px solid rgb(229, 233, 242);
   ${({ $template }) => $template ? "margin-top: -5px" : "margin-top: 0"};
+
+  & > * > * > * > * {
+    left: 24px;
+  }
 `;

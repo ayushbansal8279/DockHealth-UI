@@ -147,7 +147,7 @@ const walk = (nodes: Node[], parent: FlatNode | null = null, level: number = 0, 
 
     return [
       flattened,
-      ...walk(!collapsed ? node.children : [], flattened, level + 1, state)
+      ...walk(collapsed ? [] : node.children, flattened, level + 1, state)
     ]
   })
 }

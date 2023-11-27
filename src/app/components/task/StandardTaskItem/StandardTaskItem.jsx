@@ -6,6 +6,7 @@ import React, {
   useMemo,
   useCallback,
   useRef,
+  useContext,
 } from 'react';
 import isEmpty from 'ramda/src/isEmpty';
 import { useDispatch, useSelector } from 'react-redux';
@@ -14,6 +15,7 @@ import { storeAsCurrentTask, loadSubTasks } from 'actions/task-actions';
 import TaskComments from 'components/tasklist/TaskComments/TaskComments';
 import { taskLookupSelector } from 'selectors/task-details-selectors';
 // import { taskDetailsSelector } from 'selectors/list-details-selectors';
+import { CollapseContext } from 'views/list-details/VirtualTaskList/VirtualTaskList';
 import TaskItem from './TaskItem';
 import Subtasks from './Subtasks';
 import { getMatchedComments } from './helpers';
@@ -75,6 +77,8 @@ const Task = React.memo(
 
     const dispatch = useDispatch();
 
+    const collapse = useContext(CollapseContext);
+
     const handleSetSubtasksOpen = useCallback(
       (areOpen) => {
         if (
@@ -86,6 +90,7 @@ const Task = React.memo(
           dispatch(loadSubTasks(task));
         }
         setAreSubtasksOpen(areOpen);
+        collapse.set(taskIdentifier, areOpen);
       },
       [
         subTasksCount,

@@ -44,6 +44,7 @@ import {
   TASK_LIST_RESTRICTIONS_PROFILES,
 } from 'restrictions/task-restrictions';
 import { useTaskListColumnsConfig } from 'context-api/columns-config-context';
+import { CollapseContext } from 'views/list-details/VirtualTaskList/VirtualTaskList';
 import {
   TasksGroupContainer,
   TasksGroupHeader,
@@ -106,14 +107,19 @@ const TasksGroup = ({
 
   const isFullView = viewType === ViewType.FULL_VIEW;
 
+  const collapse = useContext(CollapseContext);
   const onSwitchOpen = useCallback(() => {
     if (isOpen) {
+      // eslint-disable-next-line react/destructuring-assignment
+      collapse.set(taskGroupIdentifier, true);
       onTaskGroupCollapsed();
     } else {
+      // eslint-disable-next-line react/destructuring-assignment
+      collapse.set(taskGroupIdentifier, false);
       onTaskGroupExpanded();
     }
     switchOpen(!isOpen);
-  }, [switchOpen, isOpen]);
+  }, [isOpen, switchOpen, collapse, taskGroupIdentifier]);
 
   const isListFlattened =
     isSearchApplied ||
@@ -144,7 +150,13 @@ const TasksGroup = ({
       showMoreTasks();
     }
     onSwitchOpen();
-  }, [tasks, isOpen, groupTaskCounts, onSwitchOpen, showMoreTasks]);
+  }, [
+    isOpen,
+    groupTaskCounts,
+    tasks?.length,
+    onSwitchOpen,
+    showMoreTasks,
+  ]);
 
   useEffect(() => {
     if (groupTaskCounts === 0 && !isLoadingGroup) switchOpen(true);
@@ -268,14 +280,14 @@ const TasksGroup = ({
   return (
     <TasksGroupContainer
       $width={
-        !window.disabledVirtualTaskList
-          ? columns
+        window.disabledVirtualTaskList
+          ? null
+          : columns
               .filter((f) => f.isChecked)
               .reduce((accumulator, column) => {
                 console.log('columnWidth', column, column.columnWidth);
                 return accumulator + column.columnWidth;
               }, 0)
-          : null
       }
     >
       <StickyContainer left={24} decreaseWidth={2 * 24}>

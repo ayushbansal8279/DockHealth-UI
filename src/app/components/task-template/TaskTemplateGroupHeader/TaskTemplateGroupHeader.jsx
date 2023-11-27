@@ -91,6 +91,7 @@ import {
   PatientMRNAnchor,
 } from './styled';
 import TaskTemplateDetails from '../TaskTemplateDetails/TaskTemplateDetails';
+import { CollapseContext } from "views/list-details/VirtualTaskList/VirtualTaskList";
 
 const TaskTemplateGroupHeader = ({
   templateGroup = {},
@@ -125,7 +126,7 @@ const TaskTemplateGroupHeader = ({
     creator,
   } = templateGroup;
 
-  console.log("TaskTemplateGroupHeader", templateGroup);
+  console.log('TaskTemplateGroupHeader', templateGroup);
 
   const { bulkEditIsActive } = useContext(BulkEditContext);
   const { bulkEditEnabled } = useContext(BulkEditContext);
@@ -607,6 +608,12 @@ const TaskTemplateGroupHeader = ({
   const { patient } = templateGroup ?? workFlowData;
 
   const [isPatientDataReadOnly] = useState(true);
+  const collapse = useContext(CollapseContext);
+  const handleOpen = () => {
+    setOpen(!isOpen);
+    // eslint-disable-next-line react/destructuring-assignment
+    collapse.set(identifier, !isOpen);
+  };
 
   const randerFirstColumnCoverIfNecessary = useCallback(
     (content, order, width) => {
@@ -641,7 +648,7 @@ const TaskTemplateGroupHeader = ({
             {showTasksWithGroup && (
               <RotatableChevron
                 rotated={isOpen}
-                onClick={() => setOpen(!isOpen)}
+                onClick={handleOpen}
                 color={iconColorActive}
               />
             )}

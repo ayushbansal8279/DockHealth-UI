@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { createContext, useMemo, useReducer } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { uniqueId } from "lodash";
 import Virtualized, { Node } from 'views/list-details/modules/Virtualized';
@@ -16,7 +16,19 @@ export interface Props {
   groupedTasks: any[]
 }
 
+export const CollapseContext = createContext({
+  get: (id: string) => {},
+  set: (id: string, value: boolean) => {}
+})
+
 function VirtualTaskList({ tasksToMap, groupedTasks }: Props) {
+  const [collapseMap, collapseDispatch] = useReducer(
+    (map: Record<string, boolean>, [id, value]: [string, boolean]) => {
+      map[id] = value
+      return { ...map }
+    },
+    {}
+  )
   // @ts-ignore
   const tasksMap = useSelector(state => state.listDetails.tasksMap)
   const nodes: Node[] = useMemo(() => {
@@ -24,12 +36,14 @@ function VirtualTaskList({ tasksToMap, groupedTasks }: Props) {
       group.groupIdentifier,
       VListGroup,
       "ListGroup",
+      !!collapseMap[group.groupIdentifier],
       { name: group.groupName },
       [
         convert(
           uniqueId().toString(),
           VQuickAddTask,
           "QuickAddTask",
+          false,
           {
             taskGroupIdentifier: group.groupIdentifier
           },
@@ -40,6 +54,7 @@ function VirtualTaskList({ tasksToMap, groupedTasks }: Props) {
           uniqueId().toString(),
           VTaskHeader,
           "TaskHeader",
+          false,
           {},
           [],
           true
@@ -54,6 +69,7 @@ function VirtualTaskList({ tasksToMap, groupedTasks }: Props) {
             taskIdentifier,
             VTask,
             "Task",
+            !!collapseMap[taskIdentifier],
             { task },
             children.map((child: any) => {
               return convert(
@@ -62,6 +78,7 @@ function VirtualTaskList({ tasksToMap, groupedTasks }: Props) {
                   ? VSubtask
                   : VTask,
                 task.itemType === "TASK" ? "Subtask" : "TaskOfBundle",
+                !!collapseMap[child?.taskIdentifier ?? child],
                 { isTaskTemplate: true },
                 !!tasksMap[child]?.subtasks.length
                   ? tasksMap[child].subtasks.map((subtask: any) => {
@@ -69,6 +86,7 @@ function VirtualTaskList({ tasksToMap, groupedTasks }: Props) {
                       subtask.taskIdentifier,
                       VSubtask,
                        "Subtask",
+                      false,
                       { task: subtask },
                       []
                     );
@@ -79,9 +97,9 @@ function VirtualTaskList({ tasksToMap, groupedTasks }: Props) {
           );
         }))
       , true)).concat(
-      convert(uniqueId().toString(), VAddGroup, "AddGroup", {}, [], true)
+      convert(uniqueId().toString(), VAddGroup, "AddGroup", false, {}, [], true)
     )
-  }, [groupedTasks, tasksMap])
+  }, [groupedTasks, tasksMap, collapseMap])
 
   const dispatch = useDispatch();
   const handleDragEnd = ({ draggableId, destination, source }: DropResult) => {
@@ -93,28 +111,39 @@ function VirtualTaskList({ tasksToMap, groupedTasks }: Props) {
     dispatch(reorderTasksInGroup({ destination, source }));
   }
 
+  const contextValue = {
+    get: (id: string) => {
+      return !!collapseMap[id]
+    },
+    set: (id: string, value: boolean) => {
+      collapseDispatch([id, value])
+    }
+  }
+
   return (
     <div
       style={{
         height: "100%",
       }}
     >
-      <Virtualized
-        nodes={nodes}
-        tasksMap={tasksMap}
-      />
+      <CollapseContext.Provider value={contextValue}>
+        <Virtualized
+          nodes={nodes}
+          tasksMap={tasksMap}
+        />
+      </CollapseContext.Provider>
     </div>
   )
 }
 
 // @ts-ignore
-const convert = (id, type, kind, data, children, phantom = false, handlers = {}): Node => {
+const convert = (id, type, kind, collapsed, data, children, phantom = false, handlers = {}): Node => {
   return {
     id,
     phantom,
     type,
     kind,
-    collapsed: false,
+    collapsed,
     data,
     children,
     handlers
