@@ -37,6 +37,11 @@ const md = new MarkdownIt({
 
 let turndownService = new TurndownService();
 
+// eslint-disable-next-line func-names
+TurndownService.prototype.escape = function (string) {
+  return string;
+};
+
 turndownService = turndownService.addRule('people-mention', {
   filter: ['span'],
   // eslint-disable-next-line func-names, object-shorthand
