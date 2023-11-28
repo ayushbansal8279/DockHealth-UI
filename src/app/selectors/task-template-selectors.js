@@ -77,6 +77,6 @@ export const currentFolderIdentifierSelector = createSelector(
 );
 
 export const selectedTasksSelector = (state) =>
-  state?.taskItems?.selectedTaskIdentifiers.map(
-    (taskId) => state?.taskTemplate?.tasksMap[taskId],
-  );
+  state?.taskItems?.selectedTaskIdentifiers
+    .filter((taskId) => state?.taskTemplate?.tasksMap[taskId] !== undefined)
+    .map((taskId) => state?.taskTemplate?.tasksMap[taskId]);
