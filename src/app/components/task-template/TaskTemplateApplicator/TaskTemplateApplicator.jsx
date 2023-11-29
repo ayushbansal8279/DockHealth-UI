@@ -57,24 +57,24 @@ const TaskTemplateApplicator = ({
     [setTaskTemplatesIsLoading],
   );
 
-  const getRootTemplatesList = () => {
-      setTaskTemplatesIsLoading(false);
-      setParentList([]);
-      getTemplates(true)
-          .then((templatesList) => {
-              setTaskTemplatesList(templatesList);
-              setTaskTemplatesIsLoading(false);
-          })
-          .catch(() => {
-              setTaskTemplatesIsLoading(false);
-          })
-  }
+  const getRootTemplatesList = useCallback(() => {
+    setTaskTemplatesIsLoading(true);
+    setParentList([]);
+    getTemplates(false)
+      .then((templatesList) => {
+        setTaskTemplatesList(templatesList);
+        setTaskTemplatesIsLoading(false);
+      })
+      .catch(() => {
+        setTaskTemplatesIsLoading(false);
+      });
+  }, []);
 
   useEffect(() => {
-      if (isPopoverOpen) {
-          getRootTemplatesList()
-      }
-  }, [isPopoverOpen]);
+    if (isPopoverOpen) {
+      getRootTemplatesList();
+    }
+  }, [getRootTemplatesList, isPopoverOpen]);
 
   const handleTemplateSelect = useCallback(
     (template) => {

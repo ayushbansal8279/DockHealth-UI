@@ -75,7 +75,7 @@ const SelectStep = ({
     clearBreadcrumbsList();
     setIsFetchingFolders(true);
     setListId(null);
-    getTemplates(false)
+    getTemplates(true)
       .then((folders) => {
         setFoldersList([
           {
