@@ -29,9 +29,11 @@ export function getAllTemplatesForOrganization() {
     .then((response) => response.data);
 }
 
-export function getTemplates() {
+export function getTemplates(includeAll) {
   return axios
-    .get(`task/template/getRootTemplatesForOrganization?includeAll=false`)
+    .get(
+      `task/template/getRootTemplatesForOrganization?includeAll=${includeAll}`,
+    )
     .then((response) => response.data);
 }
 

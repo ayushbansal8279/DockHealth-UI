@@ -58,9 +58,9 @@ const TaskTemplateApplicator = ({
   );
 
   const getRootTemplatesList = () => {
-      setTaskTemplatesIsLoading(true);
+      setTaskTemplatesIsLoading(false);
       setParentList([]);
-      getTemplates()
+      getTemplates(true)
           .then((templatesList) => {
               setTaskTemplatesList(templatesList);
               setTaskTemplatesIsLoading(false);
