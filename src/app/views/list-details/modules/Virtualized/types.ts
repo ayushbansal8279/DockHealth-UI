@@ -6,6 +6,7 @@ export type Segment = {
   metadata: {
     id: string
     index: number
+    sameLevelIndex: number
     level: number
     parent: Segment["metadata"] | null
     collapsed: boolean
@@ -35,6 +36,7 @@ export type FlatNode = {
   kind: string
   index: number | null
   level: number
+  sameLevelIndex: number
   parent: FlatNode | null
   collapsed: boolean
   data: Record<string, unknown>

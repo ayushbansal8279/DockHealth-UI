@@ -119,7 +119,6 @@ const TasksHeader = ({
 
   const renderColumn = useCallback(
     (f, index, snapshot) => {
-      console.log('renderColumn', f, index, snapshot);
       const isRegular = f._customFieldType === CUSTOM_FIELD_TYPES.REGULAR;
       const customFieldDefaultPrintWidth = CustomFieldWidthConfig[f.fieldType];
       const regularFieldDefaultPrintWidth =

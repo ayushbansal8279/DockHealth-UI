@@ -31,75 +31,81 @@ function VirtualTaskList({ tasksToMap, groupedTasks }: Props) {
   )
   // @ts-ignore
   const tasksMap = useSelector(state => state.listDetails.tasksMap)
+  // @ts-ignore
+  const listGroups = useSelector(state => state.listDetails.listGroups)
   const nodes: Node[] = useMemo(() => {
-    return groupedTasks.map(group => convert(
-      group.groupIdentifier,
-      VListGroup,
-      "ListGroup",
-      !!collapseMap[group.groupIdentifier],
-      { name: group.groupName },
-      [
-        convert(
-          uniqueId().toString(),
-          VQuickAddTask,
-          "QuickAddTask",
-          false,
-          {
-            taskGroupIdentifier: group.groupIdentifier
-          },
-          [],
-          true
-        ),
-        convert(
-          uniqueId().toString(),
-          VTaskHeader,
-          "TaskHeader",
-          false,
-          {},
-          [],
-          true
-        )
-      ]
-        .concat(...group.tasks.map((taskIdentifier: string) => {
-          const task = tasksMap[taskIdentifier];
-          const children = task.itemType === "TASK"
-            ? task.subtasks
-            : task.tasks;
-          return convert(
-            taskIdentifier,
-            VTask,
-            "Task",
-            !!collapseMap[taskIdentifier],
-            { task },
-            children.map((child: any) => {
-              return convert(
-                child?.taskIdentifier ?? child,
-                task.itemType === "TASK"
-                  ? VSubtask
-                  : VTask,
-                task.itemType === "TASK" ? "Subtask" : "TaskOfBundle",
-                !!collapseMap[child?.taskIdentifier ?? child],
-                { isTaskTemplate: true },
-                !!tasksMap[child]?.subtasks.length
-                  ? tasksMap[child].subtasks.map((subtask: any) => {
-                    return convert(
-                      subtask.taskIdentifier,
-                      VSubtask,
-                       "Subtask",
-                      false,
-                      { task: subtask },
-                      []
-                    );
-                  })
-                  : []
-              );
-            })
-          );
-        }))
-      , true)).concat(
+    // @ts-ignore
+    return listGroups.map((group) => {
+      const groupTasks = groupedTasks.find(groupedTask => groupedTask.groupIdentifier === group.taskGroupIdentifier)?.tasks ?? []
+      return convert(
+        group.taskGroupIdentifier,
+        VListGroup,
+        "ListGroup",
+        !!collapseMap[group.taskGroupIdentifier],
+        { name: group.groupName },
+        [
+          convert(
+            uniqueId().toString(),
+            VQuickAddTask,
+            "QuickAddTask",
+            false,
+            {
+              taskGroupIdentifier: group.taskGroupIdentifier
+            },
+            [],
+            true
+          ),
+          convert(
+            uniqueId().toString(),
+            VTaskHeader,
+            "TaskHeader",
+            false,
+            {},
+            [],
+            true
+          )
+        ]
+          .concat(...groupTasks.map((taskIdentifier: string) => {
+            const task = tasksMap[taskIdentifier];
+            const children = task.itemType === "TASK"
+              ? task.subtasks
+              : task.tasks;
+            return convert(
+              taskIdentifier,
+              VTask,
+              "Task",
+              !!collapseMap[taskIdentifier],
+              { task },
+              children.map((child: any) => {
+                return convert(
+                  child?.taskIdentifier ?? child,
+                  task.itemType === "TASK"
+                    ? VSubtask
+                    : VTask,
+                  task.itemType === "TASK" ? "Subtask" : "TaskOfBundle",
+                  !!collapseMap[child?.taskIdentifier ?? child],
+                  { isTaskTemplate: true },
+                  !!tasksMap[child]?.subtasks.length
+                    ? tasksMap[child].subtasks.map((subtask: any) => {
+                      return convert(
+                        subtask.taskIdentifier,
+                        VSubtask,
+                        "Subtask",
+                        false,
+                        { task: subtask },
+                        []
+                      );
+                    })
+                    : []
+                );
+              })
+            );
+          }))
+        , true);
+    }).concat(
       convert(uniqueId().toString(), VAddGroup, "AddGroup", false, {}, [], true)
     )
-  }, [groupedTasks, tasksMap, collapseMap])
+  }, [groupedTasks, tasksMap, collapseMap, listGroups])
 
   const dispatch = useDispatch();
   const handleDragEnd = ({ draggableId, destination, source }: DropResult) => {

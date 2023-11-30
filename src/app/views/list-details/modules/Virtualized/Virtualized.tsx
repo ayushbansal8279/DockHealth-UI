@@ -124,7 +124,7 @@ function Virtualized({ nodes = [], tasksMap, context, ...props }: Props) {
 }
 
 const walk = (nodes: Node[], parent: FlatNode | null = null, level: number = 0, state: { index: number } = { index: 0 }): FlatNode[] => {
-  return nodes.flatMap((node) => {
+  return nodes.flatMap((node, index) => {
     const { id, phantom, type, kind, collapsed, data, handlers } = node
     const flattened: FlatNode = {
       id,
@@ -132,6 +132,7 @@ const walk = (nodes: Node[], parent: FlatNode | null = null, level: number = 0, 
       type,
       kind,
       index: phantom ? null : state.index,
+      sameLevelIndex: index,
       level,
       parent,
       collapsed,

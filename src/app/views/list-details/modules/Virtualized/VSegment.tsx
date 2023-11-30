@@ -27,12 +27,13 @@ function VSegment({
 }
 
 const toSegment = (node: FlatNode, register?: Record<string, unknown>): Segment => {
-  const { id, index, level, parent, collapsed, children} = node
+  const { id, index, sameLevelIndex, level, parent, collapsed, children} = node
   return {
     register,
     metadata: {
       id,
       index,
+      sameLevelIndex,
       level,
       parent: parent !== null
         ? toSegment(parent).metadata
