@@ -44,6 +44,9 @@ import {
   SelectParentOption,
 } from '../../customModals/styled';
 
+import ArrowIcon from 'img/arrow.svg';
+
+
 const REQUIRED_MESSAGE = 'This field is required';
 
 const EditCustomFieldModal = ({
