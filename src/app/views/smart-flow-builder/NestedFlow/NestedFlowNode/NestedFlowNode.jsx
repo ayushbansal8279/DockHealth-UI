@@ -47,7 +47,7 @@ const NestedFlowNode = React.memo(({ data, isConnectable, selected, type }) => {
   const handleOpenModal = () => {
     dispatch(
       openModal('SmartFlowList', {
-        fetchMethod: () => getTemplates(),
+        fetchMethod: () => getTemplates(true),
         closeModal,
         setWorkflow,
       }),
