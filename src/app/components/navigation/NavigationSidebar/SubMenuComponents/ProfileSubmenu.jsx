@@ -25,7 +25,8 @@ const ProfileSubmenu = () => {
   const dispatch = useDispatch();
   const userProfile = useSelector(userProfileSelector);
   const currentOrganization = useSelector(selectedUserOrganizationSelector);
-  const { name, titles, initials, bubbleColor } = userProfile || {};
+  const { name, credentials, titles, initials, bubbleColor } =
+    userProfile || {};
 
   const whiteLabelEnabled = currentOrganization?.whiteLabelEnabled || false;
   const embeddedMode = sessionStorage.getItem('EmbeddedMode') || false;
@@ -36,7 +37,10 @@ const ProfileSubmenu = () => {
         {userProfile ? (
           <>
             <Top>
-              <UserName>{name?.trim()}</UserName>
+              <UserName>
+                {name?.trim()}
+                {credentials ? `, ${credentials}` : ''}
+              </UserName>
               <button
                 type="button"
                 onClick={() => dispatch(TemplateActions.hideSubMenu())}

@@ -148,7 +148,10 @@ const UsersSelect = (props) => {
               <SelectedUserItem key={u.identifier}>
                 {renderUserOptionAvatar(u)}
                 <SelectedUserText>
-                  {u.userName || `${u.firstName} ${u.lastName} (${u.email})`}
+                  {u.userName ||
+                    `${u.firstName} ${u.lastName}${
+                      u.credentials ? `, ${u.credentials}` : ''
+                    } (${u.email})`}
                   {/* TODO: use backend external flag */}
                   {u.external && (
                     <ExternalUserLabel> (External)</ExternalUserLabel>

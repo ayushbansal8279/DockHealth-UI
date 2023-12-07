@@ -34,7 +34,9 @@ const HistorySection = ({ selectedTask, selectedTaskIdentifier }) => {
     <DrawerSection title="History" collapsable onOpen={handleHistoryOpen}>
       {!selectedTaskIdentifier && (
         <HistoryItem
-          description={`${currentUser?.firstName} ${currentUser?.lastName} created the task`}
+          description={`${currentUser?.firstName} ${currentUser?.lastName}${
+            currentUser?.credentials ? `, ${currentUser?.credentials}` : ''
+          } created the task`}
           date={selectedTask?.createdDateTime}
           type="Task created"
         />
