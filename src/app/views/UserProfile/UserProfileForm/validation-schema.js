@@ -15,6 +15,7 @@ export default object().shape({
   specialty: string().nullable(),
   subspecialty: string().nullable(),
   department: string().nullable(),
+  credentials: string().nullable(),
   workPhoneNumber: string()
     .transform((value) => {
       if (!value || value.length <= 3) {

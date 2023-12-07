@@ -19,7 +19,14 @@ import { TooltipContent } from './styled';
 const UserAvatar = React.forwardRef(
   ({ user, color, size, isSelected, hideTooltip, onClick }, reference) => {
     const activeUsersList = useSelector(activeUsersListSelector);
-    const { name, initials, bubbleColor, userStatus, orgUserRole } = user || {};
+    const {
+      name,
+      initials,
+      credentials,
+      bubbleColor,
+      userStatus,
+      orgUserRole,
+    } = user || {};
     const isExternal = orgUserRole === UserOrganizationRole.EXTERNAL;
     const isGuest = orgUserRole === UserOrganizationRole.GUEST;
 
@@ -50,7 +57,10 @@ const UserAvatar = React.forwardRef(
         <Tooltip
           title={
             <TooltipContent>
-              <b>{name}</b>
+              <b>
+                {name}
+                {credentials ? `, ${credentials}` : ''}
+              </b>
               <div>
                 {activityStatus === ActivityStatus.ONLINE && 'online'}
                 {activityStatus === ActivityStatus.IDLE && 'idle'}
@@ -69,7 +79,8 @@ const UserAvatar = React.forwardRef(
             initials={initials}
             isSelected={isSelected}
             pictureSrc={pictureSource}
-            name={name}
+            // eslint-disable-next-line sonarjs/no-nested-template-literals
+            name={`${name}${credentials ? `, ${credentials}` : ''}`}
             activityStatus={activityStatus}
             isBlurred={isInactive}
             color={color || bubbleColor}

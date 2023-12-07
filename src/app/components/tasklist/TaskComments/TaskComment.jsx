@@ -64,7 +64,9 @@ const TaskComment = React.memo(
       dateLabel = moment(dateUpdated).format('MMMM D, YYYY');
     }
 
-    const commentAuthor = `${creator.firstName} ${creator.lastName}`.trim();
+  const commentAuthor = `${creator.firstName} ${creator.lastName}${
+    creator?.credentials ? `, ${creator?.credentials}` : ''
+  }`.trim();
 
     const commentDate = ` ${dateLabel} @ ${moment(dateUpdated).format(
       'h:mm a',

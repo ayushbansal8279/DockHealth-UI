@@ -90,7 +90,8 @@ const SelectOwnerModal = ({
               >
                 <UserAvatar user={user} size={35} />
                 <UserName>
-                  {user?.firstName} {user?.lastName}
+                  {user?.firstName} {user?.lastName}$
+                  {user?.credentials ? `, ${user?.credentials}` : ''}
                 </UserName>
               </UserItem>
             ))}
