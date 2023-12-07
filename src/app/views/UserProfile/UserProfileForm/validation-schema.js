@@ -23,7 +23,7 @@ export default object().shape({
       }
       return matchEmptyNumber(value);
     })
-    .phone(null, null, MASK_MESSAGE)
+    // .phone(null, false, MASK_MESSAGE)
     // .matches(PHONE_MASK, MASK_MESSAGE)
     .notRequired(),
 });

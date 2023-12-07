@@ -256,21 +256,21 @@ const UserProfileForm = ({ userProfile }) => {
                     />
                   </Grid>
                 </Grid>
-                <Grid container item direction="row" spacing={2}>
-                  <Grid item md={6} xs={12}>
-                    <FormInput name="title" label="Title" />
-                  </Grid>
-                  <Grid item md={6} xs={12}>
-                    <FormInput name="department" label="Department" />
-                  </Grid>
-                </Grid>
-                <Grid container item direction="row" spacing={2}>
-                  <Grid item md={6} xs={12}>
-                    <FormInput name="credentials" label="Credentails" />
-                  </Grid>
-                </Grid>
               </>
             )}
+            <Grid container item direction="row" spacing={2}>
+              <Grid item md={6} xs={12}>
+                <FormInput name="title" label="Title" />
+              </Grid>
+              <Grid item md={6} xs={12}>
+                <FormInput name="department" label="Department" />
+              </Grid>
+              <Grid container item direction="row" spacing={2}>
+                <Grid item md={6} xs={12}>
+                  <FormInput name="credentials" label="Credentails" />
+                </Grid>
+              </Grid>
+            </Grid>
           </Grid>
         </SettingsSection>
         <Grid container>

@@ -47,7 +47,14 @@ import { openDrawer } from 'actions/workflow-drawer-actions';
 import { Box, ClickAwayListener, Paper, Popper } from '@mui/material';
 import DecisionTaskElementIcon from 'img/template/decision-task-icon';
 import Tooltip from 'components/common/Tooltip/Tooltip';
-import { Controls, Position, ReactFlowProvider, MarkerType } from 'reactflow';
+import {
+  Controls,
+  Position,
+  ReactFlowProvider,
+  MarkerType,
+  useNodesInitialized,
+  useReactFlow,
+} from 'reactflow';
 import TaskDrawer from 'components/task-drawer/TaskDrawer/TaskDrawer';
 import {
   NodeType,
@@ -124,7 +131,9 @@ const DEFAULT_EDGE = {
 const SmartFlowBuilderView = () => {
   const delayPeriodOptionReference = useRef(null);
   const builderWrapperReference = useRef(null);
-  const reactFlowInstance = useRef(null);
+  const reactFlowInstance = useReactFlow();
+  const nodesInitialized = useNodesInitialized({ includeHiddenNodes: false });
+  const [reactFlowInitialized, setReactFlowInitialized] = useState(false);
   const [elements, setElements] = useState([]);
   const [draggedEdgeSourceId, setDraggedEdgeSourceId] = useState(null);
   const [, setHoveredTargetHandle] = useState(Position.Top);
@@ -140,9 +149,6 @@ const SmartFlowBuilderView = () => {
     workflow || {};
   const smartFlowsAvailable = useSelector(userHasSmartFlowsSelector);
 
-  const numberOfTasks = tasks?.length || 0;
-  const previousNumberOfTasks = useRef(null);
-
   const currentUser = useSelector(userProfileSelector);
   const isCurrentUserEditor =
     members?.find(({ user }) => user.identifier === currentUser.identifier)
@@ -152,18 +158,6 @@ const SmartFlowBuilderView = () => {
     () => elements.filter((element) => element.selected),
     [elements],
   );
-
-  useEffect(() => {
-    if (
-      reactFlowInstance.current &&
-      previousNumberOfTasks.current > 0 &&
-      numberOfTasks - previousNumberOfTasks.current > 1
-    ) {
-      setTimeout(reactFlowInstance.current.fitView, 0);
-    }
-
-    previousNumberOfTasks.current = numberOfTasks;
-  }, [numberOfTasks]);
 
   useEffect(() => {
     if (smartFlowsAvailable === false && templateType === 'SMARTFLOW') {
@@ -205,11 +199,18 @@ const SmartFlowBuilderView = () => {
     }
   }, [draggedEdgeSourceId, identifier, layout, tasks, temporaryElements]);
 
+  useEffect(() => {
+    if (reactFlowInstance && nodesInitialized && !reactFlowInitialized) {
+      reactFlowInstance.fitView();
+      setReactFlowInitialized(true);
+    }
+  }, [reactFlowInstance, nodesInitialized, reactFlowInitialized]);
+
   const centerViewToElement = (elementPosition) => {
     const { x, y } = elementPosition;
     const { offsetWidth, offsetHeight } = builderWrapperReference.current;
 
-    reactFlowInstance.current.setTransform({
+    reactFlowInstance.setTransform({
       x: -x + offsetWidth / 2 - TASK_NODE_WIDTH / 2,
       y: -y + offsetHeight / 2,
       zoom: 1,
@@ -437,7 +438,7 @@ const SmartFlowBuilderView = () => {
     const reactFlowBounds =
       builderWrapperReference.current.getBoundingClientRect();
     const type = event.dataTransfer.getData('application/reactflow');
-    const position = reactFlowInstance.current.project({
+    const position = reactFlowInstance.project({
       x: event.clientX - reactFlowBounds.left,
       y: event.clientY - reactFlowBounds.top,
     });
@@ -463,11 +464,6 @@ const SmartFlowBuilderView = () => {
     }
   };
 
-  const handleLoad = (_reactFlowInstance) => {
-    reactFlowInstance.current = _reactFlowInstance;
-    setTimeout(_reactFlowInstance.fitView, 0);
-  };
-
   // eslint-disable-next-line unicorn/consistent-function-scoping
   const resetSelection = () => {
     // resetting selection by creating click event on react flow panel
@@ -480,7 +476,7 @@ const SmartFlowBuilderView = () => {
     const autoLayout = await getAutoLayout(tasks);
     dispatch(saveTaskTemplateLayoutToHistory());
     dispatch(saveTaskTemplateLayout(autoLayout));
-    setTimeout(reactFlowInstance.current.fitView, 0);
+    setTimeout(reactFlowInstance.fitView, 0);
     dispatch(
       AlertActions.showGlobalAlertWithUndo(
         'AUTO ALIGNMENT',
@@ -501,137 +497,137 @@ const SmartFlowBuilderView = () => {
 
   return (
     <div style={{ display: 'flex', width: '100vw', height: '100vh' }}>
-      <ReactFlowProvider>
-        <Box position="relative" display="flex" height="100%" width="100%">
-          <ElementsSidebar>
-            <Box>
-              <SidebarTitle>SmartFlow Toolkit</SidebarTitle>
-              {isCurrentUserEditor &&
-                toolkitActions.map(
-                  ({ id, label, icon: Icon, ref, onClick }) => (
-                    <ElementButton
-                      key={id}
-                      type="button"
-                      ref={ref}
-                      onClick={onClick}
-                      onDragStart={(event) => {
-                        event.dataTransfer.setData('application/reactflow', id);
-                        // eslint-disable-next-line no-param-reassign
-                        event.dataTransfer.effectAllowed = 'move';
-                      }}
-                      draggable
-                    >
-                      <ElementIconBackground>
-                        <Icon />
-                      </ElementIconBackground>
-                      <ElementDescription>{label}</ElementDescription>
-                    </ElementButton>
-                  ),
-                )}
-              <SidebarDivider />
-              {isCurrentUserEditor && (
-                <Tooltip title="Auto Align will organize  your layout ">
-                  <AutoAlignButton type="button" onClick={handleAutoAlignClick}>
-                    Auto Align Layout
-                  </AutoAlignButton>
-                </Tooltip>
-              )}
-              {isDelayPopoverOpen && (
-                <Popper
-                  anchorEl={delayPeriodOptionReference.current}
-                  placement="right"
-                  open
-                  style={{ zIndex: 10 }}
+      <Box position="relative" display="flex" height="100%" width="100%">
+        <ElementsSidebar>
+          <Box>
+            <SidebarTitle>SmartFlow Toolkit</SidebarTitle>
+            {isCurrentUserEditor &&
+              toolkitActions.map(({ id, label, icon: Icon, ref, onClick }) => (
+                <ElementButton
+                  key={id}
+                  type="button"
+                  ref={ref}
+                  onClick={onClick}
+                  onDragStart={(event) => {
+                    event.dataTransfer.setData('application/reactflow', id);
+                    // eslint-disable-next-line no-param-reassign
+                    event.dataTransfer.effectAllowed = 'move';
+                  }}
+                  draggable
                 >
-                  <ClickAwayListener onClickAway={closeDelayPopover}>
-                    <Paper>
-                      <TaskLinkDelayForm
-                        onSubmit={handleDelayForSubmit}
-                        onClose={closeDelayPopover}
-                      />
-                    </Paper>
-                  </ClickAwayListener>
-                </Popper>
-              )}
-            </Box>
-            <Box>
-              <Hotkeys />
-            </Box>
-          </ElementsSidebar>
-          <Box ref={builderWrapperReference} position="relative" flex={1}>
-            <BuilderHeader>
-              <Link
-                to={
-                  parentTaskWorkflowIdentifier
-                    ? createWorkflowFolderPath(parentTaskWorkflowIdentifier)
-                    : WORKFLOW_LIBRARY_PATH
-                }
-              >
-                <BuilderHeaderText color={palette.brightBlue}>
-                  Workflows
-                </BuilderHeaderText>
-              </Link>
-              <Box px={1}>
-                <NavigateNextIcon fontSize="small" />
-              </Box>
-              <button
-                type="button"
-                onClick={() => dispatch(openDrawer(workflow.identifier, null))}
-              >
-                <BuilderHeaderText>
-                  {name}
-                  <EditIconWrapper>
-                    <EditIcon fontSize="small" color="inherit" />
-                  </EditIconWrapper>
-                </BuilderHeaderText>
-              </button>
-            </BuilderHeader>
-            {elements && (
-              <ReactFlowAdapter
-                // connectionLineComponent={ConnectionLineComponent}
-                elements={elements}
-                onConnect={onConnect}
-                connectionLineType="default"
-                nodeTypes={nodeTypes}
-                edgeTypes={linkTypes}
-                minZoom={0.1}
-                maxZoom={1}
-                onElementsChange={setElements}
-                onDragOver={handleDragOver}
-                onDrop={handleDrop}
-                deleteKeyCode={46}
-                onConnectStart={(_, { nodeId }) =>
-                  setDraggedEdgeSourceId(nodeId)
-                }
-                onConnectEnd={() => {
-                  setDraggedEdgeSourceId(null);
-                  setHoveredTargetHandle(Position.Top);
-                }}
-                onSelectionDragStop={handleSelectionDragStop}
-                onNodeDragStop={handleNodeDragStop}
-                onLoad={handleLoad}
-                selectionKeyCode={['Meta', 'Shift']}
-                multiSelectionKeyCode={['Meta', 'Shift']}
-                nodesDraggable={isCurrentUserEditor}
-                nodesConnectable={isCurrentUserEditor}
-                elementsSelectable={isCurrentUserEditor}
-                defaultEdgeOptions={DEFAULT_EDGE}
-                selectionMode="partial"
-                selectNodesOnDrag={false}
-              >
-                <Controls showInteractive={isCurrentUserEditor} />
-              </ReactFlowAdapter>
+                  <ElementIconBackground>
+                    <Icon />
+                  </ElementIconBackground>
+                  <ElementDescription>{label}</ElementDescription>
+                </ElementButton>
+              ))}
+            <SidebarDivider />
+            {isCurrentUserEditor && (
+              <Tooltip title="Auto Align will organize  your layout ">
+                <AutoAlignButton type="button" onClick={handleAutoAlignClick}>
+                  Auto Align Layout
+                </AutoAlignButton>
+              </Tooltip>
             )}
-
-            <BulkEditContainer
-              selectedTasks={selectedTasks}
-              onClose={resetSelection}
-            />
+            {isDelayPopoverOpen && (
+              <Popper
+                anchorEl={delayPeriodOptionReference.current}
+                placement="right"
+                open
+                style={{ zIndex: 10 }}
+              >
+                <ClickAwayListener onClickAway={closeDelayPopover}>
+                  <Paper>
+                    <TaskLinkDelayForm
+                      onSubmit={handleDelayForSubmit}
+                      onClose={closeDelayPopover}
+                    />
+                  </Paper>
+                </ClickAwayListener>
+              </Popper>
+            )}
           </Box>
+          <Box>
+            <Hotkeys />
+          </Box>
+        </ElementsSidebar>
+        <Box ref={builderWrapperReference} position="relative" flex={1}>
+          <BuilderHeader>
+            <Link
+              to={
+                parentTaskWorkflowIdentifier
+                  ? createWorkflowFolderPath(parentTaskWorkflowIdentifier)
+                  : WORKFLOW_LIBRARY_PATH
+              }
+            >
+              <BuilderHeaderText color={palette.brightBlue}>
+                Workflows
+              </BuilderHeaderText>
+            </Link>
+            <Box px={1}>
+              <NavigateNextIcon fontSize="small" />
+            </Box>
+            <button
+              type="button"
+              onClick={() => dispatch(openDrawer(workflow.identifier, null))}
+            >
+              <BuilderHeaderText>
+                {name}
+                <EditIconWrapper>
+                  <EditIcon fontSize="small" color="inherit" />
+                </EditIconWrapper>
+              </BuilderHeaderText>
+            </button>
+          </BuilderHeader>
+          {elements && (
+            <ReactFlowAdapter
+              // connectionLineComponent={ConnectionLineComponent}
+              elements={elements}
+              onConnect={onConnect}
+              connectionLineType="default"
+              nodeTypes={nodeTypes}
+              edgeTypes={linkTypes}
+              minZoom={0.1}
+              maxZoom={1}
+              onElementsChange={setElements}
+              onDragOver={handleDragOver}
+              onDrop={handleDrop}
+              deleteKeyCode={46}
+              onConnectStart={(_, { nodeId }) => setDraggedEdgeSourceId(nodeId)}
+              onConnectEnd={() => {
+                setDraggedEdgeSourceId(null);
+                setHoveredTargetHandle(Position.Top);
+              }}
+              onSelectionDragStop={handleSelectionDragStop}
+              onNodeDragStop={handleNodeDragStop}
+              selectionKeyCode={['Meta', 'Shift']}
+              multiSelectionKeyCode={['Meta', 'Shift']}
+              nodesDraggable={isCurrentUserEditor}
+              nodesConnectable={isCurrentUserEditor}
+              elementsSelectable={isCurrentUserEditor}
+              defaultEdgeOptions={DEFAULT_EDGE}
+              selectionMode="partial"
+              selectNodesOnDrag={false}
+            >
+              <Controls showInteractive={isCurrentUserEditor} />
+            </ReactFlowAdapter>
+          )}
+
+          <BulkEditContainer
+            selectedTasks={selectedTasks}
+            onClose={resetSelection}
+          />
         </Box>
-      </ReactFlowProvider>
+      </Box>
       <TaskDrawer origin={TaskOrigin.TEMPLATE} />
     </div>
   );
 };
-export default SmartFlowBuilderView;
+
+const SmartFlowBuilderViewWithReactFlow = () => (
+  <ReactFlowProvider>
+    <SmartFlowBuilderView />
+  </ReactFlowProvider>
+);
+
+export default SmartFlowBuilderViewWithReactFlow;
