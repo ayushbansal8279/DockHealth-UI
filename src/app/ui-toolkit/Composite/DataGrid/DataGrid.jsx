@@ -45,8 +45,8 @@ const CustomColumnMenu = ({ ...props }) => {
  *    const controller = useController()
  *
  *    <DataGrid controller={controller} dataset={[
- *      { firstName: "Laramy", lastName: "Fisk", age: 28 },
- *      { firstName: "Gabriel", lastName: "Santiago", age: 42 },
+ *      { firstName: "First1", lastName: "Last1", age: 28 },
+ *      { firstName: "First2", lastName: "Last2", age: 42 },
  *    ]}>
  *      <Data
  *        name="Name"
@@ -200,40 +200,3 @@ export const useController = () => {
     ref: apiReference,
   };
 };
-
-/*
-
-  const ? = [
-    {
-
-    }
-  ]
-
-
-  const dataset = [
-    {
-        "patientId": 3186,
-        "patientIdentifier": "ca640e89-30f3-474b-b96d-015b3d0d448b",
-        "firstName": "Wanda",
-        "lastName": "Four",
-        "phoneHome": "",
-        "patientName": "Four, Wanda"
-    }
-  ]
-
-  <DataGrid
-    multiselect
-    dataset={}
-  >
-    <Data
-      type="string"
-      name="PATIENT"
-      enable={{ sticky, sortable, draggable }}
-      render={({ firstName, lastName }) =>
-        `{firstName} {lastName}`
-      }
-    />
-  </ DataGrid>
-
-
- */
