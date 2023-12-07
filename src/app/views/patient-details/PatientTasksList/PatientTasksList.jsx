@@ -422,7 +422,7 @@ const PatientTasksListView = () => {
     <>
       {filteredLists ? (
         <>
-          {filteredLists?.length > 0 ? (
+          {filteredLists?.length >= 0 ? (
             <>
               <StickyContainer left={24} decreaseWidth={2 * 24} zIndex={13}>
                 <TaskListToolbar
