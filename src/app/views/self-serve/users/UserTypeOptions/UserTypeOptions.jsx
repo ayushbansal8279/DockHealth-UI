@@ -13,6 +13,7 @@ import { getUserTypeLabel, USER_TYPES } from '../helpers';
 const UserTypeOptions = ({
   firstName,
   lastName,
+  credentials,
   email,
   userStatus,
   orgUserRole,
@@ -32,7 +33,9 @@ const UserTypeOptions = ({
     [eulaAcknowledged, orgUserRole, userStatus],
   );
 
-  const displayName = `${firstName} ${lastName}`;
+  const displayName = `${firstName} ${lastName}${
+    credentials ? `, ${credentials}` : ''
+  }`;
   const viewOnlyRoleAvailable = useSelector(userHasViewOnlyFeatureSelector);
   const guestRoleAvailable = useSelector(userHasDockGuestFeatureSelector);
 

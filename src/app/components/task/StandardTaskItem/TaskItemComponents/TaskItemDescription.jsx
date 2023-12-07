@@ -80,7 +80,9 @@ const TaskItemDescription = ({
   const isDecisionTask = task?.intentType === 'DECISION';
 
   const completedByName = completedBy
-    ? `${completedBy?.firstName.charAt(0)}. ${completedBy?.lastName}`
+    ? `${completedBy?.firstName.charAt(0)}. ${completedBy?.lastName}${
+        completedBy?.credentials ? `, ${completedBy?.credentials}` : ''
+      }`
         .trim()
         .replace(/^\.$/, '') || 'Unknown'
     : 'Unknown';

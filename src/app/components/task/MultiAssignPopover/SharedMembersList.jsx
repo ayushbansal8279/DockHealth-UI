@@ -124,6 +124,7 @@ SharedMembersList.propTypes = {
       firstName: string,
       lastName: string,
       initials: string,
+      credentials: string,
       profileThumbnailPictureHash: string,
     }),
   ).isRequired,

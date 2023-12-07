@@ -32,6 +32,7 @@ const PersonInfoPanel = () => {
     email,
     firstName,
     lastName,
+    credentials,
     workPhoneNumber,
     providerMetaData,
   } = userDetails || {};
@@ -57,7 +58,9 @@ const PersonInfoPanel = () => {
                   hideTooltip
                   showOnlineIndicator={false}
                 />
-                <PersonTitle>{`${firstName} ${lastName}`}</PersonTitle>
+                <PersonTitle>{`${firstName} ${lastName}${
+                  credentials ? `, ${credentials}` : ''
+                }`}</PersonTitle>
                 <Box ml={2} display="flex">
                   <HeaderActionButton onClick={openDrawer}>
                     View details

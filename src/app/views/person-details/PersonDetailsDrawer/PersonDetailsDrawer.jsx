@@ -39,6 +39,7 @@ const PersonDetailsDrawer = ({ user, isOpenedDetails, closeDrawer }) => {
     email,
     workPhoneNumber,
     department,
+    credentials,
     userMetaData,
     userIdentifier,
   } = user;
@@ -48,6 +49,7 @@ const PersonDetailsDrawer = ({ user, isOpenedDetails, closeDrawer }) => {
     email,
     workPhoneNumber,
     department,
+    credentials,
     userMetaData,
   };
   const formMethods = useForm({
@@ -146,7 +148,9 @@ const PersonDetailsDrawer = ({ user, isOpenedDetails, closeDrawer }) => {
         onClose={handleClose}
       >
         <StickyHeader>
-          <TitleName>{`${lastName}, ${firstName}`}</TitleName>
+          <TitleName>
+            ${firstName} ${lastName}${credentials ? `, ${credentials}` : ''}
+          </TitleName>
           <MoreActionsWrapper>
             {isAdminOrOwner && (
               <OptionsMenu
