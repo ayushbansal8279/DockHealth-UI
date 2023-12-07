@@ -169,7 +169,7 @@ function* getOrganizationCustomFields() {
 }
 
 function* changeUserOrganizationRoleSuccess() {
-  yield put(OrganizationActions.getOrganizationUsers());
+  // yield put(OrganizationActions.getOrganizationUsers());
 }
 
 function* updateSubscriptionPlan({ newPlan }) {
