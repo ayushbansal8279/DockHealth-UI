@@ -48,7 +48,7 @@ const GroupIntoSection = () => {
   const onSubmit = useCallback(
     (groupName) => {
       createGroupAssignedToList({
-        groupName,
+        ...groupName,
         taskListIdentifier: list.taskListIdentifier,
       })
         .then((response) => {

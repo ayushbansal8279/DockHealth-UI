@@ -62,7 +62,7 @@ const CreateTasks = () => {
       const taskPromises = submitTasks?.map((task) =>
         addTask({
           ...task,
-          taskList: { taskListIdentifier: list.taskListIdentifier },
+          taskListIdentifier: list.taskListIdentifier,
         }),
       );
       Promise.all(taskPromises)
