@@ -6,7 +6,7 @@ import { styled } from '@mui/material/styles';
 
 const StyledTextField = styled(TextField)`
   && {
-    text-transform: capitalize !important;
+    text-transform: !important;
   }
   & .MuiInputBase-formControl:before {
     border: none !important;
@@ -15,7 +15,7 @@ const StyledTextField = styled(TextField)`
     border-radius: 10px;
   }
   & .MuiInputBase-input {
-    text-transform: capitalize !important;
+    text-transform: !important;
   }
 `;
 
