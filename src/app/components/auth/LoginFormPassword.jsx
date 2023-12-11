@@ -132,6 +132,8 @@ const LoginFormPassword = ({
           <a
             style={{ color: 'black', fontWeight: 800, paddingLeft: '5px' }}
             href="https://help.dock.health/"
+            target="_blank"
+            rel="noreferrer"
           >
             {' '}
             Learn More
