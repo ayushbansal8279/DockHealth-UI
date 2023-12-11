@@ -2,7 +2,7 @@
 import React, { useState, useRef, useMemo } from 'react';
 import Spacing from 'components/common/Spacing';
 import Button from 'components/common/Button/Button';
-import { MontserratTypography } from 'styles/theme-montserrat';
+import { OutfitTypography } from 'styles/theme-outfit';
 import OnboardingQuestionsPicker from '../OnboardingQuestionsPicker';
 import { ROLE_OPTIONS } from '../options';
 import { Option, QuestionContainer } from '../styled';
@@ -44,17 +44,16 @@ const OnboardingQuestionsOwnerGuest = ({
 
   return (
     <div>
-      <MontserratTypography variant="h1" weight="700">
+      <OutfitTypography variant="h1" weight="700">
         <QuestionContainer>
-          My domain of care is:
+          My role in {organizationName} is:{' '}
           <Option
             ref={roleReference}
             onClick={openRolePicker}
             hasSelectedOption={roleOptions.length > 0}
           >
             {roleText}
-          </Option>{' '}
-          working in {organizationName}.
+          </Option>
         </QuestionContainer>
         <OnboardingQuestionsPicker
           isOpen={!!activeOption}
@@ -66,7 +65,7 @@ const OnboardingQuestionsOwnerGuest = ({
           positionGlobal
           topOffset={65}
         />
-      </MontserratTypography>
+      </OutfitTypography>
       <Spacing vertical={5} />
       <Spacing vertical={6} />
       <Button

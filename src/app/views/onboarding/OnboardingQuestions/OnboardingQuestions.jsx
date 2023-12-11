@@ -3,7 +3,7 @@ import { userProfileSelector } from 'selectors/user-selectors';
 import { useSelector } from 'react-redux';
 import Spacing from 'components/common/Spacing';
 import OnboardingIndicator from 'components/common/OnboardingIndicator/OnboardingIndicator';
-import { MontserratTypography } from 'styles/theme-montserrat';
+import { OutfitTypography } from 'styles/theme-outfit';
 import OnboardingQuestionsOwner from './OnboardingQuestionsOwner/OnboardingQuestionsOwner';
 import OnboardingQuestionsMember from './OnboardingQuestionsMember/OnboardingQuestionsMember';
 import OnboardingQuestionsGuest from './OnboardingQuestionsGuest/OnboardingQuestionsGuest';
@@ -25,9 +25,9 @@ const OnboardingQuestions = () => {
         completedSteps={step}
       />
       <Spacing vertical={5} />
-      <MontserratTypography variant="h3" weight="700">
+      <OutfitTypography variant="h3" weight="700">
         {ONBOARDING_TITLE}
-      </MontserratTypography>
+      </OutfitTypography>
       <Spacing vertical={5} />
       {orgUserRole === 'OWNER' && (
         <OnboardingQuestionsOwner

@@ -3,7 +3,7 @@
 import React, { useState, useRef, useMemo, useCallback } from 'react';
 import Spacing from 'components/common/Spacing';
 import Button from 'components/common/Button/Button';
-import { MontserratTypography } from 'styles/theme-montserrat';
+import { OutfitTypography } from 'styles/theme-outfit';
 import palette from 'styles/palette';
 import { ROLE_OPTIONS, DOMAIN_OPTIONS } from '../options';
 import { Option, QuestionContainer } from '../styled';
@@ -117,9 +117,20 @@ const OnboardingQuestionsGuest = ({
 
   return (
     <div>
-      <MontserratTypography variant="h1" weight="700">
+      <OutfitTypography variant="h1" weight="700">
         <QuestionContainer>
           My domain of care is:{' '}
+          <Option
+            ref={domainReference}
+            onClick={openDomainPicker}
+            hasSelectedOption={domainOption.length > 0}
+          >
+            {domainText}
+          </Option>
+        </QuestionContainer>
+        <Spacing vertical={5} />
+        <QuestionContainer>
+          My role is:{' '}
           <Option
             ref={roleReference}
             onClick={openRolePicker}
@@ -127,17 +138,8 @@ const OnboardingQuestionsGuest = ({
           >
             {roleText}
           </Option>
-          <Spacing vertical={1} />
-          <Option
-            ref={domainReference}
-            onClick={openDomainPicker}
-            hasSelectedOption={domainOption.length > 0}
-          >
-            <br />
-            My role is: {domainText}
-          </Option>
         </QuestionContainer>
-      </MontserratTypography>
+      </OutfitTypography>
       <OnboardingQuestionsPicker
         isOpen={!!activeOption}
         questionReference={questionReference}

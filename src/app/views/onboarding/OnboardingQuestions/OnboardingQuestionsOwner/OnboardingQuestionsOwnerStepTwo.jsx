@@ -3,7 +3,7 @@
 import React, { useState, useRef, useMemo, useCallback } from 'react';
 import Spacing from 'components/common/Spacing';
 import Button from 'components/common/Button/Button';
-import { MontserratTypography } from 'styles/theme-montserrat';
+import { OutfitTypography } from 'styles/theme-outfit';
 import palette from 'styles/palette';
 import OnboardingQuestionsPicker from '../OnboardingQuestionsPicker';
 import { HEALTH_RECORD_OPTIONS, SOFTWARE_OPTIONS } from '../options';
@@ -134,7 +134,7 @@ const OnboardingQuestionsOwnerStepTwo = ({
   return (
     <div>
       <QuestionContainer>
-        <MontserratTypography variant="h2" weight={500}>
+        <OutfitTypography variant="h1" weight={700}>
           We use{' '}
           <Option
             ref={healthRecordReference}
@@ -143,7 +143,13 @@ const OnboardingQuestionsOwnerStepTwo = ({
           >
             {healthRecordText}
           </Option>{' '}
-          as our electronic health record and{' '}
+          as our electronic health record
+        </OutfitTypography>
+      </QuestionContainer>
+      <Spacing horizontal={3} />
+      <QuestionContainer>
+        <OutfitTypography variant="h1" weight={700}>
+          and{' '}
           <Option
             ref={softwareReference}
             onClick={openSoftwarePicker}
@@ -152,7 +158,7 @@ const OnboardingQuestionsOwnerStepTwo = ({
             {softwareText}
           </Option>{' '}
           in the practice.
-        </MontserratTypography>
+        </OutfitTypography>
       </QuestionContainer>
       <OnboardingQuestionsPicker
         isOpen={!!activeOption}

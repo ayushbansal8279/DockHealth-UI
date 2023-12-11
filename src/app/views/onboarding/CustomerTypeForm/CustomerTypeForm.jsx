@@ -6,7 +6,7 @@ import OnboardingIndicator from 'components/common/OnboardingIndicator/Onboardin
 import Spacing from 'components/common/Spacing';
 import Button from 'components/common/Button/Button';
 import Checkbox from 'components/common/Checkbox/Checkbox';
-
+import palette from 'styles/palette';
 import {
   Title,
   UnderTitle,
@@ -35,7 +35,7 @@ const CustomerTypeForm = ({ onSubmit, customerTypesList }) => {
       <Checkbox
         isChecked={item.key === selectedRecord.key}
         isCircle
-        size={12}
+        size={20}
       />
       <Spacing horizontal={3} />
       <span>{item.name}</span>
@@ -61,7 +61,12 @@ const CustomerTypeForm = ({ onSubmit, customerTypesList }) => {
         <Spacing vertical={5} />
         <ButtonsContainer>
           <ButtonWrapper>
-            <Button fullWidth type="submit">
+            <Button
+              fullWidth
+              type="submit"
+              color={palette.brightOrange}
+              secondaryColor={palette.oPlusRed}
+            >
               Continue
             </Button>
           </ButtonWrapper>

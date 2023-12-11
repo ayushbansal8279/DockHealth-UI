@@ -8,7 +8,7 @@ import Spacing from 'components/common/Spacing';
 import Checkbox from 'components/common/Checkbox/Checkbox';
 import Button from 'components/common/Button/Button';
 import { useSmallScreen } from 'helpers/utility-functions';
-import { MontserratTypography } from 'styles/theme-montserrat';
+import { OutfitTypography } from 'styles/theme-outfit';
 import { downloadBAADocument } from 'api/organization-api';
 import { userProfileSelector } from 'selectors/user-selectors';
 import palette from 'styles/palette';
@@ -35,20 +35,20 @@ const OnboardingEulaView = () => {
   return (
     <div>
       <Spacing vertical={3} />
-      <MontserratTypography weight="700" variant="h4">
+      <OutfitTypography weight="700" variant="h4">
         LET&apos;S GET STARTED
-      </MontserratTypography>
+      </OutfitTypography>
       <Spacing vertical={5} />
-      <MontserratTypography
+      <OutfitTypography
         weight="500"
-        variant="h3"
-        textDecoration={{ lineHeight: 2 }}
+        variant="h2"
+        textDecoration={{ lineHeight: 1.5 }}
       >
         Review our end user agreement and privacy policy <br /> and confirm your
         Business Associate Agreement
         <br />
         (BAA) for HIPAA-compliance.
-      </MontserratTypography>
+      </OutfitTypography>
       <Spacing vertical={5} />
       <Grid container>
         <Grid item sm={12} container wrap="nowrap" alignItems="center">
@@ -60,7 +60,7 @@ const OnboardingEulaView = () => {
             borderHeight="4px"
           />
           <Spacing horizontal={3} />
-          <MontserratTypography variant="h4" weight="500">
+          <OutfitTypography variant="h4" weight="500">
             <span>I have read and agree to the </span>
             <OnboardingAnchor
               href="https://www.dock.health/end-user-license-agreement"
@@ -75,7 +75,7 @@ const OnboardingEulaView = () => {
             >
               Privacy Statement
             </OnboardingAnchor>
-          </MontserratTypography>
+          </OutfitTypography>
         </Grid>
         <Spacing vertical={4} />
         {!userProfile?.baaSigned && (
@@ -88,7 +88,7 @@ const OnboardingEulaView = () => {
               borderHeight="4px"
             />
             <Spacing horizontal={3} />
-            <MontserratTypography variant="h4" weight="500">
+            <OutfitTypography variant="h4" weight="500">
               <span>I have read and agree to the </span>
               <OnboardingAnchor
                 onClick={() => {
@@ -97,7 +97,7 @@ const OnboardingEulaView = () => {
               >
                 Business Associate Agreement (BAA)
               </OnboardingAnchor>
-            </MontserratTypography>
+            </OutfitTypography>
           </Grid>
         )}
         <Spacing vertical={isSmallScreen ? 4 : 6} />
@@ -111,9 +111,9 @@ const OnboardingEulaView = () => {
               color={palette.brightOrange}
               secondaryColor={palette.oPlusRed}
             >
-              <MontserratTypography weight="700" variant="h4">
+              <OutfitTypography weight="700" variant="h4">
                 Agree & Continue
-              </MontserratTypography>
+              </OutfitTypography>
             </Button>
           </Grid>
         </Grid>

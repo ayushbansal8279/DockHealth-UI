@@ -6,7 +6,7 @@ import OnboardingIndicator from 'components/common/OnboardingIndicator/Onboardin
 import Spacing from 'components/common/Spacing';
 import FormInput from 'components/common/Input/FormInput';
 import Button from 'components/common/Button/Button';
-
+import palette from 'styles/palette';
 import {
   Title,
   FormWrapper,
@@ -70,7 +70,12 @@ const OrganizationForm = ({ onSubmit, onCancel }) => {
               </Button>
             )}
             <ButtonWrapper>
-              <Button fullWidth type="submit">
+              <Button
+                fullWidth
+                type="submit"
+                color={palette.brightOrange}
+                secondaryColor={palette.oPlusRed}
+              >
                 Continue
               </Button>
             </ButtonWrapper>
