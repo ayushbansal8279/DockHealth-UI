@@ -39,7 +39,7 @@ export const OnboardingLogo = styled.img`
 
 export const OnboardingMainContainer = styled.main`
   box-sizing: content-box;
-  margin: 0 auto;
+  // margin: 0 auto;
   max-width: 946px;
   padding: ${(props) => (props.isSmallScreen ? 0.5 : 3.25)}rem;
 `;
