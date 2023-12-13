@@ -14,6 +14,7 @@ import {
   AttachmentsContainer,
   AttachmentFileInput,
   DownloadAllLink,
+  Title,
 } from './styled';
 
 const AttachmentsSection = ({ selectedTask, disabled = false }) => {
@@ -50,9 +51,7 @@ const AttachmentsSection = ({ selectedTask, disabled = false }) => {
       <Grid container>
         <Grid item xs={12}>
           <Spacing vertical={3} />
-          <RobotoTypography condensed variant="h5" color="inherit">
-            ATTACHMENTS
-          </RobotoTypography>
+          <Title>Files</Title>
         </Grid>
         <RobotoTypography condensed variant="h4" color="inherit">
           <Spacing vertical={2} />
