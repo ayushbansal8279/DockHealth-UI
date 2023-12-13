@@ -10,6 +10,7 @@ import AddComment from 'components/drawer-common/AddComment/AddComment';
 import Comment from 'components/drawer-common/Comment/Comment';
 import * as WorkflowActions from 'actions/workflow-actions';
 import { userProfileSelector } from 'selectors/user-selectors';
+import { Title } from './styled';
 
 const CommentSection = ({ disabled }) => {
   const dispatch = useDispatch();
@@ -46,6 +47,7 @@ const CommentSection = ({ disabled }) => {
 
   return (
     <>
+      <Title>Comments</Title>
       {!disabled && (
         <AddComment
           disableMentions={isWorkflowTemplate}
