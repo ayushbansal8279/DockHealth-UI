@@ -17,7 +17,7 @@ export const FieldType = {
   RELATIONSHIP: 'RELATIONSHIP',
 };
 
-export const FieldCharakterLimit = {
+export const FieldCharacterLimit = {
   TEXT: 500,
   LONG_TEXT: 5000,
   RICH_TEXT: 5000,

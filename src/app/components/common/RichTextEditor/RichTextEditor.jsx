@@ -19,6 +19,7 @@ import FroalaEditor from 'react-froala-wysiwyg';
 import MarkdownIt from 'markdown-it';
 import TurndownService from 'turndown';
 import Tribute from 'tributejs';
+import { FieldCharacterLimit } from 'helpers/field-type-helpers';
 import { markdownItUnderline } from './helpers';
 // import { Avatar } from './styled';
 import 'tributejs/dist/tribute.css';
@@ -153,7 +154,7 @@ const RichTextEditor = React.forwardRef(
       placeholder = '',
       // highlightedValues,
       multiline = true,
-      // characterLimit = showToolbar ? FieldCharakterLimit.RICH_TEXT : false,
+      characterLimit = FieldCharacterLimit.RICH_TEXT,
       showCharCount = false,
       initOnClick = false,
       taskListIdentifier,
@@ -373,7 +374,8 @@ const RichTextEditor = React.forwardRef(
       attribution: false,
       placeholderText: placeholder,
       multiLine: multiline,
-      charCounterCount: false,
+      charCounterCount: showCharCount || !!showToolbar,
+      charCounterMax: characterLimit,
       toolbarInline: showToolbarInline,
       toolbarVisibleWithoutSelection: true,
       // height: multiline ? { height } : 30,

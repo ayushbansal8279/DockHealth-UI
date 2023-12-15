@@ -6,7 +6,7 @@ import React, {
   useCallback,
   useState,
 } from 'react';
-import { FieldCharakterLimit, FieldType } from 'helpers/field-type-helpers';
+import { FieldCharacterLimit, FieldType } from 'helpers/field-type-helpers';
 import { BOOL_SELECT_OPTIONS } from 'helpers/custom-fields-helpers';
 import FormInput from 'components/common/Input/FormInput';
 import FormSelect from 'components/common/Select/FormSelect';
@@ -120,7 +120,7 @@ const CustomField = ({
             ref={componentReference}
             onChange={() => setWasChanged(true)}
             required={isRequired}
-            // characterLimit={FieldCharakterLimit.TEXT}
+            characterLimit={FieldCharacterLimit.TEXT}
           />
         );
       }
@@ -143,7 +143,7 @@ const CustomField = ({
       case FieldType.LONG_TEXT: {
         return (
           <CustomFieldRichTextEditor
-            // characterLimit={FieldCharakterLimit.LONG_TEXT}
+            characterLimit={FieldCharacterLimit.LONG_TEXT}
             identifier={identifier}
             readOnly={readOnly}
             label={name}
