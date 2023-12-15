@@ -161,7 +161,9 @@ const ProfilesCustomFieldsView = ({ profileTypeIdentifier }) => {
                   <CustomFieldHeaderText>Field type</CustomFieldHeaderText>
                 </CustomFieldCell>
                 <CustomFieldCell>
-                  <CustomFieldHeaderText>Field category</CustomFieldHeaderText>
+                  <CustomFieldHeaderText>
+                    Included in Name
+                  </CustomFieldHeaderText>
                 </CustomFieldCell>
                 <CustomFieldCell>
                   <CustomFieldHeaderText>Show on Header</CustomFieldHeaderText>
