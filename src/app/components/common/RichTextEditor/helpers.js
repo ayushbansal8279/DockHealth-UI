@@ -24,7 +24,7 @@ const md = new MarkdownIt({
   linkify: true,
 }).use(markdownItUnderline);
 let turndownService = new TurndownService();
-turndownService = turndownService.addRule('people-mention', {
+turndownService = turndownService.addRule('strikethrough', {
   filter: ['del', 's', 'strike'],
   // eslint-disable-next-line func-names, object-shorthand
   replacement: function (content) {
@@ -60,7 +60,11 @@ export const markdowntoHTMLWithMentions = (
     for (const mentionInfo of mentions) {
       processedValue = processedValue.replace(
         `@{${mentionInfo.identifier}}`,
-        `<span class="fr-deletable fr-tribute" data="${mentionInfo.identifier}"><a>@${mentionInfo.name}</a></span>`,
+        `<span class="fr-deletable fr-tribute" data-people-mention="${mentionInfo.identifier}"><a>@${mentionInfo.name}</a></span>`,
+      );
+      processedValue = processedValue.replace(
+        `#{${mentionInfo.identifier}}`,
+        `<span class="fr-deletable fr-tribute" data-patient-mention="${mentionInfo.identifier}"><a>#${mentionInfo.name}</a></span>`,
       );
     }
   }
