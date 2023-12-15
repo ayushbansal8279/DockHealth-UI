@@ -19,26 +19,27 @@ import {
 import TemplateAuthBaseLoginContent from './TemplateAuthBase.Login';
 
 const getLeftSideContent = ({ currentAuthBaseState }) => {
-  switch (currentAuthBaseState) {
-    case AUTH_BASE_STATES.DEFAULT: {
-      return <TemplateAuthBaseDefaultContent />;
-    }
-    case AUTH_BASE_STATES.DAILY_HUB: {
-      return <TemplateAuthBaseDailyHubContent />;
-    }
-    case AUTH_BASE_STATES.REGAIN_CONTROL: {
-      return <TemplateAuthBaseRegainControlContent />;
-    }
-    case AUTH_BASE_STATES.APPROVE_DISAPPROVE: {
-      return <TemplateAuthBaseApproveDisapproveContent />;
-    }
-    case AUTH_BASE_STATES.LOGIN: {
-      return <TemplateAuthBaseLoginContent />;
-    }
-    default: {
-      return null;
-    }
-  }
+  return <TemplateAuthBaseLoginContent />;
+  // switch (currentAuthBaseState) {
+  //   case AUTH_BASE_STATES.DEFAULT: {
+  //     return <TemplateAuthBaseDefaultContent />;
+  //   }
+  //   case AUTH_BASE_STATES.DAILY_HUB: {
+  //     return <TemplateAuthBaseDailyHubContent />;
+  //   }
+  //   case AUTH_BASE_STATES.REGAIN_CONTROL: {
+  //     return <TemplateAuthBaseRegainControlContent />;
+  //   }
+  //   case AUTH_BASE_STATES.APPROVE_DISAPPROVE: {
+  //     return <TemplateAuthBaseApproveDisapproveContent />;
+  //   }
+  //   case AUTH_BASE_STATES.LOGIN: {
+  //     return <TemplateAuthBaseLoginContent />;
+  //   }
+  //   default: {
+  //     return null;
+  //   }
+  // }
 };
 
 const TemplateAuthBase = ({ childRoutes }) => {

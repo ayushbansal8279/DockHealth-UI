@@ -5,10 +5,12 @@ import { Title, Subtitle } from 'components/auth/Title';
 
 export default () => (
   <Grid container>
-    <Title>Reset your password</Title>
-    <Spacing vertical={4} />
-    <Subtitle>
-      Go to your email and click on the link to reset your password.
-    </Subtitle>
+    <Grid item xs={12}>
+      <Title>Reset your password</Title>
+      <Spacing vertical={4} />
+      <Subtitle>
+        Go to your email and click on the link to reset your password.
+      </Subtitle>
+    </Grid>
   </Grid>
 );

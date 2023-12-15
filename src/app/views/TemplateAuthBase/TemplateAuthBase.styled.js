@@ -20,10 +20,10 @@ export const LeftSideMainContainer = styled.div`
   background-repeat: repeat-x;
   background-position: bottom, top;
   display: flex;
-  max-width: 642px;
+  max-width: 50%;
   justify-content: center;
-  padding-left: 7rem;
-  padding-right: 7rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
   padding-bottom: 0;
   width: 50%;
 
@@ -51,9 +51,8 @@ export const LeftSideContentContainer = styled.div`
   height: auto;
 
   @media screen and (min-width: ${mdBreakpoint}px) {
-    max-width: 525px;
+    max-width: 640px;
   }
-
 `;
 
 export const RightSideMainContainer = styled.div`

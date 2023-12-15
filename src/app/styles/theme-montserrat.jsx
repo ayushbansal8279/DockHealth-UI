@@ -80,7 +80,7 @@ const themeProxy = new Proxy(
     400: themeMontserrat400,
     500: themeMontserrat500,
     600: themeMontserrat600,
-    700: themeMontserrat700
+    700: themeMontserrat700,
   },
   {
     get(proxy, path) {

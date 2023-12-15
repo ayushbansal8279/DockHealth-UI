@@ -13,6 +13,7 @@ import styled from 'styled-components';
 import { Grid } from '@mui/material';
 import Spacing from 'components/common/Spacing';
 import SSOOptions from 'components/auth/SSOOptions';
+import { MontserratTypography } from 'styles/theme-montserrat';
 
 const onSubmit = (form, history) => {
   const { username } = form;
@@ -88,6 +89,24 @@ const LoginUser = (props) => {
       <Grid item xs={12} alignItems="center">
         <Spacing vertical={2} />
         <SSOOptions />
+        <Spacing vertical={5} />
+        <MontserratTypography
+          variant="p"
+          align="center"
+          alignContent="center"
+          alignItems="center"
+        >
+          Dock can save you 20 hours a month{' '}
+          <a
+            style={{ color: 'black', fontWeight: 800, paddingLeft: '5px' }}
+            href="https://help.dock.health/"
+            target="_blank"
+            rel="noreferrer"
+          >
+            {' '}
+            Learn More
+          </a>
+        </MontserratTypography>
       </Grid>
     </Grid>
   );
