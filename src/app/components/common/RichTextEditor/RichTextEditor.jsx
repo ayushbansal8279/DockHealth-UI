@@ -374,7 +374,7 @@ const RichTextEditor = React.forwardRef(
       attribution: false,
       placeholderText: placeholder,
       multiLine: multiline,
-      charCounterCount: !!showToolbar,
+      charCounterCount: showCharCount || !!showToolbar,
       charCounterMax: characterLimit,
       toolbarInline: showToolbarInline,
       toolbarVisibleWithoutSelection: true,
