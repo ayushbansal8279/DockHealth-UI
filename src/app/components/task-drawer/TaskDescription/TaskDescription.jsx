@@ -87,6 +87,8 @@ const TaskDescription = ({ selectedTask, readOnly }) => {
             taskListIdentifier={selectedTask?.taskList?.taskListIdentifier}
             mentions={selectedTask?.taskMentions}
             readonly={readOnly}
+            showCharCount
+            characterLimit={1000}
           />
         </CustomTextEditor>
       </DescriptionTextContainer>
