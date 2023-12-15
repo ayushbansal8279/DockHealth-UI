@@ -131,6 +131,12 @@ const PersonForm = forwardRef(
             label="Department"
             name="department"
           />
+          <Spacing vertical={3} />
+          <FormInput
+            readOnly={!(isAdmin && edited)}
+            label="Credentials"
+            name="credentials"
+          />
         </LabeledCollapse>
 
         {customFields?.length > 0 && (

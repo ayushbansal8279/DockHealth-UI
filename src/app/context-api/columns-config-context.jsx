@@ -130,8 +130,8 @@ export function ColumnsConfigProvider({
   );
 
   useEffect(() => {
-    if (currentList?.taskListIdentifier && !hideCustomColumns) {
-      getAllTaskListCustomFields(currentList.taskListIdentifier).then(
+    if (!hideCustomColumns) {
+      getAllTaskListCustomFields(currentList?.taskListIdentifier || 'ALL').then(
         (data) => {
           setTaskListCustomColumns(
             data.map((d) => ({
@@ -155,7 +155,7 @@ export function ColumnsConfigProvider({
         _customFieldType: CUSTOM_FIELD_TYPES.ORGANIZATION,
       })),
       // list level fields data - if a list exists
-      ...(currentList ? taskListCustomColumns : []),
+      ...(taskListCustomColumns || []),
       // patient level custom fields
       ...patientCustomColumns,
     ];

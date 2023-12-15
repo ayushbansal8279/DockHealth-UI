@@ -13,4 +13,5 @@ export const validationSchema = object().shape({
   phoneMobile: string().nullable(),
   role: string().nullable(),
   department: string().nullable(),
+  credentials: string().nullable(),
 });

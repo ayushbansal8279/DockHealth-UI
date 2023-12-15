@@ -59,8 +59,8 @@ const Comment = ({
     dateLabel = moment(dateUpdated).format('MM/DD/YYYY');
   }
 
-  const commentDetails = `${creator.firstName} ${
-    creator.lastName
+  const commentDetails = `${creator?.firstName} ${creator?.lastName}${
+    creator?.credentials ? `, ${creator?.credentials}` : ''
   }, ${dateLabel} @ ${moment(dateUpdated).format('h:mma')}`;
 
   const [currentValue, setCurrentValue] = useState(commentContent);
