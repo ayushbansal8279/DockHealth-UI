@@ -60,3 +60,14 @@ export function getGroupsForTaskList(taskListIdentifier) {
       throw new Error(error?.response?.data?.errorMessage);
     });
 }
+
+export function assignTasksToGroup(taskGroupIdentifier, taskIdentifiers) {
+  return axios
+    .put(`/task/group/assignTasksToTaskGroup/${taskGroupIdentifier}`, {
+      taskIdentifiers,
+    })
+    .then(({ data }) => data)
+    .catch((error) => {
+      throw new Error(error?.response?.data?.errorMessage);
+    });
+}

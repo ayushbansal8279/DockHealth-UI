@@ -11,7 +11,10 @@ import palette from 'styles/palette';
 import { Grid } from '@mui/material';
 import OnboardingIndicator from 'components/common/OnboardingIndicator/OnboardingIndicator';
 import { useHistory } from 'react-router-dom';
-import { createGroupAssignedToList } from 'api/task-group-list-api';
+import {
+  createGroupAssignedToList,
+  assignTasksToGroup,
+} from 'api/task-group-list-api';
 import OnboardingContext from '../OnboardingContext/OnboardingContext';
 
 const validationSchema = object().shape({
@@ -28,7 +31,8 @@ const GroupIntoSection = () => {
 
   const groupNameValue = watch('groupName');
 
-  const { step, list, setGroupName } = React.useContext(OnboardingContext);
+  const { step, list, setGroupName, tasks } =
+    React.useContext(OnboardingContext);
 
   useMount(() => {
     setValue('groupName', '');
@@ -53,13 +57,23 @@ const GroupIntoSection = () => {
       })
         .then((response) => {
           console.log(`create group section`, response);
+          const taskIdentifiers = tasks.map(
+            ({ taskIdentifier }) => taskIdentifier,
+          );
+          assignTasksToGroup(response?.taskGroupIdentifier, taskIdentifiers)
+            .then((data) => {
+              console.log(`grouped successfully`, data);
+              history.push(`/core/tasks/${list.taskListIdentifier}`);
+            })
+            .catch((error) => {
+              console.error('error creating group', error);
+            });
         })
         .catch((error) => {
           console.log(`error making new group: ${error}`);
         });
-      history.push('/core/home');
     },
-    [history, list.taskListIdentifier],
+    [history, list.taskListIdentifier, tasks],
   );
 
   return (

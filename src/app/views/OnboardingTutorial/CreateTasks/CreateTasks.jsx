@@ -59,12 +59,19 @@ const CreateTasks = () => {
 
   const onSubmit = useCallback(
     ({ tasks: submitTasks }) => {
-      const taskPromises = submitTasks?.map((task) =>
-        addTask({
-          ...task,
-          taskListIdentifier: list.taskListIdentifier,
-        }),
-      );
+      const taskPromises = submitTasks?.reduce((promises, task) => {
+        if (task?.description) {
+          return [
+            ...promises,
+            addTask({
+              taskListIdentifier: list.taskListIdentifier,
+              ...task,
+            }),
+          ];
+        }
+        return promises;
+      }, []);
+
       Promise.all(taskPromises)
         .then((responseTasks) => {
           setTasks(responseTasks);
