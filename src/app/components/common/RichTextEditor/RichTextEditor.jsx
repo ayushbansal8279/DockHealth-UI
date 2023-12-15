@@ -192,7 +192,7 @@ const RichTextEditor = React.forwardRef(
       if (reset) {
         setEditorState(processMarkdownValue(initialValue || '', mentions));
       }
-    }, [reset, initialValue, mentions]);
+    }, [reset, mentions]);
 
     const [editor, setEditor] = useState(null);
     // const [initControls, setInitControls] = useState(null);
