@@ -43,7 +43,7 @@ TurndownService.prototype.escape = function (string) {
   return string;
 };
 
-turndownService = turndownService.addRule('people-mention', {
+turndownService = turndownService.addRule('people-patient-mention', {
   filter: ['span'],
   // eslint-disable-next-line func-names, object-shorthand
   replacement: function (content, node, options) {
@@ -51,6 +51,11 @@ turndownService = turndownService.addRule('people-mention', {
     if (node.attributes['data-people-mention']) {
       // eslint-disable-next-line sonarjs/prefer-immediate-return
       const alteredValue = `@{${node.attributes['data-people-mention'].nodeValue}}`;
+      return alteredValue;
+    }
+    if (node.attributes['data-patient-mention']) {
+      // eslint-disable-next-line sonarjs/prefer-immediate-return
+      const alteredValue = `#{${node.attributes['data-patient-mention'].nodeValue}}`;
       return alteredValue;
     }
     return content;
@@ -77,9 +82,9 @@ const FROALA_PRODUCT_KEY =
   'MZC1rE1D4D3I4A16B11D8jF1QUg1Xc2OZE1ABVJRDRNGGUH1ITrA1C7A6D5E1D4D4E1B10D7==';
 
 const fetchPatientsWithDebounce = debounce((value, setPatientSuggestions) => {
-  console.log(`inside of debounce:`, value);
+  // console.log(`inside of debounce:`, value);
   getPatientsByCriteria(value).then((fetchedPatients) => {
-    console.log(`returned value from debounce:`, fetchedPatients);
+    // console.log(`returned value from debounce:`, fetchedPatients);
 
     const formattedPatients = mapPatientsToSuggestions(fetchedPatients);
     setPatientSuggestions(
@@ -127,6 +132,10 @@ const processMarkdownValue = (value, mentions) => {
       processedValue = processedValue.replace(
         `@{${mentionInfo.identifier}}`,
         `<span class="fr-deletable fr-tribute" data-people-mention="${mentionInfo.identifier}"><a>@${mentionInfo.name}</a></span>`,
+      );
+      processedValue = processedValue.replace(
+        `#{${mentionInfo.identifier}}`,
+        `<span class="fr-deletable fr-tribute" data-patient-mention="${mentionInfo.identifier}"><a>#${mentionInfo.name}</a></span>`,
       );
     }
   }
@@ -215,11 +224,11 @@ const RichTextEditor = React.forwardRef(
           trigger: '@',
           // eslint-disable-next-line func-names, object-shorthand, unicorn/prevent-abbreviations
           values: function (mentionString, cb) {
-            console.log(`mention string: ${mentionString}`);
+            // console.log(`mention string: ${mentionString}`);
             if (taskListIdentifier && mentionString) {
               getListMembersByName(taskListIdentifier, mentionString).then(
                 (fetchedUsers) => {
-                  console.log(`fetched users:`, fetchedUsers);
+                  // console.log(`fetched users:`, fetchedUsers);
                   // fetchedUsers.map((user) => {
                   //   images[user.identifier] =
                   //     getUserAvatarThumbnailUrl(user) ||
@@ -244,30 +253,7 @@ const RichTextEditor = React.forwardRef(
           selectClass: 'highlight', // class added in the flyout menu for active item
           // eslint-disable-next-line func-names, object-shorthand
           menuItemTemplate: function (item) {
-            console.log(`menu template item:`, item);
             const option = item.original;
-            // return `<span className="text">${option.name}</span>`;
-            // return renderToString(
-            //   <MenuItem
-            //     key={option.identifier}
-            //     ref={option.setRefElement}
-            //     role="option"
-            //     // aria-selected={isSelected}
-            //     // id={`typeahead-item-${index}`}
-            //   >
-            //     {/* <Avatar $color={option.color}>
-            //       {option.picture?.length > 2 ? (
-            //         <img src={option.picture} alt="avatar" />
-            //       ) : (
-            //         option.picture
-            //       )}
-            //     </Avatar> */}
-            //     {/* <span className="text">
-            //       {option.name} - {option.identifier}
-            //     </span> */}
-            //     <UserMention mention={option} />
-            //   </MenuItem>,
-            // );
             return `<div>
           <div class="profile">
               <img src=${
@@ -294,7 +280,7 @@ const RichTextEditor = React.forwardRef(
           // },
           // eslint-disable-next-line func-names, object-shorthand
           selectTemplate: function (item) {
-            console.log(`select template called ${item}`);
+            // console.log(`select template called ${item}`);
             return `<span class="fr-deletable fr-tribute" data-people-mention="${item?.original.identifier}"><a>@${item?.original.name}</a></span>`;
           },
         },
@@ -302,7 +288,7 @@ const RichTextEditor = React.forwardRef(
           trigger: '#',
           // eslint-disable-next-line func-names, object-shorthand, unicorn/prevent-abbreviations
           values: function (mentionString, cb) {
-            console.log(`#mention string: ${mentionString}`);
+            // console.log(`#mention string: ${mentionString}`);
             if (mentionString) {
               fetchPatientsWithDebounce(mentionString, cb);
             }
@@ -320,29 +306,6 @@ const RichTextEditor = React.forwardRef(
           // eslint-disable-next-line func-names, object-shorthand
           menuItemTemplate: function (item) {
             const option = item.original;
-            // return `<span className="text">${option.name}</span>`;
-            // return renderToString(
-            //   <MenuItem
-            //     key={option.identifier}
-            //     ref={option.setRefElement}
-            //     role="option"
-            //     // aria-selected={isSelected}
-            //     // id={`typeahead-item-${index}`}
-            //   >
-            //     {/* <Avatar $color={option.color}>
-            //       {option.picture?.length > 2 ? (
-            //         <img src={option.picture} alt="avatar" />
-            //       ) : (
-            //         option.picture
-            //       )}
-            //     </Avatar> */}
-            //     {/* <span className="text">
-            //       {option.name} - {option.identifier}
-            //     </span> */}
-            //     <UserMention mention={option} />
-            //   </MenuItem>,
-            // );
-
             return `<div>
           <p 
             style="margin-bottom: 0;
@@ -362,8 +325,8 @@ const RichTextEditor = React.forwardRef(
           // },
           // eslint-disable-next-line func-names, object-shorthand
           selectTemplate: function (item) {
-            console.log(`select template called ${item}`);
-            return `<span class="fr-deletable fr-tribute" data-people-mention="${item?.original.identifier}"><#>@${item?.original.name}</a></span>`;
+            // console.log(`select template called ${item}`);
+            return `<span class="fr-deletable fr-tribute" data-patient-mention="${item?.original.identifier}"><a>#${item?.original.name}</a></span>`;
           },
         },
       ],
