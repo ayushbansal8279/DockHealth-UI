@@ -100,7 +100,7 @@ const SendEmailFromTaskModal = () => {
     setIsTaskCommentsIncluded(false);
     setIsTaskDescriptionIncluded(false);
     setIsTaskDetailsIncluded(false);
-    setValueReset(false);
+    setValueReset(true);
     setDetailsState('');
   }, []);
 
