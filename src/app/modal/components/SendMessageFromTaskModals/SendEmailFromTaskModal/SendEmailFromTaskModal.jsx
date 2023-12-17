@@ -100,7 +100,7 @@ const SendEmailFromTaskModal = () => {
     setIsTaskCommentsIncluded(false);
     setIsTaskDescriptionIncluded(false);
     setIsTaskDetailsIncluded(false);
-    setValueReset(true);
+    setValueReset(false);
     setDetailsState('');
   }, []);
 
@@ -139,6 +139,7 @@ const SendEmailFromTaskModal = () => {
   );
 
   const handleTextEditorChange = (value) => {
+    setValueReset(false);
     setDetailsState(value);
   };
 
