@@ -13,7 +13,7 @@ import styled from 'styled-components';
 import { Grid } from '@mui/material';
 import Spacing from 'components/common/Spacing';
 import SSOOptions from 'components/auth/SSOOptions';
-import { MontserratTypography } from 'styles/theme-montserrat';
+import { OutfitTypography } from 'styles/theme-outfit';
 
 const onSubmit = (form, history) => {
   const { username } = form;
@@ -90,7 +90,7 @@ const LoginUser = (props) => {
         <Spacing vertical={2} />
         <SSOOptions />
         <Spacing vertical={5} />
-        <MontserratTypography
+        <OutfitTypography
           variant="p"
           align="center"
           alignContent="center"
@@ -106,7 +106,7 @@ const LoginUser = (props) => {
             {' '}
             Learn More
           </a>
-        </MontserratTypography>
+        </OutfitTypography>
       </Grid>
     </Grid>
   );

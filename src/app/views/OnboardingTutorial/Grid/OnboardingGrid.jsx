@@ -9,6 +9,7 @@ import {
   TableCell,
 } from '@mui/material';
 import { MontserratTypography } from 'styles/theme-montserrat';
+import { OutfitTypography } from 'styles/theme-outfit';
 import Avatar from 'components/user/Avatar/Avatar';
 import Circle from 'img/circle.svg';
 import Spacing from 'components/common/Spacing';
@@ -36,9 +37,9 @@ const OnboardingGrid = () => {
         }}
       >
         <div>
-          <MontserratTypography variant="h2" weight="700">
+          <OutfitTypography variant="h2" weight="700">
             {list?.listName}
-          </MontserratTypography>
+          </OutfitTypography>
           <Spacing vertical={3} />
         </div>
 
@@ -63,9 +64,9 @@ const OnboardingGrid = () => {
                 }}
               >
                 <RotatableChevron />
-                <MontserratTypography variant="h4" align="center" weight="700">
+                <OutfitTypography variant="h4" align="center" weight="700">
                   {groupName}
-                </MontserratTypography>
+                </OutfitTypography>
               </div>
             )}
           </TableRow>

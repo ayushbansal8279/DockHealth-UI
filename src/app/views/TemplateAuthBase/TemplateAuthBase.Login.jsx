@@ -3,7 +3,7 @@ import React from 'react';
 import styled from 'styled-components';
 import Spacing from 'components/common/Spacing';
 import LoginImg from 'img/login.png';
-import { MontserratTypography } from 'styles/theme-montserrat';
+import { OutfitTypography } from 'styles/theme-outfit';
 
 const TranscriptImage = styled.img.attrs({
   src: LoginImg,
@@ -29,24 +29,24 @@ const TemplateAuthBaseLoginContent = () => {
       <Grid item>
         <TranscriptImage />
         <Spacing vertical={5} />
-        <MontserratTypography
+        <OutfitTypography
           weight="bold"
           variant="h3"
           color="black"
           align="center"
         >
           Collaboration built by healthcare professionals
-        </MontserratTypography>
-        <MontserratTypography
+        </OutfitTypography>
+        <OutfitTypography
           weight="bold"
           variant="h3"
           color="black"
           align="center"
         >
           for healthcare professionals.
-        </MontserratTypography>
+        </OutfitTypography>
         <Spacing vertical={3} />
-        <MontserratTypography
+        <OutfitTypography
           weight="light"
           variant="h4"
           color="rgba(0, 0, 0, 0.6)"
@@ -54,7 +54,7 @@ const TemplateAuthBaseLoginContent = () => {
         >
           Make your communication contextual with the one <br /> administrative
           tool you need to get healthcare done.
-        </MontserratTypography>
+        </OutfitTypography>
       </Grid>
     </StyledGrid>
   );
