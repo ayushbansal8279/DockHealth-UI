@@ -196,3 +196,18 @@ export function getUsersByName(name, limit = 100) {
     .get(`user/findUserByName?name=${name}&limit=${limit}`)
     .then(({ data }) => data);
 }
+// Expire Bearer Token on Logout and Auto Logout
+export function userLogout() {
+  return axios
+    .put(
+      `/user/logout?tokenString=${window.sessionStorage.getItem(
+        'accessToken',
+      )}`,
+      // {
+      //   headers: {
+      //     CurrentUserId: `${window.sessionStorage.getItem('userIdentifier')}`,
+      //   },
+      // },
+    )
+    .then(({ data }) => data);
+}
