@@ -113,6 +113,7 @@ const LoginUser = lazy(() => import('views/auth/LoginUser'));
 const LoginPassword = lazy(() => import('views/auth/LoginPassword'));
 const ForgotPassword = lazy(() => import('views/auth/ForgotPassword'));
 const EmailSent = lazy(() => import('views/auth/EmailSent'));
+const SignUpEmailSent = lazy(() => import('views/auth/SignUpEmailSent'));
 const DashboardView = lazy(() => import('views/dashboard/DashboardView'));
 const CreateAccount = lazy(() => import('views/auth/CreateAccount'));
 const CompleteCreateAccount = lazy(() =>
@@ -478,6 +479,10 @@ export const AUTH_ROUTES = [
   {
     path: '/drchrono',
     RouteComponent: DrChronoLaunch,
+  },
+  {
+    path: '/signupEmailSent',
+    RouteComponent: SignUpEmailSent,
   },
   // {
   //   path: '/embedded',

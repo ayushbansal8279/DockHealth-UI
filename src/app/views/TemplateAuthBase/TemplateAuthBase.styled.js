@@ -60,6 +60,7 @@ export const RightSideMainContainer = styled.div`
 
   @media screen and (min-width: ${mdBreakpoint}px) {
     height: 100%;
+    max-height: 100%;
     display: flex;
     flex-direction: column;
     flex: 1;
@@ -77,6 +78,7 @@ export const RightSideContentContainer = styled.div`
 
   @media screen and (min-width: ${mdBreakpoint}px) {
     max-height: 100%;
+    height: 100%;
     overflow-y: auto;
   }
 `;
@@ -87,6 +89,7 @@ export const RightSideMaxWidthContainer = styled.div`
 
   @media screen and (min-width: ${mdBreakpoint}px) {
     padding: 2rem;
-    max-width: 495px;
+    height: 100%;
+    max-width: 576px;
   }
 `;

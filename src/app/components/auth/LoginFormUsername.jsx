@@ -9,9 +9,9 @@ import FormInput from 'components/common/v2/Input/FormInput';
 import Loader, { LoaderSizes } from 'components/common/Loader/Loader';
 import Spacing from 'components/common/Spacing';
 import Button from 'components/common/v2/Button/Button';
-import { MontserratTypography } from 'styles/theme-montserrat';
 import { showAlert } from 'helpers/utility-functions';
 import palette from 'styles/palette';
+import { OutfitTypography } from 'styles/theme-outfit';
 import { StyledForm, StyledHyperLink } from './AuthComponents.styled';
 import { Title, Subtitle } from './Title';
 
@@ -113,16 +113,14 @@ const LoginFormUsername = (props) => {
         )}
         {showLoginMessage && (
           <div>
-            <MontserratTypography variant="h3">
-              Signing you in
-            </MontserratTypography>
+            <OutfitTypography variant="h3">Signing you in</OutfitTypography>
             <Spacing vertical={4} />
             <Loader size={LoaderSizes.big} />
             <Spacing vertical={6} />
-            <MontserratTypography variant="h4">
+            <OutfitTypography variant="h4">
               <span>Trouble signing in? </span>
               <StyledHyperLink href="/#/auth/login">LOGIN</StyledHyperLink>
-            </MontserratTypography>
+            </OutfitTypography>
           </div>
         )}
       </FormProvider>

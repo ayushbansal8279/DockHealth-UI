@@ -4,7 +4,7 @@ import React from 'react';
 import palette from './palette';
 import themeCommonOverrides from './theme-components';
 
-const themeOutfitFactory = ({ fontWeight }) =>
+const themeOutfitFactory = ({ fontWeight, fontSize }) =>
   createTheme({
     palette: {
       primary: {
@@ -38,6 +38,10 @@ const themeOutfitFactory = ({ fontWeight }) =>
       },
       h6: {
         fontSize: '75%',
+        fontWeight,
+      },
+      [fontSize]: {
+        fontSize,
         fontWeight,
       },
     },

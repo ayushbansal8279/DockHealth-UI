@@ -14,9 +14,9 @@ import Spacing from 'components/common/Spacing';
 import Button from 'components/common/Button/Button';
 import { showAlert, useSmallScreen } from 'helpers/utility-functions';
 import { useBoolean } from 'hooks/useBoolean';
-import { MontserratTypography } from 'styles/theme-montserrat';
 import HelloSign from 'hellosign-embedded';
 import { userProfileSelector } from 'selectors/user-selectors';
+import { OutfitTypography } from 'styles/theme-outfit';
 import { OnboardingAnchorDiv } from '../OnboardingTemplate.Components';
 import InvitationForm from './OnboardingBaaOverviewView.InvitationForm';
 
@@ -55,32 +55,32 @@ const getPanelDetails = ({
           </>
         ),
         bottomElement: (
-          <MontserratTypography variant="h4" noWrap>
+          <OutfitTypography variant="h4" noWrap>
             <span>Or </span>
             <OnboardingAnchorDiv onClick={showInvitationForm}>
               share BAA
             </OnboardingAnchorDiv>
             <span> with authorized signer</span>
-          </MontserratTypography>
+          </OutfitTypography>
         ),
       }
     : {
         justify: isSmallScreen ? 'center' : 'flex-start',
         topElement: (
-          <MontserratTypography variant="h4" noWrap>
+          <OutfitTypography variant="h4" noWrap>
             <OnboardingAnchorDiv onClick={showInvitationForm}>
               Send BAA
             </OnboardingAnchorDiv>
             <span> to another authorized signer</span>
-          </MontserratTypography>
+          </OutfitTypography>
         ),
         bottomElement: (
-          <MontserratTypography variant="h4" noWrap>
+          <OutfitTypography variant="h4" noWrap>
             <OnboardingAnchorDiv onClick={clickReadAndSign}>
               I can sign
             </OnboardingAnchorDiv>
             <span> BAA</span>
-          </MontserratTypography>
+          </OutfitTypography>
         ),
       };
 
