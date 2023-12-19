@@ -113,6 +113,7 @@ const SendFaxFromTaskModal = () => {
   );
 
   const handleTextEditorChange = (value) => {
+    setValueReset(false);
     setMessage(value);
   };
 
