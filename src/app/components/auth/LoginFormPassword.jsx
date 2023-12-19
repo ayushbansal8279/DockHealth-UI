@@ -6,11 +6,11 @@ import { object, string } from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import EyeClose from 'img/auth/eye-close.svg';
 import EyeOpen from 'img/auth/eye-open.svg';
-import { MontserratTypography } from 'styles/theme-montserrat';
 import Button from 'components/common/v2/Button/Button';
 import FormInput from 'components/common/v2/Input/FormInput';
 import Spacing from 'components/common/Spacing';
 import palette from 'styles/palette';
+import { OutfitTypography } from 'styles/theme-outfit';
 import { StyledForm, StyledLink } from './AuthComponents.styled';
 import SSOOptions from './SSOOptions';
 import { Title } from './Title';
@@ -74,13 +74,13 @@ const LoginFormPassword = ({
       <FormProvider {...formMethods}>
         <Title>{titleContent}</Title>
         <Spacing vertical={4} />
-        <MontserratTypography align="center" variant="h4">
+        <OutfitTypography align="center" variant="h4">
           New to Dock?{' '}
           <a style={{ fontWeight: 600, color: 'black' }} href="/create-account">
             {' '}
             Sign up for free{' '}
           </a>
-        </MontserratTypography>
+        </OutfitTypography>
         <Spacing vertical={5} />
         <FormInput
           name="username"
@@ -117,12 +117,12 @@ const LoginFormPassword = ({
           {unconfirmedUserFlag ? 'Resend confirmation Email' : 'Continue'}
         </Button>
         <Spacing vertical={4} />
-        <MontserratTypography variant="h5" weight="bold">
+        <OutfitTypography variant="h5" weight="bold">
           <StyledLink to="/auth/forgotPassword">FORGOT PASSWORD?</StyledLink>
-        </MontserratTypography>
+        </OutfitTypography>
         <SSOOptions />
         <Spacing vertical={5} />
-        <MontserratTypography
+        <OutfitTypography
           variant="p"
           align="center"
           alignContent="center"
@@ -138,7 +138,7 @@ const LoginFormPassword = ({
             {' '}
             Learn More
           </a>
-        </MontserratTypography>
+        </OutfitTypography>
       </FormProvider>
     </StyledForm>
   );

@@ -1,6 +1,6 @@
 import { Grid, Typography } from '@mui/material';
 import queryString from 'query-string';
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
@@ -76,57 +76,6 @@ const externalUserValidationSchema = object().shape({
     .matches(/\d{10}/, 'Please enter a valid phone number'),
 });
 
-const onSubmit =
-  ({
-    showDialog,
-    showUserExistsDialog,
-    setDialogTitle,
-    setDialogMessage,
-    locationParameters,
-  }) =>
-  async ({ email, password, mobilePhoneNumber }) => {
-    const referral = locationParameters.referral ?? '';
-    try {
-      const firstName = sessionStorage.getItem('firstName');
-      const lastName = sessionStorage.getItem('lastName');
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const organization = sessionStorage.getItem('organization');
-      await registerAction({
-        username: email,
-        password,
-        email,
-        phone_number: mobilePhoneNumber
-          ? `+${mobilePhoneNumber.replace(/\D/g, '')}`
-          : null,
-        family_name: lastName,
-        given_name: firstName,
-        // organization,
-        'custom:referral': referral,
-        'custom:app_environment': import.meta.env.VITE_APP_ENV,
-      });
-      setDialogTitle(`Please confirm your email.`);
-      setDialogMessage(
-        `We just sent an email to ${email}. Please go to your email and click on the link so that we can confirm your email address.`,
-      );
-      showDialog();
-    } catch (error) {
-      if (error?.code === 'UsernameExistsException') {
-        setDialogTitle(`Email already associated with an account`);
-        setDialogMessage(
-          `${email} is already being used for a Dock Health account. If you haven't already, please go to your email and click on the link to confirm your email address.`,
-        );
-        showUserExistsDialog();
-        return;
-      }
-      showAlert({
-        status: 'error',
-        title: 'Error',
-        text:
-          error?.message ?? 'Could not create account, please try again later',
-      });
-    }
-  };
-
 const resendEmail = async (email) => {
   try {
     await resendConfirmationCode({
@@ -187,6 +136,55 @@ const CompleteCreateAccount = (props) => {
       : yupResolver(validationSchema),
     reValidateMode: 'onSubmit',
   });
+
+  const onSubmit = useCallback(
+    ({ locationParameters }) =>
+      async ({ email, password, mobilePhoneNumber }) => {
+        const referral = locationParameters.referral ?? '';
+        try {
+          const firstName = sessionStorage.getItem('firstName');
+          const lastName = sessionStorage.getItem('lastName');
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          const organization = sessionStorage.getItem('organization');
+          await registerAction({
+            username: email,
+            password,
+            email,
+            phone_number: mobilePhoneNumber
+              ? `+${mobilePhoneNumber.replace(/\D/g, '')}`
+              : null,
+            family_name: lastName,
+            given_name: firstName,
+            // organization,
+            'custom:referral': referral,
+            'custom:app_environment': import.meta.env.VITE_APP_ENV,
+          });
+          history.push('/signupEmailSent');
+          // setDialogTitle(`Please confirm your email.`);
+          // setDialogMessage(
+          //   `We just sent an email to ${email}. Please go to your email and click on the link so that we can confirm your email address.`,
+          // );
+          // showDialog();
+        } catch (error) {
+          if (error?.code === 'UsernameExistsException') {
+            setDialogTitle(`Email already associated with an account`);
+            setDialogMessage(
+              `${email} is already being used for a Dock Health account. If you haven't already, please go to your email and click on the link to confirm your email address.`,
+            );
+            showUserExistsDialog();
+            return;
+          }
+          showAlert({
+            status: 'error',
+            title: 'Error',
+            text:
+              error?.message ??
+              'Could not create account, please try again later',
+          });
+        }
+      },
+    [history, showUserExistsDialog],
+  );
 
   const email = formMethods.watch('email');
   const { setValue } = formMethods;

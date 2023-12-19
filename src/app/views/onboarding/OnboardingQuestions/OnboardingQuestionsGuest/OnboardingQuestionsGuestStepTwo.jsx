@@ -1,8 +1,8 @@
 import React from 'react';
 import Spacing from 'components/common/Spacing';
 import Button from 'components/common/Button/Button';
-import { MontserratTypography } from 'styles/theme-montserrat';
 import palette from 'styles/palette';
+import { OutfitTypography } from 'styles/theme-outfit';
 import {
   Option,
   QuestionContainer,
@@ -19,7 +19,7 @@ const OnboardingQuestionsGuest = ({
 }) => (
   <div>
     <QuestionContainer>
-      <MontserratTypography variant="h2" weight={500}>
+      <OutfitTypography variant="h2" weight={500}>
         I&apos;d like to learn more about how to optimize Dock with a 1:1 info
         session with the Dock team{' '}
         <TutorialOptionsContainer>
@@ -38,7 +38,7 @@ const OnboardingQuestionsGuest = ({
           </Option>
         </TutorialOptionsContainer>
         .
-      </MontserratTypography>
+      </OutfitTypography>
     </QuestionContainer>
     <Spacing vertical={5} />
     {tutorialOption === 'yes' && (

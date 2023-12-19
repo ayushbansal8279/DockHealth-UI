@@ -1,6 +1,5 @@
 import React from 'react';
 import { useMount } from 'react-use';
-import { MontserratTypography } from 'styles/theme-montserrat';
 import FormInput from 'components/common/v2/Input/FormInput';
 import { object, string } from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -10,6 +9,7 @@ import DockHeaderLogo from 'img/dock-header-logo.svg';
 import styled from 'styled-components';
 import palette from 'styles/palette';
 import Spacing from 'components/common/Spacing';
+import { OutfitTypography } from 'styles/theme-outfit';
 import Button from '../common/v2/Button/Button';
 import { StyledLink } from './AuthComponents.styled';
 import { Title } from './Title';
@@ -73,11 +73,11 @@ const ResendCodeForm = (props) => {
               Resend Code
             </Button>
             <Spacing vertical={4} />
-            <MontserratTypography variant="h4" weight="bold" align="center">
+            <OutfitTypography variant="h4" weight="bold" align="center">
               <StyledLink to="/auth/confirmRegistration">
                 Confirm registration
               </StyledLink>
-            </MontserratTypography>
+            </OutfitTypography>
           </FormProvider>
         </form>
       </Grid>

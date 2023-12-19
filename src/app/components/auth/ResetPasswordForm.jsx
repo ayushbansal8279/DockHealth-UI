@@ -2,11 +2,11 @@ import React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { object, string } from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { MontserratTypography } from 'styles/theme-montserrat';
 import Button from 'components/common/v2/Button/Button';
 import FormInput from 'components/common/v2/Input/FormInput';
 import Spacing from 'components/common/Spacing';
 import palette from 'styles/palette';
+import { OutfitTypography } from 'styles/theme-outfit';
 import { Title } from './Title';
 
 const MIN_PASSWORD_LENGTH = 8;
@@ -38,10 +38,10 @@ const ResetPasswordForm = ({ authTokenReceived, onSubmit }) => {
         {!authTokenReceived && (
           <>
             <Spacing vertical={4} />
-            <MontserratTypography variant="h4">
+            <OutfitTypography variant="h4">
               First enter the six digit authorization code that was sent to your
               cell phone
-            </MontserratTypography>
+            </OutfitTypography>
             <Spacing vertical={4} />
             <FormInput
               name="code"
@@ -52,10 +52,10 @@ const ResetPasswordForm = ({ authTokenReceived, onSubmit }) => {
           </>
         )}
         <Spacing vertical={4} />
-        <MontserratTypography variant="h4">
+        <OutfitTypography variant="h4">
           In order to protect your account, please make sure your password is 8
           character minimum, includes at least one number and one capital letter
-        </MontserratTypography>
+        </OutfitTypography>
         <Spacing vertical={4} />
         <FormInput
           name="password"
@@ -63,9 +63,9 @@ const ResetPasswordForm = ({ authTokenReceived, onSubmit }) => {
           label="Enter a new password"
         />
         <Spacing vertical={3} />
-        <MontserratTypography variant="h5">
+        <OutfitTypography variant="h5">
           * 8 characters • 1 capital • 1 number
-        </MontserratTypography>
+        </OutfitTypography>
         <Spacing vertical={5} />
         <Button
           active

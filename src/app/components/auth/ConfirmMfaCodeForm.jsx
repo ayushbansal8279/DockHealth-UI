@@ -3,7 +3,6 @@ import React, { useEffect, useCallback } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { object, string } from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { MontserratTypography } from 'styles/theme-montserrat';
 import FormInput from 'components/common/v2/Input/FormInput';
 import Spacing from 'components/common/Spacing';
 import Button from 'components/common/v2/Button/Button';
@@ -12,6 +11,7 @@ import palette from 'styles/palette';
 import DockHeaderLogo from 'img/dock-header-logo.svg';
 import styled from 'styled-components';
 import { useHistory } from 'react-router-dom';
+import { OutfitTypography } from 'styles/theme-outfit';
 
 const validationSchema = object().shape({
   mfaCode: string().required('This field is required'),
@@ -66,13 +66,13 @@ const ConfirmMFACodeForm = (props) => {
             onSubmit={formMethods.handleSubmit(onSubmit)}
           >
             <FormProvider {...formMethods}>
-              <MontserratTypography align="center" weight="700" variant="h3">
+              <OutfitTypography align="center" weight="700" variant="h3">
                 Two-factor authentication{' '}
-              </MontserratTypography>
+              </OutfitTypography>
               <Spacing vertical={4} />
-              <MontserratTypography align="center" variant="h5">
+              <OutfitTypography align="center" variant="h5">
                 We’ve sent a code to your mobile number
-              </MontserratTypography>
+              </OutfitTypography>
               <Spacing vertical={5} />
               <FormInput
                 name="mfaCode"
@@ -88,16 +88,16 @@ const ConfirmMFACodeForm = (props) => {
                   padding: '10px',
                 }}
               >
-                <MontserratTypography variant="h6" weight="600" align="center">
+                <OutfitTypography variant="h6" weight="600" align="center">
                   <div style={{ cursor: 'pointer' }} onClick={handleChangeCell}>
                     Change my cell number
                   </div>
-                </MontserratTypography>
-                <MontserratTypography variant="h6" weight="600" align="center">
+                </OutfitTypography>
+                <OutfitTypography variant="h6" weight="600" align="center">
                   <div style={{ cursor: 'pointer' }} onClick={handleResend}>
                     Resend
                   </div>
-                </MontserratTypography>
+                </OutfitTypography>
               </div>
 
               <Spacing vertical={4} />
@@ -110,10 +110,10 @@ const ConfirmMFACodeForm = (props) => {
                 Verify
               </Button>
               <Spacing vertical={8} />
-              <MontserratTypography variant="h6" align="center">
+              <OutfitTypography variant="h6" align="center">
                 If you’ve lost your device or can’t use your app please contact
                 Support@dock.health
-              </MontserratTypography>
+              </OutfitTypography>
             </FormProvider>
           </form>
         </Grid>

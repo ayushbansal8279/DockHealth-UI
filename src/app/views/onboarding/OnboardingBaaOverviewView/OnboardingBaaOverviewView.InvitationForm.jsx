@@ -10,9 +10,9 @@ import { inviteAuthorizedSigner } from 'api/organization-api';
 import Spacing from 'components/common/Spacing';
 import Button from 'components/common/Button/Button';
 import { showAlert, useSmallScreen } from 'helpers/utility-functions';
-import { MontserratTypography } from 'styles/theme-montserrat';
 import FormInput from 'components/common/Input/FormInput';
 import FormPhoneNumberInput from 'components/common/PhoneNumberInput/FormPhoneNumberInput';
+import { OutfitTypography } from 'styles/theme-outfit';
 
 const REQUIRED_MESSAGE = 'This field is required';
 
@@ -83,9 +83,9 @@ const InvitationForm = ({ hideInvitationForm }) => {
     >
       <FormProvider {...formMethods}>
         <Grid container alignItems="center" justifyContent="space-between">
-          <MontserratTypography variant="h3">
+          <OutfitTypography variant="h3">
             Invite the authorized signer of your organization
-          </MontserratTypography>
+          </OutfitTypography>
           {!isSmallScreen && (
             <IconButton
               size="small"

@@ -72,6 +72,10 @@ export const themeMontserrat700 = themeMontserratFactory({
   fontWeight: '700',
 });
 
+export const themeMontserrat800 = themeMontserratFactory({
+  fontWeight: '800',
+});
+
 const themeProxy = new Proxy(
   {
     bold: themeMontserrat,
@@ -81,6 +85,7 @@ const themeProxy = new Proxy(
     500: themeMontserrat500,
     600: themeMontserrat600,
     700: themeMontserrat700,
+    800: themeMontserrat800,
   },
   {
     get(proxy, path) {
