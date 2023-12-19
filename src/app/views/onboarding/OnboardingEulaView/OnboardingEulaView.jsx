@@ -12,7 +12,8 @@ import { OutfitTypography } from 'styles/theme-outfit';
 import { downloadBAADocument } from 'api/organization-api';
 import { userProfileSelector } from 'selectors/user-selectors';
 import palette from 'styles/palette';
-import { OnboardingAnchor } from '../OnboardingTemplate.Components';
+import {StyledHyperLink
+} from './styled';
 
 const OnboardingEulaView = () => {
   const history = useHistory();
@@ -44,10 +45,10 @@ const OnboardingEulaView = () => {
         variant="h2"
         textDecoration={{ lineHeight: 1.5 }}
       >
-        Review our end user agreement and privacy policy <br /> and confirm your
-        Business Associate Agreement
+        Review our end user agreement and privacy policy <br /> 
+        {userProfile?.baaSigned ? null : "and confirm your Business Associate Agreement"}
         <br />
-        (BAA) for HIPAA-compliance.
+        {userProfile?.baaSigned ? null : "(BAA) for HIPAA-compliance"}
       </OutfitTypography>
       <Spacing vertical={5} />
       <Grid container>
@@ -62,19 +63,19 @@ const OnboardingEulaView = () => {
           <Spacing horizontal={3} />
           <OutfitTypography variant="h4" weight="500">
             <span>I have read and agree to the </span>
-            <OnboardingAnchor
+            <StyledHyperLink
               href="https://www.dock.health/end-user-license-agreement"
               target="_blank"
             >
               End User License Agreement
-            </OnboardingAnchor>
+            </StyledHyperLink>
             <span> and </span>
-            <OnboardingAnchor
+            <StyledHyperLink
               href="https://www.dock.health/privacy-statement"
               target="_blank"
             >
               Privacy Statement
-            </OnboardingAnchor>
+            </StyledHyperLink>
           </OutfitTypography>
         </Grid>
         <Spacing vertical={4} />
@@ -90,13 +91,13 @@ const OnboardingEulaView = () => {
             <Spacing horizontal={3} />
             <OutfitTypography variant="h4" weight="500">
               <span>I have read and agree to the </span>
-              <OnboardingAnchor
+              <StyledHyperLink
                 onClick={() => {
                   downloadBAADocument();
                 }}
               >
                 Business Associate Agreement (BAA)
-              </OnboardingAnchor>
+              </StyledHyperLink>
             </OutfitTypography>
           </Grid>
         )}
