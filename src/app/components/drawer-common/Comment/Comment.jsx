@@ -66,6 +66,7 @@ const Comment = ({
   const [currentValue, setCurrentValue] = useState(commentContent);
 
   const handleTextEditorChange = (value) => {
+    setValueReset(false);
     setCurrentValue(value);
   };
 

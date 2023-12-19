@@ -139,6 +139,7 @@ const SendEmailFromTaskModal = () => {
   );
 
   const handleTextEditorChange = (value) => {
+    setValueReset(false);
     setDetailsState(value);
   };
 

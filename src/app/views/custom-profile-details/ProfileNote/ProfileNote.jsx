@@ -160,6 +160,7 @@ const ProfileNote = ({
   }, [note, noteState, onSave]);
 
   const handleTextEditorChange = (value) => {
+    setValueReset(false);
     setNoteState(value);
   };
 

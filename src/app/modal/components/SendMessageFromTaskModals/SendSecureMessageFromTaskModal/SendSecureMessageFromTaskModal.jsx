@@ -40,6 +40,7 @@ const SendSecureMessageFromTaskModal = () => {
   }, [dispatch, identifier, message]);
 
   const handleTextEditorChange = (value) => {
+    setValueReset(false);
     setMessage(value);
   };
 
