@@ -36,8 +36,8 @@ const OnboardingEulaView = () => {
   return (
     <div>
       <Spacing vertical={3} />
-      <OutfitTypography weight="500" variant="h2">
-        LET&apos;S GET STARTED
+      <OutfitTypography weight="700" variant="h3">
+        Welcome to Dock! Let's make it official.
       </OutfitTypography>
       <Spacing vertical={5} />
       <OutfitTypography
