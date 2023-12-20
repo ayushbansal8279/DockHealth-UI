@@ -11,9 +11,11 @@ import { useSmallScreen } from 'helpers/utility-functions';
 import { OutfitTypography } from 'styles/theme-outfit';
 import { downloadBAADocument } from 'api/organization-api';
 import { userProfileSelector } from 'selectors/user-selectors';
+import Circle from 'img/circle.svg';
+import CircleCompleted from 'img/circle-completed.svg';
 import palette from 'styles/palette';
-import {StyledHyperLink
-} from './styled';
+import { CircleIcon } from './styled';
+import { OnboardingAnchor } from '../OnboardingTemplate.Components';
 
 const OnboardingEulaView = () => {
   const history = useHistory();
@@ -45,59 +47,59 @@ const OnboardingEulaView = () => {
         variant="h2"
         textDecoration={{ lineHeight: 1.5 }}
       >
-        Review our end user agreement and privacy policy <br /> 
-        {userProfile?.baaSigned ? null : "and confirm your Business Associate Agreement"}
+        Review our end user agreement and privacy policy <br />
+        {userProfile?.baaSigned
+          ? null
+          : 'and confirm your Business Associate Agreement'}
         <br />
-        {userProfile?.baaSigned ? null : "(BAA) for HIPAA-compliance"}
+        {userProfile?.baaSigned ? null : '(BAA) for HIPAA-compliance'}
       </OutfitTypography>
-      <Spacing vertical={5} />
+      {userProfile?.baaSigned ? (
+        <Spacing vertical={1} />
+      ) : (
+        <Spacing vertical={5} />
+      )}
       <Grid container>
         <Grid item sm={12} container wrap="nowrap" alignItems="center">
-          <Checkbox
-            isChecked={isEulaAccepted}
+          <CircleIcon
+            src={isEulaAccepted ? CircleCompleted : Circle}
             onClick={toggleEulaAccepted}
-            size={25}
-            isCircle
-            borderHeight="4px"
           />
           <Spacing horizontal={3} />
           <OutfitTypography variant="h4" weight="500">
             <span>I have read and agree to the </span>
-            <StyledHyperLink
+            <OnboardingAnchor
               href="https://www.dock.health/end-user-license-agreement"
               target="_blank"
             >
               End User License Agreement
-            </StyledHyperLink>
+            </OnboardingAnchor>
             <span> and </span>
-            <StyledHyperLink
+            <OnboardingAnchor
               href="https://www.dock.health/privacy-statement"
               target="_blank"
             >
               Privacy Statement
-            </StyledHyperLink>
+            </OnboardingAnchor>
           </OutfitTypography>
         </Grid>
         <Spacing vertical={4} />
         {!userProfile?.baaSigned && (
           <Grid item sm={12} container wrap="nowrap" alignItems="center">
-            <Checkbox
-              isChecked={isBaaAccepted}
+            <CircleIcon
+              src={isBaaAccepted ? CircleCompleted : Circle}
               onClick={toggleBaaAccepted}
-              size={25}
-              isCircle
-              borderHeight="4px"
             />
             <Spacing horizontal={3} />
             <OutfitTypography variant="h4" weight="500">
               <span>I have read and agree to the </span>
-              <StyledHyperLink
+              <OnboardingAnchor
                 onClick={() => {
                   downloadBAADocument();
                 }}
               >
                 Business Associate Agreement (BAA)
-              </StyledHyperLink>
+              </OnboardingAnchor>
             </OutfitTypography>
           </Grid>
         )}
