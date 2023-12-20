@@ -1,10 +1,4 @@
 {
-  "prettier/prettier": [
-    "error",
-    {
-      "endOfLine": "auto"
-    }
-  ],
   "parser": "@typescript-eslint/parser",
   "env": {
     "browser": true,
