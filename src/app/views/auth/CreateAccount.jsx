@@ -275,7 +275,8 @@ const CreateAccount = (props) => {
           <FormInput name="password" label="Password" type="password" />
           <Spacing vertical={3} />
           <MontserratTypography variant="h5">
-            Eight characters • One capital letter • One number
+            Eight characters • One capital letter • One number • One special
+            character
           </MontserratTypography>
           <Spacing vertical={3} />
           <FormPhoneNumberInput
