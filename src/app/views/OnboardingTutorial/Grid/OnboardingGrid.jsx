@@ -8,13 +8,17 @@ import {
   Paper,
   TableCell,
 } from '@mui/material';
-import { MontserratTypography } from 'styles/theme-montserrat';
 import { OutfitTypography } from 'styles/theme-outfit';
 import Avatar from 'components/user/Avatar/Avatar';
 import Circle from 'img/circle.svg';
 import Spacing from 'components/common/Spacing';
 import RotatableChevron from 'components/common/RotatableChevron/RotatableChevron';
-import { CircleIcon, BlankCellContent, AvatarIconContainer } from './styled';
+import {
+  CircleIcon,
+  BlankCellContent,
+  AvatarIconContainer,
+  GroupNameContainer,
+} from './styled';
 import OnboardingContext from '../OnboardingContext/OnboardingContext';
 
 const OnboardingGrid = () => {
@@ -37,7 +41,7 @@ const OnboardingGrid = () => {
         }}
       >
         <div>
-          <OutfitTypography variant="h2" weight="700">
+          <OutfitTypography variant="h3" weight="600">
             {list?.listName}
           </OutfitTypography>
           <Spacing vertical={3} />
@@ -46,28 +50,30 @@ const OnboardingGrid = () => {
         <AvatarIconContainer>
           <Avatar color="#68B1F7" />
           <Avatar color="#5E70E9" />
-          <Avatar color="#68B1F7" />
+          <Avatar color="#DBD1C7" />
         </AvatarIconContainer>
       </div>
 
       <Table aria-label="simple table">
         <TableHead>
           <TableRow>
-            {groupName && (
-              <div
+            {!groupName && (
+              <GroupNameContainer
                 style={{
-                  display: 'flex',
-                  gap: '10px',
-                  paddingLeft: '10px',
-                  paddingBottom: '10px',
-                  alignItems: 'baseline',
+                  alignItems: 'center',
                 }}
               >
+                <RotatableChevron />
+                <BlankCellContent style={{ width: '60%' }} />
+              </GroupNameContainer>
+            )}
+            {groupName && (
+              <GroupNameContainer>
                 <RotatableChevron />
                 <OutfitTypography variant="h4" align="center" weight="700">
                   {groupName}
                 </OutfitTypography>
-              </div>
+              </GroupNameContainer>
             )}
           </TableRow>
         </TableHead>
@@ -90,14 +96,14 @@ const OnboardingGrid = () => {
                   style={{
                     display: 'flex',
                     alignItems: 'center',
-                    gap: '10px',
+                    gap: '5px',
                   }}
                 >
                   <div>
                     <CircleIcon src={Circle} isCompleted={false} />
                   </div>
                   {row?.description && row?.description !== '' ? (
-                    <>{row?.description}</>
+                    <OutfitTypography>{row?.description}</OutfitTypography>
                   ) : (
                     <BlankCellContent />
                   )}

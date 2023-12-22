@@ -27,12 +27,21 @@ export const CircleIcon = styled.img`
 
 export const BlankCellContent = styled.div`
   background-color: #e5e9f2;
-  height: 25px;
+  height: 20px;
   width: 100%;
+  border-radius: 6px;
 `;
 
 export const AvatarIconContainer = styled.div`
   display: flex;
   justify-content: flex-end;
   gap: 5px;
+`;
+
+export const GroupNameContainer = styled.div`
+  display: flex;
+  gap: 10px;
+  padding-left: 10px;
+  padding-bottom: 10px;
+  align-items: baseline;
 `;
