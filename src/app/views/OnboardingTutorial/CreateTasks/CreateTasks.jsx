@@ -1,8 +1,7 @@
 import React, { useCallback } from 'react';
 import { FormProvider, useForm, useFieldArray } from 'react-hook-form';
 import { useMount } from 'react-use';
-
-import { MontserratTypography } from 'styles/theme-montserrat';
+import { OutfitTypography } from 'styles/theme-outfit';
 import Button from 'components/common/v2/Button/Button';
 import FormInput from 'components/common/v2/Input/FormInput';
 import Spacing from 'components/common/Spacing';
@@ -54,8 +53,8 @@ const CreateTasks = () => {
   const history = useHistory();
 
   const handleBack = useCallback(() => {
-    history.push('/core/home');
-  }, [history]);
+    history.push(`/core/tasks/${list.taskListIdentifier}`);
+  }, [history, list.taskListIdentifier, tasks]);
 
   const onSubmit = useCallback(
     ({ tasks: submitTasks }) => {
@@ -95,9 +94,9 @@ const CreateTasks = () => {
           <Grid item={12} sx={{ width: 0.99 }}>
             <OnboardingIndicator steps={3} completedSteps={step} />
             <Spacing vertical={5} />
-            <MontserratTypography align="left" variant="h3" weight="700">
+            <OutfitTypography align="left" variant="h3" weight="700">
               What are the next 3 tasks you need to complete
-            </MontserratTypography>
+            </OutfitTypography>
             <Spacing vertical={4} />
             <TableContainer>
               <div>
@@ -111,20 +110,38 @@ const CreateTasks = () => {
                           height: STANDARD_TASK_HEIGHT,
                         }}
                       >
-                        <TableCell
-                          sx={{ width: 75, border: 1, borderColor: '#E5E9F2' }}
+                        {/* <TableCell 
+                          sx={{width: 75, border: 1, borderColor: '#E5E9F2' }}
                         >
                           <CircleIcon src={Circle} isCompleted={false} />
-                        </TableCell>
+                        </TableCell> */}
                         <TableCell
-                          sx={{ border: 1, borderColor: '#E5E9F2' }}
-                          style={{ height: 'inherit' }}
+                          size="small"
+                          align="left"
+                          sx={{ height: 50, border: 1, borderColor: '#E5E9F2' }}
+                          style={{ display: 'flex', alignItems: 'center' }}
                         >
+                          <CircleIcon
+                            style={{ width: '20px' }}
+                            src={Circle}
+                            isCompleted={false}
+                          />
+
                           <FormInput
-                            style={{ border: 'none' }}
+                            variant="standard"
+                            id="standard-helperText"
+                            style={{ marginLeft: '5px' }}
                             type="text"
                             fullWidth
-                            disableUnderline
+                            inputProps={{
+                              style: {
+                                fontSize: 18,
+                                fontWeight: 400,
+                                fontFamily: 'Outfit',
+                              },
+                            }}
+                            autoComplete="off"
+                            InputProps={{ disableUnderline: true }}
                             placeholder={field.placeholder}
                             name={`task-${index}`}
                             {...register(`tasks.${index}.description`)}
@@ -144,6 +161,7 @@ const CreateTasks = () => {
                             }}
                           />
                         </TableCell>
+                        <Spacing vertical={1} />
                       </TableRow>
                     ))}
                   </TableBody>
@@ -155,14 +173,18 @@ const CreateTasks = () => {
           <Grid item xs={6} />
           <Grid item xs={6} spacing={0} container alignItems="center">
             <Grid item xs={6}>
-              <MontserratTypography variant="h3" weight="600" align="center">
-                <div style={{ cursor: 'pointer' }} onClick={handleBack}>
+              <OutfitTypography weight="400" align="center">
+                <div
+                  style={{ cursor: 'pointer', fontSize: '17px' }}
+                  onClick={handleBack}
+                >
                   Skip
                 </div>
-              </MontserratTypography>
+              </OutfitTypography>
             </Grid>
             <Grid item xs={6}>
               <Button
+                uppercase={false}
                 id="loginButton"
                 size="large"
                 type="submit"

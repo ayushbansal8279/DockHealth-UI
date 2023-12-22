@@ -77,6 +77,7 @@ const CreateListForm = () => {
             </OutfitTypography>
             <Spacing vertical={5} />
             <FormInput
+              autoComplete="off"
               name="listName"
               type="text"
               label="List Name"
@@ -90,14 +91,18 @@ const CreateListForm = () => {
           <Grid item xs={6} />
           <Grid item xs={6} spacing={0} container alignItems="center">
             <Grid item xs={6}>
-              <OutfitTypography variant="h3" weight="600" align="center">
-                <div style={{ cursor: 'pointer' }} onClick={handleBack}>
+              <OutfitTypography weight="400" align="center">
+                <div
+                  style={{ cursor: 'pointer', fontSize: '17px' }}
+                  onClick={handleBack}
+                >
                   Skip
                 </div>
               </OutfitTypography>
             </Grid>
             <Grid item xs={6}>
               <Button
+                uppercase={false}
                 id="loginButton"
                 size="large"
                 type="submit"
