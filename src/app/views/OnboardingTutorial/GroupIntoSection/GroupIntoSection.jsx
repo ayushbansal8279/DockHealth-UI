@@ -3,7 +3,7 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { useMount } from 'react-use';
 import { object, string } from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { MontserratTypography } from 'styles/theme-montserrat';
+import { OutfitTypography } from 'styles/theme-outfit';
 import Button from 'components/common/v2/Button/Button';
 import FormInput from 'components/common/v2/Input/FormInput';
 import Spacing from 'components/common/Spacing';
@@ -46,7 +46,7 @@ const GroupIntoSection = () => {
   const history = useHistory();
 
   const handleBack = () => {
-    history.push('/core/home');
+    history.push(`/core/tasks/${list.taskListIdentifier}`);
   };
 
   const onSubmit = useCallback(
@@ -87,14 +87,15 @@ const GroupIntoSection = () => {
           <Grid item={12} sx={{ width: 0.99 }}>
             <OnboardingIndicator steps={3} completedSteps={step} />
             <Spacing vertical={5} />
-            <MontserratTypography align="center" variant="h3" weight="700">
+            <OutfitTypography align="center" variant="h3" weight="700">
               Group your tasks into a section
-            </MontserratTypography>
+            </OutfitTypography>
             <Spacing vertical={5} />
             <FormInput
               name="groupName"
               type="text"
-              label="Group Name"
+              // label="Group Name"
+              autoComplete="off"
               value={groupNameValue}
               placeholder="e.g. Clinic Tasks"
               {...register('groupName')}
@@ -103,26 +104,39 @@ const GroupIntoSection = () => {
             <Spacing vertical={5} />
           </Grid>
           <Grid item xs={6} />
-          <Grid item xs={6} spacing={0} container alignItems="center">
-            <Grid item xs={6}>
-              <MontserratTypography variant="h3" weight="600" align="center">
-                <div style={{ cursor: 'pointer' }} onClick={handleBack}>
+          <Grid
+            mt={6}
+            ml={20}
+            xs={9}
+            spacing={0}
+            container
+            alignItems="center"
+            justifyContent="flex-end"
+          >
+            <Grid item xs={2}>
+              <OutfitTypography weight="400" align="center">
+                <div
+                  style={{ cursor: 'pointer', fontSize: '17px' }}
+                  onClick={handleBack}
+                >
                   Skip
                 </div>
-              </MontserratTypography>
+              </OutfitTypography>
             </Grid>
             <Grid item xs={6}>
-              <MontserratTypography weight="600" align="center">
-                <Button
-                  id="loginButton"
-                  size="large"
-                  type="submit"
-                  color={palette.brightOrange}
-                  secondaryColor={palette.oPlusRed}
-                >
-                  Continue
-                </Button>
-              </MontserratTypography>
+              <Button
+                uppercase={false}
+                id="loginButton"
+                size="large"
+                fullWidth
+                type="submit"
+                color={palette.brightOrange}
+                secondaryColor={palette.oPlusRed}
+              >
+                <OutfitTypography variant="h4">
+                  Continue to My List
+                </OutfitTypography>
+              </Button>
             </Grid>
           </Grid>
         </Grid>
