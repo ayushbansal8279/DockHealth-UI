@@ -80,6 +80,7 @@ export const RightSideContentContainer = styled.div`
     max-height: 100%;
     height: 100%;
     overflow-y: auto;
+    justify-content: center;
   }
 `;
 
@@ -89,7 +90,7 @@ export const RightSideMaxWidthContainer = styled.div`
 
   @media screen and (min-width: ${mdBreakpoint}px) {
     padding: 2rem;
-    height: 100%;
+    height: auto;
     max-width: 576px;
   }
 `;
