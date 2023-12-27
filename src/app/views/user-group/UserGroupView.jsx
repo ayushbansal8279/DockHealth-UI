@@ -1,6 +1,6 @@
 import { Grid } from '@mui/material';
 import queryString from 'query-string';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import isNil from 'ramda/src/isNil';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useParams, useLocation, useHistory } from 'react-router-dom';
@@ -14,11 +14,15 @@ import {
   setCurrentUserGroup,
   unsetCurrentUserGroup,
 } from 'actions/user-groups-actions';
+import { openModal } from 'modal/actions';
 import ViewLayout from 'components/template/ViewLayout/ViewLayout';
 
 import BasicLayoutHeader from 'components/template/BasicLayoutHeader/BasicLayoutHeader';
 import ListSkeletonLoader from 'components/common/ListSkeletonLoader/ListSkeletonLoader';
 import PageContentHeader from 'components/common/PageContentHeader/PageContentHeader';
+import AddButton, {
+  AddEntitiesContainer,
+} from 'components/common/AddButton/AddButton';
 import Spacing from 'components/common/Spacing';
 import Button from 'components/common/Button/Button';
 import LightbulbBig from 'img/lightbulb-big.svg';
@@ -83,6 +87,14 @@ function UserGroupView() {
     history.replace({ search: new URLSearchParams(newParameters).toString() });
   };
 
+  const onEditUserGroup = useCallback(() => {
+    dispatch(
+      openModal('AddUserToGroup', {
+        userGroupIdentifier: groupIdentifier,
+      }),
+    );
+  }, [dispatch, groupIdentifier]);
+
   return (
     <ViewLayout header={<BasicLayoutHeader title={name} />}>
       <Grid container justifyContent="center">
@@ -106,6 +118,13 @@ function UserGroupView() {
                 />
               </SearchInputWrapper>
             </Grid>
+            {groupIdentifier && groupIdentifier !== 'ALL' && (
+              <AddEntitiesContainer>
+                <AddButton onClick={onEditUserGroup}>
+                  Manage User Group
+                </AddButton>
+              </AddEntitiesContainer>
+            )}
           </Grid>
         </PageContentHeader>
         <Grid container xs={12} item justifyContent="center">
@@ -134,7 +153,6 @@ function UserGroupView() {
                 </Grid>
               </ManageUsersContainer>
             )}
-            <Spacing vertical={4} />
             {isNil(users) ? (
               <ListLoaderContainer>
                 <ListSkeletonLoader header />
