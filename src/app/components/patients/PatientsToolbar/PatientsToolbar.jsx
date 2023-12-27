@@ -74,7 +74,8 @@ const PatientsToolbar = () => {
   // const searchValue = useSelector(patientsListSearchTermSelector);
   const [searchValue, setSearchValue] = useState(null);
   const filtersActive = useSelector(filtersActiveSelector);
-  const { emrIntegrationEnabled, emrIntegrationType } = useSelector(organizationSelector) || {};
+  const { emrIntegrationEnabled, emrIntegrationType } =
+    useSelector(organizationSelector) || {};
   const listIdentifier = useSelector(currentPatientsListIdentifierSelector);
   const currentUser = useSelector(userProfileSelector);
   const currentOrganization = useSelector(selectedUserOrganizationSelector);
@@ -174,11 +175,15 @@ const PatientsToolbar = () => {
               onClear={() => dispatch(PatientsActions.clearPatientsFilters())}
             />
           </Box>
-          <AddEntitiesContainer>
-            <AddButton onClick={setIsSidebarOpen}>
-              ADD A {customerTypeLabel.toUpperCase()}
-            </AddButton>
-          </AddEntitiesContainer>
+          {listIdentifier &&
+            (listIdentifier === DefaultPatientsListType.ALL_PATIENTS ||
+              listIdentifier === DefaultPatientsListType.ACTIVE_PATIENTS) && (
+              <AddEntitiesContainer>
+                <AddButton onClick={setIsSidebarOpen}>
+                  Add a {customerTypeLabel}
+                </AddButton>
+              </AddEntitiesContainer>
+            )}
         </Box>
       </Box>
       {emrEntegrationExperience &&

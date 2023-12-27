@@ -25,6 +25,7 @@ import { organizationSelector } from 'selectors/organization-selectors';
 import { PatientEditContext } from 'context-api/patient-edit-context';
 import * as PatientsActions from 'actions/patients-actions';
 import * as PatientApi from 'api/patient-api';
+import Spacing from 'components/common/Spacing';
 import ViewLayout from 'components/template/ViewLayout/ViewLayout';
 import LayoutHeader from 'components/template/LayoutHeader/LayoutHeader';
 import PatientLabels from 'views/patient-details/PatientLabels/PatientLabels';
@@ -43,6 +44,9 @@ import {
 } from 'api/patient-api';
 import { PatientBulkActions } from 'api/patients-api';
 import initializeAttachmentsSectionHooks from 'views/patient-details/PatientAttachments/hooks';
+import AddButton, {
+  AddEntitiesContainer,
+} from 'components/common/AddButton/AddButton';
 import PatientsList from './PatientsList/PatientsList';
 import PatientsToolbar from './PatientsToolbar/PatientsToolbar';
 import BulkEditCreateTask from './BulkEditSection/BulkEditOptionsBar/BulkEditCreateTask';
@@ -400,6 +404,14 @@ const PatientsView = () => {
     [listIdentifier, listName],
   );
 
+  const onEditPatientList = useCallback(() => {
+    dispatch(
+      openModal('AddPatientToList', {
+        patientsList: listDetails,
+      }),
+    );
+  }, [dispatch, listDetails]);
+
   return (
     <PatientListColumnsConfigProvider>
       <PatientEditContext.Provider value={providerValue}>
@@ -456,6 +468,14 @@ const PatientsView = () => {
               setImportPopoverOpen={setImportPopoverOpen}
             />
             <PatientsListContainer>
+              {listIdentifier && listIdentifier.length === 36 && (
+                <AddEntitiesContainer>
+                  <AddButton onClick={onEditPatientList}>
+                    Manage Patient List
+                  </AddButton>
+                  <Spacing horizontal={5} />
+                </AddEntitiesContainer>
+              )}
               <Grid>
                 {listIdentifier === DefaultPatientsListType.ALL_PATIENTS &&
                   patients?.length >= MAX_PATIENT_ALL_RESULTS && (
