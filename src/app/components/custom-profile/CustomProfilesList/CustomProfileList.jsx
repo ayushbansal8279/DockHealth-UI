@@ -243,7 +243,7 @@ const CustomProfileList = () => {
           <Box display="flex" alignItems="center">
             <Box m={1} />
             <AddButton onClick={handleProfileAddClick}>
-              ADD A {currentProfileType?.name?.toUpperCase()}
+              Add a {currentProfileType?.name}
             </AddButton>
           </Box>
         </Stack>

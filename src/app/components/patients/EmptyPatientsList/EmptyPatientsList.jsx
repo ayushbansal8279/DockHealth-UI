@@ -50,7 +50,7 @@ const EmptyPatientsList = ({
             </StyledButton>
             <Spacing horizontal={4} />
             <StyledButton variant="outlined" onClick={onAddPatientClick}>
-              ADD A {customerTypeLabel.toUpperCase()}
+              Add a {customerTypeLabel}
             </StyledButton>
             <Spacing vertical={5} />
             <div style={{ marginTop: '20px' }}>

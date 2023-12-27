@@ -26,6 +26,7 @@ const TaskItemCustomField = ({
   field,
   customFieldValue,
   task,
+  taskWorkflow,
   onClick,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
@@ -52,7 +53,11 @@ const TaskItemCustomField = ({
     if (patientType) {
       if (task?.patient) {
         const patientMetaData =
-          (task?.patient?.patientMetaData || [])
+          (
+            task?.patient?.patientMetaData ||
+            taskWorkflow?.patient?.patientMetaData ||
+            []
+          )
             ?.filter(
               (pmd) =>
                 pmd?.customFieldIdentifier !== field.identifier &&

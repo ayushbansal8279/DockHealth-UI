@@ -84,7 +84,8 @@ const ChangePasswordModal = ({ closeModal }) => {
           />
           <Spacing vertical={4} />
           <HelperText>
-            Eight characters • One capital letter • One number
+            Eight characters • One capital letter • One number • One special
+            character
           </HelperText>
           <FormInput
             type="password"

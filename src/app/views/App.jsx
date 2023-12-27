@@ -29,7 +29,6 @@ import { node } from 'prop-types';
 import React, { PureComponent } from 'react';
 import isEmpty from 'ramda/src/isEmpty';
 import { connect } from 'react-redux';
-import { IdleTimer } from './IdleTimer';
 import { withRouter } from 'react-router-dom';
 import styled from 'styled-components';
 import ReactModal from 'react-modal';
@@ -44,6 +43,7 @@ import SendbirdProvider from '@sendbird/uikit-react/SendbirdProvider';
 import palette, { featurePalette } from 'styles/palette';
 // import { useMobile, useSmallScreen } from 'helpers/utility-functions';
 import { useMobile } from 'helpers/utility-functions';
+import { IdleTimer } from './IdleTimer';
 import Modal from '../modal/Modal';
 import RotateScreen from './RotateScreen';
 import MobileSmallScreen from './MobileSmallScreen';
@@ -205,11 +205,11 @@ class App extends PureComponent {
     UserAuthApi.logout(history)
       .then(() => {
         sessionStorage.setItem('refreshOrgMemo', true);
-        history.replace("/auth/login");
+        history.replace('/auth/login');
       })
       .catch(() => {
         history.replace('/auth/login');
-      })
+      });
   };
 
   onAction = () => {};
@@ -269,12 +269,14 @@ class App extends PureComponent {
       currentOrganization?.themeSettings?.find(
         ({ name }) => name === 'logout.timeout',
       ) || {};
+    // eslint-disable-next-line unicorn/prefer-number-properties
     const logoutTimeout = parseInt(logoutTimeoutItem?.value, 10);
 
-    const systemTimeout = 
+    const systemTimeout =
       logoutTimeout > 0
-            ? logoutTimeout
-            : parseInt(import.meta.env.VITE_SYSTEM_TIMEOUT, 10);
+        ? logoutTimeout
+        : // eslint-disable-next-line unicorn/prefer-number-properties
+          parseInt(import.meta.env.VITE_SYSTEM_TIMEOUT, 10);
     const idleTimeout = systemTimeout / 2;
 
     const { children } = this.props;
@@ -349,7 +351,7 @@ class App extends PureComponent {
                 onIdle={this.onIdleForPresence}
                 debounce={250}
                 timeout={idleTimeout}
-              /> 
+              />
               <MainContainer>{children}</MainContainer>
               <Notification />
             </SendbirdProvider>
