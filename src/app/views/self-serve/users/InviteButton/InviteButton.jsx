@@ -22,7 +22,7 @@ const InviteButton = ({ getAllUsers }) => {
         onClick={() => togglePopoverOpen(true)}
         buttonRef={invitePeopleButtonReference}
       >
-        ADD A USER
+        Add a User
       </AddButton>
       <InvitePeoplePopover
         open={isPopoverOpen}
