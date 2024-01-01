@@ -75,6 +75,7 @@ const palette = {
   tomatoInYoFaceLight: '#f9d4d2',
   orangeJuliusLight: '#fee6cd',
   bananaHammockLight: '#fff4cc',
+  tealGreen: '#69b8b2'
 };
 
 export const featurePalette = {
