@@ -1,15 +1,15 @@
 import React from 'react';
-import { MontserratTypography } from 'styles/theme-montserrat';
+import { OutfitTypography } from 'styles/theme-outfit';
 
 export const Title = ({ children, variant }) => {
   return (
-    <MontserratTypography
+    <OutfitTypography
       variant={variant ?? 'h2'}
       weight="bold"
       align="center"
     >
       {children}
-    </MontserratTypography>
+    </OutfitTypography>
   );
 };
 
@@ -17,13 +17,13 @@ export const Subtitle = (props) => {
   const { children, variant, align } = props;
 
   return (
-    <MontserratTypography
+    <OutfitTypography
       variant={variant ?? 'h4'}
       weight="normal"
       align={align ?? 'center'}
       {...props}
     >
       {children}
-    </MontserratTypography>
+    </OutfitTypography>
   );
 };
