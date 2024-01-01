@@ -73,7 +73,7 @@ const ResendCodeForm = (props) => {
               Resend Code
             </Button>
             <Spacing vertical={4} />
-            <OutfitTypography variant="h4" weight="bold" align="center">
+            <OutfitTypography variant="h4" weight="600" align="center">
               <StyledLink to="/auth/confirmRegistration">
                 Confirm registration
               </StyledLink>

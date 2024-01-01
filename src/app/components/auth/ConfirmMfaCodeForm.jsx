@@ -12,6 +12,7 @@ import DockHeaderLogo from 'img/dock-header-logo.svg';
 import styled from 'styled-components';
 import { useHistory } from 'react-router-dom';
 import { OutfitTypography } from 'styles/theme-outfit';
+import { Title, Subtitle } from './Title';
 
 const validationSchema = object().shape({
   mfaCode: string().required('This field is required'),
@@ -66,41 +67,19 @@ const ConfirmMFACodeForm = (props) => {
             onSubmit={formMethods.handleSubmit(onSubmit)}
           >
             <FormProvider {...formMethods}>
-              <OutfitTypography align="center" weight="700" variant="h3">
-                Two-factor authentication{' '}
-              </OutfitTypography>
+              <Title>Two-factor authentication </Title>
               <Spacing vertical={4} />
-              <OutfitTypography align="center" variant="h5">
-                We’ve sent a code to your mobile number
-              </OutfitTypography>
+              <Subtitle>We’ve sent a code to your mobile number</Subtitle>
               <Spacing vertical={5} />
               <FormInput
                 name="mfaCode"
                 label="Authorization code"
                 placeHolder="000000"
                 autoFocus
+                autoComplete="off"
               />
-              <div
-                style={{
-                  width: '100%',
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  padding: '10px',
-                }}
-              >
-                <OutfitTypography variant="h6" weight="600" align="center">
-                  <div style={{ cursor: 'pointer' }} onClick={handleChangeCell}>
-                    Change my cell number
-                  </div>
-                </OutfitTypography>
-                <OutfitTypography variant="h6" weight="600" align="center">
-                  <div style={{ cursor: 'pointer' }} onClick={handleResend}>
-                    Resend
-                  </div>
-                </OutfitTypography>
-              </div>
 
-              <Spacing vertical={4} />
+              <Spacing vertical={5} />
               <Button
                 type="submit"
                 size="large"
@@ -109,8 +88,29 @@ const ConfirmMFACodeForm = (props) => {
               >
                 Verify
               </Button>
-              <Spacing vertical={8} />
-              <OutfitTypography variant="h6" align="center">
+              <Spacing vertical={2} />
+              <div
+                style={{
+                  width: '100%',
+                  display: 'flex',
+                  justifyContent: 'flex-end',
+                  padding: '10px',
+                }}
+              >
+                {/* <OutfitTypography variant="h6" weight="600" align="center">
+                  <div style={{ cursor: 'pointer' }} onClick={handleChangeCell}>
+                    Change my cell number
+                  </div>
+                </OutfitTypography> */}
+                <OutfitTypography variant="h4" weight="600" align="center">
+                  <div style={{ cursor: 'pointer' }} onClick={handleResend}>
+                    Resend
+                  </div>
+                </OutfitTypography>
+              </div>
+
+              <Spacing vertical={7} />
+              <OutfitTypography variant="h4" align="center">
                 If you’ve lost your device or can’t use your app please contact
                 Support@dock.health
               </OutfitTypography>
