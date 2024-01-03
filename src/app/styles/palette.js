@@ -79,7 +79,7 @@ const palette = {
 };
 
 export const typography = {
-  text: `'Roboto Condensed', sans-serif`,
+  text: `'Outfit', sans-serif`,
 };
 
 export const featurePalette = {
