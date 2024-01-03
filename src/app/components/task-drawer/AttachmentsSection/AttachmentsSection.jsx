@@ -15,6 +15,7 @@ import {
   AttachmentFileInput,
   DownloadAllLink,
 } from './styled';
+import { ScanStatus, ScanStatusText } from './helpers';
 
 const AttachmentsSection = ({ selectedTask, disabled = false }) => {
   const {
@@ -80,13 +81,22 @@ const AttachmentsSection = ({ selectedTask, disabled = false }) => {
               <Spacing horizontal={3} />
             </>
           ) : (
-            currentTaskAttachments.map((attachment) => (
-              <AttachmentButton
-                key={attachment.attachmentIdentifier}
-                attachment={attachment}
-                onClick={openAttachmentPreview}
-                onRemoveClick={removeTaskAttachment}
-              />
+            currentTaskAttachments?.map((attachment) => (
+              <div style={{ textAlign: 'center' }}>
+                <AttachmentButton
+                  key={attachment?.attachmentIdentifier}
+                  attachment={attachment}
+                  onClick={() => {
+                    if (
+                      attachment?.scanStatus === null ||
+                      attachment?.scanStatus === ScanStatus.CLEAN
+                    )
+                      openAttachmentPreview();
+                  }}
+                  onRemoveClick={removeTaskAttachment}
+                />
+                <p>{ScanStatusText[attachment?.scanStatus]}</p>
+              </div>
             ))
           )}
           {currentlyUploadedAttachment && (
