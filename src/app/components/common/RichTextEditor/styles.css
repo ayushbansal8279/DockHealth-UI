@@ -53,7 +53,7 @@
 }
 
 .tribute-container .profile {
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: ${typography.text};
   font-size: 12px;
   font-weight: bold;
   text-align: center;

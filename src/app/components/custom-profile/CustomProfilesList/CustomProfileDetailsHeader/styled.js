@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import spacing from 'styles/spacing';
 import { fontSizes, fontWeights } from 'styles/font';
-import palette from 'styles/palette';
+import palette, { typography } from 'styles/palette';
 import Button from '@mui/material/Button';
 
 export const ButtonContainer = styled(Button)``;
@@ -13,7 +13,7 @@ export const ProfileDetailsContainer = styled.div`
   justify-content: space-between;
   // eslint-disable-next-line prettier/prettier
   padding: ${spacing.regular} ${spacing.regular} 0 ${spacing.regular};
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: ${typography.text};
   background-color: ${palette.white};
 `;
 

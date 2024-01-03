@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { fontSizes, fontWeights } from 'styles/font';
-import palette from 'styles/palette';
+import palette, { typography } from 'styles/palette';
 import spacing from 'styles/spacing';
 import { Popover } from '@mui/material';
 
@@ -40,7 +40,7 @@ export const DueDateSectionWrapper = styled.div`
   justify-content: space-between;
   width: 100%;
   height: 54px;
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: ${typography.text};
 
   ${({ disabled }) =>
     disabled &&
@@ -68,5 +68,4 @@ export const StyledPopover = styled(Popover)`
     width: ${({ width }) => width};
     overflow: visible;
   }
-  
 `;

@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import { fontSizes, fontWeights } from 'styles/font';
 import Button from 'components/common/Button/Button';
+import { typography } from 'styles/palette';
 
 export const EmptyListContainer = styled.div`
   padding: 2rem;
@@ -54,7 +55,7 @@ export const DownloadIcon = styled.img`
 `;
 
 export const DownloadTemplate = styled.a`
-  font-family: 'Roboto Condensed', sans-serif;;
+  font-family: ${typography.text};
   font-style: normal;
   font-weight: ${fontWeights.regular};
   font-size: ${fontSizes.regular};

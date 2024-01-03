@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { fontSizes, fontWeights } from 'styles/font';
-import palette from 'styles/palette';
+import palette, { typography } from 'styles/palette';
 import spacing from 'styles/spacing';
 
 export const SuggestionText = styled.div`
@@ -30,7 +30,7 @@ export const SuggestionItemContainer = styled.div`
 `;
 
 export const StatusNameSection = styled.div`
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: ${typography.text};
   font-size: ${fontSizes.regular};
   font-weight: ${fontWeights.extraLight};
   color: ${palette.coolGrey1};

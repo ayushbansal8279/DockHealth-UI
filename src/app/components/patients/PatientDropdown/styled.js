@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import Skeleton from '@mui/material/Skeleton';
 import { Popover } from '@mui/material';
-import palette from 'styles/palette';
+import palette, { typography } from 'styles/palette';
 import spacing from 'styles/spacing';
 import { fontSizes, fontWeights } from 'styles/font';
 
@@ -35,7 +35,7 @@ export const InputBox = styled.div`
   color: ${palette.mediumGrey};
   font-size: ${fontSizes.smallPlus};
   font-weight: ${fontWeights.light};
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: ${typography.text};
 
   &:placeholder {
     color: ${palette.coolGrey2};
@@ -57,7 +57,7 @@ export const Row = styled.button`
   align-items: center;
   cursor: pointer;
   color: ${palette.coolGrey1};
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: ${typography.text};
   ${({ isHovered }) => isHovered && `background: ${palette.blueGrey};`}
   ${({ readOnly }) => readOnly && `pointer-events: none;`}
 

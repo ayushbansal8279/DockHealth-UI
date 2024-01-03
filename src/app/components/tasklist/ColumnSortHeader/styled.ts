@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { fontSizes, fontWeights } from 'styles/font';
-import palette from 'styles/palette';
+import palette, { typography } from 'styles/palette';
 import spacing from 'styles/spacing';
 
 export const ResizeHandler = styled.div<{ enabled: boolean }>`
@@ -78,7 +78,7 @@ export const SortButton = styled.button<{
   }}
   height: 35px;
   text-align: left;
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: ${typography.text};
   font-size: ${fontSizes.smallPlus};
   font-weight: ${fontWeights.regularPlus};
   ${({ tasksHeaderTextTransform }) =>

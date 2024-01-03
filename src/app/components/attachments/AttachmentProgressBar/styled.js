@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import palette from 'styles/palette';
+import palette, { typography } from 'styles/palette';
 import { fontSizes } from 'styles/font';
 
 export const UploadBarOuterContainer = styled.div`
@@ -31,7 +31,7 @@ export const UploadBar = styled.div`
   &::after {
     content: '${(props) => props.progress ?? 0}%';
     color: ${palette.darkGrey};
-    font-family: 'Roboto Condensed', sans-serif;
+    font-family: ${typography.text};
     font-size: ${fontSizes.small};
     position: absolute;
     right: 0;

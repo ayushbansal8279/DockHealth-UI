@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import palette from 'styles/palette';
+import palette, { typography } from 'styles/palette';
 import spacing from 'styles/spacing';
 
 export const CustomizeImg = styled.img`
@@ -27,7 +27,7 @@ export const PlusIcon = styled.div`
 
 export const UpgradePlanPopupHeader = styled.div`
   display: flex;
-  font-family: 'Roboto Condensed', sans-serif;;
+  font-family: ${typography.text};
 `;
 
 export const Spacer = styled.hr`

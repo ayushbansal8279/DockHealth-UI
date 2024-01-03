@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import palette from 'styles/palette';
+import palette, { typography } from 'styles/palette';
 import spacing from 'styles/spacing';
 
 export const InputWrapper = styled.div`
@@ -16,7 +16,7 @@ export const NumberInput = styled.input`
   border-radius: 4px;
   border: none;
   box-shadow: none;
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: ${typography.text};
   color: ${palette.mediumGrey};
   text-align: center;
 

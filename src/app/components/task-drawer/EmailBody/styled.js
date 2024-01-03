@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import palette from 'styles/palette';
+import palette, { typography } from 'styles/palette';
 
 export const EmailBodyContainer = styled.div`
   background-color: ${palette.blueGrey};
@@ -10,7 +10,7 @@ export const EmailBodyContainer = styled.div`
 `;
 
 export const EmailMessageContainer = styled.pre`
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: ${typography.text};
   font-style: normal;
   font-weight: normal;
   font-size: 14px;

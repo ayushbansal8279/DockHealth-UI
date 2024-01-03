@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import palette from 'styles/palette';
+import palette, { typography } from 'styles/palette';
 import { fontSizes, fontWeights } from 'styles/font';
 import { ModalWrapperWithPadding } from '../styled';
 
@@ -19,7 +19,7 @@ export const Description = styled.p`
 `;
 
 export const ContentMessage = styled.p`
-  font-family: 'Roboto Condensed', sans-serif;;
+  font-family: ${typography.text};
   font-style: normal;
   font-weight: ${fontWeights.light};
   font-size: ${fontSizes.regular};
@@ -28,7 +28,7 @@ export const ContentMessage = styled.p`
 `;
 
 export const Title = styled.h5`
-  font-family: 'Roboto Condensed', sans-serif;;
+  font-family: ${typography.text};
   font-size: ${fontSizes.regular};
   color: ${palette.brightBlue};
   text-transform: uppercase;
@@ -37,7 +37,7 @@ export const Title = styled.h5`
 `;
 
 export const AlreadyHaveTemplate = styled.a`
-  font-family: 'Roboto Condensed', sans-serif;;
+  font-family: ${typography.text};
   font-style: normal;
   font-weight: ${fontWeights.regular};
   font-size: ${fontSizes.smallPlus};
@@ -54,7 +54,7 @@ export const FileInputArea = styled.div`
 `;
 
 export const FileInputMessage = styled.div`
-  font-family: 'Roboto Condensed', sans-serif;;
+  font-family: ${typography.text};
   font-style: normal;
   font-weight: ${fontWeights.extraLight};
   font-size: ${fontSizes.regular};

@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import palette from 'styles/palette';
+import palette, { typography } from 'styles/palette';
 import spacing from 'styles/spacing';
 import { fontSizes, fontWeights } from 'styles/font';
 import prop from 'ramda/src/prop';
@@ -15,7 +15,7 @@ export const StatusListWrapper = styled.div`
   flex-direction: column;
   align-items: flex-start;
   width: auto;
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: ${typography.text};
   font-size: ${fontSizes.smallPlus};
   font-weight: ${fontWeights.regularPlus};
   color: ${palette.mediumGrey};

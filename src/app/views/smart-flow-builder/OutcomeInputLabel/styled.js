@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { fontSizes, fontWeights } from 'styles/font';
-import palette from 'styles/palette';
+import palette, { typography } from 'styles/palette';
 
 export const EdgeLabel = styled.div`
   display: flex;
@@ -16,7 +16,7 @@ export const EdgeLabel = styled.div`
     hasOutcome ? palette.white : palette.mediumGrey};
   border-radius: 999px;
   transition: width 0.2s linear;
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: ${typography.text};
   font-size: ${fontSizes.smallPlus};
   font-weight: ${fontWeights.regular};
   user-select: none;

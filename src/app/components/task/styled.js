@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import { Grid } from '@mui/material';
 import spacing from 'styles/spacing';
 import { fontWeights, fontSizes } from 'styles/font';
-import palette, { featurePalette } from 'styles/palette';
+import palette, { featurePalette, typography } from 'styles/palette';
 import Select from 'components/common/Select/Select';
 
 export const highlight = keyframes`
@@ -236,7 +236,7 @@ export const DescriptionBox = styled.div`
       opacity: 1;
     }
   }
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: ${typography.text};
 `;
 
 export const DescriptionInput = styled.input`
@@ -387,7 +387,8 @@ export const StandardTaskItemContainer = styled.div`
   border: 1px solid ${palette.coolGrey3};
   border-right: none;
   display: flex;
-  justify-content: ${(props) => props.isAddingTask ? 'flex-end' : 'flex-start'};
+  justify-content: ${(props) =>
+    props.isAddingTask ? 'flex-end' : 'flex-start'};
   width: 100%;
   height: ${({ height }) => height || 35}px;
   border-top: none;

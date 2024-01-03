@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { fontSizes, fontWeights } from 'styles/font';
-import palette from 'styles/palette';
+import palette, { typography } from 'styles/palette';
 
 export const Row = styled.div`
   display: grid;
@@ -34,7 +34,7 @@ export const Cell = styled.div`
   display: flex;
   align-items: center;
   padding: 0 10px;
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: ${typography.text};
   font-weight: ${({ bold }) => (bold ? fontWeights.bold : fontWeights.regular)};
   font-size: ${fontSizes.smallPlus};
   color: ${palette.mediumGrey};

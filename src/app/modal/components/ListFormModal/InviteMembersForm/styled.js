@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import palette from 'styles/palette';
+import palette, { typography } from 'styles/palette';
 import { fontSizes, fontWeights } from 'styles/font';
 
 export const Wrapper = styled.div`
@@ -48,7 +48,7 @@ export const NavigationText = styled.p`
   margin-bottom: 0;
   color: ${palette.coolGrey1};
   font-size: ${fontSizes.regular};
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: ${typography.text};
 `;
 
 export const SkipButton = styled.button`

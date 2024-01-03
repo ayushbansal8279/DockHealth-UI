@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import palette from 'styles/palette';
+import palette, { typography } from 'styles/palette';
 import { fontSizes } from 'styles/font';
 
 export const TextContainer = styled.div`
@@ -8,7 +8,7 @@ export const TextContainer = styled.div`
   cursor: text;
   padding: 0 2px;
   border-color: transparent;
-  ${props =>
+  ${(props) =>
     props.shouldHover
       ? `  &:hover {
     border-radius: 2px;
@@ -33,7 +33,7 @@ export const AddPlaceholder = styled.div`
 `;
 
 export const TextValue = styled.div`
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: ${typography.text};
   width: 100%;
   &:hover {
     & ${AddPlaceholder} {

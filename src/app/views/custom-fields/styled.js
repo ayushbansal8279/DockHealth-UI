@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { fontSizes, fontWeights } from 'styles/font';
-import palette from 'styles/palette';
+import palette, { typography } from 'styles/palette';
 
 export const Header = styled.h2`
   margin-bottom: 0;
@@ -15,7 +15,7 @@ export const ViewContainer = styled.div`
   margin: 0 auto;
   padding: 50px 20px;
   color: ${palette.mediumGrey};
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: ${typography.text};
 `;
 
 export const EmptyListPlaceholder = styled.p`

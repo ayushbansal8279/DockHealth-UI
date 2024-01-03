@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import spacing from 'styles/spacing';
-import palette from 'styles/palette';
+import palette, { typography } from 'styles/palette';
 import { fontSizes } from 'styles/font';
 
 export const TemplateHandle = styled.img`
@@ -46,7 +46,7 @@ export const TaskTemplateGroupHeaderContainer = styled.div`
   position: relative;
   display: flex;
   padding: 0;
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: ${typography.text};
   font-size: ${fontSizes.smallPlus};
   width: 100%;
   height: 35px;

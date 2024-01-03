@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { fontSizes, fontWeights } from 'styles/font';
-import palette from 'styles/palette';
+import palette, { typography } from 'styles/palette';
 
 export const ContextMenu = styled.div`
   position: absolute;
@@ -105,7 +105,7 @@ export const BuilderHeaderText = styled.p`
   display: flex;
   align-items: center;
   margin-bottom: 0;
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: ${typography.text};
   font-size: ${fontSizes.large};
   color: ${({ color }) => color || palette.brightBlue};
 

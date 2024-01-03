@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React from 'react';
 import styled from 'styled-components';
-import palette from 'styles/palette';
+import palette, { typography } from 'styles/palette';
 import InputMask from 'react-input-mask';
 import { fontWeights } from 'styles/font';
 import spacing from 'styles/spacing';
@@ -102,7 +102,7 @@ export const TimeOptionsContainer = styled.div`
   width: 100%;
   max-height: 250px;
   overflow-y: auto;
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: ${typography.text};
 `;
 
 export const TimeOptionButton = styled.button`

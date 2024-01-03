@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import palette from 'styles/palette';
+import palette, { typography } from 'styles/palette';
 import spacing from 'styles/spacing';
 import { fontSizes, fontWeights } from 'styles/font';
 
@@ -16,7 +16,7 @@ export const InputBox = styled.div`
   color: ${palette.mediumGrey};
   font-size: ${fontSizes.smallPlus};
   font-weight: ${fontWeights.light};
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: ${typography.text};
 
   &:placeholder {
     color: ${palette.coolGrey2};
@@ -52,7 +52,7 @@ export const MemberRow = styled.button`
     isSelected ? palette.mediumGrey : palette.coolGrey1};
   background-color: ${({ isSelected }) =>
     isSelected ? `${palette.brightBlue}12` : 'transparent'};
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: ${typography.text};
   cursor: pointer;
 
   &:not(:last-of-type) {

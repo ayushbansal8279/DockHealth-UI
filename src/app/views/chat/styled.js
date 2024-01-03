@@ -1,7 +1,7 @@
 import { IconButton } from '@mui/material';
 import spacing from 'styles/spacing';
 import { fontSizes, fontWeights } from 'styles/font';
-import palette from 'styles/palette';
+import palette, { typography } from 'styles/palette';
 import styled from 'styled-components';
 
 export const StyledIconButton = styled(IconButton)`
@@ -17,7 +17,7 @@ export const ChatHeaderTitle = styled.h3`
   padding: ${spacing.smallPlus};
   font-size: ${fontSizes.large};
   font-weight: ${fontWeights.regularPlus};
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: ${typography.text};
   color: ${palette.white};
 `;
 
@@ -26,7 +26,7 @@ export const ChannelListTitle = styled.h6`
   padding: ${spacing.smallPlus};
   font-size: ${fontSizes.large};
   font-weight: ${fontWeights.regular};
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: ${typography.text};
   color: ${palette.midnightBlue};
 `;
 
@@ -57,7 +57,7 @@ export const HeaderContainer = styled.div`
   padding: 0 20px;
   background-color: ${palette.midnightBlue};
   color: ${palette.white};
-  font-family: 'Roboto Condensed', sans-serif;;
+  font-family: ${typography.text};
 `;
 
 export const ChatContainer = styled.div`

@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import palette from 'styles/palette';
+import palette, { typography } from 'styles/palette';
 import { Close } from '@mui/icons-material';
 import { fontWeights, fontSizes } from 'styles/font';
 
@@ -25,7 +25,7 @@ export const AdornmentClear = styled(Close)`
 `;
 
 export const HorizontalLabel = styled.span`
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: ${typography.text};
   margin-right: 5px;
   font-weight: ${fontWeights.bold};
   & > * {

@@ -1,7 +1,7 @@
 import { css, ListItem, Popover } from '@mui/material';
 import omit from 'ramda/src/omit';
 import React from 'react';
-import palette from 'styles/palette';
+import palette, { typography } from 'styles/palette';
 import styled from 'styled-components';
 
 const StyledPopover = styled(Popover)`
@@ -23,7 +23,7 @@ const StyledListItem = styled(ListItem)`
     &.MuiListItem-root {
       color: ${palette.coolGrey1};
       filter: brightness(1);
-      font-family: 'Roboto Condensed', sans-serif;
+      font-family: ${typography.text};
       font-size: 1rem;
       font-weight: 500;
       margin: 0;

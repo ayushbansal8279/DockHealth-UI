@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { fontSizes, fontWeights } from 'styles/font';
-import palette from 'styles/palette';
+import palette, { typography } from 'styles/palette';
 import MuiCheckIcon from '@mui/icons-material/Check';
 
 export const Container = styled.div`
@@ -11,7 +11,7 @@ export const Container = styled.div`
   padding: 18px;
   border-radius: 10px;
   box-shadow: 0px 6px 9px rgba(0, 0, 0, 0.17);
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: ${typography.text};
   background-color: ${palette.white};
 `;
 

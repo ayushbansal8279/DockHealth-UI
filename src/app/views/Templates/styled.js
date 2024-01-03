@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { fontSizes } from 'styles/font';
-import palette from 'styles/palette';
+import palette, { typography } from 'styles/palette';
 
 export const ViewContainer = styled.div`
   max-width: 800px;
@@ -8,7 +8,7 @@ export const ViewContainer = styled.div`
   margin: 0 auto;
   padding: 50px 20px;
   color: ${palette.mediumGrey};
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: ${typography.text};
 `;
 
 export const AddTemplateWrapper = styled.div`

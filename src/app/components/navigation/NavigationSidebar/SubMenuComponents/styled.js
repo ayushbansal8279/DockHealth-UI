@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { Popover } from '@mui/material';
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import spacing from 'styles/spacing';
-import palette from 'styles/palette';
+import palette, { typography } from 'styles/palette';
 import { fontWeights, fontSizes } from 'styles/font';
 import Skeleton from '@mui/material/Skeleton';
 import prop from 'ramda/src/prop';
@@ -27,7 +27,7 @@ export const SubmenuHeader = styled.h3`
   padding: ${spacing.smallPlus};
   font-size: ${fontSizes.smallPlus};
   font-weight: ${fontWeights.bold};
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: ${typography.text};
   color: ${palette.coolGrey1};
 `;
 export const SubMenuLink = styled(Link)`
@@ -203,7 +203,7 @@ export const MyOrganizationLabel = styled.h2`
   padding: ${spacing.smallPlus};
   font-size: ${fontSizes.regular};
   font-weight: ${fontWeights.bold};
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: ${typography.text};
   color: ${palette.mediumGrey};
   word-break: break-all;
   white-space: initial;
@@ -304,7 +304,7 @@ export const DrawerListsItemNewLabel = styled.div`
   color: ${palette.brightBlue};
   font-size: 10px;
   font-weight: 400;
-  font-family: 'Roboto Condensed', sans-serif;;
+  font-family: ${typography.text};
 `;
 
 export const DrawerListsNewLabel = styled.div`
@@ -390,7 +390,7 @@ export const FooterLink = styled.a`
 export const EducationCenterTitle = styled.h3`
   margin: 0;
   padding: ${spacing.smallPlus} 0;
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: ${typography.text};
   font-size: ${fontSizes.smallPlus};
   font-weight: ${fontWeights.light};
   color: ${palette.brightBlue};
@@ -402,7 +402,7 @@ export const EducationCenterList = styled.div`
   width: 100%;
   overflow-y: auto;
   color: ${palette.darkGrey};
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: ${typography.text};
   font-weight: ${fontWeights.light};
 `;
 
@@ -444,7 +444,7 @@ export const EducationSearchInput = styled.input`
   flex: 1;
   color: ${palette.darkGrey};
   font-weight: ${fontWeights.light};
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: ${typography.text};
   border: none;
   outline: none;
 `;

@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import MaterialCloseIcon from '@mui/icons-material/Close';
 import { fontSizes, fontWeights } from 'styles/font';
-import palette from 'styles/palette';
+import palette, { typography } from 'styles/palette';
 import spacing from 'styles/spacing';
 
 export const Container = styled.div`
@@ -14,7 +14,7 @@ export const Container = styled.div`
   border: 1px solid ${palette.coolGrey2};
   border-bottom: none;
   background-color: ${palette.white};
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: ${typography.text};
   color: ${palette.mediumGrey};
 `;
 

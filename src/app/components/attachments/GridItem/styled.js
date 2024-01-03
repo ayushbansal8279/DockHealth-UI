@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { fontSizes, fontWeights } from 'styles/font';
-import palette from 'styles/palette';
+import palette, { typography } from 'styles/palette';
 
 export const Container = styled.div`
   position: relative;
@@ -11,7 +11,7 @@ export const Container = styled.div`
   border-radius: 14px;
   background: ${palette.white};
   vertical-align: top;
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: ${typography.text};
   color: ${palette.mediumGrey};
 
   &:not(:last-of-type) {

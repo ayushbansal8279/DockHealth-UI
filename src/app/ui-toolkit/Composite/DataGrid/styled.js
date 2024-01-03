@@ -1,5 +1,6 @@
 import { styled } from '@mui/material/styles';
 import * as MUI from '@mui/x-data-grid';
+import { typography } from 'styles/palette';
 
 export const DataGrid = styled(MUI.DataGrid)`
   margin-bottom: 48px;
@@ -7,7 +8,7 @@ export const DataGrid = styled(MUI.DataGrid)`
   &.MuiDataGrid-root {
     background-color: white;
   }
-  
+
   & .MuiDataGrid-footerContainer {
     p {
       margin-bottom: 0;
@@ -15,7 +16,7 @@ export const DataGrid = styled(MUI.DataGrid)`
   }
 
   & .MuiSelect-select {
-    font-family: "Roboto Condensed", sans-serif;
+    font-family: ${typography.text};
     font-weight: 400;
     font-size: 0.875rem;
     line-height: 1.43;

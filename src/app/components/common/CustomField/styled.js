@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import palette from 'styles/palette';
+import palette, { typography } from 'styles/palette';
 import { fontSizes } from 'styles/font';
 
 export const CustomTextEditorContainer = styled.div`
@@ -20,5 +20,5 @@ export const DescriptionError = styled.p`
   margin-bottom: 0;
   color: ${palette.error};
   font-size: ${fontSizes.smallPlus};
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: ${typography.text};
 `;

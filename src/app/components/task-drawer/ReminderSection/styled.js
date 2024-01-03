@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { fontWeights } from 'styles/font';
-import palette from 'styles/palette';
+import palette, { typography } from 'styles/palette';
 import spacing from 'styles/spacing';
 
 export const ReminderContainer = styled.div`
@@ -12,7 +12,7 @@ export const ReminderContainer = styled.div`
   margin-top: ${spacing.large};
   margin-bottom: ${spacing.tiny};
   transition: opacity 0.4s ease-out;
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: ${typography.text};
 `;
 
 export const Description = styled.p`
@@ -25,7 +25,7 @@ export const ReminderTypeSelectOption = styled.div`
   width: 100%;
   padding: ${spacing.smallPlus};
   text-align: left;
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: ${typography.text};
   color: ${palette.coolGrey1};
   background-color: ${({ isActive }) =>
     isActive ? palette.coolGrey4 : 'transparent'};

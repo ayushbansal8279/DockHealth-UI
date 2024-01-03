@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { fontSizes, fontWeights } from 'styles/font';
-import palette from 'styles/palette';
+import palette, { typography } from 'styles/palette';
 import spacing from 'styles/spacing';
 
 const SKELETON_ELEMENT_COLOR = palette.coolGrey3;
@@ -15,7 +15,7 @@ export const UserCardContainer = styled.div`
   width: 252px;
   background-color: ${palette.white};
   box-shadow: 0px 0px 11px rgba(0, 0, 0, 0.15); // per design
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: ${typography.text};
 `;
 
 export const UserImageContainer = styled.div`

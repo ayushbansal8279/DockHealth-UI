@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import palette from 'styles/palette';
+import palette, { typography } from 'styles/palette';
 import spacing from 'styles/spacing';
 
 export const AddCommentContainer = styled.div`
@@ -15,7 +15,7 @@ export const AddCommentInputContainer = styled.div`
   border: 0;
   box-shadow: none;
   color: ${palette.darkGrey};
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: ${typography.text};
   margin: 0;
   outline: 0;
   padding: ${spacing.tiny} ${spacing.regular};

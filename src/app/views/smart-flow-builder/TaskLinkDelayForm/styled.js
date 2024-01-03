@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import palette from 'styles/palette';
+import palette, { typography } from 'styles/palette';
 import { fontWeights } from 'styles/font';
 
 export const DelayPeriodForm = styled.form`
@@ -7,13 +7,13 @@ export const DelayPeriodForm = styled.form`
 `;
 
 export const CheckboxLabel = styled.label`
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: ${typography.text};
   color: ${palette.mediumGrey};
 `;
 
 export const Title = styled.p`
   margin-bottom: 0;
   font-weight: ${fontWeights.bold};
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: ${typography.text};
   color: ${palette.mediumGrey};
 `;

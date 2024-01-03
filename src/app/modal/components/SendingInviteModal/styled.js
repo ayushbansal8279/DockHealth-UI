@@ -1,9 +1,9 @@
 import styled from 'styled-components';
-import palette from 'styles/palette';
+import palette, { typography } from 'styles/palette';
 import spacing from 'styles/spacing';
 
 export const ModalWrapper = styled.div`
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: ${typography.text};
   display: flex;
   flex-direction: row;
   align-items: center;

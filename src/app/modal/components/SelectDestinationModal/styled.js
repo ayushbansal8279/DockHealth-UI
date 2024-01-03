@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import spacing from 'styles/spacing';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import palette from 'styles/palette';
+import palette, { typography } from 'styles/palette';
 import { fontSizes } from 'styles/font';
 
 export const StepsContainer = styled.div`
@@ -92,7 +92,7 @@ export const Title = styled.h2`
   margin: 0;
   font-size: ${fontSizes.regularPlus};
   color: ${palette.brightBlue};
-  font-family: 'Roboto Condensed', sans-serif;;
+  font-family: ${typography.text};
   text-align: left;
   overflow: hidden;
   text-overflow: ellipsis;

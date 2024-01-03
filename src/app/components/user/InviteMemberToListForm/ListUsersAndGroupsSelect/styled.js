@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import CloseIcon from '@mui/icons-material/Close';
-import palette from 'styles/palette';
+import palette, { typography } from 'styles/palette';
 import spacing from 'styles/spacing';
 import { fontSizes, fontWeights } from 'styles/font';
 
@@ -10,7 +10,7 @@ export const Wrapper = styled.div`
   flex-direction: row;
   min-height: 56px;
   width: 100%;
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: ${typography.text};
   color: ${palette.mediumGrey};
 `;
 
@@ -203,7 +203,7 @@ export const EmptyPeopleResult = styled.div`
   justify-content: space-between;
   padding: ${spacing.smallPlus} ${spacing.giga} ${spacing.smallPlus}
     ${spacing.regularPlus};
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: ${typography.text};
 `;
 
 export const EmptyResultText = styled.p`

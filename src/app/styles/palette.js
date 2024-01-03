@@ -75,7 +75,11 @@ const palette = {
   tomatoInYoFaceLight: '#f9d4d2',
   orangeJuliusLight: '#fee6cd',
   bananaHammockLight: '#fff4cc',
-  tealGreen: '#69b8b2'
+  tealGreen: '#69b8b2',
+};
+
+export const typography = {
+  text: `'Roboto Condensed', sans-serif`,
 };
 
 export const featurePalette = {

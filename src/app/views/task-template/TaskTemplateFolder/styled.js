@@ -1,6 +1,6 @@
 import styled, { keyframes } from 'styled-components';
 import { fontSizes, fontWeights } from 'styles/font';
-import palette from 'styles/palette';
+import palette, { typography } from 'styles/palette';
 import spacing from 'styles/spacing';
 
 const LightenedTaskContainer = keyframes`
@@ -27,7 +27,7 @@ export const TaskTemplateHeader = styled.div`
   width: 100%;
   padding: 2px 0px 2px ${spacing.smallPlus};
   border: 1px solid ${palette.coolGrey3};
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: ${typography.text};
   font-size: ${fontSizes.smallPlus};
 `;
 

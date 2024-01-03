@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import spacing from 'styles/spacing';
-import palette from 'styles/palette';
+import palette, { typography } from 'styles/palette';
 import { fontSizes } from 'styles/font';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 
@@ -61,7 +61,7 @@ export const Title = styled.h2`
   font-size: ${fontSizes.regularPlus};
   text-transform: uppercase;
   color: ${palette.brightBlue};
-  font-family: 'Roboto Condensed', sans-serif;;
+  font-family: ${typography.text};
 `;
 
 export const Description = styled.p`
