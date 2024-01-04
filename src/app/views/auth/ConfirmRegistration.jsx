@@ -11,10 +11,18 @@ import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
 import { useBoolean } from 'hooks/useBoolean';
 import { MontserratTypography } from 'styles/theme-montserrat';
 import ConfirmEmailHeaderCheck from 'img/checked-circle.svg';
+import redTheme from 'modal/themes/red-theme';
 import {
-  OnboardingDialog,
-  OnboardingHeader,
-} from '../onboarding/OnboardingTemplate.Components';
+  FixedWidthButtonWrapper,
+  ModalDescriptionContainer,
+  ModalIconContainer,
+  ModalMainIcon,
+  ModalWrapper,
+} from 'modal/components/styled';
+import { Button, Typography } from '@mui/material';
+import { ThemeProvider as MuiThemeProvider } from '@mui/material/styles';
+import { ButtonsContainer } from 'views/dashboard/DashboardFirstVisitView/styled';
+import { OnboardingDialog } from '../onboarding/OnboardingTemplate.Components';
 
 const FONT_FAMILY_NAME = 'roboto condensed';
 
@@ -35,7 +43,7 @@ const resendEmail = async (email, dispatch) => {
 
 const ConfirmRegistration = (props) => {
   const dispatch = useDispatch();
-  const [isDialogShown, showDialog] = useBoolean(false);
+  const [isDialogShown, showDialog, hideDialog] = useBoolean(false);
   const [dialogTitle, setDialogTitle] = useState('');
   const [dialogMessage, setDialogMessage] = useState('');
   const [userEmail, setUserEmail] = useState('');
@@ -105,7 +113,7 @@ const ConfirmRegistration = (props) => {
         </div>
       </div>
       {/* <ConfirmUserAccountForm type="Confirm" onSubmit={this.onSubmit} /> */}
-      <OnboardingDialog open={isDialogShown} fullWidth maxWidth="sm">
+      {/* <OnboardingDialog open={isDialogShown} fullWidth maxWidth="sm">
         <OnboardingHeader>
           <MontserratTypography variant="h2">
             <span
@@ -153,6 +161,66 @@ const ConfirmRegistration = (props) => {
           </StyledAnchorDiv>
         </MontserratTypography>
         <Spacing vertical={5} />
+      </OnboardingDialog> */}
+      <OnboardingDialog open={isDialogShown} fullWidth maxWidth="sm">
+        <MuiThemeProvider theme={redTheme}>
+          <ModalWrapper style={{ width: '500px' }}>
+            <ModalIconContainer>
+              <ModalMainIcon src={ConfirmEmailHeaderCheck} alt="envelope" />
+              <Typography color="textPrimary" variant="h2" align="center">
+                {dialogTitle}{' '}
+              </Typography>
+            </ModalIconContainer>
+            <ModalDescriptionContainer>
+              <MontserratTypography variant="h4">
+                <span style={onboardingMessageStyle}> {dialogMessage} </span>
+              </MontserratTypography>
+              <Spacing vertical={5} />
+              <MontserratTypography variant="h4">
+                <span style={onboardingDialogStyle}>
+                  I didn't get the confirmation email. .{' '}
+                </span>
+                <StyledAnchorDiv
+                  style={onboardingLinkStyle}
+                  onClick={() => resendEmail(userEmail, dispatch)}
+                >
+                  Resend email
+                </StyledAnchorDiv>
+              </MontserratTypography>
+
+              <Spacing vertical={5} />
+
+              <MontserratTypography variant="h4">
+                <span style={onboardingDialogStyle}>
+                  {' '}
+                  Please try to Sign In{' '}
+                </span>
+                <StyledAnchorDiv
+                  onClick={() => history.push('/auth/login')}
+                  style={onboardingLinkStyle}
+                >
+                  Change email address
+                </StyledAnchorDiv>
+              </MontserratTypography>
+              <Spacing vertical={2} />
+            </ModalDescriptionContainer>
+            <ButtonsContainer>
+              <FixedWidthButtonWrapper width={300}>
+                <Button
+                  fullWidth
+                  variant="primary-red"
+                  type="button"
+                  onClick={() => {
+                    hideDialog();
+                    history.push(`/auth/login`);
+                  }}
+                >
+                  Login To My Account
+                </Button>
+              </FixedWidthButtonWrapper>
+            </ButtonsContainer>
+          </ModalWrapper>
+        </MuiThemeProvider>
       </OnboardingDialog>
     </div>
   );

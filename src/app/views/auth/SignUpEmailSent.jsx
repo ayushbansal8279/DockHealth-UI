@@ -29,7 +29,7 @@ export default () => {
     })(dispatch);
   });
 
-  const username = window.sessionStorage.getItem('username');
+  const username = window.sessionStorage.getItem('email');
 
   const handleResendEmail = useCallback(() => {
     resendConfirmationCode({ username })
@@ -81,7 +81,9 @@ export default () => {
             }}
           >
             Haven’t received your email? Please check your spam.{' '}
-            <strong onClick={handleResendEmail}>Resend email</strong>
+            <strong style={{ cursor: 'pointer' }} onClick={handleResendEmail}>
+              Resend email
+            </strong>
           </OutfitTypography>
         </Grid>
       </Grid>

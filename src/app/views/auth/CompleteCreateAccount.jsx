@@ -144,6 +144,7 @@ const CompleteCreateAccount = (props) => {
         try {
           const firstName = sessionStorage.getItem('firstName');
           const lastName = sessionStorage.getItem('lastName');
+          sessionStorage.setItem('email', email);
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
           const organization = sessionStorage.getItem('organization');
           await registerAction({
@@ -167,7 +168,7 @@ const CompleteCreateAccount = (props) => {
           // showDialog();
         } catch (error) {
           if (error?.code === 'UsernameExistsException') {
-            setDialogTitle(`Email already associated with an account`);
+            setDialogTitle(`Zach's Email already associated with an account`);
             setDialogMessage(
               `${email} is already being used for a Dock Health account. If you haven't already, please go to your email and click on the link to confirm your email address.`,
             );
