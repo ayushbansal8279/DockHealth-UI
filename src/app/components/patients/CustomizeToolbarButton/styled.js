@@ -25,7 +25,7 @@ export const PlusIcon = styled.div`
 
 export const UpgradePlanPopupHeader = styled.div`
   display: flex;
-  font-family: ${typography.text};
+  font-family: inherit;
 `;
 
 export const Spacer = styled.hr`

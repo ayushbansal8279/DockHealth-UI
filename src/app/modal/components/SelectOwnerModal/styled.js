@@ -24,7 +24,7 @@ export const UserItem = styled.button`
   align-items: center;
   padding: ${spacing.tiny} ${spacing.regularPlus};
   outline: none;
-  font-family: ${typography.text};
+  font-family: inherit;
   color: ${palette.mediumGrey};
   background-color: ${(props) =>
     props.isSelected && palette.brightBlueWithAlpha};

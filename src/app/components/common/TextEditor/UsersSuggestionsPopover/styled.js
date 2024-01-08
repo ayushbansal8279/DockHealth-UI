@@ -8,7 +8,7 @@ export const PopoverContainer = styled.div`
   width: 252px;
   background-color: ${palette.white};
   box-shadow: 0px 6px 9px rgba(0, 0, 0, 0.17);
-  font-family: ${typography.text};
+  font-family: inherit;
   font-size: ${fontSizes.regular};
   font-weight: ${fontWeights.regular};
   z-index: 1001;

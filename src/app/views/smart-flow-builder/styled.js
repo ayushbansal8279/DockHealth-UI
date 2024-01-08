@@ -105,7 +105,7 @@ export const BuilderHeaderText = styled.p`
   display: flex;
   align-items: center;
   margin-bottom: 0;
-  font-family: ${typography.text};
+  font-family: inherit;
   font-size: ${fontSizes.large};
   color: ${({ color }) => color || palette.brightBlue};
 

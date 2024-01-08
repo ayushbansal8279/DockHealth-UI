@@ -15,7 +15,7 @@ export const Description = styled.p`
   color: ${palette.mediumGrey};
   font-size: ${fontSizes.large};
   font-weight: ${fontWeights.regular};
-  font-family: ${typography.text};
+  font-family: inherit;
 `;
 
 export const Image = styled.img`

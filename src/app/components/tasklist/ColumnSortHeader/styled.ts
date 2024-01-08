@@ -78,7 +78,7 @@ export const SortButton = styled.button<{
   }}
   height: 35px;
   text-align: left;
-  font-family: ${typography.text};
+  font-family: inherit;
   font-size: ${fontSizes.smallPlus};
   font-weight: ${fontWeights.regularPlus};
   ${({ tasksHeaderTextTransform }) =>

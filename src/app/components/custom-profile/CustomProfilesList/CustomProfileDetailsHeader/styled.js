@@ -13,7 +13,7 @@ export const ProfileDetailsContainer = styled.div`
   justify-content: space-between;
   // eslint-disable-next-line prettier/prettier
   padding: ${spacing.regular} ${spacing.regular} 0 ${spacing.regular};
-  font-family: ${typography.text};
+  font-family: inherit;
   background-color: ${palette.white};
 `;
 

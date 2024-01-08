@@ -20,13 +20,13 @@ export const DateInputMask = styled(
     border-radius: 4px;
     border: none;
     box-shadow: none;
-    font-family: ${typography.text};
+    font-family: inherit;
     color: ${({ error }) => (error ? palette.error : palette.mediumGrey)};
     text-align: center;
 
     &::placeholder {
       font-size: 15px;
-      font-family: ${typography.text};
+      font-family: inherit;
     }
 
     &:focus,

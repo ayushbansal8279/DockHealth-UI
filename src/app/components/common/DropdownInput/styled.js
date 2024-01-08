@@ -45,7 +45,7 @@ export const SelectOption = styled.div`
   width: 100%;
   padding: ${spacing.smallPlus};
   text-align: left;
-  font-family: ${typography.text};
+  font-family: inherit;
   color: ${palette.coolGrey1};
   background-color: ${({ isActive }) =>
     isActive ? palette.coolGrey4 : 'transparent'};

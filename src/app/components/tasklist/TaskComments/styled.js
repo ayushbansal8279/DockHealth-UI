@@ -82,7 +82,7 @@ export const ShowMoreButton = styled.button`
   margin: ${spacing.small} 0;
   font-size: ${fontSizes.smallPlus};
   color: ${palette.brightBlue};
-  font-family: ${typography.text};
+  font-family: inherit;
   cursor: pointer;
 `;
 

@@ -75,5 +75,5 @@ export const Description = styled.p`
   margin-bottom: 0;
   font-size: ${fontSizes.regularPlus};
   font-weight: ${fontWeights.extraLight};
-  font-family: ${typography.text};
+  font-family: inherit;
 `;

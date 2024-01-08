@@ -39,7 +39,7 @@ export const InputErrorLabel = styled.div`
 
 export const InputWrapper = styled.div`
   width: 100%;
-  font-family: ${typography.text};
+  font-family: inherit;
 `;
 
 export const RequiredLabel = styled.span`

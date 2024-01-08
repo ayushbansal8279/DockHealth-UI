@@ -131,7 +131,7 @@ export const EmptyActivityAlerts = styled.div`
   box-shadow: 0px 0px 11px rgba(0, 0, 0, 0.15); // per design
   border-radius: 8px;
   padding: ${spacing.regularPlus};
-  font-family: ${typography.text};
+  font-family: inherit;
   font-weight: ${fontWeights.bold};
 `;
 

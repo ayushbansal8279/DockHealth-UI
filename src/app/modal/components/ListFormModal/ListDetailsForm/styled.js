@@ -18,7 +18,7 @@ export const CheckboxContainer = styled.div`
 
 export const CheckboxDescription = styled.label`
   display: inline;
-  font-family: ${typography.text};
+  font-family: inherit;
   font-size: ${fontSizes.regular};
   color: ${palette.scrollbarGrey};
 `;

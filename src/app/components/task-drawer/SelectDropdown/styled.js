@@ -22,7 +22,7 @@ export const ListItem = styled.li`
 export const ListItemButton = styled.button`
   width: 100%;
   cursor: pointer;
-  font-family: ${typography.text};
+  font-family: inherit;
 
   ${({ isHovered }) => isHovered && `background: ${palette.blueGrey};`}
   ${({ readOnly }) => readOnly && `pointer-events: none;`}
@@ -30,7 +30,7 @@ export const ListItemButton = styled.button`
 
 export const ListItemRefineButton = styled.button`
   width: 100%;
-  font-family: ${typography.text};
+  font-family: inherit;
   color: ${palette.oPlusRed};
   height: 42px;
 

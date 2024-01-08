@@ -61,7 +61,7 @@ export const Title = styled.h2`
   font-size: ${fontSizes.regularPlus};
   text-transform: uppercase;
   color: ${palette.brightBlue};
-  font-family: ${typography.text};
+  font-family: inherit;
 `;
 
 export const Description = styled.p`

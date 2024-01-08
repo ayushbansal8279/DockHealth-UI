@@ -27,7 +27,7 @@ export const TaskTemplateHeader = styled.div`
   width: 100%;
   padding: 2px 0px 2px ${spacing.smallPlus};
   border: 1px solid ${palette.coolGrey3};
-  font-family: ${typography.text};
+  font-family: inherit;
   font-size: ${fontSizes.smallPlus};
 `;
 

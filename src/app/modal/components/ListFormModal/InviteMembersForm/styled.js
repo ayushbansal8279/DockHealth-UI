@@ -48,7 +48,7 @@ export const NavigationText = styled.p`
   margin-bottom: 0;
   color: ${palette.coolGrey1};
   font-size: ${fontSizes.regular};
-  font-family: ${typography.text};
+  font-family: inherit;
 `;
 
 export const SkipButton = styled.button`

@@ -10,7 +10,7 @@ export const Wrapper = styled.div`
   flex-direction: row;
   min-height: 56px;
   width: 100%;
-  font-family: ${typography.text};
+  font-family: inherit;
   color: ${palette.mediumGrey};
 `;
 
@@ -203,7 +203,7 @@ export const EmptyPeopleResult = styled.div`
   justify-content: space-between;
   padding: ${spacing.smallPlus} ${spacing.giga} ${spacing.smallPlus}
     ${spacing.regularPlus};
-  font-family: ${typography.text};
+  font-family: inherit;
 `;
 
 export const EmptyResultText = styled.p`

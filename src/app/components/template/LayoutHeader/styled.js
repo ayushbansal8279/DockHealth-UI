@@ -29,7 +29,7 @@ export const MainHeader = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-  font-family: ${typography.text};
+  font-family: inherit;
   font-size: ${fontSizes.largePlus};
   font-weight: ${fontWeights.regular};
   color: ${palette.mediumGrey};

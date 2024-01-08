@@ -13,7 +13,7 @@ export const ListModalWrapper = styled(Box)`
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  font-family: ${typography.text};
+  font-family: inherit;
   background-color: white;
   width: 600px;
   min-height: 340px;
@@ -34,7 +34,7 @@ export const Body = styled.div`
   margin: 0 auto;
   padding-top: 10px;
   color: ${palette.mediumGrey};
-  font-family: ${typography.text};
+  font-family: inherit;
 `;
 
 export const Title = styled.h5`

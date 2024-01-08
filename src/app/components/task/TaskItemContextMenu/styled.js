@@ -22,7 +22,7 @@ export const MenuContainer = styled.ul`
   background-color: ${palette.white};
   box-shadow: 0px 0px 9px rgba(0, 0, 0, 0.1);
   z-index: 10003;
-  font-family: ${typography.text};
+  font-family: inherit;
   font-weight: ${fontWeights.light};
 `;
 

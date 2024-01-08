@@ -8,7 +8,7 @@ export const StyledAddButton = styled.button`
   outline: none;
   border: none;
   border-radius: 9px;
-  font-family: ${typography.text};
+  font-family: inherit;
   font-weight: ${fontWeights.bold};
   padding: ${spacing.tiny} 10px;
   transition: background-color 0.3s linear;

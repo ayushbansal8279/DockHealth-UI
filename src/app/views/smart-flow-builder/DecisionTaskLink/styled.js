@@ -32,7 +32,7 @@ export const OutcomeInput = styled.input`
   flex: 1;
   border: none;
   color: inherit;
-  font-family: ${typography.text};
+  font-family: inherit;
   font-size: ${fontSizes.smallPlus};
   font-weight: ${fontWeights.regular};
   background: transparent;

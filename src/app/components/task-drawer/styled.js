@@ -25,7 +25,7 @@ export const AdornmentClear = styled(Close)`
 `;
 
 export const HorizontalLabel = styled.span`
-  font-family: ${typography.text};
+  font-family: inherit;
   margin-right: 5px;
   font-weight: ${fontWeights.bold};
   & > * {

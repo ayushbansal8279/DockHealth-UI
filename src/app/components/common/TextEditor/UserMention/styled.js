@@ -15,7 +15,7 @@ export const UserCardContainer = styled.div`
   width: 252px;
   background-color: ${palette.white};
   box-shadow: 0px 0px 11px rgba(0, 0, 0, 0.15); // per design
-  font-family: ${typography.text};
+  font-family: inherit;
 `;
 
 export const UserImageContainer = styled.div`

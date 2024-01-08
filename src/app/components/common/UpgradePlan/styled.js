@@ -4,7 +4,7 @@ import palette, { typography } from 'styles/palette';
 import spacing from 'styles/spacing';
 
 export const UpgradePlanContainer = styled.div`
-  font-family: ${typography.text};
+  font-family: inherit;
   position: relative;
   display: flex;
   width: 100%;

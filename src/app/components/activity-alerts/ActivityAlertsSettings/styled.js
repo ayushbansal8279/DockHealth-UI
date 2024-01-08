@@ -28,7 +28,7 @@ export const ActivityAlertsSettingsItem = styled.div`
 `;
 
 export const ActivityAlertsSettingsItemsContainer = styled.div`
-  font-family: ${typography.text};
+  font-family: inherit;
   margin-top: ${spacing.large};
   display: flex;
   flex-direction: column;

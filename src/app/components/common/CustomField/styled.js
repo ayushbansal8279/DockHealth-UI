@@ -20,5 +20,5 @@ export const DescriptionError = styled.p`
   margin-bottom: 0;
   color: ${palette.error};
   font-size: ${fontSizes.smallPlus};
-  font-family: ${typography.text};
+  font-family: inherit;
 `;

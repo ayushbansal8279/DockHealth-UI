@@ -16,7 +16,7 @@ export const EdgeLabel = styled.div`
     hasOutcome ? palette.white : palette.mediumGrey};
   border-radius: 999px;
   transition: width 0.2s linear;
-  font-family: ${typography.text};
+  font-family: inherit;
   font-size: ${fontSizes.smallPlus};
   font-weight: ${fontWeights.regular};
   user-select: none;

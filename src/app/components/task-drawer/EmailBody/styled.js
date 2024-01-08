@@ -10,7 +10,7 @@ export const EmailBodyContainer = styled.div`
 `;
 
 export const EmailMessageContainer = styled.pre`
-  font-family: ${typography.text};
+  font-family: inherit;
   font-style: normal;
   font-weight: normal;
   font-size: 14px;

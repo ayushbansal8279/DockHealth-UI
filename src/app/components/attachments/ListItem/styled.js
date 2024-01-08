@@ -34,7 +34,7 @@ export const Cell = styled.div`
   display: flex;
   align-items: center;
   padding: 0 10px;
-  font-family: ${typography.text};
+  font-family: inherit;
   font-weight: ${({ bold }) => (bold ? fontWeights.bold : fontWeights.regular)};
   font-size: ${fontSizes.smallPlus};
   color: ${palette.mediumGrey};

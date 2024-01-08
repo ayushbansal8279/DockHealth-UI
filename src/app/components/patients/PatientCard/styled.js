@@ -10,7 +10,7 @@ export const PatientCardContainer = styled.div`
   width: 436px;
   background-color: ${palette.white};
   box-shadow: 0px 0px 11px rgba(0, 0, 0, 0.15);
-  font-family: ${typography.text};
+  font-family: inherit;
   color: ${palette.mediumGrey};
 `;
 

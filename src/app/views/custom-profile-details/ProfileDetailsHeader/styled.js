@@ -27,7 +27,7 @@ export const ProfileDetailsContainer = styled.div`
   flex-direction: column;
   justify-content: space-between;
   padding: ${spacing.regular} ${spacing.regular};
-  font-family: ${typography.text};
+  font-family: inherit;
   background-color: ${palette.white};
 `;
 

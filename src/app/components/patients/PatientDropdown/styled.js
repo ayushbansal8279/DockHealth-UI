@@ -35,7 +35,7 @@ export const InputBox = styled.div`
   color: ${palette.mediumGrey};
   font-size: ${fontSizes.smallPlus};
   font-weight: ${fontWeights.light};
-  font-family: ${typography.text};
+  font-family: inherit;
 
   &:placeholder {
     color: ${palette.coolGrey2};
@@ -57,7 +57,7 @@ export const Row = styled.button`
   align-items: center;
   cursor: pointer;
   color: ${palette.coolGrey1};
-  font-family: ${typography.text};
+  font-family: inherit;
   ${({ isHovered }) => isHovered && `background: ${palette.blueGrey};`}
   ${({ readOnly }) => readOnly && `pointer-events: none;`}
 

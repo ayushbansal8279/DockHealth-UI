@@ -23,7 +23,7 @@ const StyledListItem = styled(ListItem)`
     &.MuiListItem-root {
       color: ${palette.coolGrey1};
       filter: brightness(1);
-      font-family: ${typography.text};
+      font-family: inherit;
       font-size: 1rem;
       font-weight: 500;
       margin: 0;

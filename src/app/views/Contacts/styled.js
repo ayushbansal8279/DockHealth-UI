@@ -8,7 +8,7 @@ export const ViewContainer = styled.div`
   margin: 0 auto;
   padding: 50px 20px;
   color: ${palette.mediumGrey};
-  font-family: ${typography.text};
+  font-family: inherit;
 `;
 
 export const AddContactWrapper = styled.div`

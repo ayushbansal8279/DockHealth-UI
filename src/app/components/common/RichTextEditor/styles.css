@@ -53,7 +53,7 @@
 }
 
 .tribute-container .profile {
-  font-family: ${typography.text};
+  font-family: inherit;
   font-size: 12px;
   font-weight: bold;
   text-align: center;

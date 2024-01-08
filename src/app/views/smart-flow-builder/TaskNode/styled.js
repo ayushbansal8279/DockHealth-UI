@@ -27,7 +27,7 @@ export const TaskInfoWrapper = styled.div`
 
 export const TaskDescription = styled.p`
   margin-bottom: 0;
-  font-family: ${typography.text};
+  font-family: inherit;
   font-weight: ${fontWeights.regular};
   color: ${palette.mediumGrey};
 `;
@@ -35,7 +35,7 @@ export const TaskDescription = styled.p`
 export const TaskDescriptionInput = styled.input`
   width: 100%;
   border: none;
-  font-family: ${typography.text};
+  font-family: inherit;
   font-weight: ${fontWeights.regular};
   color: ${palette.mediumGrey};
   background: transparent;

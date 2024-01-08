@@ -11,7 +11,7 @@ export const Container = styled.div`
   border-radius: 14px;
   background: ${palette.white};
   vertical-align: top;
-  font-family: ${typography.text};
+  font-family: inherit;
   color: ${palette.mediumGrey};
 
   &:not(:last-of-type) {

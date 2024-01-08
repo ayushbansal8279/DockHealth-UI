@@ -11,12 +11,12 @@ export const DescriptionError = styled.p`
   margin-bottom: 0;
   color: ${palette.error};
   font-size: ${fontSizes.smallPlus};
-  font-family: ${typography.text};
+  font-family: inherit;
 `;
 
 export const DescriptionLabelContainer = styled.div`
   display: block;
-  font-family: ${typography.text};
+  font-family: inherit;
   font-size: ${fontSizes.small};
   font-weight: ${fontWeights.light};
   color: ${palette.coolGrey1};

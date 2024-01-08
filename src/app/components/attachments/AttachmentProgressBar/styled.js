@@ -31,7 +31,7 @@ export const UploadBar = styled.div`
   &::after {
     content: '${(props) => props.progress ?? 0}%';
     color: ${palette.darkGrey};
-    font-family: ${typography.text};
+    font-family: inherit;
     font-size: ${fontSizes.small};
     position: absolute;
     right: 0;

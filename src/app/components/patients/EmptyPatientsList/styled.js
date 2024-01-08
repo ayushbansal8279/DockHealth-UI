@@ -55,7 +55,7 @@ export const DownloadIcon = styled.img`
 `;
 
 export const DownloadTemplate = styled.a`
-  font-family: ${typography.text};
+  font-family: inherit;
   font-style: normal;
   font-weight: ${fontWeights.regular};
   font-size: ${fontSizes.regular};

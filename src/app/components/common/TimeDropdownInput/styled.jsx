@@ -102,7 +102,7 @@ export const TimeOptionsContainer = styled.div`
   width: 100%;
   max-height: 250px;
   overflow-y: auto;
-  font-family: ${typography.text};
+  font-family: inherit;
 `;
 
 export const TimeOptionButton = styled.button`

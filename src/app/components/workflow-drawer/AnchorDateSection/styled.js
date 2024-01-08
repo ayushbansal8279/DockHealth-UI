@@ -39,7 +39,7 @@ export const AnchorDateSectionWrapper = styled.div`
   justify-content: space-between;
   width: 100%;
   height: 54px;
-  font-family: ${typography.text};
+  font-family: inherit;
 
   ${({ disabled }) =>
     disabled &&

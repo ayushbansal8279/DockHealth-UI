@@ -44,7 +44,7 @@ export const StyledDataGrid = styled(DataGrid)`
   }
 
   & .MuiSelect-select {
-    font-family: ${typography.text};
+    font-family: inherit;
     font-weight: 400;
     font-size: 0.875rem;
     line-height: 1.43;
@@ -70,7 +70,7 @@ export const StyledDataGrid = styled(DataGrid)`
   }
 
   &.MuiDataGrid-cell {
-    font-family: ${typography.text};
+    font-family: inherit;
     font-weight: ${fontWeights.light};
     font-size: ${fontSizes.smallPlus};
     padding-left: 24px !important;
@@ -88,7 +88,7 @@ export const StyledDataGrid = styled(DataGrid)`
 
   &.MuiDataGrid-colCellTitle {
     background-color: white;
-    font-family: ${typography.text};
+    font-family: inherit;
     font-size: ${fontSizes.small};
     font-weight: ${fontWeights.regularPlus} !important;
     padding-left: 0;

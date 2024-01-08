@@ -16,7 +16,7 @@ export const InputBox = styled.div`
   color: ${palette.mediumGrey};
   font-size: ${fontSizes.smallPlus};
   font-weight: ${fontWeights.light};
-  font-family: ${typography.text};
+  font-family: inherit;
 
   &:placeholder {
     color: ${palette.coolGrey2};
@@ -60,7 +60,7 @@ export const MemberRow = styled.button`
     isSelected ? palette.mediumGrey : palette.coolGrey1};
   background-color: ${({ isSelected }) =>
     isSelected ? `${palette.brightBlue}12` : 'transparent'};
-  font-family: ${typography.text};
+  font-family: inherit;
   cursor: pointer;
 
   &:not(:last-of-type) {
