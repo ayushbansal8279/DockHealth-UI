@@ -127,6 +127,8 @@ const CompleteCreateAccount = (props) => {
   const [dialogTitle, setDialogTitle] = useState('');
   const [dialogMessage, setDialogMessage] = useState('');
   const [customPageTitle, setCustomPageTitle] = useState('');
+  const [isUserInvited, setIsUserInvited] = useState(false);
+  const [userName, setUserName] = useState(false);
   const history = useHistory();
   const dispatch = useDispatch();
 
@@ -146,7 +148,7 @@ const CompleteCreateAccount = (props) => {
           const lastName = sessionStorage.getItem('lastName');
           sessionStorage.setItem('email', email);
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          const organization = sessionStorage.getItem('organization');
+          const organizationName = sessionStorage.getItem('organization');
           await registerAction({
             username: email,
             password,
@@ -159,6 +161,7 @@ const CompleteCreateAccount = (props) => {
             // organization,
             'custom:referral': referral,
             'custom:app_environment': import.meta.env.VITE_APP_ENV,
+            'custom:organization_name': organizationName,
           });
           history.push('/signupEmailSent');
           // setDialogTitle(`Please confirm your email.`);
@@ -219,6 +222,11 @@ const CompleteCreateAccount = (props) => {
         setCustomPageTitle,
       );
     }
+
+    if (sessionStorage.getItem('isUserInvited')) setIsUserInvited(true);
+
+    if (sessionStorage.getItem('userName'))
+      setUserName(sessionStorage.getItem('userName'));
   });
 
   const hasCustomPageTitle = customPageTitle !== '';
@@ -290,7 +298,16 @@ const CompleteCreateAccount = (props) => {
             for online task management.
           </Subtitle>
           <Spacing vertical={5} />
-          <FormInput disabled={externalUserMode} name="email" label="Email" />
+          {isUserInvited ? (
+            <FormInput
+              disabled={isUserInvited}
+              name="email"
+              label="Email"
+              value={userName}
+            />
+          ) : (
+            <FormInput disabled={externalUserMode} name="email" label="Email" />
+          )}
           <Spacing vertical={5} />
           <FormInput name="password" label="Password" type="password" />
           <Spacing vertical={3} />

@@ -40,26 +40,23 @@ import {
 
 const REQUIRED_MESSAGE = 'This field is required';
 
-const validationSchema = object().shape({
-  firstName: string().required(REQUIRED_MESSAGE),
-  lastName: string().required(REQUIRED_MESSAGE),
-  organization: string().required(REQUIRED_MESSAGE),
-});
-
-const externalUserValidationSchema = object().shape({
-  firstName: string().required(REQUIRED_MESSAGE),
-  lastName: string().required(REQUIRED_MESSAGE),
-  organization: string().required(REQUIRED_MESSAGE),
-});
-
 const onSubmit =
-  ({ history, locationParameters }) =>
+  ({ history, locationParameters, isUserInvited, organizationName }) =>
   ({ organization, lastName, firstName }) => {
     const referral = locationParameters.referral ?? '';
     sessionStorage.setItem('referral', referral);
     sessionStorage.setItem('firstName', firstName);
     sessionStorage.setItem('lastName', lastName);
-    sessionStorage.setItem('organization', organization);
+    {
+      isUserInvited
+        ? sessionStorage.setItem('isUserInvited', isUserInvited)
+        : sessionStorage.setItem('organization', !isUserInvited);
+    }
+    {
+      isUserInvited
+        ? sessionStorage.setItem('organization', organizationName)
+        : sessionStorage.setItem('organization', organization);
+    }
     history.push('/auth/complete-create-account');
   };
 
@@ -102,6 +99,22 @@ const CreateAccount = (props) => {
   const history = useHistory();
   const dispatch = useDispatch();
 
+  const validationSchema = object().shape({
+    firstName: string().required(REQUIRED_MESSAGE),
+    lastName: string().required(REQUIRED_MESSAGE),
+    ...(isUserInvited
+      ? {}
+      : { organization: string().required(REQUIRED_MESSAGE) }),
+  });
+
+  const externalUserValidationSchema = object().shape({
+    firstName: string().required(REQUIRED_MESSAGE),
+    lastName: string().required(REQUIRED_MESSAGE),
+    ...(isUserInvited
+      ? {}
+      : { organization: string().required(REQUIRED_MESSAGE) }),
+  });
+
   const formMethods = useForm({
     resolver: externalUserMode
       ? yupResolver(externalUserValidationSchema)
@@ -118,6 +131,7 @@ const CreateAccount = (props) => {
     const { location } = props;
     const queryValues = queryString.parse(location.search);
     const {
+      uname,
       external,
       firstName: fname,
       lastName: lname,
@@ -133,6 +147,7 @@ const CreateAccount = (props) => {
     if (fname) setValue('firstName', fname);
     if (lname) setValue('lastName', lname);
     if (oname) setValue('organization', oname);
+    if (uname) sessionStorage.setItem('userName', uname);
     if (external === 'true') setExternalUserMode(true);
 
     if (sessionStorage.getItem('firstName'))
@@ -190,6 +205,8 @@ const CreateAccount = (props) => {
               showDialog,
               showUserExistsDialog,
               locationParameters,
+              organizationName,
+              isUserInvited,
             }),
             (error) => {
               console.log(`error: ${JSON.stringify(error)}`);
