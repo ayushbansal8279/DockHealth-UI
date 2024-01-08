@@ -93,9 +93,9 @@ const LoginFormPassword = ({
           </OutfitTypography>
         ) : (
           <>
-            <OutfitTypography align="center" variant="h4">
+            {/* <OutfitTypography align="center" variant="h4">
               Your email {uname} is verified.
-            </OutfitTypography>
+            </OutfitTypography> */}
           </>
         )}
         <Spacing vertical={5} />
