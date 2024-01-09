@@ -49,32 +49,32 @@ import {
 
 const REQUIRED_MESSAGE = 'This field is required';
 
-const validationSchema = object().shape({
-  email: string()
-    .required(REQUIRED_MESSAGE)
-    .email('Please enter a valid email address'),
-  password: string().required(REQUIRED_MESSAGE).concat(validPasswordSchema),
-  confirmPassword: string()
-    .required(REQUIRED_MESSAGE)
-    .oneOf([ref('password')], 'Your passwords do not match.'),
-  mobilePhoneNumber: string()
-    .transform((value) => value.replace(/\D/g, ''))
-    .required(REQUIRED_MESSAGE)
-    .matches(/\d{10}/, 'Please enter a valid phone number'),
-});
+// const validationSchema = object().shape({
+//   email: string()
+//     .required(REQUIRED_MESSAGE)
+//     .email('Please enter a valid email address'),
+//   password: string().required(REQUIRED_MESSAGE).concat(validPasswordSchema),
+//   confirmPassword: string()
+//     .required(REQUIRED_MESSAGE)
+//     .oneOf([ref('password')], 'Your passwords do not match.'),
+//   mobilePhoneNumber: string()
+//     .transform((value) => value.replace(/\D/g, ''))
+//     .required(REQUIRED_MESSAGE)
+//     .matches(/\d{10}/, 'Please enter a valid phone number'),
+// });
 
-const externalUserValidationSchema = object().shape({
-  email: string()
-    .required(REQUIRED_MESSAGE)
-    .email('Please enter a valid email address'),
-  password: string().required(REQUIRED_MESSAGE).concat(validPasswordSchema),
-  confirmPassword: string()
-    .required(REQUIRED_MESSAGE)
-    .oneOf([ref('password')], 'Your passwords do not match.'),
-  mobilePhoneNumber: string()
-    .transform((value) => value?.replace(/\D/g, ''))
-    .matches(/\d{10}/, 'Please enter a valid phone number'),
-});
+// const externalUserValidationSchema = object().shape({
+//   email: string()
+//     .required(REQUIRED_MESSAGE)
+//     .email('Please enter a valid email address'),
+//   password: string().required(REQUIRED_MESSAGE).concat(validPasswordSchema),
+//   confirmPassword: string()
+//     .required(REQUIRED_MESSAGE)
+//     .oneOf([ref('password')], 'Your passwords do not match.'),
+//   mobilePhoneNumber: string()
+//     .transform((value) => value?.replace(/\D/g, ''))
+//     .matches(/\d{10}/, 'Please enter a valid phone number'),
+// });
 
 const resendEmail = async (email) => {
   try {
@@ -128,9 +128,44 @@ const CompleteCreateAccount = (props) => {
   const [dialogMessage, setDialogMessage] = useState('');
   const [customPageTitle, setCustomPageTitle] = useState('');
   const [isUserInvited, setIsUserInvited] = useState(false);
-  const [userName, setUserName] = useState(false);
+  const [userName, setUserName] = useState('');
   const history = useHistory();
   const dispatch = useDispatch();
+
+  const validationSchema = object().shape({
+    ...(isUserInvited
+      ? {}
+      : {
+          email: string()
+            .required(REQUIRED_MESSAGE)
+            .email('Please enter a valid email address'),
+        }),
+    password: string().required(REQUIRED_MESSAGE).concat(validPasswordSchema),
+    confirmPassword: string()
+      .required(REQUIRED_MESSAGE)
+      .oneOf([ref('password')], 'Your passwords do not match.'),
+    mobilePhoneNumber: string()
+      .transform((value) => value.replace(/\D/g, ''))
+      .required(REQUIRED_MESSAGE)
+      .matches(/\d{10}/, 'Please enter a valid phone number'),
+  });
+
+  const externalUserValidationSchema = object().shape({
+    ...(isUserInvited
+      ? {}
+      : {
+          email: string()
+            .required(REQUIRED_MESSAGE)
+            .email('Please enter a valid email address'),
+        }),
+    password: string().required(REQUIRED_MESSAGE).concat(validPasswordSchema),
+    confirmPassword: string()
+      .required(REQUIRED_MESSAGE)
+      .oneOf([ref('password')], 'Your passwords do not match.'),
+    mobilePhoneNumber: string()
+      .transform((value) => value?.replace(/\D/g, ''))
+      .matches(/\d{10}/, 'Please enter a valid phone number'),
+  });
 
   const formMethods = useForm({
     resolver: externalUserMode
@@ -149,10 +184,14 @@ const CompleteCreateAccount = (props) => {
           sessionStorage.setItem('email', email);
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
           const organizationName = sessionStorage.getItem('organization');
+          const userEmail =
+            sessionStorage.getItem('isUserInvited') === 'true'
+              ? sessionStorage.getItem('userName')
+              : email;
           await registerAction({
-            username: email,
+            username: userEmail,
             password,
-            email,
+            email : userEmail,
             phone_number: mobilePhoneNumber
               ? `+${mobilePhoneNumber.replace(/\D/g, '')}`
               : null,
@@ -207,7 +246,7 @@ const CompleteCreateAccount = (props) => {
       organization: oname,
     } = queryValues;
 
-    if (uname) setValue('email', uname);
+    if (uname && !isUserInvited) setValue('email', uname);
     if (fname) setValue('firstName', fname);
     if (lname) setValue('lastName', lname);
     if (oname) setValue('organization', oname);
