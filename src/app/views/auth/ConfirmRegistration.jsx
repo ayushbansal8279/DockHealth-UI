@@ -112,56 +112,6 @@ const ConfirmRegistration = (props) => {
           <h5>Confirming your account ...</h5>
         </div>
       </div>
-      {/* <ConfirmUserAccountForm type="Confirm" onSubmit={this.onSubmit} /> */}
-      {/* <OnboardingDialog open={isDialogShown} fullWidth maxWidth="sm">
-        <OnboardingHeader>
-          <MontserratTypography variant="h2">
-            <span
-              style={{
-                fontWeight: 500,
-                fontSize: '26px',
-                paddingLeft: '1rem',
-                lineHeight: '45px',
-              }}
-            >
-              {' '}
-              {dialogTitle}{' '}
-            </span>
-            <img
-              src={ConfirmEmailHeaderCheck}
-              style={{ float: 'right', height: '2.7rem' }}
-              alt="Dock Health"
-            />
-          </MontserratTypography>
-        </OnboardingHeader>
-        <Spacing vertical={5} />
-        <MontserratTypography variant="h4">
-          <span style={onboardingMessageStyle}> {dialogMessage} </span>
-        </MontserratTypography>
-        <Spacing vertical={5} />
-        <MontserratTypography variant="h4">
-          <span style={onboardingDialogStyle}>Please try to</span>
-          <StyledAnchorDiv
-            style={onboardingLinkStyle}
-            onClick={() => history.push('login')}
-          >
-            Sign In
-          </StyledAnchorDiv>
-        </MontserratTypography>
-        <Spacing vertical={5} />
-        <MontserratTypography variant="h4">
-          <span style={onboardingDialogStyle}>
-            I didn&apos;t get the confirmation email.{' '}
-          </span>
-          <StyledAnchorDiv
-            style={onboardingLinkStyle}
-            onClick={() => resendEmail(userEmail, dispatch)}
-          >
-            Resend email
-          </StyledAnchorDiv>
-        </MontserratTypography>
-        <Spacing vertical={5} />
-      </OnboardingDialog> */}
       <OnboardingDialog open={isDialogShown} fullWidth maxWidth="sm">
         <MuiThemeProvider theme={redTheme}>
           <ModalWrapper style={{ width: '500px' }}>
