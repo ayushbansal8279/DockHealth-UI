@@ -1,7 +1,8 @@
 import { Box } from '@mui/material';
-import React from 'react';
+import React, { useState } from 'react';
 import Tooltip from 'components/common/Tooltip/Tooltip';
-import { CustomizeButton } from './styled';
+import { CustomizeButton, SelectIcon, ImageContainer } from './styled';
+import ArrowDefaultIcon from 'img/arrow-default.svg';
 
 const ToolbarButton = React.forwardRef((props, reference) => {
   const {
@@ -21,13 +22,18 @@ const ToolbarButton = React.forwardRef((props, reference) => {
         type="button"
         disableButton={disableButton}
       >
-        {icon && (
-          <>
-            {icon}
-            <Box mx={0.5} />
-          </>
-        )}
-        {children}
+        <SelectIcon>
+          {icon && (
+            <>
+              {icon}
+              <Box mx={0.5} />
+            </>
+          )}
+          {children}
+        </SelectIcon>
+        <ImageContainer>
+          <img src={ArrowDefaultIcon} alt="arrow-image" />
+        </ImageContainer>
       </CustomizeButton>
     </Tooltip>
   );
