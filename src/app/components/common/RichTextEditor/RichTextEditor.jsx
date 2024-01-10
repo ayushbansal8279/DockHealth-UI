@@ -408,7 +408,7 @@ const RichTextEditor = React.forwardRef(
               // eslint-disable-next-line react/no-this-in-sfc, no-shadow
               const value = this.html.get();
               const markdown = turndownService.turndown(value);
-              setEditorState('');
+              // setEditorState('');
               // eslint-disable-next-line react/no-this-in-sfc
               this.html.set('');
               // eslint-disable-next-line no-param-reassign
