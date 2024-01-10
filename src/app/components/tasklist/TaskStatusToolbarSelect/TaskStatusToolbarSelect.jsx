@@ -6,10 +6,10 @@ import { ViewTypeImg } from './styled';
 
 const OPTIONS = [
   {
-    label: 'Open Tasks',
+    label: 'Incomplete Tasks',
     value: TaskStatus.INCOMPLETE,
   },
-  { label: 'Archived Tasks', value: TaskStatus.COMPLETE },
+  { label: 'Completed Tasks', value: TaskStatus.COMPLETE },
 ];
 
 const TaskStatusToolbarSelect = ({
