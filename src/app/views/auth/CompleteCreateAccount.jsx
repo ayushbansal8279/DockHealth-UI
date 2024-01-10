@@ -49,33 +49,6 @@ import {
 
 const REQUIRED_MESSAGE = 'This field is required';
 
-// const validationSchema = object().shape({
-//   email: string()
-//     .required(REQUIRED_MESSAGE)
-//     .email('Please enter a valid email address'),
-//   password: string().required(REQUIRED_MESSAGE).concat(validPasswordSchema),
-//   confirmPassword: string()
-//     .required(REQUIRED_MESSAGE)
-//     .oneOf([ref('password')], 'Your passwords do not match.'),
-//   mobilePhoneNumber: string()
-//     .transform((value) => value.replace(/\D/g, ''))
-//     .required(REQUIRED_MESSAGE)
-//     .matches(/\d{10}/, 'Please enter a valid phone number'),
-// });
-
-// const externalUserValidationSchema = object().shape({
-//   email: string()
-//     .required(REQUIRED_MESSAGE)
-//     .email('Please enter a valid email address'),
-//   password: string().required(REQUIRED_MESSAGE).concat(validPasswordSchema),
-//   confirmPassword: string()
-//     .required(REQUIRED_MESSAGE)
-//     .oneOf([ref('password')], 'Your passwords do not match.'),
-//   mobilePhoneNumber: string()
-//     .transform((value) => value?.replace(/\D/g, ''))
-//     .matches(/\d{10}/, 'Please enter a valid phone number'),
-// });
-
 const resendEmail = async (email) => {
   try {
     await resendConfirmationCode({
@@ -203,11 +176,6 @@ const CompleteCreateAccount = (props) => {
             'custom:organization_name': organizationName,
           });
           history.push('/signupEmailSent');
-          // setDialogTitle(`Please confirm your email.`);
-          // setDialogMessage(
-          //   `We just sent an email to ${email}. Please go to your email and click on the link so that we can confirm your email address.`,
-          // );
-          // showDialog();
         } catch (error) {
           if (error?.code === 'UsernameExistsException') {
             setDialogTitle(`Zach's Email already associated with an account`);
