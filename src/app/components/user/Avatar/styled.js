@@ -13,6 +13,8 @@ export const BackgroundContainer = styled.div`
   background-color: ${palette.white};
   border-radius: 50%;
   width: min-content;
+  margin-right: -10px;
+  z-index: 1;
 `;
 
 export const AvatarContainer = styled.div`
