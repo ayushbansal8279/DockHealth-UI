@@ -42,10 +42,7 @@ import {
 } from 'modal/components/styled';
 import DockHeaderLogo from 'img/dock-header-logo.svg';
 import { Title, Subtitle } from 'components/auth/Title';
-import {
-  OnboardingDialog,
-  OnboardingHeader,
-} from '../onboarding/OnboardingTemplate.Components';
+import { OnboardingDialog } from '../onboarding/OnboardingTemplate.Components';
 
 const REQUIRED_MESSAGE = 'This field is required';
 
@@ -120,11 +117,11 @@ const StyledForm = styled.form`
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const CompleteCreateAccount = (props) => {
-  const [isDialogShown, showDialog, hideDialog] = useBoolean(false);
+  const [isDialogShown, showDialog, hideDialog] = useBoolean(true);
   const [isUserExistsDialogShown, showUserExistsDialog, hideUserExistsDialog] =
     useBoolean(false);
   const [externalUserMode, setExternalUserMode] = useState(false);
-  const [dialogTitle, setDialogTitle] = useState('');
+  const [dialogTitle, setDialogTitle] = useState('User Already Exists');
   const [dialogMessage, setDialogMessage] = useState('');
   const [customPageTitle, setCustomPageTitle] = useState('');
   const history = useHistory();
@@ -168,7 +165,7 @@ const CompleteCreateAccount = (props) => {
           // showDialog();
         } catch (error) {
           if (error?.code === 'UsernameExistsException') {
-            setDialogTitle(`Zach's Email already associated with an account`);
+            setDialogTitle(`Email already associated with an account`);
             setDialogMessage(
               `${email} is already being used for a Dock Health account. If you haven't already, please go to your email and click on the link to confirm your email address.`,
             );
@@ -346,54 +343,64 @@ const CompleteCreateAccount = (props) => {
         </FormProvider>
       </StyledForm>
       <OnboardingDialog open={isDialogShown} fullWidth maxWidth="sm">
-        <OnboardingHeader>
-          <MontserratTypography variant="h2">
-            <span
-              style={{
-                fontWeight: 500,
-                fontSize: '26px',
-                paddingLeft: '1rem',
-                lineHeight: '45px',
-              }}
-            >
-              {dialogTitle}{' '}
-            </span>
-            <img
-              src={ConfirmEmailHeaderCheck}
-              style={{ float: 'right', height: '2.7rem' }}
-              alt="Dock Health"
-            />
-          </MontserratTypography>
-        </OnboardingHeader>
-        <Spacing vertical={5} />
-        <MontserratTypography variant="h4">
-          <span style={onboardingMessageStyle}> {dialogMessage} </span>
-        </MontserratTypography>
-        <Spacing vertical={5} />
-        <MontserratTypography variant="h4">
-          <span style={onboardingDialogStyle}>
-            I didn&apos;t get the email.{' '}
-          </span>
-          <StyledAnchorDiv
-            style={onboardingLinkStyle}
-            onClick={() => resendEmail(email)}
-          >
-            Resend email
-          </StyledAnchorDiv>
-        </MontserratTypography>
+        <MuiThemeProvider theme={redTheme}>
+          <ModalWrapper style={{ width: '500px' }}>
+            <ModalIconContainer>
+              <ModalMainIcon src={ConfirmEmailHeaderCheck} alt="envelope" />
+              <Typography color="textPrimary" variant="h2" align="center">
+                {dialogTitle}{' '}
+              </Typography>
+            </ModalIconContainer>
+            <ModalDescriptionContainer>
+              <MontserratTypography variant="h4">
+                <span style={onboardingMessageStyle}> {dialogMessage} </span>
+              </MontserratTypography>
+              <Spacing vertical={5} />
+              <MontserratTypography variant="h4">
+                <span style={onboardingDialogStyle}>
+                  I didn&apos;t get the email.{' '}
+                </span>
+                <StyledAnchorDiv
+                  style={onboardingLinkStyle}
+                  onClick={() => resendEmail(email)}
+                >
+                  Resend email
+                </StyledAnchorDiv>
+              </MontserratTypography>
 
-        <Spacing vertical={5} />
+              <Spacing vertical={5} />
 
-        <MontserratTypography variant="h4">
-          <span style={onboardingDialogStyle}>
-            {' '}
-            The email address is wrong.{' '}
-          </span>
-          <StyledAnchorDiv onClick={hideDialog} style={onboardingLinkStyle}>
-            Change email address
-          </StyledAnchorDiv>
-        </MontserratTypography>
-        <Spacing vertical={5} />
+              <MontserratTypography variant="h4">
+                <span style={onboardingDialogStyle}>
+                  {' '}
+                  The email address is wrong.{' '}
+                </span>
+                <StyledAnchorDiv
+                  onClick={hideUserExistsDialog}
+                  style={onboardingLinkStyle}
+                >
+                  Change email address
+                </StyledAnchorDiv>
+              </MontserratTypography>
+              <Spacing vertical={2} />
+            </ModalDescriptionContainer>
+            <ButtonsContainer>
+              <FixedWidthButtonWrapper width={300}>
+                <Button
+                  fullWidth
+                  variant="primary-red"
+                  type="button"
+                  onClick={() => {
+                    hideDialog();
+                    history.push(`/auth/login`);
+                  }}
+                >
+                  Login To My Account
+                </Button>
+              </FixedWidthButtonWrapper>
+            </ButtonsContainer>
+          </ModalWrapper>
+        </MuiThemeProvider>
       </OnboardingDialog>
       <OnboardingDialog open={isUserExistsDialogShown} fullWidth maxWidth="sm">
         <MuiThemeProvider theme={redTheme}>
