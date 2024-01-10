@@ -9,22 +9,11 @@ import { StyledAnchorDiv } from 'components/auth/AuthComponents.styled';
 import Spacing from 'components/common/Spacing';
 import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
 import { useBoolean } from 'hooks/useBoolean';
-import { MontserratTypography } from 'styles/theme-montserrat';
-import ConfirmEmailHeaderCheck from 'img/checked-circle.svg';
-import redTheme from 'modal/themes/red-theme';
-import {
-  FixedWidthButtonWrapper,
-  ModalDescriptionContainer,
-  ModalIconContainer,
-  ModalMainIcon,
-  ModalWrapper,
-} from 'modal/components/styled';
-import { Button, Typography } from '@mui/material';
-import { ThemeProvider as MuiThemeProvider } from '@mui/material/styles';
-import { ButtonsContainer } from 'views/dashboard/DashboardFirstVisitView/styled';
-import { OnboardingDialog } from '../onboarding/OnboardingTemplate.Components';
-
-const FONT_FAMILY_NAME = 'roboto condensed';
+import DockHeaderLogo from 'img/dock-header-logo.svg';
+import styled from 'styled-components';
+import { Title, Subtitle } from 'components/auth/Title';
+import palette from 'styles/palette';
+import Button from 'components/common/v2/Button/Button';
 
 const resendEmail = async (email, dispatch) => {
   try {
@@ -84,94 +73,65 @@ const ConfirmRegistration = (props) => {
     history.push('login');
   });
 
-  const onboardingDialogStyle = {
-    fontFamily: FONT_FAMILY_NAME,
-    fontWeight: 300,
-    fontSize: '18px',
-    padding: '0rem 1rem',
-  };
-
-  const onboardingMessageStyle = {
-    fontFamily: FONT_FAMILY_NAME,
-    fontWeight: 300,
-    fontSize: '18px',
-    padding: '0rem 1rem',
-    display: 'block',
+  const confirmRegistrationContainer = {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
   };
 
   const onboardingLinkStyle = {
-    fontFamily: FONT_FAMILY_NAME,
-    fontWeight: 300,
-    fontSize: '18px',
+    paddingLeft: '10px',
   };
 
+  const DockLogoImage = styled.img.attrs({
+    src: DockHeaderLogo,
+    alt: 'Dock Health logo',
+  })`
+    align: center;
+    width: 100%;
+    object-fit: contain;
+    height: 69px;
+  `;
+
   return (
-    <div className="columns large-12">
-      <div className="row expanded text-left">
-        <div className="columns large-12 top-buffer">
-          <h5>Confirming your account ...</h5>
+    <div style={confirmRegistrationContainer}>
+      <div>
+        <DockLogoImage />
+      </div>
+      <Spacing vertical={6} />
+      <div>
+        <Title>{dialogTitle}</Title>
+        <Spacing vertical={2} />
+        <Subtitle>{dialogMessage}</Subtitle>
+        <Spacing vertical={5} />
+        <div>
+          <Button
+            id="loginButton"
+            size="large"
+            color={palette.brightOrange}
+            secondaryColor={palette.oPlusRed}
+            onClick={() => {
+              hideDialog();
+              history.push(`/auth/login`);
+            }}
+          >
+            Login To My Account
+          </Button>
         </div>
       </div>
-      <OnboardingDialog open={isDialogShown} fullWidth maxWidth="sm">
-        <MuiThemeProvider theme={redTheme}>
-          <ModalWrapper style={{ width: '500px' }}>
-            <ModalIconContainer>
-              <ModalMainIcon src={ConfirmEmailHeaderCheck} alt="envelope" />
-              <Typography color="textPrimary" variant="h2" align="center">
-                {dialogTitle}{' '}
-              </Typography>
-            </ModalIconContainer>
-            <ModalDescriptionContainer>
-              <MontserratTypography variant="h4">
-                <span style={onboardingMessageStyle}> {dialogMessage} </span>
-              </MontserratTypography>
-              <Spacing vertical={5} />
-              <MontserratTypography variant="h4">
-                <span style={onboardingDialogStyle}>
-                  I didn't get the confirmation email. .{' '}
-                </span>
-                <StyledAnchorDiv
-                  style={onboardingLinkStyle}
-                  onClick={() => resendEmail(userEmail, dispatch)}
-                >
-                  Resend email
-                </StyledAnchorDiv>
-              </MontserratTypography>
-
-              <Spacing vertical={5} />
-
-              <MontserratTypography variant="h4">
-                <span style={onboardingDialogStyle}>
-                  {' '}
-                  Please try to Sign In{' '}
-                </span>
-                <StyledAnchorDiv
-                  onClick={() => history.push('/auth/login')}
-                  style={onboardingLinkStyle}
-                >
-                  Change email address
-                </StyledAnchorDiv>
-              </MontserratTypography>
-              <Spacing vertical={2} />
-            </ModalDescriptionContainer>
-            <ButtonsContainer>
-              <FixedWidthButtonWrapper width={300}>
-                <Button
-                  fullWidth
-                  variant="primary-red"
-                  type="button"
-                  onClick={() => {
-                    hideDialog();
-                    history.push(`/auth/login`);
-                  }}
-                >
-                  Login To My Account
-                </Button>
-              </FixedWidthButtonWrapper>
-            </ButtonsContainer>
-          </ModalWrapper>
-        </MuiThemeProvider>
-      </OnboardingDialog>
+      <Spacing vertical={8} />
+      <div>
+        <Subtitle>
+          I didn&apos;t get the confirmation email.
+          <StyledAnchorDiv
+            style={onboardingLinkStyle}
+            onClick={() => resendEmail(userEmail, dispatch)}
+          >
+            Resend email
+          </StyledAnchorDiv>
+        </Subtitle>
+      </div>
     </div>
   );
 };
