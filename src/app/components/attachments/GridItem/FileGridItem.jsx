@@ -6,6 +6,10 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { PatientAttachmentType } from 'helpers/patient-details-helpers';
 import GoogleDriveIcon from 'img/google-drive-icon.png';
 import { trunc } from 'helpers/utility-functions';
+import {
+  ScanStatus,
+  ScanStatusText,
+} from 'views/patient-details/PatientAttachments/helpers';
 import { getIconFromContentType } from './helpers';
 import {
   Container,
@@ -14,6 +18,7 @@ import {
   FileNameText,
   IconContainer,
   OptionsContainer,
+  StatusText,
 } from './styled';
 
 const FileGridItem = (props) => {
@@ -26,13 +31,17 @@ const FileGridItem = (props) => {
     onDragEnd,
     draggable = false,
   } = props;
-  const { fileName, contentType, dateCreated, type } = file;
+  const { fileName, contentType, dateCreated, type, scanStatus } = file;
 
   const IconComponent = getIconFromContentType(contentType);
 
   return (
     <Container
-      onClick={onClick}
+      onClick={() => {
+        if (scanStatus === ScanStatus.CLEAN || scanStatus === null) {
+          onClick();
+        }
+      }}
       onDragStart={onDragStart}
       onDragEnter={onDragEnter}
       onDragEnd={onDragEnd}
@@ -59,6 +68,7 @@ const FileGridItem = (props) => {
         >
           <FileNameText>{trunc(fileName, 50)}</FileNameText>
           <CreatedText>{moment(dateCreated).fromNow()}</CreatedText>
+          <StatusText>{ScanStatusText[scanStatus]}</StatusText>
         </Box>
         <OptionsContainer>
           <div onClick={(event) => event.stopPropagation()}>
