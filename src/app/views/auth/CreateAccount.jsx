@@ -3,7 +3,7 @@ import queryString from 'query-string';
 import React, { useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import { useMount } from 'react-use';
 import styled from 'styled-components';
 import { object, string } from 'yup';
@@ -37,26 +37,23 @@ import { OnboardingDialog } from '../onboarding/OnboardingTemplate.Components';
 
 const REQUIRED_MESSAGE = 'This field is required';
 
-const validationSchema = object().shape({
-  firstName: string().required(REQUIRED_MESSAGE),
-  lastName: string().required(REQUIRED_MESSAGE),
-  organization: string().required(REQUIRED_MESSAGE),
-});
-
-const externalUserValidationSchema = object().shape({
-  firstName: string().required(REQUIRED_MESSAGE),
-  lastName: string().required(REQUIRED_MESSAGE),
-  organization: string().required(REQUIRED_MESSAGE),
-});
-
 const onSubmit =
-  ({ history, locationParameters }) =>
+  ({ history, locationParameters, isUserInvited, organizationName }) =>
   ({ organization, lastName, firstName }) => {
     const referral = locationParameters.referral ?? '';
     sessionStorage.setItem('referral', referral);
     sessionStorage.setItem('firstName', firstName);
     sessionStorage.setItem('lastName', lastName);
-    sessionStorage.setItem('organization', organization);
+    {
+      isUserInvited
+        ? sessionStorage.setItem('isUserInvited', isUserInvited)
+        : sessionStorage.setItem('organization', !isUserInvited);
+    }
+    {
+      isUserInvited
+        ? sessionStorage.setItem('organization', organizationName)
+        : sessionStorage.setItem('organization', organization);
+    }
     history.push('/auth/complete-create-account');
   };
 
@@ -86,15 +83,34 @@ const StyledForm = styled.form`
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const CreateAccount = (props) => {
-  const [isDialogShown, showDialog] = useBoolean(true);
+  const [organizationName, setOrganizationName] = useState('');
+  const [senderName, setSenderName] = useState('');
+  const [isDialogShown, showDialog] = useBoolean(false);
   const [isUserExistsDialogShown, showUserExistsDialog, hideUserExistsDialog] =
     useBoolean(false);
   const [externalUserMode, setExternalUserMode] = useState(false);
   const [dialogTitle, setDialogTitle] = useState('User Already Exists');
   const [dialogMessage, setDialogMessage] = useState('');
   const [customPageTitle, setCustomPageTitle] = useState('');
+  const [isUserInvited, setIsUserInvited] = useState(false);
   const history = useHistory();
   const dispatch = useDispatch();
+
+  const validationSchema = object().shape({
+    firstName: string().required(REQUIRED_MESSAGE),
+    lastName: string().required(REQUIRED_MESSAGE),
+    ...(isUserInvited
+      ? {}
+      : { organization: string().required(REQUIRED_MESSAGE) }),
+  });
+
+  const externalUserValidationSchema = object().shape({
+    firstName: string().required(REQUIRED_MESSAGE),
+    lastName: string().required(REQUIRED_MESSAGE),
+    ...(isUserInvited
+      ? {}
+      : { organization: string().required(REQUIRED_MESSAGE) }),
+  });
 
   const formMethods = useForm({
     resolver: externalUserMode
@@ -112,15 +128,23 @@ const CreateAccount = (props) => {
     const { location } = props;
     const queryValues = queryString.parse(location.search);
     const {
+      uname,
       external,
       firstName: fname,
       lastName: lname,
+      senderFirstName: sfname,
+      senderLastName: slname,
       organization: oname,
     } = queryValues;
+
+    if (oname && sfname) setIsUserInvited(true);
+    if (oname) setOrganizationName(oname);
+    if (sfname && slname) setSenderName(sfname + ' ' + slname);
 
     if (fname) setValue('firstName', fname);
     if (lname) setValue('lastName', lname);
     if (oname) setValue('organization', oname);
+    if (uname) sessionStorage.setItem('userName', uname);
     if (external === 'true') setExternalUserMode(true);
 
     if (sessionStorage.getItem('firstName'))
@@ -178,6 +202,8 @@ const CreateAccount = (props) => {
               showDialog,
               showUserExistsDialog,
               locationParameters,
+              organizationName,
+              isUserInvited,
             }),
             (error) => {
               console.log(`error: ${JSON.stringify(error)}`);
@@ -195,18 +221,42 @@ const CreateAccount = (props) => {
                 <Spacing vertical={4} />
               </>
             )}
-            <Title>Please create an account</Title>
+            {isUserInvited ? (
+              <Title>You’ve been invited by {organizationName}.</Title>
+            ) : (
+              <Title>Please create an account</Title>
+            )}
+
             <Spacing vertical={3} />
-            <Subtitle variant="p">
-              Sign up here for full trial access to Dock’s time-saving templates
-              for online task management.
-            </Subtitle>
+            <div style={{ textAlign: 'center' }}>
+              {isUserInvited ? (
+                <Subtitle
+                  style={{ margin: '200px', textAlign: 'center' }}
+                  align="center"
+                  variant="p"
+                >
+                  {senderName} has invited you to Dock Health.
+                  <br /> Create an account and start collaborating now
+                </Subtitle>
+              ) : (
+                <Subtitle variant="p">
+                  Sign up here for full trial access to Dock’s time-saving
+                  templates for online task management.
+                </Subtitle>
+              )}
+            </div>
+
             <Spacing vertical={4} />
             <FormInput name="firstName" label="First Name" />
             <Spacing vertical={5} />
             <FormInput name="lastName" label="Last Name" />
             <Spacing vertical={5} />
-            <FormInput name="organization" label="Organization" />
+            {isUserInvited ? (
+              ''
+            ) : (
+              <FormInput name="organization" label="Organization" />
+            )}
+
             <Spacing vertical={5} />
             <Button
               type="submit"
@@ -218,7 +268,8 @@ const CreateAccount = (props) => {
               Continue
             </Button>
             <Spacing vertical={5} />
-            <SSOOptions />
+            {isUserInvited ? '' : <SSOOptions />}
+
             <Spacing vertical={5} />
             <MontserratTypography variant="h4" align="center">
               Already have an account?

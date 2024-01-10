@@ -6,6 +6,9 @@ import { OutfitTypography } from 'styles/theme-outfit';
 import OnboardingQuestionsPicker from '../OnboardingQuestionsPicker';
 import { ROLE_OPTIONS } from '../options';
 import { Option, QuestionContainer } from '../styled';
+import { useHistory } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { userProfileSelector } from 'selectors/user-selectors';
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const OnboardingQuestionsOwnerGuest = ({
@@ -15,9 +18,11 @@ const OnboardingQuestionsOwnerGuest = ({
   clickNextStep,
   isDisabledButton,
 }) => {
+  const history = useHistory();
   const [activeOption, setActiveOption] = useState(null);
 
   const roleReference = useRef(null);
+  const { orgUserRole } = useSelector(userProfileSelector);
 
   const openPicker = (field) => setActiveOption(field);
 
@@ -69,7 +74,11 @@ const OnboardingQuestionsOwnerGuest = ({
       <Spacing vertical={5} />
       <Spacing vertical={6} />
       <Button
-        onClick={clickNextStep}
+        onClick={
+          orgUserRole === 'OWNER'
+            ? clickNextStep
+            : history.push('/core/home/my-tasks')
+        }
         type="button"
         disabled={isDisabledButton}
         width="265px"
