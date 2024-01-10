@@ -7,13 +7,13 @@ export const DelayPeriodForm = styled.form`
 `;
 
 export const CheckboxLabel = styled.label`
-  font-family: ${typography.text};
+  font-family: inherit;
   color: ${palette.mediumGrey};
 `;
 
 export const Title = styled.p`
   margin-bottom: 0;
   font-weight: ${fontWeights.bold};
-  font-family: ${typography.text};
+  font-family: inherit;
   color: ${palette.mediumGrey};
 `;

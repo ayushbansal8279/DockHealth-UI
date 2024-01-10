@@ -11,7 +11,7 @@ export const Container = styled.div`
   padding: 18px;
   border-radius: 10px;
   box-shadow: 0px 6px 9px rgba(0, 0, 0, 0.17);
-  font-family: ${typography.text};
+  font-family: inherit;
   background-color: ${palette.white};
 `;
 

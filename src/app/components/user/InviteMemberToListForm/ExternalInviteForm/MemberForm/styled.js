@@ -9,7 +9,7 @@ export const FormWrapper = styled.form`
 
 export const InfoContainer = styled.div`
   width: 100%;
-  font-family: ${typography.text};
+  font-family: inherit;
   font-size: ${fontSizes.regular};
   font-weight: ${fontWeights.regular};
 `;

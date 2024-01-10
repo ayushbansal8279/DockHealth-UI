@@ -50,7 +50,7 @@ import MobileSmallScreen from './MobileSmallScreen';
 import ChatActivityAlertsToasts from './chat/alerts/ChatActivityAlertsToasts';
 
 const AppContainer = styled.div`
-  font-family: ${typography.text};
+  font-family: inherit;
   overflow-x: hidden;
   position: relative;
   @media print {

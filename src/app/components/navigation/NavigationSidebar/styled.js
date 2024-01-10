@@ -32,7 +32,7 @@ export const SubMenuContainer = styled.div`
   background: ${palette.white};
   display: flex;
   flex-direction: column;
-  font-family: ${typography.text};
+  font-family: inherit;
   font-size: ${fontSizes.regular};
   font-weight: ${fontWeights.regular};
   overflow: hidden;

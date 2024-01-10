@@ -46,7 +46,7 @@ export const FormErrorText = styled.p`
 export const FieldStatusLabel = styled.p`
   margin-bottom: 0;
   color: ${({ isError }) => (isError ? palette.oPlusRed : palette.brightBlue)};
-  font-family: ${typography.text};
+  font-family: inherit;
   font-size: ${fontSizes.small};
   font-weight: ${fontWeights.light};
   text-transform: uppercase;

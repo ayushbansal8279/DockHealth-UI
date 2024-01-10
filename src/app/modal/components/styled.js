@@ -20,7 +20,7 @@ export const ModalWrapper = styled.div`
   align-items: center;
   width: ${({ width }) => width || '450px'};
   max-width: 100vw;
-  font-family: ${typography.text};
+  font-family: inherit;
   background-color: white;
 `;
 

@@ -16,7 +16,7 @@ export const TextEditorFormStyleContainer = styled.div`
     }
     return '2px solid #e40909';
   }};
-  font-family: ${typography.text};
+  font-family: inherit;
 `;
 
 export const TextEditorInputLabel = styled(
@@ -25,7 +25,7 @@ export const TextEditorInputLabel = styled(
 
 export const DescriptionLabel = styled.label`
   display: block;
-  font-family: ${typography.text};
+  font-family: inherit;
   font-size: ${fontSizes.tinyPlus};
   font-weight: ${fontWeights.light};
   color: ${palette.coolGrey1};

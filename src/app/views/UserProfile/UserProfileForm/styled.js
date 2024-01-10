@@ -24,7 +24,7 @@ export const InputActionButton = styled.button`
   color: ${palette.brightBlue};
   font-size: ${fontSizes.regular};
   font-weight: ${fontWeights.light};
-  font-family: ${typography.text};
+  font-family: inherit;
   cursor: pointer;
 `;
 

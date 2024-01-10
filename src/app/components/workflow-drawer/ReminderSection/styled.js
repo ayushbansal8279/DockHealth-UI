@@ -12,7 +12,7 @@ export const ReminderContainer = styled.div`
   margin-top: ${spacing.large};
   margin-bottom: ${spacing.tiny};
   transition: opacity 0.4s ease-out;
-  font-family: ${typography.text};
+  font-family: inherit;
 `;
 
 export const Description = styled.p`
@@ -25,7 +25,7 @@ export const ReminderTypeSelectOption = styled.div`
   width: 100%;
   padding: ${spacing.smallPlus};
   text-align: left;
-  font-family: ${typography.text};
+  font-family: inherit;
   color: ${palette.coolGrey1};
   background-color: ${({ isActive }) =>
     isActive ? palette.coolGrey4 : 'transparent'};

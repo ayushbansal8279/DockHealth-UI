@@ -10,7 +10,7 @@ export const ContentWrapper = styled.div`
   width: 100%;
   min-width: 320px;
   border: none;
-  font-family: ${typography.text};
+  font-family: inherit;
 `;
 
 export const Divider = styled.hr`

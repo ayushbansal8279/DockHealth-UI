@@ -22,7 +22,7 @@ export const AddText = styled.span`
 export const ListItemButton = styled.button`
   width: 100%;
   cursor: pointer;
-  font-family: ${typography.text};
+  font-family: inherit;
 
   ${({ isHovered }) => isHovered && `background: ${palette.blueGrey};`}
 `;
@@ -34,7 +34,7 @@ export const ListItemCustomText = styled.button`
 `;
 
 export const NoPatientFound = styled.div`
-  font-family: ${typography.text};
+  font-family: inherit;
   text-align: center;
   color: ${palette.coolGrey1};
   padding-bottom: ${spacing.tiny};

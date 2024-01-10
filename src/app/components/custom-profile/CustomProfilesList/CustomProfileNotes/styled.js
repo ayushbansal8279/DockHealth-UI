@@ -29,7 +29,7 @@ export const RichTextInputContainer = styled.div`
   box-shadow: none;
   transition: box-shadow 0.5s, border-color 0.25s ease-in-out;
   color: ${palette.mediumGrey};
-  font-family: ${typography.text};
+  font-family: inherit;
   margin: 0;
   outline: 12px;
   padding: ${spacing.regular};

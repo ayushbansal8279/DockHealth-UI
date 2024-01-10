@@ -21,7 +21,7 @@ export const Description = styled.p`
   margin-bottom: 0;
   padding: 0 ${spacing.regular};
   color: ${palette.mediumGrey};
-  font-family: ${typography.text};
+  font-family: inherit;
   font-size: ${fontSizes.regularPlus};
   font-weight: ${fontWeights.regular};
   text-transform: uppercase;

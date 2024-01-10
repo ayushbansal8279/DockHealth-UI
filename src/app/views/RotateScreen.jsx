@@ -5,7 +5,7 @@ import spacing from 'styles/spacing';
 import { typography } from 'styles/palette';
 
 const RotateScreenContainer = styled.div`
-  font-family: ${typography.text};
+  font-family: inherit;
   display: flex;
   height: 100%;
   flex: 1;

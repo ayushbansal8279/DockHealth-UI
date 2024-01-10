@@ -3,7 +3,7 @@ import palette, { typography } from 'styles/palette';
 import spacing from 'styles/spacing';
 
 export const ModalWrapper = styled.div`
-  font-family: ${typography.text};
+  font-family: inherit;
   display: flex;
   flex-direction: row;
   align-items: center;

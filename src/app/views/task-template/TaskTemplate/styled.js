@@ -21,7 +21,7 @@ export const TaskTemplateHeader = styled.div`
   padding-left: ${spacing.smallPlus};
   border: 1px solid ${palette.coolGrey3};
   background-color: ${palette.white};
-  font-family: ${typography.text};
+  font-family: inherit;
   font-size: ${fontSizes.smallPlus};
   animation: ${({ highlighted }) =>
     highlighted ? LightenedTaskContainer : 'none'};

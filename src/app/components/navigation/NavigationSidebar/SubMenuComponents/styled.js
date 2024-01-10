@@ -27,7 +27,7 @@ export const SubmenuHeader = styled.h3`
   padding: ${spacing.smallPlus};
   font-size: ${fontSizes.smallPlus};
   font-weight: ${fontWeights.bold};
-  font-family: ${typography.text};
+  font-family: inherit;
   color: ${palette.coolGrey1};
 `;
 export const SubMenuLink = styled(Link)`
@@ -203,7 +203,7 @@ export const MyOrganizationLabel = styled.h2`
   padding: ${spacing.smallPlus};
   font-size: ${fontSizes.regular};
   font-weight: ${fontWeights.bold};
-  font-family: ${typography.text};
+  font-family: inherit;
   color: ${palette.mediumGrey};
   word-break: break-all;
   white-space: initial;
@@ -304,7 +304,7 @@ export const DrawerListsItemNewLabel = styled.div`
   color: ${palette.brightBlue};
   font-size: 10px;
   font-weight: 400;
-  font-family: ${typography.text};
+  font-family: inherit;
 `;
 
 export const DrawerListsNewLabel = styled.div`
@@ -390,7 +390,7 @@ export const FooterLink = styled.a`
 export const EducationCenterTitle = styled.h3`
   margin: 0;
   padding: ${spacing.smallPlus} 0;
-  font-family: ${typography.text};
+  font-family: inherit;
   font-size: ${fontSizes.smallPlus};
   font-weight: ${fontWeights.light};
   color: ${palette.brightBlue};
@@ -402,7 +402,7 @@ export const EducationCenterList = styled.div`
   width: 100%;
   overflow-y: auto;
   color: ${palette.darkGrey};
-  font-family: ${typography.text};
+  font-family: inherit;
   font-weight: ${fontWeights.light};
 `;
 
@@ -444,7 +444,7 @@ export const EducationSearchInput = styled.input`
   flex: 1;
   color: ${palette.darkGrey};
   font-weight: ${fontWeights.light};
-  font-family: ${typography.text};
+  font-family: inherit;
   border: none;
   outline: none;
 `;

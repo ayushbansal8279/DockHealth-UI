@@ -19,7 +19,7 @@ export const CommentActionLabel = styled.button`
 export const CommentWrapper = styled.div`
   display: flex;
   width: 100%;
-  font-family: ${typography.text};
+  font-family: inherit;
 
   &:hover {
     ${CommentActionLabel} {

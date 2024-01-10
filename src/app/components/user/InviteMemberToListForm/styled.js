@@ -70,7 +70,7 @@ export const ItemFullName = styled.p`
   font-weight: ${fontWeights.regular};
   font-size: ${fontSizes.regular};
   font-weight: ${fontWeights.regular};
-  font-family: ${typography.text};
+  font-family: inherit;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

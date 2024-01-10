@@ -11,7 +11,7 @@ export const ContentWrapper = styled.div`
   width: 100%;
   min-width: 320px;
   border: none;
-  font-family: ${typography.text};
+  font-family: inherit;
 `;
 
 export const Divider = styled.hr`
@@ -105,7 +105,7 @@ export const FormRow = styled.div`
 
 export const RowLabel = styled.label`
   color: ${palette.darkGrey};
-  font-family: ${typography.text};
+  font-family: inherit;
   font-weight: ${fontWeights.bold};
 `;
 

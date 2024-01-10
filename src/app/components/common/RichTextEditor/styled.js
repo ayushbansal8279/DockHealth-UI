@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { typography } from 'styles/palette';
 
 export const Avatar = styled.div`
-  font-family: ${typography.text};
+  font-family: inherit;
   font-size: 12px;
   font-weight: bold;
   text-align: center;

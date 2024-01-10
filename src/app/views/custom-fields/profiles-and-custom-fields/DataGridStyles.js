@@ -29,7 +29,7 @@ export const StyledDataGrid = styled(DataGrid)`
   }
 
   & .MuiSelect-select {
-    font-family: ${typography.text};
+    font-family: inherit;
     font-weight: 400;
     font-size: 0.875rem;
     line-height: 1.43;

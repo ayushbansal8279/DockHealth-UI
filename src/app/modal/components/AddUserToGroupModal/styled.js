@@ -77,7 +77,7 @@ export const SelectedUsersWrapper = styled.div`
   overflow-x: hidden;
   border-radius: 8px;
   border: 1px solid ${palette.coolGrey2};
-  font-family: ${typography.text};
+  font-family: inherit;
 `;
 
 export const SelectedUserRow = styled.div`

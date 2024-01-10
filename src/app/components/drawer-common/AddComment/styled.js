@@ -15,7 +15,7 @@ export const AddCommentInputContainer = styled.div`
   border: 0;
   box-shadow: none;
   color: ${palette.darkGrey};
-  font-family: ${typography.text};
+  font-family: inherit;
   margin: 0;
   outline: 0;
   padding: ${spacing.tiny} ${spacing.regular};

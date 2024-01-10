@@ -46,7 +46,7 @@ export const TaskTemplateGroupHeaderContainer = styled.div`
   position: relative;
   display: flex;
   padding: 0;
-  font-family: ${typography.text};
+  font-family: inherit;
   font-size: ${fontSizes.smallPlus};
   width: 100%;
   height: 35px;

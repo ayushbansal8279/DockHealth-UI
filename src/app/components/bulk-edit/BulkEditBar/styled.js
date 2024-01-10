@@ -14,7 +14,7 @@ export const Container = styled.div`
   border: 1px solid ${palette.coolGrey2};
   border-bottom: none;
   background-color: ${palette.white};
-  font-family: ${typography.text};
+  font-family: inherit;
   color: ${palette.mediumGrey};
 `;
 

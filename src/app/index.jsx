@@ -2,7 +2,10 @@
 // import Symbol_observable from 'symbol-observable';
 /* eslint-disable global-require */
 // import MomentUtils from '@date-io/moment';
-import { ThemeProvider as MuiThemeProvider } from '@mui/material/styles';
+import {
+  ThemeProvider,
+  ThemeProvider as MuiThemeProvider,
+} from '@mui/material/styles';
 import { LocalizationProvider as MuiPickersUtilsProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { HashRouter } from 'react-router-dom';
@@ -20,6 +23,7 @@ import ErrorBoundary from './ErrorBoundary';
 // import flags, { FlagsProvider } from './helpers/flags';
 import Routes from './routing/routes';
 import App from './views/App';
+import { theme } from './theme';
 
 if (import.meta.env.NODE_ENV === 'development') {
   const whyDidYouRender = require('@welldone-software/why-did-you-render');
@@ -92,24 +96,26 @@ const queryClient = new QueryClient({
 const Index = () => (
   <QueryClientProvider client={queryClient}>
     <MuiThemeProvider theme={getTheme()}>
-      <MuiPickersUtilsProvider dateAdapter={AdapterDateFns}>
-        {/* <FlagsProvider flags={flags}> */}
-        <Provider store={store}>
-          <ErrorBoundary>
-            <HashRouter forceRefresh>
-              <IntercomProvider appId={VITE_INTERCOM_APP_CODE} autoBoot>
-                <App>
-                  <Routes />
-                </App>
-              </IntercomProvider>
-            </HashRouter>
-            {import.meta.env.VITE_APP_ENV === 'local' && (
-              <ReactQueryDevtools initialIsOpen={false} />
-            )}
-          </ErrorBoundary>
-        </Provider>
-        {/* </FlagsProvider> */}
-      </MuiPickersUtilsProvider>
+      <ThemeProvider theme={theme}>
+        <MuiPickersUtilsProvider dateAdapter={AdapterDateFns}>
+          {/* <FlagsProvider flags={flags}> */}
+          <Provider store={store}>
+            <ErrorBoundary>
+              <HashRouter forceRefresh>
+                <IntercomProvider appId={VITE_INTERCOM_APP_CODE} autoBoot>
+                  <App>
+                    <Routes />
+                  </App>
+                </IntercomProvider>
+              </HashRouter>
+              {import.meta.env.VITE_APP_ENV === 'local' && (
+                <ReactQueryDevtools initialIsOpen={false} />
+              )}
+            </ErrorBoundary>
+          </Provider>
+          {/* </FlagsProvider> */}
+        </MuiPickersUtilsProvider>
+      </ThemeProvider>
     </MuiThemeProvider>
   </QueryClientProvider>
 );

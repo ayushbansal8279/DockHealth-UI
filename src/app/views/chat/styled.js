@@ -17,7 +17,7 @@ export const ChatHeaderTitle = styled.h3`
   padding: ${spacing.smallPlus};
   font-size: ${fontSizes.large};
   font-weight: ${fontWeights.regularPlus};
-  font-family: ${typography.text};
+  font-family: inherit;
   color: ${palette.white};
 `;
 
@@ -26,7 +26,7 @@ export const ChannelListTitle = styled.h6`
   padding: ${spacing.smallPlus};
   font-size: ${fontSizes.large};
   font-weight: ${fontWeights.regular};
-  font-family: ${typography.text};
+  font-family: inherit;
   color: ${palette.midnightBlue};
 `;
 
@@ -57,7 +57,7 @@ export const HeaderContainer = styled.div`
   padding: 0 20px;
   background-color: ${palette.midnightBlue};
   color: ${palette.white};
-  font-family: ${typography.text};
+  font-family: inherit;
 `;
 
 export const ChatContainer = styled.div`

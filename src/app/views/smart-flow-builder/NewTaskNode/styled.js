@@ -19,7 +19,7 @@ export const NewTaskWrapper = styled.div`
 
 export const NewTaskInput = styled.input`
   padding: 15px 0;
-  font-family: ${typography.text};
+  font-family: inherit;
   border: none;
   outline: none;
   color: ${palette.mediumGrey};

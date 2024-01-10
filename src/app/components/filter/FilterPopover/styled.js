@@ -9,6 +9,6 @@ export const FilterContainer = styled.div`
   max-width: 884px;
   max-height: 530px;
   padding: 24px 24px 8px;
-  font-family: ${typography.text};
+  font-family: inherit;
   overflow: hidden;
 `;

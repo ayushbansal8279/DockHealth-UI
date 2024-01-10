@@ -16,7 +16,7 @@ export const NumberInput = styled.input`
   border-radius: 4px;
   border: none;
   box-shadow: none;
-  font-family: ${typography.text};
+  font-family: inherit;
   color: ${palette.mediumGrey};
   text-align: center;
 

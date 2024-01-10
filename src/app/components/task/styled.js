@@ -236,7 +236,7 @@ export const DescriptionBox = styled.div`
       opacity: 1;
     }
   }
-  font-family: ${typography.text};
+  font-family: inherit;
 `;
 
 export const DescriptionInput = styled.input`

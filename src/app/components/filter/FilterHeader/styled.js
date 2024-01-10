@@ -13,7 +13,7 @@ export const Title = styled.label`
   color: ${palette.mediumGrey};
   text-transform: uppercase;
   font-size: ${fontSizes.smallPlus};
-  font-family: ${typography.text};
+  font-family: inherit;
 `;
 
 export const HeaderButton = styled.button`

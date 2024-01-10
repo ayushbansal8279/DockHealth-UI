@@ -19,7 +19,7 @@ export const DescriptionContainer = styled.div`
 export const Text = styled.p`
   margin: 0;
   color: ${palette.coolGrey2};
-  font-family: ${typography.text};
+  font-family: inherit;
   font-size: ${fontSizes.regular};
   font-weight: ${fontWeights.light};
 `;

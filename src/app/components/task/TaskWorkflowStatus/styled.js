@@ -15,7 +15,7 @@ export const StatusListWrapper = styled.div`
   flex-direction: column;
   align-items: flex-start;
   width: auto;
-  font-family: ${typography.text};
+  font-family: inherit;
   font-size: ${fontSizes.smallPlus};
   font-weight: ${fontWeights.regularPlus};
   color: ${palette.mediumGrey};

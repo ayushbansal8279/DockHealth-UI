@@ -33,7 +33,7 @@ export const AddPlaceholder = styled.div`
 `;
 
 export const TextValue = styled.div`
-  font-family: ${typography.text};
+  font-family: inherit;
   width: 100%;
   &:hover {
     & ${AddPlaceholder} {

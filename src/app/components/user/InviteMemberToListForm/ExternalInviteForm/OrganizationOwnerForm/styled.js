@@ -15,7 +15,7 @@ export const UserDetailsFormWrapper = styled.div`
 
 export const InfoContainer = styled.div`
   width: 100%;
-  font-family: ${typography.text};
+  font-family: inherit;
   font-size: ${fontSizes.regular};
   font-weight: ${fontWeights.regular};
 `;
@@ -54,7 +54,7 @@ export const Step = styled.button`
 export const RoleFormWrapper = styled(Grid)`
   height: 400px;
   padding: ${spacing.regular} 0 ${spacing.regularPlus} 0;
-  font-family: ${typography.text};
+  font-family: inherit;
   color: ${palette.mediumGrey};
   flex-wrap: nowrap !important;
 `;
@@ -113,7 +113,7 @@ export const RoleOptionHeaderAdditionalInfo = styled.p`
   margin: 0;
   font-size: ${fontSizes.smallPlus};
   font-weight: ${fontWeights.regular};
-  font-family: ${typography.text};
+  font-family: inherit;
   color: ${palette.orange};
   font-style: italic;
 `;
@@ -122,6 +122,6 @@ export const RoleOptionDescription = styled.p`
   margin: 0;
   font-size: ${fontSizes.smallPlus};
   font-weight: ${fontWeights.regular};
-  font-family: ${typography.text};
+  font-family: inherit;
   color: ${palette.coolGrey1};
 `;

@@ -20,7 +20,7 @@ export const TextContainer = styled.p`
 
 export const PopoverContainer = styled.div`
   padding: ${spacing.regular};
-  font-family: ${typography.text};
+  font-family: inherit;
   font-size: ${fontSizes.regular};
   font-weight: ${fontWeights.regular};
   background-color: ${palette.white};

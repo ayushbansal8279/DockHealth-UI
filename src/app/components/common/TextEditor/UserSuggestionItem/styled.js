@@ -30,7 +30,7 @@ export const SuggestionItemContainer = styled.div`
 `;
 
 export const StatusNameSection = styled.div`
-  font-family: ${typography.text};
+  font-family: inherit;
   font-size: ${fontSizes.regular};
   font-weight: ${fontWeights.extraLight};
   color: ${palette.coolGrey1};

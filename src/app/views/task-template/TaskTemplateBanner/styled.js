@@ -47,7 +47,7 @@ export const Title = styled.p`
 
 export const Description = styled.p`
   margin-bottom: 0;
-  font-family: ${typography.text};
+  font-family: inherit;
   font-size: ${fontSizes.smallPlus};
   font-weight: ${fontWeights.light};
 `;

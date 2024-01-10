@@ -6,7 +6,7 @@ import Box from '../../Primitive/Box/Box';
 export const Container = styled(Box)`
   overflow: hidden;
   position: relative;
-  font-family: ${typography.text};
+  font-family: inherit;
   font-size: 15px;
   width: 100%;
   min-height: ${(props) => (props.$type === 'textarea' ? '75px' : '100%')};
@@ -191,7 +191,7 @@ export const Placeholder = styled(Box)`
 `;
 
 export const Avatar = styled(Box)`
-  font-family: ${typography.text};
+  font-family: inherit;
   font-size: 12px;
   font-weight: bold;
   text-align: center;
