@@ -33,10 +33,7 @@ import SSOOptions from 'components/auth/SSOOptions';
 import DockHeaderLogo from 'img/dock-header-logo.svg';
 import FormInput from 'components/common/v2/Input/FormInput';
 import { Title, Subtitle } from 'components/auth/Title';
-import {
-  OnboardingDialog,
-  OnboardingHeader,
-} from '../onboarding/OnboardingTemplate.Components';
+import { OnboardingDialog } from '../onboarding/OnboardingTemplate.Components';
 
 const REQUIRED_MESSAGE = 'This field is required';
 
@@ -92,7 +89,7 @@ const CreateAccount = (props) => {
   const [isUserExistsDialogShown, showUserExistsDialog, hideUserExistsDialog] =
     useBoolean(false);
   const [externalUserMode, setExternalUserMode] = useState(false);
-  const [dialogTitle, setDialogTitle] = useState('');
+  const [dialogTitle, setDialogTitle] = useState('User Already Exists');
   const [dialogMessage, setDialogMessage] = useState('');
   const [customPageTitle, setCustomPageTitle] = useState('');
   const [isUserInvited, setIsUserInvited] = useState(false);
@@ -290,31 +287,38 @@ const CreateAccount = (props) => {
           </FormProvider>
         </StyledForm>
         <OnboardingDialog open={isDialogShown} fullWidth maxWidth="sm">
-          <OnboardingHeader>
-            <MontserratTypography variant="h2">
-              <span
-                style={{
-                  fontWeight: 500,
-                  fontSize: '26px',
-                  paddingLeft: '1rem',
-                  lineHeight: '45px',
-                }}
-              >
-                {dialogTitle}{' '}
-              </span>
-              <img
-                src={ConfirmEmailHeaderCheck}
-                style={{ float: 'right', height: '2.7rem' }}
-                alt="Dock Health"
-              />
-            </MontserratTypography>
-          </OnboardingHeader>
-          <Spacing vertical={5} />
-          <MontserratTypography variant="h4">
-            <span style={onboardingMessageStyle}> {dialogMessage} </span>
-          </MontserratTypography>
+          <MuiThemeProvider theme={redTheme}>
+            <ModalWrapper style={{ width: '500px' }}>
+              <ModalIconContainer>
+                <ModalMainIcon src={ConfirmEmailHeaderCheck} alt="envelope" />
+                <Typography color="textPrimary" variant="h2" align="center">
+                  {dialogTitle}{' '}
+                </Typography>
+              </ModalIconContainer>
+              <ModalDescriptionContainer>
+                <MontserratTypography variant="h4">
+                  <span style={onboardingMessageStyle}> {dialogMessage} </span>
+                </MontserratTypography>
 
-          <Spacing vertical={5} />
+                <Spacing vertical={2} />
+              </ModalDescriptionContainer>
+              <ButtonsContainer>
+                <FixedWidthButtonWrapper width={300}>
+                  <Button
+                    fullWidth
+                    variant="primary-red"
+                    type="button"
+                    onClick={() => {
+                      hideUserExistsDialog();
+                      history.push(`/auth/login`);
+                    }}
+                  >
+                    Login To My Account
+                  </Button>
+                </FixedWidthButtonWrapper>
+              </ButtonsContainer>
+            </ModalWrapper>
+          </MuiThemeProvider>
         </OnboardingDialog>
         <OnboardingDialog
           open={isUserExistsDialogShown}
