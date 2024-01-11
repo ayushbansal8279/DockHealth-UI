@@ -12,7 +12,7 @@ export const Select = styled(MuiSelect)`
   border-radius: 4px;
 
   &:hover {
-    background: ${palette.newDarkBlue}CC;
+    background: ${palette.newBrightBlueShaded};
   }
 
   & .switchIcon > path {
