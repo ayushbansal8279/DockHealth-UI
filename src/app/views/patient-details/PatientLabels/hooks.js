@@ -146,7 +146,8 @@ const useInitializeLabelsSectionHooks = () => {
       patientIdentifier,
     });
 
-    refreshLabelsAndPatient();
+    refreshLabels();
+    // refreshLabelsAndPatient();
   };
 
   const removeLabelFromPatient = async (selectedLabel) => {
@@ -170,7 +171,8 @@ const useInitializeLabelsSectionHooks = () => {
       labelIdentifier,
     });
 
-    refreshLabelsAndPatient();
+    refreshLabels();
+    // refreshLabelsAndPatient();
   };
 
   return {
