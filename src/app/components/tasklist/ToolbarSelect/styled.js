@@ -3,29 +3,20 @@ import palette from 'styles/palette';
 import { Select as MuiSelect } from '@mui/material';
 
 export const Select = styled(MuiSelect)`
-  &&& {
-    &.MuiSelect-root {
-      display: flex;
-      align-items: center;
-      height: 46px;
-      padding: 4px 32px 4px 12px;
-      box-sizing: border-box;
-      border-radius: 5px;
-      color: ${palette.darkGrey};
-    }
+  display: flex;
+  align-items: center;
+  background: ${(props) => props.isOpen || palette.newDarkBlue};
+  color: ${palette.white};
+  height: 40px;
+  width: auto;
+  border-radius: 4px;
 
-    &:hover .MuiSelect-root,
-    &.Mui-focused .MuiSelect-root {
-      background: ${palette.coolGrey3};
-    }
+  &:hover {
+    background: ${palette.newBrightBlueShaded};
+  }
 
-    & .MuiOutlinedInput-notchedOutline {
-      border: none;
-    }
-
-    & .switchIcon > path {
-      fill: ${(props) => props.iconcoloractive ?? palette.dirtyBanana};
-    }
+  & .switchIcon > path {
+    fill: ${(props) => props.iconcoloractive ?? palette.white};
   }
 `;
 
@@ -33,4 +24,13 @@ export const SelectWrapper = styled.div`
   @media print {
     display: none;
   }
+`;
+
+export const SelectIcon = styled.span`
+  border-right: 2px solid ${palette.white};
+  height: 40px;
+  display: flex;
+  align-items: center;
+  padding-right: 10px;
+  filter: brightness(0) invert(1);
 `;

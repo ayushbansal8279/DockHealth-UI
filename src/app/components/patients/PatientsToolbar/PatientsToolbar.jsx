@@ -74,7 +74,8 @@ const PatientsToolbar = () => {
   // const searchValue = useSelector(patientsListSearchTermSelector);
   const [searchValue, setSearchValue] = useState(null);
   const filtersActive = useSelector(filtersActiveSelector);
-  const { emrIntegrationEnabled, emrIntegrationType } = useSelector(organizationSelector) || {};
+  const { emrIntegrationEnabled, emrIntegrationType } =
+    useSelector(organizationSelector) || {};
   const listIdentifier = useSelector(currentPatientsListIdentifierSelector);
   const currentUser = useSelector(userProfileSelector);
   const currentOrganization = useSelector(selectedUserOrganizationSelector);
@@ -163,9 +164,12 @@ const PatientsToolbar = () => {
                 iconColorActive={iconColorActiveItem?.value}
               />
             </Box>
-            <CustomizeToolbarButton
-              iconColorFilterActive={iconColorFilterActiveItem?.value}
-            />
+            <Box m={1} />
+            <Box>
+              <CustomizeToolbarButton
+                iconColorFilterActive={iconColorFilterActiveItem?.value}
+              />
+            </Box>
             <Box m={1} />
             <FilterButton
               ref={filterButtonReference}
@@ -174,11 +178,13 @@ const PatientsToolbar = () => {
               onClear={() => dispatch(PatientsActions.clearPatientsFilters())}
             />
           </Box>
-          <AddEntitiesContainer>
-            <AddButton onClick={setIsSidebarOpen}>
-              ADD A {customerTypeLabel.toUpperCase()}
-            </AddButton>
-          </AddEntitiesContainer>
+          <Box display="flex" alignItems="center">
+            <AddEntitiesContainer>
+              <AddButton onClick={setIsSidebarOpen}>
+                ADD A {customerTypeLabel.toUpperCase()}
+              </AddButton>
+            </AddEntitiesContainer>
+          </Box>
         </Box>
       </Box>
       {emrEntegrationExperience &&
