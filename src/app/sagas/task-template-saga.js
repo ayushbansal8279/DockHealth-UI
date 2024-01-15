@@ -112,7 +112,7 @@ function* getWorkflowFolder({ searchPhrase }) {
         searchPhrase && searchPhrase !== '' && searchPhrase !== ' ';
       const api = searchPhraseExist
         ? TaskTemplateApi.searchTemplates.bind(null, searchPhrase)
-        : TaskTemplateApi.getTemplates;
+        : TaskTemplateApi.getTemplates.bind(null, true);
       workflows = yield call(api, searchPhrase);
     }
 

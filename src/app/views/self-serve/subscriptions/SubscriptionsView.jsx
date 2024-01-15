@@ -1,25 +1,17 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import {
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-  Box,
-  Grid,
-} from '@mui/material';
+import { Box, Grid } from '@mui/material';
 import usePrevious from 'hooks/use-previous';
 import equals from 'ramda/src/equals';
-import ProfessionalServicesChevron from 'img/professional-services-chevron';
 import {
   BillingFrequency,
-  SubscriptionPlan,
   SUBSCRIPTION_PLANS,
   isPlanTrial,
   priceFormatter,
   PROFESSIONAL_SERVICES_PRICE,
   DockLite,
-  ProfessionalServices,
+  SubscriptionPlan as SubscriptionPlanEnum,
 } from 'helpers/subscription-helper';
 import {
   SUBS_PAYMENT_PATH,
@@ -274,16 +266,18 @@ const SubscriptionsView = () => {
                 />
               </>
             )} */}
-            <Box p={2} width="100%" alignItems="center">
-              <DockLiteFeature
-                key={DockLite.key}
-                active={subscriptionPlan === DockLite.subscriptionPlan}
-                selected={selectedPlan === DockLite.subscriptionPlan}
-                plan={DockLite}
-                hasExistingSubscription={hasExistingSubscription}
-                billingFrequency={selectedBillingFrequency}
-              />
-            </Box>
+            {subscriptionPlan !== SubscriptionPlanEnum.STANDARD && (
+              <Box p={2} width="100%" alignItems="center">
+                <DockLiteFeature
+                  key={DockLite.key}
+                  active={subscriptionPlan === DockLite.subscriptionPlan}
+                  selected={selectedPlan === DockLite.subscriptionPlan}
+                  plan={DockLite}
+                  hasExistingSubscription={hasExistingSubscription}
+                  billingFrequency={selectedBillingFrequency}
+                />
+              </Box>
+            )}
             <Box p={1} />
             <Title>
               Billing <SubTitleDescription>Est</SubTitleDescription>

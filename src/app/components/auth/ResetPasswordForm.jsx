@@ -55,6 +55,7 @@ const ResetPasswordForm = ({ authTokenReceived, onSubmit }) => {
         <MontserratTypography variant="h4">
           In order to protect your account, please make sure your password is 8
           character minimum, includes at least one number and one capital letter
+          and one special character
         </MontserratTypography>
         <Spacing vertical={4} />
         <FormInput

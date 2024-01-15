@@ -22,6 +22,7 @@ import AdditionalMembersCounter from 'components/user/AdditionalMembersCounter/A
 import TaskIcon from 'components/task/TaskIcon/TaskIcon';
 import DecisionTaskElementIcon from 'img/template/decision-task-icon';
 import { NodeType } from 'helpers/smart-flow-builder-helpers';
+import { createMentionsFromTokenizedDescription } from 'components/common/RichTextEditor/CreateMentions';
 import TaskNodeWrapper from '../TaskNodeWrapper/TaskNodeWrapper';
 import TaskNodeHandles from '../TaskNodeHandles/TaskNodeHandles';
 import {
@@ -47,6 +48,8 @@ const TaskNode = React.memo(({ data, isConnectable, selected, type }) => {
     updatedComment,
     subtasks,
     assignedToUsers,
+    tokenizedDescription,
+    taskMentions,
   } = task || {};
   const descriptionInputReference = useRef(null);
   const [inputValue, setInputValue] = useState('');
@@ -150,8 +153,10 @@ const TaskNode = React.memo(({ data, isConnectable, selected, type }) => {
               />
             ) : (
               <TaskDescription>
-                {description.slice(0, 53)}
-                {description.length > 53 && '...'}
+                {createMentionsFromTokenizedDescription(
+                  tokenizedDescription,
+                  taskMentions,
+                )}
               </TaskDescription>
             )}
             <Box p={1.2} />

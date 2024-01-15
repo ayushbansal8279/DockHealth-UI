@@ -175,11 +175,16 @@ const ProfileNote = ({
               showCharCount
             />
             <PatientNoteAuthor>
-              {creator?.firstName} {creator?.lastName} {dateNoteCreated}
+              {creator?.firstName} {creator?.lastName}
+              {creator?.credentials ? `, ${creator?.credentials}` : ''}{' '}
+              {dateNoteCreated}
             </PatientNoteAuthor>
             {dateNoteCreated !== dateNoteUpdated && (
               <PatientNoteAuthor>
-                Updated By: {lastEditor?.firstName} {lastEditor?.lastName}{' '}
+                Updated By: {lastEditor?.firstName} {lastEditor?.lastName}
+                {lastEditor?.credentials
+                  ? `, ${lastEditor?.credentials}`
+                  : ''}{' '}
                 {dateNoteUpdated}
               </PatientNoteAuthor>
             )}

@@ -8,6 +8,9 @@ import React, {
   useMemo,
   useEffect,
 } from 'react';
+import { renderToString } from 'react-dom/server';
+// import { useSelector } from 'react-redux';
+import debounce from 'lodash.debounce';
 import palette from 'styles/palette';
 import { fontSizes, fontWeights } from 'styles/font';
 import FroalaEditor from 'react-froala-wysiwyg';
@@ -15,9 +18,15 @@ import { getListMembersByName } from 'api/task-list-api';
 import MarkdownIt from 'markdown-it';
 import TurndownService from 'turndown';
 import Tribute from 'tributejs';
+import { FieldCharacterLimit } from 'helpers/field-type-helpers';
 import { markdownItUnderline } from './helpers';
 import 'tributejs/dist/tribute.css';
 import './styles.css';
+import {
+  SUGGESTIONS_PLACEHOLDER,
+  mapPatientsToSuggestions,
+} from '../TextEditor/helpers';
+import PatientsSuggestionsPopover from '../TextEditor/PatientsSuggestionsPopover/PatientsSuggestionsPopover';
 
 const md = new MarkdownIt({
   html: true,
@@ -27,7 +36,12 @@ const md = new MarkdownIt({
 
 let turndownService = new TurndownService();
 
-turndownService = turndownService.addRule('people-mention', {
+// eslint-disable-next-line func-names
+TurndownService.prototype.escape = function (string) {
+  return string;
+};
+
+turndownService = turndownService.addRule('people-patient-mention', {
   filter: ['span'],
   // eslint-disable-next-line func-names, object-shorthand
   replacement: function (content, node, options) {
@@ -65,6 +79,20 @@ turndownService = turndownService.addRule('underline', {
 const FROALA_PRODUCT_KEY =
   'MZC1rE1D4D3I4A16B11D8jF1QUg1Xc2OZE1ABVJRDRNGGUH1ITrA1C7A6D5E1D4D4E1B10D7==';
 
+const fetchPatientsWithDebounce = debounce((value, setPatientSuggestions) => {
+  // console.log(`inside of debounce:`, value);
+  getPatientsByCriteria(value).then((fetchedPatients) => {
+    // console.log(`returned value from debounce:`, fetchedPatients);
+
+    const formattedPatients = mapPatientsToSuggestions(fetchedPatients);
+    setPatientSuggestions(
+      formattedPatients.length > 0
+        ? formattedPatients
+        : [SUGGESTIONS_PLACEHOLDER],
+    );
+  });
+}, 300);
+
 const toolbarOptions = [
   'bold',
   'italic',
@@ -89,6 +117,29 @@ const toolbarOptions = [
   // 'markdown',
 ];
 
+const processMarkdownValue = (value, mentions) => {
+  if (!value || value === '') {
+    return value;
+  }
+  let mdValue = value.replace(/\\+\*/g, '*');
+  mdValue = mdValue.replace(/\n {2}\n/g, '<p><br/></p>');
+  const htmlValue = md.render(mdValue || '');
+  let processedValue = htmlValue;
+  if (mentions && value !== '') {
+    for (const mentionInfo of mentions) {
+      processedValue = processedValue.replace(
+        `@{${mentionInfo.identifier}}`,
+        `<span class="fr-deletable fr-tribute" data-people-mention="${mentionInfo.identifier}"><a>@${mentionInfo.name}</a></span>`,
+      );
+      processedValue = processedValue.replace(
+        `#{${mentionInfo.identifier}}`,
+        `<span class="fr-deletable fr-tribute" data-patient-mention="${mentionInfo.identifier}"><a>#${mentionInfo.name}</a></span>`,
+      );
+    }
+  }
+  return processedValue || '';
+};
+
 const RichTextEditor = React.forwardRef(
   (
     {
@@ -110,7 +161,7 @@ const RichTextEditor = React.forwardRef(
       placeholder = '',
       // highlightedValues,
       multiline = true,
-      // characterLimit = showToolbar ? FieldCharakterLimit.RICH_TEXT : false,
+      characterLimit = FieldCharacterLimit.RICH_TEXT,
       showCharCount = false,
       initOnClick = false,
       taskListIdentifier,
