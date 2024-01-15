@@ -53,6 +53,7 @@ const CustomizeToolbarButton = ({
   disableButton = false,
   iconColorFilterActive,
   isDashboard = false,
+  isPatientView = false,
 }) => {
   const [open, setOpen] = useState(false);
   const [openUpgradePopup, setOpenUpgradePopup] = useState(false);
@@ -114,18 +115,24 @@ const CustomizeToolbarButton = ({
           ? { ...c, isChecked: !c.isChecked }
           : c,
       );
-      newSetup = [
-        ...newSetup,
-        {
-          identifier: 'PATIENT',
-          _customFieldType: 'REGULAR',
-          isChecked: true,
-          columnWidth: 192,
-        },
-      ];
+
+      if (isPatientView) {
+        newSetup.filter((c) => c.identifier !== 'PATIENT');
+
+        newSetup = [
+          ...newSetup,
+          {
+            identifier: 'PATIENT',
+            _customFieldType: 'REGULAR',
+            isChecked: true,
+            columnWidth: 192,
+          },
+        ];
+      }
+
       setColumns(newSetup);
     },
-    [columns, setColumns],
+    [columns, isPatientView, setColumns],
   );
 
   const handleAddColumnClick = useCallback(() => {
