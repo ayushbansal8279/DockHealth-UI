@@ -261,6 +261,7 @@ const TaskItem = React.memo(
       openDependencyPopover,
       closeDependencyPopover,
     ] = useBooleanWithTimeout(false);
+    const [isDateHover, setIsDateHover] = useState(false);
     const { move, duplicate, subtasks, delete: del } = SINGLE_TASK_FEATURES;
     const organizationCustomFields = useSelector(
       organizationCustomFieldsSelector,
@@ -1346,17 +1347,20 @@ const TaskItem = React.memo(
                           identifier === TaskItemColumn.START_DATE,
                       )?.columnWidth
                     }
-                    paddingLeft="tiny"
+                    paddingLeft='10px'
                     paddingRight="tiny"
-                    justify="center"
+                    justify="flex-start"
                     onContextMenu={(event) => {
                       event.stopPropagation();
                     }}
                     order={getColumnOrder(TaskItemColumn.START_DATE)}
+                    onMouseEnter={() => setIsDateHover(true)}
+                      onMouseLeave={() => setIsDateHover(false)}
                   >
                     <TaskItemStartDate
                       task={task}
                       disabled={restrictions?.startDate === DISABLED}
+                      isDateHover={isDateHover}
                     />
                   </TaskItemCell>,
                   getColumnOrder(TaskItemColumn.START_DATE),
@@ -1376,17 +1380,20 @@ const TaskItem = React.memo(
                             identifier === TaskItemColumn.DUE_DATE,
                         )?.columnWidth
                       }
-                      paddingLeft="tiny"
+                      paddingLeft='10px'
                       paddingRight="tiny"
-                      justify="center"
+                      justify="flex-start"
                       onContextMenu={(event) => {
                         event.stopPropagation();
                       }}
                       order={getColumnOrder(TaskItemColumn.DUE_DATE)}
+                      onMouseEnter={() => setIsDateHover(true)}
+                      onMouseLeave={() => setIsDateHover(false)}
                     >
                       <TaskItemDueDate
                         task={task}
                         disabled={restrictions?.dueDate === DISABLED}
+                        isDateHover={isDateHover}
                       />
                     </TaskItemCell>,
                     getColumnOrder(TaskItemColumn.DUE_DATE),
