@@ -154,7 +154,7 @@ const CustomizeToolbarButton = ({
               </Box>
               <List>
                 {additionalOptions &&
-                  additionalOptions?.map(option => {
+                  additionalOptions?.map((option) => {
                     const { name, checked = false, disabled, onClick } = option;
                     return (
                       name && (

@@ -109,12 +109,20 @@ const CustomizeToolbarButton = ({
 
   const onClickCheckbox = useCallback(
     (column) => {
-      const newSetup = columns.map((c) =>
+      let newSetup = columns.map((c) =>
         c.identifier === column.identifier
           ? { ...c, isChecked: !c.isChecked }
           : c,
       );
-
+      newSetup = [
+        ...newSetup,
+        {
+          identifier: 'PATIENT',
+          _customFieldType: 'REGULAR',
+          isChecked: true,
+          columnWidth: 192,
+        },
+      ];
       setColumns(newSetup);
     },
     [columns, setColumns],

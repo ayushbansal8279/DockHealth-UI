@@ -108,6 +108,7 @@ export function ColumnsConfigProvider({
   const setColumnsAndUpdateApi = useCallback(
     (newState) => {
       setColumnsToState(newState);
+      console.log(`the new state:`, newState);
       if (currentList) {
         dispatch(
           updateListPreferences(
@@ -276,6 +277,10 @@ export function ColumnsConfigProvider({
 
 export function useTaskListColumnsConfig() {
   const context = useContext(ColumnsConfigContext);
+  console.log(
+    `coumns in the contextL`,
+    context.columns.some((value) => value.identifier === 'PATIENT'),
+  );
   if (context === undefined) {
     return {
       columns: translateInitialColumnsConfig(TASK_ITEM_BASE_COLUMN_CONFIG).map(
