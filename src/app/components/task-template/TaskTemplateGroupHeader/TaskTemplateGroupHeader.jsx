@@ -91,6 +91,9 @@ import {
   PatientMRNAnchor,
 } from './styled';
 import TaskTemplateDetails from '../TaskTemplateDetails/TaskTemplateDetails';
+import {
+  isWorkflowDrawerOpenSelector,
+} from 'selectors/workflow-drawer-selectors';
 
 const TaskTemplateGroupHeader = ({
   templateGroup = {},
@@ -516,7 +519,7 @@ const TaskTemplateGroupHeader = ({
     ),
   );
 
-  const isBundleSelected = isBundlePreSelected || isBundleSelectedFromTasks;
+  const isBundleSelected = useSelector(isWorkflowDrawerOpenSelector) || isBundlePreSelected || isBundleSelectedFromTasks;
 
   const handleBundleSelect = useCallback(async () => {
     let selectedTaskIdentifiers = [templateGroup?.identifier];
