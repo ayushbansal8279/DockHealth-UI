@@ -51,7 +51,7 @@ export const ListContentSection = styled.div`
 
 export const MemberRow = styled.button`
   width: 100%;
-  display: flex;
+  display: inline-flex;
   flex-direction: row;
   align-items: center;
   padding: ${spacing.tiny} ${spacing.small};
@@ -122,4 +122,14 @@ export const highlightStyle = {
 export const CheckboxSpacing = styled.div`
   width: 12px;
   height: 12px;
+`;
+
+export const StyledYouBadge = styled.div`
+  font-family: inherit;
+  font-size: 10px;
+  display: inline-block;
+  padding: 2px 4px;
+  color: ${palette.white};
+  background-color: #48bbb3;
+  border-radius: 4px;
 `;
