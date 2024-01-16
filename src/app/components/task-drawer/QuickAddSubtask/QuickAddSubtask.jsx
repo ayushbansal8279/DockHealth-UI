@@ -63,7 +63,6 @@ const QuickAddSubtask = () => {
     dispatch(addSubtask(taskIdentifier, { description: value }))
       .then(() => {
         dispatch(refreshTask(taskIdentifier));
-        // resetInputState();
       })
       .catch(resetInputState);
   };
