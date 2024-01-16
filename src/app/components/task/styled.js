@@ -686,3 +686,10 @@ export const ActionIconsContainer = styled.div`
 export const PatientMRNAnchor = styled.a`
   color: ${palette.brightBlue} !important;
 `;
+
+export const TaskScrollVericleLine = styled.div`
+  background: #48BBB3; 
+  height: 100%;
+  width: 1px;
+  box-shadow: 1px 0px 3px 0px rgba(0, 0, 0, 0.21);
+`;
