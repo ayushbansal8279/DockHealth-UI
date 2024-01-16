@@ -14,7 +14,9 @@ import {
   AttachmentsContainer,
   AttachmentFileInput,
   DownloadAllLink,
+  Title,
 } from './styled';
+import { ScanStatus, ScanStatusText } from './helpers';
 
 const AttachmentsSection = ({ selectedTask, disabled = false }) => {
   const {
@@ -50,9 +52,7 @@ const AttachmentsSection = ({ selectedTask, disabled = false }) => {
       <Grid container>
         <Grid item xs={12}>
           <Spacing vertical={3} />
-          <RobotoTypography condensed variant="h5" color="inherit">
-            ATTACHMENTS
-          </RobotoTypography>
+          <Title>Files</Title>
         </Grid>
         <RobotoTypography condensed variant="h4" color="inherit">
           <Spacing vertical={2} />
@@ -80,13 +80,22 @@ const AttachmentsSection = ({ selectedTask, disabled = false }) => {
               <Spacing horizontal={3} />
             </>
           ) : (
-            currentTaskAttachments.map((attachment) => (
-              <AttachmentButton
-                key={attachment.attachmentIdentifier}
-                attachment={attachment}
-                onClick={openAttachmentPreview}
-                onRemoveClick={removeTaskAttachment}
-              />
+            currentTaskAttachments?.map((attachment) => (
+              <div style={{ textAlign: 'center' }}>
+                <AttachmentButton
+                  key={attachment?.attachmentIdentifier}
+                  attachment={attachment}
+                  onClick={() => {
+                    if (
+                      attachment?.scanStatus === null ||
+                      attachment?.scanStatus === ScanStatus.CLEAN
+                    )
+                      openAttachmentPreview();
+                  }}
+                  onRemoveClick={removeTaskAttachment}
+                />
+                <p>{ScanStatusText[attachment?.scanStatus]}</p>
+              </div>
             ))
           )}
           {currentlyUploadedAttachment && (
