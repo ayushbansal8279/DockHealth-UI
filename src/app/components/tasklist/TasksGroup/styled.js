@@ -52,7 +52,7 @@ export const Arrow = styled.img`
 export const TasksGroupContainer = styled.div`
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
+  justify-content: center;
   padding-bottom: ${spacing.giga};
   &:hover {
     background-color: #daefff4d;
@@ -64,10 +64,9 @@ export const TasksGroupHeader = styled.div`
   display: flex;
   justify-content: flex-start;
   padding-bottom: ${spacing.regular};
-  padding-left: 0px;
-  margin-left: 0px;
+  position: sticky;
+  left: 48px;
   padding-top: ${spacing.regular};
-
   .action-buttons {
     visibility: hidden;
   }

@@ -264,15 +264,11 @@ const TasksGroup = ({
 
   return (
     <TasksGroupContainer>
-      <StickyContainer left={0} decreaseWidth={20}>
+      <StickyContainer left={24} decreaseWidth={2 * 24}>
         <TasksGroupHeader>
           <Spacing horizontal={4} />
           <GroupOpenContainer onClick={onToggleGroupOpen}>
-            <RotatableChevron
-              alt="arrow"
-              rotated={!isOpen}
-              color='#8492A4'
-            />
+            <RotatableChevron alt="arrow" rotated={!isOpen} color="#8492A4" />
           </GroupOpenContainer>
           <Spacing horizontal={1} />
           <GroupNameSectionWrapper>
@@ -296,18 +292,16 @@ const TasksGroup = ({
                       ({groupTaskCounts})
                     </TasksGroupLabelCounter>
                   )}
-                  <div>
-              {!isCompletedGroup && !restrictCustomizationFeatures && (
-              <GroupOptionsContainer>
-                <OptionsMenu options={options} placement="bottom-start">
-                  <MoreVert color="primary" />
-                </OptionsMenu>
-              </GroupOptionsContainer>
-            )}
-              </div>
+                <div>
+                  {!isCompletedGroup && !restrictCustomizationFeatures && (
+                    <GroupOptionsContainer>
+                      <OptionsMenu options={options} placement="bottom-start">
+                        <MoreVert color="primary" />
+                      </OptionsMenu>
+                    </GroupOptionsContainer>
+                  )}
+                </div>
               </TasksGroupLabel>
-              
-              
             </GroupNameSection>
           </GroupNameSectionWrapper>
           {!changingGroupOrderDisabled && (

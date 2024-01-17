@@ -3,7 +3,7 @@ import palette from 'styles/palette';
 import spacing from 'styles/spacing';
 
 export const TaskGroupsContainer = styled.div`
-// padding: ${spacing.small} ${spacing.largePlus}; // May be required for later
+  padding: ${spacing.small} ${spacing.largePlus};
   box-sizing: border-box;
   width: 100%;
   position: relative;
