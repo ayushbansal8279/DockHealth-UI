@@ -25,6 +25,7 @@ export const AddTaskInputWrapper = styled.div`
     transform: translateY(-50%);
     color: ${(props) => props.iconColor || palette.newBrightBlue};
     font-size: ${fontSizes.huge};
+    margin-left: -10px;
   }
 
   @media print {
