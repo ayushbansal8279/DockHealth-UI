@@ -61,7 +61,7 @@ const QuickAddTaskInput = React.forwardRef(
       <>
         <AddTaskInputWrapper hasError={!!error} iconColor={iconColorActive}>
           <RichTextEditor
-            placeholder="Add a task and press enter on your keyboard"
+            placeholder="&nbsp;&nbsp;&nbsp;Add task"
             ref={reference || quickAddTaskInputReference}
             value={description}
             onChange={handleTextEditorChange}

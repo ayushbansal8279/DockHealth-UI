@@ -9,20 +9,22 @@ export const AddTaskInputWrapper = styled.div`
   padding: ${spacing.small} ${spacing.huge} ${spacing.tiny} ${spacing.huge};
   border: 1px solid
     ${(props) => (props.hasError ? palette.red : palette.coolGrey3)};
-  font-size: ${fontSizes.smallPlus};
+  font-size: ${fontSizes.regular};
   background-color: ${palette.white};
   text-align: left;
   color: ${palette.mediumGrey};
+  font-family: Outfit;
+  font-weight: 400;
 
   &:before {
     position: absolute;
-    top: 50%;
+    top: 45%;
     left: ${spacing.regularPlus};
     display: block;
     content: '+';
     transform: translateY(-50%);
-    color: ${(props) => props.iconColor || palette.orange};
-    font-size: ${fontSizes.regular};
+    color: ${(props) => props.iconColor || palette.newBrightBlue};
+    font-size: ${fontSizes.huge};
   }
 
   @media print {
