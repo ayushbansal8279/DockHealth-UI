@@ -191,14 +191,6 @@ const Task = React.memo(
             {...restProps}
           />
         </div>
-        {showComments && (
-          <TaskComments
-            isOpen={isFullView}
-            comments={comments}
-            highlightedValue={highlightedValue}
-            onClickComment={onClickComment}
-          />
-        )}
         {showSubtasks && (
           <SubtasksWrapper>
             <Subtasks
