@@ -724,15 +724,6 @@ const TaskItem = React.memo(
       [dispatch, task, taskCustomFields],
     );
 
-    // For enabling green bar on task based on horizontal scroll
-    // const [hasHorizontalScroll, setHasHorizontalScroll] = useState(false);
-    // useEffect(() => {
-    //   document.getElementsByClassName('sc-kRvvDI');
-    //   const taskClass = document.getElementsByClassName('sc-kRvvDI')[0];
-    //   console.log(taskClass.scrollWidth);
-    //   setHasHorizontalScroll(taskClass.scrollWidth > window.innerWidth);
-    // });
-
     const randerFirstColumnCoverIfNecessary = useCallback(
       (content, order) => {
         if (order !== 0) return content;
