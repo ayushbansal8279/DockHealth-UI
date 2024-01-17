@@ -1061,6 +1061,8 @@ const TaskItem = React.memo(
                         options: [
                           { identifier: 'HIGH', name: 'High', color: 'red' },
                           { identifier: 'NONE', name: 'No Priority' },
+                          { identifier: 'MEDIUM', name: 'Medium', color: '#fd8914'},
+                          { identifier: 'LOW', name: 'Low' },
                         ],
                         displayOptions: [],
                       }}
