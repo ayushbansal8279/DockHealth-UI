@@ -40,6 +40,7 @@ const palette = {
   // COLORS NOT EXISTING IN GLOBAL PALETTE
   error: '#e40909',
   lightGrey2: '#f3f5f6',
+  offBlack: '#292d34',
   black: '#000000',
   white: '#ffffff',
   lightCyanBlue: '#009fcd',

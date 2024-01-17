@@ -26,6 +26,7 @@ const StickyMainTaskItemCell = styled.div`
   border-right: 1px solid ${palette.coolGrey3};
   align-items: center;
   padding-left: ${spacing.smallPlus};
+  margin-left: 24px;
   z-index: ${({ isEditingDescription }) =>
     isEditingDescription ? '12' : '11'};
 

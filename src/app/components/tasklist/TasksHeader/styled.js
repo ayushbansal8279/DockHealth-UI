@@ -31,6 +31,7 @@ export const StickyColumnContainer = styled.div`
   display: flex;
 
   left: 24px;
+  margin-left: 24px;
   z-index: 11;
   border-left: 1px solid ${palette.coolGrey3};
 
