@@ -99,6 +99,12 @@ const PersonDetailsDrawer = ({ user, isOpenedDetails, closeDrawer }) => {
   }, [isOpenedDetails]);
 
   const handleFormSubmit = (data) => {
+    if (data.accountPhoneNumber === undefined) {
+      data.accountPhoneNumber = '';
+    }
+    if (data.workPhoneNumber === undefined) {
+      data.workPhoneNumber = '';
+    }
     unsetActive();
     dispatch(
       updateUser({
