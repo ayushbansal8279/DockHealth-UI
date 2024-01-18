@@ -124,6 +124,12 @@ const PatientDetailsDrawer = ({ patient, isOpenedDetails, closeDetails }) => {
   }, [dispatch, history, patientIdentifier]);
 
   const handleFormSubmit = (data) => {
+    if (data.phoneHome === undefined) {
+      data.phoneHome = '';
+    }
+    if (data.phoneMobile === undefined) {
+      data.phoneMobile = '';
+    }
     unsetActive();
     const updateData = mergeDeepRight(patient, data);
     updateData.allNotes = undefined;
@@ -140,40 +146,40 @@ const PatientDetailsDrawer = ({ patient, isOpenedDetails, closeDetails }) => {
         onClick: setActive,
       },
       !isActive && {
-          name: 'Merge',
-          onClick: () => {
-            dispatch(
-              openModal('PatientPicker', {
-                patientIdentifiersToExclude: [patient.patientIdentifier],
-                onSelect: (selectedPatient) => {
-                  dispatch(
-                    openModal('MergePatients', {
-                      toPatient: selectedPatient,
-                      fromPatient: patient,
-                      confirm: () => {
-                        dispatch(closeModal());
-                        dispatch(
-                          mergePatient(patient, selectedPatient, () => {
-                            history.push(
-                              createPatientDetailsPath(
-                                selectedPatient.patientIdentifier,
-                              ),
-                            );
-                          }),
-                        );
-                      },
-                    }),
-                  );
-                },
-              }),
-            );
-            closeDetails();
-          },
+        name: 'Merge',
+        onClick: () => {
+          dispatch(
+            openModal('PatientPicker', {
+              patientIdentifiersToExclude: [patient.patientIdentifier],
+              onSelect: (selectedPatient) => {
+                dispatch(
+                  openModal('MergePatients', {
+                    toPatient: selectedPatient,
+                    fromPatient: patient,
+                    confirm: () => {
+                      dispatch(closeModal());
+                      dispatch(
+                        mergePatient(patient, selectedPatient, () => {
+                          history.push(
+                            createPatientDetailsPath(
+                              selectedPatient.patientIdentifier,
+                            ),
+                          );
+                        }),
+                      );
+                    },
+                  }),
+                );
+              },
+            }),
+          );
+          closeDetails();
         },
+      },
       patientStatus === 'ACTIVE' && {
-          name: 'Archive',
-          onClick: archivePatient,
-        },
+        name: 'Archive',
+        onClick: archivePatient,
+      },
       patientStatus === 'ARCHIVED' && {
         name: 'Restore',
         onClick: unarchivePatient,
