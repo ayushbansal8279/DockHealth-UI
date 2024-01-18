@@ -20,7 +20,7 @@ const TaskItemMembers = ({
   return (
     <TaskItemPopover
       disabled={readOnly}
-      contentWidth={230}
+      contentWidth={246}
       content={({ closePopover }) => (
         <MultiAssignMembersList
           taskListIdentifiers={
