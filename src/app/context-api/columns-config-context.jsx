@@ -108,6 +108,7 @@ export function ColumnsConfigProvider({
   const setColumnsAndUpdateApi = useCallback(
     (newState) => {
       setColumnsToState(newState);
+      console.log(`the new state:`, newState);
       if (currentList) {
         dispatch(
           updateListPreferences(
