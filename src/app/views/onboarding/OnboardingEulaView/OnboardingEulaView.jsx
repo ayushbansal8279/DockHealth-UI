@@ -29,7 +29,7 @@ const OnboardingEulaView = () => {
   const onAgreeClick = useCallback(() => {
     acknowledgeEula().then(() => {
       localStorage.setItem('STORAGE_NEW_USER_FIRST_TIME', true);
-      history.push('/onboarding/questions');
+      history.push('/onboarding/organization-setup');
     });
   }, [history]);
 
