@@ -65,7 +65,7 @@ const CreateListForm = () => {
       <FormProvider {...formMethods}>
         <Grid container spacing={2} justifyItems="flex-end">
           <Grid item={12}>
-            <OnboardingIndicator steps={3} completedSteps={step} />
+            <OnboardingIndicator steps={2} completedSteps={step} />
             <Spacing vertical={5} />
             <OutfitTypography align="center" variant="h3" weight="700">
               Get started with your first list
