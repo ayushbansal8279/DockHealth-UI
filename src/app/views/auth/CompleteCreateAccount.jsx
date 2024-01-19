@@ -117,7 +117,7 @@ const StyledForm = styled.form`
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const CompleteCreateAccount = (props) => {
-  const [isDialogShown, showDialog, hideDialog] = useBoolean(true);
+  const [isDialogShown, showDialog, hideDialog] = useBoolean(false);
   const [isUserExistsDialogShown, showUserExistsDialog, hideUserExistsDialog] =
     useBoolean(false);
   const [externalUserMode, setExternalUserMode] = useState(false);
