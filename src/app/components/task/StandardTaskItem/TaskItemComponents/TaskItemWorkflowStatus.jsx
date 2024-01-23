@@ -7,7 +7,7 @@ import {
   AddPlaceholder,
   StatusName,
   StatusWrapper,
-  StatusBar,
+  StatusSubContaioner,
 } from '../../styled';
 
 const TaskItemWorkflowStatus = ({
@@ -45,40 +45,42 @@ const TaskItemWorkflowStatus = ({
           )}
           disabled={readOnly}
         >
-          {workflowStatus ? (
-            <StatusWrapper>
-              {(task.status !== 'COMPLETE' ||
-                !showDefaultTaskStatusCompleted) && (
-                <>
-                  <StatusBar color={workflowStatus?.color} />
-                  <Tooltip
-                    title={name}
-                    placement="top"
-                    hideTooltip={!tooltipVisible}
-                  >
-                    <StatusName ref={statusNameReference}>
-                      {matchWorkflowStatus ? (
-                        <Highlighter
-                          highlightClassName="list-highlight"
-                          searchWords={
-                            matchWorkflowStatus
-                              ? searchWords
-                              : `${name}`.toLowerCase().split(/\s+/)
-                          }
-                          autoEscape
-                          textToHighlight={`${name}`}
-                        />
-                      ) : (
-                        name
-                      )}
-                    </StatusName>
-                  </Tooltip>
-                </>
-              )}
-            </StatusWrapper>
-          ) : (
-            <AddPlaceholder>+ Add Status</AddPlaceholder>
-          )}
+          <StatusSubContaioner>
+            {workflowStatus ? (
+              <StatusWrapper color={workflowStatus?.color}>
+                {(task.status !== 'COMPLETE' ||
+                  !showDefaultTaskStatusCompleted) && (
+                  <>
+                    {/* <StatusBar color={workflowStatus?.color} /> */}
+                    <Tooltip
+                      title={name}
+                      placement="top"
+                      hideTooltip={!tooltipVisible}
+                    >
+                      <StatusName ref={statusNameReference}>
+                        {matchWorkflowStatus ? (
+                          <Highlighter
+                            highlightClassName="list-highlight"
+                            searchWords={
+                              matchWorkflowStatus
+                                ? searchWords
+                                : `${name}`.toLowerCase().split(/\s+/)
+                            }
+                            autoEscape
+                            textToHighlight={`${name}`}
+                          />
+                        ) : (
+                          name
+                        )}
+                      </StatusName>
+                    </Tooltip>
+                  </>
+                )}
+              </StatusWrapper>
+            ) : (
+              <AddPlaceholder>+ Add Status</AddPlaceholder>
+            )}
+          </StatusSubContaioner>
         </TaskItemPopover>
       )}
     </>

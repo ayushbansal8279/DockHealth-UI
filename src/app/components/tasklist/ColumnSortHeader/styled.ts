@@ -57,8 +57,11 @@ export const LabelWrapper = styled.div<{
   white-space: nowrap;
   height: 18px;
   color: ${({ ordered, tasksHeaderTextColor }) =>
-    ordered ? palette.brightBlue : tasksHeaderTextColor || palette.coolGrey1};
+    ordered ? palette.brightBlue : tasksHeaderTextColor || palette.offBlack};
   &:hover > div > div > div > img {
+    visibility: visible;
+  }
+  &:hover > div > div:nth-child(2) > div {
     visibility: visible;
   }
 `;

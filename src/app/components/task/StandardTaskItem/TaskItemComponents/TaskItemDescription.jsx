@@ -148,6 +148,7 @@ const TaskItemDescription = ({
               textOverflow: 'ellipsis',
               overflow: 'hidden',
               whiteSpace: 'nowrap',
+              textDecoration: isCompleted ? 'line-through' : 'none',
             }}
           >
             {descriptionState

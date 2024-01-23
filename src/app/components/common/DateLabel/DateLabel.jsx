@@ -3,7 +3,13 @@ import moment from 'moment';
 import Spacing from 'components/common/Spacing';
 import RecurringIcon from 'img/recurring-arrows';
 import ReminderIcon from 'img/reminder';
-import { DueDateBasicLabel, DateText } from './styled';
+import {
+  DueDateBasicLabel,
+  DateText,
+  DateTextContainer,
+  ReminderIconContainer,
+  RecurringIconContainer,
+} from './styled';
 
 const DateLabel = (props) => {
   const {
@@ -11,25 +17,27 @@ const DateLabel = (props) => {
     isOverdue,
     hasReminder,
     hasRecurringSchedule,
-    format = 'MM/DD',
+    format = 'MMM DD, YYYY',
     showTime = false,
     timeFormat = 'HH:mm',
   } = props;
   return (
     <>
       <DueDateBasicLabel isOverdue={isOverdue}>
-        <DateText>{moment(date).format(format)}</DateText>
+        <DateTextContainer isOverdue={isOverdue}>
+          <DateText>{moment(date).format(format)}</DateText>
+        </DateTextContainer>
         {hasReminder && (
-          <>
+          <ReminderIconContainer isOverdue={isOverdue}>
             <Spacing horizontal={2} />
             <ReminderIcon />
-          </>
+          </ReminderIconContainer>
         )}
         {hasRecurringSchedule && (
-          <>
+          <RecurringIconContainer isOverdue={isOverdue}>
             <Spacing horizontal={2} />
             <RecurringIcon />
-          </>
+          </RecurringIconContainer>
         )}
       </DueDateBasicLabel>
       {showTime && (

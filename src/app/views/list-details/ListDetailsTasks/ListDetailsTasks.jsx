@@ -540,8 +540,6 @@ const ListDetailsTasks = ({
                     placeholder={messages.placeholder}
                     closeOnEnter
                   >
-                    {restrictions?.createGroup !== DISABLED &&
-                      !restrictCustomizationFeatures && <AddGroupNameButton />}
                   </GroupNameSection>
                 </StickyContainer>
               )}

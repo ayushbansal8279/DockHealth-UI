@@ -15,6 +15,7 @@ import {
   ThreeDots,
   ResizeHandler,
 } from './styled';
+import SortDoubleArrow from 'img/SortDoubleArrow';
 
 const ColumnSortHeader = ({
   id,
@@ -117,14 +118,10 @@ const ColumnSortHeader = ({
                 id &&
                 label &&
                 typeof onSortChange === 'function' && (
-                  <Box p="0 5px 0 5px">
-                    <SortArrow
-                      isParentHovered={false}
-                      orderType={id === sort?.key && sort?.order}
-                    />
+                  <Box p="0 5px 0 5px" mr="4px">
+                    <SortArrow orderType={id === sort?.key && sort?.order} />
                   </Box>
                 )}
-
               <Box
                 textOverflow="ellipsis"
                 overflow={truncateEnabled ? 'hidden' : 'initial'}
@@ -132,8 +129,14 @@ const ColumnSortHeader = ({
                 whiteSpace="nowrap"
                 display="flex"
                 alignItems="center"
+                fontFamily="Outfit"
+                fontWeight="600"
+                pl="5px"
               >
                 {label}
+                <Box ml="5px" visibility="hidden">
+                  <SortDoubleArrow />
+                </Box>
               </Box>
             </Box>
           </LabelWrapper>
