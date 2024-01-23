@@ -50,8 +50,8 @@ export const TaskTemplateGroupHeaderContainer = styled.div`
   font-size: ${fontSizes.smallPlus};
   width: 100%;
   height: 35px;
-  border-top: 1px solid ${palette.coolGrey3};
-  border-bottom: 1px solid ${palette.coolGrey3};
+  //border-top: 1px solid ${palette.coolGrey3};
+  //border-bottom: 1px solid ${palette.coolGrey3};
   background-color: ${(props) =>
     props.isSelected ? palette.dockBlueLight : palette.white};
 

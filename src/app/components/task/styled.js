@@ -374,6 +374,7 @@ export const ClickablePatient = styled.span`
 
 export const StandardTaskItemContainer = styled.div`
   position: relative;
+  background-color: red;
   background-color: ${(props) =>
     props.isSelected
       ? palette.brightBlueWithAlpha

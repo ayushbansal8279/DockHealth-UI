@@ -24,6 +24,8 @@ import {
   TaskTemplateGroupContainer,
   TaskTemplateGroupList,
   QuickAddInputWrapper,
+  TaskTemplateItemsContainer,
+  TaskTemplateItemsStartPill,
 } from './styled';
 import TaskTemplateGroupHeader from '../TaskTemplateGroupHeader/TaskTemplateGroupHeader';
 
