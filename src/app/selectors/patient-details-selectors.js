@@ -116,6 +116,6 @@ export const patientFoldersSelector = createSelector(
 );
 
 export const selectedTasksSelector = (state) =>
-  state?.taskItems?.selectedTaskIdentifiers.map(
-    (taskId) => state?.patientDetails?.tasksMap[taskId],
-  );
+  state?.taskItems?.selectedTaskIdentifiers
+    .filter((taskId) => state?.patientDetails?.tasksMap[taskId] !== undefined)
+    .map((taskId) => state?.patientDetails?.tasksMap[taskId]);

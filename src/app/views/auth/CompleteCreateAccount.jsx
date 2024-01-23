@@ -42,39 +42,9 @@ import {
 } from 'modal/components/styled';
 import DockHeaderLogo from 'img/dock-header-logo.svg';
 import { Title, Subtitle } from 'components/auth/Title';
-import {
-  OnboardingDialog,
-  OnboardingHeader,
-} from '../onboarding/OnboardingTemplate.Components';
+import { OnboardingDialog } from '../onboarding/OnboardingTemplate.Components';
 
 const REQUIRED_MESSAGE = 'This field is required';
-
-const validationSchema = object().shape({
-  email: string()
-    .required(REQUIRED_MESSAGE)
-    .email('Please enter a valid email address'),
-  password: string().required(REQUIRED_MESSAGE).concat(validPasswordSchema),
-  confirmPassword: string()
-    .required(REQUIRED_MESSAGE)
-    .oneOf([ref('password')], 'Your passwords do not match.'),
-  mobilePhoneNumber: string()
-    .transform((value) => value.replace(/\D/g, ''))
-    .required(REQUIRED_MESSAGE)
-    .matches(/\d{10}/, 'Please enter a valid phone number'),
-});
-
-const externalUserValidationSchema = object().shape({
-  email: string()
-    .required(REQUIRED_MESSAGE)
-    .email('Please enter a valid email address'),
-  password: string().required(REQUIRED_MESSAGE).concat(validPasswordSchema),
-  confirmPassword: string()
-    .required(REQUIRED_MESSAGE)
-    .oneOf([ref('password')], 'Your passwords do not match.'),
-  mobilePhoneNumber: string()
-    .transform((value) => value?.replace(/\D/g, ''))
-    .matches(/\d{10}/, 'Please enter a valid phone number'),
-});
 
 const resendEmail = async (email) => {
   try {
@@ -124,11 +94,48 @@ const CompleteCreateAccount = (props) => {
   const [isUserExistsDialogShown, showUserExistsDialog, hideUserExistsDialog] =
     useBoolean(false);
   const [externalUserMode, setExternalUserMode] = useState(false);
-  const [dialogTitle, setDialogTitle] = useState('');
+  const [dialogTitle, setDialogTitle] = useState('This Email is Already in Use');
   const [dialogMessage, setDialogMessage] = useState('');
   const [customPageTitle, setCustomPageTitle] = useState('');
+  const [isUserInvited, setIsUserInvited] = useState(false);
+  const [userName, setUserName] = useState('');
   const history = useHistory();
   const dispatch = useDispatch();
+
+  const validationSchema = object().shape({
+    ...(isUserInvited
+      ? {}
+      : {
+          email: string()
+            .required(REQUIRED_MESSAGE)
+            .email('Please enter a valid email address'),
+        }),
+    password: string().required(REQUIRED_MESSAGE).concat(validPasswordSchema),
+    confirmPassword: string()
+      .required(REQUIRED_MESSAGE)
+      .oneOf([ref('password')], 'Your passwords do not match.'),
+    mobilePhoneNumber: string()
+      .transform((value) => value.replace(/\D/g, ''))
+      .required(REQUIRED_MESSAGE)
+      .matches(/\d{10}/, 'Please enter a valid phone number'),
+  });
+
+  const externalUserValidationSchema = object().shape({
+    ...(isUserInvited
+      ? {}
+      : {
+          email: string()
+            .required(REQUIRED_MESSAGE)
+            .email('Please enter a valid email address'),
+        }),
+    password: string().required(REQUIRED_MESSAGE).concat(validPasswordSchema),
+    confirmPassword: string()
+      .required(REQUIRED_MESSAGE)
+      .oneOf([ref('password')], 'Your passwords do not match.'),
+    mobilePhoneNumber: string()
+      .transform((value) => value?.replace(/\D/g, ''))
+      .matches(/\d{10}/, 'Please enter a valid phone number'),
+  });
 
   const formMethods = useForm({
     resolver: externalUserMode
@@ -144,12 +151,17 @@ const CompleteCreateAccount = (props) => {
         try {
           const firstName = sessionStorage.getItem('firstName');
           const lastName = sessionStorage.getItem('lastName');
+          sessionStorage.setItem('email', email);
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          const organization = sessionStorage.getItem('organization');
+          const organizationName = sessionStorage.getItem('organization');
+          const userEmail =
+            sessionStorage.getItem('isUserInvited') === 'true'
+              ? sessionStorage.getItem('userName')
+              : email;
           await registerAction({
-            username: email,
+            username: userEmail,
             password,
-            email,
+            email : userEmail,
             phone_number: mobilePhoneNumber
               ? `+${mobilePhoneNumber.replace(/\D/g, '')}`
               : null,
@@ -158,13 +170,9 @@ const CompleteCreateAccount = (props) => {
             // organization,
             'custom:referral': referral,
             'custom:app_environment': import.meta.env.VITE_APP_ENV,
+            'custom:organization_name': organizationName,
           });
           history.push('/signupEmailSent');
-          // setDialogTitle(`Please confirm your email.`);
-          // setDialogMessage(
-          //   `We just sent an email to ${email}. Please go to your email and click on the link so that we can confirm your email address.`,
-          // );
-          // showDialog();
         } catch (error) {
           if (error?.code === 'UsernameExistsException') {
             setDialogTitle(`Email already associated with an account`);
@@ -203,7 +211,7 @@ const CompleteCreateAccount = (props) => {
       organization: oname,
     } = queryValues;
 
-    if (uname) setValue('email', uname);
+    if (uname && !isUserInvited) setValue('email', uname);
     if (fname) setValue('firstName', fname);
     if (lname) setValue('lastName', lname);
     if (oname) setValue('organization', oname);
@@ -218,6 +226,11 @@ const CompleteCreateAccount = (props) => {
         setCustomPageTitle,
       );
     }
+
+    if (sessionStorage.getItem('isUserInvited')) setIsUserInvited(true);
+
+    if (sessionStorage.getItem('userName'))
+      setUserName(sessionStorage.getItem('userName'));
   });
 
   const hasCustomPageTitle = customPageTitle !== '';
@@ -289,7 +302,16 @@ const CompleteCreateAccount = (props) => {
             for online task management.
           </Subtitle>
           <Spacing vertical={5} />
-          <FormInput disabled={externalUserMode} name="email" label="Email" />
+          {isUserInvited ? (
+            <FormInput
+              disabled={isUserInvited}
+              name="email"
+              label="Email"
+              value={userName}
+            />
+          ) : (
+            <FormInput disabled={externalUserMode} name="email" label="Email" />
+          )}
           <Spacing vertical={5} />
           <FormInput name="password" label="Password" type="password" />
           <Spacing vertical={3} />
@@ -345,54 +367,64 @@ const CompleteCreateAccount = (props) => {
         </FormProvider>
       </StyledForm>
       <OnboardingDialog open={isDialogShown} fullWidth maxWidth="sm">
-        <OnboardingHeader>
-          <MontserratTypography variant="h2">
-            <span
-              style={{
-                fontWeight: 500,
-                fontSize: '26px',
-                paddingLeft: '1rem',
-                lineHeight: '45px',
-              }}
-            >
-              {dialogTitle}{' '}
-            </span>
-            <img
-              src={ConfirmEmailHeaderCheck}
-              style={{ float: 'right', height: '2.7rem' }}
-              alt="Dock Health"
-            />
-          </MontserratTypography>
-        </OnboardingHeader>
-        <Spacing vertical={5} />
-        <MontserratTypography variant="h4">
-          <span style={onboardingMessageStyle}> {dialogMessage} </span>
-        </MontserratTypography>
-        <Spacing vertical={5} />
-        <MontserratTypography variant="h4">
-          <span style={onboardingDialogStyle}>
-            I didn&apos;t get the email.{' '}
-          </span>
-          <StyledAnchorDiv
-            style={onboardingLinkStyle}
-            onClick={() => resendEmail(email)}
-          >
-            Resend email
-          </StyledAnchorDiv>
-        </MontserratTypography>
+        <MuiThemeProvider theme={redTheme}>
+          <ModalWrapper style={{ width: '500px' }}>
+            <ModalIconContainer>
+              <ModalMainIcon src={ConfirmEmailHeaderCheck} alt="envelope" />
+              <Typography color="textPrimary" variant="h2" align="center">
+                {dialogTitle}{' '}
+              </Typography>
+            </ModalIconContainer>
+            <ModalDescriptionContainer>
+              <MontserratTypography variant="h4">
+                <span style={onboardingMessageStyle}> {dialogMessage} </span>
+              </MontserratTypography>
+              <Spacing vertical={5} />
+              <MontserratTypography variant="h4">
+                <span style={onboardingDialogStyle}>
+                  I didn&apos;t get the email.{' '}
+                </span>
+                <StyledAnchorDiv
+                  style={onboardingLinkStyle}
+                  onClick={() => resendEmail(email)}
+                >
+                  Resend email
+                </StyledAnchorDiv>
+              </MontserratTypography>
 
-        <Spacing vertical={5} />
+              <Spacing vertical={5} />
 
-        <MontserratTypography variant="h4">
-          <span style={onboardingDialogStyle}>
-            {' '}
-            The email address is wrong.{' '}
-          </span>
-          <StyledAnchorDiv onClick={hideDialog} style={onboardingLinkStyle}>
-            Change email address
-          </StyledAnchorDiv>
-        </MontserratTypography>
-        <Spacing vertical={5} />
+              <MontserratTypography variant="h4">
+                <span style={onboardingDialogStyle}>
+                  {' '}
+                  The email address is wrong.{' '}
+                </span>
+                <StyledAnchorDiv
+                  onClick={hideUserExistsDialog}
+                  style={onboardingLinkStyle}
+                >
+                  Change email address
+                </StyledAnchorDiv>
+              </MontserratTypography>
+              <Spacing vertical={2} />
+            </ModalDescriptionContainer>
+            <ButtonsContainer>
+              <FixedWidthButtonWrapper width={300}>
+                <Button
+                  fullWidth
+                  variant="primary-red"
+                  type="button"
+                  onClick={() => {
+                    hideDialog();
+                    history.push(`/auth/login`);
+                  }}
+                >
+                  Login To My Account
+                </Button>
+              </FixedWidthButtonWrapper>
+            </ButtonsContainer>
+          </ModalWrapper>
+        </MuiThemeProvider>
       </OnboardingDialog>
       <OnboardingDialog open={isUserExistsDialogShown} fullWidth maxWidth="sm">
         <MuiThemeProvider theme={redTheme}>

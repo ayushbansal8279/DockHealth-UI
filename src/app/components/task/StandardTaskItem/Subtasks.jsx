@@ -56,6 +56,14 @@ const Subtasks = ({
 
   const shouldRenderSubtasks = useMemo(() => !isEmpty(subtasks), [subtasks]);
 
+  const onClickComment = useCallback(
+    (subtask) => {
+      openDrawer();
+      storeAsCurrentTask(subtask);
+    },
+    [openDrawer, storeAsCurrentTask],
+  );
+
   return (
     <SubtasksContainer in={isOpen}>
       {isFetchingSubTasks ? (
@@ -119,6 +127,18 @@ const Subtasks = ({
                               patient={parentTask.patient}
                               origin={origin}
                             />
+                            {shouldRenderComments &&
+                              (subtasks?.length > 0 || subTasksCount === 0) && (
+                                <TaskComments
+                                  isOpen={isFullView}
+                                  comments={matchedComments}
+                                  highlightedValue={highlightedValue}
+                                  showSubtaskStylingLink={!draggedId}
+                                  isLast={isLast}
+                                  subtask={subtask}
+                                  onClickComment={onClickComment}
+                                />
+                              )}
                           </SubtaskItemWrapper>
                         )}
                       </Draggable>

@@ -64,6 +64,8 @@ const DescriptionSection = ({ readOnly }) => {
         onBlur={handleBlur}
         initOnClick
         showCharCount
+        taskListIdentifier={selectedWorkflow?.taskListIdentifier}
+        mentions={selectedWorkflow?.taskMentions}
       />
     </CustomTextEditor>
   );

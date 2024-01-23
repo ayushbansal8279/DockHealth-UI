@@ -39,8 +39,7 @@ const CreateTasks = () => {
     name: 'tasks',
   });
 
-  const { tasks, setTasks, step, setStep, list } =
-    React.useContext(OnboardingContext);
+  const { tasks, setTasks, step, list } = React.useContext(OnboardingContext);
 
   useMount(() => {
     setValue('task-1', '');
@@ -75,12 +74,12 @@ const CreateTasks = () => {
         .then((responseTasks) => {
           setTasks(responseTasks);
         })
+        .then(() => history.push(`/core/tasks/${list.taskListIdentifier}`))
         .catch((error) => {
           console.error(`error creating task: ${error}`);
         });
-      setStep((previous) => previous + 1);
     },
-    [list, setStep, setTasks],
+    [list, setTasks, history, list.taskListIdentifier, tasks],
   );
 
   return (
@@ -92,7 +91,7 @@ const CreateTasks = () => {
       <FormProvider {...formMethods}>
         <Grid container justifyItems="flex-end">
           <Grid item={12} sx={{ width: 0.99 }}>
-            <OnboardingIndicator steps={3} completedSteps={step} />
+            <OnboardingIndicator steps={2} completedSteps={step} />
             <Spacing vertical={5} />
             <OutfitTypography align="left" variant="h3" weight="700">
               What are the next 3 tasks you need to complete
@@ -191,7 +190,7 @@ const CreateTasks = () => {
                 color={palette.brightOrange}
                 secondaryColor={palette.oPlusRed}
               >
-                Next
+                Continue
               </Button>
             </Grid>
           </Grid>

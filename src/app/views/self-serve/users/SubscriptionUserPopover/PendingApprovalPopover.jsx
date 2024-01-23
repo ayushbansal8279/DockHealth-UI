@@ -1,10 +1,9 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import pathEq from 'ramda/src/pathEq';
 import { Popover } from '@mui/material';
 import Button from 'components/common/Button/Button';
 import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
-import { changeUserOrganizationRole } from 'actions/organization-actions';
 import { approvePendingUser, denyPendingUser } from 'api/organization-api';
 import { renderRoleItem } from './RoleSelectionPopover';
 import {
@@ -131,16 +130,11 @@ const PendingApprovalSelectionPopover = (props) => {
     addSubscription,
     removeSubscription,
     userStatus,
+    changeUserRole,
   } = props;
   const [selectedStep, setSelectedStep] = useState('first');
   const [selectedRole, setSelectedRole] = useState({});
   const dispatch = useDispatch();
-
-  const changeUserRole = useCallback(
-    ({ userIdentifier: id, role }) =>
-      dispatch(changeUserOrganizationRole(id, role)),
-    [dispatch],
-  );
 
   const FirsStepComponent = () => (
     <>

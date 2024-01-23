@@ -179,11 +179,15 @@ const PatientsToolbar = () => {
             />
           </Box>
           <Box display="flex" alignItems="center">
-            <AddEntitiesContainer>
-              <AddButton onClick={setIsSidebarOpen}>
-                ADD A {customerTypeLabel.toUpperCase()}
-              </AddButton>
-            </AddEntitiesContainer>
+          {listIdentifier &&
+            (listIdentifier === DefaultPatientsListType.ALL_PATIENTS ||
+              listIdentifier === DefaultPatientsListType.ACTIVE_PATIENTS) && (
+              <AddEntitiesContainer>
+                <AddButton onClick={setIsSidebarOpen}>
+                  Add a {customerTypeLabel}
+                </AddButton>
+              </AddEntitiesContainer>
+            )}
           </Box>
         </Box>
       </Box>

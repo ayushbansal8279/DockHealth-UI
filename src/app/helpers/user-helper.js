@@ -67,6 +67,7 @@ export const UserStatus = {
   INACTIVE: 'INACTIVE',
   ACTIVE: 'ACTIVE',
   CANCELLED: 'CANCELLED',
+  DENIED: 'DENIED',
 };
 
 export const ActivityStatus = {

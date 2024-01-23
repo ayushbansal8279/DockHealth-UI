@@ -13,6 +13,7 @@ import { getUserTypeLabel, USER_TYPES } from '../helpers';
 const UserTypeOptions = ({
   firstName,
   lastName,
+  credentials,
   email,
   userStatus,
   orgUserRole,
@@ -23,6 +24,7 @@ const UserTypeOptions = ({
   openRemoveSubscriptionModal,
   organizationMembers,
   isInvited,
+  changeUserRole,
 }) => {
   const [isPopoverOpen, openPopover, closePopover] = useBoolean(false);
 
@@ -31,7 +33,9 @@ const UserTypeOptions = ({
     [eulaAcknowledged, orgUserRole, userStatus],
   );
 
-  const displayName = `${firstName} ${lastName}`;
+  const displayName = `${firstName} ${lastName}${
+    credentials ? `, ${credentials}` : ''
+  }`;
   const viewOnlyRoleAvailable = useSelector(userHasViewOnlyFeatureSelector);
   const guestRoleAvailable = useSelector(userHasDockGuestFeatureSelector);
 
@@ -103,6 +107,7 @@ const UserTypeOptions = ({
       isDisabledRemovingSubscription={isDisabledRemovingSubscription}
       userStatus={userStatus}
       isInvited={isInvited}
+      changeUserRole={changeUserRole}
       userHasSubscription={
         !!isUserSelected({
           userIdentifier,

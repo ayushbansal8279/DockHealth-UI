@@ -22,6 +22,7 @@ const TaskItemSharedMembers = ({
       contentWidth={230}
       content={({ closePopover }) => (
         <SharedMembersList
+          task={task}
           taskListIdentifiers={
             !checkIfTemplateTask(task)
               ? task?.taskList?.taskListIdentifier

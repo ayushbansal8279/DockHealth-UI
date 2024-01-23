@@ -590,6 +590,7 @@ export function shareTask(
   userIdentifiers,
   externalUsers,
   message,
+  assignTask,
 ) {
   // TODO: add sharing task endpoint
   log('taskIdentifier', taskIdentifier);
@@ -602,6 +603,7 @@ export function shareTask(
       taskIdentifier,
       userIdentifiers,
       externalCollaborators: externalUsers,
+      assignTask,
     })
     .then(({ data }) => data);
 }

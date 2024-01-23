@@ -20,6 +20,7 @@ import watchWorkflowDrawer from './sagas/workflow-drawer-saga';
 import watchWorkflow from './sagas/workflow-saga';
 import watchMegaFilters from './sagas/mega-filter-saga';
 import watchPersonDetails from './sagas/person-details-saga';
+import watchCustomProfileDetails from './sagas/custom-profile-details-saga';
 
 function* rootSaga() {
   yield all([
@@ -43,6 +44,7 @@ function* rootSaga() {
     watchWorkflow(),
     watchMegaFilters(),
     watchPersonDetails(),
+    watchCustomProfileDetails(),
   ]);
 }
 

@@ -140,7 +140,7 @@ const DashboardTasksGroup = ({
   useEffect(() => {
     if (currentSort && currentSort.key && dashboardTasks) {
       const tasksWithDetails = dashboardTasks?.map(
-        (taskId) => tasksMap[taskId || taskId?.identifier],
+        (task) => tasksMap[task?.identifier || task],
       );
       let renderedTasks = currentSortMethod(tasksWithDetails);
       renderedTasks = renderedTasks.map((t) => t?.identifier);

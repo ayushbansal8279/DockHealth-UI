@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Select as MuiSelect,
   FormControl,
@@ -18,6 +18,7 @@ import {
   bool,
 } from 'prop-types';
 import zIndex from 'styles/z-index';
+import RotatableChevron from 'components/common/RotatableChevron/RotatableChevron';
 import Input from '../Input/Input';
 import { ColorIndicator } from './styled';
 
@@ -42,6 +43,11 @@ const Select = React.forwardRef(
     reference,
   ) => {
     const selectedOption = options?.find((element) => element.value === value);
+    const [isOpen, setIsOpen] = useState(false);
+    const toggleOpen = () => setIsOpen((wasOpen) => !wasOpen);
+    const endAdornment = (
+      <RotatableChevron onClick={toggleOpen} rotated={isOpen} />
+    );
     return readOnly ? (
       <Input
         name={name}
@@ -63,6 +69,9 @@ const Select = React.forwardRef(
           </InputLabel>
         )}
         <MuiSelect
+          open={isOpen}
+          onOpen={() => setIsOpen(true)}
+          onClose={() => setIsOpen(false)}
           disabled={disabled}
           MenuProps={{
             anchorOrigin: {
@@ -88,6 +97,7 @@ const Select = React.forwardRef(
           renderValue={(selectedValue) =>
             options.find((option) => option.value === selectedValue)?.label
           }
+          endAdornment={endAdornment}
           {...restProps}
         >
           {options?.map((option) => {

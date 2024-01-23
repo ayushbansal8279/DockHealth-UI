@@ -136,6 +136,7 @@ export const ListItem = styled.div`
   align-items: center;
   appearance: none;
   border-radius: 0;
+  padding-left: 15px;
   background-color: ${({ isSelected }) =>
     isSelected ? palette.darkBlue : 'transparent'};
 

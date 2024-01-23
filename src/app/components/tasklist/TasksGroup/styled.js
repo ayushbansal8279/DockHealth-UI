@@ -57,6 +57,7 @@ export const TasksGroupContainer = styled.div`
   &:hover {
     background-color: #daefff4d;
   }
+  ${({ $width }) => ($width ? `width: ${$width + 66 + 22}px` : '')}
 `;
 
 export const TasksGroupHeader = styled.div`

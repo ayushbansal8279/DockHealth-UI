@@ -9,7 +9,6 @@ import CustomTextEditor from 'components/common/CustomTextEditor/CustomTextEdito
 import { TaskItemType } from 'helpers/task-helpers';
 import { openDrawer } from 'actions/workflow-drawer-actions';
 import PopoverBottomBar from 'components/task/PopoverBottomBar/PopoverBottomBar';
-// import { FieldCharakterLimit } from 'helpers/field-type-helpers';
 import RichTextEditor from 'components/common/RichTextEditor/RichTextEditor';
 import debounce from 'lodash.debounce';
 import { convertToSimpleString } from 'helpers/markdown-helper.js';

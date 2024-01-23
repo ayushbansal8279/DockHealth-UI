@@ -1,7 +1,7 @@
-import Input from 'components/common/Input/Input';
 import React, { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Button from 'components/common/Button/Button';
+import RichTextEditor from 'components/common/RichTextEditor/RichTextEditor';
 import { sendSecureMessageForTask } from 'actions/task-actions';
 import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
 import { CommunicationType } from 'helpers/task-helpers';
@@ -23,6 +23,7 @@ import { InputContainerStyled } from '../styled';
 const SendSecureMessageFromTaskModal = () => {
   const dispatch = useDispatch();
   const [message, setMessage] = useState('');
+  const [isValueReset, setValueReset] = useState(false);
 
   const selectedTask = useSelector(selectedTaskSelector);
   const { identifier } = selectedTask;
@@ -37,6 +38,11 @@ const SendSecureMessageFromTaskModal = () => {
     );
     dispatch(closeModal());
   }, [dispatch, identifier, message]);
+
+  const handleTextEditorChange = (value) => {
+    setValueReset(false);
+    setMessage(value);
+  };
 
   return (
     <ModalWrapper width="600px">
@@ -54,23 +60,25 @@ const SendSecureMessageFromTaskModal = () => {
             placeholder="Pick template"
             onChange={(_, newValue, reason) => {
               if (reason === 'clear') {
+                setValueReset(true);
                 setMessage('');
                 return;
               }
               getTemplateDetails(newValue?.identifier, identifier).then(
                 (data) => {
+                  setValueReset(true);
                   setMessage(data?.details ?? '');
                 },
               );
             }}
           />
-          <Input
-            type="text"
-            label="Message"
+          <RichTextEditor
             value={message}
-            onChange={(event) => {
-              setMessage(event.target.value);
-            }}
+            reset={isValueReset}
+            readOnly={false}
+            placeholder="Message"
+            onChange={handleTextEditorChange}
+            showCharCount
           />
         </InputContainerStyled>
       </ModalDescriptionContainer>

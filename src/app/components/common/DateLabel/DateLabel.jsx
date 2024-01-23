@@ -21,11 +21,13 @@ const DateLabel = (props) => {
     showTime = false,
     timeFormat = 'HH:mm',
   } = props;
+  const dueDate = moment(date);
+  const dateFormat = dueDate.isSame(moment(), 'year') ? 'MM/DD' : format;
   return (
     <>
       <DueDateBasicLabel isOverdue={isOverdue}>
         <DateTextContainer isOverdue={isOverdue}>
-          <DateText>{moment(date).format(format)}</DateText>
+          <DateText>{dueDate.format(dateFormat)}</DateText>
         </DateTextContainer>
         {hasReminder && (
           <ReminderIconContainer isOverdue={isOverdue}>
@@ -43,7 +45,7 @@ const DateLabel = (props) => {
       {showTime && (
         <>
           <Spacing horizontal={1} />
-          <DateText>{moment(date).format(timeFormat)}</DateText>
+          <DateText>{dueDate.format(timeFormat)}</DateText>
         </>
       )}
     </>

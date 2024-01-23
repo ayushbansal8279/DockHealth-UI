@@ -3,11 +3,7 @@ import { OutfitTypography } from 'styles/theme-outfit';
 
 export const Title = ({ children, variant }) => {
   return (
-    <OutfitTypography
-      variant={variant ?? 'h2'}
-      weight="bold"
-      align="center"
-    >
+    <OutfitTypography variant={variant ?? 'h2'} weight="bold" align="center">
       {children}
     </OutfitTypography>
   );

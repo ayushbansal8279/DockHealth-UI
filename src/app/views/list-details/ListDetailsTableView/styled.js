@@ -4,9 +4,11 @@ import spacing from 'styles/spacing';
 
 export const TaskGroupsContainer = styled.div`
   padding: ${spacing.small} ${spacing.largePlus};
+  ${() => (!window.disabledVirtualTaskList ? 'padding: 0;' : '')}
   box-sizing: border-box;
   width: 100%;
   position: relative;
+  height: 100%;
 `;
 
 export const TaskViewContainer = styled.div`
@@ -16,6 +18,8 @@ export const TaskViewContainer = styled.div`
   justify-content: flex-start;
   padding-bottom: ${spacing.giga};
   background-color: ${palette.coolGrey4};
+  height: 100%;
+  ${() => (!window.disabledVirtualTaskList ? 'padding: 0;' : '')}
 `;
 
 export const ListTourWrapper = styled.div`
