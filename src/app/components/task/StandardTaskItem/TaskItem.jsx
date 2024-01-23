@@ -167,6 +167,12 @@ const TaskItem = React.memo(
       return taskLookupSelector(state, origin, taskItemIdentifier);
     });
 
+    const taskWorkflow = templateBundleIdentifier
+      ? useSelector((state) => {
+          return taskLookupSelector(state, origin, templateBundleIdentifier);
+        })
+      : null;
+
     const {
       taskIdentifier,
       assignedToUsers,
@@ -315,8 +321,11 @@ const TaskItem = React.memo(
     }, [currentUser, currentTasklist]);
 
     const isCreator = useMemo(() => {
-      return creator?.identifier === currentUser?.identifier;
-    }, [currentUser, creator]);
+      return (
+        (!templateBundleIdentifier || templateBundleIdentifier === '') &&
+        creator?.identifier === currentUser?.identifier
+      );
+    }, [templateBundleIdentifier, creator, currentUser]);
 
     if (!restrictions) {
       restrictions = {};
@@ -739,7 +748,7 @@ const TaskItem = React.memo(
           >
             {taskListRestrictions?.createTask !== DISABLED && (
               <DotsContainer
-                showDraggableDots={showDraggableDots}
+                showDraggableDots={true}
                 dragHandleProps={dragHandleProps}
               />
             )}
@@ -813,6 +822,7 @@ const TaskItem = React.memo(
     );
 
     if (task?.itemType !== TaskItemType.TASK) {
+      console.log("!!!!!", task);
       const taskGroup = task;
       return (
         <TaskTemplateGroup
@@ -1708,7 +1718,7 @@ const TaskItem = React.memo(
                     getColumnOrder(TaskItemColumn.ORG_NAME),
                   )}
                 </>
-            )}
+              )}
             {isColumnChecked(columns, TaskItemColumn.TASK_DETAILS) && (
               <>
                 {randerFirstColumnCoverIfNecessary(
@@ -1745,10 +1755,13 @@ const TaskItem = React.memo(
                   const taskCustomFieldValue = task?.taskMetaData?.find(
                     (f) => f?.customFieldIdentifier === field.identifier,
                   );
-                  const patientCustomFieldValue =
-                    patient?.patientMetaData?.find(
-                      (f) => f?.customFieldIdentifier === field.identifier,
-                    );
+                  const patientMetaData =
+                    patient?.patientMetaData ||
+                    taskWorkflow?.patient?.patientMetaData ||
+                    [];
+                  const patientCustomFieldValue = patientMetaData?.find(
+                    (f) => f?.customFieldIdentifier === field.identifier,
+                  );
                   const customFieldValue =
                     field.targetType === CUSTOM_FIELD_TYPES.PATIENT
                       ? patientCustomFieldValue
@@ -1772,6 +1785,7 @@ const TaskItem = React.memo(
                               field={field}
                               customFieldValue={customFieldValue}
                               task={task}
+                              taskWorkflow={taskWorkflow}
                               readOnly={
                                 restrictions?.customFields === READ_ONLY
                               }

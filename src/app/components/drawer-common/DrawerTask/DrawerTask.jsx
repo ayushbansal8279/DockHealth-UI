@@ -48,6 +48,7 @@ import {
   SINGLE_TASK_RESTRICTIONS_OPTIONS,
   // SINGLE_TASK_RESTRICTIONS_PROFILES,
 } from 'restrictions/task-restrictions';
+import { createMentionsFromTokenizedDescription } from 'components/common/RichTextEditor/CreateMentions';
 import {
   Container,
   IconsSection,
@@ -78,9 +79,9 @@ const DrawerTask = (props) => {
   const {
     taskIdentifier,
     status,
-    description,
-    // tokenizedDescription,
-    // taskMentions,
+    // description,
+    tokenizedDescription,
+    taskMentions,
     assignedToUsers,
     dueDate,
     comments,
@@ -197,7 +198,13 @@ const DrawerTask = (props) => {
         }}
       >
         <Description isCrossedOut={isCompleted}>
-          <span>{description}</span>
+          {/* {tokenizedDescription} */}
+          <div>
+            {createMentionsFromTokenizedDescription(
+              tokenizedDescription,
+              taskMentions,
+            )}
+          </div>
         </Description>
       </DescriptionContainer>
       <IconsSection>

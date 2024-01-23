@@ -10,25 +10,19 @@ export const DropdownBox = styled.div`
   position: relative;
   cursor: pointer;
   color: ${palette.paleBlue};
+  width: 300px;
 `;
 
 export const DropdownSelect = styled(Select)`
   & .MuiSelect-root {
     padding: 0px;
     background: white;
-    height: 40px;
   }
   & .MuiSelect-filled.MuiSelect-filled {
     padding-right: 0;
-    height: 40px;
   }
   & .MuiSelect-root:before {
     display: none;
-  }
-  & .MuiSelect-select {
-    padding: 0px;
-    background-color: cream;
-    height: 40px;
   }
 `;
 
@@ -47,4 +41,12 @@ export const ColorIndicator = styled.div`
   background: ${(props) => props.color};
   position: absolute;
   left: 0px;
+`;
+
+export const IconWrapper = styled.div`
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
 `;

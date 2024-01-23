@@ -145,6 +145,18 @@ const ProfilesAndCustomFieldsView = lazy(() =>
 const TaskCustomizationsView = lazy(() =>
   import('views/custom-fields/task-customizations/TaskCustomizationsView'),
 );
+const TasksView = lazy(() =>
+  import('views/TasksView/TasksView.jsx'),
+);
+
+const TasksView2 = lazy(() =>
+  import('views/TasksView/TasksView2.jsx'),
+);
+
+const TasksView3 = lazy(() =>
+  import('../../pages/core/tasks.page'),
+);
+
 
 const CreateList = lazy(() =>
   import('views/OnboardingTutorial/CreateList/CreateList'),
@@ -265,12 +277,28 @@ export const TEMPLATE_CORE_SUBSCRIPTION_PLAN_ROUTES = [
   {
     path: '/custom-profiles/:profileTypeIdentifier/:profileIdentifier',
     RouteComponent: CustomProfileView,
-    onLeave: onLeaveGlobalSearch,
     permissions: [CAN_ACCESS_SEARCH_PAGE],
   },
   {
     path: '/custom-profiles/:profileTypeIdentifier',
     RouteComponent: CustomProfileList,
+    permissions: [CAN_ACCESS_SEARCH_PAGE],
+  },
+  {
+    path: '/poc',
+    RouteComponent: TasksView,
+    onLeave: onLeaveGlobalSearch,
+    permissions: [CAN_ACCESS_SEARCH_PAGE],
+  },
+  {
+    path: '/poc2',
+    RouteComponent: TasksView2,
+    onLeave: onLeaveGlobalSearch,
+    permissions: [CAN_ACCESS_SEARCH_PAGE],
+  },
+  {
+    path: '/poc3',
+    RouteComponent: TasksView3,
     onLeave: onLeaveGlobalSearch,
     permissions: [CAN_ACCESS_SEARCH_PAGE],
   },

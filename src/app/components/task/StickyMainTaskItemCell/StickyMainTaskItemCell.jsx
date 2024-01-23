@@ -49,7 +49,7 @@ const StickyMainTaskItemCell = styled.div`
   &::after {
     content: '';
     display: block;
-    background-color: ${props =>
+    background-color: ${(props) =>
       // eslint-disable-next-line unicorn/no-nested-ternary
       props.isSelected
         ? palette.brightBlueWithAlpha

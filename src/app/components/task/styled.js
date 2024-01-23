@@ -520,7 +520,8 @@ export const SubtaskStylingLinkContainer = styled.div`
   top: -1px;
   display: flex;
   align-items: center;
-  z-index: 1;
+  z-index: 999;
+  pointer-events: none;
 `;
 
 export const SubtaskStylingVerticalPart = styled.div`
@@ -549,7 +550,8 @@ export const SubtaskStylingLastLink = styled.div`
   padding: 1px 0;
   left: -19px;
   top: -1px;
-  z-index: 1;
+  z-index: 999;
+  pointer-events: none;
 `;
 
 export const SubtasksCellContentButton = styled.button`

@@ -15,6 +15,7 @@ export default object().shape({
   specialty: string().nullable(),
   subspecialty: string().nullable(),
   department: string().nullable(),
+  credentials: string().nullable(),
   workPhoneNumber: string()
     .transform((value) => {
       if (!value || value.length <= 3) {
@@ -22,7 +23,7 @@ export default object().shape({
       }
       return matchEmptyNumber(value);
     })
-    .phone(null, null, MASK_MESSAGE)
+    // .phone(null, false, MASK_MESSAGE)
     // .matches(PHONE_MASK, MASK_MESSAGE)
     .notRequired(),
 });

@@ -86,6 +86,6 @@ export const userMultipleTaskDetailsSelector = createSelector(
 );
 
 export const selectedTasksSelector = (state) =>
-  state?.taskItems?.selectedTaskIdentifiers.map(
-    (taskId) => state?.personDetails?.tasksMap[taskId],
-  );
+  state?.taskItems?.selectedTaskIdentifiers
+    .filter((taskId) => state?.personDetails?.tasksMap[taskId] !== undefined)
+    .map((taskId) => state?.personDetails?.tasksMap[taskId]);

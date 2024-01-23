@@ -195,7 +195,7 @@ const SendSmsFromTaskModal = () => {
             setNewContact(contact);
           }}
           handleShow={setShow}
-          email={newContact?.value}
+          phone={newContact?.value}
           name={newContact?.label}
           identifier={newContact?.identifier}
         />

@@ -127,24 +127,16 @@ const EditTemplateModal = ({ closeModal, template, onAdded, onUpdated }) => {
                   {(templateTypeValue === TEMPLATE_TYPES.EMAIL ||
                     templateTypeValue === TEMPLATE_TYPES.SMS) && (
                     <Grid item xs={12}>
-                      <CustomTextEditor
+                      <FormInput
+                        required
+                        autoFocus
+                        name="shortMessage"
                         label={
                           templateTypeValue === TEMPLATE_TYPES.EMAIL
                             ? 'Subject'
                             : 'Message'
                         }
-                      >
-                        <RichTextEditor
-                          value={template?.shortMessage}
-                          onBlur={(value) => setValue('shortMessage', value)}
-                          showToolbar={
-                            templateTypeValue !== TEMPLATE_TYPES.EMAIL
-                          }
-                          multiline={templateTypeValue !== TEMPLATE_TYPES.EMAIL}
-                          initOnClick
-                          showCharCount
-                        />
-                      </CustomTextEditor>
+                      />
                     </Grid>
                   )}
                   {templateTypeValue !== TEMPLATE_TYPES.SMS && (

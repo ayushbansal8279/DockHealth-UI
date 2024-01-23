@@ -81,8 +81,8 @@ const MultiAssignMembersList = ({
             );
             return (
               !isSelected &&
-              name.toLowerCase().startsWith(searchValue.toLowerCase()) &&
-              identifier !== currentUser?.identifier
+              name.toLowerCase().includes(searchValue.toLowerCase()) //&&
+              // identifier !== currentUser?.identifier
             );
           }),
     [
@@ -394,6 +394,7 @@ MultiAssignMembersList.propTypes = {
       firstName: string,
       lastName: string,
       initials: string,
+      credentials: string,
       profileThumbnailPictureHash: string,
     }),
   ).isRequired,
@@ -405,6 +406,7 @@ MultiAssignMembersList.propTypes = {
       firstName: string,
       lastName: string,
       initials: string,
+      credentials: string,
       profileThumbnailPictureHash: string,
     }),
   ),

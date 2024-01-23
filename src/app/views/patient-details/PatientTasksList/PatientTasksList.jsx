@@ -230,12 +230,13 @@ const PatientTasksListView = () => {
             patientIdentifier,
           }),
         );
+        setTimeout(() => dispatch(getCurrentPatientTasks()), 1500);
       } else {
         dispatch(
           openModal('ListPicker', {
             enableSelectingGroupStep: true,
             fetchMethod: getTaskListForUser,
-            confirm: (listId, taskGroupId) =>
+            confirm: (listId, taskGroupId) => {
               dispatch(
                 addTask({
                   description,
@@ -243,7 +244,9 @@ const PatientTasksListView = () => {
                   patientIdentifier,
                   taskGroupIdentifier: taskGroupId,
                 }),
-              ),
+              );
+              setTimeout(() => dispatch(getCurrentPatientTasks()), 1500);
+            },
           }),
         );
       }
@@ -419,7 +422,7 @@ const PatientTasksListView = () => {
     <>
       {filteredLists ? (
         <>
-          {filteredLists?.length > 0 ? (
+          {filteredLists?.length >= 0 ? (
             <>
               <StickyContainer left={24} decreaseWidth={2 * 24} zIndex={13}>
                 <TaskListToolbar

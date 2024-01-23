@@ -149,8 +149,11 @@ const TaskDrawerContent = (props) => {
   }, [currentUser, currentTasklist]);
 
   const isCreator = useMemo(() => {
-    return selectedTask?.creator?.identifier === currentUser?.identifier;
-  }, [currentUser, selectedTask]);
+    return (
+      !parentBundle &&
+      selectedTask?.creator?.identifier === currentUser?.identifier
+    );
+  }, [currentUser, selectedTask, parentBundle]);
 
   if (!restrictions) {
     restrictions = {};
@@ -520,6 +523,7 @@ const TaskDrawerContent = (props) => {
               </div>
             </Grid>
           )}
+        <TaskDrawerDivider />
         {!taskAttachmentsDisabled && (
           <Grid item xs={12} style={styleFullRow(isMobile)}>
             <AttachmentsSection
@@ -529,6 +533,7 @@ const TaskDrawerContent = (props) => {
             />
           </Grid>
         )}
+        <TaskDrawerDivider />
         <Grid item xs={12} style={styleCommentRow}>
           <div>
             <CommentSection selectedTask={selectedTask} />

@@ -16,7 +16,7 @@ const AlertMessages = {
   COMMENT_ADDED: 'Comment added',
   ATTACHMENT_ADDED: 'Attachment added',
   ATTACHMENT_REMOVED: 'Attachment removed',
-  TASK_DUPLICATED: 'Task duplicted',
+  TASK_DUPLICATED: 'Task duplicated',
   PATIENT_ARCHIVED: 'Archived',
   SHARED: 'Shared',
   PATIENT_UNARCHIVED: 'Restored',

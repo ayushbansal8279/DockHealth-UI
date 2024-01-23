@@ -28,7 +28,7 @@ import * as TemplateActions from 'actions/template-actions';
 import SearchIcon from 'img/navigation/SearchIcon';
 import HomeIcon from 'img/navigation/HomeIcon';
 import ListsIcon from 'img/navigation/ListsIcon';
-import PeopleIcon from 'img/navigation/PeopleIcon';
+import ProfilesIcon from 'img/navigation/ProfilesIcon';
 import PatientsIcon from 'img/navigation/PatientsIcon';
 import SettingsIcon from 'img/navigation/SettingsIcon';
 import TemplatesIcon from 'img/navigation/TemplatesIcon';
@@ -249,7 +249,7 @@ const NavigationSidebar = () => {
               <AccessRestrictor>
                 <IconNavigationItem
                   name="Profiles"
-                  icon={PeopleIcon}
+                  icon={ProfilesIcon}
                   path={CUSTOM_PROFILES_PATH}
                   subMenuKey={SubmenuKey.CUSTOM_PROFILES}
                   subMenuOpen={openedSubMenuKey === SubmenuKey.CUSTOM_PROFILES}

@@ -23,12 +23,12 @@ export function moveWorkflowToFolder(identifier, parentTaskWorkflowIdentifier) {
 
 export function copyWorkflowToOrganization(
   identifier,
-  targetOrganizationIdentifier,
+  targetOrganizationIdentifiers,
 ) {
   return {
     type: ActionTypes.COPY_WORKFLOW_TO_ORGANIZATION,
     identifier,
-    targetOrganizationIdentifier,
+    targetOrganizationIdentifiers,
   };
 }
 

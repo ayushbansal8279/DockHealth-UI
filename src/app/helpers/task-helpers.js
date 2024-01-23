@@ -569,7 +569,7 @@ export const EmrNoteTypeOptions = {
   PROGRESS_NOTE: 'Progress note',
 };
 
-export function findIncompleteRequiredFields(customFields, task) {
+export function findIncompleteRequiredFields(customFields, task, taskBundle) {
   const requiredFieldLabels = task?.labels
     ?.filter((lbl) => lbl.labelName.indexOf('Required_') === 0)
     .map((lbl) => lbl.labelName.replace('Required_', ''));
@@ -602,6 +602,18 @@ export function findIncompleteRequiredFields(customFields, task) {
     incompleteCustomFields = incompleteCustomFields?.concat([
       {
         name: 'Task Attachment',
+      },
+    ]);
+  }
+
+  // check for patient
+  const patientRequired = task?.labels?.find(
+    (lbl) => lbl.labelName.indexOf('Required_Patient') === 0,
+  );
+  if (patientRequired && !task?.patient) {
+    incompleteCustomFields = incompleteCustomFields?.concat([
+      {
+        name: 'Patient',
       },
     ]);
   }

@@ -44,6 +44,8 @@ import {
   SelectParentOption,
 } from '../../customModals/styled';
 
+import ArrowIcon from 'img/arrow.svg';
+
 const REQUIRED_MESSAGE = 'This field is required';
 
 const EditCustomFieldModal = ({
@@ -119,7 +121,10 @@ const EditCustomFieldModal = ({
     mode: 'onSubmit',
     defaultValues: useMemo(() => {
       const baseCustomField = isCreatingNewField
-        ? { fieldCategoryType: Category.OTHER_INFO }
+        ? {
+            fieldCategoryType:
+              type === 'PATIENT' ? Category.OTHER_INFO : 'PROVIDER_OTHER',
+          }
         : {
             ...customField,
             relatedProfileType: customField.relatedProfileType?.identifier,

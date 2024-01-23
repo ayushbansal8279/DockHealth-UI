@@ -123,3 +123,17 @@ export const CheckboxSpacing = styled.div`
   width: 12px;
   height: 12px;
 `;
+
+export const NoneOption = styled.div`
+  color: ${palette.mediumGrey};
+`;
+
+export const StyledLink = styled.a`
+  color: ${palette.brightBlue};
+
+  &:hover,
+  &:active,
+  &:focus {
+    color: ${palette.brightBlue};
+  }
+`;

@@ -79,7 +79,9 @@ const ListSelectStep = ({
                       list.taskListIdentifier
                     }
                   >
-                    {list.listName}
+                    {list.discoveryEnabled === true
+                      ? `${list.listName} (Shared)`
+                      : list.listName}
                   </ListItemTextButton>
                   {enableSelectingGroupStep && (
                     <IconButton

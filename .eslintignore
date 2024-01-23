@@ -1,1 +1,3 @@
 testing/integration/**
+src/**/*.ts
+src/**/*.tsx

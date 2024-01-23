@@ -12,7 +12,7 @@ export function createProfile(profile) {
   return axios.post('profile', profile).then(({ data }) => data);
 }
 
-export function editProfileType(identifier, profile) {
+export function editProfileDetails(identifier, profile) {
   return axios.put(`profile/${identifier}`, profile).then(({ data }) => data);
 }
 

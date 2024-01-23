@@ -32,7 +32,7 @@ import { Box, ClickAwayListener } from '@mui/material';
 //   createInlineStyleButton,
 // } from '@draft-js-plugins/buttons';
 import { useMentionsEditorState } from 'components/common/TextEditor/use-mentions-editor-state';
-import { FieldCharakterLimit } from 'helpers/field-type-helpers';
+import { FieldCharacterLimit } from 'helpers/field-type-helpers';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import { userProfileSelector } from 'selectors/user-selectors';
 import UsersSuggestionsPopover from './UsersSuggestionsPopover/UsersSuggestionsPopover';
@@ -111,7 +111,7 @@ const TextEditor = React.forwardRef(
       disableMentions = false,
       minHeight,
       getFocusFromParent,
-      characterLimit = showToolbar ? FieldCharakterLimit.RICH_TEXT : false,
+      characterLimit = showToolbar ? FieldCharacterLimit.RICH_TEXT : false,
     },
     outerReference,
   ) => {

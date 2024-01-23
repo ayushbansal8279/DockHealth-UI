@@ -160,6 +160,7 @@ const ProfileNote = ({
   }, [note, noteState, onSave]);
 
   const handleTextEditorChange = (value) => {
+    setValueReset(false);
     setNoteState(value);
   };
 
@@ -181,11 +182,16 @@ const ProfileNote = ({
               showCharCount
             />
             <ProfileNoteAuthor>
-              {creator?.firstName} {creator?.lastName} {dateNoteCreated}
+              {creator?.firstName} {creator?.lastName}
+              {creator?.credentials ? `, ${creator?.credentials}` : ''}{' '}
+              {dateNoteCreated}
             </ProfileNoteAuthor>
             {dateNoteCreated !== dateNoteUpdated && (
               <ProfileNoteAuthor>
-                Updated By: {lastEditor?.firstName} {lastEditor?.lastName}{' '}
+                Updated By: {lastEditor?.firstName} {lastEditor?.lastName}
+                {lastEditor?.credentials
+                  ? `, ${lastEditor?.credentials}`
+                  : ''}{' '}
                 {dateNoteUpdated}
               </ProfileNoteAuthor>
             )}

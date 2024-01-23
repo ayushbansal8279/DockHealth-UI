@@ -55,11 +55,11 @@ const CustomerTypeDropDown = ({
           </PlaceholderContainer>
         )}
         <DropdownSelect
-          name="Customer Type DropDown"
+          name="CustomerType"
           value={value}
           onChange={handleChange}
           options={options.sort((a, b) => a.label.localeCompare(b.label))}
-          disableUnderline
+          // disableUnderline
           IconComponent={() => <></>}
           disabled={readOnly}
         />

@@ -182,7 +182,7 @@ const TaskReducer = (state = initialState, action) => {
                 const matchedTaskMetaData = taskItem?.taskMetaData?.find(
                   (newtmd) =>
                     newtmd &&
-                    newtmd.customFieldIdentifier === tmd.customFieldIdentifier,
+                    newtmd.customFieldIdentifier === tmd?.customFieldIdentifier,
                 );
                 return {
                   ...tmd,
@@ -195,7 +195,7 @@ const TaskReducer = (state = initialState, action) => {
                 state.selectedTask?.taskMetaData?.find(
                   (tmd) =>
                     tmd &&
-                    tmd.customFieldIdentifier === newtmd.customFieldIdentifier,
+                    tmd.customFieldIdentifier === newtmd?.customFieldIdentifier,
                 ) === undefined,
             );
             const mergedTaskMetaData = updatedMetaData?.concat(newMetaData);

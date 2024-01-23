@@ -17,8 +17,8 @@ import { noop } from 'helpers/utility-functions';
 import AddRecordOption from 'components/common/AddRecordOption/AddRecordOption';
 
 import { userProfileSelector } from 'selectors/user-selectors';
-import PatientSelectItem from '../PatientSelectItem/PatientSelectItem';
 import { organizationSelector } from 'selectors/organization-selectors';
+import PatientSelectItem from '../PatientSelectItem/PatientSelectItem';
 
 import {
   Input,

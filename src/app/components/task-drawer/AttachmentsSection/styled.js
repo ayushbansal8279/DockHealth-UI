@@ -2,6 +2,7 @@ import styled from 'styled-components';
 
 import palette, { opacify } from 'styles/palette';
 import spacing from 'styles/spacing';
+import { fontSizes, fontWeights } from 'styles/font';
 
 export const DropHereText = styled.div`
   display: flex;
@@ -72,4 +73,11 @@ export const DownloadAllLink = styled.a`
   color: ${palette.brightBlue};
   padding: ${spacing.tiny} ${spacing.small};
   margin: ${spacing.tiny};
+`;
+
+export const Title = styled.h3`
+  font-family: 'Montserrat', sans-serif;
+  font-size: ${fontSizes.regular};
+  font-weight: ${fontWeights.regularPlus};
+  color: ${palette.greyBlue};
 `;
