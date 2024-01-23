@@ -14,16 +14,15 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import ReactGA from 'react-ga';
 import { Provider } from 'react-redux';
-import { getTheme } from 'styles/theme';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { IntercomProvider } from 'react-use-intercom';
+import { getTheme } from 'styles/theme';
 import configureStore from './ConfigureStore';
 import ErrorBoundary from './ErrorBoundary';
 // import flags, { FlagsProvider } from './helpers/flags';
 import Routes from './routing/routes';
 import App from './views/App';
-import { theme } from './theme';
 
 if (import.meta.env.NODE_ENV === 'development') {
   const whyDidYouRender = require('@welldone-software/why-did-you-render');
@@ -96,7 +95,7 @@ const queryClient = new QueryClient({
 const Index = () => (
   <QueryClientProvider client={queryClient}>
     <MuiThemeProvider theme={getTheme()}>
-      <ThemeProvider theme={theme}>
+      <ThemeProvider theme={getTheme()}>
         <MuiPickersUtilsProvider dateAdapter={AdapterDateFns}>
           {/* <FlagsProvider flags={flags}> */}
           <Provider store={store}>
