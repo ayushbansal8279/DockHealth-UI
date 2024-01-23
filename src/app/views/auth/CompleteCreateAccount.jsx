@@ -94,7 +94,7 @@ const CompleteCreateAccount = (props) => {
   const [isUserExistsDialogShown, showUserExistsDialog, hideUserExistsDialog] =
     useBoolean(false);
   const [externalUserMode, setExternalUserMode] = useState(false);
-  const [dialogTitle, setDialogTitle] = useState('User Already Exists');
+  const [dialogTitle, setDialogTitle] = useState('This Email is Already in Use');
   const [dialogMessage, setDialogMessage] = useState('');
   const [customPageTitle, setCustomPageTitle] = useState('');
   const [isUserInvited, setIsUserInvited] = useState(false);

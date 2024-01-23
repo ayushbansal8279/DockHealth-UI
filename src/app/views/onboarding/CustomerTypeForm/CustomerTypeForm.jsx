@@ -47,8 +47,8 @@ const CustomerTypeForm = ({ onSubmit, customerTypesList }) => {
       {firstTimeUser && (
         <>
           <OnboardingIndicator
-            steps={orgUserRole === 'OWNER' ? 5 : 3}
-            completedSteps={orgUserRole === 'OWNER' ? 4 : 3}
+            steps={orgUserRole === 'OWNER' ? 2 : 3}
+            completedSteps={orgUserRole === 'OWNER' ? 2 : 3}
           />
           <Spacing vertical={5} />
         </>
