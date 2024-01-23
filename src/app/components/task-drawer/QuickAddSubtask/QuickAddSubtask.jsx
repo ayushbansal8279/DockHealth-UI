@@ -58,11 +58,11 @@ const QuickAddSubtask = () => {
   };
 
   const handleTextEditorKeyEnter = (value) => {
+    resetInputState();
     onTaskDrawerSubtaskAdd('Quick add input');
     dispatch(addSubtask(taskIdentifier, { description: value }))
       .then(() => {
         dispatch(refreshTask(taskIdentifier));
-        resetInputState();
       })
       .catch(resetInputState);
   };
@@ -86,6 +86,7 @@ const QuickAddSubtask = () => {
           disableToolbar
           showToolbarInline
           initOnClick
+          taskListIdentifier={taskList?.taskListIdentifier}
         />
       </Box>
     </QuickAddTaskInputWrapper>

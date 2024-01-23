@@ -167,6 +167,7 @@ const WorkflowDrawer = () => {
                 </Grid>
               </Grid>
             </SectionContainer>
+            <SectionSpacer />
             <SectionContainer>
               <AttachmentSection
                 disabled={restrictions?.attachments === DISABLED}
@@ -176,6 +177,7 @@ const WorkflowDrawer = () => {
             <SectionContainer>
               <TasksSection disabled={restrictions?.tasks === DISABLED} />
             </SectionContainer>
+            <SectionSpacer />
             <SectionContainer withBackground>
               <CommentSection disabled={restrictions?.comments === DISABLED} />
             </SectionContainer>
@@ -185,6 +187,7 @@ const WorkflowDrawer = () => {
                 disabled={restrictions?.customFields === DISABLED}
               />
             </SectionContainer>
+            <SectionSpacer />
             <SectionContainer>
               <HistorySection disabled={restrictions?.history === DISABLED} />
             </SectionContainer>

@@ -15,100 +15,106 @@ import {
   MoreButton,
 } from './styled';
 
-const TaskComment = ({
-  creator,
-  dateUpdated,
-  comment,
-  tokenizedComment,
-  commentMentions,
-  dateCreated,
-  highlightedValue,
-  onClickComment,
-  isLastComment,
-  showMore,
-}) => {
-  const commentTextReference = useRef(null);
-  const previousCommentValue = useRef(null);
-  const [commentState, setCommentState] = useMentionsEditorState(
-    convertToEditorState({
-      rawText: comment,
-      tokenizedText: tokenizedComment,
-      mentions: commentMentions,
-      handleRichText: true,
-    }),
-  );
-  const [wholeCommentVisible, setWholeCommentVisible] = useState(false);
+const TaskComment = React.memo(
+  ({
+    creator,
+    dateUpdated,
+    comment,
+    tokenizedComment,
+    commentMentions,
+    dateCreated,
+    highlightedValue,
+    onClickComment,
+    isLastComment,
+    showMore,
+  }) => {
+    const commentTextReference = useRef(null);
+    const previousCommentValue = useRef(null);
+    const [commentState, setCommentState] = useMentionsEditorState(
+      convertToEditorState({
+        rawText: comment,
+        tokenizedText: tokenizedComment,
+        mentions: commentMentions,
+        handleRichText: true,
+      }),
+    );
+    const [wholeCommentVisible, setWholeCommentVisible] = useState(false);
 
-  useEffect(() => {
-    if (previousCommentValue.current !== null) {
-      // const newContent = createMentionEntities(
-      //   tokenizedComment,
-      //   comment,
-      //   commentMentions,
-      //   true,
-      // );
-      // setCommentState(EditorState.push(commentState, newContent));
+    useEffect(() => {
+      if (previousCommentValue.current !== null) {
+        // const newContent = createMentionEntities(
+        //   tokenizedComment,
+        //   comment,
+        //   commentMentions,
+        //   true,
+        // );
+        // setCommentState(EditorState.push(commentState, newContent));
+      }
+      previousCommentValue.current = comment;
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [comment]);
+
+    let dateLabel = '';
+
+    if (moment(dateUpdated).isSame(new Date(), 'd')) {
+      dateLabel = 'Today';
+    } else if (moment(dateUpdated).isSame(moment().subtract(1, 'days'), 'd')) {
+      dateLabel = 'Yesterday';
+    } else {
+      dateLabel = moment(dateUpdated).format('MMMM D, YYYY');
     }
-    previousCommentValue.current = comment;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [comment]);
 
-  let dateLabel = '';
+  const commentAuthor = `${creator.firstName} ${creator.lastName}${
+    creator?.credentials ? `, ${creator?.credentials}` : ''
+  }`.trim();
 
-  if (moment(dateUpdated).isSame(new Date(), 'd')) {
-    dateLabel = 'Today';
-  } else if (moment(dateUpdated).isSame(moment().subtract(1, 'days'), 'd')) {
-    dateLabel = 'Yesterday';
-  } else {
-    dateLabel = moment(dateUpdated).format('MMMM D, YYYY');
-  }
+    const commentDate = ` ${dateLabel} @ ${moment(dateUpdated).format(
+      'h:mm a',
+    )}`;
 
-  const commentAuthor = `${creator.firstName} ${creator.lastName}`.trim();
+    const hasMore =
+      commentTextReference.current?.scrollHeight >
+      commentTextReference.current?.offsetHeight;
 
-  const commentDate = ` ${dateLabel} @ ${moment(dateUpdated).format('h:mm a')}`;
-
-  const hasMore =
-    commentTextReference.current?.scrollHeight >
-    commentTextReference.current?.offsetHeight;
-
-  return (
-    <TaskCommentContainer isLastComment={isLastComment} showMore={showMore}>
-      <TaskCommentAvatarContainer>
-        <UserAvatar user={creator} />
-      </TaskCommentAvatarContainer>
-      <TaskCommentContent onClick={onClickComment}>
-        <TaskCommentDetails>
-          <b>{commentAuthor}</b>
-          {commentDate}
-        </TaskCommentDetails>
-        <TaskCommentText
-          ref={commentTextReference}
-          wholeCommentVisible={wholeCommentVisible}
-        >
-          <TextEditor
-            readOnly
-            showToolbar
-            withEditedLabel={dateCreated !== dateUpdated}
-            state={commentState}
-            onChange={setCommentState}
-            highlightedValues={highlightedValue?.toLowerCase().split(/\s+/)}
-          />
-          {hasMore && !wholeCommentVisible && (
-            <MoreButton
-              type="button"
-              onClick={(event) => {
-                event.preventDefault();
-                event.stopPropagation();
-                setWholeCommentVisible(true);
-              }}
-            >
-              ... <span>more</span>
-            </MoreButton>
-          )}
-        </TaskCommentText>
-      </TaskCommentContent>
-    </TaskCommentContainer>
-  );
-};
+    return (
+      <TaskCommentContainer isLastComment={isLastComment} showMore={showMore}>
+        <TaskCommentAvatarContainer>
+          <UserAvatar user={creator} />
+        </TaskCommentAvatarContainer>
+        <TaskCommentContent onClick={onClickComment}>
+          <TaskCommentDetails>
+            <b>{commentAuthor}</b>
+            {commentDate}
+          </TaskCommentDetails>
+          <TaskCommentText
+            ref={commentTextReference}
+            wholeCommentVisible={wholeCommentVisible}
+          >
+            <TextEditor
+              readOnly
+              showToolbar
+              withEditedLabel={dateCreated !== dateUpdated}
+              state={commentState}
+              onChange={setCommentState}
+              highlightedValues={highlightedValue?.toLowerCase().split(/\s+/)}
+            />
+            {hasMore && !wholeCommentVisible && (
+              <MoreButton
+                type="button"
+                onClick={(event) => {
+                  event.preventDefault();
+                  event.stopPropagation();
+                  setWholeCommentVisible(true);
+                }}
+              >
+                ... <span>more</span>
+              </MoreButton>
+            )}
+          </TaskCommentText>
+        </TaskCommentContent>
+      </TaskCommentContainer>
+    );
+  },
+);
 
 export default TaskComment;

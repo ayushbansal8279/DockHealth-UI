@@ -92,6 +92,9 @@ import {
 } from './styled';
 import TaskTemplateDetails from '../TaskTemplateDetails/TaskTemplateDetails';
 import { CollapseContext } from "views/list-details/VirtualTaskList/VirtualTaskList";
+import {
+  isWorkflowDrawerOpenSelector,
+} from 'selectors/workflow-drawer-selectors';
 
 const TaskTemplateGroupHeader = ({
   templateGroup = {},
@@ -519,7 +522,7 @@ const TaskTemplateGroupHeader = ({
     ),
   );
 
-  const isBundleSelected = isBundlePreSelected || isBundleSelectedFromTasks;
+  const isBundleSelected = useSelector(isWorkflowDrawerOpenSelector) || isBundlePreSelected || isBundleSelectedFromTasks;
 
   const handleBundleSelect = useCallback(async () => {
     let selectedTaskIdentifiers = [templateGroup?.identifier];
@@ -693,6 +696,12 @@ const TaskTemplateGroupHeader = ({
       dispatch(updatePatientDetails(patientIdentifier, { [field]: value }));
     },
     [patient, dispatch],
+  );
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const handleWorkflowUpdate = useCallback(
+    compose(dispatch, updatePartialWorkflow),
+    [dispatch, updatePartialWorkflow, compose],
   );
 
   return (
@@ -970,7 +979,7 @@ const TaskTemplateGroupHeader = ({
             >
               <TemplateItemWorkflowStatus
                 workflow={templateGroup}
-                onWorkflowUpdate={compose(dispatch, updatePartialWorkflow)}
+                onWorkflowUpdate={handleWorkflowUpdate}
                 highlightedValue={highlightedValue}
                 readOnly={restrictions?.status === READ_ONLY}
               />

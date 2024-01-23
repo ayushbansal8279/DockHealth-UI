@@ -67,7 +67,7 @@ const TasksToolbar = (props) => {
               taskGroupIdentifier,
             });
             setTimeout(() => {
-              quickAddTaskInputReference.current.focus();
+              quickAddTaskInputReference?.current?.focus();
             }, 0);
           }}
           iconColorActive={iconColorActive}

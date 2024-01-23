@@ -26,6 +26,7 @@ const TaskItemCustomField = ({
   field,
   customFieldValue,
   task,
+  taskWorkflow,
   onClick,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
@@ -52,13 +53,17 @@ const TaskItemCustomField = ({
     if (patientType) {
       if (task?.patient) {
         const patientMetaData =
-          (task?.patient?.patientMetaData || [])
+          (
+            task?.patient?.patientMetaData ||
+            taskWorkflow?.patient?.patientMetaData ||
+            []
+          )
             ?.filter(
-              pmd =>
+              (pmd) =>
                 pmd?.customFieldIdentifier !== field.identifier &&
                 (pmd?.value || pmd?.values),
             )
-            ?.map(pmd => createMetaDataObjectToSend(pmd)) ?? [];
+            ?.map((pmd) => createMetaDataObjectToSend(pmd)) ?? [];
         if (Array.isArray(newValue)) {
           patientMetaData.push({
             customFieldIdentifier: field.identifier,
@@ -77,11 +82,11 @@ const TaskItemCustomField = ({
       const taskMetaData =
         task?.taskMetaData
           ?.filter(
-            tmd =>
+            (tmd) =>
               tmd?.customFieldIdentifier !== field.identifier &&
               (tmd?.value || tmd?.values),
           )
-          ?.map(tmd => createMetaDataObjectToSend(tmd)) ?? [];
+          ?.map((tmd) => createMetaDataObjectToSend(tmd)) ?? [];
       if (Array.isArray(newValue)) {
         taskMetaData.push({
           customFieldIdentifier: field.identifier,

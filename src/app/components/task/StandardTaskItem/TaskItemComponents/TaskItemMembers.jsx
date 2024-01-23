@@ -15,6 +15,7 @@ const TaskItemMembers = ({
   handleReasignTask,
   matchAssignedTo,
   readOnly,
+  additionalUsers,
 }) => {
   return (
     <TaskItemPopover
@@ -34,6 +35,7 @@ const TaskItemMembers = ({
             task?.taskList?.listType === 'PUBLIC' ||
             task?.taskList?.listType === 'TEMPLATE'
           }
+          additionalMembers={additionalUsers}
         />
       )}
       fullWidth={multipleAssigneesContext}

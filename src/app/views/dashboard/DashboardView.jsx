@@ -8,7 +8,10 @@ import {
   clearDashboardState,
   initializeDashboardState,
 } from 'actions/dashboard-actions';
-import { userProfileSelector } from 'selectors/user-selectors';
+import {
+  userProfileSelector,
+  userHasShareTaskFeatureSelector,
+} from 'selectors/user-selectors';
 import { clearFiltersForMegaFilter } from 'actions/mega-filter-actions';
 import * as TaskListActions from 'actions/task-list-actions';
 import * as UserAuthApi from 'api/user-auth-api';
@@ -54,7 +57,10 @@ const DashboardView = ({ tabName }) => {
   const [openConfetti, setOpenConfetti] = useState(false);
   const { usageState, orgUserRole } = currentUser ?? {};
   const { hasExistingLists, hasOnlyInvitedLists } = usageState ?? {};
-  const createListViewVisible = !hasExistingLists || hasOnlyInvitedLists;
+
+  const shareTaskAvailable = useSelector(userHasShareTaskFeatureSelector);
+
+  const createListViewVisible = !shareTaskAvailable && hasOnlyInvitedLists;
 
   const TAB_RESTRICTIONS = {
     [DashboardTasksTab.MY_TASKS]: {

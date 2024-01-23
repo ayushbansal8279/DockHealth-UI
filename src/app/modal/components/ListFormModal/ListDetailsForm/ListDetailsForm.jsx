@@ -15,6 +15,7 @@ import { createTaskListPath } from 'routing/helpers/paths';
 import { Title, ButtonWrapper, Header } from '../styled';
 import messages from './messages';
 import { CheckboxContainer, CheckboxDescription, StyledForm } from './styled';
+import { taskListsSelector } from 'selectors/task-list-selectors';
 
 const validateListName = (value) => {
   if (!value || ![...value]?.filter((char) => char !== ' ').length > 0) {
@@ -91,8 +92,8 @@ const ListDetailsForm = ({
     defaultValues: {
       listName: list?.listName,
       listDescription: list?.listDescription,
-      restrictCustomization: list ? !!list?.restrictCustomization : true,
-      discoveryEnabled: list ? !!list?.discoveryEnabled : true,
+      restrictCustomization: list ? list?.restrictCustomization : true,
+      discoveryEnabled: list ? list?.discoveryEnabled : false,
     },
     reValidateMode: 'onSubmit',
   });
@@ -103,6 +104,19 @@ const ListDetailsForm = ({
   const discoveryEnabled = watch('discoveryEnabled');
 
   const shareTaskAvailable = useSelector(userHasShareTaskFeatureSelector);
+
+  const taskLists = useSelector(taskListsSelector);
+  const validateExistingListName = (value) => {
+    const activeLists = [];
+    taskLists.forEach((task) => {
+      activeLists.push(task.listName);
+    });
+
+    if (activeLists.includes(value)) {
+      return 'List Name already exists';
+    }
+    return validateListName(value);
+  };
 
   return (
     <StyledForm
@@ -135,7 +149,7 @@ const ListDetailsForm = ({
               name="listName"
               required
               placeholder="Add your list name here"
-              validate={validateListName}
+              validate={validateExistingListName}
             />
             <Spacing vertical={4} />
             <FormInput

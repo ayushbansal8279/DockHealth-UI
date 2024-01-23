@@ -14,3 +14,21 @@ export const LIST_TYPE_OPTIONS = [
     value: ListViewType.ALL_TASKS,
   },
 ];
+
+export const getProfileName = (profileTypeFields, profile) => {
+  // eslint-disable-next-line sonarjs/prefer-immediate-return
+  const profileName = profile?.fields
+    ?.filter((field) => {
+      const profileTypeField = profileTypeFields?.find(
+        (ptField) => ptField.identifier === field?.profileTypeFieldIdentifier,
+      );
+      return profileTypeField?.displayOptions?.includes('PROFILE_NAME');
+    })
+    .map(
+      (field) =>
+        field.values?.[0] ||
+        field.values?.[0].value ||
+        field.values?.[0]?.customFieldOption?.name,
+    );
+  return profileName;
+};

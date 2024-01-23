@@ -20,6 +20,8 @@ import {
   workflowSelector,
   workflowAutofocusFieldSelector,
 } from 'selectors/workflow-drawer-selectors';
+import { organizationCustomFieldsSelector } from 'selectors/organization-selectors';
+import { listCustomFieldsSelector } from 'selectors/list-details-selectors';
 import { FieldType } from 'helpers/field-type-helpers';
 // import { log } from 'helpers/log';
 import { formatMetaDataOutput } from './helpers';
@@ -46,19 +48,36 @@ const CustomFieldsSection = ({ disabled, fieldCategoryType }) => {
 
   const isMobile = useMediaQuery((theme) => theme.breakpoints.down('sm'));
 
-  const { templates: unfilteredTemplates } = useSelector(
-    taskCustomFieldsSelector,
+  const organizationCustomFields = useSelector(
+    organizationCustomFieldsSelector,
   );
+  const listCustomFields = useSelector(listCustomFieldsSelector);
+  const workflowCustomFields = organizationCustomFields
+    ? organizationCustomFields.concat(listCustomFields)
+    : listCustomFields;
 
-  const templates = useMemo(() => {
+  const { templates: taskCustomFields } = useSelector(taskCustomFieldsSelector);
+  const unfilteredCustomFields = taskCustomFields?.length
+    ? taskCustomFields
+    : workflowCustomFields;
+
+  const customFields = useMemo(() => {
     // eslint-disable-next-line sonarjs/prefer-immediate-return
-    const filtered = unfilteredTemplates.filter((unfilteredTemplate) => {
+    const filtered = unfilteredCustomFields.filter((unfilteredCustomField) => {
       if (fieldCategoryType)
-        return unfilteredTemplate?.fieldCategoryType === fieldCategoryType;
+        return unfilteredCustomField?.fieldCategoryType === fieldCategoryType;
       return true;
     });
-    return filtered;
-  }, [fieldCategoryType, unfilteredTemplates]);
+
+    // eslint-disable-next-line sonarjs/prefer-immediate-return
+    const filteredAndSorted = (
+      filtered.filter((cf) => cf.taskListIdentifier === undefined) || []
+    ).concat(
+      filtered.filter((cf) => cf.taskListIdentifier !== undefined) || [],
+    );
+
+    return filteredAndSorted;
+  }, [fieldCategoryType, unfilteredCustomFields]);
 
   const { 0: emptyVisible, 3: toggleEmptyVisible } = useBoolean(false);
 
@@ -77,14 +96,14 @@ const CustomFieldsSection = ({ disabled, fieldCategoryType }) => {
   const { handleSubmit, setValue, getValues } = formMethods;
 
   useEffect(() => {
-    if (task?.taskMetaData && templates) {
-      for (const template of templates) {
+    if (task?.taskMetaData && customFields) {
+      for (const customField of customFields) {
         const cf = task?.taskMetaData?.find(
-          (field) => field?.customFieldIdentifier === template.identifier,
+          (field) => field?.customFieldIdentifier === customField.identifier,
         );
-        const fieldName = `taskMetaData.${template.identifier}`;
-        const hasValue = !!getValues('taskMetaData')?.[template.identifier];
-        if (template.fieldType !== 'PICK_LIST' || !hasValue) {
+        const fieldName = `taskMetaData.${customField.identifier}`;
+        const hasValue = !!getValues('taskMetaData')?.[customField.identifier];
+        if (customField.fieldType !== 'PICK_LIST' || !hasValue) {
           if (cf?.value) {
             setValue(fieldName, cf.value);
           } else if (cf?.values) {
@@ -95,7 +114,7 @@ const CustomFieldsSection = ({ disabled, fieldCategoryType }) => {
         }
       }
     }
-  }, [getValues, setValue, task, templates]);
+  }, [getValues, setValue, task, customFields]);
 
   const handleBlur = useCallback(
     (data, wasChanged = false, fieldType) => {
@@ -147,19 +166,19 @@ const CustomFieldsSection = ({ disabled, fieldCategoryType }) => {
     ],
   );
 
-  if (templates.length === 0) return null;
+  if (customFields.length === 0) return null;
   return (
     <FormProvider {...formMethods}>
       {fieldCategoryType === 'TASK_CORE' ? (
         <CustomFieldsSectionContainerNoLine>
-          {templates?.map((field, index) => {
+          {customFields?.map((field, index) => {
             return renderCustomField(field, index, true);
           })}
         </CustomFieldsSectionContainerNoLine>
       ) : (
         <CustomFieldsSectionContainer>
           <Title>Custom fields</Title>
-          {templates?.map((field, index) => {
+          {customFields?.map((field, index) => {
             return renderCustomField(field, index, false);
           })}
           <CategoryOptions

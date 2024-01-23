@@ -23,7 +23,7 @@ import { checkIfUserIsOrganizationAdmin } from 'helpers/user-helper';
 import RichTextEditor from 'components/common/RichTextEditor/RichTextEditor';
 // import ProfileNote from '../ProfileNote/ProfileNote';
 // import ProfileNotesLoader from '../ProfileNotesLoader/ProfileNotesLoader';
-import ProfileNote from 'components/patients/CustomProfilesList/CustomProfileNotes/ProfileNote/ProfileNote';
+import ProfileNote from 'components/custom-profile/CustomProfilesList/CustomProfileNotes/ProfileNote/ProfileNote';
 import { note } from 'api/profile-api';
 import {
   PatientNotesWrapper,

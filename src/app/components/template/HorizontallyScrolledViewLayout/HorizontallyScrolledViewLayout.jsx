@@ -2,7 +2,7 @@ import React from 'react';
 import VerticalScrollContainer from 'components/common/HorizontalScroll/HorizontalScrollContainer';
 import { Container } from './styled';
 
-const HorizontallyScrolledViewLayout = (props) => {
+const HorizontallyScrolledViewLayout = React.memo((props) => {
   const { header, children } = props;
   return (
     <>
@@ -12,6 +12,6 @@ const HorizontallyScrolledViewLayout = (props) => {
       </VerticalScrollContainer>
     </>
   );
-};
+});
 
 export default HorizontallyScrolledViewLayout;

@@ -4,7 +4,9 @@ import { CompletedByLabel } from './styled';
 
 export const getCompletedByLabel = (completedBy, completedDt) => {
   const completedByName =
-    `${completedBy?.firstName.charAt(0)}. ${completedBy?.lastName}`
+    `${completedBy?.firstName.charAt(0)}. ${completedBy?.lastName}${
+      completedBy?.credentials ? `, ${completedBy?.credentials}` : ''
+    }`
       .trim()
       .replace(/^\.$/, '') || 'Unknown';
 

@@ -26,7 +26,7 @@ const NewNestedFlowNode = React.memo((props) => {
   const handleOpenModal = () => {
     dispatch(
       openModal('SmartFlowList', {
-        fetchMethod: () => getTemplates(),
+        fetchMethod: () => getTemplates(true),
         closeModal,
         setWorkflow,
       }),

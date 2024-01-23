@@ -2,7 +2,7 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import React, { useCallback, useEffect, useMemo } from 'react';
 import compose from 'ramda/src/compose';
-import useActions from 'hooks/use-actions';
+// import useActions from 'hooks/use-actions';
 import { useDispatch, useSelector } from 'react-redux';
 import { Box } from '@mui/material';
 import { useParams, useHistory } from 'react-router-dom';
@@ -10,29 +10,29 @@ import { DrawerFieldEnum } from 'helpers/task-drawer-helpers';
 import {
   changeTasksSelectedState,
   addTask,
-  findTasksByProfileGroupedByTaskList,
+  getTasksForProfile,
 } from 'actions/task-actions';
-import { createPatientDetailsListPath } from 'routing/helpers/paths';
+// import { createPatientDetailsListPath } from 'routing/helpers/paths';
 import TaskListHeader from 'views/patient-details/TaskListHeader/TaskListHeader';
-import {
-  getPatientFilterOptions,
-  getCurrentPatientTasks,
-} from 'actions/patient-details-actions';
+// import {
+//   getPatientFilterOptions,
+//   getCurrentPatientTasks,
+// } from 'actions/patient-details-actions';
 import { openModal } from 'modal/actions';
-import { PatientTasksSagaActions } from 'sagas/patient-details-saga';
+// import { PatientTasksSagaActions } from 'sagas/patient-details-saga';
 import { checkIfTaskMatchesFilters } from 'helpers/filters-helpers';
 import TasksHeader from 'components/tasklist/TasksHeader/TasksHeader';
 import TaskTemplateGroup from 'components/task-template/TaskTemplateGroup/TaskTemplateGroup';
-import {
-  currentPatientIdentifierSelector,
-  patientTaskListsSelector,
-  completeTasksVisibilitySelector,
-  patientTaskSearchSelector,
-  patientTasksSortSelector,
-  patientSelector,
-  currentListTasksStatusSelector,
-  selectedTasksSelector,
-} from 'selectors/patient-details-selectors';
+// import {
+// currentPatientIdentifierSelector,
+// patientTaskListsSelector,
+// completeTasksVisibilitySelector,
+// patientTaskSearchSelector,
+// patientTasksSortSelector,
+// patientSelector,
+// currentListTasksStatusSelector,
+// selectedTasksSelector,
+// } from 'selectors/patient-details-selectors';
 import { addingNewSubtaskParentIdSelector } from 'selectors/task-drawer-selectors';
 // import { organizationCustomFieldsSelector } from 'selectors/organization-selectors';
 import {
@@ -49,7 +49,7 @@ import BulkEditSection from 'components/tasklist/BulkEditSection/BulkEditSection
 import StandardTaskItem from 'components/task/StandardTaskItem/StandardTaskItem';
 import EmptyListViewWithQuickAddTask from 'components/tasklist/EmptyListView/EmptyListViewWithQuickAddTask';
 import GroupedListSkeletonLoader from 'components/tasklist/GroupedListSkeletonLoader/GroupedListSkeletonLoader';
-import NoSearchResultsView from 'components/tasklist/EmptyListView/NoSearchResultsView';
+// import NoSearchResultsView from 'components/tasklist/EmptyListView/NoSearchResultsView';
 import { getTaskListForUser } from 'api/task-list-api';
 import NoFilterResultsView from 'components/tasklist/EmptyListView/NoFilterResultsView';
 import EmptyListView from 'components/tasklist/EmptyListView/EmptyListView';
@@ -60,7 +60,7 @@ import {
   TaskOrigin,
   TaskStatus,
 } from 'helpers/task-helpers';
-import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
+// import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import {
   isTaskItemsSelectedSelector,
   selectedTaskIdentifiersSelector,
@@ -68,24 +68,27 @@ import {
 import { useTaskListColumnsConfig } from 'context-api/columns-config-context';
 import { ListDetailsContainer } from 'components/tasklist/DropdownListSection/styled';
 import StickyContainer from 'components/common/HorizontalScroll/StickyContainer';
-import { profileAllTasksSelector } from 'selectors/custom-profile-details-selectors';
+import {
+  profileAllTasksSelector,
+  profileTaskListsSelector,
+} from 'selectors/custom-profile-details-selectors';
 import { ListViewType } from '../helpers';
 import {
-  checkIfSelectedListIsPresent,
+  // checkIfSelectedListIsPresent,
   groupTasks,
-  searchTaskInPatientLists,
+  // searchTaskInPatientLists,
 } from './helpers';
 import TaskListToolbar from '../TaskListToolbar/TaskListToolbar';
 import TaskListGroupCollapse from '../TaskListGroupCollapse/TaskListGroupCollapse';
 import TasksToolbar from '../TasksToolbar/TasksToolbar';
 
-const PATIENT_SPECIFIC_LIST_VIEW_COLUMNS_CONFIG = {
+const SPECIFIC_LIST_VIEW_COLUMNS_CONFIG = {
   ...TASK_ITEM_BASE_COLUMN_CONFIG,
   [TaskItemColumn.PATIENT]: false,
   [TaskItemColumn.LIST_NAME]: false,
 };
 
-const PATIENT_ALL_JOINED_LISTS_VIEW_COLUMNS_CONFIG = {
+const ALL_JOINED_LISTS_VIEW_COLUMNS_CONFIG = {
   ...TASK_ITEM_BASE_COLUMN_CONFIG,
   [TaskItemColumn.PATIENT]: false,
   [TaskItemColumn.LIST_NAME]: true,
@@ -95,43 +98,54 @@ const ProfileTasksListView = ({ profileIdentifier }) => {
   const {
     taskListIdentifier: taskListIdentifierParameter = ListViewType.ALL_TASKS,
   } = useParams();
-  const patientIdentifier = useSelector(currentPatientIdentifierSelector);
+  // const patientIdentifier = useSelector(currentPatientIdentifierSelector);
   const viewSetup = useSelector(userSetupClientViewSelector);
-  const sort = useSelector(patientTasksSortSelector);
-  const lists = useSelector(patientTaskListsSelector);
-  const completeTasksVisible = useSelector(completeTasksVisibilitySelector);
-  const currentUser = useSelector(userProfileSelector);
-  const taskSearch = useSelector(patientTaskSearchSelector);
+  // const sort = useSelector(patientTasksSortSelector);
+  const lists = useSelector(profileTaskListsSelector);
+  // const completeTasksVisible = useSelector(completeTasksVisibilitySelector);
+  // const currentUser = useSelector(userProfileSelector);
+  // const taskSearch = useSelector(patientTaskSearchSelector);
   const areFiltersApplied = useSelector(hasFiltersAppliedSelector);
   const selectedFilters = useSelector(selectedFiltersInMegaFilterSelector);
   const addingNewSubtaskParentId = useSelector(
     addingNewSubtaskParentIdSelector,
   );
-  const tasksStatus =
-    useSelector(currentListTasksStatusSelector) || TaskStatus.INCOMPLETE;
-  const customerTypeLabel = getCustomerTypeLabel(currentUser);
+  // const tasksStatus =
+  //   useSelector(currentListTasksStatusSelector) || TaskStatus.INCOMPLETE;
+  const tasksStatus = TaskStatus.INCOMPLETE;
+
   const { setCurrentList, currentList, setViewSpecificConfig } =
     useTaskListColumnsConfig();
   const dispatch = useDispatch();
   const profileTasks = useSelector(profileAllTasksSelector);
-  useEffect(() => {
-    dispatch(findTasksByProfileGroupedByTaskList(profileIdentifier));
-    console.log('!! findTasksByProfileGroupedByTaskList', profileIdentifier);
-  }, [dispatch, profileIdentifier]);
 
   useEffect(() => {
-    console.log('!! tasks', profileTasks);
+    if (profileIdentifier) {
+      dispatch(getTasksForProfile(profileIdentifier));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [profileIdentifier]);
+
+  useEffect(() => {
+    // console.log('!! tasks', profileTasks);
   }, [profileTasks]);
 
-  const history = useHistory();
-  const {
-    // togglePatientTaskStatus,
-    updatePatientTaskInList,
-    updatePatientTaskWorkflowStatus,
-    sortPatientTasks,
-    initializeSavedFilters,
-  } = useActions(PatientTasksSagaActions);
-  const patient = useSelector(patientSelector);
+  const refreshTasks = useCallback(() => {
+    if (profileIdentifier) {
+      dispatch(getTasksForProfile(profileIdentifier));
+    }
+  }, [dispatch, profileIdentifier]);
+
+  // const history = useHistory();
+
+  // const {
+  // togglePatientTaskStatus,
+  // updatePatientTaskInList,
+  // updatePatientTaskWorkflowStatus,
+  // sortPatientTasks,
+  // initializeSavedFilters,
+  // } = useActions(PatientTasksSagaActions);
+  // const patient = useSelector(patientSelector);
   const isAllTasksView = taskListIdentifierParameter === ListViewType.ALL_TASKS;
 
   // const organizationCustomFields = useSelector(
@@ -145,27 +159,31 @@ const ProfileTasksListView = ({ profileIdentifier }) => {
     currentOrganization?.themeSettings?.find(
       ({ name }) => name === 'icon.active.color',
     ) || {};
-  const enrichedWithPatientMetaDataLists = useMemo(() => {
-    if (patient?.patientMetaData) {
-      const { patientMetaData } = patient;
-      return lists?.map((l) => ({
-        ...l,
-        tasks: l.tasks?.map((t) => ({
-          ...t,
-          patient: { ...t.patient, patientMetaData },
-        })),
-      }));
-    }
-    return lists;
-  }, [lists, patient]);
 
-  const filteredLists = useMemo(
-    () =>
-      taskSearch
-        ? searchTaskInPatientLists(enrichedWithPatientMetaDataLists, taskSearch)
-        : enrichedWithPatientMetaDataLists,
-    [enrichedWithPatientMetaDataLists, taskSearch],
-  );
+  // const enrichedWithPatientMetaDataLists = useMemo(() => {
+  //   if (patient?.patientMetaData) {
+  //     const { patientMetaData } = patient;
+  //     return lists?.map((l) => ({
+  //       ...l,
+  //       tasks: l.tasks?.map((t) => ({
+  //         ...t,
+  //         patient: { ...t.patient, patientMetaData },
+  //       })),
+  //     }));
+  //   }
+  //   return lists;
+  // }, [lists, patient]);
+
+  // const filteredLists = useMemo(
+  //   () =>
+  //     taskSearch
+  //       ? searchTaskInPatientLists(enrichedWithPatientMetaDataLists, taskSearch)
+  //       : enrichedWithPatientMetaDataLists,
+  //   [enrichedWithPatientMetaDataLists, taskSearch],
+  // );
+
+  const filteredLists = lists;
+
   const activeList = useMemo(
     () =>
       isAllTasksView
@@ -183,9 +201,9 @@ const ProfileTasksListView = ({ profileIdentifier }) => {
   );
   useEffect(() => {
     if (isAllTasksView) {
-      setViewSpecificConfig(PATIENT_ALL_JOINED_LISTS_VIEW_COLUMNS_CONFIG);
+      setViewSpecificConfig(ALL_JOINED_LISTS_VIEW_COLUMNS_CONFIG);
     } else {
-      setViewSpecificConfig(PATIENT_SPECIFIC_LIST_VIEW_COLUMNS_CONFIG);
+      setViewSpecificConfig(SPECIFIC_LIST_VIEW_COLUMNS_CONFIG);
     }
   }, [isAllTasksView, setViewSpecificConfig]);
   useEffect(() => {
@@ -200,50 +218,54 @@ const ProfileTasksListView = ({ profileIdentifier }) => {
       setCurrentList(activeList);
     }
   }, [activeList, currentList, isAllTasksView, setCurrentList]);
-  useEffect(() => {
-    if (patientIdentifier) {
-      initializeSavedFilters(patientIdentifier);
-      dispatch(getCurrentPatientTasks());
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [patientIdentifier]);
-  useEffect(() => {
-    if (
-      filteredLists?.length > 0 &&
-      taskListIdentifierParameter !== ListViewType.ALL_TASKS &&
-      (!taskListIdentifierParameter ||
-        checkIfSelectedListIsPresent(
-          filteredLists,
-          taskListIdentifierParameter,
-        ))
-    ) {
-      history.replace(
-        createPatientDetailsListPath(
-          patientIdentifier,
-          filteredLists[0].taskListIdentifier,
-        ),
-      );
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [taskListIdentifierParameter, filteredLists]);
+
+  // useEffect(() => {
+  //   if (patientIdentifier) {
+  //     // initializeSavedFilters(patientIdentifier);
+  //     dispatch(getCurrentPatientTasks());
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [patientIdentifier]);
+
+  // useEffect(() => {
+  //   if (
+  //     filteredLists?.length > 0 &&
+  //     taskListIdentifierParameter !== ListViewType.ALL_TASKS &&
+  //     (!taskListIdentifierParameter ||
+  //       checkIfSelectedListIsPresent(
+  //         filteredLists,
+  //         taskListIdentifierParameter,
+  //       ))
+  //   ) {
+  //     history.replace(
+  //       createPatientDetailsListPath(
+  //         patientIdentifier,
+  //         filteredLists[0].taskListIdentifier,
+  //       ),
+  //     );
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [taskListIdentifierParameter, filteredLists]);
+
   const handleTaskUpdate = useCallback(
     (updatedTask) => {
-      dispatch(getPatientFilterOptions(patientIdentifier));
+      // dispatch(getPatientFilterOptions(patientIdentifier));
       if (!checkIfTaskMatchesFilters(updatedTask, selectedFilters)) {
-        dispatch(getCurrentPatientTasks());
+        dispatch(getTasksForProfile(profileIdentifier));
       }
     },
-    [dispatch, patientIdentifier, selectedFilters],
+    [dispatch, selectedFilters, profileIdentifier],
   );
+
   const quickAddTask = useCallback(
-    ({ description, taskListIdentifier, taskGroupIdentifier }) => {
+    async ({ description, taskListIdentifier, taskGroupIdentifier }) => {
       if (taskListIdentifier) {
         dispatch(
           addTask({
             description,
             taskListIdentifier,
             taskGroupIdentifier,
-            patientIdentifier,
+            profileIdentifier,
           }),
         );
       } else {
@@ -251,33 +273,31 @@ const ProfileTasksListView = ({ profileIdentifier }) => {
           openModal('ListPicker', {
             enableSelectingGroupStep: true,
             fetchMethod: getTaskListForUser,
-            confirm: (listId, taskGroupId) =>
+            confirm: async (listId, taskGroupId) => {
               dispatch(
                 addTask({
                   description,
                   taskListIdentifier: listId,
-                  patientIdentifier,
+                  profileIdentifier,
                   taskGroupIdentifier: taskGroupId,
                 }),
-              ),
+              );
+            },
           }),
         );
       }
     },
-    [dispatch, patientIdentifier],
+    [dispatch, profileIdentifier],
   );
   const renderEmptyListView = () => {
-    if (taskSearch) return <NoSearchResultsView />;
+    // if (taskSearch) return <NoSearchResultsView />;
     if (areFiltersApplied) return <NoFilterResultsView />;
     return (
       <EmptyListViewWithQuickAddTask
         quickAddTask={quickAddTask}
         iconColorActive={iconColorActiveItem?.value}
       >
-        <EmptyListView
-          title={`This ${customerTypeLabel} has no tasks`}
-          description={`Add tasks for this ${customerTypeLabel} above.`}
-        />
+        <EmptyListView title="No tasks" description="Add tasks above." />
       </EmptyListViewWithQuickAddTask>
     );
   };
@@ -346,16 +366,16 @@ const ProfileTasksListView = ({ profileIdentifier }) => {
 
       return (
         <>
-          {!completeTasksVisible && (
-            <StickyContainer left={24} decreaseWidth={2 * 24} zIndex={13}>
-              <TasksToolbar
-                taskListIdentifier={activeList?.taskListIdentifier}
-                taskGroupIdentifier={taskGroupIdentifier}
-                onQuickAddTask={quickAddTask}
-                iconColorActive={iconColorActiveItem?.value}
-              />
-            </StickyContainer>
-          )}
+          {/* {!completeTasksVisible && ( */}
+          <StickyContainer left={24} decreaseWidth={2 * 24} zIndex={13}>
+            <TasksToolbar
+              taskListIdentifier={activeList?.taskListIdentifier}
+              taskGroupIdentifier={taskGroupIdentifier}
+              onQuickAddTask={quickAddTask}
+              iconColorActive={iconColorActiveItem?.value}
+            />
+          </StickyContainer>
+          {/* )} */}
           <div
             className="IN"
             style={{ width: 'fit-content', minWidth: '100%' }}
@@ -363,8 +383,8 @@ const ProfileTasksListView = ({ profileIdentifier }) => {
             {tasks && tasks.length > 0 && (
               <TasksHeader
                 bulkEditEnabled
-                sort={sort}
-                onSortChange={sortPatientTasks}
+                // sort={sort}
+                // onSortChange={sortPatientTasks}
                 groupHasMultipleAssignees={groupHasMultipleAssignees}
                 isGroupSelected={isGroupSelected}
                 onGroupSelect={() => handleGroupSelect(tasks)}
@@ -377,9 +397,9 @@ const ProfileTasksListView = ({ profileIdentifier }) => {
                   isFullView={isFullView}
                   taskIdentifier={task.identifier}
                   taskGroupIdentifier={taskGroupIdentifier}
-                  isCompletedGroup={completeTasksVisible}
-                  onTaskUpdate={updatePatientTaskInList}
-                  updateWorkflowStatus={updatePatientTaskWorkflowStatus}
+                  // isCompletedGroup={completeTasksVisible}
+                  // onTaskUpdate={updatePatientTaskInList}
+                  // updateWorkflowStatus={updatePatientTaskWorkflowStatus}
                   dragAndDropDisabled
                   addingNewSubtask={
                     addingNewSubtaskParentId === task.identifier
@@ -408,26 +428,22 @@ const ProfileTasksListView = ({ profileIdentifier }) => {
       );
     },
     [
-      completeTasksVisible,
+      // completeTasksVisible,
       activeList?.taskListIdentifier,
       quickAddTask,
       iconColorActiveItem?.value,
-      sort,
-      sortPatientTasks,
       groupHasMultipleAssignees,
       selectedTaskIdentifiers,
       handleGroupSelect,
-      updatePatientTaskInList,
-      updatePatientTaskWorkflowStatus,
       addingNewSubtaskParentId,
       viewSetup,
       tasksStatus,
     ],
   );
 
-  const bulkEditTasks = useSelector(selectedTasksSelector);
+  // const bulkEditTasks = useSelector(selectedTasksSelector);
 
-  const bulkEditIsDisabled = completeTasksVisible;
+  // const bulkEditIsDisabled = completeTasksVisible;
 
   return (
     <>
@@ -447,10 +463,10 @@ const ProfileTasksListView = ({ profileIdentifier }) => {
               {profileTasks.length > 0 ? (
                 <ListDetailsContainer>
                   <BulkEditSection
-                    allTasks={bulkEditTasks}
+                    // allTasks={bulkEditTasks}
                     refreshTasks={handleTaskUpdate}
-                    disabled={bulkEditIsDisabled}
-                    searchValue={taskSearch}
+                    // disabled={bulkEditIsDisabled}
+                    // searchValue={taskSearch}
                   >
                     <StickyContainer
                       left={24}
@@ -460,7 +476,7 @@ const ProfileTasksListView = ({ profileIdentifier }) => {
                       <TaskListHeader
                         list={isAllTasksView ? null : activeList}
                         viewSetup={viewSetup}
-                        refreshView={compose(dispatch, getCurrentPatientTasks)}
+                        refreshView={refreshTasks}
                       />
                     </StickyContainer>
                     {isAllTasksView ? (
@@ -499,7 +515,7 @@ const ProfileTasksListView = ({ profileIdentifier }) => {
         onTaskUpdate={handleTaskUpdate}
         onTaskCreation={handleTaskUpdate}
         onTaskDelete={() => {
-          dispatch(getPatientFilterOptions(patientIdentifier));
+          // dispatch(getPatientFilterOptions(patientIdentifier));
         }}
         disabledFields={[DrawerFieldEnum.PATIENT]}
       />
