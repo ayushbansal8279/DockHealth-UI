@@ -22,7 +22,7 @@ const DateLabel = (props) => {
     timeFormat = 'HH:mm',
   } = props;
   const dueDate = moment(date);
-  const dateFormat = dueDate.isSame(moment(), 'year') ? 'MM/DD' : format;
+  const dateFormat = dueDate.isSame(moment(), 'year') ? 'MMM DD, YYYY' : format;
   return (
     <>
       <DueDateBasicLabel isOverdue={isOverdue}>
