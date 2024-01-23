@@ -23,6 +23,7 @@ const QuickAddTaskInput = React.forwardRef(
       disableMentions = false,
       small,
       iconColorActive,
+      style,
     },
     reference,
     // eslint-disable-next-line sonarjs/cognitive-complexity
@@ -58,7 +59,11 @@ const QuickAddTaskInput = React.forwardRef(
 
     return (
       <>
-        <AddTaskInputWrapper hasError={!!error} iconColor={iconColorActive}>
+        <AddTaskInputWrapper
+          hasError={!!error}
+          iconColor={iconColorActive}
+          style={style}
+        >
           <RichTextEditor
             placeholder="Add a task and press enter on your keyboard"
             ref={reference || quickAddTaskInputReference}
