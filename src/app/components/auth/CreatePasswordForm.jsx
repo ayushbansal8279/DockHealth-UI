@@ -36,7 +36,7 @@ const PasswordToggle = styled.div`
   }
 `;
 
-const LoginFormPassword = ({
+const CreatePasswordForm = ({
   onSubmit,
   onResendCode,
   onChange,
@@ -60,8 +60,7 @@ const LoginFormPassword = ({
   });
 
   const verified = window.sessionStorage.getItem('confirmStatus');
-
-  const titleContent = verified ? 'Log in to your account.' : 'Sign in';
+  const titleContent = verified ? 'Log in to your account' : 'Sign in';
 
   const handleUsernameChange = (event) => {
     setValue('username', event.target?.value?.trim() || '');
@@ -81,13 +80,16 @@ const LoginFormPassword = ({
         <Spacing vertical={4} />
         {verified ? (
           <>
-            <OutfitTypography align="center" variant="h4">
-              Your email {uname} is verified.
+            <OutfitTypography align="center" weight="700" fontSize="16px">
+              Your Email {uname} is verified
+            </OutfitTypography>
+            <OutfitTypography align="center" weight="700" fontSize="16px">
+              Please enter a password
             </OutfitTypography>
           </>
         ) : (
           <OutfitTypography align="center" variant="h4">
-            New to Dock?{' '}
+            Login To Your Account{' '}
             <a
               style={{ fontWeight: 600, color: 'black' }}
               href="/create-account"
@@ -99,17 +101,25 @@ const LoginFormPassword = ({
         )}
         <Spacing vertical={5} />
         <FormInput
-          name="username"
-          type="text"
-          label="Email"
+          name="passowrd"
+          type={isPasswordShown ? 'text' : 'password'}
+          label="Password"
           value={usernameValue}
           onChange={handleUsernameChange}
+          endAdornment={
+            <PasswordToggle onClick={togglePasswordShown}>
+              <img
+                src={isPasswordShown ? EyeOpen : EyeClose}
+                alt={isPasswordShown ? 'Password shown' : 'Password hidden'}
+              />
+            </PasswordToggle>
+          }
         />
         <Spacing vertical={4} />
         <FormInput
-          name="password"
+          name="confirmPassword"
           type={isPasswordShown ? 'text' : 'password'}
-          label="Password"
+          label="Confirm Password"
           autoFocus
           onChange={onChange}
           endAdornment={
@@ -130,7 +140,7 @@ const LoginFormPassword = ({
           color={palette.brightOrange}
           secondaryColor={palette.oPlusRed}
         >
-          {unconfirmedUserFlag ? 'Resend confirmation Email' : 'Continue'}
+          {unconfirmedUserFlag ? 'Login' : 'Continue'}
         </Button>
         <Spacing vertical={4} />
         <OutfitTypography variant="h5" weight="bold">
@@ -160,4 +170,4 @@ const LoginFormPassword = ({
   );
 };
 
-export default LoginFormPassword;
+export default CreatePasswordForm;

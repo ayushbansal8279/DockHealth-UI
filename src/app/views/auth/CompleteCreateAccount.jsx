@@ -46,33 +46,6 @@ import { OnboardingDialog } from '../onboarding/OnboardingTemplate.Components';
 
 const REQUIRED_MESSAGE = 'This field is required';
 
-const validationSchema = object().shape({
-  email: string()
-    .required(REQUIRED_MESSAGE)
-    .email('Please enter a valid email address'),
-  password: string().required(REQUIRED_MESSAGE).concat(validPasswordSchema),
-  confirmPassword: string()
-    .required(REQUIRED_MESSAGE)
-    .oneOf([ref('password')], 'Your passwords do not match.'),
-  mobilePhoneNumber: string()
-    .transform((value) => value.replace(/\D/g, ''))
-    .required(REQUIRED_MESSAGE)
-    .matches(/\d{10}/, 'Please enter a valid phone number'),
-});
-
-const externalUserValidationSchema = object().shape({
-  email: string()
-    .required(REQUIRED_MESSAGE)
-    .email('Please enter a valid email address'),
-  password: string().required(REQUIRED_MESSAGE).concat(validPasswordSchema),
-  confirmPassword: string()
-    .required(REQUIRED_MESSAGE)
-    .oneOf([ref('password')], 'Your passwords do not match.'),
-  mobilePhoneNumber: string()
-    .transform((value) => value?.replace(/\D/g, ''))
-    .matches(/\d{10}/, 'Please enter a valid phone number'),
-});
-
 const resendEmail = async (email) => {
   try {
     await resendConfirmationCode({
@@ -124,8 +97,45 @@ const CompleteCreateAccount = (props) => {
   const [dialogTitle, setDialogTitle] = useState('User Already Exists');
   const [dialogMessage, setDialogMessage] = useState('');
   const [customPageTitle, setCustomPageTitle] = useState('');
+  const [isUserInvited, setIsUserInvited] = useState(false);
+  const [userName, setUserName] = useState('');
   const history = useHistory();
   const dispatch = useDispatch();
+
+  const validationSchema = object().shape({
+    ...(isUserInvited
+      ? {}
+      : {
+          email: string()
+            .required(REQUIRED_MESSAGE)
+            .email('Please enter a valid email address'),
+        }),
+    password: string().required(REQUIRED_MESSAGE).concat(validPasswordSchema),
+    confirmPassword: string()
+      .required(REQUIRED_MESSAGE)
+      .oneOf([ref('password')], 'Your passwords do not match.'),
+    mobilePhoneNumber: string()
+      .transform((value) => value.replace(/\D/g, ''))
+      .required(REQUIRED_MESSAGE)
+      .matches(/\d{10}/, 'Please enter a valid phone number'),
+  });
+
+  const externalUserValidationSchema = object().shape({
+    ...(isUserInvited
+      ? {}
+      : {
+          email: string()
+            .required(REQUIRED_MESSAGE)
+            .email('Please enter a valid email address'),
+        }),
+    password: string().required(REQUIRED_MESSAGE).concat(validPasswordSchema),
+    confirmPassword: string()
+      .required(REQUIRED_MESSAGE)
+      .oneOf([ref('password')], 'Your passwords do not match.'),
+    mobilePhoneNumber: string()
+      .transform((value) => value?.replace(/\D/g, ''))
+      .matches(/\d{10}/, 'Please enter a valid phone number'),
+  });
 
   const formMethods = useForm({
     resolver: externalUserMode
@@ -143,11 +153,15 @@ const CompleteCreateAccount = (props) => {
           const lastName = sessionStorage.getItem('lastName');
           sessionStorage.setItem('email', email);
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          const organization = sessionStorage.getItem('organization');
+          const organizationName = sessionStorage.getItem('organization');
+          const userEmail =
+            sessionStorage.getItem('isUserInvited') === 'true'
+              ? sessionStorage.getItem('userName')
+              : email;
           await registerAction({
-            username: email,
+            username: userEmail,
             password,
-            email,
+            email : userEmail,
             phone_number: mobilePhoneNumber
               ? `+${mobilePhoneNumber.replace(/\D/g, '')}`
               : null,
@@ -156,13 +170,9 @@ const CompleteCreateAccount = (props) => {
             // organization,
             'custom:referral': referral,
             'custom:app_environment': import.meta.env.VITE_APP_ENV,
+            'custom:organization_name': organizationName,
           });
           history.push('/signupEmailSent');
-          // setDialogTitle(`Please confirm your email.`);
-          // setDialogMessage(
-          //   `We just sent an email to ${email}. Please go to your email and click on the link so that we can confirm your email address.`,
-          // );
-          // showDialog();
         } catch (error) {
           if (error?.code === 'UsernameExistsException') {
             setDialogTitle(`Email already associated with an account`);
@@ -201,7 +211,7 @@ const CompleteCreateAccount = (props) => {
       organization: oname,
     } = queryValues;
 
-    if (uname) setValue('email', uname);
+    if (uname && !isUserInvited) setValue('email', uname);
     if (fname) setValue('firstName', fname);
     if (lname) setValue('lastName', lname);
     if (oname) setValue('organization', oname);
@@ -216,6 +226,11 @@ const CompleteCreateAccount = (props) => {
         setCustomPageTitle,
       );
     }
+
+    if (sessionStorage.getItem('isUserInvited')) setIsUserInvited(true);
+
+    if (sessionStorage.getItem('userName'))
+      setUserName(sessionStorage.getItem('userName'));
   });
 
   const hasCustomPageTitle = customPageTitle !== '';
@@ -287,7 +302,16 @@ const CompleteCreateAccount = (props) => {
             for online task management.
           </Subtitle>
           <Spacing vertical={5} />
-          <FormInput disabled={externalUserMode} name="email" label="Email" />
+          {isUserInvited ? (
+            <FormInput
+              disabled={isUserInvited}
+              name="email"
+              label="Email"
+              value={userName}
+            />
+          ) : (
+            <FormInput disabled={externalUserMode} name="email" label="Email" />
+          )}
           <Spacing vertical={5} />
           <FormInput name="password" label="Password" type="password" />
           <Spacing vertical={3} />
