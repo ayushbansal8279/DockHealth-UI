@@ -56,6 +56,7 @@ export const TasksGroupContainer = styled.div`
   flex-direction: column;
   justify-content: center;
   margin-bottom: ${spacing.largePlus};
+  ${({ $width }) => ($width ? `width: ${$width + 66 + 22}px` : '')}
 `;
 
 export const TasksGroupHeader = styled.div`

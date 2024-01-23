@@ -748,7 +748,7 @@ const TaskItem = React.memo(
           >
             {taskListRestrictions?.createTask !== DISABLED && (
               <DotsContainer
-                showDraggableDots={showDraggableDots}
+                showDraggableDots={true}
                 dragHandleProps={dragHandleProps}
               />
             )}
@@ -822,6 +822,7 @@ const TaskItem = React.memo(
     );
 
     if (task?.itemType !== TaskItemType.TASK) {
+      console.log("!!!!!", task);
       const taskGroup = task;
       return (
         <TaskTemplateGroup

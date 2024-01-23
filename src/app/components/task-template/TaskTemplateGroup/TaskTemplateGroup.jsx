@@ -48,6 +48,8 @@ const TaskTemplateGroup = ({
     return taskLookupSelector(state, origin, pullGroup);
   });
 
+  console.log("templateGroup", templateGroup, origin, pullGroup);
+
   const {
     tasks: taskIdentifiers, // task identifiers
     identifier,
@@ -131,6 +133,7 @@ const TaskTemplateGroup = ({
   return (
     <TaskTemplateGroupContainer
     // ref={innerRef} {...draggableProps}
+      data-foo={1}
     >
       <TaskTemplateGroupHeader
         isFetchingTasks={isFetchingTasks}
@@ -154,7 +157,7 @@ const TaskTemplateGroup = ({
         highlightedValue={highlightedValue}
         origin={origin}
       />
-      {!isStartedDnD && (
+      {!isStartedDnD && window.disabledVirtualTaskList && (
         <TaskTemplateGroupList timeout={150} in={isOpen && !isStartedDnD}>
           {isFetchingTasks ? (
             <TasksSkeletonLoader rows={3} />
@@ -187,6 +190,7 @@ const TaskTemplateGroup = ({
                     <div
                       ref={templateDroppableProvided.innerRef}
                       {...templateDroppableProvided.droppableProps}
+                      data-foo={2}
                     >
                       {filteredTasks?.map((taskOrIdentifier, index) => (
                         <Draggable

@@ -21,6 +21,8 @@ import ReactHtmlParser from 'html-react-parser';
 import { linkifyTextWithMentions } from 'components/common/RichTextEditor/helpers';
 import Spacing from 'components/common/Spacing';
 import EditIcon from '@mui/icons-material/Edit';
+import PatientMention from 'components/common/TextEditor/PatientMention/PatientMention';
+import UserMention from 'components/common/TextEditor/UserMention/UserMention';
 import {
   // Description,
   DescriptionBox,
@@ -58,6 +60,7 @@ const TaskItemDescription = ({
     // taskList,
     linkedTaskTemplate,
     // read,
+    tokenizedDescription,
   } = task;
 
   const [descriptionState, setDescriptionState] = useState(description);
@@ -123,6 +126,8 @@ const TaskItemDescription = ({
     [dispatch, setEditing, task],
   );
 
+  // console.log(`split tokenized desciption:`, tokenizedDescription.split(/\s/));
+
   return (
     <DescriptionBox width={width}>
       <Box display="flex" flex={1}>
@@ -152,26 +157,68 @@ const TaskItemDescription = ({
               whiteSpace: 'nowrap',
             }}
           >
-            {descriptionState
-              .split('/s/')
-              .map((word) =>
-                word.includes('[http') || word.includes('http') ? (
-                  ReactHtmlParser(
-                    linkifyTextWithMentions(`${word} `, taskMentions),
-                  )
-                ) : (
-                  <Highlighter
-                    highlightClassName="list-highlight"
-                    searchWords={
-                      highlightedValue
-                        ? highlightedValue?.toLowerCase().split(/\s+/)
-                        : []
-                    }
-                    autoEscape
-                    textToHighlight={`${word} `}
-                  />
-                ),
-              )}
+            {tokenizedDescription.split(/\s/).map((word) => {
+              // eslint-disable-next-line unicorn/prefer-ternary
+              // console.log(`word:`, word);
+              if (word.includes('[http') || word.includes('http')) {
+                return ReactHtmlParser(
+                  linkifyTextWithMentions(`${word} `, taskMentions),
+                );
+              }
+
+              if (word[0] === '@') {
+                const wordMentionIdentifier = word.split(/@{(.*?)}/)[1];
+                const currentMention = taskMentions.find(
+                  (m) => m.identifier === wordMentionIdentifier,
+                );
+
+                if (currentMention) {
+                  return (
+                    <UserMention
+                      mention={currentMention}
+                      className="fr-deletable fr-tribute"
+                    >
+                      <span data={currentMention.identifier}>
+                        @{currentMention.name}{' '}
+                      </span>
+                    </UserMention>
+                  );
+                }
+              }
+
+              if (word[0] === '#') {
+                const wordMentionIdentifier = word.split(/#{(.*?)}/)[1];
+                const currentMention = taskMentions.find(
+                  (m) => m.identifier === wordMentionIdentifier,
+                );
+
+                if (currentMention) {
+                  return (
+                    <PatientMention
+                      mention={currentMention}
+                      className="fr-deletable fr-tribute"
+                    >
+                      <span data={currentMention.identifier}>
+                        @{currentMention.name}{' '}
+                      </span>
+                    </PatientMention>
+                  );
+                }
+              }
+
+              return (
+                <Highlighter
+                  highlightClassName="list-highlight"
+                  searchWords={
+                    highlightedValue
+                      ? highlightedValue?.toLowerCase().split(/\s+/)
+                      : []
+                  }
+                  autoEscape
+                  textToHighlight={`${word} `}
+                />
+              );
+            })}
           </div>
         )}
         {!isCompleted && (

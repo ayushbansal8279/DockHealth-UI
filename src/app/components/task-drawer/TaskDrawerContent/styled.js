@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import palette from 'styles/palette';
 import { Divider } from '@mui/material';
 import { fontSizes, fontWeights } from 'styles/font';
+import spacing from 'styles/spacing';
 
 export const TaskDrawerContainer = styled.div`
   position: relative;
@@ -84,6 +85,7 @@ export const ReferenceParentNamePlaceholder = styled.div`
 
 export const TaskDrawerDivider = styled(Divider)`
   && {
+    margin-top: ${spacing.smallExtraPlus};
     width: 100%;
     background-color: ${palette.coolGrey2};
     opacity: 0.3;

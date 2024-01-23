@@ -164,6 +164,7 @@ const SendEmailFromTaskModal = () => {
             errorMessage="Incorrect email"
             disabled={show}
             setShow={setShow}
+            value={selectedContacts}
             newContact={newContact}
             setNewContact={setNewContact}
             patient={selectedTask?.patient}

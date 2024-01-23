@@ -56,6 +56,14 @@ const Subtasks = ({
 
   const shouldRenderSubtasks = useMemo(() => !isEmpty(subtasks), [subtasks]);
 
+  const onClickComment = useCallback(
+    (subtask) => {
+      openDrawer();
+      storeAsCurrentTask(subtask);
+    },
+    [openDrawer, storeAsCurrentTask],
+  );
+
   return (
     <SubtasksContainer in={isOpen}>
       {isFetchingSubTasks ? (
@@ -127,10 +135,8 @@ const Subtasks = ({
                                   highlightedValue={highlightedValue}
                                   showSubtaskStylingLink={!draggedId}
                                   isLast={isLast}
-                                  onClickComment={() => {
-                                    openDrawer();
-                                    storeAsCurrentTask(subtask);
-                                  }}
+                                  subtask={subtask}
+                                  onClickComment={onClickComment}
                                 />
                               )}
                           </SubtaskItemWrapper>

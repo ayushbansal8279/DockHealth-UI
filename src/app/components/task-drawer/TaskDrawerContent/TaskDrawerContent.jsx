@@ -523,6 +523,7 @@ const TaskDrawerContent = (props) => {
               </div>
             </Grid>
           )}
+        <TaskDrawerDivider />
         {!taskAttachmentsDisabled && (
           <Grid item xs={12} style={styleFullRow(isMobile)}>
             <AttachmentsSection
@@ -532,6 +533,7 @@ const TaskDrawerContent = (props) => {
             />
           </Grid>
         )}
+        <TaskDrawerDivider />
         <Grid item xs={12} style={styleCommentRow}>
           <div>
             <CommentSection selectedTask={selectedTask} />

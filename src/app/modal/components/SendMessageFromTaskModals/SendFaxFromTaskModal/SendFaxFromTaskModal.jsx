@@ -8,7 +8,8 @@ import Checkbox from 'components/common/Checkbox/Checkbox';
 import { getTemplateDetails } from 'api/template-api';
 import { closeModal } from 'modal/actions';
 import { CommunicationType } from 'helpers/task-helpers';
-import ContactsAutoComplete from 'components/common/ContactsAutoComplete/ContactsAutocomplete';
+// import ContactsAutoComplete from 'components/common/ContactsAutoComplete/ContactsAutocomplete';
+import EmailContactsAutoComplete from 'components/common/EmailContactsAutoComplete/EmailContactsAutoComplete';
 import ReactModal from 'react-modal';
 import TemplateAutoComplete from 'components/common/TemplateAutoComplete/TemplateAutoComplete';
 import AddContactStep from 'modal/components/AddContactModal/AddContactModal';
@@ -45,6 +46,8 @@ const SendFaxFromTaskModal = () => {
   const [faxError, setFaxError] = useState(false);
   const [contact, setContact] = useState(null);
   const [show, setShow] = useState(false);
+  const [newContact, setNewContact] = useState([]);
+  const [selectedContacts, setSelectedContacts] = useState(null);
 
   const selectedTask = useSelector(selectedTaskSelector);
   const [attachmentsToSend, setAttachmentsToSend] = useState([]);
@@ -84,24 +87,24 @@ const SendFaxFromTaskModal = () => {
   //   }
   // };
 
-  const handleContactsOnChange = useCallback((_event, newValue, reason) => {
-    console.log(newValue);
-    if (reason === 'clear') {
-      setContact(null);
-      return;
-    }
-    if (typeof newValue === 'string') {
-      // if (validateFaxInput(newValue)) {
-      //    const [first, middle, last] = makeFaxNumber(newValue);
-      //    setContact({ value: `${first}-${middle}-${last}` });
-      setContact({ value: newValue });
-      // } else {
-      //  setFaxError(true);
-      // }
-    } else {
-      setContact(newValue);
-    }
-  }, []);
+  const handleContactsOnChange = useCallback(
+    (_event, newValue, reason) => {
+      if (reason === 'clear') {
+        setSelectedContacts([]);
+        return;
+      }
+      if (typeof newValue === 'string') {
+        // if (validateEmail(newValue)) {
+        setSelectedContacts([...selectedContacts, { value: newValue }]);
+        // } else {
+        //   setError(true);
+        // }
+      } else {
+        setSelectedContacts([newValue]);
+      }
+    },
+    [selectedContacts],
+  );
 
   const isValidToSend = !!(
     validateFaxInput(contact?.value ?? '') &&
@@ -125,7 +128,7 @@ const SendFaxFromTaskModal = () => {
       </ModalHeaderContainerStyled>
       <ModalDescriptionContainer>
         <InputContainerStyled>
-          <ContactsAutoComplete
+          {/* <ContactsAutoComplete
             type={CommunicationType.FAX}
             placeholder="Type the fax number or name of the contact"
             // onBlur={handleFaxBlur}
@@ -137,6 +140,22 @@ const SendFaxFromTaskModal = () => {
             disabled={show}
             setShow={setShow}
             value={contact?.value ?? ''}
+            patient={selectedTask?.patient}
+          /> */}
+          <EmailContactsAutoComplete
+            type={CommunicationType.FAX}
+            placeholder="Type the fax number or name of the contact"
+            onChange={handleContactsOnChange}
+            error={faxError}
+            multiple={false}
+            autoFocus
+            label="Fax"
+            errorMessage="Incorrect fax number"
+            // value={contact?.value ?? ''}
+            disabled={show}
+            setShow={setShow}
+            newContact={newContact}
+            setNewContact={setNewContact}
             patient={selectedTask?.patient}
           />
           <ContactInfoRow>
@@ -245,14 +264,18 @@ const SendFaxFromTaskModal = () => {
         onRequestClose={() => {
           setShow(false);
         }}
+        style={{ zIndex: '6001 !important' }}
       >
         <AddContactStep
           type={CommunicationType.FAX}
           show={show}
-          setContactData={setContact}
+          setContactData={(contact) => {
+            setSelectedContacts([...selectedContacts, contact]);
+            setNewContact(contact);
+          }}
           handleShow={setShow}
-          fax={contact?.value}
-          name={contact?.label}
+          fax={newContact?.value}
+          name={newContact?.label}
           identifier={contact?.identifier}
         />
       </ReactModal>

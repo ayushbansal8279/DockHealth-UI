@@ -166,6 +166,7 @@ const PatientsToolbar = () => {
             </Box>
             <CustomizeToolbarButton
               iconColorFilterActive={iconColorFilterActiveItem?.value}
+              isPatientView
             />
             <Box m={1} />
             <FilterButton

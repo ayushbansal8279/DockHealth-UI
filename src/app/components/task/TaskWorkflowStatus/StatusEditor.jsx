@@ -41,7 +41,7 @@ const StatusEditor = ({ onClose }) => {
 
   const isAddingNewStatus =
     currentlyEditedStatus && !currentlyEditedStatus.identifier;
-  const newStatusButtonVisible = !isAddingNewStatus && statuses?.length < 29;
+  const newStatusButtonVisible = !isAddingNewStatus && statuses?.length < 49;
 
   const sensors = useSensors(useSensor(MouseSensor), useSensor(TouchSensor));
 
