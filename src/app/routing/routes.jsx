@@ -11,6 +11,7 @@ import {
   TEMPLATE_CORE_SUBSCRIPTION_PLAN_ROUTES,
   SETTINGS_ROUTES,
   SIMPLE_ROUTES,
+  ONBOARDING_TUTORIAL_ROUTES,
 } from './config';
 import TemplateAuthBase from '../views/TemplateAuthBase/TemplateAuthBase';
 import TemplateCore from '../views/TemplateCore/TemplateCore';
@@ -158,6 +159,15 @@ const Routes = () => {
           render={() => (
             <TemplateCore
               childRoutes={SETTINGS_ROUTES}
+              setRedirection={setRedirection}
+            />
+          )}
+        />
+        <SecuredRoute
+          path="/onboarding-tutorial"
+          render={() => (
+            <TemplateCore
+              childRoutes={ONBOARDING_TUTORIAL_ROUTES}
               setRedirection={setRedirection}
             />
           )}

@@ -10,6 +10,7 @@ import {
   onEnterListDetailsView,
   onLeaveListDetailsView,
 } from './TemplateCoreSubscriptionPlan/ListDetails';
+
 const UsersView = lazy(() => import('views/self-serve/users/UsersView'));
 const Contacts = lazy(() => import('views/Contacts/Contacts'));
 const Templates = lazy(() => import('views/Templates/Templates'));
@@ -112,8 +113,12 @@ const LoginUser = lazy(() => import('views/auth/LoginUser'));
 const LoginPassword = lazy(() => import('views/auth/LoginPassword'));
 const ForgotPassword = lazy(() => import('views/auth/ForgotPassword'));
 const EmailSent = lazy(() => import('views/auth/EmailSent'));
+const SignUpEmailSent = lazy(() => import('views/auth/SignUpEmailSent'));
 const DashboardView = lazy(() => import('views/dashboard/DashboardView'));
 const CreateAccount = lazy(() => import('views/auth/CreateAccount'));
+const CompleteCreateAccount = lazy(() =>
+  import('views/auth/CompleteCreateAccount'),
+);
 const ConfirmRegistrationSuccess = lazy(() =>
   import('views/auth/ConfirmRegistrationSuccess'),
 );
@@ -152,6 +157,10 @@ const TasksView3 = lazy(() =>
   import('../../pages/core/tasks.page'),
 );
 
+
+const CreateList = lazy(() =>
+  import('views/OnboardingTutorial/CreateList/CreateList'),
+);
 
 const {
   CAN_ACCESS_HOME_PAGE,
@@ -408,6 +417,13 @@ export const ONBOARDING_ROUTES = [
   },
 ];
 
+export const ONBOARDING_TUTORIAL_ROUTES = [
+  {
+    path: '/create-list',
+    RouteComponent: CreateList,
+  },
+];
+
 export const AUTH_ROUTES = [
   {
     path: '/confirmRegistration',
@@ -420,6 +436,10 @@ export const AUTH_ROUTES = [
   {
     path: '/create-account',
     RouteComponent: CreateAccount,
+  },
+  {
+    path: '/complete-create-account',
+    RouteComponent: CompleteCreateAccount,
   },
   {
     path: '/login',
@@ -487,6 +507,10 @@ export const AUTH_ROUTES = [
   {
     path: '/drchrono',
     RouteComponent: DrChronoLaunch,
+  },
+  {
+    path: '/signupEmailSent',
+    RouteComponent: SignUpEmailSent,
   },
   // {
   //   path: '/embedded',

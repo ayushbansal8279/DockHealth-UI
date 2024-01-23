@@ -10,7 +10,7 @@ export const IndicatorContainer = styled.div`
 export const IndicatorBar = styled.div`
   width: ${({ steps }) => `${100 / steps}%`};
   background-color: ${({ step, completedSteps }) =>
-    step <= completedSteps ? palette.brightBlue : palette.coolGrey3};
+    step <= completedSteps ? palette.tealGreen : palette.coolGrey3};
   margin-right: ${({ step, steps }) => (step === steps ? '0px' : '4px')};
   border-radius: 9px;
 `;

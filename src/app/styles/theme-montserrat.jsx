@@ -56,6 +56,10 @@ export const themeMontserrat300 = themeMontserratFactory({
   fontWeight: '300',
 });
 
+export const themeMontserrat400 = themeMontserratFactory({
+  fontWeight: '400',
+});
+
 export const themeMontserrat500 = themeMontserratFactory({
   fontWeight: '500',
 });
@@ -64,13 +68,24 @@ export const themeMontserrat600 = themeMontserratFactory({
   fontWeight: '600',
 });
 
+export const themeMontserrat700 = themeMontserratFactory({
+  fontWeight: '700',
+});
+
+export const themeMontserrat800 = themeMontserratFactory({
+  fontWeight: '800',
+});
+
 const themeProxy = new Proxy(
   {
     bold: themeMontserrat,
     normal: themeMontserratNormal,
     300: themeMontserrat300,
+    400: themeMontserrat400,
     500: themeMontserrat500,
     600: themeMontserrat600,
+    700: themeMontserrat700,
+    800: themeMontserrat800,
   },
   {
     get(proxy, path) {
@@ -85,7 +100,7 @@ export const MontserratTypography = ({
   ...props
 }) => (
   <ThemeProvider theme={themeProxy[weight]}>
-    <Typography {...props} style={{ textDecoration }} />
+    <Typography {...props} style={{ ...textDecoration }} />
   </ThemeProvider>
 );
 

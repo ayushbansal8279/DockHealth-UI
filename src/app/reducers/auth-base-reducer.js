@@ -5,6 +5,8 @@ export const AUTH_BASE_STATES = {
   DAILY_HUB: Symbol('DAILY_HUB'),
   REGAIN_CONTROL: Symbol('REGAIN_CONTROL'),
   APPROVE_DISAPPROVE: Symbol('APPROVE_DISAPPROVE'),
+  LOGIN: Symbol('LOGIN'),
+  SIGN_UP: Symbol('SIGN_UP'),
 };
 
 const initialState = {

@@ -122,7 +122,7 @@ const onSubmit =
     Promise.all(invitationPromises)
       .then(() => {
         setIsSaving(false);
-        history.push('/core/home/my-tasks');
+        history.push('/onboarding-tutorial/create-list');
         dispatch(
           openModal('OnboardingInviteConfirmation', {
             moreThanOneInvite: filledFields.length > 1,
@@ -348,7 +348,7 @@ const OnboardingTeamSetupView = () => {
                 fullWidth
                 type="button"
                 variant="text"
-                onClick={() => history.push('/core/home/my-tasks')}
+                onClick={() => history.push('/onboarding-tutorial/create-list')}
               >
                 Skip
               </Button>

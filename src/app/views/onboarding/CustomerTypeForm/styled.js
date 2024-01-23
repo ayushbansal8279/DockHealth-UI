@@ -3,13 +3,13 @@ import { fontSizes, fontWeights } from 'styles/font';
 import palette from 'styles/palette';
 
 export const FormWrapper = styled.form`
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Outfit', sans-serif;
   color: ${palette.mediumGrey};
 `;
 
 export const Title = styled.h2`
   margin-bottom: 0;
-  font-size: ${fontSizes.huge};
+  font-size: ${fontSizes.regularPlus};
   font-weight: ${fontWeights.bold};
   font-family: inherit;
   text-transform: uppercase;

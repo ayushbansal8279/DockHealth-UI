@@ -2,9 +2,13 @@
 import React, { useState, useRef, useMemo } from 'react';
 import Spacing from 'components/common/Spacing';
 import Button from 'components/common/Button/Button';
+import { OutfitTypography } from 'styles/theme-outfit';
 import OnboardingQuestionsPicker from '../OnboardingQuestionsPicker';
 import { ROLE_OPTIONS } from '../options';
 import { Option, QuestionContainer } from '../styled';
+import { useHistory } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { userProfileSelector } from 'selectors/user-selectors';
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const OnboardingQuestionsOwnerGuest = ({
@@ -14,14 +18,16 @@ const OnboardingQuestionsOwnerGuest = ({
   clickNextStep,
   isDisabledButton,
 }) => {
+  const history = useHistory();
   const [activeOption, setActiveOption] = useState(null);
 
   const roleReference = useRef(null);
+  const { orgUserRole } = useSelector(userProfileSelector);
 
   const openPicker = (field) => setActiveOption(field);
 
   const onSelectOption = (option) =>
-    roleOptions.some((opt) => opt === option)
+    roleOptions.includes(option)
       ? setRoleOptions(roleOptions.filter((opt) => opt !== option))
       : setRoleOptions([...roleOptions, option]);
 
@@ -43,36 +49,42 @@ const OnboardingQuestionsOwnerGuest = ({
 
   return (
     <div>
-      <QuestionContainer>
-        I&apos;m a{' '}
-        <Option
-          ref={roleReference}
-          onClick={openRolePicker}
-          hasSelectedOption={roleOptions.length !== 0}
-        >
-          {roleText}
-        </Option>{' '}
-        working in {organizationName}.
-      </QuestionContainer>
-      <OnboardingQuestionsPicker
-        isOpen={!!activeOption}
-        questionReference={roleReference}
-        onClose={onClosePicker}
-        options={options}
-        onSelect={onSelectOption}
-        selectedOptions={roleOptions}
-        positionGlobal
-        topOffset={65}
-      />
+      <OutfitTypography variant="h1" weight="700">
+        <QuestionContainer>
+          My role in {organizationName} is:{' '}
+          <Option
+            ref={roleReference}
+            onClick={openRolePicker}
+            hasSelectedOption={roleOptions.length > 0}
+          >
+            {roleText}
+          </Option>
+        </QuestionContainer>
+        <OnboardingQuestionsPicker
+          isOpen={!!activeOption}
+          questionReference={roleReference}
+          onClose={onClosePicker}
+          options={options}
+          onSelect={onSelectOption}
+          selectedOptions={roleOptions}
+          positionGlobal
+          topOffset={65}
+        />
+      </OutfitTypography>
       <Spacing vertical={5} />
       <Spacing vertical={6} />
       <Button
-        onClick={clickNextStep}
+        onClick={
+          orgUserRole === 'OWNER'
+            ? clickNextStep
+            : history.push('/core/home/my-tasks')
+        }
         type="button"
         disabled={isDisabledButton}
         width="265px"
+        style={{ marginTop: '25px' }}
       >
-        Next Step
+        Continue
       </Button>
     </div>
   );

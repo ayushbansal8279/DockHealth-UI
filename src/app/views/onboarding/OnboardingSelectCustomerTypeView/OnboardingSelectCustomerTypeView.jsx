@@ -22,7 +22,7 @@ const onSubmit = async ({ history, type }) => {
   });
 
   // history.push('/onboarding/team-setup');
-  history.push('/core/home/my-tasks');
+  history.push('/onboarding-tutorial/create-list');
 };
 
 const OnboardingSelectCustomerTypeView = () => {

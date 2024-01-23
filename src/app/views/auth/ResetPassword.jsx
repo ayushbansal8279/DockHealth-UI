@@ -9,10 +9,24 @@ import * as UserAuthApi from 'api/user-auth-api';
 import ResetPasswordForm from 'components/auth/ResetPasswordForm';
 import { showAlert } from 'helpers/utility-functions';
 import { AUTH_BASE_STATES } from 'reducers/auth-base-reducer';
+import DockHeaderLogo from 'img/dock-header-logo.svg';
+import styled from 'styled-components';
+import { Grid } from '@mui/material';
+import Spacing from 'components/common/Spacing';
 
 const ResetPassword = (props) => {
   const dispatch = useDispatch();
   const history = useHistory();
+
+  const DockLogoImage = styled.img.attrs({
+    src: DockHeaderLogo,
+    alt: 'Dock Health logo',
+  })`
+    align: center;
+    width: 100%;
+    object-fit: contain;
+    height: 69px;
+  `;
 
   useMount(() => {
     setAuthBaseState({
@@ -56,11 +70,19 @@ const ResetPassword = (props) => {
   const authTokenReceived = Boolean(queryValues.code && queryValues.uname);
 
   return (
-    <ResetPasswordForm
-      type="Confirm"
-      onSubmit={onSubmit}
-      authTokenReceived={authTokenReceived}
-    />
+    <Grid container>
+      <Grid item xs={12} alignItems="center" alignContent="center">
+        <DockLogoImage />
+        <Spacing vertical={5} />
+      </Grid>
+      <Grid item xs={12}>
+        <ResetPasswordForm
+          type="Confirm"
+          onSubmit={onSubmit}
+          authTokenReceived={authTokenReceived}
+        />
+      </Grid>
+    </Grid>
   );
 };
 

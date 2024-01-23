@@ -1,6 +1,8 @@
 import React from 'react';
 import Spacing from 'components/common/Spacing';
 import Button from 'components/common/Button/Button';
+import { OutfitTypography } from 'styles/theme-outfit';
+import palette from 'styles/palette';
 import {
   Option,
   QuestionContainer,
@@ -17,24 +19,26 @@ const OnboardingQuestionsOwnerGuest = ({
 }) => (
   <div>
     <QuestionContainer>
-      I&apos;d like to learn more about how to optimize Dock with a 1:1 info
-      session with the Dock team{' '}
-      <TutorialOptionsContainer>
-        <Option
-          onClick={() => setTutorialOption('yes')}
-          hasSelectedOption={tutorialOption === 'yes'}
-        >
-          Yes
-        </Option>
-        {' / '}
-        <Option
-          onClick={() => setTutorialOption('no')}
-          hasSelectedOption={tutorialOption === 'no'}
-        >
-          No
-        </Option>
-      </TutorialOptionsContainer>
-      .
+      <OutfitTypography variant="h2">
+        I&apos;d like to learn more about how to optimize Dock with a 1:1 info
+        session with the Dock team{' '}
+        <TutorialOptionsContainer>
+          <Option
+            onClick={() => setTutorialOption('yes')}
+            hasSelectedOption={tutorialOption === 'yes'}
+          >
+            Yes
+          </Option>
+          {' / '}
+          <Option
+            onClick={() => setTutorialOption('no')}
+            hasSelectedOption={tutorialOption === 'no'}
+          >
+            No
+          </Option>
+        </TutorialOptionsContainer>
+        .
+      </OutfitTypography>
     </QuestionContainer>
     <Spacing vertical={5} />
     {tutorialOption === 'yes' && (
@@ -61,6 +65,8 @@ const OnboardingQuestionsOwnerGuest = ({
         type="button"
         disabled={isDisabledButton}
         width="265px"
+        color={palette.brightOrange}
+        secondaryColor={palette.oPlusRed}
       >
         Next Step
       </Button>

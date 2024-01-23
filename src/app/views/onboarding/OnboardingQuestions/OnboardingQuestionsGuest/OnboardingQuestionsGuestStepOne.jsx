@@ -3,9 +3,11 @@
 import React, { useState, useRef, useMemo, useCallback } from 'react';
 import Spacing from 'components/common/Spacing';
 import Button from 'components/common/Button/Button';
-import OnboardingQuestionsPicker from '../OnboardingQuestionsPicker';
+import { OutfitTypography } from 'styles/theme-outfit';
+import palette from 'styles/palette';
 import { ROLE_OPTIONS, DOMAIN_OPTIONS } from '../options';
 import { Option, QuestionContainer } from '../styled';
+import OnboardingQuestionsPicker from '../OnboardingQuestionsPicker';
 
 const OnboardingQuestionsGuest = ({
   roleOptions,
@@ -95,7 +97,6 @@ const OnboardingQuestionsGuest = ({
     const availableOptions = getOptions();
 
     if (selectedOptions.length === 0) return availableOptions;
-
     return [...new Set([...availableOptions, ...selectedOptions])];
   }, [getOptions, selectedOptions]);
 
@@ -108,33 +109,37 @@ const OnboardingQuestionsGuest = ({
       ? roleOptions.length === 1
         ? roleOptions[0]
         : roleOptions.join(', ')
-      : 'Clinician, Admin…';
+      : ROLE_OPTIONS[0];
 
-  const domainText = domainOption[0] || 'Mental Health, Internal Medicine…';
+  const domainText = domainOption[0] || DOMAIN_OPTIONS[0];
 
   const closeOnSelect = activeOption === 'DOMAIN';
 
   return (
     <div>
-      <QuestionContainer>
-        I&apos;m a{' '}
-        <Option
-          ref={roleReference}
-          onClick={openRolePicker}
-          hasSelectedOption={roleOptions.length > 0}
-        >
-          {roleText}
-        </Option>{' '}
-        working in{' '}
-        <Option
-          ref={domainReference}
-          onClick={openDomainPicker}
-          hasSelectedOption={domainOption.length > 0}
-        >
-          {domainText}
-        </Option>
-        .
-      </QuestionContainer>
+      <OutfitTypography variant="h1" weight="700">
+        <QuestionContainer>
+          My domain of care is:{' '}
+          <Option
+            ref={domainReference}
+            onClick={openDomainPicker}
+            hasSelectedOption={domainOption.length > 0}
+          >
+            {domainText}
+          </Option>
+        </QuestionContainer>
+        <Spacing vertical={5} />
+        <QuestionContainer>
+          My role is:{' '}
+          <Option
+            ref={roleReference}
+            onClick={openRolePicker}
+            hasSelectedOption={roleOptions.length > 0}
+          >
+            {roleText}
+          </Option>
+        </QuestionContainer>
+      </OutfitTypography>
       <OnboardingQuestionsPicker
         isOpen={!!activeOption}
         questionReference={questionReference}
@@ -147,14 +152,16 @@ const OnboardingQuestionsGuest = ({
         topOffset={65}
       />
       <Spacing vertical={5} />
-      <Spacing vertical={6} />
       <Button
         onClick={clickNextStep}
         type="button"
         disabled={isDisabledButton}
         width="265px"
+        color={palette.brightOrange}
+        secondaryColor={palette.oPlusRed}
+        style={{ marginTop: '25px' }}
       >
-        Next Step
+        Continue
       </Button>
     </div>
   );

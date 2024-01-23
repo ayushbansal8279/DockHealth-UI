@@ -2,16 +2,20 @@ import React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useMount, useToggle } from 'react-use';
 import styled from 'styled-components';
+import { useHistory } from 'react-router-dom';
 import { object, string } from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import EyeClose from 'img/auth/eye-close.svg';
 import EyeOpen from 'img/auth/eye-open.svg';
-import { MontserratTypography } from 'styles/theme-montserrat';
-import Button from 'components/common/Button/Button';
-import FormInput from 'components/common/Input/FormInput';
+import Button from 'components/common/v2/Button/Button';
+import FormInput from 'components/common/v2/Input/FormInput';
 import Spacing from 'components/common/Spacing';
+import palette from 'styles/palette';
+import { OutfitTypography } from 'styles/theme-outfit';
+import queryString from 'query-string';
 import { StyledForm, StyledLink } from './AuthComponents.styled';
 import SSOOptions from './SSOOptions';
+import { Title } from './Title';
 
 const validationSchema = object().shape({
   username: string()
@@ -48,13 +52,16 @@ const LoginFormPassword = ({
   const { watch, handleSubmit, setError, setValue } = formMethods;
   const usernameValue = watch('username');
 
+  const history = useHistory();
+  const { uname } = queryString.parse(history?.location?.search);
+
   useMount(() => {
     setValue('username', sessionStorage.getItem('username') ?? '');
   });
 
-  const titleContent = window.sessionStorage.getItem('confirmStatus')
-    ? 'Your email is confirmed'
-    : 'Welcome back!';
+  const verified = window.sessionStorage.getItem('confirmStatus');
+
+  const titleContent = verified ? 'Log in to your account.' : 'Sign in';
 
   const handleUsernameChange = (event) => {
     setValue('username', event.target?.value?.trim() || '');
@@ -70,10 +77,27 @@ const LoginFormPassword = ({
       )}
     >
       <FormProvider {...formMethods}>
-        <MontserratTypography variant="h2">{titleContent}</MontserratTypography>
+        <Title>{titleContent}</Title>
         <Spacing vertical={4} />
-        <MontserratTypography variant="h3">Please sign in</MontserratTypography>
-        <Spacing vertical={4} />
+        {verified ? (
+          <>
+            <OutfitTypography align="center" variant="h4">
+              Your email {uname} is verified.
+            </OutfitTypography>
+          </>
+        ) : (
+          <OutfitTypography align="center" variant="h4">
+            New to Dock?{' '}
+            <a
+              style={{ fontWeight: 600, color: 'black' }}
+              href="/create-account"
+            >
+              {' '}
+              Sign up for free{' '}
+            </a>
+          </OutfitTypography>
+        )}
+        <Spacing vertical={5} />
         <FormInput
           name="username"
           type="text"
@@ -98,14 +122,39 @@ const LoginFormPassword = ({
           }
         />
         <Spacing vertical={5} />
-        <Button id="loginButton" fullWidth size="large" type="submit">
+        <Button
+          id="loginButton"
+          fullWidth
+          size="large"
+          type="submit"
+          color={palette.brightOrange}
+          secondaryColor={palette.oPlusRed}
+        >
           {unconfirmedUserFlag ? 'Resend confirmation Email' : 'Continue'}
         </Button>
         <Spacing vertical={4} />
-        <MontserratTypography variant="h4">
+        <OutfitTypography variant="h5" weight="bold">
           <StyledLink to="/auth/forgotPassword">FORGOT PASSWORD?</StyledLink>
-        </MontserratTypography>
+        </OutfitTypography>
         <SSOOptions />
+        <Spacing vertical={5} />
+        <OutfitTypography
+          variant="p"
+          align="center"
+          alignContent="center"
+          alignItems="center"
+        >
+          Dock can save you 20 hours a month{' '}
+          <a
+            style={{ color: 'black', fontWeight: 800, paddingLeft: '5px' }}
+            href="https://help.dock.health/"
+            target="_blank"
+            rel="noreferrer"
+          >
+            {' '}
+            Learn More
+          </a>
+        </OutfitTypography>
       </FormProvider>
     </StyledForm>
   );

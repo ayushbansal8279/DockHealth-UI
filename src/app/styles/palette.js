@@ -12,6 +12,7 @@ const palette = {
   orange: '#ef8a23',
   darkOrange: '#d97e22',
   newDarkBlue: '#0e244a',
+  brightOrange: '#da5a47',
 
   // secondary
   purplePassion: '#553bbe',
@@ -74,6 +75,7 @@ const palette = {
   tomatoInYoFaceLight: '#f9d4d2',
   orangeJuliusLight: '#fee6cd',
   bananaHammockLight: '#fff4cc',
+  tealGreen: '#69b8b2'
 };
 
 export const featurePalette = {
