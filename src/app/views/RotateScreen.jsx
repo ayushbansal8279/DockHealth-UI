@@ -2,9 +2,10 @@ import React from 'react';
 import styled from 'styled-components';
 import DockHealthLogo from 'img/dock-health-logo.svg';
 import spacing from 'styles/spacing';
+import { typography } from 'styles/palette';
 
 const RotateScreenContainer = styled.div`
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: inherit;
   display: flex;
   height: 100%;
   flex: 1;

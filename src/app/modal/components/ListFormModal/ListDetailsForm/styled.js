@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { fontSizes } from 'styles/font';
-import palette from 'styles/palette';
+import palette, { typography } from 'styles/palette';
 
 export const StyledForm = styled.form`
   position: relative;
@@ -18,7 +18,7 @@ export const CheckboxContainer = styled.div`
 
 export const CheckboxDescription = styled.label`
   display: inline;
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: inherit;
   font-size: ${fontSizes.regular};
   color: ${palette.scrollbarGrey};
 `;

@@ -164,10 +164,12 @@ const PatientsToolbar = () => {
                 iconColorActive={iconColorActiveItem?.value}
               />
             </Box>
-            <CustomizeToolbarButton
-              iconColorFilterActive={iconColorFilterActiveItem?.value}
-              isPatientView
-            />
+            <Box m={1} />
+            <Box>
+              <CustomizeToolbarButton
+                iconColorFilterActive={iconColorFilterActiveItem?.value}
+              />
+            </Box>
             <Box m={1} />
             <FilterButton
               ref={filterButtonReference}
@@ -176,6 +178,7 @@ const PatientsToolbar = () => {
               onClear={() => dispatch(PatientsActions.clearPatientsFilters())}
             />
           </Box>
+          <Box display="flex" alignItems="center">
           {listIdentifier &&
             (listIdentifier === DefaultPatientsListType.ALL_PATIENTS ||
               listIdentifier === DefaultPatientsListType.ACTIVE_PATIENTS) && (
@@ -185,6 +188,7 @@ const PatientsToolbar = () => {
                 </AddButton>
               </AddEntitiesContainer>
             )}
+          </Box>
         </Box>
       </Box>
       {emrEntegrationExperience &&

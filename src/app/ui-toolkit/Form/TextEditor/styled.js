@@ -1,11 +1,12 @@
 import { styled } from '@mui/material/styles';
 import { ContentEditable } from '@lexical/react/LexicalContentEditable';
+import { typography } from 'styles/palette';
 import Box from '../../Primitive/Box/Box';
 
 export const Container = styled(Box)`
   overflow: hidden;
   position: relative;
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: inherit;
   font-size: 15px;
   width: 100%;
   min-height: ${(props) => (props.$type === 'textarea' ? '75px' : '100%')};
@@ -19,16 +20,16 @@ export const Content = styled(Box)`
 export const Toolbar = styled(Box)`
   position: relative;
   display: flex;
-  height: ${props => props.$open ? "50px" : "0"};
+  height: ${(props) => (props.$open ? '50px' : '0')};
   margin: -5px -5px;
   padding: 4px;
   vertical-align: middle;
   justify-content: space-between;
-  transform: translate(0%, ${props => props.$open ? "0%" : "-100%"});
-  opacity: ${props => props.$open ? "1" : "0"};
+  transform: translate(0%, ${(props) => (props.$open ? '0%' : '-100%')});
+  opacity: ${(props) => (props.$open ? '1' : '0')};
   transition: transform 175ms cubic-bezier(0.85, 0, 0.15, 1),
-              opacity 125ms cubic-bezier(0.45, 0, 0.55, 1),
-              height 175ms cubic-bezier(0.85, 0, 0.15, 1);
+    opacity 125ms cubic-bezier(0.45, 0, 0.55, 1),
+    height 175ms cubic-bezier(0.85, 0, 0.15, 1);
 
   svg {
     fill: #888;
@@ -51,10 +52,10 @@ export const Toolbar = styled(Box)`
 
     &:disabled {
       cursor: not-allowed;
-      color: #CCC;
+      color: #ccc;
 
       svg {
-        fill: #CCC;
+        fill: #ccc;
       }
     }
 
@@ -161,7 +162,7 @@ export const Toolbar = styled(Box)`
       pointer-events: none;
     }
   }
-`
+`;
 
 export const Input = styled(ContentEditable)`
   font: inherit;
@@ -170,7 +171,7 @@ export const Input = styled(ContentEditable)`
   p {
     margin-bottom: 0;
   }
-  
+
   ul li {
     list-style: disc;
   }
@@ -190,7 +191,7 @@ export const Placeholder = styled(Box)`
 `;
 
 export const Avatar = styled(Box)`
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: inherit;
   font-size: 12px;
   font-weight: bold;
   text-align: center;

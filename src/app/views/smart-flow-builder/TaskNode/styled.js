@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { fontSizes, fontWeights } from 'styles/font';
-import palette from 'styles/palette';
+import palette, { typography } from 'styles/palette';
 
 export const DecisionTaskIconWrapper = styled.div`
   display: flex;
@@ -27,7 +27,7 @@ export const TaskInfoWrapper = styled.div`
 
 export const TaskDescription = styled.p`
   margin-bottom: 0;
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: inherit;
   font-weight: ${fontWeights.regular};
   color: ${palette.mediumGrey};
 `;
@@ -35,7 +35,7 @@ export const TaskDescription = styled.p`
 export const TaskDescriptionInput = styled.input`
   width: 100%;
   border: none;
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: inherit;
   font-weight: ${fontWeights.regular};
   color: ${palette.mediumGrey};
   background: transparent;

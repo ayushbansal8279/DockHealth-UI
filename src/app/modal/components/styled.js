@@ -1,7 +1,7 @@
 import { Button, IconButton } from '@mui/material';
 import styled from 'styled-components';
 import spacing from 'styles/spacing';
-import palette from 'styles/palette';
+import palette, { typography } from 'styles/palette';
 import { Close } from '@mui/icons-material';
 import { fontSizes, fontWeights } from 'styles/font';
 
@@ -20,7 +20,7 @@ export const ModalWrapper = styled.div`
   align-items: center;
   width: ${({ width }) => width || '450px'};
   max-width: 100vw;
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: inherit;
   background-color: white;
 `;
 

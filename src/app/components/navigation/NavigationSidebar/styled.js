@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import MuiBarChartIcon from '@mui/icons-material/BarChart';
 import { fontSizes, fontWeights } from 'styles/font';
-import palette from 'styles/palette';
+import palette, { typography } from 'styles/palette';
 
 const SUB_MENU_WIDTH = 300;
 
@@ -32,7 +32,7 @@ export const SubMenuContainer = styled.div`
   background: ${palette.white};
   display: flex;
   flex-direction: column;
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: inherit;
   font-size: ${fontSizes.regular};
   font-weight: ${fontWeights.regular};
   overflow: hidden;

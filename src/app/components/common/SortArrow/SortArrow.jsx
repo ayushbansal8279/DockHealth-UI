@@ -1,18 +1,14 @@
 import React from 'react';
-import SortArrowIcon from 'img/SortArrowIcon';
 import { SortOrderType } from 'helpers/sorting-helper';
 import { CircleContainer, SortArrowContainer } from './styled';
+import SortAscend from 'img/SortAscend';
+import SortDecend from 'img/SortDecend';
 
-const SortArrow = ({ orderType, onClick = () => {}, isParentHovered }) => {
+const SortArrow = ({ orderType }) => {
   return (
-    <CircleContainer ordered={!!orderType}>
-      <SortArrowContainer
-        onClick={onClick}
-        hideIcon={!isParentHovered}
-        ordered={!!orderType}
-        isUp={orderType === SortOrderType.ASC}
-      >
-        <SortArrowIcon />
+    <CircleContainer>
+      <SortArrowContainer>
+        {orderType === SortOrderType.ASC ? <SortAscend /> : <SortDecend />}
       </SortArrowContainer>
     </CircleContainer>
   );

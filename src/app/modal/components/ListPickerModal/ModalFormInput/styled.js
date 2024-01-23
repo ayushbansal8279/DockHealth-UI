@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import spacing from 'styles/spacing';
-import palette from 'styles/palette';
+import palette, { typography } from 'styles/palette';
 import { fontSizes, fontWeights } from 'styles/font';
 
 export const Input = styled.input`
@@ -39,7 +39,7 @@ export const InputErrorLabel = styled.div`
 
 export const InputWrapper = styled.div`
   width: 100%;
-  font-family: 'Roboto Condensed';
+  font-family: inherit;
 `;
 
 export const RequiredLabel = styled.span`

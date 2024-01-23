@@ -23,6 +23,7 @@ import { isUserGroup } from 'helpers/user-helper';
 import GroupAvatar from 'components/user/GroupAvatar/GroupAvatar';
 import { getUsersByName } from 'api/user-api';
 import { organizationSelector } from 'selectors/organization-selectors';
+import Button from 'components/common/v2/Button/Button';
 import {
   Input,
   InputBox,
@@ -35,11 +36,16 @@ import {
   highlightStyle,
   CheckboxSpacing,
   NoRecordsText,
+  StyledYouBadge,
 } from './styled';
 import { collectJoinedListMembers } from './helpers';
 
 const UNASSIGNED_KEY = 'UNASSIGNED';
 const ASSIGN_ALL_KEY = 'ASSIGN_ALL';
+
+const YouBadge = () => {
+  return <StyledYouBadge>You</StyledYouBadge>;
+};
 
 const MultiAssignMembersList = ({
   taskListIdentifiers,
@@ -210,11 +216,15 @@ const MultiAssignMembersList = ({
       } else {
         membersToReturn = [...selectedMembers, selectedOption];
       }
-      selectMembersWithDebounce(membersToReturn);
+      // selectMembersWithDebounce(membersToReturn);
       setSelectedMembers(membersToReturn);
     },
     [membersOptions, selectMembersWithDebounce, selectedMembers],
   );
+
+  const handleOptionSendClick = () => {
+    selectMembersWithDebounce(selectedMembers);
+  };
 
   const displayUnassignedOption = 'unassigned'.includes(
     searchValue.toLowerCase(),
@@ -235,7 +245,7 @@ const MultiAssignMembersList = ({
   ]);
 
   const renderSelectOption = useCallback(
-    (member, isSelected) => {
+    (member, isSelected, extra) => {
       return (
         <MemberRow
           key={member?.identifier}
@@ -258,6 +268,7 @@ const MultiAssignMembersList = ({
               textToHighlight={member?.name}
             />
           </MemberName>
+          {extra}
         </MemberRow>
       );
     },
@@ -288,14 +299,14 @@ const MultiAssignMembersList = ({
           <ListContentSection>
             {displayCurrentUser &&
               (function renderCurrentUserOption() {
-                const isSelected = !!selectedMembers.find(
+                const isSelected = !!selectedMembers.some(
                   ({ identifier }) =>
                     identifier === currentUserMember?.identifier,
                 );
-                return (
-                  <ListContentSection>
-                    {renderSelectOption(currentUserMember, isSelected)}
-                  </ListContentSection>
+                return renderSelectOption(
+                  currentUserMember,
+                  isSelected,
+                  <YouBadge />,
                 );
               })()}
             {displayUnassignedOption && (
@@ -351,7 +362,7 @@ const MultiAssignMembersList = ({
             )}
           </ListContentSection>
         )}
-        {!isValueSendable && (
+        {!isValueSendable && filteredSelectedMembers.length > 0 && (
           <ListContentSection>
             {filteredSelectedMembers?.map((member) => {
               return renderSelectOption(member, true);
@@ -381,6 +392,11 @@ const MultiAssignMembersList = ({
           filteredMembers.length === 0 && (
             <NoRecordsText>No users found</NoRecordsText>
           )}
+        <div style={{ padding: '16px' }}>
+          <Button variant="primary-red" onClick={handleOptionSendClick}>
+            Apply
+          </Button>
+        </div>
       </ListContainer>
     </>
   );

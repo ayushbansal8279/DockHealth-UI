@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { fontSizes, fontWeights } from 'styles/font';
-import palette from 'styles/palette';
+import palette, { typography } from 'styles/palette';
 
 export const Container = styled.div`
   width: 100%;
@@ -19,7 +19,7 @@ export const DescriptionContainer = styled.div`
 export const Text = styled.p`
   margin: 0;
   color: ${palette.coolGrey2};
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: inherit;
   font-size: ${fontSizes.regular};
   font-weight: ${fontWeights.light};
 `;

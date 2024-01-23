@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import palette from 'styles/palette';
+import palette, { typography } from 'styles/palette';
 import spacing from 'styles/spacing';
 
 export const PopoverContainer = styled.div`
@@ -7,7 +7,7 @@ export const PopoverContainer = styled.div`
   width: 300px;
   background-color: ${palette.white};
   box-shadow: 0px 6px 9px rgba(0, 0, 0, 0.17);
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: inherit;
   z-index: 1001;
 `;
 

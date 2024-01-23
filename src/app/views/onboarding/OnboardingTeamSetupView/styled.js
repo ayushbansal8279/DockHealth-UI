@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import palette from 'styles/palette';
+import palette, { typography } from 'styles/palette';
 import { fontSizes, fontWeights } from 'styles/font';
 import spacing from 'styles/spacing';
 
@@ -46,7 +46,7 @@ export const FormErrorText = styled.p`
 export const FieldStatusLabel = styled.p`
   margin-bottom: 0;
   color: ${({ isError }) => (isError ? palette.oPlusRed : palette.brightBlue)};
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: inherit;
   font-size: ${fontSizes.small};
   font-weight: ${fontWeights.light};
   text-transform: uppercase;

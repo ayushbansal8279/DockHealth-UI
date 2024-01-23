@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import { Grid } from '@mui/material';
 import spacing from 'styles/spacing';
 import { fontWeights, fontSizes } from 'styles/font';
-import palette, { featurePalette } from 'styles/palette';
+import palette, { featurePalette, typography } from 'styles/palette';
 import Select from 'components/common/Select/Select';
 
 export const highlight = keyframes`
@@ -236,7 +236,7 @@ export const DescriptionBox = styled.div`
       opacity: 1;
     }
   }
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: inherit;
 `;
 
 export const DescriptionInput = styled.input`
@@ -387,7 +387,8 @@ export const StandardTaskItemContainer = styled.div`
   border: 1px solid ${palette.coolGrey3};
   border-right: none;
   display: flex;
-  justify-content: ${(props) => props.isAddingTask ? 'flex-end' : 'flex-start'};
+  justify-content: ${(props) =>
+    props.isAddingTask ? 'flex-end' : 'flex-start'};
   width: 100%;
   height: ${({ height }) => height || 35}px;
   border-top: none;
@@ -484,6 +485,22 @@ export const TaskItemParentTaskLabel = styled.div`
 
 export const StatusWrapper = styled.div`
   display: flex;
+  border-radius: 2px;
+  border: 1px solid ${(prop) => prop.color || '#7F4334'};
+  background: ${(prop) => prop.color+"1A" || '#7F43341A'};
+  min-width: 90px;
+  padding: 2.5px 2px;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  color: ${(prop) => prop.color || '#7F4334'};
+`;
+
+export const StatusSubContaioner = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-left: 5px;
 `;
 
 export const StatusName = styled.p`
@@ -493,7 +510,12 @@ export const StatusName = styled.p`
   overflow: hidden;
   white-space: nowrap;
   margin-bottom: 0;
-  text-align: left;
+  text-align: center;
+  font-family: Outfit;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 135%;
 `;
 
 export const MatchingWrapper = styled.div`
@@ -686,4 +708,11 @@ export const ActionIconsContainer = styled.div`
 
 export const PatientMRNAnchor = styled.a`
   color: ${palette.brightBlue} !important;
+`;
+
+export const TaskScrollVericleLine = styled.div`
+  background: #48BBB3; 
+  height: 100%;
+  width: 1px;
+  box-shadow: 1px 0px 3px 0px rgba(0, 0, 0, 0.21);
 `;

@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import palette from 'styles/palette';
+import palette, { typography } from 'styles/palette';
 import { fontSizes, fontWeights } from 'styles/font';
 import spacing from 'styles/spacing';
 
@@ -70,7 +70,7 @@ export const ItemFullName = styled.p`
   font-weight: ${fontWeights.regular};
   font-size: ${fontSizes.regular};
   font-weight: ${fontWeights.regular};
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: inherit;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

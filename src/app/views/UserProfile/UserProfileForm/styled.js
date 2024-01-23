@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { fontSizes, fontWeights } from 'styles/font';
 import spacing from 'styles/spacing';
-import palette from 'styles/palette';
+import palette, { typography } from 'styles/palette';
 
 export const SectionSubtypography = styled.div`
   font-size: ${fontSizes.regular};
@@ -24,7 +24,7 @@ export const InputActionButton = styled.button`
   color: ${palette.brightBlue};
   font-size: ${fontSizes.regular};
   font-weight: ${fontWeights.light};
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: inherit;
   cursor: pointer;
 `;
 

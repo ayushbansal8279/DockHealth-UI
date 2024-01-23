@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { DataGrid } from '@mui/x-data-grid';
 import { fontWeights, fontSizes } from 'styles/font';
-import palette from 'styles/palette';
+import palette, { typography } from 'styles/palette';
 import spacing from 'styles/spacing';
 
 const HEADER_HEIGHT = 35;
@@ -29,7 +29,7 @@ export const StyledDataGrid = styled(DataGrid)`
   }
 
   & .MuiSelect-select {
-    font-family: "Roboto Condensed", sans-serif;
+    font-family: inherit;
     font-weight: 400;
     font-size: 0.875rem;
     line-height: 1.43;

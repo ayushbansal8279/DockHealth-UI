@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import palette from 'styles/palette';
+import palette, { typography } from 'styles/palette';
 import spacing from 'styles/spacing';
 import { fontSizes, fontWeights } from 'styles/font';
 
@@ -16,7 +16,7 @@ export const InputBox = styled.div`
   color: ${palette.mediumGrey};
   font-size: ${fontSizes.smallPlus};
   font-weight: ${fontWeights.light};
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: inherit;
 
   &:placeholder {
     color: ${palette.coolGrey2};
@@ -51,7 +51,7 @@ export const ListContentSection = styled.div`
 
 export const MemberRow = styled.button`
   width: 100%;
-  display: flex;
+  display: inline-flex;
   flex-direction: row;
   align-items: center;
   padding: ${spacing.tiny} ${spacing.small};
@@ -60,7 +60,7 @@ export const MemberRow = styled.button`
     isSelected ? palette.mediumGrey : palette.coolGrey1};
   background-color: ${({ isSelected }) =>
     isSelected ? `${palette.brightBlue}12` : 'transparent'};
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: inherit;
   cursor: pointer;
 
   &:not(:last-of-type) {
@@ -122,6 +122,16 @@ export const highlightStyle = {
 export const CheckboxSpacing = styled.div`
   width: 12px;
   height: 12px;
+`;
+
+export const StyledYouBadge = styled.div`
+  font-family: inherit;
+  font-size: 10px;
+  display: inline-block;
+  padding: 2px 4px;
+  color: ${palette.white};
+  background-color: #48bbb3;
+  border-radius: 4px;
 `;
 
 export const NoneOption = styled.div`

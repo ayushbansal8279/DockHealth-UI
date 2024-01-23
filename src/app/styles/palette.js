@@ -13,6 +13,8 @@ const palette = {
   darkOrange: '#d97e22',
   newDarkBlue: '#0e244a',
   brightOrange: '#da5a47',
+  newBrightBlue: '#5a71f2',
+  newBrightBlueShaded: '#0e244acc',
 
   // secondary
   purplePassion: '#553bbe',
@@ -40,6 +42,7 @@ const palette = {
   // COLORS NOT EXISTING IN GLOBAL PALETTE
   error: '#e40909',
   lightGrey2: '#f3f5f6',
+  offBlack: '#292d34',
   black: '#000000',
   white: '#ffffff',
   lightCyanBlue: '#009fcd',
@@ -68,6 +71,7 @@ const palette = {
   lightBlue: '#5ccced',
   skeletonLoader: '#e5e9f2',
   selectedBlue: '#05ADEC',
+  newBrightBlue: '#4bb3fd',
 
   // lighter ones - 90%
   dockBlueLight: '#e0eff9',
@@ -75,7 +79,11 @@ const palette = {
   tomatoInYoFaceLight: '#f9d4d2',
   orangeJuliusLight: '#fee6cd',
   bananaHammockLight: '#fff4cc',
-  tealGreen: '#69b8b2'
+  tealGreen: '#69b8b2',
+};
+
+export const typography = {
+  text: `'Outfit', sans-serif`,
 };
 
 export const featurePalette = {

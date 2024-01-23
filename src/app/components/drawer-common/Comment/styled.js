@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import palette from 'styles/palette';
+import palette, { typography } from 'styles/palette';
 import spacing from 'styles/spacing';
 import { fontSizes } from 'styles/font';
 
@@ -19,7 +19,7 @@ export const CommentActionLabel = styled.button`
 export const CommentWrapper = styled.div`
   display: flex;
   width: 100%;
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: inherit;
 
   &:hover {
     ${CommentActionLabel} {

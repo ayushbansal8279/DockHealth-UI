@@ -21,7 +21,7 @@ const TaskItemCell = styled.div`
   max-width: ${({ width, isSubtask, order }) =>
     isSubtask && order === 0 ? +width - 36 : width}px;
   padding: ${(props) => props.padding || `${spacing.tiny} 0`};
-  padding-left: ${spacing.small};
+  padding-left: ${(props) => props.paddingLeft || spacing.small};
   padding-right: ${spacing.small};
   overflow: hidden;
 

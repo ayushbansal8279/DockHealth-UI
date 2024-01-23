@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { fontWeights } from 'styles/font';
-import palette from 'styles/palette';
+import palette, { typography } from 'styles/palette';
 import spacing from 'styles/spacing';
 
 export const Backdrop = styled.div`
@@ -22,7 +22,7 @@ export const MenuContainer = styled.ul`
   background-color: ${palette.white};
   box-shadow: 0px 0px 9px rgba(0, 0, 0, 0.1);
   z-index: 10003;
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: inherit;
   font-weight: ${fontWeights.light};
 `;
 

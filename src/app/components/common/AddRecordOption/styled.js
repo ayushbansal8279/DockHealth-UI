@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import palette from 'styles/palette';
+import palette, { typography } from 'styles/palette';
 import spacing from 'styles/spacing';
 
 export const AdornmentContainer = styled.div`
@@ -22,7 +22,7 @@ export const AddText = styled.span`
 export const ListItemButton = styled.button`
   width: 100%;
   cursor: pointer;
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: inherit;
 
   ${({ isHovered }) => isHovered && `background: ${palette.blueGrey};`}
 `;
@@ -34,7 +34,7 @@ export const ListItemCustomText = styled.button`
 `;
 
 export const NoPatientFound = styled.div`
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: inherit;
   text-align: center;
   color: ${palette.coolGrey1};
   padding-bottom: ${spacing.tiny};

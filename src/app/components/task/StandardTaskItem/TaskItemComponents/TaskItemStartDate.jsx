@@ -8,8 +8,10 @@ import Tooltip from 'components/common/Tooltip/Tooltip';
 import DateLabel from 'components/common/DateLabel/DateLabel';
 import { ReminderType } from 'helpers/task-helpers';
 import { onTaskStartDateChanged } from 'helpers/ga-event-helper';
+import spacing from 'styles/spacing';
+import palette from 'styles/palette';
 
-const TaskItemStartDate = ({ task, disabled = false }) => {
+const TaskItemStartDate = ({ task, isDateHover, disabled = false }) => {
   const dispatch = useDispatch();
   const { taskIdentifier, startDate, hasRecurringSchedule, reminderType } =
     task || {};
@@ -48,9 +50,22 @@ const TaskItemStartDate = ({ task, disabled = false }) => {
               hasRecurringSchedule={false}
             />
           ) : (
-            <div>
-              <TaskIcon type="calendar" />
-            </div>
+            <>
+              {isDateHover ? (
+                <div style={{ display: 'flex' }}>
+                  {' '}
+                  <TaskIcon type="calendar" isActive />{' '}
+                  <p
+                    style={{
+                      padding: `3px ${spacing.smallPlus}`,
+                      color: `${palette.coolGrey1}`,
+                    }}
+                  >
+                    None
+                  </p>
+                </div>
+              ) : null}
+            </>
           )}
         </>
       </Tooltip>

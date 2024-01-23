@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { fontSizes, fontWeights } from 'styles/font';
-import palette from 'styles/palette';
+import palette, { typography } from 'styles/palette';
 import spacing from 'styles/spacing';
 
 export const ResizeHandler = styled.div<{ enabled: boolean }>`
@@ -57,8 +57,11 @@ export const LabelWrapper = styled.div<{
   white-space: nowrap;
   height: 18px;
   color: ${({ ordered, tasksHeaderTextColor }) =>
-    ordered ? palette.brightBlue : tasksHeaderTextColor || palette.coolGrey1};
+    ordered ? palette.brightBlue : tasksHeaderTextColor || palette.offBlack};
   &:hover > div > div > div > img {
+    visibility: visible;
+  }
+  &:hover > div > div:nth-child(2) > div {
     visibility: visible;
   }
 `;
@@ -78,7 +81,7 @@ export const SortButton = styled.button<{
   }}
   height: 35px;
   text-align: left;
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: inherit;
   font-size: ${fontSizes.smallPlus};
   font-weight: ${fontWeights.regularPlus};
   ${({ tasksHeaderTextTransform }) =>

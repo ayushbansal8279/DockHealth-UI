@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React from 'react';
-import palette from 'styles/palette';
+import palette, { typography } from 'styles/palette';
 import { InputLabel } from '@mui/material';
 import { fontSizes, fontWeights } from 'styles/font';
 
@@ -16,18 +16,16 @@ export const TextEditorFormStyleContainer = styled.div`
     }
     return '2px solid #e40909';
   }};
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: inherit;
 `;
 
 export const TextEditorInputLabel = styled(
   ({ richTextEnabled, hasError, ...props }) => <InputLabel {...props} />,
-)`
-
-`;
+)``;
 
 export const DescriptionLabel = styled.label`
   display: block;
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: inherit;
   font-size: ${fontSizes.tinyPlus};
   font-weight: ${fontWeights.light};
   color: ${palette.coolGrey1};

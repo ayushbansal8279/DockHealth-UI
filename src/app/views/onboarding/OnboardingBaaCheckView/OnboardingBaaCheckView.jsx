@@ -1,25 +1,29 @@
 import React from 'react';
 import Spacing from 'components/common/Spacing';
-import { OutfitTypography } from 'styles/theme-outfit';
+import { ThemeProvider } from '@mui/material/styles';
+import { Typography } from '@mui/material';
 import OnboardingBaaSigning from '../OnboardingBaaOverviewView/OnboardingBaaSigning';
+import { theme } from '../../../theme';
 
 const OnboardingBaaCheckView = () => (
-  <div>
-    <Spacing vertical={6} />
-    <OutfitTypography variant="h2" weight="600">
-      Thank you! We need the Business Associate Agreement (BAA) signed before
-      using Dock.
-    </OutfitTypography>
-    <Spacing vertical={5} />
-    <OutfitTypography variant="h4">
-      In order to be HIPAA-compliant and rock your world, we will first need the
-      Business Associate Agreement (BAA) signed. Once an authorized signer in
-      your organization has signed the BAA, you&apos;re off to the races. Feel
-      free to keep bothering them, we&apos;re sure they&apos;re busy trying to
-      figure out how to get organized without us ;)
-    </OutfitTypography>
-    <Spacing vertical={5} />
-    <OnboardingBaaSigning />
-  </div>
+  <ThemeProvider theme={theme}>
+    <div>
+      <Spacing vertical={6} />
+      <Typography variant="h2" weight="600">
+        Thank you! We need the Business Associate Agreement (BAA) signed before
+        using Dock.
+      </Typography>
+      <Spacing vertical={5} />
+      <Typography variant="h4">
+        In order to be HIPAA-compliant and rock your world, we will first need
+        the Business Associate Agreement (BAA) signed. Once an authorized signer
+        in your organization has signed the BAA, you&apos;re off to the races.
+        Feel free to keep bothering them, we&apos;re sure they&apos;re busy
+        trying to figure out how to get organized without us ;)
+      </Typography>
+      <Spacing vertical={5} />
+      <OnboardingBaaSigning />
+    </div>
+  </ThemeProvider>
 );
 export default OnboardingBaaCheckView;

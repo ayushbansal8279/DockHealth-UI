@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { fontWeights } from 'styles/font';
-import palette from 'styles/palette';
+import palette, { typography } from 'styles/palette';
 import spacing from 'styles/spacing';
 
 export const StyledAddButton = styled.button`
@@ -8,7 +8,7 @@ export const StyledAddButton = styled.button`
   outline: none;
   border: none;
   border-radius: 9px;
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: inherit;
   font-weight: ${fontWeights.bold};
   padding: ${spacing.tiny} 10px;
   transition: background-color 0.3s linear;
