@@ -433,14 +433,14 @@ const TaskDrawerContent = (props) => {
             disableMentions={restrictMentions}
           />
         </Grid>
-        <Grid item xs={12} ml={3} style={styleRightColumn(isMobile)}>
+        <Grid item xs={12} ml={3} mb={1} style={styleRightColumn(isMobile)}>
           <AssignedToSection
             onSave={handleUpdateTask}
             disabled={restrictions?.assigment === READ_ONLY}
             selectedTask={selectedTask}
           />
         </Grid>
-        <Grid item xs={12} style={styleLeftColumn(isMobile)}>
+        <Grid item xs={12} mb={1} style={styleLeftColumn(isMobile)}>
           <PatientSection
             selectedPatient={
               selectedTask?.patient || selectedParentTask?.patient || null
@@ -459,7 +459,7 @@ const TaskDrawerContent = (props) => {
           />
         </Grid>
         {!taskStartDateDisabled && (
-          <Grid item xs={12}style={styleLeftColumn(isMobile)}>
+          <Grid item xs={12} mb={1} style={styleLeftColumn(isMobile)}>
             <div>
               <StartDateSection
                 disabled={restrictions?.startDate === DISABLED}

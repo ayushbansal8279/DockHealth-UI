@@ -5,7 +5,6 @@ import palette from 'styles/palette';
 
 export const AssignMemberContainer = styled.div`
   display: flex;
-  // padding: 5px 0;
 `;
 
 export const Title = styled.div`
