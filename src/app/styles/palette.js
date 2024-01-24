@@ -15,6 +15,10 @@ const palette = {
   brightOrange: '#da5a47',
   newBrightBlue: '#5a71f2',
   newBrightBlueShaded: '#5a71f2cc',
+  purpleNavy: '#3a4c6a',
+  cornFlowerBlue: '#778af1',
+  zinc: '#afb8c4',
+  whiteSmoke: '	#F8F8F9',
 
   // secondary
   purplePassion: '#553bbe',

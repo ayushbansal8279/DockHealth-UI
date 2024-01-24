@@ -11,6 +11,8 @@ const ToolbarButton = React.forwardRef((props, reference) => {
     onClick,
     children,
     tooltip,
+    searchValue,
+    focused,
     disableButton = false,
   } = props;
   return (
@@ -21,6 +23,7 @@ const ToolbarButton = React.forwardRef((props, reference) => {
         color={color}
         type="button"
         disableButton={disableButton}
+        wide={searchValue || focused}
       >
         <SelectIcon>
           {icon && (

@@ -1,5 +1,5 @@
-import React, { useCallback, useMemo } from 'react';
-import MoreVert from '@mui/icons-material/MoreVert';
+import React, { useCallback, useMemo, useState } from 'react';
+import { useBoolean } from 'hooks/useBoolean';
 import MegaFilter from 'components/tasklist/MegaFilter/MegaFilter';
 import LayoutHeader from 'components/template/LayoutHeader/LayoutHeader';
 import { useDispatch, useSelector } from 'react-redux';
@@ -38,8 +38,11 @@ import {
   deleteQuickFilter,
   getQuickFilters,
 } from 'actions/mega-filter-actions';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import ListDetailsToolbar from '../ListDetailsToolbar/ListDetailsToolbar';
 import { determineTaskCounts } from './helpers';
-import { HeaderMembersContainer } from './styled';
+import { HeaderMembersContainer, MainHeaderContainer } from './styled';
 
 const ListDetailsHeader = (props) => {
   const {
@@ -48,6 +51,7 @@ const ListDetailsHeader = (props) => {
     isFetchingTasks,
     searchValue,
     onSearchChange,
+    additionalOptions,
   } = props;
   const dispatch = useDispatch();
   const currentTasksStatus = useSelector(currentTaskListTasksStatusSelector);
@@ -73,7 +77,9 @@ const ListDetailsHeader = (props) => {
         : [],
     [listUsers, userIdentifier],
   );
-
+  const [isListOpen, openList] = useState(false);
+  const [focused, setFocused, unsetFocused] = useBoolean(false);
+  // const [scrollPosition, setScrollPosition] = useState(0);
   const [shownUsers, hiddenUsers] = splitAt(4, sortedUsers);
 
   const handleFilterOpen = () => {
@@ -166,100 +172,143 @@ const ListDetailsHeader = (props) => {
     [dispatch],
   );
 
+  const boxComponentStyles = {
+    mx: '4px',
+    '@media (max-width: 867px)': {
+      mx: searchValue || focused ? '0px' : '4px',
+    },
+  };
   return (
-    <LayoutHeader horizontalSticky>
-      {taskList && (
-        <Box position="absolute" top={listDescription ? 17 : 27} left={10}>
-          <ListOptionsMenu list={taskList} moreOptions tasks={tasks}>
-            <MoreVert color="primary" />
-          </ListOptionsMenu>
-        </Box>
-      )}
-      <LayoutHeader.Title
-        title={listName}
-        description={listDescription}
-        colorIndicator={color}
-      />
-      <LayoutHeader.Spacer />
-      <HeaderSearch value={searchValue} onChange={onSearchChange} />
-      <LayoutHeader.Spacer />
-      <MegaFilter
-        filters={filters}
-        selectedFilters={selectedFilters}
-        onSelectFilters={handleFilterSelect}
-        tasksAndSubTasksCount={tasksAndSubTasksCount}
-        activeItemsAmount={totalTasksAmount}
-        isFetching={false}
-        onOpen={handleFilterOpen}
-        quickFiltersList={quickFiltersList}
-        addQuickFilterOption={addQuickFilterOption}
-        selectedQuickFilter={selectedQuickFilter}
-        selectQuickFilter={handleSelectQuickFilter}
-        onSaveClick={handleSaveQuickFilter}
-        onSaveAsNewClick={handleSaveAsQuickFilter}
-        wasChangedFilters={wasChangedFilters}
-        onQuickFilterCreate={handleQuickFilterCreate}
-        onQuickFilterUpdate={handleQuickFilterUpdate}
-        onQuickFilterDelete={handleQuickFilterDelete}
-        isDefaultDateFilterApplied={isDefaultDateFilterApplied}
-      />
-      <LayoutHeader.Spacer />
-      {shownUsers && listType !== 'PUBLIC' && (
-        <HeaderMembersContainer>
-          {shownUsers.map((user, index) => {
-            return (
-              <Box
-                display="flex"
-                alignItems="center"
-                key={user.identifier}
-                pl={index === 0 ? 0 : 0.5}
-              >
-                <AvatarFilterMember
-                  member={user}
+    <MainHeaderContainer>
+      <LayoutHeader horizontalSticky>
+        {taskList && (
+          <LayoutHeader.Title
+            title={listName}
+            description={listDescription}
+            colorIndicator={color}
+          >
+            <ListOptionsMenu
+              list={taskList}
+              moreOptions
+              tasks={tasks}
+              onClose={() => openList(false)}
+              open={isListOpen}
+            >
+              {isListOpen ? (
+                <ExpandLessIcon
+                  color="primary"
+                  fontSize="large"
+                  onClick={() => openList(false)}
+                />
+              ) : (
+                <ExpandMoreIcon
+                  color="primary"
+                  fontSize="large"
+                  onClick={() => openList(true)}
+                />
+              )}
+            </ListOptionsMenu>
+          </LayoutHeader.Title>
+        )}
+        {shownUsers && listType !== 'PUBLIC' && (
+          <HeaderMembersContainer>
+            {shownUsers.map((user, index) => {
+              return (
+                <Box
+                  display="flex"
+                  alignItems="center"
+                  key={user.identifier}
+                  pl={index === 0 ? 0 : 0.5}
+                >
+                  <AvatarFilterMember
+                    member={user}
+                    size={36}
+                    onSelectFilters={handleFilterSelect}
+                    selectedFilters={selectedFilters}
+                  />
+                </Box>
+              );
+            })}
+            {hiddenUsers?.length > 0 && (
+              <Box pl={0.5}>
+                <AdditionalMembersCounterPopover
+                  hiddenMembers={hiddenUsers}
                   size={36}
                   onSelectFilters={handleFilterSelect}
                   selectedFilters={selectedFilters}
                 />
               </Box>
-            );
-          })}
-          {hiddenUsers?.length > 0 && (
-            <Box pl={0.5}>
-              <AdditionalMembersCounterPopover
-                hiddenMembers={hiddenUsers}
-                size={36}
-                onSelectFilters={handleFilterSelect}
-                selectedFilters={selectedFilters}
-              />
-            </Box>
-          )}
-          {!isUserGuestOrDockLite(currentUser) &&
-            !isUserViewOnly(currentUser) &&
-            listType &&
-            listType !== 'INBOX' && (
-              <Box pl={0.5}>
-                <InviteMemberButton
-                  size={36}
-                  onClick={() =>
-                    dispatch(
-                      openModal('InviteToList', {
-                        list: taskList,
-                        onMembersRefresh: () =>
-                          dispatch(
-                            getMembersByTaskListId(
-                              taskList.taskListIdentifier,
-                              'ALL',
-                            ),
-                          ),
-                      }),
-                    )
-                  }
-                />
-              </Box>
             )}
-        </HeaderMembersContainer>
-      )}
-    </LayoutHeader>
+            {!isUserGuestOrDockLite(currentUser) &&
+              !isUserViewOnly(currentUser) &&
+              listType &&
+              listType !== 'INBOX' && (
+                <Box pl={0.5}>
+                  <InviteMemberButton
+                    size={36}
+                    onClick={() =>
+                      dispatch(
+                        openModal('InviteToList', {
+                          list: taskList,
+                          onMembersRefresh: () =>
+                            dispatch(
+                              getMembersByTaskListId(
+                                taskList.taskListIdentifier,
+                                'ALL',
+                              ),
+                            ),
+                        }),
+                      )
+                    }
+                  />
+                </Box>
+              )}
+          </HeaderMembersContainer>
+        )}
+      </LayoutHeader>
+
+      <ListDetailsToolbar
+        additionalOptions={additionalOptions}
+        searchValue={searchValue}
+        focused={focused}
+        boxComponentStyles={boxComponentStyles}
+      >
+        {/* <LayoutHeader.Spacer /> */}
+        <Box sx={boxComponentStyles} />
+        <MegaFilter
+          filters={filters}
+          selectedFilters={selectedFilters}
+          onSelectFilters={handleFilterSelect}
+          tasksAndSubTasksCount={tasksAndSubTasksCount}
+          activeItemsAmount={totalTasksAmount}
+          isFetching={false}
+          onOpen={handleFilterOpen}
+          quickFiltersList={quickFiltersList}
+          addQuickFilterOption={addQuickFilterOption}
+          selectedQuickFilter={selectedQuickFilter}
+          selectQuickFilter={handleSelectQuickFilter}
+          onSaveClick={handleSaveQuickFilter}
+          onSaveAsNewClick={handleSaveAsQuickFilter}
+          wasChangedFilters={wasChangedFilters}
+          onQuickFilterCreate={handleQuickFilterCreate}
+          onQuickFilterUpdate={handleQuickFilterUpdate}
+          onQuickFilterDelete={handleQuickFilterDelete}
+          isDefaultDateFilterApplied={isDefaultDateFilterApplied}
+          value={searchValue}
+          focused={focused}
+        />
+        {/* <LayoutHeader.Spacer /> */}
+        <Box sx={boxComponentStyles} />
+        <HeaderSearch
+          value={searchValue}
+          onChange={onSearchChange}
+          focused={focused}
+          setFocused={setFocused}
+          unsetFocused={unsetFocused}
+        />
+        <Box sx={boxComponentStyles} />
+      </ListDetailsToolbar>
+    </MainHeaderContainer>
   );
 };
 

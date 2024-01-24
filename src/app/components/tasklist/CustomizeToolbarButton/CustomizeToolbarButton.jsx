@@ -53,6 +53,8 @@ const CustomizeToolbarButton = ({
   disableButton = false,
   iconColorFilterActive,
   isDashboard = false,
+  searchValue,
+  focused,
 }) => {
   const [open, setOpen] = useState(false);
   const [openUpgradePopup, setOpenUpgradePopup] = useState(false);
@@ -167,6 +169,8 @@ const CustomizeToolbarButton = ({
             iconColorFilterActive={iconColorFilterActive}
           />
         }
+        searchValue={searchValue}
+        focused={focused}
         onClick={disableButton ? undefined : () => setOpen(!open)}
         disableButton={disableButton}
         tooltip={
