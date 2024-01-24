@@ -9,7 +9,17 @@ import TaskDrawerPopover from 'components/task-drawer/TaskDrawerPopover/TaskDraw
 import MultiAssignMembersList from 'components/task/MultiAssignPopover/MultiAssignMembersList';
 import Input from 'components/common/Input/Input';
 import { checkIfTemplateTask } from 'helpers/task-helpers';
-import { AdornmentClear } from '../styled';
+import AssignMemberIcon from 'components/user/AssignMemberIcon/AssingMemberIcon';
+import {
+  AssignMemberContainer,
+  AddAssigneeButton,
+  Title,
+  SubTitle,
+  AssigneeContainer,
+  AssigneeTitle,
+  StyledYouBadge,
+} from './styled';
+import UserAvatar from 'components/user/UserAvatar/UserAvatar';
 
 const AssignedToSection = ({ selectedTask = {}, onSave, disabled }) => {
   const currentUser = useSelector(userProfileSelector);
@@ -26,15 +36,9 @@ const AssignedToSection = ({ selectedTask = {}, onSave, disabled }) => {
     setAssignedToUsersValue(assignedToUsers || []);
   }, [assignedToUsers]);
 
-  const wholeDisplayValue =
-    pluck('name', assignedToUsersValue || [])
-      .map(trim)
-      .join(', ') || '';
-
-  const displayValue =
-    wholeDisplayValue.length > 78
-      ? `${wholeDisplayValue.slice(0, 78)} ...`
-      : wholeDisplayValue;
+  const displayName = (userName) => {
+    return userName.length > 20 ? `${userName.slice(0, 20)} ...` : userName;
+  };
 
   const handleClearAssignedToUsers = useCallback(() => {
     setAssignedToUsersValue([]);
@@ -58,6 +62,11 @@ const AssignedToSection = ({ selectedTask = {}, onSave, disabled }) => {
     [onSave],
   );
 
+  const YouBadge = (user) => {
+    if (user.identifier === currentUser.identifier)
+      return <StyledYouBadge>You</StyledYouBadge>;
+  };
+
   return (
     <TaskDrawerPopover
       disabled={disabled}
@@ -73,21 +82,24 @@ const AssignedToSection = ({ selectedTask = {}, onSave, disabled }) => {
         />
       )}
     >
-      <Input
-        disabled={disabled}
-        name="assignTo"
-        type="text"
-        label="Assigned to"
-        placeholder="Who would you like to assign this task to?"
-        multiple
-        value={displayValue}
-        endAdornment={
-          assignedToUsers?.length > 0 &&
-          (disabled ? null : (
-            <AdornmentClear onClick={handleClearAssignedToUsers} />
-          ))
-        }
-      />
+      <AssignMemberContainer>
+        <Title>Assign to</Title>
+        {assignedToUsers &&
+          assignedToUsers.map((user) => (
+            <AssigneeContainer>
+              <UserAvatar user={user} />
+              <AssigneeTitle>{displayName(user.userName)}</AssigneeTitle>
+              {YouBadge(user)}
+            </AssigneeContainer>
+          ))}
+
+        <AddAssigneeButton>
+          <AssignMemberIcon />
+          {assignedToUsers && assignedToUsers.length === 0 ? (
+            <SubTitle>Add Assignee</SubTitle>
+          ) : null}
+        </AddAssigneeButton>
+      </AssignMemberContainer>
     </TaskDrawerPopover>
   );
 };
