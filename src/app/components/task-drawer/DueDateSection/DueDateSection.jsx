@@ -48,8 +48,10 @@ const DueDateSection = ({ selectedTask, disabled = false }) => {
 
   useEffect(() => {
     setIsOverdue(isDueDateOverdue(selectedTask));
-    if ((momentDueDate && momentDueDate.hour()) || momentDueDate.minute()) {
-      setIsTimeAvailable(true);
+    if (momentDueDate) {
+      if (momentDueDate.hour() || momentDueDate.minute()) {
+        setIsTimeAvailable(true);
+      }
     }
   }, [selectedTask]);
 

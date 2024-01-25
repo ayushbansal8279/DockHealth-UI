@@ -96,13 +96,3 @@ export const StyledPopover = styled(Popover)`
     overflow: visible;
   }
 `;
-
-// DueDateSectionWrapper,
-  // StyledPopover,
-  // Title,
-  // AddDateButton,
-  // SubTitle,
-  // DateViewContainer,
-  // DateViewText,
-  // RecurringIconContainer,
-  // ReminderIconContainer,

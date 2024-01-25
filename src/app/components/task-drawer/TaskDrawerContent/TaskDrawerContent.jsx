@@ -477,7 +477,7 @@ const TaskDrawerContent = (props) => {
             />
           </div>
         </Grid>
-        <Grid item xs={12} ml={3} style={styleRightColumn(isMobile)}>
+        {/* <Grid item xs={12} ml={3} style={styleRightColumn(isMobile)}>
           {!isTemplateTask && (
             <ReminderSection
               onSave={handleUpdateTask}
@@ -485,7 +485,7 @@ const TaskDrawerContent = (props) => {
               selectedTask={selectedTask}
             />
           )}
-        </Grid>
+        </Grid> */}
         <Grid item xs={12} style={styleLeftColumn(isMobile)}>
           <PrioritySection
             onTaskUpdate={onTaskUpdate}
