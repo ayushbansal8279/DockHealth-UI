@@ -458,7 +458,8 @@ const TaskDrawerContent = (props) => {
             quickAddPatientEnabled={quickAddPatientEnabled}
           />
         </Grid>
-        {!taskStartDateDisabled && (
+        {/* May be later we need start date in Drawer */}
+        {/* {!taskStartDateDisabled && (
           <Grid item xs={12} mb={1} style={styleLeftColumn(isMobile)}>
             <div>
               <StartDateSection
@@ -467,12 +468,7 @@ const TaskDrawerContent = (props) => {
               />
             </div>
           </Grid>
-        )}
-        {!taskStartDateDisabled && (
-          <Grid item xs={12} style={styleRightColumn(isMobile)}>
-            <div />
-          </Grid>
-        )}
+        )} */}
         <Grid item xs={12} style={styleLeftColumn(isMobile)}>
           <div>
             <DueDateSection
