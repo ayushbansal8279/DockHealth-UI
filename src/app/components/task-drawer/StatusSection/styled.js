@@ -25,7 +25,6 @@ export const StatusFlagContainer = styled.div`
 export const StatusContainer = styled.div`
   display: flex;
   align-items: center;
-  font-family: Outfit;
 `;
 
 export const Title = styled.div`
