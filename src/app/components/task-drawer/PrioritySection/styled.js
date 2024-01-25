@@ -25,14 +25,10 @@ export const PriorityLabelContainer = styled.div`
 `;
 
 export const PriorityFieldContainer = styled.div`
-display: flex;
-align-items: center;
-font-family: Outfit;
-margin-left: 10px;
-
-&MuiSelect-root{
-  height: 10px;
-}
+  display: flex;
+  align-items: center;
+  font-family: Outfit;
+  margin-left: 10px;
 `;
 
 export const PriorityFlagContainer = styled.div`
