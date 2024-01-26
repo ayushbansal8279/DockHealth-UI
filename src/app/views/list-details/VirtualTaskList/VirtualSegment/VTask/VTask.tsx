@@ -6,17 +6,19 @@ import { Draggable, DraggableProvided, DraggableStateSnapshot } from "react-beau
 
 export interface Props extends Segment {
   isTaskTemplate: boolean;
+  isLastChild: boolean;
 }
 
-function VTask({ metadata, register, isTaskTemplate, ...record }: Props, ref: ForwardedRef<HTMLDivElement>) {
+function VTask({ metadata, register, isTaskTemplate, isLastChild, ...record }: Props, ref: ForwardedRef<HTMLDivElement>) {
   return (
       <Draggable draggableId={metadata.id} index={metadata.index} key={metadata.id}>
         {(provided: DraggableProvided, snapshot: DraggableStateSnapshot) => (
           <Sc.VTask
             {...register}
             $subitem={metadata.level > 1}
+            // @ts-ignore
+            $workflow={record.task?.itemType === "BUNDLE"}
             $template={isTaskTemplate}
-            data-dupa={metadata.index}
           >
             <StandardTaskItem
               // @ts-ignore
@@ -24,6 +26,8 @@ function VTask({ metadata, register, isTaskTemplate, ...record }: Props, ref: Fo
               draggableProvided={provided}
               isDraggable={true}
               isDragging={snapshot.isDragging}
+              isTaskTemplate={isTaskTemplate}
+              isLastChild={isLastChild}
             />
           </Sc.VTask>
         )}

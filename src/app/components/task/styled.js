@@ -374,7 +374,6 @@ export const ClickablePatient = styled.span`
 
 export const StandardTaskItemContainer = styled.div`
   position: relative;
-  background-color: red;
   background-color: ${(props) =>
     props.isSelected
       ? palette.brightBlueWithAlpha
@@ -401,6 +400,21 @@ export const StandardTaskItemContainer = styled.div`
           ${highlight} 6s ease-out;
         `
       : ''};
+
+  ${({ isTaskTemplate }) =>
+    isTaskTemplate
+      ? `
+  border-left: 1px solid rgba(75, 179, 253, 1);
+  border-right: 1px solid rgba(75, 179, 253, 1);
+  `
+      : ''}
+
+  ${({ isLastChild }) =>
+    isLastChild
+      ? `
+    border-bottom: 1px solid rgba(75, 179, 253, 1);
+  `
+      : ''}
 
   @media print {
     border-left: 1px solid ${palette.coolGrey3};
@@ -487,14 +501,14 @@ export const TaskItemParentTaskLabel = styled.div`
 export const StatusWrapper = styled.div`
   display: flex;
   border-radius: 2px;
-  border: 1px solid ${(prop) => prop.color || '#7F4334'};
-  background: ${(prop) => prop.color+"1A" || '#7F43341A'};
+  border: 1px solid ${(property) => property.color || '#7F4334'};
+  background: ${(property) => `${property.color}1A` || '#7F43341A'};
   min-width: 90px;
   padding: 2.5px 2px;
   justify-content: center;
   align-items: center;
   gap: 10px;
-  color: ${(prop) => prop.color || '#7F4334'};
+  color: ${(property) => property.color || '#7F4334'};
 `;
 
 export const StatusSubContaioner = styled.div`
@@ -712,7 +726,7 @@ export const PatientMRNAnchor = styled.a`
 `;
 
 export const TaskScrollVericleLine = styled.div`
-  background: #48BBB3; 
+  background: #48bbb3;
   height: 100%;
   width: 1px;
   box-shadow: 1px 0px 3px 0px rgba(0, 0, 0, 0.21);
