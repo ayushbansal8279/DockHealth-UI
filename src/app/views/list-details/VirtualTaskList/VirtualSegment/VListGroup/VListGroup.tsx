@@ -8,10 +8,11 @@ import * as Sc from './styled';
 export interface Props extends Segment {
   name: string;
   count: number;
+  taskGroupIdentifier: string;
 }
 
 function VListGroup(
-  { name, count, metadata, register }: Props,
+  { name, count, taskGroupIdentifier, metadata, register }: Props,
   ref: ForwardedRef<HTMLDivElement>,
 ) {
   const dispatch = useDispatch();
@@ -29,6 +30,7 @@ function VListGroup(
     <Sc.VListGroup ref={ref} {...register}>
       {/* @ts-ignore */}
       <TasksGroup
+        taskGroupIdentifier={taskGroupIdentifier}
         groupName={name}
         moveGroupUp={() => moveGroup(metadata.sameLevelIndex, 'up')}
         moveGroupDown={() => moveGroup(metadata.sameLevelIndex, 'down')}
