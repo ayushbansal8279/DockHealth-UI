@@ -1,6 +1,6 @@
 import styled from '@mui/styled-engine';
 
-export const VQuickAddTask = styled("div")`
+export const VQuickAddTask = styled('div')`
   position: sticky;
   top: 0;
   left: 0;

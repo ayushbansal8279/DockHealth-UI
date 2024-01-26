@@ -1,5 +1,8 @@
 import styled from 'styled-components';
-import palette from 'styles/palette';
+import { fontSizes, fontWeights } from 'styles/font';
+import palette, { typography } from 'styles/palette';
+import spacing from 'styles/spacing';
+import { Popover } from '@mui/material';
 
 export const PriorityLabelContainer = styled.div`
   align-items: center;
@@ -22,7 +25,10 @@ export const PriorityLabelContainer = styled.div`
 `;
 
 export const PriorityFieldContainer = styled.div`
-  position: relative;
+  display: flex;
+  align-items: center;
+  font-family: Outfit;
+  margin-left: 10px;
 `;
 
 export const PriorityFlagContainer = styled.div`
@@ -30,4 +36,14 @@ export const PriorityFlagContainer = styled.div`
   position: absolute;
   top: calc(50% + 0.5rem);
   transform: translate(-100%, -50%);
+`;
+
+export const Title = styled.div`
+  margin-right: 40px;
+  color: ${palette.coolGrey1};
+  font-family: Outfit;
+  font-size: ${fontSizes.smallPlus};
+  font-weight: ${fontWeights.light};
+  display: flex;
+  align-items: center;
 `;

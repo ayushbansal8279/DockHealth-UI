@@ -21,6 +21,11 @@ export const Select = styled(MuiSelect)`
 `;
 
 export const SelectWrapper = styled.div`
+  @media (max-width: 867px) {
+    display: ${({ wide }) => {
+      if (wide) return 'none';
+    }};
+  }
   @media print {
     display: none;
   }

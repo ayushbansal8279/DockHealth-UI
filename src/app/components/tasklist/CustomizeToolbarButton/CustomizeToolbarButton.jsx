@@ -53,6 +53,8 @@ const CustomizeToolbarButton = ({
   disableButton = false,
   iconColorFilterActive,
   isDashboard = false,
+  searchValue,
+  focused,
   isPatientView = false,
 }) => {
   const [open, setOpen] = useState(false);
@@ -182,6 +184,8 @@ const CustomizeToolbarButton = ({
             iconColorFilterActive={iconColorFilterActive}
           />
         }
+        searchValue={searchValue}
+        focused={focused}
         onClick={disableButton ? undefined : () => setOpen(!open)}
         disableButton={disableButton}
         tooltip={

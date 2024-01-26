@@ -2,11 +2,11 @@ import React from 'react';
 import Spacing from 'components/common/Spacing';
 import { ThemeProvider } from '@mui/material/styles';
 import { Typography } from '@mui/material';
+import { getTheme } from 'styles/theme';
 import OnboardingBaaSigning from '../OnboardingBaaOverviewView/OnboardingBaaSigning';
-import { theme } from '../../../theme';
 
 const OnboardingBaaCheckView = () => (
-  <ThemeProvider theme={theme}>
+  <ThemeProvider theme={getTheme}>
     <div>
       <Spacing vertical={6} />
       <Typography variant="h2" weight="600">

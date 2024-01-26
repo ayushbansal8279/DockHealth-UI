@@ -26,12 +26,11 @@ env:
 phases:
   install:
     runtime-versions:
-      nodejs: 14
+      nodejs: 18
   pre_build:
     commands:
       - echo Installing source NPM dependencies...
       - npm install
-      - npm audit fix
       - node -e 'console.log(v8.getHeapStatistics().heap_size_limit/(1024*1024))'
       - export NODE_OPTIONS="--max-old-space-size=4096"
   build:
