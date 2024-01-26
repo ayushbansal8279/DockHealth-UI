@@ -1,22 +1,30 @@
-import React, { ForwardedRef, forwardRef, useCallback, useContext } from "react";
+import React, {
+  ForwardedRef,
+  forwardRef,
+  useCallback,
+  useContext,
+} from 'react';
 import { Segment } from 'views/list-details/modules/Virtualized';
-import StandardTaskItem from 'components/task/StandardTaskItem/StandardTaskItem';
-import * as Sc from './styled';
-import TasksHeader from "components/tasklist/TasksHeader/TasksHeader";
-import { BulkEditContext } from "components/tasklist/BulkEditSection/BulkEditSection";
-import { useDispatch, useSelector } from "react-redux";
-import { isTaskItemsSelectedSelector } from "../../../../../selectors/task-items-selectors";
-import * as TaskActions from "actions/task-actions";
-import { taskDetailsSortSelector } from "../../../../../selectors/list-details-selectors";
+import TasksHeader from 'components/tasklist/TasksHeader/TasksHeader';
+import { BulkEditContext } from 'components/tasklist/BulkEditSection/BulkEditSection';
+import { useDispatch, useSelector } from 'react-redux';
+import * as TaskActions from 'actions/task-actions';
 // @ts-ignore
-import { compose } from "ramda";
-import * as ListDetailsActions from "actions/list-details-actions";
+import { compose } from 'ramda';
+import * as ListDetailsActions from 'actions/list-details-actions';
+import { isTaskItemsSelectedSelector } from '../../../../../selectors/task-items-selectors';
+import * as Sc from './styled';
+import { taskDetailsSortSelector } from '../../../../../selectors/list-details-selectors';
 
 export interface Props extends Segment {
   isTaskTemplate: boolean;
 }
 
-function VTaskHeader({ metadata, register, isTaskTemplate, ...record }: Props, ref: ForwardedRef<HTMLDivElement>) {
+function VTaskHeader(
+  { metadata, register, isTaskTemplate, ...record }: Props,
+  // eslint-disable-next-line unicorn/prevent-abbreviations
+  ref: ForwardedRef<HTMLDivElement>,
+) {
   const dispatch = useDispatch();
   const sort = useSelector(taskDetailsSortSelector);
   const onSortChange = compose(
@@ -25,7 +33,9 @@ function VTaskHeader({ metadata, register, isTaskTemplate, ...record }: Props, r
   );
   // @ts-ignore
   const { bulkEditEnabled } = useContext(BulkEditContext);
-  const isGroupSelected = useSelector(isTaskItemsSelectedSelector(metadata.children));
+  const isGroupSelected = useSelector(
+    isTaskItemsSelectedSelector(metadata.children),
+  );
   const groupHasMultipleAssignees = false;
   const handleGroupSelect = useCallback(() => {
     const taskIdentifiers = metadata.children;

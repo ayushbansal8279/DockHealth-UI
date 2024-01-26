@@ -48,7 +48,7 @@ const TaskTemplateGroup = ({
     return taskLookupSelector(state, origin, pullGroup);
   });
 
-  console.log("templateGroup", templateGroup, origin, pullGroup);
+  // console.log("templateGroup", templateGroup, origin, pullGroup);
 
   const {
     tasks: taskIdentifiers, // task identifiers

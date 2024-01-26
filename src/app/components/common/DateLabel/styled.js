@@ -25,8 +25,7 @@ export const DateTextContainer = styled.div`
 `;
 
 export const ReminderIconContainer = styled.div`
-  background: ${({ isOverdue }) =>
-    isOverdue ? `${palette.oPlusRed}` : `${palette.coolGrey1}`};
+  color: ${({ isOverdue }) => (isOverdue ? '#ec4f3e' : '#8492A4')};
   padding-left: ${spacing.small};
 `;
 
