@@ -285,7 +285,7 @@ const TasksGroup = ({
           : columns
               .filter((f) => f.isChecked)
               .reduce((accumulator, column) => {
-                console.log('columnWidth', column, column.columnWidth);
+                // console.log('columnWidth', column, column.columnWidth);
                 return accumulator + column.columnWidth;
               }, 0)
       }
