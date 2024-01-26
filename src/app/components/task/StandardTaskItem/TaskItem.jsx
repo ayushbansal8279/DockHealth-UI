@@ -822,7 +822,7 @@ const TaskItem = React.memo(
     );
 
     if (task?.itemType !== TaskItemType.TASK) {
-      console.log("!!!!!", task);
+      // console.log("!!!!!", task);
       const taskGroup = task;
       return (
         <TaskTemplateGroup

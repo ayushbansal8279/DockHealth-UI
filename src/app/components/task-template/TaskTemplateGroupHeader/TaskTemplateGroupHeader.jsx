@@ -129,7 +129,7 @@ const TaskTemplateGroupHeader = ({
     creator,
   } = templateGroup;
 
-  console.log('TaskTemplateGroupHeader', templateGroup);
+  // console.log('TaskTemplateGroupHeader', templateGroup);
 
   const { bulkEditIsActive } = useContext(BulkEditContext);
   const { bulkEditEnabled } = useContext(BulkEditContext);
