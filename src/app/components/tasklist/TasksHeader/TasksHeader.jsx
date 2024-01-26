@@ -36,15 +36,6 @@ const TasksHeader = ({
   onGroupSelect,
   pageBackground,
 }) => {
-  // console.log(
-  //   'TasksHeader',
-  //   bulkEditEnabled,
-  //   sort,
-  //   onSortChange,
-  //   isGroupSelected,
-  //   onGroupSelect,
-  //   pageBackground,
-  // );
   const taskList = useSelector(currentTaskListSelector);
   const currentUser = useSelector(userProfileSelector);
   const currentOrganization = useSelector(selectedUserOrganizationSelector);

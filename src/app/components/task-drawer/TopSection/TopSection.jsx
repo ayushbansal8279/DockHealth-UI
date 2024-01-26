@@ -23,6 +23,9 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { openModal } from 'modal/actions';
 import ShareLinkIcon from 'img/share-link.svg';
+import EmailIcon from 'img/email-new-icon.svg';
+import MobileIcon from 'img/mobile-new-icon.svg';
+import Spacing from 'components/common/Spacing';
 import { HorizontalLabel } from '../styled';
 import initializeTaskDrawerTopSectionHooks from './hooks';
 
@@ -108,14 +111,14 @@ const TopSection = ({
           name: 'Copy task link',
           onClick: handleCopyLink,
         },
-        sendEmailAvailable && {
-          name: 'Send Email',
-          onClick: () => dispatch(openModal('SendEmailFromTask')),
-        },
-        sendSmsAvailable && {
-          name: 'Send SMS',
-          onClick: () => dispatch(openModal('SendSmsFromTask')),
-        },
+        // sendEmailAvailable && {
+        //   name: 'Send Email',
+        //   onClick: () => dispatch(openModal('SendEmailFromTask')),
+        // },
+        // sendSmsAvailable && {
+        //   name: 'Send SMS',
+        //   onClick: () => dispatch(openModal('SendSmsFromTask')),
+        // },
         sendSecureMessageAvailable && {
           name: 'Send Patient Message',
           onClick: () => dispatch(openModal('SendSecureMessageFromTask')),
@@ -226,6 +229,45 @@ const TopSection = ({
               <Box mx={0.5} />
             </>
           )}
+          <Spacing horizontal={2} />
+          {sendEmailAvailable && (
+            <>
+              <Box
+                display="flex"
+                alignItems="center"
+                style={{ cursor: 'pointer' }}
+                onClick={() => dispatch(openModal('SendEmailFromTask'))}
+              >
+                <img
+                  src={EmailIcon}
+                  fontSize="small"
+                  color="primary"
+                  alt="Copy the Task link"
+                />
+              </Box>
+              <Box mx={0.5} />
+            </>
+          )}
+          <Spacing horizontal={4} />
+          {sendSmsAvailable && (
+            <>
+              <Box
+                display="flex"
+                alignItems="center"
+                style={{ cursor: 'pointer' }}
+                onClick={() => dispatch(openModal('SendSmsFromTask'))}
+              >
+                <img
+                  src={MobileIcon}
+                  fontSize="small"
+                  color="primary"
+                  alt="Copy the Task link"
+                />
+              </Box>
+              <Box mx={0.5} />
+            </>
+          )}
+          <Spacing horizontal={3} />
           {allowedOptions.length !== 0 &&
             taskListRestrictions?.createTask !== DISABLED && (
               <OptionsMenu
