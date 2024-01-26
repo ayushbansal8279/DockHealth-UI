@@ -35,7 +35,7 @@ import NoFilterResultsView from 'components/tasklist/EmptyListView/NoFilterResul
 import TasksGroup from 'components/tasklist/TasksGroup/TasksGroup';
 import GroupNameSection from 'components/tasklist/GroupNameSection/GroupNameSection';
 import messages from 'components/tasklist/AddGroupNameButton/messages';
-import AddGroupNameButton from 'components/tasklist/AddGroupNameButton/AddGroupNameButton';
+// import AddGroupNameButton from 'components/tasklist/AddGroupNameButton/AddGroupNameButton';
 // import EmptyTaskAddView from 'components/tasklist/EmptyTaskAddView/EmptyTaskAddView';
 import GroupedListSkeletonLoader from 'components/tasklist/GroupedListSkeletonLoader/GroupedListSkeletonLoader';
 import { BulkEditContext } from 'components/tasklist/BulkEditSection/BulkEditSection';
@@ -170,7 +170,7 @@ const ListDetailsTasks = ({
           description="Be the first to add a task to this list!"
         />
       );
-    };
+    }
   };
 
   const onDragEnd = useCallback(

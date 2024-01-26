@@ -1,20 +1,26 @@
-import React, { ForwardedRef, forwardRef, useCallback } from 'react'
+import React, { ForwardedRef, forwardRef, useCallback } from 'react';
 import { Segment } from 'views/list-details/modules/Virtualized';
-import TasksGroup from 'components/tasklist/TasksGroup/TasksGroup';
+import messages from 'components/tasklist/AddGroupNameButton/messages';
+import AddGroupNameButton from 'components/tasklist/AddGroupNameButton/AddGroupNameButton';
+import GroupNameSection from 'components/tasklist/GroupNameSection/GroupNameSection';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  TASK_LIST_RESTRICTIONS_OPTIONS,
+  TASK_LIST_RESTRICTIONS_PROFILES,
+} from 'restrictions/task-restrictions';
+import { isMemberAdmin } from 'helpers/list-members-helper';
+import * as ListDetailsActions from 'actions/list-details-actions';
+import { userProfileSelector } from '../../../../../selectors/user-selectors';
+import { currentTaskListSelector } from '../../../../../selectors/task-list-selectors';
 import * as Sc from './styled';
-import messages from "components/tasklist/AddGroupNameButton/messages";
-import AddGroupNameButton from "components/tasklist/AddGroupNameButton/AddGroupNameButton";
-import GroupNameSection from "components/tasklist/GroupNameSection/GroupNameSection";
-import { useDispatch, useSelector } from "react-redux";
-import { userProfileSelector } from "../../../../../selectors/user-selectors";
-import { TASK_LIST_RESTRICTIONS_OPTIONS, TASK_LIST_RESTRICTIONS_PROFILES } from "restrictions/task-restrictions";
-import { currentTaskListSelector } from "../../../../../selectors/task-list-selectors";
-import { isMemberAdmin } from "helpers/list-members-helper";
-import * as ListDetailsActions from "actions/list-details-actions";
 
 export interface Props extends Segment {}
 
-function VAddGroup({ metadata, register }: Props, ref: ForwardedRef<HTMLDivElement>) {
+function VAddGroup(
+  { metadata, register }: Props,
+  // eslint-disable-next-line unicorn/prevent-abbreviations
+  ref: ForwardedRef<HTMLDivElement>,
+) {
   const dispatch = useDispatch();
   const currentUser = useSelector(userProfileSelector);
   const restrictions =
@@ -39,12 +45,9 @@ function VAddGroup({ metadata, register }: Props, ref: ForwardedRef<HTMLDivEleme
   );
 
   return (
-    <Sc.VAddGroup
-      ref={ref}
-      {...register}
-    >
+    <Sc.VAddGroup ref={ref} {...register}>
       <GroupNameSection
-        initialValue={""}
+        initialValue={''}
         disabled={false}
         onEnterClick={
           restrictions?.createGroup !== DISABLED &&

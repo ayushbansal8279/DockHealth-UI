@@ -8,15 +8,14 @@ export interface Props extends Segment {
   definition: any;
 }
 
-function VListHeader({ metadata, register, definition, ...record }: Props, ref: ForwardedRef<HTMLDivElement>) {
+function VListHeader(
+  { metadata, register, definition, ...record }: Props,
+  ref: ForwardedRef<HTMLDivElement>,
+) {
   return (
-    <Sc.VListHeader
-      ref={ref}
-      {...register}
-      $subitem={metadata.level > 1}
-    >
+    <Sc.VListHeader ref={ref} {...register} $subitem={metadata.level > 1}>
       {/* @ts-ignore */}
-      <StandardTaskItem taskIdentifier={metadata.id}/>
+      <StandardTaskItem taskIdentifier={metadata.id} />
     </Sc.VListHeader>
   );
 }

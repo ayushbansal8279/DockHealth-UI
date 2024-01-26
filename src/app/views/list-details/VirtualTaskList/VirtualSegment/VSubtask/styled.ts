@@ -1,6 +1,6 @@
 import styled from '@mui/styled-engine';
 
-export const VSubtask = styled("div")`
+export const VSubtask = styled('div')`
   position: relative;
   display: flex;
   font-size: 13px;
