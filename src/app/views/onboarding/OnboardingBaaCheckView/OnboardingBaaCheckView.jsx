@@ -2,8 +2,8 @@ import React from 'react';
 import Spacing from 'components/common/Spacing';
 import { ThemeProvider } from '@mui/material/styles';
 import { Typography } from '@mui/material';
+import { theme } from 'styles/theme';
 import OnboardingBaaSigning from '../OnboardingBaaOverviewView/OnboardingBaaSigning';
-import { theme } from '../../../theme';
 
 const OnboardingBaaCheckView = () => (
   <ThemeProvider theme={theme}>
