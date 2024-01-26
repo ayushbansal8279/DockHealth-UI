@@ -1,4 +1,4 @@
-import { Grid } from '@mui/material';
+import { Grid, Typography } from '@mui/material';
 import React, { useCallback } from 'react';
 import Spacing from 'components/common/Spacing';
 import DockHeaderLogo from 'img/dock-header-logo.svg';
@@ -9,6 +9,30 @@ import { setAuthBaseState } from 'actions/auth-base-actions';
 import { useDispatch } from 'react-redux';
 import { AUTH_BASE_STATES } from 'reducers/auth-base-reducer';
 import { OutfitTypography } from 'styles/theme-outfit';
+import { useBoolean } from 'hooks/useBoolean';
+import { redTheme } from 'modal/themes/red-theme';
+import {
+  ModalDescriptionContainer,
+  ModalIconContainer,
+  ModalMainIcon,
+  ModalWrapper,
+  FixedWidthButtonWrapper,
+  ButtonsContainer,
+} from 'modal/components/styled';
+import { OnboardingDialog } from 'views/onboarding/OnboardingTemplate.Components';
+import { ThemeProvider as MuiThemeProvider } from '@mui/material/styles';
+import Button from 'components/common/v2/Button/Button';
+import envelope from 'img/modals/envelope-red.svg';
+
+const fontFamily = 'roboto condensed';
+
+const onboardingMessageStyle = {
+  fontFamily,
+  fontWeight: 300,
+  fontSize: '18px',
+  padding: '0rem 1rem',
+  display: 'block',
+};
 
 export default () => {
   const DockLogoImage = styled.img.attrs({
@@ -23,15 +47,18 @@ export default () => {
 
   const dispatch = useDispatch();
 
+  const [isDialogShown, showDialog, hideDialog] = useBoolean(false);
+
   useMount(() => {
     setAuthBaseState({
       authBaseState: AUTH_BASE_STATES.SIGN_UP,
     })(dispatch);
   });
 
-  const username = window.sessionStorage.getItem('username');
+  const username = window.sessionStorage.getItem('email');
 
   const handleResendEmail = useCallback(() => {
+    showDialog();
     resendConfirmationCode({ username })
       .then((data) => {
         console.log(`sent confirmation code:`, data);
@@ -39,7 +66,7 @@ export default () => {
       .catch((error) => {
         console.error(`error sending confirmation code:`, error);
       });
-  }, [username]);
+  }, [showDialog, username]);
 
   return (
     <Grid container style={{ height: '100%' }}>
@@ -81,10 +108,46 @@ export default () => {
             }}
           >
             Haven’t received your email? Please check your spam.{' '}
-            <strong onClick={handleResendEmail}>Resend email</strong>
+            <strong style={{ cursor: 'pointer' }} onClick={handleResendEmail}>
+              Resend email
+            </strong>
           </OutfitTypography>
         </Grid>
       </Grid>
+      <OnboardingDialog open={isDialogShown} fullWidth maxWidth="sm">
+        <MuiThemeProvider theme={redTheme}>
+          <ModalWrapper style={{ width: '500px' }}>
+            <ModalIconContainer>
+              <ModalMainIcon src={envelope} alt="envelope" />
+              <Typography color="textPrimary" variant="h2" align="center">
+                Confirmation Email Sent
+              </Typography>
+            </ModalIconContainer>
+            <ModalDescriptionContainer>
+              <OutfitTypography variant="h4">
+                <span style={onboardingMessageStyle}>
+                  {' '}
+                  Confirmation Email has been sent to {username}{' '}
+                </span>
+              </OutfitTypography>
+            </ModalDescriptionContainer>
+            <ButtonsContainer>
+              <FixedWidthButtonWrapper width={300}>
+                <Button
+                  fullWidth
+                  variant="primary-red"
+                  type="button"
+                  onClick={() => {
+                    hideDialog();
+                  }}
+                >
+                  Close
+                </Button>
+              </FixedWidthButtonWrapper>
+            </ButtonsContainer>
+          </ModalWrapper>
+        </MuiThemeProvider>
+      </OnboardingDialog>
     </Grid>
   );
 };

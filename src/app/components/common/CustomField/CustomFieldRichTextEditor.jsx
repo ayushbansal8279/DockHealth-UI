@@ -49,7 +49,6 @@ const CustomFieldRichTextEditor = React.forwardRef(
 
     useEffect(() => {
       if (value !== null && value !== updatedValue) {
-        // const newContent = createMentionEntities(value, value, [], true);
         setUpdatedValue(value);
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -115,6 +114,10 @@ const CustomFieldRichTextEditor = React.forwardRef(
       setIsFocused(false);
     };
 
+    const changeData = (textValue) => {
+      setUpdatedValue(textValue)
+    };
+
     return (
       <CustomTextEditor
         hasError={descriptionErrorState}
@@ -130,6 +133,7 @@ const CustomFieldRichTextEditor = React.forwardRef(
             readonly={readOnly}
             placeholder={placeholder}
             onBlur={handleBlur}
+            onChange={changeData}
             initOnClick
             showCharCount
             taskListIdentifier={task?.taskList?.taskListIdentifier}

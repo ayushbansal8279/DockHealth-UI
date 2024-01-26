@@ -485,6 +485,22 @@ export const TaskItemParentTaskLabel = styled.div`
 
 export const StatusWrapper = styled.div`
   display: flex;
+  border-radius: 2px;
+  border: 1px solid ${(prop) => prop.color || '#7F4334'};
+  background: ${(prop) => prop.color+"1A" || '#7F43341A'};
+  min-width: 90px;
+  padding: 2.5px 2px;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  color: ${(prop) => prop.color || '#7F4334'};
+`;
+
+export const StatusSubContaioner = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-left: 5px;
 `;
 
 export const StatusName = styled.p`
@@ -494,7 +510,12 @@ export const StatusName = styled.p`
   overflow: hidden;
   white-space: nowrap;
   margin-bottom: 0;
-  text-align: left;
+  text-align: center;
+  font-family: Outfit;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 135%;
 `;
 
 export const MatchingWrapper = styled.div`
@@ -521,7 +542,8 @@ export const SubtaskStylingLinkContainer = styled.div`
   top: -1px;
   display: flex;
   align-items: center;
-  z-index: 1;
+  z-index: 999;
+  pointer-events: none;
 `;
 
 export const SubtaskStylingVerticalPart = styled.div`
@@ -550,7 +572,8 @@ export const SubtaskStylingLastLink = styled.div`
   padding: 1px 0;
   left: -19px;
   top: -1px;
-  z-index: 1;
+  z-index: 999;
+  pointer-events: none;
 `;
 
 export const SubtasksCellContentButton = styled.button`
@@ -685,4 +708,11 @@ export const ActionIconsContainer = styled.div`
 
 export const PatientMRNAnchor = styled.a`
   color: ${palette.brightBlue} !important;
+`;
+
+export const TaskScrollVericleLine = styled.div`
+  background: #48BBB3; 
+  height: 100%;
+  width: 1px;
+  box-shadow: 1px 0px 3px 0px rgba(0, 0, 0, 0.21);
 `;

@@ -162,7 +162,20 @@ const TasksHeader = ({
         direction="horizontal"
       >
         {(provided, snapshot) => (
-          <SortHeaderRow ref={provided.innerRef} {...provided.droppableProps}>
+          <SortHeaderRow
+            ref={provided.innerRef}
+            {...provided.droppableProps}
+            $width={
+              !window.disabledVirtualTaskList
+                ? columns
+                    .filter((f) => f.isChecked)
+                    .reduce(
+                      (accumulator, column) => accumulator + column.columnWidth,
+                      0,
+                    )
+                : null
+            }
+          >
             <StickyColumnContainer
               backgroundColor={pageBackground}
               customWidthExists
@@ -176,15 +189,13 @@ const TasksHeader = ({
                 </BulkContainer>
               )}
               {!bulkEditEnabled && (
-                <BulkContainer style={{width: '66px'}}>
-                  &nbsp;
-                </BulkContainer>
+                <BulkContainer style={{ width: '66px' }}>&nbsp;</BulkContainer>
               )}
               {renderColumn(
                 getTaskHeaderOptions(
                   customerTypeLabel,
                   uniqueIdentifierLabel,
-                  columns.filter(f => f.isChecked)?.[0],
+                  columns.find((f) => f.isChecked),
                   restrictions,
                 ),
                 0,

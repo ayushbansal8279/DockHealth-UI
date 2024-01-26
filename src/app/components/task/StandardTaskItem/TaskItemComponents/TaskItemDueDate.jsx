@@ -8,8 +8,10 @@ import Tooltip from 'components/common/Tooltip/Tooltip';
 import DateLabel from 'components/common/DateLabel/DateLabel';
 import { isDueDateOverdue, ReminderType } from 'helpers/task-helpers';
 import { onTaskDueDateChanged } from 'helpers/ga-event-helper';
+import spacing from 'styles/spacing';
+import palette from 'styles/palette';
 
-const TaskItemDueDate = ({ task, disabled = false }) => {
+const TaskItemDueDate = ({ task, isDateHover, disabled = false }) => {
   const dispatch = useDispatch();
   const { taskIdentifier, dueDate, hasRecurringSchedule, reminderType } =
     task || {};
@@ -48,9 +50,22 @@ const TaskItemDueDate = ({ task, disabled = false }) => {
               hasRecurringSchedule={hasRecurringSchedule}
             />
           ) : (
-            <div>
-              <TaskIcon type="calendar" />
-            </div>
+            <>
+              {isDateHover ? (
+                <div style={{ display: 'flex' }}>
+                  {' '}
+                  <TaskIcon type="calendar" isActive />{' '}
+                  <p
+                    style={{
+                      padding: `3px ${spacing.smallPlus}`,
+                      color: `${palette.coolGrey1}`,
+                    }}
+                  >
+                    None
+                  </p>
+                </div>
+              ) : null}
+            </>
           )}
         </>
       </Tooltip>

@@ -46,6 +46,7 @@ const palette = {
   // COLORS NOT EXISTING IN GLOBAL PALETTE
   error: '#e40909',
   lightGrey2: '#f3f5f6',
+  offBlack: '#292d34',
   black: '#000000',
   white: '#ffffff',
   lightCyanBlue: '#009fcd',
@@ -74,6 +75,7 @@ const palette = {
   lightBlue: '#5ccced',
   skeletonLoader: '#e5e9f2',
   selectedBlue: '#05ADEC',
+  newBrightBlue: '#4bb3fd',
 
   // lighter ones - 90%
   dockBlueLight: '#e0eff9',

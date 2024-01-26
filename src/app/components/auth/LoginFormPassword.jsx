@@ -2,6 +2,7 @@ import React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useMount, useToggle } from 'react-use';
 import styled from 'styled-components';
+import { useHistory } from 'react-router-dom';
 import { object, string } from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import EyeClose from 'img/auth/eye-close.svg';
@@ -11,6 +12,7 @@ import FormInput from 'components/common/v2/Input/FormInput';
 import Spacing from 'components/common/Spacing';
 import palette from 'styles/palette';
 import { OutfitTypography } from 'styles/theme-outfit';
+import queryString from 'query-string';
 import { StyledForm, StyledLink } from './AuthComponents.styled';
 import SSOOptions from './SSOOptions';
 import { Title } from './Title';
@@ -50,13 +52,16 @@ const LoginFormPassword = ({
   const { watch, handleSubmit, setError, setValue } = formMethods;
   const usernameValue = watch('username');
 
+  const history = useHistory();
+  const { uname } = queryString.parse(history?.location?.search);
+
   useMount(() => {
     setValue('username', sessionStorage.getItem('username') ?? '');
   });
 
-  const titleContent = window.sessionStorage.getItem('confirmStatus')
-    ? 'Your email is confirmed'
-    : 'Sign in';
+  const verified = window.sessionStorage.getItem('confirmStatus');
+
+  const titleContent = verified ? 'Log in to your account.' : 'Sign in';
 
   const handleUsernameChange = (event) => {
     setValue('username', event.target?.value?.trim() || '');
@@ -74,13 +79,24 @@ const LoginFormPassword = ({
       <FormProvider {...formMethods}>
         <Title>{titleContent}</Title>
         <Spacing vertical={4} />
-        <OutfitTypography align="center" variant="h4">
-          New to Dock?{' '}
-          <a style={{ fontWeight: 600, color: 'black' }} href="/create-account">
-            {' '}
-            Sign up for free{' '}
-          </a>
-        </OutfitTypography>
+        {verified ? (
+          <>
+            <OutfitTypography align="center" variant="h4">
+              Your email {uname} is verified.
+            </OutfitTypography>
+          </>
+        ) : (
+          <OutfitTypography align="center" variant="h4">
+            New to Dock?{' '}
+            <a
+              style={{ fontWeight: 600, color: 'black' }}
+              href="/create-account"
+            >
+              {' '}
+              Sign up for free{' '}
+            </a>
+          </OutfitTypography>
+        )}
         <Spacing vertical={5} />
         <FormInput
           name="username"

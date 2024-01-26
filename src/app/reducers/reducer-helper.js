@@ -117,7 +117,7 @@ export function updateTasksMap(state, taskItem) {
         ? {
             ...state.tasksMap[taskItem?.identifier],
             ...taskItem,
-            tasks: taskItem?.tasks.map((task) => task.identifier),
+            tasks: taskItem?.tasks?.map((task) => task.identifier),
           }
         : {
             ...state.tasksMap[taskItem?.identifier],

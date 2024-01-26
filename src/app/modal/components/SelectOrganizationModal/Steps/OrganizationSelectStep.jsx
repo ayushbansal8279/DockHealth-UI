@@ -10,10 +10,12 @@ import {
   ListItemTextButton,
   Step,
 } from '../styled';
+import Checkbox from 'components/common/Checkbox/Checkbox';
+
 
 const OrganizationSelectStep = ({
-  selectedOrganization,
-  setSelectedOrganization,
+  selectedOrganizations,
+  setSelectedOrganizations,
 }) => {
   const userOrganizations = useSelector(userOrganizationsSelector);
 
@@ -42,18 +44,41 @@ const OrganizationSelectStep = ({
                 <ListItem
                   key={list.organizationIdentifier}
                   isSelected={
-                    selectedOrganization?.organizationIdentifier ===
-                    list.organizationIdentifier
+                    selectedOrganizations?.has(list.organizationIdentifier)
                   }
                 >
+                  <Checkbox
+                    isChecked={ selectedOrganizations?.has(list.organizationIdentifier)}
+                    onClick={() => {
+                      if (!selectedOrganizations.has(list.organizationIdentifier)){
+                        setSelectedOrganizations(prev => new Set([...prev, list.organizationIdentifier]));
+                      }else{
+                        setSelectedOrganizations(prev => {
+                          return new Set([...prev].filter(orgId => {
+                            return orgId !== list.organizationIdentifier
+                          }))}
+                          );
+                      }
+                    }}
+                  />
                   <ListItemTextButton
                     onClick={() => {
-                      setSelectedOrganization(list);
+                      if (!selectedOrganizations.has(list.organizationIdentifier)){
+                        setSelectedOrganizations(prev => new Set([...prev, list.organizationIdentifier]));
+                      }else{
+                        setSelectedOrganizations(prev => {
+                          return new Set([...prev].filter(orgId => {
+                            return orgId !== list.organizationIdentifier
+                          }))}
+                          );
+                      }
+                      
                     }}
                     type="button"
                     isSelected={
-                      selectedOrganization?.organizationIdentifier ===
-                      list.organizationIdentifier
+                      // selectedOrganizations?.includes(org => org.organizationIdentifier ===
+                      //   list.organizationIdentifier ) 
+                      selectedOrganizations.has(list.organizationIdentifier)
                     }
                   >
                     {list.organizationName}

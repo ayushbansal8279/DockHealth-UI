@@ -59,6 +59,13 @@ export const CreatedText = styled.p`
   color: inherit;
 `;
 
+export const StatusText = styled.p`
+  margin: 0;
+  font-size: ${fontSizes.small};
+  font-weight: ${fontWeights.regular};
+  color: inherit;
+`;
+
 export const OptionsContainer = styled.div`
   position: absolute;
   bottom: 4px;

@@ -4,6 +4,9 @@ import palette from 'styles/palette';
 import spacing from 'styles/spacing';
 
 export const StyledDashboardTab = styled.button`
+  display: flex;
+  justify-content: center;
+  align-items: center;
   cursor: pointer;
   font-size: 1.125rem;
   font-weight: ${fontWeights.bold};
@@ -17,4 +20,12 @@ export const StyledDashboardTab = styled.button`
   &:focus {
     outline: none;
   }
+`;
+
+export const NewTasksIndicator = styled.div`
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: ${palette.brightBlue};
+  margin-right: 10px;
 `;

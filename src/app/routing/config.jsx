@@ -265,13 +265,11 @@ export const TEMPLATE_CORE_SUBSCRIPTION_PLAN_ROUTES = [
   {
     path: '/custom-profiles/:profileTypeIdentifier/:profileIdentifier',
     RouteComponent: CustomProfileView,
-    onLeave: onLeaveGlobalSearch,
     permissions: [CAN_ACCESS_SEARCH_PAGE],
   },
   {
     path: '/custom-profiles/:profileTypeIdentifier',
     RouteComponent: CustomProfileList,
-    onLeave: onLeaveGlobalSearch,
     permissions: [CAN_ACCESS_SEARCH_PAGE],
   },
   {

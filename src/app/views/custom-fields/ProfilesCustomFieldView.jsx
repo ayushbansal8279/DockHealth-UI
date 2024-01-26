@@ -161,6 +161,14 @@ const ProfilesCustomFieldsView = ({ profileTypeIdentifier }) => {
                   <CustomFieldHeaderText>Field type</CustomFieldHeaderText>
                 </CustomFieldCell>
                 <CustomFieldCell>
+                  <CustomFieldHeaderText>
+                    Included in Name
+                  </CustomFieldHeaderText>
+                </CustomFieldCell>
+                <CustomFieldCell>
+                  <CustomFieldHeaderText>Show on Header</CustomFieldHeaderText>
+                </CustomFieldCell>
+                <CustomFieldCell>
                   <Box width="68px" />
                 </CustomFieldCell>
               </CustomFieldItem>
@@ -194,6 +202,29 @@ const ProfilesCustomFieldsView = ({ profileTypeIdentifier }) => {
                                       field.relatedProfileType?.name
                                     }`
                                   : FieldTypeLabel[field.fieldType]}
+                              </CustomFieldText>
+                            </CustomFieldCell>
+                            {/* <CustomFieldCell>
+                              <CustomFieldText>
+                                {field.displayOptions
+                                  ?.map((option) => PROFILE_DICT[option])
+                                  .join(', ')}
+                              </CustomFieldText>
+                            </CustomFieldCell> */}
+                            <CustomFieldCell>
+                              <CustomFieldText>
+                                {field.displayOptions &&
+                                field.displayOptions?.includes('PROFILE_NAME')
+                                  ? 'Yes'
+                                  : ''}
+                              </CustomFieldText>
+                            </CustomFieldCell>
+                            <CustomFieldCell>
+                              <CustomFieldText>
+                                {field.displayOptions &&
+                                field.displayOptions?.includes('PROFILE_HEADER')
+                                  ? 'Yes'
+                                  : ''}
                               </CustomFieldText>
                             </CustomFieldCell>
                             <>

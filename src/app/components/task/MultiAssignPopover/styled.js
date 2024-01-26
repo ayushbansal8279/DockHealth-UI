@@ -133,3 +133,17 @@ export const StyledYouBadge = styled.div`
   background-color: #48bbb3;
   border-radius: 4px;
 `;
+
+export const NoneOption = styled.div`
+  color: ${palette.mediumGrey};
+`;
+
+export const StyledLink = styled.a`
+  color: ${palette.brightBlue};
+
+  &:hover,
+  &:active,
+  &:focus {
+    color: ${palette.brightBlue};
+  }
+`;

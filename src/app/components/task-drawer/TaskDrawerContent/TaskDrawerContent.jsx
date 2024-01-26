@@ -149,8 +149,11 @@ const TaskDrawerContent = (props) => {
   }, [currentUser, currentTasklist]);
 
   const isCreator = useMemo(() => {
-    return selectedTask?.creator?.identifier === currentUser?.identifier;
-  }, [currentUser, selectedTask]);
+    return (
+      !parentBundle &&
+      selectedTask?.creator?.identifier === currentUser?.identifier
+    );
+  }, [currentUser, selectedTask, parentBundle]);
 
   if (!restrictions) {
     restrictions = {};
@@ -424,13 +427,20 @@ const TaskDrawerContent = (props) => {
             <TaskDrawerEmailBodyContainer />
           </Grid>
         )}
-        <Grid item xs={12} style={styleFullRow(isMobile)}>
+        <Grid item xs={12} mb={3} style={styleFullRow(isMobile)}>
           <TaskDetails
             readOnly={restrictions?.description === READ_ONLY}
             disableMentions={restrictMentions}
           />
         </Grid>
-        <Grid item xs={12} md={6} style={styleLeftColumn(isMobile)}>
+        <Grid item xs={12} ml={3} mb={1} style={styleRightColumn(isMobile)}>
+          <AssignedToSection
+            onSave={handleUpdateTask}
+            disabled={restrictions?.assigment === READ_ONLY}
+            selectedTask={selectedTask}
+          />
+        </Grid>
+        <Grid item xs={12} mb={1} style={styleLeftColumn(isMobile)}>
           <PatientSection
             selectedPatient={
               selectedTask?.patient || selectedParentTask?.patient || null
@@ -448,15 +458,9 @@ const TaskDrawerContent = (props) => {
             quickAddPatientEnabled={quickAddPatientEnabled}
           />
         </Grid>
-        <Grid item xs={12} md={6} style={styleRightColumn(isMobile)}>
-          <AssignedToSection
-            onSave={handleUpdateTask}
-            disabled={restrictions?.assigment === READ_ONLY}
-            selectedTask={selectedTask}
-          />
-        </Grid>
-        {!taskStartDateDisabled && (
-          <Grid item xs={12} md={6} style={styleLeftColumn(isMobile)}>
+        {/* May be later we need start date in Drawer */}
+        {/* {!taskStartDateDisabled && (
+          <Grid item xs={12} mb={1} style={styleLeftColumn(isMobile)}>
             <div>
               <StartDateSection
                 disabled={restrictions?.startDate === DISABLED}
@@ -464,13 +468,8 @@ const TaskDrawerContent = (props) => {
               />
             </div>
           </Grid>
-        )}
-        {!taskStartDateDisabled && (
-          <Grid item xs={12} md={6} style={styleRightColumn(isMobile)}>
-            <div />
-          </Grid>
-        )}
-        <Grid item xs={12} md={6} style={styleLeftColumn(isMobile)}>
+        )} */}
+        <Grid item xs={12} style={styleLeftColumn(isMobile)}>
           <div>
             <DueDateSection
               disabled={restrictions?.dueDate === DISABLED}
@@ -478,7 +477,7 @@ const TaskDrawerContent = (props) => {
             />
           </div>
         </Grid>
-        <Grid item xs={12} md={6} style={styleRightColumn(isMobile)}>
+        {/* <Grid item xs={12} ml={3} style={styleRightColumn(isMobile)}>
           {!isTemplateTask && (
             <ReminderSection
               onSave={handleUpdateTask}
@@ -486,15 +485,15 @@ const TaskDrawerContent = (props) => {
               selectedTask={selectedTask}
             />
           )}
-        </Grid>
-        <Grid item xs={12} md={6} style={styleLeftColumn(isMobile)}>
+        </Grid> */}
+        <Grid item xs={12} style={styleLeftColumn(isMobile)}>
           <PrioritySection
             onTaskUpdate={onTaskUpdate}
             disabled={restrictions?.priority === DISABLED}
             selectedTask={selectedTask}
           />
         </Grid>
-        <Grid item xs={12} md={6} style={styleRightColumn(isMobile)}>
+        <Grid item xs={12} ml={3} style={styleRightColumn(isMobile)}>
           <div>
             <StatusSection
               onTaskUpdate={onTaskUpdate}
@@ -520,6 +519,7 @@ const TaskDrawerContent = (props) => {
               </div>
             </Grid>
           )}
+        <TaskDrawerDivider />
         {!taskAttachmentsDisabled && (
           <Grid item xs={12} style={styleFullRow(isMobile)}>
             <AttachmentsSection
@@ -529,6 +529,7 @@ const TaskDrawerContent = (props) => {
             />
           </Grid>
         )}
+        <TaskDrawerDivider />
         <Grid item xs={12} style={styleCommentRow}>
           <div>
             <CommentSection selectedTask={selectedTask} />

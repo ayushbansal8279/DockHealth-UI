@@ -66,10 +66,14 @@ export const CloseIcon = styled(Close)`
 
 export const SelectOptionColor = styled(Select)`
   &.MuiFormControl-root {
-    width: 48px;
+    width: 60px;
   }
 
   & .MuiInputBase-root {
+    //responsible for endAdornment styles
+    & svg {
+      width: 7px;
+    }
     //background-color: transparent !important;
 
     &.MuiFilledInput-underline:before {

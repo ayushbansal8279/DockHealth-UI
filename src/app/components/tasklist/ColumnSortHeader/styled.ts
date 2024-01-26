@@ -57,8 +57,11 @@ export const LabelWrapper = styled.div<{
   white-space: nowrap;
   height: 18px;
   color: ${({ ordered, tasksHeaderTextColor }) =>
-    ordered ? palette.brightBlue : tasksHeaderTextColor || palette.coolGrey1};
+    ordered ? palette.brightBlue : tasksHeaderTextColor || palette.offBlack};
   &:hover > div > div > div > img {
+    visibility: visible;
+  }
+  &:hover > div > div:nth-child(2) > div {
     visibility: visible;
   }
 `;
@@ -116,7 +119,7 @@ export const SortHeaderRow = styled.div`
   flex-direction: row;
   justify-content: flex-start;
   align-items: center;
-  width: 100%;
+  width: ${({ $width }) => $width ? `${$width + 66 + 22}px` : '100%'};
   background: ${palette.white};
   border: 1px solid ${palette.coolGrey3};
   border-left: 0px;

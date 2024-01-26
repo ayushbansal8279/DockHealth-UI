@@ -6,8 +6,14 @@ export const profileAllTasksSelector = createSelector(
   profileDetailsStateSelector,
   (profileDetails) => Object.values(profileDetails.tasksMap),
 );
+
 export const profileTaskDetailsSelector = createSelector(
   profileDetailsStateSelector,
   (_, taskId) => taskId,
   (profileDetails, taskId) => profileDetails.tasksMap[taskId],
+);
+
+export const profileTaskListsSelector = createSelector(
+  profileDetailsStateSelector,
+  ({ lists }) => lists,
 );

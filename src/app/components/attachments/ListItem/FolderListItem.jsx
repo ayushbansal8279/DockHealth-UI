@@ -35,6 +35,7 @@ const FolderListItem = (props) => {
         {fileName}
       </Cell>
       <Cell>{creator?.name || ''}</Cell>
+      <Cell> </Cell>
       <Cell>{moment(dateCreated).fromNow()}</Cell>
       <Cell onClick={(event) => event.stopPropagation()}>
         <div onClick={(event) => event.stopPropagation()}>

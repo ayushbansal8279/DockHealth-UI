@@ -1,4 +1,10 @@
-import React, { useCallback, useRef, useState, useMemo } from 'react';
+import React, {
+  useCallback,
+  useRef,
+  useState,
+  useMemo,
+  useEffect,
+} from 'react';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
@@ -31,13 +37,14 @@ import {
   TextEventContainer,
 } from './styled';
 import MultiAssignCalendar from './MultiAssignCalendar';
+import { createMentionsFromTokenizedDescription } from '../RichTextEditor/CreateMentions';
 
 const temporaryTaskId = 'temporaryTaskId';
 
 const Calendar = ({ taskListIdentifier }) => {
   const { userIdentifier } = useSelector(userProfileSelector);
   const [isAddingTaskEnabled, setIsAddingTaskEnabled] = useState(true);
-  const addTaskInputReference = useRef();
+  const addTaskInputReference = useRef(null);
   const dispatch = useDispatch();
   const taskIdentifiers = useSelector(calendarTasksSelector);
   const allTasks = useSelector((state) => {
@@ -81,22 +88,21 @@ const Calendar = ({ taskListIdentifier }) => {
           id: temporaryTaskId,
           start: selectInfo.startStr,
         });
-        addTaskInputReference.current?.focus();
       }
     },
     [isAddingTaskEnabled],
   );
 
-  const onAddTaskClick = useCallback(
-    (event) => {
-      event.preventDefault();
-      event.stopPropagation();
-      if (isAddingTaskEnabled) {
-        addTaskInputReference.current?.focus();
-      }
-    },
-    [isAddingTaskEnabled],
-  );
+  useEffect(() => {
+    if (!isAddingTaskEnabled) {
+      addTaskInputReference.current?.focus();
+    }
+  }, [isAddingTaskEnabled]);
+
+  const onAddTaskClick = useCallback((event) => {
+    event.preventDefault();
+    event.stopPropagation();
+  }, []);
 
   const onAddTaskInputBlur = useCallback(
     (event, eventInfo) => {
@@ -144,6 +150,21 @@ const Calendar = ({ taskListIdentifier }) => {
     [dispatch, taskListIdentifier, userIdentifier],
   );
 
+  const handleOnKeyDown = useCallback(
+    (event, eventInfo) => {
+      event.stopPropagation();
+      if (event.key === 'Enter') {
+        if (!isAddingTaskEnabled) {
+          onAddTaskInputBlur(event, eventInfo);
+        }
+      } else if (event.key === 'Escape') {
+        eventInfo.event.remove();
+        setIsAddingTaskEnabled(true);
+      }
+    },
+    [isAddingTaskEnabled, onAddTaskInputBlur],
+  );
+
   const renderEventContent = (eventInfo) => {
     if (eventInfo.event.id === temporaryTaskId) {
       return (
@@ -157,19 +178,10 @@ const Calendar = ({ taskListIdentifier }) => {
             {restrictions?.createTask !== DISABLED && (
               <input
                 name="addTaskViaCalendar"
-                onBlur={(event) => onAddTaskInputBlur(event, eventInfo)}
                 ref={addTaskInputReference}
                 onClick={onAddTaskClick}
                 placeholder="Add a task..."
-                onKeyDown={(event) => {
-                  event.stopPropagation();
-                  if (event.key === 'Enter') {
-                    onAddTaskInputBlur(event, eventInfo);
-                  } else if (event.key === 'Escape') {
-                    eventInfo.event.remove();
-                    setIsAddingTaskEnabled(true);
-                  }
-                }}
+                onKeyDown={(event) => handleOnKeyDown(event, eventInfo)}
               />
             )}
           </AddEventInputContainer>
@@ -198,7 +210,12 @@ const Calendar = ({ taskListIdentifier }) => {
           )}
           <b>{eventInfo.timeText}</b>
           <Spacing horizontal={2} />
-          <Typography noWrap>{eventInfo?.event?.title}</Typography>
+          <Typography>
+            {createMentionsFromTokenizedDescription(
+              task?.tokenizedDescription,
+              task?.taskMentions,
+            )}
+          </Typography>
         </TextEventContainer>
       </Tooltip>
     );

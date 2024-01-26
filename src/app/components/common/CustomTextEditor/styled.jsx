@@ -9,14 +9,16 @@ export const TextEditorFormStyleContainer = styled.div`
   background-color: #f7fafb !important;
   border-top-left-radius: 4px;
   border-top-right-radius: 4px;
-  padding: 10px;
+  padding-top: 5px;
+  padding-left: 20px;
+  color: #3D4858;
+  font-size: 16px;
   border-bottom: ${({ focused, hasError }) => {
-    if (!hasError) {
-      return focused ? '2px solid #0ca1c7' : '1px solid #8492a4';
+    if (hasError) {
+      return focused ? '' : '1px solid #e40909';
     }
-    return '2px solid #e40909';
   }};
-  font-family: inherit;
+  font-family: Outfit;
 `;
 
 export const TextEditorInputLabel = styled(

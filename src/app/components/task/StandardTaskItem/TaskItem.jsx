@@ -112,6 +112,7 @@ import {
   DecisionCellContainer,
   ActionIconsContainer,
   PatientMRNAnchor,
+  TaskScrollVericleLine
 } from '../styled';
 import TaskItemText from './customFieldsTaskItemComponents/TaskItemText/TaskItemText';
 import TaskItemDropdown from './customFieldsTaskItemComponents/TaskItemDropdown/TaskItemDropdown';
@@ -166,6 +167,12 @@ const TaskItem = React.memo(
     const task = useSelector((state) => {
       return taskLookupSelector(state, origin, taskItemIdentifier);
     });
+
+    const taskWorkflow = templateBundleIdentifier
+      ? useSelector((state) => {
+          return taskLookupSelector(state, origin, templateBundleIdentifier);
+        })
+      : null;
 
     const {
       taskIdentifier,
@@ -261,6 +268,7 @@ const TaskItem = React.memo(
       openDependencyPopover,
       closeDependencyPopover,
     ] = useBooleanWithTimeout(false);
+    const [isDateHover, setIsDateHover] = useState(false);
     const { move, duplicate, subtasks, delete: del } = SINGLE_TASK_FEATURES;
     const organizationCustomFields = useSelector(
       organizationCustomFieldsSelector,
@@ -315,8 +323,11 @@ const TaskItem = React.memo(
     }, [currentUser, currentTasklist]);
 
     const isCreator = useMemo(() => {
-      return creator?.identifier === currentUser?.identifier;
-    }, [currentUser, creator]);
+      return (
+        (!templateBundleIdentifier || templateBundleIdentifier === '') &&
+        creator?.identifier === currentUser?.identifier
+      );
+    }, [templateBundleIdentifier, creator, currentUser]);
 
     if (!restrictions) {
       restrictions = {};
@@ -739,7 +750,7 @@ const TaskItem = React.memo(
           >
             {taskListRestrictions?.createTask !== DISABLED && (
               <DotsContainer
-                showDraggableDots={showDraggableDots}
+                showDraggableDots={true}
                 dragHandleProps={dragHandleProps}
               />
             )}
@@ -773,6 +784,7 @@ const TaskItem = React.memo(
               />
             </ActionIconsContainer>
             {content}
+            <TaskScrollVericleLine>&nbsp;</TaskScrollVericleLine>
           </StickyMainTaskItemCell>
         );
       },
@@ -813,6 +825,7 @@ const TaskItem = React.memo(
     );
 
     if (task?.itemType !== TaskItemType.TASK) {
+      // console.log("!!!!!", task);
       const taskGroup = task;
       return (
         <TaskTemplateGroup
@@ -1049,6 +1062,8 @@ const TaskItem = React.memo(
                         options: [
                           { identifier: 'HIGH', name: 'High', color: 'red' },
                           { identifier: 'NONE', name: 'No Priority' },
+                          { identifier: 'MEDIUM', name: 'Medium', color: '#fd8914'},
+                          { identifier: 'LOW', name: 'Low' },
                         ],
                         displayOptions: [],
                       }}
@@ -1346,17 +1361,20 @@ const TaskItem = React.memo(
                           identifier === TaskItemColumn.START_DATE,
                       )?.columnWidth
                     }
-                    paddingLeft="tiny"
+                    paddingLeft='10px'
                     paddingRight="tiny"
-                    justify="center"
+                    justify="flex-start"
                     onContextMenu={(event) => {
                       event.stopPropagation();
                     }}
                     order={getColumnOrder(TaskItemColumn.START_DATE)}
+                    onMouseEnter={() => setIsDateHover(true)}
+                      onMouseLeave={() => setIsDateHover(false)}
                   >
                     <TaskItemStartDate
                       task={task}
                       disabled={restrictions?.startDate === DISABLED}
+                      isDateHover={isDateHover}
                     />
                   </TaskItemCell>,
                   getColumnOrder(TaskItemColumn.START_DATE),
@@ -1376,17 +1394,20 @@ const TaskItem = React.memo(
                             identifier === TaskItemColumn.DUE_DATE,
                         )?.columnWidth
                       }
-                      paddingLeft="tiny"
+                      paddingLeft='10px'
                       paddingRight="tiny"
-                      justify="center"
+                      justify="flex-start"
                       onContextMenu={(event) => {
                         event.stopPropagation();
                       }}
                       order={getColumnOrder(TaskItemColumn.DUE_DATE)}
+                      onMouseEnter={() => setIsDateHover(true)}
+                      onMouseLeave={() => setIsDateHover(false)}
                     >
                       <TaskItemDueDate
                         task={task}
                         disabled={restrictions?.dueDate === DISABLED}
+                        isDateHover={isDateHover}
                       />
                     </TaskItemCell>,
                     getColumnOrder(TaskItemColumn.DUE_DATE),
@@ -1708,7 +1729,7 @@ const TaskItem = React.memo(
                     getColumnOrder(TaskItemColumn.ORG_NAME),
                   )}
                 </>
-            )}
+              )}
             {isColumnChecked(columns, TaskItemColumn.TASK_DETAILS) && (
               <>
                 {randerFirstColumnCoverIfNecessary(
@@ -1745,10 +1766,13 @@ const TaskItem = React.memo(
                   const taskCustomFieldValue = task?.taskMetaData?.find(
                     (f) => f?.customFieldIdentifier === field.identifier,
                   );
-                  const patientCustomFieldValue =
-                    patient?.patientMetaData?.find(
-                      (f) => f?.customFieldIdentifier === field.identifier,
-                    );
+                  const patientMetaData =
+                    patient?.patientMetaData ||
+                    taskWorkflow?.patient?.patientMetaData ||
+                    [];
+                  const patientCustomFieldValue = patientMetaData?.find(
+                    (f) => f?.customFieldIdentifier === field.identifier,
+                  );
                   const customFieldValue =
                     field.targetType === CUSTOM_FIELD_TYPES.PATIENT
                       ? patientCustomFieldValue
@@ -1772,6 +1796,7 @@ const TaskItem = React.memo(
                               field={field}
                               customFieldValue={customFieldValue}
                               task={task}
+                              taskWorkflow={taskWorkflow}
                               readOnly={
                                 restrictions?.customFields === READ_ONLY
                               }

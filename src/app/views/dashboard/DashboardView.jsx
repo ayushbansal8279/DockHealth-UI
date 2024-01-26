@@ -60,8 +60,7 @@ const DashboardView = ({ tabName }) => {
 
   const shareTaskAvailable = useSelector(userHasShareTaskFeatureSelector);
 
-  const createListViewVisible =
-    !shareTaskAvailable && (!hasExistingLists || hasOnlyInvitedLists);
+  const createListViewVisible = !shareTaskAvailable && hasOnlyInvitedLists;
 
   const TAB_RESTRICTIONS = {
     [DashboardTasksTab.MY_TASKS]: {

@@ -52,11 +52,11 @@ const TaskDetails = ({ readOnly }) => {
 
   return (
     <DetailsContainer>
+      Details
       <CustomTextEditor
         key={selectedTask?.identifier}
         empty={!details || details?.length === 0}
         focused={isFocused}
-        label="Details"
         richTextEnabled
       >
         <RichTextEditor

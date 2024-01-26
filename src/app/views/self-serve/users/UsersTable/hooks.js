@@ -4,14 +4,14 @@ import uniq from 'ramda/src/uniq';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { createBreakpoint, useToggle } from 'react-use';
-import { showGlobalAlert } from 'alert/actions';
+import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
 import * as OrganizationApi from 'api/organization-api';
 import {
   reactivateUserInOrganization,
   cancelInviteToOrganization,
   removeUserFromOrganization,
 } from 'api/organization-api';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
 
 const useBreakpoint = createBreakpoint({ sm: 600, md: 960 });
 
@@ -19,6 +19,7 @@ const useInitializeMembersTableHooks = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const currentBreakPoint = useBreakpoint();
   const dispatch = useDispatch();
+  const queryClient = useQueryClient();
 
   const [currentSearch, setCurrentSearchRaw] = useState('');
   const [isAllUsersSelected, toggleAllUsersSelectedRaw] = useToggle(false);
@@ -32,6 +33,24 @@ const useInitializeMembersTableHooks = () => {
     ['getOrganizationUsers'],
     OrganizationApi.findAllUsersForOrganization,
   );
+
+  const changeUserOrganizationRoleMutation = useMutation({
+    mutationFn: ({ userIdentifier: id, role }) =>
+      OrganizationApi.changeUserOrganizationRole(id, role),
+    onSuccess: (_, { userIdentifier: id, role }) => {
+      queryClient.setQueryData(['getOrganizationUsers'], (oldData) =>
+        oldData
+          ? oldData.map((user) =>
+              user.identifier === id ? { ...user, orgUserRole: role } : user,
+            )
+          : oldData,
+      );
+      dispatch(showGlobalAlert(`User's role changed successfully`));
+    },
+    onError: () => dispatch(showGlobalErrorAlert()),
+  });
+
+  const changeUserRole = changeUserOrganizationRoleMutation.mutate;
   const organizationUsers = useMemo(() => data || [], [data]);
 
   const toggleAllUsersSelected = useCallback(
@@ -121,6 +140,7 @@ const useInitializeMembersTableHooks = () => {
     isAllUsersSelected,
     toggleAllUsersSelected,
     getAllUsers,
+    changeUserRole,
   };
 };
 

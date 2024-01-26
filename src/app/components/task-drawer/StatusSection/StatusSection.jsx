@@ -14,6 +14,9 @@ import {
   StatusFlag,
   StatusFieldContainer,
   StatusFlagContainer,
+  StatusContainer,
+  Title,
+
 } from './styled';
 import { EndAdornmentContainer, AdornmentClear } from '../styled';
 
@@ -56,6 +59,8 @@ const StatusSection = ({ selectedTask, onTaskUpdate, disabled = false }) => {
   };
 
   return (
+    <StatusContainer>
+      <Title>Status</Title>
     <TaskDrawerPopover
       disabled={disabled}
       content={({ closePopover, resetPosition }) => (
@@ -72,7 +77,9 @@ const StatusSection = ({ selectedTask, onTaskUpdate, disabled = false }) => {
           <StatusFlag color={workflowStatus?.color} />
         </StatusFlagContainer>
         <Input
-          label="Status"
+          variant='standard'
+          size='small'
+          // label="Status"
           name="workflowStatus"
           placeholder="Is there a status?"
           disabled={disabled}
@@ -95,7 +102,7 @@ const StatusSection = ({ selectedTask, onTaskUpdate, disabled = false }) => {
           }}
         />
       </StatusFieldContainer>
-    </TaskDrawerPopover>
+    </TaskDrawerPopover></StatusContainer>
   );
 };
 

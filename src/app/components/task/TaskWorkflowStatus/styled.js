@@ -35,7 +35,23 @@ export const StatusList = styled.div`
         return '2';
       }
 
-      return '3';
+      if (elementsCount < 31) {
+        return '3';
+      }
+
+      if (elementsCount < 41) {
+        return '4';
+      }
+
+      if (elementsCount < 51) {
+        return '5';
+      }
+
+      if (elementsCount < 61) {
+        return '6';
+      }
+
+      return `${Math.floor(elementsCount / 10)}`;
     }},
     1fr
   );
@@ -48,7 +64,7 @@ export const StatusList = styled.div`
       return 280;
     }
 
-    return 420;
+    return 550;
   }}px;
   max-height: ${10 * 32}px;
   margin: ${spacing.small} 0;

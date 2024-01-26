@@ -116,7 +116,7 @@ const PersonForm = forwardRef(
           <FormPhoneNumberInput
             readOnly
             label="Mobile Phone"
-            name="phoneMobile"
+            name="accountPhoneNumber"
           />
           <Spacing vertical={3} />
           <FormPhoneNumberInput
@@ -130,6 +130,12 @@ const PersonForm = forwardRef(
             readOnly={!(isAdmin && edited)}
             label="Department"
             name="department"
+          />
+          <Spacing vertical={3} />
+          <FormInput
+            readOnly={!(isAdmin && edited)}
+            label="Credentials"
+            name="credentials"
           />
         </LabeledCollapse>
 

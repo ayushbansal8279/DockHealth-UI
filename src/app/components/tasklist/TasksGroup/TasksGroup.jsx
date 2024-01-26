@@ -43,6 +43,8 @@ import {
   TASK_LIST_RESTRICTIONS_OPTIONS,
   TASK_LIST_RESTRICTIONS_PROFILES,
 } from 'restrictions/task-restrictions';
+import { useTaskListColumnsConfig } from 'context-api/columns-config-context';
+import { CollapseContext } from 'views/list-details/VirtualTaskList/VirtualTaskList';
 import {
   TasksGroupContainer,
   TasksGroupHeader,
@@ -105,14 +107,19 @@ const TasksGroup = ({
 
   const isFullView = viewType === ViewType.FULL_VIEW;
 
+  const collapse = useContext(CollapseContext);
   const onSwitchOpen = useCallback(() => {
     if (isOpen) {
+      // eslint-disable-next-line react/destructuring-assignment
+      collapse.set(taskGroupIdentifier, true);
       onTaskGroupCollapsed();
     } else {
+      // eslint-disable-next-line react/destructuring-assignment
+      collapse.set(taskGroupIdentifier, false);
       onTaskGroupExpanded();
     }
     switchOpen(!isOpen);
-  }, [switchOpen, isOpen]);
+  }, [isOpen, switchOpen, collapse, taskGroupIdentifier]);
 
   const isListFlattened =
     isSearchApplied ||
@@ -143,7 +150,13 @@ const TasksGroup = ({
       showMoreTasks();
     }
     onSwitchOpen();
-  }, [tasks, isOpen, groupTaskCounts, onSwitchOpen, showMoreTasks]);
+  }, [
+    isOpen,
+    groupTaskCounts,
+    tasks?.length,
+    onSwitchOpen,
+    showMoreTasks,
+  ]);
 
   useEffect(() => {
     if (groupTaskCounts === 0 && !isLoadingGroup) switchOpen(true);
@@ -262,24 +275,25 @@ const TasksGroup = ({
     ],
   );
 
+  const { columns } = useTaskListColumnsConfig();
+
   return (
-    <TasksGroupContainer>
+    <TasksGroupContainer
+      $width={
+        window.disabledVirtualTaskList
+          ? null
+          : columns
+              .filter((f) => f.isChecked)
+              .reduce((accumulator, column) => {
+                return accumulator + column.columnWidth;
+              }, 0)
+      }
+    >
       <StickyContainer left={24} decreaseWidth={2 * 24}>
         <TasksGroupHeader>
-          {!isCompletedGroup && !restrictCustomizationFeatures && (
-            <GroupOptionsContainer>
-              <OptionsMenu options={options} placement="bottom-start">
-                <MoreVert color="primary" />
-              </OptionsMenu>
-            </GroupOptionsContainer>
-          )}
-          <Spacing horizontal={2} />
+          <Spacing horizontal={4} />
           <GroupOpenContainer onClick={onToggleGroupOpen}>
-            <RotatableChevron
-              alt="arrow"
-              rotated={!isOpen}
-              color={iconColorActive}
-            />
+            <RotatableChevron alt="arrow" rotated={!isOpen} color="#8492A4" />
           </GroupOpenContainer>
           <Spacing horizontal={1} />
           <GroupNameSectionWrapper>
@@ -303,6 +317,15 @@ const TasksGroup = ({
                       ({groupTaskCounts})
                     </TasksGroupLabelCounter>
                   )}
+                <div>
+                  {!isCompletedGroup && !restrictCustomizationFeatures && (
+                    <GroupOptionsContainer>
+                      <OptionsMenu options={options} placement="bottom-start">
+                        <MoreVert color="primary" />
+                      </OptionsMenu>
+                    </GroupOptionsContainer>
+                  )}
+                </div>
               </TasksGroupLabel>
             </GroupNameSection>
           </GroupNameSectionWrapper>

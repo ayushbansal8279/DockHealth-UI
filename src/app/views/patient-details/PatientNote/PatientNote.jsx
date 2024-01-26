@@ -160,6 +160,7 @@ const PatientNote = ({
   }, [note, noteState, onSave]);
 
   const handleTextEditorChange = (value) => {
+    setValueReset(false);
     setNoteState(value);
   };
 

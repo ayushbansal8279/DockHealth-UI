@@ -7,7 +7,6 @@ import {
   TASK_LIST_RESTRICTIONS_OPTIONS,
 } from 'restrictions/task-restrictions';
 import RichTextEditor from 'components/common/RichTextEditor/RichTextEditor';
-import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
 import { AddTaskInputWrapper, ErrorLabel } from './styled';
 
 const { DISABLED } = TASK_LIST_RESTRICTIONS_OPTIONS;
@@ -24,6 +23,7 @@ const QuickAddTaskInput = React.forwardRef(
       disableMentions = false,
       small,
       iconColorActive,
+      style,
     },
     reference,
     // eslint-disable-next-line sonarjs/cognitive-complexity
@@ -52,16 +52,20 @@ const QuickAddTaskInput = React.forwardRef(
       setDescription(value);
     };
 
-    const handleTextEditorKeyEnter = (value) => {
-      quickAddTask({ description: value, taskListIdentifier });
+    const handleTextEditorKeyEnter = (value, taskMentions) => {
+      quickAddTask({ description: value, taskListIdentifier, taskMentions });
       setDescription('');
     };
 
     return (
       <>
-        <AddTaskInputWrapper hasError={!!error} iconColor={iconColorActive}>
+        <AddTaskInputWrapper
+          hasError={!!error}
+          iconColor={iconColorActive}
+          style={style}
+        >
           <RichTextEditor
-            placeholder="Add a task and press enter on your keyboard"
+            placeholder="Add task"
             ref={reference || quickAddTaskInputReference}
             value={description}
             onChange={handleTextEditorChange}

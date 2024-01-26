@@ -74,14 +74,14 @@ function* moveWorkflowToFolder({ parentTaskWorkflowIdentifier, identifier }) {
 }
 
 function* copyWorkflowToOrganization({
-  targetOrganizationIdentifier,
+  targetOrganizationIdentifiers,
   identifier,
 }) {
   try {
     yield call(
       TaskTemplateApi.copyWorkflowToOrganization,
       identifier,
-      targetOrganizationIdentifier,
+      targetOrganizationIdentifiers,
     );
     yield put({
       type: ActionTypes.COPY_WORKFLOW_TO_ORGANIZATION_SUCCESS,
@@ -92,7 +92,7 @@ function* copyWorkflowToOrganization({
     yield put({
       type: ActionTypes.COPY_WORKFLOW_TO_ORGANIZATION_FAILURE,
       identifier,
-      targetOrganizationIdentifier,
+      targetOrganizationIdentifiers,
     });
   }
 }
@@ -112,7 +112,7 @@ function* getWorkflowFolder({ searchPhrase }) {
         searchPhrase && searchPhrase !== '' && searchPhrase !== ' ';
       const api = searchPhraseExist
         ? TaskTemplateApi.searchTemplates.bind(null, searchPhrase)
-        : TaskTemplateApi.getTemplates;
+        : TaskTemplateApi.getTemplates.bind(null, true);
       workflows = yield call(api, searchPhrase);
     }
 
@@ -240,7 +240,8 @@ function* updatePartialWorkflow({ taskWorkflowIdentifier, dataToUpdate }) {
       taskWorkflowIdentifier,
     });
     yield put(showGlobalAlert(AlertMessages.UPDATED));
-  } catch {
+  } catch (error) {
+    log(error);
     yield put(showGlobalErrorAlert());
     yield put({
       type: ActionTypes.UPDATE_PARTIAL_WORKFLOW_FAILURE,

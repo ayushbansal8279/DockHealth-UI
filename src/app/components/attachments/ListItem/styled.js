@@ -6,7 +6,7 @@ export const Row = styled.div`
   display: grid;
   width: 100%;
   height: 35px;
-  grid-template-columns: 1fr 200px 150px 50px;
+  grid-template-columns: 1fr 1fr 200px 150px 50px;
   grid-gap: 12px;
   align-items: center;
   border: 1px solid ${palette.coolGrey2};

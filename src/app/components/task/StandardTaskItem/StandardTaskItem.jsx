@@ -6,6 +6,7 @@ import React, {
   useMemo,
   useCallback,
   useRef,
+  useContext,
 } from 'react';
 import isEmpty from 'ramda/src/isEmpty';
 import { useDispatch, useSelector } from 'react-redux';
@@ -14,6 +15,7 @@ import { storeAsCurrentTask, loadSubTasks } from 'actions/task-actions';
 import TaskComments from 'components/tasklist/TaskComments/TaskComments';
 import { taskLookupSelector } from 'selectors/task-details-selectors';
 // import { taskDetailsSelector } from 'selectors/list-details-selectors';
+import { CollapseContext } from 'views/list-details/VirtualTaskList/VirtualTaskList';
 import TaskItem from './TaskItem';
 import Subtasks from './Subtasks';
 import { getMatchedComments } from './helpers';
@@ -23,6 +25,7 @@ import QuickAddSubtask from './QuickAddSubtask';
 const Task = React.memo(
   ({
     taskIdentifier: taskItemIdentifier,
+    templateBundleIdentifier,
     patient: parentPatient,
     isCompletedGroup,
     isFullView,
@@ -30,7 +33,7 @@ const Task = React.memo(
     isDragging,
     draggableProvided = {},
     isDraggable,
-    addingNewSubtask,
+    // addingNewSubtask,
     subtasksDisabled,
     areFiltersApplied,
     isSearchApplied,
@@ -75,6 +78,8 @@ const Task = React.memo(
 
     const dispatch = useDispatch();
 
+    const collapse = useContext(CollapseContext);
+
     const handleSetSubtasksOpen = useCallback(
       (areOpen) => {
         if (
@@ -86,6 +91,7 @@ const Task = React.memo(
           dispatch(loadSubTasks(task));
         }
         setAreSubtasksOpen(areOpen);
+        collapse.set(taskIdentifier, areOpen);
       },
       [
         subTasksCount,
@@ -173,6 +179,7 @@ const Task = React.memo(
         <div ref={innerRef}>
           <TaskItem
             taskItemIdentifier={task?.identifier}
+            templateBundleIdentifier={templateBundleIdentifier}
             patient={parentPatient}
             isOpen={areSubtasksOpen}
             switchOpen={handleSetSubtasksOpen}
@@ -191,7 +198,7 @@ const Task = React.memo(
             {...restProps}
           />
         </div>
-        {showComments && (
+        {showComments && window.disabledVirtualTaskList && (
           <TaskComments
             isOpen={isFullView}
             comments={comments}
@@ -199,7 +206,7 @@ const Task = React.memo(
             onClickComment={onClickComment}
           />
         )}
-        {showSubtasks && (
+        {showSubtasks && window.disabledVirtualTaskList && (
           <SubtasksWrapper>
             <Subtasks
               isFetchingSubTasks={task?.isFetchingSubTasks}
