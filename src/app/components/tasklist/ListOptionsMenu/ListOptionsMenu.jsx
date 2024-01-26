@@ -26,7 +26,7 @@ const MASTER_ROLES = new Set(['ADMIN', 'OWNER']);
 const PRIVILEGE_ROLES = new Set(['ADMIN', 'OWNER', 'MEMBER']);
 
 const ListOptionsMenu = (props) => {
-  const { list, children, moreOptions } = props;
+  const { list, children, moreOptions, onClose, open } = props;
   const dispatch = useDispatch();
   const history = useHistory();
   const currentUser = useSelector(userProfileSelector);
@@ -277,6 +277,8 @@ const ListOptionsMenu = (props) => {
           />
         ) : null
       }
+      onClose={onClose}
+      open={open}
     >
       {children}
     </OptionsMenu>

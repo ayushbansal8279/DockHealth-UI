@@ -31,6 +31,8 @@ const OptionsMenu = ({
   footer: Footer,
   options,
   customButtonComponent: CustomButtonComponent,
+  onClose,
+  open,
 }) => {
   const assignMemberButtonReference = useRef(null);
   const [isOpen, openPopover] = useState(false);
@@ -44,7 +46,11 @@ const OptionsMenu = ({
         disabled={isDisabled}
         onClick={(event) => {
           event.stopPropagation();
-          openPopover(true);
+          if (open) {
+            openPopover(false);
+          } else {
+            openPopover(true);
+          }
         }}
       >
         {children}
@@ -66,7 +72,10 @@ const OptionsMenu = ({
           <ClickAwayListener
             mouseEvent="onMouseDown"
             touchEvent="onTouchStart"
-            onClickAway={() => openPopover(false)}
+            onClickAway={() => {
+              openPopover(false);
+              if (onClose) onClose();
+            }}
           >
             <Paper>
               <MenuList>

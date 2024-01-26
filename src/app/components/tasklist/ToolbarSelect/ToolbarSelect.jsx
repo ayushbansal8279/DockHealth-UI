@@ -1,14 +1,22 @@
 import React, { useState } from 'react';
 import { MenuItem, Box } from '@mui/material';
 import zIndex from 'styles/z-index';
-import { Select, SelectWrapper, SelectIcon } from './styled';
 import palette from 'styles/palette';
+import { Select, SelectWrapper, SelectIcon } from './styled';
 
-const ToolbarSelect = ({ options, name, value, icon, ...restProps }) => {
+const ToolbarSelect = ({
+  options,
+  name,
+  value,
+  icon,
+  searchValue,
+  focused,
+  ...restProps
+}) => {
   const [isOpen, setIsOpen] = useState(palette.newDarkBlue);
 
   return (
-    <SelectWrapper>
+    <SelectWrapper wide={searchValue || focused}>
       <Select
         onOpen={() => {
           setTimeout(() => {

@@ -17,6 +17,8 @@ const TaskStatusToolbarSelect = ({
   onChange,
   iconColorFilterActive,
   iconColorActive,
+  searchValue,
+  focused,
   ...restProps
 }) => {
   return (
@@ -25,6 +27,8 @@ const TaskStatusToolbarSelect = ({
       value={value || ''}
       name="task-status"
       onChange={onChange}
+      searchValue={searchValue}
+      focused={focused}
       icon={
         <ViewTypeImg
           src={TasksStatusSwitchIcon}
