@@ -1,5 +1,5 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { ClickAwayListener, Grid } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
@@ -106,6 +106,7 @@ const NavigationSidebar = () => {
   const showChatPopover = useSelector(showChatPopoverSelector);
   const openedSubMenuKey = useSelector(subMenuKeySelector);
   const selectedChannel = useSelector(selectedChatChannelSelector);
+  const [isOnboardingPage, setIsOnboardingPage] = useState(false);
 
   const { orgUserRole } = currentUser || {};
   const isUserAdmin = ['ADMIN', 'OWNER'].includes(orgUserRole);
@@ -188,6 +189,12 @@ const NavigationSidebar = () => {
     window.open('https://help.dock.health', '_blank');
   }, []);
 
+  useEffect(() => {
+    if (location.pathname === '/onboarding-tutorial/create-list') {
+      setIsOnboardingPage(true);
+    }
+  }, [location.pathname]);
+
   // const handleReferClick = () => {
   //   dispatch(TemplateActions.hideSubMenu());
   //   dispatch(openModal('ReferAColleague'));
@@ -216,15 +223,17 @@ const NavigationSidebar = () => {
                 </>
               </NavigationItem>
             </div>
-            <AccessRestrictor required={[CAN_ACCESS_SEARCH_PAGE]}>
-              <IconNavigationItem
-                name="Search"
-                icon={SearchIcon}
-                path="/core/search"
-                onItemClick={handleNavigationItemClick}
-                navSelectedColor={navSelectedColorItem?.value}
-              />
-            </AccessRestrictor>
+            {!isOnboardingPage && (
+              <AccessRestrictor required={[CAN_ACCESS_SEARCH_PAGE]}>
+                <IconNavigationItem
+                  name="Search"
+                  icon={SearchIcon}
+                  path="/core/search"
+                  onItemClick={handleNavigationItemClick}
+                  navSelectedColor={navSelectedColorItem?.value}
+                />
+              </AccessRestrictor>
+            )}
             <AccessRestrictor required={[CAN_ACCESS_HOME_PAGE]}>
               <IconNavigationItem
                 name="Home"
@@ -234,18 +243,21 @@ const NavigationSidebar = () => {
                 navSelectedColor={navSelectedColorItem?.value}
               />
             </AccessRestrictor>
-            <AccessRestrictor required={[CAN_ACCESS_TASK_LIST_PAGE]}>
-              <IconNavigationItem
-                name="Lists"
-                subMenuKey={SubmenuKey.LISTS}
-                icon={ListsIcon}
-                subMenuOpen={openedSubMenuKey === SubmenuKey.LISTS}
-                path="/core/tasks"
-                onItemClick={handleNavigationItemClick}
-                navSelectedColor={navSelectedColorItem?.value}
-              />
-            </AccessRestrictor>
-            {!embeddedMode && (
+            {!isOnboardingPage && (
+              <AccessRestrictor required={[CAN_ACCESS_TASK_LIST_PAGE]}>
+                <IconNavigationItem
+                  name="Lists"
+                  subMenuKey={SubmenuKey.LISTS}
+                  icon={ListsIcon}
+                  subMenuOpen={openedSubMenuKey === SubmenuKey.LISTS}
+                  path="/core/tasks"
+                  onItemClick={handleNavigationItemClick}
+                  navSelectedColor={navSelectedColorItem?.value}
+                />
+              </AccessRestrictor>
+            )}
+
+            {!embeddedMode && !isOnboardingPage && (
               <AccessRestrictor>
                 <IconNavigationItem
                   name="Profiles"
@@ -271,7 +283,7 @@ const NavigationSidebar = () => {
                 />
               </AccessRestrictor>
             )} */}
-            {!embeddedMode && (
+            {!embeddedMode && !isOnboardingPage && (
               <AccessRestrictor required={[CAN_ACCESS_MEMBER_LIST_PAGE]}>
                 <IconNavigationItem
                   name={`${customerTypeLabelCapitalized}s`}
@@ -284,7 +296,7 @@ const NavigationSidebar = () => {
                 />
               </AccessRestrictor>
             )}
-            {!embeddedMode && (
+            {!embeddedMode && !isOnboardingPage && (
               <AccessRestrictor required={[CAN_ACCESS_WORKFLOW_LIST_PAGE]}>
                 <IconNavigationItem
                   name="Workflow Library"
@@ -295,7 +307,7 @@ const NavigationSidebar = () => {
                 />
               </AccessRestrictor>
             )}
-            {!embeddedMode && (
+            {!embeddedMode && !isOnboardingPage && (
               <AccessRestrictor required={[CAN_ACCESS_ANALYTICS_PAGE]}>
                 <IconNavigationItem
                   name="Analytics"
@@ -306,7 +318,7 @@ const NavigationSidebar = () => {
                 />
               </AccessRestrictor>
             )}
-            {dockChatAvailable && (
+            {dockChatAvailable && !isOnboardingPage && (
               <AccessRestrictor required={[CAN_ACCESS_CHAT_PAGE]}>
                 <NavigationIconContainer>
                   <IconNavigationItem
@@ -324,23 +336,25 @@ const NavigationSidebar = () => {
             )}
           </Grid>
           <Grid container direction="column">
-            <AccessRestrictor required={[CAN_ACCESS_SETTINGS_PAGE]}>
-              <div ref={settingsMenuReference}>
-                <IconNavigationItem
-                  name="Settings"
-                  subMenuKey={SubmenuKey.SETTINGS}
-                  icon={SettingsIcon}
-                  subMenuOpen={openedSubMenuKey === SubmenuKey.SETTINGS}
-                  path={[
-                    '/settings/billing',
-                    SUBS_SETTINGS_PATH,
-                    USERS_SETTINGS_PATH,
-                  ]}
-                  onItemClick={handleNavigationItemClick}
-                  navSelectedColor={navSelectedColorItem?.value}
-                />
-              </div>
-            </AccessRestrictor>
+            {!isOnboardingPage && (
+              <AccessRestrictor required={[CAN_ACCESS_SETTINGS_PAGE]}>
+                <div ref={settingsMenuReference}>
+                  <IconNavigationItem
+                    name="Settings"
+                    subMenuKey={SubmenuKey.SETTINGS}
+                    icon={SettingsIcon}
+                    subMenuOpen={openedSubMenuKey === SubmenuKey.SETTINGS}
+                    path={[
+                      '/settings/billing',
+                      SUBS_SETTINGS_PATH,
+                      USERS_SETTINGS_PATH,
+                    ]}
+                    onItemClick={handleNavigationItemClick}
+                    navSelectedColor={navSelectedColorItem?.value}
+                  />
+                </div>
+              </AccessRestrictor>
+            )}
             {!whiteLabelEnabled && (
               <AccessRestrictor required={[CAN_ACCESS_EDUCATION_CENTER_PAGE]}>
                 <IconNavigationItem
