@@ -26,10 +26,17 @@ const OnboardingEulaView = () => {
 
   const continueButtonDisabled = !isEulaAccepted || !isBaaAccepted;
 
+  const organizationName = JSON.parse(sessionStorage.getItem('authUser'))
+    .attributes['custom:organization_name'];
+
   const onAgreeClick = useCallback(() => {
     acknowledgeEula().then(() => {
       localStorage.setItem('STORAGE_NEW_USER_FIRST_TIME', true);
-      history.push('/onboarding/organization-setup');
+      if (organizationName !== undefined) {
+        history.push('/onboarding/customer-preference');
+      } else {
+        history.push('/onboarding/organization-setup');
+      }
     });
   }, [history]);
 
