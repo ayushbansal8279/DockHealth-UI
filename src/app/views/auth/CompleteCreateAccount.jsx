@@ -26,7 +26,7 @@ import { showAlert, showToast } from 'helpers/utility-functions';
 import { useBoolean } from 'hooks/useBoolean';
 import { AUTH_BASE_STATES } from 'reducers/auth-base-reducer';
 import palette from 'styles/palette';
-import { MontserratTypography } from 'styles/theme-montserrat';
+import { OutfitTypography } from 'styles/theme-outfit';
 import ConfirmEmailHeaderCheck from 'img/checked-circle.svg';
 import Button from 'components/common/v2/Button/Button';
 import { ThemeProvider as MuiThemeProvider } from '@mui/material/styles';
@@ -94,7 +94,9 @@ const CompleteCreateAccount = (props) => {
   const [isUserExistsDialogShown, showUserExistsDialog, hideUserExistsDialog] =
     useBoolean(false);
   const [externalUserMode, setExternalUserMode] = useState(false);
-  const [dialogTitle, setDialogTitle] = useState('This Email is Already in Use');
+  const [dialogTitle, setDialogTitle] = useState(
+    'This Email is Already in Use',
+  );
   const [dialogMessage, setDialogMessage] = useState('');
   const [customPageTitle, setCustomPageTitle] = useState('');
   const [isUserInvited, setIsUserInvited] = useState(false);
@@ -161,7 +163,7 @@ const CompleteCreateAccount = (props) => {
           await registerAction({
             username: userEmail,
             password,
-            email : userEmail,
+            email: userEmail,
             phone_number: mobilePhoneNumber
               ? `+${mobilePhoneNumber.replace(/\D/g, '')}`
               : null,
@@ -285,11 +287,11 @@ const CompleteCreateAccount = (props) => {
         <FormProvider {...formMethods}>
           {(hasTrialReferral || hasCustomPageTitle) && (
             <>
-              <MontserratTypography variant="h2">
+              <OutfitTypography variant="h2">
                 {hasCustomPageTitle
                   ? customPageTitle
                   : 'Start your free 15 day trial'}
-              </MontserratTypography>
+              </OutfitTypography>
               <Spacing vertical={4} />
             </>
           )}
@@ -297,9 +299,11 @@ const CompleteCreateAccount = (props) => {
             Almost done...
           </Title>
           <Spacing vertical={3} />
-          <Subtitle variant="p">
-            Sign up here for full trial access to Dock’s time-saving templates
-            for online task management.
+          <Subtitle align="center" variant="p">
+            <p style={{ textAlign: 'center' }}>
+              Sign up here for full trial access to Dock’s time-saving templates
+              for online task management.
+            </p>
           </Subtitle>
           <Spacing vertical={5} />
           {isUserInvited ? (
@@ -315,9 +319,9 @@ const CompleteCreateAccount = (props) => {
           <Spacing vertical={5} />
           <FormInput name="password" label="Password" type="password" />
           <Spacing vertical={3} />
-          <MontserratTypography variant="h5">
+          <OutfitTypography variant="h5">
             * 8 characters • 1 capital • 1 number
-          </MontserratTypography>
+          </OutfitTypography>
           <Spacing vertical={5} />
           <FormInput
             name="confirmPassword"
@@ -331,10 +335,10 @@ const CompleteCreateAccount = (props) => {
             customShrinkCondition
           />
           <Spacing vertical={3} />
-          <MontserratTypography variant="h5">
+          <OutfitTypography variant="h4" align="center">
             This must be a mobile phone number as we are required to send a
             secondary authentication code
-          </MontserratTypography>
+          </OutfitTypography>
           <Spacing vertical={5} />
           <Button
             type="submit"
@@ -346,16 +350,16 @@ const CompleteCreateAccount = (props) => {
             Create Account
           </Button>
           <Spacing vertical={5} />
-          <MontserratTypography variant="h4" align="center">
+          <OutfitTypography variant="h4" align="center">
             <StyledLink
               style={{ display: 'block', fontWeight: 500 }}
               to="/auth/create-account"
             >
               Back
             </StyledLink>
-          </MontserratTypography>
+          </OutfitTypography>
           <Spacing vertical={5} />
-          <MontserratTypography variant="h5" align="center">
+          <OutfitTypography variant="h4" align="center">
             Already have an account?
             <StyledLink
               style={{ display: 'inline', paddingLeft: '5px', fontWeight: 600 }}
@@ -363,7 +367,7 @@ const CompleteCreateAccount = (props) => {
             >
               Log In
             </StyledLink>
-          </MontserratTypography>
+          </OutfitTypography>
         </FormProvider>
       </StyledForm>
       <OnboardingDialog open={isDialogShown} fullWidth maxWidth="sm">
@@ -376,11 +380,11 @@ const CompleteCreateAccount = (props) => {
               </Typography>
             </ModalIconContainer>
             <ModalDescriptionContainer>
-              <MontserratTypography variant="h4">
+              <OutfitTypography variant="h4">
                 <span style={onboardingMessageStyle}> {dialogMessage} </span>
-              </MontserratTypography>
+              </OutfitTypography>
               <Spacing vertical={5} />
-              <MontserratTypography variant="h4">
+              <OutfitTypography variant="h4">
                 <span style={onboardingDialogStyle}>
                   I didn&apos;t get the email.{' '}
                 </span>
@@ -390,11 +394,11 @@ const CompleteCreateAccount = (props) => {
                 >
                   Resend email
                 </StyledAnchorDiv>
-              </MontserratTypography>
+              </OutfitTypography>
 
               <Spacing vertical={5} />
 
-              <MontserratTypography variant="h4">
+              <OutfitTypography variant="h4">
                 <span style={onboardingDialogStyle}>
                   {' '}
                   The email address is wrong.{' '}
@@ -405,7 +409,7 @@ const CompleteCreateAccount = (props) => {
                 >
                   Change email address
                 </StyledAnchorDiv>
-              </MontserratTypography>
+              </OutfitTypography>
               <Spacing vertical={2} />
             </ModalDescriptionContainer>
             <ButtonsContainer>
@@ -436,11 +440,11 @@ const CompleteCreateAccount = (props) => {
               </Typography>
             </ModalIconContainer>
             <ModalDescriptionContainer>
-              <MontserratTypography variant="h4">
+              <OutfitTypography variant="h4">
                 <span style={onboardingMessageStyle}> {dialogMessage} </span>
-              </MontserratTypography>
+              </OutfitTypography>
               <Spacing vertical={5} />
-              <MontserratTypography variant="h4">
+              <OutfitTypography variant="h4">
                 <span style={onboardingDialogStyle}>
                   I didn&apos;t get the email.{' '}
                 </span>
@@ -450,11 +454,11 @@ const CompleteCreateAccount = (props) => {
                 >
                   Resend email
                 </StyledAnchorDiv>
-              </MontserratTypography>
+              </OutfitTypography>
 
               <Spacing vertical={5} />
 
-              <MontserratTypography variant="h4">
+              <OutfitTypography variant="h4">
                 <span style={onboardingDialogStyle}>
                   {' '}
                   The email address is wrong.{' '}
@@ -465,7 +469,7 @@ const CompleteCreateAccount = (props) => {
                 >
                   Change email address
                 </StyledAnchorDiv>
-              </MontserratTypography>
+              </OutfitTypography>
               <Spacing vertical={2} />
             </ModalDescriptionContainer>
             <ButtonsContainer>

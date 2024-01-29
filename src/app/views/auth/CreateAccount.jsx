@@ -15,7 +15,7 @@ import Spacing from 'components/common/Spacing';
 import { useBoolean } from 'hooks/useBoolean';
 import { AUTH_BASE_STATES } from 'reducers/auth-base-reducer';
 import palette from 'styles/palette';
-import { MontserratTypography } from 'styles/theme-montserrat';
+import { OutfitTypography } from 'styles/theme-outfit';
 import ConfirmEmailHeaderCheck from 'img/checked-circle.svg';
 import Button from 'components/common/v2/Button/Button';
 import { ThemeProvider as MuiThemeProvider } from '@mui/material/styles';
@@ -89,7 +89,9 @@ const CreateAccount = (props) => {
   const [isUserExistsDialogShown, showUserExistsDialog, hideUserExistsDialog] =
     useBoolean(false);
   const [externalUserMode, setExternalUserMode] = useState(false);
-  const [dialogTitle, setDialogTitle] = useState('This Email is Already in Use');
+  const [dialogTitle, setDialogTitle] = useState(
+    'This Email is Already in Use',
+  );
   const [dialogMessage, setDialogMessage] = useState('');
   const [customPageTitle, setCustomPageTitle] = useState('');
   const [isUserInvited, setIsUserInvited] = useState(false);
@@ -213,11 +215,11 @@ const CreateAccount = (props) => {
           <FormProvider {...formMethods}>
             {(hasTrialReferral || hasCustomPageTitle) && (
               <>
-                <MontserratTypography variant="h2">
+                <OutfitTypography variant="h2">
                   {hasCustomPageTitle
                     ? customPageTitle
                     : 'Start your free 15 day trial'}
-                </MontserratTypography>
+                </OutfitTypography>
                 <Spacing vertical={4} />
               </>
             )}
@@ -271,7 +273,7 @@ const CreateAccount = (props) => {
             {isUserInvited ? '' : <SSOOptions />}
 
             <Spacing vertical={5} />
-            <MontserratTypography variant="h4" align="center">
+            <OutfitTypography variant="h4" align="center">
               Already have an account?
               <StyledLink
                 style={{
@@ -283,7 +285,7 @@ const CreateAccount = (props) => {
               >
                 Log In
               </StyledLink>
-            </MontserratTypography>
+            </OutfitTypography>
           </FormProvider>
         </StyledForm>
         <OnboardingDialog open={isDialogShown} fullWidth maxWidth="sm">
@@ -296,9 +298,9 @@ const CreateAccount = (props) => {
                 </Typography>
               </ModalIconContainer>
               <ModalDescriptionContainer>
-                <MontserratTypography variant="h4">
+                <OutfitTypography variant="h4">
                   <span style={onboardingMessageStyle}> {dialogMessage} </span>
-                </MontserratTypography>
+                </OutfitTypography>
 
                 <Spacing vertical={2} />
               </ModalDescriptionContainer>
@@ -334,9 +336,9 @@ const CreateAccount = (props) => {
                 </Typography>
               </ModalIconContainer>
               <ModalDescriptionContainer>
-                <MontserratTypography variant="h4">
+                <OutfitTypography variant="h4">
                   <span style={onboardingMessageStyle}> {dialogMessage} </span>
-                </MontserratTypography>
+                </OutfitTypography>
 
                 <Spacing vertical={2} />
               </ModalDescriptionContainer>
