@@ -73,7 +73,7 @@ const SSOOptions = () => {
               <AthenaHealthImage />
               <Spacing horizontal={1} />
               <StyledHyperLink onClick={athenaLogin}>
-              athenahealth
+              Athena Health
               </StyledHyperLink>
               <Spacing horizontal={2} />
               <Spacing vertical={2} />

@@ -123,6 +123,7 @@ const LoginFormPassword = ({
         />
         <Spacing vertical={5} />
         <Button
+          uppercase={false}
           id="loginButton"
           fullWidth
           size="large"

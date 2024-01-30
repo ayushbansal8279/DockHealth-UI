@@ -107,6 +107,7 @@ const OnboardingEulaView = () => {
         <Grid item sm={12} container justifyContent="flex-left">
           <Grid item xs={12} sm={12} md={4}>
             <Button
+              uppercase={false}
               disabled={continueButtonDisabled}
               variant="primary"
               onClick={onAgreeClick}

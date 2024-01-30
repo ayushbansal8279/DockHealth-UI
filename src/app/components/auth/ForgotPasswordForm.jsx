@@ -73,6 +73,7 @@ const ForgotPasswordForm = ({
             <FormInput name="username" type="text" label="Email" autoFocus />
             <Spacing vertical={5} />
             <Button
+              uppercase={false}
               type="submit"
               fullWidth
               size="large"

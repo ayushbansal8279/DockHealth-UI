@@ -74,6 +74,7 @@ const OnboardingQuestionsOwnerGuest = ({
       <Spacing vertical={5} />
       <Spacing vertical={6} />
       <Button
+        uppercase={false}
         onClick={
           orgUserRole === 'OWNER'
             ? clickNextStep

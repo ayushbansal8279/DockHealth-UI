@@ -347,6 +347,7 @@ const CompleteCreateAccount = (props) => {
           </OutfitTypography>
           <Spacing vertical={5} />
           <Button
+            uppercase={false}
             type="submit"
             fullWidth
             size="large"
