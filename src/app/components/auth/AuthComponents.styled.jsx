@@ -72,12 +72,14 @@ export const StyledLink = styled(Link)`
 `;
 
 export const StyledHyperLink = styled.a`
-  color: ${palette.darkBlue};
+  color: #6D757C;
+  font-family: Outfit;
 
   &:hover,
   &:active,
   &:focus {
-    color: ${palette.darkBlue};
+    color: #6D757C;
+  font-family: Outfit;
   }
 `;
 

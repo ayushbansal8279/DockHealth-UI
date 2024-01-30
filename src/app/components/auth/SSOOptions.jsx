@@ -44,7 +44,7 @@ const SSOOptions = () => {
                 <GoogleLogoImage />
                 <Spacing horizontal={3} />
                 <StyledHyperLink href={ssoURLGoogle} target="_self">
-                  Google
+                Google
                 </StyledHyperLink>
                 <Spacing vertical={2} />
               </ListItemText>
@@ -60,7 +60,7 @@ const SSOOptions = () => {
               <DrChronoLogoImage />
               <Spacing horizontal={3} />
               <StyledHyperLink onClick={drChronoLogin}>
-                DrChrono
+                Dr. Chrono
               </StyledHyperLink>
               <Spacing vertical={2} />
             </ListItemText>
@@ -73,7 +73,7 @@ const SSOOptions = () => {
               <AthenaHealthImage />
               <Spacing horizontal={1} />
               <StyledHyperLink onClick={athenaLogin}>
-                athenahealth
+              athenahealth
               </StyledHyperLink>
               <Spacing horizontal={2} />
               <Spacing vertical={2} />
