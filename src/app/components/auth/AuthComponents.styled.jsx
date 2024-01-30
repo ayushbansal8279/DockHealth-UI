@@ -60,7 +60,7 @@ export const StyledAnchorDiv = styled.div`
 `;
 
 export const StyledLink = styled(Link)`
-  color: ${palette.black};
+  color: #727271;
   filter: brightness(1);
   transition: all 0.25s ease-out;
   display: flex;

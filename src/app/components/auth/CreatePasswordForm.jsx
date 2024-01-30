@@ -156,7 +156,7 @@ const CreatePasswordForm = ({
         >
           Dock can save you 20 hours a month{' '}
           <a
-            style={{ color: 'black', fontWeight: 800, paddingLeft: '5px' }}
+            style={{ color: '#6D757C', fontWeight: 800, paddingLeft: '5px' }}
             href="https://help.dock.health/"
             target="_blank"
             rel="noreferrer"

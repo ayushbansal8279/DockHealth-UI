@@ -89,7 +89,7 @@ const LoginFormPassword = ({
           <OutfitTypography align="center" variant="h4">
             New to Dock?{' '}
             <a
-              style={{ fontWeight: 600, color: 'black' }}
+              style={{ fontWeight: 600, color: '#6D757C' }}
               href="/create-account"
             >
               {' '}
@@ -134,7 +134,7 @@ const LoginFormPassword = ({
         </Button>
         <Spacing vertical={4} />
         <OutfitTypography variant="h5" weight="bold">
-          <StyledLink to="/auth/forgotPassword">FORGOT PASSWORD?</StyledLink>
+          <StyledLink to="/auth/forgotPassword">Forgot Password?</StyledLink>
         </OutfitTypography>
         <SSOOptions />
         <Spacing vertical={5} />
@@ -146,7 +146,7 @@ const LoginFormPassword = ({
         >
           Dock can save you 20 hours a month{' '}
           <a
-            style={{ color: 'black', fontWeight: 800, paddingLeft: '5px' }}
+            style={{ color: '#6D757C', fontWeight: 800, paddingLeft: '5px' }}
             href="https://help.dock.health/"
             target="_blank"
             rel="noreferrer"
