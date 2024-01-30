@@ -28,6 +28,7 @@ import { AUTH_BASE_STATES } from 'reducers/auth-base-reducer';
 import palette from 'styles/palette';
 import { OutfitTypography } from 'styles/theme-outfit';
 import ConfirmEmailHeaderCheck from 'img/checked-circle.svg';
+import AlertEmailCircle from 'img/alert-circle.svg';
 import Button from 'components/common/v2/Button/Button';
 import { ThemeProvider as MuiThemeProvider } from '@mui/material/styles';
 import envelope from 'img/modals/envelope-red.svg';
@@ -177,10 +178,7 @@ const CompleteCreateAccount = (props) => {
           history.push('/signupEmailSent');
         } catch (error) {
           if (error?.code === 'UsernameExistsException') {
-            setDialogTitle(`Email already associated with an account`);
-            setDialogMessage(
-              `${email} is already being used for a Dock Health account. If you haven't already, please go to your email and click on the link to confirm your email address.`,
-            );
+            setDialogTitle(`User Already Exists`);
             showUserExistsDialog();
             return;
           }
@@ -249,6 +247,14 @@ const CompleteCreateAccount = (props) => {
     fontFamily,
     fontWeight: 300,
     fontSize: '18px',
+    padding: '0rem 1rem',
+    display: 'block',
+  };
+
+  const onboardingMessageTitle = {
+    fontFamily: 'Outfit',
+    fontWeight: 600,
+    fontSize: '28px',
     padding: '0rem 1rem',
     display: 'block',
   };
@@ -434,47 +440,35 @@ const CompleteCreateAccount = (props) => {
         <MuiThemeProvider theme={redTheme}>
           <ModalWrapper style={{ width: '500px' }}>
             <ModalIconContainer>
-              <ModalMainIcon src={envelope} alt="envelope" />
-              <Typography color="textPrimary" variant="h2" align="center">
-                {dialogTitle}{' '}
-              </Typography>
+              <ModalMainIcon src={AlertEmailCircle} alt="envelope" />
+              <span style={onboardingMessageTitle}> {dialogTitle} </span>
             </ModalIconContainer>
             <ModalDescriptionContainer>
               <OutfitTypography variant="h4">
-                <span style={onboardingMessageStyle}> {dialogMessage} </span>
-              </OutfitTypography>
-              <Spacing vertical={5} />
-              <OutfitTypography variant="h4">
-                <span style={onboardingDialogStyle}>
-                  I didn&apos;t get the email.{' '}
-                </span>
                 <StyledAnchorDiv
                   style={onboardingLinkStyle}
                   onClick={() => resendEmail(email)}
                 >
-                  Resend email
+                  Resend confirmation email
                 </StyledAnchorDiv>
               </OutfitTypography>
 
               <Spacing vertical={5} />
 
               <OutfitTypography variant="h4">
-                <span style={onboardingDialogStyle}>
-                  {' '}
-                  The email address is wrong.{' '}
-                </span>
                 <StyledAnchorDiv
                   onClick={hideUserExistsDialog}
                   style={onboardingLinkStyle}
                 >
-                  Change email address
+                  Change my email address
                 </StyledAnchorDiv>
               </OutfitTypography>
               <Spacing vertical={2} />
             </ModalDescriptionContainer>
             <ButtonsContainer>
-              <FixedWidthButtonWrapper width={300}>
+              <FixedWidthButtonWrapper width={200}>
                 <Button
+                  uppercase={false}
                   fullWidth
                   variant="primary-red"
                   type="button"
