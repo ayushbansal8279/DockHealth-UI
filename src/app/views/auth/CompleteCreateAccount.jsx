@@ -20,7 +20,7 @@ import {
   StyledLink,
 } from 'components/auth/AuthComponents.styled';
 import Spacing from 'components/common/Spacing';
-import FormInput from 'components/common/Input/FormInput';
+import FormInput from 'components/common/v2/Input/FormInput';
 import FormPhoneNumberInput from 'components/common/PhoneNumberInput/FormPhoneNumberInput';
 import { showAlert, showToast } from 'helpers/utility-functions';
 import { useBoolean } from 'hooks/useBoolean';
@@ -311,7 +311,7 @@ const CompleteCreateAccount = (props) => {
               for online task management.
             </p>
           </Subtitle>
-          <Spacing vertical={5} />
+          <Spacing vertical={3} />
           {isUserInvited ? (
             <FormInput
               disabled={isUserInvited}
@@ -323,28 +323,30 @@ const CompleteCreateAccount = (props) => {
             <FormInput disabled={externalUserMode} name="email" label="Email" />
           )}
           <Spacing vertical={5} />
+          <FormPhoneNumberInput variant='outlined'
+            name="mobilePhoneNumber"
+            label="Your Mobile Phone Number"
+            style={{ borderRadius: '50px' }}
+            // customShrinkCondition
+          />
+          <Spacing vertical={3} />
+          <OutfitTypography variant="h5">
+            This must be a mobile phone number as we are required to send a
+            secondary authentication code
+          </OutfitTypography>
+          <Spacing vertical={5} />
           <FormInput name="password" label="Password" type="password" />
           <Spacing vertical={3} />
           <OutfitTypography variant="h5">
             * 8 characters • 1 capital • 1 number
           </OutfitTypography>
-          <Spacing vertical={5} />
-          <FormInput
+          <Spacing vertical={4} />
+          <FormInput 
             name="confirmPassword"
             label="Confirm Password"
             type="password"
           />
-          <Spacing vertical={5} />
-          <FormPhoneNumberInput
-            name="mobilePhoneNumber"
-            label="Your Mobile Phone Number"
-            customShrinkCondition
-          />
-          <Spacing vertical={3} />
-          <OutfitTypography variant="h4" align="center">
-            This must be a mobile phone number as we are required to send a
-            secondary authentication code
-          </OutfitTypography>
+          
           <Spacing vertical={5} />
           <Button
             uppercase={false}
