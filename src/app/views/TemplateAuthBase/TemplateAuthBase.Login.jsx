@@ -33,7 +33,6 @@ const TemplateAuthBaseLoginContent = () => {
   const [isUserInvited, setIsUserInvited] = useState(false);
 
   useEffect(() => {
-    console.log('Hello');
     if (sessionStorage.getItem('isUserInvited')) setIsUserInvited(true);
   }, [setIsUserInvited]);
 
