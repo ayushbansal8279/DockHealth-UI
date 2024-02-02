@@ -11,6 +11,7 @@ import Button from 'components/common/v2/Button/Button';
 import FormInput from 'components/common/v2/Input/FormInput';
 import Spacing from 'components/common/Spacing';
 import palette from 'styles/palette';
+import { fontWeights } from 'styles/font';
 import { OutfitTypography } from 'styles/theme-outfit';
 import queryString from 'query-string';
 import { StyledForm, StyledLink } from './AuthComponents.styled';
@@ -157,7 +158,7 @@ const CreatePasswordForm = ({
         >
           Dock can save you 20 hours a month{' '}
           <a
-            style={{ color: '#6D757C', fontWeight: 800, paddingLeft: '5px' }}
+            style={{ color: `${palette.coolGrey10}`, fontWeight: `${fontWeights.bold}`, paddingLeft: '5px' }}
             href="https://help.dock.health/"
             target="_blank"
             rel="noreferrer"

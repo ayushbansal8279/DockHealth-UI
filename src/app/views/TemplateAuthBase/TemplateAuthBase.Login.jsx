@@ -45,7 +45,6 @@ const TemplateAuthBaseLoginContent = () => {
     >
       <Grid item>
         {!isUserInvited ? <TranscriptImageSignUp /> : <TranscriptImage />}
-        {/* <TranscriptImageSignUp /> */}
         <Spacing vertical={5} />
         <OutfitTypography
           weight="bold"
