@@ -22,8 +22,8 @@ const StickyMainTaskItemCell = styled.div`
   }};
   left: ${({ isSubtask }) => (isSubtask ? '60px' : '24px')};
   ${({ order }) => (order ? `order: ${order};` : '')}
-  border-left: 1px solid ${palette.coolGrey3};
-  border-right: 1px solid ${palette.coolGrey3};
+  //border-left: 1px solid ${palette.coolGrey3};
+  //border-right: 1px solid ${palette.coolGrey3};
   align-items: center;
   padding-left: ${spacing.smallPlus};
   z-index: ${({ isEditingDescription }) =>
@@ -36,7 +36,7 @@ const StickyMainTaskItemCell = styled.div`
       backgroundColor || palette.coolGrey4};
     position: absolute;
     left: -101px;
-    top: -1;
+    top: -1px;
     width: 100px;
     height: calc(100% + 2px);
     z-index: -1;
@@ -49,20 +49,9 @@ const StickyMainTaskItemCell = styled.div`
   &::after {
     content: '';
     display: block;
-    background-color: ${(props) =>
-      // eslint-disable-next-line unicorn/no-nested-ternary
-      props.isSelected
-        ? palette.brightBlueWithAlpha
-        : // eslint-disable-next-line unicorn/no-nested-ternary
-        props.hasEscalations
-        ? palette.bananaHammockLight
-        : // eslint-disable-next-line unicorn/no-nested-ternary
-        props.customHighlight
-        ? props.customHighlight
-        : palette.white};
     transition: background-color 0.3s ease-out;
     position: absolute;
-    left: 0px;
+    left: 0;
     top: 50%;
     width: 100%;
     height: calc(100% - 2px);

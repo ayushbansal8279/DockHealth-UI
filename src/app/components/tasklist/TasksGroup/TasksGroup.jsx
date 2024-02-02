@@ -150,13 +150,7 @@ const TasksGroup = ({
       showMoreTasks();
     }
     onSwitchOpen();
-  }, [
-    isOpen,
-    groupTaskCounts,
-    tasks?.length,
-    onSwitchOpen,
-    showMoreTasks,
-  ]);
+  }, [isOpen, groupTaskCounts, tasks?.length, onSwitchOpen, showMoreTasks]);
 
   useEffect(() => {
     if (groupTaskCounts === 0 && !isLoadingGroup) switchOpen(true);
@@ -284,9 +278,10 @@ const TasksGroup = ({
           ? null
           : columns
               .filter((f) => f.isChecked)
-              .reduce((accumulator, column) => {
-                return accumulator + column.columnWidth;
-              }, 0)
+              .reduce(
+                (accumulator, column) => accumulator + column.columnWidth,
+                0,
+              )
       }
     >
       <StickyContainer left={24} decreaseWidth={2 * 24}>

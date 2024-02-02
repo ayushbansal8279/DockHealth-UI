@@ -163,6 +163,8 @@ const TaskItem = React.memo(
     iconColorActive,
     origin,
     viewSetup,
+    isTaskTemplate,
+    isLastChild,
   }) => {
     const task = useSelector((state) => {
       return taskLookupSelector(state, origin, taskItemIdentifier);
@@ -825,7 +827,6 @@ const TaskItem = React.memo(
     );
 
     if (task?.itemType !== TaskItemType.TASK) {
-      // console.log("!!!!!", task);
       const taskGroup = task;
       return (
         <TaskTemplateGroup
@@ -852,6 +853,8 @@ const TaskItem = React.memo(
           isDragging={isDragging}
         >
           <StandardTaskItemContainer
+            isTaskTemplate={isTaskTemplate}
+            isLastChild={isLastChild}
             newlyCreated={newlyCreated}
             isSelected={isSelected}
             hasEscalations={hasEscalations}

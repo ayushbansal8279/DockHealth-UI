@@ -109,7 +109,10 @@ function VirtualTaskList({ groupedTasks }: Props) {
                     task.itemType === 'TASK' ? VSubtask : VTask,
                     task.itemType === 'TASK' ? 'Subtask' : 'TaskOfBundle',
                     !!collapseMap[child?.taskIdentifier ?? child],
-                    { isTaskTemplate: true },
+                    {
+                    isTaskTemplate: true,
+                    isLastChild: children.indexOf(child) === children.length - 1
+                  },
                     !!tasksMap[child]?.subtasks.length
                       ? tasksMap[child].subtasks.map((subtask: any) => {
                           return convert(

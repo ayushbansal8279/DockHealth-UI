@@ -43,6 +43,8 @@ const Task = React.memo(
     noMargin,
     origin,
     viewSetup,
+    isTaskTemplate,
+    isLastChild,
     ...restProps
   }) => {
     const parentTaskReference = useRef(null);
@@ -178,6 +180,8 @@ const Task = React.memo(
       >
         <div ref={innerRef}>
           <TaskItem
+            isTaskTemplate={isTaskTemplate}
+            isLastChild={isLastChild}
             taskItemIdentifier={task?.identifier}
             templateBundleIdentifier={templateBundleIdentifier}
             patient={parentPatient}

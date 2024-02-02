@@ -10,6 +10,7 @@ import * as Sc from './styled';
 
 export interface Props extends Segment {
   isTaskTemplate: boolean;
+  isLastChild: boolean;
 }
 
 function VTask(
@@ -27,15 +28,18 @@ function VTask(
         <Sc.VTask
           {...register}
           $subitem={metadata.level > 1}
-          $template={isTaskTemplate}
-          data-dupa={metadata.index}
+          // @ts-ignore
+            $workflow={record.task?.itemType === "BUNDLE"}
+            $template={isTaskTemplate}
         >
           <StandardTaskItem
             // @ts-ignore
             taskIdentifier={metadata.id}
             draggableProvided={provided}
             isDraggable
-            isDragging={snapshot.isDragging}
+              isDragging={snapshot.isDragging}
+              isTaskTemplate={isTaskTemplate}
+              isLastChild={isLastChild}
           />
         </Sc.VTask>
       )}
