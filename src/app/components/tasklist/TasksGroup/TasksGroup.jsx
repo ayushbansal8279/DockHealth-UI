@@ -110,10 +110,12 @@ const TasksGroup = ({
   const collapse = useContext(CollapseContext);
   const onSwitchOpen = useCallback(() => {
     if (isOpen) {
+      console.log('TASK GROUP', taskGroupIdentifier, 'COLLAPSED');
       // eslint-disable-next-line react/destructuring-assignment
       collapse.set(taskGroupIdentifier, true);
       onTaskGroupCollapsed();
     } else {
+      console.log('TASK GROUP', taskGroupIdentifier, 'EXPANDED');
       // eslint-disable-next-line react/destructuring-assignment
       collapse.set(taskGroupIdentifier, false);
       onTaskGroupExpanded();

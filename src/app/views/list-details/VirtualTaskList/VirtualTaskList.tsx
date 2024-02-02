@@ -70,7 +70,7 @@ function VirtualTaskList({ groupedTasks }: Props) {
           VListGroup,
           'ListGroup',
           !!collapseMap[group.taskGroupIdentifier],
-          { name: group.groupName },
+          { name: group.groupName, taskGroupIdentifier: group.taskGroupIdentifier },
           [
             convert(
               uniqueId().toString(),
