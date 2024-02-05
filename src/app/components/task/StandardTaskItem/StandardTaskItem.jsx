@@ -19,7 +19,7 @@ import { CollapseContext } from 'views/list-details/VirtualTaskList/VirtualTaskL
 import TaskItem from './TaskItem';
 import Subtasks from './Subtasks';
 import { getMatchedComments } from './helpers';
-import { ParentTaskContainer, SubtasksWrapper } from '../styled';
+import { ParentTaskContainer, SubtasksWrapper, TaskContainer } from '../styled';
 import QuickAddSubtask from './QuickAddSubtask';
 
 const Task = React.memo(
@@ -43,6 +43,8 @@ const Task = React.memo(
     noMargin,
     origin,
     viewSetup,
+    isTaskTemplate,
+    isLastChild,
     ...restProps
   }) => {
     const parentTaskReference = useRef(null);
@@ -176,8 +178,10 @@ const Task = React.memo(
         noMargin={noMargin}
         {...draggableProps}
       >
-        <div ref={innerRef}>
+        <TaskContainer ref={innerRef}>
           <TaskItem
+            isTaskTemplate={isTaskTemplate}
+            isLastChild={isLastChild}
             taskItemIdentifier={task?.identifier}
             templateBundleIdentifier={templateBundleIdentifier}
             patient={parentPatient}
@@ -197,7 +201,7 @@ const Task = React.memo(
             viewSetup={viewSetup}
             {...restProps}
           />
-        </div>
+        </TaskContainer>
         {showComments && window.disabledVirtualTaskList && (
           <TaskComments
             isOpen={isFullView}

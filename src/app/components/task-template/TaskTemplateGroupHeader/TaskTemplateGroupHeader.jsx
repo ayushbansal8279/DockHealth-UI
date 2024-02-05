@@ -71,6 +71,8 @@ import TaskItemText from 'components/task/StandardTaskItem/customFieldsTaskItemC
 import { updatePatientDetails } from 'actions/patient-details-actions';
 import TaskItemDropdown from 'components/task/StandardTaskItem/customFieldsTaskItemComponents/TaskItemDropdown/TaskItemDropdown';
 import TaskItemDate from 'components/task/StandardTaskItem/customFieldsTaskItemComponents/TaskItemDate';
+import { CollapseContext } from 'views/list-details/VirtualTaskList/VirtualTaskList';
+import { isWorkflowDrawerOpenSelector } from 'selectors/workflow-drawer-selectors';
 import TaskTemplateCreatedByMembers from '../TaskTemplateMembers/TaskTemplateCreatedBy';
 import TaskTemplateCompletedByMembers from '../TaskTemplateMembers/TaskTemplateCompletedByMembers';
 import TemplateHeaderName from '../TaskTemplateName/TaskTemplateName';
@@ -91,10 +93,6 @@ import {
   PatientMRNAnchor,
 } from './styled';
 import TaskTemplateDetails from '../TaskTemplateDetails/TaskTemplateDetails';
-import { CollapseContext } from "views/list-details/VirtualTaskList/VirtualTaskList";
-import {
-  isWorkflowDrawerOpenSelector,
-} from 'selectors/workflow-drawer-selectors';
 
 const TaskTemplateGroupHeader = ({
   templateGroup = {},
@@ -128,8 +126,6 @@ const TaskTemplateGroupHeader = ({
     selected,
     creator,
   } = templateGroup;
-
-  console.log('TaskTemplateGroupHeader', templateGroup);
 
   const { bulkEditIsActive } = useContext(BulkEditContext);
   const { bulkEditEnabled } = useContext(BulkEditContext);
@@ -522,7 +518,10 @@ const TaskTemplateGroupHeader = ({
     ),
   );
 
-  const isBundleSelected = useSelector(isWorkflowDrawerOpenSelector) || isBundlePreSelected || isBundleSelectedFromTasks;
+  const isBundleSelected =
+    useSelector(isWorkflowDrawerOpenSelector) ||
+    isBundlePreSelected ||
+    isBundleSelectedFromTasks;
 
   const handleBundleSelect = useCallback(async () => {
     let selectedTaskIdentifiers = [templateGroup?.identifier];
@@ -705,11 +704,13 @@ const TaskTemplateGroupHeader = ({
   );
 
   return (
-    <TaskTemplateGroupHeaderContainer isSelected={isBundleSelected}>
+    <TaskTemplateGroupHeaderContainer
+      isSelected={isBundleSelected}
+      isOpen={isOpen}
+    >
       {randerFirstColumnCoverIfNecessary(
         <>
           <TaskItemCell
-            data-foo={3}
             key={`task_description_${identifier}`}
             width={
               columns?.find(

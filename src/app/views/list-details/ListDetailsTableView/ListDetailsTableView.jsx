@@ -479,6 +479,7 @@ const ListDetailsTableView = () => {
               ? taskCounters.incomplete
               : taskCounters.complete
           }
+          additionalOptions={additionalToolbarOptions}
         />
       }
     >
@@ -490,11 +491,11 @@ const ListDetailsTableView = () => {
       >
         <div style={{ height: '100%' }}>
           <TaskViewContainer>
-            <StickyContainer>
+            {/* <StickyContainer>
               <ListDetailsToolbar
                 additionalOptions={additionalToolbarOptions}
               />
-            </StickyContainer>
+            </StickyContainer> */}
             <TasksView
               viewSetup={displayListPreferences}
               onTaskUpdate={handleTaskUpdate}

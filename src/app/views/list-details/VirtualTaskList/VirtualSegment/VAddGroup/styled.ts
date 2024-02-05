@@ -1,6 +1,6 @@
 import styled from '@mui/styled-engine';
 
-export const VAddGroup = styled("div")`
+export const VAddGroup = styled('div')`
   display: block;
   font-weight: bold;
   text-transform: uppercase;

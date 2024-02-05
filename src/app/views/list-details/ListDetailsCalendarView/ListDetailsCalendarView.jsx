@@ -13,10 +13,11 @@ import { calendarDateRangeSelector } from 'selectors/calendar-tasks-selectors';
 import { TaskOrigin } from 'helpers/task-helpers';
 import * as ListDetailsActions from 'actions/list-details-actions';
 import * as CalendarTasksActions from 'actions/calendar-tasks-actions';
-import ListOptionsMenu from 'components/tasklist/ListOptionsMenu/ListOptionsMenu';
-import LayoutHeader from 'components/template/LayoutHeader/LayoutHeader';
+// import ListOptionsMenu from 'components/tasklist/ListOptionsMenu/ListOptionsMenu';
+// import LayoutHeader from 'components/template/LayoutHeader/LayoutHeader';
 import Calendar from 'components/common/Calendar/Calendar';
-import ListDetailsToolbar from '../ListDetailsToolbar/ListDetailsToolbar';
+// import ListDetailsToolbar from '../ListDetailsToolbar/ListDetailsToolbar';
+import ListDetailsHeader from '../ListDetailsHeader/ListDetailsHeader';
 
 const ListDetailsCalendarView = () => {
   const dispatch = useDispatch();
@@ -43,25 +44,7 @@ const ListDetailsCalendarView = () => {
   }, []);
 
   return (
-    <ViewLayout
-      header={
-        <LayoutHeader horizontalSticky>
-          {taskList && (
-            <Box position="absolute" top={listDescription ? 17 : 27} left={10}>
-              <ListOptionsMenu list={taskList}>
-                <MoreVert color="primary" />
-              </ListOptionsMenu>
-            </Box>
-          )}
-          <LayoutHeader.Title
-            title={listName}
-            description={listDescription}
-            colorIndicator={color}
-          />
-        </LayoutHeader>
-      }
-    >
-      <ListDetailsToolbar />
+    <ViewLayout header={<ListDetailsHeader />}>
       <Calendar taskListIdentifier={taskListIdentifier} />
       <TaskDrawer origin={TaskOrigin.LIST} />
     </ViewLayout>

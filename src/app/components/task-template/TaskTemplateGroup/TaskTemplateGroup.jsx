@@ -24,6 +24,8 @@ import {
   TaskTemplateGroupContainer,
   TaskTemplateGroupList,
   QuickAddInputWrapper,
+  TaskTemplateItemsContainer,
+  TaskTemplateItemsStartPill,
 } from './styled';
 import TaskTemplateGroupHeader from '../TaskTemplateGroupHeader/TaskTemplateGroupHeader';
 
@@ -47,8 +49,6 @@ const TaskTemplateGroup = ({
   const templateGroup = useSelector((state) => {
     return taskLookupSelector(state, origin, pullGroup);
   });
-
-  console.log("templateGroup", templateGroup, origin, pullGroup);
 
   const {
     tasks: taskIdentifiers, // task identifiers
@@ -131,9 +131,8 @@ const TaskTemplateGroup = ({
   const filteredTasks = filteredTasksByStatus.map((t) => t.identifier);
 
   return (
-    <TaskTemplateGroupContainer
+    <div
     // ref={innerRef} {...draggableProps}
-      data-foo={1}
     >
       <TaskTemplateGroupHeader
         isFetchingTasks={isFetchingTasks}
@@ -190,7 +189,6 @@ const TaskTemplateGroup = ({
                     <div
                       ref={templateDroppableProvided.innerRef}
                       {...templateDroppableProvided.droppableProps}
-                      data-foo={2}
                     >
                       {filteredTasks?.map((taskOrIdentifier, index) => (
                         <Draggable
@@ -261,7 +259,7 @@ const TaskTemplateGroup = ({
           )}
         </TaskTemplateGroupList>
       )}
-    </TaskTemplateGroupContainer>
+    </div>
   );
 };
 

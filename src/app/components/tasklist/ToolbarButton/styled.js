@@ -19,9 +19,13 @@ export const CustomizeButton = styled.button`
   & .switchIcon > path {
     fill: ${palette.white || palette.white};
   }
-  
   @media print {
     display: none;
+  }
+  @media (max-width: 867px) {
+    display: ${({ wide }) => {
+      if (wide) return 'none';
+    }};
   }
 `;
 

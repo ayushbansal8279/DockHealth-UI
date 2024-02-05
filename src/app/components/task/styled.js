@@ -134,8 +134,12 @@ export const AddPlaceholder = styled.div`
   color: ${palette.lightGrey};
   opacity: 0;
   &::first-letter {
-    color: ${palette.orange};
+    color: ${palette.lightGrey};
     font-size: ${fontSizes.regular};
+  }
+
+  &:hover:first-letter {
+    color: ${palette.brightBlue};
   }
 
   &:hover {
@@ -243,7 +247,7 @@ export const DescriptionInput = styled.input`
   outline: 'none';
   background-color: transparent !important;
   border: ${({ readOnly }) =>
-    readOnly ? 'none' : `1px solid ${palette.brightBlue} !important`};
+    readOnly ? 'none' : `1px solid #D4D9DF !important`};
   border-radius: '4px';
   color: ${palette.mediumGrey};
   width: 1005px;
@@ -401,6 +405,21 @@ export const StandardTaskItemContainer = styled.div`
         `
       : ''};
 
+  ${({ isTaskTemplate }) =>
+    isTaskTemplate
+      ? `
+  border-left: 1px solid rgba(75, 179, 253, 1);
+  border-right: 1px solid rgba(75, 179, 253, 1);
+  `
+      : ''}
+
+  ${({ isLastChild }) =>
+    isLastChild
+      ? `
+    border-bottom: 1px solid rgba(75, 179, 253, 1);
+  `
+      : ''}
+
   @media print {
     border-left: 1px solid ${palette.coolGrey3};
     height: auto;
@@ -486,14 +505,14 @@ export const TaskItemParentTaskLabel = styled.div`
 export const StatusWrapper = styled.div`
   display: flex;
   border-radius: 2px;
-  border: 1px solid ${(prop) => prop.color || '#7F4334'};
-  background: ${(prop) => prop.color+"1A" || '#7F43341A'};
+  border: 1px solid ${(property) => property.color || '#7F4334'};
+  background: ${(property) => `${property.color}1A` || '#7F43341A'};
   min-width: 90px;
   padding: 2.5px 2px;
   justify-content: center;
   align-items: center;
   gap: 10px;
-  color: ${(prop) => prop.color || '#7F4334'};
+  color: ${(property) => property.color || '#7F4334'};
 `;
 
 export const StatusSubContaioner = styled.div`
@@ -608,6 +627,12 @@ export const ParentTaskContainer = styled.div`
   }
 `;
 
+export const TaskContainer = styled.div`
+  &:hover {
+    box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.15);
+  }
+`;
+
 export const SubtasksWrapper = styled.div`
   position: relative;
   padding-left: ${spacing.giga};
@@ -711,7 +736,7 @@ export const PatientMRNAnchor = styled.a`
 `;
 
 export const TaskScrollVericleLine = styled.div`
-  background: #48BBB3; 
+  background: #48bbb3;
   height: 100%;
   width: 1px;
   box-shadow: 1px 0px 3px 0px rgba(0, 0, 0, 0.21);

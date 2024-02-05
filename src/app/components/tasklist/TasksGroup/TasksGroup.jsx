@@ -110,10 +110,12 @@ const TasksGroup = ({
   const collapse = useContext(CollapseContext);
   const onSwitchOpen = useCallback(() => {
     if (isOpen) {
+      console.log('TASK GROUP', taskGroupIdentifier, 'COLLAPSED');
       // eslint-disable-next-line react/destructuring-assignment
       collapse.set(taskGroupIdentifier, true);
       onTaskGroupCollapsed();
     } else {
+      console.log('TASK GROUP', taskGroupIdentifier, 'EXPANDED');
       // eslint-disable-next-line react/destructuring-assignment
       collapse.set(taskGroupIdentifier, false);
       onTaskGroupExpanded();
@@ -150,13 +152,7 @@ const TasksGroup = ({
       showMoreTasks();
     }
     onSwitchOpen();
-  }, [
-    isOpen,
-    groupTaskCounts,
-    tasks?.length,
-    onSwitchOpen,
-    showMoreTasks,
-  ]);
+  }, [isOpen, groupTaskCounts, tasks?.length, onSwitchOpen, showMoreTasks]);
 
   useEffect(() => {
     if (groupTaskCounts === 0 && !isLoadingGroup) switchOpen(true);
@@ -284,10 +280,10 @@ const TasksGroup = ({
           ? null
           : columns
               .filter((f) => f.isChecked)
-              .reduce((accumulator, column) => {
-                console.log('columnWidth', column, column.columnWidth);
-                return accumulator + column.columnWidth;
-              }, 0)
+              .reduce(
+                (accumulator, column) => accumulator + column.columnWidth,
+                0,
+              )
       }
     >
       <StickyContainer left={24} decreaseWidth={2 * 24}>

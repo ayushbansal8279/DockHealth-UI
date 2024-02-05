@@ -1,20 +1,23 @@
-import React, { ForwardedRef, forwardRef, useCallback, useMemo } from "react";
+import React, { ForwardedRef, forwardRef, useCallback, useMemo } from 'react';
 import { Segment } from 'views/list-details/modules/Virtualized';
-import * as Sc from './styled';
-import QuickAddTaskInput from "components/tasklist/QuickAddTaskInput/QuickAddTaskInput";
-import { createTask } from "../../../../../sagas/list-details-saga";
-import { useDispatch, useSelector } from "react-redux";
-import { taskCountersSelector } from "../../../../../selectors/list-details-selectors";
-import { selectedUserOrganizationSelector } from "../../../../../selectors/user-selectors";
-// @ts-ignore
+import QuickAddTaskInput from 'components/tasklist/QuickAddTaskInput/QuickAddTaskInput';
+import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
-import { useTaskListColumnsConfig } from "context-api/columns-config-context";
+import { useTaskListColumnsConfig } from 'context-api/columns-config-context';
+import * as Sc from './styled';
+import { createTask } from '../../../../../sagas/list-details-saga';
+import { taskCountersSelector } from '../../../../../selectors/list-details-selectors';
+import { selectedUserOrganizationSelector } from '../../../../../selectors/user-selectors';
 
 export interface Props extends Segment {
   taskGroupIdentifier: string;
 }
 
-function VQuickAddTask({ taskGroupIdentifier, metadata, register }: Props, ref: ForwardedRef<HTMLDivElement>) {
+function VQuickAddTask(
+  { taskGroupIdentifier, register }: Props,
+  // eslint-disable-next-line unicorn/prevent-abbreviations
+  ref: ForwardedRef<HTMLDivElement>,
+) {
   const dispatch = useDispatch();
   const taskCounters = useSelector(taskCountersSelector);
   const { taskListIdentifier } = useParams();
@@ -64,10 +67,13 @@ function VQuickAddTask({ taskGroupIdentifier, metadata, register }: Props, ref: 
         // @ts-ignore
         !window.disabledVirtualTaskList
           ? columns
-            // @ts-ignore
-            .filter((f) => f.isChecked)
-            // @ts-ignore
-            .reduce((accumulator, column) => accumulator + column.columnWidth, 0)
+              // @ts-ignore
+              .filter((f) => f.isChecked)
+              // @ts-ignore
+              .reduce(
+                (accumulator, column) => accumulator + column.columnWidth,
+                0,
+              )
           : null
       }
     >

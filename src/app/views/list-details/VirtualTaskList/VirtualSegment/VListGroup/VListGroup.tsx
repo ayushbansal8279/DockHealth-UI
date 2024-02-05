@@ -1,16 +1,20 @@
-import React, { ForwardedRef, forwardRef, useCallback } from 'react'
+import React, { ForwardedRef, forwardRef, useCallback } from 'react';
 import { Segment } from 'views/list-details/modules/Virtualized';
 import TasksGroup from 'components/tasklist/TasksGroup/TasksGroup';
+import { reorderTaskListGroups } from 'actions/list-details-actions';
+import { useDispatch } from 'react-redux';
 import * as Sc from './styled';
-import { reorderTaskListGroups } from "actions/list-details-actions";
-import { useDispatch } from "react-redux";
 
 export interface Props extends Segment {
   name: string;
   count: number;
+  taskGroupIdentifier: string;
 }
 
-function VListGroup({ name, count, metadata, register }: Props, ref: ForwardedRef<HTMLDivElement>) {
+function VListGroup(
+  { name, count, taskGroupIdentifier, metadata, register }: Props,
+  ref: ForwardedRef<HTMLDivElement>,
+) {
   const dispatch = useDispatch();
 
   const moveGroup = useCallback(
@@ -23,12 +27,10 @@ function VListGroup({ name, count, metadata, register }: Props, ref: ForwardedRe
   );
 
   return (
-    <Sc.VListGroup
-      ref={ref}
-      {...register}
-    >
+    <Sc.VListGroup ref={ref} {...register}>
       {/* @ts-ignore */}
       <TasksGroup
+        taskGroupIdentifier={taskGroupIdentifier}
         groupName={name}
         moveGroupUp={() => moveGroup(metadata.sameLevelIndex, 'up')}
         moveGroupDown={() => moveGroup(metadata.sameLevelIndex, 'down')}

@@ -83,7 +83,7 @@ const SelectDropdown = React.forwardRef(
     }, [value]);
 
     useEffect(() => {
-      console.log(`patientIdentifier: ${patientIdentifier}`);
+      // console.log(`patientIdentifier: ${patientIdentifier}`);
     }, [patientIdentifier]);
 
     useEffect(() => {
