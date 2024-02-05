@@ -50,7 +50,7 @@ const TaskItemIcons = ({
             title={
               comments?.length > 0
                 ? getCommentsIconTooltipTitle(comments)
-                : 'Add a new comment'
+                : 'Add Comment'
             }
           >
             <button type="button" onClick={onCommentClick}>

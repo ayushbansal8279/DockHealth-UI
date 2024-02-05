@@ -117,6 +117,7 @@ import {
 import TaskItemText from './customFieldsTaskItemComponents/TaskItemText/TaskItemText';
 import TaskItemDropdown from './customFieldsTaskItemComponents/TaskItemDropdown/TaskItemDropdown';
 import TaskItemDate from './customFieldsTaskItemComponents/TaskItemDate';
+import Tooltip from 'components/common/Tooltip/Tooltip';
 
 const { DISABLED, READ_ONLY } = SINGLE_TASK_RESTRICTIONS_OPTIONS;
 
@@ -769,7 +770,11 @@ const TaskItem = React.memo(
                   />
                 )}
               <Box ml="10px" />
-              <CircleIcon
+              <Tooltip
+                placement="top"
+                title={isCompleted ? 'Mark incomplete'  : 'Complete task'}
+              >
+                <CircleIcon
                 src={isCompleted ? CircleCompleted : Circle}
                 isClickable={
                   !isTaskStatusTogglingDisabled &&
@@ -784,6 +789,7 @@ const TaskItem = React.memo(
                     : () => {}
                 }
               />
+              </Tooltip>
             </ActionIconsContainer>
             {content}
             <TaskScrollVericleLine>&nbsp;</TaskScrollVericleLine>
@@ -1065,7 +1071,11 @@ const TaskItem = React.memo(
                         options: [
                           { identifier: 'HIGH', name: 'High', color: 'red' },
                           { identifier: 'NONE', name: 'No Priority' },
-                          { identifier: 'MEDIUM', name: 'Medium', color: '#fd8914'},
+                          {
+                            identifier: 'MEDIUM',
+                            name: 'Medium',
+                            color: '#fd8914',
+                          },
                           { identifier: 'LOW', name: 'Low' },
                         ],
                         displayOptions: [],
@@ -1364,7 +1374,7 @@ const TaskItem = React.memo(
                           identifier === TaskItemColumn.START_DATE,
                       )?.columnWidth
                     }
-                    paddingLeft='10px'
+                    paddingLeft="10px"
                     paddingRight="tiny"
                     justify="flex-start"
                     onContextMenu={(event) => {
@@ -1372,7 +1382,7 @@ const TaskItem = React.memo(
                     }}
                     order={getColumnOrder(TaskItemColumn.START_DATE)}
                     onMouseEnter={() => setIsDateHover(true)}
-                      onMouseLeave={() => setIsDateHover(false)}
+                    onMouseLeave={() => setIsDateHover(false)}
                   >
                     <TaskItemStartDate
                       task={task}
@@ -1397,7 +1407,7 @@ const TaskItem = React.memo(
                             identifier === TaskItemColumn.DUE_DATE,
                         )?.columnWidth
                       }
-                      paddingLeft='10px'
+                      paddingLeft="10px"
                       paddingRight="tiny"
                       justify="flex-start"
                       onContextMenu={(event) => {

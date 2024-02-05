@@ -134,8 +134,12 @@ export const AddPlaceholder = styled.div`
   color: ${palette.lightGrey};
   opacity: 0;
   &::first-letter {
-    color: ${palette.orange};
+    color: ${palette.lightGrey};
     font-size: ${fontSizes.regular};
+  }
+
+  &:hover:first-letter {
+    color: ${palette.brightBlue};
   }
 
   &:hover {
@@ -243,7 +247,7 @@ export const DescriptionInput = styled.input`
   outline: 'none';
   background-color: transparent !important;
   border: ${({ readOnly }) =>
-    readOnly ? 'none' : `1px solid ${palette.brightBlue} !important`};
+    readOnly ? 'none' : `1px solid #D4D9DF !important`};
   border-radius: '4px';
   color: ${palette.mediumGrey};
   width: 1005px;
@@ -620,6 +624,12 @@ export const SubtasksCellText = styled.p`
 export const ParentTaskContainer = styled.div`
   &:not(:last-child) {
     margin-bottom: ${({ noMargin }) => (noMargin ? -1 : 3)}px;
+  }
+`;
+
+export const TaskContainer = styled.div`
+  &:hover {
+    box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.15);
   }
 `;
 
