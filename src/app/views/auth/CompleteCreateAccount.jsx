@@ -20,14 +20,15 @@ import {
   StyledLink,
 } from 'components/auth/AuthComponents.styled';
 import Spacing from 'components/common/Spacing';
-import FormInput from 'components/common/Input/FormInput';
+import FormInput from 'components/common/v2/Input/FormInput';
 import FormPhoneNumberInput from 'components/common/PhoneNumberInput/FormPhoneNumberInput';
 import { showAlert, showToast } from 'helpers/utility-functions';
 import { useBoolean } from 'hooks/useBoolean';
 import { AUTH_BASE_STATES } from 'reducers/auth-base-reducer';
 import palette from 'styles/palette';
-import { MontserratTypography } from 'styles/theme-montserrat';
+import { OutfitTypography } from 'styles/theme-outfit';
 import ConfirmEmailHeaderCheck from 'img/checked-circle.svg';
+import AlertEmailCircle from 'img/alert-circle.svg';
 import Button from 'components/common/v2/Button/Button';
 import { ThemeProvider as MuiThemeProvider } from '@mui/material/styles';
 import envelope from 'img/modals/envelope-red.svg';
@@ -94,7 +95,9 @@ const CompleteCreateAccount = (props) => {
   const [isUserExistsDialogShown, showUserExistsDialog, hideUserExistsDialog] =
     useBoolean(false);
   const [externalUserMode, setExternalUserMode] = useState(false);
-  const [dialogTitle, setDialogTitle] = useState('This Email is Already in Use');
+  const [dialogTitle, setDialogTitle] = useState(
+    'This Email is Already in Use',
+  );
   const [dialogMessage, setDialogMessage] = useState('');
   const [customPageTitle, setCustomPageTitle] = useState('');
   const [isUserInvited, setIsUserInvited] = useState(false);
@@ -161,7 +164,7 @@ const CompleteCreateAccount = (props) => {
           await registerAction({
             username: userEmail,
             password,
-            email : userEmail,
+            email: userEmail,
             phone_number: mobilePhoneNumber
               ? `+${mobilePhoneNumber.replace(/\D/g, '')}`
               : null,
@@ -175,10 +178,7 @@ const CompleteCreateAccount = (props) => {
           history.push('/signupEmailSent');
         } catch (error) {
           if (error?.code === 'UsernameExistsException') {
-            setDialogTitle(`Email already associated with an account`);
-            setDialogMessage(
-              `${email} is already being used for a Dock Health account. If you haven't already, please go to your email and click on the link to confirm your email address.`,
-            );
+            setDialogTitle(`User Already Exists`);
             showUserExistsDialog();
             return;
           }
@@ -251,6 +251,14 @@ const CompleteCreateAccount = (props) => {
     display: 'block',
   };
 
+  const onboardingMessageTitle = {
+    fontFamily: 'Outfit',
+    fontWeight: 600,
+    fontSize: '28px',
+    padding: '0rem 1rem',
+    display: 'block',
+  };
+
   const onboardingLinkStyle = {
     fontFamily,
     fontWeight: 300,
@@ -285,11 +293,11 @@ const CompleteCreateAccount = (props) => {
         <FormProvider {...formMethods}>
           {(hasTrialReferral || hasCustomPageTitle) && (
             <>
-              <MontserratTypography variant="h2">
+              <OutfitTypography variant="h2">
                 {hasCustomPageTitle
                   ? customPageTitle
                   : 'Start your free 15 day trial'}
-              </MontserratTypography>
+              </OutfitTypography>
               <Spacing vertical={4} />
             </>
           )}
@@ -297,11 +305,13 @@ const CompleteCreateAccount = (props) => {
             Almost done...
           </Title>
           <Spacing vertical={3} />
-          <Subtitle variant="p">
-            Sign up here for full trial access to Dock’s time-saving templates
-            for online task management.
+          <Subtitle align="center" variant="p">
+            <p style={{ textAlign: 'center' }}>
+              Sign up here for full trial access to Dock’s time-saving templates
+              for online task management.
+            </p>
           </Subtitle>
-          <Spacing vertical={5} />
+          <Spacing vertical={3} />
           {isUserInvited ? (
             <FormInput
               disabled={isUserInvited}
@@ -313,30 +323,33 @@ const CompleteCreateAccount = (props) => {
             <FormInput disabled={externalUserMode} name="email" label="Email" />
           )}
           <Spacing vertical={5} />
+          <FormPhoneNumberInput variant='outlined'
+            name="mobilePhoneNumber"
+            label="Your Mobile Phone Number"
+            style={{ borderRadius: '50px' }}
+            // customShrinkCondition
+          />
+          <Spacing vertical={3} />
+          <OutfitTypography variant="h5">
+            This must be a mobile phone number as we are required to send a
+            secondary authentication code
+          </OutfitTypography>
+          <Spacing vertical={5} />
           <FormInput name="password" label="Password" type="password" />
           <Spacing vertical={3} />
-          <MontserratTypography variant="h5">
+          <OutfitTypography variant="h5">
             * 8 characters • 1 capital • 1 number
-          </MontserratTypography>
-          <Spacing vertical={5} />
-          <FormInput
+          </OutfitTypography>
+          <Spacing vertical={4} />
+          <FormInput 
             name="confirmPassword"
             label="Confirm Password"
             type="password"
           />
-          <Spacing vertical={5} />
-          <FormPhoneNumberInput
-            name="mobilePhoneNumber"
-            label="Your Mobile Phone Number"
-            customShrinkCondition
-          />
-          <Spacing vertical={3} />
-          <MontserratTypography variant="h5">
-            This must be a mobile phone number as we are required to send a
-            secondary authentication code
-          </MontserratTypography>
+          
           <Spacing vertical={5} />
           <Button
+            uppercase={false}
             type="submit"
             fullWidth
             size="large"
@@ -346,16 +359,16 @@ const CompleteCreateAccount = (props) => {
             Create Account
           </Button>
           <Spacing vertical={5} />
-          <MontserratTypography variant="h4" align="center">
+          <OutfitTypography variant="h4" align="center">
             <StyledLink
               style={{ display: 'block', fontWeight: 500 }}
               to="/auth/create-account"
             >
               Back
             </StyledLink>
-          </MontserratTypography>
+          </OutfitTypography>
           <Spacing vertical={5} />
-          <MontserratTypography variant="h5" align="center">
+          <OutfitTypography variant="h4" align="center">
             Already have an account?
             <StyledLink
               style={{ display: 'inline', paddingLeft: '5px', fontWeight: 600 }}
@@ -363,7 +376,7 @@ const CompleteCreateAccount = (props) => {
             >
               Log In
             </StyledLink>
-          </MontserratTypography>
+          </OutfitTypography>
         </FormProvider>
       </StyledForm>
       <OnboardingDialog open={isDialogShown} fullWidth maxWidth="sm">
@@ -376,11 +389,11 @@ const CompleteCreateAccount = (props) => {
               </Typography>
             </ModalIconContainer>
             <ModalDescriptionContainer>
-              <MontserratTypography variant="h4">
+              <OutfitTypography variant="h4">
                 <span style={onboardingMessageStyle}> {dialogMessage} </span>
-              </MontserratTypography>
+              </OutfitTypography>
               <Spacing vertical={5} />
-              <MontserratTypography variant="h4">
+              <OutfitTypography variant="h4">
                 <span style={onboardingDialogStyle}>
                   I didn&apos;t get the email.{' '}
                 </span>
@@ -390,11 +403,11 @@ const CompleteCreateAccount = (props) => {
                 >
                   Resend email
                 </StyledAnchorDiv>
-              </MontserratTypography>
+              </OutfitTypography>
 
               <Spacing vertical={5} />
 
-              <MontserratTypography variant="h4">
+              <OutfitTypography variant="h4">
                 <span style={onboardingDialogStyle}>
                   {' '}
                   The email address is wrong.{' '}
@@ -405,7 +418,7 @@ const CompleteCreateAccount = (props) => {
                 >
                   Change email address
                 </StyledAnchorDiv>
-              </MontserratTypography>
+              </OutfitTypography>
               <Spacing vertical={2} />
             </ModalDescriptionContainer>
             <ButtonsContainer>
@@ -430,47 +443,35 @@ const CompleteCreateAccount = (props) => {
         <MuiThemeProvider theme={redTheme}>
           <ModalWrapper style={{ width: '500px' }}>
             <ModalIconContainer>
-              <ModalMainIcon src={envelope} alt="envelope" />
-              <Typography color="textPrimary" variant="h2" align="center">
-                {dialogTitle}{' '}
-              </Typography>
+              <ModalMainIcon src={AlertEmailCircle} alt="envelope" />
+              <span style={onboardingMessageTitle}> {dialogTitle} </span>
             </ModalIconContainer>
             <ModalDescriptionContainer>
-              <MontserratTypography variant="h4">
-                <span style={onboardingMessageStyle}> {dialogMessage} </span>
-              </MontserratTypography>
-              <Spacing vertical={5} />
-              <MontserratTypography variant="h4">
-                <span style={onboardingDialogStyle}>
-                  I didn&apos;t get the email.{' '}
-                </span>
+              <OutfitTypography variant="h4">
                 <StyledAnchorDiv
                   style={onboardingLinkStyle}
                   onClick={() => resendEmail(email)}
                 >
-                  Resend email
+                  Resend confirmation email
                 </StyledAnchorDiv>
-              </MontserratTypography>
+              </OutfitTypography>
 
               <Spacing vertical={5} />
 
-              <MontserratTypography variant="h4">
-                <span style={onboardingDialogStyle}>
-                  {' '}
-                  The email address is wrong.{' '}
-                </span>
+              <OutfitTypography variant="h4">
                 <StyledAnchorDiv
                   onClick={hideUserExistsDialog}
                   style={onboardingLinkStyle}
                 >
-                  Change email address
+                  Change my email address
                 </StyledAnchorDiv>
-              </MontserratTypography>
+              </OutfitTypography>
               <Spacing vertical={2} />
             </ModalDescriptionContainer>
             <ButtonsContainer>
-              <FixedWidthButtonWrapper width={300}>
+              <FixedWidthButtonWrapper width={200}>
                 <Button
+                  uppercase={false}
                   fullWidth
                   variant="primary-red"
                   type="button"

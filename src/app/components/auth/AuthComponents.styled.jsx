@@ -60,7 +60,7 @@ export const StyledAnchorDiv = styled.div`
 `;
 
 export const StyledLink = styled(Link)`
-  color: ${palette.black};
+  color: ${palette.coolGrey10};
   filter: brightness(1);
   transition: all 0.25s ease-out;
   display: flex;
@@ -72,12 +72,14 @@ export const StyledLink = styled(Link)`
 `;
 
 export const StyledHyperLink = styled.a`
-  color: ${palette.darkBlue};
+  color: ${palette.coolGrey10};
+  font-family: Outfit;
 
   &:hover,
   &:active,
   &:focus {
-    color: ${palette.darkBlue};
+    color: ${palette.coolGrey10};
+  font-family: Outfit;
   }
 `;
 

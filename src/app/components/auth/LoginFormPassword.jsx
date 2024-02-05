@@ -9,6 +9,7 @@ import EyeClose from 'img/auth/eye-close.svg';
 import EyeOpen from 'img/auth/eye-open.svg';
 import Button from 'components/common/v2/Button/Button';
 import FormInput from 'components/common/v2/Input/FormInput';
+import { fontWeights } from 'styles/font';
 import Spacing from 'components/common/Spacing';
 import palette from 'styles/palette';
 import { OutfitTypography } from 'styles/theme-outfit';
@@ -89,7 +90,7 @@ const LoginFormPassword = ({
           <OutfitTypography align="center" variant="h4">
             New to Dock?{' '}
             <a
-              style={{ fontWeight: 600, color: 'black' }}
+              style={{ fontWeight: `${fontWeights.regularPlus}`, color: `${palette.coolGrey10}` }}
               href="/create-account"
             >
               {' '}
@@ -123,6 +124,7 @@ const LoginFormPassword = ({
         />
         <Spacing vertical={5} />
         <Button
+          uppercase={false}
           id="loginButton"
           fullWidth
           size="large"
@@ -134,7 +136,7 @@ const LoginFormPassword = ({
         </Button>
         <Spacing vertical={4} />
         <OutfitTypography variant="h5" weight="bold">
-          <StyledLink to="/auth/forgotPassword">FORGOT PASSWORD?</StyledLink>
+          <StyledLink to="/auth/forgotPassword">Forgot Password?</StyledLink>
         </OutfitTypography>
         <SSOOptions />
         <Spacing vertical={5} />
@@ -146,7 +148,7 @@ const LoginFormPassword = ({
         >
           Dock can save you 20 hours a month{' '}
           <a
-            style={{ color: 'black', fontWeight: 800, paddingLeft: '5px' }}
+            style={{ color: `${palette.coolGrey10}`, fontWeight: `${fontWeights.bold}`, paddingLeft: '5px' }}
             href="https://help.dock.health/"
             target="_blank"
             rel="noreferrer"

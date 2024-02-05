@@ -69,6 +69,7 @@ const ResetPasswordForm = ({ authTokenReceived, onSubmit }) => {
         </OutfitTypography>
         <Spacing vertical={5} />
         <Button
+          uppercase={false}
           active
           id="loginButton"
           size="large"

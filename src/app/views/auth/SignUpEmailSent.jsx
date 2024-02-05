@@ -101,7 +101,7 @@ export default () => {
         <Grid item xs={12}>
           <Spacing vertical={8} />
           <OutfitTypography
-            weight="700"
+            weight="500"
             fontSize="16px"
             textDecoration={{
               color: 'rgba(0, 0, 0, 0.60)',

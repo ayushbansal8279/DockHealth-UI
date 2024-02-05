@@ -81,6 +81,7 @@ const ConfirmMFACodeForm = (props) => {
 
               <Spacing vertical={5} />
               <Button
+                uppercase={false}
                 type="submit"
                 size="large"
                 color={palette.brightOrange}

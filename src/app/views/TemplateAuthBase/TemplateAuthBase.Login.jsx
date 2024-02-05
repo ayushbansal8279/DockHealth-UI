@@ -1,8 +1,9 @@
 import { Grid } from '@mui/material';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import Spacing from 'components/common/Spacing';
 import LoginImg from 'img/login.png';
+import SignImg from 'img/signup.png';
 import { OutfitTypography } from 'styles/theme-outfit';
 
 const TranscriptImage = styled.img.attrs({
@@ -12,6 +13,16 @@ const TranscriptImage = styled.img.attrs({
   object-fit: contain;
 `;
 
+const TranscriptImageSignUp = styled.img.attrs({
+  src: SignImg,
+  alt: 'dock-health',
+})`
+  object-fit: contain;
+  width: 100%;
+  padding-left: 25px;
+  padding-right: 25px;
+`;
+
 const StyledGrid = styled(Grid)`
   && {
     height: 100%;
@@ -19,6 +30,12 @@ const StyledGrid = styled(Grid)`
 `;
 
 const TemplateAuthBaseLoginContent = () => {
+  const [isUserInvited, setIsUserInvited] = useState(false);
+
+  useEffect(() => {
+    if (sessionStorage.getItem('isUserInvited')) setIsUserInvited(true);
+  }, [setIsUserInvited]);
+
   return (
     <StyledGrid
       container
@@ -27,7 +44,7 @@ const TemplateAuthBaseLoginContent = () => {
       direction="column"
     >
       <Grid item>
-        <TranscriptImage />
+        {!isUserInvited ? <TranscriptImageSignUp /> : <TranscriptImage />}
         <Spacing vertical={5} />
         <OutfitTypography
           weight="bold"
@@ -35,7 +52,10 @@ const TemplateAuthBaseLoginContent = () => {
           color="black"
           align="center"
         >
-          Collaboration built by healthcare professionals
+          {!isUserInvited
+            ? 'Bye bye Post-It Notes.'
+            : 'Collaboration built by healthcare professionals'}
+          {/* Collaboration built by healthcare professionals */}
         </OutfitTypography>
         <OutfitTypography
           weight="bold"
@@ -43,7 +63,9 @@ const TemplateAuthBaseLoginContent = () => {
           color="black"
           align="center"
         >
-          for healthcare professionals.
+          {!isUserInvited
+            ? 'Hello Efficiency'
+            : 'for healthcare professionals.'}
         </OutfitTypography>
         <Spacing vertical={3} />
         <OutfitTypography
@@ -52,8 +74,19 @@ const TemplateAuthBaseLoginContent = () => {
           color="rgba(0, 0, 0, 0.6)"
           align="center"
         >
-          Make your communication contextual with the one <br /> administrative
-          tool you need to get healthcare done.
+          {!isUserInvited
+            ? 'Save time, work better with HIPAA-compliant task managment'
+            : 'Make your communication contextual with the one'}
+        </OutfitTypography>
+        <OutfitTypography
+          weight="light"
+          variant="h4"
+          color="rgba(0, 0, 0, 0.6)"
+          align="center"
+        >
+          {!isUserInvited
+            ? 'and workflow automation from Dock Health'
+            : 'administrative tool you need to get healthcare done.'}
         </OutfitTypography>
       </Grid>
     </StyledGrid>

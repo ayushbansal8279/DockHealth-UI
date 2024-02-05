@@ -33,7 +33,7 @@ const OnboardingEulaView = () => {
     acknowledgeEula().then(() => {
       localStorage.setItem('STORAGE_NEW_USER_FIRST_TIME', true);
       if (organizationName !== undefined) {
-        history.push('/onboarding/customer-preference');
+        history.push('/onboarding-tutorial/create-list');
       } else {
         history.push('/onboarding/organization-setup');
       }
@@ -114,6 +114,7 @@ const OnboardingEulaView = () => {
         <Grid item sm={12} container justifyContent="flex-left">
           <Grid item xs={12} sm={12} md={4}>
             <Button
+              uppercase={false}
               disabled={continueButtonDisabled}
               variant="primary"
               onClick={onAgreeClick}

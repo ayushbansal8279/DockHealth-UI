@@ -148,6 +148,7 @@ const OnboardingQuestionsOwnerStepOne = ({
       <Spacing vertical={5} />
       <Spacing vertical={6} />
       <Button
+        uppercase={false}
         onClick={clickNextStep}
         type="button"
         disabled={isDisabledButton}
