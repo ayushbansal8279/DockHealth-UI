@@ -14,7 +14,7 @@ export interface Props extends Segment {
 }
 
 function VTask(
-  { metadata, register, isTaskTemplate, ...record }: Props,
+  { metadata, register, isTaskTemplate, isLastChild, ...record }: Props,
   // eslint-disable-next-line unicorn/prevent-abbreviations, @typescript-eslint/no-unused-vars
   ref: ForwardedRef<HTMLDivElement>,
 ) {
@@ -29,17 +29,17 @@ function VTask(
           {...register}
           $subitem={metadata.level > 1}
           // @ts-ignore
-            $workflow={record.task?.itemType === "BUNDLE"}
-            $template={isTaskTemplate}
+          $workflow={record.task?.itemType === 'BUNDLE'}
+          $template={isTaskTemplate}
         >
           <StandardTaskItem
             // @ts-ignore
             taskIdentifier={metadata.id}
             draggableProvided={provided}
             isDraggable
-              isDragging={snapshot.isDragging}
-              isTaskTemplate={isTaskTemplate}
-              isLastChild={isLastChild}
+            isDragging={snapshot.isDragging}
+            isTaskTemplate={isTaskTemplate}
+            isLastChild={isLastChild || false}
           />
         </Sc.VTask>
       )}
