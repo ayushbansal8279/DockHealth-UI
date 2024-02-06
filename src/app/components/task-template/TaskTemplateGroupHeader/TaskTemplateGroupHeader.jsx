@@ -614,7 +614,7 @@ const TaskTemplateGroupHeader = ({
   const handleOpen = () => {
     setOpen(!isOpen);
     // eslint-disable-next-line react/destructuring-assignment
-    collapse.set(identifier, !isOpen);
+    collapse.set(identifier, isOpen);
   };
 
   const randerFirstColumnCoverIfNecessary = useCallback(
