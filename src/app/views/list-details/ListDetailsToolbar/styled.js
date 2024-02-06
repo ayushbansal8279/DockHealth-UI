@@ -36,7 +36,7 @@ export const GridContainer = styled.div`
   }
 `;
 
-export const GridItem1 = styled.div`
+export const GridItemCalendarView = styled.div`
   background-color: ${(props) =>
     props.active ? palette.newDarkBlue : palette.white};
   color: ${(props) => (props.active ? palette.white : palette.zinc)};
@@ -49,7 +49,7 @@ export const GridItem1 = styled.div`
   }
 `;
 
-export const GridItem2 = styled.div`
+export const GridItemFullView = styled.div`
   background-color: ${(props) =>
     props.active ? palette.newDarkBlue : palette.white};
   color: ${(props) => (props.active ? palette.white : palette.zinc)};
@@ -61,7 +61,7 @@ export const GridItem2 = styled.div`
   }
 `;
 
-export const GridItem3 = styled.div`
+export const GridItemSlimView = styled.div`
   background-color: ${(props) =>
     props.active ? palette.newDarkBlue : palette.white};
   color: ${(props) => (props.active ? palette.white : palette.zinc)};

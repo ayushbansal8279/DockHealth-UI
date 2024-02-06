@@ -94,9 +94,4 @@ export const BoxContainer = styled.div`
   width: fit-content;
   border-radius: 5px;
   overflow: hidden;
-  @media (max-width: 867px) {
-    display: ${({ wide }) => {
-      if (wide) return 'none';
-    }};
-  }
 `;

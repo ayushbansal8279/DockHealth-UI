@@ -22,11 +22,6 @@ export const CustomizeButton = styled.button`
   @media print {
     display: none;
   }
-  @media (max-width: 867px) {
-    display: ${({ wide }) => {
-      if (wide) return 'none';
-    }};
-  }
 `;
 
 export const SelectIcon = styled.span`

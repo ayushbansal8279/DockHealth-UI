@@ -6,7 +6,7 @@ export const VQuickAddTask = styled('div')`
   left: 0;
   display: block;
   font-weight: bold;
-  text-transform: uppercase;
+  text-transform: none;
   line-height: 40px;
   height: 40px;
   margin-bottom: 8px;

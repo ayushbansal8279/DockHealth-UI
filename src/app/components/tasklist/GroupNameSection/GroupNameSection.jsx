@@ -9,6 +9,7 @@ const GroupNameSection = ({
   placeholder,
   initialValue,
   children,
+  handleInput,
   closeOnEnter,
 }) => {
   const [shouldShowInput, showInput, hideInput] = useBoolean(false);
@@ -16,15 +17,20 @@ const GroupNameSection = ({
 
   useEffect(() => {
     setGroupName(initialValue || '');
+    if (disabled) showInput();
   }, [shouldShowInput, initialValue]);
 
   if (shouldShowInput)
     return (
       <GroupNameInput
-        onBlur={hideInput}
+        onBlur={() => {
+          hideInput();
+          if (handleInput) handleInput(!shouldShowInput);
+        }}
         onChange={setGroupName}
         onEnter={() => {
           if (closeOnEnter) hideInput();
+          if (handleInput) handleInput(!disabled);
           return onEnterClick(groupName);
         }}
         placeholder={placeholder}
