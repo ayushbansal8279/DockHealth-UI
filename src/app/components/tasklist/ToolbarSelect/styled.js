@@ -5,14 +5,16 @@ import { Select as MuiSelect } from '@mui/material';
 export const Select = styled(MuiSelect)`
   display: flex;
   align-items: center;
-  background: ${(props) => props.isOpen || palette.newDarkBlue};
+  background: ${(props) =>
+    props.isOpen ? palette.newBrightBlue : palette.newDarkBlue};
   color: ${palette.white};
   height: 40px;
   width: auto;
   border-radius: 4px;
 
   &:hover {
-    background: ${palette.newBrightBlueShaded};
+    background: ${(props) =>
+      props.isOpen ? palette.cornFlowerBlue : palette.purpleNavy};
   }
 
   & .switchIcon > path {
