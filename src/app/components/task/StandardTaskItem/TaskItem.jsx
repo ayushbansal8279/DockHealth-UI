@@ -112,7 +112,7 @@ import {
   DecisionCellContainer,
   ActionIconsContainer,
   PatientMRNAnchor,
-  TaskScrollVericleLine
+  TaskScrollVericleLine,
 } from '../styled';
 import TaskItemText from './customFieldsTaskItemComponents/TaskItemText/TaskItemText';
 import TaskItemDropdown from './customFieldsTaskItemComponents/TaskItemDropdown/TaskItemDropdown';
@@ -166,6 +166,7 @@ const TaskItem = React.memo(
     viewSetup,
     isTaskTemplate,
     isLastChild,
+    changeViewType,
   }) => {
     const task = useSelector((state) => {
       return taskLookupSelector(state, origin, taskItemIdentifier);
@@ -772,23 +773,23 @@ const TaskItem = React.memo(
               <Box ml="10px" />
               <Tooltip
                 placement="top"
-                title={isCompleted ? 'Mark incomplete'  : 'Complete task'}
+                title={isCompleted ? 'Mark incomplete' : 'Complete task'}
               >
                 <CircleIcon
-                src={isCompleted ? CircleCompleted : Circle}
-                isClickable={
-                  !isTaskStatusTogglingDisabled &&
-                  isDependencyEmptyOrCompleted &&
-                  taskListRestrictions?.completeTask !== DISABLED
-                }
-                isCompleted={isCompleted}
-                onClick={
-                  // eslint-disable-next-line unicorn/no-negated-condition
-                  taskListRestrictions?.completeTask !== DISABLED
-                    ? onCircleClick
-                    : () => {}
-                }
-              />
+                  src={isCompleted ? CircleCompleted : Circle}
+                  isClickable={
+                    !isTaskStatusTogglingDisabled &&
+                    isDependencyEmptyOrCompleted &&
+                    taskListRestrictions?.completeTask !== DISABLED
+                  }
+                  isCompleted={isCompleted}
+                  onClick={
+                    // eslint-disable-next-line unicorn/no-negated-condition
+                    taskListRestrictions?.completeTask !== DISABLED
+                      ? onCircleClick
+                      : () => {}
+                  }
+                />
               </Tooltip>
             </ActionIconsContainer>
             {content}
@@ -848,6 +849,7 @@ const TaskItem = React.memo(
           iconColorActive={iconColorActiveItem?.value}
           origin={origin}
           highlightedValue={highlightedValue}
+          changeViewType={changeViewType}
         />
       );
     }

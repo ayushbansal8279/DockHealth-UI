@@ -45,6 +45,7 @@ const TaskTemplateGroup = ({
   iconColorActive,
   origin,
   highlightedValue,
+  changeViewType,
 }) => {
   const templateGroup = useSelector((state) => {
     return taskLookupSelector(state, origin, pullGroup);
@@ -68,7 +69,7 @@ const TaskTemplateGroup = ({
   const { SHOW_WORKFLOW_DETAILS, SHOW_WORKFLOW_COMPLETED_TASKS } =
     viewSetup || {};
   // const { innerRef, draggableProps } = draggableProvided;
-  const [isOpen, setOpen] = useState(false);
+  const [isOpen, setOpen] = useState(changeViewType === 'FULL_VIEW');
   const [draggedTaskIdentifier, setDraggedTaskIdentifier] = useState(null);
   const [showCompletedTasks, setShowCompletedTasks] = useState(true);
   const [showIncompleteTasks, setShowIncompleteTasks] = useState(
@@ -155,6 +156,7 @@ const TaskTemplateGroup = ({
         iconColorActive={iconColorActive}
         highlightedValue={highlightedValue}
         origin={origin}
+        changeViewType={changeViewType}
       />
       {!isStartedDnD && window.disabledVirtualTaskList && (
         <TaskTemplateGroupList timeout={150} in={isOpen && !isStartedDnD}>

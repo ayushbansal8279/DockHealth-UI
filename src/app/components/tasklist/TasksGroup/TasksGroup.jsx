@@ -326,9 +326,9 @@ const TasksGroup = ({
               </TasksGroupLabel>
             </GroupNameSection>
           </GroupNameSectionWrapper>
-          {!changingGroupOrderDisabled && (
+          {/* {!changingGroupOrderDisabled && (
             <ViewTypeSwitch value={viewType} onChange={changeViewType} />
-          )}
+          )} */}
         </TasksGroupHeader>
       </StickyContainer>
 

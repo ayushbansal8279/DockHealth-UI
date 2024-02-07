@@ -114,6 +114,7 @@ const TaskTemplateGroupHeader = ({
   showTasksWithGroup = true,
   iconColorActive,
   highlightedValue,
+  changeViewType,
   // origin,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
@@ -614,8 +615,18 @@ const TaskTemplateGroupHeader = ({
   const handleOpen = () => {
     setOpen(!isOpen);
     // eslint-disable-next-line react/destructuring-assignment
-    collapse.set(identifier, !isOpen);
+    collapse.set(identifier, isOpen);
   };
+
+  useEffect(() => {
+    if (changeViewType === 'FULL_VIEW') {
+      setOpen(true);
+      collapse.set(identifier, false);
+    } else {
+      setOpen(false);
+      collapse.set(identifier, true);
+    }
+  }, [changeViewType]);
 
   const randerFirstColumnCoverIfNecessary = useCallback(
     (content, order, width) => {
