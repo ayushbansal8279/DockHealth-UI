@@ -14,11 +14,11 @@ const DevelopersPage = () => {
     organizationIdentifier,
     subscriptionDetails: { subscriptionPlan },
   } = organization || { subscriptionDetails: {} };
-  const isEnterpriseSubscribed = true;
+  const isEnterpriseSubscribed = subscriptionPlan === 'PLAN_ENTERPRISE';
 
   return (
     <ViewLayout header={<BasicLayoutHeader title="Developers" />}>
-      <Container sx={{ m: 5 }}>
+      <Container sx={{ py: 3 }}>
         {isEnterpriseSubscribed ? <Developers /> : <SubscribeToEnterprise />}
       </Container>
     </ViewLayout>

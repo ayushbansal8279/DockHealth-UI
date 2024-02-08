@@ -1,5 +1,16 @@
+export const AllSubscriptionPlans = [
+  'PLAN_STANDARD',
+  'PLAN_FREE',
+  'PLAN_PREMIUM',
+  'PLAN_30_DAY_TRIAL',
+  'PLAN_15_DAY_TRIAL',
+  'PLAN_ENTERPRISE',
+] as const;
+type TSubscriptionPlansTuple = typeof AllSubscriptionPlans;
+export type TSubscriptionPlan = TSubscriptionPlansTuple[number];
+
 export interface TSubscriptoinDetails {
-  subscriptionPlan: string;
+  subscriptionPlan: TSubscriptionPlan;
   subscriptionPlanName: string;
   billingFrequency: string | null;
   trialEndDate: string;
