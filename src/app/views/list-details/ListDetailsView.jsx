@@ -39,6 +39,7 @@ const ListDetailsView = () => {
 
   const [addNewGroup, setAddNewGroup] = useState(false);
   const [changeViewType, setChangeViewType] = useState('SLIM_VIEW');
+  const [showShadow, setShowShadow] = useState(false);
 
   const handleAddNewGroup = (value) => {
     setAddNewGroup(value);
@@ -48,11 +49,22 @@ const ListDetailsView = () => {
     setChangeViewType(value);
   };
 
+  const handleScroll = (event) => {
+    const position = event.target.scrollTop;
+    if (position > 0) {
+      setShowShadow(true);
+    } else {
+      setShowShadow(false);
+    }
+  };
+
   const ListPageContextValue = {
     addNewGroup: addNewGroup,
     handleAddNewGroup: handleAddNewGroup,
     changeViewType: changeViewType,
     handleSetChangeViewType: handleSetChangeViewType,
+    showShadow: showShadow,
+    handleScroll: handleScroll,
   };
 
   return (

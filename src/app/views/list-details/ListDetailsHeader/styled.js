@@ -12,7 +12,12 @@ export const HeaderMembersContainer = styled.div`
 export const MainHeaderContainer = styled.div`
   background-color: ${palette.white};
   z-index: 13;
-  @media print {
+
+  box-shadow: ${(props) =>
+      props.showShadow
+        ? '0px 13px 13px 0px rgba(0, 0, 0, 0.15);'
+        : '0px 0px 0px 0px;'}
+    @media print {
     display: none;
   }
   &:hover {
@@ -20,6 +25,9 @@ export const MainHeaderContainer = styled.div`
       visibility: hidden;
     }
     box-shadow: 0px 13px 13px 0px rgba(0, 0, 0, 0.15);
+  }
+  p {
+    visibility: ${(props) => (props.showShadow ? 'hidden' : 'visible')};
   }
 `;
 
