@@ -89,7 +89,8 @@ const ListDetailsHeader = (props) => {
         : [],
     [listUsers, userIdentifier],
   );
-  const { addNewGroup, handleAddNewGroup } = useContext(ListPageContext);
+  const { addNewGroup, handleAddNewGroup, showShadow } =
+    useContext(ListPageContext);
   const [isListOpen, openList] = useState(false);
   const [focused, setFocused, unsetFocused] = useBoolean(false);
   // const [scrollPosition, setScrollPosition] = useState(0);
@@ -207,7 +208,7 @@ const ListDetailsHeader = (props) => {
   const showSearch = maxWidth <= 900 && (searchValue || focused);
 
   return (
-    <MainHeaderContainer>
+    <MainHeaderContainer showShadow={showShadow}>
       <LayoutHeader horizontalSticky>
         {taskList && (
           <LayoutHeader.Title

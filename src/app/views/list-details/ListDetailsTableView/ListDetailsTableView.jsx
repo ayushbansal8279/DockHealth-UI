@@ -489,32 +489,29 @@ const ListDetailsTableView = () => {
         disabled={bulkEditIsDisabled}
         searchValue={searchValue}
       >
-        <div style={{ height: '100%' }}>
-          <TaskViewContainer>
-            {/* <StickyContainer>
+        <TaskViewContainer>
+          {/* <StickyContainer>
               <ListDetailsToolbar
                 additionalOptions={additionalToolbarOptions}
               />
             </StickyContainer> */}
-            <TasksView
-              viewSetup={displayListPreferences}
-              onTaskUpdate={handleTaskUpdate}
-              updateWorkflowStatus={handleUpdateWorkflowStatus}
-              loadTasksForTaskGroup={loadTasksForTaskGroup}
-              __switchVirtualTaskListEnabled={
-                handleSwitchVirtualTaskListEnabled
-              }
-            />
-          </TaskViewContainer>
-          <TaskDrawer
-            fromFirstAddTask={taskCounters?.incomplete === 0}
-            hideTour={isTourOpen}
-            onTaskUpdate={refreshTabAfterTaskUpdate}
-            onTaskDelete={handleTaskDelete}
-            onTaskCreation={refreshTabAfterTaskUpdate}
-            origin={TaskOrigin.LIST}
+
+          <TasksView
+            viewSetup={displayListPreferences}
+            onTaskUpdate={handleTaskUpdate}
+            updateWorkflowStatus={handleUpdateWorkflowStatus}
+            loadTasksForTaskGroup={loadTasksForTaskGroup}
+            __switchVirtualTaskListEnabled={handleSwitchVirtualTaskListEnabled}
           />
-        </div>
+        </TaskViewContainer>
+        <TaskDrawer
+          fromFirstAddTask={taskCounters?.incomplete === 0}
+          hideTour={isTourOpen}
+          onTaskUpdate={refreshTabAfterTaskUpdate}
+          onTaskDelete={handleTaskDelete}
+          onTaskCreation={refreshTabAfterTaskUpdate}
+          origin={TaskOrigin.LIST}
+        />
       </BulkEditSection>
     </HorizontallyScrolledViewLayout>
   );
