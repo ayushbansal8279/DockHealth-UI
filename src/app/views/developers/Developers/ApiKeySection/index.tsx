@@ -6,6 +6,7 @@ import CardContent from '@mui/material/CardContent';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Field from './Field';
+import AddIcon from '@mui/icons-material/Add';
 
 const fields = [
   {
@@ -38,12 +39,18 @@ const ApiKeySection = () => {
     clientSecret: '1hm3imfccbionbt2mfjf6t2ni1faf7kqk3ivvsc315ipd0isi9lo',
   };
 
+  const generateApiKey = () => {};
+
   return (
     <Card sx={{ borderRadius: 2 }}>
       <CardContent>
         <Box display="flex" alignItems="center">
           <Typography variant="h3">API Key</Typography>
-          {!data && <Button>Generate</Button>}
+          {!data && (
+            <Button onClick={generateApiKey} startIcon={<AddIcon />}>
+              Generate
+            </Button>
+          )}
         </Box>
         <Box sx={{ my: 3, mx: 2 }}>
           {fields.map((field) => (
