@@ -16,6 +16,10 @@ export const SearchInputWrapper = styled.div`
   @media print {
     display: none;
   }
+
+  @media (max-width: 900px) {
+    flex-basis: 100%;
+  }
 `;
 
 export const SearchInput = styled.input`

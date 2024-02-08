@@ -1,4 +1,10 @@
-import React, { useCallback, useState, useMemo, useParams } from 'react';
+import React, {
+  useCallback,
+  useState,
+  useMemo,
+  useParams,
+  useContext,
+} from 'react';
 import uniq from 'ramda/src/uniq';
 import TaskViewTypeToolbarSelect from 'components/tasklist/TaskViewTypeToolbarSelect/TaskViewTypeToolbarSelect';
 import { Box } from '@mui/material';
@@ -37,12 +43,12 @@ import { isMemberAdmin } from 'helpers/list-members-helper';
 import TaskCustomFieldsModal from 'modal/customModals/TaskCustomFieldsModal';
 import {
   GridContainer,
-  GridItem1,
-  GridItem2,
-  GridItem3,
+  GridItemCalendarView,
+  GridItemFullView,
+  GridItemSlimView,
   ToolbarContainer,
 } from './styled';
-
+import { ListPageContext } from '../ListDetailsView';
 const TASKS_VISIBILITY_KEY = 'SHOW_WORKFLOW_COMPLETED_TASKS';
 
 const ListDetailsToolbar = ({
@@ -50,7 +56,6 @@ const ListDetailsToolbar = ({
   children,
   searchValue,
   focused,
-  boxComponentStyles,
 }) => {
   const dispatch = useDispatch();
   const { search } = useLocation();
@@ -76,11 +81,18 @@ const ListDetailsToolbar = ({
     currentOrganization?.themeSettings?.find(
       ({ name }) => name === 'icon.active.color',
     ) || {};
+
+  const { changeViewType, handleSetChangeViewType } =
+    useContext(ListPageContext);
   const [calendarView, setCalendarView] = useState(
     viewType === ViewType.CALENDAR_VIEW,
   );
-  const [slimView, setSlimView] = useState(false);
-  const [fullView, setFullView] = useState(false);
+  const [slimView, setSlimView] = useState(
+    viewType === ViewType.LIST_VIEW && changeViewType === 'SLIM_VIEW',
+  );
+  const [fullView, setFullView] = useState(
+    viewType === ViewType.LIST_VIEW && changeViewType === 'FULL_VIEW',
+  );
   const handleChangeViewType = useCallback(
     (event) => {
       const queryParameters = new URLSearchParams(search);
@@ -182,7 +194,7 @@ const ListDetailsToolbar = ({
         /> */}
         {viewType === ViewType.LIST_VIEW && (
           <>
-            <Box sx={boxComponentStyles} />
+            <Box mx={0.5} />
             <CustomizeToolbarButton
               openCustomFieldModal={() => setCustomFieldsModalOpened(true)}
               additionalOptions={additionalOptions}
@@ -206,16 +218,14 @@ const ListDetailsToolbar = ({
         )}
       </Box>
 
-      <Box sx={boxComponentStyles} />
+      <Box mx={0.5} />
       <GridContainer>
-        <GridItem1 active={calendarView}>
+        <GridItemCalendarView active={calendarView}>
           <Box
             sx={{ marginTop: '4px' }}
             onClick={() => {
               handleChangeViewType(ViewType.CALENDAR_VIEW);
-              setCalendarView(true);
-              setSlimView(false);
-              setFullView(false);
+              handleSetChangeViewType('');
             }}
           >
             <CalendarMonthOutlinedIcon
@@ -226,33 +236,33 @@ const ListDetailsToolbar = ({
               }}
             />
           </Box>
-        </GridItem1>
-        <GridItem2 active={slimView}>
+        </GridItemCalendarView>
+        <GridItemFullView active={fullView}>
           <Box
             sx={{ marginTop: '8px' }}
             onClick={() => {
               handleChangeViewType(ViewType.LIST_VIEW);
-              setSlimView(true);
-              setFullView(false);
-              setCalendarView(false);
+              handleSetChangeViewType('FULL_VIEW');
+              setSlimView(false);
+              setFullView(true);
             }}
           >
             <FullViewIcon />
           </Box>
-        </GridItem2>
-        <GridItem3 active={fullView}>
+        </GridItemFullView>
+        <GridItemSlimView active={slimView}>
           <Box
             onClick={() => {
               handleChangeViewType(ViewType.LIST_VIEW);
-              setFullView(true);
-              setSlimView(false);
-              setCalendarView(false);
+              handleSetChangeViewType('SLIM_VIEW');
+              setFullView(false);
+              setSlimView(true);
             }}
             sx={{ marginTop: '8px' }}
           >
             <SlimViewIcon />
           </Box>
-        </GridItem3>
+        </GridItemSlimView>
       </GridContainer>
       {/* <ViewTypeSwitch /> */}
       {/* {viewType === ViewType.LIST_VIEW && <>{children}</>} */}

@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import palette from 'styles/palette';
+import spacing from 'styles/spacing';
 
 export const HeaderMembersContainer = styled.div`
   display: flex;
@@ -19,5 +20,15 @@ export const MainHeaderContainer = styled.div`
       visibility: hidden;
     }
     box-shadow: 0px 13px 13px 0px rgba(0, 0, 0, 0.15);
+  }
+`;
+
+export const HeaderSearchContainer = styled.div`
+  background-color: ${palette.white};
+  color: ${palette.coolGrey1};
+  display: flex;
+  padding: ${spacing.small} ${spacing.large};
+  @media print {
+    display: none;
   }
 `;

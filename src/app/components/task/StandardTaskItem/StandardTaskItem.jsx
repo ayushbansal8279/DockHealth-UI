@@ -21,6 +21,7 @@ import Subtasks from './Subtasks';
 import { getMatchedComments } from './helpers';
 import { ParentTaskContainer, SubtasksWrapper, TaskContainer } from '../styled';
 import QuickAddSubtask from './QuickAddSubtask';
+// import { ListPageContext } from 'views/list-details/ListDetailsView';
 
 const Task = React.memo(
   ({
@@ -45,6 +46,7 @@ const Task = React.memo(
     viewSetup,
     isTaskTemplate,
     isLastChild,
+    changeViewType,
     ...restProps
   }) => {
     const parentTaskReference = useRef(null);
@@ -73,6 +75,7 @@ const Task = React.memo(
     const { innerRef, draggableProps, dragHandleProps } = draggableProvided;
     const { highlightedValue } = restProps;
     const { matchingCommentIdentifiers = [] } = searchMetaData;
+    // const { changeViewType } = useContext(ListPageContext);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
     // const renderedSubtasks = addingNewSubtask ? [...subtasks, {}] : subtasks;
@@ -93,7 +96,7 @@ const Task = React.memo(
           dispatch(loadSubTasks(task));
         }
         setAreSubtasksOpen(areOpen);
-        collapse.set(taskIdentifier, areOpen);
+        collapse.set(taskIdentifier, !areOpen);
       },
       [
         subTasksCount,
@@ -106,10 +109,15 @@ const Task = React.memo(
     );
 
     useEffect(() => {
-      if (isFullView) handleSetSubtasksOpen(true);
-      else setAreSubtasksOpen(false);
+      // if (isFullView) handleSetSubtasksOpen(true);
+      // else setAreSubtasksOpen(false);
+      if (changeViewType === 'FULL_VIEW') {
+        handleSetSubtasksOpen(true);
+      } else {
+        handleSetSubtasksOpen(false);
+      }
       // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isFullView]);
+    }, [changeViewType]);
 
     useEffect(() => {
       if (!areSubtasksOpen && subtaskQuickAddOpen && !subtasksDisabled) {
@@ -199,6 +207,7 @@ const Task = React.memo(
                 highlightedTasksParentIdentifier === task?.parentTaskIdentifier)
             }
             viewSetup={viewSetup}
+            changeViewType={changeViewType}
             {...restProps}
           />
         </TaskContainer>

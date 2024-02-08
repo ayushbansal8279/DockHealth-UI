@@ -1,4 +1,4 @@
-import React, { ForwardedRef, forwardRef } from 'react';
+import React, { ForwardedRef, forwardRef, useContext } from 'react';
 import { Segment } from 'views/list-details/modules/Virtualized';
 import StandardTaskItem from 'components/task/StandardTaskItem/StandardTaskItem';
 import {
@@ -7,6 +7,7 @@ import {
   DraggableStateSnapshot,
 } from 'react-beautiful-dnd';
 import * as Sc from './styled';
+import { ListPageContext } from 'views/list-details/ListDetailsView';
 
 export interface Props extends Segment {
   isTaskTemplate: boolean;
@@ -18,6 +19,7 @@ function VTask(
   // eslint-disable-next-line unicorn/prevent-abbreviations, @typescript-eslint/no-unused-vars
   ref: ForwardedRef<HTMLDivElement>,
 ) {
+  const { changeViewType } = useContext(ListPageContext);
   return (
     <Draggable
       draggableId={metadata.id}
@@ -40,6 +42,7 @@ function VTask(
             isDragging={snapshot.isDragging}
             isTaskTemplate={isTaskTemplate}
             isLastChild={isLastChild || false}
+            changeViewType={changeViewType}
           />
         </Sc.VTask>
       )}

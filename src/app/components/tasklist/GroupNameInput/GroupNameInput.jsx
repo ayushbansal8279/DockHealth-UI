@@ -8,14 +8,16 @@ import { fontWeights, fontSizes } from 'styles/font';
 
 export const Input = styled.input`
   background-color: white;
-  border: 1px solid ${palette.coolGrey3};
+  border: 1px solid ${palette.coolGrey1};
   border-radius: 4px;
   font-size: ${fontSizes.regular};
   font-weight: ${fontWeights.regularPlus};
   outline: none;
-  padding: ${spacing.smallPlus} ${spacing.regularPlus};
-  text-transform: uppercase;
-  width: ${(props) => props.width || '260px'};
+  padding: ${spacing.smallPlus} ${spacing.small};
+  text-transform: none;
+  width: ${(props) => props.width || '175px'};
+  height: 32px;
+  margin-left: 10px;
 `;
 
 const GroupNameInput = ({
