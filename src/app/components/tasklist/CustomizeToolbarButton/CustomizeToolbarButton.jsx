@@ -193,6 +193,8 @@ const CustomizeToolbarButton = ({
             ? 'Customization is restricted by list admin'
             : 'Customize your list'
         }
+        isOpen={open}
+        active={open}
         style={{ height: 'auto' }}
       >
         Customize
