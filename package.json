@@ -128,6 +128,7 @@
   "devDependencies": {
     "@faker-js/faker": "^8.1.0",
     "@types/react-beautiful-dnd": "^13.1.6",
+    "@types/react-router-dom": "^5.3.3",
     "@typescript-eslint/eslint-plugin": "5.48.2",
     "@typescript-eslint/parser": "5.48.2",
     "@vitejs/plugin-react": "^3.0.1",

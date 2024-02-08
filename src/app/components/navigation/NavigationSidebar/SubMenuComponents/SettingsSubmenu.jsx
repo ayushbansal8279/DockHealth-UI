@@ -8,6 +8,7 @@ import {
   USERS_SETTINGS_PATH,
   POFILES_SETTINGS_PATH,
   TASK_CUSTOMIZATIONS_PATH,
+  DEVELOPERS_PATH,
 } from 'routing/helpers/paths';
 import {
   userHasPatientCustomFieldsFeatureSelector,
@@ -69,6 +70,9 @@ const SettingsSubmenu = () => {
       {taskCustomFieldsAvailable && (
         <SubMenuLink to={TASK_CUSTOMIZATIONS_PATH}>Task Settings</SubMenuLink>
       )}
+      <AccessRestrictor allowedToRoles={[ADMIN, OWNER]}>
+        <SubMenuLink to={DEVELOPERS_PATH}>Developers</SubMenuLink>
+      </AccessRestrictor>
     </Box>
   );
 };
