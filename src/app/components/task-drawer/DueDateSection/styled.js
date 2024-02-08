@@ -23,13 +23,6 @@ export const DueDateSectionWrapper = styled.div`
     `
     pointer-events: none;
     
-    & ${Placeholder}, & ${DueDateLabel} {
-      color: ${palette.coolGrey2};
-    }
-
-    & ${DueDateContent} {
-      border-color: ${palette.coolGrey2};
-    }
   `}
 `;
 
@@ -68,7 +61,8 @@ export const DateViewContainer = styled.div`
   border-radius: 8px;
   color: ${({ isOverdue }) =>
     isOverdue ? `${palette.white}` : `${palette.black}`};
-  background: ${({ isOverdue }) => (isOverdue ? `${palette.oPlusRed}` : '#F8F8F9')};
+  background: ${({ isOverdue }) =>
+    isOverdue ? `${palette.oPlusRed}` : '#F8F8F9'};
 `;
 
 export const DateViewText = styled.div`
