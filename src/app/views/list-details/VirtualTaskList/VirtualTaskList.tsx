@@ -158,11 +158,12 @@ function VirtualTaskList({ groupedTasks }: Props) {
       ),
     ].concat(
       listGroups.map((group) => {
-        const groupTasks =
-          groupedTasks.find(
-            (groupedTask) =>
-              groupedTask.groupIdentifier === group.taskGroupIdentifier,
-          )?.tasks ?? [];
+        const groupTasks = groupedTasks
+          ? groupedTasks.find(
+              (groupedTask) =>
+                groupedTask.groupIdentifier === group.taskGroupIdentifier,
+            )?.tasks ?? []
+          : [];
         return convert(
           group.taskGroupIdentifier,
           VListGroup,
