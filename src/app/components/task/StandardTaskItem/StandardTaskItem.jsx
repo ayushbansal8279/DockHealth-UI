@@ -91,7 +91,7 @@ const Task = React.memo(
           dispatch(loadSubTasks(task));
         }
         setAreSubtasksOpen(areOpen);
-        collapse.set(taskIdentifier, areOpen);
+        collapse.set(taskIdentifier, !areOpen);
       },
       [
         subTasksCount,
