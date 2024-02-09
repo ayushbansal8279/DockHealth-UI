@@ -236,7 +236,7 @@ export const SETTINGS_ROUTES = [
   {
     path: '/developers',
     RouteComponent: Developers,
-    permissions: [CAN_ACCESS_SETTINGS_PAGE], // todo Nikos: confirm the permission
+    permissions: [CAN_ACCESS_SETTINGS_PAGE],
   },
 ];
 

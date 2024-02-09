@@ -1,87 +1,78 @@
 import React from 'react';
-import AddIcon from '@mui/icons-material/Add';
 import { useSelector } from 'react-redux';
 import { organizationSelector } from 'selectors/organization-selectors';
-import { useMutation } from '@tanstack/react-query';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
-import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-import Field from './Field';
-import * as DevelopersApi from '@app/api/developers-api';
-import { TCreateApiKeyMutationParams } from 'types/developer';
 import { TOrganization } from 'types/organization';
+import { useApiKeyQuery } from 'react-query/developers/useApiKeyQuery';
+import Loader, { LoaderSizes } from 'components/common/Loader/Loader';
+import DisplayApiKeyHeader from './DisplayApiKeyHeader';
+import DisplayApiKey from './DisplayApiKey';
+import CreateApiKeyHeader from './CreateApiKeyHeader';
+import EmptyContent from './EmptyContent';
+import { TApiKey } from '@/app/types/developer';
 
-const fields = [
-  {
-    name: 'domainName',
-    label: 'Domain Name',
-    ellipsis: false,
-  },
-  {
-    name: 'apiKey',
-    label: 'API Key',
-    ellipsis: true,
-  },
-  {
-    name: 'clientId',
-    label: 'Client Id',
-    ellipsis: true,
-  },
-  {
-    name: 'clientSecret',
-    label: 'Client Secret',
-    ellipsis: true,
-  },
-] as const;
+const tempData = {
+  domainName: 'dock.health-d5ed19ac-01ad-433d-bb61-046035a1df0b',
+  apiKey: 'CehlWsU4KR3W7hE2yzVJy3FrUH2bsO5X5uFJLdTX',
+  clientId: '11gogdqm4iqc42md4n2i4ki8gr',
+  clientSecret: '1hm3imfccbionbt2mfjf6t2ni1faf7kqk3ivvsc315ipd0isi9lo',
+};
 
 const ApiKeySection = () => {
   const organization = useSelector(organizationSelector) as TOrganization;
-  const {
-    organizationIdentifier,
-    subscriptionDetails: { subscriptionPlan },
-  } = organization || { subscriptionDetails: {} };
+  const organizationIdentifier = organization?.organizationIdentifier;
 
-  // { mutate, isPending, isSuccess, isError, error, data }
-  const createApiKeyMutation = useMutation({
-    mutationFn: (params: TCreateApiKeyMutationParams) =>
-      DevelopersApi.createApiKey(params),
-  });
-  const tempData = {
-    domainName: 'dock.health-d5ed19ac-01ad-433d-bb61-046035a1df0b',
-    apiKey: 'CehlWsU4KR3W7hE2yzVJy3FrUH2bsO5X5uFJLdTX',
-    clientId: '11gogdqm4iqc42md4n2i4ki8gr',
-    clientSecret: '1hm3imfccbionbt2mfjf6t2ni1faf7kqk3ivvsc315ipd0isi9lo',
+  const apiKeyQuery = { isLoading: false, data: null };
+  // const apiKeyQuery = useApiKeyQuery({
+  //   params: { organizationIdentifier },
+  //   options: {
+  //     enabled: !!organizationIdentifier, // make sure that the get request will be sent if organizationIdentifier is available
+  //   },
+  // });
+
+  const getOptionToRender = (isLoading: boolean, data: TApiKey | null) => {
+    if (isLoading)
+      return {
+        header: null,
+        content: (
+          <Box display="flex" justifyContent="center">
+            <Loader size={LoaderSizes.medium} />
+          </Box>
+        ),
+      };
+    if (!data)
+      return {
+        header: (
+          <CreateApiKeyHeader organizationIdentifier={organizationIdentifier} />
+        ),
+        content: <EmptyContent />,
+      };
+    return {
+      header: (
+        <DisplayApiKeyHeader organizationIdentifier={organizationIdentifier} />
+      ),
+      content: <DisplayApiKey data={data} />,
+    };
   };
 
-  const handleCreateApiKey = () => {
-    createApiKeyMutation.mutate({
-      organizationIdentifier,
-    });
-  };
+  const { header, content } = getOptionToRender(
+    apiKeyQuery.isLoading,
+    apiKeyQuery.data,
+  );
 
   return (
     <Card sx={{ borderRadius: 2 }}>
       <CardContent>
-        <Box display="flex" alignItems="center">
+        <Box display="flex" justifyContent="space-between" alignItems="center">
           <Typography variant="h3">API Key</Typography>
-          {!tempData && (
-            <Button onClick={handleCreateApiKey} startIcon={<AddIcon />}>
-              Create API Key
-            </Button>
-          )}
+          <Box display="flex" gap={2}>
+            {header}
+          </Box>
         </Box>
-        <Box sx={{ my: 3, mx: 2 }}>
-          {fields.map((field) => (
-            <Field
-              key={field.name}
-              label={field.label}
-              ellipsis={field.ellipsis}
-              value={tempData[field.name]}
-            />
-          ))}
-        </Box>
+        <Box sx={{ my: 3, mx: 2 }}>{content}</Box>
       </CardContent>
     </Card>
   );
