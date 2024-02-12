@@ -216,7 +216,7 @@ const MultiAssignMembersList = ({
       } else {
         membersToReturn = [...selectedMembers, selectedOption];
       }
-      // selectMembersWithDebounce(membersToReturn);
+      selectMembersWithDebounce(membersToReturn);
       setSelectedMembers(membersToReturn);
     },
     [membersOptions, selectMembersWithDebounce, selectedMembers],
@@ -392,12 +392,12 @@ const MultiAssignMembersList = ({
           filteredMembers.length === 0 && (
             <NoRecordsText>No users found</NoRecordsText>
           )}
-        <div style={{ padding: '16px' }}>
-          <Button variant="primary-red" onClick={handleOptionSendClick}>
-            Apply
-          </Button>
-        </div>
       </ListContainer>
+      <div style={{ padding: '5px' }}>
+        <Button variant="primary-red" onClick={handleOptionSendClick}>
+          Apply
+        </Button>
+      </div>
     </>
   );
 };
