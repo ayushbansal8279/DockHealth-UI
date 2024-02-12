@@ -158,7 +158,7 @@ function VirtualTaskList({ groupedTasks }: Props) {
   // eslint-disable-next-line react/jsx-no-constructed-context-values
   const contextValue = {
     get: (id: string) => {
-      return !!collapseMap[id];
+      return collapseMap[id];
     },
     set: (id: string, value: boolean) => {
       collapseDispatch([id, value]);

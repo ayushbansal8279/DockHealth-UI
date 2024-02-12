@@ -91,7 +91,7 @@ const Task = React.memo(
           dispatch(loadSubTasks(task));
         }
         setAreSubtasksOpen(areOpen);
-        collapse.set(taskIdentifier, areOpen);
+        collapse.set(taskIdentifier, !areOpen);
       },
       [
         subTasksCount,
@@ -120,6 +120,13 @@ const Task = React.memo(
       isFullView,
       subtasksDisabled,
     ]);
+
+    useEffect(() => {
+      if (collapse.get(taskIdentifier) === undefined)
+        handleSetSubtasksOpen(false);
+      else if (collapse.get(taskIdentifier)) handleSetSubtasksOpen(false);
+      else handleSetSubtasksOpen(true);
+    }, []);
 
     const matchingComments = useMemo(
       () => getMatchedComments(comments, matchingCommentIdentifiers),
