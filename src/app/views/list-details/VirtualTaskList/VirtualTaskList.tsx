@@ -70,7 +70,10 @@ function VirtualTaskList({ groupedTasks }: Props) {
           VListGroup,
           'ListGroup',
           !!collapseMap[group.taskGroupIdentifier],
-          { name: group.groupName },
+          {
+            name: group.groupName,
+            taskGroupIdentifier: group.taskGroupIdentifier,
+          },
           [
             convert(
               uniqueId().toString(),
@@ -158,7 +161,7 @@ function VirtualTaskList({ groupedTasks }: Props) {
   // eslint-disable-next-line react/jsx-no-constructed-context-values
   const contextValue = {
     get: (id: string) => {
-      return !!collapseMap[id];
+      return collapseMap[id];
     },
     set: (id: string, value: boolean) => {
       collapseDispatch([id, value]);
