@@ -26,3 +26,11 @@ npm run gen:types-swagger
 ```
 
 This will only generate types based on the Swagger UI. The other types needed on the frontend side will be manually created in [./src/app/types](./src/app/types/) directory.
+
+Then import and use the type in any ts files
+
+```ts
+import { TaskDto } from '@/app/types/swagger/models/TaskDto';
+
+const task: TaskDto = {...}
+```
