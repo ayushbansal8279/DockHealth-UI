@@ -46,7 +46,7 @@ const DashboardFirstVisitView = ({
           <>
             <Title>
               Welcome to Dock.
-              <br /> Your collegue {list?.creator?.firstName || ''} already
+              <br /> Your colleague {list?.creator?.firstName || ''} already
               started a list and invited you to it.
             </Title>
             <Spacing vertical={6} />
