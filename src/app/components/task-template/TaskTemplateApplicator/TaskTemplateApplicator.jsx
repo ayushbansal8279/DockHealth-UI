@@ -21,7 +21,9 @@ import TaskTemplatePopover from './TaskTemplatePopover';
 import {
   TaskTemplateApplicatorContainer,
   TaskTemplateApplicatorLabel,
+  ChevronVerticleGap,
 } from './styled';
+import AddIcon from '@mui/icons-material/Add';
 
 const { DISABLED } = TASK_LIST_RESTRICTIONS_OPTIONS;
 
@@ -157,14 +159,11 @@ const TaskTemplateApplicator = ({
         onClick={openPopover}
         ref={popoverReference}
       >
-        <TaskTemplateApplicatorLabel>
-          Use a workflow
-        </TaskTemplateApplicatorLabel>
+        <AddIcon />
+        <TaskTemplateApplicatorLabel>Workflow</TaskTemplateApplicatorLabel>
         <Spacing horizontal={3} />
-        <RotatableHeaderChevron
-          rotated={isPopoverOpen}
-          color={iconColorActive}
-        />
+        <ChevronVerticleGap />
+        <RotatableHeaderChevron rotated={isPopoverOpen} color={'white'} />
       </TaskTemplateApplicatorContainer>
       <TaskTemplatePopover
         anchorEl={popoverReference.current}

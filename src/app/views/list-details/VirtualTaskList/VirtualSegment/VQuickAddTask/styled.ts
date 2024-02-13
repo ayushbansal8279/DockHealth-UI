@@ -1,14 +1,22 @@
 import styled from '@mui/styled-engine';
+import spacing from 'styles/spacing';
+
+export const VQuickAddTaskContainer = styled('div')`
+  display: flex;
+  position: sticky;
+  left: ${spacing.large};
+  margin-left: ${spacing.large};
+  margin-bottom: 1px;
+  margin-top: 10px;
+`;
 
 export const VQuickAddTask = styled('div')`
-  position: sticky;
-  top: 0;
-  left: 0;
-  display: block;
-  font-weight: bold;
-  text-transform: none;
-  line-height: 40px;
-  height: 40px;
-  margin-bottom: 8px;
-  margin-left: 24px;
+width: 100%;
+font-weight: bold;
+line-height: 40px;
+`;
+
+export const TaskTemplateApplicatorContainer = styled('div')`
+  position: absolute;
+  right: 5px;
 `;
