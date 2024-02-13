@@ -121,6 +121,13 @@ const Task = React.memo(
       subtasksDisabled,
     ]);
 
+    useEffect(() => {
+      if (collapse.get(taskIdentifier) === undefined)
+        handleSetSubtasksOpen(false);
+      else if (collapse.get(taskIdentifier)) handleSetSubtasksOpen(false);
+      else handleSetSubtasksOpen(true);
+    }, []);
+
     const matchingComments = useMemo(
       () => getMatchedComments(comments, matchingCommentIdentifiers),
       [comments, matchingCommentIdentifiers],
