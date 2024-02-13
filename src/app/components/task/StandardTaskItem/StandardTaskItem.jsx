@@ -9,11 +9,13 @@ import React, {
   useContext,
 } from 'react';
 import isEmpty from 'ramda/src/isEmpty';
+import compose from 'ramda/src/compose';
 import { useDispatch, useSelector } from 'react-redux';
 import { openDrawer } from 'actions/task-drawer-actions';
 import { storeAsCurrentTask, loadSubTasks } from 'actions/task-actions';
 import TaskComments from 'components/tasklist/TaskComments/TaskComments';
 import { taskLookupSelector } from 'selectors/task-details-selectors';
+import * as TaskActions from 'actions/task-actions';
 // import { taskDetailsSelector } from 'selectors/list-details-selectors';
 import { CollapseContext } from 'views/list-details/VirtualTaskList/VirtualTaskList';
 import TaskItem from './TaskItem';
@@ -108,6 +110,11 @@ const Task = React.memo(
       ],
     );
 
+    const handleUpdateTask = useCallback(
+      compose(dispatch, TaskActions.partialUpdateTask),
+      [dispatch],
+    );
+
     useEffect(() => {
       // if (isFullView) handleSetSubtasksOpen(true);
       // else setAreSubtasksOpen(false);
@@ -196,6 +203,7 @@ const Task = React.memo(
             isOpen={areSubtasksOpen}
             switchOpen={handleSetSubtasksOpen}
             dragHandleProps={dragHandleProps}
+            onTaskUpdate={handleUpdateTask}
             isDragging={isDragging}
             isDraggable={isDraggable}
             isCompletedGroup={isCompletedGroup}
