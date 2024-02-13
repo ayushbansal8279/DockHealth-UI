@@ -259,7 +259,7 @@ const MultiAssignMembersList = ({
           ) : (
             <UserAvatar user={member} hideTooltip />
           )}
-          <Spacing horizontal={3} />
+          <Spacing horizontal={4} />
           <MemberName>
             <Highlighter
               highlightStyle={highlightStyle}
