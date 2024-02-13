@@ -91,10 +91,8 @@ import {
   PatientMRNAnchor,
 } from './styled';
 import TaskTemplateDetails from '../TaskTemplateDetails/TaskTemplateDetails';
-import { CollapseContext } from "views/list-details/VirtualTaskList/VirtualTaskList";
-import {
-  isWorkflowDrawerOpenSelector,
-} from 'selectors/workflow-drawer-selectors';
+import { CollapseContext } from 'views/list-details/VirtualTaskList/VirtualTaskList';
+import { isWorkflowDrawerOpenSelector } from 'selectors/workflow-drawer-selectors';
 
 const TaskTemplateGroupHeader = ({
   templateGroup = {},
@@ -522,7 +520,10 @@ const TaskTemplateGroupHeader = ({
     ),
   );
 
-  const isBundleSelected = useSelector(isWorkflowDrawerOpenSelector) || isBundlePreSelected || isBundleSelectedFromTasks;
+  const isBundleSelected =
+    useSelector(isWorkflowDrawerOpenSelector) ||
+    isBundlePreSelected ||
+    isBundleSelectedFromTasks;
 
   const handleBundleSelect = useCallback(async () => {
     let selectedTaskIdentifiers = [templateGroup?.identifier];
@@ -615,7 +616,7 @@ const TaskTemplateGroupHeader = ({
   const handleOpen = () => {
     setOpen(!isOpen);
     // eslint-disable-next-line react/destructuring-assignment
-    collapse.set(identifier, !isOpen);
+    collapse.set(identifier, isOpen);
   };
 
   const randerFirstColumnCoverIfNecessary = useCallback(
