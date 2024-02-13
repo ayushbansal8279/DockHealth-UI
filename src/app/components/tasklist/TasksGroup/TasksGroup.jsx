@@ -111,11 +111,11 @@ const TasksGroup = ({
   const onSwitchOpen = useCallback(() => {
     if (isOpen) {
       // eslint-disable-next-line react/destructuring-assignment
-      collapse.set(taskGroupIdentifier, true);
+      collapse.set(taskGroupIdentifier, false);
       onTaskGroupCollapsed();
     } else {
       // eslint-disable-next-line react/destructuring-assignment
-      collapse.set(taskGroupIdentifier, false);
+      collapse.set(taskGroupIdentifier, true);
       onTaskGroupExpanded();
     }
     switchOpen(!isOpen);
@@ -150,13 +150,7 @@ const TasksGroup = ({
       showMoreTasks();
     }
     onSwitchOpen();
-  }, [
-    isOpen,
-    groupTaskCounts,
-    tasks?.length,
-    onSwitchOpen,
-    showMoreTasks,
-  ]);
+  }, [isOpen, groupTaskCounts, tasks?.length, onSwitchOpen, showMoreTasks]);
 
   useEffect(() => {
     if (groupTaskCounts === 0 && !isLoadingGroup) switchOpen(true);
@@ -303,7 +297,7 @@ const TasksGroup = ({
           <GroupOpenContainer onClick={onToggleGroupOpen}>
             <RotatableChevron
               alt="arrow"
-              rotated={!isOpen}
+              rotated={collapse.get(taskGroupIdentifier) ? false : true}
               color={iconColorActive}
             />
           </GroupOpenContainer>
