@@ -619,6 +619,16 @@ const TaskTemplateGroupHeader = ({
     collapse.set(identifier, isOpen);
   };
 
+  useEffect(() => {
+    if (collapse.get(identifier) === undefined) {
+      setOpen(false);
+    } else if (collapse.get(identifier)) {
+      setOpen(false);
+    } else {
+      setOpen(true);
+    }
+  }, [handleOpen]);
+
   const randerFirstColumnCoverIfNecessary = useCallback(
     (content, order, width) => {
       if (order !== 0) return content;
