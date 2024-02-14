@@ -2,7 +2,7 @@
 import React from 'react';
 import styled, { keyframes, css } from 'styled-components';
 import { Link } from 'react-router-dom';
-import { Grid } from '@mui/material';
+import { Card, Grid } from '@mui/material';
 import spacing from 'styles/spacing';
 import { fontWeights, fontSizes } from 'styles/font';
 import palette, { featurePalette, typography } from 'styles/palette';
@@ -318,6 +318,23 @@ export const GridImg = styled(Grid)`
   justify-content: center;
   ${({ matched }) =>
     matched && `background: ${featurePalette.globalSearchHighlight};`}
+`;
+
+export const CommentCard = styled(Card)`
+  width: 422px;
+  max-height: 409px;
+  overflow: scroll;
+  border-radius: 5px;
+  padding-left: 15px;
+  padding-right: 15px;
+  .fr-box {
+    z-index: 2000;
+    .fr-toolbar .fr-command.fr-btn svg.fr-svg {
+      width: 16px;
+      height: 16px;
+      margin: 4px;
+    }
+  }
 `;
 
 export const SmallText = styled.span`

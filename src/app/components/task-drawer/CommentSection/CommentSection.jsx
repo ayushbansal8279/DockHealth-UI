@@ -15,7 +15,7 @@ import {
   Title,
 } from './styled';
 
-const CommentSection = ({ selectedTask }) => {
+const CommentSection = ({ selectedTask, showTitle = true }) => {
   const {
     comments,
     currentUser,
@@ -32,14 +32,7 @@ const CommentSection = ({ selectedTask }) => {
 
   return (
     <CommentSectionContainer>
-      <Title>Comments</Title>
-      {restrictions?.comments !== DISABLED && (
-        <AddComment
-          autoFocus={taskDrawerFocusField === DrawerFieldEnum.COMMENT}
-          taskListIdentifier={taskListIdentifier}
-          onAdd={addComment}
-        />
-      )}
+      {showTitle && <Title>Comments</Title>}
       <CommentsListContainer>
         {comments?.map((comment) => (
           <Comment
@@ -53,6 +46,13 @@ const CommentSection = ({ selectedTask }) => {
           />
         ))}
       </CommentsListContainer>
+      {restrictions?.comments !== DISABLED && (
+        <AddComment
+          autoFocus={taskDrawerFocusField === DrawerFieldEnum.COMMENT}
+          taskListIdentifier={taskListIdentifier}
+          onAdd={addComment}
+        />
+      )}
     </CommentSectionContainer>
   );
 };

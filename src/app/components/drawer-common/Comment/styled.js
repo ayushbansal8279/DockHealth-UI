@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import palette, { typography } from 'styles/palette';
+import palette from 'styles/palette';
 import spacing from 'styles/spacing';
 import { fontSizes } from 'styles/font';
 
@@ -18,8 +18,10 @@ export const CommentActionLabel = styled.button`
 
 export const CommentWrapper = styled.div`
   display: flex;
+  align-items: center;
   width: 100%;
   font-family: inherit;
+  margin-bottom: 1px solid red;
 
   &:hover {
     ${CommentActionLabel} {
@@ -51,6 +53,9 @@ export const CommentText = styled.div`
   font-weight: normal;
   // max-width: 475px;
   width: 100%;
+  & p {
+    margin-bottom: 2px;
+  }
 `;
 
 export const CommentDetails = styled.div`

@@ -16,6 +16,7 @@ import {
 } from 'components/common/RichTextEditor/helpers';
 import MarkdownIt from 'markdown-it';
 import Highlighter from 'react-highlight-words';
+import Divider from '@mui/material/Divider';
 import {
   CommentActionLabel,
   CommentContainer,
@@ -184,113 +185,118 @@ const Comment = ({
   );
 
   return (
-    <CommentWrapper>
-      <CommentMemberContainer>
-        <UserAvatar user={creator} size={35} />
-      </CommentMemberContainer>
-      <CommentContainer isEditing={isEdited}>
-        <CommentContent>
-          <CommentText>
-            {isEdited ? (
-              <RichTextEditor
-                height={60}
-                readonly={!isEdited}
-                showToolbar={isEdited}
-                focus={isFocused}
-                value={currentValue}
-                reset={isValueReset}
-                onChange={handleTextEditorChange}
-                initOnClick
-                showCharCount
-                taskListIdentifier={selectedTask?.taskList?.taskListIdentifier}
-                mentions={commentMentions}
-              />
-            ) : (
-              traverseNodes(
-                processMarkdownValue(tokenizedComment),
-                commentMentions,
-              )
-            )}
-          </CommentText>
-          <CommentDetails>{commentDetails}</CommentDetails>
-        </CommentContent>
-        <CommentActionsSection>
-          {isEdited ? (
-            <>
-              <Spacing horizontal={4} />
-              <EditCommentButton>
-                <RobotoTypography condensed variant="h5" color="inherit">
-                  <CommentActionLabel
-                    onClick={(event) => {
-                      event.preventDefault();
-                      event.stopPropagation();
-                      handleSave();
-                      unsetFocused();
-                    }}
-                  >
-                    Save
-                  </CommentActionLabel>
-                </RobotoTypography>
-              </EditCommentButton>
-              <Spacing horizontal={3} />
-              <EditCommentButton>
-                <RobotoTypography condensed variant="h5" color="inherit">
-                  <CommentActionLabel
-                    onClick={(event) => {
-                      event.preventDefault();
-                      event.stopPropagation();
-                      setIsEdited(false);
-                      setValueReset(true);
-                    }}
-                  >
-                    Cancel
-                  </CommentActionLabel>
-                </RobotoTypography>
-              </EditCommentButton>
-            </>
-          ) : (
-            <>
-              {isCommentAuthor && (
-                <>
-                  <Spacing horizontal={4} />
-                  <EditCommentButton>
-                    <RobotoTypography condensed variant="h5" color="inherit">
-                      <CommentActionLabel
-                        onClick={(event) => {
-                          event.preventDefault();
-                          event.stopPropagation();
-                          setIsEdited(true);
-                          setValueReset(false);
-                          setFocused();
-                        }}
-                      >
-                        Edit
-                      </CommentActionLabel>
-                    </RobotoTypography>
-                  </EditCommentButton>
-                </>
+    <>
+      <CommentWrapper>
+        <CommentMemberContainer>
+          <UserAvatar user={creator} size={35} />
+        </CommentMemberContainer>
+        <CommentContainer isEditing={isEdited}>
+          <CommentContent>
+            <CommentText>
+              {isEdited ? (
+                <RichTextEditor
+                  height={60}
+                  readonly={!isEdited}
+                  showToolbar={isEdited}
+                  focus={isFocused}
+                  value={currentValue}
+                  reset={isValueReset}
+                  onChange={handleTextEditorChange}
+                  initOnClick
+                  showCharCount
+                  taskListIdentifier={
+                    selectedTask?.taskList?.taskListIdentifier
+                  }
+                  mentions={commentMentions}
+                />
+              ) : (
+                traverseNodes(
+                  processMarkdownValue(tokenizedComment),
+                  commentMentions,
+                )
               )}
-              {isCommentAuthor && (
-                <>
-                  <Spacing horizontal={3} />
+            </CommentText>
+            <CommentDetails>{commentDetails}</CommentDetails>
+          </CommentContent>
+          <CommentActionsSection>
+            {isEdited ? (
+              <>
+                <Spacing horizontal={4} />
+                <EditCommentButton>
                   <RobotoTypography condensed variant="h5" color="inherit">
                     <CommentActionLabel
                       onClick={(event) => {
                         event.preventDefault();
                         event.stopPropagation();
-                        onDelete(comment);
+                        handleSave();
+                        unsetFocused();
                       }}
                     >
-                      Delete
+                      Save
                     </CommentActionLabel>
                   </RobotoTypography>
-                </>
-              )}
-            </>
-          )}
-        </CommentActionsSection>
-      </CommentContainer>
-    </CommentWrapper>
+                </EditCommentButton>
+                <Spacing horizontal={3} />
+                <EditCommentButton>
+                  <RobotoTypography condensed variant="h5" color="inherit">
+                    <CommentActionLabel
+                      onClick={(event) => {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        setIsEdited(false);
+                        setValueReset(true);
+                      }}
+                    >
+                      Cancel
+                    </CommentActionLabel>
+                  </RobotoTypography>
+                </EditCommentButton>
+              </>
+            ) : (
+              <>
+                {isCommentAuthor && (
+                  <>
+                    <Spacing horizontal={4} />
+                    <EditCommentButton>
+                      <RobotoTypography condensed variant="h5" color="inherit">
+                        <CommentActionLabel
+                          onClick={(event) => {
+                            event.preventDefault();
+                            event.stopPropagation();
+                            setIsEdited(true);
+                            setValueReset(false);
+                            setFocused();
+                          }}
+                        >
+                          Edit
+                        </CommentActionLabel>
+                      </RobotoTypography>
+                    </EditCommentButton>
+                  </>
+                )}
+                {isCommentAuthor && (
+                  <>
+                    <Spacing horizontal={3} />
+                    <RobotoTypography condensed variant="h5" color="inherit">
+                      <CommentActionLabel
+                        onClick={(event) => {
+                          event.preventDefault();
+                          event.stopPropagation();
+                          onDelete(comment);
+                        }}
+                      >
+                        Delete
+                      </CommentActionLabel>
+                    </RobotoTypography>
+                  </>
+                )}
+              </>
+            )}
+          </CommentActionsSection>
+        </CommentContainer>
+      </CommentWrapper>
+      <Divider variant="middle" />
+    </>
   );
 };
 

@@ -67,8 +67,8 @@ const initializeCommentSectionHooks = (selectedTask) => {
         comment,
         creator: currentUser,
       })(dispatch).then((newComment) => {
-        const newComments = [newComment.data, ...selectedTask.comments];
-        selectedTask.comments = [newComment.data, ...selectedTask.comments];
+        const newComments = [...selectedTask.comments, newComment.data];
+        selectedTask.comments = [...selectedTask.comments, newComment.data];
 
         setCommentsList(newComments);
 

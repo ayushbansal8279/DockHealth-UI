@@ -138,6 +138,7 @@ const BoardColumnTask = ({
             {!isWorkflow && (
               <TaskActionsContainer>
                 <Box flex="3">
+                  {/* todo: check if need to change this to TaskItemComments */}
                   <TaskItemIcons
                     restrictions={restrictions}
                     matchComments={matchComments}
