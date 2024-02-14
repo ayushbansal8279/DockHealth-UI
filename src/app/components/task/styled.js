@@ -320,23 +320,6 @@ export const GridImg = styled(Grid)`
     matched && `background: ${featurePalette.globalSearchHighlight};`}
 `;
 
-export const CommentCard = styled(Card)`
-  width: 422px;
-  max-height: 409px;
-  overflow: scroll;
-  border-radius: 5px;
-  padding-left: 15px;
-  padding-right: 15px;
-  .fr-box {
-    z-index: 2000;
-    .fr-toolbar .fr-command.fr-btn svg.fr-svg {
-      width: 16px;
-      height: 16px;
-      margin: 4px;
-    }
-  }
-`;
-
 export const SmallText = styled.span`
   color: ${palette.coolGrey2};
   font-size: ${fontSizes.small};

@@ -4,15 +4,14 @@ import { useDispatch } from 'react-redux';
 import { TaskDto } from '@/app/types/swagger/models/TaskDto';
 import { CommentDto } from '@/app/types/swagger/models/CommentDto';
 import useBooleanWithTimeout from '@/app/hooks/use-boolean-with-timeout';
-import { CommentCard, GridImg } from '../../styled';
+import { GridImg } from '../../styled';
 import { openDrawer } from 'actions/task-drawer-actions';
 import { storeAsCurrentTask } from 'actions/task-actions';
 import { DrawerFieldEnum } from 'helpers/task-drawer-helpers';
 import TaskIcon from 'components/task/TaskIcon/TaskIcon';
 import Popper from '@mui/material/Popper';
 import Grid from '@mui/material/Grid';
-import Card from '@mui/material/Card';
-import CommentSection from '@/app/components/task-drawer/CommentSection/CommentSection';
+import CommentsInPopper from '../../CommentsInPopper/CommentsInPopper';
 
 interface TaskItemCommentsProps {
   matchComments: boolean;
@@ -57,9 +56,7 @@ const TaskItemComments: FC<TaskItemCommentsProps> = ({
           placement="bottom"
           style={{ zIndex: 2000 }}
         >
-          <CommentCard>
-            <CommentSection selectedTask={task} showTitle={false} />
-          </CommentCard>
+          <CommentsInPopper task={task} />
         </Popper>
       </GridImg>
     </Grid>

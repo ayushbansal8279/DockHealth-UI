@@ -153,7 +153,7 @@ const RichTextEditor = React.forwardRef(
       reset = false,
       // fullHeight,
       readonly,
-      // onFocus = () => {},
+      onFocus = () => {},
       onBlur = () => {},
       onChange = () => {},
       onKeyEnter = () => {},
@@ -328,6 +328,7 @@ const RichTextEditor = React.forwardRef(
             // eslint-disable-next-line react/no-this-in-sfc, no-shadow
             // const value = this.html.get();
             // console.log(`focus: ${value}`);
+            onFocus();
           },
           // eslint-disable-next-line prettier/prettier, func-names
           blur(event) {
