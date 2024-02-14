@@ -224,7 +224,7 @@ const CreateAccount = (props) => {
               </>
             )}
             {isUserInvited ? (
-              <Title>You’ve been invited by {organizationName}.</Title>
+              <Title>You’ve been invited to {organizationName}.</Title>
             ) : (
               <Title>Please create an account</Title>
             )}
@@ -237,8 +237,7 @@ const CreateAccount = (props) => {
                   align="center"
                   variant="p"
                 >
-                  {senderName} has invited you to Dock Health.
-                  <br /> Create an account and start collaborating now
+                  Create an account and start collaborating with your team on Dock Health today
                 </Subtitle>
               ) : (
                 <Subtitle variant="p">

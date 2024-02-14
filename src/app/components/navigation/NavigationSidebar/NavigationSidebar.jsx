@@ -380,7 +380,7 @@ const NavigationSidebar = () => {
                 </>
               </NavigationItem>
             </AccessRestrictor> */}
-            <div ref={profileMenuReference}>
+            <div style={{marginLeft:"-7px"}} ref={profileMenuReference}>
               <NavigationItem
                 name="Account"
                 subMenuKey={SubmenuKey.PROFILE}

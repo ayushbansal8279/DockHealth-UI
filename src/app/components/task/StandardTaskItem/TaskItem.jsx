@@ -81,6 +81,7 @@ import { taskLookupSelector } from 'selectors/task-details-selectors';
 import { closeModal, openModal } from 'modal/actions';
 import { updatePatientDetails } from 'actions/patient-details-actions';
 import { formatPhoneNumber } from 'helpers/utility-functions';
+import Tooltip from 'components/common/Tooltip/Tooltip';
 import { getSubtaskStylingLink } from './helpers';
 import TaskItemContextMenu from '../TaskItemContextMenu/TaskItemContextMenu';
 import TaskItemBulkEdit from './TaskItemComponents/TaskItemBulkEdit';
@@ -117,7 +118,6 @@ import {
 import TaskItemText from './customFieldsTaskItemComponents/TaskItemText/TaskItemText';
 import TaskItemDropdown from './customFieldsTaskItemComponents/TaskItemDropdown/TaskItemDropdown';
 import TaskItemDate from './customFieldsTaskItemComponents/TaskItemDate';
-import Tooltip from 'components/common/Tooltip/Tooltip';
 import TaskItemComments from './TaskItemComponents/TaskItemComments';
 
 const { DISABLED, READ_ONLY } = SINGLE_TASK_RESTRICTIONS_OPTIONS;
@@ -808,7 +808,6 @@ const TaskItem = React.memo(
         isEditingDescription,
         taskListRestrictions?.createTask,
         taskListRestrictions?.completeTask,
-        showDraggableDots,
         dragHandleProps,
         showPriority,
         task?.priority,

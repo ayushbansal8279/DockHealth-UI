@@ -23,7 +23,6 @@ import Subtasks from './Subtasks';
 import { getMatchedComments } from './helpers';
 import { ParentTaskContainer, SubtasksWrapper, TaskContainer } from '../styled';
 import QuickAddSubtask from './QuickAddSubtask';
-// import { ListPageContext } from 'views/list-details/ListDetailsView';
 
 const Task = React.memo(
   ({
@@ -104,12 +103,15 @@ const Task = React.memo(
         subTasksCount,
         renderedSubtasks,
         subtasksDisabled,
+        isFullView,
+        collapse,
+        taskIdentifier,
         dispatch,
         task,
-        isFullView,
       ],
     );
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     const handleUpdateTask = useCallback(
       compose(dispatch, TaskActions.partialUpdateTask),
       [dispatch],
