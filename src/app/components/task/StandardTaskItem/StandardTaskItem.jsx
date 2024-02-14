@@ -23,9 +23,6 @@ import Subtasks from './Subtasks';
 import { getMatchedComments } from './helpers';
 import { ParentTaskContainer, SubtasksWrapper, TaskContainer } from '../styled';
 import QuickAddSubtask from './QuickAddSubtask';
-import compose from 'ramda/src/compose';
-import * as TaskActions from 'actions/task-actions';
-// import { ListPageContext } from 'views/list-details/ListDetailsView';
 
 const Task = React.memo(
   ({
@@ -106,12 +103,15 @@ const Task = React.memo(
         subTasksCount,
         renderedSubtasks,
         subtasksDisabled,
+        isFullView,
+        collapse,
+        taskIdentifier,
         dispatch,
         task,
-        isFullView,
       ],
     );
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     const handleUpdateTask = useCallback(
       compose(dispatch, TaskActions.partialUpdateTask),
       [dispatch],
@@ -139,11 +139,6 @@ const Task = React.memo(
       isFullView,
       subtasksDisabled,
     ]);
-
-    const handleUpdateTask = useCallback(
-      compose(dispatch, TaskActions.partialUpdateTask),
-      [dispatch],
-    );
 
     const matchingComments = useMemo(
       () => getMatchedComments(comments, matchingCommentIdentifiers),
@@ -216,7 +211,6 @@ const Task = React.memo(
             isCompletedGroup={isCompletedGroup}
             subtasksDisabled={subtasksDisabled}
             origin={origin}
-            onTaskUpdate={handleUpdateTask}
             isSelectedByHighlighted={
               highlightedTasksParentIdentifier &&
               (highlightedTasksParentIdentifier === task?.taskIdentifier ||
