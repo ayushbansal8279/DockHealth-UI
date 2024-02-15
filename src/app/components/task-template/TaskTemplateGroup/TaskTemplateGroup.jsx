@@ -46,6 +46,8 @@ const TaskTemplateGroup = ({
   origin,
   highlightedValue,
   changeViewType,
+  addedTasks,
+  handleAddTask,
 }) => {
   const templateGroup = useSelector((state) => {
     return taskLookupSelector(state, origin, pullGroup);
@@ -157,6 +159,8 @@ const TaskTemplateGroup = ({
         highlightedValue={highlightedValue}
         origin={origin}
         changeViewType={changeViewType}
+        addedTasks={addedTasks}
+        handleAddTask={handleAddTask}
       />
       {!isStartedDnD && window.disabledVirtualTaskList && (
         <TaskTemplateGroupList timeout={150} in={isOpen && !isStartedDnD}>

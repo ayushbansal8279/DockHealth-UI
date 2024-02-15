@@ -115,6 +115,8 @@ const TaskTemplateGroupHeader = ({
   iconColorActive,
   highlightedValue,
   changeViewType,
+  addedTasks,
+  handleAddTask,
   // origin,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
@@ -620,13 +622,36 @@ const TaskTemplateGroupHeader = ({
 
   useEffect(() => {
     if (changeViewType === 'FULL_VIEW') {
-      setOpen(true);
-      collapse.set(identifier, false);
+      if (!addedTasks.includes(identifier)) {
+        setOpen(true);
+        collapse.set(identifier, false);
+        handleAddTask(identifier);
+      }
+      // else {
+      //   if (collapse.get(identifier)) {
+      //     setOpen(false);
+      //   } else {
+      //     setOpen(true);
+      //   }
+      // }
+    } else if (changeViewType === 'SLIM_VIEW') {
+      if (!addedTasks.includes(identifier)) {
+        setOpen(false);
+        collapse.set(identifier, true);
+        handleAddTask(identifier);
+      }
+      // else {
+      //   if (collapse.get(identifier)) {
+      //     setOpen(false);
+      //   } else {
+      //     setOpen(true);
+      //   }
+      // }
     } else {
-      setOpen(false);
+      // setOpen(false);
       collapse.set(identifier, true);
     }
-  }, [changeViewType]);
+  }, [changeViewType, handleOpen]);
 
   const randerFirstColumnCoverIfNecessary = useCallback(
     (content, order, width) => {
@@ -660,7 +685,7 @@ const TaskTemplateGroupHeader = ({
             <Box m={1} />
             {showTasksWithGroup && (
               <RotatableChevron
-                rotated={isOpen}
+                rotated={collapse.get(identifier) ? false : true}
                 onClick={handleOpen}
                 color={iconColorActive}
               />

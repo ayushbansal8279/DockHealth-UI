@@ -240,6 +240,8 @@ const Task = React.memo(
             }
             viewSetup={viewSetup}
             changeViewType={changeViewType}
+            tasks={tasks}
+            handleAddTask={handleAddTask}
             {...restProps}
           />
         </TaskContainer>
