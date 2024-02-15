@@ -653,7 +653,7 @@ export const TaskItemDescriptionIndicators = styled.div`
   display: flex;
   align-items: baseline;
   margin-left: 20px;
-  margin-top: -13px;
+  margin-top: ${({ isCompleted }) => (isCompleted ? '-13px' : '0')};
 `;
 
 export const PatientLabel = styled.span`
