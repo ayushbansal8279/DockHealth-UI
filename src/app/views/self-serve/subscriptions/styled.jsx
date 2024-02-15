@@ -31,7 +31,7 @@ export const SubscriptionPlansContainer = styled.div`
 
 export const SubscriptionsTitle = styled.h2`
   display: inline-block;
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Outfit', sans-serif;
   font-size: ${fontSizes.huge};
   font-weight: ${fontWeights.light};
 `;
@@ -69,7 +69,7 @@ export const SwitchLabel = styled.p`
 export const ProfessionalServicesTitle = styled.p`
   margin-bottom: 0;
   display: inline-block;
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Outfit', sans-serif;
   font-size: ${fontSizes.large};
   font-weight: ${fontWeights.bold};
 `;

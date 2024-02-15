@@ -680,7 +680,7 @@ export const DateText = styled.p`
 export const DetailsButton = styled.button`
   margin-left: 8px;
   visibility: hidden;
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Outfit', sans-serif;
   font-size: ${fontSizes.smallPlus};
   font-weight: ${fontWeights.regularPlus};
   color: ${palette.brightBlue};

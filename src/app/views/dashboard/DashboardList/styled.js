@@ -52,7 +52,7 @@ export const EmptyStateContainer = styled.div`
 `;
 
 export const ShowMoreButton = styled.button`
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Outfit', sans-serif;
   cursor: pointer;
   color: ${palette.brightBlue};
   font-size: ${fontSizes.smallPlus};
@@ -79,7 +79,7 @@ export const DashboardTasksGroupLabelName = styled.span`
   white-space: nowrap;
   text-overflow: ellipsis;
   vertical-align: middle;
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Outfit', sans-serif;
 `;
 
 export const DashboardTasksGroupLabel = styled.p`

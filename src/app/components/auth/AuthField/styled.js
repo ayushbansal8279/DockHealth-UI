@@ -5,7 +5,7 @@ export const StyledLabel = styled.div`
   color: ${palette.unknownGrey5};
   left: 1rem;
   font-size: 14px;
-  font-family: 'Open Sans', sans-serif;
+  font-family: 'Outfit', sans-serif;
   font-weight: 600;
   pointer-events: none;
   position: absolute;
@@ -33,7 +33,7 @@ export const StyledInput = styled.input`
   background-color: transparent;
   box-shadow: none;
   font-size: 14px;
-  font-family: 'Open Sans', sans-serif;
+  font-family: 'Outfit', sans-serif;
   font-weight: 600;
   height: 100%;
   margin-bottom: 0;
@@ -100,7 +100,7 @@ export const StyledInputContainer = styled.div`
 
 export const StyledErrorLabel = styled.div`
   color: ${palette.error};
-  font-family: 'Open Sans', sans-serif;
+  font-family: 'Outfit', sans-serif;
   font-size: 14px;
   margin-top: 0.5rem;
 `;

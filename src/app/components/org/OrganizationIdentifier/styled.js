@@ -5,7 +5,7 @@ import spacing from 'styles/spacing';
 export const OrganizationIdentifierContainer = styled.div`
   display: flex;
   align-items: center;
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Outfit', sans-serif;
   font-weight: ${fontWeights.regular};
   font-size: ${fontSizes.regular};
   padding-top: ${(props) => spacing[props.top] || props.top}px;

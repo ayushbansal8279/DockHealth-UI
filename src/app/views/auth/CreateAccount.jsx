@@ -168,7 +168,7 @@ const CreateAccount = (props) => {
   });
 
   const hasCustomPageTitle = customPageTitle !== '';
-  const fontFamily = 'roboto condensed';
+  const fontFamily = 'Outfit';
 
   const DockLogoImage = styled.img.attrs({
     src: DockHeaderLogo,
