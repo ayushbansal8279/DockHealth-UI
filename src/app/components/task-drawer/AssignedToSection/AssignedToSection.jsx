@@ -88,7 +88,11 @@ const AssignedToSection = ({ selectedTask = {}, onSave, disabled }) => {
           assignedToUsers.map((user) => (
             <AssigneeContainer>
               <UserAvatar user={user} />
-              <AssigneeTitle>{displayName(user.userName)}</AssigneeTitle>
+              {assignedToUsers?.length <= 3 ? (
+                <AssigneeTitle>{displayName(user.userName)}</AssigneeTitle>
+              ) : (
+                ''
+              )}
               {YouBadge(user)}
             </AssigneeContainer>
           ))}
