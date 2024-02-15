@@ -652,7 +652,8 @@ export const AddSubtaskButton = styled.button`
 export const TaskItemDescriptionIndicators = styled.div`
   display: flex;
   align-items: baseline;
-  margin-left: 5px;
+  margin-left: 20px;
+  margin-top: -13px;
 `;
 
 export const PatientLabel = styled.span`

@@ -152,6 +152,7 @@ const TaskItemDescription = ({
         {!isEditing && (
           <div
             style={{
+              marginTop: isCompleted ? '-10px' : 'none',
               textOverflow: 'ellipsis',
               overflow: 'hidden',
               whiteSpace: 'nowrap',
