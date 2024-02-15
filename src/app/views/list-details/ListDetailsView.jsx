@@ -40,6 +40,7 @@ const ListDetailsView = () => {
   const [addNewGroup, setAddNewGroup] = useState(false);
   const [changeViewType, setChangeViewType] = useState('SLIM_VIEW');
   const [showShadow, setShowShadow] = useState(false);
+  const [tasks, setTasks] = useState([]);
 
   const handleAddNewGroup = (value) => {
     setAddNewGroup(value);
@@ -58,6 +59,14 @@ const ListDetailsView = () => {
     }
   };
 
+  const handleAddTask = (newTask) => {
+    setTasks((oldTasks) => [...oldTasks, newTask]);
+  };
+
+  const handleRemoveAllTasks = () => {
+    setTasks([]);
+  };
+
   const ListPageContextValue = {
     addNewGroup: addNewGroup,
     handleAddNewGroup: handleAddNewGroup,
@@ -65,6 +74,9 @@ const ListDetailsView = () => {
     handleSetChangeViewType: handleSetChangeViewType,
     showShadow: showShadow,
     handleScroll: handleScroll,
+    tasks: tasks,
+    handleAddTask: handleAddTask,
+    handleRemoveAllTasks: handleRemoveAllTasks,
   };
 
   return (

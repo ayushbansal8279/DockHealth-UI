@@ -82,7 +82,7 @@ const ListDetailsToolbar = ({
       ({ name }) => name === 'icon.active.color',
     ) || {};
 
-  const { changeViewType, handleSetChangeViewType } =
+  const { changeViewType, handleSetChangeViewType, handleRemoveAllTasks } =
     useContext(ListPageContext);
   const [calendarView, setCalendarView] = useState(
     viewType === ViewType.CALENDAR_VIEW,
@@ -226,6 +226,7 @@ const ListDetailsToolbar = ({
             onClick={() => {
               handleChangeViewType(ViewType.CALENDAR_VIEW);
               handleSetChangeViewType('');
+              handleRemoveAllTasks();
             }}
           >
             <CalendarMonthOutlinedIcon
@@ -243,6 +244,7 @@ const ListDetailsToolbar = ({
             onClick={() => {
               handleChangeViewType(ViewType.LIST_VIEW);
               handleSetChangeViewType('FULL_VIEW');
+              handleRemoveAllTasks();
               setSlimView(false);
               setFullView(true);
             }}
@@ -255,6 +257,7 @@ const ListDetailsToolbar = ({
             onClick={() => {
               handleChangeViewType(ViewType.LIST_VIEW);
               handleSetChangeViewType('SLIM_VIEW');
+              handleRemoveAllTasks();
               setFullView(false);
               setSlimView(true);
             }}
