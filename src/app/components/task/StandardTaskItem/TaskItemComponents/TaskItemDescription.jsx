@@ -239,7 +239,7 @@ const TaskItemDescription = ({
           </DescriptionEditButton>
         )}
       </Box>
-      <TaskItemDescriptionIndicators>
+      <TaskItemDescriptionIndicators isCompleted={isCompleted}>
         {isCompleted && (
           <CompletedBy isCompleted={isCompleted}>
             <span>{`By ${completedByName} ${
