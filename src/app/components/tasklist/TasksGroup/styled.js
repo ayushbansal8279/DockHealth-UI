@@ -84,7 +84,6 @@ export const TasksGroupLabel = styled.p`
   margin-bottom: 0;
   font-size: ${fontSizes.regular};
   font-weight: ${fontWeights.regularPlus};
-  text-transform: uppercase;
 `;
 
 export const TasksGroupLabelName = styled.span`
