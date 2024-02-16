@@ -627,29 +627,27 @@ const TaskTemplateGroupHeader = ({
         setOpen(true);
         collapse.set(identifier, false);
         handleAddTask(identifier);
+      } else {
+        if (collapse.get(identifier)) {
+          setOpen(false);
+        } else {
+          setOpen(true);
+        }
       }
-      // else {
-      //   if (collapse.get(identifier)) {
-      //     setOpen(false);
-      //   } else {
-      //     setOpen(true);
-      //   }
-      // }
     } else if (changeViewType === 'SLIM_VIEW') {
       if (!addedTasks.includes(identifier)) {
         setOpen(false);
         collapse.set(identifier, true);
         handleAddTask(identifier);
+      } else {
+        if (collapse.get(identifier)) {
+          setOpen(false);
+        } else {
+          setOpen(true);
+        }
       }
-      // else {
-      //   if (collapse.get(identifier)) {
-      //     setOpen(false);
-      //   } else {
-      //     setOpen(true);
-      //   }
-      // }
     } else {
-      // setOpen(false);
+      setOpen(false);
       collapse.set(identifier, true);
     }
   }, [changeViewType, handleOpen]);
