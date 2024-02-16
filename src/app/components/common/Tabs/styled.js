@@ -12,7 +12,7 @@ export const TabButton = styled.button`
     props.isSelected ? palette.coolGrey4 : palette.white};
   color: ${(props) =>
     props.isSelected ? palette.brightBlue : palette.coolGrey2};
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Outfit', sans-serif;
   font-weight: ${fontWeights.regularPlus};
   padding: ${spacing.regular} ${spacing.large};
   position: relative;

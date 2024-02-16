@@ -40,7 +40,7 @@ export const DashboardTabHighlight = styled.div`
 `;
 
 export const TipsSwitchLabel = styled.label`
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Outfit', sans-serif;
   color: ${palette.coolGrey1};
   font-weight: ${fontWeights.regular};
   vertical-align: middle;

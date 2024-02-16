@@ -23,7 +23,7 @@ export const ElementsSidebar = styled.div`
   padding: 32px 16px;
   box-shadow: 0px 2.13948px 6.41845px rgba(0, 0, 0, 0.25);
   background: ${palette.white};
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Outfit', sans-serif;
   font-size: ${fontSizes.smallPlus};
   color: ${palette.mediumGrey};
   text-align: left;

@@ -15,7 +15,7 @@ export const OrganizationTileContaier = styled.div`
   width: ${(props) => props.size};
   min-width: ${(props) => props.size};
   color: ${(props) => (props.isDefaultTile ? palette.coolGrey2 : 'white')};
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Outfit', sans-serif;
   font-size: ${(props) => props.size / 45}rem;
   font-weight: ${fontWeights.bold};
   border-radius: 3px;

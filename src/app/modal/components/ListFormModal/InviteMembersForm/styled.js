@@ -53,7 +53,7 @@ export const NavigationText = styled.p`
 
 export const SkipButton = styled.button`
   margin: 0 auto;
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Outfit', sans-serif;
   font-size: ${fontSizes.small};
   font-weight: ${fontWeights.bold};
   color: ${palette.darkBlue};

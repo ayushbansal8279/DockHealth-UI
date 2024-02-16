@@ -24,7 +24,7 @@ import { ThemeProvider as MuiThemeProvider } from '@mui/material/styles';
 import Button from 'components/common/v2/Button/Button';
 import envelope from 'img/modals/envelope-red.svg';
 
-const fontFamily = 'roboto condensed';
+const fontFamily = 'Outfit';
 
 const onboardingMessageStyle = {
   fontFamily,
