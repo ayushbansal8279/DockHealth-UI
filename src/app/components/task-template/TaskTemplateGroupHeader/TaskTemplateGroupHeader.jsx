@@ -633,7 +633,9 @@ const TaskTemplateGroupHeader = ({
           setOpen(true);
         }
       }
-    } else if (changeViewType === 'SLIM_VIEW') {
+    }
+
+    if (changeViewType === 'SLIM_VIEW') {
       if (!addedTasks.includes(identifier)) {
         setOpen(false);
         collapse.set(identifier, true);
@@ -645,11 +647,19 @@ const TaskTemplateGroupHeader = ({
           setOpen(true);
         }
       }
-    } else {
-      setOpen(false);
-      collapse.set(identifier, true);
     }
+    // else {
+    // setOpen(false);
+    // collapse.set(identifier, true);
+    // }
   }, [changeViewType, handleOpen]);
+
+  useEffect(() => {
+    if (origin === 'PATIENT') {
+      setOpen(!isOpen);
+      // collapse.set(identifier, isOpen);
+    }
+  }, [origin, handleOpen]);
 
   const randerFirstColumnCoverIfNecessary = useCallback(
     (content, order, width) => {
@@ -683,7 +693,7 @@ const TaskTemplateGroupHeader = ({
             <Box m={1} />
             {showTasksWithGroup && (
               <RotatableChevron
-                rotated={collapse.get(identifier) ? false : true}
+                rotated={isOpen}
                 onClick={handleOpen}
                 color={iconColorActive}
               />
