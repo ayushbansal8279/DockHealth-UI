@@ -620,12 +620,14 @@ const TaskTemplateGroupHeader = ({
   };
 
   useEffect(() => {
-    if (collapse.get(identifier) === undefined) {
-      setOpen(false);
-    } else if (collapse.get(identifier)) {
-      setOpen(false);
-    } else {
-      setOpen(true);
+    if (!window.disabledVirtualTaskList) {
+      if (collapse.get(identifier) === undefined) {
+        setOpen(false);
+      } else if (collapse.get(identifier)) {
+        setOpen(false);
+      } else {
+        setOpen(true);
+      }
     }
   }, [handleOpen]);
 

@@ -165,6 +165,7 @@ const PatientTasksListView = () => {
           ),
     [filteredLists, isAllTasksView, taskListIdentifierParameter],
   );
+  window.disabledVirtualTaskList = true;
   useEffect(() => {
     if (isAllTasksView) {
       setViewSpecificConfig(PATIENT_ALL_JOINED_LISTS_VIEW_COLUMNS_CONFIG);
@@ -312,19 +313,21 @@ const PatientTasksListView = () => {
   const groupHasMultipleAssignees = false;
 
   const isTaskGroupSelected = useSelector(
-    isTaskItemsSelectedSelector(activeList?.tasks.map(task => task.identifier)),
+    isTaskItemsSelectedSelector(
+      activeList?.tasks.map((task) => task.identifier),
+    ),
   );
 
   const selectedTaskIdentifiers = useSelector(selectedTaskIdentifiersSelector);
 
   const handleGroupSelect = useCallback(() => {
-    const taskIdentifiers = activeList?.tasks.map(task => task.identifier);
+    const taskIdentifiers = activeList?.tasks.map((task) => task.identifier);
     dispatch(changeTasksSelectedState(!isTaskGroupSelected, taskIdentifiers));
   }, [activeList?.tasks, dispatch, isTaskGroupSelected]);
 
   const renderTasks = useCallback(
     (tasks, { isFullView, taskGroupIdentifier }) => {
-      const taskIdentifiers = tasks.map(task => task.identifier);
+      const taskIdentifiers = tasks.map((task) => task.identifier);
       const isGroupSelected =
         taskIdentifiers?.length > 0 &&
         taskIdentifiers?.every((taskId) =>

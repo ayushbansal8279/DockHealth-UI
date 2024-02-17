@@ -252,7 +252,7 @@ const ListDetailsTasks = ({
     },
     [dispatch],
   );
-
+  window.disabledVirtualTaskList = false;
   const [isVirtualTaskListEnabled, setIsVirtualTaskListEnabled] = useState(
     !window.disabledVirtualTaskList,
   );
