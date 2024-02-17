@@ -96,7 +96,7 @@ export const TasksGroupLabelName = styled.span`
   white-space: nowrap;
   text-overflow: ellipsis;
   vertical-align: middle;
-  font-family: 'Outfit', sans-serif;  
+  font-family: Outfit, sans-serif;  
 `;
 
 export const TasksGroupLabelCounter = styled.span`

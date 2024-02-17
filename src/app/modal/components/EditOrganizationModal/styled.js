@@ -8,7 +8,7 @@ export const EditOrganizationModalWrapper = styled(ModalWrapper)`
   width: 643px;
   padding: 39px ${spacing.giga};
   color: ${palette.mediumGrey};
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Outfit', sans-serif;
   text-align: left;
 `;
 

@@ -28,7 +28,7 @@ export const PatientName = styled.p`
   margin-bottom: 0;
   font-size: ${fontSizes.regular};
   font-weight: ${fontWeights.bold};
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Outfit', sans-serif;
   color: ${palette.black};
   white-space: nowrap;
   overflow: hidden;

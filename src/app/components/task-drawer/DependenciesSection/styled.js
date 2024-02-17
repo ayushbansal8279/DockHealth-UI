@@ -9,7 +9,7 @@ export const Container = styled.div`
 `;
 
 export const Title = styled.h3`
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Outfit', sans-serif;
   font-size: ${fontSizes.regular};
   font-weight: ${fontWeights.regularPlus};
 `;

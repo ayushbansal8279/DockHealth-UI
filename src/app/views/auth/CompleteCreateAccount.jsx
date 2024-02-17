@@ -234,7 +234,7 @@ const CompleteCreateAccount = (props) => {
   });
 
   const hasCustomPageTitle = customPageTitle !== '';
-  const fontFamily = 'roboto condensed';
+  const fontFamily = 'Outfit';
 
   const onboardingDialogStyle = {
     fontFamily,

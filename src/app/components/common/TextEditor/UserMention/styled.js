@@ -119,7 +119,7 @@ export const AvatarImage = styled.img`
 export const Initials = styled.p`
   margin-bottom: 0;
   color: ${palette.white};
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Outfit', sans-serif;
   font-size: 54px;
   font-weight: ${fontWeights.regular};
 `;

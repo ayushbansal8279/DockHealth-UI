@@ -26,7 +26,7 @@ export const SearchHelperText = styled.p`
   /* max-width: 700px; */
   margin: 0 auto;
   text-align: center;
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Outfit', sans-serif;
 `;
 
 export const PatientsListImg = styled.img`

@@ -6,7 +6,7 @@ import { fontSizes, fontWeights } from 'styles/font';
 import { Box } from '@mui/material';
 
 const textStyles = `
-	font-family: 'Montserrat', sans-serif;
+	font-family: 'Outfit', sans-serif;
 	font-size: ${fontSizes.regular};
 	font-weight: ${fontWeights.regularPlus};
 	text-transform: uppercase;

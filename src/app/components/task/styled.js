@@ -652,7 +652,8 @@ export const AddSubtaskButton = styled.button`
 export const TaskItemDescriptionIndicators = styled.div`
   display: flex;
   align-items: baseline;
-  margin-left: 5px;
+  margin-left: 20px;
+  margin-top: ${({ isCompleted }) => (isCompleted ? '-13px' : '0')};
 `;
 
 export const PatientLabel = styled.span`
@@ -679,7 +680,7 @@ export const DateText = styled.p`
 export const DetailsButton = styled.button`
   margin-left: 8px;
   visibility: hidden;
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Outfit', sans-serif;
   font-size: ${fontSizes.smallPlus};
   font-weight: ${fontWeights.regularPlus};
   color: ${palette.brightBlue};

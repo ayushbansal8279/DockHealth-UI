@@ -165,6 +165,7 @@ const PatientTasksListView = () => {
           ),
     [filteredLists, isAllTasksView, taskListIdentifierParameter],
   );
+  window.disabledVirtualTaskList = true;
   useEffect(() => {
     if (isAllTasksView) {
       setViewSpecificConfig(PATIENT_ALL_JOINED_LISTS_VIEW_COLUMNS_CONFIG);

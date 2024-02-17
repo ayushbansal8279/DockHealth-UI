@@ -34,16 +34,16 @@ function VTaskHeader(
   // @ts-ignore
   const { bulkEditEnabled } = useContext(BulkEditContext);
   const isGroupSelected = useSelector(
-    isTaskItemsSelectedSelector(metadata.children),
+    isTaskItemsSelectedSelector(metadata.parent?.children),
   );
   const groupHasMultipleAssignees = false;
   const handleGroupSelect = useCallback(() => {
-    const taskIdentifiers = metadata.children;
+    const taskIdentifiers = metadata.parent?.children;
     dispatch(
       // @ts-ignore
       TaskActions.changeTasksSelectedState(!isGroupSelected, taskIdentifiers),
     );
-  }, [dispatch, isGroupSelected, metadata.children]);
+  }, [dispatch, isGroupSelected, metadata.parent?.children]);
   return (
     <Sc.VTaskHeader
       ref={ref}

@@ -11,7 +11,7 @@ export const Container = styled.div`
   border-radius: 0.25rem;
   border: 1.5px solid ${palette.newDarkBlue};
   box-shadow: 0 0.5rem 1.5rem -0.5rem rgba(0, 0, 0, 0.1);
-  font-family: 'Roboto', sans-serif;
+  font-family: 'Outfit', sans-serif;
   margin-top: 10px;
 `;
 
@@ -20,7 +20,7 @@ export const LeftContainer = styled.div`
   padding: 3rem;
   border-radius: 0.25rem;
   box-shadow: 0 0.5rem 1.5rem -0.5rem rgba(0, 0, 0, 0.1);
-  font-family: 'Roboto', sans-serif;
+  font-family: 'Outfit', sans-serif;
   margin-top: 10px;
   optimizeLegibility !important;
 `;
