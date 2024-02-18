@@ -389,54 +389,59 @@ const DashboardHeader = () => {
             </Box>
           </>
         )}
-
-        <GridContainer>
-          <GridItemCalendarView active={calendarView}>
-            <Box
-              sx={{ marginTop: '4px' }}
-              onClick={() => {
-                handleChangeViewType(ViewType.CALENDAR_VIEW);
-                setCalendarView(true);
-                setSlimView(false);
-                setFullView(false);
-              }}
-            >
-              <CalendarMonthOutlinedIcon
-                // fontSize="medium"
-                sx={{
-                  height: '28px',
-                  width: '28px',
+        <Box
+          display="flex"
+          flex={viewType === ViewType.CALENDAR_VIEW ? 1 : 0}
+          justifyContent="flex-end"
+        >
+          <GridContainer>
+            <GridItemCalendarView active={calendarView}>
+              <Box
+                sx={{ marginTop: '4px' }}
+                onClick={() => {
+                  handleChangeViewType(ViewType.CALENDAR_VIEW);
+                  setCalendarView(true);
+                  setSlimView(false);
+                  setFullView(false);
                 }}
-              />
-            </Box>
-          </GridItemCalendarView>
-          <GridItemFullView active={slimView}>
-            <Box
-              sx={{ marginTop: '8px' }}
-              onClick={() => {
-                handleChangeViewType(ViewType.LIST_VIEW);
-                setSlimView(true);
-                setFullView(false);
-                setCalendarView(false);
-              }}
-            >
-              <FullViewIcon />
-            </Box>
-          </GridItemFullView>
-          <GridItemSlimView active={fullView}>
-            <Box
-              onClick={() => {
-                handleChangeViewType(ViewType.LIST_VIEW);
-                setFullView(true);
-                setSlimView(false);
-                setCalendarView(false);
-              }}
-              sx={{ marginTop: '8px' }}
-            >
-              <SlimViewIcon />
-            </Box>
-          </GridItemSlimView>
-        </GridContainer>
+              >
+                <CalendarMonthOutlinedIcon
+                  // fontSize="medium"
+                  sx={{
+                    height: '28px',
+                    width: '28px',
+                  }}
+                />
+              </Box>
+            </GridItemCalendarView>
+            <GridItemFullView active={slimView}>
+              <Box
+                sx={{ marginTop: '8px' }}
+                onClick={() => {
+                  handleChangeViewType(ViewType.LIST_VIEW);
+                  setSlimView(true);
+                  setFullView(false);
+                  setCalendarView(false);
+                }}
+              >
+                <FullViewIcon />
+              </Box>
+            </GridItemFullView>
+            <GridItemSlimView active={fullView}>
+              <Box
+                onClick={() => {
+                  handleChangeViewType(ViewType.LIST_VIEW);
+                  setFullView(true);
+                  setSlimView(false);
+                  setCalendarView(false);
+                }}
+                sx={{ marginTop: '8px' }}
+              >
+                <SlimViewIcon />
+              </Box>
+            </GridItemSlimView>
+          </GridContainer>
+        </Box>
       </ActionsContainer>
     </DashboardHeaderContainer>
   );
