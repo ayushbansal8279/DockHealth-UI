@@ -420,6 +420,10 @@ export const StandardTaskItemContainer = styled.div`
   `
       : ''}
 
+  &:hover {
+    box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.15);
+  }
+
   @media print {
     border-left: 1px solid ${palette.coolGrey3};
     height: auto;
@@ -628,9 +632,6 @@ export const ParentTaskContainer = styled.div`
 `;
 
 export const TaskContainer = styled.div`
-  &:hover {
-    box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.15);
-  }
 `;
 
 export const SubtasksWrapper = styled.div`
