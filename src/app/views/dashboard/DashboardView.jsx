@@ -230,7 +230,7 @@ const DashboardView = ({ tabName }) => {
               <HorizontallyScrolledViewLayout>
                 <StickyContainer>
                   <DashboardHeader currentUser={currentUser} />
-                  <Spacing vertical={3} />
+                  {/* <Spacing vertical={3} /> */}
                 </StickyContainer>
                 {createListViewVisible ? (
                   <StickyContainer>
