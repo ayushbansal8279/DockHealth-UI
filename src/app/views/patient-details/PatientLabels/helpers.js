@@ -1,5 +1,5 @@
 import React from 'react';
-import { RobotoTypography } from 'styles/theme';
+import { OutfitTypography } from 'styles/theme';
 
 export const getFormattedLabel = (label) => {
   const { labelIdentifier, labelName } = label;
@@ -7,9 +7,9 @@ export const getFormattedLabel = (label) => {
     key: labelIdentifier,
     value: labelIdentifier,
     label: (
-      <RobotoTypography condensed variant="h4">
+      <OutfitTypography condensed variant="h4">
         {labelName}
-      </RobotoTypography>
+      </OutfitTypography>
     ),
     displayLabel: labelName,
   };

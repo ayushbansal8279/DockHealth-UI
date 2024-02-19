@@ -3,7 +3,7 @@ import React, { useRef, useEffect, useState, useCallback } from 'react';
 import moment from 'moment';
 import Spacing from 'components/common/Spacing';
 import UserAvatar from 'components/user/UserAvatar/UserAvatar';
-import { RobotoTypography } from 'styles/theme';
+import { OutfitTypography } from 'styles/theme';
 // eslint-disable-next-line import/no-named-as-default
 import { useBoolean } from 'hooks/useBoolean';
 import RichTextEditor from 'components/common/RichTextEditor/RichTextEditor';
@@ -219,7 +219,7 @@ const Comment = ({
             <>
               <Spacing horizontal={4} />
               <EditCommentButton>
-                <RobotoTypography condensed variant="h5" color="inherit">
+                <OutfitTypography condensed variant="h5" color="inherit">
                   <CommentActionLabel
                     onClick={(event) => {
                       event.preventDefault();
@@ -230,11 +230,11 @@ const Comment = ({
                   >
                     Save
                   </CommentActionLabel>
-                </RobotoTypography>
+                </OutfitTypography>
               </EditCommentButton>
               <Spacing horizontal={3} />
               <EditCommentButton>
-                <RobotoTypography condensed variant="h5" color="inherit">
+                <OutfitTypography condensed variant="h5" color="inherit">
                   <CommentActionLabel
                     onClick={(event) => {
                       event.preventDefault();
@@ -245,7 +245,7 @@ const Comment = ({
                   >
                     Cancel
                   </CommentActionLabel>
-                </RobotoTypography>
+                </OutfitTypography>
               </EditCommentButton>
             </>
           ) : (
@@ -254,7 +254,7 @@ const Comment = ({
                 <>
                   <Spacing horizontal={4} />
                   <EditCommentButton>
-                    <RobotoTypography condensed variant="h5" color="inherit">
+                    <OutfitTypography condensed variant="h5" color="inherit">
                       <CommentActionLabel
                         onClick={(event) => {
                           event.preventDefault();
@@ -266,14 +266,14 @@ const Comment = ({
                       >
                         Edit
                       </CommentActionLabel>
-                    </RobotoTypography>
+                    </OutfitTypography>
                   </EditCommentButton>
                 </>
               )}
               {isCommentAuthor && (
                 <>
                   <Spacing horizontal={3} />
-                  <RobotoTypography condensed variant="h5" color="inherit">
+                  <OutfitTypography condensed variant="h5" color="inherit">
                     <CommentActionLabel
                       onClick={(event) => {
                         event.preventDefault();
@@ -283,7 +283,7 @@ const Comment = ({
                     >
                       Delete
                     </CommentActionLabel>
-                  </RobotoTypography>
+                  </OutfitTypography>
                 </>
               )}
             </>
