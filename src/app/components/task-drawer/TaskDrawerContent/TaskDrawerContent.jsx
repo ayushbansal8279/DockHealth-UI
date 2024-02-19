@@ -6,7 +6,7 @@ import Spacing from 'components/common/Spacing';
 import RichTextEditor from 'components/common/RichTextEditor/RichTextEditor';
 import TaskDescription from 'components/task-drawer/TaskDescription/TaskDescription';
 import { DrawerFieldEnum } from 'helpers/task-drawer-helpers';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import {
   userProfileSelector,
   selectedUserOrganizationSelector,
@@ -18,11 +18,13 @@ import {
 } from 'restrictions/task-restrictions';
 import { isMemberAdmin } from 'helpers/list-members-helper';
 import { checkIfUserIsOrganizationAdmin } from 'helpers/user-helper';
-import StartDateSection from 'components/task-drawer/StartDateSection/StartDateSection';
+import AddComment from 'components/drawer-common/AddComment/AddComment';
 // import WatchersPopover from 'components/task-drawer/TaskDrawerContent/WatchersPopover/WatchersPopover';
 import { createTaskListPath } from 'routing/helpers/paths';
 import { useHistory } from 'react-router-dom';
 import { currentTaskListSelector } from 'selectors/task-list-selectors';
+import { addComment } from 'actions/task-actions';
+import palette from 'styles/palette';
 import AttachmentsSection from '../AttachmentsSection/AttachmentsSection';
 import CommentSection from '../CommentSection/CommentSection';
 import LabelsSection from '../LabelsSection/LabelsSection';
@@ -31,7 +33,6 @@ import TopSection from '../TopSection/TopSection';
 import HistorySection from '../HistorySection/HistorySection';
 import StatusSection from '../StatusSection/StatusSection';
 import TaskDrawerEmailBodyContainer from '../EmailBody/EmailBody';
-import ReminderSection from '../ReminderSection/ReminderSection';
 import PatientSection from '../PatientSection/PatientSection';
 import initializeTaskDrawerHooks from './hooks';
 import AssignedToSection from '../AssignedToSection/AssignedToSection';
@@ -40,6 +41,7 @@ import CustomFieldsSection from '../CustomFieldsSection/CustomFieldsSection';
 import DependenciesSection from '../DependenciesSection/DependenciesSection';
 import SubtasksSection from '../SubtasksSection/SubtasksSection';
 import TaskDetails from '../TaskDetails/TaskDetails';
+
 import {
   TaskDrawerContainer,
   TaskDrawerBackground,
@@ -110,14 +112,13 @@ const TaskDrawerContent = (props) => {
   }, [clearFormStates, handleCloseTaskDrawer]);
 
   const history = useHistory();
+  const dispatch = useDispatch();
 
   const { orgUserRole } = useSelector(userProfileSelector);
   const currentOrganization = useSelector(selectedUserOrganizationSelector);
   const taskAttachmentsDisabled =
     currentOrganization?.disabledFeatures?.includes('TASK_ATTACHMENTS') ||
     false;
-  const taskStartDateDisabled =
-    currentOrganization?.disabledFeatures?.includes('TASK_START_DATE') || false;
   const subTasksDisabled =
     currentOrganization?.disabledFeatures?.includes('TASK_SUBTASKS') || false;
 
@@ -136,6 +137,7 @@ const TaskDrawerContent = (props) => {
   let taskListRestrictions = TASK_LIST_RESTRICTIONS_PROFILES[orgUserRole];
 
   const restrictMentions = restrictions?.mentions === DISABLED;
+  const taskListIdentifier = selectedTask?.taskList?.taskListIdentifier;
 
   const selectedOrganization = useSelector(selectedUserOrganizationSelector);
   const currentTasklist = useSelector(currentTaskListSelector);
@@ -292,6 +294,15 @@ const TaskDrawerContent = (props) => {
   }, [selectedOrganization, isListAdmin, isCreator]);
 
   const isMobile = useMediaQuery((theme) => theme.breakpoints.down('sm'));
+
+  const boundAddComment = useCallback(
+    (comment) =>
+      addComment(selectedTask, {
+        comment,
+        creator: currentUser,
+      })(dispatch),
+    [currentUser, dispatch, selectedTask],
+  );
 
   if (taskDeleteDisabled) {
     if (!restrictions) {
@@ -586,6 +597,26 @@ const TaskDrawerContent = (props) => {
         anchorEl={watchersReference.current}
         onClose={handleSubscriptionListClose}
       /> */}
+      {restrictions?.comments !== DISABLED && (
+        <Box
+          sx={{
+            position: 'sticky',
+            bottom: '0%',
+            left: 0,
+            px: 4,
+            py: 1,
+            backgroundColor: palette.blueGrey,
+            borderTop: `1px solid ${palette.zinc}`,
+            zIndex: 3,
+          }}
+        >
+          <AddComment
+            autoFocus={taskDrawerFocusField === DrawerFieldEnum.COMMENT}
+            taskListIdentifier={taskListIdentifier}
+            onAdd={boundAddComment}
+          />
+        </Box>
+      )}
     </TaskDrawerContainer>
   );
 };
