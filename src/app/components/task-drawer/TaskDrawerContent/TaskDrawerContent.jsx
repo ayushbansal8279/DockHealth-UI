@@ -607,6 +607,7 @@ const TaskDrawerContent = (props) => {
             py: 1,
             backgroundColor: palette.blueGrey,
             borderTop: `1px solid ${palette.zinc}`,
+            zIndex: 3,
           }}
         >
           <AddComment
