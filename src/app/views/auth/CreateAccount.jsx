@@ -265,6 +265,7 @@ const CreateAccount = (props) => {
               size="large"
               color={palette.brightOrange}
               secondaryColor={palette.oPlusRed}
+              uppercase={false}
             >
               Continue
             </Button>
