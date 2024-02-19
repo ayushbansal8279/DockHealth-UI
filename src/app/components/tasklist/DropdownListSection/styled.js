@@ -59,5 +59,5 @@ export const ListDescription = styled.div`
   background-color: ${palette.coolGrey4};
   font-size: ${fontSizes.smallPLus};
   font-weight: ${fontWeights.regular};
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Outfit', sans-serif;
 `;

@@ -6,7 +6,7 @@ import InputMask from 'react-input-mask';
 import { fontWeights } from 'styles/font';
 import spacing from 'styles/spacing';
 
-const FONT_FAMILY = '"Roboto Condensed", sans-serif';
+const FONT_FAMILY = '"Outfit", sans-serif';
 
 export const TimeDropdownContainer = styled.div`
   position: relative;

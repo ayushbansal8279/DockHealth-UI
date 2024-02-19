@@ -9,14 +9,15 @@ const FilterPopover = (props) => {
       anchorEl={anchorEl}
       anchorOrigin={{
         vertical: 'bottom',
-        horizontal: 'left',
+        horizontal: 'center',
       }}
       transformOrigin={{
         vertical: 'top',
-        horizontal: 'left',
+        horizontal: 'center',
       }}
       open={open}
       onClose={onClose}
+      sx={{ left: '60px' }}
     >
       <FilterContainer>{children}</FilterContainer>
     </Popover>

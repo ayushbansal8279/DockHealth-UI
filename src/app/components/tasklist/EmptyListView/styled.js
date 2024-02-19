@@ -20,7 +20,7 @@ export const TextWrapper = styled.div`
   flex: 1;
   padding-right: 80px;
   color: ${palette.mediumGrey};
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Outfit', sans-serif;
 `;
 
 export const ImageWrapper = styled.div`

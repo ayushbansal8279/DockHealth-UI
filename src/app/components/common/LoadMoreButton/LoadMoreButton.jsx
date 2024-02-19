@@ -4,7 +4,7 @@ import spacing from 'styles/spacing';
 import palette from 'styles/palette';
 
 const StyledButton = styled.button`
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Outfit', sans-serif;
   color: ${palette.darkBlue};
   border: 1.15px solid ${palette.darkBlue};
   font-weight: 600;

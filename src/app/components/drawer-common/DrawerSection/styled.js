@@ -13,7 +13,7 @@ export const Title = styled.p`
   display: inline-block;
   margin: 0;
   color: ${palette.greyBlue};
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Outfit', sans-serif;
   font-size: ${fontSizes.regular};
   font-weight: ${fontWeights.regularPlus};
 `;

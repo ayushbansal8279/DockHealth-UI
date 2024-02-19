@@ -18,7 +18,7 @@ const StyledButton = styled(MuiButton)`
     &.MuiButton-root {
       width: ${({ width }) => `${width}`};
       font-weight: ${fontWeights.regular};
-      font-family: 'Montserrat', sans-serif;
+      font-family: 'Outfit', sans-serif;
       outline: none;
       min-width: 0;
       min-height: '30px';

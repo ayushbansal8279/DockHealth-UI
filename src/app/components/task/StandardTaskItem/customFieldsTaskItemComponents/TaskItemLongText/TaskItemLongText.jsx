@@ -97,7 +97,7 @@ const TaskItemLongText = ({ value = '', onChange, openDrawer }) => {
             title={
               <pre
                 style={{
-                  fontFamily: "'Roboto Condensed', sans-serif",
+                  fontFamily: "Outfit, sans-serif",
                   fontSize: '16px',
                   whiteSpace: 'pre-wrap',
                   wordBreak: 'keep-all',

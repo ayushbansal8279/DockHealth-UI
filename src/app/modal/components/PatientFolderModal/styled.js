@@ -14,7 +14,7 @@ export const ListFormModalWrapper = styled(ModalWrapper)`
 
 export const Title = styled.h5`
   width: 100%;
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Outfit', sans-serif;
   font-size: ${fontSizes.regularPlus};
   font-weight: ${fontWeights.regularPlus};
   color: ${palette.darkGrey};

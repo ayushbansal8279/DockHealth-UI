@@ -38,6 +38,6 @@ export const StyledForm = styled.form`
 
 export const SectionTitle = styled.p`
   margin-bottom: 4px;
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Outfit', sans-serif;
   font-weight: ${fontWeights.bold};
 `;

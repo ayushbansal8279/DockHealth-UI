@@ -17,7 +17,7 @@ export const Text = styled.p`
   margin: 0;
   transform: translate(-50%, -50%);
   color: ${({ color }) => color};
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Outfit', sans-serif;
   font-size: ${({ size }) => size / 2.5}px;
   font-weight: ${fontWeights.bold};
   line-height: ${({ size }) => size / 2.5}px;

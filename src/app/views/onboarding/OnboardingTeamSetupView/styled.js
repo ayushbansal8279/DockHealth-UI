@@ -5,7 +5,7 @@ import spacing from 'styles/spacing';
 
 export const ViewContainer = styled.div`
   color: ${palette.mediumGrey};
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Outfit', sans-serif;
 `;
 
 export const Title = styled.h2`

@@ -33,7 +33,7 @@ export const RefineSearchText = styled.p`
   margin: 0 auto;
   padding-top: 10px;
   text-align: center;
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Outfit', sans-serif;
   color: ${palette.oPlusRed};
 `;
 

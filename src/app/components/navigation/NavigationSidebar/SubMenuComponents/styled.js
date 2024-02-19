@@ -127,7 +127,7 @@ export const ReferButton = styled.button`
   padding: ${spacing.tiny} ${spacing.regularPlus};
   background: ${palette.brightBlue};
   color: ${palette.white};
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Outfit', sans-serif;
   font-size: ${fontSizes.small};
   font-weight: ${fontWeights.regular};
   border-radius: 22px;
@@ -178,7 +178,7 @@ export const UserInitialCircle = styled.div`
   height: ${IMAGE_SIZE}px;
   border-radius: ${IMAGE_SIZE / 2}px;
   background-color: ${({ color }) => color || palette.coolGrey2};
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Outfit', sans-serif;
   font-size: ${IMAGE_SIZE / 40}rem;
   font-weight: ${fontWeights.bold};
   color: ${palette.white};

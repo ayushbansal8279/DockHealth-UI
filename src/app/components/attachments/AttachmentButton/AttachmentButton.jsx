@@ -1,6 +1,6 @@
 import React from 'react';
 import Spacing from 'components/common/Spacing';
-import { RobotoTypography } from 'styles/theme';
+import { OutfitTypography } from 'styles/theme';
 
 import { IconButton } from '@mui/material';
 import { Close } from '@mui/icons-material';
@@ -24,9 +24,9 @@ const AttachmentButton = ({ attachment, onClick, onRemoveClick }) => {
       >
         <IconComponent color="inherit" fontSize="small" />
         <Spacing horizontal={2} />
-        <RobotoTypography condensed variant="h4" weight="bold" noWrap>
+        <OutfitTypography condensed variant="h4" weight="bold" noWrap>
           {fileName}
-        </RobotoTypography>
+        </OutfitTypography>
         {typeof onRemoveClick === 'function' && (
           <RemoveAttachmentButtonContainer>
             <IconButton

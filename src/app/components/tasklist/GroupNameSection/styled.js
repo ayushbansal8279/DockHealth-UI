@@ -16,7 +16,6 @@ export const Description = styled.div`
 export const Header = styled.span`
   color: ${palette.brightBlue};
   font-weight: ${fontWeights.regularPlus};
-  text-transform: uppercase;
 `;
 
 export const ButtonWrapper = styled.button`

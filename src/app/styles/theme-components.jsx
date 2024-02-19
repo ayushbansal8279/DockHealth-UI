@@ -24,7 +24,7 @@ const STANDARD_TRANSITION = 'all 0.25s ease-out';
 const listItemStyles = {
   backgroundColor: 'transparent',
   transition: STANDARD_TRANSITION,
-  fontFamily: "'Roboto Condensed', sans-serif",
+  fontFamily: "Outfit, sans-serif",
   color: ({ color }) => color || palette.mediumGrey,
   whiteSpace: 'normal',
 
@@ -221,7 +221,7 @@ const themeCommonOverrides = () => ({
   MuiTab: {
     styleOverrides: {
       root: {
-        fontFamily: "'Montserrat', sans-serif",
+        fontFamily: "Outfit, sans-serif",
         fontWeight: fontWeights.bold,
       },
       textColorInherit: {

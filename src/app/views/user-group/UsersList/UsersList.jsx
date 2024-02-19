@@ -4,7 +4,7 @@ import { Grid } from '@mui/material';
 import { createFilter } from 'react-search-input';
 import isEmpty from 'ramda/src/isEmpty';
 import Spacing from 'components/common/Spacing';
-import { RobotoTypography } from 'styles/theme';
+import { OutfitTypography } from 'styles/theme';
 import DataGrid, { Data } from 'ui-toolkit/Composite/DataGrid';
 import UserAvatar from 'components/user/UserAvatar/UserAvatar';
 import {
@@ -40,7 +40,7 @@ const UsersList = (props) => {
         <ListContainer>
           <ListEntryContainer>
             <Grid container justifyContent="center" alignItems="center">
-              <RobotoTypography variant="h4">No users found</RobotoTypography>
+              <OutfitTypography variant="h4">No users found</OutfitTypography>
             </Grid>
           </ListEntryContainer>
         </ListContainer>

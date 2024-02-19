@@ -2,7 +2,7 @@ import React from 'react';
 import { Grid } from '@mui/material';
 import Spacing from 'components/common/Spacing';
 import { MontserratTypography } from 'styles/theme-montserrat';
-import { RobotoTypography } from 'styles/theme';
+import { OutfitTypography } from 'styles/theme';
 import DailyHubImage from 'img/auth-daily-hub-content-new.svg';
 
 const hubStyles = {
@@ -22,18 +22,18 @@ const TemplateAuthBaseDailyHubContent = () => {
     >
       <img src={DailyHubImage} style={hubStyles} alt="Dock Health daily hub" />
       <Spacing vertical={4} />
-      <RobotoTypography variant="h3" weight="bold">
+      <OutfitTypography variant="h3" weight="bold">
         Dock is
-      </RobotoTypography>
+      </OutfitTypography>
       <MontserratTypography variant="h2" weight="bold">
         Your Daily Hub.
       </MontserratTypography>
       <Spacing vertical={3} />
-      <RobotoTypography variant="h4" weight="bold">
+      <OutfitTypography variant="h4" weight="bold">
         No more reply all emails. No more Post-It notes or spreadsheets to
         manage patient care. Just an open route to better healthcare
         collaboration.
-      </RobotoTypography>
+      </OutfitTypography>
     </Grid>
   );
 };
