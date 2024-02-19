@@ -157,6 +157,7 @@ const RichTextEditor = React.forwardRef(
       onBlur = () => {},
       onChange = () => {},
       onKeyEnter = () => {},
+      onKeyEscape,
       // onAddMention = () => {},
       placeholder = '',
       // highlightedValues,
@@ -354,7 +355,7 @@ const RichTextEditor = React.forwardRef(
           },
           // eslint-disable-next-line prettier/prettier, func-names
           keydown(keydownEvent) {
-            if (keydownEvent.keyCode === 13) {
+            if (keydownEvent.key === 'Enter') {
               if (
                 !(keydownEvent.shiftKey || keydownEvent.ctrlKey) &&
                 onKeyEnter?.length > 0
@@ -369,9 +370,12 @@ const RichTextEditor = React.forwardRef(
                 this.html.set('');
                 // eslint-disable-next-line no-param-reassign
                 onKeyEnter(markdown);
-              } else {
-                // do nothing
               }
+            } else if (
+              keydownEvent.key === 'Escape' ||
+              keydownEvent.key === 'Esc'
+            ) {
+              onKeyEscape?.();
             }
           },
           'url.linked': function (link) {

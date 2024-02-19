@@ -1,9 +1,17 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { useRef, useEffect, useState, useCallback } from 'react';
+import React, { useRef, useEffect, useState, useCallback, useId } from 'react';
+import {
+  IconButton,
+  ListItemIcon,
+  ListItemText,
+  Menu,
+  MenuItem,
+} from '@mui/material';
 import moment from 'moment';
-import Spacing from 'components/common/Spacing';
 import UserAvatar from 'components/user/UserAvatar/UserAvatar';
-import { OutfitTypography } from 'styles/theme';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 // eslint-disable-next-line import/no-named-as-default
 import { useBoolean } from 'hooks/useBoolean';
 import RichTextEditor from 'components/common/RichTextEditor/RichTextEditor';
@@ -16,9 +24,7 @@ import {
 } from 'components/common/RichTextEditor/helpers';
 import MarkdownIt from 'markdown-it';
 import Highlighter from 'react-highlight-words';
-import Divider from '@mui/material/Divider';
 import {
-  CommentActionLabel,
   CommentContainer,
   CommentText,
   CommentDetails,
@@ -26,7 +32,6 @@ import {
   CommentWrapper,
   CommentMemberContainer,
   CommentActionsSection,
-  EditCommentButton,
 } from './styled';
 
 const md = new MarkdownIt({
@@ -127,6 +132,11 @@ const Comment = ({
     tokenizedComment,
   } = comment;
 
+  // menu variables ----------------------
+
+  const [menuAnchorEl, setMenuAnchorEl] = useState(null); // <null | HTMLElement>
+  const menuOpen = Boolean(menuAnchorEl);
+
   const commentEditorReference = useRef();
   const [isEdited, setIsEdited] = useState(false);
   const [isValueReset, setValueReset] = useState(false);
@@ -163,11 +173,19 @@ const Comment = ({
     setCurrentValue(value);
   };
 
-  const handleSave = () => {
-    onUpdate({
-      commentIdentifier,
-      comment: currentValue,
-    });
+  const handleSave = (value) => {
+    if (value !== '') {
+      onUpdate({
+        commentIdentifier,
+        comment: value,
+      });
+      setCurrentValue(value);
+    }
+    handleCancel();
+    unsetFocused();
+  };
+
+  const handleCancel = () => {
     setIsEdited(false);
     setValueReset(true);
   };
@@ -182,6 +200,65 @@ const Comment = ({
       return ReactHtmlParser(htmlValue || '')[0];
     },
     [],
+  );
+
+  // #region menu methods-------------------------
+
+  const handleOpenMenu = (
+    event /* : React.MouseEvent<HTMLButtonElement> */,
+  ) => {
+    setMenuAnchorEl(event.currentTarget);
+  };
+
+  const handleCloseMenu = () => {
+    setMenuAnchorEl(null);
+  };
+
+  const handleEditClick = () => {
+    setIsEdited(true);
+    setValueReset(false);
+    setFocused();
+    handleCloseMenu();
+  };
+
+  const handleDeleteClick = () => {
+    onDelete(comment);
+    handleCloseMenu();
+  };
+
+  // #endregion menu methods-------------------------
+
+  const renderMenu = (
+    <>
+      <IconButton
+        onClick={handleOpenMenu}
+        aria-controls={menuOpen ? 'comment-menu' : undefined}
+        aria-haspopup="true"
+        aria-expanded={menuOpen ? 'true' : undefined}
+        size="small"
+      >
+        <MoreVertIcon />
+      </IconButton>
+      <Menu
+        anchorEl={menuAnchorEl}
+        open={menuOpen}
+        onClose={handleCloseMenu}
+        MenuListProps={{ 'aria-labelledby': 'basic-button' }}
+      >
+        <MenuItem onClick={handleEditClick}>
+          <ListItemIcon>
+            <EditIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText>Edit</ListItemText>
+        </MenuItem>
+        <MenuItem onClick={handleDeleteClick}>
+          <ListItemIcon>
+            <DeleteIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText>Delete</ListItemText>
+        </MenuItem>
+      </Menu>
+    </>
   );
 
   return (
@@ -201,6 +278,9 @@ const Comment = ({
                 value={currentValue}
                 reset={isValueReset}
                 onChange={handleTextEditorChange}
+                onBlur={handleSave}
+                onKeyEnter={handleSave}
+                onKeyEscape={handleCancel}
                 initOnClick
                 showCharCount
                 taskListIdentifier={selectedTask?.taskList?.taskListIdentifier}
@@ -216,79 +296,7 @@ const Comment = ({
           <CommentDetails>{commentDetails}</CommentDetails>
         </CommentContent>
         <CommentActionsSection>
-          {isEdited ? (
-            <>
-              <Spacing horizontal={4} />
-              <EditCommentButton>
-                <OutfitTypography condensed variant="h5" color="inherit">
-                  <CommentActionLabel
-                    onClick={(event) => {
-                      event.preventDefault();
-                      event.stopPropagation();
-                      handleSave();
-                      unsetFocused();
-                    }}
-                  >
-                    Save
-                  </CommentActionLabel>
-                </OutfitTypography>
-              </EditCommentButton>
-              <Spacing horizontal={3} />
-              <EditCommentButton>
-                <OutfitTypography condensed variant="h5" color="inherit">
-                  <CommentActionLabel
-                    onClick={(event) => {
-                      event.preventDefault();
-                      event.stopPropagation();
-                      setIsEdited(false);
-                      setValueReset(true);
-                    }}
-                  >
-                    Cancel
-                  </CommentActionLabel>
-                </OutfitTypography>
-              </EditCommentButton>
-            </>
-          ) : (
-            <>
-              {isCommentAuthor && (
-                <>
-                  <Spacing horizontal={4} />
-                  <EditCommentButton>
-                    <OutfitTypography condensed variant="h5" color="inherit">
-                      <CommentActionLabel
-                        onClick={(event) => {
-                          event.preventDefault();
-                          event.stopPropagation();
-                          setIsEdited(true);
-                          setValueReset(false);
-                          setFocused();
-                        }}
-                      >
-                        Edit
-                      </CommentActionLabel>
-                    </OutfitTypography>
-                  </EditCommentButton>
-                </>
-              )}
-              {isCommentAuthor && (
-                <>
-                  <Spacing horizontal={3} />
-                  <OutfitTypography condensed variant="h5" color="inherit">
-                    <CommentActionLabel
-                      onClick={(event) => {
-                        event.preventDefault();
-                        event.stopPropagation();
-                        onDelete(comment);
-                      }}
-                    >
-                      Delete
-                    </CommentActionLabel>
-                  </OutfitTypography>
-                </>
-              )}
-            </>
-          )}
+          {!isEdited && isCommentAuthor && renderMenu}
         </CommentActionsSection>
       </CommentContainer>
     </CommentWrapper>

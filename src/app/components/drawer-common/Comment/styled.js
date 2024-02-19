@@ -3,31 +3,12 @@ import palette from 'styles/palette';
 import spacing from 'styles/spacing';
 import { fontSizes } from 'styles/font';
 
-export const CommentActionLabel = styled.button`
-  color: ${palette.lightGrey};
-  cursor: pointer;
-  text-decoration: none;
-  transition: all 0.25s ease-out;
-  margin-top: ${spacing.tiny};
-
-  &:hover {
-    text-decoration: underline;
-    color: ${palette.darkGrey};
-  }
-`;
-
 export const CommentWrapper = styled.div`
   display: flex;
   align-items: center;
   width: 100%;
   font-family: inherit;
   margin-bottom: 1px solid red;
-
-  &:hover {
-    ${CommentActionLabel} {
-      opacity: 1;
-    }
-  }
 `;
 
 export const CommentContainer = styled.div`
@@ -63,15 +44,10 @@ export const CommentDetails = styled.div`
   font-size: ${fontSizes.small};
 `;
 
-export const EditCommentButton = styled.div`
-  height: fit-content;
-`;
-
 export const CommentMemberContainer = styled.div`
   padding-top: ${spacing.small};
 `;
 
 export const CommentActionsSection = styled.div`
-  display: flex;
   margin-right: ${spacing.regular};
 `;
