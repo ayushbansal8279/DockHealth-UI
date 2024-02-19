@@ -658,7 +658,7 @@ const TaskTemplateGroupHeader = ({
     (content, order, width) => {
       if (order !== 0) return content;
       return (
-        <StickyColumnContainer>
+        <StickyColumnContainer customWidthExists={true}>
           <StickyMainTaskItemCell
             customWidthExists
             backgroundColor={pageBackground}
