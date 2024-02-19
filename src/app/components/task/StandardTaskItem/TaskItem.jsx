@@ -118,11 +118,8 @@ import {
 import TaskItemText from './customFieldsTaskItemComponents/TaskItemText/TaskItemText';
 import TaskItemDropdown from './customFieldsTaskItemComponents/TaskItemDropdown/TaskItemDropdown';
 import TaskItemDate from './customFieldsTaskItemComponents/TaskItemDate';
-<<<<<<< HEAD
 import TaskItemComments from './TaskItemComponents/TaskItemComments';
-=======
 import { StickyColumnContainer } from '../../tasklist/TasksHeader/styled';
->>>>>>> b22740312e53ea2c7cd7d7c4ddebd5b6fa07de2a
 
 const { DISABLED, READ_ONLY } = SINGLE_TASK_RESTRICTIONS_OPTIONS;
 
