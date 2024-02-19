@@ -156,7 +156,7 @@ export const IncludeContainerStyled = styled.div`
 
 export const InfoHeaderTextStyled = styled.p`
   color: ${palette.coolGrey9};
-  font-family: 'Montserrat';
+  font-family: 'Outfit';
   font-weight: 600;
   margin: 0;
 `;
@@ -170,7 +170,7 @@ export const CheckboxContainer = styled.div`
 
 export const CheckboxDescription = styled.label`
   display: inline;
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: 'Outfit', sans-serif;
   font-size: ${fontSizes.regular};
   color: ${palette.mediumGrey};
 `;

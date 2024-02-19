@@ -2,7 +2,7 @@ import React from 'react';
 
 import Loader from 'components/common/Loader/Loader';
 import Spacing from 'components/common/Spacing';
-import { RobotoTypography } from 'styles/theme';
+import { OutfitTypography } from 'styles/theme';
 
 import { Grid } from '@mui/material';
 import AttachmentPreview from 'components/attachments/AttachmentPreview/AttachmentPreview';
@@ -54,7 +54,7 @@ const AttachmentsSection = ({ selectedTask, disabled = false }) => {
           <Spacing vertical={3} />
           <Title>Files</Title>
         </Grid>
-        <RobotoTypography condensed variant="h4" color="inherit">
+        <OutfitTypography condensed variant="h4" color="inherit">
           <Spacing vertical={2} />
           {isDragActive ? (
             <span>Drop the files here ...</span>
@@ -63,7 +63,7 @@ const AttachmentsSection = ({ selectedTask, disabled = false }) => {
               Drag and drop files or documents here, or click + to select files
             </span>
           )}
-        </RobotoTypography>
+        </OutfitTypography>
         <Grid item xs={12}>
           <Spacing vertical={3} />
         </Grid>

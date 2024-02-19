@@ -19,7 +19,7 @@ function VTask(
   // eslint-disable-next-line unicorn/prevent-abbreviations, @typescript-eslint/no-unused-vars
   ref: ForwardedRef<HTMLDivElement>,
 ) {
-  const { changeViewType } = useContext(ListPageContext);
+  const { changeViewType, tasks, handleAddTask } = useContext(ListPageContext);
   return (
     <Draggable
       draggableId={metadata.id}
@@ -43,6 +43,8 @@ function VTask(
             isTaskTemplate={isTaskTemplate}
             isLastChild={isLastChild || false}
             changeViewType={changeViewType}
+            tasks={tasks}
+            handleAddTask={handleAddTask}
           />
         </Sc.VTask>
       )}

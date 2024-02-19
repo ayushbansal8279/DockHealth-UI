@@ -152,6 +152,7 @@ const TaskItemDescription = ({
         {!isEditing && (
           <div
             style={{
+              marginTop: isCompleted ? '-10px' : 'none',
               textOverflow: 'ellipsis',
               overflow: 'hidden',
               whiteSpace: 'nowrap',
@@ -238,7 +239,7 @@ const TaskItemDescription = ({
           </DescriptionEditButton>
         )}
       </Box>
-      <TaskItemDescriptionIndicators>
+      <TaskItemDescriptionIndicators isCompleted={isCompleted}>
         {isCompleted && (
           <CompletedBy isCompleted={isCompleted}>
             <span>{`By ${completedByName} ${

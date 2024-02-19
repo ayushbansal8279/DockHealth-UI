@@ -84,7 +84,7 @@ export const StyledHyperLink = styled.a`
 `;
 
 export const StyledLabel = styled.div`
-  font-family: 'Open Sans', sans-serif;
+  font-family: 'Outfit', sans-serif;
   font-size: ${(props) => props.remFontSize || 1}rem;
   font-weight: ${(props) => (props.bold ? 600 : 'normal')};
 

@@ -93,6 +93,7 @@ import {
   PatientMRNAnchor,
 } from './styled';
 import TaskTemplateDetails from '../TaskTemplateDetails/TaskTemplateDetails';
+import { StickyColumnContainer } from '../../tasklist/TasksHeader/styled';
 
 const TaskTemplateGroupHeader = ({
   templateGroup = {},
@@ -115,6 +116,8 @@ const TaskTemplateGroupHeader = ({
   iconColorActive,
   highlightedValue,
   changeViewType,
+  addedTasks,
+  handleAddTask,
   // origin,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
@@ -620,63 +623,95 @@ const TaskTemplateGroupHeader = ({
 
   useEffect(() => {
     if (changeViewType === 'FULL_VIEW') {
-      setOpen(true);
-      collapse.set(identifier, false);
-    } else {
-      setOpen(false);
-      collapse.set(identifier, true);
+      if (!addedTasks.includes(identifier)) {
+        setOpen(true);
+        collapse.set(identifier, false);
+        handleAddTask(identifier);
+      } else {
+        if (collapse.get(identifier)) {
+          setOpen(false);
+        } else {
+          setOpen(true);
+        }
+      }
     }
-  }, [changeViewType]);
+
+    if (changeViewType === 'SLIM_VIEW') {
+      if (!addedTasks.includes(identifier)) {
+        setOpen(false);
+        collapse.set(identifier, true);
+        handleAddTask(identifier);
+      } else {
+        if (collapse.get(identifier)) {
+          setOpen(false);
+        } else {
+          setOpen(true);
+        }
+      }
+    }
+    // else {
+    // setOpen(false);
+    // collapse.set(identifier, true);
+    // }
+  }, [changeViewType, handleOpen]);
+
+  useEffect(() => {
+    if (origin === 'PATIENT') {
+      setOpen(!isOpen);
+      // collapse.set(identifier, isOpen);
+    }
+  }, [origin, handleOpen]);
 
   const randerFirstColumnCoverIfNecessary = useCallback(
     (content, order, width) => {
       if (order !== 0) return content;
       return (
-        <StickyMainTaskItemCell
-          customWidthExists
-          backgroundColor={pageBackground}
-          isSelected={isBundleSelected}
-          isEditingDescription={isEditing}
-          order={0}
-          width={+width + 25 + 54}
-        >
-          {!groupDragAndDropDisabled &&
-            !bulkEditIsActive &&
-            taskListRestrictions?.completeTask !== DISABLED && (
-              <TemplateHandle
-                src={ThreeDotsIcon}
-                alt="Handle"
-                {...dragHandleProps}
-              />
-            )}
-          <ActionIconsContainer>
-            {taskListRestrictions?.completeTask !== DISABLED &&
-              bulkEditEnabled && (
-                <Checkbox
-                  isChecked={selected || isBundleSelected}
-                  onClick={handleBundleSelect}
+        <StickyColumnContainer>
+          <StickyMainTaskItemCell
+            customWidthExists
+            backgroundColor={pageBackground}
+            isSelected={isBundleSelected}
+            isEditingDescription={isEditing}
+            order={0}
+            width={+width + 25 + 54}
+          >
+            {!groupDragAndDropDisabled &&
+              !bulkEditIsActive &&
+              taskListRestrictions?.completeTask !== DISABLED && (
+                <TemplateHandle
+                  src={ThreeDotsIcon}
+                  alt="Handle"
+                  {...dragHandleProps}
                 />
               )}
-            <Box m={1} />
-            {showTasksWithGroup && (
-              <RotatableChevron
-                rotated={isOpen}
-                onClick={handleOpen}
-                color={iconColorActive}
-              />
-            )}
-            {taskListRestrictions?.createTask !== DISABLED && (
-              <>
-                <Spacing horizontal={2} />
-                <OptionsMenu options={menuOptions}>
-                  <MoreVert color="primary" />
-                </OptionsMenu>
-              </>
-            )}
-          </ActionIconsContainer>
-
-          {content}
-        </StickyMainTaskItemCell>
+            <ActionIconsContainer>
+              {taskListRestrictions?.completeTask !== DISABLED &&
+                bulkEditEnabled && (
+                  <Checkbox
+                    isChecked={selected || isBundleSelected}
+                    onClick={handleBundleSelect}
+                  />
+                )}
+              <Box m={1} />
+              {showTasksWithGroup && (
+                <RotatableChevron
+                  rotated={isOpen}
+                  onClick={handleOpen}
+                  color={iconColorActive}
+                />
+              )}
+              {taskListRestrictions?.createTask !== DISABLED && (
+                <>
+                  <Spacing horizontal={2} />
+                  <OptionsMenu options={menuOptions}>
+                    <MoreVert color="primary" />
+                  </OptionsMenu>
+                </>
+              )}
+            </ActionIconsContainer>
+            {content}
+          </StickyMainTaskItemCell>
+        </StickyColumnContainer>
       );
     },
     [

@@ -26,7 +26,7 @@ export const LabeledCollapseItemName = styled.p`
   margin: 0;
   font-size: ${fontSizes.regular};
   font-weight: ${fontWeights.regularPlus};
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Outfit', sans-serif;
   text-transform: uppercase;
   text-align: left;
 `;

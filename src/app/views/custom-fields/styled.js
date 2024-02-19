@@ -6,7 +6,7 @@ export const Header = styled.h2`
   margin-bottom: 0;
   font-size: ${fontSizes.huge};
   font-weight: ${fontWeights.bold};
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Outfit', sans-serif;
 `;
 
 export const ViewContainer = styled.div`

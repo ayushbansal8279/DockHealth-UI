@@ -1,13 +1,13 @@
 import React from 'react';
-import { RobotoTypography } from 'styles/theme';
+import { OutfitTypography } from 'styles/theme';
 import { Container } from './styled';
 
 const AddAttachmentButton = () => {
   return (
     <Container>
-      <RobotoTypography condensed variant="h4" color="inherit">
+      <OutfitTypography condensed variant="h4" color="inherit">
         +
-      </RobotoTypography>
+      </OutfitTypography>
     </Container>
   );
 };

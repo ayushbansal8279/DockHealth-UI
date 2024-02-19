@@ -5,7 +5,7 @@ import { fontSizes } from 'styles/font';
 export const Wrapper = styled.div`
   width: 100%;
   text-align: center;
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Outfit', sans-serif;
 `;
 
 export const Picture = styled.img`

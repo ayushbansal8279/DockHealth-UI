@@ -45,7 +45,7 @@ export const ActivityAlertsItemHeader = styled.div`
   display: flex;
   margin-bottom: ${spacing.regularPlus};
   justify-content: space-between;
-  font-family: Montserrat;
+  font-family: Outfit;
 
   & > div {
     display: flex;
@@ -53,7 +53,7 @@ export const ActivityAlertsItemHeader = styled.div`
 `;
 
 export const ActivityAlertsItemTime = styled.div`
-  font-family: Montserrat;
+  font-family: Outfit;
   font-style: normal;
   font-weight: normal;
   font-size: ${fontSizes.small};

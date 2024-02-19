@@ -12,7 +12,7 @@ export const ChangeMobileNumberModalContainer = styled.div`
   height: 444px;
   padding: ${spacing.largePlus} ${spacing.giga};
   background-color: ${palette.white};
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Outfit', sans-serif;
   color: ${palette.mediumGrey};
 `;
 

@@ -48,6 +48,8 @@ const Task = React.memo(
     isTaskTemplate,
     isLastChild,
     changeViewType,
+    tasks,
+    handleAddTask,
     ...restProps
   }) => {
     const parentTaskReference = useRef(null);
@@ -121,7 +123,27 @@ const Task = React.memo(
       // if (isFullView) handleSetSubtasksOpen(true);
       // else setAreSubtasksOpen(false);
       if (changeViewType === 'FULL_VIEW') {
-        handleSetSubtasksOpen(true);
+        if (!tasks.includes(taskIdentifier)) {
+          handleSetSubtasksOpen(true);
+          handleAddTask(taskIdentifier);
+        } else {
+          if (collapse.get(taskIdentifier)) {
+            setAreSubtasksOpen(false);
+          } else {
+            setAreSubtasksOpen(true);
+          }
+        }
+      } else if (changeViewType === 'SLIM_VIEW') {
+        if (!tasks.includes(taskIdentifier)) {
+          handleSetSubtasksOpen(false);
+          handleAddTask(taskIdentifier);
+        } else {
+          if (collapse.get(taskIdentifier)) {
+            setAreSubtasksOpen(false);
+          } else {
+            setAreSubtasksOpen(true);
+          }
+        }
       } else {
         handleSetSubtasksOpen(false);
       }
@@ -218,6 +240,8 @@ const Task = React.memo(
             }
             viewSetup={viewSetup}
             changeViewType={changeViewType}
+            tasks={tasks}
+            handleAddTask={handleAddTask}
             {...restProps}
           />
         </TaskContainer>

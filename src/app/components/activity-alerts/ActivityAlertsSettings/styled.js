@@ -37,7 +37,7 @@ export const ActivityAlertsSettingsItemsContainer = styled.div`
 
 export const ActivityAlertsSettingsItemsHeader = styled.div`
   padding-bottom: ${spacing.regular};
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Outfit', sans-serif;
 `;
 
 export const ActivityAlertsSettingsItemsHeaderLabel = styled.div`

@@ -13,7 +13,7 @@ export const TrialBannerContainer = styled.div`
   ${(props) => (props.uppercase ? '' : 'text-transform: none;')}
   justify-content: center;
   width: 100%;
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Outfit', sans-serif;
   font-size: ${fontSizes.regular};
   font-weight: ${fontWeights.bold};
   text-transform: uppercase;

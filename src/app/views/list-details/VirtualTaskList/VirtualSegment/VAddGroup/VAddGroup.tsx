@@ -54,8 +54,22 @@ function VAddGroup(
     },
     [dispatch],
   );
+
+  const scrollToNewGroup = () => {
+    const scrollbar = document.querySelector(
+      '[data-test-id="virtuoso-scroller"]',
+    );
+
+    if (scrollbar) {
+      scrollbar.scrollTo(0, scrollbar.scrollHeight);
+    }
+  };
+
   const onGroupNameClick = useCallback(
-    (groupName: string) => createTaskGroupList(groupName),
+    (groupName: string) => {
+      createTaskGroupList(groupName);
+      scrollToNewGroup();
+    },
     [createTaskGroupList],
   );
   const { addNewGroup, handleAddNewGroup } = useContext(ListPageContext);

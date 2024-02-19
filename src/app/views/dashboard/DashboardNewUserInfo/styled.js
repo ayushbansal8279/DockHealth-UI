@@ -4,7 +4,7 @@ import { fontSizes, fontWeights } from 'styles/font';
 
 export const Wrapper = styled.div`
   padding: 0 55px;
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Outfit', sans-serif;
   color: ${palette.coolGrey1};
 `;
 

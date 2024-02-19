@@ -15,7 +15,7 @@ export const Container = styled.div`
 
 export const Label = styled.p`
   margin-bottom: 16px;
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Outfit', sans-serif;
   font-size: ${fontSizes.smallPlus};
   font-weight: ${fontWeights.bold};
   color: ${palette.lightGrey};

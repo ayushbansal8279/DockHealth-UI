@@ -11,7 +11,7 @@ export const AddPatientModalWrapper = styled(ModalWrapper)`
   width: 870px;
   min-height: 600px;
   padding: ${spacing.regularPlus} ${spacing.largePlus};
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Outfit', sans-serif;
   color: ${palette.mediumGrey};
 `;
 

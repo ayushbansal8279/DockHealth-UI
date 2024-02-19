@@ -3,7 +3,7 @@ import { fontSizes, fontWeights } from 'styles/font';
 
 export const TaskTourWrapper = styled.div`
   padding: 28px 43px; // per design
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Outfit', sans-serif;
 `;
 
 export const Title = styled.h2`
