@@ -12,7 +12,7 @@
     "server:prod": "http-server dist -p 3000 -c-1 --cors",
     "prepare": "husky install",
     "lint-staged": "lint-staged",
-    "gen:types-swagger": "rm -rf ./src/app/types/swagger && npx openapi-generator-cli generate -i http://localhost:8080/heydoc-services/v2/api-docs -g typescript -o ./src/app/types/swagger --skip-validate-spec --additional-properties=withInterfaces=true,supportsES6=true --global-property models && node ./scripts/post-generation-script.js"
+    "gen:types-swagger": "rm -rf ./src/app/types/swagger && npx openapi-generator-cli generate -i https://api-dev.dockhealth.app/heydoc-services/v2/api-docs -g typescript -o ./src/app/types/swagger --skip-validate-spec --additional-properties=withInterfaces=true,supportsES6=true --global-property models && node ./scripts/post-generation-script.js"
   },
   "author": "",
   "license": "ISC",

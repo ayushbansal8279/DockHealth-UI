@@ -1,7 +1,6 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable react-hooks/rules-of-hooks */
-import { useEffect, useState, useCallback } from 'react';
-import isEmpty from 'ramda/src/isEmpty';
+import { useCallback } from 'react';
 import { openModal, closeModal } from 'modal/actions';
 import CommentIcon from 'img/modals/comment.svg';
 import { useSelector, useDispatch } from 'react-redux';
@@ -13,21 +12,7 @@ const initializeCommentSectionHooks = (selectedTask) => {
   const currentUser = useSelector(userProfileSelector);
   const taskListIdentifier = selectedTask?.taskList?.taskListIdentifier;
   const taskDrawerFocusField = useSelector(taskDrawerFocusFieldSelector);
-
-  const [commentsList, setCommentsList] = useState([]);
-
-  const { comments = [], taskIdentifier: selectedTaskIdentifier } =
-    selectedTask || {};
-
-  useEffect(() => {
-    if (isEmpty(comments)) {
-      setCommentsList([]);
-      return;
-    }
-
-    setCommentsList(commentsList);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedTaskIdentifier]);
+  const comments = selectedTask?.comments ?? [];
 
   const dispatch = useDispatch();
 
@@ -37,17 +22,6 @@ const initializeCommentSectionHooks = (selectedTask) => {
         selectedTask,
         comment,
       )(dispatch).then(() => {
-        const newComments = selectedTask.comments.filter(
-          ({ commentIdentifier }) =>
-            commentIdentifier !== comment.commentIdentifier,
-        );
-
-        selectedTask.comments = selectedTask.comments.filter(
-          ({ commentIdentifier }) =>
-            commentIdentifier !== comment.commentIdentifier,
-        );
-
-        setCommentsList(newComments);
         dispatch(closeModal());
       });
     },
@@ -66,14 +40,7 @@ const initializeCommentSectionHooks = (selectedTask) => {
       addComment(selectedTask, {
         comment,
         creator: currentUser,
-      })(dispatch).then((newComment) => {
-        const newComments = [...selectedTask.comments, newComment.data];
-        selectedTask.comments = [...selectedTask.comments, newComment.data];
-
-        setCommentsList(newComments);
-
-        return newComment;
-      }),
+      })(dispatch),
     [currentUser, dispatch, selectedTask],
   );
 
