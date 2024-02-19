@@ -188,7 +188,7 @@ const DashboardToolbar = ({ iconColorFilterActive, iconColorActive }) => {
     <ToolbarContainer container direction="row" justifyContent="space-between">
       <Grid item md={8} sm={12}>
         <DashboardTabsContainer>
-          <AccessRestrictor
+          {/* <AccessRestrictor
             allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST, DOCK_LITE]}
           >
             <DashboardTab
@@ -199,7 +199,7 @@ const DashboardToolbar = ({ iconColorFilterActive, iconColorActive }) => {
               }}
               isSelected={tabName === DashboardTasksTab.MY_TASKS}
             />
-          </AccessRestrictor>
+          </AccessRestrictor> */}
           {shareTaskAvailable && (
             <DashboardTab
               label={`Shared With Me (${sharedTasksCount})`}
