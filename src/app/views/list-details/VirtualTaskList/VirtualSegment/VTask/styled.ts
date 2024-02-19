@@ -4,14 +4,14 @@ export const VTask = styled('div')`
   display: flex;
   font-size: 13px;
   ${({ $workflow }: any) => $workflow ? `
-  line-height: 60px;
-  height: 60px;
+  line-height: 52px;
+  height: 52px;
   ` : `
   line-height: 40px;
-  height: 35px;
+  height: 36px;
   `}
   border-left: 1px solid rgb(229, 233, 242);
-  ${({ $template }: any) => ($template ? 'margin-top: -5px' : 'margin-top: 0')};
+  ${({ $template }: any) => ($template ? 'margin-bottom: 10px' : '')};
 
   & > * > * > * > * {
     left: 24px;

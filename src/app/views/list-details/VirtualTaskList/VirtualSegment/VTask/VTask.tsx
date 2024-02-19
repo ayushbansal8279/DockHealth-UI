@@ -32,7 +32,7 @@ function VTask(
           $subitem={metadata.level > 1}
           // @ts-ignore
           $workflow={record.task?.itemType === 'BUNDLE'}
-          $template={isTaskTemplate}
+          $template={isTaskTemplate && isLastChild}
         >
           <StandardTaskItem
             // @ts-ignore
