@@ -257,7 +257,6 @@ const DashboardHeader = () => {
   }, [groupList, groupsPreferences, updateGroupsPreferences]);
 
   const [quickFilters, setQuickFilters] = useState([]);
-  console.log(quickFilters);
 
   return (
     <DashboardHeaderContainer>

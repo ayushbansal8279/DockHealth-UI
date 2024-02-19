@@ -183,29 +183,16 @@ const DashboardToolbar = ({ iconColorFilterActive, iconColorActive }) => {
   //   },
   //   [search, history],
   //[] );
-  if (viewType === ViewType.CALENDAR_VIEW) return;
 
   return (
     <ToolbarContainer container direction="row" justifyContent="space-between">
-      <Grid item md={6} sm={12}>
+      <Grid item md={8} sm={12}>
         <DashboardTabsContainer>
-          {/* <AccessRestrictor
-          allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST, DOCK_LITE]}
-          >
-          <DashboardTab
-          label="My Tasks"
-          setHighlightPosition={setHighlightPosition}
-          onClick={() => {
-            history.push(`${HOME_PATH}${search}`);
-          }}
-          isSelected={tabName === DashboardTasksTab.MY_TASKS}
-          />
-        </AccessRestrictor> */}
           <AccessRestrictor
             allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST, DOCK_LITE]}
           >
             <DashboardTab
-              label="Upcoming"
+              label="My Tasks"
               setHighlightPosition={setHighlightPosition}
               onClick={() => {
                 history.push(`${HOME_PATH}${search}`);
@@ -213,29 +200,17 @@ const DashboardToolbar = ({ iconColorFilterActive, iconColorActive }) => {
               isSelected={tabName === DashboardTasksTab.MY_TASKS}
             />
           </AccessRestrictor>
-          <AccessRestrictor
-            allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST, DOCK_LITE]}
-          >
+          {shareTaskAvailable && (
             <DashboardTab
-              label="Overdue"
+              label={`Shared With Me (${sharedTasksCount})`}
               setHighlightPosition={setHighlightPosition}
               onClick={() => {
-                history.push(`${HOME_OVERDUE_TASKS_PATH}`);
+                history.push(`${HOME_SHARED_PATH}${search}`);
               }}
-              isSelected={tabName === DashboardTasksTab.OVERDUE}
+              isSelected={tabName === DashboardTasksTab.SHARED_TASKS}
+              showNewIndicator={sharedTasksAnyUnread}
             />
-          </AccessRestrictor>
-          {/* {shareTaskAvailable && (
-            <DashboardTab
-            label={`Shared With Me (${sharedTasksCount})`}
-            setHighlightPosition={setHighlightPosition}
-            onClick={() => {
-              history.push(`${HOME_SHARED_PATH}`);
-            }}
-            isSelected={tabName === DashboardTasksTab.SHARED_TASKS}
-            showNewIndicator={sharedTasksAnyUnread}
-            />
-          )} */}
+          )}
           {!restrictAllTasksForMember && (
             <AccessRestrictor allowedToRoles={[ADMIN, OWNER, MEMBER]}>
               <DashboardTab
@@ -252,10 +227,34 @@ const DashboardToolbar = ({ iconColorFilterActive, iconColorActive }) => {
             allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST, DOCK_LITE]}
           >
             <DashboardTab
+              label="Upcoming"
+              setHighlightPosition={setHighlightPosition}
+              onClick={() => {
+                history.push(`${HOME_UPCOMING_TASKS_PATH}${search}`);
+              }}
+              isSelected={tabName === DashboardTasksTab.UPCOMING}
+            />
+          </AccessRestrictor>
+          <AccessRestrictor
+            allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST, DOCK_LITE]}
+          >
+            <DashboardTab
+              label="Overdue"
+              setHighlightPosition={setHighlightPosition}
+              onClick={() => {
+                history.push(`${HOME_OVERDUE_TASKS_PATH}${search}`);
+              }}
+              isSelected={tabName === DashboardTasksTab.OVERDUE}
+            />
+          </AccessRestrictor>
+          <AccessRestrictor
+            allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST, DOCK_LITE]}
+          >
+            <DashboardTab
               label="Completed"
               setHighlightPosition={setHighlightPosition}
               onClick={() => {
-                history.push(`${HOME_COMPLETED_TASKS_PATH}`);
+                history.push(`${HOME_COMPLETED_TASKS_PATH}${search}`);
               }}
               isSelected={tabName === DashboardTasksTab.COMPLETED}
             />

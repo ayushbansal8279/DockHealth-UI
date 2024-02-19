@@ -14,7 +14,10 @@ const DashboardTab = ({
     if (isSelected) {
       setHighlightPosition({
         width: labelReference?.current?.offsetWidth,
-        left: labelReference?.current?.offsetLeft,
+        left:
+          label === 'My Tasks'
+            ? labelReference?.current?.offsetLeft
+            : labelReference?.current?.offsetLeft + 15,
       });
     }
   }, [labelReference, setHighlightPosition, isSelected]);
