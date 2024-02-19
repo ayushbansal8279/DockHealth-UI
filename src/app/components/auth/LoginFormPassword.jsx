@@ -87,16 +87,17 @@ const LoginFormPassword = ({
             </OutfitTypography>
           </>
         ) : (
-          <OutfitTypography align="center" variant="h4">
-            New to Dock?{' '}
-            <a
-              style={{ fontWeight: `${fontWeights.regularPlus}`, color: `${palette.coolGrey10}` }}
-              href="/create-account"
-            >
-              {' '}
-              Sign up for free{' '}
-            </a>
-          </OutfitTypography>
+          <div />
+          // <OutfitTypography align="center" variant="h4">
+          //   New to Dock?{' '}
+          //   <a
+          //     style={{ fontWeight: `${fontWeights.regularPlus}`, color: `${palette.coolGrey10}` }}
+          //     href="/create-account"
+          //   >
+          //     {' '}
+          //     Sign up for free{' '}
+          //   </a>
+          // </OutfitTypography>
         )}
         <Spacing vertical={5} />
         <FormInput

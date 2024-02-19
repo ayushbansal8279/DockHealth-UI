@@ -89,16 +89,17 @@ const CreatePasswordForm = ({
             </OutfitTypography>
           </>
         ) : (
-          <OutfitTypography align="center" variant="h4">
-            Login To Your Account{' '}
-            <a
-              style={{ fontWeight: 600, color: 'black' }}
-              href="/create-account"
-            >
-              {' '}
-              Sign up for free{' '}
-            </a>
-          </OutfitTypography>
+          <div />
+          // <OutfitTypography align="center" variant="h4">
+          //   Login To Your Account{' '}
+          //   <a
+          //     style={{ fontWeight: 600, color: 'black' }}
+          //     href="/create-account"
+          //   >
+          //     {' '}
+          //     Sign up for free{' '}
+          //   </a>
+          // </OutfitTypography>
         )}
         <Spacing vertical={5} />
         <FormInput
