@@ -9,6 +9,7 @@ export const CommentWrapper = styled.div`
   width: 100%;
   font-family: inherit;
   margin-bottom: 1px solid red;
+  ${({ $showPointer }) => ($showPointer ? 'cursor: pointer' : '')}
 `;
 
 export const CommentContainer = styled.div`

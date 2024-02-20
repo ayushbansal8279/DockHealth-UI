@@ -5,9 +5,6 @@ import { TaskDto } from '@/app/types/swagger/models/TaskDto';
 import { CommentDto } from '@/app/types/swagger/models/CommentDto';
 import useBooleanWithTimeout from '@/app/hooks/use-boolean-with-timeout';
 import { GridImg } from '../../styled';
-import { openDrawer } from 'actions/task-drawer-actions';
-import { storeAsCurrentTask } from 'actions/task-actions';
-import { DrawerFieldEnum } from 'helpers/task-drawer-helpers';
 import TaskIcon from 'components/task/TaskIcon/TaskIcon';
 import Popper from '@mui/material/Popper';
 import Grid from '@mui/material/Grid';
@@ -24,25 +21,20 @@ const TaskItemComments: FC<TaskItemCommentsProps> = ({
   comments,
   task,
 }) => {
-  const dispatch = useDispatch();
-  const anchorElementRef = useRef();
-  const [cardOpen, openCard, closeCard] = useBooleanWithTimeout();
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const commentPopperOpen = Boolean(anchorEl);
 
-  const onCommentClick = () => {
-    dispatch(openDrawer(DrawerFieldEnum.COMMENT) as any);
-    dispatch(storeAsCurrentTask(task) as any);
+  const onCommentClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(anchorEl ? null : event.currentTarget);
+  };
+
+  const handleClosePopper = () => {
+    setAnchorEl(null);
   };
 
   return (
     <Grid container wrap="nowrap">
-      <GridImg
-        item
-        xs={12}
-        matched={matchComments}
-        ref={anchorElementRef}
-        onMouseEnter={openCard}
-        onMouseLeave={closeCard}
-      >
+      <GridImg item xs={12} matched={matchComments}>
         <button type="button" onClick={onCommentClick}>
           <TaskIcon
             type="comments"
@@ -51,12 +43,12 @@ const TaskItemComments: FC<TaskItemCommentsProps> = ({
           />
         </button>
         <Popper
-          anchorEl={anchorElementRef.current}
-          open={cardOpen}
+          anchorEl={anchorEl}
+          open={commentPopperOpen}
           placement="bottom"
           style={{ zIndex: 2000 }}
         >
-          <CommentsInPopper task={task} />
+          <CommentsInPopper task={task} onClose={handleClosePopper} />
         </Popper>
       </GridImg>
     </Grid>

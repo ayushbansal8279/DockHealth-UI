@@ -10,10 +10,13 @@ import {
 } from '@/app/actions/task-actions';
 import { closeModal, openModal } from '@/app/modal/actions';
 import CommentIcon from '@/app/img/modals/comment.svg';
+import { taskDrawerFocusFieldSelector } from '@/app/selectors/task-drawer-selectors';
 
-export const useCommentsActionHandler = (task: Task) => {
+export const initializeCommentSectionHooks = (task: Task) => {
   const currentUser = useSelector(userProfileSelector) as User;
   const taskListIdentifier = task?.taskList?.taskListIdentifier;
+  const comments = task?.comments ?? [];
+  const taskDrawerFocusField = useSelector(taskDrawerFocusFieldSelector);
   const dispatch = useDispatch();
 
   const handleRemoveComment = (comment: CommentDto) => {
@@ -49,9 +52,11 @@ export const useCommentsActionHandler = (task: Task) => {
 
   return {
     currentUser,
+    comments,
     removeComment: openDeleteCommentConfirmationModal,
     updateComment: handleUpdateComment,
     addComment: handleAddComment,
     taskListIdentifier,
+    taskDrawerFocusField,
   };
 };

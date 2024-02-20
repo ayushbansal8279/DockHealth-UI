@@ -1,6 +1,6 @@
 import React from 'react';
 import Comment from 'components/drawer-common/Comment/Comment';
-import initializeCommentSectionHooks from './hooks';
+import { initializeCommentSectionHooks } from './helpers';
 import {
   CommentSectionContainer,
   CommentsListContainer,
@@ -8,13 +8,8 @@ import {
 } from './styled';
 
 const CommentSection = ({ selectedTask }) => {
-  const {
-    comments,
-    currentUser,
-    removeComment,
-    updateComment,
-    taskListIdentifier,
-  } = initializeCommentSectionHooks(selectedTask);
+  const { comments, currentUser, removeComment, updateComment } =
+    initializeCommentSectionHooks(selectedTask);
 
   return (
     <CommentSectionContainer>

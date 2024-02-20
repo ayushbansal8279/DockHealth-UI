@@ -59,7 +59,6 @@ import {
   FiledInListName,
   // SubscriptionBadge,
 } from './styled';
-import CommentsInPopper from '../../task/CommentsInPopper/CommentsInPopper';
 
 const { DISABLED, READ_ONLY } = SINGLE_TASK_RESTRICTIONS_OPTIONS;
 
@@ -545,7 +544,6 @@ const TaskDrawerContent = (props) => {
         <Grid item xs={12} style={styleCommentRow}>
           <div>
             <CommentSection selectedTask={selectedTask} />
-            <CommentsInPopper task={selectedTask} />
           </div>
         </Grid>
         {selectedTask && !isSubtask && !subTasksDisabled && (

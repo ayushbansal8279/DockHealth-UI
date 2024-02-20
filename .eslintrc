@@ -110,6 +110,7 @@
     "unicorn/no-array-callback-reference": "off",
     "unicorn/error-message": "off",
     "react/jsx-no-useless-fragment": "off",
-    "react/no-unstable-nested-components": "off"
+    "react/no-unstable-nested-components": "off",
+    "sonarjs/prefer-immediate-return": "off"
   }
 }
