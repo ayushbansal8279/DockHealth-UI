@@ -89,16 +89,17 @@ const CreatePasswordForm = ({
             </OutfitTypography>
           </>
         ) : (
-          <OutfitTypography align="center" variant="h4">
-            Login To Your Account{' '}
-            <a
-              style={{ fontWeight: 600, color: 'black' }}
-              href="/create-account"
-            >
-              {' '}
-              Sign up for free{' '}
-            </a>
-          </OutfitTypography>
+          <div />
+          // <OutfitTypography align="center" variant="h4">
+          //   Login To Your Account{' '}
+          //   <a
+          //     style={{ fontWeight: 600, color: 'black' }}
+          //     href="/create-account"
+          //   >
+          //     {' '}
+          //     Sign up for free{' '}
+          //   </a>
+          // </OutfitTypography>
         )}
         <Spacing vertical={5} />
         <FormInput
@@ -159,7 +160,7 @@ const CreatePasswordForm = ({
           Dock can save you 20 hours a month{' '}
           <a
             style={{ color: `${palette.coolGrey10}`, fontWeight: `${fontWeights.bold}`, paddingLeft: '5px' }}
-            href="https://help.dock.health/"
+            href="https://dock.health/"
             target="_blank"
             rel="noreferrer"
           >

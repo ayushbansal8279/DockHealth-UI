@@ -56,11 +56,9 @@ const LoginUser = (props) => {
 
   const setConfirmationBaseState = useCallback(() => {
     setAuthBaseState({
-      authBaseState: confirmStatus
-        ? AUTH_BASE_STATES.DAILY_HUB
-        : AUTH_BASE_STATES.LOGIN,
+      authBaseState: AUTH_BASE_STATES.LOGIN,
     })(dispatch);
-  }, [confirmStatus, dispatch]);
+  }, [dispatch]);
 
   useMount(() => {
     setConfirmationBaseState();
@@ -99,7 +97,7 @@ const LoginUser = (props) => {
           Dock can save you 20 hours a month{' '}
           <a
             style={{ color: '#6D757C', fontWeight: 800, paddingLeft: '5px' }}
-            href="https://help.dock.health/"
+            href="https://dock.health/"
             target="_blank"
             rel="noreferrer"
           >

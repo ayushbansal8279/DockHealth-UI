@@ -31,7 +31,7 @@ import ConfirmEmailHeaderCheck from 'img/checked-circle.svg';
 import AlertEmailCircle from 'img/alert-circle.svg';
 import Button from 'components/common/v2/Button/Button';
 import { ThemeProvider as MuiThemeProvider } from '@mui/material/styles';
-import envelope from 'img/modals/envelope-red.svg';
+// import envelope from 'img/modals/envelope-red.svg';
 import { redTheme } from 'modal/themes/red-theme';
 import {
   ModalWrapper,
@@ -218,7 +218,7 @@ const CompleteCreateAccount = (props) => {
     if (external === 'true') setExternalUserMode(true);
 
     setAuthBaseState({
-      authBaseState: AUTH_BASE_STATES.DEFAULT,
+      authBaseState: AUTH_BASE_STATES.SIGN_UP,
     })(dispatch);
     if (locationParameters && locationParameters?.referral) {
       getCustomTitleFromReferralConfig(
@@ -323,7 +323,8 @@ const CompleteCreateAccount = (props) => {
             <FormInput disabled={externalUserMode} name="email" label="Email" />
           )}
           <Spacing vertical={5} />
-          <FormPhoneNumberInput variant='outlined'
+          <FormPhoneNumberInput
+            variant="outlined"
             name="mobilePhoneNumber"
             label="Your Mobile Phone Number"
             style={{ borderRadius: '50px' }}
@@ -338,15 +339,14 @@ const CompleteCreateAccount = (props) => {
           <FormInput name="password" label="Password" type="password" />
           <Spacing vertical={3} />
           <OutfitTypography variant="h5">
-            * 8 characters • 1 capital • 1 number
+            * 8 characters • 1 capital • 1 number • 1 special character
           </OutfitTypography>
           <Spacing vertical={4} />
-          <FormInput 
+          <FormInput
             name="confirmPassword"
             label="Confirm Password"
             type="password"
           />
-          
           <Spacing vertical={5} />
           <Button
             uppercase={false}
