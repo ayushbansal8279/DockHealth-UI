@@ -74,7 +74,10 @@ const TemplateCoreSubscriptionPlan = ({
                   exact={route.exact}
                 />
               ))}
-            <Redirect from={`${path}/home`} to={`${path}/home/my-tasks`} />
+            <Redirect
+              from={`${path}/home`}
+              to={`${path}/home/upcoming-tasks`}
+            />
           </Switch>
         </NavigationTemplate>
       )}

@@ -113,6 +113,37 @@ const DashboardList = ({ currentUser, tourModalIsOpen, openTourModal }) => {
     if (tabName === DashboardTasksTab.SHARED_TASKS) {
       return dashboardTasks;
     }
+
+    if (tabName === DashboardTasksTab.UPCOMING) {
+      return dashboardTasks?.filter(
+        (taskGroupInfo) =>
+          !(
+            taskGroupInfo?.groupType
+              .toLowerCase()
+              .includes(DashboardTasksTab.COMPLETED.toLowerCase()) ||
+            taskGroupInfo?.groupType
+              .toLowerCase()
+              .includes(DashboardTasksTab.OVERDUE.toLowerCase())
+          ),
+      );
+    }
+
+    if (tabName === DashboardTasksTab.OVERDUE) {
+      return dashboardTasks?.filter((taskGroupInfo) =>
+        taskGroupInfo?.groupType
+          .toLowerCase()
+          .includes(DashboardTasksTab.OVERDUE.toLowerCase()),
+      );
+    }
+
+    if (tabName === DashboardTasksTab.COMPLETED) {
+      return dashboardTasks?.filter((taskGroupInfo) =>
+        taskGroupInfo?.groupType
+          .toLowerCase()
+          .includes(DashboardTasksTab.COMPLETED.toLowerCase()),
+      );
+    }
+
     return dashboardTasks?.filter((taskGroupInfo) =>
       dashboardGroupsPreferences?.includes(taskGroupInfo?.groupType),
     );

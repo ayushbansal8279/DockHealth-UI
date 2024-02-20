@@ -239,7 +239,7 @@ const DashboardTasksGroup = ({
             <GroupOpenContainer onClick={onSwitchGroup}>
               <RotatableChevron
                 alt="arrow"
-                rotated={!groupIsOpen}
+                rotated={groupIsOpen}
                 color={iconColorActive}
               />
             </GroupOpenContainer>
