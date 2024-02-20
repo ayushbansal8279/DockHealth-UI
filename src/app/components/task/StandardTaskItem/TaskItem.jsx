@@ -167,9 +167,6 @@ const TaskItem = React.memo(
     viewSetup,
     isTaskTemplate,
     isLastChild,
-    changeViewType,
-    tasks,
-    handleAddTask,
   }) => {
     const task = useSelector((state) => {
       return taskLookupSelector(state, origin, taskItemIdentifier);
@@ -854,9 +851,6 @@ const TaskItem = React.memo(
           iconColorActive={iconColorActiveItem?.value}
           origin={origin}
           highlightedValue={highlightedValue}
-          changeViewType={changeViewType}
-          addedTasks={tasks}
-          handleAddTask={handleAddTask}
         />
       );
     }

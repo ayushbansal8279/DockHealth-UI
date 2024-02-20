@@ -12,7 +12,17 @@ import ListDetailsTableView from './ListDetailsTableView/ListDetailsTableView';
 import ListDetailsCalendarView from './ListDetailsCalendarView/ListDetailsCalendarView';
 import ListDetailsBoardView from './ListDetailsBoardView/ListDetailsBoardView';
 
-export const ListPageContext = createContext();
+export const ListPageContext = createContext({
+  addNewGroup: false,
+  handleAddNewGroup: {},
+  changeViewType: '',
+  handleSetChangeViewType: {},
+  showShadow: false,
+  handleScroll: {},
+  tasks: [],
+  handleAddTask: {},
+  handleRemoveAllTasks: {},
+});
 const ListDetailsView = () => {
   const parameters = useParams();
   const { taskListIdentifier: taskListIdentifierParameter, tabName } =
