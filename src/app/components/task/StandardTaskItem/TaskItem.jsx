@@ -744,7 +744,7 @@ const TaskItem = React.memo(
       (content, order) => {
         if (order !== 0) return content;
         return (
-          <StickyColumnContainer>
+          <StickyColumnContainer customWidthExists={true}>
             <StickyMainTaskItemCell
               customWidthExists
               order={0}
