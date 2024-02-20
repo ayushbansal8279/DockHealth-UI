@@ -200,29 +200,6 @@ const DashboardToolbar = ({ iconColorFilterActive, iconColorActive }) => {
               isSelected={tabName === DashboardTasksTab.MY_TASKS}
             />
           </AccessRestrictor> */}
-          {shareTaskAvailable && (
-            <DashboardTab
-              label={`Shared With Me (${sharedTasksCount})`}
-              setHighlightPosition={setHighlightPosition}
-              onClick={() => {
-                history.push(`${HOME_SHARED_PATH}${search}`);
-              }}
-              isSelected={tabName === DashboardTasksTab.SHARED_TASKS}
-              showNewIndicator={sharedTasksAnyUnread}
-            />
-          )}
-          {!restrictAllTasksForMember && (
-            <AccessRestrictor allowedToRoles={[ADMIN, OWNER, MEMBER]}>
-              <DashboardTab
-                label="All Tasks"
-                setHighlightPosition={setHighlightPosition}
-                onClick={() => {
-                  history.push(`${HOME_ALL_TASKS_PATH}${search}`);
-                }}
-                isSelected={tabName === DashboardTasksTab.ALL_TASKS}
-              />
-            </AccessRestrictor>
-          )}
           <AccessRestrictor
             allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST, DOCK_LITE]}
           >
@@ -259,6 +236,29 @@ const DashboardToolbar = ({ iconColorFilterActive, iconColorActive }) => {
               isSelected={tabName === DashboardTasksTab.COMPLETED}
             />
           </AccessRestrictor>
+          {shareTaskAvailable && (
+            <DashboardTab
+              label={`Shared With Me (${sharedTasksCount})`}
+              setHighlightPosition={setHighlightPosition}
+              onClick={() => {
+                history.push(`${HOME_SHARED_PATH}${search}`);
+              }}
+              isSelected={tabName === DashboardTasksTab.SHARED_TASKS}
+              showNewIndicator={sharedTasksAnyUnread}
+            />
+          )}
+          {!restrictAllTasksForMember && (
+            <AccessRestrictor allowedToRoles={[ADMIN, OWNER, MEMBER]}>
+              <DashboardTab
+                label="All Tasks"
+                setHighlightPosition={setHighlightPosition}
+                onClick={() => {
+                  history.push(`${HOME_ALL_TASKS_PATH}${search}`);
+                }}
+                isSelected={tabName === DashboardTasksTab.ALL_TASKS}
+              />
+            </AccessRestrictor>
+          )}
           <DashboardTabHighlight {...highlightPosition} />
         </DashboardTabsContainer>
       </Grid>

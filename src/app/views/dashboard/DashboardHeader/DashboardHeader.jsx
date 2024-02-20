@@ -60,9 +60,9 @@ import { updateCurrentUserPreferences } from 'actions/user-actions';
 import {
   GridContainer,
   GridItemCalendarView,
-  GridItemSlimView,
   GridItemFullView,
-} from 'views/list-details/ListDetailsToolbar/styled';
+  GridItemSlimView,
+} from './styled';
 import {
   ActionsContainer,
   DashboardQuickFilter,
@@ -105,8 +105,8 @@ const DashboardHeader = () => {
   const [groupsPreferences, setGroupsPreferences] = useState(
     dashboardGroupsPreferences || [],
   );
-  const [slimView, setSlimView] = useState(false);
-  const [fullView, setFullView] = useState(false);
+  const [slimView, setSlimView] = useState(viewType === ViewType.LIST_VIEW);
+  // const [fullView, setFullView] = useState(false);
 
   const currentOrganization = useSelector(selectedUserOrganizationSelector);
   const iconColorFilterActiveItem =
@@ -401,7 +401,7 @@ const DashboardHeader = () => {
                   handleChangeViewType(ViewType.CALENDAR_VIEW);
                   setCalendarView(true);
                   setSlimView(false);
-                  setFullView(false);
+                  // setFullView(false);
                 }}
               >
                 <CalendarMonthOutlinedIcon
@@ -413,7 +413,7 @@ const DashboardHeader = () => {
                 />
               </Box>
             </GridItemCalendarView>
-            <GridItemFullView active={slimView}>
+            {/* <GridItemFullView active={fullView}>
               <Box
                 sx={{ marginTop: '8px' }}
                 onClick={() => {
@@ -425,13 +425,13 @@ const DashboardHeader = () => {
               >
                 <FullViewIcon />
               </Box>
-            </GridItemFullView>
-            <GridItemSlimView active={fullView}>
+            </GridItemFullView> */}
+            <GridItemSlimView active={slimView}>
               <Box
                 onClick={() => {
                   handleChangeViewType(ViewType.LIST_VIEW);
-                  setFullView(true);
-                  setSlimView(false);
+                  // setFullView(true);
+                  setSlimView(true);
                   setCalendarView(false);
                 }}
                 sx={{ marginTop: '8px' }}

@@ -14,10 +14,18 @@ const DashboardTab = ({
     if (isSelected) {
       setHighlightPosition({
         width: labelReference?.current?.offsetWidth,
-        left: labelReference?.current?.offsetLeft + 15,
+        left: label.includes('All')
+          ? labelReference?.current?.offsetLeft + 15
+          : labelReference?.current?.offsetLeft,
       });
     }
-  }, [labelReference, setHighlightPosition, isSelected]);
+  }, [
+    labelReference,
+    setHighlightPosition,
+    isSelected,
+    showNewIndicator,
+    label,
+  ]);
 
   return (
     <StyledDashboardTab
