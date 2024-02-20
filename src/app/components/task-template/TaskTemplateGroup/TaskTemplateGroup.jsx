@@ -1,5 +1,11 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import React, { useState, useCallback, useEffect, useMemo } from 'react';
+import React, {
+  useState,
+  useCallback,
+  useEffect,
+  useMemo,
+  useContext,
+} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import usePrevious from 'hooks/use-previous';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
@@ -28,6 +34,7 @@ import {
   TaskTemplateItemsStartPill,
 } from './styled';
 import TaskTemplateGroupHeader from '../TaskTemplateGroupHeader/TaskTemplateGroupHeader';
+import { CollapseContext } from '@/app/views/list-details/VirtualTaskList/VirtualTaskList';
 
 const TaskTemplateGroup = ({
   templateGroup: pullGroup = {},
@@ -45,9 +52,6 @@ const TaskTemplateGroup = ({
   iconColorActive,
   origin,
   highlightedValue,
-  changeViewType,
-  addedTasks,
-  handleAddTask,
 }) => {
   const templateGroup = useSelector((state) => {
     return taskLookupSelector(state, origin, pullGroup);
@@ -71,7 +75,8 @@ const TaskTemplateGroup = ({
   const { SHOW_WORKFLOW_DETAILS, SHOW_WORKFLOW_COMPLETED_TASKS } =
     viewSetup || {};
   // const { innerRef, draggableProps } = draggableProvided;
-  const [isOpen, setOpen] = useState(changeViewType === 'FULL_VIEW');
+  const collapse = useContext(CollapseContext);
+  const [isOpen, setOpen] = useState(collapse.get(identifier) ? false : true);
   const [draggedTaskIdentifier, setDraggedTaskIdentifier] = useState(null);
   const [showCompletedTasks, setShowCompletedTasks] = useState(true);
   const [showIncompleteTasks, setShowIncompleteTasks] = useState(
@@ -158,9 +163,6 @@ const TaskTemplateGroup = ({
         iconColorActive={iconColorActive}
         highlightedValue={highlightedValue}
         origin={origin}
-        changeViewType={changeViewType}
-        addedTasks={addedTasks}
-        handleAddTask={handleAddTask}
       />
       {!isStartedDnD && window.disabledVirtualTaskList && (
         <TaskTemplateGroupList timeout={150} in={isOpen && !isStartedDnD}>
