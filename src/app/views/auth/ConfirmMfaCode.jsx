@@ -27,7 +27,7 @@ const ConfirmMFACode = (props) => {
       setUsername(queryValues.uname);
     }
     setAuthBaseState({
-      authBaseState: AUTH_BASE_STATES.REGAIN_CONTROL,
+      authBaseState: AUTH_BASE_STATES.DEFAULT,
     })(dispatch);
   });
 

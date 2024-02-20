@@ -30,7 +30,7 @@ const ResetPassword = (props) => {
 
   useMount(() => {
     setAuthBaseState({
-      authBaseState: AUTH_BASE_STATES.REGAIN_CONTROL,
+      authBaseState: AUTH_BASE_STATES.DEFAULT,
     })(dispatch);
   });
 

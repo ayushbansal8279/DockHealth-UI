@@ -3,7 +3,7 @@ import queryString from 'query-string';
 import React, { useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { useMount } from 'react-use';
 import styled from 'styled-components';
 import { object, string } from 'yup';
@@ -141,7 +141,7 @@ const CreateAccount = (props) => {
 
     if (oname && sfname) setIsUserInvited(true);
     if (oname) setOrganizationName(oname);
-    if (sfname && slname) setSenderName(sfname + ' ' + slname);
+    if (sfname && slname) setSenderName(`${sfname} ${slname}`);
 
     if (fname) setValue('firstName', fname);
     if (lname) setValue('lastName', lname);
@@ -157,7 +157,7 @@ const CreateAccount = (props) => {
       setValue('organization', sessionStorage.getItem('organization'));
 
     setAuthBaseState({
-      authBaseState: AUTH_BASE_STATES.DEFAULT,
+      authBaseState: AUTH_BASE_STATES.SIGN_UP,
     })(dispatch);
     if (locationParameters && locationParameters?.referral) {
       getCustomTitleFromReferralConfig(

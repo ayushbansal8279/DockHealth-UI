@@ -218,7 +218,7 @@ const CompleteCreateAccount = (props) => {
     if (external === 'true') setExternalUserMode(true);
 
     setAuthBaseState({
-      authBaseState: AUTH_BASE_STATES.DEFAULT,
+      authBaseState: AUTH_BASE_STATES.SIGN_UP,
     })(dispatch);
     if (locationParameters && locationParameters?.referral) {
       getCustomTitleFromReferralConfig(

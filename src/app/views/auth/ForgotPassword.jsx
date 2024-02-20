@@ -17,11 +17,9 @@ const ForgotPassword = () => {
 
   const setLoginAuthBaseState = useCallback(() => {
     setAuthBaseState({
-      authBaseState: unconfirmedUserFlag
-        ? AUTH_BASE_STATES.DAILY_HUB
-        : AUTH_BASE_STATES.DEFAULT,
+      authBaseState: AUTH_BASE_STATES.DEFAULT,
     })(dispatch);
-  }, [dispatch, unconfirmedUserFlag]);
+  }, [dispatch]);
 
   useMount(() => {
     setLoginAuthBaseState();

@@ -4,10 +4,10 @@ import { Switch, Redirect, useRouteMatch } from 'react-router-dom';
 
 import { RouteWrapper } from 'routing/components';
 import { AUTH_BASE_STATES } from 'reducers/auth-base-reducer';
-import TemplateAuthBaseDailyHubContent from './TemplateAuthBase.DailyHubContent';
-import TemplateAuthBaseApproveDisapproveContent from './TemplateAuthBase.ApproveDisapproveContent';
-import TemplateAuthBaseDefaultContent from './TemplateAuthBase.DefaultContent';
-import TemplateAuthBaseRegainControlContent from './TemplateAuthBase.RegainControlContent';
+// import TemplateAuthBaseDailyHubContent from './TemplateAuthBase.DailyHubContent';
+// import TemplateAuthBaseApproveDisapproveContent from './TemplateAuthBase.ApproveDisapproveContent';
+// import TemplateAuthBaseDefaultContent from './TemplateAuthBase.DefaultContent';
+// import TemplateAuthBaseRegainControlContent from './TemplateAuthBase.RegainControlContent';
 import TemplateAuthBaseSignUpContent from './TemplateAuthBas.SignUpContent';
 import {
   LeftSideContentContainer,

@@ -56,11 +56,9 @@ const LoginUser = (props) => {
 
   const setConfirmationBaseState = useCallback(() => {
     setAuthBaseState({
-      authBaseState: confirmStatus
-        ? AUTH_BASE_STATES.DAILY_HUB
-        : AUTH_BASE_STATES.LOGIN,
+      authBaseState: AUTH_BASE_STATES.LOGIN,
     })(dispatch);
-  }, [confirmStatus, dispatch]);
+  }, [dispatch]);
 
   useMount(() => {
     setConfirmationBaseState();
