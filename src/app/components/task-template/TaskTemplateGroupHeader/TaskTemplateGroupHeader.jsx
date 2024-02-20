@@ -668,6 +668,7 @@ const TaskTemplateGroupHeader = ({
       return (
         <StickyColumnContainer customWidthExists={true}>
           <StickyMainTaskItemCell
+            isOpen={isOpen}
             customWidthExists
             backgroundColor={pageBackground}
             isSelected={isBundleSelected}

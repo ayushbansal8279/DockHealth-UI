@@ -746,6 +746,7 @@ const TaskItem = React.memo(
         return (
           <StickyColumnContainer customWidthExists={true}>
             <StickyMainTaskItemCell
+              isWorkflowtask={isTaskTemplate}
               customWidthExists
               order={0}
               isSubtask={showSubtaskStylingLink}
