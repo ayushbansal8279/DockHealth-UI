@@ -354,10 +354,10 @@ const DashboardHeader = () => {
                     <DashboardQuickFilter
                       key={value}
                       active={quickFilters.some((object) => object === value)}
-                      onClick={() => {
-                        if (!quickFilters.some((object) => object === value))
-                          setQuickFilters((current) => [...current, value]);
-                      }}
+                      // onClick={() => {
+                      //   if (!quickFilters.some((object) => object === value))
+                      //     setQuickFilters((current) => [...current, value]);
+                      // }}
                     >
                       <DashboardQuickFilterLabel
                         active={quickFilters.some((object) => object === value)}
