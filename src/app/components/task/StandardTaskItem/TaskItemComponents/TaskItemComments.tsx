@@ -1,6 +1,6 @@
 import React, { FC, useCallback } from 'react';
 
-import { TaskDto } from '@/app/types/swagger/models/TaskDto';
+import { Task } from '@/app/types/Task';
 import { CommentDto } from '@/app/types/swagger/models/CommentDto';
 import { GridImg } from '../../styled';
 import TaskIcon from 'components/task/TaskIcon/TaskIcon';
@@ -11,7 +11,7 @@ import CommentsInPopper from '../../CommentsInPopper/CommentsInPopper';
 interface TaskItemCommentsProps {
   matchComments: boolean;
   comments: Array<CommentDto>;
-  task: TaskDto;
+  task: Task;
 }
 
 const TaskItemComments: FC<TaskItemCommentsProps> = ({
