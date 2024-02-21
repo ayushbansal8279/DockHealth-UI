@@ -34,7 +34,7 @@ const onSubmit =
       .catch((error) => {
         showAlert({
           status: 'error',
-          title: 'Potential Duplicate',
+          title: 'Error',
           text:
             error?.message ??
             `A patient with this name and ${uniqueIdentifierLabel} already exists!`,
@@ -108,6 +108,7 @@ const CreatePatientDrawer = ({ isSidebarOpen, onPatientCreated, onClose }) => {
           customerTypeLabel={customerTypeLabel}
           ref={formReference}
           buttonLabel={`SAVE ${customerTypeLabel}`}
+          patientAddEnabled
         />
       </FormProvider>
     </PatientDrawer>

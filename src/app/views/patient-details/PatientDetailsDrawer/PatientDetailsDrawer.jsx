@@ -6,7 +6,6 @@ import mergeDeepRight from 'ramda/src/mergeDeepRight';
 import moment from 'moment';
 import { useDispatch, useSelector } from 'react-redux';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { organizationSelector } from 'selectors/organization-selectors';
 import {
   userProfileSelector,
   selectedUserOrganizationSelector,
@@ -56,8 +55,15 @@ const PatientDetailsDrawer = ({ patient, isOpenedDetails, closeDetails }) => {
   const customerTypeLabel = getCustomerTypeLabel(currentUser);
   const { reset, clearErrors } = formMethods;
   const formReference = useRef(null);
-  const organization = useSelector(organizationSelector);
-  const { emrIntegrationEnabled } = organization || {};
+
+  const { emrIntegrationEnabled } = currentOrganization || {};
+  const quickAddPatientEnabledItem =
+    currentOrganization?.themeSettings?.find(
+      ({ name }) => name === 'patient.add.enabled',
+    ) || {};
+  const patientAddEnabled =
+    !emrIntegrationEnabled ||
+    (emrIntegrationEnabled && quickAddPatientEnabledItem?.value === 'true');
 
   const close = () => {
     unsetActive();
@@ -139,7 +145,7 @@ const PatientDetailsDrawer = ({ patient, isOpenedDetails, closeDetails }) => {
         name: 'Edit',
         onClick: setActive,
       },
-      !emrIntegrationEnabled &&
+      patientAddEnabled &&
         !isActive && {
           name: 'Merge',
           onClick: () => {
@@ -171,7 +177,7 @@ const PatientDetailsDrawer = ({ patient, isOpenedDetails, closeDetails }) => {
             closeDetails();
           },
         },
-      !emrIntegrationEnabled &&
+      patientAddEnabled &&
         patientStatus === 'ACTIVE' && {
           name: 'Archive',
           onClick: archivePatient,
@@ -188,7 +194,7 @@ const PatientDetailsDrawer = ({ patient, isOpenedDetails, closeDetails }) => {
     [
       isActive,
       setActive,
-      emrIntegrationEnabled,
+      patientAddEnabled,
       patient,
       archivePatient,
       unarchivePatient,
@@ -217,7 +223,7 @@ const PatientDetailsDrawer = ({ patient, isOpenedDetails, closeDetails }) => {
           patient={patient}
           onSubmit={handleFormSubmit}
           uniqueIdentifierLabel={uniqueIdentifierLabel}
-          emrIntegrationEnabled={emrIntegrationEnabled}
+          patientAddEnabled={patientAddEnabled}
           edited={isActive}
           customerTypeLabel={customerTypeLabel}
           buttonLabel="SAVE EDITS"
