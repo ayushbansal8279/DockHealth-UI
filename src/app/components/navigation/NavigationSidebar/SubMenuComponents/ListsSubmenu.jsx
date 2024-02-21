@@ -16,7 +16,10 @@ import {
   pendingTaskListsSelector,
   archivedTaskListsSelector,
 } from 'selectors/task-list-selectors';
-import { userProfileSelector } from 'selectors/user-selectors';
+import {
+  userProfileSelector,
+  selectedUserOrganizationSelector,
+} from 'selectors/user-selectors';
 import AddButton from 'components/common/AddButton/AddButton';
 import { openModal } from 'modal/actions';
 import { hideSubMenu } from 'actions/template-actions';
@@ -25,7 +28,11 @@ import palette from 'styles/palette';
 import { createTaskListPath } from 'routing/helpers/paths';
 import ListOptionsMenu from 'components/tasklist/ListOptionsMenu/ListOptionsMenu';
 import LabeledCollapse from 'components/common/LabeledCollapse/LabeledCollapse';
-import { isUserGuest, isUserViewOnly } from 'helpers/user-helper';
+import {
+  isUserGuest,
+  isUserViewOnly,
+  checkIfUserIsOrganizationAdmin,
+} from 'helpers/user-helper';
 import { Box } from '@mui/material';
 import { useBoolean } from 'hooks/useBoolean';
 import move from 'ramda/src/move';
@@ -66,8 +73,16 @@ const ListsSubmenu = () => {
   const currentUser = useSelector(userProfileSelector);
   const isGuest = isUserGuest(currentUser);
   const isViewOnly = isUserViewOnly(currentUser);
+  const isAdmin = checkIfUserIsOrganizationAdmin(currentUser);
 
   const [activeLists, setActiveLists] = useState(null);
+
+  const currentOrganization = useSelector(selectedUserOrganizationSelector);
+  const quickAddPatientEnabledItem =
+    currentOrganization?.themeSettings?.find(
+      ({ name }) => name === 'list.add.adminonly.enabled',
+    ) || {};
+  const listAddAdminOnly = quickAddPatientEnabledItem?.value === 'true';
 
   useEffect(() => {
     const lists =
@@ -334,9 +349,11 @@ const ListsSubmenu = () => {
     <>
       <DrawerMyListsLabel>
         <div>My Lists</div>
-        {!isGuest && !isViewOnly && (
-          <AddButton onClick={openListAddModal}>Add</AddButton>
-        )}
+        {!isGuest &&
+          !isViewOnly &&
+          (!listAddAdminOnly || (listAddAdminOnly && isAdmin)) && (
+            <AddButton onClick={openListAddModal}>Add</AddButton>
+          )}
       </DrawerMyListsLabel>
       <SubmenuDivider />
       {hasAnyPendingList && (
