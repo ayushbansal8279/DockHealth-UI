@@ -1,9 +1,7 @@
-import React, { FC, useRef } from 'react';
-import { useDispatch } from 'react-redux';
+import React, { FC, useCallback } from 'react';
 
 import { TaskDto } from '@/app/types/swagger/models/TaskDto';
 import { CommentDto } from '@/app/types/swagger/models/CommentDto';
-import useBooleanWithTimeout from '@/app/hooks/use-boolean-with-timeout';
 import { GridImg } from '../../styled';
 import TaskIcon from 'components/task/TaskIcon/TaskIcon';
 import Popper from '@mui/material/Popper';
@@ -28,9 +26,9 @@ const TaskItemComments: FC<TaskItemCommentsProps> = ({
     setAnchorEl(anchorEl ? null : event.currentTarget);
   };
 
-  const handleClosePopper = () => {
+  const handleClosePopper = useCallback(() => {
     setAnchorEl(null);
-  };
+  }, [setAnchorEl]);
 
   return (
     <Grid container wrap="nowrap">

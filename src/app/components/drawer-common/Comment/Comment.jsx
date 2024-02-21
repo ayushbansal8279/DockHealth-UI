@@ -28,6 +28,7 @@ import {
   traverseNodes,
   processMarkdownValue,
 } from './helpers';
+import { getCommentIdToScroll } from '../../task-drawer/CommentSection/helpers';
 
 const Comment = ({
   comment,
@@ -150,7 +151,7 @@ const Comment = ({
   );
 
   return (
-    <CommentWrapper>
+    <CommentWrapper id={getCommentIdToScroll(comment.commentIdentifier)}>
       <CommentMemberContainer>
         <UserAvatar user={creator} size={35} />
       </CommentMemberContainer>

@@ -13,6 +13,7 @@ import {
   OPEN_TASK_DRAWER_TO_ADD_TASK,
   SHOW_GLOBAL_ALERT,
   SET_AS_CURRENT_TASK_ERROR,
+  SET_COMMENT_IDENTIFIER_TO_SCROLL,
 } from 'actions/action-types';
 import TaskBaseReducer from './task-base-reducer';
 
@@ -31,6 +32,7 @@ const initialState = {
     templates: [], // for backward compatibility
   },
   templatesMap: {},
+  commentIdentifierToScroll: null, // string | null
 };
 
 const requestHistory = (state) => ({ ...state, isHistoryFetching: true });
@@ -160,6 +162,12 @@ const TaskReducer = (state = initialState, action) => {
       return {
         ...state,
         customFields: { ...state.customFields, isFetching: false },
+      };
+    }
+    case SET_COMMENT_IDENTIFIER_TO_SCROLL: {
+      return {
+        ...state,
+        commentIdentifierToScroll: action.payload,
       };
     }
     case SHOW_GLOBAL_ALERT: {

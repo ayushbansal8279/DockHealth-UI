@@ -14,7 +14,10 @@ import {
 } from '@/app/restrictions/task-restrictions';
 import { ContainerCard } from './styled';
 import { useDispatch } from 'react-redux';
-import { openDrawer } from 'actions/task-drawer-actions';
+import {
+  openDrawer,
+  setCommentIdentifierToScroll,
+} from 'actions/task-drawer-actions';
 import { storeAsCurrentTask } from 'actions/task-actions';
 import { DrawerFieldEnum } from 'helpers/task-drawer-helpers';
 
@@ -24,7 +27,8 @@ interface CommentsInPopperProps {
 }
 
 const CommentsInPopper: FC<CommentsInPopperProps> = ({ task, onClose }) => {
-  const { currentUser, addComment } = initializeCommentSectionHooks(task);
+  const { currentUser, addComment, comments } =
+    initializeCommentSectionHooks(task);
   const dispatch = useDispatch();
 
   const orgUserRole = currentUser?.orgUserRole;
@@ -32,11 +36,15 @@ const CommentsInPopper: FC<CommentsInPopperProps> = ({ task, onClose }) => {
     orgUserRole && SINGLE_TASK_RESTRICTIONS_PROFILES[orgUserRole];
   const { DISABLED } = SINGLE_TASK_RESTRICTIONS_OPTIONS;
 
-  const handleClick = useCallback(() => {
-    dispatch(openDrawer(DrawerFieldEnum.COMMENT) as any);
-    dispatch(storeAsCurrentTask(task) as any);
-    onClose();
-  }, []);
+  const handleClickComment = useCallback(
+    (commentIdentifier: string) => {
+      dispatch(setCommentIdentifierToScroll(commentIdentifier));
+      dispatch(openDrawer(DrawerFieldEnum.COMMENT) as any);
+      dispatch(storeAsCurrentTask(task) as any);
+      onClose();
+    },
+    [task],
+  );
 
   return (
     <ContainerCard>
@@ -46,12 +54,14 @@ const CommentsInPopper: FC<CommentsInPopperProps> = ({ task, onClose }) => {
         </IconButton>
       </Box>
       <Box sx={{ maxHeight: '300px', overflowY: 'scroll', paddingX: 2 }}>
-        {task?.comments?.map((comment, idx) => (
+        {comments.map((comment) => (
           <div key={comment.commentIdentifier}>
             <Comment
               key={comment.commentIdentifier}
               comment={comment}
-              onClick={handleClick}
+              onClick={() =>
+                handleClickComment(comment.commentIdentifier ?? '')
+              }
             />
             <Divider variant="middle" />
           </div>

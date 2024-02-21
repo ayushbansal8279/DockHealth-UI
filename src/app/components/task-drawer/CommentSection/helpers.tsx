@@ -60,3 +60,11 @@ export const initializeCommentSectionHooks = (task: Task) => {
     taskDrawerFocusField,
   };
 };
+
+export const getCommentIdToScroll = (commentIdentifier: string) =>
+  `comment-${commentIdentifier}`;
+
+export const scrollToById = (id: string) => {
+  const section = document.querySelector(id);
+  section?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+};
