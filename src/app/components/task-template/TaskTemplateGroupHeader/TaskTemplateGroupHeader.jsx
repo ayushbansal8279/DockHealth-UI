@@ -1113,7 +1113,8 @@ const TaskTemplateGroupHeader = ({
                   ({ identifier: id }) => id === TaskItemColumn.START_DATE,
                 )?.columnWidth
               }
-              justify="center"
+              paddingLeft="10px"
+              justify="flex-start"
               order={getColumnOrder(TaskItemColumn.START_DATE)}
             >
               <TaskTemplateStartDate
@@ -1138,7 +1139,8 @@ const TaskTemplateGroupHeader = ({
                   ({ identifier: id }) => id === TaskItemColumn.DUE_DATE,
                 )?.columnWidth
               }
-              justify="center"
+              paddingLeft="10px"
+              justify="flex-start"
               order={getColumnOrder(TaskItemColumn.DUE_DATE)}
             >
               <TaskTemplateDueDate
