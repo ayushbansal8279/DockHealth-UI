@@ -6,7 +6,6 @@ import CloseIcon from '@mui/icons-material/Close';
 import { Task } from '@/app/types/Task';
 import { initializeCommentSectionHooks } from '@/app/components/task-drawer/CommentSection/helpers';
 import Comment from './Comment';
-// import Comment from 'components/drawer-common/Comment/Comment';
 import AddComment from 'components/drawer-common/AddComment/AddComment';
 import {
   SINGLE_TASK_RESTRICTIONS_OPTIONS,

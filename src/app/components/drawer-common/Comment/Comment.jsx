@@ -14,6 +14,7 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 // eslint-disable-next-line import/no-named-as-default
 import { useBoolean } from 'hooks/useBoolean';
 import RichTextEditor from 'components/common/RichTextEditor/RichTextEditor';
+import { getCommentIdToScroll } from 'components/task-drawer/CommentSection/helpers';
 import {
   CommentContainer,
   CommentText,
@@ -28,7 +29,6 @@ import {
   traverseNodes,
   processMarkdownValue,
 } from './helpers';
-import { getCommentIdToScroll } from '../../task-drawer/CommentSection/helpers';
 
 const Comment = ({
   comment,
