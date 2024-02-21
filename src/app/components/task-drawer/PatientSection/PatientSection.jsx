@@ -60,6 +60,15 @@ const PatientSection = ({
         organizationIdentifier === currentOrganizationIdentifier,
     ) || {};
 
+  const { emrIntegrationEnabled } = currentOrganization || {};
+  const quickAddPatientEnabledItem =
+    currentOrganization?.themeSettings?.find(
+      ({ name }) => name === 'patient.add.enabled',
+    ) || {};
+  const patientAddEnabled =
+    !emrIntegrationEnabled ||
+    (emrIntegrationEnabled && quickAddPatientEnabledItem?.value === 'true');
+
   const formattedPatients = getFormattedPatients({ patients });
   const customerTypeLabel = getCustomerTypeLabel(currentUser);
   const customerTypeLabelCapitalized = capitalize(customerTypeLabel);
@@ -262,7 +271,7 @@ const PatientSection = ({
 
   const handleAddPatient = useCallback(
     (patient) => {
-      if (currentOrganization.emrIntegrationEnabled) {
+      if (!patientAddEnabled) {
         return;
       }
 
@@ -287,11 +296,7 @@ const PatientSection = ({
         })
         .catch(noop);
     },
-    [
-      currentOrganization.emrIntegrationEnabled,
-      fetchPatients,
-      handlePatientSelect,
-    ],
+    [patientAddEnabled, fetchPatients, handlePatientSelect],
   );
 
   return (
@@ -316,13 +321,9 @@ const PatientSection = ({
       onOptionSelect={handlePatientSelect}
       onClear={handleClearSelectedPatient}
       onAddItemClick={
-        currentOrganization?.emrIntegrationEnabled || !quickAddPatientEnabled
-          ? null
-          : handleAddPatient
+        !patientAddEnabled || !quickAddPatientEnabled ? null : handleAddPatient
       }
-      addItemEnabled={
-        !currentOrganization?.emrIntegrationEnabled && quickAddPatientEnabled
-      }
+      addItemEnabled={patientAddEnabled && quickAddPatientEnabled}
       clearOnSuccess
       refineResultsCount={MAX_PATIENT_RESULTS}
       width={600}

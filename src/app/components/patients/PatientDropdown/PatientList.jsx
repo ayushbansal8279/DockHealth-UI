@@ -65,6 +65,15 @@ const PatientList = ({
     [searchValue, selectedPatientIdentifier],
   );
 
+  const { emrIntegrationEnabled } = currentOrganization || {};
+  const quickAddPatientEnabledItem =
+    currentOrganization?.themeSettings?.find(
+      ({ name }) => name === 'patient.add.enabled',
+    ) || {};
+  const patientAddEnabled =
+    !emrIntegrationEnabled ||
+    (emrIntegrationEnabled && quickAddPatientEnabledItem?.value === 'true');
+
   useEffect(() => {
     if (patients.length === 0 && displayUnassignedOption) {
       setPatients([{ unassignOption: true, patientIdentifier: 'UNASSIGNED' }]);
@@ -136,7 +145,7 @@ const PatientList = ({
   const handleAddPatient = useCallback(() => {
     const patient = searchValue;
 
-    if (currentOrganization.emrIntegrationEnabled) {
+    if (!patientAddEnabled) {
       return;
     }
 
@@ -165,7 +174,7 @@ const PatientList = ({
       .catch(noop);
   }, [
     searchValue,
-    currentOrganization.emrIntegrationEnabled,
+    patientAddEnabled,
     // fetchPatients,
     onSelect,
   ]);
