@@ -4,7 +4,18 @@ export const DashboardTasksTab = {
   MY_TASKS: 'MyTasks',
   SHARED_TASKS: 'SharedTasks',
   ALL_TASKS: 'AllTasks',
+  UPCOMING: 'Upcoming',
+  OVERDUE: 'Overdue',
+  COMPLETED: 'Completed',
 };
+
+export const DashboardQuickFilters = [
+  'Escalations',
+  'Overdue',
+  'Due Today',
+  'Created by me',
+  'Shared with me',
+];
 
 export const DashboardGroup = {
   TODAY: 'TODAY',

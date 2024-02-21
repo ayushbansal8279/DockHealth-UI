@@ -257,6 +257,27 @@ export const TEMPLATE_CORE_SUBSCRIPTION_PLAN_ROUTES = [
     permissions: [CAN_ACCESS_HOME_PAGE],
   },
   {
+    path: '/home/upcoming-tasks',
+    RouteComponent: (props) => (
+      <DashboardView tabName={DashboardTasksTab.UPCOMING} {...props} />
+    ),
+    permissions: [CAN_ACCESS_HOME_PAGE],
+  },
+  {
+    path: '/home/overdue-tasks',
+    RouteComponent: (props) => (
+      <DashboardView tabName={DashboardTasksTab.OVERDUE} {...props} />
+    ),
+    permissions: [CAN_ACCESS_HOME_PAGE],
+  },
+  {
+    path: '/home/completed-tasks',
+    RouteComponent: (props) => (
+      <DashboardView tabName={DashboardTasksTab.COMPLETED} {...props} />
+    ),
+    permissions: [CAN_ACCESS_HOME_PAGE],
+  },
+  {
     path: '/search',
     RouteComponent: GlobalSearchView,
     onLeave: onLeaveGlobalSearch,

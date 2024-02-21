@@ -7,7 +7,6 @@ import {
   DraggableStateSnapshot,
 } from 'react-beautiful-dnd';
 import * as Sc from './styled';
-import { ListPageContext } from 'views/list-details/ListDetailsView';
 
 export interface Props extends Segment {
   isTaskTemplate: boolean;
@@ -19,7 +18,6 @@ function VTask(
   // eslint-disable-next-line unicorn/prevent-abbreviations, @typescript-eslint/no-unused-vars
   ref: ForwardedRef<HTMLDivElement>,
 ) {
-  const { changeViewType, tasks, handleAddTask } = useContext(ListPageContext);
   return (
     <Draggable
       draggableId={metadata.id}
@@ -32,7 +30,7 @@ function VTask(
           $subitem={metadata.level > 1}
           // @ts-ignore
           $workflow={record.task?.itemType === 'BUNDLE'}
-          $template={isTaskTemplate}
+          $template={isTaskTemplate && isLastChild}
         >
           <StandardTaskItem
             // @ts-ignore
@@ -42,9 +40,6 @@ function VTask(
             isDragging={snapshot.isDragging}
             isTaskTemplate={isTaskTemplate}
             isLastChild={isLastChild || false}
-            changeViewType={changeViewType}
-            tasks={tasks}
-            handleAddTask={handleAddTask}
           />
         </Sc.VTask>
       )}

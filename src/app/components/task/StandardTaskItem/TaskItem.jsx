@@ -168,9 +168,6 @@ const TaskItem = React.memo(
     viewSetup,
     isTaskTemplate,
     isLastChild,
-    changeViewType,
-    tasks,
-    handleAddTask,
   }) => {
     const task = useSelector((state) => {
       return taskLookupSelector(state, origin, taskItemIdentifier);
@@ -745,8 +742,9 @@ const TaskItem = React.memo(
       (content, order) => {
         if (order !== 0) return content;
         return (
-          <StickyColumnContainer>
+          <StickyColumnContainer customWidthExists={true}>
             <StickyMainTaskItemCell
+              isWorkflowtask={isTaskTemplate}
               customWidthExists
               order={0}
               isSubtask={showSubtaskStylingLink}
@@ -854,9 +852,6 @@ const TaskItem = React.memo(
           iconColorActive={iconColorActiveItem?.value}
           origin={origin}
           highlightedValue={highlightedValue}
-          changeViewType={changeViewType}
-          addedTasks={tasks}
-          handleAddTask={handleAddTask}
         />
       );
     }

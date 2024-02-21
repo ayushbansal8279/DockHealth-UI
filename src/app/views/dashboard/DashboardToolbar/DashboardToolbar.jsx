@@ -19,6 +19,9 @@ import {
   HOME_ALL_TASKS_PATH,
   HOME_PATH,
   HOME_SHARED_PATH,
+  HOME_UPCOMING_TASKS_PATH,
+  HOME_OVERDUE_TASKS_PATH,
+  HOME_COMPLETED_TASKS_PATH,
 } from 'routing/helpers/paths';
 import { DashboardTasksTab } from 'helpers/dashboard-helpers';
 import { ViewType, getViewTypeFromQueryString } from 'helpers/view-type-helper';
@@ -104,6 +107,13 @@ const DashboardToolbar = ({ iconColorFilterActive, iconColorActive }) => {
       },
     );
   }, [setSharedTasksCount, setSharedTasksAnyUnread]);
+  //       const anyTasksUnread =
+  //         data?.taskGroups?.[0]?.tasks?.filter((t) => t.read === false)
+  //           ?.length !== 0;
+  //       setSharedTasksAnyUnread(anyTasksUnread);
+  //     },
+  //   );
+  // }, [setSharedTasksCount, setSharedTasksAnyUnread]);
 
   useEffect(() => {
     if (
@@ -127,27 +137,27 @@ const DashboardToolbar = ({ iconColorFilterActive, iconColorActive }) => {
     }
   }, [groupList, dashboardGroupsPreferences, dispatch]);
 
-  const updateGroupsPreferences = useCallback(
-    (groupType) => {
-      const newSetup = groupsPreferences?.includes(groupType)
-        ? groupsPreferences.filter((option) => option !== groupType)
-        : [...groupsPreferences, groupType];
+  // const updateGroupsPreferences = useCallback(
+  //   (groupType) => {
+  //     const newSetup = groupsPreferences?.includes(groupType)
+  //       ? groupsPreferences.filter((option) => option !== groupType)
+  //       : [...groupsPreferences, groupType];
 
-      setGroupsPreferences(newSetup);
-      dispatch(updateCurrentUserPreferences({ displayGroups: newSetup }));
-    },
-    [dispatch, groupsPreferences],
-  );
-  const additionalOptions = useMemo(() => {
-    return groupList?.map((group) => ({
-      name: group.groupName,
-      onClick: () => updateGroupsPreferences(group.groupType),
-      key: group.key,
-      checked: groupsPreferences
-        ? groupsPreferences?.includes(group.groupType)
-        : group.defaultOpen,
-    }));
-  }, [groupList, groupsPreferences, updateGroupsPreferences]);
+  //     setGroupsPreferences(newSetup);
+  //     dispatch(updateCurrentUserPreferences({ displayGroups: newSetup }));
+  //   },
+  //   [dispatch, groupsPreferences],
+  // );
+  // const additionalOptions = useMemo(() => {
+  //   return groupList?.map((group) => ({
+  //     name: group.groupName,
+  //     onClick: () => updateGroupsPreferences(group.groupType),
+  //     key: group.key,
+  //     checked: groupsPreferences
+  //       ? groupsPreferences?.includes(group.groupType)
+  //       : group.defaultOpen,
+  //   }));
+  // }, [groupList, groupsPreferences, updateGroupsPreferences]);
 
   useEffect(() => {
     let columnsConfig = DASHBOARD_BASE_COLUMNS_CONFIG;
@@ -160,25 +170,25 @@ const DashboardToolbar = ({ iconColorFilterActive, iconColorActive }) => {
     setViewSpecificConfig(columnsConfig);
   }, [setViewSpecificConfig, userHasMultiOrgViewAvailable]);
 
-  const handleChangeViewType = useCallback(
-    (event) => {
-      const queryParameters = new URLSearchParams(search);
-      const value = event?.target.value ?? ViewType.LIST_VIEW;
-      if (value === ViewType.LIST_VIEW) {
-        queryParameters.delete('viewType');
-      } else {
-        queryParameters.set('viewType', value.toLowerCase());
-      }
-      history.push({ search: queryParameters.toString() });
-    },
-    [search, history],
-  );
+  // const handleChangeViewType = useCallback(
+  //   (event) => {
+  //     const queryParameters = new URLSearchParams(search);
+  //     const value = event?.target.value ?? ViewType.LIST_VIEW;
+  //     if (value === ViewType.LIST_VIEW) {
+  //       queryParameters.delete('viewType');
+  //     } else {
+  //       queryParameters.set('viewType', value.toLowerCase());
+  //     }
+  //     history.push({ search: queryParameters.toString() });
+  //   },
+  //   [search, history],
+  //[] );
 
   return (
     <ToolbarContainer container direction="row" justifyContent="space-between">
-      <Grid item md={6} sm={12}>
+      <Grid item md={8} sm={12}>
         <DashboardTabsContainer>
-          <AccessRestrictor
+          {/* <AccessRestrictor
             allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST, DOCK_LITE]}
           >
             <DashboardTab
@@ -189,13 +199,49 @@ const DashboardToolbar = ({ iconColorFilterActive, iconColorActive }) => {
               }}
               isSelected={tabName === DashboardTasksTab.MY_TASKS}
             />
+          </AccessRestrictor> */}
+          <AccessRestrictor
+            allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST, DOCK_LITE]}
+          >
+            <DashboardTab
+              label="Upcoming"
+              setHighlightPosition={setHighlightPosition}
+              onClick={() => {
+                history.push(`${HOME_UPCOMING_TASKS_PATH}${search}`);
+              }}
+              isSelected={tabName === DashboardTasksTab.UPCOMING}
+            />
+          </AccessRestrictor>
+          <AccessRestrictor
+            allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST, DOCK_LITE]}
+          >
+            <DashboardTab
+              label="Overdue"
+              setHighlightPosition={setHighlightPosition}
+              onClick={() => {
+                history.push(`${HOME_OVERDUE_TASKS_PATH}${search}`);
+              }}
+              isSelected={tabName === DashboardTasksTab.OVERDUE}
+            />
+          </AccessRestrictor>
+          <AccessRestrictor
+            allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST, DOCK_LITE]}
+          >
+            <DashboardTab
+              label="Completed"
+              setHighlightPosition={setHighlightPosition}
+              onClick={() => {
+                history.push(`${HOME_COMPLETED_TASKS_PATH}${search}`);
+              }}
+              isSelected={tabName === DashboardTasksTab.COMPLETED}
+            />
           </AccessRestrictor>
           {shareTaskAvailable && (
             <DashboardTab
               label={`Shared With Me (${sharedTasksCount})`}
               setHighlightPosition={setHighlightPosition}
               onClick={() => {
-                history.push(`${HOME_SHARED_PATH}`);
+                history.push(`${HOME_SHARED_PATH}${search}`);
               }}
               isSelected={tabName === DashboardTasksTab.SHARED_TASKS}
               showNewIndicator={sharedTasksAnyUnread}
@@ -216,34 +262,34 @@ const DashboardToolbar = ({ iconColorFilterActive, iconColorActive }) => {
           <DashboardTabHighlight {...highlightPosition} />
         </DashboardTabsContainer>
       </Grid>
-      <ActionsContainer item md={8}>
-        {tabName !== DashboardTasksTab.SHARED_TASKS && (
-          <TaskViewSelectWrapper>
-            <TaskViewTypeToolbarSelect
-              value={viewType}
-              onChange={handleChangeViewType}
-              iconColorFilterActive={iconColorFilterActive}
-              iconColorActive={iconColorActive}
-            />
-          </TaskViewSelectWrapper>
-        )}
-        {viewType !== ViewType.CALENDAR_VIEW && (
-          <>
-            <Spacing horizontal={4} />
+      {/* <ActionsContainer item md={8}>
+              {tabName !== DashboardTasksTab.SHARED_TASKS && (
+                <TaskViewSelectWrapper>
+                <TaskViewTypeToolbarSelect
+                value={viewType}
+                onChange={handleChangeViewType}
+                iconColorFilterActive={iconColorFilterActive}
+                iconColorActive={iconColorActive}
+                />
+                </TaskViewSelectWrapper>
+                )}
+                {viewType !== ViewType.CALENDAR_VIEW && (
+                  <>
+                  <Spacing horizontal={4} />
             <AccessRestrictor
-              allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST, DOCK_LITE]}
+            allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST, DOCK_LITE]}
             >
               <CustomizeToolbarButton
-                showCustomColumnCreate={false}
+              showCustomColumnCreate={false}
                 additionalOptionsTitle="Groups"
                 additionalOptions={additionalOptions}
                 iconColorFilterActive={iconColorFilterActive}
                 isDashboard
-              />
+                />
             </AccessRestrictor>
           </>
         )}
-      </ActionsContainer>
+      </ActionsContainer> */}
     </ToolbarContainer>
   );
 };

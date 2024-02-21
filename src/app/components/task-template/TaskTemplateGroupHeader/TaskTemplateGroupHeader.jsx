@@ -94,6 +94,7 @@ import {
 } from './styled';
 import TaskTemplateDetails from '../TaskTemplateDetails/TaskTemplateDetails';
 import { StickyColumnContainer } from '../../tasklist/TasksHeader/styled';
+import { ListPageContext } from '@/app/views/list-details/ListDetailsView';
 
 const TaskTemplateGroupHeader = ({
   templateGroup = {},
@@ -115,9 +116,6 @@ const TaskTemplateGroupHeader = ({
   showTasksWithGroup = true,
   iconColorActive,
   highlightedValue,
-  changeViewType,
-  addedTasks,
-  handleAddTask,
   // origin,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
@@ -133,6 +131,7 @@ const TaskTemplateGroupHeader = ({
 
   const { bulkEditIsActive } = useContext(BulkEditContext);
   const { bulkEditEnabled } = useContext(BulkEditContext);
+  const { changeViewType, tasks, handleAddTask } = useContext(ListPageContext);
   const [isEditing, setIsEditing] = useState(false);
   const [nameInputValue, setNameInputValue] = useState(name);
   const [nameInputError, setNameInputError] = useState(false);
@@ -623,7 +622,7 @@ const TaskTemplateGroupHeader = ({
 
   useEffect(() => {
     if (changeViewType === 'FULL_VIEW') {
-      if (!addedTasks.includes(identifier)) {
+      if (!tasks.includes(identifier)) {
         setOpen(true);
         collapse.set(identifier, false);
         handleAddTask(identifier);
@@ -637,7 +636,7 @@ const TaskTemplateGroupHeader = ({
     }
 
     if (changeViewType === 'SLIM_VIEW') {
-      if (!addedTasks.includes(identifier)) {
+      if (!tasks.includes(identifier)) {
         setOpen(false);
         collapse.set(identifier, true);
         handleAddTask(identifier);
@@ -666,8 +665,10 @@ const TaskTemplateGroupHeader = ({
     (content, order, width) => {
       if (order !== 0) return content;
       return (
-        <StickyColumnContainer>
+        <StickyColumnContainer customWidthExists={true}>
           <StickyMainTaskItemCell
+            isTamplateGroup={true}
+            isOpen={isOpen}
             customWidthExists
             backgroundColor={pageBackground}
             isSelected={isBundleSelected}

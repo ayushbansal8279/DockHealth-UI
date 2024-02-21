@@ -65,7 +65,7 @@ const ResetPasswordForm = ({ authTokenReceived, onSubmit }) => {
         />
         <Spacing vertical={3} />
         <OutfitTypography variant="h5">
-          * 8 characters • 1 capital • 1 number
+          * 8 characters • 1 capital • 1 number • 1 special character
         </OutfitTypography>
         <Spacing vertical={5} />
         <Button
