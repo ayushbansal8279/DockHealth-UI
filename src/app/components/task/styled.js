@@ -2,7 +2,7 @@
 import React from 'react';
 import styled, { keyframes, css } from 'styled-components';
 import { Link } from 'react-router-dom';
-import { Grid } from '@mui/material';
+import { Card, Grid } from '@mui/material';
 import spacing from 'styles/spacing';
 import { fontWeights, fontSizes } from 'styles/font';
 import palette, { featurePalette, typography } from 'styles/palette';

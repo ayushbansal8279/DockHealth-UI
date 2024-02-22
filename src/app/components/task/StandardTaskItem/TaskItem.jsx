@@ -118,6 +118,7 @@ import {
 import TaskItemText from './customFieldsTaskItemComponents/TaskItemText/TaskItemText';
 import TaskItemDropdown from './customFieldsTaskItemComponents/TaskItemDropdown/TaskItemDropdown';
 import TaskItemDate from './customFieldsTaskItemComponents/TaskItemDate';
+import TaskItemComments from './TaskItemComponents/TaskItemComments';
 import { StickyColumnContainer } from '../../tasklist/TasksHeader/styled';
 
 const { DISABLED, READ_ONLY } = SINGLE_TASK_RESTRICTIONS_OPTIONS;
@@ -1302,12 +1303,10 @@ const TaskItem = React.memo(
                     }
                     order={getColumnOrder(TaskItemColumn.COMMENTS)}
                   >
-                    <TaskItemIcons
-                      restrictions={restrictions}
+                    <TaskItemComments
                       matchComments={matchComments}
                       comments={comments}
                       task={task}
-                      dispatch={dispatch}
                     />
                   </TaskItemCell>,
                   getColumnOrder(TaskItemColumn.COMMENTS),

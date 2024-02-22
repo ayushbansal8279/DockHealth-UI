@@ -1,6 +1,12 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { setCommentIdentifierToScroll } from 'actions/task-drawer-actions';
 import Comment from 'components/drawer-common/Comment/Comment';
-import initializeCommentSectionHooks from './hooks';
+import {
+  getCommentIdToScroll,
+  initializeCommentSectionHooks,
+  scrollToById,
+} from './helpers';
 import {
   CommentSectionContainer,
   CommentsListContainer,
@@ -8,13 +14,19 @@ import {
 } from './styled';
 
 const CommentSection = ({ selectedTask }) => {
-  const {
-    comments,
-    currentUser,
-    removeComment,
-    updateComment,
-    taskListIdentifier,
-  } = initializeCommentSectionHooks(selectedTask);
+  const dispatch = useDispatch();
+  const { comments, currentUser, removeComment, updateComment } =
+    initializeCommentSectionHooks(selectedTask);
+  const { commentIdentifierToScroll } = useSelector(
+    (state) => state.taskDrawerState,
+  );
+
+  useEffect(() => {
+    scrollToById(`#${getCommentIdToScroll(commentIdentifierToScroll)}`);
+    dispatch(setCommentIdentifierToScroll(null));
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [commentIdentifierToScroll]);
 
   return (
     <CommentSectionContainer>
@@ -27,7 +39,6 @@ const CommentSection = ({ selectedTask }) => {
             currentUser={currentUser}
             onDelete={removeComment}
             onUpdate={updateComment}
-            taskListIdentifier={taskListIdentifier}
             selectedTask={selectedTask}
           />
         ))}
