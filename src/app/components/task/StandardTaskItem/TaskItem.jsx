@@ -118,7 +118,6 @@ import {
 import TaskItemText from './customFieldsTaskItemComponents/TaskItemText/TaskItemText';
 import TaskItemDropdown from './customFieldsTaskItemComponents/TaskItemDropdown/TaskItemDropdown';
 import TaskItemDate from './customFieldsTaskItemComponents/TaskItemDate';
-import { StickyColumnContainer } from '../../tasklist/TasksHeader/styled';
 
 const { DISABLED, READ_ONLY } = SINGLE_TASK_RESTRICTIONS_OPTIONS;
 
@@ -166,6 +165,7 @@ const TaskItem = React.memo(
     origin,
     viewSetup,
     isTaskTemplate,
+    isWorkflowSubtask,
     isLastChild,
   }) => {
     const task = useSelector((state) => {
@@ -741,63 +741,62 @@ const TaskItem = React.memo(
       (content, order) => {
         if (order !== 0) return content;
         return (
-          <StickyColumnContainer customWidthExists={true}>
-            <StickyMainTaskItemCell
-              isWorkflowtask={isTaskTemplate}
-              customWidthExists
-              order={0}
-              isSubtask={showSubtaskStylingLink}
-              newlyCreated={newlyCreated}
-              backgroundColor={pageBackground}
-              isSelected={isSelected}
-              hasEscalations={hasEscalations}
-              customHighlight={customHighlight}
-              isEditingDescription={isEditingDescription}
-            >
-              {taskListRestrictions?.createTask !== DISABLED && (
-                <DotsContainer
-                  showDraggableDots={true}
-                  dragHandleProps={dragHandleProps}
-                />
-              )}
-              {showPriority && (
-                <PriorityIndicator color={getPriorityColor(task?.priority)} />
-              )}
-              {showSubtaskStylingLink && getSubtaskStylingLink(isLast)}
-              <ActionIconsContainer>
-                {taskListRestrictions?.createTask !== DISABLED &&
-                  bulkEditEnabled && (
-                    <TaskItemBulkEdit
-                      isChecked={isSelected}
-                      onClick={onClickBulkEdit}
-                    />
-                  )}
-                <Box ml="10px" />
-                <Tooltip
-                  placement="top"
-                  title={isCompleted ? 'Mark incomplete' : 'Complete task'}
-                >
-                  <CircleIcon
-                    src={isCompleted ? CircleCompleted : Circle}
-                    isClickable={
-                      !isTaskStatusTogglingDisabled &&
-                      isDependencyEmptyOrCompleted &&
-                      taskListRestrictions?.completeTask !== DISABLED
-                    }
-                    isCompleted={isCompleted}
-                    onClick={
-                      // eslint-disable-next-line unicorn/no-negated-condition
-                      taskListRestrictions?.completeTask !== DISABLED
-                        ? onCircleClick
-                        : () => {}
-                    }
+          <StickyMainTaskItemCell
+            isWorkflowtask={isTaskTemplate}
+            customWidthExists
+            order={0}
+            isSubtask={showSubtaskStylingLink}
+            newlyCreated={newlyCreated}
+            backgroundColor={pageBackground}
+            isSelected={isSelected}
+            hasEscalations={hasEscalations}
+            customHighlight={customHighlight}
+            isEditingDescription={isEditingDescription}
+            isWorkflowSubtask={isWorkflowSubtask}
+          >
+            {taskListRestrictions?.createTask !== DISABLED && (
+              <DotsContainer
+                showDraggableDots={true}
+                dragHandleProps={dragHandleProps}
+              />
+            )}
+            {showPriority && (
+              <PriorityIndicator color={getPriorityColor(task?.priority)} />
+            )}
+            {showSubtaskStylingLink && getSubtaskStylingLink(isLast)}
+            <ActionIconsContainer>
+              {taskListRestrictions?.createTask !== DISABLED &&
+                bulkEditEnabled && (
+                  <TaskItemBulkEdit
+                    isChecked={isSelected}
+                    onClick={onClickBulkEdit}
                   />
-                </Tooltip>
-              </ActionIconsContainer>
-              {content}
-              <TaskScrollVericleLine>&nbsp;</TaskScrollVericleLine>
-            </StickyMainTaskItemCell>
-          </StickyColumnContainer>
+                )}
+              <Box ml="10px" />
+              <Tooltip
+                placement="top"
+                title={isCompleted ? 'Mark incomplete' : 'Complete task'}
+              >
+                <CircleIcon
+                  src={isCompleted ? CircleCompleted : Circle}
+                  isClickable={
+                    !isTaskStatusTogglingDisabled &&
+                    isDependencyEmptyOrCompleted &&
+                    taskListRestrictions?.completeTask !== DISABLED
+                  }
+                  isCompleted={isCompleted}
+                  onClick={
+                    // eslint-disable-next-line unicorn/no-negated-condition
+                    taskListRestrictions?.completeTask !== DISABLED
+                      ? onCircleClick
+                      : () => {}
+                  }
+                />
+              </Tooltip>
+            </ActionIconsContainer>
+            {content}
+            <TaskScrollVericleLine>&nbsp;</TaskScrollVericleLine>
+          </StickyMainTaskItemCell>
         );
       },
       [
@@ -860,6 +859,8 @@ const TaskItem = React.memo(
         <StandardTaskItemPanel
           onContextMenu={handleTaskItemRightClick}
           isDragging={isDragging}
+          isWorkflowtask={isTaskTemplate}
+          isWorkflowSubtask={isWorkflowSubtask}
         >
           <StandardTaskItemContainer
             isTaskTemplate={isTaskTemplate}

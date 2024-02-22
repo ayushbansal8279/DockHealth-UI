@@ -20,14 +20,25 @@ const StickyMainTaskItemCell = styled.div`
     if (width && !isSubtask) return `${width}px`;
     return '';
   }};
-  left: ${({ isSubtask }) => (isSubtask ? '60px' : '24px')};
+  left: ${({ isSubtask, isWorkflowSubtask }) =>
+    isSubtask || isWorkflowSubtask ? '60px' : '24px'};
   ${({ order }) => (order ? `order: ${order};` : '')}
-  border-left: 1px solid ${({ isWorkflowtask, isTamplateGroup }) => (isWorkflowtask || isTamplateGroup ? 'rgba(75, 179, 253, 1)' : `${palette.coolGrey3}`)};
-  border-right: 1px solid ${palette.coolGrey3};
+  border-left: 1px solid
+    ${({ isWorkflowtask, isTamplateGroup }) =>
+    isWorkflowtask || isTamplateGroup
+      ? 'rgba(75, 179, 253, 1)'
+      : `${palette.coolGrey3}`};
+  border-right: ${({ isWorkflowtask, isTamplateGroup, isWorkflowSubtask }) =>
+    isWorkflowtask || !isTamplateGroup || isWorkflowSubtask
+      ? ''
+      : `1px solid ${palette.coolGrey3};`};
+  margin-left: ${({ isTamplateGroup }) =>
+    isTamplateGroup ? '-0.7px;' : '0px'};
   align-items: center;
   padding-left: ${spacing.smallPlus};
   z-index: ${({ isEditingDescription }) =>
     isEditingDescription ? '12' : '11'};
+  background: ${palette.white};
 
   &::before {
     content: '';

@@ -477,6 +477,8 @@ export const StandardTaskItemPanel = styled.div`
       ? 'box-shadow: 0px 0px 11px rgba(204, 204, 204, 0.8)'
       : ''};
 
+  margin-left:${({ isWorkflowtask, isWorkflowSubtask }) =>
+    isWorkflowtask ? '-2.5px;' : isWorkflowSubtask ? '-0.5px;' : '-1.2px;'} 
   &:hover {
     & ${ThreeDots}, & ${AddPlaceholder} {
       opacity: 1;
@@ -631,8 +633,7 @@ export const ParentTaskContainer = styled.div`
   }
 `;
 
-export const TaskContainer = styled.div`
-`;
+export const TaskContainer = styled.div``;
 
 export const SubtasksWrapper = styled.div`
   position: relative;
@@ -740,6 +741,6 @@ export const PatientMRNAnchor = styled.a`
 export const TaskScrollVericleLine = styled.div`
   background: #48bbb3;
   height: 100%;
-  width: 1px;
+  width: 2.5px;
   box-shadow: 1px 0px 3px 0px rgba(0, 0, 0, 0.21);
 `;
