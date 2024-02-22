@@ -20,7 +20,6 @@ import {
   DefaultPatientListUrl,
   DefaultPatientsListType,
 } from 'helpers/patient-list-helpers';
-import { organizationSelector } from 'selectors/organization-selectors';
 import {
   userProfileSelector,
   selectedUserOrganizationSelector,
@@ -74,8 +73,6 @@ const PatientsToolbar = () => {
   // const searchValue = useSelector(patientsListSearchTermSelector);
   const [searchValue, setSearchValue] = useState(null);
   const filtersActive = useSelector(filtersActiveSelector);
-  const { emrIntegrationEnabled, emrIntegrationType } =
-    useSelector(organizationSelector) || {};
   const listIdentifier = useSelector(currentPatientsListIdentifierSelector);
   const currentUser = useSelector(userProfileSelector);
   const currentOrganization = useSelector(selectedUserOrganizationSelector);
@@ -126,9 +123,19 @@ const PatientsToolbar = () => {
     [history],
   );
 
+  const { emrIntegrationEnabled, emrIntegrationType } =
+    currentOrganization || {};
+
   const emrEntegrationExperience =
     listIdentifier === DefaultPatientsListType.ALL_PATIENTS &&
     emrIntegrationEnabled;
+  const quickAddPatientEnabledItem =
+    currentOrganization?.themeSettings?.find(
+      ({ name }) => name === 'patient.add.enabled',
+    ) || {};
+  const patientAddEnabled =
+    !emrIntegrationEnabled ||
+    (emrIntegrationEnabled && quickAddPatientEnabledItem?.value === 'true');
 
   return (
     <>
@@ -176,7 +183,8 @@ const PatientsToolbar = () => {
               onClear={() => dispatch(PatientsActions.clearPatientsFilters())}
             />
           </Box>
-          {listIdentifier &&
+          {patientAddEnabled &&
+            listIdentifier &&
             (listIdentifier === DefaultPatientsListType.ALL_PATIENTS ||
               listIdentifier === DefaultPatientsListType.ACTIVE_PATIENTS) && (
               <AddEntitiesContainer>
