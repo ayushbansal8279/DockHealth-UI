@@ -18,6 +18,7 @@ import { taskLookupSelector } from 'selectors/task-details-selectors';
 import * as TaskActions from 'actions/task-actions';
 // import { taskDetailsSelector } from 'selectors/list-details-selectors';
 import { CollapseContext } from 'views/list-details/VirtualTaskList/VirtualTaskList';
+import useActions from 'hooks/use-actions';
 import TaskItem from './TaskItem';
 import Subtasks from './Subtasks';
 import { getMatchedComments } from './helpers';
@@ -78,6 +79,7 @@ const Task = React.memo(
     const { matchingCommentIdentifiers = [] } = searchMetaData;
     const { changeViewType, tasks, handleAddTask } =
       useContext(ListPageContext);
+    const taskActions = useActions(TaskActions);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
     // const renderedSubtasks = addingNewSubtask ? [...subtasks, {}] : subtasks;
@@ -229,6 +231,7 @@ const Task = React.memo(
             onTaskUpdate={handleUpdateTask}
             isDragging={isDragging}
             isDraggable={isDraggable}
+            updateWorkflowStatus={taskActions.updateWorkflowStatus}
             isCompletedGroup={isCompletedGroup}
             subtasksDisabled={subtasksDisabled}
             origin={origin}
