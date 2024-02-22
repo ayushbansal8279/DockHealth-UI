@@ -177,7 +177,7 @@ const PatientCard = ({
     dispatch(
       openModal('EditPatient', {
         patient: patientData,
-        onAdded: newPatientData => {
+        onAdded: (newPatientData) => {
           setPatientData(newPatientData);
         },
       }),

@@ -27,9 +27,19 @@
   "settings": {
     "import/resolver": {
       "node": {
-        "paths": ["src/app"],
-        "moduleDirectory": ["node_modules", "src/app"],
-        "extensions": [".js", ".jsx", ".ts", ".tsx"]
+        "paths": [
+          "src/app"
+        ],
+        "moduleDirectory": [
+          "node_modules",
+          "src/app"
+        ],
+        "extensions": [
+          ".js",
+          ".jsx",
+          ".ts",
+          ".tsx"
+        ]
       }
     }
   },
@@ -56,7 +66,10 @@
     "react/prop-types": "off",
     "react/jsx-props-no-spreading": "off",
     "react/jsx-filename-extension": "off",
-    "react/state-in-constructor": ["error", "never"],
+    "react/state-in-constructor": [
+      "error",
+      "never"
+    ],
     "jsx-a11y/click-events-have-key-events": "off",
     "jsx-a11y/no-static-element-interactions": "off",
     "import/extensions": "off",
@@ -68,23 +81,13 @@
           "pascalCase": true,
           "kebabCase": true
         },
-        "ignore": [".conf(ig)?.js(on)?$"]
+        "ignore": [
+          ".conf(ig)?.js(on)?$"
+        ]
       }
     ],
-    "unicorn/prevent-abbreviations": [
-      "error",
-      {
-        "extendDefaultReplacements": true,
-        "replacements": {
-          "props": {
-            "properties": false
-          },
-          "conf": {
-            "config": false
-          }
-        }
-      }
-    ],
+    "unicorn/prevent-abbreviations": "off",
+    "no-use-before-define": "off",
     "@typescript-eslint/explicit-function-return-type": "off",
     "@typescript-eslint/no-empty-function": "off",
     "@typescript-eslint/no-unused-vars": "error",
@@ -107,6 +110,7 @@
     "unicorn/no-array-callback-reference": "off",
     "unicorn/error-message": "off",
     "react/jsx-no-useless-fragment": "off",
-    "react/no-unstable-nested-components": "off"
+    "react/no-unstable-nested-components": "off",
+    "sonarjs/prefer-immediate-return": "off"
   }
 }

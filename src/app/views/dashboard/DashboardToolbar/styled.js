@@ -47,7 +47,7 @@ export const DashboardQuickFilter = styled.div`
   background-color: ${(props) =>
     props.active ? palette.whiteSmoke : opacify(palette.zinc, 0)};
   border-radius: ${(props) => (props.active ? '5px' : '0px')};
-  cursor: ${(props) => (props.active ? '' : 'pointer')};
+  // cursor: ${(props) => (props.active ? '' : 'pointer')};
 `;
 
 export const DashboardQuickFilterLabel = styled.div`
