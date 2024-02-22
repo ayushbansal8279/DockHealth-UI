@@ -7,38 +7,55 @@ import axios from './axios-heydoc';
 
 export function getQuickFilters(quickFilters) {
   return axios
-    .get(`task/quickFilter/search`, {
+    .get(`quickFilter/search`, {
       params: { ...quickFilters },
     })
     .then(({ data }) =>
       data.map((f) => ({
         ...f,
-        selectedOptions: mapRequestSelectedOptionsToStore(f.selectedOptions),
+        selectedOptions:
+          f.contextType === 'PATIENTS'
+            ? mapRequestSelectedOptionsToStore(f.patientSelectedOptions)
+            : mapRequestSelectedOptionsToStore(f.selectedOptions),
       })),
     );
 }
 export function createQuickFilter(quickFilters, viewSpecificData) {
   return axios
-    .post(`task/quickFilter`, {
+    .post(`quickFilter`, {
       ...quickFilters,
       ...viewSpecificData,
-      selectedOptions: mapSelectedOptionsToRequestPayload(
-        quickFilters.selectedOptions,
-      ),
+      selectedOptions:
+        viewSpecificData?.contextType === 'PATIENTS'
+          ? {}
+          : mapSelectedOptionsToRequestPayload(quickFilters.selectedOptions),
+      patientSelectedOptions:
+        viewSpecificData?.contextType === 'PATIENTS'
+          ? mapSelectedOptionsToRequestPayload(quickFilters.selectedOptions)
+          : {},
     })
     .then(({ data }) => ({
       ...data,
       selectedOptions: mapRequestSelectedOptionsToStore(data.selectedOptions),
     }));
 }
-export function updateQuickFilter(quickFilterIdentifier, quickFilters) {
+export function updateQuickFilter(
+  quickFilterIdentifier,
+  quickFilters,
+  viewSpecificData,
+) {
   return axios
-    .put(`task/quickFilter`, {
+    .put(`quickFilter`, {
       ...quickFilters,
       quickFilterIdentifier,
-      selectedOptions: mapSelectedOptionsToRequestPayload(
-        quickFilters.selectedOptions,
-      ),
+      selectedOptions:
+        viewSpecificData?.contextType === 'PATIENTS'
+          ? {}
+          : mapSelectedOptionsToRequestPayload(quickFilters.selectedOptions),
+      patientSelectedOptions:
+        viewSpecificData?.contextType === 'PATIENTS'
+          ? mapSelectedOptionsToRequestPayload(quickFilters.selectedOptions)
+          : {},
     })
     .then(({ data }) => ({
       ...data,
@@ -47,7 +64,5 @@ export function updateQuickFilter(quickFilterIdentifier, quickFilters) {
 }
 
 export function deleteQuickFilter(identifier) {
-  return axios
-    .delete(`task/quickFilter/${identifier}`)
-    .then(({ data }) => data);
+  return axios.delete(`quickFilter/${identifier}`).then(({ data }) => data);
 }
