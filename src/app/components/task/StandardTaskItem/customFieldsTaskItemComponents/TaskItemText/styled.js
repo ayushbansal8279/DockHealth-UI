@@ -22,10 +22,6 @@ export const TextContainer = styled.div`
 export const AddPlaceholder = styled.div`
   color: ${palette.lightGrey};
   opacity: 0;
-  &::first-letter {
-    color: ${palette.orange};
-    font-size: ${fontSizes.regular};
-  }
 
   &:hover {
     color: ${palette.brightBlue};
