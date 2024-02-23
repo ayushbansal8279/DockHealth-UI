@@ -35,7 +35,6 @@ import SearchInput from 'components/common/SearchInput/SearchInput';
 import FilterPopover from 'components/filter/FilterPopover/FilterPopover';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import CustomizeToolbarButton from 'components/patients/CustomizeToolbarButton/CustomizeToolbarButton';
-import Button from 'components/common/Button/Button';
 import CreatePatientDrawer from '../CreatePatientDrawer/CreatePatientDrawer';
 import PatientsFilter from '../PatientsFilter/PatientsFilter';
 import {
@@ -150,10 +149,8 @@ const PatientsToolbar = () => {
               />
             </Box>
             <Box m={1} />
-            <ButtonWrapper>
-              <Button fullWidth onClick={handleSearch} size="small">
-                Search
-              </Button>
+            <ButtonWrapper onClick={handleSearch}>
+              Search
             </ButtonWrapper>
             <Box>
               <ToolbarSelect
