@@ -39,6 +39,9 @@ export const PatientsListImg = styled.img`
 `;
 
 export const ButtonWrapper = styled(Button)`
+  text-transform: none;
+  font-size: 16px;
+  font-weight: 500;
   color: ${palette.white};
   height: 40px;
   width: 80px;
