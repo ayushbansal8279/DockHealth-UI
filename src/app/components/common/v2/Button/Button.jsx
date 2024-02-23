@@ -14,6 +14,7 @@ const TEXT = 'text';
 const TEXT_RED = 'text-red';
 
 const StyledButton = styled(MuiButton)`
+  box-shadow: none !important;
   &&& {
     &.MuiButton-root {
       width: ${({ width }) => `${width}`};
