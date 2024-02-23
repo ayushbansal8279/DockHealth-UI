@@ -13,7 +13,7 @@ export const BooleanBox = styled.div`
 `;
 
 export const PlaceholderContainer = styled.div`
-  top: -3px;
+  top: -9px;
   position: absolute;
   left: 0px;
   z-index: 9;

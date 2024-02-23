@@ -97,7 +97,7 @@ const Select = React.forwardRef(
           renderValue={(selectedValue) =>
             options.find((option) => option.value === selectedValue)?.label
           }
-          endAdornment={endAdornment}
+          // endAdornment={endAdornment}
           {...restProps}
         >
           {options?.map((option) => {
