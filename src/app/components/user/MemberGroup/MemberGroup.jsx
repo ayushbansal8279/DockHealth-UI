@@ -49,18 +49,25 @@ const MemberGroup = ({ members, max, size }) => {
           key={member?.identifier}
           zIndex={shownMembers.length - index}
         >
+          {index === 0 ? <></> : <Spacing horizontal={4} />}
           {isUserGroup(member) ? (
             <GroupAvatar size={size} group={member} />
           ) : (
             <UserAvatar user={member} size={size} />
           )}
-          {shownMembers.length > 1 ? <Spacing horizontal={4} /> : <></>}
+          {/* {shownMembers.length > 1 ? <Spacing horizontal={4} /> : <></>} */}
         </GroupItem>
       ))}
       {hiddenMembers && (
-        <GroupItem zIndex={0}>
-          <AdditionalMembersCounter hiddenMembers={hiddenMembers} size={size} />
-        </GroupItem>
+        <>
+          <Spacing horizontal={4} />
+          <GroupItem zIndex={0}>
+            <AdditionalMembersCounter
+              hiddenMembers={hiddenMembers}
+              size={size}
+            />
+          </GroupItem>
+        </>
       )}
     </GroupContainer>
   );
