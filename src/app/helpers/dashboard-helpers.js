@@ -48,7 +48,7 @@ export const GROUPS_WITH_COMPLETED_TASKS = [
 ];
 
 export const getGroupByDueDate = (dueDate, tabName) => {
-  const isMyTasksTab = tabName === DashboardTasksTab.MY_TASKS;
+  const isMyTasksTab = tabName === DashboardTasksTab.UPCOMING;
   if (!dueDate || dueDate === '')
     return isMyTasksTab
       ? DashboardGroup.NO_DUE_DATE

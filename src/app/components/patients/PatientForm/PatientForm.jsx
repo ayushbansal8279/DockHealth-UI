@@ -52,7 +52,7 @@ const PatientForm = forwardRef(
       uniqueIdentifierLabel,
       customerTypeLabel = '',
       onSubmit,
-      emrIntegrationEnabled,
+      patientAddEnabled,
       edited = true,
       buttonLabel,
     },
@@ -173,27 +173,27 @@ const PatientForm = forwardRef(
           onClick={() => setIsOpenedPersonal(!isOpenedPersonal)}
         >
           <FormInput
-            readOnly={!edited || emrIntegrationEnabled}
+            readOnly={!edited || !patientAddEnabled}
             label="First Name"
             name="firstName"
             required
           />
           <Spacing vertical={3} />
           <FormInput
-            readOnly={!edited || emrIntegrationEnabled}
+            readOnly={!edited || !patientAddEnabled}
             label="Middle Name"
             name="middleName"
           />
           <Spacing vertical={3} />
           <FormInput
-            readOnly={!edited || emrIntegrationEnabled}
+            readOnly={!edited || !patientAddEnabled}
             label="Last Name"
             name="lastName"
             required
           />
           <Spacing vertical={3} />
           <FormSelect
-            readOnly={!edited || emrIntegrationEnabled}
+            readOnly={!edited || !patientAddEnabled}
             label="Sex at birth"
             options={GENDER_OPTIONS_BIRTH}
             name="gender"
@@ -202,7 +202,7 @@ const PatientForm = forwardRef(
             <>
               <Spacing vertical={3} />
               <FormSelect
-                readOnly={!edited || emrIntegrationEnabled}
+                readOnly={!edited || !patientAddEnabled}
                 label="Gender"
                 options={GENDER_OPTIONS_IDENTITY}
                 name="genderIdentity"
@@ -211,7 +211,7 @@ const PatientForm = forwardRef(
           )}
           <Spacing vertical={3} />
           <FormInput
-            readOnly={!edited || emrIntegrationEnabled}
+            readOnly={!edited || !patientAddEnabled}
             label="Date of Birth"
             placeholder="MM/DD/YYYY"
             inputComponent={DateInput}
@@ -222,7 +222,7 @@ const PatientForm = forwardRef(
           />
           <Spacing vertical={3} />
           <FormInput
-            readOnly={!edited || emrIntegrationEnabled}
+            readOnly={!edited || !patientAddEnabled}
             label={uniqueIdentifierLabel}
             placeholder="- -"
             name="mrn"
@@ -251,20 +251,20 @@ const PatientForm = forwardRef(
           onClick={() => setIsOpenedContact(!isOpenedContact)}
         >
           <FormPhoneNumberInput
-            readOnly={!edited || emrIntegrationEnabled}
+            readOnly={!edited || !patientAddEnabled}
             label="Mobile Phone"
             name="phoneMobile"
           />
           <Spacing vertical={3} />
           <FormPhoneNumberInput
-            readOnly={!edited || emrIntegrationEnabled}
+            readOnly={!edited || !patientAddEnabled}
             label="Home Phone"
             name="phoneHome"
             type="tel"
           />
           <Spacing vertical={3} />
           <FormInput
-            readOnly={!edited || emrIntegrationEnabled}
+            readOnly={!edited || !patientAddEnabled}
             label="email"
             name="email"
           />

@@ -41,6 +41,7 @@ function VSubtask(
             draggableProvided={provided}
             isDraggable
             isDragging={snapshot.isDragging}
+            isWorkflowSubtask={!!task}
           />
         </Sc.VSubtask>
       )}

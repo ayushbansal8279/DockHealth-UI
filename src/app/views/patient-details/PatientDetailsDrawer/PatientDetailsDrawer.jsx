@@ -6,7 +6,6 @@ import mergeDeepRight from 'ramda/src/mergeDeepRight';
 import moment from 'moment';
 import { useDispatch, useSelector } from 'react-redux';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { organizationSelector } from 'selectors/organization-selectors';
 import {
   userProfileSelector,
   selectedUserOrganizationSelector,
@@ -56,8 +55,15 @@ const PatientDetailsDrawer = ({ patient, isOpenedDetails, closeDetails }) => {
   const customerTypeLabel = getCustomerTypeLabel(currentUser);
   const { reset, clearErrors } = formMethods;
   const formReference = useRef(null);
-  const organization = useSelector(organizationSelector);
-  const { emrIntegrationEnabled } = organization || {};
+
+  const { emrIntegrationEnabled } = currentOrganization || {};
+  const quickAddPatientEnabledItem =
+    currentOrganization?.themeSettings?.find(
+      ({ name }) => name === 'patient.add.enabled',
+    ) || {};
+  const patientAddEnabled =
+    !emrIntegrationEnabled ||
+    (emrIntegrationEnabled && quickAddPatientEnabledItem?.value === 'true');
 
   const close = () => {
     unsetActive();
@@ -145,41 +151,43 @@ const PatientDetailsDrawer = ({ patient, isOpenedDetails, closeDetails }) => {
         name: 'Edit',
         onClick: setActive,
       },
-      !isActive && {
-        name: 'Merge',
-        onClick: () => {
-          dispatch(
-            openModal('PatientPicker', {
-              patientIdentifiersToExclude: [patient.patientIdentifier],
-              onSelect: (selectedPatient) => {
-                dispatch(
-                  openModal('MergePatients', {
-                    toPatient: selectedPatient,
-                    fromPatient: patient,
-                    confirm: () => {
-                      dispatch(closeModal());
-                      dispatch(
-                        mergePatient(patient, selectedPatient, () => {
-                          history.push(
-                            createPatientDetailsPath(
-                              selectedPatient.patientIdentifier,
-                            ),
-                          );
-                        }),
-                      );
-                    },
-                  }),
-                );
-              },
-            }),
-          );
-          closeDetails();
+      patientAddEnabled &&
+        !isActive && {
+          name: 'Merge',
+          onClick: () => {
+            dispatch(
+              openModal('PatientPicker', {
+                patientIdentifiersToExclude: [patient.patientIdentifier],
+                onSelect: (selectedPatient) => {
+                  dispatch(
+                    openModal('MergePatients', {
+                      toPatient: selectedPatient,
+                      fromPatient: patient,
+                      confirm: () => {
+                        dispatch(closeModal());
+                        dispatch(
+                          mergePatient(patient, selectedPatient, () => {
+                            history.push(
+                              createPatientDetailsPath(
+                                selectedPatient.patientIdentifier,
+                              ),
+                            );
+                          }),
+                        );
+                      },
+                    }),
+                  );
+                },
+              }),
+            );
+            closeDetails();
+          },
         },
-      },
-      patientStatus === 'ACTIVE' && {
-        name: 'Archive',
-        onClick: archivePatient,
-      },
+      patientAddEnabled &&
+        patientStatus === 'ACTIVE' && {
+          name: 'Archive',
+          onClick: archivePatient,
+        },
       patientStatus === 'ARCHIVED' && {
         name: 'Restore',
         onClick: unarchivePatient,
@@ -192,7 +200,7 @@ const PatientDetailsDrawer = ({ patient, isOpenedDetails, closeDetails }) => {
     [
       isActive,
       setActive,
-      emrIntegrationEnabled,
+      patientAddEnabled,
       patient,
       archivePatient,
       unarchivePatient,
@@ -221,7 +229,7 @@ const PatientDetailsDrawer = ({ patient, isOpenedDetails, closeDetails }) => {
           patient={patient}
           onSubmit={handleFormSubmit}
           uniqueIdentifierLabel={uniqueIdentifierLabel}
-          emrIntegrationEnabled={emrIntegrationEnabled}
+          patientAddEnabled={patientAddEnabled}
           edited={isActive}
           customerTypeLabel={customerTypeLabel}
           buttonLabel="SAVE EDITS"

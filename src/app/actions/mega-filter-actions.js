@@ -5,6 +5,7 @@ export const quickContextTypes = {
   MY_TASKS: 'MY_TASKS',
   ALL_TASKS: 'ALL_TASKS',
   ANALYTICS: 'ANALYTICS',
+  PATIENTS: 'PATIENTS',
 };
 
 export function clearFiltersForMegaFilter() {

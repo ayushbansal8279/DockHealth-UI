@@ -207,7 +207,7 @@ const DashboardToolbar = ({ iconColorFilterActive, iconColorActive }) => {
               label="Upcoming"
               setHighlightPosition={setHighlightPosition}
               onClick={() => {
-                history.push(`${HOME_UPCOMING_TASKS_PATH}${search}`);
+                history.push(`${HOME_PATH}${search}`);
               }}
               isSelected={tabName === DashboardTasksTab.UPCOMING}
             />

@@ -99,7 +99,7 @@ const CustomFilterOption = (props) => {
         value={value}
         onChange={(event) => setValue(event.target.value)}
         InputProps={{ disableUnderline: true }}
-        onBlur={() => onBlur(identifier, value)}
+        onBlur={() => !disabled && onBlur(identifier, value)}
       />
       {!disableOptions && (
         <OptionsMenu options={OPTIONS}>

@@ -15,8 +15,9 @@ import { addPatient } from 'api/patient-api';
 import { changePatientForTemplateBundle } from 'actions/template-bundle-actions';
 import { noop } from 'helpers/utility-functions';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
-import { capitalize } from 'helpers/capitalize';
 import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
+import AssignMemberIcon from 'components/user/AssignMemberIcon/AssingMemberIcon';
+import { useHistory, useLocation } from 'react-router-dom';
 import SelectDropdown from '../SelectDropdown/SelectDropdown';
 import { getFormattedPatient, getFormattedPatients } from './helpers';
 import {
@@ -26,8 +27,6 @@ import {
   AddPatient,
   PatientName,
 } from './styled';
-import AssignMemberIcon from 'components/user/AssignMemberIcon/AssingMemberIcon';
-import { useHistory, useLocation } from 'react-router-dom';
 
 const PATIENT_IDENTIFIER_FIELD_NAME = 'patientIdentifier';
 const MAX_PATIENT_RESULTS = 200;
@@ -70,9 +69,18 @@ const PatientSection = ({
         organizationIdentifier === currentOrganizationIdentifier,
     ) || {};
 
+  const { emrIntegrationEnabled } = currentOrganization || {};
+  const quickAddPatientEnabledItem =
+    currentOrganization?.themeSettings?.find(
+      ({ name }) => name === 'patient.add.enabled',
+    ) || {};
+  const patientAddEnabled =
+    !emrIntegrationEnabled ||
+    (emrIntegrationEnabled && quickAddPatientEnabledItem?.value === 'true');
+
   const formattedPatients = getFormattedPatients({ patients });
   const customerTypeLabel = getCustomerTypeLabel(currentUser);
-  const customerTypeLabelCapitalized = capitalize(customerTypeLabel);
+  // const customerTypeLabelCapitalized = customerTypeLabel;
 
   useEffect(() => {
     if (patientInputReference?.current && autofocus)
@@ -272,7 +280,7 @@ const PatientSection = ({
 
   const handleAddPatient = useCallback(
     (patient) => {
-      if (currentOrganization.emrIntegrationEnabled) {
+      if (!patientAddEnabled) {
         return;
       }
 
@@ -297,11 +305,7 @@ const PatientSection = ({
         })
         .catch(noop);
     },
-    [
-      currentOrganization.emrIntegrationEnabled,
-      fetchPatients,
-      handlePatientSelect,
-    ],
+    [patientAddEnabled, fetchPatients, handlePatientSelect],
   );
 
   const patientProfile = () => {
@@ -336,7 +340,7 @@ const PatientSection = ({
             //     : placeholder ||
             //       `Who is the ${customerTypeLabel}? (first last or last, first)`
             // }
-            placeholder={'Add Patient'}
+            placeholder="Add Patient"
             disabled={disabled}
             selectedOption={assignedPatient}
             options={formattedPatients}
@@ -350,15 +354,11 @@ const PatientSection = ({
             onOptionSelect={handlePatientSelect}
             onClear={handleClearSelectedPatient}
             onAddItemClick={
-              currentOrganization?.emrIntegrationEnabled ||
-              !quickAddPatientEnabled
+              !patientAddEnabled || !quickAddPatientEnabled
                 ? null
                 : handleAddPatient
             }
-            addItemEnabled={
-              !currentOrganization?.emrIntegrationEnabled &&
-              quickAddPatientEnabled
-            }
+            addItemEnabled={patientAddEnabled && quickAddPatientEnabled}
             clearOnSuccess
             refineResultsCount={MAX_PATIENT_RESULTS}
             width={600}

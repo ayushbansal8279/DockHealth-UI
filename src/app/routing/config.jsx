@@ -235,13 +235,13 @@ export const SETTINGS_ROUTES = [
 ];
 
 export const TEMPLATE_CORE_SUBSCRIPTION_PLAN_ROUTES = [
-  {
-    path: '/home/my-tasks',
-    RouteComponent: (props) => (
-      <DashboardView tabName={DashboardTasksTab.MY_TASKS} {...props} />
-    ),
-    permissions: [CAN_ACCESS_HOME_PAGE],
-  },
+  // {
+  //   path: '/home/my-tasks',
+  //   RouteComponent: (props) => (
+  //     <DashboardView tabName={DashboardTasksTab.MY_TASKS} {...props} />
+  //   ),
+  //   permissions: [CAN_ACCESS_HOME_PAGE],
+  // },
   {
     path: '/home/shared-with-me-tasks',
     RouteComponent: (props) => (
@@ -257,7 +257,7 @@ export const TEMPLATE_CORE_SUBSCRIPTION_PLAN_ROUTES = [
     permissions: [CAN_ACCESS_HOME_PAGE],
   },
   {
-    path: '/home/upcoming-tasks',
+    path: '/home/my-tasks',
     RouteComponent: (props) => (
       <DashboardView tabName={DashboardTasksTab.UPCOMING} {...props} />
     ),
