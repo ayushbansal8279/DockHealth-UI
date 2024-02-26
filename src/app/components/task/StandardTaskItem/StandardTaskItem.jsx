@@ -129,22 +129,24 @@ const Task = React.memo(
           handleSetSubtasksOpen(true);
           handleAddTask(taskIdentifier);
         } else {
-          if (collapse.get(taskIdentifier)) {
-            setAreSubtasksOpen(false);
-          } else {
-            setAreSubtasksOpen(true);
-          }
+          // if (collapse.get(taskIdentifier)) {
+          //   setAreSubtasksOpen(false);
+          // } else {
+          //   setAreSubtasksOpen(true);
+          // }
+          setAreSubtasksOpen(!collapse.get(taskIdentifier));
         }
       } else if (changeViewType === 'SLIM_VIEW') {
         if (!tasks.includes(taskIdentifier)) {
           handleSetSubtasksOpen(false);
           handleAddTask(taskIdentifier);
         } else {
-          if (collapse.get(taskIdentifier)) {
-            setAreSubtasksOpen(false);
-          } else {
-            setAreSubtasksOpen(true);
-          }
+          // if (collapse.get(taskIdentifier)) {
+          //   setAreSubtasksOpen(false);
+          // } else {
+          //   setAreSubtasksOpen(true);
+          // }
+          setAreSubtasksOpen(!collapse.get(taskIdentifier));
         }
       } else {
         handleSetSubtasksOpen(false);

@@ -34,7 +34,6 @@ import {
   TaskTemplateItemsStartPill,
 } from './styled';
 import TaskTemplateGroupHeader from '../TaskTemplateGroupHeader/TaskTemplateGroupHeader';
-import { CollapseContext } from '@/app/views/list-details/VirtualTaskList/VirtualTaskList';
 
 const TaskTemplateGroup = ({
   templateGroup: pullGroup = {},
@@ -75,8 +74,7 @@ const TaskTemplateGroup = ({
   const { SHOW_WORKFLOW_DETAILS, SHOW_WORKFLOW_COMPLETED_TASKS } =
     viewSetup || {};
   // const { innerRef, draggableProps } = draggableProvided;
-  const collapse = useContext(CollapseContext);
-  const [isOpen, setOpen] = useState(collapse.get(identifier) ? false : true);
+  const [isOpen, setOpen] = useState(true);
   const [draggedTaskIdentifier, setDraggedTaskIdentifier] = useState(null);
   const [showCompletedTasks, setShowCompletedTasks] = useState(true);
   const [showIncompleteTasks, setShowIncompleteTasks] = useState(
