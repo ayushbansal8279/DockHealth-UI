@@ -209,7 +209,7 @@ const Calendar = ({ taskListIdentifier }) => {
             <MultiAssignCalendar assignedToUsers={task.assignedToUsers} />
           )}
           <b>{eventInfo.timeText}</b>
-          <Spacing horizontal={2} />
+          <Spacing horizontal={4} />
           <Typography>
             {createMentionsFromTokenizedDescription(
               task?.tokenizedDescription,
