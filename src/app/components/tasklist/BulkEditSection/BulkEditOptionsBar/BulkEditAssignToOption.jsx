@@ -55,6 +55,7 @@ const BulkEditAssignToOption = ({
           onSelect={handleChangeAssigneTasks}
           isDisabled={isDisabled}
           onError={closePopover}
+          closeModel={closePopover}
           enableLazyLoading={containPublicListType}
         />
       )}

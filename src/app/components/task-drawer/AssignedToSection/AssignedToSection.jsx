@@ -70,7 +70,7 @@ const AssignedToSection = ({ selectedTask = {}, onSave, disabled }) => {
   return (
     <TaskDrawerPopover
       disabled={disabled}
-      content={() => (
+      content={({ closePopover }) => (
         <MultiAssignMembersList
           taskListIdentifiers={taskListIdentifier}
           selectedMembers={assignedToUsersValue}
@@ -78,6 +78,7 @@ const AssignedToSection = ({ selectedTask = {}, onSave, disabled }) => {
           enableLazyLoading={
             taskList?.listType === 'PUBLIC' || taskList?.listType === 'TEMPLATE'
           }
+          closeModel={closePopover}
           additionalMembers={selectedTask?.sharedWithUsers || []}
         />
       )}
