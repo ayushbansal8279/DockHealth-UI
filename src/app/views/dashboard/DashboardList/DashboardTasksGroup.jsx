@@ -247,9 +247,8 @@ const DashboardTasksGroup = ({
             <GroupNameSectionWrapper>
               <DashboardTasksGroupLabel>
                 <DashboardTasksGroupLabelName>
-                  {groupName}
+                  {groupName} ({metricValue})
                 </DashboardTasksGroupLabelName>
-                ({metricValue})
               </DashboardTasksGroupLabel>
             </GroupNameSectionWrapper>
           </DashboardTasksGroupHeader>
