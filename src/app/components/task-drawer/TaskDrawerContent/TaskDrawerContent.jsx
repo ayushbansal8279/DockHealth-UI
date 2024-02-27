@@ -59,6 +59,8 @@ import {
   FiledInListName,
   // SubscriptionBadge,
 } from './styled';
+import ReminderSection from '../ReminderSection/ReminderSection';
+import StartDateSection from '../StartDateSection/StartDateSection';
 
 const { DISABLED, READ_ONLY } = SINGLE_TASK_RESTRICTIONS_OPTIONS;
 
@@ -121,6 +123,9 @@ const TaskDrawerContent = (props) => {
     false;
   const subTasksDisabled =
     currentOrganization?.disabledFeatures?.includes('TASK_SUBTASKS') || false;
+  
+  const taskStartDateDisabled =
+    currentOrganization?.disabledFeatures?.includes('TASK_START_DATE') || false;
 
   const taskLabelsLocationItem =
     currentOrganization?.themeSettings?.find(
@@ -488,7 +493,7 @@ const TaskDrawerContent = (props) => {
             />
           </div>
         </Grid>
-        {/* <Grid item xs={12} ml={3} style={styleRightColumn(isMobile)}>
+        <Grid item xs={12} ml={3} style={styleRightColumn(isMobile)}>
           {!isTemplateTask && (
             <ReminderSection
               onSave={handleUpdateTask}
@@ -496,7 +501,7 @@ const TaskDrawerContent = (props) => {
               selectedTask={selectedTask}
             />
           )}
-        </Grid> */}
+        </Grid>
         <Grid item xs={12} style={styleLeftColumn(isMobile)}>
           <PrioritySection
             onTaskUpdate={onTaskUpdate}

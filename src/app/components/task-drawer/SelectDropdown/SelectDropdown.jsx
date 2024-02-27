@@ -207,7 +207,7 @@ const SelectDropdown = React.forwardRef(
     };
 
     return (
-      <>
+      <div>
         <div ref={inputContainerReference}>
           <Input
             ref={reference}
@@ -306,7 +306,7 @@ const SelectDropdown = React.forwardRef(
             )}
           </ListContainer>
         )}
-      </>
+      </div>
     );
   },
 );

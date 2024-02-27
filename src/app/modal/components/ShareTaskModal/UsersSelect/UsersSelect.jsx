@@ -85,7 +85,7 @@ const UsersSelect = (props) => {
             alignItems="left"
             {...props_}
           >
-            {renderUserOptionAvatar(option)}&nbsp;&nbsp;
+            {renderUserOptionAvatar(option)}&nbsp;&nbsp;&nbsp;&nbsp;
             <ListItemText>
               {option.userName}
               {/* TODO: use backend external flag */}
