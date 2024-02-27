@@ -72,13 +72,14 @@ export const DateViewText = styled.div`
 `;
 
 export const ReminderIconContainer = styled.div`
-  background: ${({ isOverdue }) =>
+  color: ${({ isOverdue }) =>
     isOverdue ? `${palette.oPlusRed}` : `${palette.coolGrey1}`};
   padding-left: ${spacing.small};
 `;
 
 export const RecurringIconContainer = styled.div`
-  color: ${({ isOverdue }) => (isOverdue ? '#ec4f3e' : '#8492A4')};
+  color: ${({ isOverdue }) =>
+    isOverdue ? `${palette.oPlusRed}` : `${palette.coolGrey1}`};
   padding-left: ${spacing.small};
 `;
 
