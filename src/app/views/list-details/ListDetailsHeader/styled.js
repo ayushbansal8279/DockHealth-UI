@@ -21,12 +21,12 @@ export const MainHeaderContainer = styled.div`
     display: none;
   }
   &:hover {
-    p {
+    h1 + p {
       visibility: hidden;
     }
     box-shadow: 0px 13px 13px 0px rgba(0, 0, 0, 0.15);
   }
-  p {
+  h1 + p {
     visibility: ${(props) => (props.showShadow ? 'hidden' : 'visible')};
   }
 `;
