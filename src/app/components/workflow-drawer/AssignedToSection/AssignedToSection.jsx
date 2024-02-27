@@ -74,7 +74,7 @@ const AssignedToSection = ({ disabled }) => {
 
   return (
     <TaskDrawerPopover
-      content={() =>
+      content={({ closePopover }) =>
         !disabled && (
           <MultiAssignMembersList
             taskListIdentifiers={taskListIdentifier}
@@ -84,6 +84,7 @@ const AssignedToSection = ({ disabled }) => {
               taskList?.listType === 'PUBLIC' ||
               taskList?.listType === 'TEMPLATE'
             }
+            closeModel={closePopover}
           />
         )
       }

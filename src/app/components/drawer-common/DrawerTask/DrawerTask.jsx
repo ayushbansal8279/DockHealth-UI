@@ -98,7 +98,7 @@ const DrawerTask = (props) => {
   } = task;
 
   const [isCompleted, setIsCompleted] = useState(task?.status === 'COMPLETE');
-  
+
   useEffect(() => {
     if (task?.status === 'COMPLETE') {
       setIsCompleted(true);
@@ -108,7 +108,7 @@ const DrawerTask = (props) => {
   const updateStatus = () => {
     setIsCompleted(!isCompleted);
   };
-  
+
   const isTemplateTask = checkIfTemplateTask(task);
 
   // const [descriptionState, setDescriptionState] = useMentionsEditorState(
@@ -326,6 +326,7 @@ const DrawerTask = (props) => {
               selectedMembers={assignedToUsers}
               onSelect={handleReassignSubtask}
               onError={closePopover}
+              closeModel={closePopover}
               enableLazyLoading={
                 taskList?.listType === 'PUBLIC' ||
                 taskList?.listType === 'TEMPLATE'

@@ -52,6 +52,7 @@ const MultiAssignMembersList = ({
   selectedMembers: savedSelectedMembers,
   onSelect,
   onError,
+  closeModel,
   enableLazyLoading: enabled,
   additionalMembers,
   // eslint-disable-next-line sonarjs/cognitive-complexity
@@ -224,6 +225,7 @@ const MultiAssignMembersList = ({
 
   const handleOptionSendClick = () => {
     selectMembersWithDebounce(selectedMembers);
+    closeModel();
   };
 
   const displayUnassignedOption = 'unassigned'.includes(
