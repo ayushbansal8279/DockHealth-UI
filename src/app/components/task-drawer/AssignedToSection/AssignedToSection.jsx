@@ -69,9 +69,11 @@ const AssignedToSection = ({ selectedTask = {}, onSave, disabled }) => {
 
   return (
     <TaskDrawerPopover
+    width={245}
       disabled={disabled}
       content={() => (
         <MultiAssignMembersList
+          width={245}
           taskListIdentifiers={taskListIdentifier}
           selectedMembers={assignedToUsersValue}
           onSelect={handleAssignToSelection}
