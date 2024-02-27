@@ -38,7 +38,6 @@ const StickyMainTaskItemCell = styled.div`
   padding-left: ${spacing.smallPlus};
   z-index: ${({ isEditingDescription }) =>
     isEditingDescription ? '12' : '11'};
-  background: ${palette.white};
 
   &::before {
     content: '';
