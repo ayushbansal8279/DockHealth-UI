@@ -235,14 +235,14 @@ const TaskListToolbar = (props) => {
       )}
       {viewOnlyCustomizeEnabled && (
         <>
-          <Spacing horizontal={4} />
+          <Spacing horizontal={3} />
           <CustomizeToolbarButton
             showCustomColumnCreate={false}
             additionalOptions={OPTIONS}
             iconColorFilterActive={iconColorFilterActiveItem?.value}
             {...props}
           />
-          <Spacing horizontal={4} />
+          <Spacing horizontal={3} />
           <ToolbarButton onClick={onPrintClick}>Print</ToolbarButton>
         </>
       )}

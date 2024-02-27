@@ -20,11 +20,12 @@ const ToolbarButton = React.forwardRef((props, reference) => {
     onClick,
     children,
     tooltip,
-    searchValue,
+    // searchValue,
     isOpen,
     active,
-    focused,
+    // focused,
     disableButton = false,
+    hasPopover,
   } = props;
   return (
     // <Tooltip placement="top" title={tooltip}>
@@ -57,31 +58,35 @@ const ToolbarButton = React.forwardRef((props, reference) => {
           onClick={onClick}
           size="large"
           active={+active}
+          hasPopover={hasPopover}
         >
           {icon}
           <CustomizeButtonLabel
             variant="body1"
             component="span"
             active={+active}
+            icon={icon}
           >
-            Customize
+            {children}
           </CustomizeButtonLabel>
         </CustomizeButtonWrapper>
-        <Box display="flex" width="35px" overflow="hidden">
-          <CustomizeRotatableChevronButtonWrapper
-            variant="text"
-            onClick={onClick}
-            size="large"
-            active={+active}
-          >
-            <CustomizeRotatableChevronButtonLabel
-              variant="body1"
-              component="span"
+        {hasPopover && (
+          <Box display="flex" width="35px" overflow="hidden">
+            <CustomizeRotatableChevronButtonWrapper
+              variant="text"
+              onClick={onClick}
+              size="large"
+              active={+active}
             >
-              <RotatableChevron rotated={isOpen} color={palette.white} />
-            </CustomizeRotatableChevronButtonLabel>
-          </CustomizeRotatableChevronButtonWrapper>
-        </Box>
+              <CustomizeRotatableChevronButtonLabel
+                variant="body1"
+                component="span"
+              >
+                <RotatableChevron rotated={isOpen} color={palette.white} />
+              </CustomizeRotatableChevronButtonLabel>
+            </CustomizeRotatableChevronButtonWrapper>
+          </Box>
+        )}
       </ToolbarButtonBoxContainer>
     </Tooltip>
   );
