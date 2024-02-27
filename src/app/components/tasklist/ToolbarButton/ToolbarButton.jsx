@@ -20,10 +20,8 @@ const ToolbarButton = React.forwardRef((props, reference) => {
     onClick,
     children,
     tooltip,
-    // searchValue,
     isOpen,
     active,
-    // focused,
     disableButton = false,
     hasPopover,
   } = props;
