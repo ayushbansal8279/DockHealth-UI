@@ -55,6 +55,7 @@ const MultiAssignMembersList = ({
   closeModel,
   enableLazyLoading: enabled,
   additionalMembers,
+  width
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const { emrIntegrationEnabled } = useSelector(organizationSelector);
@@ -287,7 +288,7 @@ const MultiAssignMembersList = ({
   }, [currentUserMember, enableLazyLoading, isValueSendable, searchValue]);
 
   return (
-    <>
+    <div style={{width: `${width}`}}>
       <InputBox>
         <img src={MagnifierIcon} alt="magnifier" />
         <Input
@@ -400,7 +401,7 @@ const MultiAssignMembersList = ({
           Apply
         </Button>
       </div>
-    </>
+    </div>
   );
 };
 

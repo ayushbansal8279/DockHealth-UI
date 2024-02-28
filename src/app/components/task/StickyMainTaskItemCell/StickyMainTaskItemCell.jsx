@@ -38,8 +38,18 @@ const StickyMainTaskItemCell = styled.div`
   padding-left: ${spacing.smallPlus};
   z-index: ${({ isEditingDescription }) =>
     isEditingDescription ? '12' : '11'};
-  background: ${palette.white};
-
+  
+  background-color: ${(props) =>
+    props.isSelected
+      ? palette.brightBlueWithAlpha
+      : // eslint-disable-next-line unicorn/no-nested-ternary
+      props.hasEscalations
+      ? palette.bananaHammockLight
+      : // eslint-disable-next-line unicorn/no-nested-ternary
+      props.customHighlight
+      ? props.customHighlight
+      : palette.white};
+  
   &::before {
     content: '';
     display: block;

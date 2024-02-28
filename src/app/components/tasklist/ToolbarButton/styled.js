@@ -32,7 +32,8 @@ export const CustomizeButtonWrapper = styled(Button)`
     border-radius: 0;
     background-color: ${(props) =>
       props.active ? palette.newBrightBlue : palette.newDarkBlue};
-    border-right: 2px solid ${palette.white};
+    border-right: ${(props) =>
+      props.hasPopover ? `2px solid ${palette.white};` : ''};
     // border-radius: 5px 0px 0px 5px;
     :hover {
       background-color: ${(props) =>
@@ -59,7 +60,7 @@ export const CustomizeButtonLabel = styled(Typography)`
       color: ${palette.white};
       font-weight: ${fontWeights.light};
       // display: inline-block;
-      margin-left: ${spacing.small};
+      margin-left: ${({ icon }) => (!!icon ? spacing.small : '')};
       text-transform: none;
     }
   }
