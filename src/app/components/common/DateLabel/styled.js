@@ -18,10 +18,10 @@ export const DateTextContainer = styled.div`
   align-items: center;
   border-radius: 2px;
   background: ${({ isOverdue }) =>
-    isOverdue ? `${palette.oPlusRed}` : `${palette.white}`};
+    isOverdue ? `${palette.oPlusRed}` : `${palette.whiteSmoke}`};
   padding: 3px ${spacing.small};
   color: ${({ isOverdue }) =>
-    isOverdue ? `${palette.white}` : `${palette.black}`};
+    isOverdue ? `${palette.white}` : `${palette.offBlack}`};
 `;
 
 export const ReminderIconContainer = styled.div`
@@ -30,6 +30,6 @@ export const ReminderIconContainer = styled.div`
 `;
 
 export const RecurringIconContainer = styled.div`
-  color: ${({ isOverdue }) => (isOverdue ? '#ec4f3e' : '#8492A4')};
+  color: ${({ isOverdue }) => (isOverdue ? '#ec4f3e' : '#292D34')};
   padding-left: ${spacing.small};
 `;
