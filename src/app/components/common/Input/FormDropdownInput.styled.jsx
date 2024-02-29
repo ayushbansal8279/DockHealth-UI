@@ -5,6 +5,8 @@ export const StyledDropdownInput = styled(SecondaryDropdownInput)`
   height: ${({ height }) => (height ? `${height}px` : '100%')};
   & .MuiInputBase-input {
     height: ${({ height }) => (height ? `${height}px` : '100%')};
+    font-weight: 400;
+    transform: translateY(8px);
   }
   & .MuiFormLabel-root {
     ${({ error }) => (error ? 'color: #D32F2F;' : '')}

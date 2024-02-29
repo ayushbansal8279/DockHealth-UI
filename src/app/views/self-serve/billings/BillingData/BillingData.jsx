@@ -223,7 +223,14 @@ const SaveBillingElement = ({ processingPayment, cancelSaveBillingClick }) => (
         </Anchor>
       </H3>
     </Grid>
-    <Grid item sm={12} container justifyContent="flex-end" wrap="nowrap">
+    <Grid
+      item
+      sm={12}
+      container
+      justifyContent="flex-end"
+      wrap="nowrap"
+      sx={{ mb: 2 }}
+    >
       <Button
         onClick={cancelSaveBillingClick}
         variant="text"
@@ -246,20 +253,21 @@ const UpdateBillingElement = ({
   processingUpdate,
 }) =>
   isUpdatingBilling && (
-    <Grid item sm={12} container justifyContent="flex-end" wrap="nowrap">
+    <Grid
+      item
+      sm={12}
+      container
+      justifyContent="flex-end"
+      wrap="nowrap"
+      sx={{ mb: 2 }}
+    >
       <Button
         onClick={cancelUpdateBilling}
         variant="text"
         disabled={processingUpdate}
         width="300px"
       >
-        <MontserratTypography
-          variant="h4"
-          textDecoration="underline"
-          weight="600"
-        >
-          CANCEL
-        </MontserratTypography>
+        CANCEL
       </Button>
       <Spacing horizontal={4} />
       <Button type="submit" disabled={processingUpdate} width="300px">
