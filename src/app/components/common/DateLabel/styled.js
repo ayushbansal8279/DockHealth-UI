@@ -25,11 +25,13 @@ export const DateTextContainer = styled.div`
 `;
 
 export const ReminderIconContainer = styled.div`
-  color: ${({ isOverdue }) => (isOverdue ? '#ec4f3e' : '#8492A4')};
+  color: ${({ isOverdue }) =>
+    isOverdue ? palette.oPlusRed : palette.coolGrey1};
   padding-left: ${spacing.small};
 `;
 
 export const RecurringIconContainer = styled.div`
-  color: ${({ isOverdue }) => (isOverdue ? '#ec4f3e' : '#292D34')};
+  color: ${({ isOverdue }) =>
+    isOverdue ? palette.oPlusRed : palette.offBlack};
   padding-left: ${spacing.small};
 `;
