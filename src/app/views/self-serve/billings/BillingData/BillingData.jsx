@@ -9,6 +9,8 @@ import {
   useStripe,
   useElements,
 } from '@stripe/react-stripe-js';
+import { STATE_LIST_OPTIONS } from '@/app/constants/us-states';
+import FormDropdownInput from '@/app/components/common/Input/FormDropdownInput';
 import { useEffectOnce, useToggle } from 'react-use';
 import { object, string } from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -221,20 +223,21 @@ const SaveBillingElement = ({ processingPayment, cancelSaveBillingClick }) => (
         </Anchor>
       </H3>
     </Grid>
-    <Grid item sm={12} container justifyContent="flex-end" wrap="nowrap">
+    <Grid
+      item
+      sm={12}
+      container
+      justifyContent="flex-end"
+      wrap="nowrap"
+      sx={{ mb: 2 }}
+    >
       <Button
         onClick={cancelSaveBillingClick}
         variant="text"
         disabled={processingPayment}
         width="300px"
       >
-        <MontserratTypography
-          variant="h4"
-          textDecoration="underline"
-          weight="600"
-        >
-          CANCEL
-        </MontserratTypography>
+        CANCEL
       </Button>
       <Spacing horizontal={4} />
       <Button type="submit" disabled={processingPayment} width="300px">
@@ -250,20 +253,21 @@ const UpdateBillingElement = ({
   processingUpdate,
 }) =>
   isUpdatingBilling && (
-    <Grid item sm={12} container justifyContent="flex-end" wrap="nowrap">
+    <Grid
+      item
+      sm={12}
+      container
+      justifyContent="flex-end"
+      wrap="nowrap"
+      sx={{ mb: 2 }}
+    >
       <Button
         onClick={cancelUpdateBilling}
         variant="text"
         disabled={processingUpdate}
         width="300px"
       >
-        <MontserratTypography
-          variant="h4"
-          textDecoration="underline"
-          weight="600"
-        >
-          CANCEL
-        </MontserratTypography>
+        CANCEL
       </Button>
       <Spacing horizontal={4} />
       <Button type="submit" disabled={processingUpdate} width="300px">
@@ -373,8 +377,14 @@ const CreditPaymentForm = ({
       <Grid item sm={12} md={6}>
         <FormInput required name="city" label="City" />
       </Grid>
-      <Grid item sm={12} md={3}>
-        <FormInput required name="state" label="State" />
+      <Grid item sm={12} md={3} sx={{ mb: 5 }}>
+        <FormDropdownInput
+          name="state"
+          label="State"
+          required
+          height={48}
+          options={STATE_LIST_OPTIONS}
+        />
       </Grid>
       {hasDiscountCode && <Grid item sm={12} md={9} />}
       {hasDiscountCode && (
@@ -420,6 +430,9 @@ const BillingData = ({
   const formMethods = useForm({
     resolver: yupResolver(validationSchema),
     reValidateMode: 'onSubmit',
+    defaultValues: {
+      state: '',
+    },
   });
 
   const { handleSubmit, register, setValue, unregister, clearErrors } =
@@ -480,7 +493,6 @@ const BillingData = ({
   return (
     <form
       onSubmit={handleSubmit((data) => {
-        // console.log(data);
         stripe.createToken(cardElement).then((token) => {
           if (token.error) {
             throw token.error;

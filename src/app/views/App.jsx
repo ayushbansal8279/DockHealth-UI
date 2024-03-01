@@ -40,7 +40,7 @@ import WorkflowDrawer from 'components/workflow-drawer/WorkflowDrawer/WorkflowDr
 import Notification from 'components/common/Notification/Notification';
 import ActivityAlertsToasts from 'components/activity-alerts/ActivityAlertsToasts';
 import SendbirdProvider from '@sendbird/uikit-react/SendbirdProvider';
-import palette, { featurePalette, typography } from 'styles/palette';
+import palette, { featurePalette } from 'styles/palette';
 // import { useMobile, useSmallScreen } from 'helpers/utility-functions';
 import { useMobile } from 'helpers/utility-functions';
 import { IdleTimer } from './IdleTimer';

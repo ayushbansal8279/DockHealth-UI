@@ -2,10 +2,7 @@
 // import Symbol_observable from 'symbol-observable';
 /* eslint-disable global-require */
 // import MomentUtils from '@date-io/moment';
-import {
-  ThemeProvider,
-  ThemeProvider as MuiThemeProvider,
-} from '@mui/material/styles';
+import { ThemeProvider } from '@mui/material/styles';
 import { LocalizationProvider as MuiPickersUtilsProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { HashRouter } from 'react-router-dom';
@@ -94,28 +91,26 @@ const queryClient = new QueryClient({
 
 const Index = () => (
   <QueryClientProvider client={queryClient}>
-    <MuiThemeProvider theme={getTheme()}>
-      <ThemeProvider theme={getTheme()}>
-        <MuiPickersUtilsProvider dateAdapter={AdapterDateFns}>
-          {/* <FlagsProvider flags={flags}> */}
-          <Provider store={store}>
-            <ErrorBoundary>
-              <HashRouter forceRefresh>
-                <IntercomProvider appId={VITE_INTERCOM_APP_CODE} autoBoot>
-                  <App>
-                    <Routes />
-                  </App>
-                </IntercomProvider>
-              </HashRouter>
-              {import.meta.env.VITE_APP_ENV === 'local' && (
-                <ReactQueryDevtools initialIsOpen={false} />
-              )}
-            </ErrorBoundary>
-          </Provider>
-          {/* </FlagsProvider> */}
-        </MuiPickersUtilsProvider>
-      </ThemeProvider>
-    </MuiThemeProvider>
+    <ThemeProvider theme={getTheme()}>
+      <MuiPickersUtilsProvider dateAdapter={AdapterDateFns}>
+        {/* <FlagsProvider flags={flags}> */}
+        <Provider store={store}>
+          <ErrorBoundary>
+            <HashRouter forceRefresh>
+              <IntercomProvider appId={VITE_INTERCOM_APP_CODE} autoBoot>
+                <App>
+                  <Routes />
+                </App>
+              </IntercomProvider>
+            </HashRouter>
+            {import.meta.env.VITE_APP_ENV === 'local' && (
+              <ReactQueryDevtools initialIsOpen={false} />
+            )}
+          </ErrorBoundary>
+        </Provider>
+        {/* </FlagsProvider> */}
+      </MuiPickersUtilsProvider>
+    </ThemeProvider>
   </QueryClientProvider>
 );
 

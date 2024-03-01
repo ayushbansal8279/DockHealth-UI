@@ -18,6 +18,7 @@ import styled from 'styled-components';
 import { useBoolean } from 'hooks/useBoolean';
 import InputPopover from 'components/common/InputPopover/InputPopover';
 import TextInput from 'components/common/TextInput/TextInput';
+import { Box } from '@mui/material';
 
 const StyledButton = styled.button`
   display: block;
@@ -148,20 +149,22 @@ const DropdownInput = React.forwardRef(
           isPopoverOpen={isPopoverOpen}
           closePopover={closePopover}
         >
-          {children?.map((child, index) => (
-            <StyledButton
-              type="button"
-              key={child?.key}
-              onMouseEnter={() => setHoveredItem(index)}
-              onMouseDown={() => {
-                handleSelectOption(child);
-              }}
-            >
-              {typeof child.label === 'function'
-                ? child.label(hoveredItem === index)
-                : child.label}
-            </StyledButton>
-          ))}
+          <Box sx={{ height: '200px', overflow: 'scroll' }}>
+            {children?.map((child, index) => (
+              <StyledButton
+                type="button"
+                key={child?.key}
+                onMouseEnter={() => setHoveredItem(index)}
+                onMouseDown={() => {
+                  handleSelectOption(child);
+                }}
+              >
+                {typeof child.label === 'function'
+                  ? child.label(hoveredItem === index)
+                  : child.label}
+              </StyledButton>
+            ))}
+          </Box>
         </InputPopover>
       </>
     );
