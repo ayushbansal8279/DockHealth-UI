@@ -52,7 +52,7 @@ const MultiSelect = React.forwardRef(
       />
     ) : (
       <FormControl error={error}>
-        <InputLabel shrink={!!value} variant={variant}>
+        <InputLabel sx={{textTransform: 'none'}} shrink={!!value} variant={variant}>
           {label}
         </InputLabel>
         <MuiSelect

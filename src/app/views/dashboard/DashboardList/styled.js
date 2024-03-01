@@ -86,7 +86,6 @@ export const DashboardTasksGroupLabel = styled.p`
   margin-bottom: 0;
   font-size: ${fontSizes.regular};
   font-weight: ${fontWeights.regularPlus};
-  text-transform: uppercase;
 `;
 
 export const DashboardTaskItemContainer = styled.div`
