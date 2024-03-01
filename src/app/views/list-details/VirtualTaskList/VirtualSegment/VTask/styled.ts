@@ -3,10 +3,13 @@ import styled from '@mui/styled-engine';
 export const VTask = styled('div')`
   display: flex;
   font-size: 13px;
-  ${({ $workflow }: any) => $workflow ? `
+  ${({ $workflow }: any) =>
+    $workflow
+      ? `
   line-height: 52px;
   height: 52px;
-  ` : `
+  `
+      : `
   line-height: 40px;
   height: 36px;
   `}
@@ -14,6 +17,6 @@ export const VTask = styled('div')`
   ${({ $template }: any) => ($template ? 'margin-bottom: 10px' : '')};
 
   & > * > * > * > * {
-    left: 24px;
+    left: 70px;
   }
 `;

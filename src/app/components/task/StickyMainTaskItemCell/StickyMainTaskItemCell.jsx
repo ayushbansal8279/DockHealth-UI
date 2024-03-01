@@ -20,8 +20,14 @@ const StickyMainTaskItemCell = styled.div`
     if (width && !isSubtask) return `${width}px`;
     return '';
   }};
-  left: ${({ isSubtask, isWorkflowSubtask }) =>
-    isSubtask || isWorkflowSubtask ? '60px' : '24px'};
+  left: ${({ isSubtask, isWorkflowSubtask, origin }) =>
+    origin === 'PATIENT'
+      ? isSubtask || isWorkflowSubtask
+        ? '60px'
+        : '24px'
+      : isSubtask || isWorkflowSubtask
+      ? '106px'
+      : '70px'};
   ${({ order }) => (order ? `order: ${order};` : '')}
   border-left: 1px solid
     ${({ isWorkflowtask, isTamplateGroup }) =>
@@ -38,7 +44,7 @@ const StickyMainTaskItemCell = styled.div`
   padding-left: ${spacing.smallPlus};
   z-index: ${({ isEditingDescription }) =>
     isEditingDescription ? '12' : '11'};
-  
+
   background-color: ${(props) =>
     props.isSelected
       ? palette.brightBlueWithAlpha
@@ -49,7 +55,7 @@ const StickyMainTaskItemCell = styled.div`
       props.customHighlight
       ? props.customHighlight
       : palette.white};
-  
+
   &::before {
     content: '';
     display: block;

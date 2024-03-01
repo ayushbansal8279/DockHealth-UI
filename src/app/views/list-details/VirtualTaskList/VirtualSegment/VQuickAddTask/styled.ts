@@ -5,15 +5,15 @@ export const VQuickAddTaskContainer = styled('div')`
   display: flex;
   position: sticky;
   left: ${spacing.large};
-  margin-left: ${spacing.large};
+  margin-left: 70px;
   margin-bottom: 1px;
   margin-top: 10px;
 `;
 
 export const VQuickAddTask = styled('div')`
-width: 100%;
-font-weight: bold;
-line-height: 40px;
+  width: 100%;
+  font-weight: bold;
+  line-height: 40px;
 `;
 
 export const TaskTemplateApplicatorContainer = styled('div')`
