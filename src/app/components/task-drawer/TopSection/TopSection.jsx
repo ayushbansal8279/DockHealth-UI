@@ -1,5 +1,5 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { useMemo, useCallback } from 'react';
+import React, { useMemo, useCallback, useState } from 'react';
 import { CircleIcon } from 'components/task/styled';
 import { Box, IconButton, Paper } from '@mui/material';
 import { Close, MoreHoriz } from '@mui/icons-material';
@@ -23,10 +23,13 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { openModal } from 'modal/actions';
 import ShareLinkIcon from 'img/share-link.svg';
+import ShareLinkIconActive from 'img/share-link-active.svg';
 import EmailIcon from 'img/email-new-icon.svg';
+import EmailIconActive from 'img/email-new-icon-active.svg';
 import MobileIcon from 'img/mobile-new-icon.svg';
+import MobileIconActive from 'img/mobile-new-icon-active.svg';
 import Spacing from 'components/common/Spacing';
-import { HorizontalLabel } from '../styled';
+import { HorizontalLabel, IconContainer } from './styled';
 import initializeTaskDrawerTopSectionHooks from './hooks';
 
 const { DISABLED } = SINGLE_TASK_RESTRICTIONS_OPTIONS;
@@ -57,6 +60,10 @@ const TopSection = ({
     closeTaskDrawer,
   });
   const dispatch = useDispatch();
+  const [isSmsActive, setSmsActive] = useState(false);
+  const [isEmailActive, setEmailActive] = useState(false);
+  const [isShareActive, setShareActive] = useState(false);
+  const [isOptionActive, setOptionActive] = useState(false);
 
   const sendEmailAvailable = useSelector(userHasSendEmailFeatureSelector);
   const sendFaxAvailable = useSelector(userHasSendFaxFeatureSelector);
@@ -174,6 +181,11 @@ const TopSection = ({
     [options],
   );
 
+  const modalProp = {
+    setEmailActive: setEmailActive,
+    setSmsActive: setSmsActive,
+  };
+
   return (
     <Paper elevation={3} style={{ width: '800px', height: '60px' }}>
       <Box
@@ -212,69 +224,64 @@ const TopSection = ({
         </Box>
         <Box display="flex">
           {handleCopyLink && (
-            <>
-              <Box
-                display="flex"
-                alignItems="center"
-                style={{ cursor: 'pointer' }}
-                onClick={handleCopyLink}
-              >
-                <img
-                  src={ShareLinkIcon}
-                  fontSize="small"
-                  color="primary"
-                  alt="Copy the Task link"
-                />
-              </Box>
-              <Box mx={0.5} />
-            </>
+            <IconContainer
+              onClick={() => {
+                handleCopyLink();
+                setShareActive(true);
+                setTimeout(() => {
+                  setShareActive(false);
+                }, 2000);
+              }}
+            >
+              <img
+                src={!isShareActive ? ShareLinkIcon : ShareLinkIconActive}
+                fontSize="small"
+                color="primary"
+                alt="Copy the Task link"
+              />
+            </IconContainer>
           )}
-          <Spacing horizontal={2} />
+          <Spacing horizontal={5} />
           {sendEmailAvailable && (
-            <>
-              <Box
-                display="flex"
-                alignItems="center"
-                style={{ cursor: 'pointer' }}
-                onClick={() => dispatch(openModal('SendEmailFromTask'))}
-              >
-                <img
-                  src={EmailIcon}
-                  fontSize="small"
-                  color="primary"
-                  alt="Copy the Task link"
-                />
-              </Box>
-              <Box mx={0.5} />
-            </>
+            <IconContainer
+              onClick={() => {
+                dispatch(openModal('SendEmailFromTask', modalProp));
+                setEmailActive(true);
+              }}
+            >
+              <img
+                src={!isEmailActive ? EmailIcon : EmailIconActive}
+                fontSize="small"
+                color="primary"
+                alt="Copy the Task link"
+              />
+            </IconContainer>
           )}
           <Spacing horizontal={4} />
           {sendSmsAvailable && (
-            <>
-              <Box
-                display="flex"
-                alignItems="center"
-                style={{ cursor: 'pointer' }}
-                onClick={() => dispatch(openModal('SendSmsFromTask'))}
-              >
-                <img
-                  src={MobileIcon}
-                  fontSize="small"
-                  color="primary"
-                  alt="Copy the Task link"
-                />
-              </Box>
-              <Box mx={0.5} />
-            </>
+            <IconContainer
+              onClick={() => {
+                dispatch(openModal('SendSmsFromTask', modalProp));
+                setSmsActive(true);
+              }}
+            >
+              <img
+                src={!isSmsActive ? MobileIcon : MobileIconActive}
+                fontSize="small"
+                color="primary"
+                alt="Copy the Task link"
+              />
+            </IconContainer>
           )}
-          <Spacing horizontal={3} />
+          <Spacing horizontal={4} />
           {allowedOptions.length !== 0 &&
             taskListRestrictions?.createTask !== DISABLED && (
               <OptionsMenu
+                setOptionActive={setOptionActive}
                 options={allowedOptions}
                 customButtonComponent={IconButton}
               >
-                <MoreHoriz color="primary" />
+                <MoreHoriz color={!isOptionActive ? "primary" : "secondary"} />
               </OptionsMenu>
             )}
           {!hideCloseIcon && (
