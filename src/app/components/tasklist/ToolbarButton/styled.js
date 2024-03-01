@@ -118,6 +118,7 @@ export const CustomizeRotatableChevronButtonLabel = styled(Typography)`
 export const ToolbarButtonBoxContainer = styled.div`
   display: flex;
   width: fit-content;
-  border-radius: 5px;
+  border-radius: 4px;
   overflow: hidden;
+  height: 32px;
 `;

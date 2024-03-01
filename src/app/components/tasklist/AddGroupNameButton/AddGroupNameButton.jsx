@@ -12,7 +12,8 @@ import messages from './messages';
 const AddGroupButtonContainer = styled.div`
   display: flex;
   width: fit-content;
-  border-radius: 5px;
+  border-radius: 4px;
+  height: 32px;
   // overflow: hidden;
   @media print {
     display: none;

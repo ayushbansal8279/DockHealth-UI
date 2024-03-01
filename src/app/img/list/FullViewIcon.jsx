@@ -2,8 +2,8 @@ import React from 'react';
 
 const FullViewIcon = () => (
   <svg
-    width="28"
-    height="19"
+    width="24"
+    height="28"
     viewBox="0 0 28 19"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
