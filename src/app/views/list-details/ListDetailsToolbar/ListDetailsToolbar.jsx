@@ -177,14 +177,17 @@ const ListDetailsToolbar = ({
   return (
     <ToolbarContainer>
       <Box display="flex" flex={1} justifyContent="flex-start">
-        <TaskStatusToolbarSelect
-          value={tasksStatus}
-          onChange={handleChangeTasksStatus}
-          iconColorFilterActive={iconColorFilterActiveItem?.value}
-          iconColorActive={iconColorActiveItem?.value}
-          searchValue={searchValue}
-          focused={focused}
-        />
+        {viewType === ViewType.CALENDAR_VIEW && (
+          <TaskStatusToolbarSelect
+            value={tasksStatus}
+            onChange={handleChangeTasksStatus}
+            iconColorFilterActive={iconColorFilterActiveItem?.value}
+            iconColorActive={iconColorActiveItem?.value}
+            searchValue={searchValue}
+            focused={focused}
+          />
+        )}
+
         {/* <Box mx={0.5} />
         <TaskViewTypeToolbarSelect
           value={viewType}
@@ -194,12 +197,20 @@ const ListDetailsToolbar = ({
         /> */}
         {viewType === ViewType.LIST_VIEW && (
           <>
-            <Box mx={0.5} />
             <CustomizeToolbarButton
               openCustomFieldModal={() => setCustomFieldsModalOpened(true)}
               additionalOptions={additionalOptions}
               disableButton={restrictCustomizationFeatures}
               iconColorFilterActive={iconColorFilterActiveItem?.value}
+              searchValue={searchValue}
+              focused={focused}
+            />
+            <Box mx={0.5} />
+            <TaskStatusToolbarSelect
+              value={tasksStatus}
+              onChange={handleChangeTasksStatus}
+              iconColorFilterActive={iconColorFilterActiveItem?.value}
+              iconColorActive={iconColorActiveItem?.value}
               searchValue={searchValue}
               focused={focused}
             />
