@@ -36,6 +36,7 @@ const StickyMainTaskItemCell = styled.div`
     isTamplateGroup ? '-0.7px;' : '0px'};
   align-items: center;
   padding-left: ${spacing.smallPlus};
+  border-top-left-radius: ${({isTamplateGroup}) => isTamplateGroup ?'7px' : ''};
   z-index: ${({ isEditingDescription }) =>
     isEditingDescription ? '12' : '11'};
   
