@@ -11,6 +11,7 @@ import React, {
 } from 'react';
 import pluck from 'ramda/src/pluck';
 import { useDispatch, useSelector } from 'react-redux';
+import moment from 'moment';
 import * as ListDetailsActions from 'actions/list-details-actions';
 import { isTaskSelectedSelector } from 'selectors/task-drawer-selectors';
 import { listCustomFieldsSelector } from 'selectors/list-details-selectors';
@@ -32,6 +33,7 @@ import {
 import TaskTemplateGroup from 'components/task-template/TaskTemplateGroup/TaskTemplateGroup';
 import Circle from 'img/circle.svg';
 import CircleCompleted from 'img/circle-completed.svg';
+import CircleCompletedHover from 'img/circle-completed-hover.svg';
 import ThreeDotsIcon from 'img/three-dots.svg';
 import {
   userProfileSelector,
@@ -82,6 +84,7 @@ import { closeModal, openModal } from 'modal/actions';
 import { updatePatientDetails } from 'actions/patient-details-actions';
 import { formatPhoneNumber } from 'helpers/utility-functions';
 import Tooltip from 'components/common/Tooltip/Tooltip';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import { getSubtaskStylingLink } from './helpers';
 import TaskItemContextMenu from '../TaskItemContextMenu/TaskItemContextMenu';
 import TaskItemBulkEdit from './TaskItemComponents/TaskItemBulkEdit';
@@ -114,6 +117,9 @@ import {
   ActionIconsContainer,
   PatientMRNAnchor,
   TaskScrollVericleLine,
+  TootipCompletedBy,
+  TootipCompletedByDate,
+  TootipCompletedByName,
 } from '../styled';
 import TaskItemText from './customFieldsTaskItemComponents/TaskItemText/TaskItemText';
 import TaskItemDropdown from './customFieldsTaskItemComponents/TaskItemDropdown/TaskItemDropdown';
@@ -740,6 +746,7 @@ const TaskItem = React.memo(
       [dispatch, task, taskCustomFields],
     );
 
+    const [showCircleIconOnHover, setShowCircleIconOnHover] = useState(false);
     const randerFirstColumnCoverIfNecessary = useCallback(
       (content, order) => {
         if (order !== 0) return content;
@@ -779,9 +786,50 @@ const TaskItem = React.memo(
               <Tooltip
                 placement="top"
                 title={isCompleted ? 'Mark incomplete' : 'Complete task'}
+                child={isCompleted}
+                childTitle={
+                  isCompleted ? (
+                    <>
+                      <TootipCompletedBy>Completed by</TootipCompletedBy>
+                      <TootipCompletedByName>
+                        {`${task?.completedBy?.firstName} ${task?.completedBy?.lastName}`}
+                      </TootipCompletedByName>
+                      <TootipCompletedByDate>
+                        {`${new Date(task.completedDt).toLocaleString('en-US', {
+                          weekday: 'long',
+                        })}, ${moment(task.completedDt).format(
+                          'MMM DD, YYYY',
+                        )} @${new Date(task.completedDt)
+                          .toLocaleTimeString('en-US', {
+                            hour: 'numeric',
+                            minute: '2-digit',
+                            hour12: true,
+                          })
+                          .toLowerCase()}`}
+                      </TootipCompletedByDate>
+                    </>
+                  ) : (
+                    ''
+                  )
+                }
+                childPlacement="bottom"
               >
+                {/* <Tooltip
+                  placement="bottom"
+                  title={
+                    
+                  }
+                > */}
                 <CircleIcon
-                  src={isCompleted ? CircleCompleted : Circle}
+                  src={
+                    isCompleted
+                      ? CircleCompleted
+                      : showCircleIconOnHover
+                      ? CircleCompletedHover
+                      : Circle
+                  }
+                  onMouseEnter={() => setShowCircleIconOnHover(true)}
+                  onMouseLeave={() => setShowCircleIconOnHover(false)}
                   isClickable={
                     !isTaskStatusTogglingDisabled &&
                     isDependencyEmptyOrCompleted &&
@@ -796,6 +844,7 @@ const TaskItem = React.memo(
                   }
                 />
               </Tooltip>
+              {/* </Tooltip> */}
             </ActionIconsContainer>
             {content}
             <TaskScrollVericleLine>&nbsp;</TaskScrollVericleLine>
@@ -951,9 +1000,6 @@ const TaskItem = React.memo(
                       (showDecisionRow ? 200 : 0)
                     }
                   />
-                  <DetailsButton onClick={onClickTaskItem}>
-                    Details
-                  </DetailsButton>
                   {!isSubtask && (
                     <TaskItemSubtasks
                       isSubtask={isSubtask}
@@ -969,6 +1015,11 @@ const TaskItem = React.memo(
                       readOnly={restrictions?.subtasks === READ_ONLY}
                     />
                   )}
+                  <Tooltip placement="top" title="Details">
+                    <DetailsButton onClick={onClickTaskItem}>
+                      <ChevronRightIcon />
+                    </DetailsButton>
+                  </Tooltip>
                   {showDecisionRow && (
                     <DecisionCellContainer
                       onClick={(event) => event.stopPropagation()}

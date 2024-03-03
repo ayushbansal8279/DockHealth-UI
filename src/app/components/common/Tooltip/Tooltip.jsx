@@ -8,6 +8,9 @@ const Tooltip = ({
   title,
   placement,
   arrow = true,
+  child,
+  childTitle,
+  childPlacement,
   // hideTooltip = false,
 }) => {
   return title ? (
@@ -33,7 +36,34 @@ const Tooltip = ({
         },
       }}
     >
-      {children}
+      {child ? (
+        <MuiTooltip
+          // enterDelay={hideTooltip ? 200 : 100}
+          title={childTitle}
+          placement={childPlacement}
+          arrow={arrow}
+          componentsProps={{
+            tooltip: {
+              sx: {
+                color: 'black',
+                backgroundColor: 'white',
+                fontSize: '16px',
+                boxShadow: '0px 0px 10px 0px rgba(0, 0, 0, 0.15)',
+                borderRadius: '4px',
+              },
+            },
+            arrow: {
+              sx: {
+                color: 'white',
+              },
+            },
+          }}
+        >
+          {children}
+        </MuiTooltip>
+      ) : (
+        children
+      )}
     </MuiTooltip>
   ) : (
     children

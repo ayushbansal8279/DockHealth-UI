@@ -73,7 +73,7 @@ const TaskItemIcons = ({
             title={
               labels?.length > 0
                 ? getLabelsIconTooltipTitle(labels)
-                : 'Add label'
+                : 'Add Label'
             }
           >
             <button
@@ -100,7 +100,7 @@ const TaskItemIcons = ({
             title={
               attachments?.length > 0
                 ? getAttachmentsIconTooltipTitle(attachments)
-                : 'Add file'
+                : 'Add File'
             }
           >
             <button type="button" onClick={onAttachmentsClick}>

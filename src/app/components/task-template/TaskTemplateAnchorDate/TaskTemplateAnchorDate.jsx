@@ -46,7 +46,7 @@ const TaskTemplateAnchorDate = (props) => {
     >
       <Tooltip
         placement="top"
-        title={anchorDateTime ? 'Edit anchor date' : 'Add anchor date'}
+        title={anchorDateTime ? 'Edit Anchor Date' : 'Add Anchor Date'}
       >
         {anchorDateTime ? (
           <DateLabel date={anchorDateTime} />

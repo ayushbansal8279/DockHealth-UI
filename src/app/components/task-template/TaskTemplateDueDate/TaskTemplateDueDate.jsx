@@ -40,7 +40,7 @@ const TaskTemplateDueDate = (props) => {
     >
       <Tooltip
         placement="top"
-        title={dueDateTime ? 'Edit due date' : 'Add due date'}
+        title={dueDateTime ? 'Edit due date' : 'Add Due Date'}
       >
         {dueDateTime ? (
           <DateLabel
