@@ -38,41 +38,42 @@ const TaskItemDueDate = ({ task, isDateHover, disabled = false }) => {
         />
       )}
     >
-      <Tooltip
+      {/* <Tooltip
         placement="top"
         title={dueDate ? 'Edit Due Date' : 'Add Due Date'}
-      >
-        <>
-          {dueDate ? (
-            <DateLabel
-              date={dueDate}
-              isOverdue={isDueDateOverdue(task)}
-              hasReminder={reminderType && reminderType !== ReminderType.NONE}
-              hasRecurringSchedule={hasRecurringSchedule}
-            />
-          ) : (
-            <>
-              {isDateHover ? (
-                <Tooltip placement="top" title="Add Due Date">
-                  <AddPlaceholder>
-                    <div style={{ display: 'flex' }}>
-                      <TaskIcon type="calendar" isActive />
-                      <p
-                        style={{
-                          padding: `3px ${spacing.smallPlus}`,
-                          // color: `${palette.coolGrey1}`,
-                        }}
-                      >
-                        None
-                      </p>
-                    </div>
-                  </AddPlaceholder>
-                </Tooltip>
-              ) : null}
-            </>
-          )}
-        </>
-      </Tooltip>
+      > */}
+      <>
+        {dueDate ? (
+          <DateLabel
+            date={dueDate}
+            isOverdue={isDueDateOverdue(task)}
+            hasReminder={reminderType && reminderType !== ReminderType.NONE}
+            hasRecurringSchedule={hasRecurringSchedule}
+            tootipTitle="Edit Due Date"
+          />
+        ) : (
+          <>
+            {isDateHover ? (
+              <Tooltip placement="top" title="Add Due Date">
+                <AddPlaceholder>
+                  <div style={{ display: 'flex' }}>
+                    <TaskIcon type="calendar" isActive />
+                    <p
+                      style={{
+                        padding: `3px ${spacing.smallPlus}`,
+                        // color: `${palette.coolGrey1}`,
+                      }}
+                    >
+                      None
+                    </p>
+                  </div>
+                </AddPlaceholder>
+              </Tooltip>
+            ) : null}
+          </>
+        )}
+      </>
+      {/* </Tooltip> */}
     </TaskItemPopover>
   );
 };

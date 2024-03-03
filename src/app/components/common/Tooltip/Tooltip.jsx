@@ -8,6 +8,8 @@ const Tooltip = ({
   title,
   placement,
   arrow = true,
+  open,
+  onClose,
   child,
   childTitle,
   childPlacement,
@@ -19,6 +21,8 @@ const Tooltip = ({
       title={title}
       placement={placement}
       arrow={arrow}
+      open={open}
+      onClose={onClose}
       componentsProps={{
         tooltip: {
           sx: {
@@ -42,6 +46,8 @@ const Tooltip = ({
           title={childTitle}
           placement={childPlacement}
           arrow={arrow}
+          open={open}
+          onClose={onClose}
           componentsProps={{
             tooltip: {
               sx: {

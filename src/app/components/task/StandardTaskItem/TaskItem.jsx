@@ -747,6 +747,16 @@ const TaskItem = React.memo(
     );
 
     const [showCircleIconOnHover, setShowCircleIconOnHover] = useState(false);
+    const [tooltipsOpen, setTooltipsOpen] = useState(false);
+
+    const handleTooltipClose = () => {
+      setTooltipsOpen(false);
+    };
+
+    const handleTooltipOpen = () => {
+      setTooltipsOpen(true);
+    };
+
     const randerFirstColumnCoverIfNecessary = useCallback(
       (content, order) => {
         if (order !== 0) return content;
@@ -813,13 +823,9 @@ const TaskItem = React.memo(
                   )
                 }
                 childPlacement="bottom"
+                open={tooltipsOpen}
+                onClose={() => handleTooltipClose()}
               >
-                {/* <Tooltip
-                  placement="bottom"
-                  title={
-                    
-                  }
-                > */}
                 <CircleIcon
                   src={
                     isCompleted
@@ -828,8 +834,14 @@ const TaskItem = React.memo(
                       ? CircleCompletedHover
                       : Circle
                   }
-                  onMouseEnter={() => setShowCircleIconOnHover(true)}
-                  onMouseLeave={() => setShowCircleIconOnHover(false)}
+                  onMouseEnter={() => {
+                    setShowCircleIconOnHover(true);
+                    handleTooltipOpen();
+                  }}
+                  onMouseLeave={() => {
+                    setShowCircleIconOnHover(false);
+                    handleTooltipClose();
+                  }}
                   isClickable={
                     !isTaskStatusTogglingDisabled &&
                     isDependencyEmptyOrCompleted &&
