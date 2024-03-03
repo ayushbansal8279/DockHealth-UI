@@ -33,7 +33,7 @@ const StickyMainTaskItemCell = styled.div`
       ? ''
       : `1px solid ${palette.coolGrey3};`};
   margin-left: ${({ isTamplateGroup }) =>
-    isTamplateGroup ? '-0.7px;' : '0px'};
+    isTamplateGroup ? '-1px;' : ''};
   align-items: center;
   padding-left: ${spacing.smallPlus};
   border-top-left-radius: ${({isTamplateGroup}) => isTamplateGroup ?'7px' : ''};

@@ -7,5 +7,6 @@ export const VSubtask = styled('div')`
   line-height: 40px;
   height: 40px;
   margin-left: 60px;
-  margin-bottom: -4px;
+  margin-bottom: -5px;
+  margin-top: -1px;
 `;
