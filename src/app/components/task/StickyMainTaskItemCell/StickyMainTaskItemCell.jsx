@@ -87,6 +87,14 @@ const StickyMainTaskItemCell = styled.div`
         : ''};
   }
 
+  &:hover {
+    border-left: 1px solid
+    ${({ isWorkflowtask, isTamplateGroup }) =>
+    isWorkflowtask || isTamplateGroup
+      ? 'rgba(75, 179, 253, 1)'
+      : `${palette.coolGrey2}`};
+  }
+
   @media print {
     border-left: 1px solid ${palette.coolGrey1} !important;
     min-width: 200px;
