@@ -21,7 +21,7 @@ const StickyMainTaskItemCell = styled.div`
     return '';
   }};
   left: ${({ isSubtask, isWorkflowSubtask, origin }) =>
-    origin === 'PATIENT'
+    origin === 'PATIENT' || origin === 'DASHBOARD'
       ? isSubtask || isWorkflowSubtask
         ? '60px'
         : '24px'
