@@ -134,7 +134,8 @@ const DashboardView = ({ tabName }) => {
       ) {
         if (
           eventType?.startsWith('CREATE_TASK') ||
-          eventType?.startsWith('DUPLICATE_TASK')
+          eventType?.startsWith('DUPLICATE_TASK') ||
+          eventType?.startsWith('ADD_EXISTING_TASK_TO_LIST')
         ) {
           dispatch(TaskActions.insertCreatedTask(task.taskIdentifier));
         } else {
