@@ -59,7 +59,7 @@ export const TaskTemplateGroupHeaderContainer = styled.div`
       isOpen ? `${palette.coolGrey3}` : 'rgba(75, 179, 253, 1)'};
   border-right: 1px solid rgba(75, 179, 253, 1);
   z-index: 2;
-  border-top-left-radius: 5px;
+  border-top-left-radius: 7px;
 
   &:hover {
     & ${TemplateHandle}, ${AddPlaceholder} {

@@ -20,8 +20,14 @@ const StickyMainTaskItemCell = styled.div`
     if (width && !isSubtask) return `${width}px`;
     return '';
   }};
-  left: ${({ isSubtask, isWorkflowSubtask }) =>
-    isSubtask || isWorkflowSubtask ? '60px' : '24px'};
+  left: ${({ isSubtask, isWorkflowSubtask, origin }) =>
+    origin === 'PATIENT'
+      ? isSubtask || isWorkflowSubtask
+        ? '60px'
+        : '24px'
+      : isSubtask || isWorkflowSubtask
+      ? '106px'
+      : '70px'};
   ${({ order }) => (order ? `order: ${order};` : '')}
   border-left: 1px solid
     ${({ isWorkflowtask, isTamplateGroup }) =>
@@ -33,12 +39,13 @@ const StickyMainTaskItemCell = styled.div`
       ? ''
       : `1px solid ${palette.coolGrey3};`};
   margin-left: ${({ isTamplateGroup }) =>
-    isTamplateGroup ? '-0.7px;' : '0px'};
+    isTamplateGroup ? '-1px;' : ''};
   align-items: center;
   padding-left: ${spacing.smallPlus};
+  border-top-left-radius: ${({isTamplateGroup}) => isTamplateGroup ?'7px' : ''};
   z-index: ${({ isEditingDescription }) =>
     isEditingDescription ? '12' : '11'};
-  
+
   background-color: ${(props) =>
     props.isSelected
       ? palette.brightBlueWithAlpha
@@ -49,7 +56,7 @@ const StickyMainTaskItemCell = styled.div`
       props.customHighlight
       ? props.customHighlight
       : palette.white};
-  
+
   &::before {
     content: '';
     display: block;
@@ -84,6 +91,14 @@ const StickyMainTaskItemCell = styled.div`
             ${highlightDescription} 6s ease-out;
           `
         : ''};
+  }
+
+  &:hover {
+    border-left: 1px solid
+    ${({ isWorkflowtask, isTamplateGroup }) =>
+    isWorkflowtask || isTamplateGroup
+      ? 'rgba(75, 179, 253, 1)'
+      : `${palette.coolGrey2}`};
   }
 
   @media print {

@@ -33,7 +33,12 @@ function VSubtask(
       key={metadata.id}
     >
       {(provided: DraggableProvided, snapshot: DraggableStateSnapshot) => (
-        <Sc.VSubtask ref={ref} {...register} $subitem={metadata.level > 1}>
+        <Sc.VSubtask
+          ref={ref}
+          {...register}
+          $subitem={metadata.level > 1}
+          isWorkflowSubtask={!!task}
+        >
           {getSubtaskStylingLink(isLast())}
           <StandardTaskItem
             // @ts-ignore

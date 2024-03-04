@@ -8,7 +8,7 @@ export const Select = styled(MuiSelect)`
   background: ${(props) =>
     props.isOpen ? palette.newBrightBlue : palette.newDarkBlue};
   color: ${palette.white};
-  height: 40px;
+  height: 32px;
   width: auto;
   border-radius: 4px;
 

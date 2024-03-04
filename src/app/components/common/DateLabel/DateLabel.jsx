@@ -22,6 +22,7 @@ const DateLabel = (props) => {
     showTime = false,
     timeFormat = 'HH:mm',
     tootipTitle,
+    timeFormatForHours = 'HH',
   } = props;
   const dueDate = moment(date);
   const dateFormat = dueDate.isSame(moment(), 'year') ? 'MMM DD, YYYY' : format;
@@ -33,6 +34,20 @@ const DateLabel = (props) => {
             <DateText>{dueDate.format(dateFormat)}</DateText>
           </DateTextContainer>
         </Tooltip>
+        <DateTextContainer isOverdue={isOverdue}>
+          <DateText>
+            {dueDate.format(dateFormat)}
+            {showTime && (
+              <>
+                <Spacing horizontal={1} />@
+                <Spacing horizontal={1} />
+                {dueDate.format(timeFormat)}
+                <Spacing horizontal={1} />
+                {dueDate.format(timeFormatForHours) >= 12 ? 'pm' : 'am'}
+              </>
+            )}
+          </DateText>
+        </DateTextContainer>
         {hasReminder && (
           <ReminderIconContainer isOverdue={isOverdue}>
             <Spacing horizontal={2} />
@@ -46,12 +61,16 @@ const DateLabel = (props) => {
           </RecurringIconContainer>
         )}
       </DueDateBasicLabel>
-      {showTime && (
+      {/* {showTime && (
         <>
-          <Spacing horizontal={1} />
-          <DateText>{dueDate.format(timeFormat)}</DateText>
+          <Spacing horizontal={0} />
+          <DateText>
+            @ {dueDate.format(timeFormat)}
+            <Spacing horizontal={1} />
+            {dueDate.format(timeFormatForHours) > 12 ? 'pm' : 'am'}
+          </DateText>
         </>
-      )}
+      )} */}
     </>
   );
 };

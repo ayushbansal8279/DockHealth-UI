@@ -394,24 +394,21 @@ const DashboardHeader = () => {
           justifyContent="flex-end"
         >
           <GridContainer>
-            <GridItemCalendarView active={calendarView}>
-              <Box
-                sx={{ marginTop: '4px' }}
-                onClick={() => {
-                  handleChangeViewType(ViewType.CALENDAR_VIEW);
-                  setCalendarView(true);
-                  setSlimView(false);
-                  // setFullView(false);
+            <GridItemCalendarView
+              active={calendarView}
+              onClick={() => {
+                handleChangeViewType(ViewType.CALENDAR_VIEW);
+                setCalendarView(true);
+                setSlimView(false);
+                // setFullView(false);
+              }}
+            >
+              <CalendarMonthOutlinedIcon
+                sx={{
+                  height: '28px',
+                  width: '24px',
                 }}
-              >
-                <CalendarMonthOutlinedIcon
-                  // fontSize="medium"
-                  sx={{
-                    height: '28px',
-                    width: '28px',
-                  }}
-                />
-              </Box>
+              />
             </GridItemCalendarView>
             {/* <GridItemFullView active={fullView}>
               <Box
@@ -426,18 +423,16 @@ const DashboardHeader = () => {
                 <FullViewIcon />
               </Box>
             </GridItemFullView> */}
-            <GridItemSlimView active={slimView}>
-              <Box
-                onClick={() => {
-                  handleChangeViewType(ViewType.LIST_VIEW);
-                  // setFullView(true);
-                  setSlimView(true);
-                  setCalendarView(false);
-                }}
-                sx={{ marginTop: '8px' }}
-              >
-                <SlimViewIcon />
-              </Box>
+            <GridItemSlimView
+              active={slimView}
+              onClick={() => {
+                handleChangeViewType(ViewType.LIST_VIEW);
+                // setFullView(true);
+                setSlimView(true);
+                setCalendarView(false);
+              }}
+            >
+              <SlimViewIcon />
             </GridItemSlimView>
           </GridContainer>
         </Box>

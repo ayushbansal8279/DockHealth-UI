@@ -24,16 +24,6 @@ export const AdornmentClear = styled(Close)`
   }
 `;
 
-export const HorizontalLabel = styled.span`
-  font-family: inherit;
-  margin-right: 5px;
-  font-weight: ${fontWeights.bold};
-  & > * {
-    font-size: 1rem;
-    margin-right: 5px;
-  }
-`;
-
 export const PatientLinkText = styled.p`
   margin-bottom: 0;
   font-size: ${fontSizes.regular};

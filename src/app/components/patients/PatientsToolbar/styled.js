@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import palette from 'styles/palette';
 import { fontWeights, fontSizes } from 'styles/font';
 import spacing from 'styles/spacing';
-import {Button } from '@mui/material';
+import { Button } from '@mui/material';
 
 export const ImportButton = styled.button`
   color: ${palette.brightBlue};
@@ -43,7 +43,7 @@ export const ButtonWrapper = styled(Button)`
   font-size: 16px;
   font-weight: 500;
   color: ${palette.white};
-  height: 40px;
+  height: 32px;
   width: 80px;
   margin-right: 15px;
   border-radius: 4px;

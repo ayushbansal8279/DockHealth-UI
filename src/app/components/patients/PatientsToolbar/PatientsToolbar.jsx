@@ -149,9 +149,7 @@ const PatientsToolbar = () => {
               />
             </Box>
             <Box m={1} />
-            <ButtonWrapper onClick={handleSearch}>
-              Search
-            </ButtonWrapper>
+            <ButtonWrapper onClick={handleSearch}>Search</ButtonWrapper>
             <Box>
               <ToolbarSelect
                 options={OPTIONS}
@@ -179,6 +177,7 @@ const PatientsToolbar = () => {
               ref={filterButtonReference}
               active={filtersActive}
               onClick={toggleFilter}
+              isOpen={filterOpen}
               onClear={() => dispatch(PatientsActions.clearPatientsFilters())}
             />
           </Box>

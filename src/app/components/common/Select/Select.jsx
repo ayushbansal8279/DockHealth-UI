@@ -64,7 +64,7 @@ const Select = React.forwardRef(
     ) : (
       <FormControl error={error} className={className}>
         {label && (
-          <InputLabel shrink={!!value} variant={variant} required={required}>
+          <InputLabel sx={{textTransform: 'none'}} shrink={!!value} variant={variant} required={required}>
             {label}
           </InputLabel>
         )}

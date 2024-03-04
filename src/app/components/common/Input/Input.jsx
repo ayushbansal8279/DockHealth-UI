@@ -8,6 +8,10 @@ const StyledTextField = styled(TextField)`
   & .MuiInputBase-formControl:before {
     border: none !important;
   }
+
+  & .MuiInputLabel-root{
+    text-transform: none !important;
+  }
 `;
 
 const Input = React.forwardRef(

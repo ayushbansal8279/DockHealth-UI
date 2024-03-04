@@ -694,6 +694,7 @@ const TaskTemplateGroupHeader = ({
           isEditingDescription={isEditing}
           order={0}
           width={+width + 25 + 54}
+          origin={origin}
         >
           {!groupDragAndDropDisabled &&
             !bulkEditIsActive &&
