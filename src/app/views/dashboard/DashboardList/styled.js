@@ -90,7 +90,6 @@ export const DashboardTasksGroupLabel = styled.p`
 `;
 
 export const DashboardTaskItemContainer = styled.div`
-  margin-bottom: 3px;
   
   &:hover {
     box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.15);

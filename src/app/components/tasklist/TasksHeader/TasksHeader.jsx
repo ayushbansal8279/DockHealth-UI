@@ -35,6 +35,7 @@ const TasksHeader = ({
   isGroupSelected,
   onGroupSelect,
   pageBackground,
+  isDashboardTaskHeader,
 }) => {
   const taskList = useSelector(currentTaskListSelector);
   const currentUser = useSelector(userProfileSelector);
@@ -163,6 +164,7 @@ const TasksHeader = ({
       >
         {(provided, snapshot) => (
           <SortHeaderRow
+            isDashboardTaskHeader={isDashboardTaskHeader}
             ref={provided.innerRef}
             {...provided.droppableProps}
             $width={
