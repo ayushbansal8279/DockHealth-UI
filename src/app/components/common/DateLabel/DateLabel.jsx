@@ -31,23 +31,20 @@ const DateLabel = (props) => {
       <DueDateBasicLabel isOverdue={isOverdue}>
         <Tooltip placement="top" title={!!tootipTitle ? tootipTitle : ''}>
           <DateTextContainer isOverdue={isOverdue}>
-            <DateText>{dueDate.format(dateFormat)}</DateText>
+            <DateText>
+              {dueDate.format(dateFormat)}
+              {showTime && (
+                <>
+                  <Spacing horizontal={1} />@
+                  <Spacing horizontal={1} />
+                  {dueDate.format(timeFormat)}
+                  <Spacing horizontal={1} />
+                  {dueDate.format(timeFormatForHours) >= 12 ? 'pm' : 'am'}
+                </>
+              )}
+            </DateText>
           </DateTextContainer>
         </Tooltip>
-        <DateTextContainer isOverdue={isOverdue}>
-          <DateText>
-            {dueDate.format(dateFormat)}
-            {showTime && (
-              <>
-                <Spacing horizontal={1} />@
-                <Spacing horizontal={1} />
-                {dueDate.format(timeFormat)}
-                <Spacing horizontal={1} />
-                {dueDate.format(timeFormatForHours) >= 12 ? 'pm' : 'am'}
-              </>
-            )}
-          </DateText>
-        </DateTextContainer>
         {hasReminder && (
           <ReminderIconContainer isOverdue={isOverdue}>
             <Spacing horizontal={2} />
