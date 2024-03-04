@@ -269,6 +269,7 @@ const DashboardToolbar = ({ iconColorFilterActive, iconColorActive }) => {
                   </DashboardTabsLabel>
                   <DashboardTabsNumericalBadgeContainer
                     isActive={tabName === DashboardTasksTab.SHARED_TASKS}
+                    taskCount={sharedTasksCount}
                   >
                     <DashboardTabsNumericalBadge
                       isActive={tabName === DashboardTasksTab.SHARED_TASKS}

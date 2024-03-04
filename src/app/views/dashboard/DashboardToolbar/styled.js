@@ -36,27 +36,34 @@ export const DashboardTabsNumericalBadgeContainer = styled.div`
   width: 20px;
   height: 20px;
   border-radius: 13px;
-  border: 1px solid ${({ isActive }) => (isActive ? '#4BB3FD' : '#D4D9DF')};
-  color: ${({ isActive }) => (isActive ? '#4BB3FD' : '#8492A4')};
-  background: ${({ isActive }) => (isActive ? '#F8F8F9' : '#F3F5F6')};
-  padding: 4px 7px 4px 7px;
+  border: 1px solid
+    ${({ isActive }) => (isActive ? palette.crystalBlue : palette.iron)};
+  color: ${({ isActive }) =>
+    isActive ? palette.crystalBlue : palette.coolGrey1};
+  background: ${({ isActive }) =>
+    isActive ? palette.whiteSmoke : palette.lightGrey2};
+  padding: ${({ taskCount }) =>
+    taskCount > 9 && taskCount < 100
+      ? `4px 7px 4px ${taskCount > 19 ? '3px' : '5px'}`
+      : taskCount > 99
+      ? '4px 7px 4px 3.5px'
+      : '4px 7px 4px 7px'};
+  // padding: 4px 7px 4px 7px;
   gap: 7px;
   margin-left: 6px;
-  text-align: center;
 `;
 
 export const DashboardTabsNumericalBadge = styled(Typography)`
-  color: ${({ isActive }) => (isActive ? '#4BB3FD' : '#8492A4')};
+  color: ${({ isActive }) =>
+    isActive ? palette.crystalBlue : palette.coolGrey1};
   font-family: Outfit;
   font-weight: 500;
   font-size: 11px;
   line-height: 11.19px;
-  text-align: center;
-  align-items: center;
 `;
 
 export const DashboardTabsLabel = styled(Typography)`
-  color: ${({ isActive }) => (isActive ? '#292D34' : '#8492A4')};
+  color: ${({ isActive }) => (isActive ? palette.offBlack : palette.coolGrey1)};
   font-family: Outfit;
   font-weight: ${({ isActive }) => (isActive ? '600' : '400')};
   font-size: 18px;
