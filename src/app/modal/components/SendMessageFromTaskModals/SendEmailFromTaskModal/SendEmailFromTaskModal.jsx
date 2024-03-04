@@ -47,7 +47,7 @@ import {
 import TaskCheckBoxes from '../TaskCheckBoxes';
 import { renderAddOrEdit } from '../helpers';
 
-const SendEmailFromTaskModal = () => {
+const SendEmailFromTaskModal = ({ setEmailActive }) => {
   const selectedTask = useSelector(selectedTaskSelector);
   const { attachments, identifier } = selectedTask;
   const dispatch = useDispatch();
@@ -145,7 +145,13 @@ const SendEmailFromTaskModal = () => {
 
   return (
     <ModalWrapper width="600px">
-      <CloseIconButton size="small" onClick={() => dispatch(closeModal())}>
+      <CloseIconButton
+        size="small"
+        onClick={() => {
+          dispatch(closeModal());
+          setEmailActive(false);
+        }}
+      >
         <CloseIcon htmlColor="#C1CCDA" />
       </CloseIconButton>
       <ModalHeaderContainerStyled>
