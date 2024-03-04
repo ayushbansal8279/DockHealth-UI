@@ -177,14 +177,17 @@ const ListDetailsToolbar = ({
   return (
     <ToolbarContainer>
       <Box display="flex" flex={1} justifyContent="flex-start">
-        <TaskStatusToolbarSelect
-          value={tasksStatus}
-          onChange={handleChangeTasksStatus}
-          iconColorFilterActive={iconColorFilterActiveItem?.value}
-          iconColorActive={iconColorActiveItem?.value}
-          searchValue={searchValue}
-          focused={focused}
-        />
+        {viewType === ViewType.CALENDAR_VIEW && (
+          <TaskStatusToolbarSelect
+            value={tasksStatus}
+            onChange={handleChangeTasksStatus}
+            iconColorFilterActive={iconColorFilterActiveItem?.value}
+            iconColorActive={iconColorActiveItem?.value}
+            searchValue={searchValue}
+            focused={focused}
+          />
+        )}
+
         {/* <Box mx={0.5} />
         <TaskViewTypeToolbarSelect
           value={viewType}
@@ -194,12 +197,20 @@ const ListDetailsToolbar = ({
         /> */}
         {viewType === ViewType.LIST_VIEW && (
           <>
-            <Box mx={0.5} />
             <CustomizeToolbarButton
               openCustomFieldModal={() => setCustomFieldsModalOpened(true)}
               additionalOptions={additionalOptions}
               disableButton={restrictCustomizationFeatures}
               iconColorFilterActive={iconColorFilterActiveItem?.value}
+              searchValue={searchValue}
+              focused={focused}
+            />
+            <Box mx={0.5} />
+            <TaskStatusToolbarSelect
+              value={tasksStatus}
+              onChange={handleChangeTasksStatus}
+              iconColorFilterActive={iconColorFilterActiveItem?.value}
+              iconColorActive={iconColorActiveItem?.value}
               searchValue={searchValue}
               focused={focused}
             />
@@ -220,51 +231,44 @@ const ListDetailsToolbar = ({
 
       <Box mx={0.5} />
       <GridContainer>
-        <GridItemCalendarView active={calendarView}>
-          <Box
-            sx={{ marginTop: '4px' }}
-            onClick={() => {
-              handleChangeViewType(ViewType.CALENDAR_VIEW);
-              handleSetChangeViewType('');
-              handleRemoveAllTasks();
+        <GridItemCalendarView
+          active={calendarView}
+          onClick={() => {
+            handleChangeViewType(ViewType.CALENDAR_VIEW);
+            handleSetChangeViewType('');
+            handleRemoveAllTasks();
+          }}
+        >
+          <CalendarMonthOutlinedIcon
+            sx={{
+              height: '28px',
+              width: '24px',
             }}
-          >
-            <CalendarMonthOutlinedIcon
-              // fontSize="medium"
-              sx={{
-                height: '28px',
-                width: '28px',
-              }}
-            />
-          </Box>
+          />
         </GridItemCalendarView>
-        <GridItemFullView active={fullView}>
-          <Box
-            sx={{ marginTop: '8px' }}
-            onClick={() => {
-              handleChangeViewType(ViewType.LIST_VIEW);
-              handleSetChangeViewType('FULL_VIEW');
-              handleRemoveAllTasks();
-              setSlimView(false);
-              setFullView(true);
-            }}
-          >
-            <FullViewIcon />
-          </Box>
+        <GridItemFullView
+          active={fullView}
+          onClick={() => {
+            handleChangeViewType(ViewType.LIST_VIEW);
+            handleSetChangeViewType('FULL_VIEW');
+            handleRemoveAllTasks();
+            setSlimView(false);
+            setFullView(true);
+          }}
+        >
+          <FullViewIcon />
         </GridItemFullView>
-        <GridItemSlimView active={slimView}>
-          <Box
-            onClick={() => {
-              handleChangeViewType(ViewType.LIST_VIEW);
-              handleSetChangeViewType('SLIM_VIEW');
-              handleRemoveAllTasks();
-              setFullView(false);
-              setSlimView(true);
-            }}
-            sx={{ marginTop: '8px' }}
-          >
-            <SlimViewIcon />
-          </Box>
+        <GridItemSlimView
+          active={slimView}
+          onClick={() => {
+            handleChangeViewType(ViewType.LIST_VIEW);
+            handleSetChangeViewType('SLIM_VIEW');
+            handleRemoveAllTasks();
+            setFullView(false);
+            setSlimView(true);
+          }}
+        >
+          <SlimViewIcon />
         </GridItemSlimView>
       </GridContainer>
       {/* <ViewTypeSwitch /> */}
