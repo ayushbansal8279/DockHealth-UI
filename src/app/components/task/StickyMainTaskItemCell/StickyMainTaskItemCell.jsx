@@ -39,9 +39,10 @@ const StickyMainTaskItemCell = styled.div`
       ? ''
       : `1px solid ${palette.coolGrey3};`};
   margin-left: ${({ isTamplateGroup }) =>
-    isTamplateGroup ? '-0.7px;' : '0px'};
+    isTamplateGroup ? '-1px;' : ''};
   align-items: center;
   padding-left: ${spacing.smallPlus};
+  border-top-left-radius: ${({isTamplateGroup}) => isTamplateGroup ?'7px' : ''};
   z-index: ${({ isEditingDescription }) =>
     isEditingDescription ? '12' : '11'};
 
@@ -90,6 +91,14 @@ const StickyMainTaskItemCell = styled.div`
             ${highlightDescription} 6s ease-out;
           `
         : ''};
+  }
+
+  &:hover {
+    border-left: 1px solid
+    ${({ isWorkflowtask, isTamplateGroup }) =>
+    isWorkflowtask || isTamplateGroup
+      ? 'rgba(75, 179, 253, 1)'
+      : `${palette.coolGrey2}`};
   }
 
   @media print {

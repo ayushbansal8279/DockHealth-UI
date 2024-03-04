@@ -31,7 +31,6 @@ export const DescriptionLabel = styled.label`
   font-size: ${fontSizes.tinyPlus};
   font-weight: ${fontWeights.light};
   color: ${palette.coolGrey1};
-  text-transform: uppercase;
 
   & > span {
     text-transform: none;

@@ -63,7 +63,7 @@ const TextInput = React.forwardRef(
               {required && (
                 <>
                   <Spacing horizontal={3} />
-                  <span>(required)</span>
+                  <span>*</span>
                 </>
               )}
             </>
