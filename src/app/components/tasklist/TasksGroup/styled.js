@@ -129,7 +129,7 @@ export const PaginationButton = styled.button`
 `;
 
 export const ShowMoreButton = styled.button`
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Outfit', sans-serif;
   cursor: pointer;
   color: ${palette.brightBlue};
   font-size: ${fontSizes.smallPlus};

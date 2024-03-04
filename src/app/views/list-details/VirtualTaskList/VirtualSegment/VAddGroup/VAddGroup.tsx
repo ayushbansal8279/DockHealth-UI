@@ -62,6 +62,12 @@ function VAddGroup(
 
     if (scrollbar) {
       scrollbar.scrollTo(0, scrollbar.scrollHeight);
+      setTimeout(() => {
+        const updatedScrollbar = document.querySelector(
+          '[data-test-id="virtuoso-scroller"]',
+        );
+        updatedScrollbar?.scrollTo(0, updatedScrollbar.scrollHeight);
+      }, 1000);
     }
   };
 

@@ -285,6 +285,7 @@ const DashboardTasksGroup = ({
               </StickyContainer>
             )}
             <TasksHeader
+              isDashboardTaskHeader={true}
               onOrderChange={handleOrderChange}
               pageBackground={palette.white}
               bulkEditEnabled

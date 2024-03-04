@@ -29,7 +29,6 @@ export const StyledInput = styled.input`
 
   &::placeholder {
     color: ${palette.coolGrey2};
-    text-transform: uppercase;
   }
 `;
 

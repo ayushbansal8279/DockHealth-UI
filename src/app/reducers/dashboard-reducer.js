@@ -24,7 +24,11 @@ const initialState = {
 
 const addTask = (list, taskToAdd) => {
   const { tasks = [] } = list;
-  return { ...list, tasks: [taskToAdd, ...tasks] };
+  return {
+    ...list,
+    tasks: [taskToAdd, ...tasks],
+    metricValue: tasks.length + 1,
+  };
 };
 
 const findAndAddTask = ({ lists, groupType: type, task: taskToAdd }) =>
