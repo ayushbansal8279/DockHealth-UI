@@ -14,9 +14,7 @@ const DashboardTab = ({
     if (isSelected) {
       setHighlightPosition({
         width: labelReference?.current?.offsetWidth,
-        left: label.includes('All')
-          ? labelReference?.current?.offsetLeft + 15
-          : labelReference?.current?.offsetLeft,
+        left: labelReference?.current?.offsetLeft,
       });
     }
   }, [

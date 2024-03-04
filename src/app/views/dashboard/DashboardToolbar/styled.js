@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import palette, { opacify } from 'styles/palette';
 import { fontWeights } from 'styles/font';
-import { Grid } from '@mui/material';
+import { Grid, Typography } from '@mui/material';
 import spacing from 'styles/spacing';
 
 export const ToolbarContainer = styled(Grid)`
@@ -30,6 +30,37 @@ export const ActionsContainer = styled.div`
 export const DashboardTabsContainer = styled.div`
   height: 100%;
   display: flex;
+`;
+
+export const DashboardTabsNumericalBadgeContainer = styled.div`
+  width: 20px;
+  height: 20px;
+  border-radius: 13px;
+  border: 1px solid ${({ isActive }) => (isActive ? '#4BB3FD' : '#D4D9DF')};
+  color: ${({ isActive }) => (isActive ? '#4BB3FD' : '#8492A4')};
+  background: ${({ isActive }) => (isActive ? '#F8F8F9' : '#F3F5F6')};
+  padding: 4px 7px 4px 7px;
+  gap: 7px;
+  margin-left: 6px;
+  text-align: center;
+`;
+
+export const DashboardTabsNumericalBadge = styled(Typography)`
+  color: ${({ isActive }) => (isActive ? '#4BB3FD' : '#8492A4')};
+  font-family: Outfit;
+  font-weight: 500;
+  font-size: 11px;
+  line-height: 11.19px;
+  text-align: center;
+  align-items: center;
+`;
+
+export const DashboardTabsLabel = styled(Typography)`
+  color: ${({ isActive }) => (isActive ? '#292D34' : '#8492A4')};
+  font-family: Outfit;
+  font-weight: ${({ isActive }) => (isActive ? '600' : '400')};
+  font-size: 18px;
+  line-height: 22.68px;
 `;
 
 export const DashboardQuickFilterContainer = styled.div`
