@@ -49,7 +49,7 @@ const TaskItemMembers = ({
           <MemberGroup members={assignedToUsers} size={28} />
         </>
       ) : (
-        <Tooltip placement="top" title="Assign to">
+        <Tooltip placement="top" title="Add assignee">
           <div style={{ marginLeft: '10px' }}>
             {!readOnly && <AssignMemberIcon />}
           </div>

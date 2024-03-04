@@ -7,6 +7,7 @@ import TaskIcon from 'components/task/TaskIcon/TaskIcon';
 import Popper from '@mui/material/Popper';
 import Grid from '@mui/material/Grid';
 import CommentsInPopper from '../../CommentsInPopper/CommentsInPopper';
+import Tooltip from '@/app/components/common/Tooltip/Tooltip';
 
 interface TaskItemCommentsProps {
   matchComments: boolean;
@@ -33,13 +34,15 @@ const TaskItemComments: FC<TaskItemCommentsProps> = ({
   return (
     <Grid container wrap="nowrap">
       <GridImg item xs={12} matched={matchComments}>
-        <button type="button" onClick={onCommentClick}>
-          <TaskIcon
-            type="comments"
-            isActive={comments?.length > 0}
-            isNew={task.updatedComment}
-          />
-        </button>
+        <Tooltip placement="top" title="Add Comment">
+          <button type="button" onClick={onCommentClick}>
+            <TaskIcon
+              type="comments"
+              isActive={comments?.length > 0}
+              isNew={task.updatedComment}
+            />
+          </button>
+        </Tooltip>
         <Popper
           anchorEl={anchorEl}
           open={commentPopperOpen}

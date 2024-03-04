@@ -55,7 +55,7 @@ const TaskTemplateMembers = ({
           <MemberGroup members={assignedToUsers} />
         </>
       ) : (
-        <Tooltip placement="top" title="Assign to">
+        <Tooltip placement="top" title="Add assignee">
           <div style={{ marginLeft: '10px' }}>
             <AssignMemberIcon />
           </div>

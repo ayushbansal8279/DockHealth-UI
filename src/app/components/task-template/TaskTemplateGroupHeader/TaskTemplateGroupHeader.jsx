@@ -1491,7 +1491,7 @@ const TaskTemplateGroupHeader = ({
             >
               <TaskTemplateDate
                 workflow={templateGroup}
-                title="Completed On"
+                title="Add Complete Date"
                 dateTime={templateGroup.completedDt}
               />
             </TaskItemCell>,

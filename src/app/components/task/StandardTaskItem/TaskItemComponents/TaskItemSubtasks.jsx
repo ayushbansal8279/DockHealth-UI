@@ -7,6 +7,7 @@ import {
   SubtasksCellContentButton,
   SubtasksCellText,
 } from '../../styled';
+import Tooltip from '@/app/components/common/Tooltip/Tooltip';
 
 const TaskItemSubtasks = ({
   isSubtask,
@@ -39,21 +40,23 @@ const TaskItemSubtasks = ({
   ) : (
     <>
       {(subTasksCount || isSubtask) && (
-        <SubtasksCellContentButton
-          isOpen={isOpen}
-          disabled={isNestedTask}
-          isGreyedOut={subtasksDisabled}
-          onClick={onSubtaskLabelClick}
-        >
-          {!isSubtask ? (
-            <>
-              <SubtasksCellText>{subTasksCount}</SubtasksCellText>
-              <ParentTaskIcon />
-            </>
-          ) : (
-            <SubtaskIcon />
-          )}
-        </SubtasksCellContentButton>
+        <Tooltip placement="top" title={isOpen ? '' : 'Add Subtask'}>
+          <SubtasksCellContentButton
+            isOpen={isOpen}
+            disabled={isNestedTask}
+            isGreyedOut={subtasksDisabled}
+            onClick={onSubtaskLabelClick}
+          >
+            {!isSubtask ? (
+              <>
+                <SubtasksCellText>{subTasksCount}</SubtasksCellText>
+                <ParentTaskIcon />
+              </>
+            ) : (
+              <SubtaskIcon />
+            )}
+          </SubtasksCellContentButton>
+        </Tooltip>
       )}
     </>
   );

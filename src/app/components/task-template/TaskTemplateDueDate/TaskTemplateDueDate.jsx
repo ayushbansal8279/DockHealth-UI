@@ -38,22 +38,25 @@ const TaskTemplateDueDate = (props) => {
         />
       )}
     >
-      <Tooltip
+      {/* <Tooltip
         placement="top"
-        title={dueDateTime ? 'Edit due date' : 'Add due date'}
-      >
-        {dueDateTime ? (
-          <DateLabel
-            date={dueDateTime}
-            isOverdue={isWorkflowDueDateOverdue(workflow)}
-            hasReminder={reminderType && reminderType !== ReminderType.NONE}
-          />
-        ) : (
+        title={dueDateTime ? 'Edit due date' : 'Add Due Date'}
+      > */}
+      {dueDateTime ? (
+        <DateLabel
+          date={dueDateTime}
+          isOverdue={isWorkflowDueDateOverdue(workflow)}
+          hasReminder={reminderType && reminderType !== ReminderType.NONE}
+          tootipTitle="Edit Due Date"
+        />
+      ) : (
+        <Tooltip placement="top" title="Add Due Date">
           <div>
             <TaskIcon type="calendar" />
           </div>
-        )}
-      </Tooltip>
+        </Tooltip>
+      )}
+      {/* </Tooltip> */}
     </TaskItemPopover>
   );
 };

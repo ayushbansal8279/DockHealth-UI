@@ -10,6 +10,7 @@ import {
   ReminderIconContainer,
   RecurringIconContainer,
 } from './styled';
+import Tooltip from '../Tooltip/Tooltip';
 
 const DateLabel = (props) => {
   const {
@@ -20,6 +21,7 @@ const DateLabel = (props) => {
     format = 'MMM DD, YYYY',
     showTime = false,
     timeFormat = 'HH:mm',
+    tootipTitle,
     timeFormatForHours = 'HH',
   } = props;
   const dueDate = moment(date);
@@ -27,6 +29,11 @@ const DateLabel = (props) => {
   return (
     <>
       <DueDateBasicLabel isOverdue={isOverdue}>
+        <Tooltip placement="top" title={!!tootipTitle ? tootipTitle : ''}>
+          <DateTextContainer isOverdue={isOverdue}>
+            <DateText>{dueDate.format(dateFormat)}</DateText>
+          </DateTextContainer>
+        </Tooltip>
         <DateTextContainer isOverdue={isOverdue}>
           <DateText>
             {dueDate.format(dateFormat)}
