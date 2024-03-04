@@ -748,7 +748,9 @@ const TaskItem = React.memo(
             isWorkflowtask={isTaskTemplate}
             customWidthExists
             order={0}
-            isSubtask={showSubtaskStylingLink}
+            isSubtask={
+              origin === 'PATIENT' ? showSubtaskStylingLink : isSubtask
+            }
             newlyCreated={newlyCreated}
             backgroundColor={pageBackground}
             isSelected={isSelected}
@@ -756,6 +758,7 @@ const TaskItem = React.memo(
             customHighlight={customHighlight}
             isEditingDescription={isEditingDescription}
             isWorkflowSubtask={isWorkflowSubtask}
+            origin={origin}
           >
             {taskListRestrictions?.createTask !== DISABLED && (
               <DotsContainer
