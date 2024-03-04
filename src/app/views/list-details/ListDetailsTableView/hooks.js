@@ -386,6 +386,7 @@ const initializeListDetailsViewHooks = () => {
           ((data.eventType?.startsWith('CREATE_TASK') ||
             data.eventType?.startsWith('DUPLICATE_TASK')) &&
             data.task?.creator.userIdentifier !== currentUserIdentifier) ||
+          data.eventType?.startsWith('ADD_EXISTING_TASK_TO_LIST') ||
           (data.eventType?.startsWith('MARK_INCOMPLETE') &&
             data.initiatedByIdentifier !== currentUserIdentifier &&
             !data.workflowIdentifier) // not part of workflow
