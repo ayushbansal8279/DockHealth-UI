@@ -24,7 +24,6 @@ import SubscriptionPlanFeature from '../SubscriptionPlanFeature/SubscriptionPlan
 const SubscriptionPlanTail = (props) => {
   const { active, selected, plan, hasExistingSubscription, onSelect } = props;
   const {
-    key,
     mostPopular,
     label,
     description,
@@ -43,7 +42,7 @@ const SubscriptionPlanTail = (props) => {
   const subscribeLabel = hasExistingSubscription ? upgradeLabel : 'Subscribe';
 
   return (
-    <Container isPro={key === SubscriptionPlan.PRO}>
+    <Container active={active}>
       <TopContainer>
         <Name>{label}</Name>
         {mostPopular && (
@@ -85,7 +84,7 @@ const SubscriptionPlanTail = (props) => {
             window.Intercom('show');
           }}
         >
-          {key === SubscriptionPlan.PRO ? 'Schedule a demo' : 'Contact Us'}
+          Contact Us
         </SubscribeButton>
       )}
       {/* {(annualMonthlyPrice || monthlyPrice) &&

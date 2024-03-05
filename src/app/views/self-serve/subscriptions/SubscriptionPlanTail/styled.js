@@ -8,7 +8,8 @@ export const Container = styled.div`
   padding: 18px 18px;
   border-radius: 10px;
   border-top: 10px solid ${({ color }) => color};
-  border: ${({ isPro }) => (isPro ? '2px solid #5a71f2' : '1px solid #e2e3e4')};
+  border: ${({ active }) =>
+    active ? '2px solid #5a71f2' : '1px solid #e2e3e4'};
   font-family: inherit;
 `;
 
@@ -56,7 +57,7 @@ export const Description = styled.p`
   font-size: ${fontSizes.smallPlus};
   font-weight: ${fontWeights.light};
   color: ${palette.coolGrey8};
-  min-height: 100px;
+  min-height: 80px;
 `;
 
 export const PlanDescriptionContainer = styled.div`
@@ -78,7 +79,7 @@ export const PriceContainer = styled.div`
 
 export const Price = styled.p`
   margin-bottom: 0;
-  font-size: ${fontSizes.hugePlus};
+  font-size: ${fontSizes.huge};
   font-weight: ${fontWeights.bold};
   color: ${({ color }) => color};
 `;
@@ -102,13 +103,11 @@ export const SubscribeButton = styled.button`
   width: 100%;
   padding: 14px;
   border-radius: 8px;
-  background-color: ${({ active, backgroundColor }) =>
-    active ? 'transparent' : backgroundColor};
-  border: 2px solid ${({ color }) => color};
-  color: ${({ active, color }) => (active ? color : palette.white)};
-  font-size: ${fontSizes.smallPlus};
+  background-color: ${({ active }) => (active ? 'transparent' : '#0e244a')};
+  border: 2px solid ${({ active }) => (active ? '#5a71f2' : '#0e244a')};
+  color: ${({ active }) => (active ? '#5a71f2' : palette.white)};
+  font-size: ${fontSizes.regular};
   font-weight: ${fontWeights.bold};
-  ${({ active }) => (active ? '' : 'text-transform: uppercase;')}
   display: flex;
   align-items: center;
   justify-content: center;
@@ -123,7 +122,7 @@ export const ContactUsAnchor = styled.a`
   background-color: ${({ active, color }) => (active ? 'transparent' : color)};
   border: 2px solid ${({ color }) => color};
   color: ${({ active, color }) => (active ? color : palette.white)};
-  font-size: ${fontSizes.smallPlus};
+  font-size: ${fontSizes.regular};
   font-weight: ${fontWeights.bold};
   text-transform: uppercase;
   text-align: center;
@@ -143,7 +142,7 @@ export const Divider = styled.hr`
 export const FeatureText = styled.p`
   position: relative;
   margin-bottom: 0;
-  font-size: ${fontSizes.regularPlus};
+  font-size: ${fontSizes.regular};
   font-weight: 600;
   margin-top: 20px;
 `;
