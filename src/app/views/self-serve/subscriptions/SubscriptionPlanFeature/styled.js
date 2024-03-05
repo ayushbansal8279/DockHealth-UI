@@ -13,8 +13,8 @@ export const FeatureContainer = styled.div`
 export const FeatureText = styled.p`
   position: relative;
   margin-bottom: 0;
-  font-size: ${fontSizes.smallPlus};
-
+  font-size: 16px;
+  font-weight: 400;
   ${({ color }) => `color: ${color};`}
 `;
 
