@@ -42,12 +42,6 @@ export const DashboardTabsNumericalBadgeContainer = styled.div`
     isActive ? palette.crystalBlue : palette.coolGrey1};
   background: ${({ isActive }) =>
     isActive ? palette.whiteSmoke : palette.lightGrey2};
-  padding: ${({ taskCount }) =>
-    taskCount > 9 && taskCount < 100
-      ? `4px 7px 4px ${taskCount > 19 ? '3px' : '5px'}`
-      : taskCount > 99
-      ? '4px 7px 4px 3.5px'
-      : '4px 7px 4px 7px'};
   // padding: 4px 7px 4px 7px;
   gap: 7px;
   margin-left: 6px;
@@ -60,6 +54,10 @@ export const DashboardTabsNumericalBadge = styled(Typography)`
   font-weight: 500;
   font-size: 11px;
   line-height: 11.19px;
+  &.MuiTypography-root {
+    text-align: center;
+  }
+  margin-top: 4px;
 `;
 
 export const DashboardTabsLabel = styled(Typography)`
