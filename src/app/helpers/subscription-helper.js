@@ -31,7 +31,6 @@ export const SUBSCRIPTION_PLANS = [
     subscriptionPlan: SubscriptionPlan.STANDARD,
     isFreeTrialPlan: true,
     mostPopular: false,
-    buttonBackgroundColor: palette.black,
     featuresDescription: 'Highlights',
     features: [
       'HIPAA-compliant',
@@ -59,7 +58,6 @@ export const SUBSCRIPTION_PLANS = [
     subscriptionPlan: SubscriptionPlan.PREMIUM,
     isFreeTrialPlan: true,
     mostPopular: false,
-    buttonBackgroundColor: '#48bbb3',
     featuresDescription: 'Everything in Basic, plus',
     features: [
       'HIPAA-compliant',
@@ -82,7 +80,6 @@ export const SUBSCRIPTION_PLANS = [
     subscriptionPlan: SubscriptionPlan.PRO,
     isFreeTrialPlan: true,
     mostPopular: true,
-    buttonBackgroundColor: '#5a71f2',
     featuresDescription: 'Everything in Premium, plus',
     features: [
       'HIPAA-compliant',
@@ -112,7 +109,6 @@ export const SUBSCRIPTION_PLANS = [
     selectable: false,
     isPlanTriisFreeTrialPlan: false,
     mostPopular: false,
-    buttonBackgroundColor: '#0e244a',
     featuresDescription: 'Everything in Pro, plus:',
     features: [
       'HIPAA-compliant',

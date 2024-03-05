@@ -3,13 +3,22 @@ import { fontSizes, fontWeights } from 'styles/font';
 import palette from 'styles/palette';
 import MuiCheckIcon from '@mui/icons-material/Check';
 
+const containerBorderStyle = (active, pro) => {
+  if (active) {
+    return `${palette.newBrightBlue} 2px`;
+  }
+  if (pro) {
+    return `${palette.newBrightBlue} 2px`;
+  }
+  return `${palette.coolGrey3} 1px`;
+};
+
 export const Container = styled.div`
   width: 260px;
   padding: 18px 18px;
   border-radius: 10px;
   border-top: 10px solid ${({ color }) => color};
-  border: ${({ active }) =>
-    active ? '2px solid #5a71f2' : '1px solid #e2e3e4'};
+  border: ${({ active, pro }) => `solid ${containerBorderStyle(active, pro)}`};
   font-family: inherit;
 `;
 
@@ -99,13 +108,19 @@ export const UnitText = styled.p`
   line-height: 14px;
 `;
 
+const buttonBackgroundColor = (active, pro) => {
+  if (active) return 'transparent';
+  if (pro) return palette.newBrightBlue;
+  return palette.newDarkBlue;
+};
+
 export const SubscribeButton = styled.button`
   width: 100%;
   padding: 14px;
   border-radius: 8px;
-  background-color: ${({ active }) => (active ? 'transparent' : '#0e244a')};
-  border: 2px solid ${({ active }) => (active ? '#5a71f2' : '#0e244a')};
-  color: ${({ active }) => (active ? '#5a71f2' : palette.white)};
+  background-color: ${({ active, pro }) => buttonBackgroundColor(active, pro)};
+  border: 2px solid ${({ active }) => (active ? palette.newBrightBlue : '')};
+  color: ${({ active }) => (active ? palette.newBrightBlue : palette.white)};
   font-size: ${fontSizes.regular};
   font-weight: ${fontWeights.bold};
   display: flex;

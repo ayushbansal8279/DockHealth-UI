@@ -24,12 +24,12 @@ import SubscriptionPlanFeature from '../SubscriptionPlanFeature/SubscriptionPlan
 const SubscriptionPlanTail = (props) => {
   const { active, selected, plan, hasExistingSubscription, onSelect } = props;
   const {
+    key,
     mostPopular,
     label,
     description,
     planDescriptions,
     annualMonthlyPrice,
-    buttonBackgroundColor,
     featuresDescription,
     features,
     comingSoonFeatures,
@@ -42,7 +42,10 @@ const SubscriptionPlanTail = (props) => {
   const subscribeLabel = hasExistingSubscription ? upgradeLabel : 'Subscribe';
 
   return (
-    <Container active={active}>
+    <Container
+      active={active}
+      pro={key === SubscriptionPlan.PRO && !hasExistingSubscription}
+    >
       <TopContainer>
         <Name>{label}</Name>
         {mostPopular && (
@@ -66,7 +69,6 @@ const SubscriptionPlanTail = (props) => {
         <SubscribeButton
           type="button"
           active={active}
-          backgroundColor={buttonBackgroundColor}
           disabled={active}
           onClick={() => onSelect(subscriptionPlan)}
         >
@@ -78,7 +80,7 @@ const SubscriptionPlanTail = (props) => {
       ) : (
         <SubscribeButton
           type="button"
-          backgroundColor={buttonBackgroundColor}
+          pro={key === SubscriptionPlan.PRO && !hasExistingSubscription}
           disabled={active}
           onClick={() => {
             window.Intercom('show');
