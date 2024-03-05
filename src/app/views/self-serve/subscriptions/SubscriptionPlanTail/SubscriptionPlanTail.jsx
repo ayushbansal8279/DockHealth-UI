@@ -87,30 +87,6 @@ const SubscriptionPlanTail = (props) => {
           Contact Us
         </SubscribeButton>
       )}
-      {/* {(annualMonthlyPrice || monthlyPrice) &&
-      key !== SubscriptionPlan.ENTERPRISE ? (
-        <SubscribeButton
-          type="button"
-          active={active}
-          color={palette.newDarkBlue}
-          disabled={active}
-          onClick={() => onSelect(subscriptionPlan)}
-        >
-          {!active && selected && <CheckIcon />}
-          <Box component="span" position="relative">
-            {active ? 'Active' : subscribeLabel}
-          </Box>
-        </SubscribeButton>
-      ) : (
-        <ContactUsAnchor
-          color={palette.newDarkBlue}
-          onClick={() => {
-            window.Intercom('show');
-          }}
-        >
-          Contact Us
-        </ContactUsAnchor>
-      )} */}
       <FeatureText>{featuresDescription}</FeatureText>
       <Box m={2} />
       {features.map((feature) => (
