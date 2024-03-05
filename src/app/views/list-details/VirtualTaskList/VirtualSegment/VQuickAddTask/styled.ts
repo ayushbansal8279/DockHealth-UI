@@ -5,7 +5,7 @@ export const VQuickAddTaskContainer = styled('div')`
   display: flex;
   position: sticky;
   left: ${spacing.large};
-  margin-left: 70px;
+  margin-left: 54.5px;
   margin-bottom: 1px;
   margin-top: 10px;
 `;

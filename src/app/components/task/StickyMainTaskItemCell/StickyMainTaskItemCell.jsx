@@ -34,10 +34,10 @@ const StickyMainTaskItemCell = styled.div`
       : origin === 'LIST'
       ? isSubtask || isWorkflowSubtask
         ? searchValue || isFilterApply
-          ? '70px'
-          : '106px'
-        : '70px'
-      : '24px;'};
+          ? '54.5px'
+          : '90.5px'
+        : '54.5px'
+      : '24px'};
   ${({ order }) => (order ? `order: ${order};` : '')}
   border-left: 1px solid
     ${({ isWorkflowtask, isTamplateGroup }) =>
@@ -48,7 +48,7 @@ const StickyMainTaskItemCell = styled.div`
     isWorkflowtask || !isTamplateGroup || isWorkflowSubtask
       ? ''
       : `1px solid ${palette.coolGrey3};`};
-  margin-left: ${({ isTamplateGroup }) => (isTamplateGroup ? '1px;' : '')};
+  margin-left: ${({ isTamplateGroup }) => (isTamplateGroup ? '-1px;' : '')};
   align-items: center;
   padding-left: ${spacing.smallPlus};
   border-top-left-radius: ${({ isTamplateGroup }) =>

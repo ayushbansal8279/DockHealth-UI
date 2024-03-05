@@ -9,10 +9,10 @@ export const VSubtask = styled('div')`
   border-left: 1px solid rgb(229, 233, 242);
   margin-left: ${({ isWorkflowSubtask, searchValue, isFilterApply }) =>
     isWorkflowSubtask
-      ? '105px;'
+      ? '89.5px'
       : searchValue || isFilterApply
-      ? '70px'
-      : '106px'};
+      ? '54.5px'
+      : '90.5px'};
   margin-bottom: -5px;
   margin-top: -1px;
 `;

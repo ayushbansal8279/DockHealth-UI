@@ -4,6 +4,7 @@ import TasksGroup from 'components/tasklist/TasksGroup/TasksGroup';
 import { reorderTaskListGroups } from 'actions/list-details-actions';
 import { useDispatch } from 'react-redux';
 import * as Sc from './styled';
+import { TaskOrigin } from '@/app/helpers/task-helpers';
 
 export interface Props extends Segment {
   name: string;
@@ -34,6 +35,7 @@ function VListGroup(
         groupName={name}
         moveGroupUp={() => moveGroup(metadata.sameLevelIndex, 'up')}
         moveGroupDown={() => moveGroup(metadata.sameLevelIndex, 'down')}
+        origin={TaskOrigin.LIST}
       >
         {() => null}
       </TasksGroup>

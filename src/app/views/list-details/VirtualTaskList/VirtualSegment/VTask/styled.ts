@@ -20,6 +20,6 @@ export const VTask = styled('div')`
 
   & > * > * > * > * {
     left: ${({ isTaskTemplate }: boolean) =>
-      isTaskTemplate ? '71px' : '70px'};
+      isTaskTemplate ? ' 55.5px' : '54.5px'};
   }
 `;
