@@ -7,8 +7,12 @@ export const VSubtask = styled('div')`
   line-height: 40px;
   height: 40px;
   border-left: 1px solid rgb(229, 233, 242);
-  margin-left: ${({ isWorkflowSubtask }) =>
-    isWorkflowSubtask ? '105px;' : '106px'};
+  margin-left: ${({ isWorkflowSubtask, searchValue, isFilterApply }) =>
+    isWorkflowSubtask
+      ? '105px;'
+      : searchValue || isFilterApply
+      ? '70px'
+      : '106px'};
   margin-bottom: -5px;
   margin-top: -1px;
 `;

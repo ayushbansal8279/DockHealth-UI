@@ -8,6 +8,10 @@ import {
   DraggableStateSnapshot,
 } from 'react-beautiful-dnd';
 import * as Sc from './styled';
+import { TaskOrigin } from '@/app/helpers/task-helpers';
+import { searchTermSelector } from '@/app/selectors/list-details-selectors';
+import { useSelector } from 'react-redux';
+import { megaFilterSelector } from '@/app/selectors/mega-filter-selectors';
 
 export interface Props extends Segment {
   task: any;
@@ -26,6 +30,10 @@ function VSubtask(
     }
     return false;
   };
+
+  const searchValue = useSelector(searchTermSelector);
+  const megaFilter = useSelector(megaFilterSelector);
+  const { selectedFilters } = megaFilter || {};
   return (
     <Draggable
       draggableId={metadata.id}
@@ -38,8 +46,12 @@ function VSubtask(
           {...register}
           $subitem={metadata.level > 1}
           isWorkflowSubtask={!!task}
+          searchValue={!!searchValue}
+          isFilterApply={!!selectedFilters}
         >
-          {getSubtaskStylingLink(isLast())}
+          {!!searchValue ||
+            !!selectedFilters ||
+            getSubtaskStylingLink(isLast())}
           <StandardTaskItem
             // @ts-ignore
             taskIdentifier={metadata.id}
@@ -47,6 +59,7 @@ function VSubtask(
             isDraggable
             isDragging={snapshot.isDragging}
             isWorkflowSubtask={!!task}
+            origin={TaskOrigin.LIST}
           />
         </Sc.VSubtask>
       )}

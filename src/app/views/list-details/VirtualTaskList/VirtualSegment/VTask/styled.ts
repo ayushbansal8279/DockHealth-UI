@@ -9,7 +9,8 @@ export const VTask = styled('div')`
   line-height: 52px;
   height: 52px;
   margin-bottom: -2px;
-  ` : `
+  `
+      : `
   line-height: 40px;
   height: 36px;
   `}
@@ -18,6 +19,7 @@ export const VTask = styled('div')`
   // ${({ $template }: any) => ($template ? 'margin-bottom: 1px' : '')};
 
   & > * > * > * > * {
-    left: 70px;
+    left: ${({ isTaskTemplate }: boolean) =>
+      isTaskTemplate ? '71px' : '70px'};
   }
 `;

@@ -20,14 +20,24 @@ const StickyMainTaskItemCell = styled.div`
     if (width && !isSubtask) return `${width}px`;
     return '';
   }};
-  left: ${({ isSubtask, isWorkflowSubtask, origin }) =>
-    origin === 'PATIENT' || origin === 'DASHBOARD'
+  left: ${({
+    isSubtask,
+    isWorkflowSubtask,
+    origin,
+    searchValue,
+    isFilterApply,
+  }) =>
+    origin === 'PATIENT'
       ? isSubtask || isWorkflowSubtask
         ? '60px'
         : '24px'
-      : isSubtask || isWorkflowSubtask
-      ? '106px'
-      : '70px'};
+      : origin === 'LIST'
+      ? isSubtask || isWorkflowSubtask
+        ? searchValue || isFilterApply
+          ? '70px'
+          : '106px'
+        : '70px'
+      : '24px;'};
   ${({ order }) => (order ? `order: ${order};` : '')}
   border-left: 1px solid
     ${({ isWorkflowtask, isTamplateGroup }) =>
@@ -38,11 +48,11 @@ const StickyMainTaskItemCell = styled.div`
     isWorkflowtask || !isTamplateGroup || isWorkflowSubtask
       ? ''
       : `1px solid ${palette.coolGrey3};`};
-  margin-left: ${({ isTamplateGroup }) =>
-    isTamplateGroup ? '-1px;' : ''};
+  margin-left: ${({ isTamplateGroup }) => (isTamplateGroup ? '1px;' : '')};
   align-items: center;
   padding-left: ${spacing.smallPlus};
-  border-top-left-radius: ${({isTamplateGroup}) => isTamplateGroup ?'7px' : ''};
+  border-top-left-radius: ${({ isTamplateGroup }) =>
+    isTamplateGroup ? '7px' : ''};
   z-index: ${({ isEditingDescription }) =>
     isEditingDescription ? '12' : '11'};
 
@@ -95,10 +105,10 @@ const StickyMainTaskItemCell = styled.div`
 
   &:hover {
     border-left: 1px solid
-    ${({ isWorkflowtask, isTamplateGroup }) =>
-    isWorkflowtask || isTamplateGroup
-      ? 'rgba(75, 179, 253, 1)'
-      : `${palette.coolGrey2}`};
+      ${({ isWorkflowtask, isTamplateGroup }) =>
+        isWorkflowtask || isTamplateGroup
+          ? 'rgba(75, 179, 253, 1)'
+          : `${palette.coolGrey2}`};
   }
 
   @media print {

@@ -7,6 +7,7 @@ import {
   DraggableStateSnapshot,
 } from 'react-beautiful-dnd';
 import * as Sc from './styled';
+import { TaskOrigin } from '@/app/helpers/task-helpers';
 
 export interface Props extends Segment {
   isTaskTemplate: boolean;
@@ -31,6 +32,7 @@ function VTask(
           // @ts-ignore
           $workflow={record.task?.itemType === 'BUNDLE'}
           $template={isTaskTemplate && isLastChild}
+          isTaskTemplate={isTaskTemplate}
         >
           <StandardTaskItem
             // @ts-ignore
@@ -40,6 +42,7 @@ function VTask(
             isDragging={snapshot.isDragging}
             isTaskTemplate={isTaskTemplate}
             isLastChild={isLastChild || false}
+            origin={TaskOrigin.LIST}
           />
         </Sc.VTask>
       )}
