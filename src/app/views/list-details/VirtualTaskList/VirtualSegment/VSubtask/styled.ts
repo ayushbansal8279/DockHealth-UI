@@ -21,9 +21,8 @@ export const VSubtask = styled('div')`
 export const QuickAddContainer = styled('div')`
   border-left: 1px solid ${palette.coolGrey3};
   width: 70%;
-  margin-left: ${({ isWorkflowSubtask }) =>
-    isWorkflowSubtask ? '107px;' : '106px'};
-
+  margin-left:89.5px;
+  
   &:hover {
     border-left: 1px solid ${palette.coolGrey2};
   }
