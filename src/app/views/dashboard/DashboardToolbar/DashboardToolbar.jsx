@@ -130,42 +130,42 @@ const DashboardToolbar = ({ iconColorFilterActive, iconColorActive }) => {
         setSharedTasksAnyUnread(anyTasksUnread);
       },
     );
-    setUpcomingTasksCount(0);
-    setOverdueTasksCount(0);
-    setCompletedTasksCount(0);
-    DashboardApi.getDashboardTaskStasForImplicitGroups('MyTasks').then(
-      (data) => {
-        data.map((value) => {
-          if (upcomingTabGroupTypes.includes(value?.groupType)) {
-            setUpcomingTasksCount((prev) => prev + value?.metricValue);
-          }
-          if (overdueTabGroupTypes.includes(value?.groupType)) {
-            setOverdueTasksCount((prev) => prev + value?.metricValue);
-          }
-          if (completedTabGroupTypes.includes(value?.groupType)) {
-            setCompletedTasksCount((prev) => prev + value?.metricValue);
-          }
-        });
-      },
-    );
+    // DashboardApi.getDashboardTaskStasForImplicitGroups('MyTasks').then(
+    //   (data) => {
+    // setUpcomingTasksCount(0);
+    // setOverdueTasksCount(0);
+    // setCompletedTasksCount(0);
+    // groupList.map((value) => {
+    //   if (upcomingTabGroupTypes.includes(value?.groupType)) {
+    //     setUpcomingTasksCount((prev) => prev + value?.metricValue);
+    //   }
+    //   if (overdueTabGroupTypes.includes(value?.groupType)) {
+    //     setOverdueTasksCount((prev) => prev + value?.metricValue);
+    //   }
+    //   if (completedTabGroupTypes.includes(value?.groupType)) {
+    //     setCompletedTasksCount((prev) => prev + value?.metricValue);
+    //   }
+    // });
+    //   },
+    // );
 
-    setAllTasksCount(0);
-    DashboardApi.getDashboardTaskStasForImplicitGroups('AllTasks').then(
-      (data) => {
-        data.map((value) => {
-          if (allTasksTabGroupTypes.includes(value?.groupType)) {
-            setAllTasksCount((prev) => prev + value?.metricValue);
-          }
-        });
-      },
-    );
+    // setAllTasksCount(0);
+    // DashboardApi.getDashboardTaskStasForImplicitGroups('AllTasks').then(
+    //   (data) => {
+    //     data.map((value) => {
+    //       if (allTasksTabGroupTypes.includes(value?.groupType)) {
+    //         setAllTasksCount((prev) => prev + value?.metricValue);
+    //       }
+    //     });
+    //   },
+    // );
   }, [
     setSharedTasksCount,
     setSharedTasksAnyUnread,
-    setUpcomingTasksCount,
-    setOverdueTasksCount,
-    setCompletedTasksCount,
-    setAllTasksCount,
+    // setUpcomingTasksCount,
+    // setOverdueTasksCount,
+    // setCompletedTasksCount,
+    // setAllTasksCount,
   ]);
 
   //       const anyTasksUnread =
@@ -272,7 +272,7 @@ const DashboardToolbar = ({ iconColorFilterActive, iconColorActive }) => {
                   >
                     Upcoming
                   </DashboardTabsLabel>
-                  <DashboardTabsNumericalBadgeContainer
+                  {/* <DashboardTabsNumericalBadgeContainer
                     isActive={tabName === DashboardTasksTab.UPCOMING}
                   >
                     <DashboardTabsNumericalBadge
@@ -280,7 +280,7 @@ const DashboardToolbar = ({ iconColorFilterActive, iconColorActive }) => {
                     >
                       {upcomingTasksCount}
                     </DashboardTabsNumericalBadge>
-                  </DashboardTabsNumericalBadgeContainer>
+                  </DashboardTabsNumericalBadgeContainer> */}
                 </>
               }
               onClick={() => {
@@ -300,7 +300,7 @@ const DashboardToolbar = ({ iconColorFilterActive, iconColorActive }) => {
                   >
                     Overdue
                   </DashboardTabsLabel>
-                  <DashboardTabsNumericalBadgeContainer
+                  {/* <DashboardTabsNumericalBadgeContainer
                     isActive={tabName === DashboardTasksTab.OVERDUE}
                   >
                     <DashboardTabsNumericalBadge
@@ -308,7 +308,7 @@ const DashboardToolbar = ({ iconColorFilterActive, iconColorActive }) => {
                     >
                       {overdueTasksCount}
                     </DashboardTabsNumericalBadge>
-                  </DashboardTabsNumericalBadgeContainer>
+                  </DashboardTabsNumericalBadgeContainer> */}
                 </>
               }
               onClick={() => {
@@ -328,7 +328,7 @@ const DashboardToolbar = ({ iconColorFilterActive, iconColorActive }) => {
                   >
                     Completed
                   </DashboardTabsLabel>
-                  <DashboardTabsNumericalBadgeContainer
+                  {/* <DashboardTabsNumericalBadgeContainer
                     isActive={tabName === DashboardTasksTab.COMPLETED}
                   >
                     <DashboardTabsNumericalBadge
@@ -336,7 +336,7 @@ const DashboardToolbar = ({ iconColorFilterActive, iconColorActive }) => {
                     >
                       {completedTasksCount}
                     </DashboardTabsNumericalBadge>
-                  </DashboardTabsNumericalBadgeContainer>
+                  </DashboardTabsNumericalBadgeContainer> */}
                 </>
               }
               onClick={() => {
@@ -383,7 +383,7 @@ const DashboardToolbar = ({ iconColorFilterActive, iconColorActive }) => {
                     >
                       All Tasks
                     </DashboardTabsLabel>
-                    <DashboardTabsNumericalBadgeContainer
+                    {/* <DashboardTabsNumericalBadgeContainer
                       isActive={tabName === DashboardTasksTab.ALL_TASKS}
                     >
                       <DashboardTabsNumericalBadge
@@ -391,7 +391,7 @@ const DashboardToolbar = ({ iconColorFilterActive, iconColorActive }) => {
                       >
                         {allTasksCount}
                       </DashboardTabsNumericalBadge>
-                    </DashboardTabsNumericalBadgeContainer>
+                    </DashboardTabsNumericalBadgeContainer> */}
                   </>
                 }
                 onClick={() => {
