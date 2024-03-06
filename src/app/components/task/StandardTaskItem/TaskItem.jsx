@@ -14,7 +14,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
 import * as ListDetailsActions from 'actions/list-details-actions';
 import { isTaskSelectedSelector } from 'selectors/task-drawer-selectors';
-import { listCustomFieldsSelector } from 'selectors/list-details-selectors';
+import {
+  listCustomFieldsSelector,
+  searchTermSelector,
+} from 'selectors/list-details-selectors';
 import { isTaskItemSelectedSelector } from 'selectors/task-items-selectors';
 import { TASK_DISAPPEAR_DELAY } from 'helpers/task-update-helper';
 import { currentTaskListSelector } from 'selectors/task-list-selectors';
@@ -127,6 +130,7 @@ import TaskItemDate from './customFieldsTaskItemComponents/TaskItemDate';
 
 import TaskItemComments from './TaskItemComponents/TaskItemComments';
 import { StickyColumnContainer } from '../../tasklist/TasksHeader/styled';
+import { megaFilterSelector } from '@/app/selectors/mega-filter-selectors';
 
 const { DISABLED, READ_ONLY } = SINGLE_TASK_RESTRICTIONS_OPTIONS;
 
@@ -257,6 +261,9 @@ const TaskItem = React.memo(
       matchWorkflowStatus,
     } = searchMetaData;
 
+    const searchValue = useSelector(searchTermSelector);
+    const megaFilter = useSelector(megaFilterSelector);
+    const { selectedFilters } = megaFilter || {};
     const currentUser = useSelector(userProfileSelector);
     let restrictions =
       SINGLE_TASK_RESTRICTIONS_PROFILES[currentUser?.orgUserRole];
@@ -776,6 +783,8 @@ const TaskItem = React.memo(
             isEditingDescription={isEditingDescription}
             isWorkflowSubtask={isWorkflowSubtask}
             origin={origin}
+            searchValue={!!searchValue}
+            isFilterApply={!!selectedFilters}
           >
             {taskListRestrictions?.createTask !== DISABLED && (
               <DotsContainer

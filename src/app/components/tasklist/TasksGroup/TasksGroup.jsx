@@ -87,6 +87,7 @@ const TasksGroup = ({
   children,
   iconColorActive,
   restrictCustomizationFeatures,
+  origin,
 }) => {
   const addingNewSubtaskParentId = useSelector(
     addingNewSubtaskParentIdSelector,
@@ -286,7 +287,7 @@ const TasksGroup = ({
               )
       }
     >
-      <StickyContainer left={24} decreaseWidth={2 * 24}>
+      <StickyContainer left={origin === 'LIST' ? 8 : 24} decreaseWidth={2 * 24}>
         <TasksGroupHeader>
           <Spacing horizontal={4} />
           <GroupOpenContainer onClick={onToggleGroupOpen}>

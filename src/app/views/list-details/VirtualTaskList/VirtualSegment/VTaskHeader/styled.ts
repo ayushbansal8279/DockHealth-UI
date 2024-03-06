@@ -10,6 +10,6 @@ export const VTaskHeader = styled('div')`
   margin-bottom: -3px;
 
   & > * > * {
-    left: 70px;
+    left: 54.5px;
   }
 `;
