@@ -78,3 +78,7 @@
 .fr-box .fr-counter {
   padding: 1px;
 }
+
+.fr-box * {
+  font-family: Outfit !important;
+}
