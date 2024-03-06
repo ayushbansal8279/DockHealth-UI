@@ -11,6 +11,10 @@ import {
 import * as Sc from './styled';
 import { useSelector } from 'react-redux';
 import { taskLookupSelector } from '@/app/selectors/task-details-selectors';
+import { TaskOrigin } from '@/app/helpers/task-helpers';
+import { searchTermSelector } from '@/app/selectors/list-details-selectors';
+import { megaFilterSelector } from '@/app/selectors/mega-filter-selectors';
+
 
 export interface Props extends Segment {
   task: any;
@@ -46,6 +50,10 @@ function VSubtask(
   // @ts-ignore
   const noOfSubtask = metadata.parent?.children.length - 1;
 
+  const searchValue = useSelector(searchTermSelector);
+  const megaFilter = useSelector(megaFilterSelector);
+  const { selectedFilters } = megaFilter || {};
+
   return (
     <Draggable
       draggableId={metadata.id}
@@ -59,8 +67,12 @@ function VSubtask(
             {...register}
             $subitem={metadata.level > 1}
             isWorkflowSubtask={!!task}
+            searchValue={!!searchValue}
+            isFilterApply={!!selectedFilters}
           >
-            {getSubtaskStylingLink(isLast())}
+            {!!searchValue ||
+              !!selectedFilters ||
+              getSubtaskStylingLink(isLast())}
             <StandardTaskItem
               // @ts-ignore
               taskIdentifier={metadata.id}
