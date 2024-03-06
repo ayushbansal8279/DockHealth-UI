@@ -1,4 +1,5 @@
 import styled from '@mui/styled-engine';
+import palette, { featurePalette, typography } from 'styles/palette';
 
 export const VSubtask = styled('div')`
   position: relative;
@@ -15,4 +16,15 @@ export const VSubtask = styled('div')`
       : '90.5px'};
   margin-bottom: -5px;
   margin-top: -1px;
+`;
+
+export const QuickAddContainer = styled('div')`
+  border-left: 1px solid ${palette.coolGrey3};
+  width: 70%;
+  margin-left: ${({ isWorkflowSubtask }) =>
+    isWorkflowSubtask ? '107px;' : '106px'};
+
+  &:hover {
+    border-left: 1px solid ${palette.coolGrey2};
+  }
 `;
