@@ -21,6 +21,7 @@ export const VSubtask = styled('div')`
 export const QuickAddContainer = styled('div')`
   border-left: 1px solid ${palette.coolGrey3};
   width: 70%;
+  margin-bottom: 1px;
   margin-left:89.5px;
   
   &:hover {
