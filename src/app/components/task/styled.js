@@ -661,9 +661,19 @@ export const SubtasksCellContentButton = styled.button`
     color: ${palette.coolGrey2};
     cursor: initial;
   }
+  p {
+    visibility: ${({ subTasksCount }) =>
+      subTasksCount > 0 ? 'hidden' : 'visible'};
+  }
 
   &:hover {
-    color: ${({ isOpen }) => (!isOpen ? palette.brightBlue : '')}
+    color: ${({ isOpen, subtasksDisabled }) =>
+      subtasksDisabled ? '' : !isOpen ? palette.brightBlue : ''};
+      p {
+        visibility: visible;
+      }
+     
+     
 `;
 
 export const SubtasksCellText = styled.p`

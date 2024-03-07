@@ -1034,7 +1034,7 @@ const TaskItem = React.memo(
                       isNestedTask={isNestedTask}
                       onSubtaskLabelClick={onSubtaskLabelClick}
                       taskIdentifier={taskIdentifier}
-                      // openQuickAddSubtask={openQuickAddSubtask}
+                      openQuickAddSubtask={TaskActions.openQuickAddSubtask}
                       dispatch={dispatch}
                       readOnly={restrictions?.subtasks === READ_ONLY}
                     />
