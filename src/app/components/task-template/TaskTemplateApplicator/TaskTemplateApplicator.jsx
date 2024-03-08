@@ -31,6 +31,7 @@ const TaskTemplateApplicator = ({
   onTemplateSelect,
   bulkApply = false,
   iconColorActive,
+  isListPageWorkflow,
 }) => {
   const popoverReference = useRef(null);
   const [isPopoverOpen, openPopover, closePopover] = useBoolean(false);
@@ -62,7 +63,7 @@ const TaskTemplateApplicator = ({
   const getRootTemplatesList = useCallback(() => {
     setTaskTemplatesIsLoading(true);
     setParentList([]);
-    getTemplates(false)
+    getTemplates(true)
       .then((templatesList) => {
         setTaskTemplatesList(templatesList);
         setTaskTemplatesIsLoading(false);
@@ -178,6 +179,7 @@ const TaskTemplateApplicator = ({
         getTemplatesList={getRootTemplatesList}
         parentList={parentList[parentList.length - 1]}
         onBack={handleBack}
+        isListPageWorkflow={isListPageWorkflow}
       />
     </>
   );

@@ -27,7 +27,7 @@ export const StyledTextField = styled(TextField)`
       `background-color: ${palette.white};`}
     border-radius: 0.25rem;
     color: ${palette.coolGrey1};
-    height: 2.5rem;
+    height: ${({ isWorkFlowSearch }) => (isWorkFlowSearch ? '48px' : '2.5rem')};
     ${(props) => (props.fullWidth ? 'width: 100%;' : '')}
 
     & .MuiInputBase-root {
@@ -49,7 +49,8 @@ export const StyledTextField = styled(TextField)`
     }
 
     & .MuiInputBase-root.Mui-focused {
-      border: 0.0625rem solid ${palette.coolGrey3};
+      border: ${({ isWorkFlowSearch }) =>
+        isWorkFlowSearch ? '' : `0.0625rem solid ${palette.coolGrey3}`};
       width: ${(props) => (props.fullWidth ? '100%' : '16.8125rem')};
     }
 
@@ -66,11 +67,19 @@ export const StyledTextField = styled(TextField)`
       padding: 0;
 
       &::placeholder {
-        color: ${palette.coolGrey1};
-        font-size: 1rem;
-        font-weight: ${fontWeights.regular};
+        font-family: ${({ isWorkFlowSearch }) =>
+          isWorkFlowSearch ? 'outfit' : ''};
+        color: ${({ isWorkFlowSearch }) =>
+          isWorkFlowSearch ? palette.lightGrayishBlue : palette.coolGrey1};
+        font-size: ${({ isWorkFlowSearch }) =>
+          isWorkFlowSearch ? '14px' : '1rem'};
+        font-weight: ${({ isWorkFlowSearch }) =>
+          isWorkFlowSearch ? fontWeights.light : fontWeights.regular};
         opacity: 0.8;
-        text-transform: uppercase;
+        text-transform: ${({ isWorkFlowSearch }) =>
+          isWorkFlowSearch ? 'none' : 'uppercase'};
+        line-height: ${({ isWorkFlowSearch }) =>
+          isWorkFlowSearch ? '18.9px' : ''};
       }
     }
 

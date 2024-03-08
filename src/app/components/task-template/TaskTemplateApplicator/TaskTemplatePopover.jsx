@@ -1,8 +1,10 @@
 import React, { useMemo, useCallback, useEffect } from 'react';
 import { Popover } from '@mui/material';
+import ArrowBackIosSharpIcon from '@mui/icons-material/ArrowBackIosSharp';
 import Search from 'components/task-view/Search/Search';
 import Folder from 'img/folder.svg';
-import ArrowLeftIcon from 'img/arrow-left.svg';
+import NewWorkflowFolder from 'img/new-workflow-folder-icon.svg';
+import ChevronLeftSharpIcon from '@mui/icons-material/ChevronLeftSharp';
 import { trunc } from 'helpers/utility-functions';
 import {
   Item,
@@ -19,6 +21,16 @@ import {
   PopoverHeader,
   BackIconContainer,
   HeaderTextContainer,
+  WorkflowFoldersContainer,
+  WorkflowFoldersHeaderContainer,
+  WorkflowFoldersHeaderLabel,
+  WorkflowFoldersListContainer,
+  FolderNameContainer,
+  WorkflowSearchHorizontalLineContainer,
+  WorkflowSearchHorizontalLine,
+  WorkflowListsContainer,
+  WorkflowLists,
+  WorkflowNameContainer,
 } from './styled';
 
 const TaskTemplatePopover = ({
@@ -34,6 +46,7 @@ const TaskTemplatePopover = ({
   getTemplatesList,
   parentList,
   onBack,
+  isListPageWorkflow,
 }) => {
   const folders = useMemo(
     () =>
@@ -63,7 +76,7 @@ const TaskTemplatePopover = ({
           onClick={() => onTemplateSelect(folder)}
           key={taskTemplateIdentifier}
         >
-          {name}
+          <WorkflowNameContainer>{name}</WorkflowNameContainer>
         </Item>
       );
     },
@@ -76,13 +89,13 @@ const TaskTemplatePopover = ({
       return (
         <ListItem key={taskTemplateIdentifier}>
           <FolderIconContainer>
-            <FolderIcon src={Folder} alt="folder icon" />
+            <FolderIcon src={NewWorkflowFolder} alt="folder icon" />
           </FolderIconContainer>
           <ListItemTextButton
             onClick={() => onFolderClick(folder)}
             type="button"
           >
-            {name}
+            <FolderNameContainer>{name}</FolderNameContainer>
           </ListItemTextButton>
           <NextArrow onClick={() => onFolderClick(folder)} />
         </ListItem>
@@ -95,7 +108,9 @@ const TaskTemplatePopover = ({
     <Popover
       PaperProps={{
         style: {
-          width: 325,
+          width: 317,
+          borderRadius: '7px 7px 0px 0px',
+          overflowY: 'hidden',
         },
       }}
       anchorOrigin={{
@@ -111,24 +126,38 @@ const TaskTemplatePopover = ({
       onEnter={getTemplatesList}
       onClose={onClose}
     >
-      <SearchContainer>
+      <SearchContainer isWorkFlowSearch={isListPageWorkflow}>
         <Search
           fullWidth
           noBackground
           value={searchPhrase}
           onChange={(event) => onSearchChange(event?.target?.value)}
-          placeholder="Search Workflows"
+          placeholder="Search"
+          isWorkFlowSearch={isListPageWorkflow}
         />
       </SearchContainer>
+      <WorkflowSearchHorizontalLineContainer>
+        <WorkflowSearchHorizontalLine />
+      </WorkflowSearchHorizontalLineContainer>
       {parentList && (
-        <PopoverHeader>
-          <BackIconContainer onClick={onBack}>
-            <img src={ArrowLeftIcon} alt="back-navigation" />
-          </BackIconContainer>
-          <HeaderTextContainer>
-            {trunc(parentList.name, 25)}
-          </HeaderTextContainer>
-        </PopoverHeader>
+        <>
+          <PopoverHeader>
+            <BackIconContainer onClick={onBack}>
+              <ChevronLeftSharpIcon
+                fontSize="large"
+                sx={{ color: '#4BB3FD' }}
+              />
+              {/* <img src={ArrowLeftIcon} alt="back-navigation" /> */}
+            </BackIconContainer>
+            <HeaderTextContainer>
+              Back To All Workflows
+              {/* {trunc(parentList.name, 25)} */}
+            </HeaderTextContainer>
+          </PopoverHeader>
+          <WorkflowSearchHorizontalLineContainer>
+            <WorkflowSearchHorizontalLine />
+          </WorkflowSearchHorizontalLineContainer>
+        </>
       )}
       <SelectOptionsContainer>
         {taskTemplatesIsLoading && (
@@ -138,19 +167,37 @@ const TaskTemplatePopover = ({
             <LoaderItem />
           </LoaderContainer>
         )}
-        {!taskTemplatesIsLoading &&
-          folders?.length > 0 &&
-          folders
-            .sort((a, b) => a.name.localeCompare(b.name))
-            .map((folder) => renderFolder(folder))}
-        {!taskTemplatesIsLoading &&
-          templates?.length > 0 &&
-          templates
-            .sort((a, b) => a.name.localeCompare(b.name))
-            .map((folder) => renderTemplate(folder))}
-        {!taskTemplatesIsLoading && taskTemplatesList?.length === 0 && (
-          <EmptyLabel>There are no workflows to select from</EmptyLabel>
+        {!parentList && folders?.length > 0 && (
+          <>
+            <WorkflowFoldersContainer>
+              <WorkflowFoldersHeaderContainer>
+                <WorkflowFoldersHeaderLabel>Folders</WorkflowFoldersHeaderLabel>
+              </WorkflowFoldersHeaderContainer>
+              <WorkflowFoldersListContainer>
+                {!taskTemplatesIsLoading &&
+                  folders?.length > 0 &&
+                  folders
+                    .sort((a, b) => a.name.localeCompare(b.name))
+                    .map((folder) => renderFolder(folder))}
+              </WorkflowFoldersListContainer>
+            </WorkflowFoldersContainer>
+            <WorkflowSearchHorizontalLineContainer>
+              <WorkflowSearchHorizontalLine />
+            </WorkflowSearchHorizontalLineContainer>
+          </>
         )}
+        <WorkflowListsContainer>
+          <WorkflowLists>
+            {!taskTemplatesIsLoading &&
+              templates?.length > 0 &&
+              templates
+                .sort((a, b) => a.name.localeCompare(b.name))
+                .map((folder) => renderTemplate(folder))}
+            {!taskTemplatesIsLoading && taskTemplatesList?.length === 0 && (
+              <EmptyLabel>There are no workflows to select from</EmptyLabel>
+            )}
+          </WorkflowLists>
+        </WorkflowListsContainer>
       </SelectOptionsContainer>
     </Popover>
   );

@@ -104,6 +104,7 @@ function VQuickAddTask(
         <TaskTemplateApplicator
           onTemplateSelect={applyTemplate}
           bulkApply={false}
+          isListPageWorkflow
         />
       </Sc.TaskTemplateApplicatorContainer>
     </Sc.VQuickAddTaskContainer>
