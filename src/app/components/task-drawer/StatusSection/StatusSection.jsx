@@ -9,12 +9,10 @@ import TaskDrawerPopover from 'components/task-drawer/TaskDrawerPopover/TaskDraw
 import Input from 'components/common/Input/Input';
 import AlertMessages from 'alert/AlertMessages';
 import {
-  StatusFlag,
   StatusFieldContainer,
-  StatusFlagContainer,
   StatusContainer,
   Title,
-
+  StatusWrapper,
 } from './styled';
 import { IconButton, InputAdornment } from '@mui/material';
 import AssignMemberIcon from '../../user/AssignMemberIcon/AssingMemberIcon';
@@ -60,58 +58,63 @@ const StatusSection = ({ selectedTask, onTaskUpdate, disabled = false }) => {
   return (
     <StatusContainer>
       <Title>Status</Title>
-    <TaskDrawerPopover
-      width={245}
-      disabled={disabled}
-      content={({ closePopover, resetPosition }) => (
-        <TaskWorkflowStatus
-          selectedStatusIdentifier={workflowStatus?.identifier}
-          updateWorkflowStatus={handleUpdateWorkflowStatus}
-          onClose={closePopover}
-          onWidthChange={resetPosition}
-        />
-      )}
-    >
-      <StatusFieldContainer>
-        {workflowStatus && (
-        <StatusFlagContainer>
-          <StatusFlag color={workflowStatus?.color} />
-        </StatusFlagContainer>)}
-        <Input
-          variant='outlined'
-          size='small'
-          sx={{
-            '& .MuiOutlinedInput-root': {
-              '& fieldset': {
-                borderColor: 'white',
-              },
-            },
-            width:'200px',
-            marginLeft:'5px',
-          }}
-          name="workflowStatus"
-          placeholder="Add Status"
-          disabled={disabled}
-          InputLabelProps={{
-            shrink: true,
-          }}
-          InputProps={{
-            startAdornment: !workflowStatus ? (
-              <InputAdornment position="start">
-                <IconButton aria-label="search">
-                  <AssignMemberIcon />
-                </IconButton>
-              </InputAdornment>
-            ) : '',
-          }}
-          inputProps={{
-            tabIndex: -1,
-            readOnly: true,
-            value: workflowStatus?.name || '',
-          }}
-        />
-      </StatusFieldContainer>
-    </TaskDrawerPopover></StatusContainer>
+      <TaskDrawerPopover
+        width={245}
+        disabled={disabled}
+        content={({ closePopover, resetPosition }) => (
+          <TaskWorkflowStatus
+            selectedStatusIdentifier={workflowStatus?.identifier}
+            updateWorkflowStatus={handleUpdateWorkflowStatus}
+            onClose={closePopover}
+            onWidthChange={resetPosition}
+          />
+        )}
+      >
+        <StatusFieldContainer>
+          {workflowStatus ? (
+            <StatusWrapper color={workflowStatus?.color}>
+              {workflowStatus?.name}
+            </StatusWrapper>
+          ) : (
+            <Input
+              variant="outlined"
+              size="small"
+              sx={{
+                '& .MuiOutlinedInput-root': {
+                  '& fieldset': {
+                    borderColor: 'white',
+                  },
+                },
+                width: '200px',
+                marginLeft: '5px',
+              }}
+              name="workflowStatus"
+              placeholder="Add Status"
+              disabled={disabled}
+              InputLabelProps={{
+                shrink: true,
+              }}
+              InputProps={{
+                startAdornment: !workflowStatus ? (
+                  <InputAdornment position="start">
+                    <IconButton aria-label="status">
+                      <AssignMemberIcon />
+                    </IconButton>
+                  </InputAdornment>
+                ) : (
+                  ''
+                ),
+              }}
+              inputProps={{
+                tabIndex: -1,
+                readOnly: true,
+                value: workflowStatus?.name || '',
+              }}
+            />
+          )}
+        </StatusFieldContainer>
+      </TaskDrawerPopover>
+    </StatusContainer>
   );
 };
 
