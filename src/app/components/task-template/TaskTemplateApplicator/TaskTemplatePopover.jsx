@@ -46,7 +46,7 @@ const TaskTemplatePopover = ({
   getTemplatesList,
   parentList,
   onBack,
-  isListPageWorkflow,
+  isWorkflowSearch,
 }) => {
   const folders = useMemo(
     () =>
@@ -126,14 +126,14 @@ const TaskTemplatePopover = ({
       onEnter={getTemplatesList}
       onClose={onClose}
     >
-      <SearchContainer isWorkFlowSearch={isListPageWorkflow}>
+      <SearchContainer isWorkFlowSearch={isWorkflowSearch}>
         <Search
           fullWidth
           noBackground
           value={searchPhrase}
           onChange={(event) => onSearchChange(event?.target?.value)}
           placeholder="Search"
-          isWorkFlowSearch={isListPageWorkflow}
+          isWorkFlowSearch={isWorkflowSearch}
         />
       </SearchContainer>
       <WorkflowSearchHorizontalLineContainer>

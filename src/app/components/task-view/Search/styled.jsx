@@ -68,7 +68,7 @@ export const StyledTextField = styled(TextField)`
 
       &::placeholder {
         font-family: ${({ isWorkFlowSearch }) =>
-          isWorkFlowSearch ? 'outfit' : ''};
+          isWorkFlowSearch ? 'Outfit' : ''};
         color: ${({ isWorkFlowSearch }) =>
           isWorkFlowSearch ? palette.lightGrayishBlue : palette.coolGrey1};
         font-size: ${({ isWorkFlowSearch }) =>

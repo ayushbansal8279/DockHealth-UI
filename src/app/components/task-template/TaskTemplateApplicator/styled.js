@@ -16,18 +16,18 @@ export const FolderIconContainer = styled.div`
 `;
 
 export const FolderNameContainer = styled(Typography)`
-  // font-family: Open Sans;
+  font-family: sans-serif;
   font-size: 14px;
   font-weight: 600;
-  line-height: 19px;
+  line-height: 19.07px;
   letter-spacing: 0px;
   text-align: left;
 `;
 export const WorkflowNameContainer = styled(Typography)`
-  // font-family: Open Sans;
+  font-family: sans-serif;
   font-size: 14px;
   font-weight: 600;
-  line-height: 19px;
+  line-height: 19.07px;
   letter-spacing: 0px;
   text-align: left;
 `;
@@ -51,10 +51,10 @@ export const BackIconContainer = styled.div`
 export const HeaderTextContainer = styled.div`
   font-weight: ${fontWeights.regularPlus};
   margin-top: 8px;
-  // font-family: Open Sans;
+  font-family: sans-serif;
   font-size: 14px;
   font-weight: 600;
-  line-height: 19px;
+  line-height: 19.07px;
   letter-spacing: 0px;
   text-align: left;
 `;
@@ -84,9 +84,23 @@ export const WorkflowLists = styled.div`
   width: 317px;
   max-height: 432;
   overflow-y: auto;
-  scrollbar-width: thin;
-  // scrollbar-radius: 17px;
-  scrollbar-button: none;
+
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background-color: white;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: ${palette.coolGrey3};
+    border-radius: 17px;
+  }
+
+  // ::-webkit-scrollbar-thumb:hover {
+  //   background-color: blue;
+  // }
 `;
 
 export const WorkflowFoldersHeaderContainer = styled.div`
@@ -101,14 +115,28 @@ export const WorkflowFoldersListContainer = styled.div`
   max-height: 240;
   overflow-y: scroll;
   overflow-x: hidden;
-  scrollbar-width: thin;
-  // scrollbar-radius: 17px;
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background-color: white;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: ${palette.coolGrey3};
+    border-radius: 17px;
+  }
+
+  // ::-webkit-scrollbar-thumb:hover {
+  //   background-color: blue;
+  // }
 `;
 
 export const WorkflowFoldersHeaderLabel = styled(Typography)`
   width: 50px;
   height: 19px;
-  // font-family: Open;
+  font-family: sans-serif;
   font-weight: 600;
   font-size: 14px;
   line-height: 19.07px;
@@ -122,7 +150,7 @@ export const WorkflowSearchHorizontalLineContainer = styled.div`
 `;
 export const WorkflowSearchHorizontalLine = styled.div`
   width: 317px;
-  border: 1px solid #d4d9df;
+  border: 1px solid ${palette.lightGrayishBlue};
 `;
 
 export const SelectOptionsContainer = styled.div`
@@ -208,6 +236,10 @@ export const Item = styled.div`
 export const EmptyLabel = styled.div`
   padding: ${spacing.regular} ${spacing.large};
   color: ${palette.mediumGrey};
+  font-family: sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 19.07px;
 `;
 
 export const LoaderItem = styled(Skeleton)`
