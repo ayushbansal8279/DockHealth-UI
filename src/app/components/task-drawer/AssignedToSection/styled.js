@@ -37,6 +37,7 @@ export const AssigneeContainer = styled.div`
   display: flex;
   align-items: center;
   gap: 15px;
+  height: 40px;
   padding: 0 8px;
   border-radius: 8px;
   background: #F8F8F9;
