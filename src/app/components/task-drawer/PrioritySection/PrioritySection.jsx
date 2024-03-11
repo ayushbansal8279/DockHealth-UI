@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import Select from 'components/common/Select/Select';
 import PriorityFlag from 'img/priority-flag';
@@ -8,7 +8,7 @@ import { getPriorityColor, TaskPriority } from 'helpers/task-helpers';
 import { PriorityFieldContainer, PriorityFlagContainer, Title } from './styled';
 import { PRIORITY_OPTIONS } from './helpers';
 import PrioritySelectIcon from 'img/PrioritySelectIcon';
-import { Button } from '@mui/material';
+import { Button, IconButton, InputAdornment } from '@mui/material';
 import Spacing from 'components/common/Spacing';
 
 const PrioritySection = ({ selectedTask, disabled = false }) => {
@@ -32,21 +32,51 @@ const PrioritySection = ({ selectedTask, disabled = false }) => {
       </PriorityFlagContainer> */}
 
       <Button
-        style={{ margin: '10px' }}
+        size="small"
+        variant="outlined"
+        sx={{
+          marginLeft:'15px',
+          height: '40px',
+          borderColor: 'transparent',
+          backgroundColor: 'transparent',
+          '&:hover': {
+            backgroundColor: 'transparent',
+            borderColor: 'black',
+          },
+        }}
         onClick={() => {
           setOpen(!open);
         }}
       >
-        <Spacing horizontal={4} />
         <PrioritySelectIcon />
-        <Spacing horizontal={4} />
         <Select
+          sx={{
+            '& .MuiOutlinedInput-notchedOutline': {
+              borderColor: 'transparent',
+            },
+            '&:hover .MuiOutlinedInput-notchedOutline': {
+              borderColor: 'transparent',
+            },
+            '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+              borderColor: 'transparent',
+            },
+            marginLeft: '2px',
+          }}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <IconButton aria-label="search">
+                  <PrioritySelectIcon />
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
           size="small"
-          variant="standard"
+          variant="outlined"
           // label="Priority"
           // name="priority"
           open={open}
-          value={priority || TaskPriority.LOW}
+          value={priority}
           onChange={handleOptionChange}
           options={PRIORITY_OPTIONS}
           disabled={disabled}
