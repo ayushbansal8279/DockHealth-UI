@@ -8,7 +8,7 @@ export const AssignMemberContainer = styled.div`
 `;
 
 export const Title = styled.div`
-  margin-right: 40px;
+  margin-right: 20px;
   color: ${palette.coolGrey1};
   font-family: Outfit;
   font-size: ${fontSizes.smallPlus};
@@ -40,6 +40,7 @@ export const AssigneeContainer = styled.div`
   padding: 0 8px;
   border-radius: 8px;
   background: #F8F8F9;
+  margin-left: 20px;
 `;
 export const AssigneeTitle = styled.div`
   font-family: Outfit;
@@ -56,3 +57,17 @@ export const StyledYouBadge = styled.div`
   background-color: #48bbb3;
   border-radius: 4px;
 `;
+
+export const PopupContainer = styled.div`
+  width: ${({ width }) => width}px;
+  padding: 0;
+  left: 135px;
+  margin-top: 2px;
+  position: absolute;
+  background-color: ${palette.white};
+  overflow: auto;
+  max-height: 350px;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  z-index: 10;
+}`;
