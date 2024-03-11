@@ -35,7 +35,7 @@ const PrioritySection = ({ selectedTask, disabled = false }) => {
         size="small"
         variant="outlined"
         sx={{
-          marginLeft:'15px',
+          marginLeft:'12px',
           height: '40px',
           borderColor: 'transparent',
           backgroundColor: 'transparent',

@@ -7,19 +7,20 @@ import { Popover } from '@mui/material';
 
 export const StatusFlag = styled.div`
   background-color: ${prop('color')};
-  height: 1.25rem;
+  height: 35px;
   width: 0.25rem;
 `;
 
 export const StatusFieldContainer = styled.div`
-  margin-left: 40px;
-  width: 150px;
+  margin-left: 10px;
+  width: 200px;
   display: flex;
 `;
 
 export const StatusFlagContainer = styled.div`
   margin-top: 2px;
   margin-right: 5px;
+  margin-left: 30px;
 `;
 
 export const StatusContainer = styled.div`
