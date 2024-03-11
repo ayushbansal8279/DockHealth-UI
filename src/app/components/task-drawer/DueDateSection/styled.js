@@ -46,7 +46,7 @@ export const SubTitle = styled.div`
 
 export const AddDateButton = styled.button`
   color: black;
-  margin-left: 20px;
+  margin-left: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
