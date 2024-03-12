@@ -33,6 +33,7 @@ const OptionsMenu = ({
   customButtonComponent: CustomButtonComponent,
   onClose,
   open,
+  setOptionActive,
 }) => {
   const assignMemberButtonReference = useRef(null);
   const [isOpen, openPopover] = useState(false);
@@ -48,8 +49,10 @@ const OptionsMenu = ({
           event.stopPropagation();
           if (open) {
             openPopover(false);
+            setOptionActive?.(false);
           } else {
             openPopover(true);
+            setOptionActive?.(true);
           }
         }}
       >
@@ -63,6 +66,7 @@ const OptionsMenu = ({
         onClose={(event) => {
           event.stopPropagation();
           openPopover(false);
+          setOptionActive?.(false);
         }}
         style={{
           zIndex: zIndex.optionsMenu,
@@ -74,6 +78,7 @@ const OptionsMenu = ({
             touchEvent="onTouchStart"
             onClickAway={() => {
               openPopover(false);
+              setOptionActive?.(false);
               if (onClose) onClose();
             }}
           >
@@ -101,6 +106,7 @@ const OptionsMenu = ({
                             color={color}
                             onClick={(event) => {
                               openPopover(false);
+                              setOptionActive?.(false);
                               onClick(event);
                             }}
                             disabled={disabled}

@@ -30,7 +30,7 @@ import {
 } from '../../styled';
 import { InputContainerStyled } from '../styled';
 
-const SendSmsFromTaskModal = () => {
+const SendSmsFromTaskModal = ({ setSmsActive }) => {
   const dispatch = useDispatch();
   const [message, setMessage] = useState('');
   const [PhoneError, setPhoneError] = useState(false);
@@ -56,6 +56,7 @@ const SendSmsFromTaskModal = () => {
       }),
     );
     dispatch(closeModal());
+    setSmsActive(false);
   }, [selectedContacts, dispatch, identifier, message]);
 
   const handleTextEditorReset = useCallback(() => {
@@ -91,7 +92,13 @@ const SendSmsFromTaskModal = () => {
 
   return (
     <ModalWrapper width="600px">
-      <CloseIconButton size="small" onClick={() => dispatch(closeModal())}>
+      <CloseIconButton
+        size="small"
+        onClick={() => {
+          dispatch(closeModal());
+          setSmsActive(false);
+        }}
+      >
         <CloseIcon htmlColor="#C1CCDA" />
       </CloseIconButton>
       <ModalHeaderContainerStyled>

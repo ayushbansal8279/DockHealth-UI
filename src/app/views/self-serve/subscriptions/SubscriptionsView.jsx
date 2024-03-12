@@ -119,8 +119,6 @@ const SubscriptionsView = () => {
     ({ subscriptionPlan: sp }) => sp === selectedPlan,
   );
 
-  const availableSubscriptionPlans = SUBSCRIPTION_PLANS;
-
   const isCurrentPlanChanged =
     (billingFrequency && selectedBillingFrequency !== billingFrequency) ||
     // professionalServicesIncluded !== selectedProfessionalServices ||
@@ -221,7 +219,7 @@ const SubscriptionsView = () => {
           <Box p={1} />
           <SubscriptionPlansContainer>
             <Box display="flex" justifyContent="space-between">
-              {availableSubscriptionPlans.map((plan) => (
+              {SUBSCRIPTION_PLANS.map((plan) => (
                 <SubscriptionPlanTail
                   key={plan.key}
                   active={subscriptionPlan === plan.subscriptionPlan}

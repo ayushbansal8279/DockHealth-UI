@@ -44,18 +44,20 @@ const TaskTemplateAnchorDate = (props) => {
         />
       )}
     >
-      <Tooltip
+      {/* <Tooltip
         placement="top"
-        title={anchorDateTime ? 'Edit anchor date' : 'Add anchor date'}
-      >
-        {anchorDateTime ? (
-          <DateLabel date={anchorDateTime} />
-        ) : (
+        title={anchorDateTime ? 'Edit Anchor Date' : 'Add Anchor Date'}
+      > */}
+      {anchorDateTime ? (
+        <DateLabel date={anchorDateTime} tootipTitle="Edit Anchor Date" />
+      ) : (
+        <Tooltip placement="top" title="Add Anchor Date">
           <div>
             <TaskIcon type="calendar" />
           </div>
-        )}
-      </Tooltip>
+        </Tooltip>
+      )}
+      {/* </Tooltip> */}
     </TaskItemPopover>
   );
 };

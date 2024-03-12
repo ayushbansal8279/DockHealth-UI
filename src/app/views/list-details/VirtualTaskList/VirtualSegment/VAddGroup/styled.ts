@@ -10,7 +10,6 @@ export const VAddGroup = styled('div')`
   // left: 48px;
   // padding-top: ${spacing.regular};
   font-weight: bold;
-  text-transform: uppercase;
   // line-height: 40px;
   height: 64px;
   margin-top: ${(props) => (props.active ? '32px' : '-62px')};

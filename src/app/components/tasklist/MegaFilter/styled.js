@@ -11,7 +11,7 @@ export const MegaFilterNoResultsLabel = styled.p`
 `;
 export const MegaFilterContainer = styled.div`
   // padding: 0 8px;
-  // height: 36px;
+  height: 32px;
   display: flex;
   // background: yellow;
   @media print {

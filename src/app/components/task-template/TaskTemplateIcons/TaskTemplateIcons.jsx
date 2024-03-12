@@ -62,7 +62,7 @@ const TaskTemplateIcons = ({
             title={
               comments?.length > 0
                 ? getCommentsIconTooltipTitle(comments)
-                : 'Add a new comment'
+                : 'Add Comment'
             }
           >
             <button type="button" onClick={onCommentClick}>
@@ -85,7 +85,7 @@ const TaskTemplateIcons = ({
             title={
               labels?.length > 0
                 ? getLabelsIconTooltipTitle(labels)
-                : 'Add label'
+                : 'Add Label'
             }
           >
             <button
@@ -112,7 +112,7 @@ const TaskTemplateIcons = ({
             title={
               attachments?.length > 0
                 ? getAttachmentsIconTooltipTitle(attachments)
-                : 'Add file'
+                : 'Add File'
             }
           >
             <button type="button" onClick={onAttachmentsClick}>

@@ -40,7 +40,6 @@ export const Body = styled.div`
 export const Title = styled.h5`
   font-size: ${fontSizes.regularPlus};
   color: ${palette.brightBlue};
-  text-transform: uppercase;
   text-align: center;
 `;
 

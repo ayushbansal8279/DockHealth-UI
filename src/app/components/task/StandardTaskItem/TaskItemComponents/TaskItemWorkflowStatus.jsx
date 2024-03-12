@@ -34,6 +34,7 @@ const TaskItemWorkflowStatus = ({
       )}
       {(task.status !== 'COMPLETE' || !showDefaultTaskStatusCompleted) && (
         <TaskItemPopover
+          contentWidth={160 || 'auto'}
           fullWidth
           content={({ closePopover, resetPosition }) => (
             <TaskWorkflowStatus
@@ -78,7 +79,9 @@ const TaskItemWorkflowStatus = ({
                 )}
               </StatusWrapper>
             ) : (
-              <AddPlaceholder>+ Add Status</AddPlaceholder>
+              <Tooltip placement="top" title="Add Status">
+                <AddPlaceholder>+ Add Status</AddPlaceholder>
+              </Tooltip>
             )}
           </StatusSubContaioner>
         </TaskItemPopover>

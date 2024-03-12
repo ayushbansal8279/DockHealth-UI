@@ -38,18 +38,20 @@ const TaskTemplateStartDate = (props) => {
         />
       )}
     >
-      <Tooltip
+      {/* <Tooltip
         placement="top"
-        title={startDateTime ? 'Edit start date' : 'Add start date'}
-      >
-        {startDateTime ? (
-          <DateLabel date={startDateTime} />
-        ) : (
+        title={startDateTime ? 'Edit Start Date' : 'Add Start Date'}
+      > */}
+      {startDateTime ? (
+        <DateLabel date={startDateTime} tootipTitle="Edit Start Date" />
+      ) : (
+        <Tooltip placement="top" title="Add Start Date">
           <div>
             <TaskIcon type="calendar" />
           </div>
-        )}
-      </Tooltip>
+        </Tooltip>
+      )}
+      {/* </Tooltip> */}
     </TaskItemPopover>
   );
 };
