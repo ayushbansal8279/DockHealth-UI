@@ -81,6 +81,7 @@ function VSubtask(
               isDragging={snapshot.isDragging}
               isWorkflowSubtask={!!task}
               isSubtask
+              origin={TaskOrigin.LIST}
             />
           </Sc.VSubtask>
           {metadata.sameLevelIndex === noOfSubtask && subtaskQuickAddOpen && (
@@ -88,9 +89,8 @@ function VSubtask(
               <QuickAddSubtask
                 taskListIdentifier={parentTask.taskList.taskListIdentifier}
                 parentTaskIdentifier={parentTask.identifier}
-                isWorkflowSubtask={!!task}
                 // onFocus={handleQuickAddOnFocus}
-                // origin={origin}
+                // origin={TaskOrigin.LIST}
               />
             </Sc.QuickAddContainer>
           )}
