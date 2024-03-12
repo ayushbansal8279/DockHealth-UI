@@ -42,7 +42,7 @@ function VTask(
 
   useEffect(() => {
     setSubtaskQuickAddOpen(task?.subtaskQuickAddOpen);
-    setsubTasksCount(task.subtasks.length);
+    setsubTasksCount(task?.subtasks?.length);
   }, [task]);
 
   const handleQuickAddOnFocus = () => {
