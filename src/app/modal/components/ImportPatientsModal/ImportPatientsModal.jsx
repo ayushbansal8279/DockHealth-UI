@@ -44,31 +44,31 @@ const ImportPatientsModal = ({
 
       uploadPatientData(uploadedFile, {
         onUploadProgress: ({ loaded, total }) => {
-          if (loaded === total) {
-            closeModal();
-            setImportPopoverOpen(true);
-            refreshPatientListOnUpload();
-          }
+          // if (loaded === total) {
+          closeModal();
+          setImportPopoverOpen(true);
+          // refreshPatientListOnUpload();
+          // }
         },
       });
     }
-  }, [closeModal, refreshPatientListOnUpload, setImportPopoverOpen]);
+  }, [closeModal, setImportPopoverOpen]);
 
   const onDrop = useCallback(
     (acceptedFiles) => {
       acceptedFiles.forEach((file) => {
         uploadPatientData(file, {
           onUploadProgress: ({ loaded, total }) => {
-            if (loaded === total) {
-              closeModal();
-              setImportPopoverOpen(true);
-              refreshPatientListOnUpload();
-            }
+            // if (loaded === total) {
+            closeModal();
+            setImportPopoverOpen(true);
+            // refreshPatientListOnUpload();
+            // }
           },
         });
       });
     },
-    [closeModal, refreshPatientListOnUpload, setImportPopoverOpen],
+    [closeModal, setImportPopoverOpen],
   );
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
