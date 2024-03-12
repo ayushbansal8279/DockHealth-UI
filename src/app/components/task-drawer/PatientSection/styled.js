@@ -30,6 +30,7 @@ export const PatientContainer = styled.div`
   display: flex;
   align-items: center;
   gap: 15px;
+  height: 40px;
   padding: 3px 10px;
   border-radius: 8px;
   background: #F8F8F9;

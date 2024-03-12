@@ -327,9 +327,6 @@ const PatientSection = ({
 
       {!selectedPatient && (
         <div style={{ display: 'flex' }}>
-          <AddPatient>
-            <AssignMemberIcon />{' '}
-          </AddPatient>
           <SelectDropdown
             ref={patientInputReference}
             name={PATIENT_IDENTIFIER_FIELD_NAME}

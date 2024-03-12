@@ -1,25 +1,12 @@
-import prop from 'ramda/src/prop';
 import styled from 'styled-components';
 import { fontSizes, fontWeights } from 'styles/font';
-import palette, { typography } from 'styles/palette';
-import spacing from 'styles/spacing';
-import { Popover } from '@mui/material';
+import palette from 'styles/palette';
 
-export const StatusFlag = styled.div`
-  background-color: ${prop('color')};
-  height: 1.25rem;
-  width: 0.25rem;
-`;
 
 export const StatusFieldContainer = styled.div`
-  margin-left: 40px;
-  width: 150px;
+  margin-left: 10px;
+  width: 200px;
   display: flex;
-`;
-
-export const StatusFlagContainer = styled.div`
-  margin-top: 2px;
-  margin-right: 5px;
 `;
 
 export const StatusContainer = styled.div`
@@ -35,4 +22,18 @@ export const Title = styled.div`
   font-weight: ${fontWeights.light};
   display: flex;
   align-items: center;
+`;
+
+export const StatusWrapper = styled.div`
+  display: flex;
+  border-radius: 2px;
+  border: 1px solid ${(property) => property.color || '#7F4334'};
+  background: ${(property) => `${property.color}1A` || '#7F43341A'};
+  min-width: 100px;
+  padding: 2.5px 2px;
+  height: 40px;
+  justify-content: center;
+  align-items: center;
+  margin-left: 20px;
+  color: ${(property) => property.color || '#7F4334'};
 `;

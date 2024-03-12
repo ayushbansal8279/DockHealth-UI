@@ -28,7 +28,7 @@ export const PriorityFieldContainer = styled.div`
   display: flex;
   align-items: center;
   font-family: Outfit;
-  margin-left: 10px;
+  margin: 10px;
 `;
 
 export const PriorityFlagContainer = styled.div`

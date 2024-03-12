@@ -18,8 +18,14 @@ import {
   AssigneeContainer,
   AssigneeTitle,
   StyledYouBadge,
+  PopupContainer,
 } from './styled';
 import UserAvatar from 'components/user/UserAvatar/UserAvatar';
+import { TextField } from '@mui/material';
+import { styled } from '@mui/material/styles';
+import InputAdornment from '@mui/material/InputAdornment';
+import IconButton from '@mui/material/IconButton';
+import { event } from 'react-ga';
 
 const AssignedToSection = ({ selectedTask = {}, onSave, disabled }) => {
   const currentUser = useSelector(userProfileSelector);
@@ -30,7 +36,9 @@ const AssignedToSection = ({ selectedTask = {}, onSave, disabled }) => {
   );
   const currentTaskListIdentifier = taskList?.taskListIdentifier;
   const taskListIdentifier = isTemplateTask ? null : currentTaskListIdentifier;
-  const [assignedToUsersValue, setAssignedToUsersValue] = useState();
+  const [assignedToUsersValue, setAssignedToUsersValue] = useState([]);
+  const [searchValue, setSearchValue] = useState('');
+  const [isPopoverOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     setAssignedToUsersValue(assignedToUsers || []);
@@ -67,31 +75,24 @@ const AssignedToSection = ({ selectedTask = {}, onSave, disabled }) => {
       return <StyledYouBadge>You</StyledYouBadge>;
   };
 
+  const handleInputChange = (event) => {
+    const newValue = event.target.value;
+    setSearchValue(newValue);
+  };
+  
+  const handleClick = () => {
+    setIsOpen(true);
+  };
+
   return (
-    <TaskDrawerPopover
-    width={245}
-      disabled={disabled}
-      content={({ closePopover }) => (
-        <MultiAssignMembersList
-          width={245}
-          taskListIdentifiers={taskListIdentifier}
-          selectedMembers={assignedToUsersValue}
-          onSelect={handleAssignToSelection}
-          enableLazyLoading={
-            taskList?.listType === 'PUBLIC' || taskList?.listType === 'TEMPLATE'
-          }
-          closeModel={closePopover}
-          additionalMembers={selectedTask?.sharedWithUsers || []}
-        />
-      )}
-    >
+    <div>
       <AssignMemberContainer>
         <Title>Assign to</Title>
         {assignedToUsers &&
           assignedToUsers.map((user) => (
             <AssigneeContainer>
               <UserAvatar user={user} />
-              {assignedToUsers?.length <= 3 ? (
+              {assignedToUsers?.length <= 2 ? (
                 <AssigneeTitle>{displayName(user.userName)}</AssigneeTitle>
               ) : (
                 ''
@@ -99,15 +100,57 @@ const AssignedToSection = ({ selectedTask = {}, onSave, disabled }) => {
               {YouBadge(user)}
             </AssigneeContainer>
           ))}
-
-        <AddAssigneeButton>
-          <AssignMemberIcon />
-          {assignedToUsers && assignedToUsers.length === 0 ? (
-            <SubTitle>Add Assignee</SubTitle>
-          ) : null}
-        </AddAssigneeButton>
+        <TextField
+          variant="outlined"
+          placeholder="Add Assignee"
+          size="small"
+          sx={{
+            '& .MuiOutlinedInput-root': {
+              '& fieldset': {
+                borderColor: 'white',
+              },
+            },
+            width: '200px',
+            marginLeft: '10px',
+          }}
+          inputProps={{
+            autoComplete: 'off',
+            value: searchValue,
+            onChange: handleInputChange,
+            onClick: handleClick,
+          }}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <IconButton aria-label="search">
+                  <AssignMemberIcon />
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
+        />
       </AssignMemberContainer>
-    </TaskDrawerPopover>
+
+      {isPopoverOpen && (
+        <PopupContainer width={245}>
+          <MultiAssignMembersList
+            value={searchValue}
+            setValue={setSearchValue}
+            // width={245}
+            taskDrawer
+            closePopup={setIsOpen}
+            taskListIdentifiers={taskListIdentifier}
+            selectedMembers={assignedToUsersValue}
+            onSelect={handleAssignToSelection}
+            enableLazyLoading={
+              taskList?.listType === 'PUBLIC' ||
+              taskList?.listType === 'TEMPLATE'
+            }
+            additionalMembers={selectedTask?.sharedWithUsers || []}
+          />
+        </PopupContainer>
+      )}
+    </div>
   );
 };
 
