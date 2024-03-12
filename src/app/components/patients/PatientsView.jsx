@@ -6,6 +6,7 @@ import {
   getPatientListIdentifierByUrlParameter,
   getPatientsListFiltersStorageKey,
   DefaultPatientsListType,
+  PatientsListType,
 } from 'helpers/patient-list-helpers';
 import { useBoolean } from 'hooks/useBoolean';
 import sessionStorageHelper from 'helpers/session-storage-helper';
@@ -14,7 +15,7 @@ import {
   patientsSelector,
   isFetchingPatientsSelector,
   patientsListSearchPerformedSelector,
-  // patientsListSearchTermSelector,
+  selectedDynamicPatientListFilterSelector,
 } from 'selectors/patients-selectors';
 import {
   userProfileSelector,
@@ -47,6 +48,13 @@ import initializeAttachmentsSectionHooks from 'views/patient-details/PatientAtta
 import AddButton, {
   AddEntitiesContainer,
 } from 'components/common/AddButton/AddButton';
+import {
+  getQuickFilters,
+  quickContextTypes,
+} from 'actions/mega-filter-actions';
+import { quickFiltersSelector } from 'selectors/mega-filter-selectors';
+import FilterPopover from 'components/filter/FilterPopover/FilterPopover';
+import PatientsFilter from 'components/patients/PatientsFilter/PatientsFilter';
 import PatientsList from './PatientsList/PatientsList';
 import PatientsToolbar from './PatientsToolbar/PatientsToolbar';
 import BulkEditCreateTask from './BulkEditSection/BulkEditOptionsBar/BulkEditCreateTask';
@@ -92,6 +100,7 @@ const PatientsView = () => {
 
   const currentUser = useSelector(userProfileSelector);
   const currentOrganization = useSelector(selectedUserOrganizationSelector);
+  const { organizationIdentifier } = useSelector(organizationSelector);
   const iconColorActiveItem =
     currentOrganization?.themeSettings?.find(
       ({ name }) => name === 'icon.active.color',
@@ -101,10 +110,57 @@ const PatientsView = () => {
   const isViewOnly = isUserViewOnly(currentUser);
 
   const { emrIntegrationEnabled } = useSelector(organizationSelector) || {};
+  const isDynamicPatientList =
+    listIdentifierParameter?.toUpperCase() ===
+    PatientsListType.DYNAMIC.toUpperCase();
+
+  const quickFiltersList = useSelector(quickFiltersSelector);
+  const selectedDynamicPatientListFilterId = useSelector(
+    selectedDynamicPatientListFilterSelector,
+  );
+
+  const selectedQuickFilter = useMemo(() => {
+    return (
+      quickFiltersList?.find(
+        ({ quickFilterIdentifier }) =>
+          quickFilterIdentifier === selectedDynamicPatientListFilterId,
+      ) || null
+    );
+  }, [quickFiltersList, selectedDynamicPatientListFilterId]);
+
+  const { 0: filterOpen, 2: closeFilter, 3: toggleFilter } = useBoolean(false);
 
   useEffect(() => {
-    dispatch(PatientsActions.initializePatientsListState(listIdentifier));
-  }, [dispatch, listIdentifier]);
+    const patientListIdentifier = listIdentifier;
+    if (!isDynamicPatientList) {
+      dispatch(
+        PatientsActions.initializePatientsListState(patientListIdentifier),
+      );
+    }
+  }, [dispatch, isDynamicPatientList, listIdentifier]);
+
+  useEffect(() => {
+    if (isDynamicPatientList && selectedQuickFilter) {
+      const patientListIdentifier = DefaultPatientsListType.ALL_PATIENTS;
+      dispatch(
+        PatientsActions.initializeDynamicPatientsListState(
+          patientListIdentifier,
+        ),
+      );
+    }
+  }, [dispatch, isDynamicPatientList, selectedQuickFilter]);
+
+  useEffect(() => {
+    if (isDynamicPatientList) {
+      dispatch(
+        getQuickFilters({
+          organizationIdentifier,
+          contextType: quickContextTypes.PATIENTS,
+        }),
+      );
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const refreshPatients = useCallback(() => {
     dispatch(PatientsActions.getCurrentPatients());
@@ -412,6 +468,10 @@ const PatientsView = () => {
     );
   }, [dispatch, listDetails]);
 
+  const onEditDynamicPatientList = useCallback(() => {
+    toggleFilter();
+  }, [toggleFilter]);
+
   return (
     <PatientListColumnsConfigProvider>
       <PatientEditContext.Provider value={providerValue}>
@@ -423,41 +483,49 @@ const PatientsView = () => {
                 top={listDescription ? 17 : 27}
                 left={10}
               >
-                <OptionsMenu
-                  disablePortal
-                  options={[
-                    !isGuestOrDockLite &&
-                      !isViewOnly &&
-                      !emrIntegrationEnabled &&
-                      listIdentifier ===
-                        DefaultPatientsListType.ALL_PATIENTS && {
-                        name: 'Import from Excel',
-                        onClick: () => {
-                          setImportPopupOpen(true);
+                {!isDynamicPatientList && (
+                  <OptionsMenu
+                    disablePortal
+                    options={[
+                      !isGuestOrDockLite &&
+                        !isViewOnly &&
+                        !emrIntegrationEnabled &&
+                        listIdentifier ===
+                          DefaultPatientsListType.ALL_PATIENTS && {
+                          name: 'Import from Excel',
+                          onClick: () => {
+                            setImportPopupOpen(true);
+                          },
                         },
-                      },
-                    !isGuestOrDockLite &&
-                      !isViewOnly && {
-                        name: 'Export to CSV',
-                        onClick: () => {
-                          handleDownloadPatientListData(false);
+                      !isGuestOrDockLite &&
+                        !isViewOnly && {
+                          name: 'Export to CSV',
+                          onClick: () => {
+                            handleDownloadPatientListData(false);
+                          },
                         },
-                      },
-                    !isGuestOrDockLite &&
-                      !isViewOnly && {
-                        name: 'Export to CSV (All Attributes)',
-                        onClick: () => {
-                          handleDownloadPatientListData(true);
+                      !isGuestOrDockLite &&
+                        !isViewOnly && {
+                          name: 'Export to CSV (All Attributes)',
+                          onClick: () => {
+                            handleDownloadPatientListData(true);
+                          },
                         },
-                      },
-                  ]}
-                >
-                  <MoreVert color="primary" />
-                </OptionsMenu>
+                    ]}
+                  >
+                    <MoreVert color="primary" />
+                  </OptionsMenu>
+                )}
               </Box>
               <LayoutHeader.Title
-                title={listName}
-                description={listDescription}
+                title={
+                  isDynamicPatientList
+                    ? `Dynamic Patient List - ${
+                        selectedQuickFilter?.name || ''
+                      }`
+                    : listName
+                }
+                description={isDynamicPatientList ? '' : listDescription}
               />
             </LayoutHeader>
           }
@@ -476,6 +544,14 @@ const PatientsView = () => {
                   <Spacing horizontal={5} />
                 </AddEntitiesContainer>
               )}
+              {/* {isDynamicPatientList && (
+                <AddEntitiesContainer>
+                  <AddButton onClick={onEditDynamicPatientList}>
+                    Edit Dynamic Patient List
+                  </AddButton>
+                  <Spacing horizontal={5} />
+                </AddEntitiesContainer>
+              )} */}
               <Grid>
                 {listIdentifier === DefaultPatientsListType.ALL_PATIENTS &&
                   patients?.length >= MAX_PATIENT_ALL_RESULTS && (
@@ -493,6 +569,7 @@ const PatientsView = () => {
                   hasImportErrors={hasImportErrors}
                   isFetching={isFetchingPatients && !patients}
                   refreshPatients={refreshPatients}
+                  isDynamicPatientList={isDynamicPatientList}
                 />
               </Grid>
             </PatientsListContainer>
@@ -542,6 +619,9 @@ const PatientsView = () => {
             step={1}
           />
         </Dialog>
+        {/* <FilterPopover open={filterOpen} onClose={closeFilter}>
+          <PatientsFilter />
+        </FilterPopover> */}
       </PatientEditContext.Provider>
     </PatientListColumnsConfigProvider>
   );

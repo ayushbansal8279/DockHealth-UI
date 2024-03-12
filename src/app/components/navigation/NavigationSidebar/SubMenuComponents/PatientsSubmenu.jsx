@@ -13,11 +13,13 @@ import {
 import AddButton from 'components/common/AddButton/AddButton';
 import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
 import { MoreVert } from '@mui/icons-material';
+import { organizationSelector } from 'selectors/organization-selectors';
 import {
   defaultPatientsListsSelector,
   customPatientsListsSelector,
   isFetchingPatientsListsSelector,
 } from 'selectors/patients-selectors';
+import { selectDynamicPatientListFilter } from 'actions/patients-actions';
 import prop from 'ramda/src/prop';
 import sortBy from 'ramda/src/sortBy';
 import compose from 'ramda/src/compose';
@@ -31,6 +33,11 @@ import { isUserGuestOrDockLite, isUserViewOnly } from 'helpers/user-helper';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import { capitalize } from 'helpers/capitalize';
 import UpgradePlan from 'components/common/UpgradePlan/UpgradePlan';
+import {
+  getQuickFilters,
+  quickContextTypes,
+} from 'actions/mega-filter-actions';
+import { quickFiltersSelector } from 'selectors/mega-filter-selectors';
 import PatientListsIcon from 'img/premium/patient-lists.svg';
 import {
   DrawerMyListsLabel,
@@ -63,8 +70,21 @@ const PatientsSubmenu = () => {
     userHasPatientCustomListsFeatureSelector,
   );
 
+  const { organizationIdentifier } = useSelector(organizationSelector);
+  const quickFiltersList = useSelector(quickFiltersSelector);
+
   useEffect(() => {
     dispatch(PatientsActions.getPatientsLists());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    dispatch(
+      getQuickFilters({
+        organizationIdentifier,
+        contextType: quickContextTypes.PATIENTS,
+      }),
+    );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -146,7 +166,7 @@ const PatientsSubmenu = () => {
       </DrawerListsList>
       {!isGuestOrDockLite && customListsAvailable && (
         <>
-          <Box m={6} flexShrink={0} />
+          <Box m={1} flexShrink={0} />
           <DrawerMyListsLabel>
             <div>Custom Lists</div>
             {!isViewOnly && (
@@ -203,6 +223,50 @@ const PatientsSubmenu = () => {
                         <MoreVert color="primary" />
                       </OptionsMenu>
                     </DrawerItemOptions>
+                  </DrawerListsItem>
+                ))}
+              </>
+            )}
+          </DrawerListsList>
+        </>
+      )}
+      {!isGuestOrDockLite && customListsAvailable && (
+        <>
+          <Box m={1} flexShrink={0} />
+          <DrawerMyListsLabel>
+            <div>Dynamic Lists</div>
+          </DrawerMyListsLabel>
+          <DrawerListsList>
+            {isInitialListFetching ? (
+              Array.from({ length: 5 })
+                .fill()
+                // eslint-disable-next-line react/no-array-index-key
+                .map((_, index) => <DrawerListsItemLoader key={index} />)
+            ) : (
+              <>
+                {quickFiltersList?.map((quickFilter) => (
+                  <DrawerListsItem key={quickFilter.quickFilterIdentifier}>
+                    <ListNameText
+                      isActive={
+                        quickFilter.quickFilterIdentifier ===
+                        listIdentifierUrlParameter
+                      }
+                      onClick={() => {
+                        dispatch(
+                          selectDynamicPatientListFilter(
+                            quickFilter.quickFilterIdentifier,
+                          ),
+                        );
+                        dispatch(
+                          PatientsActions.setDynamicPatientsSelectedFilters(
+                            quickFilter.selectedOptions,
+                          ),
+                        );
+                        history.push(`/core/patients/list/dynamic`);
+                      }}
+                    >
+                      {quickFilter.name}
+                    </ListNameText>
                   </DrawerListsItem>
                 ))}
               </>
