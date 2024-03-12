@@ -39,6 +39,7 @@ const TaskTemplateApplicator = ({
   bulkApply = false,
   iconColorActive,
   isWorkflowSearch,
+  origin,
 }) => {
   const popoverReference = useRef(null);
   const [isPopoverOpen, openPopover, closePopover] = useBoolean(false);
@@ -82,7 +83,9 @@ const TaskTemplateApplicator = ({
   }, []);
 
   useEffect(() => {
-    handleWorkflowPopoverOpen(!!isPopoverOpen);
+    if (origin === 'LIST') {
+      handleWorkflowPopoverOpen(!!isPopoverOpen);
+    }
     if (isPopoverOpen) {
       getRootTemplatesList();
     }
