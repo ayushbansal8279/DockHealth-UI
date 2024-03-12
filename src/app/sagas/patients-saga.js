@@ -123,6 +123,14 @@ function* initializePatientsListState({ patientsListIdentifier }) {
   }
 }
 
+function* initializeDynamicPatientsListState() {
+  yield all([put(PatientsActions.getCurrentPatientsListDetails())]);
+  const selectedFilters = yield select(patientsSelectedFiltersSelector);
+  if (selectedFilters) {
+    yield all([put(PatientsActions.getCurrentPatients())]);
+  }
+}
+
 function* getCurrentPatientsListFilterOptions() {
   try {
     const currentPatientsListIdentifier = yield select(
@@ -144,18 +152,15 @@ function* getCurrentPatientsListFilterOptions() {
       }
     }
 
-    if (!selectedFilters) {
-      const options = yield call(
-        PatientsApi.getPatientsListFilterOptions,
-        currentPatientsListIdentifier,
-        selectedFilters,
-      );
+    const options = yield call(
+      PatientsApi.getPatientsListFilterOptions,
+      currentPatientsListIdentifier,
+    );
 
-      yield put({
-        type: ActionTypes.GET_CURRENT_PATIENTS_LIST_FILTER_OPTIONS_SUCCESS,
-        options,
-      });
-    }
+    yield put({
+      type: ActionTypes.GET_CURRENT_PATIENTS_LIST_FILTER_OPTIONS_SUCCESS,
+      options,
+    });
   } catch {
     yield put(showGlobalErrorAlert());
     yield put({
@@ -389,6 +394,10 @@ export default function* watchPatients() {
   yield takeLatest(
     ActionTypes.INITIALIZE_PATIENTS_LIST_STATE,
     initializePatientsListState,
+  );
+  yield takeLatest(
+    ActionTypes.INITIALIZE_DYNAMIC_PATIENTS_LIST_STATE,
+    initializeDynamicPatientsListState,
   );
   yield takeLatest(
     ActionTypes.GET_CURRENT_PATIENTS_LIST_DETAILS,

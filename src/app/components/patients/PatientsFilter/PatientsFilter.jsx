@@ -41,7 +41,7 @@ const PatientsFilter = () => {
   const { organizationIdentifier } = useSelector(organizationSelector);
 
   useEffect(() => {
-    if (!filterOptions) {
+    if (!filterOptions || filterOptions?.length === 0) {
       dispatch(PatientsActions.getCurrentPatientsListFilterOptions());
     }
     dispatch(

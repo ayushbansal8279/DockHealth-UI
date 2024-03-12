@@ -19,6 +19,7 @@ import {
 import {
   DefaultPatientListUrl,
   DefaultPatientsListType,
+  PatientsListType,
 } from 'helpers/patient-list-helpers';
 import {
   userProfileSelector,
@@ -137,53 +138,66 @@ const PatientsToolbar = () => {
     !emrIntegrationEnabled ||
     (emrIntegrationEnabled && quickAddPatientEnabledItem?.value === 'true');
 
+  const isDynamicPatientList =
+    listIdentifierParameter?.toUpperCase() ===
+    PatientsListType.DYNAMIC.toUpperCase();
+
   return (
     <>
       <Box p="16px">
         <Box display="flex" width="100%">
           <Box display="flex" flex={1} alignItems="center">
-            <Box width="300px">
-              <SearchInput
-                value={searchValue}
-                onValueChange={handleSearchChange}
-                onKeyEnter={handleSearch}
-              />
-            </Box>
+            {!isDynamicPatientList && (
+              <Box width="300px">
+                <SearchInput
+                  value={searchValue}
+                  onValueChange={handleSearchChange}
+                  onKeyEnter={handleSearch}
+                />
+              </Box>
+            )}
             <Box m={1} />
-            <ButtonWrapper>
-              <Button fullWidth onClick={handleSearch} size="small">
-                Search
-              </Button>
-            </ButtonWrapper>
-            <Box>
-              <ToolbarSelect
-                options={OPTIONS}
-                value={optionBasedUrl}
-                name="patient-list-type"
-                onChange={onListTypeChange}
-                icon={
-                  <PatientsListImg
-                    src={TasksStatusSwitchIcon}
-                    alt="list type icon"
-                    iconColorFilterActive={iconColorFilterActiveItem?.value}
-                  />
-                }
-                iconColorActive={iconColorActiveItem?.value}
-              />
-            </Box>
+            {!isDynamicPatientList && (
+              <ButtonWrapper>
+                <Button fullWidth onClick={handleSearch} size="small">
+                  Search
+                </Button>
+              </ButtonWrapper>
+            )}
+            {!isDynamicPatientList && (
+              <Box>
+                <ToolbarSelect
+                  options={OPTIONS}
+                  value={optionBasedUrl}
+                  name="patient-list-type"
+                  onChange={onListTypeChange}
+                  icon={
+                    <PatientsListImg
+                      src={TasksStatusSwitchIcon}
+                      alt="list type icon"
+                      iconColorFilterActive={iconColorFilterActiveItem?.value}
+                    />
+                  }
+                  iconColorActive={iconColorActiveItem?.value}
+                />
+              </Box>
+            )}
             <CustomizeToolbarButton
               iconColorFilterActive={iconColorFilterActiveItem?.value}
               isPatientView
             />
             <Box m={1} />
-            <FilterButton
-              ref={filterButtonReference}
-              active={filtersActive}
-              onClick={toggleFilter}
-              onClear={() => dispatch(PatientsActions.clearPatientsFilters())}
-            />
+            {!isDynamicPatientList && (
+              <FilterButton
+                ref={filterButtonReference}
+                active={filtersActive}
+                onClick={toggleFilter}
+                onClear={() => dispatch(PatientsActions.clearPatientsFilters())}
+              />
+            )}
           </Box>
-          {patientAddEnabled &&
+          {!isDynamicPatientList &&
+            patientAddEnabled &&
             listIdentifier &&
             (listIdentifier === DefaultPatientsListType.ALL_PATIENTS ||
               listIdentifier === DefaultPatientsListType.ACTIVE_PATIENTS) && (
@@ -195,7 +209,8 @@ const PatientsToolbar = () => {
             )}
         </Box>
       </Box>
-      {emrEntegrationExperience &&
+      {!isDynamicPatientList &&
+        emrEntegrationExperience &&
         !searchValue &&
         (emrIntegrationType === 'FHIR' ? (
           <SearchHelperText>
@@ -209,7 +224,7 @@ const PatientsToolbar = () => {
             in Dock.
           </SearchHelperText>
         ))}
-      {!emrEntegrationExperience && !searchValue && (
+      {!isDynamicPatientList && !emrEntegrationExperience && !searchValue && (
         <>
           <SearchHelperText>
             Search by first name, last name or medical record number. You may

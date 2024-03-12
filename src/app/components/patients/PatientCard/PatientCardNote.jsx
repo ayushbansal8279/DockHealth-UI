@@ -12,8 +12,8 @@ import {
   PinnedNotesWrapper,
 } from './styled';
 
-const PatientCardNote = ({ note, patientName, index }) => {
-  const { identifier, pinned, description, dateUpdated } = note;
+const PatientCardNote = ({ note, index }) => {
+  const { identifier, pinned, description, dateUpdated, creator } = note;
 
   const renderNoteDescription = () => {
     return (
@@ -28,7 +28,7 @@ const PatientCardNote = ({ note, patientName, index }) => {
           />
         </NoteDescription>
         <NoteInfo>
-          {patientName} {moment(dateUpdated).format('h:mma M/DD/YY')}
+          {creator?.name} {moment(dateUpdated).format('h:mma M/DD/YY')}
         </NoteInfo>
       </>
     );

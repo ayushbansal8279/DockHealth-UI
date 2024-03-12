@@ -1,6 +1,7 @@
 export const PatientsListType = {
   DEFAULT: 'DEFAULT',
   CUSTOM: 'ADHOC',
+  DYNAMIC: 'DYNAMIC',
 };
 
 export const DefaultPatientsListType = {
@@ -13,6 +14,7 @@ export const DefaultPatientListUrl = {
   [DefaultPatientsListType.ALL_PATIENTS]: 'all',
   [DefaultPatientsListType.ARCHIVED_PATIENTS]: 'archived',
   [DefaultPatientsListType.ACTIVE_PATIENTS]: 'active',
+  [DefaultPatientsListType.DYNAMIC_PATIENTS]: 'dynamic',
 };
 
 export function getPatientListIdentifierByUrlParameter(urlParameter) {
@@ -27,6 +29,12 @@ export function getPatientListIdentifierByUrlParameter(urlParameter) {
 
 export function getPatientsListFiltersStorageKey(patientsListIdentifier) {
   return `PATIENTS_LIST_${patientsListIdentifier}`;
+}
+
+export function getPatientsDynamicListFiltersStorageKey(
+  patientsListIdentifier,
+) {
+  return `PATIENTS_DYNAMIC_LIST_${patientsListIdentifier}`;
 }
 
 export const PatientColumn = {
