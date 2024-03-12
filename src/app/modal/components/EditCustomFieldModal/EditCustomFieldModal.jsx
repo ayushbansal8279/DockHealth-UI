@@ -27,6 +27,7 @@ import { getAllProfileTypes } from 'api/profile-type-api';
 import { ORGANIZATION_TILE_COLORS } from 'styles/organization-tile-colors';
 import * as ProfileTypeFieldsApi from 'api/profile-type-field-api';
 import { getAllTaskListCustomFields } from 'api/custom-fields-api';
+import { sortAlphabetical } from 'helpers/custom-fields-helpers';
 import FiledTypeStep from './FieldTypeStep';
 import { CloseIconButton, CloseIcon } from '../styled';
 import {
@@ -140,12 +141,16 @@ const EditCustomFieldModal = ({
   const [customFields, setCustomFields] = useState([]);
 
   useEffect(() => {
-    getAllTaskListCustomFields().then((response) => {
-      setCustomFields(
-        response.filter((item) => item.fieldType === 'PICK_LIST'),
-      );
-    });
-  }, []);
+    getAllTaskListCustomFields(taskListIdentifier ? 'ALL' : null).then(
+      (response) => {
+        setCustomFields(
+          sortAlphabetical(
+            response.filter((item) => item.fieldType === 'PICK_LIST'),
+          ),
+        );
+      },
+    );
+  }, [taskListIdentifier]);
 
   useEffect(() => {
     register('fieldType');

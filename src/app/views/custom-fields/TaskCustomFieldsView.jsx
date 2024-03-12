@@ -68,6 +68,7 @@ const TaskCustomFieldsView = ({ taskListIdentifier, editable = false }) => {
           type: 'TASK',
         },
         customField: field,
+        taskListIdentifier,
         onUpdated: (updatedField) => {
           setColumnsToState(
             columns.map((f) =>
