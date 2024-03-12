@@ -3,27 +3,46 @@ import spacing from 'styles/spacing';
 import { fontSizes, fontWeights } from 'styles/font';
 import palette from 'styles/palette';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import Skeleton from '@mui/material/Skeleton';
+import { Typography } from '@mui/material';
 
 export const FolderIconContainer = styled.div`
   display: flex;
   width: 26px;
   justify-content: center;
-  margin-left: ${spacing.small};
+  // margin-left: ${spacing.small};
   grid-column: 1;
+`;
+
+export const FolderNameContainer = styled(Typography)`
+  font-family: sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 19.07px;
+  letter-spacing: 0px;
+  text-align: left;
+`;
+export const WorkflowNameContainer = styled(Typography)`
+  font-family: sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 19.07px;
+  letter-spacing: 0px;
+  text-align: left;
 `;
 
 export const PopoverHeader = styled.div`
   display: flex;
   box-sizing: border-box;
-  border-bottom: 1px solid ${palette.coolGrey3};
+  // border-bottom: 1px solid ${palette.coolGrey3};
   padding: 4px;
 `;
 
 export const BackIconContainer = styled.div`
   display: flex;
-  padding: 4px;
-  padding-right: 20px;
+  // padding: 4px;
+  padding-right: 1px;
   padding-left: 10px;
   vertical-align: middle;
   justify-content: center;
@@ -31,6 +50,13 @@ export const BackIconContainer = styled.div`
 `;
 export const HeaderTextContainer = styled.div`
   font-weight: ${fontWeights.regularPlus};
+  margin-top: 8px;
+  font-family: sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 19.07px;
+  letter-spacing: 0px;
+  text-align: left;
 `;
 
 export const FolderIcon = styled.img`
@@ -38,12 +64,98 @@ export const FolderIcon = styled.img`
 `;
 
 export const SearchContainer = styled.div`
-  border-bottom: 1px solid ${palette.coolGrey3};
+  // border-bottom: 1px solid
+  //   ${({ isWorkFlowSearch }) =>
+    isWorkFlowSearch ? palette.lightGrayishBlue : palette.coolGrey3};
+`;
+
+export const WorkflowFoldersContainer = styled.div`
+  width: 317px;
+  // height: 273px;
+`;
+
+export const WorkflowListsContainer = styled.div`
+  width: 317px;
+  // height: 240px;
+  // overflow: hidden;
+`;
+
+export const WorkflowLists = styled.div`
+  width: 317px;
+  max-height: 432;
+  overflow-y: auto;
+
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background-color: white;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: ${palette.coolGrey3};
+    border-radius: 17px;
+  }
+
+  // ::-webkit-scrollbar-thumb:hover {
+  //   background-color: blue;
+  // }
+`;
+
+export const WorkflowFoldersHeaderContainer = styled.div`
+  width: 317px;
+  height: 33px;
+  padding: 7px 16px 7px 16px;
+  gap: 10px;
+`;
+
+export const WorkflowFoldersListContainer = styled.div`
+  width: 317px;
+  max-height: 240;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background-color: white;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: ${palette.coolGrey3};
+    border-radius: 17px;
+  }
+
+  // ::-webkit-scrollbar-thumb:hover {
+  //   background-color: blue;
+  // }
+`;
+
+export const WorkflowFoldersHeaderLabel = styled(Typography)`
+  width: 50px;
+  height: 19px;
+  font-family: sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 19.07px;
+`;
+
+export const WorkflowSearchHorizontalLineContainer = styled.div`
+  width: 317px;
+  height: 16px;
+  padding: 8px 0px 8px 0px;
+  gap: 10px;
+`;
+export const WorkflowSearchHorizontalLine = styled.div`
+  width: 317px;
+  border: 1px solid ${palette.lightGrayishBlue};
 `;
 
 export const SelectOptionsContainer = styled.div`
-  max-height: 400;
-  overflow: auto;
+  // max-height: 400;
+  // overflow: auto;
 `;
 
 export const TaskTemplateApplicatorContainer = styled.div`
@@ -65,11 +177,10 @@ export const TaskTemplateApplicatorContainer = styled.div`
   }
 `;
 
-
 export const TaskTemplateApplicatorLabel = styled.div`
   white-space: nowrap;
   cursor: pointer;
-  font-size: ${fontSizes.regular}; 
+  font-size: ${fontSizes.regular};
   font-family: 'Outfit', sans-serif;
   color: ${palette.white};
   font-weight: ${fontWeights.light};
@@ -84,7 +195,7 @@ export const ChevronVerticleGap = styled.div`
   height: 40px;
   margin-top: -8px;
   width: 2px;
-  content: &nbsp;;
+  content: &nbsp;
 `;
 
 export const CreateTaskLinkText = styled.span`
@@ -125,6 +236,10 @@ export const Item = styled.div`
 export const EmptyLabel = styled.div`
   padding: ${spacing.regular} ${spacing.large};
   color: ${palette.mediumGrey};
+  font-family: sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 19.07px;
 `;
 
 export const LoaderItem = styled(Skeleton)`
@@ -142,7 +257,7 @@ export const LoaderContainer = styled.div`
 export const ListItemTextButton = styled.button`
   flex: 1;
   margin: 0;
-  padding: ${spacing.smallPlus} ${spacing.regularPlus};
+  padding: ${spacing.smallPlus} ${spacing.small};
   font-size: ${fontSizes.regular};
   text-align: left;
   outline: none;
@@ -156,7 +271,9 @@ export const NextArrow = styled(ChevronRightIcon)`
 
 export const ListItem = styled.div`
   display: block;
-  width: 100%;
+  width: 299px;
+  height: 48px;
+  padding: 0px 8px 0px 16px;
   display: flex;
   flex-direction: row;
   justify-content: space-between;

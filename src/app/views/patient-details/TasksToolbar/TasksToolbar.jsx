@@ -76,6 +76,7 @@ const TasksToolbar = (props) => {
       <TaskTemplateApplicator
         onTemplateSelect={handleApplyTemplate}
         iconColorActive={iconColorActive}
+        isWorkflowSearch
       />
     </Grid>
   );
