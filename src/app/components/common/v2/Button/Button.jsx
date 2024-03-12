@@ -14,11 +14,12 @@ const TEXT = 'text';
 const TEXT_RED = 'text-red';
 
 const StyledButton = styled(MuiButton)`
+  box-shadow: none !important;
   &&& {
     &.MuiButton-root {
       width: ${({ width }) => `${width}`};
       font-weight: ${fontWeights.regular};
-      font-family: 'Montserrat', sans-serif;
+      font-family: 'Outfit', sans-serif;
       outline: none;
       min-width: 0;
       min-height: '30px';
@@ -246,7 +247,7 @@ const Button = ({
       color={muiColor}
       backgroundColor={color}
       secondaryColor={secondaryColor}
-      uppercase={`${uppercase}`}
+      // uppercase={`${uppercase}`}
       onClick={onClick}
       size={size}
       type={type}

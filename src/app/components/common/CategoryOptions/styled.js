@@ -13,6 +13,6 @@ export const LabeledCollapseItemName = styled.p`
   margin: 0;
   font-size: ${fontSizes.smallPlus};
   font-weight: ${fontWeights.regularPlus};
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Outfit', sans-serif;
   text-align: left;
 `;

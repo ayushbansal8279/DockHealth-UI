@@ -50,7 +50,7 @@ export const AddSubtaskInputWrapper = styled.div`
     display: block;
     transform: translateY(-50%);
     color: ${palette.coolGrey1};
-    font-family: 'Montserrat', sans-serif;
+    font-family: 'Outfit', sans-serif;
     font-weight: ${fontWeights.bold};
     font-size: ${fontSizes.smallPlus};
     text-transform: uppercase;

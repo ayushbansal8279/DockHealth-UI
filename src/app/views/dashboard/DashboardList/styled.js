@@ -52,7 +52,7 @@ export const EmptyStateContainer = styled.div`
 `;
 
 export const ShowMoreButton = styled.button`
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Outfit', sans-serif;
   cursor: pointer;
   color: ${palette.brightBlue};
   font-size: ${fontSizes.smallPlus};
@@ -79,18 +79,16 @@ export const DashboardTasksGroupLabelName = styled.span`
   white-space: nowrap;
   text-overflow: ellipsis;
   vertical-align: middle;
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Outfit', sans-serif;
 `;
 
 export const DashboardTasksGroupLabel = styled.p`
   margin-bottom: 0;
   font-size: ${fontSizes.regular};
   font-weight: ${fontWeights.regularPlus};
-  text-transform: uppercase;
 `;
 
 export const DashboardTaskItemContainer = styled.div`
-  margin-bottom: 3px;
   
   &:hover {
     box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.15);

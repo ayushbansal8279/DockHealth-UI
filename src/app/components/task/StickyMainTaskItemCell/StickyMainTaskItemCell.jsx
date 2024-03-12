@@ -20,14 +20,52 @@ const StickyMainTaskItemCell = styled.div`
     if (width && !isSubtask) return `${width}px`;
     return '';
   }};
-  left: ${({ isSubtask }) => (isSubtask ? '60px' : '24px')};
+  left: ${({
+    isSubtask,
+    isWorkflowSubtask,
+    origin,
+    searchValue,
+    isFilterApply,
+  }) =>
+    origin === 'PATIENT'
+      ? isSubtask || isWorkflowSubtask
+        ? '60px'
+        : '24px'
+      : origin === 'LIST'
+      ? isSubtask || isWorkflowSubtask
+        ? searchValue || isFilterApply
+          ? '54.5px'
+          : '90.5px'
+        : '54.5px'
+      : '24px'};
   ${({ order }) => (order ? `order: ${order};` : '')}
-  //border-left: 1px solid ${palette.coolGrey3};
-  //border-right: 1px solid ${palette.coolGrey3};
+  border-left: 1px solid
+    ${({ isWorkflowtask, isTamplateGroup }) =>
+    isWorkflowtask || isTamplateGroup
+      ? 'rgba(75, 179, 253, 1)'
+      : `${palette.coolGrey3}`};
+  border-right: ${({ isWorkflowtask, isTamplateGroup, isWorkflowSubtask }) =>
+    isWorkflowtask || !isTamplateGroup || isWorkflowSubtask
+      ? ''
+      : `1px solid ${palette.coolGrey3};`};
+  margin-left: ${({ isTamplateGroup }) => (isTamplateGroup ? '-1px;' : '')};
   align-items: center;
   padding-left: ${spacing.smallPlus};
+  border-top-left-radius: ${({ isTamplateGroup }) =>
+    isTamplateGroup ? '7px' : ''};
   z-index: ${({ isEditingDescription }) =>
     isEditingDescription ? '12' : '11'};
+
+  background-color: ${(props) =>
+    props.isSelected
+      ? palette.brightBlueWithAlpha
+      : // eslint-disable-next-line unicorn/no-nested-ternary
+      props.hasEscalations
+      ? palette.bananaHammockLight
+      : // eslint-disable-next-line unicorn/no-nested-ternary
+      props.customHighlight
+      ? props.customHighlight
+      : palette.white};
 
   &::before {
     content: '';
@@ -63,6 +101,14 @@ const StickyMainTaskItemCell = styled.div`
             ${highlightDescription} 6s ease-out;
           `
         : ''};
+  }
+
+  &:hover {
+    border-left: 1px solid
+      ${({ isWorkflowtask, isTamplateGroup }) =>
+        isWorkflowtask || isTamplateGroup
+          ? 'rgba(75, 179, 253, 1)'
+          : `${palette.coolGrey2}`};
   }
 
   @media print {

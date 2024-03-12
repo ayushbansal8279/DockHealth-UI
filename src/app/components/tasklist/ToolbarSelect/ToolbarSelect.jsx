@@ -13,21 +13,16 @@ const ToolbarSelect = ({
   focused,
   ...restProps
 }) => {
-  const [isOpen, setIsOpen] = useState(palette.newDarkBlue);
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <SelectWrapper wide={searchValue || focused}>
+    <SelectWrapper>
       <Select
         onOpen={() => {
-          setTimeout(() => {
-            setIsOpen(palette.newBrightBlue);
-          }, 0);
+          setIsOpen(true);
         }}
         onClose={() => {
-          setTimeout(() => {
-            document.activeElement.blur();
-            setIsOpen(palette.newDarkBlue);
-          }, 0);
+          setIsOpen(false);
         }}
         iconcoloractive={restProps.iconColorActive}
         MenuProps={{

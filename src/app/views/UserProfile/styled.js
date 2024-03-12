@@ -14,7 +14,7 @@ export const ProfileSettingsWrapper = styled.div`
   margin: 0 auto;
   padding: 10px ${spacing.regularPlus};
   color: ${palette.mediumGrey};
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Outfit', sans-serif;
 `;
 
 export const ViewHeader = styled.h2`

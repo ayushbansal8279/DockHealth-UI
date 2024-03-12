@@ -1,4 +1,4 @@
-import React, { ForwardedRef, forwardRef } from 'react';
+import React, { ForwardedRef, forwardRef, useContext } from 'react';
 import { Segment } from 'views/list-details/modules/Virtualized';
 import StandardTaskItem from 'components/task/StandardTaskItem/StandardTaskItem';
 import {
@@ -7,6 +7,7 @@ import {
   DraggableStateSnapshot,
 } from 'react-beautiful-dnd';
 import * as Sc from './styled';
+import { TaskOrigin } from '@/app/helpers/task-helpers';
 
 export interface Props extends Segment {
   isTaskTemplate: boolean;
@@ -30,7 +31,8 @@ function VTask(
           $subitem={metadata.level > 1}
           // @ts-ignore
           $workflow={record.task?.itemType === 'BUNDLE'}
-          $template={isTaskTemplate}
+          $template={isTaskTemplate && isLastChild}
+          isTaskTemplate={isTaskTemplate}
         >
           <StandardTaskItem
             // @ts-ignore
@@ -40,6 +42,7 @@ function VTask(
             isDragging={snapshot.isDragging}
             isTaskTemplate={isTaskTemplate}
             isLastChild={isLastChild || false}
+            origin={TaskOrigin.LIST}
           />
         </Sc.VTask>
       )}

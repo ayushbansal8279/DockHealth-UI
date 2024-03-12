@@ -3,7 +3,7 @@ import queryString from 'query-string';
 import React, { useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { useMount } from 'react-use';
 import styled from 'styled-components';
 import { object, string } from 'yup';
@@ -141,7 +141,7 @@ const CreateAccount = (props) => {
 
     if (oname && sfname) setIsUserInvited(true);
     if (oname) setOrganizationName(oname);
-    if (sfname && slname) setSenderName(sfname + ' ' + slname);
+    if (sfname && slname) setSenderName(`${sfname} ${slname}`);
 
     if (fname) setValue('firstName', fname);
     if (lname) setValue('lastName', lname);
@@ -157,7 +157,7 @@ const CreateAccount = (props) => {
       setValue('organization', sessionStorage.getItem('organization'));
 
     setAuthBaseState({
-      authBaseState: AUTH_BASE_STATES.DEFAULT,
+      authBaseState: AUTH_BASE_STATES.SIGN_UP,
     })(dispatch);
     if (locationParameters && locationParameters?.referral) {
       getCustomTitleFromReferralConfig(
@@ -168,7 +168,7 @@ const CreateAccount = (props) => {
   });
 
   const hasCustomPageTitle = customPageTitle !== '';
-  const fontFamily = 'roboto condensed';
+  const fontFamily = 'Outfit';
 
   const DockLogoImage = styled.img.attrs({
     src: DockHeaderLogo,
@@ -224,7 +224,7 @@ const CreateAccount = (props) => {
               </>
             )}
             {isUserInvited ? (
-              <Title>You’ve been invited by {organizationName}.</Title>
+              <Title>You’ve been invited to {organizationName}.</Title>
             ) : (
               <Title>Please create an account</Title>
             )}
@@ -237,8 +237,7 @@ const CreateAccount = (props) => {
                   align="center"
                   variant="p"
                 >
-                  {senderName} has invited you to Dock Health.
-                  <br /> Create an account and start collaborating now
+                  Create an account and start collaborating with your team on Dock Health today
                 </Subtitle>
               ) : (
                 <Subtitle variant="p">
@@ -266,6 +265,7 @@ const CreateAccount = (props) => {
               size="large"
               color={palette.brightOrange}
               secondaryColor={palette.oPlusRed}
+              uppercase={false}
             >
               Continue
             </Button>

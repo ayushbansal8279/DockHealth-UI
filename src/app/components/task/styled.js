@@ -2,7 +2,7 @@
 import React from 'react';
 import styled, { keyframes, css } from 'styled-components';
 import { Link } from 'react-router-dom';
-import { Grid } from '@mui/material';
+import { Card, Grid } from '@mui/material';
 import spacing from 'styles/spacing';
 import { fontWeights, fontSizes } from 'styles/font';
 import palette, { featurePalette, typography } from 'styles/palette';
@@ -85,6 +85,32 @@ export const CompletedBy = styled.div`
   }
 `;
 
+export const TootipCompletedBy = styled.div`
+  color: ${palette.crystalBlue};
+  font-family: Outfit;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 19.2px;
+  margin-bottom: 2px;
+`;
+
+export const TootipCompletedByName = styled.div`
+  color: ${palette.black};
+  font-family: Outfit;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 19.2px;
+  margin-bottom: 2px;
+`;
+
+export const TootipCompletedByDate = styled.div`
+  color: ${palette.coolGrey1};
+  font-family: Outfit;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 16.8px;
+`;
+
 export const TaskContext = styled.div`
   align-items: flex-end;
   display: flex;
@@ -133,6 +159,7 @@ export const BulkContainer = styled.div`
 export const AddPlaceholder = styled.div`
   color: ${palette.lightGrey};
   opacity: 0;
+
   &::first-letter {
     color: ${palette.lightGrey};
     font-size: ${fontSizes.regular};
@@ -143,6 +170,9 @@ export const AddPlaceholder = styled.div`
   }
 
   &:hover {
+    div {
+      color: ${palette.brightBlue};
+    }
     color: ${palette.brightBlue};
   }
 `;
@@ -317,7 +347,7 @@ export const GridImg = styled(Grid)`
   align-items: center;
   justify-content: center;
   ${({ matched }) =>
-    matched && `background: ${featurePalette.globalSearchHighlight};`}
+    matched && `background: ${featurePalette.globalSearchHighlight};`};
 `;
 
 export const SmallText = styled.span`
@@ -388,14 +418,14 @@ export const StandardTaskItemContainer = styled.div`
       props.customHighlight
       ? props.customHighlight
       : palette.white};
-  border: 1px solid ${palette.coolGrey3};
-  border-right: none;
+  border-bottom: 1px solid ${palette.coolGrey3};
+  border-right: 1px solid ${palette.coolGrey3};
+  border-top: 1px solid ${palette.coolGrey3};
   display: flex;
   justify-content: ${(props) =>
     props.isAddingTask ? 'flex-end' : 'flex-start'};
   width: 100%;
   height: ${({ height }) => height || 35}px;
-  border-top: none;
   border-left: none;
   transition: background-color 0.3s ease-out;
   animation: ${(props) =>
@@ -419,6 +449,24 @@ export const StandardTaskItemContainer = styled.div`
     border-bottom: 1px solid rgba(75, 179, 253, 1);
   `
       : ''}
+
+  &:hover {
+    border-top: 1px solid ${palette.coolGrey2};
+
+    ${({ isTaskTemplate }) =>
+      !isTaskTemplate
+        ? `
+      border-right: 1px solid ${palette.coolGrey2};
+    `
+        : ``}
+
+    ${({ isLastChild }) =>
+      !isLastChild
+        ? `
+        border-bottom: 1px solid ${palette.coolGrey2};
+      `
+        : ''}
+  }
 
   @media print {
     border-left: 1px solid ${palette.coolGrey3};
@@ -473,6 +521,8 @@ export const StandardTaskItemPanel = styled.div`
       ? 'box-shadow: 0px 0px 11px rgba(204, 204, 204, 0.8)'
       : ''};
 
+  margin-left:${({ isWorkflowtask, isWorkflowSubtask }) =>
+    isWorkflowtask ? '-2.5px;' : isWorkflowSubtask ? '-0.5px;' : '-1.2px;'} 
   &:hover {
     & ${ThreeDots}, & ${AddPlaceholder} {
       opacity: 1;
@@ -486,7 +536,7 @@ export const StandardTaskItemPanel = styled.div`
     display: block;
     width: 100%;
     content: '';
-    border-top: 1px solid ${palette.coolGrey3};
+    // border-top: 1px solid ${palette.coolGrey3};
     z-index: 1;
   }
 `;
@@ -611,6 +661,9 @@ export const SubtasksCellContentButton = styled.button`
     color: ${palette.coolGrey2};
     cursor: initial;
   }
+
+  &:hover {
+    color: ${({ isOpen }) => (!isOpen ? palette.brightBlue : '')}
 `;
 
 export const SubtasksCellText = styled.p`
@@ -627,11 +680,7 @@ export const ParentTaskContainer = styled.div`
   }
 `;
 
-export const TaskContainer = styled.div`
-  &:hover {
-    box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.15);
-  }
-`;
+export const TaskContainer = styled.div``;
 
 export const SubtasksWrapper = styled.div`
   position: relative;
@@ -652,7 +701,8 @@ export const AddSubtaskButton = styled.button`
 export const TaskItemDescriptionIndicators = styled.div`
   display: flex;
   align-items: baseline;
-  margin-left: 5px;
+  margin-left: 20px;
+  margin-top: ${({ isCompleted }) => (isCompleted ? '-13px' : '0')};
 `;
 
 export const PatientLabel = styled.span`
@@ -677,12 +727,16 @@ export const DateText = styled.p`
 `;
 
 export const DetailsButton = styled.button`
-  margin-left: 8px;
-  visibility: hidden;
-  font-family: 'Montserrat', sans-serif;
+  // margin-left: 8px;
+  // visibility: hidden;
+  font-family: 'Outfit', sans-serif;
   font-size: ${fontSizes.smallPlus};
   font-weight: ${fontWeights.regularPlus};
-  color: ${palette.brightBlue};
+  color: ${palette.coolGrey1};
+
+  &:hover {
+    color: ${palette.brightBlue};
+  }
 `;
 
 export const DescriptionBorder = styled.div`
@@ -738,6 +792,6 @@ export const PatientMRNAnchor = styled.a`
 export const TaskScrollVericleLine = styled.div`
   background: #48bbb3;
   height: 100%;
-  width: 1px;
+  width: 2.5px;
   box-shadow: 1px 0px 3px 0px rgba(0, 0, 0, 0.21);
 `;

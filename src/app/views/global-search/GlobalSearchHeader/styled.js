@@ -27,12 +27,20 @@ export const CheckboxContainer = styled.div`
 `;
 
 export const ButtonWrapper = styled.div`
-  display: flex;
-  width: 130px;
-  height: 56px;
-  padding: 0 ${spacing.smallPlus};
-  box-sizing: border-box;
-  justify-content: center;
-  align-items: center;
-  background: ${palette.coolGrey4};
+color: ${palette.white};
+height: 40px;
+width: 80px;
+text-align: center;
+padding-top: 7px;
+margin-left: 15px;
+border-radius: 4px;
+background-color: ${palette.newDarkBlue};
+
+:hover {
+  background-color: ${palette.purpleNavy};
+}
+
+@media print {
+  display: none;
+}
 `;

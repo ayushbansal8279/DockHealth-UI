@@ -5,14 +5,16 @@ import { Select as MuiSelect } from '@mui/material';
 export const Select = styled(MuiSelect)`
   display: flex;
   align-items: center;
-  background: ${(props) => props.isOpen || palette.newDarkBlue};
+  background: ${(props) =>
+    props.isOpen ? palette.newBrightBlue : palette.newDarkBlue};
   color: ${palette.white};
-  height: 40px;
+  height: 32px;
   width: auto;
   border-radius: 4px;
 
   &:hover {
-    background: ${palette.newBrightBlueShaded};
+    background: ${(props) =>
+      props.isOpen ? palette.cornFlowerBlue : palette.purpleNavy};
   }
 
   & .switchIcon > path {
@@ -21,11 +23,6 @@ export const Select = styled(MuiSelect)`
 `;
 
 export const SelectWrapper = styled.div`
-  @media (max-width: 867px) {
-    display: ${({ wide }) => {
-      if (wide) return 'none';
-    }};
-  }
   @media print {
     display: none;
   }

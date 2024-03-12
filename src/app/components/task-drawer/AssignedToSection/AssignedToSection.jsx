@@ -69,15 +69,18 @@ const AssignedToSection = ({ selectedTask = {}, onSave, disabled }) => {
 
   return (
     <TaskDrawerPopover
+    width={245}
       disabled={disabled}
-      content={() => (
+      content={({ closePopover }) => (
         <MultiAssignMembersList
+          width={245}
           taskListIdentifiers={taskListIdentifier}
           selectedMembers={assignedToUsersValue}
           onSelect={handleAssignToSelection}
           enableLazyLoading={
             taskList?.listType === 'PUBLIC' || taskList?.listType === 'TEMPLATE'
           }
+          closeModel={closePopover}
           additionalMembers={selectedTask?.sharedWithUsers || []}
         />
       )}
@@ -88,7 +91,11 @@ const AssignedToSection = ({ selectedTask = {}, onSave, disabled }) => {
           assignedToUsers.map((user) => (
             <AssigneeContainer>
               <UserAvatar user={user} />
-              <AssigneeTitle>{displayName(user.userName)}</AssigneeTitle>
+              {assignedToUsers?.length <= 3 ? (
+                <AssigneeTitle>{displayName(user.userName)}</AssigneeTitle>
+              ) : (
+                ''
+              )}
               {YouBadge(user)}
             </AssigneeContainer>
           ))}

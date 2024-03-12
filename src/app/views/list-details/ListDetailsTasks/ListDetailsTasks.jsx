@@ -64,6 +64,7 @@ import {
   TaskGroupsContainer,
   DroppablePlaceholder,
 } from '../ListDetailsTableView/styled';
+import { ListPageContext } from '../ListDetailsView';
 
 const ListDetailsTasks = ({
   viewSetup,
@@ -203,7 +204,7 @@ const ListDetailsTasks = ({
   }, [groupedTasks]);
 
   const { bulkEditIsActive } = useContext(BulkEditContext);
-
+  const { handleScroll } = useContext(ListPageContext);
   const dragAndDropDisabled = bulkEditIsActive || !userSortingSupportEnabled;
 
   const isSortApplied = !!sort?.key && !!sort?.order;
@@ -252,7 +253,7 @@ const ListDetailsTasks = ({
     },
     [dispatch],
   );
-
+  window.disabledVirtualTaskList = false;
   const [isVirtualTaskListEnabled, setIsVirtualTaskListEnabled] = useState(
     !window.disabledVirtualTaskList,
   );
@@ -266,7 +267,9 @@ const ListDetailsTasks = ({
 
   const renderVirtualizedTasks = () => {
     return (
-      <VirtualTaskList tasksToMap={tasksToMap} groupedTasks={groupedTasks} />
+      <div onScrollCapture={handleScroll}>
+        <VirtualTaskList tasksToMap={tasksToMap} groupedTasks={groupedTasks} />
+      </div>
     );
   };
 
@@ -547,8 +550,7 @@ const ListDetailsTasks = ({
                     }
                     placeholder={messages.placeholder}
                     closeOnEnter
-                  >
-                  </GroupNameSection>
+                  ></GroupNameSection>
                 </StickyContainer>
               )}
           </DragDropContext>

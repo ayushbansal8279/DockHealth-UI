@@ -9,18 +9,22 @@ import React, {
   useContext,
 } from 'react';
 import isEmpty from 'ramda/src/isEmpty';
+import compose from 'ramda/src/compose';
 import { useDispatch, useSelector } from 'react-redux';
 import { openDrawer } from 'actions/task-drawer-actions';
 import { storeAsCurrentTask, loadSubTasks } from 'actions/task-actions';
 import TaskComments from 'components/tasklist/TaskComments/TaskComments';
 import { taskLookupSelector } from 'selectors/task-details-selectors';
+import * as TaskActions from 'actions/task-actions';
 // import { taskDetailsSelector } from 'selectors/list-details-selectors';
 import { CollapseContext } from 'views/list-details/VirtualTaskList/VirtualTaskList';
+import useActions from 'hooks/use-actions';
 import TaskItem from './TaskItem';
 import Subtasks from './Subtasks';
 import { getMatchedComments } from './helpers';
 import { ParentTaskContainer, SubtasksWrapper, TaskContainer } from '../styled';
 import QuickAddSubtask from './QuickAddSubtask';
+import { ListPageContext } from '@/app/views/list-details/ListDetailsView';
 
 const Task = React.memo(
   ({
@@ -44,6 +48,7 @@ const Task = React.memo(
     origin,
     viewSetup,
     isTaskTemplate,
+    isWorkflowSubtask,
     isLastChild,
     ...restProps
   }) => {
@@ -73,6 +78,9 @@ const Task = React.memo(
     const { innerRef, draggableProps, dragHandleProps } = draggableProvided;
     const { highlightedValue } = restProps;
     const { matchingCommentIdentifiers = [] } = searchMetaData;
+    const { changeViewType, tasks, handleAddTask } =
+      useContext(ListPageContext);
+    const taskActions = useActions(TaskActions);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
     // const renderedSubtasks = addingNewSubtask ? [...subtasks, {}] : subtasks;
@@ -93,23 +101,58 @@ const Task = React.memo(
           dispatch(loadSubTasks(task));
         }
         setAreSubtasksOpen(areOpen);
-        collapse.set(taskIdentifier, areOpen);
+        collapse.set(taskIdentifier, !areOpen);
       },
       [
         subTasksCount,
         renderedSubtasks,
         subtasksDisabled,
+        isFullView,
+        collapse,
+        taskIdentifier,
         dispatch,
         task,
-        isFullView,
       ],
     );
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const handleUpdateTask = useCallback(
+      compose(dispatch, TaskActions.partialUpdateTask),
+      [dispatch],
+    );
+
     useEffect(() => {
-      if (isFullView) handleSetSubtasksOpen(true);
-      else setAreSubtasksOpen(false);
+      // if (isFullView) handleSetSubtasksOpen(true);
+      // else setAreSubtasksOpen(false);
+      if (changeViewType === 'FULL_VIEW') {
+        if (!tasks.includes(taskIdentifier)) {
+          handleSetSubtasksOpen(true);
+          handleAddTask(taskIdentifier);
+        } else {
+          // if (collapse.get(taskIdentifier)) {
+          //   setAreSubtasksOpen(false);
+          // } else {
+          //   setAreSubtasksOpen(true);
+          // }
+          setAreSubtasksOpen(!collapse.get(taskIdentifier));
+        }
+      } else if (changeViewType === 'SLIM_VIEW') {
+        if (!tasks.includes(taskIdentifier)) {
+          handleSetSubtasksOpen(false);
+          handleAddTask(taskIdentifier);
+        } else {
+          // if (collapse.get(taskIdentifier)) {
+          //   setAreSubtasksOpen(false);
+          // } else {
+          //   setAreSubtasksOpen(true);
+          // }
+          setAreSubtasksOpen(!collapse.get(taskIdentifier));
+        }
+      } else {
+        handleSetSubtasksOpen(false);
+      }
       // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isFullView]);
+    }, [changeViewType]);
 
     useEffect(() => {
       if (!areSubtasksOpen && subtaskQuickAddOpen && !subtasksDisabled) {
@@ -188,8 +231,10 @@ const Task = React.memo(
             isOpen={areSubtasksOpen}
             switchOpen={handleSetSubtasksOpen}
             dragHandleProps={dragHandleProps}
+            onTaskUpdate={handleUpdateTask}
             isDragging={isDragging}
             isDraggable={isDraggable}
+            updateWorkflowStatus={taskActions.updateWorkflowStatus}
             isCompletedGroup={isCompletedGroup}
             subtasksDisabled={subtasksDisabled}
             origin={origin}
@@ -199,6 +244,7 @@ const Task = React.memo(
                 highlightedTasksParentIdentifier === task?.parentTaskIdentifier)
             }
             viewSetup={viewSetup}
+            isWorkflowSubtask={isWorkflowSubtask}
             {...restProps}
           />
         </TaskContainer>

@@ -10,6 +10,7 @@ import { ReminderType } from 'helpers/task-helpers';
 import { onTaskStartDateChanged } from 'helpers/ga-event-helper';
 import spacing from 'styles/spacing';
 import palette from 'styles/palette';
+import { AddPlaceholder } from '../../styled';
 
 const TaskItemStartDate = ({ task, isDateHover, disabled = false }) => {
   const dispatch = useDispatch();
@@ -38,37 +39,42 @@ const TaskItemStartDate = ({ task, isDateHover, disabled = false }) => {
         />
       )}
     >
-      <Tooltip
+      {/* <Tooltip
         placement="top"
-        title={startDate ? 'Edit start date' : 'Add start date'}
-      >
-        <>
-          {startDate ? (
-            <DateLabel
-              date={startDate}
-              hasReminder={reminderType && reminderType !== ReminderType.NONE}
-              hasRecurringSchedule={false}
-            />
-          ) : (
-            <>
-              {isDateHover ? (
-                <div style={{ display: 'flex' }}>
-                  {' '}
-                  <TaskIcon type="calendar" isActive />{' '}
-                  <p
-                    style={{
-                      padding: `3px ${spacing.smallPlus}`,
-                      color: `${palette.coolGrey1}`,
-                    }}
-                  >
-                    None
-                  </p>
-                </div>
-              ) : null}
-            </>
-          )}
-        </>
-      </Tooltip>
+        title={startDate ? 'Edit Start Date' : 'Add Start Date'}
+      > */}
+      <>
+        {startDate ? (
+          <DateLabel
+            date={startDate}
+            hasReminder={reminderType && reminderType !== ReminderType.NONE}
+            hasRecurringSchedule={false}
+            tootipTitle="Edit Start Date"
+          />
+        ) : (
+          <>
+            {isDateHover ? (
+              <Tooltip placement="top" title="Add Start Date">
+                <AddPlaceholder>
+                  <div style={{ display: 'flex' }}>
+                    {' '}
+                    <TaskIcon type="calendar" isActive />
+                    <p
+                      style={{
+                        padding: `3px ${spacing.smallPlus}`,
+                        // color: `${palette.coolGrey1}`,
+                      }}
+                    >
+                      None
+                    </p>
+                  </div>
+                </AddPlaceholder>
+              </Tooltip>
+            ) : null}
+          </>
+        )}
+      </>
+      {/* </Tooltip> */}
     </TaskItemPopover>
   );
 };

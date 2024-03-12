@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, createContext, useState } from 'react';
 import { useLocation, useParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { TaskStatus } from 'helpers/task-helpers';
@@ -12,6 +12,17 @@ import ListDetailsTableView from './ListDetailsTableView/ListDetailsTableView';
 import ListDetailsCalendarView from './ListDetailsCalendarView/ListDetailsCalendarView';
 import ListDetailsBoardView from './ListDetailsBoardView/ListDetailsBoardView';
 
+export const ListPageContext = createContext({
+  addNewGroup: false,
+  handleAddNewGroup: {},
+  changeViewType: '',
+  handleSetChangeViewType: {},
+  showShadow: false,
+  handleScroll: {},
+  tasks: [],
+  handleAddTask: {},
+  handleRemoveAllTasks: {},
+});
 const ListDetailsView = () => {
   const parameters = useParams();
   const { taskListIdentifier: taskListIdentifierParameter, tabName } =
@@ -36,15 +47,59 @@ const ListDetailsView = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const [addNewGroup, setAddNewGroup] = useState(false);
+  const [changeViewType, setChangeViewType] = useState('SLIM_VIEW');
+  const [showShadow, setShowShadow] = useState(false);
+  const [tasks, setTasks] = useState([]);
+
+  const handleAddNewGroup = (value) => {
+    setAddNewGroup(value);
+  };
+
+  const handleSetChangeViewType = (value) => {
+    setChangeViewType(value);
+  };
+
+  const handleScroll = (event) => {
+    const position = event.target.scrollTop;
+    if (position > 0) {
+      setShowShadow(true);
+    } else {
+      setShowShadow(false);
+    }
+  };
+
+  const handleAddTask = (newTask) => {
+    setTasks((oldTasks) => [...oldTasks, newTask]);
+  };
+
+  const handleRemoveAllTasks = () => {
+    setTasks([]);
+  };
+
+  const ListPageContextValue = {
+    addNewGroup: addNewGroup,
+    handleAddNewGroup: handleAddNewGroup,
+    changeViewType: changeViewType,
+    handleSetChangeViewType: handleSetChangeViewType,
+    showShadow: showShadow,
+    handleScroll: handleScroll,
+    tasks: tasks,
+    handleAddTask: handleAddTask,
+    handleRemoveAllTasks: handleRemoveAllTasks,
+  };
+
   return (
     <>
-      {viewType === ViewType.LIST_VIEW && (
-        <ColumnsConfigProvider>
-          <ListDetailsTableView />
-        </ColumnsConfigProvider>
-      )}
-      {viewType === ViewType.CALENDAR_VIEW && <ListDetailsCalendarView />}
-      {viewType === ViewType.BOARD_VIEW && <ListDetailsBoardView />}
+      <ListPageContext.Provider value={ListPageContextValue}>
+        {viewType === ViewType.LIST_VIEW && (
+          <ColumnsConfigProvider>
+            <ListDetailsTableView />
+          </ColumnsConfigProvider>
+        )}
+        {viewType === ViewType.CALENDAR_VIEW && <ListDetailsCalendarView />}
+        {viewType === ViewType.BOARD_VIEW && <ListDetailsBoardView />}
+      </ListPageContext.Provider>
     </>
   );
 };

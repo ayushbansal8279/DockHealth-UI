@@ -23,7 +23,7 @@ import { Title, Subtitle } from './Title';
 
 const REQUIRED_MESSAGE = 'This field is required';
 
-const fontFamily = 'roboto condensed';
+const fontFamily = 'Outfit';
 
 const onboardingMessageStyle = {
   fontFamily,

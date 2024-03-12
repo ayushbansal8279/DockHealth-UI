@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import palette from 'styles/palette';
 
-const ICON_HOVERED_COLOR = palette.coolGrey2;
+const ICON_HOVERED_COLOR = palette.brightBlue;
 
 export const Wrapper = styled.div<{
   isActive?: boolean;

@@ -21,11 +21,9 @@ const CreateList = () => {
 
   const setConfirmationBaseState = useCallback(() => {
     setAuthBaseState({
-      authBaseState: confirmStatus
-        ? AUTH_BASE_STATES.DAILY_HUB
-        : AUTH_BASE_STATES.DEFAULT,
+      authBaseState: AUTH_BASE_STATES.DEFAULT,
     })(dispatch);
-  }, [confirmStatus, dispatch]);
+  }, [dispatch]);
 
   useMount(() => {
     setConfirmationBaseState();

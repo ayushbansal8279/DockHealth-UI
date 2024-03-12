@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import palette from 'styles/palette';
 import { fontWeights, fontSizes } from 'styles/font';
 import spacing from 'styles/spacing';
+import { Button } from '@mui/material';
 
 export const ImportButton = styled.button`
   color: ${palette.brightBlue};
@@ -26,7 +27,7 @@ export const SearchHelperText = styled.p`
   /* max-width: 700px; */
   margin: 0 auto;
   text-align: center;
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Outfit', sans-serif;
 `;
 
 export const PatientsListImg = styled.img`
@@ -37,13 +38,22 @@ export const PatientsListImg = styled.img`
       : 'filter: invert(60%) sepia(60%) saturate(1790%) hue-rotate(348deg) brightness(100%) contrast(88%);'}
 `;
 
-export const ButtonWrapper = styled.div`
-  display: flex;
-  width: 130px;
-  height: 56px;
-  padding: 0 ${spacing.smallPlus};
-  box-sizing: border-box;
-  justify-content: center;
-  align-items: center;
-  background: ${palette.coolGrey4};
+export const ButtonWrapper = styled(Button)`
+  text-transform: none;
+  font-size: 16px;
+  font-weight: 500;
+  color: ${palette.white};
+  height: 32px;
+  width: 80px;
+  margin-right: 15px;
+  border-radius: 4px;
+  background-color: ${palette.newDarkBlue};
+
+  :hover {
+    background-color: ${palette.purpleNavy};
+  }
+
+  @media print {
+    display: none;
+  }
 `;

@@ -3,7 +3,7 @@ import TaskItemPopover from 'components/task/TaskItemPopover/TaskItemPopover';
 import TaskWorkflowStatus from 'components/task/TaskWorkflowStatus/TaskWorkflowStatus';
 import Tooltip from 'components/common/Tooltip/Tooltip';
 // import Highlighter from 'react-highlight-words';
-import { AddPlaceholder, StatusName, StatusWrapper, StatusBar } from './styled';
+import { AddPlaceholder, StatusName, StatusWrapper, StatusSubContaioner } from './styled';
 
 const TaskTemplateWorkflowStatus = React.memo(
   ({
@@ -46,11 +46,11 @@ const TaskTemplateWorkflowStatus = React.memo(
           />
         )}
         disabled={readOnly}
-      >
+      > <StatusSubContaioner>
         {workflowStatus ? (
-          <StatusWrapper>
+          <StatusWrapper color={workflowStatus?.color}>
             <>
-              <StatusBar color={workflowStatus?.color} />
+              {/* <StatusBar color={workflowStatus?.color} /> */}
               <Tooltip
                 title={name}
                 placement="top"
@@ -62,7 +62,7 @@ const TaskTemplateWorkflowStatus = React.memo(
           </StatusWrapper>
         ) : (
           <AddPlaceholder>+ Add Status</AddPlaceholder>
-        )}
+        )}</StatusSubContaioner>
       </TaskItemPopover>
     );
   },

@@ -40,6 +40,7 @@ const TaskTemplateMembers = ({
           selectedMembers={assignedToUsers}
           onSelect={handleWorkflowUpdate}
           onError={closePopover}
+          closeModel={closePopover}
           enableLazyLoading={
             workflow?.taskList?.listType === 'PUBLIC' ||
             workflow?.taskList?.listType === 'TEMPLATE'
@@ -54,8 +55,8 @@ const TaskTemplateMembers = ({
           <MemberGroup members={assignedToUsers} />
         </>
       ) : (
-        <Tooltip placement="top" title="Assign to">
-          <div>
+        <Tooltip placement="top" title="Add assignee">
+          <div style={{ marginLeft: '10px' }}>
             <AssignMemberIcon />
           </div>
         </Tooltip>

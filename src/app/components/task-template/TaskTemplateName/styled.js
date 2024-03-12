@@ -57,7 +57,8 @@ export const NameContainer = styled.div`
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-  padding-left: 2px;
+  padding-left: 7px;
+  font-weight: 500;
 `;
 
 export const TaskTemplateDescriptionIndicators = styled.div`
@@ -72,7 +73,7 @@ export const TaskTemplateContext = styled.div`
   font-size: ${fontSizes.small};
   padding-left: 15px;
   padding-bottom: 2px;
-  margin-top: -15px;
+  margin-top: -18px;
 
   > span {
     color: ${palette.brightBlue};

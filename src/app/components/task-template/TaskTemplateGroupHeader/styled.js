@@ -49,29 +49,17 @@ export const TaskTemplateGroupHeaderContainer = styled.div`
   font-family: inherit;
   font-size: ${fontSizes.smallPlus};
   width: 100%;
-  height: 50px;
-  //border-top: 1px solid ${palette.coolGrey3};
-  //border-bottom: 1px solid ${palette.coolGrey3};
+  height: ${({ isOpen }) => (isOpen ? '51px;' : '50px;')}
   background-color: ${(props) =>
     props.isSelected ? palette.dockBlueLight : palette.white};
 
-  border-top: 5px solid rgba(75, 179, 253, 1);
-  border-left: 1px solid rgba(75, 179, 253, 1);
+  border-top: 3px solid rgba(75, 179, 253, 1);
+  border-bottom: 1px solid
+    ${({ isOpen }) =>
+      isOpen ? `${palette.coolGrey3}` : 'rgba(75, 179, 253, 1)'};
   border-right: 1px solid rgba(75, 179, 253, 1);
-  border-bottom: 1px solid ${palette.coolGrey3};
   z-index: 2;
-
-  ${(props) =>
-    props.isOpen
-      ? `
-  border-bottom: 1px solid rgba(75, 179, 253, 1);
-  border-bottom-left-radius: 7px;
-  border-bottom-right-radius: 7px;
-  `
-      : `
   border-top-left-radius: 7px;
-  border-top-right-radius: 7px;
-  `}
 
   &:hover {
     & ${TemplateHandle}, ${AddPlaceholder} {

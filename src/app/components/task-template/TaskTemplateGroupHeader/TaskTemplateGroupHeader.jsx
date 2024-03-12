@@ -93,6 +93,8 @@ import {
   PatientMRNAnchor,
 } from './styled';
 import TaskTemplateDetails from '../TaskTemplateDetails/TaskTemplateDetails';
+import { StickyColumnContainer } from '../../tasklist/TasksHeader/styled';
+import { ListPageContext } from '@/app/views/list-details/ListDetailsView';
 
 const TaskTemplateGroupHeader = ({
   templateGroup = {},
@@ -114,7 +116,7 @@ const TaskTemplateGroupHeader = ({
   showTasksWithGroup = true,
   iconColorActive,
   highlightedValue,
-  // origin,
+  origin,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const {
@@ -129,6 +131,7 @@ const TaskTemplateGroupHeader = ({
 
   const { bulkEditIsActive } = useContext(BulkEditContext);
   const { bulkEditEnabled } = useContext(BulkEditContext);
+  const { changeViewType, tasks, handleAddTask } = useContext(ListPageContext);
   const [isEditing, setIsEditing] = useState(false);
   const [nameInputValue, setNameInputValue] = useState(name);
   const [nameInputError, setNameInputError] = useState(false);
@@ -611,23 +614,87 @@ const TaskTemplateGroupHeader = ({
 
   const [isPatientDataReadOnly] = useState(true);
   const collapse = useContext(CollapseContext);
+  const [virtualListWorkflowOpen, setVirtualListWorkflowOpen] = useState(
+    collapse.get(identifier) ? false : true,
+  );
   const handleOpen = () => {
     setOpen(!isOpen);
+    setVirtualListWorkflowOpen(!virtualListWorkflowOpen);
     // eslint-disable-next-line react/destructuring-assignment
-    collapse.set(identifier, !isOpen);
+    // collapse.set(identifier, isOpen);
+    collapse.set(identifier, virtualListWorkflowOpen);
   };
+
+  useEffect(() => {
+    if (changeViewType === 'FULL_VIEW') {
+      if (!tasks.includes(identifier)) {
+        // setOpen(true);
+        setVirtualListWorkflowOpen(true);
+        collapse.set(identifier, false);
+        handleAddTask(identifier);
+      }
+      // else {
+      // if (collapse.get(identifier)) {
+      //   setOpen(false);
+      //   // setVirtualListWorkflowOpen(false);
+      // } else {
+      //   setOpen(true);
+      //   // setVirtualListWorkflowOpen(true);
+      // }
+      // setOpen(collapse.get(identifier) ? false : true);
+      //   setVirtualListWorkflowOpen(collapse.get(identifier) ? false : true);
+      // }
+    }
+
+    if (changeViewType === 'SLIM_VIEW') {
+      if (!tasks.includes(identifier)) {
+        // setOpen(false);
+        setVirtualListWorkflowOpen(false);
+        collapse.set(identifier, true);
+        handleAddTask(identifier);
+      }
+      // else {
+      // if (collapse.get(identifier)) {
+      //   setOpen(false);
+      //   // setVirtualListWorkflowOpen(false);
+      // } else {
+      //   setOpen(true);
+      //   // setVirtualListWorkflowOpen(true);
+      // }
+      // setOpen(collapse.get(identifier) ? false : true);
+      //   setVirtualListWorkflowOpen(collapse.get(identifier) ? false : true);
+      // }
+    }
+    // else {
+    // setOpen(false);
+    // collapse.set(identifier, true);
+    // }
+  }, [
+    changeViewType,
+    // handleOpen,
+  ]);
+
+  // useEffect(() => {
+  //   if (origin === 'PATIENT') {
+  //     setOpen(!isOpen);
+  //     // collapse.set(identifier, isOpen);
+  //   }
+  // }, [origin, setOpen]);
 
   const randerFirstColumnCoverIfNecessary = useCallback(
     (content, order, width) => {
       if (order !== 0) return content;
       return (
         <StickyMainTaskItemCell
+          isTamplateGroup={true}
+          isOpen={isOpen}
           customWidthExists
           backgroundColor={pageBackground}
           isSelected={isBundleSelected}
           isEditingDescription={isEditing}
           order={0}
           width={+width + 25 + 54}
+          origin={origin}
         >
           {!groupDragAndDropDisabled &&
             !bulkEditIsActive &&
@@ -649,7 +716,9 @@ const TaskTemplateGroupHeader = ({
             <Box m={1} />
             {showTasksWithGroup && (
               <RotatableChevron
-                rotated={isOpen}
+                rotated={
+                  origin === 'PATIENT' ? isOpen : virtualListWorkflowOpen
+                }
                 onClick={handleOpen}
                 color={iconColorActive}
               />
@@ -663,7 +732,6 @@ const TaskTemplateGroupHeader = ({
               </>
             )}
           </ActionIconsContainer>
-
           {content}
         </StickyMainTaskItemCell>
       );
@@ -683,6 +751,7 @@ const TaskTemplateGroupHeader = ({
       handleBundleSelect,
       showTasksWithGroup,
       isOpen,
+      virtualListWorkflowOpen,
       iconColorActive,
       menuOptions,
       setOpen,
@@ -706,7 +775,7 @@ const TaskTemplateGroupHeader = ({
   return (
     <TaskTemplateGroupHeaderContainer
       isSelected={isBundleSelected}
-      isOpen={isOpen}
+      isOpen={origin === 'PATIENT' ? isOpen : virtualListWorkflowOpen}
     >
       {randerFirstColumnCoverIfNecessary(
         <>
@@ -1066,7 +1135,8 @@ const TaskTemplateGroupHeader = ({
                   ({ identifier: id }) => id === TaskItemColumn.START_DATE,
                 )?.columnWidth
               }
-              justify="center"
+              paddingLeft="10px"
+              justify="flex-start"
               order={getColumnOrder(TaskItemColumn.START_DATE)}
             >
               <TaskTemplateStartDate
@@ -1091,7 +1161,8 @@ const TaskTemplateGroupHeader = ({
                   ({ identifier: id }) => id === TaskItemColumn.DUE_DATE,
                 )?.columnWidth
               }
-              justify="center"
+              paddingLeft="10px"
+              justify="flex-start"
               order={getColumnOrder(TaskItemColumn.DUE_DATE)}
             >
               <TaskTemplateDueDate
@@ -1420,7 +1491,7 @@ const TaskTemplateGroupHeader = ({
             >
               <TaskTemplateDate
                 workflow={templateGroup}
-                title="Completed On"
+                title="Add Complete Date"
                 dateTime={templateGroup.completedDt}
               />
             </TaskItemCell>,

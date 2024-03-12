@@ -153,10 +153,11 @@ const RichTextEditor = React.forwardRef(
       reset = false,
       // fullHeight,
       readonly,
-      // onFocus = () => {},
+      onFocus = () => {},
       onBlur = () => {},
       onChange = () => {},
       onKeyEnter = () => {},
+      onKeyEscape,
       // onAddMention = () => {},
       placeholder = '',
       // highlightedValues,
@@ -328,6 +329,7 @@ const RichTextEditor = React.forwardRef(
             // eslint-disable-next-line react/no-this-in-sfc, no-shadow
             // const value = this.html.get();
             // console.log(`focus: ${value}`);
+            onFocus();
           },
           // eslint-disable-next-line prettier/prettier, func-names
           blur(event) {
@@ -353,7 +355,7 @@ const RichTextEditor = React.forwardRef(
           },
           // eslint-disable-next-line prettier/prettier, func-names
           keydown(keydownEvent) {
-            if (keydownEvent.keyCode === 13) {
+            if (keydownEvent.key === 'Enter') {
               if (
                 !(keydownEvent.shiftKey || keydownEvent.ctrlKey) &&
                 onKeyEnter?.length > 0
@@ -368,9 +370,12 @@ const RichTextEditor = React.forwardRef(
                 this.html.set('');
                 // eslint-disable-next-line no-param-reassign
                 onKeyEnter(markdown);
-              } else {
-                // do nothing
               }
+            } else if (
+              keydownEvent.key === 'Escape' ||
+              keydownEvent.key === 'Esc'
+            ) {
+              onKeyEscape?.();
             }
           },
           'url.linked': function (link) {

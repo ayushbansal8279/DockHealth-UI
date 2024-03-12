@@ -87,6 +87,7 @@ const TasksGroup = ({
   children,
   iconColorActive,
   restrictCustomizationFeatures,
+  origin,
 }) => {
   const addingNewSubtaskParentId = useSelector(
     addingNewSubtaskParentIdSelector,
@@ -110,14 +111,14 @@ const TasksGroup = ({
   const collapse = useContext(CollapseContext);
   const onSwitchOpen = useCallback(() => {
     if (isOpen) {
-      console.log('TASK GROUP', taskGroupIdentifier, 'COLLAPSED');
-      // eslint-disable-next-line react/destructuring-assignment
-      collapse.set(taskGroupIdentifier, true);
-      onTaskGroupCollapsed();
-    } else {
-      console.log('TASK GROUP', taskGroupIdentifier, 'EXPANDED');
+      // console.log('TASK GROUP', taskGroupIdentifier, 'COLLAPSED');
       // eslint-disable-next-line react/destructuring-assignment
       collapse.set(taskGroupIdentifier, false);
+      onTaskGroupCollapsed();
+    } else {
+      // console.log('TASK GROUP', taskGroupIdentifier, 'EXPANDED');
+      // eslint-disable-next-line react/destructuring-assignment
+      collapse.set(taskGroupIdentifier, true);
       onTaskGroupExpanded();
     }
     switchOpen(!isOpen);
@@ -286,11 +287,15 @@ const TasksGroup = ({
               )
       }
     >
-      <StickyContainer left={24} decreaseWidth={2 * 24}>
+      <StickyContainer left={origin === 'LIST' ? 8 : 24} decreaseWidth={2 * 24}>
         <TasksGroupHeader>
           <Spacing horizontal={4} />
           <GroupOpenContainer onClick={onToggleGroupOpen}>
-            <RotatableChevron alt="arrow" rotated={!isOpen} color="#8492A4" />
+            <RotatableChevron
+              alt="arrow"
+              rotated={collapse.get(taskGroupIdentifier) ? false : true}
+              color="#8492A4"
+            />
           </GroupOpenContainer>
           <Spacing horizontal={1} />
           <GroupNameSectionWrapper>
@@ -326,9 +331,9 @@ const TasksGroup = ({
               </TasksGroupLabel>
             </GroupNameSection>
           </GroupNameSectionWrapper>
-          {!changingGroupOrderDisabled && (
+          {/* {!changingGroupOrderDisabled && (
             <ViewTypeSwitch value={viewType} onChange={changeViewType} />
-          )}
+          )} */}
         </TasksGroupHeader>
       </StickyContainer>
 

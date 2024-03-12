@@ -14,7 +14,7 @@ export const SectionTypography = styled(SectionSubtypography)`
 export const FormInfoText = styled.p`
   margin-bottom: 0;
   padding: 0 ${spacing.regularPlus};
-  font-family: 'Montserrat', sans-serif;
+  font-family: Outfit, sans-serif;
   font-size: ${fontSizes.regular};
   font-weight: ${fontWeights.regular};
 `;
@@ -45,7 +45,7 @@ export const UserAvatarSupplement = styled.div`
 
 export const SectionTitle = styled.p`
   margin-bottom: 4px;
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Outfit', sans-serif;
   font-weight: ${fontWeights.bold};
   width: 100%;
 `;

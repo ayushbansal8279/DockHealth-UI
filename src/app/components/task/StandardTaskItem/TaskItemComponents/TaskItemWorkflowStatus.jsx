@@ -78,7 +78,9 @@ const TaskItemWorkflowStatus = ({
                 )}
               </StatusWrapper>
             ) : (
-              <AddPlaceholder>+ Add Status</AddPlaceholder>
+              <Tooltip placement="top" title="Add Status">
+                <AddPlaceholder>+ Add Status</AddPlaceholder>
+              </Tooltip>
             )}
           </StatusSubContaioner>
         </TaskItemPopover>

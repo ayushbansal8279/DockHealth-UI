@@ -11,9 +11,13 @@ import React, {
 } from 'react';
 import pluck from 'ramda/src/pluck';
 import { useDispatch, useSelector } from 'react-redux';
+import moment from 'moment';
 import * as ListDetailsActions from 'actions/list-details-actions';
 import { isTaskSelectedSelector } from 'selectors/task-drawer-selectors';
-import { listCustomFieldsSelector } from 'selectors/list-details-selectors';
+import {
+  listCustomFieldsSelector,
+  searchTermSelector,
+} from 'selectors/list-details-selectors';
 import { isTaskItemSelectedSelector } from 'selectors/task-items-selectors';
 import { TASK_DISAPPEAR_DELAY } from 'helpers/task-update-helper';
 import { currentTaskListSelector } from 'selectors/task-list-selectors';
@@ -32,6 +36,7 @@ import {
 import TaskTemplateGroup from 'components/task-template/TaskTemplateGroup/TaskTemplateGroup';
 import Circle from 'img/circle.svg';
 import CircleCompleted from 'img/circle-completed.svg';
+import CircleCompletedHover from 'img/circle-completed-hover.svg';
 import ThreeDotsIcon from 'img/three-dots.svg';
 import {
   userProfileSelector,
@@ -81,6 +86,8 @@ import { taskLookupSelector } from 'selectors/task-details-selectors';
 import { closeModal, openModal } from 'modal/actions';
 import { updatePatientDetails } from 'actions/patient-details-actions';
 import { formatPhoneNumber } from 'helpers/utility-functions';
+import Tooltip from 'components/common/Tooltip/Tooltip';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import { getSubtaskStylingLink } from './helpers';
 import TaskItemContextMenu from '../TaskItemContextMenu/TaskItemContextMenu';
 import TaskItemBulkEdit from './TaskItemComponents/TaskItemBulkEdit';
@@ -112,12 +119,18 @@ import {
   DecisionCellContainer,
   ActionIconsContainer,
   PatientMRNAnchor,
-  TaskScrollVericleLine
+  TaskScrollVericleLine,
+  TootipCompletedBy,
+  TootipCompletedByDate,
+  TootipCompletedByName,
 } from '../styled';
 import TaskItemText from './customFieldsTaskItemComponents/TaskItemText/TaskItemText';
 import TaskItemDropdown from './customFieldsTaskItemComponents/TaskItemDropdown/TaskItemDropdown';
 import TaskItemDate from './customFieldsTaskItemComponents/TaskItemDate';
-import Tooltip from 'components/common/Tooltip/Tooltip';
+
+import TaskItemComments from './TaskItemComponents/TaskItemComments';
+import { StickyColumnContainer } from '../../tasklist/TasksHeader/styled';
+import { megaFilterSelector } from '@/app/selectors/mega-filter-selectors';
 
 const { DISABLED, READ_ONLY } = SINGLE_TASK_RESTRICTIONS_OPTIONS;
 
@@ -165,6 +178,7 @@ const TaskItem = React.memo(
     origin,
     viewSetup,
     isTaskTemplate,
+    isWorkflowSubtask,
     isLastChild,
   }) => {
     const task = useSelector((state) => {
@@ -247,6 +261,9 @@ const TaskItem = React.memo(
       matchWorkflowStatus,
     } = searchMetaData;
 
+    const searchValue = useSelector(searchTermSelector);
+    const megaFilter = useSelector(megaFilterSelector);
+    const { selectedFilters } = megaFilter || {};
     const currentUser = useSelector(userProfileSelector);
     let restrictions =
       SINGLE_TASK_RESTRICTIONS_PROFILES[currentUser?.orgUserRole];
@@ -736,20 +753,38 @@ const TaskItem = React.memo(
       [dispatch, task, taskCustomFields],
     );
 
+    const [showCircleIconOnHover, setShowCircleIconOnHover] = useState(false);
+    const [tooltipsOpen, setTooltipsOpen] = useState(false);
+
+    const handleTooltipClose = () => {
+      setTooltipsOpen(false);
+    };
+
+    const handleTooltipOpen = () => {
+      setTooltipsOpen(true);
+    };
+
     const randerFirstColumnCoverIfNecessary = useCallback(
       (content, order) => {
         if (order !== 0) return content;
         return (
           <StickyMainTaskItemCell
+            isWorkflowtask={isTaskTemplate}
             customWidthExists
             order={0}
-            isSubtask={showSubtaskStylingLink}
+            isSubtask={
+              origin === 'PATIENT' ? showSubtaskStylingLink : isSubtask
+            }
             newlyCreated={newlyCreated}
             backgroundColor={pageBackground}
             isSelected={isSelected}
             hasEscalations={hasEscalations}
             customHighlight={customHighlight}
             isEditingDescription={isEditingDescription}
+            isWorkflowSubtask={isWorkflowSubtask}
+            origin={origin}
+            searchValue={!!searchValue}
+            isFilterApply={!!selectedFilters}
           >
             {taskListRestrictions?.createTask !== DISABLED && (
               <DotsContainer
@@ -772,24 +807,68 @@ const TaskItem = React.memo(
               <Box ml="10px" />
               <Tooltip
                 placement="top"
-                title={isCompleted ? 'Mark incomplete'  : 'Complete task'}
+                title={isCompleted ? 'Mark incomplete' : 'Complete task'}
+                child={isCompleted}
+                childTitle={
+                  isCompleted ? (
+                    <>
+                      <TootipCompletedBy>Completed by</TootipCompletedBy>
+                      <TootipCompletedByName>
+                        {`${task?.completedBy?.firstName} ${task?.completedBy?.lastName}`}
+                      </TootipCompletedByName>
+                      <TootipCompletedByDate>
+                        {`${new Date(task.completedDt).toLocaleString('en-US', {
+                          weekday: 'long',
+                        })}, ${moment(task.completedDt).format(
+                          'MMM DD, YYYY',
+                        )} @${new Date(task.completedDt)
+                          .toLocaleTimeString('en-US', {
+                            hour: 'numeric',
+                            minute: '2-digit',
+                            hour12: true,
+                          })
+                          .toLowerCase()}`}
+                      </TootipCompletedByDate>
+                    </>
+                  ) : (
+                    ''
+                  )
+                }
+                childPlacement="bottom"
+                open={tooltipsOpen}
+                onClose={() => handleTooltipClose()}
               >
                 <CircleIcon
-                src={isCompleted ? CircleCompleted : Circle}
-                isClickable={
-                  !isTaskStatusTogglingDisabled &&
-                  isDependencyEmptyOrCompleted &&
-                  taskListRestrictions?.completeTask !== DISABLED
-                }
-                isCompleted={isCompleted}
-                onClick={
-                  // eslint-disable-next-line unicorn/no-negated-condition
-                  taskListRestrictions?.completeTask !== DISABLED
-                    ? onCircleClick
-                    : () => {}
-                }
-              />
+                  src={
+                    isCompleted
+                      ? CircleCompleted
+                      : showCircleIconOnHover
+                      ? CircleCompletedHover
+                      : Circle
+                  }
+                  onMouseEnter={() => {
+                    setShowCircleIconOnHover(true);
+                    handleTooltipOpen();
+                  }}
+                  onMouseLeave={() => {
+                    setShowCircleIconOnHover(false);
+                    handleTooltipClose();
+                  }}
+                  isClickable={
+                    !isTaskStatusTogglingDisabled &&
+                    isDependencyEmptyOrCompleted &&
+                    taskListRestrictions?.completeTask !== DISABLED
+                  }
+                  isCompleted={isCompleted}
+                  onClick={
+                    // eslint-disable-next-line unicorn/no-negated-condition
+                    taskListRestrictions?.completeTask !== DISABLED
+                      ? onCircleClick
+                      : () => {}
+                  }
+                />
               </Tooltip>
+              {/* </Tooltip> */}
             </ActionIconsContainer>
             {content}
             <TaskScrollVericleLine>&nbsp;</TaskScrollVericleLine>
@@ -806,7 +885,6 @@ const TaskItem = React.memo(
         isEditingDescription,
         taskListRestrictions?.createTask,
         taskListRestrictions?.completeTask,
-        showDraggableDots,
         dragHandleProps,
         showPriority,
         task?.priority,
@@ -857,6 +935,8 @@ const TaskItem = React.memo(
         <StandardTaskItemPanel
           onContextMenu={handleTaskItemRightClick}
           isDragging={isDragging}
+          isWorkflowtask={isTaskTemplate}
+          isWorkflowSubtask={isWorkflowSubtask}
         >
           <StandardTaskItemContainer
             isTaskTemplate={isTaskTemplate}
@@ -944,9 +1024,6 @@ const TaskItem = React.memo(
                       (showDecisionRow ? 200 : 0)
                     }
                   />
-                  <DetailsButton onClick={onClickTaskItem}>
-                    Details
-                  </DetailsButton>
                   {!isSubtask && (
                     <TaskItemSubtasks
                       isSubtask={isSubtask}
@@ -962,6 +1039,11 @@ const TaskItem = React.memo(
                       readOnly={restrictions?.subtasks === READ_ONLY}
                     />
                   )}
+                  <Tooltip placement="top" title="Details">
+                    <DetailsButton onClick={onClickTaskItem}>
+                      <ChevronRightIcon />
+                    </DetailsButton>
+                  </Tooltip>
                   {showDecisionRow && (
                     <DecisionCellContainer
                       onClick={(event) => event.stopPropagation()}
@@ -1299,12 +1381,10 @@ const TaskItem = React.memo(
                     }
                     order={getColumnOrder(TaskItemColumn.COMMENTS)}
                   >
-                    <TaskItemIcons
-                      restrictions={restrictions}
+                    <TaskItemComments
                       matchComments={matchComments}
                       comments={comments}
                       task={task}
-                      dispatch={dispatch}
                     />
                   </TaskItemCell>,
                   getColumnOrder(TaskItemColumn.COMMENTS),

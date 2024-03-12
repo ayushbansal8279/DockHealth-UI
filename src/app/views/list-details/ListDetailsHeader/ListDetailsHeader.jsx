@@ -1,4 +1,10 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, {
+  useCallback,
+  useMemo,
+  useState,
+  useContext,
+  useEffect,
+} from 'react';
 import { useBoolean } from 'hooks/useBoolean';
 import MegaFilter from 'components/tasklist/MegaFilter/MegaFilter';
 import LayoutHeader from 'components/template/LayoutHeader/LayoutHeader';
@@ -40,9 +46,15 @@ import {
 } from 'actions/mega-filter-actions';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import AddGroupNameButton from 'components/tasklist/AddGroupNameButton/AddGroupNameButton';
 import ListDetailsToolbar from '../ListDetailsToolbar/ListDetailsToolbar';
 import { determineTaskCounts } from './helpers';
-import { HeaderMembersContainer, MainHeaderContainer } from './styled';
+import {
+  HeaderMembersContainer,
+  MainHeaderContainer,
+  HeaderSearchContainer,
+} from './styled';
+import { ListPageContext } from '../ListDetailsView';
 
 const ListDetailsHeader = (props) => {
   const {
@@ -77,6 +89,8 @@ const ListDetailsHeader = (props) => {
         : [],
     [listUsers, userIdentifier],
   );
+  const { addNewGroup, handleAddNewGroup, showShadow } =
+    useContext(ListPageContext);
   const [isListOpen, openList] = useState(false);
   const [focused, setFocused, unsetFocused] = useBoolean(false);
   // const [scrollPosition, setScrollPosition] = useState(0);
@@ -172,14 +186,29 @@ const ListDetailsHeader = (props) => {
     [dispatch],
   );
 
-  const boxComponentStyles = {
-    mx: '4px',
-    '@media (max-width: 867px)': {
-      mx: searchValue || focused ? '0px' : '4px',
-    },
-  };
+  // const boxComponentStyles = {
+  //   mx: '4px',
+  //   '@media (max-width: 867px)': {
+  //     mx: searchValue || focused ? '0px' : '4px',
+  //   },
+  // };
+  const [maxWidth, setMaxWidth] = useState(window.innerWidth);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setMaxWidth(window.innerWidth);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
+  const showSearch = maxWidth <= 900 && (searchValue || focused);
+
   return (
-    <MainHeaderContainer>
+    <MainHeaderContainer showShadow={showShadow}>
       <LayoutHeader horizontalSticky>
         {taskList && (
           <LayoutHeader.Title
@@ -271,10 +300,10 @@ const ListDetailsHeader = (props) => {
         additionalOptions={additionalOptions}
         searchValue={searchValue}
         focused={focused}
-        boxComponentStyles={boxComponentStyles}
+        // boxComponentStyles={boxComponentStyles}
       >
         {/* <LayoutHeader.Spacer /> */}
-        <Box sx={boxComponentStyles} />
+        <Box mx={0.5} />
         <MegaFilter
           filters={filters}
           selectedFilters={selectedFilters}
@@ -294,20 +323,40 @@ const ListDetailsHeader = (props) => {
           onQuickFilterUpdate={handleQuickFilterUpdate}
           onQuickFilterDelete={handleQuickFilterDelete}
           isDefaultDateFilterApplied={isDefaultDateFilterApplied}
-          value={searchValue}
-          focused={focused}
         />
         {/* <LayoutHeader.Spacer /> */}
-        <Box sx={boxComponentStyles} />
-        <HeaderSearch
-          value={searchValue}
-          onChange={onSearchChange}
-          focused={focused}
-          setFocused={setFocused}
-          unsetFocused={unsetFocused}
+        <Box mx={0.5} />
+        <AddGroupNameButton
+          active={addNewGroup}
+          onClick={() => handleAddNewGroup(!addNewGroup)}
         />
-        <Box sx={boxComponentStyles} />
+        <Box mx={0.5} />
+        {!showSearch ? (
+          <HeaderSearch
+            value={searchValue}
+            onChange={onSearchChange}
+            focused={focused}
+            setFocused={setFocused}
+            unsetFocused={unsetFocused}
+          />
+        ) : (
+          <></>
+        )}
+        <Box mx={0.5} />
       </ListDetailsToolbar>
+      {showSearch ? (
+        <HeaderSearchContainer>
+          <HeaderSearch
+            value={searchValue}
+            onChange={onSearchChange}
+            focused={focused}
+            setFocused={setFocused}
+            unsetFocused={unsetFocused}
+          />
+        </HeaderSearchContainer>
+      ) : (
+        <></>
+      )}
     </MainHeaderContainer>
   );
 };

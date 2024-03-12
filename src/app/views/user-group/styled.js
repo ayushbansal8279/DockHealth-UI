@@ -32,7 +32,7 @@ export const HeaderMessageTitle = styled.h2`
   margin-bottom: ${spacing.small};
   font-size: ${fontSizes.regularPlus};
   font-weight: ${fontWeights.bold};
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Outfit', sans-serif;
 `;
 
 export const HeaderMessageDescription = styled.p`
@@ -40,7 +40,7 @@ export const HeaderMessageDescription = styled.p`
   margin-bottom: 0;
   font-size: ${fontSizes.smallPLus};
   font-weight: ${fontWeights.extraLight};
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Outfit', sans-serif;
 `;
 
 export const SearchInputWrapper = styled.div`

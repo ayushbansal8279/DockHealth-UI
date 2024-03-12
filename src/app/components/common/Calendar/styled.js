@@ -39,7 +39,7 @@ export const CalendarContainer = styled.div`
   }
   .fc-button-active {
     color: ${palette.white} !important;
-    background-color: ${palette.darkBlue} !important;
+    background-color: ${palette.newDarkBlue} !important;
     border-color: ${palette.darkBlue} !important;
   }
   .fc-button-active:focus {
@@ -47,7 +47,7 @@ export const CalendarContainer = styled.div`
   }
   .fc-today-button {
     color: ${palette.white} !important;
-    background-color: ${palette.darkBlue} !important;
+    background-color: ${palette.newDarkBlue} !important;
     border-color: ${palette.darkBlue} !important;
     &:disabled {
       opacity: 1 !important;
@@ -69,5 +69,13 @@ export const CalendarContainer = styled.div`
     > .fc-event-title-container
     > .fc-event-title {
     color: ${palette.darkBlue} !important;
+  }
+
+  .fc-col-header-cell-cushion {
+    color: ${palette.newDarkBlue};
+  }
+
+  .fc-daygrid-day-number {
+    color: ${palette.newDarkBlue};
   }
 `;

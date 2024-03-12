@@ -16,7 +16,7 @@ export const EmptyListHeader = styled.div`
   left: 106px;
   top: 162px;
 
-  font-family: Montserrat;
+  font-family: Outfit;
   font-size: ${fontSizes.large};
   line-height: 153%;
   text-align: left;
@@ -29,7 +29,7 @@ export const EmptyListContent = styled.div`
   left: 106px;
   top: 264px;
 
-  font-family: Montserrat;
+  font-family: Outfit;
   font-size: ${fontSizes.regular};
   line-height: 130%;
   text-align: left;

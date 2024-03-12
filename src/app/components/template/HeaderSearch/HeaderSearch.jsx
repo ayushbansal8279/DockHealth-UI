@@ -22,7 +22,7 @@ const HeaderSearch = (props) => {
 
   return (
     <SearchInputWrapper wide={value || focused}>
-      <SearchIcon sx={{ color: palette.zinc }} />
+      <SearchIcon sx={{ color: palette.coolGrey2 }} />
       <Box mx={0.3} />
       <SearchInput
         ref={inputReference}

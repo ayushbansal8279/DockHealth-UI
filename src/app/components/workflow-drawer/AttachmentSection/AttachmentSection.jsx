@@ -23,7 +23,7 @@ import { useBoolean } from 'hooks/useBoolean';
 import { addWorkflowAttachmentSuccess } from 'actions/workflow-actions';
 import AlertMessages from 'alert/AlertMessages';
 import { AttachmentFileInput } from './styled';
-import { RobotoTypography } from 'styles/theme';
+import { OutfitTypography } from 'styles/theme';
 import Spacing from 'components/common/Spacing';
 import palette from 'styles/palette';
 
@@ -164,7 +164,7 @@ const AttachmentSection = ({ disabled }) => {
 
   return (
     <DrawerSection title="Files">
-      <RobotoTypography condensed variant="h4" color={palette.lightGrey}>
+      <OutfitTypography condensed variant="h4" color={palette.lightGrey}>
         <Spacing vertical={1} />
         {isDragActive ? (
           <span>Drop the files here ...</span>
@@ -173,7 +173,7 @@ const AttachmentSection = ({ disabled }) => {
             Drag and drop files or documents here, or click + to select files
           </span>
         )}
-      </RobotoTypography>
+      </OutfitTypography>
       <Spacing vertical={3} />
       <div ref={attachmentReference} />
       <AttachmentPreview

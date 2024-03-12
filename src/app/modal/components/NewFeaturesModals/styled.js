@@ -12,7 +12,7 @@ export const ModalWrapper = styled.div`
   width: 600px;
   height: ${({ height }) => height || 700}px;
   padding: ${spacing.huge};
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Outfit', sans-serif;
   background-color: ${palette.white};
 `;
 

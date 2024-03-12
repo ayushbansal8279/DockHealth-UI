@@ -84,7 +84,6 @@ export const TasksGroupLabel = styled.p`
   margin-bottom: 0;
   font-size: ${fontSizes.regular};
   font-weight: ${fontWeights.regularPlus};
-  text-transform: uppercase;
 `;
 
 export const TasksGroupLabelName = styled.span`
@@ -96,7 +95,7 @@ export const TasksGroupLabelName = styled.span`
   white-space: nowrap;
   text-overflow: ellipsis;
   vertical-align: middle;
-  font-family: 'Outfit', sans-serif;  
+  font-family: Outfit, sans-serif;  
 `;
 
 export const TasksGroupLabelCounter = styled.span`
@@ -130,7 +129,7 @@ export const PaginationButton = styled.button`
 `;
 
 export const ShowMoreButton = styled.button`
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Outfit', sans-serif;
   cursor: pointer;
   color: ${palette.brightBlue};
   font-size: ${fontSizes.smallPlus};

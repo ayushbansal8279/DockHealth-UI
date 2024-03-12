@@ -239,7 +239,7 @@ const DashboardTasksGroup = ({
             <GroupOpenContainer onClick={onSwitchGroup}>
               <RotatableChevron
                 alt="arrow"
-                rotated={!groupIsOpen}
+                rotated={groupIsOpen}
                 color={iconColorActive}
               />
             </GroupOpenContainer>
@@ -247,9 +247,8 @@ const DashboardTasksGroup = ({
             <GroupNameSectionWrapper>
               <DashboardTasksGroupLabel>
                 <DashboardTasksGroupLabelName>
-                  {groupName}
+                  {groupName} ({metricValue})
                 </DashboardTasksGroupLabelName>
-                ({metricValue})
               </DashboardTasksGroupLabel>
             </GroupNameSectionWrapper>
           </DashboardTasksGroupHeader>
@@ -286,6 +285,7 @@ const DashboardTasksGroup = ({
               </StickyContainer>
             )}
             <TasksHeader
+              isDashboardTaskHeader={true}
               onOrderChange={handleOrderChange}
               pageBackground={palette.white}
               bulkEditEnabled

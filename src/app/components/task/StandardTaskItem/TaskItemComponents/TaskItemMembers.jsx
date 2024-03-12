@@ -35,6 +35,7 @@ const TaskItemMembers = ({
             task?.taskList?.listType === 'PUBLIC' ||
             task?.taskList?.listType === 'TEMPLATE'
           }
+          closeModel={closePopover}
           additionalMembers={additionalUsers}
         />
       )}
@@ -48,8 +49,10 @@ const TaskItemMembers = ({
           <MemberGroup members={assignedToUsers} size={28} />
         </>
       ) : (
-        <Tooltip placement="top" title="Assign to">
-          <div>{!readOnly && <AssignMemberIcon />}</div>
+        <Tooltip placement="top" title="Add assignee">
+          <div style={{ marginLeft: '10px' }}>
+            {!readOnly && <AssignMemberIcon />}
+          </div>
         </Tooltip>
       )}
     </TaskItemPopover>

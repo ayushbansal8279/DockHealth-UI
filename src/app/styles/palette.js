@@ -77,7 +77,7 @@ const palette = {
   lightBlue: '#5ccced',
   skeletonLoader: '#e5e9f2',
   selectedBlue: '#05ADEC',
-  newBrightBlue: '#4bb3fd',
+  crystalBlue: '#4bb3fd',
 
   // lighter ones - 90%
   dockBlueLight: '#e0eff9',

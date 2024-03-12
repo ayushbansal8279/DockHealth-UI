@@ -11,6 +11,10 @@
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "allowJs": true,
+    "types": [
+      "vite/client",
+      "node"
+    ],
     "baseUrl": "./",
     "paths": {
       "@/*": [

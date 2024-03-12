@@ -113,7 +113,7 @@ const ConfirmMFACodeForm = (props) => {
               <Spacing vertical={7} />
               <OutfitTypography variant="h4" align="center">
                 If you’ve lost your device or can’t use your app please contact
-                Support@dock.health
+                support@dock.health
               </OutfitTypography>
             </FormProvider>
           </form>

@@ -20,7 +20,6 @@ import {
   DefaultPatientListUrl,
   DefaultPatientsListType,
 } from 'helpers/patient-list-helpers';
-import { organizationSelector } from 'selectors/organization-selectors';
 import {
   userProfileSelector,
   selectedUserOrganizationSelector,
@@ -36,7 +35,6 @@ import SearchInput from 'components/common/SearchInput/SearchInput';
 import FilterPopover from 'components/filter/FilterPopover/FilterPopover';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import CustomizeToolbarButton from 'components/patients/CustomizeToolbarButton/CustomizeToolbarButton';
-import Button from 'components/common/Button/Button';
 import CreatePatientDrawer from '../CreatePatientDrawer/CreatePatientDrawer';
 import PatientsFilter from '../PatientsFilter/PatientsFilter';
 import {
@@ -74,8 +72,6 @@ const PatientsToolbar = () => {
   // const searchValue = useSelector(patientsListSearchTermSelector);
   const [searchValue, setSearchValue] = useState(null);
   const filtersActive = useSelector(filtersActiveSelector);
-  const { emrIntegrationEnabled, emrIntegrationType } =
-    useSelector(organizationSelector) || {};
   const listIdentifier = useSelector(currentPatientsListIdentifierSelector);
   const currentUser = useSelector(userProfileSelector);
   const currentOrganization = useSelector(selectedUserOrganizationSelector);
@@ -126,9 +122,19 @@ const PatientsToolbar = () => {
     [history],
   );
 
+  const { emrIntegrationEnabled, emrIntegrationType } =
+    currentOrganization || {};
+
   const emrEntegrationExperience =
     listIdentifier === DefaultPatientsListType.ALL_PATIENTS &&
     emrIntegrationEnabled;
+  const quickAddPatientEnabledItem =
+    currentOrganization?.themeSettings?.find(
+      ({ name }) => name === 'patient.add.enabled',
+    ) || {};
+  const patientAddEnabled =
+    !emrIntegrationEnabled ||
+    (emrIntegrationEnabled && quickAddPatientEnabledItem?.value === 'true');
 
   return (
     <>
@@ -143,11 +149,7 @@ const PatientsToolbar = () => {
               />
             </Box>
             <Box m={1} />
-            <ButtonWrapper>
-              <Button fullWidth onClick={handleSearch} size="small">
-                Search
-              </Button>
-            </ButtonWrapper>
+            <ButtonWrapper onClick={handleSearch}>Search</ButtonWrapper>
             <Box>
               <ToolbarSelect
                 options={OPTIONS}
@@ -175,19 +177,21 @@ const PatientsToolbar = () => {
               ref={filterButtonReference}
               active={filtersActive}
               onClick={toggleFilter}
+              isOpen={filterOpen}
               onClear={() => dispatch(PatientsActions.clearPatientsFilters())}
             />
           </Box>
           <Box display="flex" alignItems="center">
-          {listIdentifier &&
-            (listIdentifier === DefaultPatientsListType.ALL_PATIENTS ||
-              listIdentifier === DefaultPatientsListType.ACTIVE_PATIENTS) && (
-              <AddEntitiesContainer>
-                <AddButton onClick={setIsSidebarOpen}>
-                  Add a {customerTypeLabel}
-                </AddButton>
-              </AddEntitiesContainer>
-            )}
+            {patientAddEnabled &&
+              listIdentifier &&
+              (listIdentifier === DefaultPatientsListType.ALL_PATIENTS ||
+                listIdentifier === DefaultPatientsListType.ACTIVE_PATIENTS) && (
+                <AddEntitiesContainer>
+                  <AddButton onClick={setIsSidebarOpen}>
+                    Add a {customerTypeLabel}
+                  </AddButton>
+                </AddEntitiesContainer>
+              )}
           </Box>
         </Box>
       </Box>

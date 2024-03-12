@@ -77,7 +77,7 @@ export const ActivityAlertsPopoverLabel = styled.div`
   color: black;
   font-weight: ${fontWeights.regularPlus};
   text-transform: uppercase;
-  font-family: Montserrat;
+  font-family: Outfit;
 `;
 
 export const ActivityAlertsList = styled.div`
@@ -90,7 +90,7 @@ export const ActivityAlertsList = styled.div`
 export const ActivityAlertsClearAllLabel = styled.div`
   display: flex;
   align-items: center;
-  font-family: Montserrat;
+  font-family: Outfit;
   font-size: ${fontSizes.small};
   font-weight: ${fontWeights.regularPlus};
   cursor: pointer;
@@ -100,7 +100,7 @@ export const ActivityAlertsClearAllLabel = styled.div`
 export const CustomizeLabel = styled.div`
   display: flex;
   align-items: center;
-  font-family: Montserrat;
+  font-family: Outfit;
   font-size: ${fontSizes.small};
   font-weight: ${fontWeights.regularPlus};
   cursor: pointer;
@@ -115,7 +115,7 @@ export const ActivityAlertsHeader = styled.div`
 `;
 
 export const ActivityAlertsSwitchLabel = styled.label`
-  font-family: Montserrat;
+  font-family: Outfit;
   font-weight: ${fontWeights.regularPlus};
   font-size: ${fontSizes.regular};
   line-height: 20px;

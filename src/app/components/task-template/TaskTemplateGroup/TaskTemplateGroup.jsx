@@ -1,5 +1,11 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import React, { useState, useCallback, useEffect, useMemo } from 'react';
+import React, {
+  useState,
+  useCallback,
+  useEffect,
+  useMemo,
+  useContext,
+} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import usePrevious from 'hooks/use-previous';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
@@ -68,7 +74,7 @@ const TaskTemplateGroup = ({
   const { SHOW_WORKFLOW_DETAILS, SHOW_WORKFLOW_COMPLETED_TASKS } =
     viewSetup || {};
   // const { innerRef, draggableProps } = draggableProvided;
-  const [isOpen, setOpen] = useState(false);
+  const [isOpen, setOpen] = useState(true);
   const [draggedTaskIdentifier, setDraggedTaskIdentifier] = useState(null);
   const [showCompletedTasks, setShowCompletedTasks] = useState(true);
   const [showIncompleteTasks, setShowIncompleteTasks] = useState(

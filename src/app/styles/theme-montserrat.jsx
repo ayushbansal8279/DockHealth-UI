@@ -15,7 +15,7 @@ const themeMontserratFactory = ({ fontWeight }) =>
       },
     },
     typography: {
-      fontFamily: ['"Montserrat"', 'sans-serif'].join(','),
+      fontFamily: ['Outfit', 'sans-serif'].join(','),
       h1: {
         fontSize: '250%',
         fontWeight,

@@ -87,16 +87,17 @@ const LoginFormPassword = ({
             </OutfitTypography>
           </>
         ) : (
-          <OutfitTypography align="center" variant="h4">
-            New to Dock?{' '}
-            <a
-              style={{ fontWeight: `${fontWeights.regularPlus}`, color: `${palette.coolGrey10}` }}
-              href="/create-account"
-            >
-              {' '}
-              Sign up for free{' '}
-            </a>
-          </OutfitTypography>
+          <div />
+          // <OutfitTypography align="center" variant="h4">
+          //   New to Dock?{' '}
+          //   <a
+          //     style={{ fontWeight: `${fontWeights.regularPlus}`, color: `${palette.coolGrey10}` }}
+          //     href="/create-account"
+          //   >
+          //     {' '}
+          //     Sign up for free{' '}
+          //   </a>
+          // </OutfitTypography>
         )}
         <Spacing vertical={5} />
         <FormInput
@@ -149,7 +150,7 @@ const LoginFormPassword = ({
           Dock can save you 20 hours a month{' '}
           <a
             style={{ color: `${palette.coolGrey10}`, fontWeight: `${fontWeights.bold}`, paddingLeft: '5px' }}
-            href="https://help.dock.health/"
+            href="https://dock.health/"
             target="_blank"
             rel="noreferrer"
           >

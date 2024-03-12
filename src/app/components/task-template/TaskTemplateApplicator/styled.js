@@ -48,22 +48,43 @@ export const SelectOptionsContainer = styled.div`
 
 export const TaskTemplateApplicatorContainer = styled.div`
   display: flex;
-  width: 170px;
   padding: ${spacing.small} 0 7px ${spacing.regular};
-  background-color: white;
+  background-color: ${palette.newDarkBlue};
   border: 1px solid ${palette.coolGrey3};
-  margin-bottom: ${spacing.small};
   font-size: ${fontSizes.smallPlus};
-  color: ${palette.mediumGrey};
+  color: ${palette.white};
+  height: 40px;
+  border-radius: 5px;
+
+  :hover {
+    background-color: ${palette.purpleNavy};
+  }
 
   @media print {
     display: none;
   }
 `;
 
-export const TaskTemplateApplicatorLabel = styled.span`
+
+export const TaskTemplateApplicatorLabel = styled.div`
   white-space: nowrap;
   cursor: pointer;
+  font-size: ${fontSizes.regular}; 
+  font-family: 'Outfit', sans-serif;
+  color: ${palette.white};
+  font-weight: ${fontWeights.light};
+  display: inline-block;
+  margin-left: ${spacing.tiny};
+  margin-right: ${spacing.tiny};
+  text-transform: none;
+`;
+
+export const ChevronVerticleGap = styled.div`
+  background-color: ${palette.white};
+  height: 40px;
+  margin-top: -8px;
+  width: 2px;
+  content: &nbsp;;
 `;
 
 export const CreateTaskLinkText = styled.span`

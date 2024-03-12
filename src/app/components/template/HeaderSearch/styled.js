@@ -6,30 +6,38 @@ import ClearIcon from '@mui/icons-material/Clear';
 export const SearchInputWrapper = styled.div`
   display: flex;
   align-items: center;
-  padding: 0 8px;
-  flex-basis: ${({ wide }) => (wide ? 580 : 140)}px;
+  padding: 8px;
+  flex-basis: ${({ wide }) => (wide ? 580 : 106)}px;
   transition: flex-basis 0.25s ease-out;
-  border: 2px solid ${palette.zinc};
+  border: 1px solid ${palette.zinc};
   color: ${palette.coolGrey1};
-  height: 40px;
-  border-radius: 5px;
+  height: 32px;
+  border-radius: 4px;
   @media print {
     display: none;
+  }
+
+  @media (max-width: 900px) {
+    flex-basis: 100%;
   }
 `;
 
 export const SearchInput = styled.input`
   flex: 1;
-  padding: 6px 0;
+  // padding: 2px 0;
   color: ${palette.mediumGrey};
   outline: none;
   border: none;
-  font-size: ${fontSizes.regularPlus};
-  width: 0px;
+  font-family: Roboto;
+  font-weight: 400;
+  line-height: 18.75px;
+  font-size: ${fontSizes.regular};
+  width: 50px;
+  height: 19px;
   background: transperant;
 
   &::placeholder {
-    color: ${palette.zinc};
+    color: ${palette.coolGrey2};
     // text-transform: uppercase;
   }
 `;

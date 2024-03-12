@@ -18,6 +18,7 @@ export const FilterButtonWrapper = styled(Button)`
   & .MuiSvgIcon-root > path {
     fill: ${palette.white};
   }
+  height: 32px;
 `;
 
 export const FilterButtonLabel = styled(Typography)`
@@ -92,11 +93,6 @@ export const FilterRotatableChevronButtonLabel = styled(Typography)`
 export const BoxContainer = styled.div`
   display: flex;
   width: fit-content;
-  border-radius: 5px;
+  border-radius: 4px;
   overflow: hidden;
-  @media (max-width: 867px) {
-    display: ${({ wide }) => {
-      if (wide) return 'none';
-    }};
-  }
 `;

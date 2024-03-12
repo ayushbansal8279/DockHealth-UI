@@ -16,6 +16,7 @@ import {
   DisabledPatientLabel,
   PatientPrintAdditionalInfo,
 } from '../../styled';
+import Tooltip from '@/app/components/common/Tooltip/Tooltip';
 
 const TaskItemPatient = ({
   highlightedValue,
@@ -92,9 +93,14 @@ const TaskItemPatient = ({
             isSubtask={isSubtask}
             hasSubtasks={hasSubtasks}
           >
-            <AddPlaceholder>
-              + Add {customerTypeLabelCapitalized}
-            </AddPlaceholder>
+            <Tooltip
+              placement="top"
+              title={`Add ${customerTypeLabelCapitalized}`}
+            >
+              <AddPlaceholder>
+                + Add {customerTypeLabelCapitalized}
+              </AddPlaceholder>
+            </Tooltip>
           </PatientDropdown>
         )}
       {!readOnly &&

@@ -14,7 +14,7 @@ export const DayButton = styled.button`
   color: ${palette.coolGrey2};
   font-size: ${fontSizes.small};
   font-weight: ${fontWeights.bold};
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Outfit', sans-serif;
 
   &:not(:last-of-type) {
     border-right: none;
