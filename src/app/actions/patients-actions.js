@@ -7,6 +7,13 @@ export function initializePatientsListState(patientsListIdentifier) {
   };
 }
 
+export function initializeDynamicPatientsListState(patientsListIdentifier) {
+  return {
+    type: ActionTypes.INITIALIZE_DYNAMIC_PATIENTS_LIST_STATE,
+    patientsListIdentifier,
+  };
+}
+
 export function getCurrentPatientsListDetails() {
   return {
     type: ActionTypes.GET_CURRENT_PATIENTS_LIST_DETAILS,
@@ -55,6 +62,13 @@ export function changePatientsSearchTerm(searchTerm) {
 export function setPatientsSelectedFilters(selectedFilters) {
   return {
     type: ActionTypes.SET_PATIENTS_SELECTED_FILTERS,
+    selectedFilters,
+  };
+}
+
+export function setDynamicPatientsSelectedFilters(selectedFilters) {
+  return {
+    type: ActionTypes.SET_DYNAMIC_PATIENTS_SELECTED_FILTERS,
     selectedFilters,
   };
 }
@@ -149,4 +163,11 @@ export const updateListPreferences = (
 ) => ({
   type: ActionTypes.UPDATE_PATIENTS_LIST_PREFERENCES,
   payload: { setup, patientListIdentifier, currentUserIdentifier },
+});
+
+export const selectDynamicPatientListFilter = (
+  dynamicPatientListFilterIdentifier,
+) => ({
+  type: ActionTypes.SELECT_DYNAMIC_PATIENT_LIST_FILTER,
+  dynamicPatientListFilterIdentifier,
 });
