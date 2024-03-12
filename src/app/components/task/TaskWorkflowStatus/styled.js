@@ -24,7 +24,7 @@ export const StatusListWrapper = styled.div`
 export const StatusList = styled.div`
   display: grid;
   grid-auto-flow: column;
-  grid-template-rows: repeat(10, 32px);
+  grid-template-rows: repeat(10, 40px);
   grid-template-columns: repeat(
     ${({ elementsCount }) => {
       if (elementsCount < 11) {
