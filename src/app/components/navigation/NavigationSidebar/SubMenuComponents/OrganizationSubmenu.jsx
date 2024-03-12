@@ -8,7 +8,10 @@ import { userOrganizationsSelector } from 'selectors/user-selectors';
 import { logout } from 'api/user-auth-api';
 import { leaveOrganization, deleteOrganization } from 'api/organization-api';
 import { openNotifications } from 'actions/template-actions';
-import { getCurrentUserOrganizations } from 'actions/user-actions';
+import {
+  getCurrentUserOrganizations,
+  removeOrganizationFromOrganizations,
+} from 'actions/user-actions';
 import {
   openModal as openModalAction,
   closeModal as closeModalAction,
@@ -39,6 +42,7 @@ const OrganizationSubmenu = ({
   selectCurrentOrganization,
 }) => {
   const dispatch = useDispatch();
+
   const history = useHistory();
   const userOrganizations = useSelector(userOrganizationsSelector);
   const { orgUserRole } = currentUser;
@@ -116,21 +120,40 @@ const OrganizationSubmenu = ({
         confirm: () => {
           deleteOrganization(currentUser?.organizationIdentifier)
             .then(() => {
-              // todo
+              dispatch(
+                removeOrganizationFromOrganizations(
+                  currentUser?.organizationIdentifier,
+                ),
+              );
+              if (availableUserOrganizations?.length) {
+                selectCurrentOrganization(
+                  availableUserOrganizations[0].organizationIdentifier,
+                );
+              } else {
+                history.push('/onboarding/new-organization');
+              }
             })
             .catch(() => {
-              dispatch(closeModalAction());
               dispatch(
                 showGlobalAlertAction(
                   'Something went wrong!',
                   AlertTypes.ERROR,
                 ),
               );
+            })
+            .finally(() => {
+              dispatch(closeModalAction());
             });
         },
       }),
     );
-  }, [currentUser, dispatch]);
+  }, [
+    availableUserOrganizations,
+    currentUser?.organizationIdentifier,
+    dispatch,
+    history,
+    selectCurrentOrganization,
+  ]);
 
   const menuOptions = useMemo(
     () => [
@@ -189,7 +212,7 @@ const OrganizationSubmenu = ({
         <SubmenuDivider />
         <DrawerOrganizationsList>
           {availableUserOrganizations?.map((org) => (
-            <>
+            <React.Fragment key={org.organizationIdentifier}>
               <OrganizationIdentifier
                 isOpen
                 tileConfig={{
@@ -211,7 +234,7 @@ const OrganizationSubmenu = ({
                 <Spacing vertical={4} />
                 <Spacing vertical={2} />
               </SpacingContainer>
-            </>
+            </React.Fragment>
           ))}
           <RolloverPopover
             anchorEl={hoveredItemReference?.current}
