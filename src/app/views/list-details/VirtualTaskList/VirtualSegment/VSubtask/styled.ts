@@ -15,4 +15,5 @@ export const VSubtask = styled('div')`
       : '90.5px'};
   margin-bottom: -5px;
   margin-top: -1px;
+  background: ${({ bgColor }) => (bgColor ? 'rgba(218, 239, 255, 0.3)' : '')};
 `;

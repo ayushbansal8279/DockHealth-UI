@@ -15,10 +15,11 @@ import { megaFilterSelector } from '@/app/selectors/mega-filter-selectors';
 
 export interface Props extends Segment {
   task: any;
+  bgColor: boolean;
 }
 
 function VSubtask(
-  { metadata, register, task, ...record }: Props,
+  { metadata, register, task, bgColor, ...record }: Props,
   // eslint-disable-next-line unicorn/prevent-abbreviations
   ref: ForwardedRef<HTMLDivElement>,
 ) {
@@ -48,6 +49,7 @@ function VSubtask(
           isWorkflowSubtask={!!task}
           searchValue={!!searchValue}
           isFilterApply={!!selectedFilters}
+          bgColor={bgColor}
         >
           {!!searchValue ||
             !!selectedFilters ||
@@ -60,6 +62,7 @@ function VSubtask(
             isDragging={snapshot.isDragging}
             isWorkflowSubtask={!!task}
             origin={TaskOrigin.LIST}
+            pageBackground={bgColor ? '#eff6fb' : ''}
           />
         </Sc.VSubtask>
       )}

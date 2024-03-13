@@ -1,4 +1,4 @@
-import React, { ForwardedRef, forwardRef, useContext } from 'react';
+import React, { ForwardedRef, forwardRef, useContext, useRef } from 'react';
 import { Segment } from 'views/list-details/modules/Virtualized';
 import StandardTaskItem from 'components/task/StandardTaskItem/StandardTaskItem';
 import {
@@ -12,10 +12,20 @@ import { TaskOrigin } from '@/app/helpers/task-helpers';
 export interface Props extends Segment {
   isTaskTemplate: boolean;
   isLastChild: boolean;
+  bgColor: boolean;
+  isLastTaskOfGroup: boolean;
 }
 
 function VTask(
-  { metadata, register, isTaskTemplate, isLastChild, ...record }: Props,
+  {
+    metadata,
+    register,
+    isTaskTemplate,
+    isLastChild,
+    isLastTaskOfGroup,
+    bgColor,
+    ...record
+  }: Props,
   // eslint-disable-next-line unicorn/prevent-abbreviations, @typescript-eslint/no-unused-vars
   ref: ForwardedRef<HTMLDivElement>,
 ) {
@@ -33,6 +43,8 @@ function VTask(
           $workflow={record.task?.itemType === 'BUNDLE'}
           $template={isTaskTemplate && isLastChild}
           isTaskTemplate={isTaskTemplate}
+          bgColor={bgColor}
+          isLastTaskOfGroup={isLastTaskOfGroup}
         >
           <StandardTaskItem
             // @ts-ignore
@@ -43,6 +55,7 @@ function VTask(
             isTaskTemplate={isTaskTemplate}
             isLastChild={isLastChild || false}
             origin={TaskOrigin.LIST}
+            pageBackground={bgColor ? '#eff6fb' : ''}
           />
         </Sc.VTask>
       )}

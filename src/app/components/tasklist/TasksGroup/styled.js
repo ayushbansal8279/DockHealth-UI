@@ -54,10 +54,12 @@ export const TasksGroupContainer = styled.div`
   flex-direction: column;
   justify-content: center;
   padding-bottom: ${spacing.giga};
-  &:hover {
-    background-color: #daefff4d;
-  }
-  ${({ $width }) => ($width ? `width: ${$width + 66 + 22}px` : '')}
+  // &:hover {
+  //   background-color: #daefff4d;
+  // }
+  background: ${({ bgColor }) => (bgColor ? 'rgba(218, 239, 255, 0.3)' : '')};
+  // ${({ $width }) => ($width ? `width: ${$width + 66 + 72}px` : '')};
+  width: 100%;
 `;
 
 export const TasksGroupHeader = styled.div`
@@ -71,7 +73,7 @@ export const TasksGroupHeader = styled.div`
   .action-buttons {
     visibility: hidden;
   }
-
+  background: ${({ bgColor }) => (bgColor ? '#DAEFFF' : '')};
   &:hover {
     .action-buttons {
       visibility: visible;
@@ -95,7 +97,7 @@ export const TasksGroupLabelName = styled.span`
   white-space: nowrap;
   text-overflow: ellipsis;
   vertical-align: middle;
-  font-family: Outfit, sans-serif;  
+  font-family: Outfit, sans-serif;
 `;
 
 export const TasksGroupLabelCounter = styled.span`

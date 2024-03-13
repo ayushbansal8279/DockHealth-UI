@@ -18,10 +18,11 @@ import { taskDetailsSortSelector } from '../../../../../selectors/list-details-s
 
 export interface Props extends Segment {
   isTaskTemplate: boolean;
+  bgColor: boolean;
 }
 
 function VTaskHeader(
-  { metadata, register, isTaskTemplate, ...record }: Props,
+  { metadata, register, isTaskTemplate, bgColor, ...record }: Props,
   // eslint-disable-next-line unicorn/prevent-abbreviations
   ref: ForwardedRef<HTMLDivElement>,
 ) {
@@ -50,6 +51,7 @@ function VTaskHeader(
       {...register}
       $subitem={metadata.level > 1}
       $template={isTaskTemplate}
+      bgColor={bgColor}
     >
       {/* @ts-ignore */}
       <TasksHeader
@@ -60,6 +62,7 @@ function VTaskHeader(
         groupHasMultipleAssignees={groupHasMultipleAssignees}
         isGroupSelected={isGroupSelected}
         onGroupSelect={handleGroupSelect}
+        pageBackground={bgColor ? '#eff6fb' : ''}
       />
     </Sc.VTaskHeader>
   );

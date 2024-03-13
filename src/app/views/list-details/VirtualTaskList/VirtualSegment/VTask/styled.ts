@@ -16,6 +16,7 @@ export const VTask = styled('div')`
   `}
   border-left: 1px solid rgb(229, 233, 242);
   margin-top: -1px;
+  background: ${({ bgColor }) => (bgColor ? 'rgba(218, 239, 255, 0.3)' : '')};
   // ${({ $template }: any) => ($template ? 'margin-bottom: 1px' : '')};
 
   & > * > * > * > * {
