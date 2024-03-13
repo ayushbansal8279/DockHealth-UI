@@ -85,6 +85,7 @@ function VTask(
               isTaskTemplate={isTaskTemplate}
               isLastChild={isLastChild || false}
               origin={TaskOrigin.LIST}
+              isNestedTask
             />
           </Sc.VTask>
           {subtaskQuickAddOpen && subTasksCount === 0 && (
