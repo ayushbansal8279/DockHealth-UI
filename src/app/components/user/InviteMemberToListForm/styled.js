@@ -23,7 +23,7 @@ export const ListItem = styled.div`
   width: 100%;
   justify-content: flex-start;
   align-items: center;
-  padding: ${spacing.tiny} ${spacing.smallPlus};
+  padding: ${spacing.smallPlus};
 `;
 
 export const UserOrGroupListWrapper = styled.div`
@@ -65,18 +65,20 @@ export const ItemAvatarWrapper = styled.div`
 
 export const ItemFullName = styled.p`
   margin-bottom: 0;
-  margin-left: ${spacing.smallPlus};
+  margin-left: ${spacing.regularPlus};
   font-size: ${fontSizes.regular};
-  font-weight: ${fontWeights.regular};
-  font-size: ${fontSizes.regular};
-  font-weight: ${fontWeights.regular};
-  font-family: inherit;
+  font-weight: ${fontWeights.regularPlus};
+  font-size: ${fontSizes.smallPlus};
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  color: ${palette.coolGrey1};
+  font-family: "Outfit";
+  text-transform: capitalize;
 `;
 
 export const ItemStatusLabel = styled.p`
+  padding-top: 5px;
   margin-left: ${spacing.smallPlus};
   margin-bottom: 0;
   font-size: ${fontSizes.regular};
@@ -90,5 +92,20 @@ export const ExternalUserInviteFormWrapper = styled.div`
   left: ${({ externalInvitePosition }) => externalInvitePosition?.left || 0}px;
   background: ${palette.white};
   width: 100%;
+  top: -70px;
+  height: 440px;
   z-index: 2;
 `;
+
+export const OptionContainer = styled.div`
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  border-radius: 4px;
+  background: #F8F8F9;
+`;
+
+export const IconContainer = styled.img`
+  transform: rotate(90deg);
+  margin:5px;
+`
