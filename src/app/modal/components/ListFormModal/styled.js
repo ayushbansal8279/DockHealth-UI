@@ -3,6 +3,7 @@ import palette from 'styles/palette';
 import { fontSizes, fontWeights } from 'styles/font';
 import spacing from 'styles/spacing';
 import { ModalWrapper } from '../styled';
+import { Button } from '@mui/material';
 
 export const ListFormModalWrapper = styled(ModalWrapper)`
   display: flex;
@@ -27,7 +28,7 @@ export const Description = styled.p`
 export const Title = styled.h5`
   font-size: ${fontSizes.regularPlus};
   text-align: center;
-  font-weight: ${fontWeights.regular};
+  font-weight: ${fontWeights.regularPlus};
 `;
 
 export const StepCounter = styled.div`
