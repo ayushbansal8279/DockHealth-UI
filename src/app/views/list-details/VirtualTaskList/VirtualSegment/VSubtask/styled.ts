@@ -1,11 +1,12 @@
 import styled from '@mui/styled-engine';
+import palette from '@/app/styles/palette';
 
 export const VSubtask = styled('div')`
   position: relative;
   display: flex;
   font-size: 13px;
   line-height: 40px;
-  height: 35px;
+  height: 40px;
   border-left: 1px solid rgb(229, 233, 242);
   margin-left: ${({ isWorkflowSubtask, searchValue, isFilterApply }) =>
     isWorkflowSubtask
@@ -13,9 +14,9 @@ export const VSubtask = styled('div')`
       : searchValue || isFilterApply
       ? '54.5px'
       : '90.5px'};
+  margin-bottom: -5px;
+  margin-top: -1px;
   // margin-bottom: -5px;
-  // margin-top: -1px;
-  // margin-bottom: -5px;
-  margin-top: -0.8x;
-  background: ${({ bgColor }) => (bgColor ? '#eff6fb' : '')};
+  // margin-top: -0.8x;
+  background: ${({ bgColor }) => (bgColor ? palette.aliceBlue : '')};
 `;

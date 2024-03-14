@@ -15,6 +15,7 @@ import * as ListDetailsActions from 'actions/list-details-actions';
 import { isTaskItemsSelectedSelector } from '../../../../../selectors/task-items-selectors';
 import * as Sc from './styled';
 import { taskDetailsSortSelector } from '../../../../../selectors/list-details-selectors';
+import palette from '@/app/styles/palette';
 
 export interface Props extends Segment {
   isTaskTemplate: boolean;
@@ -62,7 +63,7 @@ function VTaskHeader(
         groupHasMultipleAssignees={groupHasMultipleAssignees}
         isGroupSelected={isGroupSelected}
         onGroupSelect={handleGroupSelect}
-        pageBackground={bgColor ? '#eff6fb' : ''}
+        pageBackground={bgColor ? palette.aliceBlue : ''}
       />
     </Sc.VTaskHeader>
   );

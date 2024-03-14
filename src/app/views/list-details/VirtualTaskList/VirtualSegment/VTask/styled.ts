@@ -1,3 +1,4 @@
+import palette from '@/app/styles/palette';
 import styled from '@mui/styled-engine';
 
 export const VTask = styled('div')`
@@ -16,7 +17,7 @@ export const VTask = styled('div')`
   `}
   border-left: 1px solid rgb(229, 233, 242);
   margin-top: -1px;
-  background: ${({ bgColor }) => (bgColor ? '#eff6fb' : '')};
+  background: ${({ bgColor }) => (bgColor ? palette.aliceBlue : '')};
   // ${({ $template }: any) => ($template ? 'margin-bottom: 1px' : '')};
 
   & > * > * > * > * {

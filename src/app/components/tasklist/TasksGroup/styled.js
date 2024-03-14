@@ -57,7 +57,7 @@ export const TasksGroupContainer = styled.div`
   // &:hover {
   //   background-color: #daefff4d;
   // }
-  background: ${({ bgColor }) => (bgColor ? '#eff6fb' : '')};
+  background: ${({ bgColor }) => (bgColor ? palette.aliceBlue : '')};
   // ${({ $width }) => ($width ? `width: ${$width + 66 + 72}px` : '')};
   width: 100%;
 `;

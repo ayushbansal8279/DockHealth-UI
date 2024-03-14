@@ -8,6 +8,7 @@ import {
 } from 'react-beautiful-dnd';
 import * as Sc from './styled';
 import { TaskOrigin } from '@/app/helpers/task-helpers';
+import palette from '@/app/styles/palette';
 
 export interface Props extends Segment {
   isTaskTemplate: boolean;
@@ -55,7 +56,7 @@ function VTask(
             isTaskTemplate={isTaskTemplate}
             isLastChild={isLastChild || false}
             origin={TaskOrigin.LIST}
-            pageBackground={bgColor ? '#eff6fb' : ''}
+            pageBackground={bgColor ? palette.aliceBlue : ''}
           />
         </Sc.VTask>
       )}

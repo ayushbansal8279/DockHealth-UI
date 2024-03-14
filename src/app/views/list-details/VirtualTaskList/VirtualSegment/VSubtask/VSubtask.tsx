@@ -12,6 +12,7 @@ import { TaskOrigin } from '@/app/helpers/task-helpers';
 import { searchTermSelector } from '@/app/selectors/list-details-selectors';
 import { useSelector } from 'react-redux';
 import { megaFilterSelector } from '@/app/selectors/mega-filter-selectors';
+import palette from '@/app/styles/palette';
 
 export interface Props extends Segment {
   task: any;
@@ -62,7 +63,7 @@ function VSubtask(
             isDragging={snapshot.isDragging}
             isWorkflowSubtask={!!task}
             origin={TaskOrigin.LIST}
-            pageBackground={bgColor ? '#eff6fb' : ''}
+            pageBackground={bgColor ? palette.aliceBlue : ''}
           />
         </Sc.VSubtask>
       )}

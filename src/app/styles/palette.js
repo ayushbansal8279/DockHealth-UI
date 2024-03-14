@@ -19,7 +19,7 @@ const palette = {
   cornFlowerBlue: '#778af1',
   zinc: '#afb8c4',
   whiteSmoke: '	#F8F8F9',
-
+  aliceBlue: '#eff6fb',
   // secondary
   purplePassion: '#553bbe',
   blueOcean: '#2bacfb',
