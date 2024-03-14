@@ -196,10 +196,6 @@ const Task = React.memo(
         subtaskQuickAddOpen,
       ],
     );
-    // console.log(
-    //   'parentTaskReference.current.offsetWidth',
-    //   parentTaskReference?.current?.offsetWidth,
-    // );
     const handleQuickAddOnFocus = () => {
       setTimeout(() => {
         parentTaskReference.current.scrollIntoView({

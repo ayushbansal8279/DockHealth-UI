@@ -7,5 +7,4 @@ export const VListGroup = styled('div')`
   line-height: 40px;
   height: 40px;
   margin-top: 32px;
-  // background: ${({ bgColor }) => (bgColor ? '#DAEFFF' : '')};
 `;

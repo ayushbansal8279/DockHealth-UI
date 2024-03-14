@@ -274,7 +274,6 @@ const TasksGroup = ({
   );
 
   const { columns } = useTaskListColumnsConfig();
-  // console.log('columns', columns);
   return (
     <TasksGroupContainer
       $width={

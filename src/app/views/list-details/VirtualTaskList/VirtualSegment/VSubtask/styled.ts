@@ -16,7 +16,5 @@ export const VSubtask = styled('div')`
       : '90.5px'};
   margin-bottom: -5px;
   margin-top: -1px;
-  // margin-bottom: -5px;
-  // margin-top: -0.8x;
   background: ${({ bgColor }) => (bgColor ? palette.aliceBlue : '')};
 `;
