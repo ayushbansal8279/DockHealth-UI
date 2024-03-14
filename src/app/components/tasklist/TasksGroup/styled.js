@@ -73,7 +73,6 @@ export const TasksGroupHeader = styled.div`
   .action-buttons {
     visibility: hidden;
   }
-  background: ${({ bgColor }) => (bgColor ? '#DAEFFF' : '')};
   &:hover {
     .action-buttons {
       visibility: visible;
