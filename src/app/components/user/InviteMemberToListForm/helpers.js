@@ -38,7 +38,7 @@ export const getMenuOptionsForMember = (
       if (taskListUserRole === 'ADMIN' || taskListUserRole === 'OWNER') {
         return [
           {
-            name: 'Editor',
+            name: 'Member',
             onClick: () => {
               changeUserRole(userIdentifier, 'MEMBER');
             },
