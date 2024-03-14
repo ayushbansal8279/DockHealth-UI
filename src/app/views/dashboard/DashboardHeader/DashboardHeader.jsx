@@ -195,9 +195,8 @@ const DashboardHeader = () => {
   );
 
   const handleQuickFilterCreate = useCallback(
-    (name) => {
-      dispatch(createQuickFilter(name, { contextType }, selectedFilters));
-    },
+    (name) =>
+      dispatch(createQuickFilter(name, { contextType }, selectedFilters)),
     [contextType, dispatch, selectedFilters],
   );
 
@@ -251,8 +250,6 @@ const DashboardHeader = () => {
         : group.defaultOpen,
     }));
   }, [groupList, groupsPreferences, updateGroupsPreferences]);
-
-  // const [quickFilters, setQuickFilters] = useState([]);
 
   return (
     <DashboardHeaderContainer>
@@ -347,33 +344,12 @@ const DashboardHeader = () => {
               <DashboardQuickFilterContainer>
                 {quickFiltersList.map((filter, index) => {
                   return (
-                    <DashboardQuickFilter
-                      key={filter.name}
-                      // active={
-                      //   selectedQuickFilter === filter.quickFilterIdentifier
-                      //   // quickFilters.some(
-                      //   // (object) => object === filter.name,
-                      //   // )
-                      // }
-                    >
+                    <DashboardQuickFilter key={filter.name}>
                       <DashboardQuickFilterLabel
                         active={
-                          // quickFilters.some(
-                          // (object) => object === filter.name,
-                          // )
                           selectedQuickFilter === filter.quickFilterIdentifier
                         }
                         onClick={() => {
-                          // if (
-                          //   !quickFilters.some(
-                          //     (object) => object === filter.name,
-                          //   )
-                          // ) {
-                          //   setQuickFilters((current) => [
-                          //     ...current,
-                          //     filter.name,
-                          //   ]);
-                          // }
                           handleSelectQuickFilter(
                             filter.quickFilterIdentifier,
                             filter.selectedOptions,
@@ -385,17 +361,9 @@ const DashboardHeader = () => {
                       {selectedQuickFilter === filter.quickFilterIdentifier ? (
                         <DashboardQuickFilterClear
                           active={
-                            //   quickFilters.some(
-                            //   (object) => object === filter.name,
-                            // )
                             selectedQuickFilter === filter.quickFilterIdentifier
                           }
                           onClick={() => {
-                            // event.preventDefault();
-                            // const deleteObj = quickFilters.filter((object) => {
-                            //   if (object !== filter.name) return object;
-                            // });
-                            // setQuickFilters(deleteObj);
                             handleSelectQuickFilter(null);
                           }}
                         >
