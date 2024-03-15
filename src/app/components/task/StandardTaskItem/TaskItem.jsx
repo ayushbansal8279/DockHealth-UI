@@ -17,6 +17,7 @@ import { isTaskSelectedSelector } from 'selectors/task-drawer-selectors';
 import {
   listCustomFieldsSelector,
   searchTermSelector,
+  taskDetailsSortSelector,
 } from 'selectors/list-details-selectors';
 import { isTaskItemSelectedSelector } from 'selectors/task-items-selectors';
 import { TASK_DISAPPEAR_DELAY } from 'helpers/task-update-helper';
@@ -314,6 +315,7 @@ const TaskItem = React.memo(
 
     const selectedOrganization = useSelector(selectedUserOrganizationSelector);
     const currentTasklist = useSelector(currentTaskListSelector);
+    const sort = useSelector(taskDetailsSortSelector);
     const emrPatientLink = selectedOrganization?.emrPatientLink;
 
     const customHighlightColor = useMemo(() => {
@@ -787,7 +789,12 @@ const TaskItem = React.memo(
             isWorkflowSubtask={isWorkflowSubtask}
             origin={origin}
             searchValue={!!searchValue}
-            isFilterApply={!!selectedFilters}
+            isFilterApply={
+              !!selectedFilters
+                ? Object.keys(selectedFilters).length > 0
+                : !!selectedFilters
+            }
+            isSortApplied={!!sort.key}
           >
             {taskListRestrictions?.createTask !== DISABLED && (
               <DotsContainer
@@ -967,7 +974,14 @@ const TaskItem = React.memo(
                         identifier === TaskItemColumn.DESCRIPTION,
                     )?.columnWidth -
                     (isSubtask &&
-                    !hasParentTaskLabel &&
+                    (origin === 'LIST' &&
+                    ((!!selectedFilters
+                      ? Object.keys(selectedFilters).length > 0
+                      : !!selectedFilters) ||
+                      !!searchValue ||
+                      !!sort.key)
+                      ? hasParentTaskLabel
+                      : !hasParentTaskLabel) &&
                     descriptionColumnOrder === 0
                       ? 36
                       : 0)
@@ -1040,6 +1054,7 @@ const TaskItem = React.memo(
                       openQuickAddSubtask={TaskActions.openQuickAddSubtask}
                       dispatch={dispatch}
                       readOnly={restrictions?.subtasks === READ_ONLY}
+                      origin={origin}
                     />
                   )}
                   <Tooltip placement="top" title="Details">

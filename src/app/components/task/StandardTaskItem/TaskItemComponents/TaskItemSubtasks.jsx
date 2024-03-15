@@ -21,6 +21,7 @@ const TaskItemSubtasks = ({
   taskIdentifier,
   openQuickAddSubtask,
   dispatch,
+  origin,
   // readOnly,
 }) => {
   const onClickAddSubtask = useCallback(
@@ -69,7 +70,7 @@ const TaskItemSubtasks = ({
         >
           <SubtasksCellContentButton
             isOpen={isOpen}
-            disabled={isNestedTask}
+            disabled={origin === 'LIST' ? !isNestedTask : isNestedTask}
             isGreyedOut={subtasksDisabled}
             onClick={onSubtaskLabelClick}
             subtasksDisabled={subtasksDisabled}

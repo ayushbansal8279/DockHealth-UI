@@ -26,6 +26,7 @@ const StickyMainTaskItemCell = styled.div`
     origin,
     searchValue,
     isFilterApply,
+    isSortApplied,
   }) =>
     origin === 'PATIENT'
       ? isSubtask || isWorkflowSubtask
@@ -33,7 +34,7 @@ const StickyMainTaskItemCell = styled.div`
         : '24px'
       : origin === 'LIST'
       ? isSubtask || isWorkflowSubtask
-        ? searchValue || isFilterApply
+        ? searchValue || isFilterApply || isSortApplied
           ? '54.5px'
           : '90.5px'
         : '54.5px'
