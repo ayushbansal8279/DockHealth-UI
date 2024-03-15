@@ -1,22 +1,19 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { StyledDashboardTab, NewTasksIndicator } from './styled';
+import { DashboardTabHighlight } from '../DashboardToolbar/styled';
 
-const DashboardTab = ({
-  label,
-  setHighlightPosition,
-  isSelected,
-  onClick,
-  showNewIndicator,
-}) => {
+const DashboardTab = ({ label, isSelected, onClick, showNewIndicator }) => {
   const labelReference = useRef(null);
+  const [highlightPosition, setHighlightPosition] = useState({
+    width: 0,
+    left: 0,
+  });
 
   useEffect(() => {
     if (isSelected) {
       setHighlightPosition({
         width: labelReference?.current?.offsetWidth,
-        left: label.includes('All')
-          ? labelReference?.current?.offsetLeft + 15
-          : labelReference?.current?.offsetLeft,
+        left: labelReference?.current?.offsetLeft,
       });
     }
   }, [
@@ -28,14 +25,17 @@ const DashboardTab = ({
   ]);
 
   return (
-    <StyledDashboardTab
-      ref={labelReference}
-      onClick={onClick}
-      isSelected={isSelected}
-    >
-      {showNewIndicator && <NewTasksIndicator />}
-      {label}
-    </StyledDashboardTab>
+    <>
+      <StyledDashboardTab
+        ref={labelReference}
+        onClick={onClick}
+        isSelected={isSelected}
+      >
+        {showNewIndicator && <NewTasksIndicator />}
+        {label}
+      </StyledDashboardTab>
+      <DashboardTabHighlight {...highlightPosition} />
+    </>
   );
 };
 

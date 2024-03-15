@@ -1,5 +1,11 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import React, { useRef, useState, useCallback, useEffect } from 'react';
+import React, {
+  useRef,
+  useState,
+  useCallback,
+  useEffect,
+  useContext,
+} from 'react';
 import { useBoolean } from 'hooks/useBoolean';
 // import palette from 'styles/palette';
 import Spacing from 'components/common/Spacing';
@@ -24,6 +30,7 @@ import {
   ChevronVerticleGap,
 } from './styled';
 import AddIcon from '@mui/icons-material/Add';
+import { ListPageContext } from '@/app/views/list-details/ListDetailsView';
 
 const { DISABLED } = TASK_LIST_RESTRICTIONS_OPTIONS;
 
@@ -31,6 +38,8 @@ const TaskTemplateApplicator = ({
   onTemplateSelect,
   bulkApply = false,
   iconColorActive,
+  isWorkflowSearch,
+  origin,
 }) => {
   const popoverReference = useRef(null);
   const [isPopoverOpen, openPopover, closePopover] = useBoolean(false);
@@ -38,6 +47,7 @@ const TaskTemplateApplicator = ({
   const [parentList, setParentList] = useState([]);
   const [taskTemplatesList, setTaskTemplatesList] = useState(null);
   const [taskTemplatesIsLoading, setTaskTemplatesIsLoading] = useState(null);
+  const { handleWorkflowPopoverOpen } = useContext(ListPageContext);
 
   const currentUser = useSelector(userProfileSelector);
   const taskListRestrictions =
@@ -62,7 +72,7 @@ const TaskTemplateApplicator = ({
   const getRootTemplatesList = useCallback(() => {
     setTaskTemplatesIsLoading(true);
     setParentList([]);
-    getTemplates(false)
+    getTemplates(true)
       .then((templatesList) => {
         setTaskTemplatesList(templatesList);
         setTaskTemplatesIsLoading(false);
@@ -73,6 +83,9 @@ const TaskTemplateApplicator = ({
   }, []);
 
   useEffect(() => {
+    if (origin === 'LIST') {
+      handleWorkflowPopoverOpen(!!isPopoverOpen);
+    }
     if (isPopoverOpen) {
       getRootTemplatesList();
     }
@@ -178,6 +191,7 @@ const TaskTemplateApplicator = ({
         getTemplatesList={getRootTemplatesList}
         parentList={parentList[parentList.length - 1]}
         onBack={handleBack}
+        isWorkflowSearch={isWorkflowSearch}
       />
     </>
   );

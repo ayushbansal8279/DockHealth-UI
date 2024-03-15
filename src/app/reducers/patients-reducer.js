@@ -1,7 +1,10 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import * as ActionTypes from 'actions/action-types';
 import sessionStorageHelper from 'helpers/session-storage-helper';
-import { getPatientsListFiltersStorageKey } from 'helpers/patient-list-helpers';
+import {
+  getPatientsListFiltersStorageKey,
+  getPatientsDynamicListFiltersStorageKey,
+} from 'helpers/patient-list-helpers';
 
 const initialState = {
   defaultPatientsLists: null,
@@ -10,6 +13,7 @@ const initialState = {
   currentPatientsListIdentifier: null,
   currentPatientsList: null,
   searchPerformed: false,
+  selectedDynamicPatientListFilter: null,
 };
 
 const PatientsReducer = (state = initialState, action) => {
@@ -17,6 +21,19 @@ const PatientsReducer = (state = initialState, action) => {
     case ActionTypes.INITIALIZE_PATIENTS_LIST_STATE: {
       const selectedFilters = sessionStorageHelper.getItem(
         getPatientsListFiltersStorageKey(action.patientsListIdentifier),
+      );
+      return {
+        ...state,
+        currentPatientsListIdentifier: action.patientsListIdentifier,
+        currentPatientsList: {
+          selectedFilters,
+        },
+      };
+    }
+
+    case ActionTypes.INITIALIZE_DYNAMIC_PATIENTS_LIST_STATE: {
+      const selectedFilters = sessionStorageHelper.getItem(
+        getPatientsDynamicListFiltersStorageKey(action.patientsListIdentifier),
       );
       return {
         ...state,
@@ -182,6 +199,33 @@ const PatientsReducer = (state = initialState, action) => {
       };
     }
 
+    case ActionTypes.SET_DYNAMIC_PATIENTS_SELECTED_FILTERS: {
+      const { selectedFilters } = action;
+      if (selectedFilters) {
+        sessionStorageHelper.setItem(
+          getPatientsDynamicListFiltersStorageKey(
+            state.currentPatientsListIdentifier,
+          ),
+          selectedFilters,
+        );
+      } else {
+        sessionStorageHelper.removeItem(
+          getPatientsDynamicListFiltersStorageKey(
+            state.currentPatientsListIdentifier,
+          ),
+        );
+      }
+
+      return {
+        ...state,
+        currentPatientsList: {
+          ...state.currentPatientsList,
+          searchTerm: '',
+          selectedFilters,
+        },
+      };
+    }
+
     case ActionTypes.CLEAR_PATIENTS_FILTERS: {
       sessionStorageHelper.removeItem(
         getPatientsListFiltersStorageKey(state.currentPatientsListIdentifier),
@@ -319,6 +363,14 @@ const PatientsReducer = (state = initialState, action) => {
               !patientIdentifiers.includes(patientIdentifier),
           ),
         },
+      };
+    }
+
+    case ActionTypes.SELECT_DYNAMIC_PATIENT_LIST_FILTER: {
+      return {
+        ...state,
+        selectedDynamicPatientListFilter:
+          action.dynamicPatientListFilterIdentifier,
       };
     }
 

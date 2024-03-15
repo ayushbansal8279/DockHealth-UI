@@ -1,7 +1,5 @@
 /* eslint-disable react/jsx-no-duplicate-props */
 import React, { useCallback } from 'react';
-import palette from 'styles/palette';
-import SmallSwitchChevron from 'img/list-switch-chevron';
 import { useDispatch } from 'react-redux';
 import { updateWorkflowStatus } from 'actions/task-actions';
 import * as AlertActions from 'alert/actions';
@@ -11,14 +9,13 @@ import TaskDrawerPopover from 'components/task-drawer/TaskDrawerPopover/TaskDraw
 import Input from 'components/common/Input/Input';
 import AlertMessages from 'alert/AlertMessages';
 import {
-  StatusFlag,
   StatusFieldContainer,
-  StatusFlagContainer,
   StatusContainer,
   Title,
-
+  StatusWrapper,
 } from './styled';
-import { EndAdornmentContainer, AdornmentClear } from '../styled';
+import { IconButton, InputAdornment } from '@mui/material';
+import AssignMemberIcon from '../../user/AssignMemberIcon/AssingMemberIcon';
 
 const StatusSection = ({ selectedTask, onTaskUpdate, disabled = false }) => {
   const dispatch = useDispatch();
@@ -61,48 +58,63 @@ const StatusSection = ({ selectedTask, onTaskUpdate, disabled = false }) => {
   return (
     <StatusContainer>
       <Title>Status</Title>
-    <TaskDrawerPopover
-      disabled={disabled}
-      content={({ closePopover, resetPosition }) => (
-        <TaskWorkflowStatus
-          selectedStatusIdentifier={workflowStatus?.identifier}
-          updateWorkflowStatus={handleUpdateWorkflowStatus}
-          onClose={closePopover}
-          onWidthChange={resetPosition}
-        />
-      )}
-    >
-      <StatusFieldContainer>
-        <StatusFlagContainer>
-          <StatusFlag color={workflowStatus?.color} />
-        </StatusFlagContainer>
-        <Input
-          variant='standard'
-          size='small'
-          // label="Status"
-          name="workflowStatus"
-          placeholder="Is there a status?"
-          disabled={disabled}
-          InputLabelProps={{
-            shrink: true,
-          }}
-          InputProps={{
-            endAdornment: workflowStatus ? (
-              <AdornmentClear onClick={handleClear} />
-            ) : (
-              <EndAdornmentContainer>
-                <SmallSwitchChevron color={palette.orangeJulius} />
-              </EndAdornmentContainer>
-            ),
-          }}
-          inputProps={{
-            tabIndex: -1,
-            readOnly: true,
-            value: workflowStatus?.name || '',
-          }}
-        />
-      </StatusFieldContainer>
-    </TaskDrawerPopover></StatusContainer>
+      <TaskDrawerPopover
+        width={245}
+        disabled={disabled}
+        content={({ closePopover, resetPosition }) => (
+          <TaskWorkflowStatus
+            selectedStatusIdentifier={workflowStatus?.identifier}
+            updateWorkflowStatus={handleUpdateWorkflowStatus}
+            onClose={closePopover}
+            onWidthChange={resetPosition}
+          />
+        )}
+      >
+        <StatusFieldContainer>
+          {workflowStatus ? (
+            <StatusWrapper color={workflowStatus?.color}>
+              {workflowStatus?.name}
+            </StatusWrapper>
+          ) : (
+            <Input
+              variant="outlined"
+              size="small"
+              sx={{
+                '& .MuiOutlinedInput-root': {
+                  '& fieldset': {
+                    borderColor: 'white',
+                  },
+                },
+                width: '200px',
+                marginLeft: '5px',
+              }}
+              name="workflowStatus"
+              placeholder="Add Status"
+              disabled={disabled}
+              InputLabelProps={{
+                shrink: true,
+              }}
+              InputProps={{
+                startAdornment: !workflowStatus ? (
+                  <InputAdornment position="start">
+                    <IconButton aria-label="status">
+                      <AssignMemberIcon />
+                    </IconButton>
+                  </InputAdornment>
+                ) : (
+                  ''
+                ),
+              }}
+              inputProps={{
+                tabIndex: -1,
+                readOnly: true,
+                value: workflowStatus?.name || '',
+              }}
+            />
+          )}
+        </StatusFieldContainer>
+      </TaskDrawerPopover>
+    </StatusContainer>
   );
 };
 

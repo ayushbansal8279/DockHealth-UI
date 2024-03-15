@@ -18,7 +18,8 @@ const palette = {
   purpleNavy: '#3a4c6a',
   cornFlowerBlue: '#778af1',
   zinc: '#afb8c4',
-  whiteSmoke: '	#F8F8F9',
+  whiteSmoke: '#F8F8F9',
+  lightGrayishBlue: '#D4D9DF',
 
   // secondary
   purplePassion: '#553bbe',
@@ -78,6 +79,7 @@ const palette = {
   skeletonLoader: '#e5e9f2',
   selectedBlue: '#05ADEC',
   crystalBlue: '#4bb3fd',
+  iron: '#D4D9DF',
 
   // lighter ones - 90%
   dockBlueLight: '#e0eff9',

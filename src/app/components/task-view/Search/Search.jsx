@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React, { useCallback, useRef } from 'react';
 import SearchClearIcon from 'img/search-clear.svg';
 import SearchHeadsupIcon from 'img/search-headsup.svg';
+import workflowSearchHeadsupIcon from 'img/workflowSearch-headsup.svg';
 
 import { StyledTextField, StyledAdornment, ClearButton } from './styled';
 
@@ -16,6 +17,7 @@ const Search = ({
   noBackground,
   value,
   placeholder,
+  isWorkFlowSearch,
   ...otherInputProps
 }) => {
   const searchReference = useRef(null);
@@ -49,11 +51,17 @@ const Search = ({
       classes={className}
       fullWidth={fullWidth}
       variant={variant}
+      isWorkFlowSearch={isWorkFlowSearch}
       transparentbackground={!value && noBackground ? 'true' : 'false'}
       InputProps={{
         startAdornment: (
           <StyledAdornment position="start" disablePointerEvents>
-            <img src={SearchHeadsupIcon} alt="Search icon" />
+            <img
+              src={
+                isWorkFlowSearch ? workflowSearchHeadsupIcon : SearchHeadsupIcon
+              }
+              alt="Search icon"
+            />
           </StyledAdornment>
         ),
         endAdornment: (

@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import palette, { opacify } from 'styles/palette';
 import { fontWeights } from 'styles/font';
-import { Grid } from '@mui/material';
+import { Grid, Typography } from '@mui/material';
 import spacing from 'styles/spacing';
 
 export const ToolbarContainer = styled(Grid)`
@@ -30,6 +30,42 @@ export const ActionsContainer = styled.div`
 export const DashboardTabsContainer = styled.div`
   height: 100%;
   display: flex;
+`;
+
+export const DashboardTabsNumericalBadgeContainer = styled.div`
+  width: 20px;
+  height: 20px;
+  border-radius: 13px;
+  border: 1px solid
+    ${({ isActive }) => (isActive ? palette.crystalBlue : palette.iron)};
+  color: ${({ isActive }) =>
+    isActive ? palette.crystalBlue : palette.coolGrey1};
+  background: ${({ isActive }) =>
+    isActive ? palette.whiteSmoke : palette.lightGrey2};
+  // padding: 4px 7px 4px 7px;
+  gap: 7px;
+  margin-left: 6px;
+`;
+
+export const DashboardTabsNumericalBadge = styled(Typography)`
+  color: ${({ isActive }) =>
+    isActive ? palette.crystalBlue : palette.coolGrey1};
+  font-family: Outfit;
+  font-weight: 500;
+  font-size: 11px;
+  line-height: 11.19px;
+  &.MuiTypography-root {
+    text-align: center;
+  }
+  margin-top: 4px;
+`;
+
+export const DashboardTabsLabel = styled(Typography)`
+  color: ${({ isActive }) => (isActive ? palette.offBlack : palette.coolGrey1)};
+  font-family: Outfit;
+  font-weight: ${({ isActive }) => (isActive ? '600' : '400')};
+  font-size: 18px;
+  line-height: 22.68px;
 `;
 
 export const DashboardQuickFilterContainer = styled.div`

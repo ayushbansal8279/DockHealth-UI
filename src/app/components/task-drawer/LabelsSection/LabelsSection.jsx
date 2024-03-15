@@ -198,6 +198,7 @@ const LabelsSection = ({ selectedTask, onTaskUpdate }) => {
     () =>
       selectedLabels.map((option) => (
         <Chip
+          variant='outlined'
           key={option.labelIdentifier}
           onDelete={() => {
             setSelectedLabels((state) =>

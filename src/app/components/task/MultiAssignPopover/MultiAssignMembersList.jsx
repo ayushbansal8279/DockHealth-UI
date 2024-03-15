@@ -55,7 +55,11 @@ const MultiAssignMembersList = ({
   closeModel,
   enableLazyLoading: enabled,
   additionalMembers,
-  width
+  width,
+  value,
+  closePopup,
+  setValue,
+  taskDrawer,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const { emrIntegrationEnabled } = useSelector(organizationSelector);
@@ -72,6 +76,10 @@ const MultiAssignMembersList = ({
       ({ name }) => name === 'member.assignall.enabled',
     ) || {};
   const memberAssignAllEnabled = memberAssignAllEnabledItem?.value !== 'false';
+
+  useEffect(() => {
+    if (taskDrawer) setSearchValue(value);
+  }, [value]);
 
   const filteredMembers = useMemo(
     () =>
@@ -225,6 +233,10 @@ const MultiAssignMembersList = ({
   );
 
   const handleOptionSendClick = () => {
+    if (taskDrawer) {
+      closePopup(false);
+      setValue('');
+    }
     selectMembersWithDebounce(selectedMembers);
     closeModel();
   };
@@ -288,15 +300,19 @@ const MultiAssignMembersList = ({
   }, [currentUserMember, enableLazyLoading, isValueSendable, searchValue]);
 
   return (
-    <div style={{width: `${width}`}}>
-      <InputBox>
-        <img src={MagnifierIcon} alt="magnifier" />
-        <Input
-          ref={inputReference}
-          placeholder="Search"
-          onChange={(event) => setSearchValue(event.target.value)}
-        />
-      </InputBox>
+    <div style={{ width: `${width}` }}>
+      {taskDrawer ? (
+        ''
+      ) : (
+        <InputBox>
+          <img src={MagnifierIcon} alt="magnifier" />
+          <Input
+            ref={inputReference}
+            placeholder="Search"
+            onChange={(event) => setSearchValue(event.target.value)}
+          />
+        </InputBox>
+      )}
       <ListContainer>
         {(displayAssignAllOption || displayUnassignedOption) && (
           <ListContentSection>
