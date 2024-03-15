@@ -1,5 +1,5 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
 import { ascend, compose, propOr, sortWith, toLower } from 'ramda';
@@ -89,6 +89,58 @@ const PatientsList = ({
 
   const patientsList = useSelector(patientsListSelector);
 
+  const { columns: columnsData, setCurrentPatientList } =
+    usePatientListColumnsConfig();
+
+  const columnsDataSorted = useMemo(
+    () =>
+      sortWith(
+        [
+          ascend(propOr(0, 'sortIndex')),
+          ascend(compose(toLower, propOr('', 'name'))),
+        ],
+        columnsData,
+      ),
+    [columnsData],
+  );
+
+  const formattedPatients = useMemo(
+    () =>
+      patients?.map((patient) => {
+        const metaData = patient.patientMetaData?.map((pmd) => {
+          return {
+            key: pmd.customFieldIdentifier,
+            value:
+              pmd.displayName ||
+              pmd.value ||
+              pmd.displayNames?.sort().toString(),
+          };
+        });
+        const patientDetails = {
+          id: patient?.patientIdentifier || patient?.id || patient?.mrn,
+          ...patient,
+        };
+        metaData?.forEach((element) => {
+          patientDetails[element.key] = element.value;
+        });
+        return patientDetails;
+      }),
+    [patients],
+  );
+
+  useEffect(() => {
+    return () => {
+      dispatch({
+        type: ActionTypes.UNSELECT_ALL_PATIENTS,
+      });
+    };
+  }, [dispatch]);
+
+  useEffect(() => {
+    setCurrentPatientList(patientsList?.listDetails);
+    setDataGridSortModel(null);
+  }, [setCurrentPatientList, patientsList]);
+
   const setSelectedPatient = useCallback(
     (data) => {
       dispatch({
@@ -100,6 +152,7 @@ const PatientsList = ({
     [dispatch],
   );
 
+  // when the checkbox header is clicked
   const handleListSelect = useCallback(() => {
     dispatch({
       type: isListChecked
@@ -108,292 +161,8 @@ const PatientsList = ({
     });
   }, [dispatch, isListChecked]);
 
-  useEffect(() => {
-    return () => {
-      dispatch({
-        type: ActionTypes.UNSELECT_ALL_PATIENTS,
-      });
-    };
-  }, [dispatch]);
-
-  const { columns: columnsData, setCurrentPatientList } =
-    usePatientListColumnsConfig();
-
-  const columnsDataSorted = sortWith(
-    [
-      ascend(propOr(0, 'sortIndex')),
-      ascend(compose(toLower, propOr('', 'name'))),
-    ],
-    columnsData,
-  );
-
-  useEffect(() => {
-    setCurrentPatientList(patientsList?.listDetails);
-    setDataGridSortModel(undefined);
-  }, [setCurrentPatientList, patientsList]);
-
-  const columns = [
-    {
-      field: 'isSelected',
-      headerName: '',
-      sortable: false,
-      renderHeader: () =>
-        renderCheckboxColumnHeader({
-          isListChecked,
-          onListSelect: handleListSelect,
-        }),
-      renderCell: ({ row }) => (
-        <span>
-          <TaskItemBulkEdit
-            isChecked={row?.isSelected}
-            onClick={() => setSelectedPatient(row)}
-          />
-        </span>
-      ),
-      width: 40,
-    },
-    {
-      field: 'patient',
-      headerName: customerTypeLabel.toUpperCase(),
-      renderHeader: renderColumnHeader,
-      renderCell: ({ row }) => (
-        <PatientCell
-          onClick={async () => {
-            const { fromEMR, patientIdentifier } = row;
-            if (fromEMR) {
-              const patient = await lookupEMRPatient(patientIdentifier);
-
-              history.push({
-                pathname: `/core/patient/${patient.patientIdentifier}`,
-                state: {
-                  from: pathname,
-                },
-              });
-            } else {
-              history.push({
-                pathname: `/core/patient/${patientIdentifier}`,
-                state: {
-                  from: pathname,
-                },
-              });
-            }
-          }}
-          className="patient-cell"
-        >
-          <Tooltip placement="top" title={`${row.lastName}, ${row.firstName}`}>
-            <Text width="180">
-              {row.lastName}, {row.firstName}
-            </Text>
-          </Tooltip>
-        </PatientCell>
-      ),
-      // flex: 1,
-      width: 200,
-      valueGetter: (parameters) => {
-        return `${parameters.row.lastName || ''}, ${
-          parameters.row.firstName || ''
-        }`;
-      },
-    },
-    {
-      field: 'mrn',
-      headerName: uniqueIdentifierLabel.toUpperCase(),
-      renderHeader: renderColumnHeader,
-      // flex: 0.5,
-      width: 100,
-      renderCell: ({ row }) => (
-        <Tooltip placement="top" title={row.mrn}>
-          <Text width="80">{row.mrn}</Text>
-        </Tooltip>
-      ),
-    },
-    {
-      field: 'dob',
-      headerName: 'DOB',
-      renderHeader: renderColumnHeader,
-      // flex: 0.5,
-      width: 100,
-      type: 'date',
-      valueGetter: (parameters) => {
-        return parameters.value
-          ? new Date(`${parameters.value}T00:00:00`)
-          : null;
-      },
-    },
-    {
-      field: 'age',
-      headerName: 'AGE',
-      renderHeader: renderColumnHeader,
-      // flex: 0.5,
-      width: 70,
-      sortComparator: (v1, v2, parameters1, parameters2) => {
-        const { api } = parameters2;
-        const sortModel = api.getSortModel();
-        const dob1 = parameters1.api.getCellValue(parameters1.id, 'dob');
-        const dob2 = parameters2.api.getCellValue(parameters2.id, 'dob');
-
-        if (dob1 === dob2) {
-          return 0;
-        }
-
-        if (sortModel[0]?.sort === 'asc' && sortModel[0]?.field === 'age') {
-          // !IMPORTANT it is descending - MaterialUI has problem with passing correctly current order
-          if (dob1 === null || dob1 === '') {
-            return -1;
-          }
-
-          if (dob2 === null || dob2 === '') {
-            return 1;
-          }
-
-          return dob2 < dob1 ? -1 : 1;
-        }
-
-        // !IMPORTANT it is ascending - MaterialUI has problem with passing correctly current order
-        if (dob1 === null || dob1 === '') {
-          return 1;
-        }
-
-        if (dob2 === null || dob2 === '') {
-          return -1;
-        }
-
-        return dob1 < dob2 ? 1 : -1;
-      },
-    },
-    {
-      field: 'gender',
-      headerName: 'SEX',
-      renderHeader: renderColumnHeader,
-      // flex: 0.5,
-      width: 80,
-    },
-    {
-      field: 'genderIdentity',
-      headerName: 'GENDER',
-      renderHeader: renderColumnHeader,
-      // flex: 0.5,
-      width: 100,
-    },
-    {
-      field: 'email',
-      headerName: 'EMAIL',
-      renderHeader: renderColumnHeader,
-      // flex: 0.5,
-      width: 140,
-      renderCell: ({ row }) => (
-        <Tooltip placement="top" title={row.email}>
-          <Text width="120">{row.email}</Text>
-        </Tooltip>
-      ),
-      align: 'left',
-    },
-    {
-      field: 'phoneMobile',
-      headerName: 'MOBILE',
-      renderHeader: renderColumnHeader,
-      // flex: 0.5,
-      renderCell: ({ row }) => (
-        <Tooltip placement="top" title={formatPhoneNumber(row.phoneMobile)}>
-          <Text width="120">{formatPhoneNumber(row.phoneMobile)}</Text>
-        </Tooltip>
-      ),
-      width: 140,
-    },
-    {
-      field: 'phoneHome',
-      headerName: 'HOME',
-      renderHeader: renderColumnHeader,
-      renderCell: ({ row }) => (
-        <Tooltip placement="top" title={formatPhoneNumber(row.phoneHome)}>
-          <Text width="120">{formatPhoneNumber(row.phoneHome)}</Text>
-        </Tooltip>
-      ),
-      // flex: 0.5,
-      width: 140,
-    },
-  ]
-    .filter((column) => {
-      return (
-        columnsDataSorted.find(
-          (data) =>
-            PatientColumn[data.identifier] === column.field ||
-            column.field === 'isSelected',
-        )?.isChecked ?? false
-      );
-    })
-    .concat(
-      columnsDataSorted
-        .filter((column) => column.targetType === 'PATIENT' && column.isChecked)
-        .map((column) => ({
-          field: column.identifier,
-          headerName: column.name,
-          renderHeader: renderColumnHeader,
-          // flex: 0.5,
-          width: 140,
-          renderCell: ({ row }) => (
-            <Tooltip placement="top" title={row[column.identifier]}>
-              <Text width="120">{row[column.identifier]}</Text>
-            </Tooltip>
-          ),
-          sortComparator: (v1, v2, parameters1, parameters2) => {
-            const { api } = parameters2;
-            const sortModel = api.getSortModel();
-            const compareValue1 = v1 || '';
-            const compareValue2 = v2 || '';
-            // eslint-disable-next-line sonarjs/no-collapsible-if
-            if (column.fieldType === 'DATE') {
-              if (compareValue1 !== '' && compareValue2 !== '') {
-                const parameter1Date = moment(compareValue1);
-                const parameter2Date = moment(compareValue2);
-                if (sortModel[0]?.sort === 'desc') {
-                  if (parameter1Date.isAfter(parameter2Date)) {
-                    return 1;
-                  }
-                  if (parameter1Date.isBefore(parameter2Date)) {
-                    return -1;
-                  }
-                  return 0;
-                }
-                if (parameter1Date.isBefore(parameter2Date)) {
-                  return -1;
-                }
-                if (parameter1Date.isAfter(parameter2Date)) {
-                  return 1;
-                }
-                return 0;
-              }
-            }
-            return compareValue1.localeCompare(compareValue2);
-          },
-        })),
-    );
-
-  useEffect(() => {
-    const defaultSortField = localStorage.getItem('PATIENT_LIST_SORT_COLUMN');
-    const defaultSortOrder = localStorage.getItem('PATIENT_LIST_SORT_ORDER');
-
-    const defaultSortAvailable = columns.find(
-      column => column?.field === defaultSortField,
-    );
-
-    // set the model once on load
-    if (!dataGridSortModel) {
-      setDataGridSortModel(
-        defaultSortAvailable
-          ? [
-              {
-                field: defaultSortField,
-                sort: defaultSortOrder,
-              },
-            ]
-          : undefined,
-      );
-    }
-  }, [columns, dataGridSortModel]);
-
   const handleSortChange = useCallback(
-    sortModel => {
+    (sortModel) => {
       if (
         !dataGridSortModel ||
         sortModel.length === 0 ||
@@ -414,24 +183,275 @@ const PatientsList = ({
     [dataGridSortModel],
   );
 
-  const formattedPatients = patients?.map(patient => {
-    const metaData = patient.patientMetaData?.map(pmd => {
-      return {
-        key: pmd.customFieldIdentifier,
-        value:
-          pmd.displayName || pmd.value || pmd.displayNames?.sort().toString(),
-      };
-    });
-    const patientDetails = {
-      id: patient?.patientIdentifier || patient?.id || patient?.mrn,
-      ...patient,
-    };
-    // eslint-disable-next-line no-unused-expressions
-    metaData?.forEach((element) => {
-      patientDetails[element.key] = element.value;
-    });
-    return patientDetails;
-  });
+  const columns = useMemo(
+    () =>
+      [
+        {
+          field: 'isSelected',
+          headerName: '',
+          sortable: false,
+          renderHeader: () =>
+            renderCheckboxColumnHeader({
+              isListChecked,
+              onListSelect: handleListSelect,
+            }),
+          renderCell: ({ row }) => (
+            <span>
+              <TaskItemBulkEdit
+                isChecked={row?.isSelected}
+                onClick={() => setSelectedPatient(row)}
+              />
+            </span>
+          ),
+          width: 40,
+        },
+        {
+          field: 'patient',
+          headerName: customerTypeLabel.toUpperCase(),
+          renderHeader: renderColumnHeader,
+          renderCell: ({ row }) => (
+            <PatientCell
+              onClick={async () => {
+                const { fromEMR, patientIdentifier } = row;
+                if (fromEMR) {
+                  const patient = await lookupEMRPatient(patientIdentifier);
+
+                  history.push({
+                    pathname: `/core/patient/${patient.patientIdentifier}`,
+                    state: {
+                      from: pathname,
+                    },
+                  });
+                } else {
+                  history.push({
+                    pathname: `/core/patient/${patientIdentifier}`,
+                    state: {
+                      from: pathname,
+                    },
+                  });
+                }
+              }}
+              className="patient-cell"
+            >
+              <Tooltip
+                placement="top"
+                title={`${row.lastName}, ${row.firstName}`}
+              >
+                <Text width="180">
+                  {row.lastName}, {row.firstName}
+                </Text>
+              </Tooltip>
+            </PatientCell>
+          ),
+          width: 200,
+          valueGetter: (parameters) => {
+            return `${parameters.row.lastName || ''}, ${
+              parameters.row.firstName || ''
+            }`;
+          },
+        },
+        {
+          field: 'mrn',
+          headerName: uniqueIdentifierLabel.toUpperCase(),
+          renderHeader: renderColumnHeader,
+          width: 100,
+          renderCell: ({ row }) => (
+            <Tooltip placement="top" title={row.mrn}>
+              <Text width="80">{row.mrn}</Text>
+            </Tooltip>
+          ),
+        },
+        {
+          field: 'dob',
+          headerName: 'DOB',
+          renderHeader: renderColumnHeader,
+          width: 100,
+          type: 'date',
+          valueGetter: (parameters) => {
+            return parameters.value
+              ? new Date(`${parameters.value}T00:00:00`)
+              : null;
+          },
+        },
+        {
+          field: 'age',
+          headerName: 'AGE',
+          renderHeader: renderColumnHeader,
+          width: 70,
+          sortComparator: (v1, v2, parameters1, parameters2) => {
+            const { api } = parameters2;
+            const sortModel = api.getSortModel();
+            const dob1 = parameters1.api.getCellValue(parameters1.id, 'dob');
+            const dob2 = parameters2.api.getCellValue(parameters2.id, 'dob');
+
+            if (dob1 === dob2) {
+              return 0;
+            }
+
+            if (sortModel[0]?.sort === 'asc' && sortModel[0]?.field === 'age') {
+              // !IMPORTANT it is descending - MaterialUI has problem with passing correctly current order
+              if (dob1 === null || dob1 === '') {
+                return -1;
+              }
+
+              if (dob2 === null || dob2 === '') {
+                return 1;
+              }
+
+              return dob2 < dob1 ? -1 : 1;
+            }
+
+            // !IMPORTANT it is ascending - MaterialUI has problem with passing correctly current order
+            if (dob1 === null || dob1 === '') {
+              return 1;
+            }
+
+            if (dob2 === null || dob2 === '') {
+              return -1;
+            }
+
+            return dob1 < dob2 ? 1 : -1;
+          },
+        },
+        {
+          field: 'gender',
+          headerName: 'SEX',
+          renderHeader: renderColumnHeader,
+          width: 80,
+        },
+        {
+          field: 'genderIdentity',
+          headerName: 'GENDER',
+          renderHeader: renderColumnHeader,
+          width: 100,
+        },
+        {
+          field: 'email',
+          headerName: 'EMAIL',
+          renderHeader: renderColumnHeader,
+          width: 140,
+          renderCell: ({ row }) => (
+            <Tooltip placement="top" title={row.email}>
+              <Text width="120">{row.email}</Text>
+            </Tooltip>
+          ),
+          align: 'left',
+        },
+        {
+          field: 'phoneMobile',
+          headerName: 'MOBILE',
+          renderHeader: renderColumnHeader,
+          renderCell: ({ row }) => (
+            <Tooltip placement="top" title={formatPhoneNumber(row.phoneMobile)}>
+              <Text width="120">{formatPhoneNumber(row.phoneMobile)}</Text>
+            </Tooltip>
+          ),
+          width: 140,
+        },
+        {
+          field: 'phoneHome',
+          headerName: 'HOME',
+          renderHeader: renderColumnHeader,
+          renderCell: ({ row }) => (
+            <Tooltip placement="top" title={formatPhoneNumber(row.phoneHome)}>
+              <Text width="120">{formatPhoneNumber(row.phoneHome)}</Text>
+            </Tooltip>
+          ),
+          width: 140,
+        },
+      ]
+        .filter((column) => {
+          return (
+            columnsDataSorted.find(
+              (data) =>
+                PatientColumn[data.identifier] === column.field ||
+                column.field === 'isSelected',
+            )?.isChecked ?? false
+          );
+        })
+        .concat(
+          columnsDataSorted
+            .filter(
+              (column) => column.targetType === 'PATIENT' && column.isChecked,
+            )
+            .map((column) => ({
+              field: column.identifier,
+              headerName: column.name,
+              renderHeader: renderColumnHeader,
+              width: 140,
+              renderCell: ({ row }) => (
+                <Tooltip placement="top" title={row[column.identifier]}>
+                  <Text width="120">{row[column.identifier]}</Text>
+                </Tooltip>
+              ),
+              sortComparator: (v1, v2, parameters1, parameters2) => {
+                const { api } = parameters2;
+                const sortModel = api.getSortModel();
+                const compareValue1 = v1 || '';
+                const compareValue2 = v2 || '';
+                // eslint-disable-next-line sonarjs/no-collapsible-if
+                if (
+                  column.fieldType === 'DATE' &&
+                  compareValue1 !== '' &&
+                  compareValue2 !== ''
+                ) {
+                  const parameter1Date = moment(compareValue1);
+                  const parameter2Date = moment(compareValue2);
+                  if (sortModel[0]?.sort === 'desc') {
+                    if (parameter1Date.isAfter(parameter2Date)) {
+                      return 1;
+                    }
+                    if (parameter1Date.isBefore(parameter2Date)) {
+                      return -1;
+                    }
+                    return 0;
+                  }
+                  if (parameter1Date.isBefore(parameter2Date)) {
+                    return -1;
+                  }
+                  if (parameter1Date.isAfter(parameter2Date)) {
+                    return 1;
+                  }
+                  return 0;
+                }
+                return compareValue1.localeCompare(compareValue2);
+              },
+            })),
+        ),
+    [
+      columnsDataSorted,
+      customerTypeLabel,
+      handleListSelect,
+      history,
+      isListChecked,
+      pathname,
+      setSelectedPatient,
+      uniqueIdentifierLabel,
+    ],
+  );
+
+  useEffect(() => {
+    const defaultSortField = localStorage.getItem('PATIENT_LIST_SORT_COLUMN');
+    const defaultSortOrder = localStorage.getItem('PATIENT_LIST_SORT_ORDER');
+
+    const defaultSortAvailable = columns.find(
+      (column) => column?.field === defaultSortField,
+    );
+
+    // set the model once on load
+    if (!dataGridSortModel) {
+      setDataGridSortModel(
+        defaultSortAvailable
+          ? [
+              {
+                field: defaultSortField,
+                sort: defaultSortOrder,
+              },
+            ]
+          : undefined,
+      );
+    }
+  }, [columns, dataGridSortModel]);
 
   return (
     <>
@@ -459,8 +479,9 @@ const PatientsList = ({
                     onSortModelChange={handleSortChange}
                     sortModel={
                       dataGridSortModel &&
-                      columns.find(
-                        column => column?.field === dataGridSortModel[0]?.field,
+                      columns.some(
+                        (column) =>
+                          column?.field === dataGridSortModel[0]?.field,
                       )
                         ? dataGridSortModel
                         : undefined

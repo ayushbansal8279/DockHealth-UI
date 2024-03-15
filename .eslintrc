@@ -112,6 +112,7 @@
     "react/jsx-no-useless-fragment": "off",
     "react/no-unstable-nested-components": "off",
     "sonarjs/prefer-immediate-return": "off",
-    "sonarjs/no-duplicate-string": "off"
+    "sonarjs/no-duplicate-string": "off",
+    "unicorn/no-array-for-each": "off"
   }
 }

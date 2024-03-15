@@ -53,8 +53,6 @@ import {
   quickContextTypes,
 } from 'actions/mega-filter-actions';
 import { quickFiltersSelector } from 'selectors/mega-filter-selectors';
-import FilterPopover from 'components/filter/FilterPopover/FilterPopover';
-import PatientsFilter from 'components/patients/PatientsFilter/PatientsFilter';
 import PatientsList from './PatientsList/PatientsList';
 import PatientsToolbar from './PatientsToolbar/PatientsToolbar';
 import BulkEditCreateTask from './BulkEditSection/BulkEditOptionsBar/BulkEditCreateTask';

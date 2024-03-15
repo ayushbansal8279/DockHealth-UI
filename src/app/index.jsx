@@ -20,6 +20,7 @@ import ErrorBoundary from './ErrorBoundary';
 // import flags, { FlagsProvider } from './helpers/flags';
 import Routes from './routing/routes';
 import App from './views/App';
+import './register/register-mui-license-premium';
 
 if (import.meta.env.NODE_ENV === 'development') {
   const whyDidYouRender = require('@welldone-software/why-did-you-render');
