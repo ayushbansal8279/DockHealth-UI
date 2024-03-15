@@ -64,6 +64,7 @@ import {
   TaskStatus,
   findIncompleteRequiredFields,
   PatientTaskItemColumn,
+  TaskOrigin,
 } from 'helpers/task-helpers';
 import { isMemberAdmin } from 'helpers/list-members-helper';
 import { checkIfUserIsOrganizationAdmin } from 'helpers/user-helper';
@@ -484,15 +485,17 @@ const TaskItem = React.memo(
     const onSubtaskLabelClick = useCallback(
       (event) => {
         event.stopPropagation();
-        if (subtasksDisabled) {
-          highlightTasksOfTheSameParent(
-            task?.parentTaskIdentifier || task?.taskIdentifier,
-          );
-        } else if (isOpen) {
-          // eslint-disable-next-line sonarjs/no-gratuitous-expressions
-          switchOpen(!isOpen);
-        } else {
-          switchOpen(true);
+        if (origin !== TaskOrigin.DASHBOARD) {
+          if (subtasksDisabled) {
+            highlightTasksOfTheSameParent(
+              task?.parentTaskIdentifier || task?.taskIdentifier,
+            );
+          } else if (isOpen) {
+            // eslint-disable-next-line sonarjs/no-gratuitous-expressions
+            switchOpen(!isOpen);
+          } else {
+            switchOpen(true);
+          }
         }
       },
       [
@@ -773,7 +776,7 @@ const TaskItem = React.memo(
             customWidthExists
             order={0}
             isSubtask={
-              origin === 'PATIENT' ? showSubtaskStylingLink : isSubtask
+              origin === TaskOrigin.PATIENT ? showSubtaskStylingLink : isSubtask
             }
             newlyCreated={newlyCreated}
             backgroundColor={pageBackground}
