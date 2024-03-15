@@ -25,9 +25,9 @@ const CreateApiKeyHeader: FC<CreateApiKeyHeaderProps> = ({
         onClick={handleCreateApiKey}
         variant="outlined"
         startIcon={<AddIcon />}
-        disabled={createApiKey.isPending}
+        disabled={createApiKey.isLoading}
       >
-        {createApiKey.isPending ? 'Creating...' : 'Create API Key'}
+        {createApiKey.isLoading ? 'Creating...' : 'Create API Key'}
       </Button>
     </>
   );

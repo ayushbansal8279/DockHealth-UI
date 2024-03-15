@@ -9,7 +9,3 @@ export interface TCreateApiKeyMutationParams {
   organizationIdentifier: string;
   sendEmail?: boolean;
 }
-
-export interface TApiKeyQueryParams {
-  organizationIdentifier: string;
-}

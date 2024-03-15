@@ -14,18 +14,14 @@ const DisplayApiKeyHeader: FC<DisplayApiKeyHeaderProps> = ({
 }) => {
   const updateApiKey = useUpdateApiKey();
   const deleteApiKey = useDeleteApiKey();
-  const isPending = updateApiKey.isPending || deleteApiKey.isPending;
+  const isLoading = updateApiKey.isLoading || deleteApiKey.isLoading;
 
   const handleUpdate = () => {
-    updateApiKey.mutate({
-      organizationIdentifier,
-    });
+    updateApiKey.mutate(organizationIdentifier);
   };
 
   const handleDelete = () => {
-    deleteApiKey.mutate({
-      organizationIdentifier,
-    });
+    deleteApiKey.mutate(organizationIdentifier);
   };
 
   return (
@@ -35,18 +31,18 @@ const DisplayApiKeyHeader: FC<DisplayApiKeyHeaderProps> = ({
         color="warning"
         startIcon={<EditIcon />}
         onClick={handleUpdate}
-        disabled={isPending}
+        disabled={isLoading}
       >
-        {updateApiKey.isPending ? 'Regnerating...' : 'Regenerate'}
+        {updateApiKey.isLoading ? 'Regnerating...' : 'Regenerate'}
       </Button>
       <Button
         variant="outlined"
         color="error"
         startIcon={<DeleteIcon />}
         onClick={handleDelete}
-        disabled={isPending}
+        disabled={isLoading}
       >
-        {deleteApiKey.isPending ? 'Revoking...' : 'Revoke'}
+        {deleteApiKey.isLoading ? 'Revoking...' : 'Revoke'}
       </Button>
     </>
   );

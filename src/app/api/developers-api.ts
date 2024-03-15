@@ -1,9 +1,5 @@
 import axios from './axios-heydoc';
-import {
-  TApiKey,
-  TApiKeyQueryParams,
-  TCreateApiKeyMutationParams,
-} from 'types/developer';
+import { TApiKey, TCreateApiKeyMutationParams } from 'types/developer';
 
 export function createApiKey({
   organizationIdentifier,
@@ -21,27 +17,27 @@ export function createApiKey({
     });
 }
 
-export function getApiKey({ organizationIdentifier }: TApiKeyQueryParams) {
+export function getApiKey(orgId: string) {
   return axios
-    .get<TApiKey>(`developers/${organizationIdentifier}`)
+    .get<TApiKey>(`developers/${orgId}`)
     .then(({ data }) => data)
     .catch((error) => {
       throw new Error(error?.response?.data?.errorMessage);
     });
 }
 
-export function updateApiKey({ organizationIdentifier }: TApiKeyQueryParams) {
+export function updateApiKey(orgId: string) {
   return axios
-    .put<TApiKey>(`developers/${organizationIdentifier}`)
+    .put<TApiKey>(`developers/${orgId}`)
     .then(({ data }) => data)
     .catch((error) => {
       throw new Error(error?.response?.data?.errorMessage);
     });
 }
 
-export function deleteApiKey({ organizationIdentifier }: TApiKeyQueryParams) {
+export function deleteApiKey(orgId: string) {
   return axios
-    .delete(`developers/${organizationIdentifier}`)
+    .delete(`developers/${orgId}`)
     .then(({ data }) => data)
     .catch((error) => {
       throw new Error(error?.response?.data?.errorMessage);

@@ -25,15 +25,15 @@ const ApiKeySection = () => {
   const organization = useSelector(organizationSelector) as TOrganization;
   const organizationIdentifier = organization?.organizationIdentifier;
 
-  const apiKeyQuery = { isLoading: false, data: null };
-  // const apiKeyQuery = useApiKeyQuery({
-  //   params: { organizationIdentifier },
-  //   options: {
-  //     enabled: !!organizationIdentifier, // make sure that the get request will be sent if organizationIdentifier is available
-  //   },
-  // });
+  // const apiKeyQuery = { isLoading: false, data: tempData };
+  const apiKeyQuery = useApiKeyQuery({
+    orgId: organizationIdentifier,
+    options: {
+      enabled: !!organizationIdentifier, // make sure that the get request will be sent if organizationIdentifier is available
+    },
+  });
 
-  const getOptionToRender = (isLoading: boolean, data: TApiKey | null) => {
+  const getOptionToRender = (isLoading: boolean, data: TApiKey | undefined) => {
     if (isLoading)
       return {
         header: null,
@@ -51,9 +51,10 @@ const ApiKeySection = () => {
         content: <EmptyContent />,
       };
     return {
-      header: (
-        <DisplayApiKeyHeader organizationIdentifier={organizationIdentifier} />
-      ),
+      header: null,
+      // header: (
+      //   <DisplayApiKeyHeader organizationIdentifier={organizationIdentifier} />
+      // ),
       content: <DisplayApiKey data={data} />,
     };
   };

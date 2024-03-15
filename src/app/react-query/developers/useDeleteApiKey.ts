@@ -1,26 +1,28 @@
-import {
-  UseMutationOptions,
-  useMutation,
-  useQueryClient,
-} from '@tanstack/react-query';
-import { TApiKeyQueryParams } from 'types/developer';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { deleteApiKey } from '@/app/api/developers-api';
+import { ApiError, UseExtendedMutationOptions } from '../types';
+import { apiKeyQueryKey } from './useApiKeyQuery';
 
-interface DeleteApiKeyConfig {
-  options?: UseMutationOptions<null, Error, TApiKeyQueryParams>;
+type Options = UseExtendedMutationOptions<unknown, ApiError, string>;
+
+interface Config {
+  options?: Options;
 }
 
-export const useDeleteApiKey = ({ options = {} }: DeleteApiKeyConfig = {}) => {
+export const useDeleteApiKey = ({ options = {} }: Config = {}) => {
   const queryClient = useQueryClient();
 
-  return useMutation<null, Error, TApiKeyQueryParams>({
-    mutationFn: (params: TApiKeyQueryParams) => deleteApiKey(params),
-    onSuccess: (_, params) => {
-      queryClient.setQueryData(
-        ['developer_api_key', params.organizationIdentifier],
-        null,
-      );
+  const mutationFn = (orgId: string) => deleteApiKey(orgId);
+
+  const defaultOptions: Options = {
+    onSuccess: (_, orgId) => {
+      queryClient.setQueryData(apiKeyQueryKey(orgId), null);
     },
+  };
+
+  return useMutation<unknown, ApiError, string>({
+    mutationFn,
+    ...defaultOptions,
     ...options,
   });
 };

@@ -1,18 +1,21 @@
-import { UseQueryOptions, useQuery } from '@tanstack/react-query';
-import { TApiKey, TApiKeyQueryParams } from 'types/developer';
+import { TApiKey } from 'types/developer';
 import { getApiKey } from '@/app/api/developers-api';
+import { ApiError, UseExtendedQueryOptions } from '../types';
+import { useExtendedQuery } from '../useExtendedQuery';
 
-interface ApiKeyQueryConfig {
-  options?: Omit<UseQueryOptions<TApiKey, Error>, 'queryKey'>;
-  params: TApiKeyQueryParams;
+export const apiKeyQueryKey = (orgId: string) => ['developer_api_key', orgId];
+
+interface Config {
+  orgId: string;
+  options?: UseExtendedQueryOptions<TApiKey>;
 }
 
-export const useApiKeyQuery = ({ options = {}, params }: ApiKeyQueryConfig) => {
-  const queryKey = ['developer_api_key', params.organizationIdentifier];
-  const queryFn = () => getApiKey(params);
-  return useQuery<TApiKey, Error>({
-    queryKey,
-    queryFn: queryFn,
+export const useApiKeyQuery = ({ orgId, options = {} }: Config) => {
+  const queryFn = () => getApiKey(orgId);
+
+  return useExtendedQuery<TApiKey, ApiError>({
+    queryKey: apiKeyQueryKey(orgId),
+    queryFn,
     ...options,
   });
 };
