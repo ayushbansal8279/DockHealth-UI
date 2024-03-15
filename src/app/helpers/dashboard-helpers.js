@@ -9,14 +9,6 @@ export const DashboardTasksTab = {
   COMPLETED: 'Completed',
 };
 
-export const DashboardQuickFilters = [
-  'Escalations',
-  'Overdue',
-  'Due Today',
-  'Created by me',
-  'Shared with me',
-];
-
 export const DashboardGroup = {
   TODAY: 'TODAY',
   ORG_TODAY: 'ORG_TODAY',

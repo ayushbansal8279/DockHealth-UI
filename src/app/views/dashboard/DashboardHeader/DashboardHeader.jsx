@@ -45,10 +45,7 @@ import {
   quickFiltersSelector,
   selectedQuickFilterSelector,
 } from 'selectors/mega-filter-selectors';
-import {
-  DashboardTasksTab,
-  DashboardQuickFilters,
-} from 'helpers/dashboard-helpers';
+import { DashboardTasksTab } from 'helpers/dashboard-helpers';
 import { UserOrganizationRole } from 'helpers/user-helper';
 import { getViewTypeFromQueryString, ViewType } from 'helpers/view-type-helper';
 // import TaskViewTypeToolbarSelect from 'components/tasklist/TaskViewTypeToolbarSelect/TaskViewTypeToolbarSelect';
@@ -115,14 +112,11 @@ const DashboardHeader = () => {
     ) || {};
 
   const { ADMIN, OWNER, MEMBER, GUEST, DOCK_LITE } = UserOrganizationRole;
-  // const DashBoardQucikFilter = [
-  //   'Escalations',
-  //   'Overdue',
-  //   'Due Today',
-  //   'Created by me',
-  //   'Shared with me',
-  // ];
-  const contextType = currentCommonTabName ? currentCommonTabName[0] : null;
+  const contextType = currentCommonTabName
+    ? ['Upcoming', 'Overdue', 'Completed'].includes(tabName)
+      ? 'MY_TASKS'
+      : currentCommonTabName[0]
+    : null;
 
   const activeTasksCount = useMemo(
     () =>
@@ -157,6 +151,7 @@ const DashboardHeader = () => {
   };
 
   useEffect(() => {
+    dispatch(getQuickFilters({ contextType }));
     setSearchValue('');
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tabName]);
@@ -256,8 +251,6 @@ const DashboardHeader = () => {
     }));
   }, [groupList, groupsPreferences, updateGroupsPreferences]);
 
-  const [quickFilters, setQuickFilters] = useState([]);
-
   return (
     <DashboardHeaderContainer>
       <LayoutHeader>
@@ -346,34 +339,32 @@ const DashboardHeader = () => {
                   value={searchValue}
                   onChange={handleSearchChange}
                 />
-                <LayoutHeader.Spacer />
+                {/* <LayoutHeader.Spacer /> */}
               </AccessRestrictor>
-              {/* <DashboardQuickFilterContainer>
-                {DashboardQuickFilters.map((value, index) => {
+              <DashboardQuickFilterContainer>
+                {quickFiltersList.map((filter, index) => {
                   return (
-                    <DashboardQuickFilter
-                      key={value}
-                      active={quickFilters.some((object) => object === value)}
-                      // onClick={() => {
-                      //   if (!quickFilters.some((object) => object === value))
-                      //     setQuickFilters((current) => [...current, value]);
-                      // }}
-                    >
+                    <DashboardQuickFilter key={filter.name}>
                       <DashboardQuickFilterLabel
-                        active={quickFilters.some((object) => object === value)}
+                        active={
+                          selectedQuickFilter === filter.quickFilterIdentifier
+                        }
+                        onClick={() => {
+                          handleSelectQuickFilter(
+                            filter.quickFilterIdentifier,
+                            filter.selectedOptions,
+                          );
+                        }}
                       >
-                        {value}
+                        {filter.name}
                       </DashboardQuickFilterLabel>
-                      {quickFilters.some((object) => object === value) ? (
+                      {selectedQuickFilter === filter.quickFilterIdentifier ? (
                         <DashboardQuickFilterClear
-                          active={quickFilters.some(
-                            (object) => object === value,
-                          )}
+                          active={
+                            selectedQuickFilter === filter.quickFilterIdentifier
+                          }
                           onClick={() => {
-                            const deleteObj = quickFilters.filter((object) => {
-                              if (object !== value) return object;
-                            });
-                            setQuickFilters(deleteObj);
+                            handleSelectQuickFilter(null);
                           }}
                         >
                           <ClearIcon sx={{ height: '16px', width: '16px' }} />
@@ -384,7 +375,7 @@ const DashboardHeader = () => {
                     </DashboardQuickFilter>
                   );
                 })}
-              </DashboardQuickFilterContainer> */}
+              </DashboardQuickFilterContainer>
             </Box>
           </>
         )}
