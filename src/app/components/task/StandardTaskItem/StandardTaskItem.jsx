@@ -50,6 +50,7 @@ const Task = React.memo(
     isTaskTemplate,
     isWorkflowSubtask,
     isLastChild,
+    isNestedTask,
     ...restProps
   }) => {
     const parentTaskReference = useRef(null);
@@ -244,6 +245,7 @@ const Task = React.memo(
                 highlightedTasksParentIdentifier === task?.parentTaskIdentifier)
             }
             viewSetup={viewSetup}
+            isNestedTask={isNestedTask}
             isWorkflowSubtask={isWorkflowSubtask}
             {...restProps}
           />

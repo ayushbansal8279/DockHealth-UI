@@ -143,6 +143,20 @@ const UserReducer = (state = initialState, action) => {
       };
     }
 
+    case ActionTypes.REMOVE_ORGANIZATION_FROM_ORGANIZATIONS: {
+      const { orgId } = action.payload;
+
+      return {
+        ...state,
+        userProfile: {
+          ...state.userProfile,
+          userOrganizations: state.userProfile.userOrganizations?.filter(
+            ({ organizationIdentifier }) => organizationIdentifier !== orgId,
+          ),
+        },
+      };
+    }
+
     default: {
       return state;
     }

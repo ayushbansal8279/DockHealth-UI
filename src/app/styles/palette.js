@@ -20,6 +20,7 @@ const palette = {
   zinc: '#afb8c4',
   whiteSmoke: '#F8F8F9',
   lightGrayishBlue: '#D4D9DF',
+  shadowBlue: '#8492A4',
 
   // secondary
   purplePassion: '#553bbe',

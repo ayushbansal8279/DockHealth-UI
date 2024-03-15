@@ -60,3 +60,10 @@ export function getCurrentUserOrganizations() {
     type: ActionTypes.GET_CURRENT_USER_ORGANIZATIONS,
   };
 }
+
+export function removeOrganizationFromOrganizations(orgId) {
+  return {
+    type: ActionTypes.REMOVE_ORGANIZATION_FROM_ORGANIZATIONS,
+    payload: { orgId },
+  };
+}
