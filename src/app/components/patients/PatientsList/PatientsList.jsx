@@ -3,6 +3,28 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
 import { ascend, compose, propOr, sortWith, toLower } from 'ramda';
+import EditIcon from '@mui/icons-material/Edit';
+import SaveIcon from '@mui/icons-material/Save';
+import CloseIcon from '@mui/icons-material/Close';
+import {
+  GridRowId,
+  GridColDef,
+  GridRowModes,
+  useGridApiRef,
+  DataGridPremium,
+  GridRowModesModel,
+  GridEventListener,
+  GridToolbarExport,
+  GridActionsCellItem,
+  GridToolbarContainer,
+  GridRowEditStopReasons,
+  GridToolbarQuickFilter,
+  GridToolbarFilterButton,
+  GridValueFormatterParams,
+  GridRenderEditCellParams,
+  GridToolbarColumnsButton,
+  GridToolbarDensitySelector,
+} from '@mui/x-data-grid-premium';
 import * as ActionTypes from 'actions/action-types';
 import { Grid } from '@mui/material';
 import Tooltip from 'components/common/Tooltip/Tooltip';
@@ -22,6 +44,7 @@ import { PatientColumn } from 'helpers/patient-list-helpers';
 
 import { patientsListSelector } from 'selectors/patients-selectors';
 import moment from 'moment';
+import { getLastAndFirstName } from 'helpers/formatters';
 import { formatPhoneNumber } from 'helpers/utility-functions';
 import TaskItemBulkEdit from 'components/task/StandardTaskItem/TaskItemComponents/TaskItemBulkEdit';
 import PatientImportPopover from '../PatientImportPopover/PatientImportPopover';
@@ -77,7 +100,7 @@ const PatientsList = ({
     currentUser,
     currentOrganization,
   );
-
+  const [rowModesModel, setRowModesModel] = useState({});
   const [dataGridSortModel, setDataGridSortModel] = useState();
 
   const selectedPatientsCount = patients?.filter((p) => p.isSelected).length;
@@ -183,252 +206,299 @@ const PatientsList = ({
     [dataGridSortModel],
   );
 
-  const columns = useMemo(
-    () =>
-      [
-        {
-          field: 'isSelected',
-          headerName: '',
-          sortable: false,
-          renderHeader: () =>
-            renderCheckboxColumnHeader({
-              isListChecked,
-              onListSelect: handleListSelect,
-            }),
-          renderCell: ({ row }) => (
-            <span>
-              <TaskItemBulkEdit
-                isChecked={row?.isSelected}
-                onClick={() => setSelectedPatient(row)}
-              />
-            </span>
-          ),
-          width: 40,
-        },
-        {
-          field: 'patient',
-          headerName: customerTypeLabel.toUpperCase(),
-          renderHeader: renderColumnHeader,
-          renderCell: ({ row }) => (
-            <PatientCell
-              onClick={async () => {
-                const { fromEMR, patientIdentifier } = row;
-                if (fromEMR) {
-                  const patient = await lookupEMRPatient(patientIdentifier);
+  const handleEditClick = (id) => () => {
+    setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
+  };
 
-                  history.push({
-                    pathname: `/core/patient/${patient.patientIdentifier}`,
-                    state: {
-                      from: pathname,
-                    },
-                  });
-                } else {
-                  history.push({
-                    pathname: `/core/patient/${patientIdentifier}`,
-                    state: {
-                      from: pathname,
-                    },
-                  });
-                }
-              }}
-              className="patient-cell"
-            >
-              <Tooltip
-                placement="top"
-                title={`${row.lastName}, ${row.firstName}`}
-              >
-                <Text width="180">
-                  {row.lastName}, {row.firstName}
-                </Text>
-              </Tooltip>
-            </PatientCell>
-          ),
-          width: 200,
-          valueGetter: (parameters) => {
-            return `${parameters.row.lastName || ''}, ${
-              parameters.row.firstName || ''
-            }`;
-          },
-        },
-        {
-          field: 'mrn',
-          headerName: uniqueIdentifierLabel.toUpperCase(),
+  const handleSaveClick = (id) => () => {
+    setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
+  };
+
+  const handleCancelClick = (id) => () => {
+    setRowModesModel({
+      ...rowModesModel,
+      [id]: { mode: GridRowModes.View, ignoreModifications: true },
+    });
+  };
+
+  const defaultColumns = [
+    {
+      field: 'isSelected',
+      headerName: '',
+      sortable: false,
+      renderHeader: () =>
+        renderCheckboxColumnHeader({
+          isListChecked,
+          onListSelect: handleListSelect,
+        }),
+      renderCell: ({ row }) => (
+        <span>
+          <TaskItemBulkEdit
+            isChecked={row?.isSelected}
+            onClick={() => setSelectedPatient(row)}
+          />
+        </span>
+      ),
+      width: 40,
+    },
+    {
+      field: 'patient',
+      headerName: customerTypeLabel.toUpperCase(),
+      renderHeader: renderColumnHeader,
+      renderCell: ({ row }) => (
+        <PatientCell
+          onClick={async () => {
+            const { fromEMR, patientIdentifier } = row;
+            if (fromEMR) {
+              const patient = await lookupEMRPatient(patientIdentifier);
+
+              history.push({
+                pathname: `/core/patient/${patient.patientIdentifier}`,
+                state: {
+                  from: pathname,
+                },
+              });
+            } else {
+              history.push({
+                pathname: `/core/patient/${patientIdentifier}`,
+                state: {
+                  from: pathname,
+                },
+              });
+            }
+          }}
+          className="patient-cell"
+        >
+          <Tooltip placement="top" title={`${row.lastName}, ${row.firstName}`}>
+            <Text width="180">
+              {row.lastName}, {row.firstName}
+            </Text>
+          </Tooltip>
+        </PatientCell>
+      ),
+      width: 200,
+      valueGetter: (parameters) => {
+        return `${parameters.row.lastName || ''}, ${
+          parameters.row.firstName || ''
+        }`;
+      },
+      editable: true,
+      valueSetter: (params) => {
+        const { firstName, lastName } = getLastAndFirstName(params.value);
+        return {
+          ...params.row,
+          firstName,
+          lastName,
+        };
+      },
+    },
+    {
+      field: 'mrn',
+      headerName: uniqueIdentifierLabel.toUpperCase(),
+      renderHeader: renderColumnHeader,
+      width: 100,
+      renderCell: ({ row }) => (
+        <Tooltip placement="top" title={row.mrn}>
+          <Text width="80">{row.mrn}</Text>
+        </Tooltip>
+      ),
+    },
+    {
+      field: 'dob',
+      headerName: 'DOB',
+      renderHeader: renderColumnHeader,
+      width: 100,
+      type: 'date',
+      valueGetter: (parameters) => {
+        return parameters.value
+          ? new Date(`${parameters.value}T00:00:00`)
+          : null;
+      },
+    },
+    {
+      field: 'age',
+      headerName: 'AGE',
+      renderHeader: renderColumnHeader,
+      width: 70,
+      sortComparator: (v1, v2, parameters1, parameters2) => {
+        const { api } = parameters2;
+        const sortModel = api.getSortModel();
+        const dob1 = parameters1.api.getCellValue(parameters1.id, 'dob');
+        const dob2 = parameters2.api.getCellValue(parameters2.id, 'dob');
+
+        if (dob1 === dob2) {
+          return 0;
+        }
+
+        if (sortModel[0]?.sort === 'asc' && sortModel[0]?.field === 'age') {
+          // !IMPORTANT it is descending - MaterialUI has problem with passing correctly current order
+          if (dob1 === null || dob1 === '') {
+            return -1;
+          }
+
+          if (dob2 === null || dob2 === '') {
+            return 1;
+          }
+
+          return dob2 < dob1 ? -1 : 1;
+        }
+
+        // !IMPORTANT it is ascending - MaterialUI has problem with passing correctly current order
+        if (dob1 === null || dob1 === '') {
+          return 1;
+        }
+
+        if (dob2 === null || dob2 === '') {
+          return -1;
+        }
+
+        return dob1 < dob2 ? 1 : -1;
+      },
+    },
+    {
+      field: 'gender',
+      headerName: 'SEX',
+      renderHeader: renderColumnHeader,
+      width: 80,
+    },
+    {
+      field: 'genderIdentity',
+      headerName: 'GENDER',
+      renderHeader: renderColumnHeader,
+      width: 100,
+    },
+    {
+      field: 'email',
+      headerName: 'EMAIL',
+      renderHeader: renderColumnHeader,
+      width: 140,
+      renderCell: ({ row }) => (
+        <Tooltip placement="top" title={row.email}>
+          <Text width="120">{row.email}</Text>
+        </Tooltip>
+      ),
+      align: 'left',
+    },
+    {
+      field: 'phoneMobile',
+      headerName: 'MOBILE',
+      renderHeader: renderColumnHeader,
+      renderCell: ({ row }) => (
+        <Tooltip placement="top" title={formatPhoneNumber(row.phoneMobile)}>
+          <Text width="120">{formatPhoneNumber(row.phoneMobile)}</Text>
+        </Tooltip>
+      ),
+      width: 140,
+    },
+    {
+      field: 'phoneHome',
+      headerName: 'HOME',
+      renderHeader: renderColumnHeader,
+      renderCell: ({ row }) => (
+        <Tooltip placement="top" title={formatPhoneNumber(row.phoneHome)}>
+          <Text width="120">{formatPhoneNumber(row.phoneHome)}</Text>
+        </Tooltip>
+      ),
+      width: 140,
+    },
+  ];
+
+  const actionsColumn = {
+    field: 'actions',
+    type: 'actions',
+    headerName: 'Actions',
+    width: 80,
+    cellClassName: 'actions',
+    getActions: ({ id }) => {
+      const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
+
+      if (isInEditMode) {
+        return [
+          <GridActionsCellItem
+            icon={<SaveIcon />}
+            label="Save"
+            color="primary"
+            onClick={handleSaveClick(id)}
+          />,
+          <GridActionsCellItem
+            icon={<CloseIcon />}
+            label="Cancel"
+            className="textPrimary"
+            onClick={handleCancelClick(id)}
+            color="inherit"
+          />,
+        ];
+      }
+
+      return [
+        <GridActionsCellItem
+          icon={<EditIcon />}
+          label="Edit"
+          className="textPrimary"
+          onClick={handleEditClick(id)}
+          color="primary"
+        />,
+      ];
+    },
+  };
+
+  const columns = defaultColumns
+    .filter((column) => {
+      return (
+        columnsDataSorted.find(
+          (data) =>
+            PatientColumn[data.identifier] === column.field ||
+            column.field === 'isSelected',
+        )?.isChecked ?? false
+      );
+    })
+    .concat(
+      columnsDataSorted
+        .filter((column) => column.targetType === 'PATIENT' && column.isChecked)
+        .map((column) => ({
+          field: column.identifier,
+          headerName: column.name,
           renderHeader: renderColumnHeader,
-          width: 100,
+          width: 140,
           renderCell: ({ row }) => (
-            <Tooltip placement="top" title={row.mrn}>
-              <Text width="80">{row.mrn}</Text>
+            <Tooltip placement="top" title={row[column.identifier]}>
+              <Text width="120">{row[column.identifier]}</Text>
             </Tooltip>
           ),
-        },
-        {
-          field: 'dob',
-          headerName: 'DOB',
-          renderHeader: renderColumnHeader,
-          width: 100,
-          type: 'date',
-          valueGetter: (parameters) => {
-            return parameters.value
-              ? new Date(`${parameters.value}T00:00:00`)
-              : null;
-          },
-        },
-        {
-          field: 'age',
-          headerName: 'AGE',
-          renderHeader: renderColumnHeader,
-          width: 70,
           sortComparator: (v1, v2, parameters1, parameters2) => {
             const { api } = parameters2;
             const sortModel = api.getSortModel();
-            const dob1 = parameters1.api.getCellValue(parameters1.id, 'dob');
-            const dob2 = parameters2.api.getCellValue(parameters2.id, 'dob');
-
-            if (dob1 === dob2) {
-              return 0;
-            }
-
-            if (sortModel[0]?.sort === 'asc' && sortModel[0]?.field === 'age') {
-              // !IMPORTANT it is descending - MaterialUI has problem with passing correctly current order
-              if (dob1 === null || dob1 === '') {
+            const compareValue1 = v1 || '';
+            const compareValue2 = v2 || '';
+            // eslint-disable-next-line sonarjs/no-collapsible-if
+            if (
+              column.fieldType === 'DATE' &&
+              compareValue1 !== '' &&
+              compareValue2 !== ''
+            ) {
+              const parameter1Date = moment(compareValue1);
+              const parameter2Date = moment(compareValue2);
+              if (sortModel[0]?.sort === 'desc') {
+                if (parameter1Date.isAfter(parameter2Date)) {
+                  return 1;
+                }
+                if (parameter1Date.isBefore(parameter2Date)) {
+                  return -1;
+                }
+                return 0;
+              }
+              if (parameter1Date.isBefore(parameter2Date)) {
                 return -1;
               }
-
-              if (dob2 === null || dob2 === '') {
+              if (parameter1Date.isAfter(parameter2Date)) {
                 return 1;
               }
-
-              return dob2 < dob1 ? -1 : 1;
+              return 0;
             }
-
-            // !IMPORTANT it is ascending - MaterialUI has problem with passing correctly current order
-            if (dob1 === null || dob1 === '') {
-              return 1;
-            }
-
-            if (dob2 === null || dob2 === '') {
-              return -1;
-            }
-
-            return dob1 < dob2 ? 1 : -1;
+            return compareValue1.localeCompare(compareValue2);
           },
-        },
-        {
-          field: 'gender',
-          headerName: 'SEX',
-          renderHeader: renderColumnHeader,
-          width: 80,
-        },
-        {
-          field: 'genderIdentity',
-          headerName: 'GENDER',
-          renderHeader: renderColumnHeader,
-          width: 100,
-        },
-        {
-          field: 'email',
-          headerName: 'EMAIL',
-          renderHeader: renderColumnHeader,
-          width: 140,
-          renderCell: ({ row }) => (
-            <Tooltip placement="top" title={row.email}>
-              <Text width="120">{row.email}</Text>
-            </Tooltip>
-          ),
-          align: 'left',
-        },
-        {
-          field: 'phoneMobile',
-          headerName: 'MOBILE',
-          renderHeader: renderColumnHeader,
-          renderCell: ({ row }) => (
-            <Tooltip placement="top" title={formatPhoneNumber(row.phoneMobile)}>
-              <Text width="120">{formatPhoneNumber(row.phoneMobile)}</Text>
-            </Tooltip>
-          ),
-          width: 140,
-        },
-        {
-          field: 'phoneHome',
-          headerName: 'HOME',
-          renderHeader: renderColumnHeader,
-          renderCell: ({ row }) => (
-            <Tooltip placement="top" title={formatPhoneNumber(row.phoneHome)}>
-              <Text width="120">{formatPhoneNumber(row.phoneHome)}</Text>
-            </Tooltip>
-          ),
-          width: 140,
-        },
-      ]
-        .filter((column) => {
-          return (
-            columnsDataSorted.find(
-              (data) =>
-                PatientColumn[data.identifier] === column.field ||
-                column.field === 'isSelected',
-            )?.isChecked ?? false
-          );
-        })
-        .concat(
-          columnsDataSorted
-            .filter(
-              (column) => column.targetType === 'PATIENT' && column.isChecked,
-            )
-            .map((column) => ({
-              field: column.identifier,
-              headerName: column.name,
-              renderHeader: renderColumnHeader,
-              width: 140,
-              renderCell: ({ row }) => (
-                <Tooltip placement="top" title={row[column.identifier]}>
-                  <Text width="120">{row[column.identifier]}</Text>
-                </Tooltip>
-              ),
-              sortComparator: (v1, v2, parameters1, parameters2) => {
-                const { api } = parameters2;
-                const sortModel = api.getSortModel();
-                const compareValue1 = v1 || '';
-                const compareValue2 = v2 || '';
-                // eslint-disable-next-line sonarjs/no-collapsible-if
-                if (
-                  column.fieldType === 'DATE' &&
-                  compareValue1 !== '' &&
-                  compareValue2 !== ''
-                ) {
-                  const parameter1Date = moment(compareValue1);
-                  const parameter2Date = moment(compareValue2);
-                  if (sortModel[0]?.sort === 'desc') {
-                    if (parameter1Date.isAfter(parameter2Date)) {
-                      return 1;
-                    }
-                    if (parameter1Date.isBefore(parameter2Date)) {
-                      return -1;
-                    }
-                    return 0;
-                  }
-                  if (parameter1Date.isBefore(parameter2Date)) {
-                    return -1;
-                  }
-                  if (parameter1Date.isAfter(parameter2Date)) {
-                    return 1;
-                  }
-                  return 0;
-                }
-                return compareValue1.localeCompare(compareValue2);
-              },
-            })),
-        ),
-    [
-      columnsDataSorted,
-      customerTypeLabel,
-      handleListSelect,
-      history,
-      isListChecked,
-      pathname,
-      setSelectedPatient,
-      uniqueIdentifierLabel,
-    ],
-  );
+        })),
+    );
 
   useEffect(() => {
     const defaultSortField = localStorage.getItem('PATIENT_LIST_SORT_COLUMN');
