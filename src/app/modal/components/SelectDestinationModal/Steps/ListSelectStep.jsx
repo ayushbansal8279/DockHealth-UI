@@ -57,7 +57,7 @@ const ListSelectStep = ({
 
   return (
     <Step>
-      <Title>LISTS</Title>
+      <Title>Move To List</Title>
       <Box m={1} />
       <ListsWrapper>
         {!isFetchingLists && (
@@ -100,7 +100,7 @@ const ListSelectStep = ({
         <QuickAddInput
           ref={addListInputReference}
           type="text"
-          placeholder="Add list"
+          placeholder="Create New List"
           onFocus={setListInputFocused}
           onBlur={unsetListInputFocused}
           onChange={() => {

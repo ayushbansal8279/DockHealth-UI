@@ -15,6 +15,7 @@ import {
 import ListSelectStep from './Steps/ListSelectStep';
 import GroupSelectStep from './Steps/GroupSelectStep';
 import ParentTaskSelectStep from './Steps/ParentTaskSelectStep';
+import { CancelButton, ConfirmButton } from '../ModalButton/ModalButtons';
 
 const SelectDestinationModal = ({
   closeModal,
@@ -157,18 +158,18 @@ const SelectDestinationModal = ({
       <Box m={2} />
       <Grid container direction="row">
         <FlexButtonWrapper>
-          <Button
+          <CancelButton
+            style={{ width: '190px' }}
             fullWidth
             variant="secondary"
             onClick={closeModal}
             size="small"
           >
             Cancel
-          </Button>
-        </FlexButtonWrapper>
-        <Box m={1} />
-        <FlexButtonWrapper>
-          <Button
+          </CancelButton>
+          <Box m={1} />
+          <ConfirmButton
+            style={{ width: '190px' }}
             fullWidth
             disabled={
               selectParentTask
@@ -179,7 +180,7 @@ const SelectDestinationModal = ({
             size="small"
           >
             {confirmText || 'Save'}
-          </Button>
+          </ConfirmButton>
         </FlexButtonWrapper>
       </Grid>
     </ModalWrapperWithPadding>

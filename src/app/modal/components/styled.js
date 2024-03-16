@@ -60,10 +60,9 @@ export const ButtonsContainer = styled.div`
 `;
 
 export const FlexButtonWrapper = styled.div`
-  flex: 1;
-  button {
-    font-size: 14px !important;
-  }
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 export const FixedWidthButtonWrapper = styled.div`

@@ -91,9 +91,10 @@ export const ExternalUserInviteFormWrapper = styled.div`
     externalInvitePosition?.bottom || 0}px;
   left: ${({ externalInvitePosition }) => externalInvitePosition?.left || 0}px;
   background: ${palette.white};
-  width: 100%;
-  top: -70px;
-  height: 440px;
+  left: -28px;
+  width: 110%;
+  top: -72px;
+  height: 480px;
   z-index: 2;
 `;
 
