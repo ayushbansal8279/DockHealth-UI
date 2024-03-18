@@ -18,7 +18,8 @@ const palette = {
   purpleNavy: '#3a4c6a',
   cornFlowerBlue: '#778af1',
   zinc: '#afb8c4',
-  whiteSmoke: '#F8F8F9',
+  whiteSmoke: '	#F8F8F9',
+  aliceBlue: '#eff6fb',
   lightGrayishBlue: '#D4D9DF',
   shadowBlue: '#8492A4',
 

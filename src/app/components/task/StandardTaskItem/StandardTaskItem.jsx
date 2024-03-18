@@ -50,6 +50,7 @@ const Task = React.memo(
     isTaskTemplate,
     isWorkflowSubtask,
     isLastChild,
+    pageBackground,
     isNestedTask,
     ...restProps
   }) => {
@@ -196,7 +197,6 @@ const Task = React.memo(
         subtaskQuickAddOpen,
       ],
     );
-
     const handleQuickAddOnFocus = () => {
       setTimeout(() => {
         parentTaskReference.current.scrollIntoView({
@@ -247,6 +247,7 @@ const Task = React.memo(
             viewSetup={viewSetup}
             isNestedTask={isNestedTask}
             isWorkflowSubtask={isWorkflowSubtask}
+            pageBackground={pageBackground}
             {...restProps}
           />
         </TaskContainer>

@@ -21,6 +21,7 @@ export const VSubtask = styled('div')`
       : '90.5px'};
   margin-bottom: -5px;
   margin-top: -1px;
+  background: ${({ bgColor }) => (bgColor ? palette.aliceBlue : '')};
 `;
 
 export const QuickAddContainer = styled('div')`

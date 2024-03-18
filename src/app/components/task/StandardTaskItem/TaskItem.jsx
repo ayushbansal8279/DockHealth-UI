@@ -936,6 +936,7 @@ const TaskItem = React.memo(
           iconColorActive={iconColorActiveItem?.value}
           origin={origin}
           highlightedValue={highlightedValue}
+          pageBackground={pageBackground}
         />
       );
     }

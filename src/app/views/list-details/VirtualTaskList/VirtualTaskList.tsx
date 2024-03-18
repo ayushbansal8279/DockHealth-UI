@@ -157,7 +157,7 @@ function VirtualTaskList({ groupedTasks }: Props) {
         true,
       ),
     ].concat(
-      listGroups.map((group) => {
+      listGroups.map((group, index) => {
         const groupTasks = groupedTasks
           ? groupedTasks.find(
               (groupedTask) =>
@@ -172,6 +172,7 @@ function VirtualTaskList({ groupedTasks }: Props) {
           {
             name: group.groupName,
             taskGroupIdentifier: group.taskGroupIdentifier,
+            bgColor: !!(index % 2 === 0),
           },
           [
             convert(
@@ -181,6 +182,7 @@ function VirtualTaskList({ groupedTasks }: Props) {
               false,
               {
                 taskGroupIdentifier: group.taskGroupIdentifier,
+                bgColor: !!(index % 2 === 0),
               },
               [],
               true,
@@ -190,12 +192,14 @@ function VirtualTaskList({ groupedTasks }: Props) {
               VTaskHeader,
               'TaskHeader',
               false,
-              {},
+              {
+                bgColor: !!(index % 2 === 0),
+              },
               [],
               true,
             ),
           ].concat(
-            ...groupTasks.map((taskIdentifier: string) => {
+            ...groupTasks.map((taskIdentifier: string, groupTaskIndex) => {
               const task = tasksMap[taskIdentifier];
               const children =
                 task.itemType === 'TASK' ? task.subtasks : task.tasks;
@@ -204,7 +208,11 @@ function VirtualTaskList({ groupedTasks }: Props) {
                 VTask,
                 'Task',
                 !!collapseMap[taskIdentifier],
-                { task },
+                {
+                  task,
+                  bgColor: !!(index % 2 === 0),
+                  isLastTaskOfGroup: groupTaskIndex === groupTasks.length - 1,
+                },
                 children.map((child: any) => {
                   return convert(
                     child?.taskIdentifier ?? child,
@@ -215,6 +223,7 @@ function VirtualTaskList({ groupedTasks }: Props) {
                       isTaskTemplate: true,
                       isLastChild:
                         children.indexOf(child) === children.length - 1,
+                      bgColor: !!(index % 2 === 0),
                     },
                     !!tasksMap[child]?.subtasks.length
                       ? tasksMap[child].subtasks.map((subtask: any) => {
@@ -223,7 +232,7 @@ function VirtualTaskList({ groupedTasks }: Props) {
                             VSubtask,
                             'Subtask',
                             false,
-                            { task: subtask },
+                            { task: subtask, bgColor: !!(index % 2 === 0) },
                             [],
                           );
                         })

@@ -17,13 +17,15 @@ import {
   taskDetailsSortSelector,
 } from '@/app/selectors/list-details-selectors';
 import { megaFilterSelector } from '@/app/selectors/mega-filter-selectors';
+import palette from '@/app/styles/palette';
 
 export interface Props extends Segment {
   task: any;
+  bgColor: boolean;
 }
 
 function VSubtask(
-  { metadata, register, task, ...record }: Props,
+  { metadata, register, task, bgColor, ...record }: Props,
   // eslint-disable-next-line unicorn/prevent-abbreviations
   ref: ForwardedRef<HTMLDivElement>,
 ) {
@@ -77,6 +79,7 @@ function VSubtask(
                 : !!selectedFilters
             }
             isSortApplied={!!sort.key}
+            bgColor={bgColor}
           >
             {!!searchValue ||
               (!!selectedFilters
@@ -94,6 +97,7 @@ function VSubtask(
               isSubtask
               origin={TaskOrigin.LIST}
               isNestedTask
+              pageBackground={bgColor ? palette.aliceBlue : ''}
             />
           </Sc.VSubtask>
           {metadata.sameLevelIndex === noOfSubtask && subtaskQuickAddOpen && (

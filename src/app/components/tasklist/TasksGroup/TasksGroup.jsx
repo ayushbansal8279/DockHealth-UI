@@ -88,6 +88,7 @@ const TasksGroup = ({
   iconColorActive,
   restrictCustomizationFeatures,
   origin,
+  bgColor,
 }) => {
   const addingNewSubtaskParentId = useSelector(
     addingNewSubtaskParentIdSelector,
@@ -273,7 +274,6 @@ const TasksGroup = ({
   );
 
   const { columns } = useTaskListColumnsConfig();
-
   return (
     <TasksGroupContainer
       $width={
@@ -286,6 +286,7 @@ const TasksGroup = ({
                 0,
               )
       }
+      bgColor={bgColor}
     >
       <StickyContainer left={origin === 'LIST' ? 8 : 24} decreaseWidth={2 * 24}>
         <TasksGroupHeader>
