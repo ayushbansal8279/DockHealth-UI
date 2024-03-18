@@ -78,6 +78,7 @@ import EditContactModal from './components/EditContactModal/EditContactModal';
 import EditPatientModal from './components/EditPatientModal/EditPatientModal';
 import AnchorDateChangeConfirmationModal from './components/AnchorDateChangeConfirmationModal/AnchorDateChangeConfirmationModal';
 import DeleteArchivePatientModal from './components/DeleteArchivePatientModal/DeleteArchivePatientModal';
+import DeleteOrganizationModal from './components/DeleteOrganizationModal';
 
 const MODAL_MAP = {
   CompleteAllTasks: CompleteAllTasksModal,
@@ -95,6 +96,7 @@ const MODAL_MAP = {
   Video: VideoModal,
   LeaveList: LeaveListModal,
   LeaveOrganization: LeaveOrganizationModal,
+  DeleteOrganization: DeleteOrganizationModal,
   EditOrganization: EditOrganizationModal,
   InviteToList: InviteToListModal,
   ChangePassword: ChangePasswordModal,

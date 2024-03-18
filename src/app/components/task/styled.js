@@ -345,7 +345,8 @@ export const DueDateContainer = styled.div`
 export const GridImg = styled(Grid)`
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
+  padding-left: 10px;
   ${({ matched }) =>
     matched && `background: ${featurePalette.globalSearchHighlight};`};
 `;
@@ -567,9 +568,9 @@ export const StatusWrapper = styled.div`
 
 export const StatusSubContaioner = styled.div`
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
-  padding-left: 5px;
+  padding-left: 12px;
 `;
 
 export const StatusName = styled.p`

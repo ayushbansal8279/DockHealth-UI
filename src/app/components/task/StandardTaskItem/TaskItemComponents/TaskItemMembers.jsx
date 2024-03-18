@@ -50,7 +50,7 @@ const TaskItemMembers = ({
         </>
       ) : (
         <Tooltip placement="top" title="Add assignee">
-          <div style={{ marginLeft: '10px' }}>
+          <div style={{ marginLeft: '2px' }}>
             {!readOnly && <AssignMemberIcon />}
           </div>
         </Tooltip>

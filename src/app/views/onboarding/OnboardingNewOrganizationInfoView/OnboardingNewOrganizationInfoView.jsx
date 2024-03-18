@@ -1,4 +1,6 @@
 import { Box, Grid } from '@mui/material';
+import { useSelector } from 'react-redux';
+import { userOrganizationsSelector } from 'selectors/user-selectors';
 import Button from 'components/common/Button/Button';
 import Spacing from 'components/common/Spacing';
 import React from 'react';
@@ -11,6 +13,8 @@ import {
 } from './styled';
 
 const OnboardingNewOrganizationInfoView = () => {
+  const userOrganizations = useSelector(userOrganizationsSelector);
+
   const history = useHistory();
   return (
     <InfoContainer>
@@ -25,11 +29,13 @@ const OnboardingNewOrganizationInfoView = () => {
       </Description>
       <Spacing vertical={7} />
       <Grid container justifyContent="flex-end">
-        <Box flex="1">
-          <Button onClick={history.goBack} variant="text" fullWidth>
-            Cancel
-          </Button>
-        </Box>
+        {!!userOrganizations?.length && (
+          <Box flex="1">
+            <Button onClick={history.goBack} variant="text" fullWidth>
+              Cancel
+            </Button>
+          </Box>
+        )}
         <ContinueButtonContainer>
           <Button
             fullWidth

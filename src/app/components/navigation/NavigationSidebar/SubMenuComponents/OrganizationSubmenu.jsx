@@ -6,9 +6,12 @@ import { MoreVert } from '@mui/icons-material';
 import { SUBS_SETTINGS_PATH } from 'routing/helpers/paths';
 import { userOrganizationsSelector } from 'selectors/user-selectors';
 import { logout } from 'api/user-auth-api';
-import { leaveOrganization } from 'api/organization-api';
+import { leaveOrganization, deleteOrganization } from 'api/organization-api';
 import { openNotifications } from 'actions/template-actions';
-import { getCurrentUserOrganizations } from 'actions/user-actions';
+import {
+  getCurrentUserOrganizations,
+  removeOrganizationFromOrganizations,
+} from 'actions/user-actions';
 import {
   openModal as openModalAction,
   closeModal as closeModalAction,
@@ -39,6 +42,7 @@ const OrganizationSubmenu = ({
   selectCurrentOrganization,
 }) => {
   const dispatch = useDispatch();
+
   const history = useHistory();
   const userOrganizations = useSelector(userOrganizationsSelector);
   const { orgUserRole } = currentUser;
@@ -110,11 +114,56 @@ const OrganizationSubmenu = ({
     );
   }, [currentUser, dispatch]);
 
+  const handleDeleteOrganization = useCallback(() => {
+    dispatch(
+      openModalAction('DeleteOrganization', {
+        confirm: () => {
+          deleteOrganization(currentUser?.organizationIdentifier)
+            .then(() => {
+              dispatch(
+                removeOrganizationFromOrganizations(
+                  currentUser?.organizationIdentifier,
+                ),
+              );
+              if (availableUserOrganizations?.length) {
+                selectCurrentOrganization(
+                  availableUserOrganizations[0].organizationIdentifier,
+                );
+              } else {
+                history.push('/onboarding/new-organization');
+              }
+            })
+            .catch(() => {
+              dispatch(
+                showGlobalAlertAction(
+                  'Something went wrong!',
+                  AlertTypes.ERROR,
+                ),
+              );
+            })
+            .finally(() => {
+              dispatch(closeModalAction());
+            });
+        },
+      }),
+    );
+  }, [
+    availableUserOrganizations,
+    currentUser?.organizationIdentifier,
+    dispatch,
+    history,
+    selectCurrentOrganization,
+  ]);
+
   const menuOptions = useMemo(
     () => [
       MASTER_ROLES.has(orgUserRole) && {
         name: 'Edit Organization',
         onClick: handleEditOrganization,
+      },
+      MASTER_ROLES.has(orgUserRole) && {
+        name: 'Delete Organization',
+        onClick: handleDeleteOrganization,
       },
       GUEST_ROLE === orgUserRole && {
         name: 'Leave Organization',
@@ -132,6 +181,7 @@ const OrganizationSubmenu = ({
     [
       dispatch,
       handleEditOrganization,
+      handleDeleteOrganization,
       handleLeaveOrganiztion,
       history,
       orgUserRole,
@@ -161,8 +211,8 @@ const OrganizationSubmenu = ({
         </Grid>
         <SubmenuDivider />
         <DrawerOrganizationsList>
-          {availableUserOrganizations?.map(org => (
-            <>
+          {availableUserOrganizations?.map((org) => (
+            <React.Fragment key={org.organizationIdentifier}>
               <OrganizationIdentifier
                 isOpen
                 tileConfig={{
@@ -175,7 +225,7 @@ const OrganizationSubmenu = ({
                 onSelect={() =>
                   selectCurrentOrganization(org?.organizationIdentifier)
                 }
-                onMouseEnterName={event =>
+                onMouseEnterName={(event) =>
                   handleMouseEnter(event, org?.organizationName)
                 }
                 onMouseLeaveName={() => setPopoverLabel(null)}
@@ -184,7 +234,7 @@ const OrganizationSubmenu = ({
                 <Spacing vertical={4} />
                 <Spacing vertical={2} />
               </SpacingContainer>
-            </>
+            </React.Fragment>
           ))}
           <RolloverPopover
             anchorEl={hoveredItemReference?.current}
