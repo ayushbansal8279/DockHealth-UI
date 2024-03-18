@@ -135,6 +135,7 @@ const TaskTemplateGroupHeader = ({
   const [isEditing, setIsEditing] = useState(false);
   const [nameInputValue, setNameInputValue] = useState(name);
   const [nameInputError, setNameInputError] = useState(false);
+  const [isDateHover, setIsDateHover] = useState(false);
   const nameInputReference = useRef(null);
   const currentUser = useSelector(userProfileSelector);
   const currentList = useSelector(currentTaskListSelector);
@@ -1138,10 +1139,13 @@ const TaskTemplateGroupHeader = ({
               paddingLeft="10px"
               justify="flex-start"
               order={getColumnOrder(TaskItemColumn.START_DATE)}
+              onMouseEnter={() => setIsDateHover(true)}
+              onMouseLeave={() => setIsDateHover(false)}
             >
               <TaskTemplateStartDate
                 workflow={templateGroup}
                 disabled={restrictions?.startDate === DISABLED}
+                isDateHover={isDateHover}
               />
             </TaskItemCell>,
             getColumnOrder(TaskItemColumn.START_DATE),
@@ -1164,10 +1168,13 @@ const TaskTemplateGroupHeader = ({
               paddingLeft="10px"
               justify="flex-start"
               order={getColumnOrder(TaskItemColumn.DUE_DATE)}
+              onMouseEnter={() => setIsDateHover(true)}
+              onMouseLeave={() => setIsDateHover(false)}
             >
               <TaskTemplateDueDate
                 workflow={templateGroup}
                 disabled={restrictions?.dueDate === DISABLED}
+                isDateHover={isDateHover}
               />
             </TaskItemCell>,
             getColumnOrder(TaskItemColumn.DUE_DATE),
