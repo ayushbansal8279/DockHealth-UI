@@ -119,8 +119,6 @@ const SubscriptionsView = () => {
     ({ subscriptionPlan: sp }) => sp === selectedPlan,
   );
 
-  const availableSubscriptionPlans = SUBSCRIPTION_PLANS;
-
   const isCurrentPlanChanged =
     (billingFrequency && selectedBillingFrequency !== billingFrequency) ||
     // professionalServicesIncluded !== selectedProfessionalServices ||
@@ -129,11 +127,17 @@ const SubscriptionsView = () => {
   const includeProfessionalServices =
     !professionalServicesIncluded && selectedProfessionalServices;
 
+  const adjustedUserCount =
+    selectedPlanDetails?.minimumUsers > 0 &&
+    activeUserCount < selectedPlanDetails?.minimumUsers
+      ? selectedPlanDetails?.minimumUsers
+      : activeUserCount;
+
   const getTotalPrice = () => {
     let price = 0;
 
     price +=
-      activeUserCount *
+      adjustedUserCount *
       (selectedBillingFrequency === BillingFrequency.ANNUAL
         ? selectedPlanDetails?.annualMonthlyPrice * 12
         : selectedPlanDetails?.monthlyPrice || 0);
@@ -221,7 +225,7 @@ const SubscriptionsView = () => {
           <Box p={1} />
           <SubscriptionPlansContainer>
             <Box display="flex" justifyContent="space-between">
-              {availableSubscriptionPlans.map((plan) => (
+              {SUBSCRIPTION_PLANS.map((plan) => (
                 <SubscriptionPlanTail
                   key={plan.key}
                   active={subscriptionPlan === plan.subscriptionPlan}
@@ -297,7 +301,10 @@ const SubscriptionsView = () => {
                   Plan
                 </BillingTableCell>
                 <BillingTableCell>
-                  {activeUserCount} standard user(s)
+                  {adjustedUserCount} standard user(s)
+                  {selectedPlanDetails?.minimumUsers > 0
+                    ? ` (Minimum per plan: ${selectedPlanDetails?.minimumUsers})`
+                    : ''}
                 </BillingTableCell>
                 <BillingTableCell>
                   {priceFormatter(

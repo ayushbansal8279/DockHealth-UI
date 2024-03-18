@@ -135,6 +135,7 @@ const TaskTemplateGroupHeader = ({
   const [isEditing, setIsEditing] = useState(false);
   const [nameInputValue, setNameInputValue] = useState(name);
   const [nameInputError, setNameInputError] = useState(false);
+  const [isDateHover, setIsDateHover] = useState(false);
   const nameInputReference = useRef(null);
   const currentUser = useSelector(userProfileSelector);
   const currentList = useSelector(currentTaskListSelector);
@@ -1071,7 +1072,6 @@ const TaskTemplateGroupHeader = ({
                   ({ identifier: id }) => id === TaskItemColumn.PRIORITY,
                 )?.columnWidth
               }
-              justify="center"
               order={getColumnOrder(TaskItemColumn.PRIORITY)}
             >
               <TaskItemDropdown
@@ -1138,10 +1138,13 @@ const TaskTemplateGroupHeader = ({
               paddingLeft="10px"
               justify="flex-start"
               order={getColumnOrder(TaskItemColumn.START_DATE)}
+              onMouseEnter={() => setIsDateHover(true)}
+              onMouseLeave={() => setIsDateHover(false)}
             >
               <TaskTemplateStartDate
                 workflow={templateGroup}
                 disabled={restrictions?.startDate === DISABLED}
+                isDateHover={isDateHover}
               />
             </TaskItemCell>,
             getColumnOrder(TaskItemColumn.START_DATE),
@@ -1164,10 +1167,13 @@ const TaskTemplateGroupHeader = ({
               paddingLeft="10px"
               justify="flex-start"
               order={getColumnOrder(TaskItemColumn.DUE_DATE)}
+              onMouseEnter={() => setIsDateHover(true)}
+              onMouseLeave={() => setIsDateHover(false)}
             >
               <TaskTemplateDueDate
                 workflow={templateGroup}
                 disabled={restrictions?.dueDate === DISABLED}
+                isDateHover={isDateHover}
               />
             </TaskItemCell>,
             getColumnOrder(TaskItemColumn.DUE_DATE),
@@ -1185,7 +1191,7 @@ const TaskTemplateGroupHeader = ({
               ({ identifier: id }) => id === TaskItemColumn.ANCHOR_DATE,
             )?.columnWidth
           }
-          justify="center"
+          paddingLeft="12px"
           order={getColumnOrder(TaskItemColumn.ANCHOR_DATE)}
         >
           <TaskTemplateAnchorDate workflow={templateGroup} />
@@ -1202,8 +1208,7 @@ const TaskTemplateGroupHeader = ({
                 )?.columnWidth
               }
               // eslint-disable-next-line sonarjs/no-all-duplicated-branches
-              justify={groupHasMultipleAssignees ? 'center' : 'center'}
-              paddingLeft="small"
+              paddingLeft="12px"
               paddingRight="small"
               onContextMenu={(event) => {
                 event.stopPropagation();
@@ -1241,8 +1246,7 @@ const TaskTemplateGroupHeader = ({
                 )?.columnWidth
               }
               // eslint-disable-next-line sonarjs/no-all-duplicated-branches
-              justify={groupHasMultipleAssignees ? 'center' : 'center'}
-              paddingLeft="small"
+              paddingLeft="12px"
               paddingRight="small"
               onContextMenu={(event) => {
                 event.stopPropagation();
@@ -1422,8 +1426,7 @@ const TaskTemplateGroupHeader = ({
                   ({ identifier: id }) => id === TaskItemColumn.CREATED_BY,
                 )?.columnWidth
               }
-              justify="center"
-              paddingLeft="small"
+              paddingLeft="12px"
               paddingRight="small"
               onContextMenu={(event) => {
                 event.stopPropagation();
@@ -1453,9 +1456,8 @@ const TaskTemplateGroupHeader = ({
                   ({ identifier: id }) => id === TaskItemColumn.CREATED_DATE,
                 )?.columnWidth
               }
-              paddingLeft="tiny"
+              paddingLeft="12px"
               paddingRight="tiny"
-              justify="center"
               onContextMenu={(event) => {
                 event.stopPropagation();
               }}
@@ -1481,9 +1483,8 @@ const TaskTemplateGroupHeader = ({
                   ({ identifier: id }) => id === TaskItemColumn.COMPLETED_DATE,
                 )?.columnWidth
               }
-              paddingLeft="tiny"
+              paddingLeft="12px"
               paddingRight="tiny"
-              justify="center"
               onContextMenu={(event) => {
                 event.stopPropagation();
               }}
@@ -1509,8 +1510,7 @@ const TaskTemplateGroupHeader = ({
                   ({ identifier: id }) => id === TaskItemColumn.COMPLETED_BY,
                 )?.columnWidth
               }
-              justify="center"
-              paddingLeft="small"
+              paddingLeft="12px"
               paddingRight="small"
               onContextMenu={(event) => {
                 event.stopPropagation();
@@ -1544,9 +1544,8 @@ const TaskTemplateGroupHeader = ({
                   ({ identifier: id }) => id === TaskItemColumn.ELAPSED_TIME,
                 )?.columnWidth
               }
-              paddingLeft="tiny"
+              paddingLeft="12px"
               paddingRight="tiny"
-              justify="center"
               onContextMenu={(event) => {
                 event.stopPropagation();
               }}

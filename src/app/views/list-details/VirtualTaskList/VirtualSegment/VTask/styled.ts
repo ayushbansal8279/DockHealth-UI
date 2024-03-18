@@ -1,5 +1,6 @@
 import palette from '@/app/styles/palette';
 import styled from '@mui/styled-engine';
+import palette from 'styles/palette';
 
 export const VTask = styled('div')`
   display: flex;
@@ -23,5 +24,17 @@ export const VTask = styled('div')`
   & > * > * > * > * {
     left: ${({ isTaskTemplate }: boolean) =>
       isTaskTemplate ? ' 55.5px' : '54.5px'};
+  }
+`;
+
+export const QuickAddContainer = styled('div')`
+  border-left: 1px solid ${palette.coolGrey3};
+  width: 70%;
+  margin-left: 89.5px;
+  margin-top: -1px;
+  margin-bottom: 1px;
+
+  &:hover {
+    border-left: 1px solid ${palette.coolGrey2};
   }
 `;

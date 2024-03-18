@@ -92,7 +92,7 @@ const GroupSelectStep = ({
                 setSelectedGroup(null);
               }}
             >
-              <ArrowBackIcon />
+              <ArrowBackIcon color='warning'/>
             </button>
             <Title>{selectedList.listName}</Title>
           </TitleWithButtonWrapper>

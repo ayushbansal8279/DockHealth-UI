@@ -55,13 +55,14 @@ const QuickAddSubtask = ({
 
   const handleTextEditorKeyEnter = (value) => {
     onSubtaskAdded('Quick add input');
+    resetInputState()
     dispatch(
       addSubtask(parentTaskIdentifier, {
         description: value,
         taskListIdentifier,
       }),
     )
-      .then(resetInputState)
+      // .then(resetInputState)
       .catch(resetInputState);
   };
 

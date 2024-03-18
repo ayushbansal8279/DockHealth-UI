@@ -409,6 +409,9 @@ export const leaveOrganization = (organizationIdentifier) =>
     .delete(`/user/leaveOrganization/${organizationIdentifier}`)
     .then(({ data }) => data);
 
+export const deleteOrganization = (orgId) =>
+  axios.delete(`/organization/${orgId}`);
+
 export function selectCurrentOrganizationWithRedirection(
   organizationIdentifier,
   redirectionLink,

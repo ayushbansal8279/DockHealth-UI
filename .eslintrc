@@ -111,6 +111,8 @@
     "unicorn/error-message": "off",
     "react/jsx-no-useless-fragment": "off",
     "react/no-unstable-nested-components": "off",
-    "sonarjs/prefer-immediate-return": "off"
+    "sonarjs/prefer-immediate-return": "off",
+    "sonarjs/no-duplicate-string": "off",
+    "react/forbid-prop-types": "off"
   }
 }

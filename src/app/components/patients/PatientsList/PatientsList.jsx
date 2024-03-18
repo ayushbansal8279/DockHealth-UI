@@ -65,6 +65,8 @@ const PatientsList = ({
   hasImportErrors,
   isFetching,
   refreshPatients,
+  isDynamicPatientList,
+  searchValue,
 }) => {
   const { pathname } = useLocation();
   const history = useHistory();
@@ -469,11 +471,16 @@ const PatientsList = ({
               </Grid>
             </Grid>
           ) : (
-            <EmptyFilteredPatientsList
-              isFiltered={isFiltered}
-              isFetching={isFetching}
-              refreshPatients={refreshPatients}
-            />
+            <>
+              {!isDynamicPatientList && (
+                <EmptyFilteredPatientsList
+                  isFiltered={isFiltered}
+                  isFetching={isFetching}
+                  refreshPatients={refreshPatients}
+                  searchValue={searchValue}
+                />
+              )}
+            </>
           )}
         </>
       )}

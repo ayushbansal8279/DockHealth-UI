@@ -77,16 +77,6 @@ const OrganizationOwnerForm = ({
             disabled={disabled}
           />
         )}
-        <Grid container direction="row" justifyContent="center">
-          {Object.values(FormStep).map((value) => (
-            <Step
-              key={value}
-              isCurrent={currentFormStep >= value}
-              isDisabled
-              type="button"
-            />
-          ))}
-        </Grid>
         <Spacing vertical={4} />
       </FormProvider>
     </FormWrapper>

@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import palette, { opacify } from 'styles/palette';
 import { fontWeights } from 'styles/font';
-import { Grid } from '@mui/material';
+import { Grid, Typography } from '@mui/material';
 import spacing from 'styles/spacing';
 
 export const ToolbarContainer = styled(Grid)`
@@ -32,37 +32,75 @@ export const DashboardTabsContainer = styled.div`
   display: flex;
 `;
 
+export const DashboardTabsNumericalBadgeContainer = styled.div`
+  width: 20px;
+  height: 20px;
+  border-radius: 13px;
+  border: 1px solid
+    ${({ isActive }) => (isActive ? palette.crystalBlue : palette.iron)};
+  color: ${({ isActive }) =>
+    isActive ? palette.crystalBlue : palette.coolGrey1};
+  background: ${({ isActive }) =>
+    isActive ? palette.whiteSmoke : palette.lightGrey2};
+  // padding: 4px 7px 4px 7px;
+  gap: 7px;
+  margin-left: 6px;
+`;
+
+export const DashboardTabsNumericalBadge = styled(Typography)`
+  color: ${({ isActive }) =>
+    isActive ? palette.crystalBlue : palette.coolGrey1};
+  font-family: Outfit;
+  font-weight: 500;
+  font-size: 11px;
+  line-height: 11.19px;
+  &.MuiTypography-root {
+    text-align: center;
+  }
+  margin-top: 4px;
+`;
+
+export const DashboardTabsLabel = styled(Typography)`
+  color: ${({ isActive }) => (isActive ? palette.offBlack : palette.coolGrey1)};
+  font-family: Outfit;
+  font-weight: ${({ isActive }) => (isActive ? '600' : '400')};
+  font-size: 18px;
+  line-height: 22.68px;
+`;
+
 export const DashboardQuickFilterContainer = styled.div`
   display: flex;
 `;
 
 export const DashboardQuickFilter = styled.div`
-  margin-left: 5px;
   width: fit-content;
+  height: 32px;
+  padding: 10px 8px 10px 8px;
+  border-radius: 4px;
+  gap: 6px;
+  margin-left: 10px;
   display: flex;
-  height: 40px;
   align-items: center;
   text-align: center;
-  padding: 10px;
-  background-color: ${(props) =>
-    props.active ? palette.whiteSmoke : opacify(palette.zinc, 0)};
-  border-radius: ${(props) => (props.active ? '5px' : '0px')};
-  // cursor: ${(props) => (props.active ? '' : 'pointer')};
+  background-color: ${palette.whiteSmoke};
+  cursor: pointer;
 `;
 
 export const DashboardQuickFilterLabel = styled.div`
-  // display: flex;
+  font-family: Outfit;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 11px;
+  letter-spacing: 0em;
   text-align: center;
-  color: ${(props) => (props.active ? palette.newBrightBlue : palette.zinc)};
+  color: ${(props) =>
+    props.active ? palette.newBrightBlue : palette.shadowBlue};
 `;
 
 export const DashboardQuickFilterClear = styled.div`
-  // display: flex;
-  padding: 2px 0px 0px 5px;
+  padding: 2px 0px 0px 0px;
   align-items: center;
-  // width: auto;
   cursor: pointer;
-  // background: red;
   color: ${palette.coolGrey1};
 `;
 

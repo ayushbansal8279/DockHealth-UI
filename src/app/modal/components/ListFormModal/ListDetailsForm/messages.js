@@ -1,8 +1,8 @@
 const messages = {
   form: {
-    listName: { label: 'List name' },
+    listName: { label: 'Name your list' },
     description: {
-      label: 'Description',
+      label: 'Add a description of your list',
       placeholder: 'Do you want to add a desciption for the list?',
     },
     admins: {

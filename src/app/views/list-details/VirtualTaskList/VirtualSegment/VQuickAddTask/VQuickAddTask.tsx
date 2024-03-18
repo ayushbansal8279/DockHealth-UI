@@ -10,6 +10,7 @@ import { taskCountersSelector } from '../../../../../selectors/list-details-sele
 import { selectedUserOrganizationSelector } from '../../../../../selectors/user-selectors';
 import TaskTemplateApplicator from 'components/task-template/TaskTemplateApplicator/TaskTemplateApplicator';
 import { applyTaskTemplate } from 'actions/list-details-actions';
+import { TaskOrigin } from '@/app/helpers/task-helpers';
 
 export interface Props extends Segment {
   taskGroupIdentifier: string;
@@ -104,6 +105,8 @@ function VQuickAddTask(
         <TaskTemplateApplicator
           onTemplateSelect={applyTemplate}
           bulkApply={false}
+          isWorkflowSearch
+          origin={TaskOrigin.LIST}
         />
       </Sc.TaskTemplateApplicatorContainer>
     </Sc.VQuickAddTaskContainer>

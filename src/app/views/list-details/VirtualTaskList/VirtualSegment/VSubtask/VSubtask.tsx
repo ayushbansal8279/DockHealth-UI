@@ -1,16 +1,21 @@
-import React, { ForwardedRef, forwardRef } from 'react';
+import React, { ForwardedRef, forwardRef, useEffect, useState } from 'react';
 import { Segment } from 'views/list-details/modules/Virtualized';
 import StandardTaskItem from 'components/task/StandardTaskItem/StandardTaskItem';
 import { getSubtaskStylingLink } from 'components/task/StandardTaskItem/helpers';
+import QuickAddSubtask from '@/app/components/task/StandardTaskItem/QuickAddSubtask';
 import {
   Draggable,
   DraggableProvided,
   DraggableStateSnapshot,
 } from 'react-beautiful-dnd';
 import * as Sc from './styled';
-import { TaskOrigin } from '@/app/helpers/task-helpers';
-import { searchTermSelector } from '@/app/selectors/list-details-selectors';
 import { useSelector } from 'react-redux';
+import { taskLookupSelector } from '@/app/selectors/task-details-selectors';
+import { TaskOrigin } from '@/app/helpers/task-helpers';
+import {
+  searchTermSelector,
+  taskDetailsSortSelector,
+} from '@/app/selectors/list-details-selectors';
 import { megaFilterSelector } from '@/app/selectors/mega-filter-selectors';
 import palette from '@/app/styles/palette';
 
@@ -33,9 +38,27 @@ function VSubtask(
     return false;
   };
 
+  const [subtaskQuickAddOpen, setSubtaskQuickAddOpen] = useState(false);
+
+  const pulledTask = useSelector((state) => {
+    // @ts-ignore
+    return taskLookupSelector(state, origin, metadata.parent.id);
+  });
+
+  const parentTask = pulledTask;
+
+  useEffect(() => {
+    setSubtaskQuickAddOpen(parentTask?.subtaskQuickAddOpen);
+  }, [parentTask]);
+
+  // @ts-ignore
+  const noOfSubtask = metadata.parent?.children.length - 1;
+
   const searchValue = useSelector(searchTermSelector);
   const megaFilter = useSelector(megaFilterSelector);
+  const sort = useSelector(taskDetailsSortSelector);
   const { selectedFilters } = megaFilter || {};
+
   return (
     <Draggable
       draggableId={metadata.id}
@@ -43,29 +66,51 @@ function VSubtask(
       key={metadata.id}
     >
       {(provided: DraggableProvided, snapshot: DraggableStateSnapshot) => (
-        <Sc.VSubtask
-          ref={ref}
-          {...register}
-          $subitem={metadata.level > 1}
-          isWorkflowSubtask={!!task}
-          searchValue={!!searchValue}
-          isFilterApply={!!selectedFilters}
-          bgColor={bgColor}
-        >
-          {!!searchValue ||
-            !!selectedFilters ||
-            getSubtaskStylingLink(isLast())}
-          <StandardTaskItem
-            // @ts-ignore
-            taskIdentifier={metadata.id}
-            draggableProvided={provided}
-            isDraggable
-            isDragging={snapshot.isDragging}
+        <>
+          <Sc.VSubtask
+            ref={ref}
+            {...register}
+            $subitem={metadata.level > 1}
             isWorkflowSubtask={!!task}
-            origin={TaskOrigin.LIST}
-            pageBackground={bgColor ? palette.aliceBlue : ''}
-          />
-        </Sc.VSubtask>
+            searchValue={!!searchValue}
+            isFilterApply={
+              !!selectedFilters
+                ? Object.keys(selectedFilters).length > 0
+                : !!selectedFilters
+            }
+            isSortApplied={!!sort.key}
+            bgColor={bgColor}
+          >
+            {!!searchValue ||
+              (!!selectedFilters
+                ? Object.keys(selectedFilters).length > 0
+                : !!selectedFilters) ||
+              !!sort.key ||
+              getSubtaskStylingLink(isLast())}
+            <StandardTaskItem
+              // @ts-ignore
+              taskIdentifier={metadata.id}
+              draggableProvided={provided}
+              isDraggable
+              isDragging={snapshot.isDragging}
+              isWorkflowSubtask={!!task}
+              isSubtask
+              origin={TaskOrigin.LIST}
+              isNestedTask
+              pageBackground={bgColor ? palette.aliceBlue : ''}
+            />
+          </Sc.VSubtask>
+          {metadata.sameLevelIndex === noOfSubtask && subtaskQuickAddOpen && (
+            <Sc.QuickAddContainer>
+              <QuickAddSubtask
+                taskListIdentifier={parentTask.taskList.taskListIdentifier}
+                parentTaskIdentifier={parentTask.identifier}
+                // onFocus={handleQuickAddOnFocus}
+                // origin={TaskOrigin.LIST}
+              />
+            </Sc.QuickAddContainer>
+          )}
+        </>
       )}
     </Draggable>
   );

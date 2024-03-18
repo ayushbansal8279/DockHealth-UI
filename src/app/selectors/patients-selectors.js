@@ -72,3 +72,8 @@ export const filtersActiveSelector = createSelector(
   patientsStateSelector,
   ({ currentPatientsList }) => !!currentPatientsList?.selectedFilters,
 );
+
+export const selectedDynamicPatientListFilterSelector = createSelector(
+  patientsStateSelector,
+  ({ selectedDynamicPatientListFilter }) => selectedDynamicPatientListFilter,
+);

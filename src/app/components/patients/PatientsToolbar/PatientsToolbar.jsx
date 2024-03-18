@@ -19,6 +19,7 @@ import {
 import {
   DefaultPatientListUrl,
   DefaultPatientsListType,
+  PatientsListType,
 } from 'helpers/patient-list-helpers';
 import {
   userProfileSelector,
@@ -62,7 +63,7 @@ const OPTIONS = [
   },
 ];
 
-const PatientsToolbar = () => {
+const PatientsToolbar = ({ searchValue, setSearchValue }) => {
   const [isSidebarOpen, setIsSidebarOpen, unsetIsSidebarOpen] =
     useBoolean(false);
   const { 0: filterOpen, 2: closeFilter, 3: toggleFilter } = useBoolean(false);
@@ -70,7 +71,6 @@ const PatientsToolbar = () => {
   const history = useHistory();
   const dispatch = useDispatch();
   // const searchValue = useSelector(patientsListSearchTermSelector);
-  const [searchValue, setSearchValue] = useState(null);
   const filtersActive = useSelector(filtersActiveSelector);
   const listIdentifier = useSelector(currentPatientsListIdentifierSelector);
   const currentUser = useSelector(userProfileSelector);
@@ -96,9 +96,7 @@ const PatientsToolbar = () => {
     setSearchValue(searchTerm);
     dispatch(PatientsActions.changePatientsSearchTerm(searchTerm));
     dispatch(PatientsActions.clearPatients());
-    if (searchTerm === '') {
-      dispatch(PatientsActions.clearPatientSearch());
-    }
+    dispatch(PatientsActions.clearPatientSearch());
   };
 
   const handleSearch = useCallback(() => {
@@ -136,36 +134,46 @@ const PatientsToolbar = () => {
     !emrIntegrationEnabled ||
     (emrIntegrationEnabled && quickAddPatientEnabledItem?.value === 'true');
 
+  const isDynamicPatientList =
+    listIdentifierParameter?.toUpperCase() ===
+    PatientsListType.DYNAMIC.toUpperCase();
+
   return (
     <>
       <Box p="16px">
         <Box display="flex" width="100%">
           <Box display="flex" flex={1} alignItems="center">
-            <Box width="300px">
-              <SearchInput
-                value={searchValue}
-                onValueChange={handleSearchChange}
-                onKeyEnter={handleSearch}
-              />
-            </Box>
+            {!isDynamicPatientList && (
+              <Box width="300px">
+                <SearchInput
+                  value={searchValue}
+                  onValueChange={handleSearchChange}
+                  onKeyEnter={handleSearch}
+                />
+              </Box>
+            )}
             <Box m={1} />
-            <ButtonWrapper onClick={handleSearch}>Search</ButtonWrapper>
-            <Box>
-              <ToolbarSelect
-                options={OPTIONS}
-                value={optionBasedUrl}
-                name="patient-list-type"
-                onChange={onListTypeChange}
-                icon={
-                  <PatientsListImg
-                    src={TasksStatusSwitchIcon}
-                    alt="list type icon"
-                    iconColorFilterActive={iconColorFilterActiveItem?.value}
-                  />
-                }
-                iconColorActive={iconColorActiveItem?.value}
-              />
-            </Box>
+            {!isDynamicPatientList && (
+              <ButtonWrapper onClick={handleSearch}>Search</ButtonWrapper>
+            )}
+            {!isDynamicPatientList && (
+              <Box>
+                <ToolbarSelect
+                  options={OPTIONS}
+                  value={optionBasedUrl}
+                  name="patient-list-type"
+                  onChange={onListTypeChange}
+                  icon={
+                    <PatientsListImg
+                      src={TasksStatusSwitchIcon}
+                      alt="list type icon"
+                      iconColorFilterActive={iconColorFilterActiveItem?.value}
+                    />
+                  }
+                  iconColorActive={iconColorActiveItem?.value}
+                />
+              </Box>
+            )}
             <Box m={1} />
             <Box>
               <CustomizeToolbarButton
@@ -173,29 +181,31 @@ const PatientsToolbar = () => {
               />
             </Box>
             <Box m={1} />
-            <FilterButton
-              ref={filterButtonReference}
-              active={filtersActive}
-              onClick={toggleFilter}
-              isOpen={filterOpen}
-              onClear={() => dispatch(PatientsActions.clearPatientsFilters())}
-            />
+            {!isDynamicPatientList && (
+              <FilterButton
+                ref={filterButtonReference}
+                active={filtersActive}
+                onClick={toggleFilter}
+                isOpen={filterOpen}
+                onClear={() => dispatch(PatientsActions.clearPatientsFilters())}
+              />
+            )}
           </Box>
-          <Box display="flex" alignItems="center">
-            {patientAddEnabled &&
-              listIdentifier &&
-              (listIdentifier === DefaultPatientsListType.ALL_PATIENTS ||
-                listIdentifier === DefaultPatientsListType.ACTIVE_PATIENTS) && (
-                <AddEntitiesContainer>
-                  <AddButton onClick={setIsSidebarOpen}>
-                    Add a {customerTypeLabel}
-                  </AddButton>
-                </AddEntitiesContainer>
-              )}
-          </Box>
+          {!isDynamicPatientList &&
+            patientAddEnabled &&
+            listIdentifier &&
+            (listIdentifier === DefaultPatientsListType.ALL_PATIENTS ||
+              listIdentifier === DefaultPatientsListType.ACTIVE_PATIENTS) && (
+              <AddEntitiesContainer>
+                <AddButton onClick={setIsSidebarOpen}>
+                  Add a {customerTypeLabel}
+                </AddButton>
+              </AddEntitiesContainer>
+            )}
         </Box>
       </Box>
-      {emrEntegrationExperience &&
+      {!isDynamicPatientList &&
+        emrEntegrationExperience &&
         !searchValue &&
         (emrIntegrationType === 'FHIR' ? (
           <SearchHelperText>
@@ -209,7 +219,7 @@ const PatientsToolbar = () => {
             in Dock.
           </SearchHelperText>
         ))}
-      {!emrEntegrationExperience && !searchValue && (
+      {!isDynamicPatientList && !emrEntegrationExperience && !searchValue && (
         <>
           <SearchHelperText>
             Search by first name, last name or medical record number. You may
