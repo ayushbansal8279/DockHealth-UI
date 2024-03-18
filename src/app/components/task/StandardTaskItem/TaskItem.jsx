@@ -1472,7 +1472,7 @@ const TaskItem = React.memo(
                           identifier === TaskItemColumn.START_DATE,
                       )?.columnWidth
                     }
-                    paddingLeft="10px"
+                    paddingLeft="12px"
                     paddingRight="tiny"
                     justify="flex-start"
                     onContextMenu={(event) => {
@@ -1505,7 +1505,7 @@ const TaskItem = React.memo(
                             identifier === TaskItemColumn.DUE_DATE,
                         )?.columnWidth
                       }
-                      paddingLeft="10px"
+                      paddingLeft="12px"
                       paddingRight="tiny"
                       justify="flex-start"
                       onContextMenu={(event) => {
@@ -1557,8 +1557,7 @@ const TaskItem = React.memo(
                       )?.columnWidth
                     }
                     // eslint-disable-next-line sonarjs/no-duplicate-string
-                    justify={multipleAssigneesContext ? 'flex-start' : 'center'}
-                    paddingLeft="small"
+                    paddingLeft="12px"
                     paddingRight="small"
                     onContextMenu={(event) => {
                       event.stopPropagation();
@@ -1595,8 +1594,7 @@ const TaskItem = React.memo(
                       )?.columnWidth
                     }
                     // eslint-disable-next-line sonarjs/no-duplicate-string
-                    justify={multipleAssigneesContext ? 'flex-start' : 'center'}
-                    paddingLeft="small"
+                    paddingLeft="12px"
                     paddingRight="small"
                     onContextMenu={(event) => {
                       event.stopPropagation();
@@ -1631,8 +1629,7 @@ const TaskItem = React.memo(
                           identifier === TaskItemColumn.CREATED_BY,
                       )?.columnWidth
                     }
-                    justify={multipleAssigneesContext ? 'flex-start' : 'center'}
-                    paddingLeft="small"
+                    paddingLeft="12px"
                     paddingRight="small"
                     onContextMenu={(event) => {
                       event.stopPropagation();
@@ -1668,9 +1665,8 @@ const TaskItem = React.memo(
                             identifier === TaskItemColumn.CREATED_DATE,
                         )?.columnWidth
                       }
-                      paddingLeft="tiny"
+                      paddingLeft="12px"
                       paddingRight="tiny"
-                      justify="center"
                       onContextMenu={(event) => {
                         event.stopPropagation();
                       }}
@@ -1698,9 +1694,8 @@ const TaskItem = React.memo(
                             identifier === TaskItemColumn.COMPLETED_DATE,
                         )?.columnWidth
                       }
-                      paddingLeft="tiny"
+                      paddingLeft="12px"
                       paddingRight="tiny"
-                      justify="center"
                       onContextMenu={(event) => {
                         event.stopPropagation();
                       }}
@@ -1727,8 +1722,7 @@ const TaskItem = React.memo(
                           identifier === TaskItemColumn.COMPLETED_BY,
                       )?.columnWidth
                     }
-                    justify={multipleAssigneesContext ? 'flex-start' : 'center'}
-                    paddingLeft="small"
+                    paddingLeft="12px"
                     paddingRight="small"
                     onContextMenu={(event) => {
                       event.stopPropagation();
@@ -1768,9 +1762,8 @@ const TaskItem = React.memo(
                             identifier === TaskItemColumn.ELAPSED_TIME,
                         )?.columnWidth
                       }
-                      paddingLeft="tiny"
+                      paddingLeft="12px"
                       paddingRight="tiny"
-                      justify="center"
                       onContextMenu={(event) => {
                         event.stopPropagation();
                       }}
