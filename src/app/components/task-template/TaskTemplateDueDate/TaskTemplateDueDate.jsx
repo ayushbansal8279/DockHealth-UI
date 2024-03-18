@@ -12,7 +12,7 @@ import spacing from 'styles/spacing';
 import { AddPlaceholder } from './styled';
 
 const TaskTemplateDueDate = (props) => {
-  const { workflow, disabled = false, isDateHover } = props;
+  const { workflow, disabled = false, isHover } = props;
   const { identifier, dueDateTime, reminderType } = workflow || {};
   const dispatch = useDispatch();
 
@@ -53,7 +53,7 @@ const TaskTemplateDueDate = (props) => {
         />
       ) : (
         <>
-          {isDateHover ? (
+          {isHover ? (
             <Tooltip placement="top" title="Add Due Date">
               <AddPlaceholder>
                 <div style={{ display: 'flex' }}>

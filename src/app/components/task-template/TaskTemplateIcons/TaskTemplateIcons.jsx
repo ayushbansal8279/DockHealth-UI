@@ -21,6 +21,7 @@ const TaskTemplateIcons = ({
   matchAttachments,
   comments,
   matchComments,
+  isHover,
 }) => {
   const { restrictions } = workflow ?? {};
 
@@ -66,11 +67,13 @@ const TaskTemplateIcons = ({
             }
           >
             <button type="button" onClick={onCommentClick}>
-              <TaskIcon
-                type="comments"
-                isActive={comments?.length > 0}
-                // isNew={workflow?.updatedComment}
-              />
+              {(comments?.length > 0 || isHover.comment) && (
+                <TaskIcon
+                  type="comments"
+                  isActive={comments?.length > 0}
+                  // isNew={workflow?.updatedComment}
+                />
+              )}
             </button>
           </Tooltip>
         </GridImg>
@@ -96,11 +99,13 @@ const TaskTemplateIcons = ({
               type="button"
               onClick={onLabelClick}
             >
-              <TaskIcon
-                type="labels"
-                isActive={labels?.length > 0}
-                // isNew={workflow?.updatedLabel}
-              />
+              {(labels?.length > 0 || isHover.label) && (
+                <TaskIcon
+                  type="labels"
+                  isActive={labels?.length > 0}
+                  // isNew={workflow?.updatedLabel}
+                />
+              )}
             </button>
           </Tooltip>
         </GridImg>
@@ -116,11 +121,13 @@ const TaskTemplateIcons = ({
             }
           >
             <button type="button" onClick={onAttachmentsClick}>
-              <TaskIcon
-                type="attachments"
-                isActive={attachments?.length > 0}
-                // isNew={workflow?.updatedAttachment}
-              />
+              {(attachments?.length > 0 || isHover.file) && (
+                <TaskIcon
+                  type="attachments"
+                  isActive={attachments?.length > 0}
+                  // isNew={workflow?.updatedAttachment}
+                />
+              )}
             </button>
           </Tooltip>
         </GridImg>
