@@ -39,6 +39,7 @@ export const SUBSCRIPTION_PLANS = [
     ],
     comingSoonFeatures: [],
     disclaimers: [],
+    minimumUsers: 0,
   },
   {
     key: SubscriptionPlan.PREMIUM,
@@ -65,6 +66,7 @@ export const SUBSCRIPTION_PLANS = [
     ],
     comingSoonFeatures: [],
     disclaimers: [],
+    minimumUsers: 0,
   },
   {
     key: SubscriptionPlan.PRO,
@@ -96,6 +98,7 @@ export const SUBSCRIPTION_PLANS = [
     disclaimers: [
       '*Additional fees and subscription to a third-party service may be required',
     ],
+    minimumUsers: 10,
   },
   {
     key: SubscriptionPlan.ENTERPRISE,
@@ -121,6 +124,7 @@ export const SUBSCRIPTION_PLANS = [
     ],
     comingSoonFeatures: [],
     disclaimers: [],
+    minimumUsers: 0,
   },
 ];
 
