@@ -9,6 +9,7 @@ const EmptyFilteredPatientsList = ({
   isFiltered,
   isFetching,
   refreshPatients,
+  searchValue,
 }) => {
   const currentUser = useSelector(userProfileSelector);
   const customerTypeLabel = getCustomerTypeLabel(currentUser);
@@ -27,7 +28,7 @@ const EmptyFilteredPatientsList = ({
             <strong>There are no matching {customerTypeLabel}s.</strong>
           </p>
         )}
-        {!isFiltered && (
+        {!isFiltered && !searchValue && (
           <p>
             <ActionButton
               type="button"
