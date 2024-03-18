@@ -17,7 +17,10 @@ import Avatar from '../Avatar/Avatar';
 import { TooltipContent } from './styled';
 
 const UserAvatar = React.forwardRef(
-  ({ user, color, size, isSelected, hideTooltip, onClick }, reference) => {
+  (
+    { user, color, size, isSelected, hideTooltip, onClick, isListPage },
+    reference,
+  ) => {
     const activeUsersList = useSelector(activeUsersListSelector);
     const {
       name,
@@ -81,7 +84,11 @@ const UserAvatar = React.forwardRef(
             pictureSrc={pictureSource}
             // eslint-disable-next-line sonarjs/no-nested-template-literals
             name={`${name}${credentials ? `, ${credentials}` : ''}`}
-            activityStatus={activityStatus}
+            activityStatus={
+              isListPage && activityStatus === ActivityStatus.ONLINE
+                ? activityStatus
+                : ''
+            }
             isBlurred={isInactive}
             color={color || bubbleColor}
             size={size}
