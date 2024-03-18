@@ -20,9 +20,8 @@ const TaskTemplateDate = ({ dateTime, title, workflow }) => {
           timeFormat="HH:mm"
         />
       ) : (
-        <div>
-          <TaskIcon type="calendar" />
-        </div>
+        <>
+        </>
       )}
     </Tooltip>
   );
