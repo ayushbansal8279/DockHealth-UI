@@ -14,12 +14,12 @@ import {
   DraggableProvided,
   DraggableStateSnapshot,
 } from 'react-beautiful-dnd';
+import QuickAddSubtask from '@/app/components/task/StandardTaskItem/QuickAddSubtask';
+import { taskLookupSelector } from '@/app/selectors/task-details-selectors';
+import { useSelector } from 'react-redux';
 import * as Sc from './styled';
 import { TaskOrigin } from '@/app/helpers/task-helpers';
 import palette from '@/app/styles/palette';
-import { useSelector } from 'react-redux';
-import { taskLookupSelector } from '@/app/selectors/task-details-selectors';
-import QuickAddSubtask from '@/app/components/task/StandardTaskItem/QuickAddSubtask';
 
 export interface Props extends Segment {
   isTaskTemplate: boolean;
@@ -89,9 +89,8 @@ function VTask(
             isTaskTemplate={isTaskTemplate}
             isLastChild={isLastChild || false}
             origin={TaskOrigin.LIST}
-            pageBackground={bgColor ? palette.aliceBlue : ''}
             bgColor={bgColor}
-            isLastTaskOfGroup={isLastTaskOf
+            isLastTaskOfGroup={isLastTaskOfGroup}
           >
             <StandardTaskItem
               // @ts-ignore
@@ -102,6 +101,7 @@ function VTask(
               isTaskTemplate={isTaskTemplate}
               isLastChild={isLastChild || false}
               origin={TaskOrigin.LIST}
+              pageBackground={bgColor ? palette.aliceBlue : ''}
               isNestedTask
             />
           </Sc.VTask>
