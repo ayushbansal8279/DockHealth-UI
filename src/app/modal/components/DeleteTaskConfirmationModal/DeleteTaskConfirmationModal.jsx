@@ -4,7 +4,7 @@ import DeleteConfirmationModal from '../DeleteConfirmationModal/DeleteConfirmati
 const DeleteTaskConfirmationModal = (props) => {
   const { isSubtask, ...restProps } = props;
 
-  const title = `Delete ${isSubtask ? 'SUB' : ''}task`;
+  const title = `Delete ${isSubtask ? 'Sub' : ''}task`;
   const description = `Are you sure you want to delete this ${
     isSubtask ? 'sub' : ''
   }task? This action cannot be undone.`;

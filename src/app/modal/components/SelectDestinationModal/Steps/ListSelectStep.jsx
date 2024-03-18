@@ -69,7 +69,7 @@ const ListSelectStep = ({
 
   return (
     <Step>
-      <Title>LISTS</Title>
+      <Title>Move To List</Title>
       <Box m={1} />
       <ListsWrapper>
         {!isFetchingLists && (
