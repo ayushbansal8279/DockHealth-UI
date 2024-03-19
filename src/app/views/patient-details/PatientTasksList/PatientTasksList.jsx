@@ -429,6 +429,7 @@ const PatientTasksListView = () => {
                 <TaskListToolbar
                   lists={filteredLists}
                   currentList={activeList}
+                  isPatientView
                 />
               </StickyContainer>
               <Box py={0.5} />
