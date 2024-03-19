@@ -8,7 +8,7 @@ export const Select = styled(MuiSelect)`
   background: ${(props) =>
     props.isOpen ? palette.newBrightBlue : palette.newDarkBlue};
   color: ${palette.white};
-  height: 40px;
+  height: 32px;
   width: auto;
   border-radius: 4px;
 
@@ -30,7 +30,7 @@ export const SelectWrapper = styled.div`
 
 export const SelectIcon = styled.span`
   border-right: 2px solid ${palette.white};
-  height: 40px;
+  height: 32px;
   display: flex;
   align-items: center;
   padding-right: 10px;
