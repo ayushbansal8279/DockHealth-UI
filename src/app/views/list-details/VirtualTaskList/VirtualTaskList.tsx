@@ -1,4 +1,4 @@
-import React, { createContext, useMemo, useReducer } from 'react';
+import React, { createContext, useMemo, useReducer, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { uniqueId } from 'lodash';
 import Virtualized, { Node } from 'views/list-details/modules/Virtualized';
@@ -19,6 +19,9 @@ export interface Props {
 export const CollapseContext = createContext({
   get: (id: string) => {},
   set: (id: string, value: boolean) => {},
+  workflowIdentifierMap: [],
+  handleAddWorkflowIdentifier: {},
+  handleRemoveWorkflowIdentifier: {},
 });
 
 // @ts-ignore
@@ -52,10 +55,20 @@ function VirtualTaskList({ groupedTasks }: Props) {
     },
     {},
   );
+  const [workflowIdentifierMap, setWorkflowIdentifierMap] = useState([]);
   // @ts-ignore
   const tasksMap = useSelector((state) => state.listDetails.tasksMap);
   // @ts-ignore
   const listGroups = useSelector((state) => state.listDetails.listGroups);
+  const handleAddWorkflowIdentifier = (identifier) => {
+    setWorkflowIdentifierMap([...workflowIdentifierMap, identifier]);
+  };
+  const handleRemoveWorkflowIdentifier = (identifier) => {
+    const newArray = workflowIdentifierMap.filter(
+      (item) => item !== identifier,
+    );
+    setWorkflowIdentifierMap(newArray);
+  };
   // const nodes: Node[] = useMemo(() => {
   //   // @ts-ignore
   //   return listGroups
@@ -259,6 +272,9 @@ function VirtualTaskList({ groupedTasks }: Props) {
     set: (id: string, value: boolean) => {
       collapseDispatch([id, value]);
     },
+    workflowIdentifierMap: workflowIdentifierMap,
+    handleAddWorkflowIdentifier: handleAddWorkflowIdentifier,
+    handleRemoveWorkflowIdentifier: handleRemoveWorkflowIdentifier,
   };
 
   return (
