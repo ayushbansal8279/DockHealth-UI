@@ -23,6 +23,7 @@ const TaskItemIcons = ({
   attachments,
   dispatch,
   restrictions,
+  isHover,
 }) => {
   const onCommentClick = useCallback(() => {
     dispatch(openDrawer(DrawerFieldEnum.COMMENT));
@@ -84,11 +85,13 @@ const TaskItemIcons = ({
               type="button"
               onClick={onLabelClick}
             >
-              <TaskIcon
-                type="labels"
-                isActive={labels?.length > 0}
-                isNew={task.updatedLabel}
-              />
+              {(labels?.length > 0 || isHover.label) && (
+                <TaskIcon
+                  type="labels"
+                  isActive={labels?.length > 0}
+                  isNew={task.updatedLabel}
+                />
+              )}
             </button>
           </Tooltip>
         </GridImg>
@@ -104,11 +107,13 @@ const TaskItemIcons = ({
             }
           >
             <button type="button" onClick={onAttachmentsClick}>
-              <TaskIcon
-                type="attachments"
-                isActive={attachments?.length > 0}
-                isNew={task.updatedAttachment}
-              />
+              {(attachments?.length > 0 || isHover.file) && (
+                <TaskIcon
+                  type="attachments"
+                  isActive={attachments?.length > 0}
+                  isNew={task.updatedAttachment}
+                />
+              )}
             </button>
           </Tooltip>
         </GridImg>

@@ -12,6 +12,7 @@ const TaskTemplateMembers = ({
   workflow = {},
   onWorkflowUpdate,
   readOnly,
+  isHover,
 }) => {
   const {
     assignedToUsers = [],
@@ -55,11 +56,15 @@ const TaskTemplateMembers = ({
           <MemberGroup members={assignedToUsers} />
         </>
       ) : (
-        <Tooltip placement="top" title="Add assignee">
-          <div style={{ marginLeft: '10px' }}>
-            <AssignMemberIcon />
-          </div>
-        </Tooltip>
+        <>
+          {isHover && (
+            <Tooltip placement="top" title="Add assignee">
+              <div style={{ marginLeft: '2px' }}>
+                <AssignMemberIcon />
+              </div>
+            </Tooltip>
+          )}
+        </>
       )}
     </TaskItemPopover>
   );

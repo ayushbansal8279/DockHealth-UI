@@ -136,6 +136,14 @@ const TaskTemplateGroupHeader = ({
   const [nameInputValue, setNameInputValue] = useState(name);
   const [nameInputError, setNameInputError] = useState(false);
   const [isDateHover, setIsDateHover] = useState(false);
+  const [isCellHover, setCellHover] = useState({
+    dueDate: false,
+    startDate: false,
+    assignee: false,
+    comment: false,
+    label: false,
+    file: false,
+  });
   const nameInputReference = useRef(null);
   const currentUser = useSelector(userProfileSelector);
   const currentList = useSelector(currentTaskListSelector);
@@ -1138,10 +1146,11 @@ const TaskTemplateGroupHeader = ({
               paddingLeft="10px"
               justify="flex-start"
               order={getColumnOrder(TaskItemColumn.START_DATE)}
-              onMouseEnter={() => setIsDateHover(true)}
-              onMouseLeave={() => setIsDateHover(false)}
+              onMouseEnter={() => setCellHover({ startDate: true })}
+              onMouseLeave={() => setCellHover({ startDate: false })}
             >
               <TaskTemplateStartDate
+                isHover={isCellHover.startDate}
                 workflow={templateGroup}
                 disabled={restrictions?.startDate === DISABLED}
                 isDateHover={isDateHover}
@@ -1167,10 +1176,11 @@ const TaskTemplateGroupHeader = ({
               paddingLeft="10px"
               justify="flex-start"
               order={getColumnOrder(TaskItemColumn.DUE_DATE)}
-              onMouseEnter={() => setIsDateHover(true)}
-              onMouseLeave={() => setIsDateHover(false)}
+              onMouseEnter={() => setCellHover({ dueDate: true })}
+              onMouseLeave={() => setCellHover({ dueDate: false })}
             >
               <TaskTemplateDueDate
+                isHover={isCellHover.dueDate}
                 workflow={templateGroup}
                 disabled={restrictions?.dueDate === DISABLED}
                 isDateHover={isDateHover}
@@ -1215,8 +1225,11 @@ const TaskTemplateGroupHeader = ({
               }}
               order={getColumnOrder(TaskItemColumn.ASSIGNED)}
               printWidth={TaskItemColumnWidth[TaskItemColumn.ASSIGNED].PRINT}
+              onMouseEnter={() => setCellHover({ assignee: true })}
+              onMouseLeave={() => setCellHover({ assignee: false })}
             >
               <TaskTemplateMembers
+                isHover={isCellHover.assignee}
                 readOnly={restrictions?.assigment === READ_ONLY}
                 currentUser={currentUser}
                 multipleAssigneesContext={groupHasMultipleAssignees}
@@ -1293,8 +1306,11 @@ const TaskTemplateGroupHeader = ({
                 )?.columnWidth
               }
               order={getColumnOrder(TaskItemColumn.COMMENTS)}
+              onMouseEnter={() => setCellHover({ comment: true })}
+              onMouseLeave={() => setCellHover({ comment: false })}
             >
               <TaskTemplateIcons
+                isHover={isCellHover}
                 comments={
                   templateGroup.comments || !workFlowData
                     ? templateGroup.comments
@@ -1329,8 +1345,11 @@ const TaskTemplateGroupHeader = ({
                 )?.columnWidth
               }
               order={getColumnOrder(TaskItemColumn.LABELS)}
+              onMouseEnter={() => setCellHover({ label: true })}
+              onMouseLeave={() => setCellHover({ label: false })}
             >
               <TaskTemplateIcons
+                isHover={isCellHover}
                 labels={
                   templateGroup.labels || !workFlowData
                     ? templateGroup.labels
@@ -1365,8 +1384,11 @@ const TaskTemplateGroupHeader = ({
                 )?.columnWidth
               }
               order={getColumnOrder(TaskItemColumn.FILES)}
+              onMouseEnter={() => setCellHover({ file: true })}
+              onMouseLeave={() => setCellHover({ file: false })}
             >
               <TaskTemplateIcons
+                isHover={isCellHover}
                 attachments={
                   templateGroup.attachments || !workFlowData
                     ? templateGroup.attachments

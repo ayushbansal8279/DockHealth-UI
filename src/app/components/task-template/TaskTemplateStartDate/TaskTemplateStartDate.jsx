@@ -10,7 +10,7 @@ import spacing from 'styles/spacing';
 import { AddPlaceholder } from '../TaskTemplateDueDate/styled';
 
 const TaskTemplateStartDate = (props) => {
-  const { workflow, disabled = false, isDateHover } = props;
+  const { workflow, disabled = false, isHover } = props;
   const { identifier, startDateTime } = workflow || {};
   const dispatch = useDispatch();
 
@@ -48,7 +48,7 @@ const TaskTemplateStartDate = (props) => {
         <DateLabel date={startDateTime} tootipTitle="Edit Start Date" />
       ) : (
         <>
-          {isDateHover ? (
+          {isHover ? (
             <Tooltip placement="top" title="Add Due Date">
               <AddPlaceholder>
                 <div style={{ display: 'flex' }}>

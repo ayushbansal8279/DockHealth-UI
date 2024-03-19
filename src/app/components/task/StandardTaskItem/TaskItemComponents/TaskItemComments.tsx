@@ -13,12 +13,14 @@ interface TaskItemCommentsProps {
   matchComments: boolean;
   comments: Array<CommentDto>;
   task: Task;
+  isCommentHover: boolean;
 }
 
 const TaskItemComments: FC<TaskItemCommentsProps> = ({
   matchComments,
   comments,
   task,
+  isCommentHover,
 }) => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const commentPopperOpen = Boolean(anchorEl);
@@ -36,11 +38,13 @@ const TaskItemComments: FC<TaskItemCommentsProps> = ({
       <GridImg item xs={12} matched={matchComments}>
         <Tooltip placement="top" title="Add Comment">
           <button type="button" onClick={onCommentClick}>
-            <TaskIcon
-              type="comments"
-              isActive={comments?.length > 0}
-              isNew={task.updatedComment}
-            />
+            {(comments?.length > 0 || isCommentHover) && (
+              <TaskIcon
+                type="comments"
+                isActive={comments?.length > 0}
+                isNew={task.updatedComment}
+              />
+            )}
           </button>
         </Tooltip>
         <Popper
