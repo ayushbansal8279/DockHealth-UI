@@ -95,6 +95,7 @@ import {
 import TaskTemplateDetails from '../TaskTemplateDetails/TaskTemplateDetails';
 import { StickyColumnContainer } from '../../tasklist/TasksHeader/styled';
 import { ListPageContext } from '@/app/views/list-details/ListDetailsView';
+import { VTaskContext } from '@/app/views/list-details/VirtualTaskList/VirtualSegment/VTask/VTask';
 
 const TaskTemplateGroupHeader = ({
   templateGroup = {},
@@ -626,12 +627,15 @@ const TaskTemplateGroupHeader = ({
   const [virtualListWorkflowOpen, setVirtualListWorkflowOpen] = useState(
     collapse.get(identifier) ? false : true,
   );
+
+  const {handleWorkflowOpen} = useContext(VTaskContext)
   const handleOpen = () => {
     setOpen(!isOpen);
     setVirtualListWorkflowOpen(!virtualListWorkflowOpen);
     // eslint-disable-next-line react/destructuring-assignment
     // collapse.set(identifier, isOpen);
     collapse.set(identifier, virtualListWorkflowOpen);
+    handleWorkflowOpen(virtualListWorkflowOpen);
   };
 
   useEffect(() => {
