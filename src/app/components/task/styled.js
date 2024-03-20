@@ -448,6 +448,7 @@ export const StandardTaskItemContainer = styled.div`
     isLastChild
       ? `
     border-bottom: 1px solid rgba(75, 179, 253, 1);
+    border-bottom-left-radius: 9px;
   `
       : ''}
 

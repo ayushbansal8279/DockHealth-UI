@@ -781,6 +781,7 @@ const TaskItem = React.memo(
         if (order !== 0) return content;
         return (
           <StickyMainTaskItemCell
+            isLastChild={isLastChild}
             isWorkflowtask={isTaskTemplate}
             customWidthExists
             order={0}
