@@ -1,8 +1,8 @@
 import React from 'react';
-import ToolbarSelect from 'components/tasklist/ToolbarSelect/ToolbarSelect';
 import TasksStatusSwitchIcon from 'img/tasks-status-switch-icon.svg';
 import { TaskStatus } from 'helpers/task-helpers';
 import { ViewTypeImg } from './styled';
+import NewToolbarSelect from '../NewToolbarSelect/NewToolbarSelect';
 
 const OPTIONS = [
   {
@@ -22,9 +22,9 @@ const TaskStatusToolbarSelect = ({
   ...restProps
 }) => {
   return (
-    <ToolbarSelect
+    <NewToolbarSelect
       options={OPTIONS}
-      value={value || ''}
+      value={value}
       name="task-status"
       onChange={onChange}
       searchValue={searchValue}

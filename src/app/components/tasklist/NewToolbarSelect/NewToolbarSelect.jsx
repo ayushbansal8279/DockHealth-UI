@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { MenuItem, Box } from '@mui/material';
 import Button from 'components/common/v2/Button/Button';
 import zIndex from 'styles/z-index';
 import palette from 'styles/palette';
 import { Select, SelectWrapper, SelectIcon } from './styled';
 import Switch from '@mui/material/Switch';
+import { useDispatch } from 'react-redux';
+import { getCurrentListTasks } from '@/app/actions/list-details-actions';
 
 const NewToolbarSelect = ({
   options,
@@ -19,7 +21,6 @@ const NewToolbarSelect = ({
   const [checkedIncomplete, setCheckedIncomplete] = useState(true);
   const [checkedCompleted, setCheckedCompleted] = useState(false);
 
-
   const handleCheckedIncomplete = (event) => {
     setCheckedIncomplete(event.target.checked);
   };
@@ -27,6 +28,18 @@ const NewToolbarSelect = ({
   const handleCheckedCompleted = (event) => {
     setCheckedCompleted(event.target.checked);
   };
+
+  const dispatch = useDispatch();
+
+  const handleChangeTasksStatus = useCallback(() => {
+    const status =
+      checkedIncomplete && checkedCompleted
+        ? ''
+        : checkedCompleted
+        ? 'COMPLETE'
+        : 'INCOMPLETE';
+    dispatch(getCurrentListTasks({ status: status }));
+  });
 
   return (
     <SelectWrapper>
@@ -68,31 +81,41 @@ const NewToolbarSelect = ({
         }}
         {...restProps}
       >
-        
-          <div style={{ display: 'flex'}}>
-            <Switch onChange={handleCheckedIncomplete} checked={checkedIncomplete} />
-            <MenuItem
-              key={options[0].value}
-              value={options[0].value}
-              disabled={options[0].disabled}
-            >
-              {options[0].label}
-            </MenuItem>
-          </div>
-          <div style={{ display: 'flex' }}>
-            <Switch onChange={handleCheckedCompleted} checked={checkedCompleted} />
-            <MenuItem
-              key={options[1].value}
-              value={options[1].value}
-              disabled={options[1].disabled}
-            >
-              {options[1].label}
-            </MenuItem>
-          </div>
-        
-
+        <div style={{ display: 'flex' }}>
+          <Switch
+            onChange={handleCheckedIncomplete}
+            checked={checkedIncomplete}
+          />
+          <MenuItem
+            key={options[0].value}
+            value={options[0].value}
+            disabled={options[0].disabled}
+          >
+            {options[0].label}
+          </MenuItem>
+        </div>
+        <div style={{ display: 'flex' }}>
+          <Switch
+            onChange={handleCheckedCompleted}
+            checked={checkedCompleted}
+          />
+          <MenuItem
+            key={options[1].value}
+            value={options[1].value}
+            disabled={options[1].disabled}
+          >
+            {options[1].label}
+          </MenuItem>
+        </div>
         <div style={{ padding: '5px' }}>
-          <Button variant="primary-red">Apply</Button>
+          <Button
+            onClick={() => {
+              handleChangeTasksStatus();
+            }}
+            variant="primary-red"
+          >
+            Apply
+          </Button>
         </div>
       </Select>
     </SelectWrapper>
