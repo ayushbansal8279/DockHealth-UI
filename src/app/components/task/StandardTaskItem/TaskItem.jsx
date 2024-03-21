@@ -297,6 +297,7 @@ const TaskItem = React.memo(
       comment: false,
       label: false,
       file: false,
+      share: false,
     });
     const { move, duplicate, subtasks, delete: del } = SINGLE_TASK_FEATURES;
     const organizationCustomFields = useSelector(
@@ -1623,8 +1624,11 @@ const TaskItem = React.memo(
                     printWidth={
                       TaskItemColumnWidth[TaskItemColumn.SHARED].PRINT
                     }
+                    onMouseEnter={() => setCellHover({ share: true })}
+                    onMouseLeave={() => setCellHover({ share: false })}
                   >
                     <TaskItemSharedMembers
+                      isHover={isCellHover.share}
                       readOnly={restrictions?.assigment === READ_ONLY}
                       multipleAssigneesContext={multipleAssigneesContext}
                       task={task}
