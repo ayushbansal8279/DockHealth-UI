@@ -1,9 +1,10 @@
-import React, { useRef } from 'react';
+import React, { useContext, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { openModal } from 'modal/actions';
 import { selectedUserOrganizationSelector } from 'selectors/user-selectors';
 import PatientList from './PatientList';
 import { StyledPopover } from './styled';
+import { ListPageContext } from '@/app/views/list-details/ListDetailsView';
 
 const PatientDropdown = ({
   children,
@@ -18,14 +19,16 @@ const PatientDropdown = ({
 }) => {
   const popoverReference = useRef(null);
   const dispatch = useDispatch();
-
+  const { handlePatientPopoverOpen } = useContext(ListPageContext);
   const currentOrganization = useSelector(selectedUserOrganizationSelector);
   const quickAddPatientEnabledItem =
     currentOrganization?.themeSettings?.find(
       ({ name }) => name === 'patient.quickadd.enabled',
     ) || {};
   const quickAddPatientEnabled = quickAddPatientEnabledItem?.value !== 'false';
-
+  useEffect(() => {
+    handlePatientPopoverOpen(isPopoverOpen);
+  }, [isPopoverOpen]);
   const unassignPatient = () => {
     if (isMultipleChange || isSubtask || hasSubtasks) {
       dispatch(

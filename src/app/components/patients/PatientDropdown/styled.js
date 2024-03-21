@@ -50,6 +50,13 @@ export const ListContainer = styled.div`
     withBorder ? `1px solid ${palette.coolGrey2}` : '0px'};
 `;
 
+export const SearchPatientsResultList = styled.div`
+  position: relative;
+  overflow-y: auto;
+  overflow-x: hidden;
+  height: 208px;
+`;
+
 export const Row = styled.button`
   width: 100%;
   display: flex;
