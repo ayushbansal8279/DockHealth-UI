@@ -47,6 +47,7 @@ const TaskItemDescription = ({
   // disableMentions,
   // isEditButtonVisible = false,
   width,
+  isHover,
 }) => {
   const {
     description,
@@ -156,7 +157,6 @@ const TaskItemDescription = ({
               textOverflow: 'ellipsis',
               overflow: 'hidden',
               whiteSpace: 'nowrap',
-              textDecoration: isCompleted ? 'line-through' : 'none',
             }}
           >
             {tokenizedDescription.split(/\s/).map((word) => {
@@ -240,7 +240,7 @@ const TaskItemDescription = ({
         )}
       </Box>
       <TaskItemDescriptionIndicators isCompleted={isCompleted}>
-        {isCompleted && (
+        {isCompleted && isHover && (
           <CompletedBy isCompleted={isCompleted}>
             <span>{`By ${completedByName} ${
               completedDt &&
