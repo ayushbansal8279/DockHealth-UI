@@ -128,4 +128,17 @@ export const StyledDataGrid = styled(DataGridPremium)`
   &.MuiTablePagination-input {
     display: none;
   }
+
+  &.MuiDataGrid-root--densityCompact .MuiDataGrid-cell {
+    padding-top: 8px;
+    padding-bottom: 8px;
+  }
+  &.MuiDataGrid-root--densityStandard .MuiDataGrid-cell {
+    padding-top: 15px;
+    padding-bottom: 15px;
+  }
+  &.MuiDataGrid-root--densityComfortable .MuiDataGrid-cell {
+    padding-top: 22px;
+    padding-bottom: 22px;
+  }
 `;

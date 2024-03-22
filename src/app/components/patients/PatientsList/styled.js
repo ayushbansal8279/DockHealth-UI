@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import palette from 'styles/palette';
 import spacing from 'styles/spacing';
+import { GridActionsCellItem } from '@mui/x-data-grid-premium';
 
 // eslint-disable-next-line import/prefer-default-export
 export const NonEmptyListTable = styled.div`

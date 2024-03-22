@@ -7,23 +7,10 @@ import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';
 import CloseIcon from '@mui/icons-material/Close';
 import {
-  GridRowId,
-  GridColDef,
   GridRowModes,
-  useGridApiRef,
-  DataGridPremium,
-  GridRowModesModel,
-  GridEventListener,
-  GridToolbarExport,
   GridActionsCellItem,
-  GridToolbarContainer,
+  useGridApiRef,
   GridRowEditStopReasons,
-  GridToolbarQuickFilter,
-  GridToolbarFilterButton,
-  GridValueFormatterParams,
-  GridRenderEditCellParams,
-  GridToolbarColumnsButton,
-  GridToolbarDensitySelector,
 } from '@mui/x-data-grid-premium';
 import * as ActionTypes from 'actions/action-types';
 import { Grid } from '@mui/material';
@@ -44,8 +31,9 @@ import { PatientColumn } from 'helpers/patient-list-helpers';
 
 import { patientsListSelector } from 'selectors/patients-selectors';
 import moment from 'moment';
-import { getLastAndFirstName } from 'helpers/formatters';
+import palette from 'styles/palette';
 import { formatPhoneNumber } from 'helpers/utility-functions';
+import { dateFormatter } from 'helpers/date-formatter';
 import TaskItemBulkEdit from 'components/task/StandardTaskItem/TaskItemComponents/TaskItemBulkEdit';
 import PatientImportPopover from '../PatientImportPopover/PatientImportPopover';
 import EmptyFilteredPatientsList from '../EmptyFilteredPatientsList/EmptyFilteredPatientsList';
@@ -57,6 +45,8 @@ import {
   PatientCell,
 } from './styled';
 import { StyledDataGrid } from './DataGridStyles';
+import NameEditCell from './NameEditCell';
+import DateEditCell from './DateEditCell';
 
 const renderColumnHeader = (props) => {
   const { colDef } = props;
@@ -79,6 +69,12 @@ const renderCheckboxColumnHeader = ({ isListChecked, onListSelect }) => (
   </BulkContainer>
 );
 
+const handleRowEditStop = (params, event) => {
+  if (params.reason === GridRowEditStopReasons.rowFocusOut) {
+    event.defaultMuiPrevented = true;
+  }
+};
+
 const PatientsList = ({
   isFiltered = false,
   patients,
@@ -100,7 +96,6 @@ const PatientsList = ({
     currentUser,
     currentOrganization,
   );
-  const [rowModesModel, setRowModesModel] = useState({});
   const [dataGridSortModel, setDataGridSortModel] = useState();
 
   const selectedPatientsCount = patients?.filter((p) => p.isSelected).length;
@@ -114,6 +109,10 @@ const PatientsList = ({
 
   const { columns: columnsData, setCurrentPatientList } =
     usePatientListColumnsConfig();
+
+  // datagrid related states
+  const apiRef = useGridApiRef();
+  const [rowModesModel, setRowModesModel] = useState({});
 
   const columnsDataSorted = useMemo(
     () =>
@@ -221,6 +220,10 @@ const PatientsList = ({
     });
   };
 
+  const handleRowModesModelChange = (newRowModesModel) => {
+    setRowModesModel(newRowModesModel);
+  };
+
   const defaultColumns = [
     {
       field: 'isSelected',
@@ -283,14 +286,7 @@ const PatientsList = ({
         }`;
       },
       editable: true,
-      valueSetter: (params) => {
-        const { firstName, lastName } = getLastAndFirstName(params.value);
-        return {
-          ...params.row,
-          firstName,
-          lastName,
-        };
-      },
+      renderEditCell: (params) => <NameEditCell {...params} />,
     },
     {
       field: 'mrn',
@@ -302,18 +298,19 @@ const PatientsList = ({
           <Text width="80">{row.mrn}</Text>
         </Tooltip>
       ),
+      editable: true,
     },
     {
       field: 'dob',
       headerName: 'DOB',
       renderHeader: renderColumnHeader,
-      width: 100,
-      type: 'date',
-      valueGetter: (parameters) => {
-        return parameters.value
-          ? new Date(`${parameters.value}T00:00:00`)
-          : null;
-      },
+      width: 150,
+      valueGetter: ({ value }) =>
+        value
+          ? dateFormatter(value, { timezone: 'Etc/UTC', fmt: 'M/d/yyyy' })
+          : null,
+      editable: true,
+      renderEditCell: (params) => <DateEditCell {...params} />,
     },
     {
       field: 'age',
@@ -415,28 +412,23 @@ const PatientsList = ({
       if (isInEditMode) {
         return [
           <GridActionsCellItem
-            icon={<SaveIcon />}
+            icon={<SaveIcon sx={{ color: palette.lightBlue }} />}
             label="Save"
-            color="primary"
             onClick={handleSaveClick(id)}
           />,
           <GridActionsCellItem
-            icon={<CloseIcon />}
+            icon={<CloseIcon sx={{ color: palette.unknownGrey1 }} />}
             label="Cancel"
-            className="textPrimary"
             onClick={handleCancelClick(id)}
-            color="inherit"
           />,
         ];
       }
 
       return [
         <GridActionsCellItem
-          icon={<EditIcon />}
+          icon={<EditIcon sx={{ color: palette.lightBlue }} />}
           label="Edit"
-          className="textPrimary"
           onClick={handleEditClick(id)}
-          color="primary"
         />,
       ];
     },
@@ -498,7 +490,8 @@ const PatientsList = ({
             return compareValue1.localeCompare(compareValue2);
           },
         })),
-    );
+    )
+    .concat([actionsColumn]);
 
   useEffect(() => {
     const defaultSortField = localStorage.getItem('PATIENT_LIST_SORT_COLUMN');
@@ -536,16 +529,21 @@ const PatientsList = ({
               <Grid item xs={12} xl={11} md={12} lg={11}>
                 <NonEmptyListTable listLength={patients?.length ?? 0}>
                   <StyledDataGrid
+                    apiRef={apiRef}
+                    getRowId={(row) => row.patientIdentifier}
                     columns={columns}
+                    editMode="row"
                     rows={formattedPatients}
-                    rowHeight={35}
                     headerHeight={45}
+                    getRowHeight={() => 'auto'}
                     hideFooterSelectedRowCount
-                    autoHeight
                     disableColumnMenu
                     disableSelectionOnClick
                     showColumnRightBorder
                     showCellRightBorder
+                    rowModesModel={rowModesModel}
+                    onRowModesModelChange={handleRowModesModelChange}
+                    onRowEditStop={handleRowEditStop}
                     onSortModelChange={handleSortChange}
                     sortModel={
                       dataGridSortModel &&

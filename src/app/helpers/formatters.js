@@ -20,15 +20,3 @@ export const formatDate = (
 
 export const capitalize = (str) =>
   str.charAt(0).toUpperCase() + str.toLowerCase().slice(1);
-
-/**
- *
- * @param {string} name comma separated LastName and FirstName
- */
-export const getLastAndFirstName = (name) => {
-  const [lastName, firstName] = name
-    .toString()
-    .split(',')
-    .map((n) => n.trim());
-  return { firstName, lastName };
-};

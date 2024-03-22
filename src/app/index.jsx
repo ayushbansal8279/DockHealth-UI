@@ -1,10 +1,8 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-// import Symbol_observable from 'symbol-observable';
 /* eslint-disable global-require */
-// import MomentUtils from '@date-io/moment';
 import { ThemeProvider } from '@mui/material/styles';
-import { LocalizationProvider as MuiPickersUtilsProvider } from '@mui/x-date-pickers';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { HashRouter } from 'react-router-dom';
 import moment from 'moment';
 import React from 'react';
@@ -93,7 +91,7 @@ const queryClient = new QueryClient({
 const Index = () => (
   <QueryClientProvider client={queryClient}>
     <ThemeProvider theme={getTheme()}>
-      <MuiPickersUtilsProvider dateAdapter={AdapterDateFns}>
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
         {/* <FlagsProvider flags={flags}> */}
         <Provider store={store}>
           <ErrorBoundary>
@@ -110,7 +108,7 @@ const Index = () => (
           </ErrorBoundary>
         </Provider>
         {/* </FlagsProvider> */}
-      </MuiPickersUtilsProvider>
+      </LocalizationProvider>
     </ThemeProvider>
   </QueryClientProvider>
 );
