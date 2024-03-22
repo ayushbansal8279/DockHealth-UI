@@ -48,14 +48,17 @@ const TaskItemSubtasks = ({
               // onClick={onSubtaskLabelClick}
               // subtasksDisabled={subtasksDisabled}
               subTasksCount={subTasksCount}
+              onClick={onClickAddSubtask}
             >
               <>
+                <SubtasksCellText>
+                  <div style={{ marginBottom: '3px' }}>+</div>
+                </SubtasksCellText>
                 <Tooltip placement="top" title="Add Subtask">
-                  <SubtasksCellText onClick={onClickAddSubtask}>
-                    +
-                  </SubtasksCellText>
+                  <span>
+                    <ParentTaskIcon />
+                  </span>
                 </Tooltip>
-                <ParentTaskIcon />
               </>
             </SubtasksCellContentButton>
           </AddPlaceholder>
@@ -82,16 +85,25 @@ const TaskItemSubtasks = ({
                 {isOpen ? (
                   <Tooltip placement="top" title="Add Subtask">
                     <SubtasksCellText onClick={onClickAddSubtask}>
-                      +
+                      <div style={{ marginBottom: '3px' }}>+</div>
                     </SubtasksCellText>
                   </Tooltip>
                 ) : (
-                  <SubtasksCountText>{subTasksCount}</SubtasksCountText>
+                  <SubtasksCountText>
+                    <div style={{ marginBottom: '3px' }}>{subTasksCount}</div>
+                  </SubtasksCountText>
                 )}
                 {/* <SubtasksCellText>
                   {isOpen ? '+' : subTasksCount}
                 </SubtasksCellText> */}
-                <ParentTaskIcon />
+                <Tooltip
+                  placement="top"
+                  title={subtasksDisabled ? '' : isOpen ? 'Hide Subtasks' : ''}
+                >
+                  <span>
+                    <ParentTaskIcon />
+                  </span>
+                </Tooltip>
               </>
             ) : (
               <SubtaskIcon />

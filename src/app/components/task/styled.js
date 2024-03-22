@@ -655,42 +655,52 @@ export const SubtasksCellContentButton = styled.button`
   color: ${({ isOpen, isGreyedOut }) => {
     if (isGreyedOut) return palette.coolGrey2;
 
-    return isOpen ? palette.brightBlue : palette.coolGrey1;
+    // return isOpen ? palette.brightBlue : palette.coolGrey1;
+    return palette.coolGrey1;
   }};
 
   &:disabled {
     color: ${palette.coolGrey2};
     cursor: initial;
   }
-  p {
-    visibility: ${({ subTasksCount }) =>
-      subTasksCount > 0 ? 'hidden' : 'visible'};
-  }
+  // p {
+  //    visibility: ${({ subTasksCount }) =>
+    subTasksCount > 0 ? 'hidden' : 'visible'};
+  // }
 
   &:hover {
     color: ${({ isOpen, subtasksDisabled }) =>
-      subtasksDisabled ? '' : !isOpen ? palette.brightBlue : ''};
-      p {
-        visibility: visible;
-      }
-     
-     
+      subtasksDisabled ? '' : palette.brightBlue};
+    //   p {
+    //     visibility: visible;
+    //   }
+  }
 `;
 
 export const SubtasksCellText = styled.p`
   margin-right: ${spacing.tiny};
   margin-bottom: 0;
-  font-size: ${fontSizes.smallPlus};
+  // font-size: ${fontSizes.smallPlus};
   font-weight: ${fontWeights.light};
   color: inherit;
+  font-family: Roboto Condensed;
+  font-size: 12px;
+  // font-weight: 400;
+  line-height: 14.06px;
+  text-align: right;
 `;
 
 export const SubtasksCountText = styled.span`
   margin-right: ${spacing.tiny};
   margin-bottom: 0;
-  font-size: ${fontSizes.smallPlus};
+  // font-size: ${fontSizes.smallPlus};
   font-weight: ${fontWeights.light};
   color: inherit;
+  font-family: Roboto Condensed;
+  font-size: 12px;
+  // font-weight: 400;
+  line-height: 14.06px;
+  text-align: right;
 `;
 
 export const ParentTaskContainer = styled.div`
