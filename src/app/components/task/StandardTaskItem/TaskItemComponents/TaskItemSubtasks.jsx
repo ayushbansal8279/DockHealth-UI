@@ -6,6 +6,7 @@ import {
   AddSubtaskButton,
   SubtasksCellContentButton,
   SubtasksCellText,
+  SubtasksCountText,
 } from '../../styled';
 import Tooltip from '@/app/components/common/Tooltip/Tooltip';
 
@@ -85,7 +86,7 @@ const TaskItemSubtasks = ({
                     </SubtasksCellText>
                   </Tooltip>
                 ) : (
-                  <SubtasksCellText>{subTasksCount}</SubtasksCellText>
+                  <SubtasksCountText>{subTasksCount}</SubtasksCountText>
                 )}
                 {/* <SubtasksCellText>
                   {isOpen ? '+' : subTasksCount}

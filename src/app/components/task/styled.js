@@ -685,6 +685,14 @@ export const SubtasksCellText = styled.p`
   color: inherit;
 `;
 
+export const SubtasksCountText = styled.span`
+  margin-right: ${spacing.tiny};
+  margin-bottom: 0;
+  font-size: ${fontSizes.smallPlus};
+  font-weight: ${fontWeights.light};
+  color: inherit;
+`;
+
 export const ParentTaskContainer = styled.div`
   &:not(:last-child) {
     margin-bottom: ${({ noMargin }) => (noMargin ? -1 : 3)}px;
