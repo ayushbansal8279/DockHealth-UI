@@ -17,8 +17,9 @@ export class SubscriptionDto {
     'professionalServicesIncluded'?: boolean;
     'subscriptionPlan'?: SubscriptionDtoSubscriptionPlanEnum;
     'subscriptionPlanName'?: string;
-    'trialEndDate'?: Date;
+    'trialEndDate'?: string;
     'trialEnded'?: boolean;
+    'trialSignupDate'?: string;
 
     static readonly discriminator: string | undefined = undefined;
 
@@ -50,13 +51,19 @@ export class SubscriptionDto {
         {
             "name": "trialEndDate",
             "baseName": "trialEndDate",
-            "type": "Date",
-            "format": "date-time"
+            "type": "string",
+            "format": ""
         },
         {
             "name": "trialEnded",
             "baseName": "trialEnded",
             "type": "boolean",
+            "format": ""
+        },
+        {
+            "name": "trialSignupDate",
+            "baseName": "trialSignupDate",
+            "type": "string",
             "format": ""
         }    ];
 

@@ -37,11 +37,15 @@ import { Category, CategoryLabel } from 'helpers/patient-details-helpers';
 import moment from 'moment';
 import { useBoolean } from 'hooks/useBoolean';
 import CategoryOptions from 'components/common/CategoryOptions/CategoryOptions';
-import * as patientsApi from 'api/patients-api';
 import { FieldType } from 'helpers/field-type-helpers';
 import { scrollToError } from 'helpers/ui-helper';
-import { formatMetaDataOutput, GENDER_OPTIONS_BIRTH } from './helpers';
+import { formatMetaDataOutput } from './helpers';
+import {
+  GENDER_OPTIONS_BIRTH,
+  convertGenderIdentitiesToSelectOptions,
+} from '@/app/types/gender';
 import { HidableContainer } from './styled';
+import { useGenderIdentitiesQuery } from '@/app/react-query/reference/useGenderIdentitiesQuery';
 
 const groupByCategory = groupBy(prop('fieldCategoryType'));
 
@@ -75,29 +79,19 @@ const PatientForm = forwardRef(
       useBoolean(false);
     const { 0: emptyOtherVisible, 3: toggleEmptyOther } = useBoolean(false);
     const isAdmin = checkIfUserIsOrganizationAdmin(userProfile);
-    const [genderIdentityOptions, setGenderIdentityOptions] = useState([]);
     const currentOrganization = useSelector(selectedUserOrganizationSelector);
     const genderIdentityDisabled =
       currentOrganization?.disabledFeatures?.includes('PATIENT_GENDER') ||
       false;
+    const genderIdentityOptions = useGenderIdentitiesQuery();
 
     const GENDER_OPTIONS_IDENTITY = useMemo(
       () =>
-        genderIdentityOptions.map((o) => ({
-          value: o.genderIdentityType,
-          label: o.description,
-        })),
-      [genderIdentityOptions],
+        convertGenderIdentitiesToSelectOptions(
+          genderIdentityOptions.data ?? [],
+        ),
+      [genderIdentityOptions.data],
     );
-
-    const getGenderIdentityOptions = useCallback(async () => {
-      const options = await patientsApi.getGenderIdentityOptions();
-      setGenderIdentityOptions(options);
-    }, []);
-
-    useEffect(() => {
-      getGenderIdentityOptions();
-    }, [getGenderIdentityOptions]);
 
     const patientCustomFieldsAvailable = useSelector(
       userHasPatientCustomFieldsFeatureSelector,

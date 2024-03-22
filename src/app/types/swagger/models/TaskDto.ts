@@ -80,6 +80,7 @@ export class TaskDto {
     'taskOutcomes'?: any;
     'taskTemplate'?: TaskTemplateDto;
     'taskTemplateIdentifier'?: string;
+    'templateTaskIdentifier'?: string;
     'tokenizedDescription'?: string;
     'tokenizedDetails'?: string;
     'type'?: TaskDtoTypeEnum;
@@ -445,6 +446,12 @@ export class TaskDto {
         {
             "name": "taskTemplateIdentifier",
             "baseName": "taskTemplateIdentifier",
+            "type": "string",
+            "format": ""
+        },
+        {
+            "name": "templateTaskIdentifier",
+            "baseName": "templateTaskIdentifier",
             "type": "string",
             "format": ""
         },

@@ -47,6 +47,13 @@ import {
 import { StyledDataGrid } from './DataGridStyles';
 import NameEditCell from './NameEditCell';
 import DateEditCell from './DateEditCell';
+import { useGenderIdentitiesQuery } from '@/app/react-query/reference/useGenderIdentitiesQuery';
+import GenderSelectCell from './GenderSelectCell';
+import {
+  GENDER_OPTIONS_BIRTH,
+  convertGenderIdentitiesToSelectOptions,
+} from '@/app/types/gender';
+import { getValueLabelHashFromOptions } from '@/app/helpers/select-option-helper';
 
 const renderColumnHeader = (props) => {
   const { colDef } = props;
@@ -74,6 +81,9 @@ const handleRowEditStop = (params, event) => {
     event.defaultMuiPrevented = true;
   }
 };
+
+const genderBirthOptionHash =
+  getValueLabelHashFromOptions(GENDER_OPTIONS_BIRTH);
 
 const PatientsList = ({
   isFiltered = false,
@@ -107,6 +117,7 @@ const PatientsList = ({
     patientsCount === selectedPatientsCount;
 
   const patientsList = useSelector(patientsListSelector);
+  const genderIdentityOptionsQuery = useGenderIdentitiesQuery();
 
   const { columns: columnsData, setCurrentPatientList } =
     usePatientListColumnsConfig();
@@ -114,6 +125,19 @@ const PatientsList = ({
   // datagrid related states
   const apiRef = useGridApiRef();
   const [rowModesModel, setRowModesModel] = useState({});
+
+  const genderIdentityOptions = useMemo(
+    () =>
+      convertGenderIdentitiesToSelectOptions(
+        genderIdentityOptionsQuery.data ?? [],
+      ),
+    [genderIdentityOptionsQuery.data],
+  );
+
+  const genderIdentityOptionsHash = useMemo(
+    () => getValueLabelHashFromOptions(genderIdentityOptions),
+    [genderIdentityOptions],
+  );
 
   const columnsDataSorted = useMemo(
     () =>
@@ -357,13 +381,23 @@ const PatientsList = ({
       field: 'gender',
       headerName: 'SEX',
       renderHeader: renderColumnHeader,
-      width: 80,
+      width: 100,
+      valueFormatter: ({ value }) => genderBirthOptionHash[value],
+      editable: true,
+      renderEditCell: (params) => (
+        <GenderSelectCell options={GENDER_OPTIONS_BIRTH} {...params} />
+      ),
     },
     {
       field: 'genderIdentity',
       headerName: 'GENDER',
       renderHeader: renderColumnHeader,
-      width: 100,
+      width: 150,
+      valueFormatter: ({ value }) => genderIdentityOptionsHash[value],
+      editable: true,
+      renderEditCell: (params) => (
+        <GenderSelectCell options={genderIdentityOptions} {...params} />
+      ),
     },
     {
       field: 'email',
@@ -375,7 +409,7 @@ const PatientsList = ({
           <Text width="120">{row.email}</Text>
         </Tooltip>
       ),
-      align: 'left',
+      editable: true,
     },
     {
       field: 'phoneMobile',
