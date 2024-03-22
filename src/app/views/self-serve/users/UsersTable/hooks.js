@@ -29,10 +29,10 @@ const useInitializeMembersTableHooks = () => {
     data,
     isLoading: isFetching,
     refetch: getAllUsers,
-  } = useQuery(
-    ['getOrganizationUsers'],
-    OrganizationApi.findAllUsersForOrganization,
-  );
+  } = useQuery({
+    queryKey: ['getOrganizationUsers'],
+    queryFn: OrganizationApi.findAllUsersForOrganization,
+  });
 
   const changeUserOrganizationRoleMutation = useMutation({
     mutationFn: ({ userIdentifier: id, role }) =>

@@ -1,7 +1,7 @@
 import moment from 'moment';
 
 export const formatDate = (
-  date,
+  date: string | Date,
   dateFormat = 'MM/DD/YYYY',
   timeFormat = 'h:mma',
 ) => {
@@ -18,5 +18,18 @@ export const formatDate = (
   return `${dateLabel} @ ${moment(date).format(timeFormat)}`;
 };
 
-export const capitalize = (str) =>
+export const capitalize = (str: string) =>
   str.charAt(0).toUpperCase() + str.toLowerCase().slice(1);
+
+export const formatEllipsisText = (
+  text: string | null,
+  { startLen = 3, endLen = 3 } = {},
+) => {
+  if (!text) {
+    return text;
+  }
+  if (text.length <= startLen + endLen) {
+    return text;
+  }
+  return text.slice(0, startLen) + '...' + text.slice(-endLen);
+};

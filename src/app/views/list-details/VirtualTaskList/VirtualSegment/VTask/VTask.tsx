@@ -6,6 +6,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
+
 import { Segment } from 'views/list-details/modules/Virtualized';
 import StandardTaskItem from 'components/task/StandardTaskItem/StandardTaskItem';
 import {
@@ -13,19 +14,30 @@ import {
   DraggableProvided,
   DraggableStateSnapshot,
 } from 'react-beautiful-dnd';
+import QuickAddSubtask from '@/app/components/task/StandardTaskItem/QuickAddSubtask';
+import { taskLookupSelector } from '@/app/selectors/task-details-selectors';
+import { useSelector } from 'react-redux';
 import * as Sc from './styled';
 import { TaskOrigin } from '@/app/helpers/task-helpers';
-import { useSelector } from 'react-redux';
-import { taskLookupSelector } from '@/app/selectors/task-details-selectors';
-import QuickAddSubtask from '@/app/components/task/StandardTaskItem/QuickAddSubtask';
+import palette from '@/app/styles/palette';
 
 export interface Props extends Segment {
   isTaskTemplate: boolean;
   isLastChild: boolean;
+  bgColor: boolean;
+  isLastTaskOfGroup: boolean;
 }
 
 function VTask(
-  { metadata, register, isTaskTemplate, isLastChild, ...record }: Props,
+  {
+    metadata,
+    register,
+    isTaskTemplate,
+    isLastChild,
+    isLastTaskOfGroup,
+    bgColor,
+    ...record
+  }: Props,
   // eslint-disable-next-line unicorn/prevent-abbreviations, @typescript-eslint/no-unused-vars
   ref: ForwardedRef<HTMLDivElement>,
 ) {
@@ -75,6 +87,10 @@ function VTask(
             $workflow={record.task?.itemType === 'BUNDLE'}
             $template={isTaskTemplate && isLastChild}
             isTaskTemplate={isTaskTemplate}
+            isLastChild={isLastChild || false}
+            origin={TaskOrigin.LIST}
+            bgColor={bgColor}
+            isLastTaskOfGroup={isLastTaskOfGroup}
           >
             <StandardTaskItem
               // @ts-ignore
@@ -85,6 +101,8 @@ function VTask(
               isTaskTemplate={isTaskTemplate}
               isLastChild={isLastChild || false}
               origin={TaskOrigin.LIST}
+              pageBackground={bgColor ? palette.aliceBlue : ''}
+              isNestedTask
             />
           </Sc.VTask>
           {subtaskQuickAddOpen && subTasksCount === 0 && (

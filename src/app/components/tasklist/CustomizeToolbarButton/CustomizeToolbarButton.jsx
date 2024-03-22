@@ -118,15 +118,15 @@ const CustomizeToolbarButton = ({
 
       if (isPatientView) {
         newSetup.filter((c) => c.identifier !== 'PATIENT');
-
         newSetup = [
-          ...newSetup,
+          ...newSetup.slice(0, 1),
           {
             identifier: 'PATIENT',
             _customFieldType: 'REGULAR',
             isChecked: true,
             columnWidth: 192,
           },
+          ...newSetup.slice(1),
         ];
       }
 

@@ -42,10 +42,10 @@ const UserTypeLabel = ({
 }) => {
   const labelReference = useRef(null);
 
-  const { refetch: reloadUsers } = useQuery(
-    ['getOrganizationUsers'],
-    OrganizationApi.findAllUsersForOrganization,
-  );
+  const { refetch: reloadUsers } = useQuery({
+    queryKey: ['getOrganizationUsers'],
+    queryFn: OrganizationApi.findAllUsersForOrganization,
+  });
 
   const PopoverComponent = (() => {
     if (userStatus === 'PENDING') {

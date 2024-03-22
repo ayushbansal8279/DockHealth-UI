@@ -12,16 +12,20 @@ import * as Sc from './styled';
 import { useSelector } from 'react-redux';
 import { taskLookupSelector } from '@/app/selectors/task-details-selectors';
 import { TaskOrigin } from '@/app/helpers/task-helpers';
-import { searchTermSelector } from '@/app/selectors/list-details-selectors';
+import {
+  searchTermSelector,
+  taskDetailsSortSelector,
+} from '@/app/selectors/list-details-selectors';
 import { megaFilterSelector } from '@/app/selectors/mega-filter-selectors';
-
+import palette from '@/app/styles/palette';
 
 export interface Props extends Segment {
   task: any;
+  bgColor: boolean;
 }
 
 function VSubtask(
-  { metadata, register, task, ...record }: Props,
+  { metadata, register, task, bgColor, ...record }: Props,
   // eslint-disable-next-line unicorn/prevent-abbreviations
   ref: ForwardedRef<HTMLDivElement>,
 ) {
@@ -52,6 +56,7 @@ function VSubtask(
 
   const searchValue = useSelector(searchTermSelector);
   const megaFilter = useSelector(megaFilterSelector);
+  const sort = useSelector(taskDetailsSortSelector);
   const { selectedFilters } = megaFilter || {};
 
   return (
@@ -68,10 +73,19 @@ function VSubtask(
             $subitem={metadata.level > 1}
             isWorkflowSubtask={!!task}
             searchValue={!!searchValue}
-            isFilterApply={!!selectedFilters}
+            isFilterApply={
+              !!selectedFilters
+                ? Object.keys(selectedFilters).length > 0
+                : !!selectedFilters
+            }
+            isSortApplied={!!sort.key}
+            bgColor={bgColor}
           >
             {!!searchValue ||
-              !!selectedFilters ||
+              (!!selectedFilters
+                ? Object.keys(selectedFilters).length > 0
+                : !!selectedFilters) ||
+              !!sort.key ||
               getSubtaskStylingLink(isLast())}
             <StandardTaskItem
               // @ts-ignore
@@ -82,6 +96,8 @@ function VSubtask(
               isWorkflowSubtask={!!task}
               isSubtask
               origin={TaskOrigin.LIST}
+              isNestedTask
+              pageBackground={bgColor ? palette.aliceBlue : ''}
             />
           </Sc.VSubtask>
           {metadata.sameLevelIndex === noOfSubtask && subtaskQuickAddOpen && (

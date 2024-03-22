@@ -4,19 +4,20 @@ import spacing from 'styles/spacing';
 
 export const AdornmentContainer = styled.div`
   align-items: center;
-  align-self: flex-end;
-  color: ${palette.orange};
+  color: ${palette.brightBlue};
   justify-content: center;
-  margin-bottom: 0.3rem;
-  width: 2ch;
   position: relative;
   display: inline;
   top: -0px;
+
+  &::first-letter {
+    font-size: 20px;
+  }
 `;
 
 export const AddText = styled.span`
   display: flex;
-  padding: 4px;
+  padding: 2px 8px;
 `;
 
 export const ListItemButton = styled.button`

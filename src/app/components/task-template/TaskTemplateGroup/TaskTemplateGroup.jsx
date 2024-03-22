@@ -50,6 +50,7 @@ const TaskTemplateGroup = ({
   showTasksWithGroup = true,
   iconColorActive,
   origin,
+  pageBackground,
   highlightedValue,
 }) => {
   const templateGroup = useSelector((state) => {
@@ -161,6 +162,7 @@ const TaskTemplateGroup = ({
         iconColorActive={iconColorActive}
         highlightedValue={highlightedValue}
         origin={origin}
+        pageBackground={pageBackground}
       />
       {!isStartedDnD && window.disabledVirtualTaskList && (
         <TaskTemplateGroupList timeout={150} in={isOpen && !isStartedDnD}>

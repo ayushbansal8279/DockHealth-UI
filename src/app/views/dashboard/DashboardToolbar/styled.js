@@ -73,32 +73,34 @@ export const DashboardQuickFilterContainer = styled.div`
 `;
 
 export const DashboardQuickFilter = styled.div`
-  margin-left: 5px;
   width: fit-content;
+  height: 32px;
+  padding: 10px 8px 10px 8px;
+  border-radius: 4px;
+  gap: 6px;
+  margin-left: 10px;
   display: flex;
-  height: 40px;
   align-items: center;
   text-align: center;
-  padding: 10px;
-  background-color: ${(props) =>
-    props.active ? palette.whiteSmoke : opacify(palette.zinc, 0)};
-  border-radius: ${(props) => (props.active ? '5px' : '0px')};
-  // cursor: ${(props) => (props.active ? '' : 'pointer')};
+  background-color: ${palette.whiteSmoke};
+  cursor: pointer;
 `;
 
 export const DashboardQuickFilterLabel = styled.div`
-  // display: flex;
+  font-family: Outfit;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 11px;
+  letter-spacing: 0em;
   text-align: center;
-  color: ${(props) => (props.active ? palette.newBrightBlue : palette.zinc)};
+  color: ${(props) =>
+    props.active ? palette.newBrightBlue : palette.shadowBlue};
 `;
 
 export const DashboardQuickFilterClear = styled.div`
-  // display: flex;
-  padding: 2px 0px 0px 5px;
+  padding: 2px 0px 0px 0px;
   align-items: center;
-  // width: auto;
   cursor: pointer;
-  // background: red;
   color: ${palette.coolGrey1};
 `;
 

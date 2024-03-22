@@ -19,6 +19,10 @@ import {
   RoleOptionDescription,
   RoleOptionHeaderAdditionalInfo,
 } from './styled';
+import {
+  CancelButton,
+  ConfirmButton,
+} from '@/app/modal/components/ModalButton/ModalButtons';
 
 const { DOCK_PRO, VIEW_ONLY } = UserOrganizationRole;
 
@@ -29,7 +33,7 @@ const UserRoleStep = ({ navigateToPreviousStep, disabled }) => {
   const viewOnlyRoleAvailable = useSelector(userHasViewOnlyFeatureSelector);
   const guestRoleAvailable = useSelector(userHasDockGuestFeatureSelector);
   const email = watch('email');
-  const dockProEnabled = email.includes('@dock.health');
+  const dockProEnabled = email?.includes('@dock.health');
 
   return (
     <RoleFormWrapper
@@ -175,20 +179,20 @@ const UserRoleStep = ({ navigateToPreviousStep, disabled }) => {
         )}
       </RoleSelectionWrapper>
       <Grid container item direction="row" justifyContent="center" spacing={2}>
-        <Grid item xs={3}>
-          <Button
+        <Grid item>
+          <CancelButton
             fullWidth
             variant="secondary"
             type="button"
             onClick={navigateToPreviousStep}
           >
             Back
-          </Button>
+          </CancelButton>
         </Grid>
-        <Grid item xs={7}>
-          <Button fullWidth disabled={disabled} type="submit">
-            Assign role and Invite
-          </Button>
+        <Grid item>
+          <ConfirmButton fullWidth disabled={disabled} type="submit">
+            Assign Role and Invite
+          </ConfirmButton>
         </Grid>
       </Grid>
     </RoleFormWrapper>

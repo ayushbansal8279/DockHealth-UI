@@ -114,6 +114,7 @@
     "sonarjs/prefer-immediate-return": "off",
     "sonarjs/no-duplicate-string": "off",
     "unicorn/no-array-for-each": "off",
-    "no-param-reassign": "warn"
+    "no-param-reassign": "warn",
+    "react/forbid-prop-types": "off"
   }
 }

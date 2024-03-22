@@ -1,6 +1,8 @@
 import styled from 'styled-components';
 import palette, { typography } from 'styles/palette';
 import { fontSizes, fontWeights } from 'styles/font';
+import { Button } from '@mui/material';
+import spacing from 'styles/spacing';
 
 export const Wrapper = styled.div`
   position: relative;
@@ -60,4 +62,12 @@ export const SkipButton = styled.button`
   cursor: pointer;
   text-decoration: underline;
   text-transform: uppercase;
+`;
+
+export const ButtonWrapper = styled(Button)`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  border-radius: 8px;
 `;

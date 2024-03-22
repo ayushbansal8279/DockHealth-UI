@@ -85,6 +85,7 @@ const PatientsList = ({
   isFetching,
   refreshPatients,
   isDynamicPatientList,
+  searchValue,
 }) => {
   const { pathname } = useLocation();
   const history = useHistory();
@@ -565,6 +566,7 @@ const PatientsList = ({
                   isFiltered={isFiltered}
                   isFetching={isFetching}
                   refreshPatients={refreshPatients}
+                  searchValue={searchValue}
                 />
               )}
             </>

@@ -8,6 +8,7 @@ import {
   USERS_SETTINGS_PATH,
   POFILES_SETTINGS_PATH,
   TASK_CUSTOMIZATIONS_PATH,
+  DEVELOPERS_PATH,
 } from 'routing/helpers/paths';
 import {
   userHasPatientCustomFieldsFeatureSelector,
@@ -43,6 +44,10 @@ const SettingsSubmenu = () => {
   const subscription = organization?.subscriptionDetails;
   const isInTrial = isPlanTrial(subscription);
 
+  // todo DHWP-3154: uncomment below during backend integration
+  // const isApiAllowed = organization?.availableFeatures?.includes('API');
+  const isApiAllowed = true;
+
   return (
     <Box widht={1}>
       <Box m={2} />
@@ -68,6 +73,11 @@ const SettingsSubmenu = () => {
       )}
       {taskCustomFieldsAvailable && (
         <SubMenuLink to={TASK_CUSTOMIZATIONS_PATH}>Task Settings</SubMenuLink>
+      )}
+      {isApiAllowed && (
+        <AccessRestrictor allowedToRoles={[ADMIN, OWNER]}>
+          <SubMenuLink to={DEVELOPERS_PATH}>Developers</SubMenuLink>
+        </AccessRestrictor>
       )}
     </Box>
   );

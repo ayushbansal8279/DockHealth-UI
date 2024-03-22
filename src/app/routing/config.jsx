@@ -149,6 +149,7 @@ const TaskCustomizationsView = lazy(() =>
 const CreateList = lazy(() =>
   import('views/OnboardingTutorial/CreateList/CreateList'),
 );
+const Developers = lazy(() => import('views/developers'));
 
 const {
   CAN_ACCESS_HOME_PAGE,
@@ -231,6 +232,11 @@ export const SETTINGS_ROUTES = [
     path: '/contacts',
     RouteComponent: Contacts,
     permissions: [CAN_ACCESS_PEOPLE_LIST_PAGE],
+  },
+  {
+    path: '/developers',
+    RouteComponent: Developers,
+    permissions: [CAN_ACCESS_SETTINGS_PAGE],
   },
 ];
 

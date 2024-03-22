@@ -127,11 +127,17 @@ const SubscriptionsView = () => {
   const includeProfessionalServices =
     !professionalServicesIncluded && selectedProfessionalServices;
 
+  const adjustedUserCount =
+    selectedPlanDetails?.minimumUsers > 0 &&
+    activeUserCount < selectedPlanDetails?.minimumUsers
+      ? selectedPlanDetails?.minimumUsers
+      : activeUserCount;
+
   const getTotalPrice = () => {
     let price = 0;
 
     price +=
-      activeUserCount *
+      adjustedUserCount *
       (selectedBillingFrequency === BillingFrequency.ANNUAL
         ? selectedPlanDetails?.annualMonthlyPrice * 12
         : selectedPlanDetails?.monthlyPrice || 0);
@@ -295,7 +301,10 @@ const SubscriptionsView = () => {
                   Plan
                 </BillingTableCell>
                 <BillingTableCell>
-                  {activeUserCount} standard user(s)
+                  {adjustedUserCount} standard user(s)
+                  {selectedPlanDetails?.minimumUsers > 0
+                    ? ` (Minimum per plan: ${selectedPlanDetails?.minimumUsers})`
+                    : ''}
                 </BillingTableCell>
                 <BillingTableCell>
                   {priceFormatter(

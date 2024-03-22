@@ -6,7 +6,6 @@ import { fontSizes, fontWeights } from 'styles/font';
 
 export const Wrapper = styled.div`
   position: relative;
-  display: flex;
   flex-direction: row;
   min-height: 56px;
   width: 100%;
@@ -224,4 +223,57 @@ export const EmptyResultButton = styled.button`
   &:hover {
     text-decoration: underline;
   }
+`;
+
+export const SearchedUserContainer = styled.div`
+  position: absolute;
+  background: white;
+  z-index: 1;
+  top: 100%;
+  width: 100%;
+  max-height: 250px;
+  overflow: auto;
+  padding-bottom: 20px;
+  border-radius: 10px;
+  box-shadow: 0px 6px 9px rgba(0, 0, 0, 0.17);
+
+  &::-webkit-scrollbar {
+    -webkit-appearance: none;
+  }
+
+  &::-webkit-scrollbar:vertical {
+    width: 11px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: ${palette.white};
+    border-radius: 8px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: 8px;
+    border: 2px solid ${palette.white};
+    background-color: ${palette.coolGrey1};
+  }
+`;
+
+export const AvatarContainer = styled.div`
+  display: flex;
+  width: 30px;
+  height: 30px;
+  justify-content: center;
+  align-items: center;
+  margin: 24px 10px 0 10px;
+`;
+
+export const NameContainer = styled.div`
+  margin: 29px 10px 0 10px;
+  color: var(--Greyscale-Grey-400, #8492A4);
+  font-family: Outfit;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  text-transform: capitalize;
+  cursor: pointer;
 `;

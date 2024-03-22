@@ -75,7 +75,7 @@ const PatientsView = () => {
   const listIdentifier = getPatientListIdentifierByUrlParameter(
     listIdentifierParameter,
   );
-  // const searchValue = useSelector(patientsListSearchTermSelector);
+  const [searchValue, setSearchValue] = useState(null);
   const searchPerformed = useSelector(patientsListSearchPerformedSelector);
   const listDetails = useSelector(patientsListDetailsSelector);
   const isFetchingPatients = useSelector(isFetchingPatientsSelector);
@@ -530,6 +530,8 @@ const PatientsView = () => {
         >
           <PatientsViewContainer>
             <PatientsToolbar
+              searchValue={searchValue}
+              setSearchValue={setSearchValue}
               refreshPatientListOnUpload={refreshPatientListOnUpload}
               setImportPopoverOpen={setImportPopoverOpen}
             />
@@ -565,9 +567,10 @@ const PatientsView = () => {
                   importPopoverOpen={importPopoverOpen}
                   setImportPopoverOpen={setImportPopoverOpen}
                   hasImportErrors={hasImportErrors}
-                  isFetching={isFetchingPatients && !patients}
+                  isFetching={isFetchingPatients}
                   refreshPatients={refreshPatients}
                   isDynamicPatientList={isDynamicPatientList}
+                  searchValue={searchValue}
                 />
               </Grid>
             </PatientsListContainer>
