@@ -5,10 +5,9 @@ import {
   GridRenderEditCellParams,
 } from '@mui/x-data-grid-premium';
 
-import { Patient } from '@/app/types/Patient';
 import { ISelectOption } from '@/app/types/gender';
 
-interface Props extends GridRenderEditCellParams<Patient, string | undefined> {
+interface Props extends GridRenderEditCellParams<any, string | undefined> {
   options: ISelectOption[];
 }
 

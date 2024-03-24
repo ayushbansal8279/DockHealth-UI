@@ -6,10 +6,8 @@ import {
 } from '@mui/x-data-grid-premium';
 import dayjs, { Dayjs } from 'dayjs';
 
-import { Patient } from '@/app/types/Patient';
-
 export default function DateEditCell(
-  props: GridRenderEditCellParams<Patient, string | null>,
+  props: GridRenderEditCellParams<any, string | null>,
 ) {
   const { id, field, value } = props;
   const [date, setDate] = useState<Dayjs | null>(value ? dayjs(value) : null);

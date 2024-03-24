@@ -5,9 +5,11 @@ import {
 } from '@mui/x-data-grid-premium';
 
 import { Stack, TextField } from '@mui/material';
-import { Patient } from '@/app/types/Patient';
+import { INameExtends } from '@/app/types/EditCell';
 
-export default function NameEditCell(props: GridRenderEditCellParams<Patient>) {
+export default function NameEditCell(
+  props: GridRenderEditCellParams<INameExtends>,
+) {
   const { id, row } = props;
   const apiRef = useGridApiContext();
 

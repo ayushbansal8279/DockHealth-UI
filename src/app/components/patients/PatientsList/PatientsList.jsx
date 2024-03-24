@@ -6,6 +6,7 @@ import { ascend, compose, propOr, sortWith, toLower } from 'ramda';
 import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';
 import CloseIcon from '@mui/icons-material/Close';
+import { isValidPhoneNumber } from 'react-phone-number-input';
 import {
   GridRowModes,
   GridActionsCellItem,
@@ -45,10 +46,11 @@ import {
   PatientCell,
 } from './styled';
 import { StyledDataGrid } from './DataGridStyles';
-import NameEditCell from './NameEditCell';
-import DateEditCell from './DateEditCell';
+import NameEditCell from '@/app/components/common/DataGridEditCells/NameEditCell';
+import DateEditCell from '@/app/components/common/DataGridEditCells/DateEditCell';
+import GenderSelectCell from '@/app/components/common/DataGridEditCells/GenderSelectCell';
+import PhoneEditCell from '@/app/components/common/DataGridEditCells/PhoneEditCell';
 import { useGenderIdentitiesQuery } from '@/app/react-query/reference/useGenderIdentitiesQuery';
-import GenderSelectCell from './GenderSelectCell';
 import {
   GENDER_OPTIONS_BIRTH,
   convertGenderIdentitiesToSelectOptions,
@@ -330,10 +332,7 @@ const PatientsList = ({
       headerName: 'DOB',
       renderHeader: renderColumnHeader,
       width: 150,
-      valueGetter: ({ value }) =>
-        value
-          ? dateFormatter(value, { timezone: 'Etc/UTC', fmt: 'M/d/yyyy' })
-          : null,
+      valueGetter: ({ value }) => dateFormatter(value, 'M/d/yyyy'),
       editable: true,
       renderEditCell: (params) => <DateEditCell {...params} />,
     },
@@ -421,6 +420,14 @@ const PatientsList = ({
         </Tooltip>
       ),
       width: 140,
+      editable: true,
+      preProcessEditCellProps: (params) => {
+        const error = isValidPhoneNumber(params.props.value)
+          ? ''
+          : 'Invalid Phone Number';
+        return { ...params.props, error };
+      },
+      renderEditCell: (params) => <PhoneEditCell {...params} />,
     },
     {
       field: 'phoneHome',
@@ -432,6 +439,14 @@ const PatientsList = ({
         </Tooltip>
       ),
       width: 140,
+      editable: true,
+      preProcessEditCellProps: (params) => {
+        const error = isValidPhoneNumber(params.props.value)
+          ? ''
+          : 'Invalid Phone Number';
+        return { ...params.props, error };
+      },
+      renderEditCell: (params) => <PhoneEditCell {...params} />,
     },
   ];
 

@@ -1,9 +1,17 @@
-import { DateTime } from 'luxon';
+import { format } from 'date-fns';
+import { utcToZonedTime } from 'date-fns-tz';
 
-export const dateFormatter = (
-  date: string | Date,
-  { timezone = 'Etc/UTC', fmt = 'M/d/yyyy' },
-): string => {
-  const d = new Date(date).toISOString();
-  return DateTime.fromISO(d, { zone: timezone }).toFormat(fmt);
-};
+type InputValue = Date | string | number | null | undefined;
+
+/**
+ *
+ * @param date '2023-04-13'
+ * @param newFormat 'MM/dd/yyyy, HH:mm'
+ * @returns 04/13/2024, 00:00, regardless of local timezone
+ */
+export function dateFormatter(
+  date: InputValue,
+  newFormat: string = 'MM/dd/yyyy',
+) {
+  return date ? format(utcToZonedTime(new Date(date), 'UTC'), newFormat) : '';
+}
