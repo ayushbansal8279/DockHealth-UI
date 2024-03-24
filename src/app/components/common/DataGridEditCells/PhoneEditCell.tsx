@@ -3,12 +3,19 @@ import {
   useGridApiContext,
   GridRenderEditCellParams,
 } from '@mui/x-data-grid-premium';
-import { Patient } from '@/app/types/Patient';
 import PhoneNumberInput from '../PhoneNumberInput/PhoneNumberInput';
+import { isValidPhoneNumber } from '@/app/helpers/validation-helper';
 
-type Props = GridRenderEditCellParams<Patient, string | null>;
+type Params = GridRenderEditCellParams<Record<string, any>, string | null>;
 
-export default function PhoneEditCell({ id, field, value, error }: Props) {
+export const preProcessPhoneEditCellProps = (params: Params) => {
+  const error = isValidPhoneNumber(params.props.value)
+    ? ''
+    : 'Invalid Phone Number';
+  return { ...params.props, error };
+};
+
+export default function PhoneEditCell({ id, field, value, error }: Params) {
   const inputReference = useRef({});
   const apiRef = useGridApiContext();
 

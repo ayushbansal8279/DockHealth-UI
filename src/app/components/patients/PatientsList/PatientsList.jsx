@@ -6,7 +6,6 @@ import { ascend, compose, propOr, sortWith, toLower } from 'ramda';
 import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';
 import CloseIcon from '@mui/icons-material/Close';
-import { isValidPhoneNumber } from 'react-phone-number-input';
 import {
   GridRowModes,
   GridActionsCellItem,
@@ -46,10 +45,16 @@ import {
   PatientCell,
 } from './styled';
 import { StyledDataGrid } from './DataGridStyles';
-import NameEditCell from '@/app/components/common/DataGridEditCells/NameEditCell';
+import FullNameEditCell, {
+  setFullName,
+  preProcessFullNameEditCellProps,
+  getFullName,
+} from '@/app/components/common/DataGridEditCells/FullNameEditCell';
 import DateEditCell from '@/app/components/common/DataGridEditCells/DateEditCell';
 import GenderSelectCell from '@/app/components/common/DataGridEditCells/GenderSelectCell';
-import PhoneEditCell from '@/app/components/common/DataGridEditCells/PhoneEditCell';
+import PhoneEditCell, {
+  preProcessPhoneEditCellProps,
+} from '@/app/components/common/DataGridEditCells/PhoneEditCell';
 import { useGenderIdentitiesQuery } from '@/app/react-query/reference/useGenderIdentitiesQuery';
 import {
   GENDER_OPTIONS_BIRTH,
@@ -251,6 +256,16 @@ const PatientsList = ({
     setRowModesModel(newRowModesModel);
   };
 
+  const processRowUpdate = async (newRow, oldRow) => {
+    try {
+      // todo
+      return newRow;
+    } catch (error) {
+      console.error('processRowUpdate error', error);
+      return oldRow;
+    }
+  };
+
   const defaultColumns = [
     {
       field: 'isSelected',
@@ -307,13 +322,11 @@ const PatientsList = ({
         </PatientCell>
       ),
       width: 200,
-      valueGetter: (parameters) => {
-        return `${parameters.row.lastName || ''}, ${
-          parameters.row.firstName || ''
-        }`;
-      },
+      valueGetter: getFullName,
+      valueSetter: setFullName,
       editable: true,
-      renderEditCell: (params) => <NameEditCell {...params} />,
+      preProcessEditCellProps: preProcessFullNameEditCellProps,
+      renderEditCell: (params) => <FullNameEditCell {...params} />,
     },
     {
       field: 'mrn',
@@ -421,12 +434,7 @@ const PatientsList = ({
       ),
       width: 140,
       editable: true,
-      preProcessEditCellProps: (params) => {
-        const error = isValidPhoneNumber(params.props.value)
-          ? ''
-          : 'Invalid Phone Number';
-        return { ...params.props, error };
-      },
+      preProcessEditCellProps: preProcessPhoneEditCellProps,
       renderEditCell: (params) => <PhoneEditCell {...params} />,
     },
     {
@@ -440,12 +448,7 @@ const PatientsList = ({
       ),
       width: 140,
       editable: true,
-      preProcessEditCellProps: (params) => {
-        const error = isValidPhoneNumber(params.props.value)
-          ? ''
-          : 'Invalid Phone Number';
-        return { ...params.props, error };
-      },
+      preProcessEditCellProps: preProcessPhoneEditCellProps,
       renderEditCell: (params) => <PhoneEditCell {...params} />,
     },
   ];
@@ -595,6 +598,7 @@ const PatientsList = ({
                     onRowModesModelChange={handleRowModesModelChange}
                     onRowEditStop={handleRowEditStop}
                     onSortModelChange={handleSortChange}
+                    processRowUpdate={processRowUpdate}
                     sortModel={
                       dataGridSortModel &&
                       columns.some(
