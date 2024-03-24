@@ -11,6 +11,7 @@ import {
   InfoContainer,
   ContinueButtonContainer,
 } from './styled';
+import palette from '@/app/styles/palette';
 
 const OnboardingNewOrganizationInfoView = () => {
   const userOrganizations = useSelector(userOrganizationsSelector);
@@ -39,7 +40,9 @@ const OnboardingNewOrganizationInfoView = () => {
         <ContinueButtonContainer>
           <Button
             fullWidth
-            onClick={() => history.push('/onboarding/create-organization')}
+            color={palette.brightOrange}
+            secondaryColor={palette.oPlusRed}
+            onClick={() => history.push('/onboarding/eula')}
           >
             Continue
           </Button>
