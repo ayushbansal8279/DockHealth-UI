@@ -4,7 +4,7 @@ import { useBoolean } from 'hooks/useBoolean';
 import zIndex from 'styles/z-index';
 import PopoverCard from 'components/common/PopoverCard/PopoverCard';
 import { Box, ClickAwayListener, Popper } from '@mui/material';
-import { Button } from './styled';
+import { Button, PopoverDiv } from './styled';
 
 const TaskItemPopover = React.forwardRef(
   (
@@ -58,8 +58,8 @@ const TaskItemPopover = React.forwardRef(
               open={isPopoverOpen}
               onClose={closePopover}
             >
-              <Box width={contentWidth}>
-                <PopoverCard>
+              <PopoverCard>
+                <PopoverDiv>
                   {typeof content === 'function'
                     ? content({
                         openPopover,
@@ -69,8 +69,8 @@ const TaskItemPopover = React.forwardRef(
                         resetPosition: forceUpdate,
                       })
                     : content}
-                </PopoverCard>
-              </Box>
+                </PopoverDiv>
+              </PopoverCard>
             </Popper>
           </ClickAwayListener>
         )}
