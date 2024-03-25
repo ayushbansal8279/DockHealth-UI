@@ -81,6 +81,7 @@ const PrioritySection = ({ selectedTask, disabled = false }) => {
             '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
               borderColor: 'transparent',
             },
+            color:'#8492A4'
           }}
           InputProps={{
             startAdornment: (
