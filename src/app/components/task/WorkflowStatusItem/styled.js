@@ -127,6 +127,7 @@ export const NameLoader = styled.div`
 export const StatusButton = styled.button`
   ${({ selected }) => selected && `background-color: ${palette.coolGrey4};`}
   overflow: hidden;
+  width: ${({ width }) => width}px;
 
   &:hover {
     background-color: ${palette.coolGrey4};
