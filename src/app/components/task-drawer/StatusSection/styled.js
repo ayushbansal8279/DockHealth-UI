@@ -2,7 +2,6 @@ import styled from 'styled-components';
 import { fontSizes, fontWeights } from 'styles/font';
 import palette from 'styles/palette';
 
-
 export const StatusFieldContainer = styled.div`
   margin-left: 10px;
   width: 200px;
@@ -12,6 +11,7 @@ export const StatusFieldContainer = styled.div`
 export const StatusContainer = styled.div`
   display: flex;
   align-items: center;
+  margin-top: 5px;
 `;
 
 export const Title = styled.div`
@@ -31,7 +31,7 @@ export const StatusWrapper = styled.div`
   background: ${(property) => `${property.color}1A` || '#7F43341A'};
   min-width: 100px;
   padding: 2.5px 2px;
-  height: 40px;
+  height: 28px;
   justify-content: center;
   align-items: center;
   margin-left: 20px;
