@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-no-duplicate-props */
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { updateWorkflowStatus } from 'actions/task-actions';
 import * as AlertActions from 'alert/actions';
@@ -15,7 +15,7 @@ import {
   StatusWrapper,
 } from './styled';
 import { IconButton, InputAdornment } from '@mui/material';
-import AssignMemberIcon from '../../user/AssignMemberIcon/AssingMemberIcon';
+import PrioritySelectIcon from '@/app/img/PrioritySelectIcon';
 
 const StatusSection = ({ selectedTask, onTaskUpdate, disabled = false }) => {
   const dispatch = useDispatch();
@@ -81,15 +81,15 @@ const StatusSection = ({ selectedTask, onTaskUpdate, disabled = false }) => {
               size="small"
               sx={{
                 '& .MuiOutlinedInput-root': {
-                  '& fieldset': {
-                    borderColor: 'white',
+                  '& .MuiOutlinedInput-notchedOutline': {
+                    borderColor: 'transparent',
                   },
                 },
                 width: '200px',
                 marginLeft: '5px',
               }}
               name="workflowStatus"
-              placeholder="Add Status"
+              placeholder="--"
               disabled={disabled}
               InputLabelProps={{
                 shrink: true,
@@ -98,7 +98,7 @@ const StatusSection = ({ selectedTask, onTaskUpdate, disabled = false }) => {
                 startAdornment: !workflowStatus ? (
                   <InputAdornment position="start">
                     <IconButton aria-label="status">
-                      <AssignMemberIcon />
+                      <PrioritySelectIcon />
                     </IconButton>
                   </InputAdornment>
                 ) : (
