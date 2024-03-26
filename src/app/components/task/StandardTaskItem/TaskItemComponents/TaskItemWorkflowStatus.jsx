@@ -34,7 +34,7 @@ const TaskItemWorkflowStatus = ({
       )}
       {(task.status !== 'COMPLETE' || !showDefaultTaskStatusCompleted) && (
         <TaskItemPopover
-          contentWidth={160 || 'auto'}
+          // contentWidth={160 || 'auto'}
           fullWidth
           content={({ closePopover, resetPosition }) => (
             <TaskWorkflowStatus

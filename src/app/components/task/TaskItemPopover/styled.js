@@ -14,7 +14,7 @@ export const Button = styled.button`
 
 export const PopoverDiv = styled.div`
   overflow: auto;
-  width: 100%;
+  width: ${({width}) => width}px;
   background-color: white;
   min-width: 200px;
 
