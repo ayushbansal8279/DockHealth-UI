@@ -5,15 +5,18 @@ import palette from 'styles/palette';
 
 export const AssignMemberContainer = styled.div`
   display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
 `;
 
 export const Title = styled.div`
-  margin-right: 20px;
+  margin-right: 24px;
   color: ${palette.coolGrey1};
   font-family: Outfit;
   font-size: ${fontSizes.smallPlus};
   font-weight: ${fontWeights.light};
   display: flex;
+  min-width: 70px;
   align-items: center;
 `;
 
@@ -40,13 +43,13 @@ export const AssigneeContainer = styled.div`
   height: 40px;
   padding: 0 8px;
   border-radius: 8px;
-  background: #F8F8F9;
-  margin-left: 20px;
+  background: #f8f8f9;
 `;
 export const AssigneeTitle = styled.div`
   font-family: Outfit;
   font-size: ${fontSizes.regular};
   font-weight: ${fontWeights.light};
+  white-space: nowrap;
 `;
 
 export const StyledYouBadge = styled.div`
@@ -62,8 +65,6 @@ export const StyledYouBadge = styled.div`
 export const PopupContainer = styled.div`
   width: ${({ width }) => width}px;
   padding: 0;
-  left: 135px;
-  margin-top: 2px;
   position: absolute;
   background-color: ${palette.white};
   overflow: auto;
@@ -72,3 +73,14 @@ export const PopupContainer = styled.div`
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   z-index: 10;
 }`;
+
+export const HelperText = styled.div`
+  color: #8f9cac;
+  font-family: Outfit;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 135%;
+  margin-left: 9px;
+  text-transform: none;
+`;
