@@ -118,6 +118,9 @@ const PatientsList = ({
     currentOrganization,
   );
   const [dataGridSortModel, setDataGridSortModel] = useState();
+  const [pinnedColumns, setPinnedColumns] = useState({
+    left: ['isSelected', 'patient'],
+  });
 
   const selectedPatientsCount = patients?.filter((p) => p.isSelected).length;
   const patientsCount = patients?.length;
@@ -240,51 +243,67 @@ const PatientsList = ({
     [dataGridSortModel],
   );
 
-  const handleEditClick = (id) => () => {
-    setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
-  };
+  const handleEditClick = useCallback(
+    (id) => () => {
+      setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
+    },
+    [rowModesModel],
+  );
 
-  const handleSaveClick = (id) => () => {
-    setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
-  };
+  const handleSaveClick = useCallback(
+    (id) => () => {
+      setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
+    },
+    [rowModesModel],
+  );
 
-  const handleCancelClick = (id) => () => {
-    setRowModesModel({
-      ...rowModesModel,
-      [id]: { mode: GridRowModes.View, ignoreModifications: true },
-    });
-  };
+  const handleCancelClick = useCallback(
+    (id) => () => {
+      setRowModesModel({
+        ...rowModesModel,
+        [id]: { mode: GridRowModes.View, ignoreModifications: true },
+      });
+    },
+    [rowModesModel],
+  );
 
-  const handleRowModesModelChange = (newRowModesModel) => {
+  const handleRowModesModelChange = useCallback((newRowModesModel) => {
     setRowModesModel(newRowModesModel);
-  };
+  }, []);
 
-  const processRowUpdate = async (newRow, oldRow) => {
-    try {
-      const params = pick(
-        [
-          'patientIdentifier',
-          'firstName',
-          'middleName',
-          'lastName',
-          'gender',
-          'genderIdentity',
-          'dob',
-          'mrn',
-          'phoneMobile',
-          'phoneHome',
-        ],
-        newRow,
-      );
-      params.dob = dateFormatter(params.dob, 'MM/dd/yyyy');
-      await updatePatientById.mutateAsync(params);
+  const processRowUpdate = useCallback(
+    async (newRow, oldRow) => {
+      try {
+        const params = pick(
+          [
+            'patientIdentifier',
+            'firstName',
+            'middleName',
+            'lastName',
+            'gender',
+            'genderIdentity',
+            'dob',
+            'mrn',
+            'phoneMobile',
+            'phoneHome',
+          ],
+          newRow,
+        );
+        params.dob = dateFormatter(params.dob, 'MM/dd/yyyy');
+        await updatePatientById.mutateAsync(params);
 
-      return newRow;
-    } catch (error) {
-      console.error('processRowUpdate error', error);
-      return oldRow;
-    }
-  };
+        return newRow;
+      } catch (error) {
+        console.error('processRowUpdate error', error);
+        return oldRow;
+      }
+    },
+    [updatePatientById],
+  );
+
+  const handlePinnedColumnsChange = useCallback((updatedPinnedColumns) => {
+    setPinnedColumns(updatedPinnedColumns);
+  }, []);
 
   const defaultColumns = [
     {
@@ -351,7 +370,7 @@ const PatientsList = ({
     {
       field: 'mrn',
       headerName: uniqueIdentifierLabel.toUpperCase(),
-      renderHeader: renderColumnHeader,
+      // renderHeader: renderColumnHeader,
       width: 100,
       renderCell: ({ row }) => (
         <Tooltip placement="top" title={row.mrn}>
@@ -632,6 +651,8 @@ const PatientsList = ({
                         ? dataGridSortModel
                         : undefined
                     }
+                    pinnedColumns={pinnedColumns}
+                    onPinnedColumnsChange={handlePinnedColumnsChange}
                   />
                 </NonEmptyListTable>
               </Grid>

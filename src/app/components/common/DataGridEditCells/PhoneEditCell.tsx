@@ -9,9 +9,10 @@ import { isValidPhoneNumber } from '@/app/helpers/validation-helper';
 type Params = GridRenderEditCellParams<Record<string, any>, string | null>;
 
 export const preProcessPhoneEditCellProps = (params: Params) => {
-  const error = isValidPhoneNumber(params.props.value)
-    ? ''
-    : 'Invalid Phone Number';
+  const error =
+    !params.props.value || isValidPhoneNumber(params.props.value)
+      ? ''
+      : 'Invalid Phone Number';
   return { ...params.props, error };
 };
 
