@@ -276,7 +276,7 @@ const PatientsList = ({
         ],
         newRow,
       );
-      // params.dob =
+      params.dob = dateFormatter(params.dob, 'MM/dd/yyyy');
       await updatePatientById.mutateAsync(params);
 
       return newRow;
