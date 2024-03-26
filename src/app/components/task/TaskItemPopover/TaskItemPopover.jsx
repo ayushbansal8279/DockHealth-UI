@@ -59,7 +59,7 @@ const TaskItemPopover = React.forwardRef(
               onClose={closePopover}
             >
               <PopoverCard>
-                <PopoverDiv>
+                <PopoverDiv  width={contentWidth}>
                   {typeof content === 'function'
                     ? content({
                         openPopover,
