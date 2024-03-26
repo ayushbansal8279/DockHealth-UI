@@ -176,3 +176,13 @@ export function updatePatientListPreferences(setup, patientListIdentifier) {
     .put(`patient/list/updateUserPreferences/${patientListIdentifier}`, setup)
     .then(({ data }) => data);
 }
+
+/**
+ * Update patient by identifier
+ * @param {string} id patientIdentifier
+ * @param {object} payload payload to patch
+ * @returns {Promise<any>} patient object info
+ */
+export function updatePatientById(id, payload) {
+  return axios.patch(`patient/${id}`, payload).then(({ data }) => data);
+}

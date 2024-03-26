@@ -18,7 +18,7 @@ export default function DateEditCell(
     apiRef.current.setEditCellValue({
       id,
       field,
-      value: newValue?.format('M/d/YYYY') ?? null,
+      value: newValue?.format('MM/DD/YYYY') ?? null,
     });
   };
 

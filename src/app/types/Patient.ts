@@ -14,3 +14,16 @@ export type ExtendedPatient = Patient & {
 };
 
 export type PatientImportProcessTracking = PatientImportProcessTrackingDto;
+
+export interface PatientUpdateRequestParams {
+  patientIdentifier: string;
+  firstName: string;
+  middleName: string;
+  lastName: string;
+  gender: string;
+  genderIdentity: string;
+  dob: string;
+  mrn: string;
+  phoneMobile: string;
+  phoneHome: string;
+}

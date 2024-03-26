@@ -6,6 +6,7 @@ import { ascend, compose, propOr, sortWith, toLower } from 'ramda';
 import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';
 import CloseIcon from '@mui/icons-material/Close';
+import pick from 'ramda/src/pick';
 import {
   GridRowModes,
   GridActionsCellItem,
@@ -61,6 +62,7 @@ import {
   convertGenderIdentitiesToSelectOptions,
 } from '@/app/types/gender';
 import { getValueLabelHashFromOptions } from '@/app/helpers/select-option-helper';
+import { useUpdatePatientById } from '@/app/react-query/patients/useUpdatePatientById';
 
 const renderColumnHeader = (props) => {
   const { colDef } = props;
@@ -104,6 +106,7 @@ const PatientsList = ({
   isDynamicPatientList,
   searchValue,
 }) => {
+  const updatePatientById = useUpdatePatientById();
   const { pathname } = useLocation();
   const history = useHistory();
   const dispatch = useDispatch();
@@ -258,7 +261,24 @@ const PatientsList = ({
 
   const processRowUpdate = async (newRow, oldRow) => {
     try {
-      // todo
+      const params = pick(
+        [
+          'patientIdentifier',
+          'firstName',
+          'middleName',
+          'lastName',
+          'gender',
+          'genderIdentity',
+          'dob',
+          'mrn',
+          'phoneMobile',
+          'phoneHome',
+        ],
+        newRow,
+      );
+      // params.dob =
+      await updatePatientById.mutateAsync(params);
+
       return newRow;
     } catch (error) {
       console.error('processRowUpdate error', error);
@@ -346,6 +366,10 @@ const PatientsList = ({
       renderHeader: renderColumnHeader,
       width: 150,
       valueGetter: ({ value }) => dateFormatter(value, 'M/d/yyyy'),
+      valueSetter: ({ value, row }) => ({
+        ...row,
+        dob: dateFormatter(value, 'yyyy-MM-dd'),
+      }),
       editable: true,
       renderEditCell: (params) => <DateEditCell {...params} />,
     },
