@@ -16,8 +16,6 @@ import {
   DraggableProvided,
   DraggableStateSnapshot,
 } from 'react-beautiful-dnd';
-import QuickAddSubtask from '@/app/components/task/StandardTaskItem/QuickAddSubtask';
-import { taskLookupSelector } from '@/app/selectors/task-details-selectors';
 import * as Sc from './styled';
 import * as TaskActions from 'actions/task-actions';
 import { TaskOrigin } from '@/app/helpers/task-helpers';
