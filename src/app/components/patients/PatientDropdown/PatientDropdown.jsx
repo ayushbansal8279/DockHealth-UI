@@ -16,6 +16,7 @@ const PatientDropdown = ({
   isMultipleChange,
   isSubtask,
   hasSubtasks,
+  origin,
 }) => {
   const popoverReference = useRef(null);
   const dispatch = useDispatch();
@@ -26,9 +27,11 @@ const PatientDropdown = ({
       ({ name }) => name === 'patient.quickadd.enabled',
     ) || {};
   const quickAddPatientEnabled = quickAddPatientEnabledItem?.value !== 'false';
+
   useEffect(() => {
-    handlePatientPopoverOpen(isPopoverOpen);
+    origin === 'LIST' && handlePatientPopoverOpen(isPopoverOpen);
   }, [isPopoverOpen]);
+
   const unassignPatient = () => {
     if (isMultipleChange || isSubtask || hasSubtasks) {
       dispatch(
