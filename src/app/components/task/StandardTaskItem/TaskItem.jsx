@@ -1179,14 +1179,8 @@ const TaskItem = React.memo(
                       onChange={handlePriorityChange}
                       field={{
                         options: [
-                          { identifier: 'HIGH', name: 'High', color: 'red' },
-                          { identifier: 'NONE', name: 'No Priority' },
-                          {
-                            identifier: 'MEDIUM',
-                            name: 'Medium',
-                            color: '#fd8914',
-                          },
-                          { identifier: 'LOW', name: 'Low' },
+                          { identifier: 'HIGH', name: 'High', tag: 'High' },
+                          { identifier: 'LOW', name: 'No Priority', tag: '' },
                         ],
                         displayOptions: [],
                       }}

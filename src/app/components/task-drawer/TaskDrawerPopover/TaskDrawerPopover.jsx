@@ -4,9 +4,15 @@ import { useUpdate } from 'react-use';
 import { useBoolean } from 'hooks/useBoolean';
 import { bool, node, oneOf } from 'prop-types';
 import PopoverCard from 'components/common/PopoverCard/PopoverCard';
-import { StyledPopover, StyledButton } from './styled';
+import { StyledPopover, StyledButton, PopoverDiv } from './styled';
 
-const TaskDrawerPopover = ({ disabled, placement, children, content, width }) => {
+const TaskDrawerPopover = ({
+  disabled,
+  placement,
+  children,
+  content,
+  width,
+}) => {
   const buttonReference = useRef(null);
   const [isPopoverOpen, openPopover, closePopover, togglePopover] =
     useBoolean(false);
@@ -44,7 +50,7 @@ const TaskDrawerPopover = ({ disabled, placement, children, content, width }) =>
       >
         {isPopoverOpen && (
           <PopoverCard>
-            <Box width="auto" minWidth={buttonReference.current?.offsetWidth}>
+            <PopoverDiv minWidth={buttonReference.current?.offsetWidth}>
               {typeof content === 'function'
                 ? content({
                     isPopoverOpen,
@@ -54,7 +60,7 @@ const TaskDrawerPopover = ({ disabled, placement, children, content, width }) =>
                     resetPosition: forceUpdate,
                   })
                 : content}
-            </Box>
+            </PopoverDiv>
           </PopoverCard>
         )}
       </StyledPopover>
