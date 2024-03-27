@@ -25,6 +25,7 @@ export const Title = styled.h3`
   font-size: ${fontSizes.regular};
   color: ${palette.greyBlue};
   font-weight: ${fontWeights.regularPlus};
+  width: 200px;
 `;
 export const rowHeight = 'fit-content';
 
