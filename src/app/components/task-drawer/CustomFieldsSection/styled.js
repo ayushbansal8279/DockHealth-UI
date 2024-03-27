@@ -10,6 +10,7 @@ export const CustomFieldsSectionContainer = styled.div`
 
 export const CustomFieldsSectionContainerNoLine = styled.div`
   color: ${palette.coolGrey1};
+  padding: 11px 41px;
 `;
 
 export const HidableContainer = styled.div`
@@ -24,6 +25,7 @@ export const Title = styled.h3`
   font-size: ${fontSizes.regular};
   color: ${palette.greyBlue};
   font-weight: ${fontWeights.regularPlus};
+  width: 200px;
 `;
 export const rowHeight = 'fit-content';
 

@@ -26,6 +26,7 @@ const StickyMainTaskItemCell = styled.div`
     origin,
     searchValue,
     isFilterApply,
+    isSortApplied,
   }) =>
     origin === 'PATIENT'
       ? isSubtask || isWorkflowSubtask
@@ -33,7 +34,7 @@ const StickyMainTaskItemCell = styled.div`
         : '24px'
       : origin === 'LIST'
       ? isSubtask || isWorkflowSubtask
-        ? searchValue || isFilterApply
+        ? searchValue || isFilterApply || isSortApplied
           ? '54.5px'
           : '90.5px'
         : '54.5px'
@@ -51,10 +52,17 @@ const StickyMainTaskItemCell = styled.div`
   margin-left: ${({ isTamplateGroup }) => (isTamplateGroup ? '-1px;' : '')};
   align-items: center;
   padding-left: ${spacing.smallPlus};
-  border-top-left-radius: ${({ isTamplateGroup }) =>
-    isTamplateGroup ? '7px' : ''};
   z-index: ${({ isEditingDescription }) =>
     isEditingDescription ? '12' : '11'};
+
+  border-top-left-radius: ${({ isTamplateGroup }) =>
+    isTamplateGroup ? '7px' : ''};
+  border-bottom-left-radius: ${({ isTamplateGroup, isOpen }) =>
+    isTamplateGroup && !isOpen ? '7px' : ''};
+  border-bottom-left-radius: ${({ isWorkflowtask, isLastChild }) =>
+    isWorkflowtask && isLastChild ? '5.5px' : ``};
+  border-bottom-right-radius: ${({ isWorkflowtask, isLastChild }) =>
+    isWorkflowtask && isLastChild ? '7px' : ``};
 
   background-color: ${(props) =>
     props.isSelected

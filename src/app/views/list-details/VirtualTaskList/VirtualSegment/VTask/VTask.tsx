@@ -1,5 +1,6 @@
 import React, {
   ForwardedRef,
+  createContext,
   forwardRef,
   useCallback,
   useContext,
@@ -7,6 +8,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
+
 import { Segment } from 'views/list-details/modules/Virtualized';
 import StandardTaskItem from 'components/task/StandardTaskItem/StandardTaskItem';
 import {
@@ -14,6 +16,8 @@ import {
   DraggableProvided,
   DraggableStateSnapshot,
 } from 'react-beautiful-dnd';
+import QuickAddSubtask from '@/app/components/task/StandardTaskItem/QuickAddSubtask';
+import { taskLookupSelector } from '@/app/selectors/task-details-selectors';
 import * as Sc from './styled';
 import * as TaskActions from 'actions/task-actions';
 import { TaskOrigin } from '@/app/helpers/task-helpers';
@@ -23,20 +27,42 @@ import QuickAddSubtask from '@/app/components/task/StandardTaskItem/QuickAddSubt
 import { QuickAddInputWrapper } from '@/app/components/task-template/TaskTemplateGroup/styled';
 import QuickAddTaskInput from '@/app/components/tasklist/QuickAddTaskInput/QuickAddTaskInput';
 import { CollapseContext } from '../../VirtualTaskList';
+import palette from '@/app/styles/palette';
 
 export interface Props extends Segment {
   isTaskTemplate: boolean;
   isLastChild: boolean;
+  bgColor: boolean;
+  isLastTaskOfGroup: boolean;
 }
 
+export const VTaskContext = createContext({
+  handleWorkflowOpen: {},
+});
+
 function VTask(
-  { metadata, register, isTaskTemplate, isLastChild, ...record }: Props,
+  {
+    metadata,
+    register,
+    isTaskTemplate,
+    isLastChild,
+    isLastTaskOfGroup,
+    bgColor,
+    ...record
+  }: Props,
   // eslint-disable-next-line unicorn/prevent-abbreviations, @typescript-eslint/no-unused-vars
   ref: ForwardedRef<HTMLDivElement>,
 ) {
   const dispatch = useDispatch();
   const parentTaskReference = useRef(null);
   const [subtaskQuickAddOpen, setSubtaskQuickAddOpen] = useState(false);
+  const [virtualListWorkflowOpen, setVirtualListWorkflowOpen] = useState(true);
+
+  const handleWorkflowOpen = (isOpen: boolean) => {
+    setVirtualListWorkflowOpen(isOpen);
+  };
+
+  const contextValue = { handleWorkflowOpen: handleWorkflowOpen };
 
   const pulledTask = useSelector((state) => {
     // @ts-ignore
@@ -112,17 +138,26 @@ function VTask(
             $workflow={record.task?.itemType === 'BUNDLE'}
             $template={isTaskTemplate && isLastChild}
             isTaskTemplate={isTaskTemplate}
+            isLastChild={isLastChild || false}
+            origin={TaskOrigin.LIST}
+            bgColor={bgColor}
+            isLastTaskOfGroup={isLastTaskOfGroup}
+            virtualListWorkflowOpen={virtualListWorkflowOpen}
           >
-            <StandardTaskItem
-              // @ts-ignore
-              taskIdentifier={metadata.id}
-              draggableProvided={provided}
-              isDraggable
-              isDragging={snapshot.isDragging}
-              isTaskTemplate={isTaskTemplate}
-              isLastChild={isLastChild || false}
-              origin={TaskOrigin.LIST}
-            />
+            <VTaskContext.Provider value={contextValue}>
+              <StandardTaskItem
+                // @ts-ignore
+                taskIdentifier={metadata.id}
+                draggableProvided={provided}
+                isDraggable
+                isDragging={snapshot.isDragging}
+                isTaskTemplate={isTaskTemplate}
+                isLastChild={isLastChild || false}
+                origin={TaskOrigin.LIST}
+                pageBackground={bgColor ? palette.aliceBlue : ''}
+                isNestedTask
+              />
+            </VTaskContext.Provider>
           </Sc.VTask>
           {subtaskQuickAddOpen && subTasksCount === 0 && (
             <Sc.QuickAddContainer>

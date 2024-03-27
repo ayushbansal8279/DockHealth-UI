@@ -1,8 +1,15 @@
 import React, { useEffect } from 'react';
 import { Grid } from '@mui/material';
+import Spacing from 'components/common/Spacing';
 import InviteUserOrGroupToListForm from 'components/user/InviteMemberToListForm/InviteUserOrGroupToListForm';
-import { InviteToListModalWrapper, Header, Title, Description } from './styled';
+import {
+  InviteToListModalWrapper,
+  Header,
+  Title,
+  ButtonWrapper,
+} from './styled';
 import { CloseIconButton, CloseIcon } from '../styled';
+import { CancelButton, ConfirmButton } from '@/app/modal/components/ModalButton/ModalButtons';
 
 const InviteToListModal = ({ closeModal, onMembersRefresh, list = null }) => {
   useEffect(() => {
@@ -19,16 +26,16 @@ const InviteToListModal = ({ closeModal, onMembersRefresh, list = null }) => {
       <Grid container direction="column" item wrap="nowrap">
         <Header>
           <Title>Invite Others to this list</Title>
-          <Description>
-            Invite as many people as you’d like to share it with. The people you
-            invite to this list will have access to the tasks, people and
-            clients who are part of this list.
-          </Description>
         </Header>
         <InviteUserOrGroupToListForm
           list={list}
           onMembersRefresh={onMembersRefresh}
         />
+        <Spacing vertical={4} />
+        <ButtonWrapper>
+          <CancelButton onClick={closeModal}>Cancel</CancelButton>
+          <ConfirmButton onClick={closeModal}>Save</ConfirmButton>
+        </ButtonWrapper>
       </Grid>
     </InviteToListModalWrapper>
   );

@@ -8,7 +8,7 @@ export const getMemberStatus = (member) => {
       if (orgUserRole === 'GUEST') return 'Dock Lite';
 
       if (taskListUserRole === 'ADMIN' || taskListUserRole === 'OWNER')
-        return 'List Admin';
+        return 'Admin';
 
       return null;
     }

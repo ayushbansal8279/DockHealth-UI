@@ -54,12 +54,14 @@ export const TaskTemplateGroupHeaderContainer = styled.div`
     props.isSelected ? palette.dockBlueLight : palette.white};
 
   border-top: 3px solid rgba(75, 179, 253, 1);
+  margin-top: 10px;
   border-bottom: 1px solid
     ${({ isOpen }) =>
       isOpen ? `${palette.coolGrey3}` : 'rgba(75, 179, 253, 1)'};
   border-right: 1px solid rgba(75, 179, 253, 1);
   z-index: 2;
-  border-top-left-radius: 7px;
+  
+  border-radius: 7px 7px ${({ isOpen }) => (isOpen ? `0px` : '7px')} ${({ isOpen }) => (isOpen ? `0px` : '7px')};
 
   &:hover {
     & ${TemplateHandle}, ${AddPlaceholder} {

@@ -5,7 +5,7 @@ import palette from 'styles/palette';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import Skeleton from '@mui/material/Skeleton';
-import { Typography } from '@mui/material';
+import { Button, Typography } from '@mui/material';
 
 export const FolderIconContainer = styled.div`
   display: flex;
@@ -158,23 +158,97 @@ export const SelectOptionsContainer = styled.div`
   // overflow: auto;
 `;
 
-export const TaskTemplateApplicatorContainer = styled.div`
-  display: flex;
-  padding: ${spacing.small} 0 7px ${spacing.regular};
-  background-color: ${palette.newDarkBlue};
-  border: 1px solid ${palette.coolGrey3};
-  font-size: ${fontSizes.smallPlus};
-  color: ${palette.white};
-  height: 40px;
-  border-radius: 5px;
+export const TaskTemplateApplicatorContainer = styled(Button)`
+  // display: flex;
+  // padding: ${spacing.small} 0 7px ${spacing.regular};
+  // background-color: ${palette.newDarkBlue};
+  // border: 1px solid ${palette.coolGrey3};
+  // font-size: ${fontSizes.smallPlus};
+  // color: ${palette.white};
+  // width: 150px;
+  // height: 32px;
+  // top: 197px;
+  // left: 1330px;
+  // gap: 0px;
+  // opacity: 0px;
 
-  :hover {
-    background-color: ${palette.purpleNavy};
-  }
+  // border-radius: 5px;
+
+  // :hover {
+  //   background-color: ${palette.purpleNavy};
+  // }
 
   @media print {
     display: none;
   }
+
+  && {
+    border-radius: 0;
+    background-color: ${palette.newDarkBlue};
+    border-right: 1px solid ${palette.white};
+    z-index: 11;
+    :hover {
+      background-color: ${(props) =>
+        props.active ? palette.cornFlowerBlue : palette.purpleNavy};
+    }
+  }
+  & .MuiSvgIcon-root > path {
+    fill: ${palette.white};
+  }
+  height: 32px;
+`;
+
+export const TaskTemplateApplicatorButtonLabel = styled(Typography)`
+  &&& {
+    &.MuiTypography-root {
+      font-family: Outfit;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 11.19px;
+      text-align: center;
+      color: ${palette.white};
+      text-transform: none;
+    }
+  }
+`;
+
+export const TaskTemplateApplicatorRotatableChevronWrapper = styled(Button)`
+  && {
+    border-radius: 0;
+    background-color: ${palette.newDarkBlue};
+    border-right: 2px solid ${palette.white};
+    :hover {
+      background-color: ${palette.purpleNavy};
+    }
+  }
+  & .MuiSvgIcon-root > path {
+    fill: ${palette.white};
+  }
+`;
+
+export const TaskTemplateApplicatorRotatableChevronLabel = styled(Typography)`
+  &&& {
+    &.MuiTypography-root {
+      // font-family: 'Montserrat', sans-serif;
+      color: ${palette.white};
+      font-size: ${fontSizes.small};
+      font-weight: ${fontWeights.regular};
+      display: flex-start;
+      margin-right: ${spacing.tiny};
+      align-items: center;
+      padding-right: 25px;
+    }
+  }
+`;
+
+export const BoxContainer = styled.div`
+  display: flex;
+  width: 135px;
+  border-radius: 4px;
+  overflow: hidden;
+  height: 32px;
+  margin-top: 4px;
+  z-index: 11;
 `;
 
 export const TaskTemplateApplicatorLabel = styled.div`

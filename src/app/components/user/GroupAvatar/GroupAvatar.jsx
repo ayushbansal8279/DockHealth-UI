@@ -23,6 +23,7 @@ const GroupAvatar = React.forwardRef(
       hideStatus,
       onClick,
       displayUsersCount = 30,
+      isListPage,
     },
     reference,
   ) => {
@@ -79,7 +80,11 @@ const GroupAvatar = React.forwardRef(
             initials={initials}
             isSelected={isSelected}
             name={name}
-            activityStatus={activityStatus}
+            activityStatus={
+              isListPage && activityStatus === ActivityStatus.ONLINE
+                ? activityStatus
+                : ''
+            }
             color={bubbleColor}
             size={size}
             onClick={onClick}

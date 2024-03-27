@@ -171,20 +171,25 @@ const CustomFieldsSection = ({ disabled, fieldCategoryType }) => {
     <FormProvider {...formMethods}>
       {fieldCategoryType === 'TASK_CORE' ? (
         <CustomFieldsSectionContainerNoLine>
+          <CategoryOptions
+            coreTask
+            visibility={emptyVisible}
+            onToggle={toggleEmptyVisible}
+          />
           {customFields?.map((field, index) => {
-            return renderCustomField(field, index, true);
+            return renderCustomField(field, index, false);
           })}
         </CustomFieldsSectionContainerNoLine>
       ) : (
         <CustomFieldsSectionContainer>
           <Title>Custom fields</Title>
-          {customFields?.map((field, index) => {
-            return renderCustomField(field, index, false);
-          })}
           <CategoryOptions
             visibility={emptyVisible}
             onToggle={toggleEmptyVisible}
           />
+          {customFields?.map((field, index) => {
+            return renderCustomField(field, index, false);
+          })}
         </CustomFieldsSectionContainer>
       )}
     </FormProvider>

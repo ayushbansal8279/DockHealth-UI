@@ -3,9 +3,9 @@ import palette from 'styles/palette';
 
 export const StatusSubContaioner = styled.div`
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
-  padding-left: 5px;
+  padding-left: 12px;
 `;
 
 export const StatusWrapper = styled.div`

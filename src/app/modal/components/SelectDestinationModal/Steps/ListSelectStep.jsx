@@ -2,7 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { Box, IconButton } from '@mui/material';
 import { useBoolean } from 'hooks/useBoolean';
 import { useSelector } from 'react-redux';
-import { userProfileSelector } from 'selectors/user-selectors';
+import {
+  userProfileSelector,
+  selectedUserOrganizationSelector,
+} from 'selectors/user-selectors';
+import { checkIfUserIsOrganizationAdmin } from 'helpers/user-helper';
 import { getSharedTaskListsWithCurrentUser } from 'api/task-list-api';
 import {
   Title,
@@ -34,6 +38,14 @@ const ListSelectStep = ({
   const currentUser = useSelector(userProfileSelector);
   const addListInputReference = addListInput;
 
+  const isAdmin = checkIfUserIsOrganizationAdmin(currentUser);
+  const currentOrganization = useSelector(selectedUserOrganizationSelector);
+  const quickAddPatientEnabledItem =
+    currentOrganization?.themeSettings?.find(
+      ({ name }) => name === 'list.add.adminonly.enabled',
+    ) || {};
+  const listAddAdminOnly = quickAddPatientEnabledItem?.value === 'true';
+
   useEffect(() => {
     if (currentUser?.userIdentifier) {
       getSharedTaskListsWithCurrentUser(currentUser.userIdentifier)
@@ -57,7 +69,7 @@ const ListSelectStep = ({
 
   return (
     <Step>
-      <Title>LISTS</Title>
+      <Title>Move To List</Title>
       <Box m={1} />
       <ListsWrapper>
         {!isFetchingLists && (
@@ -96,28 +108,30 @@ const ListSelectStep = ({
           </>
         )}
       </ListsWrapper>
-      <QuickAddInputWrapper isFocused={listInputFocused}>
-        <QuickAddInput
-          ref={addListInputReference}
-          type="text"
-          placeholder="Add list"
-          onFocus={setListInputFocused}
-          onBlur={unsetListInputFocused}
-          onChange={() => {
-            if (addListInputReference?.current?.value) {
-              setSelectedList({
-                listName: addListInputReference?.current?.value,
-              });
-            } else {
-              setSelectedList(null);
+      {(!listAddAdminOnly || (listAddAdminOnly && isAdmin)) && (
+        <QuickAddInputWrapper isFocused={listInputFocused}>
+          <QuickAddInput
+            ref={addListInputReference}
+            type="text"
+            placeholder="Add list"
+            onFocus={setListInputFocused}
+            onBlur={unsetListInputFocused}
+            onChange={() => {
+              if (addListInputReference?.current?.value) {
+                setSelectedList({
+                  listName: addListInputReference?.current?.value,
+                });
+              } else {
+                setSelectedList(null);
+              }
+            }}
+            disabled={savingList || isFetchingLists}
+            onKeyDown={(event) =>
+              event.key === 'Enter' && handleAddNewList(event.target.value)
             }
-          }}
-          disabled={savingList || isFetchingLists}
-          onKeyDown={(event) =>
-            event.key === 'Enter' && handleAddNewList(event.target.value)
-          }
-        />
-      </QuickAddInputWrapper>
+          />
+        </QuickAddInputWrapper>
+      )}
     </Step>
   );
 };

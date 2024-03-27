@@ -9,7 +9,9 @@ import React, {
 import { useBoolean } from 'hooks/useBoolean';
 // import palette from 'styles/palette';
 import Spacing from 'components/common/Spacing';
-import { RotatableHeaderChevron } from 'components/common/RotatableChevron/RotatableChevron';
+import RotatableChevron, {
+  RotatableHeaderChevron,
+} from 'components/common/RotatableChevron/RotatableChevron';
 import debounce from 'lodash.debounce';
 import {
   getTemplates,
@@ -28,9 +30,15 @@ import {
   TaskTemplateApplicatorContainer,
   TaskTemplateApplicatorLabel,
   ChevronVerticleGap,
+  BoxContainer,
+  TaskTemplateApplicatorButtonLabel,
+  TaskTemplateApplicatorRotatableChevronWrapper,
+  TaskTemplateApplicatorRotatableChevronLabel,
 } from './styled';
 import AddIcon from '@mui/icons-material/Add';
 import { ListPageContext } from '@/app/views/list-details/ListDetailsView';
+import { Box } from '@mui/material';
+import palette from '@/app/styles/palette';
 
 const { DISABLED } = TASK_LIST_RESTRICTIONS_OPTIONS;
 
@@ -168,7 +176,33 @@ const TaskTemplateApplicator = ({
 
   return (
     <>
-      <TaskTemplateApplicatorContainer
+      <BoxContainer ref={popoverReference}>
+        <TaskTemplateApplicatorContainer
+          variant="text"
+          onClick={openPopover}
+          size="large"
+        >
+          <AddIcon />
+          <TaskTemplateApplicatorButtonLabel variant="body1" component="span">
+            Workflow
+          </TaskTemplateApplicatorButtonLabel>
+        </TaskTemplateApplicatorContainer>
+        <Box display="flex" width="35px" overflow="hidden">
+          <TaskTemplateApplicatorRotatableChevronWrapper
+            variant="text"
+            onClick={openPopover}
+            size="large"
+          >
+            <TaskTemplateApplicatorRotatableChevronLabel
+              variant="body1"
+              component="span"
+            >
+              <RotatableChevron rotated={isPopoverOpen} color={palette.white} />
+            </TaskTemplateApplicatorRotatableChevronLabel>
+          </TaskTemplateApplicatorRotatableChevronWrapper>
+        </Box>
+      </BoxContainer>
+      {/* <TaskTemplateApplicatorContainer
         onClick={openPopover}
         ref={popoverReference}
       >
@@ -177,7 +211,7 @@ const TaskTemplateApplicator = ({
         <Spacing horizontal={3} />
         <ChevronVerticleGap />
         <RotatableHeaderChevron rotated={isPopoverOpen} color={'white'} />
-      </TaskTemplateApplicatorContainer>
+      </TaskTemplateApplicatorContainer> */}
       <TaskTemplatePopover
         anchorEl={popoverReference.current}
         open={isPopoverOpen}

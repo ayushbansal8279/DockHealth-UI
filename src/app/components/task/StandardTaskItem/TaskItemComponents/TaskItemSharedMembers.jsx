@@ -48,7 +48,7 @@ const TaskItemSharedMembers = ({
         </>
       ) : (
         <Tooltip placement="top" title="Shared with">
-          <div style={{marginLeft:'10px'}} >{!readOnly && <AssignMemberIcon />}</div>
+          <div style={{marginLeft:'2px'}} >{!readOnly && <AssignMemberIcon />}</div>
         </Tooltip>
       )}
     </TaskItemPopover>

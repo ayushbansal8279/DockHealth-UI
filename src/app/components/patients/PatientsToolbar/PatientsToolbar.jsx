@@ -63,7 +63,7 @@ const OPTIONS = [
   },
 ];
 
-const PatientsToolbar = () => {
+const PatientsToolbar = ({ searchValue, setSearchValue }) => {
   const [isSidebarOpen, setIsSidebarOpen, unsetIsSidebarOpen] =
     useBoolean(false);
   const { 0: filterOpen, 2: closeFilter, 3: toggleFilter } = useBoolean(false);
@@ -71,7 +71,6 @@ const PatientsToolbar = () => {
   const history = useHistory();
   const dispatch = useDispatch();
   // const searchValue = useSelector(patientsListSearchTermSelector);
-  const [searchValue, setSearchValue] = useState(null);
   const filtersActive = useSelector(filtersActiveSelector);
   const listIdentifier = useSelector(currentPatientsListIdentifierSelector);
   const currentUser = useSelector(userProfileSelector);
@@ -97,9 +96,7 @@ const PatientsToolbar = () => {
     setSearchValue(searchTerm);
     dispatch(PatientsActions.changePatientsSearchTerm(searchTerm));
     dispatch(PatientsActions.clearPatients());
-    if (searchTerm === '') {
-      dispatch(PatientsActions.clearPatientSearch());
-    }
+    dispatch(PatientsActions.clearPatientSearch());
   };
 
   const handleSearch = useCallback(() => {

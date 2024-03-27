@@ -345,7 +345,8 @@ export const DueDateContainer = styled.div`
 export const GridImg = styled(Grid)`
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
+  padding-left: 10px;
   ${({ matched }) =>
     matched && `background: ${featurePalette.globalSearchHighlight};`};
 `;
@@ -447,6 +448,8 @@ export const StandardTaskItemContainer = styled.div`
     isLastChild
       ? `
     border-bottom: 1px solid rgba(75, 179, 253, 1);
+    border-bottom-left-radius: 9px;
+    border-bottom-right-radius: 7px;
   `
       : ''}
 
@@ -567,9 +570,9 @@ export const StatusWrapper = styled.div`
 
 export const StatusSubContaioner = styled.div`
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
-  padding-left: 5px;
+  padding-left: 12px;
 `;
 
 export const StatusName = styled.p`
@@ -654,34 +657,52 @@ export const SubtasksCellContentButton = styled.button`
   color: ${({ isOpen, isGreyedOut }) => {
     if (isGreyedOut) return palette.coolGrey2;
 
-    return isOpen ? palette.brightBlue : palette.coolGrey1;
+    // return isOpen ? palette.brightBlue : palette.coolGrey1;
+    return palette.coolGrey1;
   }};
 
   &:disabled {
     color: ${palette.coolGrey2};
     cursor: initial;
   }
-  p {
-    visibility: ${({ subTasksCount }) =>
-      subTasksCount > 0 ? 'hidden' : 'visible'};
-  }
+  // p {
+  //    visibility: ${({ subTasksCount }) =>
+    subTasksCount > 0 ? 'hidden' : 'visible'};
+  // }
 
   &:hover {
     color: ${({ isOpen, subtasksDisabled }) =>
-      subtasksDisabled ? '' : !isOpen ? palette.brightBlue : ''};
-      p {
-        visibility: visible;
-      }
-     
-     
+      subtasksDisabled ? '' : palette.brightBlue};
+    //   p {
+    //     visibility: visible;
+    //   }
+  }
 `;
 
 export const SubtasksCellText = styled.p`
   margin-right: ${spacing.tiny};
   margin-bottom: 0;
-  font-size: ${fontSizes.smallPlus};
+  // font-size: ${fontSizes.smallPlus};
   font-weight: ${fontWeights.light};
   color: inherit;
+  font-family: Roboto Condensed;
+  font-size: 12px;
+  // font-weight: 400;
+  line-height: 14.06px;
+  text-align: right;
+`;
+
+export const SubtasksCountText = styled.span`
+  margin-right: ${spacing.tiny};
+  margin-bottom: 0;
+  // font-size: ${fontSizes.smallPlus};
+  font-weight: ${fontWeights.light};
+  color: inherit;
+  font-family: Roboto Condensed;
+  font-size: 12px;
+  // font-weight: 400;
+  line-height: 14.06px;
+  text-align: right;
 `;
 
 export const ParentTaskContainer = styled.div`

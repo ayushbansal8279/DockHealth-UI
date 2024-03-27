@@ -203,6 +203,7 @@ const Button = ({
   reference,
   startIcon,
   endIcon,
+  fullWidth,
 }) => {
   let muiVariant = 'contained';
   switch (variant) {
@@ -254,6 +255,7 @@ const Button = ({
       padding={padding}
       startIcon={startIcon}
       endIcon={endIcon}
+      fullWidth={fullWidth}
     >
       <span>{children}</span>
     </StyledButton>
@@ -277,6 +279,12 @@ Button.propTypes = {
   width: PropTypes.string,
   startIcon: PropTypes.string,
   endIcon: PropTypes.node,
+  fullWidth: PropTypes.bool,
+  color: PropTypes.string,
+  secondaryColor: PropTypes.string,
+  padding: PropTypes.number,
+  id: PropTypes.string,
+  reference: PropTypes.any,
 };
 
 Button.defaultProps = {
@@ -288,6 +296,7 @@ Button.defaultProps = {
   width: '100%',
   startIcon: null,
   endIcon: null,
+  fullWidth: false,
 };
 
 export default Button;

@@ -95,6 +95,7 @@ import {
 import TaskTemplateDetails from '../TaskTemplateDetails/TaskTemplateDetails';
 import { StickyColumnContainer } from '../../tasklist/TasksHeader/styled';
 import { ListPageContext } from '@/app/views/list-details/ListDetailsView';
+import { VTaskContext } from '@/app/views/list-details/VirtualTaskList/VirtualSegment/VTask/VTask';
 
 const TaskTemplateGroupHeader = ({
   templateGroup = {},
@@ -135,6 +136,15 @@ const TaskTemplateGroupHeader = ({
   const [isEditing, setIsEditing] = useState(false);
   const [nameInputValue, setNameInputValue] = useState(name);
   const [nameInputError, setNameInputError] = useState(false);
+  const [isDateHover, setIsDateHover] = useState(false);
+  const [isCellHover, setCellHover] = useState({
+    dueDate: false,
+    startDate: false,
+    assignee: false,
+    comment: false,
+    label: false,
+    file: false,
+  });
   const nameInputReference = useRef(null);
   const currentUser = useSelector(userProfileSelector);
   const currentList = useSelector(currentTaskListSelector);
@@ -620,12 +630,15 @@ const TaskTemplateGroupHeader = ({
   const [virtualListWorkflowOpen, setVirtualListWorkflowOpen] = useState(
     collapse.get(identifier) ? false : true,
   );
+
+  const {handleWorkflowOpen} = useContext(VTaskContext)
   const handleOpen = () => {
     setOpen(!isOpen);
     setVirtualListWorkflowOpen(!virtualListWorkflowOpen);
     // eslint-disable-next-line react/destructuring-assignment
     // collapse.set(identifier, isOpen);
     collapse.set(identifier, virtualListWorkflowOpen);
+    handleWorkflowOpen(virtualListWorkflowOpen);
   };
 
   useEffect(() => {
@@ -1074,7 +1087,6 @@ const TaskTemplateGroupHeader = ({
                   ({ identifier: id }) => id === TaskItemColumn.PRIORITY,
                 )?.columnWidth
               }
-              justify="center"
               order={getColumnOrder(TaskItemColumn.PRIORITY)}
             >
               <TaskItemDropdown
@@ -1141,10 +1153,14 @@ const TaskTemplateGroupHeader = ({
               paddingLeft="10px"
               justify="flex-start"
               order={getColumnOrder(TaskItemColumn.START_DATE)}
+              onMouseEnter={() => setCellHover({ startDate: true })}
+              onMouseLeave={() => setCellHover({ startDate: false })}
             >
               <TaskTemplateStartDate
+                isHover={isCellHover.startDate}
                 workflow={templateGroup}
                 disabled={restrictions?.startDate === DISABLED}
+                isDateHover={isDateHover}
               />
             </TaskItemCell>,
             getColumnOrder(TaskItemColumn.START_DATE),
@@ -1167,10 +1183,14 @@ const TaskTemplateGroupHeader = ({
               paddingLeft="10px"
               justify="flex-start"
               order={getColumnOrder(TaskItemColumn.DUE_DATE)}
+              onMouseEnter={() => setCellHover({ dueDate: true })}
+              onMouseLeave={() => setCellHover({ dueDate: false })}
             >
               <TaskTemplateDueDate
+                isHover={isCellHover.dueDate}
                 workflow={templateGroup}
                 disabled={restrictions?.dueDate === DISABLED}
+                isDateHover={isDateHover}
               />
             </TaskItemCell>,
             getColumnOrder(TaskItemColumn.DUE_DATE),
@@ -1188,7 +1208,7 @@ const TaskTemplateGroupHeader = ({
               ({ identifier: id }) => id === TaskItemColumn.ANCHOR_DATE,
             )?.columnWidth
           }
-          justify="center"
+          paddingLeft="12px"
           order={getColumnOrder(TaskItemColumn.ANCHOR_DATE)}
         >
           <TaskTemplateAnchorDate workflow={templateGroup} />
@@ -1205,16 +1225,18 @@ const TaskTemplateGroupHeader = ({
                 )?.columnWidth
               }
               // eslint-disable-next-line sonarjs/no-all-duplicated-branches
-              justify={groupHasMultipleAssignees ? 'center' : 'center'}
-              paddingLeft="small"
+              paddingLeft="12px"
               paddingRight="small"
               onContextMenu={(event) => {
                 event.stopPropagation();
               }}
               order={getColumnOrder(TaskItemColumn.ASSIGNED)}
               printWidth={TaskItemColumnWidth[TaskItemColumn.ASSIGNED].PRINT}
+              onMouseEnter={() => setCellHover({ assignee: true })}
+              onMouseLeave={() => setCellHover({ assignee: false })}
             >
               <TaskTemplateMembers
+                isHover={isCellHover.assignee}
                 readOnly={restrictions?.assigment === READ_ONLY}
                 currentUser={currentUser}
                 multipleAssigneesContext={groupHasMultipleAssignees}
@@ -1244,8 +1266,7 @@ const TaskTemplateGroupHeader = ({
                 )?.columnWidth
               }
               // eslint-disable-next-line sonarjs/no-all-duplicated-branches
-              justify={groupHasMultipleAssignees ? 'center' : 'center'}
-              paddingLeft="small"
+              paddingLeft="12px"
               paddingRight="small"
               onContextMenu={(event) => {
                 event.stopPropagation();
@@ -1292,8 +1313,11 @@ const TaskTemplateGroupHeader = ({
                 )?.columnWidth
               }
               order={getColumnOrder(TaskItemColumn.COMMENTS)}
+              onMouseEnter={() => setCellHover({ comment: true })}
+              onMouseLeave={() => setCellHover({ comment: false })}
             >
               <TaskTemplateIcons
+                isHover={isCellHover}
                 comments={
                   templateGroup.comments || !workFlowData
                     ? templateGroup.comments
@@ -1328,8 +1352,11 @@ const TaskTemplateGroupHeader = ({
                 )?.columnWidth
               }
               order={getColumnOrder(TaskItemColumn.LABELS)}
+              onMouseEnter={() => setCellHover({ label: true })}
+              onMouseLeave={() => setCellHover({ label: false })}
             >
               <TaskTemplateIcons
+                isHover={isCellHover}
                 labels={
                   templateGroup.labels || !workFlowData
                     ? templateGroup.labels
@@ -1364,8 +1391,11 @@ const TaskTemplateGroupHeader = ({
                 )?.columnWidth
               }
               order={getColumnOrder(TaskItemColumn.FILES)}
+              onMouseEnter={() => setCellHover({ file: true })}
+              onMouseLeave={() => setCellHover({ file: false })}
             >
               <TaskTemplateIcons
+                isHover={isCellHover}
                 attachments={
                   templateGroup.attachments || !workFlowData
                     ? templateGroup.attachments
@@ -1425,8 +1455,7 @@ const TaskTemplateGroupHeader = ({
                   ({ identifier: id }) => id === TaskItemColumn.CREATED_BY,
                 )?.columnWidth
               }
-              justify="center"
-              paddingLeft="small"
+              paddingLeft="12px"
               paddingRight="small"
               onContextMenu={(event) => {
                 event.stopPropagation();
@@ -1456,9 +1485,8 @@ const TaskTemplateGroupHeader = ({
                   ({ identifier: id }) => id === TaskItemColumn.CREATED_DATE,
                 )?.columnWidth
               }
-              paddingLeft="tiny"
+              paddingLeft="12px"
               paddingRight="tiny"
-              justify="center"
               onContextMenu={(event) => {
                 event.stopPropagation();
               }}
@@ -1484,9 +1512,8 @@ const TaskTemplateGroupHeader = ({
                   ({ identifier: id }) => id === TaskItemColumn.COMPLETED_DATE,
                 )?.columnWidth
               }
-              paddingLeft="tiny"
+              paddingLeft="12px"
               paddingRight="tiny"
-              justify="center"
               onContextMenu={(event) => {
                 event.stopPropagation();
               }}
@@ -1512,8 +1539,7 @@ const TaskTemplateGroupHeader = ({
                   ({ identifier: id }) => id === TaskItemColumn.COMPLETED_BY,
                 )?.columnWidth
               }
-              justify="center"
-              paddingLeft="small"
+              paddingLeft="12px"
               paddingRight="small"
               onContextMenu={(event) => {
                 event.stopPropagation();
@@ -1547,9 +1573,8 @@ const TaskTemplateGroupHeader = ({
                   ({ identifier: id }) => id === TaskItemColumn.ELAPSED_TIME,
                 )?.columnWidth
               }
-              paddingLeft="tiny"
+              paddingLeft="12px"
               paddingRight="tiny"
-              justify="center"
               onContextMenu={(event) => {
                 event.stopPropagation();
               }}

@@ -141,7 +141,8 @@ function* getTasksGroupsList() {
   }
 }
 
-function* getCurrentListTasks() {
+function* getCurrentListTasks(prop) {
+  const { withLoader } = prop;
   try {
     const taskListIdentifier = yield select(currentTaskListIdentifierSelector);
     const selectedFilters = yield select(selectedFiltersInMegaFilterSelector);
@@ -187,7 +188,7 @@ function* getCurrentListTasks() {
           put(
             ListDetailsActions.getTasksForTaskGroups({
               taskGroupIdentifier,
-              status,
+              status: withLoader?.status ?? status,
               startPosition: 0,
               sort,
               refresh: true,

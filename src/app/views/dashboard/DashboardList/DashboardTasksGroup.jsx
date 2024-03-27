@@ -56,6 +56,8 @@ import {
   StickyElement,
   GroupOptionsContainer,
   GroupOpenContainer,
+  DashboardTasksGroupNumericalBadgeContainer,
+  DashboardTasksGroupTaskCount,
 } from './styled';
 
 const DashboardTasksGroup = ({
@@ -247,7 +249,12 @@ const DashboardTasksGroup = ({
             <GroupNameSectionWrapper>
               <DashboardTasksGroupLabel>
                 <DashboardTasksGroupLabelName>
-                  {groupName} ({metricValue})
+                  {groupName}
+                  <DashboardTasksGroupNumericalBadgeContainer>
+                    <DashboardTasksGroupTaskCount>
+                      {metricValue}
+                    </DashboardTasksGroupTaskCount>
+                  </DashboardTasksGroupNumericalBadgeContainer>
                 </DashboardTasksGroupLabelName>
               </DashboardTasksGroupLabel>
             </GroupNameSectionWrapper>
