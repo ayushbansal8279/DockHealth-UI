@@ -15,6 +15,7 @@ const TaskItemSharedMembers = ({
   handleSharingTask,
   matchAssignedTo,
   readOnly,
+  isHover,
 }) => {
   return (
     <TaskItemPopover
@@ -47,9 +48,17 @@ const TaskItemSharedMembers = ({
           <MemberGroup members={sharedWithUsers} />
         </>
       ) : (
-        <Tooltip placement="top" title="Shared with">
-          <div style={{marginLeft:'2px'}} >{!readOnly && <AssignMemberIcon />}</div>
-        </Tooltip>
+        <>
+          {isHover ? (
+            <Tooltip placement="top" title="Shared with">
+              <div style={{ marginLeft: '2px' }}>
+                {!readOnly && <AssignMemberIcon />}
+              </div>
+            </Tooltip>
+          ) : (
+            ''
+          )}
+        </>
       )}
     </TaskItemPopover>
   );

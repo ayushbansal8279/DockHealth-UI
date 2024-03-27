@@ -558,14 +558,14 @@ export const TaskItemParentTaskLabel = styled.div`
 export const StatusWrapper = styled.div`
   display: flex;
   border-radius: 2px;
-  border: 1px solid ${(property) => property.color || '#7F4334'};
-  background: ${(property) => `${property.color}1A` || '#7F43341A'};
+  border: 1px solid ${(property) => property.color || '#54B989'};
+  background: ${(property) => `${property.color}1A` || '#54B9891A'};
   min-width: 90px;
   padding: 2.5px 2px;
   justify-content: center;
   align-items: center;
   gap: 10px;
-  color: ${(property) => property.color || '#7F4334'};
+  color: ${(property) => property.color || '#54B989'};
 `;
 
 export const StatusSubContaioner = styled.div`
@@ -759,7 +759,7 @@ export const DateText = styled.p`
 
 export const DetailsButton = styled.button`
   // margin-left: 8px;
-  // visibility: hidden;
+  visibility: hidden;
   font-family: 'Outfit', sans-serif;
   font-size: ${fontSizes.smallPlus};
   font-weight: ${fontWeights.regularPlus};

@@ -29,8 +29,14 @@ import EmailIconActive from 'img/email-new-icon-active.svg';
 import MobileIcon from 'img/mobile-new-icon.svg';
 import MobileIconActive from 'img/mobile-new-icon-active.svg';
 import Spacing from 'components/common/Spacing';
-import { HorizontalLabel, IconContainer } from './styled';
+import {
+  IconContainer,
+  Title,
+  CompletedByTitle,
+  CompleteAge,
+} from './styled';
 import initializeTaskDrawerTopSectionHooks from './hooks';
+import moment from 'moment';
 
 const { DISABLED } = SINGLE_TASK_RESTRICTIONS_OPTIONS;
 
@@ -186,6 +192,29 @@ const TopSection = ({
     setSmsActive: setSmsActive,
   };
 
+  let daysDifference = '';
+
+  if (selectedTask?.status === TaskStatus.COMPLETE) {
+    const completedDate = moment(selectedTask.completedDt);
+    const todayDate = moment();
+
+    const units = [
+      'years',
+      'months',
+      'weeks',
+      'days',
+      'hours',
+      'minutes',
+      'seconds',
+    ];
+    const nonZeroUnit = units.find(
+      (unit) => todayDate.diff(completedDate, unit) !== 0,
+    );
+
+    const dateDifference = todayDate.diff(completedDate, nonZeroUnit);
+    daysDifference = ` ${dateDifference} ${nonZeroUnit} ago`;
+  }
+
   return (
     <Paper elevation={3} style={{ width: '800px', height: '60px' }}>
       <Box
@@ -218,7 +247,19 @@ const TopSection = ({
                     : () => {}
                 }
               />
-              <HorizontalLabel>Complete Task</HorizontalLabel>
+              <div style={{ display: 'flex' }}>
+                {selectedTask?.status === TaskStatus.COMPLETE ? (
+                  <>
+                    <Title>Completed by</Title>
+                    <CompletedByTitle>
+                      {selectedTask.completedBy?.name}
+                    </CompletedByTitle>
+                    <CompleteAge>{daysDifference}</CompleteAge>
+                  </>
+                ) : (
+                  <Title>Complete Task</Title>
+                )}
+              </div>
             </>
           )}
         </Box>
@@ -281,7 +322,7 @@ const TopSection = ({
                 options={allowedOptions}
                 customButtonComponent={IconButton}
               >
-                <MoreHoriz color={!isOptionActive ? "primary" : "secondary"} />
+                <MoreHoriz color={!isOptionActive ? 'primary' : 'secondary'} />
               </OptionsMenu>
             )}
           {!hideCloseIcon && (
