@@ -1,5 +1,6 @@
 import React, {
   ForwardedRef,
+  createContext,
   forwardRef,
   useContext,
   useEffect,
@@ -28,6 +29,10 @@ export interface Props extends Segment {
   isLastTaskOfGroup: boolean;
 }
 
+export const VTaskContext = createContext({
+  handleWorkflowOpen: {},
+});
+
 function VTask(
   {
     metadata,
@@ -43,6 +48,13 @@ function VTask(
 ) {
   const parentTaskReference = useRef(null);
   const [subtaskQuickAddOpen, setSubtaskQuickAddOpen] = useState(false);
+  const [virtualListWorkflowOpen, setVirtualListWorkflowOpen] = useState(true);
+
+  const handleWorkflowOpen = (isOpen: boolean) => {
+    setVirtualListWorkflowOpen(isOpen);
+  };
+
+  const contextValue = { handleWorkflowOpen: handleWorkflowOpen };
 
   const pulledTask = useSelector((state) => {
     // @ts-ignore
@@ -91,19 +103,22 @@ function VTask(
             origin={TaskOrigin.LIST}
             bgColor={bgColor}
             isLastTaskOfGroup={isLastTaskOfGroup}
+            virtualListWorkflowOpen={virtualListWorkflowOpen}
           >
-            <StandardTaskItem
-              // @ts-ignore
-              taskIdentifier={metadata.id}
-              draggableProvided={provided}
-              isDraggable
-              isDragging={snapshot.isDragging}
-              isTaskTemplate={isTaskTemplate}
-              isLastChild={isLastChild || false}
-              origin={TaskOrigin.LIST}
-              pageBackground={bgColor ? palette.aliceBlue : ''}
-              isNestedTask
-            />
+            <VTaskContext.Provider value={contextValue}>
+              <StandardTaskItem
+                // @ts-ignore
+                taskIdentifier={metadata.id}
+                draggableProvided={provided}
+                isDraggable
+                isDragging={snapshot.isDragging}
+                isTaskTemplate={isTaskTemplate}
+                isLastChild={isLastChild || false}
+                origin={TaskOrigin.LIST}
+                pageBackground={bgColor ? palette.aliceBlue : ''}
+                isNestedTask
+              />
+            </VTaskContext.Provider>
           </Sc.VTask>
           {subtaskQuickAddOpen && subTasksCount === 0 && (
             <Sc.QuickAddContainer>

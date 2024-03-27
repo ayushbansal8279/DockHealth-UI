@@ -1,25 +1,22 @@
-import palette from '@/app/styles/palette';
 import styled from '@mui/styled-engine';
 import palette from 'styles/palette';
 
 export const VTask = styled('div')`
   display: flex;
   font-size: 13px;
-  ${({ $workflow }: any) =>
+  ${({ $workflow, virtualListWorkflowOpen }: any) =>
     $workflow
       ? `
-  line-height: 52px;
-  height: 52px;
-  margin-bottom: -2px;
+  height: 62px;
+  margin-bottom: ${virtualListWorkflowOpen ? '10px' : ''};
   `
       : `
-  line-height: 40px;
   height: 36px;
   `}
   border-left: 1px solid rgb(229, 233, 242);
   margin-top: -1px;
   background: ${({ bgColor }) => (bgColor ? palette.aliceBlue : '')};
-  // ${({ $template }: any) => ($template ? 'margin-bottom: 1px' : '')};
+  ${({ $template }: any) => ($template ? 'margin-bottom: 10px' : '')};
 
   & > * > * > * > * {
     left: ${({ isTaskTemplate }: boolean) =>
