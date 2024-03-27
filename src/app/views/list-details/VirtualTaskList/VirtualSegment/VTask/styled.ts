@@ -35,3 +35,15 @@ export const QuickAddContainer = styled('div')`
     border-left: 1px solid ${palette.coolGrey2};
   }
 `;
+
+export const WorkflowQuickAddTaskContainer = styled('div')`
+  border-left: 1px solid ${palette.coolGrey3};
+  // width: 90%;
+  margin-left: 54.5px;
+  margin-top: -1px;
+  margin-bottom: 1px;
+
+  &:hover {
+    border-left: 1px solid ${palette.coolGrey2};
+  }
+`;

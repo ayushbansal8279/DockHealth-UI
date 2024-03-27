@@ -2,6 +2,7 @@ import React, {
   ForwardedRef,
   createContext,
   forwardRef,
+  useCallback,
   useContext,
   useEffect,
   useRef,
@@ -17,9 +18,15 @@ import {
 } from 'react-beautiful-dnd';
 import QuickAddSubtask from '@/app/components/task/StandardTaskItem/QuickAddSubtask';
 import { taskLookupSelector } from '@/app/selectors/task-details-selectors';
-import { useSelector } from 'react-redux';
 import * as Sc from './styled';
+import * as TaskActions from 'actions/task-actions';
 import { TaskOrigin } from '@/app/helpers/task-helpers';
+import { useDispatch, useSelector } from 'react-redux';
+import { taskLookupSelector } from '@/app/selectors/task-details-selectors';
+import QuickAddSubtask from '@/app/components/task/StandardTaskItem/QuickAddSubtask';
+import { QuickAddInputWrapper } from '@/app/components/task-template/TaskTemplateGroup/styled';
+import QuickAddTaskInput from '@/app/components/tasklist/QuickAddTaskInput/QuickAddTaskInput';
+import { CollapseContext } from '../../VirtualTaskList';
 import palette from '@/app/styles/palette';
 
 export interface Props extends Segment {
@@ -46,6 +53,7 @@ function VTask(
   // eslint-disable-next-line unicorn/prevent-abbreviations, @typescript-eslint/no-unused-vars
   ref: ForwardedRef<HTMLDivElement>,
 ) {
+  const dispatch = useDispatch();
   const parentTaskReference = useRef(null);
   const [subtaskQuickAddOpen, setSubtaskQuickAddOpen] = useState(false);
   const [virtualListWorkflowOpen, setVirtualListWorkflowOpen] = useState(true);
@@ -62,12 +70,26 @@ function VTask(
   });
 
   const task = pulledTask;
+  const { taskList, taskGroups } = task;
   const [subTasksCount, setsubTasksCount] = useState(task.subTasksCount);
 
+  const [addWorkflowTask, setAddWorkflowTask] = useState(false);
+  const taskGroup = !!taskGroups
+    ? taskGroups.filter((taskGroup) =>
+        taskGroup?.groupType === 'TASK_BUNDLE' ? taskGroup : '',
+      )
+    : '';
+  const { workflowIdentifierMap, handleRemoveWorkflowIdentifier } =
+    useContext(CollapseContext);
   useEffect(() => {
     setSubtaskQuickAddOpen(task?.subtaskQuickAddOpen);
     setsubTasksCount(task?.subtasks?.length);
-  }, [task]);
+    workflowIdentifierMap.some(
+      (identifier) => identifier === taskGroup[0]?.taskGroupIdentifier,
+    )
+      ? setAddWorkflowTask(true)
+      : setAddWorkflowTask(false);
+  }, [task, workflowIdentifierMap]);
 
   const handleQuickAddOnFocus = () => {
     setTimeout(() => {
@@ -82,6 +104,23 @@ function VTask(
       });
     }, 500);
   };
+
+  const handleAddBundleTask = useCallback(
+    (workflowTask) => {
+      const taskData = {
+        ...workflowTask,
+        taskGroupIdentifier: taskGroup[0]?.taskGroupIdentifier,
+        taskListIdentifier: taskList?.taskListIdentifier,
+      };
+      dispatch(TaskActions.saveTask(taskData));
+    },
+    [
+      dispatch,
+      // identifier,
+      taskGroup,
+      taskList?.taskListIdentifier,
+    ],
+  );
 
   return (
     <Draggable
@@ -129,6 +168,31 @@ function VTask(
                 // origin={origin}
               />
             </Sc.QuickAddContainer>
+          )}
+          {isTaskTemplate && isLastChild && addWorkflowTask && (
+            <Sc.WorkflowQuickAddTaskContainer>
+              <QuickAddInputWrapper>
+                <QuickAddTaskInput
+                  // autofocus
+                  disableMentions
+                  quickAddTask={handleAddBundleTask}
+                  onBlur={() => {
+                    handleRemoveWorkflowIdentifier(
+                      taskGroup[0]?.taskGroupIdentifier,
+                    );
+                  }}
+                  validator={(value) => {
+                    if ([...value]?.filter((char) => char !== ' ').length < 2)
+                      return 'The task description is too short (min. 2 characters)';
+
+                    return null;
+                  }}
+                  origin={TaskOrigin.LIST}
+                  // iconColorActive={iconColorActive}
+                />
+              </QuickAddInputWrapper>
+            </Sc.WorkflowQuickAddTaskContainer>
+            // )}
           )}
         </>
       )}

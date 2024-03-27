@@ -341,6 +341,9 @@ const TaskTemplateGroupHeader = ({
           name: 'Add task',
           onClick: () => {
             setIsAddingTask(true);
+            if (origin === 'LIST') {
+              collapse.handleAddWorkflowIdentifier(identifier);
+            }
           },
         },
       ];
