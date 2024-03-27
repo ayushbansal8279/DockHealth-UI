@@ -132,7 +132,6 @@
   "devDependencies": {
     "@faker-js/faker": "^8.1.0",
     "@openapitools/openapi-generator-cli": "^2.9.0",
-    "@types/luxon": "^3.4.2",
     "@types/ramda": "^0.29.10",
     "@types/react-beautiful-dnd": "^13.1.6",
     "@types/react-router-dom": "^5.3.3",
