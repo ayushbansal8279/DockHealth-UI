@@ -172,8 +172,12 @@ const CustomFieldsSection = ({ disabled, fieldCategoryType }) => {
       {fieldCategoryType === 'TASK_CORE' ? (
         <CustomFieldsSectionContainerNoLine>
           {customFields?.map((field, index) => {
-            return renderCustomField(field, index, true);
+            return renderCustomField(field, index, false);
           })}
+          <CategoryOptions
+            visibility={emptyVisible}
+            onToggle={toggleEmptyVisible}
+          />
         </CustomFieldsSectionContainerNoLine>
       ) : (
         <CustomFieldsSectionContainer>
