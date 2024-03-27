@@ -24,6 +24,8 @@ export const ListPageContext = createContext({
   handleRemoveAllTasks: {},
   workflowPopoverOpen: false,
   handleWorkflowPopoverOpen: {},
+  patientPopoverOpen: false,
+  handlePatientPopoverOpen: {},
 });
 const ListDetailsView = () => {
   const parameters = useParams();
@@ -51,6 +53,7 @@ const ListDetailsView = () => {
 
   const [addNewGroup, setAddNewGroup] = useState(false);
   const [workflowPopoverOpen, setWorkflowPopoverOpen] = useState(false);
+  const [patientPopoverOpen, setPatientPopoverOpen] = useState(false);
   const [changeViewType, setChangeViewType] = useState('SLIM_VIEW');
   const [showShadow, setShowShadow] = useState(false);
   const [tasks, setTasks] = useState([]);
@@ -84,6 +87,10 @@ const ListDetailsView = () => {
     setWorkflowPopoverOpen(isPopoveOpen);
   };
 
+  const handlePatientPopoverOpen = (isPopoveOpen) => {
+    setPatientPopoverOpen(isPopoveOpen);
+  };
+
   const ListPageContextValue = {
     addNewGroup: addNewGroup,
     handleAddNewGroup: handleAddNewGroup,
@@ -96,6 +103,8 @@ const ListDetailsView = () => {
     handleRemoveAllTasks: handleRemoveAllTasks,
     workflowPopoverOpen: workflowPopoverOpen,
     handleWorkflowPopoverOpen: handleWorkflowPopoverOpen,
+    patientPopoverOpen: patientPopoverOpen,
+    handlePatientPopoverOpen: handlePatientPopoverOpen,
   };
 
   return (
