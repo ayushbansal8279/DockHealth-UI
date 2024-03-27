@@ -24,6 +24,8 @@ const TaskItemComments: FC<TaskItemCommentsProps> = ({
 }) => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const commentPopperOpen = Boolean(anchorEl);
+  const hasComments = comments?.length > 0;
+  const tooltipTitle = hasComments ? 'Show Comments' : 'Add Comment';
 
   const onCommentClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(anchorEl ? null : event.currentTarget);
@@ -36,12 +38,12 @@ const TaskItemComments: FC<TaskItemCommentsProps> = ({
   return (
     <Grid container wrap="nowrap">
       <GridImg item xs={12} matched={matchComments}>
-        <Tooltip placement="top" title="Add Comment">
+        <Tooltip placement="top" title={tooltipTitle}>
           <button type="button" onClick={onCommentClick}>
-            {(comments?.length > 0 || isCommentHover) && (
+            {(hasComments || isCommentHover) && (
               <TaskIcon
                 type="comments"
-                isActive={comments?.length > 0}
+                isActive={hasComments}
                 isNew={task.updatedComment}
               />
             )}
