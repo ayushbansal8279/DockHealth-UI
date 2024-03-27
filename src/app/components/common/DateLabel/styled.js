@@ -12,6 +12,7 @@ export const DueDateBasicLabel = styled.div`
 
 export const DateText = styled.p`
   margin-bottom: 0;
+  white-space: nowrap;
 `;
 
 export const DateTextContainer = styled.div`

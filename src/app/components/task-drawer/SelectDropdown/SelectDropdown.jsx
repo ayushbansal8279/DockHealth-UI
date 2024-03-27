@@ -213,24 +213,33 @@ const SelectDropdown = React.forwardRef(
       );
     };
 
+    const TextFieldSx = {
+      backgroundColor: isFocused ? '#f8f8f9' : '',
+      borderRadius: '4px',
+      height: '40px',
+      '& .MuiOutlinedInput-root': {
+        '& .MuiOutlinedInput-notchedOutline': {
+          borderColor: 'transparent',
+        },
+      },
+      '&:hover': {
+        backgroundColor: '#f8f8f9',
+        borderColor: 'transparent',
+      },
+      width: '200px',
+    };
+
     return (
       <div>
         <div ref={inputContainerReference}>
           <TextField
-            sx={{
-              '& .MuiOutlinedInput-root': {
-                '& fieldset': {
-                  borderColor: 'white',
-                },
-              },
-              width:'200px'
-            }}
+            sx={TextFieldSx}
             size="small"
             variant="outlined"
             ref={reference}
             label={label}
             name={name}
-            placeholder={placeholder}
+            placeholder={isFocused ? '' : placeholder}
             disabled={disabled}
             InputLabelProps={{
               shrink: true,
