@@ -631,7 +631,7 @@ const TaskTemplateGroupHeader = ({
     collapse.get(identifier) ? false : true,
   );
 
-  const {handleWorkflowOpen} = useContext(VTaskContext)
+  const { handleWorkflowOpen } = useContext(VTaskContext);
   const handleOpen = () => {
     setOpen(!isOpen);
     setVirtualListWorkflowOpen(!virtualListWorkflowOpen);
@@ -878,6 +878,7 @@ const TaskTemplateGroupHeader = ({
                   onWorkflowUpdate={compose(dispatch, updatePartialWorkflow)}
                   currentUser={currentUser}
                   readOnly={restrictions?.patient === READ_ONLY}
+                  origin={origin}
                 />
               )}
             </TaskItemCell>,
