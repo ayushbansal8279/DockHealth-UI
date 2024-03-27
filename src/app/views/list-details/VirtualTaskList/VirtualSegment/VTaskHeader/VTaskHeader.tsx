@@ -55,16 +55,20 @@ function VTaskHeader(
       bgColor={bgColor}
     >
       {/* @ts-ignore */}
-      <TasksHeader
-        bulkEditEnabled={bulkEditEnabled}
-        sort={sort}
-        onSortChange={onSortChange}
-        // @ts-ignore
-        groupHasMultipleAssignees={groupHasMultipleAssignees}
-        isGroupSelected={isGroupSelected}
-        onGroupSelect={handleGroupSelect}
-        pageBackground={bgColor ? palette.aliceBlue : ''}
-      />
+      {metadata.parent?.children.length === 0 ? (
+        <></>
+      ) : (
+        <TasksHeader
+          bulkEditEnabled={bulkEditEnabled}
+          sort={sort}
+          onSortChange={onSortChange}
+          // @ts-ignore
+          groupHasMultipleAssignees={groupHasMultipleAssignees}
+          isGroupSelected={isGroupSelected}
+          onGroupSelect={handleGroupSelect}
+          pageBackground={bgColor ? palette.aliceBlue : ''}
+        />
+      )}
     </Sc.VTaskHeader>
   );
 }
