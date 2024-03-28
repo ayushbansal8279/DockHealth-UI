@@ -98,8 +98,6 @@ const StatusSection = ({ disabled }) => {
                     borderColor: 'transparent',
                   },
                 },
-                width: '200px',
-                marginLeft: '5px',
               }}
               name="workflowStatus"
               placeholder="--"
