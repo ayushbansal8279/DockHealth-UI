@@ -120,12 +120,13 @@ export const SortHeaderRow = styled.div`
   flex-direction: row;
   justify-content: flex-start;
   align-items: center;
-  // width: ${({ $width }) => $width ? `${$width + 66 + 22}px` : '100%'};
-  width: ${({ $width }) => $width ? `${$width + 66 + 37}px` : '100%'};
+  // width: ${({ $width }) => ($width ? `${$width + 66 + 22}px` : '100%')};
+  // width: ${({ $width }) => ($width ? `${$width + 66 + 37}px` : '100%')};
   background: ${palette.white};
   border: 1px solid ${palette.coolGrey3};
   border-left: 0px;
-  ${({isDashboardTaskHeader}) => isDashboardTaskHeader ? '' : 'margin-bottom: 3px;' }
+  ${({ isDashboardTaskHeader }) =>
+    isDashboardTaskHeader ? '' : 'margin-bottom: 3px;'}
 
   @media print {
     border: 1px solid ${palette.coolGrey1};
