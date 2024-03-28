@@ -79,6 +79,7 @@ const DashboardTasksGroup = ({
   moveGroupUp,
   moveGroupDown,
   iconColorActive,
+  backgroundColor,
 }) => {
   const {
     groupName,
@@ -228,10 +229,16 @@ const DashboardTasksGroup = ({
   );
 
   return (
-    <DashboardTasksGroupContainer ref={parentContainerReference}>
+    <DashboardTasksGroupContainer
+      ref={parentContainerReference}
+      backgroundColor={backgroundColor}
+    >
       <StickyContainer left={24} decreaseWidth={2 * 24}>
-        <StickyElement>
-          <DashboardTasksGroupHeader>
+        <StickyElement
+          origin={TaskOrigin.DASHBOARD}
+          backgroundColor={backgroundColor ? palette.aliceBlue : palette.white}
+        >
+          <DashboardTasksGroupHeader backgroundColor={backgroundColor}>
             <GroupOptionsContainer>
               <OptionsMenu options={options} placement="bottom-start">
                 <MoreVert color="primary" />
@@ -270,7 +277,13 @@ const DashboardTasksGroup = ({
           <DashboardTasksGroupList>
             {GROUPS_WITH_QUICK_ADD_TASK_INPUT.includes(groupType) && (
               <StickyContainer left={24} decreaseWidth={2 * 24} zIndex={100}>
-                <StickyElement zIndex={101}>
+                <StickyElement
+                  zIndex={101}
+                  origin={TaskOrigin.DASHBOARD}
+                  backgroundColor={
+                    backgroundColor ? palette.aliceBlue : palette.white
+                  }
+                >
                   <QuickAddTaskInput
                     ref={quickAddTaskInputReference}
                     quickAddTask={handleQuickAddTask}
@@ -294,7 +307,9 @@ const DashboardTasksGroup = ({
             <TasksHeader
               isDashboardTaskHeader={true}
               onOrderChange={handleOrderChange}
-              pageBackground={palette.white}
+              pageBackground={
+                backgroundColor ? palette.aliceBlue : palette.white
+              }
               bulkEditEnabled
               isGroupSelected={isGroupSelected}
               onGroupSelect={handleGroupSelect}
@@ -357,7 +372,11 @@ const DashboardTasksGroup = ({
                                       (task?.taskIdentifier || task) ===
                                       lastCreatedTaskId
                                     }
-                                    pageBackground={palette.white}
+                                    pageBackground={
+                                      backgroundColor
+                                        ? palette.aliceBlue
+                                        : palette.white
+                                    }
                                     taskItemIdentifier={task}
                                     isCompletedGroup={isCompletedGroup}
                                     isDragging={isDragging}
