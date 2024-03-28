@@ -7,7 +7,6 @@ export const AssignMemberContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
-  border: 2px solid red;
 `;
 
 export const Title = styled.div`
