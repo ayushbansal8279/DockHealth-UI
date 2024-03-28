@@ -131,7 +131,6 @@ import TaskItemDropdown from './customFieldsTaskItemComponents/TaskItemDropdown/
 import TaskItemDate from './customFieldsTaskItemComponents/TaskItemDate';
 
 import TaskItemComments from './TaskItemComponents/TaskItemComments';
-import { StickyColumnContainer } from '../../tasklist/TasksHeader/styled';
 import { megaFilterSelector } from '@/app/selectors/mega-filter-selectors';
 
 const { DISABLED, READ_ONLY } = SINGLE_TASK_RESTRICTIONS_OPTIONS;
@@ -701,7 +700,6 @@ const TaskItem = React.memo(
       [updateWorkflowStatus, task],
     );
 
-    const showDraggableDots = !dragAndDropDisabled && isDraggable;
     const showPriority = task?.priority && task?.priority !== TaskPriority.NONE;
     const showDecisionRow = task?.intentType === 'DECISION' && !isTemplateTask;
     const hasParentTaskLabel = isSubtask && !isNestedTask && !!parentTask;
@@ -1096,39 +1094,6 @@ const TaskItem = React.memo(
               </>,
               getColumnOrder(TaskItemColumn.DESCRIPTION),
             )}
-            {/* <>
-              {randerFirstColumnCoverIfNecessary(
-                <TaskItemCell
-                  isSubtask={isSubtask}
-                  key={`subtask_count_${taskIdentifier}`}
-                  width={
-                    columns?.find(
-                      ({ identifier }) =>
-                        identifier === TaskItemColumn.SUBTASKS_COUNT,
-                    )?.columnWidth
-                  }
-                  order={getColumnOrder(TaskItemColumn.SUBTASKS_COUNT)}
-                  justify="center"
-                  paddingLeft="tiny"
-                  paddingRight="tiny"
-                >
-                  <TaskItemSubtasks
-                    isSubtask={isSubtask}
-                    subtaskQuickAddOpen={subtaskQuickAddOpen}
-                    subtasksDisabled={subtasksDisabled}
-                    subTasksCount={subTasksCount}
-                    isOpen={isOpen}
-                    isNestedTask={isNestedTask}
-                    onSubtaskLabelClick={onSubtaskLabelClick}
-                    taskIdentifier={taskIdentifier}
-                    openQuickAddSubtask={openQuickAddSubtask}
-                    dispatch={dispatch}
-                    readOnly={restrictions?.subtasks === READ_ONLY}
-                  />
-                </TaskItemCell>,
-                getColumnOrder(TaskItemColumn.SUBTASKS_COUNT),
-              )}
-            </> */}
 
             {isColumnChecked(columns, TaskItemColumn.PATIENT) && (
               <>
