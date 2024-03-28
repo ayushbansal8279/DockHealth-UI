@@ -73,7 +73,7 @@ export const CompletedBy = styled.div`
   transition-delay: ${(props) => (props.isCompleted ? '0' : '0.4')}s;
   font-size: ${fontSizes.small};
   padding-left: 5px;
-  padding-bottom: 0px;
+  padding-bottom: 1px;
 
   > span {
     color: ${palette.brightBlue};
@@ -733,7 +733,7 @@ export const TaskItemDescriptionIndicators = styled.div`
   display: flex;
   align-items: baseline;
   margin-left: 20px;
-  margin-top: ${({ isCompleted }) => (isCompleted ? '-13px' : '0')};
+  margin-top: ${({ isCompleted }) => (isCompleted ? '-11px' : '0')};
 `;
 
 export const PatientLabel = styled.span`
