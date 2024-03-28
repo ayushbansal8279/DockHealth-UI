@@ -586,8 +586,7 @@ const PatientsList = ({
             return compareValue1.localeCompare(compareValue2);
           },
         })),
-    )
-    .concat([actionsColumn]);
+    ); // .concat([actionsColumn])
 
   useEffect(() => {
     const defaultSortField = localStorage.getItem('PATIENT_LIST_SORT_COLUMN');
