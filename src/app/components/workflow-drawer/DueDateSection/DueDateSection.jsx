@@ -31,7 +31,9 @@ const DueDateSection = ({ disabled }) => {
   const [isOverdue, setIsOverdue] = useState(false);
 
   useEffect(() => {
-    setIsOverdue(momentDueDate.isBefore(moment()));
+    if (momentDueDate) {
+      setIsOverdue(momentDueDate.isBefore(moment()));
+    }
     if (
       inputReference.current &&
       autoFocusFieldName === WorkflowDrawerFieldNames.DUE_DATE
