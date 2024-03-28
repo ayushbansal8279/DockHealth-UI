@@ -127,7 +127,7 @@ const WorkflowDrawer = () => {
                   />
                 </Grid>
                 
-                <Grid item xs={12}>
+                {/* <Grid item xs={12}>
                   <StartDateSection
                     disabled={
                       !!isTemplateTask || restrictions?.startDate === DISABLED
@@ -140,7 +140,7 @@ const WorkflowDrawer = () => {
                       !!isTemplateTask || restrictions?.anchorDate === DISABLED
                     }
                   />
-                </Grid>
+                </Grid> */}
                 <Grid item xs={12}>
                   <DueDateSection
                     disabled={

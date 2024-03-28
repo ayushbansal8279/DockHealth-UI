@@ -1,12 +1,6 @@
-import React, { useCallback, useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import moment from 'moment';
-import { Box } from '@mui/material';
-import RecurringIcon from 'img/recurring-arrows';
-import { isWorkflowDueDateOverdue } from 'helpers/workflow-helpers';
 import DueDatePicker from 'components/task/DueDatePicker/DueDatePicker';
-import Spacing from 'components/common/Spacing';
-import Tooltip from 'components/common/Tooltip/Tooltip';
-import Input from 'components/common/Input/Input';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   workflowSelector,
@@ -15,15 +9,16 @@ import {
 import TaskDrawerPopover from 'components/task-drawer/TaskDrawerPopover/TaskDrawerPopover';
 import { updatePartialWorkflow } from 'actions/task-template-actions';
 import { WorkflowDrawerFieldNames } from 'helpers/workflow-drawer-helpers';
-import { formatDueTime } from './helpers';
-import { AdornmentClear } from '../styled';
 import {
   DueDateContentWrapper,
-  DueDateContent,
   DueDateSectionWrapper,
-  Placeholder,
-  DueDateText,
+  Title,
+  DateViewContainer,
+  DateViewText,
+  SubTitle,
+  NoDateContainer,
 } from './styled';
+import AssignMemberIcon from '../../user/AssignMemberIcon/AssingMemberIcon';
 
 const DueDateSection = ({ disabled }) => {
   const dispatch = useDispatch();
@@ -33,8 +28,10 @@ const DueDateSection = ({ disabled }) => {
   const { identifier, dueDateTime, hasRecurringSchedule } =
     selectedWorkflow || {};
   const momentDueDate = dueDateTime ? moment(dueDateTime) : null;
+  const [isOverdue, setIsOverdue] = useState(false);
 
   useEffect(() => {
+    setIsOverdue(momentDueDate.isBefore(moment()));
     if (
       inputReference.current &&
       autoFocusFieldName === WorkflowDrawerFieldNames.DUE_DATE
@@ -42,7 +39,7 @@ const DueDateSection = ({ disabled }) => {
       inputReference.current.scrollIntoView(true);
       inputReference.current.focus();
     }
-  }, [autoFocusFieldName]);
+  }, [autoFocusFieldName, momentDueDate]);
 
   const handleDueDateSave = useCallback(
     (updatedDueDateTime) => {
@@ -58,62 +55,35 @@ const DueDateSection = ({ disabled }) => {
   );
 
   return (
-    <DueDateSectionWrapper disabled={disabled}>
-      <Input
-        inputRef={inputReference}
-        label="Due date"
-        shrink
-        customInputComponent={() => (
-          <TaskDrawerPopover
-            disabled={disabled}
-            content={({ closePopover }) => (
-              <DueDatePicker
-                taskIdentifier={identifier}
-                selectedDate={dueDateTime}
-                onDateChange={handleDueDateSave}
-                recurring={hasRecurringSchedule}
-                disableRecurring
-                onCloseClick={closePopover}
-              />
-            )}
-          >
-            <DueDateContentWrapper>
-              {momentDueDate ? (
-                <DueDateContent
-                  error={isWorkflowDueDateOverdue(selectedWorkflow)}
-                >
-                  <DueDateText>
-                    {momentDueDate.format('MM/DD/YY')}
-                    {hasRecurringSchedule && (
-                      <>
-                        <Spacing horizontal={3} />
-                        <Tooltip title="Recurring Task" placement="right">
-                          <Box display="inline-block">
-                            <RecurringIcon />
-                          </Box>
-                        </Tooltip>
-                      </>
-                    )}
-                  </DueDateText>
-                  <DueDateText>{formatDueTime(dueDateTime)}</DueDateText>
-                  {!disabled && (
-                    <AdornmentClear
-                      style={{ position: 'relative', top: '-6px' }}
-                      onClick={() => handleDueDateSave(null)}
-                    />
-                  )}
-                </DueDateContent>
-              ) : (
-                <Placeholder>
-                  {disabled
-                    ? 'Not available when creating a template'
-                    : 'Set a due date?'}
-                </Placeholder>
-              )}
-            </DueDateContentWrapper>
-          </TaskDrawerPopover>
+    <DueDateSectionWrapper>
+      <Title>Due date</Title>
+      <TaskDrawerPopover
+        disabled={disabled}
+        content={({ closePopover }) => (
+          <DueDatePicker
+            taskIdentifier={identifier}
+            selectedDate={dueDateTime}
+            onDateChange={handleDueDateSave}
+            recurring={hasRecurringSchedule}
+            disableRecurring
+            onCloseClick={closePopover}
+          />
         )}
-      />
+      >
+        <DueDateContentWrapper>
+          {momentDueDate ? (
+            <DateViewContainer isOverdue={isOverdue}>
+              <DateViewText>
+                {momentDueDate.format('MMM DD, YYYY')}
+              </DateViewText>
+            </DateViewContainer>
+          ) : (
+            <NoDateContainer>
+              <AssignMemberIcon /> <SubTitle>Add Date</SubTitle>
+            </NoDateContainer>
+          )}
+        </DueDateContentWrapper>
+      </TaskDrawerPopover>
     </DueDateSectionWrapper>
   );
 };
