@@ -114,52 +114,53 @@ const WorkflowDrawer = () => {
                     readOnly={restrictions?.description === DISABLED}
                   />
                 </Grid>
-                <Grid item xs={6}>
+                <Grid item xs={12}>
+                  <AssignedToSection
+                    disabled={restrictions?.assignedTo === DISABLED}
+                  />
+                </Grid>
+                <Grid item xs={12}>
                   <PatientSection
                     disabled={
                       !!isTemplateTask || restrictions?.patient === DISABLED
                     }
                   />
                 </Grid>
-                <Grid item xs={6}>
-                  <AssignedToSection
-                    disabled={restrictions?.assignedTo === DISABLED}
-                  />
-                </Grid>
-                <Grid item xs={6}>
+                
+                <Grid item xs={12}>
                   <StartDateSection
                     disabled={
                       !!isTemplateTask || restrictions?.startDate === DISABLED
                     }
                   />
                 </Grid>
-                <Grid item xs={6}>
+                <Grid item xs={12}>
                   <AnchorDateSection
                     disabled={
                       !!isTemplateTask || restrictions?.anchorDate === DISABLED
                     }
                   />
                 </Grid>
-                <Grid item xs={6}>
+                <Grid item xs={12}>
                   <DueDateSection
                     disabled={
                       !!isTemplateTask || restrictions?.dueDate === DISABLED
                     }
                   />
                 </Grid>
-                <Grid item xs={6}>
+                <Grid item xs={12}>
                   <ReminderSection
                     disabled={
                       !!isTemplateTask || restrictions?.reminder === DISABLED
                     }
                   />
                 </Grid>
-                <Grid item xs={6}>
+                <Grid item xs={12}>
                   <PrioritySection
                     disabled={restrictions?.priority === DISABLED}
                   />
                 </Grid>
-                <Grid item xs={6}>
+                <Grid item xs={12}>
                   <StatusSection disabled={restrictions?.status === DISABLED} />
                 </Grid>
                 <Grid item xs={12}>
