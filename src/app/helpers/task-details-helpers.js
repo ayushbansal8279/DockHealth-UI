@@ -5,7 +5,7 @@ export const Category = {
 
 export const CategoryLabel = {
   [Category.TASK_CORE]: 'Core',
-  [Category.TASK_OTHER]: 'Other Info',
+  [Category.TASK_OTHER]: 'Supplemental',
 };
 
 export const CATEGORY_OPTIONS = [
