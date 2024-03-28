@@ -126,7 +126,7 @@ const WorkflowDrawer = () => {
                     }
                   />
                 </Grid>
-                
+
                 {/* <Grid item xs={12}>
                   <StartDateSection
                     disabled={
@@ -148,7 +148,7 @@ const WorkflowDrawer = () => {
                     }
                   />
                 </Grid>
-                <Grid item xs={12}>
+                <Grid item mt={-3} ml={1.2} xs={12}>
                   <ReminderSection
                     disabled={
                       !!isTemplateTask || restrictions?.reminder === DISABLED
