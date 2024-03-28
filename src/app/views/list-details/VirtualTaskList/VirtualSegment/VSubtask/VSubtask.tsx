@@ -22,10 +22,11 @@ import palette from '@/app/styles/palette';
 export interface Props extends Segment {
   task: any;
   bgColor: boolean;
+  isLastTaskOfGroup: boolean;
 }
 
 function VSubtask(
-  { metadata, register, task, bgColor, ...record }: Props,
+  { metadata, register, task, bgColor, isLastTaskOfGroup, ...record }: Props,
   // eslint-disable-next-line unicorn/prevent-abbreviations
   ref: ForwardedRef<HTMLDivElement>,
 ) {
@@ -66,51 +67,59 @@ function VSubtask(
       key={metadata.id}
     >
       {(provided: DraggableProvided, snapshot: DraggableStateSnapshot) => (
-        <>
-          <Sc.VSubtask
-            ref={ref}
-            {...register}
-            $subitem={metadata.level > 1}
-            isWorkflowSubtask={!!task}
-            searchValue={!!searchValue}
-            isFilterApply={
-              !!selectedFilters
-                ? Object.keys(selectedFilters).length > 0
-                : !!selectedFilters
-            }
-            isSortApplied={!!sort.key}
-            bgColor={bgColor}
-          >
-            {!!searchValue ||
-              (!!selectedFilters
-                ? Object.keys(selectedFilters).length > 0
-                : !!selectedFilters) ||
-              !!sort.key ||
-              getSubtaskStylingLink(isLast())}
-            <StandardTaskItem
-              // @ts-ignore
-              taskIdentifier={metadata.id}
-              draggableProvided={provided}
-              isDraggable
-              isDragging={snapshot.isDragging}
+        <div
+          style={{
+            width: '100%',
+            background: bgColor ? palette.aliceBlue : '',
+            paddingBottom: isLastTaskOfGroup ? '20px' : '0px',
+          }}
+        >
+          <>
+            <Sc.VSubtask
+              ref={ref}
+              {...register}
+              $subitem={metadata.level > 1}
               isWorkflowSubtask={!!task}
-              isSubtask
-              origin={TaskOrigin.LIST}
-              isNestedTask
-              pageBackground={bgColor ? palette.aliceBlue : ''}
-            />
-          </Sc.VSubtask>
-          {metadata.sameLevelIndex === noOfSubtask && subtaskQuickAddOpen && (
-            <Sc.QuickAddContainer>
-              <QuickAddSubtask
-                taskListIdentifier={parentTask.taskList.taskListIdentifier}
-                parentTaskIdentifier={parentTask.identifier}
-                // onFocus={handleQuickAddOnFocus}
-                // origin={TaskOrigin.LIST}
+              searchValue={!!searchValue}
+              isFilterApply={
+                !!selectedFilters
+                  ? Object.keys(selectedFilters).length > 0
+                  : !!selectedFilters
+              }
+              isSortApplied={!!sort.key}
+              bgColor={bgColor}
+            >
+              {!!searchValue ||
+                (!!selectedFilters
+                  ? Object.keys(selectedFilters).length > 0
+                  : !!selectedFilters) ||
+                !!sort.key ||
+                getSubtaskStylingLink(isLast())}
+              <StandardTaskItem
+                // @ts-ignore
+                taskIdentifier={metadata.id}
+                draggableProvided={provided}
+                isDraggable
+                isDragging={snapshot.isDragging}
+                isWorkflowSubtask={!!task}
+                isSubtask
+                origin={TaskOrigin.LIST}
+                isNestedTask
+                pageBackground={bgColor ? palette.aliceBlue : ''}
               />
-            </Sc.QuickAddContainer>
-          )}
-        </>
+            </Sc.VSubtask>
+            {metadata.sameLevelIndex === noOfSubtask && subtaskQuickAddOpen && (
+              <Sc.QuickAddContainer>
+                <QuickAddSubtask
+                  taskListIdentifier={parentTask.taskList.taskListIdentifier}
+                  parentTaskIdentifier={parentTask.identifier}
+                  // onFocus={handleQuickAddOnFocus}
+                  // origin={TaskOrigin.LIST}
+                />
+              </Sc.QuickAddContainer>
+            )}
+          </>
+        </div>
       )}
     </Draggable>
   );

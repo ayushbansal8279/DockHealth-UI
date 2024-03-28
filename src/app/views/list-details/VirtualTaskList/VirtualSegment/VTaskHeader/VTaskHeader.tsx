@@ -20,10 +20,18 @@ import palette from '@/app/styles/palette';
 export interface Props extends Segment {
   isTaskTemplate: boolean;
   bgColor: boolean;
+  groupWithZeroTask: boolean;
 }
 
 function VTaskHeader(
-  { metadata, register, isTaskTemplate, bgColor, ...record }: Props,
+  {
+    metadata,
+    register,
+    isTaskTemplate,
+    groupWithZeroTask,
+    bgColor,
+    ...record
+  }: Props,
   // eslint-disable-next-line unicorn/prevent-abbreviations
   ref: ForwardedRef<HTMLDivElement>,
 ) {
@@ -47,29 +55,38 @@ function VTaskHeader(
     );
   }, [dispatch, isGroupSelected, metadata.parent?.children]);
   return (
-    <Sc.VTaskHeader
-      ref={ref}
-      {...register}
-      $subitem={metadata.level > 1}
-      $template={isTaskTemplate}
-      bgColor={bgColor}
+    <div
+      style={{
+        width: '100%',
+        paddingBottom: groupWithZeroTask ? '20px' : '0px',
+        background: bgColor ? palette.aliceBlue : '',
+      }}
     >
-      {/* @ts-ignore */}
-      {metadata.parent?.children.length === 0 ? (
-        <></>
-      ) : (
-        <TasksHeader
-          bulkEditEnabled={bulkEditEnabled}
-          sort={sort}
-          onSortChange={onSortChange}
-          // @ts-ignore
-          groupHasMultipleAssignees={groupHasMultipleAssignees}
-          isGroupSelected={isGroupSelected}
-          onGroupSelect={handleGroupSelect}
-          pageBackground={bgColor ? palette.aliceBlue : ''}
-        />
-      )}
-    </Sc.VTaskHeader>
+      <Sc.VTaskHeader
+        ref={ref}
+        {...register}
+        $subitem={metadata.level > 1}
+        $template={isTaskTemplate}
+        bgColor={bgColor}
+        groupWithZeroTask={groupWithZeroTask}
+      >
+        {/* @ts-ignore */}
+        {metadata.parent?.children.length === 0 ? (
+          <></>
+        ) : (
+          <TasksHeader
+            bulkEditEnabled={bulkEditEnabled}
+            sort={sort}
+            onSortChange={onSortChange}
+            // @ts-ignore
+            groupHasMultipleAssignees={groupHasMultipleAssignees}
+            isGroupSelected={isGroupSelected}
+            onGroupSelect={handleGroupSelect}
+            pageBackground={bgColor ? palette.aliceBlue : ''}
+          />
+        )}
+      </Sc.VTaskHeader>
+    </div>
   );
 }
 

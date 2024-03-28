@@ -56,6 +56,7 @@ function VirtualTaskList({ groupedTasks }: Props) {
     {},
   );
   const [workflowIdentifierMap, setWorkflowIdentifierMap] = useState([]);
+  // const [virtualListWorkflowOpen, setVirtualListWorkflowOpen] = useState(true);
   // @ts-ignore
   const tasksMap = useSelector((state) => state.listDetails.tasksMap);
   // @ts-ignore
@@ -185,7 +186,7 @@ function VirtualTaskList({ groupedTasks }: Props) {
           {
             name: group.groupName,
             taskGroupIdentifier: group.taskGroupIdentifier,
-            bgColor: !!(index % 2 === 0),
+            bgColor: !(index % 2 === 0),
           },
           [
             convert(
@@ -195,7 +196,7 @@ function VirtualTaskList({ groupedTasks }: Props) {
               false,
               {
                 taskGroupIdentifier: group.taskGroupIdentifier,
-                bgColor: !!(index % 2 === 0),
+                bgColor: !(index % 2 === 0),
               },
               [],
               true,
@@ -206,7 +207,8 @@ function VirtualTaskList({ groupedTasks }: Props) {
               'TaskHeader',
               false,
               {
-                bgColor: !!(index % 2 === 0),
+                bgColor: !(index % 2 === 0),
+                groupWithZeroTask: groupTasks?.length === 0,
               },
               [],
               true,
@@ -223,10 +225,14 @@ function VirtualTaskList({ groupedTasks }: Props) {
                 !!collapseMap[taskIdentifier],
                 {
                   task,
-                  bgColor: !!(index % 2 === 0),
+                  bgColor: !(index % 2 === 0),
                   isLastTaskOfGroup: groupTaskIndex === groupTasks.length - 1,
+                  // &&
+                  // !!collapseMap[taskIdentifier],
+                  // virtualListWorkflowOpen: virtualListWorkflowOpen,
+                  // setVirtualListWorkflowOpen: setVirtualListWorkflowOpen,
                 },
-                children.map((child: any) => {
+                children.map((child: any, childIndex) => {
                   return convert(
                     child?.taskIdentifier ?? child,
                     task.itemType === 'TASK' ? VSubtask : VTask,
@@ -236,19 +242,35 @@ function VirtualTaskList({ groupedTasks }: Props) {
                       isTaskTemplate: true,
                       isLastChild:
                         children.indexOf(child) === children.length - 1,
-                      bgColor: !!(index % 2 === 0),
+                      bgColor: !(index % 2 === 0),
+                      isLastTaskOfGroup:
+                        groupTaskIndex === groupTasks.length - 1 &&
+                        childIndex === children.length - 1,
+                      //  &&
+                      // !!collapseMap[child?.taskIdentifier ?? child],
+                      // virtualListWorkflowOpen: virtualListWorkflowOpen,
+                      // setVirtualListWorkflowOpen: setVirtualListWorkflowOpen,
                     },
                     !!tasksMap[child]?.subtasks.length
-                      ? tasksMap[child].subtasks.map((subtask: any) => {
-                          return convert(
-                            subtask.taskIdentifier,
-                            VSubtask,
-                            'Subtask',
-                            false,
-                            { task: subtask, bgColor: !!(index % 2 === 0) },
-                            [],
-                          );
-                        })
+                      ? tasksMap[child].subtasks.map(
+                          (subtask: any, subTaskIndex) => {
+                            return convert(
+                              subtask.taskIdentifier,
+                              VSubtask,
+                              'Subtask',
+                              false,
+                              {
+                                task: subtask,
+                                bgColor: !(index % 2 === 0),
+                                isLastTaskOfGroup:
+                                  subTaskIndex ===
+                                    tasksMap[child]?.subtasks.length - 1 &&
+                                  childIndex === children.length - 1,
+                              },
+                              [],
+                            );
+                          },
+                        )
                       : [],
                   );
                 }),

@@ -16,6 +16,9 @@ import {
   DraggableProvided,
   DraggableStateSnapshot,
 } from 'react-beautiful-dnd';
+// import QuickAddSubtask from '@/app/components/task/StandardTaskItem/QuickAddSubtask';
+// import { taskLookupSelector } from '@/app/selectors/task-details-selectors';
+// import { useSelector } from 'react-redux';
 import * as Sc from './styled';
 import * as TaskActions from 'actions/task-actions';
 import { TaskOrigin } from '@/app/helpers/task-helpers';
@@ -32,6 +35,7 @@ export interface Props extends Segment {
   isLastChild: boolean;
   bgColor: boolean;
   isLastTaskOfGroup: boolean;
+  // virtualListWorkflowOpen: boolean;
 }
 
 export const VTaskContext = createContext({
@@ -46,6 +50,8 @@ function VTask(
     isLastChild,
     isLastTaskOfGroup,
     bgColor,
+    // virtualListWorkflowOpen,
+    // setVirtualListWorkflowOpen,
     ...record
   }: Props,
   // eslint-disable-next-line unicorn/prevent-abbreviations, @typescript-eslint/no-unused-vars
@@ -121,6 +127,13 @@ function VTask(
   );
 
   return (
+    // <div
+    //   style={{
+    //     width: '100%',
+    //     background: bgColor ? palette.aliceBlue : '',
+    //     paddingBottom: isLastTaskOfGroup ? '20px' : '0px',
+    //   }}
+    // >
     <Draggable
       draggableId={metadata.id}
       index={metadata.index}
@@ -141,6 +154,8 @@ function VTask(
             bgColor={bgColor}
             isLastTaskOfGroup={isLastTaskOfGroup}
             virtualListWorkflowOpen={virtualListWorkflowOpen}
+            subtaskQuickAddOpen={subtaskQuickAddOpen}
+            addWorkflowTask={addWorkflowTask}
           >
             <VTaskContext.Provider value={contextValue}>
               <StandardTaskItem
@@ -158,43 +173,61 @@ function VTask(
             </VTaskContext.Provider>
           </Sc.VTask>
           {subtaskQuickAddOpen && subTasksCount === 0 && (
-            <Sc.QuickAddContainer>
-              <QuickAddSubtask
-                taskListIdentifier={task.taskList.taskListIdentifier}
-                parentTaskIdentifier={metadata.id}
-                onFocus={handleQuickAddOnFocus}
-                // origin={origin}
-              />
-            </Sc.QuickAddContainer>
+            <div
+              style={{
+                width: '100%',
+                background: bgColor ? palette.aliceBlue : '',
+                paddingBottom: isLastTaskOfGroup ? '20px' : '0px',
+              }}
+            >
+              <Sc.QuickAddContainer>
+                <QuickAddSubtask
+                  taskListIdentifier={task.taskList.taskListIdentifier}
+                  parentTaskIdentifier={metadata.id}
+                  onFocus={handleQuickAddOnFocus}
+                  // origin={origin}
+                />
+              </Sc.QuickAddContainer>
+            </div>
           )}
           {isTaskTemplate && isLastChild && addWorkflowTask && (
-            <Sc.WorkflowQuickAddTaskContainer>
-              <QuickAddInputWrapper>
-                <QuickAddTaskInput
-                  // autofocus
-                  disableMentions
-                  quickAddTask={handleAddBundleTask}
-                  onBlur={() => {
-                    handleRemoveWorkflowIdentifier(
-                      taskGroup[0]?.taskGroupIdentifier,
-                    );
-                  }}
-                  validator={(value) => {
-                    if ([...value]?.filter((char) => char !== ' ').length < 2)
-                      return 'The task description is too short (min. 2 characters)';
+            <div
+              style={{
+                width: '100%',
+                background: bgColor ? palette.aliceBlue : '',
+                paddingBottom: isLastTaskOfGroup ? '20px' : '0px',
+              }}
+            >
+              <Sc.WorkflowQuickAddTaskContainer>
+                <QuickAddInputWrapper>
+                  <QuickAddTaskInput
+                    // autofocus
+                    disableMentions
+                    quickAddTask={handleAddBundleTask}
+                    onBlur={() => {
+                      handleRemoveWorkflowIdentifier(
+                        taskGroup[0]?.taskGroupIdentifier,
+                      );
+                    }}
+                    validator={(value) => {
+                      if ([...value]?.filter((char) => char !== ' ').length < 2)
+                        return 'The task description is too short (min. 2 characters)';
 
-                    return null;
-                  }}
-                  origin={TaskOrigin.LIST}
-                  // iconColorActive={iconColorActive}
-                />
-              </QuickAddInputWrapper>
-            </Sc.WorkflowQuickAddTaskContainer>
-            // )}
+                      return null;
+                    }}
+                    origin={TaskOrigin.LIST}
+                    // iconColorActive={iconColorActive}
+                  />
+                </QuickAddInputWrapper>
+              </Sc.WorkflowQuickAddTaskContainer>
+            </div>
+            // {/* // )} */}
           )}
         </>
+        // </div>
       )}
     </Draggable>
+    // </div>
   );
 }
 
