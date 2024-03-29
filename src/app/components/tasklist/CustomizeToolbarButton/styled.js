@@ -3,7 +3,8 @@ import palette, { typography } from 'styles/palette';
 import spacing from 'styles/spacing';
 
 export const CustomizeImg = styled.img`
-  width: 21px;
+  width: 16px;
+  height: 16px;
   ${({ iconColorFilterActive }) =>
     iconColorFilterActive
       ? `filter: ${iconColorFilterActive}; `

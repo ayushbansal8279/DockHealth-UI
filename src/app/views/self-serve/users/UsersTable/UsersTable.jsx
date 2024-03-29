@@ -399,6 +399,7 @@ const UsersTable = ({
                     onValueChange={setCurrentSearch}
                   />
                 </Box>
+                <Spacing horizontal={3} />
                 <ToolbarSelect
                   options={SUBSCRIPTION_OPTIONS}
                   value={USER_SUBSCRIPTION_VALUES[userSubscriptionStatus]}
