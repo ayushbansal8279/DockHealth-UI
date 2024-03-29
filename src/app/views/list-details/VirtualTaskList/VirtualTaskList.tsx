@@ -20,8 +20,8 @@ export const CollapseContext = createContext({
   get: (id: string) => {},
   set: (id: string, value: boolean) => {},
   workflowIdentifierMap: [],
-  handleAddWorkflowIdentifier: {},
-  handleRemoveWorkflowIdentifier: {},
+  handleAddWorkflowIdentifier: (identifier: any) => {},
+  handleRemoveWorkflowIdentifier: (identifier: any) => {},
 });
 
 // @ts-ignore
@@ -56,7 +56,6 @@ function VirtualTaskList({ groupedTasks }: Props) {
     {},
   );
   const [workflowIdentifierMap, setWorkflowIdentifierMap] = useState([]);
-  // const [virtualListWorkflowOpen, setVirtualListWorkflowOpen] = useState(true);
   // @ts-ignore
   const tasksMap = useSelector((state) => state.listDetails.tasksMap);
   // @ts-ignore
@@ -229,8 +228,6 @@ function VirtualTaskList({ groupedTasks }: Props) {
                   isLastTaskOfGroup: groupTaskIndex === groupTasks.length - 1,
                   // &&
                   // !!collapseMap[taskIdentifier],
-                  // virtualListWorkflowOpen: virtualListWorkflowOpen,
-                  // setVirtualListWorkflowOpen: setVirtualListWorkflowOpen,
                 },
                 children.map((child: any, childIndex) => {
                   return convert(
@@ -248,8 +245,6 @@ function VirtualTaskList({ groupedTasks }: Props) {
                         childIndex === children.length - 1,
                       //  &&
                       // !!collapseMap[child?.taskIdentifier ?? child],
-                      // virtualListWorkflowOpen: virtualListWorkflowOpen,
-                      // setVirtualListWorkflowOpen: setVirtualListWorkflowOpen,
                     },
                     !!tasksMap[child]?.subtasks.length
                       ? tasksMap[child].subtasks.map(

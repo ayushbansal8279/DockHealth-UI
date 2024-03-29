@@ -35,11 +35,10 @@ export interface Props extends Segment {
   isLastChild: boolean;
   bgColor: boolean;
   isLastTaskOfGroup: boolean;
-  // virtualListWorkflowOpen: boolean;
 }
 
 export const VTaskContext = createContext({
-  handleWorkflowOpen: {},
+  isVirtualListWorkflowOpen: true,
 });
 
 function VTask(
@@ -50,8 +49,6 @@ function VTask(
     isLastChild,
     isLastTaskOfGroup,
     bgColor,
-    // virtualListWorkflowOpen,
-    // setVirtualListWorkflowOpen,
     ...record
   }: Props,
   // eslint-disable-next-line unicorn/prevent-abbreviations, @typescript-eslint/no-unused-vars
@@ -60,21 +57,15 @@ function VTask(
   const dispatch = useDispatch();
   const parentTaskReference = useRef(null);
   const [subtaskQuickAddOpen, setSubtaskQuickAddOpen] = useState(false);
-  const [virtualListWorkflowOpen, setVirtualListWorkflowOpen] = useState(true);
-
-  const handleWorkflowOpen = (isOpen: boolean) => {
-    setVirtualListWorkflowOpen(isOpen);
-  };
-
-  const contextValue = { handleWorkflowOpen: handleWorkflowOpen };
-
+  const { get, workflowIdentifierMap, handleRemoveWorkflowIdentifier } =
+    useContext(CollapseContext);
   const pulledTask = useSelector((state) => {
     // @ts-ignore
     return taskLookupSelector(state, origin, metadata.id);
   });
 
   const task = pulledTask;
-  const { taskList, taskGroups } = task;
+  const { taskList, taskGroups, identifier } = task;
   const [subTasksCount, setsubTasksCount] = useState(task.subTasksCount);
 
   const [addWorkflowTask, setAddWorkflowTask] = useState(false);
@@ -83,8 +74,7 @@ function VTask(
         taskGroup?.groupType === 'TASK_BUNDLE' ? taskGroup : '',
       )
     : '';
-  const { workflowIdentifierMap, handleRemoveWorkflowIdentifier } =
-    useContext(CollapseContext);
+
   useEffect(() => {
     setSubtaskQuickAddOpen(task?.subtaskQuickAddOpen);
     setsubTasksCount(task?.subtasks?.length);
@@ -126,6 +116,9 @@ function VTask(
     ],
   );
 
+  const contextValue = {
+    isVirtualListWorkflowOpen: get(identifier),
+  };
   return (
     // <div
     //   style={{
@@ -153,9 +146,10 @@ function VTask(
             origin={TaskOrigin.LIST}
             bgColor={bgColor}
             isLastTaskOfGroup={isLastTaskOfGroup}
-            virtualListWorkflowOpen={virtualListWorkflowOpen}
+            virtualListWorkflowOpen={get(identifier)}
             subtaskQuickAddOpen={subtaskQuickAddOpen}
             addWorkflowTask={addWorkflowTask}
+            subTaskExpanded={!metadata.collapsed && task?.subTasksCount}
           >
             <VTaskContext.Provider value={contextValue}>
               <StandardTaskItem

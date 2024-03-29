@@ -67,14 +67,15 @@ function VSubtask(
       key={metadata.id}
     >
       {(provided: DraggableProvided, snapshot: DraggableStateSnapshot) => (
-        <div
-          style={{
-            width: '100%',
-            background: bgColor ? palette.aliceBlue : '',
-            paddingBottom: isLastTaskOfGroup ? '20px' : '0px',
-          }}
-        >
-          <>
+        <>
+          <div
+            style={{
+              width: '100%',
+              background: bgColor ? palette.aliceBlue : '',
+              paddingBottom:
+                isLastTaskOfGroup && !subtaskQuickAddOpen ? '20px' : '0px',
+            }}
+          >
             <Sc.VSubtask
               ref={ref}
               {...register}
@@ -108,7 +109,15 @@ function VSubtask(
                 pageBackground={bgColor ? palette.aliceBlue : ''}
               />
             </Sc.VSubtask>
-            {metadata.sameLevelIndex === noOfSubtask && subtaskQuickAddOpen && (
+          </div>
+          {metadata.sameLevelIndex === noOfSubtask && subtaskQuickAddOpen && (
+            <div
+              style={{
+                width: '100%',
+                background: bgColor ? palette.aliceBlue : '',
+                paddingBottom: isLastTaskOfGroup ? '20px' : '0px',
+              }}
+            >
               <Sc.QuickAddContainer>
                 <QuickAddSubtask
                   taskListIdentifier={parentTask.taskList.taskListIdentifier}
@@ -117,9 +126,9 @@ function VSubtask(
                   // origin={TaskOrigin.LIST}
                 />
               </Sc.QuickAddContainer>
-            )}
-          </>
-        </div>
+            </div>
+          )}
+        </>
       )}
     </Draggable>
   );

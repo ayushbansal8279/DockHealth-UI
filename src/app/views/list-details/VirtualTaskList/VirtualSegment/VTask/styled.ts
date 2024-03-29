@@ -9,6 +9,9 @@ export const VTask = styled('div')`
     virtualListWorkflowOpen,
     isLastTaskOfGroup,
     $template,
+    subtaskQuickAddOpen,
+    addWorkflowTask,
+    subTaskExpanded,
   }: any) =>
     $workflow
       ? `
@@ -18,13 +21,31 @@ export const VTask = styled('div')`
    };
   `
       : `
-  padding-bottom: ${isLastTaskOfGroup ? '60px' : ''};
+  padding-bottom: ${
+    isLastTaskOfGroup
+      ? subtaskQuickAddOpen
+        ? '0px'
+        : subTaskExpanded
+        ? '0px'
+        : '60px'
+      : ''
+  };
   height: 36px;
   `};
-  ${({ $template, isLastTaskOfGroup }: any) =>
+  ${({
+    $template,
+    isLastTaskOfGroup,
+    addWorkflowTask,
+    subtaskQuickAddOpen,
+    subTaskExpanded,
+  }: any) =>
     $template
       ? isLastTaskOfGroup
-        ? 'padding-bottom: 60px'
+        ? subtaskQuickAddOpen || addWorkflowTask || subTaskExpanded
+          ? 'padding-bottom: 0px'
+          : 'padding-bottom: 60px'
+        : subtaskQuickAddOpen || addWorkflowTask || subTaskExpanded
+        ? 'padding-bottom: 0px'
         : 'padding-bottom: 45px'
       : ''};
 
