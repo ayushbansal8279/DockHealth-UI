@@ -73,7 +73,6 @@ export const TaskTemplateContext = styled.div`
   font-size: ${fontSizes.small};
   padding-left: 15px;
   padding-bottom: 2px;
-  margin-top: -18px;
 
   > span {
     color: ${palette.brightBlue};
