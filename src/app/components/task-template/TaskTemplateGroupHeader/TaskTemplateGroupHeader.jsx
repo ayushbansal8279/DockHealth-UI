@@ -631,14 +631,13 @@ const TaskTemplateGroupHeader = ({
     collapse.get(identifier) ? false : true,
   );
 
-  const { handleWorkflowOpen } = useContext(VTaskContext);
+  const { isVirtualListWorkflowOpen } = useContext(VTaskContext);
   const handleOpen = () => {
     setOpen(!isOpen);
     setVirtualListWorkflowOpen(!virtualListWorkflowOpen);
     // eslint-disable-next-line react/destructuring-assignment
     // collapse.set(identifier, isOpen);
     collapse.set(identifier, virtualListWorkflowOpen);
-    handleWorkflowOpen(virtualListWorkflowOpen);
   };
 
   useEffect(() => {
@@ -703,7 +702,7 @@ const TaskTemplateGroupHeader = ({
       return (
         <StickyMainTaskItemCell
           isTamplateGroup={true}
-          isOpen={isOpen}
+          isOpen={!isVirtualListWorkflowOpen}
           customWidthExists
           backgroundColor={pageBackground}
           isSelected={isBundleSelected}

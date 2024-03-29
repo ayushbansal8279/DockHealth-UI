@@ -14,18 +14,18 @@ import ListDetailsBoardView from './ListDetailsBoardView/ListDetailsBoardView';
 
 export const ListPageContext = createContext({
   addNewGroup: false,
-  handleAddNewGroup: {},
+  handleAddNewGroup: (value) => {},
   changeViewType: '',
-  handleSetChangeViewType: {},
+  handleSetChangeViewType: (value) => {},
   showShadow: false,
-  handleScroll: {},
+  handleScroll: (event) => {},
   tasks: [],
-  handleAddTask: {},
-  handleRemoveAllTasks: {},
+  handleAddTask: (newTask) => {},
+  handleRemoveAllTasks: () => {},
   workflowPopoverOpen: false,
-  handleWorkflowPopoverOpen: {},
+  handleWorkflowPopoverOpen: (isPopoveOpen) => {},
   patientPopoverOpen: false,
-  handlePatientPopoverOpen: {},
+  handlePatientPopoverOpen: (isPopoveOpen) => {},
 });
 const ListDetailsView = () => {
   const parameters = useParams();
