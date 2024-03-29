@@ -18,14 +18,6 @@ export const getAdditionalPatientOptions = ({
     ),
     onChange: (value) => handleDisplayOptionChange(value, 'PATIENT_SEARCH'),
   },
-  // {
-  //   label: 'Include on Patient List',
-  //   key: 'PATIENT_LIST',
-  //   value: !!displayOptionsState?.displayOptions?.find(
-  //     option => option === 'PATIENT_LIST',
-  //   ),
-  //   onChange: value => handleDisplayOptionChange(value, 'PATIENT_LIST'),
-  // },
 ];
 
 export const getAdditionalUserOptions = ({
