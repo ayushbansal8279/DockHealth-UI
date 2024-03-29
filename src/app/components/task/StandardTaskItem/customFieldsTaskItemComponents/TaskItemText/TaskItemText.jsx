@@ -53,6 +53,19 @@ const TaskItemText = ({
     [onChange, readOnly, setEditing, initialValue],
   );
 
+  const handleKeyDown = useCallback(
+    (event) => {
+      if (
+        event.key === 'Enter' &&
+        !readOnly &&
+        initialValue !== event.target.value
+      ) {
+        onChange(event.target.value);
+      }
+    },
+    [onChange, readOnly, initialValue],
+  );
+
   return (
     <>
       {!isEditing && (
@@ -79,6 +92,7 @@ const TaskItemText = ({
             value={value}
             onChange={handleOnChange}
             onBlur={handleBlur}
+            onKeyDown={handleKeyDown}
             onClick={handleClick}
             style={{ padding: '0px' }}
             autofocus

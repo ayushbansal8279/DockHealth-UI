@@ -114,6 +114,8 @@
     "sonarjs/prefer-immediate-return": "off",
     "sonarjs/no-duplicate-string": "off",
     "react/forbid-prop-types": "off",
+    "unicorn/consistent-function-scoping": "off",
+    "no-shadow": "warn",
     "unicorn/no-negated-condition": "off",
   }
 }
