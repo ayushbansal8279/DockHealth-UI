@@ -36,3 +36,7 @@ export const SelectIcon = styled.span`
   padding-right: 10px;
   filter: brightness(0) invert(1);
 `;
+
+export const OptionsMenu = styled.div`
+  padding: 5px;
+`;

@@ -73,7 +73,7 @@ export const CompletedBy = styled.div`
   transition-delay: ${(props) => (props.isCompleted ? '0' : '0.4')}s;
   font-size: ${fontSizes.small};
   padding-left: 5px;
-  padding-bottom: 0px;
+  padding-bottom: 1px;
 
   > span {
     color: ${palette.brightBlue};
@@ -448,6 +448,8 @@ export const StandardTaskItemContainer = styled.div`
     isLastChild
       ? `
     border-bottom: 1px solid rgba(75, 179, 253, 1);
+    border-bottom-left-radius: 9px;
+    border-bottom-right-radius: 7px;
   `
       : ''}
 
@@ -556,14 +558,14 @@ export const TaskItemParentTaskLabel = styled.div`
 export const StatusWrapper = styled.div`
   display: flex;
   border-radius: 2px;
-  border: 1px solid ${(property) => property.color || '#7F4334'};
-  background: ${(property) => `${property.color}1A` || '#7F43341A'};
+  border: 1px solid ${(property) => property.color || '#54B989'};
+  background: ${(property) => `${property.color}1A` || '#54B9891A'};
   min-width: 90px;
   padding: 2.5px 2px;
   justify-content: center;
   align-items: center;
   gap: 10px;
-  color: ${(property) => property.color || '#7F4334'};
+  color: ${(property) => property.color || '#54B989'};
 `;
 
 export const StatusSubContaioner = styled.div`
@@ -655,34 +657,52 @@ export const SubtasksCellContentButton = styled.button`
   color: ${({ isOpen, isGreyedOut }) => {
     if (isGreyedOut) return palette.coolGrey2;
 
-    return isOpen ? palette.brightBlue : palette.coolGrey1;
+    // return isOpen ? palette.brightBlue : palette.coolGrey1;
+    return palette.coolGrey1;
   }};
 
   &:disabled {
     color: ${palette.coolGrey2};
     cursor: initial;
   }
-  p {
-    visibility: ${({ subTasksCount }) =>
-      subTasksCount > 0 ? 'hidden' : 'visible'};
-  }
+  // p {
+  //    visibility: ${({ subTasksCount }) =>
+    subTasksCount > 0 ? 'hidden' : 'visible'};
+  // }
 
   &:hover {
     color: ${({ isOpen, subtasksDisabled }) =>
-      subtasksDisabled ? '' : !isOpen ? palette.brightBlue : ''};
-      p {
-        visibility: visible;
-      }
-     
-     
+      subtasksDisabled ? '' : palette.brightBlue};
+    //   p {
+    //     visibility: visible;
+    //   }
+  }
 `;
 
 export const SubtasksCellText = styled.p`
   margin-right: ${spacing.tiny};
   margin-bottom: 0;
-  font-size: ${fontSizes.smallPlus};
+  // font-size: ${fontSizes.smallPlus};
   font-weight: ${fontWeights.light};
   color: inherit;
+  font-family: Roboto Condensed;
+  font-size: 12px;
+  // font-weight: 400;
+  line-height: 14.06px;
+  text-align: right;
+`;
+
+export const SubtasksCountText = styled.span`
+  margin-right: ${spacing.tiny};
+  margin-bottom: 0;
+  // font-size: ${fontSizes.smallPlus};
+  font-weight: ${fontWeights.light};
+  color: inherit;
+  font-family: Roboto Condensed;
+  font-size: 12px;
+  // font-weight: 400;
+  line-height: 14.06px;
+  text-align: right;
 `;
 
 export const ParentTaskContainer = styled.div`
@@ -713,7 +733,7 @@ export const TaskItemDescriptionIndicators = styled.div`
   display: flex;
   align-items: baseline;
   margin-left: 20px;
-  margin-top: ${({ isCompleted }) => (isCompleted ? '-13px' : '0')};
+  margin-top: ${({ isCompleted }) => (isCompleted ? '-11px' : '0')};
 `;
 
 export const PatientLabel = styled.span`
@@ -739,7 +759,7 @@ export const DateText = styled.p`
 
 export const DetailsButton = styled.button`
   // margin-left: 8px;
-  // visibility: hidden;
+  visibility: hidden;
   font-family: 'Outfit', sans-serif;
   font-size: ${fontSizes.smallPlus};
   font-weight: ${fontWeights.regularPlus};

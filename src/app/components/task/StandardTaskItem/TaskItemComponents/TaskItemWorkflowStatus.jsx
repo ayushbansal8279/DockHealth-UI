@@ -30,11 +30,15 @@ const TaskItemWorkflowStatus = ({
   return (
     <>
       {task.status === 'COMPLETE' && showDefaultTaskStatusCompleted && (
-        <StatusName ref={statusNameReference}>Completed</StatusName>
+        <div style={{ marginLeft: '12px' }}>
+          <StatusWrapper>
+            <StatusName ref={statusNameReference}>Completed</StatusName>
+          </StatusWrapper>
+        </div>
       )}
       {(task.status !== 'COMPLETE' || !showDefaultTaskStatusCompleted) && (
         <TaskItemPopover
-          contentWidth={160 || 'auto'}
+          // contentWidth={160 || 'auto'}
           fullWidth
           content={({ closePopover, resetPosition }) => (
             <TaskWorkflowStatus

@@ -434,6 +434,7 @@ const DashboardList = ({ currentUser, tourModalIsOpen, openTourModal }) => {
                           moveGroupUp={() => moveGroupUp(item)}
                           moveGroupDown={() => moveGroupDown(item)}
                           iconColorActive={iconColorActiveItem?.value}
+                          backgroundColor={!(index % 2 === 0)}
                         />
                       ),
                   )

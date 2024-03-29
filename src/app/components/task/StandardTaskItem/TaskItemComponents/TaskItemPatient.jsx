@@ -31,6 +31,7 @@ const TaskItemPatient = ({
   onTaskUpdate,
   currentUser,
   readOnly,
+  origin,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const { pathname } = useLocation();
@@ -92,6 +93,7 @@ const TaskItemPatient = ({
             closePopover={() => setPopoverOpen(false)}
             isSubtask={isSubtask}
             hasSubtasks={hasSubtasks}
+            origin={origin}
           >
             <Tooltip
               placement="top"

@@ -1,4 +1,4 @@
-import React, { createContext, useMemo, useReducer } from 'react';
+import React, { createContext, useMemo, useReducer, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { uniqueId } from 'lodash';
 import Virtualized, { Node } from 'views/list-details/modules/Virtualized';
@@ -19,6 +19,9 @@ export interface Props {
 export const CollapseContext = createContext({
   get: (id: string) => {},
   set: (id: string, value: boolean) => {},
+  workflowIdentifierMap: [],
+  handleAddWorkflowIdentifier: (identifier: any) => {},
+  handleRemoveWorkflowIdentifier: (identifier: any) => {},
 });
 
 // @ts-ignore
@@ -52,10 +55,20 @@ function VirtualTaskList({ groupedTasks }: Props) {
     },
     {},
   );
+  const [workflowIdentifierMap, setWorkflowIdentifierMap] = useState([]);
   // @ts-ignore
   const tasksMap = useSelector((state) => state.listDetails.tasksMap);
   // @ts-ignore
   const listGroups = useSelector((state) => state.listDetails.listGroups);
+  const handleAddWorkflowIdentifier = (identifier) => {
+    setWorkflowIdentifierMap([...workflowIdentifierMap, identifier]);
+  };
+  const handleRemoveWorkflowIdentifier = (identifier) => {
+    const newArray = workflowIdentifierMap.filter(
+      (item) => item !== identifier,
+    );
+    setWorkflowIdentifierMap(newArray);
+  };
   // const nodes: Node[] = useMemo(() => {
   //   // @ts-ignore
   //   return listGroups
@@ -172,7 +185,7 @@ function VirtualTaskList({ groupedTasks }: Props) {
           {
             name: group.groupName,
             taskGroupIdentifier: group.taskGroupIdentifier,
-            bgColor: !!(index % 2 === 0),
+            bgColor: !(index % 2 === 0),
           },
           [
             convert(
@@ -182,7 +195,7 @@ function VirtualTaskList({ groupedTasks }: Props) {
               false,
               {
                 taskGroupIdentifier: group.taskGroupIdentifier,
-                bgColor: !!(index % 2 === 0),
+                bgColor: !(index % 2 === 0),
               },
               [],
               true,
@@ -193,7 +206,8 @@ function VirtualTaskList({ groupedTasks }: Props) {
               'TaskHeader',
               false,
               {
-                bgColor: !!(index % 2 === 0),
+                bgColor: !(index % 2 === 0),
+                groupWithZeroTask: groupTasks?.length === 0,
               },
               [],
               true,
@@ -210,10 +224,12 @@ function VirtualTaskList({ groupedTasks }: Props) {
                 !!collapseMap[taskIdentifier],
                 {
                   task,
-                  bgColor: !!(index % 2 === 0),
+                  bgColor: !(index % 2 === 0),
                   isLastTaskOfGroup: groupTaskIndex === groupTasks.length - 1,
+                  // &&
+                  // !!collapseMap[taskIdentifier],
                 },
-                children.map((child: any) => {
+                children.map((child: any, childIndex) => {
                   return convert(
                     child?.taskIdentifier ?? child,
                     task.itemType === 'TASK' ? VSubtask : VTask,
@@ -223,19 +239,33 @@ function VirtualTaskList({ groupedTasks }: Props) {
                       isTaskTemplate: true,
                       isLastChild:
                         children.indexOf(child) === children.length - 1,
-                      bgColor: !!(index % 2 === 0),
+                      bgColor: !(index % 2 === 0),
+                      isLastTaskOfGroup:
+                        groupTaskIndex === groupTasks.length - 1 &&
+                        childIndex === children.length - 1,
+                      //  &&
+                      // !!collapseMap[child?.taskIdentifier ?? child],
                     },
                     !!tasksMap[child]?.subtasks.length
-                      ? tasksMap[child].subtasks.map((subtask: any) => {
-                          return convert(
-                            subtask.taskIdentifier,
-                            VSubtask,
-                            'Subtask',
-                            false,
-                            { task: subtask, bgColor: !!(index % 2 === 0) },
-                            [],
-                          );
-                        })
+                      ? tasksMap[child].subtasks.map(
+                          (subtask: any, subTaskIndex) => {
+                            return convert(
+                              subtask.taskIdentifier,
+                              VSubtask,
+                              'Subtask',
+                              false,
+                              {
+                                task: subtask,
+                                bgColor: !(index % 2 === 0),
+                                isLastTaskOfGroup:
+                                  subTaskIndex ===
+                                    tasksMap[child]?.subtasks.length - 1 &&
+                                  childIndex === children.length - 1,
+                              },
+                              [],
+                            );
+                          },
+                        )
                       : [],
                   );
                 }),
@@ -268,6 +298,9 @@ function VirtualTaskList({ groupedTasks }: Props) {
     set: (id: string, value: boolean) => {
       collapseDispatch([id, value]);
     },
+    workflowIdentifierMap: workflowIdentifierMap,
+    handleAddWorkflowIdentifier: handleAddWorkflowIdentifier,
+    handleRemoveWorkflowIdentifier: handleRemoveWorkflowIdentifier,
   };
 
   return (

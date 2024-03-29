@@ -19,12 +19,14 @@ const TaskStatusToolbarSelect = ({
   iconColorActive,
   searchValue,
   focused,
+  taskListIdentifier,
   ...restProps
 }) => {
   return (
     <NewToolbarSelect
       options={OPTIONS}
       value={value}
+      taskListIdentifier={taskListIdentifier}
       name="task-status"
       onChange={onChange}
       searchValue={searchValue}

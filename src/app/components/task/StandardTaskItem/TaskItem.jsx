@@ -131,7 +131,6 @@ import TaskItemDropdown from './customFieldsTaskItemComponents/TaskItemDropdown/
 import TaskItemDate from './customFieldsTaskItemComponents/TaskItemDate';
 
 import TaskItemComments from './TaskItemComponents/TaskItemComments';
-import { StickyColumnContainer } from '../../tasklist/TasksHeader/styled';
 import { megaFilterSelector } from '@/app/selectors/mega-filter-selectors';
 
 const { DISABLED, READ_ONLY } = SINGLE_TASK_RESTRICTIONS_OPTIONS;
@@ -297,6 +296,8 @@ const TaskItem = React.memo(
       comment: false,
       label: false,
       file: false,
+      share: false,
+      task: false,
     });
     const { move, duplicate, subtasks, delete: del } = SINGLE_TASK_FEATURES;
     const organizationCustomFields = useSelector(
@@ -699,7 +700,6 @@ const TaskItem = React.memo(
       [updateWorkflowStatus, task],
     );
 
-    const showDraggableDots = !dragAndDropDisabled && isDraggable;
     const showPriority = task?.priority && task?.priority !== TaskPriority.NONE;
     const showDecisionRow = task?.intentType === 'DECISION' && !isTemplateTask;
     const hasParentTaskLabel = isSubtask && !isNestedTask && !!parentTask;
@@ -781,6 +781,7 @@ const TaskItem = React.memo(
         if (order !== 0) return content;
         return (
           <StickyMainTaskItemCell
+            isLastChild={isLastChild}
             isWorkflowtask={isTaskTemplate}
             customWidthExists
             order={0}
@@ -1003,6 +1004,8 @@ const TaskItem = React.memo(
                   isSubtask={isSubtask}
                   isSticky
                   printWidth={300}
+                  onMouseEnter={() => setCellHover({ task: true })}
+                  onMouseLeave={() => setCellHover({ task: false })}
                 >
                   {!isDependencyEmptyOrCompleted && (
                     <>
@@ -1024,6 +1027,7 @@ const TaskItem = React.memo(
                     </>
                   )}
                   <TaskItemDescription
+                    isHover={isCellHover.task}
                     disableMentions={restrictions?.mentions === DISABLED}
                     disabled={restrictions?.description === READ_ONLY}
                     task={task}
@@ -1090,39 +1094,6 @@ const TaskItem = React.memo(
               </>,
               getColumnOrder(TaskItemColumn.DESCRIPTION),
             )}
-            {/* <>
-              {randerFirstColumnCoverIfNecessary(
-                <TaskItemCell
-                  isSubtask={isSubtask}
-                  key={`subtask_count_${taskIdentifier}`}
-                  width={
-                    columns?.find(
-                      ({ identifier }) =>
-                        identifier === TaskItemColumn.SUBTASKS_COUNT,
-                    )?.columnWidth
-                  }
-                  order={getColumnOrder(TaskItemColumn.SUBTASKS_COUNT)}
-                  justify="center"
-                  paddingLeft="tiny"
-                  paddingRight="tiny"
-                >
-                  <TaskItemSubtasks
-                    isSubtask={isSubtask}
-                    subtaskQuickAddOpen={subtaskQuickAddOpen}
-                    subtasksDisabled={subtasksDisabled}
-                    subTasksCount={subTasksCount}
-                    isOpen={isOpen}
-                    isNestedTask={isNestedTask}
-                    onSubtaskLabelClick={onSubtaskLabelClick}
-                    taskIdentifier={taskIdentifier}
-                    openQuickAddSubtask={openQuickAddSubtask}
-                    dispatch={dispatch}
-                    readOnly={restrictions?.subtasks === READ_ONLY}
-                  />
-                </TaskItemCell>,
-                getColumnOrder(TaskItemColumn.SUBTASKS_COUNT),
-              )}
-            </> */}
 
             {isColumnChecked(columns, TaskItemColumn.PATIENT) && (
               <>
@@ -1152,6 +1123,7 @@ const TaskItem = React.memo(
                       onTaskUpdate={onTaskUpdate}
                       currentUser={currentUser}
                       readOnly={restrictions?.patient === READ_ONLY}
+                      origin={origin}
                     />
                   </TaskItemCell>,
                   getColumnOrder(TaskItemColumn.PATIENT),
@@ -1177,14 +1149,8 @@ const TaskItem = React.memo(
                       onChange={handlePriorityChange}
                       field={{
                         options: [
-                          { identifier: 'HIGH', name: 'High', color: 'red' },
-                          { identifier: 'NONE', name: 'No Priority' },
-                          {
-                            identifier: 'MEDIUM',
-                            name: 'Medium',
-                            color: '#fd8914',
-                          },
-                          { identifier: 'LOW', name: 'Low' },
+                          { identifier: 'HIGH', name: 'High', tag: 'High' },
+                          { identifier: 'LOW', name: 'No Priority', tag: '' },
                         ],
                         displayOptions: [],
                       }}
@@ -1623,8 +1589,11 @@ const TaskItem = React.memo(
                     printWidth={
                       TaskItemColumnWidth[TaskItemColumn.SHARED].PRINT
                     }
+                    onMouseEnter={() => setCellHover({ share: true })}
+                    onMouseLeave={() => setCellHover({ share: false })}
                   >
                     <TaskItemSharedMembers
+                      isHover={isCellHover.share}
                       readOnly={restrictions?.assigment === READ_ONLY}
                       multipleAssigneesContext={multipleAssigneesContext}
                       task={task}

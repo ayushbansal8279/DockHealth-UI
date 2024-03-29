@@ -213,6 +213,7 @@ const ListDetailsToolbar = ({
               iconColorActive={iconColorActiveItem?.value}
               searchValue={searchValue}
               focused={focused}
+              taskListIdentifier={taskListIdentifier}
             />
             {/* <Box sx={boxComponentStyles} /> */}
             <TaskCustomFieldsModal

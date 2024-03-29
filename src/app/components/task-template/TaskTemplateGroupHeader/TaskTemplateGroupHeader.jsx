@@ -95,6 +95,7 @@ import {
 import TaskTemplateDetails from '../TaskTemplateDetails/TaskTemplateDetails';
 import { StickyColumnContainer } from '../../tasklist/TasksHeader/styled';
 import { ListPageContext } from '@/app/views/list-details/ListDetailsView';
+import { VTaskContext } from '@/app/views/list-details/VirtualTaskList/VirtualSegment/VTask/VTask';
 
 const TaskTemplateGroupHeader = ({
   templateGroup = {},
@@ -340,6 +341,9 @@ const TaskTemplateGroupHeader = ({
           name: 'Add task',
           onClick: () => {
             setIsAddingTask(true);
+            if (origin === 'LIST') {
+              collapse.handleAddWorkflowIdentifier(identifier);
+            }
           },
         },
       ];
@@ -626,6 +630,8 @@ const TaskTemplateGroupHeader = ({
   const [virtualListWorkflowOpen, setVirtualListWorkflowOpen] = useState(
     collapse.get(identifier) ? false : true,
   );
+
+  const { isVirtualListWorkflowOpen } = useContext(VTaskContext);
   const handleOpen = () => {
     setOpen(!isOpen);
     setVirtualListWorkflowOpen(!virtualListWorkflowOpen);
@@ -696,7 +702,7 @@ const TaskTemplateGroupHeader = ({
       return (
         <StickyMainTaskItemCell
           isTamplateGroup={true}
-          isOpen={isOpen}
+          isOpen={!isVirtualListWorkflowOpen}
           customWidthExists
           backgroundColor={pageBackground}
           isSelected={isBundleSelected}
@@ -871,6 +877,7 @@ const TaskTemplateGroupHeader = ({
                   onWorkflowUpdate={compose(dispatch, updatePartialWorkflow)}
                   currentUser={currentUser}
                   readOnly={restrictions?.patient === READ_ONLY}
+                  origin={origin}
                 />
               )}
             </TaskItemCell>,

@@ -4,9 +4,8 @@ import { AddPlaceholder } from 'components/task/styled';
 import {
   ColorIndicator,
   DropdownBox,
-  DropdownSelect,
-  PlaceholderContainer,
 } from './styled';
+import { ListItemText, MenuItem, Select } from '@mui/material';
 
 const TaskItemDropdown = ({
   value: initialValue,
@@ -18,15 +17,16 @@ const TaskItemDropdown = ({
   const [value, setValue] = useState(initialValue);
   const options = useMemo(() => {
     const o =
-      initialOptions?.map(({ identifier, name, color }) => ({
+      initialOptions?.map(({ identifier, name, color, tag }) => ({
         label: name,
+        tag,
         value: identifier,
         color,
       })) || [];
 
-    if (o.length > 0 && !isRequired) {
-      o.unshift({ label: 'None', value: null });
-    }
+    // if (o.length > 0 && !isRequired) {
+    //   o.unshift({ label: 'None', value: null });
+    // }
 
     return o;
   }, [initialOptions, isRequired]);
@@ -49,20 +49,38 @@ const TaskItemDropdown = ({
     <>
       {colorIndicator && <ColorIndicator color={colorIndicator} />}
       <DropdownBox>
-        {!value && (
-          <PlaceholderContainer>
-            <AddPlaceholder>+ Add</AddPlaceholder>
-          </PlaceholderContainer>
-        )}
-        <DropdownSelect
+        <Select
+          sx={{
+            '& .MuiOutlinedInput-notchedOutline': {
+              borderColor: 'transparent',
+            },
+            '&:hover .MuiOutlinedInput-notchedOutline': {
+              borderColor: 'transparent',
+            },
+            '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+              borderColor: 'transparent',
+            },
+          }}
           name="dropdownCustomField"
           value={value}
+          renderValue={(selectedValue) =>
+            options.find((option) => option.value === selectedValue)?.tag
+          }
           onChange={handleChange}
-          options={options.sort((a, b) => a.label.localeCompare(b.label))}
-          disableUnderline
           IconComponent={() => <></>}
           disabled={readOnly}
-        />
+        >
+          {options?.map((option) => {
+            const { OptionIcon } = option;
+            return (
+              <MenuItem key={option.value} value={option.value}>
+                {option.color && <ColorIndicator color={option.color} />}
+                {OptionIcon || null}
+                <ListItemText>{option.label}</ListItemText>
+              </MenuItem>
+            );
+          })}
+        </Select>
       </DropdownBox>
     </>
   );

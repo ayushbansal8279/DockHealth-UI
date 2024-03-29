@@ -1,15 +1,22 @@
 import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import Select from 'components/common/Select/Select';
 import PriorityFlag from 'img/priority-flag';
 import { changeTaskPriority } from 'actions/task-actions';
 import { onTaskDrawerTaskPriorityChanged } from 'helpers/ga-event-helper';
 import { getPriorityColor, TaskPriority } from 'helpers/task-helpers';
 import { PriorityFieldContainer, PriorityFlagContainer, Title } from './styled';
-import { PRIORITY_OPTIONS } from './helpers';
 import PrioritySelectIcon from 'img/PrioritySelectIcon';
-import { Button, IconButton, InputAdornment } from '@mui/material';
+import {
+  Box,
+  Button,
+  IconButton,
+  InputAdornment,
+  ListItemText,
+  MenuItem,
+  Select,
+} from '@mui/material';
 import Spacing from 'components/common/Spacing';
+import { ColorIndicator } from '../../common/Select/styled';
 
 const PrioritySection = ({ selectedTask, disabled = false }) => {
   const dispatch = useDispatch();
@@ -18,10 +25,24 @@ const PrioritySection = ({ selectedTask, disabled = false }) => {
 
   const handleOptionChange = (event) => {
     const { value } = event.target;
+    console.log(value);
 
     onTaskDrawerTaskPriorityChanged(value);
     dispatch(changeTaskPriority(selectedTask, value));
   };
+
+  const PRIORITY_OPTIONS = [
+    {
+      value: TaskPriority.LOW,
+      label: 'No Priority',
+      tag: '--',
+    },
+    {
+      value: TaskPriority.HIGH,
+      label: 'High',
+      tag: 'High',
+    },
+  ];
 
   return (
     <PriorityFieldContainer>
@@ -35,13 +56,13 @@ const PrioritySection = ({ selectedTask, disabled = false }) => {
         size="small"
         variant="outlined"
         sx={{
-          marginLeft:'12px',
+          marginLeft: '12px',
           height: '40px',
           borderColor: 'transparent',
           backgroundColor: 'transparent',
           '&:hover': {
             backgroundColor: 'transparent',
-            borderColor: 'black',
+            borderColor: 'transparent',
           },
         }}
         onClick={() => {
@@ -60,7 +81,7 @@ const PrioritySection = ({ selectedTask, disabled = false }) => {
             '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
               borderColor: 'transparent',
             },
-            marginLeft: '2px',
+            color:'#8492A4'
           }}
           InputProps={{
             startAdornment: (
@@ -73,14 +94,26 @@ const PrioritySection = ({ selectedTask, disabled = false }) => {
           }}
           size="small"
           variant="outlined"
-          // label="Priority"
-          // name="priority"
           open={open}
           value={priority}
           onChange={handleOptionChange}
-          options={PRIORITY_OPTIONS}
           disabled={disabled}
-        ></Select>
+          renderValue={(selectedValue) =>
+            PRIORITY_OPTIONS.find((option) => option.value === selectedValue)
+              ?.tag
+          }
+        >
+          {PRIORITY_OPTIONS?.map((option) => {
+            const { OptionIcon } = option;
+            return (
+              <MenuItem key={option.value} value={option.value}>
+                {option.color && <ColorIndicator color={option.color} />}
+                {OptionIcon || null}
+                <ListItemText>{option.label}</ListItemText>
+              </MenuItem>
+            );
+          })}
+        </Select>
       </Button>
     </PriorityFieldContainer>
   );

@@ -20,6 +20,7 @@ const TaskTemplatePatient = ({
   onWorkflowUpdate,
   currentUser,
   readOnly,
+  origin,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const [isPopoverOpen, setPopoverOpen] = useState(false);
@@ -58,6 +59,7 @@ const TaskTemplatePatient = ({
           onChangePatient={handleUpdateRegularTaskPatient}
           openPopover={() => setPopoverOpen(true)}
           closePopover={() => setPopoverOpen(false)}
+          origin={origin}
         >
           <Tooltip
             placement="top"

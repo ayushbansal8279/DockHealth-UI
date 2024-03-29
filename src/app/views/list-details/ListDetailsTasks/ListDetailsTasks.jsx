@@ -204,7 +204,8 @@ const ListDetailsTasks = ({
   }, [groupedTasks]);
 
   const { bulkEditIsActive } = useContext(BulkEditContext);
-  const { handleScroll, workflowPopoverOpen } = useContext(ListPageContext);
+  const { handleScroll, workflowPopoverOpen, patientPopoverOpen } =
+    useContext(ListPageContext);
   const dragAndDropDisabled = bulkEditIsActive || !userSortingSupportEnabled;
 
   const isSortApplied = !!sort?.key && !!sort?.order;
@@ -267,7 +268,11 @@ const ListDetailsTasks = ({
 
   const renderVirtualizedTasks = () => {
     return (
-      <div onScrollCapture={!workflowPopoverOpen ? handleScroll : {}}>
+      <div
+        onScrollCapture={
+          !(workflowPopoverOpen || patientPopoverOpen) ? handleScroll : () => {}
+        }
+      >
         <VirtualTaskList tasksToMap={tasksToMap} groupedTasks={groupedTasks} />
       </div>
     );
