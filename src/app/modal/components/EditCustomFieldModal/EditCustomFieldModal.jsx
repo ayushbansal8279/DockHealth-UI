@@ -22,7 +22,6 @@ import FormInput from 'components/common/Input/FormInput';
 import Input from 'components/common/Input/Input';
 import Button from 'components/common/Button/Button';
 import FormSelect from 'components/common/Select/FormSelect';
-import ColorPicker from 'components/common/ColorPicker/ColorPicker';
 import { getAllProfileTypes } from 'api/profile-type-api';
 import { ORGANIZATION_TILE_COLORS } from 'styles/organization-tile-colors';
 import * as ProfileTypeFieldsApi from 'api/profile-type-field-api';
@@ -45,9 +44,21 @@ import {
   SelectParentOption,
 } from '../../customModals/styled';
 
-import ArrowIcon from 'img/arrow.svg';
-
 const REQUIRED_MESSAGE = 'This field is required';
+
+const validationSchema = object().shape({
+  name: string().required(REQUIRED_MESSAGE),
+  placeholder: string().nullable(),
+  fieldType: string().required(REQUIRED_MESSAGE),
+  options: array()
+    .of(
+      object().shape({
+        name: string().required(REQUIRED_MESSAGE),
+      }),
+    )
+    .nullable(),
+  fieldCategoryType: string().required(REQUIRED_MESSAGE),
+});
 
 const EditCustomFieldModal = ({
   closeModal,
@@ -97,34 +108,13 @@ const EditCustomFieldModal = ({
   const [isSaving, setIsSaving] = useState(false);
   const dispatch = useDispatch();
 
-  const validationSchema = useMemo(() => {
-    return object().shape({
-      name: string().required(REQUIRED_MESSAGE),
-      placeholder: string().nullable(),
-      fieldType: string().required(REQUIRED_MESSAGE),
-      options: array()
-        .of(
-          object().shape({
-            name: string().required(REQUIRED_MESSAGE),
-          }),
-        )
-        .nullable(),
-
-      // profileTypeIdentifier: string().nullable(),
-      ...(type === 'TASK'
-        ? {}
-        : { fieldCategoryType: string().required(REQUIRED_MESSAGE) }),
-    });
-  }, [type]);
-
   const formMethods = useForm({
     resolver: yupResolver(validationSchema),
     mode: 'onSubmit',
     defaultValues: useMemo(() => {
       const baseCustomField = isCreatingNewField
         ? {
-            fieldCategoryType:
-              type === 'PATIENT' ? Category.OTHER_INFO : 'PROVIDER_OTHER',
+            fieldCategoryType: type === 'PATIENT' ? Category.OTHER_INFO : '',
           }
         : {
             ...customField,
@@ -138,7 +128,7 @@ const EditCustomFieldModal = ({
         return { ...baseCustomField, relatedProfileType: value };
       }
       return baseCustomField;
-    }, [customField, isCreatingNewField]),
+    }, [customField, isCreatingNewField, type]),
   });
   const { register, unregister, handleSubmit, setValue, watch, errors } =
     formMethods;
