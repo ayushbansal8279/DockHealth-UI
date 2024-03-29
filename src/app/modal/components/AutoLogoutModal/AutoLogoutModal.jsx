@@ -5,6 +5,7 @@ import { ThemeProvider as MuiThemeProvider } from '@mui/material/styles';
 import Spacing from 'components/common/Spacing';
 import TimeoutIcon from 'img/modals/timeout.svg';
 import { redTheme } from '../../themes/red-theme';
+import { CancelButton, ConfirmButton } from '../ModalButton/ModalButtons';
 
 import {
   ModalWrapper,
@@ -20,32 +21,22 @@ const AutoLogoutModal = ({ closeModal, onLogout }) => {
       <ModalWrapper>
         <ModalIconContainer>
           <ModalMainIcon src={TimeoutIcon} alt="Task" />
-          <Typography color="textSecondary" variant="h2">
-            YOUR SESSION IS ABOUT TO TIME OUT
-          </Typography>
+          <h4 style={{ whiteSpace: 'nowrap' }}>
+            Your session is About to Time Out
+          </h4>
         </ModalIconContainer>
         <Spacing vertical={4} />
         <ButtonsContainer>
           <FlexButtonWrapper>
-            <Button
-              fullWidth
-              variant="secondary-red"
-              size="small"
-              onClick={onLogout}
-            >
+            <CancelButton style={{ width: '180px' }} onClick={onLogout}>
               Logout
-            </Button>
+            </CancelButton>
           </FlexButtonWrapper>
           <Spacing horizontal={4} />
           <FlexButtonWrapper>
-            <Button
-              fullWidth
-              variant="primary-red"
-              size="small"
-              onClick={closeModal}
-            >
+            <ConfirmButton style={{ width: '180px' }} onClick={closeModal}>
               Stay logged in
-            </Button>
+            </ConfirmButton>
           </FlexButtonWrapper>
         </ButtonsContainer>
       </ModalWrapper>
