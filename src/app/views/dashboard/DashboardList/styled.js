@@ -17,6 +17,23 @@ export const StickyHeader = styled.div`
 export const StickyElement = styled.div`
   z-index: ${({ zIndex }) => zIndex || 10};
   background-color: ${palette.white};
+
+  &::before {
+    content: '';
+    display: block;
+    background: ${({ backgroundColor }) => backgroundColor || palette.white};
+    position: absolute;
+    left: -100px;
+    // padding-bottom: 40px;
+    // padding-bottom: ${({ height }) => height || '0px'};
+    // top: -1px;
+    width: 100px;
+    height: calc(100%);
+    // z-index: -1;
+    @media print {
+      left: -102px;
+    }
+  }
 `;
 
 export const VerticalScrollContainer = styled.div`
@@ -36,12 +53,14 @@ export const DashboardTasksGroupContainer = styled.div`
   &:last-child {
     padding-bottom: 0;
   }
+  background: ${({ backgroundColor }) =>
+    backgroundColor ? palette.aliceBlue : ''};
 `;
 
 export const DashboardTasksGroupList = styled.div`
   display: flex;
   flex-direction: column;
-  margin-top: ${spacing.small};
+  // margin-top: ${spacing.small};
 `;
 
 export const DroppableBox = styled.div`
@@ -65,6 +84,11 @@ export const ShowMoreButton = styled.button`
 export const DashboardTasksGroupHeader = styled.div`
   align-items: center;
   display: flex;
+  background: ${({ backgroundColor }) =>
+    backgroundColor ? palette.aliceBlue : ''};
+  // height: 35px;
+  padding-bottom: 10px;
+  padding-top: 10px;
 `;
 
 export const GroupNameSectionWrapper = styled.div`
