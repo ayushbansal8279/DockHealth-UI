@@ -1,5 +1,8 @@
 import { Box } from '@mui/material';
-import { SubscriptionPlan } from 'helpers/subscription-helper';
+import {
+  BillingFrequency,
+  SubscriptionPlan,
+} from 'helpers/subscription-helper';
 import React from 'react';
 import Spacing from 'components/common/Spacing';
 import palette from 'styles/palette';
@@ -22,14 +25,23 @@ import {
 import SubscriptionPlanFeature from '../SubscriptionPlanFeature/SubscriptionPlanFeature';
 
 const SubscriptionPlanTail = (props) => {
-  const { active, selected, plan, hasExistingSubscription, onSelect } = props;
+  const {
+    active,
+    selected,
+    plan,
+    hasExistingSubscription,
+    onSelect,
+    billingFrequency,
+  } = props;
   const {
     key,
     mostPopular,
     label,
     description,
-    planDescriptions,
     annualMonthlyPrice,
+    monthlyPrice,
+    monthlyPlanDescriptions,
+    annualPlanDescriptions,
     featuresDescription,
     features,
     comingSoonFeatures,
@@ -40,6 +52,14 @@ const SubscriptionPlanTail = (props) => {
   const upgradeLabel =
     subscriptionPlan === SubscriptionPlan.STANDARD ? 'Change' : 'Upgrade';
   const subscribeLabel = hasExistingSubscription ? upgradeLabel : 'Subscribe';
+  const price =
+    billingFrequency === BillingFrequency.MONTHLY
+      ? monthlyPrice
+      : annualMonthlyPrice;
+  const planDescriptions =
+    (billingFrequency === BillingFrequency.MONTHLY
+      ? monthlyPlanDescriptions
+      : annualPlanDescriptions) ?? plan.planDescriptions;
 
   return (
     <Container
@@ -56,16 +76,14 @@ const SubscriptionPlanTail = (props) => {
       </TopContainer>
       <Description>{description}</Description>
       <PriceContainer>
-        <Price color={palette.black}>
-          {annualMonthlyPrice ? `$${annualMonthlyPrice}` : 'Custom'}
-        </Price>
+        <Price color={palette.black}>{price ? `$${price}` : 'Custom'}</Price>
       </PriceContainer>
       <PlanDescriptionContainer>
         {planDescriptions?.map((d) => (
           <PlanDescription key={d}>{d}</PlanDescription>
         ))}
       </PlanDescriptionContainer>
-      {annualMonthlyPrice ? (
+      {price ? (
         <SubscribeButton
           type="button"
           active={active}

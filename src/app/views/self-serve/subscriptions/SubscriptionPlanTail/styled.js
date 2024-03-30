@@ -70,6 +70,7 @@ export const Description = styled.p`
 `;
 
 export const PlanDescriptionContainer = styled.div`
+  height: 60px;
   margin-bottom: 24px;
 `;
 
