@@ -1,24 +1,21 @@
 import React, { useCallback, useState } from 'react';
 import queryString from 'query-string';
 import { useDispatch } from 'react-redux';
-import { useHistory } from 'react-router-dom';
 import { useMount } from 'react-use';
 import { setAuthBaseState } from 'actions/auth-base-actions';
-import {
-  error as errorNotification,
-  success,
-} from 'actions/notification-actions';
+import { error as errorNotification } from 'actions/notification-actions';
 import * as UserAuthApi from 'api/user-auth-api';
 import ConfirmMFACodeForm from 'components/auth/ConfirmMfaCodeForm';
 import { AUTH_BASE_STATES } from 'reducers/auth-base-reducer';
 import { log } from 'helpers/log';
+import { useSuccessLogin } from 'hooks/use-success-login';
 
 const ConfirmMFACode = (props) => {
   const [username, setUsername] = useState('');
   const [customError, setCustomError] = useState('');
+  const successLogin = useSuccessLogin();
 
   const dispatch = useDispatch();
-  const history = useHistory();
 
   useMount(() => {
     const { location } = props;
@@ -41,23 +38,14 @@ const ConfirmMFACode = (props) => {
           UserAuthApi.rememberDevice().then((result) => {
             log(`added device to be remembered: ${result}`);
           });
-
-          const nextPathname = sessionStorage.getItem('next-page');
-          if (nextPathname && nextPathname !== '') {
-            sessionStorage.removeItem('next-page');
-            history.push(nextPathname);
-          } else {
-            history.push('/core/home/my-tasks');
-          }
-
-          success('Logged in.');
+          successLogin();
         })
         .catch((error) => {
           setCustomError('Invalid authentication code.');
           errorNotification(error.message || 'An error occurred.');
         });
     },
-    [history, username],
+    [username, successLogin],
   );
 
   return (
