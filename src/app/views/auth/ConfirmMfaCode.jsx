@@ -41,7 +41,15 @@ const ConfirmMFACode = (props) => {
           UserAuthApi.rememberDevice().then((result) => {
             log(`added device to be remembered: ${result}`);
           });
-          history.push('/core/home/my-tasks');
+
+          const nextPathname = sessionStorage.getItem('next-page');
+          if (nextPathname && nextPathname !== '') {
+            sessionStorage.removeItem('next-page');
+            history.push(nextPathname);
+          } else {
+            history.push('/core/home/my-tasks');
+          }
+
           success('Logged in.');
         })
         .catch((error) => {
