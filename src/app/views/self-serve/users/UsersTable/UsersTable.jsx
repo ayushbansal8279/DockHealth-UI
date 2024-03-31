@@ -393,13 +393,13 @@ const UsersTable = ({
           {showTableHeader && (
             <Box p="16px" display="flex" width="100%">
               <Box display="flex" flex={1} alignItems="center">
-                <Box width="300px">
+                {/* <Box width="300px">
                   <SearchInput
                     value={currentSearch}
                     onValueChange={setCurrentSearch}
                   />
-                </Box>
-                <Spacing horizontal={3} />
+                </Box> */}
+                {/* <Spacing horizontal={3} /> */}
                 <ToolbarSelect
                   options={SUBSCRIPTION_OPTIONS}
                   value={USER_SUBSCRIPTION_VALUES[userSubscriptionStatus]}
@@ -421,6 +421,17 @@ const UsersTable = ({
                   getAllUsers={getAllUsers}
                   fullWidth={isSmallScreen}
                 />
+                <Spacing horizontal={3} />
+                <Box width="300px">
+                  <SearchInput
+                    value={currentSearch}
+                    onValueChange={setCurrentSearch}
+                  />
+                </Box>
+                {/* <InviteButton
+                  getAllUsers={getAllUsers}
+                  fullWidth={isSmallScreen}
+                /> */}
               </Box>
             </Box>
           )}
