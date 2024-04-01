@@ -50,13 +50,18 @@ const AddGroupButtonWrapper = styled(Button)`
 export const AddGroupButtonLabel = styled(Typography)`
   &&& {
     &.MuiTypography-root {
-      font-family: 'Outfit', sans-serif;
+      // font-family: 'Outfit', sans-serif;
       color: ${palette.white};
-      font-weight: ${fontWeights.light};
+      // font-weight: ${fontWeights.light};
       display: inline-block;
       margin-left: ${spacing.tiny};
       margin-right: ${spacing.tiny};
       text-transform: none;
+      font-family: Outfit;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 11.19px;
+      text-align: center;
     }
   }
 `;

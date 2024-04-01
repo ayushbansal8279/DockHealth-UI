@@ -9,7 +9,7 @@ export const FilterButtonWrapper = styled(Button)`
     border-radius: 0;
     background-color: ${(props) =>
       props.active ? palette.newBrightBlue : palette.newDarkBlue};
-    border-right: 2px solid ${palette.white};
+    border-right: 1px solid ${palette.white};
     :hover {
       background-color: ${(props) =>
         props.active ? palette.cornFlowerBlue : palette.purpleNavy};
@@ -24,12 +24,17 @@ export const FilterButtonWrapper = styled(Button)`
 export const FilterButtonLabel = styled(Typography)`
   &&& {
     &.MuiTypography-root {
-      font-family: 'Outfit', sans-serif;
+      // font-family: 'Outfit', sans-serif;
       color: ${palette.white};
-      font-weight: ${fontWeights.light};
+      // font-weight: ${fontWeights.light};
       display: inline-block;
       margin-left: ${spacing.tiny};
       text-transform: none;
+      font-family: Outfit;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 11.19px;
+      text-align: center;
     }
   }
 `;

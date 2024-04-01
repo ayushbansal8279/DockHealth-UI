@@ -143,19 +143,12 @@ const PatientsToolbar = ({ searchValue, setSearchValue }) => {
       <Box p="16px">
         <Box display="flex" width="100%">
           <Box display="flex" flex={1} alignItems="center">
-            {!isDynamicPatientList && (
-              <Box width="300px">
-                <SearchInput
-                  value={searchValue}
-                  onValueChange={handleSearchChange}
-                  onKeyEnter={handleSearch}
-                />
-              </Box>
-            )}
+            <Box>
+              <CustomizeToolbarButton
+                iconColorFilterActive={iconColorFilterActiveItem?.value}
+              />
+            </Box>
             <Box m={1} />
-            {!isDynamicPatientList && (
-              <ButtonWrapper onClick={handleSearch}>Search</ButtonWrapper>
-            )}
             {!isDynamicPatientList && (
               <Box>
                 <ToolbarSelect
@@ -175,12 +168,6 @@ const PatientsToolbar = ({ searchValue, setSearchValue }) => {
               </Box>
             )}
             <Box m={1} />
-            <Box>
-              <CustomizeToolbarButton
-                iconColorFilterActive={iconColorFilterActiveItem?.value}
-              />
-            </Box>
-            <Box m={1} />
             {!isDynamicPatientList && (
               <FilterButton
                 ref={filterButtonReference}
@@ -190,6 +177,54 @@ const PatientsToolbar = ({ searchValue, setSearchValue }) => {
                 onClear={() => dispatch(PatientsActions.clearPatientsFilters())}
               />
             )}
+            <Box m={1} />
+            {!isDynamicPatientList && (
+              <Box width="300px">
+                <SearchInput
+                  value={searchValue}
+                  onValueChange={handleSearchChange}
+                  onKeyEnter={handleSearch}
+                />
+              </Box>
+            )}
+            {/* <Box m={1} />
+            {!isDynamicPatientList && (
+              <ButtonWrapper onClick={handleSearch}>Search</ButtonWrapper>
+            )} */}
+            {/* {!isDynamicPatientList && (
+              <Box>
+                <ToolbarSelect
+                  options={OPTIONS}
+                  value={optionBasedUrl}
+                  name="patient-list-type"
+                  onChange={onListTypeChange}
+                  icon={
+                    <PatientsListImg
+                      src={TasksStatusSwitchIcon}
+                      alt="list type icon"
+                      iconColorFilterActive={iconColorFilterActiveItem?.value}
+                    />
+                  }
+                  iconColorActive={iconColorActiveItem?.value}
+                />
+              </Box>
+            )} */}
+            {/* <Box m={1} /> */}
+            {/* <Box>
+              <CustomizeToolbarButton
+                iconColorFilterActive={iconColorFilterActiveItem?.value}
+              />
+            </Box> */}
+            <Box m={1} />
+            {/* {!isDynamicPatientList && (
+              <FilterButton
+                ref={filterButtonReference}
+                active={filtersActive}
+                onClick={toggleFilter}
+                isOpen={filterOpen}
+                onClear={() => dispatch(PatientsActions.clearPatientsFilters())}
+              />
+            )} */}
           </Box>
           {!isDynamicPatientList &&
             patientAddEnabled &&

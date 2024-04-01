@@ -33,7 +33,7 @@ export const CustomizeButtonWrapper = styled(Button)`
     background-color: ${(props) =>
       props.active ? palette.newBrightBlue : palette.newDarkBlue};
     border-right: ${(props) =>
-      props.hasPopover ? `2px solid ${palette.white};` : ''};
+      props.hasPopover ? `1px solid ${palette.white};` : ''};
     // border-radius: 5px 0px 0px 5px;
     :hover {
       background-color: ${(props) =>
@@ -58,10 +58,15 @@ export const CustomizeButtonLabel = styled(Typography)`
     &.MuiTypography-root {
       font-family: 'Outfit', sans-serif;
       color: ${palette.white};
-      font-weight: ${fontWeights.light};
+      // font-weight: ${fontWeights.light};
       // display: inline-block;
       margin-left: ${({ icon }) => (!!icon ? spacing.small : '')};
       text-transform: none;
+      font-family: Outfit;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 11.19px;
+      text-align: center;
     }
   }
 `;
