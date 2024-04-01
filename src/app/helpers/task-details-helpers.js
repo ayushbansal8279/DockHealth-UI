@@ -10,11 +10,11 @@ export const CategoryLabel = {
 
 export const CATEGORY_OPTIONS = [
   {
-    label: CategoryLabel[Category.TASK_OTHER],
-    value: Category.TASK_OTHER,
-  },
-  {
     label: CategoryLabel[Category.TASK_CORE],
     value: Category.TASK_CORE,
+  },
+  {
+    label: CategoryLabel[Category.TASK_OTHER],
+    value: Category.TASK_OTHER,
   },
 ];
