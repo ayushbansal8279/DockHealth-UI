@@ -75,11 +75,11 @@ const SettingsSubmenu = () => {
         <SubMenuLink to={TASK_CUSTOMIZATIONS_PATH}>Task Settings</SubMenuLink>
       )}
       {/* TODO: remove the following after the backend is ready */}
-      {/* {isApiAllowed && (
+      {isApiAllowed && (
         <AccessRestrictor allowedToRoles={[ADMIN, OWNER]}>
           <SubMenuLink to={DEVELOPERS_PATH}>Developers</SubMenuLink>
         </AccessRestrictor>
-      )} */}
+      )}
     </Box>
   );
 };

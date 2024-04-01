@@ -7,9 +7,10 @@ export function createApiKey({
 }: TCreateApiKeyMutationParams) {
   return axios
     .post<TApiKey>(
-      `developer/create/${organizationIdentifier}?sendEmail=${
-        sendEmail ? 'true' : 'false'
-      }`,
+      // `developer/create/${organizationIdentifier}?sendEmail=${
+      //   sendEmail ? 'true' : 'false'
+      // }`,
+      'organization/settings/orgDeveloper',
     )
     .then(({ data }) => data)
     .catch((error) => {
@@ -18,12 +19,15 @@ export function createApiKey({
 }
 
 export function getApiKey(orgId: string) {
-  return axios
-    .get<TApiKey>(`developers/${orgId}`)
-    .then(({ data }) => data)
-    .catch((error) => {
-      throw new Error(error?.response?.data?.errorMessage);
-    });
+  return (
+    axios
+      // .get<TApiKey>(`developers/${orgId}`)
+      .get<TApiKey>('organization/settings/orgDeveloper')
+      .then(({ data }) => data)
+      .catch((error) => {
+        throw new Error(error?.response?.data?.errorMessage);
+      })
+  );
 }
 
 export function updateApiKey(orgId: string) {
