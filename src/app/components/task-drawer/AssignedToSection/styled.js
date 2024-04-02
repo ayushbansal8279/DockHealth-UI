@@ -10,7 +10,7 @@ export const AssignMemberContainer = styled.div`
 `;
 
 export const Title = styled.div`
-  margin-right: 24px;
+  margin-right: 26px;
   color: ${palette.coolGrey1};
   font-family: Outfit;
   font-size: ${fontSizes.smallPlus};

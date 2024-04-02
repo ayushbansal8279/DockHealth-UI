@@ -15,7 +15,7 @@ export const StatusContainer = styled.div`
 `;
 
 export const Title = styled.div`
-  margin-right: 40px;
+  margin-right: 31px;
   color: ${palette.coolGrey1};
   font-family: Outfit;
   font-size: ${fontSizes.smallPlus};
@@ -34,6 +34,6 @@ export const StatusWrapper = styled.div`
   height: 28px;
   justify-content: center;
   align-items: center;
-  margin-left: 20px;
+  margin-left: 24px;
   color: ${(property) => property.color || '#7F4334'};
 `;

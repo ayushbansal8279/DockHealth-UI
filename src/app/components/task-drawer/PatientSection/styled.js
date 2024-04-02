@@ -9,7 +9,7 @@ export const PatientMainContainer = styled.div`
 `;
 
 export const Title = styled.div`
-  margin-right: 40px;
+  margin-right: 38px;
   color: ${palette.coolGrey1};
   font-family: Outfit;
   font-size: ${fontSizes.smallPlus};
@@ -26,7 +26,7 @@ export const AddPatient = styled.div`
 `;
 
 export const PatientContainer = styled.div`
-  margin-left: 10px;
+  margin-left: 17px;
   display: flex;
   align-items: center;
   gap: 15px;
