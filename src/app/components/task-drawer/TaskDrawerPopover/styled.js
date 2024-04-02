@@ -23,6 +23,7 @@ export const PopoverDiv = styled.div`
   width: 100%;
   background-color: white;
   min-width: 200px;
+  height: ${({height}) => height}px;
 
 
   &::-webkit-scrollbar {

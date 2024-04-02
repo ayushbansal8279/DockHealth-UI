@@ -25,7 +25,7 @@ import {
   StatusListWrapper,
   NewStatusButtonWrapper,
   NewStatusButton,
-  Divider,
+  ColorPickerContainer,
   ColorPickerWrapper,
   ColorButton,
 } from './styled';
@@ -204,27 +204,29 @@ const StatusEditor = ({ onClose }) => {
           </StatusList>
         </SortableContext>
       </DndContext>
-      <Divider />
-      <ColorPickerWrapper>
-        {Object.values(StatusColor).map((color) => (
-          <ColorButton
-            key={color}
-            color={color}
-            onClick={() => handlePickColor(color)}
-            selected={
-              currentlyEditedStatus
-                ? currentlyEditedStatus.color === color
-                : color === defaultColor
-            }
-          />
-        ))}
-      </ColorPickerWrapper>
-      <Divider />
-      <PopoverBottomBar>
-        <PopoverBottomBar.Button onClick={onClose}>
-          Close
-        </PopoverBottomBar.Button>
-      </PopoverBottomBar>
+      <ColorPickerContainer>
+        <div>
+          <ColorPickerWrapper>
+            {Object.values(StatusColor).map((color) => (
+              <ColorButton
+                key={color}
+                color={color}
+                onClick={() => handlePickColor(color)}
+                selected={
+                  currentlyEditedStatus
+                    ? currentlyEditedStatus.color === color
+                    : color === defaultColor
+                }
+              />
+            ))}
+          </ColorPickerWrapper>
+          <div style={{ padding: '0 0 2px 80px' }}>
+            <PopoverBottomBar.Button onClick={onClose}>
+              Close Editor
+            </PopoverBottomBar.Button>
+          </div>
+        </div>
+      </ColorPickerContainer>
     </StatusListWrapper>
   );
 };
