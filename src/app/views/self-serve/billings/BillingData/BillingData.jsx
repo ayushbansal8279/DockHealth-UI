@@ -10,7 +10,6 @@ import {
   useElements,
 } from '@stripe/react-stripe-js';
 import { STATE_LIST_OPTIONS } from '@/app/constants/us-states';
-import FormDropdownInput from '@/app/components/common/Input/FormDropdownInput';
 import { useEffectOnce, useToggle } from 'react-use';
 import { object, string } from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -34,6 +33,7 @@ import {
   AcceptedCardsContainer,
   AddressLineToggleContainer,
   FormContainer,
+  StateAutoComplete,
 } from './styled';
 import { StyledCollapse, H3, Anchor } from '../styled';
 
@@ -378,11 +378,11 @@ const CreditPaymentForm = ({
         <FormInput required name="city" label="City" />
       </Grid>
       <Grid item sm={12} md={3} sx={{ mb: 5 }}>
-        <FormDropdownInput
+        <StateAutoComplete
           name="state"
           label="State"
+          variant="filled"
           required
-          height={48}
           options={STATE_LIST_OPTIONS}
         />
       </Grid>
