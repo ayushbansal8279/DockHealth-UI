@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import PriorityFlag from 'img/priority-flag';
+import PriorityHigh from 'img/PriorityHigh';
 import { changeTaskPriority } from 'actions/task-actions';
 import { onTaskDrawerTaskPriorityChanged } from 'helpers/ga-event-helper';
 import { getPriorityColor, TaskPriority } from 'helpers/task-helpers';
@@ -25,7 +26,6 @@ const PrioritySection = ({ selectedTask, disabled = false }) => {
 
   const handleOptionChange = (event) => {
     const { value } = event.target;
-    console.log(value);
 
     onTaskDrawerTaskPriorityChanged(value);
     dispatch(changeTaskPriority(selectedTask, value));
@@ -69,52 +69,53 @@ const PrioritySection = ({ selectedTask, disabled = false }) => {
           setOpen(!open);
         }}
       >
-        <PrioritySelectIcon />
-        <Select
-          sx={{
-            textTransform:'none',
-            '& .MuiOutlinedInput-notchedOutline': {
-              borderColor: 'transparent',
-            },
-            '&:hover .MuiOutlinedInput-notchedOutline': {
-              borderColor: 'transparent',
-            },
-            '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-              borderColor: 'transparent',
-            },
-            color:'#8492A4'
-          }}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <IconButton aria-label="search">
-                  <PrioritySelectIcon />
-                </IconButton>
-              </InputAdornment>
-            ),
-          }}
-          size="small"
-          variant="outlined"
-          open={open}
-          value={priority}
-          onChange={handleOptionChange}
-          disabled={disabled}
-          renderValue={(selectedValue) =>
-            PRIORITY_OPTIONS.find((option) => option.value === selectedValue)
-              ?.tag
-          }
-        >
-          {PRIORITY_OPTIONS?.map((option) => {
-            const { OptionIcon } = option;
-            return (
-              <MenuItem key={option.value} value={option.value}>
-                {option.color && <ColorIndicator color={option.color} />}
-                {OptionIcon || null}
-                <ListItemText>{option.label}</ListItemText>
-              </MenuItem>
-            );
-          })}
-        </Select>
+        <PriorityFlagContainer IsPriority={priority === 'HIGH'}>
+          {priority === 'HIGH' ? (
+            <div style={{ marginLeft: '2px' }}>
+              <PriorityHigh />
+            </div>
+          ) : (
+            <div style={{ marginLeft: '5px' }}>
+              <PrioritySelectIcon />
+            </div>
+          )}
+          <Select
+            sx={{
+              textTransform: 'none',
+              '& .MuiOutlinedInput-notchedOutline': {
+                borderColor: 'transparent',
+              },
+              '&:hover .MuiOutlinedInput-notchedOutline': {
+                borderColor: 'transparent',
+              },
+              '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                borderColor: 'transparent',
+              },
+              color: '#8492A4',
+            }}
+            size="small"
+            variant="outlined"
+            open={open}
+            value={priority}
+            onChange={handleOptionChange}
+            disabled={disabled}
+            renderValue={(selectedValue) =>
+              PRIORITY_OPTIONS.find((option) => option.value === selectedValue)
+                ?.tag
+            }
+          >
+            {PRIORITY_OPTIONS?.map((option) => {
+              const { OptionIcon } = option;
+              return (
+                <MenuItem key={option.value} value={option.value}>
+                  {option.color && <ColorIndicator color={option.color} />}
+                  {OptionIcon || null}
+                  <ListItemText>{option.label}</ListItemText>
+                </MenuItem>
+              );
+            })}
+          </Select>
+        </PriorityFlagContainer>
       </Button>
     </PriorityFieldContainer>
   );
