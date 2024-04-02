@@ -229,32 +229,32 @@ const PatientSection = ({
 
   const handleClearSelectedPatient = useCallback(
     async (clearInput) => {
-      if (templateBundleIdentifier && selectedPatient) {
-        dispatch(
-          openModal('UnassignPatient', {
-            isWorkflowModal: true,
-            confirm: async () => {
-              dispatch(
-                changePatientForTemplateBundle(
-                  templateBundleIdentifier,
-                  'UNASSIGNED',
-                ),
-              );
-              setAssignedPatient(null);
-              setPatients([]);
-              await savePatient(null);
-              clearInput();
-              // eslint-disable-next-line no-unused-expressions
-              patientInputReference.current?.querySelector('input')?.focus();
-            },
-          }),
-        );
-      } else {
-        setAssignedPatient(null);
+      // if (templateBundleIdentifier && selectedPatient) {
+      //   dispatch(
+      //     openModal('UnassignPatient', {
+      //       isWorkflowModal: true,
+      //       confirm: async () => {
+      //         dispatch(
+      //           changePatientForTemplateBundle(
+      //             templateBundleIdentifier,
+      //             'UNASSIGNED',
+      //           ),
+      //         );
+      //         setAssignedPatient(null);
+      //         setPatients([]);
+      //         await savePatient(null);
+      //         clearInput();
+      //         // eslint-disable-next-line no-unused-expressions
+      //         patientInputReference.current?.querySelector('input')?.focus();
+      //       },
+      //     }),
+      //   );
+      // } else {
+      setAssignedPatient(null);
 
-        setPatients([]);
-        await savePatient(null);
-      }
+      setPatients([]);
+      await savePatient(null);
+      // }
     },
     [dispatch, savePatient, selectedPatient, templateBundleIdentifier],
   );
@@ -321,7 +321,12 @@ const PatientSection = ({
           <PatientName onClick={patientProfile}>
             {selectedPatient.patientName}{' '}
           </PatientName>
-          <button style={{color: '#8492A4'}} onClick={handleClearSelectedPatient}>x</button>
+          <button
+            style={{ color: '#8492A4' }}
+            onClick={handleClearSelectedPatient}
+          >
+            x
+          </button>
         </PatientContainer>
       )}
 

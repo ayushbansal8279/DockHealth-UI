@@ -25,7 +25,6 @@ const PrioritySection = ({ selectedTask, disabled = false }) => {
 
   const handleOptionChange = (event) => {
     const { value } = event.target;
-    console.log(value);
 
     onTaskDrawerTaskPriorityChanged(value);
     dispatch(changeTaskPriority(selectedTask, value));

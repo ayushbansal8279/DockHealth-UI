@@ -13,11 +13,16 @@ import {
 import { WorkflowDrawerFieldNames } from 'helpers/workflow-drawer-helpers';
 import { updatePartialWorkflow } from 'actions/task-template-actions';
 import {
+  StatusContainer,
   StatusFlag,
   StatusFieldContainer,
   StatusFlagContainer,
+  Title,
+  StatusWrapper,
 } from './styled';
 import { EndAdornmentContainer, AdornmentClear } from '../styled';
+import PrioritySelectIcon from '@/app/img/PrioritySelectIcon';
+import { IconButton, InputAdornment } from '@mui/material';
 
 const StatusSection = ({ disabled }) => {
   const dispatch = useDispatch();
@@ -64,47 +69,63 @@ const StatusSection = ({ disabled }) => {
   };
 
   return (
-    <TaskDrawerPopover
-      content={({ closePopover, resetPosition }) =>
-        !disabled && (
-          <TaskWorkflowStatus
-            selectedStatusIdentifier={workflowStatus?.identifier}
-            updateWorkflowStatus={handleUpdateWorkflowStatus}
-            onClose={closePopover}
-            onWidthChange={resetPosition}
-          />
-        )
-      }
-    >
-      <StatusFieldContainer>
-        <StatusFlagContainer>
-          <StatusFlag color={status?.color} />
-        </StatusFlagContainer>
-        <Input
-          label="Status"
-          disabled={disabled}
-          name="workflowStatus"
-          placeholder="Is there a status?"
-          InputLabelProps={{
-            shrink: true,
-          }}
-          InputProps={{
-            endAdornment: workflowStatus ? (
-              <AdornmentClear onClick={handleClear} />
-            ) : (
-              <EndAdornmentContainer>
-                <SmallSwitchChevron color={palette.orangeJulius} />
-              </EndAdornmentContainer>
-            ),
-          }}
-          inputProps={{
-            tabIndex: -1,
-            readOnly: true,
-            value: status?.name || '',
-          }}
-        />
-      </StatusFieldContainer>
-    </TaskDrawerPopover>
+    <StatusContainer>
+      <Title>Status</Title>
+      <TaskDrawerPopover
+        content={({ closePopover, resetPosition }) =>
+          !disabled && (
+            <TaskWorkflowStatus
+              selectedStatusIdentifier={workflowStatus?.identifier}
+              updateWorkflowStatus={handleUpdateWorkflowStatus}
+              onClose={closePopover}
+              onWidthChange={resetPosition}
+            />
+          )
+        }
+      >
+        <StatusFieldContainer>
+          {workflowStatus ? (
+            <StatusWrapper color={workflowStatus?.color}>
+              {workflowStatus?.name}
+            </StatusWrapper>
+          ) : (
+            <Input
+              variant="outlined"
+              size="small"
+              sx={{
+                '& .MuiOutlinedInput-root': {
+                  '& .MuiOutlinedInput-notchedOutline': {
+                    borderColor: 'transparent',
+                  },
+                },
+              }}
+              name="workflowStatus"
+              placeholder="--"
+              disabled={disabled}
+              InputLabelProps={{
+                shrink: true,
+              }}
+              InputProps={{
+                startAdornment: !workflowStatus ? (
+                  <InputAdornment position="start">
+                    <IconButton aria-label="status">
+                      <PrioritySelectIcon />
+                    </IconButton>
+                  </InputAdornment>
+                ) : (
+                  ''
+                ),
+              }}
+              inputProps={{
+                tabIndex: -1,
+                readOnly: true,
+                value: workflowStatus?.name || '',
+              }}
+            />
+          )}
+        </StatusFieldContainer>
+      </TaskDrawerPopover>
+    </StatusContainer>
   );
 };
 
