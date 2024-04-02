@@ -72,6 +72,7 @@ const PrioritySection = ({ selectedTask, disabled = false }) => {
         <PrioritySelectIcon />
         <Select
           sx={{
+            textTransform:'none',
             '& .MuiOutlinedInput-notchedOutline': {
               borderColor: 'transparent',
             },

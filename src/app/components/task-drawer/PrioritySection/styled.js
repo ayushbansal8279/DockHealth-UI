@@ -28,7 +28,7 @@ export const PriorityFieldContainer = styled.div`
   display: flex;
   align-items: center;
   font-family: Outfit;
-  margin: 10px 13px;
+  margin: 10px 0 0 9px;
 `;
 
 export const PriorityFlagContainer = styled.div`
@@ -39,7 +39,7 @@ export const PriorityFlagContainer = styled.div`
 `;
 
 export const Title = styled.div`
-  margin-right: 40px;
+  margin-right: 35px;
   color: ${palette.coolGrey1};
   font-family: Outfit;
   font-size: ${fontSizes.smallPlus};
