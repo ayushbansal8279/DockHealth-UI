@@ -258,46 +258,6 @@ const CustomizeToolbarButton = ({
                   return optionName && renderElement(column, optionName);
                 })}
               </List>
-              <Spacer />
-              {!isDashboard && (
-                <>
-                  <Box display="flex" justifyContent="space-between" mt={1}>
-                    <Box mx={0.5} />
-                    <ListItemText>
-                      <b>{additionalOptionsTitle}</b>
-                    </ListItemText>
-                  </Box>
-                  <List>
-                    {additionalOptions &&
-                      additionalOptions?.map((option) => {
-                        const {
-                          name,
-                          checked = false,
-                          disabled,
-                          onClick,
-                        } = option;
-                        return (
-                          name && (
-                            <MenuItem
-                              key={name}
-                              onClick={() => {
-                                if (typeof onClick === 'function' && !disabled)
-                                  onClick();
-                              }}
-                            >
-                              <Checkbox
-                                isDisabled={disabled}
-                                isChecked={checked}
-                              />
-                              <Box mx={0.5} />
-                              <ListItemText>{name}</ListItemText>
-                            </MenuItem>
-                          )
-                        );
-                      })}
-                  </List>
-                </>
-              )}
             </>
           )}
           {selectedTab === 1 && (
