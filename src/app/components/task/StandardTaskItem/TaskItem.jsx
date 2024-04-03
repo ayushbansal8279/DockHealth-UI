@@ -824,10 +824,8 @@ const TaskItem = React.memo(
                 )}
               <Box ml="10px" />
               <Tooltip
-                placement="top"
-                title={isCompleted ? 'Mark incomplete' : 'Complete task'}
-                child={isCompleted}
-                childTitle={
+                placement={isCompleted ? 'bottom' : 'top'}
+                title={
                   isCompleted ? (
                     <>
                       <TootipCompletedBy>Completed by</TootipCompletedBy>
@@ -849,10 +847,9 @@ const TaskItem = React.memo(
                       </TootipCompletedByDate>
                     </>
                   ) : (
-                    ''
+                    'Complete task'
                   )
                 }
-                childPlacement="bottom"
                 open={tooltipsOpen}
                 onClose={() => handleTooltipClose()}
               >
