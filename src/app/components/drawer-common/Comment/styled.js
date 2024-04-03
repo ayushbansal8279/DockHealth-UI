@@ -5,9 +5,9 @@ import { fontSizes } from 'styles/font';
 
 export const CommentWrapper = styled.div`
   display: flex;
-  align-items: center;
   width: 100%;
   font-family: inherit;
+  padding: ${spacing.small} 0;
   margin-bottom: 1px solid red;
   ${({ $showPointer }) => ($showPointer ? 'cursor: pointer' : '')}
 `;
@@ -15,8 +15,8 @@ export const CommentWrapper = styled.div`
 export const CommentContainer = styled.div`
   display: flex;
   width: 100%;
-  padding: ${spacing.small} 0;
   margin-left: ${spacing.smallPlus};
+  padding: ${spacing.tiny} ${spacing.small};
   font-size: ${fontSizes.regular};
   transition: background-color 0.25s ease-out;
   background-color: ${(props) => (props.isEditing ? 'white' : '')};
@@ -27,7 +27,6 @@ export const CommentContent = styled.div`
   display: flex;
   flex: 1;
   flex-direction: column;
-  padding: 0 ${spacing.regular};
 `;
 
 export const CommentText = styled.div`
@@ -46,7 +45,7 @@ export const CommentDetails = styled.div`
 `;
 
 export const CommentMemberContainer = styled.div`
-  padding-top: ${spacing.small};
+  width: 35px;
 `;
 
 export const CommentActionsSection = styled.div`

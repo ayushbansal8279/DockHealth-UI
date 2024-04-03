@@ -1,13 +1,13 @@
 import styled from 'styled-components';
-import palette, { typography } from 'styles/palette';
+import palette from 'styles/palette';
 import spacing from 'styles/spacing';
 
 export const AddCommentContainer = styled.div`
-  align-items: center;
   display: grid;
   grid-template-columns: auto 1fr;
   grid-gap: ${spacing.smallPlus};
   position: relative;
+  padding: ${spacing.tiny} 0;
 `;
 
 export const AddCommentInputContainer = styled.div`
@@ -16,9 +16,9 @@ export const AddCommentInputContainer = styled.div`
   box-shadow: none;
   color: ${palette.darkGrey};
   font-family: inherit;
-  margin: 0;
   outline: 0;
-  padding: ${spacing.tiny} ${spacing.regular};
+  margin-left: ${spacing.smallPlus};
+  padding: ${spacing.tiny} ${spacing.small};
   overflow: hidden;
   min-height: 60px;
   overflow-y: auto;
