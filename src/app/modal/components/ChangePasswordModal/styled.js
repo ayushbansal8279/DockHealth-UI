@@ -8,7 +8,7 @@ export const ChangePasswordModalContainer = styled.div`
   width: 570px;
   padding: ${spacing.largePlus} ${spacing.giga};
   background-color: ${palette.white};
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Outfit', sans-serif;
   color: ${palette.mediumGrey};
 `;
 

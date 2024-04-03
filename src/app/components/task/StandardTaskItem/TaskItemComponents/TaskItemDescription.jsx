@@ -47,6 +47,7 @@ const TaskItemDescription = ({
   // disableMentions,
   // isEditButtonVisible = false,
   width,
+  isHover,
 }) => {
   const {
     description,
@@ -64,6 +65,12 @@ const TaskItemDescription = ({
   } = task;
 
   const [descriptionState, setDescriptionState] = useState(description);
+
+  const [isSubtask, setIsSubtask] = useState(false);
+
+  useEffect(() => {
+    if (task?.parentTaskIdentifier) setIsSubtask(true);
+  }, [task]);
 
   // const { taskListIdentifier } = taskList || {};
   // const { matchDescription } = searchMetaData || {};
@@ -152,9 +159,12 @@ const TaskItemDescription = ({
         {!isEditing && (
           <div
             style={{
+              marginTop: isSubtask ? '-13px' : 'none',
               textOverflow: 'ellipsis',
               overflow: 'hidden',
               whiteSpace: 'nowrap',
+              textDecoration: isCompleted ? 'line-through' : 'none',
+              color: isCompleted && 'rgba(61, 72, 88, 0.50)',
             }}
           >
             {tokenizedDescription.split(/\s/).map((word) => {
@@ -237,8 +247,8 @@ const TaskItemDescription = ({
           </DescriptionEditButton>
         )}
       </Box>
-      <TaskItemDescriptionIndicators>
-        {isCompleted && (
+      <TaskItemDescriptionIndicators isCompleted={isSubtask}>
+        {isCompleted && isHover && (
           <CompletedBy isCompleted={isCompleted}>
             <span>{`By ${completedByName} ${
               completedDt &&
@@ -246,7 +256,7 @@ const TaskItemDescription = ({
                 completedDt ? `${moment(completedDt).format('MM/DD/YYYY')}` : ''
               }`
             } ${
-              linkedTaskTemplate ? `, launched ${linkedTaskTemplate.name}` : ''
+              linkedTaskTemplate ? `, launched ${linkedTaskTemplate?.name}` : ''
             }
             `}</span>
           </CompletedBy>
@@ -258,7 +268,7 @@ const TaskItemDescription = ({
               Subtask of
               <span
                 onClick={onParentLabelClick}
-              >{` ${parentTask.description}`}</span>
+              >{` ${parentTask?.description}`}</span>
             </TaskItemParentTaskLabel>
           </>
         )}

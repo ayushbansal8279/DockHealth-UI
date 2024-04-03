@@ -18,8 +18,8 @@ const AddRecordOption = ({
   ) : (
     <ListItemButton type="button" onMouseDown={onClick}>
       <ListItemCustomText>
-        <AdornmentContainer>+</AdornmentContainer>
-        <AddText>Add &quot;{searchValue}&quot;</AddText>
+        <AdornmentContainer>+ Add</AdornmentContainer>
+        <AddText>{searchValue}</AddText>
       </ListItemCustomText>
     </ListItemButton>
   );

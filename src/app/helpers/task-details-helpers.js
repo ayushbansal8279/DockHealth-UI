@@ -5,16 +5,16 @@ export const Category = {
 
 export const CategoryLabel = {
   [Category.TASK_CORE]: 'Core',
-  [Category.TASK_OTHER]: 'Other Info',
+  [Category.TASK_OTHER]: 'Supplemental',
 };
 
 export const CATEGORY_OPTIONS = [
   {
-    label: CategoryLabel[Category.TASK_OTHER],
-    value: Category.TASK_OTHER,
-  },
-  {
     label: CategoryLabel[Category.TASK_CORE],
     value: Category.TASK_CORE,
+  },
+  {
+    label: CategoryLabel[Category.TASK_OTHER],
+    value: Category.TASK_OTHER,
   },
 ];

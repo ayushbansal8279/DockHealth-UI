@@ -3,22 +3,37 @@ import { fontSizes, fontWeights } from 'styles/font';
 import palette from 'styles/palette';
 import MuiCheckIcon from '@mui/icons-material/Check';
 
+const containerBorderStyle = (active, pro) => {
+  if (active) {
+    return `${palette.newBrightBlue} 2px`;
+  }
+  if (pro) {
+    return `${palette.newBrightBlue} 2px`;
+  }
+  return `${palette.coolGrey3} 1px`;
+};
+
 export const Container = styled.div`
   width: 260px;
-  padding: 40px 18px 18px;
+  padding: 18px 18px;
   border-radius: 10px;
-  box-shadow: 0px 6px 9px rgba(0, 0, 0, 0.17);
   border-top: 10px solid ${({ color }) => color};
-  font-family: 'Roboto Condensed', sans-serif;
+  border: ${({ active, pro }) => `solid ${containerBorderStyle(active, pro)}`};
+  font-family: inherit;
+`;
+
+export const MostPopularTextWrapper = styled.div`
+  padding: 6px;
+  border-radius: 15px;
+  overflow: hidden;
+  background-color: rgba(90, 113, 242, 0.1);
 `;
 
 export const MostPopularText = styled.p`
-  position: absolute;
-  top: -20px;
-  left: 0;
-  color: ${palette.red};
-  font-size: ${fontSizes.smallPlus};
+  margin-bottom: 0;
+  font-size: ${fontSizes.small};
   font-weight: ${fontWeights.light};
+  color: ${palette.black};
 `;
 
 export const NewText = styled.p`
@@ -32,35 +47,49 @@ export const NewText = styled.p`
 `;
 
 export const TopContainer = styled.div`
-  position: relative;
-  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 30px;
 `;
 
 export const Name = styled.p`
   margin-bottom: 0;
-  font-size: ${fontSizes.largePlus};
-  font-weight: ${fontWeights.bold};
-  color: ${({ color }) => color};
+  font-size: ${fontSizes.regular};
+  font-weight: ${fontWeights.regular};
+  color: ${palette.black};
 `;
 
 export const Description = styled.p`
+  margin-top: 5px;
   margin-bottom: 0;
   font-size: ${fontSizes.smallPlus};
   font-weight: ${fontWeights.light};
-  color: ${palette.black};
-  min-height: 100px;
+  color: ${palette.coolGrey8};
+  min-height: 80px;
+`;
+
+export const PlanDescriptionContainer = styled.div`
+  height: 60px;
+  margin-bottom: 24px;
+`;
+
+export const PlanDescription = styled.p`
+  margin-bottom: 0px;
+  font-size: ${fontSizes.smallPlus};
+  font-weight: ${fontWeights.light};
+  color: ${palette.coolGrey8};
 `;
 
 export const PriceContainer = styled.div`
   display: flex;
   height: 54px;
   width: 100%;
-  margin-bottom: 24px;
 `;
 
 export const Price = styled.p`
   margin-bottom: 0;
-  font-size: ${fontSizes.hugePlus};
+  font-size: ${fontSizes.huge};
   font-weight: ${fontWeights.bold};
   color: ${({ color }) => color};
 `;
@@ -80,16 +109,21 @@ export const UnitText = styled.p`
   line-height: 14px;
 `;
 
+const buttonBackgroundColor = (active, pro) => {
+  if (active) return 'transparent';
+  if (pro) return palette.newBrightBlue;
+  return palette.newDarkBlue;
+};
+
 export const SubscribeButton = styled.button`
   width: 100%;
   padding: 14px;
-  border-radius: 4px;
-  background-color: ${({ active, color }) => (active ? 'transparent' : color)};
-  border: 2px solid ${({ color }) => color};
-  color: ${({ active, color }) => (active ? color : palette.white)};
-  font-size: ${fontSizes.smallPlus};
+  border-radius: 8px;
+  background-color: ${({ active, pro }) => buttonBackgroundColor(active, pro)};
+  border: 2px solid ${({ active }) => (active ? palette.newBrightBlue : '')};
+  color: ${({ active }) => (active ? palette.newBrightBlue : palette.white)};
+  font-size: ${fontSizes.regular};
   font-weight: ${fontWeights.bold};
-  ${({ active }) => (active ? '' : 'text-transform: uppercase;')}
   display: flex;
   align-items: center;
   justify-content: center;
@@ -100,11 +134,11 @@ export const ContactUsAnchor = styled.a`
   box-sizing: border-box;
   width: 100%;
   padding: 14px;
-  border-radius: 4px;
+  border-radius: 8px;
   background-color: ${({ active, color }) => (active ? 'transparent' : color)};
   border: 2px solid ${({ color }) => color};
   color: ${({ active, color }) => (active ? color : palette.white)};
-  font-size: ${fontSizes.smallPlus};
+  font-size: ${fontSizes.regular};
   font-weight: ${fontWeights.bold};
   text-transform: uppercase;
   text-align: center;
@@ -124,7 +158,16 @@ export const Divider = styled.hr`
 export const FeatureText = styled.p`
   position: relative;
   margin-bottom: 0;
-  font-size: ${fontSizes.smallPlus};
+  font-size: ${fontSizes.regular};
+  font-weight: 600;
+  margin-top: 20px;
+`;
+
+export const DisclaimerText = styled.p`
+  margin-bottom: 0;
+  font-size: 12px;
+  font-weight: 400;
+  color: ${palette.coolGrey10};
 `;
 
 export const CheckIcon = styled(MuiCheckIcon)`

@@ -5,14 +5,15 @@ import { useMount } from 'react-use';
 import { object, string } from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as UserAuthApi from 'api/user-auth-api';
-import FormInput from 'components/common/Input/FormInput';
+import FormInput from 'components/common/v2/Input/FormInput';
 import Loader, { LoaderSizes } from 'components/common/Loader/Loader';
 import Spacing from 'components/common/Spacing';
-import Button from 'components/common/Button/Button';
-import { MontserratTypography } from 'styles/theme-montserrat';
+import Button from 'components/common/v2/Button/Button';
 import { showAlert } from 'helpers/utility-functions';
+import palette from 'styles/palette';
+import { OutfitTypography } from 'styles/theme-outfit';
 import { StyledForm, StyledHyperLink } from './AuthComponents.styled';
-import SSOOptions from './SSOOptions';
+import { Title, Subtitle } from './Title';
 
 const validationSchema = object().shape({
   username: string()
@@ -56,19 +57,15 @@ const LoginFormUsername = (props) => {
               window.location.href = `/#${nextPathname}`;
               return;
             }
-            const patientIdentifier = sessionStorage.getItem(
-              'PatientIdentifier',
-            );
+            const patientIdentifier =
+              sessionStorage.getItem('PatientIdentifier');
             console.log(patientIdentifier);
-            if (
+            window.location.href =
               patientIdentifier &&
               patientIdentifier !== '' &&
               patientIdentifier !== 'null'
-            ) {
-              window.location.href = `/#/core/patient/${patientIdentifier}`;
-            } else {
-              window.location.href = '/#/core/home';
-            }
+                ? `/#/core/patient/${patientIdentifier}`
+                : '/#/core/home';
             // setShowLoginMessage(false);
           })
           .catch((error) => {
@@ -87,13 +84,9 @@ const LoginFormUsername = (props) => {
       <FormProvider {...formMethods}>
         {!showLoginMessage && (
           <>
-            <MontserratTypography variant="h2">
-              {titleContent}
-            </MontserratTypography>
+            <Title>{titleContent}</Title>
             <Spacing vertical={4} />
-            <MontserratTypography variant="h3">
-              Please sign in
-            </MontserratTypography>
+            <Subtitle>Please sign in</Subtitle>
             <Spacing vertical={4} />
             <FormInput
               name="username"
@@ -106,25 +99,29 @@ const LoginFormUsername = (props) => {
               }
             />
             <Spacing vertical={5} />
-            <Button id="loginButton" fullWidth size="large" type="submit">
+            <Button
+              uppercase={false}
+              id="loginButton"
+              fullWidth
+              size="large"
+              type="submit"
+              color={palette.brightOrange}
+              secondaryColor={palette.oPlusRed}
+            >
               Continue
             </Button>
-            <Spacing vertical={2} />
-            <SSOOptions />
           </>
         )}
         {showLoginMessage && (
           <div>
-            <MontserratTypography variant="h3">
-              Signing you in
-            </MontserratTypography>
+            <OutfitTypography variant="h3">Signing you in</OutfitTypography>
             <Spacing vertical={4} />
             <Loader size={LoaderSizes.big} />
             <Spacing vertical={6} />
-            <MontserratTypography variant="h4">
+            <OutfitTypography variant="h4">
               <span>Trouble signing in? </span>
               <StyledHyperLink href="/#/auth/login">LOGIN</StyledHyperLink>
-            </MontserratTypography>
+            </OutfitTypography>
           </div>
         )}
       </FormProvider>

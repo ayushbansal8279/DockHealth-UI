@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { fontSizes, fontWeights } from 'styles/font';
 import spacing from 'styles/spacing';
-import palette from 'styles/palette';
+import palette, { typography } from 'styles/palette';
 
 export const SectionSubtypography = styled.div`
   font-size: ${fontSizes.regular};
@@ -14,7 +14,7 @@ export const SectionTypography = styled(SectionSubtypography)`
 export const FormInfoText = styled.p`
   margin-bottom: 0;
   padding: 0 ${spacing.regularPlus};
-  font-family: 'Montserrat', sans-serif;
+  font-family: Outfit, sans-serif;
   font-size: ${fontSizes.regular};
   font-weight: ${fontWeights.regular};
 `;
@@ -24,7 +24,7 @@ export const InputActionButton = styled.button`
   color: ${palette.brightBlue};
   font-size: ${fontSizes.regular};
   font-weight: ${fontWeights.light};
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: inherit;
   cursor: pointer;
 `;
 
@@ -45,7 +45,7 @@ export const UserAvatarSupplement = styled.div`
 
 export const SectionTitle = styled.p`
   margin-bottom: 4px;
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Outfit', sans-serif;
   font-weight: ${fontWeights.bold};
   width: 100%;
 `;

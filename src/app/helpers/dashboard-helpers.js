@@ -4,6 +4,9 @@ export const DashboardTasksTab = {
   MY_TASKS: 'MyTasks',
   SHARED_TASKS: 'SharedTasks',
   ALL_TASKS: 'AllTasks',
+  UPCOMING: 'Upcoming',
+  OVERDUE: 'Overdue',
+  COMPLETED: 'Completed',
 };
 
 export const DashboardGroup = {
@@ -37,7 +40,7 @@ export const GROUPS_WITH_COMPLETED_TASKS = [
 ];
 
 export const getGroupByDueDate = (dueDate, tabName) => {
-  const isMyTasksTab = tabName === DashboardTasksTab.MY_TASKS;
+  const isMyTasksTab = tabName === DashboardTasksTab.UPCOMING;
   if (!dueDate || dueDate === '')
     return isMyTasksTab
       ? DashboardGroup.NO_DUE_DATE

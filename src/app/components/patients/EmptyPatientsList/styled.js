@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import { fontSizes, fontWeights } from 'styles/font';
 import Button from 'components/common/Button/Button';
+import { typography } from 'styles/palette';
 
 export const EmptyListContainer = styled.div`
   padding: 2rem;
@@ -15,7 +16,7 @@ export const EmptyListHeader = styled.div`
   left: 106px;
   top: 162px;
 
-  font-family: Montserrat;
+  font-family: Outfit;
   font-size: ${fontSizes.large};
   line-height: 153%;
   text-align: left;
@@ -28,7 +29,7 @@ export const EmptyListContent = styled.div`
   left: 106px;
   top: 264px;
 
-  font-family: Montserrat;
+  font-family: Outfit;
   font-size: ${fontSizes.regular};
   line-height: 130%;
   text-align: left;
@@ -54,7 +55,7 @@ export const DownloadIcon = styled.img`
 `;
 
 export const DownloadTemplate = styled.a`
-  font-family: 'Roboto Condensed', sans-serif;;
+  font-family: inherit;
   font-style: normal;
   font-weight: ${fontWeights.regular};
   font-size: ${fontSizes.regular};

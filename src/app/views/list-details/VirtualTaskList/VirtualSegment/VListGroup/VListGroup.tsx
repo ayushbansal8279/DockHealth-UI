@@ -4,15 +4,17 @@ import TasksGroup from 'components/tasklist/TasksGroup/TasksGroup';
 import { reorderTaskListGroups } from 'actions/list-details-actions';
 import { useDispatch } from 'react-redux';
 import * as Sc from './styled';
+import { TaskOrigin } from '@/app/helpers/task-helpers';
 
 export interface Props extends Segment {
   name: string;
   count: number;
   taskGroupIdentifier: string;
+  bgColor: boolean;
 }
 
 function VListGroup(
-  { name, count, taskGroupIdentifier, metadata, register }: Props,
+  { name, count, taskGroupIdentifier, metadata, bgColor, register }: Props,
   ref: ForwardedRef<HTMLDivElement>,
 ) {
   const dispatch = useDispatch();
@@ -27,13 +29,15 @@ function VListGroup(
   );
 
   return (
-    <Sc.VListGroup ref={ref} {...register}>
+    <Sc.VListGroup ref={ref} {...register} bgColor={bgColor}>
       {/* @ts-ignore */}
       <TasksGroup
         taskGroupIdentifier={taskGroupIdentifier}
         groupName={name}
         moveGroupUp={() => moveGroup(metadata.sameLevelIndex, 'up')}
         moveGroupDown={() => moveGroup(metadata.sameLevelIndex, 'down')}
+        origin={TaskOrigin.LIST}
+        bgColor={bgColor}
       >
         {() => null}
       </TasksGroup>

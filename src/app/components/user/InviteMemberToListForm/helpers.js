@@ -23,9 +23,9 @@ export const getMenuOptionsForMember = (
   if (itemType === 'GROUP') {
     return [
       {
-        name: 'Remove From This List',
-        description:
-          'If you remove a group they will lose access to this list.',
+        name: 'Remove From List',
+        // description:
+        //   'If you remove a group they will lose access to this list.',
         onClick: () => {
           removeUserFromList(identifier);
         },
@@ -38,15 +38,15 @@ export const getMenuOptionsForMember = (
       if (taskListUserRole === 'ADMIN' || taskListUserRole === 'OWNER') {
         return [
           {
-            name: 'Remove as List Admin',
+            name: 'Member',
             onClick: () => {
               changeUserRole(userIdentifier, 'MEMBER');
             },
           },
           {
-            name: 'Remove From This List',
-            description:
-              'If you remove a user they will lose access to this list.',
+            name: 'Remove From List',
+            // description:
+            //   'If you remove a user they will lose access to this list.',
             onClick: () => {
               removeUserFromList(userIdentifier);
             },
@@ -56,9 +56,9 @@ export const getMenuOptionsForMember = (
       if (orgUserRole === 'GUEST' || orgUserRole === 'DOCK_LITE') {
         return [
           {
-            name: 'Remove From This List',
-            description:
-              'If you remove a user they will lose access to this list.',
+            name: 'Remove From List',
+            // description:
+            //   'If you remove a user they will lose access to this list.',
             onClick: () => {
               removeUserFromList(userIdentifier);
             },
@@ -67,16 +67,16 @@ export const getMenuOptionsForMember = (
       }
       return [
         {
-          name: 'Make List Admin',
-          description: 'Can edit and delete the list.',
+          name: 'Admin',
+          // description: 'Can edit and delete the list.',
           onClick: () => {
             changeUserRole(userIdentifier, 'ADMIN');
           },
         },
         {
-          name: 'Remove From This List',
-          description:
-            'If you remove a user they will lose access to this list.',
+          name: 'Remove From List',
+          // description:
+          //   'If you remove a user they will lose access to this list.',
           onClick: () => {
             removeUserFromList(userIdentifier);
           },
@@ -87,9 +87,9 @@ export const getMenuOptionsForMember = (
     case 'DENIED': {
       return [
         {
-          name: 'Remove From This List',
-          description:
-            'If you remove a user they will lose access to this list.',
+          name: 'Remove From List',
+          // description:
+          //   'If you remove a user they will lose access to this list.',
           onClick: () => {
             removeUserFromList(userIdentifier);
           },

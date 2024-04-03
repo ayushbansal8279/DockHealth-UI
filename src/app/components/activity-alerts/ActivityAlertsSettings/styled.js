@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { Checkbox } from '@mui/material';
 import spacing from 'styles/spacing';
 import { fontWeights, fontSizes } from 'styles/font';
-import palette from 'styles/palette';
+import palette, { typography } from 'styles/palette';
 
 export const ActivityAlertsSettingsContainer = styled.div`
   display: flex;
@@ -28,7 +28,7 @@ export const ActivityAlertsSettingsItem = styled.div`
 `;
 
 export const ActivityAlertsSettingsItemsContainer = styled.div`
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: inherit;
   margin-top: ${spacing.large};
   display: flex;
   flex-direction: column;
@@ -37,7 +37,7 @@ export const ActivityAlertsSettingsItemsContainer = styled.div`
 
 export const ActivityAlertsSettingsItemsHeader = styled.div`
   padding-bottom: ${spacing.regular};
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Outfit', sans-serif;
 `;
 
 export const ActivityAlertsSettingsItemsHeaderLabel = styled.div`

@@ -55,6 +55,21 @@ export const StatusItemWrapper = styled.div`
   }
 `;
 
+export const StatusWrapper = styled.div`
+  display: flex;
+  border-radius: 2px;
+  border: 1px solid ${(property) => property.color || '#7F4334'};
+  background: ${(property) => `${property.color}1A` || '#7F43341A'};
+  min-width: 100px;
+  padding: 2.5px 2px;
+  height: 30px;
+  justify-content: center;
+  align-items: center;
+  margin-left: 20px;
+  margin-bottom: 10px;
+  color: ${(property) => property.color || '#7F4334'};
+`;
+
 export const StatusItemContent = styled.div`
   display: flex;
   flex: 1;
@@ -112,6 +127,7 @@ export const NameLoader = styled.div`
 export const StatusButton = styled.button`
   ${({ selected }) => selected && `background-color: ${palette.coolGrey4};`}
   overflow: hidden;
+  width: ${({ width }) => width}px;
 
   &:hover {
     background-color: ${palette.coolGrey4};

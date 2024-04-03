@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { fontSizes, fontWeights } from 'styles/font';
-import palette from 'styles/palette';
+import palette, { typography } from 'styles/palette';
 import spacing from 'styles/spacing';
 import PinIcon from 'img/pin.svg';
 
@@ -10,7 +10,7 @@ export const PatientCardContainer = styled.div`
   width: 436px;
   background-color: ${palette.white};
   box-shadow: 0px 0px 11px rgba(0, 0, 0, 0.15);
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: inherit;
   color: ${palette.mediumGrey};
 `;
 
@@ -28,7 +28,7 @@ export const PatientName = styled.p`
   margin-bottom: 0;
   font-size: ${fontSizes.regular};
   font-weight: ${fontWeights.bold};
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Outfit', sans-serif;
   color: ${palette.black};
   white-space: nowrap;
   overflow: hidden;

@@ -29,6 +29,9 @@ import {
   HOME_ALL_TASKS_PATH,
   HOME_PATH,
   HOME_SHARED_PATH,
+  HOME_UPCOMING_TASKS_PATH,
+  HOME_OVERDUE_TASKS_PATH,
+  HOME_COMPLETED_TASKS_PATH,
 } from 'routing/helpers/paths';
 import { useHistory } from 'react-router-dom';
 import DashboardList from './DashboardList/DashboardList';
@@ -74,6 +77,18 @@ const DashboardView = ({ tabName }) => {
     [DashboardTasksTab.ALL_TASKS]: {
       allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST, DOCK_LITE],
       path: HOME_ALL_TASKS_PATH,
+    },
+    [DashboardTasksTab.UPCOMING]: {
+      allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST, DOCK_LITE],
+      path: HOME_UPCOMING_TASKS_PATH,
+    },
+    [DashboardTasksTab.OVERDUE]: {
+      allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST, DOCK_LITE],
+      path: HOME_OVERDUE_TASKS_PATH,
+    },
+    [DashboardTasksTab.COMPLETED]: {
+      allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST, DOCK_LITE],
+      path: HOME_COMPLETED_TASKS_PATH,
     },
   };
 
@@ -231,7 +246,7 @@ const DashboardView = ({ tabName }) => {
               <HorizontallyScrolledViewLayout>
                 <StickyContainer>
                   <DashboardHeader currentUser={currentUser} />
-                  <Spacing vertical={3} />
+                  {/* <Spacing vertical={3} /> */}
                 </StickyContainer>
                 {createListViewVisible ? (
                   <StickyContainer>

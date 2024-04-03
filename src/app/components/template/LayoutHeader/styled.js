@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import palette from 'styles/palette';
+import palette, { typography } from 'styles/palette';
 import DockLogoSrc from 'img/dock-header-logo.svg';
 import { fontSizes, fontWeights } from 'styles/font';
 import prop from 'ramda/src/prop';
@@ -29,7 +29,7 @@ export const MainHeader = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: inherit;
   font-size: ${fontSizes.largePlus};
   font-weight: ${fontWeights.regular};
   color: ${palette.mediumGrey};

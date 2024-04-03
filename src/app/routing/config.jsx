@@ -10,6 +10,7 @@ import {
   onEnterListDetailsView,
   onLeaveListDetailsView,
 } from './TemplateCoreSubscriptionPlan/ListDetails';
+
 const UsersView = lazy(() => import('views/self-serve/users/UsersView'));
 const Contacts = lazy(() => import('views/Contacts/Contacts'));
 const Templates = lazy(() => import('views/Templates/Templates'));
@@ -112,8 +113,12 @@ const LoginUser = lazy(() => import('views/auth/LoginUser'));
 const LoginPassword = lazy(() => import('views/auth/LoginPassword'));
 const ForgotPassword = lazy(() => import('views/auth/ForgotPassword'));
 const EmailSent = lazy(() => import('views/auth/EmailSent'));
+const SignUpEmailSent = lazy(() => import('views/auth/SignUpEmailSent'));
 const DashboardView = lazy(() => import('views/dashboard/DashboardView'));
 const CreateAccount = lazy(() => import('views/auth/CreateAccount'));
+const CompleteCreateAccount = lazy(() =>
+  import('views/auth/CompleteCreateAccount'),
+);
 const ConfirmRegistrationSuccess = lazy(() =>
   import('views/auth/ConfirmRegistrationSuccess'),
 );
@@ -140,6 +145,11 @@ const ProfilesAndCustomFieldsView = lazy(() =>
 const TaskCustomizationsView = lazy(() =>
   import('views/custom-fields/task-customizations/TaskCustomizationsView'),
 );
+
+const CreateList = lazy(() =>
+  import('views/OnboardingTutorial/CreateList/CreateList'),
+);
+const Developers = lazy(() => import('views/developers'));
 
 const {
   CAN_ACCESS_HOME_PAGE,
@@ -223,16 +233,21 @@ export const SETTINGS_ROUTES = [
     RouteComponent: Contacts,
     permissions: [CAN_ACCESS_PEOPLE_LIST_PAGE],
   },
+  {
+    path: '/developers',
+    RouteComponent: Developers,
+    permissions: [CAN_ACCESS_SETTINGS_PAGE],
+  },
 ];
 
 export const TEMPLATE_CORE_SUBSCRIPTION_PLAN_ROUTES = [
-  {
-    path: '/home/my-tasks',
-    RouteComponent: (props) => (
-      <DashboardView tabName={DashboardTasksTab.MY_TASKS} {...props} />
-    ),
-    permissions: [CAN_ACCESS_HOME_PAGE],
-  },
+  // {
+  //   path: '/home/my-tasks',
+  //   RouteComponent: (props) => (
+  //     <DashboardView tabName={DashboardTasksTab.MY_TASKS} {...props} />
+  //   ),
+  //   permissions: [CAN_ACCESS_HOME_PAGE],
+  // },
   {
     path: '/home/shared-with-me-tasks',
     RouteComponent: (props) => (
@@ -244,6 +259,27 @@ export const TEMPLATE_CORE_SUBSCRIPTION_PLAN_ROUTES = [
     path: '/home/all-tasks',
     RouteComponent: (props) => (
       <DashboardView tabName={DashboardTasksTab.ALL_TASKS} {...props} />
+    ),
+    permissions: [CAN_ACCESS_HOME_PAGE],
+  },
+  {
+    path: '/home/my-tasks',
+    RouteComponent: (props) => (
+      <DashboardView tabName={DashboardTasksTab.UPCOMING} {...props} />
+    ),
+    permissions: [CAN_ACCESS_HOME_PAGE],
+  },
+  {
+    path: '/home/overdue-tasks',
+    RouteComponent: (props) => (
+      <DashboardView tabName={DashboardTasksTab.OVERDUE} {...props} />
+    ),
+    permissions: [CAN_ACCESS_HOME_PAGE],
+  },
+  {
+    path: '/home/completed-tasks',
+    RouteComponent: (props) => (
+      <DashboardView tabName={DashboardTasksTab.COMPLETED} {...props} />
     ),
     permissions: [CAN_ACCESS_HOME_PAGE],
   },
@@ -378,6 +414,13 @@ export const ONBOARDING_ROUTES = [
   },
 ];
 
+export const ONBOARDING_TUTORIAL_ROUTES = [
+  {
+    path: '/create-list',
+    RouteComponent: CreateList,
+  },
+];
+
 export const AUTH_ROUTES = [
   {
     path: '/confirmRegistration',
@@ -390,6 +433,10 @@ export const AUTH_ROUTES = [
   {
     path: '/create-account',
     RouteComponent: CreateAccount,
+  },
+  {
+    path: '/complete-create-account',
+    RouteComponent: CompleteCreateAccount,
   },
   {
     path: '/login',
@@ -457,6 +504,10 @@ export const AUTH_ROUTES = [
   {
     path: '/drchrono',
     RouteComponent: DrChronoLaunch,
+  },
+  {
+    path: '/signupEmailSent',
+    RouteComponent: SignUpEmailSent,
   },
   // {
   //   path: '/embedded',

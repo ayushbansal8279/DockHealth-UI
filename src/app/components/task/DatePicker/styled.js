@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { fontSizes, fontWeights } from 'styles/font';
-import palette from 'styles/palette';
+import palette, { typography } from 'styles/palette';
 import spacing from 'styles/spacing';
 
 export const ContentWrapper = styled.div`
@@ -10,7 +10,7 @@ export const ContentWrapper = styled.div`
   width: 100%;
   min-width: 320px;
   border: none;
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: inherit;
 `;
 
 export const Divider = styled.hr`

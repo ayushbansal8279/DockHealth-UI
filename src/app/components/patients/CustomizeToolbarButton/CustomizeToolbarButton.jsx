@@ -102,12 +102,15 @@ const CustomizeToolbarButton = ({
           />
         }
         onClick={disableButton ? undefined : () => setOpen(!open)}
+        isOpen={open}
+        active={open}
         disableButton={disableButton}
         tooltip={
           disableButton
             ? 'Customization is restricted by list admin'
             : 'Customize your list'
         }
+        hasPopover
       >
         Customize
       </ToolbarButton>

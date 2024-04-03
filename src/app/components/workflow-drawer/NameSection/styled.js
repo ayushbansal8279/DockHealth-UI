@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import palette from 'styles/palette';
+import palette, { typography } from 'styles/palette';
 import { fontSizes, fontWeights } from 'styles/font';
 import spacing from 'styles/spacing';
 
@@ -11,12 +11,12 @@ export const DescriptionError = styled.p`
   margin-bottom: 0;
   color: ${palette.error};
   font-size: ${fontSizes.smallPlus};
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: inherit;
 `;
 
 export const DescriptionLabelContainer = styled.div`
   display: block;
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: inherit;
   font-size: ${fontSizes.small};
   font-weight: ${fontWeights.light};
   color: ${palette.coolGrey1};

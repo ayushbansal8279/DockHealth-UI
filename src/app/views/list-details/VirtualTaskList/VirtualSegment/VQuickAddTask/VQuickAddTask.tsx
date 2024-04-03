@@ -8,6 +8,9 @@ import * as Sc from './styled';
 import { createTask } from '../../../../../sagas/list-details-saga';
 import { taskCountersSelector } from '../../../../../selectors/list-details-selectors';
 import { selectedUserOrganizationSelector } from '../../../../../selectors/user-selectors';
+import TaskTemplateApplicator from 'components/task-template/TaskTemplateApplicator/TaskTemplateApplicator';
+import { applyTaskTemplate } from 'actions/list-details-actions';
+import { TaskOrigin } from '@/app/helpers/task-helpers';
 
 export interface Props extends Segment {
   taskGroupIdentifier: string;
@@ -59,32 +62,54 @@ function VQuickAddTask(
     [currentOrganization?.themeSettings],
   );
 
+  const applyTemplate = useCallback(
+    (template) =>
+      dispatch(
+        applyTaskTemplate({
+          taskTemplateIdentifier: template?.identifier,
+          taskListIdentifier,
+          taskGroupIdentifier,
+        }),
+      ),
+    [dispatch, taskListIdentifier],
+  );
+
   return (
-    <Sc.VQuickAddTask
-      ref={ref}
-      {...register}
-      $width={
-        // @ts-ignore
-        !window.disabledVirtualTaskList
-          ? columns
-              // @ts-ignore
-              .filter((f) => f.isChecked)
-              // @ts-ignore
-              .reduce(
-                (accumulator, column) => accumulator + column.columnWidth,
-                0,
-              )
-          : null
-      }
-    >
-      <QuickAddTaskInput
-        // @ts-ignore
-        taskListIdentifier={taskListIdentifier}
-        quickAddTask={onQuickAddTask}
-        validator={quickTaskInputValidator}
-        iconColorActive={iconColorActiveItem?.value}
-      />
-    </Sc.VQuickAddTask>
+    <Sc.VQuickAddTaskContainer>
+      <Sc.VQuickAddTask
+        ref={ref}
+        {...register}
+        $width={
+          // @ts-ignore
+          !window.disabledVirtualTaskList
+            ? columns
+                // @ts-ignore
+                .filter((f) => f.isChecked)
+                // @ts-ignore
+                .reduce(
+                  (accumulator, column) => accumulator + column.columnWidth,
+                  0,
+                )
+            : null
+        }
+      >
+        <QuickAddTaskInput
+          // @ts-ignore
+          taskListIdentifier={taskListIdentifier}
+          quickAddTask={onQuickAddTask}
+          validator={quickTaskInputValidator}
+          iconColorActive={iconColorActiveItem?.value}
+        />
+      </Sc.VQuickAddTask>
+      <Sc.TaskTemplateApplicatorContainer>
+        <TaskTemplateApplicator
+          onTemplateSelect={applyTemplate}
+          bulkApply={false}
+          isWorkflowSearch
+          origin={TaskOrigin.LIST}
+        />
+      </Sc.TaskTemplateApplicatorContainer>
+    </Sc.VQuickAddTaskContainer>
   );
 }
 

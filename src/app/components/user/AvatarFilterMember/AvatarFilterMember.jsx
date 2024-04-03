@@ -42,6 +42,7 @@ const AvatarFilterMember = (props) => {
 
   return isUserGroup(member) ? (
     <GroupAvatar
+      isListPage
       isSelected={isSelected}
       onClick={toggleSelect}
       {...props}
@@ -49,6 +50,7 @@ const AvatarFilterMember = (props) => {
     />
   ) : (
     <UserAvatar
+      isListPage
       isSelected={isSelected}
       onClick={toggleSelect}
       {...props}

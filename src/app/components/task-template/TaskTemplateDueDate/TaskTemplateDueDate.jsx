@@ -8,9 +8,11 @@ import { updatePartialWorkflow } from 'actions/task-template-actions';
 import { ReminderType } from 'helpers/task-helpers';
 import { isWorkflowDueDateOverdue } from 'helpers/workflow-helpers';
 import { useDispatch } from 'react-redux';
+import spacing from 'styles/spacing';
+import { AddPlaceholder } from './styled';
 
 const TaskTemplateDueDate = (props) => {
-  const { workflow, disabled = false } = props;
+  const { workflow, disabled = false, isHover } = props;
   const { identifier, dueDateTime, reminderType } = workflow || {};
   const dispatch = useDispatch();
 
@@ -38,22 +40,38 @@ const TaskTemplateDueDate = (props) => {
         />
       )}
     >
-      <Tooltip
+      {/* <Tooltip
         placement="top"
-        title={dueDateTime ? 'Edit due date' : 'Add due date'}
-      >
-        {dueDateTime ? (
-          <DateLabel
-            date={dueDateTime}
-            isOverdue={isWorkflowDueDateOverdue(workflow)}
-            hasReminder={reminderType && reminderType !== ReminderType.NONE}
-          />
-        ) : (
-          <div>
-            <TaskIcon type="calendar" />
-          </div>
-        )}
-      </Tooltip>
+        title={dueDateTime ? 'Edit due date' : 'Add Due Date'}
+      > */}
+      {dueDateTime ? (
+        <DateLabel
+          date={dueDateTime}
+          isOverdue={isWorkflowDueDateOverdue(workflow)}
+          hasReminder={reminderType && reminderType !== ReminderType.NONE}
+          tootipTitle="Edit Due Date"
+        />
+      ) : (
+        <>
+          {isHover ? (
+            <Tooltip placement="top" title="Add Due Date">
+              <AddPlaceholder>
+                <div style={{ display: 'flex' }}>
+                  <TaskIcon type="calendar" isActive={true} />
+                  <p
+                    style={{
+                      padding: `2px ${spacing.smallPlus}`,
+                    }}
+                  >
+                    None
+                  </p>
+                </div>
+              </AddPlaceholder>
+            </Tooltip>
+          ) : null}
+        </>
+      )}
+      {/* </Tooltip> */}
     </TaskItemPopover>
   );
 };

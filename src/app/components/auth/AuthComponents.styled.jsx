@@ -60,29 +60,31 @@ export const StyledAnchorDiv = styled.div`
 `;
 
 export const StyledLink = styled(Link)`
-  color: ${palette.darkBlue};
+  color: ${palette.coolGrey10};
   filter: brightness(1);
-  text-decoration: underline;
   transition: all 0.25s ease-out;
-
+  display: flex;
+  flex-direction: row-reverse;
   &:hover {
-    color: ${palette.darkBlue};
+    color: ${palette.black};
     filter: brightness(1.25);
   }
 `;
 
 export const StyledHyperLink = styled.a`
-  color: ${palette.darkBlue};
+  color: ${palette.coolGrey10};
+  font-family: Outfit;
 
   &:hover,
   &:active,
   &:focus {
-    color: ${palette.darkBlue};
+    color: ${palette.coolGrey10};
+  font-family: Outfit;
   }
 `;
 
 export const StyledLabel = styled.div`
-  font-family: 'Open Sans', sans-serif;
+  font-family: 'Outfit', sans-serif;
   font-size: ${(props) => props.remFontSize || 1}rem;
   font-weight: ${(props) => (props.bold ? 600 : 'normal')};
 

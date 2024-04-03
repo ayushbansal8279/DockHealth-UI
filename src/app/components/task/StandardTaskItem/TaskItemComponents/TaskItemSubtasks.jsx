@@ -1,12 +1,14 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import SubtaskIcon from 'img/SubtaskIcon';
 import ParentTaskIcon from 'img/ParentTaskIcon';
 import {
-  // AddPlaceholder,
-  // AddSubtaskButton,
+  AddPlaceholder,
+  AddSubtaskButton,
   SubtasksCellContentButton,
   SubtasksCellText,
+  SubtasksCountText,
 } from '../../styled';
+import Tooltip from '@/app/components/common/Tooltip/Tooltip';
 
 const TaskItemSubtasks = ({
   isSubtask,
@@ -16,44 +18,98 @@ const TaskItemSubtasks = ({
   isOpen,
   isNestedTask,
   onSubtaskLabelClick,
-  // taskIdentifier,
-  // openQuickAddSubtask,
-  // dispatch,
+  // onClickAddSubtask,
+  taskIdentifier,
+  openQuickAddSubtask,
+  dispatch,
+  origin,
   // readOnly,
 }) => {
-  // const onClickAddSubtask = useCallback(
-  //   () => dispatch(openQuickAddSubtask(taskIdentifier)),
-  //   [dispatch, openQuickAddSubtask, taskIdentifier],
-  // );
+  const onClickAddSubtask = useCallback(
+    (event) => {
+      event.stopPropagation();
+      dispatch(openQuickAddSubtask(taskIdentifier));
+    },
+    [dispatch, openQuickAddSubtask, taskIdentifier],
+  );
+
   return !isSubtask &&
     !subtaskQuickAddOpen &&
     !subtasksDisabled &&
     !subTasksCount ? (
     <>
-      {/* {!readOnly && (
-        <AddSubtaskButton type="button" onClick={onClickAddSubtask}>
-          <AddPlaceholder>+ Add</AddPlaceholder>
+      {
+        <AddSubtaskButton type="button">
+          <AddPlaceholder>
+            <SubtasksCellContentButton
+              // isOpen={isOpen}
+              // disabled={isNestedTask}
+              // isGreyedOut={subtasksDisabled}
+              // onClick={onSubtaskLabelClick}
+              // subtasksDisabled={subtasksDisabled}
+              subTasksCount={subTasksCount}
+              onClick={onClickAddSubtask}
+            >
+              <>
+                <SubtasksCellText>
+                  <div style={{ marginBottom: '3px' }}>+</div>
+                </SubtasksCellText>
+                <Tooltip placement="top" title="Add Subtask">
+                  <span>
+                    <ParentTaskIcon />
+                  </span>
+                </Tooltip>
+              </>
+            </SubtasksCellContentButton>
+          </AddPlaceholder>
         </AddSubtaskButton>
-      )} */}
+      }
     </>
   ) : (
     <>
       {(subTasksCount || isSubtask) && (
-        <SubtasksCellContentButton
-          isOpen={isOpen}
-          disabled={isNestedTask}
-          isGreyedOut={subtasksDisabled}
-          onClick={onSubtaskLabelClick}
+        <Tooltip
+          placement="top"
+          title={subtasksDisabled ? '' : isOpen ? '' : 'Show Subtasks'}
         >
-          {!isSubtask ? (
-            <>
-              <SubtasksCellText>{subTasksCount}</SubtasksCellText>
-              <ParentTaskIcon />
-            </>
-          ) : (
-            <SubtaskIcon />
-          )}
-        </SubtasksCellContentButton>
+          <SubtasksCellContentButton
+            isOpen={isOpen}
+            disabled={origin === 'LIST' ? !isNestedTask : isNestedTask}
+            isGreyedOut={subtasksDisabled}
+            onClick={onSubtaskLabelClick}
+            subtasksDisabled={subtasksDisabled}
+            subTasksCount={subTasksCount}
+          >
+            {!isSubtask ? (
+              <>
+                {isOpen ? (
+                  <Tooltip placement="top" title="Add Subtask">
+                    <SubtasksCellText onClick={onClickAddSubtask}>
+                      <div style={{ marginBottom: '3px' }}>+</div>
+                    </SubtasksCellText>
+                  </Tooltip>
+                ) : (
+                  <SubtasksCountText>
+                    <div style={{ marginBottom: '3px' }}>{subTasksCount}</div>
+                  </SubtasksCountText>
+                )}
+                {/* <SubtasksCellText>
+                  {isOpen ? '+' : subTasksCount}
+                </SubtasksCellText> */}
+                <Tooltip
+                  placement="top"
+                  title={subtasksDisabled ? '' : isOpen ? 'Hide Subtasks' : ''}
+                >
+                  <span>
+                    <ParentTaskIcon />
+                  </span>
+                </Tooltip>
+              </>
+            ) : (
+              <SubtaskIcon />
+            )}
+          </SubtasksCellContentButton>
+        </Tooltip>
       )}
     </>
   );

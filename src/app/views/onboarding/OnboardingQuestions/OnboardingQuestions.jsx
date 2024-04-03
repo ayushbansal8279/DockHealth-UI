@@ -3,14 +3,13 @@ import { userProfileSelector } from 'selectors/user-selectors';
 import { useSelector } from 'react-redux';
 import Spacing from 'components/common/Spacing';
 import OnboardingIndicator from 'components/common/OnboardingIndicator/OnboardingIndicator';
+import { OutfitTypography } from 'styles/theme-outfit';
 import OnboardingQuestionsOwner from './OnboardingQuestionsOwner/OnboardingQuestionsOwner';
 import OnboardingQuestionsMember from './OnboardingQuestionsMember/OnboardingQuestionsMember';
 import OnboardingQuestionsGuest from './OnboardingQuestionsGuest/OnboardingQuestionsGuest';
 
-import { Title } from './styled';
-
 const ONBOARDING_TITLE =
-  'Welcome to Dock health. Let’s customize your space to your needs';
+  'Select a few quick customizations for a better experience.';
 
 const OnboardingQuestions = () => {
   const { orgUserRole, organizationName } = useSelector(userProfileSelector);
@@ -22,11 +21,14 @@ const OnboardingQuestions = () => {
   return (
     <div>
       <OnboardingIndicator
-        steps={orgUserRole === 'OWNER' ? 5 : 2}
+        steps={orgUserRole === 'OWNER' ? 5 : 1}
         completedSteps={step}
       />
       <Spacing vertical={5} />
-      <Title>{ONBOARDING_TITLE}</Title>
+      <OutfitTypography variant="h3" weight="700">
+        {ONBOARDING_TITLE}
+      </OutfitTypography>
+      <Spacing vertical={5} />
       {orgUserRole === 'OWNER' && (
         <OnboardingQuestionsOwner
           clickNextStep={clickNextStep}

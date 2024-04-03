@@ -13,14 +13,14 @@ export const Title = styled.h2`
   margin-bottom: ${spacing.regular};
   font-size: ${fontSizes.large};
   font-weight: ${fontWeights.bold};
-  font-family: Montserrat;
+  font-family: Outfit;
 `;
 
 export const Description = styled.p`
   margin-bottom: 0px;
   font-size: ${fontSizes.regular};
   font-weight: ${fontWeights.light};
-  font-family: Montserrat;
+  font-family: Outfit;
 `;
 
 export const NavigationContainer = styled.div`

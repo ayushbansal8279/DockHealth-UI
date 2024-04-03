@@ -16,11 +16,12 @@ const TaskItemMembers = ({
   matchAssignedTo,
   readOnly,
   additionalUsers,
+  isAssigneeHover,
 }) => {
   return (
     <TaskItemPopover
       disabled={readOnly}
-      contentWidth={230}
+      contentWidth={246}
       content={({ closePopover }) => (
         <MultiAssignMembersList
           taskListIdentifiers={
@@ -35,6 +36,7 @@ const TaskItemMembers = ({
             task?.taskList?.listType === 'PUBLIC' ||
             task?.taskList?.listType === 'TEMPLATE'
           }
+          closeModel={closePopover}
           additionalMembers={additionalUsers}
         />
       )}
@@ -48,9 +50,15 @@ const TaskItemMembers = ({
           <MemberGroup members={assignedToUsers} size={28} />
         </>
       ) : (
-        <Tooltip placement="top" title="Assign to">
-          <div>{!readOnly && <AssignMemberIcon />}</div>
-        </Tooltip>
+        <>
+          {isAssigneeHover && (
+            <Tooltip placement="top" title="Add assignee">
+              <div style={{ marginLeft: '2px' }}>
+                {!readOnly && <AssignMemberIcon />}
+              </div>
+            </Tooltip>
+          )}
+        </>
       )}
     </TaskItemPopover>
   );

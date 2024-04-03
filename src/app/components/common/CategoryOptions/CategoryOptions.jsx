@@ -11,23 +11,29 @@ const CategoryOptions = ({
   onToggle,
   onAddButtonClick,
   showAddButton = false,
+  coreTask,
 }) => {
   return (
     <div>
-      <Spacing vertical={3} />
+      {coreTask && <Spacing vertical={3} />}
       <Box display="flex" justifyContent="space-between">
         <div width="auto">
           <LabeledCollapseHeaderButton
             type="button"
             onClick={onToggle}
             width="auto"
+            coreTask={coreTask}
           >
-            <Spacing horizontal={3} />
             <LabeledCollapseItemName font-size={fontSizes.small}>
-              {visibility ? 'Hide empty fields' : 'Show empty fields'}
+              {coreTask
+                ? visibility
+                  ? 'Hide Empty Fields'
+                  : 'Show Empty Fields'
+                : visibility
+                ? 'Hide Empty'
+                : 'Show Empty'}
             </LabeledCollapseItemName>
             <Spacing horizontal={3} />
-            <RotatableChevron rotated={visibility} />
           </LabeledCollapseHeaderButton>
         </div>
         {showAddButton && typeof onAddButtonClick === 'function' && (

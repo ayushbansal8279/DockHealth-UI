@@ -16,13 +16,13 @@ export const QuickAddInputWrapper = styled.div`
 
   &:before {
     position: absolute;
-    top: 50%;
-    left: ${spacing.regularPlus};
+    top: 49%;
+    left: 135px;
     display: block;
     content: '+';
     transform: translateY(-50%);
-    color: ${palette.orange};
-    font-size: ${fontSizes.regular};
+    color: ${palette.blueOcean};
+    font-size: ${fontSizes.large};
   }
 
   ${({ isFocused }) =>
@@ -42,6 +42,7 @@ export const QuickAddInput = styled.input`
   border-top: none;
   font-size: ${fontSizes.regular};
   box-shadow: none;
+  text-align: center;
 
   &:disabled {
     background-color: transparent;
@@ -83,16 +84,10 @@ export const ListItem = styled.div`
   appearance: none;
   border-radius: 0;
   background-color: ${({ isSelected }) =>
-    isSelected ? palette.darkBlue : 'transparent'};
+    isSelected ? palette.brightBlueWithAlpha : 'transparent'};
 
   &:hover {
-    background-color: ${({ isSelected }) =>
-      isSelected ? palette.darkBlue : palette.brightBlueWithAlpha};
-  }
-
-  & ${ListItemTextButton} {
-    color: ${({ isSelected }) =>
-      isSelected ? palette.white : palette.darkGrey};
+    background-color: ${palette.brightBlueWithAlpha};
   }
 `;
 

@@ -87,6 +87,8 @@ const TasksGroup = ({
   children,
   iconColorActive,
   restrictCustomizationFeatures,
+  origin,
+  bgColor,
 }) => {
   const addingNewSubtaskParentId = useSelector(
     addingNewSubtaskParentIdSelector,
@@ -110,10 +112,12 @@ const TasksGroup = ({
   const collapse = useContext(CollapseContext);
   const onSwitchOpen = useCallback(() => {
     if (isOpen) {
+      // console.log('TASK GROUP', taskGroupIdentifier, 'COLLAPSED');
       // eslint-disable-next-line react/destructuring-assignment
       collapse.set(taskGroupIdentifier, false);
       onTaskGroupCollapsed();
     } else {
+      // console.log('TASK GROUP', taskGroupIdentifier, 'EXPANDED');
       // eslint-disable-next-line react/destructuring-assignment
       collapse.set(taskGroupIdentifier, true);
       onTaskGroupExpanded();
@@ -270,7 +274,6 @@ const TasksGroup = ({
   );
 
   const { columns } = useTaskListColumnsConfig();
-
   return (
     <TasksGroupContainer
       $width={
@@ -278,27 +281,21 @@ const TasksGroup = ({
           ? null
           : columns
               .filter((f) => f.isChecked)
-              .reduce((accumulator, column) => {
-                // console.log('columnWidth', column, column.columnWidth);
-                return accumulator + column.columnWidth;
-              }, 0)
+              .reduce(
+                (accumulator, column) => accumulator + column.columnWidth,
+                0,
+              )
       }
+      bgColor={bgColor}
     >
-      <StickyContainer left={24} decreaseWidth={2 * 24}>
+      <StickyContainer left={origin === 'LIST' ? 8 : 24} decreaseWidth={2 * 24}>
         <TasksGroupHeader>
-          {!isCompletedGroup && !restrictCustomizationFeatures && (
-            <GroupOptionsContainer>
-              <OptionsMenu options={options} placement="bottom-start">
-                <MoreVert color="primary" />
-              </OptionsMenu>
-            </GroupOptionsContainer>
-          )}
-          <Spacing horizontal={2} />
+          <Spacing horizontal={4} />
           <GroupOpenContainer onClick={onToggleGroupOpen}>
             <RotatableChevron
               alt="arrow"
               rotated={collapse.get(taskGroupIdentifier) ? false : true}
-              color={iconColorActive}
+              color="#8492A4"
             />
           </GroupOpenContainer>
           <Spacing horizontal={1} />
@@ -323,12 +320,21 @@ const TasksGroup = ({
                       ({groupTaskCounts})
                     </TasksGroupLabelCounter>
                   )}
+                <div>
+                  {!isCompletedGroup && !restrictCustomizationFeatures && (
+                    <GroupOptionsContainer>
+                      <OptionsMenu options={options} placement="bottom-start">
+                        <MoreVert color="primary" />
+                      </OptionsMenu>
+                    </GroupOptionsContainer>
+                  )}
+                </div>
               </TasksGroupLabel>
             </GroupNameSection>
           </GroupNameSectionWrapper>
-          {!changingGroupOrderDisabled && (
+          {/* {!changingGroupOrderDisabled && (
             <ViewTypeSwitch value={viewType} onChange={changeViewType} />
-          )}
+          )} */}
         </TasksGroupHeader>
       </StickyContainer>
 

@@ -18,7 +18,7 @@ const StyledButton = styled(MuiButton)`
     &.MuiButton-root {
       width: ${({ width }) => `${width}`};
       font-weight: ${fontWeights.regularPlus};
-      font-family: 'Montserrat', sans-serif;
+      font-family: 'Outfit', sans-serif;
       outline: none;
       min-width: 0;
       min-height: '30px';
@@ -72,11 +72,13 @@ const StyledButton = styled(MuiButton)`
 
     &.MuiButton-containedPrimary {
       color: ${palette.white};
-      background-color: ${palette.darkBlue};
+      background-color: ${({ backgroundColor }) =>
+        `${backgroundColor ?? palette.darkBlue}`};
       border-radius: 4px;
 
       &:hover:not(:disabled) {
-        background-color: ${palette.darkBlue};
+        background-color: ${({ secondaryColor }) =>
+          `${secondaryColor ?? palette.darkBlue}`};
         opacity: 0.8;
       }
 
@@ -192,6 +194,8 @@ const Button = ({
   uppercase,
   onClick,
   size,
+  color,
+  secondaryColor,
   type,
   width,
   disabled,
@@ -199,6 +203,7 @@ const Button = ({
   reference,
   startIcon,
   endIcon,
+  fullWidth,
 }) => {
   let muiVariant = 'contained';
   switch (variant) {
@@ -239,6 +244,8 @@ const Button = ({
       ref={reference}
       variant={muiVariant}
       color={muiColor}
+      backgroundColor={color}
+      secondaryColor={secondaryColor}
       uppercase={`${uppercase}`}
       onClick={onClick}
       size={size}
@@ -248,6 +255,7 @@ const Button = ({
       padding={padding}
       startIcon={startIcon}
       endIcon={endIcon}
+      fullWidth={fullWidth}
     >
       <span>{children}</span>
     </StyledButton>
@@ -271,6 +279,12 @@ Button.propTypes = {
   width: PropTypes.string,
   startIcon: PropTypes.string,
   endIcon: PropTypes.node,
+  fullWidth: PropTypes.bool,
+  color: PropTypes.string,
+  secondaryColor: PropTypes.string,
+  padding: PropTypes.number,
+  id: PropTypes.string,
+  reference: PropTypes.any,
 };
 
 Button.defaultProps = {
@@ -282,6 +296,7 @@ Button.defaultProps = {
   width: '100%',
   startIcon: null,
   endIcon: null,
+  fullWidth: false,
 };
 
 export default Button;

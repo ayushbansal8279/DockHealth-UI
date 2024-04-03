@@ -26,13 +26,5 @@ export const StyledTextField = styled(TextField)`
       font-weight: ${fontWeights.regular};
       padding: 0;
 
-      // &::placeholder {
-      //   color: ${palette.coolGrey1};
-      //   font-size: 1rem;
-      //   font-weight: ${fontWeights.regular};
-      //   opacity: 0.8;
-      //   text-transform: uppercase;
-      // }
-    // }
   }
 `;

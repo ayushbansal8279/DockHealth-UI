@@ -2,7 +2,7 @@
 // import Symbol_observable from 'symbol-observable';
 /* eslint-disable global-require */
 // import MomentUtils from '@date-io/moment';
-import { ThemeProvider as MuiThemeProvider } from '@mui/material/styles';
+import { ThemeProvider } from '@mui/material/styles';
 import { LocalizationProvider as MuiPickersUtilsProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { HashRouter } from 'react-router-dom';
@@ -11,10 +11,10 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import ReactGA from 'react-ga';
 import { Provider } from 'react-redux';
-import { getTheme } from 'styles/theme';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { IntercomProvider } from 'react-use-intercom';
+import { getTheme } from 'styles/theme';
 import configureStore from './ConfigureStore';
 import ErrorBoundary from './ErrorBoundary';
 // import flags, { FlagsProvider } from './helpers/flags';
@@ -91,7 +91,7 @@ const queryClient = new QueryClient({
 
 const Index = () => (
   <QueryClientProvider client={queryClient}>
-    <MuiThemeProvider theme={getTheme()}>
+    <ThemeProvider theme={getTheme()}>
       <MuiPickersUtilsProvider dateAdapter={AdapterDateFns}>
         {/* <FlagsProvider flags={flags}> */}
         <Provider store={store}>
@@ -110,7 +110,7 @@ const Index = () => (
         </Provider>
         {/* </FlagsProvider> */}
       </MuiPickersUtilsProvider>
-    </MuiThemeProvider>
+    </ThemeProvider>
   </QueryClientProvider>
 );
 

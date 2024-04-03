@@ -1,14 +1,8 @@
 import styled from 'styled-components';
 import { fontSizes, fontWeights } from 'styles/font';
-import palette from 'styles/palette';
+import palette, { typography } from 'styles/palette';
 import spacing from 'styles/spacing';
 import { Popover } from '@mui/material';
-
-export const DueDateLabel = styled.label`
-  color: ${palette.coolGrey1};
-  font-size: ${fontSizes.small};
-  text-transform: uppercase;
-`;
 
 export const DueDateContentWrapper = styled.div`
   width: 100%;
@@ -18,47 +12,75 @@ export const DueDateContentWrapper = styled.div`
   padding: 25px 10px 6px 10px;
 `;
 
-export const DueDateContent = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr auto;
-  color: ${({ error }) => (error ? palette.error : palette.mediumGrey)};
-  font-weight: ${fontWeights.bold};
-`;
-
-export const DueDateText = styled.p`
-  margin-bottom: 0;
-`;
-
-export const Placeholder = styled.p`
-  color: ${palette.coolGrey1};
-  margin-bottom: 0;
-`;
-
 export const DueDateSectionWrapper = styled.div`
   display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  width: 100%;
-  height: 54px;
-  font-family: 'Roboto Condensed', sans-serif;
+  align-items: center;
+  font-family: Outfit;
+  margin-left: 10px;
 
   ${({ disabled }) =>
     disabled &&
     `
     pointer-events: none;
     
-    & ${Placeholder}, & ${DueDateLabel} {
-      color: ${palette.coolGrey2};
-    }
-
-    & ${DueDateContent} {
-      border-color: ${palette.coolGrey2};
-    }
   `}
 `;
 
-export const StyledButton = styled.button`
-  width: 100%;
+export const Title = styled.div`
+  margin-right: 37px;
+  color: ${palette.coolGrey1};
+  font-family: Outfit;
+  font-size: ${fontSizes.smallPlus};
+  font-weight: ${fontWeights.light};
+  display: flex;
+  align-items: center;
+`;
+
+export const SubTitle = styled.div`
+  margin-left: 10px;
+  color: ${palette.coolGrey1};
+  font-family: Outfit;
+  font-size: ${fontSizes.regular};
+  font-weight: ${fontWeights.light};
+`;
+
+export const AddDateButton = styled.button`
+  color: black;
+  margin-left: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+export const DateViewContainer = styled.div`
+  margin-left: 7px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 4px 8px;
+  border-radius: 8px;
+  color: ${({ isOverdue }) =>
+    isOverdue ? `${palette.white}` : `${palette.black}`};
+  background: ${({ isOverdue }) =>
+    isOverdue ? `${palette.oPlusRed}` : '#F8F8F9'};
+`;
+
+export const DateViewText = styled.div`
+  font-family: Outfit;
+  font-size: ${fontSizes.regular};
+  font-weight: ${fontWeights.light};
+`;
+
+export const ReminderIconContainer = styled.div`
+  color: ${({ isOverdue }) =>
+    isOverdue ? `${palette.oPlusRed}` : `${palette.coolGrey1}`};
+  padding-left: ${spacing.small};
+`;
+
+export const RecurringIconContainer = styled.div`
+  color: ${({ isOverdue }) =>
+    isOverdue ? `${palette.oPlusRed}` : `${palette.coolGrey1}`};
+  padding-left: ${spacing.small};
 `;
 
 export const StyledPopover = styled(Popover)`
@@ -68,5 +90,4 @@ export const StyledPopover = styled(Popover)`
     width: ${({ width }) => width};
     overflow: visible;
   }
-  
 `;

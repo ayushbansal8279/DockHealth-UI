@@ -71,6 +71,8 @@ import TaskItemText from 'components/task/StandardTaskItem/customFieldsTaskItemC
 import { updatePatientDetails } from 'actions/patient-details-actions';
 import TaskItemDropdown from 'components/task/StandardTaskItem/customFieldsTaskItemComponents/TaskItemDropdown/TaskItemDropdown';
 import TaskItemDate from 'components/task/StandardTaskItem/customFieldsTaskItemComponents/TaskItemDate';
+import { CollapseContext } from 'views/list-details/VirtualTaskList/VirtualTaskList';
+import { isWorkflowDrawerOpenSelector } from 'selectors/workflow-drawer-selectors';
 import TaskTemplateCreatedByMembers from '../TaskTemplateMembers/TaskTemplateCreatedBy';
 import TaskTemplateCompletedByMembers from '../TaskTemplateMembers/TaskTemplateCompletedByMembers';
 import TemplateHeaderName from '../TaskTemplateName/TaskTemplateName';
@@ -91,8 +93,8 @@ import {
   PatientMRNAnchor,
 } from './styled';
 import TaskTemplateDetails from '../TaskTemplateDetails/TaskTemplateDetails';
-import { CollapseContext } from 'views/list-details/VirtualTaskList/VirtualTaskList';
-import { isWorkflowDrawerOpenSelector } from 'selectors/workflow-drawer-selectors';
+import { ListPageContext } from '@/app/views/list-details/ListDetailsView';
+import { VTaskContext } from '@/app/views/list-details/VirtualTaskList/VirtualSegment/VTask/VTask';
 
 const TaskTemplateGroupHeader = ({
   templateGroup = {},
@@ -114,7 +116,7 @@ const TaskTemplateGroupHeader = ({
   showTasksWithGroup = true,
   iconColorActive,
   highlightedValue,
-  // origin,
+  origin,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const {
@@ -127,13 +129,21 @@ const TaskTemplateGroupHeader = ({
     creator,
   } = templateGroup;
 
-  // console.log('TaskTemplateGroupHeader', templateGroup);
-
   const { bulkEditIsActive } = useContext(BulkEditContext);
   const { bulkEditEnabled } = useContext(BulkEditContext);
+  const { changeViewType, tasks, handleAddTask } = useContext(ListPageContext);
   const [isEditing, setIsEditing] = useState(false);
   const [nameInputValue, setNameInputValue] = useState(name);
   const [nameInputError, setNameInputError] = useState(false);
+  const [isDateHover, setIsDateHover] = useState(false);
+  const [isCellHover, setCellHover] = useState({
+    dueDate: false,
+    startDate: false,
+    assignee: false,
+    comment: false,
+    label: false,
+    file: false,
+  });
   const nameInputReference = useRef(null);
   const currentUser = useSelector(userProfileSelector);
   const currentList = useSelector(currentTaskListSelector);
@@ -330,6 +340,9 @@ const TaskTemplateGroupHeader = ({
           name: 'Add task',
           onClick: () => {
             setIsAddingTask(true);
+            if (origin === 'LIST') {
+              collapse.handleAddWorkflowIdentifier(identifier);
+            }
           },
         },
       ];
@@ -613,35 +626,89 @@ const TaskTemplateGroupHeader = ({
 
   const [isPatientDataReadOnly] = useState(true);
   const collapse = useContext(CollapseContext);
+  const [virtualListWorkflowOpen, setVirtualListWorkflowOpen] = useState(
+    collapse.get(identifier) ? false : true,
+  );
+
+  const { isVirtualListWorkflowOpen } = useContext(VTaskContext);
   const handleOpen = () => {
     setOpen(!isOpen);
+    setVirtualListWorkflowOpen(!virtualListWorkflowOpen);
     // eslint-disable-next-line react/destructuring-assignment
-    collapse.set(identifier, isOpen);
+    // collapse.set(identifier, isOpen);
+    collapse.set(identifier, virtualListWorkflowOpen);
   };
 
   useEffect(() => {
-    if (!window.disabledVirtualTaskList) {
-      if (collapse.get(identifier) === undefined) {
-        setOpen(false);
-      } else if (collapse.get(identifier)) {
-        setOpen(false);
-      } else {
-        setOpen(true);
+    if (changeViewType === 'FULL_VIEW') {
+      if (!tasks.includes(identifier)) {
+        // setOpen(true);
+        setVirtualListWorkflowOpen(true);
+        collapse.set(identifier, false);
+        handleAddTask(identifier);
       }
+      // else {
+      // if (collapse.get(identifier)) {
+      //   setOpen(false);
+      //   // setVirtualListWorkflowOpen(false);
+      // } else {
+      //   setOpen(true);
+      //   // setVirtualListWorkflowOpen(true);
+      // }
+      // setOpen(collapse.get(identifier) ? false : true);
+      //   setVirtualListWorkflowOpen(collapse.get(identifier) ? false : true);
+      // }
     }
-  }, [handleOpen]);
+
+    if (changeViewType === 'SLIM_VIEW') {
+      if (!tasks.includes(identifier)) {
+        // setOpen(false);
+        setVirtualListWorkflowOpen(false);
+        collapse.set(identifier, true);
+        handleAddTask(identifier);
+      }
+      // else {
+      // if (collapse.get(identifier)) {
+      //   setOpen(false);
+      //   // setVirtualListWorkflowOpen(false);
+      // } else {
+      //   setOpen(true);
+      //   // setVirtualListWorkflowOpen(true);
+      // }
+      // setOpen(collapse.get(identifier) ? false : true);
+      //   setVirtualListWorkflowOpen(collapse.get(identifier) ? false : true);
+      // }
+    }
+    // else {
+    // setOpen(false);
+    // collapse.set(identifier, true);
+    // }
+  }, [
+    changeViewType,
+    // handleOpen,
+  ]);
+
+  // useEffect(() => {
+  //   if (origin === 'PATIENT') {
+  //     setOpen(!isOpen);
+  //     // collapse.set(identifier, isOpen);
+  //   }
+  // }, [origin, setOpen]);
 
   const randerFirstColumnCoverIfNecessary = useCallback(
     (content, order, width) => {
       if (order !== 0) return content;
       return (
         <StickyMainTaskItemCell
+          isTamplateGroup={true}
+          isOpen={!isVirtualListWorkflowOpen}
           customWidthExists
           backgroundColor={pageBackground}
           isSelected={isBundleSelected}
           isEditingDescription={isEditing}
           order={0}
           width={+width + 25 + 54}
+          origin={origin}
         >
           {!groupDragAndDropDisabled &&
             !bulkEditIsActive &&
@@ -663,7 +730,9 @@ const TaskTemplateGroupHeader = ({
             <Box m={1} />
             {showTasksWithGroup && (
               <RotatableChevron
-                rotated={isOpen}
+                rotated={
+                  origin === 'PATIENT' ? isOpen : virtualListWorkflowOpen
+                }
                 onClick={handleOpen}
                 color={iconColorActive}
               />
@@ -677,7 +746,6 @@ const TaskTemplateGroupHeader = ({
               </>
             )}
           </ActionIconsContainer>
-
           {content}
         </StickyMainTaskItemCell>
       );
@@ -697,6 +765,7 @@ const TaskTemplateGroupHeader = ({
       handleBundleSelect,
       showTasksWithGroup,
       isOpen,
+      virtualListWorkflowOpen,
       iconColorActive,
       menuOptions,
       setOpen,
@@ -718,11 +787,13 @@ const TaskTemplateGroupHeader = ({
   );
 
   return (
-    <TaskTemplateGroupHeaderContainer isSelected={isBundleSelected}>
+    <TaskTemplateGroupHeaderContainer
+      isSelected={isBundleSelected}
+      isOpen={origin === 'PATIENT' ? isOpen : virtualListWorkflowOpen}
+    >
       {randerFirstColumnCoverIfNecessary(
         <>
           <TaskItemCell
-            data-foo={3}
             key={`task_description_${identifier}`}
             width={
               columns?.find(
@@ -805,6 +876,7 @@ const TaskTemplateGroupHeader = ({
                   onWorkflowUpdate={compose(dispatch, updatePartialWorkflow)}
                   currentUser={currentUser}
                   readOnly={restrictions?.patient === READ_ONLY}
+                  origin={origin}
                 />
               )}
             </TaskItemCell>,
@@ -1014,7 +1086,6 @@ const TaskTemplateGroupHeader = ({
                   ({ identifier: id }) => id === TaskItemColumn.PRIORITY,
                 )?.columnWidth
               }
-              justify="center"
               order={getColumnOrder(TaskItemColumn.PRIORITY)}
             >
               <TaskItemDropdown
@@ -1078,12 +1149,17 @@ const TaskTemplateGroupHeader = ({
                   ({ identifier: id }) => id === TaskItemColumn.START_DATE,
                 )?.columnWidth
               }
-              justify="center"
+              paddingLeft="10px"
+              justify="flex-start"
               order={getColumnOrder(TaskItemColumn.START_DATE)}
+              onMouseEnter={() => setCellHover({ startDate: true })}
+              onMouseLeave={() => setCellHover({ startDate: false })}
             >
               <TaskTemplateStartDate
+                isHover={isCellHover.startDate}
                 workflow={templateGroup}
                 disabled={restrictions?.startDate === DISABLED}
+                isDateHover={isDateHover}
               />
             </TaskItemCell>,
             getColumnOrder(TaskItemColumn.START_DATE),
@@ -1103,12 +1179,17 @@ const TaskTemplateGroupHeader = ({
                   ({ identifier: id }) => id === TaskItemColumn.DUE_DATE,
                 )?.columnWidth
               }
-              justify="center"
+              paddingLeft="10px"
+              justify="flex-start"
               order={getColumnOrder(TaskItemColumn.DUE_DATE)}
+              onMouseEnter={() => setCellHover({ dueDate: true })}
+              onMouseLeave={() => setCellHover({ dueDate: false })}
             >
               <TaskTemplateDueDate
+                isHover={isCellHover.dueDate}
                 workflow={templateGroup}
                 disabled={restrictions?.dueDate === DISABLED}
+                isDateHover={isDateHover}
               />
             </TaskItemCell>,
             getColumnOrder(TaskItemColumn.DUE_DATE),
@@ -1126,7 +1207,7 @@ const TaskTemplateGroupHeader = ({
               ({ identifier: id }) => id === TaskItemColumn.ANCHOR_DATE,
             )?.columnWidth
           }
-          justify="center"
+          paddingLeft="12px"
           order={getColumnOrder(TaskItemColumn.ANCHOR_DATE)}
         >
           <TaskTemplateAnchorDate workflow={templateGroup} />
@@ -1143,16 +1224,18 @@ const TaskTemplateGroupHeader = ({
                 )?.columnWidth
               }
               // eslint-disable-next-line sonarjs/no-all-duplicated-branches
-              justify={groupHasMultipleAssignees ? 'center' : 'center'}
-              paddingLeft="small"
+              paddingLeft="12px"
               paddingRight="small"
               onContextMenu={(event) => {
                 event.stopPropagation();
               }}
               order={getColumnOrder(TaskItemColumn.ASSIGNED)}
               printWidth={TaskItemColumnWidth[TaskItemColumn.ASSIGNED].PRINT}
+              onMouseEnter={() => setCellHover({ assignee: true })}
+              onMouseLeave={() => setCellHover({ assignee: false })}
             >
               <TaskTemplateMembers
+                isHover={isCellHover.assignee}
                 readOnly={restrictions?.assigment === READ_ONLY}
                 currentUser={currentUser}
                 multipleAssigneesContext={groupHasMultipleAssignees}
@@ -1182,8 +1265,7 @@ const TaskTemplateGroupHeader = ({
                 )?.columnWidth
               }
               // eslint-disable-next-line sonarjs/no-all-duplicated-branches
-              justify={groupHasMultipleAssignees ? 'center' : 'center'}
-              paddingLeft="small"
+              paddingLeft="12px"
               paddingRight="small"
               onContextMenu={(event) => {
                 event.stopPropagation();
@@ -1230,8 +1312,11 @@ const TaskTemplateGroupHeader = ({
                 )?.columnWidth
               }
               order={getColumnOrder(TaskItemColumn.COMMENTS)}
+              onMouseEnter={() => setCellHover({ comment: true })}
+              onMouseLeave={() => setCellHover({ comment: false })}
             >
               <TaskTemplateIcons
+                isHover={isCellHover}
                 comments={
                   templateGroup.comments || !workFlowData
                     ? templateGroup.comments
@@ -1266,8 +1351,11 @@ const TaskTemplateGroupHeader = ({
                 )?.columnWidth
               }
               order={getColumnOrder(TaskItemColumn.LABELS)}
+              onMouseEnter={() => setCellHover({ label: true })}
+              onMouseLeave={() => setCellHover({ label: false })}
             >
               <TaskTemplateIcons
+                isHover={isCellHover}
                 labels={
                   templateGroup.labels || !workFlowData
                     ? templateGroup.labels
@@ -1302,8 +1390,11 @@ const TaskTemplateGroupHeader = ({
                 )?.columnWidth
               }
               order={getColumnOrder(TaskItemColumn.FILES)}
+              onMouseEnter={() => setCellHover({ file: true })}
+              onMouseLeave={() => setCellHover({ file: false })}
             >
               <TaskTemplateIcons
+                isHover={isCellHover}
                 attachments={
                   templateGroup.attachments || !workFlowData
                     ? templateGroup.attachments
@@ -1363,8 +1454,7 @@ const TaskTemplateGroupHeader = ({
                   ({ identifier: id }) => id === TaskItemColumn.CREATED_BY,
                 )?.columnWidth
               }
-              justify="center"
-              paddingLeft="small"
+              paddingLeft="12px"
               paddingRight="small"
               onContextMenu={(event) => {
                 event.stopPropagation();
@@ -1394,9 +1484,8 @@ const TaskTemplateGroupHeader = ({
                   ({ identifier: id }) => id === TaskItemColumn.CREATED_DATE,
                 )?.columnWidth
               }
-              paddingLeft="tiny"
+              paddingLeft="12px"
               paddingRight="tiny"
-              justify="center"
               onContextMenu={(event) => {
                 event.stopPropagation();
               }}
@@ -1422,9 +1511,8 @@ const TaskTemplateGroupHeader = ({
                   ({ identifier: id }) => id === TaskItemColumn.COMPLETED_DATE,
                 )?.columnWidth
               }
-              paddingLeft="tiny"
+              paddingLeft="12px"
               paddingRight="tiny"
-              justify="center"
               onContextMenu={(event) => {
                 event.stopPropagation();
               }}
@@ -1432,7 +1520,7 @@ const TaskTemplateGroupHeader = ({
             >
               <TaskTemplateDate
                 workflow={templateGroup}
-                title="Completed On"
+                title="Add Complete Date"
                 dateTime={templateGroup.completedDt}
               />
             </TaskItemCell>,
@@ -1450,8 +1538,7 @@ const TaskTemplateGroupHeader = ({
                   ({ identifier: id }) => id === TaskItemColumn.COMPLETED_BY,
                 )?.columnWidth
               }
-              justify="center"
-              paddingLeft="small"
+              paddingLeft="12px"
               paddingRight="small"
               onContextMenu={(event) => {
                 event.stopPropagation();
@@ -1485,9 +1572,8 @@ const TaskTemplateGroupHeader = ({
                   ({ identifier: id }) => id === TaskItemColumn.ELAPSED_TIME,
                 )?.columnWidth
               }
-              paddingLeft="tiny"
+              paddingLeft="12px"
               paddingRight="tiny"
-              justify="center"
               onContextMenu={(event) => {
                 event.stopPropagation();
               }}

@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import spacing from 'styles/spacing';
-import palette from 'styles/palette';
+import palette, { typography } from 'styles/palette';
 import { fontSizes } from 'styles/font';
 
 export const TemplateHandle = styled.img`
@@ -46,14 +46,22 @@ export const TaskTemplateGroupHeaderContainer = styled.div`
   position: relative;
   display: flex;
   padding: 0;
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: inherit;
   font-size: ${fontSizes.smallPlus};
   width: 100%;
-  height: 35px;
-  border-top: 1px solid ${palette.coolGrey3};
-  border-bottom: 1px solid ${palette.coolGrey3};
+  height: ${({ isOpen }) => (isOpen ? '51px;' : '50px;')}
   background-color: ${(props) =>
     props.isSelected ? palette.dockBlueLight : palette.white};
+
+  border-top: 3px solid rgba(75, 179, 253, 1);
+  margin-top: 10px;
+  border-bottom: 1px solid
+    ${({ isOpen }) =>
+      isOpen ? `${palette.coolGrey3}` : 'rgba(75, 179, 253, 1)'};
+  border-right: 1px solid rgba(75, 179, 253, 1);
+  z-index: 2;
+  
+  border-radius: 7px 7px ${({ isOpen }) => (isOpen ? `0px` : '7px')} ${({ isOpen }) => (isOpen ? `0px` : '7px')};
 
   &:hover {
     & ${TemplateHandle}, ${AddPlaceholder} {

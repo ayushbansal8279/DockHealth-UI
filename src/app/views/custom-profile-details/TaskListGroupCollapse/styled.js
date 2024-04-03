@@ -20,7 +20,7 @@ export const GroupHeader = styled.div`
 export const GroupTitle = styled.div`
   display: flex;
   flex: 1;
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Outfit', sans-serif;
   font-size: ${fontSizes.regular};
   font-weight: ${fontWeights.bold};
   margin-bottom: 0;

@@ -1,4 +1,4 @@
-import React, { createContext, useMemo, useReducer } from 'react';
+import React, { createContext, useMemo, useReducer, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { uniqueId } from 'lodash';
 import Virtualized, { Node } from 'views/list-details/modules/Virtualized';
@@ -19,6 +19,9 @@ export interface Props {
 export const CollapseContext = createContext({
   get: (id: string) => {},
   set: (id: string, value: boolean) => {},
+  workflowIdentifierMap: [],
+  handleAddWorkflowIdentifier: (identifier: any) => {},
+  handleRemoveWorkflowIdentifier: (identifier: any) => {},
 });
 
 // @ts-ignore
@@ -52,19 +55,128 @@ function VirtualTaskList({ groupedTasks }: Props) {
     },
     {},
   );
+  const [workflowIdentifierMap, setWorkflowIdentifierMap] = useState([]);
   // @ts-ignore
   const tasksMap = useSelector((state) => state.listDetails.tasksMap);
   // @ts-ignore
   const listGroups = useSelector((state) => state.listDetails.listGroups);
+  const handleAddWorkflowIdentifier = (identifier) => {
+    setWorkflowIdentifierMap([...workflowIdentifierMap, identifier]);
+  };
+  const handleRemoveWorkflowIdentifier = (identifier) => {
+    const newArray = workflowIdentifierMap.filter(
+      (item) => item !== identifier,
+    );
+    setWorkflowIdentifierMap(newArray);
+  };
+  // const nodes: Node[] = useMemo(() => {
+  //   // @ts-ignore
+  //   return listGroups
+  //     .map((group) => {
+  //       const groupTasks =
+  //         groupedTasks.find(
+  //           (groupedTask) =>
+  //             groupedTask.groupIdentifier === group.taskGroupIdentifier,
+  //         )?.tasks ?? [];
+  //       return convert(
+  //         group.taskGroupIdentifier,
+  //         VListGroup,
+  //         'ListGroup',
+  //         !!collapseMap[group.taskGroupIdentifier],
+  //         { name: group.groupName, taskGroupIdentifier: group.taskGroupIdentifier },
+  //         [
+  //           convert(
+  //             uniqueId().toString(),
+  //             VQuickAddTask,
+  //             'QuickAddTask',
+  //             false,
+  //             {
+  //               taskGroupIdentifier: group.taskGroupIdentifier,
+  //             },
+  //             [],
+  //             true,
+  //           ),
+  //           convert(
+  //             uniqueId().toString(),
+  //             VTaskHeader,
+  //             'TaskHeader',
+  //             false,
+  //             {},
+  //             [],
+  //             true,
+  //           ),
+  //         ].concat(
+  //           ...groupTasks.map((taskIdentifier: string) => {
+  //             const task = tasksMap[taskIdentifier];
+  //             const children =
+  //               task.itemType === 'TASK' ? task.subtasks : task.tasks;
+  //             return convert(
+  //               taskIdentifier,
+  //               VTask,
+  //               'Task',
+  //               !!collapseMap[taskIdentifier],
+  //               { task },
+  //               children.map((child: any) => {
+  //                 return convert(
+  //                   child?.taskIdentifier ?? child,
+  //                   task.itemType === 'TASK' ? VSubtask : VTask,
+  //                   task.itemType === 'TASK' ? 'Subtask' : 'TaskOfBundle',
+  //                   !!collapseMap[child?.taskIdentifier ?? child],
+  //                   {
+  //                   isTaskTemplate: true,
+  //                     isLastChild:
+  //                       children.indexOf(child) === children.length - 1,
+  //                 },
+  //                   !!tasksMap[child]?.subtasks.length
+  //                     ? tasksMap[child].subtasks.map((subtask: any) => {
+  //                         return convert(
+  //                           subtask.taskIdentifier,
+  //                           VSubtask,
+  //                           'Subtask',
+  //                           false,
+  //                           { task: subtask },
+  //                           [],
+  //                         );
+  //                       })
+  //                     : [],
+  //                 );
+  //               }),
+  //             );
+  //           }),
+  //         ),
+  //         true,
+  //       );
+  //     })
+  //     .concat(
+  //       convert(
+  //         uniqueId().toString(),
+  //         VAddGroup,
+  //         'AddGroup',
+  //         false,
+  //         {},
+  //         [],
+  //         true,
+  //       ),
+  //     );
   const nodes: Node[] = useMemo(() => {
-    // @ts-ignore
-    return listGroups
-      .map((group) => {
-        const groupTasks =
-          groupedTasks.find(
-            (groupedTask) =>
-              groupedTask.groupIdentifier === group.taskGroupIdentifier,
-          )?.tasks ?? [];
+    return [
+      convert(
+        uniqueId().toString(),
+        VAddGroup,
+        'AddGroup',
+        false,
+        {},
+        [],
+        true,
+      ),
+    ].concat(
+      listGroups.map((group, index) => {
+        const groupTasks = groupedTasks
+          ? groupedTasks.find(
+              (groupedTask) =>
+                groupedTask.groupIdentifier === group.taskGroupIdentifier,
+            )?.tasks ?? []
+          : [];
         return convert(
           group.taskGroupIdentifier,
           VListGroup,
@@ -73,6 +185,7 @@ function VirtualTaskList({ groupedTasks }: Props) {
           {
             name: group.groupName,
             taskGroupIdentifier: group.taskGroupIdentifier,
+            bgColor: !(index % 2 === 0),
           },
           [
             convert(
@@ -82,6 +195,7 @@ function VirtualTaskList({ groupedTasks }: Props) {
               false,
               {
                 taskGroupIdentifier: group.taskGroupIdentifier,
+                bgColor: !(index % 2 === 0),
               },
               [],
               true,
@@ -91,12 +205,15 @@ function VirtualTaskList({ groupedTasks }: Props) {
               VTaskHeader,
               'TaskHeader',
               false,
-              {},
+              {
+                bgColor: !(index % 2 === 0),
+                groupWithZeroTask: groupTasks?.length === 0,
+              },
               [],
               true,
             ),
           ].concat(
-            ...groupTasks.map((taskIdentifier: string) => {
+            ...groupTasks.map((taskIdentifier: string, groupTaskIndex) => {
               const task = tasksMap[taskIdentifier];
               const children =
                 task.itemType === 'TASK' ? task.subtasks : task.tasks;
@@ -105,25 +222,50 @@ function VirtualTaskList({ groupedTasks }: Props) {
                 VTask,
                 'Task',
                 !!collapseMap[taskIdentifier],
-                { task },
-                children.map((child: any) => {
+                {
+                  task,
+                  bgColor: !(index % 2 === 0),
+                  isLastTaskOfGroup: groupTaskIndex === groupTasks.length - 1,
+                  // &&
+                  // !!collapseMap[taskIdentifier],
+                },
+                children.map((child: any, childIndex) => {
                   return convert(
                     child?.taskIdentifier ?? child,
                     task.itemType === 'TASK' ? VSubtask : VTask,
                     task.itemType === 'TASK' ? 'Subtask' : 'TaskOfBundle',
                     !!collapseMap[child?.taskIdentifier ?? child],
-                    { isTaskTemplate: true },
+                    {
+                      isTaskTemplate: true,
+                      isLastChild:
+                        children.indexOf(child) === children.length - 1,
+                      bgColor: !(index % 2 === 0),
+                      isLastTaskOfGroup:
+                        groupTaskIndex === groupTasks.length - 1 &&
+                        childIndex === children.length - 1,
+                      //  &&
+                      // !!collapseMap[child?.taskIdentifier ?? child],
+                    },
                     !!tasksMap[child]?.subtasks.length
-                      ? tasksMap[child].subtasks.map((subtask: any) => {
-                          return convert(
-                            subtask.taskIdentifier,
-                            VSubtask,
-                            'Subtask',
-                            false,
-                            { task: subtask },
-                            [],
-                          );
-                        })
+                      ? tasksMap[child].subtasks.map(
+                          (subtask: any, subTaskIndex) => {
+                            return convert(
+                              subtask.taskIdentifier,
+                              VSubtask,
+                              'Subtask',
+                              false,
+                              {
+                                task: subtask,
+                                bgColor: !(index % 2 === 0),
+                                isLastTaskOfGroup:
+                                  subTaskIndex ===
+                                    tasksMap[child]?.subtasks.length - 1 &&
+                                  childIndex === children.length - 1,
+                              },
+                              [],
+                            );
+                          },
+                        )
                       : [],
                   );
                 }),
@@ -132,18 +274,8 @@ function VirtualTaskList({ groupedTasks }: Props) {
           ),
           true,
         );
-      })
-      .concat(
-        convert(
-          uniqueId().toString(),
-          VAddGroup,
-          'AddGroup',
-          false,
-          {},
-          [],
-          true,
-        ),
-      );
+      }),
+    );
   }, [groupedTasks, tasksMap, collapseMap, listGroups]);
 
   const dispatch = useDispatch();
@@ -166,6 +298,9 @@ function VirtualTaskList({ groupedTasks }: Props) {
     set: (id: string, value: boolean) => {
       collapseDispatch([id, value]);
     },
+    workflowIdentifierMap: workflowIdentifierMap,
+    handleAddWorkflowIdentifier: handleAddWorkflowIdentifier,
+    handleRemoveWorkflowIdentifier: handleRemoveWorkflowIdentifier,
   };
 
   return (

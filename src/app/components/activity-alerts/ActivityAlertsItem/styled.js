@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import spacing from 'styles/spacing';
 import { fontWeights, fontSizes } from 'styles/font';
-import palette from 'styles/palette';
+import palette, { typography } from 'styles/palette';
 
 export const ActivityAlertsItemContainer = styled.div`
   font-family: Montserrat;
@@ -32,7 +32,7 @@ export const ActivityAlertsItemOrganizationAvatar = styled.div`
 `;
 
 export const ActivityAlertsItemOrganizationLabel = styled.div`
-  font-family: 'Roboto Condensed', sans-serif;;
+  font-family: inherit;
   color: ${palette.mediumGrey};
   font-weight: ${fontWeights.regularPlus};
   padding-left: 10px; // per design
@@ -45,7 +45,7 @@ export const ActivityAlertsItemHeader = styled.div`
   display: flex;
   margin-bottom: ${spacing.regularPlus};
   justify-content: space-between;
-  font-family: Montserrat;
+  font-family: Outfit;
 
   & > div {
     display: flex;
@@ -53,7 +53,7 @@ export const ActivityAlertsItemHeader = styled.div`
 `;
 
 export const ActivityAlertsItemTime = styled.div`
-  font-family: Montserrat;
+  font-family: Outfit;
   font-style: normal;
   font-weight: normal;
   font-size: ${fontSizes.small};
@@ -70,14 +70,14 @@ export const ActivityAlertsItemClearLabel = styled.div`
 `;
 
 export const ActivityAlertItemTitle = styled.div`
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: inherit;
   color: ${palette.mediumGrey};
   font-weight: ${fontWeights.bold};
   margin-right: ${spacing.huge};
 `;
 
 export const ActivityAlertItemSubTitle = styled.div`
-  font-family: 'Roboto Condensed', sans-serif;;
+  font-family: inherit;
   color: ${palette.coolGrey1};
   font-size: ${fontSizes.smallPlus};
   margin-right: ${spacing.huge};
@@ -90,14 +90,14 @@ export const CompletedCircleIcon = styled.img`
 `;
 
 export const StyledDescriptionTaskLink = styled.span`
-  font-family: 'Roboto Condensed', sans-serif;;
+  font-family: inherit;
   font-weight: ${fontWeights.bold};
   color: ${palette.brightBlue};
   cursor: pointer;
 `;
 
 export const StyledTaskLink = styled(StyledDescriptionTaskLink)`
-  font-family: 'Roboto Condensed', sans-serif;;
+  font-family: inherit;
   font-weight: ${fontWeights.bold};
   font-size: ${fontSizes.regular};
   color: ${palette.brightBlue};

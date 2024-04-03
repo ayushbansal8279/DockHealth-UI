@@ -1,5 +1,11 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import React, { useState, useCallback, useEffect, useMemo } from 'react';
+import React, {
+  useState,
+  useCallback,
+  useEffect,
+  useMemo,
+  useContext,
+} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import usePrevious from 'hooks/use-previous';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
@@ -24,6 +30,8 @@ import {
   TaskTemplateGroupContainer,
   TaskTemplateGroupList,
   QuickAddInputWrapper,
+  TaskTemplateItemsContainer,
+  TaskTemplateItemsStartPill,
 } from './styled';
 import TaskTemplateGroupHeader from '../TaskTemplateGroupHeader/TaskTemplateGroupHeader';
 
@@ -42,13 +50,12 @@ const TaskTemplateGroup = ({
   showTasksWithGroup = true,
   iconColorActive,
   origin,
+  pageBackground,
   highlightedValue,
 }) => {
   const templateGroup = useSelector((state) => {
     return taskLookupSelector(state, origin, pullGroup);
   });
-
-  // console.log("templateGroup", templateGroup, origin, pullGroup);
 
   const {
     tasks: taskIdentifiers, // task identifiers
@@ -68,7 +75,7 @@ const TaskTemplateGroup = ({
   const { SHOW_WORKFLOW_DETAILS, SHOW_WORKFLOW_COMPLETED_TASKS } =
     viewSetup || {};
   // const { innerRef, draggableProps } = draggableProvided;
-  const [isOpen, setOpen] = useState(false);
+  const [isOpen, setOpen] = useState(true);
   const [draggedTaskIdentifier, setDraggedTaskIdentifier] = useState(null);
   const [showCompletedTasks, setShowCompletedTasks] = useState(true);
   const [showIncompleteTasks, setShowIncompleteTasks] = useState(
@@ -131,9 +138,8 @@ const TaskTemplateGroup = ({
   const filteredTasks = filteredTasksByStatus.map((t) => t.identifier);
 
   return (
-    <TaskTemplateGroupContainer
+    <div
     // ref={innerRef} {...draggableProps}
-      data-foo={1}
     >
       <TaskTemplateGroupHeader
         isFetchingTasks={isFetchingTasks}
@@ -156,6 +162,7 @@ const TaskTemplateGroup = ({
         iconColorActive={iconColorActive}
         highlightedValue={highlightedValue}
         origin={origin}
+        pageBackground={pageBackground}
       />
       {!isStartedDnD && window.disabledVirtualTaskList && (
         <TaskTemplateGroupList timeout={150} in={isOpen && !isStartedDnD}>
@@ -190,7 +197,6 @@ const TaskTemplateGroup = ({
                     <div
                       ref={templateDroppableProvided.innerRef}
                       {...templateDroppableProvided.droppableProps}
-                      data-foo={2}
                     >
                       {filteredTasks?.map((taskOrIdentifier, index) => (
                         <Draggable
@@ -261,7 +267,7 @@ const TaskTemplateGroup = ({
           )}
         </TaskTemplateGroupList>
       )}
-    </TaskTemplateGroupContainer>
+    </div>
   );
 };
 

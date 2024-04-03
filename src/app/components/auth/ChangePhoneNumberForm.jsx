@@ -1,24 +1,37 @@
-import { Grid } from '@mui/material';
+import { Typography } from '@mui/material';
 import React, { useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { object, string } from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useSmallScreen } from 'helpers/utility-functions';
 import { useBoolean } from 'hooks/useBoolean';
 import Spacing from 'components/common/Spacing';
 import FormPhoneNumberInput from 'components/common/PhoneNumberInput/FormPhoneNumberInput';
-import { MontserratTypography } from 'styles/theme-montserrat';
 import Button from 'components/common/Button/Button';
+import { redTheme } from 'modal/themes/red-theme';
+import { ThemeProvider as MuiThemeProvider } from '@mui/material/styles';
+import { OnboardingDialog } from 'views/onboarding/OnboardingTemplate.Components';
+import palette from 'styles/palette';
 import {
-  OnboardingDialog,
-  OnboardingDivider,
-  OnboardingH2,
-  OnboardingH2Bold,
-  OnboardingSpacing2,
-  OnboardingSpacing4,
-} from 'views/onboarding/OnboardingTemplate.Components';
+  ModalWrapper,
+  FixedWidthButtonWrapper,
+  ModalDescriptionContainer,
+  ModalIconContainer,
+  ButtonsContainer,
+} from 'modal/components/styled';
+import { OutfitTypography } from 'styles/theme-outfit';
+import { Title, Subtitle } from './Title';
 
 const REQUIRED_MESSAGE = 'This field is required';
+
+const fontFamily = 'Outfit';
+
+const onboardingMessageStyle = {
+  fontFamily,
+  fontWeight: 300,
+  fontSize: '18px',
+  padding: '0rem 1rem',
+  display: 'block',
+};
 
 const validationSchema = object().shape({
   mobilePhoneNumber: string()
@@ -39,14 +52,12 @@ const onSubmit =
   };
 
 const ChangePhoneNumberForm = () => {
-  const isSmallScreen = useSmallScreen();
-
   const formMethods = useForm({
     resolver: yupResolver(validationSchema),
     reValidateMode: 'onSubmit',
   });
 
-  const [isDialogShown, showDialog, hideDialog] = useBoolean(false);
+  const [isDialogShown, showDialog, hideDialog] = useBoolean(true);
   const [dialogTitle, setDialogTitle] = useState('');
   const [dialogMessage, setDialogMessage] = useState('');
 
@@ -59,13 +70,9 @@ const ChangePhoneNumberForm = () => {
         onSubmit({ showDialog, setDialogTitle, setDialogMessage }),
       )}
     >
-      <MontserratTypography variant="h2">
-        Change Phone Number
-      </MontserratTypography>
+      <Title>Change Phone Number</Title>
       <Spacing vertical={4} />
-      <MontserratTypography variant="h4">
-        Please enter your correct mobile phone number.
-      </MontserratTypography>
+      <Subtitle>Please enter your correct mobile phone number.</Subtitle>
       <Spacing vertical={4} />
       <FormProvider {...formMethods}>
         <FormPhoneNumberInput
@@ -76,35 +83,44 @@ const ChangePhoneNumberForm = () => {
         />
       </FormProvider>
       <Spacing vertical={5} />
-      <Button type="submit" size="large">
+      <Button
+        type="submit"
+        size="large"
+        color={palette.brightOrange}
+        secondaryColor={palette.oPlusRed}
+      >
         Continue
       </Button>
-      <OnboardingDialog
-        isSmallScreen={isSmallScreen}
-        open={isDialogShown}
-        fullWidth
-        maxWidth="sm"
-      >
-        {!isSmallScreen && (
-          <>
-            <OnboardingH2>{dialogTitle}</OnboardingH2>
-            <OnboardingSpacing2 />
-            <OnboardingDivider />
-            <OnboardingSpacing2 />
-          </>
-        )}
-        <OnboardingH2>{dialogMessage}</OnboardingH2>
-        <OnboardingSpacing4 />
-        <Grid
-          container
-          direction={isSmallScreen ? 'column' : 'row'}
-          justifyContent="space-between"
-          wrap="nowrap"
-        >
-          <Button onClick={hideDialog}>
-            <OnboardingH2Bold>Ok</OnboardingH2Bold>
-          </Button>
-        </Grid>
+      <OnboardingDialog open={isDialogShown} fullWidth maxWidth="sm">
+        <MuiThemeProvider theme={redTheme}>
+          <ModalWrapper style={{ width: '500px' }}>
+            <ModalIconContainer>
+              {/* <ModalMainIcson src={envelope} alt="envelope" /> */}
+              <Typography color="textPrimary" variant="h2" align="center">
+                {dialogTitle}
+              </Typography>
+            </ModalIconContainer>
+            <ModalDescriptionContainer>
+              <OutfitTypography variant="h4">
+                <span style={onboardingMessageStyle}>{dialogMessage}</span>
+              </OutfitTypography>
+            </ModalDescriptionContainer>
+            <ButtonsContainer>
+              <FixedWidthButtonWrapper width={300}>
+                <Button
+                  fullWidth
+                  variant="primary-red"
+                  type="button"
+                  onClick={() => {
+                    hideDialog();
+                  }}
+                >
+                  Close
+                </Button>
+              </FixedWidthButtonWrapper>
+            </ButtonsContainer>
+          </ModalWrapper>
+        </MuiThemeProvider>
       </OnboardingDialog>
     </form>
   );

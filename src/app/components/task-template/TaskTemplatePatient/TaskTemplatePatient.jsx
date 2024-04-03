@@ -11,6 +11,7 @@ import {
   PatientLabel,
   DisabledLink,
 } from './styled';
+import Tooltip from '../../common/Tooltip/Tooltip';
 
 const TaskTemplatePatient = ({
   highlightedValue,
@@ -19,6 +20,7 @@ const TaskTemplatePatient = ({
   onWorkflowUpdate,
   currentUser,
   readOnly,
+  origin,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const [isPopoverOpen, setPopoverOpen] = useState(false);
@@ -57,8 +59,16 @@ const TaskTemplatePatient = ({
           onChangePatient={handleUpdateRegularTaskPatient}
           openPopover={() => setPopoverOpen(true)}
           closePopover={() => setPopoverOpen(false)}
+          origin={origin}
         >
-          <AddPlaceholder>+ Add {customerTypeLabelCapitalized}</AddPlaceholder>
+          <Tooltip
+            placement="top"
+            title={`Add ${customerTypeLabelCapitalized}`}
+          >
+            <AddPlaceholder>
+              + Add {customerTypeLabelCapitalized}
+            </AddPlaceholder>
+          </Tooltip>
         </PatientDropdown>
       )}
       {!readOnly && !patient && openPatientPopover && (

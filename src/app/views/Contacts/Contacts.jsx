@@ -11,6 +11,8 @@ import AddButton, {
 import { StyledDataGrid } from './DataGridStyles';
 import { getContactColumns } from './helpers';
 import { ViewContainer } from './styled';
+import ToolbarButton from '@/app/components/tasklist/ToolbarButton/ToolbarButton';
+import { AddIcon } from '../smart-flow-builder/TaskNodeHandles/styled';
 
 // const PAGE_SIZE = 30;
 
@@ -87,9 +89,22 @@ const Contacts = () => {
   return (
     <ViewLayout header={<BasicLayoutHeader title="Contacts" />}>
       <ViewContainer>
-        <AddEntitiesContainer>
-          <AddButton onClick={onAddContact}>Create Contact</AddButton>
-        </AddEntitiesContainer>
+        <div style={{ marginBottom: '5px' }}>
+          <AddEntitiesContainer>
+            {/* <AddButton onClick={onAddContact}> */}
+            <ToolbarButton
+              // ref={buttonReference}
+              icon={<AddIcon />}
+              onClick={onAddContact}
+              // isOpen={open}
+              // active={open}
+              // hasPopover
+            >
+              <span style={{ marginLeft: '-5px' }}>Create Contact</span>
+            </ToolbarButton>
+            {/* </AddButton> */}
+          </AddEntitiesContainer>
+        </div>
         <StyledDataGrid
           columns={columns}
           rows={contacts.map((t) => ({ ...t, id: t.identifier }))}

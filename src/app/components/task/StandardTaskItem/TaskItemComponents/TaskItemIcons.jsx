@@ -23,6 +23,7 @@ const TaskItemIcons = ({
   attachments,
   dispatch,
   restrictions,
+  isHover,
 }) => {
   const onCommentClick = useCallback(() => {
     dispatch(openDrawer(DrawerFieldEnum.COMMENT));
@@ -50,7 +51,7 @@ const TaskItemIcons = ({
             title={
               comments?.length > 0
                 ? getCommentsIconTooltipTitle(comments)
-                : 'Add a new comment'
+                : 'Add Comment'
             }
           >
             <button type="button" onClick={onCommentClick}>
@@ -73,7 +74,7 @@ const TaskItemIcons = ({
             title={
               labels?.length > 0
                 ? getLabelsIconTooltipTitle(labels)
-                : 'Add label'
+                : 'Add Label'
             }
           >
             <button
@@ -84,11 +85,13 @@ const TaskItemIcons = ({
               type="button"
               onClick={onLabelClick}
             >
-              <TaskIcon
-                type="labels"
-                isActive={labels?.length > 0}
-                isNew={task.updatedLabel}
-              />
+              {(labels?.length > 0 || isHover.label) && (
+                <TaskIcon
+                  type="labels"
+                  isActive={labels?.length > 0}
+                  isNew={task.updatedLabel}
+                />
+              )}
             </button>
           </Tooltip>
         </GridImg>
@@ -100,15 +103,17 @@ const TaskItemIcons = ({
             title={
               attachments?.length > 0
                 ? getAttachmentsIconTooltipTitle(attachments)
-                : 'Add file'
+                : 'Add File'
             }
           >
             <button type="button" onClick={onAttachmentsClick}>
-              <TaskIcon
-                type="attachments"
-                isActive={attachments?.length > 0}
-                isNew={task.updatedAttachment}
-              />
+              {(attachments?.length > 0 || isHover.file) && (
+                <TaskIcon
+                  type="attachments"
+                  isActive={attachments?.length > 0}
+                  isNew={task.updatedAttachment}
+                />
+              )}
             </button>
           </Tooltip>
         </GridImg>

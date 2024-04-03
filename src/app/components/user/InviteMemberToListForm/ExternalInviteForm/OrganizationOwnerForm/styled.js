@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import spacing from 'styles/spacing';
 import { fontSizes, fontWeights } from 'styles/font';
-import palette from 'styles/palette';
+import palette, { typography } from 'styles/palette';
 import { Grid } from '@mui/material';
 
 export const FormWrapper = styled.form`
@@ -14,26 +14,30 @@ export const UserDetailsFormWrapper = styled.div`
 `;
 
 export const InfoContainer = styled.div`
+  display: flex;
   width: 100%;
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: inherit;
   font-size: ${fontSizes.regular};
   font-weight: ${fontWeights.regular};
 `;
 
-export const InfoHeader = styled.h4`
-  margin-bottom: 0;
-  color: ${palette.brightBlue};
-  font-size: inherit;
-  font-weight: inherit;
-  font-family: inherit;
+export const Header = styled.p`
+  color: ${palette.offBlack};
+  text-align: center;
+  font-family: Outfit;
+  font-size: 22px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 25px;
+  text-transform: capitalize;
 `;
 
 export const InfoText = styled.p`
   margin-bottom: 0;
-  color: ${palette.coolGrey1};
   font-size: inherit;
   font-weight: inherit;
   font-family: inherit;
+  margin-left: 8px;
 `;
 
 export const Step = styled.button`
@@ -53,18 +57,24 @@ export const Step = styled.button`
 
 export const RoleFormWrapper = styled(Grid)`
   height: 400px;
-  padding: ${spacing.regular} 0 ${spacing.regularPlus} 0;
-  font-family: 'Roboto Condensed', sans-serif;
+  padding: ${spacing.small} 0 0 0;
+  font-family: inherit;
   color: ${palette.mediumGrey};
   flex-wrap: nowrap !important;
 `;
 
-export const RoleSelectionHeader = styled.h3`
-  margin-bottom: 0;
+export const RoleSelectionHeader = styled.p`
   padding: 0 ${spacing.regularPlus} ${spacing.smallPlus};
   font-family: inherit;
   font-size: ${fontSizes.regular};
-  font-weight: ${fontWeights.bold};
+  font-weight: ${fontWeights.regularPlus};
+  color: ${palette.offBlack};
+  text-align: center;
+  font-family: Outfit;
+  font-size: 22px;
+  font-style: normal;
+  line-height: 25px;
+  margin-bottom: 0px;
 `;
 
 export const Divider = styled.hr`
@@ -113,7 +123,7 @@ export const RoleOptionHeaderAdditionalInfo = styled.p`
   margin: 0;
   font-size: ${fontSizes.smallPlus};
   font-weight: ${fontWeights.regular};
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: inherit;
   color: ${palette.orange};
   font-style: italic;
 `;
@@ -122,6 +132,6 @@ export const RoleOptionDescription = styled.p`
   margin: 0;
   font-size: ${fontSizes.smallPlus};
   font-weight: ${fontWeights.regular};
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: inherit;
   color: ${palette.coolGrey1};
 `;

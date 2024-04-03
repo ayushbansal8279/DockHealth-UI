@@ -1,10 +1,29 @@
-import React, { useCallback, useState, useMemo } from 'react';
+import React, {
+  useCallback,
+  useState,
+  useMemo,
+  useParams,
+  useContext,
+} from 'react';
 import uniq from 'ramda/src/uniq';
 import TaskViewTypeToolbarSelect from 'components/tasklist/TaskViewTypeToolbarSelect/TaskViewTypeToolbarSelect';
 import { Box } from '@mui/material';
+import FullViewIcon from 'img/list/FullViewIcon';
+import SlimViewIcon from 'img/list/SlimViewIcon';
+import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined';
+// import { Grid } from '@mui/material';
+// import listSectionSavedState from 'helpers/list-section-saved-state';
 import TaskStatusToolbarSelect from 'components/tasklist/TaskStatusToolbarSelect/TaskStatusToolbarSelect';
 // import CompleteTasksVisibilitySwitch from 'components/tasklist/CompleteTasksVisibilitySwitch/CompleteTasksVisibilitySwitch';
 import InboxTips from 'components/tasklist/InboxTips/InboxTips';
+import ViewTypeSwitch, {
+  ViewType as listDetailsViewType,
+} from 'components/tasklist/ViewTypeSwitch/ViewTypeSwitch';
+// import {
+//   onSlimViewChanged,
+//   onTaskGroupCollapsed,
+//   onTaskGroupExpanded,
+// } from 'helpers/ga-event-helper';
 import { ViewType, getViewTypeFromQueryString } from 'helpers/view-type-helper';
 import { useLocation, useHistory } from 'react-router-dom';
 import { TaskStatus } from 'helpers/task-helpers';
@@ -22,11 +41,22 @@ import {
 } from 'selectors/task-list-selectors';
 import { isMemberAdmin } from 'helpers/list-members-helper';
 import TaskCustomFieldsModal from 'modal/customModals/TaskCustomFieldsModal';
-import { ToolbarContainer } from './styled';
-
+import {
+  GridContainer,
+  GridItemCalendarView,
+  GridItemFullView,
+  GridItemSlimView,
+  ToolbarContainer,
+} from './styled';
+import { ListPageContext } from '../ListDetailsView';
 const TASKS_VISIBILITY_KEY = 'SHOW_WORKFLOW_COMPLETED_TASKS';
 
-const ListDetailsToolbar = ({ additionalOptions, children }) => {
+const ListDetailsToolbar = ({
+  additionalOptions,
+  children,
+  searchValue,
+  focused,
+}) => {
   const dispatch = useDispatch();
   const { search } = useLocation();
   const history = useHistory();
@@ -52,10 +82,22 @@ const ListDetailsToolbar = ({ additionalOptions, children }) => {
       ({ name }) => name === 'icon.active.color',
     ) || {};
 
+  const { changeViewType, handleSetChangeViewType, handleRemoveAllTasks } =
+    useContext(ListPageContext);
+  const [calendarView, setCalendarView] = useState(
+    viewType === ViewType.CALENDAR_VIEW,
+  );
+  const [slimView, setSlimView] = useState(
+    viewType === ViewType.LIST_VIEW && changeViewType === 'SLIM_VIEW',
+  );
+  const [fullView, setFullView] = useState(
+    viewType === ViewType.LIST_VIEW && changeViewType === 'FULL_VIEW',
+  );
   const handleChangeViewType = useCallback(
     (event) => {
       const queryParameters = new URLSearchParams(search);
-      const value = event?.target.value ?? ViewType.LIST_VIEW;
+      const value = event ?? ViewType.LIST_VIEW;
+      // ?.target.value ?? ViewType.LIST_VIEW;
       if (value === ViewType.LIST_VIEW) {
         queryParameters.delete('viewType');
       } else {
@@ -91,6 +133,32 @@ const ListDetailsToolbar = ({ additionalOptions, children }) => {
     [history, taskListIdentifier, search],
   );
 
+  // const groupSessionStorageKey = `${listUniqueKey}-default`;
+
+  // const { viewType, isOpen, switchOpen, setViewType } = listSectionSavedState({
+  //   sessionStorageKey: groupSessionStorageKey,
+  // });
+
+  // const onTaskGroupViewModeChange = (viewMode) => {
+  //   loadTasksForTaskGroup({
+  //     listUniqueKey,
+  //     startPosition: 0,
+  //     viewMode,
+  //     refresh: true,
+  //   });
+  // };
+
+  // const changeViewType = (value) => {
+  //   setViewType(value);
+  //   if (value === listDetailsViewType.SLIM_VIEW) {
+  //     onTaskGroupViewModeChange(listDetailsViewType.SLIM_VIEW);
+  //     onSlimViewChanged(true);
+  //   } else {
+  //     onTaskGroupViewModeChange(listDetailsViewType.FULL_VIEW);
+  //     onSlimViewChanged(false);
+  //   }
+  // };
+
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleTasksVisibilityChange = (visible) => {
     const newDisplayOptions = visible
@@ -109,29 +177,45 @@ const ListDetailsToolbar = ({ additionalOptions, children }) => {
   return (
     <ToolbarContainer>
       <Box display="flex" flex={1} justifyContent="flex-start">
-        <TaskStatusToolbarSelect
-          value={tasksStatus}
-          onChange={handleChangeTasksStatus}
-          iconColorFilterActive={iconColorFilterActiveItem?.value}
-          iconColorActive={iconColorActiveItem?.value}
-        />
-        <Box mx={0.5} />
+        {viewType === ViewType.CALENDAR_VIEW && (
+          <TaskStatusToolbarSelect
+            value={tasksStatus}
+            onChange={handleChangeTasksStatus}
+            iconColorFilterActive={iconColorFilterActiveItem?.value}
+            iconColorActive={iconColorActiveItem?.value}
+            searchValue={searchValue}
+            focused={focused}
+          />
+        )}
+
+        {/* <Box mx={0.5} />
         <TaskViewTypeToolbarSelect
           value={viewType}
           onChange={handleChangeViewType}
           iconColorFilterActive={iconColorFilterActiveItem?.value}
           iconColorActive={iconColorActiveItem?.value}
-        />
+        /> */}
         {viewType === ViewType.LIST_VIEW && (
           <>
-            <Box mx={0.5} />
             <CustomizeToolbarButton
               openCustomFieldModal={() => setCustomFieldsModalOpened(true)}
               additionalOptions={additionalOptions}
               disableButton={restrictCustomizationFeatures}
               iconColorFilterActive={iconColorFilterActiveItem?.value}
+              searchValue={searchValue}
+              focused={focused}
             />
             <Box mx={0.5} />
+            <TaskStatusToolbarSelect
+              value={tasksStatus}
+              onChange={handleChangeTasksStatus}
+              iconColorFilterActive={iconColorFilterActiveItem?.value}
+              iconColorActive={iconColorActiveItem?.value}
+              searchValue={searchValue}
+              focused={focused}
+              taskListIdentifier={taskListIdentifier}
+            />
+            {/* <Box sx={boxComponentStyles} /> */}
             <TaskCustomFieldsModal
               opened={customFieldsModalOpened}
               handleClose={() => setCustomFieldsModalOpened(false)}
@@ -140,22 +224,70 @@ const ListDetailsToolbar = ({ additionalOptions, children }) => {
               isListAdmin={isListAdmin}
             />
             {taskList?.listType === 'INBOX' && <InboxTips />}
+            {/* <Box sx={boxComponentStyles} /> */}
+            {children}
           </>
         )}
       </Box>
-      {viewType === ViewType.LIST_VIEW && (
-        <Box display="flex" flex={1} justifyContent="flex-end">
-          {/* {tasksStatus === TaskStatus.INCOMPLETE && (
+
+      <Box mx={0.5} />
+      <GridContainer>
+        <GridItemCalendarView
+          active={calendarView}
+          onClick={() => {
+            handleChangeViewType(ViewType.CALENDAR_VIEW);
+            handleSetChangeViewType('');
+            handleRemoveAllTasks();
+          }}
+        >
+          <CalendarMonthOutlinedIcon
+            sx={{
+              height: '28px',
+              width: '24px',
+            }}
+          />
+        </GridItemCalendarView>
+        <GridItemFullView
+          active={fullView}
+          onClick={() => {
+            handleChangeViewType(ViewType.LIST_VIEW);
+            handleSetChangeViewType('FULL_VIEW');
+            handleRemoveAllTasks();
+            setSlimView(false);
+            setFullView(true);
+          }}
+        >
+          <FullViewIcon />
+        </GridItemFullView>
+        <GridItemSlimView
+          active={slimView}
+          onClick={() => {
+            handleChangeViewType(ViewType.LIST_VIEW);
+            handleSetChangeViewType('SLIM_VIEW');
+            handleRemoveAllTasks();
+            setFullView(false);
+            setSlimView(true);
+          }}
+        >
+          <SlimViewIcon />
+        </GridItemSlimView>
+      </GridContainer>
+      {/* <ViewTypeSwitch /> */}
+      {/* {viewType === ViewType.LIST_VIEW && <>{children}</>} */}
+      {/* {viewType === ViewType.LIST_VIEW && ( */}
+      {/* // <Box display="flex" flex={1} justifyContent="flex-end"> */}
+      {/* {tasksStatus === TaskStatus.INCOMPLETE && (
             <CompleteTasksVisibilitySwitch
               visible={displayOptions.includes(TASKS_VISIBILITY_KEY)}
               onChange={handleTasksVisibilityChange}
               iconColorFilterActive={iconColorFilterActiveItem?.value}
             />
           )} */}
-          <Box mx={0.5} />
-        </Box>
-      )}
-      {children}
+      {/* {children} */}
+      {/* <Box mx={0.5} /> */}
+      {/* </Box> */}
+      {/* )} */}
+      {/* {children} */}
     </ToolbarContainer>
   );
 };

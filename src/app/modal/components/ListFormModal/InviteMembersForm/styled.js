@@ -1,6 +1,8 @@
 import styled from 'styled-components';
-import palette from 'styles/palette';
+import palette, { typography } from 'styles/palette';
 import { fontSizes, fontWeights } from 'styles/font';
+import { Button } from '@mui/material';
+import spacing from 'styles/spacing';
 
 export const Wrapper = styled.div`
   position: relative;
@@ -48,16 +50,24 @@ export const NavigationText = styled.p`
   margin-bottom: 0;
   color: ${palette.coolGrey1};
   font-size: ${fontSizes.regular};
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: inherit;
 `;
 
 export const SkipButton = styled.button`
   margin: 0 auto;
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Outfit', sans-serif;
   font-size: ${fontSizes.small};
   font-weight: ${fontWeights.bold};
   color: ${palette.darkBlue};
   cursor: pointer;
   text-decoration: underline;
   text-transform: uppercase;
+`;
+
+export const ButtonWrapper = styled(Button)`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  border-radius: 8px;
 `;

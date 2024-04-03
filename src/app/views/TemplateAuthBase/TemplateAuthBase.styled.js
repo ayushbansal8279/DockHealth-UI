@@ -1,7 +1,5 @@
 import styled from 'styled-components';
-import palette, { opacify } from 'styles/palette';
-import AuthTemplateTopBackgroundTop from 'img/bubble-pattern-top.svg';
-import AuthTemplateTopBackgroundBottom from 'img/bubble-pattern-bottom.svg';
+import palette from 'styles/palette';
 
 const mdBreakpoint = 960;
 
@@ -18,23 +16,23 @@ export const MainContainer = styled.div`
 
 export const LeftSideMainContainer = styled.div`
   align-items: center;
-  background-color: ${palette.midnightBlue};
-  background-image: linear-gradient(
-      to bottom,
-      ${opacify(palette.midnightBlue, 0.5)},
-      ${opacify(palette.midnightBlue, 0.5)}
-    ),
-    url(${AuthTemplateTopBackgroundTop}),
-    url(${AuthTemplateTopBackgroundBottom});
+  background-color: #fbfaf9;
   background-repeat: repeat-x;
   background-position: bottom, top;
   display: flex;
-  max-width: 642px;
+  max-width: 50%;
   justify-content: center;
-  padding-left: 7rem;
-  padding-right: 7rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
   padding-bottom: 0;
   width: 50%;
+
+  @media screen and (max-width: 600px) {
+    && {
+      display: none;
+      padding: 0;
+    }
+  }
 
   @media screen and (max-width: ${mdBreakpoint}px) {
     max-width: unset;
@@ -53,7 +51,7 @@ export const LeftSideContentContainer = styled.div`
   height: auto;
 
   @media screen and (min-width: ${mdBreakpoint}px) {
-    max-width: 525px;
+    max-width: 640px;
   }
 `;
 
@@ -62,6 +60,7 @@ export const RightSideMainContainer = styled.div`
 
   @media screen and (min-width: ${mdBreakpoint}px) {
     height: 100%;
+    max-height: 100%;
     display: flex;
     flex-direction: column;
     flex: 1;
@@ -79,7 +78,9 @@ export const RightSideContentContainer = styled.div`
 
   @media screen and (min-width: ${mdBreakpoint}px) {
     max-height: 100%;
+    height: 100%;
     overflow-y: auto;
+    justify-content: center;
   }
 `;
 
@@ -89,6 +90,7 @@ export const RightSideMaxWidthContainer = styled.div`
 
   @media screen and (min-width: ${mdBreakpoint}px) {
     padding: 2rem;
-    max-width: 495px;
+    height: auto;
+    max-width: 576px;
   }
 `;

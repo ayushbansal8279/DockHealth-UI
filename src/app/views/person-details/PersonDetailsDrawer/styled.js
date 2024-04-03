@@ -17,7 +17,7 @@ export const TitleName = styled.p`
   margin-bottom: 0;
   font-size: ${fontSizes.regular};
   font-weight: ${fontWeights.regularPlus};
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Outfit', sans-serif;
   text-transform: uppercase;
 `;
 

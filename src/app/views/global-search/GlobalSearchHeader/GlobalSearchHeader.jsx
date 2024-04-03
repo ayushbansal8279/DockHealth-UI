@@ -11,7 +11,6 @@ import Spacing from 'components/common/Spacing';
 import Checkbox from 'components/common/Checkbox/Checkbox';
 import SearchInput from 'components/common/SearchInput/SearchInput';
 import { useHistory } from 'react-router-dom';
-import Button from 'components/common/Button/Button';
 
 import {
   TopSectionGrid,
@@ -69,10 +68,8 @@ const GlobalSearchHeader = ({
         <Spacing horizontal={3} />
         <CheckboxDescription>Search completed tasks</CheckboxDescription>
       </CheckboxContainer>
-      <ButtonWrapper>
-        <Button fullWidth onClick={searchTasks} size="small">
-          Search
-        </Button>
+      <ButtonWrapper onClick={searchTasks}>
+        Search
       </ButtonWrapper>
     </TopSectionGrid>
   );

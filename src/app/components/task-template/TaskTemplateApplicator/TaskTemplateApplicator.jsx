@@ -1,9 +1,17 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import React, { useRef, useState, useCallback, useEffect } from 'react';
+import React, {
+  useRef,
+  useState,
+  useCallback,
+  useEffect,
+  useContext,
+} from 'react';
 import { useBoolean } from 'hooks/useBoolean';
 // import palette from 'styles/palette';
 import Spacing from 'components/common/Spacing';
-import { RotatableHeaderChevron } from 'components/common/RotatableChevron/RotatableChevron';
+import RotatableChevron, {
+  RotatableHeaderChevron,
+} from 'components/common/RotatableChevron/RotatableChevron';
 import debounce from 'lodash.debounce';
 import {
   getTemplates,
@@ -21,7 +29,16 @@ import TaskTemplatePopover from './TaskTemplatePopover';
 import {
   TaskTemplateApplicatorContainer,
   TaskTemplateApplicatorLabel,
+  ChevronVerticleGap,
+  BoxContainer,
+  TaskTemplateApplicatorButtonLabel,
+  TaskTemplateApplicatorRotatableChevronWrapper,
+  TaskTemplateApplicatorRotatableChevronLabel,
 } from './styled';
+import AddIcon from '@mui/icons-material/Add';
+import { ListPageContext } from '@/app/views/list-details/ListDetailsView';
+import { Box } from '@mui/material';
+import palette from '@/app/styles/palette';
 
 const { DISABLED } = TASK_LIST_RESTRICTIONS_OPTIONS;
 
@@ -29,6 +46,8 @@ const TaskTemplateApplicator = ({
   onTemplateSelect,
   bulkApply = false,
   iconColorActive,
+  isWorkflowSearch,
+  origin,
 }) => {
   const popoverReference = useRef(null);
   const [isPopoverOpen, openPopover, closePopover] = useBoolean(false);
@@ -36,6 +55,7 @@ const TaskTemplateApplicator = ({
   const [parentList, setParentList] = useState([]);
   const [taskTemplatesList, setTaskTemplatesList] = useState(null);
   const [taskTemplatesIsLoading, setTaskTemplatesIsLoading] = useState(null);
+  const { handleWorkflowPopoverOpen } = useContext(ListPageContext);
 
   const currentUser = useSelector(userProfileSelector);
   const taskListRestrictions =
@@ -60,7 +80,7 @@ const TaskTemplateApplicator = ({
   const getRootTemplatesList = useCallback(() => {
     setTaskTemplatesIsLoading(true);
     setParentList([]);
-    getTemplates(false)
+    getTemplates(true)
       .then((templatesList) => {
         setTaskTemplatesList(templatesList);
         setTaskTemplatesIsLoading(false);
@@ -71,6 +91,9 @@ const TaskTemplateApplicator = ({
   }, []);
 
   useEffect(() => {
+    if (origin === 'LIST') {
+      handleWorkflowPopoverOpen(!!isPopoverOpen);
+    }
     if (isPopoverOpen) {
       getRootTemplatesList();
     }
@@ -153,19 +176,42 @@ const TaskTemplateApplicator = ({
 
   return (
     <>
-      <TaskTemplateApplicatorContainer
+      <BoxContainer ref={popoverReference}>
+        <TaskTemplateApplicatorContainer
+          variant="text"
+          onClick={openPopover}
+          size="large"
+        >
+          <AddIcon />
+          <TaskTemplateApplicatorButtonLabel variant="body1" component="span">
+            Workflow
+          </TaskTemplateApplicatorButtonLabel>
+        </TaskTemplateApplicatorContainer>
+        <Box display="flex" width="35px" overflow="hidden">
+          <TaskTemplateApplicatorRotatableChevronWrapper
+            variant="text"
+            onClick={openPopover}
+            size="large"
+          >
+            <TaskTemplateApplicatorRotatableChevronLabel
+              variant="body1"
+              component="span"
+            >
+              <RotatableChevron rotated={isPopoverOpen} color={palette.white} />
+            </TaskTemplateApplicatorRotatableChevronLabel>
+          </TaskTemplateApplicatorRotatableChevronWrapper>
+        </Box>
+      </BoxContainer>
+      {/* <TaskTemplateApplicatorContainer
         onClick={openPopover}
         ref={popoverReference}
       >
-        <TaskTemplateApplicatorLabel>
-          Use a workflow
-        </TaskTemplateApplicatorLabel>
+        <AddIcon />
+        <TaskTemplateApplicatorLabel>Workflow</TaskTemplateApplicatorLabel>
         <Spacing horizontal={3} />
-        <RotatableHeaderChevron
-          rotated={isPopoverOpen}
-          color={iconColorActive}
-        />
-      </TaskTemplateApplicatorContainer>
+        <ChevronVerticleGap />
+        <RotatableHeaderChevron rotated={isPopoverOpen} color={'white'} />
+      </TaskTemplateApplicatorContainer> */}
       <TaskTemplatePopover
         anchorEl={popoverReference.current}
         open={isPopoverOpen}
@@ -179,6 +225,7 @@ const TaskTemplateApplicator = ({
         getTemplatesList={getRootTemplatesList}
         parentList={parentList[parentList.length - 1]}
         onBack={handleBack}
+        isWorkflowSearch={isWorkflowSearch}
       />
     </>
   );

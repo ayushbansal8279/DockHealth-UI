@@ -132,8 +132,15 @@ function* loadMoreDashboardTasksForGroup({ groupType }) {
 
 function* getDashboardGroups() {
   try {
-    const tabName = yield select(dashboardTabNameSelector);
+    let tabName = yield select(dashboardTabNameSelector);
 
+    if (
+      tabName === DashboardTasksTab.UPCOMING ||
+      tabName === DashboardTasksTab.OVERDUE ||
+      tabName === DashboardTasksTab.COMPLETED
+    ) {
+      tabName = DashboardTasksTab.MY_TASKS;
+    }
     // if (tabName === DashboardTasksTab.SHARED_TASKS) {
     //   const dashboardGroups = [
     //     {

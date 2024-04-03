@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import spacing from 'styles/spacing';
 import { fontSizes, fontWeights } from 'styles/font';
-import palette from 'styles/palette';
+import palette, { typography } from 'styles/palette';
 import Button from '@mui/material/Button';
 
 export const ButtonContainer = styled(Button)``;
@@ -27,7 +27,7 @@ export const PatientDetailsContainer = styled.div`
   flex-direction: column;
   justify-content: space-between;
   padding: ${spacing.regular} ${spacing.regular};
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: inherit;
   background-color: ${palette.white};
 `;
 

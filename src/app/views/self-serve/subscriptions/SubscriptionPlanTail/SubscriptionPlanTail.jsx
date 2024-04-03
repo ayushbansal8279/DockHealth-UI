@@ -9,19 +9,18 @@ import palette from 'styles/palette';
 import {
   Container,
   MostPopularText,
-  NewText,
   TopContainer,
   Name,
   Description,
   PriceContainer,
   Price,
   SubscribeButton,
-  Divider,
-  UnitContainer,
-  UnitText,
   FeatureText,
-  ContactUsAnchor,
   CheckIcon,
+  MostPopularTextWrapper,
+  DisclaimerText,
+  PlanDescription,
+  PlanDescriptionContainer,
 } from './styled';
 import SubscriptionPlanFeature from '../SubscriptionPlanFeature/SubscriptionPlanFeature';
 
@@ -31,18 +30,18 @@ const SubscriptionPlanTail = (props) => {
     selected,
     plan,
     hasExistingSubscription,
-    billingFrequency,
     onSelect,
+    billingFrequency,
   } = props;
   const {
     key,
     mostPopular,
-    showNewHeader,
-    color,
     label,
     description,
     annualMonthlyPrice,
     monthlyPrice,
+    monthlyPlanDescriptions,
+    annualPlanDescriptions,
     featuresDescription,
     features,
     comingSoonFeatures,
@@ -51,52 +50,43 @@ const SubscriptionPlanTail = (props) => {
   } = plan;
 
   const upgradeLabel =
-    plan?.subscriptionPlan === SubscriptionPlan.STANDARD ? 'Change' : 'Upgrade';
+    subscriptionPlan === SubscriptionPlan.STANDARD ? 'Change' : 'Upgrade';
   const subscribeLabel = hasExistingSubscription ? upgradeLabel : 'Subscribe';
+  const price =
+    billingFrequency === BillingFrequency.MONTHLY
+      ? monthlyPrice
+      : annualMonthlyPrice;
+  const planDescriptions =
+    (billingFrequency === BillingFrequency.MONTHLY
+      ? monthlyPlanDescriptions
+      : annualPlanDescriptions) ?? plan.planDescriptions;
 
   return (
-    <Container color={color}>
+    <Container
+      active={active}
+      pro={key === SubscriptionPlan.PRO && !hasExistingSubscription}
+    >
       <TopContainer>
-        {mostPopular && <MostPopularText>Most Popular</MostPopularText>}
-        {showNewHeader && <NewText>New</NewText>}
-        <Name color={color}>{label}</Name>
-        <Description>{description}</Description>
-      </TopContainer>
-      <PriceContainer>
-        {(annualMonthlyPrice || monthlyPrice) && (
-          <>
-            <Price color="#000000">
-              $
-              {billingFrequency === BillingFrequency.ANNUAL
-                ? annualMonthlyPrice
-                : monthlyPrice}
-            </Price>
-            <UnitContainer>
-              /
-              <Box m={0.2} />
-              <div>
-                {key === SubscriptionPlan.ENTERPRISE ? (
-                  <>
-                    <UnitText>month</UnitText>
-                    <UnitText>+ Pro per user</UnitText>
-                  </>
-                ) : (
-                  <>
-                    <UnitText>user</UnitText>
-                    <UnitText>month</UnitText>
-                  </>
-                )}
-              </div>
-            </UnitContainer>
-          </>
+        <Name>{label}</Name>
+        {mostPopular && (
+          <MostPopularTextWrapper>
+            <MostPopularText>Most Popular</MostPopularText>
+          </MostPopularTextWrapper>
         )}
+      </TopContainer>
+      <Description>{description}</Description>
+      <PriceContainer>
+        <Price color={palette.black}>{price ? `$${price}` : 'Custom'}</Price>
       </PriceContainer>
-      {(annualMonthlyPrice || monthlyPrice) &&
-      key !== SubscriptionPlan.ENTERPRISE ? (
+      <PlanDescriptionContainer>
+        {planDescriptions?.map((d) => (
+          <PlanDescription key={d}>{d}</PlanDescription>
+        ))}
+      </PlanDescriptionContainer>
+      {price ? (
         <SubscribeButton
           type="button"
           active={active}
-          color={palette.newDarkBlue}
           disabled={active}
           onClick={() => onSelect(subscriptionPlan)}
         >
@@ -106,27 +96,28 @@ const SubscriptionPlanTail = (props) => {
           </Box>
         </SubscribeButton>
       ) : (
-        <ContactUsAnchor
-          color={palette.newDarkBlue}
+        <SubscribeButton
+          type="button"
+          pro={key === SubscriptionPlan.PRO && !hasExistingSubscription}
+          disabled={active}
           onClick={() => {
             window.Intercom('show');
           }}
         >
           Contact Us
-        </ContactUsAnchor>
+        </SubscribeButton>
       )}
-      <Divider />
       <FeatureText>{featuresDescription}</FeatureText>
       <Box m={2} />
       {features.map((feature) => (
-        <SubscriptionPlanFeature feature={feature} />
+        <SubscriptionPlanFeature key={feature} feature={feature} />
       ))}
       {comingSoonFeatures?.map((feature) => (
         <SubscriptionPlanFeature comingSoon feature={feature} />
       ))}
       <Spacing vertical={1} />
       {disclaimers?.map((disclaimer) => (
-        <FeatureText>{disclaimer}</FeatureText>
+        <DisclaimerText key={disclaimer}>{disclaimer}</DisclaimerText>
       ))}
     </Container>
   );

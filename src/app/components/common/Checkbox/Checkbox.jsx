@@ -2,13 +2,14 @@ import { bool, func, number } from 'prop-types';
 import React from 'react';
 import { CheckboxInput, Icon } from './styled';
 
-const Checkbox = ({ onClick, isChecked, isDisabled, size, isCircle }) => (
+const Checkbox = ({ onClick, isChecked, isDisabled, size, isCircle, borderHeight }) => (
   <CheckboxInput
     onClick={onClick}
     isChecked={isChecked}
     disabled={isDisabled}
     size={size}
     isCircle={isCircle}
+    borderHeight={borderHeight}
   >
     <Icon
       width={size - 4}

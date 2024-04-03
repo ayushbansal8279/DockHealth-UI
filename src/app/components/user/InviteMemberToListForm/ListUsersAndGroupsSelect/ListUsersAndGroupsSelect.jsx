@@ -1,28 +1,36 @@
-import React, { useState, useRef, useMemo } from 'react';
+import React, { useState, useRef, useMemo, useEffect } from 'react';
 import Button from 'components/common/Button/Button';
 import UserAvatar from 'components/user/UserAvatar/UserAvatar';
-import { ClickAwayListener, Grid } from '@mui/material';
-import Loader from 'components/common/Loader/Loader';
+import {
+  ClickAwayListener,
+  Grid,
+} from '@mui/material';
 import AddRecordOption from 'components/common/AddRecordOption/AddRecordOption';
 import { isUserGroup } from 'helpers/user-helper';
 import GroupAvatar from 'components/user/GroupAvatar/GroupAvatar';
+import { TextField } from '@mui/material';
 import {
   Wrapper,
-  Placeholder,
-  SelectElement,
-  ButtonWrapper,
-  ItemWrapper,
-  ItemName,
-  RemoveItemButton,
-  RemoveItemIcon,
-  SearchInput,
-  AvailablePeopleWrapper,
-  AvailablePeopleItemButton,
-  UserName,
-  UserNameText,
-  SelectElementWrapper,
+  // Placeholder,
+  // SelectElement,
+  // ButtonWrapper,
+  // ItemWrapper,
+  // ItemName,
+  // RemoveItemButton,
+  // RemoveItemIcon,
+  // SearchInput,
+  // AvailablePeopleWrapper,
+  // AvailablePeopleItemButton,
+  // UserName,
+  // UserNameText,
+  // SelectElementWrapper,
   EmptyPeopleResult,
+  SearchedUserContainer,
+  NameContainer,
+  AvatarContainer,
 } from './styled';
+import SearchIcon from '@/app/img/navigation/SearchIcon';
+import { event } from 'react-ga';
 
 const ListUsersAndGroupsSelect = ({
   disabled,
@@ -32,176 +40,246 @@ const ListUsersAndGroupsSelect = ({
   emptyListAction,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
-  const searchInputReference = useRef(null);
-  const searchedUsersAndGroupsReferences = useRef([]);
+  // const searchInputReference = useRef(null);
+  // const searchedUsersAndGroupsReferences = useRef([]);
+  // const [hoveredItemIndex, setHoveredItemIndex] = useState(0);
   const [selectedUsersAndGroups, setSelectedUsersAndGroups] = useState([]);
   const [searchInputValue, setSearchInputValue] = useState('');
-  const [hoveredItemIndex, setHoveredItemIndex] = useState(0);
 
-  const searchedAvailableUsersAndGroups = useMemo(
-    () =>
-      usersAndGroups.filter(({ name, email, identifier }) => {
-        const searchValue = searchInputValue.toLowerCase();
-        return (
-          (name?.toLowerCase().includes(searchValue) ||
-            email?.toLowerCase().startsWith(searchValue)) &&
-          !selectedUsersAndGroups.some(
-            (selectedUserAndGroup) =>
-              selectedUserAndGroup.identifier === identifier,
-          )
-        );
-      }),
-    [searchInputValue, usersAndGroups, selectedUsersAndGroups],
-  );
+  // const searchedAvailableUsersAndGroups = useMemo(
+  //   () =>
+  //     usersAndGroups.filter(({ name, email, identifier }) => {
+  //       const searchValue = searchInputValue.toLowerCase();
+  //       return (
+  //         (name?.toLowerCase().includes(searchValue) ||
+  //           email?.toLowerCase().startsWith(searchValue)) &&
+  //         !selectedUsersAndGroups.some(
+  //           (selectedUserAndGroup) =>
+  //             selectedUserAndGroup.identifier === identifier,
+  //         )
+  //       );
+  //     }),
+  //   [searchInputValue, usersAndGroups, selectedUsersAndGroups],
+  // );
 
-  const showMainInviteButton =
-    !searchInputValue || searchedAvailableUsersAndGroups.length > 0;
+  // const showMainInviteButton =
+  //   !searchInputValue || searchedAvailableUsersAndGroups.length > 0;
 
-  const removeSelectedUserOrGroup = (identifier) => {
-    setSelectedUsersAndGroups((currentSelectedUsersAndGroups) =>
-      currentSelectedUsersAndGroups.filter(
-        (userOrGroup) => userOrGroup.identifier !== identifier,
-      ),
-    );
-  };
+  // const removeSelectedUserOrGroup = (identifier) => {
+  //   setSelectedUsersAndGroups((currentSelectedUsersAndGroups) =>
+  //     currentSelectedUsersAndGroups.filter(
+  //       (userOrGroup) => userOrGroup.identifier !== identifier,
+  //     ),
+  //   );
+  // };
 
-  const handleSelectUserOrGroup = (userOrGroup) => {
-    setSelectedUsersAndGroups((perviousSelectedUserAndGroup) => [
-      ...perviousSelectedUserAndGroup,
-      userOrGroup,
-    ]);
-    setSearchInputValue('');
-    searchInputReference.current.focus();
-  };
+  // const handleSelectUserOrGroup = (selectedUser) => {
+  //   setSelectedUsersAndGroups((perviousSelectedUserAndGroup) => [
+  //     ...perviousSelectedUserAndGroup,
+  //     userOrGroup,
+  //   ]);
+  //   setSearchInputValue('');
+  //   searchInputReference.current.focus();
+  // };
 
-  const handleInviteSelectedUsersAndGroups = () => {
-    if (selectedUsersAndGroups?.length > 0) {
+  const handleInviteSelectedUsersAndGroups = (selectedUser) => {
+    const selectedUsers = [selectedUser];
+    if (selectedUsers?.length > 0) {
       onActionButtonClick(
-        selectedUsersAndGroups.map((s) => ({
+        selectedUsers.map((s) => ({
           ...s,
           userIdentifier: s.identifier,
         })),
       );
-      setSelectedUsersAndGroups([]);
+      setSearchInputValue('');
     }
   };
 
   const handleEmptyResultActionClick = () => {
     emptyListAction(searchInputValue);
     setSearchInputValue('');
-    searchInputReference.current.blur();
+    // searchInputReference.current.blur();
   };
 
-  const handleSearchInputKeyDown = (event) => {
-    switch (event.keyCode) {
-      // esc key
-      case 27:
-        event.preventDefault();
-        event.stopPropagation();
-        searchInputReference.current.blur();
-        setSearchInputValue('');
-        break;
+  // const handleSearchInputKeyDown = (event) => {
+  //   switch (event.keyCode) {
+  //     // esc key
+  //     case 27:
+  //       event.preventDefault();
+  //       event.stopPropagation();
+  //       searchInputReference.current.blur();
+  //       setSearchInputValue('');
+  //       break;
 
-      // enter key
-      case 13:
-        event.preventDefault();
-        event.stopPropagation();
-        if (
-          searchInputReference.current?.value &&
-          searchedAvailableUsersAndGroups?.length > 0
-        ) {
-          handleSelectUserOrGroup(
-            searchedAvailableUsersAndGroups[hoveredItemIndex],
-          );
-          break;
-        }
+  //     // enter key
+  //     case 13:
+  //       event.preventDefault();
+  //       event.stopPropagation();
+  //       if (
+  //         searchInputReference.current?.value &&
+  //         searchedAvailableUsersAndGroups?.length > 0
+  //       ) {
+  //         handleSelectUserOrGroup(
+  //           searchedAvailableUsersAndGroups[hoveredItemIndex],
+  //         );
+  //         break;
+  //       }
 
-        if (
-          searchInputReference.current?.value &&
-          searchedAvailableUsersAndGroups?.length === 0
-        ) {
-          handleEmptyResultActionClick();
-          break;
-        }
+  //       if (
+  //         searchInputReference.current?.value &&
+  //         searchedAvailableUsersAndGroups?.length === 0
+  //       ) {
+  //         handleEmptyResultActionClick();
+  //         break;
+  //       }
 
-        if (selectedUsersAndGroups?.length > 0) {
-          handleInviteSelectedUsersAndGroups();
-          break;
-        }
+  //       if (selectedUsersAndGroups?.length > 0) {
+  //         handleInviteSelectedUsersAndGroups();
+  //         break;
+  //       }
 
-        break;
+  //       break;
 
-      // down arrow key
-      case 40:
-        event.preventDefault();
-        event.stopPropagation();
+  //     // down arrow key
+  //     case 40:
+  //       event.preventDefault();
+  //       event.stopPropagation();
 
-        if (searchedAvailableUsersAndGroups?.length > 0) {
-          setHoveredItemIndex((previousIndex) => {
-            let newIndex;
-            if (previousIndex === searchedAvailableUsersAndGroups.length - 1) {
-              newIndex = 0;
-            } else {
-              newIndex = previousIndex + 1;
-            }
+  //       if (searchedAvailableUsersAndGroups?.length > 0) {
+  //         setHoveredItemIndex((previousIndex) => {
+  //           let newIndex;
+  //           if (previousIndex === searchedAvailableUsersAndGroups.length - 1) {
+  //             newIndex = 0;
+  //           } else {
+  //             newIndex = previousIndex + 1;
+  //           }
 
-            searchedUsersAndGroupsReferences.current[newIndex].scrollIntoView(
-              false,
-            );
-            return newIndex;
-          });
-        }
+  //           searchedUsersAndGroupsReferences.current[newIndex].scrollIntoView(
+  //             false,
+  //           );
+  //           return newIndex;
+  //         });
+  //       }
 
-        break;
+  //       break;
 
-      // up arrow key
-      case 38:
-        event.preventDefault();
-        event.stopPropagation();
+  //     // up arrow key
+  //     case 38:
+  //       event.preventDefault();
+  //       event.stopPropagation();
 
-        if (searchedAvailableUsersAndGroups?.length > 0) {
-          setHoveredItemIndex((previousIndex) => {
-            let newIndex;
-            if (previousIndex === 0) {
-              newIndex = searchedAvailableUsersAndGroups.length - 1;
-            } else {
-              newIndex = previousIndex - 1;
-            }
+  //       if (searchedAvailableUsersAndGroups?.length > 0) {
+  //         setHoveredItemIndex((previousIndex) => {
+  //           let newIndex;
+  //           if (previousIndex === 0) {
+  //             newIndex = searchedAvailableUsersAndGroups.length - 1;
+  //           } else {
+  //             newIndex = previousIndex - 1;
+  //           }
 
-            searchedUsersAndGroupsReferences.current[newIndex].scrollIntoView(
-              true,
-            );
-            return newIndex;
-          });
-        }
+  //           searchedUsersAndGroupsReferences.current[newIndex].scrollIntoView(
+  //             true,
+  //           );
+  //           return newIndex;
+  //         });
+  //       }
 
-        break;
+  //       break;
 
-      default:
-        // set content width plus input padding value
-        searchInputReference.current.style.width =
-          searchInputReference.current?.scrollWidth + 8;
-        searchInputReference.current.scrollIntoView(true);
-        break;
-    }
+  //     default:
+  //       // set content width plus input padding value
+  //       searchInputReference.current.style.width =
+  //         searchInputReference.current?.scrollWidth + 8;
+  //       searchInputReference.current.scrollIntoView(true);
+  //       break;
+  //   }
 
-    if (!searchInputReference.current?.value) {
-      searchInputReference.current.style.width = 20;
-    }
+  //   if (!searchInputReference.current?.value) {
+  //     searchInputReference.current.style.width = 20;
+  //   }
+  // };
+
+  // const handleSelectAreaClick = (event) => {
+  //   event.preventDefault();
+  //   event.stopPropagation();
+
+  //   if (searchInputReference?.current) {
+  //     searchInputReference.current.focus();
+  //   }
+  // };
+
+  const handleSearch = () => {
+    const searchedUsers = usersAndGroups.filter(
+      (user) =>
+        user.name?.toLowerCase().includes(searchInputValue.toLowerCase()) ||
+        user.email?.toLowerCase().includes(searchInputValue.toLowerCase()),
+    );
+    setSelectedUsersAndGroups(searchedUsers);
   };
 
-  const handleSelectAreaClick = (event) => {
-    event.preventDefault();
-    event.stopPropagation();
+  useEffect(() => {
+    handleSearch();
+  }, [searchInputValue]);
 
-    if (searchInputReference?.current) {
-      searchInputReference.current.focus();
-    }
+  const sx = {
+    '& .MuiOutlinedInput-root': {
+      borderRadius: '10px',
+      '&.Mui-focused fieldset': {
+        borderColor: 'black',
+        borderWidth: '1px',
+      },
+    },
+    '& .MuiInputLabel-root.Mui-focused': {
+      color: 'grey',
+    },
+  }
+  const inputStyle = {
+    style: {
+      textTransform: 'none',
+    },
   };
 
   return (
     <Wrapper>
-      <ClickAwayListener onClickAway={() => setSearchInputValue('')}>
+      <TextField
+        variant="outlined"
+        label="Add User or Group"
+        value={searchInputValue}
+        InputLabelProps={inputStyle}
+        sx={sx}
+        onChange={(event) => setSearchInputValue(event.target.value)}
+      />
+      {searchInputValue !== '' && (
+        <SearchedUserContainer>
+          {selectedUsersAndGroups?.map((user) => (
+            <div style={{ display: 'flex' }}>
+              <AvatarContainer>
+                {isUserGroup(user) ? (
+                  <GroupAvatar size={35} group={user} />
+                ) : (
+                  <UserAvatar size={35} user={user} />
+                )}
+              </AvatarContainer>
+              <NameContainer
+                disabled={selectedUsersAndGroups.length === 0 || disabled}
+                onClick={() => handleInviteSelectedUsersAndGroups(user)}
+              >
+                {user.name}
+              </NameContainer>
+            </div>
+          ))}
+          {selectedUsersAndGroups?.length === 0 && searchInputValue !== '' && (
+            <EmptyPeopleResult>
+              <AddRecordOption
+                searchValue={searchInputValue}
+                onClick={handleEmptyResultActionClick}
+              />
+            </EmptyPeopleResult>
+          )}
+        </SearchedUserContainer>
+      )}
+
+      {/* <ClickAwayListener onClickAway={() => setSearchInputValue('')}>
         <SelectElementWrapper
           withValue={searchInputValue}
           fullWidth={!showMainInviteButton}
@@ -293,7 +371,7 @@ const ListUsersAndGroupsSelect = ({
             Invite
           </Button>
         </ButtonWrapper>
-      )}
+      )} */}
     </Wrapper>
   );
 };

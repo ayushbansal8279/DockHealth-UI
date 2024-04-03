@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 
-function useBooleanWithTimeout(initialValue = false) {
-  const timeoutReference = useRef(null);
+function useBooleanWithTimeout(
+  initialValue = false,
+): [boolean, () => void, () => void] {
+  const timeoutReference = useRef<NodeJS.Timeout | null>(null);
   const [isTrue, setIsTrue] = useState(initialValue);
 
   useEffect(() => () => {

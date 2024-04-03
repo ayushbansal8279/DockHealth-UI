@@ -1,7 +1,7 @@
 import { Button, IconButton } from '@mui/material';
 import styled from 'styled-components';
 import spacing from 'styles/spacing';
-import palette from 'styles/palette';
+import palette, { typography } from 'styles/palette';
 import { Close } from '@mui/icons-material';
 import { fontSizes, fontWeights } from 'styles/font';
 
@@ -20,7 +20,7 @@ export const ModalWrapper = styled.div`
   align-items: center;
   width: ${({ width }) => width || '450px'};
   max-width: 100vw;
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: inherit;
   background-color: white;
 `;
 
@@ -60,10 +60,9 @@ export const ButtonsContainer = styled.div`
 `;
 
 export const FlexButtonWrapper = styled.div`
-  flex: 1;
-  button {
-    font-size: 14px !important;
-  }
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 export const FixedWidthButtonWrapper = styled.div`
@@ -156,7 +155,7 @@ export const IncludeContainerStyled = styled.div`
 
 export const InfoHeaderTextStyled = styled.p`
   color: ${palette.coolGrey9};
-  font-family: 'Montserrat';
+  font-family: 'Outfit';
   font-weight: 600;
   margin: 0;
 `;
@@ -170,7 +169,7 @@ export const CheckboxContainer = styled.div`
 
 export const CheckboxDescription = styled.label`
   display: inline;
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: 'Outfit', sans-serif;
   font-size: ${fontSizes.regular};
   color: ${palette.mediumGrey};
 `;

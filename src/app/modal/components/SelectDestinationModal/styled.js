@@ -1,8 +1,8 @@
 import styled from 'styled-components';
 import spacing from 'styles/spacing';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import palette from 'styles/palette';
-import { fontSizes } from 'styles/font';
+import palette, { typography } from 'styles/palette';
+import { fontSizes, fontWeights } from 'styles/font';
 
 export const StepsContainer = styled.div`
   display: flex;
@@ -36,12 +36,12 @@ export const QuickAddInputWrapper = styled.div`
   &:before {
     position: absolute;
     top: 50%;
-    left: ${spacing.regularPlus};
+    left: 115px;
     display: block;
     content: '+';
     transform: translateY(-50%);
-    color: ${palette.orange};
-    font-size: ${fontSizes.regular};
+    color: ${palette.blueOcean};
+    font-size: ${fontSizes.large};
   }
 
   ${({ isFocused }) =>
@@ -61,6 +61,7 @@ export const QuickAddInput = styled.input`
   border-top: none;
   font-size: ${fontSizes.regular};
   box-shadow: none;
+  text-align: center;
 
   &:disabled {
     background-color: transparent;
@@ -91,12 +92,21 @@ export const TitleWithButtonWrapper = styled.div`
 export const Title = styled.h2`
   margin: 0;
   font-size: ${fontSizes.regularPlus};
-  color: ${palette.brightBlue};
-  font-family: 'Roboto Condensed', sans-serif;;
-  text-align: left;
+  color: ${palette.offBlack};
+  font-family: inherit;
+  text-align: Center;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  gap: 8px;
+  align-self: stretch;
+  text-align: center;
+  font-family: Outfit;
+  font-size: 22px;
+  font-style: normal;
+  font-weight: ${fontWeights.regularPlus};
+  line-height: 25px; /* 113.636% */
+  text-transform: capitalize;
 `;
 
 export const Description = styled.p`
@@ -124,7 +134,7 @@ export const ListItemTextButton = styled.button`
 `;
 
 export const NextArrow = styled(ChevronRightIcon)`
-  color: ${palette.lightGrey};
+  color: ${palette.offBlack} !important;
 `;
 
 export const ListItem = styled.div`
@@ -137,21 +147,10 @@ export const ListItem = styled.div`
   appearance: none;
   border-radius: 0;
   background-color: ${({ isSelected }) =>
-    isSelected ? palette.darkBlue : 'transparent'};
+    isSelected ? palette.brightBlueWithAlpha : 'transparent'};
 
   &:hover {
-    background-color: ${({ isSelected }) =>
-      isSelected ? palette.darkBlue : palette.brightBlueWithAlpha};
-  }
-
-  & ${ListItemTextButton} {
-    color: ${({ isSelected }) =>
-      isSelected ? palette.white : palette.darkGrey};
-  }
-
-  & ${NextArrow} {
-    color: ${({ isSelected }) =>
-      isSelected ? palette.white : palette.lightGrey};
+    background-color: ${palette.brightBlueWithAlpha};
   }
 `;
 

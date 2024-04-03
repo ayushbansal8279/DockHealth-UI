@@ -3,7 +3,14 @@ import moment from 'moment';
 import Spacing from 'components/common/Spacing';
 import RecurringIcon from 'img/recurring-arrows';
 import ReminderIcon from 'img/reminder';
-import { DueDateBasicLabel, DateText } from './styled';
+import {
+  DueDateBasicLabel,
+  DateText,
+  DateTextContainer,
+  ReminderIconContainer,
+  RecurringIconContainer,
+} from './styled';
+import Tooltip from '../Tooltip/Tooltip';
 
 const DateLabel = (props) => {
   const {
@@ -11,35 +18,56 @@ const DateLabel = (props) => {
     isOverdue,
     hasReminder,
     hasRecurringSchedule,
-    format = 'MM/DD/YY',
+    format = 'MMM DD, YYYY',
     showTime = false,
     timeFormat = 'HH:mm',
+    tootipTitle,
+    timeFormatForHours = 'HH',
   } = props;
   const dueDate = moment(date);
-  const dateFormat = dueDate.isSame(moment(), 'year') ? 'MM/DD' : format;
+  const dateFormat = dueDate.isSame(moment(), 'year') ? 'MMM DD, YYYY' : format;
   return (
     <>
       <DueDateBasicLabel isOverdue={isOverdue}>
-        <DateText>{dueDate.format(dateFormat)}</DateText>
+        <Tooltip placement="top" title={!!tootipTitle ? tootipTitle : ''}>
+          <DateTextContainer isOverdue={isOverdue}>
+            <DateText>
+              {dueDate.format(dateFormat)}
+              {showTime && (
+                <>
+                  <Spacing horizontal={1} />@
+                  <Spacing horizontal={1} />
+                  {dueDate.format(timeFormat)}
+                  <Spacing horizontal={1} />
+                  {dueDate.format(timeFormatForHours) >= 12 ? 'pm' : 'am'}
+                </>
+              )}
+            </DateText>
+          </DateTextContainer>
+        </Tooltip>
         {hasReminder && (
-          <>
+          <ReminderIconContainer isOverdue={isOverdue}>
             <Spacing horizontal={2} />
             <ReminderIcon />
-          </>
+          </ReminderIconContainer>
         )}
         {hasRecurringSchedule && (
-          <>
+          <RecurringIconContainer isOverdue={isOverdue}>
             <Spacing horizontal={2} />
             <RecurringIcon />
-          </>
+          </RecurringIconContainer>
         )}
       </DueDateBasicLabel>
-      {showTime && (
+      {/* {showTime && (
         <>
-          <Spacing horizontal={1} />
-          <DateText>{dueDate.format(timeFormat)}</DateText>
+          <Spacing horizontal={0} />
+          <DateText>
+            @ {dueDate.format(timeFormat)}
+            <Spacing horizontal={1} />
+            {dueDate.format(timeFormatForHours) > 12 ? 'pm' : 'am'}
+          </DateText>
         </>
-      )}
+      )} */}
     </>
   );
 };

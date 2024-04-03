@@ -1,11 +1,11 @@
 import styled from 'styled-components';
-import palette from 'styles/palette';
+import palette, { typography } from 'styles/palette';
 import { fontSizes, fontWeights } from 'styles/font';
 import spacing from 'styles/spacing';
 
 // Common
 export const LimitedAccessLabel = styled.span`
-  font-family: 'Roboto Condensed';
+  font-family: inherit;
   color: ${palette.orange};
   font-style: italic;
   font-weight: normal;
@@ -13,7 +13,7 @@ export const LimitedAccessLabel = styled.span`
 `;
 
 export const Header = styled.div`
-  font-family: 'Roboto Condensed';
+  font-family: inherit;
   background-color: ${palette.coolGrey4};
   width: 100%;
   font-size: ${fontSizes.regular};
@@ -66,7 +66,7 @@ export const ApprovalButtonContainer = styled.div`
 
 // RoleSelectionPopover
 export const RoleItem = styled.div`
-  font-family: 'Roboto Condensed';
+  font-family: inherit;
   display: flex;
   padding: 18px ${spacing.smallPlus};
   border: 1px solid ${palette.coolGrey3};
@@ -114,7 +114,7 @@ export const RoleSelectorCancelRemoveUserButton = styled.button`
 
 // InvitationPopover
 export const InvitationItem = styled.div`
-  font-family: 'Roboto Condensed';
+  font-family: inherit;
   display: flex;
   padding: ${spacing.large} 40px;
   width: 408px;
@@ -135,7 +135,7 @@ export const InvitationItemDescription = styled.div`
 
 // PendingApprovalPopover
 export const PendingApprovalContainer = styled.div`
-  font-family: 'Roboto Condensed';
+  font-family: inherit;
   width: 462px;
   display: flex;
   justify-content: space-between;
@@ -144,7 +144,7 @@ export const PendingApprovalContainer = styled.div`
 
 // InactiveRoleSelectionPopover
 export const InactiveRoleSelectionContainer = styled.div`
-  font-family: 'Roboto Condensed';
+  font-family: inherit;
   width: 462px;
   display: flex;
   justify-content: space-between;

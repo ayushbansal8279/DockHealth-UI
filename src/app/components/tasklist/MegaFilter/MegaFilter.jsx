@@ -29,6 +29,8 @@ const MegaFilter = ({
   onQuickFilterCreate,
   onQuickFilterDelete,
   isDefaultDateFilterApplied = false,
+  value,
+  focused,
 }) => {
   const [isOpen, openPopover] = useState(false);
   const [searchedFilterQuery, setSearchedFilterQuery] = useState('');
@@ -54,6 +56,9 @@ const MegaFilter = ({
           active={isFilterApplied}
           onClick={() => openPopover(!isOpen)}
           onClear={clearFilters}
+          isOpen={isOpen}
+          value={value}
+          focused={focused}
         />
       )}
       <FilterPopover

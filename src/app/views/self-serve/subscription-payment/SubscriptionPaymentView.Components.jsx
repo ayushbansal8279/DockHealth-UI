@@ -54,7 +54,7 @@ export const SubscriptionPaymentViewContainer = styled.div`
   width: 1200px;
 
   && * {
-    font-family: 'Montserrat', sans-serif;
+    font-family: 'Outfit', sans-serif;
   }
 `;
 

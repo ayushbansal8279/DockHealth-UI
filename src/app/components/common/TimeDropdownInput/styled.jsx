@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React from 'react';
 import styled from 'styled-components';
-import palette from 'styles/palette';
+import palette, { typography } from 'styles/palette';
 import InputMask from 'react-input-mask';
 import { fontWeights } from 'styles/font';
 import spacing from 'styles/spacing';
 
-const FONT_FAMILY = '"Roboto Condensed", sans-serif';
+const FONT_FAMILY = '"Outfit", sans-serif';
 
 export const TimeDropdownContainer = styled.div`
   position: relative;
@@ -83,7 +83,7 @@ export const TimeInputMask = styled(
       `
       height: 27px;
       font-weight: ${fontWeights.light};
-      padding: ${spacing.tiny} ${spacing.large} ${spacing.tiny} ${spacing.small};
+      padding: ${spacing.tiny};
     `}
 
     &:focus {
@@ -102,7 +102,7 @@ export const TimeOptionsContainer = styled.div`
   width: 100%;
   max-height: 250px;
   overflow-y: auto;
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: inherit;
 `;
 
 export const TimeOptionButton = styled.button`
@@ -120,7 +120,7 @@ export const TimeOptionButton = styled.button`
 
 export const EndAdornmentContainer = styled.div`
   position: absolute;
-  top: 50%;
-  right: 12px;
+  top: 60%;
+  right: 9px;
   transform: translate(50%, -50%);
 `;

@@ -5,7 +5,7 @@ import DialogContentText from '@mui/material/DialogContentText';
 
 import palette from 'styles/palette';
 import { MontserratTypography } from 'styles/theme-montserrat';
-import { RobotoTypography } from 'styles/theme';
+import { OutfitTypography } from 'styles/theme';
 import { FormProvider, useForm } from 'react-hook-form';
 import { object, string } from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -92,13 +92,13 @@ export default function ReferAColleagueModal({ closeModal, openModal }) {
           >
             <FormProvider {...formMethods}>
               <Title>
-                <RobotoTypography
+                <OutfitTypography
                   weight="normal"
                   variant="h3"
                   color={palette.mediumGrey}
                 >
                   REFER A COLLEAGUE
-                </RobotoTypography>
+                </OutfitTypography>
               </Title>
               <Spacing vertical={3} />
               <DialogContentText>

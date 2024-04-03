@@ -1,6 +1,6 @@
 import { IconButton, Box, Modal } from '@mui/material';
 import styled from 'styled-components';
-import palette from 'styles/palette';
+import palette, { typography } from 'styles/palette';
 import spacing from 'styles/spacing';
 import { fontSizes } from 'styles/font';
 import { Close } from '@mui/icons-material';
@@ -13,7 +13,7 @@ export const ListModalWrapper = styled(Box)`
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: inherit;
   background-color: white;
   width: 600px;
   min-height: 340px;
@@ -34,13 +34,12 @@ export const Body = styled.div`
   margin: 0 auto;
   padding-top: 10px;
   color: ${palette.mediumGrey};
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: inherit;
 `;
 
 export const Title = styled.h5`
   font-size: ${fontSizes.regularPlus};
   color: ${palette.brightBlue};
-  text-transform: uppercase;
   text-align: center;
 `;
 

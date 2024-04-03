@@ -1,14 +1,12 @@
-import React from 'react';
-import { DrawerFieldEnum } from 'helpers/task-drawer-helpers';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { setCommentIdentifierToScroll } from 'actions/task-drawer-actions';
 import Comment from 'components/drawer-common/Comment/Comment';
-import AddComment from 'components/drawer-common/AddComment/AddComment';
-import { useSelector } from 'react-redux';
-import { userProfileSelector } from 'selectors/user-selectors';
 import {
-  SINGLE_TASK_RESTRICTIONS_OPTIONS,
-  SINGLE_TASK_RESTRICTIONS_PROFILES,
-} from 'restrictions/task-restrictions';
-import initializeCommentSectionHooks from './hooks';
+  getCommentIdToScroll,
+  initializeCommentSectionHooks,
+  scrollToById,
+} from './helpers';
 import {
   CommentSectionContainer,
   CommentsListContainer,
@@ -16,30 +14,23 @@ import {
 } from './styled';
 
 const CommentSection = ({ selectedTask }) => {
-  const {
-    comments,
-    currentUser,
-    removeComment,
-    updateComment,
-    addComment,
-    taskListIdentifier,
-    taskDrawerFocusField,
-  } = initializeCommentSectionHooks(selectedTask);
+  const dispatch = useDispatch();
+  const { comments, currentUser, removeComment, updateComment } =
+    initializeCommentSectionHooks(selectedTask);
+  const { commentIdentifierToScroll } = useSelector(
+    (state) => state.taskDrawerState,
+  );
 
-  const { orgUserRole } = useSelector(userProfileSelector);
-  const restrictions = SINGLE_TASK_RESTRICTIONS_PROFILES[orgUserRole];
-  const { DISABLED } = SINGLE_TASK_RESTRICTIONS_OPTIONS;
+  useEffect(() => {
+    scrollToById(`#${getCommentIdToScroll(commentIdentifierToScroll)}`);
+    dispatch(setCommentIdentifierToScroll(null));
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [commentIdentifierToScroll]);
 
   return (
     <CommentSectionContainer>
       <Title>Comments</Title>
-      {restrictions?.comments !== DISABLED && (
-        <AddComment
-          autoFocus={taskDrawerFocusField === DrawerFieldEnum.COMMENT}
-          taskListIdentifier={taskListIdentifier}
-          onAdd={addComment}
-        />
-      )}
       <CommentsListContainer>
         {comments?.map((comment) => (
           <Comment
@@ -48,7 +39,6 @@ const CommentSection = ({ selectedTask }) => {
             currentUser={currentUser}
             onDelete={removeComment}
             onUpdate={updateComment}
-            taskListIdentifier={taskListIdentifier}
             selectedTask={selectedTask}
           />
         ))}

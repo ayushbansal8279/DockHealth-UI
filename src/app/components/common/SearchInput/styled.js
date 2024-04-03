@@ -9,7 +9,7 @@ const START_PADDING = 55;
 export const SearchInputWrapper = styled.div`
   position: relative;
   width: 100%;
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Outfit', sans-serif;
 `;
 
 export const StyledInput = styled.input`
@@ -29,7 +29,6 @@ export const StyledInput = styled.input`
 
   &::placeholder {
     color: ${palette.coolGrey2};
-    text-transform: uppercase;
   }
 `;
 

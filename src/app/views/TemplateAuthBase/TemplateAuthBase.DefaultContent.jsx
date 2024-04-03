@@ -2,15 +2,14 @@ import { Grid } from '@mui/material';
 import React from 'react';
 import styled from 'styled-components';
 import Spacing from 'components/common/Spacing';
-import DockHeaderLogo from 'img/dock-header-logo.svg';
+import TranscriptPng from 'img/auth-transcript.png';
 import { MontserratTypography } from 'styles/theme-montserrat';
 
-const DockLogoImage = styled.img.attrs({
-  src: DockHeaderLogo,
-  alt: 'Dock Health logo',
+const TranscriptImage = styled.img.attrs({
+  src: TranscriptPng,
+  alt: 'transcript',
 })`
   object-fit: contain;
-  height: 128px;
 `;
 
 const StyledGrid = styled(Grid)`
@@ -27,14 +26,36 @@ const TemplateAuthBaseDefaultContent = () => {
       alignItems="flex-start"
       direction="column"
     >
-      <a href="/#/core/home/my-tasks">
-        <DockLogoImage />
-      </a>
-      <Spacing vertical={5} />
-      <MontserratTypography weight="normal" variant="h3" color="inherit">
-        A simple, HIPAA-compliant task management and collaboration platform
-        built specifically for healthcare.
-      </MontserratTypography>
+      <Grid item>
+        <TranscriptImage />
+        <Spacing vertical={5} />
+        <MontserratTypography
+          weight="bold"
+          variant="h3"
+          color="black"
+          align="center"
+        >
+          Bye bye Post-It Notes.
+        </MontserratTypography>
+        <MontserratTypography
+          weight="bold"
+          variant="h3"
+          color="black"
+          align="center"
+        >
+          Hello efficiency.
+        </MontserratTypography>
+        <Spacing vertical={3} />
+        <MontserratTypography
+          weight="light"
+          variant="h4"
+          color="rgba(0, 0, 0, 0.6)"
+          align="center"
+        >
+          Save time, work better with HIPAA-compliant task management and
+          workflow automation from <br /> Dock Health.
+        </MontserratTypography>
+      </Grid>
     </StyledGrid>
   );
 };

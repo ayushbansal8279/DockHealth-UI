@@ -21,6 +21,7 @@ const TaskTemplateIcons = ({
   matchAttachments,
   comments,
   matchComments,
+  isHover,
 }) => {
   const { restrictions } = workflow ?? {};
 
@@ -62,15 +63,17 @@ const TaskTemplateIcons = ({
             title={
               comments?.length > 0
                 ? getCommentsIconTooltipTitle(comments)
-                : 'Add a new comment'
+                : 'Add Comment'
             }
           >
             <button type="button" onClick={onCommentClick}>
-              <TaskIcon
-                type="comments"
-                isActive={comments?.length > 0}
-                // isNew={workflow?.updatedComment}
-              />
+              {(comments?.length > 0 || isHover.comment) && (
+                <TaskIcon
+                  type="comments"
+                  isActive={comments?.length > 0}
+                  // isNew={workflow?.updatedComment}
+                />
+              )}
             </button>
           </Tooltip>
         </GridImg>
@@ -85,7 +88,7 @@ const TaskTemplateIcons = ({
             title={
               labels?.length > 0
                 ? getLabelsIconTooltipTitle(labels)
-                : 'Add label'
+                : 'Add Label'
             }
           >
             <button
@@ -96,11 +99,13 @@ const TaskTemplateIcons = ({
               type="button"
               onClick={onLabelClick}
             >
-              <TaskIcon
-                type="labels"
-                isActive={labels?.length > 0}
-                // isNew={workflow?.updatedLabel}
-              />
+              {(labels?.length > 0 || isHover.label) && (
+                <TaskIcon
+                  type="labels"
+                  isActive={labels?.length > 0}
+                  // isNew={workflow?.updatedLabel}
+                />
+              )}
             </button>
           </Tooltip>
         </GridImg>
@@ -112,15 +117,17 @@ const TaskTemplateIcons = ({
             title={
               attachments?.length > 0
                 ? getAttachmentsIconTooltipTitle(attachments)
-                : 'Add file'
+                : 'Add File'
             }
           >
             <button type="button" onClick={onAttachmentsClick}>
-              <TaskIcon
-                type="attachments"
-                isActive={attachments?.length > 0}
-                // isNew={workflow?.updatedAttachment}
-              />
+              {(attachments?.length > 0 || isHover.file) && (
+                <TaskIcon
+                  type="attachments"
+                  isActive={attachments?.length > 0}
+                  // isNew={workflow?.updatedAttachment}
+                />
+              )}
             </button>
           </Tooltip>
         </GridImg>

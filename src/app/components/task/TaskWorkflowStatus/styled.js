@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import palette from 'styles/palette';
+import palette, { typography } from 'styles/palette';
 import spacing from 'styles/spacing';
 import { fontSizes, fontWeights } from 'styles/font';
 import prop from 'ramda/src/prop';
@@ -15,7 +15,7 @@ export const StatusListWrapper = styled.div`
   flex-direction: column;
   align-items: flex-start;
   width: auto;
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: inherit;
   font-size: ${fontSizes.smallPlus};
   font-weight: ${fontWeights.regularPlus};
   color: ${palette.mediumGrey};
@@ -24,7 +24,7 @@ export const StatusListWrapper = styled.div`
 export const StatusList = styled.div`
   display: grid;
   grid-auto-flow: column;
-  grid-template-rows: repeat(10, 32px);
+  grid-template-rows: repeat(10, 38px);
   grid-template-columns: repeat(
     ${({ elementsCount }) => {
       if (elementsCount < 11) {
@@ -111,4 +111,11 @@ export const ColorButton = styled.button`
     border: 1px solid ${palette.white};
     box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.25);
   `}
+`;
+
+export const ColorPickerContainer = styled.div`
+  border-top: 1px solid ${palette.coolGrey2};
+  display: flex;
+  width: 100%;
+  margin-top: 55px;
 `;

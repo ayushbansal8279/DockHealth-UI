@@ -16,6 +16,7 @@ import {
   DisabledPatientLabel,
   PatientPrintAdditionalInfo,
 } from '../../styled';
+import Tooltip from '@/app/components/common/Tooltip/Tooltip';
 
 const TaskItemPatient = ({
   highlightedValue,
@@ -30,6 +31,7 @@ const TaskItemPatient = ({
   onTaskUpdate,
   currentUser,
   readOnly,
+  origin,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const { pathname } = useLocation();
@@ -91,10 +93,16 @@ const TaskItemPatient = ({
             closePopover={() => setPopoverOpen(false)}
             isSubtask={isSubtask}
             hasSubtasks={hasSubtasks}
+            origin={origin}
           >
-            <AddPlaceholder>
-              + Add {customerTypeLabelCapitalized}
-            </AddPlaceholder>
+            <Tooltip
+              placement="top"
+              title={`Add ${customerTypeLabelCapitalized}`}
+            >
+              <AddPlaceholder>
+                + Add {customerTypeLabelCapitalized}
+              </AddPlaceholder>
+            </Tooltip>
           </PatientDropdown>
         )}
       {!readOnly &&
