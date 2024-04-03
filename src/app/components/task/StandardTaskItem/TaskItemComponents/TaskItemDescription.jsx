@@ -163,6 +163,8 @@ const TaskItemDescription = ({
               textOverflow: 'ellipsis',
               overflow: 'hidden',
               whiteSpace: 'nowrap',
+              textDecoration: isCompleted ? 'line-through' : 'none',
+              color: isCompleted && 'rgba(61, 72, 88, 0.50)',
             }}
           >
             {tokenizedDescription.split(/\s/).map((word) => {
