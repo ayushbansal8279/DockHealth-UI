@@ -7,7 +7,6 @@ export const CommentWrapper = styled.div`
   display: flex;
   width: 100%;
   font-family: inherit;
-  padding: ${spacing.small} 0;
   margin-bottom: 1px solid red;
   ${({ $showPointer }) => ($showPointer ? 'cursor: pointer' : '')}
 `;
@@ -45,6 +44,7 @@ export const CommentDetails = styled.div`
 `;
 
 export const CommentMemberContainer = styled.div`
+  padding-top: ${spacing.tiny};
   width: 35px;
 `;
 

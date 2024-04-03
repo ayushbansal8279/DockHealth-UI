@@ -10,6 +10,11 @@ export const AddCommentContainer = styled.div`
   padding: ${spacing.tiny} 0;
 `;
 
+export const AvatarWrapper = styled.div`
+  width: 35px;
+  padding-top: ${spacing.tiny};
+`;
+
 export const AddCommentInputContainer = styled.div`
   background-color: ${palette.white};
   border: 0;
@@ -17,7 +22,6 @@ export const AddCommentInputContainer = styled.div`
   color: ${palette.darkGrey};
   font-family: inherit;
   outline: 0;
-  margin-left: ${spacing.smallPlus};
   padding: ${spacing.tiny} ${spacing.small};
   overflow: hidden;
   min-height: 60px;
