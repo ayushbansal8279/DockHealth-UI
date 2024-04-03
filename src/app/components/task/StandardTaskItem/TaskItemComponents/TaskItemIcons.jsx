@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import { Grid } from '@mui/material';
 import { storeAsCurrentTask } from 'actions/task-actions';
 import { openDrawer } from 'actions/task-drawer-actions';
@@ -12,6 +12,7 @@ import Tooltip from 'components/common/Tooltip/Tooltip';
 import TaskIcon from 'components/task/TaskIcon/TaskIcon';
 import { SINGLE_TASK_RESTRICTIONS_OPTIONS } from 'restrictions/task-restrictions';
 import { GridImg } from '../../styled';
+import TaskLabel from '@/app/components/common/TaskLabel/TaskLabel';
 
 const TaskItemIcons = ({
   matchComments,
@@ -30,7 +31,18 @@ const TaskItemIcons = ({
     dispatch(storeAsCurrentTask(task));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [task]);
+  // const showLabelsRef = useRef(null);
+  // console.log('showLabelsRef', showLabelsRef?.current?.offsetWidth);
+  // const itemRefs = labels.map(() => useRef(null));
 
+  // useEffect(() => {
+  //   // Use useEffect to measure each item after they've been rendered
+  //   itemRefs.forEach((itemRef, index) => {
+  //     if (itemRef.current) {
+  //       console.log(`Width of item ${index + 1}:`, itemRef.current.offsetWidth);
+  //     }
+  //   });
+  // }, [labels]);
   const onLabelClick = useCallback(() => {
     dispatch(openDrawer(DrawerFieldEnum.LABEL));
     dispatch(storeAsCurrentTask(task));
@@ -65,36 +77,51 @@ const TaskItemIcons = ({
         </GridImg>
       ) : null}
       {labels ? (
-        <GridImg item xs={12} matched={matchLabels}>
-          <Tooltip
-            hideTooltip={
-              restrictions?.labels === SINGLE_TASK_RESTRICTIONS_OPTIONS.DISABLED
-            }
-            placement="top"
-            title={
-              labels?.length > 0
-                ? getLabelsIconTooltipTitle(labels)
-                : 'Add Label'
-            }
-          >
-            <button
-              disabled={
+        labels.length > 0 ? (
+          // labels.map((label, index) => (
+          <TaskLabel
+            // labelName={label?.labelName}
+            // key={label?.labelIdentifier}
+            getLabelsIconTooltipTitle={getLabelsIconTooltipTitle}
+            labels={labels}
+            // showLabelsRef={itemRefs[index]}
+          />
+        ) : (
+          // ))
+          // ))
+          <GridImg item xs={12} matched={matchLabels}>
+            <Tooltip
+              hideTooltip={
                 restrictions?.labels ===
                 SINGLE_TASK_RESTRICTIONS_OPTIONS.DISABLED
               }
-              type="button"
-              onClick={onLabelClick}
+              placement="top"
+              title={
+                // labels?.length > 0
+                //   ? getLabelsIconTooltipTitle(labels)
+                // :
+                'Add Label'
+              }
             >
-              {(labels?.length > 0 || isHover.label) && (
-                <TaskIcon
-                  type="labels"
-                  isActive={labels?.length > 0}
-                  isNew={task.updatedLabel}
-                />
-              )}
-            </button>
-          </Tooltip>
-        </GridImg>
+              <button
+                disabled={
+                  restrictions?.labels ===
+                  SINGLE_TASK_RESTRICTIONS_OPTIONS.DISABLED
+                }
+                type="button"
+                onClick={onLabelClick}
+              >
+                {(labels?.length > 0 || isHover.label) && (
+                  <TaskIcon
+                    type="labels"
+                    isActive={labels?.length > 0}
+                    isNew={task.updatedLabel}
+                  />
+                )}
+              </button>
+            </Tooltip>
+          </GridImg>
+        )
       ) : null}
       {attachments ? (
         <GridImg item xs={12} matched={matchAttachments}>

@@ -22,6 +22,7 @@ const palette = {
   aliceBlue: '#eff6fb',
   lightGrayishBlue: '#D4D9DF',
   shadowBlue: '#8492A4',
+  gunmetal: '#292D34',
 
   // secondary
   purplePassion: '#553bbe',
