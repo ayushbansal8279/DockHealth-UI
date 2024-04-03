@@ -26,7 +26,11 @@ const InviteButton = ({ getAllUsers }) => {
       > */}
       <ToolbarButton
         ref={invitePeopleButtonReference}
-        icon={<AddIcon />}
+        icon={
+          <span style={{ marginLeft: '-5px' }}>
+            <AddIcon />
+          </span>
+        }
         onClick={() => togglePopoverOpen(true)}
         isOpen={isPopoverOpen}
         active={isPopoverOpen}

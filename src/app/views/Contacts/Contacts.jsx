@@ -94,7 +94,11 @@ const Contacts = () => {
             {/* <AddButton onClick={onAddContact}> */}
             <ToolbarButton
               // ref={buttonReference}
-              icon={<AddIcon />}
+              icon={
+                <span style={{ marginLeft: '-5px' }}>
+                  <AddIcon />
+                </span>
+              }
               onClick={onAddContact}
               // isOpen={open}
               // active={open}

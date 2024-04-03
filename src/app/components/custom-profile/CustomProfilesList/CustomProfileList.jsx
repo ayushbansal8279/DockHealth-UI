@@ -260,16 +260,25 @@ const CustomProfileList = () => {
                 </FormGroup>
               </Paper>
             </Popover>
-            <Box m={1} />
-            <Box display="flex" alignItems="center" width="300px" my={-1}>
-              <SearchInput onValueChange={handleSearchInputChange} />
+            <Box mx={0.5} />
+            <Box display="flex" alignItems="center" width="400px" my={0.4}>
+              {/* <Box display="flex" width="120px"> */}
+              <SearchInput
+                value={searchPhrase}
+                onValueChange={handleSearchInputChange}
+              />
+              {/* </Box> */}
             </Box>
           </Box>
           <Box m={1} />
           <Box display="flex" alignItems="center">
             <ToolbarButton
               // ref={buttonReference}
-              icon={<AddIcon />}
+              icon={
+                <span style={{ marginLeft: '-5px' }}>
+                  <AddIcon />
+                </span>
+              }
               onClick={handleProfileAddClick}
               isOpen={open}
               active={open}
