@@ -114,6 +114,7 @@ const ReminderSection = ({ onSave, disabled, selectedTask }) => {
           isDisabled={isCheckboxDisabled || disabled}
           isChecked={reminderChecked ?? false}
           onClick={handleToggleReminder}
+          size={14}
         />
         <Spacing horizontal={3} />
         <Description isDisabled={sectionDisabled}>Reminder</Description>
@@ -126,7 +127,7 @@ const ReminderSection = ({ onSave, disabled, selectedTask }) => {
               placeholder="--"
               onSelect={handleSelectReminderType}
               disabled={sectionDisabled}
-              width={130}
+              width={136}
               options={REMINDER_TYPE_OPTIONS}
               {...register(REMINDER_TYPE_FIELD_NAME)}
               ref={reminderTypeDropdownReference}

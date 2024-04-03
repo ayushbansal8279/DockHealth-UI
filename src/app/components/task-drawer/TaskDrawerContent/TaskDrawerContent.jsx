@@ -57,6 +57,7 @@ import {
   ReferenceParentButton,
   ReferenceParentName,
   FiledInListName,
+  DueDateAndRemainderContainer,
   // SubscriptionBadge,
 } from './styled';
 import ReminderSection from '../ReminderSection/ReminderSection';
@@ -123,7 +124,7 @@ const TaskDrawerContent = (props) => {
     false;
   const subTasksDisabled =
     currentOrganization?.disabledFeatures?.includes('TASK_SUBTASKS') || false;
-  
+
   const taskStartDateDisabled =
     currentOrganization?.disabledFeatures?.includes('TASK_START_DATE') || false;
 
@@ -485,23 +486,25 @@ const TaskDrawerContent = (props) => {
             </div>
           </Grid>
         )} */}
-        <Grid item xs={12} style={styleLeftColumn(isMobile)}>
-          <div>
-            <DueDateSection
-              disabled={restrictions?.dueDate === DISABLED}
-              selectedTask={selectedTask}
-            />
-          </div>
-        </Grid>
-        <Grid item xs={12} ml={3} style={styleRightColumn(isMobile)}>
-          {!isTemplateTask && (
-            <ReminderSection
-              onSave={handleUpdateTask}
-              disabled={restrictions?.reminder === DISABLED}
-              selectedTask={selectedTask}
-            />
-          )}
-        </Grid>
+        <DueDateAndRemainderContainer>
+          <Grid item xs={6} style={styleLeftColumn(isMobile)}>
+            <div>
+              <DueDateSection
+                disabled={restrictions?.dueDate === DISABLED}
+                selectedTask={selectedTask}
+              />
+            </div>
+          </Grid>
+          <Grid item xs={8} style={styleRightColumn(isMobile)}>
+            {!isTemplateTask && (
+              <ReminderSection
+                onSave={handleUpdateTask}
+                disabled={restrictions?.reminder === DISABLED}
+                selectedTask={selectedTask}
+              />
+            )}
+          </Grid>
+        </DueDateAndRemainderContainer>
         <Grid item xs={12} style={styleLeftColumn(isMobile)}>
           <PrioritySection
             onTaskUpdate={onTaskUpdate}

@@ -83,7 +83,7 @@ export const TimeInputMask = styled(
       `
       height: 27px;
       font-weight: ${fontWeights.light};
-      padding: ${spacing.tiny} ${spacing.large} ${spacing.tiny} ${spacing.small};
+      padding: ${spacing.tiny};
     `}
 
     &:focus {
@@ -120,7 +120,7 @@ export const TimeOptionButton = styled.button`
 
 export const EndAdornmentContainer = styled.div`
   position: absolute;
-  top: 50%;
-  right: 12px;
+  top: 60%;
+  right: 9px;
   transform: translate(50%, -50%);
 `;
