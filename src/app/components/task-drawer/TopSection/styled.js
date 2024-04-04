@@ -8,13 +8,13 @@ export const IconContainer = styled.div`
   align-items: center;
   cursor: pointer;
   border-radius: 50%;
-  width: 100%;
+  width: 40px;
+  height: 40px;
 
   &:hover {
     background-color: #f5f5f5;
   }
 `;
-
 
 export const Title = styled.span`
   margin-top: 2px;
@@ -44,4 +44,10 @@ export const CompleteAge = styled.span`
   font-style: normal;
   font-weight: ${fontWeights.regular};
   line-height: 135%;
+`;
+
+export const MoreHorizContainer = styled.div`
+  height: 30px;
+  width: 30px;
+  padding-top: 3px;
 `;
