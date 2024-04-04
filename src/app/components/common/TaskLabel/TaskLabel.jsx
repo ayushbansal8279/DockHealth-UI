@@ -23,72 +23,141 @@ const TaskLabel = ({
   const labelColumn = columns.filter((column) => {
     if (column.identifier === 'LABELS') return column.columnWidth;
   });
-  const [additionalLabelbadgeLength, setBadgeLength] = useState(0);
-  console.log('additionalLabelbadgeLength', additionalLabelbadgeLength);
-  const itemRefs = labels.map(() => useRef(null));
-  const totalWidthRef = useRef(0);
-  const additionalLabelBadgeRef = useRef(null);
+  const [showLabels, setShowLabels] = useState([]);
+  const [showAdditionalBadge, setAdditionalLabelbadge] = useState([]);
+  console.log('showLabels', showLabels);
+  console.log('showAdditionalBadge', showAdditionalBadge);
 
-  const additionalLabelbadge = labels.slice(
-    labels?.length - additionalLabelbadgeLength,
-  );
-  let totalWidth = 0;
+  const addShowLabel = (label) => {
+    const labelExist = showLabels.some(
+      (object) => object?.labelName === label?.labelName,
+    );
+    labelExist
+      ? setShowLabels((prevLabels) => [...prevLabels])
+      : setShowLabels((prevLabels) => [...prevLabels, label]);
+    removeBadgeLabel(label);
+  };
+
+  const removeShowLabel = (label) => {
+    const labelExist = showLabels.some(
+      (object) => object?.labelName === label?.labelName,
+    );
+    console.log('labelExistShowRemove', labelExist);
+
+    const filteredObjects = labelExist
+      ? showLabels.filter((object) => object?.labelName !== label?.labelName)
+      : showLabels;
+
+    setShowLabels(filteredObjects);
+  };
+
+  const addBadgeLabel = (label) => {
+    const labelExist = showAdditionalBadge.some(
+      (object) => object?.labelName === label?.labelName,
+    );
+    labelExist
+      ? setAdditionalLabelbadge((prevLabels) => [...prevLabels])
+      : setAdditionalLabelbadge((prevLabels) => [...prevLabels, label]);
+    removeShowLabel(label);
+  };
+
+  const removeBadgeLabel = (label) => {
+    const labelExist = showAdditionalBadge.some(
+      (object) => object?.labelName === label?.labelName,
+    );
+
+    console.log('labelExistBadgeRemove', labelExist);
+
+    const filteredObjects = labelExist
+      ? showAdditionalBadge.filter(
+          (object) => object?.labelName !== label?.labelName,
+        )
+      : showAdditionalBadge;
+
+    setAdditionalLabelbadge(filteredObjects);
+  };
+
+  // const [additionalLabelbadgeLength, setBadgeLength] = useState(0);
+
+  // const itemRefs = labels.map(() => useRef(null));
+  // const totalWidthRef = useRef(0);
+  // const additionalLabelBadgeRef = useRef(null);
+
+  // console.log('additionalLabelbadgeLength', additionalLabelbadgeLength);
+
+  // , setAdditionalLabelbadge] = useState([]);
+
+  // useEffect(() => {
+  //   itemRefs.forEach((itemRef, index) => {
+  //     // console.log('inside itemRef.current', itemRef?.current);
+  //     if (itemRef?.current) {
+  //       console.log(
+  //         `Width of item ${index + 1}:`,
+  //         itemRef?.current?.offsetWidth,
+  //       );
+  //       // console.log('Inside if');
+  //       // console.log(
+  //       //   'itemRef.current.offsetWidth',
+  //       //   itemRef?.current?.offsetWidth,
+  //       // );
+  //       totalWidth += itemRef.current?.offsetWidth;
+  //       totalWidth + 20 > labelColumn[0]?.columnWidth
+  //         ? setBadgeLength((cur) => cur + 1)
+  //         : setBadgeLength(0);
+  //       console.log('columnWodth', labelColumn[0]?.columnWidth);
+  //     }
+  //     console.log('totalWidth', totalWidth);
+
+  //     totalWidthRef.current = totalWidth;
+  //   });
+  // }, [labels, labelColumn[0]?.columnWidth]);
+
+  const getWidthOfString = (text, font) => {
+    const canvas = document.createElement('canvas');
+    const context = canvas.getContext('2d');
+    context.font = font;
+    const width = context.measureText(text).width;
+    canvas.remove();
+    return width;
+  };
+
+  const font = '14px Outfit';
+
   useEffect(() => {
-    itemRefs.forEach((itemRef, index) => {
-      // console.log('inside itemRef.current', itemRef?.current);
-      if (itemRef?.current) {
-        console.log(
-          `Width of item ${index + 1}:`,
-          itemRef?.current?.offsetWidth,
-        );
-        // console.log('Inside if');
-        // console.log(
-        //   'itemRef.current.offsetWidth',
-        //   itemRef?.current?.offsetWidth,
-        // );
-        totalWidth += itemRef.current?.offsetWidth;
-        totalWidth + 20 > labelColumn[0]?.columnWidth
-          ? setBadgeLength((cur) => cur + 1)
-          : setBadgeLength(0);
-        console.log('columnWodth', labelColumn[0]?.columnWidth);
-      }
-      console.log('totalWidth', totalWidth);
-
-      totalWidthRef.current = totalWidth;
+    let totalWidth = 0;
+    // Example string
+    labels.forEach((label, index) => {
+      // console.log('additionalLabelbadgeLength', additionalLabelbadgeLength);
+      const text = label?.labelName;
+      const width = getWidthOfString(text, font);
+      totalWidth = totalWidth + Math.floor(width);
+      console.log('totalWidth', totalWidth + 50);
+      console.log('labelColumn[0]?.columnWidth', labelColumn[0]?.columnWidth);
+      totalWidth + 50 > labelColumn[0]?.columnWidth
+        ? addBadgeLabel(label)
+        : addShowLabel(label);
     });
-  }, [labels, labelColumn[0]?.columnWidth]);
-  console.log('totalWidthRef.current', totalWidthRef.current);
-  // console.log('labelColumnWidth', labelColumn[0]?.columnWidth);
-  // const showLabelsRef = useRef(null);
+  }, [labelColumn[0]?.columnWidth]);
 
-  // console.log('showLabelRef111', showLabelsRef?.current?.offsetWidth);
-  // console.log(
-  //   'additionalLabelBadgeref',
-  //   additionalLabelBadgeref?.current?.offsetWidth,
+  // const additionalLabelbadge = labels.slice(
+  //   labels?.length - additionalLabelbadgeLength,
   // );
 
-  // totalWidthRef?.current > 0
-  //   ? totalWidthRef?.current > labelColumn[0]?.columnWidth
-  //     ? labels.slice(0, 2)
-  //     : ''
-  //   : labels.slice(0);
-  // console.log('showLabels', showLabels);
-
-  // console.log('labels1111', labels);
   // console.log(
-  //   'showLabelsRef + additionalLabelBadgeref',
-  //   showLabelsRef?.current?.offsetWidth +
-  //     additionalLabelBadgeref?.current?.offsetWidth,
+  //   'labelssss',
+  //   labels?.slice(0, labels?.length - additionalLabelbadgeLength),
   // );
-  // console.log('additionalLabelbadge', additionalLabelbadge);
+
   return (
     <>
-      {labels
-        ?.slice(0, labels?.length - additionalLabelbadgeLength)
+      {showLabels
+        // ?.slice(0, labels?.length - additionalLabelbadgeLength)
         ?.map((label, index) => {
           return (
             <>
-              <TaskBasicLabel ref={itemRefs[index]}>
+              <TaskBasicLabel
+              // ref={itemRefs[index]}
+              >
                 <Tooltip
                   placement="top"
                   title={!!label?.labelName ? label?.labelName : ''}
@@ -102,16 +171,18 @@ const TaskLabel = ({
             </>
           );
         })}
-      {additionalLabelbadgeLength > 0 && (
+      {showAdditionalBadge?.length > 0 && (
         <>
-          <AdditionalTaskLabelCounter ref={additionalLabelBadgeRef}>
+          <AdditionalTaskLabelCounter
+          // ref={additionalLabelBadgeRef}
+          >
             <Tooltip
               placement="top"
-              title={getLabelsIconTooltipTitle(additionalLabelbadge)}
+              title={getLabelsIconTooltipTitle(showAdditionalBadge)}
             >
               <AdditionalTaskLabelContainer>
                 <AdditionalTaskLabelText>
-                  {'+' + additionalLabelbadgeLength}
+                  {'+' + showAdditionalBadge?.length}
                 </AdditionalTaskLabelText>
               </AdditionalTaskLabelContainer>
             </Tooltip>
