@@ -125,6 +125,7 @@ import {
   TootipCompletedBy,
   TootipCompletedByDate,
   TootipCompletedByName,
+  AddPlaceholder,
 } from '../styled';
 import TaskItemText from './customFieldsTaskItemComponents/TaskItemText/TaskItemText';
 import TaskItemDropdown from './customFieldsTaskItemComponents/TaskItemDropdown/TaskItemDropdown';
@@ -1066,11 +1067,13 @@ const TaskItem = React.memo(
                       origin={origin}
                     />
                   )}
-                  <Tooltip placement="top" title="Details">
-                    <DetailsButton onClick={onClickTaskItem}>
-                      <ChevronRightIcon />
-                    </DetailsButton>
-                  </Tooltip>
+                  <AddPlaceholder>
+                    <Tooltip placement="top" title="Details">
+                      <DetailsButton onClick={onClickTaskItem}>
+                        <ChevronRightIcon />
+                      </DetailsButton>
+                    </Tooltip>
+                  </AddPlaceholder>
                   {showDecisionRow && (
                     <DecisionCellContainer
                       onClick={(event) => event.stopPropagation()}
