@@ -186,6 +186,8 @@ function VirtualTaskList({ groupedTasks }: Props) {
             name: group.groupName,
             taskGroupIdentifier: group.taskGroupIdentifier,
             bgColor: !(index % 2 === 0),
+            groupTaskCounts: group?.metricValue,
+            tasksCount: groupTasks?.length,
           },
           [
             convert(
