@@ -10,7 +10,7 @@ export const AssignMemberContainer = styled.div`
 `;
 
 export const Title = styled.div`
-  margin-right: 26px;
+  margin-right: 24px;
   color: ${palette.coolGrey1};
   font-family: Outfit;
   font-size: ${fontSizes.smallPlus};
@@ -43,7 +43,7 @@ export const AssigneeContainer = styled.div`
   height: 40px;
   padding: 0 8px;
   border-radius: 8px;
-  background: #f8f8f9;
+  background: ${palette.whiteSmoke};
 `;
 export const AssigneeTitle = styled.div`
   font-family: Outfit;

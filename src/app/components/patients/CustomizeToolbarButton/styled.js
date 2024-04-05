@@ -3,11 +3,12 @@ import palette, { typography } from 'styles/palette';
 import spacing from 'styles/spacing';
 
 export const CustomizeImg = styled.img`
-width: 21px;
-${({ iconColorFilterActive }) =>
-  iconColorFilterActive
-    ? `filter: ${iconColorFilterActive}; `
-    : 'filter: invert(100%) saturate(0%) brightness(100%);'}
+  width: 16px;
+  height: 16px;
+  ${({ iconColorFilterActive }) =>
+    iconColorFilterActive
+      ? `filter: ${iconColorFilterActive}; `
+      : 'filter: invert(100%) saturate(0%) brightness(100%);'}
 `;
 
 export const PopoverContainer = styled.div`

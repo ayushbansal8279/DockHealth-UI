@@ -29,12 +29,17 @@ export const SelectWrapper = styled.div`
 `;
 
 export const SelectIcon = styled.span`
-  border-right: 2px solid ${palette.white};
+  border-right: 1px solid ${palette.white};
   height: 32px;
   display: flex;
   align-items: center;
   padding-right: 10px;
   filter: brightness(0) invert(1);
+  font-family: Outfit;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 11.19px;
+  text-align: center;
 `;
 
 export const OptionsMenu = styled.div`

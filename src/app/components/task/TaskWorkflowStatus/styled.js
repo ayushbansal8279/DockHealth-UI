@@ -24,7 +24,7 @@ export const StatusListWrapper = styled.div`
 export const StatusList = styled.div`
   display: grid;
   grid-auto-flow: column;
-  grid-template-rows: repeat(10, 40px);
+  grid-template-rows: repeat(10, 38px);
   grid-template-columns: repeat(
     ${({ elementsCount }) => {
       if (elementsCount < 11) {
@@ -111,4 +111,11 @@ export const ColorButton = styled.button`
     border: 1px solid ${palette.white};
     box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.25);
   `}
+`;
+
+export const ColorPickerContainer = styled.div`
+  border-top: 1px solid ${palette.coolGrey2};
+  display: flex;
+  width: 100%;
+  margin-top: 55px;
 `;

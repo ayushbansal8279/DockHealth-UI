@@ -58,27 +58,27 @@ const NameSection = ({ readOnly }) => {
   );
 
   return (
-    <Grid item xs={12}>
-      <div>
-        <DescriptionTextContainer>
-          <DescriptionLabelContainer>
-            <DescriptionLabel>Name</DescriptionLabel>
-          </DescriptionLabelContainer>
-          <Input
-            fullWidth
-            inputRef={descriptionInputReference}
-            onChange={handleChange}
-            value={value}
-            name="workflowName"
-            onBlur={handleBlur}
-            readOnly={readOnly}
-          />
-        </DescriptionTextContainer>
-        {descriptionErrorState && (
-          <DescriptionError>Workflow description is required</DescriptionError>
-        )}
-      </div>
-    </Grid>
+    <div>
+      Name
+      <Input
+        sx={{
+          '& .MuiInputBase-root': {
+            height: '40px',
+          },
+        }}
+        size="small"
+        fullWidth
+        inputRef={descriptionInputReference}
+        onChange={handleChange}
+        value={value}
+        name="workflowName"
+        onBlur={handleBlur}
+        readOnly={readOnly}
+      />
+      {descriptionErrorState && (
+        <DescriptionError>Workflow description is required</DescriptionError>
+      )}
+    </div>
   );
 };
 

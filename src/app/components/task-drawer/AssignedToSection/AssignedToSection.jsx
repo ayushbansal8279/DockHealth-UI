@@ -128,7 +128,7 @@ const AssignedToSection = ({ selectedTask = {}, onSave, disabled }) => {
             <MemberGroup members={assignedToUsers.slice(4)} size={32} />
           </div>
         )}
-        <div>
+        <div style={{marginLeft:'-2px'}}>
           <Button
             size="small"
             placeholder="Add Assignee"

@@ -55,15 +55,12 @@ const TaskItemText = ({
 
   const handleKeyDown = useCallback(
     (event) => {
-      if (
-        event.key === 'Enter' &&
-        !readOnly &&
-        initialValue !== event.target.value
-      ) {
-        onChange(event.target.value);
+      if (event.key === 'Enter') {
+        inputReference.current?.blur();
+        handleBlur();
       }
     },
-    [onChange, readOnly, initialValue],
+    [handleBlur],
   );
 
   return (
