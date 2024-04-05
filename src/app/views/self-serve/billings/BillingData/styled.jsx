@@ -1,4 +1,3 @@
-import RHFAutocomplete from 'components/common/hook-form/RHFAutoComplete';
 import {
   ButtonBase,
   FormControl,
@@ -149,16 +148,5 @@ export const AcceptedCardsContainer = styled.div`
     cursor: default;
     object-fit: contain;
     width: 2.5rem;
-  }
-`;
-
-export const StateAutoComplete = styled(RHFAutocomplete)`
-  & .MuiAutocomplete-inputRoot {
-    &::before {
-      border-bottom: none;
-    }
-    &:hover:not(.Mui-disabled, .Mui-error)::before {
-      border-bottom: none;
-    }
   }
 `;

@@ -2,8 +2,9 @@ import React from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 
 import TextField from '@mui/material/TextField';
-import Autocomplete, { AutocompleteProps } from '@mui/material/Autocomplete';
+import { AutocompleteProps } from '@mui/material/Autocomplete';
 
+import { StyledAutoComplete } from './RHFAutoComplete.styled';
 // ----------------------------------------------------------------------
 
 interface Props<
@@ -30,7 +31,7 @@ export default function RHFAutocomplete<
   label,
   helperText,
   placeholder,
-  variant,
+  variant = 'filled',
   required,
   ...other
 }: Omit<Props<T, Multiple, DisableClearable, FreeSolo>, 'renderInput'>) {
@@ -42,7 +43,7 @@ export default function RHFAutocomplete<
       control={control}
       render={({ field, fieldState: { error } }) => {
         return (
-          <Autocomplete
+          <StyledAutoComplete
             {...field}
             id={`autocomplete-${name}`}
             onChange={(event, newValue) =>
