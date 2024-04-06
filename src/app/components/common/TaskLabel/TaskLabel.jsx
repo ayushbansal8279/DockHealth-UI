@@ -14,144 +14,42 @@ import { useTaskListColumnsConfig } from '@/app/context-api/columns-config-conte
 const TaskLabel = ({
   labels,
   getLabelsIconTooltipTitle,
-  // labelName,
-  // key,
-  // showLabelsRef,
+  onClick,
   ...props
 }) => {
   const { columns } = useTaskListColumnsConfig();
   const labelColumn = columns.filter((column) => {
     if (column.identifier === 'LABELS') return column.columnWidth;
   });
-  const [showLabels, setShowLabels] = useState([]);
-  const [showAdditionalBadge, setAdditionalLabelbadge] = useState([]);
-  console.log('showLabels', showLabels);
-  console.log('showAdditionalBadge', showAdditionalBadge);
-
-  const addShowLabel = (label) => {
-    const labelExist = showLabels.some(
-      (object) => object?.labelName === label?.labelName,
-    );
-    labelExist
-      ? setShowLabels((prevLabels) => [...prevLabels])
-      : setShowLabels((prevLabels) => [...prevLabels, label]);
-    removeBadgeLabel(label);
-  };
-
-  const removeShowLabel = (label) => {
-    const labelExist = showLabels.some(
-      (object) => object?.labelName === label?.labelName,
-    );
-    console.log('labelExistShowRemove', labelExist);
-
-    const filteredObjects = labelExist
-      ? showLabels.filter((object) => object?.labelName !== label?.labelName)
-      : showLabels;
-
-    setShowLabels(filteredObjects);
-  };
-
-  const addBadgeLabel = (label) => {
-    const labelExist = showAdditionalBadge.some(
-      (object) => object?.labelName === label?.labelName,
-    );
-    labelExist
-      ? setAdditionalLabelbadge((prevLabels) => [...prevLabels])
-      : setAdditionalLabelbadge((prevLabels) => [...prevLabels, label]);
-    removeShowLabel(label);
-  };
-
-  const removeBadgeLabel = (label) => {
-    const labelExist = showAdditionalBadge.some(
-      (object) => object?.labelName === label?.labelName,
-    );
-
-    console.log('labelExistBadgeRemove', labelExist);
-
-    const filteredObjects = labelExist
-      ? showAdditionalBadge.filter(
-          (object) => object?.labelName !== label?.labelName,
-        )
-      : showAdditionalBadge;
-
-    setAdditionalLabelbadge(filteredObjects);
-  };
-
-  // const [additionalLabelbadgeLength, setBadgeLength] = useState(0);
-
-  // const itemRefs = labels.map(() => useRef(null));
-  // const totalWidthRef = useRef(0);
-  // const additionalLabelBadgeRef = useRef(null);
-
-  // console.log('additionalLabelbadgeLength', additionalLabelbadgeLength);
-
-  // , setAdditionalLabelbadge] = useState([]);
-
-  // useEffect(() => {
-  //   itemRefs.forEach((itemRef, index) => {
-  //     // console.log('inside itemRef.current', itemRef?.current);
-  //     if (itemRef?.current) {
-  //       console.log(
-  //         `Width of item ${index + 1}:`,
-  //         itemRef?.current?.offsetWidth,
-  //       );
-  //       // console.log('Inside if');
-  //       // console.log(
-  //       //   'itemRef.current.offsetWidth',
-  //       //   itemRef?.current?.offsetWidth,
-  //       // );
-  //       totalWidth += itemRef.current?.offsetWidth;
-  //       totalWidth + 20 > labelColumn[0]?.columnWidth
-  //         ? setBadgeLength((cur) => cur + 1)
-  //         : setBadgeLength(0);
-  //       console.log('columnWodth', labelColumn[0]?.columnWidth);
-  //     }
-  //     console.log('totalWidth', totalWidth);
-
-  //     totalWidthRef.current = totalWidth;
-  //   });
-  // }, [labels, labelColumn[0]?.columnWidth]);
-
+  const [addBadgeLength, setAddBadgeLength] = useState(0);
+  const font = '14px Outfit';
   const getWidthOfString = (text, font) => {
     const canvas = document.createElement('canvas');
     const context = canvas.getContext('2d');
     context.font = font;
     const width = context.measureText(text).width;
     canvas.remove();
-    return width;
+    return Math.floor(width) > 160 ? 135 : width;
   };
-
-  const font = '14px Outfit';
 
   useEffect(() => {
     let totalWidth = 0;
-    // Example string
     labels.forEach((label, index) => {
-      // console.log('additionalLabelbadgeLength', additionalLabelbadgeLength);
       const text = label?.labelName;
       const width = getWidthOfString(text, font);
-      totalWidth = totalWidth + Math.floor(width);
-      console.log('totalWidth', totalWidth + 50);
-      console.log('labelColumn[0]?.columnWidth', labelColumn[0]?.columnWidth);
-      totalWidth + 50 > labelColumn[0]?.columnWidth
-        ? addBadgeLabel(label)
-        : addShowLabel(label);
+      totalWidth += Math.floor(width) + 30;
+      totalWidth > labelColumn[0]?.columnWidth
+        ? setAddBadgeLength((cur) => (cur === labels?.length ? cur : cur + 1))
+        : setAddBadgeLength((cur) => (cur === 0 ? 0 : cur - 1));
     });
-  }, [labelColumn[0]?.columnWidth]);
+  }, [labels, labelColumn[0]?.columnWidth]);
 
-  // const additionalLabelbadge = labels.slice(
-  //   labels?.length - additionalLabelbadgeLength,
-  // );
-
-  // console.log(
-  //   'labelssss',
-  //   labels?.slice(0, labels?.length - additionalLabelbadgeLength),
-  // );
+  const additionalLabelbadge = labels.slice(labels?.length - addBadgeLength);
 
   return (
     <>
-      {showLabels
-        // ?.slice(0, labels?.length - additionalLabelbadgeLength)
+      {labels
+        ?.slice(0, labels?.length - addBadgeLength)
         ?.map((label, index) => {
           return (
             <>
@@ -162,29 +60,33 @@ const TaskLabel = ({
                   placement="top"
                   title={!!label?.labelName ? label?.labelName : ''}
                 >
-                  <TaskLabelTextContainer>
-                    <TaskLabelText>{label?.labelName}</TaskLabelText>
-                  </TaskLabelTextContainer>
+                  <button onClick={onClick} type="button">
+                    <TaskLabelTextContainer>
+                      <TaskLabelText>{label?.labelName}</TaskLabelText>
+                    </TaskLabelTextContainer>
+                  </button>
                 </Tooltip>
               </TaskBasicLabel>
               <Spacing horizontal={3} />
             </>
           );
         })}
-      {showAdditionalBadge?.length > 0 && (
+      {additionalLabelbadge?.length > 0 && (
         <>
           <AdditionalTaskLabelCounter
           // ref={additionalLabelBadgeRef}
           >
             <Tooltip
               placement="top"
-              title={getLabelsIconTooltipTitle(showAdditionalBadge)}
+              title={getLabelsIconTooltipTitle(additionalLabelbadge)}
             >
-              <AdditionalTaskLabelContainer>
-                <AdditionalTaskLabelText>
-                  {'+' + showAdditionalBadge?.length}
-                </AdditionalTaskLabelText>
-              </AdditionalTaskLabelContainer>
+              <button onClick={onClick} type="button">
+                <AdditionalTaskLabelContainer>
+                  <AdditionalTaskLabelText>
+                    {'+' + additionalLabelbadge?.length}
+                  </AdditionalTaskLabelText>
+                </AdditionalTaskLabelContainer>
+              </button>
             </Tooltip>
           </AdditionalTaskLabelCounter>
         </>

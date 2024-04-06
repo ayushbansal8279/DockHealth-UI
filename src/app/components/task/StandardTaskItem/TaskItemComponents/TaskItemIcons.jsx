@@ -31,18 +31,7 @@ const TaskItemIcons = ({
     dispatch(storeAsCurrentTask(task));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [task]);
-  // const showLabelsRef = useRef(null);
-  // console.log('showLabelsRef', showLabelsRef?.current?.offsetWidth);
-  // const itemRefs = labels.map(() => useRef(null));
 
-  // useEffect(() => {
-  //   // Use useEffect to measure each item after they've been rendered
-  //   itemRefs.forEach((itemRef, index) => {
-  //     if (itemRef.current) {
-  //       console.log(`Width of item ${index + 1}:`, itemRef.current.offsetWidth);
-  //     }
-  //   });
-  // }, [labels]);
   const onLabelClick = useCallback(() => {
     dispatch(openDrawer(DrawerFieldEnum.LABEL));
     dispatch(storeAsCurrentTask(task));
@@ -78,17 +67,12 @@ const TaskItemIcons = ({
       ) : null}
       {labels ? (
         labels.length > 0 ? (
-          // labels.map((label, index) => (
           <TaskLabel
-            // labelName={label?.labelName}
-            // key={label?.labelIdentifier}
             getLabelsIconTooltipTitle={getLabelsIconTooltipTitle}
             labels={labels}
-            // showLabelsRef={itemRefs[index]}
+            onClick={onLabelClick}
           />
         ) : (
-          // ))
-          // ))
           <GridImg item xs={12} matched={matchLabels}>
             <Tooltip
               hideTooltip={
@@ -96,12 +80,7 @@ const TaskItemIcons = ({
                 SINGLE_TASK_RESTRICTIONS_OPTIONS.DISABLED
               }
               placement="top"
-              title={
-                // labels?.length > 0
-                //   ? getLabelsIconTooltipTitle(labels)
-                // :
-                'Add Label'
-              }
+              title="Add Label"
             >
               <button
                 disabled={
