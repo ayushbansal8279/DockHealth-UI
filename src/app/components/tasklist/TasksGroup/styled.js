@@ -1,4 +1,4 @@
-import { Collapse } from '@mui/material';
+import { Collapse, Typography } from '@mui/material';
 import styled from 'styled-components';
 import spacing from 'styles/spacing';
 import { fontWeights, fontSizes } from 'styles/font';
@@ -97,6 +97,38 @@ export const TasksGroupLabelName = styled.span`
   text-overflow: ellipsis;
   vertical-align: middle;
   font-family: Outfit, sans-serif;
+`;
+
+export const TasksGroupNumericalBadgeContainer = styled.div`
+  width: 20px;
+  height: 20px;
+  border-radius: 13px;
+  border: 1px solid ${palette.iron};
+  // ${({ isActive }) => (isActive ? palette.crystalBlue : palette.iron)};
+  // color: ${({ isActive }) =>
+    isActive ? palette.crystalBlue : palette.coolGrey1};
+  color: ${palette.coolGrey1};
+  // background: ${({ isActive }) =>
+    isActive ? palette.whiteSmoke : palette.lightGrey2};
+  background: ${palette.lightGrey2};
+  // padding: 4px 7px 4px 7px;
+  gap: 7px;
+  margin-left: 2px;
+  margin-top: 2px;
+`;
+
+export const TasksGroupTaskCount = styled(Typography)`
+  color: ${({ isActive }) =>
+    isActive ? palette.crystalBlue : palette.coolGrey1};
+  color: ${palette.coolGrey1};
+  font-family: Outfit;
+  font-weight: 500;
+  font-size: 11px;
+  line-height: 11.19px;
+  &.MuiTypography-root {
+    text-align: center;
+  }
+  margin-top: 4px;
 `;
 
 export const TasksGroupLabelCounter = styled.span`

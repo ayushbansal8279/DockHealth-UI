@@ -55,6 +55,8 @@ import {
   TasksGroupLabelCounter,
   GroupOptionsContainer,
   GroupOpenContainer,
+  TasksGroupNumericalBadgeContainer,
+  TasksGroupTaskCount,
 } from './styled';
 import TasksHeader from '../TasksHeader/TasksHeader';
 
@@ -88,6 +90,7 @@ const TasksGroup = ({
   iconColorActive,
   restrictCustomizationFeatures,
   origin,
+  tasksCount,
   bgColor,
 }) => {
   const addingNewSubtaskParentId = useSelector(
@@ -313,13 +316,26 @@ const TasksGroup = ({
             >
               <TasksGroupLabel>
                 <TasksGroupLabelName>{groupName}</TasksGroupLabelName>
-                {!isSearchApplied &&
-                  !areFiltersApplied &&
+                {
+                  // !isSearchApplied &&
+                  //   !areFiltersApplied &&
+                  //   !isNil(groupTaskCounts) && (
+                  //     <TasksGroupNumericalBadgeContainer>
+                  //       <TasksGroupTaskCount>
+                  //         {groupTaskCounts}
+                  //       </TasksGroupTaskCount>
+                  //     </TasksGroupNumericalBadgeContainer>
+
                   !isNil(groupTaskCounts) && (
-                    <TasksGroupLabelCounter>
-                      ({groupTaskCounts})
-                    </TasksGroupLabelCounter>
-                  )}
+                    <TasksGroupNumericalBadgeContainer>
+                      <TasksGroupTaskCount>
+                        {!isSearchApplied && !areFiltersApplied
+                          ? groupTaskCounts
+                          : tasksCount}
+                      </TasksGroupTaskCount>
+                    </TasksGroupNumericalBadgeContainer>
+                  )
+                }
                 <div>
                   {!isCompletedGroup && !restrictCustomizationFeatures && (
                     <GroupOptionsContainer>
