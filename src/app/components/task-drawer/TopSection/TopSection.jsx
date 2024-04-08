@@ -29,7 +29,13 @@ import EmailIconActive from 'img/email-new-icon-active.svg';
 import MobileIcon from 'img/mobile-new-icon.svg';
 import MobileIconActive from 'img/mobile-new-icon-active.svg';
 import Spacing from 'components/common/Spacing';
-import { IconContainer, Title, CompletedByTitle, CompleteAge } from './styled';
+import {
+  IconContainer,
+  Title,
+  CompletedByTitle,
+  CompleteAge,
+  MoreHorizContainer,
+} from './styled';
 import initializeTaskDrawerTopSectionHooks from './hooks';
 import moment from 'moment';
 import Tooltip from 'components/common/Tooltip/Tooltip';
@@ -261,7 +267,7 @@ const TopSection = ({
         </Box>
         <Box display="flex">
           {handleCopyLink && (
-            <Tooltip placement="left" title={'Copy Task Link'}>
+            <Tooltip placement="bottom" title={'Copy Task Link'}>
               <IconContainer
                 onClick={() => {
                   handleCopyLink();
@@ -280,43 +286,47 @@ const TopSection = ({
               </IconContainer>
             </Tooltip>
           )}
-          <Spacing horizontal={5} />
           {sendEmailAvailable && (
-            <Tooltip placement="bottom-end" title={'Email Task'}>
-              <IconContainer
-                onClick={() => {
-                  dispatch(openModal('SendEmailFromTask', modalProp));
-                  setEmailActive(true);
-                }}
-              >
-                <img
-                  src={!isEmailActive ? EmailIcon : EmailIconActive}
-                  fontSize="small"
-                  color="primary"
-                  alt="Copy the Task link"
-                />
-              </IconContainer>
-            </Tooltip>
+            <>
+              <Spacing horizontal={3} />
+              <Tooltip placement="bottom-end" title={'Email Task'}>
+                <IconContainer
+                  onClick={() => {
+                    dispatch(openModal('SendEmailFromTask', modalProp));
+                    setEmailActive(true);
+                  }}
+                >
+                  <img
+                    src={!isEmailActive ? EmailIcon : EmailIconActive}
+                    fontSize="small"
+                    color="primary"
+                    alt="Copy the Task link"
+                  />
+                </IconContainer>
+              </Tooltip>
+            </>
           )}
-          <Spacing horizontal={4} />
           {sendSmsAvailable && (
-            <Tooltip placement="bottom-start" title={'Send SMS'}>
-              <IconContainer
-                onClick={() => {
-                  dispatch(openModal('SendSmsFromTask', modalProp));
-                  setSmsActive(true);
-                }}
-              >
-                <img
-                  src={!isSmsActive ? MobileIcon : MobileIconActive}
-                  fontSize="small"
-                  color="primary"
-                  alt="Copy the Task link"
-                />
-              </IconContainer>
-            </Tooltip>
+            <>
+              <Spacing horizontal={3} />
+              <Tooltip placement="bottom-start" title={'Send SMS'}>
+                <IconContainer
+                  onClick={() => {
+                    dispatch(openModal('SendSmsFromTask', modalProp));
+                    setSmsActive(true);
+                  }}
+                >
+                  <img
+                    src={!isSmsActive ? MobileIcon : MobileIconActive}
+                    fontSize="small"
+                    color="primary"
+                    alt="Copy the Task link"
+                  />
+                </IconContainer>
+              </Tooltip>
+            </>
           )}
-          <Spacing horizontal={4} />
+          <Spacing horizontal={2} />
           {allowedOptions.length !== 0 &&
             taskListRestrictions?.createTask !== DISABLED && (
               <OptionsMenu
@@ -325,12 +335,15 @@ const TopSection = ({
                 customButtonComponent={IconButton}
               >
                 <Tooltip placement="bottom" title={'More'}>
-                  <MoreHoriz
-                    color={!isOptionActive ? 'primary' : 'secondary'}
-                  />
+                  <MoreHorizContainer>
+                    <MoreHoriz
+                      color={!isOptionActive ? 'primary' : 'secondary'}
+                    />
+                  </MoreHorizContainer>
                 </Tooltip>
               </OptionsMenu>
             )}
+          <Spacing horizontal={1} />
           {!hideCloseIcon && (
             <Tooltip placement="bottom-end" title={'Close Task Drawer'}>
               <IconButton
