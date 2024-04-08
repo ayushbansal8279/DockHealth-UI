@@ -171,7 +171,8 @@ function VTask(
               style={{
                 width: '100%',
                 background: bgColor ? palette.aliceBlue : '',
-                paddingBottom: isLastTaskOfGroup ? '20px' : '0px',
+                paddingBottom:
+                  isLastTaskOfGroup && !addWorkflowTask ? '20px' : '0px',
               }}
             >
               <Sc.QuickAddContainer>
@@ -184,39 +185,45 @@ function VTask(
               </Sc.QuickAddContainer>
             </div>
           )}
-          {isTaskTemplate && isLastChild && addWorkflowTask && (
-            <div
-              style={{
-                width: '100%',
-                background: bgColor ? palette.aliceBlue : '',
-                paddingBottom: isLastTaskOfGroup ? '20px' : '0px',
-              }}
-            >
-              <Sc.WorkflowQuickAddTaskContainer>
-                <QuickAddInputWrapper>
-                  <QuickAddTaskInput
-                    // autofocus
-                    disableMentions
-                    quickAddTask={handleAddBundleTask}
-                    onBlur={() => {
-                      handleRemoveWorkflowIdentifier(
-                        taskGroup[0]?.taskGroupIdentifier,
-                      );
-                    }}
-                    validator={(value) => {
-                      if ([...value]?.filter((char) => char !== ' ').length < 2)
-                        return 'The task description is too short (min. 2 characters)';
+          {isTaskTemplate &&
+            isLastChild &&
+            addWorkflowTask &&
+            (task?.subTasksCount === 0 || metadata?.collapsed) && (
+              <div
+                style={{
+                  width: '100%',
+                  background: bgColor ? palette.aliceBlue : '',
+                  paddingBottom:
+                    isLastTaskOfGroup || addWorkflowTask ? '20px' : '0px',
+                }}
+              >
+                <Sc.WorkflowQuickAddTaskContainer>
+                  <QuickAddInputWrapper>
+                    <QuickAddTaskInput
+                      // autofocus
+                      disableMentions
+                      quickAddTask={handleAddBundleTask}
+                      onBlur={() => {
+                        handleRemoveWorkflowIdentifier(
+                          taskGroup[0]?.taskGroupIdentifier,
+                        );
+                      }}
+                      validator={(value) => {
+                        if (
+                          [...value]?.filter((char) => char !== ' ').length < 2
+                        )
+                          return 'The task description is too short (min. 2 characters)';
 
-                      return null;
-                    }}
-                    origin={TaskOrigin.LIST}
-                    // iconColorActive={iconColorActive}
-                  />
-                </QuickAddInputWrapper>
-              </Sc.WorkflowQuickAddTaskContainer>
-            </div>
-            // {/* // )} */}
-          )}
+                        return null;
+                      }}
+                      origin={TaskOrigin.LIST}
+                      // iconColorActive={iconColorActive}
+                    />
+                  </QuickAddInputWrapper>
+                </Sc.WorkflowQuickAddTaskContainer>
+              </div>
+              // {/* // )} */}
+            )}
         </>
         // </div>
       )}
