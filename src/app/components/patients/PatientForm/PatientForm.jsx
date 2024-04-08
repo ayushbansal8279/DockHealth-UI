@@ -154,6 +154,9 @@ const PatientForm = forwardRef(
       [patient, edited],
     );
 
+    console.log('customFields', customFields);
+    console.log('Category.OTHER_INFO', Category.OTHER_INFO);
+
     const handleAddButtonClick = () =>
       history.push(`${CUSTOM_FIELDS_SETTINGS_PATH}/patients`);
 

@@ -39,6 +39,7 @@ const PatientCustomFieldsView = () => {
   const [customFields, setCustomFields] = useState(null);
   const [isFetching, setIsFetching] = useState(true);
   const sensors = useSensors(useSensor(MouseSensor), useSensor(TouchSensor));
+  console.log('customFields', customFields);
 
   const fetchPatientCustomFields = () => {
     CustomFieldsApi.getAllPatientCustomFields()
@@ -47,6 +48,7 @@ const PatientCustomFieldsView = () => {
           (cf) =>
             cf.contextType === 'CUSTOM' || cf.contextType === 'PREDEFINED',
         );
+        console.log('customFieldsData', customFieldsData);
         setCustomFields(customFieldsData);
         setIsFetching(false);
       })
