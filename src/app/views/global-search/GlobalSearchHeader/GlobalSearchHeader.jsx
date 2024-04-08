@@ -68,9 +68,7 @@ const GlobalSearchHeader = ({
         <Spacing horizontal={3} />
         <CheckboxDescription>Search completed tasks</CheckboxDescription>
       </CheckboxContainer>
-      <ButtonWrapper onClick={searchTasks}>
-        Search
-      </ButtonWrapper>
+      <ButtonWrapper onClick={searchTasks}>Search</ButtonWrapper>
     </TopSectionGrid>
   );
 };

@@ -1,5 +1,7 @@
 import React, { useRef } from 'react';
 import SearchHeadsupIcon from 'img/search-headsup.svg';
+import SearchIcon from '@mui/icons-material/Search';
+import { Box } from '@mui/material';
 import {
   StyledInput,
   SearchInputWrapper,
@@ -7,14 +9,26 @@ import {
   ClearButtonWrapper,
   ClearButton,
 } from './styled';
+import palette from '../../../styles/palette';
+import { CancelIcon } from '../../template/HeaderSearch/styled';
+import useBoolean from '@/app/hooks/useBoolean';
 
 const SearchInput = React.forwardRef(
   (
-    { value, onValueChange, onFocus, onBlur, onKeyEnter, placeholder = null },
+    {
+      isPatientSearchInput,
+      value,
+      onValueChange,
+      onFocus,
+      onBlur,
+      onKeyEnter,
+      placeholder = null,
+    },
     reference,
   ) => {
     const innerInputReference = useRef(null);
     const inputReference = reference || innerInputReference;
+    const [focused, setFocused, unsetFocused] = useBoolean(false);
 
     const clearInput = () => {
       onValueChange('');
@@ -28,7 +42,7 @@ const SearchInput = React.forwardRef(
       onValueChange(inputValue);
     };
 
-    const onKeyDown = event => {
+    const onKeyDown = (event) => {
       if (event.key === 'Enter') {
         onKeyEnter();
       }
@@ -44,17 +58,33 @@ const SearchInput = React.forwardRef(
     };
 
     return (
-      <SearchInputWrapper>
-        <InputIconWrapper>
+      <SearchInputWrapper
+        wide={value || focused}
+        isPatientSearchInput={isPatientSearchInput}
+      >
+        {/* <InputIconWrapper>
           <img src={SearchHeadsupIcon} alt="search" />
-        </InputIconWrapper>
-        <StyledInput ref={inputReference} {...inputProps} />
+        </InputIconWrapper> */}
+        <SearchIcon sx={{ color: palette.coolGrey2 }} />
+        <Box mx={0.3} />
+        <StyledInput
+          value={value}
+          ref={inputReference}
+          {...inputProps}
+          onFocus={setFocused}
+          onBlur={unsetFocused}
+        />
+
         {value && (
-          <ClearButtonWrapper>
+          // <ClearButtonWrapper>
+          <>
+            <Box mx={0.3} />
             <ClearButton type="button" onClick={clearInput}>
-              Clear
+              {/* Clear */}
+              <CancelIcon />
             </ClearButton>
-          </ClearButtonWrapper>
+          </>
+          // </ClearButtonWrapper>
         )}
       </SearchInputWrapper>
     );

@@ -314,7 +314,8 @@ const DashboardHeader = () => {
                   iconColorFilterActive={iconColorFilterActiveItem?.value}
                   isDashboard
                 />
-                <LayoutHeader.Spacer />
+                {/* <LayoutHeader.Spacer /> */}
+                <Box mx={0.5} />
                 <MegaFilter
                   filters={filterOptions}
                   selectedFilters={selectedFilters}
@@ -334,7 +335,8 @@ const DashboardHeader = () => {
                   onQuickFilterUpdate={handleQuickFilterUpdate}
                   onQuickFilterDelete={handleQuickFilterDelete}
                 />
-                <LayoutHeader.Spacer />
+                {/* <LayoutHeader.Spacer /> */}
+                <Box mx={0.5} />
                 <HeaderSearch
                   value={searchValue}
                   onChange={handleSearchChange}
