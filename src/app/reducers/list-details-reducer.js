@@ -772,6 +772,40 @@ const ListDetailsReducer = (state = initialState, action) => {
       };
     }
 
+    case ActionTypes.ADD_WORKFLOW_LABEL_SUCCESS: {
+      return {
+        ...state,
+        tasksMap: {
+          ...state.tasksMap,
+          [action?.newLabel?.taskWorkflowIdentifier]: {
+            ...state.tasksMap[action?.newLabel?.taskWorkflowIdentifier],
+            labels: [
+              ...state.tasksMap[action?.newLabel?.taskWorkflowIdentifier]
+                ?.labels,
+              action?.newLabel,
+            ],
+          },
+        },
+      };
+    }
+
+    case ActionTypes.REMOVE_WORKFLOW_LABEL_FROM_TASK_SUCCESS: {
+      return {
+        ...state,
+        tasksMap: {
+          ...state.tasksMap,
+          [action?.payload?.taskWorkflowIdentifier]: {
+            ...state.tasksMap[action?.payload?.taskWorkflowIdentifier],
+            labels: state.tasksMap[
+              action?.payload?.taskWorkflowIdentifier
+            ]?.labels.filter(
+              (l) => l.labelIdentifier !== action?.payload?.labelIdentifier,
+            ),
+          },
+        },
+      };
+    }
+
     case ActionTypes.REORDER_TASK_LIST_GROUPS: {
       const { newIndex, oldIndex } = action;
       const newListGroupsOrder = move(oldIndex, newIndex, state.listGroups);
