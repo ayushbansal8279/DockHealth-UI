@@ -23,7 +23,8 @@ import Tooltip from 'components/common/Tooltip/Tooltip';
 import * as AlertActions from 'alert/actions';
 import { userProfileSelector } from 'selectors/user-selectors';
 import {
-  bulkEditAssignUser,
+  bulkEditAssignUsers,
+  bulkEditUnassignUsers,
   bulkEditWorkflowStatus,
   bulkEditDueDate,
   bulkEditDelete,
@@ -103,13 +104,12 @@ const BulkEditOptionsBar = ({
     organizationCustomFieldsSelector,
   );
   const listCustomFields = useSelector(listCustomFieldsSelector);
-  const allTaskCustomFields = organizationCustomFields?.concat(
-    listCustomFields,
-  );
+  const allTaskCustomFields =
+    organizationCustomFields?.concat(listCustomFields);
 
   const allRequiredFieldsExist = useMemo(
     () =>
-      parentTasks.every(parentTask => {
+      parentTasks.every((parentTask) => {
         const incompleteRequiredFields = findIncompleteRequiredFields(
           allTaskCustomFields,
           parentTask,
@@ -369,20 +369,39 @@ const BulkEditOptionsBar = ({
   );
 
   const handleChangeAssigneeTasks = useCallback(
-    (selectedUsers) => {
-      bulkEditAssignUser(
+    /**
+     *
+     * @param {Array} selectedUsers users to send over api, assigned users list or newly unassigned users list
+     * @param {'assignment' | 'unassignment'} assignOption
+     */
+    (selectedUsers, assignOption) => {
+      // update assignee states on frontend
+      const methods = {
+        assignment: bulkEditAssignUsers,
+        unassignment: bulkEditUnassignUsers,
+      };
+      methods[assignOption]?.(
         allSelectedTasksIdentifiers,
         selectedUsers,
-        filters,
-        searchValue,
       )(dispatch);
 
-      bulkEditTasksApi({
+      // prepare payload
+      const payload = {
         bulkEditType: 'ASSIGN',
         taskIdentifiers: allSelectedTasksIdentifiers,
         taskWorkflowIdentifiers: allSelectedWorkflowIdentifiers,
-        assignedToIdentifiers: pluck('userIdentifier', selectedUsers),
-      })
+      };
+
+      if (assignOption === 'assignment') {
+        payload.assignedToIdentifiers = pluck('userIdentifier', selectedUsers);
+      } else {
+        payload.unassignedToIdentifiers = pluck(
+          'userIdentifier',
+          selectedUsers,
+        );
+      }
+
+      bulkEditTasksApi(payload)
         .then(({ transactionIdentifier }) => {
           refreshTaskWorkflows(allSelectedWorkflowIdentifiers);
           dispatch(
@@ -422,8 +441,6 @@ const BulkEditOptionsBar = ({
     },
     [
       allSelectedTasksIdentifiers,
-      filters,
-      searchValue,
       dispatch,
       allSelectedWorkflowIdentifiers,
       allSelectedTasksLength,
@@ -777,7 +794,9 @@ const BulkEditOptionsBar = ({
       numberOfSelectedItems={allSelectedTasksLength}
       isDisabled={isDisabled}
       onClose={onClose}
-      includedWorkflow={!!allSelectedTasks.find((t) => t?.itemType === 'BUNDLE')}
+      includedWorkflow={
+        !!allSelectedTasks.find((t) => t?.itemType === 'BUNDLE')
+      }
     >
       <>
         {mergedConfig[BulkEditOptionsConfig.DUPLICATE_OPTION] && (

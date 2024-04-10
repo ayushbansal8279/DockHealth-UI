@@ -7,7 +7,7 @@ import React, {
 } from 'react';
 import Highlighter from 'react-highlight-words';
 import * as OrganizationApi from 'api/organization-api';
-import { arrayOf, func, oneOfType, shape, string } from 'prop-types';
+import { arrayOf, func, oneOfType, shape, string, bool } from 'prop-types';
 import debounce from 'lodash.debounce';
 import UserAvatar from 'components/user/UserAvatar/UserAvatar';
 import MagnifierIcon from 'img/magnifier.svg';
@@ -24,6 +24,7 @@ import GroupAvatar from 'components/user/GroupAvatar/GroupAvatar';
 import { getUsersByName } from 'api/user-api';
 import { organizationSelector } from 'selectors/organization-selectors';
 import Button from 'components/common/v2/Button/Button';
+import { removeArr } from 'helpers/array-helpers';
 import {
   Input,
   InputBox,
@@ -50,6 +51,7 @@ const YouBadge = () => {
 const MultiAssignMembersList = ({
   taskListIdentifiers,
   selectedMembers: savedSelectedMembers,
+  isBulkTasks = false,
   onSelect,
   onError,
   closeModel,
@@ -79,7 +81,7 @@ const MultiAssignMembersList = ({
 
   useEffect(() => {
     if (taskDrawer) setSearchValue(value);
-  }, [value]);
+  }, [taskDrawer, value]);
 
   const filteredMembers = useMemo(
     () =>
@@ -97,17 +99,10 @@ const MultiAssignMembersList = ({
             );
             return (
               !isSelected &&
-              name.toLowerCase().includes(searchValue.toLowerCase()) //&&
-              // identifier !== currentUser?.identifier
+              name.toLowerCase().includes(searchValue.toLowerCase())
             );
           }),
-    [
-      enableLazyLoading,
-      membersOptions,
-      selectedMembers,
-      searchValue,
-      currentUser,
-    ],
+    [enableLazyLoading, membersOptions, selectedMembers, searchValue],
   );
 
   const filteredSelectedMembers = useMemo(
@@ -133,13 +128,39 @@ const MultiAssignMembersList = ({
 
   const inputReference = useRef(null);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const selectMembersWithDebounce = useCallback(
-    debounce((selection) => {
-      onSelect(selection.map((s) => ({ ...s, userIdentifier: s.identifier })));
+    debounce((newSelectedMembers) => {
+      if (isBulkTasks) {
+        if (selectedMembers.length > newSelectedMembers.length) {
+          // unassigned a user
+          const unassignedMembers = removeArr(
+            selectedMembers,
+            newSelectedMembers,
+            'userIdentifier',
+          );
+          onSelect(unassignedMembers, 'unassignment');
+        } else {
+          // assigned a new user
+          const assignedMembers = removeArr(
+            newSelectedMembers,
+            selectedMembers,
+            'userIdentifier',
+          );
+          onSelect(assignedMembers, 'assignment');
+        }
+      } else {
+        onSelect(
+          newSelectedMembers.map((s) => ({
+            ...s,
+            userIdentifier: s.identifier,
+          })),
+        );
+      }
       // eslint-disable-next-line no-unused-expressions
       inputReference.current?.focus();
     }, 700),
-    [],
+    [selectedMembers],
   );
 
   useEffect(() => {
@@ -216,7 +237,7 @@ const MultiAssignMembersList = ({
       } else if (selectedOption === UNASSIGNED_KEY) {
         membersToReturn = [];
       } else if (
-        selectedMembers.find(
+        selectedMembers.some(
           ({ identifier }) => selectedOption?.identifier === identifier,
         )
       ) {
@@ -434,6 +455,7 @@ MultiAssignMembersList.propTypes = {
     }),
   ).isRequired,
   onSelect: func.isRequired,
+  isBulkTasks: bool,
   onError: func,
   additionalMembers: arrayOf(
     shape({
@@ -449,6 +471,7 @@ MultiAssignMembersList.propTypes = {
 
 MultiAssignMembersList.defaultProps = {
   onError: null,
+  isBulkTasks: false,
 };
 
 export default MultiAssignMembersList;

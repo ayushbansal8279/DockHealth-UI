@@ -117,5 +117,6 @@
     "unicorn/consistent-function-scoping": "off",
     "no-shadow": "warn",
     "unicorn/no-negated-condition": "off",
+    "sonarjs/cognitive-complexity": "off"
   }
 }
