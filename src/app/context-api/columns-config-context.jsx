@@ -41,6 +41,7 @@ export function ColumnsConfigProvider({
   initialColumns = TASK_ITEM_BASE_COLUMN_CONFIG,
   hideCustomColumns,
   hidePatientCustomColumns,
+  restrictToInitialColumns,
 }) {
   const dispatch = useDispatch();
 
@@ -146,32 +147,40 @@ export function ColumnsConfigProvider({
 
   useEffect(() => {
     // collect data
-    const joinedColumnsData = [
-      // regular fields data
-      ...translateInitialColumnsConfig(viewSpecificConfig),
-      // org level custom fields
-      ...organizationCustomFields.map((d) => ({
-        ...d,
-        _customFieldType: CUSTOM_FIELD_TYPES.ORGANIZATION,
-      })),
-      // list level fields data - if a list exists
-      ...(taskListCustomColumns || []),
-      // patient level custom fields
-      ...patientCustomColumns,
-    ];
+    const joinedColumnsData = restrictToInitialColumns
+      ? translateInitialColumnsConfig(viewSpecificConfig)
+      : [
+          // regular fields data
+          ...translateInitialColumnsConfig(viewSpecificConfig),
+          // org level custom fields
+          ...organizationCustomFields.map((d) => ({
+            ...d,
+            _customFieldType: CUSTOM_FIELD_TYPES.ORGANIZATION,
+          })),
+          // list level fields data - if a list exists
+          ...(taskListCustomColumns || []),
+          // patient level custom fields
+          ...patientCustomColumns,
+        ];
 
     // join preferences to data
-    const mergedPreferencesAndFields = joinedColumnsData.map((field) => ({
-      ...field,
-      isChecked:
-        !!currentPreferences?.includes(field.identifier) ||
-        columnsAlwaysVisible?.includes(field.identifier),
-      columnWidth: Number(
-        currentWidthPreferences?.find(
-          (c) => c.displayColumn === field?.identifier && c.width !== 'NaN',
-        )?.width || getInitialColumnWidth(field),
-      ),
-    }));
+    const mergedPreferencesAndFields = restrictToInitialColumns
+      ? joinedColumnsData.map((field) => ({
+          ...field,
+          isChecked: true,
+          columnWidth: Number(getInitialColumnWidth(field)),
+        }))
+      : joinedColumnsData.map((field) => ({
+          ...field,
+          isChecked:
+            !!currentPreferences?.includes(field.identifier) ||
+            columnsAlwaysVisible?.includes(field.identifier),
+          columnWidth: Number(
+            currentWidthPreferences?.find(
+              (c) => c.displayColumn === field?.identifier && c.width !== 'NaN',
+            )?.width || getInitialColumnWidth(field),
+          ),
+        }));
 
     // sort data by defined order
     const fieldsWithOrder = mergedPreferencesAndFields
@@ -196,6 +205,7 @@ export function ColumnsConfigProvider({
     patientCustomColumns,
     taskListCustomColumns,
     viewSpecificConfig,
+    restrictToInitialColumns,
   ]);
 
   useEffect(() => {
