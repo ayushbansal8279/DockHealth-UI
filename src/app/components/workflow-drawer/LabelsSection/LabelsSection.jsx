@@ -323,7 +323,9 @@ const LabelsSection = ({ disabled: disabledProperty }) => {
       autoFocus={autoFocusFieldName === WorkflowDrawerFieldNames.LABEL}
       options={labelsList}
       label="Labels"
-      placeholder="Are there labels you'd like to add?"
+      placeholder={
+        selectedLabels?.length > 0 ? '' : "Are there labels you'd like to add?"
+      }
       value={selectedLabels}
       getInputReference={getInputReference}
       getOptionLabel={(option) => option?.labelName}
