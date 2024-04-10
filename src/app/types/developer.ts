@@ -5,8 +5,3 @@ export interface TApiKey {
   clientId: string;
   clientSecret: string;
 }
-
-export interface TCreateApiKeyMutationParams {
-  organizationIdentifier: string;
-  sendEmail?: boolean;
-}

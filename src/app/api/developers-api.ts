@@ -1,33 +1,22 @@
 import axios from './axios-heydoc';
-import { TApiKey, TCreateApiKeyMutationParams } from 'types/developer';
+import { TApiKey } from 'types/developer';
 
-export function createApiKey({
-  organizationIdentifier,
-  sendEmail = true,
-}: TCreateApiKeyMutationParams) {
+export function createApiKey() {
   return axios
-    .post<TApiKey>(
-      // `developer/create/${organizationIdentifier}?sendEmail=${
-      //   sendEmail ? 'true' : 'false'
-      // }`,
-      'organization/settings/orgDeveloper',
-    )
+    .post<TApiKey>('organization/settings/orgDeveloper')
     .then(({ data }) => data)
     .catch((error) => {
       throw new Error(error?.response?.data?.errorMessage);
     });
 }
 
-export function getApiKey(orgId: string) {
-  return (
-    axios
-      // .get<TApiKey>(`developers/${orgId}`)
-      .get<TApiKey>('organization/settings/orgDeveloper')
-      .then(({ data }) => data)
-      .catch((error) => {
-        throw new Error(error?.response?.data?.errorMessage);
-      })
-  );
+export function getApiKey() {
+  return axios
+    .get<TApiKey>('organization/settings/orgDeveloper')
+    .then(({ data }) => data)
+    .catch((error) => {
+      throw new Error(error?.response?.data?.errorMessage);
+    });
 }
 
 export function updateApiKey(orgId: string) {

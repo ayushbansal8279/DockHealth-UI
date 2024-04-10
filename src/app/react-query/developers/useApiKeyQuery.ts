@@ -11,7 +11,7 @@ interface Config {
 }
 
 export const useApiKeyQuery = ({ orgId, options = {} }: Config) => {
-  const queryFn = () => getApiKey(orgId);
+  const queryFn = getApiKey;
 
   return useExtendedQuery<TApiKey, ApiError>({
     queryKey: apiKeyQueryKey(orgId),

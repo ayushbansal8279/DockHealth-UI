@@ -1,37 +1,27 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { TApiKey, TCreateApiKeyMutationParams } from 'types/developer';
+import { TApiKey } from 'types/developer';
 import { createApiKey } from '@/app/api/developers-api';
 import { ApiError, UseExtendedMutationOptions } from '../types';
 import { apiKeyQueryKey } from './useApiKeyQuery';
 
 interface Config {
-  options?: UseExtendedMutationOptions<
-    TApiKey,
-    ApiError,
-    TCreateApiKeyMutationParams
-  >;
+  orgId: string;
+  options?: UseExtendedMutationOptions<TApiKey, ApiError, unknown>;
 }
 
-export const useCreateApiKey = ({ options = {} }: Config = {}) => {
+export const useCreateApiKey = ({ orgId, options = {} }: Config) => {
   const queryClient = useQueryClient();
 
-  const mutationFn = (params: TCreateApiKeyMutationParams) =>
-    createApiKey(params);
+  const mutationFn = createApiKey;
 
-  const defaultOptions: UseExtendedMutationOptions<
-    TApiKey,
-    ApiError,
-    TCreateApiKeyMutationParams
-  > = {
-    onSuccess: (data, params) => {
-      queryClient.setQueryData(
-        apiKeyQueryKey(params.organizationIdentifier),
-        data,
-      );
-    },
-  };
+  const defaultOptions: UseExtendedMutationOptions<TApiKey, ApiError, unknown> =
+    {
+      onSuccess: (data) => {
+        queryClient.setQueryData(apiKeyQueryKey(orgId), data);
+      },
+    };
 
-  return useMutation<TApiKey, ApiError, TCreateApiKeyMutationParams>({
+  return useMutation<TApiKey, ApiError>({
     mutationFn,
     ...defaultOptions,
     ...options,
