@@ -331,7 +331,7 @@ const ListDetailsHeader = (props) => {
           onClick={() => handleAddNewGroup(!addNewGroup)}
         />
         <Box mx={0.5} />
-        {!showSearch ? (
+        {!showSearch && (
           <HeaderSearch
             value={searchValue}
             onChange={onSearchChange}
@@ -339,12 +339,10 @@ const ListDetailsHeader = (props) => {
             setFocused={setFocused}
             unsetFocused={unsetFocused}
           />
-        ) : (
-          <></>
         )}
         <Box mx={0.5} />
       </ListDetailsToolbar>
-      {showSearch ? (
+      {showSearch && (
         <HeaderSearchContainer>
           <HeaderSearch
             value={searchValue}
@@ -354,8 +352,6 @@ const ListDetailsHeader = (props) => {
             unsetFocused={unsetFocused}
           />
         </HeaderSearchContainer>
-      ) : (
-        <></>
       )}
     </MainHeaderContainer>
   );

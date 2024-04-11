@@ -48,6 +48,7 @@ const convert = (
 };
 
 function VirtualTaskList({ groupedTasks }: Props) {
+  console.log('groupedTasks', groupedTasks);
   const [collapseMap, collapseDispatch] = useReducer(
     (map: Record<string, boolean>, [id, value]: [string, boolean]) => {
       map[id] = value;
@@ -69,95 +70,9 @@ function VirtualTaskList({ groupedTasks }: Props) {
     );
     setWorkflowIdentifierMap(newArray);
   };
-  // const nodes: Node[] = useMemo(() => {
-  //   // @ts-ignore
-  //   return listGroups
-  //     .map((group) => {
-  //       const groupTasks =
-  //         groupedTasks.find(
-  //           (groupedTask) =>
-  //             groupedTask.groupIdentifier === group.taskGroupIdentifier,
-  //         )?.tasks ?? [];
-  //       return convert(
-  //         group.taskGroupIdentifier,
-  //         VListGroup,
-  //         'ListGroup',
-  //         !!collapseMap[group.taskGroupIdentifier],
-  //         { name: group.groupName, taskGroupIdentifier: group.taskGroupIdentifier },
-  //         [
-  //           convert(
-  //             uniqueId().toString(),
-  //             VQuickAddTask,
-  //             'QuickAddTask',
-  //             false,
-  //             {
-  //               taskGroupIdentifier: group.taskGroupIdentifier,
-  //             },
-  //             [],
-  //             true,
-  //           ),
-  //           convert(
-  //             uniqueId().toString(),
-  //             VTaskHeader,
-  //             'TaskHeader',
-  //             false,
-  //             {},
-  //             [],
-  //             true,
-  //           ),
-  //         ].concat(
-  //           ...groupTasks.map((taskIdentifier: string) => {
-  //             const task = tasksMap[taskIdentifier];
-  //             const children =
-  //               task.itemType === 'TASK' ? task.subtasks : task.tasks;
-  //             return convert(
-  //               taskIdentifier,
-  //               VTask,
-  //               'Task',
-  //               !!collapseMap[taskIdentifier],
-  //               { task },
-  //               children.map((child: any) => {
-  //                 return convert(
-  //                   child?.taskIdentifier ?? child,
-  //                   task.itemType === 'TASK' ? VSubtask : VTask,
-  //                   task.itemType === 'TASK' ? 'Subtask' : 'TaskOfBundle',
-  //                   !!collapseMap[child?.taskIdentifier ?? child],
-  //                   {
-  //                   isTaskTemplate: true,
-  //                     isLastChild:
-  //                       children.indexOf(child) === children.length - 1,
-  //                 },
-  //                   !!tasksMap[child]?.subtasks.length
-  //                     ? tasksMap[child].subtasks.map((subtask: any) => {
-  //                         return convert(
-  //                           subtask.taskIdentifier,
-  //                           VSubtask,
-  //                           'Subtask',
-  //                           false,
-  //                           { task: subtask },
-  //                           [],
-  //                         );
-  //                       })
-  //                     : [],
-  //                 );
-  //               }),
-  //             );
-  //           }),
-  //         ),
-  //         true,
-  //       );
-  //     })
-  //     .concat(
-  //       convert(
-  //         uniqueId().toString(),
-  //         VAddGroup,
-  //         'AddGroup',
-  //         false,
-  //         {},
-  //         [],
-  //         true,
-  //       ),
-  //     );
+
+  console.log('listGroups', listGroups);
+
   const nodes: Node[] = useMemo(() => {
     return [
       convert(
@@ -171,6 +86,7 @@ function VirtualTaskList({ groupedTasks }: Props) {
       ),
     ].concat(
       listGroups.map((group, index) => {
+        // todo error: groupedTasks[i].groupIdentifier is changed to 'DEFAULT' somewhere
         const groupTasks = groupedTasks
           ? groupedTasks.find(
               (groupedTask) =>
@@ -288,7 +204,6 @@ function VirtualTaskList({ groupedTasks }: Props) {
     const xs2 = xs.slice();
     xs2.splice(xs.indexOf(draggableId), 1);
     xs2.splice(destination?.index!, 0, draggableId);
-    // console.log('handleDragEnd', destination, source, xs, xs2);
     dispatch(reorderTasksInGroup({ destination, source }));
   };
 
