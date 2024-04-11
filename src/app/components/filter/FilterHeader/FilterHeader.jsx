@@ -22,45 +22,8 @@ const FilterHeader = (props) => {
 
   return (
     <Container>
-      <Box display="flex" flex={1} alignItems="center">
-        <Title>
-          <b>{title}</b>{' '}
-          {/* {Number.isInteger(filteredItemsCount) &&
-            Number.isInteger(allItemsCount) &&
-            filteredItemsCount < allItemsCount && (
-              <>
-                showing {filteredItemsCount} of {allItemsCount} items
-              </>
-            )} */}
-          {/* {Number.isInteger(allItemsCount) &&
-            (filteredItemsCount === undefined ||
-              filteredItemsCount === allItemsCount) && (
-              <>showing {allItemsCount} items</>
-            )} */}
-        </Title>
-        {filterActive && (
-          <HeaderButton type="button" onClick={onClear}>
-            Clear
-          </HeaderButton>
-        )}
-        {onSave &&
-          selectedFilters &&
-          !isEmpty(selectedFilters) &&
-          selectedQuickFilter &&
-          editModeEnabled && (
-            <HeaderButton type="button" onClick={onSave}>
-              Save
-            </HeaderButton>
-          )}
-        {onSaveAsNew && selectedFilters && !isEmpty(selectedFilters) && (
-          <HeaderButton type="button" onClick={onSaveAsNew}>
-            {selectedQuickFilter
-              ? 'Save as new Quick Filter'
-              : 'Add to saved filters'}
-          </HeaderButton>
-        )}
-      </Box>
-      <FilterSearch value={searchValue} onValueChange={onSearchValueChange} />
+      <div>Quick Filters</div>
+      <div>Quick Filters Here</div>
     </Container>
   );
 };

@@ -8,6 +8,7 @@ import FilterHeader from 'components/filter/FilterHeader/FilterHeader';
 import FilterTable from 'components/filter/FilterTable/FilterTable';
 import CustomFilters from 'components/filter/CustomFilters/CustomFilters';
 import { MegaFilterNoResultsLabel, MegaFilterContainer } from './styled';
+import NewFilterContainer from '../../filter/NewFilterContainer/NewFilterContainer';
 
 const MegaFilter = ({
   children,
@@ -36,11 +37,16 @@ const MegaFilter = ({
   const [searchedFilterQuery, setSearchedFilterQuery] = useState('');
   const megaFilterButtonReference = useRef(null);
   const isFilterApplied = selectedFilters && !isEmpty(selectedFilters);
+  const [menuOptions, setMenuOption] = useState([]);
+  const [finalFilter, setFinalFilter] = useState({});
+  const [assignedUser, setAssignedUser] = useState({});
 
   const clearFilters = () => {
     onSelectFilters(null);
     selectQuickFilter(null);
+    setFinalFilter({})
   };
+
 
   useEffect(() => {
     // eslint-disable-next-line no-unused-expressions
@@ -65,21 +71,22 @@ const MegaFilter = ({
         anchorEl={megaFilterButtonReference.current}
         open={isOpen}
         onClose={() => openPopover(false)}
+        
       >
         <>
           <FilterHeader
-            title="Filter tasks"
-            filterActive={isFilterApplied}
-            filteredItemsCount={tasksAndSubTasksCount}
-            allItemsCount={activeItemsAmount}
-            searchValue={searchedFilterQuery}
-            onSearchValueChange={setSearchedFilterQuery}
-            onClear={clearFilters}
-            onSave={onSaveClick}
-            onSaveAsNew={onSaveAsNewClick}
-            selectedQuickFilter={selectedQuickFilter}
-            editModeEnabled={wasChangedFilters}
-            selectedFilters={selectedFilters}
+          // title="Filter tasks"
+          // filterActive={isFilterApplied}
+          // filteredItemsCount={tasksAndSubTasksCount}
+          // allItemsCount={activeItemsAmount}
+          // searchValue={searchedFilterQuery}
+          // onSearchValueChange={setSearchedFilterQuery}
+          // onClear={clearFilters}
+          // onSave={onSaveClick}
+          // onSaveAsNew={onSaveAsNewClick}
+          // selectedQuickFilter={selectedQuickFilter}
+          // editModeEnabled={wasChangedFilters}
+          // selectedFilters={selectedFilters}
           />
           {isFilterApplied && tasksAndSubTasksCount === 0 && !isFetching && (
             <MegaFilterNoResultsLabel>
@@ -92,8 +99,18 @@ const MegaFilter = ({
               needed.
             </span>
           )}
+          <NewFilterContainer
+            filters={filters}
+            onSelectedFiltersChange={onSelectFilters}
+            setFinalFilter={setFinalFilter}
+            finalFilter={finalFilter}
+            setMenuOption={setMenuOption}
+            menuOptions={menuOptions}
+            setAssignedUser={setAssignedUser}
+            assignedUser={assignedUser}
+          ></NewFilterContainer>
           <Box p={2} />
-          <FilterTable
+          {/* <FilterTable
             isLoading={isFetching}
             searchValue={searchedFilterQuery}
             filters={filters}
@@ -110,7 +127,7 @@ const MegaFilter = ({
               onCreate={onQuickFilterCreate}
               onDelete={onQuickFilterDelete}
             />
-          </FilterTable>
+          </FilterTable> */}
         </>
       </FilterPopover>
     </MegaFilterContainer>
