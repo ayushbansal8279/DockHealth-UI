@@ -231,6 +231,8 @@ const TaskTemplateView = () => {
         [TaskItemColumn.ASSIGNED]: true,
       }}
       hideCustomColumns
+      hidePatientCustomColumns
+      restrictToInitialColumns
     >
       <ViewLayout header={<BasicLayoutHeader title="Workflow Library" />}>
         <BulkEditSection
