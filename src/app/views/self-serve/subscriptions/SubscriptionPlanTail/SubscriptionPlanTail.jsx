@@ -50,8 +50,7 @@ const SubscriptionPlanTail = (props) => {
     subscriptionPlan,
   } = plan;
 
-  const upgradeLabel =
-    plan?.subscriptionPlan === SubscriptionPlan.STANDARD ? 'Change' : 'Upgrade';
+  const upgradeLabel = 'Change';
   const subscribeLabel = hasExistingSubscription ? upgradeLabel : 'Subscribe';
 
   return (
