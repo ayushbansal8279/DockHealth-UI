@@ -49,8 +49,7 @@ const SubscriptionPlanTail = (props) => {
     subscriptionPlan,
   } = plan;
 
-  const upgradeLabel =
-    subscriptionPlan === SubscriptionPlan.STANDARD ? 'Change' : 'Upgrade';
+  const upgradeLabel = 'Change';
   const subscribeLabel = hasExistingSubscription ? upgradeLabel : 'Subscribe';
   const price =
     billingFrequency === BillingFrequency.MONTHLY
