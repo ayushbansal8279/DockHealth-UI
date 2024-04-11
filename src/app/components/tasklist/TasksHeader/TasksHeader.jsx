@@ -135,7 +135,13 @@ const TasksHeader = ({
           truncateEnabled
           id={f.identifier}
           label={isRegular ? f.label : f.name}
-          width={+f.columnWidth}
+          width={
+            index === 0
+              ? +f.columnWidth - 1
+              : index === 1
+              ? +f.columnWidth + 1.5
+              : +f.columnWidth
+          }
           snapshot={snapshot}
           sort={sort}
           onSortChange={onSortChange}
