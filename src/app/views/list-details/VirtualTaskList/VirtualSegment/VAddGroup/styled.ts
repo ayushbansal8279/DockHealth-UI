@@ -12,6 +12,6 @@ export const VAddGroup = styled('div')`
   font-weight: bold;
   // line-height: 40px;
   height: 64px;
-  margin-top: ${(props) => (props.active ? '32px' : '-62px')};
+  margin-top: ${(props) => (props.active ? '5px' : '-15px')};
   margin-left: 24px;
 `;
