@@ -99,6 +99,7 @@ import { VTaskContext } from '@/app/views/list-details/VirtualTaskList/VirtualSe
 
 const TaskTemplateGroupHeader = ({
   templateGroup = {},
+  patient: parentPatient,
   templateTasks,
   groupHasMultipleAssignees,
   dragHandleProps = {},
@@ -623,7 +624,9 @@ const TaskTemplateGroupHeader = ({
     },
     [dispatch, identifier],
   );
-  const { patient } = templateGroup ?? workFlowData;
+
+  const patient =
+    parentPatient ?? templateGroup?.patient ?? workFlowData?.patient;
 
   const [isPatientDataReadOnly] = useState(true);
   const collapse = useContext(CollapseContext);
@@ -1601,10 +1604,13 @@ const TaskTemplateGroupHeader = ({
           const taskCustomFieldValue = workflowDetails?.taskMetaData?.find(
             (f) => f.customFieldIdentifier === field.identifier,
           );
-          const patientCustomFieldValue =
-            workflowDetails?.patient?.patientMetaData?.find(
-              (f) => f.customFieldIdentifier === field.identifier,
-            );
+          const patientMetaData =
+            patient?.patientMetaData ||
+            workflowDetails?.patient?.patientMetaData ||
+            [];
+          const patientCustomFieldValue = patientMetaData?.find(
+            (f) => f.customFieldIdentifier === field.identifier,
+          );
           const customFieldValue =
             field.targetType === CUSTOM_FIELD_TYPES.PATIENT
               ? patientCustomFieldValue
