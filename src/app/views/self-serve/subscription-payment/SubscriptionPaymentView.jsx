@@ -32,7 +32,10 @@ import {
   PROFESSIONAL_SERVICES_PRICE,
   SUBSCRIPTION_PLANS,
 } from 'helpers/subscription-helper';
-import { userProfileSelector } from 'selectors/user-selectors';
+import {
+  userProfileSelector,
+  selectedUserOrganizationSelector,
+} from 'selectors/user-selectors';
 import { log } from 'helpers/log';
 import BillingData from '../billings/BillingData/BillingData';
 import {
@@ -131,6 +134,13 @@ const SubscriptionPaymentView = () => {
   const { activeUserCount } = currentSubscriptionPlan || {};
   const userProfile = useSelector(userProfileSelector);
   const newPaymentPlan = useSelector(newPaymentPlanSelector);
+  const currentOrganization = useSelector(selectedUserOrganizationSelector);
+  const proplanMinimumExceptionItem =
+    currentOrganization?.themeSettings?.find(
+      ({ name }) => name === 'billing.proplan.minimum.exception',
+    ) || {};
+  const proplanMinimumException =
+    proplanMinimumExceptionItem?.value === 'true' || false;
 
   useEffect(() => {
     if (!checkIfUserIsOrganizationAdmin(userProfile)) {
@@ -173,8 +183,15 @@ const SubscriptionPaymentView = () => {
       ? annualMonthlyPrice
       : monthlyPrice;
 
+  const adjustedUserCount =
+    newPlan?.minimumUsers > 0 &&
+    !proplanMinimumException &&
+    activeUserCount < newPlan?.minimumUsers
+      ? newPlan?.minimumUsers
+      : activeUserCount;
+
   const planTotalPayment = priceFormatter(
-    activeUserCount *
+    adjustedUserCount *
       totalPerUserCost *
       (billingFrequency === BillingFrequency.ANNUAL ? 12 : 1) +
       (professionalServicesIncluded ? PROFESSIONAL_SERVICES_PRICE : 0),
@@ -227,13 +244,13 @@ const SubscriptionPaymentView = () => {
               </Grid>
               <Grid container alignItems="center" justifyContent="flex-end">
                 <MontserratTypography variant="h3">
-                  {activeUserCount}
+                  {adjustedUserCount}
                 </MontserratTypography>
                 <Spacing vertical={4} />
               </Grid>
               <Grid container alignItems="center">
                 <MontserratTypography variant="h3" weight="300">
-                  {activeUserCount > 1 ? 'users' : 'user'}
+                  {adjustedUserCount > 1 ? 'users' : 'user'}
                 </MontserratTypography>
                 <Spacing vertical={4} />
               </Grid>
