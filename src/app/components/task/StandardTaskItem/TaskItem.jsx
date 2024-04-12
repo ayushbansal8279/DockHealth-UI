@@ -831,6 +831,7 @@ const TaskItem = React.memo(
           isStartedDnD={false}
           dragHandleProps={dragHandleProps}
           templateGroup={taskGroup}
+          patient={patient}
           groupHasMultipleAssignees={false}
           isFullView={false}
           dragAndDropDisabled={isCompletedGroup || dragAndDropDisabled}
