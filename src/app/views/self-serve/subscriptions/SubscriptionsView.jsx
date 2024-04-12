@@ -23,7 +23,10 @@ import {
   updateSubscriptionDetails,
 } from 'actions/organization-actions';
 import { checkIfUserIsOrganizationAdmin } from 'helpers/user-helper';
-import { userProfileSelector } from 'selectors/user-selectors';
+import {
+  userProfileSelector,
+  selectedUserOrganizationSelector,
+} from 'selectors/user-selectors';
 import ViewLayout from 'components/template/ViewLayout/ViewLayout';
 import BasicLayoutHeader from 'components/template/BasicLayoutHeader/BasicLayoutHeader';
 import {
@@ -76,6 +79,13 @@ const SubscriptionsView = () => {
     currentSubscriptionPlan || {};
   const { subscriptionPlan, billingFrequency, professionalServicesIncluded } =
     subscriptionDetails || {};
+  const currentOrganization = useSelector(selectedUserOrganizationSelector);
+  const proplanMinimumExceptionItem =
+    currentOrganization?.themeSettings?.find(
+      ({ name }) => name === 'billing.proplan.minimum.exception',
+    ) || {};
+  const proplanMinimumException =
+    proplanMinimumExceptionItem?.value === 'true' || false;
 
   useEffect(() => {
     if (!checkIfUserIsOrganizationAdmin(currentUser)) {
@@ -129,6 +139,7 @@ const SubscriptionsView = () => {
 
   const adjustedUserCount =
     selectedPlanDetails?.minimumUsers > 0 &&
+    !proplanMinimumException &&
     activeUserCount < selectedPlanDetails?.minimumUsers
       ? selectedPlanDetails?.minimumUsers
       : activeUserCount;
@@ -302,7 +313,8 @@ const SubscriptionsView = () => {
                 </BillingTableCell>
                 <BillingTableCell>
                   {adjustedUserCount} standard user(s)
-                  {selectedPlanDetails?.minimumUsers > 0
+                  {selectedPlanDetails?.minimumUsers > 0 &&
+                  !proplanMinimumException
                     ? ` (Minimum per plan: ${selectedPlanDetails?.minimumUsers})`
                     : ''}
                 </BillingTableCell>

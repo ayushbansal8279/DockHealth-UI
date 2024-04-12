@@ -89,8 +89,12 @@ const ListDetailsHeader = (props) => {
         : [],
     [listUsers, userIdentifier],
   );
-  const { addNewGroup, handleAddNewGroup, showShadow } =
-    useContext(ListPageContext);
+  const {
+    addNewGroup,
+    handleAddNewGroup,
+    handleScrollToAddGroupName,
+    showShadow,
+  } = useContext(ListPageContext);
   const [isListOpen, openList] = useState(false);
   const [focused, setFocused, unsetFocused] = useBoolean(false);
   // const [scrollPosition, setScrollPosition] = useState(0);
@@ -328,7 +332,10 @@ const ListDetailsHeader = (props) => {
         <Box mx={0.5} />
         <AddGroupNameButton
           active={addNewGroup}
-          onClick={() => handleAddNewGroup(!addNewGroup)}
+          onClick={() => {
+            handleAddNewGroup(true);
+            handleScrollToAddGroupName();
+          }}
         />
         <Box mx={0.5} />
         {!showSearch && (

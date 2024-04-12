@@ -44,6 +44,8 @@ const GlobalSearchList = ({
     addingNewSubtaskParentIdSelector,
   );
   const viewSetup = useSelector(userSetupClientViewSelector);
+  viewSetup.SHOW_WORKFLOW_DETAILS = false;
+  viewSetup.SHOW_WORKFLOW_COMPLETED_TASKS = false;
 
   const currentOrganization = useSelector(selectedUserOrganizationSelector);
   const iconColorActiveItem =
@@ -62,6 +64,7 @@ const GlobalSearchList = ({
         ({ assignedToUsers, subtasks }) =>
           (assignedToUsers && assignedToUsers.length > 1) ||
           (subtasks &&
+            // eslint-disable-next-line unicorn/no-useless-length-check
             subtasks.length > 0 &&
             subtasks.some(
               ({ assignedToUsers: subtaskAssignedToUsers }) =>

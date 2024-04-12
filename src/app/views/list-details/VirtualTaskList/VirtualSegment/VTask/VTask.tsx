@@ -66,7 +66,7 @@ function VTask(
 
   const task = pulledTask;
   const { taskList, taskGroups, identifier } = task;
-  const [subTasksCount, setsubTasksCount] = useState(task.subTasksCount);
+  const [subTasksCount, setsubTasksCount] = useState(task?.subtasks?.length);
 
   const [addWorkflowTask, setAddWorkflowTask] = useState(false);
   const taskGroup = !!taskGroups
@@ -149,7 +149,7 @@ function VTask(
             virtualListWorkflowOpen={get(identifier)}
             subtaskQuickAddOpen={subtaskQuickAddOpen}
             addWorkflowTask={addWorkflowTask}
-            subTaskExpanded={!metadata.collapsed && task?.subTasksCount}
+            subTaskExpanded={!metadata.collapsed && task?.subtasks?.length}
           >
             <VTaskContext.Provider value={contextValue}>
               <StandardTaskItem
@@ -188,7 +188,7 @@ function VTask(
           {isTaskTemplate &&
             isLastChild &&
             addWorkflowTask &&
-            (task?.subTasksCount === 0 || metadata?.collapsed) && (
+            (task?.subtasks?.length === 0 || metadata?.collapsed) && (
               <div
                 style={{
                   width: '100%',

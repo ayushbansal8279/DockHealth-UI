@@ -11,6 +11,6 @@ export const VTaskHeader = styled('div')`
   margin-bottom: -3px;
   background: ${({ bgColor }) => (bgColor ? palette.aliceBlue : '')};
   & > * > * {
-    left: 54.5px;
+    left: 54px;
   }
 `;

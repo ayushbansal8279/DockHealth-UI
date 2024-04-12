@@ -178,5 +178,6 @@ export const CheckIcon = styled(MuiCheckIcon)`
       top: 50%;
       transform: translateY(-50%);
     }
+    height: 16px;
   }
 `;

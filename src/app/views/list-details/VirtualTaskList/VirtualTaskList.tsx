@@ -74,18 +74,8 @@ function VirtualTaskList({ groupedTasks }: Props) {
   console.log('listGroups', listGroups);
 
   const nodes: Node[] = useMemo(() => {
-    return [
-      convert(
-        uniqueId().toString(),
-        VAddGroup,
-        'AddGroup',
-        false,
-        {},
-        [],
-        true,
-      ),
-    ].concat(
-      listGroups.map((group, index) => {
+    return listGroups
+      .map((group, index) => {
         // todo error: groupedTasks[i].groupIdentifier is changed to 'DEFAULT' somewhere
         const groupTasks = groupedTasks
           ? groupedTasks.find(
@@ -192,8 +182,20 @@ function VirtualTaskList({ groupedTasks }: Props) {
           ),
           true,
         );
-      }),
-    );
+        // }),
+        // );
+      })
+      .concat(
+        convert(
+          uniqueId().toString(),
+          VAddGroup,
+          'AddGroup',
+          false,
+          {},
+          [],
+          true,
+        ),
+      );
   }, [groupedTasks, tasksMap, collapseMap, listGroups]);
 
   const dispatch = useDispatch();
