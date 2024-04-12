@@ -213,6 +213,7 @@ const TaskItem = React.memo(
       subtaskQuickAddOpen,
       // selected,
       subTasksCount,
+      subtasks: subTaskCurrentCount,
       dependencyTasksCompletedCount,
       dependencyTasksCount,
       hasEscalations,
@@ -1057,7 +1058,7 @@ const TaskItem = React.memo(
                       isSubtask={isSubtask}
                       subtaskQuickAddOpen={subtaskQuickAddOpen}
                       subtasksDisabled={subtasksDisabled}
-                      subTasksCount={subTasksCount}
+                      subTasksCount={subTaskCurrentCount?.length}
                       isOpen={isOpen}
                       isNestedTask={isNestedTask}
                       onSubtaskLabelClick={onSubtaskLabelClick}
