@@ -384,6 +384,7 @@ const PatientTasksListView = () => {
                   viewSetup={viewSetup}
                   key={task.identifier}
                   templateGroup={task}
+                  patient={patient}
                   groupHasMultipleAssignees={groupHasMultipleAssignees}
                   isFullView={isFullView}
                   groupDragAndDropDisabled
