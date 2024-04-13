@@ -39,6 +39,7 @@ const NewFilterContainer = ({
   setFinalFilter,
   setAssignedUser,
   assignedUser,
+  openPopover,
 }) => {
   const [isSelectOpen, setIsSelectOpen] = useState(false);
 
@@ -71,6 +72,7 @@ const NewFilterContainer = ({
       }
     }
     onSelectedFiltersChange(selectFilterOption('', '', data));
+    openPopover(false);
   };
 
   const clearFilter = () => {

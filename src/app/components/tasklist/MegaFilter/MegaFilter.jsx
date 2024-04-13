@@ -106,6 +106,7 @@ const MegaFilter = ({
             menuOptions={menuOptions}
             setAssignedUser={setAssignedUser}
             assignedUser={assignedUser}
+            openPopover={openPopover}
           ></NewFilterContainer>
           <Box p={2} />
           {/* <FilterTable
