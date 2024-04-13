@@ -81,15 +81,17 @@ const FilterSelect = ({
     let currentFilter = { ...finalFilter };
     delete currentFilter[filter];
     setFilter({ ...currentFilter });
-    setAssignedUser({ ...currentFilter });
+    const urs = assignedUser;
+    delete urs[filter];
+    setAssignedUser(urs);
   };
 
   useEffect(() => {
     menuOptions.map((item) => {
       if (item.id === filter) setOptionName(item.label);
     });
-    setFilterdUser(filterOptions);
-  }, [filter, filterOptions]);
+    // setFilterdUser(filterOptions);
+  }, [filter]);
 
   return (
     <>
@@ -97,23 +99,22 @@ const FilterSelect = ({
         <Title>{optionName}</Title>
         <div style={{ display: 'flex' }}>
           <AssigneHolder>
-            {assignedUser[filter]?.length > 0 &&
-              assignedUser[filter].map((item, i) => (
-                <AssigneItem key={i} contentEditable={false}>
-                  <div>{item.displayValue}</div>
-                  <div onClick={() => handleRemoveAssign(item)}>
-                    <img
-                      style={{
-                        width: '19px',
-                        margin: '2px 4px',
-                        cursor: 'pointer',
-                      }}
-                      src={CloseIcon}
-                      alt="close"
-                    />
-                  </div>
-                </AssigneItem>
-              ))}
+            {assignedUser[filter].map((item, i) => (
+              <AssigneItem key={i} contentEditable={false}>
+                <div>{item.displayValue}</div>
+                <div onClick={() => handleRemoveAssign(item)}>
+                  <img
+                    style={{
+                      width: '19px',
+                      margin: '2px 4px',
+                      cursor: 'pointer',
+                    }}
+                    src={CloseIcon}
+                    alt="close"
+                  />
+                </div>
+              </AssigneItem>
+            ))}
             <AssigneInput
               onClick={() => setIsOpen((v) => !v)}
               ref={assigneRef}

@@ -88,24 +88,24 @@ const NewFilterContainer = ({
           setFilter={setFinalFilter}
           filter={filter}
           finalFilter={finalFilter}
-          filterOptions={() => {
-            const uniqueOptions = new Set(); // Using Set to store unique values
+          // filterOptions={() => {
+          //   const uniqueOptions = new Set(); // Using Set to store unique values
 
-            filters.forEach((item) => {
-              if (item.id === filter && item.options) {
-                item.options.forEach((option) => {
-                  if (typeof option !== 'boolean') {
-                    uniqueOptions.add(option); // Adding unique options to the Set
-                  }
-                });
-              }
-            });
+          //   filters.forEach((item) => {
+          //     if (item.id === filter && item.options) {
+          //       item.options.forEach((option) => {
+          //         if (typeof option !== 'boolean') {
+          //           uniqueOptions.add(option); // Adding unique options to the Set
+          //         }
+          //       });
+          //     }
+          //   });
 
-            return Array.from(uniqueOptions);
-          }}
-          // filterOptions={filters
-          //   .flatMap((item) => item.id === filter && item.options)
-          //   .filter((item) => typeof item !== 'boolean')}
+          //   return Array.from(uniqueOptions);
+          // }}
+          filterOptions={filters
+            .flatMap((item) => item.id === filter && item.options)
+            .filter((item) => typeof item !== 'boolean')}
         />
       ))}
       <FilterButtonWrapper>
