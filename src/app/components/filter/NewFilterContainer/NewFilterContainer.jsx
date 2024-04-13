@@ -37,8 +37,8 @@ const NewFilterContainer = ({
   setMenuOption,
   finalFilter,
   setFinalFilter,
-  setAssignedUser, 
-  assignedUser
+  setAssignedUser,
+  assignedUser,
 }) => {
   const [isSelectOpen, setIsSelectOpen] = useState(false);
 
@@ -58,20 +58,18 @@ const NewFilterContainer = ({
         const obs = {};
         obs[option] = [];
         setFinalFilter((v) => ({ ...v, ...obs }));
-        setAssignedUser((v) => ({ ...v, ...obs }))
+        setAssignedUser((v) => ({ ...v, ...obs }));
       }
     });
   };
 
   const handleApplyFinalFilter = () => {
     const data = {};
-    console.log(finalFilter);
     for (const key in finalFilter) {
       if (finalFilter[key].length > 0) {
         data[key] = { options: finalFilter[key].map((item) => item.key) };
       }
     }
-    console.log(data);
     onSelectedFiltersChange(selectFilterOption('', '', data));
   };
 
@@ -90,9 +88,24 @@ const NewFilterContainer = ({
           setFilter={setFinalFilter}
           filter={filter}
           finalFilter={finalFilter}
-          filterOptions={filters
-            .flatMap((item) => item.id === filter && item.options)
-            .filter((item) => typeof item !== 'boolean')}
+          filterOptions={() => {
+            const uniqueOptions = new Set(); // Using Set to store unique values
+
+            filters.forEach((item) => {
+              if (item.id === filter && item.options) {
+                item.options.forEach((option) => {
+                  if (typeof option !== 'boolean') {
+                    uniqueOptions.add(option); // Adding unique options to the Set
+                  }
+                });
+              }
+            });
+
+            return Array.from(uniqueOptions);
+          }}
+          // filterOptions={filters
+          //   .flatMap((item) => item.id === filter && item.options)
+          //   .filter((item) => typeof item !== 'boolean')}
         />
       ))}
       <FilterButtonWrapper>

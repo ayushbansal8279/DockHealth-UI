@@ -44,9 +44,8 @@ const MegaFilter = ({
   const clearFilters = () => {
     onSelectFilters(null);
     selectQuickFilter(null);
-    setFinalFilter({})
+    setFinalFilter({});
   };
-
 
   useEffect(() => {
     // eslint-disable-next-line no-unused-expressions
@@ -71,7 +70,6 @@ const MegaFilter = ({
         anchorEl={megaFilterButtonReference.current}
         open={isOpen}
         onClose={() => openPopover(false)}
-        
       >
         <>
           <FilterHeader

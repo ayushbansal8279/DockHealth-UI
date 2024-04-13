@@ -33,10 +33,10 @@ const FilterSelect = ({
   const assigneRef = useRef(null);
 
   const handleSelectAssigne = (item) => {
-    const urs  = assignedUser ;
-    urs[filter] = [...assignedUser[filter], item]
-    setAssignedUser(v=> ({...urs}));
-    assigneRef.current.textContent = '';  
+    const urs = assignedUser;
+    urs[filter] = [...assignedUser[filter], item];
+    setAssignedUser((v) => ({ ...urs }));
+    assigneRef.current.textContent = '';
     setFilterdUser((v) => v.filter((assigne) => assigne.key !== item.key));
     let currentFilter = { ...finalFilter };
     currentFilter[filter] = [
@@ -62,11 +62,12 @@ const FilterSelect = ({
   };
 
   const handleRemoveAssign = (item) => {
-    console.log(assignedUser[filter].find((user) => user.key === item.key))
     if (assignedUser[filter].find((user) => user.key === item.key)) {
-      const urs  = {...assignedUser};
-      urs[filter] = assignedUser[filter].filter((assigne) => assigne.key !== item.key)
-      setAssignedUser(v=> ({...urs}));
+      const urs = { ...assignedUser };
+      urs[filter] = assignedUser[filter].filter(
+        (assigne) => assigne.key !== item.key,
+      );
+      setAssignedUser((v) => ({ ...urs }));
       setFilterdUser((v) => [...v, item]);
       let currentFilter = { ...finalFilter };
       currentFilter[filter] = currentFilter[filter].filter(
@@ -74,24 +75,21 @@ const FilterSelect = ({
       );
       setFilter({ ...currentFilter });
     }
-    
   };
 
   const handleRemoveOption = () => {
     let currentFilter = { ...finalFilter };
     delete currentFilter[filter];
     setFilter({ ...currentFilter });
-    setAssignedUser([]);
+    setAssignedUser({ ...currentFilter });
   };
-
 
   useEffect(() => {
     menuOptions.map((item) => {
       if (item.id === filter) setOptionName(item.label);
     });
-  }, [filter]);
-
-  
+    setFilterdUser(filterOptions);
+  }, [filter, filterOptions]);
 
   return (
     <>
@@ -99,18 +97,23 @@ const FilterSelect = ({
         <Title>{optionName}</Title>
         <div style={{ display: 'flex' }}>
           <AssigneHolder>
-            {assignedUser[filter].map((item, i) => (
-              <AssigneItem key={i} contentEditable={false}>
-                <div>{item.displayValue}</div>
-                <div onClick={() => handleRemoveAssign(item)}>
-                  <img
-                    style={{ width: '19px', margin: '2px 4px' }}
-                    src={CloseIcon}
-                    alt="close"
-                  />
-                </div>
-              </AssigneItem>
-            ))}
+            {assignedUser[filter]?.length > 0 &&
+              assignedUser[filter].map((item, i) => (
+                <AssigneItem key={i} contentEditable={false}>
+                  <div>{item.displayValue}</div>
+                  <div onClick={() => handleRemoveAssign(item)}>
+                    <img
+                      style={{
+                        width: '19px',
+                        margin: '2px 4px',
+                        cursor: 'pointer',
+                      }}
+                      src={CloseIcon}
+                      alt="close"
+                    />
+                  </div>
+                </AssigneItem>
+              ))}
             <AssigneInput
               onClick={() => setIsOpen((v) => !v)}
               ref={assigneRef}
@@ -120,7 +123,12 @@ const FilterSelect = ({
           </AssigneHolder>
           <div
             onClick={handleRemoveOption}
-            style={{ display: 'flex', alignItems: 'center', marginLeft: '5px' }}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              marginLeft: '5px',
+              cursor: 'pointer',
+            }}
           >
             {' '}
             <img src={CloseIcon} alt="close" />{' '}
