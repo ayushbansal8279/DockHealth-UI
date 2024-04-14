@@ -2,7 +2,10 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import Input from 'components/common/Input/Input';
-import { CustomFilterOptionWrapper } from './styled';
+import { CustomFilterOptionWrapper, IconContainer } from './styled';
+import CloseIcon from 'img/close_cross.svg';
+import RenameIcon from 'img/rename.png';
+import Tooltip from 'components/common/Tooltip/Tooltip';
 
 const CustomFilterOption = (props) => {
   const {
@@ -101,11 +104,35 @@ const CustomFilterOption = (props) => {
         InputProps={{ disableUnderline: true }}
         onBlur={() => !disabled && onBlur(identifier, value)}
       />
-      {!disableOptions && (
+      <IconContainer>
+        <Tooltip placement="top" title={'Rename'}>
+          <img
+            onClick={handleEnableEditMode}
+            style={{
+              width: '19px',
+              margin: '2px 4px',
+            }}
+            src={RenameIcon}
+            alt="close"
+          />
+        </Tooltip>
+        <Tooltip placement="top" title={'Delete'}>
+          <img
+            onClick={handleDelete}
+            style={{
+              width: '19px',
+              margin: '2px 4px',
+            }}
+            src={CloseIcon}
+            alt="close"
+          />
+        </Tooltip>
+      </IconContainer>
+      {/* {!disableOptions && (
         <OptionsMenu options={OPTIONS}>
           <MoreVertIcon />
         </OptionsMenu>
-      )}
+      )} */}
     </CustomFilterOptionWrapper>
   );
 };

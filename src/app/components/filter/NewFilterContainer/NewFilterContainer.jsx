@@ -3,7 +3,7 @@ import {
   ConfirmButton,
 } from '@/app/modal/components/ModalButton/ModalButtons';
 import { Button, Menu, MenuItem, Select, TextField } from '@mui/material';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import FilterIcon from 'img/Group_Filter.svg';
 import {
   AssigneDropDown,
@@ -29,6 +29,20 @@ import {
   setFilterRangeDate,
   unselectFilterOption,
 } from 'helpers/filter-options-helpers';
+import {
+  selectQuickFilter,
+  showAddQuickFilterOption,
+  createQuickFilter,
+  updateQuickFilter,
+  deleteQuickFilter,
+  getQuickFilters,
+} from 'actions/mega-filter-actions';
+import {
+  currentTaskListSelector,
+  currentTaskListTasksStatusSelector,
+  taskListMembersSelector,
+} from 'selectors/task-list-selectors';
+import { getUniqueQuickFilterLabelName } from '../CustomFilters/helpers';
 
 const NewFilterContainer = ({
   filters,
@@ -40,8 +54,14 @@ const NewFilterContainer = ({
   setAssignedUser,
   assignedUser,
   openPopover,
+  quickFiltersList,
 }) => {
   const [isSelectOpen, setIsSelectOpen] = useState(false);
+  const taskList = useSelector(currentTaskListSelector);
+  const {taskListIdentifier } =
+    taskList || {};
+
+  console.log(taskListIdentifier);
 
   const dispatch = useDispatch();
 
@@ -50,7 +70,7 @@ const NewFilterContainer = ({
   }, [filters]);
 
   const handleClick = (option) => {
-    setIsSelectOpen(true);
+    // setIsSelectOpen(true);
     menuOptions.map((item) => {
       if (
         option === item.id &&
@@ -78,6 +98,22 @@ const NewFilterContainer = ({
   const clearFilter = () => {
     setFinalFilter({});
     setAssignedUser([]);
+  };
+
+  const handleQuickFilterCreate = () => {
+    const data = {};
+    for (const key in finalFilter) {
+      if (finalFilter[key].length > 0) {
+        data[key] = { options: finalFilter[key].map((item) => item.key) };
+      }
+    }
+    dispatch(
+      createQuickFilter(
+        getUniqueQuickFilterLabelName(quickFiltersList),
+        { taskListIdentifier },
+        data,
+      ),
+    );
   };
 
   return (
@@ -135,7 +171,12 @@ const NewFilterContainer = ({
       </FilterButtonWrapper>
       <Divider />
       <BottomWrapper>
-        <CancelButton style={{ width: '270px' }}>Save Filter</CancelButton>
+        <CancelButton
+          onClick={handleQuickFilterCreate}
+          style={{ width: '270px' }}
+        >
+          Save Filter
+        </CancelButton>
         <ConfirmButton
           style={{ width: '270px' }}
           onClick={handleApplyFinalFilter}

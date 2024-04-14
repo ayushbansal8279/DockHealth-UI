@@ -53,6 +53,8 @@ const MegaFilter = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen]);
 
+  // console.log(quickFiltersList);
+
   return (
     <MegaFilterContainer isFilterApplied={isFilterApplied}>
       {children || (
@@ -72,20 +74,20 @@ const MegaFilter = ({
         onClose={() => openPopover(false)}
       >
         <>
-          <FilterHeader
-          // title="Filter tasks"
-          // filterActive={isFilterApplied}
-          // filteredItemsCount={tasksAndSubTasksCount}
-          // allItemsCount={activeItemsAmount}
-          // searchValue={searchedFilterQuery}
-          // onSearchValueChange={setSearchedFilterQuery}
-          // onClear={clearFilters}
-          // onSave={onSaveClick}
-          // onSaveAsNew={onSaveAsNewClick}
-          // selectedQuickFilter={selectedQuickFilter}
-          // editModeEnabled={wasChangedFilters}
-          // selectedFilters={selectedFilters}
-          />
+          {/* <FilterHeader
+          title="Filter tasks"
+          filterActive={isFilterApplied}
+          filteredItemsCount={tasksAndSubTasksCount}
+          allItemsCount={activeItemsAmount}
+          searchValue={searchedFilterQuery}
+          onSearchValueChange={setSearchedFilterQuery}
+          onClear={clearFilters}
+          onSave={onSaveClick}
+          onSaveAsNew={onSaveAsNewClick}
+          selectedQuickFilter={selectedQuickFilter}
+          editModeEnabled={wasChangedFilters}
+          selectedFilters={selectedFilters}
+          /> */}
           {isFilterApplied && tasksAndSubTasksCount === 0 && !isFetching && (
             <MegaFilterNoResultsLabel>
               There are no results for your filter criteria.
@@ -97,6 +99,16 @@ const MegaFilter = ({
               needed.
             </span>
           )}
+          <CustomFilters
+              quickFiltersList={quickFiltersList}
+              addQuickFilterOption={addQuickFilterOption}
+              selectedQuickFilter={selectedQuickFilter}
+              selectQuickFilter={selectQuickFilter}
+              onUpdate={onQuickFilterUpdate}
+              editModeEnabled={wasChangedFilters}
+              onCreate={onQuickFilterCreate}
+              onDelete={onQuickFilterDelete}
+            />
           <NewFilterContainer
             filters={filters}
             onSelectedFiltersChange={onSelectFilters}
@@ -107,6 +119,7 @@ const MegaFilter = ({
             setAssignedUser={setAssignedUser}
             assignedUser={assignedUser}
             openPopover={openPopover}
+            quickFiltersList={quickFiltersList}
           ></NewFilterContainer>
           <Box p={2} />
           {/* <FilterTable
