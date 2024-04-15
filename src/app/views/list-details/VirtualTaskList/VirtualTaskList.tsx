@@ -108,18 +108,19 @@ function VirtualTaskList({ groupedTasks }: Props) {
   };
 
   const nodes: Node[] = useMemo(() => {
-    return [
-      convert(
-        uniqueId().toString(),
-        VAddGroup,
-        'AddGroup',
-        false,
-        {},
-        [],
-        true,
-      ),
-    ].concat(
-      listGroups.map((group, index) => {
+    // return [
+    //   convert(
+    //     uniqueId().toString(),
+    //     VAddGroup,
+    //     'AddGroup',
+    //     false,
+    //     {},
+    //     [],
+    //     true,
+    //   ),
+    // ].concat(
+    return listGroups
+      .map((group, index) => {
         const groupTasks = groupedTasks
           ? groupedTasks.find(
               (groupedTask) =>
@@ -225,8 +226,20 @@ function VirtualTaskList({ groupedTasks }: Props) {
           ),
           true,
         );
-      }),
-    );
+        // }),
+        // );
+      })
+      .concat(
+        convert(
+          uniqueId().toString(),
+          VAddGroup,
+          'AddGroup',
+          false,
+          {},
+          [],
+          true,
+        ),
+      );
   }, [groupedTasks, tasksMap, collapseMap, listGroups]);
 
   const dispatch = useDispatch();

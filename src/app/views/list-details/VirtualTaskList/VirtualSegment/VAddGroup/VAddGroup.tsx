@@ -113,9 +113,17 @@ function VAddGroup(
         )}
       </Sc.VAddGroup>
       {addNewGroup && (
-        <StickyContainer left={24} decreaseWidth={2 * 24} zIndex={100}>
+        // <StickyContainer left={24} decreaseWidth={2 * 24} zIndex={100}>
+        <div
+          style={{
+            marginLeft: '56px',
+            paddingBottom: '50px',
+            marginTop: '-5px',
+          }}
+        >
           <QuickAddTaskInput />
-        </StickyContainer>
+        </div>
+        // </StickyContainer>
       )}
     </>
   );
