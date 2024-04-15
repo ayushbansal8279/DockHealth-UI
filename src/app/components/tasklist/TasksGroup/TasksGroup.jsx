@@ -29,9 +29,7 @@ import RotatableChevron from 'components/common/RotatableChevron/RotatableChevro
 import Spacing from 'components/common/Spacing';
 import { BulkEditContext } from 'components/tasklist/BulkEditSection/BulkEditSection';
 import GroupNameSection from 'components/tasklist/GroupNameSection/GroupNameSection';
-import ViewTypeSwitch, {
-  ViewType,
-} from 'components/tasklist/ViewTypeSwitch/ViewTypeSwitch';
+import { ViewType } from 'components/tasklist/ViewTypeSwitch/ViewTypeSwitch';
 import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
 import palette from 'styles/palette';
 import TaskTemplateApplicator from 'components/task-template/TaskTemplateApplicator/TaskTemplateApplicator';
@@ -43,7 +41,6 @@ import {
   TASK_LIST_RESTRICTIONS_OPTIONS,
   TASK_LIST_RESTRICTIONS_PROFILES,
 } from 'restrictions/task-restrictions';
-import { useTaskListColumnsConfig } from 'context-api/columns-config-context';
 import { CollapseContext } from 'views/list-details/VirtualTaskList/VirtualTaskList';
 import {
   TasksGroupContainer,
@@ -52,13 +49,13 @@ import {
   Tasks,
   GroupNameSectionWrapper,
   TasksGroupLabelName,
-  TasksGroupLabelCounter,
   GroupOptionsContainer,
   GroupOpenContainer,
   TasksGroupNumericalBadgeContainer,
   TasksGroupTaskCount,
 } from './styled';
 import TasksHeader from '../TasksHeader/TasksHeader';
+import { useVirtualTaskListScrollContext } from '@/app/views/list-details/VirtualTaskList/VirtualTastListScrollContext';
 
 const TasksGroup = ({
   isDefaultGroup,
@@ -73,7 +70,6 @@ const TasksGroup = ({
   isLoadingGroup,
   isCompletedGroup,
   showMoreTasks,
-  changingGroupOrderDisabled,
   areFiltersApplied,
   isSearchApplied,
   taskGroupIdentifier,
@@ -104,6 +100,8 @@ const TasksGroup = ({
   const groupSessionStorageKey =
     taskGroupIdentifier || `${listUniqueKey}-default`;
   const dispatch = useDispatch();
+  const { droppableHeaderWidth, visibleWidth } =
+    useVirtualTaskListScrollContext();
 
   const { viewType, isOpen, switchOpen, setViewType } = listSectionSavedState({
     sessionStorageKey: groupSessionStorageKey,
@@ -115,12 +113,10 @@ const TasksGroup = ({
   const collapse = useContext(CollapseContext);
   const onSwitchOpen = useCallback(() => {
     if (isOpen) {
-      // console.log('TASK GROUP', taskGroupIdentifier, 'COLLAPSED');
       // eslint-disable-next-line react/destructuring-assignment
       collapse.set(taskGroupIdentifier, false);
       onTaskGroupCollapsed();
     } else {
-      // console.log('TASK GROUP', taskGroupIdentifier, 'EXPANDED');
       // eslint-disable-next-line react/destructuring-assignment
       collapse.set(taskGroupIdentifier, true);
       onTaskGroupExpanded();
@@ -276,83 +272,57 @@ const TasksGroup = ({
     ],
   );
 
-  const { columns } = useTaskListColumnsConfig();
   return (
-    <TasksGroupContainer
-      $width={
-        window.disabledVirtualTaskList
-          ? null
-          : columns
-              .filter((f) => f.isChecked)
-              .reduce(
-                (accumulator, column) => accumulator + column.columnWidth,
-                0,
-              )
-      }
-      bgColor={bgColor}
-    >
-      <StickyContainer left={origin === 'LIST' ? 8 : 24} decreaseWidth={2 * 24}>
-        <TasksGroupHeader>
-          <Spacing horizontal={4} />
-          <GroupOpenContainer onClick={onToggleGroupOpen}>
-            <RotatableChevron
-              alt="arrow"
-              rotated={collapse.get(taskGroupIdentifier) ? false : true}
-              color="#8492A4"
-            />
-          </GroupOpenContainer>
-          <Spacing horizontal={1} />
-          <GroupNameSectionWrapper>
-            <GroupNameSection
-              initialValue={groupName}
-              onEnterClick={handleEditGroupName}
-              closeOnEnter
-              disabled={
-                isDefaultGroup ||
-                isCompletedGroup ||
-                restrictions?.editSettings === DISABLED ||
-                restrictCustomizationFeatures
-              }
-            >
-              <TasksGroupLabel>
-                <TasksGroupLabelName>{groupName}</TasksGroupLabelName>
-                {
-                  // !isSearchApplied &&
-                  //   !areFiltersApplied &&
-                  //   !isNil(groupTaskCounts) && (
-                  //     <TasksGroupNumericalBadgeContainer>
-                  //       <TasksGroupTaskCount>
-                  //         {groupTaskCounts}
-                  //       </TasksGroupTaskCount>
-                  //     </TasksGroupNumericalBadgeContainer>
-
-                  !isNil(groupTaskCounts) && (
-                    <TasksGroupNumericalBadgeContainer>
-                      <TasksGroupTaskCount>
-                        {!isSearchApplied && !areFiltersApplied
-                          ? groupTaskCounts
-                          : tasksCount}
-                      </TasksGroupTaskCount>
-                    </TasksGroupNumericalBadgeContainer>
-                  )
-                }
-                <div>
-                  {!isCompletedGroup && !restrictCustomizationFeatures && (
-                    <GroupOptionsContainer>
-                      <OptionsMenu options={options} placement="bottom-start">
-                        <MoreVert color="primary" />
-                      </OptionsMenu>
-                    </GroupOptionsContainer>
-                  )}
-                </div>
-              </TasksGroupLabel>
-            </GroupNameSection>
-          </GroupNameSectionWrapper>
-          {/* {!changingGroupOrderDisabled && (
-            <ViewTypeSwitch value={viewType} onChange={changeViewType} />
-          )} */}
-        </TasksGroupHeader>
-      </StickyContainer>
+    <TasksGroupContainer $width={droppableHeaderWidth} bgColor={bgColor}>
+      <TasksGroupHeader
+        $left={origin === 'LIST' ? 8 : 24}
+        $width={visibleWidth}
+      >
+        <Spacing horizontal={4} />
+        <GroupOpenContainer onClick={onToggleGroupOpen}>
+          <RotatableChevron
+            alt="arrow"
+            rotated={collapse.get(taskGroupIdentifier) ? false : true}
+            color="#8492A4"
+          />
+        </GroupOpenContainer>
+        <Spacing horizontal={1} />
+        <GroupNameSectionWrapper>
+          <GroupNameSection
+            initialValue={groupName}
+            onEnterClick={handleEditGroupName}
+            closeOnEnter
+            disabled={
+              isDefaultGroup ||
+              isCompletedGroup ||
+              restrictions?.editSettings === DISABLED ||
+              restrictCustomizationFeatures
+            }
+          >
+            <TasksGroupLabel>
+              <TasksGroupLabelName>{groupName}</TasksGroupLabelName>
+              {!isNil(groupTaskCounts) && (
+                <TasksGroupNumericalBadgeContainer>
+                  <TasksGroupTaskCount>
+                    {!isSearchApplied && !areFiltersApplied
+                      ? groupTaskCounts
+                      : tasksCount}
+                  </TasksGroupTaskCount>
+                </TasksGroupNumericalBadgeContainer>
+              )}
+              <div>
+                {!isCompletedGroup && !restrictCustomizationFeatures && (
+                  <GroupOptionsContainer>
+                    <OptionsMenu options={options} placement="bottom-start">
+                      <MoreVert color="primary" />
+                    </OptionsMenu>
+                  </GroupOptionsContainer>
+                )}
+              </div>
+            </TasksGroupLabel>
+          </GroupNameSection>
+        </GroupNameSectionWrapper>
+      </TasksGroupHeader>
 
       <Tasks timeout={150} in={isOpen}>
         {restrictions?.createTask !== DISABLED &&
