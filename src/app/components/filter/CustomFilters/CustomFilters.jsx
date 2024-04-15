@@ -17,6 +17,9 @@ const CustomFilters = ({
   onUpdate,
   onDelete,
   editModeEnabled = false,
+  setFinalFilter,
+  filters,
+  setMenuOption,
 }) => {
   const [editModeFilterIdentifier, setEditModeFilterIdentifier] =
     useState(null);
@@ -45,6 +48,18 @@ const CustomFilters = ({
       } else {
         setSelected(identifier, selectedOptions);
       }
+      const data = {};
+      for (const key in selectedOptions) {
+        const users = filters
+          .flatMap((item) => item.id === key && item.options)
+          .filter((item) => typeof item !== 'boolean');
+        data[key] = selectedOptions[key].options.map((item) =>
+          users.find((user) => user.key === item),
+        );
+      }
+      setFinalFilter(data);
+      console.log(data)
+      // setMenuOption(Object.keys(data));
     },
     [editModeEnabled, quickFiltersList, selected, setSelected],
   );

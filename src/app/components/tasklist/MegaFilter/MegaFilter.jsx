@@ -108,6 +108,10 @@ const MegaFilter = ({
               editModeEnabled={wasChangedFilters}
               onCreate={onQuickFilterCreate}
               onDelete={onQuickFilterDelete}
+              setMenuOption={setMenuOption}
+              setFinalFilter={setFinalFilter}
+              filters={filters}
+            
             />
           <NewFilterContainer
             filters={filters}
@@ -116,8 +120,6 @@ const MegaFilter = ({
             finalFilter={finalFilter}
             setMenuOption={setMenuOption}
             menuOptions={menuOptions}
-            setOptions={setOptions}
-            options={options}
             openPopover={openPopover}
             quickFiltersList={quickFiltersList}
           ></NewFilterContainer>

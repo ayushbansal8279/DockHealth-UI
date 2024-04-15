@@ -21,8 +21,6 @@ const FilterSelect = ({
   setFilter,
   filter,
   menuOptions,
-  options,
-  setOptions,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [optionName, setOptionName] = useState('');
@@ -31,10 +29,21 @@ const FilterSelect = ({
   const inputRef = useRef(null);
   const containerRef = useRef(null);
 
+  useEffect(() => {
+    setFilterdUser([
+      ...users.filter(
+        (item) => !finalFilter[filter].find((usr) => usr.key === item.key),
+      ),
+    ]);
+  }, [finalFilter]);
+
+  useEffect(() => {
+    menuOptions.map((item) => {
+      if (item.id === filter) setOptionName(item.label);
+    });
+  }, [filter]);
+
   const handleSelectOption = (item) => {
-    const urs = options;
-    urs[filter] = [...options[filter], item];
-    setOptions((v) => ({ ...urs }));
     inputRef.current.textContent = '';
     setFilterdUser((v) => v.filter((option) => option.key !== item.key));
     let currentFilter = { ...finalFilter };
@@ -60,16 +69,17 @@ const FilterSelect = ({
   };
 
   const handleRemoveAssign = (item) => {
-    if (options[filter].find((user) => user.key === item.key)) {
-      const urs = { ...options };
-      urs[filter] = options[filter].filter((option) => option.key !== item.key);
-      setOptions((v) => ({ ...urs }));
+    if (finalFilter[filter].find((user) => user.key === item.key)) {
+      const urs = { ...finalFilter };
+      urs[filter] = finalFilter[filter].filter(
+        (option) => option.key !== item.key,
+      );
+      setFilter((v) => ({ ...urs }));
       setFilterdUser((v) => [...v, item]);
       let currentFilter = { ...finalFilter };
       currentFilter[filter] = currentFilter[filter].filter(
         (user) => user.key !== item.key,
       );
-      setFilter({ ...currentFilter });
     }
   };
 
@@ -77,16 +87,7 @@ const FilterSelect = ({
     let currentFilter = { ...finalFilter };
     delete currentFilter[filter];
     setFilter({ ...currentFilter });
-    const urs = options;
-    delete urs[filter];
-    setOptions(urs);
   };
-
-  useEffect(() => {
-    menuOptions.map((item) => {
-      if (item.id === filter) setOptionName(item.label);
-    });
-  }, [filter]);
 
   return (
     <>
@@ -94,7 +95,7 @@ const FilterSelect = ({
         <Title>{optionName}</Title>
         <div ref={containerRef} style={{ display: 'flex' }}>
           <OptionHolder>
-            {options[filter].map((item, i) => (
+            {finalFilter[filter].map((item, i) => (
               <OptionItem key={i} contentEditable={false}>
                 <DisplayValue>
                   <AvatarContainer>

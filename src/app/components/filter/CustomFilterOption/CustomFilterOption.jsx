@@ -60,7 +60,7 @@ const CustomFilterOption = (props) => {
 
   const OPTIONS = [
     { name: 'Delete', onClick: handleDelete },
-    { name: 'Rename', onClick: handleEnableEditMode },
+    { name: 'Edit', onClick: handleEnableEditMode },
   ];
 
   const handleOptionClick = useCallback(() => {
@@ -104,7 +104,7 @@ const CustomFilterOption = (props) => {
         InputProps={{ disableUnderline: true }}
         onBlur={() => !disabled && onBlur(identifier, value)}
       />
-      <IconContainer>
+      {/* <IconContainer>
         <Tooltip placement="top" title={'Rename'}>
           <img
             onClick={handleEnableEditMode}
@@ -127,12 +127,12 @@ const CustomFilterOption = (props) => {
             alt="close"
           />
         </Tooltip>
-      </IconContainer>
-      {/* {!disableOptions && (
+      </IconContainer> */}
+      {!disableOptions && (
         <OptionsMenu options={OPTIONS}>
           <MoreVertIcon />
         </OptionsMenu>
-      )} */}
+      )}
     </CustomFilterOptionWrapper>
   );
 };

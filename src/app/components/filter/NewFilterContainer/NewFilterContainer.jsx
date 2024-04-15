@@ -26,8 +26,6 @@ const NewFilterContainer = ({
   setMenuOption,
   finalFilter,
   setFinalFilter,
-  setOptions,
-  options,
   openPopover,
   quickFiltersList,
 }) => {
@@ -37,7 +35,7 @@ const NewFilterContainer = ({
 
   useEffect(() => {
     setMenuOption(filters?.map((item) => ({ label: item.label, id: item.id })));
-  }, [filters]);
+  }, [filters, finalFilter]);
 
   const handleClick = (option) => {
     menuOptions.map((item) => {
@@ -48,7 +46,6 @@ const NewFilterContainer = ({
         const obs = {};
         obs[option] = [];
         setFinalFilter((v) => ({ ...v, ...obs }));
-        setOptions((v) => ({ ...v, ...obs }));
       }
     });
   };
@@ -66,7 +63,6 @@ const NewFilterContainer = ({
 
   const clearFilter = () => {
     setFinalFilter({});
-    setOptions([]);
   };
 
   const handleQuickFilterCreate = () => {
@@ -76,6 +72,7 @@ const NewFilterContainer = ({
         data[key] = { options: finalFilter[key].map((item) => item.key) };
       }
     }
+    console.log(data);
     dispatch(
       createQuickFilter(
         getUniqueQuickFilterLabelName(quickFiltersList),
@@ -85,14 +82,12 @@ const NewFilterContainer = ({
     );
   };
 
-  console.log(finalFilter);
+  console.log('finalFilter', finalFilter);
 
   return (
     <>
       {Object.keys(finalFilter).map((filter) => (
         <FilterSelect
-          setOptions={setOptions}
-          options={options}
           menuOptions={menuOptions}
           setFilter={setFinalFilter}
           filter={filter}
