@@ -24,18 +24,17 @@ const FilterSelect = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [optionName, setOptionName] = useState('');
-  const [users, setUsers] = useState(filterOptions);
   const [filterdUser, setFilterdUser] = useState(filterOptions);
   const inputRef = useRef(null);
   const containerRef = useRef(null);
 
   useEffect(() => {
     setFilterdUser([
-      ...users.filter(
+      ...filterOptions.filter(
         (item) => !finalFilter[filter].find((usr) => usr.key === item.key),
       ),
     ]);
-  }, [finalFilter]);
+  }, [filter, finalFilter, filterOptions]);
 
   useEffect(() => {
     menuOptions.map((item) => {
@@ -49,7 +48,7 @@ const FilterSelect = ({
     let currentFilter = { ...finalFilter };
     currentFilter[filter] = [
       ...currentFilter[filter],
-      ...users.filter((user) => user.key === item.key),
+      ...filterOptions.filter((user) => user.key === item.key),
     ];
     setFilter({ ...currentFilter });
   };
@@ -148,7 +147,7 @@ const FilterSelect = ({
           <OptionDropDown>
             {filterdUser.map((item, i) => (
               <OptionDropDownItem
-                key={i}
+                key={item.key}
                 onClick={() => handleSelectOption(item)}
               >
                 <DisplayValue>

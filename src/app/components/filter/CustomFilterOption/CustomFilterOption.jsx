@@ -129,7 +129,7 @@ const CustomFilterOption = (props) => {
         </Tooltip>
       </IconContainer> */}
       {!disableOptions && (
-        <OptionsMenu options={OPTIONS}>
+        <OptionsMenu color={'#8492a4'} options={OPTIONS}>
           <MoreVertIcon />
         </OptionsMenu>
       )}

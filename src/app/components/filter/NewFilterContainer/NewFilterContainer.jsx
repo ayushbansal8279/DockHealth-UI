@@ -42,6 +42,7 @@ const NewFilterContainer = ({
   setFinalFilter,
   openPopover,
   quickFiltersList,
+  setSavePopupOpen,
 }) => {
   const taskList = useSelector(currentTaskListSelector);
   const { taskListIdentifier } = taskList || {};
@@ -79,7 +80,6 @@ const NewFilterContainer = ({
     openPopover(false);
   };
 
-  console.log('Final Filter', finalFilter);
   const handleClose = useCallback(() => {
     closeAddFilterPopover();
     // setSearchValue('');
@@ -91,16 +91,19 @@ const NewFilterContainer = ({
   };
 
   const handleQuickFilterCreate = () => {
+    setSavePopupOpen(true);
     const data = {};
     for (const key in finalFilter) {
       if (finalFilter[key].length > 0) {
         data[key] = { options: finalFilter[key].map((item) => item.key) };
       }
     }
+
+    const contextType = 'MY_TASKS';
     dispatch(
       createQuickFilter(
         getUniqueQuickFilterLabelName(quickFiltersList),
-        { taskListIdentifier },
+        taskListIdentifier ? { taskListIdentifier } : { contextType },
         data,
       ),
     );

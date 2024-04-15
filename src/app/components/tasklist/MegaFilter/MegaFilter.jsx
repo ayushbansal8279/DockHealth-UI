@@ -9,6 +9,9 @@ import FilterTable from 'components/filter/FilterTable/FilterTable';
 import CustomFilters from 'components/filter/CustomFilters/CustomFilters';
 import { MegaFilterNoResultsLabel, MegaFilterContainer } from './styled';
 import NewFilterContainer from '../../filter/NewFilterContainer/NewFilterContainer';
+import SaveFilterPopup from '../../filter/SaveFilterPopup/SaveFilterPopup';
+import { useSelector } from 'react-redux';
+import { currentTaskListSelector } from '@/app/selectors/task-list-selectors';
 
 const MegaFilter = ({
   children,
@@ -40,6 +43,7 @@ const MegaFilter = ({
   const [menuOptions, setMenuOption] = useState([]);
   const [finalFilter, setFinalFilter] = useState({});
   const [options, setOptions] = useState({});
+  const [isSavePopupOpen, setSavePopupOpen] = useState(false);
 
   const clearFilters = () => {
     onSelectFilters(null);
@@ -52,7 +56,6 @@ const MegaFilter = ({
     if (isOpen) onOpen?.();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen]);
-
 
   return (
     <MegaFilterContainer isFilterApplied={isFilterApplied}>
@@ -73,7 +76,15 @@ const MegaFilter = ({
         onClose={() => openPopover(false)}
       >
         <>
-        {/* Kept here for Future Refrence */}
+        {/* For Popup of save Filter */}
+          {/* <SaveFilterPopup
+            refrence={megaFilterButtonReference}
+            isSavePopupOpen={isSavePopupOpen}
+            setSavePopupOpen={setSavePopupOpen}
+            finalFilter={finalFilter}
+            quickFiltersList={quickFiltersList}
+          ></SaveFilterPopup> */}
+          {/* Kept here for Future Refrence */}
           {/* <FilterHeader
           title="Filter tasks"
           filterActive={isFilterApplied}
@@ -100,19 +111,18 @@ const MegaFilter = ({
             </span>
           )}
           <CustomFilters
-              quickFiltersList={quickFiltersList}
-              addQuickFilterOption={addQuickFilterOption}
-              selectedQuickFilter={selectedQuickFilter}
-              selectQuickFilter={selectQuickFilter}
-              onUpdate={onQuickFilterUpdate}
-              editModeEnabled={wasChangedFilters}
-              onCreate={onQuickFilterCreate}
-              onDelete={onQuickFilterDelete}
-              setMenuOption={setMenuOption}
-              setFinalFilter={setFinalFilter}
-              filters={filters}
-            
-            />
+            quickFiltersList={quickFiltersList}
+            addQuickFilterOption={addQuickFilterOption}
+            selectedQuickFilter={selectedQuickFilter}
+            selectQuickFilter={selectQuickFilter}
+            onUpdate={onQuickFilterUpdate}
+            editModeEnabled={wasChangedFilters}
+            onCreate={onQuickFilterCreate}
+            onDelete={onQuickFilterDelete}
+            setMenuOption={setMenuOption}
+            setFinalFilter={setFinalFilter}
+            filters={filters}
+          />
           <NewFilterContainer
             filters={filters}
             onSelectedFiltersChange={onSelectFilters}
@@ -122,6 +132,7 @@ const MegaFilter = ({
             menuOptions={menuOptions}
             openPopover={openPopover}
             quickFiltersList={quickFiltersList}
+            setSavePopupOpen={setSavePopupOpen}
           ></NewFilterContainer>
           <Box p={1} />
           {/* Kept here for Future Refrence */}
