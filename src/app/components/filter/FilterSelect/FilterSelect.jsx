@@ -1,21 +1,19 @@
-import {
-  CancelButton,
-  ConfirmButton,
-} from '@/app/modal/components/ModalButton/ModalButtons';
-import { Button, Menu, MenuItem, Select, TextField } from '@mui/material';
+import { Popover } from '@mui/material';
 import React, { useEffect, useRef, useState } from 'react';
 import CloseIcon from 'img/close_cross.svg';
 import {
-  AssigneDropDown,
-  AssigneDropDownItem,
-  AssigneHolder,
-  AssigneInput,
-  AssigneItem,
-  BottomWrapper,
-  FilterButtonWrapper,
+  OptionDropDown,
+  OptionDropDownItem,
+  OptionHolder,
+  OptionInput,
+  OptionItem,
   Title,
+  DisplayValue,
+  AvatarContainer,
+  Lable,
+  CloseIconContainer,
 } from './style';
-import { log } from '@/app/helpers/log';
+import UserAvatar from '../../user/UserAvatar/UserAvatar';
 
 const FilterSelect = ({
   finalFilter,
@@ -23,21 +21,22 @@ const FilterSelect = ({
   setFilter,
   filter,
   menuOptions,
-  assignedUser,
-  setAssignedUser,
+  options,
+  setOptions,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [optionName, setOptionName] = useState('');
   const [users, setUsers] = useState(filterOptions);
   const [filterdUser, setFilterdUser] = useState(filterOptions);
-  const assigneRef = useRef(null);
+  const inputRef = useRef(null);
+  const containerRef = useRef(null);
 
-  const handleSelectAssigne = (item) => {
-    const urs = assignedUser;
-    urs[filter] = [...assignedUser[filter], item];
-    setAssignedUser((v) => ({ ...urs }));
-    assigneRef.current.textContent = '';
-    setFilterdUser((v) => v.filter((assigne) => assigne.key !== item.key));
+  const handleSelectOption = (item) => {
+    const urs = options;
+    urs[filter] = [...options[filter], item];
+    setOptions((v) => ({ ...urs }));
+    inputRef.current.textContent = '';
+    setFilterdUser((v) => v.filter((option) => option.key !== item.key));
     let currentFilter = { ...finalFilter };
     currentFilter[filter] = [
       ...currentFilter[filter],
@@ -46,12 +45,11 @@ const FilterSelect = ({
     setFilter({ ...currentFilter });
   };
 
-  const handleSearchAssigne = (e) => {
-    // .toLowerCase().localeCompare(e.target.textContent.toLowerCase())
+  const handleSearchOption = (e) => {
     if (e.target.textContent !== '') {
       setFilterdUser((item) =>
-        item.filter((assigne) =>
-          assigne.displayValue
+        item.filter((option) =>
+          option.displayValue
             .toLowerCase()
             .startsWith(e.target.textContent.toLowerCase()),
         ),
@@ -62,12 +60,10 @@ const FilterSelect = ({
   };
 
   const handleRemoveAssign = (item) => {
-    if (assignedUser[filter].find((user) => user.key === item.key)) {
-      const urs = { ...assignedUser };
-      urs[filter] = assignedUser[filter].filter(
-        (assigne) => assigne.key !== item.key,
-      );
-      setAssignedUser((v) => ({ ...urs }));
+    if (options[filter].find((user) => user.key === item.key)) {
+      const urs = { ...options };
+      urs[filter] = options[filter].filter((option) => option.key !== item.key);
+      setOptions((v) => ({ ...urs }));
       setFilterdUser((v) => [...v, item]);
       let currentFilter = { ...finalFilter };
       currentFilter[filter] = currentFilter[filter].filter(
@@ -81,27 +77,36 @@ const FilterSelect = ({
     let currentFilter = { ...finalFilter };
     delete currentFilter[filter];
     setFilter({ ...currentFilter });
-    const urs = assignedUser;
+    const urs = options;
     delete urs[filter];
-    setAssignedUser(urs);
+    setOptions(urs);
   };
 
   useEffect(() => {
     menuOptions.map((item) => {
       if (item.id === filter) setOptionName(item.label);
     });
-    // setFilterdUser(filterOptions);
   }, [filter]);
 
   return (
     <>
       <div>
         <Title>{optionName}</Title>
-        <div style={{ display: 'flex' }}>
-          <AssigneHolder>
-            {assignedUser[filter].map((item, i) => (
-              <AssigneItem key={i} contentEditable={false}>
-                <div>{item.displayValue}</div>
+        <div ref={containerRef} style={{ display: 'flex' }}>
+          <OptionHolder>
+            {options[filter].map((item, i) => (
+              <OptionItem key={i} contentEditable={false}>
+                <DisplayValue>
+                  <AvatarContainer>
+                    {optionName === 'Assigned by' ||
+                    optionName === 'Assigned to' ? (
+                      <UserAvatar user={item?.reference} />
+                    ) : (
+                      ''
+                    )}
+                  </AvatarContainer>
+                  <Lable>{item.displayValue}</Lable>
+                </DisplayValue>
                 <div onClick={() => handleRemoveAssign(item)}>
                   <img
                     style={{
@@ -113,40 +118,53 @@ const FilterSelect = ({
                     alt="close"
                   />
                 </div>
-              </AssigneItem>
+              </OptionItem>
             ))}
-            <AssigneInput
+            <OptionInput
               onClick={() => setIsOpen((v) => !v)}
-              ref={assigneRef}
+              ref={inputRef}
               contentEditable={true}
-              onInput={(e) => handleSearchAssigne(e)}
-            ></AssigneInput>
-          </AssigneHolder>
-          <div
-            onClick={handleRemoveOption}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              marginLeft: '5px',
-              cursor: 'pointer',
-            }}
-          >
-            {' '}
-            <img src={CloseIcon} alt="close" />{' '}
-          </div>
+              onInput={(e) => handleSearchOption(e)}
+            ></OptionInput>
+          </OptionHolder>
+          <CloseIconContainer onClick={handleRemoveOption}>
+            <img src={CloseIcon} alt="close" />
+          </CloseIconContainer>
         </div>
-        {isOpen && (
-          <AssigneDropDown>
+        <Popover
+          anchorEl={containerRef.current}
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'left',
+          }}
+          transformOrigin={{
+            vertical: 'top',
+            horizontal: 'left',
+          }}
+          open={isOpen}
+          onClose={() => setIsOpen(false)}
+        >
+          <OptionDropDown>
             {filterdUser.map((item, i) => (
-              <AssigneDropDownItem
+              <OptionDropDownItem
                 key={i}
-                onClick={() => handleSelectAssigne(item)}
+                onClick={() => handleSelectOption(item)}
               >
-                {item.displayValue}
-              </AssigneDropDownItem>
+                <DisplayValue>
+                  <AvatarContainer>
+                    {optionName === 'Assigned by' ||
+                    optionName === 'Assigned to' ? (
+                      <UserAvatar user={item?.reference} />
+                    ) : (
+                      ''
+                    )}
+                  </AvatarContainer>
+                  <Lable>{item.displayValue}</Lable>
+                </DisplayValue>
+              </OptionDropDownItem>
             ))}
-          </AssigneDropDown>
-        )}
+          </OptionDropDown>
+        </Popover>
       </div>
     </>
   );

@@ -2,46 +2,21 @@ import {
   CancelButton,
   ConfirmButton,
 } from '@/app/modal/components/ModalButton/ModalButtons';
-import { Button, Menu, MenuItem, Select, TextField } from '@mui/material';
+import { MenuItem, Select } from '@mui/material';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import FilterIcon from 'img/Group_Filter.svg';
 import {
-  AssigneDropDown,
-  AssigneDropDownItem,
-  AssigneHolder,
-  AssigneInput,
-  AssigneItem,
   BottomWrapper,
   FilterButtonWrapper,
   FilterLableContainer,
-  FilterLable,
   ClearFilter,
   Divider,
 } from './styled';
 import FilterSelect from '../FilterSelect/FilterSelect';
-import { filterListDetailsTasks } from '@/app/actions/list-details-actions';
 import { useDispatch, useSelector } from 'react-redux';
-import { getDashboardMyTasksFilters } from '@/app/api/dashboard-api';
-import {
-  extractSelectedOptions,
-  FilterOptionsCategory,
-  selectFilterOption,
-  setFilterRangeDate,
-  unselectFilterOption,
-} from 'helpers/filter-options-helpers';
-import {
-  selectQuickFilter,
-  showAddQuickFilterOption,
-  createQuickFilter,
-  updateQuickFilter,
-  deleteQuickFilter,
-  getQuickFilters,
-} from 'actions/mega-filter-actions';
-import {
-  currentTaskListSelector,
-  currentTaskListTasksStatusSelector,
-  taskListMembersSelector,
-} from 'selectors/task-list-selectors';
+import { selectFilterOption } from 'helpers/filter-options-helpers';
+import { createQuickFilter } from 'actions/mega-filter-actions';
+import { currentTaskListSelector } from 'selectors/task-list-selectors';
 import { getUniqueQuickFilterLabelName } from '../CustomFilters/helpers';
 
 const NewFilterContainer = ({
@@ -51,18 +26,13 @@ const NewFilterContainer = ({
   setMenuOption,
   finalFilter,
   setFinalFilter,
-  setAssignedUser,
-  assignedUser,
+  setOptions,
+  options,
   openPopover,
   quickFiltersList,
 }) => {
-  const [isSelectOpen, setIsSelectOpen] = useState(false);
   const taskList = useSelector(currentTaskListSelector);
-  const {taskListIdentifier } =
-    taskList || {};
-
-  console.log(taskListIdentifier);
-
+  const { taskListIdentifier } = taskList || {};
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -70,7 +40,6 @@ const NewFilterContainer = ({
   }, [filters]);
 
   const handleClick = (option) => {
-    // setIsSelectOpen(true);
     menuOptions.map((item) => {
       if (
         option === item.id &&
@@ -79,7 +48,7 @@ const NewFilterContainer = ({
         const obs = {};
         obs[option] = [];
         setFinalFilter((v) => ({ ...v, ...obs }));
-        setAssignedUser((v) => ({ ...v, ...obs }));
+        setOptions((v) => ({ ...v, ...obs }));
       }
     });
   };
@@ -97,7 +66,7 @@ const NewFilterContainer = ({
 
   const clearFilter = () => {
     setFinalFilter({});
-    setAssignedUser([]);
+    setOptions([]);
   };
 
   const handleQuickFilterCreate = () => {
@@ -120,27 +89,12 @@ const NewFilterContainer = ({
     <>
       {Object.keys(finalFilter).map((filter) => (
         <FilterSelect
-          setAssignedUser={setAssignedUser}
-          assignedUser={assignedUser}
+          setOptions={setOptions}
+          options={options}
           menuOptions={menuOptions}
           setFilter={setFinalFilter}
           filter={filter}
           finalFilter={finalFilter}
-          // filterOptions={() => {
-          //   const uniqueOptions = new Set(); // Using Set to store unique values
-
-          //   filters.forEach((item) => {
-          //     if (item.id === filter && item.options) {
-          //       item.options.forEach((option) => {
-          //         if (typeof option !== 'boolean') {
-          //           uniqueOptions.add(option); // Adding unique options to the Set
-          //         }
-          //       });
-          //     }
-          //   });
-
-          //   return Array.from(uniqueOptions);
-          // }}
           filterOptions={filters
             .flatMap((item) => item.id === filter && item.options)
             .filter((item) => typeof item !== 'boolean')}

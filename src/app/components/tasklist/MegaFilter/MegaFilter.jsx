@@ -39,7 +39,7 @@ const MegaFilter = ({
   const isFilterApplied = selectedFilters && !isEmpty(selectedFilters);
   const [menuOptions, setMenuOption] = useState([]);
   const [finalFilter, setFinalFilter] = useState({});
-  const [assignedUser, setAssignedUser] = useState({});
+  const [options, setOptions] = useState({});
 
   const clearFilters = () => {
     onSelectFilters(null);
@@ -53,7 +53,6 @@ const MegaFilter = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen]);
 
-  // console.log(quickFiltersList);
 
   return (
     <MegaFilterContainer isFilterApplied={isFilterApplied}>
@@ -74,6 +73,7 @@ const MegaFilter = ({
         onClose={() => openPopover(false)}
       >
         <>
+        {/* Kept here for Future Refrence */}
           {/* <FilterHeader
           title="Filter tasks"
           filterActive={isFilterApplied}
@@ -116,12 +116,13 @@ const MegaFilter = ({
             finalFilter={finalFilter}
             setMenuOption={setMenuOption}
             menuOptions={menuOptions}
-            setAssignedUser={setAssignedUser}
-            assignedUser={assignedUser}
+            setOptions={setOptions}
+            options={options}
             openPopover={openPopover}
             quickFiltersList={quickFiltersList}
           ></NewFilterContainer>
-          <Box p={2} />
+          <Box p={1} />
+          {/* Kept here for Future Refrence */}
           {/* <FilterTable
             isLoading={isFetching}
             searchValue={searchedFilterQuery}

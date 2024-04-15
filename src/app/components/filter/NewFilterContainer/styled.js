@@ -12,7 +12,7 @@ export const aa = styled.div``;
 
 export const FilterButtonWrapper = styled.div`
   display: flex;
-  margin: 15px 0;
+  margin: 20px 0 5px 2px;
 `;
 
 export const BottomWrapper = styled.div`
