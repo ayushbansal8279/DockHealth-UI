@@ -16,7 +16,6 @@ import { isTaskItemsSelectedSelector } from 'selectors/task-items-selectors';
 import * as Sc from './styled';
 import { taskDetailsSortSelector } from 'selectors/list-details-selectors';
 import palette from '@/app/styles/palette';
-import { useVirtualTaskListScrollContext } from '../../VirtualTastListScrollContext';
 
 export interface Props extends Segment {
   isTaskTemplate: boolean;
@@ -25,14 +24,7 @@ export interface Props extends Segment {
 }
 
 function VTaskHeader(
-  {
-    metadata,
-    register,
-    isTaskTemplate,
-    groupWithZeroTask,
-    bgColor,
-    ...record
-  }: Props,
+  { metadata, register, isTaskTemplate, groupWithZeroTask, bgColor }: Props,
   // eslint-disable-next-line unicorn/prevent-abbreviations
   ref: ForwardedRef<HTMLDivElement>,
 ) {

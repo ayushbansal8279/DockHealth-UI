@@ -1,4 +1,11 @@
-import React, { createContext, useMemo, useReducer, useState } from 'react';
+import React, {
+  createContext,
+  useEffect,
+  useMemo,
+  useReducer,
+  useRef,
+  useState,
+} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { uniqueId } from 'lodash';
 import Virtualized, { Node } from 'views/list-details/modules/Virtualized';
@@ -10,7 +17,10 @@ import VQuickAddTask from 'views/list-details/VirtualTaskList/VirtualSegment/VQu
 import VTaskHeader from 'views/list-details/VirtualTaskList/VirtualSegment/VTaskHeader/VTaskHeader';
 import { DropResult } from 'react-beautiful-dnd';
 import { reorderTasksInGroup } from 'actions/list-details-actions';
-import { withVirtualTaskListScrollContext } from './VirtualTastListScrollContext';
+import {
+  useVirtualTaskListScrollContext,
+  withVirtualTaskListScrollContext,
+} from './VirtualTastListScrollContext';
 
 export interface Props {
   tasksToMap: any[];
@@ -61,6 +71,32 @@ function VirtualTaskList({ groupedTasks }: Props) {
   const tasksMap = useSelector((state) => state.listDetails.tasksMap);
   // @ts-ignore
   const listGroups = useSelector((state) => state.listDetails.listGroups);
+
+  const elementRef = useRef(null);
+  const { updateVisibleWidth } = useVirtualTaskListScrollContext();
+
+  useEffect(() => {
+    const element = elementRef.current;
+
+    const resizeObserver = new ResizeObserver((entries) => {
+      const entry = entries[0];
+      if (entry?.contentRect.width) {
+        updateVisibleWidth(entry.contentRect.width);
+      }
+    });
+
+    if (element) {
+      // Start observing the element's dimension
+      resizeObserver.observe(element);
+    }
+
+    return () => {
+      if (element) {
+        resizeObserver.unobserve(element);
+      }
+    };
+  }, [elementRef.current]);
+
   const handleAddWorkflowIdentifier = (identifier) => {
     setWorkflowIdentifierMap([...workflowIdentifierMap, identifier]);
   };
@@ -220,6 +256,7 @@ function VirtualTaskList({ groupedTasks }: Props) {
 
   return (
     <div
+      ref={elementRef}
       style={{
         height: '100%',
       }}

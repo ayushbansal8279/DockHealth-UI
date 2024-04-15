@@ -1,19 +1,12 @@
-import React, {
-  ForwardedRef,
-  forwardRef,
-  useCallback,
-  useEffect,
-  useMemo,
-} from 'react';
+import React, { ForwardedRef, forwardRef, useCallback, useMemo } from 'react';
 import { Segment } from 'views/list-details/modules/Virtualized';
 import QuickAddTaskInput from 'components/tasklist/QuickAddTaskInput/QuickAddTaskInput';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
-import { useTaskListColumnsConfig } from 'context-api/columns-config-context';
 import * as Sc from './styled';
-import { createTask } from '../../../../../sagas/list-details-saga';
-import { taskCountersSelector } from '../../../../../selectors/list-details-selectors';
-import { selectedUserOrganizationSelector } from '../../../../../selectors/user-selectors';
+import { createTask } from '@/app/sagas/list-details-saga';
+import { taskCountersSelector } from 'selectors/list-details-selectors';
+import { selectedUserOrganizationSelector } from 'selectors/user-selectors';
 import TaskTemplateApplicator from 'components/task-template/TaskTemplateApplicator/TaskTemplateApplicator';
 import { applyTaskTemplate } from 'actions/list-details-actions';
 import { TaskOrigin } from '@/app/helpers/task-helpers';
@@ -31,7 +24,6 @@ function VQuickAddTask(
   const dispatch = useDispatch();
   const taskCounters = useSelector(taskCountersSelector);
   const { taskListIdentifier } = useParams();
-  const { columns } = useTaskListColumnsConfig();
   const currentOrganization = useSelector(selectedUserOrganizationSelector);
   const { visibleWidth, droppableHeaderWidth } =
     useVirtualTaskListScrollContext();

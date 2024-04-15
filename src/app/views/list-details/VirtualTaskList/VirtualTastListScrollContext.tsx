@@ -1,17 +1,19 @@
+import { useTaskListColumnsConfig } from '@/app/context-api/columns-config-context';
+import { TaskColumn } from '@/app/types/Task';
 import React, {
   ComponentType,
-  FC,
   ReactNode,
   createContext,
   useCallback,
   useContext,
-  useEffect,
+  useMemo,
   useState,
 } from 'react';
 
 interface IVirtalTaskListScrollContext {
   visibleWidth: number | null;
   droppableHeaderWidth: number | null;
+  updateVisibleWidth: (w: number) => void;
 }
 
 const VirtalTaskListScrollContext = createContext(
@@ -23,72 +25,33 @@ export const VirtaulTaskListScrollProvider = ({
 }: {
   children: ReactNode;
 }) => {
-  const [droppableHeaderWidth, setDroppableHeaderWidth] = useState<
-    number | null
-  >(null); // width of task list header
   const [visibleWidth, setVisibleWidth] = useState<number | null>(null);
+  const { columns } = useTaskListColumnsConfig() as { columns: TaskColumn[] };
 
-  useEffect(() => {
-    const visibleHeaderResizeObserver = new ResizeObserver((entries) => {
-      const entry = entries[0];
-      if (!entry) {
-        console.warn('visibleWidthElement entry not found');
-        return;
-      }
-      console.log('visibleWidth', entry.contentRect.width);
-      setVisibleWidth(entry.contentRect.width);
-    });
+  const droppableHeaderWidth = useMemo(() => {
+    const columnsWidthSum: number | null = !window.disabledVirtualTaskList
+      ? columns
+          .filter((f) => f.isChecked)
+          .reduce(
+            (accumulator: number, column) => accumulator + column.columnWidth,
+            0,
+          )
+      : null;
 
-    const droppableHeaderResizeObserver = new ResizeObserver((entries) => {
-      const entry = entries[0];
-      if (!entry) {
-        console.warn('droppableHeaderWidthElement entry not found');
-        return;
-      }
-      console.log('droppableHeaderWidth', entry.contentRect.width);
-      setDroppableHeaderWidth(entry.contentRect.width);
-    });
+    return columnsWidthSum ? columnsWidthSum + 80 : null;
+  }, [columns]);
 
-    const intervalId = setInterval((): void => {
-      const visibleHeader = document.querySelector(
-        '[data-test-id="v-task-header"]',
-      );
-      const droppableHeader = visibleHeader?.querySelector(
-        '[data-rbd-droppable-id="droppableHeader"]',
-      );
-
-      if (!visibleHeader || !droppableHeader) return;
-
-      clearInterval(intervalId);
-
-      visibleHeaderResizeObserver.observe(visibleHeader);
-      droppableHeaderResizeObserver.observe(droppableHeader);
-    }, 700);
-
-    return () => {
-      console.log('observe unsubscribed');
-      const visibleHeader = document.querySelector(
-        '[data-test-id="v-task-header"]',
-      );
-      const droppableHeader = visibleHeader?.querySelector(
-        '[data-rbd-droppable-id="droppableHeader"]',
-      );
-
-      if (visibleHeader) {
-        visibleHeaderResizeObserver.unobserve(visibleHeader);
-      }
-      if (droppableHeader) {
-        droppableHeaderResizeObserver.unobserve(droppableHeader);
-      }
-    };
+  const updateVisibleWidth = useCallback((w: number) => {
+    setVisibleWidth(w);
   }, []);
-
-  // todo: QuickAddTask-container.width = droppableHeaderWidth
-  // todo: QuickAddTask.width = visibleWidth - something
 
   return (
     <VirtalTaskListScrollContext.Provider
-      value={{ visibleWidth, droppableHeaderWidth }}
+      value={{
+        visibleWidth,
+        droppableHeaderWidth,
+        updateVisibleWidth,
+      }}
     >
       {children}
     </VirtalTaskListScrollContext.Provider>
