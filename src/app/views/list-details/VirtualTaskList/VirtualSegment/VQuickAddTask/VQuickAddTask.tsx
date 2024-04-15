@@ -1,4 +1,10 @@
-import React, { ForwardedRef, forwardRef, useCallback, useMemo } from 'react';
+import React, {
+  ForwardedRef,
+  forwardRef,
+  useCallback,
+  useEffect,
+  useMemo,
+} from 'react';
 import { Segment } from 'views/list-details/modules/Virtualized';
 import QuickAddTaskInput from 'components/tasklist/QuickAddTaskInput/QuickAddTaskInput';
 import { useDispatch, useSelector } from 'react-redux';
@@ -11,6 +17,7 @@ import { selectedUserOrganizationSelector } from '../../../../../selectors/user-
 import TaskTemplateApplicator from 'components/task-template/TaskTemplateApplicator/TaskTemplateApplicator';
 import { applyTaskTemplate } from 'actions/list-details-actions';
 import { TaskOrigin } from '@/app/helpers/task-helpers';
+import { useVirtualTaskListScrollContext } from '../../VirtualTastListScrollContext';
 
 export interface Props extends Segment {
   taskGroupIdentifier: string;
@@ -25,11 +32,16 @@ function VQuickAddTask(
   const taskCounters = useSelector(taskCountersSelector);
   const { taskListIdentifier } = useParams();
   const { columns } = useTaskListColumnsConfig();
+  const currentOrganization = useSelector(selectedUserOrganizationSelector);
+  const { visibleWidth, droppableHeaderWidth } =
+    useVirtualTaskListScrollContext();
+
   const quickTaskInputValidator = (value: string) => {
     if ([...value]?.filter((char) => char !== ' ').length < 2)
       return 'The task description is too short (min. 2 characters)';
     return null;
   };
+
   const quickAddTask = useCallback(
     (task: any) => {
       if (task?.description) {
@@ -43,6 +55,7 @@ function VQuickAddTask(
     },
     [dispatch, taskCounters],
   );
+
   const onQuickAddTask = useCallback(
     (task: any) => {
       quickAddTask({
@@ -52,7 +65,6 @@ function VQuickAddTask(
     },
     [taskGroupIdentifier, quickAddTask],
   );
-  const currentOrganization = useSelector(selectedUserOrganizationSelector);
 
   const iconColorActiveItem = useMemo(
     () =>
@@ -75,23 +87,15 @@ function VQuickAddTask(
   );
 
   return (
-    <Sc.VQuickAddTaskContainer>
+    <Sc.VQuickAddTaskContainer
+      data-test-id="add-task-container"
+      $width={droppableHeaderWidth ? `${droppableHeaderWidth}px` : '100%'}
+    >
       <Sc.VQuickAddTask
+        data-test-id="add-task"
         ref={ref}
         {...register}
-        $width={
-          // @ts-ignore
-          !window.disabledVirtualTaskList
-            ? columns
-                // @ts-ignore
-                .filter((f) => f.isChecked)
-                // @ts-ignore
-                .reduce(
-                  (accumulator, column) => accumulator + column.columnWidth,
-                  0,
-                )
-            : null
-        }
+        $width={visibleWidth ? `${visibleWidth - 60}px` : '100%'}
       >
         <QuickAddTaskInput
           // @ts-ignore
@@ -100,15 +104,15 @@ function VQuickAddTask(
           validator={quickTaskInputValidator}
           iconColorActive={iconColorActiveItem?.value}
         />
+        <Sc.TaskTemplateApplicatorContainer>
+          <TaskTemplateApplicator
+            onTemplateSelect={applyTemplate}
+            bulkApply={false}
+            isWorkflowSearch
+            origin={TaskOrigin.LIST}
+          />
+        </Sc.TaskTemplateApplicatorContainer>
       </Sc.VQuickAddTask>
-      <Sc.TaskTemplateApplicatorContainer>
-        <TaskTemplateApplicator
-          onTemplateSelect={applyTemplate}
-          bulkApply={false}
-          isWorkflowSearch
-          origin={TaskOrigin.LIST}
-        />
-      </Sc.TaskTemplateApplicatorContainer>
     </Sc.VQuickAddTaskContainer>
   );
 }

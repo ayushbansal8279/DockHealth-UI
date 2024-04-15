@@ -12,10 +12,11 @@ import * as TaskActions from 'actions/task-actions';
 // @ts-ignore
 import { compose } from 'ramda';
 import * as ListDetailsActions from 'actions/list-details-actions';
-import { isTaskItemsSelectedSelector } from '../../../../../selectors/task-items-selectors';
+import { isTaskItemsSelectedSelector } from 'selectors/task-items-selectors';
 import * as Sc from './styled';
-import { taskDetailsSortSelector } from '../../../../../selectors/list-details-selectors';
+import { taskDetailsSortSelector } from 'selectors/list-details-selectors';
 import palette from '@/app/styles/palette';
+import { useVirtualTaskListScrollContext } from '../../VirtualTastListScrollContext';
 
 export interface Props extends Segment {
   isTaskTemplate: boolean;
@@ -47,6 +48,7 @@ function VTaskHeader(
     isTaskItemsSelectedSelector(metadata.parent?.children),
   );
   const groupHasMultipleAssignees = false;
+
   const handleGroupSelect = useCallback(() => {
     const taskIdentifiers = metadata.parent?.children;
     dispatch(
@@ -54,6 +56,7 @@ function VTaskHeader(
       TaskActions.changeTasksSelectedState(!isGroupSelected, taskIdentifiers),
     );
   }, [dispatch, isGroupSelected, metadata.parent?.children]);
+
   return (
     <div
       style={{
@@ -64,6 +67,7 @@ function VTaskHeader(
     >
       <Sc.VTaskHeader
         ref={ref}
+        data-test-id="v-task-header"
         {...register}
         $subitem={metadata.level > 1}
         $template={isTaskTemplate}
