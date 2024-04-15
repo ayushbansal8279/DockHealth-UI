@@ -15,6 +15,25 @@ export const FilterButtonWrapper = styled.div`
   margin: 20px 0 5px 2px;
 `;
 
+export const FilterOptionsList = styled.div`
+  width: 257px;
+  max-height: 600;
+  overflow-y: auto;
+  margin-top: 5px;
+  margin-bottom: 5px;
+
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background-color: white;
+  }
+  ::-webkit-scrollbar-thumb {
+    background-color: ${palette.coolGrey3};
+    border-radius: 17px;
+  }
+`;
+
 export const BottomWrapper = styled.div`
   display: flex;
   gap: 10px;
@@ -77,7 +96,7 @@ to{
 }
 `;
 
-export const FilterButtonWrapper1 = styled(Button)`
+export const AddFilterButtonContainer = styled(Button)`
   && {
     border-radius: 0;
     background-color: ${(props) =>
@@ -94,20 +113,16 @@ export const FilterButtonWrapper1 = styled(Button)`
   height: 32px;
 `;
 
-export const FilterButtonLabel = styled(Typography)`
+export const AddFilterButtonLabel = styled(Typography)`
   &&& {
     &.MuiTypography-root {
-      // font-family: 'Outfit', sans-serif;
-      color: ${palette.white};
-      // font-weight: ${fontWeights.light};
-      display: inline-block;
-      margin-left: ${spacing.tiny};
-      text-transform: none;
       font-family: Outfit;
       font-size: 14px;
       font-weight: 500;
       line-height: 11.19px;
       text-align: center;
+      color: ${palette.white};
+      text-transform: none;
     }
   }
 `;
@@ -139,7 +154,7 @@ export const FilterClearButtonLabel = styled(Typography)`
   }
 `;
 
-export const FilterRotatableChevronButtonWrapper = styled(Button)`
+export const AddFilterRotatableChevronButtonWrapper = styled(Button)`
   && {
     border-radius: 0;
     background-color: ${palette.newDarkBlue};
@@ -153,7 +168,7 @@ export const FilterRotatableChevronButtonWrapper = styled(Button)`
   }
 `;
 
-export const FilterRotatableChevronButtonLabel = styled(Typography)`
+export const AddFilterRotatableChevronButtonLabel = styled(Typography)`
   &&& {
     &.MuiTypography-root {
       // font-family: 'Montserrat', sans-serif;
@@ -161,18 +176,21 @@ export const FilterRotatableChevronButtonLabel = styled(Typography)`
       font-size: ${fontSizes.small};
       font-weight: ${fontWeights.regular};
       display: flex-start;
-      margin-right: ${spacing.tiny};
+      margin-right: ${spacing.largePlus};
       align-items: center;
-      padding-right: 25px;
+      // padding-right: 25px;
     }
   }
 `;
 
 export const BoxContainer = styled.div`
   display: flex;
-  width: fit-content;
+  width: 142px;
   border-radius: 4px;
   overflow: hidden;
+  height: 32px;
+  margin-top: 4px;
+  // z-index: 11;
 `;
 
 export const FilterLableContainer = styled.div`
@@ -197,6 +215,32 @@ export const ClearFilter = styled.div`
   text-align: center;
   margin: 11px;
   cursor: pointer;
+  font-family: Outfit;
+  margin-top: 14px;
+  margin-left: 20px;
+`;
+
+export const ClearFilterButton = styled.div`
+  width: 97px;
+  height: 32px;
+  // top: 175px;
+  // left: 34px;
+  // padding: 20px 16px 22px 16px;
+  gap: 10px;
+  border-radius: 7px;
+  border: 1px solid #ec4f3e;
+  opacity: 0px;
+  cursor: pointer;
+`;
+
+export const ClearFilterLabel = styled.div`
+  font-family: Outfit;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 11.19px;
+  text-align: center;
+  color: #ec4f3e;
+  margin-top: 10px;
 `;
 
 export const Divider = styled.hr`
@@ -205,4 +249,16 @@ export const Divider = styled.hr`
   margin: 10px 0 15px 0;
   background: ${palette.coolGrey3};
   border: none;
+`;
+
+export const SelectOptionsContainer = styled.div`
+  // width: 257px;
+  // max-height: 400;
+  // overflow: auto;
+`;
+
+export const FilterOptionsListContainer = styled.div`
+  width: 257px;
+  // height: 240px;
+  // overflow: hidden;
 `;

@@ -2,15 +2,25 @@ import {
   CancelButton,
   ConfirmButton,
 } from '@/app/modal/components/ModalButton/ModalButtons';
-import { MenuItem, Select } from '@mui/material';
+import { Box, MenuItem, Select } from '@mui/material';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import FilterIcon from 'img/Group_Filter.svg';
+// import FilterIcon from 'img/Group_Filter.svg';
+import FilterListIcon from '@mui/icons-material/FilterList';
 import {
   BottomWrapper,
   FilterButtonWrapper,
   FilterLableContainer,
   ClearFilter,
   Divider,
+  BoxContainer,
+  AddFilterButtonContainer,
+  AddFilterRotatableChevronButtonWrapper,
+  AddFilterRotatableChevronButtonLabel,
+  AddFilterButtonLabel,
+  // FilterHorizontalLineContainer,
+  // FilterHorizontalLine,
+  ClearFilterButton,
+  ClearFilterLabel,
 } from './styled';
 import FilterSelect from '../FilterSelect/FilterSelect';
 import { useDispatch, useSelector } from 'react-redux';
@@ -18,6 +28,10 @@ import { selectFilterOption } from 'helpers/filter-options-helpers';
 import { createQuickFilter } from 'actions/mega-filter-actions';
 import { currentTaskListSelector } from 'selectors/task-list-selectors';
 import { getUniqueQuickFilterLabelName } from '../CustomFilters/helpers';
+import RotatableChevron from '../../common/RotatableChevron/RotatableChevron';
+import palette from '@/app/styles/palette';
+import useBoolean from '@/app/hooks/useBoolean';
+import FilterOptionsPopover from './FilterOptionsPopover';
 
 const NewFilterContainer = ({
   filters,
@@ -32,6 +46,9 @@ const NewFilterContainer = ({
   const taskList = useSelector(currentTaskListSelector);
   const { taskListIdentifier } = taskList || {};
   const dispatch = useDispatch();
+  const popoverReference = useRef(null);
+  const [isPopoverOpen, openAddFilterPopover, closeAddFilterPopover] =
+    useBoolean(false);
 
   useEffect(() => {
     setMenuOption(filters?.map((item) => ({ label: item.label, id: item.id })));
@@ -48,6 +65,7 @@ const NewFilterContainer = ({
         setFinalFilter((v) => ({ ...v, ...obs }));
       }
     });
+    closeAddFilterPopover();
   };
 
   const handleApplyFinalFilter = () => {
@@ -61,6 +79,13 @@ const NewFilterContainer = ({
     openPopover(false);
   };
 
+  console.log('Final Filter', finalFilter);
+  const handleClose = useCallback(() => {
+    closeAddFilterPopover();
+    // setSearchValue('');
+    // setParentList([]);
+  }, [closeAddFilterPopover]);
+
   const clearFilter = () => {
     setFinalFilter({});
   };
@@ -72,7 +97,6 @@ const NewFilterContainer = ({
         data[key] = { options: finalFilter[key].map((item) => item.key) };
       }
     }
-    console.log(data);
     dispatch(
       createQuickFilter(
         getUniqueQuickFilterLabelName(quickFiltersList),
@@ -81,8 +105,6 @@ const NewFilterContainer = ({
       ),
     );
   };
-
-  console.log('finalFilter', finalFilter);
 
   return (
     <>
@@ -98,7 +120,7 @@ const NewFilterContainer = ({
         />
       ))}
       <FilterButtonWrapper>
-        <Select
+        {/* <Select
           sx={{
             background: '#0E244A',
             width: '110px',
@@ -117,25 +139,78 @@ const NewFilterContainer = ({
               {option.label}
             </MenuItem>
           ))}
-        </Select>
-        <ClearFilter onClick={clearFilter}>Clear Filter</ClearFilter>
+        </Select> */}
+        <BoxContainer ref={popoverReference}>
+          <AddFilterButtonContainer
+            variant="text"
+            onClick={openAddFilterPopover}
+            size="large"
+          >
+            <FilterListIcon fontSize="medium" />
+            <AddFilterButtonLabel variant="body1" component="span">
+              Add Filter
+            </AddFilterButtonLabel>
+          </AddFilterButtonContainer>
+          <Box display="flex" width="3px">
+            <AddFilterRotatableChevronButtonWrapper
+              variant="text"
+              onClick={openAddFilterPopover}
+              size="large"
+            >
+              <AddFilterRotatableChevronButtonLabel
+                variant="body1"
+                component="span"
+              >
+                <RotatableChevron
+                  rotated={isPopoverOpen}
+                  color={palette.white}
+                />
+              </AddFilterRotatableChevronButtonLabel>
+            </AddFilterRotatableChevronButtonWrapper>
+          </Box>
+        </BoxContainer>
+        <FilterOptionsPopover
+          anchorEl={popoverReference.current}
+          open={isPopoverOpen}
+          onClose={handleClose}
+          filterOptionsList={menuOptions}
+          onFilterSelect={handleClick}
+          // taskTemplatesIsLoading={taskTemplatesIsLoading}
+          // onSearchChange={handleSearch}
+          // searchPhrase={searchValue}
+          // onTemplateSelect={handleTemplateSelect}
+          // getTemplatesList={getRootTemplatesList}
+          // parentList={parentList[parentList.length - 1]}
+        />
+        {Object.keys(finalFilter).length > 0 && (
+          <ClearFilter onClick={clearFilter}>Clear Filter</ClearFilter>
+        )}
       </FilterButtonWrapper>
       <Divider />
       <BottomWrapper>
-        <CancelButton
-          disabled={Object.keys(finalFilter).length === 0}
-          onClick={handleQuickFilterCreate}
-          style={{ width: '270px' }}
-        >
-          Save Filter
-        </CancelButton>
-        <ConfirmButton
-          disabled={Object.keys(finalFilter).length === 0}
-          style={{ width: '270px' }}
-          onClick={handleApplyFinalFilter}
-        >
-          Apply Filter
-        </ConfirmButton>
+        {!isPopoverOpen && Object.keys(finalFilter).length === 0 && (
+          <ClearFilterButton onClick={clearFilter}>
+            <ClearFilterLabel>Clear Filters</ClearFilterLabel>
+          </ClearFilterButton>
+        )}
+        {Object.keys(finalFilter).length > 0 && (
+          <>
+            <CancelButton
+              disabled={Object.keys(finalFilter).length === 0}
+              onClick={handleQuickFilterCreate}
+              style={{ width: '270px' }}
+            >
+              Save Filter
+            </CancelButton>
+            <ConfirmButton
+              disabled={Object.keys(finalFilter).length === 0}
+              style={{ width: '270px' }}
+              onClick={handleApplyFinalFilter}
+            >
+              Apply Filter
+            </ConfirmButton>
+          </>
+        )}
       </BottomWrapper>
     </>
   );
