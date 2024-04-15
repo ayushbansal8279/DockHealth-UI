@@ -59,7 +59,6 @@ function VTaskHeader(
     >
       <Sc.VTaskHeader
         ref={ref}
-        data-test-id="v-task-header"
         {...register}
         $subitem={metadata.level > 1}
         $template={isTaskTemplate}

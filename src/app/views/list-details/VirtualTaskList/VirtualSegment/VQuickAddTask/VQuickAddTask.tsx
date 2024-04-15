@@ -80,11 +80,9 @@ function VQuickAddTask(
 
   return (
     <Sc.VQuickAddTaskContainer
-      data-test-id="add-task-container"
       $width={droppableHeaderWidth ? `${droppableHeaderWidth}px` : '100%'}
     >
       <Sc.VQuickAddTask
-        data-test-id="add-task"
         ref={ref}
         {...register}
         $width={visibleWidth ? `${visibleWidth - 60}px` : '100%'}
