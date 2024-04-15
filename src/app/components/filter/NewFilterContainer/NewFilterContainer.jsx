@@ -85,6 +85,8 @@ const NewFilterContainer = ({
     );
   };
 
+  console.log(finalFilter);
+
   return (
     <>
       {Object.keys(finalFilter).map((filter) => (
@@ -126,12 +128,14 @@ const NewFilterContainer = ({
       <Divider />
       <BottomWrapper>
         <CancelButton
+          disabled={Object.keys(finalFilter).length === 0}
           onClick={handleQuickFilterCreate}
           style={{ width: '270px' }}
         >
           Save Filter
         </CancelButton>
         <ConfirmButton
+          disabled={Object.keys(finalFilter).length === 0}
           style={{ width: '270px' }}
           onClick={handleApplyFinalFilter}
         >
