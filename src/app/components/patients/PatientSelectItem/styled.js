@@ -25,7 +25,7 @@ export const SuggestionItemContainer = styled.div`
 export const SuggestionText = styled.div`
   margin-bottom: 0;
   text-align: start;
-  font-size: ${fontSizes.regular};
+  font-size: ${fontSizes.smallPlus};
   font-weight: ${fontWeights.light};
   font-family: inherit;
 `;
