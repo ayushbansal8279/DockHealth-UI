@@ -55,7 +55,7 @@ export const TasksGroupContainer = styled.div`
   justify-content: center;
   padding-bottom: ${spacing.giga};
   background: ${({ bgColor }) => (bgColor ? palette.aliceBlue : '')};
-  width: ${({ $width }) => ($width ? `${$width}px` : '100%')};
+  width: ${({ $width }) => $width};
 `;
 
 export const TasksGroupHeader = styled.div`
@@ -64,7 +64,7 @@ export const TasksGroupHeader = styled.div`
   justify-content: flex-start;
   padding-bottom: ${spacing.regular};
   position: sticky;
-  width: ${({ $width }) => ($width ? `${$width - 80}px` : '100%')};
+  width: ${({ $width }) => $width};
   left: ${({ $left }) => `${$left}px`};
   padding-top: ${spacing.regular};
   .action-buttons {

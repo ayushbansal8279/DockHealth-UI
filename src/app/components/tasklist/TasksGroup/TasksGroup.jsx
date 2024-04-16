@@ -273,10 +273,13 @@ const TasksGroup = ({
   );
 
   return (
-    <TasksGroupContainer $width={droppableHeaderWidth} bgColor={bgColor}>
+    <TasksGroupContainer
+      $width={droppableHeaderWidth ? `${droppableHeaderWidth}px` : '100%'}
+      bgColor={bgColor}
+    >
       <TasksGroupHeader
         $left={origin === 'LIST' ? 8 : 24}
-        $width={visibleWidth}
+        $width={visibleWidth ? `${visibleWidth - 80}px` : '100%'}
       >
         <Spacing horizontal={4} />
         <GroupOpenContainer onClick={onToggleGroupOpen}>
