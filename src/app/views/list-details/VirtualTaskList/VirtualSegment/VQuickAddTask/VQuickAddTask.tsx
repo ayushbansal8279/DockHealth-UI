@@ -10,7 +10,7 @@ import { selectedUserOrganizationSelector } from 'selectors/user-selectors';
 import TaskTemplateApplicator from 'components/task-template/TaskTemplateApplicator/TaskTemplateApplicator';
 import { applyTaskTemplate } from 'actions/list-details-actions';
 import { TaskOrigin } from '@/app/helpers/task-helpers';
-import { useVirtualTaskListScrollContext } from '../../VirtualTastListScrollContext';
+import { useVirtualTaskListScrollContext } from '../../VirtualTaskListScrollContext';
 
 export interface Props extends Segment {
   taskGroupIdentifier: string;

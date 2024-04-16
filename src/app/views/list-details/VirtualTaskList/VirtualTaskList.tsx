@@ -20,7 +20,7 @@ import { reorderTasksInGroup } from 'actions/list-details-actions';
 import {
   useVirtualTaskListScrollContext,
   withVirtualTaskListScrollContext,
-} from './VirtualTastListScrollContext';
+} from './VirtualTaskListScrollContext';
 
 export interface Props {
   tasksToMap: any[];
