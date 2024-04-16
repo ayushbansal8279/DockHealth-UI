@@ -12,6 +12,7 @@ import {
   AvatarContainer,
   Lable,
   CloseIconContainer,
+  PopupContainer,
 } from './style';
 import UserAvatar from '../../user/UserAvatar/UserAvatar';
 
@@ -59,7 +60,7 @@ const FilterSelect = ({
         item.filter((option) =>
           option.displayValue
             .toLowerCase()
-            .startsWith(e.target.textContent.toLowerCase()),
+            .includes(e.target.textContent.toLowerCase()),
         ),
       );
     } else {
@@ -131,40 +132,30 @@ const FilterSelect = ({
             <img src={CloseIcon} alt="close" />
           </CloseIconContainer>
         </div>
-        <Popover
-          anchorEl={containerRef.current}
-          anchorOrigin={{
-            vertical: 'bottom',
-            horizontal: 'left',
-          }}
-          transformOrigin={{
-            vertical: 'top',
-            horizontal: 'left',
-          }}
-          open={isOpen}
-          onClose={() => setIsOpen(false)}
-        >
-          <OptionDropDown>
-            {filterdUser.map((item, i) => (
-              <OptionDropDownItem
-                key={item.key}
-                onClick={() => handleSelectOption(item)}
-              >
-                <DisplayValue>
-                  <AvatarContainer>
-                    {optionName === 'Assigned by' ||
-                    optionName === 'Assigned to' ? (
-                      <UserAvatar user={item?.reference} />
-                    ) : (
-                      ''
-                    )}
-                  </AvatarContainer>
-                  <Lable>{item.displayValue}</Lable>
-                </DisplayValue>
-              </OptionDropDownItem>
-            ))}
-          </OptionDropDown>
-        </Popover>
+        {isOpen && (
+          <PopupContainer>
+            <OptionDropDown>
+              {filterdUser.map((item, i) => (
+                <OptionDropDownItem
+                  key={item.key}
+                  onClick={() => handleSelectOption(item)}
+                >
+                  <DisplayValue>
+                    <AvatarContainer>
+                      {optionName === 'Assigned by' ||
+                      optionName === 'Assigned to' ? (
+                        <UserAvatar user={item?.reference} />
+                      ) : (
+                        ''
+                      )}
+                    </AvatarContainer>
+                    <Lable>{item.displayValue}</Lable>
+                  </DisplayValue>
+                </OptionDropDownItem>
+              ))}
+            </OptionDropDown>
+          </PopupContainer>
+        )}
       </div>
     </>
   );

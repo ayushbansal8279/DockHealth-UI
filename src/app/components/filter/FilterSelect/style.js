@@ -73,7 +73,6 @@ export const OptionDropDown = styled.div`
 export const OptionDropDownItem = styled.div`
   padding: 5px 5px;
   tranition: 0.8s;
-  width: 517px;
 
   &:hover {
     background-color: #cfcccc;
@@ -111,3 +110,17 @@ export const CloseIconContainer = styled.div`
   margin-left: 5px;
   cursor: pointer;
 `;
+
+
+export const PopupContainer = styled.div`
+  width: 515px;
+  padding: 0;
+  position: absolute;
+  background-color: ${palette.white};
+  overflow: auto;
+  max-height: 200px;
+  border-radius: 4px;
+  padding: 2px 0 0 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  z-index: 10;
+}`;

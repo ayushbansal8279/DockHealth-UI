@@ -37,8 +37,6 @@ const SaveFilterPopup = ({
   const [everyOne, setEveryOne] = useState(false);
   const [edit, setEdit] = useState(false);
 
-  console.log(quickFilterIdentifier);
-
   useEffect(() => {
     if (quickFilterIdentifier !== '') {
       setEdit(true);
@@ -112,22 +110,22 @@ const SaveFilterPopup = ({
 
   return (
     <Popover
-      anchorEl={refrence}
+      anchorEl={refrence.current}
       anchorOrigin={{
-        vertical: 'top',
-        horizontal: 'left',
+        vertical: 'bottom',
+        horizontal: 'center',
       }}
       transformOrigin={{
         vertical: 'top',
-        horizontal: 'left',
+        horizontal: 'center',
       }}
       open={isSavePopupOpen}
-      sx={{ top: '120px', left: '68px' }}
+      sx={{ left: '60px' }}
       onClose={() => setSavePopupOpen(false)}
     >
       <Container>
         <Header>
-          <Title>Save Filter</Title>
+          <Title>{edit ? 'Edit Filter' : 'Save Filter'}</Title>
         </Header>
         <InputContainer>
           <TextField

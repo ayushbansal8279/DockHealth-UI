@@ -8,8 +8,7 @@ import { fontSizes, fontWeights } from 'styles/font';
 
 export const Container = styled.div`
   width: 600px;
-  height: 400px;
-  // border: 100px solid red;
+  height: 350px;
 `;
 export const Header = styled.div`
   width: 100%;
