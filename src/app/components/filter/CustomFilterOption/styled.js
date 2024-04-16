@@ -20,7 +20,7 @@ export const CustomFilterOptionWrapper = styled.div`
   }};
   border-radius: 4px;
   font-size: ${fontSizes.small};
-  padding: 0 15px 0 8px;
+  padding-left: 8px;
   cursor: ${({ disabled }) => (disabled ? 'initial' : 'pointer')};
 
   & .MuiFilledInput-root {

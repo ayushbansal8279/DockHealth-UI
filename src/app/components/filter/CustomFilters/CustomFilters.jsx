@@ -20,11 +20,14 @@ const CustomFilters = ({
   setFinalFilter,
   filters,
   setMenuOption,
+  setSavePopupOpen,
+  setQuickFilterIdentifier,
 }) => {
   const [editModeFilterIdentifier, setEditModeFilterIdentifier] =
     useState(null);
   const history = useHistory();
   const dispatch = useDispatch();
+  const [selectedQuickFilter, setSelectedQuickFilter] = useState('')
 
   useEffect(() => {
     const unlisten = history.listen(compose(dispatch, cleanClickFilter));
@@ -37,17 +40,20 @@ const CustomFilters = ({
 
   const handleSelect = useCallback(
     (_, identifier, { selectedOptions }) => {
-      if (editModeEnabled && selected === identifier) {
-        const originalFiltersList = quickFiltersList.find(
-          (f) => f.quickFilterIdentifier === identifier,
-        )?.selectedOptions;
+      // if (editModeEnabled && selected === identifier) {
+        // const originalFiltersList = quickFiltersList.find(
+        //   (f) => f.quickFilterIdentifier === identifier,
+        // )?.selectedOptions;
 
-        setSelected(identifier, originalFiltersList);
-      } else if (selected === identifier) {
-        setSelected(null);
-      } else {
-        setSelected(identifier, selectedOptions);
-      }
+        // setSelected(identifier, originalFiltersList);
+      // } else if (selected === identifier) {
+      //   setSelected(null);
+      // } else {
+      //   setSelected(identifier, selectedOptions);
+      // }
+      // setSelected(identifier, originalFiltersList);
+      setSelectedQuickFilter(identifier);
+      setQuickFilterIdentifier(identifier);
       const data = {};
       for (const key in selectedOptions) {
         const users = filters
@@ -58,10 +64,8 @@ const CustomFilters = ({
         );
       }
       setFinalFilter(data);
-      console.log(data)
-      // setMenuOption(Object.keys(data));
     },
-    [editModeEnabled, quickFiltersList, selected, setSelected],
+    [editModeEnabled, quickFiltersList, selectedQuickFilter, setSelectedQuickFilter],
   );
 
   const handleUpdate = useCallback(
@@ -104,7 +108,8 @@ const CustomFilters = ({
             label={filter.name}
             key={filter.quickFilterIdentifier}
             identifier={filter.quickFilterIdentifier}
-            selected={selected === filter.quickFilterIdentifier}
+            selectedQuickFilter={selectedQuickFilter}
+            setSelectedQuickFilter={setSelectedQuickFilter}
             onOptionClick={(event) =>
               handleSelect(event, filter.quickFilterIdentifier, filter)
             }
@@ -113,6 +118,9 @@ const CustomFilters = ({
             onBlur={handleUpdate}
             editModeEnabled={editModeEnabled}
             onDelete={onDelete}
+            setQuickFilterIdentifier={setQuickFilterIdentifier}
+            setSavePopupOpen={setSavePopupOpen}
+            setFinalFilter={setFinalFilter}
           />
         ))}
       </OptionsList>

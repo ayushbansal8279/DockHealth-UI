@@ -20,9 +20,19 @@ const CustomFilterOption = (props) => {
     autofocus,
     onBlur,
     editModeEnabled,
+    setSavePopupOpen,
+    setQuickFilterIdentifier,
+    selectedQuickFilter,
+    setSelectedQuickFilter,
+    setFinalFilter,
   } = props;
   const [value, setValue] = useState(label);
+  const [isSelected, setSelected] = useState(false);
   const inputReference = useRef(null);
+
+  useEffect(() => {
+    setSelected(selectedQuickFilter === identifier);
+  }, [selectedQuickFilter, identifier]);
 
   useEffect(() => {
     setValue(label);
@@ -49,14 +59,10 @@ const CustomFilterOption = (props) => {
     [identifier, onDelete],
   );
 
-  const handleEnableEditMode = useCallback(
-    (event) => {
-      event.preventDefault();
-      event.stopPropagation();
-      onEditMode(identifier);
-    },
-    [identifier, onEditMode],
-  );
+  const handleEnableEditMode = () => {
+    setSavePopupOpen(true);
+    setQuickFilterIdentifier(identifier);
+  };
 
   const OPTIONS = [
     { name: 'Delete', onClick: handleDelete },
@@ -68,6 +74,15 @@ const CustomFilterOption = (props) => {
       onOptionClick(identifier);
     }
   }, [disabled, identifier, onOptionClick]);
+
+  const onClick = () => {
+    if (isSelected) {
+      setSelectedQuickFilter('');
+      setSelected(false);
+      setFinalFilter({});
+      setQuickFilterIdentifier('')
+    }
+  };
 
   const handleKeyPress = useCallback(
     (event) => {
@@ -91,8 +106,10 @@ const CustomFilterOption = (props) => {
 
   return (
     <CustomFilterOptionWrapper
-      selected={selected}
-      onClick={handleOptionClick}
+      selected={isSelected}
+      onClick={() => {
+        handleOptionClick(), onClick();
+      }}
       editModeEnabled={editModeEnabled}
     >
       <Input

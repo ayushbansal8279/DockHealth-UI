@@ -41,15 +41,14 @@ const NewFilterContainer = ({
   finalFilter,
   setFinalFilter,
   openPopover,
-  quickFiltersList,
   setSavePopupOpen,
+  handleSaveQuickFilter,
+  quickFilterIdentifier,
 }) => {
-  const taskList = useSelector(currentTaskListSelector);
-  const { taskListIdentifier } = taskList || {};
-  const dispatch = useDispatch();
   const popoverReference = useRef(null);
   const [isPopoverOpen, openAddFilterPopover, closeAddFilterPopover] =
     useBoolean(false);
+  const [isUpdate, setUpdate] = useState(false);
 
   useEffect(() => {
     setMenuOption(filters?.map((item) => ({ label: item.label, id: item.id })));
@@ -82,31 +81,32 @@ const NewFilterContainer = ({
 
   const handleClose = useCallback(() => {
     closeAddFilterPopover();
-    // setSearchValue('');
-    // setParentList([]);
   }, [closeAddFilterPopover]);
 
   const clearFilter = () => {
     setFinalFilter({});
   };
 
-  const handleQuickFilterCreate = () => {
-    setSavePopupOpen(true);
-    const data = {};
-    for (const key in finalFilter) {
-      if (finalFilter[key].length > 0) {
-        data[key] = { options: finalFilter[key].map((item) => item.key) };
-      }
+  useEffect(() => {
+    if (quickFilterIdentifier !== '') {
+      setUpdate(true);
+    } else {
+      setUpdate(false);
     }
+  }, [quickFilterIdentifier]);
 
-    const contextType = 'MY_TASKS';
-    dispatch(
-      createQuickFilter(
-        getUniqueQuickFilterLabelName(quickFiltersList),
-        taskListIdentifier ? { taskListIdentifier } : { contextType },
-        data,
-      ),
-    );
+  const updateFilter = () => {
+    if (isUpdate) {
+      const data = {};
+      for (const key in finalFilter) {
+        if (finalFilter[key].length > 0) {
+          data[key] = { options: finalFilter[key].map((item) => item.key) };
+        }
+      }
+      handleSaveQuickFilter(data);
+    } else {
+      setSavePopupOpen(true);
+    }
   };
 
   return (
@@ -123,26 +123,6 @@ const NewFilterContainer = ({
         />
       ))}
       <FilterButtonWrapper>
-        {/* <Select
-          sx={{
-            background: '#0E244A',
-            width: '110px',
-            height: '32px',
-            border: 'none',
-          }}
-          value={'Add Filter'}
-          renderValue={() => (
-            <FilterLableContainer>
-              <img src={FilterIcon} alt="filter" /> Add Filter
-            </FilterLableContainer>
-          )}
-        >
-          {menuOptions?.map((option) => (
-            <MenuItem onClick={() => handleClick(option.id)} value={option.id}>
-              {option.label}
-            </MenuItem>
-          ))}
-        </Select> */}
         <BoxContainer ref={popoverReference}>
           <AddFilterButtonContainer
             variant="text"
@@ -178,12 +158,6 @@ const NewFilterContainer = ({
           onClose={handleClose}
           filterOptionsList={menuOptions}
           onFilterSelect={handleClick}
-          // taskTemplatesIsLoading={taskTemplatesIsLoading}
-          // onSearchChange={handleSearch}
-          // searchPhrase={searchValue}
-          // onTemplateSelect={handleTemplateSelect}
-          // getTemplatesList={getRootTemplatesList}
-          // parentList={parentList[parentList.length - 1]}
         />
         {Object.keys(finalFilter).length > 0 && (
           <ClearFilter onClick={clearFilter}>Clear Filter</ClearFilter>
@@ -200,10 +174,10 @@ const NewFilterContainer = ({
           <>
             <CancelButton
               disabled={Object.keys(finalFilter).length === 0}
-              onClick={handleQuickFilterCreate}
+              onClick={updateFilter}
               style={{ width: '270px' }}
             >
-              Save Filter
+              {isUpdate ? 'Update Filter' : 'Save Filter'}
             </CancelButton>
             <ConfirmButton
               disabled={Object.keys(finalFilter).length === 0}

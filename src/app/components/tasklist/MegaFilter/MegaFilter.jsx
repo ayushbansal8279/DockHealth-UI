@@ -26,7 +26,7 @@ const MegaFilter = ({
   addQuickFilterOption,
   selectedQuickFilter,
   selectQuickFilter,
-  onSaveClick,
+  handleSaveQuickFilter,
   onSaveAsNewClick,
   onQuickFilterUpdate,
   wasChangedFilters,
@@ -42,8 +42,8 @@ const MegaFilter = ({
   const isFilterApplied = selectedFilters && !isEmpty(selectedFilters);
   const [menuOptions, setMenuOption] = useState([]);
   const [finalFilter, setFinalFilter] = useState({});
-  const [options, setOptions] = useState({});
   const [isSavePopupOpen, setSavePopupOpen] = useState(false);
+  const [quickFilterIdentifier, setQuickFilterIdentifier] = useState('');
 
   const clearFilters = () => {
     onSelectFilters(null);
@@ -76,14 +76,17 @@ const MegaFilter = ({
         onClose={() => openPopover(false)}
       >
         <>
-        {/* For Popup of save Filter */}
-          {/* <SaveFilterPopup
+          {/* For Popup of save Filter */}
+          <SaveFilterPopup
+            quickFilterIdentifier={quickFilterIdentifier}
+            setQuickFilterIdentifier={setQuickFilterIdentifier}
             refrence={megaFilterButtonReference}
             isSavePopupOpen={isSavePopupOpen}
             setSavePopupOpen={setSavePopupOpen}
             finalFilter={finalFilter}
             quickFiltersList={quickFiltersList}
-          ></SaveFilterPopup> */}
+            onQuickFilterCreate={onQuickFilterCreate}
+          ></SaveFilterPopup>
           {/* Kept here for Future Refrence */}
           {/* <FilterHeader
           title="Filter tasks"
@@ -111,6 +114,8 @@ const MegaFilter = ({
             </span>
           )}
           <CustomFilters
+            setQuickFilterIdentifier={setQuickFilterIdentifier}
+            setSavePopupOpen={setSavePopupOpen}
             quickFiltersList={quickFiltersList}
             addQuickFilterOption={addQuickFilterOption}
             selectedQuickFilter={selectedQuickFilter}
@@ -133,6 +138,9 @@ const MegaFilter = ({
             openPopover={openPopover}
             quickFiltersList={quickFiltersList}
             setSavePopupOpen={setSavePopupOpen}
+            onQuickFilterCreate={onQuickFilterCreate}
+            handleSaveQuickFilter={handleSaveQuickFilter}
+            quickFilterIdentifier={quickFilterIdentifier}
           ></NewFilterContainer>
           <Box p={1} />
           {/* Kept here for Future Refrence */}

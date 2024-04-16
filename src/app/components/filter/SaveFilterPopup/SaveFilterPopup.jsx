@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import {
   Container,
@@ -12,7 +12,6 @@ import {
   ButtonContainer,
 } from './styled';
 import { Popover, TextField } from '@mui/material';
-import FormInput from 'components/common/Input/FormInput';
 import {
   CancelButton,
   ConfirmButton,
@@ -20,10 +19,7 @@ import {
 import CheckedCircle from 'img/Checks-Radio-Buttons-Checked.svg';
 import BlankCircle from 'img/Checks-Radio-Buttons-Blank.svg';
 import Spacing from '../../common/Spacing';
-import { useDispatch, useSelector } from 'react-redux';
-import { createQuickFilter } from '@/app/api/mega-filter-api';
 import { getUniqueQuickFilterLabelName } from '../CustomFilters/helpers';
-import { currentTaskListSelector } from '@/app/selectors/task-list-selectors';
 
 const SaveFilterPopup = ({
   isSavePopupOpen,
@@ -31,16 +27,37 @@ const SaveFilterPopup = ({
   refrence,
   finalFilter,
   quickFiltersList,
+  onQuickFilterCreate,
+  onQuickFilterUpdate,
+  quickFilterIdentifier,
+  setQuickFilterIdentifier,
 }) => {
-  const [searchInputValue, setSearchInputValue] = useState(
-    getUniqueQuickFilterLabelName(quickFiltersList),
-  );
+  const [searchInputValue, setSearchInputValue] = useState('');
   const [onlyone, setOnlyone] = useState(true);
   const [everyOne, setEveryOne] = useState(false);
-  const taskList = useSelector(currentTaskListSelector);
-  const { taskListIdentifier } = taskList || {};
+  const [edit, setEdit] = useState(false);
 
-  const dispatch = useDispatch();
+  console.log(quickFilterIdentifier);
+
+  useEffect(() => {
+    if (quickFilterIdentifier !== '') {
+      setEdit(true);
+    } else {
+      setEdit(false);
+    }
+  }, [quickFilterIdentifier]);
+
+  useEffect(() => {
+    if (edit) {
+      quickFiltersList.map((item) => {
+        if (item.quickFilterIdentifier === quickFilterIdentifier) {
+          setSearchInputValue(item.name);
+        }
+      });
+    } else {
+      setSearchInputValue(getUniqueQuickFilterLabelName(quickFiltersList));
+    }
+  }, [quickFiltersList, quickFilterIdentifier, edit]);
 
   const toggleSharedList = () => {
     setEveryOne(true);
@@ -51,32 +68,27 @@ const SaveFilterPopup = ({
     setOnlyone(true);
   };
 
-  // console.log(typeof(getUniqueQuickFilterLabelName(quickFiltersList)));
-
   const handleQuickFilterCreate = () => {
-    // setSavePopupOpen(false);
     const data = {};
     for (const key in finalFilter) {
       if (finalFilter[key].length > 0) {
         data[key] = { options: finalFilter[key].map((item) => item.key) };
       }
     }
-
-    console.log(searchInputValue);
-    console.log(data);
-    console.log(taskListIdentifier);
-    const contextType = 'MY_TASKS';
-    dispatch(
-      createQuickFilter(
-        'Aditya',
-        taskListIdentifier ? { taskListIdentifier } : { contextType },
-        data,
-      ),
-    );
+    onQuickFilterCreate(searchInputValue, data);
+    setSavePopupOpen(false);
   };
 
-  const onClear = () => {
+  const handleQuickFilterUpdate = () => {
+    onQuickFilterUpdate(quickFilterIdentifier, searchInputValue);
     setSavePopupOpen(false);
+    setQuickFilterIdentifier('');
+    setEdit(false);
+  };
+
+  const handleClear = () => {
+    setSavePopupOpen(false);
+    setEdit(false);
   };
 
   const sx = {
@@ -146,19 +158,15 @@ const SaveFilterPopup = ({
           </CheckboxContainer>
         </PrivacyContainer>
         <ButtonContainer>
-          <CancelButton
-            // disabled={Object.keys(finalFilter).length === 0}
-            onClick={onClear}
-            style={{ width: '270px' }}
-          >
+          <CancelButton onClick={handleClear} style={{ width: '270px' }}>
             Cancel
           </CancelButton>
           <ConfirmButton
-            // disabled={Object.keys(finalFilter).length === 0}
+            disabled={searchInputValue === ''}
             style={{ width: '270px' }}
-            onClick={handleQuickFilterCreate}
+            onClick={edit ? handleQuickFilterUpdate : handleQuickFilterCreate}
           >
-            Save
+            {edit ? ' Update' : 'Save'}
           </ConfirmButton>
         </ButtonContainer>
       </Container>
