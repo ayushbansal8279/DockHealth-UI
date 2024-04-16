@@ -181,7 +181,7 @@ function* getCurrentListTasks(prop) {
         groups = action.groups;
       }
       const groupsWithTasks = compose(filter((g) => g.metricValue > 0))(groups);
-      const groupsToGet = groupsWithTasks.slice(0, 5);
+      const groupsToGet = groupsWithTasks.slice(0);
 
       yield all(
         groupsToGet.map(({ taskGroupIdentifier }) =>

@@ -525,7 +525,7 @@ export const StandardTaskItemPanel = styled.div`
       : ''};
 
   margin-left:${({ isWorkflowtask, isWorkflowSubtask }) =>
-    isWorkflowtask ? '-2.5px;' : isWorkflowSubtask ? '-0.5px;' : '-1.2px;'} 
+    isWorkflowtask ? '-2.5px;' : isWorkflowSubtask ? '0.5px;' : '-1.2px;'}
   &:hover {
     & ${ThreeDots}, & ${AddPlaceholder} {
       opacity: 1;
@@ -758,8 +758,6 @@ export const DateText = styled.p`
 `;
 
 export const DetailsButton = styled.button`
-  // margin-left: 8px;
-  visibility: hidden;
   font-family: 'Outfit', sans-serif;
   font-size: ${fontSizes.smallPlus};
   font-weight: ${fontWeights.regularPlus};
@@ -804,7 +802,7 @@ export const DisabledLink = styled.span``;
 export const ActionIconsContainer = styled.div`
   display: flex;
   position: relative;
-  width: 65px;
+  width: 64.5px;
   &::after {
     border-right: 1px solid ${palette.coolGrey3};
     content: '';
