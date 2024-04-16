@@ -19,4 +19,8 @@ export const LabeledCollapseItemName = styled.p`
   font-style: normal;
   font-weight: ${fontWeights.light};
   line-height: 30px;
+
+  &:hover{
+    color: ${palette.lighterCyanBlue};
+  }
 `;
