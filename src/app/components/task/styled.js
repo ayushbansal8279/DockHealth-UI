@@ -707,7 +707,7 @@ export const SubtasksCountText = styled.span`
 
 export const ParentTaskContainer = styled.div`
   &:not(:last-child) {
-    margin-bottom: ${({ noMargin }) => (noMargin ? -1 : 3)}px;
+    margin-bottom: ${({ noMargin }) => (noMargin ? -1 : 0)}px;
   }
 `;
 
