@@ -54,12 +54,8 @@ export const TasksGroupContainer = styled.div`
   flex-direction: column;
   justify-content: center;
   padding-bottom: ${spacing.giga};
-  // &:hover {
-  //   background-color: #daefff4d;
-  // }
   background: ${({ bgColor }) => (bgColor ? palette.aliceBlue : '')};
-  // ${({ $width }) => ($width ? `width: ${$width + 66 + 72}px` : '')};
-  width: 100%;
+  width: ${({ $width }) => $width};
 `;
 
 export const TasksGroupHeader = styled.div`
@@ -68,7 +64,8 @@ export const TasksGroupHeader = styled.div`
   justify-content: flex-start;
   padding-bottom: ${spacing.regular};
   position: sticky;
-  left: 48px;
+  width: ${({ $width }) => $width};
+  left: ${({ $left }) => `${$left}px`};
   padding-top: ${spacing.regular};
   .action-buttons {
     visibility: hidden;
