@@ -733,7 +733,6 @@ export const TaskItemDescriptionIndicators = styled.div`
   display: flex;
   align-items: baseline;
   margin-left: 20px;
-  margin-top: ${({ isCompleted }) => (isCompleted ? '-11px' : '0')};
 `;
 
 export const PatientLabel = styled.span`
