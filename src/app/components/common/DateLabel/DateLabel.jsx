@@ -20,7 +20,8 @@ const DateLabel = (props) => {
     hasRecurringSchedule,
     format = 'MMM DD, YYYY',
     showTime = false,
-    timeFormat = 'HH:mm',
+    timeFormat = 'hh:mm a',
+    timeFormatToCheckSpecifiedTime = 'HH:mm',
     tootipTitle,
     timeFormatForHours = 'HH',
   } = props;
@@ -33,13 +34,15 @@ const DateLabel = (props) => {
           <DateTextContainer isOverdue={isOverdue}>
             <DateText>
               {dueDate.format(dateFormat)}
-              {!(dueDate.format(timeFormat) === '00:00') && (
+              {!(
+                dueDate.format(timeFormatToCheckSpecifiedTime) === '00:00'
+              ) && (
                 <>
                   <Spacing horizontal={1} />@
                   <Spacing horizontal={1} />
                   {dueDate.format(timeFormat)}
-                  <Spacing horizontal={1} />
-                  {dueDate.format(timeFormatForHours) >= 12 ? 'pm' : 'am'}
+                  {/* <Spacing horizontal={1} /> */}
+                  {/* {dueDate.format(timeFormatForHours) >= 12 ? 'pm' : 'am'} */}
                 </>
               )}
             </DateText>
