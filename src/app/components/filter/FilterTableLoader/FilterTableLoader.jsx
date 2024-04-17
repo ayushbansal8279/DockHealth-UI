@@ -8,27 +8,17 @@ const FilterTableLoader = () => {
   return (
     <FilterScrollableRow>
       <FilterOptionsColumn>
-        {new Array(12).fill().map((_, index) => (
+        {new Array(4).fill().map((_, index) => (
           <FilterOptionLoader key={index} />
         ))}
       </FilterOptionsColumn>
       <FilterOptionsColumn>
-        {new Array(5).fill().map((_, index) => (
+        {new Array(4).fill().map((_, index) => (
           <FilterOptionLoader key={index} />
         ))}
       </FilterOptionsColumn>
       <FilterOptionsColumn>
-        {new Array(12).fill().map((_, index) => (
-          <FilterOptionLoader key={index} />
-        ))}
-      </FilterOptionsColumn>
-      <FilterOptionsColumn>
-        {new Array(8).fill().map((_, index) => (
-          <FilterOptionLoader key={index} />
-        ))}
-      </FilterOptionsColumn>
-      <FilterOptionsColumn>
-        {new Array(2).fill().map((_, index) => (
+        {new Array(4).fill().map((_, index) => (
           <FilterOptionLoader key={index} />
         ))}
       </FilterOptionsColumn>
