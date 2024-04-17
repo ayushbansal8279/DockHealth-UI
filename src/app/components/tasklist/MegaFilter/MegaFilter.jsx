@@ -44,6 +44,7 @@ const MegaFilter = ({
   const [finalFilter, setFinalFilter] = useState({});
   const [isSavePopupOpen, setSavePopupOpen] = useState(false);
   const [quickFilterIdentifier, setQuickFilterIdentifier] = useState('');
+  const [editIdentifier, setEditIdentifier] = useState('');
 
   const clearFilters = () => {
     onSelectFilters(null);
@@ -86,6 +87,9 @@ const MegaFilter = ({
             finalFilter={finalFilter}
             quickFiltersList={quickFiltersList}
             onQuickFilterCreate={onQuickFilterCreate}
+            onQuickFilterUpdate={onQuickFilterUpdate}
+            setEditIdentifier={setEditIdentifier}
+            editIdentifier={editIdentifier}
           ></SaveFilterPopup>
           {/* Kept here for Future Refrence */}
           {/* <FilterHeader
@@ -127,6 +131,8 @@ const MegaFilter = ({
             setMenuOption={setMenuOption}
             setFinalFilter={setFinalFilter}
             filters={filters}
+            setEditIdentifier={setEditIdentifier}
+            editIdentifier={editIdentifier}
           />
           <NewFilterContainer
             filters={filters}

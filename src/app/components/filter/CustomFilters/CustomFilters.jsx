@@ -22,6 +22,7 @@ const CustomFilters = ({
   setMenuOption,
   setSavePopupOpen,
   setQuickFilterIdentifier,
+  setEditIdentifier,
 }) => {
   const [editModeFilterIdentifier, setEditModeFilterIdentifier] =
     useState(null);
@@ -121,6 +122,7 @@ const CustomFilters = ({
             setQuickFilterIdentifier={setQuickFilterIdentifier}
             setSavePopupOpen={setSavePopupOpen}
             setFinalFilter={setFinalFilter}
+            setEditIdentifier={setEditIdentifier}
           />
         ))}
       </OptionsList>

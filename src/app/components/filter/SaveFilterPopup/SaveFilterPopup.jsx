@@ -31,6 +31,8 @@ const SaveFilterPopup = ({
   onQuickFilterUpdate,
   quickFilterIdentifier,
   setQuickFilterIdentifier,
+  editIdentifier,
+  setsetEditIdentifier,
 }) => {
   const [searchInputValue, setSearchInputValue] = useState('');
   const [onlyone, setOnlyone] = useState(true);
@@ -38,12 +40,12 @@ const SaveFilterPopup = ({
   const [edit, setEdit] = useState(false);
 
   useEffect(() => {
-    if (quickFilterIdentifier !== '') {
+    if (editIdentifier !== '') {
       setEdit(true);
     } else {
       setEdit(false);
     }
-  }, [quickFilterIdentifier]);
+  }, [editIdentifier]);
 
   useEffect(() => {
     if (edit) {
@@ -81,13 +83,18 @@ const SaveFilterPopup = ({
     onQuickFilterUpdate(quickFilterIdentifier, searchInputValue);
     setSavePopupOpen(false);
     setQuickFilterIdentifier('');
-    setEdit(false);
+    setsetEditIdentifier('')
   };
 
   const handleClear = () => {
     setSavePopupOpen(false);
-    setEdit(false);
+    setsetEditIdentifier('')
   };
+
+  const onPopoverClose = () => {
+    setsetEditIdentifier('')
+    setSavePopupOpen(false);
+  }
 
   const sx = {
     '& .MuiOutlinedInput-root': {
@@ -121,7 +128,7 @@ const SaveFilterPopup = ({
       }}
       open={isSavePopupOpen}
       sx={{ left: '60px' }}
-      onClose={() => setSavePopupOpen(false)}
+      onClose={onPopoverClose}
     >
       <Container>
         <Header>
