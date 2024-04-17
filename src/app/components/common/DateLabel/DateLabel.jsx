@@ -33,7 +33,7 @@ const DateLabel = (props) => {
           <DateTextContainer isOverdue={isOverdue}>
             <DateText>
               {dueDate.format(dateFormat)}
-              {showTime && (
+              {!(dueDate.format(timeFormat) === '00:00') && (
                 <>
                   <Spacing horizontal={1} />@
                   <Spacing horizontal={1} />
