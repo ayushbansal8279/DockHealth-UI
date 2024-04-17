@@ -1,7 +1,7 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import React, { useCallback, useMemo } from 'react';
 import { Box, Grid, Typography, useMediaQuery } from '@mui/material';
-import { checkIfBundleTask } from 'helpers/task-helpers';
+import { checkIfBundleTask, isDueDateOverdue } from 'helpers/task-helpers';
 import Spacing from 'components/common/Spacing';
 import RichTextEditor from 'components/common/RichTextEditor/RichTextEditor';
 import TaskDescription from 'components/task-drawer/TaskDescription/TaskDescription';
@@ -155,6 +155,10 @@ const TaskDrawerContent = (props) => {
     const isOwnerOrAdmin = checkIfUserIsOrganizationAdmin(currentUser);
     return isMemberAdmin(currentUserMember) || isOwnerOrAdmin;
   }, [currentUser, currentTasklist]);
+
+  const { dueDate } = selectedTask || {};
+  const isDueDateDisabled = !dueDate;
+  const isTaskDueDateOverdue = isDueDateOverdue(selectedTask);
 
   const isCreator = useMemo(() => {
     return (
@@ -486,16 +490,16 @@ const TaskDrawerContent = (props) => {
             </div>
           </Grid>
         )} */}
-        <DueDateAndRemainderContainer>
-          <Grid item xs={6} style={styleLeftColumn(isMobile)}>
-            <div>
-              <DueDateSection
-                disabled={restrictions?.dueDate === DISABLED}
-                selectedTask={selectedTask}
-              />
-            </div>
-          </Grid>
-          <Grid item xs={8} style={styleRightColumn(isMobile)}>
+        <Grid item xs={12} style={styleLeftColumn(isMobile)}>
+          <div>
+            <DueDateSection
+              disabled={restrictions?.dueDate === DISABLED}
+              selectedTask={selectedTask}
+            />
+          </div>
+        </Grid>
+        {!isTaskDueDateOverdue && !isDueDateDisabled && (
+          <Grid item xs={12} style={styleRightColumn(isMobile)}>
             {!isTemplateTask && (
               <ReminderSection
                 onSave={handleUpdateTask}
@@ -504,7 +508,7 @@ const TaskDrawerContent = (props) => {
               />
             )}
           </Grid>
-        </DueDateAndRemainderContainer>
+        )}
         <Grid item xs={12} style={styleLeftColumn(isMobile)}>
           <PrioritySection
             onTaskUpdate={onTaskUpdate}
