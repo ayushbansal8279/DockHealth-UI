@@ -12,6 +12,7 @@ import NewFilterContainer from '../../filter/NewFilterContainer/NewFilterContain
 import SaveFilterPopup from '../../filter/SaveFilterPopup/SaveFilterPopup';
 import { useSelector } from 'react-redux';
 import { currentTaskListSelector } from '@/app/selectors/task-list-selectors';
+import FilterTableLoader from '../../filter/FilterTableLoader/FilterTableLoader';
 
 const MegaFilter = ({
   children,
@@ -117,23 +118,28 @@ const MegaFilter = ({
               needed.
             </span>
           )}
-          <CustomFilters
-            setQuickFilterIdentifier={setQuickFilterIdentifier}
-            setSavePopupOpen={setSavePopupOpen}
-            quickFiltersList={quickFiltersList}
-            addQuickFilterOption={addQuickFilterOption}
-            selectedQuickFilter={selectedQuickFilter}
-            selectQuickFilter={selectQuickFilter}
-            onUpdate={onQuickFilterUpdate}
-            editModeEnabled={wasChangedFilters}
-            onCreate={onQuickFilterCreate}
-            onDelete={onQuickFilterDelete}
-            setMenuOption={setMenuOption}
-            setFinalFilter={setFinalFilter}
-            filters={filters}
-            setEditIdentifier={setEditIdentifier}
-            editIdentifier={editIdentifier}
-          />
+
+          {filters ? (
+            <CustomFilters
+              setQuickFilterIdentifier={setQuickFilterIdentifier}
+              setSavePopupOpen={setSavePopupOpen}
+              quickFiltersList={quickFiltersList}
+              addQuickFilterOption={addQuickFilterOption}
+              selectedQuickFilter={selectedQuickFilter}
+              selectQuickFilter={selectQuickFilter}
+              onUpdate={onQuickFilterUpdate}
+              editModeEnabled={wasChangedFilters}
+              onCreate={onQuickFilterCreate}
+              onDelete={onQuickFilterDelete}
+              setMenuOption={setMenuOption}
+              setFinalFilter={setFinalFilter}
+              filters={filters}
+              setEditIdentifier={setEditIdentifier}
+              editIdentifier={editIdentifier}
+            />
+          ) : (
+            <FilterTableLoader />
+          )}
           <NewFilterContainer
             filters={filters}
             onSelectedFiltersChange={onSelectFilters}
