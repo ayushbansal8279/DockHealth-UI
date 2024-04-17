@@ -55,17 +55,13 @@ const FilterSelect = ({
   };
 
   const handleSearchOption = (e) => {
-    if (e.target.textContent !== '') {
-      setFilterdUser((item) =>
-        item.filter((option) =>
-          option.displayValue
-            .toLowerCase()
-            .includes(e.target.textContent.toLowerCase()),
-        ),
-      );
-    } else {
-      setFilterdUser(filterOptions);
-    }
+    setFilterdUser(
+      filterOptions.filter((option) =>
+        option.displayValue
+          .toLowerCase()
+          .includes(e.target.textContent.toLowerCase()),
+      ),
+    );
   };
 
   const handleRemoveAssign = (item) => {
