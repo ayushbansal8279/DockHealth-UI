@@ -17,6 +17,9 @@ const StyledTextField = styled(TextField)`
   & .MuiInputBase-input {
     text-transform: !important;
   }
+  & .MuiInputLabel-formControl {
+    text-transform: none !important;
+  }
 `;
 
 const Input = React.forwardRef(
