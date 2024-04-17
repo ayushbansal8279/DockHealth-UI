@@ -27,15 +27,15 @@ const Tooltip = ({
         tooltip: {
           sx: {
             color: 'black',
-            backgroundColor: 'white',
-            fontSize: '16px',
+            backgroundColor: '#F8F8F9',
+            fontSize: '14px',
             boxShadow: '0px 0px 10px 0px rgba(0, 0, 0, 0.15)',
             borderRadius: '4px',
           },
         },
         arrow: {
           sx: {
-            color: 'white',
+            color: '#F8F8F9',
           },
         },
       }}
@@ -52,15 +52,15 @@ const Tooltip = ({
             tooltip: {
               sx: {
                 color: 'black',
-                backgroundColor: 'white',
-                fontSize: '16px',
+                backgroundColor: '#F8F8F9',
+                fontSize: '14px',
                 boxShadow: '0px 0px 10px 0px rgba(0, 0, 0, 0.15)',
                 borderRadius: '4px',
               },
             },
             arrow: {
               sx: {
-                color: 'white',
+                color: '#F8F8F9',
               },
             },
           }}
