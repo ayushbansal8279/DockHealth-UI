@@ -53,7 +53,7 @@ function VTaskHeader(
     <div
       style={{
         width: '100%',
-        paddingBottom: groupWithZeroTask ? '20px' : '0px',
+        // paddingBottom: groupWithZeroTask ? '20px' : '0px',
         background: bgColor ? palette.aliceBlue : '',
       }}
     >
