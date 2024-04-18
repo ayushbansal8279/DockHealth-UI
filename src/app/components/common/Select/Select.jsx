@@ -64,7 +64,12 @@ const Select = React.forwardRef(
     ) : (
       <FormControl error={error} className={className}>
         {label && (
-          <InputLabel sx={{textTransform: 'none'}} shrink={!!value} variant={variant} required={required}>
+          <InputLabel
+            sx={{ textTransform: 'none' }}
+            shrink={!!value}
+            variant={variant}
+            required={required}
+          >
             {label}
           </InputLabel>
         )}
@@ -84,9 +89,6 @@ const Select = React.forwardRef(
             },
             getContentAnchorEl: null,
             style: { zIndex: zIndex.optionsMenu },
-            // PaperProps: {
-            //   style: { minWidth: 'auto' },
-            // },
           }}
           ref={reference}
           placeholder={placeholder}
@@ -97,7 +99,6 @@ const Select = React.forwardRef(
           renderValue={(selectedValue) =>
             options.find((option) => option.value === selectedValue)?.label
           }
-          // endAdornment={endAdornment}
           {...restProps}
         >
           {options?.map((option) => {

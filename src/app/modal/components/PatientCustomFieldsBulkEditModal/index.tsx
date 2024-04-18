@@ -27,6 +27,7 @@ import {
 } from '../styled';
 import { ICustomField, ICategoriedCustomFields } from '@/app/types/CustomField';
 import { FormProvider, useForm } from 'react-hook-form';
+import FormFieldItem from './FormFieldItem';
 
 interface Props {
   closeModal: VoidFunction;
@@ -40,13 +41,17 @@ export default function PatientCustomFieldsBulkEditModal({
   const dispatch = useDispatch();
 
   const [customFields, setCustomFields] = useState<ICustomField[] | null>(null);
-  const [selectedIdxArr, setSelectedIdxArr] = useState<Array<number | null>>(
-    [],
-  );
+  const [selectedIdxArr, setSelectedIdxArr] = useState<Array<number>>([]);
+
+  // NOTE: Used for key/selectedIdx for field without selected customField
+  // every time new empty customField added, this is decremented to keep identical key
+  const [emptyIdxIndicator, setEmptyIdxIndicator] = useState(-1);
 
   const methods = useForm({
     resolver: yupResolver(Yup.object().shape({})),
-    defaultValues: {},
+    defaultValues: {
+      patientMetadata: [],
+    },
   });
   const {
     reset,
@@ -59,7 +64,10 @@ export default function PatientCustomFieldsBulkEditModal({
     if (!customFields) {
       return [];
     }
-    return difference([...Array(customFields.length).keys()], selectedIdxArr);
+    return difference(
+      [...Array(customFields.length).keys()],
+      selectedIdxArr,
+    ) as number[];
   }, [customFields, selectedIdxArr]);
 
   useEffect(() => {
@@ -75,14 +83,35 @@ export default function PatientCustomFieldsBulkEditModal({
     onSave();
   };
 
+  const handleChangeSelectedIdx = (
+    selectedIdxArrIdx: number,
+    selectedIdx: number,
+  ) => {
+    console.log('selectedIdx', selectedIdx);
+    setSelectedIdxArr((prev) => [
+      ...prev.slice(0, selectedIdxArrIdx),
+      selectedIdx,
+      ...prev.slice(selectedIdxArrIdx + 1),
+    ]);
+  };
+
+  const handleRemove = (selectedIdxArrIdx: number) => {
+    setSelectedIdxArr((prev) => [
+      ...prev.slice(0, selectedIdxArrIdx),
+      ...prev.slice(selectedIdxArrIdx + 1),
+    ]);
+  };
+
   const handleAddField = () => {
-    setSelectedIdxArr((prev) => [...prev, null]);
+    setSelectedIdxArr((prev) => [...prev, emptyIdxIndicator]);
+    setEmptyIdxIndicator((prev) => prev - 1);
   };
 
   const onSubmit = handleSubmit(async (data) => {
     try {
       // todo: api call
-      reset();
+      console.log('data', data.patientMetadata);
+      // reset();
       onSave();
     } catch (error) {
       console.error(error);
@@ -90,19 +119,38 @@ export default function PatientCustomFieldsBulkEditModal({
   });
 
   return (
-    <ModalWrapper>
+    <Box
+      sx={{ width: '700px', maxWidth: '100vw', backgroundColor: 'white', p: 2 }}
+    >
       <FormProvider {...methods}>
         <form onSubmit={onSubmit}>
-          <Stack sx={{ m: 2 }} spacing={3}>
-            <Typography>
-              Select the fields you would like to change, the changes will be
-              saved:
-            </Typography>
-            <Stack>
-              <Typography>Custom field</Typography>
-              <Typography>Custom field</Typography>
-            </Stack>
-            <Stack direction="row">
+          <Typography color="GrayText" sx={{ mb: 2 }}>
+            Select the fields you would like to change, the changes will be
+            saved:
+          </Typography>
+          <Stack sx={{ mb: 2 }}>
+            {!!customFields &&
+              selectedIdxArr.map((selectedIdx, idx) => (
+                <FormFieldItem
+                  key={selectedIdx}
+                  customFields={customFields}
+                  selectedIdx={selectedIdx}
+                  availableIdxArr={availableIdxArr}
+                  onChangeSelectedIdx={(selectedIdx: number) =>
+                    handleChangeSelectedIdx(idx, selectedIdx)
+                  }
+                  onRemove={() => handleRemove(idx)}
+                />
+              ))}
+          </Stack>
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+            }}
+          >
+            <Box>
               <Button
                 variant="text"
                 startIcon={<AddBoxIcon />}
@@ -110,28 +158,23 @@ export default function PatientCustomFieldsBulkEditModal({
               >
                 Add Field
               </Button>
-              <Stack
-                spacing={1}
-                flexGrow={1}
-                direction="row"
-                alignItems="center"
-                justifyContent="flex-end"
-              >
-                <Button
-                  variant="secondary-red"
-                  size="small"
-                  onClick={closeModal}
-                >
-                  Cancel
-                </Button>
-                <Button variant="primary-red" size="small" onClick={handleSave}>
-                  Save
-                </Button>
-              </Stack>
+            </Box>
+            <Stack
+              spacing={1}
+              direction="row"
+              alignItems="center"
+              justifyContent="flex-end"
+            >
+              <Button variant="secondary-red" size="small" onClick={closeModal}>
+                Cancel
+              </Button>
+              <Button variant="primary-red" size="small" type="submit">
+                Save
+              </Button>
             </Stack>
-          </Stack>
+          </Box>
         </form>
       </FormProvider>
-    </ModalWrapper>
+    </Box>
   );
 }
