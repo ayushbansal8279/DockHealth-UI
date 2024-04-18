@@ -274,10 +274,18 @@ const TaskTemplateGroupHeader = ({
           if (currentTask.status === 'COMPLETE') {
             accumulator[0] += 1;
           }
-
-          accumulator[0] += currentTask?.subTasksCompletedCount || 0;
+          if (currentTask?.subtasks?.length > 0) {
+            currentTask?.subtasks?.map((subTask, index) => {
+              if (subTask?.status === 'COMPLETE') {
+                accumulator[0] += 1;
+              }
+            });
+          }
+          // accumulator[0] += currentTask?.subTasksCompletedCount || 0;
+          // accumulator[1] =
+          //   accumulator[1] + (currentTask?.subTasksCount || 0) + 1;
           accumulator[1] =
-            accumulator[1] + (currentTask?.subTasksCount || 0) + 1;
+            accumulator[1] + (currentTask?.subtasks?.length || 0) + 1;
 
           return accumulator;
         },
@@ -287,8 +295,8 @@ const TaskTemplateGroupHeader = ({
   );
   // const [completedTasksAmount, allTasksAmount] = [-1, -1];
 
-  const completedTasksAmountFinal = tasksCompletedCount || completedTasksAmount;
-  const allTasksAmountFinal = tasksCount || allTasksAmount;
+  const completedTasksAmountFinal = completedTasksAmount;
+  const allTasksAmountFinal = allTasksAmount;
 
   const toggleTasksVisibility = useCallback(() => {
     if (!showCompletedTasks && completedTasksAmount === 0) {

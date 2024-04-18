@@ -236,6 +236,8 @@ const TaskItem = React.memo(
     useEffect(() => {
       if (task?.status === 'COMPLETE') {
         setIsCompleted(true);
+      } else {
+        setIsCompleted(false);
       }
     }, [task]);
 
