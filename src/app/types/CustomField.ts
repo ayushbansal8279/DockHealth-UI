@@ -1,6 +1,13 @@
 import {
-  CustomFieldDto as ICustomField,
+  CustomFieldDto,
   CustomFieldDtoContextTypeEnum as CustomFieldContextTypeEnum,
+  CustomFieldDtoFieldCategoryTypeEnum as CustomFieldCategoryTypeEnum,
 } from './swagger/models/CustomFieldDto';
 
-export { ICustomField, CustomFieldContextTypeEnum };
+export type ICustomField = Required<CustomFieldDto>;
+
+export type ICategoriedCustomFields = {
+  [key in CustomFieldCategoryTypeEnum]: ICustomField[];
+};
+
+export { CustomFieldContextTypeEnum, CustomFieldCategoryTypeEnum };

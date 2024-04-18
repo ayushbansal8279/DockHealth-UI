@@ -1,5 +1,4 @@
 import sort from 'ramda/src/sort';
-import { Category } from 'helpers/patient-details-helpers';
 
 export const BOOL_SELECT_OPTIONS = [
   {
@@ -43,10 +42,16 @@ export const createMetaDataObjectToSend = (metaDataField) => {
   return null;
 };
 
-export const getSortedCustomFields = (fields) => {
-  const customFields = fields.filter(
-    ({ fieldCategoryType }) => fieldCategoryType === Category.OTHER_INFO,
-  );
-  customFields.sort((a, b) => a.sortIndex - b.sortIndex);
-  return customFields;
+export const getSortedCategorizedCustomFields = (fields) => {
+  const sortedFields = [...fields].sort((a, b) => a.sortIndex - b.sortIndex);
+  const res = {};
+
+  for (const field of sortedFields) {
+    if (!res[field.fieldCategoryType]) {
+      res[field.fieldCategoryType] = [];
+    }
+    res[field.fieldCategoryType].push(field);
+  }
+
+  return res;
 };

@@ -277,7 +277,7 @@ Button.propTypes = {
   uppercase: PropTypes.bool,
   disabled: PropTypes.bool,
   width: PropTypes.string,
-  startIcon: PropTypes.string,
+  startIcon: PropTypes.node,
   endIcon: PropTypes.node,
   fullWidth: PropTypes.bool,
   color: PropTypes.string,
