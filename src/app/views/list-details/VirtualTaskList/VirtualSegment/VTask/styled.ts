@@ -15,9 +15,9 @@ export const VTask = styled('div')`
   }: any) =>
     $workflow
       ? `
-  height: 62px;
+  height: 48px;
    padding-bottom: ${
-     virtualListWorkflowOpen ? (isLastTaskOfGroup ? '80px' : '70px') : ''
+     virtualListWorkflowOpen ? (isLastTaskOfGroup ? '80px' : '58px') : ''
    };
   `
       : `
