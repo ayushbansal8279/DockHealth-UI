@@ -6,5 +6,5 @@ export const VListGroup = styled('div')`
   text-transform: uppercase;
   line-height: 40px;
   height: 40px;
-  margin-top: 32px;
+  margin-top: ${({ bgColor }) => (bgColor ? '23px' : '0px')};
 `;

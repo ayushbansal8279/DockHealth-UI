@@ -138,6 +138,7 @@ function VirtualTaskList({ groupedTasks }: Props) {
             bgColor: !(index % 2 === 0),
             groupTaskCounts: group?.metricValue,
             tasksCount: groupTasks?.length,
+            isLastGroupOfList: index === listGroups?.length - 1,
           },
           [
             convert(
@@ -178,6 +179,7 @@ function VirtualTaskList({ groupedTasks }: Props) {
                   task,
                   bgColor: !(index % 2 === 0),
                   isLastTaskOfGroup: groupTaskIndex === groupTasks.length - 1,
+                  isLastGroupOfList: index === listGroups?.length - 1,
                   // &&
                   // !!collapseMap[taskIdentifier],
                 },
@@ -188,6 +190,7 @@ function VirtualTaskList({ groupedTasks }: Props) {
                     task.itemType === 'TASK' ? 'Subtask' : 'TaskOfBundle',
                     !!collapseMap[child?.taskIdentifier ?? child],
                     {
+                      task: child,
                       isTaskTemplate: true,
                       isLastChild:
                         children.indexOf(child) === children.length - 1,
@@ -195,6 +198,10 @@ function VirtualTaskList({ groupedTasks }: Props) {
                       isLastTaskOfGroup:
                         groupTaskIndex === groupTasks.length - 1 &&
                         childIndex === children.length - 1,
+                      isLastSubtaskParentTask:
+                        groupTaskIndex === groupTasks.length - 1 &&
+                        childIndex === children.length - 1,
+                      isLastGroupOfList: index === listGroups?.length - 1,
                       //  &&
                       // !!collapseMap[child?.taskIdentifier ?? child],
                     },
@@ -213,6 +220,11 @@ function VirtualTaskList({ groupedTasks }: Props) {
                                   subTaskIndex ===
                                     tasksMap[child]?.subtasks.length - 1 &&
                                   childIndex === children.length - 1,
+                                isLastSubtaskParentTask:
+                                  groupTaskIndex === groupTasks.length - 1 &&
+                                  childIndex === children.length - 1,
+                                isLastGroupOfList:
+                                  index === listGroups?.length - 1,
                               },
                               [],
                             );
