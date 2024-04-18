@@ -1,20 +1,13 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable import/no-cycle */
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, {
-  useState,
-  useRef,
-  useCallback,
-  useMemo,
-  useEffect,
-} from 'react';
-import { renderToString } from 'react-dom/server';
-// import { useSelector } from 'react-redux';
+import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import debounce from 'lodash.debounce';
 import palette from 'styles/palette';
 import { fontSizes, fontWeights } from 'styles/font';
 import FroalaEditor from 'react-froala-wysiwyg';
 import { getListMembersByName } from 'api/task-list-api';
+import { getUsersByName } from 'api/user-api';
 import MarkdownIt from 'markdown-it';
 import TurndownService from 'turndown';
 import Tribute from 'tributejs';
@@ -26,7 +19,6 @@ import {
   SUGGESTIONS_PLACEHOLDER,
   mapPatientsToSuggestions,
 } from '../TextEditor/helpers';
-import PatientsSuggestionsPopover from '../TextEditor/PatientsSuggestionsPopover/PatientsSuggestionsPopover';
 
 const md = new MarkdownIt({
   html: true,
@@ -236,12 +228,18 @@ const RichTextEditor = React.forwardRef(
         trigger: '@',
         // eslint-disable-next-line func-names, object-shorthand, unicorn/prevent-abbreviations
         values: function (mentionString, cb) {
-          if (taskListIdentifier && mentionString) {
-            getListMembersByName(taskListIdentifier, mentionString).then(
-              (fetchedUsers) => {
-                cb(fetchedUsers);
-              },
-            );
+          if (mentionString) {
+            if (taskListIdentifier) {
+              getListMembersByName(taskListIdentifier, mentionString).then(
+                (fetchedUsers) => {
+                  cb(fetchedUsers);
+                },
+              );
+            } else {
+              getUsersByName(mentionString).then((fetchedUsers) =>
+                cb(fetchedUsers),
+              );
+            }
           }
         },
         menuShowMinLength: 0,
@@ -431,6 +429,8 @@ const RichTextEditor = React.forwardRef(
         readonly,
         showToolbarInline,
         tribute,
+        onFocus,
+        onKeyEscape,
       ],
     );
 
