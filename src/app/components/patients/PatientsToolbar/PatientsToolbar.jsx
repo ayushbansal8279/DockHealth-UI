@@ -44,6 +44,8 @@ import {
   PatientsListImg,
   ButtonWrapper,
 } from './styled';
+import ToolbarButton from '../../tasklist/ToolbarButton/ToolbarButton';
+import { AddIcon } from '@/app/views/smart-flow-builder/TaskNodeHandles/styled';
 
 const OPTIONS = [
   {
@@ -148,7 +150,7 @@ const PatientsToolbar = ({ searchValue, setSearchValue }) => {
                 iconColorFilterActive={iconColorFilterActiveItem?.value}
               />
             </Box>
-            <Box m={1} />
+            <Box mx={0.5} />
             {!isDynamicPatientList && (
               <Box>
                 <ToolbarSelect
@@ -164,10 +166,11 @@ const PatientsToolbar = ({ searchValue, setSearchValue }) => {
                     />
                   }
                   iconColorActive={iconColorActiveItem?.value}
+                  spaceAfterLabel
                 />
               </Box>
             )}
-            <Box m={1} />
+            <Box mx={0.5} />
             {!isDynamicPatientList && (
               <FilterButton
                 ref={filterButtonReference}
@@ -177,16 +180,8 @@ const PatientsToolbar = ({ searchValue, setSearchValue }) => {
                 onClear={() => dispatch(PatientsActions.clearPatientsFilters())}
               />
             )}
-            <Box m={1} />
-            {!isDynamicPatientList && (
-              <Box width="300px">
-                <SearchInput
-                  value={searchValue}
-                  onValueChange={handleSearchChange}
-                  onKeyEnter={handleSearch}
-                />
-              </Box>
-            )}
+            <Box mx={0.5} />
+
             {/* <Box m={1} />
             {!isDynamicPatientList && (
               <ButtonWrapper onClick={handleSearch}>Search</ButtonWrapper>
@@ -215,7 +210,7 @@ const PatientsToolbar = ({ searchValue, setSearchValue }) => {
                 iconColorFilterActive={iconColorFilterActiveItem?.value}
               />
             </Box> */}
-            <Box m={1} />
+            {/* <Box m={1} /> */}
             {/* {!isDynamicPatientList && (
               <FilterButton
                 ref={filterButtonReference}
@@ -226,15 +221,43 @@ const PatientsToolbar = ({ searchValue, setSearchValue }) => {
               />
             )} */}
           </Box>
+          {!isDynamicPatientList && (
+            // <HeaderSearch value={searchValue} onChange={handleSearchChange} />
+            // <Box width="300px">
+            <SearchInput
+              value={searchValue}
+              onValueChange={handleSearchChange}
+              onKeyEnter={handleSearch}
+              isPatientSearchInput
+            />
+            // </Box>
+          )}
           {!isDynamicPatientList &&
             patientAddEnabled &&
             listIdentifier &&
             (listIdentifier === DefaultPatientsListType.ALL_PATIENTS ||
               listIdentifier === DefaultPatientsListType.ACTIVE_PATIENTS) && (
               <AddEntitiesContainer>
-                <AddButton onClick={setIsSidebarOpen}>
+                {/* <AddButton onClick={setIsSidebarOpen}>
                   Add a {customerTypeLabel}
-                </AddButton>
+                </AddButton> */}
+
+                <ToolbarButton
+                  // ref={invitePeopleButtonReference}
+                  icon={
+                    <span style={{ marginLeft: '-5px' }}>
+                      <AddIcon />
+                    </span>
+                  }
+                  onClick={setIsSidebarOpen}
+                  // isOpen={isPopoverOpen}
+                  // active={isPopoverOpen}
+                  // hasPopover
+                >
+                  <span style={{ marginLeft: '-5px' }}>
+                    Add a {customerTypeLabel}
+                  </span>
+                </ToolbarButton>
               </AddEntitiesContainer>
             )}
         </Box>

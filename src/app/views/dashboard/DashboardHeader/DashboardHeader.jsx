@@ -113,9 +113,10 @@ const DashboardHeader = () => {
 
   const { ADMIN, OWNER, MEMBER, GUEST, DOCK_LITE } = UserOrganizationRole;
   const contextType = currentCommonTabName
-    ? ['Upcoming', 'Overdue', 'Completed'].includes(tabName)
-      ? 'MY_TASKS'
-      : currentCommonTabName[0]
+    ? // ['Upcoming', 'Overdue', 'Completed'].includes(tabName)
+      //   ? 'MY_TASKS'
+      //   :
+      currentCommonTabName[0]
     : null;
 
   const activeTasksCount = useMemo(
@@ -195,7 +196,7 @@ const DashboardHeader = () => {
   );
 
   const handleQuickFilterCreate = useCallback(
-    (name) =>
+    (name, selectedFilters) =>
       dispatch(createQuickFilter(name, { contextType }, selectedFilters)),
     [contextType, dispatch, selectedFilters],
   );
@@ -314,7 +315,8 @@ const DashboardHeader = () => {
                   iconColorFilterActive={iconColorFilterActiveItem?.value}
                   isDashboard
                 />
-                <LayoutHeader.Spacer />
+                {/* <LayoutHeader.Spacer /> */}
+                <Box mx={0.5} />
                 <MegaFilter
                   filters={filterOptions}
                   selectedFilters={selectedFilters}
@@ -334,7 +336,8 @@ const DashboardHeader = () => {
                   onQuickFilterUpdate={handleQuickFilterUpdate}
                   onQuickFilterDelete={handleQuickFilterDelete}
                 />
-                <LayoutHeader.Spacer />
+                {/* <LayoutHeader.Spacer /> */}
+                <Box mx={0.5} />
                 <HeaderSearch
                   value={searchValue}
                   onChange={handleSearchChange}

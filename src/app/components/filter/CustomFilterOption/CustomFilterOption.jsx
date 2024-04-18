@@ -2,7 +2,10 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import Input from 'components/common/Input/Input';
-import { CustomFilterOptionWrapper } from './styled';
+import { CustomFilterOptionWrapper, IconContainer } from './styled';
+import CloseIcon from 'img/close_cross.svg';
+import RenameIcon from 'img/rename.png';
+import Tooltip from 'components/common/Tooltip/Tooltip';
 
 const CustomFilterOption = (props) => {
   const {
@@ -17,9 +20,20 @@ const CustomFilterOption = (props) => {
     autofocus,
     onBlur,
     editModeEnabled,
+    setSavePopupOpen,
+    setQuickFilterIdentifier,
+    selectedQuickFilter,
+    setSelectedQuickFilter,
+    setFinalFilter,
+    setEditIdentifier,
   } = props;
   const [value, setValue] = useState(label);
+  const [isSelected, setSelected] = useState(false);
   const inputReference = useRef(null);
+
+  useEffect(() => {
+    setSelected(selectedQuickFilter === identifier);
+  }, [selectedQuickFilter, identifier]);
 
   useEffect(() => {
     setValue(label);
@@ -46,18 +60,15 @@ const CustomFilterOption = (props) => {
     [identifier, onDelete],
   );
 
-  const handleEnableEditMode = useCallback(
-    (event) => {
-      event.preventDefault();
-      event.stopPropagation();
-      onEditMode(identifier);
-    },
-    [identifier, onEditMode],
-  );
+  const handleEnableEditMode = () => {
+    setSavePopupOpen(true);
+    setEditIdentifier(identifier);
+    setQuickFilterIdentifier(identifier);
+  };
 
   const OPTIONS = [
     { name: 'Delete', onClick: handleDelete },
-    { name: 'Rename', onClick: handleEnableEditMode },
+    { name: 'Edit', onClick: handleEnableEditMode },
   ];
 
   const handleOptionClick = useCallback(() => {
@@ -65,6 +76,15 @@ const CustomFilterOption = (props) => {
       onOptionClick(identifier);
     }
   }, [disabled, identifier, onOptionClick]);
+
+  const onClick = () => {
+    if (isSelected) {
+      setSelectedQuickFilter('');
+      setSelected(false);
+      setFinalFilter({});
+      setQuickFilterIdentifier('')
+    }
+  };
 
   const handleKeyPress = useCallback(
     (event) => {
@@ -88,8 +108,10 @@ const CustomFilterOption = (props) => {
 
   return (
     <CustomFilterOptionWrapper
-      selected={selected}
-      onClick={handleOptionClick}
+      selected={isSelected}
+      onClick={() => {
+        handleOptionClick(), onClick();
+      }}
       editModeEnabled={editModeEnabled}
     >
       <Input
@@ -101,8 +123,32 @@ const CustomFilterOption = (props) => {
         InputProps={{ disableUnderline: true }}
         onBlur={() => !disabled && onBlur(identifier, value)}
       />
+      {/* <IconContainer>
+        <Tooltip placement="top" title={'Rename'}>
+          <img
+            onClick={handleEnableEditMode}
+            style={{
+              width: '19px',
+              margin: '2px 4px',
+            }}
+            src={RenameIcon}
+            alt="close"
+          />
+        </Tooltip>
+        <Tooltip placement="top" title={'Delete'}>
+          <img
+            onClick={handleDelete}
+            style={{
+              width: '19px',
+              margin: '2px 4px',
+            }}
+            src={CloseIcon}
+            alt="close"
+          />
+        </Tooltip>
+      </IconContainer> */}
       {!disableOptions && (
-        <OptionsMenu options={OPTIONS}>
+        <OptionsMenu color={'#8492a4'} options={OPTIONS}>
           <MoreVertIcon />
         </OptionsMenu>
       )}

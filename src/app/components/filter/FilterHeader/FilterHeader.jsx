@@ -61,6 +61,8 @@ const FilterHeader = (props) => {
         )}
       </Box>
       <FilterSearch value={searchValue} onValueChange={onSearchValueChange} />
+      <div>Quick Filters</div>
+      <div>Quick Filters Here</div>
     </Container>
   );
 };

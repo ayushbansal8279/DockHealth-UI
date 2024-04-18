@@ -348,7 +348,8 @@ const PatientSection = ({
             options={formattedPatients}
             headerOption={
               <PatientSelectItem
-                patient={{ name: 'Name', dob: 'Dob', mrn: 'Mrn' }}
+                patient={{ name: 'Name', dob: 'DOB', mrn: 'MRN' }}
+                header
               />
             }
             isLoadingOptions={isLoadingPatients}

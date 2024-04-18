@@ -399,7 +399,7 @@ const UsersTable = ({
                     onValueChange={setCurrentSearch}
                   />
                 </Box> */}
-                {/* <Spacing horizontal={3} /> */}
+                <Box mx={-1} />
                 <ToolbarSelect
                   options={SUBSCRIPTION_OPTIONS}
                   value={USER_SUBSCRIPTION_VALUES[userSubscriptionStatus]}
@@ -422,12 +422,12 @@ const UsersTable = ({
                   fullWidth={isSmallScreen}
                 />
                 <Spacing horizontal={3} />
-                <Box width="300px">
-                  <SearchInput
-                    value={currentSearch}
-                    onValueChange={setCurrentSearch}
-                  />
-                </Box>
+                {/* <Box width="300px"> */}
+                <SearchInput
+                  value={currentSearch}
+                  onValueChange={setCurrentSearch}
+                />
+                {/* </Box> */}
                 {/* <InviteButton
                   getAllUsers={getAllUsers}
                   fullWidth={isSmallScreen}

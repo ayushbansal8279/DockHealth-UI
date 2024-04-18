@@ -79,7 +79,7 @@ const MultiAssignMembersList = ({
 
   useEffect(() => {
     if (taskDrawer) setSearchValue(value);
-  }, [value]);
+  }, [taskDrawer, value]);
 
   const filteredMembers = useMemo(
     () =>
@@ -97,17 +97,10 @@ const MultiAssignMembersList = ({
             );
             return (
               !isSelected &&
-              name.toLowerCase().includes(searchValue.toLowerCase()) //&&
-              // identifier !== currentUser?.identifier
+              name.toLowerCase().includes(searchValue.toLowerCase())
             );
           }),
-    [
-      enableLazyLoading,
-      membersOptions,
-      selectedMembers,
-      searchValue,
-      currentUser,
-    ],
+    [enableLazyLoading, membersOptions, selectedMembers, searchValue],
   );
 
   const filteredSelectedMembers = useMemo(
@@ -133,6 +126,7 @@ const MultiAssignMembersList = ({
 
   const inputReference = useRef(null);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const selectMembersWithDebounce = useCallback(
     debounce((selection) => {
       onSelect(selection.map((s) => ({ ...s, userIdentifier: s.identifier })));
@@ -216,7 +210,7 @@ const MultiAssignMembersList = ({
       } else if (selectedOption === UNASSIGNED_KEY) {
         membersToReturn = [];
       } else if (
-        selectedMembers.find(
+        selectedMembers.some(
           ({ identifier }) => selectedOption?.identifier === identifier,
         )
       ) {
@@ -259,6 +253,49 @@ const MultiAssignMembersList = ({
     isValueSendable,
   ]);
 
+  const renderUnassignedOption = (
+    <MemberRow
+      key={UNASSIGNED_KEY}
+      isSelected={selectedMembers?.length === 0}
+      onClick={(event) => handleOptionClick(event, UNASSIGNED_KEY)}
+    >
+      <CheckboxSpacing />
+      <Spacing horizontal={3} />
+      <UnassignedIcon />
+      <Spacing horizontal={3} />
+      <MemberName>
+        <Highlighter
+          highlightStyle={highlightStyle}
+          searchWords={searchValue?.toLowerCase().split(/\s+/)}
+          autoEscape
+          textToHighlight="Unassigned"
+        />
+      </MemberName>
+    </MemberRow>
+  );
+
+  const renderAssignAllOption = (
+    <MemberRow
+      key={ASSIGN_ALL_KEY}
+      isSelected={selectedMembers?.length === membersOptions?.length}
+      onClick={(event) => handleOptionClick(event, ASSIGN_ALL_KEY)}
+    >
+      <CheckboxSpacing />
+      <Spacing horizontal={3} />
+      <AssignMemberIcon />
+      <Spacing horizontal={3} />
+      <MemberName>
+        <Highlighter
+          highlightStyle={highlightStyle}
+          searchWords={searchValue?.toLowerCase().split(/\s+/)}
+          autoEscape
+          textToHighlight="Assign All"
+        />
+        &nbsp;({+membersOptions.length})
+      </MemberName>
+    </MemberRow>
+  );
+
   const renderSelectOption = useCallback(
     (member, isSelected, extra) => {
       return (
@@ -299,6 +336,13 @@ const MultiAssignMembersList = ({
       .includes(searchValue.toLowerCase());
   }, [currentUserMember, enableLazyLoading, isValueSendable, searchValue]);
 
+  const renderCurrentUserOption = () => {
+    const isSelected = !!selectedMembers.some(
+      ({ identifier }) => identifier === currentUserMember?.identifier,
+    );
+    return renderSelectOption(currentUserMember, isSelected, <YouBadge />);
+  };
+
   return (
     <div style={{ width: `${width}` }}>
       {taskDrawer ? (
@@ -316,66 +360,14 @@ const MultiAssignMembersList = ({
       <ListContainer>
         {(displayAssignAllOption || displayUnassignedOption) && (
           <ListContentSection>
-            {displayCurrentUser &&
-              (function renderCurrentUserOption() {
-                const isSelected = !!selectedMembers.some(
-                  ({ identifier }) =>
-                    identifier === currentUserMember?.identifier,
-                );
-                return renderSelectOption(
-                  currentUserMember,
-                  isSelected,
-                  <YouBadge />,
-                );
-              })()}
-            {displayUnassignedOption && (
-              <MemberRow
-                key={UNASSIGNED_KEY}
-                isSelected={selectedMembers?.length === 0}
-                onClick={(event) => handleOptionClick(event, UNASSIGNED_KEY)}
-              >
-                <CheckboxSpacing />
-                <Spacing horizontal={3} />
-                <UnassignedIcon />
-                <Spacing horizontal={3} />
-                <MemberName>
-                  <Highlighter
-                    highlightStyle={highlightStyle}
-                    searchWords={searchValue?.toLowerCase().split(/\s+/)}
-                    autoEscape
-                    textToHighlight="Unassigned"
-                  />
-                </MemberName>
-              </MemberRow>
-            )}
+            {displayCurrentUser && renderCurrentUserOption()}
+            {displayUnassignedOption && renderUnassignedOption}
             {displayAssignAllOption && membersOptions?.length > 0 && (
               <>
                 {isFetchingMembers ? (
                   <MemberRowSkeletonLoader />
                 ) : (
-                  <MemberRow
-                    key={ASSIGN_ALL_KEY}
-                    isSelected={
-                      selectedMembers?.length === membersOptions?.length
-                    }
-                    onClick={(event) =>
-                      handleOptionClick(event, ASSIGN_ALL_KEY)
-                    }
-                  >
-                    <CheckboxSpacing />
-                    <Spacing horizontal={3} />
-                    <AssignMemberIcon />
-                    <Spacing horizontal={3} />
-                    <MemberName>
-                      <Highlighter
-                        highlightStyle={highlightStyle}
-                        searchWords={searchValue?.toLowerCase().split(/\s+/)}
-                        autoEscape
-                        textToHighlight="Assign All"
-                      />
-                      &nbsp;({+membersOptions.length})
-                    </MemberName>
-                  </MemberRow>
+                  renderAssignAllOption
                 )}
               </>
             )}

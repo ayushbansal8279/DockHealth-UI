@@ -89,8 +89,12 @@ const ListDetailsHeader = (props) => {
         : [],
     [listUsers, userIdentifier],
   );
-  const { addNewGroup, handleAddNewGroup, showShadow } =
-    useContext(ListPageContext);
+  const {
+    addNewGroup,
+    handleAddNewGroup,
+    handleScrollToAddGroupName,
+    showShadow,
+  } = useContext(ListPageContext);
   const [isListOpen, openList] = useState(false);
   const [focused, setFocused, unsetFocused] = useBoolean(false);
   // const [scrollPosition, setScrollPosition] = useState(0);
@@ -139,7 +143,7 @@ const ListDetailsHeader = (props) => {
   );
 
   const handleSaveQuickFilter = useCallback(
-    () =>
+    (selectedFilters) =>
       dispatch(
         updateQuickFilter(
           selectedQuickFilter,
@@ -161,7 +165,7 @@ const ListDetailsHeader = (props) => {
   );
 
   const handleQuickFilterCreate = useCallback(
-    (name) =>
+    (name,selectedFilters) =>
       dispatch(
         createQuickFilter(name, { taskListIdentifier }, selectedFilters),
       ),
@@ -316,7 +320,7 @@ const ListDetailsHeader = (props) => {
           addQuickFilterOption={addQuickFilterOption}
           selectedQuickFilter={selectedQuickFilter}
           selectQuickFilter={handleSelectQuickFilter}
-          onSaveClick={handleSaveQuickFilter}
+          handleSaveQuickFilter={handleSaveQuickFilter}
           onSaveAsNewClick={handleSaveAsQuickFilter}
           wasChangedFilters={wasChangedFilters}
           onQuickFilterCreate={handleQuickFilterCreate}
@@ -328,7 +332,10 @@ const ListDetailsHeader = (props) => {
         <Box mx={0.5} />
         <AddGroupNameButton
           active={addNewGroup}
-          onClick={() => handleAddNewGroup(!addNewGroup)}
+          onClick={() => {
+            handleAddNewGroup(true);
+            handleScrollToAddGroupName();
+          }}
         />
         <Box mx={0.5} />
         {!showSearch ? (

@@ -17,7 +17,7 @@ export const ToolbarContainer = styled.div`
   justify-content: space-between;
   align-items: center;
   z-index: 13;
-  padding: 0 ${spacing.small};
+  // padding: 0 ${spacing.small};
 
   @media print {
     display: none;

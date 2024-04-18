@@ -7,7 +7,7 @@ export const LabeledCollapseHeaderButton = styled.button`
   align-items: flex-end;
   width: 100%;
   margin-top: ${({coreTask}) => coreTask ? '' : '-35px'};
-  margin-left: ${({coreTask}) => coreTask ? '' : '500px'};
+  margin-left: ${({coreTask}) => coreTask ? '480px' : '500px'};
   margin-bottom: -15px;
 `;
 
@@ -19,4 +19,8 @@ export const LabeledCollapseItemName = styled.p`
   font-style: normal;
   font-weight: ${fontWeights.light};
   line-height: 30px;
+
+  &:hover{
+    color: ${palette.lighterCyanBlue};
+  }
 `;
