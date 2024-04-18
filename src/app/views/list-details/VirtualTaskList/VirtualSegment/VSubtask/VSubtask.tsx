@@ -34,10 +34,21 @@ export interface Props extends Segment {
   task: any;
   bgColor: boolean;
   isLastTaskOfGroup: boolean;
+  isLastGroupOfList: boolean;
+  isLastSubtaskParentTask: boolean;
 }
 
 function VSubtask(
-  { metadata, register, task, bgColor, isLastTaskOfGroup, ...record }: Props,
+  {
+    metadata,
+    register,
+    task,
+    bgColor,
+    isLastTaskOfGroup,
+    isLastGroupOfList,
+    isLastSubtaskParentTask,
+    ...record
+  }: Props,
   // eslint-disable-next-line unicorn/prevent-abbreviations
   ref: ForwardedRef<HTMLDivElement>,
 ) {
@@ -116,7 +127,13 @@ function VSubtask(
               background: bgColor ? palette.aliceBlue : '',
               paddingBottom:
                 isLastTaskOfGroup && !subtaskQuickAddOpen && !addWorkflowTask
-                  ? '20px'
+                  ? isLastSubtaskParentTask
+                    ? bgColor
+                      ? '20px'
+                      : isLastGroupOfList
+                      ? '20px'
+                      : '0px'
+                    : '10px'
                   : '0px',
             }}
           >
@@ -160,7 +177,15 @@ function VSubtask(
                 width: '100%',
                 background: bgColor ? palette.aliceBlue : '',
                 paddingBottom:
-                  isLastTaskOfGroup && !addWorkflowTask ? '20px' : '0px',
+                  isLastTaskOfGroup && !addWorkflowTask
+                    ? isLastSubtaskParentTask
+                      ? bgColor
+                        ? '20px'
+                        : isLastGroupOfList
+                        ? '20px'
+                        : '0px'
+                      : '10px'
+                    : '0px',
               }}
             >
               <Sc.QuickAddContainer>
@@ -178,7 +203,16 @@ function VSubtask(
               style={{
                 width: '100%',
                 background: bgColor ? palette.aliceBlue : '',
-                paddingBottom: isLastTaskOfGroup ? '20px' : '0px',
+                paddingBottom:
+                  isLastTaskOfGroup
+                    ? isLastSubtaskParentTask
+                      ? bgColor
+                        ? '20px'
+                        : isLastGroupOfList
+                        ? '20px'
+                        : '0px'
+                      : '10px'
+                    : '0px',
               }}
             >
               <Sc.WorkflowQuickAddTaskContainer>
