@@ -575,6 +575,26 @@ export const StatusSubContaioner = styled.div`
   padding-left: 12px;
 `;
 
+export const PlaceholderText = styled.div`
+  color: ${palette.lightGrey};
+
+  &::first-letter {
+    color: ${palette.lightGrey};
+    font-size: ${fontSizes.regular};
+  }
+
+  &:hover:first-letter {
+    color: ${palette.brightBlue};
+  }
+
+  &:hover {
+    div {
+      color: ${palette.brightBlue};
+    }
+    color: ${palette.brightBlue};
+  }
+`;
+
 export const StatusName = styled.p`
   display: block;
   width: 100%;

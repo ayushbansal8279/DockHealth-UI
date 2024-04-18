@@ -49,12 +49,13 @@ export const TaskTemplateGroupHeaderContainer = styled.div`
   font-family: inherit;
   font-size: ${fontSizes.smallPlus};
   width: 100%;
-  height: ${({ isOpen }) => (isOpen ? '51px;' : '50px;')}
+  height: 37px;
   background-color: ${(props) =>
     props.isSelected ? palette.dockBlueLight : palette.white};
 
   border-top: 3px solid rgba(75, 179, 253, 1);
   margin-top: 10px;
+  margin-bottom: 10px;
   border-bottom: 1px solid
     ${({ isOpen }) =>
       isOpen ? `${palette.coolGrey3}` : 'rgba(75, 179, 253, 1)'};
