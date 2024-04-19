@@ -21,7 +21,7 @@ import UndoIcon from '@mui/icons-material/Undo';
 import AppRegistrationIcon from '@mui/icons-material/AppRegistration';
 import { Button } from './styled';
 
-const BulkEditOptionsBar = ({ selectedPatients = {}, onClose }) => {
+const BulkEditOptionsBar = ({ selectedPatients = [], onClose }) => {
   const patientContext = useContext(PatientEditContext);
   const dispatch = useDispatch();
 
@@ -53,16 +53,18 @@ const BulkEditOptionsBar = ({ selectedPatients = {}, onClose }) => {
   }, [toggleAddLabelOption]);
 
   const editFieldsHandler = useCallback(() => {
-    // todo
     dispatch(
       openModalAction('PatientCustomFieldsBulkEdit', {
+        patientIdentifiers: selectedPatients.map(
+          ({ patientIdentifier }) => patientIdentifier,
+        ),
         onSave: () => {
-          console.log('onSave');
           dispatch(closeModalAction());
+          // todo: update patients list data
         },
       }),
     );
-  }, [dispatch]);
+  }, [dispatch, selectedPatients]);
 
   const downloadFilesHandler = useCallback(() => {
     const selectedPatientIdentifiers = selectedPatients?.map((patient) => {

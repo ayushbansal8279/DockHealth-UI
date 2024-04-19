@@ -176,3 +176,19 @@ export function updatePatientListPreferences(setup, patientListIdentifier) {
     .put(`patient/list/updateUserPreferences/${patientListIdentifier}`, setup)
     .then(({ data }) => data);
 }
+
+/**
+ *
+ * @param {{ metaData: Array<object>; patientIdentifiers: Array<string>}} payload
+ * @returns
+ */
+export const bulkEditPatientsCustomFields = ({
+  metaData,
+  patientIdentifiers,
+}) =>
+  axios
+    .put('/patient/bulk', {
+      metaData,
+      patientIdentifiers,
+    })
+    .then(({ data }) => data);

@@ -52,7 +52,7 @@ export default function FormFieldItem({
             <CustomField
               readOnly={false}
               field={customFields[selectedIdx]}
-              fieldsGroupKey="patientMetadata"
+              fieldsGroupKey="metaData"
               popoverZindex={5000}
             />
           )}

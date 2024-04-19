@@ -272,6 +272,7 @@ Button.propTypes = {
     TEXT,
     TEXT_RED,
   ]),
+  onClick: PropTypes.func,
   size: PropTypes.oneOf(['small', 'medium', 'large']),
   type: PropTypes.oneOf(['button', 'submit']),
   uppercase: PropTypes.bool,

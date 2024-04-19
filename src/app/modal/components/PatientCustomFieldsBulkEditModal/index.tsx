@@ -2,41 +2,29 @@ import * as Yup from 'yup';
 import React, { useEffect, useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { Box, Stack, Typography } from '@mui/material';
-import groupBy from 'ramda/src/groupBy';
-import compose from 'ramda/src/compose';
-import sortBy from 'ramda/src/sortBy';
-import prop from 'ramda/src/prop';
-import pick from 'ramda/src/pick';
 import difference from 'ramda/src/difference';
 import { yupResolver } from '@hookform/resolvers/yup';
 import AddBoxIcon from '@mui/icons-material/AddBox';
 
 import Button from 'components/common/Button/Button';
-import Spacing from 'components/common/Spacing';
-import spacing from 'styles/spacing';
-import { Category, CategoryLabel } from 'helpers/patient-details-helpers';
 import * as CustomFieldsApi from '@/app/api/custom-fields-api';
-import { getSortedCategorizedCustomFields } from 'helpers/custom-fields-helpers';
+import { bulkEditPatientsCustomFields } from '@/app/api/patients-api.js';
 
-import {
-  ModalWrapper,
-  ModalIconContainer,
-  ModalDescriptionContainer,
-  ButtonsContainer,
-  FlexButtonWrapper,
-} from '../styled';
-import { ICustomField, ICategoriedCustomFields } from '@/app/types/CustomField';
+import { ICustomField } from '@/app/types/CustomField';
 import { FormProvider, useForm } from 'react-hook-form';
 import FormFieldItem from './FormFieldItem';
+import { formatMetaData } from './helpers';
 
 interface Props {
-  closeModal: VoidFunction;
+  patientIdentifiers: string[];
   onSave: VoidFunction;
+  closeModal: VoidFunction;
 }
 
 export default function PatientCustomFieldsBulkEditModal({
-  closeModal,
+  patientIdentifiers,
   onSave,
+  closeModal,
 }: Props) {
   const dispatch = useDispatch();
 
@@ -50,7 +38,7 @@ export default function PatientCustomFieldsBulkEditModal({
   const methods = useForm({
     resolver: yupResolver(Yup.object().shape({})),
     defaultValues: {
-      patientMetadata: [],
+      metaData: {},
     },
   });
   const {
@@ -59,6 +47,9 @@ export default function PatientCustomFieldsBulkEditModal({
     formState: { isSubmitting },
     getValues,
   } = methods;
+
+  const saveDisabled =
+    isSubmitting || !Object.keys(getValues('metaData')).length;
 
   const availableIdxArr = useMemo(() => {
     if (!customFields) {
@@ -77,17 +68,11 @@ export default function PatientCustomFieldsBulkEditModal({
       },
     );
   }, []);
-  console.log('customFields', customFields);
-
-  const handleSave = () => {
-    onSave();
-  };
 
   const handleChangeSelectedIdx = (
     selectedIdxArrIdx: number,
     selectedIdx: number,
   ) => {
-    console.log('selectedIdx', selectedIdx);
     setSelectedIdxArr((prev) => [
       ...prev.slice(0, selectedIdxArrIdx),
       selectedIdx,
@@ -109,9 +94,16 @@ export default function PatientCustomFieldsBulkEditModal({
 
   const onSubmit = handleSubmit(async (data) => {
     try {
-      // todo: api call
-      console.log('data', data.patientMetadata);
-      // reset();
+      const formattedMetaData = formatMetaData(getValues('metaData'));
+      if (!formattedMetaData) {
+        return;
+      }
+      const payload = {
+        metaData: formattedMetaData,
+        patientIdentifiers,
+      };
+      await bulkEditPatientsCustomFields(payload);
+      reset();
       onSave();
     } catch (error) {
       console.error(error);
@@ -168,7 +160,12 @@ export default function PatientCustomFieldsBulkEditModal({
               <Button variant="secondary-red" size="small" onClick={closeModal}>
                 Cancel
               </Button>
-              <Button variant="primary-red" size="small" type="submit">
+              <Button
+                variant="primary-red"
+                size="small"
+                type="submit"
+                disabled={saveDisabled}
+              >
                 Save
               </Button>
             </Stack>
