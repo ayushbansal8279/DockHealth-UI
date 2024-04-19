@@ -5,7 +5,8 @@ export const VTaskHeader = styled('div')`
   display: flex;
   font-size: 13px;
   line-height: 36px;
-  height: 40px;
+  height: ${({ groupWithZeroTask, bgColor }) =>
+    groupWithZeroTask ? (bgColor ? '25px' : '7px') : '40px'};
   border-left: 1px solid rgb(229, 233, 242);
   ${({ $template }: any) => ($template ? 'margin-top: -5px' : 'margin-top: 0')};
   margin-bottom: -3px;

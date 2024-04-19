@@ -426,7 +426,8 @@ export const StandardTaskItemContainer = styled.div`
   justify-content: ${(props) =>
     props.isAddingTask ? 'flex-end' : 'flex-start'};
   width: 100%;
-  height: ${({ height }) => height || 35}px;
+  // height: ${({ height }) => height || 35}px;
+  height: 35px;
   border-left: none;
   transition: background-color 0.3s ease-out;
   animation: ${(props) =>
@@ -573,6 +574,26 @@ export const StatusSubContaioner = styled.div`
   justify-content: flex-start;
   align-items: center;
   padding-left: 12px;
+`;
+
+export const PlaceholderText = styled.div`
+  color: ${palette.lightGrey};
+
+  &::first-letter {
+    color: ${palette.lightGrey};
+    font-size: ${fontSizes.regular};
+  }
+
+  &:hover:first-letter {
+    color: ${palette.brightBlue};
+  }
+
+  &:hover {
+    div {
+      color: ${palette.brightBlue};
+    }
+    color: ${palette.brightBlue};
+  }
 `;
 
 export const StatusName = styled.p`
