@@ -4,7 +4,7 @@ import styled from '@mui/styled-engine';
 export const VTaskHeader = styled('div')`
   display: flex;
   font-size: 13px;
-  line-height: 40px;
+  line-height: 36px;
   height: ${({ groupWithZeroTask, bgColor }) =>
     groupWithZeroTask ? (bgColor ? '25px' : '7px') : '40px'};
   border-left: 1px solid rgb(229, 233, 242);

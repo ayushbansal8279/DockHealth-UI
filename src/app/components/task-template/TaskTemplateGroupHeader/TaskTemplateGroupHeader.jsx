@@ -96,6 +96,7 @@ import TaskTemplateDetails from '../TaskTemplateDetails/TaskTemplateDetails';
 import { StickyColumnContainer } from '../../tasklist/TasksHeader/styled';
 import { ListPageContext } from '@/app/views/list-details/ListDetailsView';
 import { VTaskContext } from '@/app/views/list-details/VirtualTaskList/VirtualSegment/VTask/VTask';
+import { TaskScrollVericleLine } from '../../task/styled';
 
 const TaskTemplateGroupHeader = ({
   templateGroup = {},
@@ -719,7 +720,7 @@ const TaskTemplateGroupHeader = ({
           isSelected={isBundleSelected}
           isEditingDescription={isEditing}
           order={0}
-          width={+width + 25 + 55}
+          width={+width + 25 + 54.5}
           origin={origin}
         >
           {!groupDragAndDropDisabled &&
@@ -759,6 +760,7 @@ const TaskTemplateGroupHeader = ({
             )}
           </ActionIconsContainer>
           {content}
+          <TaskScrollVericleLine>&nbsp;</TaskScrollVericleLine>
         </StickyMainTaskItemCell>
       );
     },

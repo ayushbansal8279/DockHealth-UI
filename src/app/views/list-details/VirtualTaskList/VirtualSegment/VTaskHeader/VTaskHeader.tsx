@@ -16,6 +16,7 @@ import { isTaskItemsSelectedSelector } from 'selectors/task-items-selectors';
 import * as Sc from './styled';
 import { taskDetailsSortSelector } from 'selectors/list-details-selectors';
 import palette from '@/app/styles/palette';
+import { TaskOrigin } from '@/app/helpers/task-helpers';
 
 export interface Props extends Segment {
   isTaskTemplate: boolean;
@@ -78,6 +79,7 @@ function VTaskHeader(
             isGroupSelected={isGroupSelected}
             onGroupSelect={handleGroupSelect}
             pageBackground={bgColor ? palette.aliceBlue : ''}
+            origin={TaskOrigin.LIST}
           />
         )}
       </Sc.VTaskHeader>
