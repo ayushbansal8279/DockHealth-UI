@@ -525,7 +525,7 @@ export const StandardTaskItemPanel = styled.div`
       : ''};
 
   margin-left:${({ isWorkflowtask, isWorkflowSubtask }) =>
-    isWorkflowtask ? '-2.5px;' : isWorkflowSubtask ? '0.5px;' : '-1.2px;'}
+    isWorkflowtask ? '-3px;' : isWorkflowSubtask ? '-0.5px;' : '-1.2px;'}
   &:hover {
     & ${ThreeDots}, & ${AddPlaceholder} {
       opacity: 1;
@@ -819,6 +819,7 @@ export const PatientMRNAnchor = styled.a`
 
 export const TaskScrollVericleLine = styled.div`
   background: #48bbb3;
+  line-height: 36px;
   height: 100%;
   width: 2.5px;
   box-shadow: 1px 0px 3px 0px rgba(0, 0, 0, 0.21);

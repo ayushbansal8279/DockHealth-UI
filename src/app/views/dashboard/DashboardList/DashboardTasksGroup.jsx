@@ -316,6 +316,7 @@ const DashboardTasksGroup = ({
               sort={currentSort}
               onSortChange={onSortChange}
               groupHasMultipleAssignees={groupHasMultipleAssignees}
+              origin={TaskOrigin.DASHBOARD}
             />
             <DragDropContext
               onBeforeDragStart={showClearSortFiltersModal}
