@@ -157,11 +157,11 @@ export default function PatientCustomFieldsBulkEditModal({
               alignItems="center"
               justifyContent="flex-end"
             >
-              <Button variant="secondary-red" size="small" onClick={closeModal}>
+              <Button variant="secondary" size="small" onClick={closeModal}>
                 Cancel
               </Button>
               <Button
-                variant="primary-red"
+                variant="primary"
                 size="small"
                 type="submit"
                 disabled={saveDisabled}
