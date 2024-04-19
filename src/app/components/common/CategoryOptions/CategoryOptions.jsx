@@ -16,7 +16,7 @@ const CategoryOptions = ({
   return (
     <div>
       {coreTask && <Spacing vertical={3} />}
-      <Box display="flex" justifyContent="space-between">
+      <Box display="flex" justifyContent="flex-end">
         <div width="auto">
           <LabeledCollapseHeaderButton
             type="button"
@@ -25,13 +25,7 @@ const CategoryOptions = ({
             coreTask={coreTask}
           >
             <LabeledCollapseItemName font-size={fontSizes.small}>
-              {coreTask
-                ? visibility
-                  ? 'Hide Empty Fields'
-                  : 'Show Empty Fields'
-                : visibility
-                ? 'Hide Empty'
-                : 'Show Empty'}
+              {visibility ? 'Hide Empty Fields' : 'Show Empty Fields'}
             </LabeledCollapseItemName>
             <Spacing horizontal={3} />
           </LabeledCollapseHeaderButton>

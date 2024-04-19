@@ -60,7 +60,7 @@ const TaskItemDropdown = ({
           name="dropdownCustomField"
           value={value}
           renderValue={(selectedValue) =>
-            options.find((option) => option.value === selectedValue)?.tag
+            options.find((option) => option.value === selectedValue)?.label
           }
           onChange={handleChange}
           IconComponent={() => <></>}

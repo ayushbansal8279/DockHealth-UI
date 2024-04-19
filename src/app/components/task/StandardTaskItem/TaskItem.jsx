@@ -236,6 +236,8 @@ const TaskItem = React.memo(
     useEffect(() => {
       if (task?.status === 'COMPLETE') {
         setIsCompleted(true);
+      } else {
+        setIsCompleted(false);
       }
     }, [task]);
 
@@ -300,6 +302,8 @@ const TaskItem = React.memo(
       file: false,
       share: false,
       task: false,
+      status: false,
+      patient: false,
     });
     const { move, duplicate, subtasks, delete: del } = SINGLE_TASK_FEATURES;
     const organizationCustomFields = useSelector(
@@ -1067,15 +1071,16 @@ const TaskItem = React.memo(
                       dispatch={dispatch}
                       readOnly={restrictions?.subtasks === READ_ONLY}
                       origin={origin}
+                      isHover={isCellHover.task}
                     />
                   )}
-                  <AddPlaceholder>
+                  <div style={{ minWidth: '25px' }}>
                     <Tooltip placement="top" title="Details">
                       <DetailsButton onClick={onClickTaskItem}>
-                        <ChevronRightIcon />
+                        {isCellHover.task && <ChevronRightIcon />}
                       </DetailsButton>
                     </Tooltip>
-                  </AddPlaceholder>
+                  </div>
                   {showDecisionRow && (
                     <DecisionCellContainer
                       onClick={(event) => event.stopPropagation()}
@@ -1110,6 +1115,8 @@ const TaskItem = React.memo(
                       )?.columnWidth
                     }
                     order={getColumnOrder(TaskItemColumn.PATIENT)}
+                    onMouseEnter={() => setCellHover({ patient: true })}
+                    onMouseLeave={() => setCellHover({ patient: false })}
                   >
                     <TaskItemPatient
                       highlightedValue={highlightedValue}
@@ -1126,6 +1133,7 @@ const TaskItem = React.memo(
                       currentUser={currentUser}
                       readOnly={restrictions?.patient === READ_ONLY}
                       origin={origin}
+                      isPatientHover={isCellHover.patient}
                     />
                   </TaskItemCell>,
                   getColumnOrder(TaskItemColumn.PATIENT),
@@ -1344,6 +1352,8 @@ const TaskItem = React.memo(
                       event.stopPropagation();
                     }}
                     order={getColumnOrder(TaskItemColumn.WORKFLOW_STATUS)}
+                    onMouseEnter={() => setCellHover({ status: true })}
+                    onMouseLeave={() => setCellHover({ status: false })}
                   >
                     <TaskItemWorkflowStatus
                       task={task}
@@ -1355,6 +1365,7 @@ const TaskItem = React.memo(
                         selectedOrganization?.showDefaultTaskStatusCompleted
                       }
                       readOnly={restrictions?.status === READ_ONLY}
+                      isStatusHover={isCellHover.status}
                     />
                   </TaskItemCell>,
                   getColumnOrder(TaskItemColumn.WORKFLOW_STATUS),

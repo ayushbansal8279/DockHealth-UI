@@ -426,7 +426,8 @@ export const StandardTaskItemContainer = styled.div`
   justify-content: ${(props) =>
     props.isAddingTask ? 'flex-end' : 'flex-start'};
   width: 100%;
-  height: ${({ height }) => height || 35}px;
+  // height: ${({ height }) => height || 35}px;
+  height: 35px;
   border-left: none;
   transition: background-color 0.3s ease-out;
   animation: ${(props) =>
@@ -525,7 +526,7 @@ export const StandardTaskItemPanel = styled.div`
       : ''};
 
   margin-left:${({ isWorkflowtask, isWorkflowSubtask }) =>
-    isWorkflowtask ? '-2.5px;' : isWorkflowSubtask ? '0.5px;' : '-1.2px;'}
+    isWorkflowtask ? '-3px;' : isWorkflowSubtask ? '-0.5px;' : '-1.2px;'}
   &:hover {
     & ${ThreeDots}, & ${AddPlaceholder} {
       opacity: 1;
@@ -573,6 +574,26 @@ export const StatusSubContaioner = styled.div`
   justify-content: flex-start;
   align-items: center;
   padding-left: 12px;
+`;
+
+export const PlaceholderText = styled.div`
+  color: ${palette.lightGrey};
+
+  &::first-letter {
+    color: ${palette.lightGrey};
+    font-size: ${fontSizes.regular};
+  }
+
+  &:hover:first-letter {
+    color: ${palette.brightBlue};
+  }
+
+  &:hover {
+    div {
+      color: ${palette.brightBlue};
+    }
+    color: ${palette.brightBlue};
+  }
 `;
 
 export const StatusName = styled.p`
@@ -819,6 +840,7 @@ export const PatientMRNAnchor = styled.a`
 
 export const TaskScrollVericleLine = styled.div`
   background: #48bbb3;
+  line-height: 36px;
   height: 100%;
   width: 2.5px;
   box-shadow: 1px 0px 3px 0px rgba(0, 0, 0, 0.21);
