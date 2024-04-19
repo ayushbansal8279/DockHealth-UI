@@ -51,7 +51,6 @@ const FilterSelect = ({
   useEffect(() => {
     if (dueDate !== null && startDate !== null) {
       let currentFilter = { ...filteredData };
-      console.log('currentFilter', currentFilter);
       Object.entries(currentFilter).forEach(([key, value]) => {
         if (key === 'taskDueDateOptions') {
           if (
@@ -73,7 +72,6 @@ const FilterSelect = ({
       });
 
       setFilteredData(currentFilter);
-      console.log('currentFilter1', currentFilter);
     }
   }, [dueDate, startDate, setStartDate, setDueDate]);
 

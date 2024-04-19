@@ -116,8 +116,8 @@ const FilterDateInput = ({
                   setInputValue(
                     moment(d, DATE_ISO_FORMAT).format(DATE_US_FORMAT),
                   );
-                  onDateChange(d);
                   closeCalendar();
+                  onDateChange(d);
                 }}
                 minDate={minDate}
                 maxDate={minDate ? null : maxDate}
