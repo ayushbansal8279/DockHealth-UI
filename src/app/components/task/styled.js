@@ -426,7 +426,8 @@ export const StandardTaskItemContainer = styled.div`
   justify-content: ${(props) =>
     props.isAddingTask ? 'flex-end' : 'flex-start'};
   width: 100%;
-  height: ${({ height }) => height || 35}px;
+  // height: ${({ height }) => height || 35}px;
+  height: 35px;
   border-left: none;
   transition: background-color 0.3s ease-out;
   animation: ${(props) =>
