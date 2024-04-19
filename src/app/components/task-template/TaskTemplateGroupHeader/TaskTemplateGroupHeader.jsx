@@ -97,6 +97,7 @@ import { StickyColumnContainer } from '../../tasklist/TasksHeader/styled';
 import { ListPageContext } from '@/app/views/list-details/ListDetailsView';
 import { VTaskContext } from '@/app/views/list-details/VirtualTaskList/VirtualSegment/VTask/VTask';
 import { TaskScrollVericleLine } from '../../task/styled';
+import palette from '@/app/styles/palette';
 
 const TaskTemplateGroupHeader = ({
   templateGroup = {},
@@ -732,7 +733,7 @@ const TaskTemplateGroupHeader = ({
                 {...dragHandleProps}
               />
             )}
-          <ActionIconsContainer>
+          <ActionIconsContainer isOpen={!isVirtualListWorkflowOpen}>
             {taskListRestrictions?.completeTask !== DISABLED &&
               bulkEditEnabled && (
                 <Checkbox
@@ -747,7 +748,7 @@ const TaskTemplateGroupHeader = ({
                   origin === 'PATIENT' ? isOpen : virtualListWorkflowOpen
                 }
                 onClick={handleOpen}
-                color={iconColorActive}
+                color={palette.crystalBlue}
               />
             )}
             {taskListRestrictions?.createTask !== DISABLED && (
