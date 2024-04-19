@@ -51,6 +51,7 @@ import {
   DrawerMyListsLabel,
   DrawerListsItemLoader,
   ColorIndicator,
+  MenuWrapper,
 } from './styled';
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
@@ -208,11 +209,13 @@ const ListsSubmenu = () => {
                   }
                 >
                   {['INBOX', 'PUBLIC'].includes(list?.listType) ? (
-                    <Box m={2} />
+                    <Box ml={3} />
                   ) : (
-                    <ListOptionsMenu list={list}>
-                      <MoreVert color="primary" />
-                    </ListOptionsMenu>
+                    <MenuWrapper>
+                      <ListOptionsMenu list={list}>
+                        <MoreVert color="primary" />
+                      </ListOptionsMenu>
+                    </MenuWrapper>
                   )}
                   {list.color && (
                     <Box mr={1}>
@@ -279,11 +282,13 @@ const ListsSubmenu = () => {
                     {...provided.dragHandleProps}
                   >
                     {['INBOX', 'PUBLIC'].includes(list?.listType) ? (
-                      <Box m={2} />
+                      <Box ml={3} />
                     ) : (
-                      <ListOptionsMenu list={list}>
-                        <MoreVert color="primary" />
-                      </ListOptionsMenu>
+                      <MenuWrapper>
+                        <ListOptionsMenu list={list}>
+                          <MoreVert color="primary" />
+                        </ListOptionsMenu>
+                      </MenuWrapper>
                     )}
                     {list.color && (
                       <Box mr={1}>
