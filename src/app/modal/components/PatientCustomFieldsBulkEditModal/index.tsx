@@ -5,9 +5,9 @@ import { Box, Stack, Typography } from '@mui/material';
 import difference from 'ramda/src/difference';
 import { yupResolver } from '@hookform/resolvers/yup';
 import AddBoxIcon from '@mui/icons-material/AddBox';
-import { Button as MuiButton } from '@mui/material';
+import { Button } from '@mui/material';
+import LoadingButton from '@mui/lab/LoadingButton';
 
-import Button from 'components/common/Button/Button';
 import * as CustomFieldsApi from '@/app/api/custom-fields-api';
 import { bulkEditPatientsCustomFields } from '@/app/api/patients-api';
 
@@ -95,10 +95,11 @@ export default function PatientCustomFieldsBulkEditModal({
 
   const onSubmit = handleSubmit(async (data) => {
     try {
-      const formattedMetaData = formatMetaData(getValues('metaData'));
+      const formattedMetaData = formatMetaData(data.metaData);
       if (!formattedMetaData) {
         return;
       }
+
       const payload = {
         metaData: formattedMetaData,
         patientIdentifiers,
@@ -143,30 +144,31 @@ export default function PatientCustomFieldsBulkEditModal({
               alignItems: 'center',
             }}
           >
-            <MuiButton
+            <Button
               variant="text"
               startIcon={<AddBoxIcon />}
               onClick={handleAddField}
             >
               Add Field
-            </MuiButton>
+            </Button>
             <Stack
               spacing={1}
               direction="row"
               alignItems="center"
               justifyContent="flex-end"
             >
-              <Button variant="secondary" size="small" onClick={closeModal}>
+              <Button variant="outlined" size="small" onClick={closeModal}>
                 Cancel
               </Button>
-              <Button
-                variant="primary"
+              <LoadingButton
+                variant="contained"
                 size="small"
                 type="submit"
                 disabled={saveDisabled}
+                loading={isSubmitting}
               >
                 Save
-              </Button>
+              </LoadingButton>
             </Stack>
           </Box>
         </form>
