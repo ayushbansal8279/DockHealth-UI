@@ -34,7 +34,6 @@ const CustomField = ({
   taskIdentifier,
   task,
   popoverZindex,
-  // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const containerReference = useRef(null);
   const { identifier, name, placeholder, fieldType, options, displayOptions } =

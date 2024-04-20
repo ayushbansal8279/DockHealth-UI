@@ -7,6 +7,7 @@ import {
 
 import BulkEditBar from 'components/bulk-edit/BulkEditBar/BulkEditBar';
 import BulkEditOption from 'components/bulk-edit/BulkEditOption/BulkEditOption';
+import * as PatientsActions from 'actions/patients-actions';
 
 import DuplicateIcon from 'img/bulk-edit/DuplicateIcon';
 import CompleteIcon from 'img/bulk-edit/CompleteIcon';
@@ -60,6 +61,7 @@ const BulkEditOptionsBar = ({ selectedPatients = [], onClose }) => {
         ),
         onSave: () => {
           dispatch(closeModalAction());
+          dispatch(PatientsActions.getCurrentPatients());
           // todo: update patients list data
         },
       }),

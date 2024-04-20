@@ -1,10 +1,11 @@
 import React, { useMemo } from 'react';
 import { ICustomField } from '@/app/types/CustomField';
-import { Input, Stack, IconButton, Grid, Box } from '@mui/material';
+import { IconButton, Grid, Box } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 
 import Select from 'components/common/Select/Select';
 import CustomField from '@/app/components/common/CustomField/CustomField';
+import Input from 'components/common/Input/Input';
 
 interface Props {
   customFields: ICustomField[];
@@ -48,13 +49,15 @@ export default function FormFieldItem({
       </Grid>
       <Grid item xs={7} sx={{ display: 'flex', alignItems: 'center' }}>
         <Box flexGrow={1}>
-          {selectedIdx >= 0 && (
+          {selectedIdx >= 0 ? (
             <CustomField
               readOnly={false}
               field={customFields[selectedIdx]}
               fieldsGroupKey="metaData"
               popoverZindex={5000}
             />
+          ) : (
+            <Input disabled />
           )}
         </Box>
         <IconButton aria-label="delete" onClick={onRemove}>

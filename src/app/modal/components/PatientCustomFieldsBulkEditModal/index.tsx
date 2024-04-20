@@ -5,10 +5,11 @@ import { Box, Stack, Typography } from '@mui/material';
 import difference from 'ramda/src/difference';
 import { yupResolver } from '@hookform/resolvers/yup';
 import AddBoxIcon from '@mui/icons-material/AddBox';
+import { Button as MuiButton } from '@mui/material';
 
 import Button from 'components/common/Button/Button';
 import * as CustomFieldsApi from '@/app/api/custom-fields-api';
-import { bulkEditPatientsCustomFields } from '@/app/api/patients-api.js';
+import { bulkEditPatientsCustomFields } from '@/app/api/patients-api';
 
 import { ICustomField } from '@/app/types/CustomField';
 import { FormProvider, useForm } from 'react-hook-form';
@@ -142,15 +143,13 @@ export default function PatientCustomFieldsBulkEditModal({
               alignItems: 'center',
             }}
           >
-            <Box>
-              <Button
-                variant="text"
-                startIcon={<AddBoxIcon />}
-                onClick={handleAddField}
-              >
-                Add Field
-              </Button>
-            </Box>
+            <MuiButton
+              variant="text"
+              startIcon={<AddBoxIcon />}
+              onClick={handleAddField}
+            >
+              Add Field
+            </MuiButton>
             <Stack
               spacing={1}
               direction="row"
