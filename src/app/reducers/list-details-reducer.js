@@ -329,32 +329,6 @@ const ListDetailsReducer = (state = initialState, action) => {
           ...state.tasksMap,
           ...newMap,
         },
-        // listGroups: state.listGroups.map((g) => {
-        //   if (
-        //     g.taskGroupIdentifier ===
-        //     groupOfTasks.taskGroups?.[0]?.groupIdentifier
-        //   ) {
-        //     const taskCount = groupOfTasks.taskGroups?.[0]?.tasks.filter(
-        //       (t) => t.itemType === 'TASK',
-        //     ).length;
-        //     const taskInWorkflowsCount = groupOfTasks.taskGroups?.[0]?.tasks
-        //       .filter((t) => t.itemType === 'BUNDLE')
-        //       .reduce(
-        //         (accumulator, current) =>
-        //           accumulator +
-        //           (current.tasksCount || 0) -
-        //           (current.tasksCompletedCount || 0),
-        //         0,
-        //       );
-        //     const grpState = {
-        //       ...g,
-        //       tasks: [...(g.tasks || []), groupOfTasks.taskGroups?.[0]?.tasks.map((task) => task.identifier)],
-        //       // metricValue: taskCount + taskInWorkflowsCount,
-        //     };
-        //     return grpState;
-        //   }
-        //   return g;
-        // }),
       };
     }
 
@@ -371,7 +345,7 @@ const ListDetailsReducer = (state = initialState, action) => {
         isFetching: true,
         tasks: [],
         completedTasks: [],
-        showingCompletedTasks: false,
+        // showingCompletedTasks: false,
       };
     }
 

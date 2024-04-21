@@ -38,6 +38,7 @@ import {
   GET_ARCHIVED_TASKLIST_SUCCESS,
   UPDATE_LIST_VIEW_SETUP,
   INITIALIZE_TASK_LIST_STATE,
+  UPDATE_TASK_STATUS_TO_FILTER,
   CLEAR_TASK_LIST_STATE,
   GET_CURRENT_TASK_LIST_FAILURE,
   GET_CURRENT_TASK_LIST,
@@ -106,6 +107,13 @@ const TaskListReducer = (state = initialState, action) => {
         currentTaskListIdentifier: action.taskListIdentifier,
         currentTaskList: null,
         currentTasksStatus: action.currentTasksStatus,
+      };
+    }
+
+    case UPDATE_TASK_STATUS_TO_FILTER: {
+      return {
+        ...state,
+        currentTasksStatus: action.payload,
       };
     }
 
