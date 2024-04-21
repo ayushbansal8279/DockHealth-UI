@@ -4,7 +4,6 @@ import {fontSizes } from 'styles/font';
 import palette from 'styles/palette';
 
 export const AddPlaceholder = styled.div`
-  margin-top: 8px;
   color: ${palette.lightGrey};
 
   &::first-letter {
