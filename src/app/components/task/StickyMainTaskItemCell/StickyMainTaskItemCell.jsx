@@ -82,9 +82,9 @@ const StickyMainTaskItemCell = styled.div`
       backgroundColor || palette.coolGrey4};
     position: absolute;
     left: -101px;
-    top: -1px;
+    top: -3px;
     width: 100px;
-    height: calc(100% + 2px);
+    height: calc(100% + 4px);
     z-index: -1;
 
     @media print {

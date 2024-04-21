@@ -35,6 +35,7 @@ export interface Props extends Segment {
   isLastChild: boolean;
   bgColor: boolean;
   isLastTaskOfGroup: boolean;
+  isLastGroupOfList: boolean;
 }
 
 export const VTaskContext = createContext({
@@ -49,6 +50,7 @@ function VTask(
     isLastChild,
     isLastTaskOfGroup,
     bgColor,
+    isLastGroupOfList,
     ...record
   }: Props,
   // eslint-disable-next-line unicorn/prevent-abbreviations, @typescript-eslint/no-unused-vars
@@ -150,6 +152,7 @@ function VTask(
             subtaskQuickAddOpen={subtaskQuickAddOpen}
             addWorkflowTask={addWorkflowTask}
             subTaskExpanded={!metadata.collapsed && task?.subtasks?.length}
+            isLastGroupOfList={isLastGroupOfList}
           >
             <VTaskContext.Provider value={contextValue}>
               <StandardTaskItem
@@ -172,7 +175,17 @@ function VTask(
                 width: '100%',
                 background: bgColor ? palette.aliceBlue : '',
                 paddingBottom:
-                  isLastTaskOfGroup && !addWorkflowTask ? '20px' : '0px',
+                  !addWorkflowTask
+                    ? isLastTaskOfGroup
+                      ? bgColor
+                        ? '20px'
+                        : isLastGroupOfList
+                        ? '20px'
+                        : '0px'
+                      : isTaskTemplate && isLastChild
+                      ? '10px'
+                      : ''
+                    : '',
               }}
             >
               <Sc.QuickAddContainer>
@@ -194,7 +207,17 @@ function VTask(
                   width: '100%',
                   background: bgColor ? palette.aliceBlue : '',
                   paddingBottom:
-                    isLastTaskOfGroup || addWorkflowTask ? '20px' : '0px',
+                    addWorkflowTask
+                      ? isLastTaskOfGroup
+                        ? bgColor
+                          ? '20px'
+                          : isLastGroupOfList
+                          ? '20px'
+                          : '0px'
+                        : isTaskTemplate && isLastChild
+                        ? '10px'
+                        : ''
+                      : '0px',
                 }}
               >
                 <Sc.WorkflowQuickAddTaskContainer>

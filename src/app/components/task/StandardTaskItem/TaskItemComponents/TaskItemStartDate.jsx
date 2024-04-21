@@ -59,14 +59,6 @@ const TaskItemStartDate = ({ task, isDateHover, disabled = false }) => {
                   <div style={{ display: 'flex' }}>
                     {' '}
                     <TaskIcon type="calendar" isActive />
-                    <p
-                      style={{
-                        padding: `3px ${spacing.smallPlus}`,
-                        // color: `${palette.coolGrey1}`,
-                      }}
-                    >
-                      None
-                    </p>
                   </div>
                 </AddPlaceholder>
               </Tooltip>

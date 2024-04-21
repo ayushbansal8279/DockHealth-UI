@@ -11,7 +11,8 @@ const BulkEditAssignToOption = ({
   selectedTaskListIdentifiers,
   isDisabled,
 }) => {
-  const joinedSelectedMembers = useMemo(() => {
+  console.log('selectedTasks', selectedTasks);
+  const selectedMemebers = useMemo(() => {
     const { parentTasks = [], subtasks = [] } = selectedTasks || {};
 
     const allSelectedTasks = [...parentTasks, ...subtasks];
@@ -30,6 +31,8 @@ const BulkEditAssignToOption = ({
     }, []);
   }, [selectedTasks]);
 
+  console.log('joinedSelectedMembers', selectedMemebers);
+
   const containPublicListType = useMemo(() => {
     const { parentTasks = [], subtasks = [] } = selectedTasks || {};
     const allSelectedTasks = [...parentTasks, ...subtasks];
@@ -47,11 +50,7 @@ const BulkEditAssignToOption = ({
       content={({ closePopover }) => (
         <MultiAssignMembersList
           taskListIdentifiers={selectedTaskListIdentifiers}
-          selectedMembers={
-            selectedTasks?.parentTasks?.length === 1
-              ? joinedSelectedMembers
-              : []
-          }
+          selectedMembers={selectedMemebers}
           onSelect={handleChangeAssigneTasks}
           isDisabled={isDisabled}
           onError={closePopover}

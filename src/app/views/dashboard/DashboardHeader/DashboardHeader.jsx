@@ -196,7 +196,7 @@ const DashboardHeader = () => {
   );
 
   const handleQuickFilterCreate = useCallback(
-    (name) =>
+    (name, selectedFilters) =>
       dispatch(createQuickFilter(name, { contextType }, selectedFilters)),
     [contextType, dispatch, selectedFilters],
   );

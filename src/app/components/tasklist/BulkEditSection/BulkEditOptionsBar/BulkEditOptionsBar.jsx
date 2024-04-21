@@ -103,13 +103,12 @@ const BulkEditOptionsBar = ({
     organizationCustomFieldsSelector,
   );
   const listCustomFields = useSelector(listCustomFieldsSelector);
-  const allTaskCustomFields = organizationCustomFields?.concat(
-    listCustomFields,
-  );
+  const allTaskCustomFields =
+    organizationCustomFields?.concat(listCustomFields);
 
   const allRequiredFieldsExist = useMemo(
     () =>
-      parentTasks.every(parentTask => {
+      parentTasks.every((parentTask) => {
         const incompleteRequiredFields = findIncompleteRequiredFields(
           allTaskCustomFields,
           parentTask,
@@ -777,7 +776,9 @@ const BulkEditOptionsBar = ({
       numberOfSelectedItems={allSelectedTasksLength}
       isDisabled={isDisabled}
       onClose={onClose}
-      includedWorkflow={!!allSelectedTasks.find((t) => t?.itemType === 'BUNDLE')}
+      includedWorkflow={
+        !!allSelectedTasks.find((t) => t?.itemType === 'BUNDLE')
+      }
     >
       <>
         {mergedConfig[BulkEditOptionsConfig.DUPLICATE_OPTION] && (

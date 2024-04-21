@@ -5,7 +5,6 @@ import spacing from 'styles/spacing';
 
 export const Container = styled.div`
   width: 100%;
-  display: flex;
   justify-content: space-between;
 `;
 

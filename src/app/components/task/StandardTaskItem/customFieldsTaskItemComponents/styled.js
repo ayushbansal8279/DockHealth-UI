@@ -246,7 +246,6 @@ export const ClickablePatient = styled.span`
 
 export const StandardTaskItemContainer = styled.div`
   position: relative;
-  background-color: ${(props) =>
   background-color: ${props =>
     // eslint-disable-next-line unicorn/no-nested-ternary
     props.isSelected

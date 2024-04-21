@@ -17,11 +17,10 @@ const TaskTemplateDate = ({ dateTime, title, workflow }) => {
           hasRecurringSchedule={false}
           format="MM/DD/YY"
           showTime
-          timeFormat="HH:mm"
+          // timeFormat="HH:mm"
         />
       ) : (
-        <>
-        </>
+        <></>
       )}
     </Tooltip>
   );

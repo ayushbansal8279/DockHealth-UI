@@ -148,13 +148,15 @@ const WorkflowDrawer = () => {
                     }
                   />
                 </Grid>
-                <Grid item mt={-3} ml={1.2} xs={12}>
-                  <ReminderSection
-                    disabled={
-                      !!isTemplateTask || restrictions?.reminder === DISABLED
-                    }
-                  />
-                </Grid>
+                {selectedWorkflow.dueDateTime && (
+                  <Grid item mt={-3} ml={1.2} xs={12}>
+                    <ReminderSection
+                      disabled={
+                        !!isTemplateTask || restrictions?.reminder === DISABLED
+                      }
+                    />
+                  </Grid>
+                )}
                 <Grid item xs={12}>
                   <PrioritySection
                     disabled={restrictions?.priority === DISABLED}
