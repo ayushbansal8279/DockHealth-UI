@@ -52,6 +52,7 @@ const Task = React.memo(
     isLastChild,
     pageBackground,
     isNestedTask,
+    isVirtualTask,
     ...restProps
   }) => {
     const parentTaskReference = useRef(null);
@@ -221,6 +222,7 @@ const Task = React.memo(
         ref={parentTaskReference}
         noMargin={noMargin}
         {...draggableProps}
+        isVirtualTask={isVirtualTask}
       >
         <TaskContainer ref={innerRef}>
           <TaskItem

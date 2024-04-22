@@ -27,6 +27,9 @@ function VQuickAddTask(
   const currentOrganization = useSelector(selectedUserOrganizationSelector);
   const { visibleWidth, droppableHeaderWidth } =
     useVirtualTaskListScrollContext();
+  const screenWidth = typeof window !== 'undefined' ? window.innerWidth : 1920;
+  const number = droppableHeaderWidth;
+  const percentage = ((!!number ? number : 0) / screenWidth) * 100;
 
   const quickTaskInputValidator = (value: string) => {
     if ([...value]?.filter((char) => char !== ' ').length < 2)
@@ -80,12 +83,14 @@ function VQuickAddTask(
 
   return (
     <Sc.VQuickAddTaskContainer
-      $width={droppableHeaderWidth ? `${droppableHeaderWidth}px` : '100%'}
+      // $width={droppableHeaderWidth ? `${droppableHeaderWidth}px` : '100%'}
+      $width={percentage > 100 ? `${droppableHeaderWidth}px` : '100%'}
     >
       <Sc.VQuickAddTask
         ref={ref}
         {...register}
-        $width={visibleWidth ? `${visibleWidth - 60}px` : '100%'}
+        $width={visibleWidth ? `${visibleWidth - 87}px` : '100%'}
+        // $width={visibleWidth ? `${visibleWidth - 60}px` : '100%'}
       >
         <QuickAddTaskInput
           // @ts-ignore

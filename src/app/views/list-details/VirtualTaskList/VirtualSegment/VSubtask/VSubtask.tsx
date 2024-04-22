@@ -123,7 +123,7 @@ function VSubtask(
         <>
           <div
             style={{
-              width: '100%',
+              width: '104.6%',
               background: bgColor ? palette.aliceBlue : '',
               paddingBottom:
                 isLastTaskOfGroup && !subtaskQuickAddOpen && !addWorkflowTask
@@ -168,6 +168,7 @@ function VSubtask(
                 origin={TaskOrigin.LIST}
                 isNestedTask
                 pageBackground={bgColor ? palette.aliceBlue : ''}
+                isVirtualTask
               />
             </Sc.VSubtask>
           </div>
@@ -203,16 +204,15 @@ function VSubtask(
               style={{
                 width: '100%',
                 background: bgColor ? palette.aliceBlue : '',
-                paddingBottom:
-                  isLastTaskOfGroup
-                    ? isLastSubtaskParentTask
-                      ? bgColor
-                        ? '20px'
-                        : isLastGroupOfList
-                        ? '20px'
-                        : '0px'
-                      : '10px'
-                    : '0px',
+                paddingBottom: isLastTaskOfGroup
+                  ? isLastSubtaskParentTask
+                    ? bgColor
+                      ? '20px'
+                      : isLastGroupOfList
+                      ? '20px'
+                      : '0px'
+                    : '10px'
+                  : '0px',
               }}
             >
               <Sc.WorkflowQuickAddTaskContainer>

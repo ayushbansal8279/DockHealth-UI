@@ -730,6 +730,8 @@ export const ParentTaskContainer = styled.div`
   &:not(:last-child) {
     margin-bottom: ${({ noMargin }) => (noMargin ? -1 : 0)}px;
   }
+  width: ${({ isVirtualTask }) => (isVirtualTask ? '1000%' : '')};
+  padding-right: ${({ isVirtualTask }) => (isVirtualTask ? '70px' : '')};
 `;
 
 export const TaskContainer = styled.div``;
