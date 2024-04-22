@@ -273,7 +273,7 @@ const ListDetailsTasks = ({
           !(workflowPopoverOpen || patientPopoverOpen) ? handleScroll : () => {}
         }
       >
-        <VirtualTaskList tasksToMap={tasksToMap} groupedTasks={groupedTasks} />
+        <VirtualTaskList groupedTasks={groupedTasks} />
       </div>
     );
   };
@@ -430,29 +430,6 @@ const ListDetailsTasks = ({
                                         origin={TaskOrigin.LIST}
                                         viewSetup={viewSetup}
                                       />
-                                      {/* ) : (
-                                        <TaskTemplateGroup
-                                          isCompletedTab={isCompletedView}
-                                          viewSetup={viewSetup}
-                                          isStartedDnD={
-                                            draggedId === task.identifier
-                                          }
-                                          draggableProvided={draggableProvided}
-                                          templateGroup={task}
-                                          groupHasMultipleAssignees={
-                                            groupHasMultipleAssignees
-                                          }
-                                          isFullView={isFullView}
-                                          groupDragAndDropDisabled={
-                                            isCompletedGroup ||
-                                            dragAndDropDisabled
-                                          }
-                                          iconColorActive={
-                                            iconColorActiveItem?.value
-                                          }
-                                          origin={TaskOrigin.LIST}
-                                        />
-                                      )} */}
                                     </>
                                   )}
                                 </Draggable>
@@ -555,7 +532,7 @@ const ListDetailsTasks = ({
                     }
                     placeholder={messages.placeholder}
                     closeOnEnter
-                  ></GroupNameSection>
+                  />
                 </StickyContainer>
               )}
           </DragDropContext>

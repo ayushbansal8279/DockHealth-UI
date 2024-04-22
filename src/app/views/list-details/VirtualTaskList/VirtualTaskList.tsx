@@ -59,6 +59,7 @@ const convert = (
 };
 
 function VirtualTaskList({ groupedTasks }: Props) {
+  console.log('groupedTasks', groupedTasks);
   const [collapseMap, collapseDispatch] = useReducer(
     (map: Record<string, boolean>, [id, value]: [string, boolean]) => {
       map[id] = value;
@@ -108,19 +109,9 @@ function VirtualTaskList({ groupedTasks }: Props) {
   };
 
   const nodes: Node[] = useMemo(() => {
-    // return [
-    //   convert(
-    //     uniqueId().toString(),
-    //     VAddGroup,
-    //     'AddGroup',
-    //     false,
-    //     {},
-    //     [],
-    //     true,
-    //   ),
-    // ].concat(
     return listGroups
       .map((group, index) => {
+        // todo error: groupedTasks[i].groupIdentifier is changed to 'DEFAULT' somewhere
         const groupTasks = groupedTasks
           ? groupedTasks.find(
               (groupedTask) =>
@@ -262,7 +253,6 @@ function VirtualTaskList({ groupedTasks }: Props) {
     const xs2 = xs.slice();
     xs2.splice(xs.indexOf(draggableId), 1);
     xs2.splice(destination?.index!, 0, draggableId);
-    // console.log('handleDragEnd', destination, source, xs, xs2);
     dispatch(reorderTasksInGroup({ destination, source }));
   };
 

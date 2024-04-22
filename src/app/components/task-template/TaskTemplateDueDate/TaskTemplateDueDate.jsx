@@ -8,7 +8,6 @@ import { updatePartialWorkflow } from 'actions/task-template-actions';
 import { ReminderType } from 'helpers/task-helpers';
 import { isWorkflowDueDateOverdue } from 'helpers/workflow-helpers';
 import { useDispatch } from 'react-redux';
-import spacing from 'styles/spacing';
 import { AddPlaceholder } from './styled';
 
 const TaskTemplateDueDate = (props) => {
@@ -40,10 +39,6 @@ const TaskTemplateDueDate = (props) => {
         />
       )}
     >
-      {/* <Tooltip
-        placement="top"
-        title={dueDateTime ? 'Edit due date' : 'Add Due Date'}
-      > */}
       {dueDateTime ? (
         <DateLabel
           date={dueDateTime}
@@ -58,20 +53,12 @@ const TaskTemplateDueDate = (props) => {
               <AddPlaceholder>
                 <div style={{ display: 'flex' }}>
                   <TaskIcon type="calendar" isActive={true} />
-                  <p
-                    style={{
-                      padding: `2px ${spacing.smallPlus}`,
-                    }}
-                  >
-                    None
-                  </p>
                 </div>
               </AddPlaceholder>
             </Tooltip>
           ) : null}
         </>
       )}
-      {/* </Tooltip> */}
     </TaskItemPopover>
   );
 };

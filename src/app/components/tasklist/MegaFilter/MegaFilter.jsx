@@ -46,6 +46,7 @@ const MegaFilter = ({
   const [isSavePopupOpen, setSavePopupOpen] = useState(false);
   const [quickFilterIdentifier, setQuickFilterIdentifier] = useState('');
   const [editIdentifier, setEditIdentifier] = useState('');
+  const [filteredData, setFilteredData] = useState({});
 
   const clearFilters = () => {
     onSelectFilters(null);
@@ -153,6 +154,8 @@ const MegaFilter = ({
             onQuickFilterCreate={onQuickFilterCreate}
             handleSaveQuickFilter={handleSaveQuickFilter}
             quickFilterIdentifier={quickFilterIdentifier}
+            setFilteredData={setFilteredData}
+            filteredData={filteredData}
           ></NewFilterContainer>
           <Box p={1} />
           {/* Kept here for Future Refrence */}

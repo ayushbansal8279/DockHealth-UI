@@ -15,6 +15,7 @@ import {
   PopupContainer,
 } from './style';
 import UserAvatar from '../../user/UserAvatar/UserAvatar';
+import DateRangeOptions from '../DateRangeOptions/DateRangeOptions';
 
 const FilterSelect = ({
   finalFilter,
@@ -22,12 +23,16 @@ const FilterSelect = ({
   setFilter,
   filter,
   menuOptions,
+  filteredData,
+  setFilteredData,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [optionName, setOptionName] = useState('');
   const [filterdUser, setFilterdUser] = useState(filterOptions);
   const inputRef = useRef(null);
   const containerRef = useRef(null);
+  const [startDate, setStartDate] = useState('');
+  const [dueDate, setDueDate] = useState('');
 
   useEffect(() => {
     setFilterdUser([
@@ -42,6 +47,33 @@ const FilterSelect = ({
       if (item.id === filter) setOptionName(item.label);
     });
   }, [filter]);
+
+  useEffect(() => {
+    if (dueDate !== null && startDate !== null) {
+      let currentFilter = { ...filteredData };
+      Object.entries(currentFilter).forEach(([key, value]) => {
+        if (key === 'taskDueDateOptions') {
+          if (
+            currentFilter[key].options &&
+            currentFilter[key].options.length > 0
+          ) {
+            if (currentFilter[key].options.includes('DUE_DATE_RANGE')) {
+              const index =
+                currentFilter[key].options.indexOf('DUE_DATE_RANGE');
+              currentFilter[key].options.splice(index, 1);
+              currentFilter[key] = {
+                dateStart: startDate,
+                dateEnd: dueDate,
+                options: currentFilter[key].options,
+              };
+            }
+          }
+        }
+      });
+
+      setFilteredData(currentFilter);
+    }
+  }, [dueDate, startDate, setStartDate, setDueDate]);
 
   const handleSelectOption = (item) => {
     inputRef.current.textContent = '';
@@ -102,7 +134,17 @@ const FilterSelect = ({
                       ''
                     )}
                   </AvatarContainer>
-                  <Lable>{item.displayValue}</Lable>
+                  {item.displayValue === 'Range' &&
+                  item.key === 'DUE_DATE_RANGE' ? (
+                    <DateRangeOptions
+                      dueDate={dueDate}
+                      setDueDate={setDueDate}
+                      startDate={startDate}
+                      setStartDate={setStartDate}
+                    />
+                  ) : (
+                    <Lable>{item.displayValue}</Lable>
+                  )}
                 </DisplayValue>
                 <div onClick={() => handleRemoveAssign(item)}>
                   <img

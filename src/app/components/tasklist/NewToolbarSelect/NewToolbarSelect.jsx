@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Box } from '@mui/material';
 import Button from 'components/common/v2/Button/Button';
 import zIndex from 'styles/z-index';
@@ -6,6 +6,7 @@ import { Select, SelectWrapper, SelectIcon, OptionsMenu } from './styled';
 import Switch from '@mui/material/Switch';
 import { useDispatch } from 'react-redux';
 import { getCurrentListTasks } from '@/app/actions/list-details-actions';
+import { updateTaskStatusToFilter } from 'actions/task-list-actions';
 
 const NewToolbarSelect = ({
   options,
@@ -35,7 +36,8 @@ const NewToolbarSelect = ({
         : checkedCompleted
         ? 'COMPLETE'
         : 'INCOMPLETE';
-    dispatch(getCurrentListTasks({ status: status }));
+    dispatch(updateTaskStatusToFilter(status));
+    dispatch(getCurrentListTasks());
     setValue(
       checkedIncomplete && checkedCompleted
         ? 'All Tasks'
@@ -46,7 +48,7 @@ const NewToolbarSelect = ({
         : 'Incomplete Task',
     );
     setIsOpen(false);
-  });
+  }, [checkedCompleted, checkedIncomplete, dispatch]);
 
   useEffect(() => {
     setCheckedIncomplete(true);
@@ -107,12 +109,7 @@ const NewToolbarSelect = ({
             </div>
             <hr style={{ margin: '6px 0px' }} />
             <OptionsMenu>
-              <Button
-                onClick={() => {
-                  handleChangeTasksStatus();
-                }}
-                variant="primary-red"
-              >
+              <Button onClick={handleChangeTasksStatus} variant="primary-red">
                 Apply
               </Button>
             </OptionsMenu>

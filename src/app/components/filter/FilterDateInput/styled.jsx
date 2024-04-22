@@ -20,6 +20,7 @@ export const DateInput = styled(({ hasError, ...props }) => (
   overflow: auto;
   color: ${palette.coolGrey2};
   font-size: ${fontSizes.small};
+  height: 25px;
 
   ${({ value }) => value && `color: ${palette.mediumGrey};`}
 
