@@ -1,6 +1,5 @@
 /* eslint-disable import/extensions */
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { AddPlaceholder } from 'components/task/styled';
 import { ColorIndicator, DropdownBox } from './styled';
 import { ListItemText, MenuItem, Select } from '@mui/material';
 
@@ -12,6 +11,7 @@ const TaskItemDropdown = ({
 }) => {
   const isRequired = displayOptions.includes('TASK_REQUIRED');
   const [value, setValue] = useState(initialValue);
+
   const options = useMemo(() => {
     const o =
       initialOptions?.map(({ identifier, name, color, tag }) => ({
