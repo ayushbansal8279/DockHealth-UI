@@ -14,4 +14,9 @@ export const VTaskHeader = styled('div')`
   & > * > * {
     left: 54px;
   }
+  background: white;
+  border-bottom: 1px solid ${palette.coolGrey3};
+  border-right: 1px solid ${palette.coolGrey3};
+  border-top: 1px solid ${palette.coolGrey3};
+  margin-right: 15.5px;
 `;

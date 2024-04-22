@@ -102,6 +102,9 @@ const TasksGroup = ({
   const dispatch = useDispatch();
   const { droppableHeaderWidth, visibleWidth } =
     useVirtualTaskListScrollContext();
+  const screenWidth = typeof window !== 'undefined' ? window.innerWidth : 1920;
+  const number = droppableHeaderWidth;
+  const percentage = ((!!number ? number : 0) / screenWidth) * 100;
 
   const { viewType, isOpen, switchOpen, setViewType } = listSectionSavedState({
     sessionStorageKey: groupSessionStorageKey,
@@ -274,7 +277,8 @@ const TasksGroup = ({
 
   return (
     <TasksGroupContainer
-      $width={droppableHeaderWidth ? `${droppableHeaderWidth}px` : '100%'}
+      $width={percentage > 100 ? `${droppableHeaderWidth + 70}px` : '100%'}
+      // $width={droppableHeaderWidth ? `${droppableHeaderWidth}px` : '100%'}
       bgColor={bgColor}
     >
       <TasksGroupHeader
