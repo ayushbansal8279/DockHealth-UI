@@ -149,7 +149,7 @@ const WorkflowDrawer = () => {
                   />
                 </Grid>
                 {selectedWorkflow.dueDateTime && (
-                  <Grid item mt={-3} ml={1.2} xs={12}>
+                  <Grid item mt={-5} ml={14.5} xs={12}>
                     <ReminderSection
                       disabled={
                         !!isTemplateTask || restrictions?.reminder === DISABLED

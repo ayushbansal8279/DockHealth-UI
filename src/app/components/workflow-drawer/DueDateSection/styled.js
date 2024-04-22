@@ -93,5 +93,5 @@ export const SubTitle = styled.div`
 export const NoDateContainer = styled.div`
   display: flex;
   align-items: center;
-  margin-left: 8px;
+  margin-left: 5px;
 `;
