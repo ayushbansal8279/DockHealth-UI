@@ -41,17 +41,3 @@ export const createMetaDataObjectToSend = (metaDataField) => {
 
   return null;
 };
-
-export const getSortedCategorizedCustomFields = (fields) => {
-  const sortedFields = [...fields].sort((a, b) => a.sortIndex - b.sortIndex);
-  const res = {};
-
-  for (const field of sortedFields) {
-    if (!res[field.fieldCategoryType]) {
-      res[field.fieldCategoryType] = [];
-    }
-    res[field.fieldCategoryType].push(field);
-  }
-
-  return res;
-};

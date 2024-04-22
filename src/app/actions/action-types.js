@@ -563,7 +563,7 @@ export const GET_CURRENT_PATIENTS_SUCCESS = 'GET_CURRENT_PATIENTS_SUCCESS';
 export const GET_CURRENT_PATIENTS_FAILURE = 'GET_CURRENT_PATIENTS_FAILURE';
 export const CLEAR_PATIENTS = 'CLEAR_PATIENTS';
 
-// keep selected patients in the patients table, do not refresh the table.
+// NOTE: keep selected patients in the patients table, do not refresh the table.
 // used to refetch patients data after update
 export const SILENTLY_GET_CURRENT_PATIENTS = 'SILENTLY_GET_CURRENT_PATIENTS';
 export const SILENTLY_GET_CURRENT_PATIENTS_SUCCESS =

@@ -57,7 +57,7 @@ export default function FormFieldItem({
               popoverZindex={5000}
             />
           ) : (
-            <Input disabled />
+            <Input disabled /> // placeholder
           )}
         </Box>
         <IconButton aria-label="delete" onClick={onRemove}>

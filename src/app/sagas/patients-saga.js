@@ -250,7 +250,9 @@ function* getCurrentPatients() {
         patients,
       });
     }
-  } catch {}
+  } catch {
+    // error is handled inside fetchCurrentPatients
+  }
 }
 
 function* silentlyGetCurrentPatients() {
@@ -262,7 +264,9 @@ function* silentlyGetCurrentPatients() {
         patients,
       });
     }
-  } catch {}
+  } catch {
+    // error is handled inside fetchCurrentPatients
+  }
 }
 
 function* searchPatients({ searchTerm }) {
