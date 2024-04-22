@@ -191,7 +191,7 @@ function* getCurrentPatientsListDetails() {
   }
 }
 
-function* getCurrentPatients() {
+function* fetchCurrentPatients() {
   try {
     const currentPatientsListIdentifier = yield select(
       currentPatientsListIdentifierSelector,
@@ -232,16 +232,37 @@ function* getCurrentPatients() {
       );
     }
 
-    yield put({
-      type: ActionTypes.GET_CURRENT_PATIENTS_SUCCESS,
-      patients,
-    });
+    return patients;
   } catch {
     yield put(showGlobalErrorAlert());
     yield put({
       type: ActionTypes.GET_CURRENT_PATIENTS_FAILURE,
     });
   }
+}
+
+function* getCurrentPatients() {
+  try {
+    const patients = yield call(fetchCurrentPatients);
+    if (patients) {
+      yield put({
+        type: ActionTypes.GET_CURRENT_PATIENTS_SUCCESS,
+        patients,
+      });
+    }
+  } catch {}
+}
+
+function* silentlyGetCurrentPatients() {
+  try {
+    const patients = yield call(fetchCurrentPatients);
+    if (patients) {
+      yield put({
+        type: ActionTypes.SILENTLY_GET_CURRENT_PATIENTS_SUCCESS,
+        patients,
+      });
+    }
+  } catch {}
 }
 
 function* searchPatients({ searchTerm }) {
@@ -404,12 +425,15 @@ export default function* watchPatients() {
     getCurrentPatientsListDetails,
   );
   yield takeLatest(ActionTypes.GET_CURRENT_PATIENTS, getCurrentPatients);
+  yield takeLatest(
+    ActionTypes.SILENTLY_GET_CURRENT_PATIENTS,
+    silentlyGetCurrentPatients,
+  );
   yield takeLatest(ActionTypes.CLEAR_PATIENTS, clearPatients);
   yield takeLatest(
     ActionTypes.GET_CURRENT_PATIENTS_LIST_FILTER_OPTIONS,
     getCurrentPatientsListFilterOptions,
   );
-  // yield debounce(300, ActionTypes.SEARCH_PATIENTS, searchPatients);
   yield takeLatest(ActionTypes.SEARCH_PATIENTS, searchPatients);
   yield takeLatest([ActionTypes.SET_PATIENTS_SELECTED_FILTERS], filtersChange);
   yield takeLatest([ActionTypes.CLEAR_PATIENTS_FILTERS], clearFilters);

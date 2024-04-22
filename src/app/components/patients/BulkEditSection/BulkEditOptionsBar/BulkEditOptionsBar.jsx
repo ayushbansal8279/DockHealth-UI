@@ -61,8 +61,7 @@ const BulkEditOptionsBar = ({ selectedPatients = [], onClose }) => {
         ),
         onSave: () => {
           dispatch(closeModalAction());
-          dispatch(PatientsActions.getCurrentPatients());
-          // todo: update patients list data
+          dispatch(PatientsActions.silentlyGetCurrentPatients());
         },
       }),
     );
