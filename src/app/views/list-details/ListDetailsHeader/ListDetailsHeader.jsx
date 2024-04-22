@@ -55,6 +55,8 @@ import {
   HeaderSearchContainer,
 } from './styled';
 import { ListPageContext } from '../ListDetailsView';
+import { MoreVert } from '@mui/icons-material';
+import palette from '@/app/styles/palette';
 
 const ListDetailsHeader = (props) => {
   const {
@@ -165,7 +167,7 @@ const ListDetailsHeader = (props) => {
   );
 
   const handleQuickFilterCreate = useCallback(
-    (name,selectedFilters) =>
+    (name, selectedFilters) =>
       dispatch(
         createQuickFilter(name, { taskListIdentifier }, selectedFilters),
       ),
@@ -227,7 +229,7 @@ const ListDetailsHeader = (props) => {
               onClose={() => openList(false)}
               open={isListOpen}
             >
-              {isListOpen ? (
+              {/* {isListOpen ? (
                 <ExpandLessIcon
                   color="primary"
                   fontSize="large"
@@ -239,7 +241,8 @@ const ListDetailsHeader = (props) => {
                   fontSize="large"
                   onClick={() => openList(true)}
                 />
-              )}
+              )} */}
+              <MoreVert sx={{ color: palette.softSteelBlue }} />
             </ListOptionsMenu>
           </LayoutHeader.Title>
         )}
