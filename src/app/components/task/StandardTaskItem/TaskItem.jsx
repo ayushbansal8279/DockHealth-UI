@@ -126,6 +126,8 @@ import {
   TootipCompletedByDate,
   TootipCompletedByName,
   AddPlaceholder,
+  ChildTaskTitle,
+  ParentTaskLink,
 } from '../styled';
 import TaskItemText from './customFieldsTaskItemComponents/TaskItemText/TaskItemText';
 import TaskItemDropdown from './customFieldsTaskItemComponents/TaskItemDropdown/TaskItemDropdown';
@@ -133,6 +135,7 @@ import TaskItemDate from './customFieldsTaskItemComponents/TaskItemDate';
 
 import TaskItemComments from './TaskItemComponents/TaskItemComments';
 import { megaFilterSelector } from '@/app/selectors/mega-filter-selectors';
+import SubtaskIcon from '@/app/img/SubtaskIcon';
 
 const { DISABLED, READ_ONLY } = SINGLE_TASK_RESTRICTIONS_OPTIONS;
 
@@ -523,6 +526,8 @@ const TaskItem = React.memo(
         task?.taskIdentifier,
       ],
     );
+
+    console.log(task);
 
     const [isPatientDataReadOnly] = useState(true);
 
@@ -953,6 +958,16 @@ const TaskItem = React.memo(
       );
     }
 
+    const onParentLabelClick = useCallback(
+      (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        dispatch(openTaskDrawerWithContent(task.parentTask));
+      },
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      [task.parentTask],
+    );
+
     return (
       <>
         <StandardTaskItemPanel
@@ -1073,6 +1088,23 @@ const TaskItem = React.memo(
                       origin={origin}
                       isHover={isCellHover.task}
                     />
+                  )}
+                  {hasParentTaskLabel && (
+                    <Tooltip
+                      placement="bottom"
+                      title={
+                        <>
+                          <ChildTaskTitle>Child Task of: </ChildTaskTitle>
+                          <ParentTaskLink onClick={onParentLabelClick}>
+                            {task.parentTask?.description}
+                          </ParentTaskLink>
+                        </>
+                      }
+                    >
+                      <div style={{ marginRight: '8px' }}>
+                        <SubtaskIcon />
+                      </div>
+                    </Tooltip>
                   )}
                   <div style={{ minWidth: '25px' }}>
                     <Tooltip placement="top" title="Details">
