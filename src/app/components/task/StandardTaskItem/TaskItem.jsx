@@ -527,8 +527,6 @@ const TaskItem = React.memo(
       ],
     );
 
-    console.log(task);
-
     const [isPatientDataReadOnly] = useState(true);
 
     const handlePatientUpdate = useCallback(
