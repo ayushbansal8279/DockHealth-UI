@@ -46,7 +46,7 @@ const AssignedToSection = ({ selectedTask = {}, onSave, disabled }) => {
   }, [assignedToUsers]);
 
   const displayName = (userName) => {
-    return userName.length > 20 ? `${userName.slice(0, 20)} ...` : userName;
+    return userName.length > 16 ? `${userName.slice(0, 16)} ...` : userName;
   };
 
   const handleClearAssignedToUsers = useCallback(() => {

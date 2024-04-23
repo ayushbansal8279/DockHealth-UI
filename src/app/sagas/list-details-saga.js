@@ -161,6 +161,7 @@ function* getCurrentListTasks(prop) {
         : taskGroupsToLoadItem?.value || DEFAULT_TASK_GROUPS_TO_LOAD;
 
     if (searchTerm) {
+      // todo error: gropuedTasks[i].groupIdentifier is changed to 'DEFAULT' 2
       const groupedTasks = yield call(
         ListDetailsApi.searchTasksByTaskList,
         taskListIdentifier,
@@ -181,7 +182,7 @@ function* getCurrentListTasks(prop) {
         groups = action.groups;
       }
       const groupsWithTasks = compose(filter((g) => g.metricValue > 0))(groups);
-      const groupsToGet = groupsWithTasks.slice(0, 5);
+      const groupsToGet = groupsWithTasks.slice(0);
 
       yield all(
         groupsToGet.map(({ taskGroupIdentifier }) =>

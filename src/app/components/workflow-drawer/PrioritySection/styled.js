@@ -30,10 +30,11 @@ export const PriorityFieldContainer = styled.div`
 `;
 
 export const PriorityFlagContainer = styled.div`
-  left: -0.25rem;
-  position: absolute;
-  top: calc(50% + 0.5rem);
-  transform: translate(-100%, -50%);
+  display: flex;
+  align-items: center;
+  height: 35px;
+  border-radius: 8px;
+  background: ${({IsPriority}) => IsPriority && '#F8F8F9'};
 `;
 
 export const Title = styled.div`

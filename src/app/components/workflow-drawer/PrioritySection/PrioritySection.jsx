@@ -8,9 +8,10 @@ import {
 } from 'selectors/workflow-drawer-selectors';
 import { WorkflowDrawerFieldNames } from 'helpers/workflow-drawer-helpers';
 import { updatePartialWorkflow } from 'actions/task-template-actions';
-import { PriorityFieldContainer, Title } from './styled';
+import { PriorityFieldContainer, Title, PriorityFlagContainer } from './styled';
 import { Button, ListItemText, MenuItem, Select } from '@mui/material';
 import PrioritySelectIcon from '@/app/img/PrioritySelectIcon';
+import PriorityHigh from 'img/PriorityHigh';
 
 const PrioritySection = ({ disabled }) => {
   const dispatch = useDispatch();
@@ -59,7 +60,7 @@ const PrioritySection = ({ disabled }) => {
         size="small"
         variant="outlined"
         sx={{
-          marginLeft: '12px',
+          marginLeft: '5px',
           height: '40px',
           borderColor: 'transparent',
           backgroundColor: 'transparent',
@@ -72,42 +73,44 @@ const PrioritySection = ({ disabled }) => {
           setOpen(!open);
         }}
       >
-        <PrioritySelectIcon />
-        <Select
-          sx={{
-            '& .MuiOutlinedInput-notchedOutline': {
-              borderColor: 'transparent',
-            },
-            '&:hover .MuiOutlinedInput-notchedOutline': {
-              borderColor: 'transparent',
-            },
-            '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-              borderColor: 'transparent',
-            },
-            color: '#8492A4',
-          }}
-          size="small"
-          variant="outlined"
-          open={open}
-          onChange={handleOptionChange}
-          value={priority}
-          disabled={disabled}
-          renderValue={(selectedValue) =>
-            PRIORITY_OPTIONS.find((option) => option.value === selectedValue)
-              ?.tag
-          }
-        >
-          {PRIORITY_OPTIONS?.map((option) => {
-            const { OptionIcon } = option;
-            return (
-              <MenuItem key={option.value} value={option.value}>
-                {/* {option.color && <ColorIndicator color={option.color} />} */}
-                {OptionIcon || null}
-                <ListItemText>{option.label}</ListItemText>
-              </MenuItem>
-            );
-          })}
-        </Select>
+        <PriorityFlagContainer IsPriority={priority === 'HIGH'}>
+          {priority === 'HIGH' ? <PriorityHigh /> : <PrioritySelectIcon />}
+          <Select
+            sx={{
+              '& .MuiOutlinedInput-notchedOutline': {
+                borderColor: 'transparent',
+              },
+              '&:hover .MuiOutlinedInput-notchedOutline': {
+                borderColor: 'transparent',
+              },
+              '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                borderColor: 'transparent',
+              },
+              color: '#8492A4',
+            }}
+            size="small"
+            variant="outlined"
+            open={open}
+            onChange={handleOptionChange}
+            value={priority}
+            disabled={disabled}
+            renderValue={(selectedValue) =>
+              PRIORITY_OPTIONS.find((option) => option.value === selectedValue)
+                ?.tag
+            }
+          >
+            {PRIORITY_OPTIONS?.map((option) => {
+              const { OptionIcon } = option;
+              return (
+                <MenuItem key={option.value} value={option.value}>
+                  {/* {option.color && <ColorIndicator color={option.color} />} */}
+                  {OptionIcon || null}
+                  <ListItemText>{option.label}</ListItemText>
+                </MenuItem>
+              );
+            })}
+          </Select>
+        </PriorityFlagContainer>
       </Button>
     </PriorityFieldContainer>
   );

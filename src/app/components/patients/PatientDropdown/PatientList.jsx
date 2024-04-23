@@ -321,7 +321,8 @@ const PatientList = ({
           )}
           <Row key="header-label" readOnly>
             <PatientSelectItem
-              patient={{ name: 'Name', dob: 'Dob', mrn: 'Mrn' }}
+              patient={{ name: 'Name', dob: 'DOB', mrn: 'MRN' }}
+              header
             />
           </Row>
           <SearchPatientsResultList>

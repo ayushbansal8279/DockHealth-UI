@@ -6,6 +6,7 @@ import React, {
   useCallback,
   useState,
 } from 'react';
+import propTypes from 'prop-types';
 import { FieldCharacterLimit, FieldType } from 'helpers/field-type-helpers';
 import { BOOL_SELECT_OPTIONS } from 'helpers/custom-fields-helpers';
 import FormInput from 'components/common/Input/FormInput';
@@ -32,7 +33,7 @@ const CustomField = ({
   fieldsGroupKey,
   taskIdentifier,
   task,
-  // eslint-disable-next-line sonarjs/cognitive-complexity
+  popoverZindex,
 }) => {
   const containerReference = useRef(null);
   const { identifier, name, placeholder, fieldType, options, displayOptions } =
@@ -197,6 +198,7 @@ const CustomField = ({
             label={name}
             placeholder="MM/DD/YYYY"
             inputComponent={DateInput}
+            popoverZindex={popoverZindex}
             name={fieldName}
             onBlur={handleBlur}
             inputRef={inputReference}
@@ -304,6 +306,7 @@ const CustomField = ({
     watch,
     dropdownOptions,
     selected,
+    popoverZindex,
   ]);
 
   return (
@@ -313,6 +316,18 @@ const CustomField = ({
       </CustomFieldErrorContext.Provider>
     </div>
   );
+};
+
+CustomField.propTypes = {
+  readOnly: propTypes.bool,
+  field: propTypes.object.isRequired,
+  selected: propTypes.bool,
+  initialValue: propTypes.oneOfType([propTypes.string, propTypes.number]),
+  onBlur: propTypes.func,
+  fieldsGroupKey: propTypes.string.isRequired,
+  taskIdentifier: propTypes.string,
+  task: propTypes.object,
+  popoverZindex: propTypes.number,
 };
 
 export default CustomField;

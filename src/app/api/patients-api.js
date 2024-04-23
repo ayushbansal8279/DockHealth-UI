@@ -95,6 +95,7 @@ export const PatientBulkActions = {
   RESTORE_PATIENT: 'RESTORE_PATIENT',
   UNARCHIVE_PATIENT: 'UNARCHIVE_PATIENT',
   DELETE_LABEL: 'DELETE_LABEL',
+  EDIT_META_DATA: 'EDIT_META_DATA',
 };
 
 export const patientBulkCreateTask = (payload) => {
@@ -176,3 +177,20 @@ export function updatePatientListPreferences(setup, patientListIdentifier) {
     .put(`patient/list/updateUserPreferences/${patientListIdentifier}`, setup)
     .then(({ data }) => data);
 }
+
+/**
+ *
+ * @param {{ metaData: Array<object>; patientIdentifiers: Array<string>}} payload
+ * @returns
+ */
+export const bulkEditPatientsCustomFields = ({
+  metaData,
+  patientIdentifiers,
+}) =>
+  axios
+    .put('/patient/bulk', {
+      bulkOperationType: PatientBulkActions.EDIT_META_DATA,
+      metaData,
+      patientIdentifiers,
+    })
+    .then(({ data }) => data);

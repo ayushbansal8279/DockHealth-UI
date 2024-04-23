@@ -18,7 +18,7 @@ const TaskItemCreatedDate = ({ task }) => {
             hasRecurringSchedule={false}
             format="MM/DD/YY"
             showTime
-            timeFormat="HH:mm"
+            // timeFormat="HH:mm"
           />
         ) : (
           <div>

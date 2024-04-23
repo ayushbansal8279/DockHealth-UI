@@ -70,26 +70,26 @@ const DashboardView = ({ tabName }) => {
       allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST, DOCK_LITE],
       path: HOME_PATH,
     },
-    [DashboardTasksTab.SHARED_TASKS]: {
-      allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST, DOCK_LITE, EXTERNAL],
-      path: HOME_SHARED_PATH,
-    },
+    // [DashboardTasksTab.SHARED_TASKS]: {
+    //   allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST, DOCK_LITE, EXTERNAL],
+    //   path: HOME_SHARED_PATH,
+    // },
     [DashboardTasksTab.ALL_TASKS]: {
       allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST, DOCK_LITE],
       path: HOME_ALL_TASKS_PATH,
     },
-    [DashboardTasksTab.UPCOMING]: {
-      allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST, DOCK_LITE],
-      path: HOME_UPCOMING_TASKS_PATH,
-    },
-    [DashboardTasksTab.OVERDUE]: {
-      allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST, DOCK_LITE],
-      path: HOME_OVERDUE_TASKS_PATH,
-    },
-    [DashboardTasksTab.COMPLETED]: {
-      allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST, DOCK_LITE],
-      path: HOME_COMPLETED_TASKS_PATH,
-    },
+    // [DashboardTasksTab.UPCOMING]: {
+    //   allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST, DOCK_LITE],
+    //   path: HOME_UPCOMING_TASKS_PATH,
+    // },
+    // [DashboardTasksTab.OVERDUE]: {
+    //   allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST, DOCK_LITE],
+    //   path: HOME_OVERDUE_TASKS_PATH,
+    // },
+    // [DashboardTasksTab.COMPLETED]: {
+    //   allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST, DOCK_LITE],
+    //   path: HOME_COMPLETED_TASKS_PATH,
+    // },
   };
 
   const hasAccessToCurrentTab = hasAccessToElement(
