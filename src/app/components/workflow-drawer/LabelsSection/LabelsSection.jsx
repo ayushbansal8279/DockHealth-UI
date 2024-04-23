@@ -31,6 +31,8 @@ import {
   OptionButtonsInput,
   NoOptionTextLabel,
   NoOptionContainer,
+  LableContainer,
+  Title,
 } from './styled';
 
 const renderOption = ({
@@ -318,13 +320,15 @@ const LabelsSection = ({ disabled: disabledProperty }) => {
   );
 
   return (
+    <LableContainer>
+      <Title>Label</Title>
     <Autocomplete
       isOpen={isOpen}
       autoFocus={autoFocusFieldName === WorkflowDrawerFieldNames.LABEL}
       options={labelsList}
-      label="Labels"
+      // label="Labels"
       placeholder={
-        selectedLabels?.length > 0 ? '' : "Are there labels you'd like to add?"
+        selectedLabels?.length > 0 ? '' : "Add Labels"
       }
       value={selectedLabels}
       getInputReference={getInputReference}
@@ -364,6 +368,7 @@ const LabelsSection = ({ disabled: disabledProperty }) => {
       disableClearable
       disableCloseOnSelect
     />
+      </LableContainer>
   );
 };
 

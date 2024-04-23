@@ -263,7 +263,7 @@ const LabelsSection = ({ selectedTask, onTaskUpdate }) => {
           placeholder={
             selectedLabels?.length > 0
               ? ''
-              : "Are there labels you'd like to add?"
+              : "Add Labels"
           }
           value={selectedLabels}
           getInputReference={getInputReference}
