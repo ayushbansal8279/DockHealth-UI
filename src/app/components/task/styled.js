@@ -847,3 +847,26 @@ export const TaskScrollVericleLine = styled.div`
   width: 2.5px;
   box-shadow: 1px 0px 3px 0px rgba(0, 0, 0, 0.21);
 `;
+
+export const ChildTaskTitle = styled.div`
+  color: ${palette.coolGrey1};
+  font-family: Outfit;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 16.8px;
+  margin: 8px 8px 2px 6px;
+  padding: 2px;
+`;
+
+export const ParentTaskLink = styled.div`
+  color: ${palette.crystalBlue};
+  font-family: Outfit;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 19.2px;
+  cursor: pointer;
+  margin: 2px 6px 8px 6px;
+  padding: 2px;
+`;
