@@ -8,11 +8,11 @@ import FilterHeader from 'components/filter/FilterHeader/FilterHeader';
 import FilterTable from 'components/filter/FilterTable/FilterTable';
 import CustomFilters from 'components/filter/CustomFilters/CustomFilters';
 import { MegaFilterNoResultsLabel, MegaFilterContainer } from './styled';
-import NewFilterContainer from '../../filter/NewFilterContainer/NewFilterContainer';
-import SaveFilterPopup from '../../filter/SaveFilterPopup/SaveFilterPopup';
+import NewFilterContainer from '../../../filter/NewFilterContainer/NewFilterContainer';
+import SaveFilterPopup from '../../../filter/SaveFilterPopup/SaveFilterPopup';
 import { useSelector } from 'react-redux';
 import { currentTaskListSelector } from '@/app/selectors/task-list-selectors';
-import FilterTableLoader from '../../filter/FilterTableLoader/FilterTableLoader';
+import FilterTableLoader from '../../../filter/FilterTableLoader/FilterTableLoader';
 
 const MegaFilter = ({
   children,

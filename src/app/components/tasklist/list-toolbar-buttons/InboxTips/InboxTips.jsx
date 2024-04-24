@@ -1,27 +1,25 @@
 import React, { useRef } from 'react';
 import { ClickAwayListener, Popper } from '@mui/material';
+import LightbulbIcon from '@mui/icons-material/Lightbulb';
 import { useBoolean } from 'hooks/useBoolean';
-import Button from 'components/common/Button/Button';
 import InboxHelpPanel from 'views/list-details/InboxHelpPanel/InboxHelpPanel';
-import LightbulbBlue from 'img/lightbulb-blue.svg';
-import Lightbulb from 'img/lightbulb-grey.svg';
+import { ButtonContainer, ButtonWrapper } from '../styled';
 
 const InboxTips = () => {
   const tipsButtonReference = useRef(null);
   const { 0: isOpen, 2: unsetOpen, 3: toggleOpen } = useBoolean(false);
 
   return (
-    <div style={{ height: '46px', paddingTop: '8px' }}>
-      <Button
+    <ButtonContainer sx={{ ml: 1 }}>
+      <ButtonWrapper
         reference={tipsButtonReference}
         variant="text"
         onClick={toggleOpen}
-        startIcon={
-          <img alt="lightbulb" src={isOpen ? LightbulbBlue : Lightbulb} />
-        }
+        startIcon={<LightbulbIcon />}
+        sx={{ color: 'white' }}
       >
         Tips
-      </Button>
+      </ButtonWrapper>
       {isOpen && tipsButtonReference.current && (
         <Popper
           style={{ zIndex: 2001 }}
@@ -37,7 +35,7 @@ const InboxTips = () => {
           </ClickAwayListener>
         </Popper>
       )}
-    </div>
+    </ButtonContainer>
   );
 };
 

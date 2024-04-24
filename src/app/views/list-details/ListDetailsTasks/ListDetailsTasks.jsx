@@ -34,7 +34,7 @@ import EmptyListView from 'components/tasklist/EmptyListView/EmptyListView';
 import NoFilterResultsView from 'components/tasklist/EmptyListView/NoFilterResultsView';
 import TasksGroup from 'components/tasklist/TasksGroup/TasksGroup';
 import GroupNameSection from 'components/tasklist/GroupNameSection/GroupNameSection';
-import messages from 'components/tasklist/AddGroupNameButton/messages';
+import messages from '@/app/components/tasklist/list-toolbar-buttons/AddGroupNameButton/messages';
 // import AddGroupNameButton from 'components/tasklist/AddGroupNameButton/AddGroupNameButton';
 // import EmptyTaskAddView from 'components/tasklist/EmptyTaskAddView/EmptyTaskAddView';
 import GroupedListSkeletonLoader from 'components/tasklist/GroupedListSkeletonLoader/GroupedListSkeletonLoader';

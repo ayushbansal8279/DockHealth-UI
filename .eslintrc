@@ -118,6 +118,7 @@
     "no-shadow": "warn",
     "unicorn/no-negated-condition": "off",
     "sonarjs/cognitive-complexity": "off",
-    "prefer-destructuring": "off"
+    "prefer-destructuring": "off",
+    "no-extra-boolean-cast": "off"
   }
 }

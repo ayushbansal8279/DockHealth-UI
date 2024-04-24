@@ -39,7 +39,7 @@ import { CustomizeImg } from 'components/patients/CustomizeToolbarButton/styled'
 import Checkbox from 'components/common/Checkbox/Checkbox';
 import AddButton from 'components/common/AddButton/AddButton';
 import Button from 'components/common/Button/Button';
-import ToolbarButton from '../../tasklist/ToolbarButton/ToolbarButton';
+import ToolbarButton from '../../tasklist/list-toolbar-buttons/ToolbarButton/ToolbarButton';
 import { AddIcon } from '@/app/views/smart-flow-builder/TaskNodeHandles/styled';
 
 const CustomProfileList = () => {
