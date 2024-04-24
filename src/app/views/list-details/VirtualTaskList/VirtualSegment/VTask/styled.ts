@@ -22,9 +22,9 @@ export const VTask = styled('div')`
      virtualListWorkflowOpen
        ? isLastTaskOfGroup
          ? bgColor
-           ? '80px'
+           ? '72px'
            : isLastGroupOfList
-           ? '80px'
+           ? '72px'
            : '0px'
          : '58px'
        : ''

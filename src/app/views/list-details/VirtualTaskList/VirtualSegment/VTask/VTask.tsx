@@ -174,18 +174,17 @@ function VTask(
               style={{
                 width: '100%',
                 background: bgColor ? palette.aliceBlue : '',
-                paddingBottom:
-                  !addWorkflowTask
-                    ? isLastTaskOfGroup
-                      ? bgColor
-                        ? '20px'
-                        : isLastGroupOfList
-                        ? '20px'
-                        : '0px'
-                      : isTaskTemplate && isLastChild
-                      ? '10px'
-                      : ''
-                    : '',
+                paddingBottom: !addWorkflowTask
+                  ? isLastTaskOfGroup
+                    ? bgColor
+                      ? '20px'
+                      : isLastGroupOfList
+                      ? '20px'
+                      : '0px'
+                    : isTaskTemplate && isLastChild
+                    ? '10px'
+                    : ''
+                  : '',
               }}
             >
               <Sc.QuickAddContainer>
@@ -206,18 +205,17 @@ function VTask(
                 style={{
                   width: '100%',
                   background: bgColor ? palette.aliceBlue : '',
-                  paddingBottom:
-                    addWorkflowTask
-                      ? isLastTaskOfGroup
-                        ? bgColor
-                          ? '20px'
-                          : isLastGroupOfList
-                          ? '20px'
-                          : '0px'
-                        : isTaskTemplate && isLastChild
-                        ? '10px'
-                        : ''
-                      : '0px',
+                  paddingBottom: addWorkflowTask
+                    ? isLastTaskOfGroup
+                      ? bgColor
+                        ? '20px'
+                        : isLastGroupOfList
+                        ? '20px'
+                        : '0px'
+                      : isTaskTemplate && isLastChild
+                      ? '10px'
+                      : ''
+                    : '0px',
                 }}
               >
                 <Sc.WorkflowQuickAddTaskContainer>

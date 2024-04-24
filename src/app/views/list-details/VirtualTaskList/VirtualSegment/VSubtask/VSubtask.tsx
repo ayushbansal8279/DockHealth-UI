@@ -203,16 +203,15 @@ function VSubtask(
               style={{
                 width: '100%',
                 background: bgColor ? palette.aliceBlue : '',
-                paddingBottom:
-                  isLastTaskOfGroup
-                    ? isLastSubtaskParentTask
-                      ? bgColor
-                        ? '20px'
-                        : isLastGroupOfList
-                        ? '20px'
-                        : '0px'
-                      : '10px'
-                    : '0px',
+                paddingBottom: isLastTaskOfGroup
+                  ? isLastSubtaskParentTask
+                    ? bgColor
+                      ? '20px'
+                      : isLastGroupOfList
+                      ? '20px'
+                      : '0px'
+                    : '10px'
+                  : '0px',
               }}
             >
               <Sc.WorkflowQuickAddTaskContainer>
