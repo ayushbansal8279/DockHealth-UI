@@ -23,6 +23,7 @@ export const ButtonWrapper = styled(Button)<{ active: boolean }>`
     }
     padding-left: 12px;
     padding-right: 12px;
+    text-transform: none;
   }
   & .MuiSvgIcon-root > path {
     fill: ${palette.white};

@@ -44,7 +44,6 @@ import LoadMoreButton, {
 } from 'components/common/LoadMoreButton/LoadMoreButton';
 import { TaskStatus, TaskOrigin } from 'helpers/task-helpers';
 import StandardTaskItem from 'components/task/StandardTaskItem/StandardTaskItem';
-// import TaskTemplateGroup from 'components/task-template/TaskTemplateGroup/TaskTemplateGroup';
 import TasksSkeletonLoader from 'components/task/TasksSkeletonLoader/TasksSkeletonLoader';
 import { useParams } from 'react-router-dom';
 import StickyContainer from 'components/common/HorizontalScroll/StickyContainer';
@@ -65,6 +64,7 @@ import {
   DroppablePlaceholder,
 } from '../ListDetailsTableView/styled';
 import { ListPageContext } from '../ListDetailsView';
+import { Typography } from '@mui/material';
 
 const ListDetailsTasks = ({
   viewSetup,
@@ -287,6 +287,9 @@ const ListDetailsTasks = ({
           );
           const isLoadingGroup = group?.isLoadingGroup;
 
+          console.log('isLoadingGroup', isLoadingGroup);
+          console.log('isFetchingMoreTasks', group?.isFetchingMoreTasks);
+
           return (
             <TasksGroup
               isCompletedGroup={isCompletedView}
@@ -501,8 +504,13 @@ const ListDetailsTasks = ({
     ],
   );
 
-  if (isFetchingData || isEmpty(groupList))
+  if (isFetchingData) {
     return <GroupedListSkeletonLoader />;
+  }
+
+  if (isEmpty(groupList)) {
+    return <Typography sx={{ m: 3 }}>No data</Typography>;
+  }
 
   return (
     <TaskGroupsContainer>
