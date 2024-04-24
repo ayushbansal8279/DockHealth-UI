@@ -35,6 +35,10 @@ export const SelectIcon = styled.span`
   filter: brightness(0) invert(1);
 `;
 
+export const OptionsMenu = styled.div`
+  padding: 5px;
+`;
+
 export const ButtonContainer = styled(Button)`
   && {
     border-radius: 4px 0 0 4px;
