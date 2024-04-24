@@ -109,14 +109,14 @@ function UserGroupView() {
               lg={4}
               justifyContent="flex-start"
             >
-              <SearchInputWrapper fullWidth={isSearchFocused || searchTerm}>
-                <SearchInput
-                  value={searchTerm}
-                  onValueChange={handleSearchTermChange}
-                  onFocus={setSearchFocused}
-                  onBlur={unsetSearchFocused}
-                />
-              </SearchInputWrapper>
+              {/* <SearchInputWrapper fullWidth={isSearchFocused || searchTerm}> */}
+              <SearchInput
+                value={searchTerm}
+                onValueChange={handleSearchTermChange}
+                onFocus={setSearchFocused}
+                onBlur={unsetSearchFocused}
+              />
+              {/* </SearchInputWrapper> */}
             </Grid>
             {groupIdentifier && groupIdentifier !== 'ALL' && (
               <AddEntitiesContainer>

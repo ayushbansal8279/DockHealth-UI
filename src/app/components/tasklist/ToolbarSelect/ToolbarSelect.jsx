@@ -11,6 +11,7 @@ const ToolbarSelect = ({
   icon,
   searchValue,
   focused,
+  spaceAfterLabel,
   ...restProps
 }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -50,6 +51,7 @@ const ToolbarSelect = ({
               {icon}
               <Box component="span" mx={0.5} />
               {foundOption?.label || ''}
+              {spaceAfterLabel && <Box component="span" mx={0.8} />}
             </SelectIcon>
           );
         }}

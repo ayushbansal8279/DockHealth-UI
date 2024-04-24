@@ -22,7 +22,7 @@ const AutoLogoutModal = ({ closeModal, onLogout }) => {
         <ModalIconContainer>
           <ModalMainIcon src={TimeoutIcon} alt="Task" />
           <h4 style={{ whiteSpace: 'nowrap' }}>
-            Your session is About to Time Out
+            Your Session is About to Time Out
           </h4>
         </ModalIconContainer>
         <Spacing vertical={4} />

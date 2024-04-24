@@ -1,17 +1,18 @@
 import styled from '@mui/styled-engine';
 import spacing from 'styles/spacing';
 
-export const VQuickAddTaskContainer = styled('div')`
+export const VQuickAddTaskContainer = styled('div')<{ $width: string }>`
   display: flex;
-  position: sticky;
-  left: ${spacing.large};
   margin-left: 54.5px;
   margin-bottom: 1px;
   margin-top: 10px;
+  width: ${({ $width }) => $width};
 `;
 
-export const VQuickAddTask = styled('div')`
-  width: 100%;
+export const VQuickAddTask = styled('div')<{ $width: string }>`
+  width: ${({ $width }) => $width};
+  position: sticky;
+  left: 54.5px;
   font-weight: bold;
   line-height: 40px;
 `;
@@ -19,4 +20,5 @@ export const VQuickAddTask = styled('div')`
 export const TaskTemplateApplicatorContainer = styled('div')`
   position: absolute;
   right: 5px;
+  top: 0px;
 `;

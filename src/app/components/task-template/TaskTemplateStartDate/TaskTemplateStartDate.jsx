@@ -6,7 +6,6 @@ import TaskIcon from 'components/task/TaskIcon/TaskIcon';
 import DateLabel from 'components/common/DateLabel/DateLabel';
 import { updatePartialWorkflow } from 'actions/task-template-actions';
 import { useDispatch } from 'react-redux';
-import spacing from 'styles/spacing';
 import { AddPlaceholder } from '../TaskTemplateDueDate/styled';
 
 const TaskTemplateStartDate = (props) => {
@@ -24,7 +23,7 @@ const TaskTemplateStartDate = (props) => {
 
       dispatch(updatePartialWorkflow(identifier, payload));
     },
-    [dispatch, identifier],
+    [dispatch, identifier, startDateTime],
   );
 
   return (
@@ -40,33 +39,21 @@ const TaskTemplateStartDate = (props) => {
         />
       )}
     >
-      {/* <Tooltip
-        placement="top"
-        title={startDateTime ? 'Edit Start Date' : 'Add Start Date'}
-      > */}
       {startDateTime ? (
         <DateLabel date={startDateTime} tootipTitle="Edit Start Date" />
       ) : (
         <>
           {isHover ? (
-            <Tooltip placement="top" title="Add Due Date">
+            <Tooltip placement="top" title="Add Start Date">
               <AddPlaceholder>
                 <div style={{ display: 'flex' }}>
                   <TaskIcon type="calendar" isActive={true} />
-                  <p
-                    style={{
-                      padding: `2px ${spacing.smallPlus}`,
-                    }}
-                  >
-                    None
-                  </p>
                 </div>
               </AddPlaceholder>
             </Tooltip>
           ) : null}
         </>
       )}
-      {/* </Tooltip> */}
     </TaskItemPopover>
   );
 };

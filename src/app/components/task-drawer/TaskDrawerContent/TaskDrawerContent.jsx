@@ -1,7 +1,7 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import React, { useCallback, useMemo } from 'react';
 import { Box, Grid, Typography, useMediaQuery } from '@mui/material';
-import { checkIfBundleTask } from 'helpers/task-helpers';
+import { checkIfBundleTask, isDueDateOverdue } from 'helpers/task-helpers';
 import Spacing from 'components/common/Spacing';
 import RichTextEditor from 'components/common/RichTextEditor/RichTextEditor';
 import TaskDescription from 'components/task-drawer/TaskDescription/TaskDescription';
@@ -57,6 +57,7 @@ import {
   ReferenceParentButton,
   ReferenceParentName,
   FiledInListName,
+  DueDateAndRemainderContainer,
   // SubscriptionBadge,
 } from './styled';
 import ReminderSection from '../ReminderSection/ReminderSection';
@@ -123,7 +124,7 @@ const TaskDrawerContent = (props) => {
     false;
   const subTasksDisabled =
     currentOrganization?.disabledFeatures?.includes('TASK_SUBTASKS') || false;
-  
+
   const taskStartDateDisabled =
     currentOrganization?.disabledFeatures?.includes('TASK_START_DATE') || false;
 
@@ -154,6 +155,10 @@ const TaskDrawerContent = (props) => {
     const isOwnerOrAdmin = checkIfUserIsOrganizationAdmin(currentUser);
     return isMemberAdmin(currentUserMember) || isOwnerOrAdmin;
   }, [currentUser, currentTasklist]);
+
+  const { dueDate } = selectedTask || {};
+  const isDueDateDisabled = !dueDate;
+  const isTaskDueDateOverdue = isDueDateOverdue(selectedTask);
 
   const isCreator = useMemo(() => {
     return (
@@ -493,15 +498,17 @@ const TaskDrawerContent = (props) => {
             />
           </div>
         </Grid>
-        <Grid item xs={12} ml={3} style={styleRightColumn(isMobile)}>
-          {!isTemplateTask && (
-            <ReminderSection
-              onSave={handleUpdateTask}
-              disabled={restrictions?.reminder === DISABLED}
-              selectedTask={selectedTask}
-            />
-          )}
-        </Grid>
+        {!isTaskDueDateOverdue && !isDueDateDisabled && (
+          <Grid item xs={12} style={styleRightColumn(isMobile)}>
+            {!isTemplateTask && (
+              <ReminderSection
+                onSave={handleUpdateTask}
+                disabled={restrictions?.reminder === DISABLED}
+                selectedTask={selectedTask}
+              />
+            )}
+          </Grid>
+        )}
         <Grid item xs={12} style={styleLeftColumn(isMobile)}>
           <PrioritySection
             onTaskUpdate={onTaskUpdate}

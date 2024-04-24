@@ -24,7 +24,7 @@ const GlobalSearchToolbar = ({ additionalOptions, children }) => {
   const taskList = useSelector(currentTaskListSelector);
   const { restrictCustomization } = taskList || {};
   const currentUserMember = taskList?.listUsers.find(
-    u => u.identifier === currentUser?.identifier,
+    (u) => u.identifier === currentUser?.identifier,
   );
   const isListAdmin = isMemberAdmin(currentUserMember);
   const viewType = getViewTypeFromQueryString(search);
@@ -39,7 +39,7 @@ const GlobalSearchToolbar = ({ additionalOptions, children }) => {
       <Box display="flex" flex={1} justifyContent="flex-start">
         {viewType === ViewType.LIST_VIEW && (
           <>
-            <Box mx={0.5} />
+            {/* <Box mx={0.5} /> */}
             <CustomizeToolbarButton
               openCustomFieldModal={() => setCustomFieldsModalOpened(true)}
               additionalOptions={additionalOptions}

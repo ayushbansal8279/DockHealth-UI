@@ -26,6 +26,7 @@ export const ListPageContext = createContext({
   handleWorkflowPopoverOpen: (isPopoveOpen) => {},
   patientPopoverOpen: false,
   handlePatientPopoverOpen: (isPopoveOpen) => {},
+  handleScrollToAddGroupName: () => {},
 });
 const ListDetailsView = () => {
   const parameters = useParams();
@@ -34,7 +35,6 @@ const ListDetailsView = () => {
   const { search } = useLocation();
   const viewType = getViewTypeFromQueryString(search);
   const dispatch = useDispatch();
-
   useEffect(() => {
     dispatch(
       initializeTaskListState(
@@ -91,6 +91,21 @@ const ListDetailsView = () => {
     setPatientPopoverOpen(isPopoveOpen);
   };
 
+  const handleScrollToAddGroupName = () => {
+    const scrollbar = document.querySelector(
+      '[data-test-id="virtuoso-scroller"]',
+    );
+    if (scrollbar) {
+      scrollbar.scrollTo(0, scrollbar.scrollHeight);
+      setTimeout(() => {
+        const updatedScrollbar = document.querySelector(
+          '[data-test-id="virtuoso-scroller"]',
+        );
+        updatedScrollbar?.scrollTo(0, updatedScrollbar.scrollHeight);
+      }, 1000);
+    }
+  };
+
   const ListPageContextValue = {
     addNewGroup: addNewGroup,
     handleAddNewGroup: handleAddNewGroup,
@@ -105,6 +120,7 @@ const ListDetailsView = () => {
     handleWorkflowPopoverOpen: handleWorkflowPopoverOpen,
     patientPopoverOpen: patientPopoverOpen,
     handlePatientPopoverOpen: handlePatientPopoverOpen,
+    handleScrollToAddGroupName: handleScrollToAddGroupName,
   };
 
   return (

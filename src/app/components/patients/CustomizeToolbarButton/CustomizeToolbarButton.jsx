@@ -102,6 +102,8 @@ const CustomizeToolbarButton = ({
           />
         }
         onClick={disableButton ? undefined : () => setOpen(!open)}
+        isOpen={open}
+        active={open}
         disableButton={disableButton}
         tooltip={
           disableButton

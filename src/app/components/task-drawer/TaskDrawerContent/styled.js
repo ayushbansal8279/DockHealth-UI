@@ -111,3 +111,9 @@ export const SubscriptionBadge = styled.div`
     color: white;
   }
 `;
+
+export const DueDateAndRemainderContainer = styled.div`
+  display: flex;
+  width: 100%;
+  align-items: center;
+`;

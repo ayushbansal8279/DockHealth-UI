@@ -159,10 +159,11 @@ const TaskItemDescription = ({
         {!isEditing && (
           <div
             style={{
-              marginTop: isSubtask ? '-13px' : 'none',
               textOverflow: 'ellipsis',
               overflow: 'hidden',
               whiteSpace: 'nowrap',
+              textDecoration: isCompleted ? 'line-through' : 'none',
+              color: isCompleted && 'rgba(61, 72, 88, 0.50)',
             }}
           >
             {tokenizedDescription.split(/\s/).map((word) => {
@@ -245,8 +246,9 @@ const TaskItemDescription = ({
           </DescriptionEditButton>
         )}
       </Box>
-      <TaskItemDescriptionIndicators isCompleted={isSubtask}>
-        {isCompleted && isHover && (
+      <TaskItemDescriptionIndicators>
+        {/* In Future this will move on Tooltip */}
+        {/* {isCompleted && isHover && (
           <CompletedBy isCompleted={isCompleted}>
             <span>{`By ${completedByName} ${
               completedDt &&
@@ -258,8 +260,8 @@ const TaskItemDescription = ({
             }
             `}</span>
           </CompletedBy>
-        )}
-        {hasParentTaskLabel && (
+        )} */}
+        {/* {hasParentTaskLabel && (
           <>
             {isCompleted && <Spacing horizontal={2} />}
             <TaskItemParentTaskLabel>
@@ -269,7 +271,7 @@ const TaskItemDescription = ({
               >{` ${parentTask?.description}`}</span>
             </TaskItemParentTaskLabel>
           </>
-        )}
+        )} */}
         {linkedTaskTemplate && !isCompleted && !isDecisionTask && (
           <TaskContext>
             <span

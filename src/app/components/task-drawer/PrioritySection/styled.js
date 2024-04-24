@@ -28,18 +28,19 @@ export const PriorityFieldContainer = styled.div`
   display: flex;
   align-items: center;
   font-family: Outfit;
-  margin: 10px 13px;
+  margin: 10px 0 0 9px;
 `;
 
 export const PriorityFlagContainer = styled.div`
-  left: -0.25rem;
-  position: absolute;
-  top: calc(50% + 0.5rem);
-  transform: translate(-100%, -50%);
+  display: flex;
+  align-items: center;
+  height: 35px;
+  border-radius: 8px;
+  background: ${({IsPriority}) => IsPriority && '#F8F8F9'};
 `;
 
 export const Title = styled.div`
-  margin-right: 40px;
+  margin-right: 30px;
   color: ${palette.coolGrey1};
   font-family: Outfit;
   font-size: ${fontSizes.smallPlus};

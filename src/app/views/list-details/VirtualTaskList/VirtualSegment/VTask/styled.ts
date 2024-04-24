@@ -6,18 +6,28 @@ export const VTask = styled('div')`
   font-size: 13px;
   ${({
     $workflow,
+    bgColor,
     virtualListWorkflowOpen,
     isLastTaskOfGroup,
     $template,
     subtaskQuickAddOpen,
     addWorkflowTask,
     subTaskExpanded,
+    isLastGroupOfList,
   }: any) =>
     $workflow
       ? `
-  height: 62px;
+  height: 48px;
    padding-bottom: ${
-     virtualListWorkflowOpen ? (isLastTaskOfGroup ? '80px' : '70px') : ''
+     virtualListWorkflowOpen
+       ? isLastTaskOfGroup
+         ? bgColor
+           ? '72px'
+           : isLastGroupOfList
+           ? '72px'
+           : '0px'
+         : '58px'
+       : ''
    };
   `
       : `
@@ -27,7 +37,11 @@ export const VTask = styled('div')`
         ? '0px'
         : subTaskExpanded
         ? '0px'
-        : '60px'
+        : bgColor
+        ? '60px'
+        : isLastGroupOfList
+        ? '60px'
+        : '0px'
       : ''
   };
   height: 36px;
@@ -38,12 +52,18 @@ export const VTask = styled('div')`
     addWorkflowTask,
     subtaskQuickAddOpen,
     subTaskExpanded,
+    bgColor,
+    isLastGroupOfList,
   }: any) =>
     $template
       ? isLastTaskOfGroup
         ? subtaskQuickAddOpen || addWorkflowTask || subTaskExpanded
           ? 'padding-bottom: 0px'
-          : 'padding-bottom: 60px'
+          : bgColor
+          ? 'padding-bottom: 60px'
+          : isLastGroupOfList
+          ? 'padding-bottom: 60px'
+          : 'padding-bottom: 0px'
         : subtaskQuickAddOpen || addWorkflowTask || subTaskExpanded
         ? 'padding-bottom: 0px'
         : 'padding-bottom: 45px'

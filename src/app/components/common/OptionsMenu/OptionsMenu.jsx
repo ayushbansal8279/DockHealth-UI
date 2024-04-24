@@ -34,6 +34,7 @@ const OptionsMenu = ({
   onClose,
   open,
   setOptionActive,
+  color,
 }) => {
   const assignMemberButtonReference = useRef(null);
   const [isOpen, openPopover] = useState(false);
@@ -55,6 +56,7 @@ const OptionsMenu = ({
             setOptionActive?.(true);
           }
         }}
+        style={{color: color}}
       >
         {children}
       </Button>
