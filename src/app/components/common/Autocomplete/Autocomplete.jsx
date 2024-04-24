@@ -4,7 +4,6 @@
 import React, { useEffect, useRef, useCallback } from 'react';
 import propTypes from 'prop-types';
 import { Autocomplete as AutocompleteMUI, TextField } from '@mui/material';
-import Input from 'components/common/Input/Input';
 import styled from 'styled-components';
 
 const StandardAutocompleteMUI = styled(AutocompleteMUI)`
@@ -62,22 +61,6 @@ const StandardInput = ({
       }}
       {...restParams}
       />
-    // <Input
-    //   label={label}
-    //   fullWidth
-    //   id={`autocomplete-input-${label}`}
-    //   onBlur={onBlurInput}
-    //   onFocus={onFocusInput}
-    //   placeholder={placeholder}
-    //   ref={textFieldReference}
-    //   disabled={isInputDisabled}
-    //   InputProps={{
-    //     ...InputPropsParams,
-    //     disableUnderline: true,
-    //     ...CustomInputProps,
-    //   }}
-    //   {...restParams}
-    // />
   );
 };
 
