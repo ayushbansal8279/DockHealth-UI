@@ -711,7 +711,7 @@ const TaskItem = React.memo(
 
     const showPriority = task?.priority && task?.priority !== TaskPriority.NONE;
     const showDecisionRow = task?.intentType === 'DECISION' && !isTemplateTask;
-    const hasParentTaskLabel = isSubtask && !isNestedTask && !!parentTask;
+    const hasParentTaskLabel = isSubtask && !isNestedTask && !!task.parentTaskIdentifier;
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
     const onClickBulkEdit = () =>
