@@ -20,12 +20,12 @@ import {
 import { storeAsCurrentTask } from 'actions/task-actions';
 import { DrawerFieldEnum } from 'helpers/task-drawer-helpers';
 
-interface CommentsInPopperProps {
+interface CommentsInPopoverProps {
   task: Task;
   onClose: () => void;
 }
 
-const CommentsInPopper: FC<CommentsInPopperProps> = ({ task, onClose }) => {
+const CommentsInPopover: FC<CommentsInPopoverProps> = ({ task, onClose }) => {
   const { currentUser, addComment, comments } =
     initializeCommentSectionHooks(task);
   const dispatch = useDispatch();
@@ -48,7 +48,7 @@ const CommentsInPopper: FC<CommentsInPopperProps> = ({ task, onClose }) => {
   return (
     <ContainerCard>
       <Box sx={{ m: 1, textAlign: 'right' }}>
-        <IconButton aria-label="close-popper" onClick={onClose}>
+        <IconButton aria-label="close-comments" onClick={onClose}>
           <CloseIcon />
         </IconButton>
       </Box>
@@ -75,4 +75,4 @@ const CommentsInPopper: FC<CommentsInPopperProps> = ({ task, onClose }) => {
   );
 };
 
-export default CommentsInPopper;
+export default CommentsInPopover;

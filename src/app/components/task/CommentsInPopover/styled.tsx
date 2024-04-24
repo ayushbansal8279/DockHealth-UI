@@ -7,7 +7,7 @@ export const ContainerCard = styled(Card)<CardProps>(({ theme }) => ({
   overflow: 'scroll',
   borderRadius: theme.spacing(1),
   '& .fr-box': {
-    // css customization of the react-froala-wysiwyg toolbar
+    // NOTE: css customization of the react-froala-wysiwyg toolbar
     zIndex: 2000,
     '& .fr-toolbar .fr-command.fr-btn svg.fr-svg': {
       width: '16px',
