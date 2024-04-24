@@ -67,7 +67,7 @@ function VTaskHeader(
         groupWithZeroTask={groupWithZeroTask}
       >
         {/* @ts-ignore */}
-        {metadata.parent?.children.length === 0 ? (
+        {groupWithZeroTask ? (
           <></>
         ) : (
           <TasksHeader
