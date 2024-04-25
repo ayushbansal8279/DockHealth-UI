@@ -4,13 +4,13 @@ import { Box } from '@mui/material';
 import FullViewIcon from 'img/list/FullViewIcon';
 import SlimViewIcon from 'img/list/SlimViewIcon';
 import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined';
-import TaskStatusToolbarSelect from 'components/tasklist/TaskStatusToolbarSelect/TaskStatusToolbarSelect';
-import InboxTips from 'components/tasklist/InboxTips/InboxTips';
+import TaskStatusToolbarSelect from '@/app/components/tasklist/list-toolbar-buttons/TaskStatusToolbarSelect/TaskStatusToolbarSelect';
+import InboxTips from '@/app/components/tasklist/list-toolbar-buttons/InboxTips/InboxTips';
 import { ViewType, getViewTypeFromQueryString } from 'helpers/view-type-helper';
 import { useLocation, useHistory } from 'react-router-dom';
 import { TaskStatus } from 'helpers/task-helpers';
 import { updateUserListViewSetup } from 'actions/task-list-actions';
-import CustomizeToolbarButton from 'components/tasklist/CustomizeToolbarButton/CustomizeToolbarButton';
+import CustomizeToolbarButton from '@/app/components/tasklist/list-toolbar-buttons/CustomizeToolbarButton/CustomizeToolbarButton';
 import { checkIfUserIsOrganizationAdmin } from 'helpers/user-helper';
 import {
   userProfileSelector,
@@ -172,8 +172,6 @@ const ListDetailsToolbar = ({
               isOrganizationAdmin={isOrganizationAdmin}
               isListAdmin={isListAdmin}
             />
-            {taskList?.listType === 'INBOX' && <InboxTips />}
-            {/* <Box sx={boxComponentStyles} /> */}
             {children}
           </>
         )}

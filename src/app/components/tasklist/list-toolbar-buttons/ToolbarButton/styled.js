@@ -4,29 +4,6 @@ import palette from 'styles/palette';
 import spacing from 'styles/spacing';
 import { fontSizes, fontWeights } from 'styles/font';
 
-// export const CustomizeButton = styled.button`
-//   display: flex;
-//   padding: 4px 12px;
-//   align-items: center;
-//   background: ${palette.newDarkBlue};
-//   color: ${({ color }) => color || palette.white};
-//   ${({ disableButton }) => `opacity: ${disableButton ? 0.5 : 1};`}
-//   height: 40px;
-//   width: auto;
-//   border-radius: 4px;
-
-//   &:hover {
-//     background: ${palette.newBrightBlueShaded};
-//   }
-
-//   & .switchIcon > path {
-//     fill: ${palette.white || palette.white};
-//   }
-//   @media print {
-//     display: none;
-//   }
-// `;
-
 export const CustomizeButtonWrapper = styled(Button)`
   && {
     border-radius: 0;
@@ -111,14 +88,6 @@ export const CustomizeRotatableChevronButtonLabel = styled(Typography)`
     }
   }
 `;
-
-// export const ImageContainer = styled.span`
-//   display: flex;
-//   align-items: center;
-//   justify-content: center;
-//   padding-left: 10px;
-//   filter: brightness(0) invert(1);
-// `;
 
 export const ToolbarButtonBoxContainer = styled.div`
   display: flex;

@@ -6,7 +6,7 @@ import React, {
 } from 'react';
 import { Box } from '@mui/material';
 import { Segment } from 'views/list-details/modules/Virtualized';
-import messages from 'components/tasklist/AddGroupNameButton/messages';
+import messages from '@/app/components/tasklist/list-toolbar-buttons/AddGroupNameButton/messages';
 import GroupNameSection from 'components/tasklist/GroupNameSection/GroupNameSection';
 import { useDispatch, useSelector } from 'react-redux';
 import {

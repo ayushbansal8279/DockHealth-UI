@@ -2,7 +2,7 @@ import { Add } from '@mui/icons-material';
 import React, { useCallback, useRef } from 'react';
 import { useToggle } from 'react-use';
 import AddButton from 'components/common/AddButton/AddButton';
-import ToolbarButton from 'components/tasklist/ToolbarButton/ToolbarButton';
+import ToolbarButton from '@/app/components/tasklist/list-toolbar-buttons/ToolbarButton/ToolbarButton';
 import InvitePeoplePopover from '../InvitePeoplePopover/InvitePeoplePopover';
 import { AddIcon } from '@/app/views/smart-flow-builder/TaskNodeHandles/styled';
 
