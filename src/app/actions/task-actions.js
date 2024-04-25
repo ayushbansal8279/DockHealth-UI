@@ -739,6 +739,13 @@ export const bulkEditUnassignUsers = (tasksToUpdate, users) => (dispatch) => {
   });
 };
 
+export const bulkEditUnassignAllUsers = (tasksToUpdate) => (dispatch) => {
+  dispatch({
+    type: ActionTypes.DO_UNASSIGN_ALL,
+    tasksToUpdate,
+  });
+};
+
 export const bulkEditWorkflowStatus =
   (tasksToUpdate, workflowStatus) => (dispatch) => {
     dispatch({

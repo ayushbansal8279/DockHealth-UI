@@ -454,6 +454,20 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
       return updatedState;
     }
 
+    case ActionTypes.DO_UNASSIGN_ALL: {
+      const { tasksToUpdate } = action;
+      let updatedState = state;
+      for (const taskId of tasksToUpdate) {
+        updatedState = updateStateCallback(updatedState, (tasksMap) => {
+          return {
+            ...tasksMap[taskId],
+            assignedToUsers: [],
+          };
+        });
+      }
+      return updatedState;
+    }
+
     case ActionTypes.DELETE_TASKS_SUCCESS: {
       const { tasksToDelete } = action;
       const updateTasksFromAction = (task) => {

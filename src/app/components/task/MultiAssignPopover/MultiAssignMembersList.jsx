@@ -130,8 +130,15 @@ const MultiAssignMembersList = ({
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const selectMembersWithDebounce = useCallback(
-    debounce((newSelectedMembers) => {
+    debounce((newSelectedMembers, selectedOption) => {
+      // NOTE: BulkTasks case and SingleTask case use different API calls,
+      // so the logic here is totally different.
       if (isBulkTasks) {
+        if (selectedOption === UNASSIGNED_KEY) {
+          onSelect(null, 'unassign_all');
+          return;
+        }
+
         if (selectedMembers.length > newSelectedMembers.length) {
           // unassigned a user
           const unassignedMembers = removeArr(
@@ -140,25 +147,25 @@ const MultiAssignMembersList = ({
             'userIdentifier',
           );
           onSelect(unassignedMembers, 'unassignment');
-        } else {
-          // assigned a new user
-          const assignedMembers = removeArr(
-            newSelectedMembers,
-            selectedMembers,
-            'userIdentifier',
-          );
-          onSelect(assignedMembers, 'assignment');
+          return;
         }
-      } else {
-        onSelect(
-          newSelectedMembers.map((s) => ({
-            ...s,
-            userIdentifier: s.identifier,
-          })),
+
+        // assigned a new user
+        const assignedMembers = removeArr(
+          newSelectedMembers,
+          selectedMembers,
+          'userIdentifier',
         );
+        onSelect(assignedMembers, 'assignment');
+        return;
       }
-      // eslint-disable-next-line no-unused-expressions
-      inputReference.current?.focus();
+
+      onSelect(
+        newSelectedMembers.map((s) => ({
+          ...s,
+          userIdentifier: s.identifier,
+        })),
+      );
     }, 700),
     [selectedMembers],
   );
@@ -247,18 +254,18 @@ const MultiAssignMembersList = ({
       } else {
         membersToReturn = [...selectedMembers, selectedOption];
       }
-      selectMembersWithDebounce(membersToReturn);
+      selectMembersWithDebounce(membersToReturn, selectedOption);
+      inputReference.current?.focus();
       setSelectedMembers(membersToReturn);
     },
     [membersOptions, selectMembersWithDebounce, selectedMembers],
   );
 
-  const handleOptionSendClick = () => {
+  const handleClose = () => {
     if (taskDrawer) {
       closePopup(false);
       setValue('');
     }
-    selectMembersWithDebounce(selectedMembers);
     closeModel();
   };
 
@@ -432,7 +439,7 @@ const MultiAssignMembersList = ({
           )}
       </ListContainer>
       <div style={{ padding: '5px' }}>
-        <Button variant="primary-red" onClick={handleOptionSendClick}>
+        <Button variant="primary-red" onClick={handleClose}>
           Apply
         </Button>
       </div>
