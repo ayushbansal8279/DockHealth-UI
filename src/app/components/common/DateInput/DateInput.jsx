@@ -91,7 +91,7 @@ const DateInput = React.forwardRef(
         <Input
           ref={textFieldReference}
           inputRef={textInputReference}
-          value={value}
+          value={dateValue}
           onChange={handleChange}
           readOnly={readOnly}
           disabled={disabled}
