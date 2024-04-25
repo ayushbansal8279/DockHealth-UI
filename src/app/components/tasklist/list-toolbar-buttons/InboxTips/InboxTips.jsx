@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Popover } from '@mui/material';
 import LightbulbIcon from '@mui/icons-material/Lightbulb';
-import InboxHelpPanel from 'views/list-details/InboxHelpPanel/InboxHelpPanel';
+import InboxHelpPanel from './InboxHelpPanel';
 import { ButtonContainer, ButtonWrapper } from '../styled';
 
 const InboxTips = () => {
