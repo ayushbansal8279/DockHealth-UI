@@ -714,7 +714,7 @@ const TaskTemplateGroupHeader = ({
       return (
         <StickyMainTaskItemCell
           isTamplateGroup={true}
-          isOpen={!isVirtualListWorkflowOpen}
+          isOpen={origin === 'PATIENT' ? isOpen : !isVirtualListWorkflowOpen}
           customWidthExists
           backgroundColor={pageBackground}
           isSelected={isBundleSelected}

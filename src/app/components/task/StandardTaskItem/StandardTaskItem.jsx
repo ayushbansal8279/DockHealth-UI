@@ -223,6 +223,8 @@ const Task = React.memo(
         noMargin={noMargin}
         {...draggableProps}
         isVirtualTask={isVirtualTask}
+        origin={origin}
+        isLastChild={isLastChild}
       >
         <TaskContainer ref={innerRef}>
           <TaskItem

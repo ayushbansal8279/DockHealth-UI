@@ -973,6 +973,7 @@ const TaskItem = React.memo(
           isDragging={isDragging}
           isWorkflowtask={isTaskTemplate}
           isWorkflowSubtask={isWorkflowSubtask}
+          origin={origin}
         >
           <StandardTaskItemContainer
             isTaskTemplate={isTaskTemplate}

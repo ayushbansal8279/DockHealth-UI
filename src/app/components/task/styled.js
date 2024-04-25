@@ -525,8 +525,18 @@ export const StandardTaskItemPanel = styled.div`
       ? 'box-shadow: 0px 0px 11px rgba(204, 204, 204, 0.8)'
       : ''};
 
-  margin-left:${({ isWorkflowtask, isWorkflowSubtask }) =>
-    isWorkflowtask ? '-3px;' : isWorkflowSubtask ? '-0.5px;' : '-1.2px;'}
+   margin-left:${({ isWorkflowtask, isWorkflowSubtask, origin }) =>
+     origin === 'PATIENT'
+       ? isWorkflowtask
+         ? '-2px;'
+         : isWorkflowSubtask
+         ? '-0.5px;'
+         : '-1.2px;'
+       : isWorkflowtask
+       ? '-3px;'
+       : isWorkflowSubtask
+       ? '-0.5px;'
+       : '-1.2px;'}
   &:hover {
     & ${ThreeDots}, & ${AddPlaceholder} {
       opacity: 1;
@@ -732,6 +742,8 @@ export const ParentTaskContainer = styled.div`
   }
   width: ${({ isVirtualTask }) => (isVirtualTask ? '1000%' : '')};
   padding-right: ${({ isVirtualTask }) => (isVirtualTask ? '70px' : '')};
+  margin-bottom: ${({ origin, isLastChild }) =>
+    origin === 'PATIENT' ? (isLastChild ? '10px' : '') : ''};
 `;
 
 export const TaskContainer = styled.div``;
