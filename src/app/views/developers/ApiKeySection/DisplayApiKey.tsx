@@ -4,7 +4,7 @@ import Field from './Field';
 
 const fields = [
   {
-    name: 'domainName',
+    name: 'domain',
     label: 'Domain Name',
     ellipsis: false,
   },

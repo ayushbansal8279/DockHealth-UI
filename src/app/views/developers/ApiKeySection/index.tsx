@@ -14,18 +14,10 @@ import CreateApiKeyHeader from './CreateApiKeyHeader';
 import EmptyContent from './EmptyContent';
 import { TApiKey } from '@/app/types/developer';
 
-const tempData = {
-  domainName: 'dock.health-d5ed19ac-01ad-433d-bb61-046035a1df0b',
-  apiKey: 'CehlWsU4KR3W7hE2yzVJy3FrUH2bsO5X5uFJLdTX',
-  clientId: '11gogdqm4iqc42md4n2i4ki8gr',
-  clientSecret: '1hm3imfccbionbt2mfjf6t2ni1faf7kqk3ivvsc315ipd0isi9lo',
-};
-
 const ApiKeySection = () => {
   const organization = useSelector(organizationSelector) as TOrganization;
   const organizationIdentifier = organization?.organizationIdentifier;
 
-  // const apiKeyQuery = { isLoading: false, data: tempData };
   const apiKeyQuery = useApiKeyQuery({
     orgId: organizationIdentifier,
     options: {
