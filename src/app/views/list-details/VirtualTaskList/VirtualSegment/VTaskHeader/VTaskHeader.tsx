@@ -17,6 +17,7 @@ import * as Sc from './styled';
 import { taskDetailsSortSelector } from 'selectors/list-details-selectors';
 import palette from '@/app/styles/palette';
 import { TaskOrigin } from '@/app/helpers/task-helpers';
+import { useVirtualTaskListScrollContext } from '../../VirtualTaskListScrollContext';
 
 export interface Props extends Segment {
   isTaskTemplate: boolean;
@@ -40,6 +41,11 @@ function VTaskHeader(
   const isGroupSelected = useSelector(
     isTaskItemsSelectedSelector(metadata.parent?.children),
   );
+  const { visibleWidth, droppableHeaderWidth } =
+    useVirtualTaskListScrollContext();
+  const screenWidth = typeof window !== 'undefined' ? window.innerWidth : 1920;
+  const number = droppableHeaderWidth;
+  const percentage = ((!!number ? number : 0) / screenWidth) * 100;
   const groupHasMultipleAssignees = false;
 
   const handleGroupSelect = useCallback(() => {
@@ -80,6 +86,8 @@ function VTaskHeader(
             onGroupSelect={handleGroupSelect}
             pageBackground={bgColor ? palette.aliceBlue : ''}
             origin={TaskOrigin.LIST}
+            listPageGroupHeader
+            isWidthGreaterThanHundredPercent={percentage > 90}
           />
         )}
       </Sc.VTaskHeader>
