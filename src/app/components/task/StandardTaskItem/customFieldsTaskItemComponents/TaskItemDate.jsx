@@ -10,7 +10,7 @@ import moment from 'moment';
 const TaskItemDate = ({ value, onChange, readOnly = false }) => {
   const handleDateChange = useCallback(
     (newDate) => {
-      onChange(newDate ? newDate.format('MM/DD/YYYY') : null);
+      onChange(newDate);
     },
     [onChange],
   );
