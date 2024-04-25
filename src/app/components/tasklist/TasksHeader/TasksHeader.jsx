@@ -37,6 +37,8 @@ const TasksHeader = ({
   onGroupSelect,
   pageBackground,
   isDashboardTaskHeader,
+  listPageGroupHeader,
+  isWidthGreaterThanHundredPercent,
   origin,
 }) => {
   const taskList = useSelector(currentTaskListSelector);
@@ -173,6 +175,8 @@ const TasksHeader = ({
         {(provided, snapshot) => (
           <SortHeaderRow
             isDashboardTaskHeader={isDashboardTaskHeader}
+            listPageGroupHeader={listPageGroupHeader}
+            isWidthGreaterThanHundredPercent={isWidthGreaterThanHundredPercent}
             ref={provided.innerRef}
             {...provided.droppableProps}
             $width={
