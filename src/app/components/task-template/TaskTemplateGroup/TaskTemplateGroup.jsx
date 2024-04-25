@@ -234,6 +234,8 @@ const TaskTemplateGroup = ({
                               dragAndDropDisabled={tasksDragAndDropDisabled}
                               isDraggable
                               isBundleTask
+                              isTaskTemplate
+                              isLastChild={index === filteredTasks?.length - 1}
                               templateBundleIdentifier={identifier}
                               parentTaskGroupIdentifier={
                                 parentTaskGroupIdentifier
