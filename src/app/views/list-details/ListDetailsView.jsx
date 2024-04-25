@@ -96,19 +96,13 @@ const ListDetailsView = () => {
       '[data-test-id="virtuoso-scroller"]',
     );
     if (scrollbar) {
-      scrollbar.scrollTo({
-        top: scrollbar.scrollHeight,
-        behavior: 'smooth',
-      });
+      scrollbar.scrollTo(0, scrollbar.scrollHeight);
       setTimeout(() => {
         const updatedScrollbar = document.querySelector(
           '[data-test-id="virtuoso-scroller"]',
         );
-        updatedScrollbar?.scrollTo({
-          top: scrollbar.scrollHeight + 9300,
-          behavior: 'smooth',
-        });
-      }, 800);
+        updatedScrollbar?.scrollTo(0, updatedScrollbar.scrollHeight);
+      }, 1000);
     }
   };
 
