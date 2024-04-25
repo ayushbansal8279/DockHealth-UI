@@ -10,6 +10,7 @@ import * as ListDetailsActions from 'actions/list-details-actions';
 import { Segment } from 'views/list-details/modules/Virtualized';
 import { TaskOrigin } from '@/app/helpers/task-helpers';
 import * as Sc from './styled';
+import { useVirtualTaskListScrollContext } from '../../VirtualTaskListScrollContext';
 
 export interface Props extends Segment {}
 
@@ -20,6 +21,11 @@ function VLoadMoreTasks(
   const dispatch = useDispatch();
   const sort = useSelector(taskDetailsSortSelector);
   const { isLoadingGroup, isFetchingMoreTasks } = listTaskGroup ?? {};
+  const { visibleWidth, droppableHeaderWidth } =
+    useVirtualTaskListScrollContext();
+  const screenWidth = typeof window !== 'undefined' ? window.innerWidth : 1920;
+  const number = droppableHeaderWidth;
+  const percentage = ((!!number ? number : 0) / screenWidth) * 100;
 
   const loadTasksForTaskGroup = useCallback(
     ({ taskGroupIdentifier, startPosition, viewMode, refresh }) => {
@@ -37,7 +43,10 @@ function VLoadMoreTasks(
   );
 
   return (
-    <Sc.VLoadMoreTasks bgColor={bgColor}>
+    <Sc.VLoadMoreTasks
+      bgColor={bgColor}
+      $width={percentage > 100 ? `${droppableHeaderWidth + 70}px` : '100%'}
+    >
       {(isLoadingGroup || isFetchingMoreTasks) && (
         <TasksSkeletonLoader rows={3} />
       )}
