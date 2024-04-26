@@ -1,4 +1,4 @@
-import { TApiKey } from 'types/developer';
+import { ApiKey } from 'types/developer';
 import { getApiKey } from '@/app/api/developers-api';
 import { ApiError, UseExtendedQueryOptions } from '../types';
 import { useExtendedQuery } from '../useExtendedQuery';
@@ -7,13 +7,13 @@ export const apiKeyQueryKey = (orgId: string) => ['developer_api_key', orgId];
 
 interface Config {
   orgId: string;
-  options?: UseExtendedQueryOptions<TApiKey>;
+  options?: UseExtendedQueryOptions<ApiKey>;
 }
 
 export const useApiKeyQuery = ({ orgId, options = {} }: Config) => {
   const queryFn = getApiKey;
 
-  return useExtendedQuery<TApiKey, ApiError>({
+  return useExtendedQuery<ApiKey, ApiError>({
     queryKey: apiKeyQueryKey(orgId),
     queryFn,
     ...options,

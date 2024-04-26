@@ -1,9 +1,9 @@
 import axios from './axios-heydoc';
-import { TApiKey } from 'types/developer';
+import { ApiKey } from 'types/developer';
 
 export function createApiKey() {
   return axios
-    .post<TApiKey>('organization/settings/orgDeveloper')
+    .post<ApiKey>('organization/settings/orgDeveloper')
     .then(({ data }) => data)
     .catch((error) => {
       throw new Error(error?.response?.data?.errorMessage);
@@ -12,7 +12,7 @@ export function createApiKey() {
 
 export function getApiKey() {
   return axios
-    .get<TApiKey>('organization/settings/orgDeveloper')
+    .get<ApiKey>('organization/settings/orgDeveloper')
     .then(({ data }) => data)
     .catch((error) => {
       throw new Error(error?.response?.data?.errorMessage);
@@ -21,7 +21,7 @@ export function getApiKey() {
 
 export function updateApiKey(orgId: string) {
   return axios
-    .put<TApiKey>(`developers/${orgId}`)
+    .put<ApiKey>(`developers/${orgId}`)
     .then(({ data }) => data)
     .catch((error) => {
       throw new Error(error?.response?.data?.errorMessage);

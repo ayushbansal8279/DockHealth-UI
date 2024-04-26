@@ -1,12 +1,12 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { TApiKey } from 'types/developer';
+import { ApiKey } from 'types/developer';
 import { createApiKey } from '@/app/api/developers-api';
 import { ApiError, UseExtendedMutationOptions } from '../types';
 import { apiKeyQueryKey } from './useApiKeyQuery';
 
 interface Config {
   orgId: string;
-  options?: UseExtendedMutationOptions<TApiKey, ApiError, unknown>;
+  options?: UseExtendedMutationOptions<ApiKey, ApiError, unknown>;
 }
 
 export const useCreateApiKey = ({ orgId, options = {} }: Config) => {
@@ -14,14 +14,14 @@ export const useCreateApiKey = ({ orgId, options = {} }: Config) => {
 
   const mutationFn = createApiKey;
 
-  const defaultOptions: UseExtendedMutationOptions<TApiKey, ApiError, unknown> =
+  const defaultOptions: UseExtendedMutationOptions<ApiKey, ApiError, unknown> =
     {
       onSuccess: (data) => {
         queryClient.setQueryData(apiKeyQueryKey(orgId), data);
       },
     };
 
-  return useMutation<TApiKey, ApiError>({
+  return useMutation<ApiKey, ApiError>({
     mutationFn,
     ...defaultOptions,
     ...options,

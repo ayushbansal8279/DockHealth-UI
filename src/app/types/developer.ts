@@ -1,4 +1,4 @@
-export interface TApiKey {
+export interface ApiKey {
   organizationIdentifier: string;
   domainName: string;
   apiKey: string;

@@ -1,4 +1,4 @@
-import { TApiKey } from '@/app/types/developer';
+import { ApiKey } from '@/app/types/developer';
 import React, { FC } from 'react';
 import Field from './Field';
 
@@ -26,7 +26,7 @@ const fields = [
 ] as const;
 
 interface DisplayApiKeyProps {
-  data: TApiKey;
+  data: ApiKey;
 }
 
 const DisplayApiKey: FC<DisplayApiKeyProps> = ({ data }) => {

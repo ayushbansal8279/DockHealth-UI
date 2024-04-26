@@ -12,7 +12,7 @@ import DisplayApiKeyHeader from './DisplayApiKeyHeader';
 import DisplayApiKey from './DisplayApiKey';
 import CreateApiKeyHeader from './CreateApiKeyHeader';
 import EmptyContent from './EmptyContent';
-import { TApiKey } from '@/app/types/developer';
+import { ApiKey } from '@/app/types/developer';
 
 const ApiKeySection = () => {
   const organization = useSelector(organizationSelector) as TOrganization;
@@ -25,7 +25,7 @@ const ApiKeySection = () => {
     },
   });
 
-  const getOptionToRender = (isLoading: boolean, data: TApiKey | undefined) => {
+  const getOptionToRender = (isLoading: boolean, data: ApiKey | undefined) => {
     if (isLoading)
       return {
         header: null,
