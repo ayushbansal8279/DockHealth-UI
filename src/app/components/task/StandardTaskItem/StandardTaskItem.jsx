@@ -53,6 +53,8 @@ const Task = React.memo(
     pageBackground,
     isNestedTask,
     isVirtualTask,
+    isVirtualSubtask,
+    $width,
     ...restProps
   }) => {
     const parentTaskReference = useRef(null);
@@ -225,6 +227,7 @@ const Task = React.memo(
         isVirtualTask={isVirtualTask}
         origin={origin}
         isLastChild={isLastChild}
+        $width={$width}
       >
         <TaskContainer ref={innerRef}>
           <TaskItem
@@ -251,6 +254,8 @@ const Task = React.memo(
             viewSetup={viewSetup}
             isNestedTask={isNestedTask}
             isWorkflowSubtask={isWorkflowSubtask}
+            isVirtualSubtask={isVirtualSubtask}
+            isWidthGreaterThanHudredPercent={$width}
             pageBackground={pageBackground}
             {...restProps}
           />

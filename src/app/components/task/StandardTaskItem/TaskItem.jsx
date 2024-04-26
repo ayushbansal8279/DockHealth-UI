@@ -184,6 +184,8 @@ const TaskItem = React.memo(
     viewSetup,
     isTaskTemplate,
     isWorkflowSubtask,
+    isWidthGreaterThanHudredPercent,
+    isVirtualSubtask,
     isLastChild,
   }) => {
     const task = useSelector((state) => {
@@ -711,7 +713,8 @@ const TaskItem = React.memo(
 
     const showPriority = task?.priority && task?.priority !== TaskPriority.NONE;
     const showDecisionRow = task?.intentType === 'DECISION' && !isTemplateTask;
-    const hasParentTaskLabel = isSubtask && !isNestedTask && !!task.parentTaskIdentifier;
+    const hasParentTaskLabel =
+      isSubtask && !isNestedTask && !!task.parentTaskIdentifier;
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
     const onClickBulkEdit = () =>
@@ -991,6 +994,9 @@ const TaskItem = React.memo(
             iconColorActive={iconColorActive}
             taskIdentifier={task?.identifier}
             origin={origin}
+            isVirtualSubtask={isVirtualSubtask}
+            isWorkflowSubtask={isWorkflowSubtask}
+            isWidthGreaterThanHudredPercent={isWidthGreaterThanHudredPercent}
           >
             {randerFirstColumnCoverIfNecessary(
               <>
