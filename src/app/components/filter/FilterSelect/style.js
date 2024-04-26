@@ -27,7 +27,7 @@ export const Title = styled.div`
 export const OptionHolder = styled.div`
   display: flex;
   width: 517px;
-  min-height: 52px;
+  min-height: 63px;
   flex-wrap: wrap;
   align-items: center;
   border: 2px solid ${palette.crystalBlue};
