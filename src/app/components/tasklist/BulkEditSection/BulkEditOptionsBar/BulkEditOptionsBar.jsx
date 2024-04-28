@@ -226,8 +226,9 @@ const BulkEditOptionsBar = ({
 
   const refreshTaskWorkflows = useCallback(
     (workflowIdentifiers) => {
-      for (const identifier of workflowIdentifiers)
+      for (const identifier of workflowIdentifiers) {
         dispatch(refreshTaskBundle(identifier));
+      }
     },
     [dispatch],
   );
