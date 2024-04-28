@@ -14,20 +14,23 @@ export const VTask = styled('div')`
     addWorkflowTask,
     subTaskExpanded,
     isLastGroupOfList,
+    isNextVirtualTaskItemTypeBundle,
   }: any) =>
     $workflow
       ? `
   height: 48px;
    padding-bottom: ${
-     virtualListWorkflowOpen
-       ? isLastTaskOfGroup
-         ? bgColor
-           ? '72px'
-           : isLastGroupOfList
-           ? '72px'
-           : '0px'
-         : '58px'
-       : ''
+     !virtualListWorkflowOpen
+       ? ''
+       : isLastTaskOfGroup
+       ? bgColor
+         ? '72px'
+         : isLastGroupOfList
+         ? '72px'
+         : '0px'
+       : isNextVirtualTaskItemTypeBundle
+       ? ''
+       : '58px'
    };
   `
       : `
@@ -54,8 +57,9 @@ export const VTask = styled('div')`
     subTaskExpanded,
     bgColor,
     isLastGroupOfList,
+    isNextVirtualTaskItemTypeBundle,
   }: any) =>
-    $template
+    $template && !isNextVirtualTaskItemTypeBundle
       ? isLastTaskOfGroup
         ? subtaskQuickAddOpen || addWorkflowTask || subTaskExpanded
           ? 'padding-bottom: 0px'

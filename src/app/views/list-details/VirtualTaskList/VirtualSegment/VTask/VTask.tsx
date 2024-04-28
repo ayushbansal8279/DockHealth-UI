@@ -37,6 +37,7 @@ export interface Props extends Segment {
   bgColor: boolean;
   isLastTaskOfGroup: boolean;
   isLastGroupOfList: boolean;
+  isNextVirtualTaskItemTypeBundle: boolean;
 }
 
 export const VTaskContext = createContext({
@@ -52,6 +53,7 @@ function VTask(
     isLastTaskOfGroup,
     bgColor,
     isLastGroupOfList,
+    isNextVirtualTaskItemTypeBundle,
     ...record
   }: Props,
   // eslint-disable-next-line unicorn/prevent-abbreviations, @typescript-eslint/no-unused-vars
@@ -159,6 +161,7 @@ function VTask(
             addWorkflowTask={addWorkflowTask}
             subTaskExpanded={!metadata.collapsed && task?.subtasks?.length}
             isLastGroupOfList={isLastGroupOfList}
+            isNextVirtualTaskItemTypeBundle={isNextVirtualTaskItemTypeBundle}
             $width={percentage > 90 ? `${droppableHeaderWidth + 70}` : '100%'}
           >
             <VTaskContext.Provider value={contextValue}>
@@ -191,7 +194,9 @@ function VTask(
                       : isLastGroupOfList
                       ? '20px'
                       : '0px'
-                    : isTaskTemplate && isLastChild
+                    : isTaskTemplate &&
+                      isLastChild &&
+                      !isNextVirtualTaskItemTypeBundle
                     ? '10px'
                     : ''
                   : '',
@@ -231,7 +236,9 @@ function VTask(
                         : isLastGroupOfList
                         ? '20px'
                         : '0px'
-                      : isTaskTemplate && isLastChild
+                      : isTaskTemplate &&
+                        isLastChild &&
+                        !isNextVirtualTaskItemTypeBundle
                       ? '10px'
                       : ''
                     : '0px',

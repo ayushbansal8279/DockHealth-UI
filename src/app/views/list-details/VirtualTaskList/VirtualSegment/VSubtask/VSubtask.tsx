@@ -37,6 +37,7 @@ export interface Props extends Segment {
   isLastTaskOfGroup: boolean;
   isLastGroupOfList: boolean;
   isLastSubtaskParentTask: boolean;
+  isNextVirtualTaskItemTypeBundle: boolean;
 }
 
 function VSubtask(
@@ -48,6 +49,7 @@ function VSubtask(
     isLastTaskOfGroup,
     isLastGroupOfList,
     isLastSubtaskParentTask,
+    isNextVirtualTaskItemTypeBundle,
     ...record
   }: Props,
   // eslint-disable-next-line unicorn/prevent-abbreviations
@@ -131,7 +133,10 @@ function VSubtask(
               width: percentage > 90 ? `${droppableHeaderWidth + 70}` : '100%',
               background: bgColor ? palette.aliceBlue : '',
               paddingBottom:
-                isLastTaskOfGroup && !subtaskQuickAddOpen && !addWorkflowTask
+                isLastTaskOfGroup &&
+                !subtaskQuickAddOpen &&
+                !addWorkflowTask &&
+                !isNextVirtualTaskItemTypeBundle
                   ? isLastSubtaskParentTask
                     ? bgColor
                       ? '20px'
@@ -186,7 +191,9 @@ function VSubtask(
                   percentage > 90 ? `${droppableHeaderWidth + 70}` : '100%',
                 background: bgColor ? palette.aliceBlue : '',
                 paddingBottom:
-                  isLastTaskOfGroup && !addWorkflowTask
+                  isLastTaskOfGroup &&
+                  !addWorkflowTask &&
+                  !isNextVirtualTaskItemTypeBundle
                     ? isLastSubtaskParentTask
                       ? bgColor
                         ? '20px'
@@ -221,15 +228,16 @@ function VSubtask(
                 width:
                   percentage > 90 ? `${droppableHeaderWidth + 70}` : '100%',
                 background: bgColor ? palette.aliceBlue : '',
-                paddingBottom: isLastTaskOfGroup
-                  ? isLastSubtaskParentTask
-                    ? bgColor
-                      ? '20px'
-                      : isLastGroupOfList
-                      ? '20px'
-                      : '0px'
-                    : '10px'
-                  : '0px',
+                paddingBottom:
+                  isLastTaskOfGroup && !isNextVirtualTaskItemTypeBundle
+                    ? isLastSubtaskParentTask
+                      ? bgColor
+                        ? '20px'
+                        : isLastGroupOfList
+                        ? '20px'
+                        : '0px'
+                      : '10px'
+                    : '0px',
               }}
             >
               <Sc.WorkflowQuickAddTaskContainer
