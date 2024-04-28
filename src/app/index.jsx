@@ -84,6 +84,7 @@ const queryClient = new QueryClient({
       staleTime: Number.POSITIVE_INFINITY,
       refetchOnMount: false,
       refetchOnWindowFocus: false,
+      retry: false,
     },
   },
 });

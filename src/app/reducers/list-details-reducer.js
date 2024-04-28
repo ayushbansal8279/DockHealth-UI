@@ -329,32 +329,6 @@ const ListDetailsReducer = (state = initialState, action) => {
           ...state.tasksMap,
           ...newMap,
         },
-        // listGroups: state.listGroups.map((g) => {
-        //   if (
-        //     g.taskGroupIdentifier ===
-        //     groupOfTasks.taskGroups?.[0]?.groupIdentifier
-        //   ) {
-        //     const taskCount = groupOfTasks.taskGroups?.[0]?.tasks.filter(
-        //       (t) => t.itemType === 'TASK',
-        //     ).length;
-        //     const taskInWorkflowsCount = groupOfTasks.taskGroups?.[0]?.tasks
-        //       .filter((t) => t.itemType === 'BUNDLE')
-        //       .reduce(
-        //         (accumulator, current) =>
-        //           accumulator +
-        //           (current.tasksCount || 0) -
-        //           (current.tasksCompletedCount || 0),
-        //         0,
-        //       );
-        //     const grpState = {
-        //       ...g,
-        //       tasks: [...(g.tasks || []), groupOfTasks.taskGroups?.[0]?.tasks.map((task) => task.identifier)],
-        //       // metricValue: taskCount + taskInWorkflowsCount,
-        //     };
-        //     return grpState;
-        //   }
-        //   return g;
-        // }),
       };
     }
 
@@ -371,7 +345,7 @@ const ListDetailsReducer = (state = initialState, action) => {
         isFetching: true,
         tasks: [],
         completedTasks: [],
-        showingCompletedTasks: false,
+        // showingCompletedTasks: false,
       };
     }
 
@@ -768,6 +742,40 @@ const ListDetailsReducer = (state = initialState, action) => {
         groupedTasks: {
           ...state.groupedTasks,
           taskGroups: newTaskGroups,
+        },
+      };
+    }
+
+    case ActionTypes.ADD_WORKFLOW_LABEL_SUCCESS: {
+      return {
+        ...state,
+        tasksMap: {
+          ...state.tasksMap,
+          [action?.newLabel?.taskWorkflowIdentifier]: {
+            ...state.tasksMap[action?.newLabel?.taskWorkflowIdentifier],
+            labels: [
+              ...state.tasksMap[action?.newLabel?.taskWorkflowIdentifier]
+                ?.labels,
+              action?.newLabel,
+            ],
+          },
+        },
+      };
+    }
+
+    case ActionTypes.REMOVE_WORKFLOW_LABEL_FROM_TASK_SUCCESS: {
+      return {
+        ...state,
+        tasksMap: {
+          ...state.tasksMap,
+          [action?.payload?.taskWorkflowIdentifier]: {
+            ...state.tasksMap[action?.payload?.taskWorkflowIdentifier],
+            labels: state.tasksMap[
+              action?.payload?.taskWorkflowIdentifier
+            ]?.labels.filter(
+              (l) => l.labelIdentifier !== action?.payload?.labelIdentifier,
+            ),
+          },
         },
       };
     }

@@ -1,4 +1,4 @@
-import { Collapse } from '@mui/material';
+import { Collapse, Typography } from '@mui/material';
 import styled from 'styled-components';
 import spacing from 'styles/spacing';
 import { fontWeights, fontSizes } from 'styles/font';
@@ -54,12 +54,8 @@ export const TasksGroupContainer = styled.div`
   flex-direction: column;
   justify-content: center;
   padding-bottom: ${spacing.giga};
-  // &:hover {
-  //   background-color: #daefff4d;
-  // }
   background: ${({ bgColor }) => (bgColor ? palette.aliceBlue : '')};
-  // ${({ $width }) => ($width ? `width: ${$width + 66 + 72}px` : '')};
-  width: 100%;
+  width: ${({ $width }) => $width};
 `;
 
 export const TasksGroupHeader = styled.div`
@@ -68,7 +64,8 @@ export const TasksGroupHeader = styled.div`
   justify-content: flex-start;
   padding-bottom: ${spacing.regular};
   position: sticky;
-  left: 48px;
+  width: ${({ $width }) => $width};
+  left: ${({ $left }) => `${$left}px`};
   padding-top: ${spacing.regular};
   .action-buttons {
     visibility: hidden;
@@ -97,6 +94,29 @@ export const TasksGroupLabelName = styled.span`
   text-overflow: ellipsis;
   vertical-align: middle;
   font-family: Outfit, sans-serif;
+`;
+
+export const TasksGroupNumericalBadgeContainer = styled.div`
+  height: 20px;
+  border-radius: 2px;
+  border: 1px solid ${palette.iron};
+  background: ${palette.whiteSmoke};
+  padding: 4px 7px 4px 7px;
+  gap: 7px;
+  margin-left: 6px;
+  margin-top: 3px;
+  opacity: 0px;
+`;
+
+export const TasksGroupTaskCount = styled(Typography)`
+  color: ${palette.shadowBlue};
+  font-family: Outfit;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 11.19px;
+  &.MuiTypography-root {
+    text-align: center;
+  }
 `;
 
 export const TasksGroupLabelCounter = styled.span`

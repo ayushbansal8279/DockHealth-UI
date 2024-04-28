@@ -22,12 +22,9 @@ export const SUBSCRIPTION_PLANS = [
     description:
       'For teams that need the basics of HIPAA-compliant task management and communication',
     annualMonthlyPrice: 15,
-    annualPrice: 180,
     monthlyPrice: 20,
-    planDescriptions: [
-      'Per user per month, billed annually',
-      '$20 when billed monthly',
-    ],
+    monthlyPlanDescriptions: ['Per user per month'],
+    annualPlanDescriptions: ['Per user per month billed annually'],
     subscriptionPlan: SubscriptionPlan.STANDARD,
     isFreeTrialPlan: true,
     mostPopular: false,
@@ -50,12 +47,9 @@ export const SUBSCRIPTION_PLANS = [
     description:
       'For teams that need feature customization, such as patient profiles, lists and SmartFlows™',
     annualMonthlyPrice: 30,
-    annualPrice: 360,
     monthlyPrice: 35,
-    planDescriptions: [
-      'Per user per month, billed annually',
-      '$35 when billed monthly',
-    ],
+    monthlyPlanDescriptions: ['Per user per month'],
+    annualPlanDescriptions: ['Per user per month billed annually'],
     subscriptionPlan: SubscriptionPlan.PREMIUM,
     isFreeTrialPlan: true,
     mostPopular: false,
@@ -78,7 +72,18 @@ export const SUBSCRIPTION_PLANS = [
     label: 'Pro',
     description:
       'For teams needing advanced automation, secure chat and closing-the-loop functionality',
-    planDescriptions: ['Starting at $500', 'Includes first 10 users'],
+    annualMonthlyPrice: 40,
+    monthlyPrice: 50,
+    monthlyPlanDescriptions: [
+      'Per user per month',
+      'Starting at $500',
+      'Includes first 10 users',
+    ],
+    annualPlanDescriptions: [
+      'Per user per month billed annually',
+      'Starting at $400',
+      'Includes first 10 users',
+    ],
     subscriptionPlan: SubscriptionPlan.PRO,
     isFreeTrialPlan: true,
     mostPopular: true,
@@ -136,7 +141,6 @@ export const DockLite = {
     'Add Dock Light users at the Pro and Enterprise tiers for a streamlined experience for internal/external colleagues and collaborators.',
   color: '#0e244a',
   annualMonthlyPrice: 7,
-  annualPrice: 84,
   monthlyPrice: 10,
   subscriptionPlan: 'DOCK_LITE',
   isFreeTrialPlan: true,

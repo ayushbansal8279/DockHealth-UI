@@ -8,6 +8,7 @@ import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
 import RichTextEditor from 'components/common/RichTextEditor/RichTextEditor';
 import {
   AddCommentContainer,
+  AvatarWrapper,
   AddCommentLoaderContainer,
   AddCommentInputContainer,
 } from './styled';
@@ -68,7 +69,9 @@ const AddComment = ({
 
   return (
     <AddCommentContainer ref={addCommentContainerReference}>
-      <UserAvatar user={currentUser} size={35} />
+      <AvatarWrapper>
+        <UserAvatar user={currentUser} size={35} />
+      </AvatarWrapper>
       <AddCommentInputContainer isFocused={isFocused}>
         <RichTextEditor
           placeholder="New comment"

@@ -6,8 +6,9 @@ import { GridImg } from '../../styled';
 import TaskIcon from 'components/task/TaskIcon/TaskIcon';
 import Popper from '@mui/material/Popper';
 import Grid from '@mui/material/Grid';
-import CommentsInPopper from '../../CommentsInPopper/CommentsInPopper';
+import CommentsInPopover from '../../CommentsInPopover/CommentsInPopover';
 import Tooltip from '@/app/components/common/Tooltip/Tooltip';
+import { Popover } from '@mui/material';
 
 interface TaskItemCommentsProps {
   matchComments: boolean;
@@ -31,7 +32,7 @@ const TaskItemComments: FC<TaskItemCommentsProps> = ({
     setAnchorEl(anchorEl ? null : event.currentTarget);
   };
 
-  const handleClosePopper = useCallback(() => {
+  const handleCloseComments = useCallback(() => {
     setAnchorEl(null);
   }, [setAnchorEl]);
 
@@ -49,14 +50,14 @@ const TaskItemComments: FC<TaskItemCommentsProps> = ({
             )}
           </button>
         </Tooltip>
-        <Popper
+        <Popover
           anchorEl={anchorEl}
           open={commentPopperOpen}
-          placement="bottom"
           style={{ zIndex: 2000 }}
+          onClose={handleCloseComments}
         >
-          <CommentsInPopper task={task} onClose={handleClosePopper} />
-        </Popper>
+          <CommentsInPopover task={task} onClose={handleCloseComments} />
+        </Popover>
       </GridImg>
     </Grid>
   );

@@ -11,6 +11,7 @@ export const TopSectionGrid = styled(Grid)`
 
 export const InputWrapper = styled.div`
   width: 645px;
+  margin-left: 20px;
 `;
 
 export const CheckboxDescription = styled.label`
@@ -27,20 +28,20 @@ export const CheckboxContainer = styled.div`
 `;
 
 export const ButtonWrapper = styled.div`
-color: ${palette.white};
-height: 40px;
-width: 80px;
-text-align: center;
-padding-top: 7px;
-margin-left: 15px;
-border-radius: 4px;
-background-color: ${palette.newDarkBlue};
+  color: ${palette.white};
+  height: 40px;
+  width: 80px;
+  text-align: center;
+  padding-top: 7px;
+  margin-left: 15px;
+  border-radius: 4px;
+  background-color: ${palette.newDarkBlue};
 
-:hover {
-  background-color: ${palette.purpleNavy};
-}
+  :hover {
+    background-color: ${palette.purpleNavy};
+  }
 
-@media print {
-  display: none;
-}
+  @media print {
+    display: none;
+  }
 `;

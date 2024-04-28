@@ -12,10 +12,12 @@ import * as TaskActions from 'actions/task-actions';
 // @ts-ignore
 import { compose } from 'ramda';
 import * as ListDetailsActions from 'actions/list-details-actions';
-import { isTaskItemsSelectedSelector } from '../../../../../selectors/task-items-selectors';
+import { isTaskItemsSelectedSelector } from 'selectors/task-items-selectors';
 import * as Sc from './styled';
-import { taskDetailsSortSelector } from '../../../../../selectors/list-details-selectors';
+import { taskDetailsSortSelector } from 'selectors/list-details-selectors';
 import palette from '@/app/styles/palette';
+import { TaskOrigin } from '@/app/helpers/task-helpers';
+import { useVirtualTaskListScrollContext } from '../../VirtualTaskListScrollContext';
 
 export interface Props extends Segment {
   isTaskTemplate: boolean;
@@ -24,14 +26,7 @@ export interface Props extends Segment {
 }
 
 function VTaskHeader(
-  {
-    metadata,
-    register,
-    isTaskTemplate,
-    groupWithZeroTask,
-    bgColor,
-    ...record
-  }: Props,
+  { metadata, register, isTaskTemplate, groupWithZeroTask, bgColor }: Props,
   // eslint-disable-next-line unicorn/prevent-abbreviations
   ref: ForwardedRef<HTMLDivElement>,
 ) {
@@ -46,7 +41,13 @@ function VTaskHeader(
   const isGroupSelected = useSelector(
     isTaskItemsSelectedSelector(metadata.parent?.children),
   );
+  const { visibleWidth, droppableHeaderWidth } =
+    useVirtualTaskListScrollContext();
+  const screenWidth = typeof window !== 'undefined' ? window.innerWidth : 1920;
+  const percentage =
+    ((!!droppableHeaderWidth ? droppableHeaderWidth : 0) / screenWidth) * 100;
   const groupHasMultipleAssignees = false;
+
   const handleGroupSelect = useCallback(() => {
     const taskIdentifiers = metadata.parent?.children;
     dispatch(
@@ -54,11 +55,12 @@ function VTaskHeader(
       TaskActions.changeTasksSelectedState(!isGroupSelected, taskIdentifiers),
     );
   }, [dispatch, isGroupSelected, metadata.parent?.children]);
+
   return (
     <div
       style={{
-        width: '100%',
-        paddingBottom: groupWithZeroTask ? '20px' : '0px',
+        width: percentage > 90 ? `${droppableHeaderWidth + 70}` : '100%',
+        // paddingBottom: groupWithZeroTask ? '20px' : '0px',
         background: bgColor ? palette.aliceBlue : '',
       }}
     >
@@ -71,7 +73,7 @@ function VTaskHeader(
         groupWithZeroTask={groupWithZeroTask}
       >
         {/* @ts-ignore */}
-        {metadata.parent?.children.length === 0 ? (
+        {groupWithZeroTask ? (
           <></>
         ) : (
           <TasksHeader
@@ -83,6 +85,9 @@ function VTaskHeader(
             isGroupSelected={isGroupSelected}
             onGroupSelect={handleGroupSelect}
             pageBackground={bgColor ? palette.aliceBlue : ''}
+            origin={TaskOrigin.LIST}
+            listPageGroupHeader
+            isWidthGreaterThanHundredPercent={percentage > 90}
           />
         )}
       </Sc.VTaskHeader>

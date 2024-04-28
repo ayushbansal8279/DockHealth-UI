@@ -27,6 +27,7 @@ import {
   TaskHeaderColumn,
 } from './helpers';
 import ColumnSortHeader from '../ColumnSortHeader/ColumnSortHeader';
+import { TaskScrollVericleLine } from '../../task/styled';
 
 const TasksHeader = ({
   bulkEditEnabled,
@@ -36,6 +37,9 @@ const TasksHeader = ({
   onGroupSelect,
   pageBackground,
   isDashboardTaskHeader,
+  listPageGroupHeader,
+  isWidthGreaterThanHundredPercent,
+  origin,
 }) => {
   const taskList = useSelector(currentTaskListSelector);
   const currentUser = useSelector(userProfileSelector);
@@ -135,7 +139,13 @@ const TasksHeader = ({
           truncateEnabled
           id={f.identifier}
           label={isRegular ? f.label : f.name}
-          width={+f.columnWidth}
+          width={
+            index === 0
+              ? +f.columnWidth - (origin === 'LIST' ? 1 : 1.5)
+              : index === 1
+              ? +f.columnWidth - (origin === 'LIST' ? 1 : 1.1)
+              : +f.columnWidth
+          }
           snapshot={snapshot}
           sort={sort}
           onSortChange={onSortChange}
@@ -165,6 +175,8 @@ const TasksHeader = ({
         {(provided, snapshot) => (
           <SortHeaderRow
             isDashboardTaskHeader={isDashboardTaskHeader}
+            listPageGroupHeader={listPageGroupHeader}
+            isWidthGreaterThanHundredPercent={isWidthGreaterThanHundredPercent}
             ref={provided.innerRef}
             {...provided.droppableProps}
             $width={
@@ -203,6 +215,7 @@ const TasksHeader = ({
                 0,
                 snapshot,
               )}
+              <TaskScrollVericleLine>&nbsp;</TaskScrollVericleLine>
             </StickyColumnContainer>
             {columns
               .filter((f) => f.isChecked)

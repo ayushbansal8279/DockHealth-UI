@@ -9,9 +9,11 @@ import { StyledPopover, StyledButton, PopoverDiv } from './styled';
 const TaskDrawerPopover = ({
   disabled,
   placement,
+  horizontalPlacement,
   children,
   content,
   width,
+  height,
 }) => {
   const buttonReference = useRef(null);
   const [isPopoverOpen, openPopover, closePopover, togglePopover] =
@@ -35,7 +37,7 @@ const TaskDrawerPopover = ({
         anchorEl={buttonReference?.current}
         anchorOrigin={{
           vertical: placement || 'top',
-          horizontal: 'center',
+          horizontal: horizontalPlacement || 'center',
         }}
         transformOrigin={{
           vertical: placement === 'top' ? 'bottom' : 'top',
@@ -47,10 +49,11 @@ const TaskDrawerPopover = ({
           closePopover();
         }}
         width={width}
+        
       >
         {isPopoverOpen && (
           <PopoverCard>
-            <PopoverDiv minWidth={buttonReference.current?.offsetWidth}>
+            <PopoverDiv height={height} minWidth={buttonReference.current?.offsetWidth}>
               {typeof content === 'function'
                 ? content({
                     isPopoverOpen,

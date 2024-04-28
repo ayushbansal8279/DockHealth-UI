@@ -39,6 +39,8 @@ import { CustomizeImg } from 'components/patients/CustomizeToolbarButton/styled'
 import Checkbox from 'components/common/Checkbox/Checkbox';
 import AddButton from 'components/common/AddButton/AddButton';
 import Button from 'components/common/Button/Button';
+import ToolbarButton from '../../tasklist/list-toolbar-buttons/ToolbarButton/ToolbarButton';
+import { AddIcon } from '@/app/views/smart-flow-builder/TaskNodeHandles/styled';
 
 const CustomProfileList = () => {
   const dispatch = useDispatch();
@@ -179,7 +181,7 @@ const CustomProfileList = () => {
           justifyContent="space-between"
           sx={{ m: '16px 32px 0px 32px ' }}
         >
-          <Box display="flex" alignItems="center" width="300px">
+          {/* <Box display="flex" alignItems="center" width="300px">
             <SearchInput onValueChange={handleSearchInputChange} />
           </Box>
           <Box mx={1} />
@@ -188,9 +190,9 @@ const CustomProfileList = () => {
               Search
             </Button>
           </Box>
-          <Box mx={1} />
+          <Box mx={1} /> */}
           <Box display="flex" flex="1 1 auto" alignItems="start" my={2}>
-            <Toolbar>
+            {/* <Toolbar>
               <Toolbar.Button ref={buttonReference} onClick={handlePopoverOpen}>
                 <CustomizeImg
                   src={CustomizeIcon}
@@ -200,6 +202,26 @@ const CustomProfileList = () => {
                 <Box mr={1} />
                 Customize
               </Toolbar.Button>
+            </Toolbar> */}
+            <Toolbar>
+              <div style={{ marginTop: '3px' }}>
+                <ToolbarButton
+                  ref={buttonReference}
+                  icon={
+                    <CustomizeImg
+                      src={CustomizeIcon}
+                      alt="view type icon"
+                      // iconColorFilterActive={isPopoverOpen}
+                    />
+                  }
+                  onClick={handlePopoverOpen}
+                  isOpen={isPopoverOpen}
+                  active={isPopoverOpen}
+                  hasPopover
+                >
+                  Customize
+                </ToolbarButton>
+              </div>
             </Toolbar>
             <Popover
               anchorEl={buttonReference?.current}
@@ -238,13 +260,36 @@ const CustomProfileList = () => {
                 </FormGroup>
               </Paper>
             </Popover>
+            <Box mx={0.5} />
+            <Box display="flex" alignItems="center" width="400px" my={0.4}>
+              {/* <Box display="flex" width="120px"> */}
+              <SearchInput
+                value={searchPhrase}
+                onValueChange={handleSearchInputChange}
+              />
+              {/* </Box> */}
+            </Box>
           </Box>
           <Box m={1} />
           <Box display="flex" alignItems="center">
-            <Box m={1} />
-            <AddButton onClick={handleProfileAddClick}>
-              Add a {currentProfileType?.name}
-            </AddButton>
+            <ToolbarButton
+              // ref={buttonReference}
+              icon={
+                <span style={{ marginLeft: '-5px' }}>
+                  <AddIcon />
+                </span>
+              }
+              onClick={handleProfileAddClick}
+              isOpen={open}
+              active={open}
+              // hasPopover
+            >
+              {/* <AddButton onClick={handleProfileAddClick}> */}
+              <span style={{ marginLeft: '-5px' }}>
+                Add a {currentProfileType?.name}
+              </span>
+              {/* </AddButton> */}
+            </ToolbarButton>
           </Box>
         </Stack>
         <DataGrid

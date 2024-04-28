@@ -34,7 +34,7 @@ import {
 } from 'selectors/user-selectors';
 import * as DashboardApi from 'api/dashboard-api';
 import TaskViewTypeToolbarSelect from 'components/tasklist/TaskViewTypeToolbarSelect/TaskViewTypeToolbarSelect';
-import CustomizeToolbarButton from 'components/tasklist/CustomizeToolbarButton/CustomizeToolbarButton';
+import CustomizeToolbarButton from '@/app/components/tasklist/list-toolbar-buttons/CustomizeToolbarButton/CustomizeToolbarButton';
 import { useTaskListColumnsConfig } from 'context-api/columns-config-context';
 import {
   TaskItemColumn,
@@ -93,81 +93,81 @@ const DashboardToolbar = ({ iconColorFilterActive, iconColorActive }) => {
     (orgUserRole === 'MEMBER' &&
       allTasksForMemberEnabledItem?.value === 'false') ||
     false;
-  const shareTaskAvailable = useSelector(userHasShareTaskFeatureSelector);
+  // const shareTaskAvailable = useSelector(userHasShareTaskFeatureSelector);
 
-  const [sharedTasksCount, setSharedTasksCount] = useState(0);
-  const [upcomingTasksCount, setUpcomingTasksCount] = useState(0);
-  const [overdueTasksCount, setOverdueTasksCount] = useState(0);
-  const [completedTasksCount, setCompletedTasksCount] = useState(0);
-  const [allTasksCount, setAllTasksCount] = useState(0);
-  const [sharedTasksAnyUnread, setSharedTasksAnyUnread] = useState(false);
+  // const [sharedTasksCount, setSharedTasksCount] = useState(0);
+  // const [upcomingTasksCount, setUpcomingTasksCount] = useState(0);
+  // const [overdueTasksCount, setOverdueTasksCount] = useState(0);
+  // const [completedTasksCount, setCompletedTasksCount] = useState(0);
+  // const [allTasksCount, setAllTasksCount] = useState(0);
+  // const [sharedTasksAnyUnread, setSharedTasksAnyUnread] = useState(false);
 
-  const upcomingTabGroupTypes = [
-    'ESCALATED',
-    'TODAY',
-    'TOMORROW',
-    'NEXT_7_DAYS',
-    'NO_DUE_DATE',
-    'ALL_OTHER',
-    'ASSIGNED_BY_ME',
-  ];
-  const overdueTabGroupTypes = ['OVERDUE'];
-  const completedTabGroupTypes = ['COMPLETED_TODAY', 'COMPLETED_7_DAYS'];
-  const allTasksTabGroupTypes = [
-    'ORG_NEXT_7_DAYS',
-    'ORG_NO_DUE_DATE',
-    'ORG_ALL_OTHER',
-  ];
+  // const upcomingTabGroupTypes = [
+  //   'ESCALATED',
+  //   'TODAY',
+  //   'TOMORROW',
+  //   'NEXT_7_DAYS',
+  //   'NO_DUE_DATE',
+  //   'ALL_OTHER',
+  //   'ASSIGNED_BY_ME',
+  // ];
+  // const overdueTabGroupTypes = ['OVERDUE'];
+  // const completedTabGroupTypes = ['COMPLETED_TODAY', 'COMPLETED_7_DAYS'];
+  // const allTasksTabGroupTypes = [
+  //   'ORG_NEXT_7_DAYS',
+  //   'ORG_NO_DUE_DATE',
+  //   'ORG_ALL_OTHER',
+  // ];
 
-  useEffect(() => {
-    DashboardApi.getTasksAssignedToUserByImplicitGroup('SHARED', 0, 0).then(
-      (data) => {
-        const taskCount = data?.taskGroups?.[0]?.tasks?.length;
-        setSharedTasksCount(taskCount);
-        const anyTasksUnread =
-          data?.taskGroups?.[0]?.tasks?.filter((t) => t.read === false)
-            ?.length !== 0;
-        setSharedTasksAnyUnread(anyTasksUnread);
-      },
-    );
+  // useEffect(() => {
+  //   DashboardApi.getTasksAssignedToUserByImplicitGroup('SHARED', 0, 0).then(
+  //     (data) => {
+  //       const taskCount = data?.taskGroups?.[0]?.tasks?.length;
+  //       setSharedTasksCount(taskCount);
+  //       const anyTasksUnread =
+  //         data?.taskGroups?.[0]?.tasks?.filter((t) => t.read === false)
+  //           ?.length !== 0;
+  //       setSharedTasksAnyUnread(anyTasksUnread);
+  //     },
+  //   );
 
-    setUpcomingTasksCount(0);
-    setOverdueTasksCount(0);
-    setCompletedTasksCount(0);
-    DashboardApi.getDashboardTaskStasForImplicitGroups('MyTasks').then(
-      (data) => {
-        data.map((value) => {
-          if (upcomingTabGroupTypes.includes(value?.groupType)) {
-            setUpcomingTasksCount((prev) => prev + value?.metricValue);
-          }
-          if (overdueTabGroupTypes.includes(value?.groupType)) {
-            setOverdueTasksCount((prev) => prev + value?.metricValue);
-          }
-          if (completedTabGroupTypes.includes(value?.groupType)) {
-            setCompletedTasksCount((prev) => prev + value?.metricValue);
-          }
-        });
-      },
-    );
+  //   setUpcomingTasksCount(0);
+  //   setOverdueTasksCount(0);
+  //   setCompletedTasksCount(0);
+  //   DashboardApi.getDashboardTaskStasForImplicitGroups('MyTasks').then(
+  //     (data) => {
+  //       data.map((value) => {
+  //         if (upcomingTabGroupTypes.includes(value?.groupType)) {
+  //           setUpcomingTasksCount((prev) => prev + value?.metricValue);
+  //         }
+  //         if (overdueTabGroupTypes.includes(value?.groupType)) {
+  //           setOverdueTasksCount((prev) => prev + value?.metricValue);
+  //         }
+  //         if (completedTabGroupTypes.includes(value?.groupType)) {
+  //           setCompletedTasksCount((prev) => prev + value?.metricValue);
+  //         }
+  //       });
+  //     },
+  //   );
 
-    // setAllTasksCount(0);
-    // DashboardApi.getDashboardTaskStasForImplicitGroups('AllTasks').then(
-    //   (data) => {
-    //     data.map((value) => {
-    //       if (allTasksTabGroupTypes.includes(value?.groupType)) {
-    //         setAllTasksCount((prev) => prev + value?.metricValue);
-    //       }
-    //     });
-    //   },
-    // );
-  }, [
-    setSharedTasksCount,
-    setSharedTasksAnyUnread,
-    setUpcomingTasksCount,
-    setOverdueTasksCount,
-    setCompletedTasksCount,
-    // setAllTasksCount,
-  ]);
+  //   // setAllTasksCount(0);
+  //   // DashboardApi.getDashboardTaskStasForImplicitGroups('AllTasks').then(
+  //   //   (data) => {
+  //   //     data.map((value) => {
+  //   //       if (allTasksTabGroupTypes.includes(value?.groupType)) {
+  //   //         setAllTasksCount((prev) => prev + value?.metricValue);
+  //   //       }
+  //   //     });
+  //   //   },
+  //   // );
+  // }, [
+  //   setSharedTasksCount,
+  //   setSharedTasksAnyUnread,
+  //   setUpcomingTasksCount,
+  //   setOverdueTasksCount,
+  //   setCompletedTasksCount,
+  //   // setAllTasksCount,
+  // ]);
 
   //       const anyTasksUnread =
   //         data?.taskGroups?.[0]?.tasks?.filter((t) => t.read === false)
@@ -250,19 +250,26 @@ const DashboardToolbar = ({ iconColorFilterActive, iconColorActive }) => {
     <ToolbarContainer container direction="row" justifyContent="space-between">
       <Grid item md={8} sm={12}>
         <DashboardTabsContainer>
-          {/* <AccessRestrictor
+          <AccessRestrictor
             allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST, DOCK_LITE]}
           >
             <DashboardTab
-              label="My Tasks"
-              setHighlightPosition={setHighlightPosition}
+              label={
+                <DashboardTabsLabel
+                  isActive={tabName === DashboardTasksTab.MY_TASKS}
+                >
+                  My Tasks
+                </DashboardTabsLabel>
+              }
+              // "My Tasks"
+              // setHighlightPosition={setHighlightPosition}
               onClick={() => {
                 history.push(`${HOME_PATH}${search}`);
               }}
               isSelected={tabName === DashboardTasksTab.MY_TASKS}
             />
-          </AccessRestrictor> */}
-          <AccessRestrictor
+          </AccessRestrictor>
+          {/* <AccessRestrictor
             allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST, DOCK_LITE]}
           >
             <DashboardTab
@@ -289,8 +296,8 @@ const DashboardToolbar = ({ iconColorFilterActive, iconColorActive }) => {
               }}
               isSelected={tabName === DashboardTasksTab.UPCOMING}
             />
-          </AccessRestrictor>
-          <AccessRestrictor
+          </AccessRestrictor> */}
+          {/* <AccessRestrictor
             allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST, DOCK_LITE]}
           >
             <DashboardTab
@@ -317,8 +324,8 @@ const DashboardToolbar = ({ iconColorFilterActive, iconColorActive }) => {
               }}
               isSelected={tabName === DashboardTasksTab.OVERDUE}
             />
-          </AccessRestrictor>
-          <AccessRestrictor
+          </AccessRestrictor> */}
+          {/* <AccessRestrictor
             allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST, DOCK_LITE]}
           >
             <DashboardTab
@@ -345,8 +352,8 @@ const DashboardToolbar = ({ iconColorFilterActive, iconColorActive }) => {
               }}
               isSelected={tabName === DashboardTasksTab.COMPLETED}
             />
-          </AccessRestrictor>
-          {shareTaskAvailable && (
+          </AccessRestrictor> */}
+          {/* {shareTaskAvailable && (
             <DashboardTab
               // label={`Shared With Me (${sharedTasksCount})`}
               label={
@@ -373,7 +380,7 @@ const DashboardToolbar = ({ iconColorFilterActive, iconColorActive }) => {
               isSelected={tabName === DashboardTasksTab.SHARED_TASKS}
               showNewIndicator={sharedTasksAnyUnread}
             />
-          )}
+          )} */}
           {!restrictAllTasksForMember && (
             <AccessRestrictor allowedToRoles={[ADMIN, OWNER, MEMBER]}>
               <DashboardTab
@@ -382,7 +389,7 @@ const DashboardToolbar = ({ iconColorFilterActive, iconColorActive }) => {
                     <DashboardTabsLabel
                       isActive={tabName === DashboardTasksTab.ALL_TASKS}
                     >
-                      All Tasks
+                      Org Tasks
                     </DashboardTabsLabel>
                     {/* <DashboardTabsNumericalBadgeContainer
                       isActive={tabName === DashboardTasksTab.ALL_TASKS}

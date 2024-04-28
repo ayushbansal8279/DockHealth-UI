@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-no-duplicate-props */
 import React, { useCallback, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { updateWorkflowStatus } from 'actions/task-actions';
 import * as AlertActions from 'alert/actions';
 import { onTaskDrawerTaskStatusChanged } from 'helpers/ga-event-helper';
@@ -16,10 +16,12 @@ import {
 } from './styled';
 import { IconButton, InputAdornment } from '@mui/material';
 import PrioritySelectIcon from '@/app/img/PrioritySelectIcon';
+import { organizationStatusesSelector } from '@/app/selectors/organization-selectors';
 
 const StatusSection = ({ selectedTask, onTaskUpdate, disabled = false }) => {
   const dispatch = useDispatch();
   const { workflowStatus, taskIdentifier } = selectedTask || {};
+  const statuses = useSelector(organizationStatusesSelector);
 
   const setAutoSaveVisible = useCallback(() => {
     dispatch(AlertActions.showSideBarAlert(AlertMessages.SAVED));
@@ -59,7 +61,9 @@ const StatusSection = ({ selectedTask, onTaskUpdate, disabled = false }) => {
     <StatusContainer>
       <Title>Status</Title>
       <TaskDrawerPopover
-        width={245}
+        width={statuses?.length > 30 ? 600 : ''}
+        height={500}
+        horizontalPlacement={statuses?.length > 30 ? 'right' : 'center'}
         disabled={disabled}
         content={({ closePopover, resetPosition }) => (
           <TaskWorkflowStatus

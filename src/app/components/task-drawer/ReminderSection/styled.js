@@ -9,10 +9,10 @@ export const ReminderContainer = styled.div`
   justify-content: flex-start;
   align-items: center;
   width: 100%;
-  margin-top: ${spacing.large};
   margin-bottom: ${spacing.tiny};
   transition: opacity 0.4s ease-out;
   font-family: inherit;
+  margin-left: 135px;
 `;
 
 export const Description = styled.p`

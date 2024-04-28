@@ -125,6 +125,9 @@ import {
   TootipCompletedBy,
   TootipCompletedByDate,
   TootipCompletedByName,
+  AddPlaceholder,
+  ChildTaskTitle,
+  ParentTaskLink,
 } from '../styled';
 import TaskItemText from './customFieldsTaskItemComponents/TaskItemText/TaskItemText';
 import TaskItemDropdown from './customFieldsTaskItemComponents/TaskItemDropdown/TaskItemDropdown';
@@ -132,6 +135,7 @@ import TaskItemDate from './customFieldsTaskItemComponents/TaskItemDate';
 
 import TaskItemComments from './TaskItemComponents/TaskItemComments';
 import { megaFilterSelector } from '@/app/selectors/mega-filter-selectors';
+import SubtaskIcon from '@/app/img/SubtaskIcon';
 
 const { DISABLED, READ_ONLY } = SINGLE_TASK_RESTRICTIONS_OPTIONS;
 
@@ -180,6 +184,8 @@ const TaskItem = React.memo(
     viewSetup,
     isTaskTemplate,
     isWorkflowSubtask,
+    isWidthGreaterThanHudredPercent,
+    isVirtualSubtask,
     isLastChild,
   }) => {
     const task = useSelector((state) => {
@@ -212,6 +218,7 @@ const TaskItem = React.memo(
       subtaskQuickAddOpen,
       // selected,
       subTasksCount,
+      subtasks: subTaskCurrentCount,
       dependencyTasksCompletedCount,
       dependencyTasksCount,
       hasEscalations,
@@ -234,6 +241,8 @@ const TaskItem = React.memo(
     useEffect(() => {
       if (task?.status === 'COMPLETE') {
         setIsCompleted(true);
+      } else {
+        setIsCompleted(false);
       }
     }, [task]);
 
@@ -298,6 +307,8 @@ const TaskItem = React.memo(
       file: false,
       share: false,
       task: false,
+      status: false,
+      patient: false,
     });
     const { move, duplicate, subtasks, delete: del } = SINGLE_TASK_FEATURES;
     const organizationCustomFields = useSelector(
@@ -702,7 +713,8 @@ const TaskItem = React.memo(
 
     const showPriority = task?.priority && task?.priority !== TaskPriority.NONE;
     const showDecisionRow = task?.intentType === 'DECISION' && !isTemplateTask;
-    const hasParentTaskLabel = isSubtask && !isNestedTask && !!parentTask;
+    const hasParentTaskLabel =
+      isSubtask && !isNestedTask && !!task.parentTaskIdentifier;
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
     const onClickBulkEdit = () =>
@@ -824,10 +836,8 @@ const TaskItem = React.memo(
                 )}
               <Box ml="10px" />
               <Tooltip
-                placement="top"
-                title={isCompleted ? 'Mark incomplete' : 'Complete task'}
-                child={isCompleted}
-                childTitle={
+                placement={isCompleted ? 'bottom' : 'top'}
+                title={
                   isCompleted ? (
                     <>
                       <TootipCompletedBy>Completed by</TootipCompletedBy>
@@ -849,10 +859,9 @@ const TaskItem = React.memo(
                       </TootipCompletedByDate>
                     </>
                   ) : (
-                    ''
+                    'Complete task'
                   )
                 }
-                childPlacement="bottom"
                 open={tooltipsOpen}
                 onClose={() => handleTooltipClose()}
               >
@@ -938,6 +947,7 @@ const TaskItem = React.memo(
           isStartedDnD={false}
           dragHandleProps={dragHandleProps}
           templateGroup={taskGroup}
+          patient={patient}
           groupHasMultipleAssignees={false}
           isFullView={false}
           dragAndDropDisabled={isCompletedGroup || dragAndDropDisabled}
@@ -949,6 +959,16 @@ const TaskItem = React.memo(
       );
     }
 
+    const onParentLabelClick = useCallback(
+      (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        dispatch(openTaskDrawerWithContent(task.parentTask));
+      },
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      [task.parentTask],
+    );
+
     return (
       <>
         <StandardTaskItemPanel
@@ -956,6 +976,7 @@ const TaskItem = React.memo(
           isDragging={isDragging}
           isWorkflowtask={isTaskTemplate}
           isWorkflowSubtask={isWorkflowSubtask}
+          origin={origin}
         >
           <StandardTaskItemContainer
             isTaskTemplate={isTaskTemplate}
@@ -973,6 +994,9 @@ const TaskItem = React.memo(
             iconColorActive={iconColorActive}
             taskIdentifier={task?.identifier}
             origin={origin}
+            isVirtualSubtask={isVirtualSubtask}
+            isWorkflowSubtask={isWorkflowSubtask}
+            isWidthGreaterThanHudredPercent={isWidthGreaterThanHudredPercent}
           >
             {randerFirstColumnCoverIfNecessary(
               <>
@@ -1058,7 +1082,7 @@ const TaskItem = React.memo(
                       isSubtask={isSubtask}
                       subtaskQuickAddOpen={subtaskQuickAddOpen}
                       subtasksDisabled={subtasksDisabled}
-                      subTasksCount={subTasksCount}
+                      subTasksCount={subTaskCurrentCount?.length}
                       isOpen={isOpen}
                       isNestedTask={isNestedTask}
                       onSubtaskLabelClick={onSubtaskLabelClick}
@@ -1067,13 +1091,33 @@ const TaskItem = React.memo(
                       dispatch={dispatch}
                       readOnly={restrictions?.subtasks === READ_ONLY}
                       origin={origin}
+                      isHover={isCellHover.task}
                     />
                   )}
-                  <Tooltip placement="top" title="Details">
-                    <DetailsButton onClick={onClickTaskItem}>
-                      <ChevronRightIcon />
-                    </DetailsButton>
-                  </Tooltip>
+                  {hasParentTaskLabel && (
+                    <Tooltip
+                      placement="bottom"
+                      title={
+                        <>
+                          <ChildTaskTitle>Child Task of: </ChildTaskTitle>
+                          <ParentTaskLink onClick={onParentLabelClick}>
+                            {task.parentTask?.description}
+                          </ParentTaskLink>
+                        </>
+                      }
+                    >
+                      <div style={{ marginRight: '8px' }}>
+                        <SubtaskIcon />
+                      </div>
+                    </Tooltip>
+                  )}
+                  <div style={{ minWidth: '25px' }}>
+                    <Tooltip placement="top" title="Details">
+                      <DetailsButton onClick={onClickTaskItem}>
+                        {isCellHover.task && <ChevronRightIcon />}
+                      </DetailsButton>
+                    </Tooltip>
+                  </div>
                   {showDecisionRow && (
                     <DecisionCellContainer
                       onClick={(event) => event.stopPropagation()}
@@ -1108,6 +1152,8 @@ const TaskItem = React.memo(
                       )?.columnWidth
                     }
                     order={getColumnOrder(TaskItemColumn.PATIENT)}
+                    onMouseEnter={() => setCellHover({ patient: true })}
+                    onMouseLeave={() => setCellHover({ patient: false })}
                   >
                     <TaskItemPatient
                       highlightedValue={highlightedValue}
@@ -1124,6 +1170,7 @@ const TaskItem = React.memo(
                       currentUser={currentUser}
                       readOnly={restrictions?.patient === READ_ONLY}
                       origin={origin}
+                      isPatientHover={isCellHover.patient}
                     />
                   </TaskItemCell>,
                   getColumnOrder(TaskItemColumn.PATIENT),
@@ -1342,6 +1389,8 @@ const TaskItem = React.memo(
                       event.stopPropagation();
                     }}
                     order={getColumnOrder(TaskItemColumn.WORKFLOW_STATUS)}
+                    onMouseEnter={() => setCellHover({ status: true })}
+                    onMouseLeave={() => setCellHover({ status: false })}
                   >
                     <TaskItemWorkflowStatus
                       task={task}
@@ -1353,6 +1402,7 @@ const TaskItem = React.memo(
                         selectedOrganization?.showDefaultTaskStatusCompleted
                       }
                       readOnly={restrictions?.status === READ_ONLY}
+                      isStatusHover={isCellHover.status}
                     />
                   </TaskItemCell>,
                   getColumnOrder(TaskItemColumn.WORKFLOW_STATUS),

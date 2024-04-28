@@ -122,11 +122,7 @@ const LabelsSection = ({ selectedTask, onTaskUpdate }) => {
   );
 
   useEffect(() => {
-    if (
-      selectedLabelsFromStoreLength !== previousSelectedLabelsFromStoreLength
-    ) {
-      setSelectedLabels(selectedLabelsFromStore);
-    }
+    setSelectedLabels(selectedLabelsFromStore);
   }, [
     previousSelectedLabelsFromStoreLength,
     selectedLabelsFromStore,
@@ -198,7 +194,7 @@ const LabelsSection = ({ selectedTask, onTaskUpdate }) => {
     () =>
       selectedLabels.map((option) => (
         <Chip
-          variant='outlined'
+          variant="outlined"
           key={option.labelIdentifier}
           onDelete={() => {
             setSelectedLabels((state) =>
@@ -254,13 +250,17 @@ const LabelsSection = ({ selectedTask, onTaskUpdate }) => {
   return (
     <LableContainer>
       <Title>Label</Title>
-      <FormProvider {...formMethods} >
+      <FormProvider {...formMethods}>
         <Autocomplete
           isOpen={isOpen}
           autoFocus={taskDrawerFocusField === DrawerFieldEnum.LABEL}
           options={labels}
           // label="Labels"
-          placeholder="Are there labels you'd like to add?"
+          placeholder={
+            selectedLabels?.length > 0
+              ? ''
+              : "Add Labels"
+          }
           value={selectedLabels}
           getInputReference={getInputReference}
           getOptionLabel={(option) => option?.labelName}

@@ -109,6 +109,7 @@
     "unicorn/prefer-spread": "off",
     "unicorn/no-array-callback-reference": "off",
     "unicorn/error-message": "off",
+    "unicorn/switch-case-braces": "off",
     "react/jsx-no-useless-fragment": "off",
     "react/no-unstable-nested-components": "off",
     "sonarjs/prefer-immediate-return": "off",
@@ -119,5 +120,8 @@
     "unicorn/consistent-function-scoping": "off",
     "no-shadow": "warn",
     "unicorn/no-negated-condition": "off",
+    "sonarjs/cognitive-complexity": "off",
+    "prefer-destructuring": "off",
+    "no-extra-boolean-cast": "off"
   }
 }

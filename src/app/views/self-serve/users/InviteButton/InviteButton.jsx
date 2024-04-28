@@ -2,7 +2,9 @@ import { Add } from '@mui/icons-material';
 import React, { useCallback, useRef } from 'react';
 import { useToggle } from 'react-use';
 import AddButton from 'components/common/AddButton/AddButton';
+import ToolbarButton from '@/app/components/tasklist/list-toolbar-buttons/ToolbarButton/ToolbarButton';
 import InvitePeoplePopover from '../InvitePeoplePopover/InvitePeoplePopover';
+import { AddIcon } from '@/app/views/smart-flow-builder/TaskNodeHandles/styled';
 
 const InviteButton = ({ getAllUsers }) => {
   const invitePeopleButtonReference = useRef(null);
@@ -17,13 +19,26 @@ const InviteButton = ({ getAllUsers }) => {
 
   return (
     <>
-      <AddButton
+      {/* <AddButton
         adornment={<Add />}
         onClick={() => togglePopoverOpen(true)}
         buttonRef={invitePeopleButtonReference}
+      > */}
+      <ToolbarButton
+        ref={invitePeopleButtonReference}
+        icon={
+          <span style={{ marginLeft: '-5px' }}>
+            <AddIcon />
+          </span>
+        }
+        onClick={() => togglePopoverOpen(true)}
+        isOpen={isPopoverOpen}
+        active={isPopoverOpen}
+        // hasPopover
       >
-        Add a User
-      </AddButton>
+        <span style={{ marginLeft: '-5px' }}>Add a User</span>
+      </ToolbarButton>
+      {/* </AddButton> */}
       <InvitePeoplePopover
         open={isPopoverOpen}
         toggleInvitePopover={toggleInvitePopover}

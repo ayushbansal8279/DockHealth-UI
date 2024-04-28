@@ -25,13 +25,11 @@ const EmptyFilteredPatientsList = ({
         )}
         {!isFiltered && !searchValue && (
           <p>
-            <ActionButton
-              type="button"
-              onClick={() => {
-                refreshPatients();
-              }}
-            >
-              {`View All ${capitalize(customerTypeLabel)}s`}
+            <ActionButton type="button" onClick={refreshPatients}>
+              {`View All ${customerTypeLabel
+                .toLowerCase()
+                .charAt(0)
+                .toUpperCase()}${customerTypeLabel.toLowerCase().slice(1)}s`}
             </ActionButton>
           </p>
         )}

@@ -70,6 +70,7 @@ export const Description = styled.p`
 `;
 
 export const PlanDescriptionContainer = styled.div`
+  height: 60px;
   margin-bottom: 24px;
 `;
 
@@ -177,5 +178,6 @@ export const CheckIcon = styled(MuiCheckIcon)`
       top: 50%;
       transform: translateY(-50%);
     }
+    height: 16px;
   }
 `;

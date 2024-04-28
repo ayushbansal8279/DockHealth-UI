@@ -723,39 +723,45 @@ export const closeQuickAddSubtask = (taskIdentifier) => ({
   taskIdentifier,
 });
 
-export const bulkEditAssignUser =
-  (tasksToUpdate, assignedToUsers, filters, searchValue) => (dispatch) => {
-    dispatch({
-      type: ActionTypes.UPDATE_TASKS,
-      tasksToUpdate,
-      fields: {
-        assignedToUsers,
-      },
-      filters,
-      searchValue,
-    });
-  };
+export const bulkEditAssignUsers = (tasksToUpdate, users) => (dispatch) => {
+  dispatch({
+    type: ActionTypes.DO_ASSIGNMENT,
+    tasksToUpdate,
+    users,
+  });
+};
+
+export const bulkEditUnassignUsers = (tasksToUpdate, users) => (dispatch) => {
+  dispatch({
+    type: ActionTypes.DO_UNASSIGNMENT,
+    tasksToUpdate,
+    users,
+  });
+};
+
+export const bulkEditUnassignAllUsers = (tasksToUpdate) => (dispatch) => {
+  dispatch({
+    type: ActionTypes.DO_UNASSIGN_ALL,
+    tasksToUpdate,
+  });
+};
 
 export const bulkEditWorkflowStatus =
-  (tasksToUpdate, workflowStatus, filters, searchValue) => (dispatch) => {
+  (tasksToUpdate, workflowStatus) => (dispatch) => {
     dispatch({
       type: ActionTypes.UPDATE_TASKS,
       tasksToUpdate,
       fields: { workflowStatus },
-      filters,
-      searchValue,
     });
   };
 
-export const bulkEditDueDate =
-  (tasksToUpdate, dueDate, filters) => (dispatch) => {
-    dispatch({
-      type: ActionTypes.UPDATE_TASKS,
-      tasksToUpdate,
-      fields: { dueDate },
-      filters,
-    });
-  };
+export const bulkEditDueDate = (tasksToUpdate, dueDate) => (dispatch) => {
+  dispatch({
+    type: ActionTypes.UPDATE_TASKS,
+    tasksToUpdate,
+    fields: { dueDate },
+  });
+};
 
 export function bulkEditDueDateSuccess(tasksToUpdate, dueDate) {
   return {

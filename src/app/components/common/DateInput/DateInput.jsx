@@ -29,6 +29,7 @@ const DateInput = React.forwardRef(
       setError,
       clearErrors,
       showCalanderIcon = true,
+      popoverZindex,
       ...otherProps
     },
     reference,
@@ -91,7 +92,7 @@ const DateInput = React.forwardRef(
         <Input
           ref={textFieldReference}
           inputRef={textInputReference}
-          value={value}
+          value={dateValue}
           onChange={handleChange}
           readOnly={readOnly}
           disabled={disabled}
@@ -126,6 +127,7 @@ const DateInput = React.forwardRef(
           anchorEl={textFieldReference.current}
           open={open}
           onClose={handleClose}
+          sx={{ zIndex: popoverZindex ?? 'inherit' }}
         >
           <Datepicker
             selectedDate={

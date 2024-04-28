@@ -1,7 +1,13 @@
 import React, { useContext, useCallback } from 'react';
+import { useDispatch } from 'react-redux';
+import {
+  openModal as openModalAction,
+  closeModal as closeModalAction,
+} from 'modal/actions';
 
 import BulkEditBar from 'components/bulk-edit/BulkEditBar/BulkEditBar';
 import BulkEditOption from 'components/bulk-edit/BulkEditOption/BulkEditOption';
+import * as PatientsActions from 'actions/patients-actions';
 
 import DuplicateIcon from 'img/bulk-edit/DuplicateIcon';
 import CompleteIcon from 'img/bulk-edit/CompleteIcon';
@@ -12,12 +18,13 @@ import DownloadIcon from 'img/bulk-edit/DownloadIcon';
 import palette from 'styles/palette';
 import { PatientEditContext } from 'context-api/patient-edit-context';
 import { useLocation } from 'react-router-dom';
-import MoveIcon from 'img/bulk-edit/MoveIcon';
-import { Button } from './styled';
 import UndoIcon from '@mui/icons-material/Undo';
+import AppRegistrationIcon from '@mui/icons-material/AppRegistration';
+import { Button } from './styled';
 
-const BulkEditOptionsBar = ({ selectedPatients = {}, onClose }) => {
+const BulkEditOptionsBar = ({ selectedPatients = [], onClose }) => {
   const patientContext = useContext(PatientEditContext);
+  const dispatch = useDispatch();
 
   const { pathname } = useLocation();
 
@@ -45,6 +52,20 @@ const BulkEditOptionsBar = ({ selectedPatients = {}, onClose }) => {
   const addLabelHandler = useCallback(() => {
     toggleAddLabelOption();
   }, [toggleAddLabelOption]);
+
+  const editFieldsHandler = useCallback(() => {
+    dispatch(
+      openModalAction('PatientCustomFieldsBulkEdit', {
+        patientIdentifiers: selectedPatients.map(
+          ({ patientIdentifier }) => patientIdentifier,
+        ),
+        onSave: () => {
+          dispatch(closeModalAction());
+          dispatch(PatientsActions.silentlyGetCurrentPatients());
+        },
+      }),
+    );
+  }, [dispatch, selectedPatients]);
 
   const downloadFilesHandler = useCallback(() => {
     const selectedPatientIdentifiers = selectedPatients?.map((patient) => {
@@ -92,6 +113,14 @@ const BulkEditOptionsBar = ({ selectedPatients = {}, onClose }) => {
           <BulkEditOption
             iconComponent={StatusIcon}
             title="Add Label"
+            isDisabled={false}
+            wideView
+          />
+        </Button>
+        <Button type="button" onClick={editFieldsHandler} disabled={false}>
+          <BulkEditOption
+            iconComponent={AppRegistrationIcon}
+            title="Edit Fields"
             isDisabled={false}
             wideView
           />

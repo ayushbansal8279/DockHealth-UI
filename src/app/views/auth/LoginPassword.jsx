@@ -4,7 +4,6 @@ import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { useMount } from 'react-use';
 import { setAuthBaseState } from 'actions/auth-base-actions';
-import { success } from 'actions/notification-actions';
 import { login, resendConfirmationCode } from 'api/user-auth-api';
 import LoginFormPassword from 'components/auth/LoginFormPassword';
 import { showAlert, showToast } from 'helpers/utility-functions';
@@ -13,10 +12,12 @@ import DockHeaderLogo from 'img/dock-header-logo.svg';
 import styled from 'styled-components';
 import { Grid } from '@mui/material';
 import Spacing from 'components/common/Spacing';
+import { useSuccessLogin } from 'hooks/use-success-login';
 
 const LoginPassword = () => {
   const [unconfirmedUserFlag, setUnconfirmedUserFlag] = useState(false);
   const history = useHistory();
+  const successLogin = useSuccessLogin();
 
   const dispatch = useDispatch();
 
@@ -63,16 +64,7 @@ const LoginPassword = () => {
               );
             } else {
               sessionStorage.setItem('sessionStartTime', Date.now());
-
-              const nextPathname = sessionStorage.getItem('next-page');
-              if (nextPathname && nextPathname !== '') {
-                sessionStorage.removeItem('next-page');
-                history.push(nextPathname);
-              } else {
-                history.push('/core/home/my-tasks');
-              }
-
-              success('Logged in.');
+              successLogin();
             }
           })
           .catch((error) => {
@@ -92,7 +84,7 @@ const LoginPassword = () => {
             });
           });
       },
-    [history],
+    [history, successLogin],
   );
 
   const onResendCode = useCallback(

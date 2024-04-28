@@ -79,6 +79,7 @@ import EditPatientModal from './components/EditPatientModal/EditPatientModal';
 import AnchorDateChangeConfirmationModal from './components/AnchorDateChangeConfirmationModal/AnchorDateChangeConfirmationModal';
 import DeleteArchivePatientModal from './components/DeleteArchivePatientModal/DeleteArchivePatientModal';
 import DeleteOrganizationModal from './components/DeleteOrganizationModal';
+import PatientCustomFieldsBulkEditModal from './components/PatientCustomFieldsBulkEditModal';
 
 const MODAL_MAP = {
   CompleteAllTasks: CompleteAllTasksModal,
@@ -97,6 +98,7 @@ const MODAL_MAP = {
   LeaveList: LeaveListModal,
   LeaveOrganization: LeaveOrganizationModal,
   DeleteOrganization: DeleteOrganizationModal,
+  PatientCustomFieldsBulkEdit: PatientCustomFieldsBulkEditModal,
   EditOrganization: EditOrganizationModal,
   InviteToList: InviteToListModal,
   ChangePassword: ChangePasswordModal,

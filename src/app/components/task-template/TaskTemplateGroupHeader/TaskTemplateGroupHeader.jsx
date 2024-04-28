@@ -96,9 +96,11 @@ import TaskTemplateDetails from '../TaskTemplateDetails/TaskTemplateDetails';
 import { StickyColumnContainer } from '../../tasklist/TasksHeader/styled';
 import { ListPageContext } from '@/app/views/list-details/ListDetailsView';
 import { VTaskContext } from '@/app/views/list-details/VirtualTaskList/VirtualSegment/VTask/VTask';
+import { TaskScrollVericleLine } from '../../task/styled';
 
 const TaskTemplateGroupHeader = ({
   templateGroup = {},
+  patient: parentPatient,
   templateTasks,
   groupHasMultipleAssignees,
   dragHandleProps = {},
@@ -273,10 +275,18 @@ const TaskTemplateGroupHeader = ({
           if (currentTask.status === 'COMPLETE') {
             accumulator[0] += 1;
           }
-
-          accumulator[0] += currentTask?.subTasksCompletedCount || 0;
+          if (currentTask?.subtasks?.length > 0) {
+            currentTask?.subtasks?.map((subTask, index) => {
+              if (subTask?.status === 'COMPLETE') {
+                accumulator[0] += 1;
+              }
+            });
+          }
+          // accumulator[0] += currentTask?.subTasksCompletedCount || 0;
+          // accumulator[1] =
+          //   accumulator[1] + (currentTask?.subTasksCount || 0) + 1;
           accumulator[1] =
-            accumulator[1] + (currentTask?.subTasksCount || 0) + 1;
+            accumulator[1] + (currentTask?.subtasks?.length || 0) + 1;
 
           return accumulator;
         },
@@ -286,8 +296,8 @@ const TaskTemplateGroupHeader = ({
   );
   // const [completedTasksAmount, allTasksAmount] = [-1, -1];
 
-  const completedTasksAmountFinal = tasksCompletedCount || completedTasksAmount;
-  const allTasksAmountFinal = tasksCount || allTasksAmount;
+  const completedTasksAmountFinal = completedTasksAmount;
+  const allTasksAmountFinal = allTasksAmount;
 
   const toggleTasksVisibility = useCallback(() => {
     if (!showCompletedTasks && completedTasksAmount === 0) {
@@ -623,7 +633,9 @@ const TaskTemplateGroupHeader = ({
     },
     [dispatch, identifier],
   );
-  const { patient } = templateGroup ?? workFlowData;
+
+  const patient =
+    parentPatient ?? templateGroup?.patient ?? workFlowData?.patient;
 
   const [isPatientDataReadOnly] = useState(true);
   const collapse = useContext(CollapseContext);
@@ -702,13 +714,13 @@ const TaskTemplateGroupHeader = ({
       return (
         <StickyMainTaskItemCell
           isTamplateGroup={true}
-          isOpen={!isVirtualListWorkflowOpen}
+          isOpen={origin === 'PATIENT' ? isOpen : !isVirtualListWorkflowOpen}
           customWidthExists
           backgroundColor={pageBackground}
           isSelected={isBundleSelected}
           isEditingDescription={isEditing}
           order={0}
-          width={+width + 25 + 54}
+          width={+width + 25 + 54.5}
           origin={origin}
         >
           {!groupDragAndDropDisabled &&
@@ -748,6 +760,7 @@ const TaskTemplateGroupHeader = ({
             )}
           </ActionIconsContainer>
           {content}
+          <TaskScrollVericleLine>&nbsp;</TaskScrollVericleLine>
         </StickyMainTaskItemCell>
       );
     },
@@ -1601,10 +1614,13 @@ const TaskTemplateGroupHeader = ({
           const taskCustomFieldValue = workflowDetails?.taskMetaData?.find(
             (f) => f.customFieldIdentifier === field.identifier,
           );
-          const patientCustomFieldValue =
-            workflowDetails?.patient?.patientMetaData?.find(
-              (f) => f.customFieldIdentifier === field.identifier,
-            );
+          const patientMetaData =
+            patient?.patientMetaData ||
+            workflowDetails?.patient?.patientMetaData ||
+            [];
+          const patientCustomFieldValue = patientMetaData?.find(
+            (f) => f.customFieldIdentifier === field.identifier,
+          );
           const customFieldValue =
             field.targetType === CUSTOM_FIELD_TYPES.PATIENT
               ? patientCustomFieldValue

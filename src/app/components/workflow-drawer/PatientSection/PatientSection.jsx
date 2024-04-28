@@ -18,6 +18,14 @@ import {
 import { WorkflowDrawerFieldNames } from 'helpers/workflow-drawer-helpers';
 import { updatePartialWorkflow } from 'actions/task-template-actions';
 import { getFormattedPatient, getFormattedPatients } from './helpers';
+import {
+  PatientMainContainer,
+  PatientContainer,
+  Title,
+  AddPatient,
+  PatientName,
+} from './styled';
+import PatientSelectItem from '../../patients/PatientSelectItem/PatientSelectItem';
 
 const PATIENT_IDENTIFIER_FIELD_NAME = 'patientIdentifier';
 const MAX_PATIENT_RESULTS = 200;
@@ -34,7 +42,9 @@ const PatientSection = ({
   const [isLoadingPatients, setIsLoadingPatients] = useState(true);
   const currentUser = useSelector(userProfileSelector);
   const selectedWorkflow = useSelector(workflowSelector);
-  const selectedPatient = selectedWorkflow?.patient;
+  const [selectedPatient, setSelectedPatient] = useState(
+    selectedWorkflow?.patient,
+  );
   const currentOrganizationIdentifier = sessionStorage.getItem(
     'currentOrganizationIdentifier',
   );
@@ -126,32 +136,11 @@ const PatientSection = ({
 
   const handleClearSelectedPatient = useCallback(
     async (clearInput) => {
-      if (selectedWorkflow?.identifier && selectedPatient) {
-        dispatch(
-          openModal('UnassignPatient', {
-            isWorkflowModal: true,
-            confirm: async () => {
-              dispatch(
-                changePatientForTemplateBundle(
-                  selectedWorkflow?.identifier,
-                  'UNASSIGNED',
-                ),
-              );
-              setAssignedPatient(null);
-              setPatients([]);
-              await savePatient(null);
-              clearInput();
-            },
-          }),
-        );
-      } else {
-        setAssignedPatient(null);
+      setAssignedPatient(null);
 
-        setPatients([]);
-        await savePatient(null);
-      }
-      // eslint-disable-next-line no-unused-expressions
-      patientInputReference.current?.querySelector('input')?.focus();
+      setPatients([]);
+      await savePatient(null);
+      setSelectedPatient(null);
     },
     [dispatch, savePatient, selectedPatient, selectedWorkflow],
   );
@@ -203,27 +192,60 @@ const PatientSection = ({
     [patientAddEnabled, fetchPatients, handlePatientSelect],
   );
 
+  const patientProfile = () => {
+    history.push(`/core/patient/${selectedPatient.patientIdentifier}`);
+  };
+
   return (
-    <SelectDropdown
-      ref={patientInputReference}
-      name={PATIENT_IDENTIFIER_FIELD_NAME}
-      label={customerTypeLabelCapitalized}
-      placeholder={`Who is the ${customerTypeLabel}?`}
-      disabled={disabled}
-      selectedOption={assignedPatient}
-      options={formattedPatients}
-      isLoadingOptions={isLoadingPatients}
-      onInputChange={onPatientInputChange}
-      onOptionSelect={handlePatientSelect}
-      onClear={handleClearSelectedPatient}
-      onAddItemClick={
-        !patientAddEnabled || !quickAddPatientEnabled ? null : handleAddPatient
-      }
-      addItemEnabled={patientAddEnabled && quickAddPatientEnabled}
-      clearOnSuccess
-      refineResultsCount={MAX_PATIENT_RESULTS}
-      width={600}
-    />
+    <PatientMainContainer>
+      <Title>Patient</Title>
+      {selectedPatient && (
+        <PatientContainer>
+          {' '}
+          <PatientName onClick={patientProfile}>
+            {selectedPatient.patientName}{' '}
+          </PatientName>
+          <button
+            style={{ color: '#8492A4' }}
+            onClick={handleClearSelectedPatient}
+          >
+            x
+          </button>
+        </PatientContainer>
+      )}
+
+      {!selectedPatient && (
+        <div style={{ display: 'flex' }}>
+          <SelectDropdown
+            ref={patientInputReference}
+            name={PATIENT_IDENTIFIER_FIELD_NAME}
+            placeholder="Add Patient"
+            disabled={disabled}
+            selectedOption={assignedPatient}
+            options={formattedPatients}
+            headerOption={
+              <PatientSelectItem
+                patient={{ name: 'Name', dob: 'DOB', mrn: 'MRN' }}
+                header
+              />
+            }
+            isLoadingOptions={isLoadingPatients}
+            onInputChange={onPatientInputChange}
+            onOptionSelect={handlePatientSelect}
+            onClear={handleClearSelectedPatient}
+            onAddItemClick={
+              !patientAddEnabled || !quickAddPatientEnabled
+                ? null
+                : handleAddPatient
+            }
+            addItemEnabled={patientAddEnabled && quickAddPatientEnabled}
+            clearOnSuccess
+            refineResultsCount={MAX_PATIENT_RESULTS}
+            width={600}
+          />
+        </div>
+      )}
+    </PatientMainContainer>
   );
 };
 

@@ -27,7 +27,7 @@ export const DueDateSectionWrapper = styled.div`
 `;
 
 export const Title = styled.div`
-  margin-right: 40px;
+  margin-right: 37px;
   color: ${palette.coolGrey1};
   font-family: Outfit;
   font-size: ${fontSizes.smallPlus};
@@ -53,7 +53,7 @@ export const AddDateButton = styled.button`
 `;
 
 export const DateViewContainer = styled.div`
-  margin-left: 5px;
+  margin-left: 7px;
   display: flex;
   align-items: center;
   gap: 15px;

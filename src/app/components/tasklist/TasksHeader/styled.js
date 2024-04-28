@@ -62,6 +62,7 @@ export const StickyColumnContainer = styled.div`
     height: 100%;
     width: 100%;
     z-index: -1;
+    // box-shadow: -1px 0 3px 0 rgba(0, 0, 0, 0), 2.5px 0 0 0 #48bbb3;
   }
 
   @media print {

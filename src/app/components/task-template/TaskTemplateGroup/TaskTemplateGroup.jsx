@@ -37,6 +37,7 @@ import TaskTemplateGroupHeader from '../TaskTemplateGroupHeader/TaskTemplateGrou
 
 const TaskTemplateGroup = ({
   templateGroup: pullGroup = {},
+  patient: parentPatient,
   groupHasMultipleAssignees,
   isFullView,
   isCompletedGroup,
@@ -60,11 +61,13 @@ const TaskTemplateGroup = ({
   const {
     tasks: taskIdentifiers, // task identifiers
     identifier,
-    patient,
+    patient: workflowPatient,
     parentTaskGroupIdentifier,
     taskListIdentifier,
     isFetchingTasks,
   } = templateGroup ?? {};
+
+  const patient = parentPatient || workflowPatient;
 
   const tasks = useSelector((state) => {
     return taskIdentifiers
@@ -144,6 +147,7 @@ const TaskTemplateGroup = ({
       <TaskTemplateGroupHeader
         isFetchingTasks={isFetchingTasks}
         templateGroup={templateGroup}
+        patient={patient}
         templateTasks={tasks}
         groupHasMultipleAssignees={groupHasMultipleAssignees}
         dragHandleProps={dragHandleProps}
@@ -230,10 +234,13 @@ const TaskTemplateGroup = ({
                               dragAndDropDisabled={tasksDragAndDropDisabled}
                               isDraggable
                               isBundleTask
+                              isTaskTemplate
+                              isLastChild={index === filteredTasks?.length - 1}
                               templateBundleIdentifier={identifier}
                               parentTaskGroupIdentifier={
                                 parentTaskGroupIdentifier
                               }
+                              patient={patient}
                               noMargin
                               iconColorActive={iconColorActive}
                               origin={origin}

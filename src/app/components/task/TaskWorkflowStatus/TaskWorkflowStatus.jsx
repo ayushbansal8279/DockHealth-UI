@@ -98,9 +98,8 @@ const TaskWorkflowStatus = ({
             )}
           </StatusList>
           {isAdmin && (
-            <>
-              <Divider />
-              <PopoverBottomBar align="left">
+            <div style={{ marginTop: '60px' }}>
+              <PopoverBottomBar align="bottom">
                 <PopoverBottomBar.PlusButton
                   type="button"
                   onClick={setIsEditing}
@@ -108,7 +107,7 @@ const TaskWorkflowStatus = ({
                   Add/Edit status
                 </PopoverBottomBar.PlusButton>
               </PopoverBottomBar>
-            </>
+            </div>
           )}
         </>
       ) : (

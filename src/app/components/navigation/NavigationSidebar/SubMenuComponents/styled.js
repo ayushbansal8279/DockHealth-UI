@@ -285,6 +285,12 @@ export const DrawerListsItem = styled.div`
           border: 1px solid ${palette.coolGrey2};
           background-color: ${palette.coolGrey3};
         }
+
+        &:hover {
+          & ${MenuWrapper} {
+            opacity: 1;
+          }
+        }
       `}
 `;
 
@@ -453,4 +459,8 @@ export const Version = styled.p`
   color: ${palette.darkGrey};
   font-size: ${fontSizes.smallPlus};
   font-weight: ${fontWeights.light};
+`;
+
+export const MenuWrapper = styled.div`
+  opacity: 0;
 `;
