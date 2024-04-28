@@ -70,3 +70,9 @@ export const workflowLabelsSelector = createSelector(
   workflowDrawerStateSelector,
   prop('labels'),
 );
+
+export const isWorkflowSelectedSelector = createSelector(
+  workflowDrawerStateSelector,
+  (_, workflowId) => workflowId,
+  (state, workflowId) => workflowId && state.workflowIdentifier === workflowId,
+);
