@@ -796,8 +796,10 @@ const TaskTemplateGroupHeader = ({
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const handleWorkflowUpdate = useCallback(
-    compose(dispatch, updatePartialWorkflow),
-    [dispatch, updatePartialWorkflow, compose],
+    (data) => {
+      dispatch(updatePartialWorkflow(templateGroup?.identifier, data));
+    },
+    [dispatch, templateGroup],
   );
 
   return (
@@ -1077,7 +1079,7 @@ const TaskTemplateGroupHeader = ({
               order={getColumnOrder(TaskItemColumn.WORKFLOW_STATUS)}
             >
               <TemplateItemWorkflowStatus
-                workflow={templateGroup}
+                workflowStatus={templateGroup?.workflowStatus}
                 onWorkflowUpdate={handleWorkflowUpdate}
                 highlightedValue={highlightedValue}
                 readOnly={restrictions?.status === READ_ONLY}
