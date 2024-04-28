@@ -25,6 +25,12 @@ const TaskItemCell = styled.div`
   padding-right: ${spacing.small};
   overflow: hidden;
 
+  &:hover {
+    & *.addPlaceholder {
+      opacity: 100;
+    }
+  }
+
   @media print {
     ${({ printWidth }) =>
       printWidth &&

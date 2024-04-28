@@ -58,7 +58,7 @@ const TaskTemplateWorkflowStatus = React.memo(
       >
         <StatusSubContaioner>
           {workflowStatus ? (
-            <StatusWrapper>
+            <StatusWrapper color={workflowStatus?.color}>
               <>
                 {/* <StatusBar color={workflowStatus?.color} /> */}
                 <Tooltip
@@ -73,7 +73,9 @@ const TaskTemplateWorkflowStatus = React.memo(
               </>
             </StatusWrapper>
           ) : (
-            <AddPlaceholder>+ Add Status</AddPlaceholder>
+            <AddPlaceholder className="addPlaceholder">
+              + Add Status
+            </AddPlaceholder>
           )}
         </StatusSubContaioner>
       </TaskItemPopover>
