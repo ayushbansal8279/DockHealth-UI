@@ -425,7 +425,19 @@ export const StandardTaskItemContainer = styled.div`
   display: flex;
   justify-content: ${(props) =>
     props.isAddingTask ? 'flex-end' : 'flex-start'};
-  width: 100%;
+  width: ${({
+    origin,
+    isVirtualSubtask,
+    isWorkflowSubtask,
+    isWidthGreaterThanHudredPercent,
+  }) =>
+    origin === 'LIST'
+      ? isVirtualSubtask || isWorkflowSubtask
+        ? isWidthGreaterThanHudredPercent
+          ? '100%'
+          : '105.3%'
+        : '100%'
+      : '100%'};
   // height: ${({ height }) => height || 35}px;
   height: 35px;
   border-left: none;
@@ -740,7 +752,8 @@ export const ParentTaskContainer = styled.div`
   &:not(:last-child) {
     margin-bottom: ${({ noMargin }) => (noMargin ? -1 : 0)}px;
   }
-  width: ${({ isVirtualTask }) => (isVirtualTask ? '1000%' : '')};
+  width: ${({ isVirtualTask, $width }) =>
+    isVirtualTask ? (!$width ? '1000%' : '') : ''};
   padding-right: ${({ isVirtualTask }) => (isVirtualTask ? '70px' : '')};
   margin-bottom: ${({ origin, isLastChild }) =>
     origin === 'PATIENT' ? (isLastChild ? '10px' : '') : ''};
