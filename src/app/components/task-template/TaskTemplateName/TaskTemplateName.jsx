@@ -68,10 +68,10 @@ const TaskTemplateName = ({
               textToHighlight={nameInputValue}
             />
           )}
-          {templateGroup?.sourceTaskBundleTemplate && (
+          {templateGroup?.linkedSourceTaskBundle && (
             <TaskTemplateDescriptionIndicators>
               <TaskTemplateContext>
-                <span>{templateGroup?.sourceTaskBundleTemplate?.name}</span>
+                <span>{templateGroup?.linkedSourceTaskBundle?.name}</span>
               </TaskTemplateContext>
             </TaskTemplateDescriptionIndicators>
           )}
