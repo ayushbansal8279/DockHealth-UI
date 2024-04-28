@@ -29,6 +29,7 @@ import palette from '@/app/styles/palette';
 import { QuickAddInputWrapper } from '@/app/components/task-template/TaskTemplateGroup/styled';
 import QuickAddTaskInput from '@/app/components/tasklist/QuickAddTaskInput/QuickAddTaskInput';
 import { CollapseContext } from '../../VirtualTaskList';
+import { useVirtualTaskListScrollContext } from '../../VirtualTaskListScrollContext';
 
 export interface Props extends Segment {
   task: any;
@@ -62,7 +63,11 @@ function VSubtask(
     }
     return false;
   };
-
+  const { visibleWidth, droppableHeaderWidth } =
+    useVirtualTaskListScrollContext();
+  const screenWidth = typeof window !== 'undefined' ? window.innerWidth : 1920;
+  const percentage =
+    ((!!droppableHeaderWidth ? droppableHeaderWidth : 0) / screenWidth) * 100;
   const [subtaskQuickAddOpen, setSubtaskQuickAddOpen] = useState(false);
   const dispatch = useDispatch();
   const pulledTask = useSelector((state) => {
@@ -125,7 +130,7 @@ function VSubtask(
         <>
           <div
             style={{
-              width: '104.6%',
+              width: percentage > 90 ? `${droppableHeaderWidth + 70}` : '100%',
               background: bgColor ? palette.aliceBlue : '',
               paddingBottom:
                 isLastTaskOfGroup &&
@@ -174,13 +179,16 @@ function VSubtask(
                 isNestedTask
                 pageBackground={bgColor ? palette.aliceBlue : ''}
                 isVirtualTask
+                isVirtualSubtask
+                $width={percentage > 90}
               />
             </Sc.VSubtask>
           </div>
           {metadata.sameLevelIndex === noOfSubtask && subtaskQuickAddOpen && (
             <div
               style={{
-                width: '100%',
+                width:
+                  percentage > 90 ? `${droppableHeaderWidth + 70}` : '100%',
                 background: bgColor ? palette.aliceBlue : '',
                 paddingBottom:
                   isLastTaskOfGroup &&
@@ -196,7 +204,15 @@ function VSubtask(
                     : '0px',
               }}
             >
-              <Sc.QuickAddContainer>
+              <Sc.QuickAddContainer
+                $width={
+                  percentage > 90
+                    ? visibleWidth
+                      ? `${visibleWidth}px`
+                      : '100%'
+                    : `${visibleWidth - 120}px`
+                }
+              >
                 <QuickAddSubtask
                   taskListIdentifier={parentTask.taskList.taskListIdentifier}
                   parentTaskIdentifier={parentTask.identifier}
@@ -209,7 +225,8 @@ function VSubtask(
           {isLastTaskOfGroup && addWorkflowTask && (
             <div
               style={{
-                width: '100%',
+                width:
+                  percentage > 90 ? `${droppableHeaderWidth + 70}` : '100%',
                 background: bgColor ? palette.aliceBlue : '',
                 paddingBottom:
                   isLastTaskOfGroup && !isNextVirtualTaskItemTypeBundle
@@ -223,7 +240,15 @@ function VSubtask(
                     : '0px',
               }}
             >
-              <Sc.WorkflowQuickAddTaskContainer>
+              <Sc.WorkflowQuickAddTaskContainer
+                $width={
+                  percentage > 90
+                    ? visibleWidth
+                      ? `${visibleWidth}px`
+                      : '100%'
+                    : `${visibleWidth - 85}px`
+                }
+              >
                 <QuickAddInputWrapper>
                   <QuickAddTaskInput
                     disableMentions

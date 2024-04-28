@@ -72,7 +72,7 @@ export const VTask = styled('div')`
         ? 'padding-bottom: 0px'
         : 'padding-bottom: 45px'
       : ''};
-
+  width: ${({ $width }) => $width};
   border-left: 1px solid rgb(229, 233, 242);
   margin-top: -1px;
   background: ${({ bgColor }) => (bgColor ? palette.aliceBlue : '')};
@@ -88,10 +88,11 @@ export const VTask = styled('div')`
 
 export const QuickAddContainer = styled('div')`
   border-left: 1px solid ${palette.coolGrey3};
-  width: 70%;
+  width: ${({ $width }) => $width};
   margin-left: 89.5px;
   margin-top: -1px;
   margin-bottom: 1px;
+  position: sticky;
   // background: ${({ bgColor }) => (bgColor ? palette.aliceBlue : '')};
   ${({ $template }: any) => ($template ? 'margin-bottom: 10px' : '')};
   // padding-bottom: ${({ isLastTaskOfGroup }) =>
@@ -104,10 +105,11 @@ export const QuickAddContainer = styled('div')`
 export const WorkflowQuickAddTaskContainer = styled('div')`
   border-left: 1px solid ${palette.coolGrey3};
   // width: 90%;
+  width: ${({ $width }) => $width};
   margin-left: 54.5px;
   margin-top: -1px;
   margin-bottom: 1px;
-
+  position: sticky;
   &:hover {
     border-left: 1px solid ${palette.coolGrey2};
   }

@@ -44,8 +44,8 @@ function VTaskHeader(
   const { visibleWidth, droppableHeaderWidth } =
     useVirtualTaskListScrollContext();
   const screenWidth = typeof window !== 'undefined' ? window.innerWidth : 1920;
-  const number = droppableHeaderWidth;
-  const percentage = ((!!number ? number : 0) / screenWidth) * 100;
+  const percentage =
+    ((!!droppableHeaderWidth ? droppableHeaderWidth : 0) / screenWidth) * 100;
   const groupHasMultipleAssignees = false;
 
   const handleGroupSelect = useCallback(() => {
@@ -59,7 +59,7 @@ function VTaskHeader(
   return (
     <div
       style={{
-        width: '100%',
+        width: percentage > 90 ? `${droppableHeaderWidth + 70}` : '100%',
         // paddingBottom: groupWithZeroTask ? '20px' : '0px',
         background: bgColor ? palette.aliceBlue : '',
       }}
