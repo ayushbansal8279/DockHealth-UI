@@ -17,7 +17,7 @@ export const AdornmentContainer = styled.div`
 
 export const AddText = styled.span`
   display: flex;
-  padding: 2px 8px;
+  padding: 3px 8px;
 `;
 
 export const ListItemButton = styled.button`
@@ -29,7 +29,7 @@ export const ListItemButton = styled.button`
 `;
 
 export const ListItemCustomText = styled.button`
-  padding: 10px;
+  padding: 15px 0 0 12px;
   display: flex;
   cursor: pointer;
 `;
