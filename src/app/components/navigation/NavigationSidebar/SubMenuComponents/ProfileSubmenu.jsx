@@ -60,7 +60,9 @@ const ProfileSubmenu = () => {
               </UserInitialCircle>
             )}
             <Box m={2} />
-            <SubMenuLink to="/settings/userprofile">Profile</SubMenuLink>
+            <SubMenuLink to="/settings/userprofile">
+              Profile & Settings
+            </SubMenuLink>
             {!whiteLabelEnabled && (
               <SubMenuLink to="/settings/documents">Agreements</SubMenuLink>
             )}

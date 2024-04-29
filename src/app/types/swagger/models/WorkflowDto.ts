@@ -44,7 +44,7 @@ export class WorkflowDto {
     'reminderTime'?: string;
     'reminderType'?: WorkflowDtoReminderTypeEnum;
     'sortIndexOfTaskInGroup'?: number;
-    'sourceTaskBundleTemplate'?: TaskTemplateDto;
+    'taskBundleTemplate'?: TaskTemplateDto;
     'startDateTime'?: Date;
     'taskListIdentifier'?: string;
     'taskMentions'?: any;
@@ -205,8 +205,8 @@ export class WorkflowDto {
             "format": "int32"
         },
         {
-            "name": "sourceTaskBundleTemplate",
-            "baseName": "sourceTaskBundleTemplate",
+            "name": "taskBundleTemplate",
+            "baseName": "taskBundleTemplate",
             "type": "TaskTemplateDto",
             "format": ""
         },
