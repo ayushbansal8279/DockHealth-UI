@@ -440,7 +440,7 @@ const MultiAssignMembersList = ({
       </ListContainer>
       <div style={{ padding: '5px' }}>
         <Button variant="primary-red" onClick={handleClose}>
-          Apply
+          Assign Users
         </Button>
       </div>
     </div>
