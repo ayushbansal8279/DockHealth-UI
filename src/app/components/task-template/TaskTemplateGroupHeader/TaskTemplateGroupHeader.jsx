@@ -149,7 +149,16 @@ const TaskTemplateGroupHeader = ({
   const currentUser = useSelector(userProfileSelector);
   const currentList = useSelector(currentTaskListSelector);
   const dispatch = useDispatch();
-  const { columns } = useTaskListColumnsConfig();
+  const { columns: listColumns } = useTaskListColumnsConfig();
+
+  const columns = listColumns?.map((f) => ({
+    ...f,
+    columnWidth: Math.max(
+      TaskItemColumnWidth[f.identifier]?.MINIMUM || 0,
+      f.columnWidth,
+    ),
+  }));
+
   useEffect(() => {
     setNameInputValue(name);
   }, [name]);
