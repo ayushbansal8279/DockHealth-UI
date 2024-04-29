@@ -78,7 +78,7 @@ export const ItemFullName = styled.p`
 `;
 
 export const ItemStatusLabel = styled.p`
-  padding: 5px 10px 5px 10px;
+  padding: 5px 10px;
   margin-left: ${spacing.small};
   margin-bottom: 0;
   font-size: ${fontSizes.regular};
