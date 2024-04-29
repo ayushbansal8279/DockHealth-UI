@@ -78,7 +78,7 @@ const TaskTemplateGroup = ({
   const { SHOW_WORKFLOW_DETAILS, SHOW_WORKFLOW_COMPLETED_TASKS } =
     viewSetup || {};
   // const { innerRef, draggableProps } = draggableProvided;
-  const [isOpen, setOpen] = useState(true);
+  const [isOpen, setOpen] = useState(origin === 'LIST' ? true : false);
   const [draggedTaskIdentifier, setDraggedTaskIdentifier] = useState(null);
   const [showCompletedTasks, setShowCompletedTasks] = useState(true);
   const [showIncompleteTasks, setShowIncompleteTasks] = useState(
@@ -94,7 +94,7 @@ const TaskTemplateGroup = ({
   const { DISABLED } = TASK_LIST_RESTRICTIONS_OPTIONS;
 
   useEffect(() => {
-    setOpen(SHOW_WORKFLOW_DETAILS);
+    // setOpen(SHOW_WORKFLOW_DETAILS); //no longer supported
     if (isCompletedTab) {
       setShowIncompleteTasks(SHOW_WORKFLOW_COMPLETED_TASKS);
       setShowCompletedTasks(true);
@@ -105,7 +105,11 @@ const TaskTemplateGroup = ({
   }, [SHOW_WORKFLOW_DETAILS, SHOW_WORKFLOW_COMPLETED_TASKS, isCompletedTab]);
 
   useEffect(() => {
-    if (isOpen && !previousIsOpen && (!tasks || tasks.length === 0)) {
+    if (
+      !isOpen &&
+      (origin === 'LIST' ? previousIsOpen : !previousIsOpen) &&
+      (!tasks || tasks.length === 0)
+    ) {
       dispatch(TemplateBundleActions.getTasksForWorkflow(identifier));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
