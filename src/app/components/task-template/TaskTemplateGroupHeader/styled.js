@@ -53,7 +53,7 @@ export const TaskTemplateGroupHeaderContainer = styled.div`
   background-color: ${(props) =>
     props.isSelected ? palette.dockBlueLight : palette.white};
 
-  border-top: 3px solid rgba(75, 179, 253, 1);
+  border-top: 2px solid rgba(75, 179, 253, 1);
   margin-top: 10px;
   margin-bottom: ${({ isOpen }) => (isOpen ? '' : '10px')};
   border-bottom: 1px solid

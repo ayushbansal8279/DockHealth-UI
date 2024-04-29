@@ -363,7 +363,7 @@ const PatientsList = ({
       width: 200,
       valueGetter: getFullName,
       valueSetter: setFullName,
-      editable: true,
+      editable: false,
       preProcessEditCellProps: preProcessFullNameEditCellProps,
       renderEditCell: (params) => <FullNameEditCell {...params} />,
     },
@@ -377,7 +377,7 @@ const PatientsList = ({
           <Text width="80">{row.mrn}</Text>
         </Tooltip>
       ),
-      editable: true,
+      editable: false,
     },
     {
       field: 'dob',
@@ -389,7 +389,7 @@ const PatientsList = ({
         ...row,
         dob: dateFormatter(value, 'yyyy-MM-dd'),
       }),
-      editable: true,
+      editable: false,
       renderEditCell: (params) => <DateEditCell {...params} />,
     },
     {
@@ -438,7 +438,7 @@ const PatientsList = ({
       renderHeader: renderColumnHeader,
       width: 100,
       valueFormatter: ({ value }) => genderBirthOptionHash[value],
-      editable: true,
+      editable: false,
       renderEditCell: (params) => (
         <GenderSelectCell options={GENDER_OPTIONS_BIRTH} {...params} />
       ),
@@ -449,7 +449,7 @@ const PatientsList = ({
       renderHeader: renderColumnHeader,
       width: 150,
       valueFormatter: ({ value }) => genderIdentityOptionsHash[value],
-      editable: true,
+      editable: false,
       renderEditCell: (params) => (
         <GenderSelectCell options={genderIdentityOptions} {...params} />
       ),
@@ -464,7 +464,7 @@ const PatientsList = ({
           <Text width="120">{row.email}</Text>
         </Tooltip>
       ),
-      editable: true,
+      editable: false,
     },
     {
       field: 'phoneMobile',
@@ -476,7 +476,7 @@ const PatientsList = ({
         </Tooltip>
       ),
       width: 140,
-      editable: true,
+      editable: false,
       preProcessEditCellProps: preProcessPhoneEditCellProps,
       renderEditCell: (params) => <PhoneEditCell {...params} />,
     },
@@ -490,7 +490,7 @@ const PatientsList = ({
         </Tooltip>
       ),
       width: 140,
-      editable: true,
+      editable: false,
       preProcessEditCellProps: preProcessPhoneEditCellProps,
       renderEditCell: (params) => <PhoneEditCell {...params} />,
     },

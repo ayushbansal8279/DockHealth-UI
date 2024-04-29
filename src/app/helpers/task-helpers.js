@@ -208,14 +208,29 @@ export const PatientTaskItemColumn = {
 };
 
 export const TaskItemColumnWidth = {
-  [TaskItemColumn.DUE_DATE]: 78,
-  [TaskItemColumn.CREATED_DATE]: 115,
-  [TaskItemColumn.START_DATE]: 78,
-  [TaskItemColumn.ANCHOR_DATE]: 78,
+  [TaskItemColumn.DUE_DATE]: {
+    DEFAULT: 115,
+    MINIMUM: 170,
+  },
+  [TaskItemColumn.START_DATE]: {
+    DEFAULT: 115,
+    MINIMUM: 170,
+  },
+  [TaskItemColumn.ANCHOR_DATE]: {
+    DEFAULT: 115,
+    MINIMUM: 170,
+  },
   [TaskItemColumn.COMMENTS]: 100,
   [TaskItemColumn.LABELS]: 100,
   [TaskItemColumn.FILES]: 100,
-  [TaskItemColumn.COMPLETED_DATE]: 150,
+  [TaskItemColumn.CREATED_DATE]: {
+    DEFAULT: 150,
+    MINIMUM: 170,
+  },
+  [TaskItemColumn.COMPLETED_DATE]: {
+    DEFAULT: 150,
+    MINIMUM: 170,
+  },
   [TaskItemColumn.ELAPSED_TIME]: 150,
   [TaskItemColumn.COMPLETED_BY]: 150,
   [TaskItemColumn.ACTIVITY]: 150,

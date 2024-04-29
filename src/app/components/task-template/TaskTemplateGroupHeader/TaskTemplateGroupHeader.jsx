@@ -35,7 +35,6 @@ import {
 import { isMemberAdmin } from 'helpers/list-members-helper';
 import { checkIfUserIsOrganizationAdmin } from 'helpers/user-helper';
 // import * as TaskTemplateApi from 'api/task-template-api';
-// import { workflowSelector } from 'selectors/workflow-drawer-selectors';
 import Checkbox from 'components/common/Checkbox/Checkbox';
 import ProgressBar from 'components/common/ProgressBar/ProgressBar';
 import RotatableChevron from 'components/common/RotatableChevron/RotatableChevron';
@@ -72,7 +71,7 @@ import { updatePatientDetails } from 'actions/patient-details-actions';
 import TaskItemDropdown from 'components/task/StandardTaskItem/customFieldsTaskItemComponents/TaskItemDropdown/TaskItemDropdown';
 import TaskItemDate from 'components/task/StandardTaskItem/customFieldsTaskItemComponents/TaskItemDate';
 import { CollapseContext } from 'views/list-details/VirtualTaskList/VirtualTaskList';
-import { isWorkflowDrawerOpenSelector } from 'selectors/workflow-drawer-selectors';
+import { isWorkflowSelectedSelector } from 'selectors/workflow-drawer-selectors';
 import TaskTemplateCreatedByMembers from '../TaskTemplateMembers/TaskTemplateCreatedBy';
 import TaskTemplateCompletedByMembers from '../TaskTemplateMembers/TaskTemplateCompletedByMembers';
 import TemplateHeaderName from '../TaskTemplateName/TaskTemplateName';
@@ -93,7 +92,6 @@ import {
   PatientMRNAnchor,
 } from './styled';
 import TaskTemplateDetails from '../TaskTemplateDetails/TaskTemplateDetails';
-import { StickyColumnContainer } from '../../tasklist/TasksHeader/styled';
 import { ListPageContext } from '@/app/views/list-details/ListDetailsView';
 import { VTaskContext } from '@/app/views/list-details/VirtualTaskList/VirtualSegment/VTask/VTask';
 import { TaskScrollVericleLine } from '../../task/styled';
@@ -151,7 +149,16 @@ const TaskTemplateGroupHeader = ({
   const currentUser = useSelector(userProfileSelector);
   const currentList = useSelector(currentTaskListSelector);
   const dispatch = useDispatch();
-  const { columns } = useTaskListColumnsConfig();
+  const { columns: listColumns } = useTaskListColumnsConfig();
+
+  const columns = listColumns?.map((f) => ({
+    ...f,
+    columnWidth: Math.max(
+      TaskItemColumnWidth[f.identifier]?.MINIMUM || 0,
+      f.columnWidth,
+    ),
+  }));
+
   useEffect(() => {
     setNameInputValue(name);
   }, [name]);
@@ -545,7 +552,7 @@ const TaskTemplateGroupHeader = ({
   );
 
   const isBundleSelected =
-    useSelector(isWorkflowDrawerOpenSelector) ||
+    useSelector((state) => isWorkflowSelectedSelector(state, identifier)) ||
     isBundlePreSelected ||
     isBundleSelectedFromTasks;
 
@@ -713,7 +720,7 @@ const TaskTemplateGroupHeader = ({
       if (order !== 0) return content;
       return (
         <StickyMainTaskItemCell
-          isTamplateGroup={true}
+          isTamplateGroup
           isOpen={origin === 'PATIENT' ? isOpen : !isVirtualListWorkflowOpen}
           customWidthExists
           backgroundColor={pageBackground}
@@ -765,6 +772,9 @@ const TaskTemplateGroupHeader = ({
       );
     },
     [
+      origin,
+      isOpen,
+      isVirtualListWorkflowOpen,
       pageBackground,
       isBundleSelected,
       isEditing,
@@ -778,11 +788,10 @@ const TaskTemplateGroupHeader = ({
       selected,
       handleBundleSelect,
       showTasksWithGroup,
-      isOpen,
       virtualListWorkflowOpen,
+      handleOpen,
       iconColorActive,
       menuOptions,
-      setOpen,
     ],
   );
 
@@ -796,8 +805,10 @@ const TaskTemplateGroupHeader = ({
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const handleWorkflowUpdate = useCallback(
-    compose(dispatch, updatePartialWorkflow),
-    [dispatch, updatePartialWorkflow, compose],
+    (data) => {
+      dispatch(updatePartialWorkflow(templateGroup?.identifier, data));
+    },
+    [dispatch, templateGroup],
   );
 
   return (
@@ -1077,7 +1088,7 @@ const TaskTemplateGroupHeader = ({
               order={getColumnOrder(TaskItemColumn.WORKFLOW_STATUS)}
             >
               <TemplateItemWorkflowStatus
-                workflow={templateGroup}
+                workflowStatus={templateGroup?.workflowStatus}
                 onWorkflowUpdate={handleWorkflowUpdate}
                 highlightedValue={highlightedValue}
                 readOnly={restrictions?.status === READ_ONLY}

@@ -227,7 +227,7 @@ const TaskItem = React.memo(
 
     const patient = parentPatient ?? taskPatient ?? parentTask?.patient;
 
-    const { columns } = useTaskListColumnsConfig();
+    const { columns: listColumns } = useTaskListColumnsConfig();
     const { listName, taskListIdentifier } = taskList || {};
     const isTemplateTask = checkIfTemplateTask(task);
     const isSubtask = !!parentTaskIdentifier;
@@ -236,6 +236,14 @@ const TaskItem = React.memo(
       (accumulator, currentValue) => accumulator || currentValue.isSelected,
       false,
     );
+
+    const columns = listColumns?.map((f) => ({
+      ...f,
+      columnWidth: Math.max(
+        TaskItemColumnWidth[f.identifier]?.MINIMUM || 0,
+        f.columnWidth,
+      ),
+    }));
 
     const [isCompleted, setIsCompleted] = useState(false);
     useEffect(() => {

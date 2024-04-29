@@ -47,7 +47,9 @@ const DueDatePicker = ({
   useEffect(() => {
     if (selectedDate !== dateValue) {
       setDateMaskValue(moment(selectedDate).format(DATE_MASK_FORMAT));
-      setTimeMaskValue(moment(selectedDate).format(TIME_12H_FORMAT));
+      if (selectedDate) {
+        setTimeMaskValue(moment(selectedDate).format(TIME_12H_FORMAT));
+      }
       setDateValue(selectedDate);
     }
   }, [dateValue, selectedDate]);
@@ -127,7 +129,9 @@ const DueDatePicker = ({
           fillWidth
           type="button"
           isSelected={momentSelectedDate?.isSame(moment(), 'd')}
-          onClick={() => handleDatePick(moment().format(DATE_ISO_FORMAT))}
+          onClick={() =>
+            handleDatePick(moment().startOf('day').format(DATE_ISO_FORMAT))
+          }
         >
           Today
         </QuickSelectButton>
@@ -138,7 +142,9 @@ const DueDatePicker = ({
             'day',
           )}
           onClick={() =>
-            handleDatePick(moment().add(1, 'days').format(DATE_ISO_FORMAT))
+            handleDatePick(
+              moment().startOf('day').add(1, 'days').format(DATE_ISO_FORMAT),
+            )
           }
         >
           Tomorrow
