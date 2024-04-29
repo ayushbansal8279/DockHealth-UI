@@ -219,6 +219,12 @@ const Task = React.memo(
       dispatch(storeAsCurrentTask(task));
     }, [dispatch, task]);
 
+    const taskBundleId =
+      task?.taskGroups?.length > 1 &&
+      task?.taskGroups?.[1].groupType === 'TASK_BUNDLE'
+        ? task?.taskGroups?.[1].taskGroupIdentifier
+        : undefined;
+
     return (
       <ParentTaskContainer
         ref={parentTaskReference}
@@ -234,7 +240,7 @@ const Task = React.memo(
             isTaskTemplate={isTaskTemplate}
             isLastChild={isLastChild}
             taskItemIdentifier={task?.identifier}
-            templateBundleIdentifier={templateBundleIdentifier}
+            templateBundleIdentifier={templateBundleIdentifier || taskBundleId}
             patient={parentPatient}
             isOpen={areSubtasksOpen}
             switchOpen={handleSetSubtasksOpen}
