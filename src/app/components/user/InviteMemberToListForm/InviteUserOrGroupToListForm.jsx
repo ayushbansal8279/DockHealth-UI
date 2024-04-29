@@ -36,6 +36,7 @@ import {
   ItemStatusLabel,
   OptionContainer,
   IconContainer,
+  OptionMenuWrapper,
 } from './styled';
 import { getMenuOptionsForMember, isEmail } from './helpers';
 import ArrowRight from 'img/simple-arrow-right.svg';
@@ -268,6 +269,7 @@ const InviteUserOrGroupToListForm = ({
                     {userOrGroup.itemType === 'GROUP' && (
                       <ItemStatusLabel>Group</ItemStatusLabel>
                     )}
+                    <OptionMenuWrapper>
                     {(currentUserListRole === 'ADMIN' ||
                       currentUserListRole === 'OWNER') && (
                       <OptionsMenu
@@ -285,6 +287,7 @@ const InviteUserOrGroupToListForm = ({
                         <IconContainer src={ArrowRight} alt="arrow" />
                       </OptionsMenu>
                     )}
+                    </OptionMenuWrapper>
                   </OptionContainer>
                 </ListItem>
               );
