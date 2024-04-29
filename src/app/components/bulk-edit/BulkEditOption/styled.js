@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import { fontSizes, fontWeights } from 'styles/font';
 import palette from 'styles/palette';
 import spacing from 'styles/spacing';
 
@@ -20,19 +19,12 @@ export const OptionWrapper = styled.div`
         background-color: ${palette.brightBlueWithAlpha};
       }
   `}
-
-  & > p {
-    margin: 0;
-    font-size: ${fontSizes.smallPlus};
-    font-weight: ${fontWeights.light};
-  }
 `;
 
 export const IconBox = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: ${({ wideView }) => (wideView ? 105 : 20)}px;
   height: 20px;
   margin-bottom: ${spacing.tiny};
 `;
