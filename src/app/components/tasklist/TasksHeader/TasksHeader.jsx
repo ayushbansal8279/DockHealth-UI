@@ -124,8 +124,7 @@ const TasksHeader = ({
           : TaskItemColumnWidth[f.identifier];
       const regularFieldMinimumWidth =
         typeof TaskItemColumnWidth[f.identifier] === 'object'
-          ? TaskItemColumnWidth[f.identifier].MINIMUM ||
-            TaskItemColumnWidth[f.identifier].DEFAULT
+          ? TaskItemColumnWidth[f.identifier].MINIMUM || 0
           : 0;
       const customPrintWidth =
         customFieldDefaultPrintWidth || regularFieldDefaultPrintWidth;

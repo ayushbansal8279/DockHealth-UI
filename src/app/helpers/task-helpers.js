@@ -210,15 +210,15 @@ export const PatientTaskItemColumn = {
 export const TaskItemColumnWidth = {
   [TaskItemColumn.DUE_DATE]: {
     DEFAULT: 115,
-    MINIMUM: 170,
+    MINIMUM: 105,
   },
   [TaskItemColumn.START_DATE]: {
     DEFAULT: 115,
-    MINIMUM: 170,
+    MINIMUM: 105,
   },
   [TaskItemColumn.ANCHOR_DATE]: {
     DEFAULT: 115,
-    MINIMUM: 170,
+    MINIMUM: 105,
   },
   [TaskItemColumn.COMMENTS]: 100,
   [TaskItemColumn.LABELS]: 100,
