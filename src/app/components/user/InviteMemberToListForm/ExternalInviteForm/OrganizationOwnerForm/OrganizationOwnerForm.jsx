@@ -28,6 +28,7 @@ const OrganizationOwnerForm = ({
   disabled,
   onSubmit,
   closeInviteForm,
+  isOrganizationAdmin,
 }) => {
   const [currentFormStep, setCurrentFormStep] = useState(FormStep.USER_DETAILS);
 
@@ -68,6 +69,7 @@ const OrganizationOwnerForm = ({
           <UserDetailsStep
             closeInviteForm={closeInviteForm}
             disabled={disabled}
+            isOrganizationAdmin={isOrganizationAdmin}
           />
         ) : (
           <UserRoleStep

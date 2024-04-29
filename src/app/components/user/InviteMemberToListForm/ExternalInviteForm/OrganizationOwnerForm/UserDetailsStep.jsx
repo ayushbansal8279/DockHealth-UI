@@ -18,7 +18,11 @@ import {
 } from '@/app/modal/components/ModalButton/ModalButtons';
 import * as yup from 'yup';
 
-const UserDetailsStep = ({ closeInviteForm, disabled }) => {
+const UserDetailsStep = ({
+  closeInviteForm,
+  disabled,
+  isOrganizationAdmin,
+}) => {
   const {
     watch,
     setValue,
@@ -125,9 +129,12 @@ const UserDetailsStep = ({ closeInviteForm, disabled }) => {
         <Grid item>
           <Spacing vertical={2} />
           <InfoContainer>
-            {/* <InfoHeader>New User</InfoHeader> */}
-            <img src={IIcon} alt="asdsa" />
-            <InfoText>Approval Required</InfoText>
+            {isOrganizationAdmin && (
+              <>
+                <img src={IIcon} alt="!icon" />
+                <InfoText>Approval Required</InfoText>
+              </>
+            )}
           </InfoContainer>
           <Spacing vertical={4} />
         </Grid>
