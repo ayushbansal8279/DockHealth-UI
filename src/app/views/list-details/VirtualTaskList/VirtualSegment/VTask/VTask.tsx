@@ -16,9 +16,6 @@ import {
   DraggableProvided,
   DraggableStateSnapshot,
 } from 'react-beautiful-dnd';
-// import QuickAddSubtask from '@/app/components/task/StandardTaskItem/QuickAddSubtask';
-// import { taskLookupSelector } from '@/app/selectors/task-details-selectors';
-// import { useSelector } from 'react-redux';
 import * as Sc from './styled';
 import * as TaskActions from 'actions/task-actions';
 import { TaskOrigin } from '@/app/helpers/task-helpers';
@@ -72,8 +69,7 @@ function VTask(
     useVirtualTaskListScrollContext();
   const screenWidth = typeof window !== 'undefined' ? window.innerWidth : 1920;
 
-  const percentage =
-    ((!!droppableHeaderWidth ? droppableHeaderWidth : 0) / screenWidth) * 100;
+  const percentage = ((droppableHeaderWidth || 0) / screenWidth) * 100;
   const task = pulledTask;
   const { taskList, taskGroups, identifier } = task;
   const [subTasksCount, setsubTasksCount] = useState(task?.subtasks?.length);
@@ -118,25 +114,13 @@ function VTask(
       };
       dispatch(TaskActions.saveTask(taskData));
     },
-    [
-      dispatch,
-      // identifier,
-      taskGroup,
-      taskList?.taskListIdentifier,
-    ],
+    [dispatch, taskGroup, taskList?.taskListIdentifier],
   );
 
   const contextValue = {
     isVirtualListWorkflowOpen: get(identifier),
   };
   return (
-    // <div
-    //   style={{
-    //     width: '100%',
-    //     background: bgColor ? palette.aliceBlue : '',
-    //     paddingBottom: isLastTaskOfGroup ? '20px' : '0px',
-    //   }}
-    // >
     <Draggable
       draggableId={metadata.id}
       index={metadata.index}
@@ -206,7 +190,7 @@ function VTask(
                 $width={
                   percentage > 90
                     ? visibleWidth
-                      ? `${visibleWidth}px`
+                      ? `${visibleWidth - 103}px`
                       : '100%'
                     : `${visibleWidth - 120}px`
                 }
@@ -215,7 +199,6 @@ function VTask(
                   taskListIdentifier={task.taskList.taskListIdentifier}
                   parentTaskIdentifier={metadata.id}
                   onFocus={handleQuickAddOnFocus}
-                  // origin={origin}
                 />
               </Sc.QuickAddContainer>
             </div>
@@ -248,7 +231,7 @@ function VTask(
                   $width={
                     percentage > 90
                       ? visibleWidth
-                        ? `${visibleWidth}px`
+                        ? `${visibleWidth - 69.5}px`
                         : '100%'
                       : `${visibleWidth - 85}px`
                   }
@@ -277,13 +260,10 @@ function VTask(
                   </QuickAddInputWrapper>
                 </Sc.WorkflowQuickAddTaskContainer>
               </div>
-              // {/* // )} */}
             )}
         </>
-        // </div>
       )}
     </Draggable>
-    // </div>
   );
 }
 

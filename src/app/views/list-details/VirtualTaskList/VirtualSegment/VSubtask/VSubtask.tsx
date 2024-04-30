@@ -208,7 +208,7 @@ function VSubtask(
                 $width={
                   percentage > 90
                     ? visibleWidth
-                      ? `${visibleWidth}px`
+                      ? `${visibleWidth - 145}px`
                       : '100%'
                     : `${visibleWidth - 120}px`
                 }
@@ -216,8 +216,6 @@ function VSubtask(
                 <QuickAddSubtask
                   taskListIdentifier={parentTask.taskList.taskListIdentifier}
                   parentTaskIdentifier={parentTask.identifier}
-                  // onFocus={handleQuickAddOnFocus}
-                  // origin={TaskOrigin.LIST}
                 />
               </Sc.QuickAddContainer>
             </div>
