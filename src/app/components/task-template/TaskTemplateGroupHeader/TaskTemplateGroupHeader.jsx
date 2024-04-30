@@ -291,9 +291,6 @@ const TaskTemplateGroupHeader = ({
             }
           });
         }
-        // accumulator[0] += currentTask?.subTasksCompletedCount || 0;
-        // accumulator[1] =
-        //   accumulator[1] + (currentTask?.subTasksCount || 0) + 1;
         accumulator[1] =
           accumulator[1] + (currentTask?.subtasks?.length || 0) + 1;
 
@@ -302,7 +299,6 @@ const TaskTemplateGroupHeader = ({
       [0, 0],
     );
   }, [templateTasks]);
-  // const [completedTasksAmount, allTasksAmount] = [-1, -1];
 
   const completedTasksAmountFinal = completedTasksAmount;
   const allTasksAmountFinal = allTasksAmount;
