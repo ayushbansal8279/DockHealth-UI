@@ -92,80 +92,70 @@ const BulkEditOptionsBar = ({ selectedPatients = [], onClose }) => {
       onClose={onClose}
       patientView
     >
-      <>
-        <Button type="button" onClick={createTaskHandler} disabled={false}>
+      <Button type="button" onClick={createTaskHandler} disabled={false}>
+        <BulkEditOption
+          iconComponent={CompleteIcon}
+          title="Create Task"
+          isDisabled={false}
+        />
+      </Button>
+      <Button type="button" onClick={createWorkflowHandler} disabled={false}>
+        <BulkEditOption
+          iconComponent={DuplicateIcon}
+          title="Create Workflow"
+          isDisabled={false}
+        />
+      </Button>
+      <Button type="button" onClick={addLabelHandler} disabled={false}>
+        <BulkEditOption
+          iconComponent={StatusIcon}
+          title="Add Label"
+          isDisabled={false}
+        />
+      </Button>
+      <Button type="button" onClick={editFieldsHandler} disabled={false}>
+        <BulkEditOption
+          iconComponent={AppRegistrationIcon}
+          title="Edit Fields"
+          isDisabled={false}
+        />
+      </Button>
+      <Button type="button" onClick={downloadFilesHandler} disabled={false}>
+        <BulkEditOption
+          iconComponent={DownloadIcon}
+          title="Download Files"
+          isDisabled={false}
+        />
+      </Button>
+      {isArchivePage && (
+        <Button type="button" onClick={deleteHandler} disabled={false}>
           <BulkEditOption
-            iconComponent={CompleteIcon}
-            title="Create Task"
+            iconComponent={DeleteIcon}
+            title="Delete"
+            color={palette.oPlusRed}
             isDisabled={false}
-            wideView
           />
         </Button>
-        <Button type="button" onClick={createWorkflowHandler} disabled={false}>
+      )}
+      {!isArchivePage && (
+        <Button type="button" onClick={archiveHandler} disabled={false}>
           <BulkEditOption
-            iconComponent={DuplicateIcon}
-            title="Create Workflow"
+            iconComponent={DeleteIcon}
+            title="Archive"
+            color={palette.oPlusRed}
             isDisabled={false}
-            wideView
           />
         </Button>
-        <Button type="button" onClick={addLabelHandler} disabled={false}>
+      )}
+      {isArchivePage && (
+        <Button type="button" onClick={unArchiveHandler} disabled={false}>
           <BulkEditOption
-            iconComponent={StatusIcon}
-            title="Add Label"
+            iconComponent={UndoIcon}
+            title="Restore"
             isDisabled={false}
-            wideView
           />
         </Button>
-        <Button type="button" onClick={editFieldsHandler} disabled={false}>
-          <BulkEditOption
-            iconComponent={AppRegistrationIcon}
-            title="Edit Fields"
-            isDisabled={false}
-            wideView
-          />
-        </Button>
-        <Button type="button" onClick={downloadFilesHandler} disabled={false}>
-          <BulkEditOption
-            iconComponent={DownloadIcon}
-            title="Download Files"
-            isDisabled={false}
-            wideView
-          />
-        </Button>
-        {isArchivePage && (
-          <Button type="button" onClick={deleteHandler} disabled={false}>
-            <BulkEditOption
-              iconComponent={DeleteIcon}
-              title="Delete"
-              color={palette.oPlusRed}
-              isDisabled={false}
-              wideView
-            />
-          </Button>
-        )}
-        {!isArchivePage && (
-          <Button type="button" onClick={archiveHandler} disabled={false}>
-            <BulkEditOption
-              iconComponent={DeleteIcon}
-              title="Archive"
-              color={palette.oPlusRed}
-              isDisabled={false}
-              wideView
-            />
-          </Button>
-        )}
-        {isArchivePage && (
-          <Button type="button" onClick={unArchiveHandler} disabled={false}>
-            <BulkEditOption
-              iconComponent={UndoIcon}
-              title="Restore"
-              isDisabled={false}
-              wideView
-            />
-          </Button>
-        )}
-      </>
+      )}
     </BulkEditBar>
   );
 };

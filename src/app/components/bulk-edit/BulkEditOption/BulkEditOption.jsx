@@ -1,4 +1,5 @@
 import React from 'react';
+import { Typography } from '@mui/material';
 import { OptionWrapper, IconBox } from './styled';
 
 const BulkEditOption = (props) => {
@@ -9,12 +10,15 @@ const BulkEditOption = (props) => {
     isDisabled,
     wideView,
   } = props;
+
   return (
     <OptionWrapper color={color} disabled={isDisabled}>
       <IconBox wideView={wideView}>
         <IconComponent />
       </IconBox>
-      <p>{title}</p>
+      <Typography variant="body2" sx={{ whiteSpace: 'nowrap' }}>
+        {title}
+      </Typography>
     </OptionWrapper>
   );
 };
