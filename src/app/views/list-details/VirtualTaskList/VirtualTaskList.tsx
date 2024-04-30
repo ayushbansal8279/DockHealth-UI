@@ -143,6 +143,7 @@ function VirtualTaskList({ groupedTasks }: Props) {
             {
               bgColor: !(index % 2 === 0),
               groupWithZeroTask: groupTasks?.length === 0,
+              isLastGroupOfList: index === listGroups?.length - 1,
             },
             [],
             true,
@@ -219,7 +220,7 @@ function VirtualTaskList({ groupedTasks }: Props) {
                                   childIndex === children.length - 1
                                     ? tasksMap[groupTasks[groupTaskIndex + 1]]
                                         ?.itemType === 'BUNDLE'
-                                    : false,                                
+                                    : false,
                               },
                               [],
                             );
