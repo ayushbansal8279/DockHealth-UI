@@ -33,6 +33,13 @@ const WorkflowDrawerReducer = (state = initialState, action) => {
       };
     }
 
+    case ActionTypes.SET_WORKFLOW_IDENTIFIER: {
+      return {
+        ...state,
+        workflowIdentifier: action.payload,
+      };
+    }
+
     case ActionTypes.GET_WORKFLOW_DRAWER_DETAILS: {
       return {
         ...state,

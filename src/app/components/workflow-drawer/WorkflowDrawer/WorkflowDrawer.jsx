@@ -29,8 +29,6 @@ import PatientSection from '../PatientSection/PatientSection';
 import AssignedToSection from '../AssignedToSection/AssignedToSection';
 import HistorySection from '../HistorySection/HistorySection';
 import DueDateSection from '../DueDateSection/DueDateSection';
-import StartDateSection from '../StartDateSection/StartDateSection';
-import AnchorDateSection from '../AnchorDateSection/AnchorDateSection';
 import ReminderSection from '../ReminderSection/ReminderSection';
 import PrioritySection from '../PrioritySection/PrioritySection';
 import StatusSection from '../StatusSection/StatusSection';

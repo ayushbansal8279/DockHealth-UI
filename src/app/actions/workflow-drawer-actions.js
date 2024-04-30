@@ -19,6 +19,13 @@ export function closeDrawer() {
   };
 }
 
+export function setWorkflowIdentifier(identifier) {
+  return {
+    type: ActionTypes.SET_WORKFLOW_IDENTIFIER,
+    payload: identifier,
+  };
+}
+
 export function getDrawerWorkflowDetails() {
   return {
     type: ActionTypes.GET_WORKFLOW_DRAWER_DETAILS,

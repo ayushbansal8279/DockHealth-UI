@@ -1,8 +1,8 @@
-import { CommentDto } from './swagger/models/CommentDto';
+import { Comment } from './Comment';
 import { TaskDto } from './swagger/models/TaskDto';
 
 export interface Task extends TaskDto {
-  comments?: CommentDto[];
+  comments?: Comment[];
 }
 
 export interface TaskColumn {

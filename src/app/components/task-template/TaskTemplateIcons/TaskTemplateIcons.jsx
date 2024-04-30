@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { Grid } from '@mui/material';
+import { Grid, Popover } from '@mui/material';
 import { openDrawer } from 'actions/workflow-drawer-actions';
 import {
   getLabelsIconTooltipTitle,
@@ -12,6 +12,7 @@ import TaskIcon from 'components/task/TaskIcon/TaskIcon';
 import { SINGLE_TASK_RESTRICTIONS_OPTIONS } from 'restrictions/task-restrictions';
 import { GridImg } from './styled';
 import TaskLabel from '../../common/TaskLabel/TaskLabel';
+import CommentsInPopover from '../../workflow-drawer/CommentsInPopover';
 
 const TaskTemplateIcons = ({
   workflow,
@@ -24,18 +25,29 @@ const TaskTemplateIcons = ({
   matchComments,
   isHover,
 }) => {
+  const [anchorEl, setAnchorEl] = React.useState(null);
   const { restrictions } = workflow ?? {};
+  const commentPopoverOpen = Boolean(anchorEl);
+  console.log('original workflow', workflow);
 
-  const onCommentClick = useCallback(() => {
-    dispatch(
-      openDrawer(
-        workflow.identifier,
-        workflow,
-        WorkflowDrawerFieldNames.COMMENT,
-      ),
-    );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [workflow]);
+  const onCommentClick = (event) => {
+    setAnchorEl(anchorEl ? null : event.currentTarget);
+  };
+
+  const handleCloseComments = useCallback(() => {
+    setAnchorEl(null);
+  }, [setAnchorEl]);
+
+  // const onCommentClick = useCallback(() => {
+  //   console.log('here?');
+  //   dispatch(
+  //     openDrawer(
+  //       workflow.identifier,
+  //       workflow,
+  //       WorkflowDrawerFieldNames.COMMENT,
+  //     ),
+  //   );
+  // }, [workflow]);
 
   const onLabelClick = useCallback(() => {
     dispatch(
@@ -138,6 +150,15 @@ const TaskTemplateIcons = ({
           </Tooltip>
         </GridImg>
       ) : null}
+
+      <Popover
+        anchorEl={anchorEl}
+        open={commentPopoverOpen}
+        style={{ zIndex: 2000 }}
+        onClose={handleCloseComments}
+      >
+        <CommentsInPopover onClose={handleCloseComments} />
+      </Popover>
     </Grid>
   );
 };

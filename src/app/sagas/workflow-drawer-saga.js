@@ -25,6 +25,7 @@ function* getWorkflowDrawerDetails() {
   try {
     const identifier = yield select(workflowIdentifierSelector);
     const workflow = yield call(TaskTemplateApi.getTemplate, identifier);
+    console.log('yield workflow', workflow);
     yield put(WorkflowDrawerActions.getDrawerWorkflowDetailsSuccess(workflow));
   } catch {
     yield put(showGlobalErrorAlert());
