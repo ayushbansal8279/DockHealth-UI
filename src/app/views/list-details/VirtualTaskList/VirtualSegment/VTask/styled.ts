@@ -1,5 +1,6 @@
 import styled from '@mui/styled-engine';
 import palette from 'styles/palette';
+import isNil from 'ramda/src/isNil';
 
 export const VTask = styled('div')`
   display: flex;
@@ -88,15 +89,12 @@ export const VTask = styled('div')`
 
 export const QuickAddContainer = styled('div')`
   border-left: 1px solid ${palette.coolGrey3};
-  width: ${({ $width }) => $width};
-  margin-left: 89.5px;
+  ${({ $width }) => (isNil($width) ? '' : `width: ${$width};`)}
+  left: 89.5px;
   margin-top: -1px;
   margin-bottom: 1px;
   position: sticky;
-  // background: ${({ bgColor }) => (bgColor ? palette.aliceBlue : '')};
   ${({ $template }: any) => ($template ? 'margin-bottom: 10px' : '')};
-  // padding-bottom: ${({ isLastTaskOfGroup }) =>
-    isLastTaskOfGroup ? '60px' : '0px'};
   &:hover {
     border-left: 1px solid ${palette.coolGrey2};
   }
@@ -104,9 +102,8 @@ export const QuickAddContainer = styled('div')`
 
 export const WorkflowQuickAddTaskContainer = styled('div')`
   border-left: 1px solid ${palette.coolGrey3};
-  // width: 90%;
   width: ${({ $width }) => $width};
-  margin-left: 54.5px;
+  left: 54.5px;
   margin-top: -1px;
   margin-bottom: 1px;
   position: sticky;

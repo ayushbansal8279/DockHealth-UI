@@ -29,7 +29,7 @@ export const QuickAddContainer = styled('div')`
   width: ${({ $width }) => $width};
   margin-bottom: 1px;
   position: sticky;
-  margin-left: 89.5px;
+  left: 89.5px;
 
   &:hover {
     border-left: 1px solid ${palette.coolGrey2};
