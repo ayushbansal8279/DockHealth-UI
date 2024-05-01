@@ -10,7 +10,7 @@ export const AssignMemberContainer = styled.div`
 `;
 
 export const Title = styled.div`
-  margin-right: 26px;
+  margin-right: 25px;
   color: ${palette.coolGrey1};
   font-family: Outfit;
   font-size: ${fontSizes.smallPlus};
@@ -28,13 +28,6 @@ export const SubTitle = styled.div`
   font-weight: ${fontWeights.light};
 `;
 
-export const AddAssigneeButton = styled.button`
-  color: black;
-  margin-left: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
 
 export const AssigneeContainer = styled.div`
   display: flex;
