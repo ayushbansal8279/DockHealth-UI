@@ -1205,11 +1205,11 @@ const TaskTemplateGroupHeader = ({
               onMouseLeave={() => setCellHover({ comment: false })}
             >
               <TaskTemplateComment
-                isHover={isCellHover}
+                isHover={isCellHover.comment}
                 comments={templateGroup.comments}
                 matchAttachComments={templateGroup.matchComments}
                 workflow={templateGroup}
-                dispatch={dispatch}
+                origin={origin}
               />
             </TaskItemCell>,
             getColumnOrder(TaskItemColumn.COMMENTS),

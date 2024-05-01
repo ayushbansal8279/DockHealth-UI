@@ -11,19 +11,30 @@ import Tooltip from 'components/common/Tooltip/Tooltip';
 import TaskIcon from 'components/task/TaskIcon/TaskIcon';
 import { SINGLE_TASK_RESTRICTIONS_OPTIONS } from 'restrictions/task-restrictions';
 import { GridImg } from './styled';
-import TaskLabel from '../../common/TaskLabel/TaskLabel';
 import CommentsInPopover from '../../workflow-drawer/CommentsInPopover';
+import { IComment } from '@/app/types/Comment';
+
+interface Props {
+  workflow: any;
+  comments: IComment[];
+  matchComments: any[];
+  isHover: boolean;
+  origin: string;
+}
 
 export default function TaskTemplateComment({
   workflow,
   comments,
   matchComments,
   isHover,
-}) {
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  origin,
+}: Props) {
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const commentPopoverOpen = Boolean(anchorEl);
 
-  const onCommentClick = (event) => {
+  console.log('workflow', workflow);
+
+  const onCommentClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(anchorEl ? null : event.currentTarget);
   };
 
@@ -54,7 +65,7 @@ export default function TaskTemplateComment({
           }
         >
           <button type="button" onClick={onCommentClick}>
-            {(comments?.length > 0 || isHover.comment) && (
+            {(comments?.length > 0 || isHover) && (
               <TaskIcon type="comments" isActive={comments?.length > 0} />
             )}
           </button>

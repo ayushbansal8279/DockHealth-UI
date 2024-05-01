@@ -99,9 +99,7 @@ function updateBundleInState(bundleIdentifier, updatedData, state) {
   };
 }
 
-// eslint-disable-next-line sonarjs/cognitive-complexity
 const ListDetailsReducer = (state = initialState, action) => {
-  // eslint-disable-next-line sonarjs/max-switch-cases
   switch (action.type) {
     case ActionTypes.GET_COMPLETED_TASKS_BY_GROUPS_SUCCESS: {
       const { groupedTasks, loadingMore, taskListIdentifier } = action;
@@ -871,6 +869,15 @@ const ListDetailsReducer = (state = initialState, action) => {
         },
       };
     }
+
+    // todo: add comment to workflow
+    // case ActionTypes.ADD_WORKFLOW_COMMENT_TO_LIST_DETAILS_WORKFLOW: {
+    //   const {workflowId, comment} = action.payload;
+    //   return {
+    //     ...state,
+
+    //   }
+    // }
 
     default: {
       return state.taskListIdentifier && state.taskListIdentifier !== ''

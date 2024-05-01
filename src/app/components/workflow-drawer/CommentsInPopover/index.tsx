@@ -32,8 +32,8 @@ import { IComment } from '@/app/types/Comment';
 
 interface Props {
   onClose: VoidFunction;
-  comments: Comment;
-  disabled: boolean;
+  comments: IComment[];
+  disabled?: boolean;
 }
 
 export default function CommentsInPopover({
