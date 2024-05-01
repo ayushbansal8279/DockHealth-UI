@@ -142,13 +142,13 @@ function* getTasksGroupsList() {
 }
 
 function* getCurrentListTasks(prop) {
-  const { withLoader } = prop;
   try {
     const taskListIdentifier = yield select(currentTaskListIdentifierSelector);
     const selectedFilters = yield select(selectedFiltersInMegaFilterSelector);
     const sort = yield select(taskDetailsSortSelector);
     const searchTerm = yield select(searchTermSelector);
     const status = yield select(currentTaskListTasksStatusSelector);
+    const savedStatus = sessionStorage.getItem('status'+taskListIdentifier)
 
     const currentOrganization = yield select(selectedUserOrganizationSelector);
     const taskGroupsToLoadItem =
@@ -188,7 +188,7 @@ function* getCurrentListTasks(prop) {
           put(
             ListDetailsActions.getTasksForTaskGroups({
               taskGroupIdentifier,
-              status: withLoader?.status ?? status,
+              status: savedStatus !== null ? savedStatus : status,
               startPosition: 0,
               sort,
               refresh: true,

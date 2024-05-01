@@ -23,10 +23,18 @@ export interface Props extends Segment {
   isTaskTemplate: boolean;
   bgColor: boolean;
   groupWithZeroTask: boolean;
+  isLastGroupOfList: boolean;
 }
 
 function VTaskHeader(
-  { metadata, register, isTaskTemplate, groupWithZeroTask, bgColor }: Props,
+  {
+    metadata,
+    register,
+    isTaskTemplate,
+    groupWithZeroTask,
+    isLastGroupOfList,
+    bgColor,
+  }: Props,
   // eslint-disable-next-line unicorn/prevent-abbreviations
   ref: ForwardedRef<HTMLDivElement>,
 ) {
@@ -60,7 +68,8 @@ function VTaskHeader(
     <div
       style={{
         width: percentage > 90 ? `${droppableHeaderWidth + 70}` : '100%',
-        // paddingBottom: groupWithZeroTask ? '20px' : '0px',
+        paddingBottom:
+          isLastGroupOfList && groupWithZeroTask && !bgColor ? '20px' : '0px',
         background: bgColor ? palette.aliceBlue : '',
       }}
     >

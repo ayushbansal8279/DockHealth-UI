@@ -26,13 +26,16 @@ const OnboardingEulaView = () => {
 
   const continueButtonDisabled = !isEulaAccepted || !isBaaAccepted;
 
-  const organizationName = JSON.parse(sessionStorage.getItem('authUser'))
-    .attributes['custom:organization_name'];
+  const authUser = JSON.parse(sessionStorage.getItem('authUser'));
+  let organizationName = '';
+  if (authUser.attributes) {
+    organizationName = authUser.attributes['custom:organization_name'];
+  }
 
   const onAgreeClick = useCallback(() => {
     acknowledgeEula().then(() => {
       localStorage.setItem('STORAGE_NEW_USER_FIRST_TIME', true);
-      if (organizationName !== undefined) {
+      if (organizationName !== '' && organizationName !== undefined) {
         history.push('/onboarding-tutorial/create-list');
       } else {
         history.push('/onboarding/organization-setup');
