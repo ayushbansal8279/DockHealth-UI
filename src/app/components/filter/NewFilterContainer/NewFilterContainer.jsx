@@ -60,7 +60,7 @@ const NewFilterContainer = ({
       }
     }
     setFilteredData(data);
-  },[finalFilter])
+  }, [finalFilter]);
 
   useEffect(() => {
     setMenuOption(filters?.map((item) => ({ label: item.label, id: item.id })));
@@ -177,15 +177,10 @@ const NewFilterContainer = ({
           <ClearFilter onClick={clearFilter}>Clear Filter</ClearFilter>
         )}
       </FilterButtonWrapper>
-      <Divider />
-      <BottomWrapper>
-        {!isPopoverOpen && Object.keys(finalFilter).length === 0 && (
-          <ClearFilterButton onClick={clearFilter}>
-            <ClearFilterLabel>Clear Filters</ClearFilterLabel>
-          </ClearFilterButton>
-        )}
-        {Object.keys(finalFilter).length > 0 && (
-          <>
+      {Object.keys(finalFilter).length > 0 && (
+        <>
+          <Divider />
+          <BottomWrapper>
             <CancelButton
               disabled={Object.keys(finalFilter).length === 0}
               onClick={updateFilter}
@@ -200,9 +195,9 @@ const NewFilterContainer = ({
             >
               Apply Filter
             </ConfirmButton>
-          </>
-        )}
-      </BottomWrapper>
+          </BottomWrapper>
+        </>
+      )}
     </>
   );
 };
