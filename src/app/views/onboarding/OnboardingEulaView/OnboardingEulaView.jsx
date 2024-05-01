@@ -32,7 +32,7 @@ const OnboardingEulaView = () => {
   const onAgreeClick = useCallback(() => {
     acknowledgeEula().then(() => {
       localStorage.setItem('STORAGE_NEW_USER_FIRST_TIME', true);
-      if (organizationName !== undefined) {
+      if (organizationName && organizationName !== undefined) {
         history.push('/onboarding-tutorial/create-list');
       } else {
         history.push('/onboarding/organization-setup');
