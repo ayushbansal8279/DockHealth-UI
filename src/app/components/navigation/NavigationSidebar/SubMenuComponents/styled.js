@@ -283,12 +283,11 @@ export const DrawerListsItem = styled.div`
     `
         &:hover {
           border: 1px solid ${palette.coolGrey2};
-          background-color: ${palette.coolGrey3};
         }
 
         &:hover {
           & ${MenuWrapper} {
-            opacity: 1;
+            opacity: 1;                  
           }
         }
       `}
