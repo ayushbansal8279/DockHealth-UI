@@ -25,7 +25,6 @@ export function addWorkflowComment(workflowIdentifier, commentText) {
 
 export function addWorkflowCommentSuccess(workflowIdentifier, comment) {
   return {
-    // todo: listDetails.reducer also gets this to add comment to listDetails.tasksMap[workflowIdentifier]
     type: ActionTypes.ADD_WORKFLOW_COMMENT_SUCCESS,
     workflowIdentifier,
     comment,

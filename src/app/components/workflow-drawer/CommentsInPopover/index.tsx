@@ -1,49 +1,34 @@
 import React, { useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import {
-  workflowIdentifierSelector,
-  workflowCommentsSelector,
-  isWorkflowTemplateSelector,
-  workflowListIdentifierSelector,
-} from 'selectors/workflow-drawer-selectors';
+import { useDispatch } from 'react-redux';
 import AddComment from 'components/drawer-common/AddComment/AddComment';
 import * as WorkflowActions from 'actions/workflow-actions';
-import { userProfileSelector } from 'selectors/user-selectors';
 
 import { Box, IconButton } from '@mui/material';
 import Divider from '@mui/material/Divider';
 import palette from '@/app/styles/palette';
 import CloseIcon from '@mui/icons-material/Close';
-import { Task } from '@/app/types/Task';
-import { initializeCommentSectionHooks } from '@/app/components/task-drawer/CommentSection/helpers';
-import {
-  SINGLE_TASK_RESTRICTIONS_OPTIONS,
-  SINGLE_TASK_RESTRICTIONS_PROFILES,
-} from '@/app/restrictions/task-restrictions';
 import { ContainerCard } from 'components/task/CommentsInPopover/styled';
 import Comment from 'components/task/CommentsInPopover/Comment';
 import {
-  openDrawer,
-  setCommentIdentifierToScroll,
-} from 'actions/task-drawer-actions';
-import { storeAsCurrentTask } from 'actions/task-actions';
-import { DrawerFieldEnum } from 'helpers/task-drawer-helpers';
+  openDrawer as openWorkflowDrawer,
+  setWorkflowCommentIdentifierToScroll,
+} from '@/app/actions/workflow-drawer-actions';
 import { IComment } from '@/app/types/Comment';
 
 interface Props {
+  workflowIdentifier: string;
   onClose: VoidFunction;
   comments: IComment[];
   disabled?: boolean;
 }
 
 export default function CommentsInPopover({
+  workflowIdentifier,
   onClose,
   comments,
   disabled,
 }: Props) {
   const dispatch = useDispatch();
-  const workflowIdentifier = useSelector(workflowIdentifierSelector);
-  const currentUser = useSelector(userProfileSelector);
 
   const addComment = (tokenizedComment: string) => {
     dispatch(
@@ -53,10 +38,8 @@ export default function CommentsInPopover({
 
   const handleClickComment = useCallback(
     (commentIdentifier: string) => {
-      // todo
-      // dispatch(setCommentIdentifierToScroll(commentIdentifier));
-      // dispatch(openDrawer(DrawerFieldEnum.COMMENT) as any);
-      // dispatch(storeAsCurrentTask(task) as any);
+      dispatch(setWorkflowCommentIdentifierToScroll(commentIdentifier));
+      dispatch(openWorkflowDrawer(workflowIdentifier));
       onClose();
     },
     [workflowIdentifier],

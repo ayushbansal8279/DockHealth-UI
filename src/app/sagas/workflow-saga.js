@@ -45,7 +45,6 @@ function* deleteWorkflow({ identifier }) {
   }
 }
 
-// todo: check if this can be used to add comment to workflow
 function* addWorkflowComment({ workflowIdentifier, commentText }) {
   try {
     const currentUser = yield select(userProfileSelector);

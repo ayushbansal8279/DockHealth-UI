@@ -1,18 +1,19 @@
 import React, { useCallback } from 'react';
 import { Grid, Popover } from '@mui/material';
-import { openDrawer } from 'actions/workflow-drawer-actions';
-import {
-  getLabelsIconTooltipTitle,
-  getAttachmentsIconTooltipTitle,
-  getCommentsIconTooltipTitle,
-} from 'helpers/task-helpers';
-import { WorkflowDrawerFieldNames } from 'helpers/workflow-drawer-helpers';
+import { getCommentsIconTooltipTitle } from 'helpers/task-helpers';
 import Tooltip from 'components/common/Tooltip/Tooltip';
 import TaskIcon from 'components/task/TaskIcon/TaskIcon';
-import { SINGLE_TASK_RESTRICTIONS_OPTIONS } from 'restrictions/task-restrictions';
+import {
+  SINGLE_WORKFLOW_RESTRICTIONS_PROFILES,
+  WORKFLOW_LIST_RESTRICTIONS_OPTIONS,
+} from 'restrictions/task-restrictions';
 import { GridImg } from './styled';
 import CommentsInPopover from '../../workflow-drawer/CommentsInPopover';
 import { IComment } from '@/app/types/Comment';
+import { useSelector } from 'react-redux';
+import { userProfileSelector } from '@/app/selectors/user-selectors';
+
+const { DISABLED } = WORKFLOW_LIST_RESTRICTIONS_OPTIONS;
 
 interface Props {
   workflow: any;
@@ -27,12 +28,12 @@ export default function TaskTemplateComment({
   comments,
   matchComments,
   isHover,
-  origin,
 }: Props) {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const commentPopoverOpen = Boolean(anchorEl);
 
-  console.log('workflow', workflow);
+  const { orgUserRole } = useSelector(userProfileSelector);
+  const restrictions = SINGLE_WORKFLOW_RESTRICTIONS_PROFILES[orgUserRole];
 
   const onCommentClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(anchorEl ? null : event.currentTarget);
@@ -41,17 +42,6 @@ export default function TaskTemplateComment({
   const handleCloseComments = useCallback(() => {
     setAnchorEl(null);
   }, [setAnchorEl]);
-
-  // const onCommentClick = useCallback(() => {
-  //   console.log('here?');
-  //   dispatch(
-  //     openDrawer(
-  //       workflow.identifier,
-  //       workflow,
-  //       WorkflowDrawerFieldNames.COMMENT,
-  //     ),
-  //   );
-  // }, [workflow]);
 
   return (
     <Grid container>
@@ -78,7 +68,12 @@ export default function TaskTemplateComment({
         style={{ zIndex: 2000 }}
         onClose={handleCloseComments}
       >
-        <CommentsInPopover comments={comments} onClose={handleCloseComments} />
+        <CommentsInPopover
+          workflowIdentifier={workflow.identifier}
+          comments={comments}
+          onClose={handleCloseComments}
+          disabled={restrictions?.comments === DISABLED}
+        />
       </Popover>
     </Grid>
   );

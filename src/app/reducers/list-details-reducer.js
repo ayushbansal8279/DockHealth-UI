@@ -1,16 +1,10 @@
-/* eslint-disable unicorn/no-nested-ternary */
 import * as ActionTypes from 'actions/action-types';
-// import pipe from 'ramda/src/pipe';
-// import prop from 'ramda/src/prop';
-// import uniqBy from 'ramda/src/uniqBy';
 import move from 'ramda/src/move';
 import { reorderTasksForWorkflow } from 'helpers/workflow-helpers';
 import { TaskGroupType, TaskItemType } from 'helpers/task-helpers';
 import { updateBundleInList } from 'helpers/tasklist-helpers';
 import { updateTasksStateCallback, updateTasksMap } from './reducer-helper';
 import TaskBaseReducer from './task-base-reducer';
-
-// const dedupe = pipe(uniqBy(prop('identifier')));
 
 const initialState = {
   taskListIdentifier: null,
@@ -406,15 +400,6 @@ const ListDetailsReducer = (state = initialState, action) => {
     case ActionTypes.UPDATE_TEMPLATE_BUNDLE_SUCCESS: {
       const { bundleIdentifier, dataToUpdate } = action;
 
-      // const updatedMap = {
-      //   [bundleIdentifier]: {
-      //     ...state.tasksMap[bundleIdentifier],
-      //     ...dataToUpdate,
-      //     tasks: dataToUpdate?.tasks
-      //       ? dataToUpdate?.tasks?.map((task) => task.identifier)
-      //       : state.tasksMap[bundleIdentifier]?.tasks,
-      //   },
-      // };
       const updatedMap = updateTasksMap(state, {
         itemType: TaskItemType.BUNDLE,
         identifier: bundleIdentifier,
@@ -426,7 +411,6 @@ const ListDetailsReducer = (state = initialState, action) => {
         ...updatedMap,
       };
 
-      // eslint-disable-next-line sonarjs/prefer-immediate-return
       const updatedState = {
         ...state,
         tasksMap: newMap,
@@ -870,14 +854,26 @@ const ListDetailsReducer = (state = initialState, action) => {
       };
     }
 
-    // todo: add comment to workflow
-    // case ActionTypes.ADD_WORKFLOW_COMMENT_TO_LIST_DETAILS_WORKFLOW: {
-    //   const {workflowId, comment} = action.payload;
-    //   return {
-    //     ...state,
+    case ActionTypes.ADD_WORKFLOW_COMMENT_SUCCESS: {
+      const { workflowIdentifier, comment } = action;
 
-    //   }
-    // }
+      if (state.tasksMap?.[workflowIdentifier]) {
+        return {
+          ...state,
+          tasksMap: {
+            ...state.tasksMap,
+            [workflowIdentifier]: {
+              ...state.tasksMap[workflowIdentifier],
+              comments: [
+                comment,
+                ...state.tasksMap[workflowIdentifier].comments,
+              ],
+            },
+          },
+        };
+      }
+      return state;
+    }
 
     default: {
       return state.taskListIdentifier && state.taskListIdentifier !== ''
