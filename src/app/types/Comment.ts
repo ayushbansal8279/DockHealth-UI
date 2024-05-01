@@ -1,3 +1,3 @@
-import { CommentDto as Comment } from './swagger/models/CommentDto';
+import { CommentDto as IComment } from './swagger/models/CommentDto';
 
-export { Comment };
+export { IComment };

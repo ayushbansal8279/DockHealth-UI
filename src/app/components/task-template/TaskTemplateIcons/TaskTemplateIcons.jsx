@@ -1,10 +1,9 @@
 import React, { useCallback } from 'react';
-import { Grid, Popover } from '@mui/material';
+import { Grid } from '@mui/material';
 import { openDrawer } from 'actions/workflow-drawer-actions';
 import {
   getLabelsIconTooltipTitle,
   getAttachmentsIconTooltipTitle,
-  getCommentsIconTooltipTitle,
 } from 'helpers/task-helpers';
 import { WorkflowDrawerFieldNames } from 'helpers/workflow-drawer-helpers';
 import Tooltip from 'components/common/Tooltip/Tooltip';
@@ -12,7 +11,6 @@ import TaskIcon from 'components/task/TaskIcon/TaskIcon';
 import { SINGLE_TASK_RESTRICTIONS_OPTIONS } from 'restrictions/task-restrictions';
 import { GridImg } from './styled';
 import TaskLabel from '../../common/TaskLabel/TaskLabel';
-import CommentsInPopover from '../../workflow-drawer/CommentsInPopover';
 
 const TaskTemplateIcons = ({
   workflow,
@@ -21,33 +19,9 @@ const TaskTemplateIcons = ({
   matchLabels,
   attachments,
   matchAttachments,
-  comments,
-  matchComments,
   isHover,
 }) => {
-  const [anchorEl, setAnchorEl] = React.useState(null);
   const { restrictions } = workflow ?? {};
-  const commentPopoverOpen = Boolean(anchorEl);
-  console.log('original workflow', workflow);
-
-  const onCommentClick = (event) => {
-    setAnchorEl(anchorEl ? null : event.currentTarget);
-  };
-
-  const handleCloseComments = useCallback(() => {
-    setAnchorEl(null);
-  }, [setAnchorEl]);
-
-  // const onCommentClick = useCallback(() => {
-  //   console.log('here?');
-  //   dispatch(
-  //     openDrawer(
-  //       workflow.identifier,
-  //       workflow,
-  //       WorkflowDrawerFieldNames.COMMENT,
-  //     ),
-  //   );
-  // }, [workflow]);
 
   const onLabelClick = useCallback(() => {
     dispatch(
@@ -69,28 +43,6 @@ const TaskTemplateIcons = ({
 
   return (
     <Grid container>
-      {comments ? (
-        <GridImg item xs={12} matched={matchComments}>
-          <Tooltip
-            placement="top"
-            title={
-              comments?.length > 0
-                ? getCommentsIconTooltipTitle(comments)
-                : 'Add Comment'
-            }
-          >
-            <button type="button" onClick={onCommentClick}>
-              {(comments?.length > 0 || isHover.comment) && (
-                <TaskIcon
-                  type="comments"
-                  isActive={comments?.length > 0}
-                  // isNew={workflow?.updatedComment}
-                />
-              )}
-            </button>
-          </Tooltip>
-        </GridImg>
-      ) : null}
       {labels ? (
         labels.length > 0 ? (
           <TaskLabel
@@ -117,11 +69,7 @@ const TaskTemplateIcons = ({
                 onClick={onLabelClick}
               >
                 {(labels?.length > 0 || isHover.label) && (
-                  <TaskIcon
-                    type="labels"
-                    isActive={labels?.length > 0}
-                    // isNew={workflow?.updatedLabel}
-                  />
+                  <TaskIcon type="labels" isActive={labels?.length > 0} />
                 )}
               </button>
             </Tooltip>
@@ -143,22 +91,12 @@ const TaskTemplateIcons = ({
                 <TaskIcon
                   type="attachments"
                   isActive={attachments?.length > 0}
-                  // isNew={workflow?.updatedAttachment}
                 />
               )}
             </button>
           </Tooltip>
         </GridImg>
       ) : null}
-
-      <Popover
-        anchorEl={anchorEl}
-        open={commentPopoverOpen}
-        style={{ zIndex: 2000 }}
-        onClose={handleCloseComments}
-      >
-        <CommentsInPopover onClose={handleCloseComments} />
-      </Popover>
     </Grid>
   );
 };

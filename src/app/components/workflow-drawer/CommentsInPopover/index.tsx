@@ -28,18 +28,22 @@ import {
 } from 'actions/task-drawer-actions';
 import { storeAsCurrentTask } from 'actions/task-actions';
 import { DrawerFieldEnum } from 'helpers/task-drawer-helpers';
-import { Comment as IComment } from '@/app/types/Comment';
+import { IComment } from '@/app/types/Comment';
 
 interface Props {
   onClose: VoidFunction;
+  comments: Comment;
   disabled: boolean;
 }
 
-export default function CommentsInPopover({ onClose, disabled }: Props) {
+export default function CommentsInPopover({
+  onClose,
+  comments,
+  disabled,
+}: Props) {
   const dispatch = useDispatch();
   const workflowIdentifier = useSelector(workflowIdentifierSelector);
   const currentUser = useSelector(userProfileSelector);
-  const comments = useSelector(workflowCommentsSelector) as IComment[] | null;
 
   const addComment = (tokenizedComment: string) => {
     dispatch(

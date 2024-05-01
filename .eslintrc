@@ -122,6 +122,7 @@
     "unicorn/no-negated-condition": "off",
     "sonarjs/cognitive-complexity": "off",
     "prefer-destructuring": "off",
-    "no-extra-boolean-cast": "off"
+    "no-extra-boolean-cast": "off",
+    "react/destructuring-assignment": "off"
   }
 }

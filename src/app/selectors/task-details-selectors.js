@@ -25,9 +25,7 @@ import {
 } from 'selectors/global-search-selectors';
 import { profileTaskDetailsSelector } from 'selectors/custom-profile-details-selectors';
 
-// eslint-disable-next-line sonarjs/cognitive-complexity
 export const taskLookupSelector = (state, origin, task) => {
-  // eslint-disable-next-line sonarjs/prefer-immediate-return
   if (origin === TaskOrigin.LIST) {
     return taskDetailsSelector(
       state,
