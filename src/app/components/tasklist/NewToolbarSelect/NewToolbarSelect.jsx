@@ -34,6 +34,21 @@ const NewToolbarSelect = ({
   const [value, setValue] = useState('Incomplete Task');
   const buttonRef = useRef(null);
 
+  useEffect(() => {
+    const savedStatus = sessionStorage.getItem('status' + taskListIdentifier);
+    if (savedStatus === 'COMPLETE') {
+      setValue('Completed Task');
+      setCheckedCompleted(true);
+      setCheckedIncomplete(false);
+    } else if (savedStatus === '') {
+      setValue('All Tasks');
+      setCheckedCompleted(true);
+      setCheckedIncomplete(true);
+    } else {
+      setValue('Incomplete Tasks');
+    }
+  }, [taskListIdentifier]);
+
   const handleCheckedIncomplete = (e) => {
     setCheckedIncomplete(e.target.checked);
   };
@@ -48,6 +63,7 @@ const NewToolbarSelect = ({
         : checkedCompleted
         ? 'COMPLETE'
         : 'INCOMPLETE';
+    sessionStorage.setItem('status' + taskListIdentifier, status);
     dispatch(updateTaskStatusToFilter(status));
     dispatch(getCurrentListTasks());
     setValue(
@@ -61,11 +77,6 @@ const NewToolbarSelect = ({
     );
     setIsOpen(false);
   }, [checkedCompleted, checkedIncomplete, dispatch]);
-
-  useEffect(() => {
-    setCheckedIncomplete(true);
-    setCheckedCompleted(false);
-  }, [taskListIdentifier]);
 
   return (
     <SelectWrapper>
@@ -87,10 +98,7 @@ const NewToolbarSelect = ({
             onClick={() => setIsOpen(true)}
             size="large"
           >
-            <RotatableChevronButtonLabel
-              variant="body1"
-              component="span"
-            >
+            <RotatableChevronButtonLabel variant="body1" component="span">
               <RotatableChevron rotated={isOpen} color={palette.white} />
             </RotatableChevronButtonLabel>
           </RotatableChevronButtonWrapper>
