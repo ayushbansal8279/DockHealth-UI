@@ -329,7 +329,7 @@ const DashboardHeader = () => {
                   addQuickFilterOption={addQuickFilterOption}
                   selectedQuickFilter={selectedQuickFilter}
                   selectQuickFilter={handleSelectQuickFilter}
-                  onSaveClick={handleSaveQuickFilter}
+                  handleSaveQuickFilter={handleSaveQuickFilter}
                   onSaveAsNewClick={handleSaveAsQuickFilter}
                   wasChangedFilters={wasChangedFilters}
                   onQuickFilterCreate={handleQuickFilterCreate}
