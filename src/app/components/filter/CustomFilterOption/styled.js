@@ -2,10 +2,26 @@ import styled from 'styled-components';
 import { fontSizes } from 'styles/font';
 import palette from 'styles/palette';
 
-export const IconContainer = styled.div`
+export const QuickFilterTitleContainer = styled.div`
   display: flex;
+  height: 32px;
   align-items: center;
+`;
+
+export const QuickFilterTitle = styled.div`
+  color: ${({ selected }) =>
+    selected ? palette.newBrightBlue : palette.coolGrey1};
+  text-align: center;
+  font-family: Outfit;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 11px;
+`;
+
+export const OptionMenuContainer = styled.div`
   visibility: hidden;
+  margin-left: 8px;
 `;
 
 // eslint-disable-next-line import/prefer-default-export
@@ -13,37 +29,16 @@ export const CustomFilterOptionWrapper = styled.div`
   position: relative;
   display: flex;
   align-items: center;
-  width: 150px;
-  height: 30px;
+  height: 32px;
+  border-radius: 4px;
+  gap: 10px;
+  padding: 2px 0 2px 8px;
   background-color: ${({ selected }) => {
     return selected ? '#E7EAFF' : palette.whiteSmoke;
   }};
   border-radius: 4px;
   font-size: ${fontSizes.small};
-  padding-left: 8px;
   cursor: ${({ disabled }) => (disabled ? 'initial' : 'pointer')};
-
-  & .MuiFilledInput-root {
-    background-color: transparent !important;
-  }
-  & .MuiInputBase-input {
-    cursor: pointer !important;
-  }
-
-  & .MuiFilledInput-input {
-    padding: 0;
-    color: ${({ selected }) =>
-      selected ? palette.newBrightBlue : palette.coolGrey1};
-
-    font-size: ${fontSizes.small};
-    &.Mui-disabled {
-      cursor: initial;
-    }
-  }
-
-  &:not(:last-of-type) {
-    margin-bottom: 4px;
-  }
 
   ${(props) =>
     !props.disabled &&
@@ -58,18 +53,8 @@ export const CustomFilterOptionWrapper = styled.div`
       background-color: ${palette.whiteSmoke};
       color: white;}`};
 
-  ${({ color }) => color && `border-left: 8px solid ${color};`}
-
-  ${({ selected }) =>
-    selected &&
-    `& ${IconContainer} {
-    visibility: visible;
-  }`}
-
-
-
   &:hover {
-    & ${IconContainer} {
+    & ${OptionMenuContainer} {
       visibility: visible;
     }
   }
