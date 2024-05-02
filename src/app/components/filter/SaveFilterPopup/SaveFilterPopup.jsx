@@ -78,7 +78,7 @@ const SaveFilterPopup = ({
         data[key] = { options: customFinalFilter[key].map((item) => item.key) };
       }
     }
-    handleSaveQuickFilter(data);
+    handleSaveQuickFilter(editIdentifier,data);
   };
 
   const toggleSharedList = () => {

@@ -166,17 +166,17 @@ const DashboardHeader = () => {
   );
 
   const handleSaveQuickFilter = useCallback(
-    () =>
+    (quickFilterIdentifier,selectedFilters) =>
       dispatch(
         updateQuickFilter(
-          selectedQuickFilter,
+          quickFilterIdentifier,
           {
             selectedOptions: selectedFilters,
           },
           { contextType },
         ),
       ),
-    [contextType, dispatch, selectedFilters, selectedQuickFilter],
+    [contextType, dispatch, selectedFilters],
   );
 
   const handleSaveAsQuickFilter = useCallback(
