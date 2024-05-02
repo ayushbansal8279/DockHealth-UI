@@ -77,3 +77,10 @@ export function getLabelsFailure() {
     type: ActionTypes.GET_WORKFLOW_DRAWER_LABELS_FAILURE,
   };
 }
+
+export function setWorkflowCommentIdentifierToScroll(commentIdentifer) {
+  return {
+    type: ActionTypes.SET_WORKFLOW_COMMENT_IDENTIFIER_TO_SCROLL,
+    payload: commentIdentifer,
+  };
+}

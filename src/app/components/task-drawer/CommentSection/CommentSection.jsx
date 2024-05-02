@@ -4,9 +4,9 @@ import { setCommentIdentifierToScroll } from 'actions/task-drawer-actions';
 import Comment from 'components/drawer-common/Comment/Comment';
 import {
   getCommentIdToScroll,
-  initializeCommentSectionHooks,
-  scrollToById,
-} from './helpers';
+  scrollToByQuerySelector,
+} from 'helpers/scroll-helper';
+import { initializeCommentSectionHooks } from './helpers';
 import {
   CommentSectionContainer,
   CommentsListContainer,
@@ -22,11 +22,11 @@ const CommentSection = ({ selectedTask }) => {
   );
 
   useEffect(() => {
-    scrollToById(`#${getCommentIdToScroll(commentIdentifierToScroll)}`);
+    scrollToByQuerySelector(
+      `#${getCommentIdToScroll(commentIdentifierToScroll)}`,
+    );
     dispatch(setCommentIdentifierToScroll(null));
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [commentIdentifierToScroll]);
+  }, [dispatch, commentIdentifierToScroll]);
 
   return (
     <CommentSectionContainer>
