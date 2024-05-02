@@ -4,7 +4,6 @@ import { openDrawer } from 'actions/workflow-drawer-actions';
 import {
   getLabelsIconTooltipTitle,
   getAttachmentsIconTooltipTitle,
-  getCommentsIconTooltipTitle,
 } from 'helpers/task-helpers';
 import { WorkflowDrawerFieldNames } from 'helpers/workflow-drawer-helpers';
 import Tooltip from 'components/common/Tooltip/Tooltip';
@@ -20,22 +19,9 @@ const TaskTemplateIcons = ({
   matchLabels,
   attachments,
   matchAttachments,
-  comments,
-  matchComments,
   isHover,
 }) => {
   const { restrictions } = workflow ?? {};
-
-  const onCommentClick = useCallback(() => {
-    dispatch(
-      openDrawer(
-        workflow.identifier,
-        workflow,
-        WorkflowDrawerFieldNames.COMMENT,
-      ),
-    );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [workflow]);
 
   const onLabelClick = useCallback(() => {
     dispatch(
@@ -57,28 +43,6 @@ const TaskTemplateIcons = ({
 
   return (
     <Grid container>
-      {comments ? (
-        <GridImg item xs={12} matched={matchComments}>
-          <Tooltip
-            placement="top"
-            title={
-              comments?.length > 0
-                ? getCommentsIconTooltipTitle(comments)
-                : 'Add Comment'
-            }
-          >
-            <button type="button" onClick={onCommentClick}>
-              {(comments?.length > 0 || isHover.comment) && (
-                <TaskIcon
-                  type="comments"
-                  isActive={comments?.length > 0}
-                  // isNew={workflow?.updatedComment}
-                />
-              )}
-            </button>
-          </Tooltip>
-        </GridImg>
-      ) : null}
       {labels ? (
         labels.length > 0 ? (
           <TaskLabel
@@ -105,11 +69,7 @@ const TaskTemplateIcons = ({
                 onClick={onLabelClick}
               >
                 {(labels?.length > 0 || isHover.label) && (
-                  <TaskIcon
-                    type="labels"
-                    isActive={labels?.length > 0}
-                    // isNew={workflow?.updatedLabel}
-                  />
+                  <TaskIcon type="labels" isActive={labels?.length > 0} />
                 )}
               </button>
             </Tooltip>
@@ -131,7 +91,6 @@ const TaskTemplateIcons = ({
                 <TaskIcon
                   type="attachments"
                   isActive={attachments?.length > 0}
-                  // isNew={workflow?.updatedAttachment}
                 />
               )}
             </button>

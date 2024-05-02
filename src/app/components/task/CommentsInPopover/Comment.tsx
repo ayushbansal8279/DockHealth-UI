@@ -13,10 +13,10 @@ import {
   CommentMemberContainer,
 } from 'components/drawer-common/Comment/styled';
 import UserAvatar from 'components/user/UserAvatar/UserAvatar';
-import { CommentDto } from '@/app/types/swagger/models/CommentDto';
+import { IComment } from '@/app/types/Comment';
 
 interface Props {
-  comment: CommentDto;
+  comment: IComment;
   onClick: () => void;
 }
 

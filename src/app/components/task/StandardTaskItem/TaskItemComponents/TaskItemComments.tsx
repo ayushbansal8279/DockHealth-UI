@@ -1,18 +1,17 @@
 import React, { FC, useCallback } from 'react';
 
 import { Task } from '@/app/types/Task';
-import { CommentDto } from '@/app/types/swagger/models/CommentDto';
 import { GridImg } from '../../styled';
 import TaskIcon from 'components/task/TaskIcon/TaskIcon';
-import Popper from '@mui/material/Popper';
 import Grid from '@mui/material/Grid';
 import CommentsInPopover from '../../CommentsInPopover/CommentsInPopover';
 import Tooltip from '@/app/components/common/Tooltip/Tooltip';
 import { Popover } from '@mui/material';
+import { IComment } from '@/app/types/Comment';
 
 interface TaskItemCommentsProps {
   matchComments: boolean;
-  comments: Array<CommentDto>;
+  comments: Array<IComment>;
   task: Task;
   isCommentHover: boolean;
 }
@@ -24,7 +23,7 @@ const TaskItemComments: FC<TaskItemCommentsProps> = ({
   isCommentHover,
 }) => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const commentPopperOpen = Boolean(anchorEl);
+  const commentPopoverOpen = Boolean(anchorEl);
   const hasComments = comments?.length > 0;
   const tooltipTitle = hasComments ? 'Show Comments' : 'Add Comment';
 
@@ -52,7 +51,7 @@ const TaskItemComments: FC<TaskItemCommentsProps> = ({
         </Tooltip>
         <Popover
           anchorEl={anchorEl}
-          open={commentPopperOpen}
+          open={commentPopoverOpen}
           style={{ zIndex: 2000 }}
           onClose={handleCloseComments}
         >
