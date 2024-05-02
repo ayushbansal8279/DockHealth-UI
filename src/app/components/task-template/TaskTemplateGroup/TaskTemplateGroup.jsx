@@ -53,6 +53,8 @@ const TaskTemplateGroup = ({
   origin,
   pageBackground,
   highlightedValue,
+  isNextVirtualTaskItemTypeBundle,
+  isLastTaskOfGroup,
 }) => {
   const templateGroup = useSelector((state) => {
     return taskLookupSelector(state, origin, pullGroup);
@@ -167,6 +169,8 @@ const TaskTemplateGroup = ({
         highlightedValue={highlightedValue}
         origin={origin}
         pageBackground={pageBackground}
+        isNextVirtualTaskItemTypeBundle={isNextVirtualTaskItemTypeBundle}
+        isLastTaskOfGroup={isLastTaskOfGroup}
       />
       {!isStartedDnD && window.disabledVirtualTaskList && (
         <TaskTemplateGroupList timeout={150} in={isOpen && !isStartedDnD}>
