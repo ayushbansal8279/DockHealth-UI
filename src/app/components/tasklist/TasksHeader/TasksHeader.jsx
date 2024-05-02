@@ -36,7 +36,6 @@ const TasksHeader = ({
   isGroupSelected,
   onGroupSelect,
   pageBackground,
-  isDashboardTaskHeader,
   listPageGroupHeader,
   isWidthGreaterThanHundredPercent,
   origin,
@@ -180,7 +179,7 @@ const TasksHeader = ({
       >
         {(provided, snapshot) => (
           <SortHeaderRow
-            isDashboardTaskHeader={isDashboardTaskHeader}
+            origin={origin}
             listPageGroupHeader={listPageGroupHeader}
             isWidthGreaterThanHundredPercent={isWidthGreaterThanHundredPercent}
             ref={provided.innerRef}

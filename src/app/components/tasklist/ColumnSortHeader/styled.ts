@@ -131,8 +131,7 @@ export const SortHeaderRow = styled.div`
   background: ${palette.white};
   border: 1px solid ${palette.coolGrey3};
   border-left: 0px;
-  ${({ isDashboardTaskHeader }) =>
-    isDashboardTaskHeader ? '' : 'margin-bottom: 3px;'}
+  ${({ origin }) => (origin === 'LIST' ? 'margin-bottom: 3px' : '')};
 
   @media print {
     border: 1px solid ${palette.coolGrey1};
