@@ -750,7 +750,8 @@ export const SubtasksCountText = styled.span`
 
 export const ParentTaskContainer = styled.div`
   &:not(:last-child) {
-    margin-bottom: ${({ noMargin }) => (noMargin ? -1 : 0)}px;
+    margin-bottom: ${({ noMargin, origin }) =>
+      noMargin ? -1 : origin === 'PATIENT' || origin === 'GLOBAL' ? 2 : 0}px;
   }
   width: ${({ isVirtualTask, $width }) =>
     isVirtualTask ? (!$width ? '1000%' : '') : ''};
