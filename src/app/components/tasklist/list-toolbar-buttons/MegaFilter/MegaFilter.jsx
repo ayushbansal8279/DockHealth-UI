@@ -151,6 +151,7 @@ const MegaFilter = ({
               openPopover={openPopover}
               selectedQuickFilter={selectedQuickFilter}
               setSelectedQuickFilter={setSelectedQuickFilter}
+              clearFilters={clearFilters}
             />
           ) : (
             <FilterTableLoader />

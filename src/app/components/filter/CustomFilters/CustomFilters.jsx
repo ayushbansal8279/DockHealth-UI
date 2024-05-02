@@ -26,6 +26,7 @@ const CustomFilters = ({
   onQuickFilterCreate,
   setSelectedQuickFilter,
   selectedQuickFilter,
+  clearFilters,
 }) => {
   const [editModeFilterIdentifier, setEditModeFilterIdentifier] =
     useState(null);
@@ -111,6 +112,7 @@ const CustomFilters = ({
             setEditIdentifier={setEditIdentifier}
             setCustomFinalFilter={setCustomFinalFilter}
             onQuickFilterCreate={onQuickFilterCreate}
+            clearFilters={clearFilters}
           />
         ))}
       </OptionsList>

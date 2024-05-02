@@ -27,6 +27,7 @@ const CustomFilterOption = (props) => {
     setCustomFinalFilter,
     setSelectedQuickFilter,
     onQuickFilterCreate,
+    clearFilters,
   } = props;
   const [value, setValue] = useState(label);
   const [isSelected, setSelected] = useState(false);
@@ -64,7 +65,6 @@ const CustomFilterOption = (props) => {
   const handleEnableEditMode = () => {
     setSavePopupOpen(true);
     setEditIdentifier(identifier);
-    console.log(filter.selectedOptions);
 
     const data = {};
     for (const key in filter.selectedOptions) {
@@ -93,6 +93,7 @@ const CustomFilterOption = (props) => {
     if (isSelected) {
       setSelected(false);
       setSelectedQuickFilter('');
+      clearFilters();
     }
   }, [identifier, onOptionClick, isSelected]);
 
