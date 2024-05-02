@@ -44,12 +44,16 @@ const NewFilterContainer = ({
   const popoverReference = useRef(null);
   const [isPopoverOpen, openAddFilterPopover, closeAddFilterPopover] =
     useBoolean(false);
+  const [isDisable, setDisable] = useState(false);
 
   useEffect(() => {
     const data = {};
     for (const key in finalFilter) {
       if (finalFilter[key].length > 0) {
+        setDisable(true);
         data[key] = { options: finalFilter[key].map((item) => item.key) };
+      } else {
+        setDisable(false);
       }
     }
     setFilteredData(data);
@@ -157,14 +161,14 @@ const NewFilterContainer = ({
           <Divider />
           <BottomWrapper>
             <CancelButton
-              disabled={Object.keys(finalFilter).length === 0}
+              disabled={!isDisable}
               onClick={() => setSavePopupOpen(true)}
               style={{ width: '270px' }}
             >
               Save Filter
             </CancelButton>
             <ConfirmButton
-              disabled={Object.keys(finalFilter).length === 0}
+              disabled={!isDisable}
               style={{ width: '270px' }}
               onClick={handleApplyFinalFilter}
             >
