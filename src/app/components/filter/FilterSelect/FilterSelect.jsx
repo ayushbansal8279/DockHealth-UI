@@ -17,6 +17,7 @@ import {
 import UserAvatar from '../../user/UserAvatar/UserAvatar';
 import DateRangeOptions from '../DateRangeOptions/DateRangeOptions';
 import palette from '@/app/styles/palette';
+import { fontSizes } from '@/app/styles/font';
 
 const FilterSelect = ({
   finalFilter,
@@ -140,6 +141,7 @@ const FilterSelect = ({
       height: '40px',
       backgroundColor: 'transparent',
       borderRadius: '8px',
+      fontSize: fontSizes.regular,
       '& .MuiChip-deleteIcon': {
         backgroundColor: palette.lightGrey,
         borderRadius: '50%',
