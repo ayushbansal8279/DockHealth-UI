@@ -140,6 +140,7 @@ export const DashboardTaskItemContainer = styled.div`
   &:hover {
     box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.15);
   }
+  margin-bottom: 2px;
 `;
 
 export const GroupOptionsContainer = styled.div`
