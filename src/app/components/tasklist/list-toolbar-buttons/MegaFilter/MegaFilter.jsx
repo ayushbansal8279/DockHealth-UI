@@ -25,7 +25,6 @@ const MegaFilter = ({
   onOpen,
   quickFiltersList,
   addQuickFilterOption,
-  selectedQuickFilter,
   selectQuickFilter,
   handleSaveQuickFilter,
   onSaveAsNewClick,
@@ -43,15 +42,17 @@ const MegaFilter = ({
   const isFilterApplied = selectedFilters && !isEmpty(selectedFilters);
   const [menuOptions, setMenuOption] = useState([]);
   const [finalFilter, setFinalFilter] = useState({});
+  const [customFinalFilter, setCustomFinalFilter] = useState({});
   const [isSavePopupOpen, setSavePopupOpen] = useState(false);
-  const [quickFilterIdentifier, setQuickFilterIdentifier] = useState('');
   const [editIdentifier, setEditIdentifier] = useState('');
   const [filteredData, setFilteredData] = useState({});
+  const [selectedQuickFilter, setSelectedQuickFilter] = useState('');
 
   const clearFilters = () => {
     onSelectFilters(null);
     selectQuickFilter(null);
     setFinalFilter({});
+    setSelectedQuickFilter('');
   };
 
   useEffect(() => {
@@ -81,8 +82,6 @@ const MegaFilter = ({
         <>
           {/* For Popup of save Filter */}
           <SaveFilterPopup
-            quickFilterIdentifier={quickFilterIdentifier}
-            setQuickFilterIdentifier={setQuickFilterIdentifier}
             refrence={megaFilterButtonReference}
             isSavePopupOpen={isSavePopupOpen}
             setSavePopupOpen={setSavePopupOpen}
@@ -92,6 +91,18 @@ const MegaFilter = ({
             onQuickFilterUpdate={onQuickFilterUpdate}
             setEditIdentifier={setEditIdentifier}
             editIdentifier={editIdentifier}
+            filters={filters}
+            onSelectedFiltersChange={onSelectFilters}
+            setFinalFilter={setFinalFilter}
+            setMenuOption={setMenuOption}
+            menuOptions={menuOptions}
+            openPopover={openPopover}
+            handleSaveQuickFilter={handleSaveQuickFilter}
+            setFilteredData={setFilteredData}
+            filteredData={filteredData}
+            customFinalFilter={customFinalFilter}
+            setCustomFinalFilter={setCustomFinalFilter}
+            setSelectedQuickFilter={setSelectedQuickFilter}
           ></SaveFilterPopup>
           {/* Kept here for Future Refrence */}
           {/* <FilterHeader
@@ -122,21 +133,24 @@ const MegaFilter = ({
 
           {filters ? (
             <CustomFilters
-              setQuickFilterIdentifier={setQuickFilterIdentifier}
               setSavePopupOpen={setSavePopupOpen}
               quickFiltersList={quickFiltersList}
               addQuickFilterOption={addQuickFilterOption}
-              selectedQuickFilter={selectedQuickFilter}
               selectQuickFilter={selectQuickFilter}
               onUpdate={onQuickFilterUpdate}
               editModeEnabled={wasChangedFilters}
-              onCreate={onQuickFilterCreate}
+              onQuickFilterCreate={onQuickFilterCreate}
               onDelete={onQuickFilterDelete}
               setMenuOption={setMenuOption}
               setFinalFilter={setFinalFilter}
               filters={filters}
               setEditIdentifier={setEditIdentifier}
               editIdentifier={editIdentifier}
+              customFinalFilter={customFinalFilter}
+              setCustomFinalFilter={setCustomFinalFilter}
+              openPopover={openPopover}
+              selectedQuickFilter={selectedQuickFilter}
+              setSelectedQuickFilter={setSelectedQuickFilter}
             />
           ) : (
             <FilterTableLoader />
@@ -153,9 +167,12 @@ const MegaFilter = ({
             setSavePopupOpen={setSavePopupOpen}
             onQuickFilterCreate={onQuickFilterCreate}
             handleSaveQuickFilter={handleSaveQuickFilter}
-            quickFilterIdentifier={quickFilterIdentifier}
             setFilteredData={setFilteredData}
             filteredData={filteredData}
+            customFinalFilter={customFinalFilter}
+            setCustomFinalFilter={setCustomFinalFilter}
+            onClear={clearFilters}
+            setSelectedQuickFilter={setSelectedQuickFilter}
           ></NewFilterContainer>
           <Box p={1} />
           {/* Kept here for Future Refrence */}

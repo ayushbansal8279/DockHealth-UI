@@ -8,7 +8,7 @@ import { fontSizes, fontWeights } from 'styles/font';
 
 export const Container = styled.div`
   width: 600px;
-  height: 350px;
+  max-height: 600px;
 `;
 export const Header = styled.div`
   width: 100%;
@@ -62,6 +62,7 @@ export const ButtonContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: 60px;
+  margin-top: 30px;
   gap: 10px;
+  margin-bottom: 25px;
 `
