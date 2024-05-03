@@ -39,6 +39,8 @@ export const WorkflowQuickAddTaskContainer = styled('div')`
   // width: 90%;
   width: ${({ $width }) => $width};
   margin-left: 54.5px;
+  margin-top: ${({ subtaskQuickAddOpen }) =>
+    subtaskQuickAddOpen ? '1px' : '0.4px'};
   position: sticky;
   &:hover {
     border-left: 1px solid ${palette.coolGrey2};
