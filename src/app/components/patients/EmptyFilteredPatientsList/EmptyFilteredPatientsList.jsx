@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 // import PatientsEmptyIcon from 'img/patients-empty.svg';
 import { userProfileSelector } from 'selectors/user-selectors';
+import { capitalize } from 'helpers/capitalize';
 import { EmptyListContainer, ActionButton } from './styled';
 
 const EmptyFilteredPatientsList = ({

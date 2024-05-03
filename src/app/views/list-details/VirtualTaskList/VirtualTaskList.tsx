@@ -143,6 +143,7 @@ function VirtualTaskList({ groupedTasks }: Props) {
             {
               bgColor: !(index % 2 === 0),
               groupWithZeroTask: groupTasks?.length === 0,
+              isLastGroupOfList: index === listGroups?.length - 1,
             },
             [],
             true,
@@ -159,6 +160,11 @@ function VirtualTaskList({ groupedTasks }: Props) {
                 !!collapseMap[taskIdentifier],
                 {
                   task,
+                  isNextVirtualTaskItemTypeBundle:
+                    groupTaskIndex === groupTasks.length - 1
+                      ? false
+                      : tasksMap[groupTasks[groupTaskIndex + 1]]?.itemType ===
+                        'BUNDLE',
                   bgColor: !(index % 2 === 0),
                   isLastTaskOfGroup: groupTaskIndex === groupTasks.length - 1,
                   isLastGroupOfList: index === listGroups?.length - 1,
@@ -171,6 +177,11 @@ function VirtualTaskList({ groupedTasks }: Props) {
                     !!collapseMap[child?.taskIdentifier ?? child],
                     {
                       task: child,
+                      isNextVirtualTaskItemTypeBundle:
+                        children.indexOf(child) === children.length - 1
+                          ? tasksMap[groupTasks[groupTaskIndex + 1]]
+                              ?.itemType === 'BUNDLE'
+                          : false,
                       isTaskTemplate: true,
                       isLastChild:
                         children.indexOf(child) === children.length - 1,
@@ -203,6 +214,13 @@ function VirtualTaskList({ groupedTasks }: Props) {
                                   childIndex === children.length - 1,
                                 isLastGroupOfList:
                                   index === listGroups?.length - 1,
+                                isNextVirtualTaskItemTypeBundle:
+                                  subTaskIndex ===
+                                    tasksMap[child]?.subtasks.length - 1 &&
+                                  childIndex === children.length - 1
+                                    ? tasksMap[groupTasks[groupTaskIndex + 1]]
+                                        ?.itemType === 'BUNDLE'
+                                    : false,
                               },
                               [],
                             );
@@ -214,20 +232,15 @@ function VirtualTaskList({ groupedTasks }: Props) {
               );
             },
           ),
+          convert(
+            group?.taskGroupIdentifier,
+            VLoadMoreTasks,
+            'LoadMoreTasks',
+            false,
+            { listTaskGroup, bgColor: !(index % 2 === 0) },
+            [],
+          ),
         ];
-
-        if (listTaskGroup) {
-          children.concat(
-            convert(
-              group?.taskGroupIdentifier,
-              VLoadMoreTasks,
-              'LoadMoreTasks',
-              false,
-              { listTaskGroup, bgColor: !(index % 2 === 0) },
-              [],
-            ),
-          );
-        }
 
         return convert(
           group.taskGroupIdentifier,

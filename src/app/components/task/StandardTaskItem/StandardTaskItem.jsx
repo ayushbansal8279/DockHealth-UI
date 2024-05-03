@@ -53,6 +53,8 @@ const Task = React.memo(
     pageBackground,
     isNestedTask,
     isVirtualTask,
+    isVirtualSubtask,
+    $width,
     ...restProps
   }) => {
     const parentTaskReference = useRef(null);
@@ -217,6 +219,12 @@ const Task = React.memo(
       dispatch(storeAsCurrentTask(task));
     }, [dispatch, task]);
 
+    const taskBundleId =
+      task?.taskGroups?.length > 1 &&
+      task?.taskGroups?.[1].groupType === 'TASK_BUNDLE'
+        ? task?.taskGroups?.[1].taskGroupIdentifier
+        : undefined;
+
     return (
       <ParentTaskContainer
         ref={parentTaskReference}
@@ -225,13 +233,14 @@ const Task = React.memo(
         isVirtualTask={isVirtualTask}
         origin={origin}
         isLastChild={isLastChild}
+        $width={$width}
       >
         <TaskContainer ref={innerRef}>
           <TaskItem
             isTaskTemplate={isTaskTemplate}
             isLastChild={isLastChild}
             taskItemIdentifier={task?.identifier}
-            templateBundleIdentifier={templateBundleIdentifier}
+            templateBundleIdentifier={templateBundleIdentifier || taskBundleId}
             patient={parentPatient}
             isOpen={areSubtasksOpen}
             switchOpen={handleSetSubtasksOpen}
@@ -251,6 +260,8 @@ const Task = React.memo(
             viewSetup={viewSetup}
             isNestedTask={isNestedTask}
             isWorkflowSubtask={isWorkflowSubtask}
+            isVirtualSubtask={isVirtualSubtask}
+            isWidthGreaterThanHudredPercent={$width}
             pageBackground={pageBackground}
             {...restProps}
           />

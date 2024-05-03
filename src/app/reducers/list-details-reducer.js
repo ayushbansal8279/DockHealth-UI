@@ -94,7 +94,6 @@ function updateBundleInState(bundleIdentifier, updatedData, state) {
 }
 
 const ListDetailsReducer = (state = initialState, action) => {
-  // eslint-disable-next-line sonarjs/max-switch-cases
   switch (action.type) {
     case ActionTypes.GET_COMPLETED_TASKS_BY_GROUPS_SUCCESS: {
       const { groupedTasks, loadingMore, taskListIdentifier } = action;
@@ -397,15 +396,6 @@ const ListDetailsReducer = (state = initialState, action) => {
     case ActionTypes.UPDATE_TEMPLATE_BUNDLE_SUCCESS: {
       const { bundleIdentifier, dataToUpdate } = action;
 
-      // const updatedMap = {
-      //   [bundleIdentifier]: {
-      //     ...state.tasksMap[bundleIdentifier],
-      //     ...dataToUpdate,
-      //     tasks: dataToUpdate?.tasks
-      //       ? dataToUpdate?.tasks?.map((task) => task.identifier)
-      //       : state.tasksMap[bundleIdentifier]?.tasks,
-      //   },
-      // };
       const updatedMap = updateTasksMap(state, {
         itemType: TaskItemType.BUNDLE,
         identifier: bundleIdentifier,
@@ -417,7 +407,6 @@ const ListDetailsReducer = (state = initialState, action) => {
         ...updatedMap,
       };
 
-      // eslint-disable-next-line sonarjs/prefer-immediate-return
       const updatedState = {
         ...state,
         tasksMap: newMap,
@@ -859,6 +848,27 @@ const ListDetailsReducer = (state = initialState, action) => {
           ]),
         },
       };
+    }
+
+    case ActionTypes.ADD_WORKFLOW_COMMENT_SUCCESS: {
+      const { workflowIdentifier, comment } = action;
+
+      if (state.tasksMap?.[workflowIdentifier]) {
+        return {
+          ...state,
+          tasksMap: {
+            ...state.tasksMap,
+            [workflowIdentifier]: {
+              ...state.tasksMap[workflowIdentifier],
+              comments: [
+                comment,
+                ...state.tasksMap[workflowIdentifier].comments,
+              ],
+            },
+          },
+        };
+      }
+      return state;
     }
 
     default: {

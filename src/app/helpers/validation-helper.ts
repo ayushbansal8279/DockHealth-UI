@@ -1,3 +1,4 @@
+import { isValidPhoneNumber as reactPhoneIsValidPhoneNumber } from 'react-phone-number-input';
 import { string } from 'yup';
 
 export const validPasswordSchema = string()
@@ -9,16 +10,18 @@ export const validPasswordSchema = string()
     'At least one lowercase letter is required in the password',
   );
 
-export const validateNewSubtask = (value) => {
+export const validateNewSubtask = (value: string) => {
   if ([...value]?.filter((char) => char !== ' ').length < 2)
     return 'The subtask description is too short (min. 2 characters)';
 
   return null;
 };
 
-export const validateEmail = (email) =>
+export const validateEmail = (email: string) =>
   String(email)
     .toLowerCase()
     .match(
       /^[\w!#$%&'*+./=?^`{|}~-]+@[\dA-Za-z](?:[\dA-Za-z-]{0,61}[\dA-Za-z])?(?:\.[\dA-Za-z](?:[\dA-Za-z-]{0,61}[\dA-Za-z])?)*$/,
     );
+
+export const isValidPhoneNumber = reactPhoneIsValidPhoneNumber;

@@ -121,3 +121,19 @@ export function getUserAvatarThumbnailUrl(user) {
 export function hasProfilePicture(user) {
   return user && user.profileThumbnailPictureHash;
 }
+
+/**
+ *
+ * @param {string | undefined} fullName "LastName, FirstName"
+ * @returns {{ firstName: string, lastName: string }}
+ */
+export const getFirstAndLastNameFromFullName = (fullName) => {
+  const [lastName, firstName] = (fullName ?? '')
+    .split(',')
+    .map((str) => str.trim());
+
+  return {
+    firstName: firstName ?? '',
+    lastName: lastName ?? '',
+  };
+};

@@ -179,6 +179,16 @@ export function updatePatientListPreferences(setup, patientListIdentifier) {
 }
 
 /**
+ * Update patient by identifier
+ * @param {string} id patientIdentifier
+ * @param {object} payload payload to patch
+ * @returns {Promise<any>} patient object info
+ */
+export function updatePatientById(id, payload) {
+  return axios.patch(`patient/${id}`, payload).then(({ data }) => data);
+}
+
+/**
  *
  * @param {{ metaData: Array<object>; patientIdentifiers: Array<string>}} payload
  * @returns
@@ -194,3 +204,4 @@ export const bulkEditPatientsCustomFields = ({
       patientIdentifiers,
     })
     .then(({ data }) => data);
+

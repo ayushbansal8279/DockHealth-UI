@@ -184,6 +184,8 @@ const TaskItem = React.memo(
     viewSetup,
     isTaskTemplate,
     isWorkflowSubtask,
+    isWidthGreaterThanHudredPercent,
+    isVirtualSubtask,
     isLastChild,
   }) => {
     const task = useSelector((state) => {
@@ -225,7 +227,7 @@ const TaskItem = React.memo(
 
     const patient = parentPatient ?? taskPatient ?? parentTask?.patient;
 
-    const { columns } = useTaskListColumnsConfig();
+    const { columns: listColumns } = useTaskListColumnsConfig();
     const { listName, taskListIdentifier } = taskList || {};
     const isTemplateTask = checkIfTemplateTask(task);
     const isSubtask = !!parentTaskIdentifier;
@@ -234,6 +236,14 @@ const TaskItem = React.memo(
       (accumulator, currentValue) => accumulator || currentValue.isSelected,
       false,
     );
+
+    const columns = listColumns?.map((f) => ({
+      ...f,
+      columnWidth: Math.max(
+        TaskItemColumnWidth[f.identifier]?.MINIMUM || 0,
+        f.columnWidth,
+      ),
+    }));
 
     const [isCompleted, setIsCompleted] = useState(false);
     useEffect(() => {
@@ -711,7 +721,8 @@ const TaskItem = React.memo(
 
     const showPriority = task?.priority && task?.priority !== TaskPriority.NONE;
     const showDecisionRow = task?.intentType === 'DECISION' && !isTemplateTask;
-    const hasParentTaskLabel = isSubtask && !isNestedTask && !!task.parentTaskIdentifier;
+    const hasParentTaskLabel =
+      isSubtask && !isNestedTask && !!task.parentTaskIdentifier;
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
     const onClickBulkEdit = () =>
@@ -815,7 +826,7 @@ const TaskItem = React.memo(
           >
             {taskListRestrictions?.createTask !== DISABLED && (
               <DotsContainer
-                showDraggableDots={true}
+                showDraggableDots
                 dragHandleProps={dragHandleProps}
               />
             )}
@@ -991,6 +1002,9 @@ const TaskItem = React.memo(
             iconColorActive={iconColorActive}
             taskIdentifier={task?.identifier}
             origin={origin}
+            isVirtualSubtask={isVirtualSubtask}
+            isWorkflowSubtask={isWorkflowSubtask}
+            isWidthGreaterThanHudredPercent={isWidthGreaterThanHudredPercent}
           >
             {randerFirstColumnCoverIfNecessary(
               <>

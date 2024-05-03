@@ -10,6 +10,7 @@
  * Do not edit the class manually.
  */
 
+import { PatientFilterSelectedOptionsDto } from '../models/PatientFilterSelectedOptionsDto';
 import { TaskFilterSelectedOptionsDto } from '../models/TaskFilterSelectedOptionsDto';
 
 
@@ -18,6 +19,7 @@ export class QuickFilterDto {
     'name'?: string;
     'organizationIdentifier'?: string;
     'patientIdentifier'?: string;
+    'patientSelectedOptions'?: PatientFilterSelectedOptionsDto;
     'personIdentifier'?: string;
     'quickFilterIdentifier'?: string;
     'selectedOptions'?: TaskFilterSelectedOptionsDto;
@@ -48,6 +50,12 @@ export class QuickFilterDto {
             "name": "patientIdentifier",
             "baseName": "patientIdentifier",
             "type": "string",
+            "format": ""
+        },
+        {
+            "name": "patientSelectedOptions",
+            "baseName": "patientSelectedOptions",
+            "type": "PatientFilterSelectedOptionsDto",
             "format": ""
         },
         {
@@ -87,6 +95,8 @@ export class QuickFilterDto {
 export enum QuickFilterDtoContextTypeEnum {
     MyTasks = 'MY_TASKS',
     AllTasks = 'ALL_TASKS',
-    Analytics = 'ANALYTICS'
+    Analytics = 'ANALYTICS',
+    Patients = 'PATIENTS',
+    TaskList = 'TASK_LIST'
 }
 

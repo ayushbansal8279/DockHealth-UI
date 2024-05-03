@@ -141,8 +141,7 @@ function* getTasksGroupsList() {
   }
 }
 
-function* getCurrentListTasks(prop) {
-  const { withLoader } = prop;
+function* getCurrentListTasks() {
   try {
     const taskListIdentifier = yield select(currentTaskListIdentifierSelector);
     const selectedFilters = yield select(selectedFiltersInMegaFilterSelector);
@@ -150,18 +149,7 @@ function* getCurrentListTasks(prop) {
     const searchTerm = yield select(searchTermSelector);
     const status = yield select(currentTaskListTasksStatusSelector);
 
-    const currentOrganization = yield select(selectedUserOrganizationSelector);
-    const taskGroupsToLoadItem =
-      currentOrganization?.themeSettings?.find(
-        ({ name }) => name === 'list.taskgroup.default.load.count',
-      ) || {};
-    const taskGroupsToLoad =
-      status === TaskStatus.COMPLETE
-        ? DEFAULT_TASK_GROUPS_TO_LOAD_COMPLETED
-        : taskGroupsToLoadItem?.value || DEFAULT_TASK_GROUPS_TO_LOAD;
-
     if (searchTerm) {
-      // todo error: gropuedTasks[i].groupIdentifier is changed to 'DEFAULT' 2
       const groupedTasks = yield call(
         ListDetailsApi.searchTasksByTaskList,
         taskListIdentifier,
@@ -189,7 +177,7 @@ function* getCurrentListTasks(prop) {
           put(
             ListDetailsActions.getTasksForTaskGroups({
               taskGroupIdentifier,
-              status: withLoader?.status ?? status,
+              status,
               startPosition: 0,
               sort,
               refresh: true,
@@ -241,10 +229,9 @@ function* getCurrentTaskListFilterOptions() {
   }
 }
 
-function* refreshGroupedTasks({ payload }) {
+function* refreshGroupedTasks() {
   try {
-    const { withLoader = true } = payload || {};
-    yield put(ListDetailsActions.getCurrentListTasks(withLoader));
+    yield put(ListDetailsActions.getCurrentListTasks());
   } catch (error) {
     log(error);
   }

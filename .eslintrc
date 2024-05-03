@@ -114,12 +114,16 @@
     "react/no-unstable-nested-components": "off",
     "sonarjs/prefer-immediate-return": "off",
     "sonarjs/no-duplicate-string": "off",
+    "unicorn/no-array-for-each": "off",
+    "no-param-reassign": "warn",
     "react/forbid-prop-types": "off",
     "unicorn/consistent-function-scoping": "off",
     "no-shadow": "warn",
     "unicorn/no-negated-condition": "off",
     "sonarjs/cognitive-complexity": "off",
     "prefer-destructuring": "off",
-    "no-extra-boolean-cast": "off"
+    "no-extra-boolean-cast": "off",
+    "react/destructuring-assignment": "off",
+    "sonarjs/max-switch-cases": "off"
   }
 }
