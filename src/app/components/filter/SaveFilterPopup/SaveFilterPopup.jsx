@@ -101,6 +101,7 @@ const SaveFilterPopup = ({
     }
     onQuickFilterCreate(searchInputValue, data);
     setSavePopupOpen(false);
+    setFinalFilter({});
   };
 
   const handleQuickFilterUpdate = () => {
