@@ -305,7 +305,6 @@ const DashboardTasksGroup = ({
               </StickyContainer>
             )}
             <TasksHeader
-              isDashboardTaskHeader={true}
               onOrderChange={handleOrderChange}
               pageBackground={
                 backgroundColor ? palette.aliceBlue : palette.white

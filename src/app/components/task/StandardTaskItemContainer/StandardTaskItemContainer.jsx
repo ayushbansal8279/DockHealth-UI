@@ -22,7 +22,9 @@ const StandardTaskItemContainer = ({
   isBundleTask,
   isTaskTemplate,
   isLastChild,
+  isNextTaskItemTypeBundle,
   taskIdentifier,
+  isAddingTask,
   origin,
   ...restProps
 }) => {
@@ -129,6 +131,8 @@ const StandardTaskItemContainer = ({
       origin={origin}
       isTaskTemplate={isTaskTemplate}
       isLastChild={isLastChild}
+      isAddingTask={isAddingTask}
+      isNextTaskItemTypeBundle={isNextTaskItemTypeBundle}
       {...restProps}
     />
   );

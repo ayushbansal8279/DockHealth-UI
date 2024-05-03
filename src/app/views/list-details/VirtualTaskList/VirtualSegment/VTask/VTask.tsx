@@ -162,6 +162,10 @@ function VTask(
                 isNestedTask
                 isVirtualTask
                 $width={percentage > 90}
+                isNextVirtualTaskItemTypeBundle={
+                  isNextVirtualTaskItemTypeBundle
+                }
+                isLastTaskOfGroup={isLastTaskOfGroup}
               />
             </VTaskContext.Provider>
           </Sc.VTask>
@@ -174,9 +178,9 @@ function VTask(
                 paddingBottom: !addWorkflowTask
                   ? isLastTaskOfGroup
                     ? bgColor
-                      ? '20px'
+                      ? '24px'
                       : isLastGroupOfList
-                      ? '20px'
+                      ? '24px'
                       : '0px'
                     : isTaskTemplate &&
                       isLastChild &&
@@ -194,9 +198,11 @@ function VTask(
                       : '100%'
                     : `${visibleWidth - 120}px`
                 }
+                addWorkflowTask={addWorkflowTask}
+                isTaskTemplate={isTaskTemplate}
               >
                 <QuickAddSubtask
-                  taskListIdentifier={task.taskList.taskListIdentifier}
+                  taskListIdentifier={task?.taskList?.taskListIdentifier}
                   parentTaskIdentifier={metadata.id}
                   onFocus={handleQuickAddOnFocus}
                 />
@@ -215,9 +221,9 @@ function VTask(
                   paddingBottom: addWorkflowTask
                     ? isLastTaskOfGroup
                       ? bgColor
-                        ? '20px'
+                        ? '24px'
                         : isLastGroupOfList
-                        ? '20px'
+                        ? '24px'
                         : '0px'
                       : isTaskTemplate &&
                         isLastChild &&

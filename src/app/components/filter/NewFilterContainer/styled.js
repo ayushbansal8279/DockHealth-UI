@@ -13,6 +13,7 @@ export const aa = styled.div``;
 export const FilterButtonWrapper = styled.div`
   display: flex;
   margin: 20px 0 5px 2px;
+  width: 550px;
 `;
 
 export const FilterOptionsList = styled.div`
