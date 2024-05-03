@@ -1,4 +1,4 @@
-import { Popover } from '@mui/material';
+import { Autocomplete, TextField } from '@mui/material';
 import React, { useEffect, useRef, useState } from 'react';
 import CloseIcon from 'img/close_cross.svg';
 import {
@@ -15,6 +15,8 @@ import {
   PopupContainer,
 } from './style';
 import UserAvatar from '../../user/UserAvatar/UserAvatar';
+import DateRangeOptions from '../DateRangeOptions/DateRangeOptions';
+import palette from '@/app/styles/palette';
 
 const FilterSelect = ({
   finalFilter,
@@ -22,12 +24,17 @@ const FilterSelect = ({
   setFilter,
   filter,
   menuOptions,
+  filteredData,
+  setFilteredData,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [optionName, setOptionName] = useState('');
   const [filterdUser, setFilterdUser] = useState(filterOptions);
   const inputRef = useRef(null);
   const containerRef = useRef(null);
+  const [startDate, setStartDate] = useState('');
+  const [dueDate, setDueDate] = useState('');
+  const [isDateRange, setIsDateRange] = useState(false);
 
   useEffect(() => {
     setFilterdUser([
@@ -43,8 +50,37 @@ const FilterSelect = ({
     });
   }, [filter]);
 
+  useEffect(() => {
+    if (dueDate !== null && startDate !== null) {
+      let currentFilter = { ...filteredData };
+      Object.entries(currentFilter).forEach(([key, value]) => {
+        if (key === 'taskDueDateOptions') {
+          if (
+            currentFilter[key].options &&
+            currentFilter[key].options.length > 0
+          ) {
+            if (currentFilter[key].options.includes('DUE_DATE_RANGE')) {
+              const index =
+                currentFilter[key].options.indexOf('DUE_DATE_RANGE');
+              currentFilter[key].options.splice(index, 1);
+              currentFilter[key] = {
+                dateStart: startDate,
+                dateEnd: dueDate,
+                options: currentFilter[key].options,
+              };
+            }
+          }
+        }
+      });
+
+      setFilteredData(currentFilter);
+    }
+  }, [dueDate, startDate, setStartDate, setDueDate]);
+
   const handleSelectOption = (item) => {
-    inputRef.current.textContent = '';
+    if (isDateRange) {
+      inputRef.current.textContent = '';
+    }
     setFilterdUser((v) => v.filter((option) => option.key !== item.key));
     let currentFilter = { ...finalFilter };
     currentFilter[filter] = [
@@ -85,72 +121,165 @@ const FilterSelect = ({
     setFilter({ ...currentFilter });
   };
 
+  useEffect(() => {
+    finalFilter[filter].map((item) => {
+      if (item.displayValue === 'Range' && item.key === 'DUE_DATE_RANGE') {
+        setIsDateRange(true);
+      }
+    });
+  }, [finalFilter]);
+
+  const TextFieldSX = {
+    backgroundColor: palette.whiteSmoke,
+    '& .MuiOutlinedInput-root': {
+      '& .MuiOutlinedInput-notchedOutline': {
+        border: `2px solid ${palette.crystalBlue}`,
+      },
+    },
+    '& .MuiAutocomplete-tag': {
+      height: '40px',
+      backgroundColor: 'transparent',
+      borderRadius: '8px',
+      '& .MuiChip-deleteIcon': {
+        backgroundColor: palette.lightGrey,
+        borderRadius: '50%',
+        color: 'white',
+      },
+      '&:hover': {
+        '& .MuiChip-deleteIcon': {
+          color: '#daefff',
+        },
+        backgroundColor: '#daefff',
+      },
+    },
+    '& .MuiAutocomplete-endAdornment .MuiAutocomplete-clearIndicator': {
+      display: 'none',
+    },
+  };
+
   return (
     <>
       <div>
         <Title>{optionName}</Title>
-        <div ref={containerRef} style={{ display: 'flex' }}>
-          <OptionHolder>
-            {finalFilter[filter].map((item, i) => (
-              <OptionItem key={i} contentEditable={false}>
-                <DisplayValue>
-                  <AvatarContainer>
-                    {optionName === 'Assigned by' ||
-                    optionName === 'Assigned to' ? (
-                      <UserAvatar user={item?.reference} />
-                    ) : (
-                      ''
-                    )}
-                  </AvatarContainer>
-                  <Lable>{item.displayValue}</Lable>
-                </DisplayValue>
-                <div onClick={() => handleRemoveAssign(item)}>
-                  <img
-                    style={{
-                      width: '19px',
-                      margin: '2px 4px',
-                      cursor: 'pointer',
-                    }}
-                    src={CloseIcon}
-                    alt="close"
-                  />
-                </div>
-              </OptionItem>
-            ))}
-            <OptionInput
-              onClick={() => setIsOpen((v) => !v)}
-              ref={inputRef}
-              contentEditable={true}
-              onInput={(e) => handleSearchOption(e)}
-            ></OptionInput>
-          </OptionHolder>
-          <CloseIconContainer onClick={handleRemoveOption}>
-            <img src={CloseIcon} alt="close" />
-          </CloseIconContainer>
-        </div>
-        {isOpen && (
-          <PopupContainer>
-            <OptionDropDown>
-              {filterdUser.map((item, i) => (
-                <OptionDropDownItem
-                  key={item.key}
-                  onClick={() => handleSelectOption(item)}
-                >
+        {!isDateRange ? (
+          <div style={{ display: 'flex' }}>
+            <Autocomplete
+              multiple
+              options={filterdUser}
+              disableCloseOnSelect
+              getOptionLabel={(option) => option.displayValue}
+              renderOption={(props, option) => (
+                <li {...props}>
                   <DisplayValue>
                     <AvatarContainer>
                       {optionName === 'Assigned by' ||
                       optionName === 'Assigned to' ? (
-                        <UserAvatar user={item?.reference} />
+                        <UserAvatar user={option?.reference} />
                       ) : (
                         ''
                       )}
                     </AvatarContainer>
-                    <Lable>{item.displayValue}</Lable>
+                    <Lable>{option.displayValue}</Lable>
                   </DisplayValue>
-                </OptionDropDownItem>
-              ))}
-            </OptionDropDown>
-          </PopupContainer>
+                </li>
+              )}
+              style={{ width: '517' }}
+              value={finalFilter[filter]}
+              onChange={(event, newValue, action, option) => {
+                if (action === 'selectOption') {
+                  handleSelectOption(option.option);
+                }
+                if (action === 'removeOption') {
+                  handleRemoveAssign(option.option);
+                }
+                if (action === 'clear') {
+                  handleRemoveOption();
+                }
+              }}
+              renderInput={(params) => (
+                <TextField sx={TextFieldSX} {...params} />
+              )}
+            />
+            <CloseIconContainer onClick={handleRemoveOption}>
+              <img src={CloseIcon} alt="close" />
+            </CloseIconContainer>
+          </div>
+        ) : (
+          <>
+            <div ref={containerRef} style={{ display: 'flex' }}>
+              <OptionHolder>
+                {finalFilter[filter].map((item, i) => (
+                  <OptionItem key={i} contentEditable={false}>
+                    <DisplayValue>
+                      <AvatarContainer>
+                        {optionName === 'Assigned by' ||
+                        optionName === 'Assigned to' ? (
+                          <UserAvatar user={item?.reference} />
+                        ) : (
+                          ''
+                        )}
+                      </AvatarContainer>
+                      {item.displayValue === 'Range' &&
+                      item.key === 'DUE_DATE_RANGE' ? (
+                        <DateRangeOptions
+                          dueDate={dueDate}
+                          setDueDate={setDueDate}
+                          startDate={startDate}
+                          setStartDate={setStartDate}
+                        />
+                      ) : (
+                        <Lable>{item.displayValue}</Lable>
+                      )}
+                    </DisplayValue>
+                    <div onClick={() => handleRemoveAssign(item)}>
+                      <img
+                        style={{
+                          width: '19px',
+                          margin: '2px 4px',
+                          cursor: 'pointer',
+                        }}
+                        src={CloseIcon}
+                        alt="close"
+                      />
+                    </div>
+                  </OptionItem>
+                ))}
+                <OptionInput
+                  onClick={() => setIsOpen((v) => !v)}
+                  ref={inputRef}
+                  contentEditable={false}
+                  onInput={(e) => handleSearchOption(e)}
+                ></OptionInput>
+              </OptionHolder>
+              <CloseIconContainer onClick={handleRemoveOption}>
+                <img src={CloseIcon} alt="close" />
+              </CloseIconContainer>
+            </div>
+            {isOpen && (
+              <PopupContainer>
+                <OptionDropDown>
+                  {filterdUser.map((item, i) => (
+                    <OptionDropDownItem
+                      key={item.key}
+                      onClick={() => handleSelectOption(item)}
+                    >
+                      <DisplayValue>
+                        <AvatarContainer>
+                          {optionName === 'Assigned by' ||
+                          optionName === 'Assigned to' ? (
+                            <UserAvatar user={item?.reference} />
+                          ) : (
+                            ''
+                          )}
+                        </AvatarContainer>
+                        <Lable>{item.displayValue}</Lable>
+                      </DisplayValue>
+                    </OptionDropDownItem>
+                  ))}
+                </OptionDropDown>
+              </PopupContainer>
+            )}
+          </>
         )}
       </div>
     </>

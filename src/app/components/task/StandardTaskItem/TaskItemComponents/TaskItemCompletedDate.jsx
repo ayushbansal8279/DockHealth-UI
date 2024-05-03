@@ -15,7 +15,6 @@ const TaskItemCompletedDate = ({ task }) => {
             isOverdue={false}
             hasReminder={reminderType && reminderType !== ReminderType.NONE}
             hasRecurringSchedule={false}
-            format="MM/DD/YY"
             showTime
             // timeFormat="HH:mm"
           />

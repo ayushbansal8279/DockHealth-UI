@@ -122,11 +122,16 @@ export const SortHeaderRow = styled.div`
   align-items: center;
   // width: ${({ $width }) => ($width ? `${$width + 66 + 22}px` : '100%')};
   // width: ${({ $width }) => ($width ? `${$width + 66 + 37}px` : '100%')};
+  width: ${({ listPageGroupHeader, isWidthGreaterThanHundredPercent }) =>
+    listPageGroupHeader
+      ? !isWidthGreaterThanHundredPercent
+        ? '100%'
+        : ''
+      : ''};
   background: ${palette.white};
   border: 1px solid ${palette.coolGrey3};
   border-left: 0px;
-  ${({ isDashboardTaskHeader }) =>
-    isDashboardTaskHeader ? '' : 'margin-bottom: 3px;'}
+  ${({ origin }) => (origin === 'LIST' ? 'margin-bottom: 3px' : '')};
 
   @media print {
     border: 1px solid ${palette.coolGrey1};

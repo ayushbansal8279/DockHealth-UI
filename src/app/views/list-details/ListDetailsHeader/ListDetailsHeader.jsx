@@ -6,9 +6,11 @@ import React, {
   useEffect,
 } from 'react';
 import { useBoolean } from 'hooks/useBoolean';
-import MegaFilter from 'components/tasklist/MegaFilter/MegaFilter';
+import MegaFilter from '@/app/components/tasklist/list-toolbar-buttons/MegaFilter/MegaFilter';
 import LayoutHeader from 'components/template/LayoutHeader/LayoutHeader';
 import { useDispatch, useSelector } from 'react-redux';
+import { MoreVert } from '@mui/icons-material';
+import palette from 'styles/palette';
 import {
   megaFilterSelector,
   quickFiltersSelector,
@@ -44,9 +46,7 @@ import {
   deleteQuickFilter,
   getQuickFilters,
 } from 'actions/mega-filter-actions';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import ExpandLessIcon from '@mui/icons-material/ExpandLess';
-import AddGroupNameButton from 'components/tasklist/AddGroupNameButton/AddGroupNameButton';
+import AddGroupNameButton from '@/app/components/tasklist/list-toolbar-buttons/AddGroupNameButton/AddGroupNameButton';
 import ListDetailsToolbar from '../ListDetailsToolbar/ListDetailsToolbar';
 import { determineTaskCounts } from './helpers';
 import {
@@ -55,6 +55,7 @@ import {
   HeaderSearchContainer,
 } from './styled';
 import { ListPageContext } from '../ListDetailsView';
+import InboxTips from '@/app/components/tasklist/list-toolbar-buttons/InboxTips/InboxTips';
 
 const ListDetailsHeader = (props) => {
   const {
@@ -97,7 +98,6 @@ const ListDetailsHeader = (props) => {
   } = useContext(ListPageContext);
   const [isListOpen, openList] = useState(false);
   const [focused, setFocused, unsetFocused] = useBoolean(false);
-  // const [scrollPosition, setScrollPosition] = useState(0);
   const [shownUsers, hiddenUsers] = splitAt(4, sortedUsers);
 
   const handleFilterOpen = () => {
@@ -153,7 +153,7 @@ const ListDetailsHeader = (props) => {
           { taskListIdentifier },
         ),
       ),
-    [dispatch, selectedFilters, selectedQuickFilter, taskListIdentifier],
+    [dispatch, selectedQuickFilter, taskListIdentifier],
   );
 
   const handleSelectQuickFilter = useCallback(
@@ -165,11 +165,11 @@ const ListDetailsHeader = (props) => {
   );
 
   const handleQuickFilterCreate = useCallback(
-    (name,selectedFilters) =>
+    (name, selectedFilters) =>
       dispatch(
         createQuickFilter(name, { taskListIdentifier }, selectedFilters),
       ),
-    [dispatch, selectedFilters, taskListIdentifier],
+    [dispatch, taskListIdentifier],
   );
 
   const handleQuickFilterUpdate = useCallback(
@@ -190,12 +190,6 @@ const ListDetailsHeader = (props) => {
     [dispatch],
   );
 
-  // const boxComponentStyles = {
-  //   mx: '4px',
-  //   '@media (max-width: 867px)': {
-  //     mx: searchValue || focused ? '0px' : '4px',
-  //   },
-  // };
   const [maxWidth, setMaxWidth] = useState(window.innerWidth);
 
   useEffect(() => {
@@ -210,6 +204,12 @@ const ListDetailsHeader = (props) => {
   }, []);
 
   const showSearch = maxWidth <= 900 && (searchValue || focused);
+
+  const showInviteMemberButton =
+    !isUserGuestOrDockLite(currentUser) &&
+    !isUserViewOnly(currentUser) &&
+    listType &&
+    listType !== 'INBOX';
 
   return (
     <MainHeaderContainer showShadow={showShadow}>
@@ -227,19 +227,7 @@ const ListDetailsHeader = (props) => {
               onClose={() => openList(false)}
               open={isListOpen}
             >
-              {isListOpen ? (
-                <ExpandLessIcon
-                  color="primary"
-                  fontSize="large"
-                  onClick={() => openList(false)}
-                />
-              ) : (
-                <ExpandMoreIcon
-                  color="primary"
-                  fontSize="large"
-                  onClick={() => openList(true)}
-                />
-              )}
+              <MoreVert sx={{ color: palette.softSteelBlue }} />
             </ListOptionsMenu>
           </LayoutHeader.Title>
         )}
@@ -252,6 +240,7 @@ const ListDetailsHeader = (props) => {
                   alignItems="center"
                   key={user.identifier}
                   pl={index === 0 ? 0 : 0.5}
+                  pr={showInviteMemberButton ? 0 : 1.5}
                 >
                   <AvatarFilterMember
                     member={user}
@@ -272,30 +261,27 @@ const ListDetailsHeader = (props) => {
                 />
               </Box>
             )}
-            {!isUserGuestOrDockLite(currentUser) &&
-              !isUserViewOnly(currentUser) &&
-              listType &&
-              listType !== 'INBOX' && (
-                <Box pl={0.5}>
-                  <InviteMemberButton
-                    size={36}
-                    onClick={() =>
-                      dispatch(
-                        openModal('InviteToList', {
-                          list: taskList,
-                          onMembersRefresh: () =>
-                            dispatch(
-                              getMembersByTaskListId(
-                                taskList.taskListIdentifier,
-                                'ALL',
-                              ),
+            {showInviteMemberButton && (
+              <Box pl={0.5}>
+                <InviteMemberButton
+                  size={36}
+                  onClick={() =>
+                    dispatch(
+                      openModal('InviteToList', {
+                        list: taskList,
+                        onMembersRefresh: () =>
+                          dispatch(
+                            getMembersByTaskListId(
+                              taskList.taskListIdentifier,
+                              'ALL',
                             ),
-                        }),
-                      )
-                    }
-                  />
-                </Box>
-              )}
+                          ),
+                      }),
+                    )
+                  }
+                />
+              </Box>
+            )}
           </HeaderMembersContainer>
         )}
       </LayoutHeader>
@@ -304,9 +290,7 @@ const ListDetailsHeader = (props) => {
         additionalOptions={additionalOptions}
         searchValue={searchValue}
         focused={focused}
-        // boxComponentStyles={boxComponentStyles}
       >
-        {/* <LayoutHeader.Spacer /> */}
         <Box mx={0.5} />
         <MegaFilter
           filters={filters}
@@ -328,7 +312,6 @@ const ListDetailsHeader = (props) => {
           onQuickFilterDelete={handleQuickFilterDelete}
           isDefaultDateFilterApplied={isDefaultDateFilterApplied}
         />
-        {/* <LayoutHeader.Spacer /> */}
         <Box mx={0.5} />
         <AddGroupNameButton
           active={addNewGroup}
@@ -337,8 +320,9 @@ const ListDetailsHeader = (props) => {
             handleScrollToAddGroupName();
           }}
         />
+        {taskList?.listType === 'INBOX' && <InboxTips />}
         <Box mx={0.5} />
-        {!showSearch ? (
+        {!showSearch && (
           <HeaderSearch
             value={searchValue}
             onChange={onSearchChange}
@@ -346,12 +330,10 @@ const ListDetailsHeader = (props) => {
             setFocused={setFocused}
             unsetFocused={unsetFocused}
           />
-        ) : (
-          <></>
         )}
         <Box mx={0.5} />
       </ListDetailsToolbar>
-      {showSearch ? (
+      {showSearch && (
         <HeaderSearchContainer>
           <HeaderSearch
             value={searchValue}
@@ -361,8 +343,6 @@ const ListDetailsHeader = (props) => {
             unsetFocused={unsetFocused}
           />
         </HeaderSearchContainer>
-      ) : (
-        <></>
       )}
     </MainHeaderContainer>
   );

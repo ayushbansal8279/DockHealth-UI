@@ -20,6 +20,8 @@ const StandardTaskItemContainer = ({
   onTaskChanged,
   onTaskCompletedStatusChanged,
   isBundleTask,
+  isTaskTemplate,
+  isLastChild,
   taskIdentifier,
   origin,
   ...restProps
@@ -125,6 +127,8 @@ const StandardTaskItemContainer = ({
       onTaskUpdate={handleTaskUpdate}
       taskIdentifier={taskIdentifier}
       origin={origin}
+      isTaskTemplate={isTaskTemplate}
+      isLastChild={isLastChild}
       {...restProps}
     />
   );

@@ -13,9 +13,9 @@ export const Container = styled.div`
 
 export const DateRangeInputsWrapper = styled.div`
   position: relative;
-  width: 168px;
+  width: 175px;
   display: flex;
-  margin-top: ${spacing.small};
+  // margin-top: ${spacing.small};
   flex-direction: row;
 `;
 

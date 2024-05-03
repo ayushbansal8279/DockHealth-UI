@@ -1,11 +1,23 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { Box } from '@mui/material';
+import { Box, Popover } from '@mui/material';
 import Button from 'components/common/v2/Button/Button';
-import zIndex from 'styles/z-index';
-import { Select, SelectWrapper, SelectIcon, OptionsMenu } from './styled';
+import {
+  SelectWrapper,
+  SelectIcon,
+  OptionsMenu,
+  ButtonContainer,
+  ButtonLabel,
+  RotatableChevronButtonWrapper,
+  BoxContainer,
+  RotatableChevronButtonLabel,
+  PopoverWrapper,
+} from './styled';
 import Switch from '@mui/material/Switch';
 import { useDispatch } from 'react-redux';
 import { getCurrentListTasks } from '@/app/actions/list-details-actions';
+import { updateTaskStatusToFilter } from 'actions/task-list-actions';
+import RotatableChevron from '../../common/RotatableChevron/RotatableChevron';
+import palette from '@/app/styles/palette';
 
 const NewToolbarSelect = ({
   options,
@@ -20,6 +32,22 @@ const NewToolbarSelect = ({
   const [checkedIncomplete, setCheckedIncomplete] = useState(true);
   const [checkedCompleted, setCheckedCompleted] = useState(false);
   const [value, setValue] = useState('Incomplete Task');
+  const buttonRef = useRef(null);
+
+  useEffect(() => {
+    const savedStatus = sessionStorage.getItem('status' + taskListIdentifier);
+    if (savedStatus === 'COMPLETE') {
+      setValue('Completed Task');
+      setCheckedCompleted(true);
+      setCheckedIncomplete(false);
+    } else if (savedStatus === '') {
+      setValue('All Tasks');
+      setCheckedCompleted(true);
+      setCheckedIncomplete(true);
+    } else {
+      setValue('Incomplete Tasks');
+    }
+  }, [taskListIdentifier]);
 
   const handleCheckedIncomplete = (e) => {
     setCheckedIncomplete(e.target.checked);
@@ -35,7 +63,9 @@ const NewToolbarSelect = ({
         : checkedCompleted
         ? 'COMPLETE'
         : 'INCOMPLETE';
-    dispatch(getCurrentListTasks({ status: status }));
+    sessionStorage.setItem('status' + taskListIdentifier, status);
+    dispatch(updateTaskStatusToFilter(status));
+    dispatch(getCurrentListTasks());
     setValue(
       checkedIncomplete && checkedCompleted
         ? 'All Tasks'
@@ -46,79 +76,70 @@ const NewToolbarSelect = ({
         : 'Incomplete Task',
     );
     setIsOpen(false);
-  });
-
-  useEffect(() => {
-    setCheckedIncomplete(true);
-    setCheckedCompleted(false);
-  }, [taskListIdentifier]);
+  }, [checkedCompleted, checkedIncomplete, dispatch]);
 
   return (
     <SelectWrapper>
-      <Select
-        onOpen={() => {
-          setIsOpen(true);
+      <BoxContainer>
+        <ButtonContainer
+          ref={buttonRef}
+          variant="text"
+          onClick={() => setIsOpen(true)}
+          size="large"
+        >
+          <SelectIcon>{icon}</SelectIcon>
+          <ButtonLabel variant="body1" component="span">
+            {value}
+          </ButtonLabel>
+        </ButtonContainer>
+        <Box display="flex" width="3px">
+          <RotatableChevronButtonWrapper
+            variant="text"
+            onClick={() => setIsOpen(true)}
+            size="large"
+          >
+            <RotatableChevronButtonLabel variant="body1" component="span">
+              <RotatableChevron rotated={isOpen} color={palette.white} />
+            </RotatableChevronButtonLabel>
+          </RotatableChevronButtonWrapper>
+        </Box>
+      </BoxContainer>
+      <Popover
+        anchorEl={buttonRef?.current}
+        open={isOpen}
+        onClose={() => setIsOpen(false)}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'left',
         }}
-        onClose={() => {
-          setIsOpen(false);
-        }}
-        iconcoloractive={restProps.iconColorActive}
-        MenuProps={{
-          anchorOrigin: {
-            vertical: 'bottom',
-            horizontal: 'right',
-          },
-          transformOrigin: {
-            vertical: 'top',
-            horizontal: 'right',
-          },
-          getContentAnchorEl: null,
-          style: { zIndex: zIndex.optionsMenu },
-        }}
-        variant="outlined"
-        inputProps={{ name }}
-        isOpen={isOpen}
-        value={value}
-        renderValue={(selectedValue) => {
-          return (
-            <SelectIcon>
-              {icon}
-              <Box component="span" mx={0.5} />
-              {selectedValue}
-            </SelectIcon>
-          );
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'left',
         }}
       >
-        {isOpen && (
-          <>
-            <div style={{ display: 'flex' }}>
-              <Switch
-                onChange={handleCheckedIncomplete}
-                checked={checkedIncomplete}
-              />
-              <OptionsMenu>{options[0].label}</OptionsMenu>
-            </div>
-            <div style={{ display: 'flex' }}>
-              <Switch
-                onChange={handleCheckedCompleted}
-                checked={checkedCompleted}
-              />
-              <OptionsMenu>{options[1].label}</OptionsMenu>
-            </div>
-            <hr style={{ margin: '6px 0px' }} />
-            <OptionsMenu>
-              <Button
-                onClick={() => {
-                  handleChangeTasksStatus();
-                }}
-                variant="primary-red"
-              >
-                Apply
-              </Button>
-            </OptionsMenu>
-          </>
-        )}
-      </Select>
+        <PopoverWrapper>
+          <div style={{ display: 'flex' }}>
+            <Switch
+              onChange={handleCheckedIncomplete}
+              checked={checkedIncomplete}
+            />
+            <OptionsMenu>{options[0].label}</OptionsMenu>
+          </div>
+          <div style={{ display: 'flex' }}>
+            <Switch
+              onChange={handleCheckedCompleted}
+              checked={checkedCompleted}
+            />
+            <OptionsMenu>{options[1].label}</OptionsMenu>
+          </div>
+          <hr style={{ margin: '6px 0px' }} />
+          <OptionsMenu>
+            <Button onClick={handleChangeTasksStatus} variant="primary-red">
+              Apply
+            </Button>
+          </OptionsMenu>
+        </PopoverWrapper>
+      </Popover>
     </SelectWrapper>
   );
 };

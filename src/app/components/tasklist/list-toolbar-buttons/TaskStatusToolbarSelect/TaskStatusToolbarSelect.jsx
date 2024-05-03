@@ -2,7 +2,7 @@ import React from 'react';
 import TasksStatusSwitchIcon from 'img/tasks-status-switch-icon.svg';
 import { TaskStatus } from 'helpers/task-helpers';
 import { ViewTypeImg } from './styled';
-import NewToolbarSelect from '../NewToolbarSelect/NewToolbarSelect';
+import NewToolbarSelect from '../../NewToolbarSelect/NewToolbarSelect';
 
 const OPTIONS = [
   {

@@ -53,18 +53,17 @@ export const TaskTemplateGroupHeaderContainer = styled.div`
   background-color: ${(props) =>
     props.isSelected ? palette.dockBlueLight : palette.white};
 
-  border-top: 3px solid rgba(75, 179, 253, 1);
+  border-top: 2px solid rgba(75, 179, 253, 1);
   margin-top: 10px;
-  margin-bottom: 10px;
+  margin-bottom: ${({ isOpen }) => (isOpen ? '' : '10px')};
   border-bottom: 1px solid
     ${({ isOpen }) =>
       isOpen ? `${palette.coolGrey3}` : 'rgba(75, 179, 253, 1)'};
   border-right: 1px solid rgba(75, 179, 253, 1);
   z-index: 2;
-  
-  border-radius: 7px 7px ${({ isOpen }) => (isOpen ? `0px` : '7px')} ${({
-  isOpen,
-}) => (isOpen ? `0px` : '7px')};
+
+  border-radius: 7px 7px ${({ isOpen }) => (isOpen ? `0px` : '7px')}
+    ${({ isOpen }) => (isOpen ? `0px` : '7px')};
 
   &:hover {
     & ${TemplateHandle}, ${AddPlaceholder} {

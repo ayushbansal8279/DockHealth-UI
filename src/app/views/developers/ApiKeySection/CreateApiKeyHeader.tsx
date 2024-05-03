@@ -10,13 +10,10 @@ interface CreateApiKeyHeaderProps {
 const CreateApiKeyHeader: FC<CreateApiKeyHeaderProps> = ({
   organizationIdentifier,
 }) => {
-  // const createApiKey = { isLoading: false, mutate: (_: unknown) => {} };
-  const createApiKey = useCreateApiKey();
+  const createApiKey = useCreateApiKey({ orgId: organizationIdentifier });
 
   const handleCreateApiKey = () => {
-    createApiKey.mutate({
-      organizationIdentifier,
-    });
+    createApiKey.mutate();
   };
 
   return (
@@ -25,9 +22,9 @@ const CreateApiKeyHeader: FC<CreateApiKeyHeaderProps> = ({
         onClick={handleCreateApiKey}
         variant="outlined"
         startIcon={<AddIcon />}
-        disabled={createApiKey.isLoading}
+        disabled={createApiKey.isPending}
       >
-        {createApiKey.isLoading ? 'Creating...' : 'Create API Key'}
+        {createApiKey.isPending ? 'Creating...' : 'Create API Key'}
       </Button>
     </>
   );

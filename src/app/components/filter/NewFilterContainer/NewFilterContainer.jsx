@@ -44,11 +44,23 @@ const NewFilterContainer = ({
   setSavePopupOpen,
   handleSaveQuickFilter,
   quickFilterIdentifier,
+  filteredData,
+  setFilteredData,
 }) => {
   const popoverReference = useRef(null);
   const [isPopoverOpen, openAddFilterPopover, closeAddFilterPopover] =
     useBoolean(false);
   const [isUpdate, setUpdate] = useState(false);
+
+  useEffect(() => {
+    const data = {};
+    for (const key in finalFilter) {
+      if (finalFilter[key].length > 0) {
+        data[key] = { options: finalFilter[key].map((item) => item.key) };
+      }
+    }
+    setFilteredData(data);
+  },[finalFilter])
 
   useEffect(() => {
     setMenuOption(filters?.map((item) => ({ label: item.label, id: item.id })));
@@ -75,7 +87,7 @@ const NewFilterContainer = ({
         data[key] = { options: finalFilter[key].map((item) => item.key) };
       }
     }
-    onSelectedFiltersChange(selectFilterOption('', '', data));
+    onSelectedFiltersChange(selectFilterOption('', '', filteredData));
     openPopover(false);
   };
 
@@ -103,7 +115,7 @@ const NewFilterContainer = ({
           data[key] = { options: finalFilter[key].map((item) => item.key) };
         }
       }
-      handleSaveQuickFilter(data);
+      handleSaveQuickFilter(filteredData);
     } else {
       setSavePopupOpen(true);
     }
@@ -120,6 +132,8 @@ const NewFilterContainer = ({
           filterOptions={filters
             .flatMap((item) => item.id === filter && item.options)
             .filter((item) => typeof item !== 'boolean')}
+          setFilteredData={setFilteredData}
+          filteredData={filteredData}
         />
       ))}
       <FilterButtonWrapper>

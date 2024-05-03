@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import AssignMemberIcon from 'components/user/AssignMemberIcon/AssingMemberIcon';
 import MemberGroup from 'components/user/MemberGroup/MemberGroup';
 import Tooltip from 'components/common/Tooltip/Tooltip';
@@ -18,8 +18,10 @@ const TaskItemMembers = ({
   additionalUsers,
   isAssigneeHover,
 }) => {
+  const assigneeRef = useRef(null);
   return (
     <TaskItemPopover
+      reference={assigneeRef}
       disabled={readOnly}
       contentWidth={246}
       content={({ closePopover }) => (
@@ -42,24 +44,26 @@ const TaskItemMembers = ({
       )}
       fullWidth={multipleAssigneesContext}
     >
-      {assignedToUsers?.length ? (
-        <>
-          {matchAssignedTo && (
-            <AssigneeMatchingWrapper matched={matchAssignedTo} />
-          )}
-          <MemberGroup members={assignedToUsers} size={28} />
-        </>
-      ) : (
-        <>
-          {isAssigneeHover && (
-            <Tooltip placement="top" title="Add assignee">
-              <div style={{ marginLeft: '2px' }}>
-                {!readOnly && <AssignMemberIcon />}
-              </div>
-            </Tooltip>
-          )}
-        </>
-      )}
+      <div ref={assigneeRef} style={{ minWidth: '100px' }}>
+        {assignedToUsers?.length ? (
+          <>
+            {matchAssignedTo && (
+              <AssigneeMatchingWrapper matched={matchAssignedTo} />
+            )}
+            <MemberGroup members={assignedToUsers} size={28} />
+          </>
+        ) : (
+          <>
+            {isAssigneeHover && (
+              <Tooltip placement="top" title="Add assignee">
+                <div style={{ display: 'flex', marginLeft: '2px' }}>
+                  {!readOnly && <AssignMemberIcon />}
+                </div>
+              </Tooltip>
+            )}
+          </>
+        )}
+      </div>
     </TaskItemPopover>
   );
 };

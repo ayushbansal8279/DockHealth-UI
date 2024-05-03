@@ -1,34 +1,16 @@
-import React, {
-  useCallback,
-  useState,
-  useMemo,
-  useParams,
-  useContext,
-} from 'react';
+import React, { useCallback, useState, useMemo, useContext } from 'react';
 import uniq from 'ramda/src/uniq';
-import TaskViewTypeToolbarSelect from 'components/tasklist/TaskViewTypeToolbarSelect/TaskViewTypeToolbarSelect';
 import { Box } from '@mui/material';
 import FullViewIcon from 'img/list/FullViewIcon';
 import SlimViewIcon from 'img/list/SlimViewIcon';
 import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined';
-// import { Grid } from '@mui/material';
-// import listSectionSavedState from 'helpers/list-section-saved-state';
-import TaskStatusToolbarSelect from 'components/tasklist/TaskStatusToolbarSelect/TaskStatusToolbarSelect';
-// import CompleteTasksVisibilitySwitch from 'components/tasklist/CompleteTasksVisibilitySwitch/CompleteTasksVisibilitySwitch';
-import InboxTips from 'components/tasklist/InboxTips/InboxTips';
-import ViewTypeSwitch, {
-  ViewType as listDetailsViewType,
-} from 'components/tasklist/ViewTypeSwitch/ViewTypeSwitch';
-// import {
-//   onSlimViewChanged,
-//   onTaskGroupCollapsed,
-//   onTaskGroupExpanded,
-// } from 'helpers/ga-event-helper';
+import TaskStatusToolbarSelect from '@/app/components/tasklist/list-toolbar-buttons/TaskStatusToolbarSelect/TaskStatusToolbarSelect';
+import InboxTips from '@/app/components/tasklist/list-toolbar-buttons/InboxTips/InboxTips';
 import { ViewType, getViewTypeFromQueryString } from 'helpers/view-type-helper';
 import { useLocation, useHistory } from 'react-router-dom';
 import { TaskStatus } from 'helpers/task-helpers';
 import { updateUserListViewSetup } from 'actions/task-list-actions';
-import CustomizeToolbarButton from 'components/tasklist/CustomizeToolbarButton/CustomizeToolbarButton';
+import CustomizeToolbarButton from '@/app/components/tasklist/list-toolbar-buttons/CustomizeToolbarButton/CustomizeToolbarButton';
 import { checkIfUserIsOrganizationAdmin } from 'helpers/user-helper';
 import {
   userProfileSelector,
@@ -133,32 +115,6 @@ const ListDetailsToolbar = ({
     [history, taskListIdentifier, search],
   );
 
-  // const groupSessionStorageKey = `${listUniqueKey}-default`;
-
-  // const { viewType, isOpen, switchOpen, setViewType } = listSectionSavedState({
-  //   sessionStorageKey: groupSessionStorageKey,
-  // });
-
-  // const onTaskGroupViewModeChange = (viewMode) => {
-  //   loadTasksForTaskGroup({
-  //     listUniqueKey,
-  //     startPosition: 0,
-  //     viewMode,
-  //     refresh: true,
-  //   });
-  // };
-
-  // const changeViewType = (value) => {
-  //   setViewType(value);
-  //   if (value === listDetailsViewType.SLIM_VIEW) {
-  //     onTaskGroupViewModeChange(listDetailsViewType.SLIM_VIEW);
-  //     onSlimViewChanged(true);
-  //   } else {
-  //     onTaskGroupViewModeChange(listDetailsViewType.FULL_VIEW);
-  //     onSlimViewChanged(false);
-  //   }
-  // };
-
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleTasksVisibilityChange = (visible) => {
     const newDisplayOptions = visible
@@ -188,13 +144,6 @@ const ListDetailsToolbar = ({
           />
         )}
 
-        {/* <Box mx={0.5} />
-        <TaskViewTypeToolbarSelect
-          value={viewType}
-          onChange={handleChangeViewType}
-          iconColorFilterActive={iconColorFilterActiveItem?.value}
-          iconColorActive={iconColorActiveItem?.value}
-        /> */}
         {viewType === ViewType.LIST_VIEW && (
           <>
             <CustomizeToolbarButton
@@ -223,8 +172,6 @@ const ListDetailsToolbar = ({
               isOrganizationAdmin={isOrganizationAdmin}
               isListAdmin={isListAdmin}
             />
-            {taskList?.listType === 'INBOX' && <InboxTips />}
-            {/* <Box sx={boxComponentStyles} /> */}
             {children}
           </>
         )}
@@ -272,22 +219,6 @@ const ListDetailsToolbar = ({
           <SlimViewIcon />
         </GridItemSlimView>
       </GridContainer>
-      {/* <ViewTypeSwitch /> */}
-      {/* {viewType === ViewType.LIST_VIEW && <>{children}</>} */}
-      {/* {viewType === ViewType.LIST_VIEW && ( */}
-      {/* // <Box display="flex" flex={1} justifyContent="flex-end"> */}
-      {/* {tasksStatus === TaskStatus.INCOMPLETE && (
-            <CompleteTasksVisibilitySwitch
-              visible={displayOptions.includes(TASKS_VISIBILITY_KEY)}
-              onChange={handleTasksVisibilityChange}
-              iconColorFilterActive={iconColorFilterActiveItem?.value}
-            />
-          )} */}
-      {/* {children} */}
-      {/* <Box mx={0.5} /> */}
-      {/* </Box> */}
-      {/* )} */}
-      {/* {children} */}
     </ToolbarContainer>
   );
 };

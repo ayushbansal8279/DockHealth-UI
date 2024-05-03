@@ -15,7 +15,16 @@ import { DateInput } from './styled';
 const DATE_ISO_FORMAT = 'YYYY-MM-DD';
 const DATE_US_FORMAT = 'MM/DD/YYYY';
 
-const FilterDateInput = ({ date, onDateChange, minDate, maxDate }) => {
+const FilterDateInput = ({
+  date,
+  onDateChange,
+  minDate,
+  maxDate,
+  setDueDate,
+  setStartDate,
+  start,
+  due,
+}) => {
   const inputReference = useRef(null);
   const [isCalendarOpen, openCalendar, closeCalendar] = useBoolean(false);
 
@@ -32,6 +41,15 @@ const FilterDateInput = ({ date, onDateChange, minDate, maxDate }) => {
       setInputValue('');
     }
   }, [date]);
+
+  useEffect(() => {
+    if (due) {
+      setDueDate(inputValueIso);
+    }
+    if (start) {
+      setStartDate(inputValueIso);
+    }
+  }, [inputValue]);
 
   const hasError = useMemo(() => {
     if (minDate) {
@@ -98,8 +116,8 @@ const FilterDateInput = ({ date, onDateChange, minDate, maxDate }) => {
                   setInputValue(
                     moment(d, DATE_ISO_FORMAT).format(DATE_US_FORMAT),
                   );
-                  onDateChange(d);
                   closeCalendar();
+                  onDateChange(d);
                 }}
                 minDate={minDate}
                 maxDate={minDate ? null : maxDate}

@@ -22,7 +22,7 @@ import {
 } from 'helpers/custom-fields-helpers';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import { capitalize } from 'helpers/capitalize';
-import ToolbarButton from 'components/tasklist/ToolbarButton/ToolbarButton';
+import ToolbarButton from '@/app/components/tasklist/list-toolbar-buttons/ToolbarButton/ToolbarButton';
 import {
   PlusIcon,
   PopoverContainer,

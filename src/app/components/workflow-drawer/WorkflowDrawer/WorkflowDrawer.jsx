@@ -6,19 +6,21 @@ import * as WorkflowDrawerActions from 'actions/workflow-drawer-actions';
 import compose from 'ramda/src/compose';
 import { useDispatch, useSelector } from 'react-redux';
 import {
+  commentIdentifierToScrollSelector,
   isWorkflowDrawerOpenSelector,
   workflowSelector,
 } from 'selectors/workflow-drawer-selectors';
 import WorkflowDrawerHeader from 'components/workflow-drawer/DrawerHeader/DrawerHeader';
 import { checkIfTemplateWorkflow } from 'helpers/workflow-helpers';
-import {
-  userProfileSelector,
-  selectedUserOrganizationSelector,
-} from 'selectors/user-selectors';
+import { userProfileSelector } from 'selectors/user-selectors';
 import {
   SINGLE_WORKFLOW_RESTRICTIONS_PROFILES,
   WORKFLOW_LIST_RESTRICTIONS_OPTIONS,
 } from 'restrictions/task-restrictions';
+import {
+  getCommentIdToScroll,
+  scrollToByQuerySelector,
+} from 'helpers/scroll-helper';
 import { FiledInListName } from 'components/task-drawer/TaskDrawerContent/styled';
 import { createTaskListPath } from 'routing/helpers/paths';
 import { currentTaskListSelector } from 'selectors/task-list-selectors';
@@ -29,8 +31,6 @@ import PatientSection from '../PatientSection/PatientSection';
 import AssignedToSection from '../AssignedToSection/AssignedToSection';
 import HistorySection from '../HistorySection/HistorySection';
 import DueDateSection from '../DueDateSection/DueDateSection';
-import StartDateSection from '../StartDateSection/StartDateSection';
-import AnchorDateSection from '../AnchorDateSection/AnchorDateSection';
 import ReminderSection from '../ReminderSection/ReminderSection';
 import PrioritySection from '../PrioritySection/PrioritySection';
 import StatusSection from '../StatusSection/StatusSection';
@@ -53,6 +53,9 @@ const WorkflowDrawer = () => {
   const history = useHistory();
   const open = useSelector(isWorkflowDrawerOpenSelector);
   const selectedWorkflow = useSelector(workflowSelector);
+  const commentIdentifierToScroll = useSelector(
+    commentIdentifierToScrollSelector,
+  );
   const isTemplateTask = useMemo(
     () => checkIfTemplateWorkflow(selectedWorkflow),
     [selectedWorkflow],
@@ -64,13 +67,6 @@ const WorkflowDrawer = () => {
   const { orgUserRole } = useSelector(userProfileSelector);
   const restrictions = SINGLE_WORKFLOW_RESTRICTIONS_PROFILES[orgUserRole];
 
-  const currentOrganization = useSelector(selectedUserOrganizationSelector);
-  const quickAddPatientEnabledItem =
-    currentOrganization?.themeSettings?.find(
-      ({ name }) => name === 'patient.quickadd.enabled',
-    ) || {};
-  // const quickAddPatientEnabled = quickAddPatientEnabledItem?.value !== 'false';
-
   useEffect(() => {
     const unlisten = history.listen(
       compose(dispatch, WorkflowDrawerActions.closeDrawer),
@@ -81,6 +77,26 @@ const WorkflowDrawer = () => {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    let handler = setInterval(() => {
+      if (
+        scrollToByQuerySelector(
+          `#${getCommentIdToScroll(commentIdentifierToScroll)}`,
+        )
+      ) {
+        clearInterval(handler);
+        handler = null;
+        dispatch(
+          WorkflowDrawerActions.setWorkflowCommentIdentifierToScroll(null),
+        );
+      }
+    }, 20);
+
+    return () => {
+      if (handler) clearInterval(handler);
+    };
+  }, [dispatch, commentIdentifierToScroll]);
 
   const handleBackdropClick = () => {
     dispatch(WorkflowDrawerActions.closeDrawer());
@@ -127,20 +143,6 @@ const WorkflowDrawer = () => {
                   />
                 </Grid>
 
-                {/* <Grid item xs={12}>
-                  <StartDateSection
-                    disabled={
-                      !!isTemplateTask || restrictions?.startDate === DISABLED
-                    }
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <AnchorDateSection
-                    disabled={
-                      !!isTemplateTask || restrictions?.anchorDate === DISABLED
-                    }
-                  />
-                </Grid> */}
                 <Grid item xs={12}>
                   <DueDateSection
                     disabled={
@@ -149,7 +151,7 @@ const WorkflowDrawer = () => {
                   />
                 </Grid>
                 {selectedWorkflow.dueDateTime && (
-                  <Grid item mt={-3} ml={1.2} xs={12}>
+                  <Grid item mt={-5} ml={14.5} xs={12}>
                     <ReminderSection
                       disabled={
                         !!isTemplateTask || restrictions?.reminder === DISABLED

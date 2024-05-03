@@ -1,8 +1,18 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
 import { ascend, compose, propOr, sortWith, toLower } from 'ramda';
+import EditIcon from '@mui/icons-material/Edit';
+import SaveIcon from '@mui/icons-material/Save';
+import CloseIcon from '@mui/icons-material/Close';
+import pick from 'ramda/src/pick';
+import {
+  GridRowModes,
+  GridActionsCellItem,
+  useGridApiRef,
+  GridRowEditStopReasons,
+} from '@mui/x-data-grid-premium';
 import * as ActionTypes from 'actions/action-types';
 import { Grid } from '@mui/material';
 import Tooltip from 'components/common/Tooltip/Tooltip';
@@ -22,7 +32,9 @@ import { PatientColumn } from 'helpers/patient-list-helpers';
 
 import { patientsListSelector } from 'selectors/patients-selectors';
 import moment from 'moment';
+import palette from 'styles/palette';
 import { formatPhoneNumber } from 'helpers/utility-functions';
+import { dateFormatter } from 'helpers/date-formatter';
 import TaskItemBulkEdit from 'components/task/StandardTaskItem/TaskItemComponents/TaskItemBulkEdit';
 import PatientImportPopover from '../PatientImportPopover/PatientImportPopover';
 import EmptyFilteredPatientsList from '../EmptyFilteredPatientsList/EmptyFilteredPatientsList';
@@ -34,6 +46,23 @@ import {
   PatientCell,
 } from './styled';
 import { StyledDataGrid } from './DataGridStyles';
+import FullNameEditCell, {
+  setFullName,
+  preProcessFullNameEditCellProps,
+  getFullName,
+} from '@/app/components/common/DataGridEditCells/FullNameEditCell';
+import DateEditCell from '@/app/components/common/DataGridEditCells/DateEditCell';
+import GenderSelectCell from '@/app/components/common/DataGridEditCells/GenderSelectCell';
+import PhoneEditCell, {
+  preProcessPhoneEditCellProps,
+} from '@/app/components/common/DataGridEditCells/PhoneEditCell';
+import { useGenderIdentitiesQuery } from '@/app/react-query/reference/useGenderIdentitiesQuery';
+import {
+  GENDER_OPTIONS_BIRTH,
+  convertGenderIdentitiesToSelectOptions,
+} from '@/app/types/gender';
+import { getValueLabelHashFromOptions } from '@/app/helpers/select-option-helper';
+import { useUpdatePatientById } from '@/app/react-query/patients/useUpdatePatientById';
 
 const renderColumnHeader = (props) => {
   const { colDef } = props;
@@ -56,6 +85,15 @@ const renderCheckboxColumnHeader = ({ isListChecked, onListSelect }) => (
   </BulkContainer>
 );
 
+const handleRowEditStop = (params, event) => {
+  if (params.reason === GridRowEditStopReasons.rowFocusOut) {
+    event.defaultMuiPrevented = true;
+  }
+};
+
+const genderBirthOptionHash =
+  getValueLabelHashFromOptions(GENDER_OPTIONS_BIRTH);
+
 const PatientsList = ({
   isFiltered = false,
   patients,
@@ -68,6 +106,7 @@ const PatientsList = ({
   isDynamicPatientList,
   searchValue,
 }) => {
+  const updatePatientById = useUpdatePatientById();
   const { pathname } = useLocation();
   const history = useHistory();
   const dispatch = useDispatch();
@@ -78,8 +117,10 @@ const PatientsList = ({
     currentUser,
     currentOrganization,
   );
-
   const [dataGridSortModel, setDataGridSortModel] = useState();
+  const [pinnedColumns, setPinnedColumns] = useState({
+    left: ['isSelected', 'patient'],
+  });
 
   const selectedPatientsCount = patients?.filter((p) => p.isSelected).length;
   const patientsCount = patients?.length;
@@ -89,6 +130,76 @@ const PatientsList = ({
     patientsCount === selectedPatientsCount;
 
   const patientsList = useSelector(patientsListSelector);
+  const genderIdentityOptionsQuery = useGenderIdentitiesQuery();
+
+  const { columns: columnsData, setCurrentPatientList } =
+    usePatientListColumnsConfig();
+
+  // datagrid related states
+  const apiRef = useGridApiRef();
+  const [rowModesModel, setRowModesModel] = useState({});
+
+  const genderIdentityOptions = useMemo(
+    () =>
+      convertGenderIdentitiesToSelectOptions(
+        genderIdentityOptionsQuery.data ?? [],
+      ),
+    [genderIdentityOptionsQuery.data],
+  );
+
+  const genderIdentityOptionsHash = useMemo(
+    () => getValueLabelHashFromOptions(genderIdentityOptions),
+    [genderIdentityOptions],
+  );
+
+  const columnsDataSorted = useMemo(
+    () =>
+      sortWith(
+        [
+          ascend(propOr(0, 'sortIndex')),
+          ascend(compose(toLower, propOr('', 'name'))),
+        ],
+        columnsData,
+      ),
+    [columnsData],
+  );
+
+  const formattedPatients = useMemo(
+    () =>
+      patients?.map((patient) => {
+        const metaData = patient.patientMetaData?.map((pmd) => {
+          return {
+            key: pmd.customFieldIdentifier,
+            value:
+              pmd.displayName ||
+              pmd.value ||
+              pmd.displayNames?.sort().toString(),
+          };
+        });
+        const patientDetails = {
+          id: patient?.patientIdentifier || patient?.id || patient?.mrn,
+          ...patient,
+        };
+        metaData?.forEach((element) => {
+          patientDetails[element.key] = element.value;
+        });
+        return patientDetails;
+      }),
+    [patients],
+  );
+
+  useEffect(() => {
+    return () => {
+      dispatch({
+        type: ActionTypes.UNSELECT_ALL_PATIENTS,
+      });
+    };
+  }, [dispatch]);
+
+  useEffect(() => {
+    setCurrentPatientList(patientsList?.listDetails);
+    setDataGridSortModel(null);
+  }, [setCurrentPatientList, patientsList]);
 
   const setSelectedPatient = useCallback(
     (data) => {
@@ -101,6 +212,7 @@ const PatientsList = ({
     [dispatch],
   );
 
+  // when the checkbox header is clicked
   const handleListSelect = useCallback(() => {
     dispatch({
       type: isListChecked
@@ -109,31 +221,91 @@ const PatientsList = ({
     });
   }, [dispatch, isListChecked]);
 
-  useEffect(() => {
-    return () => {
-      dispatch({
-        type: ActionTypes.UNSELECT_ALL_PATIENTS,
-      });
-    };
-  }, [dispatch]);
+  const handleSortChange = useCallback(
+    (sortModel) => {
+      if (
+        !dataGridSortModel ||
+        sortModel.length === 0 ||
+        dataGridSortModel[0]?.field !== sortModel[0]?.field ||
+        dataGridSortModel[0]?.sort !== sortModel[0]?.sort
+      ) {
+        setDataGridSortModel(sortModel);
 
-  const { columns: columnsData, setCurrentPatientList } =
-    usePatientListColumnsConfig();
-
-  const columnsDataSorted = sortWith(
-    [
-      ascend(propOr(0, 'sortIndex')),
-      ascend(compose(toLower, propOr('', 'name'))),
-    ],
-    columnsData,
+        if (sortModel.length > 0) {
+          localStorage.setItem('PATIENT_LIST_SORT_COLUMN', sortModel[0]?.field);
+          localStorage.setItem('PATIENT_LIST_SORT_ORDER', sortModel[0]?.sort);
+        } else {
+          localStorage.removeItem('PATIENT_LIST_SORT_COLUMN');
+          localStorage.removeItem('PATIENT_LIST_SORT_ORDER');
+        }
+      }
+    },
+    [dataGridSortModel],
   );
 
-  useEffect(() => {
-    setCurrentPatientList(patientsList?.listDetails);
-    setDataGridSortModel(undefined);
-  }, [setCurrentPatientList, patientsList]);
+  const handleEditClick = useCallback(
+    (id) => () => {
+      setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
+    },
+    [rowModesModel],
+  );
 
-  const columns = [
+  const handleSaveClick = useCallback(
+    (id) => () => {
+      setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
+    },
+    [rowModesModel],
+  );
+
+  const handleCancelClick = useCallback(
+    (id) => () => {
+      setRowModesModel({
+        ...rowModesModel,
+        [id]: { mode: GridRowModes.View, ignoreModifications: true },
+      });
+    },
+    [rowModesModel],
+  );
+
+  const handleRowModesModelChange = useCallback((newRowModesModel) => {
+    setRowModesModel(newRowModesModel);
+  }, []);
+
+  const processRowUpdate = useCallback(
+    async (newRow, oldRow) => {
+      try {
+        const params = pick(
+          [
+            'patientIdentifier',
+            'firstName',
+            'middleName',
+            'lastName',
+            'gender',
+            'genderIdentity',
+            'dob',
+            'mrn',
+            'phoneMobile',
+            'phoneHome',
+          ],
+          newRow,
+        );
+        params.dob = dateFormatter(params.dob, 'MM/dd/yyyy');
+        await updatePatientById.mutateAsync(params);
+
+        return newRow;
+      } catch (error) {
+        console.error('processRowUpdate error', error);
+        return oldRow;
+      }
+    },
+    [updatePatientById],
+  );
+
+  const handlePinnedColumnsChange = useCallback((updatedPinnedColumns) => {
+    setPinnedColumns(updatedPinnedColumns);
+  }, []);
+
+  const defaultColumns = [
     {
       field: 'isSelected',
       headerName: '',
@@ -188,44 +360,42 @@ const PatientsList = ({
           </Tooltip>
         </PatientCell>
       ),
-      // flex: 1,
       width: 200,
-      valueGetter: (parameters) => {
-        return `${parameters.row.lastName || ''}, ${
-          parameters.row.firstName || ''
-        }`;
-      },
+      valueGetter: getFullName,
+      valueSetter: setFullName,
+      editable: false,
+      preProcessEditCellProps: preProcessFullNameEditCellProps,
+      renderEditCell: (params) => <FullNameEditCell {...params} />,
     },
     {
       field: 'mrn',
       headerName: uniqueIdentifierLabel.toUpperCase(),
-      renderHeader: renderColumnHeader,
-      // flex: 0.5,
+      // renderHeader: renderColumnHeader,
       width: 100,
       renderCell: ({ row }) => (
         <Tooltip placement="top" title={row.mrn}>
           <Text width="80">{row.mrn}</Text>
         </Tooltip>
       ),
+      editable: false,
     },
     {
       field: 'dob',
       headerName: 'DOB',
       renderHeader: renderColumnHeader,
-      // flex: 0.5,
-      width: 100,
-      type: 'date',
-      valueGetter: (parameters) => {
-        return parameters.value
-          ? new Date(`${parameters.value}T00:00:00`)
-          : null;
-      },
+      width: 150,
+      valueGetter: ({ value }) => dateFormatter(value, 'M/d/yyyy'),
+      valueSetter: ({ value, row }) => ({
+        ...row,
+        dob: dateFormatter(value, 'yyyy-MM-dd'),
+      }),
+      editable: false,
+      renderEditCell: (params) => <DateEditCell {...params} />,
     },
     {
       field: 'age',
       headerName: 'AGE',
       renderHeader: renderColumnHeader,
-      // flex: 0.5,
       width: 70,
       sortComparator: (v1, v2, parameters1, parameters2) => {
         const { api } = parameters2;
@@ -266,40 +436,49 @@ const PatientsList = ({
       field: 'gender',
       headerName: 'SEX',
       renderHeader: renderColumnHeader,
-      // flex: 0.5,
-      width: 80,
+      width: 100,
+      valueFormatter: ({ value }) => genderBirthOptionHash[value],
+      editable: false,
+      renderEditCell: (params) => (
+        <GenderSelectCell options={GENDER_OPTIONS_BIRTH} {...params} />
+      ),
     },
     {
       field: 'genderIdentity',
       headerName: 'GENDER',
       renderHeader: renderColumnHeader,
-      // flex: 0.5,
-      width: 100,
+      width: 150,
+      valueFormatter: ({ value }) => genderIdentityOptionsHash[value],
+      editable: false,
+      renderEditCell: (params) => (
+        <GenderSelectCell options={genderIdentityOptions} {...params} />
+      ),
     },
     {
       field: 'email',
       headerName: 'EMAIL',
       renderHeader: renderColumnHeader,
-      // flex: 0.5,
       width: 140,
       renderCell: ({ row }) => (
         <Tooltip placement="top" title={row.email}>
           <Text width="120">{row.email}</Text>
         </Tooltip>
       ),
-      align: 'left',
+      editable: false,
     },
     {
       field: 'phoneMobile',
       headerName: 'MOBILE',
       renderHeader: renderColumnHeader,
-      // flex: 0.5,
       renderCell: ({ row }) => (
         <Tooltip placement="top" title={formatPhoneNumber(row.phoneMobile)}>
           <Text width="120">{formatPhoneNumber(row.phoneMobile)}</Text>
         </Tooltip>
       ),
       width: 140,
+      editable: false,
+      preProcessEditCellProps: preProcessPhoneEditCellProps,
+      renderEditCell: (params) => <PhoneEditCell {...params} />,
     },
     {
       field: 'phoneHome',
@@ -310,10 +489,48 @@ const PatientsList = ({
           <Text width="120">{formatPhoneNumber(row.phoneHome)}</Text>
         </Tooltip>
       ),
-      // flex: 0.5,
       width: 140,
+      editable: false,
+      preProcessEditCellProps: preProcessPhoneEditCellProps,
+      renderEditCell: (params) => <PhoneEditCell {...params} />,
     },
-  ]
+  ];
+
+  const actionsColumn = {
+    field: 'actions',
+    type: 'actions',
+    headerName: 'Actions',
+    width: 80,
+    cellClassName: 'actions',
+    getActions: ({ id }) => {
+      const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
+
+      if (isInEditMode) {
+        return [
+          <GridActionsCellItem
+            icon={<SaveIcon sx={{ color: palette.lightBlue }} />}
+            label="Save"
+            onClick={handleSaveClick(id)}
+          />,
+          <GridActionsCellItem
+            icon={<CloseIcon sx={{ color: palette.unknownGrey1 }} />}
+            label="Cancel"
+            onClick={handleCancelClick(id)}
+          />,
+        ];
+      }
+
+      return [
+        <GridActionsCellItem
+          icon={<EditIcon sx={{ color: palette.lightBlue }} />}
+          label="Edit"
+          onClick={handleEditClick(id)}
+        />,
+      ];
+    },
+  };
+
+  const columns = defaultColumns
     .filter((column) => {
       return (
         columnsDataSorted.find(
@@ -330,7 +547,6 @@ const PatientsList = ({
           field: column.identifier,
           headerName: column.name,
           renderHeader: renderColumnHeader,
-          // flex: 0.5,
           width: 140,
           renderCell: ({ row }) => (
             <Tooltip placement="top" title={row[column.identifier]}>
@@ -343,39 +559,41 @@ const PatientsList = ({
             const compareValue1 = v1 || '';
             const compareValue2 = v2 || '';
             // eslint-disable-next-line sonarjs/no-collapsible-if
-            if (column.fieldType === 'DATE') {
-              if (compareValue1 !== '' && compareValue2 !== '') {
-                const parameter1Date = moment(compareValue1);
-                const parameter2Date = moment(compareValue2);
-                if (sortModel[0]?.sort === 'desc') {
-                  if (parameter1Date.isAfter(parameter2Date)) {
-                    return 1;
-                  }
-                  if (parameter1Date.isBefore(parameter2Date)) {
-                    return -1;
-                  }
-                  return 0;
+            if (
+              column.fieldType === 'DATE' &&
+              compareValue1 !== '' &&
+              compareValue2 !== ''
+            ) {
+              const parameter1Date = moment(compareValue1);
+              const parameter2Date = moment(compareValue2);
+              if (sortModel[0]?.sort === 'desc') {
+                if (parameter1Date.isAfter(parameter2Date)) {
+                  return 1;
                 }
                 if (parameter1Date.isBefore(parameter2Date)) {
                   return -1;
                 }
-                if (parameter1Date.isAfter(parameter2Date)) {
-                  return 1;
-                }
                 return 0;
               }
+              if (parameter1Date.isBefore(parameter2Date)) {
+                return -1;
+              }
+              if (parameter1Date.isAfter(parameter2Date)) {
+                return 1;
+              }
+              return 0;
             }
             return compareValue1.localeCompare(compareValue2);
           },
         })),
-    );
+    ); // .concat([actionsColumn])
 
   useEffect(() => {
     const defaultSortField = localStorage.getItem('PATIENT_LIST_SORT_COLUMN');
     const defaultSortOrder = localStorage.getItem('PATIENT_LIST_SORT_ORDER');
 
     const defaultSortAvailable = columns.find(
-      column => column?.field === defaultSortField,
+      (column) => column?.field === defaultSortField,
     );
 
     // set the model once on load
@@ -393,47 +611,6 @@ const PatientsList = ({
     }
   }, [columns, dataGridSortModel]);
 
-  const handleSortChange = useCallback(
-    sortModel => {
-      if (
-        !dataGridSortModel ||
-        sortModel.length === 0 ||
-        dataGridSortModel[0]?.field !== sortModel[0]?.field ||
-        dataGridSortModel[0]?.sort !== sortModel[0]?.sort
-      ) {
-        setDataGridSortModel(sortModel);
-
-        if (sortModel.length > 0) {
-          localStorage.setItem('PATIENT_LIST_SORT_COLUMN', sortModel[0]?.field);
-          localStorage.setItem('PATIENT_LIST_SORT_ORDER', sortModel[0]?.sort);
-        } else {
-          localStorage.removeItem('PATIENT_LIST_SORT_COLUMN');
-          localStorage.removeItem('PATIENT_LIST_SORT_ORDER');
-        }
-      }
-    },
-    [dataGridSortModel],
-  );
-
-  const formattedPatients = patients?.map(patient => {
-    const metaData = patient.patientMetaData?.map(pmd => {
-      return {
-        key: pmd.customFieldIdentifier,
-        value:
-          pmd.displayName || pmd.value || pmd.displayNames?.sort().toString(),
-      };
-    });
-    const patientDetails = {
-      id: patient?.patientIdentifier || patient?.id || patient?.mrn,
-      ...patient,
-    };
-    // eslint-disable-next-line no-unused-expressions
-    metaData?.forEach((element) => {
-      patientDetails[element.key] = element.value;
-    });
-    return patientDetails;
-  });
-
   return (
     <>
       {isFetching ? (
@@ -447,25 +624,34 @@ const PatientsList = ({
               <Grid item xs={12} xl={11} md={12} lg={11}>
                 <NonEmptyListTable listLength={patients?.length ?? 0}>
                   <StyledDataGrid
+                    apiRef={apiRef}
+                    getRowId={(row) => row.patientIdentifier}
                     columns={columns}
+                    editMode="row"
                     rows={formattedPatients}
-                    rowHeight={35}
                     headerHeight={45}
+                    getRowHeight={() => 'auto'}
                     hideFooterSelectedRowCount
-                    autoHeight
                     disableColumnMenu
                     disableSelectionOnClick
                     showColumnRightBorder
                     showCellRightBorder
+                    rowModesModel={rowModesModel}
+                    onRowModesModelChange={handleRowModesModelChange}
+                    onRowEditStop={handleRowEditStop}
                     onSortModelChange={handleSortChange}
+                    processRowUpdate={processRowUpdate}
                     sortModel={
                       dataGridSortModel &&
-                      columns.find(
-                        column => column?.field === dataGridSortModel[0]?.field,
+                      columns.some(
+                        (column) =>
+                          column?.field === dataGridSortModel[0]?.field,
                       )
                         ? dataGridSortModel
                         : undefined
                     }
+                    pinnedColumns={pinnedColumns}
+                    onPinnedColumnsChange={handlePinnedColumnsChange}
                   />
                 </NonEmptyListTable>
               </Grid>

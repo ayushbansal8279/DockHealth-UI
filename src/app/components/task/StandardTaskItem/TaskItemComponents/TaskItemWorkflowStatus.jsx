@@ -4,7 +4,6 @@ import TaskWorkflowStatus from 'components/task/TaskWorkflowStatus/TaskWorkflowS
 import Tooltip from 'components/common/Tooltip/Tooltip';
 import Highlighter from 'react-highlight-words';
 import {
-  AddPlaceholder,
   StatusName,
   StatusWrapper,
   StatusSubContaioner,

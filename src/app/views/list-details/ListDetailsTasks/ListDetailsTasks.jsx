@@ -34,7 +34,7 @@ import EmptyListView from 'components/tasklist/EmptyListView/EmptyListView';
 import NoFilterResultsView from 'components/tasklist/EmptyListView/NoFilterResultsView';
 import TasksGroup from 'components/tasklist/TasksGroup/TasksGroup';
 import GroupNameSection from 'components/tasklist/GroupNameSection/GroupNameSection';
-import messages from 'components/tasklist/AddGroupNameButton/messages';
+import messages from '@/app/components/tasklist/list-toolbar-buttons/AddGroupNameButton/messages';
 // import AddGroupNameButton from 'components/tasklist/AddGroupNameButton/AddGroupNameButton';
 // import EmptyTaskAddView from 'components/tasklist/EmptyTaskAddView/EmptyTaskAddView';
 import GroupedListSkeletonLoader from 'components/tasklist/GroupedListSkeletonLoader/GroupedListSkeletonLoader';
@@ -44,7 +44,6 @@ import LoadMoreButton, {
 } from 'components/common/LoadMoreButton/LoadMoreButton';
 import { TaskStatus, TaskOrigin } from 'helpers/task-helpers';
 import StandardTaskItem from 'components/task/StandardTaskItem/StandardTaskItem';
-// import TaskTemplateGroup from 'components/task-template/TaskTemplateGroup/TaskTemplateGroup';
 import TasksSkeletonLoader from 'components/task/TasksSkeletonLoader/TasksSkeletonLoader';
 import { useParams } from 'react-router-dom';
 import StickyContainer from 'components/common/HorizontalScroll/StickyContainer';
@@ -65,6 +64,7 @@ import {
   DroppablePlaceholder,
 } from '../ListDetailsTableView/styled';
 import { ListPageContext } from '../ListDetailsView';
+import { Typography } from '@mui/material';
 
 const ListDetailsTasks = ({
   viewSetup,
@@ -273,7 +273,7 @@ const ListDetailsTasks = ({
           !(workflowPopoverOpen || patientPopoverOpen) ? handleScroll : () => {}
         }
       >
-        <VirtualTaskList tasksToMap={tasksToMap} groupedTasks={groupedTasks} />
+        <VirtualTaskList groupedTasks={groupedTasks} />
       </div>
     );
   };
@@ -286,6 +286,9 @@ const ListDetailsTasks = ({
             (g) => g.groupIdentifier === taskGroupIdentifier,
           );
           const isLoadingGroup = group?.isLoadingGroup;
+
+          console.log('isLoadingGroup', isLoadingGroup);
+          console.log('isFetchingMoreTasks', group?.isFetchingMoreTasks);
 
           return (
             <TasksGroup
@@ -430,29 +433,6 @@ const ListDetailsTasks = ({
                                         origin={TaskOrigin.LIST}
                                         viewSetup={viewSetup}
                                       />
-                                      {/* ) : (
-                                        <TaskTemplateGroup
-                                          isCompletedTab={isCompletedView}
-                                          viewSetup={viewSetup}
-                                          isStartedDnD={
-                                            draggedId === task.identifier
-                                          }
-                                          draggableProvided={draggableProvided}
-                                          templateGroup={task}
-                                          groupHasMultipleAssignees={
-                                            groupHasMultipleAssignees
-                                          }
-                                          isFullView={isFullView}
-                                          groupDragAndDropDisabled={
-                                            isCompletedGroup ||
-                                            dragAndDropDisabled
-                                          }
-                                          iconColorActive={
-                                            iconColorActiveItem?.value
-                                          }
-                                          origin={TaskOrigin.LIST}
-                                        />
-                                      )} */}
                                     </>
                                   )}
                                 </Draggable>
@@ -524,8 +504,13 @@ const ListDetailsTasks = ({
     ],
   );
 
-  if (isFetchingData || isEmpty(groupList))
+  if (isFetchingData) {
     return <GroupedListSkeletonLoader />;
+  }
+
+  if (isEmpty(groupList)) {
+    return <Typography sx={{ m: 3 }}>No data</Typography>;
+  }
 
   return (
     <TaskGroupsContainer>
@@ -555,7 +540,7 @@ const ListDetailsTasks = ({
                     }
                     placeholder={messages.placeholder}
                     closeOnEnter
-                  ></GroupNameSection>
+                  />
                 </StickyContainer>
               )}
           </DragDropContext>

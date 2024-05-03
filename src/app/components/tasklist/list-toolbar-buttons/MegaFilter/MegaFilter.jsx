@@ -8,11 +8,11 @@ import FilterHeader from 'components/filter/FilterHeader/FilterHeader';
 import FilterTable from 'components/filter/FilterTable/FilterTable';
 import CustomFilters from 'components/filter/CustomFilters/CustomFilters';
 import { MegaFilterNoResultsLabel, MegaFilterContainer } from './styled';
-import NewFilterContainer from '../../filter/NewFilterContainer/NewFilterContainer';
-import SaveFilterPopup from '../../filter/SaveFilterPopup/SaveFilterPopup';
+import NewFilterContainer from '../../../filter/NewFilterContainer/NewFilterContainer';
+import SaveFilterPopup from '../../../filter/SaveFilterPopup/SaveFilterPopup';
 import { useSelector } from 'react-redux';
 import { currentTaskListSelector } from '@/app/selectors/task-list-selectors';
-import FilterTableLoader from '../../filter/FilterTableLoader/FilterTableLoader';
+import FilterTableLoader from '../../../filter/FilterTableLoader/FilterTableLoader';
 
 const MegaFilter = ({
   children,
@@ -46,6 +46,7 @@ const MegaFilter = ({
   const [isSavePopupOpen, setSavePopupOpen] = useState(false);
   const [quickFilterIdentifier, setQuickFilterIdentifier] = useState('');
   const [editIdentifier, setEditIdentifier] = useState('');
+  const [filteredData, setFilteredData] = useState({});
 
   const clearFilters = () => {
     onSelectFilters(null);
@@ -153,6 +154,8 @@ const MegaFilter = ({
             onQuickFilterCreate={onQuickFilterCreate}
             handleSaveQuickFilter={handleSaveQuickFilter}
             quickFilterIdentifier={quickFilterIdentifier}
+            setFilteredData={setFilteredData}
+            filteredData={filteredData}
           ></NewFilterContainer>
           <Box p={1} />
           {/* Kept here for Future Refrence */}

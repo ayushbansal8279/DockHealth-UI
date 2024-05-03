@@ -15,6 +15,7 @@ import VSubtask from 'views/list-details/VirtualTaskList/VirtualSegment/VSubtask
 import VAddGroup from 'views/list-details/VirtualTaskList/VirtualSegment/VAddGroup/VAddGroup';
 import VQuickAddTask from 'views/list-details/VirtualTaskList/VirtualSegment/VQuickAddTask/VQuickAddTask';
 import VTaskHeader from 'views/list-details/VirtualTaskList/VirtualSegment/VTaskHeader/VTaskHeader';
+import VLoadMoreTasks from './VirtualSegment/VLoadMoreTasks/VLoadMoreTasks';
 import { DropResult } from 'react-beautiful-dnd';
 import { reorderTasksInGroup } from 'actions/list-details-actions';
 import {
@@ -108,65 +109,47 @@ function VirtualTaskList({ groupedTasks }: Props) {
   };
 
   const nodes: Node[] = useMemo(() => {
-    // return [
-    //   convert(
-    //     uniqueId().toString(),
-    //     VAddGroup,
-    //     'AddGroup',
-    //     false,
-    //     {},
-    //     [],
-    //     true,
-    //   ),
-    // ].concat(
     return listGroups
-      .map((group, index) => {
-        const groupTasks = groupedTasks
-          ? groupedTasks.find(
-              (groupedTask) =>
-                groupedTask.groupIdentifier === group.taskGroupIdentifier,
-            )?.tasks ?? []
-          : [];
-        return convert(
-          group.taskGroupIdentifier,
-          VListGroup,
-          'ListGroup',
-          !!collapseMap[group.taskGroupIdentifier],
-          {
-            name: group.groupName,
-            taskGroupIdentifier: group.taskGroupIdentifier,
-            bgColor: !(index % 2 === 0),
-            groupTaskCounts: group?.metricValue,
-            tasksCount: groupTasks?.length,
-            isLastGroupOfList: index === listGroups?.length - 1,
-          },
-          [
-            convert(
-              uniqueId().toString(),
-              VQuickAddTask,
-              'QuickAddTask',
-              false,
-              {
-                taskGroupIdentifier: group.taskGroupIdentifier,
-                bgColor: !(index % 2 === 0),
-              },
-              [],
-              true,
-            ),
-            convert(
-              uniqueId().toString(),
-              VTaskHeader,
-              'TaskHeader',
-              false,
-              {
-                bgColor: !(index % 2 === 0),
-                groupWithZeroTask: groupTasks?.length === 0,
-              },
-              [],
-              true,
-            ),
-          ].concat(
-            ...groupTasks.map((taskIdentifier: string, groupTaskIndex) => {
+      .map((group, index: number) => {
+        const groupTasks =
+          groupedTasks?.find(
+            (groupedTask) =>
+              groupedTask.groupIdentifier === group.taskGroupIdentifier,
+          )?.tasks ?? [];
+
+        const listTaskGroup = groupedTasks?.find(
+          (groupedTask) =>
+            groupedTask.groupIdentifier === group.taskGroupIdentifier,
+        );
+
+        const children = [
+          convert(
+            uniqueId().toString(),
+            VQuickAddTask,
+            'QuickAddTask',
+            false,
+            {
+              taskGroupIdentifier: group.taskGroupIdentifier,
+              bgColor: !(index % 2 === 0),
+            },
+            [],
+            true,
+          ),
+          convert(
+            uniqueId().toString(),
+            VTaskHeader,
+            'TaskHeader',
+            false,
+            {
+              bgColor: !(index % 2 === 0),
+              groupWithZeroTask: groupTasks?.length === 0,
+              isLastGroupOfList: index === listGroups?.length - 1,
+            },
+            [],
+            true,
+          ),
+          ...groupTasks.map(
+            (taskIdentifier: string, groupTaskIndex: number) => {
               const task = tasksMap[taskIdentifier];
               const children =
                 task.itemType === 'TASK' ? task.subtasks : task.tasks;
@@ -177,13 +160,16 @@ function VirtualTaskList({ groupedTasks }: Props) {
                 !!collapseMap[taskIdentifier],
                 {
                   task,
+                  isNextVirtualTaskItemTypeBundle:
+                    groupTaskIndex === groupTasks.length - 1
+                      ? false
+                      : tasksMap[groupTasks[groupTaskIndex + 1]]?.itemType ===
+                        'BUNDLE',
                   bgColor: !(index % 2 === 0),
                   isLastTaskOfGroup: groupTaskIndex === groupTasks.length - 1,
                   isLastGroupOfList: index === listGroups?.length - 1,
-                  // &&
-                  // !!collapseMap[taskIdentifier],
                 },
-                children.map((child: any, childIndex) => {
+                children.map((child: any, childIndex: number) => {
                   return convert(
                     child?.taskIdentifier ?? child,
                     task.itemType === 'TASK' ? VSubtask : VTask,
@@ -191,6 +177,11 @@ function VirtualTaskList({ groupedTasks }: Props) {
                     !!collapseMap[child?.taskIdentifier ?? child],
                     {
                       task: child,
+                      isNextVirtualTaskItemTypeBundle:
+                        children.indexOf(child) === children.length - 1
+                          ? tasksMap[groupTasks[groupTaskIndex + 1]]
+                              ?.itemType === 'BUNDLE'
+                          : false,
                       isTaskTemplate: true,
                       isLastChild:
                         children.indexOf(child) === children.length - 1,
@@ -202,12 +193,10 @@ function VirtualTaskList({ groupedTasks }: Props) {
                         groupTaskIndex === groupTasks.length - 1 &&
                         childIndex === children.length - 1,
                       isLastGroupOfList: index === listGroups?.length - 1,
-                      //  &&
-                      // !!collapseMap[child?.taskIdentifier ?? child],
                     },
                     !!tasksMap[child]?.subtasks.length
                       ? tasksMap[child].subtasks.map(
-                          (subtask: any, subTaskIndex) => {
+                          (subtask: any, subTaskIndex: number) => {
                             return convert(
                               subtask.taskIdentifier,
                               VSubtask,
@@ -225,6 +214,13 @@ function VirtualTaskList({ groupedTasks }: Props) {
                                   childIndex === children.length - 1,
                                 isLastGroupOfList:
                                   index === listGroups?.length - 1,
+                                isNextVirtualTaskItemTypeBundle:
+                                  subTaskIndex ===
+                                    tasksMap[child]?.subtasks.length - 1 &&
+                                  childIndex === children.length - 1
+                                    ? tasksMap[groupTasks[groupTaskIndex + 1]]
+                                        ?.itemType === 'BUNDLE'
+                                    : false,
                               },
                               [],
                             );
@@ -234,12 +230,34 @@ function VirtualTaskList({ groupedTasks }: Props) {
                   );
                 }),
               );
-            }),
+            },
           ),
+          convert(
+            group?.taskGroupIdentifier,
+            VLoadMoreTasks,
+            'LoadMoreTasks',
+            false,
+            { listTaskGroup, bgColor: !(index % 2 === 0) },
+            [],
+          ),
+        ];
+
+        return convert(
+          group.taskGroupIdentifier,
+          VListGroup,
+          'ListGroup',
+          !!collapseMap[group.taskGroupIdentifier],
+          {
+            name: group.groupName,
+            taskGroupIdentifier: group.taskGroupIdentifier,
+            bgColor: !(index % 2 === 0),
+            groupTaskCounts: group?.metricValue,
+            tasksCount: groupTasks?.length,
+            isLastGroupOfList: index === listGroups?.length - 1,
+          },
+          children,
           true,
         );
-        // }),
-        // );
       })
       .concat(
         convert(
@@ -262,7 +280,6 @@ function VirtualTaskList({ groupedTasks }: Props) {
     const xs2 = xs.slice();
     xs2.splice(xs.indexOf(draggableId), 1);
     xs2.splice(destination?.index!, 0, draggableId);
-    // console.log('handleDragEnd', destination, source, xs, xs2);
     dispatch(reorderTasksInGroup({ destination, source }));
   };
 

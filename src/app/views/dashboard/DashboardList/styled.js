@@ -108,32 +108,26 @@ export const DashboardTasksGroupLabelName = styled.span`
 `;
 
 export const DashboardTasksGroupNumericalBadgeContainer = styled.div`
-  width: 20px;
   height: 20px;
-  border-radius: 13px;
-  border: 1px solid
-    ${({ isActive }) => (isActive ? palette.crystalBlue : palette.iron)};
-  color: ${({ isActive }) =>
-    isActive ? palette.crystalBlue : palette.coolGrey1};
-  background: ${({ isActive }) =>
-    isActive ? palette.whiteSmoke : palette.lightGrey2};
-  // padding: 4px 7px 4px 7px;
+  border-radius: 2px;
+  border: 1px solid ${palette.iron};
+  background: ${palette.whiteSmoke};
+  padding: 4px 7px 4px 7px;
   gap: 7px;
   margin-left: 6px;
-  margin-top: 2px;
+  margin-top: 3px;
+  opacity: 0px;
 `;
 
 export const DashboardTasksGroupTaskCount = styled(Typography)`
-  color: ${({ isActive }) =>
-    isActive ? palette.crystalBlue : palette.coolGrey1};
+  color: ${palette.shadowBlue};
   font-family: Outfit;
   font-weight: 500;
-  font-size: 11px;
+  font-size: 12px;
   line-height: 11.19px;
   &.MuiTypography-root {
     text-align: center;
   }
-  margin-top: 4px;
 `;
 
 export const DashboardTasksGroupLabel = styled.p`

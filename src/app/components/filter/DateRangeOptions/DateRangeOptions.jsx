@@ -9,24 +9,32 @@ const DateRangeOptions = ({
   dateEnd,
   onStartDateChange,
   onEndDateChange,
+  setStartDate,
+  startDate,
+  setDueDate,
+  dueDate,
 }) => {
   return (
-    <Container>
-      <OptionLabel>Range</OptionLabel>
-      <DateRangeInputsWrapper>
-        <FilterDateInput
-          date={dateStart}
-          maxDate={dateEnd}
-          onDateChange={onStartDateChange}
-        />
-        <Spacing horizontal={3} />
-        <FilterDateInput
-          date={dateEnd}
-          minDate={dateStart}
-          onDateChange={onEndDateChange}
-        />
-      </DateRangeInputsWrapper>
-    </Container>
+    <DateRangeInputsWrapper>
+      <FilterDateInput
+        start
+        startDate={startDate}
+        setStartDate={setStartDate}
+        // date={dateStart}
+        maxDate={dueDate}
+        // onDateChange={onStartDateChange}
+      />
+      <Spacing horizontal={3} />
+      <FilterDateInput
+        due
+        dueDate={dueDate}
+        setDueDate={setDueDate}
+        // date={dateEnd}
+        minDate={startDate}
+        // onDateChange={onEndDateChange}
+      />
+    </DateRangeInputsWrapper>
+    // </Container>
   );
 };
 

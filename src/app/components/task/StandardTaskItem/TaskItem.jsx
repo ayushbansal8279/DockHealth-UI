@@ -126,6 +126,8 @@ import {
   TootipCompletedByDate,
   TootipCompletedByName,
   AddPlaceholder,
+  ChildTaskTitle,
+  ParentTaskLink,
 } from '../styled';
 import TaskItemText from './customFieldsTaskItemComponents/TaskItemText/TaskItemText';
 import TaskItemDropdown from './customFieldsTaskItemComponents/TaskItemDropdown/TaskItemDropdown';
@@ -133,6 +135,7 @@ import TaskItemDate from './customFieldsTaskItemComponents/TaskItemDate';
 
 import TaskItemComments from './TaskItemComponents/TaskItemComments';
 import { megaFilterSelector } from '@/app/selectors/mega-filter-selectors';
+import SubtaskIcon from '@/app/img/SubtaskIcon';
 
 const { DISABLED, READ_ONLY } = SINGLE_TASK_RESTRICTIONS_OPTIONS;
 
@@ -181,6 +184,8 @@ const TaskItem = React.memo(
     viewSetup,
     isTaskTemplate,
     isWorkflowSubtask,
+    isWidthGreaterThanHudredPercent,
+    isVirtualSubtask,
     isLastChild,
   }) => {
     const task = useSelector((state) => {
@@ -222,7 +227,7 @@ const TaskItem = React.memo(
 
     const patient = parentPatient ?? taskPatient ?? parentTask?.patient;
 
-    const { columns } = useTaskListColumnsConfig();
+    const { columns: listColumns } = useTaskListColumnsConfig();
     const { listName, taskListIdentifier } = taskList || {};
     const isTemplateTask = checkIfTemplateTask(task);
     const isSubtask = !!parentTaskIdentifier;
@@ -231,6 +236,14 @@ const TaskItem = React.memo(
       (accumulator, currentValue) => accumulator || currentValue.isSelected,
       false,
     );
+
+    const columns = listColumns?.map((f) => ({
+      ...f,
+      columnWidth: Math.max(
+        TaskItemColumnWidth[f.identifier]?.MINIMUM || 0,
+        f.columnWidth,
+      ),
+    }));
 
     const [isCompleted, setIsCompleted] = useState(false);
     useEffect(() => {
@@ -708,7 +721,8 @@ const TaskItem = React.memo(
 
     const showPriority = task?.priority && task?.priority !== TaskPriority.NONE;
     const showDecisionRow = task?.intentType === 'DECISION' && !isTemplateTask;
-    const hasParentTaskLabel = isSubtask && !isNestedTask && !!parentTask;
+    const hasParentTaskLabel =
+      isSubtask && !isNestedTask && !!task.parentTaskIdentifier;
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
     const onClickBulkEdit = () =>
@@ -812,7 +826,7 @@ const TaskItem = React.memo(
           >
             {taskListRestrictions?.createTask !== DISABLED && (
               <DotsContainer
-                showDraggableDots={true}
+                showDraggableDots
                 dragHandleProps={dragHandleProps}
               />
             )}
@@ -953,6 +967,16 @@ const TaskItem = React.memo(
       );
     }
 
+    const onParentLabelClick = useCallback(
+      (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        dispatch(openTaskDrawerWithContent(task.parentTask));
+      },
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      [task.parentTask],
+    );
+
     return (
       <>
         <StandardTaskItemPanel
@@ -960,6 +984,7 @@ const TaskItem = React.memo(
           isDragging={isDragging}
           isWorkflowtask={isTaskTemplate}
           isWorkflowSubtask={isWorkflowSubtask}
+          origin={origin}
         >
           <StandardTaskItemContainer
             isTaskTemplate={isTaskTemplate}
@@ -977,6 +1002,9 @@ const TaskItem = React.memo(
             iconColorActive={iconColorActive}
             taskIdentifier={task?.identifier}
             origin={origin}
+            isVirtualSubtask={isVirtualSubtask}
+            isWorkflowSubtask={isWorkflowSubtask}
+            isWidthGreaterThanHudredPercent={isWidthGreaterThanHudredPercent}
           >
             {randerFirstColumnCoverIfNecessary(
               <>
@@ -1073,6 +1101,23 @@ const TaskItem = React.memo(
                       origin={origin}
                       isHover={isCellHover.task}
                     />
+                  )}
+                  {hasParentTaskLabel && (
+                    <Tooltip
+                      placement="bottom"
+                      title={
+                        <>
+                          <ChildTaskTitle>Child Task of: </ChildTaskTitle>
+                          <ParentTaskLink onClick={onParentLabelClick}>
+                            {task.parentTask?.description}
+                          </ParentTaskLink>
+                        </>
+                      }
+                    >
+                      <div style={{ marginRight: '8px' }}>
+                        <SubtaskIcon />
+                      </div>
+                    </Tooltip>
                   )}
                   <div style={{ minWidth: '25px' }}>
                     <Tooltip placement="top" title="Details">

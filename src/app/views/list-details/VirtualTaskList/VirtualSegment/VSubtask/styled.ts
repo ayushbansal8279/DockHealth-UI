@@ -26,9 +26,10 @@ export const VSubtask = styled('div')`
 
 export const QuickAddContainer = styled('div')`
   border-left: 1px solid ${palette.coolGrey3};
-  width: 99%;
+  width: ${({ $width }) => $width};
   margin-bottom: 1px;
-  margin-left: 89.5px;
+  position: sticky;
+  left: 89.5px;
 
   &:hover {
     border-left: 1px solid ${palette.coolGrey2};
@@ -38,10 +39,11 @@ export const QuickAddContainer = styled('div')`
 export const WorkflowQuickAddTaskContainer = styled('div')`
   border-left: 1px solid ${palette.coolGrey3};
   // width: 90%;
+  width: ${({ $width }) => $width};
   margin-left: 54.5px;
   margin-top: -1px;
   margin-bottom: 1px;
-
+  position: sticky;
   &:hover {
     border-left: 1px solid ${palette.coolGrey2};
   }

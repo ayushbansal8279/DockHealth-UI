@@ -23,9 +23,9 @@ import {
 } from 'selectors/user-selectors';
 import Spacing from 'components/common/Spacing';
 import { TaskStatus } from 'helpers/task-helpers';
-import TaskStatusToolbarSelect from 'components/tasklist/TaskStatusToolbarSelect/TaskStatusToolbarSelect';
-import CustomizeToolbarButton from 'components/tasklist/CustomizeToolbarButton/CustomizeToolbarButton';
-import ToolbarButton from 'components/tasklist/ToolbarButton/ToolbarButton';
+import TaskStatusToolbarSelect from '@/app/components/tasklist/list-toolbar-buttons/TaskStatusToolbarSelect/TaskStatusToolbarSelect';
+import CustomizeToolbarButton from '@/app/components/tasklist/list-toolbar-buttons/CustomizeToolbarButton/CustomizeToolbarButton';
+import ToolbarButton from '@/app/components/tasklist/list-toolbar-buttons/ToolbarButton/ToolbarButton';
 // import { printTaskPdf } from 'components/task-pdf/TaskPdfDocument';
 import ViewTypeIcon from 'img/view-type-icon.svg';
 import * as PatientDetailsActions from 'actions/patient-details-actions';
@@ -39,7 +39,7 @@ import {
 } from './styled';
 import { ListViewType, LIST_TYPE_OPTIONS } from '../helpers';
 import HeaderSearch from '@/app/components/template/HeaderSearch/HeaderSearch';
-import MegaFilter from '@/app/components/tasklist/MegaFilter/MegaFilter';
+import MegaFilter from '@/app/components/tasklist/list-toolbar-buttons/MegaFilter/MegaFilter';
 // import { getPatientFilterOptions } from 'actions/patient-details-actions';
 
 import {

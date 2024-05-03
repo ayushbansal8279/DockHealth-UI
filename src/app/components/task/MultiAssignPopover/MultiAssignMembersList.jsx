@@ -7,7 +7,7 @@ import React, {
 } from 'react';
 import Highlighter from 'react-highlight-words';
 import * as OrganizationApi from 'api/organization-api';
-import { arrayOf, func, oneOfType, shape, string } from 'prop-types';
+import { arrayOf, func, oneOfType, shape, string, bool } from 'prop-types';
 import debounce from 'lodash.debounce';
 import UserAvatar from 'components/user/UserAvatar/UserAvatar';
 import MagnifierIcon from 'img/magnifier.svg';
@@ -24,6 +24,7 @@ import GroupAvatar from 'components/user/GroupAvatar/GroupAvatar';
 import { getUsersByName } from 'api/user-api';
 import { organizationSelector } from 'selectors/organization-selectors';
 import Button from 'components/common/v2/Button/Button';
+import { removeArr } from 'helpers/array-helpers';
 import {
   Input,
   InputBox,
@@ -50,6 +51,7 @@ const YouBadge = () => {
 const MultiAssignMembersList = ({
   taskListIdentifiers,
   selectedMembers: savedSelectedMembers,
+  isBulkTasks = false,
   onSelect,
   onError,
   closeModel,
@@ -128,12 +130,44 @@ const MultiAssignMembersList = ({
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const selectMembersWithDebounce = useCallback(
-    debounce((selection) => {
-      onSelect(selection.map((s) => ({ ...s, userIdentifier: s.identifier })));
-      // eslint-disable-next-line no-unused-expressions
-      inputReference.current?.focus();
+    debounce((newSelectedMembers, selectedOption) => {
+      // NOTE: BulkTasks case and SingleTask case use different API calls,
+      // so the logic here is totally different.
+      if (isBulkTasks) {
+        if (selectedOption === UNASSIGNED_KEY) {
+          onSelect(null, 'unassign_all');
+          return;
+        }
+
+        if (selectedMembers.length > newSelectedMembers.length) {
+          // unassigned a user
+          const unassignedMembers = removeArr(
+            selectedMembers,
+            newSelectedMembers,
+            'userIdentifier',
+          );
+          onSelect(unassignedMembers, 'unassignment');
+          return;
+        }
+
+        // assigned a new user
+        const assignedMembers = removeArr(
+          newSelectedMembers,
+          selectedMembers,
+          'userIdentifier',
+        );
+        onSelect(assignedMembers, 'assignment');
+        return;
+      }
+
+      onSelect(
+        newSelectedMembers.map((s) => ({
+          ...s,
+          userIdentifier: s.identifier,
+        })),
+      );
     }, 700),
-    [],
+    [selectedMembers],
   );
 
   useEffect(() => {
@@ -220,18 +254,18 @@ const MultiAssignMembersList = ({
       } else {
         membersToReturn = [...selectedMembers, selectedOption];
       }
-      selectMembersWithDebounce(membersToReturn);
+      selectMembersWithDebounce(membersToReturn, selectedOption);
+      inputReference.current?.focus();
       setSelectedMembers(membersToReturn);
     },
     [membersOptions, selectMembersWithDebounce, selectedMembers],
   );
 
-  const handleOptionSendClick = () => {
+  const handleClose = () => {
     if (taskDrawer) {
       closePopup(false);
       setValue('');
     }
-    selectMembersWithDebounce(selectedMembers);
     closeModel();
   };
 
@@ -405,8 +439,8 @@ const MultiAssignMembersList = ({
           )}
       </ListContainer>
       <div style={{ padding: '5px' }}>
-        <Button variant="primary-red" onClick={handleOptionSendClick}>
-          Apply
+        <Button variant="primary-red" onClick={handleClose}>
+          Assign Users
         </Button>
       </div>
     </div>
@@ -426,6 +460,7 @@ MultiAssignMembersList.propTypes = {
     }),
   ).isRequired,
   onSelect: func.isRequired,
+  isBulkTasks: bool,
   onError: func,
   additionalMembers: arrayOf(
     shape({
@@ -441,6 +476,7 @@ MultiAssignMembersList.propTypes = {
 
 MultiAssignMembersList.defaultProps = {
   onError: null,
+  isBulkTasks: false,
 };
 
 export default MultiAssignMembersList;

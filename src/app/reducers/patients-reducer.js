@@ -124,6 +124,35 @@ const PatientsReducer = (state = initialState, action) => {
       };
     }
 
+    case ActionTypes.SILENTLY_GET_CURRENT_PATIENTS_SUCCESS: {
+      const patients = state.currentPatientsList.patients;
+      const newPatients = action.patients;
+
+      // copy `isSelected` field from patients to newPatients
+      if (!!patients && !!newPatients) {
+        const selectedPatientsHash = {};
+        for (const patient of patients) {
+          if (patient.isSelected) {
+            selectedPatientsHash[patient.patientIdentifier] = true;
+          }
+        }
+
+        for (const patient of newPatients) {
+          if (selectedPatientsHash[patient.patientIdentifier]) {
+            patient.isSelected = true;
+          }
+        }
+      }
+
+      return {
+        ...state,
+        currentPatientsList: {
+          ...state.currentPatientsList,
+          patients: newPatients,
+        },
+      };
+    }
+
     case ActionTypes.GET_CURRENT_PATIENTS_FAILURE: {
       return {
         ...state,

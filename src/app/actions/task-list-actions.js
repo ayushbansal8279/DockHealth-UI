@@ -16,6 +16,11 @@ export function initializeTaskListState(
   };
 }
 
+export const updateTaskStatusToFilter = (status) => ({
+  type: ActionTypes.UPDATE_TASK_STATUS_TO_FILTER,
+  payload: status,
+});
+
 export function clearTaskListState() {
   return {
     type: ActionTypes.CLEAR_TASK_LIST_STATE,
