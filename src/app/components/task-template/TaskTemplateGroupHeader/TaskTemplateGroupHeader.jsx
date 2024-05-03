@@ -113,6 +113,10 @@ const TaskTemplateGroupHeader = ({
   iconColorActive,
   highlightedValue,
   origin,
+  isNextVirtualTaskItemTypeBundle,
+  isLastTaskOfGroup,
+  isNextTaskItemTypeBundle,
+  // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const {
     name,
@@ -708,6 +712,10 @@ const TaskTemplateGroupHeader = ({
     <TaskTemplateGroupHeaderContainer
       isSelected={isBundleSelected}
       isOpen={origin === 'PATIENT' ? isOpen : virtualListWorkflowOpen}
+      isNextVirtualTaskItemTypeBundle={isNextVirtualTaskItemTypeBundle}
+      isLastTaskOfGroup={isLastTaskOfGroup}
+      origin={origin}
+      isNextTaskItemTypeBundle={isNextTaskItemTypeBundle}
     >
       {randerFirstColumnCoverIfNecessary(
         <>

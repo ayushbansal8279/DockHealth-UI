@@ -55,6 +55,10 @@ const Task = React.memo(
     isVirtualTask,
     isVirtualSubtask,
     $width,
+    isNextVirtualTaskItemTypeBundle,
+    isLastTaskOfGroup,
+    isNextTaskItemTypeBundle,
+    isAddingTask,
     ...restProps
   }) => {
     const parentTaskReference = useRef(null);
@@ -234,6 +238,8 @@ const Task = React.memo(
         origin={origin}
         isLastChild={isLastChild}
         $width={$width}
+        isNextTaskItemTypeBundle={isNextTaskItemTypeBundle}
+        isAddingTask={isAddingTask}
       >
         <TaskContainer ref={innerRef}>
           <TaskItem
@@ -264,6 +270,8 @@ const Task = React.memo(
             isWidthGreaterThanHudredPercent={$width}
             pageBackground={pageBackground}
             {...restProps}
+            isNextVirtualTaskItemTypeBundle={isNextVirtualTaskItemTypeBundle}
+            isLastTaskOfGroup={isLastTaskOfGroup}
           />
         </TaskContainer>
         {showComments && window.disabledVirtualTaskList && (

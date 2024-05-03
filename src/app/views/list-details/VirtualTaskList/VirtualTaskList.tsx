@@ -190,7 +190,6 @@ function VirtualTaskList({ groupedTasks }: Props) {
                         groupTaskIndex === groupTasks.length - 1 &&
                         childIndex === children.length - 1,
                       isLastSubtaskParentTask:
-                        groupTaskIndex === groupTasks.length - 1 &&
                         childIndex === children.length - 1,
                       isLastGroupOfList: index === listGroups?.length - 1,
                     },
@@ -206,11 +205,12 @@ function VirtualTaskList({ groupedTasks }: Props) {
                                 task: subtask,
                                 bgColor: !(index % 2 === 0),
                                 isLastTaskOfGroup:
+                                  groupTaskIndex === groupTasks.length - 1 &&
+                                  subTaskIndex ===
+                                    tasksMap[child]?.subtasks.length - 1,
+                                isLastSubtaskParentTask:
                                   subTaskIndex ===
                                     tasksMap[child]?.subtasks.length - 1 &&
-                                  childIndex === children.length - 1,
-                                isLastSubtaskParentTask:
-                                  groupTaskIndex === groupTasks.length - 1 &&
                                   childIndex === children.length - 1,
                                 isLastGroupOfList:
                                   index === listGroups?.length - 1,
@@ -221,6 +221,7 @@ function VirtualTaskList({ groupedTasks }: Props) {
                                     ? tasksMap[groupTasks[groupTaskIndex + 1]]
                                         ?.itemType === 'BUNDLE'
                                     : false,
+                                isWorkflowSubTask: true,
                               },
                               [],
                             );
