@@ -36,7 +36,6 @@ const NewFilterContainer = ({
   filteredData,
   setFilteredData,
   isQuickFilterEdit,
-  onClear,
   setSelectedQuickFilter,
 }) => {
   const popoverReference = useRef(null);
@@ -86,7 +85,6 @@ const NewFilterContainer = ({
 
   const clearFilter = () => {
     setFinalFilter({});
-    onClear();
     setSelectedQuickFilter('');
   };
 
@@ -143,7 +141,7 @@ const NewFilterContainer = ({
           onFilterSelect={handleClick}
         />
         {Object.keys(finalFilter).length > 0 && (
-          <ClearFilter onClick={clearFilter}>Clear Filter</ClearFilter>
+          <ClearFilter onClick={clearFilter}>Clear Selection</ClearFilter>
         )}
       </FilterButtonWrapper>
       {Object.keys(finalFilter).length > 0 && !isQuickFilterEdit && (

@@ -175,7 +175,6 @@ const MegaFilter = ({
             filteredData={filteredData}
             customFinalFilter={customFinalFilter}
             setCustomFinalFilter={setCustomFinalFilter}
-            onClear={clearFilters}
             setSelectedQuickFilter={setSelectedQuickFilter}
           ></NewFilterContainer>
           <Box p={1} />
