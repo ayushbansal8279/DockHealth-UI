@@ -58,6 +58,7 @@ const Task = React.memo(
     isNextVirtualTaskItemTypeBundle,
     isLastTaskOfGroup,
     isNextTaskItemTypeBundle,
+    isAddingTask,
     ...restProps
   }) => {
     const parentTaskReference = useRef(null);
@@ -238,6 +239,7 @@ const Task = React.memo(
         isLastChild={isLastChild}
         $width={$width}
         isNextTaskItemTypeBundle={isNextTaskItemTypeBundle}
+        isAddingTask={isAddingTask}
       >
         <TaskContainer ref={innerRef}>
           <TaskItem

@@ -242,6 +242,7 @@ const TaskTemplateGroup = ({
                               isBundleTask
                               isTaskTemplate
                               isLastChild={index === filteredTasks?.length - 1}
+                              isAddingTask={isAddingTask}
                               isNextTaskItemTypeBundle={
                                 isNextTaskItemTypeBundle
                               }
@@ -263,7 +264,11 @@ const TaskTemplateGroup = ({
                 </Droppable>
               </DragDropContext>
               {isAddingTask && (
-                <QuickAddInputWrapper>
+                <QuickAddInputWrapper
+                  isNextTaskItemTypeBundle={isNextTaskItemTypeBundle}
+                  isAddingTask={isAddingTask}
+                  origin={origin}
+                >
                   <QuickAddTaskInput
                     autofocus
                     disableMentions
