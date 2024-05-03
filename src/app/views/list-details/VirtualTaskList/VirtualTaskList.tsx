@@ -232,15 +232,20 @@ function VirtualTaskList({ groupedTasks }: Props) {
               );
             },
           ),
-          convert(
-            group?.taskGroupIdentifier,
-            VLoadMoreTasks,
-            'LoadMoreTasks',
-            false,
-            { listTaskGroup, bgColor: !(index % 2 === 0) },
-            [],
-          ),
         ];
+
+        if (listTaskGroup?.hasMore) {
+          children.push(
+            convert(
+              uniqueId().toString(),
+              VLoadMoreTasks,
+              'LoadMoreTasks',
+              false,
+              { listTaskGroup, bgColor: !(index % 2 === 0) },
+              [],
+            ),
+          );
+        }
 
         return convert(
           group.taskGroupIdentifier,
