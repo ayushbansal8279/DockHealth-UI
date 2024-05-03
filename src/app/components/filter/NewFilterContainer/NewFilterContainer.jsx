@@ -4,12 +4,10 @@ import {
 } from '@/app/modal/components/ModalButton/ModalButtons';
 import { Box, MenuItem, Select } from '@mui/material';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-// import FilterIcon from 'img/Group_Filter.svg';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import {
   BottomWrapper,
   FilterButtonWrapper,
-  FilterLableContainer,
   ClearFilter,
   Divider,
   BoxContainer,
@@ -17,17 +15,9 @@ import {
   AddFilterRotatableChevronButtonWrapper,
   AddFilterRotatableChevronButtonLabel,
   AddFilterButtonLabel,
-  // FilterHorizontalLineContainer,
-  // FilterHorizontalLine,
-  ClearFilterButton,
-  ClearFilterLabel,
 } from './styled';
 import FilterSelect from '../FilterSelect/FilterSelect';
-import { useDispatch, useSelector } from 'react-redux';
 import { selectFilterOption } from 'helpers/filter-options-helpers';
-import { createQuickFilter } from 'actions/mega-filter-actions';
-import { currentTaskListSelector } from 'selectors/task-list-selectors';
-import { getUniqueQuickFilterLabelName } from '../CustomFilters/helpers';
 import RotatableChevron from '../../common/RotatableChevron/RotatableChevron';
 import palette from '@/app/styles/palette';
 import useBoolean from '@/app/hooks/useBoolean';
@@ -43,24 +33,29 @@ const NewFilterContainer = ({
   openPopover,
   setSavePopupOpen,
   handleSaveQuickFilter,
-  quickFilterIdentifier,
   filteredData,
   setFilteredData,
+  isQuickFilterEdit,
+  onClear,
+  setSelectedQuickFilter,
 }) => {
   const popoverReference = useRef(null);
   const [isPopoverOpen, openAddFilterPopover, closeAddFilterPopover] =
     useBoolean(false);
-  const [isUpdate, setUpdate] = useState(false);
+  const [isDisable, setDisable] = useState(false);
 
   useEffect(() => {
     const data = {};
     for (const key in finalFilter) {
       if (finalFilter[key].length > 0) {
+        setDisable(true);
         data[key] = { options: finalFilter[key].map((item) => item.key) };
+      } else {
+        setDisable(false);
       }
     }
     setFilteredData(data);
-  },[finalFilter])
+  }, [finalFilter]);
 
   useEffect(() => {
     setMenuOption(filters?.map((item) => ({ label: item.label, id: item.id })));
@@ -81,12 +76,6 @@ const NewFilterContainer = ({
   };
 
   const handleApplyFinalFilter = () => {
-    const data = {};
-    for (const key in finalFilter) {
-      if (finalFilter[key].length > 0) {
-        data[key] = { options: finalFilter[key].map((item) => item.key) };
-      }
-    }
     onSelectedFiltersChange(selectFilterOption('', '', filteredData));
     openPopover(false);
   };
@@ -97,28 +86,8 @@ const NewFilterContainer = ({
 
   const clearFilter = () => {
     setFinalFilter({});
-  };
-
-  useEffect(() => {
-    if (quickFilterIdentifier !== '') {
-      setUpdate(true);
-    } else {
-      setUpdate(false);
-    }
-  }, [quickFilterIdentifier]);
-
-  const updateFilter = () => {
-    if (isUpdate) {
-      const data = {};
-      for (const key in finalFilter) {
-        if (finalFilter[key].length > 0) {
-          data[key] = { options: finalFilter[key].map((item) => item.key) };
-        }
-      }
-      handleSaveQuickFilter(filteredData);
-    } else {
-      setSavePopupOpen(true);
-    }
+    onClear();
+    setSelectedQuickFilter('');
   };
 
   return (
@@ -177,32 +146,27 @@ const NewFilterContainer = ({
           <ClearFilter onClick={clearFilter}>Clear Filter</ClearFilter>
         )}
       </FilterButtonWrapper>
-      <Divider />
-      <BottomWrapper>
-        {!isPopoverOpen && Object.keys(finalFilter).length === 0 && (
-          <ClearFilterButton onClick={clearFilter}>
-            <ClearFilterLabel>Clear Filters</ClearFilterLabel>
-          </ClearFilterButton>
-        )}
-        {Object.keys(finalFilter).length > 0 && (
-          <>
+      {Object.keys(finalFilter).length > 0 && !isQuickFilterEdit && (
+        <>
+          <Divider />
+          <BottomWrapper>
             <CancelButton
-              disabled={Object.keys(finalFilter).length === 0}
-              onClick={updateFilter}
+              disabled={!isDisable}
+              onClick={() => setSavePopupOpen(true)}
               style={{ width: '270px' }}
             >
-              {isUpdate ? 'Update Filter' : 'Save Filter'}
+              Save Filter
             </CancelButton>
             <ConfirmButton
-              disabled={Object.keys(finalFilter).length === 0}
+              disabled={!isDisable}
               style={{ width: '270px' }}
               onClick={handleApplyFinalFilter}
             >
               Apply Filter
             </ConfirmButton>
-          </>
-        )}
-      </BottomWrapper>
+          </BottomWrapper>
+        </>
+      )}
     </>
   );
 };
