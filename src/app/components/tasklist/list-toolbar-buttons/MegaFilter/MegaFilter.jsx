@@ -43,6 +43,7 @@ const MegaFilter = ({
   const [menuOptions, setMenuOption] = useState([]);
   const [finalFilter, setFinalFilter] = useState({});
   const [customFinalFilter, setCustomFinalFilter] = useState({});
+  const [selectedCustomFilter, setSelectedCustomFilter] = useState({});
   const [isSavePopupOpen, setSavePopupOpen] = useState(false);
   const [editIdentifier, setEditIdentifier] = useState('');
   const [filteredData, setFilteredData] = useState({});
@@ -106,6 +107,7 @@ const MegaFilter = ({
             setSelectedQuickFilter={setSelectedQuickFilter}
             customFilteredData={customFilteredData}
             setCustomFilteredData={setCustomFilteredData}
+            selectedCustomFilter={selectedCustomFilter}
           ></SaveFilterPopup>
           {/* Kept here for Future Refrence */}
           {/* <FilterHeader
@@ -155,6 +157,7 @@ const MegaFilter = ({
               selectedQuickFilter={selectedQuickFilter}
               setSelectedQuickFilter={setSelectedQuickFilter}
               clearFilters={clearFilters}
+              setSelectedCustomFilter={setSelectedCustomFilter}
             />
           ) : (
             <FilterTableLoader />

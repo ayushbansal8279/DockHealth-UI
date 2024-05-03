@@ -151,13 +151,20 @@ const NewFilterContainer = ({
             <CancelButton
               disabled={!isDisable}
               onClick={() => setSavePopupOpen(true)}
-              style={{ width: '270px' }}
+              style={{
+                width: '270px',
+                borderColor: !isDisable && palette.shadowBlue,
+              }}
             >
               Save Filter
             </CancelButton>
             <ConfirmButton
               disabled={!isDisable}
-              style={{ width: '270px' }}
+              style={{
+                width: '270px',
+                background: !isDisable && palette.shadowBlue,
+                color: !isDisable && palette.white,
+              }}
               onClick={handleApplyFinalFilter}
             >
               Apply Filter
