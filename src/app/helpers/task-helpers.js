@@ -15,9 +15,20 @@ import unless from 'ramda/src/unless';
 import palette from 'styles/palette';
 
 export const TaskStatus = {
+  ALL: '',
   INCOMPLETE: 'INCOMPLETE',
   COMPLETE: 'COMPLETE',
 };
+
+export const TaskStatusLabel = {
+  [TaskStatus.ALL]: 'All Tasks',
+  [TaskStatus.INCOMPLETE]: 'Incomplete Tasks',
+  [TaskStatus.COMPLETE]: 'Completed Tasks',
+};
+
+export const TaskStatusSelectOptions = Object.entries(TaskStatusLabel).map(
+  ([value, label]) => ({ value, label }),
+);
 
 export const TaskItemType = {
   BUNDLE: 'BUNDLE',

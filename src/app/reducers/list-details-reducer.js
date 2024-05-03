@@ -1,16 +1,10 @@
-/* eslint-disable unicorn/no-nested-ternary */
 import * as ActionTypes from 'actions/action-types';
-// import pipe from 'ramda/src/pipe';
-// import prop from 'ramda/src/prop';
-// import uniqBy from 'ramda/src/uniqBy';
 import move from 'ramda/src/move';
 import { reorderTasksForWorkflow } from 'helpers/workflow-helpers';
 import { TaskGroupType, TaskItemType } from 'helpers/task-helpers';
 import { updateBundleInList } from 'helpers/tasklist-helpers';
 import { updateTasksStateCallback, updateTasksMap } from './reducer-helper';
 import TaskBaseReducer from './task-base-reducer';
-
-// const dedupe = pipe(uniqBy(prop('identifier')));
 
 const initialState = {
   taskListIdentifier: null,
@@ -99,7 +93,6 @@ function updateBundleInState(bundleIdentifier, updatedData, state) {
   };
 }
 
-// eslint-disable-next-line sonarjs/cognitive-complexity
 const ListDetailsReducer = (state = initialState, action) => {
   // eslint-disable-next-line sonarjs/max-switch-cases
   switch (action.type) {
@@ -272,8 +265,7 @@ const ListDetailsReducer = (state = initialState, action) => {
     }
 
     case ActionTypes.REQUEST_TASKLIST_GROUP_TASKS_SUCCESS: {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { groupOfTasks, refresh, startPosition = 0 } = action;
+      const { groupOfTasks, startPosition = 0 } = action;
 
       const taskItems = groupOfTasks?.taskGroups[0]?.tasks;
       let newMap = {};
@@ -287,14 +279,12 @@ const ListDetailsReducer = (state = initialState, action) => {
       return {
         ...state,
         groupedTasks: {
-          // taskGroups: listTaskGroups,
-          taskGroups: state.groupedTasks.taskGroups.map((g) => {
+          taskGroups: state.groupedTasks.taskGroups?.map((g) => {
             const matchedGroup = groupOfTasks.taskGroups.find(
               (updatedGroup) =>
                 g.groupIdentifier === updatedGroup.groupIdentifier,
             );
             if (matchedGroup) {
-              // eslint-disable-next-line sonarjs/prefer-immediate-return
               const grpState = {
                 ...g,
                 ...matchedGroup,
@@ -345,7 +335,6 @@ const ListDetailsReducer = (state = initialState, action) => {
         isFetching: true,
         tasks: [],
         completedTasks: [],
-        // showingCompletedTasks: false,
       };
     }
 

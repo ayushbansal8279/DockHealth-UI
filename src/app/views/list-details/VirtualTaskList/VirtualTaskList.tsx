@@ -110,18 +110,125 @@ function VirtualTaskList({ groupedTasks }: Props) {
 
   const nodes: Node[] = useMemo(() => {
     return listGroups
-      .map((group, index) => {
-        // todo error: groupedTasks[i].groupIdentifier is changed to 'DEFAULT' somewhere
-        const groupTasks = groupedTasks
-          ? groupedTasks.find(
-              (groupedTask) =>
-                groupedTask.groupIdentifier === group.taskGroupIdentifier,
-            )?.tasks ?? []
-          : [];
-        const listTaskGroup = groupedTasks.find(
+      .map((group, index: number) => {
+        const groupTasks =
+          groupedTasks?.find(
+            (groupedTask) =>
+              groupedTask.groupIdentifier === group.taskGroupIdentifier,
+          )?.tasks ?? [];
+
+        const listTaskGroup = groupedTasks?.find(
           (groupedTask) =>
             groupedTask.groupIdentifier === group.taskGroupIdentifier,
         );
+
+        const children = [
+          convert(
+            uniqueId().toString(),
+            VQuickAddTask,
+            'QuickAddTask',
+            false,
+            {
+              taskGroupIdentifier: group.taskGroupIdentifier,
+              bgColor: !(index % 2 === 0),
+            },
+            [],
+            true,
+          ),
+          convert(
+            uniqueId().toString(),
+            VTaskHeader,
+            'TaskHeader',
+            false,
+            {
+              bgColor: !(index % 2 === 0),
+              groupWithZeroTask: groupTasks?.length === 0,
+            },
+            [],
+            true,
+          ),
+          ...groupTasks.map(
+            (taskIdentifier: string, groupTaskIndex: number) => {
+              const task = tasksMap[taskIdentifier];
+              const children =
+                task.itemType === 'TASK' ? task.subtasks : task.tasks;
+              return convert(
+                taskIdentifier,
+                VTask,
+                'Task',
+                !!collapseMap[taskIdentifier],
+                {
+                  task,
+                  bgColor: !(index % 2 === 0),
+                  isLastTaskOfGroup: groupTaskIndex === groupTasks.length - 1,
+                  isLastGroupOfList: index === listGroups?.length - 1,
+                },
+                children.map((child: any, childIndex: number) => {
+                  return convert(
+                    child?.taskIdentifier ?? child,
+                    task.itemType === 'TASK' ? VSubtask : VTask,
+                    task.itemType === 'TASK' ? 'Subtask' : 'TaskOfBundle',
+                    !!collapseMap[child?.taskIdentifier ?? child],
+                    {
+                      task: child,
+                      isTaskTemplate: true,
+                      isLastChild:
+                        children.indexOf(child) === children.length - 1,
+                      bgColor: !(index % 2 === 0),
+                      isLastTaskOfGroup:
+                        groupTaskIndex === groupTasks.length - 1 &&
+                        childIndex === children.length - 1,
+                      isLastSubtaskParentTask:
+                        groupTaskIndex === groupTasks.length - 1 &&
+                        childIndex === children.length - 1,
+                      isLastGroupOfList: index === listGroups?.length - 1,
+                    },
+                    !!tasksMap[child]?.subtasks.length
+                      ? tasksMap[child].subtasks.map(
+                          (subtask: any, subTaskIndex: number) => {
+                            return convert(
+                              subtask.taskIdentifier,
+                              VSubtask,
+                              'Subtask',
+                              false,
+                              {
+                                task: subtask,
+                                bgColor: !(index % 2 === 0),
+                                isLastTaskOfGroup:
+                                  subTaskIndex ===
+                                    tasksMap[child]?.subtasks.length - 1 &&
+                                  childIndex === children.length - 1,
+                                isLastSubtaskParentTask:
+                                  groupTaskIndex === groupTasks.length - 1 &&
+                                  childIndex === children.length - 1,
+                                isLastGroupOfList:
+                                  index === listGroups?.length - 1,
+                              },
+                              [],
+                            );
+                          },
+                        )
+                      : [],
+                  );
+                }),
+              );
+            },
+          ),
+        ];
+
+        if (listTaskGroup) {
+          children.concat(
+            convert(
+              group?.taskGroupIdentifier,
+              VLoadMoreTasks,
+              'LoadMoreTasks',
+              false,
+              { listTaskGroup, bgColor: !(index % 2 === 0) },
+              [],
+            ),
+          );
+        }
+
         return convert(
           group.taskGroupIdentifier,
           VListGroup,
@@ -135,117 +242,9 @@ function VirtualTaskList({ groupedTasks }: Props) {
             tasksCount: groupTasks?.length,
             isLastGroupOfList: index === listGroups?.length - 1,
           },
-          [
-            convert(
-              uniqueId().toString(),
-              VQuickAddTask,
-              'QuickAddTask',
-              false,
-              {
-                taskGroupIdentifier: group.taskGroupIdentifier,
-                bgColor: !(index % 2 === 0),
-              },
-              [],
-              true,
-            ),
-            convert(
-              uniqueId().toString(),
-              VTaskHeader,
-              'TaskHeader',
-              false,
-              {
-                bgColor: !(index % 2 === 0),
-                groupWithZeroTask: groupTasks?.length === 0,
-              },
-              [],
-              true,
-            ),
-          ]
-            .concat(
-              ...groupTasks.map((taskIdentifier: string, groupTaskIndex) => {
-                const task = tasksMap[taskIdentifier];
-                const children =
-                  task.itemType === 'TASK' ? task.subtasks : task.tasks;
-                return convert(
-                  taskIdentifier,
-                  VTask,
-                  'Task',
-                  !!collapseMap[taskIdentifier],
-                  {
-                    task,
-                    bgColor: !(index % 2 === 0),
-                    isLastTaskOfGroup: groupTaskIndex === groupTasks.length - 1,
-                    isLastGroupOfList: index === listGroups?.length - 1,
-                    // &&
-                    // !!collapseMap[taskIdentifier],
-                  },
-                  children.map((child: any, childIndex) => {
-                    return convert(
-                      child?.taskIdentifier ?? child,
-                      task.itemType === 'TASK' ? VSubtask : VTask,
-                      task.itemType === 'TASK' ? 'Subtask' : 'TaskOfBundle',
-                      !!collapseMap[child?.taskIdentifier ?? child],
-                      {
-                        task: child,
-                        isTaskTemplate: true,
-                        isLastChild:
-                          children.indexOf(child) === children.length - 1,
-                        bgColor: !(index % 2 === 0),
-                        isLastTaskOfGroup:
-                          groupTaskIndex === groupTasks.length - 1 &&
-                          childIndex === children.length - 1,
-                        isLastSubtaskParentTask:
-                          groupTaskIndex === groupTasks.length - 1 &&
-                          childIndex === children.length - 1,
-                        isLastGroupOfList: index === listGroups?.length - 1,
-                        //  &&
-                        // !!collapseMap[child?.taskIdentifier ?? child],
-                      },
-                      !!tasksMap[child]?.subtasks.length
-                        ? tasksMap[child].subtasks.map(
-                            (subtask: any, subTaskIndex) => {
-                              return convert(
-                                subtask.taskIdentifier,
-                                VSubtask,
-                                'Subtask',
-                                false,
-                                {
-                                  task: subtask,
-                                  bgColor: !(index % 2 === 0),
-                                  isLastTaskOfGroup:
-                                    subTaskIndex ===
-                                      tasksMap[child]?.subtasks.length - 1 &&
-                                    childIndex === children.length - 1,
-                                  isLastSubtaskParentTask:
-                                    groupTaskIndex === groupTasks.length - 1 &&
-                                    childIndex === children.length - 1,
-                                  isLastGroupOfList:
-                                    index === listGroups?.length - 1,
-                                },
-                                [],
-                              );
-                            },
-                          )
-                        : [],
-                    );
-                  }),
-                );
-              }),
-            )
-            .concat(
-              convert(
-                group?.taskGroupIdentifier,
-                VLoadMoreTasks,
-                'LoadMoreTasks',
-                false,
-                { listTaskGroup: listTaskGroup, bgColor: !(index % 2 === 0) },
-                [],
-              ),
-            ),
+          children,
           true,
         );
-        // }),
-        // );
       })
       .concat(
         convert(
