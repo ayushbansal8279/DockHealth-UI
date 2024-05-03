@@ -263,6 +263,7 @@ function VSubtask(
                       : '100%'
                     : `${visibleWidth - 85}px`
                 }
+                subtaskQuickAddOpen={subtaskQuickAddOpen}
               >
                 <QuickAddInputWrapper>
                   <QuickAddTaskInput
