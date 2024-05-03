@@ -1,12 +1,28 @@
 import React, { ChangeEvent, FormEvent, useState } from 'react';
 import Button from 'components/common/v2/Button/Button';
 import {
-  FormControl,
+  Box,
+  Divider,
   FormControlLabel,
-  Radio,
-  RadioGroup,
+  FormGroup,
+  Switch,
 } from '@mui/material';
-import { TaskStatusSelectOptions } from '@/app/helpers/task-helpers';
+import { TaskStatus, TaskStatusLabel } from '@/app/helpers/task-helpers';
+import {
+  TaskStatusFormData,
+  convertTaskStatusFormDataToStatus,
+} from './helpers';
+
+const options = [
+  {
+    name: 'incomplete',
+    label: TaskStatusLabel[TaskStatus.INCOMPLETE],
+  },
+  {
+    name: 'complete',
+    label: TaskStatusLabel[TaskStatus.COMPLETE],
+  },
+] as const;
 
 interface Props {
   defaultValue: string;
@@ -17,40 +33,49 @@ export default function TaskStatusSelectForm({
   defaultValue,
   onSubmit,
 }: Props) {
-  const [value, setValue] = useState(defaultValue);
+  const [formData, setFormData] = useState<TaskStatusFormData>({
+    incomplete: [TaskStatus.INCOMPLETE, TaskStatus.ALL].includes(defaultValue),
+    complete: [TaskStatus.COMPLETE, TaskStatus.ALL].includes(defaultValue),
+  });
+
+  const applyDisabled = !formData.incomplete && !formData.complete;
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setValue((event.target as HTMLInputElement).value);
+    const { name, checked } = event.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: checked,
+    }));
   };
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    onSubmit(value);
+    onSubmit(convertTaskStatusFormDataToStatus(formData));
   };
 
   return (
     <form onSubmit={handleSubmit}>
-      <FormControl sx={{ p: 2 }}>
-        <RadioGroup
-          aria-labelledby="status-select"
-          name="status-select"
-          value={value}
-          onChange={handleChange}
-          sx={{ mb: 1 }}
-        >
-          {TaskStatusSelectOptions.map((option) => (
+      <Box sx={{ p: 2 }}>
+        <FormGroup>
+          {options.map((option) => (
             <FormControlLabel
-              key={option.value}
-              value={option.value}
-              control={<Radio />}
+              key={option.name}
+              control={
+                <Switch
+                  name={option.name}
+                  checked={formData[option.name]}
+                  onChange={handleChange}
+                />
+              }
               label={option.label}
             />
           ))}
-        </RadioGroup>
-        <Button type="submit" variant="primary-red">
+        </FormGroup>
+        <Divider sx={{ my: 1 }} />
+        <Button type="submit" variant="primary-red" disabled={applyDisabled}>
           Apply
         </Button>
-      </FormControl>
+      </Box>
     </form>
   );
 }

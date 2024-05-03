@@ -26,10 +26,6 @@ export const TaskStatusLabel = {
   [TaskStatus.COMPLETE]: 'Completed Tasks',
 };
 
-export const TaskStatusSelectOptions = Object.entries(TaskStatusLabel).map(
-  ([value, label]) => ({ value, label }),
-);
-
 export const TaskItemType = {
   BUNDLE: 'BUNDLE',
   TASK: 'TASK',
@@ -75,10 +71,6 @@ export function getPriorityColor(priority) {
     }
     case TaskPriority.MEDIUM:
       return palette.orangeJulius;
-    // case TaskPriority.LOW:
-    //   return palette.bananaHammock;
-    // case TaskPriority.NONE:
-    // eslint-disable-next-line unicorn/no-useless-switch-case
     case TaskPriority.LOW:
     default: {
       return 'transparent';

@@ -36,8 +36,7 @@ const ListDetailsView = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const savedStatus = sessionStorage.getItem(`status${taskListIdentifier}`);
-    dispatch(initializeTaskListState(taskListIdentifier, savedStatus));
+    dispatch(initializeTaskListState(taskListIdentifier));
   }, [dispatch, taskListIdentifier]);
 
   useEffect(() => {
