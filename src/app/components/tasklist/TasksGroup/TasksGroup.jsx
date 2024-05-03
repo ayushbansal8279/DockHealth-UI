@@ -277,7 +277,7 @@ const TasksGroup = ({
 
   return (
     <TasksGroupContainer
-      $width={percentage > 100 ? `${droppableHeaderWidth + 70}px` : '100%'}
+      $width={percentage > 90 ? `${droppableHeaderWidth + 70}px` : '100%'}
       // $width={droppableHeaderWidth ? `${droppableHeaderWidth}px` : '100%'}
       bgColor={bgColor}
     >
