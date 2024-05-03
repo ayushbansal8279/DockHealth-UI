@@ -36,7 +36,6 @@ const NewFilterContainer = ({
   filteredData,
   setFilteredData,
   isQuickFilterEdit,
-  onClear,
   setSelectedQuickFilter,
 }) => {
   const popoverReference = useRef(null);
@@ -86,7 +85,6 @@ const NewFilterContainer = ({
 
   const clearFilter = () => {
     setFinalFilter({});
-    onClear();
     setSelectedQuickFilter('');
   };
 
@@ -143,7 +141,7 @@ const NewFilterContainer = ({
           onFilterSelect={handleClick}
         />
         {Object.keys(finalFilter).length > 0 && (
-          <ClearFilter onClick={clearFilter}>Clear Filter</ClearFilter>
+          <ClearFilter onClick={clearFilter}>Clear Selection</ClearFilter>
         )}
       </FilterButtonWrapper>
       {Object.keys(finalFilter).length > 0 && !isQuickFilterEdit && (
@@ -153,13 +151,20 @@ const NewFilterContainer = ({
             <CancelButton
               disabled={!isDisable}
               onClick={() => setSavePopupOpen(true)}
-              style={{ width: '270px' }}
+              style={{
+                width: '270px',
+                borderColor: !isDisable && palette.shadowBlue,
+              }}
             >
               Save Filter
             </CancelButton>
             <ConfirmButton
               disabled={!isDisable}
-              style={{ width: '270px' }}
+              style={{
+                width: '270px',
+                background: !isDisable && palette.shadowBlue,
+                color: !isDisable && palette.white,
+              }}
               onClick={handleApplyFinalFilter}
             >
               Apply Filter

@@ -21,6 +21,7 @@ import BlankCircle from 'img/Checks-Radio-Buttons-Blank.svg';
 import Spacing from '../../common/Spacing';
 import { getUniqueQuickFilterLabelName } from '../CustomFilters/helpers';
 import NewFilterContainer from '../NewFilterContainer/NewFilterContainer';
+import palette from '@/app/styles/palette';
 
 const SaveFilterPopup = ({
   isSavePopupOpen,
@@ -47,11 +48,15 @@ const SaveFilterPopup = ({
   setSelectedQuickFilter,
   customFilteredData,
   setCustomFilteredData,
+  selectedCustomFilter,
+  selectedQuickFilter,
+  selectQuickFilter,
 }) => {
   const [searchInputValue, setSearchInputValue] = useState('');
   const [onlyone, setOnlyone] = useState(true);
   const [everyOne, setEveryOne] = useState(false);
   const [isQuickFilterEdit, setIsQuickFilterEdit] = useState(false);
+  const [isDisable, setDisable] = useState(false);
 
   useEffect(() => {
     if (editIdentifier !== '') {
@@ -73,6 +78,20 @@ const SaveFilterPopup = ({
     }
   }, [quickFiltersList, editIdentifier, isQuickFilterEdit]);
 
+  useEffect(() => {
+    setDisable(
+      searchInputValue === '' ||
+        (isQuickFilterEdit &&
+          JSON.stringify(selectedCustomFilter) ===
+            JSON.stringify(customFinalFilter)),
+    );
+  }, [
+    isQuickFilterEdit,
+    selectedCustomFilter,
+    customFinalFilter,
+    searchInputValue,
+  ]);
+
   const updateFilter = () => {
     const data = {};
     for (const key in customFinalFilter) {
@@ -81,6 +100,9 @@ const SaveFilterPopup = ({
       }
     }
     handleSaveQuickFilter(editIdentifier, data);
+    if (selectedQuickFilter === editIdentifier) {
+      selectQuickFilter(editIdentifier, data);
+    }
   };
 
   const toggleSharedList = () => {
@@ -101,6 +123,7 @@ const SaveFilterPopup = ({
     }
     onQuickFilterCreate(searchInputValue, data);
     setSavePopupOpen(false);
+    setFinalFilter({});
   };
 
   const handleQuickFilterUpdate = () => {
@@ -212,8 +235,12 @@ const SaveFilterPopup = ({
             Cancel
           </CancelButton>
           <ConfirmButton
-            disabled={searchInputValue === ''}
-            style={{ width: '270px' }}
+            disabled={isDisable}
+            style={{
+              width: '270px',
+              background: isDisable && palette.shadowBlue,
+              color: isDisable && palette.white,
+            }}
             onClick={
               isQuickFilterEdit
                 ? handleQuickFilterUpdate

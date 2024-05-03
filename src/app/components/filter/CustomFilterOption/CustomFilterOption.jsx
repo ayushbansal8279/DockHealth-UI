@@ -28,6 +28,7 @@ const CustomFilterOption = (props) => {
     setSelectedQuickFilter,
     onQuickFilterCreate,
     clearFilters,
+    setSelectedCustomFilter,
   } = props;
   const [value, setValue] = useState(label);
   const [isSelected, setSelected] = useState(false);
@@ -76,6 +77,7 @@ const CustomFilterOption = (props) => {
       );
     }
     setCustomFinalFilter(data);
+    setSelectedCustomFilter(data);
   };
 
   const handleDuplicate = () => {
