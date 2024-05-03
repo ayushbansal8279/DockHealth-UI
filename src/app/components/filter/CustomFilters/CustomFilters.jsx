@@ -44,14 +44,6 @@ const CustomFilters = ({
 
   const handleSelect = useCallback(
     (_, identifier, { selectedOptions }) => {
-      // if (editModeEnabled && selected === identifier) {
-      //   const originalFiltersList = quickFiltersList.find(
-      //     (f) => f.quickFilterIdentifier === identifier,
-      //   )?.selectedOptions;
-      //   setSelected(identifier, originalFiltersList);
-      // } else {
-      //   setSelected(identifier, selectedOptions);
-      // }
       setSelected(identifier, selectedOptions);
       setSelectedQuickFilter(identifier);
       openPopover(false);

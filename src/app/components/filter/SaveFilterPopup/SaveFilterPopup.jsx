@@ -51,13 +51,13 @@ const SaveFilterPopup = ({
   const [searchInputValue, setSearchInputValue] = useState('');
   const [onlyone, setOnlyone] = useState(true);
   const [everyOne, setEveryOne] = useState(false);
-  const [isQuickFilterEdit, SetIsQuickFilterEdit] = useState(false);
+  const [isQuickFilterEdit, setIsQuickFilterEdit] = useState(false);
 
   useEffect(() => {
     if (editIdentifier !== '') {
-      SetIsQuickFilterEdit(true);
+      setIsQuickFilterEdit(true);
     } else {
-      SetIsQuickFilterEdit(false);
+      setIsQuickFilterEdit(false);
     }
   }, [editIdentifier]);
 
