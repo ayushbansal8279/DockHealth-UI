@@ -45,6 +45,8 @@ const SaveFilterPopup = ({
   setCustomFinalFilter,
   customFinalFilter,
   setSelectedQuickFilter,
+  customFilteredData,
+  setCustomFilteredData,
 }) => {
   const [searchInputValue, setSearchInputValue] = useState('');
   const [onlyone, setOnlyone] = useState(true);
@@ -78,7 +80,7 @@ const SaveFilterPopup = ({
         data[key] = { options: customFinalFilter[key].map((item) => item.key) };
       }
     }
-    handleSaveQuickFilter(editIdentifier,data);
+    handleSaveQuickFilter(editIdentifier, data);
   };
 
   const toggleSharedList = () => {
@@ -189,8 +191,8 @@ const SaveFilterPopup = ({
             <NewFilterContainer
               filters={filters}
               onSelectedFiltersChange={onSelectFilters}
-              setFinalFilter={setFinalFilter}
-              finalFilter={finalFilter}
+              setFinalFilter={setCustomFinalFilter}
+              finalFilter={customFinalFilter}
               setMenuOption={setMenuOption}
               menuOptions={menuOptions}
               openPopover={openPopover}
@@ -198,12 +200,10 @@ const SaveFilterPopup = ({
               setSavePopupOpen={setSavePopupOpen}
               onQuickFilterCreate={onQuickFilterCreate}
               handleSaveQuickFilter={handleSaveQuickFilter}
-              setFilteredData={setFilteredData}
-              filteredData={filteredData}
+              setFilteredData={setCustomFilteredData}
+              filteredData={customFilteredData}
               isQuickFilterEdit={isQuickFilterEdit}
               customFinalFilter={customFinalFilter}
-              setCustomFinalFilter={setCustomFinalFilter}
-              setSelectedQuickFilter={setSelectedQuickFilter}
             ></NewFilterContainer>
           </div>
         )}

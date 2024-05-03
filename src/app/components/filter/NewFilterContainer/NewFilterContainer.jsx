@@ -36,8 +36,6 @@ const NewFilterContainer = ({
   filteredData,
   setFilteredData,
   isQuickFilterEdit,
-  setCustomFinalFilter,
-  customFinalFilter,
   onClear,
   setSelectedQuickFilter,
 }) => {
@@ -71,9 +69,7 @@ const NewFilterContainer = ({
       ) {
         const obs = {};
         obs[option] = [];
-        isQuickFilterEdit
-          ? setCustomFinalFilter((v) => ({ ...v, ...obs }))
-          : setFinalFilter((v) => ({ ...v, ...obs }));
+        setFinalFilter((v) => ({ ...v, ...obs }));
       }
     });
     closeAddFilterPopover();
@@ -90,30 +86,25 @@ const NewFilterContainer = ({
 
   const clearFilter = () => {
     setFinalFilter({});
-    setCustomFinalFilter({});
     onClear();
     setSelectedQuickFilter('');
   };
 
   return (
     <>
-      {Object.keys(isQuickFilterEdit ? customFinalFilter : finalFilter).map(
-        (filter) => (
-          <FilterSelect
-            menuOptions={menuOptions}
-            setFilter={
-              isQuickFilterEdit ? setCustomFinalFilter : setFinalFilter
-            }
-            filter={filter}
-            finalFilter={isQuickFilterEdit ? customFinalFilter : finalFilter}
-            filterOptions={filters
-              .flatMap((item) => item.id === filter && item.options)
-              .filter((item) => typeof item !== 'boolean')}
-            setFilteredData={setFilteredData}
-            filteredData={filteredData}
-          />
-        ),
-      )}
+      {Object.keys(finalFilter).map((filter) => (
+        <FilterSelect
+          menuOptions={menuOptions}
+          setFilter={setFinalFilter}
+          filter={filter}
+          finalFilter={finalFilter}
+          filterOptions={filters
+            .flatMap((item) => item.id === filter && item.options)
+            .filter((item) => typeof item !== 'boolean')}
+          setFilteredData={setFilteredData}
+          filteredData={filteredData}
+        />
+      ))}
       <FilterButtonWrapper>
         <BoxContainer ref={popoverReference}>
           <AddFilterButtonContainer
@@ -151,8 +142,7 @@ const NewFilterContainer = ({
           filterOptionsList={menuOptions}
           onFilterSelect={handleClick}
         />
-        {Object.keys(isQuickFilterEdit ? customFinalFilter : finalFilter)
-          .length > 0 && (
+        {Object.keys(finalFilter).length > 0 && (
           <ClearFilter onClick={clearFilter}>Clear Filter</ClearFilter>
         )}
       </FilterButtonWrapper>
