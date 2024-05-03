@@ -104,10 +104,12 @@ const MegaFilter = ({
             filteredData={filteredData}
             customFinalFilter={customFinalFilter}
             setCustomFinalFilter={setCustomFinalFilter}
+            selectedQuickFilter={selectedQuickFilter}
             setSelectedQuickFilter={setSelectedQuickFilter}
             customFilteredData={customFilteredData}
             setCustomFilteredData={setCustomFilteredData}
             selectedCustomFilter={selectedCustomFilter}
+            selectQuickFilter={selectQuickFilter}
           ></SaveFilterPopup>
           {/* Kept here for Future Refrence */}
           {/* <FilterHeader

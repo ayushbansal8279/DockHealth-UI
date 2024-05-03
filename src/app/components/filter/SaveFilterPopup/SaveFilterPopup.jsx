@@ -49,6 +49,8 @@ const SaveFilterPopup = ({
   customFilteredData,
   setCustomFilteredData,
   selectedCustomFilter,
+  selectedQuickFilter,
+  selectQuickFilter,
 }) => {
   const [searchInputValue, setSearchInputValue] = useState('');
   const [onlyone, setOnlyone] = useState(true);
@@ -98,6 +100,9 @@ const SaveFilterPopup = ({
       }
     }
     handleSaveQuickFilter(editIdentifier, data);
+    if (selectedQuickFilter === editIdentifier) {
+      selectQuickFilter(editIdentifier, data);
+    }
   };
 
   const toggleSharedList = () => {
