@@ -120,6 +120,7 @@ const TaskTemplateGroupHeader = ({
   origin,
   isNextVirtualTaskItemTypeBundle,
   isLastTaskOfGroup,
+  isNextTaskItemTypeBundle,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const {
@@ -820,6 +821,7 @@ const TaskTemplateGroupHeader = ({
       isNextVirtualTaskItemTypeBundle={isNextVirtualTaskItemTypeBundle}
       isLastTaskOfGroup={isLastTaskOfGroup}
       origin={origin}
+      isNextTaskItemTypeBundle={isNextTaskItemTypeBundle}
     >
       {randerFirstColumnCoverIfNecessary(
         <>

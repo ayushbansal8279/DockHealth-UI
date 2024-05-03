@@ -60,13 +60,14 @@ export const TaskTemplateGroupHeaderContainer = styled.div`
     isNextVirtualTaskItemTypeBundle,
     isLastTaskOfGroup,
     origin,
+    isNextTaskItemTypeBundle,
   }) =>
     isOpen
       ? ''
-      : origin === 'LIST'
+      : origin === 'LIST' || origin === 'PATIENT'
       ? isLastTaskOfGroup
         ? '0px'
-        : isNextVirtualTaskItemTypeBundle
+        : isNextVirtualTaskItemTypeBundle || isNextTaskItemTypeBundle
         ? '0px'
         : '10px'
       : '10px'};
