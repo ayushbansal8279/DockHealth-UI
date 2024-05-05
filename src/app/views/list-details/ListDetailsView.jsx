@@ -55,12 +55,12 @@ const ListDetailsView = () => {
   const [tasks, setTasks] = useState([]);
 
   useEffect(() => {
-    const currentListIdentifier = taskListIdentifierParameter;
+    const currentListIdentifier = taskListIdentifier;
     if (currentListIdentifier !== prevListIdentifier) {
       setPrevListIdentifier(currentListIdentifier);
       handleAddNewGroup(false);
     }
-  }, [taskListIdentifierParameter]);
+  }, [prevListIdentifier, taskListIdentifier]);
 
   const handleAddNewGroup = (value) => {
     setAddNewGroup(value);
