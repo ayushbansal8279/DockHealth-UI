@@ -123,6 +123,8 @@ const TaskTemplateGroupHeader = ({
     name,
     tasks: taskIdentifiers,
     identifier,
+    tasksCount,
+    tasksCompletedCount,
     selected,
     creator,
   } = templateGroup;
@@ -281,7 +283,7 @@ const TaskTemplateGroupHeader = ({
       },
       [0, 0],
     );
-  }, [templateTasks]);
+  }, [tasksCompletedCount, tasksCount, templateTasks]);
 
   const completedTasksAmountFinal = completedTasksAmount;
   const allTasksAmountFinal = allTasksAmount;
@@ -690,7 +692,6 @@ const TaskTemplateGroupHeader = ({
       showTasksWithGroup,
       virtualListWorkflowOpen,
       handleOpen,
-      iconColorActive,
       menuOptions,
     ],
   );
