@@ -1,5 +1,5 @@
 import React, { useEffect, createContext, useState } from 'react';
-import { useLocation, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { TaskStatus } from 'helpers/task-helpers';
 import { ColumnsConfigProvider } from 'context-api/columns-config-context';
@@ -7,10 +7,11 @@ import {
   clearTaskListState,
   initializeTaskListState,
 } from 'actions/task-list-actions';
-import { ViewType, getViewTypeFromQueryString } from 'helpers/view-type-helper';
+import { ViewType } from 'helpers/view-type-helper';
 import ListDetailsTableView from './ListDetailsTableView/ListDetailsTableView';
 import ListDetailsCalendarView from './ListDetailsCalendarView/ListDetailsCalendarView';
 import ListDetailsBoardView from './ListDetailsBoardView/ListDetailsBoardView';
+import useSearchParams from '@/app/hooks/use-search-params';
 
 export const ListPageContext = createContext({
   addNewGroup: false,
@@ -30,19 +31,13 @@ export const ListPageContext = createContext({
 });
 const ListDetailsView = () => {
   const parameters = useParams();
-  const { taskListIdentifier: taskListIdentifierParameter, tabName } =
-    parameters;
-  const { search } = useLocation();
-  const viewType = getViewTypeFromQueryString(search);
+  const { taskListIdentifier } = parameters;
+  const { viewType = ViewType.LIST_VIEW } = useSearchParams();
   const dispatch = useDispatch();
+
   useEffect(() => {
-    dispatch(
-      initializeTaskListState(
-        taskListIdentifierParameter,
-        tabName?.toUpperCase() || TaskStatus.INCOMPLETE,
-      ),
-    );
-  }, [dispatch, taskListIdentifierParameter, tabName]);
+    dispatch(initializeTaskListState(taskListIdentifier));
+  }, [dispatch, taskListIdentifier]);
 
   useEffect(() => {
     return () => {
@@ -52,11 +47,20 @@ const ListDetailsView = () => {
   }, []);
 
   const [addNewGroup, setAddNewGroup] = useState(false);
+  const [prevListIdentifier, setPrevListIdentifier] = useState(null);
   const [workflowPopoverOpen, setWorkflowPopoverOpen] = useState(false);
   const [patientPopoverOpen, setPatientPopoverOpen] = useState(false);
   const [changeViewType, setChangeViewType] = useState('SLIM_VIEW');
   const [showShadow, setShowShadow] = useState(false);
   const [tasks, setTasks] = useState([]);
+
+  useEffect(() => {
+    const currentListIdentifier = taskListIdentifier;
+    if (currentListIdentifier !== prevListIdentifier) {
+      setPrevListIdentifier(currentListIdentifier);
+      handleAddNewGroup(false);
+    }
+  }, [prevListIdentifier, taskListIdentifier]);
 
   const handleAddNewGroup = (value) => {
     setAddNewGroup(value);
@@ -107,20 +111,20 @@ const ListDetailsView = () => {
   };
 
   const ListPageContextValue = {
-    addNewGroup: addNewGroup,
-    handleAddNewGroup: handleAddNewGroup,
-    changeViewType: changeViewType,
-    handleSetChangeViewType: handleSetChangeViewType,
-    showShadow: showShadow,
-    handleScroll: handleScroll,
-    tasks: tasks,
-    handleAddTask: handleAddTask,
-    handleRemoveAllTasks: handleRemoveAllTasks,
-    workflowPopoverOpen: workflowPopoverOpen,
-    handleWorkflowPopoverOpen: handleWorkflowPopoverOpen,
-    patientPopoverOpen: patientPopoverOpen,
-    handlePatientPopoverOpen: handlePatientPopoverOpen,
-    handleScrollToAddGroupName: handleScrollToAddGroupName,
+    addNewGroup,
+    handleAddNewGroup,
+    changeViewType,
+    handleSetChangeViewType,
+    showShadow,
+    handleScroll,
+    tasks,
+    handleAddTask,
+    handleRemoveAllTasks,
+    workflowPopoverOpen,
+    handleWorkflowPopoverOpen,
+    patientPopoverOpen,
+    handlePatientPopoverOpen,
+    handleScrollToAddGroupName,
   };
 
   return (

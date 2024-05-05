@@ -1,31 +1,34 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import Input from 'components/common/Input/Input';
-import { CustomFilterOptionWrapper, IconContainer } from './styled';
-import CloseIcon from 'img/close_cross.svg';
-import RenameIcon from 'img/rename.png';
-import Tooltip from 'components/common/Tooltip/Tooltip';
+import {
+  CustomFilterOptionWrapper,
+  OptionMenuContainer,
+  QuickFilterTitle,
+  QuickFilterTitleContainer,
+} from './styled';
 
 const CustomFilterOption = (props) => {
   const {
     identifier,
     label = '',
-    selected = false,
     onOptionClick,
     disabled = true,
-    onEditMode,
     disableOptions = false,
     onDelete,
     autofocus,
     onBlur,
     editModeEnabled,
     setSavePopupOpen,
-    setQuickFilterIdentifier,
     selectedQuickFilter,
-    setSelectedQuickFilter,
-    setFinalFilter,
     setEditIdentifier,
+    filter,
+    filters,
+    setCustomFinalFilter,
+    setSelectedQuickFilter,
+    onQuickFilterCreate,
+    clearFilters,
+    setSelectedCustomFilter,
   } = props;
   const [value, setValue] = useState(label);
   const [isSelected, setSelected] = useState(false);
@@ -63,28 +66,38 @@ const CustomFilterOption = (props) => {
   const handleEnableEditMode = () => {
     setSavePopupOpen(true);
     setEditIdentifier(identifier);
-    setQuickFilterIdentifier(identifier);
+
+    const data = {};
+    for (const key in filter.selectedOptions) {
+      const users = filters
+        .flatMap((item) => item.id === key && item.options)
+        .filter((item) => typeof item !== 'boolean');
+      data[key] = filter.selectedOptions[key].options.map((item) =>
+        users.find((user) => user.key === item),
+      );
+    }
+    setCustomFinalFilter(data);
+    setSelectedCustomFilter(data);
+  };
+
+  const handleDuplicate = () => {
+    onQuickFilterCreate('Copy of ' + filter.name, filter.selectedOptions);
   };
 
   const OPTIONS = [
-    { name: 'Delete', onClick: handleDelete },
     { name: 'Edit', onClick: handleEnableEditMode },
+    { name: 'Duplicate', onClick: handleDuplicate },
+    { name: 'Delete', onClick: handleDelete },
   ];
 
   const handleOptionClick = useCallback(() => {
-    if (disabled) {
-      onOptionClick(identifier);
-    }
-  }, [disabled, identifier, onOptionClick]);
-
-  const onClick = () => {
+    onOptionClick(identifier);
     if (isSelected) {
-      setSelectedQuickFilter('');
       setSelected(false);
-      setFinalFilter({});
-      setQuickFilterIdentifier('')
+      setSelectedQuickFilter('');
+      clearFilters();
     }
-  };
+  }, [identifier, onOptionClick, isSelected]);
 
   const handleKeyPress = useCallback(
     (event) => {
@@ -109,12 +122,16 @@ const CustomFilterOption = (props) => {
   return (
     <CustomFilterOptionWrapper
       selected={isSelected}
-      onClick={() => {
-        handleOptionClick(), onClick();
-      }}
       editModeEnabled={editModeEnabled}
     >
-      <Input
+      <QuickFilterTitleContainer>
+        <QuickFilterTitle
+          selected={isSelected}
+          onClick={() => handleOptionClick()}
+        >
+          {value}
+        </QuickFilterTitle>
+        {/* <Input
         onKeyPress={handleKeyPress}
         inputRef={inputReference}
         readOnly={disabled}
@@ -122,8 +139,9 @@ const CustomFilterOption = (props) => {
         onChange={(event) => setValue(event.target.value)}
         InputProps={{ disableUnderline: true }}
         onBlur={() => !disabled && onBlur(identifier, value)}
-      />
-      {/* <IconContainer>
+        onClick={() => handleOptionClick()}
+      /> */}
+        {/* <IconContainer>
         <Tooltip placement="top" title={'Rename'}>
           <img
             onClick={handleEnableEditMode}
@@ -144,14 +162,17 @@ const CustomFilterOption = (props) => {
             }}
             src={CloseIcon}
             alt="close"
-          />
-        </Tooltip>
+            />
+            </Tooltip>
       </IconContainer> */}
-      {!disableOptions && (
-        <OptionsMenu color={'#8492a4'} options={OPTIONS}>
-          <MoreVertIcon />
-        </OptionsMenu>
-      )}
+        <OptionMenuContainer>
+          {!disableOptions && (
+            <OptionsMenu color={'#8492a4'} options={OPTIONS}>
+              <MoreVertIcon />
+            </OptionsMenu>
+          )}
+        </OptionMenuContainer>
+      </QuickFilterTitleContainer>
     </CustomFilterOptionWrapper>
   );
 };

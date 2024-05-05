@@ -6,13 +6,13 @@ import {
   userIdentifierSelector,
 } from 'selectors/person-details-selectors';
 import { TaskListTabName } from 'helpers/tasklist-helpers';
-import TaskStatusToolbarSelect from '@/app/components/tasklist/list-toolbar-buttons/TaskStatusToolbarSelect/TaskStatusToolbarSelect';
 import { Box } from '@mui/material';
-import CustomizeToolbarButton from '@/app/components/tasklist/list-toolbar-buttons/CustomizeToolbarButton/CustomizeToolbarButton';
 import { userProfileSelector } from 'selectors/user-selectors';
 import { currentTaskListSelector } from 'selectors/task-list-selectors';
 import { checkIfUserIsOrganizationAdmin } from 'helpers/user-helper';
 import TaskCustomFieldsModal from 'modal/customModals/TaskCustomFieldsModal';
+import CustomizeToolbarButton from '@/app/components/tasklist/list-toolbar-buttons/CustomizeToolbarButton/CustomizeToolbarButton';
+import TaskStatusToolbarSelect from '@/app/components/tasklist/list-toolbar-buttons/TaskStatusToolbarSelect';
 import { ToolbarContainer } from './styled';
 
 const UserTasksToolbar = () => {

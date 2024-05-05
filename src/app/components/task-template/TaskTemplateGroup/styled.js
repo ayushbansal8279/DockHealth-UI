@@ -49,5 +49,11 @@ export const TaskTemplateItemsStartPill = styled.div`
 export const TaskTemplateGroupList = styled(Collapse)``;
 
 export const QuickAddInputWrapper = styled.div`
-  margin-top: -1px;
+  margin-top: ${({ origin }) => (origin === 'PATIENT' ? '0px' : '-1px')};
+  margin-bottom: ${({ isNextTaskItemTypeBundle, isAddingTask, origin }) =>
+    origin === 'PATIENT'
+      ? isAddingTask && !isNextTaskItemTypeBundle
+        ? '10px'
+        : ''
+      : ''};
 `;

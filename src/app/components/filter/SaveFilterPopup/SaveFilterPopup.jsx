@@ -20,6 +20,8 @@ import CheckedCircle from 'img/Checks-Radio-Buttons-Checked.svg';
 import BlankCircle from 'img/Checks-Radio-Buttons-Blank.svg';
 import Spacing from '../../common/Spacing';
 import { getUniqueQuickFilterLabelName } from '../CustomFilters/helpers';
+import NewFilterContainer from '../NewFilterContainer/NewFilterContainer';
+import palette from '@/app/styles/palette';
 
 const SaveFilterPopup = ({
   isSavePopupOpen,
@@ -29,35 +31,79 @@ const SaveFilterPopup = ({
   quickFiltersList,
   onQuickFilterCreate,
   onQuickFilterUpdate,
-  quickFilterIdentifier,
-  setQuickFilterIdentifier,
   editIdentifier,
-  setsetEditIdentifier,
+  setEditIdentifier,
+  filters,
+  onSelectedFiltersChange,
+  menuOptions,
+  setMenuOption,
+  setFinalFilter,
+  openPopover,
+  handleSaveQuickFilter,
+  filteredData,
+  setFilteredData,
+  onSelectFilters,
+  setCustomFinalFilter,
+  customFinalFilter,
+  setSelectedQuickFilter,
+  customFilteredData,
+  setCustomFilteredData,
+  selectedCustomFilter,
+  selectedQuickFilter,
+  selectQuickFilter,
 }) => {
   const [searchInputValue, setSearchInputValue] = useState('');
   const [onlyone, setOnlyone] = useState(true);
   const [everyOne, setEveryOne] = useState(false);
-  const [edit, setEdit] = useState(false);
+  const [isQuickFilterEdit, setIsQuickFilterEdit] = useState(false);
+  const [isDisable, setDisable] = useState(false);
 
   useEffect(() => {
     if (editIdentifier !== '') {
-      setEdit(true);
+      setIsQuickFilterEdit(true);
     } else {
-      setEdit(false);
+      setIsQuickFilterEdit(false);
     }
   }, [editIdentifier]);
 
   useEffect(() => {
-    if (edit) {
+    if (isQuickFilterEdit) {
       quickFiltersList.map((item) => {
-        if (item.quickFilterIdentifier === quickFilterIdentifier) {
+        if (item.quickFilterIdentifier === editIdentifier) {
           setSearchInputValue(item.name);
         }
       });
     } else {
       setSearchInputValue(getUniqueQuickFilterLabelName(quickFiltersList));
     }
-  }, [quickFiltersList, quickFilterIdentifier, edit]);
+  }, [quickFiltersList, editIdentifier, isQuickFilterEdit]);
+
+  useEffect(() => {
+    setDisable(
+      searchInputValue === '' ||
+        (isQuickFilterEdit &&
+          JSON.stringify(selectedCustomFilter) ===
+            JSON.stringify(customFinalFilter)),
+    );
+  }, [
+    isQuickFilterEdit,
+    selectedCustomFilter,
+    customFinalFilter,
+    searchInputValue,
+  ]);
+
+  const updateFilter = () => {
+    const data = {};
+    for (const key in customFinalFilter) {
+      if (customFinalFilter[key].length > 0) {
+        data[key] = { options: customFinalFilter[key].map((item) => item.key) };
+      }
+    }
+    handleSaveQuickFilter(editIdentifier, data);
+    if (selectedQuickFilter === editIdentifier) {
+      selectQuickFilter(editIdentifier, data);
+    }
+  };
 
   const toggleSharedList = () => {
     setEveryOne(true);
@@ -77,24 +123,25 @@ const SaveFilterPopup = ({
     }
     onQuickFilterCreate(searchInputValue, data);
     setSavePopupOpen(false);
+    setFinalFilter({});
   };
 
   const handleQuickFilterUpdate = () => {
-    onQuickFilterUpdate(quickFilterIdentifier, searchInputValue);
+    onQuickFilterUpdate(editIdentifier, searchInputValue);
+    updateFilter();
+    setEditIdentifier('');
     setSavePopupOpen(false);
-    setQuickFilterIdentifier('');
-    setsetEditIdentifier('')
   };
 
   const handleClear = () => {
+    setEditIdentifier('');
     setSavePopupOpen(false);
-    setsetEditIdentifier('')
   };
 
   const onPopoverClose = () => {
-    setsetEditIdentifier('')
+    setEditIdentifier('');
     setSavePopupOpen(false);
-  }
+  };
 
   const sx = {
     '& .MuiOutlinedInput-root': {
@@ -132,7 +179,7 @@ const SaveFilterPopup = ({
     >
       <Container>
         <Header>
-          <Title>{edit ? 'Edit Filter' : 'Save Filter'}</Title>
+          <Title>{isQuickFilterEdit ? 'Edit Filter' : 'Save Filter'}</Title>
         </Header>
         <InputContainer>
           <TextField
@@ -162,16 +209,45 @@ const SaveFilterPopup = ({
             <CheckboxDescription>Everyone</CheckboxDescription>
           </CheckboxContainer>
         </PrivacyContainer>
+        {isQuickFilterEdit && (
+          <div style={{ margin: '20px 0 0 40px' }}>
+            <NewFilterContainer
+              filters={filters}
+              onSelectedFiltersChange={onSelectFilters}
+              setFinalFilter={setCustomFinalFilter}
+              finalFilter={customFinalFilter}
+              setMenuOption={setMenuOption}
+              menuOptions={menuOptions}
+              openPopover={openPopover}
+              quickFiltersList={quickFiltersList}
+              setSavePopupOpen={setSavePopupOpen}
+              onQuickFilterCreate={onQuickFilterCreate}
+              handleSaveQuickFilter={handleSaveQuickFilter}
+              setFilteredData={setCustomFilteredData}
+              filteredData={customFilteredData}
+              isQuickFilterEdit={isQuickFilterEdit}
+              customFinalFilter={customFinalFilter}
+            ></NewFilterContainer>
+          </div>
+        )}
         <ButtonContainer>
           <CancelButton onClick={handleClear} style={{ width: '270px' }}>
             Cancel
           </CancelButton>
           <ConfirmButton
-            disabled={searchInputValue === ''}
-            style={{ width: '270px' }}
-            onClick={edit ? handleQuickFilterUpdate : handleQuickFilterCreate}
+            disabled={isDisable}
+            style={{
+              width: '270px',
+              background: isDisable && palette.shadowBlue,
+              color: isDisable && palette.white,
+            }}
+            onClick={
+              isQuickFilterEdit
+                ? handleQuickFilterUpdate
+                : handleQuickFilterCreate
+            }
           >
-            {edit ? ' Update' : 'Save'}
+            {isQuickFilterEdit ? ' Update' : 'Save'}
           </ConfirmButton>
         </ButtonContainer>
       </Container>

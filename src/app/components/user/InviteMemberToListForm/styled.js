@@ -78,11 +78,18 @@ export const ItemFullName = styled.p`
 `;
 
 export const ItemStatusLabel = styled.p`
-  padding-top: 5px;
-  margin-left: ${spacing.smallPlus};
+  padding: 5px 10px;
+  margin-left: ${spacing.small};
   margin-bottom: 0;
   font-size: ${fontSizes.regular};
   font-weight: ${fontWeights.regular};
+  border-radius: 4px;
+  background: ${palette.whiteSmoke};
+`;
+
+export const OptionMenuWrapper = styled.div`
+  border-radius: 0px 4px 4px 0px;
+  background: ${palette.whiteSmoke};
 `;
 
 export const ExternalUserInviteFormWrapper = styled.div`
@@ -101,9 +108,7 @@ export const ExternalUserInviteFormWrapper = styled.div`
 export const OptionContainer = styled.div`
   display: flex;
   align-items: flex-start;
-  gap: 10px;
-  border-radius: 4px;
-  background: #F8F8F9;
+  padding-right: 2px;
 `;
 
 export const IconContainer = styled.img`

@@ -55,7 +55,22 @@ export const TaskTemplateGroupHeaderContainer = styled.div`
 
   border-top: 2px solid rgba(75, 179, 253, 1);
   margin-top: 10px;
-  margin-bottom: ${({ isOpen }) => (isOpen ? '' : '10px')};
+  margin-bottom: ${({
+    isOpen,
+    isNextVirtualTaskItemTypeBundle,
+    isLastTaskOfGroup,
+    origin,
+    isNextTaskItemTypeBundle,
+  }) =>
+    isOpen
+      ? ''
+      : origin === 'LIST' || origin === 'PATIENT'
+      ? isLastTaskOfGroup
+        ? '0px'
+        : isNextVirtualTaskItemTypeBundle || isNextTaskItemTypeBundle
+        ? '0px'
+        : '10px'
+      : '10px'};
   border-bottom: 1px solid
     ${({ isOpen }) =>
       isOpen ? `${palette.coolGrey3}` : 'rgba(75, 179, 253, 1)'};
@@ -117,6 +132,19 @@ export const ActionIconsContainer = styled.div`
     width: 0px;
     height: 36px;
   }
+
+&::before {
+  content: "";
+  position: absolute;
+  top: -5px;
+  left: -11px;
+  height: 33.8px;
+  width: 77px;
+  background: #DAEFFF;
+  z-index: -1;
+  border-top-left-radius: 7px;
+  border-bottom-left-radius: ${({isOpen}) => !isOpen ? '6px' : ''};
+}
 `;
 
 export const PatientMRNAnchor = styled.a`

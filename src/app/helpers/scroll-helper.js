@@ -1,3 +1,25 @@
+/**
+ *
+ * @param {string} commentIdentifier
+ * @returns {string}
+ */
+export const getCommentIdToScroll = (commentIdentifier) =>
+  `comment-${commentIdentifier}`;
+
+/**
+ *
+ * @param {string} query
+ * @returns {boolean} if found and scrolled to the element
+ */
+export const scrollToByQuerySelector = (query) => {
+  const section = document.querySelector(query);
+  if (section) {
+    section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    return true;
+  }
+  return false;
+};
+
 export const isOutsideScrollViewAtTheTop = (containerElement, itemElement) => {
   const { offsetTop: itemOffsetTop } = itemElement;
   const { scrollTop: containerScrollTop } = containerElement;

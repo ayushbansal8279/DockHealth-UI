@@ -44,11 +44,12 @@ import {
   GET_CURRENT_TASK_LIST,
   GET_CURRENT_TASK_LIST_SUCCESS,
 } from 'actions/action-types';
+import { TaskStatus } from '../helpers/task-helpers';
 
 const initialState = {
   currentTaskList: null,
   currentTaskListIdentifier: null,
-  currentTasksStatus: null,
+  currentTasksStatus: TaskStatus.INCOMPLETE,
   isFetchingCurrentTaskList: false,
 
   taskLists: null,
@@ -106,7 +107,6 @@ const TaskListReducer = (state = initialState, action) => {
         ...state,
         currentTaskListIdentifier: action.taskListIdentifier,
         currentTaskList: null,
-        currentTasksStatus: action.currentTasksStatus,
       };
     }
 
@@ -122,7 +122,6 @@ const TaskListReducer = (state = initialState, action) => {
         ...state,
         currentTaskListIdentifier: null,
         currentTaskList: null,
-        currentTasksStatus: null,
       };
     }
 

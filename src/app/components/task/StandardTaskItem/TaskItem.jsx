@@ -187,6 +187,8 @@ const TaskItem = React.memo(
     isWidthGreaterThanHudredPercent,
     isVirtualSubtask,
     isLastChild,
+    isNextVirtualTaskItemTypeBundle,
+    isLastTaskOfGroup,
   }) => {
     const task = useSelector((state) => {
       return taskLookupSelector(state, origin, taskItemIdentifier);
@@ -826,7 +828,7 @@ const TaskItem = React.memo(
           >
             {taskListRestrictions?.createTask !== DISABLED && (
               <DotsContainer
-                showDraggableDots={true}
+                showDraggableDots
                 dragHandleProps={dragHandleProps}
               />
             )}
@@ -963,6 +965,8 @@ const TaskItem = React.memo(
           origin={origin}
           highlightedValue={highlightedValue}
           pageBackground={pageBackground}
+          isNextVirtualTaskItemTypeBundle={isNextVirtualTaskItemTypeBundle}
+          isLastTaskOfGroup={isLastTaskOfGroup}
         />
       );
     }

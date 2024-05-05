@@ -1,5 +1,3 @@
-import { useTaskListColumnsConfig } from '@/app/context-api/columns-config-context';
-import { TaskColumn } from '@/app/types/Task';
 import React, {
   ComponentType,
   ReactNode,
@@ -9,6 +7,9 @@ import React, {
   useMemo,
   useState,
 } from 'react';
+import { TaskItemColumnWidth } from 'helpers/task-helpers';
+import { useTaskListColumnsConfig } from '@/app/context-api/columns-config-context';
+import { TaskColumn } from '@/app/types/Task';
 
 interface IVirtalTaskListScrollContext {
   visibleWidth: number | null;
@@ -33,7 +34,12 @@ export const VirtaulTaskListScrollProvider = ({
       ? columns
           .filter((f) => f.isChecked)
           .reduce(
-            (accumulator: number, column) => accumulator + column.columnWidth,
+            (accumulator: number, column) =>
+              accumulator +
+              Math.max(
+                TaskItemColumnWidth[column.identifier]?.MINIMUM || 0,
+                column.columnWidth,
+              ),
             0,
           )
       : null;

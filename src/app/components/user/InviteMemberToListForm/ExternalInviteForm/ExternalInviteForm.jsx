@@ -61,21 +61,13 @@ const ExternalInviteForm = ({
 
   return (
     <ExternalInviteContainer>
-      {isOrganizationAdmin ? (
-        <OrganizationOwnerForm
-          initialValues={initialValues}
-          closeInviteForm={closeInviteForm}
-          onSubmit={handleSubmitForm}
-          disabled={isInviting}
-        />
-      ) : (
-        <MemberForm
-          initialValues={initialValues}
-          closeInviteForm={closeInviteForm}
-          onSubmit={handleSubmitForm}
-          disabled={isInviting}
-        />
-      )}
+      <OrganizationOwnerForm
+        isOrganizationAdmin={isOrganizationAdmin}
+        initialValues={initialValues}
+        closeInviteForm={closeInviteForm}
+        onSubmit={handleSubmitForm}
+        disabled={isInviting}
+      />
     </ExternalInviteContainer>
   );
 };

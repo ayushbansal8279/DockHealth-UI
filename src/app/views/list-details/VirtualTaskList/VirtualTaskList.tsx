@@ -143,6 +143,7 @@ function VirtualTaskList({ groupedTasks }: Props) {
             {
               bgColor: !(index % 2 === 0),
               groupWithZeroTask: groupTasks?.length === 0,
+              isLastGroupOfList: index === listGroups?.length - 1,
             },
             [],
             true,
@@ -189,7 +190,6 @@ function VirtualTaskList({ groupedTasks }: Props) {
                         groupTaskIndex === groupTasks.length - 1 &&
                         childIndex === children.length - 1,
                       isLastSubtaskParentTask:
-                        groupTaskIndex === groupTasks.length - 1 &&
                         childIndex === children.length - 1,
                       isLastGroupOfList: index === listGroups?.length - 1,
                     },
@@ -205,11 +205,12 @@ function VirtualTaskList({ groupedTasks }: Props) {
                                 task: subtask,
                                 bgColor: !(index % 2 === 0),
                                 isLastTaskOfGroup:
+                                  groupTaskIndex === groupTasks.length - 1 &&
+                                  subTaskIndex ===
+                                    tasksMap[child]?.subtasks.length - 1,
+                                isLastSubtaskParentTask:
                                   subTaskIndex ===
                                     tasksMap[child]?.subtasks.length - 1 &&
-                                  childIndex === children.length - 1,
-                                isLastSubtaskParentTask:
-                                  groupTaskIndex === groupTasks.length - 1 &&
                                   childIndex === children.length - 1,
                                 isLastGroupOfList:
                                   index === listGroups?.length - 1,
@@ -219,7 +220,8 @@ function VirtualTaskList({ groupedTasks }: Props) {
                                   childIndex === children.length - 1
                                     ? tasksMap[groupTasks[groupTaskIndex + 1]]
                                         ?.itemType === 'BUNDLE'
-                                    : false,                                
+                                    : false,
+                                isWorkflowSubTask: true,
                               },
                               [],
                             );
@@ -233,10 +235,10 @@ function VirtualTaskList({ groupedTasks }: Props) {
           ),
         ];
 
-        if (listTaskGroup) {
-          children.concat(
+        if (listTaskGroup?.hasMore) {
+          children.push(
             convert(
-              group?.taskGroupIdentifier,
+              uniqueId().toString(),
               VLoadMoreTasks,
               'LoadMoreTasks',
               false,

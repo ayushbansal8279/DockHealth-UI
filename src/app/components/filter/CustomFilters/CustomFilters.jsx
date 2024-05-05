@@ -11,7 +11,6 @@ import { getUniqueQuickFilterLabelName } from './helpers';
 const CustomFilters = ({
   quickFiltersList = [],
   addQuickFilterOption,
-  selectedQuickFilter: selected,
   selectQuickFilter: setSelected,
   onCreate,
   onUpdate,
@@ -21,14 +20,19 @@ const CustomFilters = ({
   filters,
   setMenuOption,
   setSavePopupOpen,
-  setQuickFilterIdentifier,
   setEditIdentifier,
+  setCustomFinalFilter,
+  openPopover,
+  onQuickFilterCreate,
+  setSelectedQuickFilter,
+  selectedQuickFilter,
+  clearFilters,
+  setSelectedCustomFilter,
 }) => {
   const [editModeFilterIdentifier, setEditModeFilterIdentifier] =
     useState(null);
   const history = useHistory();
   const dispatch = useDispatch();
-  const [selectedQuickFilter, setSelectedQuickFilter] = useState('')
 
   useEffect(() => {
     const unlisten = history.listen(compose(dispatch, cleanClickFilter));
@@ -41,32 +45,16 @@ const CustomFilters = ({
 
   const handleSelect = useCallback(
     (_, identifier, { selectedOptions }) => {
-      // if (editModeEnabled && selected === identifier) {
-        // const originalFiltersList = quickFiltersList.find(
-        //   (f) => f.quickFilterIdentifier === identifier,
-        // )?.selectedOptions;
-
-        // setSelected(identifier, originalFiltersList);
-      // } else if (selected === identifier) {
-      //   setSelected(null);
-      // } else {
-      //   setSelected(identifier, selectedOptions);
-      // }
-      // setSelected(identifier, originalFiltersList);
+      setSelected(identifier, selectedOptions);
       setSelectedQuickFilter(identifier);
-      setQuickFilterIdentifier(identifier);
-      const data = {};
-      for (const key in selectedOptions) {
-        const users = filters
-          .flatMap((item) => item.id === key && item.options)
-          .filter((item) => typeof item !== 'boolean');
-        data[key] = selectedOptions[key].options.map((item) =>
-          users.find((user) => user.key === item),
-        );
-      }
-      setFinalFilter(data);
+      openPopover(false);
     },
-    [editModeEnabled, quickFiltersList, selectedQuickFilter, setSelectedQuickFilter],
+    [
+      editModeEnabled,
+      quickFiltersList,
+      selectedQuickFilter,
+      setSelectedQuickFilter,
+    ],
   );
 
   const handleUpdate = useCallback(
@@ -95,17 +83,10 @@ const CustomFilters = ({
     <CustomFiltersContainer>
       <Label>Quick Filters</Label>
       <OptionsList>
-        {addQuickFilterOption && (
-          <CustomFilterOption
-            label={getUniqueQuickFilterLabelName(quickFiltersList)}
-            autofocus
-            disableOptions
-            disabled={false}
-            onBlur={handleCreate}
-          />
-        )}
         {quickFiltersList.map((filter) => (
           <CustomFilterOption
+            filters={filters}
+            filter={filter}
             label={filter.name}
             key={filter.quickFilterIdentifier}
             identifier={filter.quickFilterIdentifier}
@@ -119,10 +100,13 @@ const CustomFilters = ({
             onBlur={handleUpdate}
             editModeEnabled={editModeEnabled}
             onDelete={onDelete}
-            setQuickFilterIdentifier={setQuickFilterIdentifier}
             setSavePopupOpen={setSavePopupOpen}
             setFinalFilter={setFinalFilter}
             setEditIdentifier={setEditIdentifier}
+            setCustomFinalFilter={setCustomFinalFilter}
+            onQuickFilterCreate={onQuickFilterCreate}
+            clearFilters={clearFilters}
+            setSelectedCustomFilter={setSelectedCustomFilter}
           />
         ))}
       </OptionsList>

@@ -1,5 +1,3 @@
-/* eslint-disable no-underscore-dangle */
-/* eslint-disable react-hooks/rules-of-hooks */
 import React, {
   useState,
   useMemo,
@@ -14,7 +12,6 @@ import {
   isTaskItemSelectedSelector,
   isTaskItemsSelectedSelector,
 } from 'selectors/task-items-selectors';
-// import { multipleTaskLookupSelector } from 'selectors/task-details-selectors';
 import { useDispatch, useSelector } from 'react-redux';
 import { formatPhoneNumber } from 'helpers/utility-functions';
 import ThreeDotsIcon from 'img/three-dots.svg';
@@ -34,7 +31,6 @@ import {
 } from 'helpers/task-helpers';
 import { isMemberAdmin } from 'helpers/list-members-helper';
 import { checkIfUserIsOrganizationAdmin } from 'helpers/user-helper';
-// import * as TaskTemplateApi from 'api/task-template-api';
 import Checkbox from 'components/common/Checkbox/Checkbox';
 import ProgressBar from 'components/common/ProgressBar/ProgressBar';
 import RotatableChevron from 'components/common/RotatableChevron/RotatableChevron';
@@ -46,7 +42,6 @@ import { useTaskListColumnsConfig } from 'context-api/columns-config-context';
 import StickyMainTaskItemCell from 'components/task/StickyMainTaskItemCell/StickyMainTaskItemCell';
 import TaskItemCell from 'components/task/TaskItemCell/TaskItemCell';
 import TaskTemplateDueDate from 'components/task-template/TaskTemplateDueDate/TaskTemplateDueDate';
-// import { CustomFieldWidthConfig } from 'helpers/field-type-helpers';
 import { updatePartialWorkflow } from 'actions/task-template-actions';
 import { compose } from 'redux';
 import { openModal } from 'modal/actions';
@@ -95,6 +90,8 @@ import TaskTemplateDetails from '../TaskTemplateDetails/TaskTemplateDetails';
 import { ListPageContext } from '@/app/views/list-details/ListDetailsView';
 import { VTaskContext } from '@/app/views/list-details/VirtualTaskList/VirtualSegment/VTask/VTask';
 import { TaskScrollVericleLine } from '../../task/styled';
+import TaskTemplateComment from '../TaskTemplateIcons/TaskTemplateComment';
+import palette from '@/app/styles/palette';
 
 const TaskTemplateGroupHeader = ({
   templateGroup = {},
@@ -113,19 +110,19 @@ const TaskTemplateGroupHeader = ({
   setShowCompletedTasks,
   showIncompleteTasks,
   setShowIncompleteTasks,
-  // isFetchingTasks,
   showTasksWithGroup = true,
   iconColorActive,
   highlightedValue,
   origin,
+  isNextVirtualTaskItemTypeBundle,
+  isLastTaskOfGroup,
+  isNextTaskItemTypeBundle,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const {
     name,
     tasks: taskIdentifiers,
     identifier,
-    tasksCount,
-    tasksCompletedCount,
     selected,
     creator,
   } = templateGroup;
@@ -136,7 +133,7 @@ const TaskTemplateGroupHeader = ({
   const [isEditing, setIsEditing] = useState(false);
   const [nameInputValue, setNameInputValue] = useState(name);
   const [nameInputError, setNameInputError] = useState(false);
-  const [isDateHover, setIsDateHover] = useState(false);
+  const isDateHover = false;
   const [isCellHover, setCellHover] = useState({
     dueDate: false,
     startDate: false,
@@ -162,20 +159,6 @@ const TaskTemplateGroupHeader = ({
   useEffect(() => {
     setNameInputValue(name);
   }, [name]);
-
-  const workFlowData = undefined;
-  // const [workFlowData, setWorkFlowData] = useState(undefined);
-  // const selectedWorkflow = useSelector(workflowSelector);
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  // const templateTasks = taskIdentifiers || [];
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  // const templateTasks = useSelector((state) => {
-  //   return taskIdentifiers
-  //     ? multipleTaskLookupSelector(state, origin, taskIdentifiers)
-  //     : [];
-  // });
 
   let restrictions =
     SINGLE_TASK_RESTRICTIONS_PROFILES[currentUser?.orgUserRole];
@@ -344,8 +327,6 @@ const TaskTemplateGroupHeader = ({
   }, [currentList, dispatch, templateGroup]);
 
   const menuOptions = useMemo(() => {
-    // eslint-disable-next-line unicorn/prevent-abbreviations
-
     let options = [];
 
     if (taskListRestrictions?.workflowAddTask !== DISABLED) {
@@ -371,7 +352,6 @@ const TaskTemplateGroupHeader = ({
           onClick: () => {
             setIsEditing(true);
             setTimeout(() => {
-              // eslint-disable-next-line no-unused-expressions
               nameInputReference.current?.focus();
             }, 0);
           },
@@ -482,6 +462,7 @@ const TaskTemplateGroupHeader = ({
     }
 
     return options;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     handleMoveGroupTask,
     isCompletedTab,
@@ -512,14 +493,12 @@ const TaskTemplateGroupHeader = ({
               },
             }),
           );
-          // eslint-disable-next-line no-unused-expressions
           nameInputReference.current?.blur();
         } else {
           setNameInputError(true);
         }
       } else if (key === 'Escape') {
         setNameInputError(false);
-        // eslint-disable-next-line no-unused-expressions
         nameInputReference.current?.blur();
       }
     },
@@ -586,46 +565,13 @@ const TaskTemplateGroupHeader = ({
     templateGroup,
   ]);
 
-  // useEffect(() => {
-  //   if (!isOpen && isBundleSelected && !selected) {
-  //     const { parentTasks, subtasks } = extractTasksAndSubtasks(filteredTasks);
-  //     const allTasks = [...parentTasks, ...subtasks];
-  //     dispatch(
-  //       TaskActions.changeTasksSelectedState(
-  //         !isBundleSelected,
-  //         pluck('identifier', allTasks),
-  //       ),
-  //     );
-  //     dispatch(
-  //       TaskActions.changeWorkflowSelectedState(!isBundleSelected, identifier),
-  //     );
-  //   }
-  // }, [
-  //   dispatch,
-  //   filteredTasks,
-  //   identifier,
-  //   isBundleSelected,
-  //   isFetchingTasks,
-  //   isOpen,
-  //   selected,
-  // ]);
-
   const getColumnOrder = useCallback(
     (TaskItemColumnType) =>
       columns?.findIndex((c) => c.identifier === TaskItemColumnType),
     [columns],
   );
 
-  // const getWorkflowData = useCallback(async id => {
-  //   setWorkFlowData(await TaskTemplateApi.getTemplateBasicDetails(id));
-  // }, []);
-
-  // useEffect(() => {
-  //   // eslint-disable-next-line no-unused-expressions
-  //   !selectedWorkflow ? getWorkflowData(identifier) : setWorkFlowData(null);
-  // }, [getWorkflowData, identifier, selectedWorkflow]);
-
-  const taskPriority = (templateGroup || workFlowData).priority;
+  const taskPriority = templateGroup.priority;
 
   const handleUpdateTaskPriority = useCallback(
     (priority) => {
@@ -638,79 +584,36 @@ const TaskTemplateGroupHeader = ({
     [dispatch, identifier],
   );
 
-  const patient =
-    parentPatient ?? templateGroup?.patient ?? workFlowData?.patient;
+  const patient = parentPatient ?? templateGroup?.patient;
 
   const [isPatientDataReadOnly] = useState(true);
   const collapse = useContext(CollapseContext);
   const [virtualListWorkflowOpen, setVirtualListWorkflowOpen] = useState(
-    collapse.get(identifier) ? false : true,
+    !collapse.get(identifier),
   );
 
   const { isVirtualListWorkflowOpen } = useContext(VTaskContext);
-  const handleOpen = () => {
+
+  const handleOpen = useCallback(() => {
     setOpen(!isOpen);
     setVirtualListWorkflowOpen(!virtualListWorkflowOpen);
-    // eslint-disable-next-line react/destructuring-assignment
-    // collapse.set(identifier, isOpen);
     collapse.set(identifier, virtualListWorkflowOpen);
-  };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [identifier, isOpen, setOpen, virtualListWorkflowOpen]);
 
   useEffect(() => {
-    if (changeViewType === 'FULL_VIEW') {
-      if (!tasks.includes(identifier)) {
-        // setOpen(true);
-        setVirtualListWorkflowOpen(true);
-        collapse.set(identifier, false);
-        handleAddTask(identifier);
-      }
-      // else {
-      // if (collapse.get(identifier)) {
-      //   setOpen(false);
-      //   // setVirtualListWorkflowOpen(false);
-      // } else {
-      //   setOpen(true);
-      //   // setVirtualListWorkflowOpen(true);
-      // }
-      // setOpen(collapse.get(identifier) ? false : true);
-      //   setVirtualListWorkflowOpen(collapse.get(identifier) ? false : true);
-      // }
+    if (changeViewType === 'FULL_VIEW' && !tasks.includes(identifier)) {
+      setVirtualListWorkflowOpen(true);
+      collapse.set(identifier, false);
+      handleAddTask(identifier);
     }
 
-    if (changeViewType === 'SLIM_VIEW') {
-      if (!tasks.includes(identifier)) {
-        // setOpen(false);
-        setVirtualListWorkflowOpen(false);
-        collapse.set(identifier, true);
-        handleAddTask(identifier);
-      }
-      // else {
-      // if (collapse.get(identifier)) {
-      //   setOpen(false);
-      //   // setVirtualListWorkflowOpen(false);
-      // } else {
-      //   setOpen(true);
-      //   // setVirtualListWorkflowOpen(true);
-      // }
-      // setOpen(collapse.get(identifier) ? false : true);
-      //   setVirtualListWorkflowOpen(collapse.get(identifier) ? false : true);
-      // }
+    if (changeViewType === 'SLIM_VIEW' && !tasks.includes(identifier)) {
+      setVirtualListWorkflowOpen(false);
+      collapse.set(identifier, true);
+      handleAddTask(identifier);
     }
-    // else {
-    // setOpen(false);
-    // collapse.set(identifier, true);
-    // }
-  }, [
-    changeViewType,
-    // handleOpen,
-  ]);
-
-  // useEffect(() => {
-  //   if (origin === 'PATIENT') {
-  //     setOpen(!isOpen);
-  //     // collapse.set(identifier, isOpen);
-  //   }
-  // }, [origin, setOpen]);
+  }, [changeViewType, collapse, handleAddTask, identifier, tasks]);
 
   const randerFirstColumnCoverIfNecessary = useCallback(
     (content, order, width) => {
@@ -736,7 +639,7 @@ const TaskTemplateGroupHeader = ({
                 {...dragHandleProps}
               />
             )}
-          <ActionIconsContainer>
+          <ActionIconsContainer isOpen={!isVirtualListWorkflowOpen}>
             {taskListRestrictions?.completeTask !== DISABLED &&
               bulkEditEnabled && (
                 <Checkbox
@@ -751,7 +654,7 @@ const TaskTemplateGroupHeader = ({
                   origin === 'PATIENT' ? isOpen : virtualListWorkflowOpen
                 }
                 onClick={handleOpen}
-                color={iconColorActive}
+                color={palette.crystalBlue}
               />
             )}
             {taskListRestrictions?.createTask !== DISABLED && (
@@ -800,7 +703,6 @@ const TaskTemplateGroupHeader = ({
     [patient, dispatch],
   );
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   const handleWorkflowUpdate = useCallback(
     (data) => {
       dispatch(updatePartialWorkflow(templateGroup?.identifier, data));
@@ -812,6 +714,10 @@ const TaskTemplateGroupHeader = ({
     <TaskTemplateGroupHeaderContainer
       isSelected={isBundleSelected}
       isOpen={origin === 'PATIENT' ? isOpen : virtualListWorkflowOpen}
+      isNextVirtualTaskItemTypeBundle={isNextVirtualTaskItemTypeBundle}
+      isLastTaskOfGroup={isLastTaskOfGroup}
+      origin={origin}
+      isNextTaskItemTypeBundle={isNextTaskItemTypeBundle}
     >
       {randerFirstColumnCoverIfNecessary(
         <>
@@ -859,24 +765,6 @@ const TaskTemplateGroupHeader = ({
         columns?.find(({ identifier: id }) => id === TaskItemColumn.DESCRIPTION)
           ?.columnWidth,
       )}
-      {/* {randerFirstColumnCoverIfNecessary(
-        <TaskItemCell
-          justify="center"
-          paddingLeft="tiny"
-          paddingRight="tiny"
-          key={`subtask_count_${identifier}`}
-          width={
-            columns?.find(
-              ({ identifier: id }) => id === TaskItemColumn.SUBTASKS_COUNT,
-            )?.columnWidth
-          }
-          order={getColumnOrder(TaskItemColumn.SUBTASKS_COUNT)}
-        />,
-        getColumnOrder(TaskItemColumn.SUBTASKS_COUNT),
-        columns?.find(
-          ({ identifier: id }) => id === TaskItemColumn.SUBTASKS_COUNT,
-        )?.columnWidth,
-      )} */}
 
       {isColumnChecked(columns, TaskItemColumn.PATIENT) && (
         <>
@@ -1145,14 +1033,7 @@ const TaskTemplateGroupHeader = ({
               }
               order={getColumnOrder(TaskItemColumn.ACTIVITY)}
             >
-              <TaskTemplateIcons
-                workflow={
-                  templateGroup.comments || !workFlowData
-                    ? templateGroup
-                    : workFlowData
-                }
-                dispatch={dispatch}
-              />
+              <TaskTemplateIcons workflow={templateGroup} dispatch={dispatch} />
             </TaskItemCell>,
             getColumnOrder(TaskItemColumn.ACTIVITY),
             columns?.find(
@@ -1261,11 +1142,7 @@ const TaskTemplateGroupHeader = ({
                 readOnly={restrictions?.assigment === READ_ONLY}
                 currentUser={currentUser}
                 multipleAssigneesContext={groupHasMultipleAssignees}
-                workflow={
-                  templateGroup.assignedToUsers || !workFlowData
-                    ? templateGroup
-                    : workFlowData
-                }
+                workflow={templateGroup}
                 onWorkflowUpdate={compose(dispatch, updatePartialWorkflow)}
               />
             </TaskItemCell>,
@@ -1337,24 +1214,12 @@ const TaskTemplateGroupHeader = ({
               onMouseEnter={() => setCellHover({ comment: true })}
               onMouseLeave={() => setCellHover({ comment: false })}
             >
-              <TaskTemplateIcons
-                isHover={isCellHover}
-                comments={
-                  templateGroup.comments || !workFlowData
-                    ? templateGroup.comments
-                    : workFlowData.comments
-                }
-                matchAttachComments={
-                  templateGroup.matchComments || !workFlowData
-                    ? templateGroup.matchComments
-                    : workFlowData.matchComments
-                }
-                workflow={
-                  templateGroup.comments || !workFlowData
-                    ? templateGroup
-                    : workFlowData
-                }
-                dispatch={dispatch}
+              <TaskTemplateComment
+                isHover={isCellHover.comment}
+                comments={templateGroup.comments}
+                matchAttachComments={templateGroup.matchComments}
+                workflow={templateGroup}
+                origin={origin}
               />
             </TaskItemCell>,
             getColumnOrder(TaskItemColumn.COMMENTS),
@@ -1378,21 +1243,9 @@ const TaskTemplateGroupHeader = ({
             >
               <TaskTemplateIcons
                 isHover={isCellHover}
-                labels={
-                  templateGroup.labels || !workFlowData
-                    ? templateGroup.labels
-                    : workFlowData.labels
-                }
-                matchLabels={
-                  templateGroup.matchLabels || !workFlowData
-                    ? templateGroup.matchLabels
-                    : workFlowData.matchLabels
-                }
-                workflow={
-                  templateGroup.labels || !workFlowData
-                    ? templateGroup
-                    : workFlowData
-                }
+                labels={templateGroup.labels}
+                matchLabels={templateGroup.matchLabels}
+                workflow={templateGroup}
                 dispatch={dispatch}
               />
             </TaskItemCell>,
@@ -1417,21 +1270,9 @@ const TaskTemplateGroupHeader = ({
             >
               <TaskTemplateIcons
                 isHover={isCellHover}
-                attachments={
-                  templateGroup.attachments || !workFlowData
-                    ? templateGroup.attachments
-                    : workFlowData.attachments
-                }
-                matchAttachments={
-                  templateGroup.matchAttachments || !workFlowData
-                    ? templateGroup.matchAttachments
-                    : workFlowData.matchAttachments
-                }
-                workflow={
-                  templateGroup.attachments || !workFlowData
-                    ? templateGroup
-                    : workFlowData
-                }
+                attachments={templateGroup.attachments}
+                matchAttachments={templateGroup.matchAttachments}
+                workflow={templateGroup}
                 dispatch={dispatch}
               />
             </TaskItemCell>,
@@ -1453,11 +1294,7 @@ const TaskTemplateGroupHeader = ({
               order={getColumnOrder(TaskItemColumn.TASK_DETAILS)}
             >
               <TaskTemplateDetails
-                workflow={
-                  templateGroup.description || !workFlowData
-                    ? templateGroup
-                    : workFlowData
-                }
+                workflow={templateGroup}
                 readOnly={restrictions?.description === READ_ONLY}
               />
             </TaskItemCell>,
@@ -1484,13 +1321,7 @@ const TaskTemplateGroupHeader = ({
               order={getColumnOrder(TaskItemColumn.CREATED_BY)}
               printWidth={TaskItemColumnWidth[TaskItemColumn.CREATED_BY].PRINT}
             >
-              <TaskTemplateCreatedByMembers
-                workflow={
-                  templateGroup?.creator || !workFlowData
-                    ? templateGroup
-                    : workFlowData
-                }
-              />
+              <TaskTemplateCreatedByMembers workflow={templateGroup} />
             </TaskItemCell>,
             getColumnOrder(TaskItemColumn.CREATED_BY),
           )}
@@ -1571,13 +1402,7 @@ const TaskTemplateGroupHeader = ({
               }
             >
               <>
-                <TaskTemplateCompletedByMembers
-                  workflow={
-                    templateGroup?.creator || !workFlowData
-                      ? templateGroup
-                      : workFlowData
-                  }
-                />
+                <TaskTemplateCompletedByMembers workflow={templateGroup} />
               </>
             </TaskItemCell>,
             getColumnOrder(TaskItemColumn.COMPLETED_BY),
@@ -1601,9 +1426,7 @@ const TaskTemplateGroupHeader = ({
               }}
               order={getColumnOrder(TaskItemColumn.ELAPSED_TIME)}
             >
-              <TaskTemplateElapsedTime
-                workflow={templateGroup ?? workFlowData}
-              />
+              <TaskTemplateElapsedTime workflow={templateGroup} />
             </TaskItemCell>,
             getColumnOrder(TaskItemColumn.ELAPSED_TIME),
           )}
@@ -1615,16 +1438,12 @@ const TaskTemplateGroupHeader = ({
             f.isChecked && f._customFieldType !== CUSTOM_FIELD_TYPES.REGULAR,
         )
         .map((field) => {
-          const workflowDetails =
-            templateGroup.assignedToUsers || !workFlowData
-              ? templateGroup
-              : workFlowData;
-          const taskCustomFieldValue = workflowDetails?.taskMetaData?.find(
+          const taskCustomFieldValue = templateGroup?.taskMetaData?.find(
             (f) => f.customFieldIdentifier === field.identifier,
           );
           const patientMetaData =
             patient?.patientMetaData ||
-            workflowDetails?.patient?.patientMetaData ||
+            templateGroup?.patient?.patientMetaData ||
             [];
           const patientCustomFieldValue = patientMetaData?.find(
             (f) => f.customFieldIdentifier === field.identifier,
@@ -1636,7 +1455,7 @@ const TaskTemplateGroupHeader = ({
 
           const hidePatientCustomFields =
             field.targetType === CUSTOM_FIELD_TYPES.PATIENT &&
-            !workflowDetails?.patient?.patientIdentifier;
+            !templateGroup?.patient?.patientIdentifier;
 
           return randerFirstColumnCoverIfNecessary(
             <TaskItemCell
@@ -1644,7 +1463,7 @@ const TaskTemplateGroupHeader = ({
               width={field.columnWidth}
               order={getColumnOrder(field.identifier)}
             >
-              {!hidePatientCustomFields && workflowDetails && (
+              {!hidePatientCustomFields && templateGroup && (
                 <TaskItemCustomField
                   customFieldValue={customFieldValue}
                   onClick={(fieldIdentifier, workflow) => {
@@ -1659,7 +1478,7 @@ const TaskTemplateGroupHeader = ({
                   }}
                   field={field}
                   readOnly={taskListRestrictions?.createTask === DISABLED}
-                  task={workflowDetails}
+                  task={templateGroup}
                 />
               )}
             </TaskItemCell>,

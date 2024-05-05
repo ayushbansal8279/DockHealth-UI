@@ -143,10 +143,10 @@ const ListDetailsHeader = (props) => {
   );
 
   const handleSaveQuickFilter = useCallback(
-    (selectedFilters) =>
+    (quickFilterIdentifier,selectedFilters) =>
       dispatch(
         updateQuickFilter(
-          selectedQuickFilter,
+          quickFilterIdentifier,
           {
             selectedOptions: selectedFilters,
           },

@@ -50,6 +50,7 @@ function VSubtask(
     isLastGroupOfList,
     isLastSubtaskParentTask,
     isNextVirtualTaskItemTypeBundle,
+    isWorkflowSubTask,
     ...record
   }: Props,
   // eslint-disable-next-line unicorn/prevent-abbreviations
@@ -139,19 +140,26 @@ function VSubtask(
                 !isNextVirtualTaskItemTypeBundle
                   ? isLastSubtaskParentTask
                     ? bgColor
-                      ? '20px'
+                      ? '24px'
                       : isLastGroupOfList
-                      ? '20px'
+                      ? '24px'
                       : '0px'
-                    : '10px'
-                  : '0px',
+                    : '0px'
+                  : isLastSubtaskParentTask &&
+                    !addWorkflowTask &&
+                    !subtaskQuickAddOpen &&
+                    !isNextVirtualTaskItemTypeBundle
+                  ? isWorkflowSubTask
+                    ? '10px'
+                    : '2px'
+                  : '',
             }}
           >
             <Sc.VSubtask
               ref={ref}
               {...register}
               $subitem={metadata.level > 1}
-              isWorkflowSubtask={!!task}
+              isWorkflowSubtask={isWorkflowSubTask}
               searchValue={!!searchValue}
               isFilterApply={
                 !!selectedFilters
@@ -173,7 +181,7 @@ function VSubtask(
                 draggableProvided={provided}
                 isDraggable
                 isDragging={snapshot.isDragging}
-                isWorkflowSubtask={!!task}
+                isWorkflowSubtask={isWorkflowSubTask}
                 isSubtask
                 origin={TaskOrigin.LIST}
                 isNestedTask
@@ -196,19 +204,25 @@ function VSubtask(
                   !isNextVirtualTaskItemTypeBundle
                     ? isLastSubtaskParentTask
                       ? bgColor
-                        ? '20px'
+                        ? '24px'
                         : isLastGroupOfList
-                        ? '20px'
+                        ? '24px'
                         : '0px'
-                      : '10px'
-                    : '0px',
+                      : '0px'
+                    : isLastSubtaskParentTask &&
+                      !addWorkflowTask &&
+                      !isNextVirtualTaskItemTypeBundle
+                    ? isWorkflowSubTask
+                      ? '10px'
+                      : '2px'
+                    : '',
               }}
             >
               <Sc.QuickAddContainer
                 $width={
                   percentage > 90
                     ? visibleWidth
-                      ? `${visibleWidth}px`
+                      ? `${visibleWidth - 145}px`
                       : '100%'
                     : `${visibleWidth - 120}px`
                 }
@@ -216,13 +230,11 @@ function VSubtask(
                 <QuickAddSubtask
                   taskListIdentifier={parentTask.taskList.taskListIdentifier}
                   parentTaskIdentifier={parentTask.identifier}
-                  // onFocus={handleQuickAddOnFocus}
-                  // origin={TaskOrigin.LIST}
                 />
               </Sc.QuickAddContainer>
             </div>
           )}
-          {isLastTaskOfGroup && addWorkflowTask && (
+          {isLastSubtaskParentTask && addWorkflowTask && (
             <div
               style={{
                 width:
@@ -232,12 +244,15 @@ function VSubtask(
                   isLastTaskOfGroup && !isNextVirtualTaskItemTypeBundle
                     ? isLastSubtaskParentTask
                       ? bgColor
-                        ? '20px'
+                        ? '24px'
                         : isLastGroupOfList
-                        ? '20px'
+                        ? '24px'
                         : '0px'
-                      : '10px'
-                    : '0px',
+                      : '0px'
+                    : isLastSubtaskParentTask &&
+                      !isNextVirtualTaskItemTypeBundle
+                    ? '10px'
+                    : '',
               }}
             >
               <Sc.WorkflowQuickAddTaskContainer
@@ -248,6 +263,7 @@ function VSubtask(
                       : '100%'
                     : `${visibleWidth - 85}px`
                 }
+                subtaskQuickAddOpen={subtaskQuickAddOpen}
               >
                 <QuickAddInputWrapper>
                   <QuickAddTaskInput

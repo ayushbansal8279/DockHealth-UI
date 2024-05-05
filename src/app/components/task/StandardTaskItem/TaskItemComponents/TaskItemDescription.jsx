@@ -272,7 +272,7 @@ const TaskItemDescription = ({
             </TaskItemParentTaskLabel>
           </>
         )} */}
-        {linkedTaskTemplate && !isCompleted && !isDecisionTask && (
+        {/* {linkedTaskTemplate && !isCompleted && !isDecisionTask && (
           <TaskContext>
             <span
               style={{
@@ -281,15 +281,15 @@ const TaskItemDescription = ({
                 whiteSpace: 'nowrap',
               }}
             >
-              Triggers: {linkedTaskTemplate.name}
+              Deploy: {linkedTaskTemplate.name}
             </span>
           </TaskContext>
         )}
         {linkedTaskTemplate && !isCompleted && isDecisionTask && (
           <TaskContext>
-            <span>Triggers a SmartFlow</span>
+            <span>Deploy a SmartFlow</span>
           </TaskContext>
-        )}
+        )} */}
       </TaskItemDescriptionIndicators>
     </DescriptionBox>
   );

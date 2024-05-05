@@ -53,6 +53,9 @@ const TaskTemplateGroup = ({
   origin,
   pageBackground,
   highlightedValue,
+  isNextVirtualTaskItemTypeBundle,
+  isLastTaskOfGroup,
+  isNextTaskItemTypeBundle,
 }) => {
   const templateGroup = useSelector((state) => {
     return taskLookupSelector(state, origin, pullGroup);
@@ -171,6 +174,9 @@ const TaskTemplateGroup = ({
         highlightedValue={highlightedValue}
         origin={origin}
         pageBackground={pageBackground}
+        isNextVirtualTaskItemTypeBundle={isNextVirtualTaskItemTypeBundle}
+        isLastTaskOfGroup={isLastTaskOfGroup}
+        isNextTaskItemTypeBundle={isNextTaskItemTypeBundle}
       />
       {!isStartedDnD && window.disabledVirtualTaskList && (
         <TaskTemplateGroupList timeout={150} in={isOpen && !isStartedDnD}>
@@ -240,6 +246,10 @@ const TaskTemplateGroup = ({
                               isBundleTask
                               isTaskTemplate
                               isLastChild={index === filteredTasks?.length - 1}
+                              isAddingTask={isAddingTask}
+                              isNextTaskItemTypeBundle={
+                                isNextTaskItemTypeBundle
+                              }
                               templateBundleIdentifier={identifier}
                               parentTaskGroupIdentifier={
                                 parentTaskGroupIdentifier
@@ -258,7 +268,11 @@ const TaskTemplateGroup = ({
                 </Droppable>
               </DragDropContext>
               {isAddingTask && (
-                <QuickAddInputWrapper>
+                <QuickAddInputWrapper
+                  isNextTaskItemTypeBundle={isNextTaskItemTypeBundle}
+                  isAddingTask={isAddingTask}
+                  origin={origin}
+                >
                   <QuickAddTaskInput
                     autofocus
                     disableMentions
