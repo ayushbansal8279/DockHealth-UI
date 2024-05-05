@@ -47,11 +47,20 @@ const ListDetailsView = () => {
   }, []);
 
   const [addNewGroup, setAddNewGroup] = useState(false);
+  const [prevListIdentifier, setPrevListIdentifier] = useState(null);
   const [workflowPopoverOpen, setWorkflowPopoverOpen] = useState(false);
   const [patientPopoverOpen, setPatientPopoverOpen] = useState(false);
   const [changeViewType, setChangeViewType] = useState('SLIM_VIEW');
   const [showShadow, setShowShadow] = useState(false);
   const [tasks, setTasks] = useState([]);
+
+  useEffect(() => {
+    const currentListIdentifier = taskListIdentifierParameter;
+    if (currentListIdentifier !== prevListIdentifier) {
+      setPrevListIdentifier(currentListIdentifier);
+      handleAddNewGroup(false);
+    }
+  }, [taskListIdentifierParameter]);
 
   const handleAddNewGroup = (value) => {
     setAddNewGroup(value);
