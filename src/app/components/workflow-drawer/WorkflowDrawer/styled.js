@@ -43,3 +43,7 @@ export const SectionSpacer = styled.hr`
   border-color: ${palette.coolGrey2};
   height: 1px;
 `;
+
+export const DeployTextContainer = styled.span`
+  margin-left: 16px;  
+`;

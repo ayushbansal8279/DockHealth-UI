@@ -44,6 +44,7 @@ import {
   WorkflowDrawerContainer,
   SectionContainer,
   SectionSpacer,
+  DeployTextContainer,
 } from './styled';
 
 const { DISABLED } = WORKFLOW_LIST_RESTRICTIONS_OPTIONS;
@@ -77,6 +78,8 @@ const WorkflowDrawer = () => {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const { linkedSourceTaskBundle } = selectedWorkflow || {};
 
   useEffect(() => {
     let handler = setInterval(() => {
@@ -120,6 +123,12 @@ const WorkflowDrawer = () => {
                     >
                       {listName}
                     </FiledInListName>
+                    {linkedSourceTaskBundle !== undefined && (
+                      <DeployTextContainer>
+                        Deployed From :{' '}
+                        <FiledInListName>{linkedSourceTaskBundle.name}</FiledInListName>
+                      </DeployTextContainer>
+                    )}
                   </Typography>
                 </Grid>
                 <Grid item xs={12}>
