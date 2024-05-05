@@ -1,5 +1,3 @@
-/* eslint-disable sonarjs/cognitive-complexity */
-/* eslint-disable no-underscore-dangle */
 import React, { useState, useRef, useMemo, useCallback } from 'react';
 import {
   Box,
@@ -9,9 +7,9 @@ import {
   Popover,
   Tabs,
   Tab,
+  Switch,
 } from '@mui/material';
 import CustomizeIcon from 'img/customize-icon.svg';
-import Checkbox from 'components/common/Checkbox/Checkbox';
 import { useTaskListColumnsConfig } from 'context-api/columns-config-context';
 import {
   userProfileSelector,
@@ -156,7 +154,7 @@ const CustomizeToolbarButton = ({
           key={column.identifier}
           onClick={() => onClickCheckbox(column)}
         >
-          <Checkbox isChecked={column.isChecked} />
+          <Switch checked={column.isChecked} />
           <Box mx={0.5} />
           <ListItemText>{name || column.name}</ListItemText>
         </MenuItem>
@@ -360,7 +358,7 @@ const CustomizeToolbarButton = ({
                               onClick();
                           }}
                         >
-                          <Checkbox isDisabled={disabled} isChecked={checked} />
+                          <Switch disabled={disabled} checked={checked} />
                           <Box mx={0.5} />
                           <ListItemText>{name}</ListItemText>
                         </MenuItem>

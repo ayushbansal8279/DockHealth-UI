@@ -15,8 +15,15 @@ import unless from 'ramda/src/unless';
 import palette from 'styles/palette';
 
 export const TaskStatus = {
+  ALL: '',
   INCOMPLETE: 'INCOMPLETE',
   COMPLETE: 'COMPLETE',
+};
+
+export const TaskStatusLabel = {
+  [TaskStatus.ALL]: 'All Tasks',
+  [TaskStatus.INCOMPLETE]: 'Incomplete Tasks',
+  [TaskStatus.COMPLETE]: 'Completed Tasks',
 };
 
 export const TaskItemType = {
@@ -64,10 +71,6 @@ export function getPriorityColor(priority) {
     }
     case TaskPriority.MEDIUM:
       return palette.orangeJulius;
-    // case TaskPriority.LOW:
-    //   return palette.bananaHammock;
-    // case TaskPriority.NONE:
-    // eslint-disable-next-line unicorn/no-useless-switch-case
     case TaskPriority.LOW:
     default: {
       return 'transparent';
