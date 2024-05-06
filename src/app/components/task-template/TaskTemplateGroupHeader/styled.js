@@ -136,7 +136,7 @@ export const ActionIconsContainer = styled.div`
 &::before {
   content: "";
   position: absolute;
-  top: -5px;
+  top: -11px;
   left: -11px;
   height: 33.8px;
   width: 77px;
@@ -149,4 +149,7 @@ export const ActionIconsContainer = styled.div`
 
 export const PatientMRNAnchor = styled.a`
   color: ${palette.brightBlue} !important;
+`;
+export const ChevronContainer = styled.div`
+  margin-left: 20px;
 `;
