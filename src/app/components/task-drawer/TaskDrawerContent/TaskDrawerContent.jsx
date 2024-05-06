@@ -18,13 +18,11 @@ import {
 } from 'restrictions/task-restrictions';
 import { isMemberAdmin } from 'helpers/list-members-helper';
 import { checkIfUserIsOrganizationAdmin } from 'helpers/user-helper';
-import AddComment from 'components/drawer-common/AddComment/AddComment';
-// import WatchersPopover from 'components/task-drawer/TaskDrawerContent/WatchersPopover/WatchersPopover';
 import { createTaskListPath } from 'routing/helpers/paths';
 import { useHistory } from 'react-router-dom';
 import { currentTaskListSelector } from 'selectors/task-list-selectors';
 import { addComment } from 'actions/task-actions';
-import palette from 'styles/palette';
+import StickyAddComment from 'components/drawer-common/AddComment/StickyAddComment';
 import AttachmentsSection from '../AttachmentsSection/AttachmentsSection';
 import CommentSection from '../CommentSection/CommentSection';
 import LabelsSection from '../LabelsSection/LabelsSection';
@@ -57,11 +55,8 @@ import {
   ReferenceParentButton,
   ReferenceParentName,
   FiledInListName,
-  DueDateAndRemainderContainer,
-  // SubscriptionBadge,
 } from './styled';
 import ReminderSection from '../ReminderSection/ReminderSection';
-import StartDateSection from '../StartDateSection/StartDateSection';
 
 const { DISABLED, READ_ONLY } = SINGLE_TASK_RESTRICTIONS_OPTIONS;
 
@@ -125,9 +120,6 @@ const TaskDrawerContent = (props) => {
   const subTasksDisabled =
     currentOrganization?.disabledFeatures?.includes('TASK_SUBTASKS') || false;
 
-  const taskStartDateDisabled =
-    currentOrganization?.disabledFeatures?.includes('TASK_START_DATE') || false;
-
   const taskLabelsLocationItem =
     currentOrganization?.themeSettings?.find(
       ({ name }) => name === 'task.labels.location',
@@ -143,7 +135,6 @@ const TaskDrawerContent = (props) => {
   let taskListRestrictions = TASK_LIST_RESTRICTIONS_PROFILES[orgUserRole];
 
   const restrictMentions = restrictions?.mentions === DISABLED;
-  const taskListIdentifier = selectedTask?.taskList?.taskListIdentifier;
 
   const selectedOrganization = useSelector(selectedUserOrganizationSelector);
   const currentTasklist = useSelector(currentTaskListSelector);
@@ -278,17 +269,6 @@ const TaskDrawerContent = (props) => {
     taskListRestrictions.completeTask = DISABLED;
   }
 
-  // const watchersReference = useRef(null);
-  // const [isSubscriptionListOpen, setSubscriptionListOpen] = useState(false);
-
-  // const handleSubscriptionCountClick = () => {
-  //   setSubscriptionListOpen(!isSubscriptionListOpen);
-  // };
-
-  // const handleSubscriptionListClose = () => {
-  //   setSubscriptionListOpen(false);
-  // };
-
   const taskDeleteDisabled = useMemo(() => {
     const disabledSettingItem =
       selectedOrganization?.themeSettings?.find(
@@ -393,16 +373,6 @@ const TaskDrawerContent = (props) => {
               </Grid>
             )}
           </Grid>
-
-          {/* <SubscriptionBadge>
-            <Chip
-              label={12}
-              color="primary"
-              onClick={handleSubscriptionCountClick}
-            />{' '}
-            <span ref={watchersReference}>Watchers</span>{' '}
-            <a type="button">Unwatch</a>
-          </SubscriptionBadge> */}
         </Box>
         {isSubtask && (
           <Grid item xs={12} style={styleFullRowThin(isMobile)}>
@@ -479,17 +449,6 @@ const TaskDrawerContent = (props) => {
             quickAddPatientEnabled={quickAddPatientEnabled}
           />
         </Grid>
-        {/* May be later we need start date in Drawer */}
-        {/* {!taskStartDateDisabled && (
-          <Grid item xs={12} mb={1} style={styleLeftColumn(isMobile)}>
-            <div>
-              <StartDateSection
-                disabled={restrictions?.startDate === DISABLED}
-                selectedTask={selectedTask}
-              />
-            </div>
-          </Grid>
-        )} */}
         <Grid item xs={12} style={styleLeftColumn(isMobile)}>
           <div>
             <DueDateSection
@@ -604,31 +563,10 @@ const TaskDrawerContent = (props) => {
         </Grid>
       )}
       {taskDrawerOpen && <TaskDrawerBackground onClick={closeTaskDrawer} />}
-      {/* <WatchersPopover
-        open={isSubscriptionListOpen}
-        anchorEl={watchersReference.current}
-        onClose={handleSubscriptionListClose}
-      /> */}
-      {restrictions?.comments !== DISABLED && (
-        <Box
-          sx={{
-            position: 'sticky',
-            bottom: '0%',
-            left: 0,
-            px: 4,
-            py: 1,
-            backgroundColor: palette.blueGrey,
-            borderTop: `1px solid ${palette.zinc}`,
-            zIndex: 3,
-          }}
-        >
-          <AddComment
-            autoFocus={taskDrawerFocusField === DrawerFieldEnum.COMMENT}
-            taskListIdentifier={taskListIdentifier}
-            onAdd={boundAddComment}
-          />
-        </Box>
-      )}
+      <StickyAddComment
+        autoFocus={taskDrawerFocusField === DrawerFieldEnum.COMMENT}
+        onAdd={boundAddComment}
+      />
     </TaskDrawerContainer>
   );
 };
