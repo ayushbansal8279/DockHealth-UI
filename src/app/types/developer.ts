@@ -1,6 +1,6 @@
 export interface ApiKey {
   organizationIdentifier: string;
-  domainName: string;
+  domain: string;
   apiKey: string;
   clientId: string;
   clientSecret: string;
