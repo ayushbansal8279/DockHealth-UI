@@ -14,7 +14,7 @@ import {
 } from './styled';
 
 const AddComment = ({
-  autoFocus,
+  autoFocus = false,
   onAdd,
   onFocus = () => {},
   onBlur = () => {},

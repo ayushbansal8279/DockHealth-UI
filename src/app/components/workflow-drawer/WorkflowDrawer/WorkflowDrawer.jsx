@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   commentIdentifierToScrollSelector,
   isWorkflowDrawerOpenSelector,
+  workflowIdentifierSelector,
   workflowSelector,
 } from 'selectors/workflow-drawer-selectors';
 import WorkflowDrawerHeader from 'components/workflow-drawer/DrawerHeader/DrawerHeader';
@@ -17,6 +18,7 @@ import {
   SINGLE_WORKFLOW_RESTRICTIONS_PROFILES,
   WORKFLOW_LIST_RESTRICTIONS_OPTIONS,
 } from 'restrictions/task-restrictions';
+import * as WorkflowActions from 'actions/workflow-actions';
 import {
   getCommentIdToScroll,
   scrollToByQuerySelector,
@@ -25,6 +27,7 @@ import { FiledInListName } from 'components/task-drawer/TaskDrawerContent/styled
 import { createTaskListPath } from 'routing/helpers/paths';
 import { currentTaskListSelector } from 'selectors/task-list-selectors';
 import CustomFieldsSection from 'components/task-drawer/CustomFieldsSection/CustomFieldsSection';
+import StickyAddComment from 'components/drawer-common/AddComment/StickyAddComment';
 import NameSection from '../NameSection/NameSection';
 import DescriptionSection from '../DescriptionSection/DescriptionSection';
 import PatientSection from '../PatientSection/PatientSection';
@@ -61,6 +64,7 @@ const WorkflowDrawer = () => {
     () => checkIfTemplateWorkflow(selectedWorkflow),
     [selectedWorkflow],
   );
+  const workflowIdentifier = useSelector(workflowIdentifierSelector);
 
   const taskList = useSelector(currentTaskListSelector);
   const { listName, taskListIdentifier } = taskList || {};
@@ -105,6 +109,12 @@ const WorkflowDrawer = () => {
     dispatch(WorkflowDrawerActions.closeDrawer());
   };
 
+  const handleAddComment = (tokenizedComment) => {
+    dispatch(
+      WorkflowActions.addWorkflowComment(workflowIdentifier, tokenizedComment),
+    );
+  };
+
   return ReactDOM.createPortal(
     <div>
       {open && (
@@ -126,7 +136,9 @@ const WorkflowDrawer = () => {
                     {linkedSourceTaskBundle !== undefined && (
                       <DeployTextContainer>
                         Deployed From :{' '}
-                        <FiledInListName>{linkedSourceTaskBundle.name}</FiledInListName>
+                        <FiledInListName>
+                          {linkedSourceTaskBundle.name}
+                        </FiledInListName>
                       </DeployTextContainer>
                     )}
                   </Typography>
@@ -193,7 +205,7 @@ const WorkflowDrawer = () => {
             </SectionContainer>
             <SectionSpacer />
             <SectionContainer withBackground>
-              <CommentSection disabled={restrictions?.comments === DISABLED} />
+              <CommentSection />
             </SectionContainer>
             <SectionSpacer />
             <SectionContainer>
@@ -205,6 +217,7 @@ const WorkflowDrawer = () => {
             <SectionContainer>
               <HistorySection disabled={restrictions?.history === DISABLED} />
             </SectionContainer>
+            <StickyAddComment onAdd={handleAddComment} />
           </WorkflowDrawerContainer>
         </AnimatedContainer>
       )}
