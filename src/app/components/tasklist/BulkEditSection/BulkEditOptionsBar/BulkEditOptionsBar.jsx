@@ -480,6 +480,7 @@ const BulkEditOptionsBar = ({
         taskIdentifiers: allSelectedTasksIdentifiers,
         taskWorkflowIdentifiers: allSelectedWorkflowIdentifiers,
         includeAttachmentsForDuplication,
+        includePatientForDuplication: true,
       }).then(({ transactionIdentifier, tasks: duplicatedTasks }) => {
         dispatch(bulkEditDuplicateTasksSuccess(duplicatedTasks));
 
