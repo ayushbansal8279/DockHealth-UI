@@ -16,18 +16,18 @@ const BulkEditAssignToOption = ({
 
     const allSelectedTasks = [...parentTasks, ...subtasks];
 
-    return allSelectedTasks.reduce((accumulator, { assignedToUsers }) => {
-      if (!assignedToUsers) return accumulator;
+    return (
+      allSelectedTasks.reduce((accumulator, { assignedToUsers = [] }) => {
+        if (accumulator === null) return assignedToUsers;
 
-      if (accumulator.length === 0) return accumulator.concat(assignedToUsers);
-
-      return innerJoin(
-        (existingRecord, newRecord) =>
-          existingRecord.userIdentifier === newRecord.userIdentifier,
-        accumulator,
-        assignedToUsers,
-      );
-    }, []);
+        return innerJoin(
+          (existingRecord, newRecord) =>
+            existingRecord.userIdentifier === newRecord.userIdentifier,
+          accumulator || [],
+          assignedToUsers,
+        );
+      }, null) || []
+    );
   }, [selectedTasks]);
 
   const containPublicListType = useMemo(() => {
