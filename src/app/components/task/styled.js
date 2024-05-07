@@ -254,6 +254,7 @@ export const DescriptionEditButton = styled.div`
 
     &:hover{
       color: ${palette.brightBlue};
+      background: none;
     }
   }
 
