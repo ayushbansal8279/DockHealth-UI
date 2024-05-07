@@ -144,23 +144,25 @@ const DashboardList = ({ currentUser, tourModalIsOpen, openTourModal }) => {
     //   );
     // }
 
-    return dashboardTasks?.filter((taskGroupInfo) =>
-      dashboardGroupsPreferences?.includes(taskGroupInfo?.groupType),
-    );
+    // return dashboardTasks?.filter((taskGroupInfo) =>
+    //   dashboardGroupsPreferences?.includes(taskGroupInfo?.groupType),
+    // );
+    return dashboardTasks;
   }, [dashboardGroupsPreferences, dashboardTasks, tabName]);
 
   const orderedDashboardTasks = useMemo(() => {
     if (tabName === DashboardTasksTab.SHARED_TASKS) {
       return filteredDashboardTasks;
     }
-    const sorted = () => {
-      return dashboardGroupsPreferences
-        .map((groupType) =>
-          filteredDashboardTasks.find((g) => g.groupType === groupType),
-        )
-        .filter(Boolean);
-    };
-    return dashboardGroupsPreferences ? sorted() : filteredDashboardTasks;
+    // const sorted = () => {
+    //   return dashboardGroupsPreferences
+    //     .map((groupType) =>
+    //       filteredDashboardTasks.find((g) => g.groupType === groupType),
+    //     )
+    //     .filter(Boolean);
+    // };
+    // return dashboardGroupsPreferences ? sorted() : filteredDashboardTasks;
+    return filteredDashboardTasks;
   }, [dashboardGroupsPreferences, filteredDashboardTasks, tabName]);
 
   const currentSortMethod = useMemo(() => {
@@ -445,6 +447,7 @@ const DashboardList = ({ currentUser, tourModalIsOpen, openTourModal }) => {
                           moveGroupDown={() => moveGroupDown(item)}
                           iconColorActive={iconColorActiveItem?.value}
                           backgroundColor={!(index % 2 === 0)}
+                          showHeader={orderedDashboardTasks.length > 1}
                         />
                       ),
                   )
