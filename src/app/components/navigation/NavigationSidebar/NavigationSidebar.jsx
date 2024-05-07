@@ -329,7 +329,6 @@ const NavigationSidebar = () => {
                     path=""
                     onItemClick={handleDockChatClick}
                     navSelectedColor={navSelectedColorItem?.value}
-                    isNew
                   />
                 </NavigationIconContainer>
               </AccessRestrictor>
