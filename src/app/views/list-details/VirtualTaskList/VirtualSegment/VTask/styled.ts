@@ -4,7 +4,6 @@ import isNil from 'ramda/src/isNil';
 
 export const VTask = styled('div')`
   display: flex;
-  font-size: 13px;
   ${({
     $workflow,
     bgColor,
