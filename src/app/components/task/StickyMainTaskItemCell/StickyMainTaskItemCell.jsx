@@ -40,7 +40,7 @@ const StickyMainTaskItemCell = styled.div`
         : '54.5px'
       : '24px'};
   ${({ order }) => (order ? `order: ${order};` : '')}
-  border-left: 1px solid
+  border-left: 2px solid
     ${({ isWorkflowtask, isTamplateGroup }) =>
     isWorkflowtask || isTamplateGroup
       ? 'rgba(75, 179, 253, 1)'
@@ -48,7 +48,7 @@ const StickyMainTaskItemCell = styled.div`
   border-right: ${({ isWorkflowtask, isTamplateGroup, isWorkflowSubtask }) =>
     isWorkflowtask || !isTamplateGroup || isWorkflowSubtask
       ? ''
-      : `1px solid ${palette.coolGrey3};`};
+      : `0px solid ${palette.coolGrey3};`};
   margin-left: ${({ isTamplateGroup }) => (isTamplateGroup ? '-1px;' : '')};
   align-items: center;
   padding-left: ${spacing.smallPlus};
@@ -56,13 +56,13 @@ const StickyMainTaskItemCell = styled.div`
     isEditingDescription ? '12' : '11'};
 
   border-top-left-radius: ${({ isTamplateGroup }) =>
-    isTamplateGroup ? '7px' : ''};
-  border-bottom-left-radius: ${({ isTamplateGroup, isOpen }) =>
-    isTamplateGroup && !isOpen ? '7px' : ''};
+    isTamplateGroup ? '5px' : ''};
+  border-top-right-radius: ${({ isTamplateGroup, isOpen }) =>
+    isTamplateGroup && !isOpen ? '5px' : ''};
   border-bottom-left-radius: ${({ isWorkflowtask, isLastChild }) =>
-    isWorkflowtask && isLastChild ? '5.5px' : ``};
+    isWorkflowtask && isLastChild ? '5px' : ``};
   border-bottom-right-radius: ${({ isWorkflowtask, isLastChild }) =>
-    isWorkflowtask && isLastChild ? '7px' : ``};
+    isWorkflowtask && isLastChild ? '5px' : ``};
 
   background-color: ${(props) =>
     props.isSelected
@@ -112,7 +112,7 @@ const StickyMainTaskItemCell = styled.div`
   }
 
   &:hover {
-    border-left: 1px solid
+    border-left: 2px solid
       ${({ isWorkflowtask, isTamplateGroup }) =>
         isWorkflowtask || isTamplateGroup
           ? 'rgba(75, 179, 253, 1)'

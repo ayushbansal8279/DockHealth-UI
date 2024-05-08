@@ -562,7 +562,7 @@ const TaskTemplateGroupHeader = ({
           isSelected={isBundleSelected}
           isEditingDescription={isEditing}
           order={0}
-          width={+width + 25 + 54.5}
+          width={+width + 25 + 56}
           origin={origin}
         >
           {!groupDragAndDropDisabled &&
@@ -583,16 +583,19 @@ const TaskTemplateGroupHeader = ({
                 />
               )}
             <ChevronContainer>
-              {showTasksWithGroup && (
+              {showTasksWithGroup && origin !== 'DASHBOARD' && (
                 <RotatableChevron
                   rotated={
-                    origin === 'PATIENT' ? isOpen : virtualListWorkflowOpen
+                    origin === 'PATIENT' || origin === 'DASHBOARD'
+                      ? isOpen
+                      : virtualListWorkflowOpen
                   }
                   onClick={handleOpen}
                   color={palette.crystalBlue}
                 />
               )}
             </ChevronContainer>
+            &nbsp;
           </ActionIconsContainer>
           {content}
           <TaskScrollVericleLine>&nbsp;</TaskScrollVericleLine>
