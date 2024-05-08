@@ -3,6 +3,7 @@ import { Box } from '@mui/material';
 import FullViewIcon from 'img/list/FullViewIcon';
 import SlimViewIcon from 'img/list/SlimViewIcon';
 import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined';
+import ViewColumn from '@mui/icons-material/ViewColumn';
 import { ViewType } from 'helpers/view-type-helper';
 import { useLocation, useHistory } from 'react-router-dom';
 import { updateTaskStatusToFilter } from 'actions/task-list-actions';
@@ -10,6 +11,7 @@ import { checkIfUserIsOrganizationAdmin } from 'helpers/user-helper';
 import {
   userProfileSelector,
   selectedUserOrganizationSelector,
+  userHasBoardViewFeatureSelector,
 } from 'selectors/user-selectors';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -22,6 +24,7 @@ import queryString from 'query-string';
 import {
   GridContainer,
   GridItemCalendarView,
+  GridItemBoardView,
   GridItemFullView,
   GridItemSlimView,
   ToolbarContainer,
@@ -91,11 +94,21 @@ const ListDetailsToolbar = ({
     },
     [dispatch],
   );
+  const boardViewAvailable = useSelector(userHasBoardViewFeatureSelector);
 
   return (
     <ToolbarContainer>
       <Box display="flex" flex={1} justifyContent="flex-start">
         {viewType === ViewType.CALENDAR_VIEW && (
+          <TaskStatusToolbarSelect
+            value={tasksStatus}
+            onChange={handleChangeTasksStatus}
+            iconColorFilterActive={iconColorFilterActiveItem?.value}
+            iconColorActive={iconColorActiveItem?.value}
+          />
+        )}
+
+        {viewType === ViewType.BOARD_VIEW && (
           <TaskStatusToolbarSelect
             value={tasksStatus}
             onChange={handleChangeTasksStatus}
@@ -133,7 +146,7 @@ const ListDetailsToolbar = ({
       </Box>
 
       <Box mx={0.5} />
-      <GridContainer>
+      <GridContainer columns={boardViewAvailable ? 4 : 3}>
         <GridItemCalendarView
           active={calendarView}
           onClick={() => {
@@ -149,6 +162,23 @@ const ListDetailsToolbar = ({
             }}
           />
         </GridItemCalendarView>
+        {boardViewAvailable && (
+          <GridItemBoardView
+            active={calendarView}
+            onClick={() => {
+              handleChangeViewType(ViewType.BOARD_VIEW);
+              handleSetChangeViewType('');
+              handleRemoveAllTasks();
+            }}
+          >
+            <ViewColumn
+              sx={{
+                height: '28px',
+                width: '24px',
+              }}
+            />
+          </GridItemBoardView>
+        )}
         <GridItemFullView
           active={fullView}
           onClick={() => {

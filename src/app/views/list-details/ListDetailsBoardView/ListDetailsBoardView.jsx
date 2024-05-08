@@ -62,6 +62,7 @@ const ListDetailsBoardView = () => {
       }
     >
       <ListDetailsToolbar>
+        <Box mx={0.5} />
         <Typography>Organize By:</Typography>
         <ToolbarSelect
           options={BOARD_CONTEXTS_OPTIONS}
