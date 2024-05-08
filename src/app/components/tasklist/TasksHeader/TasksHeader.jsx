@@ -208,7 +208,7 @@ const TasksHeader = ({
                 </BulkContainer>
               )}
               {!bulkEditEnabled && (
-                <BulkContainer style={{ width: '66px' }}>&nbsp;</BulkContainer>
+                <BulkContainer style={{ width: '65px' }}>&nbsp;</BulkContainer>
               )}
               {renderColumn(
                 getTaskHeaderOptions(

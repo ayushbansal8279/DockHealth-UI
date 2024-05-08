@@ -80,6 +80,7 @@ const DashboardTasksGroup = ({
   moveGroupDown,
   iconColorActive,
   backgroundColor,
+  showHeader,
 }) => {
   const {
     groupName,
@@ -234,39 +235,43 @@ const DashboardTasksGroup = ({
       backgroundColor={backgroundColor}
     >
       <StickyContainer left={24} decreaseWidth={2 * 24}>
-        <StickyElement
-          origin={TaskOrigin.DASHBOARD}
-          backgroundColor={backgroundColor ? palette.aliceBlue : palette.white}
-        >
-          <DashboardTasksGroupHeader backgroundColor={backgroundColor}>
-            <GroupOptionsContainer>
-              <OptionsMenu options={options} placement="bottom-start">
-                <MoreVert color="primary" />
-              </OptionsMenu>
-            </GroupOptionsContainer>
-            <Spacing horizontal={2} />
-            <GroupOpenContainer onClick={onSwitchGroup}>
-              <RotatableChevron
-                alt="arrow"
-                rotated={groupIsOpen}
-                color={iconColorActive}
-              />
-            </GroupOpenContainer>
-            <Spacing horizontal={1} />
-            <GroupNameSectionWrapper>
-              <DashboardTasksGroupLabel>
-                <DashboardTasksGroupLabelName>
-                  {groupName}
-                  <DashboardTasksGroupNumericalBadgeContainer>
-                    <DashboardTasksGroupTaskCount>
-                      {metricValue}
-                    </DashboardTasksGroupTaskCount>
-                  </DashboardTasksGroupNumericalBadgeContainer>
-                </DashboardTasksGroupLabelName>
-              </DashboardTasksGroupLabel>
-            </GroupNameSectionWrapper>
-          </DashboardTasksGroupHeader>
-        </StickyElement>
+        {showHeader && (
+          <StickyElement
+            origin={TaskOrigin.DASHBOARD}
+            backgroundColor={
+              backgroundColor ? palette.aliceBlue : palette.white
+            }
+          >
+            <DashboardTasksGroupHeader backgroundColor={backgroundColor}>
+              <GroupOptionsContainer>
+                <OptionsMenu options={options} placement="bottom-start">
+                  <MoreVert color="primary" />
+                </OptionsMenu>
+              </GroupOptionsContainer>
+              <Spacing horizontal={2} />
+              <GroupOpenContainer onClick={onSwitchGroup}>
+                <RotatableChevron
+                  alt="arrow"
+                  rotated={groupIsOpen}
+                  color={iconColorActive}
+                />
+              </GroupOpenContainer>
+              <Spacing horizontal={1} />
+              <GroupNameSectionWrapper>
+                <DashboardTasksGroupLabel>
+                  <DashboardTasksGroupLabelName>
+                    {groupName}
+                    <DashboardTasksGroupNumericalBadgeContainer>
+                      <DashboardTasksGroupTaskCount>
+                        {metricValue}
+                      </DashboardTasksGroupTaskCount>
+                    </DashboardTasksGroupNumericalBadgeContainer>
+                  </DashboardTasksGroupLabelName>
+                </DashboardTasksGroupLabel>
+              </GroupNameSectionWrapper>
+            </DashboardTasksGroupHeader>
+          </StickyElement>
+        )}
       </StickyContainer>
       {isLoading && !tasks ? (
         <DashboardTasksGroupList>

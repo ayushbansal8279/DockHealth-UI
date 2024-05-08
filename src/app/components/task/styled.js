@@ -867,7 +867,7 @@ export const ActionIconsContainer = styled.div`
     top: -4px;
     left: 100%;
     width: 0px;
-    height: 36px;
+    height: 34px;
   }
 `;
 

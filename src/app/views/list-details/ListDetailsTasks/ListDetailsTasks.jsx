@@ -509,7 +509,7 @@ const ListDetailsTasks = ({
   }
 
   if (isEmpty(groupList)) {
-    return <Typography sx={{ m: 3 }}>No data</Typography>;
+    return <Typography sx={{ m: 3 }}>Loading ...</Typography>;
   }
 
   return (

@@ -92,6 +92,7 @@ const palette = {
   orangeJuliusLight: '#fee6cd',
   bananaHammockLight: '#fff4cc',
   tealGreen: '#69b8b2',
+  lightOceanBlue: '#daefff',
 };
 
 export const typography = {

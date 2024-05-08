@@ -120,24 +120,9 @@ const BoardColumnTask = ({
                 </OptionsContainer>
               )}
             </Header>
-            <TaskItemPatient
-              // highlightedValue={highlightedValue}
-              taskStatus={task?.status}
-              isSubtask={false}
-              parentHasPatient
-              hasParentTaskLabel={false}
-              matchPatientMRN={false}
-              patient={patient}
-              // matchPatient={matchPatient}
-              task={task}
-              // openPatientPopover={openPatientPopover}
-              // onTaskUpdate={onTaskUpdate}
-              currentUser={currentUser}
-              readOnly={restrictions?.patient === READ_ONLY}
-            />
             {!isWorkflow && (
               <TaskActionsContainer>
-                <Box flex="3">
+                <Box flex="1">
                   <TaskItemIcons
                     restrictions={restrictions}
                     matchComments={matchComments}
@@ -151,13 +136,18 @@ const BoardColumnTask = ({
                   />
                 </Box>
                 <Box flex="1" display="flex" justifyContent="center">
-                  <TaskItemDueDate task={task} />
+                  <TaskItemDueDate
+                    task={task}
+                    format="MM/DD"
+                    showTime={false}
+                    showRecurring={false}
+                  />
                 </Box>
                 <Box
                   flex="1"
                   display="flex"
                   justifyContent="center"
-                  padding="0 10px"
+                  padding="0 2px"
                 >
                   <TaskItemSubtasks
                     subtaskQuickAddOpen={subtaskQuickAddOpen}
@@ -199,13 +189,18 @@ const BoardColumnTask = ({
                     />
                   </Box>
                   <Box flex="1" display="flex" justifyContent="center">
-                    <TaskItemDueDate task={task} />
+                    <TaskItemDueDate
+                      task={task}
+                      format="MM/DD"
+                      showTime={false}
+                      showRecurring={false}
+                    />
                   </Box>
                   <Box
                     flex="1"
                     display="flex"
                     justifyContent="center"
-                    padding="0 10px"
+                    padding="0 2px"
                   >
                     <TaskItemSubtasks
                       subtaskQuickAddOpen={subtaskQuickAddOpen}
@@ -228,6 +223,21 @@ const BoardColumnTask = ({
                 </WorkflowActionsContainer>
               </>
             )}
+            <TaskItemPatient
+              // highlightedValue={highlightedValue}
+              taskStatus={task?.status}
+              isSubtask={false}
+              parentHasPatient
+              hasParentTaskLabel={false}
+              matchPatientMRN={false}
+              patient={patient}
+              // matchPatient={matchPatient}
+              task={task}
+              // openPatientPopover={openPatientPopover}
+              // onTaskUpdate={onTaskUpdate}
+              currentUser={currentUser}
+              readOnly={restrictions?.patient === READ_ONLY}
+            />
             {/* {isWorkflow && <WorkflowIndicator>workflow</WorkflowIndicator>} */}
           </TaskContainer>
         </Box>

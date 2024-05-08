@@ -344,7 +344,7 @@ const DashboardHeader = () => {
                 />
                 {/* <LayoutHeader.Spacer /> */}
               </AccessRestrictor>
-              <DashboardQuickFilterContainer>
+              {/* <DashboardQuickFilterContainer>
                 {quickFiltersList.map((filter, index) => {
                   return (
                     <DashboardQuickFilter key={filter.name}>
@@ -378,7 +378,7 @@ const DashboardHeader = () => {
                     </DashboardQuickFilter>
                   );
                 })}
-              </DashboardQuickFilterContainer>
+              </DashboardQuickFilterContainer> */}
             </Box>
           </>
         )}

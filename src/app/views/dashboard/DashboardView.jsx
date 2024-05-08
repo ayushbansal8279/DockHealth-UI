@@ -94,7 +94,7 @@ const DashboardView = ({ tabName }) => {
 
   const hasAccessToCurrentTab = hasAccessToElement(
     orgUserRole,
-    TAB_RESTRICTIONS[tabName].allowedToRoles,
+    TAB_RESTRICTIONS[tabName]?.allowedToRoles,
   );
 
   useEffect(() => {

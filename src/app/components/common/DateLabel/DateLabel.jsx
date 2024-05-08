@@ -19,11 +19,12 @@ const DateLabel = (props) => {
     hasReminder,
     hasRecurringSchedule,
     format = 'MMM DD, YYYY',
-    showTime = false,
+    showTime = true,
     timeFormat = 'hh:mm a',
     timeFormatToCheckSpecifiedTime = 'HH:mm',
     tootipTitle,
-    timeFormatForHours = 'HH',
+    showReminder = true,
+    showRecurring = true,
   } = props;
   const dueDate = moment(date);
   const dateFormat = dueDate.isSame(moment(), 'year') ? 'MMM DD, YYYY' : format;
@@ -34,27 +35,25 @@ const DateLabel = (props) => {
           <DateTextContainer isOverdue={isOverdue}>
             <DateText>
               {dueDate.format(dateFormat)}
-              {!(
-                dueDate.format(timeFormatToCheckSpecifiedTime) === '00:00'
-              ) && (
-                <>
-                  <Spacing horizontal={1} />@
-                  <Spacing horizontal={1} />
-                  {dueDate.format(timeFormat)}
-                  {/* <Spacing horizontal={1} /> */}
-                  {/* {dueDate.format(timeFormatForHours) >= 12 ? 'pm' : 'am'} */}
-                </>
-              )}
+              {!(dueDate.format(timeFormatToCheckSpecifiedTime) === '00:00') &&
+                showTime && (
+                  <>
+                    <Spacing horizontal={1} />@
+                    <Spacing horizontal={1} />
+                    {dueDate.format(timeFormat)}
+                    {/* <Spacing horizontal={1} /> */}
+                  </>
+                )}
             </DateText>
           </DateTextContainer>
         </Tooltip>
-        {hasReminder && (
+        {showReminder && hasReminder && (
           <ReminderIconContainer isOverdue={isOverdue}>
             <Spacing horizontal={2} />
             <ReminderIcon />
           </ReminderIconContainer>
         )}
-        {hasRecurringSchedule && (
+        {showRecurring && hasRecurringSchedule && (
           <RecurringIconContainer isOverdue={isOverdue}>
             <Spacing horizontal={2} />
             <RecurringIcon />

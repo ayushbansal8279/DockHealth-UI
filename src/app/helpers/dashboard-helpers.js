@@ -10,6 +10,8 @@ export const DashboardTasksTab = {
 };
 
 export const DashboardGroup = {
+  UPCOMING: 'UPCOMING',
+  ORG_UPCOMING: 'ORG_UPCOMING',
   TODAY: 'TODAY',
   ORG_TODAY: 'ORG_TODAY',
   NEXT_7_DAYS: 'NEXT_7_DAYS',
