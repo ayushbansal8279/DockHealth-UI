@@ -37,6 +37,8 @@ const NewFilterContainer = ({
   setFilteredData,
   isQuickFilterEdit,
   setSelectedQuickFilter,
+  handleSelectedFiltersChange,
+  isPatientListPage,
 }) => {
   const popoverReference = useRef(null);
   const [isPopoverOpen, openAddFilterPopover, closeAddFilterPopover] =
@@ -77,6 +79,10 @@ const NewFilterContainer = ({
   const handleApplyFinalFilter = () => {
     onSelectedFiltersChange(selectFilterOption('', '', filteredData));
     openPopover(false);
+  };
+
+  const handleApplyFinalFilterPatient = () => {
+    handleSelectedFiltersChange();
   };
 
   const handleClose = useCallback(() => {
@@ -165,7 +171,11 @@ const NewFilterContainer = ({
                 background: !isDisable && palette.shadowBlue,
                 color: !isDisable && palette.white,
               }}
-              onClick={handleApplyFinalFilter}
+              onClick={
+                isPatientListPage
+                  ? handleApplyFinalFilterPatient
+                  : handleApplyFinalFilter
+              }
             >
               Apply Filter
             </ConfirmButton>

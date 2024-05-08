@@ -6,7 +6,6 @@ import { useDispatch } from 'react-redux';
 import compose from 'ramda/src/compose';
 import CustomFilterOption from '../CustomFilterOption/CustomFilterOption';
 import { CustomFiltersContainer, Label, OptionsList } from './styled';
-import { getUniqueQuickFilterLabelName } from './helpers';
 
 const CustomFilters = ({
   quickFiltersList = [],
@@ -28,6 +27,8 @@ const CustomFilters = ({
   selectedQuickFilter,
   clearFilters,
   setSelectedCustomFilter,
+  isPatientListPage,
+  handleQuickFilterDuplicateForPatientList,
 }) => {
   const [editModeFilterIdentifier, setEditModeFilterIdentifier] =
     useState(null);
@@ -107,6 +108,8 @@ const CustomFilters = ({
             onQuickFilterCreate={onQuickFilterCreate}
             clearFilters={clearFilters}
             setSelectedCustomFilter={setSelectedCustomFilter}
+            isPatientListPage={isPatientListPage}
+            handleQuickFilterDuplicateForPatientList={handleQuickFilterDuplicateForPatientList}
           />
         ))}
       </OptionsList>

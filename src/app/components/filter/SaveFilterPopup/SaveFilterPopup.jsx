@@ -51,6 +51,7 @@ const SaveFilterPopup = ({
   selectedCustomFilter,
   selectedQuickFilter,
   selectQuickFilter,
+  isPatientListPage,
 }) => {
   const [searchInputValue, setSearchInputValue] = useState('');
   const [onlyone, setOnlyone] = useState(true);
@@ -59,7 +60,7 @@ const SaveFilterPopup = ({
   const [isDisable, setDisable] = useState(false);
 
   useEffect(() => {
-    if (editIdentifier !== '') {
+    if (editIdentifier !== '' && editIdentifier !== undefined) {
       setIsQuickFilterEdit(true);
     } else {
       setIsQuickFilterEdit(false);
@@ -127,7 +128,7 @@ const SaveFilterPopup = ({
   };
 
   const handleQuickFilterUpdate = () => {
-    onQuickFilterUpdate(editIdentifier, searchInputValue);
+    !isPatientListPage && onQuickFilterUpdate(editIdentifier, searchInputValue);
     updateFilter();
     setEditIdentifier('');
     setSavePopupOpen(false);
