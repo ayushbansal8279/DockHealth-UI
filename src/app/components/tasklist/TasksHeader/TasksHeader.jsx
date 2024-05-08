@@ -2,6 +2,7 @@
 /* eslint-disable no-underscore-dangle */
 import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
+import { Box } from '@mui/material';
 import Checkbox from 'components/common/Checkbox/Checkbox';
 import { SortHeaderRow } from 'components/tasklist/ColumnSortHeader/styled';
 import { TaskItemColumnWidth } from 'helpers/task-helpers';
@@ -161,12 +162,13 @@ const TasksHeader = ({
       );
     },
     [
-      handleResizeColumn,
-      onSortChange,
       restrictCustomizationFeatures,
+      origin,
       sort,
-      tasksHeaderTextTransformItem,
-      tasksHeaderTextColorItem,
+      onSortChange,
+      tasksHeaderTextTransformItem?.value,
+      tasksHeaderTextColorItem?.value,
+      handleResizeColumn,
     ],
   );
 
@@ -220,7 +222,10 @@ const TasksHeader = ({
                 0,
                 snapshot,
               )}
-              <TaskScrollVericleLine>&nbsp;</TaskScrollVericleLine>
+              <Box ml="1px" />
+              <TaskScrollVericleLine style={{ marginLeft: '-1.0px' }}>
+                &nbsp;
+              </TaskScrollVericleLine>
             </StickyColumnContainer>
             {columns
               .filter((f) => f.isChecked)

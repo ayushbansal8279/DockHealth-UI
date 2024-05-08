@@ -252,7 +252,7 @@ export const DescriptionEditButton = styled.div`
     margin: 0;
     color: ${palette.coolGrey1};
 
-    &:hover{
+    &:hover {
       color: ${palette.brightBlue};
       background: none;
     }
@@ -421,9 +421,7 @@ export const StandardTaskItemContainer = styled.div`
       props.hasEscalations
       ? palette.bananaHammockLight
       : // eslint-disable-next-line unicorn/no-nested-ternary
-      props.customHighlight
-      ? props.customHighlight
-      : palette.white};
+      props.customHighlight ?? palette.white};
   border-bottom: 1px solid ${palette.coolGrey3};
   border-right: 1px solid ${palette.coolGrey3};
   border-top: 1px solid ${palette.coolGrey3};
@@ -541,19 +539,6 @@ export const StandardTaskItemPanel = styled.div`
     props.isDragging
       ? 'box-shadow: 0px 0px 11px rgba(204, 204, 204, 0.8)'
       : ''};
-
-   margin-left:${({ isWorkflowtask, isWorkflowSubtask, origin }) =>
-     origin === 'PATIENT'
-       ? isWorkflowtask
-         ? '-2px;'
-         : isWorkflowSubtask
-         ? '-0.5px;'
-         : '-1.2px;'
-       : isWorkflowtask
-       ? '-3px;'
-       : isWorkflowSubtask
-       ? '-0.5px;'
-       : '-1.2px;'}
   &:hover {
     & ${ThreeDots}, & ${AddPlaceholder} {
       opacity: 1;
@@ -772,6 +757,7 @@ export const ParentTaskContainer = styled.div`
         ? '10px'
         : ''
       : ''};
+  margin-left: ${({ isVirtualTask }) => (isVirtualTask ? '-3px' : '-1px')};
 `;
 
 export const TaskContainer = styled.div``;
@@ -863,16 +849,12 @@ export const DisabledLink = styled.span``;
 export const ActionIconsContainer = styled.div`
   display: flex;
   position: relative;
-  width: 64.5px;
-  &::after {
-    border-right: 1px solid ${palette.coolGrey3};
-    content: '';
-    position: absolute;
-    top: -4px;
-    left: 100%;
-    width: 0px;
-    height: 34px;
-  }
+  height: -webkit-fill-available;
+  width: 68px;
+  padding-right: 4px;
+  align-items: center;
+
+  border-right: 1px solid ${palette.coolGrey3};
 `;
 
 export const PatientMRNAnchor = styled.a`
@@ -885,6 +867,7 @@ export const TaskScrollVericleLine = styled.div`
   height: 100%;
   width: 2.5px;
   box-shadow: 1px 0px 3px 0px rgba(0, 0, 0, 0.21);
+  z-index: 10;
 `;
 
 export const ChildTaskTitle = styled.div`
