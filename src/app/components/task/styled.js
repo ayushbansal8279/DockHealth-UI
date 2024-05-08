@@ -250,7 +250,12 @@ export const DescriptionEditButton = styled.div`
   & .MuiIconButton-root {
     max-height: 24px;
     margin: 0;
-    color: ${palette.brightBlue};
+    color: ${palette.coolGrey1};
+
+    &:hover{
+      color: ${palette.brightBlue};
+      background: none;
+    }
   }
 
   & .MuiSvgIcon-root {
