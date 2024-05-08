@@ -35,6 +35,7 @@ import {
   DescriptionEditButton,
   DescriptionInput,
 } from '../../styled';
+import { fontWeights } from '@/app/styles/font';
 
 const TaskItemDescription = ({
   task,
@@ -60,7 +61,7 @@ const TaskItemDescription = ({
     completedDt,
     // taskList,
     linkedTaskTemplate,
-    // read,
+    read,
     tokenizedDescription,
   } = task;
 
@@ -164,6 +165,7 @@ const TaskItemDescription = ({
               whiteSpace: 'nowrap',
               textDecoration: isCompleted ? 'line-through' : 'none',
               color: isCompleted && 'rgba(61, 72, 88, 0.50)',
+              fontWeight: read ? fontWeights.light : fontWeights.bold,
             }}
           >
             {tokenizedDescription.split(/\s/).map((word) => {
