@@ -144,23 +144,25 @@ const DashboardList = ({ currentUser, tourModalIsOpen, openTourModal }) => {
     //   );
     // }
 
-    return dashboardTasks?.filter((taskGroupInfo) =>
-      dashboardGroupsPreferences?.includes(taskGroupInfo?.groupType),
-    );
+    // return dashboardTasks?.filter((taskGroupInfo) =>
+    //   dashboardGroupsPreferences?.includes(taskGroupInfo?.groupType),
+    // );
+    return dashboardTasks;
   }, [dashboardGroupsPreferences, dashboardTasks, tabName]);
 
   const orderedDashboardTasks = useMemo(() => {
     if (tabName === DashboardTasksTab.SHARED_TASKS) {
       return filteredDashboardTasks;
     }
-    const sorted = () => {
-      return dashboardGroupsPreferences
-        .map((groupType) =>
-          filteredDashboardTasks.find((g) => g.groupType === groupType),
-        )
-        .filter(Boolean);
-    };
-    return dashboardGroupsPreferences ? sorted() : filteredDashboardTasks;
+    // const sorted = () => {
+    //   return dashboardGroupsPreferences
+    //     .map((groupType) =>
+    //       filteredDashboardTasks.find((g) => g.groupType === groupType),
+    //     )
+    //     .filter(Boolean);
+    // };
+    // return dashboardGroupsPreferences ? sorted() : filteredDashboardTasks;
+    return filteredDashboardTasks;
   }, [dashboardGroupsPreferences, filteredDashboardTasks, tabName]);
 
   const currentSortMethod = useMemo(() => {
@@ -261,8 +263,18 @@ const DashboardList = ({ currentUser, tourModalIsOpen, openTourModal }) => {
     if (completeTaskCount > 0 && tabName === DashboardTasksTab.MY_TASKS) {
       return (
         <EmptyListView
-          title={['Way to go!', 'You’ve completed all of your tasks.']}
-          description="Take a breather, tomorrow is a new day full of possibilities."
+          title={['Way to go!', "You've completed all of your tasks."]}
+          description=""
+        />
+      );
+    }
+
+    if (tabName === DashboardTasksTab.MY_TASKS) {
+      return (
+        <EmptyListView
+          widthBreakpoint={1400}
+          title={['There are no tasks assigned to you.']}
+          description="Please refine filters."
         />
       );
     }
@@ -270,8 +282,8 @@ const DashboardList = ({ currentUser, tourModalIsOpen, openTourModal }) => {
     return (
       <EmptyListView
         widthBreakpoint={1400}
-        title={['There are no tasks', 'assigned to you.']}
-        description="Add tasks above to automatically assign to yourself."
+        title={['No tasks to display.']}
+        description="Please refine filters."
       />
     );
   };
@@ -435,6 +447,7 @@ const DashboardList = ({ currentUser, tourModalIsOpen, openTourModal }) => {
                           moveGroupDown={() => moveGroupDown(item)}
                           iconColorActive={iconColorActiveItem?.value}
                           backgroundColor={!(index % 2 === 0)}
+                          showHeader={orderedDashboardTasks.length > 1}
                         />
                       ),
                   )

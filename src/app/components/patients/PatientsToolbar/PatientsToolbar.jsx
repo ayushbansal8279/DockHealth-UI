@@ -44,7 +44,7 @@ import {
   PatientsListImg,
   ButtonWrapper,
 } from './styled';
-import ToolbarButton from '../../tasklist/ToolbarButton/ToolbarButton';
+import ToolbarButton from '../../tasklist/list-toolbar-buttons/ToolbarButton/ToolbarButton';
 import { AddIcon } from '@/app/views/smart-flow-builder/TaskNodeHandles/styled';
 
 const OPTIONS = [

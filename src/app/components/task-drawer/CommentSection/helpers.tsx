@@ -2,7 +2,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import { userProfileSelector } from '@/app/selectors/user-selectors';
 import { Task } from '@/app/types/Task';
 import { User } from '@/app/types/swagger/models/User';
-import { CommentDto } from '@/app/types/swagger/models/CommentDto';
 import {
   deleteComment,
   updateComment,
@@ -11,6 +10,7 @@ import {
 import { closeModal, openModal } from '@/app/modal/actions';
 import CommentIcon from '@/app/img/modals/comment.svg';
 import { taskDrawerFocusFieldSelector } from '@/app/selectors/task-drawer-selectors';
+import { IComment } from '@/app/types/Comment';
 
 export const initializeCommentSectionHooks = (task: Task) => {
   const currentUser = useSelector(userProfileSelector) as User;
@@ -19,7 +19,7 @@ export const initializeCommentSectionHooks = (task: Task) => {
   const taskDrawerFocusField = useSelector(taskDrawerFocusFieldSelector);
   const dispatch = useDispatch();
 
-  const handleRemoveComment = (comment: CommentDto) => {
+  const handleRemoveComment = (comment: IComment) => {
     deleteComment(
       task,
       comment,
@@ -28,7 +28,7 @@ export const initializeCommentSectionHooks = (task: Task) => {
     });
   };
 
-  const handleUpdateComment = (comment: CommentDto) => {
+  const handleUpdateComment = (comment: IComment) => {
     updateComment(task, comment)(dispatch);
   };
 
@@ -39,7 +39,7 @@ export const initializeCommentSectionHooks = (task: Task) => {
     })(dispatch);
   };
 
-  const openDeleteCommentConfirmationModal = (comment: CommentDto) => {
+  const openDeleteCommentConfirmationModal = (comment: IComment) => {
     const modalProps = {
       title: 'Delete comment',
       description:

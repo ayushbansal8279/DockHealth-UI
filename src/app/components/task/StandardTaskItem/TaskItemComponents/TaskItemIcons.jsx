@@ -90,7 +90,7 @@ const TaskItemIcons = ({
                 type="button"
                 onClick={onLabelClick}
               >
-                {(labels?.length > 0 || isHover.label) && (
+                {(labels?.length > 0 || isHover?.label) && (
                   <TaskIcon
                     type="labels"
                     isActive={labels?.length > 0}
@@ -113,7 +113,7 @@ const TaskItemIcons = ({
             }
           >
             <button type="button" onClick={onAttachmentsClick}>
-              {(attachments?.length > 0 || isHover.file) && (
+              {(attachments?.length > 0 || isHover?.file) && (
                 <TaskIcon
                   type="attachments"
                   isActive={attachments?.length > 0}

@@ -360,7 +360,11 @@ const PatientTasksListView = () => {
                 onGroupSelect={handleGroupSelect}
               />
             )}
-            {tasks?.map((task) => {
+            {tasks?.map((task, index) => {
+              const isNextTaskItemTypeBundle =
+                index !== tasks?.length - 1
+                  ? tasks[index + 1]?.itemType === 'BUNDLE'
+                  : false;
               return task.itemType === TaskItemType.TASK ? (
                 <StandardTaskItem
                   key={task.identifier}
@@ -392,6 +396,7 @@ const PatientTasksListView = () => {
                   iconColorActive={iconColorActiveItem?.value}
                   isCompletedTab={tasksStatus !== TaskStatus.INCOMPLETE}
                   origin={TaskOrigin.PATIENT}
+                  isNextTaskItemTypeBundle={isNextTaskItemTypeBundle}
                 />
               );
             })}

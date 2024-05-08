@@ -140,7 +140,7 @@ const PatientSection = ({
 
       setPatients([]);
       await savePatient(null);
-      setSelectedPatient(null)
+      setSelectedPatient(null);
     },
     [dispatch, savePatient, selectedPatient, selectedWorkflow],
   );
@@ -225,7 +225,8 @@ const PatientSection = ({
             options={formattedPatients}
             headerOption={
               <PatientSelectItem
-                patient={{ name: 'Name', dob: 'Dob', mrn: 'Mrn' }}
+                patient={{ name: 'Name', dob: 'DOB', mrn: 'MRN' }}
+                header
               />
             }
             isLoadingOptions={isLoadingPatients}

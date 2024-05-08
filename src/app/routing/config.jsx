@@ -248,13 +248,13 @@ export const TEMPLATE_CORE_SUBSCRIPTION_PLAN_ROUTES = [
     ),
     permissions: [CAN_ACCESS_HOME_PAGE],
   },
-  // {
-  //   path: '/home/shared-with-me-tasks',
-  //   RouteComponent: (props) => (
-  //     <DashboardView tabName={DashboardTasksTab.SHARED_TASKS} {...props} />
-  //   ),
-  //   permissions: [CAN_ACCESS_HOME_PAGE],
-  // },
+  {
+    path: '/home/shared-with-me-tasks',
+    RouteComponent: (props) => (
+      <DashboardView tabName={DashboardTasksTab.SHARED_TASKS} {...props} />
+    ),
+    permissions: [CAN_ACCESS_HOME_PAGE],
+  },
   {
     path: '/home/all-tasks',
     RouteComponent: (props) => (

@@ -3,15 +3,20 @@ import OrganizationForm from 'views/onboarding/OrganizationForm/OrganizationForm
 import { useHistory } from 'react-router-dom';
 import { updateOrganization } from 'actions/organization-actions';
 import { useDispatch } from 'react-redux';
+import { createOrganization } from '@/app/api/organization-api';
 
 const onSubmit =
-  ({ dispatch, history }) =>
-  ({ organizationName, organizationInitials, organizationThemeColor }) => {
-    updateOrganization({
+  ({ history }) =>
+  async ({
+    organizationName,
+    organizationInitials,
+    organizationThemeColor,
+  }) => {
+    await createOrganization({
       organizationName,
       organizationInitials,
       organizationProfileColor: organizationThemeColor,
-    })(dispatch).then(() => {
+    }).then(() => {
       history.push('/onboarding/customer-preference');
     });
   };

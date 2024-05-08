@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo } from 'react';
-import MegaFilter from 'components/tasklist/MegaFilter/MegaFilter';
+import MegaFilter from '@/app/components/tasklist/list-toolbar-buttons/MegaFilter/MegaFilter';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   megaFilterSelector,

@@ -29,6 +29,7 @@ const DateInput = React.forwardRef(
       setError,
       clearErrors,
       showCalanderIcon = true,
+      popoverZindex,
       ...otherProps
     },
     reference,
@@ -58,10 +59,10 @@ const DateInput = React.forwardRef(
     };
 
     const handleClear = () => {
-      clearErrors(name);
+      clearErrors?.(name);
       onChange({ target: { value: null } });
       setTimeout(() => {
-        textInputReference.current.focus();
+        textInputReference?.current?.focus();
       }, 0);
     };
 
@@ -69,21 +70,21 @@ const DateInput = React.forwardRef(
       const date = moment(isoDate).format(DEFAULT_DATE_FORMAT);
       handleChange({ target: { value: date } });
       setTimeout(() => {
-        textInputReference.current.focus();
+        textInputReference?.current?.focus();
       }, 0);
-      clearErrors(name);
+      clearErrors?.(name);
     };
 
     useEffect(() => {
       if (value?.trim() === '' || value === '__/__/____') {
-        clearErrors(name);
+        clearErrors?.(name);
       } else if (
         (name && dateValue === 'Invalid date') ||
         value.includes('_')
       ) {
         if (typeof setError === 'function')
           setError(name, { type: 'custom', message: 'Invalid date format' });
-      } else if (typeof clearErrors === 'function') clearErrors(name);
+      } else if (typeof clearErrors === 'function') clearErrors?.(name);
     }, [clearErrors, dateValue, name, setError, value]);
 
     return (
@@ -126,6 +127,7 @@ const DateInput = React.forwardRef(
           anchorEl={textFieldReference.current}
           open={open}
           onClose={handleClose}
+          sx={{ zIndex: popoverZindex ?? 'inherit' }}
         >
           <Datepicker
             selectedDate={

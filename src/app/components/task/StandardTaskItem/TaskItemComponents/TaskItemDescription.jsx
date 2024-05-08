@@ -35,6 +35,7 @@ import {
   DescriptionEditButton,
   DescriptionInput,
 } from '../../styled';
+import { fontWeights } from '@/app/styles/font';
 
 const TaskItemDescription = ({
   task,
@@ -60,7 +61,7 @@ const TaskItemDescription = ({
     completedDt,
     // taskList,
     linkedTaskTemplate,
-    // read,
+    read,
     tokenizedDescription,
   } = task;
 
@@ -159,12 +160,12 @@ const TaskItemDescription = ({
         {!isEditing && (
           <div
             style={{
-              marginTop: isSubtask ? '-13px' : 'none',
               textOverflow: 'ellipsis',
               overflow: 'hidden',
               whiteSpace: 'nowrap',
               textDecoration: isCompleted ? 'line-through' : 'none',
               color: isCompleted && 'rgba(61, 72, 88, 0.50)',
+              fontWeight: read ? fontWeights.light : fontWeights.bold,
             }}
           >
             {tokenizedDescription.split(/\s/).map((word) => {
@@ -247,8 +248,9 @@ const TaskItemDescription = ({
           </DescriptionEditButton>
         )}
       </Box>
-      <TaskItemDescriptionIndicators isCompleted={isSubtask}>
-        {isCompleted && isHover && (
+      <TaskItemDescriptionIndicators>
+        {/* In Future this will move on Tooltip */}
+        {/* {isCompleted && isHover && (
           <CompletedBy isCompleted={isCompleted}>
             <span>{`By ${completedByName} ${
               completedDt &&
@@ -260,8 +262,8 @@ const TaskItemDescription = ({
             }
             `}</span>
           </CompletedBy>
-        )}
-        {hasParentTaskLabel && (
+        )} */}
+        {/* {hasParentTaskLabel && (
           <>
             {isCompleted && <Spacing horizontal={2} />}
             <TaskItemParentTaskLabel>
@@ -271,8 +273,8 @@ const TaskItemDescription = ({
               >{` ${parentTask?.description}`}</span>
             </TaskItemParentTaskLabel>
           </>
-        )}
-        {linkedTaskTemplate && !isCompleted && !isDecisionTask && (
+        )} */}
+        {/* {linkedTaskTemplate && !isCompleted && !isDecisionTask && (
           <TaskContext>
             <span
               style={{
@@ -281,15 +283,15 @@ const TaskItemDescription = ({
                 whiteSpace: 'nowrap',
               }}
             >
-              Triggers: {linkedTaskTemplate.name}
+              Deploy: {linkedTaskTemplate.name}
             </span>
           </TaskContext>
         )}
         {linkedTaskTemplate && !isCompleted && isDecisionTask && (
           <TaskContext>
-            <span>Triggers a SmartFlow</span>
+            <span>Deploy a SmartFlow</span>
           </TaskContext>
-        )}
+        )} */}
       </TaskItemDescriptionIndicators>
     </DescriptionBox>
   );

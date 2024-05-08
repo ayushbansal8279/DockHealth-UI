@@ -1,23 +1,36 @@
 import styled from '@mui/styled-engine';
 import palette from 'styles/palette';
+import isNil from 'ramda/src/isNil';
 
 export const VTask = styled('div')`
   display: flex;
-  font-size: 13px;
   ${({
     $workflow,
+    bgColor,
     virtualListWorkflowOpen,
     isLastTaskOfGroup,
     $template,
     subtaskQuickAddOpen,
     addWorkflowTask,
     subTaskExpanded,
+    isLastGroupOfList,
+    isNextVirtualTaskItemTypeBundle,
+    isTaskTemplate,
   }: any) =>
     $workflow
       ? `
-  height: 62px;
    padding-bottom: ${
-     virtualListWorkflowOpen ? (isLastTaskOfGroup ? '80px' : '70px') : ''
+     !virtualListWorkflowOpen
+       ? ''
+       : isLastTaskOfGroup
+       ? bgColor
+         ? '24px'
+         : isLastGroupOfList
+         ? '24px'
+         : '0px'
+       : isNextVirtualTaskItemTypeBundle
+       ? '0px'
+       : '0px'
    };
   `
       : `
@@ -27,10 +40,17 @@ export const VTask = styled('div')`
         ? '0px'
         : subTaskExpanded
         ? '0px'
-        : '60px'
-      : ''
+        : bgColor
+        ? '24px'
+        : isLastGroupOfList
+        ? '24px'
+        : '0px'
+      : isNextVirtualTaskItemTypeBundle
+      ? ''
+      : !isTaskTemplate && !subtaskQuickAddOpen && !subTaskExpanded
+      ? '2px'
+      : '0px'
   };
-  height: 36px;
   `};
   ${({
     $template,
@@ -38,19 +58,25 @@ export const VTask = styled('div')`
     addWorkflowTask,
     subtaskQuickAddOpen,
     subTaskExpanded,
+    bgColor,
+    isLastGroupOfList,
+    isNextVirtualTaskItemTypeBundle,
   }: any) =>
-    $template
+    $template && !isNextVirtualTaskItemTypeBundle
       ? isLastTaskOfGroup
         ? subtaskQuickAddOpen || addWorkflowTask || subTaskExpanded
           ? 'padding-bottom: 0px'
-          : 'padding-bottom: 60px'
+          : bgColor
+          ? 'padding-bottom: 24px'
+          : isLastGroupOfList
+          ? 'padding-bottom: 24px'
+          : 'padding-bottom: 0px'
         : subtaskQuickAddOpen || addWorkflowTask || subTaskExpanded
         ? 'padding-bottom: 0px'
-        : 'padding-bottom: 45px'
+        : 'padding-bottom: 10px'
       : ''};
-
+  width: ${({ $width }) => $width};
   border-left: 1px solid rgb(229, 233, 242);
-  margin-top: -1px;
   background: ${({ bgColor }) => (bgColor ? palette.aliceBlue : '')};
 
   // ${({ isLastTaskOfGroup }) =>
@@ -64,14 +90,12 @@ export const VTask = styled('div')`
 
 export const QuickAddContainer = styled('div')`
   border-left: 1px solid ${palette.coolGrey3};
-  width: 70%;
-  margin-left: 89.5px;
-  margin-top: -1px;
-  margin-bottom: 1px;
-  // background: ${({ bgColor }) => (bgColor ? palette.aliceBlue : '')};
+  ${({ $width }) => (isNil($width) ? '' : `width: ${$width};`)}
+  left: 89.5px;
+  padding-bottom: ${({ addWorkflowTask, isTaskTemplate }) =>
+    addWorkflowTask || isTaskTemplate ? '0px' : '2px'};
+  position: sticky;
   ${({ $template }: any) => ($template ? 'margin-bottom: 10px' : '')};
-  // padding-bottom: ${({ isLastTaskOfGroup }) =>
-    isLastTaskOfGroup ? '60px' : '0px'};
   &:hover {
     border-left: 1px solid ${palette.coolGrey2};
   }
@@ -79,11 +103,10 @@ export const QuickAddContainer = styled('div')`
 
 export const WorkflowQuickAddTaskContainer = styled('div')`
   border-left: 1px solid ${palette.coolGrey3};
-  // width: 90%;
-  margin-left: 54.5px;
-  margin-top: -1px;
-  margin-bottom: 1px;
-
+  width: ${({ $width }) => $width};
+  left: 54.5px;
+  margin-top: 1px;
+  position: sticky;
   &:hover {
     border-left: 1px solid ${palette.coolGrey2};
   }

@@ -49,19 +49,36 @@ export const TaskTemplateGroupHeaderContainer = styled.div`
   font-family: inherit;
   font-size: ${fontSizes.smallPlus};
   width: 100%;
-  height: ${({ isOpen }) => (isOpen ? '51px;' : '50px;')}
+  height: 37px;
   background-color: ${(props) =>
     props.isSelected ? palette.dockBlueLight : palette.white};
 
-  border-top: 3px solid rgba(75, 179, 253, 1);
+  border-top: 2px solid rgba(75, 179, 253, 1);
   margin-top: 10px;
+  margin-bottom: ${({
+    isOpen,
+    isNextVirtualTaskItemTypeBundle,
+    isLastTaskOfGroup,
+    origin,
+    isNextTaskItemTypeBundle,
+  }) =>
+    isOpen
+      ? ''
+      : origin === 'LIST' || origin === 'PATIENT'
+      ? isLastTaskOfGroup
+        ? '0px'
+        : isNextVirtualTaskItemTypeBundle || isNextTaskItemTypeBundle
+        ? '0px'
+        : '10px'
+      : '10px'};
   border-bottom: 1px solid
     ${({ isOpen }) =>
       isOpen ? `${palette.coolGrey3}` : 'rgba(75, 179, 253, 1)'};
   border-right: 1px solid rgba(75, 179, 253, 1);
   z-index: 2;
-  
-  border-radius: 7px 7px ${({ isOpen }) => (isOpen ? `0px` : '7px')} ${({ isOpen }) => (isOpen ? `0px` : '7px')};
+
+  border-radius: 5px 5px ${({ isOpen }) => (isOpen ? `0px` : '5px')}
+    ${({ isOpen }) => (isOpen ? `0px` : '5px')};
 
   &:hover {
     & ${TemplateHandle}, ${AddPlaceholder} {
@@ -103,19 +120,23 @@ export const TaskTemplateRight = styled.div`
 export const ActionIconsContainer = styled.div`
   display: flex;
   position: relative;
-  width: 65px;
+  height: -webkit-fill-available;
+  width: -webkit-fill-available;
   align-items: center;
-  &::after {
-    border-right: 1px solid ${palette.coolGrey3};
-    content: '';
-    position: absolute;
-    top: -4px;
-    left: 100%;
-    width: 0px;
-    height: 36px;
-  }
+  margin-left: -12px;
+  margin-right: -1px;
+  background-color: ${palette.lightOceanBlue};
+
+  border: 5px solid ${palette.lightOceanBlue};
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: ${({ isOpen }) => (!isOpen ? '2px;' : '')};
+
+  border-right: 1px solid ${palette.coolGrey3};
 `;
 
 export const PatientMRNAnchor = styled.a`
   color: ${palette.brightBlue} !important;
+`;
+export const ChevronContainer = styled.div`
+  margin-left: 20px;
 `;

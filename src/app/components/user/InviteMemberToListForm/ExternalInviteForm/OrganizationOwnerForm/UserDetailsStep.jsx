@@ -1,29 +1,58 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { Grid } from '@mui/material';
 import Input from 'components/common/Input/Input';
 import { TextField } from '@mui/material';
 import Spacing from 'components/common/Spacing';
 import Button from 'components/common/Button/Button';
-import IIcon from 'img/!-icon.svg'
+import IIcon from 'img/!-icon.svg';
 import {
   InfoText,
   Header,
   InfoContainer,
   UserDetailsFormWrapper,
 } from './styled';
-import { CancelButton, ConfirmButton } from '@/app/modal/components/ModalButton/ModalButtons';
+import {
+  CancelButton,
+  ConfirmButton,
+} from '@/app/modal/components/ModalButton/ModalButtons';
+import * as yup from 'yup';
 
-const UserDetailsStep = ({ closeInviteForm, disabled }) => {
+const UserDetailsStep = ({
+  closeInviteForm,
+  disabled,
+  isOrganizationAdmin,
+}) => {
   const {
     watch,
     setValue,
     formState: { errors },
   } = useFormContext();
 
+  const [isValid, setIsValid] = useState(false);
+
   const firstNameValue = watch('firstName');
   const lastNameInputValue = watch('lastName');
   const emailInputValue = watch('email');
+
+  const validationSchema = yup.object().shape({
+    firstNameValue: yup.string().required(),
+    lastNameInputValue: yup.string().required(),
+    emailInputValue: yup.string().email().required(),
+  });
+
+  const handleValidation = async () => {
+    const valid = await validationSchema.isValid({
+      firstNameValue,
+      lastNameInputValue,
+      emailInputValue,
+    });
+    setIsValid(valid);
+  };
+
+  useEffect(() => {
+    handleValidation();
+  }, [firstNameValue, lastNameInputValue, emailInputValue]);
 
   const sx = {
     '& .MuiOutlinedInput-root': {
@@ -98,11 +127,14 @@ const UserDetailsStep = ({ closeInviteForm, disabled }) => {
           />
         </Grid>
         <Grid item>
-            <Spacing vertical={2} />
+          <Spacing vertical={2} />
           <InfoContainer>
-            {/* <InfoHeader>New User</InfoHeader> */}
-            <img src={IIcon} alt="asdsa" />
-            <InfoText>Approval Required</InfoText>
+            {isOrganizationAdmin && (
+              <>
+                <img src={IIcon} alt="!icon" />
+                <InfoText>Approval Required</InfoText>
+              </>
+            )}
           </InfoContainer>
           <Spacing vertical={4} />
         </Grid>
@@ -124,7 +156,11 @@ const UserDetailsStep = ({ closeInviteForm, disabled }) => {
             </CancelButton>
           </Grid>
           <Grid item xs={5}>
-            <ConfirmButton fullWidth disabled={disabled} type="submit">
+            <ConfirmButton
+              fullWidth
+              disabled={!isValid || disabled}
+              type="submit"
+            >
               Next
             </ConfirmButton>
           </Grid>

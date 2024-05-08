@@ -12,7 +12,15 @@ import spacing from 'styles/spacing';
 import palette from 'styles/palette';
 import { AddPlaceholder } from '../../styled';
 
-const TaskItemDueDate = ({ task, isDateHover, disabled = false }) => {
+const TaskItemDueDate = ({
+  task,
+  isDateHover,
+  disabled = false,
+  format,
+  showTime,
+  showReminder,
+  showRecurring,
+}) => {
   const dispatch = useDispatch();
   const { taskIdentifier, dueDate, hasRecurringSchedule, reminderType } =
     task || {};
@@ -50,6 +58,10 @@ const TaskItemDueDate = ({ task, isDateHover, disabled = false }) => {
             hasReminder={reminderType && reminderType !== ReminderType.NONE}
             hasRecurringSchedule={hasRecurringSchedule}
             tootipTitle="Edit Due Date"
+            format={format}
+            showTime={showTime}
+            showReminder={showReminder}
+            showRecurring={showRecurring}
           />
         ) : (
           <>
@@ -58,14 +70,6 @@ const TaskItemDueDate = ({ task, isDateHover, disabled = false }) => {
                 <AddPlaceholder>
                   <div style={{ display: 'flex' }}>
                     <TaskIcon type="calendar" isActive />
-                    <p
-                      style={{
-                        padding: `3px ${spacing.smallPlus}`,
-                        // color: `${palette.coolGrey1}`,
-                      }}
-                    >
-                      None
-                    </p>
                   </div>
                 </AddPlaceholder>
               </Tooltip>

@@ -16,7 +16,7 @@ export const StatusFlag = styled.div`
 `;
 
 export const StatusFieldContainer = styled.div`
-  margin-left: 10px;
+  margin-left: 1px;
   width: 200px;
   display: flex;
 `;

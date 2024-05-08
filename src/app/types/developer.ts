@@ -1,11 +1,7 @@
-export interface TApiKey {
-  domainName: string;
+export interface ApiKey {
+  organizationIdentifier: string;
+  domain: string;
   apiKey: string;
   clientId: string;
   clientSecret: string;
-}
-
-export interface TCreateApiKeyMutationParams {
-  organizationIdentifier: string;
-  sendEmail?: boolean;
 }

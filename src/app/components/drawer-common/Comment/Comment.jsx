@@ -1,4 +1,3 @@
-/* eslint-disable sonarjs/cognitive-complexity */
 import React, { useRef, useEffect, useState } from 'react';
 import {
   IconButton,
@@ -11,10 +10,9 @@ import UserAvatar from 'components/user/UserAvatar/UserAvatar';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-// eslint-disable-next-line import/no-named-as-default
 import { useBoolean } from 'hooks/useBoolean';
 import RichTextEditor from 'components/common/RichTextEditor/RichTextEditor';
-import { getCommentIdToScroll } from 'components/task-drawer/CommentSection/helpers';
+import { getCommentIdToScroll } from 'helpers/scroll-helper';
 import {
   CommentContainer,
   CommentText,
@@ -37,14 +35,8 @@ const Comment = ({
   currentUser,
   selectedTask,
 }) => {
-  const {
-    // comment: commentContent,
-    creator,
-    // dateCreated,
-    commentIdentifier,
-    commentMentions,
-    tokenizedComment,
-  } = comment;
+  const { creator, commentIdentifier, commentMentions, tokenizedComment } =
+    comment;
 
   // menu variables ----------------------
   const [menuAnchorEl, setMenuAnchorEl] = useState(null); // <null | HTMLElement>

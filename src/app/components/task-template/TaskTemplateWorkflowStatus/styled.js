@@ -9,16 +9,16 @@ export const StatusSubContaioner = styled.div`
 `;
 
 export const StatusWrapper = styled.div`
-display: flex;
-border-radius: 2px;
-border: 1px solid ${(property) => property.color || '#7F4334'};
-background: ${(property) => `${property.color}1A` || '#7F43341A'};
-min-width: 90px;
-padding: 2.5px 20px;
-justify-content: center;
-align-items: center;
-gap: 10px;
-color: ${(property) => property.color || '#7F4334'};
+  display: flex;
+  border-radius: 2px;
+  border: 1px solid ${(property) => property.color || '#7F4334'};
+  background: ${(property) => `${property.color}1A` || '#7F43341A'};
+  min-width: 90px;
+  padding: 2.5px 2px;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  color: ${(property) => property.color || '#7F4334'};
 `;
 
 export const StatusBar = styled.div`
@@ -58,6 +58,7 @@ export const Placeholder = styled.div`
 
   &:hover {
     color: ${palette.brightBlue};
+    // opacity: 100;
   }
 `;
 
@@ -65,8 +66,8 @@ export const AddPlaceholder = styled(Placeholder)`
   color: ${palette.lightGrey};
   opacity: 0;
 
-  &::first-letter {
-    color: ${palette.orange};
-    font-size: 16px;
-  }
+  // &::first-letter {
+  //   color: ${palette.orange};
+  //   font-size: 16px;
+  // }
 `;

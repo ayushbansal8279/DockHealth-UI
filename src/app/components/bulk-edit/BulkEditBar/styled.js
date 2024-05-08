@@ -30,6 +30,8 @@ export const TasksText = styled.p`
 export const CloseButton = styled.button`
   height: 100%;
   width: 60px;
+  padding-left: 5px;
+  padding-right: 10px;
   color: ${palette.black};
   color: ${({ disabled }) => (disabled ? palette.coolGrey2 : palette.black)};
 

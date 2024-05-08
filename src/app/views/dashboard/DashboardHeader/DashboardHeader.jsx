@@ -26,9 +26,9 @@ import debounce from 'lodash.debounce';
 import { onSearchChanged } from 'helpers/ga-event-helper';
 import UserAvatar from 'components/user/UserAvatar/UserAvatar';
 import LayoutHeader from 'components/template/LayoutHeader/LayoutHeader';
-import MegaFilter from 'components/tasklist/MegaFilter/MegaFilter';
+import MegaFilter from '@/app/components/tasklist/list-toolbar-buttons/MegaFilter/MegaFilter';
 import HeaderSearch from 'components/template/HeaderSearch/HeaderSearch';
-import CustomizeToolbarButton from 'components/tasklist/CustomizeToolbarButton/CustomizeToolbarButton';
+import CustomizeToolbarButton from '@/app/components/tasklist/list-toolbar-buttons/CustomizeToolbarButton/CustomizeToolbarButton';
 import AccessRestrictor from 'components/access/AccessRestrictor/AccessRestrictor';
 import compose from 'ramda/src/compose';
 import equals from 'ramda/src/equals';
@@ -166,17 +166,17 @@ const DashboardHeader = () => {
   );
 
   const handleSaveQuickFilter = useCallback(
-    () =>
+    (quickFilterIdentifier,selectedFilters) =>
       dispatch(
         updateQuickFilter(
-          selectedQuickFilter,
+          quickFilterIdentifier,
           {
             selectedOptions: selectedFilters,
           },
           { contextType },
         ),
       ),
-    [contextType, dispatch, selectedFilters, selectedQuickFilter],
+    [contextType, dispatch, selectedFilters],
   );
 
   const handleSaveAsQuickFilter = useCallback(
@@ -196,7 +196,7 @@ const DashboardHeader = () => {
   );
 
   const handleQuickFilterCreate = useCallback(
-    (name) =>
+    (name, selectedFilters) =>
       dispatch(createQuickFilter(name, { contextType }, selectedFilters)),
     [contextType, dispatch, selectedFilters],
   );
@@ -329,7 +329,7 @@ const DashboardHeader = () => {
                   addQuickFilterOption={addQuickFilterOption}
                   selectedQuickFilter={selectedQuickFilter}
                   selectQuickFilter={handleSelectQuickFilter}
-                  onSaveClick={handleSaveQuickFilter}
+                  handleSaveQuickFilter={handleSaveQuickFilter}
                   onSaveAsNewClick={handleSaveAsQuickFilter}
                   wasChangedFilters={wasChangedFilters}
                   onQuickFilterCreate={handleQuickFilterCreate}
@@ -344,7 +344,7 @@ const DashboardHeader = () => {
                 />
                 {/* <LayoutHeader.Spacer /> */}
               </AccessRestrictor>
-              <DashboardQuickFilterContainer>
+              {/* <DashboardQuickFilterContainer>
                 {quickFiltersList.map((filter, index) => {
                   return (
                     <DashboardQuickFilter key={filter.name}>
@@ -378,7 +378,7 @@ const DashboardHeader = () => {
                     </DashboardQuickFilter>
                   );
                 })}
-              </DashboardQuickFilterContainer>
+              </DashboardQuickFilterContainer> */}
             </Box>
           </>
         )}

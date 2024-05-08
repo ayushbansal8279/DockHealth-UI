@@ -1,7 +1,7 @@
 import React from 'react';
 import palette from 'styles/palette';
 
-export default ({ size = 14, color = palette.coolGrey2 }) => (
+export default ({ size = 13, color = palette.coolGrey1 }) => (
   <svg
     width={size * 1.65}
     height={size}

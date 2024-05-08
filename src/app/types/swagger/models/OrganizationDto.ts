@@ -15,6 +15,7 @@ import { SubscriptionDto } from '../models/SubscriptionDto';
 
 
 export class OrganizationDto {
+    'active'?: boolean;
     'availableFeatures'?: any;
     'baaSignatureDateTime'?: Date;
     'baaSignatureRequestSent'?: boolean;
@@ -41,6 +42,12 @@ export class OrganizationDto {
     static readonly discriminator: string | undefined = undefined;
 
     static readonly attributeTypeMap: Array<{name: string, baseName: string, type: string, format: string}> = [
+        {
+            "name": "active",
+            "baseName": "active",
+            "type": "boolean",
+            "format": ""
+        },
         {
             "name": "availableFeatures",
             "baseName": "availableFeatures",
