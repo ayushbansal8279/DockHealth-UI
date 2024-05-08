@@ -120,8 +120,6 @@ export const SortHeaderRow = styled.div`
   flex-direction: row;
   justify-content: flex-start;
   align-items: center;
-  // width: ${({ $width }) => ($width ? `${$width + 66 + 22}px` : '100%')};
-  // width: ${({ $width }) => ($width ? `${$width + 66 + 37}px` : '100%')};
   width: ${({ listPageGroupHeader, isWidthGreaterThanHundredPercent }) =>
     listPageGroupHeader
       ? !isWidthGreaterThanHundredPercent
