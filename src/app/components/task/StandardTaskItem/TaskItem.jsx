@@ -799,7 +799,7 @@ const TaskItem = React.memo(
     };
 
     const randerFirstColumnCoverIfNecessary = useCallback(
-      (content, order) => {
+      (content, order, width) => {
         if (order !== 0) return content;
         return (
           <StickyMainTaskItemCell
@@ -825,6 +825,7 @@ const TaskItem = React.memo(
                 : !!selectedFilters
             }
             isSortApplied={!!sort.key}
+            width={width + 25 + 56}
           >
             {taskListRestrictions?.createTask !== DISABLED && (
               <DotsContainer
@@ -905,6 +906,7 @@ const TaskItem = React.memo(
                   }
                 />
               </Tooltip>
+              <Box ml="10px" />
               {/* </Tooltip> */}
             </ActionIconsContainer>
             {content}
@@ -913,22 +915,35 @@ const TaskItem = React.memo(
         );
       },
       [
+        isLastChild,
+        isTaskTemplate,
+        origin,
         showSubtaskStylingLink,
+        isSubtask,
         newlyCreated,
         pageBackground,
         isSelected,
         hasEscalations,
         customHighlight,
         isEditingDescription,
+        isWorkflowSubtask,
+        searchValue,
+        selectedFilters,
+        sort.key,
         taskListRestrictions?.createTask,
         taskListRestrictions?.completeTask,
         dragHandleProps,
         showPriority,
         task?.priority,
+        task?.completedBy?.firstName,
+        task?.completedBy?.lastName,
+        task.completedDt,
         isLast,
         bulkEditEnabled,
         onClickBulkEdit,
         isCompleted,
+        tooltipsOpen,
+        showCircleIconOnHover,
         isTaskStatusTogglingDisabled,
         isDependencyEmptyOrCompleted,
         onCircleClick,
@@ -1149,6 +1164,9 @@ const TaskItem = React.memo(
                 </MainStandardTaskItemCell>
               </>,
               getColumnOrder(TaskItemColumn.DESCRIPTION),
+              columns?.find(
+                ({ identifier: id }) => id === TaskItemColumn.DESCRIPTION,
+              )?.columnWidth,
             )}
 
             {isColumnChecked(columns, TaskItemColumn.PATIENT) && (

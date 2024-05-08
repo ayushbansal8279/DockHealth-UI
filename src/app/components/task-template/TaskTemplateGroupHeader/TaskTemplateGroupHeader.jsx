@@ -562,7 +562,7 @@ const TaskTemplateGroupHeader = ({
           isSelected={isBundleSelected}
           isEditingDescription={isEditing}
           order={0}
-          width={+width + 25 + 56}
+          width={width + 25 + 56}
           origin={origin}
         >
           {!groupDragAndDropDisabled &&
@@ -612,7 +612,6 @@ const TaskTemplateGroupHeader = ({
       groupDragAndDropDisabled,
       bulkEditIsActive,
       taskListRestrictions?.completeTask,
-      taskListRestrictions?.createTask,
       DISABLED,
       dragHandleProps,
       bulkEditEnabled,

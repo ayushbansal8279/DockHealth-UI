@@ -128,7 +128,7 @@ export const SortHeaderRow = styled.div`
       : ''};
   background: ${palette.white};
   border: 1px solid ${palette.coolGrey3};
-  border-left: 0px;
+  border-left: 1px;
   ${({ origin }) => (origin === 'LIST' ? 'margin-bottom: 3px' : '')};
 
   @media print {
