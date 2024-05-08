@@ -28,6 +28,7 @@ const TaskItemPatient = ({
   patient,
   matchPatient,
   task,
+  taskWorkflow,
   openPatientPopover,
   onTaskUpdate,
   currentUser,
@@ -94,6 +95,7 @@ const TaskItemPatient = ({
             openPopover={() => openPopoverWhenNotCompleted(true)}
             closePopover={() => setPopoverOpen(false)}
             isSubtask={isSubtask}
+            taskWorkflow={taskWorkflow}
             hasSubtasks={hasSubtasks}
             origin={origin}
           >

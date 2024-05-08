@@ -5,6 +5,8 @@ import { selectedUserOrganizationSelector } from 'selectors/user-selectors';
 import PatientList from './PatientList';
 import { StyledPopover } from './styled';
 import { ListPageContext } from '@/app/views/list-details/ListDetailsView';
+import { updatePartialWorkflow } from '@/app/actions/task-template-actions';
+import { changePatientForTemplateBundle } from '@/app/actions/template-bundle-actions';
 
 const PatientDropdown = ({
   children,
@@ -16,6 +18,7 @@ const PatientDropdown = ({
   isMultipleChange,
   isSubtask,
   hasSubtasks,
+  taskWorkflow,
   origin,
 }) => {
   const popoverReference = useRef(null);
@@ -40,12 +43,26 @@ const PatientDropdown = ({
           confirm: () => {
             onChangePatient(null);
             closePopover();
+            if (taskWorkflow) {
+              dispatch(
+                updatePartialWorkflow(taskWorkflow?.identifier, {
+                  patientIdentifier: 'UNASSIGNED',
+                }),
+              );
+            }
           },
         }),
       );
     } else {
       onChangePatient(null);
       closePopover();
+      if (taskWorkflow) {
+        dispatch(
+          updatePartialWorkflow(taskWorkflow?.identifier, {
+            patientIdentifier: 'UNASSIGNED',
+          }),
+        );
+      }
     }
   };
 
@@ -66,6 +83,14 @@ const PatientDropdown = ({
           confirm: () => {
             onChangePatient(patient?.patientIdentifier, patient);
             closePopover();
+            if (taskWorkflow) {
+              dispatch(
+                changePatientForTemplateBundle(
+                  taskWorkflow?.identifier,
+                  patient?.patientIdentifier,
+                ),
+              );
+            }
           },
           patientName: patient?.lastName
             ? `${patient?.lastName}, ${patient?.firstName}`
@@ -75,6 +100,14 @@ const PatientDropdown = ({
     } else {
       onChangePatient(patient?.patientIdentifier, patient);
       closePopover();
+      if (taskWorkflow) {
+        dispatch(
+          changePatientForTemplateBundle(
+            taskWorkflow?.identifier,
+            patient?.patientIdentifier,
+          ),
+        );
+      }
     }
   };
 

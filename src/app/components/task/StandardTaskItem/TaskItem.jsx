@@ -1177,6 +1177,7 @@ const TaskItem = React.memo(
                       patient={patient || parentTask?.patient || parentPatient}
                       matchPatient={matchPatient}
                       task={task}
+                      taskWorkflow={taskWorkflow}
                       openPatientPopover={openPatientPopover}
                       onTaskUpdate={onTaskUpdate}
                       currentUser={currentUser}
