@@ -29,6 +29,8 @@ const CustomFilterOption = (props) => {
     onQuickFilterCreate,
     clearFilters,
     setSelectedCustomFilter,
+    isPatientListPage,
+    handleQuickFilterDuplicateForPatientList,
   } = props;
   const [value, setValue] = useState(label);
   const [isSelected, setSelected] = useState(false);
@@ -67,12 +69,26 @@ const CustomFilterOption = (props) => {
     setSavePopupOpen(true);
     setEditIdentifier(identifier);
 
+    let selectedOptions = filter.selectedOptions;
+
+    if (
+      isPatientListPage &&
+      filter.patientSelectedOptions.customFields.length !== 0
+    ) {
+      selectedOptions = {};
+      filter.patientSelectedOptions.customFields.forEach((element) => {
+        selectedOptions[element.customFieldIdentifier] = {
+          options: element.selectedOptionIdentifiers,
+        };
+      });
+    }
+
     const data = {};
-    for (const key in filter.selectedOptions) {
+    for (const key in selectedOptions) {
       const users = filters
         .flatMap((item) => item.id === key && item.options)
         .filter((item) => typeof item !== 'boolean');
-      data[key] = filter.selectedOptions[key].options.map((item) =>
+      data[key] = selectedOptions[key].options.map((item) =>
         users.find((user) => user.key === item),
       );
     }
@@ -81,7 +97,24 @@ const CustomFilterOption = (props) => {
   };
 
   const handleDuplicate = () => {
-    onQuickFilterCreate('Copy of ' + filter.name, filter.selectedOptions);
+    if (
+      isPatientListPage &&
+      filter.patientSelectedOptions.customFields.length !== 0
+    ) {
+      const selectedOptions = {};
+      filter.patientSelectedOptions.customFields.forEach((element) => {
+        selectedOptions[element.customFieldIdentifier] = {
+          options: element.selectedOptionIdentifiers,
+        };
+      });
+      console.log(selectedOptions);
+      handleQuickFilterDuplicateForPatientList(
+        'Copy of ' + filter.name,
+        selectedOptions,
+      );
+    } else {
+      onQuickFilterCreate('Copy of ' + filter.name, filter.selectedOptions);
+    }
   };
 
   const OPTIONS = [

@@ -291,7 +291,10 @@ const PatientsToolbar = ({ searchValue, setSearchValue }) => {
         open={filterOpen}
         onClose={closeFilter}
       >
-        <PatientsFilter />
+        <PatientsFilter
+          filterButtonReference={filterButtonReference}
+          closeFilter={closeFilter}
+        />
       </FilterPopover>
       <CreatePatientDrawer
         onPatientCreated={({ patientIdentifier }) =>
