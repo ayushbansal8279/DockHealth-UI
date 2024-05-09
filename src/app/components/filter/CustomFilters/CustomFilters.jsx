@@ -6,17 +6,29 @@ import { useDispatch } from 'react-redux';
 import compose from 'ramda/src/compose';
 import CustomFilterOption from '../CustomFilterOption/CustomFilterOption';
 import { CustomFiltersContainer, Label, OptionsList } from './styled';
-import { getUniqueQuickFilterLabelName } from './helpers';
 
 const CustomFilters = ({
   quickFiltersList = [],
   addQuickFilterOption,
-  selectedQuickFilter: selected,
   selectQuickFilter: setSelected,
   onCreate,
   onUpdate,
   onDelete,
   editModeEnabled = false,
+  setFinalFilter,
+  filters,
+  setMenuOption,
+  setSavePopupOpen,
+  setEditIdentifier,
+  setCustomFinalFilter,
+  openPopover,
+  onQuickFilterCreate,
+  setSelectedQuickFilter,
+  selectedQuickFilter,
+  clearFilters,
+  setSelectedCustomFilter,
+  isPatientListPage,
+  handleQuickFilterDuplicateForPatientList,
 }) => {
   const [editModeFilterIdentifier, setEditModeFilterIdentifier] =
     useState(null);
@@ -34,19 +46,16 @@ const CustomFilters = ({
 
   const handleSelect = useCallback(
     (_, identifier, { selectedOptions }) => {
-      if (editModeEnabled && selected === identifier) {
-        const originalFiltersList = quickFiltersList.find(
-          (f) => f.quickFilterIdentifier === identifier,
-        )?.selectedOptions;
-
-        setSelected(identifier, originalFiltersList);
-      } else if (selected === identifier) {
-        setSelected(null);
-      } else {
-        setSelected(identifier, selectedOptions);
-      }
+      setSelected(identifier, selectedOptions);
+      setSelectedQuickFilter(identifier);
+      openPopover(false);
     },
-    [editModeEnabled, quickFiltersList, selected, setSelected],
+    [
+      editModeEnabled,
+      quickFiltersList,
+      selectedQuickFilter,
+      setSelectedQuickFilter,
+    ],
   );
 
   const handleUpdate = useCallback(
@@ -75,21 +84,15 @@ const CustomFilters = ({
     <CustomFiltersContainer>
       <Label>Quick Filters</Label>
       <OptionsList>
-        {addQuickFilterOption && (
-          <CustomFilterOption
-            label={getUniqueQuickFilterLabelName(quickFiltersList)}
-            autofocus
-            disableOptions
-            disabled={false}
-            onBlur={handleCreate}
-          />
-        )}
         {quickFiltersList.map((filter) => (
           <CustomFilterOption
+            filters={filters}
+            filter={filter}
             label={filter.name}
             key={filter.quickFilterIdentifier}
             identifier={filter.quickFilterIdentifier}
-            selected={selected === filter.quickFilterIdentifier}
+            selectedQuickFilter={selectedQuickFilter}
+            setSelectedQuickFilter={setSelectedQuickFilter}
             onOptionClick={(event) =>
               handleSelect(event, filter.quickFilterIdentifier, filter)
             }
@@ -98,6 +101,15 @@ const CustomFilters = ({
             onBlur={handleUpdate}
             editModeEnabled={editModeEnabled}
             onDelete={onDelete}
+            setSavePopupOpen={setSavePopupOpen}
+            setFinalFilter={setFinalFilter}
+            setEditIdentifier={setEditIdentifier}
+            setCustomFinalFilter={setCustomFinalFilter}
+            onQuickFilterCreate={onQuickFilterCreate}
+            clearFilters={clearFilters}
+            setSelectedCustomFilter={setSelectedCustomFilter}
+            isPatientListPage={isPatientListPage}
+            handleQuickFilterDuplicateForPatientList={handleQuickFilterDuplicateForPatientList}
           />
         ))}
       </OptionsList>

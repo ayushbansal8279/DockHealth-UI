@@ -12,6 +12,7 @@ const initialState = {
   isFetchingHistory: false,
   autoFocusFieldName: null,
   labels: [],
+  commentIdentifierToScroll: null, // used to scroll to comment after opening drawer
 };
 
 const WorkflowDrawerReducer = (state = initialState, action) => {
@@ -30,6 +31,13 @@ const WorkflowDrawerReducer = (state = initialState, action) => {
       return {
         ...state,
         ...initialState,
+      };
+    }
+
+    case ActionTypes.SET_WORKFLOW_IDENTIFIER: {
+      return {
+        ...state,
+        workflowIdentifier: action.payload,
       };
     }
 
@@ -228,6 +236,13 @@ const WorkflowDrawerReducer = (state = initialState, action) => {
           ...state.workflow,
           tasks: workflow.tasks,
         },
+      };
+    }
+
+    case ActionTypes.SET_WORKFLOW_COMMENT_IDENTIFIER_TO_SCROLL: {
+      return {
+        ...state,
+        commentIdentifierToScroll: action.payload,
       };
     }
 

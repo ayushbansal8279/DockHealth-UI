@@ -1,6 +1,7 @@
 import { bool, shape, string } from 'prop-types';
 import React from 'react';
 import Highlighter from 'react-highlight-words';
+import moment from 'moment';
 // import prop from 'ramda/src/prop';
 // import sortBy from 'ramda/src/sortBy';
 // import compose from 'ramda/src/compose';
@@ -8,7 +9,7 @@ import Highlighter from 'react-highlight-words';
 import { SuggestionItemContainer, SuggestionText } from './styled';
 
 const PatientSelectItem = React.forwardRef(
-  ({ patient, searchValue, isFocused, ...restProps }, reference) => {
+  ({ patient, searchValue, isFocused, header, ...restProps }, reference) => {
     const { name, dob, mrn } = patient;
     // const sortedPatientMetaData = patient?.patientMetaData
     //   ? sortBy(
@@ -31,7 +32,9 @@ const PatientSelectItem = React.forwardRef(
             textToHighlight={name}
           />
         </SuggestionText>
-        <SuggestionText>{dob}</SuggestionText>
+        <SuggestionText>
+          {header ? dob : dob ? moment(dob).format('MMM D, YYYY') : dob}
+        </SuggestionText>
         <SuggestionText>
           <Highlighter
             highlightStyle={{ fontWeight: 'bold', background: 'none' }}

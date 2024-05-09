@@ -12,6 +12,7 @@ export const ReminderContainer = styled.div`
   margin-bottom: ${spacing.tiny};
   transition: opacity 0.4s ease-out;
   font-family: inherit;
+  margin-left: 135px;
 `;
 
 export const Description = styled.p`

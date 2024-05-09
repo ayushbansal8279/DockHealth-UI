@@ -38,16 +38,18 @@ import {
   GET_ARCHIVED_TASKLIST_SUCCESS,
   UPDATE_LIST_VIEW_SETUP,
   INITIALIZE_TASK_LIST_STATE,
+  UPDATE_TASK_STATUS_TO_FILTER,
   CLEAR_TASK_LIST_STATE,
   GET_CURRENT_TASK_LIST_FAILURE,
   GET_CURRENT_TASK_LIST,
   GET_CURRENT_TASK_LIST_SUCCESS,
 } from 'actions/action-types';
+import { TaskStatus } from '../helpers/task-helpers';
 
 const initialState = {
   currentTaskList: null,
   currentTaskListIdentifier: null,
-  currentTasksStatus: null,
+  currentTasksStatus: TaskStatus.INCOMPLETE,
   isFetchingCurrentTaskList: false,
 
   taskLists: null,
@@ -105,7 +107,13 @@ const TaskListReducer = (state = initialState, action) => {
         ...state,
         currentTaskListIdentifier: action.taskListIdentifier,
         currentTaskList: null,
-        currentTasksStatus: action.currentTasksStatus,
+      };
+    }
+
+    case UPDATE_TASK_STATUS_TO_FILTER: {
+      return {
+        ...state,
+        currentTasksStatus: action.payload,
       };
     }
 
@@ -114,7 +122,6 @@ const TaskListReducer = (state = initialState, action) => {
         ...state,
         currentTaskListIdentifier: null,
         currentTaskList: null,
-        currentTasksStatus: null,
       };
     }
 

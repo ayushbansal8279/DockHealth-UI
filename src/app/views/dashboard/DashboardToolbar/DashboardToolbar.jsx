@@ -34,7 +34,7 @@ import {
 } from 'selectors/user-selectors';
 import * as DashboardApi from 'api/dashboard-api';
 import TaskViewTypeToolbarSelect from 'components/tasklist/TaskViewTypeToolbarSelect/TaskViewTypeToolbarSelect';
-import CustomizeToolbarButton from 'components/tasklist/CustomizeToolbarButton/CustomizeToolbarButton';
+import CustomizeToolbarButton from '@/app/components/tasklist/list-toolbar-buttons/CustomizeToolbarButton/CustomizeToolbarButton';
 import { useTaskListColumnsConfig } from 'context-api/columns-config-context';
 import {
   TaskItemColumn,
@@ -93,14 +93,14 @@ const DashboardToolbar = ({ iconColorFilterActive, iconColorActive }) => {
     (orgUserRole === 'MEMBER' &&
       allTasksForMemberEnabledItem?.value === 'false') ||
     false;
-  // const shareTaskAvailable = useSelector(userHasShareTaskFeatureSelector);
+  const shareTaskAvailable = useSelector(userHasShareTaskFeatureSelector);
 
-  // const [sharedTasksCount, setSharedTasksCount] = useState(0);
+  const [sharedTasksCount, setSharedTasksCount] = useState(0);
   // const [upcomingTasksCount, setUpcomingTasksCount] = useState(0);
   // const [overdueTasksCount, setOverdueTasksCount] = useState(0);
   // const [completedTasksCount, setCompletedTasksCount] = useState(0);
   // const [allTasksCount, setAllTasksCount] = useState(0);
-  // const [sharedTasksAnyUnread, setSharedTasksAnyUnread] = useState(false);
+  const [sharedTasksAnyUnread, setSharedTasksAnyUnread] = useState(false);
 
   // const upcomingTabGroupTypes = [
   //   'ESCALATED',
@@ -119,17 +119,17 @@ const DashboardToolbar = ({ iconColorFilterActive, iconColorActive }) => {
   //   'ORG_ALL_OTHER',
   // ];
 
-  // useEffect(() => {
-  //   DashboardApi.getTasksAssignedToUserByImplicitGroup('SHARED', 0, 0).then(
-  //     (data) => {
-  //       const taskCount = data?.taskGroups?.[0]?.tasks?.length;
-  //       setSharedTasksCount(taskCount);
-  //       const anyTasksUnread =
-  //         data?.taskGroups?.[0]?.tasks?.filter((t) => t.read === false)
-  //           ?.length !== 0;
-  //       setSharedTasksAnyUnread(anyTasksUnread);
-  //     },
-  //   );
+  useEffect(() => {
+    DashboardApi.getTasksAssignedToUserByImplicitGroup('SHARED', 0, 0).then(
+      (data) => {
+        const taskCount = data?.taskGroups?.[0]?.tasks?.length;
+        setSharedTasksCount(taskCount);
+        const anyTasksUnread =
+          data?.taskGroups?.[0]?.tasks?.filter((t) => t.read === false)
+            ?.length !== 0;
+        setSharedTasksAnyUnread(anyTasksUnread);
+      },
+    );
 
   //   setUpcomingTasksCount(0);
   //   setOverdueTasksCount(0);
@@ -175,7 +175,7 @@ const DashboardToolbar = ({ iconColorFilterActive, iconColorActive }) => {
   //       setSharedTasksAnyUnread(anyTasksUnread);
   //     },
   //   );
-  // }, [setSharedTasksCount, setSharedTasksAnyUnread]);
+  }, [setSharedTasksCount, setSharedTasksAnyUnread]);
 
   useEffect(() => {
     if (
@@ -261,7 +261,6 @@ const DashboardToolbar = ({ iconColorFilterActive, iconColorActive }) => {
                   My Tasks
                 </DashboardTabsLabel>
               }
-              // "My Tasks"
               // setHighlightPosition={setHighlightPosition}
               onClick={() => {
                 history.push(`${HOME_PATH}${search}`);
@@ -353,7 +352,7 @@ const DashboardToolbar = ({ iconColorFilterActive, iconColorActive }) => {
               isSelected={tabName === DashboardTasksTab.COMPLETED}
             />
           </AccessRestrictor> */}
-          {/* {shareTaskAvailable && (
+          {shareTaskAvailable && (
             <DashboardTab
               // label={`Shared With Me (${sharedTasksCount})`}
               label={
@@ -380,7 +379,7 @@ const DashboardToolbar = ({ iconColorFilterActive, iconColorActive }) => {
               isSelected={tabName === DashboardTasksTab.SHARED_TASKS}
               showNewIndicator={sharedTasksAnyUnread}
             />
-          )} */}
+          )}
           {!restrictAllTasksForMember && (
             <AccessRestrictor allowedToRoles={[ADMIN, OWNER, MEMBER]}>
               <DashboardTab

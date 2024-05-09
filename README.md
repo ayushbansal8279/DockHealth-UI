@@ -32,21 +32,24 @@ Then, create a new file inside `src/app/types`, import the swagger generated typ
 Example,
 
 ```ts
+// src/app/types/Comment.ts
+import { CommentDto as IComment } from './swagger/models/CommentDto';
+
+export { IComment };
+
 // src/app/types/Task.ts
-import { CommentDto } from './swagger/models/CommentDto';
+import { IComment } from './Comment';
 import { TaskDto } from './swagger/models/TaskDto';
 
-export type Comment = CommentDto;
-
 export interface Task extends TaskDto {
-  comments?: Comment[];
+  comments?: IComment[];
 }
 
 
 // inside other ts files
-import { Comment, Task } from '@/app/types/Task'
+import { Task } from '@/app/types/Task'
 
-const comment: Comment = { ... }
+const task: Task = { ... }
 ```
 
 ## Practice of Writing Code
@@ -71,3 +74,25 @@ Please install the VSCode extension [Better Comments](https://marketplace.visual
 
 While writing code, if you see the commented code block that exists there for more than 3 months without adequate explanation, please ping the author to clarify and remove the code block.
 Also if you add a new component and the old component is no longer in use, make sure it's not used anywhere and remove it.
+
+### Define Component with TypeScript
+
+Example:
+
+```tsx
+interface Props {
+  onChange: (v: string) => void;
+  onClick: VoidFunction; // () => void;
+  initialValue: string;
+}
+
+export default function CheckBox({onChange, onClick, initialValue}: Props) {
+  const [checked, setChecked] = useState<boolean>(false)
+
+  return (
+    <Box>
+      <Checkbox checked={checked} onChange>
+    </Box>
+  )
+}
+```

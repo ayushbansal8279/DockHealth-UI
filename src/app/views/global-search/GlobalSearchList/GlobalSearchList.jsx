@@ -103,6 +103,7 @@ const GlobalSearchList = ({
         sort={false}
         groupHasMultipleAssignees={containsMultipleAssignees}
         isGroupSelected={false}
+        origin={TaskOrigin.GLOBAL}
       />
       <Tasks timeout={150} in={isOpen}>
         {tasks?.map((task) => (

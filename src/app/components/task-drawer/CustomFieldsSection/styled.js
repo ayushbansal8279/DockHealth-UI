@@ -10,7 +10,7 @@ export const CustomFieldsSectionContainer = styled.div`
 
 export const CustomFieldsSectionContainerNoLine = styled.div`
   color: ${palette.coolGrey1};
-  padding: 11px 41px;
+  padding: 0px 32px 0 31px;
 `;
 
 export const HidableContainer = styled.div`

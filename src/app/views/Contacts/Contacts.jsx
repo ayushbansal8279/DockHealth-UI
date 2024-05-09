@@ -11,7 +11,7 @@ import AddButton, {
 import { StyledDataGrid } from './DataGridStyles';
 import { getContactColumns } from './helpers';
 import { ViewContainer } from './styled';
-import ToolbarButton from '@/app/components/tasklist/ToolbarButton/ToolbarButton';
+import ToolbarButton from '@/app/components/tasklist/list-toolbar-buttons/ToolbarButton/ToolbarButton';
 import { AddIcon } from '../smart-flow-builder/TaskNodeHandles/styled';
 
 // const PAGE_SIZE = 30;

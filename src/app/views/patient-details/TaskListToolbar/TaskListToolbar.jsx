@@ -23,15 +23,15 @@ import {
 } from 'selectors/user-selectors';
 import Spacing from 'components/common/Spacing';
 import { TaskStatus } from 'helpers/task-helpers';
-import TaskStatusToolbarSelect from 'components/tasklist/TaskStatusToolbarSelect/TaskStatusToolbarSelect';
-import CustomizeToolbarButton from 'components/tasklist/CustomizeToolbarButton/CustomizeToolbarButton';
-import ToolbarButton from 'components/tasklist/ToolbarButton/ToolbarButton';
 // import { printTaskPdf } from 'components/task-pdf/TaskPdfDocument';
 import ViewTypeIcon from 'img/view-type-icon.svg';
 import * as PatientDetailsActions from 'actions/patient-details-actions';
 import compose from 'ramda/src/compose';
 import equals from 'ramda/src/equals';
 import debounce from 'lodash.debounce';
+import ToolbarButton from '@/app/components/tasklist/list-toolbar-buttons/ToolbarButton/ToolbarButton';
+import CustomizeToolbarButton from '@/app/components/tasklist/list-toolbar-buttons/CustomizeToolbarButton/CustomizeToolbarButton';
+import TaskStatusToolbarSelect from '@/app/components/tasklist/list-toolbar-buttons/TaskStatusToolbarSelect';
 import {
   ListsToolbarContainer,
   ListsTabsContainer,
@@ -39,7 +39,7 @@ import {
 } from './styled';
 import { ListViewType, LIST_TYPE_OPTIONS } from '../helpers';
 import HeaderSearch from '@/app/components/template/HeaderSearch/HeaderSearch';
-import MegaFilter from '@/app/components/tasklist/MegaFilter/MegaFilter';
+import MegaFilter from '@/app/components/tasklist/list-toolbar-buttons/MegaFilter/MegaFilter';
 // import { getPatientFilterOptions } from 'actions/patient-details-actions';
 
 import {
@@ -129,18 +129,14 @@ const TaskListToolbar = (props) => {
     currentOrganization?.themeSettings?.find(
       ({ name }) => name === 'role.viewOnly.patient.view.customize.enabled',
     ) || {};
-  const viewOnlyArchivedTasksEnabled =
+  const viewOnlyArchivedTasksEnabled = !(
     isUserViewOnly(currentUser) &&
     viewOnlyArchivedTasksEnabledItem?.value === 'false'
-      ? // eslint-disable-next-line no-unneeded-ternary
-        false
-      : true;
-  const viewOnlyCustomizeEnabled =
+  );
+  const viewOnlyCustomizeEnabled = !(
     isUserViewOnly(currentUser) &&
     viewOnlyCustomizeEnabledItem?.value === 'false'
-      ? // eslint-disable-next-line no-unneeded-ternary
-        false
-      : true;
+  );
 
   const handleListChange = (event) => {
     history.push(
@@ -343,7 +339,6 @@ const TaskListToolbar = (props) => {
             iconColorActive={iconColorActiveItem?.value}
           />
         )}
-        {/* <Spacing horizontal={3} /> */}
         {viewOnlyArchivedTasksEnabled && (
           <>
             <Spacing horizontal={3} />

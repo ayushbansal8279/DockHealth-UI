@@ -4,6 +4,7 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import { formatEllipsisText } from 'helpers/formatters';
+import { Grid } from '@mui/material';
 
 interface FieldProps {
   label: string;
@@ -27,36 +28,46 @@ const Field: FC<FieldProps> = ({ label, value, ellipsis }) => {
   };
 
   const handleMouseOut = () => {
-    setCopied(false);
+    setTimeout(() => {
+      setCopied(false);
+    }, 400);
   };
 
   return (
-    <Box display="flex" alignItems="center" marginY={1}>
-      <Typography sx={{ width: '120px' }}>{label}</Typography>
-      <Tooltip
-        title={copied ? 'Copied!' : 'Click to Copy'}
-        placement="top"
-        arrow
-        disableInteractive
-        slotProps={{
-          popper: {
-            modifiers: [
-              {
-                name: 'offset',
-                options: {
-                  offset: [0, -10],
+    <>
+      <Grid item xs={12} md={4}>
+        <Typography>{label}</Typography>
+      </Grid>
+      <Grid item xs={12} md={8}>
+        <Tooltip
+          title={copied ? 'Copied!' : 'Click to Copy'}
+          placement="top"
+          arrow
+          disableInteractive
+          slotProps={{
+            popper: {
+              modifiers: [
+                {
+                  name: 'offset',
+                  options: {
+                    offset: [0, -10],
+                  },
                 },
-              },
-            ],
-          },
-        }}
-        onMouseOut={handleMouseOut}
-      >
-        <Button variant="text" onClick={copyToClipboard}>
-          {valueToShow || 'Empty'}
-        </Button>
-      </Tooltip>
-    </Box>
+              ],
+            },
+          }}
+          onMouseOut={handleMouseOut}
+        >
+          <Button
+            variant="text"
+            onClick={copyToClipboard}
+            sx={{ textTransform: 'none' }}
+          >
+            {valueToShow || 'Empty'}
+          </Button>
+        </Tooltip>
+      </Grid>
+    </>
   );
 };
 

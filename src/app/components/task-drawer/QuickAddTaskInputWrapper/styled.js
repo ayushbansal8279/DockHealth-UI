@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { fontSizes, fontWeights } from 'styles/font';
+import { fontSizes } from 'styles/font';
 import palette from 'styles/palette';
 import spacing from 'styles/spacing';
 
@@ -11,7 +11,8 @@ export const AddSubtaskInputWrapper = styled.div`
   height: auto;
   margin-top: ${spacing.small};
   margin-bottom: ${spacing.small};
-  padding: ${spacing.small} ${spacing.regular} ${spacing.none} ${spacing.regular};
+  padding: ${spacing.small} ${spacing.regular} ${spacing.none}
+    ${spacing.regular};
   font-size: ${fontSizes.smallPlus};
   background-color: ${palette.white};
   text-align: left;
@@ -51,9 +52,7 @@ export const AddSubtaskInputWrapper = styled.div`
     transform: translateY(-50%);
     color: ${palette.coolGrey1};
     font-family: 'Outfit', sans-serif;
-    font-weight: ${fontWeights.bold};
     font-size: ${fontSizes.smallPlus};
-    text-transform: uppercase;
     pointer-events: none;
   }
 
@@ -70,13 +69,6 @@ export const AddSubtaskInputWrapper = styled.div`
         &:after {
       visibility: hidden;
    `}
-`;
-
-export const QuickAddHint = styled.p`
-  margin-bottom: 0;
-  color: ${palette.coolGrey1};
-  font-size: ${fontSizes.smallPlus};
-  white-space: nowrap;
 `;
 
 export const ErrorLabel = styled.div`

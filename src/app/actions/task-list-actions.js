@@ -5,16 +5,17 @@ import * as AlertActions from 'alert/actions';
 import * as ActionTypes from 'actions/action-types';
 import AlertMessages from '../alert/AlertMessages';
 
-export function initializeTaskListState(
-  taskListIdentifier,
-  currentTasksStatus,
-) {
+export function initializeTaskListState(taskListIdentifier) {
   return {
     type: ActionTypes.INITIALIZE_TASK_LIST_STATE,
     taskListIdentifier,
-    currentTasksStatus,
   };
 }
+
+export const updateTaskStatusToFilter = (status) => ({
+  type: ActionTypes.UPDATE_TASK_STATUS_TO_FILTER,
+  payload: status,
+});
 
 export function clearTaskListState() {
   return {

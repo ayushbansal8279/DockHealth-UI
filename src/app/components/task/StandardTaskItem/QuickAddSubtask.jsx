@@ -1,9 +1,7 @@
-/* eslint-disable import/extensions */
 import { Box } from '@mui/material';
 import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import Circle from 'img/circle.svg';
-// import { validateNewSubtask } from 'helpers/validation-helper';
 import { onSubtaskAdded } from 'helpers/ga-event-helper';
 import RichTextEditor from 'components/common/RichTextEditor/RichTextEditor';
 import { addSubtask, closeQuickAddSubtask } from 'actions/task-actions';
@@ -19,7 +17,6 @@ const QuickAddSubtask = ({
   onFocus,
   iconColorActive,
   origin,
-  // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const editorReference = useRef(null);
   const [currentValue, setCurrentValue] = useState('');
@@ -37,7 +34,6 @@ const QuickAddSubtask = ({
     setDisabled(false);
     setHasInputValue(false);
 
-    // setCurrentValue('');
     setValueReset(true);
     editorReference.current?.focus();
   };
@@ -55,15 +51,13 @@ const QuickAddSubtask = ({
 
   const handleTextEditorKeyEnter = (value) => {
     onSubtaskAdded('Quick add input');
-    resetInputState()
+    resetInputState();
     dispatch(
       addSubtask(parentTaskIdentifier, {
         description: value,
         taskListIdentifier,
       }),
-    )
-      // .then(resetInputState)
-      .catch(resetInputState);
+    ).catch(resetInputState);
   };
 
   return (

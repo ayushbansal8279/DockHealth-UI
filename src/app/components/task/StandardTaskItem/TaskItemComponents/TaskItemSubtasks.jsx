@@ -23,6 +23,7 @@ const TaskItemSubtasks = ({
   openQuickAddSubtask,
   dispatch,
   origin,
+  isHover,
   // readOnly,
 }) => {
   const onClickAddSubtask = useCallback(
@@ -38,32 +39,32 @@ const TaskItemSubtasks = ({
     !subtasksDisabled &&
     !subTasksCount ? (
     <>
-      {
+      {isHover && (
         <AddSubtaskButton type="button">
-          <AddPlaceholder>
-            <SubtasksCellContentButton
-              // isOpen={isOpen}
-              // disabled={isNestedTask}
-              // isGreyedOut={subtasksDisabled}
-              // onClick={onSubtaskLabelClick}
-              // subtasksDisabled={subtasksDisabled}
-              subTasksCount={subTasksCount}
-              onClick={onClickAddSubtask}
-            >
-              <>
-                <SubtasksCellText>
-                  <div style={{ marginBottom: '3px' }}>+</div>
-                </SubtasksCellText>
-                <Tooltip placement="top" title="Add Subtask">
-                  <span>
-                    <ParentTaskIcon />
-                  </span>
-                </Tooltip>
-              </>
-            </SubtasksCellContentButton>
-          </AddPlaceholder>
+          {/* <AddPlaceholder> */}
+          <SubtasksCellContentButton
+            // isOpen={isOpen}
+            // disabled={isNestedTask}
+            // isGreyedOut={subtasksDisabled}
+            // onClick={onSubtaskLabelClick}
+            // subtasksDisabled={subtasksDisabled}
+            subTasksCount={subTasksCount}
+            onClick={onClickAddSubtask}
+          >
+            <>
+              <SubtasksCellText>
+                <div style={{ marginBottom: '3px' }}>+</div>
+              </SubtasksCellText>
+              <Tooltip placement="top" title="Add Subtask">
+                <span>
+                  <ParentTaskIcon />
+                </span>
+              </Tooltip>
+            </>
+          </SubtasksCellContentButton>
+          {/* </AddPlaceholder> */}
         </AddSubtaskButton>
-      }
+      )}
     </>
   ) : (
     <>

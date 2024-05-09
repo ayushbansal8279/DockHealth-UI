@@ -16,6 +16,11 @@ export const workflowIdentifierSelector = createSelector(
   prop('workflowIdentifier'),
 );
 
+export const commentIdentifierToScrollSelector = createSelector(
+  workflowDrawerStateSelector,
+  prop('commentIdentifierToScroll'),
+);
+
 export const isFetchingWorkflowDetailsSelector = createSelector(
   workflowDrawerStateSelector,
   prop('isFetchingDetails'),
@@ -69,4 +74,10 @@ export const isWorkflowTemplateSelector = createSelector(
 export const workflowLabelsSelector = createSelector(
   workflowDrawerStateSelector,
   prop('labels'),
+);
+
+export const isWorkflowSelectedSelector = createSelector(
+  workflowDrawerStateSelector,
+  (_, workflowId) => workflowId,
+  (state, workflowId) => workflowId && state.workflowIdentifier === workflowId,
 );

@@ -4,10 +4,10 @@ import TaskWorkflowStatus from 'components/task/TaskWorkflowStatus/TaskWorkflowS
 import Tooltip from 'components/common/Tooltip/Tooltip';
 import Highlighter from 'react-highlight-words';
 import {
-  AddPlaceholder,
   StatusName,
   StatusWrapper,
   StatusSubContaioner,
+  PlaceholderText,
 } from '../../styled';
 
 const TaskItemWorkflowStatus = ({
@@ -18,6 +18,7 @@ const TaskItemWorkflowStatus = ({
   highlightedValue,
   showDefaultTaskStatusCompleted,
   readOnly,
+  isStatusHover,
 }) => {
   const statusNameReference = useRef(null);
   const { name } = workflowStatus || {};
@@ -83,9 +84,13 @@ const TaskItemWorkflowStatus = ({
                 )}
               </StatusWrapper>
             ) : (
-              <Tooltip placement="top" title="Add Status">
-                <AddPlaceholder>+ Add Status</AddPlaceholder>
-              </Tooltip>
+              <>
+                {isStatusHover && (
+                  <Tooltip placement="top" title="Add Status">
+                    <PlaceholderText>+ Add Status</PlaceholderText>
+                  </Tooltip>
+                )}
+              </>
             )}
           </StatusSubContaioner>
         </TaskItemPopover>

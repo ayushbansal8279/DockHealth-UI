@@ -18,6 +18,9 @@ export const formatDate = (
   return `${dateLabel} @ ${moment(date).format(timeFormat)}`;
 };
 
+export const capitalize = (str: string) =>
+  str.charAt(0).toUpperCase() + str.toLowerCase().slice(1);
+
 export const formatEllipsisText = (
   text: string | null,
   { startLen = 3, endLen = 3 } = {},

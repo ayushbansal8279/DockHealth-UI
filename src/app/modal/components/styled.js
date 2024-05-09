@@ -1,7 +1,7 @@
 import { Button, IconButton } from '@mui/material';
 import styled from 'styled-components';
 import spacing from 'styles/spacing';
-import palette, { typography } from 'styles/palette';
+import palette from 'styles/palette';
 import { Close } from '@mui/icons-material';
 import { fontSizes, fontWeights } from 'styles/font';
 

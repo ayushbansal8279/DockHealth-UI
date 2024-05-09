@@ -26,9 +26,18 @@ import {
   quickFiltersSelector,
   selectedQuickFilterSelector,
 } from 'selectors/mega-filter-selectors';
+import NewFilterContainer from '../../filter/NewFilterContainer/NewFilterContainer';
+import SaveFilterPopup from '../../filter/SaveFilterPopup/SaveFilterPopup';
 
-const PatientsFilter = () => {
-  const [searchValue, setSearchValue] = useState('');
+const PatientsFilter = ({ closeFilter, filterButtonReference }) => {
+  const [menuOptions, setMenuOption] = useState([]);
+  const [finalFilter, setFinalFilter] = useState({});
+  const [filteredData, setFilteredData] = useState({});
+  const [isSavePopupOpen, setSavePopupOpen] = useState(false);
+  const [editIdentifier, setEditIdentifier] = useState('');
+  const [customFinalFilter, setCustomFinalFilter] = useState({});
+  const [selectedCustomFilter, setSelectedCustomFilter] = useState({});
+  const [customFilteredData, setCustomFilteredData] = useState({});
   const dispatch = useDispatch();
   const filterOptions = useSelector(filterOptionsSelector);
   const selectedFilters = useSelector(patientsSelectedFiltersSelector);
@@ -39,6 +48,12 @@ const PatientsFilter = () => {
   const selectedQuickFilter = useSelector(selectedQuickFilterSelector);
 
   const { organizationIdentifier } = useSelector(organizationSelector);
+
+  useEffect(() => {
+    setMenuOption(
+      filterOptions?.map((item) => ({ label: item.label, id: item.id })),
+    );
+  }, [filterOptions, finalFilter]);
 
   useEffect(() => {
     if (!filterOptions || filterOptions?.length === 0) {
@@ -53,8 +68,9 @@ const PatientsFilter = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleSelectedFiltersChange = (newSelectedFilters) => {
-    dispatch(PatientsActions.setPatientsSelectedFilters(newSelectedFilters));
+  const handleSelectedFiltersChange = () => {
+    dispatch(PatientsActions.setPatientsSelectedFilters(filteredData));
+    closeFilter();
   };
 
   const handleClear = () => {
@@ -68,10 +84,10 @@ const PatientsFilter = () => {
   );
 
   const handleSaveQuickFilter = useCallback(
-    () =>
+    (quickFilterIdentifier, selectedFilters) =>
       dispatch(
         updateQuickFilter(
-          selectedQuickFilter,
+          quickFilterIdentifier,
           {
             selectedOptions: selectedFilters,
           },
@@ -92,12 +108,24 @@ const PatientsFilter = () => {
   );
 
   const handleQuickFilterCreate = useCallback(
-    (name) =>
+    (name,filteredData) =>
       dispatch(
         createQuickFilter(
           name,
           { organizationIdentifier, contextType: quickContextTypes.PATIENTS },
-          selectedFilters,
+          filteredData,
+        ),
+      ),
+    [dispatch, organizationIdentifier, selectedFilters],
+  );
+
+  const handleQuickFilterDuplicateForPatientList = useCallback(
+    (name, updatedFilters) =>
+      dispatch(
+        createQuickFilter(
+          name,
+          { organizationIdentifier, contextType: quickContextTypes.PATIENTS },
+          updatedFilters,
         ),
       ),
     [dispatch, organizationIdentifier, selectedFilters],
@@ -128,7 +156,87 @@ const PatientsFilter = () => {
 
   return (
     <>
-      <FilterHeader
+      <SaveFilterPopup
+        refrence={filterButtonReference}
+        isSavePopupOpen={isSavePopupOpen}
+        setSavePopupOpen={setSavePopupOpen}
+        finalFilter={finalFilter}
+        quickFiltersList={quickFiltersList}
+        onQuickFilterCreate={handleQuickFilterCreate}
+        onQuickFilterUpdate={handleQuickFilterUpdate}
+        setEditIdentifier={setEditIdentifier}
+        editIdentifier={editIdentifier}
+        filters={filterOptions}
+        // onSelectedFiltersChange={onSelectFilters}
+        setFinalFilter={setFinalFilter}
+        setMenuOption={setMenuOption}
+        menuOptions={menuOptions}
+        // openPopover={openPopover}
+        handleSaveQuickFilter={handleSaveQuickFilter}
+        // setFilteredData={setFilteredData}
+        filteredData={filteredData}
+        customFinalFilter={customFinalFilter}
+        selectedCustomFilter={selectedCustomFilter}
+        setCustomFinalFilter={setCustomFinalFilter}
+        // selectedQuickFilter={selectedQuickFilter}
+        // setSelectedQuickFilter={setSelectedQuickFilter}
+        customFilteredData={customFilteredData}
+        setCustomFilteredData={setCustomFilteredData}
+        // selectQuickFilter={selectQuickFilter}
+        isPatientListPage
+        
+      ></SaveFilterPopup>
+      <CustomFilters
+        quickFiltersList={quickFiltersList}
+        addQuickFilterOption={addQuickFilterOption}
+        selectedQuickFilter={selectedQuickFilter}
+        selectQuickFilter={handleSelectQuickFilter}
+        editModeEnabled={false}
+        // onCreate={handleQuickFilterCreate}
+        onUpdate={handleQuickFilterUpdate}
+        onDelete={handleQuickFilterDelete}
+        setSavePopupOpen={setSavePopupOpen}
+        // selectQuickFilter={selectQuickFilter}
+        // onUpdate={onQuickFilterUpdate}
+        // editModeEnabled={wasChangedFilters}
+        onQuickFilterCreate={handleQuickFilterCreate}
+        // onDelete={onQuickFilterDelete}
+        // setMenuOption={setMenuOption}
+        // setFinalFilter={setFinalFilter}
+        filters={filterOptions}
+        setEditIdentifier={setEditIdentifier}
+        editIdentifier={editIdentifier}
+        customFinalFilter={customFinalFilter}
+        setCustomFinalFilter={setCustomFinalFilter}
+        // openPopover={openPopover}
+        // selectedQuickFilter={selectedQuickFilter}
+        // setSelectedQuickFilter={setSelectedQuickFilter}
+        // clearFilters={clearFilters}
+        setSelectedCustomFilter={setSelectedCustomFilter}
+        handleQuickFilterDuplicateForPatientList={handleQuickFilterDuplicateForPatientList}
+        isPatientListPage
+      />
+      <NewFilterContainer
+        filters={filterOptions}
+        // onSelectedFiltersChange={onSelectFilters}
+        setFinalFilter={setFinalFilter}
+        finalFilter={finalFilter}
+        setMenuOption={setMenuOption}
+        menuOptions={menuOptions}
+        // openPopover={openPopover}
+        quickFiltersList={quickFiltersList}
+        setSavePopupOpen={setSavePopupOpen}
+        // onQuickFilterCreate={onQuickFilterCreate}
+        // handleSaveQuickFilter={handleSaveQuickFilter}
+        setFilteredData={setFilteredData}
+        // filteredData={filteredData}
+        customFinalFilter={customFinalFilter}
+        setCustomFinalFilter={setCustomFinalFilter}
+        // setSelectedQuickFilter={setSelectedQuickFilter}
+        handleSelectedFiltersChange={handleSelectedFiltersChange}
+        isPatientListPage
+      ></NewFilterContainer>
+      {/* <FilterHeader
         title="Filter patients"
         filterActive={isFilterApplied}
         selectedFilters={selectedFilters}
@@ -157,7 +265,7 @@ const PatientsFilter = () => {
           onUpdate={handleQuickFilterUpdate}
           onDelete={handleQuickFilterDelete}
         />
-      </FilterTable>
+      </FilterTable> */}
     </>
   );
 };

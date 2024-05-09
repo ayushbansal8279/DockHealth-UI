@@ -1,8 +1,13 @@
-import { CommentDto } from './swagger/models/CommentDto';
+import { IComment } from './Comment';
 import { TaskDto } from './swagger/models/TaskDto';
 
-export type Comment = CommentDto;
-
 export interface Task extends TaskDto {
-  comments?: Comment[];
+  comments?: IComment[];
+}
+
+export interface TaskColumn {
+  identifier: string;
+  _customFieldType: string;
+  isChecked: boolean;
+  columnWidth: number;
 }

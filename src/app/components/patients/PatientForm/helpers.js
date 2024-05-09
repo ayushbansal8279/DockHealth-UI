@@ -5,21 +5,6 @@ import { mixed, string, object } from 'yup';
 const DATE_FORMAT = 'MM/DD/YYYY';
 const REQUIRED_MESSAGE = 'This field is required';
 
-export const GENDER_OPTIONS_BIRTH = [
-  {
-    value: 'male',
-    label: 'Male',
-  },
-  {
-    value: 'female',
-    label: 'Female',
-  },
-  {
-    value: 'decline',
-    label: 'Decline to state',
-  },
-];
-
 export function formatMetaDataOutput(outputData) {
   const metadata = outputData.patientMetaData;
 

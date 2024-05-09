@@ -200,8 +200,6 @@ export const EmptyPeopleResult = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  padding: ${spacing.smallPlus} ${spacing.giga} ${spacing.smallPlus}
-    ${spacing.regularPlus};
   font-family: inherit;
 `;
 

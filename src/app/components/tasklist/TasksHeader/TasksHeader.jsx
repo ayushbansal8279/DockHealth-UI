@@ -2,6 +2,7 @@
 /* eslint-disable no-underscore-dangle */
 import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
+import { Box } from '@mui/material';
 import Checkbox from 'components/common/Checkbox/Checkbox';
 import { SortHeaderRow } from 'components/tasklist/ColumnSortHeader/styled';
 import { TaskItemColumnWidth } from 'helpers/task-helpers';
@@ -27,6 +28,7 @@ import {
   TaskHeaderColumn,
 } from './helpers';
 import ColumnSortHeader from '../ColumnSortHeader/ColumnSortHeader';
+import { TaskScrollVericleLine } from '../../task/styled';
 
 const TasksHeader = ({
   bulkEditEnabled,
@@ -35,7 +37,9 @@ const TasksHeader = ({
   isGroupSelected,
   onGroupSelect,
   pageBackground,
-  isDashboardTaskHeader,
+  listPageGroupHeader,
+  isWidthGreaterThanHundredPercent,
+  origin,
 }) => {
   const taskList = useSelector(currentTaskListSelector);
   const currentUser = useSelector(userProfileSelector);
@@ -118,8 +122,14 @@ const TasksHeader = ({
           ? TaskItemColumnWidth[f.identifier].PRINT ||
             TaskItemColumnWidth[f.identifier].DEFAULT
           : TaskItemColumnWidth[f.identifier];
+      const regularFieldMinimumWidth =
+        typeof TaskItemColumnWidth[f.identifier] === 'object'
+          ? TaskItemColumnWidth[f.identifier].MINIMUM || 0
+          : 0;
       const customPrintWidth =
         customFieldDefaultPrintWidth || regularFieldDefaultPrintWidth;
+
+      const columnWidth = Math.max(f.columnWidth, regularFieldMinimumWidth);
 
       return (
         <ColumnSortHeader
@@ -137,10 +147,10 @@ const TasksHeader = ({
           label={isRegular ? f.label : f.name}
           width={
             index === 0
-              ? +f.columnWidth - 1
+              ? +columnWidth - (origin === 'LIST' ? 1 : 1.5)
               : index === 1
-              ? +f.columnWidth + 1.5
-              : +f.columnWidth
+              ? +columnWidth - (origin === 'LIST' ? 1 : 1.1)
+              : +columnWidth
           }
           snapshot={snapshot}
           sort={sort}
@@ -152,12 +162,13 @@ const TasksHeader = ({
       );
     },
     [
-      handleResizeColumn,
-      onSortChange,
       restrictCustomizationFeatures,
+      origin,
       sort,
-      tasksHeaderTextTransformItem,
-      tasksHeaderTextColorItem,
+      onSortChange,
+      tasksHeaderTextTransformItem?.value,
+      tasksHeaderTextColorItem?.value,
+      handleResizeColumn,
     ],
   );
 
@@ -170,7 +181,9 @@ const TasksHeader = ({
       >
         {(provided, snapshot) => (
           <SortHeaderRow
-            isDashboardTaskHeader={isDashboardTaskHeader}
+            origin={origin}
+            listPageGroupHeader={listPageGroupHeader}
+            isWidthGreaterThanHundredPercent={isWidthGreaterThanHundredPercent}
             ref={provided.innerRef}
             {...provided.droppableProps}
             $width={
@@ -197,7 +210,7 @@ const TasksHeader = ({
                 </BulkContainer>
               )}
               {!bulkEditEnabled && (
-                <BulkContainer style={{ width: '66px' }}>&nbsp;</BulkContainer>
+                <BulkContainer style={{ width: '65px' }}>&nbsp;</BulkContainer>
               )}
               {renderColumn(
                 getTaskHeaderOptions(
@@ -209,6 +222,10 @@ const TasksHeader = ({
                 0,
                 snapshot,
               )}
+              <Box ml="1px" />
+              <TaskScrollVericleLine style={{ marginLeft: '-1.0px' }}>
+                &nbsp;
+              </TaskScrollVericleLine>
             </StickyColumnContainer>
             {columns
               .filter((f) => f.isChecked)

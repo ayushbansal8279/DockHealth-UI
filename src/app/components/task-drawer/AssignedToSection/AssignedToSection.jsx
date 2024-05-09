@@ -23,7 +23,7 @@ import {
   HelperText,
 } from './styled';
 import UserAvatar from 'components/user/UserAvatar/UserAvatar';
-import { Button, TextField } from '@mui/material';
+import { Button, ClickAwayListener, TextField } from '@mui/material';
 import MemberGroup from '../../user/MemberGroup/MemberGroup';
 
 const AssignedToSection = ({ selectedTask = {}, onSave, disabled }) => {
@@ -46,7 +46,7 @@ const AssignedToSection = ({ selectedTask = {}, onSave, disabled }) => {
   }, [assignedToUsers]);
 
   const displayName = (userName) => {
-    return userName.length > 20 ? `${userName.slice(0, 20)} ...` : userName;
+    return userName.length > 16 ? `${userName.slice(0, 16)} ...` : userName;
   };
 
   const handleClearAssignedToUsers = useCallback(() => {
@@ -90,6 +90,8 @@ const AssignedToSection = ({ selectedTask = {}, onSave, disabled }) => {
     height: '40px',
     borderRadius: '4px',
     borderColor: 'transparent',
+    minWidth: '40px',
+    // paddingLeft:'2px',
     backgroundColor: isPopoverOpen ? '#f8f8f9' : 'transparent',
     '&:hover': {
       backgroundColor: '#f8f8f9',
@@ -115,6 +117,69 @@ const AssignedToSection = ({ selectedTask = {}, onSave, disabled }) => {
     <div style={{ display: 'flex' }}>
       <Title>Assign to</Title>
       <AssignMemberContainer>
+        <ClickAwayListener onClickAway={() => setIsOpen(false)}>
+          <div>
+            <Button
+              size="small"
+              placeholder="Add Assignee"
+              variant="outlined"
+              disabled={disabled}
+              sx={ButtonSx}
+              onClick={() => {
+                handleClick();
+              }}
+            >
+              <AssignMemberIcon />
+              {!isPopoverOpen && assignedToUsers?.length === 0 && (
+                <HelperText>Add Assignee</HelperText>
+              )}
+              {isPopoverOpen && (
+                <TextField
+                  autoFocus
+                  inputRef={() => inputRef}
+                  variant="outlined"
+                  disabled={disabled}
+                  // placeholder="Add Assignee"
+                  size="small"
+                  sx={{
+                    backgroundColor: '#f8f8f9',
+                    '& .MuiOutlinedInput-root': {
+                      '& .MuiOutlinedInput-notchedOutline': {
+                        borderColor: 'transparent',
+                      },
+                    },
+                    width: '200px',
+                  }}
+                  inputProps={{
+                    autoComplete: 'off',
+                    value: searchValue,
+                    onChange: handleInputChange,
+                    onClick: handleClick,
+                  }}
+                />
+              )}
+            </Button>
+            {isPopoverOpen && (
+              <PopupContainer width={245}>
+                <MultiAssignMembersList
+                  value={searchValue}
+                  setValue={setSearchValue}
+                  // width={245}
+                  taskDrawer
+                  closePopup={setIsOpen}
+                  taskListIdentifiers={taskListIdentifier}
+                  selectedMembers={assignedToUsersValue}
+                  onSelect={handleAssignToSelection}
+                  enableLazyLoading={
+                    taskList?.listType === 'PUBLIC' ||
+                    taskList?.listType === 'TEMPLATE'
+                  }
+                  additionalMembers={selectedTask?.sharedWithUsers || []}
+                />
+              </PopupContainer>
+            )}
+          </div>
+        </ClickAwayListener>
         {assignedToUsers &&
           assignedToUsers.slice(0, 4).map((user) => (
             <AssigneeContainer>
@@ -128,67 +193,6 @@ const AssignedToSection = ({ selectedTask = {}, onSave, disabled }) => {
             <MemberGroup members={assignedToUsers.slice(4)} size={32} />
           </div>
         )}
-        <div style={{marginLeft:'-2px'}}>
-          <Button
-            size="small"
-            placeholder="Add Assignee"
-            variant="outlined"
-            disabled={disabled}
-            sx={ButtonSx}
-            onClick={() => {
-              handleClick();
-            }}
-          >
-            <AssignMemberIcon />
-            {!isPopoverOpen && assignedToUsers?.length === 0 && (
-              <HelperText>Add Assignee</HelperText>
-            )}
-            {isPopoverOpen && (
-              <TextField
-                autoFocus
-                inputRef={() => inputRef}
-                variant="outlined"
-                disabled={disabled}
-                // placeholder="Add Assignee"
-                size="small"
-                sx={{
-                  backgroundColor: '#f8f8f9',
-                  '& .MuiOutlinedInput-root': {
-                    '& .MuiOutlinedInput-notchedOutline': {
-                      borderColor: 'transparent',
-                    },
-                  },
-                  width: '200px',
-                }}
-                inputProps={{
-                  autoComplete: 'off',
-                  value: searchValue,
-                  onChange: handleInputChange,
-                  onClick: handleClick,
-                }}
-              />
-            )}
-          </Button>
-          {isPopoverOpen && (
-            <PopupContainer width={245}>
-              <MultiAssignMembersList
-                value={searchValue}
-                setValue={setSearchValue}
-                // width={245}
-                taskDrawer
-                closePopup={setIsOpen}
-                taskListIdentifiers={taskListIdentifier}
-                selectedMembers={assignedToUsersValue}
-                onSelect={handleAssignToSelection}
-                enableLazyLoading={
-                  taskList?.listType === 'PUBLIC' ||
-                  taskList?.listType === 'TEMPLATE'
-                }
-                additionalMembers={selectedTask?.sharedWithUsers || []}
-              />
-            </PopupContainer>
-          )}
-        </div>
       </AssignMemberContainer>
     </div>
   );

@@ -7,7 +7,7 @@ import React, {
 } from 'react';
 import Highlighter from 'react-highlight-words';
 import * as OrganizationApi from 'api/organization-api';
-import { arrayOf, func, oneOfType, shape, string } from 'prop-types';
+import { arrayOf, func, oneOfType, shape, string, bool } from 'prop-types';
 import debounce from 'lodash.debounce';
 import UserAvatar from 'components/user/UserAvatar/UserAvatar';
 import MagnifierIcon from 'img/magnifier.svg';
@@ -24,6 +24,7 @@ import GroupAvatar from 'components/user/GroupAvatar/GroupAvatar';
 import { getUsersByName } from 'api/user-api';
 import { organizationSelector } from 'selectors/organization-selectors';
 import Button from 'components/common/v2/Button/Button';
+import { removeArr } from 'helpers/array-helpers';
 import {
   Input,
   InputBox,
@@ -50,6 +51,7 @@ const YouBadge = () => {
 const MultiAssignMembersList = ({
   taskListIdentifiers,
   selectedMembers: savedSelectedMembers,
+  isBulkTasks = false,
   onSelect,
   onError,
   closeModel,
@@ -79,7 +81,7 @@ const MultiAssignMembersList = ({
 
   useEffect(() => {
     if (taskDrawer) setSearchValue(value);
-  }, [value]);
+  }, [taskDrawer, value]);
 
   const filteredMembers = useMemo(
     () =>
@@ -97,17 +99,10 @@ const MultiAssignMembersList = ({
             );
             return (
               !isSelected &&
-              name.toLowerCase().includes(searchValue.toLowerCase()) //&&
-              // identifier !== currentUser?.identifier
+              name.toLowerCase().includes(searchValue.toLowerCase())
             );
           }),
-    [
-      enableLazyLoading,
-      membersOptions,
-      selectedMembers,
-      searchValue,
-      currentUser,
-    ],
+    [enableLazyLoading, membersOptions, selectedMembers, searchValue],
   );
 
   const filteredSelectedMembers = useMemo(
@@ -133,13 +128,46 @@ const MultiAssignMembersList = ({
 
   const inputReference = useRef(null);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const selectMembersWithDebounce = useCallback(
-    debounce((selection) => {
-      onSelect(selection.map((s) => ({ ...s, userIdentifier: s.identifier })));
-      // eslint-disable-next-line no-unused-expressions
-      inputReference.current?.focus();
+    debounce((newSelectedMembers, selectedOption) => {
+      // NOTE: BulkTasks case and SingleTask case use different API calls,
+      // so the logic here is totally different.
+      if (isBulkTasks) {
+        if (selectedOption === UNASSIGNED_KEY) {
+          onSelect(null, 'unassign_all');
+          return;
+        }
+
+        if (selectedMembers.length > newSelectedMembers.length) {
+          // unassigned a user
+          const unassignedMembers = removeArr(
+            selectedMembers,
+            newSelectedMembers,
+            'userIdentifier',
+          );
+          onSelect(unassignedMembers, 'unassignment');
+          return;
+        }
+
+        // assigned a new user
+        const assignedMembers = removeArr(
+          newSelectedMembers,
+          selectedMembers,
+          'userIdentifier',
+        );
+        onSelect(assignedMembers, 'assignment');
+        return;
+      }
+
+      onSelect(
+        newSelectedMembers.map((s) => ({
+          ...s,
+          userIdentifier: s.identifier,
+        })),
+      );
     }, 700),
-    [],
+    [selectedMembers],
   );
 
   useEffect(() => {
@@ -216,7 +244,7 @@ const MultiAssignMembersList = ({
       } else if (selectedOption === UNASSIGNED_KEY) {
         membersToReturn = [];
       } else if (
-        selectedMembers.find(
+        selectedMembers.some(
           ({ identifier }) => selectedOption?.identifier === identifier,
         )
       ) {
@@ -226,18 +254,18 @@ const MultiAssignMembersList = ({
       } else {
         membersToReturn = [...selectedMembers, selectedOption];
       }
-      selectMembersWithDebounce(membersToReturn);
+      selectMembersWithDebounce(membersToReturn, selectedOption);
+      inputReference.current?.focus();
       setSelectedMembers(membersToReturn);
     },
     [membersOptions, selectMembersWithDebounce, selectedMembers],
   );
 
-  const handleOptionSendClick = () => {
+  const handleClose = () => {
     if (taskDrawer) {
       closePopup(false);
       setValue('');
     }
-    selectMembersWithDebounce(selectedMembers);
     closeModel();
   };
 
@@ -258,6 +286,49 @@ const MultiAssignMembersList = ({
     isFetchingMembers,
     isValueSendable,
   ]);
+
+  const renderUnassignedOption = (
+    <MemberRow
+      key={UNASSIGNED_KEY}
+      isSelected={selectedMembers?.length === 0}
+      onClick={(event) => handleOptionClick(event, UNASSIGNED_KEY)}
+    >
+      <CheckboxSpacing />
+      <Spacing horizontal={3} />
+      <UnassignedIcon />
+      <Spacing horizontal={3} />
+      <MemberName>
+        <Highlighter
+          highlightStyle={highlightStyle}
+          searchWords={searchValue?.toLowerCase().split(/\s+/)}
+          autoEscape
+          textToHighlight="Unassigned"
+        />
+      </MemberName>
+    </MemberRow>
+  );
+
+  const renderAssignAllOption = (
+    <MemberRow
+      key={ASSIGN_ALL_KEY}
+      isSelected={selectedMembers?.length === membersOptions?.length}
+      onClick={(event) => handleOptionClick(event, ASSIGN_ALL_KEY)}
+    >
+      <CheckboxSpacing />
+      <Spacing horizontal={3} />
+      <AssignMemberIcon />
+      <Spacing horizontal={3} />
+      <MemberName>
+        <Highlighter
+          highlightStyle={highlightStyle}
+          searchWords={searchValue?.toLowerCase().split(/\s+/)}
+          autoEscape
+          textToHighlight="Assign All"
+        />
+        &nbsp;({+membersOptions.length})
+      </MemberName>
+    </MemberRow>
+  );
 
   const renderSelectOption = useCallback(
     (member, isSelected, extra) => {
@@ -299,6 +370,13 @@ const MultiAssignMembersList = ({
       .includes(searchValue.toLowerCase());
   }, [currentUserMember, enableLazyLoading, isValueSendable, searchValue]);
 
+  const renderCurrentUserOption = () => {
+    const isSelected = !!selectedMembers.some(
+      ({ identifier }) => identifier === currentUserMember?.identifier,
+    );
+    return renderSelectOption(currentUserMember, isSelected, <YouBadge />);
+  };
+
   return (
     <div style={{ width: `${width}` }}>
       {taskDrawer ? (
@@ -316,66 +394,14 @@ const MultiAssignMembersList = ({
       <ListContainer>
         {(displayAssignAllOption || displayUnassignedOption) && (
           <ListContentSection>
-            {displayCurrentUser &&
-              (function renderCurrentUserOption() {
-                const isSelected = !!selectedMembers.some(
-                  ({ identifier }) =>
-                    identifier === currentUserMember?.identifier,
-                );
-                return renderSelectOption(
-                  currentUserMember,
-                  isSelected,
-                  <YouBadge />,
-                );
-              })()}
-            {displayUnassignedOption && (
-              <MemberRow
-                key={UNASSIGNED_KEY}
-                isSelected={selectedMembers?.length === 0}
-                onClick={(event) => handleOptionClick(event, UNASSIGNED_KEY)}
-              >
-                <CheckboxSpacing />
-                <Spacing horizontal={3} />
-                <UnassignedIcon />
-                <Spacing horizontal={3} />
-                <MemberName>
-                  <Highlighter
-                    highlightStyle={highlightStyle}
-                    searchWords={searchValue?.toLowerCase().split(/\s+/)}
-                    autoEscape
-                    textToHighlight="Unassigned"
-                  />
-                </MemberName>
-              </MemberRow>
-            )}
+            {displayCurrentUser && renderCurrentUserOption()}
+            {displayUnassignedOption && renderUnassignedOption}
             {displayAssignAllOption && membersOptions?.length > 0 && (
               <>
                 {isFetchingMembers ? (
                   <MemberRowSkeletonLoader />
                 ) : (
-                  <MemberRow
-                    key={ASSIGN_ALL_KEY}
-                    isSelected={
-                      selectedMembers?.length === membersOptions?.length
-                    }
-                    onClick={(event) =>
-                      handleOptionClick(event, ASSIGN_ALL_KEY)
-                    }
-                  >
-                    <CheckboxSpacing />
-                    <Spacing horizontal={3} />
-                    <AssignMemberIcon />
-                    <Spacing horizontal={3} />
-                    <MemberName>
-                      <Highlighter
-                        highlightStyle={highlightStyle}
-                        searchWords={searchValue?.toLowerCase().split(/\s+/)}
-                        autoEscape
-                        textToHighlight="Assign All"
-                      />
-                      &nbsp;({+membersOptions.length})
-                    </MemberName>
-                  </MemberRow>
+                  renderAssignAllOption
                 )}
               </>
             )}
@@ -413,8 +439,8 @@ const MultiAssignMembersList = ({
           )}
       </ListContainer>
       <div style={{ padding: '5px' }}>
-        <Button variant="primary-red" onClick={handleOptionSendClick}>
-          Apply
+        <Button variant="primary-red" onClick={handleClose}>
+          Assign Users
         </Button>
       </div>
     </div>
@@ -434,6 +460,7 @@ MultiAssignMembersList.propTypes = {
     }),
   ).isRequired,
   onSelect: func.isRequired,
+  isBulkTasks: bool,
   onError: func,
   additionalMembers: arrayOf(
     shape({
@@ -449,6 +476,7 @@ MultiAssignMembersList.propTypes = {
 
 MultiAssignMembersList.defaultProps = {
   onError: null,
+  isBulkTasks: false,
 };
 
 export default MultiAssignMembersList;

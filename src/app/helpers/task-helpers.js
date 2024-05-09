@@ -15,8 +15,15 @@ import unless from 'ramda/src/unless';
 import palette from 'styles/palette';
 
 export const TaskStatus = {
+  ALL: '',
   INCOMPLETE: 'INCOMPLETE',
   COMPLETE: 'COMPLETE',
+};
+
+export const TaskStatusLabel = {
+  [TaskStatus.ALL]: 'All Tasks',
+  [TaskStatus.INCOMPLETE]: 'Incomplete Tasks',
+  [TaskStatus.COMPLETE]: 'Completed Tasks',
 };
 
 export const TaskItemType = {
@@ -64,10 +71,6 @@ export function getPriorityColor(priority) {
     }
     case TaskPriority.MEDIUM:
       return palette.orangeJulius;
-    // case TaskPriority.LOW:
-    //   return palette.bananaHammock;
-    // case TaskPriority.NONE:
-    // eslint-disable-next-line unicorn/no-useless-switch-case
     case TaskPriority.LOW:
     default: {
       return 'transparent';
@@ -208,14 +211,29 @@ export const PatientTaskItemColumn = {
 };
 
 export const TaskItemColumnWidth = {
-  [TaskItemColumn.DUE_DATE]: 78,
-  [TaskItemColumn.CREATED_DATE]: 115,
-  [TaskItemColumn.START_DATE]: 78,
-  [TaskItemColumn.ANCHOR_DATE]: 78,
+  [TaskItemColumn.DUE_DATE]: {
+    DEFAULT: 115,
+    MINIMUM: 105,
+  },
+  [TaskItemColumn.START_DATE]: {
+    DEFAULT: 115,
+    MINIMUM: 105,
+  },
+  [TaskItemColumn.ANCHOR_DATE]: {
+    DEFAULT: 115,
+    MINIMUM: 105,
+  },
   [TaskItemColumn.COMMENTS]: 100,
   [TaskItemColumn.LABELS]: 100,
   [TaskItemColumn.FILES]: 100,
-  [TaskItemColumn.COMPLETED_DATE]: 150,
+  [TaskItemColumn.CREATED_DATE]: {
+    DEFAULT: 150,
+    MINIMUM: 170,
+  },
+  [TaskItemColumn.COMPLETED_DATE]: {
+    DEFAULT: 150,
+    MINIMUM: 170,
+  },
   [TaskItemColumn.ELAPSED_TIME]: 150,
   [TaskItemColumn.COMPLETED_BY]: 150,
   [TaskItemColumn.ACTIVITY]: 150,

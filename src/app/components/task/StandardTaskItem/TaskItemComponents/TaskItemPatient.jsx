@@ -15,6 +15,7 @@ import {
   DisabledLink,
   DisabledPatientLabel,
   PatientPrintAdditionalInfo,
+  PlaceholderText,
 } from '../../styled';
 import Tooltip from '@/app/components/common/Tooltip/Tooltip';
 
@@ -32,6 +33,7 @@ const TaskItemPatient = ({
   currentUser,
   readOnly,
   origin,
+  isPatientHover,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const { pathname } = useLocation();
@@ -95,14 +97,16 @@ const TaskItemPatient = ({
             hasSubtasks={hasSubtasks}
             origin={origin}
           >
-            <Tooltip
-              placement="top"
-              title={`Add ${customerTypeLabelCapitalized}`}
-            >
-              <AddPlaceholder>
-                + Add {customerTypeLabelCapitalized}
-              </AddPlaceholder>
-            </Tooltip>
+            {isPatientHover && (
+              <Tooltip
+                placement="top"
+                title={`Add ${customerTypeLabelCapitalized}`}
+              >
+                <PlaceholderText>
+                  + Add {customerTypeLabelCapitalized}
+                </PlaceholderText>
+              </Tooltip>
+            )}
           </PatientDropdown>
         )}
       {!readOnly &&

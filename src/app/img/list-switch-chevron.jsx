@@ -2,7 +2,7 @@ import React from 'react';
 import palette from 'styles/palette';
 
 const ListSwitchChevron = ({
-  color = palette.dirtyBananam,
+  color = palette.dirtyBanana,
   height = 7,
   width = 10,
 }) => (

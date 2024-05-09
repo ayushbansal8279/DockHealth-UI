@@ -10,6 +10,7 @@
  * Do not edit the class manually.
  */
 
+import { TaskDto } from '../models/TaskDto';
 import { TaskTemplateMember } from '../models/TaskTemplateMember';
 import { TaskWorkflowStatusDto } from '../models/TaskWorkflowStatusDto';
 import { UserSummaryDto } from '../models/UserSummaryDto';
@@ -27,6 +28,7 @@ export class TaskTemplateDto {
     'parentTaskWorkflowIdentifier'?: string;
     'priority'?: TaskTemplateDtoPriorityEnum;
     'publicAccess'?: boolean;
+    'tasks'?: Array<TaskDto>;
     'templateType'?: TaskTemplateDtoTemplateTypeEnum;
     'tokenizedDescription'?: string;
     'workflowStatus'?: TaskWorkflowStatusDto;
@@ -99,6 +101,12 @@ export class TaskTemplateDto {
             "name": "publicAccess",
             "baseName": "publicAccess",
             "type": "boolean",
+            "format": ""
+        },
+        {
+            "name": "tasks",
+            "baseName": "tasks",
+            "type": "Array<TaskDto>",
             "format": ""
         },
         {

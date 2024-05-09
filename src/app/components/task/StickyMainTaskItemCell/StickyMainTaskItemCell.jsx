@@ -40,29 +40,23 @@ const StickyMainTaskItemCell = styled.div`
         : '54.5px'
       : '24px'};
   ${({ order }) => (order ? `order: ${order};` : '')}
-  border-left: 1px solid
+  border-left: 2px solid
     ${({ isWorkflowtask, isTamplateGroup }) =>
     isWorkflowtask || isTamplateGroup
       ? 'rgba(75, 179, 253, 1)'
       : `${palette.coolGrey3}`};
-  border-right: ${({ isWorkflowtask, isTamplateGroup, isWorkflowSubtask }) =>
-    isWorkflowtask || !isTamplateGroup || isWorkflowSubtask
-      ? ''
-      : `1px solid ${palette.coolGrey3};`};
-  margin-left: ${({ isTamplateGroup }) => (isTamplateGroup ? '-1px;' : '')};
+  margin-left: ${({ isTamplateGroup }) => (isTamplateGroup ? '1px;' : '0px')};
   align-items: center;
   padding-left: ${spacing.smallPlus};
   z-index: ${({ isEditingDescription }) =>
     isEditingDescription ? '12' : '11'};
 
   border-top-left-radius: ${({ isTamplateGroup }) =>
-    isTamplateGroup ? '7px' : ''};
-  border-bottom-left-radius: ${({ isTamplateGroup, isOpen }) =>
-    isTamplateGroup && !isOpen ? '7px' : ''};
+    isTamplateGroup ? '3px' : ''};
+  border-bottom-left-radius: ${({ isTamplateGroup }) =>
+    isTamplateGroup ? '1px' : ``};
   border-bottom-left-radius: ${({ isWorkflowtask, isLastChild }) =>
-    isWorkflowtask && isLastChild ? '5.5px' : ``};
-  border-bottom-right-radius: ${({ isWorkflowtask, isLastChild }) =>
-    isWorkflowtask && isLastChild ? '7px' : ``};
+    isWorkflowtask && isLastChild ? '1px' : ``};
 
   background-color: ${(props) =>
     props.isSelected
@@ -71,9 +65,7 @@ const StickyMainTaskItemCell = styled.div`
       props.hasEscalations
       ? palette.bananaHammockLight
       : // eslint-disable-next-line unicorn/no-nested-ternary
-      props.customHighlight
-      ? props.customHighlight
-      : palette.white};
+      props.customHighlight ?? palette.white};
 
   &::before {
     content: '';
@@ -82,9 +74,9 @@ const StickyMainTaskItemCell = styled.div`
       backgroundColor || palette.coolGrey4};
     position: absolute;
     left: -101px;
-    top: -1px;
+    top: -3px;
     width: 100px;
-    height: calc(100% + 2px);
+    height: calc(100% + 4px);
     z-index: -1;
 
     @media print {
@@ -112,7 +104,7 @@ const StickyMainTaskItemCell = styled.div`
   }
 
   &:hover {
-    border-left: 1px solid
+    border-left: 2px solid
       ${({ isWorkflowtask, isTamplateGroup }) =>
         isWorkflowtask || isTamplateGroup
           ? 'rgba(75, 179, 253, 1)'
