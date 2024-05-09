@@ -80,19 +80,34 @@ Also if you add a new component and the old component is no longer in use, make 
 Example:
 
 ```tsx
+import React, { useState, ChangeEvent } from 'react';
+import { Box, Button, Checkbox, TextField } from '@mui/material';
+
 interface Props {
-  onChange: (v: string) => void;
+  text?: string;
+  onTextChange: (v: string) => void;
   onClick: VoidFunction; // () => void;
-  initialValue: string;
 }
 
-export default function CheckBox({onChange, onClick, initialValue}: Props) {
-  const [checked, setChecked] = useState<boolean>(false)
+export default function Example({ text = '', onTextChange, onClick }: Props) {
+  const [checked, setChecked] = useState<boolean>(false);
+
+  const handleCheckedChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setChecked(e.target.checked);
+  };
+
+  const handleChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
+    onTextChange(e.target.value);
+  };
 
   return (
     <Box>
-      <Checkbox checked={checked} onChange>
+      <Checkbox checked={checked} onChange={handleCheckedChange} />
+      <TextField value={text} onChange={handleChange} />
+      <Button onClick={onClick}>Click Me</Button>
     </Box>
-  )
+  );
 }
 ```
