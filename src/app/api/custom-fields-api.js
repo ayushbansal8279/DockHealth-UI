@@ -8,7 +8,7 @@ export function getAllPatientCustomFields(active = true, patientIdentifier) {
     .then(({ data }) => data);
 }
 
-export function getAllTaskListCustomFields(taskListIdentifier) {
+export function getAllTaskListCustomFields(taskListIdentifier = 'ALL') {
   return axios
     .get(`custom/field/getAll/TASK`, {
       params: { taskListIdentifier },
