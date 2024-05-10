@@ -29,7 +29,7 @@ export const StickyColumnContainer = styled.div`
   `}
   position: sticky;
   display: flex;
-  // left: 24px;
+  left: 24px;
   z-index: 11;
   border-left: 1px solid ${palette.coolGrey3};
 
