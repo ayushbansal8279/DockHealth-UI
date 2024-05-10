@@ -196,13 +196,20 @@ function* applyTemplate({
   }
 }
 
-function* getTasksForWorkflow({ workflowIdentifier }) {
+function* getTasksForWorkflow({ workflowIdentifier, status }) {
   try {
     const { tasks } = yield call(WorkflowApi.getWorkflow, workflowIdentifier);
+    const statusToSelect = status || 'ALL';
+
+    const tasksBasedOnStatus =
+      statusToSelect === 'ALL'
+        ? tasks
+        : tasks.filter((task) => task.status === statusToSelect);
+
     yield put({
       type: ActionTypes.GET_TASKS_FOR_WORKFLOW_SUCCESS,
       workflowIdentifier,
-      tasks,
+      tasks: tasksBasedOnStatus,
     });
   } catch {
     yield put({
