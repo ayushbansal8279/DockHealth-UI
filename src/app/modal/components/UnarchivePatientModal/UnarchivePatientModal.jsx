@@ -17,7 +17,9 @@ import {
   ModalDescriptionContainer,
   ButtonsContainer,
   FlexButtonWrapper,
+  ModalHeaderName,
 } from '../styled';
+import { CancelButton, ConfirmButton } from '../ModalButton/ModalButtons';
 
 const UnarchivePatientModal = ({ closeModal, confirm }) => {
   const currentUser = useSelector(userProfileSelector);
@@ -29,37 +31,21 @@ const UnarchivePatientModal = ({ closeModal, confirm }) => {
       <ModalWrapper>
         <ModalIconContainer>
           <ModalMainIcon src={RedFolder} alt="red-folder" />
-          <Typography color="textPrimary" variant="h2">
+          <ModalHeaderName>
             Restore {customerTypeLabelCapitalized}
-          </Typography>
+          </ModalHeaderName>
         </ModalIconContainer>
         <ModalDescriptionContainer>
-          <Typography variant="body1">
-            Are you sure you want to restore this {customerTypeLabel}?
-          </Typography>
+          Are you sure you want to restore this {customerTypeLabel}?
         </ModalDescriptionContainer>
         <ButtonsContainer>
-          <FlexButtonWrapper>
-            <Button
-              fullWidth
-              variant="secondary-red"
-              size="small"
-              onClick={closeModal}
-            >
-              Do not restore
-            </Button>
-          </FlexButtonWrapper>
+          <CancelButton style={{ width: '180px' }} onClick={closeModal}>
+            Do Not Restore
+          </CancelButton>
           <Spacing horizontal={4} />
-          <FlexButtonWrapper>
-            <Button
-              fullWidth
-              variant="primary-red"
-              size="small"
-              onClick={confirm}
-            >
-              Restore
-            </Button>
-          </FlexButtonWrapper>
+          <ConfirmButton style={{ width: '180px' }} onClick={confirm}>
+            Restore
+          </ConfirmButton>
         </ButtonsContainer>
       </ModalWrapper>
     </MuiThemeProvider>

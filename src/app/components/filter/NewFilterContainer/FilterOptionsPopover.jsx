@@ -1,5 +1,5 @@
-import React, { useMemo, useCallback, useEffect } from 'react';
-import { MenuItem, Popover } from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import { Input, MenuItem, Popover } from '@mui/material';
 import {
   FilterOptionsList,
   FilterOptionsListContainer,
@@ -16,9 +16,18 @@ const FilterOptionsPopover = ({
   onSearchChange,
   getTemplatesList,
 }) => {
+  const [filterOptionLists, setFilterOptionList] = useState(filterOptionsList);
+
   useEffect(() => {
-    if (!open && searchPhrase !== '') onSearchChange('');
-  }, [onSearchChange, open, searchPhrase]);
+    setFilterOptionList(filterOptionsList);
+  }, [filterOptionsList]);
+
+  const handleFilterListSearch = (event) => {
+    const filteredList = filterOptionsList.filter((item) =>
+      item.label.toLowerCase().includes(event.target.value.toLowerCase()),
+    );
+    setFilterOptionList(filteredList);
+  };
 
   return (
     <Popover
@@ -44,20 +53,16 @@ const FilterOptionsPopover = ({
       onEnter={getTemplatesList}
       onClose={onClose}
     >
-      {/* <SearchContainer isWorkFlowSearch={isWorkflowSearch}>
-        <Search
-          fullWidth
-          noBackground
-          value={searchPhrase}
-          onChange={(event) => onSearchChange(event?.target?.value)}
-          placeholder="Search"
-          isWorkFlowSearch={isWorkflowSearch}
-        />
-      </SearchContainer> */}
+      <Input
+        fullWidth
+        placeholder="Search"
+        sx={{ padding: '5px 10px 5px 15px' }}
+        onChange={handleFilterListSearch}
+      />
       <SelectOptionsContainer>
         <FilterOptionsListContainer>
           <FilterOptionsList>
-            {filterOptionsList?.map((option) => (
+            {filterOptionLists?.map((option) => (
               <MenuItem
                 onClick={() => onFilterSelect(option.id)}
                 value={option.id}
@@ -70,9 +75,6 @@ const FilterOptionsPopover = ({
                 {option.label}
               </MenuItem>
             ))}
-            {/* {!taskTemplatesIsLoading && taskTemplatesList?.length === 0 && (
-              <EmptyLabel>There are no workflows to select from</EmptyLabel>
-            )} */}
           </FilterOptionsList>
         </FilterOptionsListContainer>
       </SelectOptionsContainer>

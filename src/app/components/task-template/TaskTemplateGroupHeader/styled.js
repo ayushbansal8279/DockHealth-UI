@@ -54,6 +54,7 @@ export const TaskTemplateGroupHeaderContainer = styled.div`
     props.isSelected ? palette.dockBlueLight : palette.white};
 
   border-top: 2px solid rgba(75, 179, 253, 1);
+  margin-left: -1px;
   margin-top: 10px;
   margin-bottom: ${({
     isOpen,
@@ -76,9 +77,6 @@ export const TaskTemplateGroupHeaderContainer = styled.div`
       isOpen ? `${palette.coolGrey3}` : 'rgba(75, 179, 253, 1)'};
   border-right: 1px solid rgba(75, 179, 253, 1);
   z-index: 2;
-
-  border-radius: 5px 5px ${({ isOpen }) => (isOpen ? `0px` : '5px')}
-    ${({ isOpen }) => (isOpen ? `0px` : '5px')};
 
   &:hover {
     & ${TemplateHandle}, ${AddPlaceholder} {
@@ -121,15 +119,14 @@ export const ActionIconsContainer = styled.div`
   display: flex;
   position: relative;
   height: -webkit-fill-available;
-  width: -webkit-fill-available;
+  width: 78px;
   align-items: center;
+  padding-left: 8px;
   margin-left: -12px;
-  margin-right: -1px;
+  margin-right: 0px;
   background-color: ${palette.lightOceanBlue};
 
   border: 5px solid ${palette.lightOceanBlue};
-  border-top-left-radius: 5px;
-  border-bottom-left-radius: ${({ isOpen }) => (!isOpen ? '2px;' : '')};
 
   border-right: 1px solid ${palette.coolGrey3};
 `;

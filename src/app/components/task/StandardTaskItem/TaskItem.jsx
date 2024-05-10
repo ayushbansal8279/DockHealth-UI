@@ -799,17 +799,22 @@ const TaskItem = React.memo(
     };
 
     const randerFirstColumnCoverIfNecessary = useCallback(
-      (content, order) => {
+      (content, order, width) => {
         if (order !== 0) return content;
+        const indentSubTask =
+          !(
+            origin === TaskOrigin.DASHBOARD ||
+            (!!selectedFilters && Object.keys(selectedFilters).length > 0) ||
+            !!searchValue ||
+            !!sort.key
+          ) ?? false;
         return (
           <StickyMainTaskItemCell
             isLastChild={isLastChild}
             isWorkflowtask={isTaskTemplate}
             customWidthExists
             order={0}
-            isSubtask={
-              origin === TaskOrigin.PATIENT ? showSubtaskStylingLink : isSubtask
-            }
+            isSubtask={indentSubTask ? isSubtask : false}
             newlyCreated={newlyCreated}
             backgroundColor={pageBackground}
             isSelected={isSelected}
@@ -825,6 +830,7 @@ const TaskItem = React.memo(
                 : !!selectedFilters
             }
             isSortApplied={!!sort.key}
+            width={width + 25 + 56}
           >
             {taskListRestrictions?.createTask !== DISABLED && (
               <DotsContainer
@@ -905,6 +911,7 @@ const TaskItem = React.memo(
                   }
                 />
               </Tooltip>
+              <Box ml="10px" />
               {/* </Tooltip> */}
             </ActionIconsContainer>
             {content}
@@ -913,22 +920,35 @@ const TaskItem = React.memo(
         );
       },
       [
+        isLastChild,
+        isTaskTemplate,
+        origin,
         showSubtaskStylingLink,
+        isSubtask,
         newlyCreated,
         pageBackground,
         isSelected,
         hasEscalations,
         customHighlight,
         isEditingDescription,
+        isWorkflowSubtask,
+        searchValue,
+        selectedFilters,
+        sort.key,
         taskListRestrictions?.createTask,
         taskListRestrictions?.completeTask,
         dragHandleProps,
         showPriority,
         task?.priority,
+        task?.completedBy?.firstName,
+        task?.completedBy?.lastName,
+        task.completedDt,
         isLast,
         bulkEditEnabled,
         onClickBulkEdit,
         isCompleted,
+        tooltipsOpen,
+        showCircleIconOnHover,
         isTaskStatusTogglingDisabled,
         isDependencyEmptyOrCompleted,
         onCircleClick,
@@ -1013,24 +1033,24 @@ const TaskItem = React.memo(
             {randerFirstColumnCoverIfNecessary(
               <>
                 <MainStandardTaskItemCell
-                  width={
-                    columns?.find(
-                      ({ identifier }) =>
-                        identifier === TaskItemColumn.DESCRIPTION,
-                    )?.columnWidth -
-                    (isSubtask &&
-                    (origin === 'LIST' &&
-                    ((!!selectedFilters
-                      ? Object.keys(selectedFilters).length > 0
-                      : !!selectedFilters) ||
-                      !!searchValue ||
-                      !!sort.key)
-                      ? hasParentTaskLabel
-                      : !hasParentTaskLabel) &&
-                    descriptionColumnOrder === 0
-                      ? 36
-                      : 0)
-                  }
+                  // width={
+                  //   columns?.find(
+                  //     ({ identifier }) =>
+                  //       identifier === TaskItemColumn.DESCRIPTION,
+                  //   )?.columnWidth -
+                  //   (isSubtask &&
+                  //   (origin === 'LIST' &&
+                  //   ((!!selectedFilters
+                  //     ? Object.keys(selectedFilters).length > 0
+                  //     : !!selectedFilters) ||
+                  //     !!searchValue ||
+                  //     !!sort.key)
+                  //     ? hasParentTaskLabel
+                  //     : !hasParentTaskLabel) &&
+                  //   descriptionColumnOrder === 0
+                  //     ? 36
+                  //     : 0)
+                  // }
                   order={getColumnOrder(TaskItemColumn.DESCRIPTION)}
                   bolded
                   paddingLeft="smallPlus"
@@ -1149,6 +1169,9 @@ const TaskItem = React.memo(
                 </MainStandardTaskItemCell>
               </>,
               getColumnOrder(TaskItemColumn.DESCRIPTION),
+              columns?.find(
+                ({ identifier: id }) => id === TaskItemColumn.DESCRIPTION,
+              )?.columnWidth,
             )}
 
             {isColumnChecked(columns, TaskItemColumn.PATIENT) && (

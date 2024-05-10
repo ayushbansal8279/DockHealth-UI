@@ -13,7 +13,9 @@ import {
   ModalDescriptionContainer,
   ButtonsContainer,
   FlexButtonWrapper,
+  ModalHeaderName,
 } from '../styled';
+import { CancelButton, ConfirmButton } from '../ModalButton/ModalButtons';
 
 const LeaveOrganizationModal = ({ closeModal, confirm }) => {
   return (
@@ -21,38 +23,20 @@ const LeaveOrganizationModal = ({ closeModal, confirm }) => {
       <ModalWrapper>
         <ModalIconContainer>
           <ModalMainIcon src={ExitIcon} alt="Task" />
-          <Typography color="textSecondary" variant="h2">
-            LEAVE ORGANIZATION
-          </Typography>
+          <ModalHeaderName>Leave Organization</ModalHeaderName>
         </ModalIconContainer>
         <ModalDescriptionContainer>
-          <Typography variant="body1">
-            You’re about to leave this Organization and will need to be invited
-            by a member to rejoin.
-          </Typography>
+          You’re about to leave this Organization and will need to be invited by
+          a member to rejoin.
         </ModalDescriptionContainer>
         <ButtonsContainer>
-          <FlexButtonWrapper>
-            <Button
-              fullWidth
-              variant="secondary-red"
-              size="small"
-              onClick={closeModal}
-            >
-              Cancel
-            </Button>
-          </FlexButtonWrapper>
+          <CancelButton style={{ width: '180px' }} onClick={closeModal}>
+            Cancel
+          </CancelButton>
           <Spacing horizontal={4} />
-          <FlexButtonWrapper>
-            <Button
-              fullWidth
-              variant="primary-red"
-              size="small"
-              onClick={confirm}
-            >
-              Leave
-            </Button>
-          </FlexButtonWrapper>
+          <ConfirmButton style={{ width: '180px' }} onClick={confirm}>
+            Leave
+          </ConfirmButton>
         </ButtonsContainer>
       </ModalWrapper>
     </MuiThemeProvider>

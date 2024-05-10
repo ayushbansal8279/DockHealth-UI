@@ -13,7 +13,9 @@ import {
   ModalDescriptionContainer,
   ButtonsContainer,
   FlexButtonWrapper,
+  ModalHeaderName,
 } from '../styled';
+import { CancelButton, ConfirmButton } from '../ModalButton/ModalButtons';
 
 const ClearSortFiltersModal = ({ closeModal, closeOnConfirm, confirm }) => {
   return (
@@ -21,41 +23,26 @@ const ClearSortFiltersModal = ({ closeModal, closeOnConfirm, confirm }) => {
       <ModalWrapper>
         <ModalIconContainer>
           <ModalMainIcon src={SortArrows} alt="Sort arrows" />
-          <Typography color="textSecondary" variant="h2">
-            CLEAR SORT
-          </Typography>
+          <ModalHeaderName>Clear Sort</ModalHeaderName>
         </ModalIconContainer>
         <ModalDescriptionContainer>
-          <Typography variant="body1">
-            This page has an active sort. In order to enable drag and drop we’ll
-            need to clear the sort.
-          </Typography>
+          This page has an active sort. In order to enable drag and drop we’ll
+          need to clear the sort.
         </ModalDescriptionContainer>
         <ButtonsContainer>
-          <FlexButtonWrapper>
-            <Button
-              fullWidth
-              variant="secondary-red"
-              size="small"
-              onClick={closeModal}
-            >
-              Cancel
-            </Button>
-          </FlexButtonWrapper>
+          <CancelButton style={{ width: '180px' }} onClick={closeModal}>
+            Cancel
+          </CancelButton>
           <Spacing horizontal={4} />
-          <FlexButtonWrapper>
-            <Button
-              fullWidth
-              variant="primary-red"
-              size="small"
-              onClick={() => {
-                confirm();
-                if (closeOnConfirm) closeModal();
-              }}
-            >
-              CLEAR SORT
-            </Button>
-          </FlexButtonWrapper>
+          <ConfirmButton
+            style={{ width: '180px' }}
+            onClick={() => {
+              confirm();
+              if (closeOnConfirm) closeModal();
+            }}
+          >
+            Clear Sort
+          </ConfirmButton>
         </ButtonsContainer>
       </ModalWrapper>
     </MuiThemeProvider>

@@ -295,6 +295,14 @@ const TaskTemplateGroupHeader = ({
     if (!showCompletedTasks && completedTasksAmount === 0) {
       dispatch(TemplateBundleActions.getTasksForWorkflow(identifier));
     }
+    if (showCompletedTasks) {
+      dispatch(
+        TemplateBundleActions.getTasksForWorkflow(
+          identifier,
+          TaskStatus.INCOMPLETE,
+        ),
+      );
+    }
     return isCompletedTab
       ? setShowIncompleteTasks(!showIncompleteTasks)
       : setShowCompletedTasks(!showCompletedTasks);
@@ -403,7 +411,6 @@ const TaskTemplateGroupHeader = ({
   };
 
   const handleTaskItemRightClick = useCallback((event) => {
-    console.log(event);
     event.preventDefault();
     setContextMenu({ x: event.pageX, y: event.pageY });
   }, []);
@@ -562,7 +569,7 @@ const TaskTemplateGroupHeader = ({
           isSelected={isBundleSelected}
           isEditingDescription={isEditing}
           order={0}
-          width={+width + 25 + 56}
+          width={width + 25 + 56}
           origin={origin}
         >
           {!groupDragAndDropDisabled &&
@@ -612,7 +619,6 @@ const TaskTemplateGroupHeader = ({
       groupDragAndDropDisabled,
       bulkEditIsActive,
       taskListRestrictions?.completeTask,
-      taskListRestrictions?.createTask,
       DISABLED,
       dragHandleProps,
       bulkEditEnabled,

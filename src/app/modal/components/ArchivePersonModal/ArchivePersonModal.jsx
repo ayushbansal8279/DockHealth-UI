@@ -12,7 +12,9 @@ import {
   ModalDescriptionContainer,
   ButtonsContainer,
   FlexButtonWrapper,
+  ModalHeaderName,
 } from '../styled';
+import { CancelButton, ConfirmButton } from '../ModalButton/ModalButtons';
 
 const ArchivePersonModal = ({ closeModal, confirm }) => {
   return (
@@ -20,41 +22,26 @@ const ArchivePersonModal = ({ closeModal, confirm }) => {
       <ModalWrapper>
         <ModalIconContainer>
           <ModalMainIcon src={RedFolder} alt="red-folder" />
-          <Typography color="textPrimary" variant="h2">
-            Archive user
-          </Typography>
+          <ModalHeaderName>Archive User</ModalHeaderName>
         </ModalIconContainer>
         <ModalDescriptionContainer>
-          <Typography variant="body1">
-            Are you sure you want to archive this user? This action cannot be
-            undone.
-          </Typography>
+          Are you sure you want to archive this user? This action cannot be
+          undone.
         </ModalDescriptionContainer>
         <ButtonsContainer>
-          <FlexButtonWrapper>
-            <Button
-              fullWidth
-              variant="secondary-red"
-              size="small"
-              onClick={closeModal}
-            >
-              Do not archive
-            </Button>
-          </FlexButtonWrapper>
+          <CancelButton style={{ width: '180px' }} onClick={closeModal}>
+            Do Not Archive
+          </CancelButton>
           <Spacing horizontal={4} />
-          <FlexButtonWrapper>
-            <Button
-              fullWidth
-              variant="primary-red"
-              size="small"
-              onClick={() => {
-                confirm();
-                closeModal();
-              }}
-            >
-              Archive
-            </Button>
-          </FlexButtonWrapper>
+          <ConfirmButton
+            style={{ width: '180px' }}
+            onClick={() => {
+              confirm();
+              closeModal();
+            }}
+          >
+            Archive
+          </ConfirmButton>
         </ButtonsContainer>
       </ModalWrapper>
     </MuiThemeProvider>

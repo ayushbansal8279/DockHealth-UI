@@ -13,7 +13,9 @@ import {
   ModalDescriptionContainer,
   ButtonsContainer,
   FlexButtonWrapper,
+  ModalHeaderName,
 } from '../styled';
+import { CancelButton, ConfirmButton } from '../ModalButton/ModalButtons';
 
 const BulkCompleteTasksModal = ({ closeModal, confirm }) => {
   return (
@@ -21,40 +23,25 @@ const BulkCompleteTasksModal = ({ closeModal, confirm }) => {
       <ModalWrapper>
         <ModalIconContainer>
           <ModalMainIcon src={CircleCompletedGrey} alt="completed" />
-          <Typography color="textSecondary" variant="h2">
-            SUBTASKS MAY BE INCOMPLETE
-          </Typography>
+          <ModalHeaderName>Subtasks May Be Incomplete</ModalHeaderName>
         </ModalIconContainer>
         <ModalDescriptionContainer>
-          <Typography variant="body1">
-            Marking this task as complete will also complete related subtasks.
-          </Typography>
+          Marking this task as complete will also complete related subtasks.
         </ModalDescriptionContainer>
         <ButtonsContainer>
-          <FlexButtonWrapper>
-            <Button
-              fullWidth
-              variant="secondary-red"
-              size="small"
-              onClick={closeModal}
-            >
-              Do not complete
-            </Button>
-          </FlexButtonWrapper>
+          <CancelButton style={{ width: '180px' }} onClick={closeModal}>
+            Do Not Complete
+          </CancelButton>
           <Spacing horizontal={4} />
-          <FlexButtonWrapper>
-            <Button
-              fullWidth
-              variant="primary-red"
-              size="small"
-              onClick={() => {
-                confirm();
-                closeModal();
-              }}
-            >
-              Complete all
-            </Button>
-          </FlexButtonWrapper>
+          <ConfirmButton
+            style={{ width: '180px' }}
+            onClick={() => {
+              confirm();
+              closeModal();
+            }}
+          >
+            Complete All
+          </ConfirmButton>
         </ButtonsContainer>
       </ModalWrapper>
     </MuiThemeProvider>

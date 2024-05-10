@@ -10,7 +10,9 @@ import {
   ModalDescriptionContainer,
   ButtonsContainer,
   FlexButtonWrapper,
+  ModalHeaderName,
 } from './styled';
+import { CancelButton, ConfirmButton } from './ModalButton/ModalButtons';
 
 interface Props {
   closeModal: VoidFunction;
@@ -25,38 +27,20 @@ export default function DeleteOrganizationModal({
     <ModalWrapper>
       <ModalIconContainer>
         <DeleteIcon fontSize="large" color="error" sx={{ mb: spacing.large }} />
-        <Typography color="textSecondary" variant="h2">
-          DELETE ORGANIZATION
-        </Typography>
+        <ModalHeaderName>Delete Organization</ModalHeaderName>
       </ModalIconContainer>
       <ModalDescriptionContainer>
-        <Typography variant="body1">
-          You’re about to delete this Organization and will lose all data
-          related to this Organization.
-        </Typography>
+        You’re about to delete this Organization and will lose all data related
+        to this Organization.
       </ModalDescriptionContainer>
       <ButtonsContainer>
-        <FlexButtonWrapper>
-          <Button
-            fullWidth
-            variant="secondary-red"
-            size="small"
-            onClick={closeModal}
-          >
-            Cancel
-          </Button>
-        </FlexButtonWrapper>
+        <CancelButton style={{ width: '180px' }} onClick={closeModal}>
+          Cancel
+        </CancelButton>
         <Spacing horizontal={4} />
-        <FlexButtonWrapper>
-          <Button
-            fullWidth
-            variant="primary-red"
-            size="small"
-            onClick={confirm}
-          >
-            Delete
-          </Button>
-        </FlexButtonWrapper>
+        <ConfirmButton style={{ width: '180px' }} onClick={confirm}>
+          Delete
+        </ConfirmButton>
       </ButtonsContainer>
     </ModalWrapper>
   );

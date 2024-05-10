@@ -36,6 +36,8 @@ import {
   DescriptionInput,
 } from '../../styled';
 import { fontWeights } from '@/app/styles/font';
+import Tooltip from '@/app/components/common/Tooltip/Tooltip';
+import EditPencil from '@/app/img/EditPencil';
 
 const TaskItemDescription = ({
   task,
@@ -243,7 +245,9 @@ const TaskItemDescription = ({
                 }
               }}
             >
-              <EditIcon />
+              <Tooltip placement="top" title="Edit Task Description">
+                <EditPencil />
+              </Tooltip>
             </IconButton>
           </DescriptionEditButton>
         )}

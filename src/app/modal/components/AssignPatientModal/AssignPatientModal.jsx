@@ -15,7 +15,9 @@ import {
   ModalIconContainer,
   ModalDescriptionContainer,
   ButtonsContainer,
+  ModalHeaderName,
 } from '../styled';
+import { CancelButton, ConfirmButton } from '../ModalButton/ModalButtons';
 
 const PrimaryText = styled.span`
   font-size: 18px;
@@ -37,36 +39,29 @@ const AssignPatientModal = ({
       <ModalWrapper>
         <ModalIconContainer>
           <ModalMainIcon src={patient} alt="patient" />
-          <Typography variant="h2" align="center">
-            <PrimaryText>Assign All</PrimaryText>
-          </Typography>
+          <ModalHeaderName>Assign All</ModalHeaderName>
         </ModalIconContainer>
         <ModalDescriptionContainer>
-          <Typography variant="body1">
-            {isWorkflowModal
-              ? `Only one ${customerTypeLabel} may be assigned per workflow. Assign all tasks in
+          {isWorkflowModal
+            ? `Only one ${customerTypeLabel} may be assigned per workflow. Assign all tasks in
             this workflow to:`
-              : `Assigning a ${customerTypeLabel} from this task will update assignee to the primary task and related subtasks to`}
-          </Typography>
-          <Typography variant="body1">
-            <b>{patientName}</b>
-          </Typography>
+            : `Assigning a ${customerTypeLabel} from this task will update assignee to the primary task and related subtasks to`}
+          <b>{patientName}</b>
         </ModalDescriptionContainer>
         <ButtonsContainer>
-          <Button variant="secondary-red" size="small" onClick={closeModal}>
-            CANCEL
-          </Button>
+          <CancelButton style={{ width: '180px' }} onClick={closeModal}>
+            Cancel
+          </CancelButton>
           <Spacing horizontal={4} />
-          <Button
-            variant="primary-red"
-            size="small"
+          <ConfirmButton
+            style={{ width: '180px' }}
             onClick={() => {
               confirm();
               closeModal();
             }}
           >
-            ASSIGN ALL
-          </Button>
+            Assign All
+          </ConfirmButton>
         </ButtonsContainer>
       </ModalWrapper>
     </MuiThemeProvider>

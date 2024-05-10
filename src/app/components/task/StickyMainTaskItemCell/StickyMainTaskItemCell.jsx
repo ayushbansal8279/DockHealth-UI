@@ -45,24 +45,11 @@ const StickyMainTaskItemCell = styled.div`
     isWorkflowtask || isTamplateGroup
       ? 'rgba(75, 179, 253, 1)'
       : `${palette.coolGrey3}`};
-  border-right: ${({ isWorkflowtask, isTamplateGroup, isWorkflowSubtask }) =>
-    isWorkflowtask || !isTamplateGroup || isWorkflowSubtask
-      ? ''
-      : `0px solid ${palette.coolGrey3};`};
-  margin-left: ${({ isTamplateGroup }) => (isTamplateGroup ? '-1px;' : '')};
+  margin-left: ${({ isTamplateGroup }) => (isTamplateGroup ? '1px;' : '0px')};
   align-items: center;
   padding-left: ${spacing.smallPlus};
   z-index: ${({ isEditingDescription }) =>
     isEditingDescription ? '12' : '11'};
-
-  border-top-left-radius: ${({ isTamplateGroup }) =>
-    isTamplateGroup ? '5px' : ''};
-  border-top-right-radius: ${({ isTamplateGroup, isOpen }) =>
-    isTamplateGroup && !isOpen ? '5px' : ''};
-  border-bottom-left-radius: ${({ isWorkflowtask, isLastChild }) =>
-    isWorkflowtask && isLastChild ? '5px' : ``};
-  border-bottom-right-radius: ${({ isWorkflowtask, isLastChild }) =>
-    isWorkflowtask && isLastChild ? '5px' : ``};
 
   background-color: ${(props) =>
     props.isSelected
@@ -71,9 +58,7 @@ const StickyMainTaskItemCell = styled.div`
       props.hasEscalations
       ? palette.bananaHammockLight
       : // eslint-disable-next-line unicorn/no-nested-ternary
-      props.customHighlight
-      ? props.customHighlight
-      : palette.white};
+      props.customHighlight ?? palette.white};
 
   &::before {
     content: '';
