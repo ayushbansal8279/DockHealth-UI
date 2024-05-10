@@ -13,7 +13,10 @@ import {
   ModalDescriptionContainer,
   ButtonsContainer,
   FlexButtonWrapper,
+  ModalHeaderName,
+  ModalDescriptionListContainer,
 } from '../styled';
+import { CancelButton } from '../ModalButton/ModalButtons';
 
 const CompleteAllFieldsModal = ({ closeModal, incompleteFields }) => {
   return (
@@ -21,36 +24,23 @@ const CompleteAllFieldsModal = ({ closeModal, incompleteFields }) => {
       <ModalWrapper>
         <ModalIconContainer>
           <ModalMainIcon src={CircleCompletedGrey} alt="completed" />
-          <Typography color="textSecondary" variant="h2">
-            A Required Field Is INCOMPLETE
-          </Typography>
+          <ModalHeaderName>A Required Field Is Incomplete</ModalHeaderName>
         </ModalIconContainer>
         <ModalDescriptionContainer>
-          <Typography variant="body1">
-            You’re about to complete a task which has required fields that are
-            incomplete.
-          </Typography>
-          <ul>
+          You’re about to complete a task which has required fields that are
+          incomplete.
+        </ModalDescriptionContainer>
+        <ModalDescriptionListContainer>
+          <ul style={{}}>
             {incompleteFields?.map((field) => {
-              return (
-                <li>
-                  <Typography variant="textPrimary">{field?.name}</Typography>
-                </li>
-              );
+              return <li>{field?.name}</li>;
             })}
           </ul>
-        </ModalDescriptionContainer>
+        </ModalDescriptionListContainer>
         <ButtonsContainer>
-          <FlexButtonWrapper>
-            <Button
-              fullWidth
-              variant="secondary-red"
-              size="small"
-              onClick={closeModal}
-            >
-              OK
-            </Button>
-          </FlexButtonWrapper>
+          <CancelButton style={{ width: '180px' }} onClick={closeModal}>
+            Ok
+          </CancelButton>
           <Spacing horizontal={4} />
         </ButtonsContainer>
       </ModalWrapper>

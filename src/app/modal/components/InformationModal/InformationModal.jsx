@@ -17,9 +17,7 @@ const InformationModal = ({ text }) => {
         <ModalIconContainer>
           <InfoOutlinedIcon style={{ fontSize: 40 }} />
         </ModalIconContainer>
-        <ModalDescriptionContainer>
-          <Typography variant="body1">{text}</Typography>
-        </ModalDescriptionContainer>
+        <ModalDescriptionContainer>{text}</ModalDescriptionContainer>
       </ModalWrapper>
     </MuiThemeProvider>
   );

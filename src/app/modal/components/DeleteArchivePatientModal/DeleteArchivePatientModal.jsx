@@ -17,7 +17,9 @@ import {
   ModalDescriptionContainer,
   ButtonsContainer,
   FlexButtonWrapper,
+  ModalHeaderName,
 } from '../styled';
+import { CancelButton, ConfirmButton } from '../ModalButton/ModalButtons';
 
 const DeleteArchivePatientModal = ({ closeModal, confirm }) => {
   const currentUser = useSelector(userProfileSelector);
@@ -29,38 +31,21 @@ const DeleteArchivePatientModal = ({ closeModal, confirm }) => {
       <ModalWrapper>
         <ModalIconContainer>
           <ModalMainIcon src={RedFolder} alt="red-folder" />
-          <Typography color="textPrimary" variant="h2">
+          <ModalHeaderName>
             Delete {customerTypeLabelCapitalized}
-          </Typography>
+          </ModalHeaderName>
         </ModalIconContainer>
         <ModalDescriptionContainer>
-          <Typography variant="body1">
-            Are you sure you want to permanently delete this {customerTypeLabel}
-            ?
-          </Typography>
+          Are you sure you want to permanently delete this {customerTypeLabel}?
         </ModalDescriptionContainer>
         <ButtonsContainer>
-          <FlexButtonWrapper>
-            <Button
-              fullWidth
-              variant="secondary-red"
-              size="small"
-              onClick={closeModal}
-            >
-              Do not delete
-            </Button>
-          </FlexButtonWrapper>
+          <CancelButton style={{ width: '180px' }} onClick={closeModal}>
+            Do Not Delete
+          </CancelButton>
           <Spacing horizontal={4} />
-          <FlexButtonWrapper>
-            <Button
-              fullWidth
-              variant="primary-red"
-              size="small"
-              onClick={confirm}
-            >
-              Delete
-            </Button>
-          </FlexButtonWrapper>
+          <ConfirmButton style={{ width: '180px' }} onClick={confirm}>
+            Delete
+          </ConfirmButton>
         </ButtonsContainer>
       </ModalWrapper>
     </MuiThemeProvider>
