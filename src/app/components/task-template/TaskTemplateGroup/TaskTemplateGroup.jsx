@@ -34,6 +34,7 @@ import {
   TaskTemplateItemsStartPill,
 } from './styled';
 import TaskTemplateGroupHeader from '../TaskTemplateGroupHeader/TaskTemplateGroupHeader';
+import { currentTaskListTasksStatusSelector } from 'selectors/task-list-selectors';
 
 const TaskTemplateGroup = ({
   templateGroup: pullGroup = {},
@@ -95,6 +96,7 @@ const TaskTemplateGroup = ({
   const restrictions =
     TASK_LIST_RESTRICTIONS_PROFILES[currentUser?.orgUserRole];
   const { DISABLED } = TASK_LIST_RESTRICTIONS_OPTIONS;
+  const tasksStatus = useSelector(currentTaskListTasksStatusSelector);
 
   useEffect(() => {
     // setOpen(SHOW_WORKFLOW_DETAILS); //no longer supported
@@ -109,10 +111,12 @@ const TaskTemplateGroup = ({
 
   useEffect(() => {
     if (isOpen && !previousIsOpen && (!tasks || tasks.length === 0)) {
-      dispatch(TemplateBundleActions.getTasksForWorkflow(identifier));
+      dispatch(
+        TemplateBundleActions.getTasksForWorkflow(identifier, tasksStatus),
+      );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isOpen, tasks]);
+  }, [isOpen, tasks, tasksStatus]);
 
   const handleAddBundleTask = useCallback(
     (task) => {
