@@ -51,13 +51,6 @@ const StickyMainTaskItemCell = styled.div`
   z-index: ${({ isEditingDescription }) =>
     isEditingDescription ? '12' : '11'};
 
-  border-top-left-radius: ${({ isTamplateGroup }) =>
-    isTamplateGroup ? '3px' : ''};
-  border-bottom-left-radius: ${({ isTamplateGroup }) =>
-    isTamplateGroup ? '1px' : ``};
-  border-bottom-left-radius: ${({ isWorkflowtask, isLastChild }) =>
-    isWorkflowtask && isLastChild ? '1px' : ``};
-
   background-color: ${(props) =>
     props.isSelected
       ? palette.brightBlueWithAlpha
