@@ -801,15 +801,20 @@ const TaskItem = React.memo(
     const randerFirstColumnCoverIfNecessary = useCallback(
       (content, order, width) => {
         if (order !== 0) return content;
+        const indentSubTask =
+          !(
+            origin === TaskOrigin.DASHBOARD ||
+            (!!selectedFilters && Object.keys(selectedFilters).length > 0) ||
+            !!searchValue ||
+            !!sort.key
+          ) ?? false;
         return (
           <StickyMainTaskItemCell
             isLastChild={isLastChild}
             isWorkflowtask={isTaskTemplate}
             customWidthExists
             order={0}
-            isSubtask={
-              origin === TaskOrigin.PATIENT ? showSubtaskStylingLink : isSubtask
-            }
+            isSubtask={indentSubTask ? isSubtask : false}
             newlyCreated={newlyCreated}
             backgroundColor={pageBackground}
             isSelected={isSelected}
@@ -1028,24 +1033,24 @@ const TaskItem = React.memo(
             {randerFirstColumnCoverIfNecessary(
               <>
                 <MainStandardTaskItemCell
-                  width={
-                    columns?.find(
-                      ({ identifier }) =>
-                        identifier === TaskItemColumn.DESCRIPTION,
-                    )?.columnWidth -
-                    (isSubtask &&
-                    (origin === 'LIST' &&
-                    ((!!selectedFilters
-                      ? Object.keys(selectedFilters).length > 0
-                      : !!selectedFilters) ||
-                      !!searchValue ||
-                      !!sort.key)
-                      ? hasParentTaskLabel
-                      : !hasParentTaskLabel) &&
-                    descriptionColumnOrder === 0
-                      ? 36
-                      : 0)
-                  }
+                  // width={
+                  //   columns?.find(
+                  //     ({ identifier }) =>
+                  //       identifier === TaskItemColumn.DESCRIPTION,
+                  //   )?.columnWidth -
+                  //   (isSubtask &&
+                  //   (origin === 'LIST' &&
+                  //   ((!!selectedFilters
+                  //     ? Object.keys(selectedFilters).length > 0
+                  //     : !!selectedFilters) ||
+                  //     !!searchValue ||
+                  //     !!sort.key)
+                  //     ? hasParentTaskLabel
+                  //     : !hasParentTaskLabel) &&
+                  //   descriptionColumnOrder === 0
+                  //     ? 36
+                  //     : 0)
+                  // }
                   order={getColumnOrder(TaskItemColumn.DESCRIPTION)}
                   bolded
                   paddingLeft="smallPlus"
