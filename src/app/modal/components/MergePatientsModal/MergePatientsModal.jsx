@@ -11,7 +11,9 @@ import {
   ModalDescriptionContainer,
   ButtonsContainer,
   FlexButtonWrapper,
+  ModalHeaderName,
 } from '../styled';
+import { CancelButton, ConfirmButton } from '../ModalButton/ModalButtons';
 
 const MergePatientsModal = ({
   closeModal,
@@ -26,12 +28,10 @@ const MergePatientsModal = ({
           <Box mb={1}>
             <MergeTypeIcon fontSize="large" />
           </Box>
-          <Typography color="textSecondary" variant="h2">
-            MERGE PATIENT
-          </Typography>
+          <ModalHeaderName>Merge Patient</ModalHeaderName>
         </ModalIconContainer>
         <ModalDescriptionContainer>
-          <Typography variant="body1">
+          <Typography style={{ fontFamily: 'Outfit' }}>
             Please confirm to merge{' '}
             <span style={{ fontWeight: 'bold' }}>
               {fromPatient.firstName} {fromPatient.lastName}
@@ -43,27 +43,13 @@ const MergePatientsModal = ({
           </Typography>
         </ModalDescriptionContainer>
         <ButtonsContainer>
-          <FlexButtonWrapper>
-            <Button
-              fullWidth
-              variant="secondary-red"
-              size="small"
-              onClick={closeModal}
-            >
-              Cancel
-            </Button>
-          </FlexButtonWrapper>
+          <CancelButton style={{ width: '180px' }} onClick={closeModal}>
+            Cancel
+          </CancelButton>
           <Spacing horizontal={4} />
-          <FlexButtonWrapper>
-            <Button
-              fullWidth
-              variant="primary-red"
-              size="small"
-              onClick={confirm}
-            >
-              Merge
-            </Button>
-          </FlexButtonWrapper>
+          <ConfirmButton style={{ width: '180px' }} onClick={confirm}>
+            Merge
+          </ConfirmButton>
         </ButtonsContainer>
       </ModalWrapper>
     </MuiThemeProvider>

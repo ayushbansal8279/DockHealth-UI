@@ -245,11 +245,11 @@ const PatientsView = () => {
 
     const modalProps = {
       title: `You want to delete ${selectedPatientsCount} patient${
-        selectedPatientsCount > 1 && 's'
+        selectedPatientsCount > 1 ? 's' : ''
       }`,
       description: `Are you sure you want to delete ${selectedPatientsCount} patient${
-        selectedPatientsCount > 1 && 's'
-      } ? This action cannot be undone.`,
+        selectedPatientsCount > 1 ? 's' : ''
+      }? This action cannot be undone.`,
       confirmButtonText: 'Delete',
       confirm: () => {
         handleDeleteConfirm();

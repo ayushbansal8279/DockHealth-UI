@@ -13,7 +13,9 @@ import {
   ModalDescriptionContainer,
   ButtonsContainer,
   FlexButtonWrapper,
+  ModalHeaderName,
 } from '../styled';
+import { CancelButton, ConfirmButton } from '../ModalButton/ModalButtons';
 
 const PrimaryText = styled.span`
   font-size: 18px;
@@ -26,40 +28,27 @@ const MoveTasksWithSubtasksModal = ({ closeModal, confirm }) => {
       <ModalWrapper>
         <ModalIconContainer>
           <ModalMainIcon src={folderUser} alt="folder_user" />
-          <Typography color="textPrimary" variant="h2" align="center">
-            <PrimaryText>All subtasks will move with main task</PrimaryText>
-          </Typography>
+          <ModalHeaderName>
+            All subtasks will move with main task
+          </ModalHeaderName>
         </ModalIconContainer>
         <ModalDescriptionContainer>
-          <Typography variant="body1">
-            Main tasks and sub tasks cannot be separated upon moving
-          </Typography>
+          Main tasks and sub tasks cannot be separated upon moving
         </ModalDescriptionContainer>
         <ButtonsContainer>
-          <FlexButtonWrapper>
-            <Button
-              fullWidth
-              variant="secondary-red"
-              size="small"
-              onClick={closeModal}
-            >
-              CANCEL
-            </Button>
-          </FlexButtonWrapper>
+          <CancelButton style={{ width: '180px' }} onClick={closeModal}>
+            Cancel
+          </CancelButton>
           <Spacing horizontal={4} />
-          <FlexButtonWrapper>
-            <Button
-              fullWidth
-              variant="primary-red"
-              size="small"
-              onClick={() => {
-                confirm();
-                closeModal();
-              }}
-            >
-              MOVE ALL
-            </Button>
-          </FlexButtonWrapper>
+          <ConfirmButton
+            style={{ width: '180px' }}
+            onClick={() => {
+              confirm();
+              closeModal();
+            }}
+          >
+            Move All
+          </ConfirmButton>
         </ButtonsContainer>
       </ModalWrapper>
     </MuiThemeProvider>

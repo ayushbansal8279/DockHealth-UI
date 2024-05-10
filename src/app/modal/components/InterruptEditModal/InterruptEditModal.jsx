@@ -17,9 +17,15 @@ import {
   ButtonsContainer,
   FlexButtonWrapper,
   FixedWidthButtonWrapper,
+  ModalHeaderName,
 } from '../styled';
+import { CancelButton, ConfirmButton } from '../ModalButton/ModalButtons';
 
-const InterruptEditModal = ({ closeModal, confirm, profileTypeName = null }) => {
+const InterruptEditModal = ({
+  closeModal,
+  confirm,
+  profileTypeName = null,
+}) => {
   const currentUser = useSelector(userProfileSelector);
   const customerTypeLabel = getCustomerTypeLabel(currentUser);
 
@@ -28,34 +34,21 @@ const InterruptEditModal = ({ closeModal, confirm, profileTypeName = null }) => 
       <ModalWrapper>
         <ModalIconContainer>
           <ModalMainIcon src={DownArrow} alt="Task" />
-          <Typography variant="body1">
-            YOU HAVE UNSAVED CHANGES TO THE {profileTypeName ?? customerTypeLabel.toUpperCase()}
-            &apos;S PROFILE
-          </Typography>
+          <ModalHeaderName>
+            You have unsaved changes to the{' '}
+            {profileTypeName ?? customerTypeLabel.toUpperCase()}
+            &apos;s profile
+          </ModalHeaderName>
         </ModalIconContainer>
         <ModalDescriptionContainer />
         <ButtonsContainer>
-          <FlexButtonWrapper>
-            <Button
-              fullWidth
-              variant="secondary-red"
-              size="small"
-              onClick={closeModal}
-            >
-              DON’T SAVE
-            </Button>
-          </FlexButtonWrapper>
+          <CancelButton style={{ width: '180px' }} onClick={closeModal}>
+            Don't Save
+          </CancelButton>
           <Spacing horizontal={4} />
-          <FixedWidthButtonWrapper width={231}>
-            <Button
-              fullWidth
-              variant="primary-red"
-              size="small"
-              onClick={confirm}
-            >
-              SAVE CHANGES
-            </Button>
-          </FixedWidthButtonWrapper>
+          <ConfirmButton style={{ width: '180px' }} onClick={confirm}>
+            Save Changes
+          </ConfirmButton>
         </ButtonsContainer>
       </ModalWrapper>
     </MuiThemeProvider>

@@ -15,7 +15,9 @@ import {
   ModalIconContainer,
   ModalDescriptionContainer,
   ButtonsContainer,
+  ModalHeaderName,
 } from '../styled';
+import { CancelButton, ConfirmButton } from '../ModalButton/ModalButtons';
 
 const PrimaryText = styled.span`
   font-size: 18px;
@@ -32,36 +34,29 @@ const UnassignPatientModal = ({ closeModal, confirm, isWorkflowModal }) => {
       <ModalWrapper>
         <ModalIconContainer>
           <ModalMainIcon src={patient} alt="patient" />
-          <Typography variant="h2" align="center">
-            <PrimaryText>Un-Assign All</PrimaryText>
-          </Typography>
+          <ModalHeaderName>Un-Assign All</ModalHeaderName>
         </ModalIconContainer>
         <ModalDescriptionContainer>
-          <Typography variant="body1">
-            {isWorkflowModal
-              ? `Un-assigning the ${customerTypeLabel} from here will update all tasks and
+          {isWorkflowModal
+            ? `Un-assigning the ${customerTypeLabel} from here will update all tasks and
             subtasks in this workflow to:`
-              : `Un-assigning a ${customerTypeLabel} from this task will update the primary task and related subtasks to:`}
-          </Typography>
-          <Typography variant="body1">
-            <b>Un-assigned</b>
-          </Typography>
+            : `Un-assigning a ${customerTypeLabel} from this task will update the primary task and related subtasks to:`}
+          <b>Un-assigned</b>
         </ModalDescriptionContainer>
         <ButtonsContainer>
-          <Button variant="secondary-red" size="small" onClick={closeModal}>
-            CANCEL
-          </Button>
+          <CancelButton style={{ width: '180px' }} onClick={closeModal}>
+            Cancel
+          </CancelButton>
           <Spacing horizontal={4} />
-          <Button
-            variant="primary-red"
-            size="small"
+          <ConfirmButton
+            style={{ width: '180px' }}
             onClick={() => {
               confirm();
               closeModal();
             }}
           >
-            UN-ASSIGN ALL
-          </Button>
+            Un-Assign All
+          </ConfirmButton>
         </ButtonsContainer>
       </ModalWrapper>
     </MuiThemeProvider>

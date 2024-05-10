@@ -13,8 +13,10 @@ import {
   ModalDescriptionContainer,
   ButtonsContainer,
   FlexButtonWrapper,
+  ModalHeaderName,
 } from '../styled';
 import { FirstDescription, SecondDescription } from './styled';
+import { CancelButton, ConfirmButton } from '../ModalButton/ModalButtons';
 
 const RemoveActiveUserModal = ({ closeModal, confirm, userIdentifier }) => {
   const [taskCount, setTaskCount] = useState(0);
@@ -30,9 +32,7 @@ const RemoveActiveUserModal = ({ closeModal, confirm, userIdentifier }) => {
       <ModalWrapper>
         <ModalIconContainer>
           <ModalMainIcon src={folderUser} alt="folder_user" />
-          <Typography color="textPrimary" variant="h2">
-            Remove as an active User
-          </Typography>
+          <ModalHeaderName>Remove as an active user</ModalHeaderName>
         </ModalIconContainer>
         <ModalDescriptionContainer>
           <FirstDescription>
@@ -47,30 +47,19 @@ const RemoveActiveUserModal = ({ closeModal, confirm, userIdentifier }) => {
           </SecondDescription>
         </ModalDescriptionContainer>
         <ButtonsContainer>
-          <FlexButtonWrapper>
-            <Button
-              fullWidth
-              variant="secondary-red"
-              size="small"
-              onClick={closeModal}
-            >
-              Do not remove
-            </Button>
-          </FlexButtonWrapper>
+          <CancelButton style={{ width: '180px' }} onClick={closeModal}>
+            Do Not Remove
+          </CancelButton>
           <Spacing horizontal={4} />
-          <FlexButtonWrapper>
-            <Button
-              fullWidth
-              variant="primary-red"
-              size="small"
-              onClick={() => {
-                closeModal();
-                confirm();
-              }}
-            >
-              Remove
-            </Button>
-          </FlexButtonWrapper>
+          <ConfirmButton
+            style={{ width: '180px' }}
+            onClick={() => {
+              closeModal();
+              confirm();
+            }}
+          >
+            Remove
+          </ConfirmButton>
         </ButtonsContainer>
       </ModalWrapper>
     </MuiThemeProvider>

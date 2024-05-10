@@ -14,7 +14,9 @@ import {
   FlexButtonWrapper,
   FixedWidthButtonWrapper,
   DeleteButton,
+  ModalHeaderName,
 } from '../styled';
+import { CancelButton, ConfirmButton } from '../ModalButton/ModalButtons';
 
 const DeleteFolder = ({ closeModal, confirm }) => {
   return (
@@ -22,41 +24,26 @@ const DeleteFolder = ({ closeModal, confirm }) => {
       <ModalWrapper>
         <ModalIconContainer>
           <ModalMainIcon src={TrashCan} alt="Task" />
-          <Typography color="textPrimary" variant="h2">
-            DELETE FOLDER
-          </Typography>
+          <ModalHeaderName>Delete Folder</ModalHeaderName>
         </ModalIconContainer>
         <ModalDescriptionContainer>
-          <Typography variant="body1">
-            Are you sure you want to delete this folder? This action cannot be
-            undone.
-          </Typography>
+          Are you sure you want to delete this folder? This action cannot be
+          undone.
         </ModalDescriptionContainer>
         <ButtonsContainer>
-          <FlexButtonWrapper>
-            <Button
-              fullWidth
-              variant="secondary-red"
-              size="small"
-              onClick={closeModal}
-            >
-              Cancel
-            </Button>
-          </FlexButtonWrapper>
+          <CancelButton style={{ width: '180px' }} onClick={closeModal}>
+            Cancel
+          </CancelButton>
           <Spacing horizontal={4} />
-          <FixedWidthButtonWrapper width={231}>
-            <DeleteButton
-              fullWidth
-              variant="primary-red"
-              size="small"
-              onClick={() => {
-                confirm();
-                closeModal();
-              }}
-            >
-              Delete Permanently22
-            </DeleteButton>
-          </FixedWidthButtonWrapper>
+          <ConfirmButton
+            style={{ width: '180px' }}
+            onClick={() => {
+              confirm();
+              closeModal();
+            }}
+          >
+            Delete Permanently
+          </ConfirmButton>
         </ButtonsContainer>
       </ModalWrapper>
     </MuiThemeProvider>
