@@ -78,9 +78,6 @@ export const TaskTemplateGroupHeaderContainer = styled.div`
   border-right: 1px solid rgba(75, 179, 253, 1);
   z-index: 2;
 
-  border-radius: 5px 5px ${({ isOpen }) => (isOpen ? `0px` : '5px')}
-    ${({ isOpen }) => (isOpen ? `0px` : '5px')};
-
   &:hover {
     & ${TemplateHandle}, ${AddPlaceholder} {
       opacity: 1;
@@ -130,8 +127,6 @@ export const ActionIconsContainer = styled.div`
   background-color: ${palette.lightOceanBlue};
 
   border: 5px solid ${palette.lightOceanBlue};
-  border-top-left-radius: 2px;
-  border-bottom-left-radius: ${({ isOpen }) => (!isOpen ? '0.5px;' : '')};
 
   border-right: 1px solid ${palette.coolGrey3};
 `;
