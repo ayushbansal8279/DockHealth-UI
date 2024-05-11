@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 import React, {
   useState,
   useMemo,
@@ -6,7 +7,6 @@ import React, {
   useCallback,
   useEffect,
 } from 'react';
-import { Box } from '@mui/material';
 import pluck from 'ramda/src/pluck';
 import {
   isTaskItemSelectedSelector,
@@ -15,7 +15,6 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { formatPhoneNumber } from 'helpers/utility-functions';
 import ThreeDotsIcon from 'img/three-dots.svg';
-import { MoreVert } from '@mui/icons-material';
 import * as ModalActions from 'modal/actions';
 import * as WorkflowActions from 'actions/workflow-actions';
 import * as TaskActions from 'actions/task-actions';
@@ -113,12 +112,13 @@ const TaskTemplateGroupHeader = ({
   showIncompleteTasks,
   setShowIncompleteTasks,
   showTasksWithGroup = true,
-  iconColorActive,
+  // iconColorActive,
   highlightedValue,
   origin,
   isNextVirtualTaskItemTypeBundle,
   isLastTaskOfGroup,
   isNextTaskItemTypeBundle,
+  currentTaskListTasksStatus,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const {
@@ -273,7 +273,7 @@ const TaskTemplateGroupHeader = ({
           accumulator[0] += 1;
         }
         if (currentTask?.subtasks?.length > 0) {
-          currentTask?.subtasks?.map((subTask, index) => {
+          currentTask?.subtasks?.map((subTask) => {
             if (subTask?.status === 'COMPLETE') {
               accumulator[0] += 1;
             }
@@ -291,31 +291,27 @@ const TaskTemplateGroupHeader = ({
   const completedTasksAmountFinal = completedTasksAmount;
   const allTasksAmountFinal = allTasksAmount;
 
-  const toggleTasksVisibility = useCallback(() => {
-    if (!showCompletedTasks && completedTasksAmount === 0) {
-      dispatch(TemplateBundleActions.getTasksForWorkflow(identifier));
-    }
-    if (showCompletedTasks) {
-      dispatch(
-        TemplateBundleActions.getTasksForWorkflow(
-          identifier,
-          TaskStatus.INCOMPLETE,
-        ),
-      );
-    }
-    return isCompletedTab
-      ? setShowIncompleteTasks(!showIncompleteTasks)
-      : setShowCompletedTasks(!showCompletedTasks);
-  }, [
-    isCompletedTab,
-    setShowIncompleteTasks,
-    setShowCompletedTasks,
-    showCompletedTasks,
-    showIncompleteTasks,
-    completedTasksAmount,
-    dispatch,
-    identifier,
-  ]);
+  const toggleCompletedTasksVisibility = useCallback(() => {
+    const updatedShowCompletedTasks = !showCompletedTasks;
+    dispatch(
+      TemplateBundleActions.showhideCompletedTasks(
+        identifier,
+        updatedShowCompletedTasks,
+      ),
+    );
+    setShowCompletedTasks(updatedShowCompletedTasks);
+  }, [showCompletedTasks, setShowCompletedTasks, dispatch, identifier]);
+
+  const toggleIncompleteTasksVisibility = useCallback(() => {
+    const updatedShowIncompleteTasks = !showIncompleteTasks;
+    dispatch(
+      TemplateBundleActions.showhideIncompleteTasks(
+        identifier,
+        updatedShowIncompleteTasks,
+      ),
+    );
+    setShowIncompleteTasks(updatedShowIncompleteTasks);
+  }, [showIncompleteTasks, setShowIncompleteTasks, dispatch, identifier]);
 
   const handleMoveGroupTask = useCallback(() => {
     const handleAddGroupTask = () => {
@@ -1434,6 +1430,7 @@ const TaskTemplateGroupHeader = ({
       </TaskTemplateGroupHeaderContainer>
       {contextMenu && (
         <TaskTemplateContextMenu
+          identifier={identifier}
           restrictions={restrictions}
           position={contextMenu}
           onClose={onCloseContextMenu}
@@ -1444,7 +1441,10 @@ const TaskTemplateGroupHeader = ({
           handleDuplicate={handleDuplicate}
           handleDelete={handleDelete}
           showCompletedTasks={showCompletedTasks}
-          toggleTasksVisibility={toggleTasksVisibility}
+          showIncompleteTasks={showIncompleteTasks}
+          currentTaskListTasksStatus={currentTaskListTasksStatus}
+          toggleCompletedTasksVisibility={toggleCompletedTasksVisibility}
+          toggleIncompleteTasksVisibility={toggleIncompleteTasksVisibility}
         />
       )}
     </>
