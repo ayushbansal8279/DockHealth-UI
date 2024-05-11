@@ -15,9 +15,9 @@ import VSubtask from 'views/list-details/VirtualTaskList/VirtualSegment/VSubtask
 import VAddGroup from 'views/list-details/VirtualTaskList/VirtualSegment/VAddGroup/VAddGroup';
 import VQuickAddTask from 'views/list-details/VirtualTaskList/VirtualSegment/VQuickAddTask/VQuickAddTask';
 import VTaskHeader from 'views/list-details/VirtualTaskList/VirtualSegment/VTaskHeader/VTaskHeader';
-import VLoadMoreTasks from './VirtualSegment/VLoadMoreTasks/VLoadMoreTasks';
 import { DropResult } from 'react-beautiful-dnd';
 import { reorderTasksInGroup } from 'actions/list-details-actions';
+import VLoadMoreTasks from './VirtualSegment/VLoadMoreTasks/VLoadMoreTasks';
 import {
   useVirtualTaskListScrollContext,
   withVirtualTaskListScrollContext,
