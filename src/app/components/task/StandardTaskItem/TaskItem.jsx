@@ -1033,24 +1033,12 @@ const TaskItem = React.memo(
             {randerFirstColumnCoverIfNecessary(
               <>
                 <MainStandardTaskItemCell
-                  // width={
-                  //   columns?.find(
-                  //     ({ identifier }) =>
-                  //       identifier === TaskItemColumn.DESCRIPTION,
-                  //   )?.columnWidth -
-                  //   (isSubtask &&
-                  //   (origin === 'LIST' &&
-                  //   ((!!selectedFilters
-                  //     ? Object.keys(selectedFilters).length > 0
-                  //     : !!selectedFilters) ||
-                  //     !!searchValue ||
-                  //     !!sort.key)
-                  //     ? hasParentTaskLabel
-                  //     : !hasParentTaskLabel) &&
-                  //   descriptionColumnOrder === 0
-                  //     ? 36
-                  //     : 0)
-                  // }
+                  width={
+                    columns?.find(
+                      ({ identifier }) =>
+                        identifier === TaskItemColumn.DESCRIPTION,
+                    )?.columnWidth
+                  }
                   order={getColumnOrder(TaskItemColumn.DESCRIPTION)}
                   bolded
                   paddingLeft="smallPlus"
