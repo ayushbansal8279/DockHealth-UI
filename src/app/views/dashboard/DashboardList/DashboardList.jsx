@@ -26,19 +26,15 @@ import EmptyListView from 'components/tasklist/EmptyListView/EmptyListView';
 import {
   getDashboardFilters,
   getDashboardTasks,
+  getDashboardTasksForGroup,
 } from 'actions/dashboard-actions';
-import {
-  TASK_ITEM_SORT_METHODS,
-  TASK_ITEM_SORT_DESC_METHODS,
-  TaskOrigin,
-} from 'helpers/task-helpers';
+import { TaskOrigin } from 'helpers/task-helpers';
 import * as TaskActions from 'actions/task-actions';
 import * as TaskDrawerActions from 'actions/task-drawer-actions';
 import TaskDrawer from 'components/task-drawer/TaskDrawer/TaskDrawer';
 import NoFilterResultsView from 'components/tasklist/EmptyListView/NoFilterResultsView';
 import { hasFiltersAppliedSelector } from 'selectors/mega-filter-selectors';
 import { onSortChanged } from 'helpers/ga-event-helper';
-import { SortOrderType } from 'helpers/sorting-helper';
 import { DashboardTasksTab } from 'helpers/dashboard-helpers';
 
 import { ViewType, getViewTypeFromQueryString } from 'helpers/view-type-helper';
@@ -51,14 +47,6 @@ import {
 import { updateCurrentUserPreferences } from 'actions/user-actions';
 import { Context } from 'components/common/HorizontalScroll/HorizontalScrollContainer';
 import useActions from 'hooks/use-actions';
-import pipe from 'ramda/src/pipe';
-import prop from 'ramda/src/prop';
-// import path from 'ramda/src/path';
-import sortWith from 'ramda/src/sortWith';
-import ascend from 'ramda/src/ascend';
-import descend from 'ramda/src/descend';
-import toLower from 'ramda/src/toLower';
-import defaultTo from 'ramda/src/defaultTo';
 // import ifElse from 'ramda/src/ifElse';
 import BulkEditSection from 'components/tasklist/BulkEditSection/BulkEditSection';
 import DashboardTasksGroup from './DashboardTasksGroup';
@@ -165,32 +153,9 @@ const DashboardList = ({ currentUser, tourModalIsOpen, openTourModal }) => {
     return filteredDashboardTasks;
   }, [dashboardGroupsPreferences, filteredDashboardTasks, tabName]);
 
-  const currentSortMethod = useMemo(() => {
-    if (!sortKey) return identity;
-    if (sortKey.length === 36) {
-      return sortWith([
-        ascend(pipe(prop('description'), defaultTo(' '), toLower)),
-      ]);
-    }
-    return TASK_ITEM_SORT_METHODS[sortKey];
-  }, [sortKey]);
-
-  const currentSortDescMethod = useMemo(() => {
-    if (!sortKey) return identity;
-    if (sortKey.length === 36) {
-      return sortWith([
-        descend(pipe(prop('description'), defaultTo(' '), toLower)),
-      ]);
-    }
-    return TASK_ITEM_SORT_DESC_METHODS[sortKey];
-  }, [sortKey]);
-
   const currentSortMethodWithOrder = useMemo(() => {
-    if (sortOrder === SortOrderType.DESC) {
-      return currentSortDescMethod;
-    }
-    return currentSortMethod;
-  }, [sortOrder, currentSortMethod, currentSortDescMethod]);
+    return identity;
+  }, []);
 
   function resetSort() {
     setCurrentSort({
@@ -229,8 +194,12 @@ const DashboardList = ({ currentUser, tourModalIsOpen, openTourModal }) => {
         key: order ? key : null,
         order,
       });
+      // eslint-disable-next-line array-callback-return
+      orderedDashboardTasks?.map((item) => {
+        dispatch(getDashboardTasksForGroup(item?.groupType, key, order));
+      });
     },
-    [taskActions],
+    [dispatch, orderedDashboardTasks, taskActions],
   );
 
   const showClearSortFiltersModal = () => {
