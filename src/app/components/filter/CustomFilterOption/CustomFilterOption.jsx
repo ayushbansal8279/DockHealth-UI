@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
+import palette from 'styles/palette';
 import {
   CustomFilterOptionWrapper,
   OptionMenuContainer,
@@ -109,11 +110,11 @@ const CustomFilterOption = (props) => {
       });
       console.log(selectedOptions);
       handleQuickFilterDuplicateForPatientList(
-        'Copy of ' + filter.name,
+        `Copy of ${filter.name}`,
         selectedOptions,
       );
     } else {
-      onQuickFilterCreate('Copy of ' + filter.name, filter.selectedOptions);
+      onQuickFilterCreate(`Copy of ${filter.name}`, filter.selectedOptions);
     }
   };
 
@@ -130,27 +131,33 @@ const CustomFilterOption = (props) => {
       setSelectedQuickFilter('');
       clearFilters();
     }
-  }, [identifier, onOptionClick, isSelected]);
+  }, [
+    onOptionClick,
+    identifier,
+    isSelected,
+    setSelectedQuickFilter,
+    clearFilters,
+  ]);
 
-  const handleKeyPress = useCallback(
-    (event) => {
-      const { key } = event;
+  // const handleKeyPress = useCallback(
+  //   (event) => {
+  //     const { key } = event;
 
-      switch (key) {
-        case 'Enter': {
-          onBlur(identifier, value);
-          break;
-        }
-        case 'Escape': {
-          break;
-        }
-        default: {
-          break;
-        }
-      }
-    },
-    [identifier, onBlur, value],
-  );
+  //     switch (key) {
+  //       case 'Enter': {
+  //         onBlur(identifier, value);
+  //         break;
+  //       }
+  //       case 'Escape': {
+  //         break;
+  //       }
+  //       default: {
+  //         break;
+  //       }
+  //     }
+  //   },
+  //   [identifier, onBlur, value],
+  // );
 
   return (
     <CustomFilterOptionWrapper
@@ -200,7 +207,7 @@ const CustomFilterOption = (props) => {
       </IconContainer> */}
         <OptionMenuContainer>
           {!disableOptions && (
-            <OptionsMenu color={'#8492a4'} options={OPTIONS}>
+            <OptionsMenu color={palette.shadowBlue} options={OPTIONS}>
               <MoreVertIcon />
             </OptionsMenu>
           )}
