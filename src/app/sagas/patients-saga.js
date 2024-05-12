@@ -282,7 +282,7 @@ function* searchPatients({ searchTerm }) {
 
 function* filtersChange() {
   yield put(PatientsActions.getCurrentPatients());
-  yield put(PatientsActions.getCurrentPatientsListFilterOptions());
+  // yield put(PatientsActions.getCurrentPatientsListFilterOptions());
 }
 
 function* clearPatients() {
