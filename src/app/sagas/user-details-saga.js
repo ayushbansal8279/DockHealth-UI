@@ -131,7 +131,7 @@ function* selectFiltersFromMegaFilter({ id, status }) {
   ]);
   if (userIdentifier === id && currentStatus === status) {
     yield all([
-      put(PersonDetailsActions.getUserTaskFilterOptions()),
+      // put(PersonDetailsActions.getUserTaskFilterOptions()),
       status === TaskStatus.COMPLETE
         ? put(PersonDetailsActions.getUserCompletedTasks())
         : put(PersonDetailsActions.getUserTasks()),

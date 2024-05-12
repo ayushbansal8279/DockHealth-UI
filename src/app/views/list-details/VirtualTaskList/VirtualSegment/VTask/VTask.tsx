@@ -16,10 +16,10 @@ import {
   DraggableProvided,
   DraggableStateSnapshot,
 } from 'react-beautiful-dnd';
-import * as Sc from './styled';
 import * as TaskActions from 'actions/task-actions';
-import { TaskOrigin } from '@/app/helpers/task-helpers';
 import { useDispatch, useSelector } from 'react-redux';
+import * as Sc from './styled';
+import { TaskOrigin } from '@/app/helpers/task-helpers';
 import { taskLookupSelector } from '@/app/selectors/task-details-selectors';
 import QuickAddSubtask from '@/app/components/task/StandardTaskItem/QuickAddSubtask';
 import { QuickAddInputWrapper } from '@/app/components/task-template/TaskTemplateGroup/styled';

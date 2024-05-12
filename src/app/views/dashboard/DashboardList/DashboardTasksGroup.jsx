@@ -417,7 +417,13 @@ const DashboardTasksGroup = ({
                     dashboardTasksGroup?.moreTasksIndex !== 0 && (
                       <LoadMoreButton
                         onClick={() =>
-                          dispatch(loadMoreDashboardTasksForGroup(groupType))
+                          dispatch(
+                            loadMoreDashboardTasksForGroup(
+                              groupType,
+                              currentSort?.key,
+                              currentSort?.order,
+                            ),
+                          )
                         }
                       />
                     )}

@@ -1,7 +1,7 @@
 /* eslint-disable import/extensions */
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { ColorIndicator, DropdownBox } from './styled';
 import { ListItemText, MenuItem, Select } from '@mui/material';
+import { ColorIndicator, DropdownBox } from './styled';
 
 const TaskItemDropdown = ({
   value: initialValue,
@@ -21,9 +21,9 @@ const TaskItemDropdown = ({
         color,
       })) || [];
 
-    // if (o.length > 0 && !isRequired) {
-    //   o.unshift({ label: 'None', value: null });
-    // }
+    if (o.length > 0 && !isRequired) {
+      o.unshift({ label: 'None', value: null });
+    }
 
     return o;
   }, [initialOptions, isRequired]);

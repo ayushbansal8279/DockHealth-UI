@@ -8,6 +8,7 @@ import React, {
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { uniqueId } from 'lodash';
+import { TaskStatus } from 'helpers/task-helpers';
 import Virtualized, { Node } from 'views/list-details/modules/Virtualized';
 import VListGroup from 'views/list-details/VirtualTaskList/VirtualSegment/VListGroup/VListGroup';
 import VTask from 'views/list-details/VirtualTaskList/VirtualSegment/VTask/VTask';
@@ -15,9 +16,14 @@ import VSubtask from 'views/list-details/VirtualTaskList/VirtualSegment/VSubtask
 import VAddGroup from 'views/list-details/VirtualTaskList/VirtualSegment/VAddGroup/VAddGroup';
 import VQuickAddTask from 'views/list-details/VirtualTaskList/VirtualSegment/VQuickAddTask/VQuickAddTask';
 import VTaskHeader from 'views/list-details/VirtualTaskList/VirtualSegment/VTaskHeader/VTaskHeader';
+// import { DropResult } from 'react-beautiful-dnd';
+// import { reorderTasksInGroup } from 'actions/list-details-actions';
+import { currentTaskListTasksStatusSelector } from 'selectors/task-list-selectors';
+// import {
+//   isShowCompletedTasks,
+//   isShowIncompleteTasks,
+// } from 'selectors/task-items-selectors';
 import VLoadMoreTasks from './VirtualSegment/VLoadMoreTasks/VLoadMoreTasks';
-import { DropResult } from 'react-beautiful-dnd';
-import { reorderTasksInGroup } from 'actions/list-details-actions';
 import {
   useVirtualTaskListScrollContext,
   withVirtualTaskListScrollContext,
@@ -68,10 +74,18 @@ function VirtualTaskList({ groupedTasks }: Props) {
     {},
   );
   const [workflowIdentifierMap, setWorkflowIdentifierMap] = useState([]);
-  // @ts-ignore
-  const tasksMap = useSelector((state) => state.listDetails.tasksMap);
-  // @ts-ignore
-  const listGroups = useSelector((state) => state.listDetails.listGroups);
+
+  const tasksMap = useSelector((state: any) => state.listDetails?.tasksMap);
+  const listGroups = useSelector((state: any) => state.listDetails?.listGroups);
+  const showCompletedWorkflowIdentifiers = useSelector(
+    (state: any) => state?.taskItems?.showCompletedWorkflowIdentifiers,
+  );
+  const showIncompleteWorkflowIdentifiers = useSelector(
+    (state: any) => state?.taskItems?.showIncompleteWorkflowIdentifiers,
+  );
+  const currentTaskListTasksStatus = useSelector(
+    currentTaskListTasksStatusSelector,
+  );
 
   const elementRef = useRef(null);
   const { updateVisibleWidth } = useVirtualTaskListScrollContext();
@@ -98,10 +112,10 @@ function VirtualTaskList({ groupedTasks }: Props) {
     };
   }, [elementRef.current]);
 
-  const handleAddWorkflowIdentifier = (identifier) => {
+  const handleAddWorkflowIdentifier = (identifier: any) => {
     setWorkflowIdentifierMap([...workflowIdentifierMap, identifier]);
   };
-  const handleRemoveWorkflowIdentifier = (identifier) => {
+  const handleRemoveWorkflowIdentifier = (identifier: any) => {
     const newArray = workflowIdentifierMap.filter(
       (item) => item !== identifier,
     );
@@ -169,67 +183,82 @@ function VirtualTaskList({ groupedTasks }: Props) {
                   isLastTaskOfGroup: groupTaskIndex === groupTasks.length - 1,
                   isLastGroupOfList: index === listGroups?.length - 1,
                 },
-                children.map((child: any, childIndex: number) => {
-                  return convert(
-                    child?.taskIdentifier ?? child,
-                    task.itemType === 'TASK' ? VSubtask : VTask,
-                    task.itemType === 'TASK' ? 'Subtask' : 'TaskOfBundle',
-                    !!collapseMap[child?.taskIdentifier ?? child],
-                    {
-                      task: child,
-                      isNextVirtualTaskItemTypeBundle:
-                        children.indexOf(child) === children.length - 1
-                          ? tasksMap[groupTasks[groupTaskIndex + 1]]
-                              ?.itemType === 'BUNDLE'
-                          : false,
-                      isTaskTemplate: true,
-                      isLastChild:
-                        children.indexOf(child) === children.length - 1,
-                      bgColor: !(index % 2 === 0),
-                      isLastTaskOfGroup:
-                        groupTaskIndex === groupTasks.length - 1 &&
-                        childIndex === children.length - 1,
-                      isLastSubtaskParentTask:
-                        childIndex === children.length - 1,
-                      isLastGroupOfList: index === listGroups?.length - 1,
-                    },
-                    !!tasksMap[child]?.subtasks.length
-                      ? tasksMap[child].subtasks.map(
-                          (subtask: any, subTaskIndex: number) => {
-                            return convert(
-                              subtask.taskIdentifier,
-                              VSubtask,
-                              'Subtask',
-                              false,
-                              {
-                                task: subtask,
-                                bgColor: !(index % 2 === 0),
-                                isLastTaskOfGroup:
-                                  groupTaskIndex === groupTasks.length - 1 &&
-                                  subTaskIndex ===
-                                    tasksMap[child]?.subtasks.length - 1,
-                                isLastSubtaskParentTask:
-                                  subTaskIndex ===
-                                    tasksMap[child]?.subtasks.length - 1 &&
-                                  childIndex === children.length - 1,
-                                isLastGroupOfList:
-                                  index === listGroups?.length - 1,
-                                isNextVirtualTaskItemTypeBundle:
-                                  subTaskIndex ===
-                                    tasksMap[child]?.subtasks.length - 1 &&
-                                  childIndex === children.length - 1
-                                    ? tasksMap[groupTasks[groupTaskIndex + 1]]
-                                        ?.itemType === 'BUNDLE'
-                                    : false,
-                                isWorkflowSubTask: true,
-                              },
-                              [],
-                            );
-                          },
-                        )
-                      : [],
-                  );
-                }),
+                children
+                  .filter(
+                    (child: any) =>
+                      task.itemType === 'TASK' ||
+                      currentTaskListTasksStatus === TaskStatus.ALL ||
+                      tasksMap[child]?.status === currentTaskListTasksStatus ||
+                      (currentTaskListTasksStatus === TaskStatus.INCOMPLETE &&
+                        showCompletedWorkflowIdentifiers.includes(
+                          task?.identifier,
+                        )) ||
+                      (currentTaskListTasksStatus === TaskStatus.COMPLETE &&
+                        showIncompleteWorkflowIdentifiers.includes(
+                          task?.identifier,
+                        )),
+                  )
+                  .map((child: any, childIndex: number) => {
+                    return convert(
+                      child?.taskIdentifier ?? child,
+                      task.itemType === 'TASK' ? VSubtask : VTask,
+                      task.itemType === 'TASK' ? 'Subtask' : 'TaskOfBundle',
+                      !!collapseMap[child?.taskIdentifier ?? child],
+                      {
+                        task: child,
+                        isNextVirtualTaskItemTypeBundle:
+                          children.indexOf(child) === children.length - 1
+                            ? tasksMap[groupTasks[groupTaskIndex + 1]]
+                                ?.itemType === 'BUNDLE'
+                            : false,
+                        isTaskTemplate: true,
+                        isLastChild:
+                          children.indexOf(child) === children.length - 1,
+                        bgColor: !(index % 2 === 0),
+                        isLastTaskOfGroup:
+                          groupTaskIndex === groupTasks.length - 1 &&
+                          childIndex === children.length - 1,
+                        isLastSubtaskParentTask:
+                          childIndex === children.length - 1,
+                        isLastGroupOfList: index === listGroups?.length - 1,
+                      },
+                      !!tasksMap[child]?.subtasks.length
+                        ? tasksMap[child].subtasks.map(
+                            (subtask: any, subTaskIndex: number) => {
+                              return convert(
+                                subtask.taskIdentifier,
+                                VSubtask,
+                                'Subtask',
+                                false,
+                                {
+                                  task: subtask,
+                                  bgColor: !(index % 2 === 0),
+                                  isLastTaskOfGroup:
+                                    groupTaskIndex === groupTasks.length - 1 &&
+                                    subTaskIndex ===
+                                      tasksMap[child]?.subtasks.length - 1,
+                                  isLastSubtaskParentTask:
+                                    subTaskIndex ===
+                                      tasksMap[child]?.subtasks.length - 1 &&
+                                    childIndex === children.length - 1,
+                                  isLastGroupOfList:
+                                    index === listGroups?.length - 1,
+                                  isNextVirtualTaskItemTypeBundle:
+                                    subTaskIndex ===
+                                      tasksMap[child]?.subtasks.length - 1 &&
+                                    childIndex === children.length - 1
+                                      ? tasksMap[groupTasks[groupTaskIndex + 1]]
+                                          ?.itemType === 'BUNDLE'
+                                      : false,
+                                  isWorkflowSubTask: true,
+                                },
+                                [],
+                              );
+                            },
+                          )
+                        : [],
+                    );
+                  }),
               );
             },
           ),
@@ -276,18 +305,26 @@ function VirtualTaskList({ groupedTasks }: Props) {
           true,
         ),
       );
-  }, [groupedTasks, tasksMap, collapseMap, listGroups]);
+  }, [
+    listGroups,
+    groupedTasks,
+    collapseMap,
+    tasksMap,
+    currentTaskListTasksStatus,
+    showCompletedWorkflowIdentifiers,
+    showIncompleteWorkflowIdentifiers,
+  ]);
 
-  const dispatch = useDispatch();
-  const handleDragEnd = ({ draggableId, destination, source }: DropResult) => {
-    const xs = nodes[0]?.children
-      .map((task) => task.id)
-      .filter((id) => id.length > 3);
-    const xs2 = xs.slice();
-    xs2.splice(xs.indexOf(draggableId), 1);
-    xs2.splice(destination?.index!, 0, draggableId);
-    dispatch(reorderTasksInGroup({ destination, source }));
-  };
+  // const dispatch = useDispatch();
+  // const handleDragEnd = ({ draggableId, destination, source }: DropResult) => {
+  //   const xs = nodes[0]?.children
+  //     .map((task) => task.id)
+  //     .filter((id) => id.length > 3);
+  //   const xs2 = xs.slice();
+  //   xs2.splice(xs.indexOf(draggableId), 1);
+  //   xs2.splice(destination?.index!, 0, draggableId);
+  //   dispatch(reorderTasksInGroup({ destination, source }));
+  // };
 
   // eslint-disable-next-line react/jsx-no-constructed-context-values
   const contextValue = {
@@ -297,9 +334,9 @@ function VirtualTaskList({ groupedTasks }: Props) {
     set: (id: string, value: boolean) => {
       collapseDispatch([id, value]);
     },
-    workflowIdentifierMap: workflowIdentifierMap,
-    handleAddWorkflowIdentifier: handleAddWorkflowIdentifier,
-    handleRemoveWorkflowIdentifier: handleRemoveWorkflowIdentifier,
+    workflowIdentifierMap,
+    handleAddWorkflowIdentifier,
+    handleRemoveWorkflowIdentifier,
   };
 
   return (

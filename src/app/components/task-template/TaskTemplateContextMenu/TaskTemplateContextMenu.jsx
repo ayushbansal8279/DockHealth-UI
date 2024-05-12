@@ -1,17 +1,24 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useCallback, useEffect, useRef } from 'react';
+import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import palette from 'styles/palette';
 import { SINGLE_TASK_RESTRICTIONS_OPTIONS } from 'restrictions/task-restrictions';
+import { TaskStatus } from 'helpers/task-helpers';
+import {
+  isShowCompletedTasks,
+  isShowIncompleteTasks,
+} from 'selectors/task-items-selectors';
 import { Backdrop, MenuContainer, MenuItemButton, Divider } from './styled';
 
 const { DISABLED } = SINGLE_TASK_RESTRICTIONS_OPTIONS;
 
 const TaskTemplateContextMenu = ({
+  identifier,
+  restrictions,
   position,
   onClose,
-  restrictions,
   handleAddTask,
   handleEditName,
   handleMoveToList,
@@ -19,9 +26,23 @@ const TaskTemplateContextMenu = ({
   handleDuplicate,
   handleDelete,
   showCompletedTasks,
-  toggleTasksVisibility,
+  showIncompleteTasks,
+  currentTaskListTasksStatus,
+  toggleCompletedTasksVisibility,
+  toggleIncompleteTasksVisibility,
 }) => {
   const menuReference = useRef(null);
+
+  const isShowCompletedTasksFlag = useSelector(
+    isShowCompletedTasks(identifier),
+  );
+  const isShowIncompleteTasksFlag = useSelector(
+    isShowIncompleteTasks(identifier),
+  );
+  const showCompletedTasksResolved =
+    showCompletedTasks || isShowCompletedTasksFlag;
+  const showIncompleteTasksResolved =
+    showIncompleteTasks || isShowIncompleteTasksFlag;
 
   const handleKeyDown = useCallback((event) => {
     function handleBackward() {
@@ -171,13 +192,30 @@ const TaskTemplateContextMenu = ({
             </MenuItemButton>
           </div>
         )}
-        <div>
-          <MenuItemButton type="button" onClick={toggleTasksVisibility}>
-            {showCompletedTasks
-              ? 'Hide completed tasks'
-              : 'Show completed tasks'}
-          </MenuItemButton>
-        </div>
+        {currentTaskListTasksStatus === TaskStatus.INCOMPLETE && (
+          <div>
+            <MenuItemButton
+              type="button"
+              onClick={toggleCompletedTasksVisibility}
+            >
+              {showCompletedTasksResolved
+                ? 'Hide completed tasks'
+                : 'Show completed tasks'}
+            </MenuItemButton>
+          </div>
+        )}
+        {currentTaskListTasksStatus === TaskStatus.COMPLETE && (
+          <div>
+            <MenuItemButton
+              type="button"
+              onClick={toggleIncompleteTasksVisibility}
+            >
+              {showIncompleteTasksResolved
+                ? 'Hide incomplete tasks'
+                : 'Show incomplete tasks'}
+            </MenuItemButton>
+          </div>
+        )}
         {restrictions?.delete !== DISABLED && (
           <>
             <Divider />

@@ -593,7 +593,7 @@ function* filterListDetailsTasks({ payload }) {
   );
 
   yield all([
-    put(ListDetailsActions.getCurrentTaskListFilterOptions()),
+    // put(ListDetailsActions.getCurrentTaskListFilterOptions()),
     put(ListDetailsActions.refreshListDetailsGroupedTasks()),
   ]);
 }

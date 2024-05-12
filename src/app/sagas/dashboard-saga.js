@@ -70,18 +70,20 @@ function* getDashboardFilters() {
   }
 }
 
-function* getDashboardTasksForGroup({ groupType }) {
+function* getDashboardTasksForGroup({ groupType, sortBy, sortDirection }) {
   try {
     const tabName = yield select(dashboardTabNameSelector);
     const isAllTasks = tabName === DashboardTasksTab.ALL_TASKS;
-    const { tasks } = yield select(dashboardGroupTasksCountSelector, groupType);
+    // const { tasks } = yield select(dashboardGroupTasksCountSelector, groupType);
     const { taskGroups } = yield call(
       isAllTasks
         ? getTasksForOrganizationByImplicitGroup
         : getTasksAssignedToUserByImplicitGroup,
       groupType,
+      sortBy,
+      sortDirection,
       0,
-      tasks?.length || 0,
+      0,
     );
     const group = taskGroups.find((g) => g.groupType === groupType);
 
@@ -99,7 +101,7 @@ function* getDashboardTasksForGroup({ groupType }) {
   }
 }
 
-function* loadMoreDashboardTasksForGroup({ groupType }) {
+function* loadMoreDashboardTasksForGroup({ groupType, sortBy, sortDirection }) {
   try {
     const tabName = yield select(dashboardTabNameSelector);
     const isAllTasks = tabName === DashboardTasksTab.ALL_TASKS;
@@ -113,7 +115,10 @@ function* loadMoreDashboardTasksForGroup({ groupType }) {
         ? getTasksForOrganizationByImplicitGroup
         : getTasksAssignedToUserByImplicitGroup,
       groupType,
+      sortBy,
+      sortDirection,
       customStartPosition,
+      0,
     );
     const group = taskGroups.find((g) => g.groupType === groupType);
 
@@ -323,7 +328,7 @@ function* selectDashboardFilters() {
   if (tabName) {
     yield all([
       put(DashboardActions.getDashboardTasks()),
-      put(DashboardActions.getDashboardFilters()),
+      // put(DashboardActions.getDashboardFilters()),
     ]);
   }
 }
