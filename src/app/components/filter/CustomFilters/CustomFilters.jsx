@@ -98,6 +98,7 @@ const CustomFilters = ({
             }
             onEditMode={(identifier) => setEditModeFilterIdentifier(identifier)}
             disabled={filter.quickFilterIdentifier !== editModeFilterIdentifier}
+            disableOptions={filter.predefined}
             onBlur={handleUpdate}
             editModeEnabled={editModeEnabled}
             onDelete={onDelete}
