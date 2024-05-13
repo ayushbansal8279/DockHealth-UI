@@ -90,7 +90,7 @@ const AttachmentsSection = ({ selectedTask, disabled = false }) => {
                       attachment?.scanStatus === null ||
                       attachment?.scanStatus === ScanStatus.CLEAN
                     )
-                      openAttachmentPreview();
+                      openAttachmentPreview(attachment);
                   }}
                   onRemoveClick={removeTaskAttachment}
                 />
