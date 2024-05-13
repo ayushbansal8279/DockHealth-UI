@@ -45,10 +45,14 @@ export function getPatientFilterOptions() {
   };
 }
 
-export function changePatientTasksFilters(selectedFilters) {
+export function changePatientTasksFilters(
+  selectedFilters,
+  selectedQuickFilter,
+) {
   return {
     type: ActionTypes.CHANGE_PATIENT_TASKS_FILTERS,
     selectedFilters,
+    selectedQuickFilter,
   };
 }
 

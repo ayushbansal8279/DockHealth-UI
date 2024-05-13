@@ -158,7 +158,7 @@ const TaskListToolbar = (props) => {
     );
   };
 
-  const handleFilterChange = compose(
+  const handleFilterSelect = compose(
     dispatch,
     PatientDetailsActions.changePatientTasksFilters,
   );
@@ -166,23 +166,25 @@ const TaskListToolbar = (props) => {
   const handleSelectQuickFilter = useCallback(
     (id, filtersSetup) => {
       dispatch(selectQuickFilter(id));
-      dispatch(PatientDetailsActions.changePatientTasksFilters(filtersSetup));
+      dispatch(
+        PatientDetailsActions.changePatientTasksFilters(filtersSetup, id),
+      );
     },
     [dispatch],
   );
 
   const handleSaveQuickFilter = useCallback(
-    () =>
+    (quickFilterIdentifier, selectedFilters) =>
       dispatch(
         updateQuickFilter(
-          selectedQuickFilter,
+          quickFilterIdentifier,
           {
             selectedOptions: selectedFilters,
           },
           { patientIdentifier },
         ),
       ),
-    [dispatch, patientIdentifier, selectedFilters, selectedQuickFilter],
+    [dispatch, patientIdentifier],
   );
 
   const handleSaveAsQuickFilter = useCallback(
@@ -354,7 +356,7 @@ const TaskListToolbar = (props) => {
         <MegaFilter
           filters={filters}
           selectedFilters={selectedFilters}
-          onSelectFilters={handleFilterChange}
+          onSelectFilters={handleFilterSelect}
           isFetching={isFetchingLists}
           onOpen={() => {
             dispatch(getQuickFilters({ patientIdentifier }));
@@ -364,7 +366,7 @@ const TaskListToolbar = (props) => {
           addQuickFilterOption={addQuickFilterOption}
           selectedQuickFilter={selectedQuickFilter}
           selectQuickFilter={handleSelectQuickFilter}
-          onSaveClick={handleSaveQuickFilter}
+          handleSaveQuickFilter={handleSaveQuickFilter}
           onSaveAsNewClick={handleSaveAsQuickFilter}
           wasChangedFilters={wasChangedFilters}
           onQuickFilterCreate={handleQuickFilterCreate}

@@ -18,6 +18,7 @@ const MegaFilter = ({
   children,
   filters,
   selectedFilters,
+  selectedQuickFilter: initialQuickFilter,
   onSelectFilters,
   // activeItemsAmount,
   tasksAndSubTasksCount,
@@ -56,6 +57,10 @@ const MegaFilter = ({
     setFinalFilter({});
     setSelectedQuickFilter('');
   };
+
+  useEffect(() => {
+    setSelectedQuickFilter(initialQuickFilter);
+  }, [initialQuickFilter]);
 
   useEffect(() => {
     // eslint-disable-next-line no-unused-expressions

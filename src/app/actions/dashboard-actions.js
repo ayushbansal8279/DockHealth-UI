@@ -40,10 +40,11 @@ export function getDashboardFilters() {
   };
 }
 
-export function selectDashboardFilters(selectedFilters) {
+export function selectDashboardFilters(selectedFilters, selectedQuickFilter) {
   return {
     type: ActionTypes.SELECT_DASHBOARD_FILTERS,
     selectedFilters,
+    selectedQuickFilter,
   };
 }
 
