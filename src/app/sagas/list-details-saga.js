@@ -38,7 +38,6 @@ import * as ActionTypes from 'actions/action-types';
 import { storeAsCurrentTask } from 'actions/task-actions';
 import { selectedFiltersInMegaFilterSelector } from 'selectors/mega-filter-selectors';
 import { taskIsSelectedSelector } from 'selectors/task-drawer-selectors';
-import { selectedUserOrganizationSelector } from 'selectors/user-selectors';
 import {
   listDetailsGroupsSelector,
   groupTasksSelector,

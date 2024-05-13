@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
-import { bulkEditTaskListCustomFields } from '@/app/api/task-list-api';
+import { bulkEditCustomFieldsByTaskIdentifiers } from '@/app/api/task-api';
 import * as CustomFieldsApi from '@/app/api/custom-fields-api';
 import { ICustomField } from '@/app/types/CustomField';
 import { FormattedMetaData } from '../CustomFieldsBulkEditModal/helpers';
 import CustomFieldsBulkEditModal from '../CustomFieldsBulkEditModal';
+import { showGlobalAlert, showGlobalErrorAlert } from '@/app/alert/actions';
+import AlertMessages from '@/app/alert/AlertMessages';
+import { updateCustomFieldsByTaskIdentifiers } from '@/app/actions/task-actions';
 
 interface Props {
   taskIdentifiers: string[];
@@ -30,18 +33,19 @@ export default function TaskListCustomFieldsBulkEditModal({
   }, []);
 
   const handleSave = async (formattedMetaData: FormattedMetaData) => {
-    console.log('taskIdentifiers', taskIdentifiers);
-    console.log('formattedMetaData', formattedMetaData);
-    return;
     try {
       const payload = {
         metaData: formattedMetaData,
         taskIdentifiers,
       };
-      await bulkEditTaskListCustomFields(payload);
-      // todo: update tasks list
+      await bulkEditCustomFieldsByTaskIdentifiers(payload);
+      dispatch(
+        updateCustomFieldsByTaskIdentifiers(taskIdentifiers, formattedMetaData),
+      );
+      dispatch(showGlobalAlert(AlertMessages.UPDATED));
       closeModal();
     } catch (error) {
+      dispatch(showGlobalErrorAlert());
       console.error(error);
     }
   };

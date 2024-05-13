@@ -593,11 +593,6 @@ export function shareTask(
   assignTask,
 ) {
   // TODO: add sharing task endpoint
-  log('taskIdentifier', taskIdentifier);
-  log('usersIdentifiers', userIdentifiers);
-  log('externalUsers', externalUsers);
-  log('message', message);
-  // return Promise.resolve();
   return axios
     .post(`task/sharing`, {
       taskIdentifier,
@@ -616,4 +611,15 @@ export function postToEMR(task) {
   return axios
     .post('task/communication/postToEMR', task)
     .then(({ data }) => data);
+}
+
+export function bulkEditCustomFieldsByTaskIdentifiers({
+  metaData,
+  taskIdentifiers,
+}) {
+  return axios.put('/task/bulkEdit', {
+    bulkEditType: 'EDIT_META_DATA',
+    metaData,
+    taskIdentifiers,
+  });
 }

@@ -516,6 +516,16 @@ export function updateTaskDescription(task, descriptionState) {
   };
 }
 
+export function updateCustomFieldsByTaskIdentifiers(taskIdentifiers, metaData) {
+  return {
+    type: ActionTypes.UPDATE_CUSTOM_FIELDS_BY_TASK_IDENTIFIERS,
+    payload: {
+      taskIdentifiers,
+      metaData,
+    },
+  };
+}
+
 export function updateTaskDetails(task, detailsState) {
   return {
     type: ActionTypes.UPDATE_TASK_DETAILS,

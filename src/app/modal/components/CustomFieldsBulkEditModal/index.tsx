@@ -42,8 +42,6 @@ export default function CustomFieldsBulkEditModal({
     getValues,
   } = methods;
 
-  console.log('customFields', customFields);
-
   const saveDisabled =
     isSubmitting || !Object.keys(getValues('metaData')).length;
 
