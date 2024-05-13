@@ -54,6 +54,7 @@ const SaveFilterPopup = ({
   isPatientListPage,
 }) => {
   const [searchInputValue, setSearchInputValue] = useState('');
+  const [quickfilterName, setQuickfilterName] = useState('');
   const [onlyone, setOnlyone] = useState(true);
   const [everyOne, setEveryOne] = useState(false);
   const [isQuickFilterEdit, setIsQuickFilterEdit] = useState(false);
@@ -64,6 +65,7 @@ const SaveFilterPopup = ({
       quickFiltersList.map((item) => {
         if (item.quickFilterIdentifier === editIdentifier) {
           setSearchInputValue(item.name);
+          setQuickfilterName(item.name);
           setIsQuickFilterEdit(true);
         }
       });
@@ -74,11 +76,16 @@ const SaveFilterPopup = ({
   }, [quickFiltersList, editIdentifier, isQuickFilterEdit]);
 
   useEffect(() => {
+    const isFilterOptionsSame =
+      isQuickFilterEdit &&
+      JSON.stringify(selectedCustomFilter) ===
+        JSON.stringify(customFinalFilter);
+
+    const isQuickfilterNameSame =
+      quickfilterName && searchInputValue === quickfilterName;
+
     setDisable(
-      searchInputValue === '' ||
-        (isQuickFilterEdit &&
-          JSON.stringify(selectedCustomFilter) ===
-            JSON.stringify(customFinalFilter)),
+      searchInputValue === '' || (isFilterOptionsSame && isQuickfilterNameSame),
     );
   }, [
     isQuickFilterEdit,
