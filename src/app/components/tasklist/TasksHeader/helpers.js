@@ -44,11 +44,13 @@ export const getTaskHeaderOptions = (
       identifier: TaskHeaderColumn.DESCRIPTION,
       label: 'Tasks',
       draggable: true,
+      sortEnabled: true,
     },
     {
       identifier: TaskHeaderColumn.TASK_DETAILS,
       label: 'Details',
       draggable: true,
+      sortEnabled: true,
     },
     // {
     //   identifier: TaskHeaderColumn.SUBTASKS_COUNT,
@@ -60,6 +62,7 @@ export const getTaskHeaderOptions = (
       label:
         customerTypeLabel.charAt(0).toUpperCase() + customerTypeLabel.slice(1),
       draggable: true,
+      sortEnabled: true,
     },
     {
       identifier: TaskHeaderColumn.PATIENT_GENDER,
@@ -67,6 +70,7 @@ export const getTaskHeaderOptions = (
         .charAt(0)
         .toUpperCase()}${customerTypeLabel.slice(1)} Gender`,
       draggable: true,
+      sortEnabled: false,
     },
     {
       identifier: TaskHeaderColumn.PATIENT_DOB,
@@ -74,6 +78,7 @@ export const getTaskHeaderOptions = (
         .charAt(0)
         .toUpperCase()}${customerTypeLabel.slice(1)} DOB`,
       draggable: true,
+      sortEnabled: true,
     },
     {
       identifier: TaskHeaderColumn.PATIENT_EMAIL,
@@ -81,11 +86,13 @@ export const getTaskHeaderOptions = (
         .charAt(0)
         .toUpperCase()}${customerTypeLabel.slice(1)} Email`,
       draggable: true,
+      sortEnabled: true,
     },
     {
       identifier: TaskHeaderColumn.PATIENT_MRN,
       label: `${uniqueIdentifierLabel}`,
       draggable: true,
+      sortEnabled: true,
     },
     {
       identifier: TaskHeaderColumn.PATIENT_HOME_PHONE,
@@ -93,6 +100,7 @@ export const getTaskHeaderOptions = (
         .charAt(0)
         .toUpperCase()}${customerTypeLabel.slice(1)} Home Phone`,
       draggable: true,
+      sortEnabled: true,
     },
     {
       identifier: TaskHeaderColumn.PATIENT_MOBILE_PHONE,
@@ -100,101 +108,119 @@ export const getTaskHeaderOptions = (
         .charAt(0)
         .toUpperCase()}${customerTypeLabel.slice(1)} Mobile Phone`,
       draggable: true,
+      sortEnabled: true,
     },
     {
       identifier: TaskHeaderColumn.WORKFLOW_STATUS,
       label: 'Status',
       draggable: true,
+      sortEnabled: true,
     },
     {
       identifier: TaskHeaderColumn.PRIORITY,
       label: 'Priority',
       draggable: true,
+      sortEnabled: true,
     },
     {
       identifier: TaskHeaderColumn.COMMENTS,
       label: 'Comments',
       draggable: true,
+      sortEnabled: false,
     },
     {
       identifier: TaskHeaderColumn.LABELS,
       label: 'Labels',
       draggable: true,
+      sortEnabled: false,
     },
     {
       identifier: TaskHeaderColumn.FILES,
       label: 'Files',
       draggable: true,
+      sortEnabled: false,
     },
     {
       identifier: TaskHeaderColumn.START_DATE,
       label: 'Start',
       draggable: true,
+      sortEnabled: true,
     },
     {
       identifier: TaskHeaderColumn.DUE_DATE,
       label: 'Due',
       draggable: true,
       hidden: restrictions?.dueDate !== DISABLED,
+      sortEnabled: true,
     },
     {
       identifier: TaskHeaderColumn.CREATED_DATE,
       label: 'Created date',
       draggable: true,
       hidden: restrictions?.createdDate !== DISABLED,
+      sortEnabled: true,
     },
     {
       identifier: TaskHeaderColumn.COMPLETED_DATE,
       label: 'Completed date',
       draggable: true,
       hidden: restrictions?.completedDate !== DISABLED,
+      sortEnabled: true,
     },
     {
       identifier: TaskHeaderColumn.ELAPSED_TIME,
       label: 'Elapsed time',
       draggable: true,
       hidden: restrictions?.elapsedTime !== DISABLED,
+      sortEnabled: true,
     },
     {
       identifier: TaskHeaderColumn.COMPLETED_BY,
       label: 'Completed by',
       draggable: true,
       hidden: restrictions?.completedBy !== DISABLED,
+      sortEnabled: true,
     },
     {
       identifier: TaskHeaderColumn.CREATED_BY,
       label: 'Created by',
       draggable: true,
       hidden: restrictions?.createdBy !== DISABLED,
+      sortEnabled: true,
     },
     {
       identifier: TaskHeaderColumn.ANCHOR_DATE,
       label: 'Anchor',
       draggable: true,
+      sortEnabled: true,
     },
     {
       identifier: TaskHeaderColumn.ASSIGNED,
       label: 'Assign',
       draggable: true,
       printWidth: TaskItemColumnWidth[TaskHeaderColumn.ASSIGNED].PRINT,
+      sortEnabled: true,
     },
     {
       identifier: TaskHeaderColumn.SHARED,
       label: 'Shared',
       draggable: true,
       printWidth: TaskItemColumnWidth[TaskHeaderColumn.ASSIGNED].PRINT,
+      sortEnabled: true,
     },
     {
       identifier: TaskHeaderColumn.LIST_NAME,
       label: 'List',
       draggable: true,
       hidden: restrictions?.listName !== DISABLED,
+      sortEnabled: true,
     },
     {
       identifier: TaskHeaderColumn.ORG_NAME,
       label: 'Org',
       draggable: true,
       hidden: restrictions?.listName !== DISABLED,
+      sortEnabled: true,
     },
   ];
 

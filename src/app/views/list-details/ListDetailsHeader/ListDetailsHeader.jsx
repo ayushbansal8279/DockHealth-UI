@@ -6,7 +6,6 @@ import React, {
   useEffect,
 } from 'react';
 import { useBoolean } from 'hooks/useBoolean';
-import MegaFilter from '@/app/components/tasklist/list-toolbar-buttons/MegaFilter/MegaFilter';
 import LayoutHeader from 'components/template/LayoutHeader/LayoutHeader';
 import { useDispatch, useSelector } from 'react-redux';
 import { MoreVert } from '@mui/icons-material';
@@ -46,6 +45,7 @@ import {
   deleteQuickFilter,
   getQuickFilters,
 } from 'actions/mega-filter-actions';
+import MegaFilter from '@/app/components/tasklist/list-toolbar-buttons/MegaFilter/MegaFilter';
 import AddGroupNameButton from '@/app/components/tasklist/list-toolbar-buttons/AddGroupNameButton/AddGroupNameButton';
 import ListDetailsToolbar from '../ListDetailsToolbar/ListDetailsToolbar';
 import { determineTaskCounts } from './helpers';
@@ -143,7 +143,7 @@ const ListDetailsHeader = (props) => {
   );
 
   const handleSaveQuickFilter = useCallback(
-    (quickFilterIdentifier,selectedFilters) =>
+    (quickFilterIdentifier, selectedFilters) =>
       dispatch(
         updateQuickFilter(
           quickFilterIdentifier,
@@ -153,13 +153,13 @@ const ListDetailsHeader = (props) => {
           { taskListIdentifier },
         ),
       ),
-    [dispatch, selectedQuickFilter, taskListIdentifier],
+    [dispatch, taskListIdentifier],
   );
 
   const handleSelectQuickFilter = useCallback(
     (id, filtersSetup) => {
       dispatch(selectQuickFilter(id));
-      dispatch(filterListDetailsTasks(filtersSetup));
+      dispatch(filterListDetailsTasks(filtersSetup, id));
     },
     [dispatch],
   );

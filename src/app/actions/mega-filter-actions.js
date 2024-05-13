@@ -1,4 +1,10 @@
-import { getFiltersFromLocalStorage } from 'helpers/mega-filter-helper';
+import {
+  getFiltersStorageKey,
+  getQuickFilterStorageKey,
+  getFiltersFromLocalStorage,
+  getQuickFilterFromLocalStorage,
+} from 'helpers/mega-filter-helper';
+import sessionStorageHelper from 'helpers/session-storage-helper';
 import * as ActionTypes from './action-types';
 
 export const quickContextTypes = {
@@ -17,26 +23,41 @@ export function clearFiltersForMegaFilter() {
 export function selectFiltersFromLocalStorage(id, status) {
   return (dispatch) => {
     const initialFilters = getFiltersFromLocalStorage(id, status);
+    const initialQuickFilter = getQuickFilterFromLocalStorage(id, status);
 
     dispatch({
       type: ActionTypes.SELECT_FILTERS_FROM_MEGA_FILTER,
       selectedFilters: initialFilters || {},
+      selectedQuickFilter: initialQuickFilter || [],
     });
   };
 }
 
-export function selectFiltersForMegaFilter(selectedFilters, id, status) {
+export function selectFiltersForMegaFilter(
+  selectedFilters,
+  id,
+  status,
+  selectedQuickFilter,
+) {
   return (dispatch) => {
     if (selectedFilters) {
-      sessionStorage[`filter-${id}-${status}`] =
-        JSON.stringify(selectedFilters);
+      sessionStorageHelper.setItem(
+        getFiltersStorageKey(id, status),
+        selectedFilters,
+      );
+      sessionStorageHelper.setItem(
+        getQuickFilterStorageKey(id, status),
+        selectedQuickFilter,
+      );
     } else {
-      sessionStorage.removeItem(`filter-${id}-${status}`);
+      sessionStorageHelper.removeItem(getFiltersStorageKey(id, status));
+      sessionStorageHelper.removeItem(getQuickFilterStorageKey(id, status));
     }
 
     dispatch({
       type: ActionTypes.SELECT_FILTERS_FROM_MEGA_FILTER,
       selectedFilters,
+      selectedQuickFilter,
       id,
       status,
     });

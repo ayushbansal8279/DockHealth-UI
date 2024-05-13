@@ -1880,7 +1880,6 @@ const TaskItem = React.memo(
                       order={getColumnOrder(TaskItemColumn.ORG_NAME)}
                     >
                       <TaskItemOrganization
-                        organizationName={organization?.organizationName}
                         organizationIdentifier={
                           organization?.organizationIdentifier
                         }

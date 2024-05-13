@@ -60,10 +60,12 @@ import {
   SINGLE_TASK_RESTRICTIONS_PROFILES,
   TASK_LIST_RESTRICTIONS_PROFILES,
 } from 'restrictions/task-restrictions';
-import TaskItemText from 'components/task/StandardTaskItem/customFieldsTaskItemComponents/TaskItemText/TaskItemText';
 import { updatePatientDetails } from 'actions/patient-details-actions';
+import TaskItemText from 'components/task/StandardTaskItem/customFieldsTaskItemComponents/TaskItemText/TaskItemText';
 import TaskItemDropdown from 'components/task/StandardTaskItem/customFieldsTaskItemComponents/TaskItemDropdown/TaskItemDropdown';
 import TaskItemDate from 'components/task/StandardTaskItem/customFieldsTaskItemComponents/TaskItemDate';
+import TaskItemList from 'components/task/StandardTaskItem/TaskItemComponents/TaskItemList';
+import TaskItemOrganization from 'components/task/StandardTaskItem/TaskItemComponents/TaskItemOrganization';
 import { CollapseContext } from 'views/list-details/VirtualTaskList/VirtualTaskList';
 import { isWorkflowSelectedSelector } from 'selectors/workflow-drawer-selectors';
 import TaskTemplateCreatedByMembers from '../TaskTemplateMembers/TaskTemplateCreatedBy';
@@ -1128,10 +1130,51 @@ const TaskTemplateGroupHeader = ({
                   )?.columnWidth
                 }
                 order={getColumnOrder(TaskItemColumn.LIST_NAME)}
-              />,
+              >
+                <TaskItemList
+                  listName={templateGroup?.taskList?.listName}
+                  taskListIdentifier={
+                    templateGroup?.taskList?.taskListIdentifier
+                  }
+                />
+              </TaskItemCell>,
               getColumnOrder(TaskItemColumn.LIST_NAME),
               columns?.find(
                 ({ identifier: id }) => id === TaskItemColumn.LIST_NAME,
+              )?.columnWidth,
+            )}
+          </>
+        )}
+        {isColumnChecked(columns, TaskItemColumn.ORG_NAME) && (
+          <>
+            {randerFirstColumnCoverIfNecessary(
+              <TaskItemCell
+                key={`list_${identifier}`}
+                width={
+                  columns?.find(
+                    ({ identifier: id }) => id === TaskItemColumn.ORG_NAME,
+                  )?.columnWidth
+                }
+                order={getColumnOrder(TaskItemColumn.ORG_NAME)}
+              >
+                <TaskItemOrganization
+                  organizationName={
+                    templateGroup?.organization?.organizationName
+                  }
+                  organizationIdentifier={
+                    templateGroup?.organization?.organizationIdentifier
+                  }
+                  organizationInitials={
+                    templateGroup?.organization?.organizationInitials
+                  }
+                  organizationProfileColor={
+                    templateGroup?.organization?.organizationProfileColor
+                  }
+                />
+              </TaskItemCell>,
+              getColumnOrder(TaskItemColumn.ORG_NAME),
+              columns?.find(
+                ({ identifier: id }) => id === TaskItemColumn.ORG_NAME,
               )?.columnWidth,
             )}
           </>

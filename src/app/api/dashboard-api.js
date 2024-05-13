@@ -49,34 +49,18 @@ export function reorderTasksInGroup({
     });
 }
 
-export function getDashboardMyTasksFilters(selectedFilters) {
-  const request = selectedFilters
-    ? axios
-        .post(
-          `task/filter/filterTasksByCriteriaForCurrentUser?status=INCOMPLETE&includeOptions=true`,
-          mapSelectedOptionsToRequestPayload(selectedFilters),
-        )
-        .then(({ data }) => data.taskFilterOptions)
-    : axios
-        .get(`task/filter/filterOptionsForCurrentUser?status=INCOMPLETE`)
-        .then(({ data }) => data);
+export function getDashboardMyTasksFilters() {
+  const request = axios
+    .get(`task/filter/filterOptionsForCurrentUser?status=INCOMPLETE`)
+    .then(({ data }) => data);
 
   return request.then((options) => mapFilterOptions(options));
 }
 
-export function getDashboardAllTasksFilters(selectedFilters) {
-  const request = selectedFilters
-    ? axios
-        .post(
-          `task/filter/filterTasksByCriteriaForOrganization?status=INCOMPLETE&includeOptions=true`,
-          mapSelectedOptionsToRequestPayload(selectedFilters),
-        )
-        .then(({ data }) => data.taskFilterOptions)
-    : axios
-        .get(
-          `task/filter/filterOptionsForTasksInOrganization?status=INCOMPLETE`,
-        )
-        .then(({ data }) => data);
+export function getDashboardAllTasksFilters() {
+  const request = axios
+    .get(`task/filter/filterOptionsForTasksInOrganization?status=INCOMPLETE`)
+    .then(({ data }) => data);
 
   return request.then((options) => mapFilterOptions(options));
 }

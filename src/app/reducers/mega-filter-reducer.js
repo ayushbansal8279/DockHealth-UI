@@ -11,7 +11,7 @@ const INITIAL_STATE = {
 };
 
 export default (state = INITIAL_STATE, action = {}) => {
-  const { type, error, selectedFilters } = action;
+  const { type, error, selectedFilters, selectedQuickFilter } = action;
   switch (type) {
     case ActionTypes.CLEAN_QUICK_FILTER: {
       return {
@@ -103,7 +103,7 @@ export default (state = INITIAL_STATE, action = {}) => {
     }
 
     case ActionTypes.SELECT_FILTERS_FROM_MEGA_FILTER: {
-      return { ...state, selectedFilters };
+      return { ...state, selectedFilters, selectedQuickFilter };
     }
 
     case ActionTypes.CLEAR_MEGA_FILTERS: {

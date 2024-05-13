@@ -32,15 +32,40 @@ import {
   dashboardTasksSelector,
   dashboardGroupTasksCountSelector,
   dashboardTabNameSelector,
-  dashboardSelectedFiltersSelector,
 } from 'selectors/dashboard-selectors';
+import * as MegaFilterActions from 'actions/mega-filter-actions';
 import { showGlobalErrorAlert } from 'alert/actions';
+import { selectedFiltersInMegaFilterSelector } from 'selectors/mega-filter-selectors';
+import {
+  getFiltersStorageKey,
+  getQuickFilterStorageKey,
+} from 'helpers/mega-filter-helper';
+import sessionStorageHelper from 'helpers/session-storage-helper';
 import { log } from 'helpers/log';
 
 function* initializeDashboardView() {
   try {
-    const selectedFilters = yield select(dashboardSelectedFiltersSelector);
-    yield selectedFilters
+    const tabName = yield select(dashboardTabNameSelector);
+
+    const filters = sessionStorageHelper.getItem(
+      getFiltersStorageKey('dashboard', tabName),
+    );
+    const selectedQuickFilter = sessionStorageHelper.getItem(
+      getQuickFilterStorageKey('dashboard', tabName),
+    );
+
+    if (filters) {
+      yield put(
+        MegaFilterActions.selectFiltersForMegaFilter(
+          filters,
+          'dashboard',
+          tabName,
+          selectedQuickFilter,
+        ),
+      );
+    }
+
+    yield filters
       ? put(DashboardActions.getDashboardTasks())
       : put(DashboardActions.getDashboardGroups());
   } catch (error) {
@@ -50,7 +75,7 @@ function* initializeDashboardView() {
 
 function* getDashboardFilters() {
   const tabName = yield select(dashboardTabNameSelector);
-  const selectedFilters = yield select(dashboardSelectedFiltersSelector);
+  const selectedFilters = yield select(selectedFiltersInMegaFilterSelector);
 
   try {
     const filters =
@@ -216,7 +241,7 @@ function* searchDashboardTasks({ searchTerm }) {
 
 function* getDashboardTasks() {
   try {
-    const selectedFilters = yield select(dashboardSelectedFiltersSelector);
+    const selectedFilters = yield select(selectedFiltersInMegaFilterSelector);
 
     const tabName = yield select(dashboardTabNameSelector);
     const isAllTasks = tabName === DashboardTasksTab.ALL_TASKS;
@@ -322,7 +347,7 @@ function* updateTaskDueDateSuccess({ task: taskToChange, dueDate }) {
   }
 }
 
-function* selectDashboardFilters() {
+function* selectDashboardFilters({ selectedFilters, selectedQuickFilter }) {
   const tabName = yield select(dashboardTabNameSelector);
 
   if (tabName) {
@@ -330,6 +355,15 @@ function* selectDashboardFilters() {
       put(DashboardActions.getDashboardTasks()),
       // put(DashboardActions.getDashboardFilters()),
     ]);
+
+    yield put(
+      MegaFilterActions.selectFiltersForMegaFilter(
+        selectedFilters,
+        'dashboard',
+        tabName,
+        selectedQuickFilter,
+      ),
+    );
   }
 }
 

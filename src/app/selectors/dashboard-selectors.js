@@ -59,11 +59,6 @@ export const dashboardTabNameSelector = createSelector(
   ({ tabName }) => tabName,
 );
 
-export const dashboardSelectedFiltersSelector = createSelector(
-  dashboardTasksStateSelector,
-  ({ selectedFilters }) => selectedFilters,
-);
-
 export const dashboardFilterOptionsSelector = createSelector(
   dashboardTasksStateSelector,
   ({ filterOptions }) => filterOptions,

@@ -58,11 +58,12 @@ export function sortListDetailsTasks(key, order) {
   };
 }
 
-export function filterListDetailsTasks(filters) {
+export function filterListDetailsTasks(filters, selectedQuickFilter) {
   return {
     type: ActionTypes.FILTER_LIST_DETAILS_TASKS,
     payload: {
       filters,
+      selectedQuickFilter,
     },
   };
 }
