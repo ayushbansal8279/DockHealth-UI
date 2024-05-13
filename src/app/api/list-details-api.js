@@ -116,28 +116,12 @@ export function getFilteredTasksForList(
     );
 }
 
-export function getTaskListFilterOptions(
-  taskListIdentifier,
-  status,
-  selectedFilters,
-) {
-  const request = selectedFilters
-    ? axios
-        .post(
-          `task/filter/filterSpecificTasksByCriteria/${taskListIdentifier}?includeOptions=true`,
-          mapSelectedOptionsToRequestPayload(selectedFilters),
-          {
-            params: {
-              status,
-            },
-          },
-        )
-        .then(({ data }) => data.taskFilterOptions)
-    : axios
-        .get(`task/filter/filterOptionsForTaskList/${taskListIdentifier}`, {
-          params: { status },
-        })
-        .then(({ data }) => data);
+export function getTaskListFilterOptions(taskListIdentifier, status) {
+  const request = axios
+    .get(`task/filter/filterOptionsForTaskList/${taskListIdentifier}`, {
+      params: { status },
+    })
+    .then(({ data }) => data);
 
   return request.then((responseFilters) => mapFilterOptions(responseFilters));
 }
