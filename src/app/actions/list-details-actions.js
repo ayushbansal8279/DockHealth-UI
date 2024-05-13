@@ -58,11 +58,12 @@ export function sortListDetailsTasks(key, order) {
   };
 }
 
-export function filterListDetailsTasks(filters) {
+export function filterListDetailsTasks(filters, selectedQuickFilter) {
   return {
     type: ActionTypes.FILTER_LIST_DETAILS_TASKS,
     payload: {
       filters,
+      selectedQuickFilter,
     },
   };
 }
@@ -190,5 +191,13 @@ export function getListCalendarTasksSuccess(tasks) {
 export function getListCalendarTasksFailure() {
   return {
     type: ActionTypes.GET_LIST_CALENDAR_TASKS_FAILURE,
+  };
+}
+
+export function showhideWorkflowTasksReset() {
+  return (dispatch) => {
+    dispatch({
+      type: ActionTypes.WORKFLOW_SHOWHIDE_RESET,
+    });
   };
 }

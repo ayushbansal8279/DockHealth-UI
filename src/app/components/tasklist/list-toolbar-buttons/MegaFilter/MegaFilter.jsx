@@ -1,25 +1,26 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import React, { useRef, useState, useEffect } from 'react';
+// import { useSelector } from 'react-redux';
 import { Box } from '@mui/material';
 import isEmpty from 'ramda/src/isEmpty';
 import FilterButton from 'components/filter/FilterButton/FilterButton';
 import FilterPopover from 'components/filter/FilterPopover/FilterPopover';
-import FilterHeader from 'components/filter/FilterHeader/FilterHeader';
-import FilterTable from 'components/filter/FilterTable/FilterTable';
+// import FilterHeader from 'components/filter/FilterHeader/FilterHeader';
+// import FilterTable from 'components/filter/FilterTable/FilterTable';
 import CustomFilters from 'components/filter/CustomFilters/CustomFilters';
 import { MegaFilterNoResultsLabel, MegaFilterContainer } from './styled';
 import NewFilterContainer from '../../../filter/NewFilterContainer/NewFilterContainer';
 import SaveFilterPopup from '../../../filter/SaveFilterPopup/SaveFilterPopup';
-import { useSelector } from 'react-redux';
-import { currentTaskListSelector } from '@/app/selectors/task-list-selectors';
+// import { currentTaskListSelector } from '@/app/selectors/task-list-selectors';
 import FilterTableLoader from '../../../filter/FilterTableLoader/FilterTableLoader';
 
 const MegaFilter = ({
   children,
   filters,
   selectedFilters,
+  selectedQuickFilter: initialQuickFilter,
   onSelectFilters,
-  activeItemsAmount,
+  // activeItemsAmount,
   tasksAndSubTasksCount,
   isFetching,
   onOpen,
@@ -27,7 +28,7 @@ const MegaFilter = ({
   addQuickFilterOption,
   selectQuickFilter,
   handleSaveQuickFilter,
-  onSaveAsNewClick,
+  // onSaveAsNewClick,
   onQuickFilterUpdate,
   wasChangedFilters,
   onQuickFilterCreate,
@@ -37,7 +38,7 @@ const MegaFilter = ({
   focused,
 }) => {
   const [isOpen, openPopover] = useState(false);
-  const [searchedFilterQuery, setSearchedFilterQuery] = useState('');
+  // const [searchedFilterQuery, setSearchedFilterQuery] = useState('');
   const megaFilterButtonReference = useRef(null);
   const isFilterApplied = selectedFilters && !isEmpty(selectedFilters);
   const [menuOptions, setMenuOption] = useState([]);
@@ -56,6 +57,10 @@ const MegaFilter = ({
     setFinalFilter({});
     setSelectedQuickFilter('');
   };
+
+  useEffect(() => {
+    setSelectedQuickFilter(initialQuickFilter);
+  }, [initialQuickFilter]);
 
   useEffect(() => {
     // eslint-disable-next-line no-unused-expressions
@@ -82,7 +87,6 @@ const MegaFilter = ({
         onClose={() => openPopover(false)}
       >
         <>
-          {/* For Popup of save Filter */}
           <SaveFilterPopup
             refrence={megaFilterButtonReference}
             isSavePopupOpen={isSavePopupOpen}
@@ -110,22 +114,7 @@ const MegaFilter = ({
             setCustomFilteredData={setCustomFilteredData}
             selectedCustomFilter={selectedCustomFilter}
             selectQuickFilter={selectQuickFilter}
-          ></SaveFilterPopup>
-          {/* Kept here for Future Refrence */}
-          {/* <FilterHeader
-          title="Filter tasks"
-          filterActive={isFilterApplied}
-          filteredItemsCount={tasksAndSubTasksCount}
-          allItemsCount={activeItemsAmount}
-          searchValue={searchedFilterQuery}
-          onSearchValueChange={setSearchedFilterQuery}
-          onClear={clearFilters}
-          onSave={onSaveClick}
-          onSaveAsNew={onSaveAsNewClick}
-          selectedQuickFilter={selectedQuickFilter}
-          editModeEnabled={wasChangedFilters}
-          selectedFilters={selectedFilters}
-          /> */}
+          />
           {isFilterApplied && tasksAndSubTasksCount === 0 && !isFetching && (
             <MegaFilterNoResultsLabel>
               There are no results for your filter criteria.
@@ -181,27 +170,8 @@ const MegaFilter = ({
             customFinalFilter={customFinalFilter}
             setCustomFinalFilter={setCustomFinalFilter}
             setSelectedQuickFilter={setSelectedQuickFilter}
-          ></NewFilterContainer>
+          />
           <Box p={1} />
-          {/* Kept here for Future Refrence */}
-          {/* <FilterTable
-            isLoading={isFetching}
-            searchValue={searchedFilterQuery}
-            filters={filters}
-            selectedFilters={selectedFilters}
-            onSelectedFiltersChange={onSelectFilters}
-          >
-            <CustomFilters
-              quickFiltersList={quickFiltersList}
-              addQuickFilterOption={addQuickFilterOption}
-              selectedQuickFilter={selectedQuickFilter}
-              selectQuickFilter={selectQuickFilter}
-              onUpdate={onQuickFilterUpdate}
-              editModeEnabled={wasChangedFilters}
-              onCreate={onQuickFilterCreate}
-              onDelete={onQuickFilterDelete}
-            />
-          </FilterTable> */}
         </>
       </FilterPopover>
     </MegaFilterContainer>

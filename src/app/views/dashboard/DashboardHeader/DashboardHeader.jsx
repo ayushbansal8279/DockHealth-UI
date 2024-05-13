@@ -2,13 +2,12 @@ import React, { useCallback, useMemo, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useHistory } from 'react-router-dom';
 import { Box } from '@mui/material';
-import ClearIcon from '@mui/icons-material/Clear';
+// import ClearIcon from '@mui/icons-material/Clear';
 import {
   dashboardTasksSelector,
   dashboardTabNameSelector,
   dashboardFilterOptionsSelector,
   isFetchingDashboardFiltersSelector,
-  dashboardSelectedFiltersSelector,
 } from 'selectors/dashboard-selectors';
 import {
   getDashboardFilters,
@@ -26,9 +25,7 @@ import debounce from 'lodash.debounce';
 import { onSearchChanged } from 'helpers/ga-event-helper';
 import UserAvatar from 'components/user/UserAvatar/UserAvatar';
 import LayoutHeader from 'components/template/LayoutHeader/LayoutHeader';
-import MegaFilter from '@/app/components/tasklist/list-toolbar-buttons/MegaFilter/MegaFilter';
 import HeaderSearch from 'components/template/HeaderSearch/HeaderSearch';
-import CustomizeToolbarButton from '@/app/components/tasklist/list-toolbar-buttons/CustomizeToolbarButton/CustomizeToolbarButton';
 import AccessRestrictor from 'components/access/AccessRestrictor/AccessRestrictor';
 import compose from 'ramda/src/compose';
 import equals from 'ramda/src/equals';
@@ -44,28 +41,31 @@ import {
   addQuickFilterOptionSelector,
   quickFiltersSelector,
   selectedQuickFilterSelector,
+  selectedFiltersInMegaFilterSelector,
 } from 'selectors/mega-filter-selectors';
 import { DashboardTasksTab } from 'helpers/dashboard-helpers';
 import { UserOrganizationRole } from 'helpers/user-helper';
 import { getViewTypeFromQueryString, ViewType } from 'helpers/view-type-helper';
 // import TaskViewTypeToolbarSelect from 'components/tasklist/TaskViewTypeToolbarSelect/TaskViewTypeToolbarSelect';
-import FullViewIcon from 'img/list/FullViewIcon';
+// import FullViewIcon from 'img/list/FullViewIcon';
 import SlimViewIcon from 'img/list/SlimViewIcon';
 import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined';
 import Spacing from 'components/common/Spacing';
 import { updateCurrentUserPreferences } from 'actions/user-actions';
+import CustomizeToolbarButton from '@/app/components/tasklist/list-toolbar-buttons/CustomizeToolbarButton/CustomizeToolbarButton';
+import MegaFilter from '@/app/components/tasklist/list-toolbar-buttons/MegaFilter/MegaFilter';
 import {
   GridContainer,
   GridItemCalendarView,
-  GridItemFullView,
+  // GridItemFullView,
   GridItemSlimView,
 } from './styled';
 import {
   ActionsContainer,
-  DashboardQuickFilter,
-  DashboardQuickFilterClear,
-  DashboardQuickFilterContainer,
-  DashboardQuickFilterLabel,
+  // DashboardQuickFilter,
+  // DashboardQuickFilterClear,
+  // DashboardQuickFilterContainer,
+  // DashboardQuickFilterLabel,
 } from '../DashboardToolbar/styled';
 
 import { DashboardHeaderContainer } from './styled';
@@ -82,7 +82,7 @@ const DashboardHeader = () => {
   const currentUser = useSelector(userProfileSelector);
   const tabName = useSelector(dashboardTabNameSelector);
   const filterOptions = useSelector(dashboardFilterOptionsSelector);
-  const selectedFilters = useSelector(dashboardSelectedFiltersSelector);
+  const selectedFilters = useSelector(selectedFiltersInMegaFilterSelector);
   const quickFiltersList = useSelector(quickFiltersSelector);
   const addQuickFilterOption = useSelector(addQuickFilterOptionSelector);
   const selectedQuickFilter = useSelector(selectedQuickFilterSelector);
@@ -160,13 +160,13 @@ const DashboardHeader = () => {
   const handleSelectQuickFilter = useCallback(
     (id, filtersSetup) => {
       dispatch(selectQuickFilter(id));
-      dispatch(selectDashboardFilters(filtersSetup));
+      dispatch(selectDashboardFilters(filtersSetup, id));
     },
     [dispatch],
   );
 
   const handleSaveQuickFilter = useCallback(
-    (quickFilterIdentifier,selectedFilters) =>
+    (quickFilterIdentifier, selectedFilters) =>
       dispatch(
         updateQuickFilter(
           quickFilterIdentifier,
@@ -176,7 +176,7 @@ const DashboardHeader = () => {
           { contextType },
         ),
       ),
-    [contextType, dispatch, selectedFilters],
+    [contextType, dispatch],
   );
 
   const handleSaveAsQuickFilter = useCallback(
@@ -198,7 +198,7 @@ const DashboardHeader = () => {
   const handleQuickFilterCreate = useCallback(
     (name, selectedFilters) =>
       dispatch(createQuickFilter(name, { contextType }, selectedFilters)),
-    [contextType, dispatch, selectedFilters],
+    [contextType, dispatch],
   );
 
   const handleQuickFilterUpdate = useCallback(

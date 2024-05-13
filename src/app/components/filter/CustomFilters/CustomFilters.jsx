@@ -17,7 +17,7 @@ const CustomFilters = ({
   editModeEnabled = false,
   setFinalFilter,
   filters,
-  setMenuOption,
+  // setMenuOption,
   setSavePopupOpen,
   setEditIdentifier,
   setCustomFinalFilter,
@@ -50,12 +50,7 @@ const CustomFilters = ({
       setSelectedQuickFilter(identifier);
       openPopover(false);
     },
-    [
-      editModeEnabled,
-      quickFiltersList,
-      selectedQuickFilter,
-      setSelectedQuickFilter,
-    ],
+    [openPopover, setSelected, setSelectedQuickFilter],
   );
 
   const handleUpdate = useCallback(
@@ -98,6 +93,7 @@ const CustomFilters = ({
             }
             onEditMode={(identifier) => setEditModeFilterIdentifier(identifier)}
             disabled={filter.quickFilterIdentifier !== editModeFilterIdentifier}
+            disableOptions={filter.predefined}
             onBlur={handleUpdate}
             editModeEnabled={editModeEnabled}
             onDelete={onDelete}
@@ -109,7 +105,9 @@ const CustomFilters = ({
             clearFilters={clearFilters}
             setSelectedCustomFilter={setSelectedCustomFilter}
             isPatientListPage={isPatientListPage}
-            handleQuickFilterDuplicateForPatientList={handleQuickFilterDuplicateForPatientList}
+            handleQuickFilterDuplicateForPatientList={
+              handleQuickFilterDuplicateForPatientList
+            }
           />
         ))}
       </OptionsList>

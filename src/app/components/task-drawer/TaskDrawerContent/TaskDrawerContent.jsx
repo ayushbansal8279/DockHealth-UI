@@ -508,6 +508,7 @@ const TaskDrawerContent = (props) => {
               restrictions={restrictions?.attachments}
               disabled={restrictions?.attachments === DISABLED}
               selectedTask={selectedTask}
+              taskDrawerFocusField={taskDrawerFocusField}
             />
           </Grid>
         )}

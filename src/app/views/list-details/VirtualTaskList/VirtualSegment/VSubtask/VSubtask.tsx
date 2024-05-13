@@ -184,7 +184,6 @@ function VSubtask(
                 isWorkflowSubtask={isWorkflowSubTask}
                 isSubtask
                 origin={TaskOrigin.LIST}
-                isNestedTask
                 pageBackground={bgColor ? palette.aliceBlue : ''}
                 isVirtualTask
                 isVirtualSubtask

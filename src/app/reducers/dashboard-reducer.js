@@ -1,9 +1,5 @@
 import * as ActionTypes from 'actions/action-types';
-import {
-  getDashboardFiltersStorageKey,
-  getGroupByDueDate,
-} from 'helpers/dashboard-helpers';
-import sessionStorageHelper from 'helpers/session-storage-helper';
+import { getGroupByDueDate } from 'helpers/dashboard-helpers';
 import { TaskItemType } from 'helpers/task-helpers';
 import { updateTasksStateCallback } from './reducer-helper';
 import TaskBaseReducer from './task-base-reducer';
@@ -89,41 +85,16 @@ const DashboardTasksReducer = (state = initialState, action) => {
   const { type, tasksList, error } = action;
   switch (type) {
     case ActionTypes.INITIALIZE_DASHBOARD_STATE: {
-      const selectedFilters = sessionStorageHelper.getItem(
-        getDashboardFiltersStorageKey(action.tabName),
-      );
-
       return {
         ...state,
         ...initialState,
         tabName: action.tabName,
-        selectedFilters,
       };
     }
 
     case ActionTypes.CLEAR_DASHBOARD_STATE: {
       return {
         ...initialState,
-      };
-    }
-
-    case ActionTypes.SELECT_DASHBOARD_FILTERS: {
-      const { selectedFilters } = action;
-
-      if (selectedFilters) {
-        sessionStorageHelper.setItem(
-          getDashboardFiltersStorageKey(state.tabName),
-          selectedFilters,
-        );
-      } else {
-        sessionStorageHelper.removeItem(
-          getDashboardFiltersStorageKey(state.tabName),
-        );
-      }
-
-      return {
-        ...state,
-        selectedFilters: action.selectedFilters,
       };
     }
 

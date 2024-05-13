@@ -54,7 +54,8 @@ const TaskLabel = ({
           return (
             <>
               <TaskBasicLabel
-              // ref={itemRefs[index]}
+                key={label?.identifier}
+                // ref={itemRefs[index]}
               >
                 <Tooltip
                   placement="top"

@@ -13,7 +13,9 @@ import {
   ButtonsContainer,
   FlexButtonWrapper,
   FixedWidthButtonWrapper,
+  ModalHeaderName,
 } from '../styled';
+import { CancelButton, ConfirmButton } from '../ModalButton/ModalButtons';
 
 const AnchorDateChangeConfirmationModal = ({
   closeModal,
@@ -28,38 +30,23 @@ const AnchorDateChangeConfirmationModal = ({
       <ModalWrapper>
         <ModalIconContainer>
           <ModalMainIcon src={Note} alt="note" />
-          <Typography color="textPrimary" variant="h2">
-            {title}
-          </Typography>
+          <ModalHeaderName>{title}</ModalHeaderName>
         </ModalIconContainer>
-        <ModalDescriptionContainer>
-          <Typography variant="body1">{description}</Typography>
-        </ModalDescriptionContainer>
+        <ModalDescriptionContainer>{description}</ModalDescriptionContainer>
         <ButtonsContainer>
-          <FlexButtonWrapper>
-            <Button
-              fullWidth
-              variant="secondary-red"
-              size="small"
-              onClick={closeModal}
-            >
-              Cancel
-            </Button>
-          </FlexButtonWrapper>
+          <CancelButton style={{ width: '180px' }} onClick={closeModal}>
+            Cancel
+          </CancelButton>
           <Spacing horizontal={4} />
-          <FixedWidthButtonWrapper width={231}>
-            <Button
-              fullWidth
-              variant="primary-red"
-              size="small"
-              onClick={() => {
-                confirm();
-                closeModal();
-              }}
-            >
-              {confirmButtonText}
-            </Button>
-          </FixedWidthButtonWrapper>
+          <ConfirmButton
+            style={{ width: '180px' }}
+            onClick={() => {
+              confirm();
+              closeModal();
+            }}
+          >
+            {confirmButtonText}
+          </ConfirmButton>
         </ButtonsContainer>
       </ModalWrapper>
     </MuiThemeProvider>

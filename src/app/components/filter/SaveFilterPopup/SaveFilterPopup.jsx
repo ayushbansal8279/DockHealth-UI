@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from 'react';
 
+import { Popover, TextField } from '@mui/material';
+import CheckedCircle from 'img/Checks-Radio-Buttons-Checked.svg';
+import BlankCircle from 'img/Checks-Radio-Buttons-Blank.svg';
 import {
   Container,
   Header,
@@ -11,13 +14,10 @@ import {
   InputContainer,
   ButtonContainer,
 } from './styled';
-import { Popover, TextField } from '@mui/material';
 import {
   CancelButton,
   ConfirmButton,
 } from '@/app/modal/components/ModalButton/ModalButtons';
-import CheckedCircle from 'img/Checks-Radio-Buttons-Checked.svg';
-import BlankCircle from 'img/Checks-Radio-Buttons-Blank.svg';
 import Spacing from '../../common/Spacing';
 import { getUniqueQuickFilterLabelName } from '../CustomFilters/helpers';
 import NewFilterContainer from '../NewFilterContainer/NewFilterContainer';
@@ -61,21 +61,15 @@ const SaveFilterPopup = ({
 
   useEffect(() => {
     if (editIdentifier !== '' && editIdentifier !== undefined) {
-      setIsQuickFilterEdit(true);
-    } else {
-      setIsQuickFilterEdit(false);
-    }
-  }, [editIdentifier]);
-
-  useEffect(() => {
-    if (isQuickFilterEdit) {
       quickFiltersList.map((item) => {
         if (item.quickFilterIdentifier === editIdentifier) {
           setSearchInputValue(item.name);
+          setIsQuickFilterEdit(true);
         }
       });
     } else {
       setSearchInputValue(getUniqueQuickFilterLabelName(quickFiltersList));
+      setIsQuickFilterEdit(false);
     }
   }, [quickFiltersList, editIdentifier, isQuickFilterEdit]);
 

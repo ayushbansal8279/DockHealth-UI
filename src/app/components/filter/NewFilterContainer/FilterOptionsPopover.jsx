@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Input, MenuItem, Popover } from '@mui/material';
 import {
   FilterOptionsList,
@@ -17,6 +17,10 @@ const FilterOptionsPopover = ({
   getTemplatesList,
 }) => {
   const [filterOptionLists, setFilterOptionList] = useState(filterOptionsList);
+
+  useEffect(() => {
+    setFilterOptionList(filterOptionsList);
+  }, [filterOptionsList]);
 
   const handleFilterListSearch = (event) => {
     const filteredList = filterOptionsList.filter((item) =>
@@ -51,7 +55,7 @@ const FilterOptionsPopover = ({
     >
       <Input
         fullWidth
-        placeholder='Search'
+        placeholder="Search"
         sx={{ padding: '5px 10px 5px 15px' }}
         onChange={handleFilterListSearch}
       />

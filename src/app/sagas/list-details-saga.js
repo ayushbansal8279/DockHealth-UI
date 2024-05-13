@@ -49,6 +49,11 @@ import {
   currentTaskListSelector,
   currentTaskListIdentifierSelector,
 } from 'selectors/task-list-selectors';
+import {
+  getFiltersStorageKey,
+  getQuickFilterStorageKey,
+} from 'helpers/mega-filter-helper';
+import sessionStorageHelper from 'helpers/session-storage-helper';
 import { calendarDateRangeSelector } from 'selectors/calendar-tasks-selectors';
 import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
@@ -56,7 +61,6 @@ import { openDrawer } from 'actions/task-drawer-actions';
 import { checkIfTaskMatchesFilters } from 'helpers/filters-helpers';
 import { locationParametersSelector } from 'location/selectors';
 import { TaskStatus } from 'helpers/task-helpers';
-import sessionStorageHelper from 'helpers/session-storage-helper';
 import { onSortChanged, onSearchChanged } from 'helpers/ga-event-helper';
 import { openModal } from 'modal/actions';
 import { applyTaskTemplate as applyTaskTemplateAction } from 'actions/list-details-actions';
@@ -456,7 +460,10 @@ function* initializeListDetailsTableState() {
 
     if (taskListIdentifier && status) {
       const filters = sessionStorageHelper.getItem(
-        `filter-${taskListIdentifier}-${status}`,
+        getFiltersStorageKey(taskListIdentifier, status),
+      );
+      const selectedQuickFilter = sessionStorageHelper.getItem(
+        getQuickFilterStorageKey(taskListIdentifier, status),
       );
 
       if (filters) {
@@ -465,6 +472,7 @@ function* initializeListDetailsTableState() {
             filters,
             taskListIdentifier,
             status,
+            selectedQuickFilter,
           ),
         );
       }
@@ -578,7 +586,7 @@ function* sortListDetailsTasks({ payload }) {
 }
 
 function* filterListDetailsTasks({ payload }) {
-  const { filters } = payload;
+  const { filters, selectedQuickFilter } = payload;
 
   const taskListIdentifier = yield select(currentTaskListIdentifierSelector);
   const status = yield select(currentTaskListTasksStatusSelector);
@@ -588,11 +596,12 @@ function* filterListDetailsTasks({ payload }) {
       filters,
       taskListIdentifier,
       status,
+      selectedQuickFilter,
     ),
   );
 
   yield all([
-    put(ListDetailsActions.getCurrentTaskListFilterOptions()),
+    // put(ListDetailsActions.getCurrentTaskListFilterOptions()),
     put(ListDetailsActions.refreshListDetailsGroupedTasks()),
   ]);
 }

@@ -13,7 +13,9 @@ import {
   ModalDescriptionContainer,
   ButtonsContainer,
   FlexButtonWrapper,
+  ModalHeaderName,
 } from '../styled';
+import { CancelButton, ConfirmButton } from '../ModalButton/ModalButtons';
 
 const AttachmentsDuplicateModal = ({ skip, confirm, closeModal }) => {
   return (
@@ -21,43 +23,32 @@ const AttachmentsDuplicateModal = ({ skip, confirm, closeModal }) => {
       <ModalWrapper>
         <ModalIconContainer>
           <ModalMainIcon src={Attachment} alt="Attachment" />
-          <Typography color="textSecondary" variant="h2">
-            DUPLICATE ATTACHMENTS
-          </Typography>
+          <ModalHeaderName>Duplicate Attachments</ModalHeaderName>
         </ModalIconContainer>
         <ModalDescriptionContainer>
-          <Typography variant="body1">
-            Would you like to duplicate attachments?
-          </Typography>
+          Would you like to duplicate attachments?
         </ModalDescriptionContainer>
         <ButtonsContainer>
-          <FlexButtonWrapper>
-            <Button
-              fullWidth
-              variant="secondary-red"
-              size="small"
-              onClick={() => {
-                skip();
-                closeModal();
-              }}
-            >
-              Do not duplicate
-            </Button>
-          </FlexButtonWrapper>
+          <CancelButton
+            style={{ width: '180px' }}
+            onClick={() => {
+              skip();
+              closeModal();
+            }}
+          >
+            Do Not Duplicate
+          </CancelButton>
           <Spacing horizontal={4} />
-          <FlexButtonWrapper>
-            <Button
-              fullWidth
-              variant="primary-red"
-              size="small"
-              onClick={() => {
-                confirm();
-                closeModal();
-              }}
-            >
-              Yes
-            </Button>
-          </FlexButtonWrapper>
+
+          <ConfirmButton
+            style={{ width: '180px' }}
+            onClick={() => {
+              confirm();
+              closeModal();
+            }}
+          >
+            Yes
+          </ConfirmButton>
         </ButtonsContainer>
       </ModalWrapper>
     </MuiThemeProvider>

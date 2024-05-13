@@ -24,6 +24,7 @@ export const MenuContainer = styled.ul`
   z-index: 10003;
   font-family: inherit;
   font-weight: ${fontWeights.light};
+  font-size: 13px;
 `;
 
 export const MenuItemButton = styled.button`

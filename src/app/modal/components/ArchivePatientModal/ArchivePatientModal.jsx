@@ -17,7 +17,9 @@ import {
   ModalDescriptionContainer,
   ButtonsContainer,
   FlexButtonWrapper,
+  ModalHeaderName,
 } from '../styled';
+import { CancelButton, ConfirmButton } from '../ModalButton/ModalButtons';
 
 const ArchivePatientModal = ({ closeModal, confirm }) => {
   const currentUser = useSelector(userProfileSelector);
@@ -29,37 +31,21 @@ const ArchivePatientModal = ({ closeModal, confirm }) => {
       <ModalWrapper>
         <ModalIconContainer>
           <ModalMainIcon src={RedFolder} alt="red-folder" />
-          <Typography color="textPrimary" variant="h2">
+          <ModalHeaderName>
             Archive {customerTypeLabelCapitalized}
-          </Typography>
+          </ModalHeaderName>
         </ModalIconContainer>
         <ModalDescriptionContainer>
-          <Typography variant="body1">
-            Are you sure you want to archive this {customerTypeLabel}?
-          </Typography>
+          Are you sure you want to archive this {customerTypeLabel}?
         </ModalDescriptionContainer>
         <ButtonsContainer>
-          <FlexButtonWrapper>
-            <Button
-              fullWidth
-              variant="secondary-red"
-              size="small"
-              onClick={closeModal}
-            >
-              Do not archive
-            </Button>
-          </FlexButtonWrapper>
+          <CancelButton style={{ width: '180px' }} onClick={closeModal}>
+            Do Not Archive
+          </CancelButton>
           <Spacing horizontal={4} />
-          <FlexButtonWrapper>
-            <Button
-              fullWidth
-              variant="primary-red"
-              size="small"
-              onClick={confirm}
-            >
-              Archive
-            </Button>
-          </FlexButtonWrapper>
+          <ConfirmButton style={{ width: '180px' }} onClick={confirm}>
+            Archive
+          </ConfirmButton>
         </ButtonsContainer>
       </ModalWrapper>
     </MuiThemeProvider>

@@ -12,7 +12,9 @@ import {
   ModalDescriptionContainer,
   ButtonsContainer,
   FlexButtonWrapper,
+  ModalHeaderName,
 } from '../styled';
+import { CancelButton } from '../ModalButton/ModalButtons';
 
 const PrimaryText = styled.span`
   font-size: 18px;
@@ -25,27 +27,15 @@ const HomeScreenDragDropModal = ({ closeModal }) => {
       <ModalWrapper>
         <ModalIconContainer>
           <ModalMainIcon src={SortArrows} alt="Sort arrows" />
-          <Typography color="textSeconday" variant="h2" align="center">
-            <PrimaryText>Drag and Drop to new group</PrimaryText>
-          </Typography>
+          <ModalHeaderName>Drag and Drop to new group</ModalHeaderName>
         </ModalIconContainer>
         <ModalDescriptionContainer>
-          <Typography variant="body1">
-            You cannot move a task to a different group within the home screen{' '}
-          </Typography>
+          You cannot move a task to a different group within the home screen{' '}
         </ModalDescriptionContainer>
         <ButtonsContainer>
-          <FlexButtonWrapper>
-            <Button
-              fullWidth
-              variant="primary-red"
-              type="button"
-              size="small"
-              onClick={closeModal}
-            >
-              OKAY, GOT IT
-            </Button>
-          </FlexButtonWrapper>
+          <CancelButton style={{ width: '180px' }} onClick={closeModal}>
+            Okay, Got It
+          </CancelButton>
         </ButtonsContainer>
       </ModalWrapper>
     </MuiThemeProvider>

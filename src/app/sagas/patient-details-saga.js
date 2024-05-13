@@ -45,6 +45,11 @@ import { closeModal } from 'modal/actions';
 import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
 import { TaskStatus } from 'helpers/task-helpers';
 import { log } from 'helpers/log';
+import {
+  getFiltersStorageKey,
+  getQuickFilterStorageKey,
+} from 'helpers/mega-filter-helper';
+import sessionStorageHelper from 'helpers/session-storage-helper';
 import { PATIENTS_LIST_ALL } from '../routing/helpers/paths';
 
 export const DO_TOGGLE_PATIENT_TASK_STATUS = 'DO_TOGGLE_PATIENT_TASK_STATUS';
@@ -426,11 +431,9 @@ function* doUpdatePatientTaskInList({ payload }) {
   }
 }
 
-function* changePatientTasksFilters({ selectedFilters }) {
+function* changePatientTasksFilters({ selectedFilters, selectedQuickFilter }) {
   try {
-    const { patientIdentifier } = yield select(
-      currentPatientIdentifierSelector,
-    );
+    const patientIdentifier = yield select(currentPatientIdentifierSelector);
     const completeTasksVisible = yield select(completeTasksVisibilitySelector);
     const status = completeTasksVisible ? 'ALL' : 'INCOMPLETE';
 
@@ -439,6 +442,7 @@ function* changePatientTasksFilters({ selectedFilters }) {
         selectedFilters,
         patientIdentifier,
         status,
+        selectedQuickFilter,
       ),
     );
     yield put(PatientDetailsActions.getCurrentPatientTasks());
@@ -451,10 +455,20 @@ function* doInitializeSavedFiltersForPatient({ patientIdentifier }) {
   try {
     const completeTasksVisible = yield select(completeTasksVisibilitySelector);
     const status = completeTasksVisible ? 'ALL' : 'INCOMPLETE';
+
+    const filters = sessionStorageHelper.getItem(
+      getFiltersStorageKey(patientIdentifier, status),
+    );
+    const selectedQuickFilter = sessionStorageHelper.getItem(
+      getQuickFilterStorageKey(patientIdentifier, status),
+    );
+
     yield put(
-      MegaFilterActions.selectFiltersFromLocalStorage(
+      MegaFilterActions.selectFiltersForMegaFilter(
+        filters,
         patientIdentifier,
         status,
+        selectedQuickFilter,
       ),
     );
   } catch (error) {

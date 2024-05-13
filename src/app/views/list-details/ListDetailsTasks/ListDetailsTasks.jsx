@@ -34,7 +34,6 @@ import EmptyListView from 'components/tasklist/EmptyListView/EmptyListView';
 import NoFilterResultsView from 'components/tasklist/EmptyListView/NoFilterResultsView';
 import TasksGroup from 'components/tasklist/TasksGroup/TasksGroup';
 import GroupNameSection from 'components/tasklist/GroupNameSection/GroupNameSection';
-import messages from '@/app/components/tasklist/list-toolbar-buttons/AddGroupNameButton/messages';
 // import AddGroupNameButton from 'components/tasklist/AddGroupNameButton/AddGroupNameButton';
 // import EmptyTaskAddView from 'components/tasklist/EmptyTaskAddView/EmptyTaskAddView';
 import GroupedListSkeletonLoader from 'components/tasklist/GroupedListSkeletonLoader/GroupedListSkeletonLoader';
@@ -59,12 +58,13 @@ import {
 } from 'restrictions/task-restrictions';
 import { hasFiltersAppliedSelector } from 'selectors/mega-filter-selectors';
 import VirtualTaskList from 'views/list-details/VirtualTaskList/VirtualTaskList';
+import { Typography } from '@mui/material';
+import messages from '@/app/components/tasklist/list-toolbar-buttons/AddGroupNameButton/messages';
+import { ListPageContext } from '../ListDetailsView';
 import {
   TaskGroupsContainer,
   DroppablePlaceholder,
 } from '../ListDetailsTableView/styled';
-import { ListPageContext } from '../ListDetailsView';
-import { Typography } from '@mui/material';
 
 const ListDetailsTasks = ({
   viewSetup,
@@ -158,6 +158,12 @@ const ListDetailsTasks = ({
   );
   const userSortingSupportEnabled =
     userSortingSupportEnabledItem?.value !== 'false';
+
+  useEffect(() => {
+    return () => {
+      dispatch(ListDetailsActions.showhideWorkflowTasksReset());
+    };
+  }, [dispatch, taskListIdentifier]);
 
   const renderEmptyState = () => {
     if (isSearchApplied) return <NoSearchResultsView />;

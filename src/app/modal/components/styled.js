@@ -37,11 +37,19 @@ export const ModalMainIcon = styled.img`
 
 export const ModalIconContainer = styled.div`
   padding: ${spacing.largePlus};
-  border-bottom: 1px solid ${palette.coolGrey2};
+  // border-bottom: 1px solid ${palette.coolGrey2};
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
+`;
+
+export const ModalHeaderName = styled.div`
+  font-family: Outfit;
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 25px;
+  text-align: center;
 `;
 
 export const ModalDescriptionContainer = styled.div`
@@ -50,6 +58,30 @@ export const ModalDescriptionContainer = styled.div`
   flex-direction: column;
   align-items: center;
   padding: ${spacing.large};
+  align-self: stretch;
+  color: ${palette.black};
+  text-align: center;
+  font-family: Outfit;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 300;
+  line-height: 25px;
+`;
+
+export const ModalDescriptionListContainer = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: ${spacing.large};
+  align-self: stretch;
+  color: ${palette.black};
+  font-family: Outfit;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 25px;
+  margin-top: -45px;
 `;
 
 export const ButtonsContainer = styled.div`

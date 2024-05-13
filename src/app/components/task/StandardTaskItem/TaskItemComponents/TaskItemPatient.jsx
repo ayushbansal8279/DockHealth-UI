@@ -152,7 +152,7 @@ const TaskItemPatient = ({
           </PatientPrintAdditionalInfo>
         </PatientCard>
       )}
-      {patient && !openPatientPopover && (
+      {patient && !openPatientPopover && !hasParentTaskLabel && (
         <PatientCard
           disableLink={readOnly}
           patientIdentifier={patient.patientIdentifier}

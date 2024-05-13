@@ -801,15 +801,20 @@ const TaskItem = React.memo(
     const randerFirstColumnCoverIfNecessary = useCallback(
       (content, order, width) => {
         if (order !== 0) return content;
+        const indentSubTask =
+          !(
+            origin === TaskOrigin.DASHBOARD ||
+            (!!selectedFilters && Object.keys(selectedFilters).length > 0) ||
+            !!searchValue ||
+            !!sort.key
+          ) ?? false;
         return (
           <StickyMainTaskItemCell
             isLastChild={isLastChild}
             isWorkflowtask={isTaskTemplate}
             customWidthExists
             order={0}
-            isSubtask={
-              origin === TaskOrigin.PATIENT ? showSubtaskStylingLink : isSubtask
-            }
+            isSubtask={indentSubTask ? isSubtask : false}
             newlyCreated={newlyCreated}
             backgroundColor={pageBackground}
             isSelected={isSelected}
@@ -856,11 +861,11 @@ const TaskItem = React.memo(
                         {`${task?.completedBy?.firstName} ${task?.completedBy?.lastName}`}
                       </TootipCompletedByName>
                       <TootipCompletedByDate>
-                        {`${new Date(task.completedDt).toLocaleString('en-US', {
+                        {`${new Date(task?.completedDt).toLocaleString('en-US', {
                           weekday: 'long',
-                        })}, ${moment(task.completedDt).format(
+                        })}, ${moment(task?.completedDt).format(
                           'MMM DD, YYYY',
-                        )} @${new Date(task.completedDt)
+                        )} @${new Date(task?.completedDt)
                           .toLocaleTimeString('en-US', {
                             hour: 'numeric',
                             minute: '2-digit',
@@ -937,7 +942,7 @@ const TaskItem = React.memo(
         task?.priority,
         task?.completedBy?.firstName,
         task?.completedBy?.lastName,
-        task.completedDt,
+        task?.completedDt,
         isLast,
         bulkEditEnabled,
         onClickBulkEdit,
@@ -1032,19 +1037,7 @@ const TaskItem = React.memo(
                     columns?.find(
                       ({ identifier }) =>
                         identifier === TaskItemColumn.DESCRIPTION,
-                    )?.columnWidth -
-                    (isSubtask &&
-                    (origin === 'LIST' &&
-                    ((!!selectedFilters
-                      ? Object.keys(selectedFilters).length > 0
-                      : !!selectedFilters) ||
-                      !!searchValue ||
-                      !!sort.key)
-                      ? hasParentTaskLabel
-                      : !hasParentTaskLabel) &&
-                    descriptionColumnOrder === 0
-                      ? 36
-                      : 0)
+                    )?.columnWidth
                   }
                   order={getColumnOrder(TaskItemColumn.DESCRIPTION)}
                   bolded
@@ -1887,7 +1880,6 @@ const TaskItem = React.memo(
                       order={getColumnOrder(TaskItemColumn.ORG_NAME)}
                     >
                       <TaskItemOrganization
-                        organizationName={organization?.organizationName}
                         organizationIdentifier={
                           organization?.organizationIdentifier
                         }
