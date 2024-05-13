@@ -80,6 +80,7 @@ import AnchorDateChangeConfirmationModal from './components/AnchorDateChangeConf
 import DeleteArchivePatientModal from './components/DeleteArchivePatientModal/DeleteArchivePatientModal';
 import DeleteOrganizationModal from './components/DeleteOrganizationModal';
 import PatientCustomFieldsBulkEditModal from './components/PatientCustomFieldsBulkEditModal';
+import TaskListCustomFieldsBulkEditModal from './components/TaskListCustomFieldsBulkEditModal';
 
 const MODAL_MAP = {
   CompleteAllTasks: CompleteAllTasksModal,
@@ -142,6 +143,7 @@ const MODAL_MAP = {
   EditCustomField: EditCustomFieldModal,
   DeleteConfirmation: DeleteConfirmationModal,
   DeleteTaskConfirmation: DeleteTaskConfirmationModal,
+  TaskListCustomFieldsBulkEdit: TaskListCustomFieldsBulkEditModal,
   EditUserGroup: EditUserGroupModal,
   AddUserToGroup: AddUserToGroupModal,
   Information: InformationModal,
