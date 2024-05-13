@@ -14,8 +14,11 @@ import TaskCustomFieldsModal from 'modal/customModals/TaskCustomFieldsModal';
 import CustomizeToolbarButton from '@/app/components/tasklist/list-toolbar-buttons/CustomizeToolbarButton/CustomizeToolbarButton';
 import TaskStatusToolbarSelect from '@/app/components/tasklist/list-toolbar-buttons/TaskStatusToolbarSelect';
 import { ToolbarContainer } from './styled';
+import UserDetailsFilters from '../UserDetailsFilters/UserDetailsFilters';
+import { onSearchChanged } from '@/app/helpers/ga-event-helper';
+import HeaderSearch from '@/app/components/template/HeaderSearch/HeaderSearch';
 
-const UserTasksToolbar = () => {
+const UserTasksToolbar = ({ searchValue, setSearchValue }) => {
   const history = useHistory();
   const userIdentifier = useSelector(userIdentifierSelector);
   const tasksStatus = useSelector(currentTasksStatusSelector);
@@ -37,9 +40,14 @@ const UserTasksToolbar = () => {
     [history, userIdentifier],
   );
 
+  const handleSearchValueChange = (newValue) => {
+    setSearchValue(newValue);
+    onSearchChanged();
+  };
+
   return (
     <ToolbarContainer>
-      <Box display="flex" flex={1} justifyContent="flex-end">
+      <Box display="flex" flex={1}>
         <CustomizeToolbarButton
           openCustomFieldModal={() => setCustomFieldsModalOpened(true)}
           showCustomColumnCreate={false}
@@ -56,6 +64,9 @@ const UserTasksToolbar = () => {
           isOrganizationAdmin={isOrganizationAdmin}
           isListCreator={isListCreator}
         />
+        <UserDetailsFilters />
+        <Box mx={0.5} />
+        <HeaderSearch value={searchValue} onChange={handleSearchValueChange} />
       </Box>
     </ToolbarContainer>
   );

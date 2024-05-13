@@ -7,5 +7,5 @@ export const ToolbarContainer = styled.div`
   color: ${palette.coolGrey1};
   display: flex;
   justify-content: flex-end;
-  padding: 18px 24px;
+  padding: 0 24px 18px;
 `;
