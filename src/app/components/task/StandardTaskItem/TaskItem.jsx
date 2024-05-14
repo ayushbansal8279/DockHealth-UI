@@ -861,9 +861,12 @@ const TaskItem = React.memo(
                         {`${task?.completedBy?.firstName} ${task?.completedBy?.lastName}`}
                       </TootipCompletedByName>
                       <TootipCompletedByDate>
-                        {`${new Date(task?.completedDt).toLocaleString('en-US', {
-                          weekday: 'long',
-                        })}, ${moment(task?.completedDt).format(
+                        {`${new Date(task?.completedDt).toLocaleString(
+                          'en-US',
+                          {
+                            weekday: 'long',
+                          },
+                        )}, ${moment(task?.completedDt).format(
                           'MMM DD, YYYY',
                         )} @${new Date(task?.completedDt)
                           .toLocaleTimeString('en-US', {
@@ -1102,7 +1105,7 @@ const TaskItem = React.memo(
                       isSubtask={isSubtask}
                       subtaskQuickAddOpen={subtaskQuickAddOpen}
                       subtasksDisabled={subtasksDisabled}
-                      subTasksCount={subTaskCurrentCount?.length}
+                      subTasksCount={subTasksCount}
                       isOpen={isOpen}
                       isNestedTask={isNestedTask}
                       onSubtaskLabelClick={onSubtaskLabelClick}
