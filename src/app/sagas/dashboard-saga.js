@@ -351,11 +351,6 @@ function* selectDashboardFilters({ selectedFilters, selectedQuickFilter }) {
   const tabName = yield select(dashboardTabNameSelector);
 
   if (tabName) {
-    yield all([
-      put(DashboardActions.getDashboardTasks()),
-      // put(DashboardActions.getDashboardFilters()),
-    ]);
-
     yield put(
       MegaFilterActions.selectFiltersForMegaFilter(
         selectedFilters,
@@ -364,6 +359,11 @@ function* selectDashboardFilters({ selectedFilters, selectedQuickFilter }) {
         selectedQuickFilter,
       ),
     );
+
+    yield all([
+      put(DashboardActions.getDashboardTasks()),
+      // put(DashboardActions.getDashboardFilters()),
+    ]);
   }
 }
 

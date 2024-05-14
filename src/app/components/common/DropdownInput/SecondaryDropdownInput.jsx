@@ -6,7 +6,7 @@ import { generateSelectOptions } from './helpers';
 const SecondaryDropdownInput = React.forwardRef(
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   (
-    { options, width, height, sortEnabled = false, ...restProps },
+    { options, width, height, sortDisabled = false, ...restProps },
     reference,
   ) => {
     return (
@@ -20,7 +20,7 @@ const SecondaryDropdownInput = React.forwardRef(
           }}
           {...restProps}
         >
-          {generateSelectOptions(options, sortEnabled)}
+          {generateSelectOptions(options, sortDisabled)}
         </StyledDropdownInput>
       </>
     );
