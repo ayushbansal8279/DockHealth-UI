@@ -918,6 +918,7 @@ export function addSubtask(parentTaskIdentifier, subtask) {
         dispatch({
           type: ActionTypes.ADD_SUBTASK,
           subtask: newSubtask,
+          parentTaskIdentifier,
         });
         dispatch(AlertActions.showGlobalAlert(AlertMessages.TASK_CREATED));
         return newSubtask;
