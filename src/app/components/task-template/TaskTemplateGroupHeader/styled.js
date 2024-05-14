@@ -56,6 +56,7 @@ export const TaskTemplateGroupHeaderContainer = styled.div`
   border-top: 2px solid rgba(75, 179, 253, 1);
   margin-left: -1px;
   margin-top: 10px;
+
   margin-bottom: ${({
     isOpen,
     isNextVirtualTaskItemTypeBundle,
@@ -64,7 +65,7 @@ export const TaskTemplateGroupHeaderContainer = styled.div`
     isNextTaskItemTypeBundle,
   }) =>
     isOpen
-      ? ''
+      ? origin === 'DASHBOARD' && '10px'
       : origin === 'LIST' || origin === 'PATIENT'
       ? isLastTaskOfGroup
         ? '0px'
@@ -72,9 +73,15 @@ export const TaskTemplateGroupHeaderContainer = styled.div`
         ? '0px'
         : '10px'
       : '10px'};
+
   border-bottom: 1px solid
-    ${({ isOpen }) =>
-      isOpen ? `${palette.coolGrey3}` : 'rgba(75, 179, 253, 1)'};
+    ${({ isOpen, origin }) =>
+      isOpen
+        ? origin === 'DASHBOARD'
+          ? 'rgba(75, 179, 253, 1)'
+          : `${palette.coolGrey3}`
+        : 'rgba(75, 179, 253, 1)'};
+
   border-right: 1px solid rgba(75, 179, 253, 1);
   z-index: 2;
 

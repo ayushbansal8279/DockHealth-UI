@@ -162,30 +162,14 @@ export function getUserFilteredTasks(
     .then(({ data }) => data.tasks);
 }
 
-export function getUserTaskFilterOptions(
-  userIdentifier,
-  status,
-  selectedFilters,
-) {
-  const request = selectedFilters
-    ? axios
-        .post(
-          `task/filter/filterTasksByCriteriaForAssignedToUser/${userIdentifier}?includeOptions=true`,
-          mapSelectedOptionsToRequestPayload(selectedFilters),
-          {
-            params: {
-              status,
-            },
-          },
-        )
-        .then(({ data }) => data.taskFilterOptions)
-    : axios
-        .get(`task/filter/filterOptionsForAssignedToUser/${userIdentifier}`, {
-          params: {
-            status,
-          },
-        })
-        .then(({ data }) => data);
+export function getUserTaskFilterOptions(userIdentifier, status) {
+  const request = axios
+    .get(`task/filter/filterOptionsForAssignedToUser/${userIdentifier}`, {
+      params: {
+        status,
+      },
+    })
+    .then(({ data }) => data);
 
   return request.then((options) => mapFilterOptions(options));
 }

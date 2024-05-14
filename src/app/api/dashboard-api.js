@@ -49,34 +49,18 @@ export function reorderTasksInGroup({
     });
 }
 
-export function getDashboardMyTasksFilters(selectedFilters) {
-  const request = selectedFilters
-    ? axios
-        .post(
-          `task/filter/filterTasksByCriteriaForCurrentUser?status=INCOMPLETE&includeOptions=true`,
-          mapSelectedOptionsToRequestPayload(selectedFilters),
-        )
-        .then(({ data }) => data.taskFilterOptions)
-    : axios
-        .get(`task/filter/filterOptionsForCurrentUser?status=INCOMPLETE`)
-        .then(({ data }) => data);
+export function getDashboardMyTasksFilters() {
+  const request = axios
+    .get(`task/filter/filterOptionsForCurrentUser?status=INCOMPLETE`)
+    .then(({ data }) => data);
 
   return request.then((options) => mapFilterOptions(options));
 }
 
-export function getDashboardAllTasksFilters(selectedFilters) {
-  const request = selectedFilters
-    ? axios
-        .post(
-          `task/filter/filterTasksByCriteriaForOrganization?status=INCOMPLETE&includeOptions=true`,
-          mapSelectedOptionsToRequestPayload(selectedFilters),
-        )
-        .then(({ data }) => data.taskFilterOptions)
-    : axios
-        .get(
-          `task/filter/filterOptionsForTasksInOrganization?status=INCOMPLETE`,
-        )
-        .then(({ data }) => data);
+export function getDashboardAllTasksFilters() {
+  const request = axios
+    .get(`task/filter/filterOptionsForTasksInOrganization?status=INCOMPLETE`)
+    .then(({ data }) => data);
 
   return request.then((options) => mapFilterOptions(options));
 }
@@ -101,12 +85,24 @@ export const getDashboardAllTasksByCriteria = (selectedFilters) =>
 
 export function getTasksAssignedToUserByImplicitGroup(
   groupType,
+  sortBy,
+  sortDirection,
   startPosition = 0,
   endPosition = 0,
 ) {
   return axios
     .get(`/task/findTasksAssignedToUserByImplicitGroup`, {
-      params: { groupType, startPosition, endPosition, status: 'INCOMPLETE' },
+      params:
+        sortBy && sortDirection
+          ? {
+              groupType,
+              startPosition,
+              endPosition,
+              status: 'INCOMPLETE',
+              sortBy,
+              sortDirection,
+            }
+          : { groupType, startPosition, endPosition, status: 'INCOMPLETE' },
     })
     .then(({ data }) => includeCustomFieldsPatientsToEachTask(data))
     .catch((error) => {
@@ -116,13 +112,25 @@ export function getTasksAssignedToUserByImplicitGroup(
 
 export function getTasksForOrganizationByImplicitGroup(
   groupType,
+  sortBy,
+  sortDirection,
   startPosition = 0,
   endPosition = 0,
 ) {
   return axios
-    .get(
-      `/task/findTasksForOrganizationByImplicitGroup?groupType=${groupType}&startPosition=${startPosition}&endPosition=${endPosition}&status=INCOMPLETE`,
-    )
+    .get(`/task/findTasksForOrganizationByImplicitGroup`, {
+      params:
+        sortBy && sortDirection
+          ? {
+              groupType,
+              startPosition,
+              endPosition,
+              status: 'INCOMPLETE',
+              sortBy,
+              sortDirection,
+            }
+          : { groupType, startPosition, endPosition, status: 'INCOMPLETE' },
+    })
     .then(({ data }) => includeCustomFieldsPatientsToEachTask(data))
     .catch((error) => {
       throw error;

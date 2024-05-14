@@ -32,6 +32,7 @@ export const BulkEditOptionsConfig = {
   DUPLICATE_OPTION: 'BulkEditDuplicateOption',
   MOVE_OPTION: 'BulkEditMoveOption',
   COMPLETE_OPTION: 'BulkEditCompleteOption',
+  EDIT_CUSTOM_FIELDS_OPTION: 'BulkEditCustomFieldsOption',
   STATUS_OPTION: 'BulkEditStatusOption',
   DUE_DATE_OPTION: 'BulkEditDueDateOption',
   ASSIGN_OPTION: 'BulkEditAssignOption',

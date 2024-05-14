@@ -1,28 +1,31 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
+import { bulkEditCustomFieldsByTaskIdentifiers } from '@/app/api/task-api';
 import * as CustomFieldsApi from '@/app/api/custom-fields-api';
-import { bulkEditPatientsCustomFields } from '@/app/api/patients-api';
-
-import * as PatientsActions from 'actions/patients-actions';
 import { ICustomField } from '@/app/types/CustomField';
 import { FormattedMetaData } from '../CustomFieldsBulkEditModal/helpers';
 import CustomFieldsBulkEditModal from '../CustomFieldsBulkEditModal';
+import { showGlobalAlert, showGlobalErrorAlert } from '@/app/alert/actions';
+import AlertMessages from '@/app/alert/AlertMessages';
+import { updateCustomFieldsByTaskIdentifiers } from '@/app/actions/task-actions';
 
 interface Props {
-  patientIdentifiers: string[];
+  taskIdentifiers: string[];
+  taskListIdentifier?: string;
   closeModal: VoidFunction;
 }
 
-export default function PatientCustomFieldsBulkEditModal({
-  patientIdentifiers,
+export default function TaskListCustomFieldsBulkEditModal({
+  taskIdentifiers,
+  taskListIdentifier,
   closeModal,
 }: Props) {
   const dispatch = useDispatch();
   const [customFields, setCustomFields] = useState<ICustomField[] | null>(null);
 
   useEffect(() => {
-    CustomFieldsApi.getAllPatientCustomFields(true).then(
+    CustomFieldsApi.getAllTaskListCustomFields(taskListIdentifier).then(
       (data: ICustomField[]) => {
         setCustomFields(data.sort((a, b) => a.sortIndex - b.sortIndex));
       },
@@ -33,12 +36,16 @@ export default function PatientCustomFieldsBulkEditModal({
     try {
       const payload = {
         metaData: formattedMetaData,
-        patientIdentifiers,
+        taskIdentifiers,
       };
-      await bulkEditPatientsCustomFields(payload);
-      dispatch(PatientsActions.silentlyGetCurrentPatients());
+      await bulkEditCustomFieldsByTaskIdentifiers(payload);
+      dispatch(
+        updateCustomFieldsByTaskIdentifiers(taskIdentifiers, formattedMetaData),
+      );
+      dispatch(showGlobalAlert(AlertMessages.UPDATED));
       closeModal();
     } catch (error) {
+      dispatch(showGlobalErrorAlert());
       console.error(error);
     }
   };

@@ -2,6 +2,8 @@ import * as ActionTypes from 'actions/action-types';
 
 const INITIAL_STATE = {
   selectedTaskIdentifiers: [],
+  showCompletedWorkflowIdentifiers: [],
+  showIncompleteWorkflowIdentifiers: [],
 };
 
 const TaskItemReducer = (state = INITIAL_STATE, action) => {
@@ -49,6 +51,54 @@ const TaskItemReducer = (state = INITIAL_STATE, action) => {
               (taskId) => !taskIdentifiers?.includes(taskId),
             ),
           };
+    }
+
+    case ActionTypes.WORKFLOW_SHOWHIDE_COMPLETED_TASKS: {
+      const { workflowIdentifier, showFlag } = action;
+
+      return showFlag
+        ? {
+            ...state,
+            showCompletedWorkflowIdentifiers:
+              state.showCompletedWorkflowIdentifiers.concat([
+                workflowIdentifier,
+              ]),
+          }
+        : {
+            ...state,
+            showCompletedWorkflowIdentifiers:
+              state.showCompletedWorkflowIdentifiers?.filter(
+                (id) => id !== workflowIdentifier,
+              ),
+          };
+    }
+
+    case ActionTypes.WORKFLOW_SHOWHIDE_INCOMPLETE_TASKS: {
+      const { workflowIdentifier, showFlag } = action;
+
+      return showFlag
+        ? {
+            ...state,
+            showIncompleteWorkflowIdentifiers:
+              state.showIncompleteWorkflowIdentifiers.concat([
+                workflowIdentifier,
+              ]),
+          }
+        : {
+            ...state,
+            showIncompleteWorkflowIdentifiers:
+              state.showIncompleteWorkflowIdentifiers?.filter(
+                (id) => id !== workflowIdentifier,
+              ),
+          };
+    }
+
+    case ActionTypes.WORKFLOW_SHOWHIDE_RESET: {
+      return {
+        ...state,
+        showCompletedWorkflowIdentifiers: [],
+        showIncompleteWorkflowIdentifiers: [],
+      };
     }
 
     default: {

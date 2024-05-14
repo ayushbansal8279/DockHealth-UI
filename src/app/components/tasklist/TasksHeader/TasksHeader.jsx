@@ -141,7 +141,7 @@ const TasksHeader = ({
             ![TaskHeaderColumn.SUBTASKS_COUNT].includes(f.identifier)
           }
           isDraggingOver={snapshot.isDraggingOver}
-          disabled={false}
+          disabled={f.sortDisabled}
           truncateEnabled
           id={f.identifier}
           label={isRegular ? f.label : f.name}

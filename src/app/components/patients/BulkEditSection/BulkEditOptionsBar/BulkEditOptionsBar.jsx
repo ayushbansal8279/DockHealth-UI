@@ -59,10 +59,6 @@ const BulkEditOptionsBar = ({ selectedPatients = [], onClose }) => {
         patientIdentifiers: selectedPatients.map(
           ({ patientIdentifier }) => patientIdentifier,
         ),
-        onSave: () => {
-          dispatch(closeModalAction());
-          dispatch(PatientsActions.silentlyGetCurrentPatients());
-        },
       }),
     );
   }, [dispatch, selectedPatients]);

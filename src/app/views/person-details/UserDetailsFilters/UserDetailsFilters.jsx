@@ -112,7 +112,12 @@ const UserDetailsFilters = () => {
     (id, filtersSetup) => {
       dispatch(selectQuickFilter(id));
       dispatch(
-        selectFiltersForMegaFilter(filtersSetup, userIdentifier, selectedTab),
+        selectFiltersForMegaFilter(
+          filtersSetup,
+          userIdentifier,
+          selectedTab,
+          id,
+        ),
       );
     },
     [dispatch, selectedTab, userIdentifier],
@@ -166,7 +171,7 @@ const UserDetailsFilters = () => {
         addQuickFilterOption={addQuickFilterOption}
         selectedQuickFilter={selectedQuickFilter}
         selectQuickFilter={handleSelectQuickFilter}
-        onSaveClick={handleSaveQuickFilter}
+        handleSaveQuickFilter={handleSaveQuickFilter}
         onSaveAsNewClick={handleSaveAsQuickFilter}
         wasChangedFilters={wasChangedFilters}
         onQuickFilterCreate={handleQuickFilterCreate}

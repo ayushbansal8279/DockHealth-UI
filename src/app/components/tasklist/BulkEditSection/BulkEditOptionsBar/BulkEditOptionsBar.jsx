@@ -1,5 +1,6 @@
 /* eslint-disable sonarjs/no-identical-functions */
 import React, { useMemo, useCallback } from 'react';
+import AppRegistrationIcon from '@mui/icons-material/AppRegistration';
 import { useParams } from 'react-router-dom';
 import isEmpty from 'ramda/src/isEmpty';
 import pluck from 'ramda/src/pluck';
@@ -59,6 +60,7 @@ const BULK_EDIT_BASE_CONFIG = {
   [BulkEditOptionsConfig.COMPLETE_OPTION]: true,
   [BulkEditOptionsConfig.STATUS_OPTION]: true,
   [BulkEditOptionsConfig.DUE_DATE_OPTION]: true,
+  [BulkEditOptionsConfig.EDIT_CUSTOM_FIELDS_OPTION]: true,
   [BulkEditOptionsConfig.ASSIGN_OPTION]: true,
   [BulkEditOptionsConfig.DELETE_OPTION]: true,
 };
@@ -727,6 +729,19 @@ const BulkEditOptionsBar = ({
     modalActions,
   ]);
 
+  const handleEditFields = useCallback(() => {
+    dispatch(
+      openModal('TaskListCustomFieldsBulkEdit', {
+        taskIdentifiers: selectedTasks.parentTasks?.map(
+          ({ taskIdentifier }) => taskIdentifier,
+        ),
+        onSave: () => {
+          dispatch(closeModal());
+        },
+      }),
+    );
+  }, [dispatch, selectedTasks]);
+
   const handleDeleteTasks = useCallback(() => {
     dispatch(
       openModal('DeleteConfirmation', {
@@ -867,6 +882,19 @@ const BulkEditOptionsBar = ({
             <BulkEditOption
               iconComponent={CompleteIcon}
               title="Complete"
+              isDisabled={isDisabled}
+            />
+          </Button>
+        )}
+        {mergedConfig[BulkEditOptionsConfig.EDIT_CUSTOM_FIELDS_OPTION] && (
+          <Button
+            type="button"
+            onClick={handleEditFields}
+            disabled={isDisabled}
+          >
+            <BulkEditOption
+              iconComponent={AppRegistrationIcon}
+              title="Edit Fields"
               isDisabled={isDisabled}
             />
           </Button>

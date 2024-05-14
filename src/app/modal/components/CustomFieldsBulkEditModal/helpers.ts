@@ -1,6 +1,19 @@
 import isEmpty from 'ramda/src/isEmpty';
 
-export const formatMetaData = (metaData: Record<string, any>) => {
+export type FormattedMetaData = Array<
+  | {
+      customFieldIdentifier: string;
+      selectedOptionIdentifiers: any;
+    }
+  | {
+      customFieldIdentifier: string;
+      value: any;
+    }
+>;
+
+export const formatMetaData = (
+  metaData: Record<string, any>,
+): FormattedMetaData | null => {
   if (isEmpty(metaData)) {
     return null;
   }

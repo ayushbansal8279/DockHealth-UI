@@ -135,7 +135,7 @@ const ColumnSortHeader = ({
               >
                 {label}
                 <Box ml="5px" visibility="hidden">
-                  <SortDoubleArrow />
+                  {!disabled && <SortDoubleArrow />}
                 </Box>
               </Box>
             </Box>

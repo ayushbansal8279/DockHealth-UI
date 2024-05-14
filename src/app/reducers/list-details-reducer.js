@@ -59,7 +59,7 @@ function updateGroupInState(
 function updateBundleInState(bundleIdentifier, updatedData, state) {
   const updatedMap = {
     [bundleIdentifier]: {
-      ...state.tasksMap[bundleIdentifier],
+      // ...state.tasksMap[bundleIdentifier],
       ...updatedData,
       tasks: [
         ...new Set([
@@ -869,6 +869,36 @@ const ListDetailsReducer = (state = initialState, action) => {
         };
       }
       return state;
+    }
+
+    case ActionTypes.UPDATE_CUSTOM_FIELDS_BY_TASK_IDENTIFIERS: {
+      const { taskIdentifiers, metaData: metaDataToUpdate } = action.payload;
+      const tasksMap = { ...state.tasksMap };
+      for (const taskIdentifier of taskIdentifiers) {
+        if (!(taskIdentifier in tasksMap)) continue;
+
+        tasksMap[taskIdentifier] = {
+          ...tasksMap[taskIdentifier],
+          taskMetaData: tasksMap[taskIdentifier].taskMetaData.map(
+            (metaItem) => {
+              if (!metaItem.customFieldIdentifier) return metaItem;
+              const metaItemToUpdate = metaDataToUpdate.find(
+                ({ customFieldIdentifier }) =>
+                  customFieldIdentifier === metaItem.customFieldIdentifier,
+              );
+              return {
+                ...metaItem,
+                ...metaItemToUpdate,
+              };
+            },
+          ),
+        };
+      }
+
+      return {
+        ...state,
+        tasksMap,
+      };
     }
 
     default: {

@@ -47,30 +47,14 @@ export function getPatientTasksStats(patientIdentifier) {
     .then(({ data }) => data);
 }
 
-export function getPatientFilters(
-  patientIdentifier,
-  status = 'INCOMPLETE',
-  selectedFilters,
-) {
-  const request = selectedFilters
-    ? axios
-        .post(
-          `/task/filter/filterTasksByCriteriaForPatient/${patientIdentifier}?includeOptions=true`,
-          mapSelectedOptionsToRequestPayload(selectedFilters),
-          {
-            params: {
-              status: status === 'ALL' ? undefined : status,
-            },
-          },
-        )
-        .then(({ data }) => data.taskFilterOptions)
-    : axios
-        .get(`task/filter/filterOptionsForPatient/${patientIdentifier}`, {
-          params: {
-            status: status === 'ALL' ? undefined : status,
-          },
-        })
-        .then(({ data }) => data);
+export function getPatientFilters(patientIdentifier, status = 'INCOMPLETE') {
+  const request = axios
+    .get(`task/filter/filterOptionsForPatient/${patientIdentifier}`, {
+      params: {
+        status: status === 'ALL' ? undefined : status,
+      },
+    })
+    .then(({ data }) => data);
 
   return request.then((options) => mapFilterOptions(options));
 }

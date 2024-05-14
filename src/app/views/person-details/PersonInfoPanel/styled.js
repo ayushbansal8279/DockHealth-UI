@@ -8,7 +8,7 @@ export const InfoPanelContainer = styled.div`
   justify-content: flex-start;
   align-items: center;
   width: 100%;
-  padding: ${spacing.large} ${spacing.largePlus};
+  padding: ${spacing.small} ${spacing.largePlus} ${spacing.regular};
   font-size: ${fontSizes.regular};
   line-height: 1.2;
   font-weight: ${fontWeights.light};

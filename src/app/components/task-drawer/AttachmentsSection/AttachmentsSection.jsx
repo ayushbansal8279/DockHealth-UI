@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 
 import Loader from 'components/common/Loader/Loader';
 import Spacing from 'components/common/Spacing';
@@ -17,8 +17,13 @@ import {
   Title,
 } from './styled';
 import { ScanStatus, ScanStatusText } from './helpers';
+import { DrawerFieldEnum } from '@/app/helpers/task-drawer-helpers';
 
-const AttachmentsSection = ({ selectedTask, disabled = false }) => {
+const AttachmentsSection = ({
+  selectedTask,
+  taskDrawerFocusField,
+  disabled = false,
+}) => {
   const {
     attachmentsSources,
     currentTaskAttachments,
@@ -35,8 +40,19 @@ const AttachmentsSection = ({ selectedTask, disabled = false }) => {
     downloadAllFiles,
   } = initializeAttachmentsSectionHooks(selectedTask);
 
+  const attachmentRef = useRef(null);
+
+  useEffect(() => {
+    if (
+      attachmentRef.current &&
+      taskDrawerFocusField === DrawerFieldEnum.ATTACHMENT
+    ) {
+      attachmentRef.current.scrollIntoView(true);
+    }
+  }, [taskDrawerFocusField]);
+
   return (
-    <AttachmentsContainer isDragActive={isDragActive}>
+    <AttachmentsContainer ref={attachmentRef} isDragActive={isDragActive}>
       <AttachmentPreview
         attachment={previewedAttachment}
         attachmentsSources={attachmentsSources}
@@ -90,7 +106,7 @@ const AttachmentsSection = ({ selectedTask, disabled = false }) => {
                       attachment?.scanStatus === null ||
                       attachment?.scanStatus === ScanStatus.CLEAN
                     )
-                      openAttachmentPreview();
+                      openAttachmentPreview(attachment);
                   }}
                   onRemoveClick={removeTaskAttachment}
                 />

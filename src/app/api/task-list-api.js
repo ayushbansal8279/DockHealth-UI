@@ -351,3 +351,13 @@ export function sortTasksListsForUser(sortedTaskLists) {
     .put(`/list/sortTaskListsForUser`, { taskListIdentifiers: sortedTaskLists })
     .then(({ data }) => data);
 }
+
+export function bulkEditTaskListCustomFields({ metaData, taskIdentifiers }) {
+  return axios
+    .put('/list/bulk', {
+      bulkOperationType: 'haha',
+      metaData,
+      taskIdentifiers,
+    })
+    .then(({ data }) => data);
+}

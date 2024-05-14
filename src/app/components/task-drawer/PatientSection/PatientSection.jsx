@@ -27,6 +27,7 @@ import {
   AddPatient,
   PatientName,
 } from './styled';
+import { updatePartialWorkflow } from '@/app/actions/task-template-actions';
 
 const PATIENT_IDENTIFIER_FIELD_NAME = 'patientIdentifier';
 const MAX_PATIENT_RESULTS = 200;
@@ -156,14 +157,17 @@ const PatientSection = ({
               dispatch(
                 openModal('UnassignPatient', {
                   isWorkflowModal: true,
-                  confirm: () => {
+                  confirm: async () => {
+                    onTaskDrawerTaskPatientChanged();
+                    await onSave({
+                      patient: patientToSave,
+                      patientIdentifier: 'UNASSIGNED',
+                    });
                     dispatch(
-                      changePatientForTemplateBundle(
-                        templateBundleIdentifier,
-                        'UNASSIGNED',
-                      ),
+                      updatePartialWorkflow(templateBundleIdentifier, {
+                        patientIdentifier: 'UNASSIGNED',
+                      }),
                     );
-                    onSavePatient(true);
                   },
                 }),
               );
