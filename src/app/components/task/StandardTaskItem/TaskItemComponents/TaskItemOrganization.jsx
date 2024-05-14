@@ -14,7 +14,7 @@ const TaskItemOrganization = ({
       <Grid
         container
         direction="row"
-        justifyContent="flex-end"
+        justifyContent="flex-start"
         alignItems="center"
       >
         <OrganizationTile
