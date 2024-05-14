@@ -214,7 +214,6 @@ const CustomizeToolbarButton = ({
             indicatorColor="secondary"
             textColor="inherit"
             variant="fullWidth"
-            tabItemContainerStyle={{ position: 'fixed', top: '0' }}
           >
             <Tab
               label="Default"

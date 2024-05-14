@@ -1619,6 +1619,7 @@ const TaskItem = React.memo(
                     // eslint-disable-next-line sonarjs/no-duplicate-string
                     paddingLeft="12px"
                     paddingRight="small"
+                    padding="0"
                     onContextMenu={(event) => {
                       event.stopPropagation();
                     }}
@@ -1697,6 +1698,7 @@ const TaskItem = React.memo(
                     }
                     paddingLeft="12px"
                     paddingRight="small"
+                    padding="0"
                     onContextMenu={(event) => {
                       event.stopPropagation();
                     }}
@@ -1790,6 +1792,7 @@ const TaskItem = React.memo(
                     }
                     paddingLeft="12px"
                     paddingRight="small"
+                    padding="0"
                     onContextMenu={(event) => {
                       event.stopPropagation();
                     }}
@@ -1884,6 +1887,7 @@ const TaskItem = React.memo(
                       order={getColumnOrder(TaskItemColumn.ORG_NAME)}
                     >
                       <TaskItemOrganization
+                        organizationName={organization?.organizationName}
                         organizationIdentifier={
                           organization?.organizationIdentifier
                         }

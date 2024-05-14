@@ -4,7 +4,7 @@ import FullViewIcon from 'img/list/FullViewIcon';
 import SlimViewIcon from 'img/list/SlimViewIcon';
 import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined';
 import ViewColumn from '@mui/icons-material/ViewColumn';
-import { ViewType } from 'helpers/view-type-helper';
+import { ViewType, getViewTypeFromQueryString } from 'helpers/view-type-helper';
 import { useLocation, useHistory } from 'react-router-dom';
 import { updateTaskStatusToFilter } from 'actions/task-list-actions';
 import { checkIfUserIsOrganizationAdmin } from 'helpers/user-helper';
@@ -41,7 +41,8 @@ const ListDetailsToolbar = ({
   focused,
 }) => {
   const dispatch = useDispatch();
-  const { viewType = ViewType.LIST_VIEW } = useLocation();
+  const { viewType = ViewType.LIST_VIEW, search } = useLocation();
+  const queryViewType = getViewTypeFromQueryString(search);
   const history = useHistory();
   const [customFieldsModalOpened, setCustomFieldsModalOpened] = useState(false);
   const currentUser = useSelector(userProfileSelector);
@@ -67,7 +68,10 @@ const ListDetailsToolbar = ({
   const { changeViewType, handleSetChangeViewType, handleRemoveAllTasks } =
     useContext(ListPageContext);
   const [calendarView, setCalendarView] = useState(
-    viewType === ViewType.CALENDAR_VIEW,
+    queryViewType === ViewType.CALENDAR_VIEW,
+  );
+  const [boardView, setBoardView] = useState(
+    queryViewType === ViewType.BOARD_VIEW,
   );
   const [slimView, setSlimView] = useState(
     viewType === ViewType.LIST_VIEW && changeViewType === 'SLIM_VIEW',
@@ -164,7 +168,7 @@ const ListDetailsToolbar = ({
         </GridItemCalendarView>
         {boardViewAvailable && (
           <GridItemBoardView
-            active={calendarView}
+            active={boardView}
             onClick={() => {
               handleChangeViewType(ViewType.BOARD_VIEW);
               handleSetChangeViewType('');

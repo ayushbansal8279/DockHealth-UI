@@ -122,7 +122,11 @@ const LabelsSection = ({ selectedTask, onTaskUpdate }) => {
   );
 
   useEffect(() => {
-    setSelectedLabels(selectedLabelsFromStore);
+    if (
+      selectedLabelsFromStoreLength !== previousSelectedLabelsFromStoreLength
+    ) {
+      setSelectedLabels(selectedLabelsFromStore);
+    }
   }, [
     previousSelectedLabelsFromStoreLength,
     selectedLabelsFromStore,

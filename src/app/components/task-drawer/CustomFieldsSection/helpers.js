@@ -1,7 +1,7 @@
 export function formatMetaDataOutput(outputData) {
   const metadata = outputData.taskMetaData;
   const filteredMetaDataKeys = Object.keys(metadata).filter(
-    (key) => key.length === 36 && metadata[key],
+    (key) => key.length === 36,
   );
 
   const formattedMetadata = filteredMetaDataKeys.map((key) => {

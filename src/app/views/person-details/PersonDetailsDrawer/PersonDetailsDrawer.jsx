@@ -157,7 +157,8 @@ const PersonDetailsDrawer = ({ user, isOpenedDetails, closeDrawer }) => {
       >
         <StickyHeader>
           <TitleName>
-            ${firstName} ${lastName}${credentials ? `, ${credentials}` : ''}
+            {firstName} {lastName}
+            {credentials ? `, ${credentials}` : ''}
           </TitleName>
           <MoreActionsWrapper>
             {isAdminOrOwner && (

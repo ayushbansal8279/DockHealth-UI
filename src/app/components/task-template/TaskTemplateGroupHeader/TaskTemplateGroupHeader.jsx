@@ -1067,6 +1067,7 @@ const TaskTemplateGroupHeader = ({
                 // eslint-disable-next-line sonarjs/no-all-duplicated-branches
                 paddingLeft="12px"
                 paddingRight="small"
+                padding="0"
                 onContextMenu={(event) => {
                   event.stopPropagation();
                 }}
@@ -1295,6 +1296,7 @@ const TaskTemplateGroupHeader = ({
                 }
                 paddingLeft="12px"
                 paddingRight="small"
+                padding="0"
                 onContextMenu={(event) => {
                   event.stopPropagation();
                 }}
@@ -1376,6 +1378,7 @@ const TaskTemplateGroupHeader = ({
                 }
                 paddingLeft="12px"
                 paddingRight="small"
+                padding="0"
                 onContextMenu={(event) => {
                   event.stopPropagation();
                 }}

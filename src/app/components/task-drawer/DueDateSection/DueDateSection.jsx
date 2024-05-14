@@ -36,6 +36,7 @@ const DueDateSection = ({ selectedTask, disabled = false }) => {
   const isTemplateTask = checkIfTemplateTask(selectedTask);
   const sectionDisabled = isTemplateTask || !taskIdentifier;
   const buttonReference = useRef(null);
+  const dueDateRef = useRef(null);
   const [isPopoverOpen, openPopover, closePopover] = useBoolean(false);
   const [isOverdue, setIsOverdue] = useState(false);
   const [isTimeAvailable, setIsTimeAvailable] = useState(false);
@@ -56,7 +57,10 @@ const DueDateSection = ({ selectedTask, disabled = false }) => {
   }, [selectedTask]);
 
   return (
-    <DueDateSectionWrapper disabled={isTemplateTask || disabled}>
+    <DueDateSectionWrapper
+      ref={dueDateRef}
+      disabled={isTemplateTask || disabled}
+    >
       <Title>Due date</Title>
       {!momentDueDate && (
         <AddDateButton
@@ -108,15 +112,16 @@ const DueDateSection = ({ selectedTask, disabled = false }) => {
         </ReminderIconContainer>
       )}
       <StyledPopover
-        anchorEl={buttonReference?.current}
+        anchorEl={dueDateRef?.current}
         anchorOrigin={{
-          vertical: 'center',
+          vertical: 'bottom',
           horizontal: 'left',
         }}
         transformOrigin={{
           vertical: 'top',
           horizontal: 'left',
         }}
+        sx={{ marginLeft: '103px' }}
         open={isPopoverOpen}
         onClose={(event) => {
           event.stopPropagation();
