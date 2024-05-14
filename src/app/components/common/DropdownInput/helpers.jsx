@@ -1,8 +1,8 @@
 import React from 'react';
 import { SelectOption } from './styled';
 
-export function generateSelectOptions(options, sortEnabled) {
-  if (sortEnabled) {
+export function generateSelectOptions(options, sortDisabled) {
+  if (!sortDisabled) {
     return options
       .sort((a, b) => a.label?.localeCompare(b.label))
       .map(({ value, label }) => {
