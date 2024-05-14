@@ -27,7 +27,7 @@ const TaskItemOrganization = ({
       </Grid>
     </div>
   ) : (
-    'Unfiled'
+    ''
   );
 };
 
