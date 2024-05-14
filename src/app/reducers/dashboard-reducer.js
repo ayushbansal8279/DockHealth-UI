@@ -80,6 +80,43 @@ const updateGroupsWithGroupTasksLoadMore = (tasksList, group, groupType) => {
   return newTasksList;
 };
 
+function updateBundleInState(bundleIdentifier, updatedData, state) {
+  const updatedMap = {
+    [bundleIdentifier]: {
+      ...state.tasksMap[bundleIdentifier],
+      ...updatedData,
+      tasks: [
+        ...new Set([
+          ...(state.tasksMap[bundleIdentifier]?.tasks || []),
+          ...updatedData?.tasks.map((task) => task.identifier),
+        ]),
+      ],
+    },
+  };
+
+  // add tasks and subtasks in the bundle
+  for (const task of updatedData?.tasks) {
+    updatedMap[task.identifier] = {
+      ...updatedMap[task.identifier],
+      ...task,
+    };
+    for (const subtask of task?.subtasks) {
+      updatedMap[subtask.identifier] = {
+        ...updatedMap[subtask.identifier],
+        ...subtask,
+      };
+    }
+  }
+
+  return {
+    ...state,
+    tasksMap: {
+      ...state.tasksMap,
+      ...updatedMap,
+    },
+  };
+}
+
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const DashboardTasksReducer = (state = initialState, action) => {
   const { type, tasksList, error } = action;
@@ -326,6 +363,14 @@ const DashboardTasksReducer = (state = initialState, action) => {
             updateTasksStateCallback,
           )
         : state;
+    }
+
+    case ActionTypes.UPDATE_PARTIAL_WORKFLOW_SUCCESS: {
+      return updateBundleInState(
+        action.taskWorkflowIdentifier,
+        action.newData,
+        state,
+      );
     }
 
     case ActionTypes.ADD_TASK_SUCCESS: {
