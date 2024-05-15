@@ -219,7 +219,7 @@ const TaskItem = React.memo(
       searchMetaData = {},
       parentTask,
       subtaskQuickAddOpen,
-      subtasks: subTaskCurrentCount,
+      subTasksCount,
       dependencyTasksCompletedCount,
       dependencyTasksCount,
       hasEscalations,

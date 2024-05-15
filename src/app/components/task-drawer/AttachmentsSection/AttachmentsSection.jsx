@@ -4,18 +4,13 @@ import Loader from 'components/common/Loader/Loader';
 import Spacing from 'components/common/Spacing';
 import { OutfitTypography } from 'styles/theme';
 
-import { Grid } from '@mui/material';
+import { Button, Grid } from '@mui/material';
 import AttachmentPreview from 'components/attachments/AttachmentPreview/AttachmentPreview';
 import AttachmentButton from 'components/attachments/AttachmentButton/AttachmentButton';
 import AttachmentProgressBar from 'components/attachments/AttachmentProgressBar/AttachmentProgressBar';
 import AddAttachmentButton from 'components/attachments/AddAttachmentButton/AddAttachmentButton';
 import initializeAttachmentsSectionHooks from './hooks';
-import {
-  AttachmentsContainer,
-  AttachmentFileInput,
-  DownloadAllLink,
-  Title,
-} from './styled';
+import { AttachmentsContainer, AttachmentFileInput, Title } from './styled';
 import { ScanStatus, ScanStatusText } from './helpers';
 import { DrawerFieldEnum } from '@/app/helpers/task-drawer-helpers';
 
@@ -41,6 +36,10 @@ const AttachmentsSection = ({
   } = initializeAttachmentsSectionHooks(selectedTask);
 
   const attachmentRef = useRef(null);
+
+  const downloadDisabled = currentTaskAttachments?.some(
+    ({ scanStatus }) => scanStatus !== null && scanStatus !== ScanStatus.CLEAN,
+  );
 
   useEffect(() => {
     if (
@@ -125,9 +124,14 @@ const AttachmentsSection = ({
         {currentTaskAttachments && currentTaskAttachments.length > 0 && (
           <Grid item xs={12}>
             <div>
-              <DownloadAllLink onClick={downloadAllFiles}>
+              <Button
+                variant="text"
+                disabled={downloadDisabled}
+                onClick={downloadAllFiles}
+                sx={{ textTransform: 'none' }}
+              >
                 Download All
-              </DownloadAllLink>
+              </Button>
             </div>
           </Grid>
         )}

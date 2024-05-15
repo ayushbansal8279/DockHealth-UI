@@ -24,7 +24,7 @@ const CreateApiKeyHeader: FC<CreateApiKeyHeaderProps> = ({
         startIcon={<AddIcon />}
         disabled={createApiKey.isPending}
       >
-        {createApiKey.isPending ? 'Creating...' : 'Create API Key'}
+        {createApiKey.isPending ? 'Creating...' : 'Create Credential'}
       </Button>
     </>
   );

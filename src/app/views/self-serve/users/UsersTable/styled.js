@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { DataGrid } from '@mui/x-data-grid';
 import { fontWeights, fontSizes } from 'styles/font';
-import palette, { typography } from 'styles/palette';
+import palette from 'styles/palette';
 
 export const UsersTableContainer = styled.div`
   width: 100%;
@@ -139,5 +139,9 @@ export const StyledDataGrid = styled(DataGrid)`
 
   &.MuiTablePagination-input {
     display: none;
+  }
+
+  & .MuiTablePagination-root .MuiToolbar-root .MuiSelect-nativeInput + div {
+    transform: translate(25px, -2px);
   }
 `;

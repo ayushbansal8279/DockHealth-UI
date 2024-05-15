@@ -60,7 +60,7 @@ const ApiKeySection = () => {
     <Card sx={{ borderRadius: 2 }}>
       <CardContent>
         <Box display="flex" justifyContent="space-between" alignItems="center">
-          <Typography variant="h3">API Key</Typography>
+          <Typography variant="h3">Credentials</Typography>
           <Box display="flex" gap={2}>
             {header}
           </Box>
