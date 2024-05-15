@@ -226,13 +226,13 @@ const CustomizeToolbarButton = ({
               {...applyProps(2)}
               style={{ minWidth: '75px' }}
             />
-            {isDashboard && (
+            {/* {isDashboard && (
               <Tab
                 label={additionalOptionsTitle}
                 {...applyProps(3)}
                 style={{ minWidth: '75px' }}
               />
-            )}
+            )} */}
           </Tabs>
           <Box p={1} />
           {selectedTab === 0 && (

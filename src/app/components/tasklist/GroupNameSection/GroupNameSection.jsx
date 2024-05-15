@@ -17,8 +17,8 @@ const GroupNameSection = ({
 
   useEffect(() => {
     setGroupName(initialValue || '');
-    if (disabled) showInput();
-  }, [shouldShowInput, initialValue]);
+    if (disabled) hideInput();
+  }, [initialValue, disabled, hideInput]);
 
   if (shouldShowInput)
     return (
