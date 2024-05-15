@@ -31,6 +31,8 @@ const TaskItemCustomField = ({
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const { value, values } = customFieldValue || {};
+  const { taskMetaData } = task;
+  const { options } = field;
   const patientType = field.targetType === CUSTOM_FIELD_TYPES.PATIENT;
   const isWorkflow =
     task.itemType === TaskItemType.BUNDLE ||
@@ -138,12 +140,24 @@ const TaskItemCustomField = ({
       );
     }
     case FieldType.DROPDOWN: {
+      const dependantOptions = options?.filter((option) => {
+        if (option?.linkedCustomFieldIdentifier) {
+          return taskMetaData?.some(
+            (taskmetadata) =>
+              taskmetadata?.value === option?.linkedCustomFieldOptionIdentifier,
+          );
+        }
+        return true;
+      });
+
+      const updatedField = { ...field, options: dependantOptions };
+
       return (
         <TaskItemDropdown
           readOnly={readOnly}
           value={value}
           onChange={handleChange}
-          field={field}
+          field={updatedField}
         />
       );
     }
