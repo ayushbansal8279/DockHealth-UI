@@ -36,7 +36,10 @@ import TaskTemplateApplicator from 'components/task-template/TaskTemplateApplica
 import { addingNewSubtaskParentIdSelector } from 'selectors/task-drawer-selectors';
 
 import StickyContainer from 'components/common/HorizontalScroll/StickyContainer';
-import { userProfileSelector } from 'selectors/user-selectors';
+import {
+  userProfileSelector,
+  selectedUserOrganizationSelector,
+} from 'selectors/user-selectors';
 import {
   TASK_LIST_RESTRICTIONS_OPTIONS,
   TASK_LIST_RESTRICTIONS_PROFILES,
@@ -236,6 +239,12 @@ const TasksGroup = ({
     [dispatch, taskGroupIdentifier],
   );
 
+  const currentOrganization = useSelector(selectedUserOrganizationSelector);
+  const defaultGroupNameItem =
+    currentOrganization?.themeSettings?.find(
+      (setting) => setting?.name === 'content.label.default.group',
+    ) || {};
+
   const currentUser = useSelector(userProfileSelector);
   const restrictions =
     TASK_LIST_RESTRICTIONS_PROFILES[currentUser?.orgUserRole];
@@ -275,6 +284,11 @@ const TasksGroup = ({
     ],
   );
 
+  const derivedGroupName =
+    groupName === 'DEFAULT'
+      ? defaultGroupNameItem?.value || 'New Tasks'
+      : groupName;
+
   return (
     <TasksGroupContainer
       $width={percentage > 90 ? `${droppableHeaderWidth + 70}px` : '100%'}
@@ -296,7 +310,7 @@ const TasksGroup = ({
         <Spacing horizontal={1} />
         <GroupNameSectionWrapper>
           <GroupNameSection
-            initialValue={groupName}
+            initialValue={derivedGroupName}
             onEnterClick={handleEditGroupName}
             closeOnEnter
             disabled={
@@ -307,7 +321,7 @@ const TasksGroup = ({
             }
           >
             <TasksGroupLabel>
-              <TasksGroupLabelName>{groupName}</TasksGroupLabelName>
+              <TasksGroupLabelName>{derivedGroupName}</TasksGroupLabelName>
               {!isNil(groupTaskCounts) && (
                 <TasksGroupNumericalBadgeContainer>
                   <TasksGroupTaskCount>
