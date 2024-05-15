@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useDispatch } from 'react-redux';
 
 import { bulkEditCustomFieldsByTaskIdentifiers } from '@/app/api/task-api';
-import * as CustomFieldsApi from '@/app/api/custom-fields-api';
 import { ICustomField } from '@/app/types/CustomField';
 import { FormattedMetaData } from '../CustomFieldsBulkEditModal/helpers';
 import CustomFieldsBulkEditModal from '../CustomFieldsBulkEditModal';
@@ -12,25 +11,17 @@ import { updateCustomFieldsByTaskIdentifiers } from '@/app/actions/task-actions'
 
 interface Props {
   taskIdentifiers: string[];
-  taskListIdentifier?: string;
+  taskListIdentifier?: string; // todo: confirm and remove
+  customFields: ICustomField[];
   closeModal: VoidFunction;
 }
 
 export default function TaskListCustomFieldsBulkEditModal({
   taskIdentifiers,
-  taskListIdentifier,
+  customFields,
   closeModal,
 }: Props) {
   const dispatch = useDispatch();
-  const [customFields, setCustomFields] = useState<ICustomField[] | null>(null);
-
-  useEffect(() => {
-    CustomFieldsApi.getAllTaskListCustomFields(taskListIdentifier).then(
-      (data: ICustomField[]) => {
-        setCustomFields(data.sort((a, b) => a.sortIndex - b.sortIndex));
-      },
-    );
-  }, []);
 
   const handleSave = async (formattedMetaData: FormattedMetaData) => {
     try {
