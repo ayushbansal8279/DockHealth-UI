@@ -127,7 +127,7 @@ const DateInput = React.forwardRef(
           anchorEl={textFieldReference.current}
           open={open}
           onClose={handleClose}
-          sx={{ zIndex: popoverZindex ?? 'inherit' }}
+          sx={{ zIndex: popoverZindex ?? 5000 }}
         >
           <Datepicker
             selectedDate={
