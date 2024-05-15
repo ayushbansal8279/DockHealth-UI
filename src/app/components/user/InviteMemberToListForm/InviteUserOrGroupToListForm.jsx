@@ -1,6 +1,9 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Grid, IconButton, ClickAwayListener } from '@mui/material';
-import { MoreVert } from '@mui/icons-material';
+import {
+  Grid,
+  IconButton,
+  ClickAwayListener,
+} from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import * as TaskListApi from 'api/task-list-api';
 import * as OrganizationApi from 'api/organization-api';
@@ -31,8 +34,12 @@ import {
   ExternalUserInviteFormWrapper,
   Container,
   ItemStatusLabel,
+  OptionContainer,
+  IconContainer,
+  OptionMenuWrapper,
 } from './styled';
 import { getMenuOptionsForMember, isEmail } from './helpers';
+import ArrowRight from 'img/simple-arrow-right.svg';
 
 const InviteUserOrGroupToListForm = ({
   list,
@@ -255,27 +262,33 @@ const InviteUserOrGroupToListForm = ({
                         )}
                     </ItemFullName>
                   </ItemFullNameWrapper>
-                  {status && <ItemStatusLabel>{status}</ItemStatusLabel>}
-                  {userOrGroup.itemType === 'GROUP' && (
-                    <ItemStatusLabel>Group</ItemStatusLabel>
-                  )}
-                  {(currentUserListRole === 'ADMIN' ||
-                    currentUserListRole === 'OWNER') && (
-                    <OptionsMenu
-                      placement="left-start"
-                      options={getMenuOptionsForMember(userOrGroup, {
-                        changeUserRole,
-                        removeUserFromList,
-                        cancelInviteToList,
-                        resendInvitationToList,
-                        resendApprovalRequestToList,
-                      })}
-                      customButtonComponent={IconButton}
-                      isDisabled={isUpdatingUsersAndGroupsList}
-                    >
-                      <MoreVert />
-                    </OptionsMenu>
-                  )}
+                  <OptionContainer>
+                    <ItemStatusLabel>
+                      {status ? status : 'Member'}
+                    </ItemStatusLabel>
+                    {userOrGroup.itemType === 'GROUP' && (
+                      <ItemStatusLabel>Group</ItemStatusLabel>
+                    )}
+                    <OptionMenuWrapper>
+                    {(currentUserListRole === 'ADMIN' ||
+                      currentUserListRole === 'OWNER') && (
+                      <OptionsMenu
+                        placement="bottom-end"
+                        options={getMenuOptionsForMember(userOrGroup, {
+                          changeUserRole,
+                          removeUserFromList,
+                          cancelInviteToList,
+                          resendInvitationToList,
+                          resendApprovalRequestToList,
+                        })}
+                        customButtonComponent={IconButton}
+                        isDisabled={isUpdatingUsersAndGroupsList}
+                      >
+                        <IconContainer src={ArrowRight} alt="arrow" />
+                      </OptionsMenu>
+                    )}
+                    </OptionMenuWrapper>
+                  </OptionContainer>
                 </ListItem>
               );
             })}

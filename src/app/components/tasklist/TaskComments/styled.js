@@ -3,7 +3,7 @@ import React from 'react';
 import styled, { css } from 'styled-components';
 import { Collapse } from '@mui/material';
 import spacing from 'styles/spacing';
-import palette from 'styles/palette';
+import palette, { typography } from 'styles/palette';
 import { fontSizes, fontWeights } from 'styles/font';
 
 export const TaskCommentsPadding = styled.div`
@@ -82,7 +82,7 @@ export const ShowMoreButton = styled.button`
   margin: ${spacing.small} 0;
   font-size: ${fontSizes.smallPlus};
   color: ${palette.brightBlue};
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: inherit;
   cursor: pointer;
 `;
 

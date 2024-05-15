@@ -53,8 +53,6 @@ import {
   quickContextTypes,
 } from 'actions/mega-filter-actions';
 import { quickFiltersSelector } from 'selectors/mega-filter-selectors';
-import FilterPopover from 'components/filter/FilterPopover/FilterPopover';
-import PatientsFilter from 'components/patients/PatientsFilter/PatientsFilter';
 import PatientsList from './PatientsList/PatientsList';
 import PatientsToolbar from './PatientsToolbar/PatientsToolbar';
 import BulkEditCreateTask from './BulkEditSection/BulkEditOptionsBar/BulkEditCreateTask';
@@ -247,11 +245,11 @@ const PatientsView = () => {
 
     const modalProps = {
       title: `You want to delete ${selectedPatientsCount} patient${
-        selectedPatientsCount > 1 && 's'
+        selectedPatientsCount > 1 ? 's' : ''
       }`,
       description: `Are you sure you want to delete ${selectedPatientsCount} patient${
-        selectedPatientsCount > 1 && 's'
-      } ? This action cannot be undone.`,
+        selectedPatientsCount > 1 ? 's' : ''
+      }? This action cannot be undone.`,
       confirmButtonText: 'Delete',
       confirm: () => {
         handleDeleteConfirm();

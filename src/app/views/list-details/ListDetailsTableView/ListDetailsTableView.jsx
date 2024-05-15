@@ -458,6 +458,13 @@ const ListDetailsTableView = () => {
     },
   ];
 
+  const [isVirtualTaskListEnabled, setIsVirtualTaskListEnabled] = useState(
+    !window.disabledVirtualTaskList,
+  );
+  const handleSwitchVirtualTaskListEnabled = () => {
+    setIsVirtualTaskListEnabled(true);
+  };
+
   return (
     <HorizontallyScrolledViewLayout
       header={
@@ -473,6 +480,7 @@ const ListDetailsTableView = () => {
               ? taskCounters.incomplete
               : taskCounters.complete
           }
+          additionalOptions={additionalToolbarOptions}
         />
       }
     >
@@ -482,29 +490,29 @@ const ListDetailsTableView = () => {
         disabled={bulkEditIsDisabled}
         searchValue={searchValue}
       >
-        <div>
-          <TaskViewContainer>
-            <StickyContainer>
+        <TaskViewContainer>
+          {/* <StickyContainer>
               <ListDetailsToolbar
                 additionalOptions={additionalToolbarOptions}
               />
-            </StickyContainer>
-            <TasksView
-              viewSetup={displayListPreferences}
-              onTaskUpdate={handleTaskUpdate}
-              updateWorkflowStatus={handleUpdateWorkflowStatus}
-              loadTasksForTaskGroup={loadTasksForTaskGroup}
-            />
-          </TaskViewContainer>
-          <TaskDrawer
-            fromFirstAddTask={taskCounters?.incomplete === 0}
-            hideTour={isTourOpen}
-            onTaskUpdate={refreshTabAfterTaskUpdate}
-            onTaskDelete={handleTaskDelete}
-            onTaskCreation={refreshTabAfterTaskUpdate}
-            origin={TaskOrigin.LIST}
+            </StickyContainer> */}
+
+          <TasksView
+            viewSetup={displayListPreferences}
+            onTaskUpdate={handleTaskUpdate}
+            updateWorkflowStatus={handleUpdateWorkflowStatus}
+            loadTasksForTaskGroup={loadTasksForTaskGroup}
+            __switchVirtualTaskListEnabled={handleSwitchVirtualTaskListEnabled}
           />
-        </div>
+        </TaskViewContainer>
+        <TaskDrawer
+          fromFirstAddTask={taskCounters?.incomplete === 0}
+          hideTour={isTourOpen}
+          onTaskUpdate={refreshTabAfterTaskUpdate}
+          onTaskDelete={handleTaskDelete}
+          onTaskCreation={refreshTabAfterTaskUpdate}
+          origin={TaskOrigin.LIST}
+        />
       </BulkEditSection>
     </HorizontallyScrolledViewLayout>
   );

@@ -165,6 +165,7 @@ const PatientTasksListView = () => {
           ),
     [filteredLists, isAllTasksView, taskListIdentifierParameter],
   );
+  window.disabledVirtualTaskList = true;
   useEffect(() => {
     if (isAllTasksView) {
       setViewSpecificConfig(PATIENT_ALL_JOINED_LISTS_VIEW_COLUMNS_CONFIG);
@@ -312,19 +313,21 @@ const PatientTasksListView = () => {
   const groupHasMultipleAssignees = false;
 
   const isTaskGroupSelected = useSelector(
-    isTaskItemsSelectedSelector(activeList?.tasks),
+    isTaskItemsSelectedSelector(
+      activeList?.tasks.map((task) => task.identifier),
+    ),
   );
 
   const selectedTaskIdentifiers = useSelector(selectedTaskIdentifiersSelector);
 
   const handleGroupSelect = useCallback(() => {
-    const taskIdentifiers = activeList?.tasks;
+    const taskIdentifiers = activeList?.tasks.map((task) => task.identifier);
     dispatch(changeTasksSelectedState(!isTaskGroupSelected, taskIdentifiers));
   }, [activeList?.tasks, dispatch, isTaskGroupSelected]);
 
   const renderTasks = useCallback(
     (tasks, { isFullView, taskGroupIdentifier }) => {
-      const taskIdentifiers = tasks;
+      const taskIdentifiers = tasks.map((task) => task.identifier);
       const isGroupSelected =
         taskIdentifiers?.length > 0 &&
         taskIdentifiers?.every((taskId) =>
@@ -354,10 +357,14 @@ const PatientTasksListView = () => {
                 onSortChange={sortPatientTasks}
                 groupHasMultipleAssignees={groupHasMultipleAssignees}
                 isGroupSelected={isGroupSelected}
-                onGroupSelect={() => handleGroupSelect(tasks)}
+                onGroupSelect={handleGroupSelect}
               />
             )}
-            {tasks?.map((task) => {
+            {tasks?.map((task, index) => {
+              const isNextTaskItemTypeBundle =
+                index !== tasks?.length - 1
+                  ? tasks[index + 1]?.itemType === 'BUNDLE'
+                  : false;
               return task.itemType === TaskItemType.TASK ? (
                 <StandardTaskItem
                   key={task.identifier}
@@ -389,6 +396,7 @@ const PatientTasksListView = () => {
                   iconColorActive={iconColorActiveItem?.value}
                   isCompletedTab={tasksStatus !== TaskStatus.INCOMPLETE}
                   origin={TaskOrigin.PATIENT}
+                  isNextTaskItemTypeBundle={isNextTaskItemTypeBundle}
                 />
               );
             })}

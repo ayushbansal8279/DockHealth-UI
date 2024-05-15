@@ -11,20 +11,60 @@
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "allowJs": true,
+    "types": [
+      "vite/client",
+      "node"
+    ],
     "baseUrl": "./",
     "paths": {
-      "@mui/styled-engine": ["./node_modules/@mui/styled-engine-sc"],
-      "actions/*": ["src/app/actions/*"],
-      "context-api/*": ["src/app/context-api/*"],
-      "api/*": ["src/app/api"],
-      "restrictions/*": ["src/app/restrictions/*"],
-      "components/*": ["src/app/components/*"],
-      "helpers/*": ["src/app/helpers/*"],
-      "hooks/*": ["src/app/hooks/*"],
-      "img/*": ["src/app/img/*"],
-      "reducers/*": ["src/app/reducers/*"],
-      "views/*": ["src/app/views/*"],
-      "styles/*": ["src/app/styles/*"]
+      "@/*": [
+        "src/*"
+      ],
+      "@mui/styled-engine": [
+        "./node_modules/@mui/styled-engine-sc"
+      ],
+      "actions/*": [
+        "src/app/actions/*"
+      ],
+      "context-api/*": [
+        "src/app/context-api/*"
+      ],
+      "api/*": [
+        "src/app/api"
+      ],
+      "restrictions/*": [
+        "src/app/restrictions/*"
+      ],
+      "components/*": [
+        "src/app/components/*"
+      ],
+      "helpers/*": [
+        "src/app/helpers/*"
+      ],
+      "hooks/*": [
+        "src/app/hooks/*"
+      ],
+      "img/*": [
+        "src/app/img/*"
+      ],
+      "reducers/*": [
+        "src/app/reducers/*"
+      ],
+      "views/*": [
+        "src/app/views/*"
+      ],
+      "styles/*": [
+        "src/app/styles/*"
+      ],
+      "selectors/*": [
+        "src/app/selectors/*"
+      ],
+      "types/*": [
+        "src/app/types/*"
+      ],
+      "react-query/*": [
+        "src/app/react-query/*"
+      ],
     }
   },
   "include": [

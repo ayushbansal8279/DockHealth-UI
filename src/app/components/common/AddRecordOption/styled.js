@@ -1,40 +1,41 @@
 import styled from 'styled-components';
-import palette from 'styles/palette';
+import palette, { typography } from 'styles/palette';
 import spacing from 'styles/spacing';
 
 export const AdornmentContainer = styled.div`
   align-items: center;
-  align-self: flex-end;
-  color: ${palette.orange};
+  color: ${palette.brightBlue};
   justify-content: center;
-  margin-bottom: 0.3rem;
-  width: 2ch;
   position: relative;
   display: inline;
   top: -0px;
+
+  &::first-letter {
+    font-size: 20px;
+  }
 `;
 
 export const AddText = styled.span`
   display: flex;
-  padding: 4px;
+  padding: 3px 8px;
 `;
 
 export const ListItemButton = styled.button`
   width: 100%;
   cursor: pointer;
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: inherit;
 
   ${({ isHovered }) => isHovered && `background: ${palette.blueGrey};`}
 `;
 
 export const ListItemCustomText = styled.button`
-  padding: 10px;
+  padding: 15px 0 0 12px;
   display: flex;
   cursor: pointer;
 `;
 
 export const NoPatientFound = styled.div`
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: inherit;
   text-align: center;
   color: ${palette.coolGrey1};
   padding-bottom: ${spacing.tiny};

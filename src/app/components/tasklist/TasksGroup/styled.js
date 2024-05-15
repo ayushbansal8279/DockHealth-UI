@@ -1,24 +1,22 @@
-import { Collapse } from '@mui/material';
+import { Collapse, Typography } from '@mui/material';
 import styled from 'styled-components';
 import spacing from 'styles/spacing';
 import { fontWeights, fontSizes } from 'styles/font';
 import palette from 'styles/palette';
 
 export const GroupOptionsContainer = styled.div`
-  position: absolute;
-  left: -20px;
-  top: 50%;
-  transform: translateY(-80%);
+  transform: rotate(-90deg);
 `;
 
 export const GroupOpenContainer = styled.div`
-  height: 30px;
+  height: 23px;
   width: 30px;
   display: flex;
   align-items: center;
   flex-basis: content;
-  padding-left: 10px;
-  padding-right: 10px;
+  padding-left: 5px;
+  padding-right: 5px;
+  background-color: ${palette.white};
 `;
 
 export const TasksGroupActionButtonsContainer = styled.div`
@@ -55,21 +53,23 @@ export const TasksGroupContainer = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  margin-bottom: ${spacing.largePlus};
+  padding-bottom: ${spacing.giga};
+  background: ${({ bgColor }) => (bgColor ? palette.aliceBlue : '')};
+  width: ${({ $width }) => $width};
 `;
 
 export const TasksGroupHeader = styled.div`
   align-items: center;
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   padding-bottom: ${spacing.regular};
   position: sticky;
-  left: 24px;
-
+  width: ${({ $width }) => $width};
+  left: ${({ $left }) => `${$left}px`};
+  padding-top: ${spacing.regular};
   .action-buttons {
     visibility: hidden;
   }
-
   &:hover {
     .action-buttons {
       visibility: visible;
@@ -78,21 +78,50 @@ export const TasksGroupHeader = styled.div`
 `;
 
 export const TasksGroupLabel = styled.p`
+  display: flex;
   margin-bottom: 0;
   font-size: ${fontSizes.regular};
   font-weight: ${fontWeights.regularPlus};
-  text-transform: uppercase;
 `;
 
 export const TasksGroupLabelName = styled.span`
   display: inline-block;
   max-width: 400px;
   padding-right: ${spacing.tiny};
+  padding-left: ${spacing.small};
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
   vertical-align: middle;
-  font-family: 'Montserrat', sans-serif;
+  font-family: Outfit, sans-serif;
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 22.68px;
+  letter-spacing: 0.307692289352417px;
+  text-align: left;
+`;
+
+export const TasksGroupNumericalBadgeContainer = styled.div`
+  height: 20px;
+  border-radius: 2px;
+  border: 1px solid ${palette.iron};
+  background: ${palette.whiteSmoke};
+  padding: 4px 7px 4px 7px;
+  gap: 7px;
+  margin-left: 6px;
+  margin-top: 2px;
+  opacity: 0px;
+`;
+
+export const TasksGroupTaskCount = styled(Typography)`
+  color: ${palette.shadowBlue};
+  font-family: Outfit;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 11.19px;
+  &.MuiTypography-root {
+    text-align: center;
+  }
 `;
 
 export const TasksGroupLabelCounter = styled.span`
@@ -126,7 +155,7 @@ export const PaginationButton = styled.button`
 `;
 
 export const ShowMoreButton = styled.button`
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Outfit', sans-serif;
   cursor: pointer;
   color: ${palette.brightBlue};
   font-size: ${fontSizes.smallPlus};

@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo } from 'react';
-import MegaFilter from 'components/tasklist/MegaFilter/MegaFilter';
+import MegaFilter from '@/app/components/tasklist/list-toolbar-buttons/MegaFilter/MegaFilter';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   megaFilterSelector,
@@ -112,7 +112,12 @@ const UserDetailsFilters = () => {
     (id, filtersSetup) => {
       dispatch(selectQuickFilter(id));
       dispatch(
-        selectFiltersForMegaFilter(filtersSetup, userIdentifier, selectedTab),
+        selectFiltersForMegaFilter(
+          filtersSetup,
+          userIdentifier,
+          selectedTab,
+          id,
+        ),
       );
     },
     [dispatch, selectedTab, userIdentifier],
@@ -166,7 +171,7 @@ const UserDetailsFilters = () => {
         addQuickFilterOption={addQuickFilterOption}
         selectedQuickFilter={selectedQuickFilter}
         selectQuickFilter={handleSelectQuickFilter}
-        onSaveClick={handleSaveQuickFilter}
+        handleSaveQuickFilter={handleSaveQuickFilter}
         onSaveAsNewClick={handleSaveAsQuickFilter}
         wasChangedFilters={wasChangedFilters}
         onQuickFilterCreate={handleQuickFilterCreate}

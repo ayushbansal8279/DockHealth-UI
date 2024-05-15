@@ -100,12 +100,6 @@ export const userHasPostEMRNoteFeatureSelector = createSelector(
     organizationAvailableFeatures?.includes('POST_EMR_NOTE'),
 );
 
-export const userHasBoardVieweFeatureSelector = createSelector(
-  userProfileSelector,
-  ({ organizationAvailableFeatures }) =>
-    organizationAvailableFeatures?.includes('BOARD_VIEW'),
-);
-
 export const userHasShareTaskFeatureSelector = createSelector(
   userProfileSelector,
   ({ organizationAvailableFeatures }) =>

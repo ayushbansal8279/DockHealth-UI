@@ -56,6 +56,8 @@ import {
   StickyElement,
   GroupOptionsContainer,
   GroupOpenContainer,
+  DashboardTasksGroupNumericalBadgeContainer,
+  DashboardTasksGroupTaskCount,
 } from './styled';
 
 const DashboardTasksGroup = ({
@@ -77,6 +79,8 @@ const DashboardTasksGroup = ({
   moveGroupUp,
   moveGroupDown,
   iconColorActive,
+  backgroundColor,
+  showHeader,
 }) => {
   const {
     groupName,
@@ -94,6 +98,7 @@ const DashboardTasksGroup = ({
   );
 
   const [tasks, setNewTasks] = useState(dashboardTasks);
+  const [tasksIdentifiers, setTasksIdentifiers] = useState([]);
   const [groupIsOpen, setGroupIsOpen] = useState(defaultOpen);
   const quickAddTaskInputReference = useRef(null);
   const parentContainerReference = useRef(null);
@@ -114,10 +119,16 @@ const DashboardTasksGroup = ({
     }
   }, [dashboardTasks, isLoading, metricValue]);
 
-  const isGroupSelected = useSelector(isTaskItemsSelectedSelector(tasks));
+  const isGroupSelected = useSelector(
+    isTaskItemsSelectedSelector(tasksIdentifiers),
+  );
 
   const handleGroupSelect = useCallback(() => {
-    const taskIdentifiers = tasks;
+    let taskIdentifiers =
+      tasks && typeof tasks[0] === 'string'
+        ? tasks
+        : tasks.map((item) => item.identifier);
+    setTasksIdentifiers(taskIdentifiers);
     dispatch(
       TaskActions.changeTasksSelectedState(!isGroupSelected, taskIdentifiers),
     );
@@ -226,34 +237,48 @@ const DashboardTasksGroup = ({
   );
 
   return (
-    <DashboardTasksGroupContainer ref={parentContainerReference}>
+    <DashboardTasksGroupContainer
+      ref={parentContainerReference}
+      backgroundColor={backgroundColor}
+    >
       <StickyContainer left={24} decreaseWidth={2 * 24}>
-        <StickyElement>
-          <DashboardTasksGroupHeader>
-            <GroupOptionsContainer>
-              <OptionsMenu options={options} placement="bottom-start">
-                <MoreVert color="primary" />
-              </OptionsMenu>
-            </GroupOptionsContainer>
-            <Spacing horizontal={2} />
-            <GroupOpenContainer onClick={onSwitchGroup}>
-              <RotatableChevron
-                alt="arrow"
-                rotated={!groupIsOpen}
-                color={iconColorActive}
-              />
-            </GroupOpenContainer>
-            <Spacing horizontal={1} />
-            <GroupNameSectionWrapper>
-              <DashboardTasksGroupLabel>
-                <DashboardTasksGroupLabelName>
-                  {groupName}
-                </DashboardTasksGroupLabelName>
-                ({metricValue})
-              </DashboardTasksGroupLabel>
-            </GroupNameSectionWrapper>
-          </DashboardTasksGroupHeader>
-        </StickyElement>
+        {showHeader && (
+          <StickyElement
+            origin={TaskOrigin.DASHBOARD}
+            backgroundColor={
+              backgroundColor ? palette.aliceBlue : palette.white
+            }
+          >
+            <DashboardTasksGroupHeader backgroundColor={backgroundColor}>
+              <GroupOptionsContainer>
+                <OptionsMenu options={options} placement="bottom-start">
+                  <MoreVert color="primary" />
+                </OptionsMenu>
+              </GroupOptionsContainer>
+              <Spacing horizontal={2} />
+              <GroupOpenContainer onClick={onSwitchGroup}>
+                <RotatableChevron
+                  alt="arrow"
+                  rotated={groupIsOpen}
+                  color={iconColorActive}
+                />
+              </GroupOpenContainer>
+              <Spacing horizontal={1} />
+              <GroupNameSectionWrapper>
+                <DashboardTasksGroupLabel>
+                  <DashboardTasksGroupLabelName>
+                    {groupName}
+                    <DashboardTasksGroupNumericalBadgeContainer>
+                      <DashboardTasksGroupTaskCount>
+                        {metricValue}
+                      </DashboardTasksGroupTaskCount>
+                    </DashboardTasksGroupNumericalBadgeContainer>
+                  </DashboardTasksGroupLabelName>
+                </DashboardTasksGroupLabel>
+              </GroupNameSectionWrapper>
+            </DashboardTasksGroupHeader>
+          </StickyElement>
+        )}
       </StickyContainer>
       {isLoading && !tasks ? (
         <DashboardTasksGroupList>
@@ -264,7 +289,13 @@ const DashboardTasksGroup = ({
           <DashboardTasksGroupList>
             {GROUPS_WITH_QUICK_ADD_TASK_INPUT.includes(groupType) && (
               <StickyContainer left={24} decreaseWidth={2 * 24} zIndex={100}>
-                <StickyElement zIndex={101}>
+                <StickyElement
+                  zIndex={101}
+                  origin={TaskOrigin.DASHBOARD}
+                  backgroundColor={
+                    backgroundColor ? palette.aliceBlue : palette.white
+                  }
+                >
                   <QuickAddTaskInput
                     ref={quickAddTaskInputReference}
                     quickAddTask={handleQuickAddTask}
@@ -287,13 +318,16 @@ const DashboardTasksGroup = ({
             )}
             <TasksHeader
               onOrderChange={handleOrderChange}
-              pageBackground={palette.white}
+              pageBackground={
+                backgroundColor ? palette.aliceBlue : palette.white
+              }
               bulkEditEnabled
               isGroupSelected={isGroupSelected}
               onGroupSelect={handleGroupSelect}
               sort={currentSort}
               onSortChange={onSortChange}
               groupHasMultipleAssignees={groupHasMultipleAssignees}
+              origin={TaskOrigin.DASHBOARD}
             />
             <DragDropContext
               onBeforeDragStart={showClearSortFiltersModal}
@@ -350,7 +384,11 @@ const DashboardTasksGroup = ({
                                       (task?.taskIdentifier || task) ===
                                       lastCreatedTaskId
                                     }
-                                    pageBackground={palette.white}
+                                    pageBackground={
+                                      backgroundColor
+                                        ? palette.aliceBlue
+                                        : palette.white
+                                    }
                                     taskItemIdentifier={task}
                                     isCompletedGroup={isCompletedGroup}
                                     isDragging={isDragging}
@@ -386,7 +424,13 @@ const DashboardTasksGroup = ({
                     dashboardTasksGroup?.moreTasksIndex !== 0 && (
                       <LoadMoreButton
                         onClick={() =>
-                          dispatch(loadMoreDashboardTasksForGroup(groupType))
+                          dispatch(
+                            loadMoreDashboardTasksForGroup(
+                              groupType,
+                              currentSort?.key,
+                              currentSort?.order,
+                            ),
+                          )
                         }
                       />
                     )}

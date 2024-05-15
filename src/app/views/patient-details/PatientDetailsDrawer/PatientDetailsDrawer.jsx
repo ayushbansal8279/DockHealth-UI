@@ -130,6 +130,12 @@ const PatientDetailsDrawer = ({ patient, isOpenedDetails, closeDetails }) => {
   }, [dispatch, history, patientIdentifier]);
 
   const handleFormSubmit = (data) => {
+    if (data.phoneHome === undefined) {
+      data.phoneHome = '';
+    }
+    if (data.phoneMobile === undefined) {
+      data.phoneMobile = '';
+    }
     unsetActive();
     const updateData = mergeDeepRight(patient, data);
     updateData.allNotes = undefined;

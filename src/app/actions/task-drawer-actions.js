@@ -35,3 +35,10 @@ export const getTaskCustomFields = (taskIdentifier, taskListIdentifier) => ({
 export function openTaskDrawerToAddTask(initialTaskState) {
   return { type: ActionTypes.OPEN_TASK_DRAWER_TO_ADD_TASK, initialTaskState };
 }
+
+export function setCommentIdentifierToScroll(commentIdentifer) {
+  return {
+    type: ActionTypes.SET_COMMENT_IDENTIFIER_TO_SCROLL,
+    payload: commentIdentifer,
+  };
+}

@@ -30,16 +30,7 @@ class ResendCode extends PureComponent {
   }
 
   render() {
-    return (
-      <div className="columns large-12">
-        <div className="row expanded text-left">
-          <div className="columns large-12 top-buffer">
-            <h5>Resend confirmation code</h5>
-          </div>
-        </div>
-        <ResendCodeForm type="Confirm" onSubmit={this.onSubmit} />
-      </div>
-    );
+    return <ResendCodeForm type="Confirm" onSubmit={this.onSubmit} />;
   }
 }
 

@@ -68,12 +68,12 @@ const TaskDescription = ({ selectedTask, readOnly }) => {
 
   return (
     <>
-      <DescriptionTextContainer isCrossed={status === TaskStatus.COMPLETE}>
+      <DescriptionTextContainer>
+        Task
         <CustomTextEditor
           key={selectedTask?.identifier}
           // empty={isEmptyDetailsState}
           focused={isFocused}
-          label="Description"
           richTextEnabled
         >
           <RichTextEditor

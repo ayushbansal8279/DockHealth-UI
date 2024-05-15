@@ -1,20 +1,27 @@
 // eslint-disable-next-line unicorn/filename-case
-import React, { useState, useRef } from 'react';
-import { Box, ListItemText, Popover } from '@mui/material';
-import { MontserratTypography } from 'styles/theme-montserrat';
+import React from 'react';
+import { ListItemText, Grid, Divider } from '@mui/material';
 import Spacing from 'components/common/Spacing';
-import palette from 'styles/palette';
-import SSOIcon from '@mui/icons-material/Security';
 import {
-  SSOOptionsBar,
-  SSOButton,
   GoogleLogoImage,
-  PopoverContainer,
-  Spacer,
   DrChronoLogoImage,
   AthenaHealthImage,
+  StyledPaper,
 } from './styled';
 import { StyledHyperLink } from './AuthComponents.styled';
+
+const drChronoLogin = () => {
+  window.sessionStorage.setItem('iss', 'drchrono.com');
+  window.location.href = `${
+    import.meta.env.VITE_HEYDOC_SERVICES_BASE_URL
+  }oidc/authorize?iss=client1-drchrono.com`;
+};
+const athenaLogin = () => {
+  window.sessionStorage.setItem('iss', 'athenahealth');
+  window.location.href = `${
+    import.meta.env.VITE_HEYDOC_SERVICES_BASE_URL
+  }oidc/authorize?iss=athenahealth`;
+};
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const SSOOptions = () => {
@@ -26,108 +33,58 @@ const SSOOptions = () => {
     ssoURLGoogle = import.meta.env.VITE_SSO_LAUNCH_URL_GOOGLE;
   }
 
-  const drChronoLogin = () => {
-    window.sessionStorage.setItem('iss', 'drchrono.com');
-    window.location.href = `${
-      import.meta.env.VITE_HEYDOC_SERVICES_BASE_URL
-    }oidc/authorize?iss=client1-drchrono.com`;
-  };
-  const athenaLogin = () => {
-    window.sessionStorage.setItem('iss', 'athenahealth');
-    window.location.href = `${
-      import.meta.env.VITE_HEYDOC_SERVICES_BASE_URL
-    }oidc/authorize?iss=athenahealth`;
-  };
-  const buttonReference = useRef(null);
-  const [open, setOpen] = useState(false);
-
   return (
     <>
       <Spacing vertical={4} />
-      <MontserratTypography variant="h4">Or sign in with</MontserratTypography>
-      <Spacing vertical={3} />
-      <SSOOptionsBar>
+      {/* <MontserratTypography variant="h4">Or sign in with</MontserratTypography> */}
+      <Divider>Or sign in with</Divider>
+      <Spacing vertical={4} />
+      <Grid xs={12} container columnSpacing={2}>
         {ssoURLGoogle && (
-          <>
-            <a href={ssoURLGoogle} target="_self">
-              <Box
-                mx={1}
-                style={{ textAlign: 'center', color: palette.mediumGrey }}
-              >
-                <SSOButton>
-                  <GoogleLogoImage />
-                </SSOButton>
+          <Grid item xs={4}>
+            <StyledPaper>
+              <ListItemText>
                 <Spacing vertical={2} />
-                <MontserratTypography variant="h4" weight="400">
+                <GoogleLogoImage />
+                <Spacing horizontal={3} />
+                <StyledHyperLink href={ssoURLGoogle} target="_self">
                   Google
-                </MontserratTypography>
-              </Box>
-            </a>
-            <Box mx={1} />
-          </>
+                </StyledHyperLink>
+                <Spacing vertical={2} />
+              </ListItemText>
+            </StyledPaper>
+          </Grid>
         )}
-        <StyledHyperLink>
-          <Box
-            mx={1}
-            style={{ textAlign: 'center', color: palette.mediumGrey }}
-          >
-            <SSOButton
-              ref={buttonReference}
-              onClick={() => setOpen(!open)}
-              tooltip="Select EMR for Single Sign On"
-            >
-              <SSOIcon style={{ width: '60px' }} />
-            </SSOButton>
-            <Spacing vertical={2} />
-            <MontserratTypography variant="h4" weight="400">
-              SSO
-            </MontserratTypography>
-          </Box>
-        </StyledHyperLink>
-        <Box mx={1} />
-        <Box mx={1} />
-        <Popover
-          anchorEl={buttonReference?.current}
-          open={open}
-          onClose={() => setOpen(false)}
-          anchorOrigin={{
-            vertical: 'bottom',
-            horizontal: 'left',
-          }}
-          transformOrigin={{
-            vertical: 'top',
-            horizontal: 'left',
-          }}
-        >
-          <PopoverContainer>
-            <Box display="flex" justifyContent="space-between">
-              <Box mx={0.5} />
-              <ListItemText>
-                <Spacing vertical={2} />
-                <DrChronoLogoImage />
-                <Spacing horizontal={3} />
-                <StyledHyperLink onClick={drChronoLogin}>
-                  DrChrono
-                </StyledHyperLink>
-                <Spacing vertical={2} />
-              </ListItemText>
-            </Box>
-            <Spacer />
-            <Box display="flex" justifyContent="space-between">
-              <Box mx={0.5} />
-              <ListItemText>
-                <Spacing vertical={2} />
-                <AthenaHealthImage />
-                <Spacing horizontal={3} />
-                <StyledHyperLink onClick={athenaLogin}>
-                  athenahealth
-                </StyledHyperLink>
-                <Spacing vertical={2} />
-              </ListItemText>
-            </Box>
-          </PopoverContainer>
-        </Popover>
-      </SSOOptionsBar>
+
+        <Grid item xs={4}>
+          <StyledPaper>
+            <ListItemText>
+              <Spacing vertical={2} />
+              <Spacing horizontal={3} />
+              <DrChronoLogoImage />
+              <Spacing horizontal={3} />
+              <StyledHyperLink onClick={drChronoLogin}>
+                DrChrono
+              </StyledHyperLink>
+              <Spacing vertical={2} />
+            </ListItemText>
+          </StyledPaper>
+        </Grid>
+        <Grid item xs={4}>
+          <StyledPaper>
+            <ListItemText>
+              <Spacing vertical={2} />
+              <AthenaHealthImage />
+              <Spacing horizontal={1} />
+              <StyledHyperLink onClick={athenaLogin}>
+                athenahealth
+              </StyledHyperLink>
+              <Spacing horizontal={2} />
+              <Spacing vertical={2} />
+            </ListItemText>
+          </StyledPaper>
+        </Grid>
+      </Grid>
     </>
   );
 };

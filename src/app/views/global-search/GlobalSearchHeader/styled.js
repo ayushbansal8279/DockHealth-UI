@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { Grid } from '@mui/material';
 import spacing from 'styles/spacing';
-import palette from 'styles/palette';
+import palette, { typography } from 'styles/palette';
 import { fontSizes } from 'styles/font';
 
 export const TopSectionGrid = styled(Grid)`
@@ -11,11 +11,12 @@ export const TopSectionGrid = styled(Grid)`
 
 export const InputWrapper = styled.div`
   width: 645px;
+  margin-left: 20px;
 `;
 
 export const CheckboxDescription = styled.label`
   display: inline;
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: inherit;
   font-size: ${fontSizes.regular};
   color: ${palette.scrollbarGrey};
 `;
@@ -27,12 +28,20 @@ export const CheckboxContainer = styled.div`
 `;
 
 export const ButtonWrapper = styled.div`
-  display: flex;
-  width: 130px;
-  height: 56px;
-  padding: 0 ${spacing.smallPlus};
-  box-sizing: border-box;
-  justify-content: center;
-  align-items: center;
-  background: ${palette.coolGrey4};
+  color: ${palette.white};
+  height: 40px;
+  width: 80px;
+  text-align: center;
+  padding-top: 7px;
+  margin-left: 15px;
+  border-radius: 4px;
+  background-color: ${palette.newDarkBlue};
+
+  :hover {
+    background-color: ${palette.purpleNavy};
+  }
+
+  @media print {
+    display: none;
+  }
 `;

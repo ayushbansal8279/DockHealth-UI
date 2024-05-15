@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import spacing from 'styles/spacing';
-import { fontSizes } from 'styles/font';
+import { fontSizes, fontWeights } from 'styles/font';
 import palette from 'styles/palette';
 import { ModalWrapper } from '../styled';
 
@@ -14,7 +14,7 @@ export const InviteToListModalWrapper = styled(ModalWrapper)`
 export const Header = styled.div`
   width: 100%;
   text-align: center;
-  margin-bottom: ${spacing.huge};
+  margin-bottom: ${spacing.large};
 `;
 
 export const Description = styled.p`
@@ -25,7 +25,15 @@ export const Description = styled.p`
 
 export const Title = styled.h5`
   font-size: ${fontSizes.regularPlus};
-  color: ${palette.brightBlue};
-  text-transform: uppercase;
   text-align: center;
+  font-weight: ${fontWeights.regularPlus};
+`;
+
+export const ButtonWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  border-radius: 8px;
+  
 `;

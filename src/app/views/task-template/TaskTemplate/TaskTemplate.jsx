@@ -31,6 +31,7 @@ import { openDrawer } from 'actions/workflow-drawer-actions';
 import { isTaskItemsSelectedSelector } from 'selectors/task-items-selectors';
 import { TaskOrigin } from 'helpers/task-helpers';
 import Tooltip from 'components/common/Tooltip/Tooltip';
+import TasksHeader from 'components/tasklist/TasksHeader/TasksHeader';
 import RotatableChevron from 'components/common/RotatableChevron/RotatableChevron';
 import StandardTaskItemContainer from 'components/task/StandardTaskItemContainer/StandardTaskItemContainer';
 import TasksSkeletonLoader from 'components/task/TasksSkeletonLoader/TasksSkeletonLoader';
@@ -383,6 +384,7 @@ const TaskTemplate = ({
             <TasksSkeletonLoader rows={4} />
           ) : (
             <>
+              <TasksHeader bulkEditEnabled={false} isGroupSelected={false} />
               <DragDropContext
                 onBeforeCapture={onBeforeCapture}
                 onDragEnd={onDragEnd}
@@ -395,41 +397,43 @@ const TaskTemplate = ({
                     >
                       {tasks?.map((taskOrIdentifier, index) => {
                         return (
-                          <Draggable
-                            key={
-                              taskOrIdentifier?.taskIdentifier ||
-                              taskOrIdentifier
-                            }
-                            draggableId={String(
-                              taskOrIdentifier?.taskIdentifier ||
-                                taskOrIdentifier,
-                            )}
-                            index={index}
-                          >
-                            {(draggableProvided, draggableSnapshot) => (
-                              <StandardTaskItemContainer
-                                isStartedDnD={
-                                  draggableId ===
-                                  (taskOrIdentifier?.taskIdentifier ||
-                                    taskOrIdentifier)
-                                }
-                                isDragging={draggableSnapshot.isDragging}
-                                draggableProvided={draggableProvided}
-                                isDraggable
-                                taskIdentifier={
-                                  taskOrIdentifier?.taskIdentifier ||
-                                  taskOrIdentifier
-                                }
-                                isFullView={isFullView}
-                                multipleAssigneesContext={
-                                  containsMultipleAssignees
-                                }
-                                noMargin
-                                iconColorActive={iconColorActive}
-                                origin={TaskOrigin.TEMPLATE}
-                              />
-                            )}
-                          </Draggable>
+                          <div style={{ marginBottom: '1px' }}>
+                            <Draggable
+                              key={
+                                taskOrIdentifier?.taskIdentifier ||
+                                taskOrIdentifier
+                              }
+                              draggableId={String(
+                                taskOrIdentifier?.taskIdentifier ||
+                                  taskOrIdentifier,
+                              )}
+                              index={index}
+                            >
+                              {(draggableProvided, draggableSnapshot) => (
+                                <StandardTaskItemContainer
+                                  isStartedDnD={
+                                    draggableId ===
+                                    (taskOrIdentifier?.taskIdentifier ||
+                                      taskOrIdentifier)
+                                  }
+                                  isDragging={draggableSnapshot.isDragging}
+                                  draggableProvided={draggableProvided}
+                                  isDraggable
+                                  taskIdentifier={
+                                    taskOrIdentifier?.taskIdentifier ||
+                                    taskOrIdentifier
+                                  }
+                                  isFullView={isFullView}
+                                  multipleAssigneesContext={
+                                    containsMultipleAssignees
+                                  }
+                                  noMargin
+                                  iconColorActive={iconColorActive}
+                                  origin={TaskOrigin.TEMPLATE}
+                                />
+                              )}
+                            </Draggable>
+                          </div>
                         );
                       })}
                       {droppableProvided.placeholder}

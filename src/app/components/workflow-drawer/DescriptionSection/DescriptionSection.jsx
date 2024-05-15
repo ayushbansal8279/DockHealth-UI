@@ -50,22 +50,26 @@ const DescriptionSection = ({ readOnly }) => {
   );
 
   return (
-    <CustomTextEditor
-      key={selectedWorkflow?.identifier}
-      empty={!description || description?.length === 0}
-      focused={isFocused}
-      label="description"
-      richTextEnabled
-    >
-      <RichTextEditor
-        readonly={readOnly}
-        value={description}
-        onChange={handleChange}
-        onBlur={handleBlur}
-        initOnClick
-        showCharCount
-      />
-    </CustomTextEditor>
+    <div>
+      Description
+      <CustomTextEditor
+        key={selectedWorkflow?.identifier}
+        empty={!description || description?.length === 0}
+        focused={isFocused}
+        richTextEnabled
+      >
+        <RichTextEditor
+          readonly={readOnly}
+          value={description}
+          onChange={handleChange}
+          onBlur={handleBlur}
+          initOnClick
+          showCharCount
+          taskListIdentifier={selectedWorkflow?.taskListIdentifier}
+          mentions={selectedWorkflow?.taskMentions}
+        />
+      </CustomTextEditor>
+    </div>
   );
 };
 

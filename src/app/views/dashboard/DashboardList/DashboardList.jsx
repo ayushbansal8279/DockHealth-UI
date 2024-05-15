@@ -26,19 +26,15 @@ import EmptyListView from 'components/tasklist/EmptyListView/EmptyListView';
 import {
   getDashboardFilters,
   getDashboardTasks,
+  getDashboardTasksForGroup,
 } from 'actions/dashboard-actions';
-import {
-  TASK_ITEM_SORT_METHODS,
-  TASK_ITEM_SORT_DESC_METHODS,
-  TaskOrigin,
-} from 'helpers/task-helpers';
+import { TaskOrigin } from 'helpers/task-helpers';
 import * as TaskActions from 'actions/task-actions';
 import * as TaskDrawerActions from 'actions/task-drawer-actions';
 import TaskDrawer from 'components/task-drawer/TaskDrawer/TaskDrawer';
 import NoFilterResultsView from 'components/tasklist/EmptyListView/NoFilterResultsView';
 import { hasFiltersAppliedSelector } from 'selectors/mega-filter-selectors';
 import { onSortChanged } from 'helpers/ga-event-helper';
-import { SortOrderType } from 'helpers/sorting-helper';
 import { DashboardTasksTab } from 'helpers/dashboard-helpers';
 
 import { ViewType, getViewTypeFromQueryString } from 'helpers/view-type-helper';
@@ -51,14 +47,6 @@ import {
 import { updateCurrentUserPreferences } from 'actions/user-actions';
 import { Context } from 'components/common/HorizontalScroll/HorizontalScrollContainer';
 import useActions from 'hooks/use-actions';
-import pipe from 'ramda/src/pipe';
-import prop from 'ramda/src/prop';
-// import path from 'ramda/src/path';
-import sortWith from 'ramda/src/sortWith';
-import ascend from 'ramda/src/ascend';
-import descend from 'ramda/src/descend';
-import toLower from 'ramda/src/toLower';
-import defaultTo from 'ramda/src/defaultTo';
 // import ifElse from 'ramda/src/ifElse';
 import BulkEditSection from 'components/tasklist/BulkEditSection/BulkEditSection';
 import DashboardTasksGroup from './DashboardTasksGroup';
@@ -113,51 +101,61 @@ const DashboardList = ({ currentUser, tourModalIsOpen, openTourModal }) => {
     if (tabName === DashboardTasksTab.SHARED_TASKS) {
       return dashboardTasks;
     }
-    return dashboardTasks?.filter((taskGroupInfo) =>
-      dashboardGroupsPreferences?.includes(taskGroupInfo?.groupType),
-    );
+
+    // if (tabName === DashboardTasksTab.UPCOMING) {
+    //   return dashboardTasks?.filter(
+    //     (taskGroupInfo) =>
+    //       !(
+    //         taskGroupInfo?.groupType
+    //           .toLowerCase()
+    //           .includes(DashboardTasksTab.COMPLETED.toLowerCase()) ||
+    //         taskGroupInfo?.groupType
+    //           .toLowerCase()
+    //           .includes(DashboardTasksTab.OVERDUE.toLowerCase())
+    //       ),
+    //   );
+    // }
+
+    // if (tabName === DashboardTasksTab.OVERDUE) {
+    //   return dashboardTasks?.filter((taskGroupInfo) =>
+    //     taskGroupInfo?.groupType
+    //       .toLowerCase()
+    //       .includes(DashboardTasksTab.OVERDUE.toLowerCase()),
+    //   );
+    // }
+
+    // if (tabName === DashboardTasksTab.COMPLETED) {
+    //   return dashboardTasks?.filter((taskGroupInfo) =>
+    //     taskGroupInfo?.groupType
+    //       .toLowerCase()
+    //       .includes(DashboardTasksTab.COMPLETED.toLowerCase()),
+    //   );
+    // }
+
+    // return dashboardTasks?.filter((taskGroupInfo) =>
+    //   dashboardGroupsPreferences?.includes(taskGroupInfo?.groupType),
+    // );
+    return dashboardTasks;
   }, [dashboardGroupsPreferences, dashboardTasks, tabName]);
 
   const orderedDashboardTasks = useMemo(() => {
     if (tabName === DashboardTasksTab.SHARED_TASKS) {
       return filteredDashboardTasks;
     }
-    const sorted = () => {
-      return dashboardGroupsPreferences
-        .map((groupType) =>
-          filteredDashboardTasks.find((g) => g.groupType === groupType),
-        )
-        .filter(Boolean);
-    };
-    return dashboardGroupsPreferences ? sorted() : filteredDashboardTasks;
+    // const sorted = () => {
+    //   return dashboardGroupsPreferences
+    //     .map((groupType) =>
+    //       filteredDashboardTasks.find((g) => g.groupType === groupType),
+    //     )
+    //     .filter(Boolean);
+    // };
+    // return dashboardGroupsPreferences ? sorted() : filteredDashboardTasks;
+    return filteredDashboardTasks;
   }, [dashboardGroupsPreferences, filteredDashboardTasks, tabName]);
 
-  const currentSortMethod = useMemo(() => {
-    if (!sortKey) return identity;
-    if (sortKey.length === 36) {
-      return sortWith([
-        ascend(pipe(prop('description'), defaultTo(' '), toLower)),
-      ]);
-    }
-    return TASK_ITEM_SORT_METHODS[sortKey];
-  }, [sortKey]);
-
-  const currentSortDescMethod = useMemo(() => {
-    if (!sortKey) return identity;
-    if (sortKey.length === 36) {
-      return sortWith([
-        descend(pipe(prop('description'), defaultTo(' '), toLower)),
-      ]);
-    }
-    return TASK_ITEM_SORT_DESC_METHODS[sortKey];
-  }, [sortKey]);
-
   const currentSortMethodWithOrder = useMemo(() => {
-    if (sortOrder === SortOrderType.DESC) {
-      return currentSortDescMethod;
-    }
-    return currentSortMethod;
-  }, [sortOrder, currentSortMethod, currentSortDescMethod]);
+    return identity;
+  }, []);
 
   function resetSort() {
     setCurrentSort({
@@ -196,8 +194,12 @@ const DashboardList = ({ currentUser, tourModalIsOpen, openTourModal }) => {
         key: order ? key : null,
         order,
       });
+      // eslint-disable-next-line array-callback-return
+      orderedDashboardTasks?.map((item) => {
+        dispatch(getDashboardTasksForGroup(item?.groupType, key, order));
+      });
     },
-    [taskActions],
+    [dispatch, orderedDashboardTasks, taskActions],
   );
 
   const showClearSortFiltersModal = () => {
@@ -230,8 +232,18 @@ const DashboardList = ({ currentUser, tourModalIsOpen, openTourModal }) => {
     if (completeTaskCount > 0 && tabName === DashboardTasksTab.MY_TASKS) {
       return (
         <EmptyListView
-          title={['Way to go!', 'You’ve completed all of your tasks.']}
-          description="Take a breather, tomorrow is a new day full of possibilities."
+          title={['Way to go!', "You've completed all of your tasks."]}
+          description=""
+        />
+      );
+    }
+
+    if (tabName === DashboardTasksTab.MY_TASKS) {
+      return (
+        <EmptyListView
+          widthBreakpoint={1400}
+          title={['There are no tasks assigned to you.']}
+          description="Please refine filters."
         />
       );
     }
@@ -239,8 +251,8 @@ const DashboardList = ({ currentUser, tourModalIsOpen, openTourModal }) => {
     return (
       <EmptyListView
         widthBreakpoint={1400}
-        title={['There are no tasks', 'assigned to you.']}
-        description="Add tasks above to automatically assign to yourself."
+        title={['No tasks to display.']}
+        description="Please refine filters."
       />
     );
   };
@@ -403,6 +415,8 @@ const DashboardList = ({ currentUser, tourModalIsOpen, openTourModal }) => {
                           moveGroupUp={() => moveGroupUp(item)}
                           moveGroupDown={() => moveGroupDown(item)}
                           iconColorActive={iconColorActiveItem?.value}
+                          backgroundColor={!(index % 2 === 0)}
+                          showHeader={orderedDashboardTasks.length > 1}
                         />
                       ),
                   )

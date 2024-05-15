@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import spacing from 'styles/spacing';
-import palette from 'styles/palette';
+import palette, { typography } from 'styles/palette';
 import { fontSizes } from 'styles/font';
 
 export const TemplateHandle = styled.img`
@@ -46,14 +46,44 @@ export const TaskTemplateGroupHeaderContainer = styled.div`
   position: relative;
   display: flex;
   padding: 0;
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: inherit;
   font-size: ${fontSizes.smallPlus};
   width: 100%;
-  height: 35px;
-  border-top: 1px solid ${palette.coolGrey3};
-  border-bottom: 1px solid ${palette.coolGrey3};
+  height: 37px;
   background-color: ${(props) =>
     props.isSelected ? palette.dockBlueLight : palette.white};
+
+  border-top: 2px solid rgba(75, 179, 253, 1);
+  margin-left: -1px;
+  margin-top: 10px;
+
+  margin-bottom: ${({
+    isOpen,
+    isNextVirtualTaskItemTypeBundle,
+    isLastTaskOfGroup,
+    origin,
+    isNextTaskItemTypeBundle,
+  }) =>
+    isOpen
+      ? origin === 'DASHBOARD' && '10px'
+      : origin === 'LIST' || origin === 'PATIENT'
+      ? isLastTaskOfGroup
+        ? '0px'
+        : isNextVirtualTaskItemTypeBundle || isNextTaskItemTypeBundle
+        ? '0px'
+        : '10px'
+      : '10px'};
+
+  border-bottom: 1px solid
+    ${({ isOpen, origin }) =>
+      isOpen
+        ? origin === 'DASHBOARD'
+          ? 'rgba(75, 179, 253, 1)'
+          : `${palette.coolGrey3}`
+        : 'rgba(75, 179, 253, 1)'};
+
+  border-right: 1px solid rgba(75, 179, 253, 1);
+  z-index: 2;
 
   &:hover {
     & ${TemplateHandle}, ${AddPlaceholder} {
@@ -95,19 +125,22 @@ export const TaskTemplateRight = styled.div`
 export const ActionIconsContainer = styled.div`
   display: flex;
   position: relative;
-  width: 65px;
+  height: -webkit-fill-available;
+  width: 78px;
   align-items: center;
-  &::after {
-    border-right: 1px solid ${palette.coolGrey3};
-    content: '';
-    position: absolute;
-    top: -4px;
-    left: 100%;
-    width: 0px;
-    height: 36px;
-  }
+  padding-left: 8px;
+  margin-left: -12px;
+  margin-right: 0px;
+  background-color: ${palette.lightOceanBlue};
+
+  border: 5px solid ${palette.lightOceanBlue};
+
+  border-right: 1px solid ${palette.coolGrey3};
 `;
 
 export const PatientMRNAnchor = styled.a`
   color: ${palette.brightBlue} !important;
+`;
+export const ChevronContainer = styled.div`
+  margin-left: 20px;
 `;

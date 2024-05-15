@@ -21,6 +21,8 @@ import ReactHtmlParser from 'html-react-parser';
 import { linkifyTextWithMentions } from 'components/common/RichTextEditor/helpers';
 import Spacing from 'components/common/Spacing';
 import EditIcon from '@mui/icons-material/Edit';
+import PatientMention from 'components/common/TextEditor/PatientMention/PatientMention';
+import UserMention from 'components/common/TextEditor/UserMention/UserMention';
 import {
   // Description,
   DescriptionBox,
@@ -33,6 +35,9 @@ import {
   DescriptionEditButton,
   DescriptionInput,
 } from '../../styled';
+import { fontWeights } from '@/app/styles/font';
+import Tooltip from '@/app/components/common/Tooltip/Tooltip';
+import EditPencil from '@/app/img/EditPencil';
 
 const TaskItemDescription = ({
   task,
@@ -45,6 +50,7 @@ const TaskItemDescription = ({
   // disableMentions,
   // isEditButtonVisible = false,
   width,
+  isHover,
 }) => {
   const {
     description,
@@ -57,10 +63,17 @@ const TaskItemDescription = ({
     completedDt,
     // taskList,
     linkedTaskTemplate,
-    // read,
+    read,
+    tokenizedDescription,
   } = task;
 
   const [descriptionState, setDescriptionState] = useState(description);
+
+  const [isSubtask, setIsSubtask] = useState(false);
+
+  useEffect(() => {
+    if (task?.parentTaskIdentifier) setIsSubtask(true);
+  }, [task]);
 
   // const { taskListIdentifier } = taskList || {};
   // const { matchDescription } = searchMetaData || {};
@@ -123,6 +136,8 @@ const TaskItemDescription = ({
     [dispatch, setEditing, task],
   );
 
+  // console.log(`split tokenized desciption:`, tokenizedDescription.split(/\s/));
+
   return (
     <DescriptionBox width={width}>
       <Box display="flex" flex={1}>
@@ -150,28 +165,73 @@ const TaskItemDescription = ({
               textOverflow: 'ellipsis',
               overflow: 'hidden',
               whiteSpace: 'nowrap',
+              textDecoration: isCompleted ? 'line-through' : 'none',
+              color: isCompleted && 'rgba(61, 72, 88, 0.50)',
+              fontWeight: read ? fontWeights.light : fontWeights.bold,
             }}
           >
-            {descriptionState
-              .split('/s/')
-              .map((word) =>
-                word.includes('[http') || word.includes('http') ? (
-                  ReactHtmlParser(
-                    linkifyTextWithMentions(`${word} `, taskMentions),
-                  )
-                ) : (
-                  <Highlighter
-                    highlightClassName="list-highlight"
-                    searchWords={
-                      highlightedValue
-                        ? highlightedValue?.toLowerCase().split(/\s+/)
-                        : []
-                    }
-                    autoEscape
-                    textToHighlight={`${word} `}
-                  />
-                ),
-              )}
+            {tokenizedDescription.split(/\s/).map((word) => {
+              // eslint-disable-next-line unicorn/prefer-ternary
+              // console.log(`word:`, word);
+              if (word.includes('[http') || word.includes('http')) {
+                return ReactHtmlParser(
+                  linkifyTextWithMentions(`${word} `, taskMentions),
+                );
+              }
+
+              if (word[0] === '@') {
+                const wordMentionIdentifier = word.split(/@{(.*?)}/)[1];
+                const currentMention = taskMentions.find(
+                  (m) => m.identifier === wordMentionIdentifier,
+                );
+
+                if (currentMention) {
+                  return (
+                    <UserMention
+                      mention={currentMention}
+                      className="fr-deletable fr-tribute"
+                    >
+                      <span data={currentMention.identifier}>
+                        @{currentMention.name}{' '}
+                      </span>
+                    </UserMention>
+                  );
+                }
+              }
+
+              if (word[0] === '#') {
+                const wordMentionIdentifier = word.split(/#{(.*?)}/)[1];
+                const currentMention = taskMentions.find(
+                  (m) => m.identifier === wordMentionIdentifier,
+                );
+
+                if (currentMention) {
+                  return (
+                    <PatientMention
+                      mention={currentMention}
+                      className="fr-deletable fr-tribute"
+                    >
+                      <span data={currentMention.identifier}>
+                        @{currentMention.name}{' '}
+                      </span>
+                    </PatientMention>
+                  );
+                }
+              }
+
+              return (
+                <Highlighter
+                  highlightClassName="list-highlight"
+                  searchWords={
+                    highlightedValue
+                      ? highlightedValue?.toLowerCase().split(/\s+/)
+                      : []
+                  }
+                  autoEscape
+                  textToHighlight={`${word} `}
+                />
+              );
+            })}
           </div>
         )}
         {!isCompleted && (
@@ -185,13 +245,16 @@ const TaskItemDescription = ({
                 }
               }}
             >
-              <EditIcon />
+              <Tooltip placement="top" title="Edit Task Description">
+                <EditPencil />
+              </Tooltip>
             </IconButton>
           </DescriptionEditButton>
         )}
       </Box>
       <TaskItemDescriptionIndicators>
-        {isCompleted && (
+        {/* In Future this will move on Tooltip */}
+        {/* {isCompleted && isHover && (
           <CompletedBy isCompleted={isCompleted}>
             <span>{`By ${completedByName} ${
               completedDt &&
@@ -199,23 +262,23 @@ const TaskItemDescription = ({
                 completedDt ? `${moment(completedDt).format('MM/DD/YYYY')}` : ''
               }`
             } ${
-              linkedTaskTemplate ? `, launched ${linkedTaskTemplate.name}` : ''
+              linkedTaskTemplate ? `, launched ${linkedTaskTemplate?.name}` : ''
             }
             `}</span>
           </CompletedBy>
-        )}
-        {hasParentTaskLabel && (
+        )} */}
+        {/* {hasParentTaskLabel && (
           <>
             {isCompleted && <Spacing horizontal={2} />}
             <TaskItemParentTaskLabel>
               Subtask of
               <span
                 onClick={onParentLabelClick}
-              >{` ${parentTask.description}`}</span>
+              >{` ${parentTask?.description}`}</span>
             </TaskItemParentTaskLabel>
           </>
-        )}
-        {linkedTaskTemplate && !isCompleted && !isDecisionTask && (
+        )} */}
+        {/* {linkedTaskTemplate && !isCompleted && !isDecisionTask && (
           <TaskContext>
             <span
               style={{
@@ -224,15 +287,15 @@ const TaskItemDescription = ({
                 whiteSpace: 'nowrap',
               }}
             >
-              Triggers: {linkedTaskTemplate.name}
+              Deploy: {linkedTaskTemplate.name}
             </span>
           </TaskContext>
         )}
         {linkedTaskTemplate && !isCompleted && isDecisionTask && (
           <TaskContext>
-            <span>Triggers a SmartFlow</span>
+            <span>Deploy a SmartFlow</span>
           </TaskContext>
-        )}
+        )} */}
       </TaskItemDescriptionIndicators>
     </DescriptionBox>
   );

@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import Skeleton from '@mui/material/Skeleton';
 import { Popover } from '@mui/material';
-import palette from 'styles/palette';
+import palette, { typography } from 'styles/palette';
 import spacing from 'styles/spacing';
 import { fontSizes, fontWeights } from 'styles/font';
 
@@ -35,7 +35,7 @@ export const InputBox = styled.div`
   color: ${palette.mediumGrey};
   font-size: ${fontSizes.smallPlus};
   font-weight: ${fontWeights.light};
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: inherit;
 
   &:placeholder {
     color: ${palette.coolGrey2};
@@ -50,6 +50,13 @@ export const ListContainer = styled.div`
     withBorder ? `1px solid ${palette.coolGrey2}` : '0px'};
 `;
 
+export const SearchPatientsResultList = styled.div`
+  position: relative;
+  overflow-y: auto;
+  overflow-x: hidden;
+  height: 208px;
+`;
+
 export const Row = styled.button`
   width: 100%;
   display: flex;
@@ -57,7 +64,7 @@ export const Row = styled.button`
   align-items: center;
   cursor: pointer;
   color: ${palette.coolGrey1};
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: inherit;
   ${({ isHovered }) => isHovered && `background: ${palette.blueGrey};`}
   ${({ readOnly }) => readOnly && `pointer-events: none;`}
 

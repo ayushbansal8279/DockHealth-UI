@@ -8,11 +8,17 @@ import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
 import RichTextEditor from 'components/common/RichTextEditor/RichTextEditor';
 import {
   AddCommentContainer,
+  AvatarWrapper,
   AddCommentLoaderContainer,
   AddCommentInputContainer,
 } from './styled';
 
-const AddComment = ({ autoFocus, onAdd }) => {
+const AddComment = ({
+  autoFocus = false,
+  onAdd,
+  onFocus = () => {},
+  onBlur = () => {},
+}) => {
   const addCommentReference = useRef();
   const addCommentContainerReference = useRef();
   const [isFocused] = useState(false);
@@ -40,11 +46,16 @@ const AddComment = ({ autoFocus, onAdd }) => {
     setDescription(value);
   };
 
+  const handleTextEditorFocus = () => {
+    onFocus?.();
+  };
+
   const handleTextEditorBlur = (value) => {
     if (value !== '') {
       onAdd(value);
       setDescription('');
     }
+    onBlur?.();
   };
 
   const handleTextEditorKeyEnter = (value) => {
@@ -58,7 +69,9 @@ const AddComment = ({ autoFocus, onAdd }) => {
 
   return (
     <AddCommentContainer ref={addCommentContainerReference}>
-      <UserAvatar user={currentUser} size={35} />
+      <AvatarWrapper>
+        <UserAvatar user={currentUser} size={35} />
+      </AvatarWrapper>
       <AddCommentInputContainer isFocused={isFocused}>
         <RichTextEditor
           placeholder="New comment"
@@ -66,6 +79,7 @@ const AddComment = ({ autoFocus, onAdd }) => {
           value={description}
           onChange={handleTextEditorChange}
           onBlur={handleTextEditorBlur}
+          onFocus={handleTextEditorFocus}
           onKeyEnter={handleTextEditorKeyEnter}
           taskListIdentifier={selectedTask?.taskList?.taskListIdentifier}
           mentions={selectedTask?.taskMentions}

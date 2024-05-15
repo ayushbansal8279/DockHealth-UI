@@ -1,19 +1,17 @@
-import React, { useCallback, useState, useMemo } from 'react';
-import uniq from 'ramda/src/uniq';
-import TaskViewTypeToolbarSelect from 'components/tasklist/TaskViewTypeToolbarSelect/TaskViewTypeToolbarSelect';
+import React, { useCallback, useState, useContext } from 'react';
 import { Box } from '@mui/material';
-import TaskStatusToolbarSelect from 'components/tasklist/TaskStatusToolbarSelect/TaskStatusToolbarSelect';
-// import CompleteTasksVisibilitySwitch from 'components/tasklist/CompleteTasksVisibilitySwitch/CompleteTasksVisibilitySwitch';
-import InboxTips from 'components/tasklist/InboxTips/InboxTips';
+import FullViewIcon from 'img/list/FullViewIcon';
+import SlimViewIcon from 'img/list/SlimViewIcon';
+import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined';
+import ViewColumn from '@mui/icons-material/ViewColumn';
 import { ViewType, getViewTypeFromQueryString } from 'helpers/view-type-helper';
 import { useLocation, useHistory } from 'react-router-dom';
-import { TaskStatus } from 'helpers/task-helpers';
-import { updateUserListViewSetup } from 'actions/task-list-actions';
-import CustomizeToolbarButton from 'components/tasklist/CustomizeToolbarButton/CustomizeToolbarButton';
+import { updateTaskStatusToFilter } from 'actions/task-list-actions';
 import { checkIfUserIsOrganizationAdmin } from 'helpers/user-helper';
 import {
   userProfileSelector,
   selectedUserOrganizationSelector,
+  userHasBoardViewFeatureSelector,
 } from 'selectors/user-selectors';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -22,13 +20,29 @@ import {
 } from 'selectors/task-list-selectors';
 import { isMemberAdmin } from 'helpers/list-members-helper';
 import TaskCustomFieldsModal from 'modal/customModals/TaskCustomFieldsModal';
-import { ToolbarContainer } from './styled';
+import queryString from 'query-string';
+import {
+  GridContainer,
+  GridItemCalendarView,
+  GridItemBoardView,
+  GridItemFullView,
+  GridItemSlimView,
+  ToolbarContainer,
+} from './styled';
+import { ListPageContext } from '../ListDetailsView';
+import { getCurrentListTasks } from '@/app/actions/list-details-actions';
+import CustomizeToolbarButton from '@/app/components/tasklist/list-toolbar-buttons/CustomizeToolbarButton/CustomizeToolbarButton';
+import TaskStatusToolbarSelect from '@/app/components/tasklist/list-toolbar-buttons/TaskStatusToolbarSelect';
 
-const TASKS_VISIBILITY_KEY = 'SHOW_WORKFLOW_COMPLETED_TASKS';
-
-const ListDetailsToolbar = ({ additionalOptions, children }) => {
+const ListDetailsToolbar = ({
+  additionalOptions,
+  children,
+  searchValue,
+  focused,
+}) => {
   const dispatch = useDispatch();
-  const { search } = useLocation();
+  const { viewType = ViewType.LIST_VIEW, search } = useLocation();
+  const queryViewType = getViewTypeFromQueryString(search);
   const history = useHistory();
   const [customFieldsModalOpened, setCustomFieldsModalOpened] = useState(false);
   const currentUser = useSelector(userProfileSelector);
@@ -41,7 +55,6 @@ const ListDetailsToolbar = ({ additionalOptions, children }) => {
     (u) => u.identifier === currentUser?.identifier,
   );
   const isListAdmin = isMemberAdmin(currentUserMember);
-  const viewType = getViewTypeFromQueryString(search);
   const restrictCustomizationFeatures = restrictCustomization && !isListAdmin;
   const iconColorFilterActiveItem =
     currentOrganization?.themeSettings?.find(
@@ -52,86 +65,78 @@ const ListDetailsToolbar = ({ additionalOptions, children }) => {
       ({ name }) => name === 'icon.active.color',
     ) || {};
 
-  const handleChangeViewType = useCallback(
-    (event) => {
-      const queryParameters = new URLSearchParams(search);
-      const value = event?.target.value ?? ViewType.LIST_VIEW;
-      if (value === ViewType.LIST_VIEW) {
-        queryParameters.delete('viewType');
-      } else {
-        queryParameters.set('viewType', value.toLowerCase());
-      }
-      history.push({ search: queryParameters.toString() });
-    },
-    [search, history],
+  const { changeViewType, handleSetChangeViewType, handleRemoveAllTasks } =
+    useContext(ListPageContext);
+  const [calendarView, setCalendarView] = useState(
+    queryViewType === ViewType.CALENDAR_VIEW,
+  );
+  const [boardView, setBoardView] = useState(
+    queryViewType === ViewType.BOARD_VIEW,
+  );
+  const [slimView, setSlimView] = useState(
+    viewType === ViewType.LIST_VIEW && changeViewType === 'SLIM_VIEW',
+  );
+  const [fullView, setFullView] = useState(
+    viewType === ViewType.LIST_VIEW && changeViewType === 'FULL_VIEW',
   );
 
-  const { displayOptions = [] } = useMemo(
-    () =>
-      taskList?.listType === 'PUBLIC'
-        ? taskList
-        : taskList?.listUsers?.find(
-            (user) => user.identifier === currentUser.identifier,
-          ) ||
-          taskList ||
-          {},
-    [taskList, currentUser],
+  const handleChangeViewType = useCallback(
+    (newViewType) => {
+      const queryParams = {};
+      if (newViewType !== ViewType.LIST_VIEW)
+        queryParams.viewType = newViewType;
+      const query = queryString.stringify(queryParams);
+      history.push(`/core/tasks/${taskListIdentifier}?${query}`);
+    },
+    [history, taskListIdentifier],
   );
 
   const handleChangeTasksStatus = useCallback(
-    (event) => {
-      history.push(
-        `/core/tasks/${taskListIdentifier}${
-          event.target.value === TaskStatus.INCOMPLETE
-            ? ''
-            : `/${TaskStatus.COMPLETE}`
-        }${search}`,
-      );
+    (status) => {
+      dispatch(updateTaskStatusToFilter(status));
+      dispatch(getCurrentListTasks());
     },
-    [history, taskListIdentifier, search],
+    [dispatch],
   );
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const handleTasksVisibilityChange = (visible) => {
-    const newDisplayOptions = visible
-      ? uniq([...displayOptions, TASKS_VISIBILITY_KEY])
-      : displayOptions.filter((k) => k !== TASKS_VISIBILITY_KEY);
-
-    dispatch(
-      updateUserListViewSetup(
-        taskList.taskListIdentifier,
-        newDisplayOptions,
-        currentUser.identifier,
-      ),
-    );
-  };
+  const boardViewAvailable = useSelector(userHasBoardViewFeatureSelector);
 
   return (
     <ToolbarContainer>
       <Box display="flex" flex={1} justifyContent="flex-start">
-        <TaskStatusToolbarSelect
-          value={tasksStatus}
-          onChange={handleChangeTasksStatus}
-          iconColorFilterActive={iconColorFilterActiveItem?.value}
-          iconColorActive={iconColorActiveItem?.value}
-        />
-        <Box mx={0.5} />
-        <TaskViewTypeToolbarSelect
-          value={viewType}
-          onChange={handleChangeViewType}
-          iconColorFilterActive={iconColorFilterActiveItem?.value}
-          iconColorActive={iconColorActiveItem?.value}
-        />
+        {viewType === ViewType.CALENDAR_VIEW && (
+          <TaskStatusToolbarSelect
+            value={tasksStatus}
+            onChange={handleChangeTasksStatus}
+            iconColorFilterActive={iconColorFilterActiveItem?.value}
+            iconColorActive={iconColorActiveItem?.value}
+          />
+        )}
+
+        {viewType === ViewType.BOARD_VIEW && (
+          <TaskStatusToolbarSelect
+            value={tasksStatus}
+            onChange={handleChangeTasksStatus}
+            iconColorFilterActive={iconColorFilterActiveItem?.value}
+            iconColorActive={iconColorActiveItem?.value}
+          />
+        )}
+
         {viewType === ViewType.LIST_VIEW && (
           <>
-            <Box mx={0.5} />
             <CustomizeToolbarButton
               openCustomFieldModal={() => setCustomFieldsModalOpened(true)}
               additionalOptions={additionalOptions}
               disableButton={restrictCustomizationFeatures}
               iconColorFilterActive={iconColorFilterActiveItem?.value}
+              searchValue={searchValue}
+              focused={focused}
             />
             <Box mx={0.5} />
+            <TaskStatusToolbarSelect
+              value={tasksStatus}
+              onChange={handleChangeTasksStatus}
+              iconColorFilterActive={iconColorFilterActiveItem?.value}
+            />
             <TaskCustomFieldsModal
               opened={customFieldsModalOpened}
               handleClose={() => setCustomFieldsModalOpened(false)}
@@ -139,23 +144,70 @@ const ListDetailsToolbar = ({ additionalOptions, children }) => {
               isOrganizationAdmin={isOrganizationAdmin}
               isListAdmin={isListAdmin}
             />
-            {taskList?.listType === 'INBOX' && <InboxTips />}
+            {children}
           </>
         )}
       </Box>
-      {viewType === ViewType.LIST_VIEW && (
-        <Box display="flex" flex={1} justifyContent="flex-end">
-          {/* {tasksStatus === TaskStatus.INCOMPLETE && (
-            <CompleteTasksVisibilitySwitch
-              visible={displayOptions.includes(TASKS_VISIBILITY_KEY)}
-              onChange={handleTasksVisibilityChange}
-              iconColorFilterActive={iconColorFilterActiveItem?.value}
+
+      <Box mx={0.5} />
+      <GridContainer columns={boardViewAvailable ? 4 : 3}>
+        <GridItemCalendarView
+          active={calendarView}
+          onClick={() => {
+            handleChangeViewType(ViewType.CALENDAR_VIEW);
+            handleSetChangeViewType('');
+            handleRemoveAllTasks();
+          }}
+        >
+          <CalendarMonthOutlinedIcon
+            sx={{
+              height: '28px',
+              width: '24px',
+            }}
+          />
+        </GridItemCalendarView>
+        {boardViewAvailable && (
+          <GridItemBoardView
+            active={boardView}
+            onClick={() => {
+              handleChangeViewType(ViewType.BOARD_VIEW);
+              handleSetChangeViewType('');
+              handleRemoveAllTasks();
+            }}
+          >
+            <ViewColumn
+              sx={{
+                height: '28px',
+                width: '24px',
+              }}
             />
-          )} */}
-          <Box mx={0.5} />
-        </Box>
-      )}
-      {children}
+          </GridItemBoardView>
+        )}
+        <GridItemFullView
+          active={fullView}
+          onClick={() => {
+            handleChangeViewType(ViewType.LIST_VIEW);
+            handleSetChangeViewType('FULL_VIEW');
+            handleRemoveAllTasks();
+            setSlimView(false);
+            setFullView(true);
+          }}
+        >
+          <FullViewIcon />
+        </GridItemFullView>
+        <GridItemSlimView
+          active={slimView}
+          onClick={() => {
+            handleChangeViewType(ViewType.LIST_VIEW);
+            handleSetChangeViewType('SLIM_VIEW');
+            handleRemoveAllTasks();
+            setFullView(false);
+            setSlimView(true);
+          }}
+        >
+          <SlimViewIcon />
+        </GridItemSlimView>
+      </GridContainer>
     </ToolbarContainer>
   );
 };

@@ -8,8 +8,19 @@ import Tooltip from 'components/common/Tooltip/Tooltip';
 import DateLabel from 'components/common/DateLabel/DateLabel';
 import { isDueDateOverdue, ReminderType } from 'helpers/task-helpers';
 import { onTaskDueDateChanged } from 'helpers/ga-event-helper';
+import spacing from 'styles/spacing';
+import palette from 'styles/palette';
+import { AddPlaceholder } from '../../styled';
 
-const TaskItemDueDate = ({ task, disabled = false }) => {
+const TaskItemDueDate = ({
+  task,
+  isDateHover,
+  disabled = false,
+  format,
+  showTime,
+  showReminder,
+  showRecurring,
+}) => {
   const dispatch = useDispatch();
   const { taskIdentifier, dueDate, hasRecurringSchedule, reminderType } =
     task || {};
@@ -35,25 +46,38 @@ const TaskItemDueDate = ({ task, disabled = false }) => {
         />
       )}
     >
-      <Tooltip
+      {/* <Tooltip
         placement="top"
-        title={dueDate ? 'Edit due date' : 'Add due date'}
-      >
-        <>
-          {dueDate ? (
-            <DateLabel
-              date={dueDate}
-              isOverdue={isDueDateOverdue(task)}
-              hasReminder={reminderType && reminderType !== ReminderType.NONE}
-              hasRecurringSchedule={hasRecurringSchedule}
-            />
-          ) : (
-            <div>
-              <TaskIcon type="calendar" />
-            </div>
-          )}
-        </>
-      </Tooltip>
+        title={dueDate ? 'Edit Due Date' : 'Add Due Date'}
+      > */}
+      <>
+        {dueDate ? (
+          <DateLabel
+            date={dueDate}
+            isOverdue={isDueDateOverdue(task)}
+            hasReminder={reminderType && reminderType !== ReminderType.NONE}
+            hasRecurringSchedule={hasRecurringSchedule}
+            tootipTitle="Edit Due Date"
+            format={format}
+            showTime={showTime}
+            showReminder={showReminder}
+            showRecurring={showRecurring}
+          />
+        ) : (
+          <>
+            {isDateHover ? (
+              <Tooltip placement="top" title="Add Due Date">
+                <AddPlaceholder>
+                  <div style={{ display: 'flex' }}>
+                    <TaskIcon type="calendar" isActive />
+                  </div>
+                </AddPlaceholder>
+              </Tooltip>
+            ) : null}
+          </>
+        )}
+      </>
+      {/* </Tooltip> */}
     </TaskItemPopover>
   );
 };

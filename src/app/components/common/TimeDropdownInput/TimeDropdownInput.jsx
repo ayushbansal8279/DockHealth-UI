@@ -281,7 +281,9 @@ const TimeDropdownInput = ({
           disabled={disabled}
         />
         {endAdornment && (
-          <EndAdornmentContainer>{endAdornment}</EndAdornmentContainer>
+          <EndAdornmentContainer onClick={setIsPopoverOpen}>
+            {endAdornment}
+          </EndAdornmentContainer>
         )}
       </TimeInputMaskContainer>
       <InputPopover

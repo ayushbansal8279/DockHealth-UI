@@ -1,22 +1,24 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 
 import Loader from 'components/common/Loader/Loader';
 import Spacing from 'components/common/Spacing';
-import { RobotoTypography } from 'styles/theme';
+import { OutfitTypography } from 'styles/theme';
 
-import { Grid } from '@mui/material';
+import { Button, Grid } from '@mui/material';
 import AttachmentPreview from 'components/attachments/AttachmentPreview/AttachmentPreview';
 import AttachmentButton from 'components/attachments/AttachmentButton/AttachmentButton';
 import AttachmentProgressBar from 'components/attachments/AttachmentProgressBar/AttachmentProgressBar';
 import AddAttachmentButton from 'components/attachments/AddAttachmentButton/AddAttachmentButton';
 import initializeAttachmentsSectionHooks from './hooks';
-import {
-  AttachmentsContainer,
-  AttachmentFileInput,
-  DownloadAllLink,
-} from './styled';
+import { AttachmentsContainer, AttachmentFileInput, Title } from './styled';
+import { ScanStatus, ScanStatusText } from './helpers';
+import { DrawerFieldEnum } from '@/app/helpers/task-drawer-helpers';
 
-const AttachmentsSection = ({ selectedTask, disabled = false }) => {
+const AttachmentsSection = ({
+  selectedTask,
+  taskDrawerFocusField,
+  disabled = false,
+}) => {
   const {
     attachmentsSources,
     currentTaskAttachments,
@@ -33,8 +35,23 @@ const AttachmentsSection = ({ selectedTask, disabled = false }) => {
     downloadAllFiles,
   } = initializeAttachmentsSectionHooks(selectedTask);
 
+  const attachmentRef = useRef(null);
+
+  const downloadDisabled = currentTaskAttachments?.some(
+    ({ scanStatus }) => scanStatus !== null && scanStatus !== ScanStatus.CLEAN,
+  );
+
+  useEffect(() => {
+    if (
+      attachmentRef.current &&
+      taskDrawerFocusField === DrawerFieldEnum.ATTACHMENT
+    ) {
+      attachmentRef.current.scrollIntoView(true);
+    }
+  }, [taskDrawerFocusField]);
+
   return (
-    <AttachmentsContainer isDragActive={isDragActive}>
+    <AttachmentsContainer ref={attachmentRef} isDragActive={isDragActive}>
       <AttachmentPreview
         attachment={previewedAttachment}
         attachmentsSources={attachmentsSources}
@@ -50,11 +67,9 @@ const AttachmentsSection = ({ selectedTask, disabled = false }) => {
       <Grid container>
         <Grid item xs={12}>
           <Spacing vertical={3} />
-          <RobotoTypography condensed variant="h5" color="inherit">
-            ATTACHMENTS
-          </RobotoTypography>
+          <Title>Files</Title>
         </Grid>
-        <RobotoTypography condensed variant="h4" color="inherit">
+        <OutfitTypography condensed variant="h4" color="inherit">
           <Spacing vertical={2} />
           {isDragActive ? (
             <span>Drop the files here ...</span>
@@ -63,7 +78,7 @@ const AttachmentsSection = ({ selectedTask, disabled = false }) => {
               Drag and drop files or documents here, or click + to select files
             </span>
           )}
-        </RobotoTypography>
+        </OutfitTypography>
         <Grid item xs={12}>
           <Spacing vertical={3} />
         </Grid>
@@ -80,13 +95,22 @@ const AttachmentsSection = ({ selectedTask, disabled = false }) => {
               <Spacing horizontal={3} />
             </>
           ) : (
-            currentTaskAttachments.map((attachment) => (
-              <AttachmentButton
-                key={attachment.attachmentIdentifier}
-                attachment={attachment}
-                onClick={openAttachmentPreview}
-                onRemoveClick={removeTaskAttachment}
-              />
+            currentTaskAttachments?.map((attachment) => (
+              <div style={{ textAlign: 'center' }}>
+                <AttachmentButton
+                  key={attachment?.attachmentIdentifier}
+                  attachment={attachment}
+                  onClick={() => {
+                    if (
+                      attachment?.scanStatus === null ||
+                      attachment?.scanStatus === ScanStatus.CLEAN
+                    )
+                      openAttachmentPreview(attachment);
+                  }}
+                  onRemoveClick={removeTaskAttachment}
+                />
+                <p>{ScanStatusText[attachment?.scanStatus]}</p>
+              </div>
             ))
           )}
           {currentlyUploadedAttachment && (
@@ -100,9 +124,14 @@ const AttachmentsSection = ({ selectedTask, disabled = false }) => {
         {currentTaskAttachments && currentTaskAttachments.length > 0 && (
           <Grid item xs={12}>
             <div>
-              <DownloadAllLink onClick={downloadAllFiles}>
+              <Button
+                variant="text"
+                disabled={downloadDisabled}
+                onClick={downloadAllFiles}
+                sx={{ textTransform: 'none' }}
+              >
                 Download All
-              </DownloadAllLink>
+              </Button>
             </div>
           </Grid>
         )}

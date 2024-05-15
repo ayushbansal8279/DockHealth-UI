@@ -20,11 +20,8 @@ import {
   taskLookupSelector,
   multipleTaskLookupSelector,
 } from 'selectors/task-details-selectors';
-import {
-  TaskTemplateGroupContainer,
-  TaskTemplateGroupList,
-  QuickAddInputWrapper,
-} from './styled';
+import { currentTaskListTasksStatusSelector } from 'selectors/task-list-selectors';
+import { TaskTemplateGroupList, QuickAddInputWrapper } from './styled';
 import TaskTemplateGroupHeader from '../TaskTemplateGroupHeader/TaskTemplateGroupHeader';
 
 const TaskTemplateGroup = ({
@@ -43,7 +40,11 @@ const TaskTemplateGroup = ({
   showTasksWithGroup = true,
   iconColorActive,
   origin,
+  pageBackground,
   highlightedValue,
+  isNextVirtualTaskItemTypeBundle,
+  isLastTaskOfGroup,
+  isNextTaskItemTypeBundle,
 }) => {
   const templateGroup = useSelector((state) => {
     return taskLookupSelector(state, origin, pullGroup);
@@ -66,15 +67,13 @@ const TaskTemplateGroup = ({
       : [];
   });
 
-  const { SHOW_WORKFLOW_DETAILS, SHOW_WORKFLOW_COMPLETED_TASKS } =
-    viewSetup || {};
+  // const { SHOW_WORKFLOW_DETAILS, SHOW_WORKFLOW_COMPLETED_TASKS } =
+  //   viewSetup || {};
   // const { innerRef, draggableProps } = draggableProvided;
   const [isOpen, setOpen] = useState(false);
   const [draggedTaskIdentifier, setDraggedTaskIdentifier] = useState(null);
-  const [showCompletedTasks, setShowCompletedTasks] = useState(true);
-  const [showIncompleteTasks, setShowIncompleteTasks] = useState(
-    !isCompletedTab,
-  );
+  const [showCompletedTasks, setShowCompletedTasks] = useState(false);
+  const [showIncompleteTasks, setShowIncompleteTasks] = useState(true);
   const [isAddingTask, setIsAddingTask] = useState(false);
   const dispatch = useDispatch();
   const previousIsOpen = usePrevious(isOpen);
@@ -83,24 +82,50 @@ const TaskTemplateGroup = ({
   const restrictions =
     TASK_LIST_RESTRICTIONS_PROFILES[currentUser?.orgUserRole];
   const { DISABLED } = TASK_LIST_RESTRICTIONS_OPTIONS;
+  const currentTaskListTasksStatus = useSelector(
+    currentTaskListTasksStatusSelector,
+  );
 
-  useEffect(() => {
-    setOpen(SHOW_WORKFLOW_DETAILS);
-    if (isCompletedTab) {
-      setShowIncompleteTasks(SHOW_WORKFLOW_COMPLETED_TASKS);
-      setShowCompletedTasks(true);
-    } else {
-      setShowIncompleteTasks(true);
-      setShowCompletedTasks(SHOW_WORKFLOW_COMPLETED_TASKS);
-    }
-  }, [SHOW_WORKFLOW_DETAILS, SHOW_WORKFLOW_COMPLETED_TASKS, isCompletedTab]);
+  // useEffect(() => {
+  //   // setOpen(SHOW_WORKFLOW_DETAILS); //no longer supported
+  //   if (isCompletedTab) {
+  //     setShowIncompleteTasks(SHOW_WORKFLOW_COMPLETED_TASKS);
+  //     setShowCompletedTasks(true);
+  //   } else {
+  //     setShowIncompleteTasks(true);
+  //     setShowCompletedTasks(SHOW_WORKFLOW_COMPLETED_TASKS);
+  //   }
+  // }, [SHOW_WORKFLOW_DETAILS, SHOW_WORKFLOW_COMPLETED_TASKS, isCompletedTab]);
 
   useEffect(() => {
     if (isOpen && !previousIsOpen && (!tasks || tasks.length === 0)) {
       dispatch(TemplateBundleActions.getTasksForWorkflow(identifier));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isOpen, tasks]);
+  }, [isOpen, tasks, currentTaskListTasksStatus]);
+
+  useEffect(() => {
+    switch (currentTaskListTasksStatus) {
+      case TaskStatus.COMPLETE: {
+        setShowIncompleteTasks(false);
+        setShowCompletedTasks(true);
+        break;
+      }
+      case TaskStatus.INCOMPLETE: {
+        setShowIncompleteTasks(true);
+        setShowCompletedTasks(false);
+        break;
+      }
+      case TaskStatus.ALL: {
+        setShowIncompleteTasks(true);
+        setShowCompletedTasks(true);
+        break;
+      }
+      default:
+      // No default
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentTaskListTasksStatus]);
 
   const handleAddBundleTask = useCallback(
     (task) => {
@@ -122,17 +147,23 @@ const TaskTemplateGroup = ({
   const filteredTasksByStatus = useMemo(
     () =>
       tasks.filter(
-        isCompletedTab
-          ? (task) => showIncompleteTasks || task.status === TaskStatus.COMPLETE
-          : (task) => showCompletedTasks || task.status !== TaskStatus.COMPLETE,
+        (task) =>
+          (showIncompleteTasks && task.status === TaskStatus.INCOMPLETE) ||
+          (showCompletedTasks && task.status === TaskStatus.COMPLETE) ||
+          task.status === currentTaskListTasksStatus,
       ),
-    [showCompletedTasks, showIncompleteTasks, tasks, isCompletedTab],
+    [
+      tasks,
+      showIncompleteTasks,
+      showCompletedTasks,
+      currentTaskListTasksStatus,
+    ],
   );
 
   const filteredTasks = filteredTasksByStatus.map((t) => t.identifier);
 
   return (
-    <TaskTemplateGroupContainer
+    <div
     // ref={innerRef} {...draggableProps}
     >
       <TaskTemplateGroupHeader
@@ -157,8 +188,13 @@ const TaskTemplateGroup = ({
         iconColorActive={iconColorActive}
         highlightedValue={highlightedValue}
         origin={origin}
+        pageBackground={pageBackground}
+        isNextVirtualTaskItemTypeBundle={isNextVirtualTaskItemTypeBundle}
+        isLastTaskOfGroup={isLastTaskOfGroup}
+        isNextTaskItemTypeBundle={isNextTaskItemTypeBundle}
+        currentTaskListTasksStatus={currentTaskListTasksStatus}
       />
-      {!isStartedDnD && (
+      {!isStartedDnD && window.disabledVirtualTaskList && (
         <TaskTemplateGroupList timeout={150} in={isOpen && !isStartedDnD}>
           {isFetchingTasks ? (
             <TasksSkeletonLoader rows={3} />
@@ -224,6 +260,12 @@ const TaskTemplateGroup = ({
                               dragAndDropDisabled={tasksDragAndDropDisabled}
                               isDraggable
                               isBundleTask
+                              isTaskTemplate
+                              isLastChild={index === filteredTasks?.length - 1}
+                              isAddingTask={isAddingTask}
+                              isNextTaskItemTypeBundle={
+                                isNextTaskItemTypeBundle
+                              }
                               templateBundleIdentifier={identifier}
                               parentTaskGroupIdentifier={
                                 parentTaskGroupIdentifier
@@ -242,7 +284,11 @@ const TaskTemplateGroup = ({
                 </Droppable>
               </DragDropContext>
               {isAddingTask && (
-                <QuickAddInputWrapper>
+                <QuickAddInputWrapper
+                  isNextTaskItemTypeBundle={isNextTaskItemTypeBundle}
+                  isAddingTask={isAddingTask}
+                  origin={origin}
+                >
                   <QuickAddTaskInput
                     autofocus
                     disableMentions
@@ -262,7 +308,7 @@ const TaskTemplateGroup = ({
           )}
         </TaskTemplateGroupList>
       )}
-    </TaskTemplateGroupContainer>
+    </div>
   );
 };
 

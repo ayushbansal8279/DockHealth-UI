@@ -1,4 +1,4 @@
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import moment from 'moment';
 import { Box } from '@mui/material';
 import RecurringIcon from 'img/recurring-arrows';
@@ -14,23 +14,32 @@ import PopoverCard from 'components/common/PopoverCard/PopoverCard';
 import { formatDueTime } from './helpers';
 import { AdornmentClear } from '../styled';
 import {
-  DueDateContentWrapper,
-  DueDateContent,
   DueDateSectionWrapper,
-  Placeholder,
-  DueDateText,
-  StyledButton,
   StyledPopover,
+  Title,
+  AddDateButton,
+  SubTitle,
+  DateViewContainer,
+  DateViewText,
+  RecurringIconContainer,
+  ReminderIconContainer,
 } from './styled';
+import AssignMemberIcon from 'components/user/AssignMemberIcon/AssingMemberIcon';
+import { ReminderType } from 'helpers/task-helpers';
+import ReminderIcon from 'img/reminder';
 
 const DueDateSection = ({ selectedTask, disabled = false }) => {
   const dispatch = useDispatch();
-  const { taskIdentifier, dueDate, hasRecurringSchedule } = selectedTask || {};
+  const { taskIdentifier, dueDate, hasRecurringSchedule, reminderType } =
+    selectedTask || {};
   const momentDueDate = dueDate ? moment(dueDate) : null;
   const isTemplateTask = checkIfTemplateTask(selectedTask);
   const sectionDisabled = isTemplateTask || !taskIdentifier;
   const buttonReference = useRef(null);
+  const dueDateRef = useRef(null);
   const [isPopoverOpen, openPopover, closePopover] = useBoolean(false);
+  const [isOverdue, setIsOverdue] = useState(false);
+  const [isTimeAvailable, setIsTimeAvailable] = useState(false);
   const handleDueDateSave = useCallback(
     (updatedDueDateTime) => {
       dispatch(updateTaskDueDate(selectedTask, updatedDueDateTime));
@@ -38,65 +47,81 @@ const DueDateSection = ({ selectedTask, disabled = false }) => {
     [dispatch, selectedTask],
   );
 
+  useEffect(() => {
+    setIsOverdue(isDueDateOverdue(selectedTask));
+    if (momentDueDate) {
+      if (momentDueDate.hour() || momentDueDate.minute()) {
+        setIsTimeAvailable(true);
+      }
+    }
+  }, [selectedTask]);
+
   return (
-    <DueDateSectionWrapper disabled={isTemplateTask || disabled}>
-      <Input
-        label="Due date"
-        ref={buttonReference}
-        shrink
-        customInputComponent={() => (
-          <StyledButton
-            type="button"
+    <DueDateSectionWrapper
+      ref={dueDateRef}
+      disabled={isTemplateTask || disabled}
+    >
+      <Title>Due date</Title>
+      {!momentDueDate && (
+        <AddDateButton
+          ref={buttonReference}
+          onClick={(event) => {
+            event.stopPropagation();
+            openPopover(true);
+          }}
+        >
+          <AssignMemberIcon /> <SubTitle>Add Date</SubTitle>
+        </AddDateButton>
+      )}
+      {momentDueDate && (
+        <DateViewContainer isOverdue={isOverdue}>
+          <DateViewText
+            ref={buttonReference}
             onClick={(event) => {
               event.stopPropagation();
               openPopover(true);
             }}
           >
-            <DueDateContentWrapper>
-              {momentDueDate ? (
-                <DueDateContent error={isDueDateOverdue(selectedTask)}>
-                  <DueDateText>
-                    {momentDueDate.format('MM/DD/YY')}
-                    {hasRecurringSchedule && (
-                      <>
-                        <Spacing horizontal={3} />
-                        <Tooltip title="Recurring Task" placement="right">
-                          <Box display="inline-block">
-                            <RecurringIcon />
-                          </Box>
-                        </Tooltip>
-                      </>
-                    )}
-                  </DueDateText>
-                  <DueDateText>{formatDueTime(dueDate)}</DueDateText>
-                  {!sectionDisabled && (
-                    <AdornmentClear
-                      style={{ position: 'relative', top: '-6px' }}
-                      onClick={() => handleDueDateSave(null)}
-                    />
-                  )}
-                </DueDateContent>
-              ) : (
-                <Placeholder>
-                  {isTemplateTask
-                    ? 'Not available when creating a template'
-                    : 'Set a due date?'}
-                </Placeholder>
-              )}
-            </DueDateContentWrapper>
-          </StyledButton>
-        )}
-      />
+            {momentDueDate.format('MMM DD, YYYY')}
+          </DateViewText>
+        </DateViewContainer>
+      )}
+      {isTimeAvailable && (
+        <DateViewContainer isOverdue={isOverdue}>
+          <DateViewText
+            ref={buttonReference}
+            onClick={(event) => {
+              event.stopPropagation();
+              openPopover(true);
+            }}
+          >
+            {momentDueDate.format('hh:mm a')}
+          </DateViewText>
+        </DateViewContainer>
+      )}
+      {hasRecurringSchedule && (
+        <RecurringIconContainer isOverdue={isOverdue}>
+          <Spacing horizontal={2} />
+          <RecurringIcon />
+        </RecurringIconContainer>
+      )}
+      {reminderType && reminderType !== ReminderType.NONE && (
+        <ReminderIconContainer isOverdue={isOverdue}>
+          <Spacing horizontal={2} />
+          <ReminderIcon />
+        </ReminderIconContainer>
+      )}
       <StyledPopover
-        anchorEl={buttonReference?.current}
+        anchorEl={dueDateRef?.current}
         anchorOrigin={{
-          vertical: 'top',
-          horizontal: 'right',
+          vertical: 'bottom',
+          horizontal: 'left',
         }}
         transformOrigin={{
           vertical: 'top',
-          horizontal: 'right',
+          horizontal: 'left',
         }}
+        sx={{ marginLeft: '103px' }}
         open={isPopoverOpen}
         onClose={(event) => {
           event.stopPropagation();

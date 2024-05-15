@@ -29,6 +29,9 @@ import {
   HOME_ALL_TASKS_PATH,
   HOME_PATH,
   HOME_SHARED_PATH,
+  HOME_UPCOMING_TASKS_PATH,
+  HOME_OVERDUE_TASKS_PATH,
+  HOME_COMPLETED_TASKS_PATH,
 } from 'routing/helpers/paths';
 import { useHistory } from 'react-router-dom';
 import DashboardList from './DashboardList/DashboardList';
@@ -60,27 +63,38 @@ const DashboardView = ({ tabName }) => {
 
   const shareTaskAvailable = useSelector(userHasShareTaskFeatureSelector);
 
-  const createListViewVisible =
-    !shareTaskAvailable && (!hasExistingLists || hasOnlyInvitedLists);
+  const createListViewVisible = !shareTaskAvailable && hasOnlyInvitedLists;
 
   const TAB_RESTRICTIONS = {
     [DashboardTasksTab.MY_TASKS]: {
       allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST, DOCK_LITE],
       path: HOME_PATH,
     },
-    [DashboardTasksTab.SHARED_TASKS]: {
-      allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST, DOCK_LITE, EXTERNAL],
-      path: HOME_SHARED_PATH,
-    },
+    // [DashboardTasksTab.SHARED_TASKS]: {
+    //   allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST, DOCK_LITE, EXTERNAL],
+    //   path: HOME_SHARED_PATH,
+    // },
     [DashboardTasksTab.ALL_TASKS]: {
       allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST, DOCK_LITE],
       path: HOME_ALL_TASKS_PATH,
     },
+    // [DashboardTasksTab.UPCOMING]: {
+    //   allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST, DOCK_LITE],
+    //   path: HOME_UPCOMING_TASKS_PATH,
+    // },
+    // [DashboardTasksTab.OVERDUE]: {
+    //   allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST, DOCK_LITE],
+    //   path: HOME_OVERDUE_TASKS_PATH,
+    // },
+    // [DashboardTasksTab.COMPLETED]: {
+    //   allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST, DOCK_LITE],
+    //   path: HOME_COMPLETED_TASKS_PATH,
+    // },
   };
 
   const hasAccessToCurrentTab = hasAccessToElement(
     orgUserRole,
-    TAB_RESTRICTIONS[tabName].allowedToRoles,
+    TAB_RESTRICTIONS[tabName]?.allowedToRoles,
   );
 
   useEffect(() => {
@@ -232,7 +246,7 @@ const DashboardView = ({ tabName }) => {
               <HorizontallyScrolledViewLayout>
                 <StickyContainer>
                   <DashboardHeader currentUser={currentUser} />
-                  <Spacing vertical={3} />
+                  {/* <Spacing vertical={3} /> */}
                 </StickyContainer>
                 {createListViewVisible ? (
                   <StickyContainer>

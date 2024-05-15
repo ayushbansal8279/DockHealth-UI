@@ -22,3 +22,19 @@ export const isTaskItemsSelectedSelector = (taskIdentifiers) =>
         selectedTaskIdentifiers?.includes(taskId),
       ),
   );
+
+export const isShowCompletedTasks = (workflowIdentifier) =>
+  createSelector(
+    taskItemsSelector,
+    ({ showCompletedWorkflowIdentifiers }) =>
+      workflowIdentifier &&
+      showCompletedWorkflowIdentifiers?.includes(workflowIdentifier),
+  );
+
+export const isShowIncompleteTasks = (workflowIdentifier) =>
+  createSelector(
+    taskItemsSelector,
+    ({ showIncompleteWorkflowIdentifiers }) =>
+      workflowIdentifier &&
+      showIncompleteWorkflowIdentifiers?.includes(workflowIdentifier),
+  );

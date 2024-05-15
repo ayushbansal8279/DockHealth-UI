@@ -6,7 +6,7 @@ import OnboardingIndicator from 'components/common/OnboardingIndicator/Onboardin
 import Spacing from 'components/common/Spacing';
 import FormInput from 'components/common/Input/FormInput';
 import Button from 'components/common/Button/Button';
-
+import palette from 'styles/palette';
 import {
   Title,
   FormWrapper,
@@ -38,9 +38,9 @@ const OrganizationForm = ({ onSubmit, onCancel }) => {
       {firstTimeUser && (
         <>
           <OnboardingIndicator
-            steps={orgUserRole === 'OWNER' ? 5 : 3}
+            steps={orgUserRole === 'OWNER' ? 2 : 3}
             // eslint-disable-next-line sonarjs/no-all-duplicated-branches
-            completedSteps={orgUserRole === 'OWNER' ? 3 : 3}
+            completedSteps={orgUserRole === 'OWNER' ? 1 : 3}
           />
           <Spacing vertical={5} />
         </>
@@ -70,7 +70,12 @@ const OrganizationForm = ({ onSubmit, onCancel }) => {
               </Button>
             )}
             <ButtonWrapper>
-              <Button fullWidth type="submit">
+              <Button
+                fullWidth
+                type="submit"
+                color={palette.brightOrange}
+                secondaryColor={palette.oPlusRed}
+              >
                 Continue
               </Button>
             </ButtonWrapper>

@@ -9,6 +9,7 @@ import {
   CloseIcon,
   FlexButtonWrapper,
 } from '../styled';
+import { CancelButton, ConfirmButton } from '../ModalButton/ModalButtons';
 
 const SelectDestinationGroupModal = ({
   closeModal,
@@ -42,25 +43,25 @@ const SelectDestinationGroupModal = ({
       <Box m={2} />
       <Grid container direction="row">
         <FlexButtonWrapper>
-          <Button
+          <CancelButton
+            style={{ width: '180px' }}
             fullWidth
             variant="secondary"
             onClick={closeModal}
             size="small"
           >
             Cancel
-          </Button>
-        </FlexButtonWrapper>
-        <Box m={1} />
-        <FlexButtonWrapper>
-          <Button
+          </CancelButton>
+          <Box m={1} />
+          <ConfirmButton
+            style={{ width: '190px' }}
             fullWidth
             disabled={!selectedGroup}
             onClick={handleConfirm}
             size="small"
           >
             Move
-          </Button>
+          </ConfirmButton>
         </FlexButtonWrapper>
       </Grid>
     </ModalWrapperWithPadding>

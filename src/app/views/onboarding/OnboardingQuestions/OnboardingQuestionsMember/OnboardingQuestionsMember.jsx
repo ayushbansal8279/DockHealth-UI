@@ -26,19 +26,19 @@ const OnboardingQuestionsMember = ({
         demoNeeded: tutorialOption,
       },
     }).then(() => {
-      history.push('/core/home/my-tasks');
+      history.push('/onboarding-tutorial/create-list');
     });
 
-  if (step === 2)
-    return (
-      <OnboardingQuestionsMemberStepTwo
-        clickPreviousStep={clickPreviousStep}
-        tutorialOption={tutorialOption}
-        setTutorialOption={setTutorialOption}
-        onSendAnswers={onSendAnswers}
-        isDisabledButton={isDisabledSecondButton}
-      />
-    );
+  // if (step === 2)
+  //   return (
+  //     <OnboardingQuestionsMemberStepTwo
+  //       clickPreviousStep={clickPreviousStep}
+  //       tutorialOption={tutorialOption}
+  //       setTutorialOption={setTutorialOption}
+  //       onSendAnswers={onSendAnswers}
+  //       isDisabledButton={isDisabledSecondButton}
+  //     />
+  //   );
 
   return (
     <OnboardingQuestionsMemberStepOne

@@ -1,8 +1,9 @@
 import styled from 'styled-components';
 import palette from 'styles/palette';
-import { fontSizes } from 'styles/font';
+import { fontSizes, fontWeights } from 'styles/font';
 import spacing from 'styles/spacing';
 import { ModalWrapper } from '../styled';
+import { Button } from '@mui/material';
 
 export const ListFormModalWrapper = styled(ModalWrapper)`
   display: flex;
@@ -26,9 +27,8 @@ export const Description = styled.p`
 
 export const Title = styled.h5`
   font-size: ${fontSizes.regularPlus};
-  color: ${palette.brightBlue};
-  text-transform: uppercase;
   text-align: center;
+  font-weight: ${fontWeights.regularPlus};
 `;
 
 export const StepCounter = styled.div`
@@ -53,5 +53,5 @@ export const Step = styled.button`
 `;
 
 export const ButtonWrapper = styled.div`
-  width: 170px;
+  width: 220px;
 `;

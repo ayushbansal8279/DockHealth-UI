@@ -1,11 +1,11 @@
 /* eslint-disable import/no-cycle */
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { Box } from '@mui/material';
 import { useSelector, useDispatch } from 'react-redux';
 import { useParams, useHistory } from 'react-router-dom';
 // import { useBoolean } from 'hooks/useBoolean';
-import { onPrint } from 'helpers/ga-event-helper';
+import { onPrint, onSearchChanged } from 'helpers/ga-event-helper';
 import { createPatientDetailsListPath } from 'routing/helpers/paths';
 import ToolbarSelect from 'components/tasklist/ToolbarSelect/ToolbarSelect';
 import { currentListTasksStatusSelector } from 'selectors/patient-details-selectors';
@@ -13,6 +13,7 @@ import { isUserViewOnly } from 'helpers/user-helper';
 import {
   getCurrentPatientTasks,
   setCurrentListTasksStatus,
+  getPatientFilterOptions,
 } from 'actions/patient-details-actions';
 import { updateUserPageViewSetup } from 'actions/task-list-actions';
 import {
@@ -22,17 +23,42 @@ import {
 } from 'selectors/user-selectors';
 import Spacing from 'components/common/Spacing';
 import { TaskStatus } from 'helpers/task-helpers';
-import TaskStatusToolbarSelect from 'components/tasklist/TaskStatusToolbarSelect/TaskStatusToolbarSelect';
-import CustomizeToolbarButton from 'components/tasklist/CustomizeToolbarButton/CustomizeToolbarButton';
-import ToolbarButton from 'components/tasklist/ToolbarButton/ToolbarButton';
 // import { printTaskPdf } from 'components/task-pdf/TaskPdfDocument';
 import ViewTypeIcon from 'img/view-type-icon.svg';
+import * as PatientDetailsActions from 'actions/patient-details-actions';
+import compose from 'ramda/src/compose';
+import equals from 'ramda/src/equals';
+import debounce from 'lodash.debounce';
+import ToolbarButton from '@/app/components/tasklist/list-toolbar-buttons/ToolbarButton/ToolbarButton';
+import CustomizeToolbarButton from '@/app/components/tasklist/list-toolbar-buttons/CustomizeToolbarButton/CustomizeToolbarButton';
+import TaskStatusToolbarSelect from '@/app/components/tasklist/list-toolbar-buttons/TaskStatusToolbarSelect';
 import {
   ListsToolbarContainer,
   ListsTabsContainer,
   ListSelectionImg,
 } from './styled';
 import { ListViewType, LIST_TYPE_OPTIONS } from '../helpers';
+import HeaderSearch from '@/app/components/template/HeaderSearch/HeaderSearch';
+import MegaFilter from '@/app/components/tasklist/list-toolbar-buttons/MegaFilter/MegaFilter';
+// import { getPatientFilterOptions } from 'actions/patient-details-actions';
+
+import {
+  addQuickFilterOptionSelector,
+  availableFiltersInInMegaFilterSelector,
+  quickFiltersSelector,
+  selectedFiltersInMegaFilterSelector,
+  selectedQuickFilterSelector,
+} from '@/app/selectors/mega-filter-selectors';
+import { isFetchingPatientsListsSelector } from '@/app/selectors/patients-selectors';
+import {
+  createQuickFilter,
+  deleteQuickFilter,
+  getQuickFilters,
+  selectQuickFilter,
+  showAddQuickFilterOption,
+  updateQuickFilter,
+} from '@/app/actions/mega-filter-actions';
+import { setPatientTaskSearch } from '@/app/sagas/patient-details-saga';
 
 const TaskListToolbar = (props) => {
   const { lists } = props;
@@ -77,6 +103,13 @@ const TaskListToolbar = (props) => {
       };
     },
   );
+  const [searchValue, setSearchValue] = useState('');
+  const filters = useSelector(availableFiltersInInMegaFilterSelector);
+  const selectedFilters = useSelector(selectedFiltersInMegaFilterSelector);
+  const isFetchingLists = useSelector(isFetchingPatientsListsSelector);
+  const quickFiltersList = useSelector(quickFiltersSelector);
+  const addQuickFilterOption = useSelector(addQuickFilterOptionSelector);
+  const selectedQuickFilter = useSelector(selectedQuickFilterSelector);
 
   const currentUser = useSelector(userProfileSelector);
   const currentOrganization = useSelector(selectedUserOrganizationSelector);
@@ -96,18 +129,14 @@ const TaskListToolbar = (props) => {
     currentOrganization?.themeSettings?.find(
       ({ name }) => name === 'role.viewOnly.patient.view.customize.enabled',
     ) || {};
-  const viewOnlyArchivedTasksEnabled =
+  const viewOnlyArchivedTasksEnabled = !(
     isUserViewOnly(currentUser) &&
     viewOnlyArchivedTasksEnabledItem?.value === 'false'
-      ? // eslint-disable-next-line no-unneeded-ternary
-        false
-      : true;
-  const viewOnlyCustomizeEnabled =
+  );
+  const viewOnlyCustomizeEnabled = !(
     isUserViewOnly(currentUser) &&
     viewOnlyCustomizeEnabledItem?.value === 'false'
-      ? // eslint-disable-next-line no-unneeded-ternary
-        false
-      : true;
+  );
 
   const handleListChange = (event) => {
     history.push(
@@ -127,6 +156,88 @@ const TaskListToolbar = (props) => {
           : lists[0].taskListIdentifier,
       ),
     );
+  };
+
+  const handleFilterSelect = compose(
+    dispatch,
+    PatientDetailsActions.changePatientTasksFilters,
+  );
+
+  const handleSelectQuickFilter = useCallback(
+    (id, filtersSetup) => {
+      dispatch(selectQuickFilter(id));
+      dispatch(
+        PatientDetailsActions.changePatientTasksFilters(filtersSetup, id),
+      );
+    },
+    [dispatch],
+  );
+
+  const handleSaveQuickFilter = useCallback(
+    (quickFilterIdentifier, selectedFilters) =>
+      dispatch(
+        updateQuickFilter(
+          quickFilterIdentifier,
+          {
+            selectedOptions: selectedFilters,
+          },
+          { patientIdentifier },
+        ),
+      ),
+    [dispatch, patientIdentifier],
+  );
+
+  const handleSaveAsQuickFilter = useCallback(
+    () => dispatch(showAddQuickFilterOption()),
+    [dispatch],
+  );
+
+  const wasChangedFilters = useMemo(
+    () =>
+      !equals(
+        selectedFilters,
+        quickFiltersList?.find(
+          (f) => f.quickFilterIdentifier === selectedQuickFilter,
+        )?.selectedOptions,
+      ),
+    [quickFiltersList, selectedFilters, selectedQuickFilter],
+  );
+
+  const handleQuickFilterCreate = useCallback(
+    (name) =>
+      dispatch(createQuickFilter(name, { patientIdentifier }, selectedFilters)),
+    [dispatch, patientIdentifier, selectedFilters],
+  );
+
+  const handleQuickFilterUpdate = useCallback(
+    (quickFilterIdentifier, name) =>
+      dispatch(
+        updateQuickFilter(
+          quickFilterIdentifier,
+          { name },
+          { patientIdentifier },
+        ),
+      ),
+    [dispatch, patientIdentifier],
+  );
+
+  const handleQuickFilterDelete = useCallback(
+    (quickFilterIdentifier) =>
+      dispatch(deleteQuickFilter(quickFilterIdentifier)),
+    [dispatch],
+  );
+
+  const onSearchChangedWithDebounce = useCallback(
+    debounce((value) => {
+      dispatch(setPatientTaskSearch(value));
+      onSearchChanged();
+    }, 500),
+    [setPatientTaskSearch, onSearchChanged],
+  );
+
+  const handleSearchValueChange = (newValue) => {
+    setSearchValue(newValue);
+    onSearchChangedWithDebounce(newValue);
   };
 
   const OPTIONS = [
@@ -187,7 +298,16 @@ const TaskListToolbar = (props) => {
   return (
     <ListsToolbarContainer>
       <ListsTabsContainer>
-        <ToolbarSelect
+        {viewOnlyCustomizeEnabled && (
+          <CustomizeToolbarButton
+            showCustomColumnCreate={false}
+            additionalOptions={OPTIONS}
+            iconColorFilterActive={iconColorFilterActiveItem?.value}
+            {...props}
+          />
+        )}
+        {/* <Spacing horizontal={3} /> */}
+        {/* <ToolbarSelect
           options={LIST_TYPE_OPTIONS}
           value={
             isAllTasksView ? ListViewType.ALL_TASKS : ListViewType.LIST_VIEW
@@ -203,8 +323,8 @@ const TaskListToolbar = (props) => {
           }
           iconColorActive={iconColorActiveItem?.value}
           width={170}
-        />
-        <Box px={2} />
+        /> */}
+        {/* <Box px={2} /> */}
         {taskListIdentifierParameter !== ListViewType.ALL_TASKS && (
           <ToolbarSelect
             options={listOptions}
@@ -221,8 +341,42 @@ const TaskListToolbar = (props) => {
             iconColorActive={iconColorActiveItem?.value}
           />
         )}
+        {viewOnlyArchivedTasksEnabled && (
+          <>
+            <Spacing horizontal={3} />
+            <TaskStatusToolbarSelect
+              value={tasksStatus}
+              onChange={handleChangeTasksStatus}
+              iconColorFilterActive={iconColorFilterActiveItem?.value}
+              iconColorActive={iconColorActiveItem?.value}
+            />
+          </>
+        )}
+        <Spacing horizontal={3} />
+        <MegaFilter
+          filters={filters}
+          selectedFilters={selectedFilters}
+          onSelectFilters={handleFilterSelect}
+          isFetching={isFetchingLists}
+          onOpen={() => {
+            dispatch(getQuickFilters({ patientIdentifier }));
+            dispatch(getPatientFilterOptions(patientIdentifier));
+          }}
+          quickFiltersList={quickFiltersList}
+          addQuickFilterOption={addQuickFilterOption}
+          selectedQuickFilter={selectedQuickFilter}
+          selectQuickFilter={handleSelectQuickFilter}
+          handleSaveQuickFilter={handleSaveQuickFilter}
+          onSaveAsNewClick={handleSaveAsQuickFilter}
+          wasChangedFilters={wasChangedFilters}
+          onQuickFilterCreate={handleQuickFilterCreate}
+          onQuickFilterUpdate={handleQuickFilterUpdate}
+          onQuickFilterDelete={handleQuickFilterDelete}
+        />
+        <Spacing horizontal={3} />
+        <HeaderSearch value={searchValue} onChange={handleSearchValueChange} />
       </ListsTabsContainer>
-      {viewOnlyArchivedTasksEnabled && (
+      {/* {viewOnlyArchivedTasksEnabled && (
         <>
           <Spacing horizontal={4} />
           <TaskStatusToolbarSelect
@@ -232,20 +386,20 @@ const TaskListToolbar = (props) => {
             iconColorActive={iconColorActiveItem?.value}
           />
         </>
-      )}
-      {viewOnlyCustomizeEnabled && (
+      )} */}
+      {/* {viewOnlyCustomizeEnabled && (
         <>
-          <Spacing horizontal={4} />
+          <Spacing horizontal={3} />
           <CustomizeToolbarButton
             showCustomColumnCreate={false}
             additionalOptions={OPTIONS}
             iconColorFilterActive={iconColorFilterActiveItem?.value}
             {...props}
           />
-          <Spacing horizontal={4} />
+          <Spacing horizontal={3} />
           <ToolbarButton onClick={onPrintClick}>Print</ToolbarButton>
         </>
-      )}
+      )} */}
     </ListsToolbarContainer>
   );
 };

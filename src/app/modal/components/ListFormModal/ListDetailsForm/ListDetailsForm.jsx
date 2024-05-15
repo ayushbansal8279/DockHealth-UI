@@ -8,13 +8,22 @@ import { userHasShareTaskFeatureSelector } from 'selectors/user-selectors';
 import { Grid } from '@mui/material';
 import FormInput from 'components/common/Input/FormInput';
 import Spacing from 'components/common/Spacing';
-import Button from 'components/common/Button/Button';
 import { useHistory } from 'react-router-dom';
-import Checkbox from 'components/common/Checkbox/Checkbox';
 import { createTaskListPath } from 'routing/helpers/paths';
 import { Title, ButtonWrapper, Header } from '../styled';
 import messages from './messages';
-import { CheckboxContainer, CheckboxDescription, StyledForm } from './styled';
+import CheckedCircle from 'img/Checks-Radio-Buttons-Checked.svg';
+import BlankCircle from 'img/Checks-Radio-Buttons-Blank.svg';
+import {
+  CheckboxContainer,
+  CheckboxDescription,
+  StyledForm,
+  ConfirmButton,
+  CancelButton,
+  PrivacyContainer,
+  PrivacyTitle,
+} from './styled';
+import { taskListsSelector } from 'selectors/task-list-selectors';
 
 const validateListName = (value) => {
   if (!value || ![...value]?.filter((char) => char !== ' ').length > 0) {
@@ -35,6 +44,7 @@ const onSubmit =
     setList,
     taskListIdentifier,
     history,
+    isSharedList,
   }) =>
   (data) => {
     event.stopPropagation();
@@ -54,7 +64,7 @@ const onSubmit =
               onListCreationSuccess(updatedList.taskListIdentifier);
             }
             onTaskListAdded();
-            if (nextStep) {
+            if (nextStep && isSharedList) {
               nextStep();
             } else {
               closeModal();
@@ -85,6 +95,9 @@ const ListDetailsForm = ({
 }) => {
   const dispatch = useDispatch();
   const [isSavingList, setIsSavingList] = useState(false);
+  const [isSharedList, setSharedList] = useState(false);
+  const [isPrivateList, setPrivateList] = useState(true);
+  const [isConfigureAllowed, setConfigureAllowed] = useState(false);
   const history = useHistory();
 
   const formMethods = useForm({
@@ -104,6 +117,43 @@ const ListDetailsForm = ({
 
   const shareTaskAvailable = useSelector(userHasShareTaskFeatureSelector);
 
+  const taskLists = useSelector(taskListsSelector);
+  const validateExistingListName = (value) => {
+    const activeLists = taskLists
+      .map((task) => task.listName)
+      .filter((name) => name !== value || !list || list.listName !== value);
+
+    if (activeLists.includes(value)) {
+      return 'List Name already exists';
+    }
+    return validateListName(value);
+  };
+
+  const toggleSharedList = () => {
+    setPrivateList(false);
+    setSharedList(true);
+  };
+  const togglePrivateList = () => {
+    setPrivateList(true);
+    setSharedList(false);
+  };
+  const toggleConfigure = () => {
+    setConfigureAllowed(!isConfigureAllowed);
+  };
+
+  const inputStyle = {
+    '& .MuiOutlinedInput-root': {
+      borderRadius: '10px',
+      '&.Mui-focused fieldset': {
+        borderColor: 'black',
+        borderWidth: '1px',
+      },
+    },
+    '& .MuiInputLabel-root.Mui-focused': {
+      color: 'grey',
+    },
+  };
+
   return (
     <StyledForm
       onSubmit={(event) =>
@@ -118,6 +168,7 @@ const ListDetailsForm = ({
             setList,
             taskListIdentifier: list?.taskListIdentifier,
             history,
+            isSharedList,
           }),
         )(event)
       }
@@ -129,85 +180,77 @@ const ListDetailsForm = ({
               <Title>{list ? 'Edit a list' : 'Create a list'}</Title>
             </Header>
             <FormInput
+              variant="outlined"
+              sx={inputStyle}
               autoFocus
               fullWidth
               label={messages.form.listName.label}
               name="listName"
               required
               placeholder="Add your list name here"
-              validate={validateListName}
+              validate={validateExistingListName}
             />
             <Spacing vertical={4} />
             <FormInput
+              variant="outlined"
+              sx={inputStyle}
               fullWidth
               label={messages.form.description.label}
               name="listDescription"
               placeholder="Do you want to add a desciption for the list?"
             />
             <Spacing vertical={4} />
-            <CheckboxContainer>
-              <Checkbox
-                size={16}
-                onClick={() =>
-                  setValue('restrictCustomization', !restrictCustomizationValue)
-                }
-                isChecked={restrictCustomizationValue}
-              />
-              <Spacing horizontal={3} />
-              <CheckboxDescription>
-                Restrict Customization for Members
-              </CheckboxDescription>
-            </CheckboxContainer>
-            <Spacing vertical={4} />
-            <span>
-              Note: You will need to reconfigure the columns displayed on the
-              list when you change the above option.
-            </span>
-            <Spacing vertical={4} />
-            {shareTaskAvailable && (
-              <>
-                <CheckboxContainer>
-                  <Checkbox
-                    size={16}
-                    onClick={() =>
-                      setValue('discoveryEnabled', !discoveryEnabled)
-                    }
-                    isChecked={discoveryEnabled}
-                  />
-                  <Spacing horizontal={3} />
-                  <CheckboxDescription>
-                    Enable Discovery for Task Sharing
-                  </CheckboxDescription>
-                </CheckboxContainer>
-                <Spacing vertical={4} />
-                <span>
-                  Enables this list to be listed for others to move or share
-                  tasks
-                </span>
-              </>
-            )}
+            <PrivacyContainer>
+              <PrivacyTitle>Privacy</PrivacyTitle>
+              <CheckboxContainer>
+                <img
+                  onClick={toggleSharedList}
+                  src={isSharedList ? CheckedCircle : BlankCircle}
+                />
+                <Spacing horizontal={3} />
+                <CheckboxDescription>Sharable List</CheckboxDescription>
+                <img
+                  onClick={togglePrivateList}
+                  src={isPrivateList ? CheckedCircle : BlankCircle}
+                />
+                <Spacing horizontal={3} />
+                <CheckboxDescription>Private List</CheckboxDescription>
+              </CheckboxContainer>
+            </PrivacyContainer>
+
+            <Spacing vertical={5} />
+
+            <PrivacyContainer>
+              <PrivacyTitle>Configuration settings</PrivacyTitle>
+              <CheckboxContainer>
+                <img
+                  onClick={() => {
+                    toggleConfigure();
+                    setValue(
+                      'restrictCustomization',
+                      !restrictCustomizationValue,
+                    );
+                  }}
+                  src={isConfigureAllowed ? CheckedCircle : BlankCircle}
+                />
+                <Spacing horizontal={3} />
+                <CheckboxDescription>
+                  Allow members to configure list
+                </CheckboxDescription>
+              </CheckboxContainer>
+            </PrivacyContainer>
           </Grid>
           <Grid container direction="row" justifyContent="center">
             <ButtonWrapper>
-              <Button
-                fullWidth
-                variant="secondary"
-                onClick={closeModal}
-                size="small"
-              >
+              <CancelButton fullWidth onClick={closeModal} size="small">
                 Cancel
-              </Button>
+              </CancelButton>
             </ButtonWrapper>
-            <Spacing horizontal={3} />
+            <Spacing horizontal={4} />
             <ButtonWrapper>
-              <Button
-                fullWidth
-                type="submit"
-                disabled={isSavingList}
-                size="small"
-              >
+              <ConfirmButton fullWidth type="submit" disabled={isSavingList}>
                 Save
-              </Button>
+              </ConfirmButton>
             </ButtonWrapper>
           </Grid>
         </Grid>

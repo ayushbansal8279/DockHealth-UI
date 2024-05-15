@@ -12,8 +12,10 @@ import {
   ModalDescriptionContainer,
   ButtonsContainer,
   FlexButtonWrapper,
+  ModalHeaderName,
 } from '../styled';
 import { FirstDescription } from './styled';
+import { CancelButton, ConfirmButton } from '../ModalButton/ModalButtons';
 
 const UnassignTaskTemplateModal = ({ closeModal, confirm, taskCount }) => {
   const taskPhrase = useMemo(() => {
@@ -27,9 +29,7 @@ const UnassignTaskTemplateModal = ({ closeModal, confirm, taskCount }) => {
       <ModalWrapper>
         <ModalIconContainer>
           <ModalMainIcon src={folderUser} alt="folder_user" />
-          <Typography color="textPrimary" variant="h2">
-            Task will be unassigned
-          </Typography>
+          <ModalHeaderName>Task will be unassigned</ModalHeaderName>
         </ModalIconContainer>
         <ModalDescriptionContainer>
           <FirstDescription>
@@ -38,30 +38,19 @@ const UnassignTaskTemplateModal = ({ closeModal, confirm, taskCount }) => {
           </FirstDescription>
         </ModalDescriptionContainer>
         <ButtonsContainer>
-          <FlexButtonWrapper>
-            <Button
-              fullWidth
-              variant="secondary-red"
-              size="small"
-              onClick={closeModal}
-            >
-              Cancel
-            </Button>
-          </FlexButtonWrapper>
+          <CancelButton style={{ width: '180px' }} onClick={closeModal}>
+            Cancel
+          </CancelButton>
           <Spacing horizontal={4} />
-          <FlexButtonWrapper>
-            <Button
-              fullWidth
-              variant="primary-red"
-              size="small"
-              onClick={() => {
-                closeModal();
-                confirm();
-              }}
-            >
-              Unassign
-            </Button>
-          </FlexButtonWrapper>
+          <ConfirmButton
+            style={{ width: '180px' }}
+            onClick={() => {
+              closeModal();
+              confirm();
+            }}
+          >
+            Unassign
+          </ConfirmButton>
         </ButtonsContainer>
       </ModalWrapper>
     </MuiThemeProvider>

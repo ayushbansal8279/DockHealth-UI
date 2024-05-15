@@ -2,6 +2,7 @@ import react from '@vitejs/plugin-react';
 import path from 'node:path';
 import { defineConfig, loadEnv } from 'vite';
 import { createHtmlPlugin } from 'vite-plugin-html';
+import svgr from 'vite-plugin-svgr';
 
 export default ({ mode }) => {
   process.env = { ...process.env, ...loadEnv(mode, process.cwd()) };
@@ -11,6 +12,7 @@ export default ({ mode }) => {
       outDir: 'dist',
     },
     plugins: [
+      svgr(),
       react({
         include: '**/*.{jsx,tsx}',
       }),
@@ -26,6 +28,7 @@ export default ({ mode }) => {
     ],
     resolve: {
       alias: {
+        '@': path.resolve(__dirname, 'src'),
         '@mui/styled-engine': '@mui/styled-engine-sc',
         './runtimeConfig': './runtimeConfig.browser',
         restrictions: path.resolve(__dirname, 'src/app/restrictions'),
@@ -40,10 +43,12 @@ export default ({ mode }) => {
         styles: path.resolve(__dirname, 'src/app/styles'),
         modal: path.resolve(__dirname, 'src/app/modal'),
         selectors: path.resolve(__dirname, 'src/app/selectors'),
+        types: path.resolve(__dirname, 'src/app/types'),
         alert: path.resolve(__dirname, 'src/app/alert'),
         sagas: path.resolve(__dirname, 'src/app/sagas'),
         routing: path.resolve(__dirname, 'src/app/routing'),
         location: path.resolve(__dirname, 'src/app/location'),
+        'react-query': path.resolve(__dirname, 'src/app/react-query'),
         'context-api': path.resolve(__dirname, 'src/app/context-api'),
         'ui-toolkit': path.resolve(__dirname, 'src/app/ui-toolkit'),
         'script/dockhealth-widget-sdk-internal.js': path.resolve(

@@ -1,16 +1,10 @@
-/* eslint-disable unicorn/no-nested-ternary */
 import * as ActionTypes from 'actions/action-types';
-// import pipe from 'ramda/src/pipe';
-// import prop from 'ramda/src/prop';
-// import uniqBy from 'ramda/src/uniqBy';
 import move from 'ramda/src/move';
 import { reorderTasksForWorkflow } from 'helpers/workflow-helpers';
 import { TaskGroupType, TaskItemType } from 'helpers/task-helpers';
 import { updateBundleInList } from 'helpers/tasklist-helpers';
 import { updateTasksStateCallback, updateTasksMap } from './reducer-helper';
 import TaskBaseReducer from './task-base-reducer';
-
-// const dedupe = pipe(uniqBy(prop('identifier')));
 
 const initialState = {
   taskListIdentifier: null,
@@ -65,7 +59,7 @@ function updateGroupInState(
 function updateBundleInState(bundleIdentifier, updatedData, state) {
   const updatedMap = {
     [bundleIdentifier]: {
-      ...state.tasksMap[bundleIdentifier],
+      // ...state.tasksMap[bundleIdentifier],
       ...updatedData,
       tasks: [
         ...new Set([
@@ -99,9 +93,7 @@ function updateBundleInState(bundleIdentifier, updatedData, state) {
   };
 }
 
-// eslint-disable-next-line sonarjs/cognitive-complexity
 const ListDetailsReducer = (state = initialState, action) => {
-  // eslint-disable-next-line sonarjs/max-switch-cases
   switch (action.type) {
     case ActionTypes.GET_COMPLETED_TASKS_BY_GROUPS_SUCCESS: {
       const { groupedTasks, loadingMore, taskListIdentifier } = action;
@@ -272,8 +264,7 @@ const ListDetailsReducer = (state = initialState, action) => {
     }
 
     case ActionTypes.REQUEST_TASKLIST_GROUP_TASKS_SUCCESS: {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { groupOfTasks, refresh, startPosition = 0 } = action;
+      const { groupOfTasks, startPosition = 0 } = action;
 
       const taskItems = groupOfTasks?.taskGroups[0]?.tasks;
       let newMap = {};
@@ -287,14 +278,12 @@ const ListDetailsReducer = (state = initialState, action) => {
       return {
         ...state,
         groupedTasks: {
-          // taskGroups: listTaskGroups,
-          taskGroups: state.groupedTasks.taskGroups.map((g) => {
+          taskGroups: state.groupedTasks.taskGroups?.map((g) => {
             const matchedGroup = groupOfTasks.taskGroups.find(
               (updatedGroup) =>
                 g.groupIdentifier === updatedGroup.groupIdentifier,
             );
             if (matchedGroup) {
-              // eslint-disable-next-line sonarjs/prefer-immediate-return
               const grpState = {
                 ...g,
                 ...matchedGroup,
@@ -329,32 +318,6 @@ const ListDetailsReducer = (state = initialState, action) => {
           ...state.tasksMap,
           ...newMap,
         },
-        // listGroups: state.listGroups.map((g) => {
-        //   if (
-        //     g.taskGroupIdentifier ===
-        //     groupOfTasks.taskGroups?.[0]?.groupIdentifier
-        //   ) {
-        //     const taskCount = groupOfTasks.taskGroups?.[0]?.tasks.filter(
-        //       (t) => t.itemType === 'TASK',
-        //     ).length;
-        //     const taskInWorkflowsCount = groupOfTasks.taskGroups?.[0]?.tasks
-        //       .filter((t) => t.itemType === 'BUNDLE')
-        //       .reduce(
-        //         (accumulator, current) =>
-        //           accumulator +
-        //           (current.tasksCount || 0) -
-        //           (current.tasksCompletedCount || 0),
-        //         0,
-        //       );
-        //     const grpState = {
-        //       ...g,
-        //       tasks: [...(g.tasks || []), groupOfTasks.taskGroups?.[0]?.tasks.map((task) => task.identifier)],
-        //       // metricValue: taskCount + taskInWorkflowsCount,
-        //     };
-        //     return grpState;
-        //   }
-        //   return g;
-        // }),
       };
     }
 
@@ -371,7 +334,6 @@ const ListDetailsReducer = (state = initialState, action) => {
         isFetching: true,
         tasks: [],
         completedTasks: [],
-        showingCompletedTasks: false,
       };
     }
 
@@ -434,15 +396,6 @@ const ListDetailsReducer = (state = initialState, action) => {
     case ActionTypes.UPDATE_TEMPLATE_BUNDLE_SUCCESS: {
       const { bundleIdentifier, dataToUpdate } = action;
 
-      // const updatedMap = {
-      //   [bundleIdentifier]: {
-      //     ...state.tasksMap[bundleIdentifier],
-      //     ...dataToUpdate,
-      //     tasks: dataToUpdate?.tasks
-      //       ? dataToUpdate?.tasks?.map((task) => task.identifier)
-      //       : state.tasksMap[bundleIdentifier]?.tasks,
-      //   },
-      // };
       const updatedMap = updateTasksMap(state, {
         itemType: TaskItemType.BUNDLE,
         identifier: bundleIdentifier,
@@ -454,7 +407,6 @@ const ListDetailsReducer = (state = initialState, action) => {
         ...updatedMap,
       };
 
-      // eslint-disable-next-line sonarjs/prefer-immediate-return
       const updatedState = {
         ...state,
         tasksMap: newMap,
@@ -772,6 +724,40 @@ const ListDetailsReducer = (state = initialState, action) => {
       };
     }
 
+    case ActionTypes.ADD_WORKFLOW_LABEL_SUCCESS: {
+      return {
+        ...state,
+        tasksMap: {
+          ...state.tasksMap,
+          [action?.newLabel?.taskWorkflowIdentifier]: {
+            ...state.tasksMap[action?.newLabel?.taskWorkflowIdentifier],
+            labels: [
+              ...state.tasksMap[action?.newLabel?.taskWorkflowIdentifier]
+                ?.labels,
+              action?.newLabel,
+            ],
+          },
+        },
+      };
+    }
+
+    case ActionTypes.REMOVE_WORKFLOW_LABEL_FROM_TASK_SUCCESS: {
+      return {
+        ...state,
+        tasksMap: {
+          ...state.tasksMap,
+          [action?.payload?.taskWorkflowIdentifier]: {
+            ...state.tasksMap[action?.payload?.taskWorkflowIdentifier],
+            labels: state.tasksMap[
+              action?.payload?.taskWorkflowIdentifier
+            ]?.labels.filter(
+              (l) => l.labelIdentifier !== action?.payload?.labelIdentifier,
+            ),
+          },
+        },
+      };
+    }
+
     case ActionTypes.REORDER_TASK_LIST_GROUPS: {
       const { newIndex, oldIndex } = action;
       const newListGroupsOrder = move(oldIndex, newIndex, state.listGroups);
@@ -861,6 +847,57 @@ const ListDetailsReducer = (state = initialState, action) => {
             },
           ]),
         },
+      };
+    }
+
+    case ActionTypes.ADD_WORKFLOW_COMMENT_SUCCESS: {
+      const { workflowIdentifier, comment } = action;
+
+      if (state.tasksMap?.[workflowIdentifier]) {
+        return {
+          ...state,
+          tasksMap: {
+            ...state.tasksMap,
+            [workflowIdentifier]: {
+              ...state.tasksMap[workflowIdentifier],
+              comments: [
+                comment,
+                ...state.tasksMap[workflowIdentifier].comments,
+              ],
+            },
+          },
+        };
+      }
+      return state;
+    }
+
+    case ActionTypes.UPDATE_CUSTOM_FIELDS_BY_TASK_IDENTIFIERS: {
+      const { taskIdentifiers, metaData: metaDataToUpdate } = action.payload;
+      const tasksMap = { ...state.tasksMap };
+      for (const taskIdentifier of taskIdentifiers) {
+        if (!(taskIdentifier in tasksMap)) continue;
+
+        tasksMap[taskIdentifier] = {
+          ...tasksMap[taskIdentifier],
+          taskMetaData: tasksMap[taskIdentifier].taskMetaData.map(
+            (metaItem) => {
+              if (!metaItem.customFieldIdentifier) return metaItem;
+              const metaItemToUpdate = metaDataToUpdate.find(
+                ({ customFieldIdentifier }) =>
+                  customFieldIdentifier === metaItem.customFieldIdentifier,
+              );
+              return {
+                ...metaItem,
+                ...metaItemToUpdate,
+              };
+            },
+          ),
+        };
+      }
+
+      return {
+        ...state,
+        tasksMap,
       };
     }
 

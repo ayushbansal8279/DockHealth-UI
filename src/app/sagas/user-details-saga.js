@@ -6,6 +6,11 @@ import {
   clearFiltersForMegaFilter,
   selectFiltersForMegaFilter,
 } from 'actions/mega-filter-actions';
+import {
+  getFiltersStorageKey,
+  getQuickFilterStorageKey,
+} from 'helpers/mega-filter-helper';
+import sessionStorageHelper from 'helpers/session-storage-helper';
 import { showGlobalErrorAlert } from 'alert/actions';
 import {
   userIdentifierSelector,
@@ -14,7 +19,6 @@ import {
 } from 'selectors/person-details-selectors';
 import { selectedFiltersInMegaFilterSelector } from 'selectors/mega-filter-selectors';
 import { TaskStatus } from 'helpers/task-helpers';
-import sessionStorageHelper from 'helpers/session-storage-helper';
 import isEmpty from 'ramda/src/isEmpty';
 
 function* initializeUserTasks(status) {
@@ -23,11 +27,21 @@ function* initializeUserTasks(status) {
   const userIdentifier = yield select(userIdentifierSelector);
 
   const filters = sessionStorageHelper.getItem(
-    `filter-${userIdentifier}-${status}`,
+    getFiltersStorageKey(userIdentifier, status),
+  );
+  const selectedQuickFilter = sessionStorageHelper.getItem(
+    getQuickFilterStorageKey(userIdentifier, status),
   );
 
   if (filters && !isEmpty(filters))
-    yield put(selectFiltersForMegaFilter(filters, userIdentifier, status));
+    yield put(
+      selectFiltersForMegaFilter(
+        filters,
+        userIdentifier,
+        status,
+        selectedQuickFilter,
+      ),
+    );
   else {
     yield put(clearFiltersForMegaFilter());
     yield status === TaskStatus.COMPLETE
@@ -131,7 +145,7 @@ function* selectFiltersFromMegaFilter({ id, status }) {
   ]);
   if (userIdentifier === id && currentStatus === status) {
     yield all([
-      put(PersonDetailsActions.getUserTaskFilterOptions()),
+      // put(PersonDetailsActions.getUserTaskFilterOptions()),
       status === TaskStatus.COMPLETE
         ? put(PersonDetailsActions.getUserCompletedTasks())
         : put(PersonDetailsActions.getUserTasks()),

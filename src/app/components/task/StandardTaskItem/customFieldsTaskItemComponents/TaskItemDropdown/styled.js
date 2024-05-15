@@ -28,7 +28,7 @@ export const DropdownSelect = styled(Select)`
 `;
 
 export const PlaceholderContainer = styled.div`
-  top: -3px;
+  top: -9px;
   position: absolute;
   left: 0px;
   z-index: 9;

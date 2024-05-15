@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { fontSizes } from 'styles/font';
+import { fontSizes, fontWeights } from 'styles/font';
 import palette from 'styles/palette';
 import spacing from 'styles/spacing';
 
@@ -21,6 +21,24 @@ export const OptionButton = styled.button`
   &:hover {
     color: ${palette.darkGrey};
   }
+`;
+
+export const LableContainer = styled.div`
+  display: Grid;
+  grid-template-columns: 10% auto;
+  margin-left: 10px;
+  Gap: 30px;
+  padding-top: 10px;
+`;
+
+export const Title = styled.div`
+  margin-right: 40px;
+  color: ${palette.coolGrey1};
+  font-family: Outfit;
+  font-size: ${fontSizes.smallPlus};
+  font-weight: ${fontWeights.light};
+  display: flex;
+  align-items: center;
 `;
 
 export const OptionContainer = styled.div`

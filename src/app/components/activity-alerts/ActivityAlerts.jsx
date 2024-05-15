@@ -2,6 +2,7 @@
 /* eslint-disable sonarjs/no-duplicated-branches */
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { useLocation } from 'react-router-dom';
 import BlueBellIcon from 'img/notifications/blue-bell.svg';
 import NewBlueBellIcon from 'img/notifications/new-blue-bell.svg';
 import WhiteBellIcon from 'img/notifications/white-bell.svg';
@@ -112,9 +113,11 @@ const ActivityAlerts = ({ variant = 'blue', patientIdentifier }) => {
   const [activityAlertsListIsFetching, setActivityAlertsListIsFetching] =
     useState(null);
   const [notificationSettings, setNotificationSettings] = useState([]);
+  const [isOnboardingPage, setIsOnboardingPage] = useState(false);
 
   const iconReference = useRef(null);
   const dispatch = useDispatch();
+  const location = useLocation();
 
   const embeddedMode = sessionStorage.getItem('EmbeddedMode') || false;
 
@@ -122,7 +125,7 @@ const ActivityAlerts = ({ variant = 'blue', patientIdentifier }) => {
     const alerts = await ActivityAlertsApi.getActivityAlerts();
     if (embeddedMode) {
       const filteredAlerts = alerts?.filter(
-        alt =>
+        (alt) =>
           !patientIdentifier ||
           alt.task?.patient?.patientIdentifier === patientIdentifier,
       );
@@ -217,17 +220,25 @@ const ActivityAlerts = ({ variant = 'blue', patientIdentifier }) => {
     CurrentBellIcon = MutedBellIcon;
   }
 
+  useEffect(() => {
+    if (location.pathname === '/onboarding-tutorial/create-list') {
+      setIsOnboardingPage(true);
+    }
+  }, [location.pathname]);
+
   return (
     <>
-      <ActivityAlertsImg
-        ref={iconReference}
-        src={CurrentBellIcon}
-        onClick={() => {
-          onActivityAlertOpened();
-          setIsOpen(!isOpen);
-        }}
-        withAnimaton={hasUnreadAlertsState}
-      />
+      {!isOnboardingPage && (
+        <ActivityAlertsImg
+          ref={iconReference}
+          src={CurrentBellIcon}
+          onClick={() => {
+            onActivityAlertOpened();
+            setIsOpen(!isOpen);
+          }}
+          withAnimaton={hasUnreadAlertsState}
+        />
+      )}
       <ActivityAlertsPopover
         onClick={() => {}}
         open={isOpen}

@@ -21,6 +21,8 @@ import {
   OptionButtonsInput,
   NoOptionTextLabel,
   NoOptionContainer,
+  LableContainer,
+  Title,
 } from './styled';
 
 const renderOption = ({
@@ -196,6 +198,7 @@ const LabelsSection = ({ selectedTask, onTaskUpdate }) => {
     () =>
       selectedLabels.map((option) => (
         <Chip
+          variant="outlined"
           key={option.labelIdentifier}
           onDelete={() => {
             setSelectedLabels((state) =>
@@ -249,55 +252,62 @@ const LabelsSection = ({ selectedTask, onTaskUpdate }) => {
     [saveAddLabel],
   );
   return (
-    <FormProvider {...formMethods}>
-      <Autocomplete
-        isOpen={isOpen}
-        autoFocus={taskDrawerFocusField === DrawerFieldEnum.LABEL}
-        options={labels}
-        label="Labels"
-        placeholder="Are there labels you'd like to add?"
-        value={selectedLabels}
-        getInputReference={getInputReference}
-        getOptionLabel={(option) => option?.labelName}
-        isOptionEqualToValue={(option, value) =>
-          option.labelIdentifier === value.labelIdentifier
-        }
-        // isDisabled={!!currentEditableOption}
-        renderOption={renderOptionCallback}
-        renderTags={renderTagsCallback}
-        onInputChange={setInputState}
-        InputProps={{
-          onKeyDown: (event) => {
-            if (event.key === 'Enter' && event?.target.value !== '') {
-              event.stopPropagation();
-              event.preventDefault();
-              event?.target?.blur();
-              handleSave({ labelName: inputState });
-              // saveAddLabel({ labelName: inputState });
-            }
-          },
-        }}
-        noOptionsText={noOptionText}
-        onOpen={() => {
-          refreshLabels();
-          setIsOpen(true);
-        }}
-        onClose={() => !currentEditableOption && setIsOpen(false)}
-        isLoading={isLoadingLabels}
-        onChange={(values) => {
-          const valuesLength = values.length;
-          const value = values[valuesLength - 1];
-          // saveAddLabel(value);
-          handleSave(value);
-          if (currentEditableOption) {
-            setCurrentEditableOption(null);
+    <LableContainer>
+      <Title>Label</Title>
+      <FormProvider {...formMethods}>
+        <Autocomplete
+          isOpen={isOpen}
+          autoFocus={taskDrawerFocusField === DrawerFieldEnum.LABEL}
+          options={labels}
+          // label="Labels"
+          placeholder={
+            selectedLabels?.length > 0
+              ? ''
+              : "Add Labels"
           }
-        }}
-        multiple
-        disableClearable
-        disableCloseOnSelect
-      />
-    </FormProvider>
+          value={selectedLabels}
+          getInputReference={getInputReference}
+          getOptionLabel={(option) => option?.labelName}
+          isOptionEqualToValue={(option, value) =>
+            option.labelIdentifier === value.labelIdentifier
+          }
+          // isDisabled={!!currentEditableOption}
+          renderOption={renderOptionCallback}
+          renderTags={renderTagsCallback}
+          onInputChange={setInputState}
+          InputProps={{
+            onKeyDown: (event) => {
+              if (event.key === 'Enter' && event?.target.value !== '') {
+                event.stopPropagation();
+                event.preventDefault();
+                event?.target?.blur();
+                handleSave({ labelName: inputState });
+                // saveAddLabel({ labelName: inputState });
+              }
+            },
+          }}
+          noOptionsText={noOptionText}
+          onOpen={() => {
+            refreshLabels();
+            setIsOpen(true);
+          }}
+          onClose={() => !currentEditableOption && setIsOpen(false)}
+          isLoading={isLoadingLabels}
+          onChange={(values) => {
+            const valuesLength = values.length;
+            const value = values[valuesLength - 1];
+            // saveAddLabel(value);
+            handleSave(value);
+            if (currentEditableOption) {
+              setCurrentEditableOption(null);
+            }
+          }}
+          multiple
+          disableClearable
+          disableCloseOnSelect
+        />
+      </FormProvider>
+    </LableContainer>
   );
 };
 

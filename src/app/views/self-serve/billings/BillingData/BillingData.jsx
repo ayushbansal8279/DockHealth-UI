@@ -9,6 +9,7 @@ import {
   useStripe,
   useElements,
 } from '@stripe/react-stripe-js';
+import { STATE_LIST_OPTIONS } from '@/app/constants/us-states';
 import { useEffectOnce, useToggle } from 'react-use';
 import { object, string } from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -27,6 +28,7 @@ import {
   billingDetailsSelector,
   referralConfigSelector,
 } from 'selectors/organization-selectors';
+import RHFAutocomplete from 'components/common/hook-form/RHFAutoComplete';
 import BillingInformation from '../BillingInformation/BillingInformation';
 import {
   AcceptedCardsContainer,
@@ -34,61 +36,6 @@ import {
   FormContainer,
 } from './styled';
 import { StyledCollapse, H3, Anchor } from '../styled';
-
-// const CardNumberInput = React.forwardRef((props, reference) => {
-//   const { onChange, ...other } = props;
-//   const [isEmpty, setIsEmpty] = useState(true);
-//   const elementReference = useRef();
-//   useImperativeHandle(reference, () => ({
-//     focus: () => elementReference.current.focus,
-//   }));
-//   return (
-//     <CardNumberElement
-//       ref={elementReference}
-//       // eslint-disable-next-line no-return-assign
-//       onReady={(element) => (elementReference.current = element)}
-//       showIcon={!isEmpty}
-//       onChange={(event) => {
-//         // eslint-disable-next-line no-unused-expressions
-//         onChange?.(event);
-//         if (isEmpty !== event.empty) setIsEmpty(event.empty);
-//       }}
-//       {...other}
-//     />
-//   );
-// });
-
-// const CardExpiryInput = React.forwardRef((props, reference) => {
-//   const { ...other } = props;
-//   const elementReference = useRef();
-//   useImperativeHandle(reference, () => ({
-//     focus: () => elementReference.current.focus,
-//   }));
-//   return (
-//     <CardExpiryElement
-//       ref={elementReference}
-//       // eslint-disable-next-line no-return-assign
-//       onReady={(element) => (elementReference.current = element)}
-//       {...other}
-//     />
-//   );
-// });
-
-// const CardCvcInput = React.forwardRef((props, reference) => {
-//   const { ...other } = props;
-//   const elementReference = useRef();
-//   useImperativeHandle(reference, () => ({
-//     focus: () => elementReference.current.focus,
-//   }));
-//   return (
-//     <CardCvcElement
-//       ref={elementReference}
-//       // eslint-disable-next-line no-return-assign
-//       onReady={(element) => (elementReference.current = element)}
-//       {...other}
-//     />
-//   );
-// });
 
 const CardInputComponent = React.forwardRef((props, reference) => {
   const { onChange, component: Component, ...other } = props;
@@ -221,20 +168,21 @@ const SaveBillingElement = ({ processingPayment, cancelSaveBillingClick }) => (
         </Anchor>
       </H3>
     </Grid>
-    <Grid item sm={12} container justifyContent="flex-end" wrap="nowrap">
+    <Grid
+      item
+      sm={12}
+      container
+      justifyContent="flex-end"
+      wrap="nowrap"
+      sx={{ mb: 2 }}
+    >
       <Button
         onClick={cancelSaveBillingClick}
         variant="text"
         disabled={processingPayment}
         width="300px"
       >
-        <MontserratTypography
-          variant="h4"
-          textDecoration="underline"
-          weight="600"
-        >
-          CANCEL
-        </MontserratTypography>
+        CANCEL
       </Button>
       <Spacing horizontal={4} />
       <Button type="submit" disabled={processingPayment} width="300px">
@@ -250,20 +198,21 @@ const UpdateBillingElement = ({
   processingUpdate,
 }) =>
   isUpdatingBilling && (
-    <Grid item sm={12} container justifyContent="flex-end" wrap="nowrap">
+    <Grid
+      item
+      sm={12}
+      container
+      justifyContent="flex-end"
+      wrap="nowrap"
+      sx={{ mb: 2 }}
+    >
       <Button
         onClick={cancelUpdateBilling}
         variant="text"
         disabled={processingUpdate}
         width="300px"
       >
-        <MontserratTypography
-          variant="h4"
-          textDecoration="underline"
-          weight="600"
-        >
-          CANCEL
-        </MontserratTypography>
+        CANCEL
       </Button>
       <Spacing horizontal={4} />
       <Button type="submit" disabled={processingUpdate} width="300px">
@@ -373,8 +322,13 @@ const CreditPaymentForm = ({
       <Grid item sm={12} md={6}>
         <FormInput required name="city" label="City" />
       </Grid>
-      <Grid item sm={12} md={3}>
-        <FormInput required name="state" label="State" />
+      <Grid item sm={12} md={3} sx={{ mb: 5 }}>
+        <RHFAutocomplete
+          name="state"
+          label="State"
+          required
+          options={STATE_LIST_OPTIONS}
+        />
       </Grid>
       {hasDiscountCode && <Grid item sm={12} md={9} />}
       {hasDiscountCode && (
@@ -420,6 +374,9 @@ const BillingData = ({
   const formMethods = useForm({
     resolver: yupResolver(validationSchema),
     reValidateMode: 'onSubmit',
+    defaultValues: {
+      state: '',
+    },
   });
 
   const { handleSubmit, register, setValue, unregister, clearErrors } =
@@ -480,7 +437,6 @@ const BillingData = ({
   return (
     <form
       onSubmit={handleSubmit((data) => {
-        // console.log(data);
         stripe.createToken(cardElement).then((token) => {
           if (token.error) {
             throw token.error;

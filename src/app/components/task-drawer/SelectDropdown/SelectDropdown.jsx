@@ -1,6 +1,12 @@
 /* eslint-disable react/jsx-no-duplicate-props */
 import React, { useEffect, useRef, useState } from 'react';
-import { Box, Grid } from '@mui/material';
+import {
+  Box,
+  Grid,
+  IconButton,
+  InputAdornment,
+  TextField,
+} from '@mui/material';
 import Loader, { LoaderSizes } from 'components/common/Loader/Loader';
 import Spacing from 'components/common/Spacing';
 import { useBoolean } from 'hooks/useBoolean';
@@ -25,6 +31,7 @@ import {
   ListItemRefineButton,
 } from './styled';
 import { AdornmentClear, PatientLinkText } from '../styled';
+import AssignMemberIcon from '../../user/AssignMemberIcon/AssingMemberIcon';
 
 const SelectDropdown = React.forwardRef(
   (
@@ -83,7 +90,7 @@ const SelectDropdown = React.forwardRef(
     }, [value]);
 
     useEffect(() => {
-      console.log(`patientIdentifier: ${patientIdentifier}`);
+      // console.log(`patientIdentifier: ${patientIdentifier}`);
     }, [patientIdentifier]);
 
     useEffect(() => {
@@ -206,10 +213,90 @@ const SelectDropdown = React.forwardRef(
       );
     };
 
+    const TextFieldSx = {
+      backgroundColor: isFocused ? '#f8f8f9' : '',
+      borderRadius: '4px',
+      height: '40px',
+      '& .MuiOutlinedInput-root': {
+        '& .MuiOutlinedInput-notchedOutline': {
+          borderColor: 'transparent',
+        },
+      },
+      '&:hover': {
+        backgroundColor: '#f8f8f9',
+        borderColor: 'transparent',
+      },
+      width: '200px',
+    };
+
     return (
-      <>
+      <div>
         <div ref={inputContainerReference}>
-          <Input
+          <TextField
+            sx={TextFieldSx}
+            size="small"
+            variant="outlined"
+            ref={reference}
+            label={label}
+            name={name}
+            placeholder={isFocused ? '' : placeholder}
+            disabled={disabled}
+            InputLabelProps={{
+              shrink: true,
+            }}
+            inputProps={{
+              autoComplete: 'off',
+              value: inputValue,
+              onChange: handleInputChange,
+              onKeyDown: handleInputKeyDown,
+            }}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <IconButton aria-label="search">
+                    <AssignMemberIcon />
+                  </IconButton>
+                </InputAdornment>
+              ),
+              endAdornment: disabled ? null : (
+                <>
+                  {patientIdentifier && (
+                    <div style={{ display: 'flex' }}>
+                      <Link
+                        to={{
+                          pathname: `/core/patient/${patientIdentifier}`,
+                          state: {
+                            from: pathname,
+                          },
+                        }}
+                      >
+                        <PatientLinkText>
+                          <LaunchIcon />
+                        </PatientLinkText>
+                      </Link>
+                      <Spacing horizontal={3} />
+                    </div>
+                  )}
+                  <Box mx={0.5} />
+                  {currentSelectedOption?.displayLabel === inputValue && (
+                    <AdornmentClear
+                      onClick={() => {
+                        if (clearOnSuccess) {
+                          onClear(() => setCurrentSelectedOption(null));
+                        } else {
+                          onClear();
+                          setCurrentSelectedOption(null);
+                        }
+                      }}
+                    />
+                  )}
+                </>
+              ),
+            }}
+            onFocus={setIsFocused}
+            onBlur={unsetIsFocused}
+          />
+          {/* <Input
             ref={reference}
             label={label}
             name={name}
@@ -262,7 +349,7 @@ const SelectDropdown = React.forwardRef(
             }}
             onFocus={setIsFocused}
             onBlur={unsetIsFocused}
-          />
+          /> */}
         </div>
         {isFocused && inputValue && (
           <ListContainer
@@ -306,7 +393,7 @@ const SelectDropdown = React.forwardRef(
             )}
           </ListContainer>
         )}
-      </>
+      </div>
     );
   },
 );

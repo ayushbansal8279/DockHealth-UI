@@ -1,16 +1,29 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { MenuItem, Box } from '@mui/material';
 import zIndex from 'styles/z-index';
-import { Select, SelectWrapper } from './styled';
+import palette from 'styles/palette';
+import { Select, SelectWrapper, SelectIcon } from './styled';
 
-const ToolbarSelect = ({ options, name, value, icon, ...restProps }) => {
+const ToolbarSelect = ({
+  options,
+  name,
+  value,
+  icon,
+  searchValue,
+  focused,
+  spaceAfterLabel,
+  ...restProps
+}) => {
+  const [isOpen, setIsOpen] = useState(false);
+
   return (
     <SelectWrapper>
       <Select
+        onOpen={() => {
+          setIsOpen(true);
+        }}
         onClose={() => {
-          setTimeout(() => {
-            document.activeElement.blur();
-          }, 0);
+          setIsOpen(false);
         }}
         iconcoloractive={restProps.iconColorActive}
         MenuProps={{
@@ -27,17 +40,19 @@ const ToolbarSelect = ({ options, name, value, icon, ...restProps }) => {
         }}
         variant="outlined"
         inputProps={{ name }}
+        isOpen={isOpen}
         value={value}
         renderValue={(selectedValue) => {
           const foundOption = options?.find(
             (option) => option.value === selectedValue,
           );
           return (
-            <>
+            <SelectIcon>
               {icon}
               <Box component="span" mx={0.5} />
               {foundOption?.label || ''}
-            </>
+              {spaceAfterLabel && <Box component="span" mx={0.8} />}
+            </SelectIcon>
           );
         }}
         {...restProps}

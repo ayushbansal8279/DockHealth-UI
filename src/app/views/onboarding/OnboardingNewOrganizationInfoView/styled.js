@@ -3,7 +3,7 @@ import { fontSizes, fontWeights } from 'styles/font';
 
 export const InfoContainer = styled.div`
   width: 100%;
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Outfit', sans-serif;
 `;
 
 export const Title = styled.h2`

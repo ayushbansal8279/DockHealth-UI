@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { fontSizes, fontWeights } from 'styles/font';
-import palette from 'styles/palette';
+import palette, { typography } from 'styles/palette';
 import spacing from 'styles/spacing';
 
 export const ModalWrapper = styled.div`
@@ -12,7 +12,7 @@ export const ModalWrapper = styled.div`
   width: 600px;
   height: ${({ height }) => height || 700}px;
   padding: ${spacing.huge};
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Outfit', sans-serif;
   background-color: ${palette.white};
 `;
 
@@ -75,5 +75,5 @@ export const Description = styled.p`
   margin-bottom: 0;
   font-size: ${fontSizes.regularPlus};
   font-weight: ${fontWeights.extraLight};
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: inherit;
 `;

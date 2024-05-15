@@ -110,7 +110,7 @@ function* doRefreshTasks() {
     const status = isSearchingCompletedTasks ? 'COMPLETE' : 'INCOMPLETE';
     if (searchValue) {
       let taskStatus = '';
-      // search for both completed and incompleted tasks
+      // search for both completed and incomplete tasks
       if (status === 'INCOMPLETE') {
         taskStatus = status;
       }
@@ -148,7 +148,7 @@ function* doGetMoreTasksForTaskList({ payload }) {
     const status = isSearchingCompletedTasks ? 'COMPLETE' : 'INCOMPLETE';
     if (searchValue && taskListIdentifier) {
       let taskStatus;
-      // search for both completed and incompleted tasks
+      // search for both completed and incomplete tasks
       if (status === 'INCOMPLETE') {
         taskStatus = status;
       }

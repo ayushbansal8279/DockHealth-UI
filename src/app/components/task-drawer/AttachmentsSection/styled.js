@@ -2,6 +2,7 @@ import styled from 'styled-components';
 
 import palette, { opacify } from 'styles/palette';
 import spacing from 'styles/spacing';
+import { fontSizes, fontWeights } from 'styles/font';
 
 export const DropHereText = styled.div`
   display: flex;
@@ -67,9 +68,9 @@ export const AttachmentFileInput = styled.input.attrs({
   width: 1px;
 `;
 
-export const DownloadAllLink = styled.a`
-  align-items: center;
-  color: ${palette.brightBlue};
-  padding: ${spacing.tiny} ${spacing.small};
-  margin: ${spacing.tiny};
+export const Title = styled.h3`
+  font-family: 'Outfit', sans-serif;
+  font-size: ${fontSizes.regular};
+  font-weight: ${fontWeights.regularPlus};
+  color: ${palette.greyBlue};
 `;

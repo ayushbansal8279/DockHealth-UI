@@ -292,7 +292,7 @@ const TaskTemplateView = () => {
                 <AddButton onClick={handleCreateTemplateFolder}>
                   Add Folder
                 </AddButton>
-                <ViewTypeSwitch value={viewType} onChange={setViewType} />
+                {/* <ViewTypeSwitch value={viewType} onChange={setViewType} /> */}
               </AddEntitiesContainer>
             </SearchAndFilterContainer>
             <Spacing vertical={4} />

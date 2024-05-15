@@ -37,6 +37,7 @@ import {
   TextEventContainer,
 } from './styled';
 import MultiAssignCalendar from './MultiAssignCalendar';
+import { createMentionsFromTokenizedDescription } from '../RichTextEditor/CreateMentions';
 
 const temporaryTaskId = 'temporaryTaskId';
 
@@ -208,8 +209,13 @@ const Calendar = ({ taskListIdentifier }) => {
             <MultiAssignCalendar assignedToUsers={task.assignedToUsers} />
           )}
           <b>{eventInfo.timeText}</b>
-          <Spacing horizontal={2} />
-          <Typography noWrap>{eventInfo?.event?.title}</Typography>
+          <Spacing horizontal={4} />
+          <Typography>
+            {createMentionsFromTokenizedDescription(
+              task?.tokenizedDescription,
+              task?.taskMentions,
+            )}
+          </Typography>
         </TextEventContainer>
       </Tooltip>
     );

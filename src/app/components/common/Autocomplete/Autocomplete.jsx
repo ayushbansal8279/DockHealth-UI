@@ -3,8 +3,7 @@
 /* eslint-disable no-unused-expressions */
 import React, { useEffect, useRef, useCallback } from 'react';
 import propTypes from 'prop-types';
-import { Autocomplete as AutocompleteMUI } from '@mui/material';
-import Input from 'components/common/Input/Input';
+import { Autocomplete as AutocompleteMUI, TextField } from '@mui/material';
 import styled from 'styled-components';
 
 const StandardAutocompleteMUI = styled(AutocompleteMUI)`
@@ -36,10 +35,20 @@ const StandardInput = ({
   const { InputProps: InputPropsParams, ...restParams } = params;
 
   return (
-    <Input
+    <TextField
+      size="small"
+      sx={{
+        backgroundColor: '#f8f8f9',
+        '& .MuiOutlinedInput-root': {
+          minHeight: '40px',
+          padding: '5px 3px 2px 5px  !important',
+          '& .MuiOutlinedInput-notchedOutline': {
+            borderColor: 'transparent',
+          },
+        },
+      }}
       label={label}
       fullWidth
-      id={`autocomplete-input-${label}`}
       onBlur={onBlurInput}
       onFocus={onFocusInput}
       placeholder={placeholder}
@@ -51,7 +60,7 @@ const StandardInput = ({
         ...CustomInputProps,
       }}
       {...restParams}
-    />
+      />
   );
 };
 

@@ -78,7 +78,7 @@ export const IncludeContainerStyled = styled.div`
 
 export const InfoHeaderTextStyled = styled.p`
   color: ${palette.coolGrey9};
-  font-family: 'Montserrat';
+  font-family: 'Outfit';
   font-weight: 600;
   margin: 0;
 `;

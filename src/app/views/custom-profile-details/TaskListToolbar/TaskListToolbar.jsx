@@ -22,11 +22,11 @@ import {
 } from 'selectors/user-selectors';
 import Spacing from 'components/common/Spacing';
 import { TaskStatus } from 'helpers/task-helpers';
-import TaskStatusToolbarSelect from 'components/tasklist/TaskStatusToolbarSelect/TaskStatusToolbarSelect';
-import CustomizeToolbarButton from 'components/tasklist/CustomizeToolbarButton/CustomizeToolbarButton';
-import ToolbarButton from 'components/tasklist/ToolbarButton/ToolbarButton';
-// import { printTaskPdf } from 'components/task-pdf/TaskPdfDocument';
 import ViewTypeIcon from 'img/view-type-icon.svg';
+import TaskStatusToolbarSelect from '@/app/components/tasklist/list-toolbar-buttons/TaskStatusToolbarSelect';
+import CustomizeToolbarButton from '@/app/components/tasklist/list-toolbar-buttons/CustomizeToolbarButton/CustomizeToolbarButton';
+import ToolbarButton from '@/app/components/tasklist/list-toolbar-buttons/ToolbarButton/ToolbarButton';
+// import { printTaskPdf } from 'components/task-pdf/TaskPdfDocument';
 import {
   ListsToolbarContainer,
   ListsTabsContainer,
@@ -96,18 +96,14 @@ const TaskListToolbar = (props) => {
     currentOrganization?.themeSettings?.find(
       ({ name }) => name === 'role.viewOnly.patient.view.customize.enabled',
     ) || {};
-  const viewOnlyArchivedTasksEnabled =
+  const viewOnlyArchivedTasksEnabled = !(
     isUserViewOnly(currentUser) &&
     viewOnlyArchivedTasksEnabledItem?.value === 'false'
-      ? // eslint-disable-next-line no-unneeded-ternary
-        false
-      : true;
-  const viewOnlyCustomizeEnabled =
+  );
+  const viewOnlyCustomizeEnabled = !(
     isUserViewOnly(currentUser) &&
     viewOnlyCustomizeEnabledItem?.value === 'false'
-      ? // eslint-disable-next-line no-unneeded-ternary
-        false
-      : true;
+  );
 
   const handleListChange = (event) => {
     history.push(
@@ -187,7 +183,7 @@ const TaskListToolbar = (props) => {
   return (
     <ListsToolbarContainer>
       <ListsTabsContainer>
-        <ToolbarSelect
+        {/* <ToolbarSelect
           options={LIST_TYPE_OPTIONS}
           value={
             isAllTasksView ? ListViewType.ALL_TASKS : ListViewType.LIST_VIEW
@@ -203,8 +199,8 @@ const TaskListToolbar = (props) => {
           }
           iconColorActive={iconColorActiveItem?.value}
           width={170}
-        />
-        <Box px={2} />
+        /> */}
+        {/* <Box px={2} /> */}
         {taskListIdentifierParameter !== ListViewType.ALL_TASKS && (
           <ToolbarSelect
             options={listOptions}

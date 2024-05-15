@@ -132,7 +132,7 @@ const BoardContextProvider = ({ contextName, children }) => {
         const handleAddWorkflow = ({ identifier: taskGroupIdentifier }) => {
           dispatch(
             openModal('SmartFlowList', {
-              fetchMethod: () => getTemplates(),
+              fetchMethod: () => getTemplates(true),
               closeModal,
               confirmText: 'Select',
               setWorkflow: ({ identifier: taskTemplateIdentifier }) => {

@@ -1,12 +1,12 @@
 import styled from 'styled-components';
 import { fontSizes, fontWeights } from 'styles/font';
-import palette from 'styles/palette';
+import palette, { typography } from 'styles/palette';
 
 export const Row = styled.div`
   display: grid;
   width: 100%;
   height: 35px;
-  grid-template-columns: 1fr 200px 150px 50px;
+  grid-template-columns: 1fr 1fr 200px 150px 50px;
   grid-gap: 12px;
   align-items: center;
   border: 1px solid ${palette.coolGrey2};
@@ -34,7 +34,7 @@ export const Cell = styled.div`
   display: flex;
   align-items: center;
   padding: 0 10px;
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: inherit;
   font-weight: ${({ bold }) => (bold ? fontWeights.bold : fontWeights.regular)};
   font-size: ${fontSizes.smallPlus};
   color: ${palette.mediumGrey};

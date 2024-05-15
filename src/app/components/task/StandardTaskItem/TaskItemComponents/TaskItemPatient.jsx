@@ -15,7 +15,9 @@ import {
   DisabledLink,
   DisabledPatientLabel,
   PatientPrintAdditionalInfo,
+  PlaceholderText,
 } from '../../styled';
+import Tooltip from '@/app/components/common/Tooltip/Tooltip';
 
 const TaskItemPatient = ({
   highlightedValue,
@@ -26,10 +28,13 @@ const TaskItemPatient = ({
   patient,
   matchPatient,
   task,
+  taskWorkflow,
   openPatientPopover,
   onTaskUpdate,
   currentUser,
   readOnly,
+  origin,
+  isPatientHover,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const { pathname } = useLocation();
@@ -90,11 +95,20 @@ const TaskItemPatient = ({
             openPopover={() => openPopoverWhenNotCompleted(true)}
             closePopover={() => setPopoverOpen(false)}
             isSubtask={isSubtask}
+            taskWorkflow={taskWorkflow}
             hasSubtasks={hasSubtasks}
+            origin={origin}
           >
-            <AddPlaceholder>
-              + Add {customerTypeLabelCapitalized}
-            </AddPlaceholder>
+            {isPatientHover && (
+              <Tooltip
+                placement="top"
+                title={`Add ${customerTypeLabelCapitalized}`}
+              >
+                <PlaceholderText>
+                  + Add {customerTypeLabelCapitalized}
+                </PlaceholderText>
+              </Tooltip>
+            )}
           </PatientDropdown>
         )}
       {!readOnly &&
@@ -140,7 +154,7 @@ const TaskItemPatient = ({
           </PatientPrintAdditionalInfo>
         </PatientCard>
       )}
-      {patient && !openPatientPopover && (
+      {patient && !openPatientPopover && !hasParentTaskLabel && (
         <PatientCard
           disableLink={readOnly}
           patientIdentifier={patient.patientIdentifier}

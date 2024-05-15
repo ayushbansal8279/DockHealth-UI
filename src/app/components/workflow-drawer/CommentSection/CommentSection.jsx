@@ -6,24 +6,18 @@ import {
   isWorkflowTemplateSelector,
   workflowListIdentifierSelector,
 } from 'selectors/workflow-drawer-selectors';
-import AddComment from 'components/drawer-common/AddComment/AddComment';
 import Comment from 'components/drawer-common/Comment/Comment';
 import * as WorkflowActions from 'actions/workflow-actions';
 import { userProfileSelector } from 'selectors/user-selectors';
+import { Title } from './styled';
 
-const CommentSection = ({ disabled }) => {
+const CommentSection = () => {
   const dispatch = useDispatch();
   const workflowIdentifier = useSelector(workflowIdentifierSelector);
   const currentUser = useSelector(userProfileSelector);
   const comments = useSelector(workflowCommentsSelector);
   const isWorkflowTemplate = useSelector(isWorkflowTemplateSelector);
   const workflowListIdentifier = useSelector(workflowListIdentifierSelector);
-
-  const handleAddComment = (tokenizedComment) => {
-    dispatch(
-      WorkflowActions.addWorkflowComment(workflowIdentifier, tokenizedComment),
-    );
-  };
 
   const handleUpdateComment = ({ commentIdentifier, comment }) => {
     dispatch(
@@ -46,13 +40,7 @@ const CommentSection = ({ disabled }) => {
 
   return (
     <>
-      {!disabled && (
-        <AddComment
-          disableMentions={isWorkflowTemplate}
-          taskListIdentifier={workflowListIdentifier}
-          onAdd={handleAddComment}
-        />
-      )}
+      <Title>Comments</Title>
       {comments?.map((comment) => (
         <Comment
           key={comment.commentIdentifier}
@@ -62,6 +50,7 @@ const CommentSection = ({ disabled }) => {
           currentUser={currentUser}
           onUpdate={handleUpdateComment}
           onDelete={handleDeleteComment}
+          mentions={comment.commentMentions}
         />
       ))}
     </>

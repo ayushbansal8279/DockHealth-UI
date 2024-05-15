@@ -57,7 +57,8 @@ export const NameContainer = styled.div`
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-  padding-left: 2px;
+  padding-left: 7px;
+  font-weight: 500;
 `;
 
 export const TaskTemplateDescriptionIndicators = styled.div`

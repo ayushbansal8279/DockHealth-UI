@@ -14,9 +14,10 @@ export const ListsTabsContainer = styled.div`
 `;
 
 export const ListSelectionImg = styled.img`
-  width: 21px;
+  width: 18px;
+  height: 18px;
   ${({ iconColorFilterActive }) =>
     iconColorFilterActive
       ? `filter: ${iconColorFilterActive}; `
-      : 'filter: invert(60%) sepia(60%) saturate(1790%) hue-rotate(348deg) brightness(100%) contrast(88%);'}
+      : 'filter: invert(60%) sepia(60%) saturate(1790%) hue-rotate(348deg) brightness(100%) contrast(88%);'};
 `;

@@ -1,8 +1,8 @@
 /* eslint-disable sonarjs/no-identical-functions */
 import React, { useMemo, useCallback } from 'react';
+import AppRegistrationIcon from '@mui/icons-material/AppRegistration';
 import { useParams } from 'react-router-dom';
 import isEmpty from 'ramda/src/isEmpty';
-import pluck from 'ramda/src/pluck';
 import { bulkEditTasks as bulkEditTasksApi } from 'api/task-api';
 import * as ModalActions from 'modal/actions';
 import {
@@ -23,7 +23,9 @@ import Tooltip from 'components/common/Tooltip/Tooltip';
 import * as AlertActions from 'alert/actions';
 import { userProfileSelector } from 'selectors/user-selectors';
 import {
-  bulkEditAssignUser,
+  bulkEditAssignUsers,
+  bulkEditUnassignUsers,
+  bulkEditUnassignAllUsers,
   bulkEditWorkflowStatus,
   bulkEditDueDate,
   bulkEditDelete,
@@ -57,6 +59,7 @@ const BULK_EDIT_BASE_CONFIG = {
   [BulkEditOptionsConfig.COMPLETE_OPTION]: true,
   [BulkEditOptionsConfig.STATUS_OPTION]: true,
   [BulkEditOptionsConfig.DUE_DATE_OPTION]: true,
+  [BulkEditOptionsConfig.EDIT_CUSTOM_FIELDS_OPTION]: true,
   [BulkEditOptionsConfig.ASSIGN_OPTION]: true,
   [BulkEditOptionsConfig.DELETE_OPTION]: true,
 };
@@ -103,23 +106,22 @@ const BulkEditOptionsBar = ({
     organizationCustomFieldsSelector,
   );
   const listCustomFields = useSelector(listCustomFieldsSelector);
-  const allTaskCustomFields = organizationCustomFields?.concat(
-    listCustomFields,
+
+  const allTaskCustomFields = useMemo(
+    () => [...(organizationCustomFields ?? []), ...(listCustomFields ?? [])],
+    [organizationCustomFields, listCustomFields],
   );
 
   const allRequiredFieldsExist = useMemo(
     () =>
-      parentTasks.every(parentTask => {
+      parentTasks.every((parentTask) => {
         const incompleteRequiredFields = findIncompleteRequiredFields(
           allTaskCustomFields,
           parentTask,
         );
         const isRequiredFieldsAreIncomplete =
           incompleteRequiredFields.length > 0;
-        if (isRequiredFieldsAreIncomplete) {
-          return false;
-        }
-        return true;
+        return !isRequiredFieldsAreIncomplete;
       }),
     [allTaskCustomFields, parentTasks],
   );
@@ -225,8 +227,9 @@ const BulkEditOptionsBar = ({
 
   const refreshTaskWorkflows = useCallback(
     (workflowIdentifiers) => {
-      for (const identifier of workflowIdentifiers)
+      for (const identifier of workflowIdentifiers) {
         dispatch(refreshTaskBundle(identifier));
+      }
     },
     [dispatch],
   );
@@ -369,20 +372,52 @@ const BulkEditOptionsBar = ({
   );
 
   const handleChangeAssigneeTasks = useCallback(
-    (selectedUsers) => {
-      bulkEditAssignUser(
-        allSelectedTasksIdentifiers,
-        selectedUsers,
-        filters,
-        searchValue,
-      )(dispatch);
+    /**
+     *
+     * @param {Array} selectedUsers users to send over api, assigned users list or newly unassigned users list
+     * @param {'assignment' | 'unassignment', 'unassign_all'} assignOption
+     */
+    (selectedUsers, assignOption) => {
+      // NOTE: update assignees in redux state
+      if (assignOption === 'unassign_all') {
+        bulkEditUnassignAllUsers(allSelectedTasksIdentifiers)(dispatch);
+      } else {
+        const methods = {
+          assignment: bulkEditAssignUsers,
+          unassignment: bulkEditUnassignUsers,
+        };
+        methods[assignOption]?.(
+          allSelectedTasksIdentifiers,
+          selectedUsers,
+        )(dispatch);
+      }
 
-      bulkEditTasksApi({
+      // NOTE: prepare payload for api
+      const payload = {
         bulkEditType: 'ASSIGN',
         taskIdentifiers: allSelectedTasksIdentifiers,
         taskWorkflowIdentifiers: allSelectedWorkflowIdentifiers,
-        assignedToIdentifiers: pluck('userIdentifier', selectedUsers),
-      })
+      };
+
+      const selectedUserIdentifiers = selectedUsers?.map(
+        ({ userIdentifier }) => userIdentifier,
+      );
+
+      switch (assignOption) {
+        case 'assignment':
+          payload.assignedToIdentifiers = selectedUserIdentifiers;
+          break;
+        case 'unassignment':
+          payload.unassignedToIdentifiers = selectedUserIdentifiers;
+          break;
+        case 'unassign_all':
+          payload.unAssignAll = true;
+          break;
+        default:
+      }
+
+      // send api request
+      bulkEditTasksApi(payload)
         .then(({ transactionIdentifier }) => {
           refreshTaskWorkflows(allSelectedWorkflowIdentifiers);
           dispatch(
@@ -422,8 +457,6 @@ const BulkEditOptionsBar = ({
     },
     [
       allSelectedTasksIdentifiers,
-      filters,
-      searchValue,
       dispatch,
       allSelectedWorkflowIdentifiers,
       allSelectedTasksLength,
@@ -448,6 +481,7 @@ const BulkEditOptionsBar = ({
         taskIdentifiers: allSelectedTasksIdentifiers,
         taskWorkflowIdentifiers: allSelectedWorkflowIdentifiers,
         includeAttachmentsForDuplication,
+        includePatientForDuplication: true,
       }).then(({ transactionIdentifier, tasks: duplicatedTasks }) => {
         dispatch(bulkEditDuplicateTasksSuccess(duplicatedTasks));
 
@@ -694,6 +728,21 @@ const BulkEditOptionsBar = ({
     modalActions,
   ]);
 
+  const handleEditFields = useCallback(() => {
+    dispatch(
+      openModal('TaskListCustomFieldsBulkEdit', {
+        taskIdentifiers: selectedTasks.parentTasks?.map(
+          ({ taskIdentifier }) => taskIdentifier,
+        ),
+        taskListIdentifier,
+        customFields: allTaskCustomFields,
+        onSave: () => {
+          dispatch(closeModal());
+        },
+      }),
+    );
+  }, [dispatch, selectedTasks, taskListIdentifier, allTaskCustomFields]);
+
   const handleDeleteTasks = useCallback(() => {
     dispatch(
       openModal('DeleteConfirmation', {
@@ -777,7 +826,9 @@ const BulkEditOptionsBar = ({
       numberOfSelectedItems={allSelectedTasksLength}
       isDisabled={isDisabled}
       onClose={onClose}
-      includedWorkflow={!!allSelectedTasks.find((t) => t?.itemType === 'BUNDLE')}
+      includedWorkflow={
+        !!allSelectedTasks.find((t) => t?.itemType === 'BUNDLE')
+      }
     >
       <>
         {mergedConfig[BulkEditOptionsConfig.DUPLICATE_OPTION] && (
@@ -832,6 +883,19 @@ const BulkEditOptionsBar = ({
             <BulkEditOption
               iconComponent={CompleteIcon}
               title="Complete"
+              isDisabled={isDisabled}
+            />
+          </Button>
+        )}
+        {mergedConfig[BulkEditOptionsConfig.EDIT_CUSTOM_FIELDS_OPTION] && (
+          <Button
+            type="button"
+            onClick={handleEditFields}
+            disabled={isDisabled}
+          >
+            <BulkEditOption
+              iconComponent={AppRegistrationIcon}
+              title="Edit Fields"
               isDisabled={isDisabled}
             />
           </Button>

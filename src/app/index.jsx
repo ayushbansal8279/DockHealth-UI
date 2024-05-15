@@ -1,25 +1,24 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-// import Symbol_observable from 'symbol-observable';
 /* eslint-disable global-require */
-// import MomentUtils from '@date-io/moment';
-import { ThemeProvider as MuiThemeProvider } from '@mui/material/styles';
-import { LocalizationProvider as MuiPickersUtilsProvider } from '@mui/x-date-pickers';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { ThemeProvider } from '@mui/material/styles';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { HashRouter } from 'react-router-dom';
 import moment from 'moment';
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import ReactGA from 'react-ga';
 import { Provider } from 'react-redux';
-import { getTheme } from 'styles/theme';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { IntercomProvider } from 'react-use-intercom';
+import { getTheme } from 'styles/theme';
 import configureStore from './ConfigureStore';
 import ErrorBoundary from './ErrorBoundary';
 // import flags, { FlagsProvider } from './helpers/flags';
 import Routes from './routing/routes';
 import App from './views/App';
+import './register/register-mui-license-premium';
 
 if (import.meta.env.NODE_ENV === 'development') {
   const whyDidYouRender = require('@welldone-software/why-did-you-render');
@@ -85,14 +84,15 @@ const queryClient = new QueryClient({
       staleTime: Number.POSITIVE_INFINITY,
       refetchOnMount: false,
       refetchOnWindowFocus: false,
+      retry: false,
     },
   },
 });
 
 const Index = () => (
   <QueryClientProvider client={queryClient}>
-    <MuiThemeProvider theme={getTheme()}>
-      <MuiPickersUtilsProvider dateAdapter={AdapterDateFns}>
+    <ThemeProvider theme={getTheme()}>
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
         {/* <FlagsProvider flags={flags}> */}
         <Provider store={store}>
           <ErrorBoundary>
@@ -109,8 +109,8 @@ const Index = () => (
           </ErrorBoundary>
         </Provider>
         {/* </FlagsProvider> */}
-      </MuiPickersUtilsProvider>
-    </MuiThemeProvider>
+      </LocalizationProvider>
+    </ThemeProvider>
   </QueryClientProvider>
 );
 

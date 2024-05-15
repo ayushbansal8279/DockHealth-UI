@@ -1,7 +1,7 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 /* eslint-disable import/extensions */
 import moment from 'moment';
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import pluck from 'ramda/src/pluck';
 import Circle from 'img/circle.svg';
@@ -48,6 +48,7 @@ import {
   SINGLE_TASK_RESTRICTIONS_OPTIONS,
   // SINGLE_TASK_RESTRICTIONS_PROFILES,
 } from 'restrictions/task-restrictions';
+import { createMentionsFromTokenizedDescription } from 'components/common/RichTextEditor/CreateMentions';
 import {
   Container,
   IconsSection,
@@ -78,9 +79,9 @@ const DrawerTask = (props) => {
   const {
     taskIdentifier,
     status,
-    description,
-    // tokenizedDescription,
-    // taskMentions,
+    // description,
+    tokenizedDescription,
+    taskMentions,
     assignedToUsers,
     dueDate,
     comments,
@@ -96,7 +97,18 @@ const DrawerTask = (props) => {
     dependencyTasksCount,
   } = task;
 
-  const isCompleted = status === 'COMPLETE';
+  const [isCompleted, setIsCompleted] = useState(task?.status === 'COMPLETE');
+
+  useEffect(() => {
+    if (task?.status === 'COMPLETE') {
+      setIsCompleted(true);
+    }
+  }, [task]);
+
+  const updateStatus = () => {
+    setIsCompleted(!isCompleted);
+  };
+
   const isTemplateTask = checkIfTemplateTask(task);
 
   // const [descriptionState, setDescriptionState] = useMentionsEditorState(
@@ -182,6 +194,7 @@ const DrawerTask = (props) => {
           isDependencyEmptyOrCompleted &&
           taskListRestrictions?.completeTask !== DISABLED
             ? (event) => {
+                updateStatus();
                 event.stopPropagation();
                 (isCompleted
                   ? onTaskDrawerSubtaskReActivated
@@ -197,7 +210,13 @@ const DrawerTask = (props) => {
         }}
       >
         <Description isCrossedOut={isCompleted}>
-          <span>{description}</span>
+          {/* {tokenizedDescription} */}
+          <div>
+            {createMentionsFromTokenizedDescription(
+              tokenizedDescription,
+              taskMentions,
+            )}
+          </div>
         </Description>
       </DescriptionContainer>
       <IconsSection>
@@ -307,6 +326,7 @@ const DrawerTask = (props) => {
               selectedMembers={assignedToUsers}
               onSelect={handleReassignSubtask}
               onError={closePopover}
+              closeModel={closePopover}
               enableLazyLoading={
                 taskList?.listType === 'PUBLIC' ||
                 taskList?.listType === 'TEMPLATE'

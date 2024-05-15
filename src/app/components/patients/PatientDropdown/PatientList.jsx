@@ -30,6 +30,7 @@ import {
   UnassignRowContainer,
   UnassignRow,
   RefineSearchRow,
+  SearchPatientsResultList,
 } from './styled';
 
 const MAX_PATIENT_RESULTS = 200;
@@ -320,12 +321,15 @@ const PatientList = ({
           )}
           <Row key="header-label" readOnly>
             <PatientSelectItem
-              patient={{ name: 'Name', dob: 'Dob', mrn: 'Mrn' }}
+              patient={{ name: 'Name', dob: 'DOB', mrn: 'MRN' }}
+              header
             />
           </Row>
-          {!isLoadingPatients &&
-            patients?.length !== 0 &&
-            patients.map(renderRow)}
+          <SearchPatientsResultList>
+            {!isLoadingPatients &&
+              patients?.length !== 0 &&
+              patients.map(renderRow)}
+          </SearchPatientsResultList>
         </ListContainer>
       )}
     </>

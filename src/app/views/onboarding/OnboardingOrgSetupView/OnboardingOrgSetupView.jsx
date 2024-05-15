@@ -1,19 +1,29 @@
 import React from 'react';
 import OrganizationForm from 'views/onboarding/OrganizationForm/OrganizationForm';
 import { useHistory } from 'react-router-dom';
-import { updateOrganization } from 'actions/organization-actions';
 import { useDispatch } from 'react-redux';
+import {
+  createOrganization,
+  selectCurrentOrganizationWithRedirection,
+} from '@/app/api/organization-api';
 
 const onSubmit =
-  ({ dispatch, history }) =>
-  ({ organizationName, organizationInitials, organizationThemeColor }) => {
-    updateOrganization({
+  ({ history, dispatch }) =>
+  async ({
+    organizationName,
+    organizationInitials,
+    organizationThemeColor,
+  }) => {
+    const { organizationIdentifier } = await createOrganization({
       organizationName,
       organizationInitials,
       organizationProfileColor: organizationThemeColor,
-    })(dispatch).then(() => {
-      history.push('/onboarding/customer-preference');
     });
+
+    await selectCurrentOrganizationWithRedirection(
+      organizationIdentifier,
+      '/#/onboarding/customer-preference',
+    );
   };
 
 const OnboardingOrgSetupView = () => {

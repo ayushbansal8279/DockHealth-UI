@@ -4,9 +4,14 @@ export const DashboardTasksTab = {
   MY_TASKS: 'MyTasks',
   SHARED_TASKS: 'SharedTasks',
   ALL_TASKS: 'AllTasks',
+  UPCOMING: 'Upcoming',
+  OVERDUE: 'Overdue',
+  COMPLETED: 'Completed',
 };
 
 export const DashboardGroup = {
+  UPCOMING: 'UPCOMING',
+  ORG_UPCOMING: 'ORG_UPCOMING',
   TODAY: 'TODAY',
   ORG_TODAY: 'ORG_TODAY',
   NEXT_7_DAYS: 'NEXT_7_DAYS',
@@ -60,7 +65,3 @@ export const getGroupByDueDate = (dueDate, tabName) => {
       : DashboardGroup.ORG_ALL_OTHER;
   if (date.isBefore(new Date(), 'day')) return DashboardGroup.OVERDUE;
 };
-
-export function getDashboardFiltersStorageKey(tabName) {
-  return `filter-dashboard-${tabName}`;
-}

@@ -78,6 +78,9 @@ import EditContactModal from './components/EditContactModal/EditContactModal';
 import EditPatientModal from './components/EditPatientModal/EditPatientModal';
 import AnchorDateChangeConfirmationModal from './components/AnchorDateChangeConfirmationModal/AnchorDateChangeConfirmationModal';
 import DeleteArchivePatientModal from './components/DeleteArchivePatientModal/DeleteArchivePatientModal';
+import DeleteOrganizationModal from './components/DeleteOrganizationModal';
+import PatientCustomFieldsBulkEditModal from './components/PatientCustomFieldsBulkEditModal';
+import TaskListCustomFieldsBulkEditModal from './components/TaskListCustomFieldsBulkEditModal';
 
 const MODAL_MAP = {
   CompleteAllTasks: CompleteAllTasksModal,
@@ -95,6 +98,8 @@ const MODAL_MAP = {
   Video: VideoModal,
   LeaveList: LeaveListModal,
   LeaveOrganization: LeaveOrganizationModal,
+  DeleteOrganization: DeleteOrganizationModal,
+  PatientCustomFieldsBulkEdit: PatientCustomFieldsBulkEditModal,
   EditOrganization: EditOrganizationModal,
   InviteToList: InviteToListModal,
   ChangePassword: ChangePasswordModal,
@@ -138,6 +143,7 @@ const MODAL_MAP = {
   EditCustomField: EditCustomFieldModal,
   DeleteConfirmation: DeleteConfirmationModal,
   DeleteTaskConfirmation: DeleteTaskConfirmationModal,
+  TaskListCustomFieldsBulkEdit: TaskListCustomFieldsBulkEditModal,
   EditUserGroup: EditUserGroupModal,
   AddUserToGroup: AddUserToGroupModal,
   Information: InformationModal,

@@ -4,10 +4,11 @@ import { Switch, Redirect, useRouteMatch } from 'react-router-dom';
 
 import { RouteWrapper } from 'routing/components';
 import { AUTH_BASE_STATES } from 'reducers/auth-base-reducer';
-import TemplateAuthBaseDailyHubContent from './TemplateAuthBase.DailyHubContent';
-import TemplateAuthBaseApproveDisapproveContent from './TemplateAuthBase.ApproveDisapproveContent';
-import TemplateAuthBaseDefaultContent from './TemplateAuthBase.DefaultContent';
-import TemplateAuthBaseRegainControlContent from './TemplateAuthBase.RegainControlContent';
+// import TemplateAuthBaseDailyHubContent from './TemplateAuthBase.DailyHubContent';
+// import TemplateAuthBaseApproveDisapproveContent from './TemplateAuthBase.ApproveDisapproveContent';
+// import TemplateAuthBaseDefaultContent from './TemplateAuthBase.DefaultContent';
+// import TemplateAuthBaseRegainControlContent from './TemplateAuthBase.RegainControlContent';
+import TemplateAuthBaseSignUpContent from './TemplateAuthBas.SignUpContent';
 import {
   LeftSideContentContainer,
   LeftSideMainContainer,
@@ -16,23 +17,31 @@ import {
   RightSideMainContainer,
   RightSideMaxWidthContainer,
 } from './TemplateAuthBase.styled';
+import TemplateAuthBaseLoginContent from './TemplateAuthBase.Login';
 
 const getLeftSideContent = ({ currentAuthBaseState }) => {
   switch (currentAuthBaseState) {
-    case AUTH_BASE_STATES.DEFAULT: {
-      return <TemplateAuthBaseDefaultContent />;
-    }
-    case AUTH_BASE_STATES.DAILY_HUB: {
-      return <TemplateAuthBaseDailyHubContent />;
-    }
-    case AUTH_BASE_STATES.REGAIN_CONTROL: {
-      return <TemplateAuthBaseRegainControlContent />;
-    }
-    case AUTH_BASE_STATES.APPROVE_DISAPPROVE: {
-      return <TemplateAuthBaseApproveDisapproveContent />;
+    // case AUTH_BASE_STATES.DEFAULT: {
+    //   return <TemplateAuthBaseDefaultContent />;
+    // }
+    // case AUTH_BASE_STATES.DAILY_HUB: {
+    //   return <TemplateAuthBaseDailyHubContent />;
+    // }
+    // case AUTH_BASE_STATES.REGAIN_CONTROL: {
+    //   return <TemplateAuthBaseRegainControlContent />;
+    // }
+    // case AUTH_BASE_STATES.APPROVE_DISAPPROVE: {
+    //   return <TemplateAuthBaseApproveDisapproveContent />;
+    // }
+    // case AUTH_BASE_STATES.LOGIN: {
+    //   return <TemplateAuthBaseLoginContent />;
+    // }
+    case AUTH_BASE_STATES.SIGN_UP: {
+      return <TemplateAuthBaseSignUpContent />;
     }
     default: {
-      return null;
+      return <TemplateAuthBaseLoginContent />;
+      // return null;
     }
   }
 };

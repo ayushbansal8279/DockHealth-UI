@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { fontSizes, fontWeights } from 'styles/font';
-import palette from 'styles/palette';
+import palette, { typography } from 'styles/palette';
 
 export const ContextMenu = styled.div`
   position: absolute;
@@ -23,7 +23,7 @@ export const ElementsSidebar = styled.div`
   padding: 32px 16px;
   box-shadow: 0px 2.13948px 6.41845px rgba(0, 0, 0, 0.25);
   background: ${palette.white};
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Outfit', sans-serif;
   font-size: ${fontSizes.smallPlus};
   color: ${palette.mediumGrey};
   text-align: left;
@@ -105,7 +105,7 @@ export const BuilderHeaderText = styled.p`
   display: flex;
   align-items: center;
   margin-bottom: 0;
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: inherit;
   font-size: ${fontSizes.large};
   color: ${({ color }) => color || palette.brightBlue};
 

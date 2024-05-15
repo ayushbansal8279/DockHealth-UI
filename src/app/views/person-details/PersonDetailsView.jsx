@@ -9,7 +9,6 @@ import {
   userProfileSelector,
   selectedUserOrganizationSelector,
 } from 'selectors/user-selectors';
-import { onSearchChanged } from 'helpers/ga-event-helper';
 import { TaskListTabName } from 'helpers/tasklist-helpers';
 import {
   TaskItemColumn,
@@ -22,7 +21,6 @@ import TaskDrawer from 'components/task-drawer/TaskDrawer/TaskDrawer';
 import { organizationCustomFieldsSelector } from 'selectors/organization-selectors';
 import LayoutHeader from 'components/template/LayoutHeader/LayoutHeader';
 import { updateCurrentUserPreferences } from 'actions/user-actions';
-import HeaderSearch from 'components/template/HeaderSearch/HeaderSearch';
 import { TASK_DISAPPEAR_DELAY } from 'helpers/task-update-helper';
 import { ColumnsConfigProvider } from 'context-api/columns-config-context';
 import HorizontallyScrolledViewLayout from 'components/template/HorizontallyScrolledViewLayout/HorizontallyScrolledViewLayout';
@@ -31,7 +29,6 @@ import OpenedTasksView from './PersonDetailsOpenedTasksContainer/PersonDetailsOp
 import CompletedTasksView from './PersonDetailsCompletedTasksContainer/PersonDetailsCompletedTasks';
 import PersonInfoPanel from './PersonInfoPanel/PersonInfoPanel';
 import UserTasksToolbar from './UserTasksToolbar/UserTasksToolbar';
-import UserDetailsFilters from './UserDetailsFilters/UserDetailsFilters';
 import { TaskViewContainer } from './styled';
 
 const PERSON_VIEW_COLUMNS_CONFIG = {
@@ -85,11 +82,6 @@ const PersonDetailsView = () => {
   const handleTaskDelete = () => {
     dispatch(PersonDetailsActions.getUserTaskFilterOptions());
     dispatch(PersonDetailsActions.getUserTaskCounters());
-  };
-
-  const handleSearchValueChange = (newValue) => {
-    setSearchValue(newValue);
-    onSearchChanged();
   };
 
   const invokeToggleCompleteAction = (task) => {
@@ -164,13 +156,6 @@ const PersonDetailsView = () => {
         header={
           <LayoutHeader>
             <LayoutHeader.Title title="People" />
-            <LayoutHeader.Spacer />
-            <HeaderSearch
-              value={searchValue}
-              onChange={handleSearchValueChange}
-            />
-            <LayoutHeader.Spacer />
-            <UserDetailsFilters />
           </LayoutHeader>
         }
       >
@@ -179,7 +164,10 @@ const PersonDetailsView = () => {
         </StickyContainer>
         <TaskViewContainer>
           <StickyContainer>
-            <UserTasksToolbar />
+            <UserTasksToolbar
+              searchValue={searchValue}
+              setSearchValue={setSearchValue}
+            />
           </StickyContainer>
           {selectedTab === TaskListTabName.COMPLETE ? (
             <CompletedTasksView

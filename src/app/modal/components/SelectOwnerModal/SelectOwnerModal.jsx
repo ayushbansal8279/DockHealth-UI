@@ -16,6 +16,7 @@ import {
   ModalIconContainer,
   ModalDescriptionContainer,
   ButtonsContainer,
+  ModalHeaderName,
 } from '../styled';
 import {
   UsersContainer,
@@ -26,6 +27,7 @@ import {
   SearchUserInput,
   UserNotFound,
 } from './styled';
+import { CancelButton, ConfirmButton } from '../ModalButton/ModalButtons';
 
 const SelectOwnerModal = ({
   closeModal,
@@ -55,16 +57,12 @@ const SelectOwnerModal = ({
       <ModalWrapper>
         <ModalIconContainer>
           <ModalMainIcon src={folderUser} alt="folder_user" />
-          <Typography color="textPrimary" variant="h2">
-            SELECTING AN OWNER
-          </Typography>
+          <ModalHeaderName>Selecting An Owner</ModalHeaderName>
         </ModalIconContainer>
         <ModalDescriptionContainer>
-          <Typography variant="body1">
-            At this time, you don’t have any organizational owners. You must
-            have one person assigned as an owner. Who would you like to assign
-            as the organizational owner?
-          </Typography>
+          At this time, you don’t have any organizational owners. You must have
+          one person assigned as an owner. Who would you like to assign as the
+          organizational owner?
         </ModalDescriptionContainer>
         <UsersContainer>
           <SearchUserInputContainer>
@@ -98,20 +96,12 @@ const SelectOwnerModal = ({
           </UsersList>
         </UsersContainer>
         <ButtonsContainer>
-          <Button
-            fullWidth
-            variant="secondary-red"
-            size="small"
-            onClick={closeModal}
-          >
-            CANCEL
-          </Button>
+          <CancelButton style={{ width: '180px' }} onClick={closeModal}>
+            Cancel
+          </CancelButton>
           <Spacing horizontal={4} />
-          <Button
-            fullWidth
-            variant="primary-red"
-            size="small"
-            disabled={isEmpty(selectedUser)}
+          <ConfirmButton
+            style={{ width: '180px' }}
             onClick={() => {
               changeUserToOwner(selectedUser?.userIdentifier).then(() => {
                 confirm();
@@ -124,8 +114,8 @@ const SelectOwnerModal = ({
               });
             }}
           >
-            ASSIGN AS OWNER
-          </Button>
+            Assign As Owner
+          </ConfirmButton>
         </ButtonsContainer>
       </ModalWrapper>
     </MuiThemeProvider>

@@ -68,13 +68,14 @@ const TaskTemplateName = ({
               textToHighlight={nameInputValue}
             />
           )}
-          {templateGroup?.sourceTaskBundleTemplate && (
+          {/* This line will be required when we implement this on Tooltip in Future */}
+          {/* {templateGroup?.linkedSourceTaskBundle && (
             <TaskTemplateDescriptionIndicators>
               <TaskTemplateContext>
-                <span>{templateGroup?.sourceTaskBundleTemplate?.name}</span>
+                <span>{templateGroup?.linkedSourceTaskBundle?.name}</span>
               </TaskTemplateContext>
             </TaskTemplateDescriptionIndicators>
-          )}
+          )} */}
         </>
       </NameContainer>
       <Popper

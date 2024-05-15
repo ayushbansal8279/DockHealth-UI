@@ -1,18 +1,24 @@
 import styled from 'styled-components';
 import { fontSizes, fontWeights } from 'styles/font';
+import palette from '@/app/styles/palette';
 
 export const LabeledCollapseHeaderButton = styled.button`
   display: flex;
-  align-items: center;
-  width: 100%;
+  align-items: flex-end;
+  margin-top: ${({coreTask}) => coreTask ? '' : '-35px'};
 `;
 
 export const LabeledCollapseItemName = styled.p`
-  display: block;
-  flex: 1;
-  margin: 0;
+  color: ${palette.shadowBlue};
+  text-align: right;
+  font-family: Outfit;
   font-size: ${fontSizes.smallPlus};
-  font-weight: ${fontWeights.regularPlus};
-  font-family: 'Montserrat', sans-serif;
-  text-align: left;
+  font-style: normal;
+  font-weight: ${fontWeights.light};
+  line-height: 30px;
+  height: 10px;
+
+  &:hover{
+    color: ${palette.lighterCyanBlue};
+  }
 `;

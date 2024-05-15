@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { fontSizes, fontWeights } from 'styles/font';
-import palette from 'styles/palette';
+import palette, { typography } from 'styles/palette';
 import spacing from 'styles/spacing';
 
 export const ButtonContainer = styled.div`
@@ -20,7 +20,7 @@ export const TextContainer = styled.p`
 
 export const PopoverContainer = styled.div`
   padding: ${spacing.regular};
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: inherit;
   font-size: ${fontSizes.regular};
   font-weight: ${fontWeights.regular};
   background-color: ${palette.white};

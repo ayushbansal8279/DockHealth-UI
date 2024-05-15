@@ -1,12 +1,12 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import React, { useCallback, useMemo } from 'react';
 import { Box, Grid, Typography, useMediaQuery } from '@mui/material';
-import { checkIfBundleTask } from 'helpers/task-helpers';
+import { checkIfBundleTask, isDueDateOverdue } from 'helpers/task-helpers';
 import Spacing from 'components/common/Spacing';
 import RichTextEditor from 'components/common/RichTextEditor/RichTextEditor';
 import TaskDescription from 'components/task-drawer/TaskDescription/TaskDescription';
 import { DrawerFieldEnum } from 'helpers/task-drawer-helpers';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import {
   userProfileSelector,
   selectedUserOrganizationSelector,
@@ -18,11 +18,11 @@ import {
 } from 'restrictions/task-restrictions';
 import { isMemberAdmin } from 'helpers/list-members-helper';
 import { checkIfUserIsOrganizationAdmin } from 'helpers/user-helper';
-import StartDateSection from 'components/task-drawer/StartDateSection/StartDateSection';
-// import WatchersPopover from 'components/task-drawer/TaskDrawerContent/WatchersPopover/WatchersPopover';
 import { createTaskListPath } from 'routing/helpers/paths';
 import { useHistory } from 'react-router-dom';
 import { currentTaskListSelector } from 'selectors/task-list-selectors';
+import { addComment } from 'actions/task-actions';
+import StickyAddComment from 'components/drawer-common/AddComment/StickyAddComment';
 import AttachmentsSection from '../AttachmentsSection/AttachmentsSection';
 import CommentSection from '../CommentSection/CommentSection';
 import LabelsSection from '../LabelsSection/LabelsSection';
@@ -31,7 +31,6 @@ import TopSection from '../TopSection/TopSection';
 import HistorySection from '../HistorySection/HistorySection';
 import StatusSection from '../StatusSection/StatusSection';
 import TaskDrawerEmailBodyContainer from '../EmailBody/EmailBody';
-import ReminderSection from '../ReminderSection/ReminderSection';
 import PatientSection from '../PatientSection/PatientSection';
 import initializeTaskDrawerHooks from './hooks';
 import AssignedToSection from '../AssignedToSection/AssignedToSection';
@@ -40,6 +39,7 @@ import CustomFieldsSection from '../CustomFieldsSection/CustomFieldsSection';
 import DependenciesSection from '../DependenciesSection/DependenciesSection';
 import SubtasksSection from '../SubtasksSection/SubtasksSection';
 import TaskDetails from '../TaskDetails/TaskDetails';
+
 import {
   TaskDrawerContainer,
   TaskDrawerBackground,
@@ -55,8 +55,8 @@ import {
   ReferenceParentButton,
   ReferenceParentName,
   FiledInListName,
-  // SubscriptionBadge,
 } from './styled';
+import ReminderSection from '../ReminderSection/ReminderSection';
 
 const { DISABLED, READ_ONLY } = SINGLE_TASK_RESTRICTIONS_OPTIONS;
 
@@ -110,14 +110,13 @@ const TaskDrawerContent = (props) => {
   }, [clearFormStates, handleCloseTaskDrawer]);
 
   const history = useHistory();
+  const dispatch = useDispatch();
 
   const { orgUserRole } = useSelector(userProfileSelector);
   const currentOrganization = useSelector(selectedUserOrganizationSelector);
   const taskAttachmentsDisabled =
     currentOrganization?.disabledFeatures?.includes('TASK_ATTACHMENTS') ||
     false;
-  const taskStartDateDisabled =
-    currentOrganization?.disabledFeatures?.includes('TASK_START_DATE') || false;
   const subTasksDisabled =
     currentOrganization?.disabledFeatures?.includes('TASK_SUBTASKS') || false;
 
@@ -147,6 +146,10 @@ const TaskDrawerContent = (props) => {
     const isOwnerOrAdmin = checkIfUserIsOrganizationAdmin(currentUser);
     return isMemberAdmin(currentUserMember) || isOwnerOrAdmin;
   }, [currentUser, currentTasklist]);
+
+  const { dueDate } = selectedTask || {};
+  const isDueDateDisabled = !dueDate;
+  const isTaskDueDateOverdue = isDueDateOverdue(selectedTask);
 
   const isCreator = useMemo(() => {
     return (
@@ -266,17 +269,6 @@ const TaskDrawerContent = (props) => {
     taskListRestrictions.completeTask = DISABLED;
   }
 
-  // const watchersReference = useRef(null);
-  // const [isSubscriptionListOpen, setSubscriptionListOpen] = useState(false);
-
-  // const handleSubscriptionCountClick = () => {
-  //   setSubscriptionListOpen(!isSubscriptionListOpen);
-  // };
-
-  // const handleSubscriptionListClose = () => {
-  //   setSubscriptionListOpen(false);
-  // };
-
   const taskDeleteDisabled = useMemo(() => {
     const disabledSettingItem =
       selectedOrganization?.themeSettings?.find(
@@ -292,6 +284,15 @@ const TaskDrawerContent = (props) => {
   }, [selectedOrganization, isListAdmin, isCreator]);
 
   const isMobile = useMediaQuery((theme) => theme.breakpoints.down('sm'));
+
+  const boundAddComment = useCallback(
+    (comment) =>
+      addComment(selectedTask, {
+        comment,
+        creator: currentUser,
+      })(dispatch),
+    [currentUser, dispatch, selectedTask],
+  );
 
   if (taskDeleteDisabled) {
     if (!restrictions) {
@@ -372,16 +373,6 @@ const TaskDrawerContent = (props) => {
               </Grid>
             )}
           </Grid>
-
-          {/* <SubscriptionBadge>
-            <Chip
-              label={12}
-              color="primary"
-              onClick={handleSubscriptionCountClick}
-            />{' '}
-            <span ref={watchersReference}>Watchers</span>{' '}
-            <a type="button">Unwatch</a>
-          </SubscriptionBadge> */}
         </Box>
         {isSubtask && (
           <Grid item xs={12} style={styleFullRowThin(isMobile)}>
@@ -427,13 +418,20 @@ const TaskDrawerContent = (props) => {
             <TaskDrawerEmailBodyContainer />
           </Grid>
         )}
-        <Grid item xs={12} style={styleFullRow(isMobile)}>
+        <Grid item xs={12} mb={3} style={styleFullRow(isMobile)}>
           <TaskDetails
             readOnly={restrictions?.description === READ_ONLY}
             disableMentions={restrictMentions}
           />
         </Grid>
-        <Grid item xs={12} md={6} style={styleLeftColumn(isMobile)}>
+        <Grid item xs={12} ml={3} mb={1} style={styleRightColumn(isMobile)}>
+          <AssignedToSection
+            onSave={handleUpdateTask}
+            disabled={restrictions?.assigment === READ_ONLY}
+            selectedTask={selectedTask}
+          />
+        </Grid>
+        <Grid item xs={12} mb={1} style={styleLeftColumn(isMobile)}>
           <PatientSection
             selectedPatient={
               selectedTask?.patient || selectedParentTask?.patient || null
@@ -451,29 +449,7 @@ const TaskDrawerContent = (props) => {
             quickAddPatientEnabled={quickAddPatientEnabled}
           />
         </Grid>
-        <Grid item xs={12} md={6} style={styleRightColumn(isMobile)}>
-          <AssignedToSection
-            onSave={handleUpdateTask}
-            disabled={restrictions?.assigment === READ_ONLY}
-            selectedTask={selectedTask}
-          />
-        </Grid>
-        {!taskStartDateDisabled && (
-          <Grid item xs={12} md={6} style={styleLeftColumn(isMobile)}>
-            <div>
-              <StartDateSection
-                disabled={restrictions?.startDate === DISABLED}
-                selectedTask={selectedTask}
-              />
-            </div>
-          </Grid>
-        )}
-        {!taskStartDateDisabled && (
-          <Grid item xs={12} md={6} style={styleRightColumn(isMobile)}>
-            <div />
-          </Grid>
-        )}
-        <Grid item xs={12} md={6} style={styleLeftColumn(isMobile)}>
+        <Grid item xs={12} style={styleLeftColumn(isMobile)}>
           <div>
             <DueDateSection
               disabled={restrictions?.dueDate === DISABLED}
@@ -481,23 +457,25 @@ const TaskDrawerContent = (props) => {
             />
           </div>
         </Grid>
-        <Grid item xs={12} md={6} style={styleRightColumn(isMobile)}>
-          {!isTemplateTask && (
-            <ReminderSection
-              onSave={handleUpdateTask}
-              disabled={restrictions?.reminder === DISABLED}
-              selectedTask={selectedTask}
-            />
-          )}
-        </Grid>
-        <Grid item xs={12} md={6} style={styleLeftColumn(isMobile)}>
+        {!isTaskDueDateOverdue && !isDueDateDisabled && (
+          <Grid item xs={12} style={styleRightColumn(isMobile)}>
+            {!isTemplateTask && (
+              <ReminderSection
+                onSave={handleUpdateTask}
+                disabled={restrictions?.reminder === DISABLED}
+                selectedTask={selectedTask}
+              />
+            )}
+          </Grid>
+        )}
+        <Grid item xs={12} style={styleLeftColumn(isMobile)}>
           <PrioritySection
             onTaskUpdate={onTaskUpdate}
             disabled={restrictions?.priority === DISABLED}
             selectedTask={selectedTask}
           />
         </Grid>
-        <Grid item xs={12} md={6} style={styleRightColumn(isMobile)}>
+        <Grid item xs={12} ml={3} style={styleRightColumn(isMobile)}>
           <div>
             <StatusSection
               onTaskUpdate={onTaskUpdate}
@@ -523,15 +501,18 @@ const TaskDrawerContent = (props) => {
               </div>
             </Grid>
           )}
+        <TaskDrawerDivider />
         {!taskAttachmentsDisabled && (
           <Grid item xs={12} style={styleFullRow(isMobile)}>
             <AttachmentsSection
               restrictions={restrictions?.attachments}
               disabled={restrictions?.attachments === DISABLED}
               selectedTask={selectedTask}
+              taskDrawerFocusField={taskDrawerFocusField}
             />
           </Grid>
         )}
+        <TaskDrawerDivider />
         <Grid item xs={12} style={styleCommentRow}>
           <div>
             <CommentSection selectedTask={selectedTask} />
@@ -583,11 +564,10 @@ const TaskDrawerContent = (props) => {
         </Grid>
       )}
       {taskDrawerOpen && <TaskDrawerBackground onClick={closeTaskDrawer} />}
-      {/* <WatchersPopover
-        open={isSubscriptionListOpen}
-        anchorEl={watchersReference.current}
-        onClose={handleSubscriptionListClose}
-      /> */}
+      <StickyAddComment
+        autoFocus={taskDrawerFocusField === DrawerFieldEnum.COMMENT}
+        onAdd={boundAddComment}
+      />
     </TaskDrawerContainer>
   );
 };

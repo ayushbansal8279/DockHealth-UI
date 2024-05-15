@@ -8,6 +8,7 @@ import {
   updateNestedTask,
   updateSubtasksInTaskWithCallback,
 } from 'helpers/task-helpers';
+import { addArr, removeArr } from '../helpers/array-helpers';
 
 const TaskBaseReducer = (state, action, updateStateCallback) => {
   switch (action.type) {
@@ -404,78 +405,63 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
     }
 
     case ActionTypes.UPDATE_TASKS: {
-      const {
-        tasksToUpdate,
-        fields: dataToUpdate,
-        // filters,
-        // searchValue,
-      } = action;
-      // const updateTasksFromAction = (task) => {
-      //   let updatedTask = task;
-
-      //   if (tasksToUpdate.includes(task.taskIdentifier)) {
-      //     updatedTask = {
-      //       ...updatedTask,
-      //       ...dataToUpdate,
-      //     };
-
-      //     if (dataToUpdate.patient) {
-      //       updatedTask = {
-      //         ...updatedTask,
-      //         subtasks: updatedTask.subtasks?.map((s) => ({
-      //           ...s,
-      //           patient: dataToUpdate.patient,
-      //         })),
-      //       };
-      //     }
-
-      //     if (dataToUpdate.status === TaskStatus.COMPLETE) {
-      //       updatedTask = {
-      //         ...updatedTask,
-      //         subtasks: updatedTask.subtasks?.map((s) => ({
-      //           ...s,
-      //           patient: dataToUpdate.status,
-      //         })),
-      //       };
-      //     }
-      //   }
-
-      //   updatedTask = {
-      //     ...updatedTask,
-      //     subtasks: updatedTask.subtasks?.map((s) =>
-      //       tasksToUpdate.includes(s.taskIdentifier)
-      //         ? { ...s, ...dataToUpdate }
-      //         : s,
-      //     ),
-      //   };
-
-      //   if (dataToUpdate.status && updatedTask.subtasks?.length > 0) {
-      //     updatedTask = {
-      //       ...updatedTask,
-      //       subTasksCompletedCount: updatedTask.subtasks?.filter(
-      //         ({ status }) => status === TaskStatus.COMPLETE,
-      //       ).length,
-      //     };
-      //   }
-
-      //   if (
-      //     (!isEmpty(filters) &&
-      //       !checkIfTaskMatchesFilters(updatedTask, filters)) ||
-      //     (searchValue && !checkIfTaskMatchesSearch(updatedTask, searchValue))
-      //   ) {
-      //     return null;
-      //   }
-
-      //   return updatedTask;
-      // };
-      // return updateStateCallback(state, updateTasksFromAction);
-
+      const { tasksToUpdate, fields: dataToUpdate } = action;
       let updatedState = state;
       for (const taskId of tasksToUpdate) {
         updatedState = updateStateCallback(updatedState, (tasksMap) => {
           return {
             ...tasksMap[taskId],
             ...dataToUpdate,
+          };
+        });
+      }
+      return updatedState;
+    }
+
+    case ActionTypes.DO_ASSIGNMENT: {
+      const { tasksToUpdate, users } = action;
+      let updatedState = state;
+      for (const taskId of tasksToUpdate) {
+        updatedState = updateStateCallback(updatedState, (tasksMap) => {
+          return {
+            ...tasksMap[taskId],
+            assignedToUsers: addArr(
+              tasksMap[taskId].assignedToUsers,
+              users,
+              'userIdentifier',
+            ),
+          };
+        });
+      }
+      return updatedState;
+    }
+
+    case ActionTypes.DO_UNASSIGNMENT: {
+      const { tasksToUpdate, users } = action;
+      let updatedState = state;
+      for (const taskId of tasksToUpdate) {
+        updatedState = updateStateCallback(updatedState, (tasksMap) => {
+          return {
+            ...tasksMap[taskId],
+            assignedToUsers: removeArr(
+              tasksMap[taskId].assignedToUsers,
+              users,
+              'userIdentifier',
+            ),
+          };
+        });
+      }
+      return updatedState;
+    }
+
+    case ActionTypes.DO_UNASSIGN_ALL: {
+      const { tasksToUpdate } = action;
+      let updatedState = state;
+      for (const taskId of tasksToUpdate) {
+        updatedState = updateStateCallback(updatedState, (tasksMap) => {
+          return {
+            ...tasksMap[taskId],
+            assignedToUsers: [],
           };
         });
       }
@@ -521,8 +507,25 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
     }
 
     case ActionTypes.ADD_SUBTASK: {
-      const { subtask } = action;
-      return updateStateCallback(state, subtask);
+      const { subtask, parentTaskIdentifier } = action;
+
+      const updateTaskFromAction = (tasksMap) => {
+        const task = tasksMap[parentTaskIdentifier];
+        if (!task) {
+          return null;
+        }
+
+        return {
+          ...task,
+          subtasks: task.subtasks?.map((s) => ({
+            ...s,
+            subtask,
+          })),
+          subTasksCount: task?.subTasksCount + 1,
+        };
+      };
+
+      return updateStateCallback(state, updateTaskFromAction);
     }
 
     case ActionTypes.UPDATE_WORKFLOW_STATUS_FOR_TASKS: {

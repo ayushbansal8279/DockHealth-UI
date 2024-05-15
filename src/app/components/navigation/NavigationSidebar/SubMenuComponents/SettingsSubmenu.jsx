@@ -8,6 +8,7 @@ import {
   USERS_SETTINGS_PATH,
   POFILES_SETTINGS_PATH,
   TASK_CUSTOMIZATIONS_PATH,
+  DEVELOPERS_PATH,
 } from 'routing/helpers/paths';
 import {
   userHasPatientCustomFieldsFeatureSelector,
@@ -43,6 +44,8 @@ const SettingsSubmenu = () => {
   const subscription = organization?.subscriptionDetails;
   const isInTrial = isPlanTrial(subscription);
 
+  const isApiAllowed = organization?.availableFeatures?.includes('API');
+
   return (
     <Box widht={1}>
       <Box m={2} />
@@ -54,9 +57,6 @@ const SettingsSubmenu = () => {
         <SubMenuLink to={POFILES_SETTINGS_PATH}>Profiles</SubMenuLink>
       )}
       <SubMenuLink to={USERS_SETTINGS_PATH}>Users</SubMenuLink>
-      {/* {(patientCustomFieldsAvailable || taskCustomFieldsAvailable) && (
-        <SubMenuLink to="/settings/custom-fields">Custom Fields</SubMenuLink>
-      )} */}
       {(sendEmailAvailable ||
         sendFaxAvailable ||
         sendSmsAvailable ||
@@ -68,6 +68,11 @@ const SettingsSubmenu = () => {
       )}
       {taskCustomFieldsAvailable && (
         <SubMenuLink to={TASK_CUSTOMIZATIONS_PATH}>Task Settings</SubMenuLink>
+      )}
+      {isApiAllowed && (
+        <AccessRestrictor allowedToRoles={[ADMIN, OWNER]}>
+          <SubMenuLink to={DEVELOPERS_PATH}>Developers</SubMenuLink>
+        </AccessRestrictor>
       )}
     </Box>
   );

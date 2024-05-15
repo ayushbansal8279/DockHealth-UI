@@ -58,9 +58,30 @@ export function applyTemplate({
   };
 }
 
-export function getTasksForWorkflow(workflowIdentifier) {
+export function getTasksForWorkflow(workflowIdentifier, status) {
   return {
     type: ActionTypes.GET_TASKS_FOR_WORKFLOW,
     workflowIdentifier,
+    status,
+  };
+}
+
+export function showhideCompletedTasks(workflowIdentifier, showFlag) {
+  return (dispatch) => {
+    dispatch({
+      type: ActionTypes.WORKFLOW_SHOWHIDE_COMPLETED_TASKS,
+      workflowIdentifier,
+      showFlag,
+    });
+  };
+}
+
+export function showhideIncompleteTasks(workflowIdentifier, showFlag) {
+  return (dispatch) => {
+    dispatch({
+      type: ActionTypes.WORKFLOW_SHOWHIDE_INCOMPLETE_TASKS,
+      workflowIdentifier,
+      showFlag,
+    });
   };
 }

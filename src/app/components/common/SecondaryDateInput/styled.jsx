@@ -3,7 +3,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import InputMask from 'react-input-mask';
-import palette from 'styles/palette';
+import palette, { typography } from 'styles/palette';
 import spacing from 'styles/spacing';
 
 export const DateInputMask = styled(
@@ -12,7 +12,7 @@ export const DateInputMask = styled(
   )),
 )`
   && {
-    width: 90px;
+    width: 100px;
     height: 27px;
     margin: 0;
     padding: ${spacing.tiny} ${spacing.small};
@@ -20,13 +20,13 @@ export const DateInputMask = styled(
     border-radius: 4px;
     border: none;
     box-shadow: none;
-    font-family: 'Roboto Condensed', sans-serif;
+    font-family: inherit;
     color: ${({ error }) => (error ? palette.error : palette.mediumGrey)};
     text-align: center;
 
     &::placeholder {
       font-size: 15px;
-      font-family: 'Roboto Condensed', sans-serif;
+      font-family: inherit;
     }
 
     &:focus,

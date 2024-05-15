@@ -38,7 +38,6 @@ import * as ActionTypes from 'actions/action-types';
 import { storeAsCurrentTask } from 'actions/task-actions';
 import { selectedFiltersInMegaFilterSelector } from 'selectors/mega-filter-selectors';
 import { taskIsSelectedSelector } from 'selectors/task-drawer-selectors';
-import { selectedUserOrganizationSelector } from 'selectors/user-selectors';
 import {
   listDetailsGroupsSelector,
   groupTasksSelector,
@@ -50,6 +49,11 @@ import {
   currentTaskListSelector,
   currentTaskListIdentifierSelector,
 } from 'selectors/task-list-selectors';
+import {
+  getFiltersStorageKey,
+  getQuickFilterStorageKey,
+} from 'helpers/mega-filter-helper';
+import sessionStorageHelper from 'helpers/session-storage-helper';
 import { calendarDateRangeSelector } from 'selectors/calendar-tasks-selectors';
 import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
@@ -57,7 +61,6 @@ import { openDrawer } from 'actions/task-drawer-actions';
 import { checkIfTaskMatchesFilters } from 'helpers/filters-helpers';
 import { locationParametersSelector } from 'location/selectors';
 import { TaskStatus } from 'helpers/task-helpers';
-import sessionStorageHelper from 'helpers/session-storage-helper';
 import { onSortChanged, onSearchChanged } from 'helpers/ga-event-helper';
 import { openModal } from 'modal/actions';
 import { applyTaskTemplate as applyTaskTemplateAction } from 'actions/list-details-actions';
@@ -149,16 +152,6 @@ function* getCurrentListTasks() {
     const searchTerm = yield select(searchTermSelector);
     const status = yield select(currentTaskListTasksStatusSelector);
 
-    const currentOrganization = yield select(selectedUserOrganizationSelector);
-    const taskGroupsToLoadItem =
-      currentOrganization?.themeSettings?.find(
-        ({ name }) => name === 'list.taskgroup.default.load.count',
-      ) || {};
-    const taskGroupsToLoad =
-      status === TaskStatus.COMPLETE
-        ? DEFAULT_TASK_GROUPS_TO_LOAD_COMPLETED
-        : taskGroupsToLoadItem?.value || DEFAULT_TASK_GROUPS_TO_LOAD;
-
     if (searchTerm) {
       const groupedTasks = yield call(
         ListDetailsApi.searchTasksByTaskList,
@@ -180,7 +173,7 @@ function* getCurrentListTasks() {
         groups = action.groups;
       }
       const groupsWithTasks = compose(filter((g) => g.metricValue > 0))(groups);
-      const groupsToGet = groupsWithTasks.slice(0, 5);
+      const groupsToGet = groupsWithTasks.slice(0);
 
       yield all(
         groupsToGet.map(({ taskGroupIdentifier }) =>
@@ -239,10 +232,9 @@ function* getCurrentTaskListFilterOptions() {
   }
 }
 
-function* refreshGroupedTasks({ payload }) {
+function* refreshGroupedTasks() {
   try {
-    const { withLoader = true } = payload || {};
-    yield put(ListDetailsActions.getCurrentListTasks(withLoader));
+    yield put(ListDetailsActions.getCurrentListTasks());
   } catch (error) {
     log(error);
   }
@@ -468,7 +460,10 @@ function* initializeListDetailsTableState() {
 
     if (taskListIdentifier && status) {
       const filters = sessionStorageHelper.getItem(
-        `filter-${taskListIdentifier}-${status}`,
+        getFiltersStorageKey(taskListIdentifier, status),
+      );
+      const selectedQuickFilter = sessionStorageHelper.getItem(
+        getQuickFilterStorageKey(taskListIdentifier, status),
       );
 
       if (filters) {
@@ -477,6 +472,7 @@ function* initializeListDetailsTableState() {
             filters,
             taskListIdentifier,
             status,
+            selectedQuickFilter,
           ),
         );
       }
@@ -590,7 +586,7 @@ function* sortListDetailsTasks({ payload }) {
 }
 
 function* filterListDetailsTasks({ payload }) {
-  const { filters } = payload;
+  const { filters, selectedQuickFilter } = payload;
 
   const taskListIdentifier = yield select(currentTaskListIdentifierSelector);
   const status = yield select(currentTaskListTasksStatusSelector);
@@ -600,11 +596,12 @@ function* filterListDetailsTasks({ payload }) {
       filters,
       taskListIdentifier,
       status,
+      selectedQuickFilter,
     ),
   );
 
   yield all([
-    put(ListDetailsActions.getCurrentTaskListFilterOptions()),
+    // put(ListDetailsActions.getCurrentTaskListFilterOptions()),
     put(ListDetailsActions.refreshListDetailsGroupedTasks()),
   ]);
 }

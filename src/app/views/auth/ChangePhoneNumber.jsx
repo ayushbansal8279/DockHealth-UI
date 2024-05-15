@@ -10,7 +10,7 @@ const ChangePhoneNumber = () => {
 
   useMount(() => {
     setAuthBaseState({
-      authBaseState: AUTH_BASE_STATES.DEFAULT,
+      authBaseState: AUTH_BASE_STATES.SIGN_UP,
     })(dispatch);
   });
 

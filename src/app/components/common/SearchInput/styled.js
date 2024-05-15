@@ -7,29 +7,62 @@ const END_PADDING = 65;
 const START_PADDING = 55;
 
 export const SearchInputWrapper = styled.div`
-  position: relative;
-  width: 100%;
-  font-family: 'Montserrat', sans-serif;
+  // position: relative;
+  // width: 100%;
+  // font-family: 'Outfit', sans-serif;
+
+  display: flex;
+  align-items: center;
+  padding: 8px;
+  flex-basis: ${({ wide, isPatientSearchInput }) =>
+    isPatientSearchInput ? (wide ? 780 : 190) : wide ? 580 : 106}px;
+  // flex-direction: row;
+  transition: flex-basis 0.25s ease-out;
+  border: 1px solid ${palette.zinc};
+  color: ${palette.coolGrey1};
+  height: 32px;
+  border-radius: 4px;
+  @media print {
+    display: none;
+  }
+  background: ${palette.white};
 `;
 
 export const StyledInput = styled.input`
-  width: 100%;
-  padding: ${spacing.regular} ${END_PADDING}px ${spacing.regular}
-    ${START_PADDING}px;
-  border: 1px solid ${palette.coolGrey3};
-  background: linear-gradient(180deg, #ffffff 0%, rgba(255, 255, 255, 0) 100%),
-    #ffffff;
-  font-size: ${fontSizes.regular};
-  font-weight: ${fontWeights.regularPlus};
-  color: ${palette.mediumGrey};
+  // width: 100%;
+  // padding: ${spacing.regular} ${END_PADDING}px ${spacing.regular}
+  //   ${START_PADDING}px;
+  // border: 1px solid ${palette.coolGrey3};
+  // background: linear-gradient(180deg, #ffffff 0%, rgba(255, 255, 255, 0) 100%),
+  //   #ffffff;
+  // font-size: ${fontSizes.regular};
+  // font-weight: ${fontWeights.regularPlus};
+  // color: ${palette.mediumGrey};
 
-  &:focus {
-    outline: none;
-  }
+  // &:focus {
+  //   outline: none;
+  // }
+
+  // &::placeholder {
+  //   color: ${palette.coolGrey2};
+  // }
+
+  flex: 1;
+  // padding: 2px 0;
+  color: ${palette.mediumGrey};
+  outline: none;
+  border: none;
+  font-family: Roboto;
+  font-weight: 400;
+  line-height: 18.75px;
+  font-size: ${fontSizes.regular};
+  width: 50px;
+  height: 19px;
+  background: transparent;
 
   &::placeholder {
     color: ${palette.coolGrey2};
-    text-transform: uppercase;
+    // text-transform: uppercase;
   }
 `;
 

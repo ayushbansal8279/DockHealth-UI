@@ -37,6 +37,7 @@ const PersonDetailsDrawer = ({ user, isOpenedDetails, closeDrawer }) => {
     firstName,
     lastName,
     email,
+    accountPhoneNumber,
     workPhoneNumber,
     department,
     credentials,
@@ -47,6 +48,7 @@ const PersonDetailsDrawer = ({ user, isOpenedDetails, closeDrawer }) => {
     firstName,
     lastName,
     email,
+    accountPhoneNumber,
     workPhoneNumber,
     department,
     credentials,
@@ -71,7 +73,7 @@ const PersonDetailsDrawer = ({ user, isOpenedDetails, closeDrawer }) => {
       dispatch(
         openModal('InterruptEdit', {
           isWorkflowModal: true,
-          profileTypeName: "USER",
+          profileTypeName: 'USER',
           confirm: () => {
             formReference.current.dispatchEvent(
               new Event('submit', { cancelable: true, bubbles: true }),
@@ -97,6 +99,12 @@ const PersonDetailsDrawer = ({ user, isOpenedDetails, closeDrawer }) => {
   }, [isOpenedDetails]);
 
   const handleFormSubmit = (data) => {
+    if (data.accountPhoneNumber === undefined) {
+      data.accountPhoneNumber = '';
+    }
+    if (data.workPhoneNumber === undefined) {
+      data.workPhoneNumber = '';
+    }
     unsetActive();
     dispatch(
       updateUser({
@@ -149,7 +157,8 @@ const PersonDetailsDrawer = ({ user, isOpenedDetails, closeDrawer }) => {
       >
         <StickyHeader>
           <TitleName>
-            ${firstName} ${lastName}${credentials ? `, ${credentials}` : ''}
+            {firstName} {lastName}
+            {credentials ? `, ${credentials}` : ''}
           </TitleName>
           <MoreActionsWrapper>
             {isAdminOrOwner && (

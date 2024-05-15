@@ -1,0 +1,23 @@
+.Item {
+  box-sizing: border-box;
+  display: flex;
+  font-size: 13px;
+  line-height: 40px;
+  height: 40px;
+  // temp hack
+  width: calc(7 * 180px);
+  //
+  margin-bottom: 4px;
+  background-color: white;
+  border: 1px solid rgb(229, 233, 242);
+  opacity: 0;
+  transition: opacity 375ms cubic-bezier(0.16, 1, 0.3, 1);
+
+  &:hover {
+    background-color: rgb(250, 250, 250);
+  }
+
+  &.visible {
+    opacity: 1;
+  }
+}

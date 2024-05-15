@@ -16,6 +16,7 @@ import StatusEditor from './StatusEditor';
 import PopoverBottomBar from '../PopoverBottomBar/PopoverBottomBar';
 import WorkflowStatusItemButton from '../WorkflowStatusItem/WorkflowStatusItemButton';
 import WorkflowStatusItemLoader from '../WorkflowStatusItem/WorkflowStatusItemLoader';
+import { Button } from '@mui/material';
 
 const TaskWorkflowStatus = ({
   selectedStatusIdentifier,
@@ -65,18 +66,27 @@ const TaskWorkflowStatus = ({
           <StatusList elementsCount={numberOfElements}>
             {!isFetching ? (
               <>
-                <WorkflowStatusItemButton
-                  selected={!selectedStatusIdentifier}
-                  onStatusClick={() => handleStatusSelect(null)}
+                <Button
+                  sx={{
+                    '&:hover': {
+                      bgcolor: 'transparent',
+                    },
+                    '& .MuiTouchRipple-root': {
+                      display: 'none',
+                    },
+                  }}
                   status={RESET_STATUS}
-                  colorBorder
-                />
+                  onClick={() => handleStatusSelect(null)}
+                >
+                  --
+                </Button>
                 {statuses?.map((status) => (
                   <WorkflowStatusItemButton
                     key={status.identifier}
                     selected={status.identifier === selectedStatusIdentifier}
                     onStatusClick={() => handleStatusSelect(status)}
                     status={status}
+                    width={status?.name?.length}
                   />
                 ))}
               </>
@@ -88,9 +98,8 @@ const TaskWorkflowStatus = ({
             )}
           </StatusList>
           {isAdmin && (
-            <>
-              <Divider />
-              <PopoverBottomBar align="left">
+            <div style={{ marginTop: '60px' }}>
+              <PopoverBottomBar align="bottom">
                 <PopoverBottomBar.PlusButton
                   type="button"
                   onClick={setIsEditing}
@@ -98,7 +107,7 @@ const TaskWorkflowStatus = ({
                   Add/Edit status
                 </PopoverBottomBar.PlusButton>
               </PopoverBottomBar>
-            </>
+            </div>
           )}
         </>
       ) : (

@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import MaterialCloseIcon from '@mui/icons-material/Close';
 import { fontSizes, fontWeights } from 'styles/font';
-import palette from 'styles/palette';
+import palette, { typography } from 'styles/palette';
 import spacing from 'styles/spacing';
 
 export const Container = styled.div`
@@ -14,7 +14,7 @@ export const Container = styled.div`
   border: 1px solid ${palette.coolGrey2};
   border-bottom: none;
   background-color: ${palette.white};
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: inherit;
   color: ${palette.mediumGrey};
 `;
 
@@ -30,6 +30,8 @@ export const TasksText = styled.p`
 export const CloseButton = styled.button`
   height: 100%;
   width: 60px;
+  padding-left: 5px;
+  padding-right: 10px;
   color: ${palette.black};
   color: ${({ disabled }) => (disabled ? palette.coolGrey2 : palette.black)};
 

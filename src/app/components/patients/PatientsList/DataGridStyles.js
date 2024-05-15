@@ -1,11 +1,11 @@
 /* eslint-disable unicorn/filename-case */
 import styled from 'styled-components';
-import { DataGrid } from '@mui/x-data-grid';
 import { fontWeights, fontSizes } from 'styles/font';
 import palette from 'styles/palette';
 import spacing from 'styles/spacing';
+import { DataGridPremium } from '@mui/x-data-grid-premium';
 
-export const StyledDataGrid = styled(DataGrid)`
+export const StyledDataGrid = styled(DataGridPremium)`
   margin-bottom: 48px;
 
   &.MuiDataGrid-root {
@@ -28,7 +28,7 @@ export const StyledDataGrid = styled(DataGrid)`
   }
 
   & .MuiSelect-select {
-    font-family: "Roboto Condensed", sans-serif;
+    font-family: inherit;
     font-weight: 400;
     font-size: 0.875rem;
     line-height: 1.43;
@@ -58,7 +58,7 @@ export const StyledDataGrid = styled(DataGrid)`
   }
 
   &.MuiDataGrid-cell {
-    font-family: 'Roboto Condensed', sans-serif;;
+    font-family: inherit;
     font-weight: ${fontWeights.light};
     font-size: ${fontSizes.smallPlus};
   }
@@ -75,7 +75,7 @@ export const StyledDataGrid = styled(DataGrid)`
 
   &.MuiDataGrid-colCellTitle {
     background-color: white;
-    font-family: 'Roboto Condensed', sans-serif;
+    font-family: inherit;
     font-size: ${fontSizes.small};
     font-weight: ${fontWeights.regularPlus} !important;
     padding-left: 0;
@@ -127,5 +127,18 @@ export const StyledDataGrid = styled(DataGrid)`
 
   &.MuiTablePagination-input {
     display: none;
+  }
+
+  &.MuiDataGrid-root--densityCompact .MuiDataGrid-cell {
+    padding-top: 8px;
+    padding-bottom: 8px;
+  }
+  &.MuiDataGrid-root--densityStandard .MuiDataGrid-cell {
+    padding-top: 15px;
+    padding-bottom: 15px;
+  }
+  &.MuiDataGrid-root--densityComfortable .MuiDataGrid-cell {
+    padding-top: 22px;
+    padding-bottom: 22px;
   }
 `;

@@ -15,10 +15,19 @@ import { addPatient } from 'api/patient-api';
 import { changePatientForTemplateBundle } from 'actions/template-bundle-actions';
 import { noop } from 'helpers/utility-functions';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
-import { capitalize } from 'helpers/capitalize';
 import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
+import AssignMemberIcon from 'components/user/AssignMemberIcon/AssingMemberIcon';
+import { useHistory, useLocation } from 'react-router-dom';
 import SelectDropdown from '../SelectDropdown/SelectDropdown';
 import { getFormattedPatient, getFormattedPatients } from './helpers';
+import {
+  PatientMainContainer,
+  PatientContainer,
+  Title,
+  AddPatient,
+  PatientName,
+} from './styled';
+import { updatePartialWorkflow } from '@/app/actions/task-template-actions';
 
 const PATIENT_IDENTIFIER_FIELD_NAME = 'patientIdentifier';
 const MAX_PATIENT_RESULTS = 200;
@@ -37,6 +46,7 @@ const PatientSection = ({
   const patientInputReference = useRef(null);
   const [patients, setPatients] = useState([]);
   const [assignedPatient, setAssignedPatient] = useState(null);
+  const history = useHistory();
 
   useEffect(() => {
     if (selectedPatient) {
@@ -71,7 +81,7 @@ const PatientSection = ({
 
   const formattedPatients = getFormattedPatients({ patients });
   const customerTypeLabel = getCustomerTypeLabel(currentUser);
-  const customerTypeLabelCapitalized = capitalize(customerTypeLabel);
+  // const customerTypeLabelCapitalized = customerTypeLabel;
 
   useEffect(() => {
     if (patientInputReference?.current && autofocus)
@@ -147,14 +157,17 @@ const PatientSection = ({
               dispatch(
                 openModal('UnassignPatient', {
                   isWorkflowModal: true,
-                  confirm: () => {
+                  confirm: async () => {
+                    onTaskDrawerTaskPatientChanged();
+                    await onSave({
+                      patient: patientToSave,
+                      patientIdentifier: 'UNASSIGNED',
+                    });
                     dispatch(
-                      changePatientForTemplateBundle(
-                        templateBundleIdentifier,
-                        'UNASSIGNED',
-                      ),
+                      updatePartialWorkflow(templateBundleIdentifier, {
+                        patientIdentifier: 'UNASSIGNED',
+                      }),
                     );
-                    onSavePatient(true);
                   },
                 }),
               );
@@ -220,32 +233,32 @@ const PatientSection = ({
 
   const handleClearSelectedPatient = useCallback(
     async (clearInput) => {
-      if (templateBundleIdentifier && selectedPatient) {
-        dispatch(
-          openModal('UnassignPatient', {
-            isWorkflowModal: true,
-            confirm: async () => {
-              dispatch(
-                changePatientForTemplateBundle(
-                  templateBundleIdentifier,
-                  'UNASSIGNED',
-                ),
-              );
-              setAssignedPatient(null);
-              setPatients([]);
-              await savePatient(null);
-              clearInput();
-              // eslint-disable-next-line no-unused-expressions
-              patientInputReference.current?.querySelector('input')?.focus();
-            },
-          }),
-        );
-      } else {
-        setAssignedPatient(null);
+      // if (templateBundleIdentifier && selectedPatient) {
+      //   dispatch(
+      //     openModal('UnassignPatient', {
+      //       isWorkflowModal: true,
+      //       confirm: async () => {
+      //         dispatch(
+      //           changePatientForTemplateBundle(
+      //             templateBundleIdentifier,
+      //             'UNASSIGNED',
+      //           ),
+      //         );
+      //         setAssignedPatient(null);
+      //         setPatients([]);
+      //         await savePatient(null);
+      //         clearInput();
+      //         // eslint-disable-next-line no-unused-expressions
+      //         patientInputReference.current?.querySelector('input')?.focus();
+      //       },
+      //     }),
+      //   );
+      // } else {
+      setAssignedPatient(null);
 
-        setPatients([]);
-        await savePatient(null);
-      }
+      setPatients([]);
+      await savePatient(null);
+      // }
     },
     [dispatch, savePatient, selectedPatient, templateBundleIdentifier],
   );
@@ -299,35 +312,67 @@ const PatientSection = ({
     [patientAddEnabled, fetchPatients, handlePatientSelect],
   );
 
+  const patientProfile = () => {
+    history.push(`/core/patient/${selectedPatient.patientIdentifier}`);
+  };
+
   return (
-    <SelectDropdown
-      ref={patientInputReference}
-      name={PATIENT_IDENTIFIER_FIELD_NAME}
-      label={customerTypeLabelCapitalized}
-      placeholder={
-        emrIntegrationType === 'FHIR'
-          ? `Who is the ${customerTypeLabel}? (MRN #)`
-          : placeholder ||
-            `Who is the ${customerTypeLabel}? (first last or last, first)`
-      }
-      disabled={disabled}
-      selectedOption={assignedPatient}
-      options={formattedPatients}
-      headerOption={
-        <PatientSelectItem patient={{ name: 'Name', dob: 'Dob', mrn: 'Mrn' }} />
-      }
-      isLoadingOptions={isLoadingPatients}
-      onInputChange={onPatientInputChange}
-      onOptionSelect={handlePatientSelect}
-      onClear={handleClearSelectedPatient}
-      onAddItemClick={
-        !patientAddEnabled || !quickAddPatientEnabled ? null : handleAddPatient
-      }
-      addItemEnabled={patientAddEnabled && quickAddPatientEnabled}
-      clearOnSuccess
-      refineResultsCount={MAX_PATIENT_RESULTS}
-      width={600}
-    />
+    <PatientMainContainer>
+      <Title>Patient</Title>
+      {selectedPatient && (
+        <PatientContainer>
+          {' '}
+          <PatientName onClick={patientProfile}>
+            {selectedPatient.patientName}{' '}
+          </PatientName>
+          <button
+            style={{ color: '#8492A4' }}
+            onClick={handleClearSelectedPatient}
+          >
+            x
+          </button>
+        </PatientContainer>
+      )}
+
+      {!selectedPatient && (
+        <div style={{ display: 'flex' }}>
+          <SelectDropdown
+            ref={patientInputReference}
+            name={PATIENT_IDENTIFIER_FIELD_NAME}
+            // label={customerTypeLabelCapitalized}
+            // placeholder={
+            //   emrIntegrationType === 'FHIR'
+            //     ? `Who is the ${customerTypeLabel}? (MRN #)`
+            //     : placeholder ||
+            //       `Who is the ${customerTypeLabel}? (first last or last, first)`
+            // }
+            placeholder="Add Patient"
+            disabled={disabled}
+            selectedOption={assignedPatient}
+            options={formattedPatients}
+            headerOption={
+              <PatientSelectItem
+                patient={{ name: 'Name', dob: 'DOB', mrn: 'MRN' }}
+                header
+              />
+            }
+            isLoadingOptions={isLoadingPatients}
+            onInputChange={onPatientInputChange}
+            onOptionSelect={handlePatientSelect}
+            onClear={handleClearSelectedPatient}
+            onAddItemClick={
+              !patientAddEnabled || !quickAddPatientEnabled
+                ? null
+                : handleAddPatient
+            }
+            addItemEnabled={patientAddEnabled && quickAddPatientEnabled}
+            clearOnSuccess
+            refineResultsCount={MAX_PATIENT_RESULTS}
+            width={600}
+          />
+        </div>
+      )}
+    </PatientMainContainer>
   );
 };
 

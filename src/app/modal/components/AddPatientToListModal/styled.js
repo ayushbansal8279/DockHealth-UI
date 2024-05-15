@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { fontSizes, fontWeights } from 'styles/font';
-import palette from 'styles/palette';
+import palette, { typography } from 'styles/palette';
 import spacing from 'styles/spacing';
 import { Close } from '@mui/icons-material';
 import { ModalWrapper } from '../styled';
@@ -11,7 +11,7 @@ export const AddPatientModalWrapper = styled(ModalWrapper)`
   width: 870px;
   min-height: 600px;
   padding: ${spacing.regularPlus} ${spacing.largePlus};
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Outfit', sans-serif;
   color: ${palette.mediumGrey};
 `;
 
@@ -79,7 +79,7 @@ export const SelectedPatientsWrapper = styled.div`
   overflow-x: hidden;
   border-radius: 8px;
   border: 1px solid ${palette.coolGrey2};
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: inherit;
 `;
 
 export const SelectedPatientRow = styled.div`

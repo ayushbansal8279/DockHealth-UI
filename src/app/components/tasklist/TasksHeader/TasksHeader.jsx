@@ -2,6 +2,7 @@
 /* eslint-disable no-underscore-dangle */
 import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
+import { Box } from '@mui/material';
 import Checkbox from 'components/common/Checkbox/Checkbox';
 import { SortHeaderRow } from 'components/tasklist/ColumnSortHeader/styled';
 import { TaskItemColumnWidth } from 'helpers/task-helpers';
@@ -27,6 +28,7 @@ import {
   TaskHeaderColumn,
 } from './helpers';
 import ColumnSortHeader from '../ColumnSortHeader/ColumnSortHeader';
+import { TaskScrollVericleLine } from '../../task/styled';
 
 const TasksHeader = ({
   bulkEditEnabled,
@@ -35,6 +37,9 @@ const TasksHeader = ({
   isGroupSelected,
   onGroupSelect,
   pageBackground,
+  listPageGroupHeader,
+  isWidthGreaterThanHundredPercent,
+  origin,
 }) => {
   const taskList = useSelector(currentTaskListSelector);
   const currentUser = useSelector(userProfileSelector);
@@ -117,8 +122,14 @@ const TasksHeader = ({
           ? TaskItemColumnWidth[f.identifier].PRINT ||
             TaskItemColumnWidth[f.identifier].DEFAULT
           : TaskItemColumnWidth[f.identifier];
+      const regularFieldMinimumWidth =
+        typeof TaskItemColumnWidth[f.identifier] === 'object'
+          ? TaskItemColumnWidth[f.identifier].MINIMUM || 0
+          : 0;
       const customPrintWidth =
         customFieldDefaultPrintWidth || regularFieldDefaultPrintWidth;
+
+      const columnWidth = Math.max(f.columnWidth, regularFieldMinimumWidth);
 
       return (
         <ColumnSortHeader
@@ -130,11 +141,17 @@ const TasksHeader = ({
             ![TaskHeaderColumn.SUBTASKS_COUNT].includes(f.identifier)
           }
           isDraggingOver={snapshot.isDraggingOver}
-          disabled={false}
+          disabled={f.sortDisabled}
           truncateEnabled
           id={f.identifier}
           label={isRegular ? f.label : f.name}
-          width={+f.columnWidth}
+          width={
+            index === 0
+              ? +columnWidth - (origin === 'LIST' ? 1 : 1.1)
+              : index === 1
+              ? +columnWidth - (origin === 'LIST' ? 3 : 0.5)
+              : +columnWidth
+          }
           snapshot={snapshot}
           sort={sort}
           onSortChange={onSortChange}
@@ -145,12 +162,13 @@ const TasksHeader = ({
       );
     },
     [
-      handleResizeColumn,
-      onSortChange,
       restrictCustomizationFeatures,
+      origin,
       sort,
-      tasksHeaderTextTransformItem,
-      tasksHeaderTextColorItem,
+      onSortChange,
+      tasksHeaderTextTransformItem?.value,
+      tasksHeaderTextColorItem?.value,
+      handleResizeColumn,
     ],
   );
 
@@ -162,7 +180,23 @@ const TasksHeader = ({
         direction="horizontal"
       >
         {(provided, snapshot) => (
-          <SortHeaderRow ref={provided.innerRef} {...provided.droppableProps}>
+          <SortHeaderRow
+            origin={origin}
+            listPageGroupHeader={listPageGroupHeader}
+            isWidthGreaterThanHundredPercent={isWidthGreaterThanHundredPercent}
+            ref={provided.innerRef}
+            {...provided.droppableProps}
+            $width={
+              !window.disabledVirtualTaskList
+                ? columns
+                    .filter((f) => f.isChecked)
+                    .reduce(
+                      (accumulator, column) => accumulator + column.columnWidth,
+                      0,
+                    )
+                : null
+            }
+          >
             <StickyColumnContainer
               backgroundColor={pageBackground}
               customWidthExists
@@ -176,20 +210,22 @@ const TasksHeader = ({
                 </BulkContainer>
               )}
               {!bulkEditEnabled && (
-                <BulkContainer style={{width: '66px'}}>
-                  &nbsp;
-                </BulkContainer>
+                <BulkContainer style={{ width: '65px' }}>&nbsp;</BulkContainer>
               )}
               {renderColumn(
                 getTaskHeaderOptions(
                   customerTypeLabel,
                   uniqueIdentifierLabel,
-                  columns.filter(f => f.isChecked)?.[0],
+                  columns.find((f) => f.isChecked),
                   restrictions,
                 ),
                 0,
                 snapshot,
               )}
+              <Box ml="1px" />
+              <TaskScrollVericleLine style={{ marginLeft: '-1.0px' }}>
+                &nbsp;
+              </TaskScrollVericleLine>
             </StickyColumnContainer>
             {columns
               .filter((f) => f.isChecked)

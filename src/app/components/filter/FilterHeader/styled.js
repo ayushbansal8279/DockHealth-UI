@@ -1,11 +1,10 @@
 import styled from 'styled-components';
 import { fontSizes } from 'styles/font';
-import palette from 'styles/palette';
+import palette, { typography } from 'styles/palette';
 import spacing from 'styles/spacing';
 
 export const Container = styled.div`
   width: 100%;
-  display: flex;
   justify-content: space-between;
 `;
 
@@ -13,7 +12,7 @@ export const Title = styled.label`
   color: ${palette.mediumGrey};
   text-transform: uppercase;
   font-size: ${fontSizes.smallPlus};
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: inherit;
 `;
 
 export const HeaderButton = styled.button`

@@ -1,18 +1,13 @@
 import Spacing from 'components/common/Spacing';
 import Tooltip from 'components/common/Tooltip/Tooltip';
 import React, { useRef } from 'react';
-import {
-  StatusFlag,
-  StatusItemWrapper,
-  StatusName,
-  StatusButton,
-} from './styled';
+import { StatusButton, StatusWrapper } from './styled';
 
 const WorkflowStatusItemButton = ({
   selected,
   status,
-  colorBorder,
   onStatusClick,
+  width,
 }) => {
   const nameReference = useRef(null);
   const { name, color } = status || {};
@@ -22,14 +17,19 @@ const WorkflowStatusItemButton = ({
     nameReference.current.offsetWidth < nameReference.current.scrollWidth;
 
   return (
-    <StatusButton selected={selected} onClick={onStatusClick}>
-      <StatusItemWrapper>
-        <StatusFlag border={colorBorder} color={color} />
-        <Spacing horizontal={3} />
-        <Tooltip title={name} placement="top" hideTooltip={!tooltipVisible}>
-          <StatusName ref={nameReference}>{name}</StatusName>
-        </Tooltip>
-      </StatusItemWrapper>
+    <StatusButton width={140} selected={selected} onClick={onStatusClick}>
+      <StatusWrapper color={color}>
+        <div
+          style={{
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+          }}
+          ref={nameReference}
+        >
+          {name}
+        </div>
+      </StatusWrapper>
     </StatusButton>
   );
 };

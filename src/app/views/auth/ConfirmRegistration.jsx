@@ -9,14 +9,11 @@ import { StyledAnchorDiv } from 'components/auth/AuthComponents.styled';
 import Spacing from 'components/common/Spacing';
 import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
 import { useBoolean } from 'hooks/useBoolean';
-import { MontserratTypography } from 'styles/theme-montserrat';
-import ConfirmEmailHeaderCheck from 'img/checked-circle.svg';
-import {
-  OnboardingDialog,
-  OnboardingHeader,
-} from '../onboarding/OnboardingTemplate.Components';
-
-const FONT_FAMILY_NAME = 'roboto condensed';
+import DockHeaderLogo from 'img/dock-header-logo.svg';
+import styled from 'styled-components';
+import { Title, Subtitle } from 'components/auth/Title';
+import palette from 'styles/palette';
+import Button from 'components/common/v2/Button/Button';
 
 const resendEmail = async (email, dispatch) => {
   try {
@@ -35,7 +32,7 @@ const resendEmail = async (email, dispatch) => {
 
 const ConfirmRegistration = (props) => {
   const dispatch = useDispatch();
-  const [isDialogShown, showDialog] = useBoolean(false);
+  const [isDialogShown, showDialog, hideDialog] = useBoolean(false);
   const [dialogTitle, setDialogTitle] = useState('');
   const [dialogMessage, setDialogMessage] = useState('');
   const [userEmail, setUserEmail] = useState('');
@@ -76,84 +73,65 @@ const ConfirmRegistration = (props) => {
     history.push('login');
   });
 
-  const onboardingDialogStyle = {
-    fontFamily: FONT_FAMILY_NAME,
-    fontWeight: 300,
-    fontSize: '18px',
-    padding: '0rem 1rem',
-  };
-
-  const onboardingMessageStyle = {
-    fontFamily: FONT_FAMILY_NAME,
-    fontWeight: 300,
-    fontSize: '18px',
-    padding: '0rem 1rem',
-    display: 'block',
+  const confirmRegistrationContainer = {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
   };
 
   const onboardingLinkStyle = {
-    fontFamily: FONT_FAMILY_NAME,
-    fontWeight: 300,
-    fontSize: '18px',
+    paddingLeft: '10px',
   };
 
+  const DockLogoImage = styled.img.attrs({
+    src: DockHeaderLogo,
+    alt: 'Dock Health logo',
+  })`
+    align: center;
+    width: 100%;
+    object-fit: contain;
+    height: 69px;
+  `;
+
   return (
-    <div className="columns large-12">
-      <div className="row expanded text-left">
-        <div className="columns large-12 top-buffer">
-          <h5>Confirming your account ...</h5>
+    <div style={confirmRegistrationContainer}>
+      <div>
+        <DockLogoImage />
+      </div>
+      <Spacing vertical={6} />
+      <div>
+        <Title>{dialogTitle}</Title>
+        <Spacing vertical={2} />
+        <Subtitle>{dialogMessage}</Subtitle>
+        <Spacing vertical={5} />
+        <div>
+          <Button
+            id="loginButton"
+            size="large"
+            color={palette.brightOrange}
+            secondaryColor={palette.oPlusRed}
+            onClick={() => {
+              hideDialog();
+              history.push(`/auth/login`);
+            }}
+          >
+            Login To My Account
+          </Button>
         </div>
       </div>
-      {/* <ConfirmUserAccountForm type="Confirm" onSubmit={this.onSubmit} /> */}
-      <OnboardingDialog open={isDialogShown} fullWidth maxWidth="sm">
-        <OnboardingHeader>
-          <MontserratTypography variant="h2">
-            <span
-              style={{
-                fontWeight: 500,
-                fontSize: '26px',
-                paddingLeft: '1rem',
-                lineHeight: '45px',
-              }}
-            >
-              {' '}
-              {dialogTitle}{' '}
-            </span>
-            <img
-              src={ConfirmEmailHeaderCheck}
-              style={{ float: 'right', height: '2.7rem' }}
-              alt="Dock Health"
-            />
-          </MontserratTypography>
-        </OnboardingHeader>
-        <Spacing vertical={5} />
-        <MontserratTypography variant="h4">
-          <span style={onboardingMessageStyle}> {dialogMessage} </span>
-        </MontserratTypography>
-        <Spacing vertical={5} />
-        <MontserratTypography variant="h4">
-          <span style={onboardingDialogStyle}>Please try to</span>
-          <StyledAnchorDiv
-            style={onboardingLinkStyle}
-            onClick={() => history.push('login')}
-          >
-            Sign In
-          </StyledAnchorDiv>
-        </MontserratTypography>
-        <Spacing vertical={5} />
-        <MontserratTypography variant="h4">
-          <span style={onboardingDialogStyle}>
-            I didn&apos;t get the confirmation email.{' '}
-          </span>
+      <Spacing vertical={8} />
+      <div>
+        <Subtitle>
+          I didn&apos;t get the confirmation email.
           <StyledAnchorDiv
             style={onboardingLinkStyle}
             onClick={() => resendEmail(userEmail, dispatch)}
           >
             Resend email
           </StyledAnchorDiv>
-        </MontserratTypography>
-        <Spacing vertical={5} />
-      </OnboardingDialog>
+        </Subtitle>
+      </div>
     </div>
   );
 };

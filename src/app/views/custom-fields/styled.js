@@ -1,12 +1,12 @@
 import styled from 'styled-components';
 import { fontSizes, fontWeights } from 'styles/font';
-import palette from 'styles/palette';
+import palette, { typography } from 'styles/palette';
 
 export const Header = styled.h2`
   margin-bottom: 0;
   font-size: ${fontSizes.huge};
   font-weight: ${fontWeights.bold};
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Outfit', sans-serif;
 `;
 
 export const ViewContainer = styled.div`
@@ -15,7 +15,7 @@ export const ViewContainer = styled.div`
   margin: 0 auto;
   padding: 50px 20px;
   color: ${palette.mediumGrey};
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: inherit;
 `;
 
 export const EmptyListPlaceholder = styled.p`

@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { fontSizes, fontWeights } from 'styles/font';
-import palette from 'styles/palette';
+import palette, { typography } from 'styles/palette';
 
 export const Container = styled.div`
   position: relative;
@@ -11,7 +11,7 @@ export const Container = styled.div`
   border-radius: 14px;
   background: ${palette.white};
   vertical-align: top;
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: inherit;
   color: ${palette.mediumGrey};
 
   &:not(:last-of-type) {
@@ -53,6 +53,13 @@ export const FileNameText = styled.p`
 `;
 
 export const CreatedText = styled.p`
+  margin: 0;
+  font-size: ${fontSizes.small};
+  font-weight: ${fontWeights.regular};
+  color: inherit;
+`;
+
+export const StatusText = styled.p`
   margin: 0;
   font-size: ${fontSizes.small};
   font-weight: ${fontWeights.regular};

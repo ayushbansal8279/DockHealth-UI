@@ -105,7 +105,6 @@ const UsersTable = ({
   showJoined = true,
   showSubscription = true,
   showTableHeader = true,
-  // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const {
     selectedUsers,
@@ -138,7 +137,6 @@ const UsersTable = ({
   ];
 
   const columns = useMemo(
-    // eslint-disable-next-line sonarjs/cognitive-complexity
     () => [
       {
         field: 'userName',
@@ -256,8 +254,6 @@ const UsersTable = ({
             ? registrationMoment.format('LL')
             : '';
 
-          // if (userStatus === 'INVITED') return <span>Invitation sent ({formattedRegistrationDate})</span>;
-
           if (userStatus === 'INVITED')
             return (
               <Tooltip placement="top" title={formattedRegistrationDate}>
@@ -315,7 +311,6 @@ const UsersTable = ({
                         ? null
                         : `${listName.slice(0, 14)}...`,
                   }))
-                  // eslint-disable-next-line func-names
                   .sort((a, b) => {
                     if (a.fullName < b.fullName) {
                       return -1;
@@ -362,6 +357,7 @@ const UsersTable = ({
       showJoined,
       showSubscription,
       toggleSelectedUser,
+      changeUserRole,
     ],
   );
 
@@ -393,12 +389,7 @@ const UsersTable = ({
           {showTableHeader && (
             <Box p="16px" display="flex" width="100%">
               <Box display="flex" flex={1} alignItems="center">
-                <Box width="300px">
-                  <SearchInput
-                    value={currentSearch}
-                    onValueChange={setCurrentSearch}
-                  />
-                </Box>
+                <Box mx={-1} />
                 <ToolbarSelect
                   options={SUBSCRIPTION_OPTIONS}
                   value={USER_SUBSCRIPTION_VALUES[userSubscriptionStatus]}
@@ -419,6 +410,11 @@ const UsersTable = ({
                 <InviteButton
                   getAllUsers={getAllUsers}
                   fullWidth={isSmallScreen}
+                />
+                <Spacing horizontal={3} />
+                <SearchInput
+                  value={currentSearch}
+                  onValueChange={setCurrentSearch}
                 />
               </Box>
             </Box>

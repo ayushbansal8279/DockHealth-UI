@@ -5,6 +5,7 @@ import { arrayOf, number, shape, string } from 'prop-types';
 import { userProfileSelector } from 'selectors/user-selectors';
 import GroupAvatar from 'components/user/GroupAvatar/GroupAvatar';
 import { isUserGroup } from 'helpers/user-helper';
+import Spacing from 'components/common/Spacing';
 import { GroupContainer, GroupItem, NameWrapper } from './styled';
 import AdditionalMembersCounter from '../AdditionalMembersCounter/AdditionalMembersCounter';
 
@@ -48,17 +49,25 @@ const MemberGroup = ({ members, max, size }) => {
           key={member?.identifier}
           zIndex={shownMembers.length - index}
         >
+          {index === 0 ? <></> : <Spacing horizontal={4} />}
           {isUserGroup(member) ? (
             <GroupAvatar size={size} group={member} />
           ) : (
             <UserAvatar user={member} size={size} />
           )}
+          {/* {shownMembers.length > 1 ? <Spacing horizontal={4} /> : <></>} */}
         </GroupItem>
       ))}
       {hiddenMembers && (
-        <GroupItem zIndex={0}>
-          <AdditionalMembersCounter hiddenMembers={hiddenMembers} size={size} />
-        </GroupItem>
+        <>
+          <Spacing horizontal={4} />
+          <GroupItem zIndex={0}>
+            <AdditionalMembersCounter
+              hiddenMembers={hiddenMembers}
+              size={size}
+            />
+          </GroupItem>
+        </>
       )}
     </GroupContainer>
   );

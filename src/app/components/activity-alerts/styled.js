@@ -2,7 +2,7 @@ import styled, { keyframes, css } from 'styled-components';
 import { Popover } from '@mui/material';
 import spacing from 'styles/spacing';
 import { fontWeights, fontSizes } from 'styles/font';
-import palette from 'styles/palette';
+import palette, { typography } from 'styles/palette';
 
 export const rotateImg = keyframes`
   0% {
@@ -77,7 +77,7 @@ export const ActivityAlertsPopoverLabel = styled.div`
   color: black;
   font-weight: ${fontWeights.regularPlus};
   text-transform: uppercase;
-  font-family: Montserrat;
+  font-family: Outfit;
 `;
 
 export const ActivityAlertsList = styled.div`
@@ -90,7 +90,7 @@ export const ActivityAlertsList = styled.div`
 export const ActivityAlertsClearAllLabel = styled.div`
   display: flex;
   align-items: center;
-  font-family: Montserrat;
+  font-family: Outfit;
   font-size: ${fontSizes.small};
   font-weight: ${fontWeights.regularPlus};
   cursor: pointer;
@@ -100,7 +100,7 @@ export const ActivityAlertsClearAllLabel = styled.div`
 export const CustomizeLabel = styled.div`
   display: flex;
   align-items: center;
-  font-family: Montserrat;
+  font-family: Outfit;
   font-size: ${fontSizes.small};
   font-weight: ${fontWeights.regularPlus};
   cursor: pointer;
@@ -115,7 +115,7 @@ export const ActivityAlertsHeader = styled.div`
 `;
 
 export const ActivityAlertsSwitchLabel = styled.label`
-  font-family: Montserrat;
+  font-family: Outfit;
   font-weight: ${fontWeights.regularPlus};
   font-size: ${fontSizes.regular};
   line-height: 20px;
@@ -131,7 +131,7 @@ export const EmptyActivityAlerts = styled.div`
   box-shadow: 0px 0px 11px rgba(0, 0, 0, 0.15); // per design
   border-radius: 8px;
   padding: ${spacing.regularPlus};
-  font-family: 'Roboto Condensed', sans-serif;;
+  font-family: inherit;
   font-weight: ${fontWeights.bold};
 `;
 

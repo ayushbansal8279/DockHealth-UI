@@ -1,8 +1,24 @@
 import styled from 'styled-components';
 import palette from 'styles/palette';
 
+export const StatusSubContaioner = styled.div`
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  padding-left: 12px;
+`;
+
 export const StatusWrapper = styled.div`
   display: flex;
+  border-radius: 2px;
+  border: 1px solid ${(property) => property.color || '#7F4334'};
+  background: ${(property) => `${property.color}1A` || '#7F43341A'};
+  min-width: 90px;
+  padding: 2.5px 2px;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  color: ${(property) => property.color || '#7F4334'};
 `;
 
 export const StatusBar = styled.div`
@@ -23,7 +39,12 @@ export const StatusName = styled.p`
   overflow: hidden;
   white-space: nowrap;
   margin-bottom: 0;
-  text-align: left;
+  text-align: center;
+  font-family: Outfit;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 135%;
 `;
 
 export const Placeholder = styled.div`
@@ -37,6 +58,7 @@ export const Placeholder = styled.div`
 
   &:hover {
     color: ${palette.brightBlue};
+    // opacity: 100;
   }
 `;
 
@@ -44,8 +66,8 @@ export const AddPlaceholder = styled(Placeholder)`
   color: ${palette.lightGrey};
   opacity: 0;
 
-  &::first-letter {
-    color: ${palette.orange};
-    font-size: 16px;
-  }
+  // &::first-letter {
+  //   color: ${palette.orange};
+  //   font-size: 16px;
+  // }
 `;

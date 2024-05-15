@@ -63,7 +63,7 @@ const LayoutHeader = (props) => {
 };
 
 LayoutHeader.Title = (props) => {
-  const { title, description, colorIndicator } = props;
+  const { title, description, colorIndicator, children } = props;
 
   return (
     <Box flex={1} overflow="hidden">
@@ -74,7 +74,8 @@ LayoutHeader.Title = (props) => {
               <ColorIndicator color={colorIndicator} />
             </Box>
           )}
-          {title}
+          <Box overflow="hidden">{title}</Box>
+          {children}
         </Box>
       </Title>
       <Description>{description}</Description>

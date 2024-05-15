@@ -20,7 +20,7 @@ export const ModalWrapper = styled.div`
   align-items: center;
   width: ${({ width }) => width || '450px'};
   max-width: 100vw;
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: inherit;
   background-color: white;
 `;
 
@@ -37,11 +37,19 @@ export const ModalMainIcon = styled.img`
 
 export const ModalIconContainer = styled.div`
   padding: ${spacing.largePlus};
-  border-bottom: 1px solid ${palette.coolGrey2};
+  // border-bottom: 1px solid ${palette.coolGrey2};
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
+`;
+
+export const ModalHeaderName = styled.div`
+  font-family: Outfit;
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 25px;
+  text-align: center;
 `;
 
 export const ModalDescriptionContainer = styled.div`
@@ -50,6 +58,30 @@ export const ModalDescriptionContainer = styled.div`
   flex-direction: column;
   align-items: center;
   padding: ${spacing.large};
+  align-self: stretch;
+  color: ${palette.black};
+  text-align: center;
+  font-family: Outfit;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 300;
+  line-height: 25px;
+`;
+
+export const ModalDescriptionListContainer = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: ${spacing.large};
+  align-self: stretch;
+  color: ${palette.black};
+  font-family: Outfit;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 25px;
+  margin-top: -45px;
 `;
 
 export const ButtonsContainer = styled.div`
@@ -60,10 +92,9 @@ export const ButtonsContainer = styled.div`
 `;
 
 export const FlexButtonWrapper = styled.div`
-  flex: 1;
-  button {
-    font-size: 14px !important;
-  }
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 export const FixedWidthButtonWrapper = styled.div`
@@ -156,7 +187,7 @@ export const IncludeContainerStyled = styled.div`
 
 export const InfoHeaderTextStyled = styled.p`
   color: ${palette.coolGrey9};
-  font-family: 'Montserrat';
+  font-family: 'Outfit';
   font-weight: 600;
   margin: 0;
 `;
@@ -170,7 +201,7 @@ export const CheckboxContainer = styled.div`
 
 export const CheckboxDescription = styled.label`
   display: inline;
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: 'Outfit', sans-serif;
   font-size: ${fontSizes.regular};
   color: ${palette.mediumGrey};
 `;

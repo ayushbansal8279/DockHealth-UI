@@ -20,6 +20,7 @@ import { log } from 'helpers/log';
 import configureStore from '../ConfigureStore';
 import axios from './axios-heydoc';
 import sendEvent from './usage-api';
+import { userLogout } from './user-api';
 
 const store = configureStore();
 
@@ -123,6 +124,7 @@ export function changePassword(oldPassword, newPassword) {
 
 export function logout(history) {
   onLogout();
+  userLogout();
   window.sessionStorage.removeItem('confirmStatus');
   history.replace('/auth/login');
 
@@ -585,7 +587,7 @@ export const getCustomLaunchEnterpriseAccessTokensByAuthCode = (
     try {
       // const authUrl = `${import.meta.env.VITE_HEYDOC_SERVICES_BASE_URL}/launch/drchrono`;
 
-      return axios.post(requestAuthTokenURL, authData).then(response => {
+      return axios.post(requestAuthTokenURL, authData).then((response) => {
         const userRefreshToken = response?.data.refresh_token;
         const userAccessToken = response?.data.access_token;
         const email = response?.data.profile;

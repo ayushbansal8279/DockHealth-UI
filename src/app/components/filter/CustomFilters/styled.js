@@ -3,26 +3,23 @@ import { fontSizes, fontWeights } from 'styles/font';
 import palette from 'styles/palette';
 
 export const CustomFiltersContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  flex: 180px 0 0;
-  overflow: hidden;
+  
 `;
 
-export const Label = styled.p`
-  margin-bottom: 16px;
-  font-family: 'Montserrat', sans-serif;
-  font-size: ${fontSizes.smallPlus};
-  font-weight: ${fontWeights.bold};
-  color: ${palette.lightGrey};
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  overflow: hidden;
+export const Label = styled.div`
+color: ${palette.mediumGrey};
+font-family: Outfit;
+font-size: 14px;
+font-style: normal;
+font-weight: 400;
+margin: 0 0 5px 5px;
 `;
 
 export const OptionsList = styled.div`
-  flex: 1;
-  overflow-y: auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  width: 550px;
 
   &::-webkit-scrollbar {
     -webkit-appearance: none;

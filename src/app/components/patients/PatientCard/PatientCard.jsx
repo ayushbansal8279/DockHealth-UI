@@ -12,7 +12,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import descend from 'ramda/src/descend';
 import prop from 'ramda/src/prop';
 import moment from 'moment';
-import { Box, Popper, Typography } from '@mui/material';
+import { Box, Chip, Popper, Typography } from '@mui/material';
 import { Link, useLocation } from 'react-router-dom';
 import * as PatientApi from 'api/patient-api';
 import useBooleanWithTimeout from 'hooks/use-boolean-with-timeout';
@@ -153,6 +153,7 @@ const PatientCard = ({
     email,
     phoneMobile,
     phoneHome,
+    patientLabels,
   } = patientData || {};
 
   const patientStreetAddress = patientData?.patientMetaData?.filter(
@@ -177,7 +178,7 @@ const PatientCard = ({
     dispatch(
       openModal('EditPatient', {
         patient: patientData,
-        onAdded: newPatientData => {
+        onAdded: (newPatientData) => {
           setPatientData(newPatientData);
         },
       }),
@@ -325,6 +326,22 @@ const PatientCard = ({
                     ),
                   )}
                 </Box>
+                {patientLabels && (
+                  <>
+                    <Box py="4px" />
+                    <Box display="flex" flexWrap="wrap">
+                      {patientLabels?.map(({ labelIdentifier, labelName }) => (
+                        <Box
+                          key={Math.random() + 1000}
+                          display="inline-block"
+                          py="1px"
+                        >
+                          <Chip label={labelName} />
+                        </Box>
+                      ))}
+                    </Box>
+                  </>
+                )}
               </>
             ) : (
               <PatientCardDetailsLoader />

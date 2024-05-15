@@ -1,7 +1,8 @@
 import React, { useRef } from 'react';
 import { Box } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
-import { useBoolean } from 'hooks/useBoolean';
+// import { useBoolean } from 'hooks/useBoolean';
+import palette from 'styles/palette';
 import {
   SearchInput,
   SearchInputWrapper,
@@ -10,9 +11,9 @@ import {
 } from './styled';
 
 const HeaderSearch = (props) => {
-  const { value, onChange } = props;
+  const { value, onChange, focused, setFocused, unsetFocused } = props;
   const inputReference = useRef(null);
-  const [focused, setFocused, unsetFocused] = useBoolean(false);
+  // const [focused, setFocused, unsetFocused] = useBoolean(false);
 
   const handleClear = () => {
     onChange('');
@@ -21,7 +22,7 @@ const HeaderSearch = (props) => {
 
   return (
     <SearchInputWrapper wide={value || focused}>
-      <SearchIcon />
+      <SearchIcon sx={{ color: palette.coolGrey2 }} />
       <Box mx={0.3} />
       <SearchInput
         ref={inputReference}

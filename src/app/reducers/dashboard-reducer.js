@@ -1,9 +1,5 @@
 import * as ActionTypes from 'actions/action-types';
-import {
-  getDashboardFiltersStorageKey,
-  getGroupByDueDate,
-} from 'helpers/dashboard-helpers';
-import sessionStorageHelper from 'helpers/session-storage-helper';
+import { getGroupByDueDate } from 'helpers/dashboard-helpers';
 import { TaskItemType } from 'helpers/task-helpers';
 import { updateTasksStateCallback } from './reducer-helper';
 import TaskBaseReducer from './task-base-reducer';
@@ -24,7 +20,11 @@ const initialState = {
 
 const addTask = (list, taskToAdd) => {
   const { tasks = [] } = list;
-  return { ...list, tasks: [taskToAdd, ...tasks] };
+  return {
+    ...list,
+    tasks: [taskToAdd, ...tasks],
+    metricValue: tasks.length + 1,
+  };
 };
 
 const findAndAddTask = ({ lists, groupType: type, task: taskToAdd }) =>
@@ -80,46 +80,58 @@ const updateGroupsWithGroupTasksLoadMore = (tasksList, group, groupType) => {
   return newTasksList;
 };
 
+function updateBundleInState(bundleIdentifier, updatedData, state) {
+  const updatedMap = {
+    [bundleIdentifier]: {
+      // ...state.tasksMap[bundleIdentifier],
+      ...updatedData,
+      tasks: [
+        ...new Set([
+          ...(state.tasksMap[bundleIdentifier]?.tasks || []),
+          ...updatedData?.tasks.map((task) => task.identifier),
+        ]),
+      ],
+    },
+  };
+
+  // add tasks and subtasks in the bundle
+  for (const task of updatedData?.tasks) {
+    updatedMap[task.identifier] = {
+      ...updatedMap[task.identifier],
+      ...task,
+    };
+    for (const subtask of task?.subtasks) {
+      updatedMap[subtask.identifier] = {
+        ...updatedMap[subtask.identifier],
+        ...subtask,
+      };
+    }
+  }
+
+  return {
+    ...state,
+    tasksMap: {
+      ...state.tasksMap,
+      ...updatedMap,
+    },
+  };
+}
+
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const DashboardTasksReducer = (state = initialState, action) => {
   const { type, tasksList, error } = action;
   switch (type) {
     case ActionTypes.INITIALIZE_DASHBOARD_STATE: {
-      const selectedFilters = sessionStorageHelper.getItem(
-        getDashboardFiltersStorageKey(action.tabName),
-      );
-
       return {
         ...state,
         ...initialState,
         tabName: action.tabName,
-        selectedFilters,
       };
     }
 
     case ActionTypes.CLEAR_DASHBOARD_STATE: {
       return {
         ...initialState,
-      };
-    }
-
-    case ActionTypes.SELECT_DASHBOARD_FILTERS: {
-      const { selectedFilters } = action;
-
-      if (selectedFilters) {
-        sessionStorageHelper.setItem(
-          getDashboardFiltersStorageKey(state.tabName),
-          selectedFilters,
-        );
-      } else {
-        sessionStorageHelper.removeItem(
-          getDashboardFiltersStorageKey(state.tabName),
-        );
-      }
-
-      return {
-        ...state,
-        selectedFilters: action.selectedFilters,
       };
     }
 
@@ -351,6 +363,14 @@ const DashboardTasksReducer = (state = initialState, action) => {
             updateTasksStateCallback,
           )
         : state;
+    }
+
+    case ActionTypes.UPDATE_PARTIAL_WORKFLOW_SUCCESS: {
+      return updateBundleInState(
+        action.taskWorkflowIdentifier,
+        action.newData,
+        state,
+      );
     }
 
     case ActionTypes.ADD_TASK_SUCCESS: {

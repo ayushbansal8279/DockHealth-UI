@@ -112,7 +112,7 @@ function* getWorkflowFolder({ searchPhrase }) {
         searchPhrase && searchPhrase !== '' && searchPhrase !== ' ';
       const api = searchPhraseExist
         ? TaskTemplateApi.searchTemplates.bind(null, searchPhrase)
-        : TaskTemplateApi.getTemplates;
+        : TaskTemplateApi.getTemplates.bind(null, true);
       workflows = yield call(api, searchPhrase);
     }
 
@@ -754,7 +754,10 @@ function* addWorkflowLabel({
   };
   try {
     const newLabel = yield call(addLabel, payload);
-    yield put({ type: ActionTypes.ADD_WORKFLOW_LABEL_SUCCESS, newLabel });
+    yield put({
+      type: ActionTypes.ADD_WORKFLOW_LABEL_SUCCESS,
+      newLabel,
+    });
     yield put(getLabels({ isTemplateWorkflow, taskListIdentifier }));
     yield put(showGlobalAlert(AlertMessages.UPDATED));
   } catch {
@@ -792,6 +795,7 @@ function* removeLabelFromWorkflow({ labelIdentifier, identifier }) {
     yield put({
       type: ActionTypes.REMOVE_WORKFLOW_LABEL_FROM_TASK_SUCCESS,
       updatedLabel,
+      payload,
     });
     yield put(showGlobalAlert(AlertMessages.UPDATED));
   } catch {

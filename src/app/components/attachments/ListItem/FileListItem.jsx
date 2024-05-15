@@ -5,6 +5,10 @@ import GoogleDriveIcon from 'img/google-drive-icon.png';
 import { Box, IconButton } from '@mui/material';
 import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
+import {
+  ScanStatus,
+  ScanStatusText,
+} from 'views/patient-details/PatientAttachments/helpers';
 import { Cell, Row } from './styled';
 
 const FileListItem = (props) => {
@@ -17,11 +21,15 @@ const FileListItem = (props) => {
     onDragEnd,
     draggable = false,
   } = props;
-  const { fileName, dateCreated, creator, type } = file;
+  const { fileName, dateCreated, creator, type, scanStatus } = file;
 
   return (
     <Row
-      onClick={onClick}
+      onClick={() => {
+        if (scanStatus === null || scanStatus === ScanStatus.CLEAN) {
+          onClick();
+        }
+      }}
       clickable
       onDragStart={onDragStart}
       onDragEnter={onDragEnter}
@@ -42,6 +50,7 @@ const FileListItem = (props) => {
         {fileName}
       </Cell>
       <Cell>{creator?.name || ''}</Cell>
+      <Cell>{ScanStatusText[scanStatus]}</Cell>
       <Cell>{moment(dateCreated).fromNow()}</Cell>
       <Cell onClick={(event) => event.stopPropagation()}>
         <OptionsMenu customButtonComponent={IconButton} options={options}>

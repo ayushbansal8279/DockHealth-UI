@@ -8,10 +8,13 @@ import Spacing from 'components/common/Spacing';
 import Checkbox from 'components/common/Checkbox/Checkbox';
 import Button from 'components/common/Button/Button';
 import { useSmallScreen } from 'helpers/utility-functions';
-import { MontserratTypography } from 'styles/theme-montserrat';
-import { RobotoTypography } from 'styles/theme';
+import { OutfitTypography } from 'styles/theme-outfit';
 import { downloadBAADocument } from 'api/organization-api';
 import { userProfileSelector } from 'selectors/user-selectors';
+import Circle from 'img/circle.svg';
+import CircleCompleted from 'img/circle-completed.svg';
+import palette from 'styles/palette';
+import { CircleIcon } from './styled';
 import { OnboardingAnchor } from '../OnboardingTemplate.Components';
 
 const OnboardingEulaView = () => {
@@ -23,10 +26,20 @@ const OnboardingEulaView = () => {
 
   const continueButtonDisabled = !isEulaAccepted || !isBaaAccepted;
 
+  const authUser = JSON.parse(sessionStorage.getItem('authUser'));
+  let organizationName = '';
+  if (authUser.attributes) {
+    organizationName = authUser.attributes['custom:organization_name'];
+  }
+
   const onAgreeClick = useCallback(() => {
     acknowledgeEula().then(() => {
       localStorage.setItem('STORAGE_NEW_USER_FIRST_TIME', true);
-      history.push('/onboarding/questions');
+      if (organizationName !== '' && organizationName !== undefined) {
+        history.push('/onboarding-tutorial/create-list');
+      } else {
+        history.push('/onboarding/organization-setup');
+      }
     });
   }, [history]);
 
@@ -35,29 +48,35 @@ const OnboardingEulaView = () => {
   return (
     <div>
       <Spacing vertical={3} />
-      <MontserratTypography weight="600" variant="h2">
-        LET&apos;S GET STARTED
-      </MontserratTypography>
+      <OutfitTypography weight="700" variant="h3">
+        Welcome to Dock! Let's make it official.
+      </OutfitTypography>
       <Spacing vertical={5} />
-      <MontserratTypography variant="h3">
-        Securing patient data, being HIPAA-compliant, and getting your team
-        ready to work better. Sounds like the start of a great relationship.
-      </MontserratTypography>
-      <Spacing vertical={5} />
-      <MontserratTypography variant="h4">
-        To get you and your team set up to be HIPAA-complaint, please agree to
-        the terms below..
-      </MontserratTypography>
-      <Spacing vertical={5} />
+      <OutfitTypography
+        weight="500"
+        variant="h2"
+        textDecoration={{ lineHeight: 1.5 }}
+      >
+        Review our end user agreement and privacy policy <br />
+        {userProfile?.baaSigned
+          ? null
+          : 'and confirm your Business Associate Agreement'}
+        <br />
+        {userProfile?.baaSigned ? null : '(BAA) for HIPAA-compliance'}
+      </OutfitTypography>
+      {userProfile?.baaSigned ? (
+        <Spacing vertical={1} />
+      ) : (
+        <Spacing vertical={5} />
+      )}
       <Grid container>
         <Grid item sm={12} container wrap="nowrap" alignItems="center">
-          <Checkbox
-            isChecked={isEulaAccepted}
+          <CircleIcon
+            src={isEulaAccepted ? CircleCompleted : Circle}
             onClick={toggleEulaAccepted}
-            size={20}
           />
           <Spacing horizontal={3} />
-          <RobotoTypography variant="h4">
+          <OutfitTypography variant="h4" weight="500">
             <span>I have read and agree to the </span>
             <OnboardingAnchor
               href="https://www.dock.health/end-user-license-agreement"
@@ -72,18 +91,17 @@ const OnboardingEulaView = () => {
             >
               Privacy Statement
             </OnboardingAnchor>
-          </RobotoTypography>
+          </OutfitTypography>
         </Grid>
         <Spacing vertical={4} />
         {!userProfile?.baaSigned && (
           <Grid item sm={12} container wrap="nowrap" alignItems="center">
-            <Checkbox
-              isChecked={isBaaAccepted}
+            <CircleIcon
+              src={isBaaAccepted ? CircleCompleted : Circle}
               onClick={toggleBaaAccepted}
-              size={20}
             />
             <Spacing horizontal={3} />
-            <RobotoTypography variant="h4">
+            <OutfitTypography variant="h4" weight="500">
               <span>I have read and agree to the </span>
               <OnboardingAnchor
                 onClick={() => {
@@ -92,19 +110,24 @@ const OnboardingEulaView = () => {
               >
                 Business Associate Agreement (BAA)
               </OnboardingAnchor>
-            </RobotoTypography>
+            </OutfitTypography>
           </Grid>
         )}
         <Spacing vertical={isSmallScreen ? 4 : 6} />
-        <Grid item sm={12} container justifyContent="flex-end">
+        <Grid item sm={12} container justifyContent="flex-left">
           <Grid item xs={12} sm={12} md={4}>
             <Button
+              uppercase={false}
               disabled={continueButtonDisabled}
               variant="primary"
               onClick={onAgreeClick}
               fullWidth
+              color={palette.brightOrange}
+              secondaryColor={palette.oPlusRed}
             >
-              Agree & Continue
+              <OutfitTypography weight="700" variant="h4">
+                Agree & Continue
+              </OutfitTypography>
             </Button>
           </Grid>
         </Grid>

@@ -14,7 +14,7 @@ import compose from 'ramda/src/compose';
 import equals from 'ramda/src/equals';
 import * as AnalyticsActions from 'actions/analytics-actions';
 
-import MegaFilter from 'components/tasklist/MegaFilter/MegaFilter';
+import MegaFilter from '@/app/components/tasklist/list-toolbar-buttons/MegaFilter/MegaFilter';
 import {
   showAddQuickFilterOption,
   deleteQuickFilter,
@@ -145,7 +145,7 @@ const AnalyticsView = () => {
             addQuickFilterOption={addQuickFilterOption}
             selectedQuickFilter={selectedQuickFilter}
             selectQuickFilter={handleSelectQuickFilter}
-            onSaveClick={handleSaveQuickFilter}
+            handleSaveQuickFilter={handleSaveQuickFilter}
             onSaveAsNewClick={handleSaveAsQuickFilter}
             wasChangedFilters={wasChangedFilters}
             onQuickFilterCreate={handleQuickFilterCreate}

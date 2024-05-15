@@ -11,7 +11,7 @@ const TaskItemList = ({ listName, taskListIdentifier, taskStatus }) => {
       {listName}
     </ListLink>
   ) : (
-    'Unfiled'
+    ''
   );
 };
 

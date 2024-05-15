@@ -7,9 +7,14 @@ import {
   TASK_LIST_RESTRICTIONS_OPTIONS,
 } from 'restrictions/task-restrictions';
 import RichTextEditor from 'components/common/RichTextEditor/RichTextEditor';
-import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
+import Circle from 'img/circle.svg';
 import { AddTaskInputWrapper, ErrorLabel } from './styled';
-
+import {
+  CircleIcon,
+  MainStandardTaskItemCell,
+  StandardTaskItemContainer,
+} from '../../task/styled';
+import { Box } from '@mui/material';
 const { DISABLED } = TASK_LIST_RESTRICTIONS_OPTIONS;
 
 const QuickAddTaskInput = React.forwardRef(
@@ -24,6 +29,8 @@ const QuickAddTaskInput = React.forwardRef(
       disableMentions = false,
       small,
       iconColorActive,
+      origin,
+      style,
     },
     reference,
     // eslint-disable-next-line sonarjs/cognitive-complexity
@@ -52,28 +59,67 @@ const QuickAddTaskInput = React.forwardRef(
       setDescription(value);
     };
 
-    const handleTextEditorKeyEnter = (value) => {
-      quickAddTask({ description: value, taskListIdentifier });
+    const handleTextEditorKeyEnter = (value, taskMentions) => {
+      quickAddTask({ description: value, taskListIdentifier, taskMentions });
       setDescription('');
     };
 
     return (
       <>
-        <AddTaskInputWrapper hasError={!!error} iconColor={iconColorActive}>
-          <RichTextEditor
-            placeholder="Add a task and press enter on your keyboard"
-            ref={reference || quickAddTaskInputReference}
-            value={description}
-            onChange={handleTextEditorChange}
-            onKeyEnter={handleTextEditorKeyEnter}
-            showToolbar={false}
-            multiline={false}
-            disableToolbar
-            showToolbarInline
-            initOnClick
-            taskListIdentifier={taskListIdentifier}
-          />
-        </AddTaskInputWrapper>
+        {origin === 'LIST' ? (
+          <StandardTaskItemContainer
+            isAddingTask
+            iconColorActive={iconColorActive}
+            origin={origin}
+          >
+            <MainStandardTaskItemCell
+              bolded
+              position="static"
+              alignItems="flex-start"
+              paddingLeft="huge"
+              paddingRight="small"
+            >
+              <CircleIcon src={Circle} />
+              <Box flex={1} overflow="hidden">
+                <RichTextEditor
+                  placeholder="Add task"
+                  ref={reference || quickAddTaskInputReference}
+                  value={description}
+                  onChange={handleTextEditorChange}
+                  onKeyEnter={handleTextEditorKeyEnter}
+                  showToolbar={false}
+                  onBlur={onBlur}
+                  multiline={false}
+                  disableToolbar
+                  showToolbarInline
+                  initOnClick
+                  taskListIdentifier={taskListIdentifier}
+                />
+              </Box>
+            </MainStandardTaskItemCell>
+          </StandardTaskItemContainer>
+        ) : (
+          <AddTaskInputWrapper
+            hasError={!!error}
+            iconColor={iconColorActive}
+            style={style}
+          >
+            <RichTextEditor
+              placeholder="Add task"
+              ref={reference || quickAddTaskInputReference}
+              value={description}
+              onChange={handleTextEditorChange}
+              onKeyEnter={handleTextEditorKeyEnter}
+              showToolbar={false}
+              onBlur={onBlur}
+              multiline={false}
+              disableToolbar
+              showToolbarInline
+              initOnClick
+              taskListIdentifier={taskListIdentifier}
+            />
+          </AddTaskInputWrapper>
+        )}
         {error && <ErrorLabel>{error}</ErrorLabel>}
       </>
     );

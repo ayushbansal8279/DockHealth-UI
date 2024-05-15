@@ -12,8 +12,8 @@ export const CheckboxInput = styled.div`
   border-radius: ${({ isCircle }) => (isCircle ? '50%' : '2px')};
   border: ${(props) =>
     props.isChecked
-      ? `1px solid ${palette.brightBlue}`
-      : `1px solid ${palette.coolGrey2}`};
+      ? `${props.borderHeight ?? `1px`} solid ${palette.brightBlue}`
+      : `${props.borderHeight ?? `1px`} solid ${palette.coolGrey2}`};
   transition: all 150ms;
   cursor: ${({ disabled }) => (disabled ? 'default' : 'pointer')};
   display: flex;

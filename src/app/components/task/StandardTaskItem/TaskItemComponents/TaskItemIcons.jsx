@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import { Grid } from '@mui/material';
 import { storeAsCurrentTask } from 'actions/task-actions';
 import { openDrawer } from 'actions/task-drawer-actions';
@@ -12,6 +12,7 @@ import Tooltip from 'components/common/Tooltip/Tooltip';
 import TaskIcon from 'components/task/TaskIcon/TaskIcon';
 import { SINGLE_TASK_RESTRICTIONS_OPTIONS } from 'restrictions/task-restrictions';
 import { GridImg } from '../../styled';
+import TaskLabel from '@/app/components/common/TaskLabel/TaskLabel';
 
 const TaskItemIcons = ({
   matchComments,
@@ -23,6 +24,7 @@ const TaskItemIcons = ({
   attachments,
   dispatch,
   restrictions,
+  isHover,
 }) => {
   const onCommentClick = useCallback(() => {
     dispatch(openDrawer(DrawerFieldEnum.COMMENT));
@@ -50,7 +52,7 @@ const TaskItemIcons = ({
             title={
               comments?.length > 0
                 ? getCommentsIconTooltipTitle(comments)
-                : 'Add a new comment'
+                : 'Add Comment'
             }
           >
             <button type="button" onClick={onCommentClick}>
@@ -64,34 +66,41 @@ const TaskItemIcons = ({
         </GridImg>
       ) : null}
       {labels ? (
-        <GridImg item xs={12} matched={matchLabels}>
-          <Tooltip
-            hideTooltip={
-              restrictions?.labels === SINGLE_TASK_RESTRICTIONS_OPTIONS.DISABLED
-            }
-            placement="top"
-            title={
-              labels?.length > 0
-                ? getLabelsIconTooltipTitle(labels)
-                : 'Add label'
-            }
-          >
-            <button
-              disabled={
+        labels.length > 0 ? (
+          <TaskLabel
+            getLabelsIconTooltipTitle={getLabelsIconTooltipTitle}
+            labels={labels}
+            onClick={onLabelClick}
+          />
+        ) : (
+          <GridImg item xs={12} matched={matchLabels}>
+            <Tooltip
+              hideTooltip={
                 restrictions?.labels ===
                 SINGLE_TASK_RESTRICTIONS_OPTIONS.DISABLED
               }
-              type="button"
-              onClick={onLabelClick}
+              placement="top"
+              title="Add Label"
             >
-              <TaskIcon
-                type="labels"
-                isActive={labels?.length > 0}
-                isNew={task.updatedLabel}
-              />
-            </button>
-          </Tooltip>
-        </GridImg>
+              <button
+                disabled={
+                  restrictions?.labels ===
+                  SINGLE_TASK_RESTRICTIONS_OPTIONS.DISABLED
+                }
+                type="button"
+                onClick={onLabelClick}
+              >
+                {(labels?.length > 0 || isHover?.label) && (
+                  <TaskIcon
+                    type="labels"
+                    isActive={labels?.length > 0}
+                    isNew={task.updatedLabel}
+                  />
+                )}
+              </button>
+            </Tooltip>
+          </GridImg>
+        )
       ) : null}
       {attachments ? (
         <GridImg item xs={12} matched={matchAttachments}>
@@ -100,15 +109,17 @@ const TaskItemIcons = ({
             title={
               attachments?.length > 0
                 ? getAttachmentsIconTooltipTitle(attachments)
-                : 'Add file'
+                : 'Add File'
             }
           >
             <button type="button" onClick={onAttachmentsClick}>
-              <TaskIcon
-                type="attachments"
-                isActive={attachments?.length > 0}
-                isNew={task.updatedAttachment}
-              />
+              {(attachments?.length > 0 || isHover?.file) && (
+                <TaskIcon
+                  type="attachments"
+                  isActive={attachments?.length > 0}
+                  isNew={task.updatedAttachment}
+                />
+              )}
             </button>
           </Tooltip>
         </GridImg>

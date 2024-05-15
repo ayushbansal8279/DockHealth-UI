@@ -14,6 +14,9 @@ export const FilterOptionsCategory = {
   COMPLETE_DATE: 'taskCompletedDateOptions',
   CREATED_DATE: 'taskCreatedDateOptions',
   TASK_STATUS: 'taskStatusOptions',
+  ESCALATED: 'escalatedStatusOptions',
+  CREATED_BY: 'createdBy',
+  COMPLETED_BY: 'completedBy',
 };
 
 const FilterOptionsLabel = {
@@ -24,11 +27,14 @@ const FilterOptionsLabel = {
   [FilterOptionsCategory.ASSIGNED_BY]: 'Assigned by',
   [FilterOptionsCategory.DUE_DATE]: 'Due date',
   [FilterOptionsCategory.LABELS]: 'Label',
-  [FilterOptionsCategory.WORKFLOW_STATUS]: 'Workflow status',
+  [FilterOptionsCategory.WORKFLOW_STATUS]: 'Workflow Status',
   [FilterOptionsCategory.PRIORITY]: 'Priority',
   [FilterOptionsCategory.COMPLETE_DATE]: 'Task completed date',
   [FilterOptionsCategory.CREATED_DATE]: 'Task created date',
-  [FilterOptionsCategory.TASK_STATUS]: 'Status',
+  [FilterOptionsCategory.TASK_STATUS]: 'Completed Status',
+  [FilterOptionsCategory.ESCALATED]: 'Escalated',
+  [FilterOptionsCategory.CREATED_BY]: 'Created By',
+  [FilterOptionsCategory.COMPLETED_BY]: 'Completed By',
 };
 
 const DATE_FILTER_OPTIONS = new Set([

@@ -4,7 +4,7 @@ import spacing from 'styles/spacing';
 import palette from 'styles/palette';
 
 const StyledButton = styled.button`
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Outfit', sans-serif;
   color: ${palette.darkBlue};
   border: 1.15px solid ${palette.darkBlue};
   font-weight: 600;
@@ -18,7 +18,13 @@ export const LoadMoreSection = styled.div`
   width: 100%;
   align-items: center;
   justify-content: center;
-  padding: ${spacing.large} 0;
+  // padding: ${spacing.large} 0;
+  padding: ${({ origin, bgColor }) =>
+    origin === 'LIST'
+      ? bgColor
+        ? '0px 24px 24px 24px'
+        : `24px 24px 2px 24px`
+      : `${spacing.large} 0`};
 `;
 
 const LoadMoreButton = ({ onClick, disabled }) => (

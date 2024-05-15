@@ -12,6 +12,18 @@ const palette = {
   orange: '#ef8a23',
   darkOrange: '#d97e22',
   newDarkBlue: '#0e244a',
+  brightOrange: '#da5a47',
+  newBrightBlue: '#5a71f2',
+  newBrightBlueShaded: '#5a71f2cc',
+  purpleNavy: '#3a4c6a',
+  cornFlowerBlue: '#778af1',
+  zinc: '#afb8c4',
+  whiteSmoke: '#F8F8F9',
+  aliceBlue: '#eff6fb',
+  lightGrayishBlue: '#D4D9DF',
+  shadowBlue: '#8492A4',
+  gunmetal: '#292D34',
+  softSteelBlue: '#C1CCDA',
 
   // secondary
   purplePassion: '#553bbe',
@@ -34,11 +46,14 @@ const palette = {
   coolGrey6: '#82909D',
   coolGrey9: '#17191c',
   coolGrey7: '#C0CBD4',
+  coolGrey8: '#727271',
+  coolGrey10: '#6d757c',
   blueGrey: '#f5f8fa',
 
   // COLORS NOT EXISTING IN GLOBAL PALETTE
   error: '#e40909',
   lightGrey2: '#f3f5f6',
+  offBlack: '#292d34',
   black: '#000000',
   white: '#ffffff',
   lightCyanBlue: '#009fcd',
@@ -67,6 +82,8 @@ const palette = {
   lightBlue: '#5ccced',
   skeletonLoader: '#e5e9f2',
   selectedBlue: '#05ADEC',
+  crystalBlue: '#4bb3fd',
+  iron: '#D4D9DF',
 
   // lighter ones - 90%
   dockBlueLight: '#e0eff9',
@@ -74,6 +91,12 @@ const palette = {
   tomatoInYoFaceLight: '#f9d4d2',
   orangeJuliusLight: '#fee6cd',
   bananaHammockLight: '#fff4cc',
+  tealGreen: '#69b8b2',
+  lightOceanBlue: '#daefff',
+};
+
+export const typography = {
+  text: `'Outfit', sans-serif`,
 };
 
 export const featurePalette = {

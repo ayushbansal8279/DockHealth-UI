@@ -12,6 +12,7 @@ const TaskTemplateMembers = ({
   workflow = {},
   onWorkflowUpdate,
   readOnly,
+  isHover,
 }) => {
   const {
     assignedToUsers = [],
@@ -40,6 +41,7 @@ const TaskTemplateMembers = ({
           selectedMembers={assignedToUsers}
           onSelect={handleWorkflowUpdate}
           onError={closePopover}
+          closeModel={closePopover}
           enableLazyLoading={
             workflow?.taskList?.listType === 'PUBLIC' ||
             workflow?.taskList?.listType === 'TEMPLATE'
@@ -54,11 +56,15 @@ const TaskTemplateMembers = ({
           <MemberGroup members={assignedToUsers} />
         </>
       ) : (
-        <Tooltip placement="top" title="Assign to">
-          <div>
-            <AssignMemberIcon />
-          </div>
-        </Tooltip>
+        <>
+          {isHover && (
+            <Tooltip placement="top" title="Add assignee">
+              <div style={{ marginLeft: '2px' }}>
+                <AssignMemberIcon />
+              </div>
+            </Tooltip>
+          )}
+        </>
       )}
     </TaskItemPopover>
   );

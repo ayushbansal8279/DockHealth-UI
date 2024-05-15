@@ -26,6 +26,12 @@ export function getCurrentPatients() {
   };
 }
 
+export function silentlyGetCurrentPatients() {
+  return {
+    type: ActionTypes.SILENTLY_GET_CURRENT_PATIENTS,
+  };
+}
+
 export function clearPatients() {
   return {
     type: ActionTypes.CLEAR_PATIENTS,

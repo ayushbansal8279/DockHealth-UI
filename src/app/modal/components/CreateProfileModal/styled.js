@@ -1,7 +1,7 @@
 import { Checkbox } from '@mui/material';
 import styled from 'styled-components';
 import { fontSizes, fontWeights } from 'styles/font';
-import palette from 'styles/palette';
+import palette, { typography } from 'styles/palette';
 import spacing from 'styles/spacing';
 import { ModalWrapper } from '../styled';
 
@@ -15,7 +15,7 @@ export const AddPatientFieldModalWrapper = styled(ModalWrapper)`
   width: 700px;
   min-height: 200px;
   padding: ${spacing.large} ${spacing.huge};
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Outfit', sans-serif;
   color: ${palette.mediumGrey};
 `;
 
@@ -47,7 +47,7 @@ export const FieldTypeImage = styled.img`
 export const FiledTypeDescription = styled.p`
   min-height: 72px;
   margin-bottom: 0;
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: inherit;
   font-size: ${fontSizes.regular};
   font-weight: ${fontWeights.light};
   color: ${palette.coolGrey1};
@@ -55,7 +55,7 @@ export const FiledTypeDescription = styled.p`
 
 export const FiledTypeTitle = styled.p`
   margin-bottom: 8px;
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: inherit;
   font-size: ${fontSizes.regular};
   font-weight: ${fontWeights.bold};
   color: ${palette.coolGrey1};

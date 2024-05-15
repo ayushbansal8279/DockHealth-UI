@@ -27,7 +27,7 @@
   padding: 0;
   list-style: none;
   background: white;
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: Outfit !important;
   border: 0.1px solid #e5e9f2; /* coolGrey3 */
   box-shadow: 0px 0px 11px rgba(0, 0, 0, 0.15);
 }
@@ -53,7 +53,7 @@
 }
 
 .tribute-container .profile {
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: Outfit !important;
   font-size: 12px;
   font-weight: bold;
   text-align: center;
@@ -77,4 +77,8 @@
 
 .fr-box .fr-counter {
   padding: 1px;
+}
+
+.fr-box * {
+  font-family: Outfit !important;
 }

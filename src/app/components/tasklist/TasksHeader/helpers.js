@@ -67,6 +67,7 @@ export const getTaskHeaderOptions = (
         .charAt(0)
         .toUpperCase()}${customerTypeLabel.slice(1)} Gender`,
       draggable: true,
+      sortDisabled: true,
     },
     {
       identifier: TaskHeaderColumn.PATIENT_DOB,
@@ -115,16 +116,19 @@ export const getTaskHeaderOptions = (
       identifier: TaskHeaderColumn.COMMENTS,
       label: 'Comments',
       draggable: true,
+      sortDisabled: true,
     },
     {
       identifier: TaskHeaderColumn.LABELS,
       label: 'Labels',
       draggable: true,
+      sortDisabled: true,
     },
     {
       identifier: TaskHeaderColumn.FILES,
       label: 'Files',
       draggable: true,
+      sortDisabled: true,
     },
     {
       identifier: TaskHeaderColumn.START_DATE,

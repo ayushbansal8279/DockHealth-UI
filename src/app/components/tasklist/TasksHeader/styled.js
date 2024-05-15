@@ -7,7 +7,7 @@ export const BulkContainer = styled.div`
   align-items: center;
   justify-content: center;
   padding-right: 54px;
-  margin-left: 12px;
+  margin-left: 13px;
   &::after {
     border-right: 1px solid ${palette.coolGrey3};
     content: '';
@@ -29,7 +29,6 @@ export const StickyColumnContainer = styled.div`
   `}
   position: sticky;
   display: flex;
-
   left: 24px;
   z-index: 11;
   border-left: 1px solid ${palette.coolGrey3};
@@ -62,6 +61,7 @@ export const StickyColumnContainer = styled.div`
     height: 100%;
     width: 100%;
     z-index: -1;
+    // box-shadow: -1px 0 3px 0 rgba(0, 0, 0, 0), 2.5px 0 0 0 #48bbb3;
   }
 
   @media print {

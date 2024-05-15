@@ -2,12 +2,18 @@ import React from 'react';
 // import MuiTooltip from '@mui/material/Tooltip';
 import { bool, node, oneOf, oneOfType, string } from 'prop-types';
 import { MuiTooltip } from './styled';
+import palette from '@/app/styles/palette';
 
 const Tooltip = ({
   children,
   title,
   placement,
   arrow = true,
+  open,
+  onClose,
+  child,
+  childTitle,
+  childPlacement,
   // hideTooltip = false,
 }) => {
   return title ? (
@@ -16,8 +22,55 @@ const Tooltip = ({
       title={title}
       placement={placement}
       arrow={arrow}
+      open={open}
+      onClose={onClose}
+      componentsProps={{
+        tooltip: {
+          sx: {
+            color: 'black',
+            backgroundColor: palette.whiteSmoke,
+            fontSize: '14px',
+            boxShadow: '0px 0px 10px 0px rgba(0, 0, 0, 0.15)',
+            borderRadius: '4px',
+          },
+        },
+        arrow: {
+          sx: {
+            color: palette.whiteSmoke,
+          },
+        },
+      }}
     >
-      {children}
+      {child ? (
+        <MuiTooltip
+          // enterDelay={hideTooltip ? 200 : 100}
+          title={childTitle}
+          placement={childPlacement}
+          arrow={arrow}
+          open={open}
+          onClose={onClose}
+          componentsProps={{
+            tooltip: {
+              sx: {
+                color: 'black',
+                backgroundColor: palette.whiteSmoke,
+                fontSize: '14px',
+                boxShadow: '0px 0px 10px 0px rgba(0, 0, 0, 0.15)',
+                borderRadius: '4px',
+              },
+            },
+            arrow: {
+              sx: {
+                color: palette.whiteSmoke,
+              },
+            },
+          }}
+        >
+          {children}
+        </MuiTooltip>
+      ) : (
+        children
+      )}
     </MuiTooltip>
   ) : (
     children

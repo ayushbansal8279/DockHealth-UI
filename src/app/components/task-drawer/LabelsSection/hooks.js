@@ -81,7 +81,7 @@ const initializeLabelsSectionHooks = ({
       'labels',
       getFormattedLabels({ labels: selectedTask?.labels ?? [] }),
     );
-    const refreshedTask = await refreshTask(selectedTask.identifier)(dispatch);
+    const refreshedTask = await dispatch(refreshTask(selectedTask?.identifier));
 
     onTaskUpdate(refreshedTask);
   };

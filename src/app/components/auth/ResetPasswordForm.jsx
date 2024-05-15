@@ -2,10 +2,12 @@ import React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { object, string } from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { MontserratTypography } from 'styles/theme-montserrat';
-import Button from 'components/common/Button/Button';
-import FormInput from 'components/common/Input/FormInput';
+import Button from 'components/common/v2/Button/Button';
+import FormInput from 'components/common/v2/Input/FormInput';
 import Spacing from 'components/common/Spacing';
+import palette from 'styles/palette';
+import { OutfitTypography } from 'styles/theme-outfit';
+import { Title } from './Title';
 
 const MIN_PASSWORD_LENGTH = 8;
 
@@ -32,16 +34,14 @@ const ResetPasswordForm = ({ authTokenReceived, onSubmit }) => {
   return (
     <form style={{ width: '100%' }} onSubmit={handleSubmit(onSubmit)}>
       <FormProvider {...formMethods}>
-        <MontserratTypography variant="h2">
-          Let’s set a new password
-        </MontserratTypography>
+        <Title>Let’s set a new password</Title>
         {!authTokenReceived && (
           <>
             <Spacing vertical={4} />
-            <MontserratTypography variant="h4">
+            <OutfitTypography variant="h4">
               First enter the six digit authorization code that was sent to your
               cell phone
-            </MontserratTypography>
+            </OutfitTypography>
             <Spacing vertical={4} />
             <FormInput
               name="code"
@@ -52,19 +52,31 @@ const ResetPasswordForm = ({ authTokenReceived, onSubmit }) => {
           </>
         )}
         <Spacing vertical={4} />
-        <MontserratTypography variant="h4">
+        <OutfitTypography variant="h4">
           In order to protect your account, please make sure your password is 8
           character minimum, includes at least one number and one capital letter
           and one special character
-        </MontserratTypography>
+        </OutfitTypography>
         <Spacing vertical={4} />
         <FormInput
           name="password"
           type="password"
           label="Enter a new password"
         />
+        <Spacing vertical={3} />
+        <OutfitTypography variant="h5">
+          * 8 characters • 1 capital • 1 number • 1 special character
+        </OutfitTypography>
         <Spacing vertical={5} />
-        <Button active id="loginButton" size="large" type="submit">
+        <Button
+          uppercase={false}
+          active
+          id="loginButton"
+          size="large"
+          type="submit"
+          color={palette.brightOrange}
+          secondaryColor={palette.oPlusRed}
+        >
           Continue
         </Button>
       </FormProvider>

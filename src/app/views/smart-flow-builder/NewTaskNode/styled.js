@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import palette from 'styles/palette';
+import palette, { typography } from 'styles/palette';
 
 export const NewTaskWrapper = styled.div`
   width: 100%;
@@ -19,7 +19,7 @@ export const NewTaskWrapper = styled.div`
 
 export const NewTaskInput = styled.input`
   padding: 15px 0;
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: inherit;
   border: none;
   outline: none;
   color: ${palette.mediumGrey};

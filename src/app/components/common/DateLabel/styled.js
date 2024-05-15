@@ -7,13 +7,32 @@ export const DueDateBasicLabel = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-  padding: 2px ${spacing.tiny};
-  border-radius: 6px;
-  background: ${({ isOverdue }) => (isOverdue ? '#e84739' : '#949aa4')};
-  color: ${palette.white};
   font-size: ${fontSizes.small};
 `;
 
 export const DateText = styled.p`
   margin-bottom: 0;
+  white-space: nowrap;
+`;
+
+export const DateTextContainer = styled.div`
+  align-items: center;
+  border-radius: 2px;
+  background: ${({ isOverdue }) =>
+    isOverdue ? `${palette.oPlusRed}` : `${palette.whiteSmoke}`};
+  padding: 3px ${spacing.small};
+  color: ${({ isOverdue }) =>
+    isOverdue ? `${palette.white}` : `${palette.offBlack}`};
+`;
+
+export const ReminderIconContainer = styled.div`
+  color: ${({ isOverdue }) =>
+    isOverdue ? palette.oPlusRed : palette.coolGrey1};
+  padding-left: ${spacing.small};
+`;
+
+export const RecurringIconContainer = styled.div`
+  color: ${({ isOverdue }) =>
+    isOverdue ? palette.oPlusRed : palette.offBlack};
+  padding-left: ${spacing.small};
 `;
