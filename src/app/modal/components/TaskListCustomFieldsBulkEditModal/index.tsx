@@ -3,7 +3,10 @@ import { useDispatch } from 'react-redux';
 
 import { bulkEditCustomFieldsByTaskIdentifiers } from '@/app/api/task-api';
 import { ICustomField } from '@/app/types/CustomField';
-import { FormattedMetaData } from '../CustomFieldsBulkEditModal/helpers';
+import {
+  FormattedMetaDataForApi,
+  convertMetaDataApiToState,
+} from '../CustomFieldsBulkEditModal/helpers';
 import CustomFieldsBulkEditModal from '../CustomFieldsBulkEditModal';
 import { showGlobalAlert, showGlobalErrorAlert } from '@/app/alert/actions';
 import AlertMessages from '@/app/alert/AlertMessages';
@@ -11,7 +14,6 @@ import { updateCustomFieldsByTaskIdentifiers } from '@/app/actions/task-actions'
 
 interface Props {
   taskIdentifiers: string[];
-  taskListIdentifier?: string; // todo: confirm and remove
   customFields: ICustomField[];
   closeModal: VoidFunction;
 }
@@ -23,7 +25,7 @@ export default function TaskListCustomFieldsBulkEditModal({
 }: Props) {
   const dispatch = useDispatch();
 
-  const handleSave = async (formattedMetaData: FormattedMetaData) => {
+  const handleSave = async (formattedMetaData: FormattedMetaDataForApi) => {
     try {
       const payload = {
         metaData: formattedMetaData,
@@ -31,7 +33,10 @@ export default function TaskListCustomFieldsBulkEditModal({
       };
       await bulkEditCustomFieldsByTaskIdentifiers(payload);
       dispatch(
-        updateCustomFieldsByTaskIdentifiers(taskIdentifiers, formattedMetaData),
+        updateCustomFieldsByTaskIdentifiers(
+          taskIdentifiers,
+          convertMetaDataApiToState(formattedMetaData),
+        ),
       );
       dispatch(showGlobalAlert(AlertMessages.UPDATED));
       closeModal();

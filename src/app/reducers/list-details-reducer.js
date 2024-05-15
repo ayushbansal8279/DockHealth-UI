@@ -5,6 +5,7 @@ import { TaskGroupType, TaskItemType } from 'helpers/task-helpers';
 import { updateBundleInList } from 'helpers/tasklist-helpers';
 import { updateTasksStateCallback, updateTasksMap } from './reducer-helper';
 import TaskBaseReducer from './task-base-reducer';
+import { mergeArr } from '../helpers/array-helpers';
 
 const initialState = {
   taskListIdentifier: null,
@@ -879,18 +880,10 @@ const ListDetailsReducer = (state = initialState, action) => {
 
         tasksMap[taskIdentifier] = {
           ...tasksMap[taskIdentifier],
-          taskMetaData: tasksMap[taskIdentifier].taskMetaData.map(
-            (metaItem) => {
-              if (!metaItem.customFieldIdentifier) return metaItem;
-              const metaItemToUpdate = metaDataToUpdate.find(
-                ({ customFieldIdentifier }) =>
-                  customFieldIdentifier === metaItem.customFieldIdentifier,
-              );
-              return {
-                ...metaItem,
-                ...metaItemToUpdate,
-              };
-            },
+          taskMetaData: mergeArr(
+            tasksMap[taskIdentifier].taskMetaData,
+            metaDataToUpdate,
+            'customFieldIdentifier',
           ),
         };
       }

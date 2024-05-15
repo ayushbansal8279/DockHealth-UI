@@ -6,7 +6,7 @@ import { bulkEditPatientsCustomFields } from '@/app/api/patients-api';
 
 import * as PatientsActions from 'actions/patients-actions';
 import { ICustomField } from '@/app/types/CustomField';
-import { FormattedMetaData } from '../CustomFieldsBulkEditModal/helpers';
+import { FormattedMetaDataForApi } from '../CustomFieldsBulkEditModal/helpers';
 import CustomFieldsBulkEditModal from '../CustomFieldsBulkEditModal';
 
 interface Props {
@@ -29,7 +29,7 @@ export default function PatientCustomFieldsBulkEditModal({
     );
   }, []);
 
-  const handleSave = async (formattedMetaData: FormattedMetaData) => {
+  const handleSave = async (formattedMetaData: FormattedMetaDataForApi) => {
     try {
       const payload = {
         metaData: formattedMetaData,

@@ -1,4 +1,3 @@
-/* eslint-disable import/extensions */
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { ListItemText, MenuItem, Select } from '@mui/material';
 import { ColorIndicator, DropdownBox } from './styled';
@@ -47,6 +46,7 @@ const TaskItemDropdown = ({
       {colorIndicator && <ColorIndicator color={colorIndicator} />}
       <DropdownBox>
         <Select
+          key={value}
           sx={{
             '& .MuiOutlinedInput-notchedOutline': {
               borderColor: 'transparent',
@@ -57,7 +57,7 @@ const TaskItemDropdown = ({
             '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
               borderColor: 'transparent',
             },
-            height:'26px',
+            height: '26px',
           }}
           name="dropdownCustomField"
           value={value}
