@@ -94,6 +94,11 @@ export const TasksGroupLabelName = styled.span`
   text-overflow: ellipsis;
   vertical-align: middle;
   font-family: Outfit, sans-serif;
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 22.68px;
+  letter-spacing: 0.307692289352417px;
+  text-align: left;
 `;
 
 export const TasksGroupNumericalBadgeContainer = styled.div`
@@ -104,7 +109,7 @@ export const TasksGroupNumericalBadgeContainer = styled.div`
   padding: 4px 7px 4px 7px;
   gap: 7px;
   margin-left: 6px;
-  margin-top: 3px;
+  margin-top: 2px;
   opacity: 0px;
 `;
 

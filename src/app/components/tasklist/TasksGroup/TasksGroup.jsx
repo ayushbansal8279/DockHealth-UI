@@ -309,39 +309,39 @@ const TasksGroup = ({
         </GroupOpenContainer>
         <Spacing horizontal={1} />
         <GroupNameSectionWrapper>
-          <GroupNameSection
-            initialValue={derivedGroupName}
-            onEnterClick={handleEditGroupName}
-            closeOnEnter
-            disabled={
-              isDefaultGroup ||
-              isCompletedGroup ||
-              restrictions?.editSettings === DISABLED ||
-              restrictCustomizationFeatures
-            }
-          >
-            <TasksGroupLabel>
+          <TasksGroupLabel>
+            <GroupNameSection
+              initialValue={derivedGroupName}
+              onEnterClick={handleEditGroupName}
+              closeOnEnter
+              disabled={
+                isDefaultGroup ||
+                isCompletedGroup ||
+                restrictions?.editSettings === DISABLED ||
+                restrictCustomizationFeatures
+              }
+            >
               <TasksGroupLabelName>{derivedGroupName}</TasksGroupLabelName>
-              {!isNil(groupTaskCounts) && (
-                <TasksGroupNumericalBadgeContainer>
-                  <TasksGroupTaskCount>
-                    {!isSearchApplied && !areFiltersApplied
-                      ? groupTaskCounts
-                      : tasksCount}
-                  </TasksGroupTaskCount>
-                </TasksGroupNumericalBadgeContainer>
+            </GroupNameSection>
+            {!isNil(groupTaskCounts) && (
+              <TasksGroupNumericalBadgeContainer>
+                <TasksGroupTaskCount>
+                  {!isSearchApplied && !areFiltersApplied
+                    ? groupTaskCounts
+                    : tasksCount}
+                </TasksGroupTaskCount>
+              </TasksGroupNumericalBadgeContainer>
+            )}
+            <div>
+              {!isCompletedGroup && !restrictCustomizationFeatures && (
+                <GroupOptionsContainer>
+                  <OptionsMenu options={options} placement="bottom-start">
+                    <MoreVert color="primary" />
+                  </OptionsMenu>
+                </GroupOptionsContainer>
               )}
-              <div>
-                {!isCompletedGroup && !restrictCustomizationFeatures && (
-                  <GroupOptionsContainer>
-                    <OptionsMenu options={options} placement="bottom-start">
-                      <MoreVert color="primary" />
-                    </OptionsMenu>
-                  </GroupOptionsContainer>
-                )}
-              </div>
-            </TasksGroupLabel>
-          </GroupNameSection>
+            </div>
+          </TasksGroupLabel>
         </GroupNameSectionWrapper>
       </TasksGroupHeader>
 
