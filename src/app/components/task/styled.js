@@ -848,7 +848,7 @@ export const ActionIconsContainer = styled.div`
   display: flex;
   position: relative;
   height: -webkit-fill-available;
-  width: 68px;
+  width: 65px;
   padding-right: 4px;
   align-items: center;
 

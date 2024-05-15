@@ -306,8 +306,8 @@ const TaskListToolbar = (props) => {
             {...props}
           />
         )}
-        <Spacing horizontal={3} />
-        <ToolbarSelect
+        {/* <Spacing horizontal={3} /> */}
+        {/* <ToolbarSelect
           options={LIST_TYPE_OPTIONS}
           value={
             isAllTasksView ? ListViewType.ALL_TASKS : ListViewType.LIST_VIEW
@@ -323,7 +323,7 @@ const TaskListToolbar = (props) => {
           }
           iconColorActive={iconColorActiveItem?.value}
           width={170}
-        />
+        /> */}
         {/* <Box px={2} /> */}
         {taskListIdentifierParameter !== ListViewType.ALL_TASKS && (
           <ToolbarSelect

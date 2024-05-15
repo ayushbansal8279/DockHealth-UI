@@ -47,6 +47,7 @@ function VListGroup(
     <Sc.VListGroup ref={ref} {...register} bgColor={bgColor}>
       {/* @ts-ignore */}
       <TasksGroup
+        isDefaultGroup={name === 'DEFAULT'}
         taskGroupIdentifier={taskGroupIdentifier}
         groupName={name}
         groupTaskCounts={groupTaskCounts}
