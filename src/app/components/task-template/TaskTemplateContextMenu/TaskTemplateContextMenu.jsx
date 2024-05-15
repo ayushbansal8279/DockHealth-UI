@@ -158,13 +158,6 @@ const TaskTemplateContextMenu = ({
             </MenuItemButton>
           </div>
         )}
-        {restrictions?.name !== DISABLED && (
-          <div>
-            <MenuItemButton type="button" onClick={handleEditName}>
-              Edit Name
-            </MenuItemButton>
-          </div>
-        )}
         {restrictions?.move !== DISABLED && (
           <div>
             <MenuItemButton
