@@ -3,7 +3,6 @@ import React, { useMemo, useCallback } from 'react';
 import AppRegistrationIcon from '@mui/icons-material/AppRegistration';
 import { useParams } from 'react-router-dom';
 import isEmpty from 'ramda/src/isEmpty';
-import pluck from 'ramda/src/pluck';
 import { bulkEditTasks as bulkEditTasksApi } from 'api/task-api';
 import * as ModalActions from 'modal/actions';
 import {
@@ -107,8 +106,11 @@ const BulkEditOptionsBar = ({
     organizationCustomFieldsSelector,
   );
   const listCustomFields = useSelector(listCustomFieldsSelector);
-  const allTaskCustomFields =
-    organizationCustomFields?.concat(listCustomFields);
+
+  const allTaskCustomFields = useMemo(
+    () => [...(organizationCustomFields ?? []), ...(listCustomFields ?? [])],
+    [organizationCustomFields, listCustomFields],
+  );
 
   const allRequiredFieldsExist = useMemo(
     () =>
@@ -119,10 +121,7 @@ const BulkEditOptionsBar = ({
         );
         const isRequiredFieldsAreIncomplete =
           incompleteRequiredFields.length > 0;
-        if (isRequiredFieldsAreIncomplete) {
-          return false;
-        }
-        return true;
+        return !isRequiredFieldsAreIncomplete;
       }),
     [allTaskCustomFields, parentTasks],
   );
@@ -735,12 +734,14 @@ const BulkEditOptionsBar = ({
         taskIdentifiers: selectedTasks.parentTasks?.map(
           ({ taskIdentifier }) => taskIdentifier,
         ),
+        taskListIdentifier,
+        customFields: allTaskCustomFields,
         onSave: () => {
           dispatch(closeModal());
         },
       }),
     );
-  }, [dispatch, selectedTasks]);
+  }, [dispatch, selectedTasks, taskListIdentifier, allTaskCustomFields]);
 
   const handleDeleteTasks = useCallback(() => {
     dispatch(
