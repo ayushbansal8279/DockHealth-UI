@@ -190,15 +190,16 @@ const TaskItem = React.memo(
     isNextVirtualTaskItemTypeBundle,
     isLastTaskOfGroup,
   }) => {
+    const dependencyIconReference = useRef(null);
     const task = useSelector((state) => {
       return taskLookupSelector(state, origin, taskItemIdentifier);
     });
 
-    const taskWorkflow = templateBundleIdentifier
-      ? useSelector((state) => {
-          return taskLookupSelector(state, origin, templateBundleIdentifier);
-        })
-      : null;
+    const taskWorkflow = useSelector((state) =>
+      templateBundleIdentifier
+        ? taskLookupSelector(state, origin, templateBundleIdentifier)
+        : null,
+    );
 
     const {
       taskIdentifier,
@@ -218,8 +219,6 @@ const TaskItem = React.memo(
       searchMetaData = {},
       parentTask,
       subtaskQuickAddOpen,
-      // selected,
-      subTasksCount,
       subtasks: subTaskCurrentCount,
       dependencyTasksCompletedCount,
       dependencyTasksCount,
@@ -247,16 +246,8 @@ const TaskItem = React.memo(
       ),
     }));
 
-    const [isCompleted, setIsCompleted] = useState(false);
-    useEffect(() => {
-      if (task?.status === 'COMPLETE') {
-        setIsCompleted(true);
-      } else {
-        setIsCompleted(false);
-      }
-    }, [task]);
-
     const actions = useActions(TaskActions);
+    const [isCompleted, setIsCompleted] = useState(false);
     const modalActions = useActions(ModalActions);
 
     const isTaskStatusTogglingDisabled =
@@ -301,7 +292,6 @@ const TaskItem = React.memo(
     const [taskDecisionError, setTaskDecisionError] = useState(false);
     const [contextMenu, setContextMenu] = useState(null);
     const dispatch = useDispatch();
-    const dependencyIconReference = useRef(null);
     const [isEditingDescription, setEditingDescription] = useState(false);
     const [
       dependencyPopoverOpen,
@@ -347,6 +337,12 @@ const TaskItem = React.memo(
     const sort = useSelector(taskDetailsSortSelector);
     const emrPatientLink = selectedOrganization?.emrPatientLink;
 
+    const [isPatientDataReadOnly] = useState(true);
+
+    const [showCircleIconOnHover, setShowCircleIconOnHover] = useState(false);
+    const [tooltipsOpen, setTooltipsOpen] = useState(false);
+    const { tabName } = useParams();
+
     const customHighlightColor = useMemo(() => {
       const customHighlightItem =
         selectedOrganization?.themeSettings?.find(
@@ -365,6 +361,14 @@ const TaskItem = React.memo(
         hasPriorityHighlightItem && hasPriorityHighlightItem?.value === 'true'
       );
     }, [selectedOrganization]);
+
+    useEffect(() => {
+      if (task?.status === 'COMPLETE') {
+        setIsCompleted(true);
+      } else {
+        setIsCompleted(false);
+      }
+    }, [task]);
 
     const isListAdmin = useMemo(() => {
       const currentUserMember = currentTasklist?.listUsers?.find(
@@ -538,8 +542,6 @@ const TaskItem = React.memo(
         task?.taskIdentifier,
       ],
     );
-
-    const [isPatientDataReadOnly] = useState(true);
 
     const handlePatientUpdate = useCallback(
       (field) => (value) => {
@@ -787,9 +789,6 @@ const TaskItem = React.memo(
       [dispatch, task, taskCustomFields],
     );
 
-    const [showCircleIconOnHover, setShowCircleIconOnHover] = useState(false);
-    const [tooltipsOpen, setTooltipsOpen] = useState(false);
-
     const handleTooltipClose = () => {
       setTooltipsOpen(false);
     };
@@ -959,7 +958,6 @@ const TaskItem = React.memo(
     );
 
     const descriptionColumnOrder = getColumnOrder(TaskItemColumn.DESCRIPTION);
-    const { tabName } = useParams();
     const isCompletedView = tabName?.toUpperCase() === TaskStatus.COMPLETE;
 
     const iconColorActiveItem = useMemo(
