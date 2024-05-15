@@ -1,12 +1,11 @@
 import styled from 'styled-components';
 import palette from 'styles/palette';
 import spacing from 'styles/spacing';
-import { GridActionsCellItem } from '@mui/x-data-grid-premium';
 
-// eslint-disable-next-line import/prefer-default-export
 export const NonEmptyListTable = styled.div`
   color: ${palette.unknownGrey1};
   margin: 0.2rem;
+  height: calc(100vh - 220px);
   ${(props) =>
     props.highlightedPatientIdentifier ? 'margin-right: 0.25rem;' : ''}
 `;
