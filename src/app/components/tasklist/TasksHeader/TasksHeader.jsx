@@ -147,9 +147,9 @@ const TasksHeader = ({
           label={isRegular ? f.label : f.name}
           width={
             index === 0
-              ? +columnWidth - (origin === 'LIST' ? 1 : 1.5)
-              : index === 1
               ? +columnWidth - (origin === 'LIST' ? 1 : 1.1)
+              : index === 1
+              ? +columnWidth - (origin === 'LIST' ? 3 : 0.5)
               : +columnWidth
           }
           snapshot={snapshot}
