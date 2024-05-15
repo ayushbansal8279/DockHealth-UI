@@ -68,13 +68,6 @@ export const AttachmentFileInput = styled.input.attrs({
   width: 1px;
 `;
 
-export const DownloadAllLink = styled.a`
-  align-items: center;
-  color: ${palette.brightBlue};
-  padding: ${spacing.tiny} ${spacing.small};
-  margin: ${spacing.tiny};
-`;
-
 export const Title = styled.h3`
   font-family: 'Outfit', sans-serif;
   font-size: ${fontSizes.regular};
