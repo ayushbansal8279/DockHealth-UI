@@ -203,12 +203,12 @@ const SaveFilterPopup = ({
             />
             <Spacing horizontal={3} />
             <CheckboxDescription>Only You</CheckboxDescription>
-            <img
+            {/* <img
               onClick={toggleSharedList}
               src={everyOne ? CheckedCircle : BlankCircle}
             />
             <Spacing horizontal={3} />
-            <CheckboxDescription>Everyone</CheckboxDescription>
+            <CheckboxDescription>Everyone</CheckboxDescription> */}
           </CheckboxContainer>
         </PrivacyContainer>
         {isQuickFilterEdit && (
