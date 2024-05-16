@@ -38,7 +38,7 @@ const AttachmentsSection = ({
   const attachmentRef = useRef(null);
 
   const downloadDisabled = currentTaskAttachments?.some(
-    ({ scanStatus }) => scanStatus !== null && scanStatus !== ScanStatus.CLEAN,
+    ({ scanStatus }) => scanStatus && scanStatus !== ScanStatus.CLEAN,
   );
 
   useEffect(() => {
@@ -80,7 +80,7 @@ const AttachmentsSection = ({
           )}
         </OutfitTypography>
         <Grid item xs={12}>
-          <Spacing vertical={3} />
+          <Spacing vertical={2} />
         </Grid>
         <Grid
           item
@@ -109,7 +109,9 @@ const AttachmentsSection = ({
                   }}
                   onRemoveClick={removeTaskAttachment}
                 />
-                <p>{ScanStatusText[attachment?.scanStatus]}</p>
+                {attachment?.scanStatus && (
+                  <p>{ScanStatusText[attachment?.scanStatus]}</p>
+                )}
               </div>
             ))
           )}

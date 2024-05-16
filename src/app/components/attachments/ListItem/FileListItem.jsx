@@ -26,7 +26,7 @@ const FileListItem = (props) => {
   return (
     <Row
       onClick={() => {
-        if (scanStatus === null || scanStatus === ScanStatus.CLEAN) {
+        if (!scanStatus || scanStatus === ScanStatus.CLEAN) {
           onClick();
         }
       }}

@@ -36,12 +36,10 @@ export const PopoverHeader = styled.div`
   display: flex;
   box-sizing: border-box;
   // border-bottom: 1px solid ${palette.coolGrey3};
-  padding: 4px;
 `;
 
 export const BackIconContainer = styled.div`
   display: flex;
-  // padding: 4px;
   padding-right: 1px;
   padding-left: 10px;
   vertical-align: middle;

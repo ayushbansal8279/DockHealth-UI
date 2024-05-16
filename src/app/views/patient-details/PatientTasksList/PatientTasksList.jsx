@@ -313,19 +313,21 @@ const PatientTasksListView = () => {
   const groupHasMultipleAssignees = false;
 
   const isTaskGroupSelected = useSelector(
-    isTaskItemsSelectedSelector(activeList?.tasks),
+    isTaskItemsSelectedSelector(
+      activeList?.tasks.map((task) => task.identifier),
+    ),
   );
 
   const selectedTaskIdentifiers = useSelector(selectedTaskIdentifiersSelector);
 
   const handleGroupSelect = useCallback(() => {
-    const taskIdentifiers = activeList?.tasks;
+    const taskIdentifiers = activeList?.tasks.map((task) => task.identifier);
     dispatch(changeTasksSelectedState(!isTaskGroupSelected, taskIdentifiers));
   }, [activeList?.tasks, dispatch, isTaskGroupSelected]);
 
   const renderTasks = useCallback(
     (tasks, { isFullView, taskGroupIdentifier }) => {
-      const taskIdentifiers = tasks;
+      const taskIdentifiers = tasks.map((task) => task.identifier);
       const isGroupSelected =
         taskIdentifiers?.length > 0 &&
         taskIdentifiers?.every((taskId) =>
@@ -355,7 +357,7 @@ const PatientTasksListView = () => {
                 onSortChange={sortPatientTasks}
                 groupHasMultipleAssignees={groupHasMultipleAssignees}
                 isGroupSelected={isGroupSelected}
-                onGroupSelect={() => handleGroupSelect(tasks)}
+                onGroupSelect={handleGroupSelect}
               />
             )}
             {tasks?.map((task, index) => {

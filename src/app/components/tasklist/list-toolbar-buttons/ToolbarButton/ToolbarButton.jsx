@@ -12,8 +12,16 @@ import {
 } from './styled';
 
 const ToolbarButton = React.forwardRef((props, reference) => {
-  const { icon, onClick, children, tooltip, isOpen, active, hasPopover } =
-    props;
+  const {
+    icon,
+    onClick,
+    children,
+    tooltip,
+    isOpen,
+    active,
+    hasPopover,
+    disableButton,
+  } = props;
 
   return (
     <Tooltip placement="top" title={tooltip}>
@@ -24,6 +32,7 @@ const ToolbarButton = React.forwardRef((props, reference) => {
           size="large"
           active={+active}
           hasPopover={hasPopover}
+          disableButton={disableButton}
         >
           {icon}
           <CustomizeButtonLabel
@@ -42,6 +51,7 @@ const ToolbarButton = React.forwardRef((props, reference) => {
               onClick={onClick}
               size="large"
               active={+active}
+              disableButton={disableButton}
             >
               <CustomizeRotatableChevronButtonLabel
                 variant="body1"

@@ -98,6 +98,7 @@ const DashboardTasksGroup = ({
   );
 
   const [tasks, setNewTasks] = useState(dashboardTasks);
+  const [tasksIdentifiers, setTasksIdentifiers] = useState([]);
   const [groupIsOpen, setGroupIsOpen] = useState(defaultOpen);
   const quickAddTaskInputReference = useRef(null);
   const parentContainerReference = useRef(null);
@@ -118,10 +119,16 @@ const DashboardTasksGroup = ({
     }
   }, [dashboardTasks, isLoading, metricValue]);
 
-  const isGroupSelected = useSelector(isTaskItemsSelectedSelector(tasks));
+  const isGroupSelected = useSelector(
+    isTaskItemsSelectedSelector(tasksIdentifiers),
+  );
 
   const handleGroupSelect = useCallback(() => {
-    const taskIdentifiers = tasks;
+    let taskIdentifiers =
+      tasks && typeof tasks[0] === 'string'
+        ? tasks
+        : tasks.map((item) => item.identifier);
+    setTasksIdentifiers(taskIdentifiers);
     dispatch(
       TaskActions.changeTasksSelectedState(!isGroupSelected, taskIdentifiers),
     );

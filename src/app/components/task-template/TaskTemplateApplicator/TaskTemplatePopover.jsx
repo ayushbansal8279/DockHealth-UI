@@ -141,8 +141,8 @@ const TaskTemplatePopover = ({
       </WorkflowSearchHorizontalLineContainer>
       {parentList && (
         <>
-          <PopoverHeader>
-            <BackIconContainer onClick={onBack}>
+          <PopoverHeader onClick={onBack}>
+            <BackIconContainer>
               <ChevronLeftSharpIcon
                 fontSize="large"
                 sx={{ color: '#4BB3FD' }}
@@ -150,7 +150,7 @@ const TaskTemplatePopover = ({
               {/* <img src={ArrowLeftIcon} alt="back-navigation" /> */}
             </BackIconContainer>
             <HeaderTextContainer>
-              Back To All Workflows
+              Back
               {/* {trunc(parentList.name, 25)} */}
             </HeaderTextContainer>
           </PopoverHeader>
@@ -167,7 +167,7 @@ const TaskTemplatePopover = ({
             <LoaderItem />
           </LoaderContainer>
         )}
-        {!parentList && folders?.length > 0 && (
+        {folders?.length > 0 && (
           <>
             <WorkflowFoldersContainer>
               <WorkflowFoldersHeaderContainer>
