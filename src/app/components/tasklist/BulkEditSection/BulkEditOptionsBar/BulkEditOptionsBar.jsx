@@ -375,23 +375,9 @@ const BulkEditOptionsBar = ({
     /**
      *
      * @param {Array} selectedUsers users to send over api, assigned users list or newly unassigned users list
-     * @param {'assignment' | 'unassignment', 'unassign_all'} assignOption
+     * @param {'assignment' | 'unassignment' | 'unassign_all'} assignOption
      */
     (selectedUsers, assignOption) => {
-      // NOTE: update assignees in redux state
-      if (assignOption === 'unassign_all') {
-        bulkEditUnassignAllUsers(allSelectedTasksIdentifiers)(dispatch);
-      } else {
-        const methods = {
-          assignment: bulkEditAssignUsers,
-          unassignment: bulkEditUnassignUsers,
-        };
-        methods[assignOption]?.(
-          allSelectedTasksIdentifiers,
-          selectedUsers,
-        )(dispatch);
-      }
-
       // NOTE: prepare payload for api
       const payload = {
         bulkEditType: 'ASSIGN',
@@ -419,7 +405,6 @@ const BulkEditOptionsBar = ({
       // send api request
       bulkEditTasksApi(payload)
         .then(({ transactionIdentifier }) => {
-          refreshTaskWorkflows(allSelectedWorkflowIdentifiers);
           dispatch(
             AlertActions.showGlobalAlertWithUndo(
               allSelectedTasksLength > 1
@@ -439,6 +424,19 @@ const BulkEditOptionsBar = ({
               },
             ),
           );
+          // NOTE: update assignees in redux state
+          if (assignOption === 'unassign_all') {
+            bulkEditUnassignAllUsers(allSelectedTasksIdentifiers)(dispatch);
+          } else {
+            const methods = {
+              assignment: bulkEditAssignUsers,
+              unassignment: bulkEditUnassignUsers,
+            };
+            methods[assignOption]?.(
+              allSelectedTasksIdentifiers,
+              selectedUsers,
+            )(dispatch);
+          }
 
           if (
             shouldRefreshTasksEveryTime &&
@@ -463,7 +461,6 @@ const BulkEditOptionsBar = ({
       shouldRefreshTasksEveryTime,
       refreshTasks,
       updateTasks,
-      refreshTaskWorkflows,
     ],
   );
 
