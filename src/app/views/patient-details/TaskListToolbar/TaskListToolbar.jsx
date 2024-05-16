@@ -1,6 +1,6 @@
 /* eslint-disable import/no-cycle */
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Box } from '@mui/material';
 import { useSelector, useDispatch } from 'react-redux';
 import { useParams, useHistory } from 'react-router-dom';
@@ -289,6 +289,11 @@ const TaskListToolbar = (props) => {
     //   taskListMembers: listUsers,
     // });
   }, []);
+
+  useEffect(() => {
+    dispatch(getPatientFilterOptions(patientIdentifier));
+    dispatch(getQuickFilters({ patientIdentifier }));
+  }, [patientIdentifier]);
 
   return (
     <ListsToolbarContainer>
