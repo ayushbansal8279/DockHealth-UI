@@ -113,41 +113,6 @@ const ProfileDetailsView = () => {
     [],
   );
 
-  // useEffect(() => {
-  //   dispatch(PatientDetailsActions.initializePatientState(patientIdentifier));
-
-  //   return () => {
-  //     dispatch(PatientDetailsActions.clearPatientState());
-  //   };
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [patientIdentifier]);
-
-  // useEffect(() => {
-  //   (async () => {
-  //     const widgetDetails = await getPatientWidgets();
-  //     const widgets = widgetDetails?.widgets;
-  //
-  //     const widgetTabs = [];
-  //
-  //     if (widgets && widgets.length > 0) {
-  //       widgetTabs.push({
-  //         label: widgets[0].name,
-  //         mainPath: `widget/${widgets[0].identifier}`,
-  //         url: widgetDetails?.authToken
-  //           ? `${widgets[0].url}?authToken=${widgetDetails?.authToken}&idToken=${widgetDetails?.idToken}`
-  //           : widgets[0].url,
-  //         height: widgets[0].height,
-  //         width: widgets[0].width,
-  //         type: 'widget',
-  //         RouteComponent: ProfileWidget,
-  //       });
-  //
-  //       setTabsConfiguration([...tabsConfiguration, ...widgetTabs]);
-  //     }
-  //   })();
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, []);
-
   useEffect(() => {
     // eslint-disable-next-line unicorn/consistent-function-scoping
     const taskCallback = ({ eventType, task, workflowIdentifier }) => {
