@@ -289,7 +289,7 @@ function* getCurrentPatientTasks({ payload }) {
     // const completeTasksVisible = yield select(completeTasksVisibilitySelector);
     // const status = completeTasksVisible ? 'ALL' : 'INCOMPLETE';
     const selectedTaskStatus = yield select(currentListTasksStatusSelector);
-    const status = taskStatus || selectedTaskStatus || TaskStatus.INCOMPLETE;
+    const status = taskStatus || selectedTaskStatus;
     const sort = yield select(patientTasksSortSelector);
     const patientIdentifier = yield select(currentPatientIdentifierSelector);
 
