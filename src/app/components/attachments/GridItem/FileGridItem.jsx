@@ -38,7 +38,7 @@ const FileGridItem = (props) => {
   return (
     <Container
       onClick={() => {
-        if (scanStatus === ScanStatus.CLEAN || scanStatus === null) {
+        if (!scanStatus || scanStatus === ScanStatus.CLEAN) {
           onClick();
         }
       }}

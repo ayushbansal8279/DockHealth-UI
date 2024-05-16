@@ -8,13 +8,21 @@ export const CustomizeButtonWrapper = styled(Button)`
   && {
     border-radius: 0;
     background-color: ${(props) =>
-      props.active ? palette.newBrightBlue : palette.newDarkBlue};
+      props.disableButton
+        ? palette.coolGrey1
+        : props.active
+        ? palette.newBrightBlue
+        : palette.newDarkBlue};
     border-right: ${(props) =>
       props.hasPopover ? `1px solid ${palette.white};` : ''};
     // border-radius: 5px 0px 0px 5px;
     :hover {
       background-color: ${(props) =>
-        props.active ? palette.cornFlowerBlue : palette.purpleNavy};
+        props.disableButton
+          ? palette.coolGrey1
+          : props.active
+          ? palette.cornFlowerBlue
+          : palette.purpleNavy};
     }
   }
   & .MuiSvgIcon-root > path {
@@ -52,11 +60,20 @@ export const CustomizeRotatableChevronButtonWrapper = styled(Button)`
   && {
     border-radius: 0;
     background-color: ${(props) =>
-      props.active ? palette.cornFlowerBlue : palette.newDarkBlue};
+      props.disableButton
+        ? palette.coolGrey1
+        : props.active
+        ? palette.cornFlowerBlue
+        : palette.newDarkBlue};
     // border-right: 2px solid ${palette.white};
     // border-radius: 0px 5px 5px 0px;
     :hover {
-      background-color: ${palette.purpleNavy};
+      background-color: ${(props) =>
+        props.disableButton
+          ? palette.coolGrey1
+          : props.active
+          ? palette.cornFlowerBlue
+          : palette.purpleNavy};
     }
   }
 

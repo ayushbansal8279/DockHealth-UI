@@ -70,8 +70,7 @@ const TaskListToolbar = (props) => {
   } = useParams();
   const history = useHistory();
   const dispatch = useDispatch();
-  const tasksStatus =
-    useSelector(currentListTasksStatusSelector) || TaskStatus.INCOMPLETE;
+  const tasksStatus = useSelector(currentListTasksStatusSelector);
   const viewSetup = useSelector(userSetupClientViewSelector);
   // const [closeMorePopover] = useBoolean(false);
   const isAllTasksView = taskListIdentifierParameter === ListViewType.ALL_TASKS;
@@ -267,13 +266,9 @@ const TaskListToolbar = (props) => {
   ];
 
   const handleChangeTasksStatus = useCallback(
-    (event) => {
-      const selectedTaskStatus =
-        event.target.value === TaskStatus.INCOMPLETE
-          ? TaskStatus.INCOMPLETE
-          : TaskStatus.COMPLETE;
-      dispatch(setCurrentListTasksStatus(selectedTaskStatus));
-      dispatch(getCurrentPatientTasks(selectedTaskStatus));
+    (status) => {
+      dispatch(setCurrentListTasksStatus(status));
+      dispatch(getCurrentPatientTasks(status));
     },
     [dispatch],
   );

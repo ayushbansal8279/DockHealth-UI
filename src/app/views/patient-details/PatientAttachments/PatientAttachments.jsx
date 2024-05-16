@@ -36,7 +36,7 @@ import {
   DownloadAllLink,
 } from './styled';
 import initializeAttachmentsSectionHooks from './hooks';
-import { FilesViewType, PATIENT_FILES_VIEW_TYPE } from './helpers';
+import { FilesViewType, PATIENT_FILES_VIEW_TYPE, ScanStatus } from './helpers';
 
 const PatientAttachments = () => {
   const [activeViewType, setActiveViewType] = useState(
@@ -93,6 +93,10 @@ const PatientAttachments = () => {
   const [didDragOverFile, setDidDragOverFile] = useState(false);
 
   const isFetching = useSelector(isFetchingPatientAttachmentsSelector);
+
+  const downloadDisabled = currentPatientAttachments?.some(
+    ({ scanStatus }) => scanStatus && scanStatus !== ScanStatus.CLEAN,
+  );
 
   const FileItemComponent =
     activeViewType === FilesViewType.GRID ? FileGridItem : FileListItem;
@@ -370,7 +374,7 @@ const PatientAttachments = () => {
                 )}
               </>
             )}
-            {currentPatientAttachments.length > 0 && (
+            {!downloadDisabled && currentPatientAttachments.length > 0 && (
               <div>
                 <DownloadAllLink onClick={downloadAllFiles}>
                   Download All

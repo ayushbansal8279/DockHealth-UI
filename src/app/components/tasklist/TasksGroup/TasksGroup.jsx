@@ -320,6 +320,7 @@ const TasksGroup = ({
                 restrictions?.editSettings === DISABLED ||
                 restrictCustomizationFeatures
               }
+              isDefaultInputShown={false}
             >
               <TasksGroupLabelName>{derivedGroupName}</TasksGroupLabelName>
             </GroupNameSection>

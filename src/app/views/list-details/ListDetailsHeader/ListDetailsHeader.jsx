@@ -38,6 +38,11 @@ import { Box } from '@mui/material';
 import InviteMemberButton from 'components/user/InviteMemberButton/InviteMemberButton';
 import { isUserGuestOrDockLite, isUserViewOnly } from 'helpers/user-helper';
 import {
+  TASK_LIST_RESTRICTIONS_OPTIONS,
+  TASK_LIST_RESTRICTIONS_PROFILES,
+} from 'restrictions/task-restrictions';
+import { isMemberAdmin } from 'helpers/list-members-helper';
+import {
   selectQuickFilter,
   showAddQuickFilterOption,
   createQuickFilter,
@@ -70,8 +75,14 @@ const ListDetailsHeader = (props) => {
   const currentTasksStatus = useSelector(currentTaskListTasksStatusSelector);
   const listUsers = useSelector(taskListMembersSelector);
   const taskList = useSelector(currentTaskListSelector);
-  const { listName, listDescription, listType, taskListIdentifier, color } =
-    taskList || {};
+  const {
+    listName,
+    listDescription,
+    listType,
+    taskListIdentifier,
+    color,
+    restrictCustomization,
+  } = taskList || {};
   const megaFilter = useSelector(megaFilterSelector);
   const { filters, selectedFilters } = megaFilter || {};
   const currentUser = useSelector(userProfileSelector);
@@ -108,6 +119,15 @@ const ListDetailsHeader = (props) => {
   const handleFilterSelect = (newFilters) => {
     dispatch(filterListDetailsTasks(newFilters));
   };
+
+  const currentUserMember = taskList?.listUsers.find(
+    (u) => u.identifier === currentUser?.identifier,
+  );
+  const isListAdmin = isMemberAdmin(currentUserMember);
+  const restrictCustomizationFeatures = restrictCustomization && !isListAdmin;
+  const restrictions =
+    TASK_LIST_RESTRICTIONS_PROFILES[currentUser?.orgUserRole];
+  const { DISABLED } = TASK_LIST_RESTRICTIONS_OPTIONS;
 
   const tasksAndSubTasksCount = determineTaskCounts({
     selectedFilters,
@@ -312,14 +332,19 @@ const ListDetailsHeader = (props) => {
           onQuickFilterDelete={handleQuickFilterDelete}
           isDefaultDateFilterApplied={isDefaultDateFilterApplied}
         />
-        <Box mx={0.5} />
-        <AddGroupNameButton
-          active={addNewGroup}
-          onClick={() => {
-            handleAddNewGroup(true);
-            handleScrollToAddGroupName();
-          }}
-        />
+        {restrictions?.editSettings !== DISABLED &&
+          !restrictCustomizationFeatures && (
+            <>
+              <Box mx={0.5} />
+              <AddGroupNameButton
+                active={addNewGroup}
+                onClick={() => {
+                  handleAddNewGroup(true);
+                  handleScrollToAddGroupName();
+                }}
+              />
+            </>
+          )}
         {taskList?.listType === 'INBOX' && <InboxTips />}
         <Box mx={0.5} />
         {!showSearch && (

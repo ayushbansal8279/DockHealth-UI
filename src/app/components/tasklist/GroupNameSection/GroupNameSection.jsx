@@ -2,9 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { useBoolean } from 'hooks/useBoolean';
 import GroupNameInput from '../GroupNameInput/GroupNameInput';
 import { ButtonWrapper } from './styled';
+// import { TrendingUpRounded } from '@mui/icons-material';
 
 const GroupNameSection = ({
   disabled,
+  isDefaultInputShown,
   onEnterClick,
   placeholder,
   initialValue,
@@ -17,8 +19,8 @@ const GroupNameSection = ({
 
   useEffect(() => {
     setGroupName(initialValue || '');
-    if (disabled) hideInput();
-  }, [initialValue, disabled, hideInput]);
+    if (isDefaultInputShown) showInput();
+  }, [initialValue, isDefaultInputShown, hideInput, showInput]);
 
   if (shouldShowInput)
     return (
