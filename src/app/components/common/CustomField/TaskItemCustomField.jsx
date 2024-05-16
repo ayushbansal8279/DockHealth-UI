@@ -150,7 +150,10 @@ const TaskItemCustomField = ({
         return true;
       });
 
-      const updatedField = { ...field, options: dependantOptions };
+      const updatedField =
+        dependantOptions?.length > 0
+          ? { ...field, options: dependantOptions }
+          : field;
 
       return (
         <TaskItemDropdown
