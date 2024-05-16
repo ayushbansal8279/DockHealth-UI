@@ -461,7 +461,7 @@ const PatientsList = ({
       width: 140,
       renderCell: ({ row }) => (
         <Tooltip placement="top" title={row.email}>
-          <Text width="120">{row.email}</Text>
+          <Text>{row.email}</Text>
         </Tooltip>
       ),
       editable: false,
@@ -472,7 +472,7 @@ const PatientsList = ({
       renderHeader: renderColumnHeader,
       renderCell: ({ row }) => (
         <Tooltip placement="top" title={formatPhoneNumber(row.phoneMobile)}>
-          <Text width="120">{formatPhoneNumber(row.phoneMobile)}</Text>
+          <Text>{formatPhoneNumber(row.phoneMobile)}</Text>
         </Tooltip>
       ),
       width: 140,
@@ -486,7 +486,7 @@ const PatientsList = ({
       renderHeader: renderColumnHeader,
       renderCell: ({ row }) => (
         <Tooltip placement="top" title={formatPhoneNumber(row.phoneHome)}>
-          <Text width="120">{formatPhoneNumber(row.phoneHome)}</Text>
+          <Text>{formatPhoneNumber(row.phoneHome)}</Text>
         </Tooltip>
       ),
       width: 140,
@@ -550,7 +550,7 @@ const PatientsList = ({
           width: 140,
           renderCell: ({ row }) => (
             <Tooltip placement="top" title={row[column.identifier]}>
-              <Text width="120">{row[column.identifier]}</Text>
+              <Text>{row[column.identifier]}</Text>
             </Tooltip>
           ),
           sortComparator: (v1, v2, parameters1, parameters2) => {
