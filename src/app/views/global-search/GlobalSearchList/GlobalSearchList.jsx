@@ -117,7 +117,6 @@ const GlobalSearchList = ({
                 taskIdentifier={task.taskIdentifier}
                 isCompletedGroup={isCompletedList}
                 toggleCompleteTask={toggleTaskStatus}
-                onTaskUpdate={onTaskUpdate}
                 updateWorkflowStatus={updateWorkflowStatus}
                 dragAndDropDisabled
                 selectedTask={selectedTask}
@@ -141,6 +140,7 @@ const GlobalSearchList = ({
                 iconColorActive={iconColorActiveItem?.value}
                 origin={TaskOrigin.GLOBAL}
                 highlightedValue={highlightedValue}
+                key={task?.identifier}
               />
             )}
           </>

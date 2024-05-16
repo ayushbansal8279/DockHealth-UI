@@ -14,6 +14,43 @@ const initialState = {
   error: '',
 };
 
+function updateBundleInState(bundleIdentifier, updatedData, state) {
+  const updatedMap = {
+    [bundleIdentifier]: {
+      // ...state.tasksMap[bundleIdentifier],
+      ...updatedData,
+      tasks: [
+        ...new Set([
+          ...(state.tasksMap[bundleIdentifier]?.tasks || []),
+          ...updatedData?.tasks.map((task) => task.identifier),
+        ]),
+      ],
+    },
+  };
+
+  // add tasks and subtasks in the bundle
+  for (const task of updatedData?.tasks) {
+    updatedMap[task.identifier] = {
+      ...updatedMap[task.identifier],
+      ...task,
+    };
+    for (const subtask of task?.subtasks) {
+      updatedMap[subtask.identifier] = {
+        ...updatedMap[subtask.identifier],
+        ...subtask,
+      };
+    }
+  }
+
+  return {
+    ...state,
+    tasksMap: {
+      ...state.tasksMap,
+      ...updatedMap,
+    },
+  };
+}
+
 const GlobalSearchReducer = (state = initialState, action) => {
   const { type, payload } = action;
   switch (type) {
@@ -49,10 +86,10 @@ const GlobalSearchReducer = (state = initialState, action) => {
 
     case types.GLOBAL_SEARCH_REQUEST_SUCCESS: {
       const { payload } = action;
-      
+
       var newMap = {};
-      if(payload?.lists) {
-        for(const list of payload?.lists) {
+      if (payload?.lists) {
+        for (const list of payload?.lists) {
           for (const taskItem of list?.tasks) {
             newMap = {
               ...newMap,
@@ -125,6 +162,14 @@ const GlobalSearchReducer = (state = initialState, action) => {
         searchPerformed: false,
         lists: [],
       };
+    }
+
+    case types.UPDATE_PARTIAL_WORKFLOW_SUCCESS: {
+      return updateBundleInState(
+        action.taskWorkflowIdentifier,
+        action.newData,
+        state,
+      );
     }
 
     default: {
