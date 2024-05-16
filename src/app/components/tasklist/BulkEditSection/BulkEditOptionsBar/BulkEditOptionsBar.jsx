@@ -108,8 +108,11 @@ const BulkEditOptionsBar = ({
   const listCustomFields = useSelector(listCustomFieldsSelector);
 
   const allTaskCustomFields = useMemo(
-    () => [...(organizationCustomFields ?? []), ...(listCustomFields ?? [])],
-    [organizationCustomFields, listCustomFields],
+    () =>
+      taskListIdentifier
+        ? [...(organizationCustomFields ?? []), ...(listCustomFields ?? [])]
+        : organizationCustomFields ?? [],
+    [organizationCustomFields, listCustomFields, taskListIdentifier],
   );
 
   const allRequiredFieldsExist = useMemo(
@@ -734,14 +737,13 @@ const BulkEditOptionsBar = ({
         taskIdentifiers: selectedTasks.parentTasks?.map(
           ({ taskIdentifier }) => taskIdentifier,
         ),
-        taskListIdentifier,
         customFields: allTaskCustomFields,
         onSave: () => {
           dispatch(closeModal());
         },
       }),
     );
-  }, [dispatch, selectedTasks, taskListIdentifier, allTaskCustomFields]);
+  }, [dispatch, selectedTasks, allTaskCustomFields]);
 
   const handleDeleteTasks = useCallback(() => {
     dispatch(

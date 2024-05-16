@@ -10,11 +10,11 @@ import LoadingButton from '@mui/lab/LoadingButton';
 import { ICustomField } from '@/app/types/CustomField';
 import { FormProvider, useForm } from 'react-hook-form';
 import FormFieldItem from './FormFieldItem';
-import { FormattedMetaData, formatMetaData } from './helpers';
+import { FormattedMetaDataForApi, formatMetaDataForApi } from './helpers';
 
 interface Props {
   customFields: ICustomField[];
-  onSave: (formattedMetaData: FormattedMetaData) => Promise<void>;
+  onSave: (formattedMetaData: FormattedMetaDataForApi) => Promise<void>;
   closeModal: VoidFunction;
 }
 
@@ -80,7 +80,7 @@ export default function CustomFieldsBulkEditModal({
 
   const onSubmit = handleSubmit(async (data) => {
     try {
-      const formattedMetaData = formatMetaData(data.metaData);
+      const formattedMetaData = formatMetaDataForApi(data.metaData);
       if (!formattedMetaData) {
         return;
       }

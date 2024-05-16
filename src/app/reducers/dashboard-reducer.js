@@ -3,6 +3,7 @@ import { getGroupByDueDate } from 'helpers/dashboard-helpers';
 import { TaskItemType } from 'helpers/task-helpers';
 import { updateTasksStateCallback } from './reducer-helper';
 import TaskBaseReducer from './task-base-reducer';
+import { updateCustomFieldsByTaskIdentifiers } from './reducer-helpers/task-reducer-helper';
 
 const initialState = {
   tabName: null,
@@ -383,6 +384,21 @@ const DashboardTasksReducer = (state = initialState, action) => {
       };
 
       return updateTasksStateCallback(updatedState, task);
+    }
+
+    case ActionTypes.UPDATE_CUSTOM_FIELDS_BY_TASK_IDENTIFIERS: {
+      const { taskIdentifiers, metaData: metaDataToUpdate } = action.payload;
+
+      const tasksMap = updateCustomFieldsByTaskIdentifiers({
+        oldTasksMap: state.tasksMap,
+        taskIdentifiers,
+        metaDataToUpdate,
+      });
+
+      return {
+        ...state,
+        tasksMap,
+      };
     }
 
     default: {

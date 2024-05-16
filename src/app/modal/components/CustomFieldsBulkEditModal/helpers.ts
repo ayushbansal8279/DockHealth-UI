@@ -1,6 +1,6 @@
 import isEmpty from 'ramda/src/isEmpty';
 
-export type FormattedMetaData = Array<
+export type FormattedMetaDataForApi = Array<
   | {
       customFieldIdentifier: string;
       selectedOptionIdentifiers: any;
@@ -11,9 +11,20 @@ export type FormattedMetaData = Array<
     }
 >;
 
-export const formatMetaData = (
+export type FormattedMetaDataForState = Array<
+  | {
+      customFieldIdentifier: string;
+      values: any;
+    }
+  | {
+      customFieldIdentifier: string;
+      value: any;
+    }
+>;
+
+export const formatMetaDataForApi = (
   metaData: Record<string, any>,
-): FormattedMetaData | null => {
+): FormattedMetaDataForApi | null => {
   if (isEmpty(metaData)) {
     return null;
   }
@@ -37,4 +48,26 @@ export const formatMetaData = (
   });
 
   return formattedMetaData;
+};
+
+/**
+ * This is mainly used for task list bulk edit
+ */
+export const convertMetaDataApiToState = (
+  metaData: FormattedMetaDataForApi,
+): FormattedMetaDataForState | null => {
+  if (isEmpty(metaData)) {
+    return null;
+  }
+
+  return metaData.map((metaItem) => {
+    if ('selectedOptionIdentifiers' in metaItem) {
+      const { selectedOptionIdentifiers, ...rest } = metaItem;
+      return {
+        ...rest,
+        values: selectedOptionIdentifiers,
+      };
+    }
+    return metaItem;
+  });
 };
