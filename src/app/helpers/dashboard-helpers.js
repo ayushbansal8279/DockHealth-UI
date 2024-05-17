@@ -32,6 +32,7 @@ export const GROUPS_WITH_QUICK_ADD_TASK_INPUT = [
   DashboardGroup.TODAY,
   DashboardGroup.NEXT_7_DAYS,
   DashboardGroup.NO_DUE_DATE,
+  DashboardGroup.UPCOMING,
 ];
 
 export const GROUPS_WITH_COMPLETED_TASKS = [

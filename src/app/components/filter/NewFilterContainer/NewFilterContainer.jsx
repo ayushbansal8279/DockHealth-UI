@@ -50,7 +50,7 @@ const NewFilterContainer = ({
     for (const key in finalFilter) {
       if (finalFilter[key].length > 0) {
         setDisable(true);
-        data[key] = { options: finalFilter[key].map((item) => item.key) };
+        data[key] = { options: finalFilter[key].map((item) => item?.key) };
       } else {
         setDisable(false);
       }
@@ -59,7 +59,7 @@ const NewFilterContainer = ({
   }, [finalFilter]);
 
   useEffect(() => {
-    setMenuOption(filters?.map((item) => ({ label: item.label, id: item.id })));
+    setMenuOption(filters?.map((item) => ({ label: item?.label, id: item?.id })));
   }, [filters, finalFilter]);
 
   const handleClick = (option) => {
@@ -103,7 +103,7 @@ const NewFilterContainer = ({
           filter={filter}
           finalFilter={finalFilter}
           filterOptions={filters
-            .flatMap((item) => item.id === filter && item.options)
+            .flatMap((item) => item?.id === filter && item?.options)
             .filter((item) => typeof item !== 'boolean')}
           setFilteredData={setFilteredData}
           filteredData={filteredData}

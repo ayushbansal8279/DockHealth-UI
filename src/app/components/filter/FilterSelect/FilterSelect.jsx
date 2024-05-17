@@ -40,14 +40,14 @@ const FilterSelect = ({
   useEffect(() => {
     setFilterdUser([
       ...filterOptions.filter(
-        (item) => !finalFilter[filter].find((usr) => usr.key === item.key),
+        (item) => !finalFilter[filter].find((usr) => usr?.key === item?.key),
       ),
     ]);
   }, [filter, finalFilter, filterOptions]);
 
   useEffect(() => {
     menuOptions.map((item) => {
-      if (item.id === filter) setOptionName(item.label);
+      if (item?.id === filter) setOptionName(item?.label);
     });
   }, [filter]);
 
@@ -82,11 +82,11 @@ const FilterSelect = ({
     if (isDateRange) {
       inputRef.current.textContent = '';
     }
-    setFilterdUser((v) => v.filter((option) => option.key !== item.key));
+    setFilterdUser((v) => v.filter((option) => option?.key !== item?.key));
     let currentFilter = { ...finalFilter };
     currentFilter[filter] = [
       ...currentFilter[filter],
-      ...filterOptions.filter((user) => user.key === item.key),
+      ...filterOptions.filter((user) => user?.key === item?.key),
     ];
     setFilter({ ...currentFilter });
   };
@@ -94,7 +94,7 @@ const FilterSelect = ({
   const handleSearchOption = (e) => {
     setFilterdUser(
       filterOptions.filter((option) =>
-        option.displayValue
+        option?.displayValue
           .toLowerCase()
           .includes(e.target.textContent.toLowerCase()),
       ),
@@ -102,16 +102,16 @@ const FilterSelect = ({
   };
 
   const handleRemoveAssign = (item) => {
-    if (finalFilter[filter].find((user) => user.key === item.key)) {
+    if (finalFilter[filter].find((user) => user.key === item?.key)) {
       const urs = { ...finalFilter };
       urs[filter] = finalFilter[filter].filter(
-        (option) => option.key !== item.key,
+        (option) => option?.key !== item?.key,
       );
       setFilter((v) => ({ ...urs }));
       setFilterdUser((v) => [...v, item]);
       let currentFilter = { ...finalFilter };
       currentFilter[filter] = currentFilter[filter].filter(
-        (user) => user.key !== item.key,
+        (user) => user.key !== item?.key,
       );
     }
   };
@@ -124,7 +124,7 @@ const FilterSelect = ({
 
   useEffect(() => {
     finalFilter[filter].map((item) => {
-      if (item.displayValue === 'Range' && item.key === 'DUE_DATE_RANGE') {
+      if (item?.displayValue === 'Range' && item?.key === 'DUE_DATE_RANGE') {
         setIsDateRange(true);
       }
     });
@@ -169,7 +169,7 @@ const FilterSelect = ({
               multiple
               options={filterdUser}
               disableCloseOnSelect
-              getOptionLabel={(option) => option.displayValue}
+              getOptionLabel={(option) => option?.displayValue}
               renderOption={(props, option) => (
                 <li {...props}>
                   <DisplayValue>
@@ -181,7 +181,7 @@ const FilterSelect = ({
                         ''
                       )}
                     </AvatarContainer>
-                    <Lable>{option.displayValue}</Lable>
+                    <Lable>{option?.displayValue}</Lable>
                   </DisplayValue>
                 </li>
               )}
@@ -221,7 +221,7 @@ const FilterSelect = ({
                           ''
                         )}
                       </AvatarContainer>
-                      {item.displayValue === 'Range' &&
+                      {item?.displayValue === 'Range' &&
                       item.key === 'DUE_DATE_RANGE' ? (
                         <DateRangeOptions
                           dueDate={dueDate}
@@ -230,7 +230,7 @@ const FilterSelect = ({
                           setStartDate={setStartDate}
                         />
                       ) : (
-                        <Lable>{item.displayValue}</Lable>
+                        <Lable>{item?.displayValue}</Lable>
                       )}
                     </DisplayValue>
                     <div onClick={() => handleRemoveAssign(item)}>
@@ -274,7 +274,7 @@ const FilterSelect = ({
                             ''
                           )}
                         </AvatarContainer>
-                        <Lable>{item.displayValue}</Lable>
+                        <Lable>{item?.displayValue}</Lable>
                       </DisplayValue>
                     </OptionDropDownItem>
                   ))}

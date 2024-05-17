@@ -85,6 +85,10 @@ const MegaFilter = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen]);
 
+  const quickFilterInfo = quickFiltersList?.find(
+    (filter) => filter.quickFilterIdentifier === selectedQuickFilter,
+  );
+
   return (
     <MegaFilterContainer isFilterApplied={isFilterApplied}>
       {children || (
@@ -170,27 +174,31 @@ const MegaFilter = ({
           ) : (
             <></>
           )}
-          {filters ? (
-            <NewFilterContainer
-              filters={filters}
-              onSelectedFiltersChange={onSelectFilters}
-              setFinalFilter={setFinalFilter}
-              finalFilter={finalFilter}
-              setMenuOption={setMenuOption}
-              menuOptions={menuOptions}
-              openPopover={openPopover}
-              quickFiltersList={quickFiltersList}
-              setSavePopupOpen={setSavePopupOpen}
-              onQuickFilterCreate={onQuickFilterCreate}
-              handleSaveQuickFilter={handleSaveQuickFilter}
-              setFilteredData={setFilteredData}
-              filteredData={filteredData}
-              customFinalFilter={customFinalFilter}
-              setCustomFinalFilter={setCustomFinalFilter}
-              setSelectedQuickFilter={setSelectedQuickFilter}
-            />
-          ) : (
-            <FilterTableLoader />
+          {!quickFilterInfo?.predefined && (
+            <>
+              {filters ? (
+                <NewFilterContainer
+                  filters={filters}
+                  onSelectedFiltersChange={onSelectFilters}
+                  setFinalFilter={setFinalFilter}
+                  finalFilter={finalFilter}
+                  setMenuOption={setMenuOption}
+                  menuOptions={menuOptions}
+                  openPopover={openPopover}
+                  quickFiltersList={quickFiltersList}
+                  setSavePopupOpen={setSavePopupOpen}
+                  onQuickFilterCreate={onQuickFilterCreate}
+                  handleSaveQuickFilter={handleSaveQuickFilter}
+                  setFilteredData={setFilteredData}
+                  filteredData={filteredData}
+                  customFinalFilter={customFinalFilter}
+                  setCustomFinalFilter={setCustomFinalFilter}
+                  setSelectedQuickFilter={setSelectedQuickFilter}
+                />
+              ) : (
+                <FilterTableLoader />
+              )}
+            </>
           )}
           <Box p={1} />
         </>
