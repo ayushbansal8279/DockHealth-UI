@@ -68,8 +68,6 @@ const PatientsFilter = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  console.log(selectedQuickFilter);
-
   useEffect(() => {
     const data = {};
     if (selectedQuickFilter === null && selectedFilters && filterOptions) {
@@ -105,14 +103,9 @@ const PatientsFilter = ({
   };
 
   const handleClear = () => {
-    console.log("heyyyyyyyyyy");
     dispatch(PatientsActions.clearPatientsFilters());
     dispatch(selectQuickFilter(null));
   };
-
-  // setTimeout(() => {
-  //   handleClear()
-  // }, 10000);
 
   const handleSaveAsQuickFilter = useCallback(
     () => dispatch(showAddQuickFilterOption()),

@@ -48,7 +48,6 @@ const FilterSelect = ({
   useEffect(() => {
     filters.map((item) => {
       if (item.id === filter) {
-        // console.log('0', item);
         setOptionName(item.label);
       }
     });
