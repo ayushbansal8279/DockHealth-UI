@@ -1,6 +1,6 @@
 import * as Yup from 'yup';
 import React, { useMemo, useState } from 'react';
-import { Box, Stack, Typography } from '@mui/material';
+import { Box, Divider, Stack, Typography } from '@mui/material';
 import difference from 'ramda/src/difference';
 import { yupResolver } from '@hookform/resolvers/yup';
 import AddBoxIcon from '@mui/icons-material/AddBox';
@@ -24,6 +24,7 @@ export default function CustomFieldsBulkEditModal({
   closeModal,
 }: Props) {
   const [selectedIdxArr, setSelectedIdxArr] = useState<Array<number>>([]);
+  console.log('customFields', customFields);
 
   // NOTE: Used for key/selectedIdx for field without selected customField
   // every time new empty customField added, this is decremented to keep identical key
@@ -117,40 +118,37 @@ export default function CustomFieldsBulkEditModal({
                 />
               ))}
           </Stack>
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-            }}
+          <Button
+            variant="text"
+            startIcon={<AddBoxIcon />}
+            onClick={handleAddField}
           >
+            Add Field
+          </Button>
+          <Divider />
+          <Stack direction="row" gap={2} sx={{ mt: 1 }}>
             <Button
-              variant="text"
-              startIcon={<AddBoxIcon />}
-              onClick={handleAddField}
+              fullWidth
+              variant="outlined"
+              color="error"
+              size="medium"
+              onClick={closeModal}
             >
-              Add Field
+              Cancel
             </Button>
-            <Stack
-              spacing={1}
-              direction="row"
-              alignItems="center"
-              justifyContent="flex-end"
+            <LoadingButton
+              fullWidth
+              variant="contained"
+              color="error"
+              size="medium"
+              type="submit"
+              disabled={saveDisabled}
+              loading={isSubmitting}
+              loadingIndicator="Saving..."
             >
-              <Button variant="outlined" size="small" onClick={closeModal}>
-                Cancel
-              </Button>
-              <LoadingButton
-                variant="contained"
-                size="small"
-                type="submit"
-                disabled={saveDisabled}
-                loading={isSubmitting}
-              >
-                Save
-              </LoadingButton>
-            </Stack>
-          </Box>
+              Save
+            </LoadingButton>
+          </Stack>
         </form>
       </FormProvider>
     </Box>
