@@ -30,6 +30,7 @@ import {
   TASK_LIST_RESTRICTIONS_OPTIONS,
   TASK_LIST_RESTRICTIONS_PROFILES,
 } from 'restrictions/task-restrictions';
+import ReminderIcon from 'img/reminder';
 import { transformTaskToEvent } from './helpers';
 import {
   CalendarContainer,
@@ -208,7 +209,12 @@ const Calendar = ({ taskListIdentifier }) => {
           {task && (
             <MultiAssignCalendar assignedToUsers={task.assignedToUsers} />
           )}
-          {/* <b>{eventInfo.timeText}</b> */}
+          {eventInfo.timeText && eventInfo?.view?.type === 'dayGridMonth' && (
+            <>
+              <Spacing horizontal={4} />
+              <ReminderIcon />
+            </>
+          )}
           <Spacing horizontal={4} />
           <Typography>
             {createMentionsFromTokenizedDescription(
