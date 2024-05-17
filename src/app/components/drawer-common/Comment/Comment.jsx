@@ -16,18 +16,14 @@ import { getCommentIdToScroll } from 'helpers/scroll-helper';
 import {
   CommentContainer,
   CommentText,
-  CommentTextReadonly,
   CommentDetails,
   CommentContent,
   CommentWrapper,
   CommentMemberContainer,
   CommentActionsSection,
 } from './styled';
-import {
-  getCommentDetails,
-  traverseNodes,
-  processMarkdownValue,
-} from './helpers';
+import { getCommentDetails } from './helpers';
+import CommentTextReadOnly from './CommentTextReadOnly';
 
 const Comment = ({
   comment,
@@ -50,7 +46,6 @@ const Comment = ({
 
   useEffect(() => {
     if (isEdited) {
-      // eslint-disable-next-line no-unused-expressions
       commentEditorReference?.current?.focus();
     }
   }, [isEdited, commentEditorReference]);
@@ -169,12 +164,7 @@ const Comment = ({
                 mentions={commentMentions}
               />
             ) : (
-              <CommentTextReadonly>
-                {traverseNodes(
-                  processMarkdownValue(tokenizedComment),
-                  commentMentions,
-                )}
-              </CommentTextReadonly>
+              <CommentTextReadOnly comment={comment} />
             )}
           </CommentText>
           <CommentDetails>{commentDetails}</CommentDetails>
