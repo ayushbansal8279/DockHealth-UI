@@ -24,7 +24,6 @@ export default function CustomFieldsBulkEditModal({
   closeModal,
 }: Props) {
   const [selectedIdxArr, setSelectedIdxArr] = useState<Array<number>>([]);
-  console.log('customFields', customFields);
 
   // NOTE: Used for key/selectedIdx for field without selected customField
   // every time new empty customField added, this is decremented to keep identical key
