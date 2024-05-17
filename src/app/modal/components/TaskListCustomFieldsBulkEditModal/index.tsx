@@ -14,12 +14,14 @@ import { updateCustomFieldsByTaskIdentifiers } from '@/app/actions/task-actions'
 
 interface Props {
   taskIdentifiers: string[];
+  taskWorkflowIdentifiers: string[];
   customFields: ICustomField[];
   closeModal: VoidFunction;
 }
 
 export default function TaskListCustomFieldsBulkEditModal({
   taskIdentifiers,
+  taskWorkflowIdentifiers,
   customFields,
   closeModal,
 }: Props) {
@@ -30,13 +32,15 @@ export default function TaskListCustomFieldsBulkEditModal({
       const payload = {
         metaData: formattedMetaData,
         taskIdentifiers,
+        taskWorkflowIdentifiers,
       };
       await bulkEditCustomFieldsByTaskIdentifiers(payload);
       dispatch(
-        updateCustomFieldsByTaskIdentifiers(
+        updateCustomFieldsByTaskIdentifiers({
           taskIdentifiers,
-          convertMetaDataApiToState(formattedMetaData),
-        ),
+          taskWorkflowIdentifiers,
+          metaData: convertMetaDataApiToState(formattedMetaData),
+        }),
       );
       dispatch(showGlobalAlert(AlertMessages.UPDATED));
       closeModal();

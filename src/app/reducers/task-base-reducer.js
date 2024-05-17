@@ -632,11 +632,16 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
     }
 
     case ActionTypes.UPDATE_CUSTOM_FIELDS_BY_TASK_IDENTIFIERS: {
-      const { taskIdentifiers, metaData: metaDataToUpdate } = action.payload;
+      const {
+        taskIdentifiers,
+        taskWorkflowIdentifiers,
+        metaData: metaDataToUpdate,
+      } = action.payload;
 
       const tasksMap = updateCustomFieldsByTaskIdentifiers({
         oldTasksMap: state.tasksMap,
         taskIdentifiers,
+        taskWorkflowIdentifiers,
         metaDataToUpdate,
       });
 

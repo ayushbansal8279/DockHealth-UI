@@ -740,13 +740,19 @@ const BulkEditOptionsBar = ({
     dispatch(
       openModal('TaskListCustomFieldsBulkEdit', {
         taskIdentifiers: allSelectedTasksIdentifiers,
+        taskWorkflowIdentifiers: allSelectedWorkflowIdentifiers,
         customFields: allTaskCustomFields,
         onSave: () => {
           dispatch(closeModal());
         },
       }),
     );
-  }, [dispatch, allSelectedTasksIdentifiers, allTaskCustomFields]);
+  }, [
+    dispatch,
+    allSelectedTasksIdentifiers,
+    allTaskCustomFields,
+    allSelectedWorkflowIdentifiers,
+  ]);
 
   const handleDeleteTasks = useCallback(() => {
     dispatch(
