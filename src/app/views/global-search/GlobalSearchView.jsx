@@ -112,11 +112,14 @@ const GlobalSearchView = ({
                             storeAsCurrentTask={storeAsCurrentTask}
                             toggleTaskStatus={toggleTaskStatus}
                             onTaskUpdate={updateTask}
-                            updateWorkflowStatus={setWorkflowStatus}
+                            updateWorkflowStatus={
+                              taskActions.updateWorkflowStatus
+                            }
                             highlightedValue={searchValue}
                             isCompletedList={isSearchingCompletedTasks}
                             getMoreTasksForTaskList={getMoreTasksForTaskList}
                             isLoadingMore={isLoadingMore}
+                            key={list?.taskListIdentifier}
                           />
                         ) : null,
                       )
