@@ -2,7 +2,7 @@ import {
   CancelButton,
   ConfirmButton,
 } from '@/app/modal/components/ModalButton/ModalButtons';
-import { Box, MenuItem, Select } from '@mui/material';
+import { Box } from '@mui/material';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import {
@@ -26,8 +26,6 @@ import FilterOptionsPopover from './FilterOptionsPopover';
 const NewFilterContainer = ({
   filters,
   onSelectedFiltersChange,
-  menuOptions,
-  setMenuOption,
   finalFilter,
   setFinalFilter,
   openPopover,
@@ -50,7 +48,27 @@ const NewFilterContainer = ({
     for (const key in finalFilter) {
       if (finalFilter[key].length > 0) {
         setDisable(true);
-        data[key] = { options: finalFilter[key].map((item) => item.key) };
+        let options = [];
+        let dateStart = '';
+        let dateEnd = '';
+        finalFilter[key].map((item) => {
+          if (item.key.includes('DATE_RANGE')) {
+            dateStart = item.dateStart;
+            dateEnd = item.dateEnd;
+            options.push(item.key);
+          } else {
+            options.push(item.key);
+          }
+        });
+        if (dateStart !== '' && dateEnd !== '') {
+          data[key] = {
+            options: options,
+            dateStart: dateStart,
+            dateEnd: dateEnd,
+          };
+        } else {
+          data[key] = { options: options };
+        }
       } else {
         setDisable(false);
       }
@@ -58,12 +76,8 @@ const NewFilterContainer = ({
     setFilteredData(data);
   }, [finalFilter]);
 
-  useEffect(() => {
-    setMenuOption(filters?.map((item) => ({ label: item.label, id: item.id })));
-  }, [filters, finalFilter]);
-
   const handleClick = (option) => {
-    menuOptions.map((item) => {
+    filters.map((item) => {
       if (
         option === item.id &&
         !Object.keys(finalFilter).find((select) => select === option)
@@ -98,8 +112,8 @@ const NewFilterContainer = ({
     <>
       {Object.keys(finalFilter).map((filter) => (
         <FilterSelect
-          menuOptions={menuOptions}
-          setFilter={setFinalFilter}
+          filters={filters}
+          setFinalFilter={setFinalFilter}
           filter={filter}
           finalFilter={finalFilter}
           filterOptions={filters
@@ -143,7 +157,7 @@ const NewFilterContainer = ({
           anchorEl={popoverReference.current}
           open={isPopoverOpen}
           onClose={handleClose}
-          filterOptionsList={menuOptions}
+          filterOptionsList={filters}
           onFilterSelect={handleClick}
         />
         {Object.keys(finalFilter).length > 0 && (

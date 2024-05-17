@@ -27,7 +27,6 @@ const SaveFilterPopup = ({
   isSavePopupOpen,
   setSavePopupOpen,
   refrence,
-  finalFilter,
   quickFiltersList,
   onQuickFilterCreate,
   onQuickFilterUpdate,
@@ -41,7 +40,6 @@ const SaveFilterPopup = ({
   openPopover,
   handleSaveQuickFilter,
   filteredData,
-  setFilteredData,
   onSelectFilters,
   setCustomFinalFilter,
   customFinalFilter,
@@ -95,15 +93,9 @@ const SaveFilterPopup = ({
   ]);
 
   const updateFilter = () => {
-    const data = {};
-    for (const key in customFinalFilter) {
-      if (customFinalFilter[key].length > 0) {
-        data[key] = { options: customFinalFilter[key].map((item) => item.key) };
-      }
-    }
-    handleSaveQuickFilter(editIdentifier, data);
+    handleSaveQuickFilter(editIdentifier, customFilteredData);
     if (selectedQuickFilter === editIdentifier) {
-      selectQuickFilter(editIdentifier, data);
+      selectQuickFilter(editIdentifier, customFilteredData);
     }
   };
 
@@ -117,13 +109,7 @@ const SaveFilterPopup = ({
   };
 
   const handleQuickFilterCreate = () => {
-    const data = {};
-    for (const key in finalFilter) {
-      if (finalFilter[key].length > 0) {
-        data[key] = { options: finalFilter[key].map((item) => item.key) };
-      }
-    }
-    onQuickFilterCreate(searchInputValue, data);
+    onQuickFilterCreate(searchInputValue, filteredData);
     setSavePopupOpen(false);
     setFinalFilter({});
   };
