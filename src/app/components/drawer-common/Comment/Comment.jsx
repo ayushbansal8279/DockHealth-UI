@@ -16,6 +16,7 @@ import { getCommentIdToScroll } from 'helpers/scroll-helper';
 import {
   CommentContainer,
   CommentText,
+  CommentTextReadonly,
   CommentDetails,
   CommentContent,
   CommentWrapper,
@@ -168,10 +169,12 @@ const Comment = ({
                 mentions={commentMentions}
               />
             ) : (
-              traverseNodes(
-                processMarkdownValue(tokenizedComment),
-                commentMentions,
-              )
+              <CommentTextReadonly>
+                {traverseNodes(
+                  processMarkdownValue(tokenizedComment),
+                  commentMentions,
+                )}
+              </CommentTextReadonly>
             )}
           </CommentText>
           <CommentDetails>{commentDetails}</CommentDetails>

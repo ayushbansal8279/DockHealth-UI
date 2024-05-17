@@ -7,6 +7,7 @@ import {
 import {
   CommentContainer,
   CommentText,
+  CommentTextReadonly,
   CommentDetails,
   CommentContent,
   CommentWrapper,
@@ -33,10 +34,12 @@ export default function Comment({ comment, onClick }: Props) {
       <CommentContainer>
         <CommentContent>
           <CommentText>
-            {traverseNodes(
-              processMarkdownValue(tokenizedComment),
-              commentMentions,
-            )}
+            <CommentTextReadonly>
+              {traverseNodes(
+                processMarkdownValue(tokenizedComment),
+                commentMentions,
+              )}
+            </CommentTextReadonly>
           </CommentText>
           <CommentDetails>{commentDetails}</CommentDetails>
         </CommentContent>
