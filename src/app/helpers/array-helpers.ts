@@ -31,3 +31,23 @@ export const removeArr = <T extends Record<string, any>>(
 
   return arr.filter((item) => fieldsSet.has(item[idField]));
 };
+
+export const mergeArr = <T extends Record<string, any>>(
+  arr1: T[],
+  arr2: T[],
+  idField: string,
+): T[] => {
+  const hashMap: { [key: string]: T } = {};
+
+  arr1?.forEach((obj) => {
+    hashMap[obj[idField]] = obj;
+  });
+  arr2?.forEach((obj) => {
+    hashMap[obj[idField]] = {
+      ...(hashMap[obj[idField]] ?? {}),
+      ...obj,
+    };
+  });
+
+  return Object.values(hashMap);
+};

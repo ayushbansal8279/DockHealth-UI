@@ -9,6 +9,7 @@ import {
   updateSubtasksInTaskWithCallback,
 } from 'helpers/task-helpers';
 import { addArr, removeArr } from '../helpers/array-helpers';
+import { updateCustomFieldsByTaskIdentifiers } from './reducer-helpers/task-reducer-helper';
 
 const TaskBaseReducer = (state, action, updateStateCallback) => {
   switch (action.type) {
@@ -420,20 +421,24 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
 
     case ActionTypes.DO_ASSIGNMENT: {
       const { tasksToUpdate, users } = action;
-      let updatedState = state;
-      for (const taskId of tasksToUpdate) {
-        updatedState = updateStateCallback(updatedState, (tasksMap) => {
-          return {
-            ...tasksMap[taskId],
-            assignedToUsers: addArr(
-              tasksMap[taskId].assignedToUsers,
-              users,
-              'userIdentifier',
-            ),
-          };
-        });
+      const tasksMap = { ...state.tasksMap };
+
+      for (const taskIdentifier of tasksToUpdate) {
+        if (!(taskIdentifier in tasksMap)) continue;
+        tasksMap[taskIdentifier] = {
+          ...tasksMap[taskIdentifier],
+          assignedToUsers: addArr(
+            tasksMap[taskIdentifier].assignedToUsers,
+            users,
+            'userIdentifier',
+          ),
+        };
       }
-      return updatedState;
+
+      return {
+        ...state,
+        tasksMap,
+      };
     }
 
     case ActionTypes.DO_UNASSIGNMENT: {
@@ -630,28 +635,24 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
       return updateStateCallback(state, updateTaskFromAction);
     }
 
-    case ActionTypes.FIND_TASKS_BY_PROFILE_GROUPED_BY_TASK_LIST_SUCCESS: {
-      // const newMap = { ...state.tasksMap };
-      // for (const task of action.payload.flatMap((taskList) => taskList.tasks)) {
-      //   newMap[task.identifier] = task;
-      // }
-      //
-      // console.log(
-      //   '!!! FIND_TASKS_BY_PROFILE_GROUPED_BY_TASK_LIST_SUCCESS',
-      //   action,
-      //   state,
-      //   state.tasksMap,
-      //   action.payload.flatMap((taskList) => taskList.tasks),
-      //   newMap,
-      // );
-      //
-      // return {
-      //   ...state,
-      //   tasks: [...(state.tasks || []), ...action.payload],
-      //   taskMap2: newMap,
-      // };
+    case ActionTypes.UPDATE_CUSTOM_FIELDS_BY_TASK_IDENTIFIERS: {
+      const {
+        taskIdentifiers,
+        taskWorkflowIdentifiers,
+        metaData: metaDataToUpdate,
+      } = action.payload;
 
-      return { dupa: 1 };
+      const tasksMap = updateCustomFieldsByTaskIdentifiers({
+        oldTasksMap: state.tasksMap,
+        taskIdentifiers,
+        taskWorkflowIdentifiers,
+        metaDataToUpdate,
+      });
+
+      return {
+        ...state,
+        tasksMap,
+      };
     }
 
     default: {

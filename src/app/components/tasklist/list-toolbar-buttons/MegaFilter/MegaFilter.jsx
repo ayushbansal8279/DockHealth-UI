@@ -51,6 +51,23 @@ const MegaFilter = ({
   const [customFilteredData, setCustomFilteredData] = useState({});
   const [selectedQuickFilter, setSelectedQuickFilter] = useState('');
 
+  useEffect(() => {
+    const data = {};
+    if (selectedFilters && filters) {
+      for (const key in selectedFilters) {
+        if (key !== '') {
+          const users = filters
+            .flatMap((item) => item.id === key && item.options)
+            .filter((item) => typeof item !== 'boolean');
+          data[key] = selectedFilters[key].options.map((item) =>
+            users.find((user) => user.key === item),
+          );
+        }
+      }
+      setFinalFilter(data);
+    }
+  }, [selectedFilters, filters]);
+
   const clearFilters = () => {
     onSelectFilters(null);
     selectQuickFilter(null);
@@ -151,26 +168,30 @@ const MegaFilter = ({
               setSelectedCustomFilter={setSelectedCustomFilter}
             />
           ) : (
+            <></>
+          )}
+          {filters ? (
+            <NewFilterContainer
+              filters={filters}
+              onSelectedFiltersChange={onSelectFilters}
+              setFinalFilter={setFinalFilter}
+              finalFilter={finalFilter}
+              setMenuOption={setMenuOption}
+              menuOptions={menuOptions}
+              openPopover={openPopover}
+              quickFiltersList={quickFiltersList}
+              setSavePopupOpen={setSavePopupOpen}
+              onQuickFilterCreate={onQuickFilterCreate}
+              handleSaveQuickFilter={handleSaveQuickFilter}
+              setFilteredData={setFilteredData}
+              filteredData={filteredData}
+              customFinalFilter={customFinalFilter}
+              setCustomFinalFilter={setCustomFinalFilter}
+              setSelectedQuickFilter={setSelectedQuickFilter}
+            />
+          ) : (
             <FilterTableLoader />
           )}
-          <NewFilterContainer
-            filters={filters}
-            onSelectedFiltersChange={onSelectFilters}
-            setFinalFilter={setFinalFilter}
-            finalFilter={finalFilter}
-            setMenuOption={setMenuOption}
-            menuOptions={menuOptions}
-            openPopover={openPopover}
-            quickFiltersList={quickFiltersList}
-            setSavePopupOpen={setSavePopupOpen}
-            onQuickFilterCreate={onQuickFilterCreate}
-            handleSaveQuickFilter={handleSaveQuickFilter}
-            setFilteredData={setFilteredData}
-            filteredData={filteredData}
-            customFinalFilter={customFinalFilter}
-            setCustomFinalFilter={setCustomFinalFilter}
-            setSelectedQuickFilter={setSelectedQuickFilter}
-          />
           <Box p={1} />
         </>
       </FilterPopover>

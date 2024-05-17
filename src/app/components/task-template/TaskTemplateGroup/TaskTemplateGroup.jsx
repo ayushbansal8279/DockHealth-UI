@@ -77,9 +77,7 @@ const TaskTemplateGroup = ({
   // const { SHOW_WORKFLOW_DETAILS, SHOW_WORKFLOW_COMPLETED_TASKS } =
   //   viewSetup || {};
   // const { innerRef, draggableProps } = draggableProvided;
-  const [isOpen, setOpen] = useState(
-    changeViewType === 'FULL_VIEW' ? true : false,
-  );
+  const [isOpen, setOpen] = useState(false);
   const [draggedTaskIdentifier, setDraggedTaskIdentifier] = useState(null);
   const [showCompletedTasks, setShowCompletedTasks] = useState(false);
   const [showIncompleteTasks, setShowIncompleteTasks] = useState(true);
@@ -105,6 +103,12 @@ const TaskTemplateGroup = ({
   //     setShowCompletedTasks(SHOW_WORKFLOW_COMPLETED_TASKS);
   //   }
   // }, [SHOW_WORKFLOW_DETAILS, SHOW_WORKFLOW_COMPLETED_TASKS, isCompletedTab]);
+
+  useEffect(() => {
+    if (changeViewType === 'FULL_VIEW') {
+      setOpen(true);
+    }
+  }, [changeViewType]);
 
   useEffect(() => {
     if (isOpen && !previousIsOpen && (!tasks || tasks.length === 0)) {

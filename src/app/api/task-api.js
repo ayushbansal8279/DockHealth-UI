@@ -616,10 +616,12 @@ export function postToEMR(task) {
 export function bulkEditCustomFieldsByTaskIdentifiers({
   metaData,
   taskIdentifiers,
+  taskWorkflowIdentifiers,
 }) {
   return axios.put('/task/bulkEdit', {
     bulkEditType: 'EDIT_META_DATA',
     metaData,
     taskIdentifiers,
+    taskWorkflowIdentifiers,
   });
 }

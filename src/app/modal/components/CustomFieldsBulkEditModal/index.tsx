@@ -1,6 +1,6 @@
 import * as Yup from 'yup';
 import React, { useMemo, useState } from 'react';
-import { Box, Stack, Typography } from '@mui/material';
+import { Box, Divider, Stack, Typography } from '@mui/material';
 import difference from 'ramda/src/difference';
 import { yupResolver } from '@hookform/resolvers/yup';
 import AddBoxIcon from '@mui/icons-material/AddBox';
@@ -10,11 +10,11 @@ import LoadingButton from '@mui/lab/LoadingButton';
 import { ICustomField } from '@/app/types/CustomField';
 import { FormProvider, useForm } from 'react-hook-form';
 import FormFieldItem from './FormFieldItem';
-import { FormattedMetaData, formatMetaData } from './helpers';
+import { FormattedMetaDataForApi, formatMetaDataForApi } from './helpers';
 
 interface Props {
   customFields: ICustomField[];
-  onSave: (formattedMetaData: FormattedMetaData) => Promise<void>;
+  onSave: (formattedMetaData: FormattedMetaDataForApi) => Promise<void>;
   closeModal: VoidFunction;
 }
 
@@ -80,7 +80,7 @@ export default function CustomFieldsBulkEditModal({
 
   const onSubmit = handleSubmit(async (data) => {
     try {
-      const formattedMetaData = formatMetaData(data.metaData);
+      const formattedMetaData = formatMetaDataForApi(data.metaData);
       if (!formattedMetaData) {
         return;
       }
@@ -117,40 +117,37 @@ export default function CustomFieldsBulkEditModal({
                 />
               ))}
           </Stack>
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-            }}
+          <Button
+            variant="text"
+            startIcon={<AddBoxIcon />}
+            onClick={handleAddField}
           >
+            Add Field
+          </Button>
+          <Divider />
+          <Stack direction="row" gap={2} sx={{ mt: 1 }}>
             <Button
-              variant="text"
-              startIcon={<AddBoxIcon />}
-              onClick={handleAddField}
+              fullWidth
+              variant="outlined"
+              color="error"
+              size="medium"
+              onClick={closeModal}
             >
-              Add Field
+              Cancel
             </Button>
-            <Stack
-              spacing={1}
-              direction="row"
-              alignItems="center"
-              justifyContent="flex-end"
+            <LoadingButton
+              fullWidth
+              variant="contained"
+              color="error"
+              size="medium"
+              type="submit"
+              disabled={saveDisabled}
+              loading={isSubmitting}
+              loadingIndicator="Saving..."
             >
-              <Button variant="outlined" size="small" onClick={closeModal}>
-                Cancel
-              </Button>
-              <LoadingButton
-                variant="contained"
-                size="small"
-                type="submit"
-                disabled={saveDisabled}
-                loading={isSubmitting}
-              >
-                Save
-              </LoadingButton>
-            </Stack>
-          </Box>
+              Save
+            </LoadingButton>
+          </Stack>
         </form>
       </FormProvider>
     </Box>

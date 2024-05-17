@@ -124,6 +124,7 @@
     "prefer-destructuring": "off",
     "no-extra-boolean-cast": "off",
     "react/destructuring-assignment": "off",
-    "sonarjs/max-switch-cases": "off"
+    "sonarjs/max-switch-cases": "off",
+    "no-continue": "off"
   }
 }

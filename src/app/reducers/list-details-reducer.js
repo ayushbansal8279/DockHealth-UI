@@ -871,36 +871,6 @@ const ListDetailsReducer = (state = initialState, action) => {
       return state;
     }
 
-    case ActionTypes.UPDATE_CUSTOM_FIELDS_BY_TASK_IDENTIFIERS: {
-      const { taskIdentifiers, metaData: metaDataToUpdate } = action.payload;
-      const tasksMap = { ...state.tasksMap };
-      for (const taskIdentifier of taskIdentifiers) {
-        if (!(taskIdentifier in tasksMap)) continue;
-
-        tasksMap[taskIdentifier] = {
-          ...tasksMap[taskIdentifier],
-          taskMetaData: tasksMap[taskIdentifier].taskMetaData.map(
-            (metaItem) => {
-              if (!metaItem.customFieldIdentifier) return metaItem;
-              const metaItemToUpdate = metaDataToUpdate.find(
-                ({ customFieldIdentifier }) =>
-                  customFieldIdentifier === metaItem.customFieldIdentifier,
-              );
-              return {
-                ...metaItem,
-                ...metaItemToUpdate,
-              };
-            },
-          ),
-        };
-      }
-
-      return {
-        ...state,
-        tasksMap,
-      };
-    }
-
     default: {
       return state.taskListIdentifier && state.taskListIdentifier !== ''
         ? TaskBaseReducer(state, action, updateTasksStateCallback)
