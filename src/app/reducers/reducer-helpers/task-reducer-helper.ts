@@ -5,15 +5,20 @@ import { Task } from '@/app/types/Task';
 export function updateCustomFieldsByTaskIdentifiers({
   oldTasksMap,
   taskIdentifiers,
+  taskWorkflowIdentifiers,
   metaDataToUpdate,
 }: {
   oldTasksMap: Record<string, Task>;
   taskIdentifiers: string[];
+  taskWorkflowIdentifiers: string[];
   metaDataToUpdate: FormattedMetaDataForState;
 }): Record<string, Task> {
   const tasksMap = { ...oldTasksMap };
 
-  for (const taskIdentifier of taskIdentifiers) {
+  for (const taskIdentifier of [
+    ...taskIdentifiers,
+    ...taskWorkflowIdentifiers,
+  ]) {
     if (!(taskIdentifier in tasksMap)) continue;
 
     tasksMap[taskIdentifier] = {

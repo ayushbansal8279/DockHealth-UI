@@ -660,12 +660,17 @@ const BulkEditOptionsBar = ({
                 ) {
                   refreshTasks();
                 } else {
-                  for (const task of tasks)
-                    task.parentTaskIdentifier &&
-                    (isEmpty(filters) || !filters) &&
-                    !searchValue
-                      ? updateTasks([task])
-                      : addTasks([task]);
+                  for (const task of tasks) {
+                    if (
+                      task.parentTaskIdentifier &&
+                      (isEmpty(filters) || !filters) &&
+                      !searchValue
+                    ) {
+                      updateTasks([task]);
+                    } else {
+                      addTasks([task]);
+                    }
+                  }
                 }
               },
             ),
@@ -731,16 +736,20 @@ const BulkEditOptionsBar = ({
   const handleEditFields = useCallback(() => {
     dispatch(
       openModal('TaskListCustomFieldsBulkEdit', {
-        taskIdentifiers: selectedTasks.parentTasks?.map(
-          ({ taskIdentifier }) => taskIdentifier,
-        ),
+        taskIdentifiers: allSelectedTasksIdentifiers,
+        taskWorkflowIdentifiers: allSelectedWorkflowIdentifiers,
         customFields: allTaskCustomFields,
         onSave: () => {
           dispatch(closeModal());
         },
       }),
     );
-  }, [dispatch, selectedTasks, allTaskCustomFields]);
+  }, [
+    dispatch,
+    allSelectedTasksIdentifiers,
+    allTaskCustomFields,
+    allSelectedWorkflowIdentifiers,
+  ]);
 
   const handleDeleteTasks = useCallback(() => {
     dispatch(
@@ -825,9 +834,7 @@ const BulkEditOptionsBar = ({
       numberOfSelectedItems={allSelectedTasksLength}
       isDisabled={isDisabled}
       onClose={onClose}
-      includedWorkflow={
-        !!allSelectedTasks.find((t) => t?.itemType === 'BUNDLE')
-      }
+      includedWorkflow={allSelectedTasks.some((t) => t?.itemType === 'BUNDLE')}
     >
       <>
         {mergedConfig[BulkEditOptionsConfig.DUPLICATE_OPTION] && (

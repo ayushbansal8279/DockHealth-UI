@@ -5,8 +5,6 @@ import { TaskGroupType, TaskItemType } from 'helpers/task-helpers';
 import { updateBundleInList } from 'helpers/tasklist-helpers';
 import { updateTasksStateCallback, updateTasksMap } from './reducer-helper';
 import TaskBaseReducer from './task-base-reducer';
-import { mergeArr } from '../helpers/array-helpers';
-import { updateCustomFieldsByTaskIdentifiers } from '../actions/task-actions';
 
 const initialState = {
   taskListIdentifier: null,
@@ -871,21 +869,6 @@ const ListDetailsReducer = (state = initialState, action) => {
         };
       }
       return state;
-    }
-
-    case ActionTypes.UPDATE_CUSTOM_FIELDS_BY_TASK_IDENTIFIERS: {
-      const { taskIdentifiers, metaData: metaDataToUpdate } = action.payload;
-
-      const tasksMap = updateCustomFieldsByTaskIdentifiers({
-        oldTasksMap: state.tasksMap,
-        taskIdentifiers,
-        metaDataToUpdate,
-      });
-
-      return {
-        ...state,
-        tasksMap,
-      };
     }
 
     default: {
