@@ -120,5 +120,6 @@ export const processMarkdownValue = (
     const mdValue = markdownText?.replace(/\n {2}\n/g, '<p><br/></p>');
     htmlValue = md.render(mdValue || '');
   }
-  return ReactHtmlParser(htmlValue || '')[0];
+  const nodes = ReactHtmlParser(htmlValue || '');
+  return nodes;
 };

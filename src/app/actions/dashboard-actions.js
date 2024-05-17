@@ -28,9 +28,11 @@ export function getDashboardTasksForGroup(groupType, sortBy, sortDirection) {
   };
 }
 
-export function getDashboardTasks() {
+export function getDashboardTasks(sortBy, sortDirection) {
   return {
     type: ActionTypes.GET_DASHBOARD_TASKS,
+    sortBy,
+    sortDirection,
   };
 }
 

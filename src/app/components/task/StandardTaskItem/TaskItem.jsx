@@ -1038,7 +1038,15 @@ const TaskItem = React.memo(
                     columns?.find(
                       ({ identifier }) =>
                         identifier === TaskItemColumn.DESCRIPTION,
-                    )?.columnWidth
+                    )?.columnWidth - 
+                    (isSubtask &&
+                      origin === 'LIST' &&
+                    !selectedFilters &&
+                      !searchValue &&
+                      !sort.key && 
+                      descriptionColumnOrder === 0
+                      ? 36
+                      : 0)
                   }
                   order={getColumnOrder(TaskItemColumn.DESCRIPTION)}
                   bolded
