@@ -65,20 +65,36 @@ export function getDashboardAllTasksFilters() {
   return request.then((options) => mapFilterOptions(options));
 }
 
-export const getDashboardMyTasksByCriteria = (selectedFilters) =>
+export const getDashboardMyTasksByCriteria = (
+  selectedFilters,
+  sortBy,
+  sortDirection,
+) =>
   axios
     .post(
-      `task/filter/filterTasksByCriteriaForCurrentUser?status=INCOMPLETE`,
+      `${
+        sortBy && sortDirection
+          ? `task/filter/filterTasksByCriteriaForCurrentUser?status=INCOMPLETE&sortBy=${sortBy}&sortDirection=${sortDirection}`
+          : `task/filter/filterTasksByCriteriaForCurrentUser?status=INCOMPLETE`
+      }`,
       mapSelectedOptionsToRequestPayload(selectedFilters),
     )
     .then(
       ({ data }) => includeCustomFieldsPatientsToEachTask(data)?.taskGroups,
     );
 
-export const getDashboardAllTasksByCriteria = (selectedFilters) =>
+export const getDashboardAllTasksByCriteria = (
+  selectedFilters,
+  sortBy,
+  sortDirection,
+) =>
   axios
     .post(
-      `task/filter/filterTasksByCriteriaForOrganization?status=INCOMPLETE`,
+      `${
+        sortBy && sortDirection
+          ? `task/filter/filterTasksByCriteriaForOrganization?status=INCOMPLETE&sortBy=${sortBy}&sortDirection=${sortDirection}`
+          : `task/filter/filterTasksByCriteriaForOrganization?status=INCOMPLETE`
+      }`,
       mapSelectedOptionsToRequestPayload(selectedFilters),
     )
     .then(({ data }) => data.taskGroups);

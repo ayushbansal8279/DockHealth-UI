@@ -239,7 +239,7 @@ function* searchDashboardTasks({ searchTerm }) {
   }
 }
 
-function* getDashboardTasks() {
+function* getDashboardTasks(payload) {
   try {
     const selectedFilters = yield select(selectedFiltersInMegaFilterSelector);
 
@@ -252,6 +252,8 @@ function* getDashboardTasks() {
           ? getDashboardAllTasksByCriteria
           : getDashboardMyTasksByCriteria,
         selectedFilters,
+        payload?.sortBy,
+        payload?.sortDirection,
       );
 
       yield put({

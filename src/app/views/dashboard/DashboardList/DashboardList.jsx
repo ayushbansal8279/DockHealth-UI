@@ -196,7 +196,11 @@ const DashboardList = ({ currentUser, tourModalIsOpen, openTourModal }) => {
       });
       // eslint-disable-next-line array-callback-return
       orderedDashboardTasks?.map((item) => {
-        dispatch(getDashboardTasksForGroup(item?.groupType, key, order));
+        if(!areFiltersApplied){
+          dispatch(getDashboardTasksForGroup(item?.groupType, key, order));
+        }else{
+          dispatch(getDashboardTasks(key, order));
+        }
       });
     },
     [dispatch, orderedDashboardTasks, taskActions],
