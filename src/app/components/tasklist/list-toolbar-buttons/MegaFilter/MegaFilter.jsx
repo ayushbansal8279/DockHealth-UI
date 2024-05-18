@@ -44,32 +44,31 @@ const MegaFilter = ({
   const [selectedQuickFilter, setSelectedQuickFilter] = useState('');
 
   useEffect(() => {
-      const data = {};
-      if (selectedQuickFilter === null && selectedFilters && filters) {
-        for (const key in selectedFilters) {
-          if (key !== '') {
-            const users = filters
-              .flatMap((item) => item.id === key && item.options)
-              .filter((item) => typeof item !== 'boolean');
+    const data = {};
+    if (selectedQuickFilter === null && selectedFilters && filters) {
+      for (const key in selectedFilters) {
+        if (key !== '') {
+          const users = filters
+            .flatMap((item) => item.id === key && item.options)
+            .filter((item) => typeof item !== 'boolean');
 
-            let options = selectedFilters[key].options.map((item) => {
-              if (item.includes('DATE_RANGE')) {
-                let aa = users.find((user) => user.key === item);
-                aa = {
-                  ...aa,
-                  dateStart: selectedFilters[key].dateStart,
-                  dateEnd: selectedFilters[key].dateEnd,
-                };
-                return aa;
-              } else {
-                return users.find((user) => user.key === item);
-              }
-            });
-            data[key] = options;
-          }
+          const options = selectedFilters[key].options.map((item) => {
+            if (item.includes('DATE_RANGE')) {
+              let aa = users.find((user) => user.key === item);
+              aa = {
+                ...aa,
+                dateStart: selectedFilters[key].dateStart,
+                dateEnd: selectedFilters[key].dateEnd,
+              };
+              return aa;
+            }
+            return users.find((user) => user.key === item);
+          });
+          data[key] = options;
         }
-        setFinalFilter(data);
       }
+      setFinalFilter(data);
+    }
   }, [selectedFilters, filters, selectedQuickFilter]);
 
   const clearFilters = () => {
@@ -183,8 +182,6 @@ const MegaFilter = ({
                   onSelectedFiltersChange={onSelectFilters}
                   setFinalFilter={setFinalFilter}
                   finalFilter={finalFilter}
-                  setMenuOption={setMenuOption}
-                  menuOptions={menuOptions}
                   openPopover={openPopover}
                   quickFiltersList={quickFiltersList}
                   setSavePopupOpen={setSavePopupOpen}
@@ -197,7 +194,7 @@ const MegaFilter = ({
                   setSelectedQuickFilter={setSelectedQuickFilter}
                 />
               ) : (
-                </>
+                <></>
               )}
             </>
           )}
