@@ -38,15 +38,6 @@ export const CommentText = styled.div`
   }
 `;
 
-export const CommentTextReadonly = styled.div`
-  max-height: 150px;
-  overflow-y: auto;
-  border: 0.5px solid ${palette.coolGrey3};
-  border-radius: 5px;
-  background-color: ${palette.white};
-  padding: 5px;
-`;
-
 export const CommentDetails = styled.div`
   color: ${palette.coolGrey1};
   font-size: ${fontSizes.small};
