@@ -1,17 +1,13 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import React, { useRef, useState, useEffect } from 'react';
-// import { useSelector } from 'react-redux';
 import { Box } from '@mui/material';
 import isEmpty from 'ramda/src/isEmpty';
 import FilterButton from 'components/filter/FilterButton/FilterButton';
 import FilterPopover from 'components/filter/FilterPopover/FilterPopover';
-// import FilterHeader from 'components/filter/FilterHeader/FilterHeader';
-// import FilterTable from 'components/filter/FilterTable/FilterTable';
 import CustomFilters from 'components/filter/CustomFilters/CustomFilters';
 import { MegaFilterNoResultsLabel, MegaFilterContainer } from './styled';
 import NewFilterContainer from '../../../filter/NewFilterContainer/NewFilterContainer';
 import SaveFilterPopup from '../../../filter/SaveFilterPopup/SaveFilterPopup';
-// import { currentTaskListSelector } from '@/app/selectors/task-list-selectors';
 import FilterTableLoader from '../../../filter/FilterTableLoader/FilterTableLoader';
 
 const MegaFilter = ({
@@ -20,7 +16,6 @@ const MegaFilter = ({
   selectedFilters,
   selectedQuickFilter: initialQuickFilter,
   onSelectFilters,
-  // activeItemsAmount,
   tasksAndSubTasksCount,
   isFetching,
   onOpen,
@@ -28,7 +23,6 @@ const MegaFilter = ({
   addQuickFilterOption,
   selectQuickFilter,
   handleSaveQuickFilter,
-  // onSaveAsNewClick,
   onQuickFilterUpdate,
   wasChangedFilters,
   onQuickFilterCreate,
@@ -38,10 +32,8 @@ const MegaFilter = ({
   focused,
 }) => {
   const [isOpen, openPopover] = useState(false);
-  // const [searchedFilterQuery, setSearchedFilterQuery] = useState('');
   const megaFilterButtonReference = useRef(null);
   const isFilterApplied = selectedFilters && !isEmpty(selectedFilters);
-  const [menuOptions, setMenuOption] = useState([]);
   const [finalFilter, setFinalFilter] = useState({});
   const [customFinalFilter, setCustomFinalFilter] = useState({});
   const [selectedCustomFilter, setSelectedCustomFilter] = useState({});
@@ -52,21 +44,33 @@ const MegaFilter = ({
   const [selectedQuickFilter, setSelectedQuickFilter] = useState('');
 
   useEffect(() => {
-    const data = {};
-    if (selectedFilters && filters) {
-      for (const key in selectedFilters) {
-        if (key !== '') {
-          const users = filters
-            .flatMap((item) => item.id === key && item.options)
-            .filter((item) => typeof item !== 'boolean');
-          data[key] = selectedFilters[key].options.map((item) =>
-            users.find((user) => user.key === item),
-          );
+      const data = {};
+      if (selectedQuickFilter === null && selectedFilters && filters) {
+        for (const key in selectedFilters) {
+          if (key !== '') {
+            const users = filters
+              .flatMap((item) => item.id === key && item.options)
+              .filter((item) => typeof item !== 'boolean');
+
+            let options = selectedFilters[key].options.map((item) => {
+              if (item.includes('DATE_RANGE')) {
+                let aa = users.find((user) => user.key === item);
+                aa = {
+                  ...aa,
+                  dateStart: selectedFilters[key].dateStart,
+                  dateEnd: selectedFilters[key].dateEnd,
+                };
+                return aa;
+              } else {
+                return users.find((user) => user.key === item);
+              }
+            });
+            data[key] = options;
+          }
         }
+        setFinalFilter(data);
       }
-      setFinalFilter(data);
-    }
-  }, [selectedFilters, filters]);
+  }, [selectedFilters, filters, selectedQuickFilter]);
 
   const clearFilters = () => {
     onSelectFilters(null);
@@ -121,8 +125,6 @@ const MegaFilter = ({
             filters={filters}
             onSelectedFiltersChange={onSelectFilters}
             setFinalFilter={setFinalFilter}
-            setMenuOption={setMenuOption}
-            menuOptions={menuOptions}
             openPopover={openPopover}
             handleSaveQuickFilter={handleSaveQuickFilter}
             setFilteredData={setFilteredData}
@@ -158,7 +160,6 @@ const MegaFilter = ({
               editModeEnabled={wasChangedFilters}
               onQuickFilterCreate={onQuickFilterCreate}
               onDelete={onQuickFilterDelete}
-              setMenuOption={setMenuOption}
               setFinalFilter={setFinalFilter}
               filters={filters}
               setEditIdentifier={setEditIdentifier}
@@ -172,7 +173,7 @@ const MegaFilter = ({
               setSelectedCustomFilter={setSelectedCustomFilter}
             />
           ) : (
-            <></>
+            <FilterTableLoader />
           )}
           {!quickFilterInfo?.predefined && (
             <>
@@ -196,7 +197,7 @@ const MegaFilter = ({
                   setSelectedQuickFilter={setSelectedQuickFilter}
                 />
               ) : (
-                <FilterTableLoader />
+                </>
               )}
             </>
           )}

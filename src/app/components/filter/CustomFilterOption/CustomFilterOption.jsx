@@ -8,6 +8,7 @@ import {
   QuickFilterTitle,
   QuickFilterTitleContainer,
 } from './styled';
+import moment from 'moment';
 
 const CustomFilterOption = (props) => {
   const {
@@ -70,29 +71,38 @@ const CustomFilterOption = (props) => {
     setSavePopupOpen(true);
     setEditIdentifier(identifier);
 
-    let selectedOptions = filter.selectedOptions;
-
-    if (
-      isPatientListPage &&
-      filter.patientSelectedOptions.customFields.length !== 0
-    ) {
-      selectedOptions = {};
-      filter.patientSelectedOptions.customFields.forEach((element) => {
-        selectedOptions[element.customFieldIdentifier] = {
-          options: element.selectedOptionIdentifiers,
-        };
-      });
-    }
+    let selectedFilters = filter.selectedOptions;
 
     const data = {};
-    for (const key in selectedOptions) {
-      const users = filters
-        .flatMap((item) => item.id === key && item.options)
-        .filter((item) => typeof item !== 'boolean');
-      data[key] = selectedOptions[key].options.map((item) =>
-        users.find((user) => user.key === item),
-      );
+    if (selectedFilters && filters) {
+      for (const key in selectedFilters) {
+        if (key !== '') {
+          const users = filters
+            .flatMap((item) => item.id === key && item.options)
+            .filter((item) => typeof item !== 'boolean');
+
+          let options = selectedFilters[key].options.map((item) => {
+            if (item.includes('DATE_RANGE')) {
+              let aa = users.find((user) => user.key === item);
+              aa = {
+                ...aa,
+                dateStart: moment(selectedFilters[key].dateStart).format(
+                  'YYYY-MM-DD',
+                ),
+                dateEnd: moment(selectedFilters[key].dateEnd).format(
+                  'YYYY-MM-DD',
+                ),
+              };
+              return aa;
+            } else {
+              return users.find((user) => user.key === item);
+            }
+          });
+          data[key] = options;
+        }
+      }
     }
+
     setCustomFinalFilter(data);
     setSelectedCustomFilter(data);
   };
@@ -108,7 +118,6 @@ const CustomFilterOption = (props) => {
           options: element.selectedOptionIdentifiers,
         };
       });
-      console.log(selectedOptions);
       handleQuickFilterDuplicateForPatientList(
         `Copy of ${filter.name}`,
         selectedOptions,
@@ -125,11 +134,12 @@ const CustomFilterOption = (props) => {
   ];
 
   const handleOptionClick = useCallback(() => {
-    onOptionClick(identifier);
     if (isSelected) {
+      clearFilters();
       setSelected(false);
       setSelectedQuickFilter('');
-      clearFilters();
+    } else {
+      onOptionClick(identifier);
     }
   }, [
     onOptionClick,
