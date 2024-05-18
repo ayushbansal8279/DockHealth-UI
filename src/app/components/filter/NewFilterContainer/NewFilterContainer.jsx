@@ -52,12 +52,12 @@ const NewFilterContainer = ({
         let dateStart = '';
         let dateEnd = '';
         finalFilter[key].map((item) => {
-          if (item.key.includes('DATE_RANGE')) {
-            dateStart = item.dateStart;
-            dateEnd = item.dateEnd;
-            options.push(item.key);
+          if (item?.key.includes('DATE_RANGE')) {
+            dateStart = item?.dateStart;
+            dateEnd = item?.dateEnd;
+            options.push(item?.key);
           } else {
-            options.push(item.key);
+            options.push(item?.key);
           }
         });
         if (dateStart !== '' && dateEnd !== '') {
@@ -79,7 +79,7 @@ const NewFilterContainer = ({
   const handleClick = (option) => {
     filters.map((item) => {
       if (
-        option === item.id &&
+        option === item?.id &&
         !Object.keys(finalFilter).find((select) => select === option)
       ) {
         const obs = {};
@@ -117,7 +117,7 @@ const NewFilterContainer = ({
           filter={filter}
           finalFilter={finalFilter}
           filterOptions={filters
-            .flatMap((item) => item.id === filter && item.options)
+            .flatMap((item) => item?.id === filter && item?.options)
             .filter((item) => typeof item !== 'boolean')}
           setFilteredData={setFilteredData}
           filteredData={filteredData}

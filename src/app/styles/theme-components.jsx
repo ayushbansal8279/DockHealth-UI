@@ -24,7 +24,7 @@ const STANDARD_TRANSITION = 'all 0.25s ease-out';
 const listItemStyles = {
   backgroundColor: 'transparent',
   transition: STANDARD_TRANSITION,
-  fontFamily: "Outfit, sans-serif",
+  fontFamily: 'Outfit, sans-serif',
   color: ({ color }) => color || palette.mediumGrey,
   whiteSpace: 'normal',
 
@@ -221,7 +221,7 @@ const themeCommonOverrides = () => ({
   MuiTab: {
     styleOverrides: {
       root: {
-        fontFamily: "Outfit, sans-serif",
+        fontFamily: 'Outfit, sans-serif',
         fontWeight: fontWeights.bold,
       },
       textColorInherit: {
@@ -274,6 +274,13 @@ const themeCommonOverrides = () => ({
         marginRight: spacing.tiny,
 
         color: ({ textcolor }) => textcolor || palette.mediumGrey,
+      },
+    },
+  },
+  MuiButton: {
+    styleOverrides: {
+      root: {
+        textTransform: 'none',
       },
     },
   },

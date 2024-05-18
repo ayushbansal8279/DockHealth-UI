@@ -238,7 +238,11 @@ const CustomField = ({
             <FormSelect
               readOnly={readOnly}
               label={name}
-              options={dependantOptions}
+              options={
+                dependantOptions?.length > 0
+                  ? dependantOptions
+                  : dropdownOptions
+              }
               name={fieldName}
               onBlur={handleBlur}
               inputRef={inputReference}

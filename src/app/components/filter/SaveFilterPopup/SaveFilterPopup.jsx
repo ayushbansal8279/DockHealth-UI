@@ -215,7 +215,7 @@ const SaveFilterPopup = ({
               filteredData={customFilteredData}
               isQuickFilterEdit={isQuickFilterEdit}
               customFinalFilter={customFinalFilter}
-            ></NewFilterContainer>
+            />
           </div>
         )}
         <ButtonContainer>

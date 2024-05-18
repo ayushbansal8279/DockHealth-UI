@@ -1,3 +1,16 @@
-import { CommentDto as IComment } from './swagger/models/CommentDto';
+import { IUserSummary } from './user';
 
-export { IComment };
+export interface IComment {
+  comment: string;
+  commentId: number;
+  commentIdentifier: string;
+  commentMentions: Array<any>;
+  creator: IUserSummary;
+  dateCreated: string;
+  dateUpdated: string;
+  hasMentiones: boolean;
+  sortIndex?: number;
+  taskIdentifier: string;
+  taskWorkflowIdentifier?: string;
+  tokenizedComment: string;
+}
