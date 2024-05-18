@@ -8,8 +8,7 @@ import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import CloseIcon from '@mui/icons-material/Close';
 import Datepicker from 'components/common/Datepicker/Datepicker';
 import { useBoolean } from 'hooks/useBoolean';
-
-const DEFAULT_DATE_FORMAT = 'MM/DD/YYYY';
+import { DEFAULT_DATE_FORMAT, getMomenDateFromString } from './helpers';
 
 const CustomDateInput = ({ inputRef, ...otherProps }) => (
   <InputMask inputRef={inputRef} mask="99/99/9999" {...otherProps} />
@@ -47,11 +46,7 @@ const DateInput = React.forwardRef(
       if (textInputReference?.current) textInputReference?.current?.focus();
     }, [textInputReference, unsetOpen]);
 
-    const momentDate =
-      value != null && value.includes('T')
-        ? moment(value, 'YYYY-MM-DDTHH:mm:ss.SSSZ')
-        : moment(value, DEFAULT_DATE_FORMAT);
-
+    const momentDate = getMomenDateFromString(value);
     const dateValue = momentDate.format(DEFAULT_DATE_FORMAT);
 
     const handleChange = ({ target: { value: date } }) => {
