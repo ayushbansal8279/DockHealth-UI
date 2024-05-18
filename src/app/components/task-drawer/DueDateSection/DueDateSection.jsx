@@ -42,6 +42,9 @@ const DueDateSection = ({ selectedTask, disabled = false }) => {
   const [isTimeAvailable, setIsTimeAvailable] = useState(false);
   const handleDueDateSave = useCallback(
     (updatedDueDateTime) => {
+      if (updatedDueDateTime === null) {
+        setIsTimeAvailable(false);
+      }
       dispatch(updateTaskDueDate(selectedTask, updatedDueDateTime));
     },
     [dispatch, selectedTask],
