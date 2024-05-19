@@ -166,14 +166,15 @@ function* getCurrentListTasks() {
     } else if (!selectedFilters || isEmpty(selectedFilters)) {
       let groups = yield select(listDetailsGroupsSelector);
 
-      if (!groups || isEmpty(groups)) {
-        const action = yield take(
-          (a) => a.type === ActionTypes.GET_TASKS_GROUPS_LIST_SUCCESS,
-        );
-        groups = action.groups;
-      }
-      const groupsWithTasks = compose(filter((g) => g.metricValue > 0))(groups);
-      const groupsToGet = groupsWithTasks.slice(0);
+      const action = yield take(
+        (a) => a.type === ActionTypes.GET_TASKS_GROUPS_LIST_SUCCESS,
+      );
+      groups = action.groups;
+
+      const groupsWithTasks = compose(filter((g) => g.metricValue >= 0))(
+        groups,
+      );
+      const groupsToGet = groupsWithTasks;
 
       yield all(
         groupsToGet.map(({ taskGroupIdentifier }) =>
