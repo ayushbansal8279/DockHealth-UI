@@ -77,7 +77,13 @@ function createMentionsComment(tokenizedDescription, mentions) {
   });
 }
 
-export function traverseNodes(node, mentions) {
+export function traverseNodes(nodes, mentions) {
+  return nodes && nodes.length > 0 ? nodes.map((node) => {
+      return traverseNode(node, mentions);
+    }) : nodes;
+}
+
+export function traverseNode(node, mentions) {
   if (node && node?.props && node.props.children) {
     const { children } = node.props;
     if (typeof children === 'string') {
@@ -86,7 +92,7 @@ export function traverseNodes(node, mentions) {
         props: { children: createMentionsComment(children, mentions) },
       };
     }
-    return traverseNodes(children, mentions);
+    return traverseNode(children, mentions);
   }
   return node;
 }
