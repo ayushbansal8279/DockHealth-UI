@@ -59,7 +59,7 @@ function updateGroupInState(
 function updateBundleInState(bundleIdentifier, updatedData, state) {
   const updatedMap = {
     [bundleIdentifier]: {
-      // ...state.tasksMap[bundleIdentifier],
+      ...state.tasksMap[bundleIdentifier],
       ...updatedData,
       tasks: [
         ...new Set([
