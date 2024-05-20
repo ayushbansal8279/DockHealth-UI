@@ -59,6 +59,7 @@ const Task = React.memo(
     isLastTaskOfGroup,
     isNextTaskItemTypeBundle,
     isAddingTask,
+    patientView,
     ...restProps
   }) => {
     const parentTaskReference = useRef(null);
@@ -130,6 +131,16 @@ const Task = React.memo(
       compose(dispatch, TaskActions.partialUpdateTask),
       [dispatch],
     );
+
+    useEffect(() => {
+      if (origin === 'PATIENT') {
+        if (patientView === 'FULL_VIEW') {
+          handleSetSubtasksOpen(true);
+        } else {
+          handleSetSubtasksOpen(false);
+        }
+      }
+    }, [origin, patientView]);
 
     useEffect(() => {
       // if (isFullView) handleSetSubtasksOpen(true);

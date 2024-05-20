@@ -36,6 +36,9 @@ import {
   ListsToolbarContainer,
   ListsTabsContainer,
   ListSelectionImg,
+  GridContainer,
+  GridItemFullView,
+  GridItemSlimView,
 } from './styled';
 import { ListViewType, LIST_TYPE_OPTIONS } from '../helpers';
 import HeaderSearch from '@/app/components/template/HeaderSearch/HeaderSearch';
@@ -59,9 +62,11 @@ import {
   updateQuickFilter,
 } from '@/app/actions/mega-filter-actions';
 import { setPatientTaskSearch } from '@/app/sagas/patient-details-saga';
+import FullViewIcon from '@/app/img/list/FullViewIcon';
+import SlimViewIcon from '@/app/img/list/SlimViewIcon';
 
 const TaskListToolbar = (props) => {
-  const { lists } = props;
+  const { lists, patientView, handlePatientView } = props;
   // const tasksToPrint = currentList?.tasks ? currentList?.tasks : [];
   // const listUsers = currentList?.listUsers ? currentList?.listUsers : [];
   const {
@@ -298,16 +303,17 @@ const TaskListToolbar = (props) => {
   return (
     <ListsToolbarContainer>
       <ListsTabsContainer>
-        {viewOnlyCustomizeEnabled && (
-          <CustomizeToolbarButton
-            showCustomColumnCreate={false}
-            additionalOptions={OPTIONS}
-            iconColorFilterActive={iconColorFilterActiveItem?.value}
-            {...props}
-          />
-        )}
-        {/* <Spacing horizontal={3} /> */}
-        {/* <ToolbarSelect
+        <Box display="flex" flex={1} justifyContent="flex-start">
+          {viewOnlyCustomizeEnabled && (
+            <CustomizeToolbarButton
+              showCustomColumnCreate={false}
+              additionalOptions={OPTIONS}
+              iconColorFilterActive={iconColorFilterActiveItem?.value}
+              {...props}
+            />
+          )}
+          {/* <Spacing horizontal={3} /> */}
+          {/* <ToolbarSelect
           options={LIST_TYPE_OPTIONS}
           value={
             isAllTasksView ? ListViewType.ALL_TASKS : ListViewType.LIST_VIEW
@@ -316,65 +322,87 @@ const TaskListToolbar = (props) => {
           onChange={handleListViewTypeChange}
           icon={
             <ListSelectionImg
-              src={ViewTypeIcon}
-              alt="list type icon"
+            src={ViewTypeIcon}
+            alt="list type icon"
               iconColorFilterActive={iconColorFilterActiveItem?.value}
-            />
-          }
-          iconColorActive={iconColorActiveItem?.value}
-          width={170}
-        /> */}
-        {/* <Box px={2} /> */}
-        {taskListIdentifierParameter !== ListViewType.ALL_TASKS && (
-          <ToolbarSelect
-            options={listOptions}
-            value={taskListIdentifierParameter}
-            name="currentList"
-            onChange={handleListChange}
-            icon={
-              <ListSelectionImg
-                src={ViewTypeIcon}
-                alt="list type icon"
-                iconColorFilterActive={iconColorFilterActiveItem?.value}
               />
             }
             iconColorActive={iconColorActiveItem?.value}
-          />
-        )}
-        {viewOnlyArchivedTasksEnabled && (
-          <>
-            <Spacing horizontal={3} />
-            <TaskStatusToolbarSelect
-              value={tasksStatus}
-              onChange={handleChangeTasksStatus}
-              iconColorFilterActive={iconColorFilterActiveItem?.value}
+            width={170}
+          /> */}
+          {/* <Box px={2} /> */}
+          {taskListIdentifierParameter !== ListViewType.ALL_TASKS && (
+            <ToolbarSelect
+              options={listOptions}
+              value={taskListIdentifierParameter}
+              name="currentList"
+              onChange={handleListChange}
+              icon={
+                <ListSelectionImg
+                  src={ViewTypeIcon}
+                  alt="list type icon"
+                  iconColorFilterActive={iconColorFilterActiveItem?.value}
+                />
+              }
               iconColorActive={iconColorActiveItem?.value}
             />
-          </>
-        )}
-        <Spacing horizontal={3} />
-        <MegaFilter
-          filters={filters}
-          selectedFilters={selectedFilters}
-          onSelectFilters={handleFilterSelect}
-          isFetching={isFetchingLists}
-          onOpen={() => {
-            dispatch(getQuickFilters({ patientIdentifier }));
-            dispatch(getPatientFilterOptions(patientIdentifier));
-          }}
-          quickFiltersList={quickFiltersList}
-          addQuickFilterOption={addQuickFilterOption}
-          selectedQuickFilter={selectedQuickFilter}
-          selectQuickFilter={handleSelectQuickFilter}
-          handleSaveQuickFilter={handleSaveQuickFilter}
-          onSaveAsNewClick={handleSaveAsQuickFilter}
-          wasChangedFilters={wasChangedFilters}
-          onQuickFilterCreate={handleQuickFilterCreate}
-          onQuickFilterUpdate={handleQuickFilterUpdate}
-          onQuickFilterDelete={handleQuickFilterDelete}
-        />
-        <Spacing horizontal={3} />
-        <HeaderSearch value={searchValue} onChange={handleSearchValueChange} />
+          )}
+          {viewOnlyArchivedTasksEnabled && (
+            <>
+              <Spacing horizontal={3} />
+              <TaskStatusToolbarSelect
+                value={tasksStatus}
+                onChange={handleChangeTasksStatus}
+                iconColorFilterActive={iconColorFilterActiveItem?.value}
+                iconColorActive={iconColorActiveItem?.value}
+              />
+            </>
+          )}
+          <Spacing horizontal={3} />
+          <MegaFilter
+            filters={filters}
+            selectedFilters={selectedFilters}
+            onSelectFilters={handleFilterSelect}
+            isFetching={isFetchingLists}
+            onOpen={() => {
+              dispatch(getQuickFilters({ patientIdentifier }));
+              dispatch(getPatientFilterOptions(patientIdentifier));
+            }}
+            quickFiltersList={quickFiltersList}
+            addQuickFilterOption={addQuickFilterOption}
+            selectedQuickFilter={selectedQuickFilter}
+            selectQuickFilter={handleSelectQuickFilter}
+            handleSaveQuickFilter={handleSaveQuickFilter}
+            onSaveAsNewClick={handleSaveAsQuickFilter}
+            wasChangedFilters={wasChangedFilters}
+            onQuickFilterCreate={handleQuickFilterCreate}
+            onQuickFilterUpdate={handleQuickFilterUpdate}
+            onQuickFilterDelete={handleQuickFilterDelete}
+          />
+          <Spacing horizontal={3} />
+          <HeaderSearch
+            value={searchValue}
+            onChange={handleSearchValueChange}
+          />
+        </Box>
+        <GridContainer columns={2}>
+          <GridItemFullView
+            active={patientView === 'FULL_VIEW'}
+            onClick={() => {
+              handlePatientView('FULL_VIEW');
+            }}
+          >
+            <FullViewIcon />
+          </GridItemFullView>
+          <GridItemSlimView
+            active={patientView === 'SLIM_VIEW'}
+            onClick={() => {
+              handlePatientView('SLIM_VIEW');
+            }}
+          >
+            <SlimViewIcon />
+          </GridItemSlimView>
+        </GridContainer>
       </ListsTabsContainer>
       {/* {viewOnlyArchivedTasksEnabled && (
         <>

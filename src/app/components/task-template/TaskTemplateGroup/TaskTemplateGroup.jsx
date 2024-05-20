@@ -52,6 +52,7 @@ const TaskTemplateGroup = ({
   isNextVirtualTaskItemTypeBundle,
   isLastTaskOfGroup,
   isNextTaskItemTypeBundle,
+  patientView,
 }) => {
   const templateGroup = useSelector((state) => {
     return taskLookupSelector(state, origin, pullGroup);
@@ -105,10 +106,12 @@ const TaskTemplateGroup = ({
   // }, [SHOW_WORKFLOW_DETAILS, SHOW_WORKFLOW_COMPLETED_TASKS, isCompletedTab]);
 
   useEffect(() => {
-    if (changeViewType === 'FULL_VIEW' || origin === TaskOrigin.PATIENT) {
+    if (changeViewType === 'FULL_VIEW' || patientView === 'FULL_VIEW') {
       setOpen(true);
+    } else {
+      setOpen(false);
     }
-  }, [changeViewType, origin]);
+  }, [changeViewType, patientView]);
 
   useEffect(() => {
     if (isOpen && !previousIsOpen && (!tasks || tasks.length === 0)) {
@@ -287,6 +290,7 @@ const TaskTemplateGroup = ({
                               noMargin
                               iconColorActive={iconColorActive}
                               origin={origin}
+                              patientView={patientView}
                             />
                           )}
                         </Draggable>
