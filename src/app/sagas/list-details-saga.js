@@ -166,11 +166,12 @@ function* getCurrentListTasks() {
     } else if (!selectedFilters || isEmpty(selectedFilters)) {
       let groups = yield select(listDetailsGroupsSelector);
 
-      const action = yield take(
-        (a) => a.type === ActionTypes.GET_TASKS_GROUPS_LIST_SUCCESS,
-      );
-      groups = action.groups;
-
+      if (!groups || isEmpty(groups)) {
+        const action = yield take(
+          (a) => a.type === ActionTypes.GET_TASKS_GROUPS_LIST_SUCCESS,
+        );
+        groups = action.groups;
+      }
       const groupsWithTasks = compose(filter((g) => g.metricValue >= 0))(
         groups,
       );
