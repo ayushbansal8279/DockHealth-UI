@@ -186,7 +186,7 @@ const DashboardTasksReducer = (state = initialState, action) => {
           );
           return {
             ...g,
-            metricValue: matchingGroup ? matchingGroup[0].metricValue : 0,
+            metricValue: matchingGroup ? matchingGroup?.[0]?.metricValue : 0,
           };
         }),
         isLoading: false,

@@ -207,7 +207,7 @@ const DashboardList = ({ currentUser, tourModalIsOpen, openTourModal }) => {
   );
 
   const showClearSortFiltersModal = () => {
-    if (isSortApplied) {
+    if (isSortApplied || areFiltersApplied) {
       openModal('ClearSortFilters', {
         confirm: () => {
           resetSort();
