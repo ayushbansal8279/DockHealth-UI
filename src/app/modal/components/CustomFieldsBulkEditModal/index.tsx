@@ -1,16 +1,32 @@
 import * as Yup from 'yup';
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useRef, useCallback } from 'react';
 import { Box, Divider, Stack, Typography } from '@mui/material';
 import difference from 'ramda/src/difference';
 import { yupResolver } from '@hookform/resolvers/yup';
-import AddBoxIcon from '@mui/icons-material/AddBox';
-import { Button } from '@mui/material';
-import LoadingButton from '@mui/lab/LoadingButton';
 
 import { ICustomField } from '@/app/types/CustomField';
 import { FormProvider, useForm } from 'react-hook-form';
 import FormFieldItem from './FormFieldItem';
 import { FormattedMetaDataForApi, formatMetaDataForApi } from './helpers';
+import RotatableChevron from '@/app/components/common/RotatableChevron/RotatableChevron';
+import FilterListIcon from '@mui/icons-material/FilterList';
+import {
+  ConfirmButton as SaveButton,
+  CancelButton,
+} from '../ModalButton/ModalButtons';
+import {
+  BottomWrapper,
+  FilterButtonWrapper,
+  ClearFilter,
+  BoxContainer,
+  AddFilterButtonContainer,
+  AddFilterRotatableChevronButtonWrapper,
+  AddFilterRotatableChevronButtonLabel,
+  AddFilterButtonLabel,
+} from '@/app/components/filter/NewFilterContainer/styled';
+import useBoolean from '@/app/hooks/useBoolean';
+import palette from '@/app/styles/palette';
+import FilterOptionsPopover from '@/app/components/filter/NewFilterContainer/FilterOptionsPopover';
 
 interface Props {
   customFields: ICustomField[];
@@ -23,7 +39,14 @@ export default function CustomFieldsBulkEditModal({
   onSave,
   closeModal,
 }: Props) {
+  console.log('customFields', customFields);
+  const popoverReference = useRef(null);
   const [selectedIdxArr, setSelectedIdxArr] = useState<Array<number>>([]);
+  const [isAddFieldPopoverOpen, openAddFieldPopover, closeAddFieldPopover] =
+    useBoolean(false);
+  const [selectedIdentifierArr, setSelectedIdentifierArr] = useState<
+    Array<string>
+  >([]);
 
   // NOTE: Used for key/selectedIdx for field without selected customField
   // every time new empty customField added, this is decremented to keep identical key
@@ -42,40 +65,28 @@ export default function CustomFieldsBulkEditModal({
     getValues,
   } = methods;
 
-  const saveDisabled =
-    isSubmitting || !Object.keys(getValues('metaData')).length;
+  const actionsHidden =
+    isSubmitting || !Object.keys(getValues('metaData') ?? {}).length;
 
-  const availableIdxArr = useMemo(() => {
-    if (!customFields) {
-      return [];
+  const handleRemove = (customFieldIdentifier: string) => {
+    const idx = selectedIdentifierArr.indexOf(customFieldIdentifier);
+    if (idx >= 0) {
+      setSelectedIdentifierArr((prev) => [
+        ...prev.slice(0, idx - 1),
+        ...prev.slice(idx + 1),
+      ]);
     }
-    return difference(
-      [...Array(customFields.length).keys()],
-      selectedIdxArr,
-    ) as number[];
-  }, [customFields, selectedIdxArr]);
-
-  const handleChangeSelectedIdx = (
-    selectedIdxArrIdx: number,
-    selectedIdx: number,
-  ) => {
-    setSelectedIdxArr((prev) => [
-      ...prev.slice(0, selectedIdxArrIdx),
-      selectedIdx,
-      ...prev.slice(selectedIdxArrIdx + 1),
-    ]);
   };
 
-  const handleRemove = (selectedIdxArrIdx: number) => {
-    setSelectedIdxArr((prev) => [
-      ...prev.slice(0, selectedIdxArrIdx),
-      ...prev.slice(selectedIdxArrIdx + 1),
-    ]);
+  const handleAddField = (customFieldIdentifier: string) => {
+    if (!selectedIdentifierArr.includes(customFieldIdentifier)) {
+      setSelectedIdentifierArr((prev) => [...prev, customFieldIdentifier]);
+    }
+    closeAddFieldPopover();
   };
 
-  const handleAddField = () => {
-    setSelectedIdxArr((prev) => [...prev, emptyIdxIndicator]);
-    setEmptyIdxIndicator((prev) => prev - 1);
+  const clearFilter = () => {
+    setSelectedIdentifierArr([]);
   };
 
   const onSubmit = handleSubmit(async (data) => {
@@ -104,50 +115,71 @@ export default function CustomFieldsBulkEditModal({
           </Typography>
           <Stack sx={{ mb: 2 }}>
             {!!customFields &&
-              selectedIdxArr.map((selectedIdx, idx) => (
+              selectedIdentifierArr.map((identifier) => (
                 <FormFieldItem
-                  key={selectedIdx}
+                  key={identifier}
                   customFields={customFields}
-                  selectedIdx={selectedIdx}
-                  availableIdxArr={availableIdxArr}
-                  onChangeSelectedIdx={(selectedIdx: number) =>
-                    handleChangeSelectedIdx(idx, selectedIdx)
-                  }
-                  onRemove={() => handleRemove(idx)}
+                  identifier={identifier}
+                  onRemove={() => handleRemove(identifier)}
                 />
               ))}
           </Stack>
-          <Button
-            variant="text"
-            startIcon={<AddBoxIcon />}
-            onClick={handleAddField}
-          >
-            Add Field
-          </Button>
-          <Divider />
-          <Stack direction="row" gap={2} sx={{ mt: 1 }}>
-            <Button
-              fullWidth
-              variant="outlined"
-              color="error"
-              size="medium"
-              onClick={closeModal}
-            >
-              Cancel
-            </Button>
-            <LoadingButton
-              fullWidth
-              variant="contained"
-              color="error"
-              size="medium"
-              type="submit"
-              disabled={saveDisabled}
-              loading={isSubmitting}
-              loadingIndicator="Saving..."
-            >
-              Save
-            </LoadingButton>
-          </Stack>
+          <FilterButtonWrapper>
+            <BoxContainer ref={popoverReference}>
+              <AddFilterButtonContainer
+                variant="text"
+                onClick={openAddFieldPopover}
+                size="large"
+              >
+                <FilterListIcon fontSize="medium" />
+                <AddFilterButtonLabel variant="body1" component="span">
+                  Add Field
+                </AddFilterButtonLabel>
+              </AddFilterButtonContainer>
+              <Box display="flex" width="3px">
+                <AddFilterRotatableChevronButtonWrapper
+                  variant="text"
+                  onClick={openAddFieldPopover}
+                  size="large"
+                >
+                  <AddFilterRotatableChevronButtonLabel variant="body1">
+                    <RotatableChevron
+                      rotated={isAddFieldPopoverOpen}
+                      color={palette.white}
+                    />
+                  </AddFilterRotatableChevronButtonLabel>
+                </AddFilterRotatableChevronButtonWrapper>
+              </Box>
+            </BoxContainer>
+            <FilterOptionsPopover
+              anchorEl={popoverReference.current}
+              open={isAddFieldPopoverOpen}
+              onClose={closeAddFieldPopover}
+              filterOptionsList={customFields}
+              onFilterSelect={handleAddField}
+            />
+            {Object.keys(finalFilter).length > 0 && (
+              <ClearFilter onClick={clearFilter}>Clear Selection</ClearFilter>
+            )}
+          </FilterButtonWrapper>
+          {!actionsHidden && (
+            <>
+              <Divider />
+              <Stack direction="row" gap={2} sx={{ mt: 1 }}>
+                <CancelButton fullWidth onClick={closeModal}>
+                  Cancel
+                </CancelButton>
+                <SaveButton
+                  fullWidth
+                  type="submit"
+                  loading={isSubmitting}
+                  loadingIndicator="Saving..."
+                >
+                  Save
+                </SaveButton>
+              </Stack>
+            </>
+          )}
         </form>
       </FormProvider>
     </Box>

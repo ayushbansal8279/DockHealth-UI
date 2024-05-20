@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import { typography } from 'styles/palette';
 
 // eslint-disable-next-line import/prefer-default-export
 export const FilterContainer = styled.div`
