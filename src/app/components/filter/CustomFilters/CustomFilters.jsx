@@ -17,7 +17,6 @@ const CustomFilters = ({
   editModeEnabled = false,
   setFinalFilter,
   filters,
-  // setMenuOption,
   setSavePopupOpen,
   setEditIdentifier,
   setCustomFinalFilter,

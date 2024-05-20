@@ -1,13 +1,9 @@
 import React from 'react';
-import {
-  traverseNodes,
-  getCommentDetails,
-  processMarkdownValue,
-} from 'components/drawer-common/Comment/helpers';
+import { getCommentDetails } from 'components/drawer-common/Comment/helpers';
+import CommentTextReadOnly from 'components/drawer-common/Comment/CommentTextReadOnly';
 import {
   CommentContainer,
   CommentText,
-  CommentTextReadonly,
   CommentDetails,
   CommentContent,
   CommentWrapper,
@@ -34,12 +30,7 @@ export default function Comment({ comment, onClick }: Props) {
       <CommentContainer>
         <CommentContent>
           <CommentText>
-            <CommentTextReadonly>
-              {traverseNodes(
-                processMarkdownValue(tokenizedComment),
-                commentMentions,
-              )}
-            </CommentTextReadonly>
+            <CommentTextReadOnly comment={comment} />
           </CommentText>
           <CommentDetails>{commentDetails}</CommentDetails>
         </CommentContent>

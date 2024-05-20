@@ -22,11 +22,9 @@ import { fontSizes } from '@/app/styles/font';
 const FilterSelect = ({
   finalFilter,
   filterOptions,
-  setFilter,
+  setFinalFilter,
   filter,
-  menuOptions,
-  filteredData,
-  setFilteredData,
+  filters,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [optionName, setOptionName] = useState('');
@@ -35,6 +33,8 @@ const FilterSelect = ({
   const containerRef = useRef(null);
   const [startDate, setStartDate] = useState('');
   const [dueDate, setDueDate] = useState('');
+  const [dateStart, setDateStart] = useState('');
+  const [dateEnd, setDateEnd] = useState('');
   const [isDateRange, setIsDateRange] = useState(false);
 
   useEffect(() => {
@@ -46,35 +46,38 @@ const FilterSelect = ({
   }, [filter, finalFilter, filterOptions]);
 
   useEffect(() => {
-    menuOptions.map((item) => {
-      if (item?.id === filter) setOptionName(item?.label);
+    filters.map((item) => {
+      if (item?.id === filter) {
+        setOptionName(item?.label);
+      }
     });
   }, [filter]);
 
   useEffect(() => {
+    finalFilter[filter].map((item) => {
+      if (item.key.includes('DATE_RANGE')) {
+        if (item.dateStart && item.dateEnd) {
+          setDateStart(item.dateStart);
+          setDateEnd(item.dateEnd);
+        }
+      }
+    });
+  }, [finalFilter]);
+
+  useEffect(() => {
     if (dueDate !== null && startDate !== null) {
-      let currentFilter = { ...filteredData };
-      Object.entries(currentFilter).forEach(([key, value]) => {
-        if (key === 'taskDueDateOptions') {
-          if (
-            currentFilter[key].options &&
-            currentFilter[key].options.length > 0
-          ) {
-            if (currentFilter[key].options.includes('DUE_DATE_RANGE')) {
-              const index =
-                currentFilter[key].options.indexOf('DUE_DATE_RANGE');
-              currentFilter[key].options.splice(index, 1);
-              currentFilter[key] = {
-                dateStart: startDate,
-                dateEnd: dueDate,
-                options: currentFilter[key].options,
-              };
-            }
-          }
+      let currentFinalFilter = { ...finalFilter };
+      currentFinalFilter[filter].map((item, index) => {
+        if (item.key.includes('DATE_RANGE')) {
+          currentFinalFilter[filter][index] = {
+            ...currentFinalFilter[filter][index],
+            dateStart: startDate,
+            dateEnd: dueDate,
+          };
         }
       });
 
-      setFilteredData(currentFilter);
+      setFinalFilter({ ...currentFinalFilter });
     }
   }, [dueDate, startDate, setStartDate, setDueDate]);
 
@@ -88,7 +91,7 @@ const FilterSelect = ({
       ...currentFilter[filter],
       ...filterOptions.filter((user) => user?.key === item?.key),
     ];
-    setFilter({ ...currentFilter });
+    setFinalFilter({ ...currentFilter });
   };
 
   const handleSearchOption = (e) => {
@@ -107,7 +110,7 @@ const FilterSelect = ({
       urs[filter] = finalFilter[filter].filter(
         (option) => option?.key !== item?.key,
       );
-      setFilter((v) => ({ ...urs }));
+      setFinalFilter((v) => ({ ...urs }));
       setFilterdUser((v) => [...v, item]);
       let currentFilter = { ...finalFilter };
       currentFilter[filter] = currentFilter[filter].filter(
@@ -119,12 +122,12 @@ const FilterSelect = ({
   const handleRemoveOption = () => {
     let currentFilter = { ...finalFilter };
     delete currentFilter[filter];
-    setFilter({ ...currentFilter });
+    setFinalFilter({ ...currentFilter });
   };
 
   useEffect(() => {
     finalFilter[filter].map((item) => {
-      if (item?.displayValue === 'Range' && item?.key === 'DUE_DATE_RANGE') {
+      if (item?.key.includes('DATE_RANGE')) {
         setIsDateRange(true);
       }
     });
@@ -221,13 +224,14 @@ const FilterSelect = ({
                           ''
                         )}
                       </AvatarContainer>
-                      {item?.displayValue === 'Range' &&
-                      item.key === 'DUE_DATE_RANGE' ? (
+                      {item?.key.includes('DATE_RANGE') ? (
                         <DateRangeOptions
                           dueDate={dueDate}
                           setDueDate={setDueDate}
                           startDate={startDate}
                           setStartDate={setStartDate}
+                          dateEnd={dateEnd}
+                          dateStart={dateStart}
                         />
                       ) : (
                         <Lable>{item?.displayValue}</Lable>

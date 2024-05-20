@@ -68,6 +68,13 @@ const OPTIONS = [
 const PatientsToolbar = ({ searchValue, setSearchValue }) => {
   const [isSidebarOpen, setIsSidebarOpen, unsetIsSidebarOpen] =
     useBoolean(false);
+  const [finalFilter, setFinalFilter] = useState({});
+  const [filteredData, setFilteredData] = useState({});
+  const [isSavePopupOpen, setSavePopupOpen] = useState(false);
+  const [editIdentifier, setEditIdentifier] = useState('');
+  const [customFinalFilter, setCustomFinalFilter] = useState({});
+  const [selectedCustomFilter, setSelectedCustomFilter] = useState({});
+  const [customFilteredData, setCustomFilteredData] = useState({});
   const { 0: filterOpen, 2: closeFilter, 3: toggleFilter } = useBoolean(false);
   const filterButtonReference = useRef(null);
   const history = useHistory();
@@ -294,6 +301,20 @@ const PatientsToolbar = ({ searchValue, setSearchValue }) => {
         <PatientsFilter
           filterButtonReference={filterButtonReference}
           closeFilter={closeFilter}
+          finalFilter={finalFilter}
+          setFinalFilter={setFinalFilter}
+          filteredData={filteredData}
+          setFilteredData={setFilteredData}
+          isSavePopupOpen={isSavePopupOpen}
+          setSavePopupOpen={setSavePopupOpen}
+          editIdentifier={editIdentifier}
+          setEditIdentifier={setEditIdentifier}
+          customFinalFilter={customFinalFilter}
+          setCustomFinalFilter={setCustomFinalFilter}
+          selectedCustomFilter={selectedCustomFilter}
+          setSelectedCustomFilter={setSelectedCustomFilter}
+          customFilteredData={customFilteredData}
+          setCustomFilteredData={setCustomFilteredData}
         />
       </FilterPopover>
       <CreatePatientDrawer

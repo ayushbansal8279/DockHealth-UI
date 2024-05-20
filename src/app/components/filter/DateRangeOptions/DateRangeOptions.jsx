@@ -20,7 +20,7 @@ const DateRangeOptions = ({
         start
         startDate={startDate}
         setStartDate={setStartDate}
-        // date={dateStart}
+        date={dateStart}
         maxDate={dueDate}
         // onDateChange={onStartDateChange}
       />
@@ -29,7 +29,7 @@ const DateRangeOptions = ({
         due
         dueDate={dueDate}
         setDueDate={setDueDate}
-        // date={dateEnd}
+        date={dateEnd}
         minDate={startDate}
         // onDateChange={onEndDateChange}
       />
