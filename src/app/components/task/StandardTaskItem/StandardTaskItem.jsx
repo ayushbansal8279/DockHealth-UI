@@ -105,7 +105,8 @@ const Task = React.memo(
           subTasksCount > 0 &&
           isEmpty(renderedSubtasks) &&
           !subtasksDisabled &&
-          !isFullView
+          !isFullView &&
+          areOpen
         ) {
           dispatch(loadSubTasks(task));
         }
@@ -138,11 +139,6 @@ const Task = React.memo(
           handleSetSubtasksOpen(true);
           handleAddTask(taskIdentifier);
         } else {
-          // if (collapse.get(taskIdentifier)) {
-          //   setAreSubtasksOpen(false);
-          // } else {
-          //   setAreSubtasksOpen(true);
-          // }
           setAreSubtasksOpen(!collapse.get(taskIdentifier));
         }
       } else if (changeViewType === 'SLIM_VIEW') {
@@ -150,11 +146,6 @@ const Task = React.memo(
           handleSetSubtasksOpen(false);
           handleAddTask(taskIdentifier);
         } else {
-          // if (collapse.get(taskIdentifier)) {
-          //   setAreSubtasksOpen(false);
-          // } else {
-          //   setAreSubtasksOpen(true);
-          // }
           setAreSubtasksOpen(!collapse.get(taskIdentifier));
         }
       } else {
