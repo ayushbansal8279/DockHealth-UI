@@ -246,14 +246,17 @@ export const DrawerOrganizationsList = styled.div`
 
 // Lists
 export const DrawerMyListsLabel = styled(DrawerSubmenuLabel)`
-  color: ${palette.coolGrey1};
-  font-weight: ${fontWeights.bold};
+  color: ${palette.black};
+  font-weight: ${fontWeights.light};
   padding: ${spacing.smallPlus};
-  border-bottom: 1px solid ${palette.coolGrey2};
-  font-size: ${fontSizes.smallPlus};
+  // border-bottom: 1px solid ${palette.coolGrey2};
+  font-size: ${fontSizes.regular};
   display: flex;
   justify-content: space-between;
   align-items: center;
+  font-family: Outfit;
+  line-height: 18px;
+  text-align: left;
 `;
 
 export const DrawerListsList = styled.div`
@@ -282,7 +285,8 @@ export const DrawerListsItem = styled.div`
     isDraggable &&
     `
         &:hover {
-          border: 1px solid ${palette.coolGrey2};
+          // border: 1px solid ${palette.coolGrey2};
+          background: ${palette.whiteSmoke};
         }
 
         &:hover {
@@ -328,6 +332,11 @@ export const ListNameText = styled.div`
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  font-family: Outfit;
+  font-size: 16px;
+  line-height: 18px;
+  text-align: left;
+  font-weight: 400;
   ${({ color }) => (color ? `color: ${color};` : undefined)}
   ${({ isActive }) =>
     isActive
@@ -336,11 +345,11 @@ export const ListNameText = styled.div`
       `
       : `
           cursor: pointer;
-          &:hover {
-            color: ${palette.brightBlue};
-            text-decoration: underline;
-          }
-        `}
+          // &:hover {
+          //   color: ${palette.brightBlue};
+          //   text-decoration: underline;
+          // }
+        `};
 `;
 
 export const UpdatesForMemberIndicator = styled.div`

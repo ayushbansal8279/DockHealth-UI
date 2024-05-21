@@ -8,6 +8,8 @@ import React, {
 import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { MoreVert } from '@mui/icons-material';
+import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { onTaskListInvitationAccepted } from 'helpers/ga-event-helper';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import {
@@ -53,6 +55,10 @@ import {
   ColorIndicator,
   MenuWrapper,
 } from './styled';
+import {
+  NumericalBadgeContainer,
+  TaskCount,
+} from '@/app/views/dashboard/DashboardList/styled';
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const ListsSubmenu = () => {
@@ -328,14 +334,25 @@ const ListsSubmenu = () => {
                       <DrawerListsItemNewLabel>New</DrawerListsItemNewLabel>
                     )}
                     <DrawerItemOptions>
-                      <div>{list?.numberOfTasks ?? 0}</div>
-                      {list.hasUpdatesForMember ? (
+                      <div>
+                        <NumericalBadgeContainer
+                          areNewTasksAdded={list.hasUpdatesForMember}
+                        >
+                          <TaskCount
+                            areNewTasksAdded={list.hasUpdatesForMember}
+                          >
+                            {list?.numberOfTasks ?? 0}
+                          </TaskCount>
+                        </NumericalBadgeContainer>
+                      </div>
+                      {/* {list.hasUpdatesForMember ? (
                         <Box m=" 0 5px">
                           <UpdatesForMemberIndicator />
                         </Box>
                       ) : (
                         <Box m={1} />
-                      )}
+                      )} */}
+                      <Box m={1} />
                     </DrawerItemOptions>
                   </DrawerListsItem>
                 )}
@@ -353,14 +370,17 @@ const ListsSubmenu = () => {
   return (
     <>
       <DrawerMyListsLabel>
-        <div>My Lists</div>
+        <div style={{ marginLeft: '-10px' }}>
+          <ArrowDropUpIcon sx={{ color: palette.shadowBlue }} />
+        </div>
+        <div style={{ marginRight: '65px' }}>My Lists</div>
         {!isGuest &&
           !isViewOnly &&
           (!listAddAdminOnly || (listAddAdminOnly && isAdmin)) && (
-            <AddButton onClick={openListAddModal}>Add</AddButton>
+            <AddButton onClick={openListAddModal}>Add a List</AddButton>
           )}
       </DrawerMyListsLabel>
-      <SubmenuDivider />
+      {/* <SubmenuDivider /> */}
       {hasAnyPendingList && (
         <DrawerListsNewLabel>Hooray you have a new list!</DrawerListsNewLabel>
       )}
