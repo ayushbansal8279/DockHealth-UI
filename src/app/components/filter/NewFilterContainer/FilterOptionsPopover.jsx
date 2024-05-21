@@ -15,6 +15,7 @@ const FilterOptionsPopover = ({
   getTemplatesList,
   idField = 'id',
   labelField = 'label',
+  popoverZindex,
 }) => {
   const [filterOptionLists, setFilterOptionList] = useState(filterOptionsList);
 
@@ -33,6 +34,7 @@ const FilterOptionsPopover = ({
 
   return (
     <Popover
+      sx={popoverZindex ? { zIndex: popoverZindex } : {}}
       PaperProps={{
         style: {
           width: 260,
@@ -74,7 +76,7 @@ const FilterOptionsPopover = ({
                   paddingTop: '8px',
                 }}
               >
-                {option.label}
+                {option[labelField]}
               </MenuItem>
             ))}
           </FilterOptionsList>

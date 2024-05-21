@@ -1,5 +1,5 @@
 import { mergeArr } from '@/app/helpers/array-helpers';
-import { FormattedMetaDataForState } from '@/app/modal/components/CustomFieldsBulkEditModal/helpers';
+import { FormattedMetaDataForState } from '@/app/modal/components/BulkEditCustomFieldsModal/helpers';
 import { Task } from '@/app/types/Task';
 
 export function updateCustomFieldsByTaskIdentifiers({

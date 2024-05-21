@@ -1,7 +1,6 @@
 import * as Yup from 'yup';
 import React, { useMemo, useState, useRef, useCallback } from 'react';
 import { Box, Divider, Stack, Typography } from '@mui/material';
-import difference from 'ramda/src/difference';
 import { yupResolver } from '@hookform/resolvers/yup';
 
 import { ICustomField } from '@/app/types/CustomField';
@@ -34,14 +33,12 @@ interface Props {
   closeModal: VoidFunction;
 }
 
-export default function CustomFieldsBulkEditModal({
+export default function BulkEditCustomFieldsModal({
   customFields,
   onSave,
   closeModal,
 }: Props) {
-  console.log('customFields', customFields);
   const popoverReference = useRef(null);
-  const [selectedIdxArr, setSelectedIdxArr] = useState<Array<number>>([]);
   const [isAddFieldPopoverOpen, openAddFieldPopover, closeAddFieldPopover] =
     useBoolean(false);
   const [selectedIdentifierArr, setSelectedIdentifierArr] = useState<
@@ -72,7 +69,7 @@ export default function CustomFieldsBulkEditModal({
     const idx = selectedIdentifierArr.indexOf(customFieldIdentifier);
     if (idx >= 0) {
       setSelectedIdentifierArr((prev) => [
-        ...prev.slice(0, idx - 1),
+        ...prev.slice(0, idx),
         ...prev.slice(idx + 1),
       ]);
     }
@@ -113,7 +110,7 @@ export default function CustomFieldsBulkEditModal({
             Select the fields you would like to change, the changes will be
             saved:
           </Typography>
-          <Stack sx={{ mb: 2 }}>
+          <Stack sx={{ mb: 2 }} spacing={2}>
             {!!customFields &&
               selectedIdentifierArr.map((identifier) => (
                 <FormFieldItem
@@ -157,9 +154,12 @@ export default function CustomFieldsBulkEditModal({
               onClose={closeAddFieldPopover}
               filterOptionsList={customFields}
               onFilterSelect={handleAddField}
+              idField="identifier"
+              labelField="name"
+              popoverZindex={5000}
             />
-            {Object.keys(finalFilter).length > 0 && (
-              <ClearFilter onClick={clearFilter}>Clear Selection</ClearFilter>
+            {selectedIdentifierArr.length > 0 && (
+              <ClearFilter onClick={clearFilter}>Clear Fields</ClearFilter>
             )}
           </FilterButtonWrapper>
           {!actionsHidden && (
