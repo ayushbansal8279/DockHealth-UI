@@ -76,7 +76,13 @@ export function createMentionsFromTokenizedDescription(
   });
 }
 
-export function traverseNodes(node, mentions) {
+export function traverseNodes(nodes, mentions) {
+  return nodes && nodes.length > 0 ? nodes.map((node) => {
+      return traverseNode(node, mentions);
+  }) : nodes;
+}
+
+export function traverseNode(node, mentions) {
   if (node && node?.props && node.props.children) {
     const { children } = node.props;
     if (typeof children === 'string') {
@@ -87,7 +93,7 @@ export function traverseNodes(node, mentions) {
         },
       };
     }
-    return traverseNodes(children, mentions);
+    return traverseNode(children, mentions);
   }
   return node;
 }
@@ -98,7 +104,7 @@ export const processMarkdownValue = (markdownText, preserveNewLines = true) => {
     const mdValue = markdownText?.replace(/\n {2}\n/g, '<p><br/></p>');
     htmlValue = md.render(mdValue || '');
   }
-  return ReactHtmlParser(htmlValue || '')[0];
+  return ReactHtmlParser(htmlValue || '');
 };
 
 export function createMentions(

@@ -21,7 +21,7 @@ import {
   TASK_LIST_RESTRICTIONS_OPTIONS,
   TASK_LIST_RESTRICTIONS_PROFILES,
 } from 'restrictions/task-restrictions';
-import { TaskStatus } from 'helpers/task-helpers';
+import { TaskStatus, TaskOrigin } from 'helpers/task-helpers';
 import {
   taskLookupSelector,
   multipleTaskLookupSelector,
@@ -105,10 +105,10 @@ const TaskTemplateGroup = ({
   // }, [SHOW_WORKFLOW_DETAILS, SHOW_WORKFLOW_COMPLETED_TASKS, isCompletedTab]);
 
   useEffect(() => {
-    if (changeViewType === 'FULL_VIEW') {
+    if (changeViewType === 'FULL_VIEW' || origin === TaskOrigin.PATIENT) {
       setOpen(true);
     }
-  }, [changeViewType]);
+  }, [changeViewType, origin]);
 
   useEffect(() => {
     if (isOpen && !previousIsOpen && (!tasks || tasks.length === 0)) {
