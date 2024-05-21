@@ -1,10 +1,10 @@
-import { fontWeights } from "@/app/styles/font";
-import palette from "@/app/styles/palette";
+import { fontWeights } from '@/app/styles/font';
+import palette from '@/app/styles/palette';
 import styled from 'styled-components';
-import { Button } from "@mui/material";
-import spacing from "@/app/styles/spacing";
+import { Button } from '@mui/material';
+import spacing from '@/app/styles/spacing';
 
-export const ConfirmButton = styled(Button)`
+export const ConfirmButton = styled.button`
   display: flex;
   height: 40px;
   padding: 22px 24px;

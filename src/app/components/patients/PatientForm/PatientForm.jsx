@@ -44,8 +44,9 @@ import {
   GENDER_OPTIONS_BIRTH,
   convertGenderIdentitiesToSelectOptions,
 } from '@/app/types/gender';
-import { HidableContainer, SaveButton } from './styled';
+import { HidableContainer } from './styled';
 import { useGenderIdentitiesQuery } from '@/app/react-query/reference/useGenderIdentitiesQuery';
+import { ConfirmButton } from '@/app/modal/components/ModalButton/ModalButtons';
 
 const groupByCategory = groupBy(prop('fieldCategoryType'));
 
@@ -311,7 +312,7 @@ const PatientForm = forwardRef(
             )}
           </div>
           {edited && (
-            <SaveButton
+            <ConfirmButton
               style={{ width: 'auto' }}
               onClick={(event) => {
                 if (!isEmpty(errors)) {
@@ -322,7 +323,7 @@ const PatientForm = forwardRef(
               }}
             >
               {buttonLabel || `SAVE ${customerTypeLabel}`}
-            </SaveButton>
+            </ConfirmButton>
           )}
         </Box>
       </form>
