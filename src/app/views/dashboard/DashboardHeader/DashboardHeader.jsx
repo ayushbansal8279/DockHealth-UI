@@ -70,7 +70,12 @@ import {
 
 import { DashboardHeaderContainer } from './styled';
 
-const DashboardHeader = () => {
+const DashboardHeader = ({
+  clearSearch,
+  setClearSearch,
+  clearFilter,
+  setClearFilter,
+}) => {
   const { search } = useLocation();
   const history = useHistory();
   const groupList = useSelector(dashboardTasksSelector);
@@ -150,6 +155,16 @@ const DashboardHeader = () => {
       dispatch(initializeDashboardState(tabName));
     }
   };
+
+  useEffect(() => {
+    if (clearSearch) {
+      setSearchValue('');
+      dispatch(initializeDashboardState(tabName));
+      setTimeout(() => {
+        setClearSearch(false);
+      }, 500);
+    }
+  }, [clearSearch]);
 
   useEffect(() => {
     dispatch(getQuickFilters({ contextType }));
@@ -335,6 +350,8 @@ const DashboardHeader = () => {
                   onQuickFilterCreate={handleQuickFilterCreate}
                   onQuickFilterUpdate={handleQuickFilterUpdate}
                   onQuickFilterDelete={handleQuickFilterDelete}
+                  clearFilter={clearFilter}
+                  setClearFilter={setClearFilter}
                 />
                 {/* <LayoutHeader.Spacer /> */}
                 <Box mx={0.5} />
