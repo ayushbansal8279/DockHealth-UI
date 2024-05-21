@@ -189,6 +189,7 @@ const TaskItem = React.memo(
     isLastChild,
     isNextVirtualTaskItemTypeBundle,
     isLastTaskOfGroup,
+    viewType,
   }) => {
     const dependencyIconReference = useRef(null);
     const task = useSelector((state) => {
@@ -988,6 +989,7 @@ const TaskItem = React.memo(
           pageBackground={pageBackground}
           isNextVirtualTaskItemTypeBundle={isNextVirtualTaskItemTypeBundle}
           isLastTaskOfGroup={isLastTaskOfGroup}
+          viewType={viewType}
         />
       );
     }
@@ -1038,13 +1040,13 @@ const TaskItem = React.memo(
                     columns?.find(
                       ({ identifier }) =>
                         identifier === TaskItemColumn.DESCRIPTION,
-                    )?.columnWidth - 
+                    )?.columnWidth -
                     (isSubtask &&
-                      origin === 'LIST' &&
+                    origin === 'LIST' &&
                     !selectedFilters &&
-                      !searchValue &&
-                      !sort.key && 
-                      descriptionColumnOrder === 0
+                    !searchValue &&
+                    !sort.key &&
+                    descriptionColumnOrder === 0
                       ? 36
                       : 0)
                   }

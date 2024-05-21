@@ -118,9 +118,9 @@ const PatientTasksListView = () => {
   } = useActions(PatientTasksSagaActions);
   const patient = useSelector(patientSelector);
   const isAllTasksView = taskListIdentifierParameter === ListViewType.ALL_TASKS;
-  const [patientView, setPatientView] = useState('SLIM_VIEW');
+  const [viewType, setViewType] = useState('SLIM_VIEW');
   const handlePatientView = (value) => {
-    setPatientView(value);
+    setViewType(value);
   };
 
   // const organizationCustomFields = useSelector(
@@ -386,7 +386,7 @@ const PatientTasksListView = () => {
                   multipleAssigneesContext={groupHasMultipleAssignees}
                   iconColorActive={iconColorActiveItem?.value}
                   origin={TaskOrigin.PATIENT}
-                  patientView={patientViewType}
+                  viewType={patientViewType}
                 />
               ) : (
                 <TaskTemplateGroup
@@ -402,7 +402,7 @@ const PatientTasksListView = () => {
                   isCompletedTab={tasksStatus !== TaskStatus.INCOMPLETE}
                   origin={TaskOrigin.PATIENT}
                   isNextTaskItemTypeBundle={isNextTaskItemTypeBundle}
-                  patientView={patientViewType}
+                  viewType={patientViewType}
                 />
               );
             })}
@@ -444,7 +444,7 @@ const PatientTasksListView = () => {
                   lists={filteredLists}
                   currentList={activeList}
                   isPatientView
-                  patientView={patientView}
+                  patientViewType={viewType}
                   handlePatientView={handlePatientView}
                 />
               </StickyContainer>
@@ -472,7 +472,7 @@ const PatientTasksListView = () => {
                       renderTasks(
                         activeList.tasks,
                         { isFullView: false },
-                        patientView,
+                        viewType,
                       )
                     ) : (
                       <>

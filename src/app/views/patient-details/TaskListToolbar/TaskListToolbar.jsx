@@ -66,7 +66,7 @@ import FullViewIcon from '@/app/img/list/FullViewIcon';
 import SlimViewIcon from '@/app/img/list/SlimViewIcon';
 
 const TaskListToolbar = (props) => {
-  const { lists, patientView, handlePatientView } = props;
+  const { lists, patientViewType, handlePatientView } = props;
   // const tasksToPrint = currentList?.tasks ? currentList?.tasks : [];
   // const listUsers = currentList?.listUsers ? currentList?.listUsers : [];
   const {
@@ -387,7 +387,7 @@ const TaskListToolbar = (props) => {
         </Box>
         <GridContainer columns={2}>
           <GridItemFullView
-            active={patientView === 'FULL_VIEW'}
+            active={patientViewType === 'FULL_VIEW'}
             onClick={() => {
               handlePatientView('FULL_VIEW');
             }}
@@ -395,7 +395,7 @@ const TaskListToolbar = (props) => {
             <FullViewIcon />
           </GridItemFullView>
           <GridItemSlimView
-            active={patientView === 'SLIM_VIEW'}
+            active={patientViewType === 'SLIM_VIEW'}
             onClick={() => {
               handlePatientView('SLIM_VIEW');
             }}

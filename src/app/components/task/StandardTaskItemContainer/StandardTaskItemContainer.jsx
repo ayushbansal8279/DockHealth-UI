@@ -26,7 +26,7 @@ const StandardTaskItemContainer = ({
   taskIdentifier,
   isAddingTask,
   origin,
-  patientView,
+  viewType,
   ...restProps
 }) => {
   const organizationCustomFields = useSelector(
@@ -135,7 +135,7 @@ const StandardTaskItemContainer = ({
       isAddingTask={isAddingTask}
       isNextTaskItemTypeBundle={isNextTaskItemTypeBundle}
       {...restProps}
-      patientView={patientView}
+      viewType={viewType}
     />
   );
 };
