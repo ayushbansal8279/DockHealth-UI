@@ -32,6 +32,7 @@ import {
 export interface Props {
   tasksToMap: any[];
   groupedTasks: any[];
+  showClearSortFiltersModal: any;
 }
 
 export const CollapseContext = createContext({
@@ -65,7 +66,7 @@ const convert = (
   };
 };
 
-function VirtualTaskList({ groupedTasks }: Props) {
+function VirtualTaskList({ groupedTasks, showClearSortFiltersModal }: Props) {
   const [collapseMap, collapseDispatch] = useReducer(
     (map: Record<string, boolean>, [id, value]: [string, boolean]) => {
       map[id] = value;
@@ -347,7 +348,11 @@ function VirtualTaskList({ groupedTasks }: Props) {
       }}
     >
       <CollapseContext.Provider value={contextValue}>
-        <Virtualized nodes={nodes} tasksMap={tasksMap} />
+        <Virtualized
+          nodes={nodes}
+          tasksMap={tasksMap}
+          showClearSortFiltersModal={showClearSortFiltersModal}
+        />
       </CollapseContext.Provider>
     </div>
   );
