@@ -1,5 +1,5 @@
 import * as Yup from 'yup';
-import React, { useMemo, useState, useRef, useCallback } from 'react';
+import React, { useState, useRef } from 'react';
 import { Box, Divider, Stack, Typography } from '@mui/material';
 import { yupResolver } from '@hookform/resolvers/yup';
 
@@ -14,7 +14,6 @@ import {
   CancelButton,
 } from '../ModalButton/ModalButtons';
 import {
-  BottomWrapper,
   FilterButtonWrapper,
   ClearFilter,
   BoxContainer,
@@ -65,7 +64,7 @@ export default function BulkEditCustomFieldsModal({
   const actionsHidden =
     isSubmitting || !Object.keys(getValues('metaData') ?? {}).length;
 
-  const handleRemove = (customFieldIdentifier: string) => {
+  const handleRemove = (customFieldIdentifier: string) => () => {
     const idx = selectedIdentifierArr.indexOf(customFieldIdentifier);
     if (idx >= 0) {
       setSelectedIdentifierArr((prev) => [
@@ -117,7 +116,7 @@ export default function BulkEditCustomFieldsModal({
                   key={identifier}
                   customFields={customFields}
                   identifier={identifier}
-                  onRemove={() => handleRemove(identifier)}
+                  onRemove={handleRemove(identifier)}
                 />
               ))}
           </Stack>
