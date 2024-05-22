@@ -211,12 +211,18 @@ const Calendar = ({ taskListIdentifier }) => {
           )}
           {eventInfo.timeText && eventInfo?.view?.type === 'dayGridMonth' && (
             <>
-              <Spacing horizontal={4} />
-              <ReminderIcon />
+              <div>
+                <ReminderIcon />
+              </div>
             </>
           )}
-          <Spacing horizontal={4} />
-          <Typography>
+          <Typography
+            style={{
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+              overflow: 'hidden',
+            }}
+          >
             {createMentionsFromTokenizedDescription(
               task?.tokenizedDescription,
               task?.taskMentions,
