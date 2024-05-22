@@ -46,6 +46,7 @@ import {
 } from '@/app/types/gender';
 import { HidableContainer } from './styled';
 import { useGenderIdentitiesQuery } from '@/app/react-query/reference/useGenderIdentitiesQuery';
+import { ConfirmButton } from '@/app/modal/components/ModalButton/ModalButtons';
 
 const groupByCategory = groupBy(prop('fieldCategoryType'));
 
@@ -311,9 +312,8 @@ const PatientForm = forwardRef(
             )}
           </div>
           {edited && (
-            <Button
-              width="auto"
-              type="submit"
+            <ConfirmButton
+              style={{ width: 'auto' }}
               onClick={(event) => {
                 if (!isEmpty(errors)) {
                   event.preventDefault();
@@ -323,7 +323,7 @@ const PatientForm = forwardRef(
               }}
             >
               {buttonLabel || `SAVE ${customerTypeLabel}`}
-            </Button>
+            </ConfirmButton>
           )}
         </Box>
       </form>
