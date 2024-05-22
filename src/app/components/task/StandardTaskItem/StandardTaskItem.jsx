@@ -59,6 +59,7 @@ const Task = React.memo(
     isLastTaskOfGroup,
     isNextTaskItemTypeBundle,
     isAddingTask,
+    viewType,
     ...restProps
   }) => {
     const parentTaskReference = useRef(null);
@@ -87,8 +88,7 @@ const Task = React.memo(
     const { innerRef, draggableProps, dragHandleProps } = draggableProvided;
     const { highlightedValue } = restProps;
     const { matchingCommentIdentifiers = [] } = searchMetaData;
-    const { changeViewType, tasks, handleAddTask } =
-      useContext(ListPageContext);
+    const { tasks, handleAddTask } = useContext(ListPageContext);
     const taskActions = useActions(TaskActions);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -132,16 +132,26 @@ const Task = React.memo(
     );
 
     useEffect(() => {
+      if (origin === 'PATIENT') {
+        if (viewType === 'FULL_VIEW') {
+          handleSetSubtasksOpen(true);
+        } else {
+          handleSetSubtasksOpen(false);
+        }
+      }
+    }, [origin, viewType]);
+
+    useEffect(() => {
       // if (isFullView) handleSetSubtasksOpen(true);
       // else setAreSubtasksOpen(false);
-      if (changeViewType === 'FULL_VIEW') {
+      if (viewType === 'FULL_VIEW') {
         if (!tasks.includes(taskIdentifier)) {
           handleSetSubtasksOpen(true);
           handleAddTask(taskIdentifier);
         } else {
           setAreSubtasksOpen(!collapse.get(taskIdentifier));
         }
-      } else if (changeViewType === 'SLIM_VIEW') {
+      } else if (viewType === 'SLIM_VIEW') {
         if (!tasks.includes(taskIdentifier)) {
           handleSetSubtasksOpen(false);
           handleAddTask(taskIdentifier);
@@ -152,7 +162,7 @@ const Task = React.memo(
         handleSetSubtasksOpen(false);
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [changeViewType]);
+    }, [viewType]);
 
     useEffect(() => {
       if (!areSubtasksOpen && subtaskQuickAddOpen && !subtasksDisabled) {
@@ -263,6 +273,7 @@ const Task = React.memo(
             {...restProps}
             isNextVirtualTaskItemTypeBundle={isNextVirtualTaskItemTypeBundle}
             isLastTaskOfGroup={isLastTaskOfGroup}
+            viewType={viewType}
           />
         </TaskContainer>
         {showComments && window.disabledVirtualTaskList && (

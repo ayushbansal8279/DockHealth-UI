@@ -27,6 +27,7 @@ import QuickAddTaskInput from '@/app/components/tasklist/QuickAddTaskInput/Quick
 import { CollapseContext } from '../../VirtualTaskList';
 import palette from '@/app/styles/palette';
 import { useVirtualTaskListScrollContext } from '../../VirtualTaskListScrollContext';
+import { ListPageContext } from '../../../ListDetailsView';
 
 export interface Props extends Segment {
   isTaskTemplate: boolean;
@@ -61,6 +62,7 @@ function VTask(
   const [subtaskQuickAddOpen, setSubtaskQuickAddOpen] = useState(false);
   const { get, workflowIdentifierMap, handleRemoveWorkflowIdentifier } =
     useContext(CollapseContext);
+  const { changeViewType } = useContext(ListPageContext);
   const pulledTask = useSelector((state) => {
     // @ts-ignore
     return taskLookupSelector(state, origin, metadata.id);
@@ -166,6 +168,7 @@ function VTask(
                   isNextVirtualTaskItemTypeBundle
                 }
                 isLastTaskOfGroup={isLastTaskOfGroup}
+                viewType={changeViewType}
               />
             </VTaskContext.Provider>
           </Sc.VTask>
