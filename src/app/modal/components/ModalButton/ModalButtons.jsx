@@ -1,10 +1,11 @@
+import styled from 'styled-components';
+import LoadingButton from '@mui/lab/LoadingButton';
+import { Button } from '@mui/material';
 import { fontWeights } from '@/app/styles/font';
 import palette from '@/app/styles/palette';
-import styled from 'styled-components';
-import { Button } from '@mui/material';
 import spacing from '@/app/styles/spacing';
 
-export const ConfirmButton = styled.button`
+export const ConfirmButton = styled(LoadingButton)`
   display: flex;
   height: 40px;
   padding: 22px 24px;
@@ -20,11 +21,16 @@ export const ConfirmButton = styled.button`
   font-weight: ${fontWeights.regular};
   line-height: 11.189px;
   text-transform: none;
-  width: 200px;
+  width: ${({ fullWidth }) => (fullWidth ? '100%' : '200px')};
 
   &:hover {
     background-color: ${palette.oPlusRed};
     color: ${palette.white};
+  }
+
+  &:disabled {
+    color: ${palette.white};
+    background-color: ${palette.shadowBlue};
   }
 `;
 
@@ -44,5 +50,9 @@ export const CancelButton = styled(Button)`
   font-weight: ${fontWeights.regular};
   line-height: 11.189px;
   text-transform: none;
-  width: 200px;
+  width: ${({ fullWidth }) => (fullWidth ? '100%' : '200px')};
+
+  &:disabled {
+    border-color: ${palette.shadowBlue};
+  }
 `;

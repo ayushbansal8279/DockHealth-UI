@@ -6,8 +6,8 @@ import { bulkEditPatientsCustomFields } from '@/app/api/patients-api';
 
 import * as PatientsActions from 'actions/patients-actions';
 import { ICustomField } from '@/app/types/CustomField';
-import { FormattedMetaDataForApi } from '../CustomFieldsBulkEditModal/helpers';
-import CustomFieldsBulkEditModal from '../CustomFieldsBulkEditModal';
+import { FormattedMetaDataForApi } from '../BulkEditCustomFieldsModal/helpers';
+import BulkEditCustomFieldsModal from '../BulkEditCustomFieldsModal';
 
 interface Props {
   patientIdentifiers: string[];
@@ -45,7 +45,7 @@ export default function PatientCustomFieldsBulkEditModal({
 
   return (
     !!customFields && (
-      <CustomFieldsBulkEditModal
+      <BulkEditCustomFieldsModal
         customFields={customFields}
         onSave={handleSave}
         closeModal={closeModal}

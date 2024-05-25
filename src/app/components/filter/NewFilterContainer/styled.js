@@ -1,14 +1,8 @@
-import { keyframes } from '@mui/material';
-import React from 'react';
+import { keyframes, Typography, Button } from '@mui/material';
 import styled from 'styled-components';
-import palette, { typography } from 'styles/palette';
+import palette from 'styles/palette';
 import spacing from 'styles/spacing';
-import { Typography, Button } from '@mui/material';
 import { fontSizes, fontWeights } from 'styles/font';
-
-export const Container = styled.div``;
-
-export const aa = styled.div``;
 
 export const FilterButtonWrapper = styled.div`
   display: flex;
@@ -172,14 +166,12 @@ export const AddFilterRotatableChevronButtonWrapper = styled(Button)`
 export const AddFilterRotatableChevronButtonLabel = styled(Typography)`
   &&& {
     &.MuiTypography-root {
-      // font-family: 'Montserrat', sans-serif;
       color: ${palette.white};
       font-size: ${fontSizes.small};
       font-weight: ${fontWeights.regular};
       display: flex-start;
       margin-right: ${spacing.largePlus};
       align-items: center;
-      // padding-right: 25px;
     }
   }
 `;
@@ -191,11 +183,9 @@ export const BoxContainer = styled.div`
   overflow: hidden;
   height: 32px;
   margin-top: 4px;
-  // z-index: 11;
 `;
 
 export const FilterLableContainer = styled.div`
-  // display: flex;
   color: ${palette.white};
   font-size: 14px;
 `;
@@ -224,9 +214,6 @@ export const ClearFilter = styled.div`
 export const ClearFilterButton = styled.div`
   width: 97px;
   height: 32px;
-  // top: 175px;
-  // left: 34px;
-  // padding: 20px 16px 22px 16px;
   gap: 10px;
   border-radius: 7px;
   border: 1px solid #ec4f3e;
@@ -252,14 +239,8 @@ export const Divider = styled.hr`
   border: none;
 `;
 
-export const SelectOptionsContainer = styled.div`
-  // width: 257px;
-  // max-height: 400;
-  // overflow: auto;
-`;
+export const SelectOptionsContainer = styled.div``;
 
 export const FilterOptionsListContainer = styled.div`
   width: 257px;
-  // height: 240px;
-  // overflow: hidden;
 `;

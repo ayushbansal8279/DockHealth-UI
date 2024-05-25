@@ -12,9 +12,10 @@ const FilterOptionsPopover = ({
   onFilterSelect,
   open,
   onClose,
-  searchPhrase = '',
-  onSearchChange,
   getTemplatesList,
+  idField = 'id',
+  labelField = 'label',
+  popoverZindex,
 }) => {
   const [filterOptionLists, setFilterOptionList] = useState(filterOptionsList);
 
@@ -24,13 +25,16 @@ const FilterOptionsPopover = ({
 
   const handleFilterListSearch = (event) => {
     const filteredList = filterOptionsList.filter((item) =>
-      item.label.toLowerCase().includes(event.target.value.toLowerCase()),
+      item[labelField]
+        ?.toLowerCase()
+        .includes(event.target.value.toLowerCase()),
     );
     setFilterOptionList(filteredList);
   };
 
   return (
     <Popover
+      sx={popoverZindex ? { zIndex: popoverZindex } : {}}
       PaperProps={{
         style: {
           width: 260,
@@ -64,15 +68,15 @@ const FilterOptionsPopover = ({
           <FilterOptionsList>
             {filterOptionLists?.map((option) => (
               <MenuItem
-                onClick={() => onFilterSelect(option.id)}
-                value={option.id}
+                onClick={() => onFilterSelect(option[idField])}
+                value={option[idField]}
                 sx={{
                   textOverflow: 'ellipsis',
                   paddingBottom: '8px',
                   paddingTop: '8px',
                 }}
               >
-                {option.label}
+                {option[labelField]}
               </MenuItem>
             ))}
           </FilterOptionsList>

@@ -6,8 +6,8 @@ import { ICustomField } from '@/app/types/CustomField';
 import {
   FormattedMetaDataForApi,
   convertMetaDataApiToState,
-} from '../CustomFieldsBulkEditModal/helpers';
-import CustomFieldsBulkEditModal from '../CustomFieldsBulkEditModal';
+} from '../BulkEditCustomFieldsModal/helpers';
+import BulkEditCustomFieldsModal from '../BulkEditCustomFieldsModal';
 import { showGlobalAlert, showGlobalErrorAlert } from '@/app/alert/actions';
 import AlertMessages from '@/app/alert/AlertMessages';
 import { updateCustomFieldsByTaskIdentifiers } from '@/app/actions/task-actions';
@@ -52,7 +52,7 @@ export default function TaskListCustomFieldsBulkEditModal({
 
   return (
     !!customFields && (
-      <CustomFieldsBulkEditModal
+      <BulkEditCustomFieldsModal
         customFields={customFields}
         onSave={handleSave}
         closeModal={closeModal}
