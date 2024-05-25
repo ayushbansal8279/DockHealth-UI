@@ -12,7 +12,6 @@ import FormInput from 'components/common/Input/FormInput';
 import { FormProvider, useForm } from 'react-hook-form';
 import { userProfileSelector } from 'selectors/user-selectors';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
-import { updateOrganizationCallType } from 'api/organization-api';
 import {
   EditOrganizationModalWrapper,
   Header,
@@ -53,22 +52,13 @@ const onSubmit =
       selectedRecord: selectedType,
     };
 
-    console.log(`type: ${JSON.stringify(type)}`);
-
-    Promise.all([
-      (updateOrganizationCallType({
-        type,
-        organizationIdentifier,
-      }),
-      // history.push('/onboarding/team-setup');
-
-      updateOrganization({
-        organizationIdentifier,
-        organizationName,
-        organizationInitials,
-        organizationProfileColor,
-      })(dispatch)),
-    ]).then(() => {
+    updateOrganization({
+      organizationIdentifier,
+      organizationName,
+      organizationInitials,
+      organizationProfileColor,
+      customerType: type.selectedRecord.key,
+    }).then(() => {
       onSuccess();
       dispatch(
         openModal('Confirmation', {
