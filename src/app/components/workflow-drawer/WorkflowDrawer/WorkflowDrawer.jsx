@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import ReactDOM from 'react-dom';
 import { useHistory } from 'react-router-dom';
 import { Grid, Typography } from '@mui/material';
@@ -41,6 +41,7 @@ import LabelsSection from '../LabelsSection/LabelsSection';
 import CommentSection from '../CommentSection/CommentSection';
 import AttachmentSection from '../AttachmentSection/AttachmentSection';
 import TasksSection from '../TasksSection/TasksSection';
+import moment from 'moment';
 import {
   Backdrop,
   AnimatedContainer,
@@ -57,6 +58,7 @@ const WorkflowDrawer = () => {
   const history = useHistory();
   const open = useSelector(isWorkflowDrawerOpenSelector);
   const selectedWorkflow = useSelector(workflowSelector);
+  const [isOverdue, setIsOverdue] = useState(false);
   const commentIdentifierToScroll = useSelector(
     commentIdentifierToScrollSelector,
   );
@@ -71,6 +73,16 @@ const WorkflowDrawer = () => {
 
   const { orgUserRole } = useSelector(userProfileSelector);
   const restrictions = SINGLE_WORKFLOW_RESTRICTIONS_PROFILES[orgUserRole];
+
+  const momentDueDate = selectedWorkflow?.dueDateTime
+    ? moment(selectedWorkflow?.dueDateTime)
+    : null;
+
+  useEffect(() => {
+    if (momentDueDate) {
+      setIsOverdue(momentDueDate.isBefore(moment()));
+    }
+  }, [selectedWorkflow, momentDueDate]);
 
   useEffect(() => {
     const unlisten = history.listen(
@@ -171,8 +183,8 @@ const WorkflowDrawer = () => {
                     }
                   />
                 </Grid>
-                {selectedWorkflow.dueDateTime && (
-                  <Grid item mt={-5} ml={14.5} xs={12}>
+                {!isOverdue && (
+                  <Grid ml={18.5} xs={12}>
                     <ReminderSection
                       disabled={
                         !!isTemplateTask || restrictions?.reminder === DISABLED

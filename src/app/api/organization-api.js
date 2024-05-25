@@ -138,16 +138,18 @@ export const updateOrganization = ({
   organizationName,
   organizationInitials,
   organizationProfileColor,
-  organizationIdentifier = null,
+  organizationIdentifier,
+  customerType,
 }) =>
   axios({
-    method: 'put',
-    url: '/organization/updateOrganizationName',
+    method: 'patch',
+    url: '/organization',
     data: {
       organizationName,
       organizationInitials,
       organizationProfileColor,
       organizationIdentifier,
+      customerType,
     },
   }).then((response) => response.data);
 

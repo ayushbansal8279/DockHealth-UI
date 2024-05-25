@@ -58,6 +58,8 @@ const DashboardView = ({ tabName }) => {
   const [firstCreatedUserListIdentifier, setFirstCreatedUserListIdentifier] =
     useState(null);
   const [openConfetti, setOpenConfetti] = useState(false);
+  const [clearSearch, setClearSearch] = useState(false);
+  const [clearFilter, setClearFilter] = useState(false);
   const { usageState, orgUserRole } = currentUser ?? {};
   const { hasExistingLists, hasOnlyInvitedLists } = usageState ?? {};
 
@@ -245,7 +247,13 @@ const DashboardView = ({ tabName }) => {
             <DashboardScrollableList>
               <HorizontallyScrolledViewLayout>
                 <StickyContainer>
-                  <DashboardHeader currentUser={currentUser} />
+                  <DashboardHeader
+                    clearSearch={clearSearch}
+                    setClearSearch={setClearSearch}
+                    clearFilter={clearFilter}
+                    setClearFilter={setClearFilter}
+                    currentUser={currentUser}
+                  />
                   {/* <Spacing vertical={3} /> */}
                 </StickyContainer>
                 {createListViewVisible ? (
@@ -275,6 +283,8 @@ const DashboardView = ({ tabName }) => {
                     tourModalIsOpen={tourModalIsOpen}
                     openTourModal={forceOpenTourModal}
                     customerTypeLabel={customerTypeLabel}
+                    setClearSearch={setClearSearch}
+                    setClearFilter={setClearFilter}
                   />
                 )}
               </HorizontallyScrolledViewLayout>

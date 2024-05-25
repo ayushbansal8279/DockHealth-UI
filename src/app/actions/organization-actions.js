@@ -140,27 +140,20 @@ export const setPaymentNewPlan =
     });
   };
 
-export const updateOrganization =
-  ({
+export const updateOrganization = ({
+  organizationName,
+  organizationInitials,
+  organizationProfileColor,
+  organizationIdentifier,
+  customerType,
+}) =>
+  OrganizationApi.updateOrganization({
     organizationName,
     organizationInitials,
     organizationProfileColor,
     organizationIdentifier,
-  }) =>
-  (dispatch) =>
-    OrganizationApi.updateOrganization({
-      organizationName,
-      organizationInitials,
-      organizationProfileColor,
-      organizationIdentifier,
-    }).then(() => {
-      dispatch({
-        type: ActionTypes.UPDATE_ORGANIZATION,
-        payload: {
-          organizationName,
-        },
-      });
-    });
+    customerType,
+  }).then((response) => response.data);
 
 // eslint-disable-next-line unicorn/consistent-function-scoping
 export const checkBAASignedStatus = (organizationIdentifier) => (dispatch) => {

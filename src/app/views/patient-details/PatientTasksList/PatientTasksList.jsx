@@ -1,6 +1,6 @@
 /* eslint-disable import/no-cycle */
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { useCallback, useEffect, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import compose from 'ramda/src/compose';
 import useActions from 'hooks/use-actions';
 import { useDispatch, useSelector } from 'react-redux';
@@ -118,6 +118,10 @@ const PatientTasksListView = () => {
   } = useActions(PatientTasksSagaActions);
   const patient = useSelector(patientSelector);
   const isAllTasksView = taskListIdentifierParameter === ListViewType.ALL_TASKS;
+  const [viewType, setViewType] = useState('SLIM_VIEW');
+  const handlePatientView = (value) => {
+    setViewType(value);
+  };
 
   // const organizationCustomFields = useSelector(
   //   organizationCustomFieldsSelector,
@@ -326,7 +330,7 @@ const PatientTasksListView = () => {
   }, [activeList?.tasks, dispatch, isTaskGroupSelected]);
 
   const renderTasks = useCallback(
-    (tasks, { isFullView, taskGroupIdentifier }) => {
+    (tasks, { isFullView, taskGroupIdentifier }, patientViewType) => {
       const taskIdentifiers = tasks.map((task) => task.identifier);
       const isGroupSelected =
         taskIdentifiers?.length > 0 &&
@@ -382,6 +386,7 @@ const PatientTasksListView = () => {
                   multipleAssigneesContext={groupHasMultipleAssignees}
                   iconColorActive={iconColorActiveItem?.value}
                   origin={TaskOrigin.PATIENT}
+                  viewType={patientViewType}
                 />
               ) : (
                 <TaskTemplateGroup
@@ -397,6 +402,7 @@ const PatientTasksListView = () => {
                   isCompletedTab={tasksStatus !== TaskStatus.INCOMPLETE}
                   origin={TaskOrigin.PATIENT}
                   isNextTaskItemTypeBundle={isNextTaskItemTypeBundle}
+                  viewType={patientViewType}
                 />
               );
             })}
@@ -438,6 +444,8 @@ const PatientTasksListView = () => {
                   lists={filteredLists}
                   currentList={activeList}
                   isPatientView
+                  patientViewType={viewType}
+                  handlePatientView={handlePatientView}
                 />
               </StickyContainer>
               <Box py={0.5} />
@@ -461,7 +469,11 @@ const PatientTasksListView = () => {
                       />
                     </StickyContainer>
                     {isAllTasksView ? (
-                      renderTasks(activeList.tasks, { isFullView: false })
+                      renderTasks(
+                        activeList.tasks,
+                        { isFullView: false },
+                        viewType,
+                      )
                     ) : (
                       <>
                         {groupedTasks.map((group) => (

@@ -9,6 +9,8 @@ export const TextEventContainer = styled.div`
   padding-left: 3px;
   display: flex;
   align-items: center;
+  flex-direction: row;
+  gap: 14px;
 `;
 
 export const AddEventInputContainer = styled.div`

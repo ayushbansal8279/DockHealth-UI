@@ -232,7 +232,7 @@ const PatientDetailsDrawer = ({ patient, isOpenedDetails, closeDetails }) => {
           patientAddEnabled={patientAddEnabled}
           edited={isActive}
           customerTypeLabel={customerTypeLabel}
-          buttonLabel="SAVE EDITS"
+          buttonLabel="Save Edits"
         />
       </PatientDrawer>
     </FormProvider>

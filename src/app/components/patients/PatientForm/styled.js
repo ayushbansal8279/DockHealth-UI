@@ -1,3 +1,5 @@
+import { fontWeights } from '@/app/styles/font';
+import palette from '@/app/styles/palette';
 import styled from 'styled-components';
 
 export const HidableContainer = styled.div`
