@@ -174,12 +174,18 @@ function* reorderWorkflowTasks(payload) {
   } = payload;
 
   try {
+    let taskIdentifiers = workflow.tasks;
+
+    if (typeof workflow.tasks[0] !== 'string') {
+      taskIdentifiers = workflow['tasks']?.flatMap((item) => item.identifier);
+    }
+
     const reorderedTasks = reorderTasksForWorkflow(
       sourceIndex,
       destinationIndex,
       incompleteTasksShown,
       completedTasksShown,
-      workflow.tasks,
+      taskIdentifiers,
     );
 
     yield call(
