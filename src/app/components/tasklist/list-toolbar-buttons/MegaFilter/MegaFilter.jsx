@@ -27,6 +27,8 @@ const MegaFilter = ({
   wasChangedFilters,
   onQuickFilterCreate,
   onQuickFilterDelete,
+  clearFilter,
+  setClearFilter,
   isDefaultDateFilterApplied = false,
   value,
   focused,
@@ -77,6 +79,15 @@ const MegaFilter = ({
     setFinalFilter({});
     setSelectedQuickFilter('');
   };
+
+  useEffect(() => {
+    if (clearFilter) {
+      clearFilters();
+      setTimeout(() => {
+        setClearFilter(false);
+      }, 500);
+    }
+  }, [clearFilter]);
 
   useEffect(() => {
     setSelectedQuickFilter(initialQuickFilter);

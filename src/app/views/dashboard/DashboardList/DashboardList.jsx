@@ -59,7 +59,13 @@ import {
 } from './styled';
 import DashboardCalendar from '../DashboardCalendar/DashboardCalendar';
 
-const DashboardList = ({ currentUser, tourModalIsOpen, openTourModal }) => {
+const DashboardList = ({
+  currentUser,
+  tourModalIsOpen,
+  openTourModal,
+  setClearSearch,
+  setClearFilter,
+}) => {
   const searchValue = useSelector(dashboardSearchValueSelector);
   const dispatch = useDispatch();
   const { search } = useLocation();
@@ -73,6 +79,7 @@ const DashboardList = ({ currentUser, tourModalIsOpen, openTourModal }) => {
   const modalActions = useActions(ModalActions);
   const taskActions = useActions(TaskActions);
   const { openModal } = modalActions;
+  const isSearchApplied = !!searchValue;
 
   const dashboardTasks = useSelector(dashboardTasksSelector);
   const dashboardTasksIsLoading = useSelector(dashboardTasksIsLoadingSelector);
@@ -196,9 +203,9 @@ const DashboardList = ({ currentUser, tourModalIsOpen, openTourModal }) => {
       });
       // eslint-disable-next-line array-callback-return
       orderedDashboardTasks?.map((item) => {
-        if(!areFiltersApplied){
+        if (!areFiltersApplied) {
           dispatch(getDashboardTasksForGroup(item?.groupType, key, order));
-        }else{
+        } else {
           dispatch(getDashboardTasks(key, order));
         }
       });
@@ -207,10 +214,12 @@ const DashboardList = ({ currentUser, tourModalIsOpen, openTourModal }) => {
   );
 
   const showClearSortFiltersModal = () => {
-    if (isSortApplied || areFiltersApplied) {
+    if (isSortApplied || areFiltersApplied || isSearchApplied) {
       openModal('ClearSortFilters', {
         confirm: () => {
-          resetSort();
+          if (isSortApplied) resetSort();
+          if (isSearchApplied) setClearSearch(true);
+          if (areFiltersApplied) setClearFilter(true);
         },
         closeOnConfirm: true,
       });

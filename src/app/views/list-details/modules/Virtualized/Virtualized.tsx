@@ -16,9 +16,16 @@ export interface Props {
   nodes?: Node[];
   tasksMap: Record<string, any>;
   context?: any;
+  showClearSortFiltersModal?: any;
 }
 
-function Virtualized({ nodes = [], tasksMap, context, ...props }: Props) {
+function Virtualized({
+  nodes = [],
+  tasksMap,
+  context,
+  showClearSortFiltersModal,
+  ...props
+}: Props) {
   const dispatch = useDispatch();
 
   const flatNodes = useMemo(() => walk(nodes), [nodes]);
@@ -103,7 +110,10 @@ function Virtualized({ nodes = [], tasksMap, context, ...props }: Props) {
   );
 
   return (
-    <DragDropContext onDragEnd={handleDragEnd}>
+    <DragDropContext
+      onBeforeDragStart={showClearSortFiltersModal}
+      onDragEnd={handleDragEnd}
+    >
       <Droppable
         mode="virtual"
         droppableId={'nodes[0].id'}

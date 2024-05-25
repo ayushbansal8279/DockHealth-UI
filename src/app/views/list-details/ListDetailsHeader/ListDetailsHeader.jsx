@@ -70,6 +70,8 @@ const ListDetailsHeader = (props) => {
     searchValue,
     onSearchChange,
     additionalOptions,
+    clearFilter,
+    setClearFilter,
   } = props;
   const dispatch = useDispatch();
   const currentTasksStatus = useSelector(currentTaskListTasksStatusSelector);
@@ -331,6 +333,8 @@ const ListDetailsHeader = (props) => {
           onQuickFilterUpdate={handleQuickFilterUpdate}
           onQuickFilterDelete={handleQuickFilterDelete}
           isDefaultDateFilterApplied={isDefaultDateFilterApplied}
+          clearFilter={clearFilter}
+          setClearFilter={setClearFilter}
         />
         {restrictions?.editSettings !== DISABLED &&
           !restrictCustomizationFeatures && (
