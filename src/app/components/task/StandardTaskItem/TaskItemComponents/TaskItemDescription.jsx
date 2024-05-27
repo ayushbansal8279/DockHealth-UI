@@ -50,7 +50,6 @@ const TaskItemDescription = ({
   // disableMentions,
   // isEditButtonVisible = false,
   width,
-  isHover,
 }) => {
   const {
     description,
