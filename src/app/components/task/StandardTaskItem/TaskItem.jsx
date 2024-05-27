@@ -299,18 +299,6 @@ const TaskItem = React.memo(
       openDependencyPopover,
       closeDependencyPopover,
     ] = useBooleanWithTimeout(false);
-    const [isCellHover, setCellHover] = useState({
-      dueDate: false,
-      startDate: false,
-      assignee: false,
-      comment: false,
-      label: false,
-      file: false,
-      share: false,
-      task: false,
-      status: false,
-      patient: false,
-    });
     const { move, duplicate, subtasks, delete: del } = SINGLE_TASK_FEATURES;
     const organizationCustomFields = useSelector(
       organizationCustomFieldsSelector,
@@ -1059,8 +1047,6 @@ const TaskItem = React.memo(
                   isSubtask={isSubtask}
                   isSticky
                   printWidth={300}
-                  onMouseEnter={() => setCellHover({ task: true })}
-                  onMouseLeave={() => setCellHover({ task: false })}
                 >
                   {!isDependencyEmptyOrCompleted && (
                     <>
@@ -1082,7 +1068,6 @@ const TaskItem = React.memo(
                     </>
                   )}
                   <TaskItemDescription
-                    isHover={isCellHover.task}
                     disableMentions={restrictions?.mentions === DISABLED}
                     disabled={restrictions?.description === READ_ONLY}
                     task={task}
@@ -1122,7 +1107,6 @@ const TaskItem = React.memo(
                       dispatch={dispatch}
                       readOnly={restrictions?.subtasks === READ_ONLY}
                       origin={origin}
-                      isHover={isCellHover.task}
                     />
                   )}
                   {hasParentTaskLabel && (
@@ -1145,7 +1129,7 @@ const TaskItem = React.memo(
                   <div style={{ minWidth: '25px' }}>
                     <Tooltip placement="top" title="Details">
                       <DetailsButton onClick={onClickTaskItem}>
-                        {isCellHover.task && <ChevronRightIcon />}
+                        <ChevronRightIcon />
                       </DetailsButton>
                     </Tooltip>
                   </div>
@@ -1186,8 +1170,6 @@ const TaskItem = React.memo(
                       )?.columnWidth
                     }
                     order={getColumnOrder(TaskItemColumn.PATIENT)}
-                    onMouseEnter={() => setCellHover({ patient: true })}
-                    onMouseLeave={() => setCellHover({ patient: false })}
                   >
                     <TaskItemPatient
                       highlightedValue={highlightedValue}
@@ -1205,7 +1187,6 @@ const TaskItem = React.memo(
                       currentUser={currentUser}
                       readOnly={restrictions?.patient === READ_ONLY}
                       origin={origin}
-                      isPatientHover={isCellHover.patient}
                     />
                   </TaskItemCell>,
                   getColumnOrder(TaskItemColumn.PATIENT),
@@ -1429,8 +1410,6 @@ const TaskItem = React.memo(
                       event.stopPropagation();
                     }}
                     order={getColumnOrder(TaskItemColumn.WORKFLOW_STATUS)}
-                    onMouseEnter={() => setCellHover({ status: true })}
-                    onMouseLeave={() => setCellHover({ status: false })}
                   >
                     <TaskItemWorkflowStatus
                       task={task}
@@ -1442,7 +1421,6 @@ const TaskItem = React.memo(
                         selectedOrganization?.showDefaultTaskStatusCompleted
                       }
                       readOnly={restrictions?.status === READ_ONLY}
-                      isStatusHover={isCellHover.status}
                     />
                   </TaskItemCell>,
                   getColumnOrder(TaskItemColumn.WORKFLOW_STATUS),
@@ -1462,11 +1440,8 @@ const TaskItem = React.memo(
                       )?.columnWidth
                     }
                     order={getColumnOrder(TaskItemColumn.COMMENTS)}
-                    onMouseEnter={() => setCellHover({ comment: true })}
-                    onMouseLeave={() => setCellHover({ comment: false })}
                   >
                     <TaskItemComments
-                      isCommentHover={isCellHover.comment}
                       matchComments={matchComments}
                       comments={comments}
                       task={task}
@@ -1489,11 +1464,8 @@ const TaskItem = React.memo(
                       )?.columnWidth
                     }
                     order={getColumnOrder(TaskItemColumn.LABELS)}
-                    onMouseEnter={() => setCellHover({ label: true })}
-                    onMouseLeave={() => setCellHover({ label: false })}
                   >
                     <TaskItemIcons
-                      isHover={isCellHover}
                       restrictions={restrictions}
                       task={task}
                       matchLabels={matchLabels}
@@ -1517,11 +1489,8 @@ const TaskItem = React.memo(
                       )?.columnWidth
                     }
                     order={getColumnOrder(TaskItemColumn.FILES)}
-                    onMouseEnter={() => setCellHover({ file: true })}
-                    onMouseLeave={() => setCellHover({ file: false })}
                   >
                     <TaskItemIcons
-                      isHover={isCellHover}
                       restrictions={restrictions}
                       task={task}
                       matchAttachments={matchAttachments}
@@ -1552,13 +1521,10 @@ const TaskItem = React.memo(
                       event.stopPropagation();
                     }}
                     order={getColumnOrder(TaskItemColumn.START_DATE)}
-                    onMouseEnter={() => setCellHover({ startDate: true })}
-                    onMouseLeave={() => setCellHover({ startDate: false })}
                   >
                     <TaskItemStartDate
                       task={task}
                       disabled={restrictions?.startDate === DISABLED}
-                      isDateHover={isCellHover.startDate}
                     />
                   </TaskItemCell>,
                   getColumnOrder(TaskItemColumn.START_DATE),
@@ -1585,13 +1551,10 @@ const TaskItem = React.memo(
                         event.stopPropagation();
                       }}
                       order={getColumnOrder(TaskItemColumn.DUE_DATE)}
-                      onMouseEnter={() => setCellHover({ dueDate: true })}
-                      onMouseLeave={() => setCellHover({ dueDate: false })}
                     >
                       <TaskItemDueDate
                         task={task}
                         disabled={restrictions?.dueDate === DISABLED}
-                        isDateHover={isCellHover.dueDate}
                       />
                     </TaskItemCell>,
                     getColumnOrder(TaskItemColumn.DUE_DATE),
@@ -1640,11 +1603,8 @@ const TaskItem = React.memo(
                     printWidth={
                       TaskItemColumnWidth[TaskItemColumn.ASSIGNED].PRINT
                     }
-                    onMouseEnter={() => setCellHover({ assignee: true })}
-                    onMouseLeave={() => setCellHover({ assignee: false })}
                   >
                     <TaskItemMembers
-                      isAssigneeHover={isCellHover.assignee}
                       readOnly={restrictions?.assigment === READ_ONLY}
                       multipleAssigneesContext={multipleAssigneesContext}
                       task={task}
@@ -1680,11 +1640,8 @@ const TaskItem = React.memo(
                     printWidth={
                       TaskItemColumnWidth[TaskItemColumn.SHARED].PRINT
                     }
-                    onMouseEnter={() => setCellHover({ share: true })}
-                    onMouseLeave={() => setCellHover({ share: false })}
                   >
                     <TaskItemSharedMembers
-                      isHover={isCellHover.share}
                       readOnly={restrictions?.assigment === READ_ONLY}
                       multipleAssigneesContext={multipleAssigneesContext}
                       task={task}
