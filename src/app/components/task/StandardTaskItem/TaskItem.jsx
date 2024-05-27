@@ -1964,7 +1964,8 @@ const TaskItem = React.memo(
 
                   const hidePatientCustomFields =
                     field.targetType === CUSTOM_FIELD_TYPES.PATIENT &&
-                    !task?.patient?.patientIdentifier;
+                    !patient?.patientIdentifier &&
+                    !taskWorkflow?.patient?.patientIdentifier;
                   return (
                     <>
                       {randerFirstColumnCoverIfNecessary(
