@@ -138,6 +138,7 @@ import TaskItemDate from './customFieldsTaskItemComponents/TaskItemDate';
 import TaskItemComments from './TaskItemComponents/TaskItemComments';
 import { megaFilterSelector } from '@/app/selectors/mega-filter-selectors';
 import SubtaskIcon from '@/app/img/SubtaskIcon';
+import { getTaskDetails } from '@/app/api/task-api';
 
 const { DISABLED, READ_ONLY } = SINGLE_TASK_RESTRICTIONS_OPTIONS;
 
@@ -250,6 +251,7 @@ const TaskItem = React.memo(
     }));
 
     const actions = useActions(TaskActions);
+    const [parent, setParent] = useState({});
     const [isCompleted, setIsCompleted] = useState(false);
     const modalActions = useActions(ModalActions);
 
@@ -732,6 +734,13 @@ const TaskItem = React.memo(
     const hasParentTaskLabel =
       isSubtask && !isNestedTask && !!task.parentTaskIdentifier;
 
+    const showSubtaskIcon =
+      isSubtask &&
+      (origin === 'DASHBOARD' ||
+        !!selectedFilters ||
+        !!searchValue ||
+        !!sort.key);
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
     const onClickBulkEdit = () =>
       dispatch(selectTask(taskIdentifier, !isTaskBulkSelected));
@@ -1011,11 +1020,17 @@ const TaskItem = React.memo(
       (event) => {
         event.preventDefault();
         event.stopPropagation();
-        dispatch(openTaskDrawerWithContent(task.parentTask));
+        dispatch(openTaskDrawerWithContent(parent));
       },
       // eslint-disable-next-line react-hooks/exhaustive-deps
-      [task.parentTask],
+      [parent, dispatch],
     );
+
+    const fetchParentTask = async () => {
+      if (!parent?.identifier) {
+        setParent(await getTaskDetails(parentTaskIdentifier));
+      }
+    };
 
     return (
       <>
@@ -1138,19 +1153,22 @@ const TaskItem = React.memo(
                       isHover={isCellHover.task}
                     />
                   )}
-                  {hasParentTaskLabel && (
+                  {showSubtaskIcon && (
                     <Tooltip
                       placement="bottom"
                       title={
                         <>
                           <ChildTaskTitle>Child Task of: </ChildTaskTitle>
                           <ParentTaskLink onClick={onParentLabelClick}>
-                            {task.parentTask?.description}
+                            {parent?.description}
                           </ParentTaskLink>
                         </>
                       }
                     >
-                      <div style={{ marginRight: '8px' }}>
+                      <div
+                        onMouseEnter={fetchParentTask}
+                        style={{ marginRight: '8px' }}
+                      >
                         <SubtaskIcon />
                       </div>
                     </Tooltip>
