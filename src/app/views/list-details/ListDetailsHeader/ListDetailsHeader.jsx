@@ -70,6 +70,8 @@ const ListDetailsHeader = (props) => {
     searchValue,
     onSearchChange,
     additionalOptions,
+    clearFilter,
+    setClearFilter,
   } = props;
   const dispatch = useDispatch();
   const currentTasksStatus = useSelector(currentTaskListTasksStatusSelector);
@@ -148,14 +150,15 @@ const ListDetailsHeader = (props) => {
     [quickFiltersList, selectedFilters, selectedQuickFilter],
   );
 
-  const isDefaultDateFilterApplied =
-    currentTasksStatus === 'COMPLETE' &&
-    !selectedFilters?.taskCreatedDateOptions?.options &&
-    !selectedFilters?.taskCreatedDateOptions?.dateStart &&
-    !selectedFilters?.taskCreatedDateOptions?.dateSEnd &&
-    !selectedFilters?.taskCompletedDateOptions?.options &&
-    !selectedFilters?.taskCompletedDateOptions?.dateStart &&
-    !selectedFilters?.taskCompletedDateOptions?.dateSEnd;
+  const isDefaultDateFilterApplied = false;
+  // const isDefaultDateFilterApplied =
+  //   currentTasksStatus === 'COMPLETE' &&
+  //   !selectedFilters?.taskCreatedDateOptions?.options &&
+  //   !selectedFilters?.taskCreatedDateOptions?.dateStart &&
+  //   !selectedFilters?.taskCreatedDateOptions?.dateSEnd &&
+  //   !selectedFilters?.taskCompletedDateOptions?.options &&
+  //   !selectedFilters?.taskCompletedDateOptions?.dateStart &&
+  //   !selectedFilters?.taskCompletedDateOptions?.dateSEnd;
 
   const handleSaveAsQuickFilter = useCallback(
     () => dispatch(showAddQuickFilterOption()),
@@ -331,6 +334,8 @@ const ListDetailsHeader = (props) => {
           onQuickFilterUpdate={handleQuickFilterUpdate}
           onQuickFilterDelete={handleQuickFilterDelete}
           isDefaultDateFilterApplied={isDefaultDateFilterApplied}
+          clearFilter={clearFilter}
+          setClearFilter={setClearFilter}
         />
         {restrictions?.editSettings !== DISABLED &&
           !restrictCustomizationFeatures && (

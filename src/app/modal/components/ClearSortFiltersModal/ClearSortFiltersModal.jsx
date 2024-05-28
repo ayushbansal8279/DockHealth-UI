@@ -23,11 +23,11 @@ const ClearSortFiltersModal = ({ closeModal, closeOnConfirm, confirm }) => {
       <ModalWrapper>
         <ModalIconContainer>
           <ModalMainIcon src={SortArrows} alt="Sort arrows" />
-          <ModalHeaderName>Clear Filter and Sort</ModalHeaderName>
+          <ModalHeaderName>Clear Filter, Search and Sort</ModalHeaderName>
         </ModalIconContainer>
         <ModalDescriptionContainer>
-          This page has an active filter or sort applied. In order to enable
-          drag and drop please clear any filters and sorting.
+          This page has an active filter, search or sort applied. In order to
+          enable drag and drop please clear any filters and sorting.
         </ModalDescriptionContainer>
         <ButtonsContainer>
           <CancelButton style={{ width: '180px' }} onClick={closeModal}>
@@ -35,13 +35,13 @@ const ClearSortFiltersModal = ({ closeModal, closeOnConfirm, confirm }) => {
           </CancelButton>
           <Spacing horizontal={4} />
           <ConfirmButton
-            style={{ width: '180px' }}
+            style={{ width: '280px' }}
             onClick={() => {
               confirm();
               if (closeOnConfirm) closeModal();
             }}
           >
-            Clear Filter / Sort
+            Clear Filter / Sort / Search
           </ConfirmButton>
         </ButtonsContainer>
       </ModalWrapper>

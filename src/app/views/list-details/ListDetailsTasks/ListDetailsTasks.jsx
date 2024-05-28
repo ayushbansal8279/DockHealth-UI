@@ -71,6 +71,8 @@ const ListDetailsTasks = ({
   onTaskUpdate,
   updateWorkflowStatus,
   loadTasksForTaskGroup,
+  setClearSearch,
+  setClearFilter,
   __switchVirtualTaskListEnabled = () => {},
 }) => {
   const groupedTasks = useSelector(groupTasksSelector);
@@ -216,19 +218,21 @@ const ListDetailsTasks = ({
 
   const isSortApplied = !!sort?.key && !!sort?.order;
 
-  const showClearSortFiltersModal = useCallback(() => {
-    if (isSortApplied) {
+  const showClearSortFiltersModal = () => {
+    if (isSortApplied || isSearchApplied || areFiltersApplied) {
       setDraggableId(null);
       dispatch(
         openModalAction('ClearSortFilters', {
           confirm: () => {
-            resetSort();
+            if (isSortApplied) resetSort();
+            if (isSearchApplied) setClearSearch(true);
+            if (areFiltersApplied) setClearFilter(true);
           },
           closeOnConfirm: true,
         }),
       );
     }
-  }, [isSortApplied, dispatch, resetSort]);
+  };
 
   const applyTemplate = useCallback(
     ({ taskTemplateIdentifier, taskGroupIdentifier }) =>
@@ -279,7 +283,10 @@ const ListDetailsTasks = ({
           !(workflowPopoverOpen || patientPopoverOpen) ? handleScroll : () => {}
         }
       >
-        <VirtualTaskList groupedTasks={groupedTasks} />
+        <VirtualTaskList
+          showClearSortFiltersModal={showClearSortFiltersModal}
+          groupedTasks={groupedTasks}
+        />
       </div>
     );
   };
@@ -525,8 +532,8 @@ const ListDetailsTasks = ({
       ) : (
         <>
           <DragDropContext
-            onBeforeCapture={onBeforeCapture}
             onBeforeDragStart={showClearSortFiltersModal}
+            onBeforeCapture={onBeforeCapture}
             onDragEnd={isSortApplied ? () => {} : onDragEnd}
           >
             {isVirtualTaskListEnabled

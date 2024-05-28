@@ -27,6 +27,8 @@ const MegaFilter = ({
   wasChangedFilters,
   onQuickFilterCreate,
   onQuickFilterDelete,
+  clearFilter,
+  setClearFilter,
   isDefaultDateFilterApplied = false,
   value,
   focused,
@@ -53,7 +55,7 @@ const MegaFilter = ({
             .filter((item) => typeof item !== 'boolean');
 
           const options = selectedFilters[key].options.map((item) => {
-            if (item.includes('DATE_RANGE')) {
+            if (item?.includes('DATE_RANGE')) {
               let aa = users.find((user) => user.key === item);
               aa = {
                 ...aa,
@@ -77,6 +79,15 @@ const MegaFilter = ({
     setFinalFilter({});
     setSelectedQuickFilter('');
   };
+
+  useEffect(() => {
+    if (clearFilter) {
+      clearFilters();
+      setTimeout(() => {
+        setClearFilter(false);
+      }, 500);
+    }
+  }, [clearFilter]);
 
   useEffect(() => {
     setSelectedQuickFilter(initialQuickFilter);

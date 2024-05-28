@@ -1,10 +1,7 @@
-import {
-  CancelButton,
-  ConfirmButton,
-} from '@/app/modal/components/ModalButton/ModalButtons';
 import { Box } from '@mui/material';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import FilterListIcon from '@mui/icons-material/FilterList';
+import { selectFilterOption } from 'helpers/filter-options-helpers';
 import {
   BottomWrapper,
   FilterButtonWrapper,
@@ -17,7 +14,10 @@ import {
   AddFilterButtonLabel,
 } from './styled';
 import FilterSelect from '../FilterSelect/FilterSelect';
-import { selectFilterOption } from 'helpers/filter-options-helpers';
+import {
+  CancelButton,
+  ConfirmButton,
+} from '@/app/modal/components/ModalButton/ModalButtons';
 import RotatableChevron from '../../common/RotatableChevron/RotatableChevron';
 import palette from '@/app/styles/palette';
 import useBoolean from '@/app/hooks/useBoolean';
@@ -38,6 +38,7 @@ const NewFilterContainer = ({
   handleSelectedFiltersChange,
   isPatientListPage,
 }) => {
+  console.log('filters', filters);
   const popoverReference = useRef(null);
   const [isPopoverOpen, openAddFilterPopover, closeAddFilterPopover] =
     useBoolean(false);
@@ -48,27 +49,26 @@ const NewFilterContainer = ({
     for (const key in finalFilter) {
       if (finalFilter[key].length > 0) {
         setDisable(true);
-        let options = [];
+        const options = [];
         let dateStart = '';
         let dateEnd = '';
         finalFilter[key].map((item) => {
-          if (item?.key.includes('DATE_RANGE')) {
+          if (item?.key?.includes('DATE_RANGE')) {
             dateStart = item?.dateStart;
             dateEnd = item?.dateEnd;
             options.push(item?.key);
           } else {
-            options.push(item?.key);
+            options.push(item?.key || '');
           }
         });
-        if (dateStart !== '' && dateEnd !== '') {
-          data[key] = {
-            options: options,
-            dateStart: dateStart,
-            dateEnd: dateEnd,
-          };
-        } else {
-          data[key] = { options: options };
-        }
+        data[key] =
+          dateStart !== '' && dateEnd !== ''
+            ? {
+                options,
+                dateStart,
+                dateEnd,
+              }
+            : { options };
       } else {
         setDisable(false);
       }
@@ -171,20 +171,13 @@ const NewFilterContainer = ({
             <CancelButton
               disabled={!isDisable}
               onClick={() => setSavePopupOpen(true)}
-              style={{
-                width: '270px',
-                borderColor: !isDisable && palette.shadowBlue,
-              }}
+              style={{ width: '270px' }}
             >
               Save Filter
             </CancelButton>
             <ConfirmButton
               disabled={!isDisable}
-              style={{
-                width: '270px',
-                background: !isDisable && palette.shadowBlue,
-                color: !isDisable && palette.white,
-              }}
+              style={{ width: '270px' }}
               onClick={
                 isPatientListPage
                   ? handleApplyFinalFilterPatient

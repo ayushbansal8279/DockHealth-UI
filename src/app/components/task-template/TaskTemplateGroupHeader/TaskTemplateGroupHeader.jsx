@@ -120,7 +120,7 @@ const TaskTemplateGroupHeader = ({
   isNextVirtualTaskItemTypeBundle,
   isLastTaskOfGroup,
   isNextTaskItemTypeBundle,
-  currentTaskListTasksStatus,
+  tasksStatus,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const {
@@ -1488,7 +1488,7 @@ const TaskTemplateGroupHeader = ({
           handleDelete={handleDelete}
           showCompletedTasks={showCompletedTasks}
           showIncompleteTasks={showIncompleteTasks}
-          currentTaskListTasksStatus={currentTaskListTasksStatus}
+          tasksStatus={tasksStatus}
           toggleCompletedTasksVisibility={toggleCompletedTasksVisibility}
           toggleIncompleteTasksVisibility={toggleIncompleteTasksVisibility}
         />

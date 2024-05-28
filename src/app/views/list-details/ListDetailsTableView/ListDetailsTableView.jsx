@@ -93,6 +93,8 @@ const ListDetailsTableView = () => {
 
   const pusher = useRef(initializePusher());
   const [channel, setChannel] = useState(null);
+  const [clearSearch, setClearSearch] = useState(false);
+  const [clearFilter, setClearFilter] = useState(false);
 
   const dispatch = useDispatch();
   const { taskListIdentifier, tabName } = params;
@@ -197,6 +199,15 @@ const ListDetailsTableView = () => {
       dispatch(ListDetailsActions.searchCurrentListTasks(searchQuery)),
     [dispatch],
   );
+
+  useEffect(() => {
+    if (clearSearch) {
+      dispatch(ListDetailsActions.searchCurrentListTasks(''));
+      setTimeout(() => {
+        setClearSearch(false);
+      }, 500);
+    }
+  }, [clearSearch]);
 
   const handleTaskUpdate = useCallback(
     (taskIdentifier, dataToUpdate) => {
@@ -481,6 +492,8 @@ const ListDetailsTableView = () => {
               : taskCounters.complete
           }
           additionalOptions={additionalToolbarOptions}
+          clearFilter={clearFilter}
+          setClearFilter={setClearFilter}
         />
       }
     >
@@ -498,6 +511,8 @@ const ListDetailsTableView = () => {
             </StickyContainer> */}
 
           <TasksView
+            setClearSearch={setClearSearch}
+            setClearFilter={setClearFilter}
             viewSetup={displayListPreferences}
             onTaskUpdate={handleTaskUpdate}
             updateWorkflowStatus={handleUpdateWorkflowStatus}
