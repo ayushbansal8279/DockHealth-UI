@@ -207,7 +207,7 @@ const TaskTemplateGroup = ({
         isNextVirtualTaskItemTypeBundle={isNextVirtualTaskItemTypeBundle}
         isLastTaskOfGroup={isLastTaskOfGroup}
         isNextTaskItemTypeBundle={isNextTaskItemTypeBundle}
-        currentTaskListTasksStatus={tasksStatus}
+        tasksStatus={tasksStatus}
       />
       {!isStartedDnD && window.disabledVirtualTaskList && (
         <TaskTemplateGroupList timeout={150} in={isOpen && !isStartedDnD}>
