@@ -53,12 +53,12 @@ const NewFilterContainer = ({
         let dateStart = '';
         let dateEnd = '';
         finalFilter[key].map((item) => {
-          if (item?.key.includes('DATE_RANGE')) {
+          if (item?.key?.includes('DATE_RANGE')) {
             dateStart = item?.dateStart;
             dateEnd = item?.dateEnd;
             options.push(item?.key);
           } else {
-            options.push(item?.key);
+            options.push(item?.key || '');
           }
         });
         data[key] =

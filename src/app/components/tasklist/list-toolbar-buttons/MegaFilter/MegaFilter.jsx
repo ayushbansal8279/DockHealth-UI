@@ -55,7 +55,7 @@ const MegaFilter = ({
             .filter((item) => typeof item !== 'boolean');
 
           const options = selectedFilters[key].options.map((item) => {
-            if (item.includes('DATE_RANGE')) {
+            if (item?.includes('DATE_RANGE')) {
               let aa = users.find((user) => user.key === item);
               aa = {
                 ...aa,

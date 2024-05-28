@@ -38,6 +38,8 @@ import TaskTemplateGroup from 'components/task-template/TaskTemplateGroup/TaskTe
 import Circle from 'img/circle.svg';
 import CircleCompleted from 'img/circle-completed.svg';
 import CircleCompletedHover from 'img/circle-completed-hover.svg';
+import TaskAutomationPending from 'img/task-automation-pending.svg';
+import TaskAutomationComplete from 'img/task-automation-complete.svg';
 import ThreeDotsIcon from 'img/three-dots.svg';
 import {
   userProfileSelector,
@@ -125,7 +127,7 @@ import {
   TootipCompletedBy,
   TootipCompletedByDate,
   TootipCompletedByName,
-  AddPlaceholder,
+  // AddPlaceholder,
   ChildTaskTitle,
   ParentTaskLink,
 } from '../styled';
@@ -535,12 +537,13 @@ const TaskItem = React.memo(
         }
       },
       [
+        origin,
         subtasksDisabled,
         isOpen,
-        switchOpen,
         highlightTasksOfTheSameParent,
         task?.parentTaskIdentifier,
         task?.taskIdentifier,
+        switchOpen,
       ],
     );
 
@@ -877,8 +880,10 @@ const TaskItem = React.memo(
                           .toLowerCase()}`}
                       </TootipCompletedByDate>
                     </>
-                  ) : (
+                  ) : !task?.systemTask ? (
                     'Complete task'
+                  ) : (
+                    'System task'
                   )
                 }
                 open={tooltipsOpen}
@@ -887,9 +892,15 @@ const TaskItem = React.memo(
                 <CircleIcon
                   src={
                     isCompleted
-                      ? CircleCompleted
+                      ? task?.systemTask
+                        ? TaskAutomationComplete
+                        : CircleCompleted
                       : showCircleIconOnHover
-                      ? CircleCompletedHover
+                      ? task?.systemTask
+                        ? TaskAutomationPending
+                        : CircleCompletedHover
+                      : task?.systemTask
+                      ? TaskAutomationPending
                       : Circle
                   }
                   onMouseEnter={() => {
@@ -908,7 +919,8 @@ const TaskItem = React.memo(
                   isCompleted={isCompleted}
                   onClick={
                     // eslint-disable-next-line unicorn/no-negated-condition
-                    taskListRestrictions?.completeTask !== DISABLED
+                    taskListRestrictions?.completeTask !== DISABLED &&
+                    !task?.systemTask
                       ? onCircleClick
                       : () => {}
                   }
@@ -923,10 +935,12 @@ const TaskItem = React.memo(
         );
       },
       [
+        origin,
+        selectedFilters,
+        searchValue,
+        sort.key,
         isLastChild,
         isTaskTemplate,
-        origin,
-        showSubtaskStylingLink,
         isSubtask,
         newlyCreated,
         pageBackground,
@@ -935,9 +949,6 @@ const TaskItem = React.memo(
         customHighlight,
         isEditingDescription,
         isWorkflowSubtask,
-        searchValue,
-        selectedFilters,
-        sort.key,
         taskListRestrictions?.createTask,
         taskListRestrictions?.completeTask,
         dragHandleProps,
@@ -946,6 +957,8 @@ const TaskItem = React.memo(
         task?.completedBy?.firstName,
         task?.completedBy?.lastName,
         task?.completedDt,
+        task?.systemTask,
+        showSubtaskStylingLink,
         isLast,
         bulkEditEnabled,
         onClickBulkEdit,
@@ -1966,7 +1979,8 @@ const TaskItem = React.memo(
 
                   const hidePatientCustomFields =
                     field.targetType === CUSTOM_FIELD_TYPES.PATIENT &&
-                    !task?.patient?.patientIdentifier;
+                    !patient?.patientIdentifier &&
+                    !taskWorkflow?.patient?.patientIdentifier;
                   return (
                     <>
                       {randerFirstColumnCoverIfNecessary(
