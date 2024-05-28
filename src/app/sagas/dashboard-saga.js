@@ -54,16 +54,14 @@ function* initializeDashboardView() {
       getQuickFilterStorageKey('dashboard', tabName),
     );
 
-    if (filters) {
-      yield put(
-        MegaFilterActions.selectFiltersForMegaFilter(
-          filters,
-          'dashboard',
-          tabName,
-          selectedQuickFilter,
-        ),
-      );
-    }
+    yield put(
+      MegaFilterActions.selectFiltersForMegaFilter(
+        filters,
+        'dashboard',
+        tabName,
+        selectedQuickFilter,
+      ),
+    );
 
     yield filters
       ? put(DashboardActions.getDashboardTasks())

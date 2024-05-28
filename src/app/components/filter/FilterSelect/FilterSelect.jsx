@@ -55,7 +55,7 @@ const FilterSelect = ({
 
   useEffect(() => {
     finalFilter[filter].map((item) => {
-      if (item.key.includes('DATE_RANGE')) {
+      if (item?.key?.includes('DATE_RANGE')) {
         if (item.dateStart && item.dateEnd) {
           setDateStart(item.dateStart);
           setDateEnd(item.dateEnd);
@@ -112,7 +112,7 @@ const FilterSelect = ({
       );
       setFinalFilter((v) => ({ ...urs }));
       setFilterdUser((v) => [...v, item]);
-      let currentFilter = { ...finalFilter };
+      const currentFilter = { ...finalFilter };
       currentFilter[filter] = currentFilter[filter].filter(
         (user) => user.key !== item?.key,
       );
@@ -120,18 +120,18 @@ const FilterSelect = ({
   };
 
   const handleRemoveOption = () => {
-    let currentFilter = { ...finalFilter };
+    const currentFilter = { ...finalFilter };
     delete currentFilter[filter];
     setFinalFilter({ ...currentFilter });
   };
 
   useEffect(() => {
     finalFilter[filter].map((item) => {
-      if (item?.key.includes('DATE_RANGE')) {
+      if (item?.key?.includes('DATE_RANGE')) {
         setIsDateRange(true);
       }
     });
-  }, [finalFilter]);
+  }, [filter, finalFilter]);
 
   const TextFieldSX = {
     backgroundColor: palette.whiteSmoke,
@@ -224,7 +224,7 @@ const FilterSelect = ({
                           ''
                         )}
                       </AvatarContainer>
-                      {item?.key.includes('DATE_RANGE') ? (
+                      {item?.key?.includes('DATE_RANGE') ? (
                         <DateRangeOptions
                           dueDate={dueDate}
                           setDueDate={setDueDate}
@@ -266,7 +266,7 @@ const FilterSelect = ({
                 <OptionDropDown>
                   {filterdUser.map((item, i) => (
                     <OptionDropDownItem
-                      key={item.key}
+                      key={item?.key}
                       onClick={() => handleSelectOption(item)}
                     >
                       <DisplayValue>

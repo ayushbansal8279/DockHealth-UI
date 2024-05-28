@@ -27,6 +27,7 @@ import {
   multipleTaskLookupSelector,
 } from 'selectors/task-details-selectors';
 import { currentTaskListTasksStatusSelector } from 'selectors/task-list-selectors';
+import { currentListTasksStatusSelector } from 'selectors/patient-details-selectors';
 import { TaskTemplateGroupList, QuickAddInputWrapper } from './styled';
 import TaskTemplateGroupHeader from '../TaskTemplateGroupHeader/TaskTemplateGroupHeader';
 import { ListPageContext } from '@/app/views/list-details/ListDetailsView';
@@ -89,10 +90,16 @@ const TaskTemplateGroup = ({
   const restrictions =
     TASK_LIST_RESTRICTIONS_PROFILES[currentUser?.orgUserRole];
   const { DISABLED } = TASK_LIST_RESTRICTIONS_OPTIONS;
+
   const currentTaskListTasksStatus = useSelector(
     currentTaskListTasksStatusSelector,
   );
+  const currentPatientTasksStatus = useSelector(currentListTasksStatusSelector);
 
+  const tasksStatus =
+    origin === TaskOrigin.PATIENT
+      ? currentPatientTasksStatus
+      : currentTaskListTasksStatus;
   // useEffect(() => {
   //   // setOpen(SHOW_WORKFLOW_DETAILS); //no longer supported
   //   if (isCompletedTab) {
@@ -115,10 +122,10 @@ const TaskTemplateGroup = ({
       dispatch(TemplateBundleActions.getTasksForWorkflow(identifier));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isOpen, tasks, currentTaskListTasksStatus]);
+  }, [isOpen, tasks, tasksStatus]);
 
   useEffect(() => {
-    switch (currentTaskListTasksStatus) {
+    switch (tasksStatus) {
       case TaskStatus.COMPLETE: {
         setShowIncompleteTasks(false);
         setShowCompletedTasks(true);
@@ -138,7 +145,7 @@ const TaskTemplateGroup = ({
       // No default
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentTaskListTasksStatus]);
+  }, [tasksStatus]);
 
   const handleAddBundleTask = useCallback(
     (task) => {
@@ -163,14 +170,9 @@ const TaskTemplateGroup = ({
         (task) =>
           (showIncompleteTasks && task.status === TaskStatus.INCOMPLETE) ||
           (showCompletedTasks && task.status === TaskStatus.COMPLETE) ||
-          task.status === currentTaskListTasksStatus,
+          task.status === tasksStatus,
       ),
-    [
-      tasks,
-      showIncompleteTasks,
-      showCompletedTasks,
-      currentTaskListTasksStatus,
-    ],
+    [tasks, showIncompleteTasks, showCompletedTasks, tasksStatus],
   );
 
   const filteredTasks = filteredTasksByStatus.map((t) => t.identifier);
@@ -205,7 +207,7 @@ const TaskTemplateGroup = ({
         isNextVirtualTaskItemTypeBundle={isNextVirtualTaskItemTypeBundle}
         isLastTaskOfGroup={isLastTaskOfGroup}
         isNextTaskItemTypeBundle={isNextTaskItemTypeBundle}
-        currentTaskListTasksStatus={currentTaskListTasksStatus}
+        tasksStatus={tasksStatus}
       />
       {!isStartedDnD && window.disabledVirtualTaskList && (
         <TaskTemplateGroupList timeout={150} in={isOpen && !isStartedDnD}>
