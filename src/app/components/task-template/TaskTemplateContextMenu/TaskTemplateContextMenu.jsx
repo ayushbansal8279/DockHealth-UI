@@ -20,14 +20,14 @@ const TaskTemplateContextMenu = ({
   position,
   onClose,
   handleAddTask,
-  handleEditName,
+  // handleEditName,
   handleMoveToList,
   handleMoveGroupTask,
   handleDuplicate,
   handleDelete,
   showCompletedTasks,
   showIncompleteTasks,
-  currentTaskListTasksStatus,
+  tasksStatus,
   toggleCompletedTasksVisibility,
   toggleIncompleteTasksVisibility,
 }) => {
@@ -185,7 +185,7 @@ const TaskTemplateContextMenu = ({
             </MenuItemButton>
           </div>
         )}
-        {currentTaskListTasksStatus === TaskStatus.INCOMPLETE && (
+        {tasksStatus === TaskStatus.INCOMPLETE && (
           <div>
             <MenuItemButton
               type="button"
@@ -197,7 +197,7 @@ const TaskTemplateContextMenu = ({
             </MenuItemButton>
           </div>
         )}
-        {currentTaskListTasksStatus === TaskStatus.COMPLETE && (
+        {tasksStatus === TaskStatus.COMPLETE && (
           <div>
             <MenuItemButton
               type="button"
