@@ -732,7 +732,10 @@ const TaskItem = React.memo(
 
     const showSubtaskIcon =
       isSubtask &&
-      (origin === 'DASHBOARD' || !!selectedFilters || !!searchValue);
+      (origin === 'DASHBOARD' ||
+        !!selectedFilters ||
+        !!searchValue ||
+        !!sort.key);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
     const onClickBulkEdit = () =>
