@@ -8,6 +8,7 @@ import {
   takeLatest,
   all,
 } from 'redux-saga/effects';
+import isEmpty from 'ramda/src/isEmpty';
 import * as ActionTypes from 'actions/action-types';
 import * as DashboardActions from 'actions/dashboard-actions';
 import {
@@ -128,28 +129,48 @@ function* loadMoreDashboardTasksForGroup({ groupType, sortBy, sortDirection }) {
   try {
     const tabName = yield select(dashboardTabNameSelector);
     const isAllTasks = tabName === DashboardTasksTab.ALL_TASKS;
+    const selectedFilters = yield select(selectedFiltersInMegaFilterSelector);
     const customStartPosition = yield select(
       dashboardGroupTasksCountSelector,
       groupType,
     );
 
-    const { taskGroups } = yield call(
-      isAllTasks
-        ? getTasksForOrganizationByImplicitGroup
-        : getTasksAssignedToUserByImplicitGroup,
-      groupType,
-      sortBy,
-      sortDirection,
-      customStartPosition,
-      0,
-    );
-    const group = taskGroups.find((g) => g.groupType === groupType);
+    if (!selectedFilters || isEmpty(selectedFilters)) {
+      const { taskGroups } = yield call(
+        isAllTasks
+          ? getTasksForOrganizationByImplicitGroup
+          : getTasksAssignedToUserByImplicitGroup,
+        groupType,
+        sortBy,
+        sortDirection,
+        customStartPosition,
+        0,
+      );
+      const group = taskGroups.find((g) => g.groupType === groupType);
 
-    yield put({
-      type: ActionTypes.LOAD_MORE_DASHBOARD_TASKS_FOR_GROUP_SUCCESS,
-      groupType,
-      group,
-    });
+      yield put({
+        type: ActionTypes.LOAD_MORE_DASHBOARD_TASKS_FOR_GROUP_SUCCESS,
+        groupType,
+        group,
+      });
+    } else {
+      const taskGroups = yield call(
+        isAllTasks
+          ? getDashboardAllTasksByCriteria
+          : getDashboardMyTasksByCriteria,
+        selectedFilters,
+        sortBy,
+        sortDirection,
+        customStartPosition,
+      );
+      const group = taskGroups.find((g) => g.groupType === groupType);
+
+      yield put({
+        type: ActionTypes.LOAD_MORE_DASHBOARD_TASKS_FOR_GROUP_SUCCESS,
+        groupType,
+        group,
+      });
+    }
   } catch {
     yield put({
       type: ActionTypes.LOAD_MORE_DASHBOARD_TASKS_FOR_GROUP_FAILURE,
