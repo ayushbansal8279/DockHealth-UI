@@ -21,14 +21,15 @@ const validationSchema = object().shape({
     .email('Please enter a valid email address'),
 });
 
-// eslint-disable-next-line sonarjs/cognitive-complexity
-const LoginFormUsername = (props) => {
-  const { onSubmit } = props;
+const LoginFormUsername = ({ onSubmit }) => {
   const [showLoginMessage, setShowLoginMessage] = useState(false);
 
   const formMethods = useForm({
     resolver: yupResolver(validationSchema),
     reValidateMode: 'onSubmit',
+    defaultValues: {
+      username: '',
+    },
   });
 
   const { watch, setValue, handleSubmit } = formMethods;
@@ -49,9 +50,8 @@ const LoginFormUsername = (props) => {
 
         UserAuthApi.getEnterpriseAccessTokensByAuthCode(authCode, issValue)
           .then(() => {
-            sessionStorage.setItem('sessionStartTime', new Date().getTime());
+            sessionStorage.setItem('sessionStartTime', Date.now());
             const nextPathname = sessionStorage.getItem('next-page');
-            console.log(nextPathname);
             if (nextPathname && nextPathname !== '') {
               sessionStorage.removeItem('next-page');
               window.location.href = `/#${nextPathname}`;
@@ -59,14 +59,12 @@ const LoginFormUsername = (props) => {
             }
             const patientIdentifier =
               sessionStorage.getItem('PatientIdentifier');
-            console.log(patientIdentifier);
             window.location.href =
               patientIdentifier &&
               patientIdentifier !== '' &&
               patientIdentifier !== 'null'
                 ? `/#/core/patient/${patientIdentifier}`
                 : '/#/core/home';
-            // setShowLoginMessage(false);
           })
           .catch((error) => {
             showAlert({ status: 'error', title: 'Error', text: error.message });

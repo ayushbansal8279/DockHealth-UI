@@ -46,6 +46,10 @@ const LoginFormPassword = ({
   const formMethods = useForm({
     resolver: yupResolver(validationSchema),
     reValidateMode: 'onSubmit',
+    defaultValues: {
+      username: '',
+      password: '',
+    },
   });
 
   const [isPasswordShown, togglePasswordShown] = useToggle(false);
@@ -80,24 +84,12 @@ const LoginFormPassword = ({
       <FormProvider {...formMethods}>
         <Title>{titleContent}</Title>
         <Spacing vertical={4} />
-        {verified ? (
+        {verified && (
           <>
             <OutfitTypography align="center" variant="h4">
               Your email {uname} is verified.
             </OutfitTypography>
           </>
-        ) : (
-          <div />
-          // <OutfitTypography align="center" variant="h4">
-          //   New to Dock?{' '}
-          //   <a
-          //     style={{ fontWeight: `${fontWeights.regularPlus}`, color: `${palette.coolGrey10}` }}
-          //     href="/create-account"
-          //   >
-          //     {' '}
-          //     Sign up for free{' '}
-          //   </a>
-          // </OutfitTypography>
         )}
         <Spacing vertical={5} />
         <FormInput
@@ -149,7 +141,11 @@ const LoginFormPassword = ({
         >
           Dock can save you 20 hours a month{' '}
           <a
-            style={{ color: `${palette.coolGrey10}`, fontWeight: `${fontWeights.bold}`, paddingLeft: '5px' }}
+            style={{
+              color: `${palette.coolGrey10}`,
+              fontWeight: `${fontWeights.bold}`,
+              paddingLeft: '5px',
+            }}
             href="https://dock.health/"
             target="_blank"
             rel="noreferrer"
