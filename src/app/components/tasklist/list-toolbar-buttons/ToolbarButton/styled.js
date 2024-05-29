@@ -14,7 +14,7 @@ export const CustomizeButtonWrapper = styled(Button)`
         ? palette.newBrightBlue
         : palette.newDarkBlue};
     border-right: ${(props) =>
-      props.hasPopover ? `1px solid ${palette.white};` : ''};
+      props.$hasPopover ? `1px solid ${palette.white};` : ''};
     // border-radius: 5px 0px 0px 5px;
     :hover {
       background-color: ${(props) =>

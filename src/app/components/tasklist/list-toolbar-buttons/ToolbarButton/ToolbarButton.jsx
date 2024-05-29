@@ -31,7 +31,7 @@ const ToolbarButton = React.forwardRef((props, reference) => {
           onClick={onClick}
           size="large"
           active={+active}
-          hasPopover={hasPopover}
+          $hasPopover={hasPopover}
           disableButton={disableButton}
         >
           {icon}
