@@ -16,15 +16,13 @@ import { changePatientForTemplateBundle } from 'actions/template-bundle-actions'
 import { noop } from 'helpers/utility-functions';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
-import AssignMemberIcon from 'components/user/AssignMemberIcon/AssingMemberIcon';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import SelectDropdown from '../SelectDropdown/SelectDropdown';
 import { getFormattedPatient, getFormattedPatients } from './helpers';
 import {
   PatientMainContainer,
   PatientContainer,
   Title,
-  AddPatient,
   PatientName,
 } from './styled';
 import { updatePartialWorkflow } from '@/app/actions/task-template-actions';
@@ -328,6 +326,7 @@ const PatientSection = ({
           <button
             style={{ color: '#8492A4' }}
             onClick={handleClearSelectedPatient}
+            type="button"
           >
             x
           </button>
@@ -339,13 +338,6 @@ const PatientSection = ({
           <SelectDropdown
             ref={patientInputReference}
             name={PATIENT_IDENTIFIER_FIELD_NAME}
-            // label={customerTypeLabelCapitalized}
-            // placeholder={
-            //   emrIntegrationType === 'FHIR'
-            //     ? `Who is the ${customerTypeLabel}? (MRN #)`
-            //     : placeholder ||
-            //       `Who is the ${customerTypeLabel}? (first last or last, first)`
-            // }
             placeholder="Add Patient"
             disabled={disabled}
             selectedOption={assignedPatient}

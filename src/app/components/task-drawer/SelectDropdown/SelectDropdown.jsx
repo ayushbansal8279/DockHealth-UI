@@ -11,7 +11,6 @@ import Loader, { LoaderSizes } from 'components/common/Loader/Loader';
 import Spacing from 'components/common/Spacing';
 import { useBoolean } from 'hooks/useBoolean';
 import { isOutsideScrollView } from 'helpers/scroll-helper';
-import Input from 'components/common/Input/Input';
 import { useLocation, Link } from 'react-router-dom';
 import LaunchIcon from '@mui/icons-material/Launch';
 import {
@@ -400,7 +399,7 @@ const SelectDropdown = React.forwardRef(
 
 SelectDropdown.propTypes = {
   name: string.isRequired,
-  label: string.isRequired,
+  label: string,
   placeholder: string,
   disabled: bool,
   options: arrayOf(
