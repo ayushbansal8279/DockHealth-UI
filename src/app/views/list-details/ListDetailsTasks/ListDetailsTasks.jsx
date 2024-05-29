@@ -260,6 +260,7 @@ const ListDetailsTasks = ({
     },
     [dispatch],
   );
+
   window.disabledVirtualTaskList = false;
   const [isVirtualTaskListEnabled, setIsVirtualTaskListEnabled] = useState(
     !window.disabledVirtualTaskList,
@@ -310,6 +311,13 @@ const ListDetailsTasks = ({
               quickAddTask={quickAddTask}
               moveGroupUp={() => moveGroup(index, 'up')}
               moveGroupDown={() => moveGroup(index, 'down')}
+              onTaskGroupRefresh={() => {
+                loadTasksForTaskGroup({
+                  taskGroupIdentifier,
+                  startPosition: 0,
+                  refresh: true,
+                });
+              }}
               isFirstGroup={index === 0}
               isLastGroup={index === groupList?.length - 1}
               tasks={group?.tasks || []}
