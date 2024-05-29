@@ -71,6 +71,7 @@ const PatientForm = forwardRef(
     } = useFormContext();
     const [isOpenedPersonal, setIsOpenedPersonal] = useState(true);
     const [isOpenedContact, setIsOpenedContact] = useState(true);
+    const [isOpenedOther, setIsOpenedOther] = useState(true);
     const [customFields, setCustomFields] = useState(null);
     const userProfile = useSelector(userProfileSelector);
     const { 0: emptyPersonalVisible, 3: toggleEmptyPersonal } =
@@ -283,8 +284,8 @@ const PatientForm = forwardRef(
             name={`${capitalize(customerTypeLabel)} ${CategoryLabel[
               Category.OTHER_INFO
             ].toLowerCase()}`}
-            isOpened={isOpenedContact}
-            onClick={() => setIsOpenedContact(!isOpenedContact)}
+            isOpened={isOpenedOther}
+            onClick={() => setIsOpenedOther(!isOpenedOther)}
           >
             {customFields?.[Category.OTHER_INFO].map((field, index) => {
               return renderCustomField(
