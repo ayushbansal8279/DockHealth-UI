@@ -4,6 +4,7 @@ import ParentTaskIcon from 'img/ParentTaskIcon';
 import {
   AddPlaceholder,
   AddSubtaskButton,
+  SubtaskWrapper,
   SubtasksCellContentButton,
   SubtasksCellText,
   SubtasksCountText,
@@ -23,7 +24,6 @@ const TaskItemSubtasks = ({
   openQuickAddSubtask,
   dispatch,
   origin,
-  isHover,
   // readOnly,
 }) => {
   const onClickAddSubtask = useCallback(
@@ -38,34 +38,25 @@ const TaskItemSubtasks = ({
     !subtaskQuickAddOpen &&
     !subtasksDisabled &&
     !subTasksCount ? (
-    <>
-      {isHover && (
-        <AddSubtaskButton type="button">
-          {/* <AddPlaceholder> */}
-          <SubtasksCellContentButton
-            // isOpen={isOpen}
-            // disabled={isNestedTask}
-            // isGreyedOut={subtasksDisabled}
-            // onClick={onSubtaskLabelClick}
-            // subtasksDisabled={subtasksDisabled}
-            subTasksCount={subTasksCount}
-            onClick={onClickAddSubtask}
-          >
-            <>
-              <SubtasksCellText>
-                <div style={{ marginBottom: '3px' }}>+</div>
-              </SubtasksCellText>
-              <Tooltip placement="top" title="Add Subtask">
-                <span>
-                  <ParentTaskIcon />
-                </span>
-              </Tooltip>
-            </>
-          </SubtasksCellContentButton>
-          {/* </AddPlaceholder> */}
-        </AddSubtaskButton>
-      )}
-    </>
+    <SubtaskWrapper>
+      <AddSubtaskButton type="button">
+        <SubtasksCellContentButton
+          subTasksCount={subTasksCount}
+          onClick={onClickAddSubtask}
+        >
+          <>
+            <SubtasksCellText>
+              <div style={{ marginBottom: '3px' }}>+</div>
+            </SubtasksCellText>
+            <Tooltip placement="top" title="Add Subtask">
+              <span>
+                <ParentTaskIcon />
+              </span>
+            </Tooltip>
+          </>
+        </SubtasksCellContentButton>
+      </AddSubtaskButton>
+    </SubtaskWrapper>
   ) : (
     <>
       {(subTasksCount || isSubtask) && (

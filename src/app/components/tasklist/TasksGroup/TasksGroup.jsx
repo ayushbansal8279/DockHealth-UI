@@ -69,6 +69,7 @@ const TasksGroup = ({
   quickAddTask,
   moveGroupUp,
   moveGroupDown,
+  onTaskGroupRefresh,
   tasks,
   isLoadingGroup,
   isCompletedGroup,
@@ -252,6 +253,10 @@ const TasksGroup = ({
   const options = useMemo(
     () =>
       [
+        {
+          name: 'Refresh',
+          onClick: onTaskGroupRefresh,
+        },
         !isFirstGroup && {
           name: 'Move up',
           onClick: moveGroupUp,
@@ -281,6 +286,7 @@ const TasksGroup = ({
       isDefaultGroup,
       handleDeleteGroup,
       restrictCustomizationFeatures,
+      onTaskGroupRefresh,
     ],
   );
 

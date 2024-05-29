@@ -1,8 +1,12 @@
 import React, { ForwardedRef, forwardRef, useCallback } from 'react';
 import { Segment } from 'views/list-details/modules/Virtualized';
 import TasksGroup from 'components/tasklist/TasksGroup/TasksGroup';
-import { reorderTaskListGroups } from 'actions/list-details-actions';
+import {
+  reorderTaskListGroups,
+  getTasksForTaskGroups,
+} from 'actions/list-details-actions';
 import { useDispatch, useSelector } from 'react-redux';
+import { ViewType } from 'components/tasklist/ViewTypeSwitch/ViewTypeSwitch';
 import * as Sc from './styled';
 import { TaskOrigin } from '@/app/helpers/task-helpers';
 import { hasFiltersAppliedSelector } from '@/app/selectors/mega-filter-selectors';
@@ -43,6 +47,18 @@ function VListGroup(
   const areFiltersApplied = useSelector(hasFiltersAppliedSelector);
   const searchValue = useSelector(searchTermSelector);
 
+  const loadTasksForTaskGroup = useCallback(() => {
+    const payload = {
+      taskGroupIdentifier,
+      status: 'INCOMPLETE',
+      startPosition: 0,
+      sort: {},
+      viewMode: ViewType.SLIM_VIEW,
+      refresh: true,
+    };
+    dispatch(getTasksForTaskGroups(payload));
+  }, [dispatch, taskGroupIdentifier]);
+
   return (
     <Sc.VListGroup ref={ref} {...register} bgColor={bgColor}>
       {/* @ts-ignore */}
@@ -56,6 +72,7 @@ function VListGroup(
         isSearchApplied={searchValue}
         moveGroupUp={() => moveGroup(metadata.sameLevelIndex, 'up')}
         moveGroupDown={() => moveGroup(metadata.sameLevelIndex, 'down')}
+        onTaskGroupRefresh={loadTasksForTaskGroup}
         origin={TaskOrigin.LIST}
         bgColor={bgColor}
       >
