@@ -22,7 +22,7 @@ import {
   getFormattedPatient,
   getFormattedPatients,
   hasRestrictedPatientLookup,
-} from './helpers';
+} from 'components/task-drawer/PatientSection/helpers';
 import {
   PatientMainContainer,
   PatientContainer,
