@@ -344,6 +344,7 @@ const PatientSection = ({
           <button
             style={{ color: '#8492A4' }}
             onClick={handleClearSelectedPatient}
+            type="button"
           >
             x
           </button>
@@ -355,7 +356,6 @@ const PatientSection = ({
           <SelectDropdown
             ref={patientInputReference}
             name={PATIENT_IDENTIFIER_FIELD_NAME}
-            // label={customerTypeLabelCapitalized}
             placeholder={
               emrIntegrationType === 'FHIR'
                 ? `Add ${customerTypeLabel} (type MRN #)`

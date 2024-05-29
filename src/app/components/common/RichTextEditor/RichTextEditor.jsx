@@ -18,6 +18,7 @@ import 'tributejs/dist/tribute.css';
 import './styles.css';
 import { mapPatientsToSuggestions } from '../TextEditor/helpers';
 import turndownService from './TurndownServiceSingleton';
+import { dateFormatter } from '@/app/helpers/date-formatter';
 
 const md = new MarkdownIt({
   html: true,
@@ -83,7 +84,6 @@ const toolbarOptions = [
 
 const RichTextEditor = ({
   value: initialValue, // initial value
-  height = 100,
   disableToolbar = false,
   showToolbar = true, // dynamic show/hide toolbar
   showToolbarInline = false,
@@ -179,7 +179,7 @@ const RichTextEditor = ({
       selectClass: 'highlight', // class added in the flyout menu for active item
       menuItemTemplate(item) {
         const option = item.original;
-        return `<div>
+        return `<div style="width: 250px;">
           <div class="profile">
               <img src=${
                 import.meta.env.VITE_HEYDOC_SERVICES_BASE_URL
@@ -221,24 +221,45 @@ const RichTextEditor = ({
       selectClass: 'highlight', // class added in the flyout menu for active item
       menuItemTemplate(item) {
         const option = item.original;
-        return `<div>
-          <div class="profile">
-              <img src=${
-                import.meta.env.VITE_HEYDOC_SERVICES_BASE_URL
-              }user/profilePicture/${
-          option.identifier
-        }?UserPictureType=PROFILE_THUMBNAIL alt="" />
-          </div>
-          <p 
-            style="margin-bottom: 0;
+        return `<div style="display: flex; padding-left: 10px; padding-right: 10px;">
+          <span style="
+            display: inline-block;
+            width: 200px;
             color: ${palette.mediumGrey};
             font-size: ${fontSizes.regular};
             font-weight: ${fontWeights.light};
             white-space: nowrap;
             overflow: hidden;
-            text-overflow: ellipsis;">
+            text-overflow: ellipsis;"
+          >
             ${option.name}
-          </p>
+          </span>
+          <span style="
+            display: inline-block;
+            width: 150px;
+            color: ${option.dob ? palette.mediumGrey : palette.coolGrey1};
+            font-size: ${fontSizes.regular};
+            font-weight: ${fontWeights.light};
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;"
+          >
+            ${
+              option.dob ? dateFormatter(option.dob, 'MMM d, yyyy') : '(No DOB)'
+            }
+          </span>
+          <span style="
+            display: inline-block;
+            width: 80px;
+            color: ${option.mrn ? palette.mediumGrey : palette.coolGrey1};
+            font-size: ${fontSizes.regular};
+            font-weight: ${fontWeights.light};
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;"
+          >
+            ${option.mrn ?? '(No MRN)'}
+          </span>
         </div>`;
       },
       selectTemplate(item) {
