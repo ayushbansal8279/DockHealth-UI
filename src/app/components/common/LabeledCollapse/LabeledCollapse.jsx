@@ -17,6 +17,7 @@ const LabeledCollapse = ({
   name,
   isOpened,
   noBorder = false,
+  isListSubMenu,
 }) => {
   const [openedItem, setOpenedItem] = useState(null);
 
@@ -34,12 +35,19 @@ const LabeledCollapse = ({
   return (
     <LabeledCollapseWrapper noBorder={noBorder}>
       <LabeledCollapseHeaderButton type="button" onClick={handleClick}>
-        <LabeledCollapseItemName>{name}</LabeledCollapseItemName>
-        <Spacing horizontal={3} />
         <RotatableChevron
           color={palette.darkGrey}
           rotated={isOpened || openedItem}
         />
+        <Spacing horizontal={4} />
+        <LabeledCollapseItemName isListSubMenu={isListSubMenu}>
+          {name}
+        </LabeledCollapseItemName>
+        <Spacing horizontal={3} />
+        {/* <RotatableChevron
+          color={palette.darkGrey}
+          rotated={isOpened || openedItem}
+        /> */}
         <Spacing horizontal={3} />
       </LabeledCollapseHeaderButton>
       <Collapse in={isOpened || openedItem}>
