@@ -58,11 +58,7 @@ const TaskItemWorkflowStatus = ({
                   !showDefaultTaskStatusCompleted) && (
                   <>
                     {/* <StatusBar color={workflowStatus?.color} /> */}
-                    <Tooltip
-                      title={name}
-                      placement="top"
-                      hideTooltip={!tooltipVisible}
-                    >
+                    <Tooltip title={name} placement="top">
                       <StatusName ref={statusNameReference}>
                         {matchWorkflowStatus ? (
                           <Highlighter

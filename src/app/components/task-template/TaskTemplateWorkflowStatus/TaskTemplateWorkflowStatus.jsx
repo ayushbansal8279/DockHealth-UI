@@ -55,12 +55,7 @@ const TaskTemplateWorkflowStatus = React.memo(
           {workflowStatus ? (
             <StatusWrapper color={workflowStatus?.color}>
               <>
-                {/* <StatusBar color={workflowStatus?.color} /> */}
-                <Tooltip
-                  title={workflowStatus?.name}
-                  placement="top"
-                  hideTooltip={!tooltipVisible}
-                >
+                <Tooltip title={workflowStatus?.name} placement="top">
                   <StatusName ref={statusNameReference}>
                     {workflowStatus?.name}
                   </StatusName>

@@ -60,16 +60,6 @@ const DateLabel = (props) => {
           </RecurringIconContainer>
         )}
       </DueDateBasicLabel>
-      {/* {showTime && (
-        <>
-          <Spacing horizontal={0} />
-          <DateText>
-            @ {dueDate.format(timeFormat)}
-            <Spacing horizontal={1} />
-            {dueDate.format(timeFormatForHours) > 12 ? 'pm' : 'am'}
-          </DateText>
-        </>
-      )} */}
     </>
   );
 };
