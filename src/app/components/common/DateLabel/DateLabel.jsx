@@ -41,7 +41,6 @@ const DateLabel = (props) => {
                     <Spacing horizontal={1} />@
                     <Spacing horizontal={1} />
                     {dueDate.format(timeFormat)}
-                    {/* <Spacing horizontal={1} /> */}
                   </>
                 )}
             </DateText>

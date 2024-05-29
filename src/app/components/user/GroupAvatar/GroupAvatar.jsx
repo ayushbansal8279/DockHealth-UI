@@ -83,7 +83,7 @@ const GroupAvatar = React.forwardRef(
             activityStatus={
               isListPage && activityStatus === ActivityStatus.ONLINE
                 ? activityStatus
-                : ''
+                : ActivityStatus.OFFLINE
             }
             color={bubbleColor}
             size={size}
