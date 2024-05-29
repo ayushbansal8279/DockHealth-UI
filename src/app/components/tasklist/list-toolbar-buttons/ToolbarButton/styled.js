@@ -8,7 +8,7 @@ export const CustomizeButtonWrapper = styled(Button)`
   && {
     border-radius: 0;
     background-color: ${(props) =>
-      props.disableButton
+      props.$disableButton
         ? palette.coolGrey1
         : props.active
         ? palette.newBrightBlue
@@ -18,7 +18,7 @@ export const CustomizeButtonWrapper = styled(Button)`
     // border-radius: 5px 0px 0px 5px;
     :hover {
       background-color: ${(props) =>
-        props.disableButton
+        props.$disableButton
           ? palette.coolGrey1
           : props.active
           ? palette.cornFlowerBlue
@@ -60,7 +60,7 @@ export const CustomizeRotatableChevronButtonWrapper = styled(Button)`
   && {
     border-radius: 0;
     background-color: ${(props) =>
-      props.disableButton
+      props.$disableButton
         ? palette.coolGrey1
         : props.active
         ? palette.cornFlowerBlue
@@ -69,7 +69,7 @@ export const CustomizeRotatableChevronButtonWrapper = styled(Button)`
     // border-radius: 0px 5px 5px 0px;
     :hover {
       background-color: ${(props) =>
-        props.disableButton
+        props.$disableButton
           ? palette.coolGrey1
           : props.active
           ? palette.cornFlowerBlue

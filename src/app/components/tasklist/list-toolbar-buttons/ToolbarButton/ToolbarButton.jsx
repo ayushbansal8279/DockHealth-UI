@@ -32,7 +32,7 @@ const ToolbarButton = React.forwardRef((props, reference) => {
           size="large"
           active={+active}
           $hasPopover={hasPopover}
-          disableButton={disableButton}
+          $disableButton={disableButton}
         >
           {icon}
           <CustomizeButtonLabel
@@ -51,7 +51,7 @@ const ToolbarButton = React.forwardRef((props, reference) => {
               onClick={onClick}
               size="large"
               active={+active}
-              disableButton={disableButton}
+              $disableButton={disableButton}
             >
               <CustomizeRotatableChevronButtonLabel
                 variant="body1"
