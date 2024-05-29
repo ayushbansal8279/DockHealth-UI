@@ -2,14 +2,15 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { userProfileSelector } from 'selectors/user-selectors';
+import { organizationSelector } from 'selectors/organization-selectors';
 import debounce from 'lodash.debounce';
-import { openModal } from 'modal/actions';
+// import { openModal } from 'modal/actions';
 import { getPatientsByCriteria } from 'api/patients-api';
 import { addPatient } from 'api/patient-api';
-import { changePatientForTemplateBundle } from 'actions/template-bundle-actions';
+// import { changePatientForTemplateBundle } from 'actions/template-bundle-actions';
 import { noop } from 'helpers/utility-functions';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
-import { capitalize } from 'helpers/capitalize';
+// import { capitalize } from 'helpers/capitalize';
 import SelectDropdown from 'components/task-drawer/SelectDropdown/SelectDropdown';
 import {
   workflowSelector,
@@ -17,12 +18,17 @@ import {
 } from 'selectors/workflow-drawer-selectors';
 import { WorkflowDrawerFieldNames } from 'helpers/workflow-drawer-helpers';
 import { updatePartialWorkflow } from 'actions/task-template-actions';
-import { getFormattedPatient, getFormattedPatients } from './helpers';
+import {
+  getFormattedPatient,
+  getFormattedPatients,
+  hasRestrictedPatientLookup,
+} from './helpers';
 import {
   PatientMainContainer,
   PatientContainer,
   Title,
-  AddPatient,
+  InstructionText,
+  // AddPatient,
   PatientName,
 } from './styled';
 import PatientSelectItem from '../../patients/PatientSelectItem/PatientSelectItem';
@@ -65,8 +71,11 @@ const PatientSection = ({
 
   const formattedPatients = getFormattedPatients({ patients });
   const customerTypeLabel = getCustomerTypeLabel(currentUser);
-  const customerTypeLabelCapitalized = capitalize(customerTypeLabel);
+  // const customerTypeLabelCapitalized = capitalize(customerTypeLabel);
   const autoFocusFieldName = useSelector(workflowAutofocusFieldSelector);
+
+  const { emrIntegrationType } = useSelector(organizationSelector) || {};
+  const restrictedLookup = hasRestrictedPatientLookup(emrIntegrationType);
 
   useEffect(() => {
     if (
@@ -91,9 +100,8 @@ const PatientSection = ({
 
   const savePatient = useCallback(
     async (patientToSave) => {
-      const patientIdentifier = patientToSave?.patientIdentifier
-        ? patientToSave?.patientIdentifier
-        : 'UNASSIGNED';
+      const patientIdentifier =
+        patientToSave?.patientIdentifier ?? 'UNASSIGNED';
       dispatch(
         updatePartialWorkflow(selectedWorkflow?.identifier, {
           patientIdentifier,
@@ -123,13 +131,23 @@ const PatientSection = ({
 
   const onPatientInputChange = useCallback(
     (value) => {
-      if (value !== '') {
-        setIsLoadingPatients(true);
-        fetchPatientsWithDebounce(value);
-      } else {
+      if (value === '') {
         fetchPatientsWithDebounce.cancel();
         setPatients([]);
+      } else {
+        setIsLoadingPatients(true);
+        if (!restrictedLookup) {
+          fetchPatientsWithDebounce(value);
+        }
       }
+    },
+    [fetchPatientsWithDebounce, restrictedLookup],
+  );
+
+  const onEnterPress = useCallback(
+    (value) => {
+      setIsLoadingPatients(true);
+      fetchPatientsWithDebounce(value);
     },
     [fetchPatientsWithDebounce],
   );
@@ -142,7 +160,7 @@ const PatientSection = ({
       await savePatient(null);
       setSelectedPatient(null);
     },
-    [dispatch, savePatient, selectedPatient, selectedWorkflow],
+    [savePatient],
   );
 
   const handlePatientSelect = useCallback(
@@ -219,7 +237,11 @@ const PatientSection = ({
           <SelectDropdown
             ref={patientInputReference}
             name={PATIENT_IDENTIFIER_FIELD_NAME}
-            placeholder="Add Patient"
+            placeholder={
+              emrIntegrationType === 'FHIR'
+                ? `Add ${customerTypeLabel} (type MRN #)`
+                : `Add ${customerTypeLabel} (type first last or last, first)`
+            }
             disabled={disabled}
             selectedOption={assignedPatient}
             options={formattedPatients}
@@ -231,6 +253,7 @@ const PatientSection = ({
             }
             isLoadingOptions={isLoadingPatients}
             onInputChange={onPatientInputChange}
+            onEnterPress={onEnterPress}
             onOptionSelect={handlePatientSelect}
             onClear={handleClearSelectedPatient}
             onAddItemClick={
@@ -241,8 +264,11 @@ const PatientSection = ({
             addItemEnabled={patientAddEnabled && quickAddPatientEnabled}
             clearOnSuccess
             refineResultsCount={MAX_PATIENT_RESULTS}
-            width={600}
+            width={400}
           />
+          {restrictedLookup && !selectedPatient && (
+            <InstructionText>Press enter to search</InstructionText>
+          )}
         </div>
       )}
     </PatientMainContainer>

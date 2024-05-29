@@ -45,13 +45,14 @@ const SelectDropdown = React.forwardRef(
       selectedOption,
       isLoadingOptions,
       onInputChange,
+      onEnterPress,
       onOptionSelect,
       onClear,
       onAddItemClick,
       clearOnSuccess,
       addItemEnabled,
       refineResultsCount = 0,
-      width,
+      width = 200,
     },
     reference,
     // eslint-disable-next-line sonarjs/cognitive-complexity
@@ -121,13 +122,22 @@ const SelectDropdown = React.forwardRef(
         case 13: {
           event.preventDefault();
           event.stopPropagation();
-          if (inputValue && options?.length > 0 && options[hoveredItemIndex]) {
-            handleOptionSelect(options[hoveredItemIndex]);
-          } else if (
-            inputValue &&
-            (!options || (options.length === 0 && !isLoadingOptions))
-          ) {
-            onAddItemClick(inputValue);
+          if (onEnterPress) {
+            onEnterPress(inputValue);
+          } else {
+            // eslint-disable-next-line no-lonely-if
+            if (
+              inputValue &&
+              options?.length > 0 &&
+              options[hoveredItemIndex]
+            ) {
+              handleOptionSelect(options[hoveredItemIndex]);
+            } else if (
+              inputValue &&
+              (!options || (options.length === 0 && !isLoadingOptions))
+            ) {
+              onAddItemClick(inputValue);
+            }
           }
           break;
         }
@@ -226,7 +236,7 @@ const SelectDropdown = React.forwardRef(
         backgroundColor: '#f8f8f9',
         borderColor: 'transparent',
       },
-      width: '200px',
+      width,
     };
 
     return (

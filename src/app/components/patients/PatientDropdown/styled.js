@@ -81,6 +81,10 @@ export const UnassignRow = styled(Row)`
   padding: ${spacing.small};
 `;
 
+export const InstructionshRow = styled(Row)`
+  padding: ${spacing.small};
+`;
+
 export const RefineSearchRow = styled(Row)`
   padding: ${spacing.small};
   color: ${palette.oPlusRed};
