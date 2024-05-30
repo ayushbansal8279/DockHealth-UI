@@ -89,8 +89,6 @@ const ListsSubmenu = () => {
   const isViewOnly = isUserViewOnly(currentUser);
   const isAdmin = checkIfUserIsOrganizationAdmin(currentUser);
 
-  // const [activeLists, setActiveLists] = useState(null);
-
   const currentOrganization = useSelector(selectedUserOrganizationSelector);
   const quickAddPatientEnabledItem =
     currentOrganization?.themeSettings?.find(
@@ -109,7 +107,6 @@ const ListsSubmenu = () => {
     const orgLists = lists?.filter(
       (list) => list.listType === 'INBOX' || list.listType === 'PUBLIC',
     );
-    // setActiveLists(lists);
     setMyLists(myLevelLists);
     setOrgLevelLists(orgLists);
   }, [taskLists, pendingTaskLists]);
@@ -438,17 +435,6 @@ const ListsSubmenu = () => {
 
   return (
     <>
-      {/* <DrawerMyListsLabel>
-        <div style={{ marginLeft: '-10px' }}>
-          <ArrowDropUpIcon sx={{ color: palette.shadowBlue }} />
-        </div>
-        <div style={{ marginRight: '65px' }}>My Lists</div>
-        {!isGuest &&
-          !isViewOnly &&
-          (!listAddAdminOnly || (listAddAdminOnly && isAdmin)) && (
-            <AddButton onClick={openListAddModal}>Add a List</AddButton>
-          )}
-      </DrawerMyListsLabel> */}
       <LabeledCollapse
         name="Org Level Lists"
         isOpened={orgListsVisible}
@@ -465,7 +451,6 @@ const ListsSubmenu = () => {
           {renderLists(orgLevelLists, false, isOverflowing)}
         </div>
       </LabeledCollapse>
-      {/* <Spacing vertical={3} /> */}
       <DrawerMyListsLabel isListSubMenu isOpen={myListsVisible}>
         <div style={{ marginLeft: '-3px' }} onClick={toggleMyLists}>
           <RotatableChevron color={palette.darkGrey} rotated={myListsVisible} />
@@ -506,23 +491,6 @@ const ListsSubmenu = () => {
           </DragDropContext>
         </Collapse>
       </DrawerListsList>
-      {/* <RolloverPopover
-          anchorEl={hoveredItemReference?.current}
-          anchorOrigin={{
-            vertical: 'top',
-            horizontal: 'left',
-          }}
-          open={!!popoverLabel}
-          transformOrigin={{
-            vertical: 'top',
-            horizontal: 'left',
-          }}
-          transitionDuration={100}
-          >
-          <RolloverPopoverLabel>{popoverLabel}</RolloverPopoverLabel>
-        </RolloverPopover> */}
-      {/* </LabeledCollapse>
-      </DrawerListsList>  */}
       <Spacing vertical={myListsVisible ? 4 : 0} />
       <LabeledCollapse
         name="Archived Lists"

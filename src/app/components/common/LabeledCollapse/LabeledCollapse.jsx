@@ -44,11 +44,6 @@ const LabeledCollapse = ({
           {name}
         </LabeledCollapseItemName>
         <Spacing horizontal={3} />
-        {/* <RotatableChevron
-          color={palette.darkGrey}
-          rotated={isOpened || openedItem}
-        /> */}
-        <Spacing horizontal={3} />
       </LabeledCollapseHeaderButton>
       <Collapse in={isOpened || openedItem}>
         <Box width="100%" py={spacing.small}>
