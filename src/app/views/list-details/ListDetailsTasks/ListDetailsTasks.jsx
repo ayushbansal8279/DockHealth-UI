@@ -34,8 +34,6 @@ import EmptyListView from 'components/tasklist/EmptyListView/EmptyListView';
 import NoFilterResultsView from 'components/tasklist/EmptyListView/NoFilterResultsView';
 import TasksGroup from 'components/tasklist/TasksGroup/TasksGroup';
 import GroupNameSection from 'components/tasklist/GroupNameSection/GroupNameSection';
-// import AddGroupNameButton from 'components/tasklist/AddGroupNameButton/AddGroupNameButton';
-// import EmptyTaskAddView from 'components/tasklist/EmptyTaskAddView/EmptyTaskAddView';
 import GroupedListSkeletonLoader from 'components/tasklist/GroupedListSkeletonLoader/GroupedListSkeletonLoader';
 import { BulkEditContext } from 'components/tasklist/BulkEditSection/BulkEditSection';
 import LoadMoreButton, {
@@ -65,6 +63,7 @@ import {
   TaskGroupsContainer,
   DroppablePlaceholder,
 } from '../ListDetailsTableView/styled';
+import useSearchParams from '@/app/hooks/use-search-params';
 
 const ListDetailsTasks = ({
   viewSetup,
@@ -73,8 +72,10 @@ const ListDetailsTasks = ({
   loadTasksForTaskGroup,
   setClearSearch,
   setClearFilter,
-  __switchVirtualTaskListEnabled = () => {},
 }) => {
+  const searchParams = useSearchParams();
+  const isVirtualTaskListEnabled = searchParams.print !== 'yes';
+
   const groupedTasks = useSelector(groupTasksSelector);
   const areFiltersApplied = useSelector(hasFiltersAppliedSelector);
   const groupList = useSelector(listDetailsGroupsSelector);
@@ -265,18 +266,6 @@ const ListDetailsTasks = ({
     [dispatch],
   );
 
-  window.disabledVirtualTaskList = false;
-  const [isVirtualTaskListEnabled, setIsVirtualTaskListEnabled] = useState(
-    !window.disabledVirtualTaskList,
-  );
-  useEffect(() => {
-    __switchVirtualTaskListEnabled();
-    window.disableVirtualTaskList = () => {
-      setIsVirtualTaskListEnabled(false);
-      window.disabledVirtualTaskList = true;
-    };
-  }, [__switchVirtualTaskListEnabled]);
-
   const renderVirtualizedTasks = () => {
     return (
       <div
@@ -300,9 +289,6 @@ const ListDetailsTasks = ({
             (g) => g.groupIdentifier === taskGroupIdentifier,
           );
           const isLoadingGroup = group?.isLoadingGroup;
-
-          console.log('isLoadingGroup', isLoadingGroup);
-          console.log('isFetchingMoreTasks', group?.isFetchingMoreTasks);
 
           return (
             <TasksGroup

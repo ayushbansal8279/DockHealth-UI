@@ -21,11 +21,13 @@ import * as TaskListActions from 'actions/task-list-actions';
 import palette from 'styles/palette';
 import ColorPicker from 'components/common/ColorPicker/ColorPicker';
 import { isMemberAdmin } from 'helpers/list-members-helper';
+import useSearchParams from '@/app/hooks/use-search-params';
 
 const MASTER_ROLES = new Set(['ADMIN', 'OWNER']);
 const PRIVILEGE_ROLES = new Set(['ADMIN', 'OWNER', 'MEMBER']);
 
 const ListOptionsMenu = (props) => {
+  const searchParams = useSearchParams();
   const { list, children, moreOptions, onClose, open } = props;
   const dispatch = useDispatch();
   const history = useHistory();
@@ -103,8 +105,20 @@ const ListOptionsMenu = (props) => {
   );
 
   const onPrintClick = useCallback(() => {
-    onPrint();
-    window.print();
+    if (searchParams.print === 'yes') {
+      // if search params include 'print=yes',
+      // then the page is rendered without virtualized list,
+      // so can print it
+      onPrint();
+      window.print();
+    } else {
+      // if not, open a new tab with 'print=yes' search params
+      const suffix =
+        Object.keys(searchParams).length > 0 ? '&print=yes' : '?print=yes';
+      const newUrl = window.location.href + suffix;
+      window.open(newUrl, '_blank');
+    }
+
     // INFO: Here's an old print implementation, may be a day when this would need to be restored
     // const { listUsers: taskListMembers } = targetList || {};
     // return printTaskPdf({
@@ -114,7 +128,7 @@ const ListOptionsMenu = (props) => {
     //   isListNameVisible: false,
     //   isPatientVisible: true,
     // });
-  }, []);
+  }, [searchParams]);
 
   // TODO: change to flag inside list object
   const isListArchived = useCallback(
