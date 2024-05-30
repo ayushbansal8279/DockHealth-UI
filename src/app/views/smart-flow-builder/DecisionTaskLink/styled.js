@@ -6,6 +6,7 @@ export const LabelsWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   height: 100%;
   width: fit-content;
   margin: 0 auto;

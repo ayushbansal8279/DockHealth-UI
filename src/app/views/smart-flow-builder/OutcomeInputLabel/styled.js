@@ -4,12 +4,14 @@ import palette, { typography } from 'styles/palette';
 
 export const EdgeLabel = styled.div`
   display: flex;
-  align-items: center;
+  // align-items: center;
+  text-align: center;
+  justify-content: center;
+  flex-direction: inherit;
   margin: 0 auto;
-  height: 32px;
   width: auto;
   max-width: 120px;
-  padding: 0 10px;
+  padding: 10px;
   background: ${({ hasOutcome }) =>
     hasOutcome ? palette.brightBlue : palette.coolGrey2};
   color: ${({ hasOutcome }) =>
@@ -20,6 +22,10 @@ export const EdgeLabel = styled.div`
   font-size: ${fontSizes.smallPlus};
   font-weight: ${fontWeights.regular};
   user-select: none;
+  overflow: hidden;
+  white-space: normal;
+  word-wrap: break-word;
+  line-height: 1.2;
 `;
 
 export const OutcomeInput = styled.input`
