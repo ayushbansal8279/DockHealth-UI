@@ -162,7 +162,7 @@ const ListsSubmenu = () => {
                 key={`listsubmenu_${list.taskListIdentifier}`}
                 data-list-id={list.taskListIdentifier}
                 className="drawer-menu-list-item"
-                isListSubMenu
+                $isListSubMenu
               >
                 <ListOptionsMenu list={list}>
                   <MoreVert color="primary" />
@@ -195,7 +195,7 @@ const ListsSubmenu = () => {
                       }
                       history.push(createTaskListPath(list.taskListIdentifier));
                     }}
-                    isListSubMenu
+                    $isListSubMenu
                   >
                     <ListNameLabel
                       isNewList={
@@ -209,12 +209,12 @@ const ListsSubmenu = () => {
                 <DrawerItemOptions>
                   <div>
                     <NumericalBadgeContainer
-                      areNewTasksAdded={
+                      $areNewTasksAdded={
                         list.hasUpdatesForMember || list?.status === 'PENDING'
                       }
                     >
                       <TaskCount
-                        areNewTasksAdded={
+                        $areNewTasksAdded={
                           list.hasUpdatesForMember || list?.status === 'PENDING'
                         }
                       >
@@ -243,7 +243,7 @@ const ListsSubmenu = () => {
                       ? 'drawer-menu-list-inbox'
                       : `drawer-menu-list-item`
                   }
-                  isListSubMenu
+                  $isListSubMenu
                 >
                   <Box ml={1} />
                   {['INBOX', 'PUBLIC'].includes(list?.listType) ? (
@@ -290,7 +290,7 @@ const ListsSubmenu = () => {
                           createTaskListPath(list.taskListIdentifier),
                         );
                       }}
-                      isListSubMenu
+                      $isListSubMenu
                     >
                       <ListNameLabel
                         isNewList={
@@ -304,12 +304,12 @@ const ListsSubmenu = () => {
                   <DrawerItemOptions>
                     <div>
                       <NumericalBadgeContainer
-                        areNewTasksAdded={
+                        $areNewTasksAdded={
                           list.hasUpdatesForMember || list?.status === 'PENDING'
                         }
                       >
                         <TaskCount
-                          areNewTasksAdded={
+                          $areNewTasksAdded={
                             list.hasUpdatesForMember ||
                             list?.status === 'PENDING'
                           }
@@ -337,9 +337,9 @@ const ListsSubmenu = () => {
                         ? 'drawer-menu-list-inbox'
                         : `drawer-menu-list-item`
                     }
-                    isListSubMenu
-                    isDraggable
-                    isDragging={snapshot?.isDragging}
+                    $isListSubMenu
+                    $isDraggable
+                    $isDragging={snapshot?.isDragging}
                     ref={provided.innerRef}
                     {...provided.draggableProps}
                     {...provided.dragHandleProps}
@@ -389,7 +389,7 @@ const ListsSubmenu = () => {
                             createTaskListPath(list.taskListIdentifier),
                           );
                         }}
-                        isListSubMenu
+                        $isListSubMenu
                       >
                         <ListNameLabel
                           isNewList={
@@ -402,15 +402,15 @@ const ListsSubmenu = () => {
                       </ListNameText>
                     </Tooltip>
                     <DrawerItemOptions>
-                      <div style={{ marginRight: '9px' }}>
+                      <div style={{ marginRight: '9px', marginTop: '-3px' }}>
                         <NumericalBadgeContainer
-                          areNewTasksAdded={
+                          $areNewTasksAdded={
                             list.hasUpdatesForMember ||
                             list?.status === 'PENDING'
                           }
                         >
                           <TaskCount
-                            areNewTasksAdded={
+                            $areNewTasksAdded={
                               list.hasUpdatesForMember ||
                               list?.status === 'PENDING'
                             }
@@ -451,7 +451,7 @@ const ListsSubmenu = () => {
           {renderLists(orgLevelLists, false, isOverflowing)}
         </div>
       </LabeledCollapse>
-      <DrawerMyListsLabel isListSubMenu isOpen={myListsVisible}>
+      <DrawerMyListsLabel $isListSubMenu $isOpen={myListsVisible}>
         <div style={{ marginLeft: '-3px' }} onClick={toggleMyLists}>
           <RotatableChevron color={palette.darkGrey} rotated={myListsVisible} />
         </div>
@@ -473,7 +473,7 @@ const ListsSubmenu = () => {
             </div>
           )}
       </DrawerMyListsLabel>
-      <DrawerListsList isListSubMenu isOpen={myListsVisible}>
+      <DrawerListsList $isListSubMenu $isOpen={myListsVisible}>
         <Collapse in={myListsVisible}>
           {hasAnyPendingList && (
             <DrawerListsNewLabel>

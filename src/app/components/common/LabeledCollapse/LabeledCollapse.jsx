@@ -40,7 +40,7 @@ const LabeledCollapse = ({
           rotated={isOpened || openedItem}
         />
         <Spacing horizontal={4} />
-        <LabeledCollapseItemName isListSubMenu={isListSubMenu}>
+        <LabeledCollapseItemName $isListSubMenu={isListSubMenu}>
           {name}
         </LabeledCollapseItemName>
         <Spacing horizontal={3} />

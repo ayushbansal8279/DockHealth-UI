@@ -111,10 +111,10 @@ export const NumericalBadgeContainer = styled.div`
   height: 20px;
   border-radius: 2px;
   border: 1px solid
-    ${({ areNewTasksAdded }) =>
-      areNewTasksAdded ? palette.crystalBlue : palette.iron};
-  background: ${({ areNewTasksAdded }) =>
-    areNewTasksAdded ? palette.crystalBlue : palette.whiteSmoke};
+    ${({ $areNewTasksAdded }) =>
+      $areNewTasksAdded ? palette.crystalBlue : palette.iron};
+  background: ${({ $areNewTasksAdded }) =>
+    $areNewTasksAdded ? palette.crystalBlue : palette.whiteSmoke};
   padding: 4px 7px 4px 7px;
   gap: 7px;
   margin-left: 6px;
@@ -123,8 +123,8 @@ export const NumericalBadgeContainer = styled.div`
 `;
 
 export const TaskCount = styled(Typography)`
-  color: ${({ areNewTasksAdded }) =>
-    areNewTasksAdded ? palette.white : palette.shadowBlue};
+  color: ${({ $areNewTasksAdded }) =>
+    $areNewTasksAdded ? palette.white : palette.shadowBlue};
   font-family: Outfit;
   font-weight: 500;
   font-size: 12px;
