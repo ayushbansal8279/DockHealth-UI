@@ -105,16 +105,16 @@ const ListOptionsMenu = (props) => {
   );
 
   const onPrintClick = useCallback(() => {
-    if (searchParams.print === 'yes') {
-      // if search params include 'print=yes',
+    if (searchParams.print === 'true') {
+      // if search params include 'print=true',
       // then the page is rendered without virtualized list,
       // so can print it
       onPrint();
       window.print();
     } else {
-      // if not, open a new tab with 'print=yes' search params
+      // if not, open a new tab with 'print=true' search params
       const suffix =
-        Object.keys(searchParams).length > 0 ? '&print=yes' : '?print=yes';
+        Object.keys(searchParams).length > 0 ? '&print=true' : '?print=true';
       const newUrl = window.location.href + suffix;
       window.open(newUrl, '_blank');
     }

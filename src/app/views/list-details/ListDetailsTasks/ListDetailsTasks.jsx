@@ -63,7 +63,7 @@ import {
   TaskGroupsContainer,
   DroppablePlaceholder,
 } from '../ListDetailsTableView/styled';
-import useSearchParams from '@/app/hooks/use-search-params';
+import { useIsVirtualizedList } from '@/app/hooks/use-is-virtualized-list';
 
 const ListDetailsTasks = ({
   viewSetup,
@@ -73,8 +73,7 @@ const ListDetailsTasks = ({
   setClearSearch,
   setClearFilter,
 }) => {
-  const searchParams = useSearchParams();
-  const isVirtualTaskListEnabled = searchParams.print !== 'yes';
+  const isVirtualizedList = useIsVirtualizedList();
 
   const groupedTasks = useSelector(groupTasksSelector);
   const areFiltersApplied = useSelector(hasFiltersAppliedSelector);
@@ -388,59 +387,51 @@ const ListDetailsTasks = ({
                                   }
                                 >
                                   {(draggableProvided, { isDragging }) => (
-                                    <>
-                                      {/* {task?.itemType === TaskItemType.TASK ? ( */}
-                                      <StandardTaskItem
-                                        key={taskIdentifier}
-                                        isFullView={isFullView}
-                                        isDragging={isDragging}
-                                        isStartedDnD={
-                                          draggedId === taskIdentifier
-                                        }
-                                        taskIdentifier={taskIdentifier}
-                                        taskGroupIdentifier={
-                                          taskGroupIdentifier
-                                        }
-                                        draggableProvided={draggableProvided}
-                                        isCompletedGroup={isCompletedGroup}
-                                        onTaskUpdate={onTaskUpdate}
-                                        updateWorkflowStatus={
-                                          updateWorkflowStatus
-                                        }
-                                        dragAndDropDisabled={
-                                          isCompletedGroup ||
-                                          dragAndDropDisabled
-                                        }
-                                        isDraggable
-                                        addingNewSubtask={
-                                          addingNewSubtaskParentId ===
-                                          taskIdentifier
-                                        }
-                                        subtasksDisabled={isListFlattened}
-                                        areFiltersApplied={areFiltersApplied}
-                                        isSearchApplied={isSearchApplied}
-                                        shouldShowBlockModalOnDrag={
-                                          isSortApplied
-                                        }
-                                        showClearSortFiltersModal={
-                                          showClearSortFiltersModal
-                                        }
-                                        multipleAssigneesContext={
-                                          groupHasMultipleAssignees
-                                        }
-                                        highlightedTasksParentIdentifier={
-                                          highlightedTasksParentIdentifier
-                                        }
-                                        highlightTasksOfTheSameParent={
-                                          highlightTasksOfTheSameParent
-                                        }
-                                        iconColorActive={
-                                          iconColorActiveItem?.value
-                                        }
-                                        origin={TaskOrigin.LIST}
-                                        viewSetup={viewSetup}
-                                      />
-                                    </>
+                                    <StandardTaskItem
+                                      key={taskIdentifier}
+                                      isFullView={isFullView}
+                                      isDragging={isDragging}
+                                      isStartedDnD={
+                                        draggedId === taskIdentifier
+                                      }
+                                      taskIdentifier={taskIdentifier}
+                                      taskGroupIdentifier={taskGroupIdentifier}
+                                      draggableProvided={draggableProvided}
+                                      isCompletedGroup={isCompletedGroup}
+                                      onTaskUpdate={onTaskUpdate}
+                                      updateWorkflowStatus={
+                                        updateWorkflowStatus
+                                      }
+                                      dragAndDropDisabled={
+                                        isCompletedGroup || dragAndDropDisabled
+                                      }
+                                      isDraggable
+                                      addingNewSubtask={
+                                        addingNewSubtaskParentId ===
+                                        taskIdentifier
+                                      }
+                                      subtasksDisabled={isListFlattened}
+                                      areFiltersApplied={areFiltersApplied}
+                                      isSearchApplied={isSearchApplied}
+                                      shouldShowBlockModalOnDrag={isSortApplied}
+                                      showClearSortFiltersModal={
+                                        showClearSortFiltersModal
+                                      }
+                                      multipleAssigneesContext={
+                                        groupHasMultipleAssignees
+                                      }
+                                      highlightedTasksParentIdentifier={
+                                        highlightedTasksParentIdentifier
+                                      }
+                                      highlightTasksOfTheSameParent={
+                                        highlightTasksOfTheSameParent
+                                      }
+                                      iconColorActive={
+                                        iconColorActiveItem?.value
+                                      }
+                                      origin={TaskOrigin.LIST}
+                                      viewSetup={viewSetup}
+                                    />
                                   )}
                                 </Draggable>
                               ))
@@ -530,10 +521,8 @@ const ListDetailsTasks = ({
             onBeforeCapture={onBeforeCapture}
             onDragEnd={isSortApplied ? () => {} : onDragEnd}
           >
-            {isVirtualTaskListEnabled
-              ? renderVirtualizedTasks()
-              : renderTasks()}
-            {!isVirtualTaskListEnabled &&
+            {isVirtualizedList ? renderVirtualizedTasks() : renderTasks()}
+            {!isVirtualizedList &&
               !!createTaskGroupList &&
               !isSearchApplied &&
               !areFiltersApplied && (

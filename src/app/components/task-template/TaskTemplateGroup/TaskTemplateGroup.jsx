@@ -30,7 +30,6 @@ import { currentTaskListTasksStatusSelector } from 'selectors/task-list-selector
 import { currentListTasksStatusSelector } from 'selectors/patient-details-selectors';
 import { TaskTemplateGroupList, QuickAddInputWrapper } from './styled';
 import TaskTemplateGroupHeader from '../TaskTemplateGroupHeader/TaskTemplateGroupHeader';
-import { ListPageContext } from '@/app/views/list-details/ListDetailsView';
 
 const TaskTemplateGroup = ({
   templateGroup: pullGroup = {},
