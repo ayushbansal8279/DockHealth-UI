@@ -38,7 +38,6 @@ const NewFilterContainer = ({
   handleSelectedFiltersChange,
   isPatientListPage,
 }) => {
-  console.log('filters', filters);
   const popoverReference = useRef(null);
   const [isPopoverOpen, openAddFilterPopover, closeAddFilterPopover] =
     useBoolean(false);
