@@ -1,5 +1,5 @@
-import React, { useCallback, useRef, useState } from 'react';
-import { TaskStatusLabel } from 'helpers/task-helpers';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { TaskStatus, TaskStatusLabel } from 'helpers/task-helpers';
 import { Box, Popover } from '@mui/material';
 import TasksStatusSwitchIcon from 'img/tasks-status-switch-icon.svg';
 import {
@@ -20,14 +20,27 @@ interface Props {
   value: string;
   onChange: (newStatus: string) => void;
   iconColorFilterActive: string;
+  taskListIdentifier: string;
 }
 
 export default function TaskStatusToolbarSelect({
   value,
   onChange,
   iconColorFilterActive,
+  taskListIdentifier,
 }: Props) {
   const [isOpen, setIsOpen] = useState(false);
+  const [status, setStatus] = useState(TaskStatus.INCOMPLETE);
+
+  useEffect(() => {
+    const savedStatus = localStorage.getItem(`status${taskListIdentifier}`);
+    if (savedStatus !== null) {
+      setStatus(savedStatus);
+    } else {
+      setStatus(TaskStatus.INCOMPLETE);
+    }
+  }, [taskListIdentifier]);
+
   const buttonRef = useRef(null);
 
   const handleOpen = useCallback(() => {
@@ -39,6 +52,8 @@ export default function TaskStatusToolbarSelect({
   }, []);
 
   const handleSubmit = (status: string) => {
+    setStatus(status);
+    localStorage.setItem(`status${taskListIdentifier}`, status);
     onChange(status);
     handleClose();
   };
@@ -59,7 +74,7 @@ export default function TaskStatusToolbarSelect({
               iconColorFilterActive={iconColorFilterActive}
             />
           </SelectIcon>
-          <ButtonLabel variant="body1">{TaskStatusLabel[value]}</ButtonLabel>
+          <ButtonLabel variant="body1">{TaskStatusLabel[status]}</ButtonLabel>
         </ButtonContainer>
         <Box display="flex" width="3px">
           <RotatableChevronButtonWrapper
@@ -87,7 +102,7 @@ export default function TaskStatusToolbarSelect({
             horizontal: 'left',
           }}
         >
-          <TaskStatusSelectForm defaultValue={value} onSubmit={handleSubmit} />
+          <TaskStatusSelectForm defaultValue={status} onSubmit={handleSubmit} />
         </Popover>
       )}
     </SelectWrapper>
