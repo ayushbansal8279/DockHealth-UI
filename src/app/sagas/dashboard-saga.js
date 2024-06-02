@@ -41,17 +41,17 @@ import {
   getFiltersStorageKey,
   getQuickFilterStorageKey,
 } from 'helpers/mega-filter-helper';
-import sessionStorageHelper from 'helpers/session-storage-helper';
 import { log } from 'helpers/log';
+import localStorageHelper from '../helpers/local-storage-helper';
 
 function* initializeDashboardView() {
   try {
     const tabName = yield select(dashboardTabNameSelector);
 
-    const filters = sessionStorageHelper.getItem(
+    const filters = localStorageHelper.getItem(
       getFiltersStorageKey('dashboard', tabName),
     );
-    const selectedQuickFilter = sessionStorageHelper.getItem(
+    const selectedQuickFilter = localStorageHelper.getItem(
       getQuickFilterStorageKey('dashboard', tabName),
     );
 
