@@ -70,6 +70,15 @@ const ListDetailsView = () => {
     setChangeViewType(value);
   };
 
+  useEffect(() => {
+    const storedViewType = localStorage.getItem(`view${taskListIdentifier}`);
+    if (storedViewType === 'FULL_VIEW') {
+      setChangeViewType('FULL_VIEW');
+    } else {
+      setChangeViewType('SLIM_VIEW');
+    }
+  }, [taskListIdentifier]);
+
   const handleScroll = (event) => {
     const position = event.target.scrollTop;
     if (position > 0) {

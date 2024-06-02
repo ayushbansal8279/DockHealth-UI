@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useContext } from 'react';
+import React, { useCallback, useState, useContext, useEffect } from 'react';
 import { Box } from '@mui/material';
 import FullViewIcon from 'img/list/FullViewIcon';
 import SlimViewIcon from 'img/list/SlimViewIcon';
@@ -98,6 +98,18 @@ const ListDetailsToolbar = ({
     },
     [dispatch],
   );
+
+  useEffect(() => {
+    const viewType = localStorage.getItem(`view${taskListIdentifier}`);
+    if (viewType === 'FULL_VIEW') {
+      setFullView(true);
+      setSlimView(false);
+    } else if (!boardView && !calendarView) {
+      setFullView(false);
+      setSlimView(true);
+    }
+  }, [taskListIdentifier]);
+
   const boardViewAvailable = useSelector(userHasBoardViewFeatureSelector);
 
   return (
@@ -109,6 +121,7 @@ const ListDetailsToolbar = ({
             onChange={handleChangeTasksStatus}
             iconColorFilterActive={iconColorFilterActiveItem?.value}
             iconColorActive={iconColorActiveItem?.value}
+            taskListIdentifier={taskListIdentifier}
           />
         )}
 
@@ -118,6 +131,7 @@ const ListDetailsToolbar = ({
             onChange={handleChangeTasksStatus}
             iconColorFilterActive={iconColorFilterActiveItem?.value}
             iconColorActive={iconColorActiveItem?.value}
+            taskListIdentifier={taskListIdentifier}
           />
         )}
 
@@ -136,6 +150,7 @@ const ListDetailsToolbar = ({
               value={tasksStatus}
               onChange={handleChangeTasksStatus}
               iconColorFilterActive={iconColorFilterActiveItem?.value}
+              taskListIdentifier={taskListIdentifier}
             />
             <TaskCustomFieldsModal
               opened={customFieldsModalOpened}
@@ -157,6 +172,7 @@ const ListDetailsToolbar = ({
             handleChangeViewType(ViewType.CALENDAR_VIEW);
             handleSetChangeViewType('');
             handleRemoveAllTasks();
+            localStorage.removeItem(`view${taskListIdentifier}`);
           }}
         >
           <CalendarMonthOutlinedIcon
@@ -173,6 +189,7 @@ const ListDetailsToolbar = ({
               handleChangeViewType(ViewType.BOARD_VIEW);
               handleSetChangeViewType('');
               handleRemoveAllTasks();
+              localStorage.removeItem(`view${taskListIdentifier}`);
             }}
           >
             <ViewColumn
@@ -191,6 +208,7 @@ const ListDetailsToolbar = ({
             handleRemoveAllTasks();
             setSlimView(false);
             setFullView(true);
+            localStorage.setItem(`view${taskListIdentifier}`, 'FULL_VIEW');
           }}
         >
           <FullViewIcon />
@@ -203,6 +221,7 @@ const ListDetailsToolbar = ({
             handleRemoveAllTasks();
             setFullView(false);
             setSlimView(true);
+            localStorage.removeItem(`view${taskListIdentifier}`);
           }}
         >
           <SlimViewIcon />
