@@ -68,6 +68,11 @@ const ListDetailsView = () => {
 
   const handleSetChangeViewType = (value) => {
     setChangeViewType(value);
+    if (value === 'FULL_VIEW') {
+      localStorage.setItem(`view${taskListIdentifier}`, value);
+    } else {
+      localStorage.removeItem(`view${taskListIdentifier}`);
+    }
   };
 
   useEffect(() => {

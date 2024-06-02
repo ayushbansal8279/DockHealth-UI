@@ -172,7 +172,6 @@ const ListDetailsToolbar = ({
             handleChangeViewType(ViewType.CALENDAR_VIEW);
             handleSetChangeViewType('');
             handleRemoveAllTasks();
-            localStorage.removeItem(`view${taskListIdentifier}`);
           }}
         >
           <CalendarMonthOutlinedIcon
@@ -189,7 +188,6 @@ const ListDetailsToolbar = ({
               handleChangeViewType(ViewType.BOARD_VIEW);
               handleSetChangeViewType('');
               handleRemoveAllTasks();
-              localStorage.removeItem(`view${taskListIdentifier}`);
             }}
           >
             <ViewColumn
@@ -208,7 +206,6 @@ const ListDetailsToolbar = ({
             handleRemoveAllTasks();
             setSlimView(false);
             setFullView(true);
-            localStorage.setItem(`view${taskListIdentifier}`, 'FULL_VIEW');
           }}
         >
           <FullViewIcon />
@@ -221,7 +218,6 @@ const ListDetailsToolbar = ({
             handleRemoveAllTasks();
             setFullView(false);
             setSlimView(true);
-            localStorage.removeItem(`view${taskListIdentifier}`);
           }}
         >
           <SlimViewIcon />
