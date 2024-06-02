@@ -121,7 +121,19 @@ const PatientTasksListView = () => {
   const [viewType, setViewType] = useState('SLIM_VIEW');
   const handlePatientView = (value) => {
     setViewType(value);
+    if (value === 'FULL_VIEW') {
+      localStorage.setItem(`patient${patientIdentifier}`, value);
+    } else {
+      localStorage.removeItem(`patient${patientIdentifier}`);
+    }
   };
+
+  useEffect(() => {
+    const storedViewType = localStorage.getItem(`patient${patientIdentifier}`);
+    if (storedViewType === 'FULL_VIEW') {
+      setViewType('FULL_VIEW');
+    }
+  }, [patientIdentifier]);
 
   // const organizationCustomFields = useSelector(
   //   organizationCustomFieldsSelector,
