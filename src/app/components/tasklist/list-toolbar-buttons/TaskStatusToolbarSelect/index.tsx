@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { TaskStatus, TaskStatusLabel } from 'helpers/task-helpers';
+import { TaskOrigin, TaskStatus, TaskStatusLabel } from 'helpers/task-helpers';
 import { Box, Popover } from '@mui/material';
 import TasksStatusSwitchIcon from 'img/tasks-status-switch-icon.svg';
 import {
@@ -21,6 +21,7 @@ interface Props {
   onChange: (newStatus: string) => void;
   iconColorFilterActive: string;
   taskListIdentifier: string;
+  origin: string;
 }
 
 export default function TaskStatusToolbarSelect({
@@ -28,12 +29,15 @@ export default function TaskStatusToolbarSelect({
   onChange,
   iconColorFilterActive,
   taskListIdentifier,
+  origin,
 }: Props) {
   const [isOpen, setIsOpen] = useState(false);
   const [status, setStatus] = useState(TaskStatus.INCOMPLETE);
+  const storageKey =
+    origin === TaskOrigin.PATIENT ? 'patientStatus' : `status${taskListIdentifier}`;
 
   useEffect(() => {
-    const savedStatus = localStorage.getItem(`status${taskListIdentifier}`);
+    const savedStatus = localStorage.getItem(storageKey);
     if (savedStatus !== null) {
       setStatus(savedStatus);
     } else {
@@ -53,7 +57,12 @@ export default function TaskStatusToolbarSelect({
 
   const handleSubmit = (status: string) => {
     setStatus(status);
-    localStorage.setItem(`status${taskListIdentifier}`, status);
+
+    if (status !== TaskStatus.INCOMPLETE) {
+      localStorage.setItem(storageKey, status);
+    } else {
+      localStorage.removeItem(storageKey);
+    }
     onChange(status);
     handleClose();
   };
