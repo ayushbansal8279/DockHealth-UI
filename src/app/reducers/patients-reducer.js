@@ -1,10 +1,10 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import * as ActionTypes from 'actions/action-types';
-import sessionStorageHelper from 'helpers/session-storage-helper';
 import {
   getPatientsListFiltersStorageKey,
   getPatientsDynamicListFiltersStorageKey,
 } from 'helpers/patient-list-helpers';
+import localStorageHelper from '../helpers/local-storage-helper';
 
 const initialState = {
   defaultPatientsLists: null,
@@ -19,7 +19,7 @@ const initialState = {
 const PatientsReducer = (state = initialState, action) => {
   switch (action.type) {
     case ActionTypes.INITIALIZE_PATIENTS_LIST_STATE: {
-      const selectedFilters = sessionStorageHelper.getItem(
+      const selectedFilters = localStorageHelper.getItem(
         getPatientsListFiltersStorageKey(action.patientsListIdentifier),
       );
       return {
@@ -32,7 +32,7 @@ const PatientsReducer = (state = initialState, action) => {
     }
 
     case ActionTypes.INITIALIZE_DYNAMIC_PATIENTS_LIST_STATE: {
-      const selectedFilters = sessionStorageHelper.getItem(
+      const selectedFilters = localStorageHelper.getItem(
         getPatientsDynamicListFiltersStorageKey(action.patientsListIdentifier),
       );
       return {
@@ -208,12 +208,12 @@ const PatientsReducer = (state = initialState, action) => {
     case ActionTypes.SET_PATIENTS_SELECTED_FILTERS: {
       const { selectedFilters } = action;
       if (selectedFilters) {
-        sessionStorageHelper.setItem(
+        localStorageHelper.setItem(
           getPatientsListFiltersStorageKey(state.currentPatientsListIdentifier),
           selectedFilters,
         );
       } else {
-        sessionStorageHelper.removeItem(
+        localStorageHelper.removeItem(
           getPatientsListFiltersStorageKey(state.currentPatientsListIdentifier),
         );
       }
@@ -231,14 +231,14 @@ const PatientsReducer = (state = initialState, action) => {
     case ActionTypes.SET_DYNAMIC_PATIENTS_SELECTED_FILTERS: {
       const { selectedFilters } = action;
       if (selectedFilters) {
-        sessionStorageHelper.setItem(
+        localStorageHelper.setItem(
           getPatientsDynamicListFiltersStorageKey(
             state.currentPatientsListIdentifier,
           ),
           selectedFilters,
         );
       } else {
-        sessionStorageHelper.removeItem(
+        localStorageHelper.removeItem(
           getPatientsDynamicListFiltersStorageKey(
             state.currentPatientsListIdentifier,
           ),
@@ -256,7 +256,7 @@ const PatientsReducer = (state = initialState, action) => {
     }
 
     case ActionTypes.CLEAR_PATIENTS_FILTERS: {
-      sessionStorageHelper.removeItem(
+      localStorageHelper.removeItem(
         getPatientsListFiltersStorageKey(state.currentPatientsListIdentifier),
       );
       return {
