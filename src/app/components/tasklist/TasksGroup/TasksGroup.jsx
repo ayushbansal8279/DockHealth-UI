@@ -9,7 +9,7 @@ import React, {
 } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import isNil from 'ramda/src/isNil';
-import { Grid } from '@mui/material';
+import { Box, Grid } from '@mui/material';
 import MoreVert from '@mui/icons-material/MoreVert';
 import * as TaskActions from 'actions/task-actions';
 import { closeModal, openModal } from 'modal/actions';
@@ -69,6 +69,7 @@ const TasksGroup = ({
   quickAddTask,
   moveGroupUp,
   moveGroupDown,
+  onTaskGroupRefresh,
   tasks,
   isLoadingGroup,
   isCompletedGroup,
@@ -252,6 +253,10 @@ const TasksGroup = ({
   const options = useMemo(
     () =>
       [
+        {
+          name: 'Refresh',
+          onClick: onTaskGroupRefresh,
+        },
         !isFirstGroup && {
           name: 'Move up',
           onClick: moveGroupUp,
@@ -281,6 +286,7 @@ const TasksGroup = ({
       isDefaultGroup,
       handleDeleteGroup,
       restrictCustomizationFeatures,
+      onTaskGroupRefresh,
     ],
   );
 
@@ -303,7 +309,7 @@ const TasksGroup = ({
         <GroupOpenContainer onClick={onToggleGroupOpen}>
           <RotatableChevron
             alt="arrow"
-            rotated={collapse.get(taskGroupIdentifier) ? false : true}
+            rotated={!collapse.get(taskGroupIdentifier)}
             color="#8492A4"
           />
         </GroupOpenContainer>
@@ -351,7 +357,7 @@ const TasksGroup = ({
           !!quickAddTask &&
           !isSearchApplied &&
           !isCompletedGroup && (
-            <StickyContainer left={24} decreaseWidth={2 * 24} zIndex={100}>
+            <StickyContainer left={55} decreaseWidth={80} zIndex={100}>
               <Grid container>
                 <Grid item xs>
                   <QuickAddTaskInput
@@ -372,14 +378,16 @@ const TasksGroup = ({
             </StickyContainer>
           )}
         {(tasks?.length > 0 || isLoadingGroup) && (
-          <TasksHeader
-            bulkEditEnabled={bulkEditEnabled}
-            sort={sort}
-            onSortChange={onSortChange}
-            groupHasMultipleAssignees={groupHasMultipleAssignees}
-            isGroupSelected={isGroupSelected}
-            onGroupSelect={handleGroupSelect}
-          />
+          <Box sx={{ ml: '55px' }}>
+            <TasksHeader
+              bulkEditEnabled={bulkEditEnabled}
+              sort={sort}
+              onSortChange={onSortChange}
+              groupHasMultipleAssignees={groupHasMultipleAssignees}
+              isGroupSelected={isGroupSelected}
+              onGroupSelect={handleGroupSelect}
+            />
+          </Box>
         )}
         {children({
           isFetchingMoreTasks,

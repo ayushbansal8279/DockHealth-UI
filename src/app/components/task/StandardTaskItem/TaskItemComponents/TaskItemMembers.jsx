@@ -6,7 +6,11 @@ import TaskItemPopover from 'components/task/TaskItemPopover/TaskItemPopover';
 import MultiAssignMembersList from 'components/task/MultiAssignPopover/MultiAssignMembersList';
 
 import { checkIfTemplateTask } from 'helpers/task-helpers';
-import { AssigneeMatchingWrapper } from '../../styled';
+import {
+  AssigneeContainer,
+  AssigneeMatchingWrapper,
+  AssigneeWrapper,
+} from '../../styled';
 
 const TaskItemMembers = ({
   multipleAssigneesContext,
@@ -16,55 +20,56 @@ const TaskItemMembers = ({
   matchAssignedTo,
   readOnly,
   additionalUsers,
-  isAssigneeHover,
 }) => {
   const assigneeRef = useRef(null);
   return (
-    <TaskItemPopover
-      reference={assigneeRef}
-      disabled={readOnly}
-      contentWidth={246}
-      content={({ closePopover }) => (
-        <MultiAssignMembersList
-          taskListIdentifiers={
-            !checkIfTemplateTask(task)
-              ? task?.taskList?.taskListIdentifier
-              : null
-          }
-          selectedMembers={assignedToUsers}
-          onSelect={handleReasignTask}
-          onError={closePopover}
-          enableLazyLoading={
-            task?.taskList?.listType === 'PUBLIC' ||
-            task?.taskList?.listType === 'TEMPLATE'
-          }
-          closeModel={closePopover}
-          additionalMembers={additionalUsers}
-        />
-      )}
-      fullWidth={multipleAssigneesContext}
-    >
-      <div ref={assigneeRef} style={{ minWidth: '100px' }}>
-        {assignedToUsers?.length ? (
-          <>
-            {matchAssignedTo && (
-              <AssigneeMatchingWrapper matched={matchAssignedTo} />
-            )}
-            <MemberGroup members={assignedToUsers} size={28} />
-          </>
-        ) : (
-          <>
-            {isAssigneeHover && (
-              <Tooltip placement="top" title="Add assignee">
-                <div style={{ display: 'flex', marginLeft: '2px' }}>
-                  {!readOnly && <AssignMemberIcon />}
-                </div>
-              </Tooltip>
-            )}
-          </>
+    <AssigneeContainer>
+      <TaskItemPopover
+        reference={assigneeRef}
+        disabled={readOnly}
+        contentWidth={246}
+        content={({ closePopover }) => (
+          <MultiAssignMembersList
+            taskListIdentifiers={
+              !checkIfTemplateTask(task)
+                ? task?.taskList?.taskListIdentifier
+                : null
+            }
+            selectedMembers={assignedToUsers}
+            onSelect={handleReasignTask}
+            onError={closePopover}
+            enableLazyLoading={
+              task?.taskList?.listType === 'PUBLIC' ||
+              task?.taskList?.listType === 'TEMPLATE'
+            }
+            closeModel={closePopover}
+            additionalMembers={additionalUsers}
+          />
         )}
-      </div>
-    </TaskItemPopover>
+        fullWidth={multipleAssigneesContext}
+      >
+        <div ref={assigneeRef} style={{ minWidth: '100px' }}>
+          {assignedToUsers?.length ? (
+            <>
+              {matchAssignedTo && (
+                <AssigneeMatchingWrapper matched={matchAssignedTo} />
+              )}
+              <MemberGroup members={assignedToUsers} size={28} />
+            </>
+          ) : (
+            <>
+              <AssigneeWrapper>
+                <Tooltip placement="top" title="Add assignee">
+                  <div style={{ display: 'flex', marginLeft: '2px' }}>
+                    {!readOnly && <AssignMemberIcon />}
+                  </div>
+                </Tooltip>
+              </AssigneeWrapper>
+            </>
+          )}
+        </div>
+      </TaskItemPopover>
+    </AssigneeContainer>
   );
 };
 

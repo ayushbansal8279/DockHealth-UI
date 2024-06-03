@@ -148,15 +148,16 @@ const CompleteCreateAccount = (props) => {
   });
 
   const onSubmit = useCallback(
-    ({ locationParameters }) =>
+    () =>
       async ({ email, password, mobilePhoneNumber }) => {
-        const referral = locationParameters.referral ?? '';
         try {
           const firstName = sessionStorage.getItem('firstName');
           const lastName = sessionStorage.getItem('lastName');
           sessionStorage.setItem('email', email);
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
           const organizationName = sessionStorage.getItem('organization');
+          const externalUserId = sessionStorage.getItem('externalUserId') ?? '';
+          const referral = sessionStorage.getItem('referral') ?? '';
           const userEmail =
             sessionStorage.getItem('isUserInvited') === 'true'
               ? sessionStorage.getItem('userName')
@@ -174,6 +175,7 @@ const CompleteCreateAccount = (props) => {
             'custom:referral': referral,
             'custom:app_environment': import.meta.env.VITE_APP_ENV,
             'custom:organization_name': organizationName,
+            'custom:external_user_id': externalUserId,
           });
           history.push('/signupEmailSent');
         } catch (error) {
@@ -211,7 +213,7 @@ const CompleteCreateAccount = (props) => {
       organization: oname,
     } = queryValues;
 
-    if (uname && !isUserInvited) setValue('email', uname);
+    if (uname) setValue('email', uname);
     if (fname) setValue('firstName', fname);
     if (lname) setValue('lastName', lname);
     if (oname) setValue('organization', oname);
@@ -229,8 +231,13 @@ const CompleteCreateAccount = (props) => {
 
     if (sessionStorage.getItem('isUserInvited')) setIsUserInvited(true);
 
-    if (sessionStorage.getItem('userName'))
+    if (sessionStorage.getItem('mobilePhone'))
+      setValue('mobilePhoneNumber', sessionStorage.getItem('mobilePhone'));
+
+    if (sessionStorage.getItem('userName')) {
       setUserName(sessionStorage.getItem('userName'));
+      setValue('email', sessionStorage.getItem('userName'));
+    }
   });
 
   const hasCustomPageTitle = customPageTitle !== '';

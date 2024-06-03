@@ -41,9 +41,13 @@ const onSubmit =
   ({ history, locationParameters, isUserInvited, organizationName }) =>
   ({ organization, lastName, firstName }) => {
     const referral = locationParameters.referral ?? '';
+    const mobilePhone = locationParameters.mobilePhone ?? '';
+    const externalUserId = locationParameters.externalUserId ?? '';
     sessionStorage.setItem('referral', referral);
     sessionStorage.setItem('firstName', firstName);
     sessionStorage.setItem('lastName', lastName);
+    sessionStorage.setItem('externalUserId', externalUserId);
+    sessionStorage.setItem('mobilePhone', mobilePhone);
     {
       isUserInvited
         ? sessionStorage.setItem('isUserInvited', isUserInvited)

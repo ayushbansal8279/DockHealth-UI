@@ -10,7 +10,10 @@ import debounce from 'lodash.debounce';
 import MagnifierIcon from 'img/magnifier.svg';
 import { getPatientsByCriteria } from 'api/patients-api';
 import { addPatient } from 'api/patient-api';
-import { getFormattedPatients } from 'components/task-drawer/PatientSection/helpers';
+import {
+  getFormattedPatients,
+  hasRestrictedPatientLookup,
+} from 'components/task-drawer/PatientSection/helpers';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import { onTaskDrawerPatientAdded } from 'helpers/ga-event-helper';
 import { noop } from 'helpers/utility-functions';
@@ -29,6 +32,7 @@ import {
   LoaderContainer,
   UnassignRowContainer,
   UnassignRow,
+  InstructionshRow,
   RefineSearchRow,
   SearchPatientsResultList,
 } from './styled';
@@ -49,6 +53,7 @@ const PatientList = ({
   const [hoveredItemIndex, setHoveredItemIndex] = useState(0);
   const currentUser = useSelector(userProfileSelector);
   const { emrIntegrationType } = useSelector(organizationSelector) || {};
+  const restrictedLookup = hasRestrictedPatientLookup(emrIntegrationType);
   const currentOrganizationIdentifier = sessionStorage.getItem(
     'currentOrganizationIdentifier',
   );
@@ -61,7 +66,7 @@ const PatientList = ({
 
   const displayUnassignedOption = useMemo(
     () =>
-      'unassigned'.includes(searchValue.toLowerCase()) &&
+      'unassigned'.includes(searchValue?.toLowerCase()) &&
       selectedPatientIdentifier,
     [searchValue, selectedPatientIdentifier],
   );
@@ -129,10 +134,22 @@ const PatientList = ({
         setIsLoadingPatients(false);
         setPatients([]);
       } else {
-        setIsLoadingPatients(true);
         setSearchValue(value);
-        fetchPatientsWithDebounce(value);
+        setIsLoadingPatients(true);
+        if (!restrictedLookup) {
+          fetchPatientsWithDebounce(value);
+        }
       }
+    },
+    [restrictedLookup, fetchPatientsWithDebounce],
+  );
+
+  const onEnterPress = useCallback(
+    (event) => {
+      const value = event?.target?.value;
+      setSearchValue(value);
+      setIsLoadingPatients(true);
+      fetchPatientsWithDebounce(value);
     },
     [fetchPatientsWithDebounce],
   );
@@ -196,14 +213,14 @@ const PatientList = ({
       case 13: {
         event.preventDefault();
         event.stopPropagation();
-
-        if (
-          (searchValue && patients?.length > 0 && patients[hoveredItemIndex]) ||
-          displayUnassignedOption
-        ) {
-          onSelect(patients[hoveredItemIndex].patient);
-          clearInput();
-        }
+        onEnterPress(event);
+        // if (
+        //   (searchValue && patients?.length > 0 && patients[hoveredItemIndex]) ||
+        //   displayUnassignedOption
+        // ) {
+        //   onSelect(patients[hoveredItemIndex].patient);
+        //   clearInput();
+        // }
         break;
       }
 
@@ -293,12 +310,15 @@ const PatientList = ({
           onKeyDown={handleInputKeyDown}
         />
       </InputBox>
-      {isLoadingPatients && (
+      {isLoadingPatients && !restrictedLookup && (
         <LoaderContainer>
           <LoaderItem />
           <LoaderItem />
           <LoaderItem />
         </LoaderContainer>
+      )}
+      {isLoadingPatients && restrictedLookup && (
+        <InstructionshRow>Press Enter</InstructionshRow>
       )}
       {!disableAdding &&
         !isLoadingPatients &&
@@ -315,8 +335,8 @@ const PatientList = ({
         <ListContainer withBorder={patients.length > 0}>
           {!isLoadingPatients && patients.length >= MAX_PATIENT_RESULTS && (
             <RefineSearchRow>
-              Only displaying limited number of patient profiles. Please further
-              refine search!
+              Only displaying limited number of {customerTypeLabel} profiles.
+              Please further refine search!
             </RefineSearchRow>
           )}
           <Row key="header-label" readOnly>

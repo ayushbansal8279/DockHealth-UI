@@ -32,3 +32,6 @@ export const getFormattedPatient = (patient) => {
 
 export const getFormattedPatients = ({ patients }) =>
   (patients ?? []).map(getFormattedPatient);
+
+export const hasRestrictedPatientLookup = (emrIntegrationType) =>
+  emrIntegrationType === 'ATHENA' || emrIntegrationType === 'DRCHRONO';

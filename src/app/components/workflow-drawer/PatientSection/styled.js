@@ -45,3 +45,12 @@ export const PatientName = styled.div`
   font-family: Outfit;
 `;
 
+export const InstructionText = styled.div`
+  margin-left: 10px;
+  color: ${palette.coolGrey1};
+  font-family: Outfit;
+  font-size: ${fontSizes.smallPlus};
+  font-weight: ${fontWeights.light};
+  display: flex;
+  align-items: center;
+`;

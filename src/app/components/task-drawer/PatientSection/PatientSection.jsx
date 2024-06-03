@@ -18,11 +18,16 @@ import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
 import { useHistory } from 'react-router-dom';
 import SelectDropdown from '../SelectDropdown/SelectDropdown';
-import { getFormattedPatient, getFormattedPatients } from './helpers';
+import {
+  getFormattedPatient,
+  getFormattedPatients,
+  hasRestrictedPatientLookup,
+} from './helpers';
 import {
   PatientMainContainer,
   PatientContainer,
   Title,
+  InstructionText,
   PatientName,
 } from './styled';
 import { updatePartialWorkflow } from '@/app/actions/task-template-actions';
@@ -34,7 +39,7 @@ const PatientSection = ({
   selectedPatient,
   autofocus,
   disabled,
-  placeholder,
+  // placeholder,
   onSave,
   isSubtask,
   quickAddPatientEnabled,
@@ -57,6 +62,7 @@ const PatientSection = ({
   const [isLoadingPatients, setIsLoadingPatients] = useState(true);
   const currentUser = useSelector(userProfileSelector);
   const { emrIntegrationType } = useSelector(organizationSelector) || {};
+  const restrictedLookup = hasRestrictedPatientLookup(emrIntegrationType);
   const { templateBundleIdentifier } = useSelector(selectedTaskSelector) || {};
 
   const currentOrganizationIdentifier = sessionStorage.getItem(
@@ -223,8 +229,18 @@ const PatientSection = ({
         setPatients([]);
       } else {
         setIsLoadingPatients(true);
-        fetchPatientsWithDebounce(value);
+        if (!restrictedLookup) {
+          fetchPatientsWithDebounce(value);
+        }
       }
+    },
+    [fetchPatientsWithDebounce, restrictedLookup],
+  );
+
+  const onEnterPress = useCallback(
+    (value) => {
+      setIsLoadingPatients(true);
+      fetchPatientsWithDebounce(value);
     },
     [fetchPatientsWithDebounce],
   );
@@ -258,7 +274,7 @@ const PatientSection = ({
       await savePatient(null);
       // }
     },
-    [dispatch, savePatient, selectedPatient, templateBundleIdentifier],
+    [savePatient],
   );
 
   const handlePatientSelect = useCallback(
@@ -338,7 +354,11 @@ const PatientSection = ({
           <SelectDropdown
             ref={patientInputReference}
             name={PATIENT_IDENTIFIER_FIELD_NAME}
-            placeholder="Add Patient"
+            placeholder={
+              emrIntegrationType === 'FHIR'
+                ? `Add ${customerTypeLabel} (type MRN #)`
+                : `Add ${customerTypeLabel} (type first last or last, first)`
+            }
             disabled={disabled}
             selectedOption={assignedPatient}
             options={formattedPatients}
@@ -350,6 +370,7 @@ const PatientSection = ({
             }
             isLoadingOptions={isLoadingPatients}
             onInputChange={onPatientInputChange}
+            onEnterPress={onEnterPress}
             onOptionSelect={handlePatientSelect}
             onClear={handleClearSelectedPatient}
             onAddItemClick={
@@ -360,8 +381,11 @@ const PatientSection = ({
             addItemEnabled={patientAddEnabled && quickAddPatientEnabled}
             clearOnSuccess
             refineResultsCount={MAX_PATIENT_RESULTS}
-            width={600}
+            width={400}
           />
+          {restrictedLookup && !selectedPatient && (
+            <InstructionText>Press enter to search</InstructionText>
+          )}
         </div>
       )}
     </PatientMainContainer>

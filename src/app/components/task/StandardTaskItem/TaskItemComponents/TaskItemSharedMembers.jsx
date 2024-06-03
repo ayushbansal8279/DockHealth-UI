@@ -6,7 +6,11 @@ import TaskItemPopover from 'components/task/TaskItemPopover/TaskItemPopover';
 import SharedMembersList from 'components/task/MultiAssignPopover/SharedMembersList';
 
 import { checkIfTemplateTask } from 'helpers/task-helpers';
-import { AssigneeMatchingWrapper } from '../../styled';
+import {
+  AssigneeMatchingWrapper,
+  ShareContainer,
+  ShareWrapper,
+} from '../../styled';
 
 const TaskItemSharedMembers = ({
   multipleAssigneesContext,
@@ -15,52 +19,49 @@ const TaskItemSharedMembers = ({
   handleSharingTask,
   matchAssignedTo,
   readOnly,
-  isHover,
 }) => {
   return (
-    <TaskItemPopover
-      disabled={readOnly}
-      contentWidth={230}
-      content={({ closePopover }) => (
-        <SharedMembersList
-          task={task}
-          taskListIdentifiers={
-            !checkIfTemplateTask(task)
-              ? task?.taskList?.taskListIdentifier
-              : null
-          }
-          selectedMembers={sharedWithUsers}
-          onSelect={handleSharingTask}
-          onError={closePopover}
-          enableLazyLoading={
-            task?.taskList?.listType === 'PUBLIC' ||
-            task?.taskList?.listType === 'TEMPLATE'
-          }
-        />
-      )}
-      fullWidth={multipleAssigneesContext}
-    >
-      {sharedWithUsers?.length ? (
-        <>
-          {matchAssignedTo && (
-            <AssigneeMatchingWrapper matched={matchAssignedTo} />
-          )}
-          <MemberGroup members={sharedWithUsers} />
-        </>
-      ) : (
-        <>
-          {isHover ? (
+    <ShareContainer>
+      <TaskItemPopover
+        disabled={readOnly}
+        contentWidth={230}
+        content={({ closePopover }) => (
+          <SharedMembersList
+            task={task}
+            taskListIdentifiers={
+              !checkIfTemplateTask(task)
+                ? task?.taskList?.taskListIdentifier
+                : null
+            }
+            selectedMembers={sharedWithUsers}
+            onSelect={handleSharingTask}
+            onError={closePopover}
+            enableLazyLoading={
+              task?.taskList?.listType === 'PUBLIC' ||
+              task?.taskList?.listType === 'TEMPLATE'
+            }
+          />
+        )}
+        fullWidth={multipleAssigneesContext}
+      >
+        {sharedWithUsers?.length ? (
+          <>
+            {matchAssignedTo && (
+              <AssigneeMatchingWrapper matched={matchAssignedTo} />
+            )}
+            <MemberGroup members={sharedWithUsers} />
+          </>
+        ) : (
+          <ShareWrapper>
             <Tooltip placement="top" title="Shared with">
               <div style={{ marginLeft: '2px' }}>
                 {!readOnly && <AssignMemberIcon />}
               </div>
             </Tooltip>
-          ) : (
-            ''
-          )}
-        </>
-      )}
-    </TaskItemPopover>
+          </ShareWrapper>
+        )}
+      </TaskItemPopover>
+    </ShareContainer>
   );
 };
 

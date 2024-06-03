@@ -69,13 +69,14 @@ export const getDashboardMyTasksByCriteria = (
   selectedFilters,
   sortBy,
   sortDirection,
+  startPosition = 0,
 ) =>
   axios
     .post(
       `${
         sortBy && sortDirection
-          ? `task/filter/filterTasksByCriteriaForCurrentUser?status=INCOMPLETE&sortBy=${sortBy}&sortDirection=${sortDirection}`
-          : `task/filter/filterTasksByCriteriaForCurrentUser?status=INCOMPLETE`
+          ? `task/filter/filterTasksByCriteriaForCurrentUser?status=INCOMPLETE&sortBy=${sortBy}&sortDirection=${sortDirection}&startPosition=${startPosition}`
+          : `task/filter/filterTasksByCriteriaForCurrentUser?status=INCOMPLETE&startPosition=${startPosition}`
       }`,
       mapSelectedOptionsToRequestPayload(selectedFilters),
     )
@@ -87,13 +88,14 @@ export const getDashboardAllTasksByCriteria = (
   selectedFilters,
   sortBy,
   sortDirection,
+  startPosition = 0,
 ) =>
   axios
     .post(
       `${
         sortBy && sortDirection
-          ? `task/filter/filterTasksByCriteriaForOrganization?status=INCOMPLETE&sortBy=${sortBy}&sortDirection=${sortDirection}`
-          : `task/filter/filterTasksByCriteriaForOrganization?status=INCOMPLETE`
+          ? `task/filter/filterTasksByCriteriaForOrganization?status=INCOMPLETE&sortBy=${sortBy}&sortDirection=${sortDirection}&startPosition=${startPosition}`
+          : `task/filter/filterTasksByCriteriaForOrganization?status=INCOMPLETE&startPosition=${startPosition}`
       }`,
       mapSelectedOptionsToRequestPayload(selectedFilters),
     )

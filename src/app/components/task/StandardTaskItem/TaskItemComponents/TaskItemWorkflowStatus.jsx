@@ -8,6 +8,8 @@ import {
   StatusWrapper,
   StatusSubContaioner,
   PlaceholderText,
+  WorkflowStatusWrapper,
+  StatusContainer,
 } from '../../styled';
 
 const TaskItemWorkflowStatus = ({
@@ -18,7 +20,6 @@ const TaskItemWorkflowStatus = ({
   highlightedValue,
   showDefaultTaskStatusCompleted,
   readOnly,
-  isStatusHover,
 }) => {
   const statusNameReference = useRef(null);
   const { name } = workflowStatus || {};
@@ -29,7 +30,7 @@ const TaskItemWorkflowStatus = ({
       statusNameReference.current.scrollWidth;
 
   return (
-    <>
+    <StatusContainer>
       {task.status === 'COMPLETE' && showDefaultTaskStatusCompleted && (
         <div style={{ marginLeft: '12px' }}>
           <StatusWrapper>
@@ -80,18 +81,16 @@ const TaskItemWorkflowStatus = ({
                 )}
               </StatusWrapper>
             ) : (
-              <>
-                {isStatusHover && (
+              <WorkflowStatusWrapper>
                   <Tooltip placement="top" title="Add Status">
                     <PlaceholderText>+ Add Status</PlaceholderText>
                   </Tooltip>
-                )}
-              </>
+              </WorkflowStatusWrapper>
             )}
           </StatusSubContaioner>
         </TaskItemPopover>
       )}
-    </>
+    </StatusContainer>
   );
 };
 

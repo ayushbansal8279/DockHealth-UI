@@ -8,13 +8,14 @@ import Tooltip from 'components/common/Tooltip/Tooltip';
 import DateLabel from 'components/common/DateLabel/DateLabel';
 import { isDueDateOverdue, ReminderType } from 'helpers/task-helpers';
 import { onTaskDueDateChanged } from 'helpers/ga-event-helper';
-import spacing from 'styles/spacing';
-import palette from 'styles/palette';
-import { AddPlaceholder } from '../../styled';
+import {
+  AddPlaceholder,
+  DueDatesContainer,
+  DueDateWrapper,
+} from '../../styled';
 
 const TaskItemDueDate = ({
   task,
-  isDateHover,
   disabled = false,
   format,
   showTime,
@@ -34,38 +35,34 @@ const TaskItemDueDate = ({
   );
 
   return (
-    <TaskItemPopover
-      disabled={disabled}
-      content={({ closePopover }) => (
-        <DueDatePicker
-          taskIdentifier={taskIdentifier}
-          selectedDate={dueDate}
-          onDateChange={handleDueDateChange}
-          recurring={hasRecurringSchedule}
-          onCloseClick={closePopover}
-        />
-      )}
-    >
-      {/* <Tooltip
-        placement="top"
-        title={dueDate ? 'Edit Due Date' : 'Add Due Date'}
-      > */}
-      <>
-        {dueDate ? (
-          <DateLabel
-            date={dueDate}
-            isOverdue={isDueDateOverdue(task)}
-            hasReminder={reminderType && reminderType !== ReminderType.NONE}
-            hasRecurringSchedule={hasRecurringSchedule}
-            tootipTitle="Edit Due Date"
-            format={format}
-            showTime={showTime}
-            showReminder={showReminder}
-            showRecurring={showRecurring}
+    <DueDatesContainer>
+      <TaskItemPopover
+        disabled={disabled}
+        content={({ closePopover }) => (
+          <DueDatePicker
+            taskIdentifier={taskIdentifier}
+            selectedDate={dueDate}
+            onDateChange={handleDueDateChange}
+            recurring={hasRecurringSchedule}
+            onCloseClick={closePopover}
           />
-        ) : (
-          <>
-            {isDateHover ? (
+        )}
+      >
+        <>
+          {dueDate ? (
+            <DateLabel
+              date={dueDate}
+              isOverdue={isDueDateOverdue(task)}
+              hasReminder={reminderType && reminderType !== ReminderType.NONE}
+              hasRecurringSchedule={hasRecurringSchedule}
+              tootipTitle="Edit Due Date"
+              format={format}
+              showTime={showTime}
+              showReminder={showReminder}
+              showRecurring={showRecurring}
+            />
+          ) : (
+            <DueDateWrapper>
               <Tooltip placement="top" title="Add Due Date">
                 <AddPlaceholder>
                   <div style={{ display: 'flex' }}>
@@ -73,12 +70,11 @@ const TaskItemDueDate = ({
                   </div>
                 </AddPlaceholder>
               </Tooltip>
-            ) : null}
-          </>
-        )}
-      </>
-      {/* </Tooltip> */}
-    </TaskItemPopover>
+            </DueDateWrapper>
+          )}
+        </>
+      </TaskItemPopover>
+    </DueDatesContainer>
   );
 };
 
