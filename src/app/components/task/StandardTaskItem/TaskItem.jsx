@@ -139,6 +139,7 @@ import TaskItemComments from './TaskItemComponents/TaskItemComments';
 import { megaFilterSelector } from '@/app/selectors/mega-filter-selectors';
 import SubtaskIcon from '@/app/img/SubtaskIcon';
 import { getTaskDetails } from '@/app/api/task-api';
+import { useIsVirtualizedList } from '@/app/hooks/use-is-virtualized-list';
 
 const { DISABLED, READ_ONLY } = SINGLE_TASK_RESTRICTIONS_OPTIONS;
 
@@ -166,7 +167,6 @@ const TaskItem = React.memo(
     dragAndDropDisabled,
     parentHasPatient,
     highlightedValue,
-    isDraggable,
     isLast,
     showSubtaskStylingLink,
     isNestedTask = false,
@@ -194,6 +194,7 @@ const TaskItem = React.memo(
     isLastTaskOfGroup,
     viewType,
   }) => {
+    const isVirtualizedList = useIsVirtualizedList();
     const dependencyIconReference = useRef(null);
     const task = useSelector((state) => {
       return taskLookupSelector(state, origin, taskItemIdentifier);
@@ -1024,10 +1025,9 @@ const TaskItem = React.memo(
       <>
         <StandardTaskItemPanel
           onContextMenu={handleTaskItemRightClick}
-          isDragging={isDragging}
-          isWorkflowtask={isTaskTemplate}
-          isWorkflowSubtask={isWorkflowSubtask}
           origin={origin}
+          $isVirtualizedList={isVirtualizedList}
+          $isDragging={isDragging}
         >
           <StandardTaskItemContainer
             isTaskTemplate={isTaskTemplate}
