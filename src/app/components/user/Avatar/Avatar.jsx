@@ -51,7 +51,7 @@ const Avatar = React.forwardRef(
         );
       }
       return isGroup ? initials?.[0]?.toUpperCase() : initials?.toLowerCase();
-    }, [pictureSrc, isGroup, initials, name]);
+    }, [pictureSrc, isGroup, initials, name, pictureSize]);
 
     return (
       <BackgroundContainer
@@ -106,7 +106,7 @@ Avatar.defaultProps = {
   initials: undefined,
   name: undefined,
   pictureSrc: null,
-  activityStatus: null,
+  activityStatus: ActivityStatus.OFFLINE,
   size: 30,
   isBlurred: false,
   isSelected: false,

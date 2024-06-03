@@ -1,5 +1,4 @@
 import React from 'react';
-// import MuiTooltip from '@mui/material/Tooltip';
 import { bool, node, oneOf, oneOfType, string } from 'prop-types';
 import { MuiTooltip } from './styled';
 import palette from '@/app/styles/palette';
@@ -14,11 +13,9 @@ const Tooltip = ({
   child,
   childTitle,
   childPlacement,
-  // hideTooltip = false,
 }) => {
   return title ? (
     <MuiTooltip
-      // enterDelay={hideTooltip ? 200 : 100}
       title={title}
       placement={placement}
       arrow={arrow}
@@ -43,7 +40,6 @@ const Tooltip = ({
     >
       {child ? (
         <MuiTooltip
-          // enterDelay={hideTooltip ? 200 : 100}
           title={childTitle}
           placement={childPlacement}
           arrow={arrow}
@@ -95,14 +91,12 @@ Tooltip.propTypes = {
     'top',
   ]),
   arrow: bool,
-  hideTooltip: bool,
 };
 
 Tooltip.defaultProps = {
   title: null,
   placement: 'bottom',
   arrow: true,
-  hideTooltip: false,
 };
 
 export default Tooltip;

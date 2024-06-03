@@ -68,7 +68,7 @@ const TaskItemText = ({
       {!isEditing && (
         <>
           {value && value !== '' && (
-            <Tooltip placement="top" title={value} hideTooltip={isEditing}>
+            <Tooltip placement="top" title={value}>
               <TextValue onClick={handleClick}>{value}</TextValue>
             </Tooltip>
           )}

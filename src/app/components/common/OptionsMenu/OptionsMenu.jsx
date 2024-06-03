@@ -56,7 +56,7 @@ const OptionsMenu = ({
             setOptionActive?.(true);
           }
         }}
-        style={{color: color}}
+        style={{ color }}
       >
         {children}
       </Button>
@@ -98,11 +98,7 @@ const OptionsMenu = ({
                       tooltipText,
                       component,
                     }) => (
-                      <Tooltip
-                        key={name}
-                        title={tooltipText}
-                        hideTooltip={!tooltipText}
-                      >
+                      <Tooltip key={name} title={tooltipText}>
                         <div>
                           <MenuItem
                             color={color}

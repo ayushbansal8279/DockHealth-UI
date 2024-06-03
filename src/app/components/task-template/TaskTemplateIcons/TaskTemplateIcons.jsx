@@ -52,14 +52,7 @@ const TaskTemplateIcons = ({
           />
         ) : (
           <GridImg item xs={12} matched={matchLabels}>
-            <Tooltip
-              hideTooltip={
-                restrictions?.labels ===
-                SINGLE_TASK_RESTRICTIONS_OPTIONS.DISABLED
-              }
-              placement="top"
-              title="Add Label"
-            >
+            <Tooltip placement="top" title="Add Label">
               <button
                 disabled={
                   restrictions?.labels ===
