@@ -1,11 +1,10 @@
 import styled from 'styled-components';
-import LoadingButton from '@mui/lab/LoadingButton';
 import { Button } from '@mui/material';
 import { fontWeights } from '@/app/styles/font';
 import palette from '@/app/styles/palette';
 import spacing from '@/app/styles/spacing';
 
-export const ConfirmButton = styled(LoadingButton)`
+export const ConfirmButton = styled.button`
   display: flex;
   height: 40px;
   padding: 22px 24px;
