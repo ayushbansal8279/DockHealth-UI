@@ -8,11 +8,13 @@ import Tooltip from 'components/common/Tooltip/Tooltip';
 import DateLabel from 'components/common/DateLabel/DateLabel';
 import { ReminderType } from 'helpers/task-helpers';
 import { onTaskStartDateChanged } from 'helpers/ga-event-helper';
-import spacing from 'styles/spacing';
-import palette from 'styles/palette';
-import { AddPlaceholder } from '../../styled';
+import {
+  AddPlaceholder,
+  StartDateContainer,
+  StartDateWrapper,
+} from '../../styled';
 
-const TaskItemStartDate = ({ task, isDateHover, disabled = false }) => {
+const TaskItemStartDate = ({ task, disabled = false }) => {
   const dispatch = useDispatch();
   const { taskIdentifier, startDate, hasRecurringSchedule, reminderType } =
     task || {};
@@ -26,34 +28,30 @@ const TaskItemStartDate = ({ task, isDateHover, disabled = false }) => {
   );
 
   return (
-    <TaskItemPopover
-      disabled={disabled}
-      content={({ closePopover }) => (
-        <DueDatePicker
-          taskIdentifier={taskIdentifier}
-          selectedDate={startDate}
-          onDateChange={handleDueDateChange}
-          recurring={hasRecurringSchedule}
-          onCloseClick={closePopover}
-          disableRecurring
-        />
-      )}
-    >
-      {/* <Tooltip
-        placement="top"
-        title={startDate ? 'Edit Start Date' : 'Add Start Date'}
-      > */}
-      <>
-        {startDate ? (
-          <DateLabel
-            date={startDate}
-            hasReminder={reminderType && reminderType !== ReminderType.NONE}
-            hasRecurringSchedule={false}
-            tootipTitle="Edit Start Date"
+    <StartDateContainer>
+      <TaskItemPopover
+        disabled={disabled}
+        content={({ closePopover }) => (
+          <DueDatePicker
+            taskIdentifier={taskIdentifier}
+            selectedDate={startDate}
+            onDateChange={handleDueDateChange}
+            recurring={hasRecurringSchedule}
+            onCloseClick={closePopover}
+            disableRecurring
           />
-        ) : (
-          <>
-            {isDateHover ? (
+        )}
+      >
+        <>
+          {startDate ? (
+            <DateLabel
+              date={startDate}
+              hasReminder={reminderType && reminderType !== ReminderType.NONE}
+              hasRecurringSchedule={false}
+              tootipTitle="Edit Start Date"
+            />
+          ) : (
+            <StartDateWrapper>
               <Tooltip placement="top" title="Add Start Date">
                 <AddPlaceholder>
                   <div style={{ display: 'flex' }}>
@@ -62,12 +60,11 @@ const TaskItemStartDate = ({ task, isDateHover, disabled = false }) => {
                   </div>
                 </AddPlaceholder>
               </Tooltip>
-            ) : null}
-          </>
-        )}
-      </>
-      {/* </Tooltip> */}
-    </TaskItemPopover>
+            </StartDateWrapper>
+          )}
+        </>
+      </TaskItemPopover>
+    </StartDateContainer>
   );
 };
 

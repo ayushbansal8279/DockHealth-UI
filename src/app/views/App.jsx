@@ -48,6 +48,7 @@ import Modal from '../modal/Modal';
 import RotateScreen from './RotateScreen';
 import MobileSmallScreen from './MobileSmallScreen';
 import ChatActivityAlertsToasts from './chat/alerts/ChatActivityAlertsToasts';
+import './App.css';
 
 const AppContainer = styled.div`
   font-family: inherit;

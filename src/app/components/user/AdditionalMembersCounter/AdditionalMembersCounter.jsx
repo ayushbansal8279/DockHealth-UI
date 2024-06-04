@@ -23,7 +23,7 @@ const AdditionalMembersCounter = ({
   );
 
   return hiddenMembers?.length ? (
-    <Tooltip hideTooltip={hideTooltip} title={tooltipContent}>
+    <Tooltip title={tooltipContent}>
       <Container color={color} size={size}>
         <Text color={color} size={size}>
           {hiddenMembers?.length < 100 && `+`}

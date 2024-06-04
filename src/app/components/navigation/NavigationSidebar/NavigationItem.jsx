@@ -21,7 +21,7 @@ const NavigationItem = ({
   }, [subMenuKey, defaultPath, onItemClick]);
 
   return (
-    <Tooltip title={name} placement="right" hideTooltip={subMenuOpen}>
+    <Tooltip title={name} placement="right">
       <NavigationButton
         isActive={isActive && !subMenuKey}
         subMenuOpen={subMenuOpen}

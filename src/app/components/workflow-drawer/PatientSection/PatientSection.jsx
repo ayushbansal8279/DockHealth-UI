@@ -226,6 +226,7 @@ const PatientSection = ({
           <button
             style={{ color: '#8492A4' }}
             onClick={handleClearSelectedPatient}
+            type="button"
           >
             x
           </button>

@@ -95,6 +95,7 @@ import { TaskScrollVericleLine } from '../../task/styled';
 import TaskTemplateComment from '../TaskTemplateIcons/TaskTemplateComment';
 import palette from '@/app/styles/palette';
 import TaskTemplateContextMenu from '../TaskTemplateContextMenu/TaskTemplateContextMenu';
+import { useIsVirtualizedList } from '@/app/hooks/use-is-virtualized-list';
 
 const TaskTemplateGroupHeader = ({
   templateGroup = {},
@@ -123,6 +124,7 @@ const TaskTemplateGroupHeader = ({
   tasksStatus,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
+  const isVirtualizedList = useIsVirtualizedList();
   const {
     name,
     tasks: taskIdentifiers,
@@ -648,6 +650,7 @@ const TaskTemplateGroupHeader = ({
       <TaskTemplateGroupHeaderContainer
         onContextMenu={handleTaskItemRightClick}
         isSelected={isBundleSelected}
+        $isVirtualizedList={isVirtualizedList}
         isOpen={origin === 'PATIENT' ? isOpen : virtualListWorkflowOpen}
         isNextVirtualTaskItemTypeBundle={isNextVirtualTaskItemTypeBundle}
         isLastTaskOfGroup={isLastTaskOfGroup}

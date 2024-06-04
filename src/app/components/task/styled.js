@@ -391,6 +391,23 @@ export const StandardTaskItemCell = styled.div`
   position: relative;
 `;
 
+export const SubtaskWrapper = styled.div`
+  width: fit-content;
+  opacity: 0;
+`;
+
+export const DetailsButton = styled.button`
+  font-family: 'Outfit', sans-serif;
+  font-size: ${fontSizes.smallPlus};
+  font-weight: ${fontWeights.regularPlus};
+  color: ${palette.coolGrey1};
+  opacity: 0;
+
+  &:hover {
+    color: ${palette.brightBlue};
+  }
+`;
+
 export const MainStandardTaskItemCell = styled(StandardTaskItemCell)`
   flex: 1;
   ${({ order }) => (order === 0 ? 'border: transparent;' : ``)}
@@ -402,6 +419,10 @@ export const MainStandardTaskItemCell = styled(StandardTaskItemCell)`
     min-width: ${(props) => props.printWidth};
     height: 100%;
   }
+  &:hover {
+    & ${SubtaskWrapper}, & ${DetailsButton} {
+      opacity: 1;
+    }
 `;
 
 export const ClickablePatient = styled.span`
@@ -421,7 +442,7 @@ export const StandardTaskItemContainer = styled.div`
       props.hasEscalations
       ? palette.bananaHammockLight
       : // eslint-disable-next-line unicorn/no-nested-ternary
-      props.customHighlight ?? palette.white};
+        props.customHighlight ?? palette.white};
   border-bottom: 1px solid ${palette.coolGrey3};
   border-right: 1px solid ${palette.coolGrey3};
   border-top: 1px solid ${palette.coolGrey3};
@@ -533,8 +554,10 @@ export const StandardTaskThreeDots = styled(ThreeDots)`
 
 export const StandardTaskItemPanel = styled.div`
   position: relative;
+  ${({ $isVirtualizedList }) =>
+    $isVirtualizedList ? '' : 'margin-left: 55px;'}
   ${(props) =>
-    props.isDragging
+    props.$isDragging
       ? 'box-shadow: 0px 0px 11px rgba(204, 204, 204, 0.8)'
       : ''};
   &:hover {
@@ -741,8 +764,7 @@ export const ParentTaskContainer = styled.div`
     margin-bottom: ${({ noMargin, origin }) =>
       noMargin ? -1 : origin === 'PATIENT' || origin === 'GLOBAL' ? 2 : 0}px;
   }
-  width: ${({ isVirtualTask, $width }) =>
-    isVirtualTask ? (!$width ? '1000%' : '') : ''};
+  width: ${({ $width }) => (!$width ? '1000%' : '')};
   padding-right: ${({ isVirtualTask }) => (isVirtualTask ? '70px' : '')};
   margin-bottom: ${({
     origin,
@@ -755,7 +777,6 @@ export const ParentTaskContainer = styled.div`
         ? '10px'
         : ''
       : ''};
-  margin-left: ${({ isVirtualTask }) => (isVirtualTask ? '-3px' : '-1px')};
 `;
 
 export const TaskContainer = styled.div``;
@@ -800,17 +821,6 @@ export const DisabledPatientLabel = styled(PatientLabel)`
 
 export const DateText = styled.p`
   margin-bottom: 0;
-`;
-
-export const DetailsButton = styled.button`
-  font-family: 'Outfit', sans-serif;
-  font-size: ${fontSizes.smallPlus};
-  font-weight: ${fontWeights.regularPlus};
-  color: ${palette.coolGrey1};
-
-  &:hover {
-    color: ${palette.brightBlue};
-  }
 `;
 
 export const DescriptionBorder = styled.div`
@@ -889,4 +899,113 @@ export const ParentTaskLink = styled.div`
   cursor: pointer;
   margin: 2px 6px 8px 6px;
   padding: 2px;
+`;
+
+export const AssigneeWrapper = styled.div`
+  opacity: 0;
+`;
+
+export const AssigneeContainer = styled.div`
+width: 100%;
+&:hover {
+  & ${AssigneeWrapper} {
+    opacity: 1;
+  }
+`;
+
+export const PatientWrapper = styled.div`
+  width: fit-content;
+  opacity: 0;
+`;
+
+export const PatientContainer = styled.div`
+width: 100%;
+&:hover {
+  & ${PatientWrapper} {
+    opacity: 1;
+  }
+`;
+export const WorkflowStatusWrapper = styled.div`
+  width: fit-content;
+  opacity: 0;
+`;
+
+export const StatusContainer = styled.div`
+width: 100%;
+&:hover {
+  & ${WorkflowStatusWrapper} {
+    opacity: 1;
+  }
+`;
+export const LabelWrapper = styled.div`
+  width: fit-content;
+  opacity: 0;
+`;
+
+export const LabelContainer = styled.div`
+width: 100%;
+&:hover {
+  & ${LabelWrapper} {
+    opacity: 1;
+  }
+`;
+export const FilesWrapper = styled.div`
+  width: fit-content;
+  opacity: ${({ attachments }) => (attachments ? 1 : 0)};
+`;
+
+export const FilesContainer = styled.div`
+width: 100%;
+&:hover {
+  & ${FilesWrapper} {
+    opacity: 1;
+  }
+`;
+export const StartDateWrapper = styled.div`
+  width: fit-content;
+  opacity: 0;
+`;
+
+export const StartDateContainer = styled.div`
+width: 100%;
+&:hover {
+  & ${StartDateWrapper} {
+    opacity: 1;
+  }
+`;
+export const DueDateWrapper = styled.div`
+  width: fit-content;
+  opacity: 0;
+`;
+
+export const DueDatesContainer = styled.div`
+width: 100%;
+&:hover {
+  & ${DueDateWrapper} {
+    opacity: 1;
+  }
+`;
+export const ShareWrapper = styled.div`
+  width: fit-content;
+  opacity: 0;
+`;
+
+export const ShareContainer = styled.div`
+width: 100%;
+&:hover {
+  & ${ShareWrapper} {
+    opacity: 1;
+  }
+`;
+export const CommentsWrapper = styled.div`
+  width: fit-content;
+  opacity: ${({ hasComments }) => (hasComments ? 1 : 0)};
+`;
+
+export const CommentsContainer = styled.div`
+width: 100%;
+&:hover {
+  & ${CommentsWrapper} {
+    opacity: 1;
+  }
 `;

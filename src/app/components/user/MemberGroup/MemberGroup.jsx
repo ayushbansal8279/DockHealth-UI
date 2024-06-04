@@ -39,9 +39,9 @@ const MemberGroup = ({ members, max, size }) => {
     <GroupContainer>
       <>
         {members?.map((member, index) => (
-          <NameWrapper key={member?.identifier}>{`
-        ${member?.name}${index !== shownMembers.length - 1 ? ', ' : ''}
-        `}</NameWrapper>
+          <NameWrapper key={`name-wrapper-${member?.identifier}`}>
+            {`${member?.name}${index !== shownMembers.length - 1 ? ', ' : ''}`}
+          </NameWrapper>
         ))}
       </>
       {shownMembers?.map((member, index) => (
@@ -55,7 +55,6 @@ const MemberGroup = ({ members, max, size }) => {
           ) : (
             <UserAvatar user={member} size={size} />
           )}
-          {/* {shownMembers.length > 1 ? <Spacing horizontal={4} /> : <></>} */}
         </GroupItem>
       ))}
       {hiddenMembers && (

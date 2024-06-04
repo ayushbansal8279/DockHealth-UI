@@ -2,17 +2,19 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import moment from 'moment';
 import { Box } from '@mui/material';
 import RecurringIcon from 'img/recurring-arrows';
-import { checkIfTemplateTask, isDueDateOverdue } from 'helpers/task-helpers';
+import {
+  checkIfTemplateTask,
+  isDueDateOverdue,
+  ReminderType,
+} from 'helpers/task-helpers';
 import DueDatePicker from 'components/task/DueDatePicker/DueDatePicker';
 import Spacing from 'components/common/Spacing';
-import Tooltip from 'components/common/Tooltip/Tooltip';
-import Input from 'components/common/Input/Input';
 import { updateTaskDueDate } from 'actions/task-actions';
 import { useDispatch } from 'react-redux';
 import { useBoolean } from 'hooks/useBoolean';
 import PopoverCard from 'components/common/PopoverCard/PopoverCard';
-import { formatDueTime } from './helpers';
-import { AdornmentClear } from '../styled';
+import AssignMemberIcon from 'components/user/AssignMemberIcon/AssingMemberIcon';
+import ReminderIcon from 'img/reminder';
 import {
   DueDateSectionWrapper,
   StyledPopover,
@@ -24,9 +26,6 @@ import {
   RecurringIconContainer,
   ReminderIconContainer,
 } from './styled';
-import AssignMemberIcon from 'components/user/AssignMemberIcon/AssingMemberIcon';
-import { ReminderType } from 'helpers/task-helpers';
-import ReminderIcon from 'img/reminder';
 
 const DueDateSection = ({ selectedTask, disabled = false }) => {
   const dispatch = useDispatch();
@@ -34,7 +33,6 @@ const DueDateSection = ({ selectedTask, disabled = false }) => {
     selectedTask || {};
   const momentDueDate = dueDate ? moment(dueDate) : null;
   const isTemplateTask = checkIfTemplateTask(selectedTask);
-  const sectionDisabled = isTemplateTask || !taskIdentifier;
   const buttonReference = useRef(null);
   const dueDateRef = useRef(null);
   const [isPopoverOpen, openPopover, closePopover] = useBoolean(false);
@@ -52,10 +50,8 @@ const DueDateSection = ({ selectedTask, disabled = false }) => {
 
   useEffect(() => {
     setIsOverdue(isDueDateOverdue(selectedTask));
-    if (momentDueDate) {
-      if (momentDueDate.hour() || momentDueDate.minute()) {
-        setIsTimeAvailable(true);
-      }
+    if (momentDueDate && (momentDueDate.hour() || momentDueDate.minute())) {
+      setIsTimeAvailable(true);
     }
   }, [selectedTask]);
 

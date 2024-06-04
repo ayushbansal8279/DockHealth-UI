@@ -11,7 +11,13 @@ import { DrawerFieldEnum } from 'helpers/task-drawer-helpers';
 import Tooltip from 'components/common/Tooltip/Tooltip';
 import TaskIcon from 'components/task/TaskIcon/TaskIcon';
 import { SINGLE_TASK_RESTRICTIONS_OPTIONS } from 'restrictions/task-restrictions';
-import { GridImg } from '../../styled';
+import {
+  FilesContainer,
+  FilesWrapper,
+  GridImg,
+  LabelContainer,
+  LabelWrapper,
+} from '../../styled';
 import TaskLabel from '@/app/components/common/TaskLabel/TaskLabel';
 
 const TaskItemIcons = ({
@@ -24,7 +30,6 @@ const TaskItemIcons = ({
   attachments,
   dispatch,
   restrictions,
-  isHover,
 }) => {
   const onCommentClick = useCallback(() => {
     dispatch(openDrawer(DrawerFieldEnum.COMMENT));
@@ -73,56 +78,60 @@ const TaskItemIcons = ({
             onClick={onLabelClick}
           />
         ) : (
-          <GridImg item xs={12} matched={matchLabels}>
-            <Tooltip
-              hideTooltip={
-                restrictions?.labels ===
-                SINGLE_TASK_RESTRICTIONS_OPTIONS.DISABLED
-              }
-              placement="top"
-              title="Add Label"
-            >
-              <button
-                disabled={
+          <LabelContainer>
+            <GridImg item xs={12} matched={matchLabels}>
+              <Tooltip
+                hideTooltip={
                   restrictions?.labels ===
                   SINGLE_TASK_RESTRICTIONS_OPTIONS.DISABLED
                 }
-                type="button"
-                onClick={onLabelClick}
+                placement="top"
+                title="Add Label"
               >
-                {(labels?.length > 0 || isHover?.label) && (
-                  <TaskIcon
-                    type="labels"
-                    isActive={labels?.length > 0}
-                    isNew={task.updatedLabel}
-                  />
-                )}
-              </button>
-            </Tooltip>
-          </GridImg>
+                <button
+                  disabled={
+                    restrictions?.labels ===
+                    SINGLE_TASK_RESTRICTIONS_OPTIONS.DISABLED
+                  }
+                  type="button"
+                  onClick={onLabelClick}
+                >
+                  <LabelWrapper>
+                    <TaskIcon
+                      type="labels"
+                      isActive={labels?.length > 0}
+                      isNew={task.updatedLabel}
+                    />
+                  </LabelWrapper>
+                </button>
+              </Tooltip>
+            </GridImg>
+          </LabelContainer>
         )
       ) : null}
       {attachments ? (
-        <GridImg item xs={12} matched={matchAttachments}>
-          <Tooltip
-            placement="top"
-            title={
-              attachments?.length > 0
-                ? getAttachmentsIconTooltipTitle(attachments)
-                : 'Add File'
-            }
-          >
-            <button type="button" onClick={onAttachmentsClick}>
-              {(attachments?.length > 0 || isHover?.file) && (
-                <TaskIcon
-                  type="attachments"
-                  isActive={attachments?.length > 0}
-                  isNew={task.updatedAttachment}
-                />
-              )}
-            </button>
-          </Tooltip>
-        </GridImg>
+        <FilesContainer>
+          <GridImg item xs={12} matched={matchAttachments}>
+            <Tooltip
+              placement="top"
+              title={
+                attachments?.length > 0
+                  ? getAttachmentsIconTooltipTitle(attachments)
+                  : 'Add File'
+              }
+            >
+              <button type="button" onClick={onAttachmentsClick}>
+                <FilesWrapper attachments={attachments?.length > 0}>
+                  <TaskIcon
+                    type="attachments"
+                    isActive={attachments?.length > 0}
+                    isNew={task.updatedAttachment}
+                  />
+                </FilesWrapper>
+              </button>
+            </Tooltip>
+          </GridImg>
+        </FilesContainer>
       ) : null}
     </Grid>
   );

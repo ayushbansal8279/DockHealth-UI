@@ -16,6 +16,8 @@ import {
   DisabledPatientLabel,
   PatientPrintAdditionalInfo,
   PlaceholderText,
+  PatientWrapper,
+  PatientContainer,
 } from '../../styled';
 import Tooltip from '@/app/components/common/Tooltip/Tooltip';
 
@@ -34,7 +36,6 @@ const TaskItemPatient = ({
   currentUser,
   readOnly,
   origin,
-  isPatientHover,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const { pathname } = useLocation();
@@ -79,122 +80,126 @@ const TaskItemPatient = ({
   const customerTypeLabel = getCustomerTypeLabel(currentUser);
   const customerTypeLabelCapitalized = capitalize(customerTypeLabel);
   return (
-    <ClickablePatient onClick={properOnPatientClick}>
-      {!readOnly &&
-        !isCompleted &&
-        !patient &&
-        !isSubtask &&
-        !openPatientPopover &&
-        !isTemplateTask && (
-          <PatientDropdown
-            selectedPatientIdentifier={
-              patient ? patient.patientIdentifier : null
-            }
-            isPopoverOpen={isPopoverOpen}
-            onChangePatient={handleUpdateRegularTaskPatient}
-            openPopover={() => openPopoverWhenNotCompleted(true)}
-            closePopover={() => setPopoverOpen(false)}
-            isSubtask={isSubtask}
-            taskWorkflow={taskWorkflow}
-            hasSubtasks={hasSubtasks}
-            origin={origin}
+    <PatientContainer>
+      <ClickablePatient onClick={properOnPatientClick}>
+        {!readOnly &&
+          !isCompleted &&
+          !patient &&
+          !isSubtask &&
+          !openPatientPopover &&
+          !isTemplateTask && (
+            <PatientDropdown
+              selectedPatientIdentifier={
+                patient ? patient.patientIdentifier : null
+              }
+              isPopoverOpen={isPopoverOpen}
+              onChangePatient={handleUpdateRegularTaskPatient}
+              openPopover={() => openPopoverWhenNotCompleted(true)}
+              closePopover={() => setPopoverOpen(false)}
+              isSubtask={isSubtask}
+              taskWorkflow={taskWorkflow}
+              hasSubtasks={hasSubtasks}
+              origin={origin}
+            >
+              <PatientWrapper>
+                <Tooltip
+                  placement="top"
+                  title={`Add ${customerTypeLabelCapitalized}`}
+                >
+                  <PlaceholderText>
+                    + Add {customerTypeLabelCapitalized}
+                  </PlaceholderText>
+                </Tooltip>
+              </PatientWrapper>
+            </PatientDropdown>
+          )}
+        {!readOnly &&
+          !isCompleted &&
+          !patient &&
+          !isSubtask &&
+          openPatientPopover && (
+            <AddPlaceholder>
+              + Add {customerTypeLabelCapitalized}
+            </AddPlaceholder>
+          )}
+        {patient && (openPatientPopover || hasParentTaskLabel) && (
+          <PatientCard
+            disableLink={readOnly}
+            patientIdentifier={patient.patientIdentifier}
           >
-            {isPatientHover && (
-              <Tooltip
-                placement="top"
-                title={`Add ${customerTypeLabelCapitalized}`}
-              >
-                <PlaceholderText>
-                  + Add {customerTypeLabelCapitalized}
-                </PlaceholderText>
-              </Tooltip>
-            )}
-          </PatientDropdown>
-        )}
-      {!readOnly &&
-        !isCompleted &&
-        !patient &&
-        !isSubtask &&
-        openPatientPopover && (
-          <AddPlaceholder>+ Add {customerTypeLabelCapitalized}</AddPlaceholder>
-        )}
-      {patient && (openPatientPopover || hasParentTaskLabel) && (
-        <PatientCard
-          disableLink={readOnly}
-          patientIdentifier={patient.patientIdentifier}
-        >
-          <Link
-            to={{
-              pathname: `/core/patient/${patient.patientIdentifier}`,
-              state: {
-                from: pathname,
-              },
-            }}
-          >
-            <PatientLabelComponent>
-              {(matchPatient || matchPatientMRN) && highlightedValue ? (
-                <Highlighter
-                  highlightClassName="list-highlight"
-                  searchWords={
-                    matchPatient
-                      ? highlightedValue?.toLowerCase().split(/\s+/)
-                      : `${patientName}`.toLowerCase().split(/\s+/)
-                  }
-                  autoEscape
-                  textToHighlight={`${patient.patientName}`}
-                />
-              ) : (
-                `${patientName}`
-              )}
-            </PatientLabelComponent>
-          </Link>
-          <PatientPrintAdditionalInfo>
-            {patient.mrn && <Box whiteSpace="normal">MRN: {patient.mrn}</Box>}
-            {patient.dob && <Box whiteSpace="normal">DoB: {patient.dob}</Box>}
-          </PatientPrintAdditionalInfo>
-        </PatientCard>
-      )}
-      {patient && !openPatientPopover && !hasParentTaskLabel && (
-        <PatientCard
-          disableLink={readOnly}
-          patientIdentifier={patient.patientIdentifier}
-        >
-          <Link
-            to={{
-              pathname: `/core/patient/${patient.patientIdentifier}`,
-              state: {
-                from: pathname,
-              },
-            }}
-          >
-            <PatientLabelComponent>
-              {(matchPatient || matchPatientMRN) && highlightedValue ? (
-                <Highlighter
-                  highlightClassName="list-highlight"
-                  searchWords={
-                    matchPatient
-                      ? highlightedValue?.toLowerCase().split(/\s+/)
-                      : `${patientName}`.toLowerCase().split(/\s+/)
-                  }
-                  autoEscape
-                  textToHighlight={`${patient.patientName}`}
-                />
-              ) : (
-                `${patientName}`
-              )}
-              <PatientPrintAdditionalInfo>
-                {patient.mrn && (
-                  <Box whiteSpace="normal">MRN: {patient.mrn}</Box>
+            <Link
+              to={{
+                pathname: `/core/patient/${patient.patientIdentifier}`,
+                state: {
+                  from: pathname,
+                },
+              }}
+            >
+              <PatientLabelComponent>
+                {(matchPatient || matchPatientMRN) && highlightedValue ? (
+                  <Highlighter
+                    highlightClassName="list-highlight"
+                    searchWords={
+                      matchPatient
+                        ? highlightedValue?.toLowerCase().split(/\s+/)
+                        : `${patientName}`.toLowerCase().split(/\s+/)
+                    }
+                    autoEscape
+                    textToHighlight={`${patient.patientName}`}
+                  />
+                ) : (
+                  `${patientName}`
                 )}
-                {patient.dob && (
-                  <Box whiteSpace="normal">DoB: {patient.dob}</Box>
+              </PatientLabelComponent>
+            </Link>
+            <PatientPrintAdditionalInfo>
+              {patient.mrn && <Box whiteSpace="normal">MRN: {patient.mrn}</Box>}
+              {patient.dob && <Box whiteSpace="normal">DoB: {patient.dob}</Box>}
+            </PatientPrintAdditionalInfo>
+          </PatientCard>
+        )}
+        {patient && !openPatientPopover && !hasParentTaskLabel && (
+          <PatientCard
+            disableLink={readOnly}
+            patientIdentifier={patient.patientIdentifier}
+          >
+            <Link
+              to={{
+                pathname: `/core/patient/${patient.patientIdentifier}`,
+                state: {
+                  from: pathname,
+                },
+              }}
+            >
+              <PatientLabelComponent>
+                {(matchPatient || matchPatientMRN) && highlightedValue ? (
+                  <Highlighter
+                    highlightClassName="list-highlight"
+                    searchWords={
+                      matchPatient
+                        ? highlightedValue?.toLowerCase().split(/\s+/)
+                        : `${patientName}`.toLowerCase().split(/\s+/)
+                    }
+                    autoEscape
+                    textToHighlight={`${patient.patientName}`}
+                  />
+                ) : (
+                  `${patientName}`
                 )}
-              </PatientPrintAdditionalInfo>
-            </PatientLabelComponent>
-          </Link>
-        </PatientCard>
-      )}
-    </ClickablePatient>
+                <PatientPrintAdditionalInfo>
+                  {patient.mrn && (
+                    <Box whiteSpace="normal">MRN: {patient.mrn}</Box>
+                  )}
+                  {patient.dob && (
+                    <Box whiteSpace="normal">DoB: {patient.dob}</Box>
+                  )}
+                </PatientPrintAdditionalInfo>
+              </PatientLabelComponent>
+            </Link>
+          </PatientCard>
+        )}
+      </ClickablePatient>
+    </PatientContainer>
   );
 };
 
