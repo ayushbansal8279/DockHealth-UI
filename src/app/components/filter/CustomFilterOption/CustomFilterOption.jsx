@@ -20,7 +20,7 @@ const CustomFilterOption = (props) => {
     onDelete,
     autofocus,
     onBlur,
-    editModeEnabled,
+    editModeEnabled = true,
     setSavePopupOpen,
     selectedQuickFilter,
     setEditIdentifier,
@@ -216,7 +216,7 @@ const CustomFilterOption = (props) => {
             </Tooltip>
       </IconContainer> */}
         <OptionMenuContainer>
-          {!disableOptions && (
+          {!disableOptions && editModeEnabled && (
             <OptionsMenu color={palette.shadowBlue} options={OPTIONS}>
               <MoreVertIcon />
             </OptionsMenu>
