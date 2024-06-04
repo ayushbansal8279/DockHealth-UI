@@ -53,6 +53,9 @@ axiosInstance.interceptors.response.use(identity, (error) => {
   if (String(error).includes('Network Error')) {
     // window.location.href = '/#/auth/login';
   }
+  if (String(error).includes('Token verification failed')) {
+    window.location.href = '/#/auth/login';
+  }
   // window.location.href = '/#/auth/login';
   // window.location.href = '/#/core/home/my-tasks';
   showToast({
