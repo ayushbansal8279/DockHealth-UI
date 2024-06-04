@@ -64,6 +64,11 @@ export const dashboardFilterOptionsSelector = createSelector(
   ({ filterOptions }) => filterOptions,
 );
 
+export const dashboardTaskViewFilterSelector = createSelector(
+  dashboardTasksStateSelector,
+  ({ taskViewFilter }) => taskViewFilter,
+);
+
 export const isFetchingDashboardFiltersSelector = createSelector(
   dashboardTasksStateSelector,
   ({ isFetchingFilters }) => isFetchingFilters,
