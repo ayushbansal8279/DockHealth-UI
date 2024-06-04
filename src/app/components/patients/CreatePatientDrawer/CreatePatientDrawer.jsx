@@ -107,7 +107,7 @@ const CreatePatientDrawer = ({ isSidebarOpen, onPatientCreated, onClose }) => {
           uniqueIdentifierLabel={uniqueIdentifierLabel}
           customerTypeLabel={customerTypeLabel}
           ref={formReference}
-          buttonLabel={`SAVE ${customerTypeLabel}`}
+          buttonLabel="Save"
           patientAddEnabled
         />
       </FormProvider>

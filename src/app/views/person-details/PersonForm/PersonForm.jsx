@@ -164,7 +164,7 @@ const PersonForm = forwardRef(
         <Box display="flex" justifyContent="space-between">
           {edited && (
             <Button width="auto" type="submit">
-              SAVE EDITS
+              Save Edits
             </Button>
           )}
         </Box>

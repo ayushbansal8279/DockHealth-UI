@@ -36,6 +36,7 @@ export interface Props extends Segment {
   isLastTaskOfGroup: boolean;
   isLastGroupOfList: boolean;
   isNextVirtualTaskItemTypeBundle: boolean;
+  taskGroupIdentifier: string;
 }
 
 export const VTaskContext = createContext({
@@ -52,6 +53,7 @@ function VTask(
     bgColor,
     isLastGroupOfList,
     isNextVirtualTaskItemTypeBundle,
+    taskGroupIdentifier,
     ...record
   }: Props,
   // eslint-disable-next-line unicorn/prevent-abbreviations, @typescript-eslint/no-unused-vars
@@ -154,6 +156,7 @@ function VTask(
               <StandardTaskItem
                 // @ts-ignore
                 taskIdentifier={metadata.id}
+                taskGroupIdentifier={taskGroupIdentifier}
                 draggableProvided={provided}
                 isDraggable
                 isDragging={snapshot.isDragging}

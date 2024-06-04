@@ -4,10 +4,14 @@ const APP_KEY = import.meta.env.VITE_PUSHER_APP_KEY;
 const APP_CLUSTER = import.meta.env.VITE_PUSHER_CLUSTER_NAME;
 
 let pusherInstance = null;
+let pusherAccessToken = null;
 
 export const initializePusher = () => {
   const currentAccessToken = sessionStorage.getItem('accessToken');
-  if (currentAccessToken && !pusherInstance) {
+  if (
+    currentAccessToken &&
+    (!pusherInstance || pusherAccessToken !== currentAccessToken)
+  ) {
     pusherInstance = new Pusher(APP_KEY, {
       cluster: APP_CLUSTER,
       authEndpoint: `${
@@ -17,6 +21,7 @@ export const initializePusher = () => {
         headers: { Authorization: `Bearer ${currentAccessToken}` },
       },
     });
+    pusherAccessToken = currentAccessToken;
   }
   return pusherInstance;
 };
@@ -25,7 +30,10 @@ let pusherInstanceForPresence = null;
 
 export const initializePusherForPresence = () => {
   const currentAccessToken = sessionStorage.getItem('accessToken');
-  if (currentAccessToken && !pusherInstanceForPresence) {
+  if (
+    currentAccessToken &&
+    (!pusherInstance || pusherInstanceForPresence !== currentAccessToken)
+  ) {
     pusherInstanceForPresence = new Pusher(APP_KEY, {
       cluster: APP_CLUSTER,
       authEndpoint: `${
@@ -35,6 +43,7 @@ export const initializePusherForPresence = () => {
         headers: { Authorization: `Bearer ${currentAccessToken}` },
       },
     });
+    pusherAccessToken = currentAccessToken;
   }
   return pusherInstanceForPresence;
 };
