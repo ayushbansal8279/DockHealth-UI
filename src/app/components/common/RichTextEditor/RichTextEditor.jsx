@@ -171,7 +171,7 @@ const RichTextEditor = ({
       values: fetchMemberesWithDebounce(taskListIdentifier),
       menuShowMinLength: 0,
       allowSpaces: true,
-      requireLeadingSpace: false,
+      requireLeadingSpace: true,
       lookup: 'name',
       searchOpts: {
         skip: true, // true will skip local search, useful if doing server-side search
@@ -213,7 +213,7 @@ const RichTextEditor = ({
       values: fetchPatientsWithDebounce,
       menuShowMinLength: 0,
       allowSpaces: true,
-      requireLeadingSpace: false,
+      requireLeadingSpace: true,
       lookup: 'name',
       searchOpts: {
         skip: true, // true will skip local search, useful if doing server-side search
