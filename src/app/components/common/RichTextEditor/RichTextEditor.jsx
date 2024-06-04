@@ -26,6 +26,8 @@ const md = new MarkdownIt({
   linkify: true,
 }).use(markdownItUnderline);
 
+md.linkify.set({ fuzzyEmail: false, fuzzyLink: false });
+
 const FROALA_PRODUCT_KEY =
   'MZC1rE1D4D3I4A16B11D8jF1QUg1Xc2OZE1ABVJRDRNGGUH1ITrA1C7A6D5E1D4D4E1B10D7==';
 
@@ -344,6 +346,7 @@ const RichTextEditor = ({
         },
         'url.linked': function (link) {
           // Do something here.
+          console.log(link);
         },
         click(clickEvent) {
           if (
@@ -352,6 +355,21 @@ const RichTextEditor = ({
           ) {
             window.open(clickEvent.currentTarget?.href, '_blank', 'noreferrer');
           }
+        },
+        // 'link.beforeInsert': (link, text, attrs) => {
+        //   console.log(link);
+        //   console.log(text);
+        //   console.log(attrs);
+        // },
+        'link.beforeInsert': function (link, text, attrs) {
+          console.log(link);
+          console.log(text);
+          console.log(attrs);
+        },
+        'link.beforeRemove': function (link, text, attrs) {
+          console.log(link);
+          console.log(text);
+          console.log(attrs);
         },
       },
       linkNoReferrer: false,
