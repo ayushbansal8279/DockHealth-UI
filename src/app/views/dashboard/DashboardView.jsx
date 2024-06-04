@@ -207,7 +207,7 @@ const DashboardView = ({ tabName }) => {
   };
 
   useMount(() => {
-    refreshAccessToken(currentUser);
+    // refreshAccessToken(currentUser);
   });
 
   const handleCreateFirstList = () => {
