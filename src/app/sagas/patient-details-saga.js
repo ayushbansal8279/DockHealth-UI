@@ -292,7 +292,7 @@ function* getCurrentPatientTasks({ payload }) {
     let status = taskStatus || selectedTaskStatus;
     const sort = yield select(patientTasksSortSelector);
     const patientIdentifier = yield select(currentPatientIdentifierSelector);
-    const savedStatus = localStorage.getItem('patientStatus');
+    const savedStatus = localStorageHelper.getItem('patientStatus');
     if (savedStatus !== null) {
       status = savedStatus;
     }

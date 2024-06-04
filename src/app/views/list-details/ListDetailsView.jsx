@@ -12,6 +12,7 @@ import ListDetailsTableView from './ListDetailsTableView/ListDetailsTableView';
 import ListDetailsCalendarView from './ListDetailsCalendarView/ListDetailsCalendarView';
 import ListDetailsBoardView from './ListDetailsBoardView/ListDetailsBoardView';
 import useSearchParams from '@/app/hooks/use-search-params';
+import localStorageHelper from '@/app/helpers/local-storage-helper';
 
 export const ListPageContext = createContext({
   addNewGroup: false,
@@ -69,14 +70,14 @@ const ListDetailsView = () => {
   const handleSetChangeViewType = (value) => {
     setChangeViewType(value);
     if (value === 'FULL_VIEW') {
-      localStorage.setItem(`view${taskListIdentifier}`, value);
+      localStorageHelper.setItem(`view${taskListIdentifier}`, value);
     } else {
-      localStorage.removeItem(`view${taskListIdentifier}`);
+      localStorageHelper.removeItem(`view${taskListIdentifier}`);
     }
   };
 
   useEffect(() => {
-    const storedViewType = localStorage.getItem(`view${taskListIdentifier}`);
+    const storedViewType = localStorageHelper.getItem(`view${taskListIdentifier}`);
     if (storedViewType === 'FULL_VIEW') {
       setChangeViewType('FULL_VIEW');
     } else {

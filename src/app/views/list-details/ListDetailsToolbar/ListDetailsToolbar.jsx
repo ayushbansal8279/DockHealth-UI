@@ -33,6 +33,7 @@ import { ListPageContext } from '../ListDetailsView';
 import { getCurrentListTasks } from '@/app/actions/list-details-actions';
 import CustomizeToolbarButton from '@/app/components/tasklist/list-toolbar-buttons/CustomizeToolbarButton/CustomizeToolbarButton';
 import TaskStatusToolbarSelect from '@/app/components/tasklist/list-toolbar-buttons/TaskStatusToolbarSelect';
+import localStorageHelper from '@/app/helpers/local-storage-helper';
 
 const ListDetailsToolbar = ({
   additionalOptions,
@@ -100,7 +101,7 @@ const ListDetailsToolbar = ({
   );
 
   useEffect(() => {
-    const viewType = localStorage.getItem(`view${taskListIdentifier}`);
+    const viewType = localStorageHelper.getItem(`view${taskListIdentifier}`);
     if (viewType === 'FULL_VIEW') {
       setFullView(true);
       setSlimView(false);

@@ -73,6 +73,7 @@ import {
 import TaskListToolbar from '../TaskListToolbar/TaskListToolbar';
 import TaskListGroupCollapse from '../TaskListGroupCollapse/TaskListGroupCollapse';
 import TasksToolbar from '../TasksToolbar/TasksToolbar';
+import localStorageHelper from '@/app/helpers/local-storage-helper';
 
 const PATIENT_SPECIFIC_LIST_VIEW_COLUMNS_CONFIG = {
   ...TASK_ITEM_BASE_COLUMN_CONFIG,
@@ -122,14 +123,14 @@ const PatientTasksListView = () => {
   const handlePatientView = (value) => {
     setViewType(value);
     if (value === 'FULL_VIEW') {
-      localStorage.setItem(`patient${patientIdentifier}`, value);
+      localStorageHelper.setItem(`patient${patientIdentifier}`, value);
     } else {
-      localStorage.removeItem(`patient${patientIdentifier}`);
+      localStorageHelper.removeItem(`patient${patientIdentifier}`);
     }
   };
 
   useEffect(() => {
-    const storedViewType = localStorage.getItem(`patient${patientIdentifier}`);
+    const storedViewType = localStorageHelper.getItem(`patient${patientIdentifier}`);
     if (storedViewType === 'FULL_VIEW') {
       setViewType('FULL_VIEW');
     }

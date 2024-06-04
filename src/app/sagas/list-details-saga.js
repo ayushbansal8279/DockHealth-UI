@@ -151,7 +151,7 @@ function* getCurrentListTasks() {
     const sort = yield select(taskDetailsSortSelector);
     const searchTerm = yield select(searchTermSelector);
     let status = TaskStatus.INCOMPLETE;
-    const savedStatus = localStorage.getItem(`status${taskListIdentifier}`);
+    const savedStatus = localStorageHelper.getItem(`status${taskListIdentifier}`);
     if (savedStatus !== null) {
       status = savedStatus;
     }

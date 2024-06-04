@@ -15,6 +15,7 @@ import {
 import RotatableChevron from '@/app/components/common/RotatableChevron/RotatableChevron';
 import palette from '@/app/styles/palette';
 import TaskStatusSelectForm from './TaskStatusSelectForm';
+import localStorageHelper from '@/app/helpers/local-storage-helper';
 
 interface Props {
   value: string;
@@ -37,7 +38,7 @@ export default function TaskStatusToolbarSelect({
     origin === TaskOrigin.PATIENT ? 'patientStatus' : `status${taskListIdentifier}`;
 
   useEffect(() => {
-    const savedStatus = localStorage.getItem(storageKey);
+    const savedStatus = localStorageHelper.getItem(storageKey);
     if (savedStatus !== null) {
       setStatus(savedStatus);
     } else {
@@ -59,9 +60,9 @@ export default function TaskStatusToolbarSelect({
     setStatus(status);
 
     if (status !== TaskStatus.INCOMPLETE) {
-      localStorage.setItem(storageKey, status);
+      localStorageHelper.setItem(storageKey, status);
     } else {
-      localStorage.removeItem(storageKey);
+      localStorageHelper.removeItem(storageKey);
     }
     onChange(status);
     handleClose();
