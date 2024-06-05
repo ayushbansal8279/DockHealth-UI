@@ -346,7 +346,6 @@ const RichTextEditor = ({
         },
         'url.linked': function (link) {
           // Do something here.
-          console.log(link);
         },
         click(clickEvent) {
           if (
@@ -355,21 +354,6 @@ const RichTextEditor = ({
           ) {
             window.open(clickEvent.currentTarget?.href, '_blank', 'noreferrer');
           }
-        },
-        // 'link.beforeInsert': (link, text, attrs) => {
-        //   console.log(link);
-        //   console.log(text);
-        //   console.log(attrs);
-        // },
-        'link.beforeInsert': function (link, text, attrs) {
-          console.log(link);
-          console.log(text);
-          console.log(attrs);
-        },
-        'link.beforeRemove': function (link, text, attrs) {
-          console.log(link);
-          console.log(text);
-          console.log(attrs);
         },
       },
       linkNoReferrer: false,
