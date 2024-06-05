@@ -245,7 +245,7 @@ const ListDetailsTableView = () => {
   );
 
   useEffect(() => {
-    refreshAccessToken(currentUser);
+    // refreshAccessToken(currentUser);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

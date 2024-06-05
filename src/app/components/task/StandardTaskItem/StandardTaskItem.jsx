@@ -32,6 +32,7 @@ const Task = React.memo(
     taskIdentifier: taskItemIdentifier,
     templateBundleIdentifier,
     patient: parentPatient,
+    taskGroupIdentifier,
     isCompletedGroup,
     isFullView,
     isStartedDnD,
@@ -250,6 +251,7 @@ const Task = React.memo(
             taskItemIdentifier={task?.identifier}
             templateBundleIdentifier={templateBundleIdentifier || taskBundleId}
             patient={parentPatient}
+            taskGroupIdentifier={taskGroupIdentifier}
             isOpen={areSubtasksOpen}
             switchOpen={handleSetSubtasksOpen}
             dragHandleProps={dragHandleProps}
