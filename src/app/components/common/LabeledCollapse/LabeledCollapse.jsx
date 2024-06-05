@@ -17,7 +17,7 @@ const LabeledCollapse = ({
   name,
   isOpened,
   noBorder = false,
-  isListSubMenu,
+  isSubMenu,
 }) => {
   const [openedItem, setOpenedItem] = useState(null);
 
@@ -40,7 +40,7 @@ const LabeledCollapse = ({
           rotated={isOpened || openedItem}
         />
         <Spacing horizontal={4} />
-        <LabeledCollapseItemName $isListSubMenu={isListSubMenu}>
+        <LabeledCollapseItemName $isSubMenu={isSubMenu}>
           {name}
         </LabeledCollapseItemName>
         <Spacing horizontal={3} />

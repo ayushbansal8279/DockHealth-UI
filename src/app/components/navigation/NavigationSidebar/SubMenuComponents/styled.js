@@ -246,20 +246,20 @@ export const DrawerOrganizationsList = styled.div`
 
 // Lists
 export const DrawerMyListsLabel = styled(DrawerSubmenuLabel)`
-  color: ${({ $isListSubMenu }) =>
-    $isListSubMenu ? palette.black : palette.coolGrey1};
-  font-weight: ${({ $isListSubMenu }) =>
-    $isListSubMenu ? fontWeights.light : fontWeights.bold};
-  padding: ${({ $isListSubMenu, $isOpen }) =>
-    $isListSubMenu
+  color: ${({ $isSubMenu }) =>
+    $isSubMenu ? palette.black : palette.coolGrey1};
+  font-weight: ${({ $isSubMenu }) =>
+    $isSubMenu ? fontWeights.light : fontWeights.bold};
+  padding: ${({ $isSubMenu, $isOpen }) =>
+    $isSubMenu
       ? $isOpen
         ? `0 ${spacing.smallPlus} ${spacing.smallPlus} ${spacing.smallPlus}`
         : `0 ${spacing.smallPlus} `
       : spacing.smallPlus};
-  border-bottom: ${({ $isListSubMenu }) =>
-    $isListSubMenu ? '' : `1px solid ${palette.coolGrey2}`};
-  font-size: ${({ $isListSubMenu }) =>
-    $isListSubMenu ? fontSizes.regular : fontSizes.smallPlus};
+  border-bottom: ${({ $isSubMenu }) =>
+    $isSubMenu ? '' : `1px solid ${palette.coolGrey2}`};
+  font-size: ${({ $isSubMenu }) =>
+    $isSubMenu ? fontSizes.regular : fontSizes.smallPlus};
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -269,14 +269,14 @@ export const DrawerMyListsLabel = styled(DrawerSubmenuLabel)`
 `;
 
 export const DrawerListsList = styled.div`
-  padding: ${({ $isListSubMenu, $isOpen }) =>
-    $isListSubMenu
+  padding: ${({ $isSubMenu, $isOpen }) =>
+    $isSubMenu
       ? $isOpen
         ? `${spacing.small}  0 ${spacing.regularPlus} 0`
         : `${spacing.small}  0 ${spacing.small} 0`
       : `${spacing.largePlus} 0`};
-  border-bottom: ${({ $isListSubMenu, $isOpen }) =>
-    $isListSubMenu
+  border-bottom: ${({ $isSubMenu, $isOpen }) =>
+    $isSubMenu
       ? $isOpen
         ? `1px solid ${palette.whiteSmoke}`
         : ''
@@ -296,8 +296,8 @@ export const DrawerListsItem = styled.div`
   font-size: ${fontSizes.regular};
   box-sizing: border-box;
   border: 1px solid transparent;
-  ${({ $isListSubMenu }) =>
-    $isListSubMenu
+  ${({ $isSubMenu }) =>
+    $isSubMenu
       ? `padding: 5px 0`
       : `&:not(:last-child) {
         padding-bottom: 10px;
@@ -360,7 +360,7 @@ export const ListNameText = styled.div`
   text-overflow: ellipsis;
   white-space: nowrap;
   ${({ color }) => (color ? `color: ${color};` : undefined)}
-  ${({ isActive, $isListSubMenu }) =>
+  ${({ isActive, $isSubMenu }) =>
     isActive
       ? `
         color: ${palette.brightBlue};
@@ -368,7 +368,7 @@ export const ListNameText = styled.div`
       : `
           cursor: pointer;
         ${
-          !$isListSubMenu
+          !$isSubMenu
             ? `&:hover {
           color: ${palette.brightBlue};
           text-decoration: underline;

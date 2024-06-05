@@ -25,10 +25,9 @@ export const LabeledCollapseItemName = styled.p`
   flex: 1;
   margin: 0;
   font-size: ${fontSizes.regular};
-  font-weight: ${({ $isListSubMenu }) =>
-    $isListSubMenu ? fontWeights.light : fontWeights.regularPlus};
+  font-weight: ${({ $isSubMenu }) =>
+    $isSubMenu ? fontWeights.light : fontWeights.regularPlus};
   font-family: 'Outfit', sans-serif;
-  text-transform: ${({ $isListSubMenu }) =>
-    $isListSubMenu ? 'none' : ` uppercase`};
+  text-transform: ${({ $isSubMenu }) => ($isSubMenu ? 'none' : ` uppercase`)};
   text-align: left;
 `;
