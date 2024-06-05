@@ -26,6 +26,8 @@ const md = new MarkdownIt({
   linkify: true,
 }).use(markdownItUnderline);
 
+md.linkify.set({ fuzzyEmail: false, fuzzyLink: false });
+
 const FROALA_PRODUCT_KEY =
   'MZC1rE1D4D3I4A16B11D8jF1QUg1Xc2OZE1ABVJRDRNGGUH1ITrA1C7A6D5E1D4D4E1B10D7==';
 
@@ -169,7 +171,7 @@ const RichTextEditor = ({
       values: fetchMemberesWithDebounce(taskListIdentifier),
       menuShowMinLength: 0,
       allowSpaces: true,
-      requireLeadingSpace: false,
+      requireLeadingSpace: true,
       lookup: 'name',
       searchOpts: {
         skip: true, // true will skip local search, useful if doing server-side search
@@ -211,7 +213,7 @@ const RichTextEditor = ({
       values: fetchPatientsWithDebounce,
       menuShowMinLength: 0,
       allowSpaces: true,
-      requireLeadingSpace: false,
+      requireLeadingSpace: true,
       lookup: 'name',
       searchOpts: {
         skip: true, // true will skip local search, useful if doing server-side search
