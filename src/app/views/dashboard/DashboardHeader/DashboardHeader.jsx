@@ -14,6 +14,7 @@ import {
   initializeDashboardState,
   searchDashboardTasks,
   selectDashboardFilters,
+  updateDashboardTaskViewFilter,
 } from 'actions/dashboard-actions';
 
 import {
@@ -60,6 +61,10 @@ import {
 } from './styled';
 import { ActionsContainer } from '../DashboardToolbar/styled';
 import HomeTaskViewFilter from '@/app/components/tasklist/list-toolbar-buttons/HomeTaskViewFilter';
+import {
+  getDashboardTaskViewFilter,
+  setDashboardTaskViewFilter,
+} from '@/app/helpers/local-storage-helper';
 
 const DashboardHeader = ({
   clearSearch,
@@ -120,8 +125,13 @@ const DashboardHeader = ({
     [filteredDashboardTasks],
   );
 
-  const onChangeTaskViewFilter = (value) => {
-    // todo: dispatch()
+  const onChangeTaskViewFilter = (newFilter) => {
+    dispatch(updateDashboardTaskViewFilter(newFilter));
+    setDashboardTaskViewFilter(
+      currentOrganization?.organizationIdentifier,
+      newFilter,
+    );
+    // todo: fetch tasks
   };
 
   const handleMegaFilterOpen = useCallback(() => {
@@ -142,19 +152,39 @@ const DashboardHeader = ({
     if (value) {
       searchTasksWithDebounce(value);
     } else {
-      dispatch(initializeDashboardState(tabName));
+      dispatch(
+        initializeDashboardState(
+          tabName,
+          getDashboardTaskViewFilter(
+            currentOrganization?.organizationIdentifier,
+          ),
+        ),
+      );
     }
   };
 
   useEffect(() => {
     if (clearSearch) {
       setSearchValue('');
-      dispatch(initializeDashboardState(tabName));
+      dispatch(
+        initializeDashboardState(
+          tabName,
+          getDashboardTaskViewFilter(
+            currentOrganization?.organizationIdentifier,
+          ),
+        ),
+      );
       setTimeout(() => {
         setClearSearch(false);
       }, 500);
     }
-  }, [clearSearch, dispatch, setClearSearch, tabName]);
+  }, [
+    clearSearch,
+    dispatch,
+    setClearSearch,
+    tabName,
+    currentOrganization?.organizationIdentifier,
+  ]);
 
   useEffect(() => {
     dispatch(getQuickFilters({ contextType }));

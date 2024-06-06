@@ -39,7 +39,6 @@ const NewFilterContainer = ({
   isPatientListPage,
   editModeEnabled = true,
 }) => {
-  console.log('filters', filters);
   const popoverReference = useRef(null);
   const [isPopoverOpen, openAddFilterPopover, closeAddFilterPopover] =
     useBoolean(false);
@@ -113,6 +112,7 @@ const NewFilterContainer = ({
     <>
       {Object.keys(finalFilter).map((filter) => (
         <FilterSelect
+          key={filter}
           filters={filters}
           setFinalFilter={setFinalFilter}
           filter={filter}

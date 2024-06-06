@@ -10,7 +10,7 @@ import Button from 'components/common/v2/Button/Button';
 import {
   IDashboardTaskViewFilter,
   dashboardTaskViewFilterOptions,
-} from '@/app/types/taskFilters';
+} from '@/app/types/taskViewFilter';
 
 interface Props {
   filter: IDashboardTaskViewFilter;

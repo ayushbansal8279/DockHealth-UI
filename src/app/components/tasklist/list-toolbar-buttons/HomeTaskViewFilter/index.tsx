@@ -13,7 +13,7 @@ import {
 import RotatableChevron from '@/app/components/common/RotatableChevron/RotatableChevron';
 import palette from '@/app/styles/palette';
 import TaskViewFilterForm from './TaskViewFilterForm';
-import { IDashboardTaskViewFilter } from '@/app/types/taskFilters';
+import { IDashboardTaskViewFilter } from '@/app/types/taskViewFilter';
 
 interface Props {
   filter: IDashboardTaskViewFilter;
@@ -33,7 +33,9 @@ export default function HomeTaskViewFilter({ filter, onChange }: Props) {
   }, []);
 
   const handleSubmit = (newFilter: IDashboardTaskViewFilter) => {
-    onChange(newFilter);
+    if (newFilter.includeWorkflows !== filter.includeWorkflows) {
+      onChange(newFilter);
+    }
     handleClose();
   };
 

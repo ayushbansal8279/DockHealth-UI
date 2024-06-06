@@ -381,10 +381,7 @@ function* selectDashboardFilters({ selectedFilters, selectedQuickFilter }) {
       ),
     );
 
-    yield all([
-      put(DashboardActions.getDashboardTasks()),
-      // put(DashboardActions.getDashboardFilters()),
-    ]);
+    yield put(DashboardActions.getDashboardTasks());
   }
 }
 
