@@ -1,4 +1,3 @@
-// eslint-disable-next-line unicorn/filename-case
 import React from 'react';
 import { ListItemText, Grid, Divider } from '@mui/material';
 import Spacing from 'components/common/Spacing';
@@ -39,7 +38,7 @@ const SSOOptions = () => {
       {/* <MontserratTypography variant="h4">Or sign in with</MontserratTypography> */}
       <Divider>Or sign in with</Divider>
       <Spacing vertical={4} />
-      <Grid xs={12} container columnSpacing={2}>
+      <Grid container columnSpacing={2}>
         {ssoURLGoogle && (
           <Grid item xs={4}>
             <StyledPaper>

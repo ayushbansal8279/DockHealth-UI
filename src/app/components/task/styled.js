@@ -554,8 +554,10 @@ export const StandardTaskThreeDots = styled(ThreeDots)`
 
 export const StandardTaskItemPanel = styled.div`
   position: relative;
+  ${({ $isVirtualizedList }) =>
+    $isVirtualizedList ? '' : 'margin-left: 55px;'}
   ${(props) =>
-    props.isDragging
+    props.$isDragging
       ? 'box-shadow: 0px 0px 11px rgba(204, 204, 204, 0.8)'
       : ''};
   &:hover {
@@ -762,8 +764,7 @@ export const ParentTaskContainer = styled.div`
     margin-bottom: ${({ noMargin, origin }) =>
       noMargin ? -1 : origin === 'PATIENT' || origin === 'GLOBAL' ? 2 : 0}px;
   }
-  width: ${({ isVirtualTask, $width }) =>
-    isVirtualTask ? (!$width ? '1000%' : '') : ''};
+  width: ${({ $width }) => (!$width ? '1000%' : '')};
   padding-right: ${({ isVirtualTask }) => (isVirtualTask ? '70px' : '')};
   margin-bottom: ${({
     origin,
@@ -776,7 +777,6 @@ export const ParentTaskContainer = styled.div`
         ? '10px'
         : ''
       : ''};
-  margin-left: ${({ isVirtualTask }) => (isVirtualTask ? '-3px' : '-1px')};
 `;
 
 export const TaskContainer = styled.div``;

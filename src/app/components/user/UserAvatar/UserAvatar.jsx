@@ -87,7 +87,7 @@ const UserAvatar = React.forwardRef(
             activityStatus={
               isListPage && activityStatus === ActivityStatus.ONLINE
                 ? activityStatus
-                : ''
+                : ActivityStatus.OFFLINE
             }
             isBlurred={isInactive}
             color={color || bubbleColor}

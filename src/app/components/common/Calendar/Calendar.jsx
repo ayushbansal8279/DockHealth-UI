@@ -195,11 +195,7 @@ const Calendar = ({ taskListIdentifier }) => {
     );
 
     return (
-      <Tooltip
-        key={eventInfo?.event?.id}
-        title={eventInfo?.event?.title}
-        hideTooltip={eventInfo?.event?.title.length < 17}
-      >
+      <Tooltip key={eventInfo?.event?.id} title={eventInfo?.event?.title}>
         <TextEventContainer
           style={{
             backgroundColor: task.taskList?.color || 'white',

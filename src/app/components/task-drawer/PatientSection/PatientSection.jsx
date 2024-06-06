@@ -16,7 +16,6 @@ import { changePatientForTemplateBundle } from 'actions/template-bundle-actions'
 import { noop } from 'helpers/utility-functions';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
-// import AssignMemberIcon from 'components/user/AssignMemberIcon/AssingMemberIcon';
 import { useHistory } from 'react-router-dom';
 import SelectDropdown from '../SelectDropdown/SelectDropdown';
 import {
@@ -29,7 +28,6 @@ import {
   PatientContainer,
   Title,
   InstructionText,
-  // AddPatient,
   PatientName,
 } from './styled';
 import { updatePartialWorkflow } from '@/app/actions/task-template-actions';

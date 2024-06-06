@@ -14,7 +14,7 @@ const CustomFilters = ({
   onCreate,
   onUpdate,
   onDelete,
-  editModeEnabled = false,
+  editModeEnabled = true,
   setFinalFilter,
   filters,
   setSavePopupOpen,

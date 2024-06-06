@@ -28,7 +28,6 @@ const TaskItemCustomField = ({
   task,
   taskWorkflow,
   onClick,
-  // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const { value, values } = customFieldValue || {};
   const { taskMetaData } = task;
