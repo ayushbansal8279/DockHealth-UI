@@ -107,6 +107,7 @@ export function getTasksAssignedToUserByImplicitGroup(
   sortDirection,
   startPosition = 0,
   endPosition = 0,
+  includeWorkflows = true,
 ) {
   return axios
     .get(`/task/findTasksAssignedToUserByImplicitGroup`, {
@@ -119,8 +120,15 @@ export function getTasksAssignedToUserByImplicitGroup(
               status: 'INCOMPLETE',
               sortBy,
               sortDirection,
+              includeWorkflows,
             }
-          : { groupType, startPosition, endPosition, status: 'INCOMPLETE' },
+          : {
+              groupType,
+              startPosition,
+              endPosition,
+              status: 'INCOMPLETE',
+              includeWorkflows,
+            },
     })
     .then(({ data }) => includeCustomFieldsPatientsToEachTask(data))
     .catch((error) => {
@@ -134,6 +142,7 @@ export function getTasksForOrganizationByImplicitGroup(
   sortDirection,
   startPosition = 0,
   endPosition = 0,
+  includeWorkflows = true,
 ) {
   return axios
     .get(`/task/findTasksForOrganizationByImplicitGroup`, {
@@ -146,8 +155,15 @@ export function getTasksForOrganizationByImplicitGroup(
               status: 'INCOMPLETE',
               sortBy,
               sortDirection,
+              includeWorkflows,
             }
-          : { groupType, startPosition, endPosition, status: 'INCOMPLETE' },
+          : {
+              groupType,
+              startPosition,
+              endPosition,
+              status: 'INCOMPLETE',
+              includeWorkflows,
+            },
     })
     .then(({ data }) => includeCustomFieldsPatientsToEachTask(data))
     .catch((error) => {

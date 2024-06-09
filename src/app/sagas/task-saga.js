@@ -313,16 +313,7 @@ function* updateTaskDetails({ task, detailsState }) {
 
 function* updateTaskStartDate({ task, startDate }) {
   try {
-    const updatedTask = yield call(
-      TaskApi.updateStartDate,
-      task.identifier,
-      startDate,
-    );
-    yield put({
-      type: ActionTypes.UPDATE_TASK_START_DATE_SUCCESS,
-      task,
-      startDate: updatedTask.startDate,
-    });
+    yield call(TaskApi.updateStartDate, task.identifier, startDate);
     yield put(showGlobalAlert(AlertMessages.UPDATED));
   } catch {
     yield put({

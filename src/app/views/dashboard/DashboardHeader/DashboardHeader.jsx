@@ -11,6 +11,7 @@ import {
 } from 'selectors/dashboard-selectors';
 import {
   getDashboardFilters,
+  getDashboardTasks,
   initializeDashboardState,
   searchDashboardTasks,
   selectDashboardFilters,
@@ -61,10 +62,7 @@ import {
 } from './styled';
 import { ActionsContainer } from '../DashboardToolbar/styled';
 import HomeTaskViewFilter from '@/app/components/tasklist/list-toolbar-buttons/HomeTaskViewFilter';
-import {
-  getDashboardTaskViewFilter,
-  setDashboardTaskViewFilter,
-} from '@/app/helpers/local-storage-helper';
+import * as localStorageHelper from '@/app/helpers/local-storage-helper';
 
 const DashboardHeader = ({
   clearSearch,
@@ -127,11 +125,11 @@ const DashboardHeader = ({
 
   const onChangeTaskViewFilter = (newFilter) => {
     dispatch(updateDashboardTaskViewFilter(newFilter));
-    setDashboardTaskViewFilter(
+    localStorageHelper.setDashboardTaskViewFilter(
       currentOrganization?.organizationIdentifier,
       newFilter,
     );
-    // todo: fetch tasks
+    dispatch(getDashboardTasks());
   };
 
   const handleMegaFilterOpen = useCallback(() => {
@@ -155,7 +153,7 @@ const DashboardHeader = ({
       dispatch(
         initializeDashboardState(
           tabName,
-          getDashboardTaskViewFilter(
+          localStorageHelper.getDashboardTaskViewFilter(
             currentOrganization?.organizationIdentifier,
           ),
         ),
@@ -169,7 +167,7 @@ const DashboardHeader = ({
       dispatch(
         initializeDashboardState(
           tabName,
-          getDashboardTaskViewFilter(
+          localStorageHelper.getDashboardTaskViewFilter(
             currentOrganization?.organizationIdentifier,
           ),
         ),
