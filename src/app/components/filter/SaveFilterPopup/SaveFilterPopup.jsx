@@ -56,7 +56,6 @@ const SaveFilterPopup = ({
   const [onlyone, setOnlyone] = useState(true);
   const [everyOne, setEveryOne] = useState(false);
   const [isQuickFilterEdit, setIsQuickFilterEdit] = useState(false);
-  const [isDisable, setDisable] = useState(false);
 
   useEffect(() => {
     if (editIdentifier !== '' && editIdentifier !== undefined) {
@@ -73,24 +72,26 @@ const SaveFilterPopup = ({
     }
   }, [quickFiltersList, editIdentifier, isQuickFilterEdit]);
 
-  useEffect(() => {
-    const isFilterOptionsSame =
-      isQuickFilterEdit &&
-      JSON.stringify(selectedCustomFilter) ===
-        JSON.stringify(customFinalFilter);
+  // If we need the disable option later
+  // const [isDisable, setDisable] = useState(false);
+  // useEffect(() => {
+  //   const isFilterOptionsSame =
+  //     isQuickFilterEdit &&
+  //     JSON.stringify(selectedCustomFilter) ===
+  //       JSON.stringify(customFinalFilter);
 
-    const isQuickfilterNameSame =
-      quickfilterName && searchInputValue === quickfilterName;
+  //   const isQuickfilterNameSame =
+  //     quickfilterName && searchInputValue === quickfilterName;
 
-    setDisable(
-      searchInputValue === '' || (isFilterOptionsSame && isQuickfilterNameSame),
-    );
-  }, [
-    isQuickFilterEdit,
-    selectedCustomFilter,
-    customFinalFilter,
-    searchInputValue,
-  ]);
+  //   setDisable(
+  //     searchInputValue === '' || (isFilterOptionsSame && isQuickfilterNameSame),
+  //   );
+  // }, [
+  //   isQuickFilterEdit,
+  //   selectedCustomFilter,
+  //   customFinalFilter,
+  //   searchInputValue,
+  // ]);
 
   const updateFilter = () => {
     handleSaveQuickFilter(editIdentifier, customFilteredData);
@@ -223,12 +224,7 @@ const SaveFilterPopup = ({
             Cancel
           </CancelButton>
           <ConfirmButton
-            disabled={isDisable}
-            style={{
-              width: '270px',
-              background: isDisable && palette.shadowBlue,
-              color: isDisable && palette.white,
-            }}
+            style={{ width: '270px' }}
             onClick={
               isQuickFilterEdit
                 ? handleQuickFilterUpdate
