@@ -764,9 +764,7 @@ export const ParentTaskContainer = styled.div`
     margin-bottom: ${({ noMargin, origin }) =>
       noMargin ? -1 : origin === 'PATIENT' || origin === 'GLOBAL' ? 2 : 0}px;
   }
-  width: ${({ $width, origin }) =>
-    origin === 'LIST' ? (!$width ? '1000%' : '') : ''};
-  padding-right: ${({ isVirtualTask }) => (isVirtualTask ? '70px' : '')};
+  width: ${({ $width }) => (!$width ? '100%' : '')};
   margin-bottom: ${({
     origin,
     isLastChild,
