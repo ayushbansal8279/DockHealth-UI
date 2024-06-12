@@ -554,8 +554,6 @@ export const StandardTaskThreeDots = styled(ThreeDots)`
 
 export const StandardTaskItemPanel = styled.div`
   position: relative;
-  ${({ $isVirtualizedList }) =>
-    $isVirtualizedList ? '' : 'margin-left: 55px;'}
   ${(props) =>
     props.$isDragging
       ? 'box-shadow: 0px 0px 11px rgba(204, 204, 204, 0.8)'
@@ -777,6 +775,7 @@ export const ParentTaskContainer = styled.div`
         ? '10px'
         : ''
       : ''};
+  margin-left: ${({ isVirtualTask }) => (isVirtualTask ? '-3px' : '-1px')};
 `;
 
 export const TaskContainer = styled.div``;

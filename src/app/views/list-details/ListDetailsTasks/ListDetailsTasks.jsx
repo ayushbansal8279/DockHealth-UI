@@ -73,6 +73,7 @@ const ListDetailsTasks = ({
   setClearSearch,
   setClearFilter,
 }) => {
+  window.disabledVirtualTaskList = false;
   const isVirtualizedList = useIsVirtualizedList();
 
   const groupedTasks = useSelector(groupTasksSelector);
