@@ -25,7 +25,6 @@ import { getMatchedComments } from './helpers';
 import { ParentTaskContainer, SubtasksWrapper, TaskContainer } from '../styled';
 import QuickAddSubtask from './QuickAddSubtask';
 import { ListPageContext } from '@/app/views/list-details/ListDetailsView';
-import { useIsVirtualizedList } from '@/app/hooks/use-is-virtualized-list';
 
 const Task = React.memo(
   ({
@@ -54,6 +53,7 @@ const Task = React.memo(
     isLastChild,
     pageBackground,
     isNestedTask,
+    isVirtualTask,
     isVirtualSubtask,
     $width,
     isNextVirtualTaskItemTypeBundle,
@@ -64,7 +64,6 @@ const Task = React.memo(
     ...restProps
   }) => {
     const parentTaskReference = useRef(null);
-    const isVirtualizedList = useIsVirtualizedList();
     const [areSubtasksOpen, setAreSubtasksOpen] = useState(false);
 
     // const pulledTask = useSelector((state) =>
@@ -237,7 +236,7 @@ const Task = React.memo(
         ref={parentTaskReference}
         noMargin={noMargin}
         {...draggableProps}
-        $isVirtualizedList={isVirtualizedList}
+        isVirtualTask={isVirtualTask}
         origin={origin}
         isLastChild={isLastChild}
         $width={$width}
@@ -270,6 +269,7 @@ const Task = React.memo(
             viewSetup={viewSetup}
             isNestedTask={isNestedTask}
             isWorkflowSubtask={isWorkflowSubtask}
+            isVirtualTask={isVirtualTask}
             isVirtualSubtask={isVirtualSubtask}
             isWidthGreaterThanHudredPercent={$width}
             pageBackground={pageBackground}
