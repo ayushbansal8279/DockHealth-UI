@@ -1198,7 +1198,15 @@ const TaskItem = React.memo(
                       columns?.find(
                         ({ identifier }) =>
                           identifier === TaskItemColumn.PATIENT,
-                      )?.columnWidth
+                      )?.columnWidth -
+                      (isSubtask &&
+                      origin === 'LIST' &&
+                      !selectedFilters &&
+                      !searchValue &&
+                      !sort.key &&
+                      getColumnOrder(TaskItemColumn.PATIENT) === 0
+                        ? 36
+                        : 0)
                     }
                     order={getColumnOrder(TaskItemColumn.PATIENT)}
                   >
@@ -1234,7 +1242,15 @@ const TaskItem = React.memo(
                       columns?.find(
                         ({ identifier }) =>
                           identifier === TaskItemColumn.PRIORITY,
-                      )?.columnWidth
+                      )?.columnWidth -
+                      (isSubtask &&
+                      origin === 'LIST' &&
+                      !selectedFilters &&
+                      !searchValue &&
+                      !sort.key &&
+                      getColumnOrder(TaskItemColumn.PRIORITY) === 0
+                        ? 36
+                        : 0)
                     }
                     order={getColumnOrder(TaskItemColumn.PRIORITY)}
                   >
@@ -1270,7 +1286,15 @@ const TaskItem = React.memo(
                       columns?.find(
                         ({ identifier }) =>
                           identifier === PatientTaskItemColumn.GENDER,
-                      )?.columnWidth
+                      )?.columnWidth -
+                      (isSubtask &&
+                      origin === 'LIST' &&
+                      !selectedFilters &&
+                      !searchValue &&
+                      !sort.key &&
+                      getColumnOrder(PatientTaskItemColumn.GENDER) === 0
+                        ? 36
+                        : 0)
                     }
                     order={getColumnOrder(PatientTaskItemColumn.GENDER)}
                   >
@@ -1309,7 +1333,15 @@ const TaskItem = React.memo(
                       columns?.find(
                         ({ identifier }) =>
                           identifier === PatientTaskItemColumn.DOB,
-                      )?.columnWidth
+                      )?.columnWidth -
+                      (isSubtask &&
+                      origin === 'LIST' &&
+                      !selectedFilters &&
+                      !searchValue &&
+                      !sort.key &&
+                      getColumnOrder(PatientTaskItemColumn.DOB) === 0
+                        ? 36
+                        : 0)
                     }
                     order={getColumnOrder(PatientTaskItemColumn.DOB)}
                   >
@@ -1333,7 +1365,15 @@ const TaskItem = React.memo(
                       columns?.find(
                         ({ identifier }) =>
                           identifier === PatientTaskItemColumn.EMAIL,
-                      )?.columnWidth
+                      )?.columnWidth -
+                      (isSubtask &&
+                      origin === 'LIST' &&
+                      !selectedFilters &&
+                      !searchValue &&
+                      !sort.key &&
+                      getColumnOrder(PatientTaskItemColumn.EMAIL) === 0
+                        ? 36
+                        : 0)
                     }
                     order={getColumnOrder(PatientTaskItemColumn.EMAIL)}
                   >
@@ -1357,7 +1397,15 @@ const TaskItem = React.memo(
                       columns?.find(
                         ({ identifier }) =>
                           identifier === PatientTaskItemColumn.MRN,
-                      )?.columnWidth
+                      )?.columnWidth -
+                      (isSubtask &&
+                      origin === 'LIST' &&
+                      !selectedFilters &&
+                      !searchValue &&
+                      !sort.key &&
+                      getColumnOrder(PatientTaskItemColumn.MRN) === 0
+                        ? 36
+                        : 0)
                     }
                     order={getColumnOrder(PatientTaskItemColumn.MRN)}
                   >
@@ -1386,7 +1434,15 @@ const TaskItem = React.memo(
                       columns?.find(
                         ({ identifier }) =>
                           identifier === PatientTaskItemColumn.MOBILE_PHONE,
-                      )?.columnWidth
+                      )?.columnWidth -
+                      (isSubtask &&
+                      origin === 'LIST' &&
+                      !selectedFilters &&
+                      !searchValue &&
+                      !sort.key &&
+                      getColumnOrder(PatientTaskItemColumn.MOBILE_PHONE) === 0
+                        ? 36
+                        : 0)
                     }
                     order={getColumnOrder(PatientTaskItemColumn.MOBILE_PHONE)}
                   >
@@ -1410,7 +1466,15 @@ const TaskItem = React.memo(
                       columns?.find(
                         ({ identifier }) =>
                           identifier === PatientTaskItemColumn.HOME_PHONE,
-                      )?.columnWidth
+                      )?.columnWidth -
+                      (isSubtask &&
+                      origin === 'LIST' &&
+                      !selectedFilters &&
+                      !searchValue &&
+                      !sort.key &&
+                      getColumnOrder(PatientTaskItemColumn.HOME_PHONE) === 0
+                        ? 36
+                        : 0)
                     }
                     order={getColumnOrder(PatientTaskItemColumn.HOME_PHONE)}
                   >
@@ -1433,7 +1497,15 @@ const TaskItem = React.memo(
                       columns?.find(
                         ({ identifier }) =>
                           identifier === TaskItemColumn.WORKFLOW_STATUS,
-                      )?.columnWidth
+                      )?.columnWidth -
+                      (isSubtask &&
+                      origin === 'LIST' &&
+                      !selectedFilters &&
+                      !searchValue &&
+                      !sort.key &&
+                      getColumnOrder(TaskItemColumn.WORKFLOW_STATUS) === 0
+                        ? 36
+                        : 0)
                     }
                     paddingLeft="smallPlus"
                     paddingRight="tiny"
@@ -1468,7 +1540,15 @@ const TaskItem = React.memo(
                       columns?.find(
                         ({ identifier }) =>
                           identifier === TaskItemColumn.COMMENTS,
-                      )?.columnWidth
+                      )?.columnWidth -
+                      (isSubtask &&
+                      origin === 'LIST' &&
+                      !selectedFilters &&
+                      !searchValue &&
+                      !sort.key &&
+                      getColumnOrder(TaskItemColumn.COMMENTS) === 0
+                        ? 36
+                        : 0)
                     }
                     order={getColumnOrder(TaskItemColumn.COMMENTS)}
                   >
@@ -1492,7 +1572,15 @@ const TaskItem = React.memo(
                       columns?.find(
                         ({ identifier }) =>
                           identifier === TaskItemColumn.LABELS,
-                      )?.columnWidth
+                      )?.columnWidth -
+                      (isSubtask &&
+                      origin === 'LIST' &&
+                      !selectedFilters &&
+                      !searchValue &&
+                      !sort.key &&
+                      getColumnOrder(TaskItemColumn.LABELS) === 0
+                        ? 36
+                        : 0)
                     }
                     order={getColumnOrder(TaskItemColumn.LABELS)}
                   >
@@ -1517,7 +1605,15 @@ const TaskItem = React.memo(
                     width={
                       columns?.find(
                         ({ identifier }) => identifier === TaskItemColumn.FILES,
-                      )?.columnWidth
+                      )?.columnWidth -
+                      (isSubtask &&
+                      origin === 'LIST' &&
+                      !selectedFilters &&
+                      !searchValue &&
+                      !sort.key &&
+                      getColumnOrder(TaskItemColumn.FILES) === 0
+                        ? 36
+                        : 0)
                     }
                     order={getColumnOrder(TaskItemColumn.FILES)}
                   >
@@ -1543,7 +1639,15 @@ const TaskItem = React.memo(
                       columns?.find(
                         ({ identifier }) =>
                           identifier === TaskItemColumn.START_DATE,
-                      )?.columnWidth
+                      )?.columnWidth -
+                      (isSubtask &&
+                      origin === 'LIST' &&
+                      !selectedFilters &&
+                      !searchValue &&
+                      !sort.key &&
+                      getColumnOrder(TaskItemColumn.START_DATE) === 0
+                        ? 36
+                        : 0)
                     }
                     paddingLeft="12px"
                     paddingRight="tiny"
@@ -1573,7 +1677,15 @@ const TaskItem = React.memo(
                         columns?.find(
                           ({ identifier }) =>
                             identifier === TaskItemColumn.DUE_DATE,
-                        )?.columnWidth
+                        )?.columnWidth -
+                        (isSubtask &&
+                        origin === 'LIST' &&
+                        !selectedFilters &&
+                        !searchValue &&
+                        !sort.key &&
+                        getColumnOrder(TaskItemColumn.DUE_DATE) === 0
+                          ? 36
+                          : 0)
                       }
                       paddingLeft="12px"
                       paddingRight="tiny"
@@ -1600,7 +1712,15 @@ const TaskItem = React.memo(
                       columns?.find(
                         ({ identifier }) =>
                           identifier === TaskItemColumn.ANCHOR_DATE,
-                      )?.columnWidth
+                      )?.columnWidth -
+                      (isSubtask &&
+                      origin === 'LIST' &&
+                      !selectedFilters &&
+                      !searchValue &&
+                      !sort.key &&
+                      getColumnOrder(TaskItemColumn.ANCHOR_DATE) === 0
+                        ? 36
+                        : 0)
                     }
                     onContextMenu={(event) => {
                       event.stopPropagation();
@@ -1621,7 +1741,15 @@ const TaskItem = React.memo(
                       columns?.find(
                         ({ identifier }) =>
                           identifier === TaskItemColumn.ASSIGNED,
-                      )?.columnWidth
+                      )?.columnWidth -
+                      (isSubtask &&
+                      origin === 'LIST' &&
+                      !selectedFilters &&
+                      !searchValue &&
+                      !sort.key &&
+                      getColumnOrder(TaskItemColumn.ASSIGNED) === 0
+                        ? 36
+                        : 0)
                     }
                     // eslint-disable-next-line sonarjs/no-duplicate-string
                     paddingLeft="12px"
@@ -1659,7 +1787,15 @@ const TaskItem = React.memo(
                       columns?.find(
                         ({ identifier }) =>
                           identifier === TaskItemColumn.SHARED,
-                      )?.columnWidth
+                      )?.columnWidth -
+                      (isSubtask &&
+                      origin === 'LIST' &&
+                      !selectedFilters &&
+                      !searchValue &&
+                      !sort.key &&
+                      getColumnOrder(TaskItemColumn.SHARED) === 0
+                        ? 36
+                        : 0)
                     }
                     // eslint-disable-next-line sonarjs/no-duplicate-string
                     paddingLeft="12px"
@@ -1695,7 +1831,15 @@ const TaskItem = React.memo(
                       columns?.find(
                         ({ identifier }) =>
                           identifier === TaskItemColumn.CREATED_BY,
-                      )?.columnWidth
+                      )?.columnWidth -
+                      (isSubtask &&
+                      origin === 'LIST' &&
+                      !selectedFilters &&
+                      !searchValue &&
+                      !sort.key &&
+                      getColumnOrder(TaskItemColumn.CREATED_BY) === 0
+                        ? 36
+                        : 0)
                     }
                     paddingLeft="12px"
                     paddingRight="small"
@@ -1732,7 +1876,15 @@ const TaskItem = React.memo(
                         columns?.find(
                           ({ identifier }) =>
                             identifier === TaskItemColumn.CREATED_DATE,
-                        )?.columnWidth
+                        )?.columnWidth -
+                        (isSubtask &&
+                        origin === 'LIST' &&
+                        !selectedFilters &&
+                        !searchValue &&
+                        !sort.key &&
+                        getColumnOrder(TaskItemColumn.CREATED_DATE) === 0
+                          ? 36
+                          : 0)
                       }
                       paddingLeft="12px"
                       paddingRight="tiny"
@@ -1761,7 +1913,15 @@ const TaskItem = React.memo(
                         columns?.find(
                           ({ identifier }) =>
                             identifier === TaskItemColumn.COMPLETED_DATE,
-                        )?.columnWidth
+                        )?.columnWidth -
+                        (isSubtask &&
+                        origin === 'LIST' &&
+                        !selectedFilters &&
+                        !searchValue &&
+                        !sort.key &&
+                        getColumnOrder(TaskItemColumn.COMPLETED_DATE) === 0
+                          ? 36
+                          : 0)
                       }
                       paddingLeft="12px"
                       paddingRight="tiny"
@@ -1789,7 +1949,15 @@ const TaskItem = React.memo(
                       columns?.find(
                         ({ identifier }) =>
                           identifier === TaskItemColumn.COMPLETED_BY,
-                      )?.columnWidth
+                      )?.columnWidth -
+                      (isSubtask &&
+                      origin === 'LIST' &&
+                      !selectedFilters &&
+                      !searchValue &&
+                      !sort.key &&
+                      getColumnOrder(TaskItemColumn.COMPLETED_BY) === 0
+                        ? 36
+                        : 0)
                     }
                     paddingLeft="12px"
                     paddingRight="small"
@@ -1830,7 +1998,15 @@ const TaskItem = React.memo(
                         columns?.find(
                           ({ identifier }) =>
                             identifier === TaskItemColumn.ELAPSED_TIME,
-                        )?.columnWidth
+                        )?.columnWidth -
+                        (isSubtask &&
+                        origin === 'LIST' &&
+                        !selectedFilters &&
+                        !searchValue &&
+                        !sort.key &&
+                        getColumnOrder(TaskItemColumn.ELAPSED_TIME) === 0
+                          ? 36
+                          : 0)
                       }
                       paddingLeft="12px"
                       paddingRight="tiny"
@@ -1858,7 +2034,15 @@ const TaskItem = React.memo(
                       columns?.find(
                         ({ identifier }) =>
                           identifier === TaskItemColumn.LIST_NAME,
-                      )?.columnWidth
+                      )?.columnWidth -
+                      (isSubtask &&
+                      origin === 'LIST' &&
+                      !selectedFilters &&
+                      !searchValue &&
+                      !sort.key &&
+                      getColumnOrder(TaskItemColumn.LIST_NAME) === 0
+                        ? 36
+                        : 0)
                     }
                     order={getColumnOrder(TaskItemColumn.LIST_NAME)}
                   >
@@ -1883,7 +2067,15 @@ const TaskItem = React.memo(
                         columns?.find(
                           ({ identifier }) =>
                             identifier === TaskItemColumn.ORG_NAME,
-                        )?.columnWidth
+                        )?.columnWidth -
+                        (isSubtask &&
+                        origin === 'LIST' &&
+                        !selectedFilters &&
+                        !searchValue &&
+                        !sort.key &&
+                        getColumnOrder(TaskItemColumn.ORG_NAME) === 0
+                          ? 36
+                          : 0)
                       }
                       order={getColumnOrder(TaskItemColumn.ORG_NAME)}
                     >
@@ -1914,7 +2106,15 @@ const TaskItem = React.memo(
                       columns?.find(
                         ({ identifier }) =>
                           identifier === TaskItemColumn.TASK_DETAILS,
-                      )?.columnWidth
+                      )?.columnWidth -
+                      (isSubtask &&
+                      origin === 'LIST' &&
+                      !selectedFilters &&
+                      !searchValue &&
+                      !sort.key &&
+                      getColumnOrder(TaskItemColumn.TASK_DETAILS) === 0
+                        ? 36
+                        : 0)
                     }
                     order={getColumnOrder(TaskItemColumn.TASK_DETAILS)}
                   >
@@ -1963,7 +2163,17 @@ const TaskItem = React.memo(
                           isSubtask={isSubtask}
                           key={`custom_${taskIdentifier}_${field.identifier}`}
                           padding="4px"
-                          width={field.columnWidth}
+                          width={
+                            field.columnWidth -
+                            (isSubtask &&
+                            origin === 'LIST' &&
+                            !selectedFilters &&
+                            !searchValue &&
+                            !sort.key &&
+                            getColumnOrder(field.identifier) === 0
+                              ? 36
+                              : 0)
+                          }
                           order={getColumnOrder(field.identifier)}
                         >
                           {!hidePatientCustomFields && (
