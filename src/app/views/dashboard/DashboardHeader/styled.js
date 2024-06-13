@@ -1,3 +1,6 @@
+import { fontWeights } from '@/app/styles/font';
+import spacing from '@/app/styles/spacing';
+import { Button, Typography } from '@mui/material';
 import styled from 'styled-components';
 import palette from 'styles/palette';
 
@@ -67,5 +70,31 @@ export const GridItemSlimView = styled.div`
   gap: 10px;
   @media print {
     display: none;
+  }
+`;
+
+export const AddTaskButtonWrapper = styled(Button)`
+  && {
+    border-radius: 4px;
+    background-color: ${palette.newDarkBlue};
+  }
+  & .MuiSvgIcon-root > path {
+    fill: ${palette.white};
+  }
+  height: 32px;
+`;
+
+export const AddTaskButtonLabel = styled(Typography)`
+  &&& {
+    &.MuiTypography-root {
+      color: ${palette.white};
+      display: inline-block;
+      margin-left: ${spacing.tiny};
+      text-transform: none;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 11.19px;
+      text-align: center;
+    }
   }
 `;

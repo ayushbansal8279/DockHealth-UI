@@ -59,6 +59,8 @@ import {
   GridItemCalendarView,
   // GridItemFullView,
   GridItemSlimView,
+  AddTaskButtonWrapper,
+  AddTaskButtonLabel,
 } from './styled';
 import {
   ActionsContainer,
@@ -69,6 +71,7 @@ import {
 } from '../DashboardToolbar/styled';
 
 import { DashboardHeaderContainer } from './styled';
+import { Add } from '@mui/icons-material';
 
 const DashboardHeader = ({
   clearSearch,
@@ -399,6 +402,12 @@ const DashboardHeader = ({
             </Box>
           </>
         )}
+        <Box mr>
+          <AddTaskButtonWrapper>
+            <Add />
+            <AddTaskButtonLabel>Add Task</AddTaskButtonLabel>
+          </AddTaskButtonWrapper>
+        </Box>
         <Box
           display="flex"
           flex={viewType === ViewType.CALENDAR_VIEW ? 1 : 0}
