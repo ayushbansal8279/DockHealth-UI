@@ -5,10 +5,14 @@ import isEmpty from 'ramda/src/isEmpty';
 import FilterButton from 'components/filter/FilterButton/FilterButton';
 import FilterPopover from 'components/filter/FilterPopover/FilterPopover';
 import CustomFilters from 'components/filter/CustomFilters/CustomFilters';
+import { useSelector } from 'react-redux';
 import { MegaFilterNoResultsLabel, MegaFilterContainer } from './styled';
 import NewFilterContainer from '../../../filter/NewFilterContainer/NewFilterContainer';
 import SaveFilterPopup from '../../../filter/SaveFilterPopup/SaveFilterPopup';
 import FilterTableLoader from '../../../filter/FilterTableLoader/FilterTableLoader';
+import { ampli } from '@/ampli';
+import { organizationSelector } from '@/app/selectors/organization-selectors';
+import { userProfileSelector } from '@/app/selectors/user-selectors';
 
 const MegaFilter = ({
   children,
@@ -44,6 +48,17 @@ const MegaFilter = ({
   const [filteredData, setFilteredData] = useState({});
   const [customFilteredData, setCustomFilteredData] = useState({});
   const [selectedQuickFilter, setSelectedQuickFilter] = useState('');
+  const organization = useSelector(organizationSelector);
+  const userProfile = useSelector(userProfileSelector);
+
+  useEffect(() => {
+    if (isOpen) {
+      ampli.megaFilterOpen({
+        organizationIdentifier: organization.organizationIdentifier ?? '',
+        userIdentifier: userProfile.userIdentifier ?? '',
+      });
+    }
+  }, [isOpen]);
 
   useEffect(() => {
     const data = {};

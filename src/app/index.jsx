@@ -19,6 +19,7 @@ import ErrorBoundary from './ErrorBoundary';
 import Routes from './routing/routes';
 import App from './views/App';
 import './register/register-mui-license-premium';
+import { AmplitudeContextProvider } from './context-api/Amplitude/AmplitudeContext';
 
 if (import.meta.env.NODE_ENV === 'development') {
   const whyDidYouRender = require('@welldone-software/why-did-you-render');
@@ -93,22 +94,22 @@ const Index = () => (
   <QueryClientProvider client={queryClient}>
     <ThemeProvider theme={getTheme()}>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
-        {/* <FlagsProvider flags={flags}> */}
-        <Provider store={store}>
-          <ErrorBoundary>
-            <HashRouter forceRefresh>
-              <IntercomProvider appId={VITE_INTERCOM_APP_CODE} autoBoot>
-                <App>
-                  <Routes />
-                </App>
-              </IntercomProvider>
-            </HashRouter>
-            {import.meta.env.VITE_APP_ENV === 'local' && (
-              <ReactQueryDevtools initialIsOpen={false} />
-            )}
-          </ErrorBoundary>
-        </Provider>
-        {/* </FlagsProvider> */}
+        <AmplitudeContextProvider>
+          <Provider store={store}>
+            <ErrorBoundary>
+              <HashRouter forceRefresh>
+                <IntercomProvider appId={VITE_INTERCOM_APP_CODE} autoBoot>
+                  <App>
+                    <Routes />
+                  </App>
+                </IntercomProvider>
+              </HashRouter>
+              {import.meta.env.VITE_APP_ENV === 'local' && (
+                <ReactQueryDevtools initialIsOpen={false} />
+              )}
+            </ErrorBoundary>
+          </Provider>
+        </AmplitudeContextProvider>
       </LocalizationProvider>
     </ThemeProvider>
   </QueryClientProvider>
