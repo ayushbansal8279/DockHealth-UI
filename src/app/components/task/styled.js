@@ -752,7 +752,7 @@ export const ParentTaskContainer = styled.div`
   }
   width: ${({ $width }) => ($width ? '100%' : '')};
   padding-right: ${({ $width, $isVirtualSubtask }) =>
-    $width ? ($isVirtualSubtask ? '10px' : '65px') : ''};
+    $width ? ($isVirtualSubtask ? '15.5px' : '66.5px') : ''};
   margin-bottom: ${({
     origin,
     isLastChild,
@@ -764,7 +764,6 @@ export const ParentTaskContainer = styled.div`
         ? '10px'
         : ''
       : ''};
-  margin-left: ${({ isVirtualTask }) => (isVirtualTask ? '-3px' : '-1px')};
 `;
 
 export const TaskContainer = styled.div``;

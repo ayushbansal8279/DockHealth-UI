@@ -179,7 +179,7 @@ function VTask(
               style={{
                 width:
                   percentage > 90 ? `${droppableHeaderWidth + 70}` : '100%',
-                paddingRight: percentage > 90 ? '16px' : '13px',
+                paddingRight: percentage > 90 ? '16px' : '15px',
                 background: bgColor ? palette.aliceBlue : '',
                 paddingBottom: !addWorkflowTask
                   ? isLastTaskOfGroup
@@ -223,7 +223,7 @@ function VTask(
                 style={{
                   width:
                     percentage > 90 ? `${droppableHeaderWidth + 70}` : '100%',
-                  paddingRight: percentage > 90 ? '16px' : '13px',
+                  paddingRight: percentage > 90 ? '16px' : '15px',
                   background: bgColor ? palette.aliceBlue : '',
                   paddingBottom: addWorkflowTask
                     ? isLastTaskOfGroup

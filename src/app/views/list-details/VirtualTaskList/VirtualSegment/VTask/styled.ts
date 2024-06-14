@@ -79,12 +79,8 @@ export const VTask = styled('div')`
   border-left: 1px solid rgb(229, 233, 242);
   background: ${({ bgColor }) => (bgColor ? palette.aliceBlue : '')};
 
-  // ${({ isLastTaskOfGroup }) =>
-    isLastTaskOfGroup ? 'padding-bottom:60px' : 'padding-bottom:0px'};
-  // padding-bottom: 0px;
   & > * > * > * > * {
-    left: ${({ isTaskTemplate }: boolean) =>
-      isTaskTemplate ? ' 54px' : '54.5px'};
+    left: 51px;
   }
 `;
 

@@ -131,6 +131,7 @@ function VSubtask(
         <>
           <div
             style={{
+              width: percentage > 90 ? `${droppableHeaderWidth + 70}` : '100%',
               background: bgColor ? palette.aliceBlue : '',
               paddingBottom:
                 isLastTaskOfGroup &&
@@ -203,7 +204,7 @@ function VSubtask(
               style={{
                 width:
                   percentage > 90 ? `${droppableHeaderWidth + 70}` : '100%',
-                paddingRight: percentage > 90 ? '17px' : '13px',
+                paddingRight: percentage > 90 ? '17px' : '15px',
                 background: bgColor ? palette.aliceBlue : '',
                 paddingBottom:
                   isLastTaskOfGroup &&
@@ -246,7 +247,7 @@ function VSubtask(
               style={{
                 width:
                   percentage > 90 ? `${droppableHeaderWidth + 70}` : '100%',
-                paddingRight: percentage > 90 ? '16px' : '13px',
+                paddingRight: percentage > 90 ? '16px' : '15px',
                 background: bgColor ? palette.aliceBlue : '',
                 paddingBottom:
                   isLastTaskOfGroup && !isNextVirtualTaskItemTypeBundle

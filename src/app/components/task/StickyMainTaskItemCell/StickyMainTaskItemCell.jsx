@@ -36,7 +36,7 @@ const StickyMainTaskItemCell = styled.div`
       ? isSubtask || isWorkflowSubtask
         ? searchValue || isFilterApply || isSortApplied
           ? '54.5px'
-          : '90.5px'
+          : '90px'
         : '54.5px'
       : '24px'};
   ${({ order }) => (order ? `order: ${order};` : '')}
@@ -58,7 +58,7 @@ const StickyMainTaskItemCell = styled.div`
       props.hasEscalations
       ? palette.bananaHammockLight
       : // eslint-disable-next-line unicorn/no-nested-ternary
-      props.customHighlight ?? palette.white};
+        props.customHighlight ?? palette.white};
 
   &::before {
     content: '';
