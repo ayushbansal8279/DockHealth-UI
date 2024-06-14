@@ -186,7 +186,6 @@ const TaskItem = React.memo(
     viewSetup,
     isTaskTemplate,
     isWorkflowSubtask,
-    isWidthGreaterThanHudredPercent,
     isVirtualSubtask,
     isLastChild,
     isNextVirtualTaskItemTypeBundle,
@@ -1044,7 +1043,6 @@ const TaskItem = React.memo(
             origin={origin}
             isVirtualSubtask={isVirtualSubtask}
             isWorkflowSubtask={isWorkflowSubtask}
-            isWidthGreaterThanHudredPercent={isWidthGreaterThanHudredPercent}
           >
             {randerFirstColumnCoverIfNecessary(
               <>
