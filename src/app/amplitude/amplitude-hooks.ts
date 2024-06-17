@@ -1,4 +1,4 @@
-import { ampli } from '@/ampli';
+import { ampli } from './ampli';
 import { IAmplitudeSdk } from '@/app/types/amplitude';
 import { useEffect, useState } from 'react';
 

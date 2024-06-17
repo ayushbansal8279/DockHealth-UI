@@ -10,9 +10,9 @@ import { MegaFilterNoResultsLabel, MegaFilterContainer } from './styled';
 import NewFilterContainer from '../../../filter/NewFilterContainer/NewFilterContainer';
 import SaveFilterPopup from '../../../filter/SaveFilterPopup/SaveFilterPopup';
 import FilterTableLoader from '../../../filter/FilterTableLoader/FilterTableLoader';
-import { ampli } from '@/ampli';
 import { organizationSelector } from '@/app/selectors/organization-selectors';
 import { userProfileSelector } from '@/app/selectors/user-selectors';
+import { ampli, AmpliEventType } from '@/app/amplitude/ampli';
 
 const MegaFilter = ({
   children,
@@ -53,11 +53,15 @@ const MegaFilter = ({
 
   useEffect(() => {
     if (isOpen) {
-      ampli.megaFilterOpen({
+      ampli.track(AmpliEventType.MegaFilterOpen, {
         organizationIdentifier: organization.organizationIdentifier ?? '',
         userIdentifier: userProfile.userIdentifier ?? '',
       });
     }
+    ampli.track(AmpliEventType.Random, {
+      hello: 'world',
+      open: isOpen,
+    });
   }, [isOpen]);
 
   useEffect(() => {

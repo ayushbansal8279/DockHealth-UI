@@ -19,7 +19,7 @@ import ErrorBoundary from './ErrorBoundary';
 import Routes from './routing/routes';
 import App from './views/App';
 import './register/register-mui-license-premium';
-import { AmplitudeContextProvider } from './context-api/Amplitude/AmplitudeContext';
+import { AmplitudeContextProvider } from './amplitude/amplitude-context';
 
 if (import.meta.env.NODE_ENV === 'development') {
   const whyDidYouRender = require('@welldone-software/why-did-you-render');

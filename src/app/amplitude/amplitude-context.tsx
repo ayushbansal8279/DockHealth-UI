@@ -1,6 +1,6 @@
 import React, { createContext, PropsWithChildren } from 'react';
 import { IAmplitudeContext } from '@/app/types/amplitude';
-import { useInitAmplitude } from './utils';
+import { useInitAmplitude } from './amplitude-hooks';
 
 export const AmplitudeContext = createContext({} as IAmplitudeContext);
 
