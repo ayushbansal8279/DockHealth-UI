@@ -107,11 +107,13 @@ export const DashboardTasksGroupLabelName = styled.span`
   font-family: 'Outfit', sans-serif;
 `;
 
-export const DashboardTasksGroupNumericalBadgeContainer = styled.div`
+export const NumericalBadgeContainer = styled.div`
   height: 20px;
   border-radius: 2px;
-  border: 1px solid ${palette.iron};
-  background: ${palette.whiteSmoke};
+  border: 1px solid
+    ${({ $hasUpdates }) => ($hasUpdates ? palette.crystalBlue : palette.iron)};
+  background: ${({ $hasUpdates }) =>
+    $hasUpdates ? palette.crystalBlue : palette.whiteSmoke};
   padding: 4px 7px 4px 7px;
   gap: 7px;
   margin-left: 6px;
@@ -119,8 +121,9 @@ export const DashboardTasksGroupNumericalBadgeContainer = styled.div`
   opacity: 0px;
 `;
 
-export const DashboardTasksGroupTaskCount = styled(Typography)`
-  color: ${palette.shadowBlue};
+export const TaskCount = styled(Typography)`
+  color: ${({ $hasUpdates }) =>
+    $hasUpdates ? palette.white : palette.shadowBlue};
   font-family: Outfit;
   font-weight: 500;
   font-size: 12px;

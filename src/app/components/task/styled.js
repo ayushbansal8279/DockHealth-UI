@@ -449,19 +449,7 @@ export const StandardTaskItemContainer = styled.div`
   display: flex;
   justify-content: ${(props) =>
     props.isAddingTask ? 'flex-end' : 'flex-start'};
-  width: ${({
-    origin,
-    isVirtualSubtask,
-    isWorkflowSubtask,
-    isWidthGreaterThanHudredPercent,
-  }) =>
-    origin === 'LIST'
-      ? isVirtualSubtask || isWorkflowSubtask
-        ? isWidthGreaterThanHudredPercent
-          ? '100%'
-          : '105.3%'
-        : '100%'
-      : '100%'};
+  width: 100%;
   // height: ${({ height }) => height || 35}px;
   height: 35px;
   border-left: none;
@@ -554,8 +542,6 @@ export const StandardTaskThreeDots = styled(ThreeDots)`
 
 export const StandardTaskItemPanel = styled.div`
   position: relative;
-  ${({ $isVirtualizedList }) =>
-    $isVirtualizedList ? '' : 'margin-left: 55px;'}
   ${(props) =>
     props.$isDragging
       ? 'box-shadow: 0px 0px 11px rgba(204, 204, 204, 0.8)'
@@ -764,8 +750,9 @@ export const ParentTaskContainer = styled.div`
     margin-bottom: ${({ noMargin, origin }) =>
       noMargin ? -1 : origin === 'PATIENT' || origin === 'GLOBAL' ? 2 : 0}px;
   }
-  width: ${({ $width }) => (!$width ? '1000%' : '')};
-  padding-right: ${({ isVirtualTask }) => (isVirtualTask ? '70px' : '')};
+  width: ${({ $width }) => ($width ? '100%' : '')};
+  padding-right: ${({ $width, $isVirtualSubtask }) =>
+    $width ? ($isVirtualSubtask ? '15.5px' : '66.5px') : ''};
   margin-bottom: ${({
     origin,
     isLastChild,

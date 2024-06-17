@@ -54,8 +54,6 @@ export const TaskTemplateGroupHeaderContainer = styled.div`
     props.isSelected ? palette.dockBlueLight : palette.white};
 
   border-top: 2px solid rgba(75, 179, 253, 1);
-  margin-left: ${({ $isVirtualizedList }) =>
-    $isVirtualizedList ? '-1px' : '54px'};
   margin-top: 10px;
 
   margin-bottom: ${({
