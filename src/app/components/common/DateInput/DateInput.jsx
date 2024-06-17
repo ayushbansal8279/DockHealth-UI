@@ -19,6 +19,7 @@ const DateInput = React.forwardRef(
     {
       value,
       onChange,
+      onBlur,
       readOnly,
       disabled,
       error,
@@ -51,6 +52,7 @@ const DateInput = React.forwardRef(
 
     const handleChange = ({ target: { value: date } }) => {
       onChange({ target: { value: date } });
+      onBlur({ target: { value: date } }, true);
     };
 
     const handleClear = () => {
