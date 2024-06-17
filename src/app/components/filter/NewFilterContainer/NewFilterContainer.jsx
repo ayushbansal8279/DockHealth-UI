@@ -37,8 +37,9 @@ const NewFilterContainer = ({
   setSelectedQuickFilter,
   handleSelectedFiltersChange,
   isPatientListPage,
+  editModeEnabled = true,
 }) => {
-  console.log('filters', filters);
+  // console.log('filters', filters);
   const popoverReference = useRef(null);
   const [isPopoverOpen, openAddFilterPopover, closeAddFilterPopover] =
     useBoolean(false);
@@ -123,47 +124,49 @@ const NewFilterContainer = ({
           filteredData={filteredData}
         />
       ))}
-      <FilterButtonWrapper>
-        <BoxContainer ref={popoverReference}>
-          <AddFilterButtonContainer
-            variant="text"
-            onClick={openAddFilterPopover}
-            size="large"
-          >
-            <FilterListIcon fontSize="medium" />
-            <AddFilterButtonLabel variant="body1" component="span">
-              Add Filter
-            </AddFilterButtonLabel>
-          </AddFilterButtonContainer>
-          <Box display="flex" width="3px">
-            <AddFilterRotatableChevronButtonWrapper
+      {editModeEnabled && (
+        <FilterButtonWrapper>
+          <BoxContainer ref={popoverReference}>
+            <AddFilterButtonContainer
               variant="text"
               onClick={openAddFilterPopover}
               size="large"
             >
-              <AddFilterRotatableChevronButtonLabel
-                variant="body1"
-                component="span"
+              <FilterListIcon fontSize="medium" />
+              <AddFilterButtonLabel variant="body1" component="span">
+                Add Filter
+              </AddFilterButtonLabel>
+            </AddFilterButtonContainer>
+            <Box display="flex" width="3px">
+              <AddFilterRotatableChevronButtonWrapper
+                variant="text"
+                onClick={openAddFilterPopover}
+                size="large"
               >
-                <RotatableChevron
-                  rotated={isPopoverOpen}
-                  color={palette.white}
-                />
-              </AddFilterRotatableChevronButtonLabel>
-            </AddFilterRotatableChevronButtonWrapper>
-          </Box>
-        </BoxContainer>
-        <FilterOptionsPopover
-          anchorEl={popoverReference.current}
-          open={isPopoverOpen}
-          onClose={handleClose}
-          filterOptionsList={filters}
-          onFilterSelect={handleClick}
-        />
-        {Object.keys(finalFilter).length > 0 && (
-          <ClearFilter onClick={clearFilter}>Clear Selection</ClearFilter>
-        )}
-      </FilterButtonWrapper>
+                <AddFilterRotatableChevronButtonLabel
+                  variant="body1"
+                  component="span"
+                >
+                  <RotatableChevron
+                    rotated={isPopoverOpen}
+                    color={palette.white}
+                  />
+                </AddFilterRotatableChevronButtonLabel>
+              </AddFilterRotatableChevronButtonWrapper>
+            </Box>
+          </BoxContainer>
+          <FilterOptionsPopover
+            anchorEl={popoverReference.current}
+            open={isPopoverOpen}
+            onClose={handleClose}
+            filterOptionsList={filters}
+            onFilterSelect={handleClick}
+          />
+          {Object.keys(finalFilter).length > 0 && (
+            <ClearFilter onClick={clearFilter}>Clear Selection</ClearFilter>
+          )}
+        </FilterButtonWrapper>
+      )}
       {Object.keys(finalFilter).length > 0 && !isQuickFilterEdit && (
         <>
           <Divider />

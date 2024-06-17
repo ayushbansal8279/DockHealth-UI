@@ -20,7 +20,7 @@ export const VSubtask = styled('div')`
         : '90.5px'
       : searchValue || isFilterApply || isSortApplied
       ? '54.5px'
-      : '90.5px'};
+      : '87px'};
   margin-bottom: -5px;
   background: ${({ bgColor }) => (bgColor ? palette.aliceBlue : '')};
 `;

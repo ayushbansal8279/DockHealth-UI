@@ -322,7 +322,7 @@ const PatientForm = forwardRef(
                 }
               }}
             >
-              {buttonLabel || `SAVE ${customerTypeLabel}`}
+              {buttonLabel || `Save Edits`}
             </ConfirmButton>
           )}
         </Box>

@@ -107,7 +107,7 @@ function VAddGroup(
             <Spacing horizontal={1} />
             <GroupNameSection
               initialValue=""
-              disabled={false}
+              disabled={addNewGroup}
               isDefaultInputShown
               onEnterClick={
                 restrictions?.createGroup !== DISABLED &&

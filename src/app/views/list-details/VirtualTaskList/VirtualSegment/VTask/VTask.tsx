@@ -36,6 +36,7 @@ export interface Props extends Segment {
   isLastTaskOfGroup: boolean;
   isLastGroupOfList: boolean;
   isNextVirtualTaskItemTypeBundle: boolean;
+  taskGroupIdentifier: string;
 }
 
 export const VTaskContext = createContext({
@@ -52,6 +53,7 @@ function VTask(
     bgColor,
     isLastGroupOfList,
     isNextVirtualTaskItemTypeBundle,
+    taskGroupIdentifier,
     ...record
   }: Props,
   // eslint-disable-next-line unicorn/prevent-abbreviations, @typescript-eslint/no-unused-vars
@@ -148,12 +150,12 @@ function VTask(
             subTaskExpanded={!metadata.collapsed && task?.subtasks?.length}
             isLastGroupOfList={isLastGroupOfList}
             isNextVirtualTaskItemTypeBundle={isNextVirtualTaskItemTypeBundle}
-            $width={percentage > 90 ? `${droppableHeaderWidth + 70}` : '100%'}
           >
             <VTaskContext.Provider value={contextValue}>
               <StandardTaskItem
                 // @ts-ignore
                 taskIdentifier={metadata.id}
+                taskGroupIdentifier={taskGroupIdentifier}
                 draggableProvided={provided}
                 isDraggable
                 isDragging={snapshot.isDragging}
@@ -163,7 +165,7 @@ function VTask(
                 pageBackground={bgColor ? palette.aliceBlue : ''}
                 isNestedTask
                 isVirtualTask
-                $width={percentage > 90}
+                $width={percentage < 90}
                 isNextVirtualTaskItemTypeBundle={
                   isNextVirtualTaskItemTypeBundle
                 }
@@ -177,6 +179,7 @@ function VTask(
               style={{
                 width:
                   percentage > 90 ? `${droppableHeaderWidth + 70}` : '100%',
+                paddingRight: percentage > 90 ? '16px' : '15px',
                 background: bgColor ? palette.aliceBlue : '',
                 paddingBottom: !addWorkflowTask
                   ? isLastTaskOfGroup
@@ -220,6 +223,7 @@ function VTask(
                 style={{
                   width:
                     percentage > 90 ? `${droppableHeaderWidth + 70}` : '100%',
+                  paddingRight: percentage > 90 ? '16px' : '15px',
                   background: bgColor ? palette.aliceBlue : '',
                   paddingBottom: addWorkflowTask
                     ? isLastTaskOfGroup

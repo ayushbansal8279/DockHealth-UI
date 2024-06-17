@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo } from 'react';
 import {
   filterOptionsSelector,
   patientsSelectedFiltersSelector,
@@ -7,6 +7,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import isEmpty from 'ramda/src/isEmpty';
 import * as PatientsActions from 'actions/patients-actions';
 import { organizationSelector } from 'selectors/organization-selectors';
+import { userProfileSelector } from 'selectors/user-selectors';
+import { checkIfUserIsOrganizationAdmin } from 'helpers/user-helper';
 import {
   getQuickFilters,
   createQuickFilter,
@@ -47,13 +49,16 @@ const PatientsFilter = ({
   const dispatch = useDispatch();
   const filterOptions = useSelector(filterOptionsSelector);
   const selectedFilters = useSelector(patientsSelectedFiltersSelector);
-  const isFilterApplied = selectedFilters && !isEmpty(selectedFilters);
+  // const isFilterApplied = selectedFilters && !isEmpty(selectedFilters);
 
   const quickFiltersList = useSelector(quickFiltersSelector);
   const addQuickFilterOption = useSelector(addQuickFilterOptionSelector);
   const selectedQuickFilter = useSelector(selectedQuickFilterSelector);
 
   const { organizationIdentifier } = useSelector(organizationSelector);
+
+  const userProfile = useSelector(userProfileSelector);
+  const isAdmin = checkIfUserIsOrganizationAdmin(userProfile);
 
   useEffect(() => {
     if (!filterOptions || filterOptions?.length === 0) {
@@ -205,13 +210,13 @@ const PatientsFilter = ({
         customFilteredData={customFilteredData}
         setCustomFilteredData={setCustomFilteredData}
         isPatientListPage
-      ></SaveFilterPopup>
+      />
       <CustomFilters
         quickFiltersList={quickFiltersList}
         addQuickFilterOption={addQuickFilterOption}
         selectedQuickFilter={selectedQuickFilter}
         selectQuickFilter={handleSelectQuickFilter}
-        editModeEnabled={false}
+        editModeEnabled={isAdmin}
         onUpdate={handleQuickFilterUpdate}
         onDelete={handleQuickFilterDelete}
         setSavePopupOpen={setSavePopupOpen}
@@ -225,7 +230,6 @@ const PatientsFilter = ({
         handleQuickFilterDuplicateForPatientList={
           handleQuickFilterDuplicateForPatientList
         }
-        
         clearFilters={handleClear}
         isPatientListPage
       />
@@ -240,7 +244,8 @@ const PatientsFilter = ({
         setCustomFinalFilter={setCustomFinalFilter}
         handleSelectedFiltersChange={handleSelectedFiltersChange}
         isPatientListPage
-      ></NewFilterContainer>
+        editModeEnabled={isAdmin}
+      />
     </>
   );
 };
