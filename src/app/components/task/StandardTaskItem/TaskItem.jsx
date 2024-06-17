@@ -139,7 +139,6 @@ import TaskItemComments from './TaskItemComponents/TaskItemComments';
 import { megaFilterSelector } from '@/app/selectors/mega-filter-selectors';
 import SubtaskIcon from '@/app/img/SubtaskIcon';
 import { getTaskDetails } from '@/app/api/task-api';
-import { useIsVirtualizedList } from '@/app/hooks/use-is-virtualized-list';
 
 const { DISABLED, READ_ONLY } = SINGLE_TASK_RESTRICTIONS_OPTIONS;
 
@@ -187,14 +186,12 @@ const TaskItem = React.memo(
     viewSetup,
     isTaskTemplate,
     isWorkflowSubtask,
-    isWidthGreaterThanHudredPercent,
     isVirtualSubtask,
     isLastChild,
     isNextVirtualTaskItemTypeBundle,
     isLastTaskOfGroup,
     viewType,
   }) => {
-    const isVirtualizedList = useIsVirtualizedList();
     const dependencyIconReference = useRef(null);
     const task = useSelector((state) => {
       return taskLookupSelector(state, origin, taskItemIdentifier);
@@ -831,7 +828,7 @@ const TaskItem = React.memo(
                 : !!selectedFilters
             }
             isSortApplied={!!sort.key}
-            width={width + 25 + 56}
+            width={origin === 'LIST' ? width + 25 + 55.5 : width + 25 + 56}
           >
             {taskListRestrictions?.createTask !== DISABLED && (
               <DotsContainer
@@ -1026,7 +1023,6 @@ const TaskItem = React.memo(
         <StandardTaskItemPanel
           onContextMenu={handleTaskItemRightClick}
           origin={origin}
-          $isVirtualizedList={isVirtualizedList}
           $isDragging={isDragging}
         >
           <StandardTaskItemContainer
@@ -1047,7 +1043,6 @@ const TaskItem = React.memo(
             origin={origin}
             isVirtualSubtask={isVirtualSubtask}
             isWorkflowSubtask={isWorkflowSubtask}
-            isWidthGreaterThanHudredPercent={isWidthGreaterThanHudredPercent}
           >
             {randerFirstColumnCoverIfNecessary(
               <>

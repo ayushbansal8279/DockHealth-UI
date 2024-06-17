@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useContext } from 'react';
+import React, { useCallback, useState, useContext, useEffect } from 'react';
 import { Box } from '@mui/material';
 import FullViewIcon from 'img/list/FullViewIcon';
 import SlimViewIcon from 'img/list/SlimViewIcon';
@@ -67,18 +67,19 @@ const ListDetailsToolbar = ({
 
   const { changeViewType, handleSetChangeViewType, handleRemoveAllTasks } =
     useContext(ListPageContext);
-  const [calendarView, setCalendarView] = useState(
-    queryViewType === ViewType.CALENDAR_VIEW,
-  );
-  const [boardView, setBoardView] = useState(
-    queryViewType === ViewType.BOARD_VIEW,
-  );
-  const [slimView, setSlimView] = useState(
-    viewType === ViewType.LIST_VIEW && changeViewType === 'SLIM_VIEW',
-  );
-  const [fullView, setFullView] = useState(
-    viewType === ViewType.LIST_VIEW && changeViewType === 'FULL_VIEW',
-  );
+  const [calendarView, setCalendarView] = useState(false);
+  const [boardView, setBoardView] = useState(false);
+  const [slimView, setSlimView] = useState(false);
+  const [fullView, setFullView] = useState(false);
+
+  useEffect(() => {
+    if (viewType === ViewType.LIST_VIEW && changeViewType === 'SLIM_VIEW')
+      setSlimView(true);
+    if (viewType === ViewType.LIST_VIEW && changeViewType === 'FULL_VIEW')
+      setFullView(true);
+    if (queryViewType === ViewType.BOARD_VIEW) setBoardView(true);
+    if (queryViewType === ViewType.CALENDAR_VIEW) setCalendarView(true);
+  }, [viewType, queryViewType, changeViewType]);
 
   const handleChangeViewType = useCallback(
     (newViewType) => {

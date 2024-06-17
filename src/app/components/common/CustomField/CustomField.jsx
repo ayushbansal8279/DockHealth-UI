@@ -78,9 +78,13 @@ const CustomField = ({
   }, [fieldType, isRequired, options]);
 
   const handleBlur = useCallback(
-    (data) => {
+    (data, wasDateChanged) => {
       if (onBlur) {
-        onBlur(data, wasChanged);
+        if (fieldType === FieldType.DATE) {
+          onBlur(data, wasDateChanged);
+        } else {
+          onBlur(data, wasChanged);
+        }
       }
     },
     [onBlur, wasChanged],
