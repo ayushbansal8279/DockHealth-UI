@@ -151,7 +151,12 @@ const PatientsToolbar = ({ searchValue, setSearchValue }) => {
     <>
       <Box p="16px">
         <Box display="flex" width="100%">
-          <Box display="flex" flex={1} alignItems="center">
+          <Box
+            display="flex"
+            flex={1}
+            alignItems="center"
+            maxWidth="fit-content"
+          >
             <Box>
               <CustomizeToolbarButton
                 iconColorFilterActive={iconColorFilterActiveItem?.value}
