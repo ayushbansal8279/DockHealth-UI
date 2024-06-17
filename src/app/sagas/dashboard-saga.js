@@ -96,7 +96,6 @@ function* getDashboardFilters() {
 }
 
 function* getDashboardTasksForGroup({ groupType, sortBy, sortDirection }) {
-  console.log('groupType', groupType);
   try {
     const tabName = yield select(dashboardTabNameSelector);
     const isAllTasks = tabName === DashboardTasksTab.ALL_TASKS;
@@ -239,7 +238,6 @@ function* searchDashboardTasks({ searchTerm }) {
 }
 
 function* getDashboardTasks(payload) {
-  console.log('payload', payload);
   try {
     const selectedFilters = yield select(selectedFiltersInMegaFilterSelector);
 
