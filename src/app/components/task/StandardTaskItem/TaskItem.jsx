@@ -828,7 +828,7 @@ const TaskItem = React.memo(
                 : !!selectedFilters
             }
             isSortApplied={!!sort.key}
-            width={width + 25 + 56}
+            width={origin === 'LIST' ? width + 25 + 55.5 : width + 25 + 56}
           >
             {taskListRestrictions?.createTask !== DISABLED && (
               <DotsContainer
