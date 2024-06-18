@@ -8,6 +8,7 @@ import PrioritySection from '../PrioritySection/PrioritySection';
 import StatusSection from '../StatusSection/StatusSection';
 import TaskDrawerEmailBodyContainer from '../EmailBody/EmailBody';
 import PatientSection from '../PatientSection/PatientSection';
+import initializeTaskDrawerHooks from './hooks';
 import AssignedToSection from '../AssignedToSection/AssignedToSection';
 import DueDateSection from '../DueDateSection/DueDateSection';
 import TaskDetails from '../TaskDetails/TaskDetails';
@@ -37,7 +38,28 @@ import {
 import ListSelectorSection from '../ListSelectorSection/ListSelectorSection';
 
 const AddTaskDrawerContent = (props) => {
-  const { setAddTaskDrawer } = props;
+  const {
+    isInbox,
+    onTaskUpdate = () => {},
+    onTaskCreation = () => {},
+    onTaskDelete = () => {},
+    fromFirstAddTask = false,
+    hideTour = false,
+    setAddTaskDrawer,
+  } = props;
+
+  const {
+    closeTaskDrawer: handleCloseTaskDrawer,
+    selectedTask,
+    taskDrawerOpen,
+  } = initializeTaskDrawerHooks({
+    isInbox,
+    onTaskUpdate,
+    onTaskCreation,
+    onTaskDelete,
+    fromFirstAddTask,
+    hideTour,
+  });
 
   const [description, setDescription] = useState('');
   const [details, setDetails] = useState('');
