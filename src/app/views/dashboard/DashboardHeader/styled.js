@@ -95,6 +95,7 @@ export const AddTaskButtonLabel = styled(Typography)`
       font-weight: 500;
       line-height: 11.19px;
       text-align: center;
+      margin-right: 5px;
     }
   }
 `;

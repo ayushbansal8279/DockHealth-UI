@@ -72,12 +72,14 @@ import {
 
 import { DashboardHeaderContainer } from './styled';
 import { Add } from '@mui/icons-material';
+import { openAddTaskTaskDrawer } from '@/app/actions/task-drawer-actions';
 
 const DashboardHeader = ({
   clearSearch,
   setClearSearch,
   clearFilter,
   setClearFilter,
+  setAddTaskDrawer,
 }) => {
   const { search } = useLocation();
   const history = useHistory();
@@ -270,6 +272,11 @@ const DashboardHeader = ({
     }));
   }, [groupList, groupsPreferences, updateGroupsPreferences]);
 
+  const openAddTaskDrawer = () => {
+    setAddTaskDrawer(true);
+    dispatch(openAddTaskTaskDrawer());
+  };
+
   return (
     <DashboardHeaderContainer>
       <LayoutHeader>
@@ -403,7 +410,7 @@ const DashboardHeader = ({
           </>
         )}
         <Box mr>
-          <AddTaskButtonWrapper>
+          <AddTaskButtonWrapper onClick={openAddTaskDrawer}>
             <Add />
             <AddTaskButtonLabel>Add Task</AddTaskButtonLabel>
           </AddTaskButtonWrapper>
