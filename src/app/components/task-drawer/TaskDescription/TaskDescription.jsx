@@ -18,7 +18,13 @@ import RichTextEditor from 'components/common/RichTextEditor/RichTextEditor';
 import CustomTextEditor from 'components/common/CustomTextEditor/CustomTextEditor';
 import { DescriptionTextContainer, DescriptionError } from './styled';
 
-const TaskDescription = ({ selectedTask, readOnly }) => {
+const TaskDescription = ({
+  selectedTask,
+  readOnly,
+  addTaskDrawer,
+  taskDescription,
+  setTaskDescription,
+}) => {
   const {
     // description,
     tokenizedDescription,
@@ -53,11 +59,11 @@ const TaskDescription = ({ selectedTask, readOnly }) => {
   }, [descriptionReference, selectedTask]);
 
   const handleChange = (value) => {
-    setDescriptionState(value);
+    addTaskDrawer ? setTaskDescription(value) : setDescriptionState(value);
   };
 
   const handleBlur = (value) => {
-    if (selectedTask?.description !== value) {
+    if (selectedTask?.description !== value && !addTaskDrawer) {
       dispatch(
         updateTaskDescription(selectedTask, {
           tokenizedDescription: value || '',
@@ -77,7 +83,7 @@ const TaskDescription = ({ selectedTask, readOnly }) => {
           richTextEnabled
         >
           <RichTextEditor
-            value={descriptionState}
+            value={addTaskDrawer ? taskDescription : descriptionState}
             onChange={handleChange}
             onBlur={handleBlur}
             showToolbar={false}
