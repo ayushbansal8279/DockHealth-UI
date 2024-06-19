@@ -243,6 +243,7 @@ const Task = React.memo(
         isNextTaskItemTypeBundle={isNextTaskItemTypeBundle}
         isAddingTask={isAddingTask}
         $isVirtualSubtask={isVirtualSubtask}
+        $isWorkflowTask={isTaskTemplate}
       >
         <TaskContainer ref={innerRef}>
           <TaskItem
