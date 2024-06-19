@@ -5,7 +5,7 @@ import palette from '@/app/styles/palette';
 export const LabeledCollapseHeaderButton = styled.button`
   display: flex;
   align-items: flex-end;
-  margin-top: ${({coreTask}) => coreTask ? '' : '-35px'};
+  margin-top: ${({ coreTask }) => (coreTask ? '' : '-12px')};
 `;
 
 export const LabeledCollapseItemName = styled.p`
@@ -18,7 +18,7 @@ export const LabeledCollapseItemName = styled.p`
   line-height: 30px;
   height: 10px;
 
-  &:hover{
+  &:hover {
     color: ${palette.lighterCyanBlue};
   }
 `;
