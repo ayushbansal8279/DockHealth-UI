@@ -239,7 +239,12 @@ const AddTaskDrawerContent = (props) => {
           <CancelButton onClick={closeTaskDrawer} style={{ width: '150px' }}>
             Cancel
           </CancelButton>
-          <ConfirmButton onClick={handleSave}>Save task</ConfirmButton>
+          <ConfirmButton
+            disabled={slectedListIdentifier === '' || description === ''}
+            onClick={handleSave}
+          >
+            Save task
+          </ConfirmButton>
         </ButtonWrapper>
       </AddTaskDrawerWrapper>
       {taskDrawerOpen && <TaskDrawerBackground onClick={closeTaskDrawer} />}
