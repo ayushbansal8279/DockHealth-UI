@@ -41,6 +41,9 @@ export const PatientNoteInformation = styled.div`
   flex-direction: column;
   width: 100%;
   padding-right: ${spacing.regular};
+  & p {
+    margin-bottom: 2px;
+  }
 `;
 
 export const NoteContainer = styled.div`
