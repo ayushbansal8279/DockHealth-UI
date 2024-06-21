@@ -61,14 +61,7 @@ const TaskTemplatePatient = ({
           closePopover={() => setPopoverOpen(false)}
           origin={origin}
         >
-          <Tooltip
-            placement="top"
-            title={`Add ${customerTypeLabelCapitalized}`}
-          >
-            <AddPlaceholder>
-              + Add {customerTypeLabelCapitalized}
-            </AddPlaceholder>
-          </Tooltip>
+          <AddPlaceholder>+ Add {customerTypeLabelCapitalized}</AddPlaceholder>
         </PatientDropdown>
       )}
       {!readOnly && !patient && openPatientPopover && (

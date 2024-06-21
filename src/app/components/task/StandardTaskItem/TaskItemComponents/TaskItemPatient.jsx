@@ -102,14 +102,9 @@ const TaskItemPatient = ({
               origin={origin}
             >
               <PatientWrapper>
-                <Tooltip
-                  placement="top"
-                  title={`Add ${customerTypeLabelCapitalized}`}
-                >
-                  <PlaceholderText>
-                    + Add {customerTypeLabelCapitalized}
-                  </PlaceholderText>
-                </Tooltip>
+                <PlaceholderText>
+                  + Add {customerTypeLabelCapitalized}
+                </PlaceholderText>
               </PatientWrapper>
             </PatientDropdown>
           )}
