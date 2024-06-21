@@ -8,8 +8,8 @@ import Highlighter from 'react-highlight-words';
 import {
   NameContainer,
   NameTooltip,
-  TaskTemplateDescriptionIndicators,
-  TaskTemplateContext,
+  // TaskTemplateDescriptionIndicators,
+  // TaskTemplateContext,
   TaskTemplateNameInput,
 } from './styled';
 
@@ -31,8 +31,6 @@ const TaskTemplateName = ({
   return (
     <>
       <NameContainer
-        // onMouseEnter={() => setIsHoverVisible(true)}
-        // onMouseLeave={() => setIsHoverVisible(false)}
         onClick={() => {
           dispatch(openDrawer(identifier, templateGroup));
         }}

@@ -22,3 +22,28 @@ export const AddPlaceholder = styled.div`
     color: ${palette.brightBlue};
   }
 `;
+
+export const StartDateWrapper = styled.div`
+  width: fit-content;
+  opacity: 0;
+`;
+
+export const StartDateContainer = styled.div`
+width: 100%;
+&:hover {
+  & ${StartDateWrapper} {
+    opacity: 1;
+  }
+`;
+export const DueDateWrapper = styled.div`
+  width: fit-content;
+  opacity: 0;
+`;
+
+export const DueDatesContainer = styled.div`
+width: 100%;
+&:hover {
+  & ${DueDateWrapper} {
+    opacity: 1;
+  }
+`;
