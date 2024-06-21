@@ -19,7 +19,6 @@ import {
   PatientWrapper,
   PatientContainer,
 } from '../../styled';
-import Tooltip from '@/app/components/common/Tooltip/Tooltip';
 
 const TaskItemPatient = ({
   highlightedValue,

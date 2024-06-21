@@ -41,7 +41,7 @@ const TaskTemplateName = ({
               ref={nameInputReference}
               readOnly={!isEditing}
               error={nameInputError}
-              onChange={event => {
+              onChange={(event) => {
                 setNameInputValue(event.target?.value);
                 setNameInputError(false);
               }}
@@ -51,7 +51,7 @@ const TaskTemplateName = ({
               }}
               onKeyDown={handleNameInputKeyDown}
               value={nameInputValue}
-              onClick={event => {
+              onClick={(event) => {
                 if (isEditing) {
                   event.stopPropagation();
                 }

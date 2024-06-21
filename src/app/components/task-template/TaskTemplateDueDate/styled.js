@@ -1,6 +1,5 @@
-import React from 'react';
 import styled from 'styled-components';
-import {fontSizes } from 'styles/font';
+import { fontSizes } from 'styles/font';
 import palette from 'styles/palette';
 
 export const AddPlaceholder = styled.div`

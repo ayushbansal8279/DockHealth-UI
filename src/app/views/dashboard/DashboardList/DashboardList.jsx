@@ -92,7 +92,7 @@ const DashboardList = ({
   const [completeTaskCount, setCompleteTaskCount] = useState();
   const { usageState } = currentUser;
   const isSortApplied = !!currentSort?.key;
-  const { key: sortKey, order: sortOrder } = currentSort;
+  // const { key: sortKey, order: sortOrder } = currentSort;
 
   const currentOrganization = useSelector(selectedUserOrganizationSelector);
   const iconColorFilterActiveItem =
@@ -143,7 +143,7 @@ const DashboardList = ({
     //   dashboardGroupsPreferences?.includes(taskGroupInfo?.groupType),
     // );
     return dashboardTasks;
-  }, [dashboardGroupsPreferences, dashboardTasks, tabName]);
+  }, [dashboardTasks, tabName]);
 
   const orderedDashboardTasks = useMemo(() => {
     if (tabName === DashboardTasksTab.SHARED_TASKS) {
@@ -158,7 +158,7 @@ const DashboardList = ({
     // };
     // return dashboardGroupsPreferences ? sorted() : filteredDashboardTasks;
     return filteredDashboardTasks;
-  }, [dashboardGroupsPreferences, filteredDashboardTasks, tabName]);
+  }, [filteredDashboardTasks, tabName]);
 
   const currentSortMethodWithOrder = useMemo(() => {
     return identity;
@@ -210,10 +210,10 @@ const DashboardList = ({
         }
       });
     },
-    [dispatch, orderedDashboardTasks, taskActions],
+    [areFiltersApplied, dispatch, orderedDashboardTasks, taskActions],
   );
 
-  const showClearSortFiltersModal = () => {
+  const showClearSortFiltersModal = useCallback(() => {
     if (isSortApplied || areFiltersApplied || isSearchApplied) {
       openModal('ClearSortFilters', {
         confirm: () => {
@@ -224,7 +224,14 @@ const DashboardList = ({
         closeOnConfirm: true,
       });
     }
-  };
+  }, [
+    areFiltersApplied,
+    isSearchApplied,
+    isSortApplied,
+    openModal,
+    setClearFilter,
+    setClearSearch,
+  ]);
 
   const renderEmptyState = () => {
     if (searchValue) return <NoSearchResultsView />;

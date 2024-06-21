@@ -11,7 +11,6 @@ import {
   PatientLabel,
   DisabledLink,
 } from './styled';
-import Tooltip from '../../common/Tooltip/Tooltip';
 
 const TaskTemplatePatient = ({
   highlightedValue,
