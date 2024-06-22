@@ -15,6 +15,7 @@ import {
 } from '../styled';
 import GroupSelectSection from './GroupSelectSection';
 import ListSelectStep from './ListSelectStep';
+import { CancelButton, ConfirmButton } from '../ModalButton/ModalButtons';
 
 const STEPS = {
   1: 0,
@@ -122,24 +123,17 @@ const ListPickerModal = ({
         <Spacing vertical={4} />
         <Grid container direction="row" spacing={2}>
           <Grid item xs={6}>
-            <Button
-              variant="secondary"
-              type="button"
-              onClick={handleCancel}
-              size="small"
-            >
-              {step === STEPS[1] ? 'cancel' : 'back'}
-            </Button>
+            <CancelButton onClick={handleCancel}>
+              {step === STEPS[1] ? 'Cancel' : 'Back'}
+            </CancelButton>
           </Grid>
           <Grid item xs={6}>
-            <Button
-              type="button"
-              onClick={handleSave}
-              size="small"
+            <ConfirmButton
               disabled={isSavingList || isFetchingLists || !selectedList}
+              onClick={handleSave}
             >
               Select
-            </Button>
+            </ConfirmButton>
           </Grid>
         </Grid>
       </ListPickerModalWrapper>
