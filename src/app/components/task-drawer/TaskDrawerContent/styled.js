@@ -117,3 +117,35 @@ export const DueDateAndRemainderContainer = styled.div`
   width: 100%;
   align-items: center;
 `;
+
+export const CreateTaskLable = styled.div`
+  color: #3d4858;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 135%;
+  padding-left: 30px;
+`;
+
+export const NewTaskDrawerDivider = styled(Divider)`
+  && {
+    width: 100%;
+    background-color: ${palette.coolGrey2};
+    opacity: 0.3;
+  }
+`;
+
+export const AddTaskDrawerWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: space-between;
+  height: 100%;
+`;
+
+export const ButtonWrapper = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin: 0 50px 20px 0;
+`;

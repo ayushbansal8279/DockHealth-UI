@@ -45,7 +45,8 @@ const StickyMainTaskItemCell = styled.div`
     isWorkflowtask || isTamplateGroup
       ? 'rgba(75, 179, 253, 1)'
       : `${palette.coolGrey3}`};
-  margin-left: ${({ isTamplateGroup }) => (isTamplateGroup ? '1px;' : '0px')};
+  margin-left: ${({ isTamplateGroup, origin }) =>
+    isTamplateGroup && origin !== 'LIST' ? '1px' : '0px'};
   align-items: center;
   padding-left: ${spacing.smallPlus};
   z-index: ${({ isEditingDescription }) =>

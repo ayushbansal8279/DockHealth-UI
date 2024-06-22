@@ -54,6 +54,7 @@ const DashboardView = ({ tabName }) => {
   const [openConfetti, setOpenConfetti] = useState(false);
   const [clearSearch, setClearSearch] = useState(false);
   const [clearFilter, setClearFilter] = useState(false);
+  const [isAddTaskDrawer, setAddTaskDrawer] = useState(false);
   const { usageState, orgUserRole } = currentUser ?? {};
   const { hasExistingLists, hasOnlyInvitedLists } = usageState ?? {};
   const organization = useSelector(organizationSelector);
@@ -233,6 +234,8 @@ const DashboardView = ({ tabName }) => {
                     clearFilter={clearFilter}
                     setClearFilter={setClearFilter}
                     currentUser={currentUser}
+                    isAddTaskDrawer={isAddTaskDrawer}
+                    setAddTaskDrawer={setAddTaskDrawer}
                   />
                   {/* <Spacing vertical={3} /> */}
                 </StickyContainer>
@@ -265,6 +268,8 @@ const DashboardView = ({ tabName }) => {
                     customerTypeLabel={customerTypeLabel}
                     setClearSearch={setClearSearch}
                     setClearFilter={setClearFilter}
+                    isAddTaskDrawer={isAddTaskDrawer}
+                    setAddTaskDrawer={setAddTaskDrawer}
                   />
                 )}
               </HorizontallyScrolledViewLayout>

@@ -43,6 +43,8 @@ const PatientSection = ({
   onSave,
   isSubtask,
   quickAddPatientEnabled,
+  addTaskDrawer,
+  setPatientIdentifier,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const dispatch = useDispatch();
@@ -247,51 +249,38 @@ const PatientSection = ({
 
   const handleClearSelectedPatient = useCallback(
     async (clearInput) => {
-      // if (templateBundleIdentifier && selectedPatient) {
-      //   dispatch(
-      //     openModal('UnassignPatient', {
-      //       isWorkflowModal: true,
-      //       confirm: async () => {
-      //         dispatch(
-      //           changePatientForTemplateBundle(
-      //             templateBundleIdentifier,
-      //             'UNASSIGNED',
-      //           ),
-      //         );
-      //         setAssignedPatient(null);
-      //         setPatients([]);
-      //         await savePatient(null);
-      //         clearInput();
-      //         // eslint-disable-next-line no-unused-expressions
-      //         patientInputReference.current?.querySelector('input')?.focus();
-      //       },
-      //     }),
-      //   );
-      // } else {
-      setAssignedPatient(null);
-
-      setPatients([]);
-      await savePatient(null);
-      // }
+      if (addTaskDrawer) {
+        setAssignedPatient(null);
+        setPatientIdentifier('');
+      } else {
+        setAssignedPatient(null);
+        setPatients([]);
+        await savePatient(null);
+      }
     },
     [savePatient],
   );
 
   const handlePatientSelect = useCallback(
     async (selectedOption) => {
-      const [lastName, names] = selectedOption.displayLabel.split(', ');
-      const [firstName, middleName] = names.split(' ');
-      const patient = {
-        patientIdentifier: selectedOption.value,
-        patientName: selectedOption.displayLabel,
-        lastName,
-        firstName,
-        middleName: middleName || '',
-      };
-      setAssignedPatient(patient);
-      savePatient(patient);
-      // eslint-disable-next-line no-unused-expressions
-      patientInputReference.current?.querySelector('input')?.blur();
+      if (addTaskDrawer) {
+        setPatientIdentifier(selectedOption.key);
+        setAssignedPatient(selectedOption);
+      } else {
+        const [lastName, names] = selectedOption.displayLabel.split(', ');
+        const [firstName, middleName] = names.split(' ');
+        const patient = {
+          patientIdentifier: selectedOption.value,
+          patientName: selectedOption.displayLabel,
+          lastName,
+          firstName,
+          middleName: middleName || '',
+        };
+        setAssignedPatient(patient);
+        savePatient(patient);
+        // eslint-disable-next-line no-unused-expressions
+        patientInputReference.current?.querySelector('input')?.blur();
+      }
     },
     [savePatient],
   );

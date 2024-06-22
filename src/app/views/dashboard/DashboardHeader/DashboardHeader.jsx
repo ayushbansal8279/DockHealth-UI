@@ -59,16 +59,21 @@ import {
   GridItemCalendarView,
   GridItemSlimView,
   DashboardHeaderContainer,
+  AddTaskButtonWrapper,
+  AddTaskButtonLabel,
 } from './styled';
 import { ActionsContainer } from '../DashboardToolbar/styled';
 import HomeTaskViewFilter from '@/app/components/tasklist/list-toolbar-buttons/HomeTaskViewFilter';
 import * as localStorageHelper from '@/app/helpers/local-storage-helper';
+import { Add } from '@mui/icons-material';
+import { openAddTaskTaskDrawer } from '@/app/actions/task-drawer-actions';
 
 const DashboardHeader = ({
   clearSearch,
   setClearSearch,
   clearFilter,
   setClearFilter,
+  setAddTaskDrawer,
 }) => {
   const { search } = useLocation();
   const history = useHistory();
@@ -285,6 +290,11 @@ const DashboardHeader = ({
     }));
   }, [groupList, groupsPreferences, updateGroupsPreferences]);
 
+  const openAddTaskDrawer = () => {
+    setAddTaskDrawer(true);
+    dispatch(openAddTaskTaskDrawer());
+  };
+
   return (
     <DashboardHeaderContainer>
       <LayoutHeader>
@@ -348,6 +358,12 @@ const DashboardHeader = ({
             </Box>
           </>
         )}
+        <Box mr>
+          <AddTaskButtonWrapper onClick={openAddTaskDrawer}>
+            <Add />
+            <AddTaskButtonLabel>Add Task</AddTaskButtonLabel>
+          </AddTaskButtonWrapper>
+        </Box>
         <Box
           display="flex"
           flex={viewType === ViewType.CALENDAR_VIEW ? 1 : 0}

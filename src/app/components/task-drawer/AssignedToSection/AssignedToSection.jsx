@@ -26,7 +26,14 @@ import UserAvatar from 'components/user/UserAvatar/UserAvatar';
 import { Button, ClickAwayListener, TextField } from '@mui/material';
 import MemberGroup from '../../user/MemberGroup/MemberGroup';
 
-const AssignedToSection = ({ selectedTask = {}, onSave, disabled }) => {
+const AssignedToSection = ({
+  selectedTask = {},
+  onSave,
+  disabled,
+  addTaskDrawer,
+  setAddTaskAssignees,
+  slectedListIdentifier,
+}) => {
   const currentUser = useSelector(userProfileSelector);
   const { assignedToUsers, taskList } = selectedTask || {};
   const isTemplateTask = useMemo(
@@ -34,7 +41,11 @@ const AssignedToSection = ({ selectedTask = {}, onSave, disabled }) => {
     [selectedTask],
   );
   const currentTaskListIdentifier = taskList?.taskListIdentifier;
-  const taskListIdentifier = isTemplateTask ? null : currentTaskListIdentifier;
+  const taskListIdentifier = addTaskDrawer
+    ? slectedListIdentifier
+    : isTemplateTask
+    ? null
+    : currentTaskListIdentifier;
   const [assignedToUsersValue, setAssignedToUsersValue] = useState([]);
   const [searchValue, setSearchValue] = useState('');
   const [isPopoverOpen, setIsOpen] = useState(false);
@@ -42,7 +53,7 @@ const AssignedToSection = ({ selectedTask = {}, onSave, disabled }) => {
   const inputRef = useRef(null);
 
   useEffect(() => {
-    setAssignedToUsersValue(assignedToUsers || []);
+    !addTaskDrawer && setAssignedToUsersValue(assignedToUsers || []);
   }, [assignedToUsers]);
 
   const displayName = (userName) => {
@@ -61,12 +72,17 @@ const AssignedToSection = ({ selectedTask = {}, onSave, disabled }) => {
 
   const handleAssignToSelection = useCallback(
     (selectedMembers) => {
-      setAssignedToUsersValue(selectedMembers);
-      onTaskDrawerTaskAssigned();
-      onSave({
-        assignedToUsers: selectedMembers,
-        assignedToIdentifiers: pluck('userIdentifier', selectedMembers),
-      });
+      if (addTaskDrawer) {
+        setAssignedToUsersValue(selectedMembers);
+        setAddTaskAssignees(selectedMembers);
+      } else {
+        setAssignedToUsersValue(selectedMembers);
+        onTaskDrawerTaskAssigned();
+        onSave({
+          assignedToUsers: selectedMembers,
+          assignedToIdentifiers: pluck('userIdentifier', selectedMembers),
+        });
+      }
     },
     [onSave],
   );
@@ -130,7 +146,7 @@ const AssignedToSection = ({ selectedTask = {}, onSave, disabled }) => {
               }}
             >
               <AssignMemberIcon />
-              {!isPopoverOpen && assignedToUsers?.length === 0 && (
+              {!isPopoverOpen && assignedToUsersValue?.length === 0 && (
                 <HelperText>Add Assignee</HelperText>
               )}
               {isPopoverOpen && (
@@ -180,17 +196,17 @@ const AssignedToSection = ({ selectedTask = {}, onSave, disabled }) => {
             )}
           </div>
         </ClickAwayListener>
-        {assignedToUsers &&
-          assignedToUsers.slice(0, 4).map((user) => (
+        {assignedToUsersValue &&
+          assignedToUsersValue.slice(0, 4).map((user) => (
             <AssigneeContainer>
               <UserAvatar user={user} />
               <AssigneeTitle>{displayName(user.userName)}</AssigneeTitle>
               {YouBadge(user)}
             </AssigneeContainer>
           ))}
-        {assignedToUsers?.length >= 1 && (
+        {assignedToUsersValue?.length >= 1 && (
           <div style={{ padding: '4px' }}>
-            <MemberGroup members={assignedToUsers.slice(4)} size={32} />
+            <MemberGroup members={assignedToUsersValue.slice(4)} size={32} />
           </div>
         )}
       </AssignMemberContainer>

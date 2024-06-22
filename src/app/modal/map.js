@@ -56,6 +56,7 @@ import DeleteConfirmationModal from './components/DeleteConfirmationModal/Delete
 import EditUserGroupModal from './components/EditUserGroupModal/EditUserGroupModal';
 import AddUserToGroupModal from './components/AddUserToGroupModal/AddUserToGroupModal';
 import DeleteTaskConfirmationModal from './components/DeleteTaskConfirmationModal/DeleteTaskConfirmationModal';
+import DeleteCredentialConfirmModal from './components/DeleteCredentialConfirmModal/DeleteCredentialConfirmModal';
 import InformationModal from './components/InformationModal/InformationModal';
 import UnassignTaskTemplateModal from './components/UnassignTaskTemplateModal/UnassignTaskTemplateModal';
 import PatientPickerModal from './components/PatientPickerModal/PatientPickerModal';
@@ -143,6 +144,7 @@ const MODAL_MAP = {
   EditCustomField: EditCustomFieldModal,
   DeleteConfirmation: DeleteConfirmationModal,
   DeleteTaskConfirmation: DeleteTaskConfirmationModal,
+  DeleteCredentialConfirm: DeleteCredentialConfirmModal,
   TaskListCustomFieldsBulkEdit: TaskListCustomFieldsBulkEditModal,
   EditUserGroup: EditUserGroupModal,
   AddUserToGroup: AddUserToGroupModal,

@@ -64,6 +64,8 @@ const DashboardList = ({
   openTourModal,
   setClearSearch,
   setClearFilter,
+  isAddTaskDrawer,
+  setAddTaskDrawer,
 }) => {
   const searchValue = useSelector(dashboardSearchValueSelector);
   const dispatch = useDispatch();
@@ -382,6 +384,8 @@ const DashboardList = ({
           onTaskCreation={handleTaskUpdate}
           onTaskDelete={() => dispatch(getDashboardFilters())}
           origin={TaskOrigin.DASHBOARD}
+          isAddTaskDrawer={isAddTaskDrawer}
+          setAddTaskDrawer={setAddTaskDrawer}
         />
       </>
     </BulkEditSection>

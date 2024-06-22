@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import spacing from 'styles/spacing';
 import palette, { typography } from 'styles/palette';
-import { fontSizes } from 'styles/font';
+import { fontSizes, fontWeights } from 'styles/font';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 
 export const ListPickerModalWrapper = styled.div`
@@ -57,11 +57,23 @@ export const AddListInput = styled.input`
 `;
 
 export const Title = styled.h2`
-  margin-bottom: ${spacing.small};
+  margin: 0;
   font-size: ${fontSizes.regularPlus};
-  text-transform: uppercase;
-  color: ${palette.brightBlue};
+  color: ${palette.offBlack};
   font-family: inherit;
+  text-align: Center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  gap: 8px;
+  align-self: stretch;
+  text-align: center;
+  font-family: Outfit;
+  font-size: 22px;
+  font-style: normal;
+  font-weight: ${fontWeights.regularPlus};
+  line-height: 25px; /* 113.636% */
+  text-transform: capitalize;
 `;
 
 export const Description = styled.p`
@@ -88,7 +100,7 @@ export const ListItemTextButton = styled.button`
 `;
 
 export const NextArrow = styled(ChevronRightIcon)`
-  color: ${palette.lightGrey};
+  color: ${palette.offBlack} !important;
 `;
 
 export const ListItem = styled.div`
@@ -101,21 +113,10 @@ export const ListItem = styled.div`
   appearance: none;
   border-radius: 0;
   background-color: ${({ isSelected }) =>
-    isSelected ? palette.darkBlue : 'transparent'};
+    isSelected ? palette.brightBlueWithAlpha : 'transparent'};
 
   &:hover {
-    background-color: ${({ isSelected }) =>
-      isSelected ? palette.darkBlue : palette.brightBlueWithAlpha};
-  }
-
-  & ${ListItemTextButton} {
-    color: ${({ isSelected }) =>
-      isSelected ? palette.white : palette.darkGrey};
-  }
-
-  & ${NextArrow} {
-    color: ${({ isSelected }) =>
-      isSelected ? palette.white : palette.lightGrey};
+    background-color: ${palette.brightBlueWithAlpha};
   }
 `;
 
@@ -148,12 +149,12 @@ export const QuickAddInputWrapper = styled.div`
   &:before {
     position: absolute;
     top: 50%;
-    left: ${spacing.regularPlus};
+    left: 15px;
     display: block;
     content: '+';
     transform: translateY(-50%);
-    color: ${palette.orange};
-    font-size: ${fontSizes.regular};
+    color: ${palette.blueOcean};
+    font-size: ${fontSizes.large};
   }
 
   ${({ isFocused }) =>
