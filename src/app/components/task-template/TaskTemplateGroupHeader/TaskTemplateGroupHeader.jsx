@@ -567,7 +567,7 @@ const TaskTemplateGroupHeader = ({
           isSelected={isBundleSelected}
           isEditingDescription={isEditing}
           order={0}
-          width={width + 25 + 55.5}
+          width={width + 25 + 56}
           origin={origin}
         >
           {!groupDragAndDropDisabled &&
