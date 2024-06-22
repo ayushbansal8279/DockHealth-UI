@@ -14,6 +14,7 @@ import {
   SHOW_GLOBAL_ALERT,
   SET_AS_CURRENT_TASK_ERROR,
   SET_COMMENT_IDENTIFIER_TO_SCROLL,
+  OPEN_ADD_TASK_DRAWER,
 } from 'actions/action-types';
 import TaskBaseReducer from './task-base-reducer';
 
@@ -133,6 +134,14 @@ const TaskReducer = (state = initialState, action) => {
         open,
         focusField,
         selectedTask: task,
+      };
+    }
+    case OPEN_ADD_TASK_DRAWER: {
+      const { open } = action;
+
+      return {
+        ...state,
+        open,
       };
     }
     case GET_TASK_CUSTOM_FIELDS: {

@@ -26,6 +26,11 @@ export const openTaskDrawerWithContent = (task, focusField) => ({
   focusField,
 });
 
+export const openAddTaskTaskDrawer = () => ({
+  type: ActionTypes.OPEN_ADD_TASK_DRAWER,
+  open: true,
+});
+
 export const getTaskCustomFields = (taskIdentifier, taskListIdentifier) => ({
   type: ActionTypes.GET_TASK_CUSTOM_FIELDS,
   taskIdentifier,
