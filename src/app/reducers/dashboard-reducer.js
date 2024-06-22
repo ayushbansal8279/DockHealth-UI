@@ -16,6 +16,7 @@ const initialState = {
   filterOptions: null,
   isFetchingFilters: false,
   filterOptionsError: false,
+  taskViewFilter: null,
 };
 
 const addTask = (list, taskToAdd) => {
@@ -126,6 +127,7 @@ const DashboardTasksReducer = (state = initialState, action) => {
         ...state,
         ...initialState,
         tabName: action.tabName,
+        taskViewFilter: action.taskViewFilter,
       };
     }
 
@@ -383,6 +385,13 @@ const DashboardTasksReducer = (state = initialState, action) => {
       };
 
       return updateTasksStateCallback(updatedState, task);
+    }
+
+    case ActionTypes.UPDATE_DASHBOARD_TASK_VIEW_FILTER: {
+      return {
+        ...state,
+        taskViewFilter: action.payload,
+      };
     }
 
     default: {

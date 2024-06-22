@@ -1,9 +1,10 @@
 import * as ActionTypes from 'actions/action-types';
 
-export function initializeDashboardState(tabName) {
+export function initializeDashboardState(tabName, taskViewFilter) {
   return {
     type: ActionTypes.INITIALIZE_DASHBOARD_STATE,
     tabName,
+    taskViewFilter,
   };
 }
 
@@ -92,5 +93,12 @@ export function getDashboardCalendarTasksSuccess(tasks) {
 export function getDashboardCalendarTasksFailure() {
   return {
     type: ActionTypes.GET_DASHBOARD_CALENDAR_TASKS_FAILURE,
+  };
+}
+
+export function updateDashboardTaskViewFilter(newFilter) {
+  return {
+    type: ActionTypes.UPDATE_DASHBOARD_TASK_VIEW_FILTER,
+    payload: newFilter,
   };
 }

@@ -47,7 +47,6 @@ import {
 import { updateCurrentUserPreferences } from 'actions/user-actions';
 import { Context } from 'components/common/HorizontalScroll/HorizontalScrollContainer';
 import useActions from 'hooks/use-actions';
-// import ifElse from 'ramda/src/ifElse';
 import BulkEditSection from 'components/tasklist/BulkEditSection/BulkEditSection';
 import DashboardTasksGroup from './DashboardTasksGroup';
 import DashboardToolbar from '../DashboardToolbar/DashboardToolbar';
@@ -94,7 +93,6 @@ const DashboardList = ({
   const [completeTaskCount, setCompleteTaskCount] = useState();
   const { usageState } = currentUser;
   const isSortApplied = !!currentSort?.key;
-  const { key: sortKey, order: sortOrder } = currentSort;
 
   const currentOrganization = useSelector(selectedUserOrganizationSelector);
   const iconColorFilterActiveItem =
@@ -105,62 +103,6 @@ const DashboardList = ({
     currentOrganization?.themeSettings?.find(
       ({ name }) => name === 'icon.active.color',
     ) || {};
-
-  const filteredDashboardTasks = useMemo(() => {
-    if (tabName === DashboardTasksTab.SHARED_TASKS) {
-      return dashboardTasks;
-    }
-
-    // if (tabName === DashboardTasksTab.UPCOMING) {
-    //   return dashboardTasks?.filter(
-    //     (taskGroupInfo) =>
-    //       !(
-    //         taskGroupInfo?.groupType
-    //           .toLowerCase()
-    //           .includes(DashboardTasksTab.COMPLETED.toLowerCase()) ||
-    //         taskGroupInfo?.groupType
-    //           .toLowerCase()
-    //           .includes(DashboardTasksTab.OVERDUE.toLowerCase())
-    //       ),
-    //   );
-    // }
-
-    // if (tabName === DashboardTasksTab.OVERDUE) {
-    //   return dashboardTasks?.filter((taskGroupInfo) =>
-    //     taskGroupInfo?.groupType
-    //       .toLowerCase()
-    //       .includes(DashboardTasksTab.OVERDUE.toLowerCase()),
-    //   );
-    // }
-
-    // if (tabName === DashboardTasksTab.COMPLETED) {
-    //   return dashboardTasks?.filter((taskGroupInfo) =>
-    //     taskGroupInfo?.groupType
-    //       .toLowerCase()
-    //       .includes(DashboardTasksTab.COMPLETED.toLowerCase()),
-    //   );
-    // }
-
-    // return dashboardTasks?.filter((taskGroupInfo) =>
-    //   dashboardGroupsPreferences?.includes(taskGroupInfo?.groupType),
-    // );
-    return dashboardTasks;
-  }, [dashboardGroupsPreferences, dashboardTasks, tabName]);
-
-  const orderedDashboardTasks = useMemo(() => {
-    if (tabName === DashboardTasksTab.SHARED_TASKS) {
-      return filteredDashboardTasks;
-    }
-    // const sorted = () => {
-    //   return dashboardGroupsPreferences
-    //     .map((groupType) =>
-    //       filteredDashboardTasks.find((g) => g.groupType === groupType),
-    //     )
-    //     .filter(Boolean);
-    // };
-    // return dashboardGroupsPreferences ? sorted() : filteredDashboardTasks;
-    return filteredDashboardTasks;
-  }, [dashboardGroupsPreferences, filteredDashboardTasks, tabName]);
 
   const currentSortMethodWithOrder = useMemo(() => {
     return identity;
@@ -203,8 +145,7 @@ const DashboardList = ({
         key: order ? key : null,
         order,
       });
-      // eslint-disable-next-line array-callback-return
-      orderedDashboardTasks?.map((item) => {
+      dashboardTasks?.forEach((item) => {
         if (!areFiltersApplied) {
           dispatch(getDashboardTasksForGroup(item?.groupType, key, order));
         } else {
@@ -212,7 +153,7 @@ const DashboardList = ({
         }
       });
     },
-    [dispatch, orderedDashboardTasks, taskActions],
+    [dispatch, dashboardTasks, taskActions, areFiltersApplied],
   );
 
   const showClearSortFiltersModal = () => {
@@ -287,8 +228,8 @@ const DashboardList = ({
   }, [dashboardGroupsPreferences, dashboardTasks]);
 
   const flattedOrderedDashboardTasks = useMemo(
-    () => orderedDashboardTasks.map((g) => g.groupType),
-    [orderedDashboardTasks],
+    () => dashboardTasks.map((g) => g.groupType),
+    [dashboardTasks],
   );
 
   const moveGroupUp = useCallback(
@@ -398,12 +339,12 @@ const DashboardList = ({
               <GroupedListSkeletonLoader numberOfGroups={3} />
             ) : (
               <DashboardTaskGroupsWrapper>
-                {isEmpty(orderedDashboardTasks) ? (
+                {isEmpty(dashboardTasks) ? (
                   <EmptyStateContainer>
                     {renderEmptyState()}
                   </EmptyStateContainer>
                 ) : (
-                  orderedDashboardTasks?.map(
+                  dashboardTasks?.map(
                     (item, index) =>
                       item && (
                         <DashboardTasksGroup
@@ -424,14 +365,12 @@ const DashboardList = ({
                           closeDrawer={taskDrawerActions.closeDrawer}
                           openModal={openModal}
                           isFirstGroup={index === 0}
-                          isLastGroup={
-                            index === orderedDashboardTasks.length - 1
-                          }
+                          isLastGroup={index === dashboardTasks.length - 1}
                           moveGroupUp={() => moveGroupUp(item)}
                           moveGroupDown={() => moveGroupDown(item)}
                           iconColorActive={iconColorActiveItem?.value}
                           backgroundColor={!(index % 2 === 0)}
-                          showHeader={orderedDashboardTasks.length > 1}
+                          showHeader={dashboardTasks.length > 1}
                         />
                       ),
                   )

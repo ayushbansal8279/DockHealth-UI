@@ -124,7 +124,7 @@ const DashboardTasksGroup = ({
   );
 
   const handleGroupSelect = useCallback(() => {
-    let taskIdentifiers =
+    const taskIdentifiers =
       tasks && typeof tasks[0] === 'string'
         ? tasks
         : tasks.map((item) => item.identifier);

@@ -25,14 +25,7 @@ import StickyContainer from 'components/common/HorizontalScroll/StickyContainer'
 import { DashboardTasksTab } from 'helpers/dashboard-helpers';
 import { UserOrganizationRole } from 'helpers/user-helper';
 import { hasAccessToElement } from 'helpers/access-helpers';
-import {
-  HOME_ALL_TASKS_PATH,
-  HOME_PATH,
-  HOME_SHARED_PATH,
-  HOME_UPCOMING_TASKS_PATH,
-  HOME_OVERDUE_TASKS_PATH,
-  HOME_COMPLETED_TASKS_PATH,
-} from 'routing/helpers/paths';
+import { HOME_ALL_TASKS_PATH, HOME_PATH } from 'routing/helpers/paths';
 import { useHistory } from 'react-router-dom';
 import DashboardList from './DashboardList/DashboardList';
 import DashboardFirstVisitView from './DashboardFirstVisitView/DashboardFirstVisitView';
@@ -45,9 +38,10 @@ import {
 } from './styled';
 import DashboardHeader from './DashboardHeader/DashboardHeader';
 import newUserTourHooks from './new-user-tour-hooks';
+import { organizationSelector } from '@/app/selectors/organization-selectors';
+import { getDashboardTaskViewFilter } from '@/app/helpers/local-storage-helper';
 
-const { ADMIN, OWNER, MEMBER, GUEST, DOCK_LITE, EXTERNAL } =
-  UserOrganizationRole;
+const { ADMIN, OWNER, MEMBER, GUEST, DOCK_LITE } = UserOrganizationRole;
 
 const DashboardView = ({ tabName }) => {
   const pusher = useRef(initializePusher());
@@ -63,6 +57,7 @@ const DashboardView = ({ tabName }) => {
   const [isAddTaskDrawer, setAddTaskDrawer] = useState(false);
   const { usageState, orgUserRole } = currentUser ?? {};
   const { hasExistingLists, hasOnlyInvitedLists } = usageState ?? {};
+  const organization = useSelector(organizationSelector);
 
   const shareTaskAvailable = useSelector(userHasShareTaskFeatureSelector);
 
@@ -73,26 +68,10 @@ const DashboardView = ({ tabName }) => {
       allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST, DOCK_LITE],
       path: HOME_PATH,
     },
-    // [DashboardTasksTab.SHARED_TASKS]: {
-    //   allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST, DOCK_LITE, EXTERNAL],
-    //   path: HOME_SHARED_PATH,
-    // },
     [DashboardTasksTab.ALL_TASKS]: {
       allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST, DOCK_LITE],
       path: HOME_ALL_TASKS_PATH,
     },
-    // [DashboardTasksTab.UPCOMING]: {
-    //   allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST, DOCK_LITE],
-    //   path: HOME_UPCOMING_TASKS_PATH,
-    // },
-    // [DashboardTasksTab.OVERDUE]: {
-    //   allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST, DOCK_LITE],
-    //   path: HOME_OVERDUE_TASKS_PATH,
-    // },
-    // [DashboardTasksTab.COMPLETED]: {
-    //   allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST, DOCK_LITE],
-    //   path: HOME_COMPLETED_TASKS_PATH,
-    // },
   };
 
   const hasAccessToCurrentTab = hasAccessToElement(
@@ -102,23 +81,24 @@ const DashboardView = ({ tabName }) => {
 
   useEffect(() => {
     if (hasAccessToCurrentTab) {
-      dispatch(initializeDashboardState(tabName));
-    } else {
-      // const nextAllowedTab = Object.values(DashboardTasksTab).find(value => {
-      //   return hasAccessToElement(
-      //     orgUserRole,
-      //     TAB_RESTRICTIONS[value].allowedToRoles,
-      //   );
-      // });
-      // if (nextAllowedTab) {
-      //   history.push(TAB_RESTRICTIONS[nextAllowedTab].path);
-      // }
+      dispatch(
+        initializeDashboardState(
+          tabName,
+          getDashboardTaskViewFilter(organization?.organizationIdentifier),
+        ),
+      );
     }
 
     return () => {
       dispatch(clearFiltersForMegaFilter());
     };
-  }, [dispatch, history, tabName, hasAccessToCurrentTab]);
+  }, [
+    dispatch,
+    history,
+    tabName,
+    hasAccessToCurrentTab,
+    organization?.organizationIdentifier,
+  ]);
 
   useEffect(() => {
     return () => {

@@ -33,6 +33,7 @@ import {
   dashboardTasksSelector,
   dashboardGroupTasksCountSelector,
   dashboardTabNameSelector,
+  dashboardTaskViewFilterSelector,
 } from 'selectors/dashboard-selectors';
 import * as MegaFilterActions from 'actions/mega-filter-actions';
 import { showGlobalErrorAlert } from 'alert/actions';
@@ -98,7 +99,8 @@ function* getDashboardTasksForGroup({ groupType, sortBy, sortDirection }) {
   try {
     const tabName = yield select(dashboardTabNameSelector);
     const isAllTasks = tabName === DashboardTasksTab.ALL_TASKS;
-    // const { tasks } = yield select(dashboardGroupTasksCountSelector, groupType);
+    const taskViewFilter = yield select(dashboardTaskViewFilterSelector);
+    const includeWorkflows = taskViewFilter?.includeWorkflows ?? true;
     const { taskGroups } = yield call(
       isAllTasks
         ? getTasksForOrganizationByImplicitGroup
@@ -108,6 +110,7 @@ function* getDashboardTasksForGroup({ groupType, sortBy, sortDirection }) {
       sortDirection,
       0,
       0,
+      includeWorkflows,
     );
     const group = taskGroups.find((g) => g.groupType === groupType);
 
@@ -183,29 +186,6 @@ function* getDashboardGroups() {
   try {
     const tabName = yield select(dashboardTabNameSelector);
 
-    // if (
-    //   tabName === DashboardTasksTab.UPCOMING ||
-    //   tabName === DashboardTasksTab.OVERDUE ||
-    //   tabName === DashboardTasksTab.COMPLETED
-    // ) {
-    //   tabName = DashboardTasksTab.MY_TASKS;
-    // }
-    // if (tabName === DashboardTasksTab.SHARED_TASKS) {
-    //   const dashboardGroups = [
-    //     {
-    //       groupName: 'Shared',
-    //       groupType: 'SHARED',
-    //       metricName: 'INCOMPLETE_TASKS_COUNT',
-    //       metricValue: 0,
-    //       defaultOpen: true,
-    //     },
-    //   ];
-
-    //   yield put({
-    //     type: ActionTypes.GET_DASHBOARD_GROUPS_SUCCESS,
-    //     tasksList: dashboardGroups,
-    //   });
-    // } else {
     const dashboardGroups = yield call(
       getDashboardTaskStasForImplicitGroups,
       tabName,
@@ -215,7 +195,6 @@ function* getDashboardGroups() {
       type: ActionTypes.GET_DASHBOARD_GROUPS_SUCCESS,
       tasksList: dashboardGroups,
     });
-    // }
   } catch {
     yield put(showGlobalErrorAlert());
     yield put({ type: ActionTypes.GET_DASHBOARD_GROUPS_FAILURE });
@@ -312,35 +291,6 @@ function* reorderDashboardTasks({ taskGroupImplicitType, tasksOrder }) {
   }
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-function* updateTaskStartDateSuccess({ task: taskToChange, startDate }) {
-  // const tabName = yield select(dashboardTabNameSelector);
-  // const task = { ...taskToChange, startDate };
-  // if (tabName) {
-  //   const groups = yield select(dashboardTasksSelector);
-  //   yield all(
-  //     groups
-  //       .filter(
-  //         ({ groupType }) =>
-  //           groupType === getGroupByDueDate(task.startDate, tabName) ||
-  //           groupType === getGroupByDueDate(taskToChange.startDate, tabName),
-  //       )
-  //       .map(({ groupType }) =>
-  //         put(DashboardActions.getDashboardTasksForGroup(groupType)),
-  //       ),
-  //   );
-  //   const dashboardGroups = yield call(
-  //     getDashboardTaskStasForImplicitGroups,
-  //     tabName,
-  //   );
-  // yield put({
-  //   type: ActionTypes.GET_DASHBOARD_GROUP_STATS_SUCCESS,
-  //   tasksList: dashboardGroups,
-  // });
-  // }
-}
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function* updateTaskDueDateSuccess({ task: taskToChange, dueDate }) {
   const tabName = yield select(dashboardTabNameSelector);
   const task = { ...taskToChange, dueDate };
@@ -381,10 +331,7 @@ function* selectDashboardFilters({ selectedFilters, selectedQuickFilter }) {
       ),
     );
 
-    yield all([
-      put(DashboardActions.getDashboardTasks()),
-      // put(DashboardActions.getDashboardFilters()),
-    ]);
+    yield put(DashboardActions.getDashboardTasks());
   }
 }
 
@@ -435,10 +382,6 @@ export default function* watchDashboard() {
   yield takeEvery(
     ActionTypes.LOAD_MORE_DASHBOARD_TASKS_FOR_GROUP,
     loadMoreDashboardTasksForGroup,
-  );
-  yield takeEvery(
-    ActionTypes.UPDATE_TASK_START_DATE_SUCCESS,
-    updateTaskStartDateSuccess,
   );
   yield takeEvery(
     ActionTypes.UPDATE_TASK_DUE_DATE_SUCCESS,
