@@ -92,6 +92,7 @@ const TasksGroup = ({
   origin,
   tasksCount,
   bgColor,
+  isEditing,
 }) => {
   const addingNewSubtaskParentId = useSelector(
     addingNewSubtaskParentIdSelector,
@@ -327,6 +328,7 @@ const TasksGroup = ({
                 restrictCustomizationFeatures
               }
               isDefaultInputShown={false}
+              isEditing={isEditing}
             >
               <TasksGroupLabelName>{derivedGroupName}</TasksGroupLabelName>
             </GroupNameSection>
