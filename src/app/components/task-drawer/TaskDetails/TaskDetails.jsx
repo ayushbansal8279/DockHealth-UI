@@ -8,7 +8,7 @@ import debounce from 'lodash.debounce';
 import CustomTextEditor from 'components/common/CustomTextEditor/CustomTextEditor';
 import { DetailsContainer } from './styled';
 
-const TaskDetails = ({ readOnly }) => {
+const TaskDetails = ({ readOnly, addTaskDrawer, taskDetail, setTaskDetail }) => {
   const selectedTask = useSelector(selectedTaskSelector);
   const dispatch = useDispatch();
   const [isFocused] = useBoolean();
@@ -20,7 +20,7 @@ const TaskDetails = ({ readOnly }) => {
   }, [selectedTask]);
 
   const handleAutoSave = debounce((value) => {
-    if (value !== (selectedTask?.tokenizedDetails || '')) {
+    if (addTaskDrawer && value !== (selectedTask?.tokenizedDetails || '')) {
       dispatch(
         updateTaskDetails(selectedTask, {
           tokenizedDetails: value || '',
@@ -31,14 +31,18 @@ const TaskDetails = ({ readOnly }) => {
   }, 10000);
 
   const handleChange = (value) => {
-    setDetails(value);
-    handleAutoSave.cancel();
-    handleAutoSave(value);
+    if (!addTaskDrawer) {
+      setDetails(value);
+      handleAutoSave.cancel();
+      handleAutoSave(value);
+    } else {
+      setTaskDetail(value);
+    }
   };
 
   const handleBlur = useCallback(
     (value) => {
-      if (selectedTask?.tokenizedDetails !== value) {
+      if (selectedTask?.tokenizedDetails !== value && !addTaskDrawer) {
         dispatch(
           updateTaskDetails(selectedTask, {
             tokenizedDetails: value || '',
@@ -61,7 +65,7 @@ const TaskDetails = ({ readOnly }) => {
       >
         <RichTextEditor
           readonly={readOnly}
-          value={details}
+          value={addTaskDrawer ? taskDetail : details}
           onChange={handleChange}
           onBlur={handleBlur}
           initOnClick

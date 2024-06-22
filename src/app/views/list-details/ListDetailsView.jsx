@@ -35,17 +35,6 @@ const ListDetailsView = () => {
   const { viewType = ViewType.LIST_VIEW } = useSearchParams();
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    dispatch(initializeTaskListState(taskListIdentifier));
-  }, [dispatch, taskListIdentifier]);
-
-  useEffect(() => {
-    return () => {
-      dispatch(clearTaskListState());
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   const [addNewGroup, setAddNewGroup] = useState(false);
   const [prevListIdentifier, setPrevListIdentifier] = useState(null);
   const [workflowPopoverOpen, setWorkflowPopoverOpen] = useState(false);
@@ -53,6 +42,18 @@ const ListDetailsView = () => {
   const [changeViewType, setChangeViewType] = useState('SLIM_VIEW');
   const [showShadow, setShowShadow] = useState(false);
   const [tasks, setTasks] = useState([]);
+
+  useEffect(() => {
+    dispatch(initializeTaskListState(taskListIdentifier));
+    if (changeViewType === '') setChangeViewType('SLIM_VIEW');
+  }, [dispatch, taskListIdentifier]);
+
+  useEffect(() => {
+    return () => {
+      dispatch(clearTaskListState());
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [taskListIdentifier]);
 
   useEffect(() => {
     const currentListIdentifier = taskListIdentifier;

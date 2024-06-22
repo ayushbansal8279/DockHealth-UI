@@ -246,19 +246,41 @@ export const DrawerOrganizationsList = styled.div`
 
 // Lists
 export const DrawerMyListsLabel = styled(DrawerSubmenuLabel)`
-  color: ${palette.coolGrey1};
-  font-weight: ${fontWeights.bold};
-  padding: ${spacing.smallPlus};
-  border-bottom: 1px solid ${palette.coolGrey2};
-  font-size: ${fontSizes.smallPlus};
+  color: ${({ $isSubMenu }) =>
+    $isSubMenu ? palette.black : palette.coolGrey1};
+  font-weight: ${({ $isSubMenu }) =>
+    $isSubMenu ? fontWeights.light : fontWeights.bold};
+  padding: ${({ $isSubMenu, $isOpen }) =>
+    $isSubMenu
+      ? $isOpen
+        ? `0 ${spacing.smallPlus} ${spacing.smallPlus} ${spacing.smallPlus}`
+        : `0 ${spacing.smallPlus} `
+      : spacing.smallPlus};
+  border-bottom: ${({ $isSubMenu }) =>
+    $isSubMenu ? '' : `1px solid ${palette.coolGrey2}`};
+  font-size: ${({ $isSubMenu }) =>
+    $isSubMenu ? fontSizes.regular : fontSizes.smallPlus};
   display: flex;
   justify-content: space-between;
   align-items: center;
+  font-family: Outfit;
+  line-height: 18px;
+  text-align: left;
 `;
 
 export const DrawerListsList = styled.div`
-  padding: ${spacing.largePlus} 0;
-  border-bottom: 1px solid ${palette.coolGrey2};
+  padding: ${({ $isSubMenu, $isOpen }) =>
+    $isSubMenu
+      ? $isOpen
+        ? `${spacing.small}  0 ${spacing.regularPlus} 0`
+        : `${spacing.small}  0 ${spacing.small} 0`
+      : `${spacing.largePlus} 0`};
+  border-bottom: ${({ $isSubMenu, $isOpen }) =>
+    $isSubMenu
+      ? $isOpen
+        ? `1px solid ${palette.whiteSmoke}`
+        : ''
+      : `1px solid ${palette.coolGrey2}`};
   overflow-y: auto;
 
   ${({ flexShrink }) =>
@@ -274,15 +296,24 @@ export const DrawerListsItem = styled.div`
   font-size: ${fontSizes.regular};
   box-sizing: border-box;
   border: 1px solid transparent;
-  &:not(:last-child) {
-    margin-bottom: 10px;
-  }
+  ${({ $isSubMenu }) =>
+    $isSubMenu
+      ? `padding: 5px 0`
+      : `&:not(:last-child) {
+        padding-bottom: 10px;
+      }`};
 
-  ${({ isDraggable }) =>
-    isDraggable &&
+  ${({ $isDragging }) =>
+    $isDragging &&
+    ` border-bottom:2px solid ${palette.black};
+  `};
+
+  ${({ $isDraggable }) =>
+    $isDraggable &&
     `
         &:hover {
-          border: 1px solid ${palette.coolGrey2};
+          // border: 1px solid ${palette.coolGrey2};
+          background: ${palette.whiteSmoke};
         }
 
         &:hover {
@@ -329,18 +360,33 @@ export const ListNameText = styled.div`
   text-overflow: ellipsis;
   white-space: nowrap;
   ${({ color }) => (color ? `color: ${color};` : undefined)}
-  ${({ isActive }) =>
+  ${({ isActive, $isSubMenu }) =>
     isActive
       ? `
         color: ${palette.brightBlue};
       `
       : `
           cursor: pointer;
-          &:hover {
-            color: ${palette.brightBlue};
-            text-decoration: underline;
-          }
-        `}
+        ${
+          !$isSubMenu
+            ? `&:hover {
+          color: ${palette.brightBlue};
+          text-decoration: underline;
+        }`
+            : ''
+        }  
+        `};
+`;
+
+export const ListNameLabel = styled.div`
+  font-family: Outfit;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  font-size: 16px;
+  line-height: 18px;
+  text-align: left;
+  font-weight: ${({ isNewList }) => (isNewList ? '700' : '400')};
 `;
 
 export const UpdatesForMemberIndicator = styled.div`
