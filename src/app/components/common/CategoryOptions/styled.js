@@ -5,7 +5,6 @@ import palette from '@/app/styles/palette';
 export const LabeledCollapseHeaderButton = styled.button`
   display: flex;
   align-items: flex-end;
-  margin-top: ${({ coreTask }) => (coreTask ? '' : '-12px')};
 `;
 
 export const LabeledCollapseItemName = styled.p`
