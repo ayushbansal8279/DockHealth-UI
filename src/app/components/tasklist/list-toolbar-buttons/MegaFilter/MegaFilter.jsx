@@ -9,6 +9,8 @@ import { MegaFilterNoResultsLabel, MegaFilterContainer } from './styled';
 import NewFilterContainer from '../../../filter/NewFilterContainer/NewFilterContainer';
 import SaveFilterPopup from '../../../filter/SaveFilterPopup/SaveFilterPopup';
 import FilterTableLoader from '../../../filter/FilterTableLoader/FilterTableLoader';
+import sessionStorageHelper from '@/app/helpers/session-storage-helper';
+import { TaskOrigin } from '@/app/helpers/task-helpers';
 
 const MegaFilter = ({
   children,
@@ -32,10 +34,13 @@ const MegaFilter = ({
   isDefaultDateFilterApplied = false,
   value,
   focused,
+  origin,
+  selectedDashboardQuickfilters,
+  setSelectedDashboardQuickfilters,
 }) => {
   const [isOpen, openPopover] = useState(false);
   const megaFilterButtonReference = useRef(null);
-  const isFilterApplied = selectedFilters && !isEmpty(selectedFilters);
+  let isFilterApplied = selectedFilters && !isEmpty(selectedFilters);
   const [finalFilter, setFinalFilter] = useState({});
   const [customFinalFilter, setCustomFinalFilter] = useState({});
   const [selectedCustomFilter, setSelectedCustomFilter] = useState({});
@@ -44,6 +49,13 @@ const MegaFilter = ({
   const [filteredData, setFilteredData] = useState({});
   const [customFilteredData, setCustomFilteredData] = useState({});
   const [selectedQuickFilter, setSelectedQuickFilter] = useState('');
+
+  if (origin === TaskOrigin.DASHBOARD) {
+    isFilterApplied =
+      selectedFilters || selectedDashboardQuickfilters?.length > 0;
+  } else {
+    isFilterApplied = selectedFilters && !isEmpty(selectedFilters);
+  }
 
   useEffect(() => {
     const data = {};
@@ -74,10 +86,17 @@ const MegaFilter = ({
   }, [selectedFilters, filters, selectedQuickFilter]);
 
   const clearFilters = () => {
-    onSelectFilters(null);
-    selectQuickFilter(null);
-    setFinalFilter({});
-    setSelectedQuickFilter('');
+    if (origin === TaskOrigin.DASHBOARD) {
+      sessionStorageHelper.removeItem('dashboardSelectedQuickFilters');
+      setSelectedDashboardQuickfilters([]);
+      onSelectFilters(null);
+      selectQuickFilter(null);
+    } else {
+      onSelectFilters(null);
+      selectQuickFilter(null);
+      setFinalFilter({});
+      setSelectedQuickFilter('');
+    }
   };
 
   useEffect(() => {
@@ -181,6 +200,11 @@ const MegaFilter = ({
               setSelectedQuickFilter={setSelectedQuickFilter}
               clearFilters={clearFilters}
               setSelectedCustomFilter={setSelectedCustomFilter}
+              origin={origin}
+              selectedDashboardQuickfilters={selectedDashboardQuickfilters}
+              setSelectedDashboardQuickfilters={
+                setSelectedDashboardQuickfilters
+              }
             />
           ) : (
             <FilterTableLoader />
