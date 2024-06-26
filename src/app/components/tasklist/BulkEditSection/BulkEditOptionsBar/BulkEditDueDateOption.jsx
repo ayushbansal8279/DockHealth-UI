@@ -4,7 +4,11 @@ import TaskItemPopover from 'components/task/TaskItemPopover/TaskItemPopover';
 import DueDatePicker from 'components/task/DueDatePicker/DueDatePicker';
 import BulkEditOption from 'components/bulk-edit/BulkEditOption/BulkEditOption';
 
-const BulkEditDueDateOption = ({ handleChangeDateTasks, isDisabled }) => {
+const BulkEditDueDateOption = ({
+  handleChangeDateTasks,
+  isDisabled,
+  selectedDate,
+}) => {
   return (
     <TaskItemPopover
       placement="bottom"
@@ -13,6 +17,7 @@ const BulkEditDueDateOption = ({ handleChangeDateTasks, isDisabled }) => {
           onDateChange={(newDueDate) => {
             handleChangeDateTasks(newDueDate);
           }}
+          selectedDate={selectedDate}
           disableRecurring
           onCloseClick={closePopover}
         />
