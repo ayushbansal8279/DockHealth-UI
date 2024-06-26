@@ -750,7 +750,7 @@ export const ParentTaskContainer = styled.div`
     margin-bottom: ${({ noMargin, origin }) =>
       noMargin ? -1 : origin === 'PATIENT' || origin === 'GLOBAL' ? 2 : 0}px;
   }
-  width: ${({ $width }) => (!$width ? '100%' : '')};
+  width: ${({ $width }) => ($width ? '100%' : '')};
   padding-right: ${({ $width, $isVirtualSubtask, $isWorkflowTask }) =>
     $width
       ? $isVirtualSubtask
