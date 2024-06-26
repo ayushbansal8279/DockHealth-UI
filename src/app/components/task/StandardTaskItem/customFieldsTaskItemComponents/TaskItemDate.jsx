@@ -1,11 +1,11 @@
 import React, { useCallback } from 'react';
-import { Box } from '@mui/material';
 import DatePicker from 'components/task/DatePicker/DatePicker';
 import TaskItemPopover from 'components/task/TaskItemPopover/TaskItemPopover';
 import TaskIcon from 'components/task/TaskIcon/TaskIcon';
 import Tooltip from 'components/common/Tooltip/Tooltip';
 import DateLabel from 'components/common/DateLabel/DateLabel';
 import moment from 'moment';
+import { DateWrapper, DateIconWrapper } from './styled';
 
 const TaskItemDate = ({ value, onChange, readOnly = false }) => {
   const handleDateChange = useCallback(
@@ -21,7 +21,7 @@ const TaskItemDate = ({ value, onChange, readOnly = false }) => {
   }
 
   return (
-    <Box marginLeft="auto" marginRight="auto">
+    <DateWrapper>
       <TaskItemPopover
         content={({ closePopover }) => (
           <DatePicker
@@ -40,13 +40,13 @@ const TaskItemDate = ({ value, onChange, readOnly = false }) => {
           {dateTimeValue ? (
             <DateLabel date={dateTimeValue} format="MM/DD/YYYY" />
           ) : (
-            <div>
+            <DateIconWrapper>
               <TaskIcon type="calendar" />
-            </div>
+            </DateIconWrapper>
           )}
         </Tooltip>
       </TaskItemPopover>
-    </Box>
+    </DateWrapper>
   );
 };
 
