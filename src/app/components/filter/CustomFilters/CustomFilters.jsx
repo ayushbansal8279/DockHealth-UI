@@ -6,6 +6,8 @@ import { useDispatch } from 'react-redux';
 import compose from 'ramda/src/compose';
 import CustomFilterOption from '../CustomFilterOption/CustomFilterOption';
 import { CustomFiltersContainer, Label, OptionsList } from './styled';
+import { TaskOrigin } from '@/app/helpers/task-helpers';
+import sessionStorageHelper from '@/app/helpers/session-storage-helper';
 
 const CustomFilters = ({
   quickFiltersList = [],
@@ -28,6 +30,9 @@ const CustomFilters = ({
   setSelectedCustomFilter,
   isPatientListPage,
   handleQuickFilterDuplicateForPatientList,
+  origin,
+  selectedDashboardQuickfilters,
+  setSelectedDashboardQuickfilters,
 }) => {
   const [editModeFilterIdentifier, setEditModeFilterIdentifier] =
     useState(null);
@@ -45,11 +50,30 @@ const CustomFilters = ({
 
   const handleSelect = useCallback(
     (_, identifier, { selectedOptions }) => {
-      setSelected(identifier, selectedOptions);
-      setSelectedQuickFilter(identifier);
-      openPopover(false);
+      if (origin === TaskOrigin.DASHBOARD) {
+        const quickFiltersList = selectedDashboardQuickfilters || [];
+        if (!quickFiltersList?.includes(identifier)) {
+          quickFiltersList.push(identifier);
+        }
+        sessionStorageHelper.setItem(
+          'dashboardSelectedQuickFilters',
+          JSON.stringify(quickFiltersList),
+        );
+        // ToDo @Nitin we can call the API and pass the quickFiltersList here
+        setSelectedDashboardQuickfilters(quickFiltersList);
+        openPopover(false);
+      } else {
+        setSelected(identifier, selectedOptions);
+        setSelectedQuickFilter(identifier);
+      }
     },
-    [openPopover, setSelected, setSelectedQuickFilter],
+    [
+      openPopover,
+      setSelected,
+      setSelectedQuickFilter,
+      selectedDashboardQuickfilters,
+      setSelectedDashboardQuickfilters,
+    ],
   );
 
   const handleUpdate = useCallback(
@@ -107,6 +131,10 @@ const CustomFilters = ({
             handleQuickFilterDuplicateForPatientList={
               handleQuickFilterDuplicateForPatientList
             }
+            origin={origin}
+            selectedDashboardQuickfilters={selectedDashboardQuickfilters}
+            setSelectedDashboardQuickfilters={setSelectedDashboardQuickfilters}
+            openPopover={openPopover}
           />
         ))}
       </OptionsList>

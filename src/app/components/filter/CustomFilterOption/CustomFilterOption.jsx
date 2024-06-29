@@ -9,6 +9,8 @@ import {
   QuickFilterTitleContainer,
 } from './styled';
 import moment from 'moment';
+import { TaskOrigin } from '@/app/helpers/task-helpers';
+import sessionStorageHelper from '@/app/helpers/session-storage-helper';
 
 const CustomFilterOption = (props) => {
   const {
@@ -33,14 +35,30 @@ const CustomFilterOption = (props) => {
     setSelectedCustomFilter,
     isPatientListPage,
     handleQuickFilterDuplicateForPatientList,
+    origin,
+    selectedDashboardQuickfilters,
+    setSelectedDashboardQuickfilters,
+    openPopover,
   } = props;
   const [value, setValue] = useState(label);
   const [isSelected, setSelected] = useState(false);
   const inputReference = useRef(null);
 
   useEffect(() => {
-    setSelected(selectedQuickFilter === identifier);
-  }, [selectedQuickFilter, identifier]);
+    if (origin === TaskOrigin.DASHBOARD) {
+      setSelected(selectedDashboardQuickfilters?.includes(identifier));
+    } else {
+      setSelected(selectedQuickFilter === identifier);
+    }
+  }, [
+    selectedQuickFilter,
+    identifier,
+    origin,
+    selectedDashboardQuickfilters,
+    setSelectedDashboardQuickfilters,
+  ]);
+
+  // console.log(selectedDashboardQuickfilters);
 
   useEffect(() => {
     setValue(label);
@@ -134,12 +152,31 @@ const CustomFilterOption = (props) => {
   ];
 
   const handleOptionClick = useCallback(() => {
-    if (isSelected) {
-      clearFilters();
-      setSelected(false);
-      setSelectedQuickFilter('');
+    if (origin === TaskOrigin.DASHBOARD) {
+      if (isSelected) {
+        const quickFiltersList = selectedDashboardQuickfilters;
+        if (selectedDashboardQuickfilters.includes(identifier)) {
+          const index = quickFiltersList.indexOf(identifier);
+          quickFiltersList.splice(index, 1);
+          sessionStorageHelper.setItem(
+            'dashboardSelectedQuickFilters',
+            JSON.stringify(quickFiltersList),
+          );
+          // ToDo @Nitin we can call the API and pass the quickfiltersList here
+          setSelectedDashboardQuickfilters(quickFiltersList);
+        }
+        openPopover(false);
+      } else {
+        onOptionClick(identifier);
+      }
     } else {
-      onOptionClick(identifier);
+      if (isSelected) {
+        clearFilters();
+        setSelected(false);
+        setSelectedQuickFilter('');
+      } else {
+        onOptionClick(identifier);
+      }
     }
   }, [
     onOptionClick,

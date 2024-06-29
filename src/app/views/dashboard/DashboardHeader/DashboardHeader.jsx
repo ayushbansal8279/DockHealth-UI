@@ -67,6 +67,8 @@ import HomeTaskViewFilter from '@/app/components/tasklist/list-toolbar-buttons/H
 import * as localStorageHelper from '@/app/helpers/local-storage-helper';
 import { Add } from '@mui/icons-material';
 import { openAddTaskTaskDrawer } from '@/app/actions/task-drawer-actions';
+import { TaskOrigin } from '@/app/helpers/task-helpers';
+import sessionStorageHelper from '@/app/helpers/session-storage-helper';
 
 const DashboardHeader = ({
   clearSearch,
@@ -91,6 +93,11 @@ const DashboardHeader = ({
   const quickFiltersList = useSelector(quickFiltersSelector);
   const addQuickFilterOption = useSelector(addQuickFilterOptionSelector);
   const selectedQuickFilter = useSelector(selectedQuickFilterSelector);
+  const savedDashboardSelectedQuickFilters = sessionStorageHelper.getItem(
+    'dashboardSelectedQuickFilters',
+  );
+  const [selectedDashboardQuickfilters, setSelectedDashboardQuickfilters] =
+    useState([]);
   const filteredDashboardTasks = dashboardTasks?.filter(
     (taskGroupInfo) => taskGroupInfo?.metricValue !== 0,
   );
@@ -165,6 +172,14 @@ const DashboardHeader = ({
       );
     }
   };
+
+  useEffect(() => {
+    if (savedDashboardSelectedQuickFilters !== undefined) {
+      setSelectedDashboardQuickfilters(
+        JSON.parse(savedDashboardSelectedQuickFilters),
+      );
+    }
+  }, [savedDashboardSelectedQuickFilters]);
 
   useEffect(() => {
     if (clearSearch) {
@@ -348,6 +363,11 @@ const DashboardHeader = ({
                   onQuickFilterDelete={handleQuickFilterDelete}
                   clearFilter={clearFilter}
                   setClearFilter={setClearFilter}
+                  origin={TaskOrigin.DASHBOARD}
+                  selectedDashboardQuickfilters={selectedDashboardQuickfilters}
+                  setSelectedDashboardQuickfilters={
+                    setSelectedDashboardQuickfilters
+                  }
                 />
                 <Box mx={0.5} />
                 <HeaderSearch
