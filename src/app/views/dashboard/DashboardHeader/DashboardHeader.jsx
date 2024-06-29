@@ -12,6 +12,7 @@ import {
 import {
   getDashboardFilters,
   getDashboardTasks,
+  getDashboardGroups,
   initializeDashboardState,
   searchDashboardTasks,
   selectDashboardFilters,
@@ -52,6 +53,7 @@ import SlimViewIcon from 'img/list/SlimViewIcon';
 import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined';
 import Spacing from 'components/common/Spacing';
 import { updateCurrentUserPreferences } from 'actions/user-actions';
+import { Add } from '@mui/icons-material';
 import CustomizeToolbarButton from '@/app/components/tasklist/list-toolbar-buttons/CustomizeToolbarButton/CustomizeToolbarButton';
 import MegaFilter from '@/app/components/tasklist/list-toolbar-buttons/MegaFilter/MegaFilter';
 import {
@@ -65,7 +67,6 @@ import {
 import { ActionsContainer } from '../DashboardToolbar/styled';
 import HomeTaskViewFilter from '@/app/components/tasklist/list-toolbar-buttons/HomeTaskViewFilter';
 import * as localStorageHelper from '@/app/helpers/local-storage-helper';
-import { Add } from '@mui/icons-material';
 import { openAddTaskTaskDrawer } from '@/app/actions/task-drawer-actions';
 import { TaskOrigin } from '@/app/helpers/task-helpers';
 import sessionStorageHelper from '@/app/helpers/session-storage-helper';
@@ -96,7 +97,7 @@ const DashboardHeader = ({
   const savedDashboardSelectedQuickFilters = sessionStorageHelper.getItem(
     'dashboardSelectedQuickFilters',
   );
-  const [selectedDashboardQuickfilters, setSelectedDashboardQuickfilters] =
+  const [multipleSelectedQuickFilters, setMultipleSelectedQuickFilters] =
     useState([]);
   const filteredDashboardTasks = dashboardTasks?.filter(
     (taskGroupInfo) => taskGroupInfo?.metricValue !== 0,
@@ -149,13 +150,12 @@ const DashboardHeader = ({
     dispatch(getQuickFilters({ contextType }));
   }, [contextType, dispatch]);
 
-  const searchTasksWithDebounce = useCallback(
+  const searchTasksWithDebounce = useCallback(() => {
     debounce((value) => {
       onSearchChanged();
       dispatch(searchDashboardTasks(value));
-    }, 1000),
-    [],
-  );
+    }, 1000);
+  }, [dispatch]);
 
   const handleSearchChange = (value) => {
     setSearchValue(value);
@@ -172,14 +172,6 @@ const DashboardHeader = ({
       );
     }
   };
-
-  useEffect(() => {
-    if (savedDashboardSelectedQuickFilters !== undefined) {
-      setSelectedDashboardQuickfilters(
-        JSON.parse(savedDashboardSelectedQuickFilters),
-      );
-    }
-  }, [savedDashboardSelectedQuickFilters]);
 
   useEffect(() => {
     if (clearSearch) {
@@ -310,6 +302,34 @@ const DashboardHeader = ({
     dispatch(openAddTaskTaskDrawer());
   };
 
+  useEffect(() => {
+    if (savedDashboardSelectedQuickFilters !== undefined) {
+      setMultipleSelectedQuickFilters(
+        JSON.parse(savedDashboardSelectedQuickFilters),
+      );
+    }
+  }, [savedDashboardSelectedQuickFilters]);
+
+  const handleUpdateMultipleSelectedQuickFilters = useCallback(
+    (identifier) => {
+      const quickFiltersList = multipleSelectedQuickFilters || [];
+      if (!quickFiltersList?.includes(identifier)) {
+        quickFiltersList.push(identifier);
+      } else {
+        const index = quickFiltersList.indexOf(identifier);
+        quickFiltersList.splice(index, 1);
+      }
+      sessionStorageHelper.setItem(
+        'dashboardSelectedQuickFilters',
+        JSON.stringify(quickFiltersList),
+      );
+
+      setMultipleSelectedQuickFilters(quickFiltersList);
+      setTimeout(() => dispatch(getDashboardGroups()), 1000); //time delay results in better home view refresh
+    },
+    [dispatch, multipleSelectedQuickFilters],
+  );
+
   return (
     <DashboardHeaderContainer>
       <LayoutHeader>
@@ -364,9 +384,10 @@ const DashboardHeader = ({
                   clearFilter={clearFilter}
                   setClearFilter={setClearFilter}
                   origin={TaskOrigin.DASHBOARD}
-                  selectedDashboardQuickfilters={selectedDashboardQuickfilters}
-                  setSelectedDashboardQuickfilters={
-                    setSelectedDashboardQuickfilters
+                  multiSelectEnabled
+                  multipleSelectedQuickFilters={multipleSelectedQuickFilters}
+                  updateMultipleSelectedQuickFilters={
+                    handleUpdateMultipleSelectedQuickFilters
                   }
                 />
                 <Box mx={0.5} />

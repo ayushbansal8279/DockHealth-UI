@@ -95,16 +95,19 @@ const DashboardToolbar = ({ iconColorFilterActive, iconColorActive }) => {
   const [sharedTasksAnyUnread, setSharedTasksAnyUnread] = useState(false);
 
   useEffect(() => {
-    DashboardApi.getTasksAssignedToUserByImplicitGroup('SHARED', 0, 0).then(
-      (data) => {
-        const taskCount = data?.taskGroups?.[0]?.tasks?.length;
-        setSharedTasksCount(taskCount);
-        const anyTasksUnread =
-          data?.taskGroups?.[0]?.tasks?.filter((t) => t.read === false)
-            ?.length !== 0;
-        setSharedTasksAnyUnread(anyTasksUnread);
-      },
-    );
+    DashboardApi.getTasksAssignedToUserByImplicitGroup(
+      'SHARED',
+      null,
+      0,
+      0,
+    ).then((data) => {
+      const taskCount = data?.taskGroups?.[0]?.tasks?.length;
+      setSharedTasksCount(taskCount);
+      const anyTasksUnread =
+        data?.taskGroups?.[0]?.tasks?.filter((t) => t.read === false)
+          ?.length !== 0;
+      setSharedTasksAnyUnread(anyTasksUnread);
+    });
   }, [setSharedTasksCount, setSharedTasksAnyUnread]);
 
   useEffect(() => {

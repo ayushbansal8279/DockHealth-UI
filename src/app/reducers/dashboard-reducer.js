@@ -53,7 +53,11 @@ const getMapOfLoadedTasks = (group) => {
 };
 
 const updateGroupsWithGroupTasksLoad = (tasksList, group, groupType) => {
-  const groupToUpdate = tasksList?.find((g) => g.groupType === groupType);
+  const groupToUpdate = tasksList?.find((g) =>
+    g.groupType === 'QUICK_FILTER'
+      ? g.taskGroupIdentifier === group.groupIdentifier
+      : g.groupType === groupType,
+  );
   const groupToUpdateIndex = tasksList?.indexOf(groupToUpdate);
   const newTasksList = [...tasksList];
   newTasksList[groupToUpdateIndex] = {
@@ -66,7 +70,11 @@ const updateGroupsWithGroupTasksLoad = (tasksList, group, groupType) => {
 };
 
 const updateGroupsWithGroupTasksLoadMore = (tasksList, group, groupType) => {
-  const groupToUpdate = tasksList?.find((g) => g.groupType === groupType);
+  const groupToUpdate = tasksList?.find((g) =>
+    g.groupType === 'QUICK_FILTER'
+      ? g.taskGroupIdentifier === group.groupIdentifier
+      : g.groupType === groupType,
+  );
   const groupToUpdateIndex = tasksList?.indexOf(groupToUpdate);
   const newTasksList = [...tasksList];
   newTasksList[groupToUpdateIndex] = {
@@ -237,7 +245,10 @@ const DashboardTasksReducer = (state = initialState, action) => {
 
     case ActionTypes.GET_DASHBOARD_TASKS_FOR_GROUP: {
       const groupToUpdate = state?.tasksList?.find(
-        ({ groupType }) => groupType === action.groupType,
+        ({ groupType, taskGroupIdentifier }) =>
+          groupType === 'QUICK_FILTER'
+            ? taskGroupIdentifier === action.groupIdentifier
+            : groupType === action.groupType,
       );
 
       const groupToUpdateIndex = state?.tasksList?.indexOf(groupToUpdate);
@@ -275,7 +286,10 @@ const DashboardTasksReducer = (state = initialState, action) => {
 
     case ActionTypes.LOAD_MORE_DASHBOARD_TASKS_FOR_GROUP: {
       const groupToUpdate = state?.tasksList?.find(
-        ({ groupType }) => groupType === action.groupType,
+        ({ groupType, taskGroupIdentifier }) =>
+          groupType === 'QUICK_FILTER'
+            ? taskGroupIdentifier === action.groupIdentifier
+            : groupType === action.groupType,
       );
       const groupToUpdateIndex = state?.tasksList?.indexOf(groupToUpdate);
       const newTasksList = [...state?.tasksList];

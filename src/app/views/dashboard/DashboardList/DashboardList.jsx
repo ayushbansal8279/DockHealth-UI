@@ -370,7 +370,10 @@ const DashboardList = ({
                           moveGroupDown={() => moveGroupDown(item)}
                           iconColorActive={iconColorActiveItem?.value}
                           backgroundColor={!(index % 2 === 0)}
-                          showHeader={dashboardTasks.length > 1}
+                          showHeader={
+                            dashboardTasks.length > 1 ||
+                            item?.groupType === 'QUICK_FILTER'
+                          }
                         />
                       ),
                   )

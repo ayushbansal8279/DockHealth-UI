@@ -103,6 +103,7 @@ export const getDashboardAllTasksByCriteria = (
 
 export function getTasksAssignedToUserByImplicitGroup(
   groupType,
+  taskGroupIdentifier,
   sortBy,
   sortDirection,
   startPosition = 0,
@@ -115,6 +116,7 @@ export function getTasksAssignedToUserByImplicitGroup(
         sortBy && sortDirection
           ? {
               groupType,
+              quickFilterId: taskGroupIdentifier,
               startPosition,
               endPosition,
               status: 'INCOMPLETE',
@@ -124,6 +126,7 @@ export function getTasksAssignedToUserByImplicitGroup(
             }
           : {
               groupType,
+              quickFilterId: taskGroupIdentifier,
               startPosition,
               endPosition,
               status: 'INCOMPLETE',
@@ -171,10 +174,11 @@ export function getTasksForOrganizationByImplicitGroup(
     });
 }
 
-export function getDashboardTaskStasForImplicitGroups(tab) {
+export function getDashboardTaskStasForImplicitGroups(tab, quickFilterIds) {
+  const quickFilterIdsString = quickFilterIds.join(',');
   return axios
     .get(
-      `/task/stats/getTaskStatsForImplicitGroupsForCurrentUser?viewName=${tab}`,
+      `/task/stats/getTaskStatsForImplicitGroupsForCurrentUser?viewName=${tab}&quickFilterIds=${quickFilterIdsString}`,
     )
     .then((response) => response.data)
     .catch((error) => {

@@ -20,10 +20,16 @@ export function getDashboardGroups() {
   };
 }
 
-export function getDashboardTasksForGroup(groupType, sortBy, sortDirection) {
+export function getDashboardTasksForGroup(
+  groupType,
+  taskGroupIdentifier,
+  sortBy,
+  sortDirection,
+) {
   return {
     type: ActionTypes.GET_DASHBOARD_TASKS_FOR_GROUP,
     groupType,
+    taskGroupIdentifier,
     sortBy,
     sortDirection,
   };
@@ -61,12 +67,14 @@ export function reorderDashboardTasks(taskGroupImplicitType, tasksOrder) {
 
 export function loadMoreDashboardTasksForGroup(
   groupType,
+  taskGroupIdentifier,
   sortBy,
   sortDirection,
 ) {
   return {
     type: ActionTypes.LOAD_MORE_DASHBOARD_TASKS_FOR_GROUP,
     groupType,
+    taskGroupIdentifier,
     sortBy,
     sortDirection,
   };
