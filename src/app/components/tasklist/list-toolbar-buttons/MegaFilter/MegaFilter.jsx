@@ -84,7 +84,7 @@ const MegaFilter = ({
     selectQuickFilter(null);
     setFinalFilter({});
     setSelectedQuickFilter('');
-    updateMultipleSelectedQuickFilters([]);
+    updateMultipleSelectedQuickFilters('', true);
   }, [onSelectFilters, selectQuickFilter, updateMultipleSelectedQuickFilters]);
 
   useEffect(() => {

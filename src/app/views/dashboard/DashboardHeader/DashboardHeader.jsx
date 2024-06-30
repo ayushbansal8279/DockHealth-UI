@@ -311,20 +311,25 @@ const DashboardHeader = ({
   }, [savedDashboardSelectedQuickFilters]);
 
   const handleUpdateMultipleSelectedQuickFilters = useCallback(
-    (identifier) => {
-      const quickFiltersList = multipleSelectedQuickFilters || [];
-      if (!quickFiltersList?.includes(identifier)) {
-        quickFiltersList.push(identifier);
-      } else {
-        const index = quickFiltersList.indexOf(identifier);
-        quickFiltersList.splice(index, 1);
+    (identifier, clearAll) => {
+      let quickFiltersArray = multipleSelectedQuickFilters || [];
+      if (clearAll) {
+        quickFiltersArray = [];
+      }
+      if (identifier && identifier !== '' && !Array.isArray(identifier)) {
+        if (!quickFiltersArray?.includes(identifier)) {
+          quickFiltersArray.push(identifier);
+        } else {
+          const index = quickFiltersArray.indexOf(identifier);
+          quickFiltersArray.splice(index, 1);
+        }
       }
       localStorageHelper.setItem(
         getMultipleSelectedQuickFilterStorageKey('dashboard', tabName),
-        JSON.stringify(quickFiltersList),
+        JSON.stringify(quickFiltersArray),
       );
 
-      setMultipleSelectedQuickFilters(quickFiltersList);
+      setMultipleSelectedQuickFilters(quickFiltersArray);
       setTimeout(() => dispatch(getDashboardGroups()), 1000); // time delay results in better home view refresh
     },
     [dispatch, multipleSelectedQuickFilters, tabName],
