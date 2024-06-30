@@ -68,6 +68,7 @@ import { getTasksForWorkflow } from 'actions/template-bundle-actions';
 import { log } from 'helpers/log';
 import store from '../store';
 import localStorageHelper from '../helpers/local-storage-helper';
+import sessionStorageHelper from '../helpers/session-storage-helper';
 
 export const DO_CREATE_TASK = 'DO_CREATE_TASK';
 export const DEFAULT_TASK_GROUPS_TO_LOAD = 3;
@@ -151,7 +152,10 @@ function* getCurrentListTasks() {
     const sort = yield select(taskDetailsSortSelector);
     const searchTerm = yield select(searchTermSelector);
     let status = TaskStatus.INCOMPLETE;
-    const savedStatus = localStorageHelper.getItem(`status${taskListIdentifier}`);
+    let savedStatus = localStorageHelper.getItem(`status${taskListIdentifier}`);
+    if (!savedStatus) {
+      savedStatus = sessionStorageHelper.getItem(`status${taskListIdentifier}`);
+    }
     if (savedStatus !== null) {
       status = savedStatus;
     }
@@ -465,12 +469,22 @@ function* initializeListDetailsTableState() {
     const status = yield select(currentTaskListTasksStatusSelector);
 
     if (taskListIdentifier && status) {
-      const filters = localStorageHelper.getItem(
+      let filters = localStorageHelper.getItem(
         getFiltersStorageKey(taskListIdentifier, status),
       );
-      const selectedQuickFilter = localStorageHelper.getItem(
+      if (!filters) {
+        filters = sessionStorageHelper.getItem(
+          getFiltersStorageKey(taskListIdentifier, status),
+        );
+      }
+      let selectedQuickFilter = localStorageHelper.getItem(
         getQuickFilterStorageKey(taskListIdentifier, status),
       );
+      if (!selectedQuickFilter) {
+        selectedQuickFilter = sessionStorageHelper.getItem(
+          getQuickFilterStorageKey(taskListIdentifier, status),
+        );
+      }
 
       if (filters) {
         yield put(

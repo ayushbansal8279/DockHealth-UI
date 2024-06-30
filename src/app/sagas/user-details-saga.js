@@ -20,18 +20,29 @@ import { selectedFiltersInMegaFilterSelector } from 'selectors/mega-filter-selec
 import { TaskStatus } from 'helpers/task-helpers';
 import isEmpty from 'ramda/src/isEmpty';
 import localStorageHelper from '../helpers/local-storage-helper';
+import sessionStorageHelper from '../helpers/session-storage-helper';
 
 function* initializeUserTasks(status) {
   yield put(PersonDetailsActions.getUserTaskCounters());
 
   const userIdentifier = yield select(userIdentifierSelector);
 
-  const filters = localStorageHelper.getItem(
+  let filters = localStorageHelper.getItem(
     getFiltersStorageKey(userIdentifier, status),
   );
-  const selectedQuickFilter = localStorageHelper.getItem(
+  if (!filters) {
+    filters = sessionStorageHelper.getItem(
+      getFiltersStorageKey(userIdentifier, status),
+    );
+  }
+  let selectedQuickFilter = localStorageHelper.getItem(
     getQuickFilterStorageKey(userIdentifier, status),
   );
+  if (!selectedQuickFilter) {
+    selectedQuickFilter = sessionStorageHelper.getItem(
+      getQuickFilterStorageKey(userIdentifier, status),
+    );
+  }
 
   if (filters && !isEmpty(filters))
     yield put(
