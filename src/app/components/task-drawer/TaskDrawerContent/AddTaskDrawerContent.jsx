@@ -37,6 +37,8 @@ import {
 } from '@/app/modal/components/ModalButton/ModalButtons';
 import ListSelectorSection from '../ListSelectorSection/ListSelectorSection';
 import palette from '@/app/styles/palette';
+import { getGroupsForTaskList } from '@/app/api/task-group-list-api';
+import GroupSelectorSection from '../ListSelectorSection/GroupSelectorSection';
 
 const AddTaskDrawerContent = (props) => {
   const {
@@ -66,6 +68,8 @@ const AddTaskDrawerContent = (props) => {
   const [description, setDescription] = useState('');
   const [details, setDetails] = useState('');
   const [slectedListIdentifier, setSelectedListIdentifier] = useState('');
+  const [groups, setGroups] = useState([]);
+  const [taskGroupIdentifier, setTaskGroupIdentifier] = useState('');
   const [assignedToIdentifiers, setAssignedToIdentifiers] = useState([]);
   const [addTaskAssignees, setAddTaskAssignees] = useState([]);
   const [priority, setPriority] = useState('');
@@ -97,6 +101,14 @@ const AddTaskDrawerContent = (props) => {
     setAssignedToIdentifiers(assignedToIdentifiers);
   }, [addTaskAssignees]);
 
+  useEffect(() => {
+    if (slectedListIdentifier) {
+      getGroupsForTaskList(slectedListIdentifier).then((responseGroups) => {
+        setGroups(responseGroups);
+      });
+    }
+  }, [slectedListIdentifier]);
+
   const clearFormStates = () => {
     setDescription('');
     setDetails('');
@@ -122,11 +134,16 @@ const AddTaskDrawerContent = (props) => {
     setSelectedListIdentifier(listIdentifier);
   };
 
+  const handleGroupChange = (groupIdentifier) => {
+    setTaskGroupIdentifier(groupIdentifier);
+  };
+
   const handleSave = () => {
     setClicked(true);
     if (description && slectedListIdentifier) {
       const data = {
         taskListIdentifier: slectedListIdentifier,
+        taskGroupIdentifier,
         description,
         details,
         assignedToIdentifier: userIdentifier,
@@ -183,13 +200,18 @@ const AddTaskDrawerContent = (props) => {
           <NewTaskDrawerDivider />
           <ListSelectorSection
             isClicked={isClicked}
-            title={'List Name'}
             handleListChange={handleListChange}
             slectedListIdentifier={slectedListIdentifier}
             lists={lists}
             searchedKeyword={searchedKeyword}
             handleListSearch={handleListSearch}
             searchedLists={searchedLists}
+          />
+          <GroupSelectorSection
+            handleGroupChange={handleGroupChange}
+            taskGroupIdentifier={taskGroupIdentifier}
+            groups={groups}
+            slectedListIdentifier={slectedListIdentifier}
           />
           <Grid item xs={12} style={styleFullRow(isMobile)}>
             <TaskDescription

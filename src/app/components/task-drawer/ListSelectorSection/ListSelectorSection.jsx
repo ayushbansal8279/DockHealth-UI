@@ -10,7 +10,6 @@ const ListSelectorSection = ({
   searchedKeyword,
   handleListSearch,
   searchedLists,
-  title,
   isClicked,
 }) => {
   const CustomIcon = () => <ArrowDropDownIcon sx={{ marginRight: 2 }} />;
@@ -18,7 +17,7 @@ const ListSelectorSection = ({
   return (
     <Grid item xs={12}>
       <ListSelectContainer>
-        <ListTitle>{title}</ListTitle>
+        <ListTitle>List</ListTitle>
         <Select
           sx={{
             '& .MuiOutlinedInput-notchedOutline': {
