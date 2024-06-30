@@ -64,6 +64,7 @@ import {
   ContentWrapper,
 } from './styled';
 import localStorageHelper from '@/app/helpers/local-storage-helper';
+import sessionStorageHelper from '@/app/helpers/session-storage-helper';
 
 const MAX_PATIENT_ALL_RESULTS = 1000;
 
@@ -439,9 +440,14 @@ const PatientsView = () => {
   const handleDownloadPatientListData = useCallback(
     async (includeAllAttributes) => {
       const filename = `Dock ${listName}.csv`;
-      const selectedFilters = localStorageHelper.getItem(
+      let selectedFilters = localStorageHelper.getItem(
         getPatientsListFiltersStorageKey(listIdentifier),
       );
+      if (!selectedFilters) {
+        selectedFilters = sessionStorageHelper.getItem(
+          getPatientsListFiltersStorageKey(listIdentifier),
+        );
+      }
       const { data } = await downloadPatientListData(
         listIdentifier,
         selectedFilters,

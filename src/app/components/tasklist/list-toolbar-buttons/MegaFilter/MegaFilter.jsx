@@ -1,5 +1,5 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect, useCallback } from 'react';
 import { Box } from '@mui/material';
 import isEmpty from 'ramda/src/isEmpty';
 import FilterButton from 'components/filter/FilterButton/FilterButton';
@@ -9,8 +9,6 @@ import { MegaFilterNoResultsLabel, MegaFilterContainer } from './styled';
 import NewFilterContainer from '../../../filter/NewFilterContainer/NewFilterContainer';
 import SaveFilterPopup from '../../../filter/SaveFilterPopup/SaveFilterPopup';
 import FilterTableLoader from '../../../filter/FilterTableLoader/FilterTableLoader';
-import sessionStorageHelper from '@/app/helpers/session-storage-helper';
-import { TaskOrigin } from '@/app/helpers/task-helpers';
 
 const MegaFilter = ({
   children,
@@ -34,13 +32,12 @@ const MegaFilter = ({
   isDefaultDateFilterApplied = false,
   value,
   focused,
-  origin,
-  selectedDashboardQuickfilters,
-  setSelectedDashboardQuickfilters,
+  multiSelectEnabled,
+  multipleSelectedQuickFilters,
+  updateMultipleSelectedQuickFilters,
 }) => {
   const [isOpen, openPopover] = useState(false);
   const megaFilterButtonReference = useRef(null);
-  let isFilterApplied = selectedFilters && !isEmpty(selectedFilters);
   const [finalFilter, setFinalFilter] = useState({});
   const [customFinalFilter, setCustomFinalFilter] = useState({});
   const [selectedCustomFilter, setSelectedCustomFilter] = useState({});
@@ -50,12 +47,9 @@ const MegaFilter = ({
   const [customFilteredData, setCustomFilteredData] = useState({});
   const [selectedQuickFilter, setSelectedQuickFilter] = useState('');
 
-  if (origin === TaskOrigin.DASHBOARD) {
-    isFilterApplied =
-      selectedFilters || selectedDashboardQuickfilters?.length > 0;
-  } else {
-    isFilterApplied = selectedFilters && !isEmpty(selectedFilters);
-  }
+  const isFilterApplied =
+    (selectedFilters && !isEmpty(selectedFilters)) ||
+    multipleSelectedQuickFilters?.length > 0;
 
   useEffect(() => {
     const data = {};
@@ -85,19 +79,13 @@ const MegaFilter = ({
     }
   }, [selectedFilters, filters, selectedQuickFilter]);
 
-  const clearFilters = () => {
-    if (origin === TaskOrigin.DASHBOARD) {
-      sessionStorageHelper.removeItem('dashboardSelectedQuickFilters');
-      setSelectedDashboardQuickfilters([]);
-      onSelectFilters(null);
-      selectQuickFilter(null);
-    } else {
-      onSelectFilters(null);
-      selectQuickFilter(null);
-      setFinalFilter({});
-      setSelectedQuickFilter('');
-    }
-  };
+  const clearFilters = useCallback(() => {
+    onSelectFilters(null);
+    selectQuickFilter(null);
+    setFinalFilter({});
+    setSelectedQuickFilter('');
+    updateMultipleSelectedQuickFilters('', true);
+  }, [onSelectFilters, selectQuickFilter, updateMultipleSelectedQuickFilters]);
 
   useEffect(() => {
     if (clearFilter) {
@@ -106,7 +94,7 @@ const MegaFilter = ({
         setClearFilter(false);
       }, 500);
     }
-  }, [clearFilter]);
+  }, [clearFilter, clearFilters, setClearFilter]);
 
   useEffect(() => {
     setSelectedQuickFilter(initialQuickFilter);
@@ -201,9 +189,10 @@ const MegaFilter = ({
               clearFilters={clearFilters}
               setSelectedCustomFilter={setSelectedCustomFilter}
               origin={origin}
-              selectedDashboardQuickfilters={selectedDashboardQuickfilters}
-              setSelectedDashboardQuickfilters={
-                setSelectedDashboardQuickfilters
+              multiSelectEnabled={multiSelectEnabled}
+              multipleSelectedQuickFilters={multipleSelectedQuickFilters}
+              updateMultipleSelectedQuickFilters={
+                updateMultipleSelectedQuickFilters
               }
             />
           ) : (

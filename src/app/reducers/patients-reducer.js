@@ -5,6 +5,7 @@ import {
   getPatientsDynamicListFiltersStorageKey,
 } from 'helpers/patient-list-helpers';
 import localStorageHelper from '../helpers/local-storage-helper';
+import sessionStorageHelper from '../helpers/session-storage-helper';
 
 const initialState = {
   defaultPatientsLists: null,
@@ -19,9 +20,14 @@ const initialState = {
 const PatientsReducer = (state = initialState, action) => {
   switch (action.type) {
     case ActionTypes.INITIALIZE_PATIENTS_LIST_STATE: {
-      const selectedFilters = localStorageHelper.getItem(
+      let selectedFilters = localStorageHelper.getItem(
         getPatientsListFiltersStorageKey(action.patientsListIdentifier),
       );
+      if (!selectedFilters) {
+        selectedFilters = sessionStorageHelper.getItem(
+          getPatientsListFiltersStorageKey(action.patientsListIdentifier),
+        );
+      }
       return {
         ...state,
         currentPatientsListIdentifier: action.patientsListIdentifier,
@@ -32,9 +38,14 @@ const PatientsReducer = (state = initialState, action) => {
     }
 
     case ActionTypes.INITIALIZE_DYNAMIC_PATIENTS_LIST_STATE: {
-      const selectedFilters = localStorageHelper.getItem(
+      let selectedFilters = localStorageHelper.getItem(
         getPatientsDynamicListFiltersStorageKey(action.patientsListIdentifier),
       );
+      if (!selectedFilters) {
+        selectedFilters = sessionStorageHelper.getItem(
+          getPatientsListFiltersStorageKey(action.patientsListIdentifier),
+        );
+      }
       return {
         ...state,
         currentPatientsListIdentifier: action.patientsListIdentifier,

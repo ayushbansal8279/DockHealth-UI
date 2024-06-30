@@ -8,9 +8,6 @@ import {
   QuickFilterTitle,
   QuickFilterTitleContainer,
 } from './styled';
-import moment from 'moment';
-import { TaskOrigin } from '@/app/helpers/task-helpers';
-import sessionStorageHelper from '@/app/helpers/session-storage-helper';
 
 const CustomFilterOption = (props) => {
   const {
@@ -25,38 +22,30 @@ const CustomFilterOption = (props) => {
     editModeEnabled = true,
     setSavePopupOpen,
     selectedQuickFilter,
+    setSelectedQuickFilter,
     setEditIdentifier,
     filter,
     filters,
     setCustomFinalFilter,
-    setSelectedQuickFilter,
     onQuickFilterCreate,
     clearFilters,
     setSelectedCustomFilter,
     isPatientListPage,
     handleQuickFilterDuplicateForPatientList,
-    origin,
-    selectedDashboardQuickfilters,
-    setSelectedDashboardQuickfilters,
-    openPopover,
+    multiSelectEnabled,
+    multipleSelectedQuickFilters,
+    // updateMultipleSelectedQuickFilters,
   } = props;
   const [value, setValue] = useState(label);
   const [isSelected, setSelected] = useState(false);
   const inputReference = useRef(null);
 
   useEffect(() => {
-    if (origin === TaskOrigin.DASHBOARD) {
-      setSelected(selectedDashboardQuickfilters?.includes(identifier));
-    } else {
-      setSelected(selectedQuickFilter === identifier);
-    }
-  }, [
-    selectedQuickFilter,
-    identifier,
-    origin,
-    selectedDashboardQuickfilters,
-    setSelectedDashboardQuickfilters,
-  ]);
+    setSelected(
+      selectedQuickFilter === identifier ||
+        multipleSelectedQuickFilters?.includes(identifier),
+    );
+  }, [selectedQuickFilter, identifier, multipleSelectedQuickFilters]);
 
   // console.log(selectedDashboardQuickfilters);
 
@@ -89,7 +78,7 @@ const CustomFilterOption = (props) => {
     setSavePopupOpen(true);
     setEditIdentifier(identifier);
 
-    let selectedFilters = filter.selectedOptions;
+    const selectedFilters = filter.selectedOptions;
 
     const data = {};
     if (selectedFilters && filters) {
@@ -112,9 +101,8 @@ const CustomFilterOption = (props) => {
                 ),
               };
               return aa;
-            } else {
-              return users.find((user) => user.key === item);
             }
+            return users.find((user) => user.key === item);
           });
           data[key] = options;
         }
@@ -128,7 +116,7 @@ const CustomFilterOption = (props) => {
   const handleDuplicate = () => {
     if (
       isPatientListPage &&
-      filter.patientSelectedOptions.customFields.length !== 0
+      filter.patientSelectedOptions.customFields.length > 0
     ) {
       const selectedOptions = {};
       filter.patientSelectedOptions.customFields.forEach((element) => {
@@ -152,38 +140,22 @@ const CustomFilterOption = (props) => {
   ];
 
   const handleOptionClick = useCallback(() => {
-    if (origin === TaskOrigin.DASHBOARD) {
-      if (isSelected) {
-        const quickFiltersList = selectedDashboardQuickfilters;
-        if (selectedDashboardQuickfilters.includes(identifier)) {
-          const index = quickFiltersList.indexOf(identifier);
-          quickFiltersList.splice(index, 1);
-          sessionStorageHelper.setItem(
-            'dashboardSelectedQuickFilters',
-            JSON.stringify(quickFiltersList),
-          );
-          // ToDo @Nitin we can call the API and pass the quickfiltersList here
-          setSelectedDashboardQuickfilters(quickFiltersList);
-        }
-        openPopover(false);
-      } else {
-        onOptionClick(identifier);
-      }
+    if (multiSelectEnabled) {
+      onOptionClick(identifier);
+    } else if (isSelected) {
+      clearFilters();
+      setSelected(false);
+      setSelectedQuickFilter('');
     } else {
-      if (isSelected) {
-        clearFilters();
-        setSelected(false);
-        setSelectedQuickFilter('');
-      } else {
-        onOptionClick(identifier);
-      }
+      onOptionClick(identifier);
     }
   }, [
+    multiSelectEnabled,
+    isSelected,
     onOptionClick,
     identifier,
-    isSelected,
-    setSelectedQuickFilter,
     clearFilters,
+    setSelectedQuickFilter,
   ]);
 
   // const handleKeyPress = useCallback(
