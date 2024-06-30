@@ -53,7 +53,6 @@ import {
   getFiltersStorageKey,
   getQuickFilterStorageKey,
 } from 'helpers/mega-filter-helper';
-import sessionStorageHelper from 'helpers/session-storage-helper';
 import { calendarDateRangeSelector } from 'selectors/calendar-tasks-selectors';
 import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
@@ -68,6 +67,7 @@ import * as CustomFieldsApi from 'api/custom-fields-api';
 import { getTasksForWorkflow } from 'actions/template-bundle-actions';
 import { log } from 'helpers/log';
 import store from '../store';
+import localStorageHelper from '../helpers/local-storage-helper';
 
 export const DO_CREATE_TASK = 'DO_CREATE_TASK';
 export const DEFAULT_TASK_GROUPS_TO_LOAD = 3;
@@ -150,7 +150,11 @@ function* getCurrentListTasks() {
     const selectedFilters = yield select(selectedFiltersInMegaFilterSelector);
     const sort = yield select(taskDetailsSortSelector);
     const searchTerm = yield select(searchTermSelector);
-    const status = yield select(currentTaskListTasksStatusSelector);
+    let status = TaskStatus.INCOMPLETE;
+    const savedStatus = localStorageHelper.getItem(`status${taskListIdentifier}`);
+    if (savedStatus !== null) {
+      status = savedStatus;
+    }
 
     if (searchTerm) {
       const groupedTasks = yield call(
@@ -461,10 +465,10 @@ function* initializeListDetailsTableState() {
     const status = yield select(currentTaskListTasksStatusSelector);
 
     if (taskListIdentifier && status) {
-      const filters = sessionStorageHelper.getItem(
+      const filters = localStorageHelper.getItem(
         getFiltersStorageKey(taskListIdentifier, status),
       );
-      const selectedQuickFilter = sessionStorageHelper.getItem(
+      const selectedQuickFilter = localStorageHelper.getItem(
         getQuickFilterStorageKey(taskListIdentifier, status),
       );
 

@@ -6,9 +6,10 @@ const getItem = (key) => {
 
     if (item) return JSON.parse(item);
 
-    return;
+    return null;
   } catch {
     localStorage.removeItem(key);
+    return null;
   }
 };
 
