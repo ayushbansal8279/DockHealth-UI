@@ -249,6 +249,7 @@ const AddTaskDrawerContent = (props) => {
           </CancelButton>
           <ConfirmButton
             style={{
+              width: '150px',
               backgroundColor:
                 (!description || !slectedListIdentifier) && palette.shadowBlue,
             }}
