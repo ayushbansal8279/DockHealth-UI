@@ -141,6 +141,7 @@ export function getTasksAssignedToUserByImplicitGroup(
 
 export function getTasksForOrganizationByImplicitGroup(
   groupType,
+  taskGroupIdentifier,
   sortBy,
   sortDirection,
   startPosition = 0,
@@ -153,6 +154,7 @@ export function getTasksForOrganizationByImplicitGroup(
         sortBy && sortDirection
           ? {
               groupType,
+              quickFilterId: taskGroupIdentifier,
               startPosition,
               endPosition,
               status: 'INCOMPLETE',
@@ -162,6 +164,7 @@ export function getTasksForOrganizationByImplicitGroup(
             }
           : {
               groupType,
+              quickFilterId: taskGroupIdentifier,
               startPosition,
               endPosition,
               status: 'INCOMPLETE',
