@@ -36,6 +36,7 @@ import {
   ConfirmButton,
 } from '@/app/modal/components/ModalButton/ModalButtons';
 import ListSelectorSection from '../ListSelectorSection/ListSelectorSection';
+import palette from '@/app/styles/palette';
 
 const AddTaskDrawerContent = (props) => {
   const {
@@ -61,6 +62,7 @@ const AddTaskDrawerContent = (props) => {
     hideTour,
   });
 
+  const [isClicked, setClicked] = useState(false);
   const [description, setDescription] = useState('');
   const [details, setDetails] = useState('');
   const [slectedListIdentifier, setSelectedListIdentifier] = useState('');
@@ -121,24 +123,27 @@ const AddTaskDrawerContent = (props) => {
   };
 
   const handleSave = () => {
-    const data = {
-      taskListIdentifier: slectedListIdentifier,
-      description,
-      details,
-      assignedToIdentifier: userIdentifier,
-      assignedToIdentifiers,
-      patientIdentifier,
-      dueDate,
-      priority,
-      workflowStatusIdentifier,
-    };
+    setClicked(true);
+    if (description && slectedListIdentifier) {
+      const data = {
+        taskListIdentifier: slectedListIdentifier,
+        description,
+        details,
+        assignedToIdentifier: userIdentifier,
+        assignedToIdentifiers,
+        patientIdentifier,
+        dueDate,
+        priority,
+        workflowStatusIdentifier,
+      };
 
-    const filteredData = Object.entries(data)
-      .filter(([_, value]) => value !== null && value !== '')
-      .reduce((obj, [key, value]) => ({ ...obj, [key]: value }), {});
+      const filteredData = Object.entries(data)
+        .filter(([_, value]) => value !== null && value !== '')
+        .reduce((obj, [key, value]) => ({ ...obj, [key]: value }), {});
 
-    dispatch(TaskActions.saveTask(filteredData));
-    closeTaskDrawer();
+      dispatch(TaskActions.saveTask(filteredData));
+      closeTaskDrawer();
+    }
   };
 
   const TopSection = () => {
@@ -177,6 +182,8 @@ const AddTaskDrawerContent = (props) => {
           {TopSection()}
           <NewTaskDrawerDivider />
           <ListSelectorSection
+            isClicked={isClicked}
+            title={'List Name'}
             handleListChange={handleListChange}
             slectedListIdentifier={slectedListIdentifier}
             lists={lists}
@@ -187,6 +194,7 @@ const AddTaskDrawerContent = (props) => {
           <Grid item xs={12} style={styleFullRow(isMobile)}>
             <TaskDescription
               addTaskDrawer
+              isClicked={isClicked}
               taskDescription={description}
               setTaskDescription={setDescription}
             />
@@ -240,7 +248,10 @@ const AddTaskDrawerContent = (props) => {
             Cancel
           </CancelButton>
           <ConfirmButton
-            disabled={slectedListIdentifier === '' || description === ''}
+            style={{
+              backgroundColor:
+                (!description || !slectedListIdentifier) && palette.shadowBlue,
+            }}
             onClick={handleSave}
           >
             Save task

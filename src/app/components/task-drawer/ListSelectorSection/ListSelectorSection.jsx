@@ -1,5 +1,5 @@
 import { Grid, Input, MenuItem, Select } from '@mui/material';
-import { ListSelectContainer, ListTitle } from './styled';
+import { ListSelectContainer, ListTitle, ValidationError } from './styled';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import palette from '@/app/styles/palette';
 
@@ -10,23 +10,30 @@ const ListSelectorSection = ({
   searchedKeyword,
   handleListSearch,
   searchedLists,
+  title,
+  isClicked,
 }) => {
   const CustomIcon = () => <ArrowDropDownIcon sx={{ marginRight: 2 }} />;
 
   return (
     <Grid item xs={12}>
       <ListSelectContainer>
-        <ListTitle>List Name</ListTitle>
+        <ListTitle>{title}</ListTitle>
         <Select
           sx={{
             '& .MuiOutlinedInput-notchedOutline': {
               border: 'none',
             },
             background: palette.lightGrey2,
+            border:
+              isClicked &&
+              !slectedListIdentifier &&
+              `1px solid ${palette.oPlusRed}`,
           }}
           IconComponent={CustomIcon}
           size="small"
           fullWidth
+          placeholder="asdsa"
           value={slectedListIdentifier}
           renderValue={(value) =>
             lists?.map((item) => {
@@ -56,6 +63,9 @@ const ListSelectorSection = ({
             ))}
           </div>
         </Select>
+        {isClicked && !slectedListIdentifier && (
+          <ValidationError>List name is required</ValidationError>
+        )}
       </ListSelectContainer>
     </Grid>
   );
