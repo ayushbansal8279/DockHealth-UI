@@ -41,20 +41,32 @@ import { selectedFiltersInMegaFilterSelector } from 'selectors/mega-filter-selec
 import {
   getFiltersStorageKey,
   getQuickFilterStorageKey,
+  getMultipleSelectedQuickFilterStorageKey,
 } from 'helpers/mega-filter-helper';
 import { log } from 'helpers/log';
 import localStorageHelper from '../helpers/local-storage-helper';
+import sessionStorageHelper from '../helpers/session-storage-helper';
 
 function* initializeDashboardView() {
   try {
     const tabName = yield select(dashboardTabNameSelector);
 
-    const filters = localStorageHelper.getItem(
+    let filters = localStorageHelper.getItem(
       getFiltersStorageKey('dashboard', tabName),
     );
-    const selectedQuickFilter = localStorageHelper.getItem(
+    if (!filters) {
+      filters = sessionStorageHelper.getItem(
+        getFiltersStorageKey('dashboard', tabName),
+      );
+    }
+    let selectedQuickFilter = localStorageHelper.getItem(
       getQuickFilterStorageKey('dashboard', tabName),
     );
+    if (!selectedQuickFilter) {
+      selectedQuickFilter = sessionStorageHelper.getItem(
+        getQuickFilterStorageKey('dashboard', tabName),
+      );
+    }
 
     yield put(
       MegaFilterActions.selectFiltersForMegaFilter(
@@ -210,8 +222,8 @@ function* loadMoreDashboardTasksForGroup({
 function* getDashboardGroups() {
   try {
     const tabName = yield select(dashboardTabNameSelector);
-    const savedDashboardSelectedQuickFilters = sessionStorageHelper.getItem(
-      'dashboardSelectedQuickFilters',
+    const savedDashboardSelectedQuickFilters = localStorageHelper.getItem(
+      getMultipleSelectedQuickFilterStorageKey('dashboard', tabName),
     );
 
     const dashboardGroups = yield call(
@@ -339,8 +351,8 @@ function* reorderDashboardTasks({
 
 function* updateTaskDueDateSuccess({ task: taskToChange, dueDate }) {
   const tabName = yield select(dashboardTabNameSelector);
-  const savedDashboardSelectedQuickFilters = sessionStorageHelper.getItem(
-    'dashboardSelectedQuickFilters',
+  const savedDashboardSelectedQuickFilters = localStorageHelper.getItem(
+    getMultipleSelectedQuickFilterStorageKey('dashboard', tabName),
   );
 
   const task = { ...taskToChange, dueDate };

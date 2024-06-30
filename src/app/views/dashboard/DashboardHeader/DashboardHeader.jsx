@@ -54,6 +54,7 @@ import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined
 import Spacing from 'components/common/Spacing';
 import { updateCurrentUserPreferences } from 'actions/user-actions';
 import { Add } from '@mui/icons-material';
+import { getMultipleSelectedQuickFilterStorageKey } from 'helpers/mega-filter-helper';
 import CustomizeToolbarButton from '@/app/components/tasklist/list-toolbar-buttons/CustomizeToolbarButton/CustomizeToolbarButton';
 import MegaFilter from '@/app/components/tasklist/list-toolbar-buttons/MegaFilter/MegaFilter';
 import {
@@ -66,10 +67,9 @@ import {
 } from './styled';
 import { ActionsContainer } from '../DashboardToolbar/styled';
 import HomeTaskViewFilter from '@/app/components/tasklist/list-toolbar-buttons/HomeTaskViewFilter';
-import * as localStorageHelper from '@/app/helpers/local-storage-helper';
+import localStorageHelper from '@/app/helpers/local-storage-helper';
 import { openAddTaskTaskDrawer } from '@/app/actions/task-drawer-actions';
 import { TaskOrigin } from '@/app/helpers/task-helpers';
-import sessionStorageHelper from '@/app/helpers/session-storage-helper';
 
 const DashboardHeader = ({
   clearSearch,
@@ -94,8 +94,8 @@ const DashboardHeader = ({
   const quickFiltersList = useSelector(quickFiltersSelector);
   const addQuickFilterOption = useSelector(addQuickFilterOptionSelector);
   const selectedQuickFilter = useSelector(selectedQuickFilterSelector);
-  const savedDashboardSelectedQuickFilters = sessionStorageHelper.getItem(
-    'dashboardSelectedQuickFilters',
+  const savedDashboardSelectedQuickFilters = localStorageHelper.getItem(
+    getMultipleSelectedQuickFilterStorageKey('dashboard', tabName),
   );
   const [multipleSelectedQuickFilters, setMultipleSelectedQuickFilters] =
     useState([]);
@@ -319,15 +319,15 @@ const DashboardHeader = ({
         const index = quickFiltersList.indexOf(identifier);
         quickFiltersList.splice(index, 1);
       }
-      sessionStorageHelper.setItem(
-        'dashboardSelectedQuickFilters',
+      localStorageHelper.setItem(
+        getMultipleSelectedQuickFilterStorageKey('dashboard', tabName),
         JSON.stringify(quickFiltersList),
       );
 
       setMultipleSelectedQuickFilters(quickFiltersList);
-      setTimeout(() => dispatch(getDashboardGroups()), 1000); //time delay results in better home view refresh
+      setTimeout(() => dispatch(getDashboardGroups()), 1000); // time delay results in better home view refresh
     },
-    [dispatch, multipleSelectedQuickFilters],
+    [dispatch, multipleSelectedQuickFilters, tabName],
   );
 
   return (
