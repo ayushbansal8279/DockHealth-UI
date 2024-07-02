@@ -11,6 +11,10 @@ import {
   PatientNotesWrapper,
   PinnedNotesWrapper,
 } from './styled';
+import {
+  traverseNodes,
+  processMarkdownValue,
+} from '../../drawer-common/Comment/helpers';
 
 const PatientCardNote = ({ note, index }) => {
   const { identifier, pinned, description, dateUpdated, creator } = note;
@@ -19,13 +23,7 @@ const PatientCardNote = ({ note, index }) => {
     return (
       <>
         <NoteDescription>
-          <RichTextEditor
-            readonly
-            showToolbar={false}
-            value={description}
-            initOnClick
-            showCharCount
-          />
+          {traverseNodes(processMarkdownValue(description), [])}
         </NoteDescription>
         <NoteInfo>
           {creator?.name} {moment(dateUpdated).format('h:mma M/DD/YY')}

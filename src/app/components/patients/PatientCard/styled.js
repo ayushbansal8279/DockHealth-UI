@@ -84,6 +84,9 @@ export const NoteDescription = styled.p`
   margin-bottom: 0;
   font-size: ${fontSizes.regular};
   font-weight: ${fontWeights.light};
+  & p {
+    margin-bottom: 2px;
+  }
 `;
 
 export const NoteInfo = styled(NoteDescription)`
