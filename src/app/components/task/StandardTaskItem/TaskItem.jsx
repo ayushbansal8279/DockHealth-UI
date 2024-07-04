@@ -14,6 +14,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
 import * as ListDetailsActions from 'actions/list-details-actions';
 import { isTaskSelectedSelector } from 'selectors/task-drawer-selectors';
+import * as CustomFieldsApi from 'api/custom-fields-api';
 import {
   listCustomFieldsSelector,
   searchTermSelector,
@@ -139,6 +140,7 @@ import TaskItemComments from './TaskItemComponents/TaskItemComments';
 import { megaFilterSelector } from '@/app/selectors/mega-filter-selectors';
 import SubtaskIcon from '@/app/img/SubtaskIcon';
 import { getTaskDetails } from '@/app/api/task-api';
+import { showGlobalErrorAlert } from '@/app/alert/actions';
 
 const { DISABLED, READ_ONLY } = SINGLE_TASK_RESTRICTIONS_OPTIONS;
 
@@ -249,6 +251,7 @@ const TaskItem = React.memo(
     }));
 
     const actions = useActions(TaskActions);
+    const [taskListCustomFields, setTaskListCustomFields] = useState([]);
     const [parent, setParent] = useState({});
     const [isCompleted, setIsCompleted] = useState(false);
     const modalActions = useActions(ModalActions);
@@ -306,8 +309,26 @@ const TaskItem = React.memo(
       organizationCustomFieldsSelector,
     );
     const listCustomFields = useSelector(listCustomFieldsSelector);
+    const fetchListCustomFields = () => {
+      CustomFieldsApi.getAllTaskListCustomFields(taskListIdentifier)
+        .then((data) => {
+          setTaskListCustomFields(data);
+        })
+        .catch(() => {
+          dispatch(showGlobalErrorAlert());
+        });
+    };
+
+    useEffect(() => {
+      if (taskListIdentifier && origin !== 'LIST') {
+        fetchListCustomFields();
+      }
+    }, [taskListIdentifier, origin]);
+
     const taskCustomFields = organizationCustomFields
-      ? organizationCustomFields.concat(listCustomFields)
+      ? origin === 'LIST'
+        ? organizationCustomFields.concat(listCustomFields)
+        : organizationCustomFields.concat(taskListCustomFields)
       : listCustomFields;
 
     const showContextMenu = [move, duplicate, subtasks, del].reduce(
