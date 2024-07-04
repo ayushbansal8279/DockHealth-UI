@@ -37,6 +37,7 @@ const CustomPhoneNumberInput = ({ readOnly, inputRef, ...otherProps }) => {
       defaultCountry={defaultLang?.toUpperCase()}
       ref={inputRef}
       inputProps={{ readOnly }}
+      readOnly={readOnly}
     />
   );
 };
