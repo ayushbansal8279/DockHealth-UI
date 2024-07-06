@@ -9,7 +9,6 @@ import React, {
 } from 'react';
 import { Box, IconButton } from '@mui/material';
 import { useDispatch } from 'react-redux';
-import moment from 'moment';
 import Highlighter from 'react-highlight-words';
 import {
   storeAsCurrentTask,
@@ -19,19 +18,14 @@ import { TaskStatus } from 'helpers/task-helpers';
 import { openDrawer } from 'actions/task-drawer-actions';
 import ReactHtmlParser from 'html-react-parser';
 import { linkifyTextWithMentions } from 'components/common/RichTextEditor/helpers';
-import Spacing from 'components/common/Spacing';
-import EditIcon from '@mui/icons-material/Edit';
 import PatientMention from 'components/common/TextEditor/PatientMention/PatientMention';
 import UserMention from 'components/common/TextEditor/UserMention/UserMention';
 import {
   // Description,
   DescriptionBox,
-  CompletedBy,
-  TaskItemParentTaskLabel,
   TaskItemDescriptionIndicators,
   // DescriptionTooltipWrapper,
   // DescriptionBorder,
-  TaskContext,
   DescriptionEditButton,
   DescriptionInput,
 } from '../../styled';
@@ -43,7 +37,6 @@ const TaskItemDescription = ({
   task,
   // isCompletedGroup,
   highlightedValue,
-  hasParentTaskLabel,
   isEditing,
   setEditing,
   disabled,
@@ -59,9 +52,7 @@ const TaskItemDescription = ({
     parentTask,
     // searchMetaData,
     completedBy,
-    completedDt,
     // taskList,
-    linkedTaskTemplate,
     read,
     tokenizedDescription,
   } = task;
@@ -91,14 +82,6 @@ const TaskItemDescription = ({
   const isCompleted = status === TaskStatus.COMPLETE;
   const isDecisionTask = task?.intentType === 'DECISION';
 
-  const completedByName = completedBy
-    ? `${completedBy?.firstName.charAt(0)}. ${completedBy?.lastName}${
-        completedBy?.credentials ? `, ${completedBy?.credentials}` : ''
-      }`
-        .trim()
-        .replace(/^\.$/, '') || 'Unknown'
-    : 'Unknown';
-
   useEffect(() => {
     setDescriptionState(description);
   }, [description]);
@@ -108,17 +91,6 @@ const TaskItemDescription = ({
       setTimeout(descriptionReference.current.focus, 0);
     }
   }, [isEditing, descriptionReference]);
-
-  const onParentLabelClick = useCallback(
-    (event) => {
-      event.preventDefault();
-      event.stopPropagation();
-      dispatch(openDrawer());
-      dispatch(storeAsCurrentTask(parentTask));
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [parentTask],
-  );
 
   const handleDescriptionChange = useCallback(
     (event) => {

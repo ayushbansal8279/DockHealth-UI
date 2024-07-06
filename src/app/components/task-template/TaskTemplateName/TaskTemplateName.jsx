@@ -8,8 +8,8 @@ import Highlighter from 'react-highlight-words';
 import {
   NameContainer,
   NameTooltip,
-  TaskTemplateDescriptionIndicators,
-  TaskTemplateContext,
+  // TaskTemplateDescriptionIndicators,
+  // TaskTemplateContext,
   TaskTemplateNameInput,
 } from './styled';
 
@@ -31,8 +31,6 @@ const TaskTemplateName = ({
   return (
     <>
       <NameContainer
-        // onMouseEnter={() => setIsHoverVisible(true)}
-        // onMouseLeave={() => setIsHoverVisible(false)}
         onClick={() => {
           dispatch(openDrawer(identifier, templateGroup));
         }}
@@ -43,7 +41,7 @@ const TaskTemplateName = ({
               ref={nameInputReference}
               readOnly={!isEditing}
               error={nameInputError}
-              onChange={event => {
+              onChange={(event) => {
                 setNameInputValue(event.target?.value);
                 setNameInputError(false);
               }}
@@ -53,7 +51,7 @@ const TaskTemplateName = ({
               }}
               onKeyDown={handleNameInputKeyDown}
               value={nameInputValue}
-              onClick={event => {
+              onClick={(event) => {
                 if (isEditing) {
                   event.stopPropagation();
                 }
