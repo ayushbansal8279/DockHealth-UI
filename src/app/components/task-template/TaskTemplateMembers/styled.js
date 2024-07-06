@@ -17,3 +17,15 @@ export const AssigneeMatchingWrapper = styled(MatchingWrapper)`
   width: 75%;
   height: 75%;
 `;
+
+export const AssigneeWrapper = styled.div`
+  opacity: 0;
+`;
+
+export const AssigneeContainer = styled.div`
+width: 100%;
+&:hover {
+  & ${AssigneeWrapper} {
+    opacity: 1;
+  }
+`;

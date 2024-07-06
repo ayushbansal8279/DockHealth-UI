@@ -137,7 +137,7 @@ function VTask(
             ref={parentTaskReference}
             $subitem={metadata.level > 1}
             // @ts-ignore
-            $workflow={record.task?.itemType === 'BUNDLE'}
+            $workflow={record.itemType === 'BUNDLE'}
             $template={isTaskTemplate && isLastChild}
             isTaskTemplate={isTaskTemplate}
             isLastChild={isLastChild || false}

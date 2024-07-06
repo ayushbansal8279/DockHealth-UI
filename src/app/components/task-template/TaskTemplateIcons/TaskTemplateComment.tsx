@@ -7,10 +7,10 @@ import {
   SINGLE_WORKFLOW_RESTRICTIONS_PROFILES,
   WORKFLOW_LIST_RESTRICTIONS_OPTIONS,
 } from 'restrictions/task-restrictions';
-import { GridImg } from './styled';
+import { useSelector } from 'react-redux';
+import { CommentsContainer, CommentsWrapper, GridImg } from './styled';
 import CommentsInPopover from '../../workflow-drawer/CommentsInPopover';
 import { IComment } from '@/app/types/Comment';
-import { useSelector } from 'react-redux';
 import { userProfileSelector } from '@/app/selectors/user-selectors';
 
 const { DISABLED } = WORKFLOW_LIST_RESTRICTIONS_OPTIONS;
@@ -19,15 +19,12 @@ interface Props {
   workflow: any;
   comments: IComment[];
   matchComments: any[];
-  isHover: boolean;
-  origin: string;
 }
 
 export default function TaskTemplateComment({
   workflow,
   comments,
   matchComments,
-  isHover,
 }: Props) {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const commentPopoverOpen = Boolean(anchorEl);
@@ -44,37 +41,39 @@ export default function TaskTemplateComment({
   }, [setAnchorEl]);
 
   return (
-    <Grid container>
-      <GridImg item xs={12} matched={matchComments}>
-        <Tooltip
-          placement="top"
-          title={
-            comments?.length > 0
-              ? getCommentsIconTooltipTitle(comments)
-              : 'Add Comment'
-          }
-        >
-          <button type="button" onClick={onCommentClick}>
-            {(comments?.length > 0 || isHover) && (
-              <TaskIcon type="comments" isActive={comments?.length > 0} />
-            )}
-          </button>
-        </Tooltip>
-      </GridImg>
+    <CommentsContainer>
+      <Grid container>
+        <GridImg item xs={12} matched={matchComments}>
+          <Tooltip
+            placement="top"
+            title={
+              comments?.length > 0
+                ? getCommentsIconTooltipTitle(comments)
+                : 'Add Comment'
+            }
+          >
+            <button type="button" onClick={onCommentClick}>
+              <CommentsWrapper hasComments={comments?.length > 0}>
+                <TaskIcon type="comments" isActive={comments?.length > 0} />
+              </CommentsWrapper>
+            </button>
+          </Tooltip>
+        </GridImg>
 
-      <Popover
-        anchorEl={anchorEl}
-        open={commentPopoverOpen}
-        style={{ zIndex: 2000 }}
-        onClose={handleCloseComments}
-      >
-        <CommentsInPopover
-          workflowIdentifier={workflow.identifier}
-          comments={comments}
+        <Popover
+          anchorEl={anchorEl}
+          open={commentPopoverOpen}
+          style={{ zIndex: 2000 }}
           onClose={handleCloseComments}
-          disabled={restrictions?.comments === DISABLED}
-        />
-      </Popover>
-    </Grid>
+        >
+          <CommentsInPopover
+            workflowIdentifier={workflow.identifier}
+            comments={comments}
+            onClose={handleCloseComments}
+            disabled={restrictions?.comments === DISABLED}
+          />
+        </Popover>
+      </Grid>
+    </CommentsContainer>
   );
 }

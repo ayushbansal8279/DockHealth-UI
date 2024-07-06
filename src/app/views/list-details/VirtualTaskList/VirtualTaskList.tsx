@@ -6,7 +6,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { uniqueId } from 'lodash';
 import { TaskStatus } from 'helpers/task-helpers';
 import Virtualized, { Node } from 'views/list-details/modules/Virtualized';
@@ -30,7 +30,6 @@ import {
 } from './VirtualTaskListScrollContext';
 
 export interface Props {
-  tasksToMap: any[];
   groupedTasks: any[];
   showClearSortFiltersModal: any;
 }
@@ -174,7 +173,7 @@ function VirtualTaskList({ groupedTasks, showClearSortFiltersModal }: Props) {
                 'Task',
                 !!collapseMap[taskIdentifier],
                 {
-                  task,
+                  itemType: task?.itemType,
                   isNextVirtualTaskItemTypeBundle:
                     groupTaskIndex === groupTasks.length - 1
                       ? false
@@ -207,7 +206,7 @@ function VirtualTaskList({ groupedTasks, showClearSortFiltersModal }: Props) {
                       task.itemType === 'TASK' ? 'Subtask' : 'TaskOfBundle',
                       !!collapseMap[child?.taskIdentifier ?? child],
                       {
-                        task: child,
+                        itemType: child?.itemType,
                         isNextVirtualTaskItemTypeBundle:
                           children.indexOf(child) === children.length - 1
                             ? tasksMap[groupTasks[groupTaskIndex + 1]]
@@ -233,7 +232,7 @@ function VirtualTaskList({ groupedTasks, showClearSortFiltersModal }: Props) {
                                 'Subtask',
                                 false,
                                 {
-                                  task: subtask,
+                                  itemType: subtask?.itemType,
                                   bgColor: !(index % 2 === 0),
                                   isLastTaskOfGroup:
                                     groupTaskIndex === groupTasks.length - 1 &&

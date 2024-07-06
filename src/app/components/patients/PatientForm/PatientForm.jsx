@@ -30,7 +30,6 @@ import FormPhoneNumberInput from 'components/common/PhoneNumberInput/FormPhoneNu
 import FormSelect from 'components/common/Select/FormSelect';
 import DateInput from 'components/common/DateInput/DateInput';
 import CustomField from 'components/common/CustomField/CustomField';
-import Button from 'components/common/Button/Button';
 import Spacing from 'components/common/Spacing';
 import AddButton from 'components/common/AddButton/AddButton';
 import { Category, CategoryLabel } from 'helpers/patient-details-helpers';

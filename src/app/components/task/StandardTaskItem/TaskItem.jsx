@@ -11,7 +11,6 @@ import React, {
 } from 'react';
 import pluck from 'ramda/src/pluck';
 import { useDispatch, useSelector } from 'react-redux';
-import moment from 'moment';
 import * as ListDetailsActions from 'actions/list-details-actions';
 import { isTaskSelectedSelector } from 'selectors/task-drawer-selectors';
 import {
@@ -35,11 +34,6 @@ import {
 } from 'actions/task-actions';
 // eslint-disable-next-line import/no-cycle
 import TaskTemplateGroup from 'components/task-template/TaskTemplateGroup/TaskTemplateGroup';
-import Circle from 'img/circle.svg';
-import CircleCompleted from 'img/circle-completed.svg';
-import CircleCompletedHover from 'img/circle-completed-hover.svg';
-import TaskAutomationPending from 'img/task-automation-pending.svg';
-import TaskAutomationComplete from 'img/task-automation-complete.svg';
 import ThreeDotsIcon from 'img/three-dots.svg';
 import {
   userProfileSelector,
@@ -111,8 +105,8 @@ import TaskItemList from './TaskItemComponents/TaskItemList';
 import TaskItemOrganization from './TaskItemComponents/TaskItemOrganization';
 import TaskItemWorkflowStatus from './TaskItemComponents/TaskItemWorkflowStatus';
 import TaskItemDecision from './TaskItemComponents/TaskItemDecision';
+import TaskItemCompleteIcon from './TaskItemComponents/TaskItemCompleteIcon';
 import {
-  CircleIcon,
   MainStandardTaskItemCell,
   StandardTaskItemContainer,
   StandardTaskItemPanel,
@@ -124,9 +118,6 @@ import {
   ActionIconsContainer,
   PatientMRNAnchor,
   TaskScrollVericleLine,
-  TootipCompletedBy,
-  TootipCompletedByDate,
-  TootipCompletedByName,
   // AddPlaceholder,
   ChildTaskTitle,
   ParentTaskLink,
@@ -331,8 +322,6 @@ const TaskItem = React.memo(
 
     const [isPatientDataReadOnly] = useState(true);
 
-    const [showCircleIconOnHover, setShowCircleIconOnHover] = useState(false);
-    const [tooltipsOpen, setTooltipsOpen] = useState(false);
     const { tabName } = useParams();
 
     const customHighlightColor = useMemo(() => {
@@ -789,14 +778,6 @@ const TaskItem = React.memo(
       [dispatch, task, taskCustomFields],
     );
 
-    const handleTooltipClose = () => {
-      setTooltipsOpen(false);
-    };
-
-    const handleTooltipOpen = () => {
-      setTooltipsOpen(true);
-    };
-
     const randerFirstColumnCoverIfNecessary = useCallback(
       (content, order, width) => {
         if (order !== 0) return content;
@@ -850,78 +831,14 @@ const TaskItem = React.memo(
                   />
                 )}
               <Box ml="10px" />
-              <Tooltip
-                placement={isCompleted ? 'bottom' : 'top'}
-                title={
-                  isCompleted ? (
-                    <>
-                      <TootipCompletedBy>Completed by</TootipCompletedBy>
-                      <TootipCompletedByName>
-                        {`${task?.completedBy?.firstName} ${task?.completedBy?.lastName}`}
-                      </TootipCompletedByName>
-                      <TootipCompletedByDate>
-                        {`${new Date(task?.completedDt).toLocaleString(
-                          'en-US',
-                          {
-                            weekday: 'long',
-                          },
-                        )}, ${moment(task?.completedDt).format(
-                          'MMM DD, YYYY',
-                        )} @${new Date(task?.completedDt)
-                          .toLocaleTimeString('en-US', {
-                            hour: 'numeric',
-                            minute: '2-digit',
-                            hour12: true,
-                          })
-                          .toLowerCase()}`}
-                      </TootipCompletedByDate>
-                    </>
-                  ) : !task?.systemTask ? (
-                    'Complete task'
-                  ) : (
-                    'System task'
-                  )
-                }
-                open={tooltipsOpen}
-                onClose={() => handleTooltipClose()}
-              >
-                <CircleIcon
-                  src={
-                    isCompleted
-                      ? task?.systemTask
-                        ? TaskAutomationComplete
-                        : CircleCompleted
-                      : showCircleIconOnHover
-                      ? task?.systemTask
-                        ? TaskAutomationPending
-                        : CircleCompletedHover
-                      : task?.systemTask
-                      ? TaskAutomationPending
-                      : Circle
-                  }
-                  onMouseEnter={() => {
-                    setShowCircleIconOnHover(true);
-                    handleTooltipOpen();
-                  }}
-                  onMouseLeave={() => {
-                    setShowCircleIconOnHover(false);
-                    handleTooltipClose();
-                  }}
-                  isClickable={
-                    !isTaskStatusTogglingDisabled &&
-                    isDependencyEmptyOrCompleted &&
-                    taskListRestrictions?.completeTask !== DISABLED
-                  }
-                  isCompleted={isCompleted}
-                  onClick={
-                    // eslint-disable-next-line unicorn/no-negated-condition
-                    taskListRestrictions?.completeTask !== DISABLED &&
-                    !task?.systemTask
-                      ? onCircleClick
-                      : () => {}
-                  }
-                />
-              </Tooltip>
+              <TaskItemCompleteIcon
+                task={task}
+                isCompleted={isCompleted}
+                isTaskStatusTogglingDisabled={isTaskStatusTogglingDisabled}
+                isDependencyEmptyOrCompleted={isDependencyEmptyOrCompleted}
+                taskListRestrictions={taskListRestrictions}
+                onCircleClick={onCircleClick}
+              />
               <Box ml="10px" />
               {/* </Tooltip> */}
             </ActionIconsContainer>
@@ -959,8 +876,6 @@ const TaskItem = React.memo(
         bulkEditEnabled,
         onClickBulkEdit,
         isCompleted,
-        tooltipsOpen,
-        showCircleIconOnHover,
         isTaskStatusTogglingDisabled,
         isDependencyEmptyOrCompleted,
         onCircleClick,
