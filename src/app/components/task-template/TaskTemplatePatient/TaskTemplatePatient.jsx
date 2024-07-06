@@ -11,7 +11,6 @@ import {
   PatientLabel,
   DisabledLink,
 } from './styled';
-import Tooltip from '../../common/Tooltip/Tooltip';
 
 const TaskTemplatePatient = ({
   highlightedValue,
@@ -61,14 +60,7 @@ const TaskTemplatePatient = ({
           closePopover={() => setPopoverOpen(false)}
           origin={origin}
         >
-          <Tooltip
-            placement="top"
-            title={`Add ${customerTypeLabelCapitalized}`}
-          >
-            <AddPlaceholder>
-              + Add {customerTypeLabelCapitalized}
-            </AddPlaceholder>
-          </Tooltip>
+          <AddPlaceholder>+ Add {customerTypeLabelCapitalized}</AddPlaceholder>
         </PatientDropdown>
       )}
       {!readOnly && !patient && openPatientPopover && (

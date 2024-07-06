@@ -1,19 +1,18 @@
 import React, { FC, useCallback } from 'react';
 
+import { Popover } from '@mui/material';
+import Grid from '@mui/material/Grid';
+import TaskIcon from 'components/task/TaskIcon/TaskIcon';
 import { Task } from '@/app/types/Task';
 import { CommentsContainer, CommentsWrapper, GridImg } from '../../styled';
-import TaskIcon from 'components/task/TaskIcon/TaskIcon';
-import Grid from '@mui/material/Grid';
 import CommentsInPopover from '../../CommentsInPopover/CommentsInPopover';
 import Tooltip from '@/app/components/common/Tooltip/Tooltip';
-import { Popover } from '@mui/material';
 import { IComment } from '@/app/types/Comment';
 
 interface TaskItemCommentsProps {
   matchComments: boolean;
   comments: Array<IComment>;
   task: Task;
-  isCommentHover: boolean;
 }
 
 const TaskItemComments: FC<TaskItemCommentsProps> = ({
