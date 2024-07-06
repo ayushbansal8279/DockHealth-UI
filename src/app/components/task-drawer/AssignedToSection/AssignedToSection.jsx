@@ -99,7 +99,7 @@ const AssignedToSection = ({
 
   const handleClick = () => {
     setIsOpen(true);
-    inputRef.current.focus();
+    inputRef?.current?.focus();
   };
 
   const ButtonSx = {
