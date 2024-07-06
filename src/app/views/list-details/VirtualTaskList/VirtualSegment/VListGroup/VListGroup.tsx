@@ -75,7 +75,6 @@ function VListGroup(
         onTaskGroupRefresh={loadTasksForTaskGroup}
         origin={TaskOrigin.LIST}
         bgColor={bgColor}
-        isEditing
       >
         {() => null}
       </TasksGroup>
