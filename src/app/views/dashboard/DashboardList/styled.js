@@ -55,6 +55,16 @@ export const DashboardTasksGroupContainer = styled.div`
   }
   background: ${({ backgroundColor }) =>
     backgroundColor ? palette.aliceBlue : ''};
+
+  &:before {
+    margin-left: -24px;
+    content: '';
+    display: block;
+    width: 24px;
+    height: ${({ backgroundColor, height }) => (backgroundColor ? height : '')};
+    position: absolute;
+    background-color: ${palette.aliceBlue};
+  }
 `;
 
 export const DashboardTasksGroupList = styled.div`

@@ -241,6 +241,7 @@ const DashboardTasksGroup = ({
     <DashboardTasksGroupContainer
       ref={parentContainerReference}
       backgroundColor={backgroundColor}
+      height={150 + tasks?.length * 40}
     >
       <StickyContainer left={24} decreaseWidth={2 * 24}>
         {showHeader && (
