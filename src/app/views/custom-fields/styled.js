@@ -50,7 +50,7 @@ export const CustomFieldItem = styled.div`
 `;
 
 export const CustomFieldCell = styled.div`
-  padding: 0px 8px;
+  padding: 0px 6px;
   overflow: hidden;
 
   &:first-of-type {

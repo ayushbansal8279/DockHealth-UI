@@ -208,83 +208,94 @@ const TaskCustomFieldsView = ({ taskListIdentifier, editable = false }) => {
                   <CustomFieldHeaderText>Required</CustomFieldHeaderText>
                 </CustomFieldCell>
                 <CustomFieldCell>
-                  <Box width="68px" />
+                  <Box width="98px" />
+                  {/* <Box width="68px" /> */}
                 </CustomFieldCell>
               </CustomFieldItem>
-              <DndContext
-                sensors={sensors}
-                onDragEnd={({ active, over }) =>
-                  handleOnDragEnd(active.id, over.id)
-                }
+              <div
+                style={{
+                  maxHeight: '400px',
+                  overflowY: 'auto',
+                  position: 'relative',
+                }}
               >
-                <SortableContext items={pluck('identifier', sortedFields)}>
-                  {sortedFields.map((field) => (
-                    <SortableItem
-                      key={field.identifier}
-                      itemId={field.identifier}
-                    >
-                      {({ dragHandleProps }) => (
-                        <div>
-                          <CustomFieldItem editable={editable} type="TASK">
-                            {editable && (
-                              <DragHandle {...dragHandleProps}>
-                                <DragHandleIcon />
-                              </DragHandle>
-                            )}
-                            <CustomFieldCell>
-                              <CustomFieldText>{field.name}</CustomFieldText>
-                            </CustomFieldCell>
-                            <CustomFieldCell>
-                              <CustomFieldText>
-                                {field.fieldType === FieldType.RELATIONSHIP
-                                  ? `${FieldTypeLabel[field.fieldType]} - ${
-                                      field.relatedProfileType?.name
-                                    }`
-                                  : FieldTypeLabel[field.fieldType]}
-                              </CustomFieldText>
-                            </CustomFieldCell>
-                            <CustomFieldCell>
-                              <CustomFieldText>
-                                {CategoryLabel[field.fieldCategoryType]}
-                              </CustomFieldText>
-                            </CustomFieldCell>
-                            <CustomFieldCell>
-                              <CustomFieldText>
-                                {field.displayOptions &&
-                                field.displayOptions?.includes('TASK_REQUIRED')
-                                  ? 'Yes'
-                                  : ''}
-                              </CustomFieldText>
-                            </CustomFieldCell>
-                            {editable && (
-                              <>
-                                <CustomFieldCell>
-                                  <IconButton
-                                    size="small"
-                                    onClick={() => handleEditClick(field)}
-                                  >
-                                    <EditIcon />
-                                  </IconButton>
-                                </CustomFieldCell>
-                                <CustomFieldCell>
-                                  <IconButton
-                                    size="small"
-                                    onClick={() =>
-                                      handleRemoveClick(field.identifier)
-                                    }
-                                  >
-                                    <DeleteIcon />
-                                  </IconButton>
-                                </CustomFieldCell>
-                              </>
-                            )}
-                          </CustomFieldItem>
-                        </div>
-                      )}
-                    </SortableItem>
-                  ))}
-                </SortableContext>
-              </DndContext>
+                <DndContext
+                  sensors={sensors}
+                  onDragEnd={({ active, over }) =>
+                    handleOnDragEnd(active.id, over.id)
+                  }
+                >
+                  <SortableContext items={pluck('identifier', sortedFields)}>
+                    {sortedFields.map((field) => (
+                      <SortableItem
+                        key={field.identifier}
+                        itemId={field.identifier}
+                      >
+                        {({ dragHandleProps }) => (
+                          <div>
+                            <CustomFieldItem editable={editable} type="TASK">
+                              {editable && (
+                                <DragHandle {...dragHandleProps}>
+                                  <DragHandleIcon />
+                                </DragHandle>
+                              )}
+                              <CustomFieldCell>
+                                <CustomFieldText>{field.name}</CustomFieldText>
+                              </CustomFieldCell>
+                              <CustomFieldCell>
+                                <CustomFieldText>
+                                  {field.fieldType === FieldType.RELATIONSHIP
+                                    ? `${FieldTypeLabel[field.fieldType]} - ${
+                                        field.relatedProfileType?.name
+                                      }`
+                                    : FieldTypeLabel[field.fieldType]}
+                                </CustomFieldText>
+                              </CustomFieldCell>
+                              <CustomFieldCell>
+                                <CustomFieldText>
+                                  {CategoryLabel[field.fieldCategoryType]}
+                                </CustomFieldText>
+                              </CustomFieldCell>
+                              <CustomFieldCell>
+                                <CustomFieldText>
+                                  {field.displayOptions &&
+                                  field.displayOptions?.includes(
+                                    'TASK_REQUIRED',
+                                  )
+                                    ? 'Yes'
+                                    : ''}
+                                </CustomFieldText>
+                              </CustomFieldCell>
+                              {editable && (
+                                <>
+                                  <CustomFieldCell>
+                                    <IconButton
+                                      size="small"
+                                      onClick={() => handleEditClick(field)}
+                                    >
+                                      <EditIcon />
+                                    </IconButton>
+                                  </CustomFieldCell>
+                                  <CustomFieldCell>
+                                    <IconButton
+                                      size="small"
+                                      onClick={() =>
+                                        handleRemoveClick(field.identifier)
+                                      }
+                                    >
+                                      <DeleteIcon />
+                                    </IconButton>
+                                  </CustomFieldCell>
+                                </>
+                              )}
+                            </CustomFieldItem>
+                          </div>
+                        )}
+                      </SortableItem>
+                    ))}
+                  </SortableContext>
+                </DndContext>
+              </div>
             </>
           ) : (
             <EmptyListPlaceholder>List is empty</EmptyListPlaceholder>
