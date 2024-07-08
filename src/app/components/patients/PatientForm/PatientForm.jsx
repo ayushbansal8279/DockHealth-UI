@@ -8,11 +8,8 @@ import React, {
 } from 'react';
 import { useSelector } from 'react-redux';
 import { Box } from '@mui/material';
-import { useHistory } from 'react-router-dom';
-import { CUSTOM_FIELDS_SETTINGS_PATH } from 'routing/helpers/paths';
 import {
   userProfileSelector,
-  userHasPatientCustomFieldsFeatureSelector,
   selectedUserOrganizationSelector,
 } from 'selectors/user-selectors';
 import { checkIfUserIsOrganizationAdmin } from 'helpers/user-helper';
@@ -62,7 +59,6 @@ const PatientForm = forwardRef(
     },
     reference,
   ) => {
-    const history = useHistory();
     const {
       handleSubmit,
       formState: { errors },
@@ -93,11 +89,6 @@ const PatientForm = forwardRef(
         ),
       [genderIdentityOptions.data],
     );
-
-    const patientCustomFieldsAvailable = useSelector(
-      userHasPatientCustomFieldsFeatureSelector,
-    );
-
     useEffect(() => {
       CustomFieldsApi.getAllPatientCustomFields(
         true,
@@ -148,9 +139,6 @@ const PatientForm = forwardRef(
       },
       [patient, edited],
     );
-
-    const handleAddButtonClick = () =>
-      history.push(`${CUSTOM_FIELDS_SETTINGS_PATH}/patients`);
 
     return (
       <form
@@ -230,13 +218,6 @@ const PatientForm = forwardRef(
               emptyPersonalVisible || edited,
             );
           })}
-          <Spacing vertical={3} />
-          <CategoryOptions
-            visibility={emptyPersonalVisible}
-            onToggle={toggleEmptyPersonal}
-            showAddButton={isAdmin && patientCustomFieldsAvailable}
-            onAddButtonClick={handleAddButtonClick}
-          />
         </LabeledCollapse>
         <LabeledCollapse
           name={`${capitalize(customerTypeLabel)} ${CategoryLabel[
@@ -271,13 +252,6 @@ const PatientForm = forwardRef(
               emptyContactsVisible || edited,
             );
           })}
-          <Spacing vertical={3} />
-          <CategoryOptions
-            visibility={emptyContactsVisible}
-            onToggle={toggleEmptyContacts}
-            showAddButton={isAdmin && patientCustomFieldsAvailable}
-            onAddButtonClick={handleAddButtonClick}
-          />
         </LabeledCollapse>
         {customFields?.[Category.OTHER_INFO]?.length > 0 && (
           <LabeledCollapse
@@ -294,23 +268,9 @@ const PatientForm = forwardRef(
                 emptyOtherVisible || edited,
               );
             })}
-            <Spacing vertical={3} />
-            <CategoryOptions
-              visibility={emptyOtherVisible}
-              onToggle={toggleEmptyOther}
-              showAddButton={isAdmin && patientCustomFieldsAvailable}
-              onAddButtonClick={handleAddButtonClick}
-            />
           </LabeledCollapse>
         )}
         <Box display="flex" justifyContent="space-between">
-          <div>
-            {isAdmin && patientCustomFieldsAvailable && (
-              <AddButton onClick={handleAddButtonClick}>
-                Add or edit fields
-              </AddButton>
-            )}
-          </div>
           {edited && (
             <ConfirmButton
               style={{ width: 'auto' }}

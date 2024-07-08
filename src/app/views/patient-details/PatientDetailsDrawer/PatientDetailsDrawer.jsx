@@ -12,13 +12,15 @@ import {
 } from 'selectors/user-selectors';
 import { FormProvider, useForm } from 'react-hook-form';
 import { openModal, closeModal } from 'modal/actions';
-import { createPatientDetailsPath } from 'routing/helpers/paths';
+import {
+  createPatientDetailsPath,
+  CUSTOM_FIELDS_SETTINGS_PATH,
+} from 'routing/helpers/paths';
 import {
   archivePatient as archivePatientAction,
   unarchivePatient as unarchivePatientAction,
   deletePatientArchive as deletePatientArchiveAction,
 } from 'sagas/patient-details-saga';
-
 import {
   mergePatient,
   updatePatientDetails,
@@ -145,6 +147,10 @@ const PatientDetailsDrawer = ({ patient, isOpenedDetails, closeDetails }) => {
     dispatch(updatePatientDetails(patientIdentifier, updateData));
   };
 
+  const handleAddButtonClick = useCallback(() => {
+    history.push(`${CUSTOM_FIELDS_SETTINGS_PATH}/patients`);
+  }, [history]);
+
   const contextMenuOptions = useMemo(
     () => [
       !isActive && {
@@ -196,6 +202,10 @@ const PatientDetailsDrawer = ({ patient, isOpenedDetails, closeDetails }) => {
         name: 'Delete',
         onClick: deletePatient,
       },
+      {
+        name: 'Edit Profile Details',
+        onClick: handleAddButtonClick,
+      },
     ],
     [
       isActive,
@@ -209,6 +219,7 @@ const PatientDetailsDrawer = ({ patient, isOpenedDetails, closeDetails }) => {
       dispatch,
       closeDetails,
       history,
+      handleAddButtonClick,
     ],
   );
 
