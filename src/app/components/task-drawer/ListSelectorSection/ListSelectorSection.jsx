@@ -32,7 +32,6 @@ const ListSelectorSection = ({
           IconComponent={CustomIcon}
           size="small"
           fullWidth
-          placeholder="asdsa"
           value={slectedListIdentifier}
           renderValue={(value) =>
             lists?.map((item) => {
