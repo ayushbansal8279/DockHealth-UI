@@ -17,7 +17,7 @@ export const VSubtask = styled('div')`
     isWorkflowSubtask
       ? searchValue || isFilterApply || isSortApplied
         ? '53.5px'
-        : '90.5px'
+        : '87px'
       : searchValue || isFilterApply || isSortApplied
       ? '54.5px'
       : '87px'};

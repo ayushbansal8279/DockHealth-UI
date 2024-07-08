@@ -751,8 +751,15 @@ export const ParentTaskContainer = styled.div`
       noMargin ? -1 : origin === 'PATIENT' || origin === 'GLOBAL' ? 2 : 0}px;
   }
   width: ${({ $width }) => ($width ? '100%' : '')};
-  padding-right: ${({ $width, $isVirtualSubtask }) =>
-    $width ? ($isVirtualSubtask ? '15.5px' : '66.5px') : ''};
+  padding-right: ${({ $width, $isVirtualSubtask, $isWorkflowTask }) =>
+    $width
+      ? $isVirtualSubtask
+        ? '15.5px'
+        : $isWorkflowTask
+        ? '66px'
+        : '66.5px'
+      : ''};
+
   margin-bottom: ${({
     origin,
     isLastChild,

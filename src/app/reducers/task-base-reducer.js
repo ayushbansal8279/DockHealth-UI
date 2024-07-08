@@ -421,24 +421,20 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
 
     case ActionTypes.DO_ASSIGNMENT: {
       const { tasksToUpdate, users } = action;
-      const tasksMap = { ...state.tasksMap };
-
-      for (const taskIdentifier of tasksToUpdate) {
-        if (!(taskIdentifier in tasksMap)) continue;
-        tasksMap[taskIdentifier] = {
-          ...tasksMap[taskIdentifier],
-          assignedToUsers: addArr(
-            tasksMap[taskIdentifier].assignedToUsers,
-            users,
-            'userIdentifier',
-          ),
-        };
+      let updatedState = state;
+      for (const taskId of tasksToUpdate) {
+        updatedState = updateStateCallback(updatedState, (tasksMap) => {
+          return {
+            ...tasksMap[taskId],
+            assignedToUsers: addArr(
+              tasksMap[taskId].assignedToUsers,
+              users,
+              'userIdentifier',
+            ),
+          };
+        });
       }
-
-      return {
-        ...state,
-        tasksMap,
-      };
+      return updatedState;
     }
 
     case ActionTypes.DO_UNASSIGNMENT: {

@@ -9,7 +9,6 @@ import {
   PatientsListType,
 } from 'helpers/patient-list-helpers';
 import { useBoolean } from 'hooks/useBoolean';
-import sessionStorageHelper from 'helpers/session-storage-helper';
 import {
   patientsListDetailsSelector,
   patientsSelector,
@@ -64,6 +63,8 @@ import {
   TaskTemplateApplicatorContainer,
   ContentWrapper,
 } from './styled';
+import localStorageHelper from '@/app/helpers/local-storage-helper';
+import sessionStorageHelper from '@/app/helpers/session-storage-helper';
 
 const MAX_PATIENT_ALL_RESULTS = 1000;
 
@@ -439,9 +440,14 @@ const PatientsView = () => {
   const handleDownloadPatientListData = useCallback(
     async (includeAllAttributes) => {
       const filename = `Dock ${listName}.csv`;
-      const selectedFilters = sessionStorageHelper.getItem(
+      let selectedFilters = localStorageHelper.getItem(
         getPatientsListFiltersStorageKey(listIdentifier),
       );
+      if (!selectedFilters) {
+        selectedFilters = sessionStorageHelper.getItem(
+          getPatientsListFiltersStorageKey(listIdentifier),
+        );
+      }
       const { data } = await downloadPatientListData(
         listIdentifier,
         selectedFilters,

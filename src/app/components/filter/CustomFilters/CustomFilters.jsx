@@ -28,6 +28,9 @@ const CustomFilters = ({
   setSelectedCustomFilter,
   isPatientListPage,
   handleQuickFilterDuplicateForPatientList,
+  multiSelectEnabled,
+  multipleSelectedQuickFilters,
+  updateMultipleSelectedQuickFilters,
 }) => {
   const [editModeFilterIdentifier, setEditModeFilterIdentifier] =
     useState(null);
@@ -45,11 +48,21 @@ const CustomFilters = ({
 
   const handleSelect = useCallback(
     (_, identifier, { selectedOptions }) => {
-      setSelected(identifier, selectedOptions);
-      setSelectedQuickFilter(identifier);
-      openPopover(false);
+      if (multiSelectEnabled) {
+        openPopover(false);
+        updateMultipleSelectedQuickFilters(identifier);
+      } else {
+        setSelected(identifier, selectedOptions);
+        setSelectedQuickFilter(identifier);
+      }
     },
-    [openPopover, setSelected, setSelectedQuickFilter],
+    [
+      multiSelectEnabled,
+      updateMultipleSelectedQuickFilters,
+      openPopover,
+      setSelected,
+      setSelectedQuickFilter,
+    ],
   );
 
   const handleUpdate = useCallback(
@@ -107,6 +120,12 @@ const CustomFilters = ({
             handleQuickFilterDuplicateForPatientList={
               handleQuickFilterDuplicateForPatientList
             }
+            multiSelectEnabled={multiSelectEnabled}
+            multipleSelectedQuickFilters={multipleSelectedQuickFilters}
+            updateMultipleSelectedQuickFilters={
+              updateMultipleSelectedQuickFilters
+            }
+            openPopover={openPopover}
           />
         ))}
       </OptionsList>

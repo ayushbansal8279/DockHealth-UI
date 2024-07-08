@@ -49,8 +49,9 @@ import {
   getFiltersStorageKey,
   getQuickFilterStorageKey,
 } from 'helpers/mega-filter-helper';
-import sessionStorageHelper from 'helpers/session-storage-helper';
 import { PATIENTS_LIST_ALL } from '../routing/helpers/paths';
+import localStorageHelper from '../helpers/local-storage-helper';
+import sessionStorageHelper from '../helpers/session-storage-helper';
 
 export const DO_TOGGLE_PATIENT_TASK_STATUS = 'DO_TOGGLE_PATIENT_TASK_STATUS';
 export const DO_REASSIGN_TASK = 'DO_REASSIGN_TASK';
@@ -289,9 +290,16 @@ function* getCurrentPatientTasks({ payload }) {
     // const completeTasksVisible = yield select(completeTasksVisibilitySelector);
     // const status = completeTasksVisible ? 'ALL' : 'INCOMPLETE';
     const selectedTaskStatus = yield select(currentListTasksStatusSelector);
-    const status = taskStatus || selectedTaskStatus;
+    let status = taskStatus || selectedTaskStatus;
     const sort = yield select(patientTasksSortSelector);
     const patientIdentifier = yield select(currentPatientIdentifierSelector);
+    let savedStatus = localStorageHelper.getItem('patientStatus');
+    if (!savedStatus) {
+      savedStatus = sessionStorageHelper.getItem('patientStatus');
+    }
+    if (savedStatus !== null) {
+      status = savedStatus;
+    }
 
     const lists = yield selectedFilters && !isEmpty(selectedFilters)
       ? call(
@@ -456,12 +464,22 @@ function* doInitializeSavedFiltersForPatient({ patientIdentifier }) {
     const completeTasksVisible = yield select(completeTasksVisibilitySelector);
     const status = completeTasksVisible ? 'ALL' : 'INCOMPLETE';
 
-    const filters = sessionStorageHelper.getItem(
+    let filters = localStorageHelper.getItem(
       getFiltersStorageKey(patientIdentifier, status),
     );
-    const selectedQuickFilter = sessionStorageHelper.getItem(
+    if (!filters) {
+      filters = sessionStorageHelper.getItem(
+        getFiltersStorageKey(patientIdentifier, status),
+      );
+    }
+    let selectedQuickFilter = localStorageHelper.getItem(
       getQuickFilterStorageKey(patientIdentifier, status),
     );
+    if (!selectedQuickFilter) {
+      selectedQuickFilter = sessionStorageHelper.getItem(
+        getQuickFilterStorageKey(patientIdentifier, status),
+      );
+    }
 
     yield put(
       MegaFilterActions.selectFiltersForMegaFilter(
