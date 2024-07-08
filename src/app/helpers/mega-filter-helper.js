@@ -6,6 +6,10 @@ export function getQuickFilterStorageKey(identifier, status) {
   return `quickfilter-${identifier}-${status}`;
 }
 
+export function getMultipleSelectedQuickFilterStorageKey(identifier, status) {
+  return `multipleSelectedQuickFilters-${identifier}-${status}`;
+}
+
 export const getFiltersFromLocalStorage = (identifier, status) =>
   sessionStorage[getFiltersStorageKey(identifier, status)];
 

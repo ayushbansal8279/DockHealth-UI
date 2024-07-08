@@ -41,20 +41,32 @@ import { selectedFiltersInMegaFilterSelector } from 'selectors/mega-filter-selec
 import {
   getFiltersStorageKey,
   getQuickFilterStorageKey,
+  getMultipleSelectedQuickFilterStorageKey,
 } from 'helpers/mega-filter-helper';
-import sessionStorageHelper from 'helpers/session-storage-helper';
 import { log } from 'helpers/log';
+import localStorageHelper from '../helpers/local-storage-helper';
+import sessionStorageHelper from '../helpers/session-storage-helper';
 
 function* initializeDashboardView() {
   try {
     const tabName = yield select(dashboardTabNameSelector);
 
-    const filters = sessionStorageHelper.getItem(
+    let filters = localStorageHelper.getItem(
       getFiltersStorageKey('dashboard', tabName),
     );
-    const selectedQuickFilter = sessionStorageHelper.getItem(
+    if (!filters) {
+      filters = sessionStorageHelper.getItem(
+        getFiltersStorageKey('dashboard', tabName),
+      );
+    }
+    let selectedQuickFilter = localStorageHelper.getItem(
       getQuickFilterStorageKey('dashboard', tabName),
     );
+    if (!selectedQuickFilter) {
+      selectedQuickFilter = sessionStorageHelper.getItem(
+        getQuickFilterStorageKey('dashboard', tabName),
+      );
+    }
 
     yield put(
       MegaFilterActions.selectFiltersForMegaFilter(
@@ -95,7 +107,12 @@ function* getDashboardFilters() {
   }
 }
 
-function* getDashboardTasksForGroup({ groupType, sortBy, sortDirection }) {
+function* getDashboardTasksForGroup({
+  groupType,
+  taskGroupIdentifier,
+  sortBy,
+  sortDirection,
+}) {
   try {
     const tabName = yield select(dashboardTabNameSelector);
     const isAllTasks = tabName === DashboardTasksTab.ALL_TASKS;
@@ -106,13 +123,18 @@ function* getDashboardTasksForGroup({ groupType, sortBy, sortDirection }) {
         ? getTasksForOrganizationByImplicitGroup
         : getTasksAssignedToUserByImplicitGroup,
       groupType,
+      taskGroupIdentifier,
       sortBy,
       sortDirection,
       0,
       0,
       includeWorkflows,
     );
-    const group = taskGroups.find((g) => g.groupType === groupType);
+    const group = taskGroups.find((g) =>
+      g.groupType === 'QUICK_FILTER'
+        ? g.groupIdentifier === taskGroupIdentifier
+        : g.groupType === groupType,
+    );
 
     yield put({
       type: ActionTypes.GET_DASHBOARD_TASKS_FOR_GROUP_SUCCESS,
@@ -128,7 +150,12 @@ function* getDashboardTasksForGroup({ groupType, sortBy, sortDirection }) {
   }
 }
 
-function* loadMoreDashboardTasksForGroup({ groupType, sortBy, sortDirection }) {
+function* loadMoreDashboardTasksForGroup({
+  groupType,
+  taskGroupIdentifier,
+  sortBy,
+  sortDirection,
+}) {
   try {
     const tabName = yield select(dashboardTabNameSelector);
     const isAllTasks = tabName === DashboardTasksTab.ALL_TASKS;
@@ -144,12 +171,17 @@ function* loadMoreDashboardTasksForGroup({ groupType, sortBy, sortDirection }) {
           ? getTasksForOrganizationByImplicitGroup
           : getTasksAssignedToUserByImplicitGroup,
         groupType,
+        taskGroupIdentifier,
         sortBy,
         sortDirection,
         customStartPosition,
         0,
       );
-      const group = taskGroups.find((g) => g.groupType === groupType);
+      const group = taskGroups.find((g) =>
+        g.groupType === 'QUICK_FILTER'
+          ? g.groupIdentifier === taskGroupIdentifier
+          : g.groupType === groupType,
+      );
 
       yield put({
         type: ActionTypes.LOAD_MORE_DASHBOARD_TASKS_FOR_GROUP_SUCCESS,
@@ -166,7 +198,11 @@ function* loadMoreDashboardTasksForGroup({ groupType, sortBy, sortDirection }) {
         sortDirection,
         customStartPosition,
       );
-      const group = taskGroups.find((g) => g.groupType === groupType);
+      const group = taskGroups.find((g) =>
+        g.groupType === 'QUICK_FILTER'
+          ? g.groupIdentifier === taskGroupIdentifier
+          : g.groupType === groupType,
+      );
 
       yield put({
         type: ActionTypes.LOAD_MORE_DASHBOARD_TASKS_FOR_GROUP_SUCCESS,
@@ -174,7 +210,8 @@ function* loadMoreDashboardTasksForGroup({ groupType, sortBy, sortDirection }) {
         group,
       });
     }
-  } catch {
+  } catch (error) {
+    log(error);
     yield put({
       type: ActionTypes.LOAD_MORE_DASHBOARD_TASKS_FOR_GROUP_FAILURE,
     });
@@ -185,10 +222,16 @@ function* loadMoreDashboardTasksForGroup({ groupType, sortBy, sortDirection }) {
 function* getDashboardGroups() {
   try {
     const tabName = yield select(dashboardTabNameSelector);
+    const savedDashboardSelectedQuickFilters = localStorageHelper.getItem(
+      getMultipleSelectedQuickFilterStorageKey('dashboard', tabName),
+    );
 
     const dashboardGroups = yield call(
       getDashboardTaskStasForImplicitGroups,
       tabName,
+      savedDashboardSelectedQuickFilters
+        ? JSON.parse(savedDashboardSelectedQuickFilters)
+        : [],
     );
 
     yield put({
@@ -205,8 +248,13 @@ function* getDashboardGroupsSuccess({ tasksList }) {
   yield all(
     tasksList
       .filter(({ defaultOpen }) => defaultOpen)
-      .map(({ groupType }) =>
-        put(DashboardActions.getDashboardTasksForGroup(groupType)),
+      .map(({ groupType, taskGroupIdentifier }) =>
+        put(
+          DashboardActions.getDashboardTasksForGroup(
+            groupType,
+            taskGroupIdentifier,
+          ),
+        ),
       ),
   );
 }
@@ -277,15 +325,25 @@ function* getDashboardTasks(payload) {
   }
 }
 
-function* reorderDashboardTasks({ taskGroupImplicitType, tasksOrder }) {
+function* reorderDashboardTasks({
+  taskGroupImplicitType,
+  taskGroupIdentifier,
+  tasksOrder,
+}) {
   try {
     yield reorderTasksInGroup({ tasksOrder, taskGroupImplicitType });
     yield put(
-      DashboardActions.getDashboardTasksForGroup(taskGroupImplicitType),
+      DashboardActions.getDashboardTasksForGroup(
+        taskGroupImplicitType,
+        taskGroupIdentifier,
+      ),
     );
   } catch {
     yield put(
-      DashboardActions.getDashboardTasksForGroup(taskGroupImplicitType),
+      DashboardActions.getDashboardTasksForGroup(
+        taskGroupImplicitType,
+        taskGroupIdentifier,
+      ),
     );
     yield put(showGlobalErrorAlert());
   }
@@ -293,6 +351,10 @@ function* reorderDashboardTasks({ taskGroupImplicitType, tasksOrder }) {
 
 function* updateTaskDueDateSuccess({ task: taskToChange, dueDate }) {
   const tabName = yield select(dashboardTabNameSelector);
+  const savedDashboardSelectedQuickFilters = localStorageHelper.getItem(
+    getMultipleSelectedQuickFilterStorageKey('dashboard', tabName),
+  );
+
   const task = { ...taskToChange, dueDate };
   if (tabName) {
     const groups = yield select(dashboardTasksSelector);
@@ -303,13 +365,21 @@ function* updateTaskDueDateSuccess({ task: taskToChange, dueDate }) {
             groupType === getGroupByDueDate(task.dueDate, tabName) ||
             groupType === getGroupByDueDate(taskToChange.dueDate, tabName),
         )
-        .map(({ groupType }) =>
-          put(DashboardActions.getDashboardTasksForGroup(groupType)),
+        .map(({ groupType, taskGroupIdentifier }) =>
+          put(
+            DashboardActions.getDashboardTasksForGroup(
+              groupType,
+              taskGroupIdentifier,
+            ),
+          ),
         ),
     );
     const dashboardGroups = yield call(
       getDashboardTaskStasForImplicitGroups,
       tabName,
+      savedDashboardSelectedQuickFilters
+        ? JSON.parse(savedDashboardSelectedQuickFilters)
+        : [],
     );
     yield put({
       type: ActionTypes.GET_DASHBOARD_GROUP_STATS_SUCCESS,

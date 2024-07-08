@@ -150,6 +150,7 @@ function VTask(
             subTaskExpanded={!metadata.collapsed && task?.subtasks?.length}
             isLastGroupOfList={isLastGroupOfList}
             isNextVirtualTaskItemTypeBundle={isNextVirtualTaskItemTypeBundle}
+            $width={percentage > 90 ? `${droppableHeaderWidth + 70}` : '100%'}
           >
             <VTaskContext.Provider value={contextValue}>
               <StandardTaskItem

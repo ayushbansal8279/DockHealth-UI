@@ -85,6 +85,7 @@ const DashboardTasksGroup = ({
   const {
     groupName,
     groupType,
+    taskGroupIdentifier,
     metricValue,
     defaultOpen,
     isLoading,
@@ -136,7 +137,7 @@ const DashboardTasksGroup = ({
 
   const onSwitchGroup = useCallback(() => {
     if (!groupIsOpen && !isSearching) {
-      dispatch(getDashboardTasksForGroup(groupType));
+      dispatch(getDashboardTasksForGroup(groupType, taskGroupIdentifier));
     }
     setGroupIsOpen(!groupIsOpen);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -268,9 +269,11 @@ const DashboardTasksGroup = ({
                 <DashboardTasksGroupLabel>
                   <DashboardTasksGroupLabelName>
                     {groupName}
-                    <NumericalBadgeContainer>
-                      <TaskCount>{metricValue}</TaskCount>
-                    </NumericalBadgeContainer>
+                    {metricValue !== -1 && (
+                      <NumericalBadgeContainer>
+                        <TaskCount>{metricValue}</TaskCount>
+                      </NumericalBadgeContainer>
+                    )}
                   </DashboardTasksGroupLabelName>
                 </DashboardTasksGroupLabel>
               </GroupNameSectionWrapper>
@@ -425,6 +428,7 @@ const DashboardTasksGroup = ({
                           dispatch(
                             loadMoreDashboardTasksForGroup(
                               groupType,
+                              taskGroupIdentifier,
                               currentSort?.key,
                               currentSort?.order,
                             ),

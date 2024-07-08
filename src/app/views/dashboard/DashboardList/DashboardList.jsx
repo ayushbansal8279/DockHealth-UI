@@ -48,6 +48,7 @@ import { updateCurrentUserPreferences } from 'actions/user-actions';
 import { Context } from 'components/common/HorizontalScroll/HorizontalScrollContainer';
 import useActions from 'hooks/use-actions';
 import BulkEditSection from 'components/tasklist/BulkEditSection/BulkEditSection';
+import { getMultipleSelectedQuickFilterStorageKey } from 'helpers/mega-filter-helper';
 import DashboardTasksGroup from './DashboardTasksGroup';
 import DashboardToolbar from '../DashboardToolbar/DashboardToolbar';
 import {
@@ -57,6 +58,7 @@ import {
   DashboardTaskGroupsWrapper,
 } from './styled';
 import DashboardCalendar from '../DashboardCalendar/DashboardCalendar';
+import localStorageHelper from '@/app/helpers/local-storage-helper';
 
 const DashboardList = ({
   currentUser,
@@ -223,8 +225,11 @@ const DashboardList = ({
   }, [dispatch]);
 
   const groupOrder = useMemo(() => {
-    const defaultGroupOrder = dashboardTasks.map((g) => g.groupType);
-    return dashboardGroupsPreferences || defaultGroupOrder;
+    const defaultGroupOrder = dashboardTasks.map((g) =>
+      g.groupType === 'QUICK_FILTER' ? g.taskGroupIdentifier : g.groupType,
+    );
+    // return dashboardGroupsPreferences || defaultGroupOrder;
+    return defaultGroupOrder;
   }, [dashboardGroupsPreferences, dashboardTasks]);
 
   const flattedOrderedDashboardTasks = useMemo(
@@ -234,78 +239,56 @@ const DashboardList = ({
 
   const moveGroupUp = useCallback(
     (groupToMove) => {
-      const elementToMove = groupToMove.groupType;
+      const elementToMove =
+        groupToMove.groupType === 'QUICK_FILTER'
+          ? groupToMove.groupIdentifier
+          : groupToMove.groupType;
       const elementToMoveWholeListIndex = groupOrder.indexOf(elementToMove);
-      const elementToMoveLimitedListIndex =
-        flattedOrderedDashboardTasks.indexOf(elementToMove);
-      const elementAbove =
-        flattedOrderedDashboardTasks[elementToMoveLimitedListIndex - 1];
-      const elementAboveWholeListIndex = groupOrder.indexOf(elementAbove);
-      const partBeforeUpperElement = groupOrder.slice(
-        0,
-        elementAboveWholeListIndex,
-      );
-      const partAfterUpperElement = [
+      const newOrder = [
+        ...groupOrder.slice(0, elementToMoveWholeListIndex - 1),
+        elementToMove,
         ...groupOrder.slice(
-          elementAboveWholeListIndex + 1,
+          elementToMoveWholeListIndex - 1,
           elementToMoveWholeListIndex,
         ),
         ...groupOrder.slice(elementToMoveWholeListIndex + 1),
       ];
-      const newOrder = [
-        ...partBeforeUpperElement,
-        elementToMove,
-        elementAbove,
-        ...partAfterUpperElement,
-      ];
-      dispatch(
-        updateCurrentUserPreferences({
-          displayGroups: newOrder,
-        }),
+      // console.log(newOrder);
+
+      localStorageHelper.setItem(
+        getMultipleSelectedQuickFilterStorageKey('dashboard', tabName),
+        JSON.stringify(newOrder),
       );
+      setTimeout(() => dispatch(getDashboardTasks()), 1000);
     },
-    [dispatch, flattedOrderedDashboardTasks, groupOrder],
+    [dispatch, groupOrder, tabName],
   );
 
   const moveGroupDown = useCallback(
     (groupToMove) => {
-      const elementToMove = groupToMove.groupType;
+      const elementToMove =
+        groupToMove.groupType === 'QUICK_FILTER'
+          ? groupToMove.groupIdentifier
+          : groupToMove.groupType;
       const elementToMoveWholeListIndex = groupOrder.indexOf(elementToMove);
-      const elementToMoveLimitedListIndex =
-        flattedOrderedDashboardTasks.indexOf(elementToMove);
-
-      const elementBelow =
-        flattedOrderedDashboardTasks[elementToMoveLimitedListIndex + 1];
-      const elementBelowWholeListIndex = groupOrder.indexOf(elementBelow);
-
-      const partBeforeFirstElement = groupOrder.slice(
-        0,
-        elementToMoveWholeListIndex,
-      );
-      const partBetweenFirstAndSecondElement = groupOrder.slice(
-        elementToMoveWholeListIndex + 1,
-        elementBelowWholeListIndex,
-      );
-
-      const partAfterUpperElement = groupOrder.slice(
-        elementBelowWholeListIndex + 1,
-      );
-
       const newOrder = [
-        ...partBeforeFirstElement,
-        ...partBetweenFirstAndSecondElement,
-        elementBelow,
+        ...groupOrder.slice(0, Math.max(elementToMoveWholeListIndex, 0)),
+        ...groupOrder.slice(
+          elementToMoveWholeListIndex + 1,
+          elementToMoveWholeListIndex + 2,
+        ),
         elementToMove,
-        ...partAfterUpperElement,
+        ...groupOrder.slice(elementToMoveWholeListIndex + 2),
       ];
+      // console.log(newOrder);
 
-      dispatch(
-        updateCurrentUserPreferences({
-          displayGroups: newOrder,
-        }),
+      localStorageHelper.setItem(
+        getMultipleSelectedQuickFilterStorageKey('dashboard', tabName),
+        JSON.stringify(newOrder),
       );
+      setTimeout(() => dispatch(getDashboardTasks()), 1000);
     },
-    [dispatch, flattedOrderedDashboardTasks, groupOrder],
+    [dispatch, groupOrder, tabName],
   );
 
   const parentContainerWidth = useContext(Context);
@@ -370,7 +353,10 @@ const DashboardList = ({
                           moveGroupDown={() => moveGroupDown(item)}
                           iconColorActive={iconColorActiveItem?.value}
                           backgroundColor={!(index % 2 === 0)}
-                          showHeader={dashboardTasks.length > 1}
+                          showHeader={
+                            dashboardTasks.length > 1 ||
+                            item?.groupType === 'QUICK_FILTER'
+                          }
                         />
                       ),
                   )

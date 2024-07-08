@@ -12,6 +12,7 @@ import {
 import {
   getDashboardFilters,
   getDashboardTasks,
+  getDashboardGroups,
   initializeDashboardState,
   searchDashboardTasks,
   selectDashboardFilters,
@@ -52,6 +53,8 @@ import SlimViewIcon from 'img/list/SlimViewIcon';
 import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined';
 import Spacing from 'components/common/Spacing';
 import { updateCurrentUserPreferences } from 'actions/user-actions';
+import { Add } from '@mui/icons-material';
+import { getMultipleSelectedQuickFilterStorageKey } from 'helpers/mega-filter-helper';
 import CustomizeToolbarButton from '@/app/components/tasklist/list-toolbar-buttons/CustomizeToolbarButton/CustomizeToolbarButton';
 import MegaFilter from '@/app/components/tasklist/list-toolbar-buttons/MegaFilter/MegaFilter';
 import {
@@ -64,9 +67,9 @@ import {
 } from './styled';
 import { ActionsContainer } from '../DashboardToolbar/styled';
 import HomeTaskViewFilter from '@/app/components/tasklist/list-toolbar-buttons/HomeTaskViewFilter';
-import * as localStorageHelper from '@/app/helpers/local-storage-helper';
-import { Add } from '@mui/icons-material';
+import localStorageHelper from '@/app/helpers/local-storage-helper';
 import { openAddTaskTaskDrawer } from '@/app/actions/task-drawer-actions';
+import { TaskOrigin } from '@/app/helpers/task-helpers';
 
 const DashboardHeader = ({
   clearSearch,
@@ -91,6 +94,11 @@ const DashboardHeader = ({
   const quickFiltersList = useSelector(quickFiltersSelector);
   const addQuickFilterOption = useSelector(addQuickFilterOptionSelector);
   const selectedQuickFilter = useSelector(selectedQuickFilterSelector);
+  const savedDashboardSelectedQuickFilters = localStorageHelper.getItem(
+    getMultipleSelectedQuickFilterStorageKey('dashboard', tabName),
+  );
+  const [multipleSelectedQuickFilters, setMultipleSelectedQuickFilters] =
+    useState([]);
   const filteredDashboardTasks = dashboardTasks?.filter(
     (taskGroupInfo) => taskGroupInfo?.metricValue !== 0,
   );
@@ -142,13 +150,12 @@ const DashboardHeader = ({
     dispatch(getQuickFilters({ contextType }));
   }, [contextType, dispatch]);
 
-  const searchTasksWithDebounce = useCallback(
+  const searchTasksWithDebounce = useCallback(() => {
     debounce((value) => {
       onSearchChanged();
       dispatch(searchDashboardTasks(value));
-    }, 1000),
-    [],
-  );
+    }, 1000);
+  }, [dispatch]);
 
   const handleSearchChange = (value) => {
     setSearchValue(value);
@@ -295,6 +302,39 @@ const DashboardHeader = ({
     dispatch(openAddTaskTaskDrawer());
   };
 
+  useEffect(() => {
+    if (savedDashboardSelectedQuickFilters !== undefined) {
+      setMultipleSelectedQuickFilters(
+        JSON.parse(savedDashboardSelectedQuickFilters),
+      );
+    }
+  }, [savedDashboardSelectedQuickFilters]);
+
+  const handleUpdateMultipleSelectedQuickFilters = useCallback(
+    (identifier, clearAll) => {
+      let quickFiltersArray = multipleSelectedQuickFilters || [];
+      if (clearAll) {
+        quickFiltersArray = [];
+      }
+      if (identifier && identifier !== '' && !Array.isArray(identifier)) {
+        if (!quickFiltersArray?.includes(identifier)) {
+          quickFiltersArray.push(identifier);
+        } else {
+          const index = quickFiltersArray.indexOf(identifier);
+          quickFiltersArray.splice(index, 1);
+        }
+      }
+      localStorageHelper.setItem(
+        getMultipleSelectedQuickFilterStorageKey('dashboard', tabName),
+        JSON.stringify(quickFiltersArray),
+      );
+
+      setMultipleSelectedQuickFilters(quickFiltersArray);
+      setTimeout(() => dispatch(getDashboardGroups()), 1000); // time delay results in better home view refresh
+    },
+    [dispatch, multipleSelectedQuickFilters, tabName],
+  );
+
   return (
     <DashboardHeaderContainer>
       <LayoutHeader>
@@ -348,6 +388,12 @@ const DashboardHeader = ({
                   onQuickFilterDelete={handleQuickFilterDelete}
                   clearFilter={clearFilter}
                   setClearFilter={setClearFilter}
+                  origin={TaskOrigin.DASHBOARD}
+                  multiSelectEnabled
+                  multipleSelectedQuickFilters={multipleSelectedQuickFilters}
+                  updateMultipleSelectedQuickFilters={
+                    handleUpdateMultipleSelectedQuickFilters
+                  }
                 />
                 <Box mx={0.5} />
                 <HeaderSearch

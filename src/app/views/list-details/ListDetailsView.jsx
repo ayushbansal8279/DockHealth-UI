@@ -12,6 +12,7 @@ import ListDetailsTableView from './ListDetailsTableView/ListDetailsTableView';
 import ListDetailsCalendarView from './ListDetailsCalendarView/ListDetailsCalendarView';
 import ListDetailsBoardView from './ListDetailsBoardView/ListDetailsBoardView';
 import useSearchParams from '@/app/hooks/use-search-params';
+import localStorageHelper from '@/app/helpers/local-storage-helper';
 
 export const ListPageContext = createContext({
   addNewGroup: false,
@@ -69,7 +70,21 @@ const ListDetailsView = () => {
 
   const handleSetChangeViewType = (value) => {
     setChangeViewType(value);
+    if (value === 'FULL_VIEW') {
+      localStorageHelper.setItem(`view${taskListIdentifier}`, value);
+    } else {
+      localStorageHelper.removeItem(`view${taskListIdentifier}`);
+    }
   };
+
+  useEffect(() => {
+    const storedViewType = localStorageHelper.getItem(`view${taskListIdentifier}`);
+    if (storedViewType === 'FULL_VIEW') {
+      setChangeViewType('FULL_VIEW');
+    } else {
+      setChangeViewType('SLIM_VIEW');
+    }
+  }, [taskListIdentifier]);
 
   const handleScroll = (event) => {
     const position = event.target.scrollTop;
