@@ -8,11 +8,7 @@ import React, {
 } from 'react';
 import { useSelector } from 'react-redux';
 import { Box } from '@mui/material';
-import {
-  userProfileSelector,
-  selectedUserOrganizationSelector,
-} from 'selectors/user-selectors';
-import { checkIfUserIsOrganizationAdmin } from 'helpers/user-helper';
+import { selectedUserOrganizationSelector } from 'selectors/user-selectors';
 import groupBy from 'ramda/src/groupBy';
 import prop from 'ramda/src/prop';
 import compose from 'ramda/src/compose';
@@ -28,7 +24,6 @@ import FormSelect from 'components/common/Select/FormSelect';
 import DateInput from 'components/common/DateInput/DateInput';
 import CustomField from 'components/common/CustomField/CustomField';
 import Spacing from 'components/common/Spacing';
-import AddButton from 'components/common/AddButton/AddButton';
 import { Category, CategoryLabel } from 'helpers/patient-details-helpers';
 import moment from 'moment';
 import { useBoolean } from 'hooks/useBoolean';
@@ -69,13 +64,12 @@ const PatientForm = forwardRef(
     const [isOpenedContact, setIsOpenedContact] = useState(true);
     const [isOpenedOther, setIsOpenedOther] = useState(true);
     const [customFields, setCustomFields] = useState(null);
-    const userProfile = useSelector(userProfileSelector);
+
     const { 0: emptyPersonalVisible, 3: toggleEmptyPersonal } =
       useBoolean(false);
     const { 0: emptyContactsVisible, 3: toggleEmptyContacts } =
       useBoolean(false);
     const { 0: emptyOtherVisible, 3: toggleEmptyOther } = useBoolean(false);
-    const isAdmin = checkIfUserIsOrganizationAdmin(userProfile);
     const currentOrganization = useSelector(selectedUserOrganizationSelector);
     const genderIdentityDisabled =
       currentOrganization?.disabledFeatures?.includes('PATIENT_GENDER') ||
