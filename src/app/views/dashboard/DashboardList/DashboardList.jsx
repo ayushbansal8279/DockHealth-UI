@@ -158,7 +158,7 @@ const DashboardList = ({
     [dispatch, dashboardTasks, taskActions, areFiltersApplied],
   );
 
-  const showClearSortFiltersModal = () => {
+  const showClearSortFiltersModal = useCallback(() => {
     if (isSortApplied || areFiltersApplied || isSearchApplied) {
       openModal('ClearSortFilters', {
         confirm: () => {
@@ -169,7 +169,14 @@ const DashboardList = ({
         closeOnConfirm: true,
       });
     }
-  };
+  }, [
+    areFiltersApplied,
+    isSearchApplied,
+    isSortApplied,
+    openModal,
+    setClearFilter,
+    setClearSearch,
+  ]);
 
   const renderEmptyState = () => {
     if (searchValue) return <NoSearchResultsView />;

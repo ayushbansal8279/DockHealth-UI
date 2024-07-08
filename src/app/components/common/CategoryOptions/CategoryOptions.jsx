@@ -1,6 +1,5 @@
 import React from 'react';
 import { fontSizes } from 'styles/font';
-import RotatableChevron from 'components/common/RotatableChevron/RotatableChevron';
 import Spacing from 'components/common/Spacing';
 import { Box } from '@mui/material';
 import AddButton from 'components/common/AddButton/AddButton';
@@ -11,25 +10,22 @@ const CategoryOptions = ({
   onToggle,
   onAddButtonClick,
   showAddButton = false,
-  coreTask,
 }) => {
   return (
     <div>
-      {coreTask && <Spacing vertical={3} />}
       <Box display="flex" justifyContent="flex-end">
-        <div width="auto">
-          <LabeledCollapseHeaderButton
-            type="button"
-            onClick={onToggle}
-            width="auto"
-            coreTask={coreTask}
-          >
-            <LabeledCollapseItemName font-size={fontSizes.small}>
-              {visibility ? 'Hide Empty Fields' : 'Show Empty Fields'}
-            </LabeledCollapseItemName>
-            <Spacing horizontal={3} />
-          </LabeledCollapseHeaderButton>
-        </div>
+        <LabeledCollapseHeaderButton
+          type="button"
+          onClick={onToggle}
+          width="auto"
+        >
+          <LabeledCollapseItemName font-size={fontSizes.small}>
+            {visibility ? 'Hide empty fields' : 'Show empty fields'}
+          </LabeledCollapseItemName>
+          <Spacing horizontal={3} />
+        </LabeledCollapseHeaderButton>
+      </Box>
+      <Box display="flex" justifyContent="flex-end">
         {showAddButton && typeof onAddButtonClick === 'function' && (
           <AddButton width="auto" onClick={onAddButtonClick}>
             Add or edit fields

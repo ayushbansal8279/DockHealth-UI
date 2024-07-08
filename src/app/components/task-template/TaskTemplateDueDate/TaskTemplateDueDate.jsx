@@ -8,10 +8,10 @@ import { updatePartialWorkflow } from 'actions/task-template-actions';
 import { ReminderType } from 'helpers/task-helpers';
 import { isWorkflowDueDateOverdue } from 'helpers/workflow-helpers';
 import { useDispatch } from 'react-redux';
-import { AddPlaceholder } from './styled';
+import { AddPlaceholder, DueDatesContainer, DueDateWrapper } from './styled';
 
 const TaskTemplateDueDate = (props) => {
-  const { workflow, disabled = false, isHover } = props;
+  const { workflow, disabled = false } = props;
   const { identifier, dueDateTime, reminderType } = workflow || {};
   const dispatch = useDispatch();
 
@@ -27,39 +27,39 @@ const TaskTemplateDueDate = (props) => {
   );
 
   return (
-    <TaskItemPopover
-      disabled={disabled}
-      content={({ closePopover }) => (
-        <DueDatePicker
-          taskIdentifier={identifier}
-          selectedDate={dueDateTime}
-          disableRecurring
-          onDateChange={handleDueDateChange}
-          onCloseClick={closePopover}
-        />
-      )}
-    >
-      {dueDateTime ? (
-        <DateLabel
-          date={dueDateTime}
-          isOverdue={isWorkflowDueDateOverdue(workflow)}
-          hasReminder={reminderType && reminderType !== ReminderType.NONE}
-          tootipTitle="Edit Due Date"
-        />
-      ) : (
-        <>
-          {isHover ? (
+    <DueDatesContainer>
+      <TaskItemPopover
+        disabled={disabled}
+        content={({ closePopover }) => (
+          <DueDatePicker
+            taskIdentifier={identifier}
+            selectedDate={dueDateTime}
+            disableRecurring
+            onDateChange={handleDueDateChange}
+            onCloseClick={closePopover}
+          />
+        )}
+      >
+        {dueDateTime ? (
+          <DateLabel
+            date={dueDateTime}
+            isOverdue={isWorkflowDueDateOverdue(workflow)}
+            hasReminder={reminderType && reminderType !== ReminderType.NONE}
+            tootipTitle="Edit Due Date"
+          />
+        ) : (
+          <DueDateWrapper>
             <Tooltip placement="top" title="Add Due Date">
               <AddPlaceholder>
                 <div style={{ display: 'flex' }}>
-                  <TaskIcon type="calendar" isActive={true} />
+                  <TaskIcon type="calendar" isActive />
                 </div>
               </AddPlaceholder>
             </Tooltip>
-          ) : null}
-        </>
-      )}
-    </TaskItemPopover>
+          </DueDateWrapper>
+        )}
+      </TaskItemPopover>
+    </DueDatesContainer>
   );
 };
 

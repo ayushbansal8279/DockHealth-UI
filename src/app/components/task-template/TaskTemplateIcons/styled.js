@@ -13,3 +13,41 @@ export const GridImg = styled(Grid)`
 `;
 
 export const DisabledLink = styled.span``;
+
+export const CommentsWrapper = styled.div`
+  width: fit-content;
+  opacity: ${({ hasComments }) => (hasComments ? 1 : 0)};
+`;
+
+export const CommentsContainer = styled.div`
+width: 100%;
+&:hover {
+  & ${CommentsWrapper} {
+    opacity: 1;
+  }
+`;
+
+export const LabelWrapper = styled.div`
+  width: fit-content;
+  opacity: 0;
+`;
+
+export const LabelContainer = styled.div`
+width: 100%;
+&:hover {
+  & ${LabelWrapper} {
+    opacity: 1;
+  }
+`;
+export const FilesWrapper = styled.div`
+  width: fit-content;
+  opacity: ${({ attachments }) => (attachments ? 1 : 0)};
+`;
+
+export const FilesContainer = styled.div`
+width: 100%;
+&:hover {
+  & ${FilesWrapper} {
+    opacity: 1;
+  }
+`;
