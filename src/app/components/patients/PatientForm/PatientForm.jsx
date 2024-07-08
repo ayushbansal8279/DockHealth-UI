@@ -218,6 +218,11 @@ const PatientForm = forwardRef(
               emptyPersonalVisible || edited,
             );
           })}
+          <Spacing vertical={3} />
+          <CategoryOptions
+            visibility={emptyPersonalVisible}
+            onToggle={toggleEmptyPersonal}
+          />
         </LabeledCollapse>
         <LabeledCollapse
           name={`${capitalize(customerTypeLabel)} ${CategoryLabel[
@@ -252,6 +257,11 @@ const PatientForm = forwardRef(
               emptyContactsVisible || edited,
             );
           })}
+          <Spacing vertical={3} />
+          <CategoryOptions
+            visibility={emptyContactsVisible}
+            onToggle={toggleEmptyContacts}
+          />
         </LabeledCollapse>
         {customFields?.[Category.OTHER_INFO]?.length > 0 && (
           <LabeledCollapse
@@ -268,6 +278,11 @@ const PatientForm = forwardRef(
                 emptyOtherVisible || edited,
               );
             })}
+            <Spacing vertical={3} />
+            <CategoryOptions
+              visibility={emptyOtherVisible}
+              onToggle={toggleEmptyOther}
+            />
           </LabeledCollapse>
         )}
         <Box display="flex" justifyContent="space-between">
