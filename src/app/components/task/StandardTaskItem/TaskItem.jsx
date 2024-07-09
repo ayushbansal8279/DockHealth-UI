@@ -13,7 +13,6 @@ import pluck from 'ramda/src/pluck';
 import { useDispatch, useSelector } from 'react-redux';
 import * as ListDetailsActions from 'actions/list-details-actions';
 import { isTaskSelectedSelector } from 'selectors/task-drawer-selectors';
-import * as CustomFieldsApi from 'api/custom-fields-api';
 import {
   listCustomFieldsSelector,
   searchTermSelector,
@@ -134,7 +133,6 @@ import TaskItemComments from './TaskItemComponents/TaskItemComments';
 import { megaFilterSelector } from '@/app/selectors/mega-filter-selectors';
 import SubtaskIcon from '@/app/img/SubtaskIcon';
 import { getTaskDetails } from '@/app/api/task-api';
-import { showGlobalErrorAlert } from '@/app/alert/actions';
 
 const { DISABLED, READ_ONLY } = SINGLE_TASK_RESTRICTIONS_OPTIONS;
 
