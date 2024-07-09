@@ -1,17 +1,24 @@
 /* eslint-disable unicorn/consistent-function-scoping */
-import React, { useRef, useCallback, useEffect } from 'react';
+import React, { useRef, useCallback, useEffect, useState } from 'react';
 import moment from 'moment';
 import InputMask from 'react-input-mask';
 import Input from 'components/common/Input/Input';
 import { Box, IconButton, Popover } from '@mui/material';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import CloseIcon from '@mui/icons-material/Close';
-import Datepicker from 'components/common/Datepicker/Datepicker';
+import DatePicker from '../../task/DatePicker/DatePicker';
 import { useBoolean } from 'hooks/useBoolean';
-import { DEFAULT_DATE_FORMAT, getMomenDateFromString } from './helpers';
 
 const CustomDateInput = ({ inputRef, ...otherProps }) => (
   <InputMask inputRef={inputRef} mask="99/99/9999" {...otherProps} />
+);
+
+const CustomDateTimeInput = ({ inputRef, ...otherProps }) => (
+  <InputMask
+    inputRef={inputRef}
+    mask="99/99/9999         99:99"
+    {...otherProps}
+  />
 );
 
 const DateInput = React.forwardRef(
@@ -35,7 +42,10 @@ const DateInput = React.forwardRef(
     reference,
     // eslint-disable-next-line sonarjs/cognitive-complexity
   ) => {
+    const DEFAULT_DATE_TIME_FORMAT = 'MM/DD/YYYY/HH/mm';
+    const DATE_TIME_FORMAT = 'YYYY-MM-DDTHH:mm:ss.SSSZ';
     const [open, setOpen, unsetOpen] = useBoolean(false);
+    const [isTime, setTime] = useState(false);
     const innerReference = useRef(null);
     const textFieldReference = reference || innerReference;
     const innerTextInputReference = useRef(null);
@@ -47,8 +57,9 @@ const DateInput = React.forwardRef(
       if (textInputReference?.current) textInputReference?.current?.focus();
     }, [textInputReference, unsetOpen]);
 
-    const momentDate = getMomenDateFromString(value);
-    const dateValue = momentDate.format(DEFAULT_DATE_FORMAT);
+    const momentDate = moment(value);
+    const dateValue = momentDate.format(DEFAULT_DATE_TIME_FORMAT);
+    const time = momentDate.format('HH/mm');
 
     const handleChange = ({ target: { value: date } }) => {
       onChange({ target: { value: date } });
@@ -64,7 +75,7 @@ const DateInput = React.forwardRef(
     };
 
     const handleDatepickerChange = (isoDate) => {
-      const date = moment(isoDate).format(DEFAULT_DATE_FORMAT);
+      const date = moment(isoDate).format(DATE_TIME_FORMAT);
       handleChange({ target: { value: date } });
       setTimeout(() => {
         textInputReference?.current?.focus();
@@ -73,16 +84,23 @@ const DateInput = React.forwardRef(
     };
 
     useEffect(() => {
-      if (value?.trim() === '' || value === '__/__/____') {
-        clearErrors?.(name);
-      } else if (
-        (name && dateValue === 'Invalid date') ||
-        value.includes('_')
-      ) {
-        if (typeof setError === 'function')
-          setError(name, { type: 'custom', message: 'Invalid date format' });
-      } else if (typeof clearErrors === 'function') clearErrors?.(name);
-    }, [clearErrors, dateValue, name, setError, value]);
+      if (time !== 'Invalid date' && time !== '00/00') {
+        setTime(true);
+      }
+    }, [momentDate, time]);
+
+    // const value1 = moment(value).format(DATE_TIME_FORMAT);
+    // useEffect(() => {
+    //     if (value?.trim() === '' || value === '__/__/____') {
+    //         clearErrors?.(name);
+    //       } else if (
+    //     (name && dateValue === 'Invalid date') ||
+    //     value.includes('_')
+    //   ) {
+    //       if (typeof setError === 'function')
+    //       setError(name, { type: 'custom', message: 'Invalid date format' });
+    //     } else if (typeof clearErrors === 'function') clearErrors?.(name);
+    //   }, [clearErrors, dateValue, name, setError, value]);
 
     return (
       <>
@@ -110,7 +128,7 @@ const DateInput = React.forwardRef(
             </Box>
           }
           {...otherProps}
-          customInputComponent={CustomDateInput}
+          customInputComponent={isTime ? CustomDateTimeInput : CustomDateInput}
         />
         <Popover
           anchorOrigin={{
@@ -126,12 +144,11 @@ const DateInput = React.forwardRef(
           onClose={handleClose}
           sx={{ zIndex: popoverZindex ?? 5000 }}
         >
-          <Datepicker
+          <DatePicker
             selectedDate={
               momentDate.isValid() ? momentDate.toISOString() : undefined
             }
             onDateChange={handleDatepickerChange}
-            maxDate={maxDate}
           />
         </Popover>
       </>
