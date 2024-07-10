@@ -36,6 +36,9 @@ import {
   ConfirmButton,
 } from '@/app/modal/components/ModalButton/ModalButtons';
 import ListSelectorSection from '../ListSelectorSection/ListSelectorSection';
+import palette from '@/app/styles/palette';
+import { getGroupsForTaskList } from '@/app/api/task-group-list-api';
+import GroupSelectorSection from '../ListSelectorSection/GroupSelectorSection';
 
 const AddTaskDrawerContent = (props) => {
   const {
@@ -61,9 +64,12 @@ const AddTaskDrawerContent = (props) => {
     hideTour,
   });
 
+  const [isClicked, setClicked] = useState(false);
   const [description, setDescription] = useState('');
   const [details, setDetails] = useState('');
   const [slectedListIdentifier, setSelectedListIdentifier] = useState('');
+  const [groups, setGroups] = useState([]);
+  const [taskGroupIdentifier, setTaskGroupIdentifier] = useState('');
   const [assignedToIdentifiers, setAssignedToIdentifiers] = useState([]);
   const [addTaskAssignees, setAddTaskAssignees] = useState([]);
   const [priority, setPriority] = useState('');
@@ -95,6 +101,14 @@ const AddTaskDrawerContent = (props) => {
     setAssignedToIdentifiers(assignedToIdentifiers);
   }, [addTaskAssignees]);
 
+  useEffect(() => {
+    if (slectedListIdentifier) {
+      getGroupsForTaskList(slectedListIdentifier).then((responseGroups) => {
+        setGroups(responseGroups);
+      });
+    }
+  }, [slectedListIdentifier]);
+
   const clearFormStates = () => {
     setDescription('');
     setDetails('');
@@ -120,25 +134,33 @@ const AddTaskDrawerContent = (props) => {
     setSelectedListIdentifier(listIdentifier);
   };
 
+  const handleGroupChange = (groupIdentifier) => {
+    setTaskGroupIdentifier(groupIdentifier);
+  };
+
   const handleSave = () => {
-    const data = {
-      taskListIdentifier: slectedListIdentifier,
-      description,
-      details,
-      assignedToIdentifier: userIdentifier,
-      assignedToIdentifiers,
-      patientIdentifier,
-      dueDate,
-      priority,
-      workflowStatusIdentifier,
-    };
+    setClicked(true);
+    if (description && slectedListIdentifier) {
+      const data = {
+        taskListIdentifier: slectedListIdentifier,
+        taskGroupIdentifier,
+        description,
+        details,
+        assignedToIdentifier: userIdentifier,
+        assignedToIdentifiers,
+        patientIdentifier,
+        dueDate,
+        priority,
+        workflowStatusIdentifier,
+      };
 
-    const filteredData = Object.entries(data)
-      .filter(([_, value]) => value !== null && value !== '')
-      .reduce((obj, [key, value]) => ({ ...obj, [key]: value }), {});
+      const filteredData = Object.entries(data)
+        .filter(([_, value]) => value !== null && value !== '')
+        .reduce((obj, [key, value]) => ({ ...obj, [key]: value }), {});
 
-    dispatch(TaskActions.saveTask(filteredData));
-    closeTaskDrawer();
+      dispatch(TaskActions.saveTask(filteredData));
+      closeTaskDrawer();
+    }
   };
 
   const TopSection = () => {
@@ -177,6 +199,7 @@ const AddTaskDrawerContent = (props) => {
           {TopSection()}
           <NewTaskDrawerDivider />
           <ListSelectorSection
+            isClicked={isClicked}
             handleListChange={handleListChange}
             slectedListIdentifier={slectedListIdentifier}
             lists={lists}
@@ -184,9 +207,16 @@ const AddTaskDrawerContent = (props) => {
             handleListSearch={handleListSearch}
             searchedLists={searchedLists}
           />
+          <GroupSelectorSection
+            handleGroupChange={handleGroupChange}
+            taskGroupIdentifier={taskGroupIdentifier}
+            groups={groups}
+            slectedListIdentifier={slectedListIdentifier}
+          />
           <Grid item xs={12} style={styleFullRow(isMobile)}>
             <TaskDescription
               addTaskDrawer
+              isClicked={isClicked}
               taskDescription={description}
               setTaskDescription={setDescription}
             />
@@ -240,7 +270,11 @@ const AddTaskDrawerContent = (props) => {
             Cancel
           </CancelButton>
           <ConfirmButton
-            disabled={slectedListIdentifier === '' || description === ''}
+            style={{
+              width: '150px',
+              backgroundColor:
+                (!description || !slectedListIdentifier) && palette.shadowBlue,
+            }}
             onClick={handleSave}
           >
             Save task
