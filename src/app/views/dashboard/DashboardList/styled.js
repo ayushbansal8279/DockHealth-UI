@@ -55,6 +55,16 @@ export const DashboardTasksGroupContainer = styled.div`
   }
   background: ${({ backgroundColor }) =>
     backgroundColor ? palette.aliceBlue : ''};
+
+  &:before {
+    margin-left: -24px;
+    content: '';
+    display: block;
+    width: 24px;
+    height: ${({ backgroundColor, height }) => (backgroundColor ? height : '')};
+    position: absolute;
+    background-color: ${palette.aliceBlue};
+  }
 `;
 
 export const DashboardTasksGroupList = styled.div`
@@ -92,19 +102,19 @@ export const DashboardTasksGroupHeader = styled.div`
 `;
 
 export const GroupNameSectionWrapper = styled.div`
-  flex: 1;
-  overflow: hidden;
+  display: flex;
 `;
 
 export const DashboardTasksGroupLabelName = styled.span`
   display: flex;
-  max-width: calc(100% - 40px);
   padding-right: ${spacing.tiny};
-  overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
   vertical-align: middle;
   font-family: 'Outfit', sans-serif;
+  font-weight: ${fontWeights.regularPlus};
+  font-size: 18px;
+  line-height: ${fontSizes.large};
 `;
 
 export const NumericalBadgeContainer = styled.div`
@@ -147,10 +157,7 @@ export const DashboardTaskItemContainer = styled.div`
 `;
 
 export const GroupOptionsContainer = styled.div`
-  position: absolute;
-  left: -20px;
-  top: 50%;
-  transform: translateY(-50%);
+  transform: rotate(-90deg);
 `;
 
 export const GroupOpenContainer = styled.div`
