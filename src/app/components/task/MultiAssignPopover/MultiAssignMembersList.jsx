@@ -62,6 +62,7 @@ const MultiAssignMembersList = ({
   closePopup,
   setValue,
   taskDrawer,
+  isBulkEdit,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const { emrIntegrationEnabled } = useSelector(organizationSelector);
@@ -400,6 +401,8 @@ const MultiAssignMembersList = ({
               <>
                 {isFetchingMembers ? (
                   <MemberRowSkeletonLoader />
+                ) : isBulkEdit ? (
+                  <></>
                 ) : (
                   renderAssignAllOption
                 )}

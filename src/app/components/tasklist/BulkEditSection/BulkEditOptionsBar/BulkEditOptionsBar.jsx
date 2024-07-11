@@ -933,6 +933,7 @@ const BulkEditOptionsBar = ({
               handleChangeAssigneTasks={handleChangeAssigneeTasks}
               isDisabled={isDisabled}
               selectedTasks={selectedTasks}
+              isBulkEdit
             />
           </AccessRestrictor>
         )}

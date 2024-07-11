@@ -10,6 +10,7 @@ const BulkEditAssignToOption = ({
   handleChangeAssigneTasks,
   selectedTaskListIdentifiers,
   isDisabled,
+  isBulkEdit,
 }) => {
   const selectedMemebers = useMemo(() => {
     const { parentTasks = [], subtasks = [] } = selectedTasks || {};
@@ -54,6 +55,7 @@ const BulkEditAssignToOption = ({
           onError={closePopover}
           closeModel={closePopover}
           enableLazyLoading={containPublicListType}
+          isBulkEdit={isBulkEdit}
         />
       )}
     >
