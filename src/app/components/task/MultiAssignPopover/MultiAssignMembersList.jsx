@@ -71,6 +71,7 @@ const MultiAssignMembersList = ({
   const [membersOptions, setMembersOptions] = useState([]);
   const [selectedMembers, setSelectedMembers] = useState([]);
   const [isFetchingMembers, setIsFetchingMembers] = useState(false);
+  const [isBulkEditAssignModal, setIsBulkEditAssignModal] = useState(false);
   const [searchValue, setSearchValue] = useState('');
   const enableLazyLoading = emrIntegrationEnabled && enabled;
   const isValueSendable = searchValue?.trim()?.length > 2;
@@ -83,6 +84,10 @@ const MultiAssignMembersList = ({
   useEffect(() => {
     if (taskDrawer) setSearchValue(value);
   }, [taskDrawer, value]);
+
+  useEffect(() => {
+    if (isBulkEdit) setIsBulkEditAssignModal(true);
+  }, [isBulkEdit]);
 
   const filteredMembers = useMemo(
     () =>
@@ -401,7 +406,7 @@ const MultiAssignMembersList = ({
               <>
                 {isFetchingMembers ? (
                   <MemberRowSkeletonLoader />
-                ) : isBulkEdit ? (
+                ) : isBulkEditAssignModal ? (
                   <></>
                 ) : (
                   renderAssignAllOption
