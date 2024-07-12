@@ -41,15 +41,15 @@ const ListSelectorSection = ({
             })
           }
         >
-          <div style={{ maxHeight: '400px' }}>
+          {/* <div style={{ maxHeight: '400px' }}>
             <Input
               value={searchedKeyword}
               fullWidth
               placeholder="Search"
               sx={{ padding: '5px 10px 5px 15px' }}
               onChange={handleListSearch}
-            />
-            {searchedLists?.map((list) => (
+            /> */}
+            {lists?.map((list) => (
               <MenuItem
                 onClick={() => {
                   handleListChange(list?.taskListIdentifier);
@@ -59,7 +59,7 @@ const ListSelectorSection = ({
                 {list?.listName}
               </MenuItem>
             ))}
-          </div>
+          {/* </div> */}
         </Select>
         {isClicked && !slectedListIdentifier && (
           <ValidationError>List name is required</ValidationError>
