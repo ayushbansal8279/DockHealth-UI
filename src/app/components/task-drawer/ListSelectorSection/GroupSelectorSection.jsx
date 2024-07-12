@@ -30,7 +30,9 @@ const GroupSelectorSection = ({
           renderValue={(value) =>
             groups?.map((item) => {
               if (item.taskGroupIdentifier === value) {
-                return item.groupName;
+                return item.groupName === 'DEFAULT'
+                  ? 'New Tasks'
+                  : item?.groupName;
               }
             })
           }
@@ -43,7 +45,7 @@ const GroupSelectorSection = ({
               }}
               value={group?.taskGroupIdentifier}
             >
-              {group?.groupName}
+              {group?.groupName === 'DEFAULT' ? 'New Tasks' : group?.groupName}
             </MenuItem>
           ))}
         </Select>
