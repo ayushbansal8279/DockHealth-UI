@@ -50,9 +50,6 @@ export const DashboardTaskGroupsWrapper = styled.div`
 
 export const DashboardTasksGroupContainer = styled.div`
   padding-bottom: 30px;
-  &:last-child {
-    padding-bottom: 0;
-  }
   background: ${({ backgroundColor }) =>
     backgroundColor ? palette.aliceBlue : ''};
 
