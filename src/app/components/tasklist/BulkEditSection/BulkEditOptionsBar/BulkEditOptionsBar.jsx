@@ -430,14 +430,22 @@ const BulkEditOptionsBar = ({
           );
           // NOTE: update assignees in redux state
           if (assignOption === 'unassign_all') {
-            bulkEditUnassignAllUsers(allSelectedTasksIdentifiers)(dispatch);
+            bulkEditUnassignAllUsers(
+              allSelectedTasksIdentifiers?.length === 0 &&
+                allSelectedWorkflowIdentifiers?.length > 0
+                ? allSelectedWorkflowIdentifiers
+                : allSelectedTasksIdentifiers,
+            )(dispatch);
           } else {
             const methods = {
               assignment: bulkEditAssignUsers,
               unassignment: bulkEditUnassignUsers,
             };
             methods[assignOption]?.(
-              allSelectedTasksIdentifiers,
+              allSelectedTasksIdentifiers?.length === 0 &&
+                allSelectedWorkflowIdentifiers?.length > 0
+                ? allSelectedWorkflowIdentifiers
+                : allSelectedTasksIdentifiers,
               selectedUsers,
             )(dispatch);
           }
