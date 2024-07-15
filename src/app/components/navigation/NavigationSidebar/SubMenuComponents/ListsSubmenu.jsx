@@ -62,6 +62,7 @@ import {
 import Tooltip from '@/app/components/common/Tooltip/Tooltip';
 import RotatableChevron from '@/app/components/common/RotatableChevron/RotatableChevron';
 import ToolbarButton from '@/app/components/tasklist/list-toolbar-buttons/ToolbarButton/ToolbarButton';
+import { organizationSelector } from '@/app/selectors/organization-selectors';
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const ListsSubmenu = () => {
@@ -73,6 +74,8 @@ const ListsSubmenu = () => {
   const taskLists = useSelector(taskListsSelector);
   const pendingTaskLists = useSelector(pendingTaskListsSelector);
   const archivedTaskLists = useSelector(archivedTaskListsSelector);
+  const organization = useSelector(organizationSelector);
+  const { subscriptionDetails } = organization;
 
   const dispatch = useDispatch();
 
@@ -464,6 +467,7 @@ const ListsSubmenu = () => {
                   </span>
                 }
                 onClick={openListAddModal}
+                disableButton={subscriptionDetails?.trialEnded}
               >
                 <span style={{ marginLeft: '-5px' }}>Add a List</span>
               </ToolbarButton>
