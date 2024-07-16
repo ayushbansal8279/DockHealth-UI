@@ -23,7 +23,7 @@ import {
 import Spacing from 'components/common/Spacing';
 import { TaskStatus } from 'helpers/task-helpers';
 import ViewTypeIcon from 'img/view-type-icon.svg';
-import TaskStatusToolbarSelect from '@/app/components/tasklist/list-toolbar-buttons/TaskStatusToolbarSelect';
+import TaskStatusToolbarSelect from '@/app/components/tasklist/list-toolbar-buttons/TaskStatusToolbarSelect/TaskStatusToolbarSelect';
 import CustomizeToolbarButton from '@/app/components/tasklist/list-toolbar-buttons/CustomizeToolbarButton/CustomizeToolbarButton';
 import ToolbarButton from '@/app/components/tasklist/list-toolbar-buttons/ToolbarButton/ToolbarButton';
 // import { printTaskPdf } from 'components/task-pdf/TaskPdfDocument';
