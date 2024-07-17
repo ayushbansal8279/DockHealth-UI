@@ -54,6 +54,9 @@ const DueDateSection = ({
         setDueDate(updatedDueDateTime);
         setMomentDueDate(moment(updatedDueDateTime));
       } else {
+        setMomentDueDate(
+          !!updatedDueDateTime ? moment(updatedDueDateTime) : null,
+        );
         dispatch(updateTaskDueDate(selectedTask, updatedDueDateTime));
       }
     },
