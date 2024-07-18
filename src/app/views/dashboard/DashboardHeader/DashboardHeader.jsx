@@ -67,7 +67,10 @@ import {
 } from './styled';
 import { ActionsContainer } from '../DashboardToolbar/styled';
 import HomeTaskViewFilter from '@/app/components/tasklist/list-toolbar-buttons/HomeTaskViewFilter';
-import localStorageHelper from '@/app/helpers/local-storage-helper';
+import localStorageHelper, {
+  getDashboardTaskViewFilter,
+  setDashboardTaskViewFilter,
+} from '@/app/helpers/local-storage-helper';
 import { openAddTaskTaskDrawer } from '@/app/actions/task-drawer-actions';
 import { TaskOrigin } from '@/app/helpers/task-helpers';
 
@@ -138,7 +141,7 @@ const DashboardHeader = ({
 
   const onChangeTaskViewFilter = (newFilter) => {
     dispatch(updateDashboardTaskViewFilter(newFilter));
-    localStorageHelper.setDashboardTaskViewFilter(
+    setDashboardTaskViewFilter(
       currentOrganization?.organizationIdentifier,
       newFilter,
     );
@@ -165,7 +168,7 @@ const DashboardHeader = ({
       dispatch(
         initializeDashboardState(
           tabName,
-          localStorageHelper.getDashboardTaskViewFilter(
+          getDashboardTaskViewFilter(
             currentOrganization?.organizationIdentifier,
           ),
         ),
@@ -179,7 +182,7 @@ const DashboardHeader = ({
       dispatch(
         initializeDashboardState(
           tabName,
-          localStorageHelper.getDashboardTaskViewFilter(
+          getDashboardTaskViewFilter(
             currentOrganization?.organizationIdentifier,
           ),
         ),

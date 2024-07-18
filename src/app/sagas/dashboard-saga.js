@@ -159,6 +159,8 @@ function* loadMoreDashboardTasksForGroup({
   try {
     const tabName = yield select(dashboardTabNameSelector);
     const isAllTasks = tabName === DashboardTasksTab.ALL_TASKS;
+    const taskViewFilter = yield select(dashboardTaskViewFilterSelector);
+    const includeWorkflows = taskViewFilter?.includeWorkflows ?? true;
     const selectedFilters = yield select(selectedFiltersInMegaFilterSelector);
     const customStartPosition = yield select(
       dashboardGroupTasksCountSelector,
@@ -176,6 +178,7 @@ function* loadMoreDashboardTasksForGroup({
         sortDirection,
         customStartPosition,
         0,
+        includeWorkflows,
       );
       const group = taskGroups.find((g) =>
         g.groupType === 'QUICK_FILTER'
