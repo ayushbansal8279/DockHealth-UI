@@ -22,7 +22,7 @@ export const TaskStatus = {
 
 export const TaskStatusLabel = {
   [TaskStatus.ALL]: 'All Tasks',
-  [TaskStatus.INCOMPLETE]: 'Incomplete Tasks',
+  [TaskStatus.INCOMPLETE]: 'Active Tasks',
   [TaskStatus.COMPLETE]: 'Completed Tasks',
 };
 
