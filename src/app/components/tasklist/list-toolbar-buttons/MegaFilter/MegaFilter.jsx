@@ -53,7 +53,7 @@ const MegaFilter = ({
 
   useEffect(() => {
     const data = {};
-    if (selectedQuickFilter === null && selectedFilters && filters) {
+    if (!selectedQuickFilter && selectedFilters && filters) {
       for (const key in selectedFilters) {
         if (key !== '') {
           const users = filters
