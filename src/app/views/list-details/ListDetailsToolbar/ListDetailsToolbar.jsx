@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useContext } from 'react';
+import React, { useCallback, useState, useContext, useEffect } from 'react';
 import { Box } from '@mui/material';
 import FullViewIcon from 'img/list/FullViewIcon';
 import SlimViewIcon from 'img/list/SlimViewIcon';
@@ -33,6 +33,7 @@ import { ListPageContext } from '../ListDetailsView';
 import { getCurrentListTasks } from '@/app/actions/list-details-actions';
 import CustomizeToolbarButton from '@/app/components/tasklist/list-toolbar-buttons/CustomizeToolbarButton/CustomizeToolbarButton';
 import TaskStatusToolbarSelect from '@/app/components/tasklist/list-toolbar-buttons/TaskStatusToolbarSelect';
+import localStorageHelper from '@/app/helpers/local-storage-helper';
 
 const ListDetailsToolbar = ({
   additionalOptions,
@@ -67,18 +68,19 @@ const ListDetailsToolbar = ({
 
   const { changeViewType, handleSetChangeViewType, handleRemoveAllTasks } =
     useContext(ListPageContext);
-  const [calendarView, setCalendarView] = useState(
-    queryViewType === ViewType.CALENDAR_VIEW,
-  );
-  const [boardView, setBoardView] = useState(
-    queryViewType === ViewType.BOARD_VIEW,
-  );
-  const [slimView, setSlimView] = useState(
-    viewType === ViewType.LIST_VIEW && changeViewType === 'SLIM_VIEW',
-  );
-  const [fullView, setFullView] = useState(
-    viewType === ViewType.LIST_VIEW && changeViewType === 'FULL_VIEW',
-  );
+  const [calendarView, setCalendarView] = useState(false);
+  const [boardView, setBoardView] = useState(false);
+  const [slimView, setSlimView] = useState(false);
+  const [fullView, setFullView] = useState(false);
+
+  useEffect(() => {
+    if (viewType === ViewType.LIST_VIEW && changeViewType === 'SLIM_VIEW')
+      setSlimView(true);
+    if (viewType === ViewType.LIST_VIEW && changeViewType === 'FULL_VIEW')
+      setFullView(true);
+    if (queryViewType === ViewType.BOARD_VIEW) setBoardView(true);
+    if (queryViewType === ViewType.CALENDAR_VIEW) setCalendarView(true);
+  }, [viewType, queryViewType, changeViewType]);
 
   const handleChangeViewType = useCallback(
     (newViewType) => {
@@ -98,6 +100,18 @@ const ListDetailsToolbar = ({
     },
     [dispatch],
   );
+
+  useEffect(() => {
+    const viewType = localStorageHelper.getItem(`view${taskListIdentifier}`);
+    if (viewType === 'FULL_VIEW') {
+      setFullView(true);
+      setSlimView(false);
+    } else if (!boardView && !calendarView) {
+      setFullView(false);
+      setSlimView(true);
+    }
+  }, [taskListIdentifier]);
+
   const boardViewAvailable = useSelector(userHasBoardViewFeatureSelector);
 
   return (
@@ -109,6 +123,7 @@ const ListDetailsToolbar = ({
             onChange={handleChangeTasksStatus}
             iconColorFilterActive={iconColorFilterActiveItem?.value}
             iconColorActive={iconColorActiveItem?.value}
+            taskListIdentifier={taskListIdentifier}
           />
         )}
 
@@ -118,6 +133,7 @@ const ListDetailsToolbar = ({
             onChange={handleChangeTasksStatus}
             iconColorFilterActive={iconColorFilterActiveItem?.value}
             iconColorActive={iconColorActiveItem?.value}
+            taskListIdentifier={taskListIdentifier}
           />
         )}
 
@@ -136,6 +152,7 @@ const ListDetailsToolbar = ({
               value={tasksStatus}
               onChange={handleChangeTasksStatus}
               iconColorFilterActive={iconColorFilterActiveItem?.value}
+              taskListIdentifier={taskListIdentifier}
             />
             <TaskCustomFieldsModal
               opened={customFieldsModalOpened}

@@ -22,7 +22,7 @@ import {
   selectedUserOrganizationSelector,
 } from 'selectors/user-selectors';
 import Spacing from 'components/common/Spacing';
-import { TaskStatus } from 'helpers/task-helpers';
+import { TaskOrigin } from 'helpers/task-helpers';
 // import { printTaskPdf } from 'components/task-pdf/TaskPdfDocument';
 import ViewTypeIcon from 'img/view-type-icon.svg';
 import * as PatientDetailsActions from 'actions/patient-details-actions';
@@ -355,6 +355,8 @@ const TaskListToolbar = (props) => {
                 onChange={handleChangeTasksStatus}
                 iconColorFilterActive={iconColorFilterActiveItem?.value}
                 iconColorActive={iconColorActiveItem?.value}
+                taskListIdentifier={patientIdentifier}
+                origin={TaskOrigin.PATIENT}
               />
             </>
           )}

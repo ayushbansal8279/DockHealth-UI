@@ -36,7 +36,7 @@ const StickyMainTaskItemCell = styled.div`
       ? isSubtask || isWorkflowSubtask
         ? searchValue || isFilterApply || isSortApplied
           ? '54.5px'
-          : '90.5px'
+          : '90px'
         : '54.5px'
       : '24px'};
   ${({ order }) => (order ? `order: ${order};` : '')}
@@ -45,7 +45,8 @@ const StickyMainTaskItemCell = styled.div`
     isWorkflowtask || isTamplateGroup
       ? 'rgba(75, 179, 253, 1)'
       : `${palette.coolGrey3}`};
-  margin-left: ${({ isTamplateGroup }) => (isTamplateGroup ? '1px;' : '0px')};
+  margin-left: ${({ isTamplateGroup, origin }) =>
+    isTamplateGroup && origin !== 'LIST' ? '1px' : '0px'};
   align-items: center;
   padding-left: ${spacing.smallPlus};
   z-index: ${({ isEditingDescription }) =>
@@ -58,7 +59,7 @@ const StickyMainTaskItemCell = styled.div`
       props.hasEscalations
       ? palette.bananaHammockLight
       : // eslint-disable-next-line unicorn/no-nested-ternary
-      props.customHighlight ?? palette.white};
+        props.customHighlight ?? palette.white};
 
   &::before {
     content: '';

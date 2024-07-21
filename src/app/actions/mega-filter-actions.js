@@ -4,8 +4,8 @@ import {
   getFiltersFromLocalStorage,
   getQuickFilterFromLocalStorage,
 } from 'helpers/mega-filter-helper';
-import sessionStorageHelper from 'helpers/session-storage-helper';
 import * as ActionTypes from './action-types';
+import localStorageHelper from '../helpers/local-storage-helper';
 
 export const quickContextTypes = {
   MY_TASKS: 'MY_TASKS',
@@ -41,17 +41,17 @@ export function selectFiltersForMegaFilter(
 ) {
   return (dispatch) => {
     if (selectedFilters) {
-      sessionStorageHelper.setItem(
+      localStorageHelper.setItem(
         getFiltersStorageKey(id, status),
         selectedFilters,
       );
-      sessionStorageHelper.setItem(
+      localStorageHelper.setItem(
         getQuickFilterStorageKey(id, status),
         selectedQuickFilter,
       );
     } else {
-      sessionStorageHelper.removeItem(getFiltersStorageKey(id, status));
-      sessionStorageHelper.removeItem(getQuickFilterStorageKey(id, status));
+      localStorageHelper.removeItem(getFiltersStorageKey(id, status));
+      localStorageHelper.removeItem(getQuickFilterStorageKey(id, status));
     }
 
     dispatch({

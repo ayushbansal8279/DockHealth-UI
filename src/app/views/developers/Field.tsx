@@ -1,18 +1,17 @@
-import React, { FC, useState } from 'react';
-import Box from '@mui/material/Box';
+import React, { useState } from 'react';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import { formatEllipsisText } from 'helpers/formatters';
 import { Grid } from '@mui/material';
 
-interface FieldProps {
+interface Props {
   label: string;
   value: string;
   ellipsis?: boolean;
 }
 
-const Field: FC<FieldProps> = ({ label, value, ellipsis }) => {
+export default function Field({ label, value, ellipsis }: Props) {
   const [copied, setCopied] = useState(false);
   const valueToShow = ellipsis ? formatEllipsisText(value) : value;
 
@@ -34,7 +33,7 @@ const Field: FC<FieldProps> = ({ label, value, ellipsis }) => {
   };
 
   return (
-    <>
+    <Grid container>
       <Grid item xs={12} md={4}>
         <Typography>{label}</Typography>
       </Grid>
@@ -67,8 +66,6 @@ const Field: FC<FieldProps> = ({ label, value, ellipsis }) => {
           </Button>
         </Tooltip>
       </Grid>
-    </>
+    </Grid>
   );
-};
-
-export default Field;
+}

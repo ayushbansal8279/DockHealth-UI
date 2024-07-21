@@ -68,7 +68,10 @@ import { checkIfUserIsOrganizationAdmin } from 'helpers/user-helper';
 import DependencyIcon from 'img/dependency-icon.svg';
 import DependencyListPopover from 'components/common/DependencyListPopover/DependencyListPopover';
 import useBooleanWithTimeout from 'hooks/use-boolean-with-timeout';
-import { useTaskListColumnsConfig } from 'context-api/columns-config-context';
+import {
+  ColumnsConfigContext,
+  useTaskListColumnsConfig,
+} from 'context-api/columns-config-context';
 import TaskItemCustomField from 'components/common/CustomField/TaskItemCustomField';
 import StickyMainTaskItemCell from 'components/task/StickyMainTaskItemCell/StickyMainTaskItemCell';
 import TaskItemCell from 'components/task/TaskItemCell/TaskItemCell';
@@ -177,7 +180,6 @@ const TaskItem = React.memo(
     viewSetup,
     isTaskTemplate,
     isWorkflowSubtask,
-    isWidthGreaterThanHudredPercent,
     isVirtualSubtask,
     isLastChild,
     isNextVirtualTaskItemTypeBundle,
@@ -298,8 +300,17 @@ const TaskItem = React.memo(
       organizationCustomFieldsSelector,
     );
     const listCustomFields = useSelector(listCustomFieldsSelector);
+    const { allTaskListCustomFields } = useContext(ColumnsConfigContext);
+
     const taskCustomFields = organizationCustomFields
-      ? organizationCustomFields.concat(listCustomFields)
+      ? origin === 'LIST'
+        ? organizationCustomFields.concat(listCustomFields)
+        : organizationCustomFields.concat(
+            allTaskListCustomFields?.filter(
+              (taskListCustomfield) =>
+                taskListCustomfield?.taskListIdentifier === taskListIdentifier,
+            ),
+          )
       : listCustomFields;
 
     const showContextMenu = [move, duplicate, subtasks, del].reduce(
@@ -893,6 +904,37 @@ const TaskItem = React.memo(
       [selectedOrganization?.themeSettings],
     );
 
+    const getReduceWidth = (columnName) => {
+      return isSubtask &&
+        (origin === 'LIST' || origin === 'PATIENT') &&
+        !selectedFilters &&
+        !searchValue &&
+        !sort.key &&
+        getColumnOrder(columnName) === 0
+        ? 36
+        : 0;
+    };
+
+    const getWidthCalculation = (columnName) => {
+      return (
+        columns?.find(({ identifier }) => identifier === columnName)
+          ?.columnWidth - getReduceWidth(columnName)
+      );
+    };
+
+    const getWidth = useMemo(
+      () => getWidthCalculation,
+      [
+        columns,
+        isSubtask,
+        origin,
+        selectedFilters,
+        searchValue,
+        sort.key,
+        getColumnOrder,
+      ],
+    );
+
     if (task?.itemType !== TaskItemType.TASK) {
       const taskGroup = task;
       return (
@@ -959,25 +1001,11 @@ const TaskItem = React.memo(
             origin={origin}
             isVirtualSubtask={isVirtualSubtask}
             isWorkflowSubtask={isWorkflowSubtask}
-            isWidthGreaterThanHudredPercent={isWidthGreaterThanHudredPercent}
           >
             {randerFirstColumnCoverIfNecessary(
               <>
                 <MainStandardTaskItemCell
-                  width={
-                    columns?.find(
-                      ({ identifier }) =>
-                        identifier === TaskItemColumn.DESCRIPTION,
-                    )?.columnWidth -
-                    (isSubtask &&
-                    origin === 'LIST' &&
-                    !selectedFilters &&
-                    !searchValue &&
-                    !sort.key &&
-                    descriptionColumnOrder === 0
-                      ? 36
-                      : 0)
-                  }
+                  width={getWidth(TaskItemColumn.DESCRIPTION)}
                   order={getColumnOrder(TaskItemColumn.DESCRIPTION)}
                   bolded
                   paddingLeft="smallPlus"
@@ -1106,12 +1134,7 @@ const TaskItem = React.memo(
                   <TaskItemCell
                     isSubtask={isSubtask}
                     key={`patient_${taskIdentifier}`}
-                    width={
-                      columns?.find(
-                        ({ identifier }) =>
-                          identifier === TaskItemColumn.PATIENT,
-                      )?.columnWidth
-                    }
+                    width={getWidth(TaskItemColumn.PATIENT)}
                     order={getColumnOrder(TaskItemColumn.PATIENT)}
                   >
                     <TaskItemPatient
@@ -1142,12 +1165,7 @@ const TaskItem = React.memo(
                   <TaskItemCell
                     isSubtask={isSubtask}
                     key={`priority_${taskIdentifier}`}
-                    width={
-                      columns?.find(
-                        ({ identifier }) =>
-                          identifier === TaskItemColumn.PRIORITY,
-                      )?.columnWidth
-                    }
+                    width={getWidth(TaskItemColumn.PRIORITY)}
                     order={getColumnOrder(TaskItemColumn.PRIORITY)}
                   >
                     <TaskItemDropdown
@@ -1178,12 +1196,7 @@ const TaskItem = React.memo(
                   <TaskItemCell
                     isSubtask={isSubtask}
                     key={`gender_${taskIdentifier}`}
-                    width={
-                      columns?.find(
-                        ({ identifier }) =>
-                          identifier === PatientTaskItemColumn.GENDER,
-                      )?.columnWidth
-                    }
+                    width={getWidth(PatientTaskItemColumn.GENDER)}
                     order={getColumnOrder(PatientTaskItemColumn.GENDER)}
                   >
                     <TaskItemDropdown
@@ -1217,12 +1230,7 @@ const TaskItem = React.memo(
                   <TaskItemCell
                     isSubtask={isSubtask}
                     key={`patient_dob_${taskIdentifier}`}
-                    width={
-                      columns?.find(
-                        ({ identifier }) =>
-                          identifier === PatientTaskItemColumn.DOB,
-                      )?.columnWidth
-                    }
+                    width={getWidth(PatientTaskItemColumn.DOB)}
                     order={getColumnOrder(PatientTaskItemColumn.DOB)}
                   >
                     <TaskItemDate
@@ -1241,12 +1249,7 @@ const TaskItem = React.memo(
                   <TaskItemCell
                     isSubtask={isSubtask}
                     key={`patient_email_${taskIdentifier}`}
-                    width={
-                      columns?.find(
-                        ({ identifier }) =>
-                          identifier === PatientTaskItemColumn.EMAIL,
-                      )?.columnWidth
-                    }
+                    width={getWidth(PatientTaskItemColumn.EMAIL)}
                     order={getColumnOrder(PatientTaskItemColumn.EMAIL)}
                   >
                     <TaskItemText
@@ -1265,12 +1268,7 @@ const TaskItem = React.memo(
                   <TaskItemCell
                     isSubtask={isSubtask}
                     key={`patient_MRN_${taskIdentifier}`}
-                    width={
-                      columns?.find(
-                        ({ identifier }) =>
-                          identifier === PatientTaskItemColumn.MRN,
-                      )?.columnWidth
-                    }
+                    width={getWidth(PatientTaskItemColumn.MRN)}
                     order={getColumnOrder(PatientTaskItemColumn.MRN)}
                   >
                     {emrPatientLink && (
@@ -1294,12 +1292,7 @@ const TaskItem = React.memo(
                   <TaskItemCell
                     isSubtask={isSubtask}
                     key={`patient_mobile_phone_${taskIdentifier}`}
-                    width={
-                      columns?.find(
-                        ({ identifier }) =>
-                          identifier === PatientTaskItemColumn.MOBILE_PHONE,
-                      )?.columnWidth
-                    }
+                    width={getWidth(PatientTaskItemColumn.MOBILE_PHONE)}
                     order={getColumnOrder(PatientTaskItemColumn.MOBILE_PHONE)}
                   >
                     <TaskItemText
@@ -1318,12 +1311,7 @@ const TaskItem = React.memo(
                   <TaskItemCell
                     isSubtask={isSubtask}
                     key={`patient_home_phone_${taskIdentifier}`}
-                    width={
-                      columns?.find(
-                        ({ identifier }) =>
-                          identifier === PatientTaskItemColumn.HOME_PHONE,
-                      )?.columnWidth
-                    }
+                    width={getWidth(PatientTaskItemColumn.HOME_PHONE)}
                     order={getColumnOrder(PatientTaskItemColumn.HOME_PHONE)}
                   >
                     <TaskItemText
@@ -1341,12 +1329,7 @@ const TaskItem = React.memo(
                 {randerFirstColumnCoverIfNecessary(
                   <TaskItemCell
                     key={`task_status_${taskIdentifier}`}
-                    width={
-                      columns?.find(
-                        ({ identifier }) =>
-                          identifier === TaskItemColumn.WORKFLOW_STATUS,
-                      )?.columnWidth
-                    }
+                    width={getWidth(TaskItemColumn.WORKFLOW_STATUS)}
                     paddingLeft="smallPlus"
                     paddingRight="tiny"
                     onContextMenu={(event) => {
@@ -1376,12 +1359,7 @@ const TaskItem = React.memo(
                   <TaskItemCell
                     isSubtask={isSubtask}
                     key={`comments_${taskIdentifier}`}
-                    width={
-                      columns?.find(
-                        ({ identifier }) =>
-                          identifier === TaskItemColumn.COMMENTS,
-                      )?.columnWidth
-                    }
+                    width={getWidth(TaskItemColumn.COMMENTS)}
                     order={getColumnOrder(TaskItemColumn.COMMENTS)}
                   >
                     <TaskItemComments
@@ -1400,12 +1378,7 @@ const TaskItem = React.memo(
                   <TaskItemCell
                     isSubtask={isSubtask}
                     key={`labels_${taskIdentifier}`}
-                    width={
-                      columns?.find(
-                        ({ identifier }) =>
-                          identifier === TaskItemColumn.LABELS,
-                      )?.columnWidth
-                    }
+                    width={getWidth(TaskItemColumn.LABELS)}
                     order={getColumnOrder(TaskItemColumn.LABELS)}
                   >
                     <TaskItemIcons
@@ -1426,11 +1399,7 @@ const TaskItem = React.memo(
                   <TaskItemCell
                     isSubtask={isSubtask}
                     key={`files_${taskIdentifier}`}
-                    width={
-                      columns?.find(
-                        ({ identifier }) => identifier === TaskItemColumn.FILES,
-                      )?.columnWidth
-                    }
+                    width={getWidth(TaskItemColumn.FILES)}
                     order={getColumnOrder(TaskItemColumn.FILES)}
                   >
                     <TaskItemIcons
@@ -1451,12 +1420,7 @@ const TaskItem = React.memo(
                   <TaskItemCell
                     isSubtask={isSubtask}
                     key={`start_date_${taskIdentifier}`}
-                    width={
-                      columns?.find(
-                        ({ identifier }) =>
-                          identifier === TaskItemColumn.START_DATE,
-                      )?.columnWidth
-                    }
+                    width={getWidth(TaskItemColumn.START_DATE)}
                     paddingLeft="12px"
                     paddingRight="tiny"
                     justify="flex-start"
@@ -1481,12 +1445,7 @@ const TaskItem = React.memo(
                     <TaskItemCell
                       isSubtask={isSubtask}
                       key={`due_date_${taskIdentifier}`}
-                      width={
-                        columns?.find(
-                          ({ identifier }) =>
-                            identifier === TaskItemColumn.DUE_DATE,
-                        )?.columnWidth
-                      }
+                      width={getWidth(TaskItemColumn.DUE_DATE)}
                       paddingLeft="12px"
                       paddingRight="tiny"
                       justify="flex-start"
@@ -1508,12 +1467,7 @@ const TaskItem = React.memo(
               <>
                 {randerFirstColumnCoverIfNecessary(
                   <TaskItemCell
-                    width={
-                      columns?.find(
-                        ({ identifier }) =>
-                          identifier === TaskItemColumn.ANCHOR_DATE,
-                      )?.columnWidth
-                    }
+                    width={getWidth(TaskItemColumn.ANCHOR_DATE)}
                     onContextMenu={(event) => {
                       event.stopPropagation();
                     }}
@@ -1529,12 +1483,7 @@ const TaskItem = React.memo(
                   <TaskItemCell
                     isSubtask={isSubtask}
                     key={`assigned_${taskIdentifier}`}
-                    width={
-                      columns?.find(
-                        ({ identifier }) =>
-                          identifier === TaskItemColumn.ASSIGNED,
-                      )?.columnWidth
-                    }
+                    width={getWidth(TaskItemColumn.ASSIGNED)}
                     // eslint-disable-next-line sonarjs/no-duplicate-string
                     paddingLeft="12px"
                     paddingRight="small"
@@ -1567,12 +1516,7 @@ const TaskItem = React.memo(
                   <TaskItemCell
                     isSubtask={isSubtask}
                     key={`shared_${taskIdentifier}`}
-                    width={
-                      columns?.find(
-                        ({ identifier }) =>
-                          identifier === TaskItemColumn.SHARED,
-                      )?.columnWidth
-                    }
+                    width={getWidth(TaskItemColumn.SHARED)}
                     // eslint-disable-next-line sonarjs/no-duplicate-string
                     paddingLeft="12px"
                     paddingRight="small"
@@ -1603,12 +1547,7 @@ const TaskItem = React.memo(
                   <TaskItemCell
                     isSubtask={isSubtask}
                     key={`created_by_${taskIdentifier}`}
-                    width={
-                      columns?.find(
-                        ({ identifier }) =>
-                          identifier === TaskItemColumn.CREATED_BY,
-                      )?.columnWidth
-                    }
+                    width={getWidth(TaskItemColumn.CREATED_BY)}
                     paddingLeft="12px"
                     paddingRight="small"
                     padding="0"
@@ -1640,12 +1579,7 @@ const TaskItem = React.memo(
                     <TaskItemCell
                       isSubtask={isSubtask}
                       key={`created_date_${taskIdentifier}`}
-                      width={
-                        columns?.find(
-                          ({ identifier }) =>
-                            identifier === TaskItemColumn.CREATED_DATE,
-                        )?.columnWidth
-                      }
+                      width={getWidth(TaskItemColumn.CREATED_DATE)}
                       paddingLeft="12px"
                       paddingRight="tiny"
                       onContextMenu={(event) => {
@@ -1669,12 +1603,7 @@ const TaskItem = React.memo(
                     <TaskItemCell
                       isSubtask={isSubtask}
                       key={`completed_date_${taskIdentifier}`}
-                      width={
-                        columns?.find(
-                          ({ identifier }) =>
-                            identifier === TaskItemColumn.COMPLETED_DATE,
-                        )?.columnWidth
-                      }
+                      width={getWidth(TaskItemColumn.COMPLETED_DATE)}
                       paddingLeft="12px"
                       paddingRight="tiny"
                       onContextMenu={(event) => {
@@ -1697,12 +1626,7 @@ const TaskItem = React.memo(
                   <TaskItemCell
                     isSubtask={isSubtask}
                     key={`completed_by_${taskIdentifier}`}
-                    width={
-                      columns?.find(
-                        ({ identifier }) =>
-                          identifier === TaskItemColumn.COMPLETED_BY,
-                      )?.columnWidth
-                    }
+                    width={getWidth(TaskItemColumn.COMPLETED_BY)}
                     paddingLeft="12px"
                     paddingRight="small"
                     padding="0"
@@ -1738,12 +1662,7 @@ const TaskItem = React.memo(
                     <TaskItemCell
                       isSubtask={isSubtask}
                       key={`elapsed_time_${taskIdentifier}`}
-                      width={
-                        columns?.find(
-                          ({ identifier }) =>
-                            identifier === TaskItemColumn.ELAPSED_TIME,
-                        )?.columnWidth
-                      }
+                      width={getWidth(TaskItemColumn.ELAPSED_TIME)}
                       paddingLeft="12px"
                       paddingRight="tiny"
                       onContextMenu={(event) => {
@@ -1766,12 +1685,7 @@ const TaskItem = React.memo(
                   <TaskItemCell
                     isSubtask={isSubtask}
                     key={`list_${taskIdentifier}`}
-                    width={
-                      columns?.find(
-                        ({ identifier }) =>
-                          identifier === TaskItemColumn.LIST_NAME,
-                      )?.columnWidth
-                    }
+                    width={getWidth(TaskItemColumn.LIST_NAME)}
                     order={getColumnOrder(TaskItemColumn.LIST_NAME)}
                   >
                     <TaskItemList
@@ -1791,12 +1705,7 @@ const TaskItem = React.memo(
                     <TaskItemCell
                       isSubtask={isSubtask}
                       key={`list_${taskIdentifier}`}
-                      width={
-                        columns?.find(
-                          ({ identifier }) =>
-                            identifier === TaskItemColumn.ORG_NAME,
-                        )?.columnWidth
-                      }
+                      width={getWidth(TaskItemColumn.ORG_NAME)}
                       order={getColumnOrder(TaskItemColumn.ORG_NAME)}
                     >
                       <TaskItemOrganization
@@ -1822,12 +1731,7 @@ const TaskItem = React.memo(
                   <TaskItemCell
                     isSubtask={isSubtask}
                     key={`task_details_${taskIdentifier}`}
-                    width={
-                      columns?.find(
-                        ({ identifier }) =>
-                          identifier === TaskItemColumn.TASK_DETAILS,
-                      )?.columnWidth
-                    }
+                    width={getWidth(TaskItemColumn.TASK_DETAILS)}
                     order={getColumnOrder(TaskItemColumn.TASK_DETAILS)}
                   >
                     <TaskItemDetails
@@ -1875,7 +1779,9 @@ const TaskItem = React.memo(
                           isSubtask={isSubtask}
                           key={`custom_${taskIdentifier}_${field.identifier}`}
                           padding="4px"
-                          width={field.columnWidth}
+                          width={
+                            field.columnWidth - getReduceWidth(field.identifier)
+                          }
                           order={getColumnOrder(field.identifier)}
                         >
                           {!hidePatientCustomFields && (

@@ -246,6 +246,8 @@ const Task = React.memo(
         $width={$width}
         isNextTaskItemTypeBundle={isNextTaskItemTypeBundle}
         isAddingTask={isAddingTask}
+        $isVirtualSubtask={isVirtualSubtask}
+        $isWorkflowTask={isTaskTemplate}
       >
         <TaskContainer ref={innerRef}>
           <TaskItem
@@ -275,7 +277,6 @@ const Task = React.memo(
             isWorkflowSubtask={isWorkflowSubtask}
             isVirtualTask={isVirtualTask}
             isVirtualSubtask={isVirtualSubtask}
-            isWidthGreaterThanHudredPercent={$width}
             pageBackground={pageBackground}
             {...restProps}
             isNextVirtualTaskItemTypeBundle={isNextVirtualTaskItemTypeBundle}

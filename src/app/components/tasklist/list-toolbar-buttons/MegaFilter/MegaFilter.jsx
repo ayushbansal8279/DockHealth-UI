@@ -1,5 +1,5 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect, useCallback } from 'react';
 import { Box } from '@mui/material';
 import isEmpty from 'ramda/src/isEmpty';
 import FilterButton from 'components/filter/FilterButton/FilterButton';
@@ -32,10 +32,12 @@ const MegaFilter = ({
   isDefaultDateFilterApplied = false,
   value,
   focused,
+  multiSelectEnabled,
+  multipleSelectedQuickFilters,
+  updateMultipleSelectedQuickFilters,
 }) => {
   const [isOpen, openPopover] = useState(false);
   const megaFilterButtonReference = useRef(null);
-  const isFilterApplied = selectedFilters && !isEmpty(selectedFilters);
   const [finalFilter, setFinalFilter] = useState({});
   const [customFinalFilter, setCustomFinalFilter] = useState({});
   const [selectedCustomFilter, setSelectedCustomFilter] = useState({});
@@ -45,9 +47,13 @@ const MegaFilter = ({
   const [customFilteredData, setCustomFilteredData] = useState({});
   const [selectedQuickFilter, setSelectedQuickFilter] = useState('');
 
+  const isFilterApplied =
+    (selectedFilters && !isEmpty(selectedFilters)) ||
+    multipleSelectedQuickFilters?.length > 0;
+
   useEffect(() => {
     const data = {};
-    if (selectedQuickFilter === null && selectedFilters && filters) {
+    if (!selectedQuickFilter && selectedFilters && filters) {
       for (const key in selectedFilters) {
         if (key !== '') {
           const users = filters
@@ -73,12 +79,13 @@ const MegaFilter = ({
     }
   }, [selectedFilters, filters, selectedQuickFilter]);
 
-  const clearFilters = () => {
+  const clearFilters = useCallback(() => {
     onSelectFilters(null);
     selectQuickFilter(null);
     setFinalFilter({});
     setSelectedQuickFilter('');
-  };
+    updateMultipleSelectedQuickFilters('', true);
+  }, [onSelectFilters, selectQuickFilter, updateMultipleSelectedQuickFilters]);
 
   useEffect(() => {
     if (clearFilter) {
@@ -87,7 +94,7 @@ const MegaFilter = ({
         setClearFilter(false);
       }, 500);
     }
-  }, [clearFilter]);
+  }, [clearFilter, clearFilters, setClearFilter]);
 
   useEffect(() => {
     setSelectedQuickFilter(initialQuickFilter);
@@ -181,6 +188,12 @@ const MegaFilter = ({
               setSelectedQuickFilter={setSelectedQuickFilter}
               clearFilters={clearFilters}
               setSelectedCustomFilter={setSelectedCustomFilter}
+              origin={origin}
+              multiSelectEnabled={multiSelectEnabled}
+              multipleSelectedQuickFilters={multipleSelectedQuickFilters}
+              updateMultipleSelectedQuickFilters={
+                updateMultipleSelectedQuickFilters
+              }
             />
           ) : (
             <FilterTableLoader />

@@ -169,12 +169,20 @@ function VSubtask(
               isSortApplied={!!sort.key}
               bgColor={bgColor}
             >
-              {!!searchValue ||
-                (!!selectedFilters
-                  ? Object.keys(selectedFilters).length > 0
-                  : !!selectedFilters) ||
-                !!sort.key ||
-                getSubtaskStylingLink(isLast())}
+              <div
+                style={{
+                  position: 'sticky',
+                  left: '92.2px',
+                  zIndex: '12',
+                }}
+              >
+                {!!searchValue ||
+                  (!!selectedFilters
+                    ? Object.keys(selectedFilters).length > 0
+                    : !!selectedFilters) ||
+                  !!sort.key ||
+                  getSubtaskStylingLink(isLast())}
+              </div>
               <StandardTaskItem
                 // @ts-ignore
                 taskIdentifier={metadata.id}
@@ -187,7 +195,7 @@ function VSubtask(
                 pageBackground={bgColor ? palette.aliceBlue : ''}
                 isVirtualTask
                 isVirtualSubtask
-                $width={percentage > 90}
+                $width={percentage < 90}
               />
             </Sc.VSubtask>
           </div>
@@ -196,6 +204,7 @@ function VSubtask(
               style={{
                 width:
                   percentage > 90 ? `${droppableHeaderWidth + 70}` : '100%',
+                paddingRight: percentage > 90 ? '17px' : '15px',
                 background: bgColor ? palette.aliceBlue : '',
                 paddingBottom:
                   isLastTaskOfGroup &&
@@ -221,7 +230,7 @@ function VSubtask(
                 $width={
                   percentage > 90
                     ? visibleWidth
-                      ? `${visibleWidth - 145}px`
+                      ? `${visibleWidth - 100}px`
                       : '100%'
                     : `${visibleWidth - 120}px`
                 }
@@ -238,6 +247,7 @@ function VSubtask(
               style={{
                 width:
                   percentage > 90 ? `${droppableHeaderWidth + 70}` : '100%',
+                paddingRight: percentage > 90 ? '16px' : '15px',
                 background: bgColor ? palette.aliceBlue : '',
                 paddingBottom:
                   isLastTaskOfGroup && !isNextVirtualTaskItemTypeBundle
@@ -258,7 +268,7 @@ function VSubtask(
                 $width={
                   percentage > 90
                     ? visibleWidth
-                      ? `${visibleWidth}px`
+                      ? `${visibleWidth - 70}px`
                       : '100%'
                     : `${visibleWidth - 85}px`
                 }

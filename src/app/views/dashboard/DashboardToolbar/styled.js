@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import palette, { opacify } from 'styles/palette';
+import palette from 'styles/palette';
 import { fontWeights } from 'styles/font';
 import { Grid, Typography } from '@mui/material';
 import spacing from 'styles/spacing';

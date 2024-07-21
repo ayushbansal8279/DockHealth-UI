@@ -8,7 +8,6 @@ import {
   QuickFilterTitle,
   QuickFilterTitleContainer,
 } from './styled';
-import moment from 'moment';
 
 const CustomFilterOption = (props) => {
   const {
@@ -23,24 +22,32 @@ const CustomFilterOption = (props) => {
     editModeEnabled = true,
     setSavePopupOpen,
     selectedQuickFilter,
+    setSelectedQuickFilter,
     setEditIdentifier,
     filter,
     filters,
     setCustomFinalFilter,
-    setSelectedQuickFilter,
     onQuickFilterCreate,
     clearFilters,
     setSelectedCustomFilter,
     isPatientListPage,
     handleQuickFilterDuplicateForPatientList,
+    multiSelectEnabled,
+    multipleSelectedQuickFilters,
+    // updateMultipleSelectedQuickFilters,
   } = props;
   const [value, setValue] = useState(label);
   const [isSelected, setSelected] = useState(false);
   const inputReference = useRef(null);
 
   useEffect(() => {
-    setSelected(selectedQuickFilter === identifier);
-  }, [selectedQuickFilter, identifier]);
+    setSelected(
+      selectedQuickFilter === identifier ||
+        multipleSelectedQuickFilters?.includes(identifier),
+    );
+  }, [selectedQuickFilter, identifier, multipleSelectedQuickFilters]);
+
+  // console.log(selectedDashboardQuickfilters);
 
   useEffect(() => {
     setValue(label);
@@ -71,7 +78,7 @@ const CustomFilterOption = (props) => {
     setSavePopupOpen(true);
     setEditIdentifier(identifier);
 
-    let selectedFilters = filter.selectedOptions;
+    const selectedFilters = filter.selectedOptions;
 
     const data = {};
     if (selectedFilters && filters) {
@@ -94,9 +101,8 @@ const CustomFilterOption = (props) => {
                 ),
               };
               return aa;
-            } else {
-              return users.find((user) => user.key === item);
             }
+            return users.find((user) => user.key === item);
           });
           data[key] = options;
         }
@@ -110,7 +116,7 @@ const CustomFilterOption = (props) => {
   const handleDuplicate = () => {
     if (
       isPatientListPage &&
-      filter.patientSelectedOptions.customFields.length !== 0
+      filter.patientSelectedOptions.customFields.length > 0
     ) {
       const selectedOptions = {};
       filter.patientSelectedOptions.customFields.forEach((element) => {
@@ -134,7 +140,9 @@ const CustomFilterOption = (props) => {
   ];
 
   const handleOptionClick = useCallback(() => {
-    if (isSelected) {
+    if (multiSelectEnabled) {
+      onOptionClick(identifier);
+    } else if (isSelected) {
       clearFilters();
       setSelected(false);
       setSelectedQuickFilter('');
@@ -142,11 +150,12 @@ const CustomFilterOption = (props) => {
       onOptionClick(identifier);
     }
   }, [
+    multiSelectEnabled,
+    isSelected,
     onOptionClick,
     identifier,
-    isSelected,
-    setSelectedQuickFilter,
     clearFilters,
+    setSelectedQuickFilter,
   ]);
 
   // const handleKeyPress = useCallback(

@@ -36,7 +36,7 @@ export const QuickAddInputWrapper = styled.div`
   &:before {
     position: absolute;
     top: 50%;
-    left: 115px;
+    left: 15px;
     display: block;
     content: '+';
     transform: translateY(-50%);
@@ -61,7 +61,6 @@ export const QuickAddInput = styled.input`
   border-top: none;
   font-size: ${fontSizes.regular};
   box-shadow: none;
-  text-align: center;
 
   &:disabled {
     background-color: transparent;

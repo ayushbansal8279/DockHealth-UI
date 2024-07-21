@@ -50,11 +50,18 @@ export const DashboardTaskGroupsWrapper = styled.div`
 
 export const DashboardTasksGroupContainer = styled.div`
   padding-bottom: 30px;
-  &:last-child {
-    padding-bottom: 0;
-  }
   background: ${({ backgroundColor }) =>
     backgroundColor ? palette.aliceBlue : ''};
+
+  &:before {
+    margin-left: -24px;
+    content: '';
+    display: block;
+    width: 24px;
+    height: ${({ backgroundColor, height }) => (backgroundColor ? height : '')};
+    position: absolute;
+    background-color: ${palette.aliceBlue};
+  }
 `;
 
 export const DashboardTasksGroupList = styled.div`
@@ -92,26 +99,28 @@ export const DashboardTasksGroupHeader = styled.div`
 `;
 
 export const GroupNameSectionWrapper = styled.div`
-  flex: 1;
-  overflow: hidden;
+  display: flex;
 `;
 
 export const DashboardTasksGroupLabelName = styled.span`
   display: flex;
-  max-width: calc(100% - 40px);
   padding-right: ${spacing.tiny};
-  overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
   vertical-align: middle;
   font-family: 'Outfit', sans-serif;
+  font-weight: ${fontWeights.regularPlus};
+  font-size: 18px;
+  line-height: ${fontSizes.large};
 `;
 
-export const DashboardTasksGroupNumericalBadgeContainer = styled.div`
+export const NumericalBadgeContainer = styled.div`
   height: 20px;
   border-radius: 2px;
-  border: 1px solid ${palette.iron};
-  background: ${palette.whiteSmoke};
+  border: 1px solid
+    ${({ $hasUpdates }) => ($hasUpdates ? palette.crystalBlue : palette.iron)};
+  background: ${({ $hasUpdates }) =>
+    $hasUpdates ? palette.crystalBlue : palette.whiteSmoke};
   padding: 4px 7px 4px 7px;
   gap: 7px;
   margin-left: 6px;
@@ -119,8 +128,9 @@ export const DashboardTasksGroupNumericalBadgeContainer = styled.div`
   opacity: 0px;
 `;
 
-export const DashboardTasksGroupTaskCount = styled(Typography)`
-  color: ${palette.shadowBlue};
+export const TaskCount = styled(Typography)`
+  color: ${({ $hasUpdates }) =>
+    $hasUpdates ? palette.white : palette.shadowBlue};
   font-family: Outfit;
   font-weight: 500;
   font-size: 12px;
@@ -144,10 +154,7 @@ export const DashboardTaskItemContainer = styled.div`
 `;
 
 export const GroupOptionsContainer = styled.div`
-  position: absolute;
-  left: -20px;
-  top: 50%;
-  transform: translateY(-50%);
+  transform: rotate(-90deg);
 `;
 
 export const GroupOpenContainer = styled.div`

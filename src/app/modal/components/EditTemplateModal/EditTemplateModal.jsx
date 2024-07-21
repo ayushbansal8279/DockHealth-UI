@@ -23,6 +23,7 @@ import {
   TEMPLATE_TYPE_OPTIONS,
   validationSchema,
 } from './helpers';
+import { CancelButton, ConfirmButton } from '../ModalButton/ModalButtons';
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const EditTemplateModal = ({ closeModal, template, onAdded, onUpdated }) => {
@@ -105,7 +106,7 @@ const EditTemplateModal = ({ closeModal, template, onAdded, onUpdated }) => {
             )}
           >
             <FormScrollingContainer>
-              <Box overflow="hidden">
+              <Box>
                 <Grid container spacing={2}>
                   <Grid item xs={12}>
                     <FormInput
@@ -156,13 +157,11 @@ const EditTemplateModal = ({ closeModal, template, onAdded, onUpdated }) => {
             </FormScrollingContainer>
             <Box m={2} />
             <Grid container justifyContent="flex-end">
-              <Button width="auto" variant="secondary" onClick={closeModal}>
-                Cancel
-              </Button>
+              <CancelButton onClick={closeModal}>Cancel</CancelButton>
               <Box m={1} />
-              <Button type="submit" width="auto" disabled={isSaving}>
+              <ConfirmButton type="submit" width="auto" disabled={isSaving}>
                 Save template
-              </Button>
+              </ConfirmButton>
             </Grid>
           </TemplateForm>
         </FormProvider>

@@ -115,7 +115,7 @@ const CustomFieldsSection = ({ disabled, fieldCategoryType }) => {
         }
       }
     }
-  }, [getValues, setValue, task, customFields]);
+  }, [getValues, setValue, task]);
 
   const handleBlur = useCallback(
     (data, wasChanged = false, fieldType) => {

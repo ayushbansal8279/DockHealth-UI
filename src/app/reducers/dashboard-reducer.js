@@ -16,6 +16,7 @@ const initialState = {
   filterOptions: null,
   isFetchingFilters: false,
   filterOptionsError: false,
+  taskViewFilter: null,
 };
 
 const addTask = (list, taskToAdd) => {
@@ -52,7 +53,11 @@ const getMapOfLoadedTasks = (group) => {
 };
 
 const updateGroupsWithGroupTasksLoad = (tasksList, group, groupType) => {
-  const groupToUpdate = tasksList?.find((g) => g.groupType === groupType);
+  const groupToUpdate = tasksList?.find((g) =>
+    g.groupType === 'QUICK_FILTER'
+      ? g.taskGroupIdentifier === group.groupIdentifier
+      : g.groupType === groupType,
+  );
   const groupToUpdateIndex = tasksList?.indexOf(groupToUpdate);
   const newTasksList = [...tasksList];
   newTasksList[groupToUpdateIndex] = {
@@ -65,7 +70,11 @@ const updateGroupsWithGroupTasksLoad = (tasksList, group, groupType) => {
 };
 
 const updateGroupsWithGroupTasksLoadMore = (tasksList, group, groupType) => {
-  const groupToUpdate = tasksList?.find((g) => g.groupType === groupType);
+  const groupToUpdate = tasksList?.find((g) =>
+    g.groupType === 'QUICK_FILTER'
+      ? g.taskGroupIdentifier === group.groupIdentifier
+      : g.groupType === groupType,
+  );
   const groupToUpdateIndex = tasksList?.indexOf(groupToUpdate);
   const newTasksList = [...tasksList];
   newTasksList[groupToUpdateIndex] = {
@@ -126,6 +135,7 @@ const DashboardTasksReducer = (state = initialState, action) => {
         ...state,
         ...initialState,
         tabName: action.tabName,
+        taskViewFilter: action.taskViewFilter,
       };
     }
 
@@ -235,7 +245,10 @@ const DashboardTasksReducer = (state = initialState, action) => {
 
     case ActionTypes.GET_DASHBOARD_TASKS_FOR_GROUP: {
       const groupToUpdate = state?.tasksList?.find(
-        ({ groupType }) => groupType === action.groupType,
+        ({ groupType, taskGroupIdentifier }) =>
+          groupType === 'QUICK_FILTER'
+            ? taskGroupIdentifier === action.groupIdentifier
+            : groupType === action.groupType,
       );
 
       const groupToUpdateIndex = state?.tasksList?.indexOf(groupToUpdate);
@@ -273,7 +286,10 @@ const DashboardTasksReducer = (state = initialState, action) => {
 
     case ActionTypes.LOAD_MORE_DASHBOARD_TASKS_FOR_GROUP: {
       const groupToUpdate = state?.tasksList?.find(
-        ({ groupType }) => groupType === action.groupType,
+        ({ groupType, taskGroupIdentifier }) =>
+          groupType === 'QUICK_FILTER'
+            ? taskGroupIdentifier === action.groupIdentifier
+            : groupType === action.groupType,
       );
       const groupToUpdateIndex = state?.tasksList?.indexOf(groupToUpdate);
       const newTasksList = [...state?.tasksList];
@@ -383,6 +399,13 @@ const DashboardTasksReducer = (state = initialState, action) => {
       };
 
       return updateTasksStateCallback(updatedState, task);
+    }
+
+    case ActionTypes.UPDATE_DASHBOARD_TASK_VIEW_FILTER: {
+      return {
+        ...state,
+        taskViewFilter: action.payload,
+      };
     }
 
     default: {

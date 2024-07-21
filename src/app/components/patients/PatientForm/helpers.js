@@ -1,9 +1,11 @@
 import moment from 'moment';
 import isEmpty from 'ramda/src/isEmpty';
 import { mixed, string, object } from 'yup';
+import { isValidPhoneNumber } from 'react-phone-number-input';
 
 const DATE_FORMAT = 'MM/DD/YYYY';
 const REQUIRED_MESSAGE = 'This field is required';
+const MASK_MESSAGE = 'Invalid phone number';
 
 export function formatMetaDataOutput(outputData) {
   const metadata = outputData.patientMetaData;
@@ -84,6 +86,16 @@ export const validationSchema = object().shape({
     .nullable()
     .transform((value) => value || null)
     .email('This field requires a valid email address'),
-  phoneHome: string().nullable(),
-  phoneMobile: string().nullable(),
+  phoneHome: string()
+    .nullable()
+    .test('phoneHome', MASK_MESSAGE, function (value) {
+      if (value === undefined || value === '') return true;
+      return isValidPhoneNumber(String(value));
+    }),
+  phoneMobile: string()
+    .nullable()
+    .test('phoneMobile', MASK_MESSAGE, function (value) {
+      if (value === undefined || value === '') return true;
+      return isValidPhoneNumber(String(value));
+    }),
 });

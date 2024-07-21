@@ -128,6 +128,10 @@ const TimeDropdownInput = ({
     unsetIsPopoverOpen();
   }, [timeValue, saveTime, resetDueTimeInput, unsetIsPopoverOpen]);
 
+  useEffect(() => {
+    handleInputBlur();
+  }, [timeValue]);
+
   const handleInputKeyDown = useCallback(
     // eslint-disable-next-line sonarjs/cognitive-complexity
     (event) => {
@@ -272,7 +276,7 @@ const TimeDropdownInput = ({
           }}
           value={(timeValue || '').toLowerCase()}
           alwaysShowMask
-          onBlur={handleInputBlur}
+          onBlur={unsetIsPopoverOpen}
           onFocus={setIsPopoverOpen}
           onChange={handleInputChange}
           onKeyDown={handleInputKeyDown}

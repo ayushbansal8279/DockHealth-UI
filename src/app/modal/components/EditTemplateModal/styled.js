@@ -11,7 +11,7 @@ export const AdditionalOptionLabel = styled.span`
 export const AddPatientFieldModalWrapper = styled(ModalWrapper)`
   display: flex;
   flex-direction: column;
-  width: 700px;
+  width: 760px;
   min-height: 480px;
   padding: ${spacing.large} ${spacing.huge};
   font-family: 'Outfit', sans-serif;

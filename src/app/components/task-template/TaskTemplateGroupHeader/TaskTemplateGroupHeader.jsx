@@ -1027,18 +1027,27 @@ const TaskTemplateGroupHeader = ({
           </>
         )}
         {isColumnChecked(columns, TaskItemColumn.ANCHOR_DATE) && (
-          <TaskItemCell
-            key={`anchor_date_${identifier}`}
-            width={
+          <>
+            {randerFirstColumnCoverIfNecessary(
+              <TaskItemCell
+                key={`anchor_date_${identifier}`}
+                width={
+                  columns?.find(
+                    ({ identifier: id }) => id === TaskItemColumn.ANCHOR_DATE,
+                  )?.columnWidth
+                }
+                paddingLeft="10px"
+                justify="flex-start"
+                order={getColumnOrder(TaskItemColumn.ANCHOR_DATE)}
+              >
+                <TaskTemplateAnchorDate workflow={templateGroup} />
+              </TaskItemCell>,
+              getColumnOrder(TaskItemColumn.ANCHOR_DATE),
               columns?.find(
                 ({ identifier: id }) => id === TaskItemColumn.ANCHOR_DATE,
-              )?.columnWidth
-            }
-            paddingLeft="12px"
-            order={getColumnOrder(TaskItemColumn.ANCHOR_DATE)}
-          >
-            <TaskTemplateAnchorDate workflow={templateGroup} />
-          </TaskItemCell>
+              )?.columnWidth,
+            )}
+          </>
         )}
         {isColumnChecked(columns, TaskItemColumn.ASSIGNED) && (
           <>
