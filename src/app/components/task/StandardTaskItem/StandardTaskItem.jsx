@@ -160,14 +160,7 @@ const Task = React.memo(
       } else {
         handleSetSubtasksOpen(false);
       }
-    }, [
-      collapse,
-      handleAddTask,
-      handleSetSubtasksOpen,
-      taskIdentifier,
-      tasks,
-      viewType,
-    ]);
+    }, [viewType]);
 
     useEffect(() => {
       if (!areSubtasksOpen && subtaskQuickAddOpen && !subtasksDisabled) {
