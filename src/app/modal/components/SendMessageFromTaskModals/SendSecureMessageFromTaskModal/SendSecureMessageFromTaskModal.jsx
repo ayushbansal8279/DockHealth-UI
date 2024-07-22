@@ -23,6 +23,7 @@ import { InputContainerStyled } from '../styled';
 const SendSecureMessageFromTaskModal = () => {
   const dispatch = useDispatch();
   const [message, setMessage] = useState('');
+  const [templateIdentifier, setTemplateIdentifier] = useState('');
   const [isValueReset, setValueReset] = useState(false);
 
   const selectedTask = useSelector(selectedTaskSelector);
@@ -34,6 +35,7 @@ const SendSecureMessageFromTaskModal = () => {
         message,
         recipientContact: 'PATIENT',
         taskIdentifier: identifier,
+        templateIdentifier,
       }),
     );
     dispatch(closeModal());
@@ -68,6 +70,7 @@ const SendSecureMessageFromTaskModal = () => {
                 (data) => {
                   setValueReset(true);
                   setMessage(data?.details ?? '');
+                  setTemplateIdentifier(data?.identifier);
                 },
               );
             }}
