@@ -32,22 +32,14 @@ const CustomFilterOption = (props) => {
     setSelectedCustomFilter,
     isPatientListPage,
     handleQuickFilterDuplicateForPatientList,
-    multiSelectEnabled,
-    multipleSelectedQuickFilters,
-    // updateMultipleSelectedQuickFilters,
   } = props;
   const [value, setValue] = useState(label);
   const [isSelected, setSelected] = useState(false);
   const inputReference = useRef(null);
 
   useEffect(() => {
-    setSelected(
-      selectedQuickFilter === identifier ||
-        multipleSelectedQuickFilters?.includes(identifier),
-    );
-  }, [selectedQuickFilter, identifier, multipleSelectedQuickFilters]);
-
-  // console.log(selectedDashboardQuickfilters);
+    setSelected(selectedQuickFilter === identifier);
+  }, [selectedQuickFilter, identifier]);
 
   useEffect(() => {
     setValue(label);
@@ -140,9 +132,7 @@ const CustomFilterOption = (props) => {
   ];
 
   const handleOptionClick = useCallback(() => {
-    if (multiSelectEnabled) {
-      onOptionClick(identifier);
-    } else if (isSelected) {
+    if (isSelected) {
       clearFilters();
       setSelected(false);
       setSelectedQuickFilter('');
@@ -150,7 +140,6 @@ const CustomFilterOption = (props) => {
       onOptionClick(identifier);
     }
   }, [
-    multiSelectEnabled,
     isSelected,
     onOptionClick,
     identifier,
