@@ -140,7 +140,7 @@ const CreateAccount = (props) => {
       lastName: lname,
       senderFirstName: sfname,
       senderLastName: slname,
-      organization: oname,
+      orgName: oname,
     } = queryValues;
 
     if (oname && sfname) setIsUserInvited(true);
