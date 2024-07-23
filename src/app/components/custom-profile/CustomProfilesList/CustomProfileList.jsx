@@ -153,11 +153,12 @@ const CustomProfileList = () => {
       <ViewLayout
         header={
           <LayoutHeader>
-            <Box position="absolute" top={27} left={10}>
+            {/* Kept for future to use menu options for CUstom Profile */}
+            {/* <Box position="absolute" top={27} left={10}>
               <OptionsMenu disablePortal options={[]}>
                 <MoreVert color="primary" />
               </OptionsMenu>
-            </Box>
+            </Box> */}
             <LayoutHeader.Title
               title={currentProfileType?.name}
               description={currentProfileType?.description}
@@ -294,6 +295,11 @@ const CustomProfileList = () => {
         </Stack>
         <DataGrid
           fluid
+          sx={{
+            '& .MuiTablePagination-select': {
+              paddingLeft: '1rem',
+            },
+          }}
           controller={controller}
           dataset={profiles.filter(
             (profile) =>
