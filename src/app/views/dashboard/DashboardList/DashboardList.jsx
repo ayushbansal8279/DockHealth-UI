@@ -84,9 +84,14 @@ const DashboardList = ({
   const { openModal } = modalActions;
   const isSearchApplied = !!searchValue;
 
-  const dashboardTasks = useSelector(dashboardTasksSelector);
+  const dashboardTaskGroups = useSelector(dashboardTasksSelector);
+  const [dashboardTasks, setDashboardTasks] = useState([]);
   const dashboardTasksIsLoading = useSelector(dashboardTasksIsLoadingSelector);
   const areFiltersApplied = useSelector(hasFiltersAppliedSelector);
+
+  useEffect(() => {
+    setDashboardTasks(dashboardTaskGroups);
+  }, [dashboardTaskGroups]);
 
   const [currentSort, setCurrentSort] = useState({
     key: null,
@@ -260,15 +265,25 @@ const DashboardList = ({
         ),
         ...groupOrder.slice(elementToMoveWholeListIndex + 1),
       ];
-      // console.log(newOrder);
+
+      const newOrderDashboardTasks = [
+        ...dashboardTasks.slice(0, elementToMoveWholeListIndex - 1),
+        groupToMove,
+        ...dashboardTasks.slice(
+          elementToMoveWholeListIndex - 1,
+          elementToMoveWholeListIndex,
+        ),
+        ...dashboardTasks.slice(elementToMoveWholeListIndex + 1),
+      ];
+      setDashboardTasks(newOrderDashboardTasks);
 
       localStorageHelper.setItem(
         getMultipleSelectedQuickFilterStorageKey('dashboard', tabName),
         JSON.stringify(newOrder),
       );
-      setTimeout(() => dispatch(getDashboardTasks()), 1000);
+      // setTimeout(() => dispatch(getDashboardTasks()), 1000);
     },
-    [dispatch, groupOrder, tabName],
+    [groupOrder, tabName, dashboardTasks],
   );
 
   const moveGroupDown = useCallback(
@@ -287,15 +302,25 @@ const DashboardList = ({
         elementToMove,
         ...groupOrder.slice(elementToMoveWholeListIndex + 2),
       ];
-      // console.log(newOrder);
+
+      const newOrderDashboardTasks = [
+        ...dashboardTasks.slice(0, Math.max(elementToMoveWholeListIndex, 0)),
+        ...dashboardTasks.slice(
+          elementToMoveWholeListIndex + 1,
+          elementToMoveWholeListIndex + 2,
+        ),
+        groupToMove,
+        ...groupOrder.slice(elementToMoveWholeListIndex + 2),
+      ];
+      setDashboardTasks(newOrderDashboardTasks);
 
       localStorageHelper.setItem(
         getMultipleSelectedQuickFilterStorageKey('dashboard', tabName),
         JSON.stringify(newOrder),
       );
-      setTimeout(() => dispatch(getDashboardTasks()), 1000);
+      // setTimeout(() => dispatch(getDashboardTasks()), 1000);
     },
-    [dispatch, groupOrder, tabName],
+    [groupOrder, tabName, dashboardTasks],
   );
 
   const parentContainerWidth = useContext(Context);
