@@ -27,6 +27,7 @@ import {
   getDashboardFilters,
   getDashboardTasks,
   getDashboardTasksForGroup,
+  reorderDashboardTaskGroups,
 } from 'actions/dashboard-actions';
 import { TaskOrigin } from 'helpers/task-helpers';
 import * as TaskActions from 'actions/task-actions';
@@ -59,6 +60,7 @@ import {
 } from './styled';
 import DashboardCalendar from '../DashboardCalendar/DashboardCalendar';
 import localStorageHelper from '@/app/helpers/local-storage-helper';
+import { move } from 'ramda';
 
 const DashboardList = ({
   currentUser,
@@ -84,14 +86,9 @@ const DashboardList = ({
   const { openModal } = modalActions;
   const isSearchApplied = !!searchValue;
 
-  const dashboardTaskGroups = useSelector(dashboardTasksSelector);
-  const [dashboardTasks, setDashboardTasks] = useState([]);
+  const dashboardTasks = useSelector(dashboardTasksSelector);
   const dashboardTasksIsLoading = useSelector(dashboardTasksIsLoadingSelector);
   const areFiltersApplied = useSelector(hasFiltersAppliedSelector);
-
-  useEffect(() => {
-    setDashboardTasks(dashboardTaskGroups);
-  }, [dashboardTaskGroups]);
 
   const [currentSort, setCurrentSort] = useState({
     key: null,
@@ -256,34 +253,25 @@ const DashboardList = ({
           ? groupToMove.groupIdentifier
           : groupToMove.groupType;
       const elementToMoveWholeListIndex = groupOrder.indexOf(elementToMove);
-      const newOrder = [
-        ...groupOrder.slice(0, elementToMoveWholeListIndex - 1),
-        elementToMove,
-        ...groupOrder.slice(
-          elementToMoveWholeListIndex - 1,
-          elementToMoveWholeListIndex,
-        ),
-        ...groupOrder.slice(elementToMoveWholeListIndex + 1),
-      ];
 
-      const newOrderDashboardTasks = [
-        ...dashboardTasks.slice(0, elementToMoveWholeListIndex - 1),
-        groupToMove,
-        ...dashboardTasks.slice(
-          elementToMoveWholeListIndex - 1,
-          elementToMoveWholeListIndex,
-        ),
-        ...dashboardTasks.slice(elementToMoveWholeListIndex + 1),
-      ];
-      setDashboardTasks(newOrderDashboardTasks);
+      const newOrder = move(
+        elementToMoveWholeListIndex,
+        elementToMoveWholeListIndex - 1,
+        groupOrder,
+      );
 
       localStorageHelper.setItem(
         getMultipleSelectedQuickFilterStorageKey('dashboard', tabName),
         JSON.stringify(newOrder),
       );
-      // setTimeout(() => dispatch(getDashboardTasks()), 1000);
+      dispatch(
+        reorderDashboardTaskGroups(
+          elementToMoveWholeListIndex,
+          elementToMoveWholeListIndex - 1,
+        ),
+      );
     },
-    [groupOrder, tabName, dashboardTasks],
+    [dispatch, groupOrder, tabName],
   );
 
   const moveGroupDown = useCallback(
@@ -293,34 +281,26 @@ const DashboardList = ({
           ? groupToMove.groupIdentifier
           : groupToMove.groupType;
       const elementToMoveWholeListIndex = groupOrder.indexOf(elementToMove);
-      const newOrder = [
-        ...groupOrder.slice(0, Math.max(elementToMoveWholeListIndex, 0)),
-        ...groupOrder.slice(
-          elementToMoveWholeListIndex + 1,
-          elementToMoveWholeListIndex + 2,
-        ),
-        elementToMove,
-        ...groupOrder.slice(elementToMoveWholeListIndex + 2),
-      ];
 
-      const newOrderDashboardTasks = [
-        ...dashboardTasks.slice(0, Math.max(elementToMoveWholeListIndex, 0)),
-        ...dashboardTasks.slice(
-          elementToMoveWholeListIndex + 1,
-          elementToMoveWholeListIndex + 2,
-        ),
-        groupToMove,
-        ...groupOrder.slice(elementToMoveWholeListIndex + 2),
-      ];
-      setDashboardTasks(newOrderDashboardTasks);
+      const newOrder = move(
+        elementToMoveWholeListIndex,
+        elementToMoveWholeListIndex + 1,
+        groupOrder,
+      );
 
       localStorageHelper.setItem(
         getMultipleSelectedQuickFilterStorageKey('dashboard', tabName),
         JSON.stringify(newOrder),
       );
-      // setTimeout(() => dispatch(getDashboardTasks()), 1000);
+      dispatch(
+        reorderDashboardTaskGroups(
+          elementToMoveWholeListIndex,
+          elementToMoveWholeListIndex + 1,
+        ),
+      );
+      // setTimeout(() => dispatch(getDashboardTasks()), 1000); // If we want to refresh Dashboard
     },
-    [groupOrder, tabName, dashboardTasks],
+    [dispatch, groupOrder, tabName],
   );
 
   const parentContainerWidth = useContext(Context);
