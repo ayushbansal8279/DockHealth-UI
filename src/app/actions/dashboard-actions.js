@@ -65,6 +65,14 @@ export function reorderDashboardTasks(taskGroupImplicitType, tasksOrder) {
   };
 }
 
+export function reorderDashboardTaskGroups(oldIndex, newIndex) {
+  return {
+    type: ActionTypes.REORDER_DASHBOARD_TASK_GROUPS,
+    oldIndex,
+    newIndex,
+  };
+}
+
 export function loadMoreDashboardTasksForGroup(
   groupType,
   taskGroupIdentifier,
