@@ -8,15 +8,12 @@ import {
   takeLatest,
   all,
 } from 'redux-saga/effects';
-import isEmpty from 'ramda/src/isEmpty';
 import * as ActionTypes from 'actions/action-types';
 import * as DashboardActions from 'actions/dashboard-actions';
 import {
   reorderTasksInGroup,
   getDashboardMyTasksFilters,
   getDashboardAllTasksFilters,
-  getDashboardMyTasksByCriteria,
-  getDashboardAllTasksByCriteria,
   getDashboardTaskStasForImplicitGroups,
   getTasksAssignedToUserByImplicitGroup,
   getTasksForOrganizationByImplicitGroup,
@@ -77,9 +74,7 @@ function* initializeDashboardView() {
       ),
     );
 
-    yield filters
-      ? put(DashboardActions.getDashboardTasks())
-      : put(DashboardActions.getDashboardGroups());
+    yield put(DashboardActions.getDashboardGroups());
   } catch (error) {
     log(error);
   }
@@ -118,6 +113,8 @@ function* getDashboardTasksForGroup({
     const isAllTasks = tabName === DashboardTasksTab.ALL_TASKS;
     const taskViewFilter = yield select(dashboardTaskViewFilterSelector);
     const includeWorkflows = taskViewFilter?.includeWorkflows ?? true;
+    const selectedFilters = yield select(selectedFiltersInMegaFilterSelector);
+
     const { taskGroups } = yield call(
       isAllTasks
         ? getTasksForOrganizationByImplicitGroup
@@ -129,6 +126,7 @@ function* getDashboardTasksForGroup({
       0,
       0,
       includeWorkflows,
+      selectedFilters,
     );
     const group = taskGroups.find((g) =>
       g.groupType === 'QUICK_FILTER'
@@ -167,52 +165,30 @@ function* loadMoreDashboardTasksForGroup({
       groupType,
     );
 
-    if (!selectedFilters || isEmpty(selectedFilters)) {
-      const { taskGroups } = yield call(
-        isAllTasks
-          ? getTasksForOrganizationByImplicitGroup
-          : getTasksAssignedToUserByImplicitGroup,
-        groupType,
-        taskGroupIdentifier,
-        sortBy,
-        sortDirection,
-        customStartPosition,
-        0,
-        includeWorkflows,
-      );
-      const group = taskGroups.find((g) =>
-        g.groupType === 'QUICK_FILTER'
-          ? g.groupIdentifier === taskGroupIdentifier
-          : g.groupType === groupType,
-      );
+    const { taskGroups } = yield call(
+      isAllTasks
+        ? getTasksForOrganizationByImplicitGroup
+        : getTasksAssignedToUserByImplicitGroup,
+      groupType,
+      taskGroupIdentifier,
+      sortBy,
+      sortDirection,
+      customStartPosition,
+      0,
+      includeWorkflows,
+      selectedFilters,
+    );
+    const group = taskGroups.find((g) =>
+      g.groupType === 'QUICK_FILTER'
+        ? g.groupIdentifier === taskGroupIdentifier
+        : g.groupType === groupType,
+    );
 
-      yield put({
-        type: ActionTypes.LOAD_MORE_DASHBOARD_TASKS_FOR_GROUP_SUCCESS,
-        groupType,
-        group,
-      });
-    } else {
-      const taskGroups = yield call(
-        isAllTasks
-          ? getDashboardAllTasksByCriteria
-          : getDashboardMyTasksByCriteria,
-        selectedFilters,
-        sortBy,
-        sortDirection,
-        customStartPosition,
-      );
-      const group = taskGroups.find((g) =>
-        g.groupType === 'QUICK_FILTER'
-          ? g.groupIdentifier === taskGroupIdentifier
-          : g.groupType === groupType,
-      );
-
-      yield put({
-        type: ActionTypes.LOAD_MORE_DASHBOARD_TASKS_FOR_GROUP_SUCCESS,
-        groupType,
-        group,
-      });
-    }
+    yield put({
+      type: ActionTypes.LOAD_MORE_DASHBOARD_TASKS_FOR_GROUP_SUCCESS,
+      groupType,
+      group,
+    });
   } catch (error) {
     log(error);
     yield put({
@@ -247,7 +223,7 @@ function* getDashboardGroups() {
   }
 }
 
-function* getDashboardGroupsSuccess({ tasksList }) {
+function* getDashboardGroupsSuccess({ tasksList, sortBy, sortDirection }) {
   yield all(
     tasksList
       .filter(({ defaultOpen }) => defaultOpen)
@@ -256,6 +232,8 @@ function* getDashboardGroupsSuccess({ tasksList }) {
           DashboardActions.getDashboardTasksForGroup(
             groupType,
             taskGroupIdentifier,
+            sortBy,
+            sortDirection,
           ),
         ),
       ),
@@ -290,35 +268,17 @@ function* searchDashboardTasks({ searchTerm }) {
 
 function* getDashboardTasks(payload) {
   try {
-    const selectedFilters = yield select(selectedFiltersInMegaFilterSelector);
+    const groups = yield select(dashboardTasksSelector);
 
-    const tabName = yield select(dashboardTabNameSelector);
-    const isAllTasks = tabName === DashboardTasksTab.ALL_TASKS;
-
-    if (selectedFilters && Object.keys(selectedFilters).length > 0) {
-      const taskGroups = yield call(
-        isAllTasks
-          ? getDashboardAllTasksByCriteria
-          : getDashboardMyTasksByCriteria,
-        selectedFilters,
-        payload?.sortBy,
-        payload?.sortDirection,
-      );
-
-      yield put({
-        type: ActionTypes.GET_DASHBOARD_TASKS_SUCCESS,
-        tasksList: taskGroups?.map((group) => ({
-          ...group,
-          metricValue: group?.tasks?.length || 0,
-          defaultOpen: true,
-        })),
-      });
-    } else {
-      yield all([
-        put(DashboardActions.getDashboardGroups()),
-        put(DashboardActions.getDashboardFilters()),
-      ]);
-    }
+    yield all([
+      put(
+        DashboardActions.getDashboardGroupTasks(
+          groups,
+          payload?.sortBy,
+          payload?.sortDirection,
+        ),
+      ),
+    ]);
   } catch (error) {
     log(error);
     yield put({
