@@ -218,7 +218,7 @@ const TopSection = ({
   }
 
   return (
-    <Paper elevation={3} style={{ width: '800px', height: '60px' }}>
+    <Paper elevation={3} style={{ width: '100%', height: '60px' }}>
       <Box
         width="100%"
         display="flex"
