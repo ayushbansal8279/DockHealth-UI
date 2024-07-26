@@ -76,11 +76,10 @@ const MegaFilter = ({
   }, [selectedFilters, filters, selectedQuickFilter]);
 
   const clearFilters = useCallback(() => {
-    onSelectFilters(null);
     selectQuickFilter(null);
     setFinalFilter({});
     setSelectedQuickFilter('');
-  }, [onSelectFilters, selectQuickFilter]);
+  }, [selectQuickFilter]);
 
   useEffect(() => {
     if (clearFilter) {
