@@ -300,6 +300,20 @@ const DashboardHeader = ({
     }));
   }, [groupList, groupsPreferences, updateGroupsPreferences]);
 
+  const groupOptions = useMemo(() => {
+    return quickFiltersList?.map((quickFilter) => ({
+      name: quickFilter?.name,
+      onClick: () =>
+        handleUpdateMultipleSelectedQuickFilters(
+          quickFilter.quickFilterIdentifier,
+        ),
+      key: quickFilter.quickFilterIdentifier,
+      checked: multipleSelectedQuickFilters?.includes(
+        quickFilter?.quickFilterIdentifier,
+      ),
+    }));
+  }, [quickFiltersList, multipleSelectedQuickFilters]);
+
   const openAddTaskDrawer = () => {
     setAddTaskDrawer(true);
     dispatch(openAddTaskTaskDrawer());
@@ -333,7 +347,7 @@ const DashboardHeader = ({
       );
 
       setMultipleSelectedQuickFilters(quickFiltersArray);
-      setTimeout(() => dispatch(getDashboardGroups()), 1000); // time delay results in better home view refresh
+      setTimeout(() => dispatch(getDashboardGroups()), 10); // time delay results in better home view refresh
     },
     [dispatch, multipleSelectedQuickFilters, tabName],
   );
@@ -362,6 +376,7 @@ const DashboardHeader = ({
                   showCustomColumnCreate={false}
                   additionalOptionsTitle="Groups"
                   additionalOptions={additionalOptions}
+                  groupOptions={groupOptions}
                   iconColorFilterActive={iconColorFilterActiveItem?.value}
                   isDashboard
                 />
@@ -392,11 +407,6 @@ const DashboardHeader = ({
                   clearFilter={clearFilter}
                   setClearFilter={setClearFilter}
                   origin={TaskOrigin.DASHBOARD}
-                  multiSelectEnabled
-                  multipleSelectedQuickFilters={multipleSelectedQuickFilters}
-                  updateMultipleSelectedQuickFilters={
-                    handleUpdateMultipleSelectedQuickFilters
-                  }
                 />
                 <Box mx={0.5} />
                 <HeaderSearch

@@ -149,7 +149,14 @@ const DashboardList = ({
       });
       dashboardTasks?.forEach((item) => {
         if (!areFiltersApplied) {
-          dispatch(getDashboardTasksForGroup(item?.groupType, key, order));
+          dispatch(
+            getDashboardTasksForGroup(
+              item?.groupType,
+              item?.taskGroupIdentifier,
+              key,
+              order,
+            ),
+          );
         } else {
           dispatch(getDashboardTasks(key, order));
         }
