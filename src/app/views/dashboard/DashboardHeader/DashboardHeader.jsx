@@ -2,18 +2,21 @@ import React, { useCallback, useMemo, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useHistory } from 'react-router-dom';
 import { Box } from '@mui/material';
-// import ClearIcon from '@mui/icons-material/Clear';
 import {
   dashboardTasksSelector,
   dashboardTabNameSelector,
   dashboardFilterOptionsSelector,
   isFetchingDashboardFiltersSelector,
+  dashboardTaskViewFilterSelector,
 } from 'selectors/dashboard-selectors';
 import {
   getDashboardFilters,
+  getDashboardTasks,
+  getDashboardGroups,
   initializeDashboardState,
   searchDashboardTasks,
   selectDashboardFilters,
+  updateDashboardTaskViewFilter,
 } from 'actions/dashboard-actions';
 
 import {
@@ -46,35 +49,37 @@ import {
 import { DashboardTasksTab } from 'helpers/dashboard-helpers';
 import { UserOrganizationRole } from 'helpers/user-helper';
 import { getViewTypeFromQueryString, ViewType } from 'helpers/view-type-helper';
-// import TaskViewTypeToolbarSelect from 'components/tasklist/TaskViewTypeToolbarSelect/TaskViewTypeToolbarSelect';
-// import FullViewIcon from 'img/list/FullViewIcon';
 import SlimViewIcon from 'img/list/SlimViewIcon';
 import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined';
 import Spacing from 'components/common/Spacing';
 import { updateCurrentUserPreferences } from 'actions/user-actions';
+import { Add } from '@mui/icons-material';
+import { getMultipleSelectedQuickFilterStorageKey } from 'helpers/mega-filter-helper';
 import CustomizeToolbarButton from '@/app/components/tasklist/list-toolbar-buttons/CustomizeToolbarButton/CustomizeToolbarButton';
 import MegaFilter from '@/app/components/tasklist/list-toolbar-buttons/MegaFilter/MegaFilter';
 import {
   GridContainer,
   GridItemCalendarView,
-  // GridItemFullView,
   GridItemSlimView,
+  DashboardHeaderContainer,
+  AddTaskButtonWrapper,
+  AddTaskButtonLabel,
 } from './styled';
-import {
-  ActionsContainer,
-  // DashboardQuickFilter,
-  // DashboardQuickFilterClear,
-  // DashboardQuickFilterContainer,
-  // DashboardQuickFilterLabel,
-} from '../DashboardToolbar/styled';
-
-import { DashboardHeaderContainer } from './styled';
+import { ActionsContainer } from '../DashboardToolbar/styled';
+import HomeTaskViewFilter from '@/app/components/tasklist/list-toolbar-buttons/HomeTaskViewFilter';
+import localStorageHelper, {
+  getDashboardTaskViewFilter,
+  setDashboardTaskViewFilter,
+} from '@/app/helpers/local-storage-helper';
+import { openAddTaskTaskDrawer } from '@/app/actions/task-drawer-actions';
+import { TaskOrigin } from '@/app/helpers/task-helpers';
 
 const DashboardHeader = ({
   clearSearch,
   setClearSearch,
   clearFilter,
   setClearFilter,
+  setAddTaskDrawer,
 }) => {
   const { search } = useLocation();
   const history = useHistory();
@@ -87,10 +92,16 @@ const DashboardHeader = ({
   const currentUser = useSelector(userProfileSelector);
   const tabName = useSelector(dashboardTabNameSelector);
   const filterOptions = useSelector(dashboardFilterOptionsSelector);
+  const taskViewFilter = useSelector(dashboardTaskViewFilterSelector);
   const selectedFilters = useSelector(selectedFiltersInMegaFilterSelector);
   const quickFiltersList = useSelector(quickFiltersSelector);
   const addQuickFilterOption = useSelector(addQuickFilterOptionSelector);
   const selectedQuickFilter = useSelector(selectedQuickFilterSelector);
+  const savedDashboardSelectedQuickFilters = localStorageHelper.getItem(
+    getMultipleSelectedQuickFilterStorageKey('dashboard', tabName),
+  );
+  const [multipleSelectedQuickFilters, setMultipleSelectedQuickFilters] =
+    useState([]);
   const filteredDashboardTasks = dashboardTasks?.filter(
     (taskGroupInfo) => taskGroupInfo?.metricValue !== 0,
   );
@@ -108,7 +119,6 @@ const DashboardHeader = ({
     dashboardGroupsPreferences || [],
   );
   const [slimView, setSlimView] = useState(viewType === ViewType.LIST_VIEW);
-  // const [fullView, setFullView] = useState(false);
 
   const currentOrganization = useSelector(selectedUserOrganizationSelector);
   const iconColorFilterActiveItem =
@@ -117,12 +127,7 @@ const DashboardHeader = ({
     ) || {};
 
   const { ADMIN, OWNER, MEMBER, GUEST, DOCK_LITE } = UserOrganizationRole;
-  const contextType = currentCommonTabName
-    ? // ['Upcoming', 'Overdue', 'Completed'].includes(tabName)
-      //   ? 'MY_TASKS'
-      //   :
-      currentCommonTabName[0]
-    : null;
+  const contextType = currentCommonTabName ? currentCommonTabName[0] : null;
 
   const activeTasksCount = useMemo(
     () =>
@@ -134,37 +139,65 @@ const DashboardHeader = ({
     [filteredDashboardTasks],
   );
 
+  const onChangeTaskViewFilter = (newFilter) => {
+    dispatch(updateDashboardTaskViewFilter(newFilter));
+    setDashboardTaskViewFilter(
+      currentOrganization?.organizationIdentifier,
+      newFilter,
+    );
+    dispatch(getDashboardTasks());
+  };
+
   const handleMegaFilterOpen = useCallback(() => {
     dispatch(getDashboardFilters());
     dispatch(getQuickFilters({ contextType }));
   }, [contextType, dispatch]);
 
-  const searchTasksWithDebounce = useCallback(
+  const searchTasksWithDebounce = useCallback(() => {
     debounce((value) => {
       onSearchChanged();
       dispatch(searchDashboardTasks(value));
-    }, 1000),
-    [],
-  );
+    }, 1000);
+  }, [dispatch]);
 
   const handleSearchChange = (value) => {
     setSearchValue(value);
     if (value) {
       searchTasksWithDebounce(value);
     } else {
-      dispatch(initializeDashboardState(tabName));
+      dispatch(
+        initializeDashboardState(
+          tabName,
+          getDashboardTaskViewFilter(
+            currentOrganization?.organizationIdentifier,
+          ),
+        ),
+      );
     }
   };
 
   useEffect(() => {
     if (clearSearch) {
       setSearchValue('');
-      dispatch(initializeDashboardState(tabName));
+      dispatch(
+        initializeDashboardState(
+          tabName,
+          getDashboardTaskViewFilter(
+            currentOrganization?.organizationIdentifier,
+          ),
+        ),
+      );
       setTimeout(() => {
         setClearSearch(false);
       }, 500);
     }
-  }, [clearSearch]);
+  }, [
+    clearSearch,
+    dispatch,
+    setClearSearch,
+    tabName,
+    currentOrganization?.organizationIdentifier,
+  ]);
 
   useEffect(() => {
     dispatch(getQuickFilters({ contextType }));
@@ -267,6 +300,58 @@ const DashboardHeader = ({
     }));
   }, [groupList, groupsPreferences, updateGroupsPreferences]);
 
+  const groupOptions = useMemo(() => {
+    return quickFiltersList?.map((quickFilter) => ({
+      name: quickFilter?.name,
+      onClick: () =>
+        handleUpdateMultipleSelectedQuickFilters(
+          quickFilter.quickFilterIdentifier,
+        ),
+      key: quickFilter.quickFilterIdentifier,
+      checked: multipleSelectedQuickFilters?.includes(
+        quickFilter?.quickFilterIdentifier,
+      ),
+    }));
+  }, [quickFiltersList, multipleSelectedQuickFilters]);
+
+  const openAddTaskDrawer = () => {
+    setAddTaskDrawer(true);
+    dispatch(openAddTaskTaskDrawer());
+  };
+
+  useEffect(() => {
+    if (savedDashboardSelectedQuickFilters !== undefined) {
+      setMultipleSelectedQuickFilters(
+        JSON.parse(savedDashboardSelectedQuickFilters),
+      );
+    }
+  }, [savedDashboardSelectedQuickFilters]);
+
+  const handleUpdateMultipleSelectedQuickFilters = useCallback(
+    (identifier, clearAll) => {
+      let quickFiltersArray = multipleSelectedQuickFilters || [];
+      if (clearAll) {
+        quickFiltersArray = [];
+      }
+      if (identifier && identifier !== '' && !Array.isArray(identifier)) {
+        if (!quickFiltersArray?.includes(identifier)) {
+          quickFiltersArray.push(identifier);
+        } else {
+          const index = quickFiltersArray.indexOf(identifier);
+          quickFiltersArray.splice(index, 1);
+        }
+      }
+      localStorageHelper.setItem(
+        getMultipleSelectedQuickFilterStorageKey('dashboard', tabName),
+        JSON.stringify(quickFiltersArray),
+      );
+
+      setMultipleSelectedQuickFilters(quickFiltersArray);
+      setTimeout(() => dispatch(getDashboardGroups()), 10); // time delay results in better home view refresh
+    },
+    [dispatch, multipleSelectedQuickFilters, tabName],
+  );
+
   return (
     <DashboardHeaderContainer>
       <LayoutHeader>
@@ -278,44 +363,8 @@ const DashboardHeader = ({
         />
         <LayoutHeader.Spacer />
         <LayoutHeader.Title title={`Hello ${currentUser.firstName}`} />
-        {/* {viewType !== ViewType.CALENDAR_VIEW && (
-          <>
-            <LayoutHeader.Spacer />
-            <HeaderSearch value={searchValue} onChange={handleSearchChange} />
-            <LayoutHeader.Spacer />
-            <MegaFilter
-              filters={filterOptions}
-              selectedFilters={selectedFilters}
-              onSelectFilters={compose(dispatch, selectDashboardFilters)}
-              taskStatus="INCOMPLETE"
-              activeItemsAmount={activeTasksCount}
-              onOpen={handleMegaFilterOpen}
-              isFetching={isFetchingFilters}
-              quickFiltersList={quickFiltersList}
-              addQuickFilterOption={addQuickFilterOption}
-              selectedQuickFilter={selectedQuickFilter}
-              selectQuickFilter={handleSelectQuickFilter}
-              onSaveClick={handleSaveQuickFilter}
-              onSaveAsNewClick={handleSaveAsQuickFilter}
-              wasChangedFilters={wasChangedFilters}
-              onQuickFilterCreate={handleQuickFilterCreate}
-              onQuickFilterUpdate={handleQuickFilterUpdate}
-              onQuickFilterDelete={handleQuickFilterDelete}
-            />
-          </>
-        )} */}
       </LayoutHeader>
       <ActionsContainer>
-        {/* {tabName !== DashboardTasksTab.SHARED_TASKS && (
-          <TaskViewSelectWrapper>
-            <TaskViewTypeToolbarSelect
-              value={viewType}
-              onChange={handleChangeViewType}
-              // iconColorFilterActive={iconColorFilterActive}
-              // iconColorActive={iconColorActive}
-            />
-          </TaskViewSelectWrapper>
-        )} */}
         {viewType !== ViewType.CALENDAR_VIEW && (
           <>
             <Spacing horizontal={4} />
@@ -327,10 +376,15 @@ const DashboardHeader = ({
                   showCustomColumnCreate={false}
                   additionalOptionsTitle="Groups"
                   additionalOptions={additionalOptions}
+                  groupOptions={groupOptions}
                   iconColorFilterActive={iconColorFilterActiveItem?.value}
                   isDashboard
                 />
-                {/* <LayoutHeader.Spacer /> */}
+                <Box mx={0.5} />
+                <HomeTaskViewFilter
+                  filter={taskViewFilter}
+                  onChange={onChangeTaskViewFilter}
+                />
                 <Box mx={0.5} />
                 <MegaFilter
                   filters={filterOptions}
@@ -352,53 +406,23 @@ const DashboardHeader = ({
                   onQuickFilterDelete={handleQuickFilterDelete}
                   clearFilter={clearFilter}
                   setClearFilter={setClearFilter}
+                  origin={TaskOrigin.DASHBOARD}
                 />
-                {/* <LayoutHeader.Spacer /> */}
                 <Box mx={0.5} />
                 <HeaderSearch
                   value={searchValue}
                   onChange={handleSearchChange}
                 />
-                {/* <LayoutHeader.Spacer /> */}
               </AccessRestrictor>
-              {/* <DashboardQuickFilterContainer>
-                {quickFiltersList.map((filter, index) => {
-                  return (
-                    <DashboardQuickFilter key={filter.name}>
-                      <DashboardQuickFilterLabel
-                        active={
-                          selectedQuickFilter === filter.quickFilterIdentifier
-                        }
-                        onClick={() => {
-                          handleSelectQuickFilter(
-                            filter.quickFilterIdentifier,
-                            filter.selectedOptions,
-                          );
-                        }}
-                      >
-                        {filter.name}
-                      </DashboardQuickFilterLabel>
-                      {selectedQuickFilter === filter.quickFilterIdentifier ? (
-                        <DashboardQuickFilterClear
-                          active={
-                            selectedQuickFilter === filter.quickFilterIdentifier
-                          }
-                          onClick={() => {
-                            handleSelectQuickFilter(null);
-                          }}
-                        >
-                          <ClearIcon sx={{ height: '16px', width: '16px' }} />
-                        </DashboardQuickFilterClear>
-                      ) : (
-                        <></>
-                      )}
-                    </DashboardQuickFilter>
-                  );
-                })}
-              </DashboardQuickFilterContainer> */}
             </Box>
           </>
         )}
+        <Box mr>
+          <AddTaskButtonWrapper onClick={openAddTaskDrawer}>
+            <Add />
+            <AddTaskButtonLabel>Add Task</AddTaskButtonLabel>
+          </AddTaskButtonWrapper>
+        </Box>
         <Box
           display="flex"
           flex={viewType === ViewType.CALENDAR_VIEW ? 1 : 0}
@@ -411,7 +435,6 @@ const DashboardHeader = ({
                 handleChangeViewType(ViewType.CALENDAR_VIEW);
                 setCalendarView(true);
                 setSlimView(false);
-                // setFullView(false);
               }}
             >
               <CalendarMonthOutlinedIcon
@@ -421,24 +444,10 @@ const DashboardHeader = ({
                 }}
               />
             </GridItemCalendarView>
-            {/* <GridItemFullView active={fullView}>
-              <Box
-                sx={{ marginTop: '8px' }}
-                onClick={() => {
-                  handleChangeViewType(ViewType.LIST_VIEW);
-                  setSlimView(true);
-                  setFullView(false);
-                  setCalendarView(false);
-                }}
-              >
-                <FullViewIcon />
-              </Box>
-            </GridItemFullView> */}
             <GridItemSlimView
               active={slimView}
               onClick={() => {
                 handleChangeViewType(ViewType.LIST_VIEW);
-                // setFullView(true);
                 setSlimView(true);
                 setCalendarView(false);
               }}

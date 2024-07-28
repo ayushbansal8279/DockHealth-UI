@@ -137,7 +137,7 @@ function VTask(
             ref={parentTaskReference}
             $subitem={metadata.level > 1}
             // @ts-ignore
-            $workflow={record.task?.itemType === 'BUNDLE'}
+            $workflow={record.itemType === 'BUNDLE'}
             $template={isTaskTemplate && isLastChild}
             isTaskTemplate={isTaskTemplate}
             isLastChild={isLastChild || false}
@@ -166,7 +166,7 @@ function VTask(
                 pageBackground={bgColor ? palette.aliceBlue : ''}
                 isNestedTask
                 isVirtualTask
-                $width={percentage > 90}
+                $width={percentage < 90}
                 isNextVirtualTaskItemTypeBundle={
                   isNextVirtualTaskItemTypeBundle
                 }
@@ -180,6 +180,7 @@ function VTask(
               style={{
                 width:
                   percentage > 90 ? `${droppableHeaderWidth + 70}` : '100%',
+                paddingRight: percentage > 90 ? '16px' : '15px',
                 background: bgColor ? palette.aliceBlue : '',
                 paddingBottom: !addWorkflowTask
                   ? isLastTaskOfGroup
@@ -223,6 +224,7 @@ function VTask(
                 style={{
                   width:
                     percentage > 90 ? `${droppableHeaderWidth + 70}` : '100%',
+                  paddingRight: percentage > 90 ? '16px' : '15px',
                   background: bgColor ? palette.aliceBlue : '',
                   paddingBottom: addWorkflowTask
                     ? isLastTaskOfGroup

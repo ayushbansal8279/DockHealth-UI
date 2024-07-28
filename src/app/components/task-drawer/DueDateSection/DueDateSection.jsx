@@ -27,11 +27,18 @@ import {
   ReminderIconContainer,
 } from './styled';
 
-const DueDateSection = ({ selectedTask, disabled = false }) => {
+const DueDateSection = ({
+  selectedTask,
+  disabled = false,
+  addTaskDrawer,
+  setDueDate,
+}) => {
   const dispatch = useDispatch();
   const { taskIdentifier, dueDate, hasRecurringSchedule, reminderType } =
     selectedTask || {};
-  const momentDueDate = dueDate ? moment(dueDate) : null;
+  const [momentDueDate, setMomentDueDate] = useState(
+    dueDate ? moment(dueDate) : null,
+  );
   const isTemplateTask = checkIfTemplateTask(selectedTask);
   const buttonReference = useRef(null);
   const dueDateRef = useRef(null);
@@ -43,7 +50,15 @@ const DueDateSection = ({ selectedTask, disabled = false }) => {
       if (updatedDueDateTime === null) {
         setIsTimeAvailable(false);
       }
-      dispatch(updateTaskDueDate(selectedTask, updatedDueDateTime));
+      if (addTaskDrawer) {
+        setDueDate(updatedDueDateTime);
+        setMomentDueDate(moment(updatedDueDateTime));
+      } else {
+        setMomentDueDate(
+          !!updatedDueDateTime ? moment(updatedDueDateTime) : null,
+        );
+        dispatch(updateTaskDueDate(selectedTask, updatedDueDateTime));
+      }
     },
     [dispatch, selectedTask],
   );

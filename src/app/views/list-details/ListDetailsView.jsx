@@ -12,6 +12,7 @@ import ListDetailsTableView from './ListDetailsTableView/ListDetailsTableView';
 import ListDetailsCalendarView from './ListDetailsCalendarView/ListDetailsCalendarView';
 import ListDetailsBoardView from './ListDetailsBoardView/ListDetailsBoardView';
 import useSearchParams from '@/app/hooks/use-search-params';
+import localStorageHelper from '@/app/helpers/local-storage-helper';
 
 export const ListPageContext = createContext({
   addNewGroup: false,
@@ -35,17 +36,6 @@ const ListDetailsView = () => {
   const { viewType = ViewType.LIST_VIEW } = useSearchParams();
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    dispatch(initializeTaskListState(taskListIdentifier));
-  }, [dispatch, taskListIdentifier]);
-
-  useEffect(() => {
-    return () => {
-      dispatch(clearTaskListState());
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   const [addNewGroup, setAddNewGroup] = useState(false);
   const [prevListIdentifier, setPrevListIdentifier] = useState(null);
   const [workflowPopoverOpen, setWorkflowPopoverOpen] = useState(false);
@@ -53,6 +43,18 @@ const ListDetailsView = () => {
   const [changeViewType, setChangeViewType] = useState('SLIM_VIEW');
   const [showShadow, setShowShadow] = useState(false);
   const [tasks, setTasks] = useState([]);
+
+  useEffect(() => {
+    dispatch(initializeTaskListState(taskListIdentifier));
+    if (changeViewType === '') setChangeViewType('SLIM_VIEW');
+  }, [dispatch, taskListIdentifier]);
+
+  useEffect(() => {
+    return () => {
+      dispatch(clearTaskListState());
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [taskListIdentifier]);
 
   useEffect(() => {
     const currentListIdentifier = taskListIdentifier;
@@ -68,7 +70,21 @@ const ListDetailsView = () => {
 
   const handleSetChangeViewType = (value) => {
     setChangeViewType(value);
+    if (value === 'FULL_VIEW') {
+      localStorageHelper.setItem(`view${taskListIdentifier}`, value);
+    } else {
+      localStorageHelper.removeItem(`view${taskListIdentifier}`);
+    }
   };
+
+  useEffect(() => {
+    const storedViewType = localStorageHelper.getItem(`view${taskListIdentifier}`);
+    if (storedViewType === 'FULL_VIEW') {
+      setChangeViewType('FULL_VIEW');
+    } else {
+      setChangeViewType('SLIM_VIEW');
+    }
+  }, [taskListIdentifier]);
 
   const handleScroll = (event) => {
     const position = event.target.scrollTop;

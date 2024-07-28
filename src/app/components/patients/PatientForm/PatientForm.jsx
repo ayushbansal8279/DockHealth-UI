@@ -8,14 +8,7 @@ import React, {
 } from 'react';
 import { useSelector } from 'react-redux';
 import { Box } from '@mui/material';
-import { useHistory } from 'react-router-dom';
-import { CUSTOM_FIELDS_SETTINGS_PATH } from 'routing/helpers/paths';
-import {
-  userProfileSelector,
-  userHasPatientCustomFieldsFeatureSelector,
-  selectedUserOrganizationSelector,
-} from 'selectors/user-selectors';
-import { checkIfUserIsOrganizationAdmin } from 'helpers/user-helper';
+import { selectedUserOrganizationSelector } from 'selectors/user-selectors';
 import groupBy from 'ramda/src/groupBy';
 import prop from 'ramda/src/prop';
 import compose from 'ramda/src/compose';
@@ -30,9 +23,7 @@ import FormPhoneNumberInput from 'components/common/PhoneNumberInput/FormPhoneNu
 import FormSelect from 'components/common/Select/FormSelect';
 import DateInput from 'components/common/DateInput/DateInput';
 import CustomField from 'components/common/CustomField/CustomField';
-import Button from 'components/common/Button/Button';
 import Spacing from 'components/common/Spacing';
-import AddButton from 'components/common/AddButton/AddButton';
 import { Category, CategoryLabel } from 'helpers/patient-details-helpers';
 import moment from 'moment';
 import { useBoolean } from 'hooks/useBoolean';
@@ -63,7 +54,6 @@ const PatientForm = forwardRef(
     },
     reference,
   ) => {
-    const history = useHistory();
     const {
       handleSubmit,
       formState: { errors },
@@ -72,14 +62,14 @@ const PatientForm = forwardRef(
     } = useFormContext();
     const [isOpenedPersonal, setIsOpenedPersonal] = useState(true);
     const [isOpenedContact, setIsOpenedContact] = useState(true);
+    const [isOpenedOther, setIsOpenedOther] = useState(true);
     const [customFields, setCustomFields] = useState(null);
-    const userProfile = useSelector(userProfileSelector);
+
     const { 0: emptyPersonalVisible, 3: toggleEmptyPersonal } =
       useBoolean(false);
     const { 0: emptyContactsVisible, 3: toggleEmptyContacts } =
       useBoolean(false);
     const { 0: emptyOtherVisible, 3: toggleEmptyOther } = useBoolean(false);
-    const isAdmin = checkIfUserIsOrganizationAdmin(userProfile);
     const currentOrganization = useSelector(selectedUserOrganizationSelector);
     const genderIdentityDisabled =
       currentOrganization?.disabledFeatures?.includes('PATIENT_GENDER') ||
@@ -93,11 +83,6 @@ const PatientForm = forwardRef(
         ),
       [genderIdentityOptions.data],
     );
-
-    const patientCustomFieldsAvailable = useSelector(
-      userHasPatientCustomFieldsFeatureSelector,
-    );
-
     useEffect(() => {
       CustomFieldsApi.getAllPatientCustomFields(
         true,
@@ -148,9 +133,6 @@ const PatientForm = forwardRef(
       },
       [patient, edited],
     );
-
-    const handleAddButtonClick = () =>
-      history.push(`${CUSTOM_FIELDS_SETTINGS_PATH}/patients`);
 
     return (
       <form
@@ -234,8 +216,6 @@ const PatientForm = forwardRef(
           <CategoryOptions
             visibility={emptyPersonalVisible}
             onToggle={toggleEmptyPersonal}
-            showAddButton={isAdmin && patientCustomFieldsAvailable}
-            onAddButtonClick={handleAddButtonClick}
           />
         </LabeledCollapse>
         <LabeledCollapse
@@ -275,8 +255,6 @@ const PatientForm = forwardRef(
           <CategoryOptions
             visibility={emptyContactsVisible}
             onToggle={toggleEmptyContacts}
-            showAddButton={isAdmin && patientCustomFieldsAvailable}
-            onAddButtonClick={handleAddButtonClick}
           />
         </LabeledCollapse>
         {customFields?.[Category.OTHER_INFO]?.length > 0 && (
@@ -284,8 +262,8 @@ const PatientForm = forwardRef(
             name={`${capitalize(customerTypeLabel)} ${CategoryLabel[
               Category.OTHER_INFO
             ].toLowerCase()}`}
-            isOpened={isOpenedContact}
-            onClick={() => setIsOpenedContact(!isOpenedContact)}
+            isOpened={isOpenedOther}
+            onClick={() => setIsOpenedOther(!isOpenedOther)}
           >
             {customFields?.[Category.OTHER_INFO].map((field, index) => {
               return renderCustomField(
@@ -298,19 +276,10 @@ const PatientForm = forwardRef(
             <CategoryOptions
               visibility={emptyOtherVisible}
               onToggle={toggleEmptyOther}
-              showAddButton={isAdmin && patientCustomFieldsAvailable}
-              onAddButtonClick={handleAddButtonClick}
             />
           </LabeledCollapse>
         )}
         <Box display="flex" justifyContent="space-between">
-          <div>
-            {isAdmin && patientCustomFieldsAvailable && (
-              <AddButton onClick={handleAddButtonClick}>
-                Add or edit fields
-              </AddButton>
-            )}
-          </div>
           {edited && (
             <ConfirmButton
               style={{ width: 'auto' }}

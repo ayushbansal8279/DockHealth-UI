@@ -103,25 +103,44 @@ export const getDashboardAllTasksByCriteria = (
 
 export function getTasksAssignedToUserByImplicitGroup(
   groupType,
+  taskGroupIdentifier,
   sortBy,
   sortDirection,
   startPosition = 0,
   endPosition = 0,
+  includeWorkflows = true,
+  selectedFilters = {},
 ) {
   return axios
-    .get(`/task/findTasksAssignedToUserByImplicitGroup`, {
-      params:
-        sortBy && sortDirection
-          ? {
-              groupType,
-              startPosition,
-              endPosition,
-              status: 'INCOMPLETE',
-              sortBy,
-              sortDirection,
-            }
-          : { groupType, startPosition, endPosition, status: 'INCOMPLETE' },
-    })
+    .post(
+      `/task/findTasksAssignedToUserByImplicitGroup`,
+      mapSelectedOptionsToRequestPayload(selectedFilters || {}),
+      {
+        params:
+          sortBy && sortDirection
+            ? {
+                groupType,
+                quickFilterId: taskGroupIdentifier,
+                startPosition,
+                endPosition,
+                status: 'INCOMPLETE',
+                sortBy,
+                sortDirection,
+                includeWorkflows,
+              }
+            : {
+                groupType,
+                quickFilterId: taskGroupIdentifier,
+                startPosition,
+                endPosition,
+                status: 'INCOMPLETE',
+                includeWorkflows,
+              },
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      },
+    )
     .then(({ data }) => includeCustomFieldsPatientsToEachTask(data))
     .catch((error) => {
       throw error;
@@ -130,35 +149,55 @@ export function getTasksAssignedToUserByImplicitGroup(
 
 export function getTasksForOrganizationByImplicitGroup(
   groupType,
+  taskGroupIdentifier,
   sortBy,
   sortDirection,
   startPosition = 0,
   endPosition = 0,
+  includeWorkflows = true,
+  selectedFilters = {},
 ) {
   return axios
-    .get(`/task/findTasksForOrganizationByImplicitGroup`, {
-      params:
-        sortBy && sortDirection
-          ? {
-              groupType,
-              startPosition,
-              endPosition,
-              status: 'INCOMPLETE',
-              sortBy,
-              sortDirection,
-            }
-          : { groupType, startPosition, endPosition, status: 'INCOMPLETE' },
-    })
+    .post(
+      `/task/findTasksForOrganizationByImplicitGroup`,
+      mapSelectedOptionsToRequestPayload(selectedFilters || {}),
+      {
+        params:
+          sortBy && sortDirection
+            ? {
+                groupType,
+                quickFilterId: taskGroupIdentifier,
+                startPosition,
+                endPosition,
+                status: 'INCOMPLETE',
+                sortBy,
+                sortDirection,
+                includeWorkflows,
+              }
+            : {
+                groupType,
+                quickFilterId: taskGroupIdentifier,
+                startPosition,
+                endPosition,
+                status: 'INCOMPLETE',
+                includeWorkflows,
+              },
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      },
+    )
     .then(({ data }) => includeCustomFieldsPatientsToEachTask(data))
     .catch((error) => {
       throw error;
     });
 }
 
-export function getDashboardTaskStasForImplicitGroups(tab) {
+export function getDashboardTaskStasForImplicitGroups(tab, quickFilterIds) {
+  const quickFilterIdsString = quickFilterIds.join(',');
   return axios
     .get(
-      `/task/stats/getTaskStatsForImplicitGroupsForCurrentUser?viewName=${tab}`,
+      `/task/stats/getTaskStatsForImplicitGroupsForCurrentUser?viewName=${tab}&quickFilterIds=${quickFilterIdsString}`,
     )
     .then((response) => response.data)
     .catch((error) => {

@@ -5,14 +5,17 @@ import Tooltip from 'components/common/Tooltip/Tooltip';
 import TaskItemPopover from 'components/task/TaskItemPopover/TaskItemPopover';
 import MultiAssignMembersList from 'components/task/MultiAssignPopover/MultiAssignMembersList';
 import pluck from 'ramda/src/pluck';
-import { AssigneeMatchingWrapper } from './styled';
+import {
+  AssigneeMatchingWrapper,
+  AssigneeContainer,
+  AssigneeWrapper,
+} from './styled';
 
 const TaskTemplateMembers = ({
   multipleAssigneesContext,
   workflow = {},
   onWorkflowUpdate,
   readOnly,
-  isHover,
 }) => {
   const {
     assignedToUsers = [],
@@ -32,41 +35,45 @@ const TaskTemplateMembers = ({
   );
 
   return (
-    <TaskItemPopover
-      disabled={readOnly}
-      contentWidth={230}
-      content={({ closePopover }) => (
-        <MultiAssignMembersList
-          taskListIdentifiers={taskListIdentifier}
-          selectedMembers={assignedToUsers}
-          onSelect={handleWorkflowUpdate}
-          onError={closePopover}
-          closeModel={closePopover}
-          enableLazyLoading={
-            workflow?.taskList?.listType === 'PUBLIC' ||
-            workflow?.taskList?.listType === 'TEMPLATE'
-          }
-        />
-      )}
-      fullWidth={multipleAssigneesContext}
-    >
-      {assignedToUsers?.length ? (
-        <>
-          <AssigneeMatchingWrapper matched={searchMetaData?.matchAssignedTo} />
-          <MemberGroup members={assignedToUsers} />
-        </>
-      ) : (
-        <>
-          {isHover && (
-            <Tooltip placement="top" title="Add assignee">
-              <div style={{ marginLeft: '2px' }}>
-                <AssignMemberIcon />
-              </div>
-            </Tooltip>
-          )}
-        </>
-      )}
-    </TaskItemPopover>
+    <AssigneeContainer>
+      <TaskItemPopover
+        disabled={readOnly}
+        contentWidth={230}
+        content={({ closePopover }) => (
+          <MultiAssignMembersList
+            taskListIdentifiers={taskListIdentifier}
+            selectedMembers={assignedToUsers}
+            onSelect={handleWorkflowUpdate}
+            onError={closePopover}
+            closeModel={closePopover}
+            enableLazyLoading={
+              workflow?.taskList?.listType === 'PUBLIC' ||
+              workflow?.taskList?.listType === 'TEMPLATE'
+            }
+          />
+        )}
+        fullWidth={multipleAssigneesContext}
+      >
+        {assignedToUsers?.length ? (
+          <>
+            <AssigneeMatchingWrapper
+              matched={searchMetaData?.matchAssignedTo}
+            />
+            <MemberGroup members={assignedToUsers} />
+          </>
+        ) : (
+          <>
+            <AssigneeWrapper>
+              <Tooltip placement="top" title="Add assignee">
+                <div style={{ marginLeft: '2px' }}>
+                  <AssignMemberIcon />
+                </div>
+              </Tooltip>
+            </AssigneeWrapper>
+          </>
+        )}
+      </TaskItemPopover>
+    </AssigneeContainer>
   );
 };
 

@@ -26,6 +26,7 @@ const GroupNameSection = ({
     return (
       <GroupNameInput
         onBlur={() => {
+          onEnterClick(groupName);
           hideInput();
           if (handleInput) handleInput(!shouldShowInput);
         }}

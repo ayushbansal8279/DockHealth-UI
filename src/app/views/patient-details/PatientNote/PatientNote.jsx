@@ -27,6 +27,10 @@ import {
   ButtonContainer,
   ButtonWrapper,
 } from './styled';
+import {
+  traverseNodes,
+  processMarkdownValue,
+} from '../../../components/drawer-common/Comment/helpers';
 
 const PatientNote = ({
   note,
@@ -171,16 +175,20 @@ const PatientNote = ({
           <UserAvatar user={creator} />
           <Box m={2} />
           <PatientNoteInformation>
-            <RichTextEditor
-              readonly={!isEdited}
-              showToolbar={isEdited}
-              value={noteState}
-              onChange={handleTextEditorChange}
-              onFocus={handleFocus}
-              reset={isValueReset}
-              initOnClick
-              showCharCount
-            />
+            {isEdited ? (
+              <RichTextEditor
+                readonly={!isEdited}
+                showToolbar={isEdited}
+                value={noteState}
+                onChange={handleTextEditorChange}
+                onFocus={handleFocus}
+                reset={isValueReset}
+                initOnClick
+                showCharCount
+              />
+            ) : (
+              <>{traverseNodes(processMarkdownValue(noteState), [])}</>
+            )}
             <PatientNoteAuthor>
               {creator?.firstName} {creator?.lastName} {dateNoteCreated}
             </PatientNoteAuthor>

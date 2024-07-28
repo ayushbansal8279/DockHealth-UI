@@ -73,6 +73,7 @@ import {
 import TaskListToolbar from '../TaskListToolbar/TaskListToolbar';
 import TaskListGroupCollapse from '../TaskListGroupCollapse/TaskListGroupCollapse';
 import TasksToolbar from '../TasksToolbar/TasksToolbar';
+import localStorageHelper from '@/app/helpers/local-storage-helper';
 
 const PATIENT_SPECIFIC_LIST_VIEW_COLUMNS_CONFIG = {
   ...TASK_ITEM_BASE_COLUMN_CONFIG,
@@ -121,7 +122,19 @@ const PatientTasksListView = () => {
   const [viewType, setViewType] = useState('SLIM_VIEW');
   const handlePatientView = (value) => {
     setViewType(value);
+    if (value === 'FULL_VIEW') {
+      localStorageHelper.setItem(`patient${patientIdentifier}`, value);
+    } else {
+      localStorageHelper.removeItem(`patient${patientIdentifier}`);
+    }
   };
+
+  useEffect(() => {
+    const storedViewType = localStorageHelper.getItem(`patient${patientIdentifier}`);
+    if (storedViewType === 'FULL_VIEW') {
+      setViewType('FULL_VIEW');
+    }
+  }, [patientIdentifier]);
 
   // const organizationCustomFields = useSelector(
   //   organizationCustomFieldsSelector,

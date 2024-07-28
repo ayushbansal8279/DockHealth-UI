@@ -28,6 +28,7 @@ import { createTaskListPath } from 'routing/helpers/paths';
 import { currentTaskListSelector } from 'selectors/task-list-selectors';
 import CustomFieldsSection from 'components/task-drawer/CustomFieldsSection/CustomFieldsSection';
 import StickyAddComment from 'components/drawer-common/AddComment/StickyAddComment';
+import moment from 'moment';
 import NameSection from '../NameSection/NameSection';
 import DescriptionSection from '../DescriptionSection/DescriptionSection';
 import PatientSection from '../PatientSection/PatientSection';
@@ -41,7 +42,6 @@ import LabelsSection from '../LabelsSection/LabelsSection';
 import CommentSection from '../CommentSection/CommentSection';
 import AttachmentSection from '../AttachmentSection/AttachmentSection';
 import TasksSection from '../TasksSection/TasksSection';
-import moment from 'moment';
 import {
   Backdrop,
   AnimatedContainer,

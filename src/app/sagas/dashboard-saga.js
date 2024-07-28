@@ -8,15 +8,12 @@ import {
   takeLatest,
   all,
 } from 'redux-saga/effects';
-import isEmpty from 'ramda/src/isEmpty';
 import * as ActionTypes from 'actions/action-types';
 import * as DashboardActions from 'actions/dashboard-actions';
 import {
   reorderTasksInGroup,
   getDashboardMyTasksFilters,
   getDashboardAllTasksFilters,
-  getDashboardMyTasksByCriteria,
-  getDashboardAllTasksByCriteria,
   getDashboardTaskStasForImplicitGroups,
   getTasksAssignedToUserByImplicitGroup,
   getTasksForOrganizationByImplicitGroup,
@@ -33,6 +30,7 @@ import {
   dashboardTasksSelector,
   dashboardGroupTasksCountSelector,
   dashboardTabNameSelector,
+  dashboardTaskViewFilterSelector,
 } from 'selectors/dashboard-selectors';
 import * as MegaFilterActions from 'actions/mega-filter-actions';
 import { showGlobalErrorAlert } from 'alert/actions';
@@ -40,20 +38,32 @@ import { selectedFiltersInMegaFilterSelector } from 'selectors/mega-filter-selec
 import {
   getFiltersStorageKey,
   getQuickFilterStorageKey,
+  getMultipleSelectedQuickFilterStorageKey,
 } from 'helpers/mega-filter-helper';
-import sessionStorageHelper from 'helpers/session-storage-helper';
 import { log } from 'helpers/log';
+import localStorageHelper from '../helpers/local-storage-helper';
+import sessionStorageHelper from '../helpers/session-storage-helper';
 
 function* initializeDashboardView() {
   try {
     const tabName = yield select(dashboardTabNameSelector);
 
-    const filters = sessionStorageHelper.getItem(
+    let filters = localStorageHelper.getItem(
       getFiltersStorageKey('dashboard', tabName),
     );
-    const selectedQuickFilter = sessionStorageHelper.getItem(
+    if (!filters) {
+      filters = sessionStorageHelper.getItem(
+        getFiltersStorageKey('dashboard', tabName),
+      );
+    }
+    let selectedQuickFilter = localStorageHelper.getItem(
       getQuickFilterStorageKey('dashboard', tabName),
     );
+    if (!selectedQuickFilter) {
+      selectedQuickFilter = sessionStorageHelper.getItem(
+        getQuickFilterStorageKey('dashboard', tabName),
+      );
+    }
 
     yield put(
       MegaFilterActions.selectFiltersForMegaFilter(
@@ -64,9 +74,7 @@ function* initializeDashboardView() {
       ),
     );
 
-    yield filters
-      ? put(DashboardActions.getDashboardTasks())
-      : put(DashboardActions.getDashboardGroups());
+    yield put(DashboardActions.getDashboardGroups());
   } catch (error) {
     log(error);
   }
@@ -94,22 +102,37 @@ function* getDashboardFilters() {
   }
 }
 
-function* getDashboardTasksForGroup({ groupType, sortBy, sortDirection }) {
+function* getDashboardTasksForGroup({
+  groupType,
+  taskGroupIdentifier,
+  sortBy,
+  sortDirection,
+}) {
   try {
     const tabName = yield select(dashboardTabNameSelector);
     const isAllTasks = tabName === DashboardTasksTab.ALL_TASKS;
-    // const { tasks } = yield select(dashboardGroupTasksCountSelector, groupType);
+    const taskViewFilter = yield select(dashboardTaskViewFilterSelector);
+    const includeWorkflows = taskViewFilter?.includeWorkflows ?? true;
+    const selectedFilters = yield select(selectedFiltersInMegaFilterSelector);
+
     const { taskGroups } = yield call(
       isAllTasks
         ? getTasksForOrganizationByImplicitGroup
         : getTasksAssignedToUserByImplicitGroup,
       groupType,
+      taskGroupIdentifier,
       sortBy,
       sortDirection,
       0,
       0,
+      includeWorkflows,
+      selectedFilters,
     );
-    const group = taskGroups.find((g) => g.groupType === groupType);
+    const group = taskGroups.find((g) =>
+      g.groupType === 'QUICK_FILTER'
+        ? g.groupIdentifier === taskGroupIdentifier
+        : g.groupType === groupType,
+    );
 
     yield put({
       type: ActionTypes.GET_DASHBOARD_TASKS_FOR_GROUP_SUCCESS,
@@ -125,53 +148,49 @@ function* getDashboardTasksForGroup({ groupType, sortBy, sortDirection }) {
   }
 }
 
-function* loadMoreDashboardTasksForGroup({ groupType, sortBy, sortDirection }) {
+function* loadMoreDashboardTasksForGroup({
+  groupType,
+  taskGroupIdentifier,
+  sortBy,
+  sortDirection,
+}) {
   try {
     const tabName = yield select(dashboardTabNameSelector);
     const isAllTasks = tabName === DashboardTasksTab.ALL_TASKS;
+    const taskViewFilter = yield select(dashboardTaskViewFilterSelector);
+    const includeWorkflows = taskViewFilter?.includeWorkflows ?? true;
     const selectedFilters = yield select(selectedFiltersInMegaFilterSelector);
     const customStartPosition = yield select(
       dashboardGroupTasksCountSelector,
       groupType,
     );
 
-    if (!selectedFilters || isEmpty(selectedFilters)) {
-      const { taskGroups } = yield call(
-        isAllTasks
-          ? getTasksForOrganizationByImplicitGroup
-          : getTasksAssignedToUserByImplicitGroup,
-        groupType,
-        sortBy,
-        sortDirection,
-        customStartPosition,
-        0,
-      );
-      const group = taskGroups.find((g) => g.groupType === groupType);
+    const { taskGroups } = yield call(
+      isAllTasks
+        ? getTasksForOrganizationByImplicitGroup
+        : getTasksAssignedToUserByImplicitGroup,
+      groupType,
+      taskGroupIdentifier,
+      sortBy,
+      sortDirection,
+      customStartPosition,
+      0,
+      includeWorkflows,
+      selectedFilters,
+    );
+    const group = taskGroups.find((g) =>
+      g.groupType === 'QUICK_FILTER'
+        ? g.groupIdentifier === taskGroupIdentifier
+        : g.groupType === groupType,
+    );
 
-      yield put({
-        type: ActionTypes.LOAD_MORE_DASHBOARD_TASKS_FOR_GROUP_SUCCESS,
-        groupType,
-        group,
-      });
-    } else {
-      const taskGroups = yield call(
-        isAllTasks
-          ? getDashboardAllTasksByCriteria
-          : getDashboardMyTasksByCriteria,
-        selectedFilters,
-        sortBy,
-        sortDirection,
-        customStartPosition,
-      );
-      const group = taskGroups.find((g) => g.groupType === groupType);
-
-      yield put({
-        type: ActionTypes.LOAD_MORE_DASHBOARD_TASKS_FOR_GROUP_SUCCESS,
-        groupType,
-        group,
-      });
-    }
-  } catch {
+    yield put({
+      type: ActionTypes.LOAD_MORE_DASHBOARD_TASKS_FOR_GROUP_SUCCESS,
+      groupType,
+      group,
+    });
+  } catch (error) {
+    log(error);
     yield put({
       type: ActionTypes.LOAD_MORE_DASHBOARD_TASKS_FOR_GROUP_FAILURE,
     });
@@ -182,52 +201,41 @@ function* loadMoreDashboardTasksForGroup({ groupType, sortBy, sortDirection }) {
 function* getDashboardGroups() {
   try {
     const tabName = yield select(dashboardTabNameSelector);
+    const savedDashboardSelectedQuickFilters = localStorageHelper.getItem(
+      getMultipleSelectedQuickFilterStorageKey('dashboard', tabName),
+    );
 
-    // if (
-    //   tabName === DashboardTasksTab.UPCOMING ||
-    //   tabName === DashboardTasksTab.OVERDUE ||
-    //   tabName === DashboardTasksTab.COMPLETED
-    // ) {
-    //   tabName = DashboardTasksTab.MY_TASKS;
-    // }
-    // if (tabName === DashboardTasksTab.SHARED_TASKS) {
-    //   const dashboardGroups = [
-    //     {
-    //       groupName: 'Shared',
-    //       groupType: 'SHARED',
-    //       metricName: 'INCOMPLETE_TASKS_COUNT',
-    //       metricValue: 0,
-    //       defaultOpen: true,
-    //     },
-    //   ];
-
-    //   yield put({
-    //     type: ActionTypes.GET_DASHBOARD_GROUPS_SUCCESS,
-    //     tasksList: dashboardGroups,
-    //   });
-    // } else {
     const dashboardGroups = yield call(
       getDashboardTaskStasForImplicitGroups,
       tabName,
+      savedDashboardSelectedQuickFilters
+        ? JSON.parse(savedDashboardSelectedQuickFilters)
+        : [],
     );
 
     yield put({
       type: ActionTypes.GET_DASHBOARD_GROUPS_SUCCESS,
       tasksList: dashboardGroups,
     });
-    // }
   } catch {
     yield put(showGlobalErrorAlert());
     yield put({ type: ActionTypes.GET_DASHBOARD_GROUPS_FAILURE });
   }
 }
 
-function* getDashboardGroupsSuccess({ tasksList }) {
+function* getDashboardGroupsSuccess({ tasksList, sortBy, sortDirection }) {
   yield all(
     tasksList
       .filter(({ defaultOpen }) => defaultOpen)
-      .map(({ groupType }) =>
-        put(DashboardActions.getDashboardTasksForGroup(groupType)),
+      .map(({ groupType, taskGroupIdentifier }) =>
+        put(
+          DashboardActions.getDashboardTasksForGroup(
+            groupType,
+            taskGroupIdentifier,
+            sortBy,
+            sortDirection,
+          ),
+        ),
       ),
   );
 }
@@ -260,35 +268,17 @@ function* searchDashboardTasks({ searchTerm }) {
 
 function* getDashboardTasks(payload) {
   try {
-    const selectedFilters = yield select(selectedFiltersInMegaFilterSelector);
+    const groups = yield select(dashboardTasksSelector);
 
-    const tabName = yield select(dashboardTabNameSelector);
-    const isAllTasks = tabName === DashboardTasksTab.ALL_TASKS;
-
-    if (selectedFilters && Object.keys(selectedFilters).length > 0) {
-      const taskGroups = yield call(
-        isAllTasks
-          ? getDashboardAllTasksByCriteria
-          : getDashboardMyTasksByCriteria,
-        selectedFilters,
-        payload?.sortBy,
-        payload?.sortDirection,
-      );
-
-      yield put({
-        type: ActionTypes.GET_DASHBOARD_TASKS_SUCCESS,
-        tasksList: taskGroups?.map((group) => ({
-          ...group,
-          metricValue: group?.tasks?.length || 0,
-          defaultOpen: true,
-        })),
-      });
-    } else {
-      yield all([
-        put(DashboardActions.getDashboardGroups()),
-        put(DashboardActions.getDashboardFilters()),
-      ]);
-    }
+    yield all([
+      put(
+        DashboardActions.getDashboardGroupTasks(
+          groups,
+          payload?.sortBy,
+          payload?.sortDirection,
+        ),
+      ),
+    ]);
   } catch (error) {
     log(error);
     yield put({
@@ -298,51 +288,36 @@ function* getDashboardTasks(payload) {
   }
 }
 
-function* reorderDashboardTasks({ taskGroupImplicitType, tasksOrder }) {
+function* reorderDashboardTasks({
+  taskGroupImplicitType,
+  taskGroupIdentifier,
+  tasksOrder,
+}) {
   try {
     yield reorderTasksInGroup({ tasksOrder, taskGroupImplicitType });
     yield put(
-      DashboardActions.getDashboardTasksForGroup(taskGroupImplicitType),
+      DashboardActions.getDashboardTasksForGroup(
+        taskGroupImplicitType,
+        taskGroupIdentifier,
+      ),
     );
   } catch {
     yield put(
-      DashboardActions.getDashboardTasksForGroup(taskGroupImplicitType),
+      DashboardActions.getDashboardTasksForGroup(
+        taskGroupImplicitType,
+        taskGroupIdentifier,
+      ),
     );
     yield put(showGlobalErrorAlert());
   }
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-function* updateTaskStartDateSuccess({ task: taskToChange, startDate }) {
-  // const tabName = yield select(dashboardTabNameSelector);
-  // const task = { ...taskToChange, startDate };
-  // if (tabName) {
-  //   const groups = yield select(dashboardTasksSelector);
-  //   yield all(
-  //     groups
-  //       .filter(
-  //         ({ groupType }) =>
-  //           groupType === getGroupByDueDate(task.startDate, tabName) ||
-  //           groupType === getGroupByDueDate(taskToChange.startDate, tabName),
-  //       )
-  //       .map(({ groupType }) =>
-  //         put(DashboardActions.getDashboardTasksForGroup(groupType)),
-  //       ),
-  //   );
-  //   const dashboardGroups = yield call(
-  //     getDashboardTaskStasForImplicitGroups,
-  //     tabName,
-  //   );
-  // yield put({
-  //   type: ActionTypes.GET_DASHBOARD_GROUP_STATS_SUCCESS,
-  //   tasksList: dashboardGroups,
-  // });
-  // }
-}
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function* updateTaskDueDateSuccess({ task: taskToChange, dueDate }) {
   const tabName = yield select(dashboardTabNameSelector);
+  const savedDashboardSelectedQuickFilters = localStorageHelper.getItem(
+    getMultipleSelectedQuickFilterStorageKey('dashboard', tabName),
+  );
+
   const task = { ...taskToChange, dueDate };
   if (tabName) {
     const groups = yield select(dashboardTasksSelector);
@@ -353,13 +328,21 @@ function* updateTaskDueDateSuccess({ task: taskToChange, dueDate }) {
             groupType === getGroupByDueDate(task.dueDate, tabName) ||
             groupType === getGroupByDueDate(taskToChange.dueDate, tabName),
         )
-        .map(({ groupType }) =>
-          put(DashboardActions.getDashboardTasksForGroup(groupType)),
+        .map(({ groupType, taskGroupIdentifier }) =>
+          put(
+            DashboardActions.getDashboardTasksForGroup(
+              groupType,
+              taskGroupIdentifier,
+            ),
+          ),
         ),
     );
     const dashboardGroups = yield call(
       getDashboardTaskStasForImplicitGroups,
       tabName,
+      savedDashboardSelectedQuickFilters
+        ? JSON.parse(savedDashboardSelectedQuickFilters)
+        : [],
     );
     yield put({
       type: ActionTypes.GET_DASHBOARD_GROUP_STATS_SUCCESS,
@@ -381,10 +364,7 @@ function* selectDashboardFilters({ selectedFilters, selectedQuickFilter }) {
       ),
     );
 
-    yield all([
-      put(DashboardActions.getDashboardTasks()),
-      // put(DashboardActions.getDashboardFilters()),
-    ]);
+    yield put(DashboardActions.getDashboardTasks());
   }
 }
 
@@ -435,10 +415,6 @@ export default function* watchDashboard() {
   yield takeEvery(
     ActionTypes.LOAD_MORE_DASHBOARD_TASKS_FOR_GROUP,
     loadMoreDashboardTasksForGroup,
-  );
-  yield takeEvery(
-    ActionTypes.UPDATE_TASK_START_DATE_SUCCESS,
-    updateTaskStartDateSuccess,
   );
   yield takeEvery(
     ActionTypes.UPDATE_TASK_DUE_DATE_SUCCESS,

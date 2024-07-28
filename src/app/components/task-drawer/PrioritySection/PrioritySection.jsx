@@ -19,16 +19,24 @@ import {
 import Spacing from 'components/common/Spacing';
 import { ColorIndicator } from '../../common/Select/styled';
 
-const PrioritySection = ({ selectedTask, disabled = false }) => {
+const PrioritySection = ({
+  selectedTask,
+  disabled = false,
+  addTaskDrawer,
+  setPriority,
+}) => {
   const dispatch = useDispatch();
   const { priority } = selectedTask || {};
   const [open, setOpen] = React.useState(false);
 
   const handleOptionChange = (event) => {
     const { value } = event.target;
-
-    onTaskDrawerTaskPriorityChanged(value);
-    dispatch(changeTaskPriority(selectedTask, value));
+    if (addTaskDrawer) {
+      setPriority(value);
+    } else {
+      onTaskDrawerTaskPriorityChanged(value);
+      dispatch(changeTaskPriority(selectedTask, value));
+    }
   };
 
   const PRIORITY_OPTIONS = [

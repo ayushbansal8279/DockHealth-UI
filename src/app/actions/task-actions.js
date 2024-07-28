@@ -468,7 +468,7 @@ export function toggleCompleteTask(
     return TaskApi[apiEndpoint](task)
       .then(() => {
         if (
-          !task.parentTaskIdentifier &&
+          (!task.parentTaskIdentifier || task.parentTaskIdentifier) &&
           !isBundleTask &&
           newStatus === 'COMPLETE'
         ) {
@@ -807,14 +807,14 @@ export function bulkEditComplete(taskToComplete, currentUser = null) {
       fields: newTaskData,
     });
 
-    setTimeout(
-      () =>
+    setTimeout(() => {
+      for (const task of taskToComplete) {
         dispatch({
-          type: ActionTypes.COMPLETE_TASKS_SUCCESS,
-          tasksToDelete: taskToComplete,
-        }),
-      1500,
-    );
+          type: ActionTypes.DELETE_TASK,
+          taskIdentifier: task,
+        });
+      }
+    }, 1500);
   };
 }
 

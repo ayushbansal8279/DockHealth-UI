@@ -126,11 +126,9 @@ const Task = React.memo(
       ],
     );
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    const handleUpdateTask = useCallback(
-      compose(dispatch, TaskActions.partialUpdateTask),
-      [dispatch],
-    );
+    const handleUpdateTask = useCallback(() => {
+      compose(dispatch, TaskActions.partialUpdateTask);
+    }, [dispatch]);
 
     useEffect(() => {
       if (origin === 'PATIENT') {
@@ -140,7 +138,7 @@ const Task = React.memo(
           handleSetSubtasksOpen(false);
         }
       }
-    }, [origin, viewType]);
+    }, [handleSetSubtasksOpen, origin, viewType]);
 
     useEffect(() => {
       // if (isFullView) handleSetSubtasksOpen(true);
@@ -162,8 +160,14 @@ const Task = React.memo(
       } else {
         handleSetSubtasksOpen(false);
       }
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [viewType]);
+    }, [
+      collapse,
+      handleAddTask,
+      handleSetSubtasksOpen,
+      taskIdentifier,
+      tasks,
+      viewType,
+    ]);
 
     useEffect(() => {
       if (!areSubtasksOpen && subtaskQuickAddOpen && !subtasksDisabled) {
@@ -242,6 +246,8 @@ const Task = React.memo(
         $width={$width}
         isNextTaskItemTypeBundle={isNextTaskItemTypeBundle}
         isAddingTask={isAddingTask}
+        $isVirtualSubtask={isVirtualSubtask}
+        $isWorkflowTask={isTaskTemplate}
       >
         <TaskContainer ref={innerRef}>
           <TaskItem
@@ -271,7 +277,6 @@ const Task = React.memo(
             isWorkflowSubtask={isWorkflowSubtask}
             isVirtualTask={isVirtualTask}
             isVirtualSubtask={isVirtualSubtask}
-            isWidthGreaterThanHudredPercent={$width}
             pageBackground={pageBackground}
             {...restProps}
             isNextVirtualTaskItemTypeBundle={isNextVirtualTaskItemTypeBundle}

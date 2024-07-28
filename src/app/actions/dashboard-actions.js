@@ -1,9 +1,10 @@
 import * as ActionTypes from 'actions/action-types';
 
-export function initializeDashboardState(tabName) {
+export function initializeDashboardState(tabName, taskViewFilter) {
   return {
     type: ActionTypes.INITIALIZE_DASHBOARD_STATE,
     tabName,
+    taskViewFilter,
   };
 }
 
@@ -19,10 +20,16 @@ export function getDashboardGroups() {
   };
 }
 
-export function getDashboardTasksForGroup(groupType, sortBy, sortDirection) {
+export function getDashboardTasksForGroup(
+  groupType,
+  taskGroupIdentifier,
+  sortBy,
+  sortDirection,
+) {
   return {
     type: ActionTypes.GET_DASHBOARD_TASKS_FOR_GROUP,
     groupType,
+    taskGroupIdentifier,
     sortBy,
     sortDirection,
   };
@@ -31,6 +38,15 @@ export function getDashboardTasksForGroup(groupType, sortBy, sortDirection) {
 export function getDashboardTasks(sortBy, sortDirection) {
   return {
     type: ActionTypes.GET_DASHBOARD_TASKS,
+    sortBy,
+    sortDirection,
+  };
+}
+
+export function getDashboardGroupTasks(dashboardGroups, sortBy, sortDirection) {
+  return {
+    type: ActionTypes.GET_DASHBOARD_GROUPS_SUCCESS,
+    tasksList: dashboardGroups,
     sortBy,
     sortDirection,
   };
@@ -60,12 +76,14 @@ export function reorderDashboardTasks(taskGroupImplicitType, tasksOrder) {
 
 export function loadMoreDashboardTasksForGroup(
   groupType,
+  taskGroupIdentifier,
   sortBy,
   sortDirection,
 ) {
   return {
     type: ActionTypes.LOAD_MORE_DASHBOARD_TASKS_FOR_GROUP,
     groupType,
+    taskGroupIdentifier,
     sortBy,
     sortDirection,
   };
@@ -92,5 +110,12 @@ export function getDashboardCalendarTasksSuccess(tasks) {
 export function getDashboardCalendarTasksFailure() {
   return {
     type: ActionTypes.GET_DASHBOARD_CALENDAR_TASKS_FAILURE,
+  };
+}
+
+export function updateDashboardTaskViewFilter(newFilter) {
+  return {
+    type: ActionTypes.UPDATE_DASHBOARD_TASK_VIEW_FILTER,
+    payload: newFilter,
   };
 }

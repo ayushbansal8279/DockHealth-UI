@@ -39,7 +39,6 @@ export function addTask(task) {
   return axios
     .post('task', {
       ...task,
-      createdByUserIdentifier: sessionStorage.userIdentifier,
     })
     .then((response) => response.data)
     .catch((error) => {
