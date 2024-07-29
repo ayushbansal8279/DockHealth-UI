@@ -430,9 +430,6 @@ const ListDetailsReducer = (state = initialState, action) => {
 
       const updatedState = {
         ...state,
-        groupedTasks: {
-          ...state.groupedTasks,
-        },
         tasksMap: newMap,
       };
 
