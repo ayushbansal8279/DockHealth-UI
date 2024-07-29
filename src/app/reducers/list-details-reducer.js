@@ -396,6 +396,27 @@ const ListDetailsReducer = (state = initialState, action) => {
     case ActionTypes.UPDATE_TEMPLATE_BUNDLE_SUCCESS: {
       const { bundleIdentifier, dataToUpdate } = action;
 
+      const groupWithTasks = state.groupedTasks?.taskGroups?.find(
+        ({ groupIdentifier }) =>
+          groupIdentifier === dataToUpdate.parentTaskWorkflowIdentifier,
+      );
+
+      if (groupWithTasks) {
+        return updateGroupInState(
+          (group) => ({
+            ...group,
+            tasks: group.tasks?.find(
+              (taskId) => taskId === dataToUpdate?.identifier,
+            )
+              ? group.tasks
+              : [dataToUpdate?.identifier, ...(group.tasks || [])],
+          }),
+          dataToUpdate.parentTaskWorkflowIdentifier,
+          dataToUpdate,
+          state,
+        );
+      }
+
       const updatedMap = updateTasksMap(state, {
         itemType: TaskItemType.BUNDLE,
         identifier: bundleIdentifier,
