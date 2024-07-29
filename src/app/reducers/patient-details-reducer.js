@@ -377,6 +377,18 @@ export default (state = INITIAL_STATE, action = {}) => {
       // eslint-disable-next-line sonarjs/prefer-immediate-return
       const updatedState = {
         ...state,
+        lists: state.lists?.map((l) => {
+          return l?.taskListIdentifier === dataToUpdate?.taskListIdentifier
+            ? {
+                ...l,
+                tasks: updateBundleInList(
+                  dataToUpdate,
+                  dataToUpdate.identifier,
+                  l.tasks,
+                ),
+              }
+            : { ...l };
+        }),
         tasksMap: newMap,
       };
 
