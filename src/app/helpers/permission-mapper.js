@@ -98,7 +98,7 @@ export default {
     canAccessSearchPage: true,
     canAccessTaskListPage: true,
     canAccessPeopleListPage: false,
-    canAccessMemberListPage: false,
+    canAccessMemberListPage: true,
     canAccessWorkflowListPage: true,
     canAccessAnalyticsPage: false,
     canAccessChatPage: false,
