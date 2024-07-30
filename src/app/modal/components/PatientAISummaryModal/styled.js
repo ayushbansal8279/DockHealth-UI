@@ -31,6 +31,8 @@ export const PatientName = styled.div`
 export const IconWrapper = styled.img`
   margin-left: 10px;
   cursor: pointer;
+  width: 24px;
+  height: 24px;
 `;
 
 export const GeneratedTime = styled.div`

@@ -45,4 +45,13 @@ export const AddPlaceholder = styled(Placeholder)`
   }
 `;
 
+export const PatientLableContainer = styled.div`
+  display: flex;
+  items-align: center;
+`;
+
+export const PatientImageWrapper = styled.div`
+  margin: 0 15px 0 2px;
+`;
+
 export const DisabledLink = styled.span``;

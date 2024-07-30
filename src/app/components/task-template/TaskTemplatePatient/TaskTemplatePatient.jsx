@@ -5,12 +5,18 @@ import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import { capitalize } from 'helpers/capitalize';
 import { Link as RouterLink } from 'react-router-dom';
 import Highlighter from 'react-highlight-words';
+import LuminaStar from 'img/AI/LuminaStar';
 import {
   AddPlaceholder,
   ClickablePatient,
   PatientLabel,
   DisabledLink,
+  PatientLableContainer,
+  PatientImageWrapper,
 } from './styled';
+import { openModal } from '@/app/modal/actions';
+import { useDispatch } from 'react-redux';
+import palette from '@/app/styles/palette';
 
 const TaskTemplatePatient = ({
   highlightedValue,
@@ -23,9 +29,11 @@ const TaskTemplatePatient = ({
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const [isPopoverOpen, setPopoverOpen] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
   const matchPatientMRN = workflow?.searchMetaData?.matchPatientMRN;
   const matchPatient = workflow?.searchMetaData?.matchPatient;
   const { patient } = workflow;
+  const dispatch = useDispatch();
 
   const Link = readOnly ? DisabledLink : RouterLink;
 
@@ -96,24 +104,43 @@ const TaskTemplatePatient = ({
           disableLink={readOnly}
           patientIdentifier={patient.patientIdentifier}
         >
-          <Link to={`/core/patient/${patient.patientIdentifier}`}>
-            <PatientLabel>
-              {(matchPatient || matchPatientMRN) && highlightedValue ? (
-                <Highlighter
-                  highlightClassName="list-highlight"
-                  searchWords={
-                    matchPatient
-                      ? highlightedValue?.toLowerCase().split(/\s+/)
-                      : `${patientName}`.toLowerCase().split(/\s+/)
-                  }
-                  autoEscape
-                  textToHighlight={`${patient.patientName}`}
-                />
-              ) : (
-                `${patientName}`
-              )}
-            </PatientLabel>
-          </Link>
+          <PatientLableContainer>
+            <PatientImageWrapper
+              onMouseEnter={() => setIsHovered(true)}
+              onMouseLeave={() => setIsHovered(false)}
+              onClick={() =>
+                dispatch(
+                  openModal('PatientAISummary', {
+                    patient: patient,
+                  }),
+                )
+              }
+            >
+              <LuminaStar
+                color={
+                  isHovered ? palette.newBrightBlue : palette.lightGrayishBlue
+                }
+              />
+            </PatientImageWrapper>
+            <Link to={`/core/patient/${patient.patientIdentifier}`}>
+              <PatientLabel>
+                {(matchPatient || matchPatientMRN) && highlightedValue ? (
+                  <Highlighter
+                    highlightClassName="list-highlight"
+                    searchWords={
+                      matchPatient
+                        ? highlightedValue?.toLowerCase().split(/\s+/)
+                        : `${patientName}`.toLowerCase().split(/\s+/)
+                    }
+                    autoEscape
+                    textToHighlight={`${patient.patientName}`}
+                  />
+                ) : (
+                  `${patientName}`
+                )}
+              </PatientLabel>
+            </Link>
+          </PatientLableContainer>
         </PatientCard>
       )}
     </ClickablePatient>
