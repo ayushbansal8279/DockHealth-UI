@@ -7,6 +7,7 @@ import { Box } from '@mui/material';
 import { capitalize } from 'helpers/capitalize';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
 import Highlighter from 'react-highlight-words';
+import LuminaStar from 'img/AI/LuminaStar';
 
 import {
   AddPlaceholder,
@@ -18,7 +19,12 @@ import {
   PlaceholderText,
   PatientWrapper,
   PatientContainer,
+  PatientLableContainer,
+  PatientImageWrapper,
 } from '../../styled';
+import palette from '@/app/styles/palette';
+import { useDispatch } from 'react-redux';
+import { openModal } from '@/app/modal/actions';
 
 const TaskItemPatient = ({
   highlightedValue,
@@ -39,6 +45,7 @@ const TaskItemPatient = ({
 }) => {
   const { pathname } = useLocation();
   const [isPopoverOpen, setPopoverOpen] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
   const isCompleted = taskStatus === 'COMPLETE';
   const isTemplateTask = checkIfTemplateTask(task);
   const onPatientClick = useCallback(() => {
@@ -47,6 +54,7 @@ const TaskItemPatient = ({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [patient, task]);
+  const dispatch = useDispatch();
 
   const Link = readOnly ? DisabledLink : RouterLink;
 
@@ -157,39 +165,58 @@ const TaskItemPatient = ({
             disableLink={readOnly}
             patientIdentifier={patient.patientIdentifier}
           >
-            <Link
-              to={{
-                pathname: `/core/patient/${patient.patientIdentifier}`,
-                state: {
-                  from: pathname,
-                },
-              }}
-            >
-              <PatientLabelComponent>
-                {(matchPatient || matchPatientMRN) && highlightedValue ? (
-                  <Highlighter
-                    highlightClassName="list-highlight"
-                    searchWords={
-                      matchPatient
-                        ? highlightedValue?.toLowerCase().split(/\s+/)
-                        : `${patientName}`.toLowerCase().split(/\s+/)
-                    }
-                    autoEscape
-                    textToHighlight={`${patient.patientName}`}
-                  />
-                ) : (
-                  `${patientName}`
-                )}
-                <PatientPrintAdditionalInfo>
-                  {patient.mrn && (
-                    <Box whiteSpace="normal">MRN: {patient.mrn}</Box>
+            <PatientLableContainer>
+              <PatientImageWrapper
+                onMouseEnter={() => setIsHovered(true)}
+                onMouseLeave={() => setIsHovered(false)}
+                onClick={() =>
+                  dispatch(
+                    openModal('PatientAISummary', {
+                      patient: patient,
+                    }),
+                  )
+                }
+              >
+                <LuminaStar
+                  color={
+                    isHovered ? palette.newBrightBlue : palette.lightGrayishBlue
+                  }
+                />
+              </PatientImageWrapper>
+              <Link
+                to={{
+                  pathname: `/core/patient/${patient.patientIdentifier}`,
+                  state: {
+                    from: pathname,
+                  },
+                }}
+              >
+                <PatientLabelComponent>
+                  {(matchPatient || matchPatientMRN) && highlightedValue ? (
+                    <Highlighter
+                      highlightClassName="list-highlight"
+                      searchWords={
+                        matchPatient
+                          ? highlightedValue?.toLowerCase().split(/\s+/)
+                          : `${patientName}`.toLowerCase().split(/\s+/)
+                      }
+                      autoEscape
+                      textToHighlight={`${patient.patientName}`}
+                    />
+                  ) : (
+                    `${patientName}`
                   )}
-                  {patient.dob && (
-                    <Box whiteSpace="normal">DoB: {patient.dob}</Box>
-                  )}
-                </PatientPrintAdditionalInfo>
-              </PatientLabelComponent>
-            </Link>
+                  <PatientPrintAdditionalInfo>
+                    {patient.mrn && (
+                      <Box whiteSpace="normal">MRN: {patient.mrn}</Box>
+                    )}
+                    {patient.dob && (
+                      <Box whiteSpace="normal">DoB: {patient.dob}</Box>
+                    )}
+                  </PatientPrintAdditionalInfo>
+                </PatientLabelComponent>
+              </Link>
+            </PatientLableContainer>
           </PatientCard>
         )}
       </ClickablePatient>
