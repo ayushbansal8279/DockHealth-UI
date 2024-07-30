@@ -96,3 +96,8 @@ export const ArrowBox = styled.div`
 export const ArrowBoxIndicator = styled.div`
   height: fit-content;
 `;
+
+export const AISummaryImageWrapper = styled.div`
+  cursor: pointer;
+  margin-left: 20px;
+`;

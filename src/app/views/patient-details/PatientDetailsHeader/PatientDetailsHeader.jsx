@@ -27,6 +27,7 @@ import {
 } from 'restrictions/task-restrictions';
 import PatientDetailsDrawer from '../PatientDetailsDrawer/PatientDetailsDrawer';
 import PatientDetailsLoader from '../PatientDetailsLoader/PatientDetailsLoader';
+import LuminaStar from 'img/AI/LuminaStar';
 import {
   PatientDetailsContainer,
   PatientName,
@@ -39,7 +40,11 @@ import {
   IconWrapper,
   ContactContainer,
   PatientMRNAnchor,
+  AISummaryImageWrapper,
 } from './styled';
+import palette from '@/app/styles/palette';
+import { useDispatch } from 'react-redux';
+import { openModal } from '@/app/modal/actions';
 
 const { DISABLED } = TASK_LIST_RESTRICTIONS_OPTIONS;
 
@@ -78,6 +83,8 @@ const PatientDetailsHeader = () => {
   const genderIdentityDisabled =
     currentOrganization?.disabledFeatures?.includes('PATIENT_GENDER') || false;
   const embeddedMode = sessionStorage.getItem('EmbeddedMode') || false;
+  const [isAiIconHovered, setAiIconHovered] = useState(false);
+  const dispatch = useDispatch();
 
   const goBack = useCallback(() => {
     if (cameFrom) {
@@ -116,6 +123,27 @@ const PatientDetailsHeader = () => {
                 <PatientName>
                   {[`${lastName},`, firstName, middleName].join(' ')}
                 </PatientName>
+                <Tooltip placement="top" title="AI Summary">
+                  <AISummaryImageWrapper
+                    onMouseEnter={() => setAiIconHovered(true)}
+                    onMouseLeave={() => setAiIconHovered(false)}
+                    onClick={() =>
+                      dispatch(
+                        openModal('PatientAISummary', {
+                          patient: patient,
+                        }),
+                      )
+                    }
+                  >
+                    <LuminaStar
+                      color={
+                        isAiIconHovered
+                          ? palette.newBrightBlue
+                          : palette.lightGrayishBlue
+                      }
+                    />
+                  </AISummaryImageWrapper>
+                </Tooltip>
                 <Box mx={1} />
                 {taskListRestrictions?.createTask !== DISABLED && (
                   <ButtonContainer onClick={setIsDrawerOpen}>
