@@ -17,6 +17,7 @@ import {
 import { openModal } from '@/app/modal/actions';
 import { useDispatch } from 'react-redux';
 import palette from '@/app/styles/palette';
+import Tooltip from '../../common/Tooltip/Tooltip';
 
 const TaskTemplatePatient = ({
   highlightedValue,
@@ -29,7 +30,7 @@ const TaskTemplatePatient = ({
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const [isPopoverOpen, setPopoverOpen] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
+  const [isAiIconHovered, setAiIconHovered] = useState(false);
   const matchPatientMRN = workflow?.searchMetaData?.matchPatientMRN;
   const matchPatient = workflow?.searchMetaData?.matchPatient;
   const { patient } = workflow;
@@ -105,23 +106,27 @@ const TaskTemplatePatient = ({
           patientIdentifier={patient.patientIdentifier}
         >
           <PatientLableContainer>
-            <PatientImageWrapper
-              onMouseEnter={() => setIsHovered(true)}
-              onMouseLeave={() => setIsHovered(false)}
-              onClick={() =>
-                dispatch(
-                  openModal('PatientAISummary', {
-                    patient: patient,
-                  }),
-                )
-              }
-            >
-              <LuminaStar
-                color={
-                  isHovered ? palette.newBrightBlue : palette.lightGrayishBlue
+            <Tooltip placement="top" title="AI Summary">
+              <PatientImageWrapper
+                onMouseEnter={() => setAiIconHovered(true)}
+                onMouseLeave={() => setAiIconHovered(false)}
+                onClick={() =>
+                  dispatch(
+                    openModal('PatientAISummary', {
+                      patient: patient,
+                    }),
+                  )
                 }
-              />
-            </PatientImageWrapper>
+              >
+                <LuminaStar
+                  color={
+                    isAiIconHovered
+                      ? palette.newBrightBlue
+                      : palette.lightGrayishBlue
+                  }
+                />
+              </PatientImageWrapper>
+            </Tooltip>
             <Link to={`/core/patient/${patient.patientIdentifier}`}>
               <PatientLabel>
                 {(matchPatient || matchPatientMRN) && highlightedValue ? (

@@ -20,11 +20,12 @@ import {
   PatientWrapper,
   PatientContainer,
   PatientLableContainer,
-  PatientImageWrapper,
+  AISummaryImageWrapper,
 } from '../../styled';
 import palette from '@/app/styles/palette';
 import { useDispatch } from 'react-redux';
 import { openModal } from '@/app/modal/actions';
+import Tooltip from '@/app/components/common/Tooltip/Tooltip';
 
 const TaskItemPatient = ({
   highlightedValue,
@@ -45,7 +46,7 @@ const TaskItemPatient = ({
 }) => {
   const { pathname } = useLocation();
   const [isPopoverOpen, setPopoverOpen] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
+  const [isAiIconHovered, setAiIconHovered] = useState(false);
   const isCompleted = taskStatus === 'COMPLETE';
   const isTemplateTask = checkIfTemplateTask(task);
   const onPatientClick = useCallback(() => {
@@ -166,23 +167,27 @@ const TaskItemPatient = ({
             patientIdentifier={patient.patientIdentifier}
           >
             <PatientLableContainer>
-              <PatientImageWrapper
-                onMouseEnter={() => setIsHovered(true)}
-                onMouseLeave={() => setIsHovered(false)}
-                onClick={() =>
-                  dispatch(
-                    openModal('PatientAISummary', {
-                      patient: patient,
-                    }),
-                  )
-                }
-              >
-                <LuminaStar
-                  color={
-                    isHovered ? palette.newBrightBlue : palette.lightGrayishBlue
+              <Tooltip placement="top" title="AI Summary">
+                <AISummaryImageWrapper
+                  onMouseEnter={() => setAiIconHovered(true)}
+                  onMouseLeave={() => setAiIconHovered(false)}
+                  onClick={() =>
+                    dispatch(
+                      openModal('PatientAISummary', {
+                        patient: patient,
+                      }),
+                    )
                   }
-                />
-              </PatientImageWrapper>
+                >
+                  <LuminaStar
+                    color={
+                      isAiIconHovered
+                        ? palette.newBrightBlue
+                        : palette.lightGrayishBlue
+                    }
+                  />
+                </AISummaryImageWrapper>
+              </Tooltip>
               <Link
                 to={{
                   pathname: `/core/patient/${patient.patientIdentifier}`,
