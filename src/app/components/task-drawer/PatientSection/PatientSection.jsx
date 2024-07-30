@@ -29,8 +29,13 @@ import {
   Title,
   InstructionText,
   PatientName,
+  PatientLableContainer,
+  AISummaryImageWrapper,
 } from './styled';
 import { updatePartialWorkflow } from '@/app/actions/task-template-actions';
+import LuminaStar from '@/app/img/AI/LuminaStar';
+import palette from '@/app/styles/palette';
+import Tooltip from '../../common/Tooltip/Tooltip';
 
 const PATIENT_IDENTIFIER_FIELD_NAME = 'patientIdentifier';
 const MAX_PATIENT_RESULTS = 200;
@@ -50,6 +55,7 @@ const PatientSection = ({
   const dispatch = useDispatch();
   const patientInputReference = useRef(null);
   const [patients, setPatients] = useState([]);
+  const [isAiIconHovered, setAiIconHovered] = useState(false);
   const [assignedPatient, setAssignedPatient] = useState(null);
   const history = useHistory();
 
@@ -323,19 +329,42 @@ const PatientSection = ({
     <PatientMainContainer>
       <Title>Patient</Title>
       {selectedPatient && (
-        <PatientContainer>
-          {' '}
-          <PatientName onClick={patientProfile}>
-            {selectedPatient.patientName}{' '}
-          </PatientName>
-          <button
-            style={{ color: '#8492A4' }}
-            onClick={handleClearSelectedPatient}
-            type="button"
-          >
-            x
-          </button>
-        </PatientContainer>
+        <PatientLableContainer>
+          <PatientContainer>
+            {' '}
+            <PatientName onClick={patientProfile}>
+              {selectedPatient.patientName}{' '}
+            </PatientName>
+            <button
+              style={{ color: '#8492A4' }}
+              onClick={handleClearSelectedPatient}
+              type="button"
+            >
+              x
+            </button>
+          </PatientContainer>
+          <Tooltip placement="top" title="AI Summary">
+            <AISummaryImageWrapper
+              onMouseEnter={() => setAiIconHovered(true)}
+              onMouseLeave={() => setAiIconHovered(false)}
+              onClick={() =>
+                dispatch(
+                  openModal('PatientAISummary', {
+                    patient: selectedPatient,
+                  }),
+                )
+              }
+            >
+              <LuminaStar
+                color={
+                  isAiIconHovered
+                    ? palette.newBrightBlue
+                    : palette.lightGrayishBlue
+                }
+              />
+            </AISummaryImageWrapper>
+          </Tooltip>
+        </PatientLableContainer>
       )}
 
       {!selectedPatient && (
