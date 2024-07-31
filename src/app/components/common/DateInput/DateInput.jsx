@@ -11,7 +11,21 @@ import { useBoolean } from 'hooks/useBoolean';
 import { DEFAULT_DATE_FORMAT, getMomenDateFromString } from './helpers';
 
 const CustomDateInput = ({ inputRef, ...otherProps }) => (
-  <InputMask inputRef={inputRef} mask="99/99/9999" {...otherProps} />
+  <InputMask
+    inputRef={inputRef}
+    type="text"
+    mask="19/29/8999"
+    maskChar="_"
+    placeholder="mm/dd/yyyy"
+    formatChars={{
+      1: '[0-1]',
+      2: '[0-3]',
+      8: '[1-9]',
+      9: '[0-9]',
+    }}
+    autoComplete="off"
+    {...otherProps}
+  />
 );
 
 const DateInput = React.forwardRef(
@@ -47,17 +61,26 @@ const DateInput = React.forwardRef(
       if (textInputReference?.current) textInputReference?.current?.focus();
     }, [textInputReference, unsetOpen]);
 
-    const momentDate = getMomenDateFromString(value);
-    const dateValue = momentDate.format(DEFAULT_DATE_FORMAT);
+    const momentDate =
+      value && value !== '' && !value.includes('_')
+        ? getMomenDateFromString(value)
+        : undefined;
+    const dateValue = momentDate?.format(DEFAULT_DATE_FORMAT);
 
     const handleChange = ({ target: { value: date } }) => {
       onChange({ target: { value: date } });
-      onBlur({ target: { value: date } }, true);
+    };
+
+    const handleBlur = ({ target: { value: date } }) => {
+      if (typeof onBlur === 'function') {
+        onBlur({ target: { value: date } }, true);
+      }
     };
 
     const handleClear = () => {
       clearErrors?.(name);
-      onChange({ target: { value: null } });
+      handleChange({ target: { value: null } });
+      onBlur({ target: { value: null } }, true);
       setTimeout(() => {
         textInputReference?.current?.focus();
       }, 0);
@@ -89,11 +112,12 @@ const DateInput = React.forwardRef(
         <Input
           ref={textFieldReference}
           inputRef={textInputReference}
-          value={dateValue}
+          value={value}
           onChange={handleChange}
+          onBlur={handleBlur}
           readOnly={readOnly}
           disabled={disabled}
-          shrink={!!dateValue}
+          shrink={!!value}
           name={name}
           error={error}
           endAdornment={
@@ -104,7 +128,10 @@ const DateInput = React.forwardRef(
                 </IconButton>
               )}
               <Box mx={0.5} />
-              <IconButton disabled={readOnly || disabled} onClick={handleClear}>
+              <IconButton
+                disabled={readOnly || disabled}
+                onClick={() => handleClear()}
+              >
                 <CloseIcon />
               </IconButton>
             </Box>
@@ -128,7 +155,7 @@ const DateInput = React.forwardRef(
         >
           <Datepicker
             selectedDate={
-              momentDate.isValid() ? momentDate.toISOString() : undefined
+              momentDate?.isValid() ? momentDate?.toISOString() : undefined
             }
             onDateChange={handleDatepickerChange}
             maxDate={maxDate}
