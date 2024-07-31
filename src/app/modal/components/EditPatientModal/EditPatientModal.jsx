@@ -138,7 +138,7 @@ const EditPatientModal = ({ closeModal, patient, onAdded }) => {
                     />
                   </Grid>
                   <Grid item xs={6}>
-                    <FormInput readOnly={false} label="email" name="email" />
+                    <FormInput readOnly={false} label="Email" name="email" />
                   </Grid>
                 </Grid>
               </Grid>
