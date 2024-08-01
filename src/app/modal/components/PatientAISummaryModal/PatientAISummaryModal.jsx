@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { Grid } from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import { Grid, TextField } from '@mui/material';
 import Spacing from 'components/common/Spacing';
 import {
   PatientAISummaryModalWrapper,
@@ -9,6 +9,9 @@ import {
   IconWrapper,
   GeneratedTime,
   PatientInfo,
+  RegenerateWrapper,
+  ResponseButton,
+  RefreshWrapper,
 } from './styled';
 import LuminaStar from 'img/AI/LuminaStar';
 import palette from '@/app/styles/palette';
@@ -22,8 +25,18 @@ const PatientAISummaryModal = ({ closeModal, patient }) => {
     }
   }, [closeModal, patient]);
 
+  const [value, setValue] = useState('');
+
   const handleCopy = () => {
     navigator.clipboard.writeText('Aditya Chaurasia');
+  };
+
+  const handlePromptChange = (event) => {
+    setValue(event?.target.value);
+  };
+
+  const handleRegenrate = () => {
+    console.log(value);
   };
 
   return (
@@ -42,7 +55,34 @@ const PatientAISummaryModal = ({ closeModal, patient }) => {
       </Header>
       <Spacing vertical={3} />
       <Grid container direction="column" item wrap="nowrap">
-        <GeneratedTime>Generated 2 m ago</GeneratedTime>
+        <RegenerateWrapper>
+          <GeneratedTime>Generated 2 m ago</GeneratedTime>
+          <div>
+            <TextField
+              value={value}
+              placeholder="Custom Prompt"
+              size="small"
+              sx={{
+                backgroundColor: palette.white,
+                '& .MuiOutlinedInput-root': {
+                  '& .MuiOutlinedInput-notchedOutline': {
+                    borderWidth: '1px',
+                  },
+                  '&.Mui-focused fieldset': {
+                    borderColor: palette.gunmetal,
+                  },
+                },
+                width: '300px',
+              }}
+              onChange={handlePromptChange}
+              variant="outlined"
+            />
+          </div>
+          <RefreshWrapper style={{ background: palette.whiteSmoke }}>
+            <LuminaStar color={palette.newBrightBlue} />
+            <ResponseButton onClick={handleRegenrate}>Refresh</ResponseButton>
+          </RefreshWrapper>
+        </RegenerateWrapper>
         <Spacing vertical={4} />
         <PatientInfo>
           Patient info: <br />

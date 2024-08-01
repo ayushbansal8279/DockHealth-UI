@@ -3,6 +3,7 @@ import spacing from 'styles/spacing';
 import { fontSizes, fontWeights } from 'styles/font';
 import palette from 'styles/palette';
 import { ModalWrapper } from '../styled';
+import { Button } from '@mui/material';
 
 export const PatientAISummaryModalWrapper = styled(ModalWrapper)`
   width: 600px;
@@ -47,4 +48,35 @@ export const PatientInfo = styled.div`
   font-style: normal;
   font-weight: ${fontWeights.light};
   line-height: normal;
+`;
+
+export const ResponseButton = styled(Button)`
+  color: ${palette.black};
+  font-size: 16px;
+  line-height: 135%;
+  background-color: ${palette.whiteSmoke};
+
+  &:hover {
+    background-color: ${palette.whiteSmoke};
+    color: ${palette.black};
+  }
+
+  &:disabled {
+    color: ${palette.white};
+    background-color: ${palette.shadowBlue};
+  }
+`;
+
+export const RegenerateWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+export const RefreshWrapper = styled.div`
+  border-radius: 6px;
+  background-color: ${palette.whiteSmoke};
+  padding-left: 10px;
+  display: flex;
+  align-items: center;
 `;
