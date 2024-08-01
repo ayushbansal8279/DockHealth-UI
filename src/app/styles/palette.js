@@ -90,7 +90,7 @@ const palette = {
   oPlusRedLight: '#fad3cf',
   tomatoInYoFaceLight: '#f9d4d2',
   orangeJuliusLight: '#fee6cd',
-  bananaHammockLight: '#fff4cc',
+  bananaHammockLight: '#ffffee',
   tealGreen: '#69b8b2',
   lightOceanBlue: '#daefff',
 };
