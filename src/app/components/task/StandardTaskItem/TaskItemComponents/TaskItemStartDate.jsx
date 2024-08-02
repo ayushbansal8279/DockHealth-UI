@@ -39,7 +39,7 @@ const TaskItemStartDate = ({ task, disabled = false }) => {
       const isStartDateValid = moment(dueDate).isSameOrAfter(
         moment(newDueDate),
       );
-      if (isStartDateValid) {
+      if (isStartDateValid || newDueDate === null || !dueDate) {
         handleSave(newDueDate);
       } else {
         dispatch(
