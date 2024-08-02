@@ -11,13 +11,15 @@ import {
   StartDateContainer,
   StartDateWrapper,
 } from '../TaskTemplateDueDate/styled';
+import moment from 'moment';
+import { openModal } from '@/app/modal/actions';
 
 const TaskTemplateStartDate = (props) => {
   const { workflow, disabled = false } = props;
-  const { identifier, startDateTime } = workflow || {};
+  const { identifier, startDateTime, dueDateTime } = workflow || {};
   const dispatch = useDispatch();
 
-  const handleStartDateChange = useCallback(
+  const handleSave = useCallback(
     (updatedDate) => {
       const payload = {
         startDateTime: updatedDate,
@@ -26,6 +28,25 @@ const TaskTemplateStartDate = (props) => {
       if (!updatedDate) payload.startDateTimeCleared = true;
 
       dispatch(updatePartialWorkflow(identifier, payload));
+    },
+    [dispatch, identifier],
+  );
+
+  const handleStartDateChange = useCallback(
+    (newStartDate) => {
+      const isStartDateValid = moment(dueDateTime).isSameOrAfter(
+        moment(newStartDate),
+      );
+      if (isStartDateValid || newStartDate === null || !dueDateTime) {
+        handleSave(newStartDate);
+      } else {
+        dispatch(
+          openModal('DateWarning', {
+            type: 'startDate',
+            onSave: () => handleSave(newStartDate),
+          }),
+        );
+      }
     },
     [dispatch, identifier],
   );

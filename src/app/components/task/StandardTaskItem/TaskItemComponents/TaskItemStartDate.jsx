@@ -27,25 +27,25 @@ const TaskItemStartDate = ({ task, disabled = false }) => {
   } = task || {};
 
   const handleSave = useCallback(
-    (newDueDate) => {
-      dispatch(updateTaskStartDate(task, newDueDate));
+    (newStartDate) => {
+      dispatch(updateTaskStartDate(task, newStartDate));
       onTaskStartDateChanged();
     },
     [dispatch, task],
   );
 
   const handleDueDateChange = useCallback(
-    (newDueDate) => {
+    (newStartDate) => {
       const isStartDateValid = moment(dueDate).isSameOrAfter(
-        moment(newDueDate),
+        moment(newStartDate),
       );
-      if (isStartDateValid || newDueDate === null || !dueDate) {
-        handleSave(newDueDate);
+      if (isStartDateValid || newStartDate === null || !dueDate) {
+        handleSave(newStartDate);
       } else {
         dispatch(
           openModal('DateWarning', {
             type: 'startDate',
-            onSave: () => handleSave(newDueDate),
+            onSave: () => handleSave(newStartDate),
           }),
         );
       }
