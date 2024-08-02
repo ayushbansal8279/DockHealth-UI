@@ -26,6 +26,7 @@ import {
   RecurringIconContainer,
   ReminderIconContainer,
 } from './styled';
+import { openModal } from '@/app/modal/actions';
 
 const DueDateSection = ({
   selectedTask,
@@ -34,8 +35,13 @@ const DueDateSection = ({
   setDueDate,
 }) => {
   const dispatch = useDispatch();
-  const { taskIdentifier, dueDate, hasRecurringSchedule, reminderType } =
-    selectedTask || {};
+  const {
+    taskIdentifier,
+    startDate,
+    dueDate,
+    hasRecurringSchedule,
+    reminderType,
+  } = selectedTask || {};
   const [momentDueDate, setMomentDueDate] = useState(
     dueDate ? moment(dueDate) : null,
   );
@@ -45,7 +51,7 @@ const DueDateSection = ({
   const [isPopoverOpen, openPopover, closePopover] = useBoolean(false);
   const [isOverdue, setIsOverdue] = useState(false);
   const [isTimeAvailable, setIsTimeAvailable] = useState(false);
-  const handleDueDateSave = useCallback(
+  const handleSave = useCallback(
     (updatedDueDateTime) => {
       if (updatedDueDateTime === null) {
         setIsTimeAvailable(false);
@@ -58,6 +64,25 @@ const DueDateSection = ({
           !!updatedDueDateTime ? moment(updatedDueDateTime) : null,
         );
         dispatch(updateTaskDueDate(selectedTask, updatedDueDateTime));
+      }
+    },
+    [dispatch, selectedTask],
+  );
+
+  const handleDueDateSave = useCallback(
+    (newDueDate) => {
+      const isDueDateValid = moment(startDate).isSameOrBefore(
+        moment(newDueDate),
+      );
+      if (isDueDateValid || newDueDate === null || !startDate) {
+        handleSave(newDueDate);
+      } else {
+        dispatch(
+          openModal('DateWarning', {
+            type: 'dueDate',
+            onSave: () => handleSave(newDueDate),
+          }),
+        );
       }
     },
     [dispatch, selectedTask],
