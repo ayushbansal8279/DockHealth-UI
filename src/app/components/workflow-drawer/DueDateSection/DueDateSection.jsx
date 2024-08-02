@@ -19,13 +19,14 @@ import {
   NoDateContainer,
 } from './styled';
 import AssignMemberIcon from '../../user/AssignMemberIcon/AssingMemberIcon';
+import { openModal } from '@/app/modal/actions';
 
 const DueDateSection = ({ disabled }) => {
   const dispatch = useDispatch();
   const selectedWorkflow = useSelector(workflowSelector);
   const inputReference = useRef(null);
   const autoFocusFieldName = useSelector(workflowAutofocusFieldSelector);
-  const { identifier, dueDateTime, hasRecurringSchedule } =
+  const { identifier, startDateTime, dueDateTime, hasRecurringSchedule } =
     selectedWorkflow || {};
   const momentDueDate = dueDateTime ? moment(dueDateTime) : null;
   const [isOverdue, setIsOverdue] = useState(false);
@@ -43,7 +44,7 @@ const DueDateSection = ({ disabled }) => {
     }
   }, [autoFocusFieldName, momentDueDate]);
 
-  const handleDueDateSave = useCallback(
+  const handleSave = useCallback(
     (updatedDueDateTime) => {
       const payload = {
         dueDateTime: updatedDueDateTime,
@@ -52,6 +53,25 @@ const DueDateSection = ({ disabled }) => {
       if (!updatedDueDateTime) payload.dueDateTimeCleared = true;
 
       dispatch(updatePartialWorkflow(selectedWorkflow?.identifier, payload));
+    },
+    [dispatch, selectedWorkflow],
+  );
+
+  const handleDueDateSave = useCallback(
+    (newDueDate) => {
+      const isDueDateValid = moment(startDateTime).isSameOrBefore(
+        moment(newDueDate),
+      );
+      if (isDueDateValid || newDueDate === null || !startDateTime) {
+        handleSave(newDueDate);
+      } else {
+        dispatch(
+          openModal('DateWarning', {
+            type: 'dueDate',
+            onSave: () => handleSave(newDueDate),
+          }),
+        );
+      }
     },
     [dispatch, selectedWorkflow],
   );
