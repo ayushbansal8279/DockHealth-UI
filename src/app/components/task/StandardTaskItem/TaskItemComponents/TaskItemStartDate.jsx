@@ -13,16 +13,42 @@ import {
   StartDateContainer,
   StartDateWrapper,
 } from '../../styled';
+import moment from 'moment';
+import { openModal } from '@/app/modal/actions';
 
 const TaskItemStartDate = ({ task, disabled = false }) => {
   const dispatch = useDispatch();
-  const { taskIdentifier, startDate, hasRecurringSchedule, reminderType } =
-    task || {};
+  const {
+    taskIdentifier,
+    startDate,
+    hasRecurringSchedule,
+    reminderType,
+    dueDate,
+  } = task || {};
 
-  const handleDueDateChange = useCallback(
+  const handleSave = useCallback(
     (newDueDate) => {
       dispatch(updateTaskStartDate(task, newDueDate));
       onTaskStartDateChanged();
+    },
+    [dispatch, task],
+  );
+
+  const handleDueDateChange = useCallback(
+    (newDueDate) => {
+      const isStartDateValid = moment(dueDate).isSameOrAfter(
+        moment(newDueDate),
+      );
+      if (isStartDateValid) {
+        handleSave(newDueDate);
+      } else {
+        dispatch(
+          openModal('DateWarning', {
+            type: 'startDate',
+            onSave: () => handleSave(newDueDate),
+          }),
+        );
+      }
     },
     [dispatch, task],
   );
