@@ -425,4 +425,5 @@ export default function* watchDashboard() {
     ActionTypes.GET_DASHBOARD_CALENDAR_TASKS,
     getDashboardCalendarTasks,
   );
+  yield takeLatest(ActionTypes.REFRESH_ORIGIN, getDashboardTasks);
 }
