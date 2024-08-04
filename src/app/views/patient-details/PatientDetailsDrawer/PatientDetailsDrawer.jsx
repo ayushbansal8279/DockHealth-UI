@@ -8,17 +8,21 @@ import { useDispatch, useSelector } from 'react-redux';
 import { yupResolver } from '@hookform/resolvers/yup';
 import {
   userProfileSelector,
+  userHasPatientCustomFieldsFeatureSelector,
   selectedUserOrganizationSelector,
 } from 'selectors/user-selectors';
+import { checkIfUserIsOrganizationAdmin } from 'helpers/user-helper';
 import { FormProvider, useForm } from 'react-hook-form';
 import { openModal, closeModal } from 'modal/actions';
-import { createPatientDetailsPath } from 'routing/helpers/paths';
+import {
+  createPatientDetailsPath,
+  CUSTOM_FIELDS_SETTINGS_PATH,
+} from 'routing/helpers/paths';
 import {
   archivePatient as archivePatientAction,
   unarchivePatient as unarchivePatientAction,
   deletePatientArchive as deletePatientArchiveAction,
 } from 'sagas/patient-details-saga';
-
 import {
   mergePatient,
   updatePatientDetails,
@@ -46,6 +50,10 @@ const PatientDetailsDrawer = ({ patient, isOpenedDetails, closeDetails }) => {
   const dispatch = useDispatch();
   const currentUser = useSelector(userProfileSelector);
   const currentOrganization = useSelector(selectedUserOrganizationSelector);
+  const patientCustomFieldsAvailable = useSelector(
+    userHasPatientCustomFieldsFeatureSelector,
+  );
+
   const [isActive, setActive, unsetActive] = useBoolean(false);
   const formMethods = useForm({
     defaultValues: patientValues,
@@ -55,6 +63,8 @@ const PatientDetailsDrawer = ({ patient, isOpenedDetails, closeDetails }) => {
   const customerTypeLabel = getCustomerTypeLabel(currentUser);
   const { reset, clearErrors } = formMethods;
   const formReference = useRef(null);
+  const userProfile = useSelector(userProfileSelector);
+  const isAdmin = checkIfUserIsOrganizationAdmin(userProfile);
 
   const { emrIntegrationEnabled } = currentOrganization || {};
   const quickAddPatientEnabledItem =
@@ -145,6 +155,10 @@ const PatientDetailsDrawer = ({ patient, isOpenedDetails, closeDetails }) => {
     dispatch(updatePatientDetails(patientIdentifier, updateData));
   };
 
+  const handleAddButtonClick = useCallback(() => {
+    history.push(`${CUSTOM_FIELDS_SETTINGS_PATH}/patients`);
+  }, [history]);
+
   const contextMenuOptions = useMemo(
     () => [
       !isActive && {
@@ -196,6 +210,11 @@ const PatientDetailsDrawer = ({ patient, isOpenedDetails, closeDetails }) => {
         name: 'Delete',
         onClick: deletePatient,
       },
+      isAdmin &&
+        patientCustomFieldsAvailable && {
+          name: 'Edit Profile Details',
+          onClick: handleAddButtonClick,
+        },
     ],
     [
       isActive,
@@ -209,6 +228,9 @@ const PatientDetailsDrawer = ({ patient, isOpenedDetails, closeDetails }) => {
       dispatch,
       closeDetails,
       history,
+      handleAddButtonClick,
+      isAdmin,
+      patientCustomFieldsAvailable,
     ],
   );
 

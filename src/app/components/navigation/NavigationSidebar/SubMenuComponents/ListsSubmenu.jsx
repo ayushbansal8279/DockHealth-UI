@@ -62,6 +62,7 @@ import {
 import Tooltip from '@/app/components/common/Tooltip/Tooltip';
 import RotatableChevron from '@/app/components/common/RotatableChevron/RotatableChevron';
 import ToolbarButton from '@/app/components/tasklist/list-toolbar-buttons/ToolbarButton/ToolbarButton';
+import { organizationSelector } from '@/app/selectors/organization-selectors';
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const ListsSubmenu = () => {
@@ -73,6 +74,8 @@ const ListsSubmenu = () => {
   const taskLists = useSelector(taskListsSelector);
   const pendingTaskLists = useSelector(pendingTaskListsSelector);
   const archivedTaskLists = useSelector(archivedTaskListsSelector);
+  const organization = useSelector(organizationSelector);
+  const { subscriptionDetails } = organization;
 
   const dispatch = useDispatch();
 
@@ -452,11 +455,11 @@ const ListsSubmenu = () => {
         <div style={{ marginLeft: '-3px' }} onClick={toggleMyLists}>
           <RotatableChevron color={palette.darkGrey} rotated={myListsVisible} />
         </div>
-        <div style={{ marginRight: '65px' }}>My Lists</div>
-        {!isGuest &&
-          !isViewOnly &&
-          (!listAddAdminOnly || (listAddAdminOnly && isAdmin)) && (
-            <div style={{ marginRight: '-2px' }}>
+        <div style={{ marginLeft: '0px' }}>My Lists</div>
+        <div style={{ marginRight: '0px', marginLeft: '60px', width: '110px' }}>
+          {!isGuest &&
+            !isViewOnly &&
+            (!listAddAdminOnly || (listAddAdminOnly && isAdmin)) && (
               <ToolbarButton
                 icon={
                   <span style={{ marginLeft: '-5px' }}>
@@ -464,11 +467,12 @@ const ListsSubmenu = () => {
                   </span>
                 }
                 onClick={openListAddModal}
+                disableButton={subscriptionDetails?.trialEnded}
               >
                 <span style={{ marginLeft: '-5px' }}>Add a List</span>
               </ToolbarButton>
-            </div>
-          )}
+            )}
+        </div>
       </DrawerMyListsLabel>
       <DrawerListsList $isSubMenu $isOpen={myListsVisible}>
         <Collapse in={myListsVisible}>

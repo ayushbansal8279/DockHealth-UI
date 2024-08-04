@@ -126,9 +126,11 @@ const Task = React.memo(
       ],
     );
 
-    const handleUpdateTask = useCallback(() => {
-      compose(dispatch, TaskActions.partialUpdateTask);
-    }, [dispatch]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const handleUpdateTask = useCallback(
+      compose(dispatch, TaskActions.partialUpdateTask),
+      [dispatch],
+    );
 
     useEffect(() => {
       if (origin === 'PATIENT') {

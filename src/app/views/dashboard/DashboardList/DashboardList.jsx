@@ -25,6 +25,7 @@ import NoSearchResultsView from 'components/tasklist/EmptyListView/NoSearchResul
 import EmptyListView from 'components/tasklist/EmptyListView/EmptyListView';
 import {
   getDashboardFilters,
+  getDashboardGroups,
   getDashboardTasks,
   getDashboardTasksForGroup,
 } from 'actions/dashboard-actions';
@@ -149,7 +150,14 @@ const DashboardList = ({
       });
       dashboardTasks?.forEach((item) => {
         if (!areFiltersApplied) {
-          dispatch(getDashboardTasksForGroup(item?.groupType, key, order));
+          dispatch(
+            getDashboardTasksForGroup(
+              item?.groupType,
+              item?.taskGroupIdentifier,
+              key,
+              order,
+            ),
+          );
         } else {
           dispatch(getDashboardTasks(key, order));
         }
@@ -266,7 +274,7 @@ const DashboardList = ({
         getMultipleSelectedQuickFilterStorageKey('dashboard', tabName),
         JSON.stringify(newOrder),
       );
-      setTimeout(() => dispatch(getDashboardTasks()), 1000);
+      setTimeout(() => dispatch(getDashboardGroups()), 100);
     },
     [dispatch, groupOrder, tabName],
   );
@@ -293,7 +301,7 @@ const DashboardList = ({
         getMultipleSelectedQuickFilterStorageKey('dashboard', tabName),
         JSON.stringify(newOrder),
       );
-      setTimeout(() => dispatch(getDashboardTasks()), 1000);
+      setTimeout(() => dispatch(getDashboardGroups()), 100);
     },
     [dispatch, groupOrder, tabName],
   );

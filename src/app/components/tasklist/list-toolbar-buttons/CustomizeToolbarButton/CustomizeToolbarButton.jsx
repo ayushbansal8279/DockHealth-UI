@@ -52,6 +52,7 @@ const CustomizeToolbarButton = ({
   iconColorFilterActive,
   isDashboard = false,
   isPatientView = false,
+  groupOptions,
 }) => {
   const [open, setOpen] = useState(false);
   const [openUpgradePopup, setOpenUpgradePopup] = useState(false);
@@ -226,13 +227,13 @@ const CustomizeToolbarButton = ({
               {...applyProps(2)}
               style={{ minWidth: '75px' }}
             />
-            {/* {isDashboard && (
+            {isDashboard && (
               <Tab
                 label={additionalOptionsTitle}
                 {...applyProps(3)}
                 style={{ minWidth: '75px' }}
               />
-            )} */}
+            )}
           </Tabs>
           <Box p={1} />
           {selectedTab === 0 && (
@@ -345,19 +346,18 @@ const CustomizeToolbarButton = ({
                 </ListItemText>
               </Box>
               <List>
-                {additionalOptions &&
-                  additionalOptions?.map((option) => {
-                    const { name, checked = false, disabled, onClick } = option;
+                {groupOptions &&
+                  groupOptions?.map((option) => {
+                    const { name, key, checked, onClick } = option;
                     return (
                       name && (
                         <MenuItem
-                          key={name}
+                          key={key}
                           onClick={() => {
-                            if (typeof onClick === 'function' && !disabled)
-                              onClick();
+                            if (typeof onClick === 'function') onClick();
                           }}
                         >
-                          <Switch disabled={disabled} checked={checked} />
+                          <Switch checked={checked} />
                           <Box mx={0.5} />
                           <ListItemText>{name}</ListItemText>
                         </MenuItem>

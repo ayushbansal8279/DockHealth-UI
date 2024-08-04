@@ -266,6 +266,7 @@ export function ColumnsConfigProvider({
       viewSpecificConfig,
       setViewSpecificConfig,
       hasWidthPreferences,
+      allTaskListCustomFields: taskListCustomColumns,
     }),
     [
       columns,
@@ -274,6 +275,7 @@ export function ColumnsConfigProvider({
       setColumnWidth,
       setColumnsAndUpdateApi,
       viewSpecificConfig,
+      taskListCustomColumns,
     ],
   );
 

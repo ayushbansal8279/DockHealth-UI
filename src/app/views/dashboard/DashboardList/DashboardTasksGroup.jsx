@@ -241,6 +241,7 @@ const DashboardTasksGroup = ({
     <DashboardTasksGroupContainer
       ref={parentContainerReference}
       backgroundColor={backgroundColor}
+      height={150 + tasks?.length * 40}
     >
       <StickyContainer left={24} decreaseWidth={2 * 24}>
         {showHeader && (
@@ -251,17 +252,12 @@ const DashboardTasksGroup = ({
             }
           >
             <DashboardTasksGroupHeader backgroundColor={backgroundColor}>
-              <GroupOptionsContainer>
-                <OptionsMenu options={options} placement="bottom-start">
-                  <MoreVert color="primary" />
-                </OptionsMenu>
-              </GroupOptionsContainer>
               <Spacing horizontal={2} />
               <GroupOpenContainer onClick={onSwitchGroup}>
                 <RotatableChevron
                   alt="arrow"
                   rotated={groupIsOpen}
-                  color={iconColorActive}
+                  color={palette.shadowBlue}
                 />
               </GroupOpenContainer>
               <Spacing horizontal={1} />
@@ -269,13 +265,18 @@ const DashboardTasksGroup = ({
                 <DashboardTasksGroupLabel>
                   <DashboardTasksGroupLabelName>
                     {groupName}
-                    {metricValue !== -1 && (
+                    {tasks?.length > 0 && (
                       <NumericalBadgeContainer>
-                        <TaskCount>{metricValue}</TaskCount>
+                        <TaskCount>{tasks?.length}</TaskCount>
                       </NumericalBadgeContainer>
                     )}
                   </DashboardTasksGroupLabelName>
                 </DashboardTasksGroupLabel>
+                <GroupOptionsContainer>
+                  <OptionsMenu options={options} placement="bottom-start">
+                    <MoreVert color="primary" />
+                  </OptionsMenu>
+                </GroupOptionsContainer>
               </GroupNameSectionWrapper>
             </DashboardTasksGroupHeader>
           </StickyElement>
