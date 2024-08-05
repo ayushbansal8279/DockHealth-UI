@@ -10,6 +10,7 @@ const FONT_FAMILY = '"Outfit", sans-serif';
 
 export const TimeDropdownContainer = styled.div`
   position: relative;
+  width: 94px;
 `;
 
 export const TimeLabelContainer = styled.div`
