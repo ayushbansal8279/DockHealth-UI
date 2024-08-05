@@ -28,6 +28,7 @@ import {
   getDashboardGroups,
   getDashboardTasks,
   getDashboardTasksForGroup,
+  reorderDashboardTaskGroups,
 } from 'actions/dashboard-actions';
 import { TaskOrigin } from 'helpers/task-helpers';
 import * as TaskActions from 'actions/task-actions';
@@ -60,6 +61,7 @@ import {
 } from './styled';
 import DashboardCalendar from '../DashboardCalendar/DashboardCalendar';
 import localStorageHelper from '@/app/helpers/local-storage-helper';
+import { move } from 'ramda';
 
 const DashboardList = ({
   currentUser,
@@ -259,22 +261,23 @@ const DashboardList = ({
           ? groupToMove.groupIdentifier
           : groupToMove.groupType;
       const elementToMoveWholeListIndex = groupOrder.indexOf(elementToMove);
-      const newOrder = [
-        ...groupOrder.slice(0, elementToMoveWholeListIndex - 1),
-        elementToMove,
-        ...groupOrder.slice(
-          elementToMoveWholeListIndex - 1,
-          elementToMoveWholeListIndex,
-        ),
-        ...groupOrder.slice(elementToMoveWholeListIndex + 1),
-      ];
-      // console.log(newOrder);
+
+      const newOrder = move(
+        elementToMoveWholeListIndex,
+        elementToMoveWholeListIndex - 1,
+        groupOrder,
+      );
 
       localStorageHelper.setItem(
         getMultipleSelectedQuickFilterStorageKey('dashboard', tabName),
         JSON.stringify(newOrder),
       );
-      setTimeout(() => dispatch(getDashboardGroups()), 100);
+      dispatch(
+        reorderDashboardTaskGroups(
+          elementToMoveWholeListIndex,
+          elementToMoveWholeListIndex - 1,
+        ),
+      );
     },
     [dispatch, groupOrder, tabName],
   );
@@ -286,22 +289,24 @@ const DashboardList = ({
           ? groupToMove.groupIdentifier
           : groupToMove.groupType;
       const elementToMoveWholeListIndex = groupOrder.indexOf(elementToMove);
-      const newOrder = [
-        ...groupOrder.slice(0, Math.max(elementToMoveWholeListIndex, 0)),
-        ...groupOrder.slice(
-          elementToMoveWholeListIndex + 1,
-          elementToMoveWholeListIndex + 2,
-        ),
-        elementToMove,
-        ...groupOrder.slice(elementToMoveWholeListIndex + 2),
-      ];
-      // console.log(newOrder);
+
+      const newOrder = move(
+        elementToMoveWholeListIndex,
+        elementToMoveWholeListIndex + 1,
+        groupOrder,
+      );
 
       localStorageHelper.setItem(
         getMultipleSelectedQuickFilterStorageKey('dashboard', tabName),
         JSON.stringify(newOrder),
       );
-      setTimeout(() => dispatch(getDashboardGroups()), 100);
+      dispatch(
+        reorderDashboardTaskGroups(
+          elementToMoveWholeListIndex,
+          elementToMoveWholeListIndex + 1,
+        ),
+      );
+      // setTimeout(() => dispatch(getDashboardTasks()), 1000); // If we want to refresh Dashboard
     },
     [dispatch, groupOrder, tabName],
   );
