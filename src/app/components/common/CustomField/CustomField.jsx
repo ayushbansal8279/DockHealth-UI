@@ -17,12 +17,14 @@ import { taskDrawerFocusFieldSelector } from 'selectors/task-drawer-selectors';
 import { useSelector } from 'react-redux';
 import { TaskItemType } from 'helpers/task-helpers';
 import { workflowAutofocusFieldSelector } from 'selectors/workflow-drawer-selectors';
-import { Box } from '@mui/material';
+import { Box, TextField } from '@mui/material';
 import CustomFieldRichTextEditor from './CustomFieldRichTextEditor';
 import { ColorIndicator } from './styled';
 import MultiFormSelect from '../MultiSelect/MultiFormSelect';
 import CustomFieldErrorContext from './CustomFieldErrorContext';
 import CustomFieldAutoComplete from './CustomFieldAutoComplete';
+import AutoCompleteFormSelect from '../Autocomplete/AutoCompleteFormSelect';
+
 
 const CustomField = ({
   readOnly,
@@ -239,14 +241,10 @@ const CustomField = ({
         return (
           <Box position="relative">
             {colorIndicator && <ColorIndicator color={colorIndicator} />}
-            <FormSelect
+            <AutoCompleteFormSelect
               readOnly={readOnly}
               label={name}
-              options={
-                dependantOptions?.length > 0
-                  ? dependantOptions
-                  : dropdownOptions
-              }
+              options={dependantOptions?.length > 0 ? dependantOptions : dropdownOptions}
               name={fieldName}
               onBlur={handleBlur}
               inputRef={inputReference}
@@ -260,7 +258,7 @@ const CustomField = ({
       case FieldType.DROPDOWN_MULTI: {
         return (
           <Box position="relative">
-            <MultiFormSelect
+            <AutoCompleteFormSelect
               readOnly={readOnly}
               label={name}
               options={dropdownOptions}
@@ -270,6 +268,7 @@ const CustomField = ({
               ref={componentReference}
               onChange={() => setWasChanged(true)}
               required={isRequired}
+              multiple={true}
             />
           </Box>
         );
