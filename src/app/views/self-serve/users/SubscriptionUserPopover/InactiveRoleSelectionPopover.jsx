@@ -157,6 +157,7 @@ const InactiveRoleSelectionPopover = (props) => {
           Cancel
         </RoleSelectorCancelRemoveUserButton>
         <Button
+          width="200px"
           onClick={() => {
             closePopover();
             reactivateUser(userIdentifier, selectedRole?.key).then(() => {

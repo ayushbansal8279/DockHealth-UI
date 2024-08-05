@@ -132,37 +132,44 @@ const Task = React.memo(
       [dispatch],
     );
 
-    useEffect(() => {
-      if (origin === 'PATIENT') {
-        if (viewType === 'FULL_VIEW') {
-          handleSetSubtasksOpen(true);
-        } else {
-          handleSetSubtasksOpen(false);
-        }
-      }
-    }, [handleSetSubtasksOpen, origin, viewType]);
+    // useEffect(() => {
+    //   if (origin === 'PATIENT') {
+    //     if (viewType === 'FULL_VIEW') {
+    //       handleSetSubtasksOpen(true);
+    //     } else {
+    //       handleSetSubtasksOpen(false);
+    //     }
+    //   }
+    // }, [handleSetSubtasksOpen, origin, viewType]);
 
-    useEffect(() => {
-      // if (isFullView) handleSetSubtasksOpen(true);
-      // else setAreSubtasksOpen(false);
-      if (viewType === 'FULL_VIEW') {
-        if (!tasks.includes(taskIdentifier)) {
-          handleSetSubtasksOpen(true);
-          handleAddTask(taskIdentifier);
-        } else {
-          setAreSubtasksOpen(!collapse.get(taskIdentifier));
-        }
-      } else if (viewType === 'SLIM_VIEW') {
-        if (!tasks.includes(taskIdentifier)) {
-          handleSetSubtasksOpen(false);
-          handleAddTask(taskIdentifier);
-        } else {
-          setAreSubtasksOpen(!collapse.get(taskIdentifier));
-        }
-      } else {
-        handleSetSubtasksOpen(false);
-      }
-    }, [viewType]);
+    // useEffect(() => {
+    //   // if (isFullView) handleSetSubtasksOpen(true);
+    //   // else setAreSubtasksOpen(false);
+    //   if (viewType === 'FULL_VIEW') {
+    //     if (!tasks.includes(taskIdentifier)) {
+    //       handleSetSubtasksOpen(true);
+    //       handleAddTask(taskIdentifier);
+    //     } else {
+    //       setAreSubtasksOpen(!collapse.get(taskIdentifier));
+    //     }
+    //   } else if (viewType === 'SLIM_VIEW') {
+    //     if (!tasks.includes(taskIdentifier)) {
+    //       handleSetSubtasksOpen(false);
+    //       handleAddTask(taskIdentifier);
+    //     } else {
+    //       setAreSubtasksOpen(!collapse.get(taskIdentifier));
+    //     }
+    //   } else {
+    //     handleSetSubtasksOpen(false);
+    //   }
+    // }, [
+    //   collapse,
+    //   handleAddTask,
+    //   handleSetSubtasksOpen,
+    //   taskIdentifier,
+    //   tasks,
+    //   viewType,
+    // ]);
 
     useEffect(() => {
       if (!areSubtasksOpen && subtaskQuickAddOpen && !subtasksDisabled) {
