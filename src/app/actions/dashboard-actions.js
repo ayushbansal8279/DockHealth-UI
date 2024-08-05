@@ -43,6 +43,15 @@ export function getDashboardTasks(sortBy, sortDirection) {
   };
 }
 
+export function getDashboardGroupTasks(dashboardGroups, sortBy, sortDirection) {
+  return {
+    type: ActionTypes.GET_DASHBOARD_GROUPS_SUCCESS,
+    tasksList: dashboardGroups,
+    sortBy,
+    sortDirection,
+  };
+}
+
 export function getDashboardFilters() {
   return {
     type: ActionTypes.GET_DASHBOARD_FILTERS,

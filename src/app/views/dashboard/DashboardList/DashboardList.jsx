@@ -25,6 +25,7 @@ import NoSearchResultsView from 'components/tasklist/EmptyListView/NoSearchResul
 import EmptyListView from 'components/tasklist/EmptyListView/EmptyListView';
 import {
   getDashboardFilters,
+  getDashboardGroups,
   getDashboardTasks,
   getDashboardTasksForGroup,
   reorderDashboardTaskGroups,
@@ -151,7 +152,14 @@ const DashboardList = ({
       });
       dashboardTasks?.forEach((item) => {
         if (!areFiltersApplied) {
-          dispatch(getDashboardTasksForGroup(item?.groupType, key, order));
+          dispatch(
+            getDashboardTasksForGroup(
+              item?.groupType,
+              item?.taskGroupIdentifier,
+              key,
+              order,
+            ),
+          );
         } else {
           dispatch(getDashboardTasks(key, order));
         }
