@@ -87,7 +87,7 @@ const CustomField = ({
         }
       }
     },
-    [onBlur, wasChanged],
+    [fieldType, onBlur, wasChanged],
   );
 
   const fieldName = `${fieldsGroupKey}.${identifier}`;
@@ -202,6 +202,7 @@ const CustomField = ({
             label={name}
             placeholder="MM/DD/YYYY"
             inputComponent={DateInput}
+            timeEnabled
             popoverZindex={popoverZindex}
             name={fieldName}
             onBlur={handleBlur}

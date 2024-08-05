@@ -6,8 +6,9 @@ import Input from 'components/common/Input/Input';
 import { Box, IconButton, Popover } from '@mui/material';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import CloseIcon from '@mui/icons-material/Close';
-import DatePicker from '../../task/DatePicker/DatePicker';
 import { useBoolean } from 'hooks/useBoolean';
+import DatePicker from '../../task/DatePicker/DatePicker';
+import { DEFAULT_DATE_TIME_FORMAT, getMomenDateFromString } from './helpers';
 
 const CustomDateInput = ({ inputRef, ...otherProps }) => (
   <InputMask
@@ -30,7 +31,17 @@ const CustomDateInput = ({ inputRef, ...otherProps }) => (
 const CustomDateTimeInput = ({ inputRef, ...otherProps }) => (
   <InputMask
     inputRef={inputRef}
-    mask="99/99/9999         99:99"
+    type="text"
+    mask="19/29/8999 19:59 AM"
+    formatChars={{
+      1: '[0-1]',
+      2: '[0-3]',
+      8: '[1-9]',
+      9: '[0-9]',
+      5: '[0-5]',
+      A: '[a,A,p,P]',
+    }}
+    autoComplete="off"
     {...otherProps}
   />
 );
@@ -51,15 +62,14 @@ const DateInput = React.forwardRef(
       clearErrors,
       showCalanderIcon = true,
       popoverZindex,
+      timeEnabled = false,
       ...otherProps
     },
     reference,
     // eslint-disable-next-line sonarjs/cognitive-complexity
   ) => {
-    const DEFAULT_DATE_TIME_FORMAT = 'MM/DD/YYYY/HH/mm';
-    const DATE_TIME_FORMAT = 'YYYY-MM-DDTHH:mm:ss.SSSZ';
     const [open, setOpen, unsetOpen] = useBoolean(false);
-    const [isTime, setTime] = useState(false);
+    const [isTime, setTime] = useState(timeEnabled);
     const innerReference = useRef(null);
     const textFieldReference = reference || innerReference;
     const innerTextInputReference = useRef(null);
@@ -75,16 +85,26 @@ const DateInput = React.forwardRef(
       value && value !== '' && !value.includes('_')
         ? getMomenDateFromString(value)
         : undefined;
-    const dateValue = momentDate?.format(DEFAULT_DATE_FORMAT);
-    const time = momentDate.format('HH/mm');
+    const dateValue =
+      value && value !== '' && !value.includes('_')
+        ? momentDate?.format(DEFAULT_DATE_TIME_FORMAT)
+        : value;
 
     const handleChange = ({ target: { value: date } }) => {
-      onChange({ target: { value: date } });
+      const standardizedDate =
+        date && date !== '' && !date.includes('_')
+          ? moment(date).toISOString()
+          : date;
+      onChange({ target: { value: standardizedDate } });
     };
 
     const handleBlur = ({ target: { value: date } }) => {
       if (typeof onBlur === 'function') {
-        onBlur({ target: { value: date } }, true);
+        const standardizedDate =
+          date && date !== '' && !date.includes('_')
+            ? moment(date).toISOString()
+            : date;
+        onBlur({ target: { value: standardizedDate } }, true);
       }
     };
 
@@ -98,8 +118,9 @@ const DateInput = React.forwardRef(
     };
 
     const handleDatepickerChange = (isoDate) => {
-      const date = moment(isoDate).format(DATE_TIME_FORMAT);
+      const date = moment(isoDate).toISOString();
       handleChange({ target: { value: date } });
+      handleBlur({ target: { value: date } });
       setTimeout(() => {
         textInputReference?.current?.focus();
       }, 0);
@@ -107,30 +128,23 @@ const DateInput = React.forwardRef(
     };
 
     useEffect(() => {
-      if (time !== 'Invalid date' && time !== '00/00') {
-        setTime(true);
-      }
-    }, [momentDate, time]);
-
-    // const value1 = moment(value).format(DATE_TIME_FORMAT);
-    // useEffect(() => {
-    //     if (value?.trim() === '' || value === '__/__/____') {
-    //         clearErrors?.(name);
-    //       } else if (
-    //     (name && dateValue === 'Invalid date') ||
-    //     value.includes('_')
-    //   ) {
-    //       if (typeof setError === 'function')
-    //       setError(name, { type: 'custom', message: 'Invalid date format' });
-    //     } else if (typeof clearErrors === 'function') clearErrors?.(name);
-    //   }, [clearErrors, dateValue, name, setError, value]);
+      if (value?.trim() === '' || value === '__/__/____ __:__ _M') {
+        clearErrors?.(name);
+      } else if (
+        (name && dateValue === 'Invalid date') ||
+        value.includes('_')
+      ) {
+        if (typeof setError === 'function')
+          setError(name, { type: 'custom', message: 'Invalid date format' });
+      } else if (typeof clearErrors === 'function') clearErrors?.(name);
+    }, [clearErrors, dateValue, name, setError, value]);
 
     return (
       <>
         <Input
           ref={textFieldReference}
           inputRef={textInputReference}
-          value={value}
+          value={dateValue}
           onChange={handleChange}
           onBlur={handleBlur}
           readOnly={readOnly}
