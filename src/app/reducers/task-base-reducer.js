@@ -518,10 +518,7 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
 
         return {
           ...task,
-          subtasks: task.subtasks?.map((s) => ({
-            ...s,
-            subtask,
-          })),
+          subtasks: [...(task.subtasks || []), subtask],
           subTasksCount: task?.subTasksCount + 1,
         };
       };
