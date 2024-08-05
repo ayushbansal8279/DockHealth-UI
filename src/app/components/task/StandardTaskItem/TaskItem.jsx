@@ -68,10 +68,7 @@ import { checkIfUserIsOrganizationAdmin } from 'helpers/user-helper';
 import DependencyIcon from 'img/dependency-icon.svg';
 import DependencyListPopover from 'components/common/DependencyListPopover/DependencyListPopover';
 import useBooleanWithTimeout from 'hooks/use-boolean-with-timeout';
-import {
-  ColumnsConfigContext,
-  useTaskListColumnsConfig,
-} from 'context-api/columns-config-context';
+import { useTaskListColumnsConfig } from 'context-api/columns-config-context';
 import TaskItemCustomField from 'components/common/CustomField/TaskItemCustomField';
 import StickyMainTaskItemCell from 'components/task/StickyMainTaskItemCell/StickyMainTaskItemCell';
 import TaskItemCell from 'components/task/TaskItemCell/TaskItemCell';
@@ -300,13 +297,12 @@ const TaskItem = React.memo(
       organizationCustomFieldsSelector,
     );
     const listCustomFields = useSelector(listCustomFieldsSelector);
-    const { allTaskListCustomFields } = useContext(ColumnsConfigContext);
 
     const taskCustomFields = organizationCustomFields
       ? origin === 'LIST'
         ? organizationCustomFields.concat(listCustomFields)
         : organizationCustomFields.concat(
-            allTaskListCustomFields?.filter(
+            listColumns?.filter(
               (taskListCustomfield) =>
                 taskListCustomfield?.taskListIdentifier === taskListIdentifier,
             ),

@@ -75,9 +75,7 @@ function VTask(
 
   const percentage = ((droppableHeaderWidth || 0) / screenWidth) * 100;
   const task = pulledTask;
-  const { taskList, taskGroups, identifier } = task;
-  const [subTasksCount, setsubTasksCount] = useState(task?.subtasks?.length);
-
+  const { taskList, taskGroups, identifier, subTasksCount } = task;
   const [addWorkflowTask, setAddWorkflowTask] = useState(false);
   const taskGroup = !!taskGroups
     ? taskGroups.filter((taskGroup) =>
@@ -87,7 +85,6 @@ function VTask(
 
   useEffect(() => {
     setSubtaskQuickAddOpen(task?.subtaskQuickAddOpen);
-    setsubTasksCount(task?.subtasks?.length);
     workflowIdentifierMap.some(
       (identifier) => identifier === taskGroup[0]?.taskGroupIdentifier,
     )
@@ -147,7 +144,7 @@ function VTask(
             virtualListWorkflowOpen={get(identifier)}
             subtaskQuickAddOpen={subtaskQuickAddOpen}
             addWorkflowTask={addWorkflowTask}
-            subTaskExpanded={!metadata.collapsed && task?.subtasks?.length}
+            subTaskExpanded={!metadata.collapsed && subTasksCount}
             isLastGroupOfList={isLastGroupOfList}
             isNextVirtualTaskItemTypeBundle={isNextVirtualTaskItemTypeBundle}
             $width={percentage > 90 ? `${droppableHeaderWidth + 70}` : '100%'}
@@ -219,7 +216,7 @@ function VTask(
           {isTaskTemplate &&
             isLastChild &&
             addWorkflowTask &&
-            (task?.subtasks?.length === 0 || metadata?.collapsed) && (
+            (subTasksCount === 0 || metadata?.collapsed) && (
               <div
                 style={{
                   width:
