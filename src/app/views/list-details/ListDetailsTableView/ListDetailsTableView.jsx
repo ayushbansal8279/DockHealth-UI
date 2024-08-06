@@ -48,7 +48,7 @@ import {
 import { userProfileSelector } from 'selectors/user-selectors';
 import { selectedFiltersInMegaFilterSelector } from 'selectors/mega-filter-selectors';
 import { useTaskListColumnsConfig } from 'context-api/columns-config-context';
-import { TaskOrigin, TaskStatus } from 'helpers/task-helpers';
+import { TaskOrigin } from 'helpers/task-helpers';
 import * as TaskActions from 'actions/task-actions';
 import * as UserAuthApi from 'api/user-auth-api';
 import { TaskViewContainer } from './styled';
