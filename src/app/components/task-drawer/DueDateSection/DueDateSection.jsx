@@ -27,6 +27,7 @@ import {
   ReminderIconContainer,
 } from './styled';
 import { openModal } from '@/app/modal/actions';
+import { isDueDateValid } from '@/app/helpers/date-validation-helper';
 
 const DueDateSection = ({
   selectedTask,
@@ -71,12 +72,8 @@ const DueDateSection = ({
 
   const handleDueDateSave = useCallback(
     (newDueDate) => {
-      const isDueDateValid =
-        !startDate ||
-        newDueDate === null ||
-        moment(startDate).isSameOrBefore(moment(newDueDate));
-
-      if (isDueDateValid) {
+      const isDateValid = isDueDateValid(startDate, newDueDate);
+      if (isDateValid) {
         handleSave(newDueDate);
       } else {
         dispatch(

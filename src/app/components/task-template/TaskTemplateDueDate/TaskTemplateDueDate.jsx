@@ -9,8 +9,8 @@ import { ReminderType } from 'helpers/task-helpers';
 import { isWorkflowDueDateOverdue } from 'helpers/workflow-helpers';
 import { useDispatch } from 'react-redux';
 import { AddPlaceholder, DueDatesContainer, DueDateWrapper } from './styled';
-import moment from 'moment';
 import { openModal } from '@/app/modal/actions';
+import { isDueDateValid } from '@/app/helpers/date-validation-helper';
 
 const TaskTemplateDueDate = (props) => {
   const { workflow, disabled = false } = props;
@@ -31,12 +31,8 @@ const TaskTemplateDueDate = (props) => {
 
   const handleDueDateChange = useCallback(
     (newDueDate) => {
-      const isDueDateValid =
-        !startDateTime ||
-        newDueDate === null ||
-        moment(startDateTime).isSameOrBefore(moment(newDueDate));
-
-      if (isDueDateValid) {
+      const isDateValid = isDueDateValid(startDateTime, newDueDate);
+      if (isDateValid) {
         handleSave(newDueDate);
       } else {
         dispatch(

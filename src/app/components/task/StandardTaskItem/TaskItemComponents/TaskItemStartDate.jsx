@@ -13,8 +13,8 @@ import {
   StartDateContainer,
   StartDateWrapper,
 } from '../../styled';
-import moment from 'moment';
 import { openModal } from '@/app/modal/actions';
+import { isStartDateValid } from '@/app/helpers/date-validation-helper';
 
 const TaskItemStartDate = ({ task, disabled = false }) => {
   const dispatch = useDispatch();
@@ -36,12 +36,8 @@ const TaskItemStartDate = ({ task, disabled = false }) => {
 
   const handleDueDateChange = useCallback(
     (newStartDate) => {
-      const isStartDateValid =
-        !dueDate ||
-        newStartDate === null ||
-        moment(dueDate).isSameOrAfter(moment(newStartDate));
-
-      if (isStartDateValid) {
+      const isDateValid = isStartDateValid(dueDate, newStartDate);
+      if (isDateValid) {
         handleSave(newStartDate);
       } else {
         dispatch(

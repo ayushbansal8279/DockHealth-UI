@@ -20,6 +20,7 @@ import {
 } from './styled';
 import AssignMemberIcon from '../../user/AssignMemberIcon/AssingMemberIcon';
 import { openModal } from '@/app/modal/actions';
+import { isDueDateValid } from '@/app/helpers/date-validation-helper';
 
 const DueDateSection = ({ disabled }) => {
   const dispatch = useDispatch();
@@ -59,12 +60,8 @@ const DueDateSection = ({ disabled }) => {
 
   const handleDueDateSave = useCallback(
     (newDueDate) => {
-      const isDueDateValid =
-        !startDateTime ||
-        newDueDate === null ||
-        moment(startDateTime).isSameOrBefore(moment(newDueDate));
-
-      if (isDueDateValid) {
+      const isDateValid = isDueDateValid(startDateTime, newDueDate);
+      if (isDateValid) {
         handleSave(newDueDate);
       } else {
         dispatch(
