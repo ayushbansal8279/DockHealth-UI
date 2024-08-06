@@ -133,14 +133,8 @@ function* getTasksGroupsList() {
     if (!taskListIdentifier) {
       return;
     }
-    // const status = yield select(currentTaskListTasksStatusSelector);
-    let status = TaskStatus.INCOMPLETE;
-    const savedStatus = localStorageHelper.getItem(
-      `status${taskListIdentifier}`,
-    );
-    if (savedStatus !== null) {
-      status = savedStatus;
-    }
+    const status = yield select(currentTaskListTasksStatusSelector) ||
+      TaskStatus.INCOMPLETE;
     const groups = yield call(getGroupsByListId, taskListIdentifier, status);
     yield put({
       type: ActionTypes.GET_TASKS_GROUPS_LIST_SUCCESS,
@@ -158,11 +152,8 @@ function* getCurrentListTasks() {
     const selectedFilters = yield select(selectedFiltersInMegaFilterSelector);
     const sort = yield select(taskDetailsSortSelector);
     const searchTerm = yield select(searchTermSelector);
-    let status = TaskStatus.INCOMPLETE;
-    let savedStatus = localStorageHelper.getItem(`status${taskListIdentifier}`);
-    if (savedStatus !== null) {
-      status = savedStatus;
-    }
+    const status = yield select(currentTaskListTasksStatusSelector) ||
+      TaskStatus.INCOMPLETE;
 
     if (searchTerm) {
       const groupedTasks = yield call(
@@ -225,14 +216,8 @@ function* getCurrentListTasks() {
 function* getCurrentTaskListFilterOptions() {
   try {
     const taskListIdentifier = yield select(currentTaskListIdentifierSelector);
-    // const status = yield select(currentTaskListTasksStatusSelector);
-    let status = TaskStatus.INCOMPLETE;
-    const savedStatus = localStorageHelper.getItem(
-      `status${taskListIdentifier}`,
-    );
-    if (savedStatus !== null) {
-      status = savedStatus;
-    }
+    const status = yield select(currentTaskListTasksStatusSelector) ||
+      TaskStatus.INCOMPLETE;
 
     const currentFilters = yield select(selectedFiltersInMegaFilterSelector);
 
@@ -477,14 +462,8 @@ function* initializeListDetailsTableState() {
   try {
     const { taskIdentifier } = yield select(locationParametersSelector);
     const taskListIdentifier = yield select(currentTaskListIdentifierSelector);
-    // const status = yield select(currentTaskListTasksStatusSelector);
-    let status = TaskStatus.INCOMPLETE;
-    const savedStatus = localStorageHelper.getItem(
-      `status${taskListIdentifier}`,
-    );
-    if (savedStatus !== null) {
-      status = savedStatus;
-    }
+    const status = yield select(currentTaskListTasksStatusSelector) ||
+      TaskStatus.INCOMPLETE;
 
     if (taskListIdentifier) {
       let filters = localStorageHelper.getItem(
@@ -547,14 +526,8 @@ function* doCreateTask(payload) {
       autoOpenDrawer,
     } = payload;
     const { taskListIdentifier } = yield select(locationParametersSelector);
-    // const status = yield select(currentTaskListTasksStatusSelector);
-    let status = TaskStatus.INCOMPLETE;
-    const savedStatus = localStorageHelper.getItem(
-      `status${taskListIdentifier}`,
-    );
-    if (savedStatus !== null) {
-      status = savedStatus;
-    }
+    const status = yield select(currentTaskListTasksStatusSelector) ||
+      TaskStatus.INCOMPLETE;
 
     if (taskListIdentifier) {
       const createdTask = yield call(createTaskApi, {
@@ -634,12 +607,8 @@ function* filterListDetailsTasks({ payload }) {
   const { filters, selectedQuickFilter } = payload;
 
   const taskListIdentifier = yield select(currentTaskListIdentifierSelector);
-  // const status = yield select(currentTaskListTasksStatusSelector);
-  let status = TaskStatus.INCOMPLETE;
-  const savedStatus = localStorageHelper.getItem(`status${taskListIdentifier}`);
-  if (savedStatus !== null) {
-    status = savedStatus;
-  }
+  const status = yield select(currentTaskListTasksStatusSelector) ||
+    TaskStatus.INCOMPLETE;
 
   yield put(
     MegaFilterActions.selectFiltersForMegaFilter(
@@ -819,14 +788,8 @@ function* reorderTaskListGroups({ newIndex, oldIndex }) {
 function* getListCalendarTasks() {
   try {
     const taskListIdentifier = yield select(currentTaskListIdentifierSelector);
-    // const status = yield select(currentTaskListTasksStatusSelector);
-    let status = TaskStatus.INCOMPLETE;
-    const savedStatus = localStorageHelper.getItem(
-      `status${taskListIdentifier}`,
-    );
-    if (savedStatus !== null) {
-      status = savedStatus;
-    }
+    const status = yield select(currentTaskListTasksStatusSelector) ||
+      TaskStatus.INCOMPLETE;
     const { startDate, endDate } = yield select(calendarDateRangeSelector);
     const tasks = yield call(
       ListDetailsApi.getTasksForListByDateRange,
