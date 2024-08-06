@@ -34,10 +34,12 @@ const TaskTemplateStartDate = (props) => {
 
   const handleStartDateChange = useCallback(
     (newStartDate) => {
-      const isStartDateValid = moment(dueDateTime).isSameOrAfter(
-        moment(newStartDate),
-      );
-      if (isStartDateValid || newStartDate === null || !dueDateTime) {
+      const isStartDateValid =
+        !dueDateTime ||
+        newStartDate === null ||
+        moment(dueDateTime).isSameOrAfter(moment(newStartDate));
+
+      if (isStartDateValid) {
         handleSave(newStartDate);
       } else {
         dispatch(

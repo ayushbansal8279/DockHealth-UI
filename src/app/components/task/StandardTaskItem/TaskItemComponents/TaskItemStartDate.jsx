@@ -36,10 +36,12 @@ const TaskItemStartDate = ({ task, disabled = false }) => {
 
   const handleDueDateChange = useCallback(
     (newStartDate) => {
-      const isStartDateValid = moment(dueDate).isSameOrAfter(
-        moment(newStartDate),
-      );
-      if (isStartDateValid || newStartDate === null || !dueDate) {
+      const isStartDateValid =
+        !dueDate ||
+        newStartDate === null ||
+        moment(dueDate).isSameOrAfter(moment(newStartDate));
+
+      if (isStartDateValid) {
         handleSave(newStartDate);
       } else {
         dispatch(

@@ -71,10 +71,12 @@ const DueDateSection = ({
 
   const handleDueDateSave = useCallback(
     (newDueDate) => {
-      const isDueDateValid = moment(startDate).isSameOrBefore(
-        moment(newDueDate),
-      );
-      if (isDueDateValid || newDueDate === null || !startDate) {
+      const isDueDateValid =
+        !startDate ||
+        newDueDate === null ||
+        moment(startDate).isSameOrBefore(moment(newDueDate));
+
+      if (isDueDateValid) {
         handleSave(newDueDate);
       } else {
         dispatch(
