@@ -110,7 +110,7 @@ const ListDetailsTableView = () => {
       const status = localStorageHelper.getItem(
         getTaskListStatusStorageKey(currentTaskListIdentifier),
       );
-      dispatch(updateTaskStatusToFilter(status || TaskStatus.INCOMPLETE));
+      dispatch(updateTaskStatusToFilter(status));
       dispatch(ListDetailsActions.initializeListDetailsTableState());
     }
   }, [dispatch, currentTaskListIdentifier, currentStatus]);
