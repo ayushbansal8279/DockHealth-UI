@@ -16,6 +16,7 @@ import RotatableChevron from '@/app/components/common/RotatableChevron/Rotatable
 import palette from '@/app/styles/palette';
 import TaskStatusSelectForm from './TaskStatusSelectForm';
 import localStorageHelper from '@/app/helpers/local-storage-helper';
+import { getTaskListStatusStorageKey } from '@/app/helpers/tasklist-helpers';
 
 interface Props {
   value: string;
@@ -35,7 +36,9 @@ export default function TaskStatusToolbarSelect({
   const [isOpen, setIsOpen] = useState(false);
   const [status, setStatus] = useState(TaskStatus.INCOMPLETE);
   const storageKey =
-    origin === TaskOrigin.PATIENT ? 'patientStatus' : `status${taskListIdentifier}`;
+    origin === TaskOrigin.PATIENT
+      ? 'patientStatus'
+      : getTaskListStatusStorageKey(taskListIdentifier);
 
   useEffect(() => {
     const savedStatus = localStorageHelper.getItem(storageKey);
@@ -59,11 +62,7 @@ export default function TaskStatusToolbarSelect({
   const handleSubmit = (status: string) => {
     setStatus(status);
 
-    if (status !== TaskStatus.INCOMPLETE) {
-      localStorageHelper.setItem(storageKey, status);
-    } else {
-      localStorageHelper.removeItem(storageKey);
-    }
+    localStorageHelper.setItem(storageKey, status);
     onChange(status);
     handleClose();
   };
