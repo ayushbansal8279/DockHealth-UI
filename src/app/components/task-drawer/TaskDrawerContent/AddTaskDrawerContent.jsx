@@ -39,6 +39,8 @@ import ListSelectorSection from '../ListSelectorSection/ListSelectorSection';
 import palette from '@/app/styles/palette';
 import { getGroupsForTaskList } from '@/app/api/task-group-list-api';
 import GroupSelectorSection from '../ListSelectorSection/GroupSelectorSection';
+import { getDashboardTasks } from '@/app/actions/dashboard-actions';
+import { showGlobalErrorAlert } from '@/app/alert/actions';
 
 const AddTaskDrawerContent = (props) => {
   const {
@@ -138,7 +140,7 @@ const AddTaskDrawerContent = (props) => {
     setTaskGroupIdentifier(groupIdentifier);
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     setClicked(true);
     if (description && slectedListIdentifier) {
       const data = {
@@ -157,9 +159,14 @@ const AddTaskDrawerContent = (props) => {
       const filteredData = Object.entries(data)
         .filter(([_, value]) => value !== null && value !== '')
         .reduce((obj, [key, value]) => ({ ...obj, [key]: value }), {});
-
-      dispatch(TaskActions.saveTask(filteredData));
-      closeTaskDrawer();
+      try {
+        await dispatch(TaskActions.saveTask(filteredData));
+        closeTaskDrawer();
+        dispatch(getDashboardTasks());
+      } catch (error) {
+        dispatch(showGlobalErrorAlert());
+        dispatch(getDashboardTasks());
+      }
     }
   };
 
