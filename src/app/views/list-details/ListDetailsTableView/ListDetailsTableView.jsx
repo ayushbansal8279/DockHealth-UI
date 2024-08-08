@@ -6,7 +6,10 @@ import React, {
   useMemo,
   useRef,
 } from 'react';
-import { TaskListTabName } from 'helpers/tasklist-helpers';
+import {
+  getTaskListStatusStorageKey,
+  TaskListTabName,
+} from 'helpers/tasklist-helpers';
 import * as ListDetailsActions from 'actions/list-details-actions';
 import TaskDrawer from 'components/task-drawer/TaskDrawer/TaskDrawer';
 import BulkEditSection from 'components/tasklist/BulkEditSection/BulkEditSection';
@@ -20,7 +23,10 @@ import { initializePusher } from 'helpers/pusher-instance';
 import useActions from 'hooks/use-actions';
 import usePrevious from 'hooks/use-previous';
 import localStorageHelper from 'helpers/local-storage-helper';
-import { updateUserListViewSetup } from 'actions/task-list-actions';
+import {
+  updateTaskStatusToFilter,
+  updateUserListViewSetup,
+} from 'actions/task-list-actions';
 import { checkIfTaskMatchesFilters } from 'helpers/filters-helpers';
 import {
   completedTasksIsFetchingSelector,
@@ -100,8 +106,13 @@ const ListDetailsTableView = () => {
   const { taskListIdentifier, tabName } = params;
 
   useEffect(() => {
-    if (currentTaskListIdentifier)
+    if (currentTaskListIdentifier) {
+      const status = localStorageHelper.getItem(
+        getTaskListStatusStorageKey(currentTaskListIdentifier),
+      );
+      dispatch(updateTaskStatusToFilter(status));
       dispatch(ListDetailsActions.initializeListDetailsTableState());
+    }
   }, [dispatch, currentTaskListIdentifier, currentStatus]);
 
   useEffect(() => {
