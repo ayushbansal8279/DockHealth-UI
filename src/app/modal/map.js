@@ -82,6 +82,7 @@ import DeleteArchivePatientModal from './components/DeleteArchivePatientModal/De
 import DeleteOrganizationModal from './components/DeleteOrganizationModal';
 import PatientCustomFieldsBulkEditModal from './components/PatientCustomFieldsBulkEditModal';
 import TaskListCustomFieldsBulkEditModal from './components/TaskListCustomFieldsBulkEditModal';
+import DateWarningModal from './components/DateWarningModal/DateWarningModal';
 
 const MODAL_MAP = {
   CompleteAllTasks: CompleteAllTasksModal,
@@ -168,6 +169,7 @@ const MODAL_MAP = {
   AnchorDateChangeConfirmation: AnchorDateChangeConfirmationModal,
   EditPatient: EditPatientModal,
   InviteUsersToChannel: InviteUsersToChannelModal,
+  DateWarning: DateWarningModal,
 };
 
 export default MODAL_MAP;
