@@ -74,6 +74,11 @@ export const isFetchingDashboardFiltersSelector = createSelector(
   ({ isFetchingFilters }) => isFetchingFilters,
 );
 
+export const dashboardSortTasksSelector = createSelector(
+  dashboardTasksStateSelector,
+  ({ sort }) => sort,
+);
+
 export const selectedTasksSelector = (state) =>
   state?.taskItems?.selectedTaskIdentifiers
     .filter((taskId) => state?.dashboardTasks?.tasksMap[taskId] !== undefined)

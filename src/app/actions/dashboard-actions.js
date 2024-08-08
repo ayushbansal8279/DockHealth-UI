@@ -35,11 +35,17 @@ export function getDashboardTasksForGroup(
   };
 }
 
-export function getDashboardTasks(sortBy, sortDirection) {
+export function getDashboardTasks() {
   return {
     type: ActionTypes.GET_DASHBOARD_TASKS,
-    sortBy,
-    sortDirection,
+  };
+}
+
+export function updateSortDashboardTasks(key, order) {
+  return {
+    type: ActionTypes.SORT_DASHBOARD_TASKS,
+    key: order ? key : null,
+    order,
   };
 }
 

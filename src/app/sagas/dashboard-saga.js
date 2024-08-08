@@ -31,6 +31,7 @@ import {
   dashboardGroupTasksCountSelector,
   dashboardTabNameSelector,
   dashboardTaskViewFilterSelector,
+  dashboardSortTasksSelector,
 } from 'selectors/dashboard-selectors';
 import * as MegaFilterActions from 'actions/mega-filter-actions';
 import { showGlobalErrorAlert } from 'alert/actions';
@@ -266,18 +267,12 @@ function* searchDashboardTasks({ searchTerm }) {
   }
 }
 
-function* getDashboardTasks(payload) {
+function* getDashboardTasks() {
   try {
     const groups = yield select(dashboardTasksSelector);
-
+    const { key, order } = yield select(dashboardSortTasksSelector);
     yield all([
-      put(
-        DashboardActions.getDashboardGroupTasks(
-          groups,
-          payload?.sortBy,
-          payload?.sortDirection,
-        ),
-      ),
+      put(DashboardActions.getDashboardGroupTasks(groups, key, order)),
     ]);
   } catch (error) {
     log(error);

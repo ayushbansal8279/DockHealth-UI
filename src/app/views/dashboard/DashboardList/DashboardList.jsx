@@ -29,6 +29,7 @@ import {
   getDashboardTasks,
   getDashboardTasksForGroup,
   reorderDashboardTaskGroups,
+  updateSortDashboardTasks,
 } from 'actions/dashboard-actions';
 import { TaskOrigin } from 'helpers/task-helpers';
 import * as TaskActions from 'actions/task-actions';
@@ -150,6 +151,7 @@ const DashboardList = ({
         key: order ? key : null,
         order,
       });
+      dispatch(updateSortDashboardTasks(key, order));
       dashboardTasks?.forEach((item) => {
         if (!areFiltersApplied) {
           dispatch(
@@ -161,7 +163,7 @@ const DashboardList = ({
             ),
           );
         } else {
-          dispatch(getDashboardTasks(key, order));
+          dispatch(getDashboardTasks());
         }
       });
     },

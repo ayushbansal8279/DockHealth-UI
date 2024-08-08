@@ -18,6 +18,10 @@ const initialState = {
   isFetchingFilters: false,
   filterOptionsError: false,
   taskViewFilter: null,
+  sort: {
+    key: null,
+    order: null,
+  },
 };
 
 const addTask = (list, taskToAdd) => {
@@ -328,6 +332,18 @@ const DashboardTasksReducer = (state = initialState, action) => {
         tasksMap: {
           ...state.tasksMap,
           ...newMap,
+        },
+      };
+    }
+
+    case ActionTypes.SORT_DASHBOARD_TASKS: {
+      const { key, order } = action;
+
+      return {
+        ...state,
+        sort: {
+          key,
+          order,
         },
       };
     }
