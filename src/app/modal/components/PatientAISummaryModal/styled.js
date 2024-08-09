@@ -4,6 +4,7 @@ import { fontSizes, fontWeights } from 'styles/font';
 import palette from 'styles/palette';
 import { ModalWrapper } from '../styled';
 import { Button } from '@mui/material';
+import Skeleton from '@mui/material/Skeleton';
 
 export const PatientAISummaryModalWrapper = styled(ModalWrapper)`
   width: 600px;
@@ -44,7 +45,7 @@ export const GeneratedTime = styled.div`
 `;
 export const PatientInfo = styled.div`
   color: ${palette.gunmetal};
-  font-size: 14px;
+  font-size: 15px;
   font-style: normal;
   font-weight: ${fontWeights.light};
   line-height: normal;
@@ -79,4 +80,13 @@ export const RefreshWrapper = styled.div`
   padding-left: 10px;
   display: flex;
   align-items: center;
+`;
+
+export const AISummaryLoaderSkeleton = styled(Skeleton)`
+  &&& {
+    &.MuiSkeleton-root {
+      height: 15px;
+      border-radius: 4px;
+    }
+  }
 `;
