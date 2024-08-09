@@ -12,11 +12,13 @@ import {
   RegenerateWrapper,
   ResponseButton,
   RefreshWrapper,
+  AISummaryLoaderSkeleton,
 } from './styled';
 import LuminaStar from 'img/AI/LuminaStar';
 import palette from '@/app/styles/palette';
 import Copy from 'img/AI/Copy.svg';
 import Close from 'img/AI/XClose.svg';
+import { getPatientAISummary } from '@/app/api/ai-summary-api';
 
 const PatientAISummaryModal = ({ closeModal, patient }) => {
   useEffect(() => {
@@ -26,17 +28,52 @@ const PatientAISummaryModal = ({ closeModal, patient }) => {
   }, [closeModal, patient]);
 
   const [value, setValue] = useState('');
+  const [summaries, setSummaries] = useState([]);
+  const [isFetching, setIsFetching] = useState(false);
 
   const handleCopy = () => {
-    navigator.clipboard.writeText('Aditya Chaurasia');
+    const formattedString = summary.join('\n\n');
+    navigator.clipboard.writeText(formattedString);
   };
 
   const handlePromptChange = (event) => {
     setValue(event?.target.value);
   };
 
-  const handleRegenrate = () => {
-    console.log(value);
+  const handleGenerateResponse = async () => {
+    setIsFetching(true);
+    const response = await getPatientAISummary('PATIENT', patient?.patientIdentifier);
+    setIsFetching(false);
+
+    const splitArray = response.split('-');
+
+    const formattedArray = splitArray
+      .filter((item) => item.trim() !== '')
+      .map((item) => item.trim().replace(':', ':\n'));
+
+    formattedArray ? setSummaries(formattedArray) : null;
+  };
+
+  const AISummaryLoader = () => {
+    return new Array(5).fill().map((_, index) => (
+      <>
+        <AISummaryLoaderSkeleton key={index} />
+        <Spacing vertical={2} />
+      </>
+    ));
+  };
+
+  const textFieldSX = {
+    backgroundColor: palette.white,
+    '& .MuiOutlinedInput-root': {
+      '& .MuiOutlinedInput-notchedOutline': {
+        borderWidth: '1px',
+      },
+      '&.Mui-focused fieldset': {
+        borderColor: palette.gunmetal,
+      },
+    },
+    width: '300px',
   };
 
   return (
@@ -62,54 +99,28 @@ const PatientAISummaryModal = ({ closeModal, patient }) => {
               value={value}
               placeholder="Custom Prompt"
               size="small"
-              sx={{
-                backgroundColor: palette.white,
-                '& .MuiOutlinedInput-root': {
-                  '& .MuiOutlinedInput-notchedOutline': {
-                    borderWidth: '1px',
-                  },
-                  '&.Mui-focused fieldset': {
-                    borderColor: palette.gunmetal,
-                  },
-                },
-                width: '300px',
-              }}
+              sx={textFieldSX}
               onChange={handlePromptChange}
               variant="outlined"
             />
           </div>
-          <RefreshWrapper style={{ background: palette.whiteSmoke }}>
+          <RefreshWrapper>
             <LuminaStar color={palette.newBrightBlue} />
-            <ResponseButton onClick={handleRegenrate}>Refresh</ResponseButton>
+            <ResponseButton onClick={handleGenerateResponse}>
+              Refresh
+            </ResponseButton>
           </RefreshWrapper>
         </RegenerateWrapper>
         <Spacing vertical={4} />
+        {isFetching && AISummaryLoader()}
         <PatientInfo>
-          Patient info: <br />
-          34 year old male patient named Bojan Ilioski El with date of birth
-          1989-11-08, patient identifier 6ea1e12d-1a54-40db-ae63-7cd70b6fe4f3,
-          created by Stefan Kochev on 2024-01-15, last updated on 2024-02-02,
-          currently has active status. <br />
-          <Spacing vertical={4} />
-          Notes summary: <br />
-          Notes indicate the patient's appetite is improving after follow-up. A
-          Flomax prescription was sent to the pharmacy for the patient. The
-          patient also reported no longer having nausea in a previous note.
-          <Spacing vertical={4} />
-          Workflows summary: <br />
-          The first workflow involved calling the patient Bojan Ilioski to share
-          lab results. It was conducted by Stefan Kochev on January 16, 2024.
-          The lab results were received and analyzed, then the patient was
-          called to discuss the findings. The call was documented in the
-          patient's chart and follow up reminders were created. <br />
-          <br />
-          The second workflow was for onboarding patient Bojan Ilioski El. It
-          involved contacting the patient, checking their medication and
-          insurance information, submitting refill requests, and recording
-          encounters. It was executed by Stefan Kochev from January 21-22, 2024.
-          Initial contact was unsuccessful so alternative methods were used. A
-          medication coverage issue was identified and resolved. All encounters
-          were recorded in the EMR.
+          {!isFetching &&
+            summaries?.map((summary) => (
+              <>
+                {summary}
+                <Spacing vertical={4} />
+              </>
+            ))}
         </PatientInfo>
       </Grid>
     </PatientAISummaryModalWrapper>
