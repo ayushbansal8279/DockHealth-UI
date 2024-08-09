@@ -32,7 +32,7 @@ const PatientAISummaryModal = ({ closeModal, patient }) => {
   const [isFetching, setIsFetching] = useState(false);
 
   const handleCopy = () => {
-    const formattedString = summary.join('\n\n');
+    const formattedString = summaries.join('\n\n');
     navigator.clipboard.writeText(formattedString);
   };
 
