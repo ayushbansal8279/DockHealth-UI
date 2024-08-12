@@ -222,6 +222,12 @@ const TaskCustomFieldsView = ({ taskListIdentifier, editable = false }) => {
                   <CustomFieldHeaderText>Required</CustomFieldHeaderText>
                 </CustomFieldCell>
                 <CustomFieldCell>
+                  <CustomFieldHeaderText>Readonly</CustomFieldHeaderText>
+                </CustomFieldCell>
+                <CustomFieldCell>
+                  <CustomFieldHeaderText>Hidden</CustomFieldHeaderText>
+                </CustomFieldCell>
+                <CustomFieldCell>
                   <Box width="68px" />
                 </CustomFieldCell>
               </CustomFieldItem>
@@ -266,6 +272,22 @@ const TaskCustomFieldsView = ({ taskListIdentifier, editable = false }) => {
                               <CustomFieldText>
                                 {field.displayOptions &&
                                 field.displayOptions?.includes('TASK_REQUIRED')
+                                  ? 'Yes'
+                                  : ''}
+                              </CustomFieldText>
+                            </CustomFieldCell>
+                            <CustomFieldCell>
+                              <CustomFieldText>
+                                {field.displayOptions &&
+                                field.displayOptions?.includes('READONLY')
+                                  ? 'Yes'
+                                  : ''}
+                              </CustomFieldText>
+                            </CustomFieldCell>
+                            <CustomFieldCell>
+                              <CustomFieldText>
+                                {field.displayOptions &&
+                                field.displayOptions?.includes('HIDDEN')
                                   ? 'Yes'
                                   : ''}
                               </CustomFieldText>

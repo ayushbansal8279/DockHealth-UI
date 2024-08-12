@@ -193,6 +193,12 @@ const UserCustomFieldsView = () => {
                   <CustomFieldHeaderText>Field type</CustomFieldHeaderText>
                 </CustomFieldCell>
                 <CustomFieldCell>
+                  <CustomFieldHeaderText>Readonly</CustomFieldHeaderText>
+                </CustomFieldCell>
+                <CustomFieldCell>
+                  <CustomFieldHeaderText>Hidden</CustomFieldHeaderText>
+                </CustomFieldCell>
+                <CustomFieldCell>
                   <Box width="68px" />
                 </CustomFieldCell>
               </CustomFieldItem>
@@ -224,6 +230,22 @@ const UserCustomFieldsView = () => {
                                       field.relatedProfileType?.name
                                     }`
                                   : FieldTypeLabel[field.fieldType]}
+                              </CustomFieldText>
+                            </CustomFieldCell>
+                            <CustomFieldCell>
+                              <CustomFieldText>
+                                {field.displayOptions &&
+                                field.displayOptions?.includes('READONLY')
+                                  ? 'Yes'
+                                  : ''}
+                              </CustomFieldText>
+                            </CustomFieldCell>
+                            <CustomFieldCell>
+                              <CustomFieldText>
+                                {field.displayOptions &&
+                                field.displayOptions?.includes('HIDDEN')
+                                  ? 'Yes'
+                                  : ''}
                               </CustomFieldText>
                             </CustomFieldCell>
                             <>
