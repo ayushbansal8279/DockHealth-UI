@@ -52,11 +52,10 @@ const AutoCompleteFormSelect = React.forwardRef(
               {...params}
               variant='standard'
               sx={{
-                backgroundColor: '#f5f8fa',
-                marginLeft: '10px',
+                backgroundColor: '#f5f8fa',  
                 borderRadius:'4px',
                 '& .MuiInputLabel-root': {
-                  color: '7d91a2#', // Set the label color
+                  color: '7d91a2#',
                   paddingLeft: '10px',
                   textTransform: 'none',
                 },
