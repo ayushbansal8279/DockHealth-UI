@@ -26,6 +26,7 @@ import palette from '@/app/styles/palette';
 import { useDispatch } from 'react-redux';
 import { openModal } from '@/app/modal/actions';
 import Tooltip from '@/app/components/common/Tooltip/Tooltip';
+import { getPatientAISummary } from '@/app/api/ai-summary-api';
 
 const TaskItemPatient = ({
   highlightedValue,
@@ -173,8 +174,11 @@ const TaskItemPatient = ({
                   onMouseLeave={() => setAiIconHovered(false)}
                   onClick={() =>
                     dispatch(
-                      openModal('PatientAISummary', {
-                        patient: patient,
+                      openModal('AISummary', {
+                        origin: 'Patient',
+                        title: `${patient?.lastName}, ${patient?.firstName}`,
+                        onsubmit: async () =>
+                          await getPatientAISummary(patient?.patientIdentifier),
                       }),
                     )
                   }

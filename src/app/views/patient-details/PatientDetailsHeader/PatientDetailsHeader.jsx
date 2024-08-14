@@ -45,6 +45,7 @@ import {
 import palette from '@/app/styles/palette';
 import { useDispatch } from 'react-redux';
 import { openModal } from '@/app/modal/actions';
+import { getPatientAISummary } from '@/app/api/ai-summary-api';
 
 const { DISABLED } = TASK_LIST_RESTRICTIONS_OPTIONS;
 
@@ -123,27 +124,34 @@ const PatientDetailsHeader = () => {
                 <PatientName>
                   {[`${lastName},`, firstName, middleName].join(' ')}
                 </PatientName>
-                <Tooltip placement="top" title="AI Summary">
-                  <AISummaryImageWrapper
-                    onMouseEnter={() => setAiIconHovered(true)}
-                    onMouseLeave={() => setAiIconHovered(false)}
-                    onClick={() =>
-                      dispatch(
-                        openModal('PatientAISummary', {
-                          patient: patient,
-                        }),
-                      )
-                    }
-                  >
-                    <LuminaStar
-                      color={
-                        isAiIconHovered
-                          ? palette.newBrightBlue
-                          : palette.lightGrayishBlue
+                {true && ( // true will be replaced with Beta Feature Enable
+                  <Tooltip placement="top" title="AI Summary">
+                    <AISummaryImageWrapper
+                      onMouseEnter={() => setAiIconHovered(true)}
+                      onMouseLeave={() => setAiIconHovered(false)}
+                      onClick={() =>
+                        dispatch(
+                          openModal('AISummary', {
+                            origin: 'Patient',
+                            title: `${lastName}, ${firstName}`,
+                            onsubmit: async () =>
+                              await getPatientAISummary(
+                                patient?.patientIdentifier,
+                              ),
+                          }),
+                        )
                       }
-                    />
-                  </AISummaryImageWrapper>
-                </Tooltip>
+                    >
+                      <LuminaStar
+                        color={
+                          isAiIconHovered
+                            ? palette.newBrightBlue
+                            : palette.lightGrayishBlue
+                        }
+                      />
+                    </AISummaryImageWrapper>
+                  </Tooltip>
+                )}
                 <Box mx={1} />
                 {taskListRestrictions?.createTask !== DISABLED && (
                   <ButtonContainer onClick={setIsDrawerOpen}>

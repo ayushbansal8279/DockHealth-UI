@@ -18,6 +18,7 @@ import { openModal } from '@/app/modal/actions';
 import { useDispatch } from 'react-redux';
 import palette from '@/app/styles/palette';
 import Tooltip from '../../common/Tooltip/Tooltip';
+import { getPatientAISummary } from '@/app/api/ai-summary-api';
 
 const TaskTemplatePatient = ({
   highlightedValue,
@@ -106,27 +107,32 @@ const TaskTemplatePatient = ({
           patientIdentifier={patient.patientIdentifier}
         >
           <PatientLableContainer>
-            <Tooltip placement="top" title="AI Summary">
-              <PatientImageWrapper
-                onMouseEnter={() => setAiIconHovered(true)}
-                onMouseLeave={() => setAiIconHovered(false)}
-                onClick={() =>
-                  dispatch(
-                    openModal('PatientAISummary', {
-                      patient: patient,
-                    }),
-                  )
-                }
-              >
-                <LuminaStar
-                  color={
-                    isAiIconHovered
-                      ? palette.newBrightBlue
-                      : palette.lightGrayishBlue
+            {true && ( // true will be replaced with Beta Feature Enable
+              <Tooltip placement="top" title="AI Summary">
+                <PatientImageWrapper
+                  onMouseEnter={() => setAiIconHovered(true)}
+                  onMouseLeave={() => setAiIconHovered(false)}
+                  onClick={() =>
+                    dispatch(
+                      openModal('AISummary', {
+                        origin: 'Patient',
+                        title: `${patient?.lastName}, ${patient?.firstName}`,
+                        onsubmit: async () =>
+                          await getPatientAISummary(patient?.patientIdentifier),
+                      }),
+                    )
                   }
-                />
-              </PatientImageWrapper>
-            </Tooltip>
+                >
+                  <LuminaStar
+                    color={
+                      isAiIconHovered
+                        ? palette.newBrightBlue
+                        : palette.lightGrayishBlue
+                    }
+                  />
+                </PatientImageWrapper>
+              </Tooltip>
+            )}
             <Link to={`/core/patient/${patient.patientIdentifier}`}>
               <PatientLabel>
                 {(matchPatient || matchPatientMRN) && highlightedValue ? (

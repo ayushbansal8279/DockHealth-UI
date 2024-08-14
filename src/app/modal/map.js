@@ -82,7 +82,7 @@ import DeleteArchivePatientModal from './components/DeleteArchivePatientModal/De
 import DeleteOrganizationModal from './components/DeleteOrganizationModal';
 import PatientCustomFieldsBulkEditModal from './components/PatientCustomFieldsBulkEditModal';
 import TaskListCustomFieldsBulkEditModal from './components/TaskListCustomFieldsBulkEditModal';
-import PatientAISummaryModal from './components/PatientAISummaryModal/PatientAISummaryModal';
+import AISummaryModal from './components/AISummaryModal/AISummaryModal';
 
 const MODAL_MAP = {
   CompleteAllTasks: CompleteAllTasksModal,
@@ -169,7 +169,7 @@ const MODAL_MAP = {
   AnchorDateChangeConfirmation: AnchorDateChangeConfirmationModal,
   EditPatient: EditPatientModal,
   InviteUsersToChannel: InviteUsersToChannelModal,
-  PatientAISummary:PatientAISummaryModal
+  AISummary:AISummaryModal
 };
 
 export default MODAL_MAP;
