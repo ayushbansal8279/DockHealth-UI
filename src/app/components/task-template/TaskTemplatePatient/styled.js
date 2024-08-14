@@ -50,7 +50,7 @@ export const PatientLableContainer = styled.div`
   items-align: center;
 `;
 
-export const PatientImageWrapper = styled.div`
+export const AISummaryWrapper = styled.div`
   margin: 0 15px 0 2px;
 `;
 

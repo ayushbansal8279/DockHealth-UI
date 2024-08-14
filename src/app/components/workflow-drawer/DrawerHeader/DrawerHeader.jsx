@@ -17,15 +17,11 @@ import {
   HeaderContainer,
   HeaderText,
   StyledIconButton,
-  AISummaryImageWrapper,
+  AISummaryWrapper,
 } from './styled';
-import { openModal } from '@/app/modal/actions';
-import LuminaStar from '@/app/img/AI/LuminaStar';
-import { getWorkflowAISummary } from '@/app/api/ai-summary-api';
-import Tooltip from '../../common/Tooltip/Tooltip';
+import AISummaryModalOpenerHelper from '@/app/modal/components/AISummaryModal/AISummaryModalOpenerHelper';
 
 const DrawerHeader = () => {
-  const [isAiIconHovered, setAiIconHovered] = useState(false);
   const dispatch = useDispatch();
   const workflow = useSelector(workflowSelector);
   const { identifier, name } = workflow || {};
@@ -111,31 +107,14 @@ const DrawerHeader = () => {
       <HeaderText>Workflow</HeaderText>
       <Box display="flex">
         <Box>
-          {true && ( // true will be replaced with Beta Feature Enable
-            <Tooltip placement="bottom" title={'AI Summary'}>
-              <AISummaryImageWrapper
-                onMouseEnter={() => setAiIconHovered(true)}
-                onMouseLeave={() => setAiIconHovered(false)}
-                onClick={() =>
-                  dispatch(
-                    openModal('AISummary', {
-                      origin: 'Workflow',
-                      title: name,
-                      onsubmit: async () =>
-                        await getWorkflowAISummary(identifier),
-                    }),
-                  )
-                }
-              >
-                <LuminaStar
-                  color={
-                    isAiIconHovered
-                      ? palette.newBrightBlue
-                      : palette.lightGrayishBlue
-                  }
-                />
-              </AISummaryImageWrapper>
-            </Tooltip>
+          {true && ( // true will be replaced with Beta Feature
+            <AISummaryWrapper>
+              <AISummaryModalOpenerHelper
+                type={'Workflow'}
+                title={`${name}`}
+                identifier={identifier}
+              />
+            </AISummaryWrapper>
           )}
         </Box>
         <OptionsMenu

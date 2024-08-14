@@ -19,7 +19,7 @@ import palette from '@/app/styles/palette';
 import Copy from 'img/AI/Copy.svg';
 import Close from 'img/AI/XClose.svg';
 
-const AISummaryModal = ({ closeModal, title, onsubmit, origin }) => {
+const AISummaryModal = ({ closeModal, title, onsubmit, type }) => {
   useEffect(() => {
     if (!title) {
       closeModal();
@@ -44,7 +44,8 @@ const AISummaryModal = ({ closeModal, title, onsubmit, origin }) => {
     const response = await onsubmit();
     setIsFetching(false);
 
-    const splitArray = response.split(origin === 'Patient' ? '-' : /(?<!Dr)\./);
+    const splitArray = response.split(type === 'Patient' ? '-' : /(?<!Dr)\./);
+
     const formattedArray = splitArray
       .filter((item) => item.trim() !== '')
       .map((item) => item.trim().replace(':', ':\n'));

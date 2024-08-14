@@ -30,14 +30,10 @@ import {
   InstructionText,
   PatientName,
   PatientLableContainer,
-  AISummaryImageWrapper,
+  AISummaryWrapper,
 } from './styled';
 import PatientSelectItem from '../../patients/PatientSelectItem/PatientSelectItem';
-import LuminaStar from '@/app/img/AI/LuminaStar';
-import palette from '@/app/styles/palette';
-import Tooltip from '../../common/Tooltip/Tooltip';
-import { openModal } from '@/app/modal/actions';
-import { getPatientAISummary } from '@/app/api/ai-summary-api';
+import AISummaryModalOpenerHelper from '@/app/modal/components/AISummaryModal/AISummaryModalOpenerHelper';
 
 const PATIENT_IDENTIFIER_FIELD_NAME = 'patientIdentifier';
 const MAX_PATIENT_RESULTS = 200;
@@ -50,7 +46,6 @@ const PatientSection = ({
   const dispatch = useDispatch();
   const patientInputReference = useRef(null);
   const [patients, setPatients] = useState([]);
-  const [isAiIconHovered, setAiIconHovered] = useState(false);
   const [assignedPatient, setAssignedPatient] = useState(null);
   const [isLoadingPatients, setIsLoadingPatients] = useState(true);
   const currentUser = useSelector(userProfileSelector);
@@ -239,33 +234,14 @@ const PatientSection = ({
               x
             </button>
           </PatientContainer>
-          {true && ( // true will be replaced with Beta Feature Enable
-            <Tooltip placement="top" title="AI Summary">
-              <AISummaryImageWrapper
-                onMouseEnter={() => setAiIconHovered(true)}
-                onMouseLeave={() => setAiIconHovered(false)}
-                onClick={() =>
-                  dispatch(
-                    openModal('AISummary', {
-                      origin: 'Patient',
-                      title: `${selectedPatient?.lastName}, ${selectedPatient?.firstName}`,
-                      onsubmit: async () =>
-                        await getPatientAISummary(
-                          selectedPatient?.patientIdentifier,
-                        ),
-                    }),
-                  )
-                }
-              >
-                <LuminaStar
-                  color={
-                    isAiIconHovered
-                      ? palette.newBrightBlue
-                      : palette.lightGrayishBlue
-                  }
-                />
-              </AISummaryImageWrapper>
-            </Tooltip>
+          {true && ( // true will be replaced with Beta Feature
+            <AISummaryWrapper>
+              <AISummaryModalOpenerHelper
+                type={'Patient'}
+                title={`${selectedPatient?.lastName}, ${selectedPatient?.firstName}`}
+                identifier={selectedPatient?.patientIdentifier}
+              />
+            </AISummaryWrapper>
           )}
         </PatientLableContainer>
       )}

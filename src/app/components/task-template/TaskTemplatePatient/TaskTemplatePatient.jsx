@@ -5,20 +5,15 @@ import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import { capitalize } from 'helpers/capitalize';
 import { Link as RouterLink } from 'react-router-dom';
 import Highlighter from 'react-highlight-words';
-import LuminaStar from 'img/AI/LuminaStar';
 import {
   AddPlaceholder,
   ClickablePatient,
   PatientLabel,
   DisabledLink,
   PatientLableContainer,
-  PatientImageWrapper,
+  AISummaryWrapper,
 } from './styled';
-import { openModal } from '@/app/modal/actions';
-import { useDispatch } from 'react-redux';
-import palette from '@/app/styles/palette';
-import Tooltip from '../../common/Tooltip/Tooltip';
-import { getPatientAISummary } from '@/app/api/ai-summary-api';
+import AISummaryModalOpenerHelper from '@/app/modal/components/AISummaryModal/AISummaryModalOpenerHelper';
 
 const TaskTemplatePatient = ({
   highlightedValue,
@@ -31,11 +26,9 @@ const TaskTemplatePatient = ({
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const [isPopoverOpen, setPopoverOpen] = useState(false);
-  const [isAiIconHovered, setAiIconHovered] = useState(false);
   const matchPatientMRN = workflow?.searchMetaData?.matchPatientMRN;
   const matchPatient = workflow?.searchMetaData?.matchPatient;
   const { patient } = workflow;
-  const dispatch = useDispatch();
 
   const Link = readOnly ? DisabledLink : RouterLink;
 
@@ -107,31 +100,14 @@ const TaskTemplatePatient = ({
           patientIdentifier={patient.patientIdentifier}
         >
           <PatientLableContainer>
-            {true && ( // true will be replaced with Beta Feature Enable
-              <Tooltip placement="top" title="AI Summary">
-                <PatientImageWrapper
-                  onMouseEnter={() => setAiIconHovered(true)}
-                  onMouseLeave={() => setAiIconHovered(false)}
-                  onClick={() =>
-                    dispatch(
-                      openModal('AISummary', {
-                        origin: 'Patient',
-                        title: `${patient?.lastName}, ${patient?.firstName}`,
-                        onsubmit: async () =>
-                          await getPatientAISummary(patient?.patientIdentifier),
-                      }),
-                    )
-                  }
-                >
-                  <LuminaStar
-                    color={
-                      isAiIconHovered
-                        ? palette.newBrightBlue
-                        : palette.lightGrayishBlue
-                    }
-                  />
-                </PatientImageWrapper>
-              </Tooltip>
+            {true && ( // true will be replaced with Beta Feature
+              <AISummaryWrapper>
+                <AISummaryModalOpenerHelper
+                  type={'Patient'}
+                  title={`${patient?.lastName}, ${patient?.firstName}`}
+                  identifier={patient?.patientIdentifier}
+                />
+              </AISummaryWrapper>
             )}
             <Link to={`/core/patient/${patient.patientIdentifier}`}>
               <PatientLabel>

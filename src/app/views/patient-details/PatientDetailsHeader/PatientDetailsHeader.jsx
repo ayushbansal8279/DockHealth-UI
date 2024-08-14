@@ -27,7 +27,6 @@ import {
 } from 'restrictions/task-restrictions';
 import PatientDetailsDrawer from '../PatientDetailsDrawer/PatientDetailsDrawer';
 import PatientDetailsLoader from '../PatientDetailsLoader/PatientDetailsLoader';
-import LuminaStar from 'img/AI/LuminaStar';
 import {
   PatientDetailsContainer,
   PatientName,
@@ -40,12 +39,9 @@ import {
   IconWrapper,
   ContactContainer,
   PatientMRNAnchor,
-  AISummaryImageWrapper,
+  AISummaryWrapper,
 } from './styled';
-import palette from '@/app/styles/palette';
-import { useDispatch } from 'react-redux';
-import { openModal } from '@/app/modal/actions';
-import { getPatientAISummary } from '@/app/api/ai-summary-api';
+import AISummaryModalOpenerHelper from '@/app/modal/components/AISummaryModal/AISummaryModalOpenerHelper';
 
 const { DISABLED } = TASK_LIST_RESTRICTIONS_OPTIONS;
 
@@ -84,8 +80,6 @@ const PatientDetailsHeader = () => {
   const genderIdentityDisabled =
     currentOrganization?.disabledFeatures?.includes('PATIENT_GENDER') || false;
   const embeddedMode = sessionStorage.getItem('EmbeddedMode') || false;
-  const [isAiIconHovered, setAiIconHovered] = useState(false);
-  const dispatch = useDispatch();
 
   const goBack = useCallback(() => {
     if (cameFrom) {
@@ -124,33 +118,14 @@ const PatientDetailsHeader = () => {
                 <PatientName>
                   {[`${lastName},`, firstName, middleName].join(' ')}
                 </PatientName>
-                {true && ( // true will be replaced with Beta Feature Enable
-                  <Tooltip placement="top" title="AI Summary">
-                    <AISummaryImageWrapper
-                      onMouseEnter={() => setAiIconHovered(true)}
-                      onMouseLeave={() => setAiIconHovered(false)}
-                      onClick={() =>
-                        dispatch(
-                          openModal('AISummary', {
-                            origin: 'Patient',
-                            title: `${lastName}, ${firstName}`,
-                            onsubmit: async () =>
-                              await getPatientAISummary(
-                                patient?.patientIdentifier,
-                              ),
-                          }),
-                        )
-                      }
-                    >
-                      <LuminaStar
-                        color={
-                          isAiIconHovered
-                            ? palette.newBrightBlue
-                            : palette.lightGrayishBlue
-                        }
-                      />
-                    </AISummaryImageWrapper>
-                  </Tooltip>
+                {true && ( // true will be replaced with Beta Feature
+                  <AISummaryWrapper>
+                    <AISummaryModalOpenerHelper
+                      type={'Patient'}
+                      title={`${lastName}, ${firstName}`}
+                      identifier={patient?.patientIdentifier}
+                    />
+                  </AISummaryWrapper>
                 )}
                 <Box mx={1} />
                 {taskListRestrictions?.createTask !== DISABLED && (
