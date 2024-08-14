@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import palette from 'styles/palette';
 import { useDispatch, useSelector } from 'react-redux';
 import compose from 'ramda/src/compose';
@@ -13,12 +13,22 @@ import * as WorkflowDrawerActions from 'actions/workflow-drawer-actions';
 import * as TaskTemplateActions from 'actions/task-template-actions';
 import * as TemplateBundleActions from 'actions/template-bundle-actions';
 import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
-import { HeaderContainer, HeaderText, StyledIconButton } from './styled';
+import {
+  HeaderContainer,
+  HeaderText,
+  StyledIconButton,
+  AISummaryImageWrapper,
+} from './styled';
+import { openModal } from '@/app/modal/actions';
+import LuminaStar from '@/app/img/AI/LuminaStar';
+import { getWorkflowAISummary } from '@/app/api/ai-summary-api';
+import Tooltip from '../../common/Tooltip/Tooltip';
 
 const DrawerHeader = () => {
+  const [isAiIconHovered, setAiIconHovered] = useState(false);
   const dispatch = useDispatch();
   const workflow = useSelector(workflowSelector);
-  const { identifier } = workflow || {};
+  const { identifier, name } = workflow || {};
 
   const isTemplateTask = useMemo(
     () => checkIfTemplateWorkflow(workflow),
@@ -100,6 +110,34 @@ const DrawerHeader = () => {
     <HeaderContainer>
       <HeaderText>Workflow</HeaderText>
       <Box display="flex">
+        <Box>
+          {true && ( // true will be replaced with Beta Feature Enable
+            <Tooltip placement="bottom" title={'AI Summary'}>
+              <AISummaryImageWrapper
+                onMouseEnter={() => setAiIconHovered(true)}
+                onMouseLeave={() => setAiIconHovered(false)}
+                onClick={() =>
+                  dispatch(
+                    openModal('AISummary', {
+                      origin: 'Workflow',
+                      title: name,
+                      onsubmit: async () =>
+                        await getWorkflowAISummary(identifier),
+                    }),
+                  )
+                }
+              >
+                <LuminaStar
+                  color={
+                    isAiIconHovered
+                      ? palette.newBrightBlue
+                      : palette.lightGrayishBlue
+                  }
+                />
+              </AISummaryImageWrapper>
+            </Tooltip>
+          )}
+        </Box>
         <OptionsMenu
           customButtonComponent={StyledIconButton}
           options={menuOptions}
