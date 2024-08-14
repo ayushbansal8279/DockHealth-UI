@@ -1,9 +1,29 @@
 import { log } from 'helpers/log';
 import axios from './axios-heydoc';
 
-export function getPatientAISummary(contextType, patientIdentifier) {
+export function getPatientAISummary(patientIdentifier) {
   return axios
-    .get(`aiproxy?contextType=${contextType}&contextId=${patientIdentifier}`)
+    .get(`/aisummary/patient/${patientIdentifier}`)
+    .then((response) => response.data)
+    .catch((error) => {
+      log(error);
+      throw new Error(error?.response?.data?.errorMessage);
+    });
+}
+
+export function getTaskAISummary(taskIdentifier) {
+  return axios
+    .get(`/aisummary/task/${taskIdentifier}`)
+    .then((response) => response.data)
+    .catch((error) => {
+      log(error);
+      throw new Error(error?.response?.data?.errorMessage);
+    });
+}
+
+export function getWorkflowAISummary(workFlowIdentifier) {
+  return axios
+    .get(`/aisummary/workflow/${workFlowIdentifier}`)
     .then((response) => response.data)
     .catch((error) => {
       log(error);
