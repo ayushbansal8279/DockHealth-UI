@@ -1,12 +1,12 @@
 import styled from 'styled-components';
 import spacing from 'styles/spacing';
-import { fontSizes, fontWeights } from 'styles/font';
+import { fontWeights } from 'styles/font';
 import palette from 'styles/palette';
 import { ModalWrapper } from '../styled';
 import { Button } from '@mui/material';
 import Skeleton from '@mui/material/Skeleton';
 
-export const PatientAISummaryModalWrapper = styled(ModalWrapper)`
+export const AISummaryModalWrapper = styled(ModalWrapper)`
   width: 600px;
   border-radius: 10px;
   padding: ${spacing.regularPlus} ${spacing.largePlus} ${spacing.largePlus};
@@ -24,7 +24,7 @@ export const SubHeader = styled.div`
   gap: 10px;
 `;
 
-export const PatientName = styled.div`
+export const Title = styled.div`
   color: ${palette.gunmetal};
   font-size: 21px;
   font-weight: ${fontWeights.bold};
@@ -43,7 +43,7 @@ export const GeneratedTime = styled.div`
   font-weight: ${fontWeights.light};
   line-height: 150%;
 `;
-export const PatientInfo = styled.div`
+export const Info = styled.div`
   color: ${palette.gunmetal};
   font-size: 15px;
   font-style: normal;

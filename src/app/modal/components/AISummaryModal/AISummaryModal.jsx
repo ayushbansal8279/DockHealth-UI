@@ -2,13 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { Grid, TextField } from '@mui/material';
 import Spacing from 'components/common/Spacing';
 import {
-  PatientAISummaryModalWrapper,
+  AISummaryModalWrapper,
   Header,
-  PatientName,
+  Title,
   SubHeader,
   IconWrapper,
   GeneratedTime,
-  PatientInfo,
+  Info,
   RegenerateWrapper,
   ResponseButton,
   RefreshWrapper,
@@ -18,14 +18,13 @@ import LuminaStar from 'img/AI/LuminaStar';
 import palette from '@/app/styles/palette';
 import Copy from 'img/AI/Copy.svg';
 import Close from 'img/AI/XClose.svg';
-import { getPatientAISummary } from '@/app/api/ai-summary-api';
 
-const PatientAISummaryModal = ({ closeModal, patient }) => {
+const AISummaryModal = ({ closeModal, title, onsubmit, origin }) => {
   useEffect(() => {
-    if (!patient) {
+    if (!title) {
       closeModal();
     }
-  }, [closeModal, patient]);
+  }, [closeModal, title]);
 
   const [value, setValue] = useState('');
   const [summaries, setSummaries] = useState([]);
@@ -42,11 +41,10 @@ const PatientAISummaryModal = ({ closeModal, patient }) => {
 
   const handleGenerateResponse = async () => {
     setIsFetching(true);
-    const response = await getPatientAISummary('PATIENT', patient?.patientIdentifier);
+    const response = await onsubmit();
     setIsFetching(false);
 
-    const splitArray = response.split('-');
-
+    const splitArray = response.split(origin === 'Patient' ? '-' : /(?<!Dr)\./);
     const formattedArray = splitArray
       .filter((item) => item.trim() !== '')
       .map((item) => item.trim().replace(':', ':\n'));
@@ -77,13 +75,11 @@ const PatientAISummaryModal = ({ closeModal, patient }) => {
   };
 
   return (
-    <PatientAISummaryModalWrapper>
+    <AISummaryModalWrapper>
       <Header>
         <SubHeader>
           <LuminaStar color={palette.newBrightBlue} />
-          <PatientName>
-            {patient?.lastName}, {patient?.firstName}
-          </PatientName>
+          <Title>{title}</Title>
         </SubHeader>
         <div>
           <IconWrapper onClick={handleCopy} src={Copy} alt="copy" />
@@ -113,7 +109,7 @@ const PatientAISummaryModal = ({ closeModal, patient }) => {
         </RegenerateWrapper>
         <Spacing vertical={4} />
         {isFetching && AISummaryLoader()}
-        <PatientInfo>
+        <Info>
           {!isFetching &&
             summaries?.map((summary) => (
               <>
@@ -121,10 +117,10 @@ const PatientAISummaryModal = ({ closeModal, patient }) => {
                 <Spacing vertical={4} />
               </>
             ))}
-        </PatientInfo>
+        </Info>
       </Grid>
-    </PatientAISummaryModalWrapper>
+    </AISummaryModalWrapper>
   );
 };
 
-export default PatientAISummaryModal;
+export default AISummaryModal;
