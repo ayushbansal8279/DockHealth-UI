@@ -39,6 +39,8 @@ import {
 import initializeTaskDrawerTopSectionHooks from './hooks';
 import moment from 'moment';
 import Tooltip from 'components/common/Tooltip/Tooltip';
+import LuminaStar from '@/app/img/AI/LuminaStar';
+import { getTaskAISummary } from '@/app/api/ai-summary-api';
 
 const { DISABLED } = SINGLE_TASK_RESTRICTIONS_OPTIONS;
 
@@ -72,6 +74,7 @@ const TopSection = ({
   const [isEmailActive, setEmailActive] = useState(false);
   const [isShareActive, setShareActive] = useState(false);
   const [isOptionActive, setOptionActive] = useState(false);
+  const [isAiIconHovered, setAiIconHovered] = useState(false);
 
   const sendEmailAvailable = useSelector(userHasSendEmailFeatureSelector);
   const sendFaxAvailable = useSelector(userHasSendFaxFeatureSelector);
@@ -266,6 +269,32 @@ const TopSection = ({
           )}
         </Box>
         <Box display="flex">
+          {true && ( // true will be replaced with Beta Feature Enable
+            <Tooltip placement="bottom" title={'AI Summary'}>
+              <IconContainer
+                onMouseEnter={() => setAiIconHovered(true)}
+                onMouseLeave={() => setAiIconHovered(false)}
+                onClick={() =>
+                  dispatch(
+                    openModal('AISummary', {
+                      origin: 'Task',
+                      title: selectedTask?.description,
+                      onsubmit: async () =>
+                        await getTaskAISummary(selectedTask?.identifier),
+                    }),
+                  )
+                }
+              >
+                <LuminaStar
+                  color={
+                    isAiIconHovered
+                      ? palette.newBrightBlue
+                      : palette.lightGrayishBlue
+                  }
+                />
+              </IconContainer>
+            </Tooltip>
+          )}
           {handleCopyLink && (
             <Tooltip placement="bottom" title={'Copy Task Link'}>
               <IconContainer
