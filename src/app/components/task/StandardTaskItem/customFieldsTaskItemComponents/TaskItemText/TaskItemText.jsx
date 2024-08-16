@@ -9,6 +9,7 @@ const TaskItemText = ({
   onChange,
   readOnly = false,
   placeholder,
+  disabled = false,
 }) => {
   const [value, setValue] = useState(initialValue);
 
@@ -85,6 +86,7 @@ const TaskItemText = ({
             hiddenLabel
             // characterLimit={characterLimit}
             readOnly={readOnly}
+            disabled = {disabled}
             placeholder={placeholder}
             value={value}
             onChange={handleOnChange}

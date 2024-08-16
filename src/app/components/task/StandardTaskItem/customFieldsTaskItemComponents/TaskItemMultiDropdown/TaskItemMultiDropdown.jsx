@@ -10,6 +10,7 @@ const TaskItemMultiDropdown = ({
   field,
   readOnly = false,
   withSearch = false,
+  disabled = false,
 }) => {
   const { options: initialOptions } = field;
   const [value, setValue] = useState(initialValue);
@@ -43,7 +44,7 @@ const TaskItemMultiDropdown = ({
     },
     [onChange],
   );
-  console.log(value);
+
 
   const handleSearchChange = (event) => {
     setSearchQuery(event.target.value);
@@ -69,6 +70,7 @@ const TaskItemMultiDropdown = ({
       <DropdownBox>
         <Select
           multiple
+          disabled={disabled}
           readOnly={readOnly}
           MenuProps={{
             anchorOrigin: {

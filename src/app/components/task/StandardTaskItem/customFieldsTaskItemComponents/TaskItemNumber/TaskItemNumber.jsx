@@ -6,6 +6,7 @@ const TaskItemNumber = ({
   value: initialValue = '',
   onChange,
   readOnly = false,
+  disabled = false,
 }) => {
   const [value, setValue] = useState(initialValue);
 
@@ -36,6 +37,7 @@ const TaskItemNumber = ({
         onChange={handleOnChange}
         InputProps={{ disableUnderline: true }}
         readOnly={readOnly}
+        disabled ={disabled}
       />
     </NumberInputContainer>
   );

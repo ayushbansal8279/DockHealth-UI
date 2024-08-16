@@ -89,6 +89,9 @@ const TaskItemDropdown = ({
             '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
               borderColor: 'transparent',
             },
+            '&.Mui-disabled .MuiOutlinedInput-notchedOutline': {
+              borderColor: 'transparent',
+            },
             height: '26px',
           }}
           name="dropdownCustomField"

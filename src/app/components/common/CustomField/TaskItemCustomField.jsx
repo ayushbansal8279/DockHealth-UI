@@ -38,6 +38,7 @@ const TaskItemCustomField = ({
     task.itemType === TaskItemType.TEMPLATE;
 
   const dispatch = useDispatch();
+  const isDisabled = field.displayOptions?.includes('READONLY') ;
 
   const handleClick = useCallback(() => {
     if (!patientType) {
@@ -111,7 +112,7 @@ const TaskItemCustomField = ({
     case FieldType.BOOL: {
       return (
         <TaskItemBoolean
-          readOnly={readOnly}
+          readOnly={readOnly || isDisabled}
           value={value}
           onChange={handleChange}
           field={field}
@@ -124,7 +125,7 @@ const TaskItemCustomField = ({
           value={value}
           onChange={handleChange}
           field={field}
-          readOnly={readOnly}
+          readOnly={readOnly || isDisabled}
         />
       );
     }
@@ -136,6 +137,7 @@ const TaskItemCustomField = ({
           onChange={handleChange}
           field={field}
           withSearch
+          disabled={isDisabled}
         />
       );
     }
@@ -157,7 +159,7 @@ const TaskItemCustomField = ({
 
       return (
         <TaskItemDropdown
-          readOnly={readOnly}
+          readOnly={readOnly || isDisabled}
           value={value}
           onChange={handleChange}
           field={updatedField}
@@ -172,6 +174,7 @@ const TaskItemCustomField = ({
           value={value}
           onChange={handleChange}
           field={field}
+          disabled={isDisabled}
         />
       );
     }
@@ -183,6 +186,7 @@ const TaskItemCustomField = ({
           onChange={handleChange}
           openDrawer={patientType ? undefined : handleClick}
           field={field}
+          disabled={isDisabled}
         />
       );
     }
@@ -193,6 +197,7 @@ const TaskItemCustomField = ({
           value={value}
           onChange={handleChange}
           field={field}
+          disabled={isDisabled}
         />
       );
     }
@@ -201,6 +206,7 @@ const TaskItemCustomField = ({
         <StyledHyperLink
           href={value?.startsWith('http') ? value : `//${value}`}
           target="_blank"
+          disabled={isDisabled}
         >
           {trunc(value, 15)}
         </StyledHyperLink>
