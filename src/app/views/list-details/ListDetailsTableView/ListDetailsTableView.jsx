@@ -48,7 +48,7 @@ import {
 import { userProfileSelector } from 'selectors/user-selectors';
 import { selectedFiltersInMegaFilterSelector } from 'selectors/mega-filter-selectors';
 import { useTaskListColumnsConfig } from 'context-api/columns-config-context';
-import { TaskOrigin } from 'helpers/task-helpers';
+import { TaskOrigin, TaskStatus } from 'helpers/task-helpers';
 import * as TaskActions from 'actions/task-actions';
 import * as UserAuthApi from 'api/user-auth-api';
 import { TaskViewContainer } from './styled';
@@ -107,10 +107,11 @@ const ListDetailsTableView = () => {
 
   useEffect(() => {
     if (currentTaskListIdentifier) {
-      const status = localStorageHelper.getItem(
+      const savedStatus = localStorageHelper.getItem(
         getTaskListStatusStorageKey(currentTaskListIdentifier),
       );
-      dispatch(updateTaskStatusToFilter(status));
+
+      dispatch(updateTaskStatusToFilter(savedStatus ?? TaskStatus.INCOMPLETE));
       dispatch(ListDetailsActions.initializeListDetailsTableState());
     }
   }, [dispatch, currentTaskListIdentifier, currentStatus]);
