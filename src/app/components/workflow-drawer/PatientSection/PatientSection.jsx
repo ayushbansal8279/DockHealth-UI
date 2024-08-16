@@ -34,6 +34,7 @@ import {
 } from './styled';
 import PatientSelectItem from '../../patients/PatientSelectItem/PatientSelectItem';
 import AISummaryModalOpenerHelper from '@/app/modal/components/AISummaryModal/AISummaryModalOpenerHelper';
+import { SummaryType } from '@/app/helpers/ai-helper';
 
 const PATIENT_IDENTIFIER_FIELD_NAME = 'patientIdentifier';
 const MAX_PATIENT_RESULTS = 200;
@@ -237,7 +238,7 @@ const PatientSection = ({
           {true && ( // true will be replaced with Beta Feature
             <AISummaryWrapper>
               <AISummaryModalOpenerHelper
-                type={'Patient'}
+                type={SummaryType.PATIENT}
                 title={`${selectedPatient?.lastName}, ${selectedPatient?.firstName}`}
                 identifier={selectedPatient?.patientIdentifier}
               />

@@ -23,6 +23,7 @@ import {
 } from '../../styled';
 import { useDispatch } from 'react-redux';
 import AISummaryModalOpenerHelper from '@/app/modal/components/AISummaryModal/AISummaryModalOpenerHelper';
+import { SummaryType } from '@/app/helpers/ai-helper';
 
 const TaskItemPatient = ({
   highlightedValue,
@@ -166,7 +167,7 @@ const TaskItemPatient = ({
               {true && ( // true will be replaced with Beta Feature
                 <AISummaryWrapper>
                   <AISummaryModalOpenerHelper
-                    type={'Patient'}
+                    type={SummaryType.PATIENT}
                     title={`${patient?.lastName}, ${patient?.firstName}`}
                     identifier={patient.patientIdentifier}
                   />

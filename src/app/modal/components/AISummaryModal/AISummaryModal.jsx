@@ -18,6 +18,7 @@ import LuminaStar from 'img/AI/LuminaStar';
 import palette from '@/app/styles/palette';
 import Copy from 'img/AI/Copy.svg';
 import Close from 'img/AI/XClose.svg';
+import { SummaryType } from '@/app/helpers/ai-helper';
 
 const AISummaryModal = ({ closeModal, title, onsubmit, type }) => {
   useEffect(() => {
@@ -41,10 +42,12 @@ const AISummaryModal = ({ closeModal, title, onsubmit, type }) => {
 
   const handleGenerateResponse = async () => {
     setIsFetching(true);
-    const response = await onsubmit();
+    const response = await onsubmit(value);
     setIsFetching(false);
 
-    const splitArray = response.split(type === 'Patient' ? '-' : /(?<!Dr)\./);
+    const splitArray = response.split(
+      type === SummaryType.PATIENT ? '-' : /(?<!Dr)\./,
+    );
 
     const formattedArray = splitArray
       .filter((item) => item.trim() !== '')

@@ -97,6 +97,7 @@ import TaskTemplateComment from '../TaskTemplateIcons/TaskTemplateComment';
 import palette from '@/app/styles/palette';
 import TaskTemplateContextMenu from '../TaskTemplateContextMenu/TaskTemplateContextMenu';
 import AISummaryModalOpenerHelper from '@/app/modal/components/AISummaryModal/AISummaryModalOpenerHelper';
+import { SummaryType } from '@/app/helpers/ai-helper';
 
 const TaskTemplateGroupHeader = ({
   templateGroup = {},
@@ -664,7 +665,7 @@ const TaskTemplateGroupHeader = ({
               {true && ( // true will be replaced with Beta Feature
                 <AISummaryWrapper>
                   <AISummaryModalOpenerHelper
-                    type={'Workflow'}
+                    type={SummaryType.WORKFLOW}
                     title={`${name}`}
                     identifier={identifier}
                   />

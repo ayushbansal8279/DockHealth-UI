@@ -42,6 +42,7 @@ import {
   AISummaryWrapper,
 } from './styled';
 import AISummaryModalOpenerHelper from '@/app/modal/components/AISummaryModal/AISummaryModalOpenerHelper';
+import { SummaryType } from '@/app/helpers/ai-helper';
 
 const { DISABLED } = TASK_LIST_RESTRICTIONS_OPTIONS;
 
@@ -121,7 +122,7 @@ const PatientDetailsHeader = () => {
                 {true && ( // true will be replaced with Beta Feature
                   <AISummaryWrapper>
                     <AISummaryModalOpenerHelper
-                      type={'Patient'}
+                      type={SummaryType.PATIENT}
                       title={`${lastName}, ${firstName}`}
                       identifier={patient?.patientIdentifier}
                     />

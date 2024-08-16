@@ -20,6 +20,7 @@ import {
   AISummaryWrapper,
 } from './styled';
 import AISummaryModalOpenerHelper from '@/app/modal/components/AISummaryModal/AISummaryModalOpenerHelper';
+import { SummaryType } from '@/app/helpers/ai-helper';
 
 const DrawerHeader = () => {
   const dispatch = useDispatch();
@@ -110,7 +111,7 @@ const DrawerHeader = () => {
           {true && ( // true will be replaced with Beta Feature
             <AISummaryWrapper>
               <AISummaryModalOpenerHelper
-                type={'Workflow'}
+                type={SummaryType.WORKFLOW}
                 title={`${name}`}
                 identifier={identifier}
               />
