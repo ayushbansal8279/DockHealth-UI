@@ -1,9 +1,9 @@
 import { log } from 'helpers/log';
 import axios from './axios-heydoc';
 
-export function getPatientAISummary(patientIdentifier) {
+export function getPatientAISummary(patientIdentifier, customPrompt) {
   return axios
-    .get(`/aisummary/patient/${patientIdentifier}`)
+    .post(`/aisummary/patient/${patientIdentifier}`, customPrompt)
     .then((response) => response.data)
     .catch((error) => {
       log(error);
@@ -11,9 +11,9 @@ export function getPatientAISummary(patientIdentifier) {
     });
 }
 
-export function getTaskAISummary(taskIdentifier) {
+export function getTaskAISummary(taskIdentifier, customPrompt) {
   return axios
-    .get(`/aisummary/task/${taskIdentifier}`)
+    .post(`/aisummary/task/${taskIdentifier}`, customPrompt)
     .then((response) => response.data)
     .catch((error) => {
       log(error);
@@ -21,9 +21,9 @@ export function getTaskAISummary(taskIdentifier) {
     });
 }
 
-export function getWorkflowAISummary(workFlowIdentifier) {
+export function getWorkflowAISummary(workFlowIdentifier, customPrompt) {
   return axios
-    .get(`/aisummary/workflow/${workFlowIdentifier}`)
+    .post(`/aisummary/workflow/${workFlowIdentifier}`, customPrompt)
     .then((response) => response.data)
     .catch((error) => {
       log(error);

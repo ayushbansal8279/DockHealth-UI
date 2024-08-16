@@ -9,15 +9,21 @@ import {
 } from '@/app/api/ai-summary-api';
 import { openModal } from '../../actions';
 import { useDispatch } from 'react-redux';
+import { customPromptBuilder, SummaryType } from '@/app/helpers/ai-helper';
+
 const AISummaryModalOpenerHelper = ({ type, title, identifier }) => {
   const [isAiIconHovered, setAiIconHovered] = useState(false);
   const dispatch = useDispatch();
-  console.log('identifier', identifier);
 
-  const methodToCall = async () => {
-    if (type === 'Patient') return await getPatientAISummary(identifier);
-    if (type === 'Task') return await getTaskAISummary(identifier);
-    if (type === 'Workflow') return await getWorkflowAISummary(identifier);
+  const methodToCall = async (promptText) => {
+    const customPrompt = customPromptBuilder(promptText);
+
+    if (type === SummaryType.PATIENT)
+      return await getPatientAISummary(identifier, customPrompt);
+    if (type === SummaryType.TASK)
+      return await getTaskAISummary(identifier, customPrompt);
+    if (type === SummaryType.WORKFLOW)
+      return await getWorkflowAISummary(identifier, customPrompt);
   };
 
   return (
@@ -30,7 +36,7 @@ const AISummaryModalOpenerHelper = ({ type, title, identifier }) => {
             openModal('AISummary', {
               type: type,
               title: `${title}`,
-              onsubmit: async () => await methodToCall(),
+              onsubmit: async (promptText) => await methodToCall(promptText),
             }),
           )
         }
