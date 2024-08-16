@@ -3,7 +3,7 @@ import spacing from 'styles/spacing';
 import { fontWeights } from 'styles/font';
 import palette from 'styles/palette';
 import { ModalWrapper } from '../styled';
-import { Button } from '@mui/material';
+import { Button, TextField } from '@mui/material';
 import Skeleton from '@mui/material/Skeleton';
 
 export const AISummaryModalWrapper = styled(ModalWrapper)`
@@ -28,6 +28,22 @@ export const Title = styled.div`
   color: ${palette.gunmetal};
   font-size: 21px;
   font-weight: ${fontWeights.bold};
+`;
+
+export const CustomPromptInput = styled(TextField)`
+  background-color: ${palette.white};
+  width: 550px;
+  margin-top: 10px;
+
+  .MuiOutlinedInput-root {
+    .MuiOutlinedInput-notchedOutline {
+      border-width: 1px;
+    }
+
+    &.Mui-focused .MuiOutlinedInput-notchedOutline {
+      border-color: ${palette.gunmetal};
+    }
+  }
 `;
 
 export const IconWrapper = styled.img`

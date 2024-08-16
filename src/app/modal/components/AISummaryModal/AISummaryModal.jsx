@@ -13,6 +13,7 @@ import {
   ResponseButton,
   RefreshWrapper,
   AISummaryLoaderSkeleton,
+  CustomPromptInput,
 } from './styled';
 import LuminaStar from 'img/AI/LuminaStar';
 import palette from '@/app/styles/palette';
@@ -65,19 +66,6 @@ const AISummaryModal = ({ closeModal, title, onsubmit, type }) => {
     ));
   };
 
-  const textFieldSX = {
-    backgroundColor: palette.white,
-    '& .MuiOutlinedInput-root': {
-      '& .MuiOutlinedInput-notchedOutline': {
-        borderWidth: '1px',
-      },
-      '&.Mui-focused fieldset': {
-        borderColor: palette.gunmetal,
-      },
-    },
-    width: '300px',
-  };
-
   return (
     <AISummaryModalWrapper>
       <Header>
@@ -93,17 +81,7 @@ const AISummaryModal = ({ closeModal, title, onsubmit, type }) => {
       <Spacing vertical={3} />
       <Grid container direction="column" item wrap="nowrap">
         <RegenerateWrapper>
-          <GeneratedTime>Generated 2 m ago</GeneratedTime>
-          <div>
-            <TextField
-              value={value}
-              placeholder="Custom Prompt"
-              size="small"
-              sx={textFieldSX}
-              onChange={handlePromptChange}
-              variant="outlined"
-            />
-          </div>
+          <GeneratedTime>Generated 1 min ago</GeneratedTime>
           <RefreshWrapper>
             <LuminaStar color={palette.newBrightBlue} />
             <ResponseButton onClick={handleGenerateResponse}>
@@ -123,6 +101,14 @@ const AISummaryModal = ({ closeModal, title, onsubmit, type }) => {
             ))}
         </Info>
       </Grid>
+      <CustomPromptInput
+        disabled={isFetching}
+        value={value}
+        placeholder="Custom Prompt"
+        size="small"
+        onChange={handlePromptChange}
+        variant="outlined"
+      />
     </AISummaryModalWrapper>
   );
 };
