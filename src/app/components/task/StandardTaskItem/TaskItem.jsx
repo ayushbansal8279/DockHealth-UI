@@ -194,6 +194,19 @@ const TaskItem = React.memo(
         : null,
     );
 
+    const getTemplateBundleIdentifier = (taskItem) => {
+      if (taskItem?.itemType === 'TASK' && taskItem?.taskGroups) {
+        const filteredGroups = taskItem.taskGroups.filter(
+          (taskGroup) => taskGroup?.groupType === 'TASK_BUNDLE',
+        );
+
+        return filteredGroups.length > 0
+          ? filteredGroups[0]?.taskGroupIdentifier
+          : null;
+      }
+      return taskItem?.identifier;
+    };
+
     const {
       taskIdentifier,
       assignedToUsers,
@@ -1108,7 +1121,10 @@ const TaskItem = React.memo(
                         outcomes={task?.taskOutcomes}
                         onSelect={handleDecisionOutcomeSelection}
                         task={task}
-                        templateBundleIdentifier={templateBundleIdentifier}
+                        templateBundleIdentifier={
+                          templateBundleIdentifier ||
+                          getTemplateBundleIdentifier(task)
+                        }
                         disabled={isCompleted || !isDependencyEmptyOrCompleted}
                         error={taskDecisionError}
                         clearError={() => setTaskDecisionError(false)}
