@@ -6,7 +6,10 @@ import React, {
   useMemo,
   useRef,
 } from 'react';
-import { TaskListTabName } from 'helpers/tasklist-helpers';
+import {
+  getTaskListStatusStorageKey,
+  TaskListTabName,
+} from 'helpers/tasklist-helpers';
 import * as ListDetailsActions from 'actions/list-details-actions';
 import TaskDrawer from 'components/task-drawer/TaskDrawer/TaskDrawer';
 import BulkEditSection from 'components/tasklist/BulkEditSection/BulkEditSection';
@@ -20,7 +23,10 @@ import { initializePusher } from 'helpers/pusher-instance';
 import useActions from 'hooks/use-actions';
 import usePrevious from 'hooks/use-previous';
 import localStorageHelper from 'helpers/local-storage-helper';
-import { updateUserListViewSetup } from 'actions/task-list-actions';
+import {
+  updateTaskStatusToFilter,
+  updateUserListViewSetup,
+} from 'actions/task-list-actions';
 import { checkIfTaskMatchesFilters } from 'helpers/filters-helpers';
 import {
   completedTasksIsFetchingSelector,
@@ -42,7 +48,7 @@ import {
 import { userProfileSelector } from 'selectors/user-selectors';
 import { selectedFiltersInMegaFilterSelector } from 'selectors/mega-filter-selectors';
 import { useTaskListColumnsConfig } from 'context-api/columns-config-context';
-import { TaskOrigin } from 'helpers/task-helpers';
+import { TaskOrigin, TaskStatus } from 'helpers/task-helpers';
 import * as TaskActions from 'actions/task-actions';
 import * as UserAuthApi from 'api/user-auth-api';
 import { TaskViewContainer } from './styled';
@@ -100,8 +106,14 @@ const ListDetailsTableView = () => {
   const { taskListIdentifier, tabName } = params;
 
   useEffect(() => {
-    if (currentTaskListIdentifier)
+    if (currentTaskListIdentifier) {
+      const savedStatus = localStorageHelper.getItem(
+        getTaskListStatusStorageKey(currentTaskListIdentifier),
+      );
+
+      dispatch(updateTaskStatusToFilter(savedStatus ?? TaskStatus.INCOMPLETE));
       dispatch(ListDetailsActions.initializeListDetailsTableState());
+    }
   }, [dispatch, currentTaskListIdentifier, currentStatus]);
 
   useEffect(() => {

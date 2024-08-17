@@ -97,3 +97,7 @@ export function updateBundleInList(
 export function checkIfHasIncompleteTasks(tasks) {
   return !!tasks?.some(({ status }) => status === TaskStatus.INCOMPLETE);
 }
+
+export function getTaskListStatusStorageKey(taskListIdentifier) {
+  return `status${taskListIdentifier}`;
+}

@@ -226,6 +226,9 @@ const PatientSection = ({
             {' '}
             <PatientName onClick={patientProfile}>
               {selectedPatient.patientName}{' '}
+              {selectedPatient.mrn && selectedPatient.mrn !== ''
+                ? `(${selectedPatient.mrn})`
+                : ''}
             </PatientName>
             <button
               style={{ color: '#8492A4' }}

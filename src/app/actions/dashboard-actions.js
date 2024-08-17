@@ -35,11 +35,17 @@ export function getDashboardTasksForGroup(
   };
 }
 
-export function getDashboardTasks(sortBy, sortDirection) {
+export function getDashboardTasks() {
   return {
     type: ActionTypes.GET_DASHBOARD_TASKS,
-    sortBy,
-    sortDirection,
+  };
+}
+
+export function updateSortDashboardTasks(key, order) {
+  return {
+    type: ActionTypes.SORT_DASHBOARD_TASKS,
+    key: order ? key : null,
+    order,
   };
 }
 
@@ -71,6 +77,14 @@ export function reorderDashboardTasks(taskGroupImplicitType, tasksOrder) {
     type: ActionTypes.REORDER_DASHBOARD_TASKS,
     taskGroupImplicitType,
     tasksOrder,
+  };
+}
+
+export function reorderDashboardTaskGroups(oldIndex, newIndex) {
+  return {
+    type: ActionTypes.REORDER_DASHBOARD_TASK_GROUPS,
+    oldIndex,
+    newIndex,
   };
 }
 

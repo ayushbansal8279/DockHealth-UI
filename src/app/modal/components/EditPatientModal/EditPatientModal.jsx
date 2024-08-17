@@ -87,7 +87,7 @@ const EditPatientModal = ({ closeModal, patient, onAdded }) => {
                   <Grid item xs={2}>
                     <FormInput
                       readOnly={false}
-                      label="Middle Name"
+                      label="Middle"
                       name="middleName"
                       xs={2}
                     />
@@ -107,7 +107,7 @@ const EditPatientModal = ({ closeModal, patient, onAdded }) => {
                   <Grid item xs={6}>
                     <FormSelect
                       readOnly={false}
-                      label="Sex at birth"
+                      label="Sex at Birth"
                       options={GENDER_OPTIONS_BIRTH}
                       name="gender"
                     />
@@ -138,7 +138,7 @@ const EditPatientModal = ({ closeModal, patient, onAdded }) => {
                     />
                   </Grid>
                   <Grid item xs={6}>
-                    <FormInput readOnly={false} label="email" name="email" />
+                    <FormInput readOnly={false} label="Email" name="email" />
                   </Grid>
                 </Grid>
               </Grid>

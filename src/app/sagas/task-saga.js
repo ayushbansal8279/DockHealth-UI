@@ -240,6 +240,7 @@ function* chooseTaskOutcome({
   try {
     yield call(TaskApi.chooseTaskOutcome, taskOutcomeIdentifier);
     yield call(refreshTemplateBundle, { templateBundleIdentifier });
+    yield put({ type: ActionTypes.REFRESH_ORIGIN });
     yield put(showGlobalAlert(AlertMessages.UPDATED));
   } catch {
     yield put(showGlobalErrorAlert());
@@ -337,6 +338,7 @@ function* updateTaskDueDate({ task, dueDate }) {
       task,
       dueDate: updatedTask.dueDate,
     });
+    yield put({ type: ActionTypes.REFRESH_ORIGIN });
     yield put(showGlobalAlert(AlertMessages.UPDATED));
   } catch {
     yield put({

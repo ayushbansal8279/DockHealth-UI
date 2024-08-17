@@ -151,14 +151,7 @@ function* getCurrentListTasks() {
     const selectedFilters = yield select(selectedFiltersInMegaFilterSelector);
     const sort = yield select(taskDetailsSortSelector);
     const searchTerm = yield select(searchTermSelector);
-    let status = TaskStatus.INCOMPLETE;
-    let savedStatus = localStorageHelper.getItem(`status${taskListIdentifier}`);
-    if (!savedStatus) {
-      savedStatus = sessionStorageHelper.getItem(`status${taskListIdentifier}`);
-    }
-    if (savedStatus !== null) {
-      status = savedStatus;
-    }
+    const status = yield select(currentTaskListTasksStatusSelector);
 
     if (searchTerm) {
       const groupedTasks = yield call(
@@ -468,7 +461,7 @@ function* initializeListDetailsTableState() {
     const taskListIdentifier = yield select(currentTaskListIdentifierSelector);
     const status = yield select(currentTaskListTasksStatusSelector);
 
-    if (taskListIdentifier && status) {
+    if (taskListIdentifier) {
       let filters = localStorageHelper.getItem(
         getFiltersStorageKey(taskListIdentifier, status),
       );

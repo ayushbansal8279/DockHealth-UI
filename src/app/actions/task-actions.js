@@ -126,6 +126,7 @@ export function saveTask(newTask, shouldReloadGroups = false) {
             type: ActionTypes.UPDATE_TASK_SUCCESS,
             task,
           });
+          dispatch({ type: ActionTypes.REFRESH_ORIGIN });
           return task;
         })
         .catch((error) => {
@@ -194,6 +195,7 @@ export function partialUpdateTask(taskIdentifier, dataToUpdate) {
               task,
             });
           }
+          dispatch({ type: ActionTypes.REFRESH_ORIGIN });
           dispatch(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
           return task;
         })
@@ -217,6 +219,7 @@ export function updateTaskAssignment(taskIdentifier, dataToUpdate) {
       TaskApi.updateTaskAssignment(taskIdentifier, dataToUpdate)
         // eslint-disable-next-line sonarjs/no-identical-functions
         .then((task) => {
+          dispatch({ type: ActionTypes.REFRESH_ORIGIN });
           dispatch(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
           return task;
         })
@@ -240,6 +243,7 @@ export function updateTaskMetaData(taskIdentifier, dataToUpdate) {
       TaskApi.updateTaskMetaData(taskIdentifier, dataToUpdate)
         // eslint-disable-next-line sonarjs/no-identical-functions
         .then((task) => {
+          dispatch({ type: ActionTypes.REFRESH_ORIGIN });
           dispatch(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
           return task;
         })
@@ -562,6 +566,7 @@ export const updatePatient = (task, patient) => (dispatch) =>
         type: ActionTypes.UPDATE_TASK_SUCCESS,
         task: updatedTask,
       });
+      dispatch({ type: ActionTypes.REFRESH_ORIGIN });
       return updatedTask;
     })
     .catch((error) => {
@@ -577,6 +582,7 @@ export const updateReminder = (task, reminderDt) => (dispatch) =>
         type: ActionTypes.UPDATE_TASK_SUCCESS,
         task: newTask,
       });
+      dispatch({ type: ActionTypes.REFRESH_ORIGIN });
     })
     .catch((error) => {
       throw error;
@@ -599,6 +605,7 @@ export const updateWorkflowStatus = (task, workflowStatus) => (dispatch) => {
     workflowStatus?.identifier || null,
   )
     .then((modifiedTask) => {
+      dispatch({ type: ActionTypes.REFRESH_ORIGIN });
       dispatch(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
       return modifiedTask;
     })
@@ -607,6 +614,7 @@ export const updateWorkflowStatus = (task, workflowStatus) => (dispatch) => {
         type: ActionTypes.UPDATE_TASK_SUCCESS,
         task,
       });
+      dispatch({ type: ActionTypes.REFRESH_ORIGIN });
       throw error;
     });
 };

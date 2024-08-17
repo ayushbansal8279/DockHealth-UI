@@ -45,11 +45,35 @@ function Virtualized({
         const sourceParentFirstChild = flatNodes.find(
           (node) => node.id === source.parent?.children[0],
         );
-        const destinationOffsetIndex =
-          (destination.index as number) -
-          (destinationParentFirstChild?.index as number);
-        const sourceOffsetIndex =
-          (source.index as number) - (sourceParentFirstChild?.index as number);
+        // const destinationOffsetIndex =
+        //   (destination.index as number) -
+        //   (destinationParentFirstChild?.index as number);
+        // const sourceOffsetIndex =
+        //   (source.index as number) - (sourceParentFirstChild?.index as number);
+
+        // For Indexing Task
+        const destinationOffsetIndexTask =
+          (destination.taskIndex as number) -
+          (destinationParentFirstChild?.taskIndex as number);
+        const sourceOffsetIndexTask =
+          (source.taskIndex as number) -
+          (sourceParentFirstChild?.taskIndex as number);
+
+        // For Indexing Subtask
+        const destinationOffsetIndexSubtask =
+          (destination.subtaskIndex as number) -
+          (destinationParentFirstChild?.subtaskIndex as number);
+        const sourceOffsetIndexSubtask =
+          (source.subtaskIndex as number) -
+          (sourceParentFirstChild?.subtaskIndex as number);
+
+        // For Indexing TaskOfBundle
+        const destinationOffsetIndexTaskOfBundle =
+          (destination.taskOfBundleIndex as number) -
+          (destinationParentFirstChild?.taskOfBundleIndex as number);
+        const sourceOffsetIndexTaskOfBundle =
+          (source.taskOfBundleIndex as number) -
+          (sourceParentFirstChild?.taskOfBundleIndex as number);
 
         // eslint-disable-next-line default-case
         switch (source.kind) {
@@ -58,11 +82,11 @@ function Virtualized({
               dispatch(
                 reassignTasksToAnotherGroup({
                   destination: {
-                    index: destinationOffsetIndex,
+                    index: destinationOffsetIndexTask,
                     droppableId: destination?.parent?.id,
                   },
                   source: {
-                    index: sourceOffsetIndex,
+                    index: sourceOffsetIndexTask,
                     droppableId: source?.parent?.id,
                   },
                 }),
@@ -71,11 +95,11 @@ function Virtualized({
             dispatch(
               reorderTasksInGroup({
                 destination: {
-                  index: destinationOffsetIndex,
+                  index: destinationOffsetIndexTask,
                   droppableId: destination?.parent?.id,
                 },
                 source: {
-                  index: sourceOffsetIndex,
+                  index: sourceOffsetIndexTask,
                 },
               }),
             );
@@ -84,8 +108,8 @@ function Virtualized({
           case 'Subtask': {
             dispatch(
               reorderSubtasks({
-                source: { index: sourceOffsetIndex },
-                destination: { index: destinationOffsetIndex },
+                source: { index: sourceOffsetIndexSubtask },
+                destination: { index: destinationOffsetIndexSubtask },
                 parentTask: tasksMap[source?.parent?.id!],
               }),
             );
@@ -94,8 +118,8 @@ function Virtualized({
           case 'TaskOfBundle': {
             dispatch(
               reorderWorkflowTasks({
-                source: { index: sourceOffsetIndex },
-                destination: { index: destinationOffsetIndex },
+                source: { index: sourceOffsetIndexTaskOfBundle },
+                destination: { index: destinationOffsetIndexTaskOfBundle },
                 workflow: tasksMap[destination.parent?.id!],
                 completedTasksShown: true,
                 incompleteTasksShown: true,
@@ -150,15 +174,25 @@ const walk = (
   parent: FlatNode | null = null,
   level: number = 0,
   state: { index: number } = { index: 0 },
+  taskIndex: { index: number } = { index: 0 },
+  taskOfBundleIndex: { index: number } = { index: 0 },
+  subTaskState: { index: number } = { index: 0 },
 ): FlatNode[] => {
   return nodes.flatMap((node, index) => {
     const { id, phantom, type, kind, collapsed, data, handlers } = node;
+    const isTask = !phantom && kind === 'Task';
+    const isSubtask = !phantom && kind === 'Subtask';
+    const isTaskOfBundle = !phantom && kind === 'TaskOfBundle';
+
     const flattened: FlatNode = {
       id,
       phantom,
       type,
       kind,
       index: phantom ? null : state.index,
+      taskIndex: isTask ? taskIndex.index : null,
+      subtaskIndex: isSubtask ? subTaskState.index : null,
+      taskOfBundleIndex: isTaskOfBundle ? taskOfBundleIndex.index : null,
       sameLevelIndex: index,
       level,
       parent,
@@ -169,8 +203,13 @@ const walk = (
         .map((child) => child.id),
       handlers,
     };
+
     if (!phantom) {
       state.index = state.index + 1;
+
+      if (isTask) taskIndex.index = taskIndex.index + 1;
+      if (isSubtask) subTaskState.index = subTaskState.index + 1;
+      if (isTaskOfBundle) taskOfBundleIndex.index = taskOfBundleIndex.index + 1;
     }
 
     return [

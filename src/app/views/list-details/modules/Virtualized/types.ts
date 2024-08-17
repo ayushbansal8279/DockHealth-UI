@@ -34,6 +34,9 @@ export type FlatNode = {
   type: FunctionComponent<Segment>;
   kind: string;
   index: number | null;
+  taskIndex: number | null;
+  subtaskIndex: number | null;
+  taskOfBundleIndex: number | null;
   level: number;
   sameLevelIndex: number;
   parent: FlatNode | null;
