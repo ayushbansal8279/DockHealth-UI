@@ -1,3 +1,23 @@
+const commonOptions = (displayOptionsState, handleDisplayOptionChange) => [
+  {
+    label: 'Readonly',
+    key: 'READONLY',
+    value: !!displayOptionsState?.displayOptions?.find(
+      (option) => option === 'READONLY',
+    ),
+    onChange: (value) => handleDisplayOptionChange(value, 'READONLY'),
+  },
+  {
+    label: 'Hidden',
+    key: 'HIDDEN',
+    value: !!displayOptionsState?.displayOptions?.find(
+      (option) => option === 'HIDDEN',
+    ),
+    onChange: (value) => handleDisplayOptionChange(value, 'HIDDEN'),
+  },
+];
+
+
 export const getAdditionalPatientOptions = ({
   displayOptionsState,
   handleDisplayOptionChange,
@@ -18,6 +38,7 @@ export const getAdditionalPatientOptions = ({
     ),
     onChange: (value) => handleDisplayOptionChange(value, 'PATIENT_SEARCH'),
   },
+  ...commonOptions(displayOptionsState, handleDisplayOptionChange),
 ];
 
 export const getAdditionalUserOptions = ({
@@ -40,12 +61,14 @@ export const getAdditionalUserOptions = ({
     ),
     onChange: (value) => handleDisplayOptionChange(value, 'PROVIDER_LIST'),
   },
+  ...commonOptions(displayOptionsState, handleDisplayOptionChange),
 ];
 
 export const getAdditionalTaskOptions = ({
   displayOptionsState,
   handleDisplayOptionChange,
-}) => [
+}) => 
+ [
   {
     label: 'Required for Task completion',
     key: 'TASK_REQUIRED',
@@ -54,6 +77,7 @@ export const getAdditionalTaskOptions = ({
     ),
     onChange: (value) => handleDisplayOptionChange(value, 'TASK_REQUIRED'),
   },
+  ...commonOptions(displayOptionsState, handleDisplayOptionChange),
 ];
 
 export const getAdditionalProfileOptions = ({
@@ -76,7 +100,9 @@ export const getAdditionalProfileOptions = ({
     ),
     onChange: (value) => handleDisplayOptionChange(value, 'PROFILE_HEADER'),
   },
+ 
 ];
+
 export const getAdditionalOptions = ({
   displayOptionsState,
   handleDisplayOptionChange,
