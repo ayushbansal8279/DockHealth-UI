@@ -143,3 +143,7 @@ export const PatientMRNAnchor = styled.a`
 export const ChevronContainer = styled.div`
   margin-left: 20px;
 `;
+
+export const AISummaryWrapper = styled.div`
+  margin: 0 5px 0 10px;
+`;

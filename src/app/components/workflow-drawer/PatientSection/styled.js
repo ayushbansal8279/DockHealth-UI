@@ -54,3 +54,12 @@ export const InstructionText = styled.div`
   display: flex;
   align-items: center;
 `;
+
+export const PatientLableContainer = styled.div`
+  display: flex;
+  items-align: center;
+`;
+
+export const AISummaryWrapper = styled.div`
+  margin: 10px 0 0 15px;
+`;

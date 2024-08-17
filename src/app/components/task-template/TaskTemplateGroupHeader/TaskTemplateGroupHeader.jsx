@@ -87,6 +87,7 @@ import {
   ActionIconsContainer,
   PatientMRNAnchor,
   ChevronContainer,
+  AISummaryWrapper,
 } from './styled';
 import TaskTemplateDetails from '../TaskTemplateDetails/TaskTemplateDetails';
 import { ListPageContext } from '@/app/views/list-details/ListDetailsView';
@@ -95,6 +96,8 @@ import { TaskScrollVericleLine } from '../../task/styled';
 import TaskTemplateComment from '../TaskTemplateIcons/TaskTemplateComment';
 import palette from '@/app/styles/palette';
 import TaskTemplateContextMenu from '../TaskTemplateContextMenu/TaskTemplateContextMenu';
+import AISummaryModalOpenerHelper from '@/app/modal/components/AISummaryModal/AISummaryModalOpenerHelper';
+import { SummaryType } from '@/app/helpers/ai-helper';
 
 const TaskTemplateGroupHeader = ({
   templateGroup = {},
@@ -659,6 +662,15 @@ const TaskTemplateGroupHeader = ({
               paddingRight="tiny"
               order={getColumnOrder(TaskItemColumn.DESCRIPTION)}
             >
+              {true && ( // true will be replaced with Beta Feature
+                <AISummaryWrapper>
+                  <AISummaryModalOpenerHelper
+                    type={SummaryType.WORKFLOW}
+                    title={`${name}`}
+                    identifier={identifier}
+                  />
+                </AISummaryWrapper>
+              )}
               <TemplateHeaderName
                 templateGroup={templateGroup}
                 isEditing={isEditing}

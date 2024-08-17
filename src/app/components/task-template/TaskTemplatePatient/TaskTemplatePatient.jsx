@@ -10,7 +10,11 @@ import {
   ClickablePatient,
   PatientLabel,
   DisabledLink,
+  PatientLableContainer,
+  AISummaryWrapper,
 } from './styled';
+import AISummaryModalOpenerHelper from '@/app/modal/components/AISummaryModal/AISummaryModalOpenerHelper';
+import { SummaryType } from '@/app/helpers/ai-helper';
 
 const TaskTemplatePatient = ({
   highlightedValue,
@@ -96,24 +100,35 @@ const TaskTemplatePatient = ({
           disableLink={readOnly}
           patientIdentifier={patient.patientIdentifier}
         >
-          <Link to={`/core/patient/${patient.patientIdentifier}`}>
-            <PatientLabel>
-              {(matchPatient || matchPatientMRN) && highlightedValue ? (
-                <Highlighter
-                  highlightClassName="list-highlight"
-                  searchWords={
-                    matchPatient
-                      ? highlightedValue?.toLowerCase().split(/\s+/)
-                      : `${patientName}`.toLowerCase().split(/\s+/)
-                  }
-                  autoEscape
-                  textToHighlight={`${patient.patientName}`}
+          <PatientLableContainer>
+            {true && ( // true will be replaced with Beta Feature
+              <AISummaryWrapper>
+                <AISummaryModalOpenerHelper
+                  type={SummaryType.PATIENT}
+                  title={`${patient?.lastName}, ${patient?.firstName}`}
+                  identifier={patient?.patientIdentifier}
                 />
-              ) : (
-                `${patientName}`
-              )}
-            </PatientLabel>
-          </Link>
+              </AISummaryWrapper>
+            )}
+            <Link to={`/core/patient/${patient.patientIdentifier}`}>
+              <PatientLabel>
+                {(matchPatient || matchPatientMRN) && highlightedValue ? (
+                  <Highlighter
+                    highlightClassName="list-highlight"
+                    searchWords={
+                      matchPatient
+                        ? highlightedValue?.toLowerCase().split(/\s+/)
+                        : `${patientName}`.toLowerCase().split(/\s+/)
+                    }
+                    autoEscape
+                    textToHighlight={`${patient.patientName}`}
+                  />
+                ) : (
+                  `${patientName}`
+                )}
+              </PatientLabel>
+            </Link>
+          </PatientLableContainer>
         </PatientCard>
       )}
     </ClickablePatient>

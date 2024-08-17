@@ -29,8 +29,12 @@ import {
   Title,
   InstructionText,
   PatientName,
+  PatientLableContainer,
+  AISummaryWrapper,
 } from './styled';
 import { updatePartialWorkflow } from '@/app/actions/task-template-actions';
+import AISummaryModalOpenerHelper from '@/app/modal/components/AISummaryModal/AISummaryModalOpenerHelper';
+import { SummaryType } from '@/app/helpers/ai-helper';
 
 const PATIENT_IDENTIFIER_FIELD_NAME = 'patientIdentifier';
 const MAX_PATIENT_RESULTS = 200;
@@ -323,19 +327,30 @@ const PatientSection = ({
     <PatientMainContainer>
       <Title>Patient</Title>
       {selectedPatient && (
-        <PatientContainer>
-          {' '}
-          <PatientName onClick={patientProfile}>
-            {selectedPatient.patientName}{' '}
-          </PatientName>
-          <button
-            style={{ color: '#8492A4' }}
-            onClick={handleClearSelectedPatient}
-            type="button"
-          >
-            x
-          </button>
-        </PatientContainer>
+        <PatientLableContainer>
+          <PatientContainer>
+            {' '}
+            <PatientName onClick={patientProfile}>
+              {selectedPatient.patientName}{' '}
+            </PatientName>
+            <button
+              style={{ color: '#8492A4' }}
+              onClick={handleClearSelectedPatient}
+              type="button"
+            >
+              x
+            </button>
+          </PatientContainer>
+          {true && ( // true will be replaced with Beta Feature
+            <AISummaryWrapper>
+              <AISummaryModalOpenerHelper
+                type={SummaryType.PATIENT}
+                title={`${selectedPatient?.lastName}, ${selectedPatient?.firstName}`}
+                identifier={selectedPatient.patientIdentifier}
+              />
+            </AISummaryWrapper>
+          )}
+        </PatientLableContainer>
       )}
 
       {!selectedPatient && (
