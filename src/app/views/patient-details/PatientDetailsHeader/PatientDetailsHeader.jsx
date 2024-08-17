@@ -39,7 +39,10 @@ import {
   IconWrapper,
   ContactContainer,
   PatientMRNAnchor,
+  AISummaryWrapper,
 } from './styled';
+import AISummaryModalOpenerHelper from '@/app/modal/components/AISummaryModal/AISummaryModalOpenerHelper';
+import { SummaryType } from '@/app/helpers/ai-helper';
 
 const { DISABLED } = TASK_LIST_RESTRICTIONS_OPTIONS;
 
@@ -116,6 +119,15 @@ const PatientDetailsHeader = () => {
                 <PatientName>
                   {[`${lastName},`, firstName, middleName].join(' ')}
                 </PatientName>
+                {true && ( // true will be replaced with Beta Feature
+                  <AISummaryWrapper>
+                    <AISummaryModalOpenerHelper
+                      type={SummaryType.PATIENT}
+                      title={`${lastName}, ${firstName}`}
+                      identifier={patient?.patientIdentifier}
+                    />
+                  </AISummaryWrapper>
+                )}
                 <Box mx={1} />
                 {taskListRestrictions?.createTask !== DISABLED && (
                   <ButtonContainer onClick={setIsDrawerOpen}>

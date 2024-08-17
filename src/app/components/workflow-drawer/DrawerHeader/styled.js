@@ -26,3 +26,7 @@ export const StyledIconButton = styled(IconButton)`
     }
   }
 `;
+
+export const AISummaryWrapper = styled.div`
+  margin: 5px 10px 0 2px;
+`;
