@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { EdgeLabel, OutcomeInput } from './styled';
 
 const OutcomeInputLabel = React.forwardRef((props, reference) => {
   const {
-    readOnly,
+    readOnly = true,
     inputRef,
     hasOutcome,
     value,
@@ -14,7 +14,14 @@ const OutcomeInputLabel = React.forwardRef((props, reference) => {
     onClick,
   } = props;
 
-  const [isEditorActive, setEditorActive] = useState(false);
+  const [isEditorActive, setEditorActive] = useState(!readOnly);
+
+  useEffect(() => {
+    setEditorActive(!readOnly);
+    if (inputRef?.current && !readOnly) {
+      inputRef?.current?.focus();
+    }
+  }, [readOnly, inputRef]);
 
   const handleClick = (event) => {
     setEditorActive(true);
@@ -38,7 +45,6 @@ const OutcomeInputLabel = React.forwardRef((props, reference) => {
     <EdgeLabel
       ref={reference}
       hasOutcome={hasOutcome}
-      readOnly={readOnly}
       placeholder="Type option"
       value={value}
       onChange={onChange}
