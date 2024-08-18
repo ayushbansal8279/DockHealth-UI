@@ -37,11 +37,13 @@ export function getDashboardMyTasks(status = 'INCOMPLETE') {
 export function reorderTasksInGroup({
   tasksOrder: orderedTaskIds,
   taskGroupImplicitType,
+  taskGroupIdentifier,
 }) {
   return axios
     .put('task/sortTasksInImplicitTaskGroup', {
       taskIdentifiers: orderedTaskIds,
       taskGroupImplicitType,
+      taskGroupIdentifier,
     })
     .then(({ data }) => data)
     .catch((error) => {

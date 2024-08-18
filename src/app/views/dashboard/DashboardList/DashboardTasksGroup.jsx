@@ -350,7 +350,13 @@ const DashboardTasksGroup = ({
                     const newTasksOrder = newTaskIdentifiers.map(
                       (taskIdentifier) => taskIdentifier,
                     );
-                    dispatch(reorderDashboardTasks(groupType, newTasksOrder));
+                    dispatch(
+                      reorderDashboardTasks(
+                        groupType,
+                        taskGroupIdentifier,
+                        newTasksOrder,
+                      ),
+                    );
                   } else {
                     openModal('HomeScreenDragDrop');
                   }

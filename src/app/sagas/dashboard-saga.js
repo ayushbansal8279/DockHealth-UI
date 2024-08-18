@@ -289,7 +289,11 @@ function* reorderDashboardTasks({
   tasksOrder,
 }) {
   try {
-    yield reorderTasksInGroup({ tasksOrder, taskGroupImplicitType });
+    yield reorderTasksInGroup({
+      tasksOrder,
+      taskGroupImplicitType,
+      taskGroupIdentifier,
+    });
     yield put(
       DashboardActions.getDashboardTasksForGroup(
         taskGroupImplicitType,
