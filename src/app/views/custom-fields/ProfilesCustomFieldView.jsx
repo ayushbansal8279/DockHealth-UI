@@ -64,6 +64,7 @@ const ProfilesCustomFieldsView = ({ profileTypeIdentifier }) => {
           type: 'PROFILE',
         },
         customField: field,
+        fetchUserCustomFields : () => fetchUserCustomFields(),
         onUpdated: (updatedField) => {
           setColumnsToState(
             columns.map((f) =>
