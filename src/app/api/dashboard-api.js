@@ -112,11 +112,15 @@ export function getTasksAssignedToUserByImplicitGroup(
   endPosition = 0,
   includeWorkflows = true,
   selectedFilters = {},
+  searchTerm,
 ) {
   return axios
     .post(
       `/task/findTasksAssignedToUserByImplicitGroup`,
-      mapSelectedOptionsToRequestPayload(selectedFilters || {}),
+      {
+        ...mapSelectedOptionsToRequestPayload(selectedFilters || {}),
+        searchTerm,
+      },
       {
         params:
           sortBy && sortDirection
@@ -158,11 +162,15 @@ export function getTasksForOrganizationByImplicitGroup(
   endPosition = 0,
   includeWorkflows = true,
   selectedFilters = {},
+  searchTerm,
 ) {
   return axios
     .post(
       `/task/findTasksForOrganizationByImplicitGroup`,
-      mapSelectedOptionsToRequestPayload(selectedFilters || {}),
+      {
+        ...mapSelectedOptionsToRequestPayload(selectedFilters || {}),
+        searchTerm,
+      },
       {
         params:
           sortBy && sortDirection
