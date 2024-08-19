@@ -7,7 +7,7 @@ import RichTextEditor from 'components/common/RichTextEditor/RichTextEditor';
 import { convertToSimpleString } from 'helpers/markdown-helper.js';
 import { Text, LongTextBox, Divider } from './styled';
 
-const TaskItemLongText = ({ value = '', onChange, openDrawer, disabled = false }) => {
+const TaskItemLongText = ({ value = '', onChange, openDrawer, readOnly = false}) => {
   const [rawDetails, setRawDetails] = useState(null);
   const [unformattedDetails, setUnformattedDetails] = useState(null);
 
@@ -51,7 +51,7 @@ const TaskItemLongText = ({ value = '', onChange, openDrawer, disabled = false }
   return (
     <Box width="100%" height="100%" display="flex" alignItems="center">
       <TaskItemPopover
-        disabled={disabled}
+        disabled={readOnly}
         fullWidth
         // eslint-disable-next-line react/no-unstable-nested-components
         content={({ closePopover, onClose }) => (

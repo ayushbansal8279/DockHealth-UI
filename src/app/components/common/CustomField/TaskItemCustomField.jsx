@@ -36,9 +36,8 @@ const TaskItemCustomField = ({
   const isWorkflow =
     task.itemType === TaskItemType.BUNDLE ||
     task.itemType === TaskItemType.TEMPLATE;
-
   const dispatch = useDispatch();
-  const isDisabled = field.displayOptions?.includes('READONLY') ;
+  const isReadOnly = field.displayOptions?.includes('READONLY') || readOnly;
 
   const handleClick = useCallback(() => {
     if (!patientType) {
@@ -112,7 +111,7 @@ const TaskItemCustomField = ({
     case FieldType.BOOL: {
       return (
         <TaskItemBoolean
-          readOnly={readOnly || isDisabled}
+          readOnly={isReadOnly}
           value={value}
           onChange={handleChange}
           field={field}
@@ -125,19 +124,18 @@ const TaskItemCustomField = ({
           value={value}
           onChange={handleChange}
           field={field}
-          readOnly={readOnly || isDisabled}
+          readOnly={isReadOnly}
         />
       );
     }
     case FieldType.DROPDOWN_MULTI: {
       return (
         <TaskItemMultiDropdown
-          readOnly={readOnly}
+          readOnly={isReadOnly}
           value={values || []}
           onChange={handleChange}
           field={field}
           withSearch
-          disabled={isDisabled}
         />
       );
     }
@@ -159,7 +157,7 @@ const TaskItemCustomField = ({
 
       return (
         <TaskItemDropdown
-          readOnly={readOnly || isDisabled}
+          readOnly={isReadOnly}
           value={value}
           onChange={handleChange}
           field={updatedField}
@@ -170,34 +168,31 @@ const TaskItemCustomField = ({
     case FieldType.TEXT: {
       return (
         <TaskItemText
-          readOnly={readOnly}
+          readOnly={isReadOnly}
           value={value}
           onChange={handleChange}
           field={field}
-          disabled={isDisabled}
         />
       );
     }
     case FieldType.LONG_TEXT: {
       return (
-        <TaskItemLongText
-          readOnly={readOnly}
+        <TaskItemLongText  
+          readOnly={isReadOnly}
           value={value}
           onChange={handleChange}
           openDrawer={patientType ? undefined : handleClick}
           field={field}
-          disabled={isDisabled}
         />
       );
     }
     case FieldType.NUMBER: {
       return (
         <TaskItemNumber
-          readOnly={readOnly}
+          readOnly={isReadOnly}
           value={value}
           onChange={handleChange}
           field={field}
-          disabled={isDisabled}
         />
       );
     }
