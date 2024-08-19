@@ -32,6 +32,7 @@ import {
   dashboardTabNameSelector,
   dashboardTaskViewFilterSelector,
   dashboardSortTasksSelector,
+  dashboardSearchValueSelector,
 } from 'selectors/dashboard-selectors';
 import * as MegaFilterActions from 'actions/mega-filter-actions';
 import { showGlobalErrorAlert } from 'alert/actions';
@@ -108,7 +109,6 @@ function* getDashboardTasksForGroup({
   taskGroupIdentifier,
   sortBy,
   sortDirection,
-  searchTerm,
 }) {
   try {
     const tabName = yield select(dashboardTabNameSelector);
@@ -116,6 +116,7 @@ function* getDashboardTasksForGroup({
     const taskViewFilter = yield select(dashboardTaskViewFilterSelector);
     const includeWorkflows = taskViewFilter?.includeWorkflows ?? true;
     const selectedFilters = yield select(selectedFiltersInMegaFilterSelector);
+    const searchTerm = yield select(dashboardSearchValueSelector);
 
     const { taskGroups } = yield call(
       isAllTasks
@@ -226,12 +227,7 @@ function* getDashboardGroups() {
   }
 }
 
-function* getDashboardGroupsSuccess({
-  tasksList,
-  sortBy,
-  sortDirection,
-  searchTerm,
-}) {
+function* getDashboardGroupsSuccess({ tasksList, sortBy, sortDirection }) {
   yield all(
     tasksList
       .filter(({ defaultOpen }) => defaultOpen)
@@ -242,7 +238,6 @@ function* getDashboardGroupsSuccess({
             taskGroupIdentifier,
             sortBy,
             sortDirection,
-            searchTerm,
           ),
         ),
       ),
@@ -250,37 +245,11 @@ function* getDashboardGroupsSuccess({
 }
 
 function* searchDashboardTasks({ searchTerm }) {
-  // try {
-  // const tabName = yield select(dashboardTabNameSelector);
-  // const isAllTasks = tabName === DashboardTasksTab.ALL_TASKS;
-
-  // const dashboardTasksGroups = yield call(
-  //   isAllTasks
-  //     ? searchTasksForOrganizationGroupedByImplicitGroups
-  //     : searchTasksByAssignedToUserGroupedByImplicitGroups,
-  //   searchTerm,
-  // );
-
-  // yield put({
-  //   type: ActionTypes.SEARCH_DASHBOARD_TASKS_SUCCESS,
-  //   tasksList: dashboardTasksGroups?.map((group) => ({
-  //     ...group,
-  //     metricValue: group?.tasks?.length || 0,
-  //     defaultOpen: true,
-  //   })),
-  // });
-  // } catch {
-  //   yield put({ type: ActionTypes.SEARCH_DASHBOARD_TASKS_FAILURE });
-  //   yield put(showGlobalErrorAlert());
-  // }
-
   try {
     const groups = yield select(dashboardTasksSelector);
     const { key, order } = yield select(dashboardSortTasksSelector);
     yield all([
-      put(
-        DashboardActions.getDashboardGroupTasks(groups, key, order, searchTerm),
-      ),
+      put(DashboardActions.getDashboardGroupTasks(groups, key, order)),
     ]);
   } catch (error) {
     log(error);

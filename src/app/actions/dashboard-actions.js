@@ -25,7 +25,6 @@ export function getDashboardTasksForGroup(
   taskGroupIdentifier,
   sortBy,
   sortDirection,
-  searchTerm,
 ) {
   return {
     type: ActionTypes.GET_DASHBOARD_TASKS_FOR_GROUP,
@@ -33,7 +32,6 @@ export function getDashboardTasksForGroup(
     taskGroupIdentifier,
     sortBy,
     sortDirection,
-    searchTerm,
   };
 }
 
@@ -51,18 +49,12 @@ export function updateSortDashboardTasks(key, order) {
   };
 }
 
-export function getDashboardGroupTasks(
-  dashboardGroups,
-  sortBy,
-  sortDirection,
-  searchTerm,
-) {
+export function getDashboardGroupTasks(dashboardGroups, sortBy, sortDirection) {
   return {
     type: ActionTypes.GET_DASHBOARD_GROUPS_SUCCESS,
     tasksList: dashboardGroups,
     sortBy,
     sortDirection,
-    searchTerm,
   };
 }
 
@@ -116,11 +108,9 @@ export function loadMoreDashboardTasksForGroup(
   };
 }
 
-export const searchDashboardTasks = (searchTerm, sortBy, sortDirection) => ({
+export const searchDashboardTasks = (searchTerm) => ({
   type: ActionTypes.SEARCH_DASHBOARD_TASKS,
   searchTerm,
-  sortBy,
-  sortDirection,
 });
 
 export function getDashboardCalendarTasks() {
