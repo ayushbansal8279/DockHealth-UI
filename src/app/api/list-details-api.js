@@ -98,11 +98,16 @@ export function getFilteredTasksForList(
   status = 'INCOMPLETE',
   sortBy,
   selectedFilters,
+  searchTerm,
 ) {
+  const selectedCriteria = {
+    ...mapSelectedOptionsToRequestPayload(selectedFilters),
+    searchTerm,
+  };
   return axios
     .post(
       `task/filter/filterSpecificTasksByCriteria/${taskListIdentifier}`,
-      mapSelectedOptionsToRequestPayload(selectedFilters),
+      selectedCriteria,
       {
         params: {
           status,

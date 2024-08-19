@@ -153,18 +153,10 @@ function* getCurrentListTasks() {
     const searchTerm = yield select(searchTermSelector);
     const status = yield select(currentTaskListTasksStatusSelector);
 
-    if (searchTerm) {
-      const groupedTasks = yield call(
-        ListDetailsApi.searchTasksByTaskList,
-        taskListIdentifier,
-        searchTerm,
-        status,
-      );
-      yield put({
-        type: ActionTypes.GET_CURRENT_LIST_TASKS_SUCCESS,
-        groupedTasks,
-      });
-    } else if (!selectedFilters || isEmpty(selectedFilters)) {
+    if (
+      (!selectedFilters || isEmpty(selectedFilters)) &&
+      !(searchTerm && searchTerm !== '')
+    ) {
       let groups = yield select(listDetailsGroupsSelector);
 
       if (!groups || isEmpty(groups)) {
@@ -198,6 +190,7 @@ function* getCurrentListTasks() {
         status,
         sort,
         selectedFilters,
+        searchTerm,
       );
       yield put({
         type: ActionTypes.GET_CURRENT_LIST_TASKS_SUCCESS,
