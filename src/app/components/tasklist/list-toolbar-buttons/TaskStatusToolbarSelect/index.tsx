@@ -16,6 +16,7 @@ import RotatableChevron from '@/app/components/common/RotatableChevron/Rotatable
 import palette from '@/app/styles/palette';
 import TaskStatusSelectForm from './TaskStatusSelectForm';
 import localStorageHelper from '@/app/helpers/local-storage-helper';
+import { getTaskListStatusStorageKey } from '@/app/helpers/tasklist-helpers';
 
 interface Props {
   value: string;
@@ -33,18 +34,11 @@ export default function TaskStatusToolbarSelect({
   origin,
 }: Props) {
   const [isOpen, setIsOpen] = useState(false);
-  const [status, setStatus] = useState(TaskStatus.INCOMPLETE);
-  const storageKey =
-    origin === TaskOrigin.PATIENT ? 'patientStatus' : `status${taskListIdentifier}`;
 
-  useEffect(() => {
-    const savedStatus = localStorageHelper.getItem(storageKey);
-    if (savedStatus !== null) {
-      setStatus(savedStatus);
-    } else {
-      setStatus(TaskStatus.INCOMPLETE);
-    }
-  }, [taskListIdentifier]);
+  const storageKey =
+    origin === TaskOrigin.PATIENT
+      ? 'patientStatus'
+      : getTaskListStatusStorageKey(taskListIdentifier);
 
   const buttonRef = useRef(null);
 
@@ -57,13 +51,7 @@ export default function TaskStatusToolbarSelect({
   }, []);
 
   const handleSubmit = (status: string) => {
-    setStatus(status);
-
-    if (status !== TaskStatus.INCOMPLETE) {
-      localStorageHelper.setItem(storageKey, status);
-    } else {
-      localStorageHelper.removeItem(storageKey);
-    }
+    localStorageHelper.setItem(storageKey, status);
     onChange(status);
     handleClose();
   };
@@ -84,7 +72,7 @@ export default function TaskStatusToolbarSelect({
               iconColorFilterActive={iconColorFilterActive}
             />
           </SelectIcon>
-          <ButtonLabel variant="body1">{TaskStatusLabel[status]}</ButtonLabel>
+          <ButtonLabel variant="body1">{TaskStatusLabel[value]}</ButtonLabel>
         </ButtonContainer>
         <Box display="flex" width="3px">
           <RotatableChevronButtonWrapper
@@ -112,7 +100,7 @@ export default function TaskStatusToolbarSelect({
             horizontal: 'left',
           }}
         >
-          <TaskStatusSelectForm defaultValue={status} onSubmit={handleSubmit} />
+          <TaskStatusSelectForm defaultValue={value} onSubmit={handleSubmit} />
         </Popover>
       )}
     </SelectWrapper>

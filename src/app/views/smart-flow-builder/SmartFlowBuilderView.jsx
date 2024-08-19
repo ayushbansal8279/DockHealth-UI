@@ -522,13 +522,13 @@ const SmartFlowBuilderView = () => {
                 </ElementButton>
               ))}
             <SidebarDivider />
-            {isCurrentUserEditor && (
+            {/* {isCurrentUserEditor && (
               <Tooltip title="Auto Align will organize  your layout ">
                 <AutoAlignButton type="button" onClick={handleAutoAlignClick}>
                   Auto Align Layout
                 </AutoAlignButton>
               </Tooltip>
-            )}
+            )} */}
             {isDelayPopoverOpen && (
               <Popper
                 anchorEl={delayPeriodOptionReference.current}

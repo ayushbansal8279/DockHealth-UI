@@ -153,12 +153,13 @@ const DashboardHeader = ({
     dispatch(getQuickFilters({ contextType }));
   }, [contextType, dispatch]);
 
-  const searchTasksWithDebounce = useCallback(() => {
+  const searchTasksWithDebounce = useCallback(
     debounce((value) => {
       onSearchChanged();
       dispatch(searchDashboardTasks(value));
-    }, 1000);
-  }, [dispatch]);
+    }, 1000),
+    [],
+  );
 
   const handleSearchChange = (value) => {
     setSearchValue(value);

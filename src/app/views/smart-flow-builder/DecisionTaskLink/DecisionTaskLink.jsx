@@ -65,7 +65,7 @@ const DecisionTaskLink = (props) => {
   }, [outcomeName, unsetEdited]);
 
   useEffect(() => {
-    if (isEdited && outcome) inputReference.current.focus();
+    if (isEdited && outcome) inputReference.current?.focus();
   }, [isEdited, outcome]);
 
   useEffect(() => {
@@ -183,6 +183,7 @@ const DecisionTaskLink = (props) => {
   const handleInputBlur = () => {
     saveTaskOutcome();
     unsetFocused();
+    unsetEdited();
   };
 
   return (

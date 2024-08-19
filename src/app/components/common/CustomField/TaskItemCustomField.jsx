@@ -135,6 +135,7 @@ const TaskItemCustomField = ({
           value={values || []}
           onChange={handleChange}
           field={field}
+          withSearch
         />
       );
     }
@@ -160,6 +161,7 @@ const TaskItemCustomField = ({
           value={value}
           onChange={handleChange}
           field={updatedField}
+          withSearch
         />
       );
     }

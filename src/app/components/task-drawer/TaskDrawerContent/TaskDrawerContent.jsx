@@ -318,7 +318,6 @@ const TaskDrawerContent = (props) => {
             marginTop: '0',
             height: '60px',
             position: stickyHeader ? 'fixed' : 'relative',
-            width: '800px',
             zIndex: '1000000',
           }}
         >
@@ -377,7 +376,10 @@ const TaskDrawerContent = (props) => {
         {isSubtask && (
           <Grid item xs={12} style={styleFullRowThin(isMobile)}>
             <Spacing vertical={2} />
-            <Typography sx={{ fontWeight: 'bold' }} component="span">
+            <Typography
+              sx={{ fontWeight: 'bold', verticalAlign: 'top' }}
+              component="span"
+            >
               Parent Task:{' '}
             </Typography>
             {selectedParentTask ? (
@@ -424,7 +426,13 @@ const TaskDrawerContent = (props) => {
             disableMentions={restrictMentions}
           />
         </Grid>
-        <Grid item xs={12} ml={3} mb={1} style={styleRightColumn(isMobile)}>
+        <Grid
+          item
+          xs={12}
+          ml={isMobile ? 1 : 3}
+          mb={1}
+          style={styleRightColumn(isMobile)}
+        >
           <AssignedToSection
             onSave={handleUpdateTask}
             disabled={restrictions?.assigment === READ_ONLY}
@@ -475,7 +483,12 @@ const TaskDrawerContent = (props) => {
             selectedTask={selectedTask}
           />
         </Grid>
-        <Grid item xs={12} ml={3} style={styleRightColumn(isMobile)}>
+        <Grid
+          item
+          xs={12}
+          ml={isMobile ? 1 : 3}
+          style={styleRightColumn(isMobile)}
+        >
           <div>
             <StatusSection
               onTaskUpdate={onTaskUpdate}

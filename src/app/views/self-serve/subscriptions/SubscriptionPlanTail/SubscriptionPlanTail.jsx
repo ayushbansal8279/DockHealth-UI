@@ -21,6 +21,8 @@ import {
   DisclaimerText,
   PlanDescription,
   PlanDescriptionContainer,
+  SupportText,
+  Divider,
 } from './styled';
 import SubscriptionPlanFeature from '../SubscriptionPlanFeature/SubscriptionPlanFeature';
 
@@ -44,6 +46,7 @@ const SubscriptionPlanTail = (props) => {
     annualPlanDescriptions,
     featuresDescription,
     features,
+    supportAndServices,
     comingSoonFeatures,
     disclaimers,
     subscriptionPlan,
@@ -51,6 +54,8 @@ const SubscriptionPlanTail = (props) => {
 
   const upgradeLabel = 'Change';
   const subscribeLabel = hasExistingSubscription ? upgradeLabel : 'Subscribe';
+  const supportLabel = 'SUPPORT & SERVICE';
+  const isSupportAvailable = supportAndServices?.length > 0 || false;
   const price =
     billingFrequency === BillingFrequency.MONTHLY
       ? monthlyPrice
@@ -109,6 +114,11 @@ const SubscriptionPlanTail = (props) => {
       <FeatureText>{featuresDescription}</FeatureText>
       <Box m={2} />
       {features.map((feature) => (
+        <SubscriptionPlanFeature key={feature} feature={feature} />
+      ))}
+      {isSupportAvailable && <Divider />}
+      {isSupportAvailable && <SupportText>{supportLabel}</SupportText>}
+      {supportAndServices.map((feature) => (
         <SubscriptionPlanFeature key={feature} feature={feature} />
       ))}
       {comingSoonFeatures?.map((feature) => (

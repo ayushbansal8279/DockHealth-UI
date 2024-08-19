@@ -91,6 +91,27 @@ export function getListCustomFields(taskListIdentifier) {
   };
 }
 
+export function addListCustomField(addedCustomField) {
+  return {
+    type: ActionTypes.ADD_LIST_CUSTOM_FIELD,
+    addedCustomField,
+  };
+}
+
+export function updateListCustomField(updatedCustomField) {
+  return {
+    type: ActionTypes.UPDATE_LIST_CUSTOM_FIELD,
+    updatedCustomField,
+  };
+}
+
+export function deleteListCustomField(deletedCustomFieldIdentifier) {
+  return {
+    type: ActionTypes.DELETE_LIST_CUSTOM_FIELD,
+    deletedCustomFieldIdentifier,
+  };
+}
+
 export function applyTaskTemplate({
   taskTemplateIdentifier,
   taskListIdentifier,

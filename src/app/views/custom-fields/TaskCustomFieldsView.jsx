@@ -25,6 +25,8 @@ import { SortableContext } from '@dnd-kit/sortable';
 import DragHandleIcon from 'img/drag-handle';
 import SortableItem from 'components/common/SortableItem/SortableItem';
 import { useTaskListColumnsConfig } from 'context-api/columns-config-context';
+import * as ListDetailsActions from 'actions/list-details-actions';
+import { CUSTOM_FIELD_TYPES } from 'helpers/custom-fields-helpers';
 import {
   EmptyListPlaceholder,
   CustomFieldItem,
@@ -84,6 +86,7 @@ const TaskCustomFieldsView = ({ taskListIdentifier, editable = false }) => {
                 : f,
             ),
           );
+          dispatch(ListDetailsActions.updateListCustomField(updatedField));
         },
       }),
     );
@@ -98,10 +101,12 @@ const TaskCustomFieldsView = ({ taskListIdentifier, editable = false }) => {
         confirm: () => {
           setColumnsToState(columns.filter((f) => f.identifier !== id));
           CustomFieldsApi.deleteCustomField(id)
-            .then(() =>
-              setCustomFields((previousValue) =>
-                previousValue.filter(({ identifier }) => id !== identifier),
-              ),
+            .then(
+              () =>
+                setCustomFields((previousValue) =>
+                  previousValue.filter(({ identifier }) => id !== identifier),
+                ),
+              dispatch(ListDetailsActions.deleteListCustomField(id)),
             )
             .catch(() => {
               dispatch(showGlobalErrorAlert());
@@ -151,7 +156,10 @@ const TaskCustomFieldsView = ({ taskListIdentifier, editable = false }) => {
         },
         taskListIdentifier,
         onAdded: async (customField) => {
-          setColumnsToState([...columns, customField]);
+          setColumnsToState([
+            ...columns,
+            { ...customField, _customFieldType: CUSTOM_FIELD_TYPES.TASK_LIST },
+          ]);
           const newFields = (
             sortedFields ? [...sortedFields, customField] : [customField]
           ).map((field, index) => {
@@ -161,6 +169,12 @@ const TaskCustomFieldsView = ({ taskListIdentifier, editable = false }) => {
             await CustomFieldsApi.sortTaskCustomFields(
               pluck('identifier', newFields),
               taskListIdentifier,
+            );
+            dispatch(
+              ListDetailsActions.addListCustomField({
+                ...customField,
+                _customFieldType: CUSTOM_FIELD_TYPES.TASK_LIST,
+              }),
             );
           } catch {
             fetchTaskCustomFields();

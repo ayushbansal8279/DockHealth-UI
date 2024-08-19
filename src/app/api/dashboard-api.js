@@ -37,11 +37,13 @@ export function getDashboardMyTasks(status = 'INCOMPLETE') {
 export function reorderTasksInGroup({
   tasksOrder: orderedTaskIds,
   taskGroupImplicitType,
+  taskGroupIdentifier,
 }) {
   return axios
     .put('task/sortTasksInImplicitTaskGroup', {
       taskIdentifiers: orderedTaskIds,
       taskGroupImplicitType,
+      taskGroupIdentifier,
     })
     .then(({ data }) => data)
     .catch((error) => {
@@ -110,11 +112,15 @@ export function getTasksAssignedToUserByImplicitGroup(
   endPosition = 0,
   includeWorkflows = true,
   selectedFilters = {},
+  searchTerm,
 ) {
   return axios
     .post(
       `/task/findTasksAssignedToUserByImplicitGroup`,
-      mapSelectedOptionsToRequestPayload(selectedFilters || {}),
+      {
+        ...mapSelectedOptionsToRequestPayload(selectedFilters || {}),
+        searchTerm,
+      },
       {
         params:
           sortBy && sortDirection
@@ -156,11 +162,15 @@ export function getTasksForOrganizationByImplicitGroup(
   endPosition = 0,
   includeWorkflows = true,
   selectedFilters = {},
+  searchTerm,
 ) {
   return axios
     .post(
       `/task/findTasksForOrganizationByImplicitGroup`,
-      mapSelectedOptionsToRequestPayload(selectedFilters || {}),
+      {
+        ...mapSelectedOptionsToRequestPayload(selectedFilters || {}),
+        searchTerm,
+      },
       {
         params:
           sortBy && sortDirection

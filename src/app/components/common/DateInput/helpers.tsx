@@ -1,10 +1,18 @@
 import moment from 'moment';
 
 export const DEFAULT_DATE_FORMAT = 'MM/DD/YYYY';
+export const DEFAULT_DATE_TIME_FORMAT = 'MM/DD/YYYY hh:mm A';
 
 export const getMomenDateFromString = (value: string | null): moment.Moment => {
   if (value != null && value.includes('T')) {
     return moment(value, 'YYYY-MM-DDTHH:mm:ss.SSSZ');
+  }
+
+  if (
+    value != null &&
+    (value.toLowerCase().includes('am') || value.toLowerCase().includes('pm'))
+  ) {
+    return moment(value, 'MM/DD/YYYY hh:mm A');
   }
 
   if (value === null) {

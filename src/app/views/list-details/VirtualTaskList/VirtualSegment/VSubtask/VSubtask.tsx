@@ -236,8 +236,8 @@ function VSubtask(
                 }
               >
                 <QuickAddSubtask
-                  taskListIdentifier={parentTask.taskList.taskListIdentifier}
-                  parentTaskIdentifier={parentTask.identifier}
+                  taskListIdentifier={parentTask?.taskList?.taskListIdentifier}
+                  parentTaskIdentifier={parentTask?.identifier}
                 />
               </Sc.QuickAddContainer>
             </div>

@@ -1,14 +1,14 @@
 /* eslint-disable unicorn/consistent-function-scoping */
-import React, { useRef, useCallback, useEffect } from 'react';
+import React, { useRef, useCallback, useEffect, useState } from 'react';
 import moment from 'moment';
 import InputMask from 'react-input-mask';
 import Input from 'components/common/Input/Input';
 import { Box, IconButton, Popover } from '@mui/material';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import CloseIcon from '@mui/icons-material/Close';
-import Datepicker from 'components/common/Datepicker/Datepicker';
 import { useBoolean } from 'hooks/useBoolean';
-import { DEFAULT_DATE_FORMAT, getMomenDateFromString } from './helpers';
+import DatePicker from '../../task/DatePicker/DatePicker';
+import { DEFAULT_DATE_TIME_FORMAT, getMomenDateFromString } from './helpers';
 
 const CustomDateInput = ({ inputRef, ...otherProps }) => (
   <InputMask
@@ -22,6 +22,24 @@ const CustomDateInput = ({ inputRef, ...otherProps }) => (
       2: '[0-3]',
       8: '[1-9]',
       9: '[0-9]',
+    }}
+    autoComplete="off"
+    {...otherProps}
+  />
+);
+
+const CustomDateTimeInput = ({ inputRef, ...otherProps }) => (
+  <InputMask
+    inputRef={inputRef}
+    type="text"
+    mask="19/29/8999 19:59 AM"
+    formatChars={{
+      1: '[0-1]',
+      2: '[0-3]',
+      8: '[1-9]',
+      9: '[0-9]',
+      5: '[0-5]',
+      A: '[a,A,p,P]',
     }}
     autoComplete="off"
     {...otherProps}
@@ -44,12 +62,14 @@ const DateInput = React.forwardRef(
       clearErrors,
       showCalanderIcon = true,
       popoverZindex,
+      timeEnabled = false,
       ...otherProps
     },
     reference,
     // eslint-disable-next-line sonarjs/cognitive-complexity
   ) => {
     const [open, setOpen, unsetOpen] = useBoolean(false);
+    const [isTime, setTime] = useState(timeEnabled);
     const innerReference = useRef(null);
     const textFieldReference = reference || innerReference;
     const innerTextInputReference = useRef(null);
@@ -65,15 +85,26 @@ const DateInput = React.forwardRef(
       value && value !== '' && !value.includes('_')
         ? getMomenDateFromString(value)
         : undefined;
-    const dateValue = momentDate?.format(DEFAULT_DATE_FORMAT);
+    const dateValue =
+      value && value !== '' && !value.includes('_')
+        ? momentDate?.format(DEFAULT_DATE_TIME_FORMAT)
+        : value;
 
     const handleChange = ({ target: { value: date } }) => {
-      onChange({ target: { value: date } });
+      const standardizedDate =
+        date && date !== '' && !date.includes('_')
+          ? moment(date).toISOString()
+          : date;
+      onChange({ target: { value: standardizedDate } });
     };
 
     const handleBlur = ({ target: { value: date } }) => {
       if (typeof onBlur === 'function') {
-        onBlur({ target: { value: date } }, true);
+        const standardizedDate =
+          date && date !== '' && !date.includes('_')
+            ? moment(date).toISOString()
+            : date;
+        onBlur({ target: { value: standardizedDate } }, true);
       }
     };
 
@@ -87,8 +118,9 @@ const DateInput = React.forwardRef(
     };
 
     const handleDatepickerChange = (isoDate) => {
-      const date = moment(isoDate).format(DEFAULT_DATE_FORMAT);
+      const date = moment(isoDate).toISOString();
       handleChange({ target: { value: date } });
+      handleBlur({ target: { value: date } });
       setTimeout(() => {
         textInputReference?.current?.focus();
       }, 0);
@@ -96,7 +128,7 @@ const DateInput = React.forwardRef(
     };
 
     useEffect(() => {
-      if (value?.trim() === '' || value === '__/__/____') {
+      if (value?.trim() === '' || value === '__/__/____ __:__ _M') {
         clearErrors?.(name);
       } else if (
         (name && dateValue === 'Invalid date') ||
@@ -112,7 +144,7 @@ const DateInput = React.forwardRef(
         <Input
           ref={textFieldReference}
           inputRef={textInputReference}
-          value={value}
+          value={dateValue}
           onChange={handleChange}
           onBlur={handleBlur}
           readOnly={readOnly}
@@ -137,7 +169,7 @@ const DateInput = React.forwardRef(
             </Box>
           }
           {...otherProps}
-          customInputComponent={CustomDateInput}
+          customInputComponent={isTime ? CustomDateTimeInput : CustomDateInput}
         />
         <Popover
           anchorOrigin={{
@@ -153,12 +185,11 @@ const DateInput = React.forwardRef(
           onClose={handleClose}
           sx={{ zIndex: popoverZindex ?? 5000 }}
         >
-          <Datepicker
+          <DatePicker
             selectedDate={
               momentDate?.isValid() ? momentDate?.toISOString() : undefined
             }
             onDateChange={handleDatepickerChange}
-            maxDate={maxDate}
           />
         </Popover>
       </>

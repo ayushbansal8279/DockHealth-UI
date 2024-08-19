@@ -17,8 +17,8 @@ import {
   getDashboardTaskStasForImplicitGroups,
   getTasksAssignedToUserByImplicitGroup,
   getTasksForOrganizationByImplicitGroup,
-  searchTasksByAssignedToUserGroupedByImplicitGroups,
-  searchTasksForOrganizationGroupedByImplicitGroups,
+  // searchTasksByAssignedToUserGroupedByImplicitGroups,
+  // searchTasksForOrganizationGroupedByImplicitGroups,
   getCalendarTasks,
 } from 'api/dashboard-api';
 import {
@@ -31,6 +31,8 @@ import {
   dashboardGroupTasksCountSelector,
   dashboardTabNameSelector,
   dashboardTaskViewFilterSelector,
+  dashboardSortTasksSelector,
+  dashboardSearchValueSelector,
 } from 'selectors/dashboard-selectors';
 import * as MegaFilterActions from 'actions/mega-filter-actions';
 import { showGlobalErrorAlert } from 'alert/actions';
@@ -114,6 +116,7 @@ function* getDashboardTasksForGroup({
     const taskViewFilter = yield select(dashboardTaskViewFilterSelector);
     const includeWorkflows = taskViewFilter?.includeWorkflows ?? true;
     const selectedFilters = yield select(selectedFiltersInMegaFilterSelector);
+    const searchTerm = yield select(dashboardSearchValueSelector);
 
     const { taskGroups } = yield call(
       isAllTasks
@@ -127,6 +130,7 @@ function* getDashboardTasksForGroup({
       0,
       includeWorkflows,
       selectedFilters,
+      searchTerm,
     );
     const group = taskGroups.find((g) =>
       g.groupType === 'QUICK_FILTER'
@@ -242,42 +246,26 @@ function* getDashboardGroupsSuccess({ tasksList, sortBy, sortDirection }) {
 
 function* searchDashboardTasks({ searchTerm }) {
   try {
-    const tabName = yield select(dashboardTabNameSelector);
-    const isAllTasks = tabName === DashboardTasksTab.ALL_TASKS;
-
-    const dashboardTasksGroups = yield call(
-      isAllTasks
-        ? searchTasksForOrganizationGroupedByImplicitGroups
-        : searchTasksByAssignedToUserGroupedByImplicitGroups,
-      searchTerm,
-    );
-
+    const groups = yield select(dashboardTasksSelector);
+    const { key, order } = yield select(dashboardSortTasksSelector);
+    yield all([
+      put(DashboardActions.getDashboardGroupTasks(groups, key, order)),
+    ]);
+  } catch (error) {
+    log(error);
     yield put({
-      type: ActionTypes.SEARCH_DASHBOARD_TASKS_SUCCESS,
-      tasksList: dashboardTasksGroups?.map((group) => ({
-        ...group,
-        metricValue: group?.tasks?.length || 0,
-        defaultOpen: true,
-      })),
+      type: ActionTypes.GET_DASHBOARD_TASKS_FAILURE,
     });
-  } catch {
-    yield put({ type: ActionTypes.SEARCH_DASHBOARD_TASKS_FAILURE });
     yield put(showGlobalErrorAlert());
   }
 }
 
-function* getDashboardTasks(payload) {
+function* getDashboardTasks() {
   try {
     const groups = yield select(dashboardTasksSelector);
-
+    const { key, order } = yield select(dashboardSortTasksSelector);
     yield all([
-      put(
-        DashboardActions.getDashboardGroupTasks(
-          groups,
-          payload?.sortBy,
-          payload?.sortDirection,
-        ),
-      ),
+      put(DashboardActions.getDashboardGroupTasks(groups, key, order)),
     ]);
   } catch (error) {
     log(error);
@@ -294,7 +282,11 @@ function* reorderDashboardTasks({
   tasksOrder,
 }) {
   try {
-    yield reorderTasksInGroup({ tasksOrder, taskGroupImplicitType });
+    yield reorderTasksInGroup({
+      tasksOrder,
+      taskGroupImplicitType,
+      taskGroupIdentifier,
+    });
     yield put(
       DashboardActions.getDashboardTasksForGroup(
         taskGroupImplicitType,
@@ -425,4 +417,5 @@ export default function* watchDashboard() {
     ActionTypes.GET_DASHBOARD_CALENDAR_TASKS,
     getDashboardCalendarTasks,
   );
+  yield takeLatest(ActionTypes.REFRESH_ORIGIN, getDashboardTasks);
 }

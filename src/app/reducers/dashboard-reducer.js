@@ -3,6 +3,7 @@ import { getGroupByDueDate } from 'helpers/dashboard-helpers';
 import { TaskItemType } from 'helpers/task-helpers';
 import { updateTasksStateCallback } from './reducer-helper';
 import TaskBaseReducer from './task-base-reducer';
+import { move } from 'ramda';
 
 const initialState = {
   tabName: null,
@@ -17,6 +18,10 @@ const initialState = {
   isFetchingFilters: false,
   filterOptionsError: false,
   taskViewFilter: null,
+  sort: {
+    key: null,
+    order: null,
+  },
 };
 
 const addTask = (list, taskToAdd) => {
@@ -264,6 +269,13 @@ const DashboardTasksReducer = (state = initialState, action) => {
       };
     }
 
+    case ActionTypes.REORDER_DASHBOARD_TASK_GROUPS: {
+      const { newIndex, oldIndex } = action;
+      const newDashboardGroupsOrder = move(oldIndex, newIndex, state.tasksList);
+
+      return { ...state, tasksList: newDashboardGroupsOrder };
+    }
+
     case ActionTypes.GET_DASHBOARD_TASKS_FOR_GROUP_SUCCESS: {
       const { groupType, group } = action;
 
@@ -320,6 +332,18 @@ const DashboardTasksReducer = (state = initialState, action) => {
         tasksMap: {
           ...state.tasksMap,
           ...newMap,
+        },
+      };
+    }
+
+    case ActionTypes.SORT_DASHBOARD_TASKS: {
+      const { key, order } = action;
+
+      return {
+        ...state,
+        sort: {
+          key,
+          order,
         },
       };
     }
