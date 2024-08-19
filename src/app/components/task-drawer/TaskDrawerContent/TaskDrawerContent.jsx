@@ -376,7 +376,10 @@ const TaskDrawerContent = (props) => {
         {isSubtask && (
           <Grid item xs={12} style={styleFullRowThin(isMobile)}>
             <Spacing vertical={2} />
-            <Typography sx={{ fontWeight: 'bold' }} component="span">
+            <Typography
+              sx={{ fontWeight: 'bold', verticalAlign: 'top' }}
+              component="span"
+            >
               Parent Task:{' '}
             </Typography>
             {selectedParentTask ? (
