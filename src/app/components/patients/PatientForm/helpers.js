@@ -41,21 +41,14 @@ export const validationSchema = object().shape({
   dob: mixed()
     .nullable()
     .transform((newValue) => {
-      const dobMoment = moment(newValue, DATE_FORMAT);
+      const dobMoment = moment(newValue);
 
       if (!newValue) {
         return null;
       }
 
-      if (
-        newValue?.replace(/[/_-]/g, '')?.length <
-        DATE_FORMAT.replace(/\//g, '').length
-      ) {
-        return new Error();
-      }
-
       if (dobMoment.isValid()) {
-        return newValue;
+        return dobMoment.format(DATE_FORMAT);
       }
 
       return new Error();
