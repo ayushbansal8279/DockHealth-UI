@@ -19,6 +19,7 @@ import {
   ModalWrapper,
 } from '../../styled';
 import { InputContainerStyled } from '../styled';
+import { ConfirmButton } from '../../ModalButton/ModalButtons';
 
 const SendSecureMessageFromTaskModal = () => {
   const dispatch = useDispatch();
@@ -86,14 +87,17 @@ const SendSecureMessageFromTaskModal = () => {
         </InputContainerStyled>
       </ModalDescriptionContainer>
       <ModalFooterStyled>
-        <Button
+        {/* <Button
           uppercase
           width="150px"
           variant="primary"
           onClick={handleSubmit}
         >
           send
-        </Button>
+        </Button> */}
+        <ConfirmButton style={{ width: '270px' }} onClick={handleSubmit}>
+          Send
+        </ConfirmButton>
       </ModalFooterStyled>
     </ModalWrapper>
   );

@@ -29,6 +29,7 @@ import {
   InfoHeaderTextStyled,
 } from '../../styled';
 import { InputContainerStyled } from '../styled';
+import { ConfirmButton } from '../../ModalButton/ModalButtons';
 
 const SendSmsFromTaskModal = ({ setSmsActive }) => {
   const dispatch = useDispatch();
@@ -175,7 +176,7 @@ const SendSmsFromTaskModal = ({ setSmsActive }) => {
         </TextWaringStyled>
       </ModalDescriptionContainer>
       <ModalFooterStyled>
-        <Button
+        {/* <Button
           uppercase
           width="150px"
           variant="primary"
@@ -183,7 +184,14 @@ const SendSmsFromTaskModal = ({ setSmsActive }) => {
           onClick={handleSubmit}
         >
           send
-        </Button>
+        </Button> */}
+        <ConfirmButton
+          disabled={PhoneError || !selectedContacts?.length > 0 || !message}
+          style={{ width: '270px' }}
+          onClick={handleSubmit}
+        >
+          Send
+        </ConfirmButton>
       </ModalFooterStyled>
       <ReactModal
         isOpen={show}

@@ -37,6 +37,7 @@ import {
   AddEditContactLink,
 } from '../styled';
 import { makeFaxNumber, renderAddOrEdit, validateFaxInput } from '../helpers';
+import { ConfirmButton } from '../../ModalButton/ModalButtons';
 
 const SendFaxFromTaskModal = () => {
   const dispatch = useDispatch();
@@ -236,7 +237,7 @@ const SendFaxFromTaskModal = () => {
         </TextWaringStyled>
       </ModalDescriptionContainer>
       <ModalFooterStyled>
-        <Button
+        {/* <Button
           uppercase
           width="150px"
           variant="primary"
@@ -255,7 +256,25 @@ const SendFaxFromTaskModal = () => {
           }}
         >
           send
-        </Button>
+        </Button> */}
+        <ConfirmButton
+          disabled={faxError || !isValidToSend}
+          style={{ width: '270px' }}
+          onClick={() => {
+            dispatch(
+              sendFaxForTask({
+                message,
+                recipientContact: contact?.value.replace(/\D/g, ''),
+                // taskAttachmentIdentifiers: attachments,
+                taskAttachmentIdentifiers: attachmentsToSend,
+                taskIdentifier: identifier,
+              }),
+            );
+            dispatch(closeModal());
+          }}
+        >
+          Send
+        </ConfirmButton>
       </ModalFooterStyled>
       <ReactModal
         isOpen={show}
