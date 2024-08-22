@@ -46,15 +46,13 @@ const AISummaryModal = ({ closeModal, title, onsubmit, type }) => {
     const response = await onsubmit(value);
     setIsFetching(false);
 
-    const splitArray = response.split(
-      type === SummaryType.PATIENT ? '-' : /(?<!Dr)\./,
-    );
+    const splitArray = response.split('\n');
 
-    const formattedArray = splitArray
-      .filter((item) => item.trim() !== '')
-      .map((item) => item.trim().replace(':', ':\n'));
+    // const formattedArray = splitArray
+    //   .filter((item) => item.trim() !== '')
+    //   .map((item) => item.trim().replace(':', ':\n'));
 
-    formattedArray ? setSummaries(formattedArray) : null;
+    splitArray ? setSummaries(splitArray) : null;
   };
 
   const AISummaryLoader = () => {
