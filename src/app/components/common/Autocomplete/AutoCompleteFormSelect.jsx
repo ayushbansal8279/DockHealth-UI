@@ -34,6 +34,7 @@ const AutoCompleteFormSelect = React.forwardRef(
       return (
         <Autocomplete
           multiple={multiple}
+          readOnly={readOnly}
           ref={reference}
           options={options}
           getOptionLabel={(option) => option.label}

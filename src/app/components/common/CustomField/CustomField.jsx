@@ -17,10 +17,9 @@ import { taskDrawerFocusFieldSelector } from 'selectors/task-drawer-selectors';
 import { useSelector } from 'react-redux';
 import { TaskItemType } from 'helpers/task-helpers';
 import { workflowAutofocusFieldSelector } from 'selectors/workflow-drawer-selectors';
-import { Box, TextField } from '@mui/material';
+import { Box } from '@mui/material';
 import CustomFieldRichTextEditor from './CustomFieldRichTextEditor';
 import { ColorIndicator } from './styled';
-import MultiFormSelect from '../MultiSelect/MultiFormSelect';
 import CustomFieldErrorContext from './CustomFieldErrorContext';
 import CustomFieldAutoComplete from './CustomFieldAutoComplete';
 import AutoCompleteFormSelect from '../Autocomplete/AutoCompleteFormSelect';
@@ -41,12 +40,12 @@ const CustomField = ({
   const { identifier, name, placeholder, fieldType, options, displayOptions } =
     field;
   const isRequired = displayOptions?.includes('TASK_REQUIRED');
+  const isReadOnly = displayOptions?.includes('READONLY') || readOnly;
   const inputReference = useRef(null);
   const componentReference = useRef(null);
   const { setValue, watch, setError, clearErrors } = useFormContext();
   const [wasChanged, setWasChanged] = useState(false);
   const [descriptionErrorState, setDescriptionErrorState] = useState(false);
-
   const errorContextValue = useMemo(
     () => ({
       identifier,
@@ -118,7 +117,7 @@ const CustomField = ({
         return (
           <FormInput
             type="text"
-            readOnly={readOnly}
+            readOnly={isReadOnly}
             label={name}
             name={fieldName}
             placeholder={placeholder}
@@ -134,7 +133,7 @@ const CustomField = ({
       case FieldType.RELATIONSHIP: {
         return (
           <CustomFieldAutoComplete
-            readOnly={readOnly}
+            readOnly={isReadOnly}
             label={name}
             name={fieldName}
             placeholder={placeholder}
@@ -152,7 +151,7 @@ const CustomField = ({
           <CustomFieldRichTextEditor
             characterLimit={FieldCharacterLimit.LONG_TEXT}
             identifier={identifier}
-            readOnly={readOnly}
+            readOnly={isReadOnly}
             label={name}
             name={fieldName}
             placeholder={placeholder}
@@ -169,7 +168,7 @@ const CustomField = ({
         return (
           <FormInput
             type="number"
-            readOnly={readOnly}
+            readOnly={isReadOnly}
             label={name}
             name={fieldName}
             placeholder={placeholder}
@@ -184,7 +183,7 @@ const CustomField = ({
       case FieldType.BOOL: {
         return (
           <FormSelect
-            readOnly={readOnly}
+            readOnly={isReadOnly}
             label={name}
             options={BOOL_SELECT_OPTIONS}
             name={fieldName}
@@ -200,7 +199,7 @@ const CustomField = ({
       case FieldType.DATE: {
         return (
           <FormInput
-            readOnly={readOnly}
+            readOnly={isReadOnly}
             label={name}
             placeholder="MM/DD/YYYY"
             inputComponent={DateInput}
@@ -243,7 +242,7 @@ const CustomField = ({
           <Box position="relative">
             {colorIndicator && <ColorIndicator color={colorIndicator} />}
             <AutoCompleteFormSelect
-              readOnly={readOnly}
+              readOnly={isReadOnly}
               label={name}
               options={dependantOptions?.length > 0 ? dependantOptions : dropdownOptions}
               name={fieldName}
@@ -260,7 +259,7 @@ const CustomField = ({
         return (
           <Box position="relative">
             <AutoCompleteFormSelect
-              readOnly={readOnly}
+              readOnly={isReadOnly}
               label={name}
               options={dropdownOptions}
               name={fieldName}
@@ -278,7 +277,7 @@ const CustomField = ({
         return (
           <FormInput
             type="text"
-            readOnly={readOnly}
+            readOnly={isReadOnly}
             label={name}
             name={fieldName}
             placeholder={placeholder}
