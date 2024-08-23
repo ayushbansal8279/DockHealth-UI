@@ -43,7 +43,7 @@ const TaskItemMultiDropdown = ({
     },
     [onChange],
   );
-  console.log(value);
+
 
   const handleSearchChange = (event) => {
     setSearchQuery(event.target.value);

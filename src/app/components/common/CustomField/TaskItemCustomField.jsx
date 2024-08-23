@@ -36,8 +36,8 @@ const TaskItemCustomField = ({
   const isWorkflow =
     task.itemType === TaskItemType.BUNDLE ||
     task.itemType === TaskItemType.TEMPLATE;
-
   const dispatch = useDispatch();
+  const isReadOnly = field.displayOptions?.includes('READONLY') || readOnly;
 
   const handleClick = useCallback(() => {
     if (!patientType) {
@@ -111,7 +111,7 @@ const TaskItemCustomField = ({
     case FieldType.BOOL: {
       return (
         <TaskItemBoolean
-          readOnly={readOnly}
+          readOnly={isReadOnly}
           value={value}
           onChange={handleChange}
           field={field}
@@ -124,14 +124,14 @@ const TaskItemCustomField = ({
           value={value}
           onChange={handleChange}
           field={field}
-          readOnly={readOnly}
+          readOnly={isReadOnly}
         />
       );
     }
     case FieldType.DROPDOWN_MULTI: {
       return (
         <TaskItemMultiDropdown
-          readOnly={readOnly}
+          readOnly={isReadOnly}
           value={values || []}
           onChange={handleChange}
           field={field}
@@ -157,7 +157,7 @@ const TaskItemCustomField = ({
 
       return (
         <TaskItemDropdown
-          readOnly={readOnly}
+          readOnly={isReadOnly}
           value={value}
           onChange={handleChange}
           field={updatedField}
@@ -168,7 +168,7 @@ const TaskItemCustomField = ({
     case FieldType.TEXT: {
       return (
         <TaskItemText
-          readOnly={readOnly}
+          readOnly={isReadOnly}
           value={value}
           onChange={handleChange}
           field={field}
@@ -177,8 +177,8 @@ const TaskItemCustomField = ({
     }
     case FieldType.LONG_TEXT: {
       return (
-        <TaskItemLongText
-          readOnly={readOnly}
+        <TaskItemLongText  
+          readOnly={isReadOnly}
           value={value}
           onChange={handleChange}
           openDrawer={patientType ? undefined : handleClick}
@@ -189,7 +189,7 @@ const TaskItemCustomField = ({
     case FieldType.NUMBER: {
       return (
         <TaskItemNumber
-          readOnly={readOnly}
+          readOnly={isReadOnly}
           value={value}
           onChange={handleChange}
           field={field}
@@ -201,6 +201,7 @@ const TaskItemCustomField = ({
         <StyledHyperLink
           href={value?.startsWith('http') ? value : `//${value}`}
           target="_blank"
+          disabled={isDisabled}
         >
           {trunc(value, 15)}
         </StyledHyperLink>
