@@ -443,9 +443,15 @@ export const StandardTaskItemContainer = styled.div`
       ? palette.bananaHammockLight
       : // eslint-disable-next-line unicorn/no-nested-ternary
         props.customHighlight ?? palette.white};
-  border-bottom: 1px solid ${palette.coolGrey3};
-  border-right: 1px solid ${palette.coolGrey3};
-  border-top: 1px solid ${palette.coolGrey3};
+  border-bottom: 1px solid
+    ${({ isTaskOfTemplate }) =>
+      isTaskOfTemplate ? palette.blueOcean : palette.coolGrey3};
+  border-right: 1px solid
+    ${({ isTaskOfTemplate }) =>
+      isTaskOfTemplate ? palette.blueOcean : palette.coolGrey3};
+  border-top: 1px solid
+    ${({ isTaskOfTemplate }) =>
+      isTaskOfTemplate ? palette.blueOcean : palette.coolGrey3};
   display: flex;
   justify-content: ${(props) =>
     props.isAddingTask ? 'flex-end' : 'flex-start'};
@@ -492,6 +498,9 @@ export const StandardTaskItemContainer = styled.div`
         border-bottom: 1px solid ${palette.coolGrey2};
       `
         : ''}
+
+    ${({ isTaskOfTemplate }) =>
+      isTaskOfTemplate ? `border: 1px solid ${palette.blueOcean}` : ``};
   }
 
   @media print {
@@ -881,6 +890,16 @@ export const ChildTaskTitle = styled.div`
   line-height: 16.8px;
   margin: 8px 8px 2px 6px;
   padding: 2px;
+`;
+
+export const WorkflowTitle = styled.div`
+  color: ${palette.black};
+  margin: 4px 4px 0px 6px;
+  text-align: left;
+  font-family: Outfit;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 19.2px;
 `;
 
 export const ParentTaskLink = styled.div`
