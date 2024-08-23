@@ -72,10 +72,15 @@ export function selectDashboardFilters(selectedFilters, selectedQuickFilter) {
   };
 }
 
-export function reorderDashboardTasks(taskGroupImplicitType, tasksOrder) {
+export function reorderDashboardTasks(
+  taskGroupImplicitType,
+  taskGroupIdentifier,
+  tasksOrder,
+) {
   return {
     type: ActionTypes.REORDER_DASHBOARD_TASKS,
     taskGroupImplicitType,
+    taskGroupIdentifier,
     tasksOrder,
   };
 }

@@ -147,63 +147,32 @@ function* getTasksGroupsList() {
 
 function* getCurrentListTasks() {
   try {
-    const taskListIdentifier = yield select(currentTaskListIdentifierSelector);
-    const selectedFilters = yield select(selectedFiltersInMegaFilterSelector);
     const sort = yield select(taskDetailsSortSelector);
-    const searchTerm = yield select(searchTermSelector);
     const status = yield select(currentTaskListTasksStatusSelector);
 
-    if (searchTerm) {
-      const groupedTasks = yield call(
-        ListDetailsApi.searchTasksByTaskList,
-        taskListIdentifier,
-        searchTerm,
-        status,
+    let groups = yield select(listDetailsGroupsSelector);
+    if (!groups || isEmpty(groups)) {
+      const action = yield take(
+        (a) => a.type === ActionTypes.GET_TASKS_GROUPS_LIST_SUCCESS,
       );
-      yield put({
-        type: ActionTypes.GET_CURRENT_LIST_TASKS_SUCCESS,
-        groupedTasks,
-      });
-    } else if (!selectedFilters || isEmpty(selectedFilters)) {
-      let groups = yield select(listDetailsGroupsSelector);
-
-      if (!groups || isEmpty(groups)) {
-        const action = yield take(
-          (a) => a.type === ActionTypes.GET_TASKS_GROUPS_LIST_SUCCESS,
-        );
-        groups = action.groups;
-      }
-      const groupsWithTasks = compose(filter((g) => g.metricValue >= 0))(
-        groups,
-      );
-      const groupsToGet = groupsWithTasks;
-
-      yield all(
-        groupsToGet.map(({ taskGroupIdentifier }) =>
-          put(
-            ListDetailsActions.getTasksForTaskGroups({
-              taskGroupIdentifier,
-              status,
-              startPosition: 0,
-              sort,
-              refresh: true,
-            }),
-          ),
-        ),
-      );
-    } else {
-      const groupedTasks = yield call(
-        ListDetailsApi.getFilteredTasksForList,
-        taskListIdentifier,
-        status,
-        sort,
-        selectedFilters,
-      );
-      yield put({
-        type: ActionTypes.GET_CURRENT_LIST_TASKS_SUCCESS,
-        groupedTasks,
-      });
+      groups = action.groups;
     }
+    const groupsWithTasks = compose(filter((g) => g.metricValue >= 0))(groups);
+    const groupsToGet = groupsWithTasks;
+
+    yield all(
+      groupsToGet.map(({ taskGroupIdentifier }) =>
+        put(
+          ListDetailsActions.getTasksForTaskGroups({
+            taskGroupIdentifier,
+            status,
+            startPosition: 0,
+            sort,
+            refresh: true,
+          }),
+        ),
+      ),
+    );
   } catch (error) {
     log(error);
     yield put(showGlobalErrorAlert());
@@ -277,6 +246,7 @@ function* getTasksForTaskGroups(payload) {
       viewMode,
       fetchWorkflowTasks = false,
     } = payload;
+
     const { taskListIdentifier } = yield select(locationParametersSelector);
     yield put({
       type: ActionTypes.REQUEST_TASKLIST_GROUP_TASKS,
@@ -284,26 +254,51 @@ function* getTasksForTaskGroups(payload) {
       refresh,
     });
 
-    const groupOfTasks = yield call(
-      ListDetailsApi.getTasksForTaskListByTaskGroup,
-      taskListIdentifier,
-      taskGroupIdentifier,
-      status,
-      startPosition,
-      endPosition,
-      sort,
-      viewMode,
-    );
+    const selectedFilters = yield select(selectedFiltersInMegaFilterSelector);
+    const searchTerm = yield select(searchTermSelector);
 
-    if (fetchWorkflowTasks) {
-      const bundles = groupOfTasks?.taskGroups?.[0]?.tasks?.filter(
-        (t) => t.itemType === 'BUNDLE',
+    let groupOfTasks = {};
+
+    if (
+      (!selectedFilters || isEmpty(selectedFilters)) &&
+      !(searchTerm && searchTerm !== '')
+    ) {
+      groupOfTasks = yield call(
+        ListDetailsApi.getTasksForTaskListByTaskGroup,
+        taskListIdentifier,
+        taskGroupIdentifier,
+        status,
+        startPosition,
+        endPosition,
+        sort,
+        viewMode,
       );
-      yield all(
-        [...(bundles || [])]?.map((b) =>
-          put(getTasksForWorkflow(b.identifier)),
-        ),
+
+      if (fetchWorkflowTasks) {
+        const bundles = groupOfTasks?.taskGroups?.[0]?.tasks?.filter(
+          (t) => t.itemType === 'BUNDLE',
+        );
+        yield all(
+          [...(bundles || [])]?.map((b) =>
+            put(getTasksForWorkflow(b.identifier)),
+          ),
+        );
+      }
+    } else {
+      const groupedTasks = yield call(
+        ListDetailsApi.getFilteredTasksForList,
+        taskListIdentifier,
+        status,
+        startPosition,
+        endPosition,
+        sort,
+        selectedFilters,
+        taskGroupIdentifier,
+        searchTerm,
       );
+      groupOfTasks = {
+        taskGroups: groupedTasks,
+      };
     }
 
     if (shouldSaveInStore) {

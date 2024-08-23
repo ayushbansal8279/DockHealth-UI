@@ -54,6 +54,7 @@ const EditCustomFieldModal = ({
   options: { type },
   taskListIdentifier,
   profileTypeIdentifier,
+  fetchUserCustomFields,
 }) => {
   const [displayOptionsState, setDisplayOptionsState] = useState({
     displayOptions: customField?.displayOptions || [],
@@ -300,6 +301,7 @@ const EditCustomFieldModal = ({
             ...updatedField,
             relatedProfileTypeName: selectedProfileType,
           });
+          fetchUserCustomFields()
           setIsSaving(false);
           closeModal();
         })
