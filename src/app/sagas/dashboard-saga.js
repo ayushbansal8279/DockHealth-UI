@@ -249,7 +249,6 @@ function* searchDashboardTasks({ searchTerm }) {
     const groups = yield select(dashboardTasksSelector);
     const { key, order } = yield select(dashboardSortTasksSelector);
     yield all([
-      put(DashboardActions.addLoadingDashboardGroups(groups)),
       put(DashboardActions.getDashboardGroupTasks(groups, key, order)),
     ]);
   } catch (error) {

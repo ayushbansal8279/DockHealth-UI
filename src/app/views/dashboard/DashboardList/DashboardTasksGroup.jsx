@@ -101,7 +101,7 @@ const DashboardTasksGroup = ({
 
   const loadingDashboardGroups = useSelector(dashboardLoadingGroupsSelector);
   const isGroupLoading = loadingDashboardGroups?.some(
-    (group) => group?.taskGroupIdentifier === taskGroupIdentifier,
+    (group) => group?.groupName === groupName,
   );
 
   const [tasks, setNewTasks] = useState(dashboardTasks);

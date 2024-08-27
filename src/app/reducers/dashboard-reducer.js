@@ -185,18 +185,19 @@ const DashboardTasksReducer = (state = initialState, action) => {
       };
     }
 
+    case ActionTypes.SELECT_DASHBOARD_FILTERS: {
+      return {
+        ...state,
+        loadingGroups: state?.tasksList,
+      };
+    }
+
     case ActionTypes.SEARCH_DASHBOARD_TASKS: {
       return {
         ...state,
         isLoading: true,
         searchValue: action.searchTerm,
-      };
-    }
-
-    case ActionTypes.ADD_LOADING_DASHBOARD_GROUPS: {
-      return {
-        ...state,
-        loadingGroups: action.loadingGroups,
+        loadingGroups: state?.tasksList,
       };
     }
 
@@ -302,8 +303,7 @@ const DashboardTasksReducer = (state = initialState, action) => {
           ...newMap,
         },
         loadingGroups: state?.loadingGroups?.filter(
-          (taskGroup) =>
-            taskGroup?.taskGroupIdentifier !== group?.groupIdentifier,
+          (taskGroup) => taskGroup?.groupName !== group?.groupName,
         ),
       };
     }
@@ -357,6 +357,7 @@ const DashboardTasksReducer = (state = initialState, action) => {
           key,
           order,
         },
+        loadingGroups: state?.tasksList,
       };
     }
 
