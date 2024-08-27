@@ -240,6 +240,7 @@ function* chooseTaskOutcome({
   try {
     yield call(TaskApi.chooseTaskOutcome, taskOutcomeIdentifier);
     yield call(refreshTemplateBundle, { templateBundleIdentifier });
+    yield put({ type: ActionTypes.REFRESH_ORIGIN });
     yield put(showGlobalAlert(AlertMessages.UPDATED));
   } catch {
     yield put(showGlobalErrorAlert());
@@ -313,16 +314,7 @@ function* updateTaskDetails({ task, detailsState }) {
 
 function* updateTaskStartDate({ task, startDate }) {
   try {
-    const updatedTask = yield call(
-      TaskApi.updateStartDate,
-      task.identifier,
-      startDate,
-    );
-    yield put({
-      type: ActionTypes.UPDATE_TASK_START_DATE_SUCCESS,
-      task,
-      startDate: updatedTask.startDate,
-    });
+    yield call(TaskApi.updateStartDate, task.identifier, startDate);
     yield put(showGlobalAlert(AlertMessages.UPDATED));
   } catch {
     yield put({
@@ -346,6 +338,7 @@ function* updateTaskDueDate({ task, dueDate }) {
       task,
       dueDate: updatedTask.dueDate,
     });
+    yield put({ type: ActionTypes.REFRESH_ORIGIN });
     yield put(showGlobalAlert(AlertMessages.UPDATED));
   } catch {
     yield put({

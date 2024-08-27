@@ -33,6 +33,7 @@ import { ListPageContext } from '../ListDetailsView';
 import { getCurrentListTasks } from '@/app/actions/list-details-actions';
 import CustomizeToolbarButton from '@/app/components/tasklist/list-toolbar-buttons/CustomizeToolbarButton/CustomizeToolbarButton';
 import TaskStatusToolbarSelect from '@/app/components/tasklist/list-toolbar-buttons/TaskStatusToolbarSelect';
+import localStorageHelper from '@/app/helpers/local-storage-helper';
 
 const ListDetailsToolbar = ({
   additionalOptions,
@@ -99,6 +100,18 @@ const ListDetailsToolbar = ({
     },
     [dispatch],
   );
+
+  useEffect(() => {
+    const viewType = localStorageHelper.getItem(`view${taskListIdentifier}`);
+    if (viewType === 'FULL_VIEW') {
+      setFullView(true);
+      setSlimView(false);
+    } else if (!boardView && !calendarView) {
+      setFullView(false);
+      setSlimView(true);
+    }
+  }, [taskListIdentifier]);
+
   const boardViewAvailable = useSelector(userHasBoardViewFeatureSelector);
 
   return (
@@ -110,6 +123,7 @@ const ListDetailsToolbar = ({
             onChange={handleChangeTasksStatus}
             iconColorFilterActive={iconColorFilterActiveItem?.value}
             iconColorActive={iconColorActiveItem?.value}
+            taskListIdentifier={taskListIdentifier}
           />
         )}
 
@@ -119,6 +133,7 @@ const ListDetailsToolbar = ({
             onChange={handleChangeTasksStatus}
             iconColorFilterActive={iconColorFilterActiveItem?.value}
             iconColorActive={iconColorActiveItem?.value}
+            taskListIdentifier={taskListIdentifier}
           />
         )}
 
@@ -137,6 +152,7 @@ const ListDetailsToolbar = ({
               value={tasksStatus}
               onChange={handleChangeTasksStatus}
               iconColorFilterActive={iconColorFilterActiveItem?.value}
+              taskListIdentifier={taskListIdentifier}
             />
             <TaskCustomFieldsModal
               opened={customFieldsModalOpened}

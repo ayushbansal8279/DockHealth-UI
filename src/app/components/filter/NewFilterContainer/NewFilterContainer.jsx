@@ -112,6 +112,7 @@ const NewFilterContainer = ({
     <>
       {Object.keys(finalFilter).map((filter) => (
         <FilterSelect
+          key={filter}
           filters={filters}
           setFinalFilter={setFinalFilter}
           filter={filter}

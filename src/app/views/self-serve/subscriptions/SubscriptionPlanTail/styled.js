@@ -151,8 +151,7 @@ export const ContactUsAnchor = styled.a`
 
 export const Divider = styled.hr`
   width: 100%;
-  margin: 30px 0;
-  border: 1px solid ${palette.coolGrey3};
+  margin: 20px 0;
 `;
 
 export const FeatureText = styled.p`
@@ -165,6 +164,13 @@ export const FeatureText = styled.p`
 
 export const DisclaimerText = styled.p`
   margin-bottom: 0;
+  font-size: 12px;
+  font-weight: 400;
+  color: ${palette.coolGrey10};
+`;
+
+export const SupportText = styled.p`
+  margin-bottom: 10px;
   font-size: 12px;
   font-weight: 400;
   color: ${palette.coolGrey10};

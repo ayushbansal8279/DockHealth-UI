@@ -9,7 +9,13 @@ import { WorkflowDrawerFieldNames } from 'helpers/workflow-drawer-helpers';
 import Tooltip from 'components/common/Tooltip/Tooltip';
 import TaskIcon from 'components/task/TaskIcon/TaskIcon';
 import { SINGLE_TASK_RESTRICTIONS_OPTIONS } from 'restrictions/task-restrictions';
-import { GridImg } from './styled';
+import {
+  FilesContainer,
+  FilesWrapper,
+  GridImg,
+  LabelContainer,
+  LabelWrapper,
+} from './styled';
 import TaskLabel from '../../common/TaskLabel/TaskLabel';
 
 const TaskTemplateIcons = ({
@@ -19,7 +25,6 @@ const TaskTemplateIcons = ({
   matchLabels,
   attachments,
   matchAttachments,
-  isHover,
 }) => {
   const { restrictions } = workflow ?? {};
 
@@ -44,51 +49,55 @@ const TaskTemplateIcons = ({
   return (
     <Grid container>
       {labels ? (
-        labels.length > 0 ? (
-          <TaskLabel
-            getLabelsIconTooltipTitle={getLabelsIconTooltipTitle}
-            labels={labels}
-            onClick={onLabelClick}
-          />
-        ) : (
-          <GridImg item xs={12} matched={matchLabels}>
-            <Tooltip placement="top" title="Add Label">
-              <button
-                disabled={
-                  restrictions?.labels ===
-                  SINGLE_TASK_RESTRICTIONS_OPTIONS.DISABLED
-                }
-                type="button"
-                onClick={onLabelClick}
-              >
-                {(labels?.length > 0 || isHover.label) && (
-                  <TaskIcon type="labels" isActive={labels?.length > 0} />
-                )}
+        <LabelContainer>
+          {labels.length > 0 ? (
+            <TaskLabel
+              getLabelsIconTooltipTitle={getLabelsIconTooltipTitle}
+              labels={labels}
+              onClick={onLabelClick}
+            />
+          ) : (
+            <GridImg item xs={12} matched={matchLabels}>
+              <Tooltip placement="top" title="Add Label">
+                <button
+                  disabled={
+                    restrictions?.labels ===
+                    SINGLE_TASK_RESTRICTIONS_OPTIONS.DISABLED
+                  }
+                  type="button"
+                  onClick={onLabelClick}
+                >
+                  <LabelWrapper>
+                    <TaskIcon type="labels" isActive={labels?.length > 0} />
+                  </LabelWrapper>
+                </button>
+              </Tooltip>
+            </GridImg>
+          )}
+        </LabelContainer>
+      ) : null}
+      {attachments ? (
+        <FilesContainer>
+          <GridImg item xs={12} matched={matchAttachments}>
+            <Tooltip
+              placement="top"
+              title={
+                attachments?.length > 0
+                  ? getAttachmentsIconTooltipTitle(attachments)
+                  : 'Add File'
+              }
+            >
+              <button type="button" onClick={onAttachmentsClick}>
+                <FilesWrapper attachments={attachments?.length > 0}>
+                  <TaskIcon
+                    type="attachments"
+                    isActive={attachments?.length > 0}
+                  />
+                </FilesWrapper>
               </button>
             </Tooltip>
           </GridImg>
-        )
-      ) : null}
-      {attachments ? (
-        <GridImg item xs={12} matched={matchAttachments}>
-          <Tooltip
-            placement="top"
-            title={
-              attachments?.length > 0
-                ? getAttachmentsIconTooltipTitle(attachments)
-                : 'Add File'
-            }
-          >
-            <button type="button" onClick={onAttachmentsClick}>
-              {(attachments?.length > 0 || isHover.file) && (
-                <TaskIcon
-                  type="attachments"
-                  isActive={attachments?.length > 0}
-                />
-              )}
-            </button>
-          </Tooltip>
-        </GridImg>
+        </FilesContainer>
       ) : null}
     </Grid>
   );

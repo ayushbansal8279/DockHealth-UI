@@ -47,7 +47,6 @@ const CustomFilters = ({
     (_, identifier, { selectedOptions }) => {
       setSelected(identifier, selectedOptions);
       setSelectedQuickFilter(identifier);
-      openPopover(false);
     },
     [openPopover, setSelected, setSelectedQuickFilter],
   );
@@ -107,6 +106,7 @@ const CustomFilters = ({
             handleQuickFilterDuplicateForPatientList={
               handleQuickFilterDuplicateForPatientList
             }
+            openPopover={openPopover}
           />
         ))}
       </OptionsList>

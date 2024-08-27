@@ -85,6 +85,7 @@ const DashboardTasksGroup = ({
   const {
     groupName,
     groupType,
+    taskGroupIdentifier,
     metricValue,
     defaultOpen,
     isLoading,
@@ -124,7 +125,7 @@ const DashboardTasksGroup = ({
   );
 
   const handleGroupSelect = useCallback(() => {
-    let taskIdentifiers =
+    const taskIdentifiers =
       tasks && typeof tasks[0] === 'string'
         ? tasks
         : tasks.map((item) => item.identifier);
@@ -136,7 +137,7 @@ const DashboardTasksGroup = ({
 
   const onSwitchGroup = useCallback(() => {
     if (!groupIsOpen && !isSearching) {
-      dispatch(getDashboardTasksForGroup(groupType));
+      dispatch(getDashboardTasksForGroup(groupType, taskGroupIdentifier));
     }
     setGroupIsOpen(!groupIsOpen);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -240,6 +241,7 @@ const DashboardTasksGroup = ({
     <DashboardTasksGroupContainer
       ref={parentContainerReference}
       backgroundColor={backgroundColor}
+      height={150 + tasks?.length * 40}
     >
       <StickyContainer left={24} decreaseWidth={2 * 24}>
         {showHeader && (
@@ -250,17 +252,12 @@ const DashboardTasksGroup = ({
             }
           >
             <DashboardTasksGroupHeader backgroundColor={backgroundColor}>
-              <GroupOptionsContainer>
-                <OptionsMenu options={options} placement="bottom-start">
-                  <MoreVert color="primary" />
-                </OptionsMenu>
-              </GroupOptionsContainer>
               <Spacing horizontal={2} />
               <GroupOpenContainer onClick={onSwitchGroup}>
                 <RotatableChevron
                   alt="arrow"
                   rotated={groupIsOpen}
-                  color={iconColorActive}
+                  color={palette.shadowBlue}
                 />
               </GroupOpenContainer>
               <Spacing horizontal={1} />
@@ -268,11 +265,18 @@ const DashboardTasksGroup = ({
                 <DashboardTasksGroupLabel>
                   <DashboardTasksGroupLabelName>
                     {groupName}
-                    <NumericalBadgeContainer>
-                      <TaskCount>{metricValue}</TaskCount>
-                    </NumericalBadgeContainer>
+                    {tasks?.length > 0 && (
+                      <NumericalBadgeContainer>
+                        <TaskCount>{tasks?.length}</TaskCount>
+                      </NumericalBadgeContainer>
+                    )}
                   </DashboardTasksGroupLabelName>
                 </DashboardTasksGroupLabel>
+                <GroupOptionsContainer>
+                  <OptionsMenu options={options} placement="bottom-start">
+                    <MoreVert color="primary" />
+                  </OptionsMenu>
+                </GroupOptionsContainer>
               </GroupNameSectionWrapper>
             </DashboardTasksGroupHeader>
           </StickyElement>
@@ -285,7 +289,7 @@ const DashboardTasksGroup = ({
       ) : (
         <Collapse timeout={500} in={groupIsOpen}>
           <DashboardTasksGroupList>
-            {GROUPS_WITH_QUICK_ADD_TASK_INPUT.includes(groupType) && (
+            {/* {GROUPS_WITH_QUICK_ADD_TASK_INPUT.includes(groupType) && (
               <StickyContainer left={24} decreaseWidth={2 * 24} zIndex={100}>
                 <StickyElement
                   zIndex={101}
@@ -313,7 +317,7 @@ const DashboardTasksGroup = ({
                   />
                 </StickyElement>
               </StickyContainer>
-            )}
+            )} */}
             <TasksHeader
               onOrderChange={handleOrderChange}
               pageBackground={
@@ -346,7 +350,13 @@ const DashboardTasksGroup = ({
                     const newTasksOrder = newTaskIdentifiers.map(
                       (taskIdentifier) => taskIdentifier,
                     );
-                    dispatch(reorderDashboardTasks(groupType, newTasksOrder));
+                    dispatch(
+                      reorderDashboardTasks(
+                        groupType,
+                        taskGroupIdentifier,
+                        newTasksOrder,
+                      ),
+                    );
                   } else {
                     openModal('HomeScreenDragDrop');
                   }
@@ -425,6 +435,7 @@ const DashboardTasksGroup = ({
                           dispatch(
                             loadMoreDashboardTasksForGroup(
                               groupType,
+                              taskGroupIdentifier,
                               currentSort?.key,
                               currentSort?.order,
                             ),

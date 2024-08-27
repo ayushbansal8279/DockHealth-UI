@@ -13,16 +13,40 @@ import {
   StartDateContainer,
   StartDateWrapper,
 } from '../../styled';
+import { openModal } from '@/app/modal/actions';
+import { isStartDateValid } from '@/app/helpers/date-validation-helper';
 
 const TaskItemStartDate = ({ task, disabled = false }) => {
   const dispatch = useDispatch();
-  const { taskIdentifier, startDate, hasRecurringSchedule, reminderType } =
-    task || {};
+  const {
+    taskIdentifier,
+    startDate,
+    hasRecurringSchedule,
+    reminderType,
+    dueDate,
+  } = task || {};
+
+  const handleSave = useCallback(
+    (newStartDate) => {
+      dispatch(updateTaskStartDate(task, newStartDate));
+      onTaskStartDateChanged();
+    },
+    [dispatch, task],
+  );
 
   const handleDueDateChange = useCallback(
-    (newDueDate) => {
-      dispatch(updateTaskStartDate(task, newDueDate));
-      onTaskStartDateChanged();
+    (newStartDate) => {
+      const isDateValid = isStartDateValid(dueDate, newStartDate);
+      if (isDateValid) {
+        handleSave(newStartDate);
+      } else {
+        dispatch(
+          openModal('DateWarning', {
+            type: 'startDate',
+            onSave: () => handleSave(newStartDate),
+          }),
+        );
+      }
     },
     [dispatch, task],
   );

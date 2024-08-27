@@ -1,38 +1,29 @@
 import axios from './axios-heydoc';
-import { ApiKey } from 'types/developer';
+import { Credential } from 'types/developer';
 
-export function createApiKey() {
+export function getDeveloperCredentials() {
   return axios
-    .post<ApiKey>('organization/settings/orgDeveloper')
+    .get<Credential[]>('organization/settings/developer/credential')
+    .then(({ data }) => data)
+    .catch((err) => {
+      throw new Error(err?.response?.data?.errorMessage);
+    });
+}
+
+export function createDeveloperCredential() {
+  return axios
+    .post<Credential>('organization/settings/developer/credential')
     .then(({ data }) => data)
     .catch((error) => {
       throw new Error(error?.response?.data?.errorMessage);
     });
 }
 
-export function getApiKey() {
+export function deleteDeveloperCredential(apiKey: string) {
   return axios
-    .get<ApiKey>('organization/settings/orgDeveloper')
+    .delete(`organization/settings/developer/credential/${apiKey}`)
     .then(({ data }) => data)
-    .catch((error) => {
-      throw new Error(error?.response?.data?.errorMessage);
-    });
-}
-
-export function updateApiKey(orgId: string) {
-  return axios
-    .put<ApiKey>(`developers/${orgId}`)
-    .then(({ data }) => data)
-    .catch((error) => {
-      throw new Error(error?.response?.data?.errorMessage);
-    });
-}
-
-export function deleteApiKey(orgId: string) {
-  return axios
-    .delete(`developers/${orgId}`)
-    .then(({ data }) => data)
-    .catch((error) => {
-      throw new Error(error?.response?.data?.errorMessage);
+    .catch((err) => {
+      throw new Error(err?.response?.data?.errorMessage);
     });
 }

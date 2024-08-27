@@ -84,7 +84,7 @@ const DueDatePicker = ({
   };
 
   const handleInsertDateAsText = () => {
-    const areSomeMissingParts = dateMaskValue.includes('_');
+    const areSomeMissingParts = dateMaskValue?.includes('_');
 
     if (areSomeMissingParts) {
       return;
@@ -179,6 +179,7 @@ const DueDatePicker = ({
             type="button"
             onClick={() => {
               onDateChange(null);
+              setTimeMaskValue(null);
             }}
           >
             Clear Date

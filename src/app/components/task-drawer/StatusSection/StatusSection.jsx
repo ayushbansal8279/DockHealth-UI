@@ -18,10 +18,17 @@ import { IconButton, InputAdornment } from '@mui/material';
 import PrioritySelectIcon from '@/app/img/PrioritySelectIcon';
 import { organizationStatusesSelector } from '@/app/selectors/organization-selectors';
 
-const StatusSection = ({ selectedTask, onTaskUpdate, disabled = false }) => {
+const StatusSection = ({
+  selectedTask,
+  onTaskUpdate,
+  disabled = false,
+  addTaskDrawer,
+  setWorkflowStatusIdentifier,
+}) => {
   const dispatch = useDispatch();
   const { workflowStatus, taskIdentifier } = selectedTask || {};
   const statuses = useSelector(organizationStatusesSelector);
+  const [status, setStatus] = useState(workflowStatus);
 
   const setAutoSaveVisible = useCallback(() => {
     dispatch(AlertActions.showSideBarAlert(AlertMessages.SAVED));
@@ -29,24 +36,29 @@ const StatusSection = ({ selectedTask, onTaskUpdate, disabled = false }) => {
 
   const handleUpdateWorkflowStatus = useCallback(
     (newWorkflowStatus) => {
-      if (taskIdentifier) {
-        updateWorkflowStatus(
-          selectedTask,
-          newWorkflowStatus,
-        )(dispatch)
-          .then((updatedTask) => {
-            onTaskDrawerTaskStatusChanged(newWorkflowStatus?.name);
-            onTaskUpdate(updatedTask);
-            setAutoSaveVisible();
-          })
-          .catch(() => {
-            dispatch(
-              AlertActions.showGlobalAlert(
-                'Error updating status, please try again later',
-                'error',
-              ),
-            );
-          });
+      if (addTaskDrawer) {
+        setWorkflowStatusIdentifier(newWorkflowStatus.identifier);
+        setStatus(newWorkflowStatus);
+      } else {
+        if (taskIdentifier) {
+          updateWorkflowStatus(
+            selectedTask,
+            newWorkflowStatus,
+          )(dispatch)
+            .then((updatedTask) => {
+              onTaskDrawerTaskStatusChanged(newWorkflowStatus?.name);
+              onTaskUpdate(updatedTask);
+              setAutoSaveVisible();
+            })
+            .catch(() => {
+              dispatch(
+                AlertActions.showGlobalAlert(
+                  'Error updating status, please try again later',
+                  'error',
+                ),
+              );
+            });
+        }
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -75,10 +87,8 @@ const StatusSection = ({ selectedTask, onTaskUpdate, disabled = false }) => {
         )}
       >
         <StatusFieldContainer>
-          {workflowStatus ? (
-            <StatusWrapper color={workflowStatus?.color}>
-              {workflowStatus?.name}
-            </StatusWrapper>
+          {status ? (
+            <StatusWrapper color={status?.color}>{status?.name}</StatusWrapper>
           ) : (
             <Input
               variant="outlined"
@@ -99,7 +109,7 @@ const StatusSection = ({ selectedTask, onTaskUpdate, disabled = false }) => {
                 shrink: true,
               }}
               InputProps={{
-                startAdornment: !workflowStatus ? (
+                startAdornment: !status ? (
                   <InputAdornment position="start">
                     <IconButton aria-label="status">
                       <PrioritySelectIcon />
@@ -112,7 +122,7 @@ const StatusSection = ({ selectedTask, onTaskUpdate, disabled = false }) => {
               inputProps={{
                 tabIndex: -1,
                 readOnly: true,
-                value: workflowStatus?.name || '',
+                value: status?.name || '',
               }}
             />
           )}

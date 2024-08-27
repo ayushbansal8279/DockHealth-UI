@@ -1,3 +1,6 @@
+import { fontWeights } from '@/app/styles/font';
+import spacing from '@/app/styles/spacing';
+import { Button, Typography } from '@mui/material';
 import styled from 'styled-components';
 import palette from 'styles/palette';
 
@@ -38,19 +41,6 @@ export const GridItemCalendarView = styled.div`
   }
 `;
 
-export const GridItemFullView = styled.div`
-  background-color: ${(props) =>
-    props.active ? palette.newDarkBlue : palette.white};
-  color: ${(props) => (props.active ? palette.white : palette.zinc)};
-  // border: 2px solid ${palette.zinc};
-  height: 32px;
-  text-align: center;
-  cursor: pointer;
-  @media print {
-    display: none;
-  }
-`;
-
 export const GridItemSlimView = styled.div`
   background-color: ${(props) =>
     props.active ? palette.newDarkBlue : palette.white};
@@ -67,5 +57,32 @@ export const GridItemSlimView = styled.div`
   gap: 10px;
   @media print {
     display: none;
+  }
+`;
+
+export const AddTaskButtonWrapper = styled(Button)`
+  && {
+    border-radius: 4px;
+    background-color: ${palette.newDarkBlue};
+  }
+  & .MuiSvgIcon-root > path {
+    fill: ${palette.white};
+  }
+  height: 32px;
+`;
+
+export const AddTaskButtonLabel = styled(Typography)`
+  &&& {
+    &.MuiTypography-root {
+      color: ${palette.white};
+      display: inline-block;
+      margin-left: ${spacing.tiny};
+      text-transform: none;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 11.19px;
+      text-align: center;
+      margin-right: 5px;
+    }
   }
 `;

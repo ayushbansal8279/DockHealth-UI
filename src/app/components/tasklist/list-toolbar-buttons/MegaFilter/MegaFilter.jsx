@@ -1,5 +1,5 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect, useCallback } from 'react';
 import { Box } from '@mui/material';
 import isEmpty from 'ramda/src/isEmpty';
 import FilterButton from 'components/filter/FilterButton/FilterButton';
@@ -39,7 +39,6 @@ const MegaFilter = ({
 }) => {
   const [isOpen, openPopover] = useState(false);
   const megaFilterButtonReference = useRef(null);
-  const isFilterApplied = selectedFilters && !isEmpty(selectedFilters);
   const [finalFilter, setFinalFilter] = useState({});
   const [customFinalFilter, setCustomFinalFilter] = useState({});
   const [selectedCustomFilter, setSelectedCustomFilter] = useState({});
@@ -64,9 +63,12 @@ const MegaFilter = ({
     });
   }, [isOpen]);
 
+  const isFilterApplied =
+    (selectedFilters && !isEmpty(selectedFilters))
+
   useEffect(() => {
     const data = {};
-    if (selectedQuickFilter === null && selectedFilters && filters) {
+    if (!selectedQuickFilter && selectedFilters && filters) {
       for (const key in selectedFilters) {
         if (key !== '') {
           const users = filters
@@ -92,12 +94,11 @@ const MegaFilter = ({
     }
   }, [selectedFilters, filters, selectedQuickFilter]);
 
-  const clearFilters = () => {
-    onSelectFilters(null);
+  const clearFilters = useCallback(() => {
     selectQuickFilter(null);
     setFinalFilter({});
     setSelectedQuickFilter('');
-  };
+  }, [selectQuickFilter]);
 
   useEffect(() => {
     if (clearFilter) {
@@ -106,7 +107,7 @@ const MegaFilter = ({
         setClearFilter(false);
       }, 500);
     }
-  }, [clearFilter]);
+  }, [clearFilter, clearFilters, setClearFilter]);
 
   useEffect(() => {
     setSelectedQuickFilter(initialQuickFilter);
@@ -200,6 +201,7 @@ const MegaFilter = ({
               setSelectedQuickFilter={setSelectedQuickFilter}
               clearFilters={clearFilters}
               setSelectedCustomFilter={setSelectedCustomFilter}
+              origin={origin}
             />
           ) : (
             <FilterTableLoader />

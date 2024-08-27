@@ -1,5 +1,5 @@
-import React, { useCallback, useRef, useState } from 'react';
-import { TaskStatusLabel } from 'helpers/task-helpers';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { TaskOrigin, TaskStatus, TaskStatusLabel } from 'helpers/task-helpers';
 import { Box, Popover } from '@mui/material';
 import TasksStatusSwitchIcon from 'img/tasks-status-switch-icon.svg';
 import {
@@ -15,19 +15,31 @@ import {
 import RotatableChevron from '@/app/components/common/RotatableChevron/RotatableChevron';
 import palette from '@/app/styles/palette';
 import TaskStatusSelectForm from './TaskStatusSelectForm';
+import localStorageHelper from '@/app/helpers/local-storage-helper';
+import { getTaskListStatusStorageKey } from '@/app/helpers/tasklist-helpers';
 
 interface Props {
   value: string;
   onChange: (newStatus: string) => void;
   iconColorFilterActive: string;
+  taskListIdentifier: string;
+  origin: string;
 }
 
 export default function TaskStatusToolbarSelect({
   value,
   onChange,
   iconColorFilterActive,
+  taskListIdentifier,
+  origin,
 }: Props) {
   const [isOpen, setIsOpen] = useState(false);
+
+  const storageKey =
+    origin === TaskOrigin.PATIENT
+      ? 'patientStatus'
+      : getTaskListStatusStorageKey(taskListIdentifier);
+
   const buttonRef = useRef(null);
 
   const handleOpen = useCallback(() => {
@@ -39,6 +51,7 @@ export default function TaskStatusToolbarSelect({
   }, []);
 
   const handleSubmit = (status: string) => {
+    localStorageHelper.setItem(storageKey, status);
     onChange(status);
     handleClose();
   };

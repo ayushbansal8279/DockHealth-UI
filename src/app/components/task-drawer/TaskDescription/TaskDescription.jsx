@@ -1,43 +1,36 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import React, {
-  // useCallback,
   useEffect,
   useLayoutEffect,
-  // useMemo,
   useRef,
   useState,
 } from 'react';
-// import { EditorState } from 'draft-js';
 import { useDispatch } from 'react-redux';
 import { useBoolean } from 'hooks/useBoolean';
-import { addTask, updateTaskDescription } from 'actions/task-actions';
-// import { useBoolean } from 'hooks/useBoolean';
-import { checkIfTemplateTask, TaskStatus } from 'helpers/task-helpers';
-// import debounce from 'lodash.debounce';
+import { updateTaskDescription } from 'actions/task-actions';
 import RichTextEditor from 'components/common/RichTextEditor/RichTextEditor';
 import CustomTextEditor from 'components/common/CustomTextEditor/CustomTextEditor';
 import { DescriptionTextContainer, DescriptionError } from './styled';
+import palette from '@/app/styles/palette';
 
-const TaskDescription = ({ selectedTask, readOnly }) => {
+const TaskDescription = ({
+  selectedTask,
+  readOnly,
+  addTaskDrawer,
+  taskDescription,
+  setTaskDescription,
+  isClicked = false,
+}) => {
   const {
-    // description,
     tokenizedDescription,
-    status,
-    // parentTaskIdentifier,
   } = selectedTask || {};
-  // const { taskListIdentifier } = taskList || {};
 
   const dispatch = useDispatch();
   const firstRender = useRef(true);
   const descriptionReference = useRef(null);
-  const [isFocused, setFocused, unsetFocused] = useBoolean(false);
+  const [isFocused] = useBoolean(false);
   const [descriptionState, setDescriptionState] =
     useState(tokenizedDescription);
-  // const [descriptionErrorState, setDescriptionErrorState] = useState(false);
-
-  // const isSubtask = !!parentTaskIdentifier;
-
-  // const isTemplateTask = checkIfTemplateTask(selectedTask);
 
   useLayoutEffect(() => {
     if (firstRender) firstRender.current = false;
@@ -53,11 +46,11 @@ const TaskDescription = ({ selectedTask, readOnly }) => {
   }, [descriptionReference, selectedTask]);
 
   const handleChange = (value) => {
-    setDescriptionState(value);
+    addTaskDrawer ? setTaskDescription(value) : setDescriptionState(value);
   };
 
   const handleBlur = (value) => {
-    if (selectedTask?.description !== value) {
+    if (selectedTask?.description !== value && !addTaskDrawer) {
       dispatch(
         updateTaskDescription(selectedTask, {
           tokenizedDescription: value || '',
@@ -66,35 +59,41 @@ const TaskDescription = ({ selectedTask, readOnly }) => {
     }
   };
 
+  const addDrawerStyle = {
+    border: isClicked && !taskDescription && `1px solid ${palette.oPlusRed}`,
+    borderRadius: '2px',
+  };
+
   return (
     <>
       <DescriptionTextContainer>
         Task
-        <CustomTextEditor
-          key={selectedTask?.identifier}
-          // empty={isEmptyDetailsState}
-          focused={isFocused}
-          richTextEnabled
-        >
-          <RichTextEditor
-            value={descriptionState}
-            onChange={handleChange}
-            onBlur={handleBlur}
-            showToolbar={false}
-            disableToolbar
-            showToolbarInline
-            multiline={false}
-            taskListIdentifier={selectedTask?.taskList?.taskListIdentifier}
-            mentions={selectedTask?.taskMentions}
-            readonly={readOnly}
-            showCharCount
-            characterLimit={1000}
-          />
-        </CustomTextEditor>
+        <div style={addTaskDrawer && addDrawerStyle}>
+          <CustomTextEditor
+            key={selectedTask?.identifier}
+            focused={isFocused}
+            richTextEnabled
+          >
+            <RichTextEditor
+              value={addTaskDrawer ? taskDescription : descriptionState}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              showToolbar={false}
+              disableToolbar
+              showToolbarInline
+              multiline={false}
+              taskListIdentifier={selectedTask?.taskList?.taskListIdentifier}
+              mentions={selectedTask?.taskMentions}
+              readonly={readOnly}
+              showCharCount
+              characterLimit={1000}
+            />
+          </CustomTextEditor>
+        </div>
       </DescriptionTextContainer>
-      {/* {descriptionErrorState && (
+      {addTaskDrawer && isClicked && !taskDescription && (
         <DescriptionError>Task description is required</DescriptionError>
-      )} */}
+      )}
     </>
   );
 };

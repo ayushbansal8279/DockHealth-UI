@@ -209,13 +209,13 @@ const TaskNode = React.memo(({ data, isConnectable, selected, type }) => {
                   </SubtasksLabel>
                 )}
               </Box>
-              {assignedToUsers.length === 1 &&
+              {assignedToUsers?.length === 1 &&
                 (isUserGroup(assignedToUsers[0]) ? (
                   <GroupAvatar group={assignedToUsers[0]} size={35} />
                 ) : (
                   <UserAvatar user={assignedToUsers[0]} size={35} />
                 ))}
-              {assignedToUsers.length > 1 && (
+              {assignedToUsers?.length > 1 && (
                 <AdditionalMembersCounter
                   hiddenMembers={assignedToUsers}
                   size={35}

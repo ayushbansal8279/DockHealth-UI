@@ -8,14 +8,17 @@ import { updatePartialWorkflow } from 'actions/task-template-actions';
 import { ReminderType } from 'helpers/task-helpers';
 import { isWorkflowDueDateOverdue } from 'helpers/workflow-helpers';
 import { useDispatch } from 'react-redux';
-import { AddPlaceholder } from './styled';
+import { AddPlaceholder, DueDatesContainer, DueDateWrapper } from './styled';
+import { openModal } from '@/app/modal/actions';
+import { isDueDateValid } from '@/app/helpers/date-validation-helper';
 
 const TaskTemplateDueDate = (props) => {
-  const { workflow, disabled = false, isHover } = props;
-  const { identifier, dueDateTime, reminderType } = workflow || {};
+  const { workflow, disabled = false } = props;
+  const { identifier, dueDateTime, reminderType, startDateTime } =
+    workflow || {};
   const dispatch = useDispatch();
 
-  const handleDueDateChange = useCallback(
+  const handleSave = useCallback(
     (updatedDueDateTime) => {
       const payload = { dueDateTime: updatedDueDateTime };
 
@@ -26,40 +29,57 @@ const TaskTemplateDueDate = (props) => {
     [dispatch, identifier],
   );
 
+  const handleDueDateChange = useCallback(
+    (newDueDate) => {
+      const isDateValid = isDueDateValid(startDateTime, newDueDate);
+      if (isDateValid) {
+        handleSave(newDueDate);
+      } else {
+        dispatch(
+          openModal('DateWarning', {
+            type: 'dueDate',
+            onSave: () => handleSave(newDueDate),
+          }),
+        );
+      }
+    },
+    [dispatch, identifier],
+  );
+
   return (
-    <TaskItemPopover
-      disabled={disabled}
-      content={({ closePopover }) => (
-        <DueDatePicker
-          taskIdentifier={identifier}
-          selectedDate={dueDateTime}
-          disableRecurring
-          onDateChange={handleDueDateChange}
-          onCloseClick={closePopover}
-        />
-      )}
-    >
-      {dueDateTime ? (
-        <DateLabel
-          date={dueDateTime}
-          isOverdue={isWorkflowDueDateOverdue(workflow)}
-          hasReminder={reminderType && reminderType !== ReminderType.NONE}
-          tootipTitle="Edit Due Date"
-        />
-      ) : (
-        <>
-          {isHover ? (
+    <DueDatesContainer>
+      <TaskItemPopover
+        disabled={disabled}
+        content={({ closePopover }) => (
+          <DueDatePicker
+            taskIdentifier={identifier}
+            selectedDate={dueDateTime}
+            disableRecurring
+            onDateChange={handleDueDateChange}
+            onCloseClick={closePopover}
+          />
+        )}
+      >
+        {dueDateTime ? (
+          <DateLabel
+            date={dueDateTime}
+            isOverdue={isWorkflowDueDateOverdue(workflow)}
+            hasReminder={reminderType && reminderType !== ReminderType.NONE}
+            tootipTitle="Edit Due Date"
+          />
+        ) : (
+          <DueDateWrapper>
             <Tooltip placement="top" title="Add Due Date">
               <AddPlaceholder>
                 <div style={{ display: 'flex' }}>
-                  <TaskIcon type="calendar" isActive={true} />
+                  <TaskIcon type="calendar" isActive />
                 </div>
               </AddPlaceholder>
             </Tooltip>
-          ) : null}
-        </>
-      )}
-    </TaskItemPopover>
+          </DueDateWrapper>
+        )}
+      </TaskItemPopover>
+    </DueDatesContainer>
   );
 };
 

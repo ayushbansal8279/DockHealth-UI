@@ -246,7 +246,7 @@ export const ClickablePatient = styled.span`
 
 export const StandardTaskItemContainer = styled.div`
   position: relative;
-  background-color: ${props =>
+  background-color: ${(props) =>
     // eslint-disable-next-line unicorn/no-nested-ternary
     props.isSelected
       ? palette.brightBlueWithAlpha
@@ -487,4 +487,21 @@ export const PatientLabel = styled.span`
 export const DisabledPatientLabel = styled(PatientLabel)`
   opacity: 0.5;
   cursor: not-allowed;
+`;
+
+export const DateIconWrapper = styled.div`
+  opacity: 0;
+`;
+
+export const DateWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  &:hover {
+    & ${DateIconWrapper} {
+      opacity: 1;
+    }
+  }
 `;

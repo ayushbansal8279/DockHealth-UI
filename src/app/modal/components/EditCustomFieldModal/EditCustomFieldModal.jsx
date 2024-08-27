@@ -46,20 +46,6 @@ import {
 
 const REQUIRED_MESSAGE = 'This field is required';
 
-const validationSchema = object().shape({
-  name: string().required(REQUIRED_MESSAGE),
-  placeholder: string().nullable(),
-  fieldType: string().required(REQUIRED_MESSAGE),
-  options: array()
-    .of(
-      object().shape({
-        name: string().required(REQUIRED_MESSAGE),
-      }),
-    )
-    .nullable(),
-  fieldCategoryType: string().required(REQUIRED_MESSAGE),
-});
-
 const EditCustomFieldModal = ({
   closeModal,
   customField,
@@ -68,6 +54,7 @@ const EditCustomFieldModal = ({
   options: { type },
   taskListIdentifier,
   profileTypeIdentifier,
+  fetchUserCustomFields,
 }) => {
   const [displayOptionsState, setDisplayOptionsState] = useState({
     displayOptions: customField?.displayOptions || [],
@@ -107,6 +94,25 @@ const EditCustomFieldModal = ({
   const isCreatingNewField = !customField;
   const [isSaving, setIsSaving] = useState(false);
   const dispatch = useDispatch();
+
+  const validationSchema = useMemo(() => {
+    return object().shape({
+      name: string().required(REQUIRED_MESSAGE),
+      placeholder: string().nullable(),
+      fieldType: string().required(REQUIRED_MESSAGE),
+      options: array()
+        .of(
+          object().shape({
+            name: string().required(REQUIRED_MESSAGE),
+          }),
+        )
+        .nullable(),
+
+      ...(type === 'PROFILE'
+        ? {}
+        : { fieldCategoryType: string().required(REQUIRED_MESSAGE) }),
+    });
+  }, [type]);
 
   const formMethods = useForm({
     resolver: yupResolver(validationSchema),
@@ -289,6 +295,7 @@ const EditCustomFieldModal = ({
             ...updatedField,
             relatedProfileTypeName: selectedProfileType,
           });
+          fetchUserCustomFields()
           setIsSaving(false);
           closeModal();
         })

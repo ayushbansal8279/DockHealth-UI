@@ -148,6 +148,40 @@ const ListDetailsReducer = (state = initialState, action) => {
         taskListIdentifier: null,
       };
     }
+
+    case ActionTypes.ADD_LIST_CUSTOM_FIELD: {
+      const { listCustomFields } = state;
+      const { addedCustomField } = action;
+      return {
+        ...state,
+        listCustomFields: [...(listCustomFields || []), addedCustomField],
+      };
+    }
+
+    case ActionTypes.UPDATE_LIST_CUSTOM_FIELD: {
+      const { listCustomFields } = state;
+      const { updatedCustomField } = action;
+      return {
+        ...state,
+        listCustomFields: listCustomFields.map((field) =>
+          updatedCustomField.identifier === field.identifier
+            ? { ...field, ...updatedCustomField }
+            : field,
+        ),
+      };
+    }
+
+    case ActionTypes.DELETE_LIST_CUSTOM_FIELD: {
+      const { listCustomFields } = state;
+      const { deletedCustomFieldIdentifier } = action;
+      return {
+        ...state,
+        listCustomFields: listCustomFields.filter(
+          ({ identifier }) => deletedCustomFieldIdentifier !== identifier,
+        ),
+      };
+    }
+
     case ActionTypes.GET_LIST_CUSTOM_FIELDS_SUCCESS: {
       const { listCustomFields } = action;
       return {
@@ -395,6 +429,27 @@ const ListDetailsReducer = (state = initialState, action) => {
     case ActionTypes.UPDATE_TEMPLATE_BUNDLE_FAILURE:
     case ActionTypes.UPDATE_TEMPLATE_BUNDLE_SUCCESS: {
       const { bundleIdentifier, dataToUpdate } = action;
+
+      const groupWithTasks = state.groupedTasks?.taskGroups?.find(
+        ({ groupIdentifier }) =>
+          groupIdentifier === dataToUpdate.parentTaskWorkflowIdentifier,
+      );
+
+      if (groupWithTasks) {
+        return updateGroupInState(
+          (group) => ({
+            ...group,
+            tasks: group.tasks?.find(
+              (taskId) => taskId === dataToUpdate?.identifier,
+            )
+              ? group.tasks
+              : [dataToUpdate?.identifier, ...(group.tasks || [])],
+          }),
+          dataToUpdate.parentTaskWorkflowIdentifier,
+          dataToUpdate,
+          state,
+        );
+      }
 
       const updatedMap = updateTasksMap(state, {
         itemType: TaskItemType.BUNDLE,
