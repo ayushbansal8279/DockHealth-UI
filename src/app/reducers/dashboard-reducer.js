@@ -22,6 +22,7 @@ const initialState = {
     key: null,
     order: null,
   },
+  loadingGroups: [],
 };
 
 const addTask = (list, taskToAdd) => {
@@ -192,6 +193,13 @@ const DashboardTasksReducer = (state = initialState, action) => {
       };
     }
 
+    case ActionTypes.ADD_LOADING_DASHBOARD_GROUPS: {
+      return {
+        ...state,
+        loadingGroups: action.loadingGroups,
+      };
+    }
+
     case ActionTypes.GET_DASHBOARD_GROUP_STATS_SUCCESS: {
       return {
         ...state,
@@ -293,6 +301,10 @@ const DashboardTasksReducer = (state = initialState, action) => {
           ...state.tasksMap,
           ...newMap,
         },
+        loadingGroups: state?.loadingGroups?.filter(
+          (taskGroup) =>
+            taskGroup?.taskGroupIdentifier !== group?.groupIdentifier,
+        ),
       };
     }
 

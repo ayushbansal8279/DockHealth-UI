@@ -108,6 +108,11 @@ export function loadMoreDashboardTasksForGroup(
   };
 }
 
+export const addLoadingDashboardGroups = (loadingGroups) => ({
+  type: ActionTypes.ADD_LOADING_DASHBOARD_GROUPS,
+  loadingGroups,
+});
+
 export const searchDashboardTasks = (searchTerm) => ({
   type: ActionTypes.SEARCH_DASHBOARD_TASKS,
   searchTerm,

@@ -79,6 +79,11 @@ export const dashboardSortTasksSelector = createSelector(
   ({ sort }) => sort,
 );
 
+export const dashboardLoadingGroupsSelector = createSelector(
+  dashboardTasksStateSelector,
+  ({ loadingGroups }) => loadingGroups,
+);
+
 export const selectedTasksSelector = (state) =>
   state?.taskItems?.selectedTaskIdentifiers
     .filter((taskId) => state?.dashboardTasks?.tasksMap[taskId] !== undefined)

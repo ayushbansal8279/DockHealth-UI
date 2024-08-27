@@ -37,6 +37,7 @@ import RotatableChevron from 'components/common/RotatableChevron/RotatableChevro
 import Spacing from 'components/common/Spacing';
 import {
   dashboardLastCreatedTaskIdentifierSelector,
+  dashboardLoadingGroupsSelector,
   dashboardTasksMapSelector,
 } from 'selectors/dashboard-selectors';
 import { usePrevious } from 'react-use';
@@ -96,6 +97,11 @@ const DashboardTasksGroup = ({
 
   const lastCreatedTaskId = useSelector(
     dashboardLastCreatedTaskIdentifierSelector,
+  );
+
+  const loadingDashboardGroups = useSelector(dashboardLoadingGroupsSelector);
+  const isGroupLoading = loadingDashboardGroups?.some(
+    (group) => group?.taskGroupIdentifier === taskGroupIdentifier,
   );
 
   const [tasks, setNewTasks] = useState(dashboardTasks);
@@ -282,7 +288,7 @@ const DashboardTasksGroup = ({
           </StickyElement>
         )}
       </StickyContainer>
-      {isLoading && !tasks ? (
+      {isGroupLoading || !tasks ? (
         <DashboardTasksGroupList>
           <TasksSkeletonLoader rows={4} />
         </DashboardTasksGroupList>
