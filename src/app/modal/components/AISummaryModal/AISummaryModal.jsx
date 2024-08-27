@@ -107,21 +107,23 @@ const AISummaryModal = ({ closeModal, title, onsubmit, type }) => {
             ))}
         </Info>
       </Grid>
-      <CustomPromptInput
-        maxRows={3}
-        disabled={isFetching}
-        value={value}
-        placeholder="Custom Prompt"
-        size="small"
-        onChange={handlePromptChange}
-        variant="outlined"
-      />
-      <RefreshWrapper>
-        <LuminaStar color={palette.newBrightBlue} />
-        <ResponseButton onClick={handleReGenerateResponse}>
-          Refresh
-        </ResponseButton>
-      </RefreshWrapper>
+      <RegenerateWrapper>
+        <CustomPromptInput
+          maxRows={3}
+          disabled={isFetching}
+          value={value}
+          placeholder="Custom Prompt"
+          size="small"
+          onChange={handlePromptChange}
+          variant="outlined"
+        />
+        <RefreshWrapper>
+          <LuminaStar color={palette.newBrightBlue} />
+          <ResponseButton onClick={handleReGenerateResponse}>
+            Refresh
+          </ResponseButton>
+        </RefreshWrapper>
+      </RegenerateWrapper>
     </AISummaryModalWrapper>
   );
 };
