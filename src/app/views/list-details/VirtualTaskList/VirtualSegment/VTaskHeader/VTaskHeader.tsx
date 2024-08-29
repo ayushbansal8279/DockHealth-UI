@@ -18,12 +18,14 @@ import { taskDetailsSortSelector } from 'selectors/list-details-selectors';
 import palette from '@/app/styles/palette';
 import { TaskOrigin } from '@/app/helpers/task-helpers';
 import { useVirtualTaskListScrollContext } from '../../VirtualTaskListScrollContext';
+import TasksSkeletonLoader from '@/app/components/task/TasksSkeletonLoader/TasksSkeletonLoader';
 
 export interface Props extends Segment {
   isTaskTemplate: boolean;
   bgColor: boolean;
   groupWithZeroTask: boolean;
   isLastGroupOfList: boolean;
+  isLoadingGroup: boolean;
 }
 
 function VTaskHeader(
@@ -34,6 +36,7 @@ function VTaskHeader(
     groupWithZeroTask,
     isLastGroupOfList,
     bgColor,
+    isLoadingGroup,
   }: Props,
   // eslint-disable-next-line unicorn/prevent-abbreviations
   ref: ForwardedRef<HTMLDivElement>,
@@ -73,33 +76,37 @@ function VTaskHeader(
         background: bgColor ? palette.aliceBlue : '',
       }}
     >
-      <Sc.VTaskHeader
-        ref={ref}
-        {...register}
-        $subitem={metadata.level > 1}
-        $template={isTaskTemplate}
-        bgColor={bgColor}
-        groupWithZeroTask={groupWithZeroTask}
-      >
-        {/* @ts-ignore */}
-        {groupWithZeroTask ? (
-          <></>
-        ) : (
-          <TasksHeader
-            bulkEditEnabled={bulkEditEnabled}
-            sort={sort}
-            onSortChange={onSortChange}
-            // @ts-ignore
-            groupHasMultipleAssignees={groupHasMultipleAssignees}
-            isGroupSelected={isGroupSelected}
-            onGroupSelect={handleGroupSelect}
-            pageBackground={bgColor ? palette.aliceBlue : ''}
-            origin={TaskOrigin.LIST}
-            listPageGroupHeader
-            isWidthGreaterThanHundredPercent={percentage > 90}
-          />
-        )}
-      </Sc.VTaskHeader>
+      {isLoadingGroup ? (
+        <TasksSkeletonLoader rows={4} />
+      ) : (
+        <Sc.VTaskHeader
+          ref={ref}
+          {...register}
+          $subitem={metadata.level > 1}
+          $template={isTaskTemplate}
+          bgColor={bgColor}
+          groupWithZeroTask={groupWithZeroTask}
+        >
+          {/* @ts-ignore */}
+          {groupWithZeroTask ? (
+            <></>
+          ) : (
+            <TasksHeader
+              bulkEditEnabled={bulkEditEnabled}
+              sort={sort}
+              onSortChange={onSortChange}
+              // @ts-ignore
+              groupHasMultipleAssignees={groupHasMultipleAssignees}
+              isGroupSelected={isGroupSelected}
+              onGroupSelect={handleGroupSelect}
+              pageBackground={bgColor ? palette.aliceBlue : ''}
+              origin={TaskOrigin.LIST}
+              listPageGroupHeader
+              isWidthGreaterThanHundredPercent={percentage > 90}
+            />
+          )}
+        </Sc.VTaskHeader>
+      )}
     </div>
   );
 }
