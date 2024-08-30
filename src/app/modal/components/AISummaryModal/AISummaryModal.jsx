@@ -14,6 +14,10 @@ import {
   RefreshWrapper,
   AISummaryLoaderSkeleton,
   CustomPromptInput,
+  CopyWrapper,
+  CloseTooltip,
+  CloseWrapper,
+  CopyTooltip,
 } from './styled';
 import LuminaStar from 'img/AI/LuminaStar';
 import palette from '@/app/styles/palette';
@@ -33,12 +37,17 @@ const AISummaryModal = ({ closeModal, title, onsubmit, type }) => {
   }, []);
 
   const [value, setValue] = useState('');
+  const [copied, setCopied] = useState(false);
   const [summaries, setSummaries] = useState([]);
   const [isFetching, setIsFetching] = useState(false);
 
   const handleCopy = () => {
     const formattedString = summaries.join('\n\n');
     navigator.clipboard.writeText(formattedString);
+    setCopied(true);
+    setTimeout(() => {
+      setCopied(false);
+    }, 2000);
   };
 
   const handlePromptChange = (event) => {
@@ -79,9 +88,17 @@ const AISummaryModal = ({ closeModal, title, onsubmit, type }) => {
           <LuminaStar color={palette.newBrightBlue} />
           <Title>{title}</Title>
         </SubHeader>
-        <div>
-          <IconWrapper onClick={handleCopy} src={Copy} alt="copy" />
-          <IconWrapper onClick={closeModal} src={Close} alt="close" />
+        <div style={{ display: 'flex' }}>
+          <CopyWrapper>
+            <IconWrapper onClick={handleCopy} src={Copy} alt="copy" />
+            <CopyTooltip>
+              {copied ? 'Copied to clipboard !' : 'Copy to clipboard'}
+            </CopyTooltip>
+          </CopyWrapper>
+          <CloseWrapper>
+            <IconWrapper onClick={closeModal} src={Close} alt="close" />
+            <CloseTooltip>Close</CloseTooltip>
+          </CloseWrapper>
         </div>
       </Header>
       <Spacing vertical={3} />

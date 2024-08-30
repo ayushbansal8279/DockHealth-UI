@@ -17,6 +17,7 @@ export const Header = styled.div`
   justify-content: space-between;
   align-items: space-between;
   width: 100%;
+  margin-top: 5px;
 `;
 
 export const SubHeader = styled.div`
@@ -115,4 +116,34 @@ export const AISummaryLoaderSkeleton = styled(Skeleton)`
       border-radius: 4px;
     }
   }
+`;
+
+export const CopyTooltip = styled.div`
+  opacity: 0;
+  position: absolute;
+  top: 2;
+  right: 10;
+  color: ${palette.coolGrey1};
+`;
+
+export const CloseTooltip = styled.div`
+  opacity: 0;
+  position: absolute;
+  top: 2;
+  right: 20;
+  color: ${palette.coolGrey1};
+`;
+
+export const CopyWrapper = styled.div`
+  &:hover {
+    & ${CopyTooltip} {
+      opacity: 1;
+    }
+`;
+
+export const CloseWrapper = styled.div`
+  &:hover {
+    & ${CloseTooltip} {
+      opacity: 1;
+    }
 `;
