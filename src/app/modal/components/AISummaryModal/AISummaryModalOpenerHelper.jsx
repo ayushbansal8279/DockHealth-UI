@@ -15,8 +15,8 @@ const AISummaryModalOpenerHelper = ({ type, title, identifier }) => {
   const [isAiIconHovered, setAiIconHovered] = useState(false);
   const dispatch = useDispatch();
 
-  const methodToCall = async (promptText) => {
-    const customPrompt = customPromptBuilder(promptText);
+  const methodToCall = async (promptText, forceRefresh) => {
+    const customPrompt = customPromptBuilder(promptText, forceRefresh);
 
     if (type === SummaryType.PATIENT)
       return await getPatientAISummary(identifier, customPrompt);
@@ -36,7 +36,8 @@ const AISummaryModalOpenerHelper = ({ type, title, identifier }) => {
             openModal('AISummary', {
               type: type,
               title: `${title}`,
-              onsubmit: async (promptText) => await methodToCall(promptText),
+              onsubmit: async (promptText, forceRefresh) =>
+                await methodToCall(promptText, forceRefresh),
             }),
           )
         }

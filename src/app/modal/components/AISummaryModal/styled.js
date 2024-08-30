@@ -3,7 +3,7 @@ import spacing from 'styles/spacing';
 import { fontWeights } from 'styles/font';
 import palette from 'styles/palette';
 import { ModalWrapper } from '../styled';
-import { Button, TextField } from '@mui/material';
+import { Button, TextareaAutosize } from '@mui/material';
 import Skeleton from '@mui/material/Skeleton';
 
 export const AISummaryModalWrapper = styled(ModalWrapper)`
@@ -30,19 +30,27 @@ export const Title = styled.div`
   font-weight: ${fontWeights.bold};
 `;
 
-export const CustomPromptInput = styled(TextField)`
+export const CustomPromptInput = styled(TextareaAutosize)`
   background-color: ${palette.white};
-  width: 550px;
+  min-width: 435px;
+  max-width: 435px;
+  max-height: 150px;
+  width: 435px;
   margin-top: 10px;
+  line-height: 1.5;
+  padding: 8px 15px;
+  border-radius: 8px;
 
-  .MuiOutlinedInput-root {
-    .MuiOutlinedInput-notchedOutline {
-      border-width: 1px;
-    }
+  &:hover {
+    border-color: ${palette.brightBlue};
+  }
 
-    &.Mui-focused .MuiOutlinedInput-notchedOutline {
-      border-color: ${palette.gunmetal};
-    }
+  &:focus {
+    border-color: ${palette.brightBlue};
+  }
+
+  &:disabled {
+    background-color: ${palette.white};
   }
 `;
 
@@ -91,11 +99,13 @@ export const RegenerateWrapper = styled.div`
 `;
 
 export const RefreshWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  height: 32px;
+  margin: 10px 0 0 10px;
   border-radius: 6px;
   background-color: ${palette.whiteSmoke};
   padding-left: 10px;
-  display: flex;
-  align-items: center;
 `;
 
 export const AISummaryLoaderSkeleton = styled(Skeleton)`

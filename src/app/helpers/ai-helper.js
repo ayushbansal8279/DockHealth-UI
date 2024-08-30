@@ -1,8 +1,12 @@
-export const customPromptBuilder = (prompt) => {
+export const customPromptBuilder = (prompt, refresh) => {
+  const customPrompt = prompt || '';
+  const forceRefresh = refresh || false;
+
   return {
-    customPrompt: prompt,
+    customPrompt: customPrompt,
     persona: '',
     tone: '',
+    force: forceRefresh,
   };
 };
 

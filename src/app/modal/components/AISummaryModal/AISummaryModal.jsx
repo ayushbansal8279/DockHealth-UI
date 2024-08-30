@@ -28,6 +28,10 @@ const AISummaryModal = ({ closeModal, title, onsubmit, type }) => {
     }
   }, [closeModal, title]);
 
+  useEffect(() => {
+    handleGenerateResponse(false);
+  }, []);
+
   const [value, setValue] = useState('');
   const [summaries, setSummaries] = useState([]);
   const [isFetching, setIsFetching] = useState(false);
@@ -41,9 +45,9 @@ const AISummaryModal = ({ closeModal, title, onsubmit, type }) => {
     setValue(event?.target.value);
   };
 
-  const handleGenerateResponse = async () => {
+  const handleGenerateResponse = async (forceRefresh) => {
     setIsFetching(true);
-    const response = await onsubmit(value);
+    const response = await onsubmit(value, forceRefresh);
     setIsFetching(false);
 
     const splitArray = response.split('\n');
@@ -53,6 +57,10 @@ const AISummaryModal = ({ closeModal, title, onsubmit, type }) => {
     //   .map((item) => item.trim().replace(':', ':\n'));
 
     splitArray ? setSummaries(splitArray) : null;
+  };
+
+  const handleReGenerateResponse = async () => {
+    handleGenerateResponse(true);
   };
 
   const AISummaryLoader = () => {
@@ -80,12 +88,12 @@ const AISummaryModal = ({ closeModal, title, onsubmit, type }) => {
       <Grid container direction="column" item wrap="nowrap">
         <RegenerateWrapper>
           <GeneratedTime>Generated 1 min ago</GeneratedTime>
-          <RefreshWrapper>
+          {/* <RefreshWrapper>
             <LuminaStar color={palette.newBrightBlue} />
-            <ResponseButton onClick={handleGenerateResponse}>
+            <ResponseButton onClick={handleReGenerateResponse}>
               Refresh
             </ResponseButton>
-          </RefreshWrapper>
+          </RefreshWrapper> */}
         </RegenerateWrapper>
         <Spacing vertical={4} />
         {isFetching && AISummaryLoader()}
@@ -99,14 +107,23 @@ const AISummaryModal = ({ closeModal, title, onsubmit, type }) => {
             ))}
         </Info>
       </Grid>
-      <CustomPromptInput
-        disabled={isFetching}
-        value={value}
-        placeholder="Custom Prompt"
-        size="small"
-        onChange={handlePromptChange}
-        variant="outlined"
-      />
+      <RegenerateWrapper>
+        <CustomPromptInput
+          maxRows={3}
+          disabled={isFetching}
+          value={value}
+          placeholder="Custom Prompt"
+          size="small"
+          onChange={handlePromptChange}
+          variant="outlined"
+        />
+        <RefreshWrapper>
+          <LuminaStar color={palette.newBrightBlue} />
+          <ResponseButton onClick={handleReGenerateResponse}>
+            Refresh
+          </ResponseButton>
+        </RefreshWrapper>
+      </RegenerateWrapper>
     </AISummaryModalWrapper>
   );
 };
