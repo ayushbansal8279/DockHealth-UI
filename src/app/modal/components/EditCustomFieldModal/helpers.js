@@ -100,7 +100,7 @@ export const getAdditionalProfileOptions = ({
     ),
     onChange: (value) => handleDisplayOptionChange(value, 'PROFILE_HEADER'),
   },
- 
+  ...commonOptions(displayOptionsState, handleDisplayOptionChange),
 ];
 
 export const getAdditionalOptions = ({
