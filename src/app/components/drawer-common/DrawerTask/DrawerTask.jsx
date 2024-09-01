@@ -242,7 +242,7 @@ const DrawerTask = (props) => {
           <Tooltip
             placement="top"
             title={
-              labels?.length > 0 ? getLabelsIconTooltipTitle(labels) : 'Lable'
+              labels?.length > 0 ? getLabelsIconTooltipTitle(labels) : 'Label'
             }
           >
             <button type="button" onClick={handleLabelIconClick}>
