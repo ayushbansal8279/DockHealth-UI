@@ -22,6 +22,7 @@ const initialState = {
     key: null,
     order: null,
   },
+  loadingGroups: [],
 };
 
 const addTask = (list, taskToAdd) => {
@@ -184,11 +185,19 @@ const DashboardTasksReducer = (state = initialState, action) => {
       };
     }
 
+    case ActionTypes.SELECT_DASHBOARD_FILTERS: {
+      return {
+        ...state,
+        loadingGroups: state?.tasksList,
+      };
+    }
+
     case ActionTypes.SEARCH_DASHBOARD_TASKS: {
       return {
         ...state,
         isLoading: true,
         searchValue: action.searchTerm,
+        loadingGroups: state?.tasksList,
       };
     }
 
@@ -293,6 +302,9 @@ const DashboardTasksReducer = (state = initialState, action) => {
           ...state.tasksMap,
           ...newMap,
         },
+        loadingGroups: state?.loadingGroups?.filter(
+          (taskGroup) => taskGroup?.groupName !== group?.groupName,
+        ),
       };
     }
 
@@ -345,6 +357,7 @@ const DashboardTasksReducer = (state = initialState, action) => {
           key,
           order,
         },
+        loadingGroups: state?.tasksList,
       };
     }
 
