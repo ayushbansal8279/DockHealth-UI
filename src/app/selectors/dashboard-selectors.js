@@ -81,7 +81,9 @@ export const dashboardSortTasksSelector = createSelector(
 
 export const dashboardLoadingGroupsSelector = createSelector(
   dashboardTasksStateSelector,
-  ({ loadingGroups }) => loadingGroups,
+  (_, groupName) => groupName,
+  ({ loadingGroups }, groupName) =>
+    loadingGroups?.some((group) => group?.groupName === groupName),
 );
 
 export const selectedTasksSelector = (state) =>
