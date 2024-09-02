@@ -29,6 +29,7 @@ import {
   ModalWrapper,
 } from '../../styled';
 import TaskCheckBoxes from '../TaskCheckBoxes';
+import { ConfirmButton } from '../../ModalButton/ModalButtons';
 
 function SendEmrNoteFromTaskModal() {
   const selectedTask = useSelector(selectedTaskSelector);
@@ -139,11 +140,9 @@ function SendEmrNoteFromTaskModal() {
         </TextEditorContainerStyled>
       </ModalDescriptionContainer>
       <ModalFooterStyled>
-        <Button
-          uppercase
-          width="150px"
-          variant="primary"
+        <ConfirmButton
           disabled={detailsState === ''}
+          style={{ width: '270px' }}
           onClick={() => {
             dispatch(
               sendEmrForTask({
@@ -155,8 +154,8 @@ function SendEmrNoteFromTaskModal() {
             dispatch(closeModal());
           }}
         >
-          post
-        </Button>
+          Post
+        </ConfirmButton>
       </ModalFooterStyled>
     </ModalWrapper>
   );
