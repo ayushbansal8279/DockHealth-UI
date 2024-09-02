@@ -24,6 +24,7 @@ import * as amplitude from '@amplitude/analytics-browser';
 export enum AmpliEventType {
   Random = 'Random Track Event',
   MegaFilterOpen = 'Mega Filter Open',
+  UsageEvent = 'Usage Event',
 }
 
 /**
