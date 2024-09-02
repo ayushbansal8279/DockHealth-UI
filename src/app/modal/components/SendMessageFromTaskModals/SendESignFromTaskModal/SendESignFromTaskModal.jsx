@@ -132,26 +132,6 @@ const SendESignFromTaskModal = () => {
         </TextWaringStyled>
       </ModalDescriptionContainer>
       <ModalFooterStyled>
-        {/* <Button
-          uppercase
-          width="150px"
-          variant="primary"
-          disabled={!validateEmail(contact?.value)}
-          onClick={() => {
-            dispatch(
-              sendESignForTask({
-                templateIdentifier: templateId,
-                message: templateName,
-                taskIdentifier: selectedTask?.identifier,
-                recipientContact: contact.value,
-                recipientName: contact.label,
-              }),
-            );
-            dispatch(closeModal());
-          }}
-        >
-          send
-        </Button> */}
         <ConfirmButton
           disabled={!validateEmail(contact?.value)}
           style={{ width: '270px' }}

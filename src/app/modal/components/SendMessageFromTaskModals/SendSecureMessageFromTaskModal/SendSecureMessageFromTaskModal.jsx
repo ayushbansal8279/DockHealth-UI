@@ -87,14 +87,6 @@ const SendSecureMessageFromTaskModal = () => {
         </InputContainerStyled>
       </ModalDescriptionContainer>
       <ModalFooterStyled>
-        {/* <Button
-          uppercase
-          width="150px"
-          variant="primary"
-          onClick={handleSubmit}
-        >
-          send
-        </Button> */}
         <ConfirmButton style={{ width: '270px' }} onClick={handleSubmit}>
           Send
         </ConfirmButton>

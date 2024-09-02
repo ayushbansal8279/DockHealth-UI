@@ -140,24 +140,6 @@ function SendEmrNoteFromTaskModal() {
         </TextEditorContainerStyled>
       </ModalDescriptionContainer>
       <ModalFooterStyled>
-        {/* <Button
-          uppercase
-          width="150px"
-          variant="primary"
-          disabled={detailsState === ''}
-          onClick={() => {
-            dispatch(
-              sendEmrForTask({
-                noteType,
-                details: detailsState,
-                taskIdentifier,
-              }),
-            );
-            dispatch(closeModal());
-          }}
-        >
-          post
-        </Button> */}
         <ConfirmButton
           disabled={detailsState === ''}
           style={{ width: '270px' }}

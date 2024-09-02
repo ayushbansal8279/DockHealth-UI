@@ -176,15 +176,6 @@ const SendSmsFromTaskModal = ({ setSmsActive }) => {
         </TextWaringStyled>
       </ModalDescriptionContainer>
       <ModalFooterStyled>
-        {/* <Button
-          uppercase
-          width="150px"
-          variant="primary"
-          disabled={PhoneError || !selectedContacts?.length > 0 || !message}
-          onClick={handleSubmit}
-        >
-          send
-        </Button> */}
         <ConfirmButton
           disabled={PhoneError || !selectedContacts?.length > 0 || !message}
           style={{ width: '270px' }}

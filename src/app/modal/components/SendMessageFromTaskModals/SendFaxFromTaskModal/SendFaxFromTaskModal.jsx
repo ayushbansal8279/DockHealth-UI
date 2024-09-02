@@ -237,26 +237,6 @@ const SendFaxFromTaskModal = () => {
         </TextWaringStyled>
       </ModalDescriptionContainer>
       <ModalFooterStyled>
-        {/* <Button
-          uppercase
-          width="150px"
-          variant="primary"
-          disabled={faxError || !isValidToSend}
-          onClick={() => {
-            dispatch(
-              sendFaxForTask({
-                message,
-                recipientContact: contact?.value.replace(/\D/g, ''),
-                // taskAttachmentIdentifiers: attachments,
-                taskAttachmentIdentifiers: attachmentsToSend,
-                taskIdentifier: identifier,
-              }),
-            );
-            dispatch(closeModal());
-          }}
-        >
-          send
-        </Button> */}
         <ConfirmButton
           disabled={faxError || !isValidToSend}
           style={{ width: '270px' }}

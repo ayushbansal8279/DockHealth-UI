@@ -289,29 +289,6 @@ const SendEmailFromTaskModal = ({ setEmailActive }) => {
         </TextWaringStyled>
       </ModalDescriptionContainer>
       <ModalFooterStyled>
-        {/* <Button
-          uppercase
-          width="150px"
-          variant="primary"
-          disabled={
-            // !validateEmail(contact?.value) ||
-            selectedContacts.length === 0 // || !detailsState.getCurrentContent().hasText()
-          }
-          onClick={() => {
-            dispatch(
-              sendEmailForTask({
-                message: subject,
-                details: detailsState,
-                recipientContacts: selectedContacts.map((c) => c.value),
-                taskAttachmentIdentifiers: attachmentsToSend,
-                taskIdentifier: identifier,
-              }),
-            );
-            dispatch(closeModal());
-          }}
-        >
-          send
-        </Button> */}
         <ConfirmButton
           disabled={
             // !validateEmail(contact?.value) ||

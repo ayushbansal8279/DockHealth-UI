@@ -127,8 +127,6 @@ export const CloseIcon = styled(Close)`
 export const ModalHeader = styled.p`
   margin-bottom: 0;
   font-size: 22px;
-  // color: ${palette.brightBlue};
-  // text-transform: uppercase;
   text-align: ${({ textAlign }) => textAlign ?? 'center'};
   font-family: Outfit;
   font-weight: 600;
