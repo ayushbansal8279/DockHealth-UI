@@ -43,6 +43,7 @@ import SendbirdProvider from '@sendbird/uikit-react/SendbirdProvider';
 import palette, { featurePalette } from 'styles/palette';
 // import { useMobile, useSmallScreen } from 'helpers/utility-functions';
 import { useMobile } from 'helpers/utility-functions';
+import { ampli } from 'amplitude/ampli';
 import { IdleTimer } from './IdleTimer';
 import Modal from '../modal/Modal';
 import RotateScreen from './RotateScreen';
@@ -199,6 +200,11 @@ class App extends PureComponent {
         );
       }
     }
+    ampli.identify(
+      userProfile?.email,
+      userProfile?.identifier,
+      userProfile?.name,
+    );
   }
 
   logout = () => {

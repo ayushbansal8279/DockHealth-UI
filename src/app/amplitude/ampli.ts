@@ -22,7 +22,6 @@ import * as amplitude from '@amplitude/analytics-browser';
  * The event type to track via Amplitude
  */
 export enum AmpliEventType {
-  Random = 'Random Track Event',
   MegaFilterOpen = 'Mega Filter Open',
   UsageEvent = 'Usage Event',
 }
@@ -140,6 +139,8 @@ export class Ampli {
    */
   identify(
     userId: string | undefined,
+    userIdentifier?: string | undefined,
+    userName?: string | undefined,
     options?: EventOptions,
   ): PromiseResult<Result> {
     if (!this.isInitializedAndEnabled()) {
@@ -147,6 +148,7 @@ export class Ampli {
     }
 
     if (userId) {
+      // options = {...options,  user_id: userId,  extra: {userIdentifier: userIdentifier, name: userName}};
       options = {...options,  user_id: userId};
     }
 

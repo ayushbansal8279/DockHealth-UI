@@ -57,10 +57,6 @@ const MegaFilter = ({
         userIdentifier: userProfile.userIdentifier ?? '',
       });
     }
-    ampli.track(AmpliEventType.Random, {
-      hello: 'world',
-      open: isOpen,
-    });
   }, [isOpen]);
 
   const isFilterApplied =

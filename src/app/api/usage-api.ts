@@ -2,7 +2,6 @@ import ReactGA from 'react-ga';
 import axios from './axios-heydoc';
 import { ampli, AmpliEventType } from '@/app/amplitude/ampli';
 
-
 interface SendEventProps {
   eventAction: string;
   eventCategory: string;
@@ -49,12 +48,10 @@ const sendEvent = async (data: SendEventProps) => {
     }
   }
 
-  ampli.track(AmpliEventType.UsageEvent,{
-     
-      event_action: data.eventAction, 
-      event_category: data.eventCategory, 
-      event_label: data.eventLabel,
-    
+  ampli.track(AmpliEventType.UsageEvent, {
+    event_action: data.eventAction,
+    event_category: data.eventCategory,
+    event_label: data.eventLabel,
   });
 
   ReactGA.event(
