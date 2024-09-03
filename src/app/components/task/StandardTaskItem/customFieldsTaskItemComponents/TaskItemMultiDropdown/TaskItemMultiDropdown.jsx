@@ -15,15 +15,16 @@ const TaskItemMultiDropdown = ({
   const [value, setValue] = useState(initialValue);
   const [searchQuery, setSearchQuery] = useState('');
   const [isOpen, setIsOpen] = useState(false);
-  
+
   const options = useMemo(() => {
-    const mappedOptions = initialOptions?.map(({ identifier, name }) => ({
-      label: name,
-      value: identifier,
-    })) || [];
+    const mappedOptions =
+      initialOptions?.map(({ identifier, name }) => ({
+        label: name,
+        value: identifier,
+      })) || [];
     if (searchQuery) {
-      return mappedOptions.filter(option =>
-        option.label.toLowerCase().includes(searchQuery.toLowerCase())
+      return mappedOptions.filter((option) =>
+        option.label.toLowerCase().includes(searchQuery.toLowerCase()),
       );
     }
     return mappedOptions;
@@ -43,7 +44,6 @@ const TaskItemMultiDropdown = ({
     },
     [onChange],
   );
-  console.log(value);
 
   const handleSearchChange = (event) => {
     setSearchQuery(event.target.value);
@@ -91,7 +91,9 @@ const TaskItemMultiDropdown = ({
           renderValue={(selectedValue) =>
             selectedValue
               .map((selected) => {
-                return initialOptions.find((option) => option.identifier === selected)?.name;
+                return initialOptions.find(
+                  (option) => option.identifier === selected,
+                )?.name;
               })
               .join(', ')
           }
@@ -99,30 +101,30 @@ const TaskItemMultiDropdown = ({
           onOpen={handleDropdownOpen}
         >
           {withSearch && isOpen && (
-              <Input
-                sx={{
-                  '& .MuiOutlinedInput-notchedOutline': {
-                    borderColor: 'transparent',
-                  },
-                  '&:hover .MuiOutlinedInput-notchedOutline': {
-                    borderColor: 'transparent',
-                  },
-                  '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                    borderColor: 'transparent',
-                  },
-                  height: '35px',
-                  padding: '5px 10px 5px 15px',
-                }}
-                fullWidth
-                value={searchQuery}
-                onChange={handleSearchChange}
-                placeholder="Search"
-                onKeyDown={handleKeyDown}
-              />   
+            <Input
+              sx={{
+                '& .MuiOutlinedInput-notchedOutline': {
+                  borderColor: 'transparent',
+                },
+                '&:hover .MuiOutlinedInput-notchedOutline': {
+                  borderColor: 'transparent',
+                },
+                '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                  borderColor: 'transparent',
+                },
+                height: '35px',
+                padding: '5px 10px 5px 15px',
+              }}
+              fullWidth
+              value={searchQuery}
+              onChange={handleSearchChange}
+              placeholder="Search"
+              onKeyDown={handleKeyDown}
+            />
           )}
           {options?.map((option) => {
             return (
-              <MenuItem key={option.value} value={option.value} >
+              <MenuItem key={option.value} value={option.value}>
                 <Checkbox checked={value.includes(option.value)} />
                 <ListItemText primary={option.label} />
               </MenuItem>
