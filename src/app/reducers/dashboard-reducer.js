@@ -261,7 +261,7 @@ const DashboardTasksReducer = (state = initialState, action) => {
       const groupToUpdate = state?.tasksList?.find(
         ({ groupType, taskGroupIdentifier }) =>
           groupType === 'QUICK_FILTER'
-            ? taskGroupIdentifier === action.groupIdentifier
+            ? taskGroupIdentifier === action.taskGroupIdentifier
             : groupType === action.groupType,
       );
 
@@ -312,7 +312,7 @@ const DashboardTasksReducer = (state = initialState, action) => {
       const groupToUpdate = state?.tasksList?.find(
         ({ groupType, taskGroupIdentifier }) =>
           groupType === 'QUICK_FILTER'
-            ? taskGroupIdentifier === action.groupIdentifier
+            ? taskGroupIdentifier === action.taskGroupIdentifier
             : groupType === action.groupType,
       );
       const groupToUpdateIndex = state?.tasksList?.indexOf(groupToUpdate);
