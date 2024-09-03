@@ -62,6 +62,8 @@ const AddComment = ({
     if (value !== '') {
       onAdd(value);
       setDescription('');
+    } else {
+      setDescription('');
     }
   };
 
