@@ -22,7 +22,6 @@ import * as amplitude from '@amplitude/analytics-browser';
  * The event type to track via Amplitude
  */
 export enum AmpliEventType {
-  MegaFilterOpen = 'Mega Filter Open',
   UsageEvent = 'Usage Event',
 }
 

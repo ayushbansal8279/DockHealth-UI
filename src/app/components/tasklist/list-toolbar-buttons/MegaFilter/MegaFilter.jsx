@@ -12,7 +12,7 @@ import SaveFilterPopup from '../../../filter/SaveFilterPopup/SaveFilterPopup';
 import FilterTableLoader from '../../../filter/FilterTableLoader/FilterTableLoader';
 import { organizationSelector } from '@/app/selectors/organization-selectors';
 import { userProfileSelector } from '@/app/selectors/user-selectors';
-import { ampli, AmpliEventType } from '@/app/amplitude/ampli';
+// import { ampli, AmpliEventType } from '@/app/amplitude/ampli';
 
 const MegaFilter = ({
   children,
@@ -50,14 +50,14 @@ const MegaFilter = ({
   const organization = useSelector(organizationSelector);
   const userProfile = useSelector(userProfileSelector);
 
-  useEffect(() => {
-    if (isOpen) {
-      ampli.track(AmpliEventType.MegaFilterOpen, {
-        organizationIdentifier: organization.organizationIdentifier ?? '',
-        userIdentifier: userProfile.userIdentifier ?? '',
-      });
-    }
-  }, [isOpen]);
+  // useEffect(() => {
+  //   if (isOpen) {
+  //     ampli.track(AmpliEventType.MegaFilterOpen, {
+  //       organizationIdentifier: organization.organizationIdentifier ?? '',
+  //       userIdentifier: userProfile.userIdentifier ?? '',
+  //     });
+  //   }
+  // }, [isOpen]);
 
   const isFilterApplied =
     (selectedFilters && !isEmpty(selectedFilters))

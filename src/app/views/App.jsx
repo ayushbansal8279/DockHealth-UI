@@ -43,13 +43,13 @@ import SendbirdProvider from '@sendbird/uikit-react/SendbirdProvider';
 import palette, { featurePalette } from 'styles/palette';
 // import { useMobile, useSmallScreen } from 'helpers/utility-functions';
 import { useMobile } from 'helpers/utility-functions';
-import { ampli } from 'amplitude/ampli';
 import { IdleTimer } from './IdleTimer';
 import Modal from '../modal/Modal';
 import RotateScreen from './RotateScreen';
 import MobileSmallScreen from './MobileSmallScreen';
 import ChatActivityAlertsToasts from './chat/alerts/ChatActivityAlertsToasts';
 import './App.css';
+import { ampli } from '@/app/amplitude/ampli';
 
 const AppContainer = styled.div`
   font-family: inherit;
