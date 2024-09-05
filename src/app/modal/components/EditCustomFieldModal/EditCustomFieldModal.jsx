@@ -385,14 +385,6 @@ const EditCustomFieldModal = ({
     }
   };
 
-  // const filteredCustomFields = useMemo(
-  //   () =>
-  //     customFields.filter(
-  //       (cf) => cf.name !== fieldNameValue, // Exclude the custom field with the same name
-  //     ),
-  //   [customFields, fieldNameValue],
-  // );
-
   return (
     <AddPatientFieldModalWrapper>
       <CloseIconButton onClick={closeModal} size="small" color="secondary">
