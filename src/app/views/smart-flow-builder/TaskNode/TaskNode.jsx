@@ -102,6 +102,7 @@ const TaskNode = React.memo(({ data, isConnectable, selected, type }) => {
 
   const handleKeyDown = (event) => {
     const { key } = event;
+
     switch (key) {
       case 'Enter': {
         if (inputValue?.length > 0) {
