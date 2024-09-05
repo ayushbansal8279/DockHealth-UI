@@ -89,14 +89,19 @@ const TaskNode = React.memo(({ data, isConnectable, selected, type }) => {
 
   const handleBlur = () => {
     if (inputValue?.length > 0) {
-      dispatch(partialUpdateTask(taskIdentifier, { description: inputValue }));
+      dispatch(
+        partialUpdateTask(taskIdentifier, {
+          description: inputValue,
+          tokenizedDescription: inputValue,
+        }),
+      ).then(() => {
+        unsetEditing();
+      });
     }
-    unsetEditing();
   };
 
   const handleKeyDown = (event) => {
     const { key } = event;
-
     switch (key) {
       case 'Enter': {
         if (inputValue?.length > 0) {
