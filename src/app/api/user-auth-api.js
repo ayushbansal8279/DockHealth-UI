@@ -614,14 +614,13 @@ export const updatePhoneNumber = async (email, existingPhone, newPhone) => {
   await Auth.updateUserAttributes(userAuth, { phone_number: `${newPhone}` });
 
   await Auth.verifyUserAttribute(userAuth, 'phone_number');
-
-  return axios.put(`/user/updateMFAPhoneNumber`, {}).then(({ data }) => data);
 };
 
-export const verifyNewPhoneNumber = (code) => {
+export const verifyNewPhoneNumber = async (code) => {
   const { userAuth } = store.getState().userState;
 
-  return Auth.verifyUserAttributeSubmit(userAuth, 'phone_number', code);
+  await Auth.verifyUserAttributeSubmit(userAuth, 'phone_number', code);
+  return axios.put(`/user/updateMFAPhoneNumber`, {}).then(({ data }) => data);
 };
 
 export function checkSSO(email) {

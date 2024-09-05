@@ -37,11 +37,11 @@ const onSubmit =
     UserAuthApi.updatePhoneNumber(
       userProfile.email,
       userProfile.accountPhoneNumber,
-      `+${phoneNumber.replace(/[\s()-]/g, '')}`,
+      `${phoneNumber.replace(/[\s()-]/g, '')}`,
     )
       .then(() => {
         goToNextStep();
-        setNewPhoneNumber(`+${phoneNumber}`);
+        setNewPhoneNumber(`${phoneNumber}`);
       })
       .catch(() => {
         setError('phoneNumber', {
