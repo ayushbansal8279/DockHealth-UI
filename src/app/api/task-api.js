@@ -632,7 +632,7 @@ export function downloadTaskListData(
   filename,
 ) {
   return axios({
-    url: `https://api-dev.dockhealth.app/heydoc-services/list/download/${listIdentifier}?taskStatus=${selectedFilters}`,
+    url: `/list/download/${listIdentifier}?taskStatus=${selectedFilters}`,
     method: 'POST',
     responseType: 'blob',
     headers: {
