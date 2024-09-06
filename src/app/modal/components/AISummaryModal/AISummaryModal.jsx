@@ -14,16 +14,13 @@ import {
   RefreshWrapper,
   AISummaryLoaderSkeleton,
   CustomPromptInput,
-  CopyWrapper,
-  CloseTooltip,
-  CloseWrapper,
   CopyTooltip,
 } from './styled';
 import LuminaStar from 'img/AI/LuminaStar';
 import palette from '@/app/styles/palette';
 import Copy from 'img/AI/Copy.svg';
 import Close from 'img/AI/XClose.svg';
-import { SummaryType } from '@/app/helpers/ai-helper';
+import { calculateResponseTimeAgo, separateTimestamp } from './helper';
 
 const AISummaryModal = ({ closeModal, title, onsubmit, type }) => {
   useEffect(() => {
@@ -40,6 +37,7 @@ const AISummaryModal = ({ closeModal, title, onsubmit, type }) => {
   const [copied, setCopied] = useState(false);
   const [summaries, setSummaries] = useState([]);
   const [isFetching, setIsFetching] = useState(false);
+  const [generateDateTime, setGeneratedDateTime] = useState('');
 
   const handleCopy = () => {
     const formattedString = summaries.join('\n\n');
@@ -59,12 +57,11 @@ const AISummaryModal = ({ closeModal, title, onsubmit, type }) => {
     const response = await onsubmit(value, forceRefresh);
     setIsFetching(false);
 
-    const splitArray = response.split('\n');
+    const result = separateTimestamp(response);
+    const responseDateTime = calculateResponseTimeAgo(result.timestamp);
+    setGeneratedDateTime(responseDateTime);
 
-    // const formattedArray = splitArray
-    //   .filter((item) => item.trim() !== '')
-    //   .map((item) => item.trim().replace(':', ':\n'));
-
+    const splitArray = result.remainingString.split('\n');
     splitArray ? setSummaries(splitArray) : null;
   };
 
@@ -89,22 +86,19 @@ const AISummaryModal = ({ closeModal, title, onsubmit, type }) => {
           <Title>{title}</Title>
         </SubHeader>
         <div style={{ display: 'flex' }}>
-          <CopyWrapper>
-            <IconWrapper onClick={handleCopy} src={Copy} alt="copy" />
-            <CopyTooltip>
-              {copied ? 'Copied to clipboard !' : 'Copy to clipboard'}
-            </CopyTooltip>
-          </CopyWrapper>
-          <CloseWrapper>
-            <IconWrapper onClick={closeModal} src={Close} alt="close" />
-            <CloseTooltip>Close</CloseTooltip>
-          </CloseWrapper>
+          <IconWrapper onClick={handleCopy} src={Copy} alt="copy" />
+          <CopyTooltip copied={copied}>
+            {copied ? 'Copied to clipboard!' : ''}
+          </CopyTooltip>
+          <IconWrapper onClick={closeModal} src={Close} alt="close" />
         </div>
       </Header>
       <Spacing vertical={3} />
       <Grid container direction="column" item wrap="nowrap">
         <RegenerateWrapper>
-          <GeneratedTime>Generated 1 min ago</GeneratedTime>
+          {!isFetching && (
+            <GeneratedTime>Generated {generateDateTime}</GeneratedTime>
+          )}
           {/* <RefreshWrapper>
             <LuminaStar color={palette.newBrightBlue} />
             <ResponseButton onClick={handleReGenerateResponse}>
