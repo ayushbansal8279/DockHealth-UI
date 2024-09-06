@@ -21,10 +21,12 @@ import {
 } from './styled';
 import AISummaryModalOpenerHelper from '@/app/modal/components/AISummaryModal/AISummaryModalOpenerHelper';
 import { SummaryType } from '@/app/helpers/ai-helper';
+import { userHasAiSummaryViewFeatureSelector } from '@/app/selectors/user-selectors';
 
 const DrawerHeader = () => {
   const dispatch = useDispatch();
   const workflow = useSelector(workflowSelector);
+  const aiSummaryAvailable = useSelector(userHasAiSummaryViewFeatureSelector);
   const { identifier, name } = workflow || {};
 
   const isTemplateTask = useMemo(
@@ -108,7 +110,7 @@ const DrawerHeader = () => {
       <HeaderText>Workflow</HeaderText>
       <Box display="flex">
         <Box>
-          {true && ( // true will be replaced with Beta Feature
+          {aiSummaryAvailable && (
             <AISummaryWrapper>
               <AISummaryModalOpenerHelper
                 type={SummaryType.WORKFLOW}

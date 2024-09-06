@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-expressions */
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { userProfileSelector } from 'selectors/user-selectors';
+import { userHasAiSummaryViewFeatureSelector, userProfileSelector } from 'selectors/user-selectors';
 import { organizationSelector } from 'selectors/organization-selectors';
 import debounce from 'lodash.debounce';
 // import { openModal } from 'modal/actions';
@@ -79,6 +79,7 @@ const PatientSection = ({
 
   const { emrIntegrationType } = useSelector(organizationSelector) || {};
   const restrictedLookup = hasRestrictedPatientLookup(emrIntegrationType);
+  const aiSummaryAvailable = useSelector(userHasAiSummaryViewFeatureSelector);
 
   useEffect(() => {
     if (
@@ -238,7 +239,7 @@ const PatientSection = ({
               x
             </button>
           </PatientContainer>
-          {true && ( // true will be replaced with Beta Feature
+          {aiSummaryAvailable && (
             <AISummaryWrapper>
               <AISummaryModalOpenerHelper
                 type={SummaryType.PATIENT}

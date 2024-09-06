@@ -54,6 +54,7 @@ import { CUSTOM_FIELD_TYPES } from 'helpers/custom-fields-helpers';
 import {
   userProfileSelector,
   selectedUserOrganizationSelector,
+  userHasAiSummaryViewFeatureSelector,
 } from 'selectors/user-selectors';
 import {
   SINGLE_TASK_RESTRICTIONS_OPTIONS,
@@ -528,6 +529,7 @@ const TaskTemplateGroupHeader = ({
   );
 
   const { isVirtualListWorkflowOpen } = useContext(VTaskContext);
+  const aiSummaryAvailable = useSelector(userHasAiSummaryViewFeatureSelector);
 
   const handleOpen = useCallback(() => {
     setOpen(!isOpen);
@@ -662,7 +664,7 @@ const TaskTemplateGroupHeader = ({
               paddingRight="tiny"
               order={getColumnOrder(TaskItemColumn.DESCRIPTION)}
             >
-              {true && ( // true will be replaced with Beta Feature
+              {aiSummaryAvailable && (
                 <AISummaryWrapper>
                   <AISummaryModalOpenerHelper
                     type={SummaryType.WORKFLOW}

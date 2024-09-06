@@ -19,6 +19,7 @@ import {
   userHasPostEMRNoteFeatureSelector,
   userHasShareTaskFeatureSelector,
   userSubscriptionIsProSelector,
+  userHasAiSummaryViewFeatureSelector,
 } from 'selectors/user-selectors';
 import { useDispatch, useSelector } from 'react-redux';
 import { openModal } from 'modal/actions';
@@ -85,6 +86,7 @@ const TopSection = ({
   const postToEMRAvailable = useSelector(userHasPostEMRNoteFeatureSelector);
   const shareTaskAvailable = useSelector(userHasShareTaskFeatureSelector);
   const userSubscriptionIsPro = useSelector(userSubscriptionIsProSelector);
+  const aiSummaryAvailable = useSelector(userHasAiSummaryViewFeatureSelector);
 
   const handleMarkAsUnRead = useCallback(() => {
     dispatch(markTaskAsUnRead(selectedTask.taskIdentifier));
@@ -268,7 +270,7 @@ const TopSection = ({
           )}
         </Box>
         <Box display="flex">
-          {true && ( // true will be replaced with Beta Feature
+          {aiSummaryAvailable && (
             <IconContainer>
               <AISummaryModalOpenerHelper
                 type={SummaryType.TASK}
