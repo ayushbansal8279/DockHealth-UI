@@ -92,9 +92,14 @@ const AutoCompleteFormSelect = React.forwardRef(
                 borderRadius: '4px',
                 padding: '8px 10px',
               },
-              '& .MuiSvgIcon-root': {
-                color: '#ffac33', // Set the dropdown arrow color
+              '& .MuiAutocomplete-popupIndicator': {
+                color: '#ffac33', // dropdown arrow color
+                marginRight: '6px'
+               },
+               '& .MuiInput-underline:before': {
+                display: 'none', // Remove the underline
               },
+                    
             }}
             label={label}
             error={!!error}

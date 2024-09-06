@@ -158,6 +158,7 @@ function VirtualTaskList({ groupedTasks, showClearSortFiltersModal }: Props) {
               bgColor: !(index % 2 === 0),
               groupWithZeroTask: groupTasks?.length === 0,
               isLastGroupOfList: index === listGroups?.length - 1,
+              isLoadingGroup: listTaskGroup?.isLoadingGroup,
             },
             [],
             true,

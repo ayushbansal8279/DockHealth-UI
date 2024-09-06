@@ -122,18 +122,6 @@ const TopSection = ({
             name: 'Share Task',
             onClick: handleShareTask,
           },
-        {
-          name: 'Copy task link',
-          onClick: handleCopyLink,
-        },
-        // sendEmailAvailable && {
-        //   name: 'Send Email',
-        //   onClick: () => dispatch(openModal('SendEmailFromTask')),
-        // },
-        // sendSmsAvailable && {
-        //   name: 'Send SMS',
-        //   onClick: () => dispatch(openModal('SendSmsFromTask')),
-        // },
         sendSecureMessageAvailable && {
           name: 'Send Patient Message',
           onClick: () => dispatch(openModal('SendSecureMessageFromTask')),

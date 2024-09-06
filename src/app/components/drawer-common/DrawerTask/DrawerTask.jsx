@@ -226,7 +226,7 @@ const DrawerTask = (props) => {
             title={
               comments?.length > 0
                 ? getCommentsIconTooltipTitle(comments)
-                : null
+                : 'Comment'
             }
           >
             <button type="button" onClick={handleCommentIconClick}>
@@ -242,7 +242,7 @@ const DrawerTask = (props) => {
           <Tooltip
             placement="top"
             title={
-              labels?.length > 0 ? getLabelsIconTooltipTitle(labels) : null
+              labels?.length > 0 ? getLabelsIconTooltipTitle(labels) : 'Label'
             }
           >
             <button type="button" onClick={handleLabelIconClick}>
@@ -256,11 +256,11 @@ const DrawerTask = (props) => {
         </IconContainer>
         <IconContainer>
           <Tooltip
-            placement="top-end"
+            placement="top"
             title={
               attachments?.length > 0
                 ? getAttachmentsIconTooltipTitle(attachments)
-                : ''
+                : 'File'
             }
           >
             <button type="button" onClick={handleAttachmentIconClick}>
@@ -353,7 +353,9 @@ const DrawerTask = (props) => {
           dispatch(openDrawer());
         }}
       >
-        <img src={SimpleArrowRight} alt="Go to parent task" />
+        <Tooltip placement="top" title="Details">
+          <img src={SimpleArrowRight} alt="Go to parent task" />
+        </Tooltip>
       </GoToParentIconContainer>
     </Container>
   );
