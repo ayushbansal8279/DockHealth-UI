@@ -1,5 +1,6 @@
 import { createSelector } from 'reselect';
 import { SubscriptionPlan } from 'helpers/subscription-helper';
+import { featureSelector } from './selector-helper';
 
 export const userStateSelector = (state) => state.userState;
 export const userViewSetupSelector = (state) => state.userState.userViewSetup;
@@ -36,98 +37,172 @@ export const dashboardGroupsPreferencesSelector = createSelector(
 
 export const userHasSmartFlowsSelector = createSelector(
   userProfileSelector,
-  ({ organizationAvailableFeatures }) =>
-    organizationAvailableFeatures?.includes('SMART_FLOWS'),
+  ({ organizationAvailableFeatures, userAvailableFeatures }) =>
+    featureSelector(
+      organizationAvailableFeatures,
+      userAvailableFeatures,
+      'SMART_FLOWS',
+    ),
 );
 
 export const userHasUserGroupsFeatureSelector = createSelector(
   userProfileSelector,
-  ({ organizationAvailableFeatures }) =>
-    organizationAvailableFeatures?.includes('USER_GROUPS'),
+  ({ organizationAvailableFeatures, userAvailableFeatures }) =>
+    featureSelector(
+      organizationAvailableFeatures,
+      userAvailableFeatures,
+      'USER_GROUPS',
+    ),
 );
 
 export const userHasPatientCustomListsFeatureSelector = createSelector(
   userProfileSelector,
-  ({ organizationAvailableFeatures }) =>
-    organizationAvailableFeatures?.includes('PATIENT_CUSTOM_LISTS'),
+  ({ organizationAvailableFeatures, userAvailableFeatures }) =>
+    featureSelector(
+      organizationAvailableFeatures,
+      userAvailableFeatures,
+      'PATIENT_CUSTOM_LISTS',
+    ),
 );
 
 export const userHasPatientCustomFieldsFeatureSelector = createSelector(
   userProfileSelector,
-  ({ organizationAvailableFeatures }) =>
-    organizationAvailableFeatures?.includes('PATIENT_CUSTOM_FIELDS'),
+  ({ organizationAvailableFeatures, userAvailableFeatures }) =>
+    featureSelector(
+      organizationAvailableFeatures,
+      userAvailableFeatures,
+      'PATIENT_CUSTOM_FIELDS',
+    ),
 );
 
 export const userHasTaskCustomFieldsFeatureSelector = createSelector(
   userProfileSelector,
-  ({ organizationAvailableFeatures }) =>
-    organizationAvailableFeatures?.includes('TASK_CUSTOM_FIELDS'),
+  ({ organizationAvailableFeatures, userAvailableFeatures }) =>
+    featureSelector(
+      organizationAvailableFeatures,
+      userAvailableFeatures,
+      'TASK_CUSTOM_FIELDS',
+    ),
 );
 
 export const userHasSendEmailFeatureSelector = createSelector(
   userProfileSelector,
-  ({ organizationAvailableFeatures }) =>
-    organizationAvailableFeatures?.includes('SEND_COMM_EMAIL'),
+  ({ organizationAvailableFeatures, userAvailableFeatures }) =>
+    featureSelector(
+      organizationAvailableFeatures,
+      userAvailableFeatures,
+      'SEND_COMM_EMAIL',
+    ),
 );
 
 export const userHasSendFaxFeatureSelector = createSelector(
   userProfileSelector,
-  ({ organizationAvailableFeatures }) =>
-    organizationAvailableFeatures?.includes('SEND_COMM_FAX'),
+  ({ organizationAvailableFeatures, userAvailableFeatures }) =>
+    featureSelector(
+      organizationAvailableFeatures,
+      userAvailableFeatures,
+      'SEND_COMM_FAX',
+    ),
+);
+
+export const userHasCalenderViewFeatureSelector = createSelector(
+  userProfileSelector,
+  ({ organizationAvailableFeatures, userAvailableFeatures }) =>
+    featureSelector(
+      organizationAvailableFeatures,
+      userAvailableFeatures,
+      'CALENDAR_VIEW',
+    ),
 );
 
 export const userHasSendSmsFeatureSelector = createSelector(
   userProfileSelector,
-  ({ organizationAvailableFeatures }) =>
-    organizationAvailableFeatures?.includes('SEND_COMM_SMS'),
+  ({ organizationAvailableFeatures, userAvailableFeatures }) =>
+    featureSelector(
+      organizationAvailableFeatures,
+      userAvailableFeatures,
+      'SEND_COMM_SMS',
+    ),
 );
 
 export const userHasSendSecureMessageFeatureSelector = createSelector(
   userProfileSelector,
-  ({ organizationAvailableFeatures }) =>
-    organizationAvailableFeatures?.includes('SEND_COMM_SECURE_MSG'),
+  ({ organizationAvailableFeatures, userAvailableFeatures }) =>
+    featureSelector(
+      organizationAvailableFeatures,
+      userAvailableFeatures,
+      'SEND_COMM_SECURE_MSG',
+    ),
 );
 
 export const userHasSendESignFeatureSelector = createSelector(
   userProfileSelector,
-  ({ organizationAvailableFeatures }) =>
-    organizationAvailableFeatures?.includes('SEND_COMM_ESIGN'),
+  ({ organizationAvailableFeatures, userAvailableFeatures }) =>
+    featureSelector(
+      organizationAvailableFeatures,
+      userAvailableFeatures,
+      'SEND_COMM_ESIGN',
+    ),
 );
 
 export const userHasPostEMRNoteFeatureSelector = createSelector(
   userProfileSelector,
-  ({ organizationAvailableFeatures }) =>
-    organizationAvailableFeatures?.includes('POST_EMR_NOTE'),
+  ({ organizationAvailableFeatures, userAvailableFeatures }) =>
+    featureSelector(
+      organizationAvailableFeatures,
+      userAvailableFeatures,
+      'POST_EMR_NOTE',
+    ),
 );
 
 export const userHasShareTaskFeatureSelector = createSelector(
   userProfileSelector,
-  ({ organizationAvailableFeatures }) =>
-    organizationAvailableFeatures?.includes('SHARE_TASK'),
+  ({ organizationAvailableFeatures, userAvailableFeatures }) =>
+    featureSelector(
+      organizationAvailableFeatures,
+      userAvailableFeatures,
+      'SHARE_TASK',
+    ),
 );
 
 export const userHasDockChatFeatureSelector = createSelector(
   userProfileSelector,
-  ({ organizationAvailableFeatures }) =>
-    organizationAvailableFeatures?.includes('DOCK_CHAT'),
+  ({ organizationAvailableFeatures, userAvailableFeatures }) =>
+    featureSelector(
+      organizationAvailableFeatures,
+      userAvailableFeatures,
+      'DOCK_CHAT',
+    ),
 );
 
 export const userHasBoardViewFeatureSelector = createSelector(
   userProfileSelector,
-  ({ organizationAvailableFeatures }) =>
-    organizationAvailableFeatures?.includes('BOARD_VIEW'),
+  ({ organizationAvailableFeatures, userAvailableFeatures }) =>
+    featureSelector(
+      organizationAvailableFeatures,
+      userAvailableFeatures,
+      'BOARD_VIEW',
+    ),
 );
 
 export const userHasViewOnlyFeatureSelector = createSelector(
   userProfileSelector,
-  ({ organizationAvailableFeatures }) =>
-    organizationAvailableFeatures?.includes('VIEW_ONLY'),
+  ({ organizationAvailableFeatures, userAvailableFeatures }) =>
+    featureSelector(
+      organizationAvailableFeatures,
+      userAvailableFeatures,
+      'VIEW_ONLY',
+    ),
 );
 
 export const userHasDockGuestFeatureSelector = createSelector(
   userProfileSelector,
-  ({ organizationAvailableFeatures }) =>
-    organizationAvailableFeatures?.includes('DOCK_GUEST'),
+  ({ organizationAvailableFeatures, userAvailableFeatures }) =>
+    featureSelector(
+      organizationAvailableFeatures,
+      userAvailableFeatures,
+      'DOCK_GUEST',
+    ),
 );
 
 // export const userHasDockLiteFeatureSelector = createSelector(
@@ -138,14 +213,32 @@ export const userHasDockGuestFeatureSelector = createSelector(
 
 export const userHasCustomProfilesFeatureSelector = createSelector(
   userProfileSelector,
-  ({ organizationAvailableFeatures }) =>
-    organizationAvailableFeatures?.includes('CUSTOM_PROFILES'),
+  ({ organizationAvailableFeatures, userAvailableFeatures }) =>
+    featureSelector(
+      organizationAvailableFeatures,
+      userAvailableFeatures,
+      'CUSTOM_PROFILES',
+    ),
 );
 
 export const userHasMultiOrgViewFeatureSelector = createSelector(
   userProfileSelector,
-  ({ organizationAvailableFeatures }) =>
-    organizationAvailableFeatures?.includes('MULTI_ORG_VIEW'),
+  ({ organizationAvailableFeatures, userAvailableFeatures }) =>
+    featureSelector(
+      organizationAvailableFeatures,
+      userAvailableFeatures,
+      'MULTI_ORG_VIEW',
+    ),
+);
+
+export const userHasAiSummaryViewFeatureSelector = createSelector(
+  userProfileSelector,
+  ({ organizationAvailableFeatures, userAvailableFeatures }) =>
+    featureSelector(
+      organizationAvailableFeatures,
+      userAvailableFeatures,
+      'AI_SUMMARY',
+    ),
 );
 
 export const userSetupClientViewSelector = createSelector(
