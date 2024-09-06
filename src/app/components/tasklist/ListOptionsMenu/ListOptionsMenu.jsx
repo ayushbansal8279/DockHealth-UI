@@ -13,6 +13,7 @@ import {
 import {
   currentTaskListIdentifierSelector,
   archivedTaskListsSelector,
+  currentTaskListSelector,
 } from 'selectors/task-list-selectors';
 import { userProfileSelector } from 'selectors/user-selectors';
 import { openModal, closeModal } from 'modal/actions';
@@ -22,6 +23,10 @@ import palette from 'styles/palette';
 import ColorPicker from 'components/common/ColorPicker/ColorPicker';
 import { isMemberAdmin } from 'helpers/list-members-helper';
 import useSearchParams from '@/app/hooks/use-search-params';
+import { downloadTaskListData } from '@/app/api/task-api';
+import { getTaskListStatusStorageKey } from '@/app/helpers/tasklist-helpers';
+import localStorageHelper from '@/app/helpers/local-storage-helper';
+import sessionStorageHelper from '@/app/helpers/session-storage-helper';
 
 const MASTER_ROLES = new Set(['ADMIN', 'OWNER']);
 const PRIVILEGE_ROLES = new Set(['ADMIN', 'OWNER', 'MEMBER']);
@@ -32,6 +37,8 @@ const ListOptionsMenu = (props) => {
   const dispatch = useDispatch();
   const history = useHistory();
   const currentUser = useSelector(userProfileSelector);
+  const listDetails = useSelector(currentTaskListSelector);
+  const {listName , taskListIdentifier} = listDetails || {};
   const archivedTaskLists = useSelector(archivedTaskListsSelector);
   const activeTaskListIdentifier = useSelector(
     currentTaskListIdentifierSelector,
@@ -161,6 +168,30 @@ const ListOptionsMenu = (props) => {
     [dispatch],
   );
 
+  const handleDownloadTaskListData = useCallback(
+    async () => {
+      const filename = `Dock ${listName}.csv`;
+      let selectedFilters = localStorageHelper.getItem(
+        getTaskListStatusStorageKey(taskListIdentifier),
+      );
+      if (!selectedFilters) {
+        selectedFilters = 'ALL'
+      }
+      const { data } = await downloadTaskListData(
+        taskListIdentifier,
+        selectedFilters,
+        filename,
+      );
+      const url = window.URL.createObjectURL(new Blob([data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', filename);
+      document.body.append(link);
+      link.click();
+    },
+    [taskListIdentifier,listName],
+  )
+
   const getMenuItems = useCallback(
     (targetList) => {
       if (MASTER_ROLES.has(targetList?.role) && isListArchived(targetList)) {
@@ -252,6 +283,16 @@ const ListOptionsMenu = (props) => {
             key: 'print',
             name: 'Print',
             onClick: () => onPrintClick(targetList),
+          },
+        ];
+      }
+      if(moreOptions){
+        baseList = [
+          ...baseList,
+          {
+            key: 'export',
+            name: 'Export To CSV',
+            onClick: () => handleDownloadTaskListData(targetList),
           },
         ];
       }
