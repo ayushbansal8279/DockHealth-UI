@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { DecisionBox, DecisionSelect } from '../../styled';
+import Tooltip from 'components/common/Tooltip/Tooltip';
 
 const TaskItemDecision = ({
   task,
@@ -22,6 +23,9 @@ const TaskItemDecision = ({
     outcomes.find(outcome => outcome.isSelected)?.taskOutcomeIdentifier ?? null,
   );
 
+  const selectedTask =
+    outcomes.find(outcome => outcome.isSelected)?.name ?? null;
+
   const handleValueChange = event => {
     clearError();
     const { value: newValue } = event.target;
@@ -31,17 +35,19 @@ const TaskItemDecision = ({
   };
 
   return (
-    <DecisionBox>
-      <DecisionSelect
-        name="decision"
-        value={value}
-        options={options}
-        onChange={handleValueChange}
-        disabled={disabled}
-        error={error}
-        iconColorActive={iconColorActive}
-      />
-    </DecisionBox>
+    <Tooltip placement="top" title={selectedTask} arrow>
+      <DecisionBox>
+        <DecisionSelect
+          name="decision"
+          value={value}
+          options={options}
+          onChange={handleValueChange}
+          disabled={disabled}
+          error={error}
+          iconColorActive={iconColorActive}
+        />
+      </DecisionBox>
+    </Tooltip>
   );
 };
 
