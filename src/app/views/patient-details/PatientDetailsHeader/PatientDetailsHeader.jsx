@@ -13,6 +13,7 @@ import Tooltip from 'components/common/Tooltip/Tooltip';
 import {
   userProfileSelector,
   selectedUserOrganizationSelector,
+  userHasAiSummaryViewFeatureSelector,
 } from 'selectors/user-selectors';
 import { PATIENTS_LIST_ALL } from 'routing/helpers/paths';
 import { organizationSelector } from 'selectors/organization-selectors';
@@ -73,6 +74,7 @@ const PatientDetailsHeader = () => {
     currentOrganization,
   );
   const organization = useSelector(organizationSelector);
+  const aiSummaryAvailable = useSelector(userHasAiSummaryViewFeatureSelector);
   const emrPatientLink = organization?.emrPatientLink;
   const isLoadingDetails = isFetchingPatient || !patient;
   const [cameFrom, setCameFrom] = useState();
@@ -119,7 +121,7 @@ const PatientDetailsHeader = () => {
                 <PatientName>
                   {[`${lastName},`, firstName, middleName].join(' ')}
                 </PatientName>
-                {true && ( // true will be replaced with Beta Feature
+                {aiSummaryAvailable && (
                   <AISummaryWrapper>
                     <AISummaryModalOpenerHelper
                       type={SummaryType.PATIENT}

@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { userProfileSelector } from 'selectors/user-selectors';
+import { userHasAiSummaryViewFeatureSelector, userHasDockGuestFeatureSelector, userHasViewOnlyFeatureSelector, userProfileSelector } from 'selectors/user-selectors';
 import { organizationSelector } from 'selectors/organization-selectors';
 import {
   onTaskDrawerPatientAdded,
@@ -70,6 +70,7 @@ const PatientSection = ({
   const { emrIntegrationType } = useSelector(organizationSelector) || {};
   const restrictedLookup = hasRestrictedPatientLookup(emrIntegrationType);
   const { templateBundleIdentifier } = useSelector(selectedTaskSelector) || {};
+  const aiSummaryAvailable = useSelector(userHasAiSummaryViewFeatureSelector);
 
   const currentOrganizationIdentifier = sessionStorage.getItem(
     'currentOrganizationIdentifier',
@@ -341,7 +342,7 @@ const PatientSection = ({
               x
             </button>
           </PatientContainer>
-          {true && ( // true will be replaced with Beta Feature
+          {aiSummaryAvailable && (
             <AISummaryWrapper>
               <AISummaryModalOpenerHelper
                 type={SummaryType.PATIENT}

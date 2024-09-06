@@ -9,7 +9,7 @@ import Skeleton from '@mui/material/Skeleton';
 export const AISummaryModalWrapper = styled(ModalWrapper)`
   width: 600px;
   border-radius: 10px;
-  padding: ${spacing.regularPlus} ${spacing.largePlus} ${spacing.largePlus};
+  padding: ${spacing.regular} ${spacing.largePlus} ${spacing.largePlus};
 `;
 
 export const Header = styled.div`
@@ -119,31 +119,11 @@ export const AISummaryLoaderSkeleton = styled(Skeleton)`
 `;
 
 export const CopyTooltip = styled.div`
-  opacity: 0;
   position: absolute;
-  top: 2;
+  top: -10;
   right: 10;
   color: ${palette.coolGrey1};
-`;
-
-export const CloseTooltip = styled.div`
-  opacity: 0;
-  position: absolute;
-  top: 2;
-  right: 20;
-  color: ${palette.coolGrey1};
-`;
-
-export const CopyWrapper = styled.div`
-  &:hover {
-    & ${CopyTooltip} {
-      opacity: 1;
-    }
-`;
-
-export const CloseWrapper = styled.div`
-  &:hover {
-    & ${CloseTooltip} {
-      opacity: 1;
-    }
+  background-color: ${({ copied }) => (copied ? palette.mediumGrey : '')};
+  padding: 2px 5px;
+  border-radius: 6px;
 `;

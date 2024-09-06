@@ -15,6 +15,8 @@ import {
 } from './styled';
 import AISummaryModalOpenerHelper from '@/app/modal/components/AISummaryModal/AISummaryModalOpenerHelper';
 import { SummaryType } from '@/app/helpers/ai-helper';
+import { useSelector } from 'react-redux';
+import { userHasAiSummaryViewFeatureSelector } from '@/app/selectors/user-selectors';
 
 const TaskTemplatePatient = ({
   highlightedValue,
@@ -27,6 +29,7 @@ const TaskTemplatePatient = ({
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const [isPopoverOpen, setPopoverOpen] = useState(false);
+  const aiSummaryAvailable = useSelector(userHasAiSummaryViewFeatureSelector);
   const matchPatientMRN = workflow?.searchMetaData?.matchPatientMRN;
   const matchPatient = workflow?.searchMetaData?.matchPatient;
   const { patient } = workflow;
@@ -101,7 +104,7 @@ const TaskTemplatePatient = ({
           patientIdentifier={patient.patientIdentifier}
         >
           <PatientLableContainer>
-            {true && ( // true will be replaced with Beta Feature
+            {aiSummaryAvailable && (
               <AISummaryWrapper>
                 <AISummaryModalOpenerHelper
                   type={SummaryType.PATIENT}

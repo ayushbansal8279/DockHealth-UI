@@ -21,9 +21,10 @@ import {
   PatientLableContainer,
   AISummaryWrapper,
 } from '../../styled';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import AISummaryModalOpenerHelper from '@/app/modal/components/AISummaryModal/AISummaryModalOpenerHelper';
 import { SummaryType } from '@/app/helpers/ai-helper';
+import { userHasAiSummaryViewFeatureSelector } from '@/app/selectors/user-selectors';
 
 const TaskItemPatient = ({
   highlightedValue,
@@ -46,6 +47,7 @@ const TaskItemPatient = ({
   const [isPopoverOpen, setPopoverOpen] = useState(false);
   const isCompleted = taskStatus === 'COMPLETE';
   const isTemplateTask = checkIfTemplateTask(task);
+  const aiSummaryAvailable = useSelector(userHasAiSummaryViewFeatureSelector);
   const onPatientClick = useCallback(() => {
     if (openPatientPopover && typeof openPatientPopover === 'function') {
       openPatientPopover();
@@ -164,7 +166,7 @@ const TaskItemPatient = ({
             patientIdentifier={patient.patientIdentifier}
           >
             <PatientLableContainer>
-              {true && ( // true will be replaced with Beta Feature
+              {aiSummaryAvailable && (
                 <AISummaryWrapper>
                   <AISummaryModalOpenerHelper
                     type={SummaryType.PATIENT}
