@@ -21,6 +21,7 @@
     "react-dom": "18.2.0"
   },
   "dependencies": {
+    "@amplitude/analytics-browser": "^2.8.1",
     "@aws-amplify/auth": "3.4.34",
     "@date-io/moment": "2.16.1",
     "@dnd-kit/core": "6.0.7",

@@ -169,7 +169,7 @@ const EditCustomFieldModal = ({
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
+  const fieldNameValue = watch('name'); // Track the "Field label name" input check here for changes
   const fieldTypeValue = watch('fieldType');
   const optionsValue = watch('options');
   const numberOfOptions = optionsValue?.length;
@@ -301,7 +301,7 @@ const EditCustomFieldModal = ({
             ...updatedField,
             relatedProfileTypeName: selectedProfileType,
           });
-          fetchUserCustomFields()
+          fetchUserCustomFields();
           setIsSaving(false);
           closeModal();
         })
@@ -553,10 +553,15 @@ const EditCustomFieldModal = ({
                                     onChange={handleParentDropdownChange(
                                       identifier,
                                     )}
-                                    options={customFields.map((field) => ({
-                                      label: field.name,
-                                      value: field.identifier,
-                                    }))}
+                                    options={customFields
+                                      .filter(
+                                        (field) =>
+                                          field.name !== fieldNameValue,
+                                      )
+                                      .map((field) => ({
+                                        label: field.name,
+                                        value: field.identifier,
+                                      }))}
                                   />
                                   <SelectParentOption
                                     label="Parent Option"

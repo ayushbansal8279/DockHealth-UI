@@ -46,6 +46,7 @@ import {
 } from '../styled';
 import TaskCheckBoxes from '../TaskCheckBoxes';
 import { renderAddOrEdit } from '../helpers';
+import { ConfirmButton } from '../../ModalButton/ModalButtons';
 
 const SendEmailFromTaskModal = ({ setEmailActive }) => {
   const selectedTask = useSelector(selectedTaskSelector);
@@ -288,15 +289,13 @@ const SendEmailFromTaskModal = ({ setEmailActive }) => {
         </TextWaringStyled>
       </ModalDescriptionContainer>
       <ModalFooterStyled>
-        <Button
-          uppercase
-          width="150px"
-          variant="primary"
+        <ConfirmButton
           disabled={
             // !validateEmail(contact?.value) ||
             selectedContacts.length === 0 // || !detailsState.getCurrentContent().hasText()
           }
-          onClick={() => {
+          style={{ width: '270px' }}
+          nClick={() => {
             dispatch(
               sendEmailForTask({
                 message: subject,
@@ -309,8 +308,8 @@ const SendEmailFromTaskModal = ({ setEmailActive }) => {
             dispatch(closeModal());
           }}
         >
-          send
-        </Button>
+          Send
+        </ConfirmButton>
       </ModalFooterStyled>
       <ReactModal
         isOpen={show}

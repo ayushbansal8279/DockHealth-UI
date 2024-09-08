@@ -30,6 +30,7 @@ import {
   AddEditContactLink,
 } from '../styled';
 import { renderAddOrEdit } from '../helpers';
+import { ConfirmButton } from '../../ModalButton/ModalButtons';
 
 const SendESignFromTaskModal = () => {
   const dispatch = useDispatch();
@@ -131,11 +132,9 @@ const SendESignFromTaskModal = () => {
         </TextWaringStyled>
       </ModalDescriptionContainer>
       <ModalFooterStyled>
-        <Button
-          uppercase
-          width="150px"
-          variant="primary"
+        <ConfirmButton
           disabled={!validateEmail(contact?.value)}
+          style={{ width: '270px' }}
           onClick={() => {
             dispatch(
               sendESignForTask({
@@ -149,8 +148,8 @@ const SendESignFromTaskModal = () => {
             dispatch(closeModal());
           }}
         >
-          send
-        </Button>
+          Send
+        </ConfirmButton>
       </ModalFooterStyled>
       <ReactModal
         isOpen={show}

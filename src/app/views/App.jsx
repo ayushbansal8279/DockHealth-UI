@@ -49,6 +49,7 @@ import RotateScreen from './RotateScreen';
 import MobileSmallScreen from './MobileSmallScreen';
 import ChatActivityAlertsToasts from './chat/alerts/ChatActivityAlertsToasts';
 import './App.css';
+import { ampli } from '@/app/amplitude/ampli';
 
 const AppContainer = styled.div`
   font-family: inherit;
@@ -199,6 +200,11 @@ class App extends PureComponent {
         );
       }
     }
+    ampli.identify(
+      userProfile?.email,
+      userProfile?.identifier,
+      userProfile?.name,
+    );
   }
 
   logout = () => {
