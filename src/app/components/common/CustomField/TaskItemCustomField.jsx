@@ -201,7 +201,7 @@ const TaskItemCustomField = ({
         <StyledHyperLink
           href={value?.startsWith('http') ? value : `//${value}`}
           target="_blank"
-          disabled={isDisabled}
+          disabled={isReadOnly}
         >
           {trunc(value, 15)}
         </StyledHyperLink>
