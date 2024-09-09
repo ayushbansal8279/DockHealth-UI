@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import palette from 'styles/palette';
 import { useDispatch, useSelector } from 'react-redux';
 import compose from 'ramda/src/compose';
@@ -13,12 +13,21 @@ import * as WorkflowDrawerActions from 'actions/workflow-drawer-actions';
 import * as TaskTemplateActions from 'actions/task-template-actions';
 import * as TemplateBundleActions from 'actions/template-bundle-actions';
 import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
-import { HeaderContainer, HeaderText, StyledIconButton } from './styled';
+import {
+  HeaderContainer,
+  HeaderText,
+  StyledIconButton,
+  AISummaryWrapper,
+} from './styled';
+import AISummaryModalOpenerHelper from '@/app/modal/components/AISummaryModal/AISummaryModalOpenerHelper';
+import { SummaryType } from '@/app/helpers/ai-helper';
+import { userHasAiSummaryViewFeatureSelector } from '@/app/selectors/user-selectors';
 
 const DrawerHeader = () => {
   const dispatch = useDispatch();
   const workflow = useSelector(workflowSelector);
-  const { identifier } = workflow || {};
+  const aiSummaryAvailable = useSelector(userHasAiSummaryViewFeatureSelector);
+  const { identifier, name } = workflow || {};
 
   const isTemplateTask = useMemo(
     () => checkIfTemplateWorkflow(workflow),
@@ -100,6 +109,17 @@ const DrawerHeader = () => {
     <HeaderContainer>
       <HeaderText>Workflow</HeaderText>
       <Box display="flex">
+        <Box>
+          {aiSummaryAvailable && (
+            <AISummaryWrapper>
+              <AISummaryModalOpenerHelper
+                type={SummaryType.WORKFLOW}
+                title={`${name}`}
+                identifier={identifier}
+              />
+            </AISummaryWrapper>
+          )}
+        </Box>
         <OptionsMenu
           customButtonComponent={StyledIconButton}
           options={menuOptions}

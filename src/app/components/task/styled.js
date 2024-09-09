@@ -1022,3 +1022,12 @@ width: 100%;
     opacity: 1;
   }
 `;
+
+export const PatientLableContainer = styled.div`
+  display: flex;
+  items-align: center;
+`;
+
+export const AISummaryWrapper = styled.div`
+  margin: 0 15px 0 2px;
+`;

@@ -19,6 +19,7 @@ import {
   userHasPostEMRNoteFeatureSelector,
   userHasShareTaskFeatureSelector,
   userSubscriptionIsProSelector,
+  userHasAiSummaryViewFeatureSelector,
 } from 'selectors/user-selectors';
 import { useDispatch, useSelector } from 'react-redux';
 import { openModal } from 'modal/actions';
@@ -38,7 +39,9 @@ import {
 } from './styled';
 import initializeTaskDrawerTopSectionHooks from './hooks';
 import moment from 'moment';
-import Tooltip from 'components/common/Tooltip/Tooltip';
+import Tooltip from 'components/common/Tooltip/Tooltip';;
+import AISummaryModalOpenerHelper from '@/app/modal/components/AISummaryModal/AISummaryModalOpenerHelper';
+import { SummaryType } from '@/app/helpers/ai-helper';
 
 const { DISABLED } = SINGLE_TASK_RESTRICTIONS_OPTIONS;
 
@@ -83,6 +86,7 @@ const TopSection = ({
   const postToEMRAvailable = useSelector(userHasPostEMRNoteFeatureSelector);
   const shareTaskAvailable = useSelector(userHasShareTaskFeatureSelector);
   const userSubscriptionIsPro = useSelector(userSubscriptionIsProSelector);
+  const aiSummaryAvailable = useSelector(userHasAiSummaryViewFeatureSelector);
 
   const handleMarkAsUnRead = useCallback(() => {
     dispatch(markTaskAsUnRead(selectedTask.taskIdentifier));
@@ -254,6 +258,15 @@ const TopSection = ({
           )}
         </Box>
         <Box display="flex">
+          {aiSummaryAvailable && (
+            <IconContainer>
+              <AISummaryModalOpenerHelper
+                type={SummaryType.TASK}
+                title={`${selectedTask?.description}`}
+                identifier={selectedTask?.identifier}
+              />
+            </IconContainer>
+          )}
           {handleCopyLink && (
             <Tooltip placement="bottom" title={'Copy Task Link'}>
               <IconContainer

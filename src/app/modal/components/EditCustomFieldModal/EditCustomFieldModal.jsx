@@ -62,15 +62,21 @@ const EditCustomFieldModal = ({
 
   const handleDisplayOptionChange = useCallback(
     (value, displayOption) => {
-      let updatedOptions = displayOptionsState?.displayOptions;
+      let updatedOptions = displayOptionsState?.displayOptions || [];
+
       if (value) {
-        if (!updatedOptions?.includes(displayOption)) {
+        const isRequired = displayOption.endsWith('_REQUIRED')
+        if (displayOption === 'READONLY' || displayOption === 'HIDDEN') {
+          updatedOptions = updatedOptions.filter((item) => !item.endsWith('_REQUIRED'));
+        }
+        if (isRequired) {
+          updatedOptions = updatedOptions.filter((item) => item !== 'READONLY' && item !== 'HIDDEN');
+        }
+        if (!updatedOptions.includes(displayOption)) {
           updatedOptions.push(displayOption);
         }
       } else {
-        updatedOptions = updatedOptions.filter(
-          (item) => item !== displayOption,
-        );
+        updatedOptions = updatedOptions.filter((item) => item !== displayOption);
       }
       setDisplayOptionsState((s) => ({
         ...s,
