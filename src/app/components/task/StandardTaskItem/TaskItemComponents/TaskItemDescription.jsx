@@ -7,6 +7,7 @@ import React, {
   useEffect,
   // useMemo,
 } from 'react';
+import { Link } from 'react-router-dom';
 import { Box, IconButton } from '@mui/material';
 import { useDispatch } from 'react-redux';
 import Highlighter from 'react-highlight-words';
@@ -162,9 +163,18 @@ const TaskItemDescription = ({
                       mention={currentMention}
                       className="fr-deletable fr-tribute"
                     >
-                      <span data={currentMention.identifier}>
-                        @{currentMention.name}{' '}
-                      </span>
+                      <Link
+                        to={`/core/assignedToPerson/${currentMention.identifier}`}
+                      >
+                        <span
+                          data={currentMention.identifier}
+                          onClick={(event) => {
+                            event.stopPropagation();
+                          }}
+                        >
+                          @{currentMention.name}{' '}
+                        </span>
+                      </Link>
                     </UserMention>
                   );
                 }
