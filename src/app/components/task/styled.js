@@ -144,6 +144,8 @@ export const PriorityIndicator = styled.div`
 
 export const DependencyIconContainer = styled.div`
   margin-right: ${spacing.small};
+  width: 12px;
+  height: 12px;
 `;
 
 export const BulkContainer = styled.div`

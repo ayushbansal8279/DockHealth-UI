@@ -1110,7 +1110,7 @@ const TaskItem = React.memo(
                             ? 50
                             : 0) -
                           (isSubtask ? 0 : 50) -
-                          (showDecisionRow ? 200 : 0)
+                          (showDecisionRow ? 20 : 0)
                         }
                       />
                     </div>
