@@ -201,6 +201,7 @@ function VSubtask(
                 isVirtualTask
                 isVirtualSubtask
                 $width={percentage < 90}
+                patient={patient}
               />
             </Sc.VSubtask>
           </div>
