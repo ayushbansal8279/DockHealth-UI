@@ -62,15 +62,21 @@ const EditCustomFieldModal = ({
 
   const handleDisplayOptionChange = useCallback(
     (value, displayOption) => {
-      let updatedOptions = displayOptionsState?.displayOptions;
+      let updatedOptions = displayOptionsState?.displayOptions || [];
+
       if (value) {
-        if (!updatedOptions?.includes(displayOption)) {
+        const isRequired = displayOption.endsWith('_REQUIRED')
+        if (displayOption === 'READONLY' || displayOption === 'HIDDEN') {
+          updatedOptions = updatedOptions.filter((item) => !item.endsWith('_REQUIRED'));
+        }
+        if (isRequired) {
+          updatedOptions = updatedOptions.filter((item) => item !== 'READONLY' && item !== 'HIDDEN');
+        }
+        if (!updatedOptions.includes(displayOption)) {
           updatedOptions.push(displayOption);
         }
       } else {
-        updatedOptions = updatedOptions.filter(
-          (item) => item !== displayOption,
-        );
+        updatedOptions = updatedOptions.filter((item) => item !== displayOption);
       }
       setDisplayOptionsState((s) => ({
         ...s,
@@ -163,7 +169,7 @@ const EditCustomFieldModal = ({
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
+  const fieldNameValue = watch('name'); // Track the "Field label name" input check here for changes
   const fieldTypeValue = watch('fieldType');
   const optionsValue = watch('options');
   const numberOfOptions = optionsValue?.length;
@@ -295,7 +301,7 @@ const EditCustomFieldModal = ({
             ...updatedField,
             relatedProfileTypeName: selectedProfileType,
           });
-          fetchUserCustomFields()
+          fetchUserCustomFields();
           setIsSaving(false);
           closeModal();
         })
@@ -547,10 +553,15 @@ const EditCustomFieldModal = ({
                                     onChange={handleParentDropdownChange(
                                       identifier,
                                     )}
-                                    options={customFields.map((field) => ({
-                                      label: field.name,
-                                      value: field.identifier,
-                                    }))}
+                                    options={customFields
+                                      .filter(
+                                        (field) =>
+                                          field.name !== fieldNameValue,
+                                      )
+                                      .map((field) => ({
+                                        label: field.name,
+                                        value: field.identifier,
+                                      }))}
                                   />
                                   <SelectParentOption
                                     label="Parent Option"

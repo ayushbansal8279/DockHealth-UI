@@ -168,6 +168,10 @@ const ListDetailsTasks = ({
     };
   }, [dispatch, taskListIdentifier]);
 
+  const areGroupsLoading = useMemo(() => {
+    return groupedTasks?.some(({ isLoadingGroup }) => isLoadingGroup === true);
+  }, [groupedTasks]);
+
   const renderEmptyState = () => {
     if (isSearchApplied) return <NoSearchResultsView />;
 
@@ -521,7 +525,9 @@ const ListDetailsTasks = ({
 
   return (
     <TaskGroupsContainer>
-      {isSearchApplied && !hasAnyTask ? (
+      {(isSearchApplied || areFiltersApplied) &&
+      !hasAnyTask &&
+      !areGroupsLoading ? (
         renderEmptyState()
       ) : (
         <>

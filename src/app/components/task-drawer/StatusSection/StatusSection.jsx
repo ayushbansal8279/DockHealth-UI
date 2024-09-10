@@ -48,6 +48,7 @@ const StatusSection = ({
             .then((updatedTask) => {
               onTaskDrawerTaskStatusChanged(newWorkflowStatus?.name);
               onTaskUpdate(updatedTask);
+              setStatus(newWorkflowStatus);
               setAutoSaveVisible();
             })
             .catch(() => {

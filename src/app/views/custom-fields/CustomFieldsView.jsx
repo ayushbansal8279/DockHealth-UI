@@ -48,9 +48,9 @@ const CustomFieldsView = () => {
           />
         }
       >
-        <ViewContainer>
+        <ViewContainer isPatient={selectedTab === 0}>
           <Box p={1} />
-          {selectedTab === 0 && <PatientCustomFieldsView />}
+          {selectedTab === 0 && <PatientCustomFieldsView  />}
           {selectedTab === 1 && <TaskCustomFieldsView editable />}
           {selectedTab === 2 && <UserCustomFieldsView editable />}
           {!selectedTab && selectedTab !== 0 && (

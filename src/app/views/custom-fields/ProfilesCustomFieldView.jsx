@@ -154,7 +154,7 @@ const ProfilesCustomFieldsView = ({ profileTypeIdentifier }) => {
           <Box p={1} />
           {customFields?.length > 0 ? (
             <>
-              <CustomFieldItem editable type="PROVIDER">
+              <CustomFieldItem editable type="PROFILE">
                 <CustomFieldCell>
                   <CustomFieldHeaderText>Field label</CustomFieldHeaderText>
                 </CustomFieldCell>
@@ -162,12 +162,16 @@ const ProfilesCustomFieldsView = ({ profileTypeIdentifier }) => {
                   <CustomFieldHeaderText>Field type</CustomFieldHeaderText>
                 </CustomFieldCell>
                 <CustomFieldCell>
-                  <CustomFieldHeaderText>
-                    Included in Name
-                  </CustomFieldHeaderText>
+                  <CustomFieldHeaderText>Included in Name</CustomFieldHeaderText>
                 </CustomFieldCell>
                 <CustomFieldCell>
                   <CustomFieldHeaderText>Show on Header</CustomFieldHeaderText>
+                </CustomFieldCell>
+                <CustomFieldCell>
+                  <CustomFieldHeaderText>Readonly</CustomFieldHeaderText>
+                </CustomFieldCell>
+                <CustomFieldCell>
+                  <CustomFieldHeaderText>Hidden</CustomFieldHeaderText>
                 </CustomFieldCell>
                 <CustomFieldCell>
                   <Box width="68px" />
@@ -189,7 +193,7 @@ const ProfilesCustomFieldsView = ({ profileTypeIdentifier }) => {
                     >
                       {({ dragHandleProps }) => (
                         <div>
-                          <CustomFieldItem editable type="PROVIDER">
+                          <CustomFieldItem editable type="PROFILE">
                             <DragHandle {...dragHandleProps}>
                               <DragHandleIcon />
                             </DragHandle>
@@ -224,6 +228,22 @@ const ProfilesCustomFieldsView = ({ profileTypeIdentifier }) => {
                               <CustomFieldText>
                                 {field.displayOptions &&
                                 field.displayOptions?.includes('PROFILE_HEADER')
+                                  ? 'Yes'
+                                  : ''}
+                              </CustomFieldText>
+                            </CustomFieldCell>
+                            <CustomFieldCell>
+                              <CustomFieldText>
+                                {field.displayOptions &&
+                                field.displayOptions?.includes('READONLY')
+                                  ? 'Yes'
+                                  : ''}
+                              </CustomFieldText>
+                            </CustomFieldCell>
+                            <CustomFieldCell>
+                              <CustomFieldText>
+                                {field.displayOptions &&
+                                field.displayOptions?.includes('HIDDEN')
                                   ? 'Yes'
                                   : ''}
                               </CustomFieldText>

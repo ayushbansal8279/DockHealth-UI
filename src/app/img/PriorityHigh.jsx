@@ -15,9 +15,9 @@ const PrioritySelectIcon = () => (
     <path
       d="M12.625 22.375L17 18L21.375 22.375"
       stroke="white"
-      stroke-width="1.8"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
   </svg>
 );

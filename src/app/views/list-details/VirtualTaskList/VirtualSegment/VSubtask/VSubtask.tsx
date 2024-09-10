@@ -77,7 +77,7 @@ function VSubtask(
   });
   const [addWorkflowTask, setAddWorkflowTask] = useState(false);
   const parentTask = pulledTask;
-  const { taskList, taskGroups, identifier } = parentTask;
+  const { taskList, taskGroups, identifier, patient } = parentTask;
   const { workflowIdentifierMap, handleRemoveWorkflowIdentifier } =
     useContext(CollapseContext);
 
@@ -111,6 +111,11 @@ function VSubtask(
         taskGroupIdentifier: taskGroup[0]?.taskGroupIdentifier,
         taskListIdentifier: taskList?.taskListIdentifier,
       };
+
+      if (patient) {
+        taskData.patientIdentifier = patient?.patientIdentifier;
+      }
+
       dispatch(TaskActions.saveTask(taskData));
     },
     [

@@ -1,0 +1,200 @@
+/* tslint:disable */
+/* eslint-disable */
+// @ts-nocheck
+/**
+ * Ampli - A strong typed wrapper for your Analytics
+ *
+ * To update run 'ampli pull web'
+ *
+ * Required dependencies: @amplitude/analytics-browser@^1.3.0
+ * Tracking Plan Version: 2
+ * Build: 1.0.0
+ * Runtime: browser:typescript-ampli-v2
+ *
+ * [View Tracking Plan](https://data.amplitude.com/dockhealth/Dock%20Web%20Dev/events/main/latest)
+ *
+ * [Full Setup Instructions](https://data.amplitude.com/dockhealth/Dock%20Web%20Dev/implementation/web)
+ */
+
+import * as amplitude from '@amplitude/analytics-browser';
+
+/**
+ * The event type to track via Amplitude
+ */
+export enum AmpliEventType {
+  UsageEvent = 'Usage Event',
+}
+
+/**
+ * Default Amplitude configuration options. Contains tracking plan information.
+ */
+export const DefaultConfiguration: BrowserOptions = {
+  plan: {
+    version: '2',
+    branch: 'main',
+    source: 'web',
+    versionId: '2fa1fc15-8f59-41f0-9675-869e5229fe83',
+  },
+  ...{
+    ingestionMetadata: {
+      sourceName: 'browser-typescript-ampli',
+      sourceVersion: '2.0.0',
+    },
+  },
+};
+
+export interface LoadOptionsBase {
+  disabled?: boolean;
+}
+
+export type LoadOptionsWithEnvironment = LoadOptionsBase & {
+  environment: Environment;
+  client?: { configuration?: BrowserOptions };
+};
+export type LoadOptionsWithApiKey = LoadOptionsBase & {
+  client: { apiKey: string; configuration?: BrowserOptions };
+};
+export type LoadOptionsWithClientInstance = LoadOptionsBase & {
+  client: { instance: BrowserClient };
+};
+
+export type LoadOptions =
+  | LoadOptionsWithEnvironment
+  | LoadOptionsWithApiKey
+  | LoadOptionsWithClientInstance;
+
+export class AmpliEvent implements BaseEvent {
+  constructor(
+    public event_type: AmpliEventType,
+    public event_properties: MegaFilterOpenProperties,
+  ) {
+    this.event_type = event_type;
+    this.event_properties = event_properties;
+  }
+}
+
+export type PromiseResult<T> = { promise: Promise<T | void> };
+
+const getVoidPromiseResult = () => ({ promise: Promise.resolve() });
+
+// prettier-ignore
+export class Ampli {
+  private disabled: boolean = false;
+  private amplitude?: BrowserClient;
+
+  get client(): BrowserClient {
+    this.isInitializedAndEnabled();
+    return this.amplitude!;
+  }
+
+  get isLoaded(): boolean {
+    return this.amplitude != null;
+  }
+
+  private isInitializedAndEnabled(): boolean {
+    if (!this.amplitude) {
+      console.error('ERROR: Ampli is not yet initialized. Have you called ampli.load() on app start?');
+      return false;
+    }
+    return !this.disabled;
+  }
+
+  /**
+   * Initialize the Ampli SDK. Call once when your application starts.
+   *
+   * @param options Configuration options to initialize the Ampli SDK with.
+   */
+  load(options: LoadOptions): PromiseResult<void> {
+    this.disabled = options.disabled ?? false;
+
+    if (this.amplitude) {
+      console.warn('WARNING: Ampli is already intialized. Ampli.load() should be called once at application startup.');
+      return getVoidPromiseResult();
+    }
+
+    let apiKey: string | null = null;
+    if (options.client && 'apiKey' in options.client) {
+      apiKey = options.client.apiKey;
+    }
+
+    if (options.client && 'instance' in options.client) {
+      this.amplitude = options.client.instance;
+    } else if (apiKey) {
+      this.amplitude = amplitude.createInstance();
+      const configuration = (options.client && 'configuration' in options.client) ? options.client.configuration : {};
+      return this.amplitude.init(apiKey, undefined, { ...DefaultConfiguration, ...configuration });
+    } else {
+      console.error("ERROR: ampli.load() requires 'environment', 'client.apiKey', or 'client.instance'");
+    }
+
+    return getVoidPromiseResult();
+  }
+
+  /**
+   * Identify a user and set user properties.
+   *
+   * @param userId The user's id.
+   * @param options Optional event options.
+   */
+  identify(
+    userId: string | undefined,
+    userIdentifier?: string | undefined,
+    userName?: string | undefined,
+    options?: EventOptions,
+  ): PromiseResult<Result> {
+    if (!this.isInitializedAndEnabled()) {
+      return getVoidPromiseResult();
+    }
+
+    if (userId) {
+      // options = {...options,  user_id: userId,  extra: {userIdentifier: userIdentifier, name: userName}};
+      options = {...options,  user_id: userId};
+    }
+
+    const amplitudeIdentify = new amplitude.Identify();
+    return this.amplitude!.identify(
+      amplitudeIdentify,
+      options,
+    );
+  }
+
+  /**
+  * Flush the event.
+  */
+  flush() : PromiseResult<Result> {
+    if (!this.isInitializedAndEnabled()) {
+      return getVoidPromiseResult();
+    }
+
+    return this.amplitude!.flush();
+  }
+
+  /**
+   * Track event
+   *
+   * @param event The event to track.
+   * @param options Optional event options.
+   */
+  track(eventType: AmpliEventType, eventProperties: Record<string, any>, options?: EventOptions): PromiseResult<Result> {
+    if (!this.isInitializedAndEnabled()) {
+      return getVoidPromiseResult();
+    }
+
+    const event = new AmpliEvent(eventType, eventProperties)
+
+    return this.amplitude!.track(event, undefined, options);
+  }
+}
+
+export const ampli = new Ampli();
+
+// BASE TYPES
+type BrowserOptions = amplitude.Types.BrowserOptions;
+
+export type BrowserClient = amplitude.Types.BrowserClient;
+export type BaseEvent = amplitude.Types.BaseEvent;
+export type IdentifyEvent = amplitude.Types.IdentifyEvent;
+export type GroupEvent = amplitude.Types.GroupIdentifyEvent;
+export type Event = amplitude.Types.Event;
+export type EventOptions = amplitude.Types.EventOptions;
+export type Result = amplitude.Types.Result;

@@ -7,7 +7,7 @@ import DateLabel from 'components/common/DateLabel/DateLabel';
 import moment from 'moment';
 import { DateWrapper, DateIconWrapper } from './styled';
 
-const TaskItemDate = ({ value, onChange, readOnly = false }) => {
+const TaskItemDate = ({ value, onChange, readOnly = false}) => {
   const handleDateChange = useCallback(
     (newDate) => {
       onChange(newDate);

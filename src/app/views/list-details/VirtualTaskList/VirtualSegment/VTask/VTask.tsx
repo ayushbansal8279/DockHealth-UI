@@ -75,7 +75,7 @@ function VTask(
 
   const percentage = ((droppableHeaderWidth || 0) / screenWidth) * 100;
   const task = pulledTask;
-  const { taskList, taskGroups, identifier, subTasksCount } = task;
+  const { taskList, taskGroups, identifier, subTasksCount, patient } = task;
   const [addWorkflowTask, setAddWorkflowTask] = useState(false);
   const taskGroup = !!taskGroups
     ? taskGroups.filter((taskGroup) =>
@@ -113,6 +113,11 @@ function VTask(
         taskGroupIdentifier: taskGroup[0]?.taskGroupIdentifier,
         taskListIdentifier: taskList?.taskListIdentifier,
       };
+
+      if (patient) {
+        taskData.patientIdentifier = patient?.patientIdentifier;
+      }
+
       dispatch(TaskActions.saveTask(taskData));
     },
     [dispatch, taskGroup, taskList?.taskListIdentifier],
