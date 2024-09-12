@@ -5,6 +5,7 @@ export const TextEditorContainerStyled = styled.div`
   margin-top: 1.5rem;
   width: 100%;
   background: #f7fafb;
+  text-align: left;
 `;
 
 export const InfoHeaderAttachmentsTextStyled = styled.p`
@@ -13,6 +14,7 @@ export const InfoHeaderAttachmentsTextStyled = styled.p`
   margin-top: 20px;
   margin-bottom: 5px;
   font-weight: 400;
+  text-align: left;
 `;
 
 export const AttachmentContainerStyled = styled.div`

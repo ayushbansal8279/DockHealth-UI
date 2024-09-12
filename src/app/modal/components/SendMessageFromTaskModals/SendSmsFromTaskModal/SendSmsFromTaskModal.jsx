@@ -103,7 +103,7 @@ const SendSmsFromTaskModal = ({ setSmsActive }) => {
         <CloseIcon htmlColor="#C1CCDA" />
       </CloseIconButton>
       <ModalHeaderContainerStyled>
-        <ModalHeader>Send sms</ModalHeader>
+        <ModalHeader>Send SMS</ModalHeader>
         <ModalDescription>Send a SMS for this task</ModalDescription>
       </ModalHeaderContainerStyled>
       <ModalDescriptionContainer>
