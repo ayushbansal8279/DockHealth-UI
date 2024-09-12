@@ -85,7 +85,7 @@ function SendEmrNoteFromTaskModal() {
       <ModalHeaderContainerStyled>
         <ModalHeader>Post note to EHR</ModalHeader>
         <ModalDescription>
-          Post a summary to the patient’s health record
+          Post a summary to the patient's health record
         </ModalDescription>
       </ModalHeaderContainerStyled>
       <ModalDescriptionContainer>
