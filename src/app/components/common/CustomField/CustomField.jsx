@@ -289,9 +289,11 @@ const CustomField = ({
       }
       case FieldType.HYPERLINK: {
         const value = watch(fieldName);
-        const customFieldHasValue = task?.taskMetaData?.find(
-          (customField) => customField.customFieldIdentifier === identifier,
-        )?.value;
+        const customFieldHasValue =
+          readOnly ||
+          task?.taskMetaData?.find(
+            (customField) => customField.customFieldIdentifier === identifier,
+          )?.value;
         const inputFieldName =
           isEditable || !value || !customFieldHasValue ? fieldName : '';
 
@@ -328,7 +330,8 @@ const CustomField = ({
               ) : null
             }
             endAdornment={
-              customFieldHasValue && !isEditable ? (
+              readOnly ||
+              (customFieldHasValue && !isEditable ? (
                 <EditIcon
                   onClick={handleEditClick}
                   sx={{
@@ -339,7 +342,7 @@ const CustomField = ({
                     },
                   }}
                 />
-              ) : null
+              ) : null)
             }
           />
         );

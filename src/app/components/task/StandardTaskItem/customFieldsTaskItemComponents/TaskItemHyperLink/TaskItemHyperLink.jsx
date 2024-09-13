@@ -51,11 +51,7 @@ const TaskItemHyperLink = ({
 
   const handleBlur = useCallback(
     (event) => {
-      if (
-        !readOnly &&
-        initialValue !== event?.target?.value &&
-        !!event?.target?.value
-      ) {
+      if (!readOnly && initialValue !== event?.target?.value) {
         onChange(event?.target.value);
       }
       setEditing(false);
@@ -66,8 +62,7 @@ const TaskItemHyperLink = ({
   const handleKeyDown = useCallback(
     (event) => {
       if (event.key === 'Enter') {
-        inputReference.current?.blur();
-        handleBlur();
+        handleBlur(event);
       }
     },
     [handleBlur],
