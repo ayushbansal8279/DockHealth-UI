@@ -156,7 +156,7 @@ const SendEmailFromTaskModal = ({ setEmailActive }) => {
         <CloseIcon htmlColor="#C1CCDA" />
       </CloseIconButton>
       <ModalHeaderContainerStyled>
-        <ModalHeader>Send email</ModalHeader>
+        <ModalHeader>Send Email</ModalHeader>
         <ModalDescription>Send an email for this task</ModalDescription>
       </ModalHeaderContainerStyled>
       <ModalDescriptionContainer>
@@ -219,7 +219,7 @@ const SendEmailFromTaskModal = ({ setEmailActive }) => {
           />
           <Input
             type="text"
-            label="subject"
+            label="Subject"
             name="email"
             placeholder="Type the email subject"
             shrink
@@ -295,7 +295,7 @@ const SendEmailFromTaskModal = ({ setEmailActive }) => {
             selectedContacts.length === 0 // || !detailsState.getCurrentContent().hasText()
           }
           style={{ width: '270px' }}
-          nClick={() => {
+          onClick={() => {
             dispatch(
               sendEmailForTask({
                 message: subject,

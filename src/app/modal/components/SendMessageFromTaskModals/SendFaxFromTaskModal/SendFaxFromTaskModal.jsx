@@ -124,8 +124,8 @@ const SendFaxFromTaskModal = () => {
         <CloseIcon htmlColor="#C1CCDA" />
       </CloseIconButton>
       <ModalHeaderContainerStyled>
-        <ModalHeader>Send fax</ModalHeader>
-        <ModalDescription>Send a fax for this task</ModalDescription>
+        <ModalHeader>Send FAX</ModalHeader>
+        <ModalDescription>Send a FAX for this task</ModalDescription>
       </ModalHeaderContainerStyled>
       <ModalDescriptionContainer>
         <InputContainerStyled>
@@ -145,13 +145,13 @@ const SendFaxFromTaskModal = () => {
           /> */}
           <EmailContactsAutoComplete
             type={CommunicationType.FAX}
-            placeholder="Type the fax number or name of the contact"
+            placeholder="Type the FAX number or name of the contact"
             onChange={handleContactsOnChange}
             error={faxError}
             multiple={false}
             autoFocus
-            label="Fax"
-            errorMessage="Incorrect fax number"
+            label="FAX"
+            errorMessage="Incorrect FAX number"
             // value={contact?.value ?? ''}
             disabled={show}
             setShow={setShow}
@@ -191,12 +191,12 @@ const SendFaxFromTaskModal = () => {
             disabled={show}
           />
           <TextEditorContainerStyled>
-            <CustomTextEditor label="Fax Cover Message">
+            <CustomTextEditor label="FAX Cover Message">
               <RichTextEditor
                 value={message}
                 reset={isValueReset}
                 readOnly={false}
-                placeholder="Fax Message"
+                placeholder="FAX Message"
                 onChange={handleTextEditorChange}
                 initOnClick
                 showCharCount
