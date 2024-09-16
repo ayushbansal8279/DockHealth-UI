@@ -174,8 +174,8 @@ const ListOptionsMenu = (props) => {
       let selectedTaskListStatus = localStorageHelper.getItem(
         getTaskListStatusStorageKey(taskListIdentifier),
       );
-      if (!selectedFilters) {
-        selectedFilters = 'ALL'
+      if (!selectedTaskListStatus) {
+        selectedTaskListStatus = 'ALL'
       }
       const { data } = await downloadTaskListData(
         taskListIdentifier,
