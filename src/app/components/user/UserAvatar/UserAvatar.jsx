@@ -30,7 +30,6 @@ const UserAvatar = React.forwardRef(
       userStatus,
       orgUserRole,
     } = user || {};
-    console.log(user);
     const isExternal = orgUserRole === UserOrganizationRole.EXTERNAL;
     const isGuest = orgUserRole === UserOrganizationRole.GUEST;
 
@@ -42,16 +41,12 @@ const UserAvatar = React.forwardRef(
       [userStatus],
     );
 
-    console.log(isInactive);
-
     const activityStatus = useMemo(() => {
       if (isInactive) {
         return;
       }
       return getUserActivityStatus(user, activeUsersList);
     }, [activeUsersList, isInactive, user]);
-
-    console.log(activityStatus);
 
     const pictureSource = useMemo(() => {
       if (isExternal || isGuest) return ExternalIcon;
