@@ -6,7 +6,7 @@ import TaskItemDropdown from 'components/task/StandardTaskItem/customFieldsTaskI
 import TaskItemText from 'components/task/StandardTaskItem/customFieldsTaskItemComponents/TaskItemText/TaskItemText';
 import TaskItemLongText from 'components/task/StandardTaskItem/customFieldsTaskItemComponents/TaskItemLongText/TaskItemLongText';
 import TaskItemNumber from 'components/task/StandardTaskItem/customFieldsTaskItemComponents/TaskItemNumber/TaskItemNumber';
-
+import TaskItemHyperLink from 'components/task/StandardTaskItem/customFieldsTaskItemComponents/TaskItemHyperLink/TaskItemHyperLink';
 import { updatePartialWorkflow } from 'actions/task-template-actions';
 import { partialUpdateTask, storeAsCurrentTask } from 'actions/task-actions';
 import { TaskItemType } from 'helpers/task-helpers';
@@ -18,8 +18,6 @@ import {
   createMetaDataObjectToSend,
   CUSTOM_FIELD_TYPES,
 } from 'helpers/custom-fields-helpers';
-import { StyledHyperLink } from 'components/auth/AuthComponents.styled';
-import { trunc } from 'helpers/utility-functions';
 
 const TaskItemCustomField = ({
   readOnly,
@@ -177,7 +175,7 @@ const TaskItemCustomField = ({
     }
     case FieldType.LONG_TEXT: {
       return (
-        <TaskItemLongText  
+        <TaskItemLongText
           readOnly={isReadOnly}
           value={value}
           onChange={handleChange}
@@ -198,13 +196,12 @@ const TaskItemCustomField = ({
     }
     case FieldType.HYPERLINK: {
       return (
-        <StyledHyperLink
-          href={value?.startsWith('http') ? value : `//${value}`}
-          target="_blank"
-          disabled={isReadOnly}
-        >
-          {trunc(value, 15)}
-        </StyledHyperLink>
+        <TaskItemHyperLink
+          readOnly={isReadOnly}
+          value={value}
+          onChange={handleChange}
+          field={field}
+        />
       );
     }
     default: {
