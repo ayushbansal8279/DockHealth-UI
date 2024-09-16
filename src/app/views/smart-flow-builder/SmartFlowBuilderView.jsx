@@ -16,6 +16,7 @@ import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import HardDependencyIcon from 'img/template/hard-dependency';
 import CalendarIcon from 'img/template/calendar-icon';
 import WorkflowLinkIcon from 'img/template/workflow-icon';
+import * as ModalActions from 'modal/actions';
 import {
   createWorkflowFolderPath,
   WORKFLOW_LIBRARY_PATH,
@@ -494,6 +495,20 @@ const SmartFlowBuilderView = () => {
         ?.map(path(['data', 'task'])),
     [selectedElements],
   );
+
+  useEffect(() => {
+    if (isCurrentUserEditor && nodesInitialized) {
+    dispatch(
+      ModalActions.openModal('Alert', {
+        description:
+          "Changes won't apply to deployed workflows.They will be saved and used in future workflows.",
+        confirm: () => {
+          dispatch(ModalActions.closeModal());
+        },
+      }),
+    );
+   }
+  }, [dispatch, isCurrentUserEditor, nodesInitialized]);
 
   return (
     <div style={{ display: 'flex', width: '100vw', height: '100vh' }}>

@@ -108,6 +108,17 @@ const TaskItemDescription = ({
     [dispatch, setEditing, task],
   );
 
+  const textRef = useRef(null);
+  const [isTruncated, setIsTruncated] = useState(false);
+
+  useEffect(() => {
+    if (textRef.current) {
+      setIsTruncated(textRef.current.scrollWidth > textRef.current.clientWidth);
+    }
+  }, [tokenizedDescription]);
+
+  const TooltipWrapper = isTruncated ? Tooltip : React.Fragment;
+
   // console.log(`split tokenized desciption:`, tokenizedDescription.split(/\s/));
 
   return (
@@ -132,88 +143,91 @@ const TaskItemDescription = ({
           />
         )}
         {!isEditing && (
-          <div
-            style={{
-              textOverflow: 'ellipsis',
-              overflow: 'hidden',
-              whiteSpace: 'nowrap',
-              textDecoration: isCompleted ? 'line-through' : 'none',
-              color: isCompleted && 'rgba(61, 72, 88, 0.50)',
-              fontWeight: read ? fontWeights.light : fontWeights.bold,
-            }}
-          >
-            {tokenizedDescription.split(/\s/).map((word) => {
-              // eslint-disable-next-line unicorn/prefer-ternary
-              // console.log(`word:`, word);
-              if (word.includes('[http') || word.includes('http')) {
-                return ReactHtmlParser(
-                  linkifyTextWithMentions(`${word} `, taskMentions),
-                );
-              }
+          <TooltipWrapper {...(isTruncated && { placement: 'top', title: tokenizedDescription })}>
+            <div
+              ref={textRef}
+              style={{
+                textOverflow: 'ellipsis',
+                overflow: 'hidden',
+                whiteSpace: 'nowrap',
+                textDecoration: isCompleted ? 'line-through' : 'none',
+                color: isCompleted && 'rgba(61, 72, 88, 0.50)',
+                fontWeight: read ? fontWeights.light : fontWeights.bold,
+              }}
+            >
+              {tokenizedDescription.split(/\s/).map((word) => {
+                // eslint-disable-next-line unicorn/prefer-ternary
+                // console.log(`word:`, word);
+                if (word.includes('[http') || word.includes('http')) {
+                  return ReactHtmlParser(
+                    linkifyTextWithMentions(`${word} `, taskMentions),
+                  );
+                }
 
-              if (word[0] === '@') {
-                const wordMentionIdentifier = word.split(/@{(.*?)}/)[1];
-                const currentMention = taskMentions.find(
-                  (m) => m.identifier === wordMentionIdentifier,
-                );
+                if (word[0] === '@') {
+                  const wordMentionIdentifier = word.split(/@{(.*?)}/)[1];
+                  const currentMention = taskMentions.find(
+                    (m) => m.identifier === wordMentionIdentifier,
+                  );
 
-                if (currentMention) {
-                  return (
-                    <UserMention
-                      mention={currentMention}
-                      className="fr-deletable fr-tribute"
-                    >
-                      <Link
-                        to={`/core/assignedToPerson/${currentMention.identifier}`}
+                  if (currentMention) {
+                    return (
+                      <UserMention
+                        mention={currentMention}
+                        className="fr-deletable fr-tribute"
                       >
-                        <span
-                          data={currentMention.identifier}
-                          onClick={(event) => {
-                            event.stopPropagation();
-                          }}
+                        <Link
+                          to={`/core/assignedToPerson/${currentMention.identifier}`}
                         >
+                          <span
+                            data={currentMention.identifier}
+                            onClick={(event) => {
+                              event.stopPropagation();
+                            }}
+                          >
+                            @{currentMention.name}{' '}
+                          </span>
+                        </Link>
+                      </UserMention>
+                    );
+                  }
+                }
+
+                if (word[0] === '#') {
+                  const wordMentionIdentifier = word.split(/#{(.*?)}/)[1];
+                  const currentMention = taskMentions.find(
+                    (m) => m.identifier === wordMentionIdentifier,
+                  );
+
+                  if (currentMention) {
+                    return (
+                      <PatientMention
+                        mention={currentMention}
+                        className="fr-deletable fr-tribute"
+                      >
+                        <span data={currentMention.identifier}>
                           @{currentMention.name}{' '}
                         </span>
-                      </Link>
-                    </UserMention>
-                  );
-                }
-              }
-
-              if (word[0] === '#') {
-                const wordMentionIdentifier = word.split(/#{(.*?)}/)[1];
-                const currentMention = taskMentions.find(
-                  (m) => m.identifier === wordMentionIdentifier,
-                );
-
-                if (currentMention) {
-                  return (
-                    <PatientMention
-                      mention={currentMention}
-                      className="fr-deletable fr-tribute"
-                    >
-                      <span data={currentMention.identifier}>
-                        @{currentMention.name}{' '}
-                      </span>
-                    </PatientMention>
-                  );
-                }
-              }
-
-              return (
-                <Highlighter
-                  highlightClassName="list-highlight"
-                  searchWords={
-                    highlightedValue
-                      ? highlightedValue?.toLowerCase().split(/\s+/)
-                      : []
+                      </PatientMention>
+                    );
                   }
-                  autoEscape
-                  textToHighlight={`${word} `}
-                />
-              );
-            })}
-          </div>
+                }
+
+                return (
+                  <Highlighter
+                    highlightClassName="list-highlight"
+                    searchWords={
+                      highlightedValue
+                        ? highlightedValue?.toLowerCase().split(/\s+/)
+                        : []
+                    }
+                    autoEscape
+                    textToHighlight={`${word} `}
+                  />
+                );
+              })}
+            </div>
+          </TooltipWrapper>
         )}
         {!isCompleted && (
           <DescriptionEditButton>
