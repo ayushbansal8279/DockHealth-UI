@@ -18,7 +18,7 @@ import { TooltipContent } from './styled';
 
 const UserAvatar = React.forwardRef(
   (
-    { user, color, size, isSelected, hideTooltip, onClick, isListPage },
+    { user, color, size, isSelected, hideTooltip, onClick },
     reference,
   ) => {
     const activeUsersList = useSelector(activeUsersListSelector);
@@ -30,16 +30,19 @@ const UserAvatar = React.forwardRef(
       userStatus,
       orgUserRole,
     } = user || {};
+    console.log(user);
     const isExternal = orgUserRole === UserOrganizationRole.EXTERNAL;
     const isGuest = orgUserRole === UserOrganizationRole.GUEST;
 
     const isInactive = useMemo(
       () =>
         [UserStatus.PENDING, UserStatus.INVITED, UserStatus.INACTIVE].includes(
-          userStatus,
+          userStatus
         ),
       [userStatus],
     );
+
+    console.log(isInactive);
 
     const activityStatus = useMemo(() => {
       if (isInactive) {
@@ -47,6 +50,8 @@ const UserAvatar = React.forwardRef(
       }
       return getUserActivityStatus(user, activeUsersList);
     }, [activeUsersList, isInactive, user]);
+
+    console.log(activityStatus);
 
     const pictureSource = useMemo(() => {
       if (isExternal || isGuest) return ExternalIcon;
@@ -85,7 +90,7 @@ const UserAvatar = React.forwardRef(
             // eslint-disable-next-line sonarjs/no-nested-template-literals
             name={`${name}${credentials ? `, ${credentials}` : ''}`}
             activityStatus={
-              isListPage && activityStatus === ActivityStatus.ONLINE
+               activityStatus === ActivityStatus.ONLINE
                 ? activityStatus
                 : ActivityStatus.OFFLINE
             }
