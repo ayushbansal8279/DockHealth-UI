@@ -194,7 +194,7 @@ const PatientForm = forwardRef(
             inputComponent={DateInput}
             name="dob"
             maxDate={moment().toISOString()}
-            setError={setError}
+            // setError={setError}
             clearErrors={clearErrors}
           />
           <Spacing vertical={3} />
