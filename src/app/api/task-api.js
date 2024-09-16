@@ -628,19 +628,17 @@ export function bulkEditCustomFieldsByTaskIdentifiers({
 
 export function downloadTaskListData(
   listIdentifier,
-  selectedFilters,
+  selectedTaskListStatus,
   filename,
 ) {
   return axios({
-    url: `/list/download/${listIdentifier}?taskStatus=${selectedFilters}`,
+    url: `/list/download/${listIdentifier}?taskStatus=${selectedTaskListStatus}`,
     method: 'POST',
     responseType: 'blob',
     headers: {
       Accept: 'application/octet-stream',
     },
-    data: selectedFilters
-      ? mapSelectedOptionsToRequestPayload(selectedFilters)
-      : {},
+    data: {},
   })
     .then((response) => {
       const url = window.URL.createObjectURL(new Blob([response.data]));
