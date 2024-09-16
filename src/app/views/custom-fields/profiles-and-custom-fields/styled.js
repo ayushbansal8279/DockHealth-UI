@@ -1,6 +1,8 @@
+import { Button } from '@mui/material';
 import styled from 'styled-components';
 import { fontSizes } from 'styles/font';
-import palette, { typography } from 'styles/palette';
+import palette from 'styles/palette';
+import AddIcon from '@mui/icons-material/Add';
 
 export const ViewContainer = styled.div`
   max-width: 800px;
@@ -25,4 +27,24 @@ export const AddTemplateWrapper = styled.div`
     color: ${palette.orange};
     font-size: ${fontSizes.regular};
   }
+`;
+
+export const AddButton = styled(Button)`
+  margin-top: 10px;
+  border-radius: 6px;
+  background: ${palette.newDarkBlue};
+  color: ${palette.white};
+  height: 32px;
+  &:hover {
+    background-color: ${palette.purpleNavy};
+  }
+`;
+
+export const AddButtonWrapper = styled.div`
+  position: absolute;
+  right: 100px;
+`;
+
+export const PlusIcon = styled(AddIcon)`
+  font-size: 20px;
 `;
