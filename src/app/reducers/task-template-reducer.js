@@ -651,7 +651,7 @@ const TaskTemplateReducer = (state = initialState, action) => {
                 t.identifier === task.taskIdentifier
                   ? {
                       ...t,
-                      assignedToUsers: task.assignedToUsers,
+                      ...task,
                     }
                   : t,
               ),
