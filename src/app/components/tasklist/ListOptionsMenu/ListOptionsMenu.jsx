@@ -171,7 +171,7 @@ const ListOptionsMenu = (props) => {
   const handleDownloadTaskListData = useCallback(
     async () => {
       const filename = `Dock ${listName}.csv`;
-      let selectedFilters = localStorageHelper.getItem(
+      let selectedTaskListStatus = localStorageHelper.getItem(
         getTaskListStatusStorageKey(taskListIdentifier),
       );
       if (!selectedFilters) {
@@ -179,7 +179,7 @@ const ListOptionsMenu = (props) => {
       }
       const { data } = await downloadTaskListData(
         taskListIdentifier,
-        selectedFilters,
+        selectedTaskListStatus,
         filename,
       );
       const url = window.URL.createObjectURL(new Blob([data]));
