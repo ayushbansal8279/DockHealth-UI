@@ -22,8 +22,8 @@ const AlertModal = ({
        <CloseIconContainer>
         <ModalCloseIcon/>
       </CloseIconContainer>
+      <InfoOutlinedIcon style={{ fontSize: 40 }} />
       <ModalIconContainer>
-        <InfoOutlinedIcon style={{ fontSize: 40 }} />
           {title}
       </ModalIconContainer>
       <ModalDescriptionContainer>{description}</ModalDescriptionContainer>

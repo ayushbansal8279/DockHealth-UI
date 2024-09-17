@@ -13,7 +13,7 @@ export const ModalWrapper = styled.div`
   max-width: 100vw;
   font-family: inherit;
   background-color: white;
-  padding-bottom: ${spacing.regular};
+  padding-bottom: ${spacing.small};
   // padding-top: ${spacing.largePlus};
 `;
 
@@ -25,20 +25,21 @@ export const ModalIconContainer = styled.div`
   color: ${palette.offBlack};
   text-align: center;
   font-family: Outfit;
-  font-size: 22px;
+  font-size: 18px;
   font-style: normal;
   font-weight: ${fontWeights.regularPlus};
-  line-height: 25px;
+  line-height: 20px;
   text-transform: capitalize;
+  padding-top: 16px;
 `;
 
 export const ModalDescriptionContainer = styled.div`
-  padding: ${spacing.large};
+  padding: ${spacing.regularPlus};
   align-self: stretch;
   color: ${palette.black};
   text-align: center;
   font-family: Outfit;
-  font-size: 18px;
+  font-size: 15px;
   font-style: normal;
   font-weight: 300;
   line-height: 25px; /* 156.25% */
