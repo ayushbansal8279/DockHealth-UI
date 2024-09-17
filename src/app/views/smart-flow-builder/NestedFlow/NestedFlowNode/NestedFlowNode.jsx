@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { shallowEqual, useDispatch } from 'react-redux';
+import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { IconButton, Typography } from '@mui/material';
 import { openModal, closeModal } from 'modal/actions';
 import { deleteTask, partialUpdateTask } from 'actions/task-actions';
@@ -13,6 +13,8 @@ import TaskNodeWrapper from 'views/smart-flow-builder/TaskNodeWrapper/TaskNodeWr
 import { TaskNodeEllipsis } from 'views/smart-flow-builder/TaskNodeWrapper/styled';
 import { IconContainerStyled } from './styled';
 import NestedFlowNodeStyled, { TaskLinks, TaskWrapper } from '../styled';
+import { userProfileSelector } from '@/app/selectors/user-selectors';
+import { workflowSelector } from '@/app/selectors/workflow-drawer-selectors';
 
 const NestedFlowNode = React.memo(({ data, isConnectable, selected, type }) => {
   const { task } = data || {};
@@ -26,6 +28,7 @@ const NestedFlowNode = React.memo(({ data, isConnectable, selected, type }) => {
   const [taskList, setTaskList] = useState(linkedWorkflowTaskList);
   const [taskGroup, setTaskGroup] = useState(linkedWorkflowTaskGroup);
 
+  const selectedWorkflow = useSelector(workflowSelector);
   const [currentTaskList, setCurrentTaskList] = useState(
     linkedWorkflowTaskList,
   );
@@ -121,6 +124,12 @@ const NestedFlowNode = React.memo(({ data, isConnectable, selected, type }) => {
 
   const description = task?.description || workflow?.name;
 
+  const memberslist = data?.task?.taskTemplate?.members || [];
+  const currentUser = useSelector(userProfileSelector);
+  const isCurrentMemberPermission = memberslist?.find(({ user }) => 
+    user.identifier === currentUser.identifier)
+    ?.memberPermission === 'VIEW';
+
   return (
     <TaskNodeHandles
       isConnectable={isConnectable}
@@ -135,7 +144,8 @@ const NestedFlowNode = React.memo(({ data, isConnectable, selected, type }) => {
               {description?.slice(0, 40)}
               {description?.length > 40 && '...'}
             </Typography>
-            <IconContainerStyled>
+            { !isCurrentMemberPermission && (
+              <IconContainerStyled>
               <IconButton onClick={handleDelete}>
                 <Delete htmlColor={palette.white} />
               </IconButton>
@@ -146,6 +156,8 @@ const NestedFlowNode = React.memo(({ data, isConnectable, selected, type }) => {
                 <ListsIcon color="white" />
               </IconButton>
             </IconContainerStyled>
+             )
+            }           
           </NestedFlowNodeStyled>
         </TaskNodeWrapper>
         <TaskLinks>
