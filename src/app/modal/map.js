@@ -53,6 +53,7 @@ import AddPatientToListModal from './components/AddPatientToListModal/AddPatient
 import InterruptEditModal from './components/InterruptEditModal/InterruptEditModal';
 import EditCustomFieldModal from './components/EditCustomFieldModal/EditCustomFieldModal';
 import DeleteConfirmationModal from './components/DeleteConfirmationModal/DeleteConfirmationModal';
+import DuplicateConfirmationModal from './components/DuplicateConfirmationModal/DuplicateConfirmationModal';
 import EditUserGroupModal from './components/EditUserGroupModal/EditUserGroupModal';
 import AddUserToGroupModal from './components/AddUserToGroupModal/AddUserToGroupModal';
 import DeleteTaskConfirmationModal from './components/DeleteTaskConfirmationModal/DeleteTaskConfirmationModal';
@@ -146,6 +147,7 @@ const MODAL_MAP = {
   InterruptEdit: InterruptEditModal,
   EditCustomField: EditCustomFieldModal,
   DeleteConfirmation: DeleteConfirmationModal,
+  DuplicateConfirmation: DuplicateConfirmationModal,
   DeleteTaskConfirmation: DeleteTaskConfirmationModal,
   DeleteCredentialConfirm: DeleteCredentialConfirmModal,
   TaskListCustomFieldsBulkEdit: TaskListCustomFieldsBulkEditModal,
@@ -171,7 +173,7 @@ const MODAL_MAP = {
   AnchorDateChangeConfirmation: AnchorDateChangeConfirmationModal,
   EditPatient: EditPatientModal,
   InviteUsersToChannel: InviteUsersToChannelModal,
-  AISummary:AISummaryModal,
+  AISummary: AISummaryModal,
   DateWarning: DateWarningModal,
   Alert : AlertModal
 };
