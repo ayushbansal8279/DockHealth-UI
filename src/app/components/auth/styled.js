@@ -77,3 +77,20 @@ export const Spacer = styled.hr`
 export const StyledPaper = styled(Paper)`
   border-radius: 4px;
 `;
+
+export const RulesList = styled.ul`
+  display: flex;
+  gap: 0.25rem;
+  list-style-type: none;
+  margin: 0;
+  font-size: 12px;
+`;
+
+export const RuleItem = styled.li`
+  color: ${({ isValid, isTouched }) => (isTouched ? (isValid ? '#388E3C' : '#D32F2F') : '#000')};
+`;
+
+export const Separator = styled.span`
+  margin-inline: 0.25rem;
+  color: #000;
+`;
