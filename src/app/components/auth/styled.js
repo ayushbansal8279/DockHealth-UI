@@ -87,7 +87,7 @@ export const RulesList = styled.ul`
 `;
 
 export const RuleItem = styled.li`
-  color: ${({ isValid, isTouched }) => (isTouched ? (isValid ? '#388E3C' : '#D32F2F') : '#000')};
+  color: ${({ isValid, isTouched }) => (isTouched ? (isValid ? palette.taskCheckboxGreen : palette.error) : '#000')};
 `;
 
 export const Separator = styled.span`
