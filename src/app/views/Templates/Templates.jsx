@@ -3,7 +3,11 @@ import ViewLayout from 'components/template/ViewLayout/ViewLayout';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { getAllTemplates, deleteTemplate } from 'api/template-api';
+import {
+  getAllTemplates,
+  deleteTemplate,
+  duplicateTemplate,
+} from 'api/template-api';
 import { openModal, closeModal } from 'modal/actions';
 import AddButton, {
   AddEntitiesContainer,
@@ -109,9 +113,32 @@ const Templates = () => {
     [dispatch],
   );
 
+  const onDuplicateTemplate = useCallback(
+    ({ id, ...data }) => {
+      const modalProps = {
+        title: 'Duplicate template',
+        description:
+          'Are you sure you want to duplicate this template? This action cannot be undone.',
+        confirm: () => {
+          dispatch(closeModal());
+          duplicateTemplate(id).then((data) =>
+            setTemplates((s) => [data, ...s]),
+          );
+        },
+      };
+      dispatch(openModal('DuplicateConfirmation', modalProps));
+    },
+    [dispatch, templates],
+  );
+
   const columns = useMemo(
-    () => getTemplateColumns({ onEditTemplate, onDeteleTemplate }),
-    [onDeteleTemplate, onEditTemplate],
+    () =>
+      getTemplateColumns({
+        onEditTemplate,
+        onDeteleTemplate,
+        onDuplicateTemplate,
+      }),
+    [onDeteleTemplate, onEditTemplate, onDuplicateTemplate],
   );
 
   return (

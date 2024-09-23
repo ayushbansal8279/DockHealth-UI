@@ -16,7 +16,11 @@ const renderColumnHeader = (props) => {
   );
 };
 
-export const getTemplateColumns = ({ onEditTemplate, onDeteleTemplate }) => [
+export const getTemplateColumns = ({
+  onEditTemplate,
+  onDeteleTemplate,
+  onDuplicateTemplate,
+}) => [
   {
     field: 'name',
     headerName: 'Template Name',
@@ -45,6 +49,10 @@ export const getTemplateColumns = ({ onEditTemplate, onDeteleTemplate }) => [
           name: 'Delete',
           color: palette.red,
           onClick: () => onDeteleTemplate(data),
+        },
+        {
+          name: 'Duplicate',
+          onClick: () => onDuplicateTemplate(data),
         },
       ];
       return (
