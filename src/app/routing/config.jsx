@@ -146,6 +146,10 @@ const TaskCustomizationsView = lazy(() =>
   import('views/custom-fields/task-customizations/TaskCustomizationsView'),
 );
 
+const ProfileBuilderView = lazy(() =>
+  import('components/profile-builder/ProfileBuilder'),
+);
+
 const CreateList = lazy(() =>
   import('views/OnboardingTutorial/CreateList/CreateList'),
 );
@@ -216,6 +220,11 @@ export const SETTINGS_ROUTES = [
   {
     path: '/profiles',
     RouteComponent: ProfilesAndCustomFieldsView,
+    permissions: [CAN_ACCESS_SETTINGS_PAGE],
+  },
+  {
+    path: '/profile-builder',
+    RouteComponent: ProfileBuilderView,
     permissions: [CAN_ACCESS_SETTINGS_PAGE],
   },
   {
