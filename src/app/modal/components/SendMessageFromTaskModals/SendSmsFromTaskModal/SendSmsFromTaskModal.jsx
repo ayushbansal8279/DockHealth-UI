@@ -34,6 +34,7 @@ import { ConfirmButton } from '../../ModalButton/ModalButtons';
 const SendSmsFromTaskModal = ({ setSmsActive }) => {
   const dispatch = useDispatch();
   const [message, setMessage] = useState('');
+  const [templateIdentifier, setTemplateIdentifier] = useState('');
   const [PhoneError, setPhoneError] = useState(false);
   const [selectedContacts, setSelectedContacts] = useState(null);
   const [newContact, setNewContact] = useState([]);
@@ -54,6 +55,7 @@ const SendSmsFromTaskModal = ({ setSmsActive }) => {
         message,
         recipientContact: selectedContacts.map((c) => c.value)[0],
         taskIdentifier: identifier,
+        templateIdentifier,
       }),
     );
     dispatch(closeModal());
@@ -143,6 +145,7 @@ const SendSmsFromTaskModal = ({ setSmsActive }) => {
               getTemplateDetails(newValue?.identifier, identifier).then(
                 (data) => {
                   setMessage(data?.shortMessage || '');
+                  setTemplateIdentifier(data?.identifier);
                 },
               );
             }}
