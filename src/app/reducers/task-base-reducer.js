@@ -132,6 +132,26 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
         if (!task) {
           return null;
         }
+
+        if (task?.parentTaskIdentifier) {
+          const updateTaskFromAction = (tasksMap) => {
+            const parentTask = tasksMap[task?.parentTaskIdentifier];
+            if (!parentTask) {
+              return null;
+            }
+
+            return {
+              ...parentTask,
+              subtasks: (parentTask.subtasks || []).filter(
+                (subtask) => subtask?.identifier !== task?.identifier,
+              ),
+              subTasksCount: parentTask?.subTasksCount - 1,
+            };
+          };
+
+          return updateStateCallback(state, updateTaskFromAction);
+        }
+
         if (task.identifier === taskIdentifier) {
           // return null to remove the task
           return null;
