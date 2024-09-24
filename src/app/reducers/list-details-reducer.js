@@ -643,6 +643,26 @@ const ListDetailsReducer = (state = initialState, action) => {
     case ActionTypes.DELETE_TASK: {
       const { taskIdentifier } = action;
       const taskItem = state.tasksMap[taskIdentifier];
+      const bundle =
+        taskItem?.taskGroups?.find(
+          ({ groupType }) => groupType === TaskGroupType.BUNDLE,
+        ) || {};
+      const bundleIdentifier = bundle?.taskGroupIdentifier;
+
+      if (bundleIdentifier && !taskItem?.parentTaskIdentifier) {
+        return {
+          ...state,
+          tasksMap: {
+            ...state.tasksMap,
+            [bundleIdentifier]: {
+              ...state.tasksMap[bundleIdentifier],
+              tasks: state.tasksMap[bundleIdentifier]?.tasks?.filter(
+                (taskId) => taskId !== taskIdentifier,
+              ),
+            },
+          },
+        };
+      }
 
       const updatedStateAfterRemovingTaskItem =
         taskItem?.itemType === TaskItemType.BUNDLE
