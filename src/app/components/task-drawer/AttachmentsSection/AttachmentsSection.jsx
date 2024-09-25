@@ -101,17 +101,18 @@ const AttachmentsSection = ({
                   key={attachment?.attachmentIdentifier}
                   attachment={attachment}
                   onClick={() => {
-                    if (
-                      attachment?.scanStatus === null ||
-                      attachment?.scanStatus === ScanStatus.CLEAN
-                    )
+                    if(attachment?.scanStatus === ScanStatus.CLEAN)
                       openAttachmentPreview(attachment);
                   }}
                   onRemoveClick={removeTaskAttachment}
                 />
-                {attachment?.scanStatus && (
-                  <p>{ScanStatusText[attachment?.scanStatus]}</p>
-                )}
+                <p>
+                  {
+                    !attachment?.scanStatus || attachment?.scanStatus === 'IN_PROGRESS'
+                      ? ScanStatusText.IN_PROGRESS
+                      : ScanStatusText[attachment.scanStatus]
+                  }
+                </p>
               </div>
             ))
           )}
