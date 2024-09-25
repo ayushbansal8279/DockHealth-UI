@@ -30,6 +30,7 @@ const ListSelectStep = ({
   setLists,
   onAddList,
   savingList,
+  openedWorkflowTab
 }) => {
   const [isFetchingLists, setIsFetchingLists] = useState(true);
   const [listInputFocused, setListInputFocused, unsetListInputFocused] =
@@ -69,7 +70,9 @@ const ListSelectStep = ({
 
   return (
     <Step>
-      <Title>Move To List</Title>
+      <Title>
+        {openedWorkflowTab ? 'Select List and Group' : 'Move To List'}
+      </Title>
       <Box m={1} />
       <ListsWrapper>
         {!isFetchingLists && (
@@ -89,6 +92,12 @@ const ListSelectStep = ({
                       selectedList?.taskListIdentifier ===
                       list.taskListIdentifier
                     }
+                    style={{
+                      alignItems: 'center',
+                      overflow: 'hidden',
+                      whiteSpace: 'nowrap',
+                      textOverflow: 'ellipsis',
+                    }}
                   >
                     {list.listName}
                   </ListItemTextButton>

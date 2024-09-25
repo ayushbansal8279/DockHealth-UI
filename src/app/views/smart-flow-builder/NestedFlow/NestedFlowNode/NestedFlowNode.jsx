@@ -118,6 +118,7 @@ const NestedFlowNode = React.memo(({ data, isConnectable, selected, type }) => {
             setTaskGroup(null);
           }
         },
+        openedWorkflowTab:true,
       }),
     );
   };
