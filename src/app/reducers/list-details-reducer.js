@@ -661,6 +661,22 @@ const ListDetailsReducer = (state = initialState, action) => {
               ),
             },
           },
+          groupedTasks: {
+            ...state.groupedTasks,
+            taskGroups: state.groupedTasks?.taskGroups?.map((g) =>
+              g.groupIdentifier === bundle?.parentTaskGroupIdentifier
+                ? {
+                    ...g,
+                    tasks:
+                      state.tasksMap[bundleIdentifier]?.tasks.length === 1
+                        ? g.tasks?.filter(
+                            (taskId) => taskId !== bundleIdentifier,
+                          )
+                        : g.tasks,
+                  }
+                : g,
+            ),
+          },
         };
       }
 
