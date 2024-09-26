@@ -26,6 +26,8 @@ import { AttachmentFileInput } from './styled';
 import { OutfitTypography } from 'styles/theme';
 import Spacing from 'components/common/Spacing';
 import palette from 'styles/palette';
+import { ScanStatusText } from '../../task-drawer/AttachmentsSection/helpers';
+import { ScanStatus } from '@/app/views/patient-details/PatientAttachments/helpers';
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const AttachmentSection = ({ disabled }) => {
@@ -156,10 +158,12 @@ const AttachmentSection = ({ disabled }) => {
   };
 
   const handleAttachmentClick = (attachment) => {
-    setPreviewedAttachment(attachment);
-    loadAttachmentContent(attachment).then(() => {
-      showAttachmentPreview();
-    });
+    if (attachment?.scanStatus === ScanStatus.CLEAN) {
+      setPreviewedAttachment(attachment);
+      loadAttachmentContent(attachment).then(() => {
+        showAttachmentPreview();
+      });
+    }
   };
 
   return (
@@ -199,12 +203,21 @@ const AttachmentSection = ({ disabled }) => {
             </>
           ) : (
             attachments?.map((attachment) => (
-              <AttachmentButton
-                key={attachment.attachmentIdentifier}
-                attachment={attachment}
-                onClick={handleAttachmentClick}
-                onRemoveClick={handleDeleteAttachment}
-              />
+              <div style={{ textAlign: 'center' }}>
+                <AttachmentButton
+                  key={attachment.attachmentIdentifier}
+                  attachment={attachment}
+                  onClick={handleAttachmentClick}
+                  onRemoveClick={handleDeleteAttachment}
+                />
+                <p>
+                  {
+                    !attachment?.scanStatus || attachment?.scanStatus === 'IN_PROGRESS'
+                      ? ScanStatusText.IN_PROGRESS
+                      : ScanStatusText[attachment.scanStatus]
+                  }
+                </p>
+              </div>
             ))
           )}
           {isUploadingAttachments && (
