@@ -717,48 +717,37 @@ export default (state = INITIAL_STATE, action = {}) => {
         ) || {};
       const bundleIdentifier = bundle?.taskGroupIdentifier;
 
-      if (bundleIdentifier && !taskItem?.parentTaskIdentifier) {
-        return {
-          ...state,
-          tasksMap: {
-            ...state.tasksMap,
-            [bundleIdentifier]: {
-              ...state.tasksMap[bundleIdentifier],
-              tasks: state.tasksMap[bundleIdentifier]?.tasks?.filter(
-                (taskId) => taskId !== taskIdentifier,
-              ),
-            },
-          },
-          lists: state.lists?.map((l) =>
-            l.taskListIdentifier === taskListIdentifier
-              ? {
-                  ...l,
-                  tasks:
-                    state.tasksMap[bundleIdentifier]?.tasks.length === 1
-                      ? l.tasks?.filter(
-                          (task) => task.identifier !== bundleIdentifier,
-                        )
-                      : l.tasks,
-                }
-              : l,
-          ),
-        };
-      }
-
       const updatedStateAfterRemovingTaskItem =
         taskItem?.itemType === TaskItemType.BUNDLE
-          ? {
-              ...state,
-            }
+          ? { ...state }
           : {
               ...state,
+              tasksMap:
+                bundleIdentifier && !taskItem?.parentTaskIdentifier
+                  ? {
+                      ...state.tasksMap,
+                      [bundleIdentifier]: {
+                        ...state.tasksMap[bundleIdentifier],
+                        tasks: state.tasksMap[bundleIdentifier]?.tasks?.filter(
+                          (taskId) => taskId !== taskIdentifier,
+                        ),
+                      },
+                    }
+                  : state.tasksMap,
               lists: state.lists?.map((l) =>
                 l.taskListIdentifier === taskListIdentifier
                   ? {
                       ...l,
-                      tasks: l.tasks?.filter(
-                        (task) => task?.taskIdentifier !== taskIdentifier,
-                      ),
+                      tasks:
+                        bundleIdentifier && !taskItem?.parentTaskIdentifier
+                          ? state.tasksMap[bundleIdentifier]?.tasks.length === 1
+                            ? l.tasks?.filter(
+                                (task) => task.identifier !== bundleIdentifier,
+                              )
+                            : l.tasks
+                          : l.tasks?.filter(
+                              (task) => task?.taskIdentifier !== taskIdentifier,
+                            ),
                     }
                   : l,
               ),
