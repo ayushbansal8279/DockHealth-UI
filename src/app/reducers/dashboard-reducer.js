@@ -389,6 +389,24 @@ const DashboardTasksReducer = (state = initialState, action) => {
       };
     }
 
+    case ActionTypes.DELETE_WORKFLOW: {
+      const { identifier } = action;
+      return {
+        ...state,
+        tasksList: state.tasksList.map((g) => {
+          const newTasks = g.tasks?.filter((taskId) => taskId !== identifier);
+          return {
+            ...g,
+            tasks: newTasks,
+            metricValue:
+              newTasks?.length === g.tasks?.length
+                ? g.metricValue
+                : g.metricValue - 1,
+          };
+        }),
+      };
+    }
+
     case ActionTypes.DELETE_TASK: {
       const { taskIdentifier } = action;
 
