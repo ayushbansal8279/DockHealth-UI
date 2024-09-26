@@ -188,17 +188,22 @@ const NestedFlowNode = React.memo(({ data, isConnectable, selected, type }) => {
               style={{
                 display: 'flex',
                 alignItems: 'center',
-                overflow: 'hidden',
-                whiteSpace: 'nowrap',
-                textOverflow: 'ellipsis',
                 padding:'5px 0 5px 0'
               }}
             >
-            {taskList?.listName.slice(0, 23)}{taskList?.listName.length > 23 && '...'}
+            <span 
+              style={{
+                overflow: 'hidden',
+                whiteSpace: 'nowrap',
+                textOverflow: 'ellipsis',
+                flex: 1
+              }}>
+                {taskList?.listName}
+            </span>
             <IconButton
               size="small"
               onClick={() => handleClose('taskList')}
-              style={{ padding: '4px', right:7, position: 'absolute' }}
+              style={{ padding: '2px' ,textAlign:'right'}}
             >
               <CloseIcon htmlColor={palette.white} fontSize='small'/>
              </IconButton>
@@ -210,17 +215,22 @@ const NestedFlowNode = React.memo(({ data, isConnectable, selected, type }) => {
               style={{
                 display: 'flex',
                 alignItems: 'center',
-                overflow: 'hidden',
-                whiteSpace: 'nowrap',
-                textOverflow: 'ellipsis',
                 paddingBottom:'6px'
               }}
             >
-              {taskGroup?.groupName.slice(0, 23)}{taskGroup?.groupName.length > 23 && '...'}
+            <span 
+              style={{
+                overflow: 'hidden',
+                whiteSpace: 'nowrap',
+                textOverflow: 'ellipsis',
+                flex: 1
+              }}>
+                {taskGroup.groupName}
+            </span>
               <IconButton
                 size="small"
                 onClick={() => handleClose('taskGroup')}
-                style={{ padding: '4px' , right: 7 , position: 'absolute'}}
+                style={{ padding: '2px',textAlign:'right'}}
               >
               <CloseIcon htmlColor={palette.white} fontSize='small'/>
              </IconButton>
