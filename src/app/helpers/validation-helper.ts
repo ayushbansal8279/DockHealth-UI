@@ -8,6 +8,10 @@ export const validPasswordSchema = string()
   .matches(
     /[a-z]/,
     'At least one lowercase letter is required in the password',
+  )
+  .matches(
+    /[!@#$%^&*(),.?":{}|<>]/,
+    'At least one special character is required in the password',
   );
 
 export const validateNewSubtask = (value: string) => {

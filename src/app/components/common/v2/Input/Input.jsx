@@ -57,7 +57,11 @@ const Input = React.forwardRef(
       error={!!error}
       defaultValue={defaultValue}
       size={size}
-      helperText={error || null}
+      helperText={
+        (name === "password" && error === "This field is required") || name !== "password"
+          ? error || null
+          : null
+      }
       disabled={disabled}
       inputProps={{ readOnly }}
       InputProps={{
