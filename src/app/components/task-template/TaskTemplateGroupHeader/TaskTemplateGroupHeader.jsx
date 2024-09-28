@@ -368,6 +368,7 @@ const TaskTemplateGroupHeader = ({
               ),
             );
           },
+          modalLabel: true
         }),
       );
     }

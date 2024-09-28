@@ -228,6 +228,7 @@ const TaskItemContextMenu = ({
         confirmText: 'Move',
         confirm: hasSubtasks ? openMoveTasksWithSubtasksModal : confirmAction,
         preventClosingModal: hasSubtasks,
+        modalLabel: true
       }),
     );
   }, [task]);

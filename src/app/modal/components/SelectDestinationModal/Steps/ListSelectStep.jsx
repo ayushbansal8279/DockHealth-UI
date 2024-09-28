@@ -30,7 +30,7 @@ const ListSelectStep = ({
   setLists,
   onAddList,
   savingList,
-  openedWorkflowTab
+  modalLabel
 }) => {
   const [isFetchingLists, setIsFetchingLists] = useState(true);
   const [listInputFocused, setListInputFocused, unsetListInputFocused] =
@@ -71,7 +71,7 @@ const ListSelectStep = ({
   return (
     <Step>
       <Title>
-        {openedWorkflowTab ? 'Select List and Group' : 'Move To List'}
+        {modalLabel ? 'Move To List' : 'Select List and Group'}
       </Title>
       <Box m={1} />
       <ListsWrapper>
