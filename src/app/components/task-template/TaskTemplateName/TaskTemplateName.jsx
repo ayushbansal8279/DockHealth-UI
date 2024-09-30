@@ -1,8 +1,9 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Fade, Popper } from '@mui/material';
 import { openDrawer } from 'actions/workflow-drawer-actions';
 import { checkIfShouldDisplayTooltip } from 'components/task/OverflowTooltip/OverflowTooltip';
+import Tooltip from '@/app/components/common/Tooltip/Tooltip';
 import { useDispatch } from 'react-redux';
 import Highlighter from 'react-highlight-words';
 import {
@@ -27,6 +28,17 @@ const TaskTemplateName = ({
 }) => {
   const dispatch = useDispatch();
   const { name, identifier } = templateGroup;
+
+  const textRef = useRef(null);
+  const [isTruncated, setIsTruncated] = useState(false);
+
+  useEffect(() => {
+    if (textRef.current) {
+      setIsTruncated(textRef.current.scrollWidth > textRef.current.clientWidth);
+    }
+  }, [nameInputValue]);
+
+  const TooltipWrapper = isTruncated ? Tooltip : React.Fragment;
 
   return (
     <>
@@ -59,12 +71,23 @@ const TaskTemplateName = ({
             />
           )}
           {!isEditing && (
-            <Highlighter
-              highlightClassName="list-highlight"
-              searchWords={highlightedValue?.toLowerCase().split(/\s+/)}
-              autoEscape
-              textToHighlight={nameInputValue}
-            />
+            <TooltipWrapper {...(isTruncated && { placement: 'top', title: nameInputValue })}>
+              <div
+                ref={textRef}
+                style={{
+                  textOverflow: 'ellipsis',
+                  overflow: 'hidden',
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                <Highlighter
+                  highlightClassName="list-highlight"
+                  searchWords={highlightedValue?.toLowerCase().split(/\s+/)}
+                  autoEscape
+                  textToHighlight={nameInputValue}
+                />
+              </div>
+            </TooltipWrapper>
           )}
           {/* This line will be required when we implement this on Tooltip in Future */}
           {/* {templateGroup?.linkedSourceTaskBundle && (

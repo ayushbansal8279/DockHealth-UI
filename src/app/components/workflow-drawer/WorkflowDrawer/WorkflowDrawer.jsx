@@ -79,9 +79,9 @@ const WorkflowDrawer = () => {
 
   const memberslist = selectedWorkflow?.members;  
   const currentUser = useSelector(userProfileSelector);
-  const isCurrentMemberPermission = memberslist?.find(({ user }) => 
+  const hasEditorPermissions = memberslist?.find(({ user }) => 
     user.identifier === currentUser.identifier)
-    ?.memberPermission === 'VIEW';
+    ?.memberPermission === 'EDITOR';
 
   useEffect(() => {
     if (momentDueDate) {
@@ -161,22 +161,22 @@ const WorkflowDrawer = () => {
                   </Typography>
                 </Grid>
                 <Grid item xs={12}>
-                  <NameSection readOnly={restrictions?.name === DISABLED || isCurrentMemberPermission} />
+                  <NameSection readOnly={restrictions?.name === DISABLED || !hasEditorPermissions} />
                 </Grid>
                 <Grid item xs={12}>
                   <DescriptionSection
-                    readOnly={restrictions?.description === DISABLED || isCurrentMemberPermission}
+                    readOnly={restrictions?.description === DISABLED || !hasEditorPermissions}
                   />
                 </Grid>
                 <Grid item xs={12}>
                   <AssignedToSection
-                    disabled={restrictions?.assignedTo === DISABLED || isCurrentMemberPermission}
+                    disabled={restrictions?.assignedTo === DISABLED || !hasEditorPermissions}
                   />
                 </Grid>
                 <Grid item xs={12}>
                   <PatientSection
                     disabled={
-                      !!isTemplateTask || restrictions?.patient === DISABLED || isCurrentMemberPermission
+                      !!isTemplateTask || restrictions?.patient === DISABLED || !hasEditorPermissions
                     }
                   />
                 </Grid>
@@ -184,7 +184,7 @@ const WorkflowDrawer = () => {
                 <Grid item xs={12}>
                   <DueDateSection
                     disabled={
-                      !!isTemplateTask || restrictions?.dueDate === DISABLED || isCurrentMemberPermission
+                      !!isTemplateTask || restrictions?.dueDate === DISABLED || !hasEditorPermissions
                     }
                   />
                 </Grid>
@@ -192,33 +192,33 @@ const WorkflowDrawer = () => {
                   <Grid ml={18.5} xs={12}>
                     <ReminderSection
                       disabled={
-                        !!isTemplateTask || restrictions?.reminder === DISABLED || isCurrentMemberPermission
+                        !!isTemplateTask || restrictions?.reminder === DISABLED || !hasEditorPermissions
                       }
                     />
                   </Grid>
                 )}
                 <Grid item xs={12}>
                   <PrioritySection
-                    disabled={restrictions?.priority === DISABLED || isCurrentMemberPermission}
+                    disabled={restrictions?.priority === DISABLED || !hasEditorPermissions}
                   />
                 </Grid>
                 <Grid item xs={12}>
-                  <StatusSection disabled={restrictions?.status === DISABLED || isCurrentMemberPermission} />
+                  <StatusSection disabled={restrictions?.status === DISABLED || !hasEditorPermissions} />
                 </Grid>
                 <Grid item xs={12}>
-                  <LabelsSection disabled={restrictions?.labels === DISABLED || isCurrentMemberPermission} />
+                  <LabelsSection disabled={restrictions?.labels === DISABLED || !hasEditorPermissions} />
                 </Grid>
               </Grid>
             </SectionContainer>
             <SectionSpacer />
             <SectionContainer>
               <AttachmentSection
-                disabled={restrictions?.attachments === DISABLED || isCurrentMemberPermission}
+                disabled={restrictions?.attachments === DISABLED || !hasEditorPermissions}
               />
             </SectionContainer>
             <SectionSpacer />
             <SectionContainer>
-              <TasksSection disabled={restrictions?.tasks === DISABLED || isCurrentMemberPermission} />
+              <TasksSection disabled={restrictions?.tasks === DISABLED || !hasEditorPermissions} />
             </SectionContainer>
             <SectionSpacer />
             <SectionContainer withBackground>
@@ -227,12 +227,12 @@ const WorkflowDrawer = () => {
             <SectionSpacer />
             <SectionContainer>
               <CustomFieldsSection
-                disabled={restrictions?.customFields === DISABLED || isCurrentMemberPermission}
+                disabled={restrictions?.customFields === DISABLED || !hasEditorPermissions}
               />
             </SectionContainer>
             <SectionSpacer />
             <SectionContainer>
-              <HistorySection disabled={restrictions?.history === DISABLED || isCurrentMemberPermission} />
+              <HistorySection disabled={restrictions?.history === DISABLED || !hasEditorPermissions} />
             </SectionContainer>
             <StickyAddComment onAdd={handleAddComment} />
           </WorkflowDrawerContainer>
