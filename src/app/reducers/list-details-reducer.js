@@ -643,20 +643,52 @@ const ListDetailsReducer = (state = initialState, action) => {
     case ActionTypes.DELETE_TASK: {
       const { taskIdentifier } = action;
       const taskItem = state.tasksMap[taskIdentifier];
+      const bundle =
+        taskItem?.taskGroups?.find(
+          ({ groupType }) => groupType === TaskGroupType.BUNDLE,
+        ) || {};
+      const bundleIdentifier = bundle?.taskGroupIdentifier;
 
       const updatedStateAfterRemovingTaskItem =
         taskItem?.itemType === TaskItemType.BUNDLE
-          ? {
-              ...state,
-            }
+          ? { ...state }
           : {
               ...state,
+              tasksMap:
+                bundleIdentifier && !taskItem?.parentTaskIdentifier
+                  ? {
+                      ...state.tasksMap,
+                      [bundleIdentifier]: {
+                        ...state.tasksMap[bundleIdentifier],
+                        tasks: state.tasksMap[bundleIdentifier]?.tasks?.filter(
+                          (taskId) => taskId !== taskIdentifier,
+                        ),
+                      },
+                    }
+                  : state.tasksMap,
               groupedTasks: {
                 ...state.groupedTasks,
-                taskGroups: state.groupedTasks?.taskGroups?.map((g) => ({
-                  ...g,
-                  tasks: g.tasks?.filter((itemId) => itemId !== taskIdentifier),
-                })),
+                taskGroups: state.groupedTasks?.taskGroups?.map((group) =>
+                  bundleIdentifier && !taskItem?.parentTaskIdentifier
+                    ? group.groupIdentifier ===
+                      bundle?.parentTaskGroupIdentifier
+                      ? {
+                          ...group,
+                          tasks:
+                            state.tasksMap[bundleIdentifier]?.tasks.length === 1
+                              ? group.tasks?.filter(
+                                  (taskId) => taskId !== bundleIdentifier,
+                                )
+                              : group.tasks,
+                        }
+                      : group
+                    : {
+                        ...group,
+                        tasks: group.tasks?.filter(
+                          (itemId) => itemId !== taskIdentifier,
+                        ),
+                      },
+                ),
               },
               completedGroupedTasks: {
                 ...state.completedGroupedTasks,
@@ -664,7 +696,7 @@ const ListDetailsReducer = (state = initialState, action) => {
                   (g) => ({
                     ...g,
                     tasks: g.tasks?.filter(
-                      (itemId) => itemId !== taskIdentifier,
+                      (taskId) => taskId !== taskIdentifier,
                     ),
                   }),
                 ),
