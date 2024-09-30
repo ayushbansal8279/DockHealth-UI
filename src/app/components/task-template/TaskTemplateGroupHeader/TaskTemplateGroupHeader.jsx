@@ -336,7 +336,10 @@ const TaskTemplateGroupHeader = ({
   const handleAddTaskToWorkflow = () => {
     if (taskListRestrictions?.workflowAddTask !== DISABLED) {
       setIsAddingTask(true);
-      if (origin === 'LIST') {
+      if (origin === 'LIST' || origin === 'PATIENT') {
+        setOpen(true);
+        setVirtualListWorkflowOpen(true);
+        collapse.set(identifier, false);
         collapse.handleAddWorkflowIdentifier(identifier);
       }
     }
