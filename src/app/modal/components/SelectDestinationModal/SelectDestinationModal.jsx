@@ -23,7 +23,7 @@ const SelectDestinationModal = ({
   confirmText,
   preventClosingModal = false,
   selectParentTask,
-  modalLabel = false
+  modalLabel
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const dispatch = useDispatch();

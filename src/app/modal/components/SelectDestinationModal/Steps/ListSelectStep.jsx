@@ -71,7 +71,7 @@ const ListSelectStep = ({
   return (
     <Step>
       <Title>
-        {modalLabel ? 'Move To List' : 'Select List and Group'}
+        {modalLabel || 'Select List and Group'}
       </Title>
       <Box m={1} />
       <ListsWrapper>

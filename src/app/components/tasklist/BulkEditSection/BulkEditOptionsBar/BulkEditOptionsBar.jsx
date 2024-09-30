@@ -619,7 +619,7 @@ const BulkEditOptionsBar = ({
         confirmText: 'Move',
         confirm: confirmAction,
         preventClosingModal,
-        modalLabel: true
+        modalLabel: 'Move to List'
       }),
     );
   }, [

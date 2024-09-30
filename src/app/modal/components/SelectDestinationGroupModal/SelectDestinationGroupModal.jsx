@@ -31,7 +31,7 @@ const SelectDestinationGroupModal = ({
   return (
     <ModalWrapperWithPadding>
       <Title>
-        Select From Group
+        Select Group
       </Title>
       <Box m={1} />
       <CloseIconButton onClick={closeModal} size="small" color="secondary">

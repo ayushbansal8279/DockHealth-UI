@@ -368,7 +368,7 @@ const TaskTemplateGroupHeader = ({
               ),
             );
           },
-          modalLabel: true
+          modalLabel: 'Move to List'
         }),
       );
     }
