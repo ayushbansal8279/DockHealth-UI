@@ -118,7 +118,7 @@ const NestedFlowNode = React.memo(({ data, isConnectable, selected, type }) => {
             setTaskGroup(null);
           }
         },
-        modalLabel : 'Select From List and Group'
+        modalLabel : 'Select List and Group'
       }),
     );
   };
