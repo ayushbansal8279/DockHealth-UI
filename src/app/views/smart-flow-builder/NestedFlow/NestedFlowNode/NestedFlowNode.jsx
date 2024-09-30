@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { IconButton, Typography } from '@mui/material';
 import { openModal, closeModal } from 'modal/actions';
@@ -7,7 +7,7 @@ import { getTemplates } from 'api/task-template-api';
 import { Edit, Delete } from '@mui/icons-material';
 import palette from 'styles/palette';
 import ListsIcon from 'img/navigation/ListsIcon';
-
+import CloseIcon from '@mui/icons-material/Close';
 import TaskNodeHandles from 'views/smart-flow-builder/TaskNodeHandles/TaskNodeHandles';
 import TaskNodeWrapper from 'views/smart-flow-builder/TaskNodeWrapper/TaskNodeWrapper';
 import { TaskNodeEllipsis } from 'views/smart-flow-builder/TaskNodeWrapper/styled';
@@ -122,6 +122,27 @@ const NestedFlowNode = React.memo(({ data, isConnectable, selected, type }) => {
     );
   };
 
+  const handleClose = useCallback((type) => {
+    if(type === 'taskList'){
+      dispatch(
+        partialUpdateTask(taskIdentifier, {
+          linkedWorkflowTaskListIdentifier: null,
+          ...(taskGroup && {linkedWorkflowTaskGroupIdentifier: null})
+        }),
+      );
+      setTaskList(null);
+      setTaskGroup(null);
+    }
+    else if(type === 'taskGroup'){
+      dispatch(
+        partialUpdateTask(taskIdentifier, {
+          linkedWorkflowTaskGroupIdentifier: null
+        }),
+      );
+      setTaskGroup(null);
+    }
+  }, [dispatch, taskIdentifier, taskGroup]); 
+
   const description = task?.description || workflow?.name;
 
   const memberslist = data?.task?.taskTemplate?.members || [];
@@ -165,24 +186,54 @@ const NestedFlowNode = React.memo(({ data, isConnectable, selected, type }) => {
             <Typography
               component="p"
               style={{
+                display: 'flex',
+                alignItems: 'center',
+                padding:'5px 0 5px 0'
+              }}
+            >
+            <span 
+              style={{
                 overflow: 'hidden',
                 whiteSpace: 'nowrap',
                 textOverflow: 'ellipsis',
-              }}
+                flex: 1
+              }}>
+                {taskList?.listName}
+            </span>
+            <IconButton
+              size="small"
+              onClick={() => handleClose('taskList')}
+              style={{ padding: '2px' ,textAlign:'right'}}
             >
-              {taskList.listName}
+              <CloseIcon htmlColor={palette.white} fontSize='small'/>
+             </IconButton>
             </Typography>
           )}
           {taskGroup && (
             <Typography
               component="p"
               style={{
+                display: 'flex',
+                alignItems: 'center',
+                paddingBottom:'6px'
+              }}
+            >
+            <span 
+              style={{
                 overflow: 'hidden',
                 whiteSpace: 'nowrap',
                 textOverflow: 'ellipsis',
-              }}
-            >
-              {taskGroup.groupName}
+                flex: 1
+              }}>
+                {taskGroup.groupName}
+            </span>
+              <IconButton
+                size="small"
+                onClick={() => handleClose('taskGroup')}
+                style={{ padding: '2px',textAlign:'right'}}
+              >
+              <CloseIcon htmlColor={palette.white} fontSize='small'/>
+             </IconButton>
             </Typography>
           )}
         </TaskLinks>
