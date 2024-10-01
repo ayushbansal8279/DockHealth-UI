@@ -138,10 +138,17 @@ const CreateAccount = (props) => {
       external,
       firstName: fname,
       lastName: lname,
-      senderFirstName: sfname,
-      senderLastName: slname,
-      orgName: oname,
+      senderFirstName,
+      sendersFirstName,
+      senderLastName,
+      sendersLastName,
+      orgName,
+      organization,
     } = queryValues;
+
+    const oname = orgName || organization;
+    const sfname = senderFirstName || sendersFirstName;
+    const slname = senderLastName || sendersLastName;
 
     if (oname && sfname) setIsUserInvited(true);
     if (oname) setOrganizationName(oname);
