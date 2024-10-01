@@ -84,6 +84,7 @@ import PatientCustomFieldsBulkEditModal from './components/PatientCustomFieldsBu
 import TaskListCustomFieldsBulkEditModal from './components/TaskListCustomFieldsBulkEditModal';
 import AISummaryModal from './components/AISummaryModal/AISummaryModal';
 import DateWarningModal from './components/DateWarningModal/DateWarningModal';
+import AlertModal from './components/AlertModal/AlertModal';
 
 const MODAL_MAP = {
   CompleteAllTasks: CompleteAllTasksModal,
@@ -172,6 +173,7 @@ const MODAL_MAP = {
   InviteUsersToChannel: InviteUsersToChannelModal,
   AISummary:AISummaryModal,
   DateWarning: DateWarningModal,
+  Alert : AlertModal
 };
 
 export default MODAL_MAP;

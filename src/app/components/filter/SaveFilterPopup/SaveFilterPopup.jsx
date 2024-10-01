@@ -21,7 +21,7 @@ import {
 import Spacing from '../../common/Spacing';
 import { getUniqueQuickFilterLabelName } from '../CustomFilters/helpers';
 import NewFilterContainer from '../NewFilterContainer/NewFilterContainer';
-import palette from '@/app/styles/palette';
+import { selectFilterOption } from '@/app/helpers/filter-options-helpers';
 
 const SaveFilterPopup = ({
   isSavePopupOpen,
@@ -111,6 +111,7 @@ const SaveFilterPopup = ({
 
   const handleQuickFilterCreate = () => {
     onQuickFilterCreate(searchInputValue, filteredData);
+    onSelectedFiltersChange(selectFilterOption('', '', filteredData));
     setSavePopupOpen(false);
     setFinalFilter({});
   };

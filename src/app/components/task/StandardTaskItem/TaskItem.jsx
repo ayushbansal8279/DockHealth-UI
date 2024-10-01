@@ -941,7 +941,7 @@ const TaskItem = React.memo(
 
     const getReduceWidth = (columnName) => {
       return isSubtask &&
-        (origin === 'LIST' || origin === 'PATIENT') &&
+        (origin === 'LIST' || origin === 'PATIENT' || origin === 'TEMPLATE') &&
         !selectedFilters &&
         !searchValue &&
         !sort.key &&
