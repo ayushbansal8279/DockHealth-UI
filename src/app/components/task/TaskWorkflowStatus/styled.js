@@ -19,6 +19,7 @@ export const StatusListWrapper = styled.div`
   font-size: ${fontSizes.smallPlus};
   font-weight: ${fontWeights.regularPlus};
   color: ${palette.mediumGrey};
+  padding-top: ${spacing.small};
 `;
 
 export const StatusList = styled.div`
@@ -71,9 +72,8 @@ export const StatusList = styled.div`
 `;
 
 export const NewStatusButtonWrapper = styled.div`
-  width: 100%;
-  padding: ${spacing.tiny} ${spacing.smallPlus} ${spacing.tiny}
-    ${spacing.regular};
+  width: 7rem;
+  padding: ${spacing.tiny} ${spacing.smallPlus} ${spacing.tiny} ${spacing.regular};
 `;
 
 export const NewStatusButton = styled.button`

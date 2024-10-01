@@ -39,9 +39,8 @@ export const StatusItemWrapper = styled.div`
   justify-content: flex-start;
   align-items: center;
   height: 100%;
-  width: 100%;
-  padding: ${spacing.tiny} ${spacing.smallPlus} ${spacing.tiny}
-    ${spacing.regular};
+  width: fit-content;
+  padding: ${spacing.tiny} ${spacing.smallPlus} ${spacing.tiny} ${spacing.regular};
   overflow: hidden;
 
   &:hover {
@@ -79,6 +78,7 @@ export const StatusItemContent = styled.div`
   overflow: hidden;
   background-color: ${({ editing }) =>
     editing ? palette.coolGrey4 : palette.white};
+    width: fit-content;
 `;
 
 export const StatusFlag = styled.div`
