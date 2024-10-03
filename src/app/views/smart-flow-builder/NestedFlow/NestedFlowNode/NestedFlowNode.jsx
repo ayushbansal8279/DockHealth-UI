@@ -15,6 +15,7 @@ import { IconContainerStyled } from './styled';
 import NestedFlowNodeStyled, { TaskLinks, TaskWrapper } from '../styled';
 import { userProfileSelector } from '@/app/selectors/user-selectors';
 import { workflowSelector } from '@/app/selectors/workflow-drawer-selectors';
+import { TaskOrigin } from '@/app/helpers/task-helpers';
 
 const NestedFlowNode = React.memo(({ data, isConnectable, selected, type }) => {
   const { task } = data || {};
@@ -118,7 +119,8 @@ const NestedFlowNode = React.memo(({ data, isConnectable, selected, type }) => {
             setTaskGroup(null);
           }
         },
-        modalLabel : 'Select List and Group'
+        modalLabel : 'Select List and Group',
+        origin : TaskOrigin.TEMPLATE
       }),
     );
   };
@@ -189,7 +191,7 @@ const NestedFlowNode = React.memo(({ data, isConnectable, selected, type }) => {
               style={{
                 display: 'flex',
                 alignItems: 'center',
-                padding:'5px 0 5px 0'
+                padding:'5px 0 3px 0'
               }}
             >
             <span 
@@ -216,7 +218,7 @@ const NestedFlowNode = React.memo(({ data, isConnectable, selected, type }) => {
               style={{
                 display: 'flex',
                 alignItems: 'center',
-                paddingBottom:'6px'
+                padding:'1px 0 5px 0'
               }}
             >
             <span 
