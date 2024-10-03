@@ -371,6 +371,7 @@ const TaskTemplateGroupHeader = ({
               ),
             );
           },
+          modalLabel: 'Move to List'
         }),
       );
     }
