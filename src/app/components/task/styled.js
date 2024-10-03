@@ -39,7 +39,8 @@ export const DecisionSelect = styled(Select)`
   }
   & .MuiSelect-select {
     padding: 0px;
-    background-color: white;
+    width: 38px;
+    text-overflow: ellipsis;
   }
 `;
 
@@ -271,7 +272,10 @@ export const DescriptionBox = styled.div`
   flex-direction: column;
   flex: 1;
   cursor: pointer;
-  width: ${({ width }) => (width ? `${width}px` : '100%')};
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  // width: ${({ width }) => (width ? `${width}px` : '100%')};
   &:hover {
     ${DescriptionEditButton} {
       opacity: 1;
@@ -855,6 +859,8 @@ export const DecisionCellContainer = styled.div`
   border-left: 1px solid ${palette.coolGrey3};
   padding-left: 10px;
   margin-left: 8px;
+  position: relative;
+  overflow: hidden;
 `;
 
 export const DisabledLink = styled.span``;
