@@ -135,7 +135,6 @@ const StatusEditor = ({ onClose }) => {
     (statuses?.length || 0) +
     1 +
     (isAddingNewStatus || newStatusButtonVisible ? 1 : 0);
-  console.log(statuses)
   return (
     <StatusListWrapper>
       <DndContext sensors={sensors} onDragEnd={handleDragAndDropEnd}>
