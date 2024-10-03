@@ -39,6 +39,7 @@ export const DecisionSelect = styled(Select)`
   }
   & .MuiSelect-select {
     padding: 0px;
+    background-color: white;
     width: 38px;
     text-overflow: ellipsis;
   }
