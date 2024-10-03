@@ -36,6 +36,7 @@ import {
 
 const MASTER_ROLES = new Set(['ADMIN', 'OWNER']);
 const GUEST_ROLE = 'GUEST';
+const MEMBER_ROLE = 'MEMBER';
 
 const OrganizationSubmenu = ({
   currentUser = {},
@@ -165,7 +166,7 @@ const OrganizationSubmenu = ({
         name: 'Delete Organization',
         onClick: handleDeleteOrganization,
       },
-      GUEST_ROLE === orgUserRole && {
+      [GUEST_ROLE, MEMBER_ROLE].includes(orgUserRole) && {
         name: 'Leave Organization',
         onClick: handleLeaveOrganiztion,
       },
