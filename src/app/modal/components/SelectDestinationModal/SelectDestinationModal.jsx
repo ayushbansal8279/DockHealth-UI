@@ -16,6 +16,7 @@ import ListSelectStep from './Steps/ListSelectStep';
 import GroupSelectStep from './Steps/GroupSelectStep';
 import ParentTaskSelectStep from './Steps/ParentTaskSelectStep';
 import { CancelButton, ConfirmButton } from '../ModalButton/ModalButtons';
+import { TaskOrigin } from '@/app/helpers/task-helpers';
 
 const SelectDestinationModal = ({
   closeModal,
@@ -32,7 +33,7 @@ const SelectDestinationModal = ({
   const [selectedList, setSelectedList] = useState(null);
   const [selectedGroup, setSelectedGroup] = useState(null);
   const [selectedParentTask, setSelectedParentTask] = useState(null);
-  const [isChecked, setIsChecked] = useState(false);
+  const [isCheckedForRelativeList, setisCheckedForRelativeList] = useState(false);
   const addListInput = useRef(null);
   const [lists, setLists] = useState(null);
   const [savingList, setSavingList] = useState(false);
@@ -69,10 +70,10 @@ const SelectDestinationModal = ({
     (createdList) => {
 
       const taskList = createdList || selectedList;
-      if (!isChecked && !taskList) return;
+      if (!taskList) return;
       let responseData = {};
       
-      if (isChecked) {
+      if (isCheckedForRelativeList) {
       if (selectedGroup) {
         responseData = {
           taskGroupIdentifier: selectedGroup.taskGroupIdentifier,
@@ -110,7 +111,7 @@ const SelectDestinationModal = ({
       selectedParentTask,
       preventClosingModal,
       closeModal,
-      isChecked
+      isCheckedForRelativeList
     ],
   );
 
@@ -170,7 +171,7 @@ const SelectDestinationModal = ({
           )}
         </StepsContainer>
       </Container>
-      { origin === 'TEMPLATE' && (
+      { origin === TaskOrigin.TEMPLATE && (
         <>
           <Box m={0.5} /> 
           <FormControlLabel
@@ -181,8 +182,8 @@ const SelectDestinationModal = ({
               }}
             control=
               {<Checkbox 
-                      checked={isChecked}
-                      onChange={(e) => setIsChecked(e.target.checked)} 
+                      checked={isCheckedForRelativeList}
+                      onChange={(e) => setisCheckedForRelativeList(e.target.checked)} 
               />} 
             label="Deploy to  this group for any list" />
         </>
@@ -205,7 +206,7 @@ const SelectDestinationModal = ({
             style={{ width: '190px' }}
             fullWidth
             disabled={
-                  isChecked
+              isCheckedForRelativeList
                 ? !selectedGroup
                 : selectParentTask
                 ? !selectedList || !selectedGroup || !selectedParentTask

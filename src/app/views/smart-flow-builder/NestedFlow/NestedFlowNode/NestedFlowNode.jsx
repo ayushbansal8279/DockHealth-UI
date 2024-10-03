@@ -191,7 +191,7 @@ const NestedFlowNode = React.memo(({ data, isConnectable, selected, type }) => {
               style={{
                 display: 'flex',
                 alignItems: 'center',
-                padding:'5px 0 5px 0'
+                padding:'5px 0 3px 0'
               }}
             >
             <span 
@@ -218,7 +218,7 @@ const NestedFlowNode = React.memo(({ data, isConnectable, selected, type }) => {
               style={{
                 display: 'flex',
                 alignItems: 'center',
-                paddingBottom:'6px'
+                padding:'1px 0 5px 0'
               }}
             >
             <span 
