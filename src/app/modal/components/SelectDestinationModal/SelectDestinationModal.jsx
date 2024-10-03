@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useRef } from 'react';
-import { Box, Grid } from '@mui/material';
+import { Box, Grid , Checkbox, FormControlLabel } from '@mui/material';
 import Button from 'components/common/Button/Button';
 import { useDispatch, useSelector } from 'react-redux';
 import { userProfileSelector } from 'selectors/user-selectors';
@@ -23,7 +23,8 @@ const SelectDestinationModal = ({
   confirmText,
   preventClosingModal = false,
   selectParentTask,
-  modalLabel
+  modalLabel,
+  origin
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const dispatch = useDispatch();
@@ -31,7 +32,7 @@ const SelectDestinationModal = ({
   const [selectedList, setSelectedList] = useState(null);
   const [selectedGroup, setSelectedGroup] = useState(null);
   const [selectedParentTask, setSelectedParentTask] = useState(null);
-
+  const [isChecked, setIsChecked] = useState(false);
   const addListInput = useRef(null);
   const [lists, setLists] = useState(null);
   const [savingList, setSavingList] = useState(false);
@@ -66,23 +67,34 @@ const SelectDestinationModal = ({
 
   const handleConfirm = useCallback(
     (createdList) => {
+
       const taskList = createdList || selectedList;
-
-      if (!taskList) return;
-
-      const responseData = {
-        taskListIdentifier: taskList?.taskListIdentifier,
-        listName: taskList?.listName,
-      };
-
+      if (!isChecked && !taskList) return;
+      let responseData = {};
+      
+      if (isChecked) {
       if (selectedGroup) {
-        responseData.taskGroupIdentifier = selectedGroup.taskGroupIdentifier;
-        responseData.groupName = selectedGroup.groupName;
+        responseData = {
+          taskGroupIdentifier: selectedGroup.taskGroupIdentifier,
+          groupName: selectedGroup.groupName,
+        };
       }
+    } else {
 
-      if (selectedParentTask) {
-        responseData.parentTaskIdentifier = selectedParentTask.taskIdentifier;
-      }
+        responseData = {
+          taskListIdentifier: taskList?.taskListIdentifier,
+          listName: taskList?.listName,
+        };
+
+        if (selectedGroup) {
+          responseData.taskGroupIdentifier = selectedGroup.taskGroupIdentifier;
+          responseData.groupName = selectedGroup.groupName;
+        }
+
+        if (selectedParentTask) {
+          responseData.parentTaskIdentifier = selectedParentTask.taskIdentifier;
+        }
+     }
 
       if (typeof confirm === 'function') {
         confirm(responseData);
@@ -98,6 +110,7 @@ const SelectDestinationModal = ({
       selectedParentTask,
       preventClosingModal,
       closeModal,
+      isChecked
     ],
   );
 
@@ -157,7 +170,25 @@ const SelectDestinationModal = ({
           )}
         </StepsContainer>
       </Container>
-      <Box m={2} />
+      { origin === 'TEMPLATE' && (
+        <>
+          <Box m={0.5} /> 
+          <FormControlLabel
+            sx={{
+              display: 'flex',
+              justifyContent: 'flex-start',
+              width: '382px'// Ensures the entire component stretches across its container
+              }}
+            control=
+              {<Checkbox 
+                      checked={isChecked}
+                      onChange={(e) => setIsChecked(e.target.checked)} 
+              />} 
+            label="Deploy to  this group for any list" />
+        </>
+      )}
+      
+      <Box m={1.5} />
       <Grid container direction="row">
         <FlexButtonWrapper>
           <CancelButton
@@ -174,7 +205,9 @@ const SelectDestinationModal = ({
             style={{ width: '190px' }}
             fullWidth
             disabled={
-              selectParentTask
+                  isChecked
+                ? !selectedGroup
+                : selectParentTask
                 ? !selectedList || !selectedGroup || !selectedParentTask
                 : !selectedList
             }
