@@ -20,6 +20,7 @@ import {
   PatientContainer,
   PatientLableContainer,
   AISummaryWrapper,
+  AISummaryWrapperSubtask,
 } from '../../styled';
 import { useDispatch, useSelector } from 'react-redux';
 import AISummaryModalOpenerHelper from '@/app/modal/components/AISummaryModal/AISummaryModalOpenerHelper';
@@ -129,31 +130,43 @@ const TaskItemPatient = ({
             disableLink={readOnly}
             patientIdentifier={patient.patientIdentifier}
           >
-            <Link
-              to={{
-                pathname: `/core/patient/${patient.patientIdentifier}`,
-                state: {
-                  from: pathname,
-                },
-              }}
-            >
-              <PatientLabelComponent>
-                {(matchPatient || matchPatientMRN) && highlightedValue ? (
-                  <Highlighter
-                    highlightClassName="list-highlight"
-                    searchWords={
-                      matchPatient
-                        ? highlightedValue?.toLowerCase().split(/\s+/)
-                        : `${patientName}`.toLowerCase().split(/\s+/)
-                    }
-                    autoEscape
-                    textToHighlight={`${patient.patientName}`}
+            <PatientLableContainer>
+              {aiSummaryAvailable && (
+                <AISummaryWrapperSubtask>
+                  <AISummaryModalOpenerHelper
+                    type={SummaryType.PATIENT}
+                    title={`${patient?.lastName}, ${patient?.firstName}`}
+                    identifier={patient.patientIdentifier}
                   />
-                ) : (
-                  `${patientName}`
-                )}
-              </PatientLabelComponent>
-            </Link>
+                </AISummaryWrapperSubtask>
+              )}
+
+              <Link
+                to={{
+                  pathname: `/core/patient/${patient.patientIdentifier}`,
+                  state: {
+                    from: pathname,
+                  },
+                }}
+              >
+                <PatientLabelComponent>
+                  {(matchPatient || matchPatientMRN) && highlightedValue ? (
+                    <Highlighter
+                      highlightClassName="list-highlight"
+                      searchWords={
+                        matchPatient
+                          ? highlightedValue?.toLowerCase().split(/\s+/)
+                          : `${patientName}`.toLowerCase().split(/\s+/)
+                      }
+                      autoEscape
+                      textToHighlight={`${patient.patientName}`}
+                    />
+                  ) : (
+                    `${patientName}`
+                  )}
+                </PatientLabelComponent>
+              </Link>
+            </PatientLableContainer>
             <PatientPrintAdditionalInfo>
               {patient.mrn && <Box whiteSpace="normal">MRN: {patient.mrn}</Box>}
               {patient.dob && <Box whiteSpace="normal">DoB: {patient.dob}</Box>}

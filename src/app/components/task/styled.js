@@ -1030,6 +1030,10 @@ export const PatientLableContainer = styled.div`
   items-align: center;
 `;
 
+export const AISummaryWrapperSubtask = styled.div`
+  margin: 8px 15px 0 2px;
+`;
+
 export const AISummaryWrapper = styled.div`
   margin: 0 15px 0 2px;
 `;
