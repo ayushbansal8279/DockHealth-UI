@@ -96,15 +96,17 @@ const AISummaryModal = ({ closeModal, title, onsubmit, type }) => {
       <Spacing vertical={3} />
       <Grid container direction="column" item wrap="nowrap">
         <RegenerateWrapper>
-          {!isFetching && (
+          {isFetching ? (
+            <GeneratedTime>Generating Summary...</GeneratedTime>
+          ) : (
             <GeneratedTime>Generated {generateDateTime}</GeneratedTime>
           )}
-          {/* <RefreshWrapper>
+          <RefreshWrapper>
             <LuminaStar color={palette.newBrightBlue} />
             <ResponseButton onClick={handleReGenerateResponse}>
               Refresh
             </ResponseButton>
-          </RefreshWrapper> */}
+          </RefreshWrapper>
         </RegenerateWrapper>
         <Spacing vertical={4} />
         {isFetching && AISummaryLoader()}
@@ -118,7 +120,7 @@ const AISummaryModal = ({ closeModal, title, onsubmit, type }) => {
             ))}
         </Info>
       </Grid>
-      <RegenerateWrapper>
+      {/* <RegenerateWrapper>
         <CustomPromptInput
           maxRows={3}
           disabled={isFetching}
@@ -134,7 +136,7 @@ const AISummaryModal = ({ closeModal, title, onsubmit, type }) => {
             Refresh
           </ResponseButton>
         </RefreshWrapper>
-      </RegenerateWrapper>
+      </RegenerateWrapper> */}
     </AISummaryModalWrapper>
   );
 };
