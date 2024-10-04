@@ -711,20 +711,43 @@ export default (state = INITIAL_STATE, action = {}) => {
 
       const { taskListIdentifier } = taskItem?.taskList || {};
 
+      const bundle =
+        taskItem?.taskGroups?.find(
+          ({ groupType }) => groupType === TaskGroupType.BUNDLE,
+        ) || {};
+      const bundleIdentifier = bundle?.taskGroupIdentifier;
+
       const updatedStateAfterRemovingTaskItem =
         taskItem?.itemType === TaskItemType.BUNDLE
-          ? {
-              ...state,
-            }
+          ? { ...state }
           : {
               ...state,
+              tasksMap:
+                bundleIdentifier && !taskItem?.parentTaskIdentifier
+                  ? {
+                      ...state.tasksMap,
+                      [bundleIdentifier]: {
+                        ...state.tasksMap[bundleIdentifier],
+                        tasks: state.tasksMap[bundleIdentifier]?.tasks?.filter(
+                          (taskId) => taskId !== taskIdentifier,
+                        ),
+                      },
+                    }
+                  : state.tasksMap,
               lists: state.lists?.map((l) =>
                 l.taskListIdentifier === taskListIdentifier
                   ? {
                       ...l,
-                      tasks: l.tasks?.filter(
-                        (task) => task?.taskIdentifier !== taskIdentifier,
-                      ),
+                      tasks:
+                        bundleIdentifier && !taskItem?.parentTaskIdentifier
+                          ? state.tasksMap[bundleIdentifier]?.tasks.length === 1
+                            ? l.tasks?.filter(
+                                (task) => task.identifier !== bundleIdentifier,
+                              )
+                            : l.tasks
+                          : l.tasks?.filter(
+                              (task) => task?.taskIdentifier !== taskIdentifier,
+                            ),
                     }
                   : l,
               ),

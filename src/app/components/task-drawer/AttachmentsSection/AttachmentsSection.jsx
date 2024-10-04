@@ -112,9 +112,13 @@ const AttachmentsSection = ({
                     }}
                     onRemoveClick={removeTaskAttachment}
                   />
-                  {attachment?.scanStatus && (
-                    <p>{ScanStatusText[attachment?.scanStatus]}</p>
-                  )}
+                  <p>
+                  {
+                    !attachment?.scanStatus || attachment?.scanStatus === 'IN_PROGRESS'
+                      ? ScanStatusText.IN_PROGRESS
+                      : ScanStatusText[attachment.scanStatus]
+                  }
+                </p>
                 </div>
               ))
             )}

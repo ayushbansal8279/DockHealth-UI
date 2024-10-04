@@ -53,6 +53,7 @@ const SendEmailFromTaskModal = ({ setEmailActive }) => {
   const { attachments, identifier } = selectedTask;
   const dispatch = useDispatch();
   const [subject, setSubject] = useState('');
+  const [templateIdentifier, setTemplateIdentifier] = useState('');
   const [selectedContacts, setSelectedContacts] = useState([]);
   const [newContact, setNewContact] = useState([]);
   const [error] = useState(false);
@@ -212,6 +213,7 @@ const SendEmailFromTaskModal = ({ setEmailActive }) => {
                   setValueReset(true);
                   setDetailsState(updatedValue);
                   setSubject(data?.shortMessage ?? '');
+                  setTemplateIdentifier(data?.identifier);
                 },
               );
             }}
@@ -303,6 +305,7 @@ const SendEmailFromTaskModal = ({ setEmailActive }) => {
                 recipientContacts: selectedContacts.map((c) => c.value),
                 taskAttachmentIdentifiers: attachmentsToSend,
                 taskIdentifier: identifier,
+                templateIdentifier,
               }),
             );
             dispatch(closeModal());

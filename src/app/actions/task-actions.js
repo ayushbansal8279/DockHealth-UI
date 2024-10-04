@@ -389,6 +389,11 @@ export function deleteTask(task) {
           type: ActionTypes.DELETE_TASK,
           taskIdentifier: task.taskIdentifier,
         });
+        dispatch({
+          type: ActionTypes.DELETE_SUBTASK,
+          subTask: task,
+          parentTaskIdentifier: task?.parentTaskIdentifier,
+        });
         dispatch(
           AlertActions.showGlobalAlertWithUndo(
             AlertMessages.DELETED,
