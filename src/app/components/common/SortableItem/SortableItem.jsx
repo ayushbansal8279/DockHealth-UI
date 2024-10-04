@@ -7,7 +7,7 @@ const SortableItemWrapper = styled.div`
   width: 100%;
 `;
 
-const SortableItem = ({ itemId, children, overflowHidden = false }) => {
+const SortableItem = ({ itemId, children, overflowHidden = false, statusSection = false }) => {
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({
       id: itemId,
@@ -16,6 +16,7 @@ const SortableItem = ({ itemId, children, overflowHidden = false }) => {
     transform: CSS.Translate.toString(transform),
     transition,
     overflow: overflowHidden ? 'hidden' : 'visible',
+    width: statusSection ? '8rem' : '100%'
   };
 
   if (typeof children === 'function') {
