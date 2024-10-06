@@ -74,6 +74,32 @@ export const Info = styled.div`
   font-style: normal;
   font-weight: ${fontWeights.light};
   line-height: normal;
+  max-height: 450px;
+  overflow: auto;
+
+  &::-webkit-scrollbar {
+    -webkit-appearance: none;
+  }
+
+  &::-webkit-scrollbar:vertical {
+    width: 11px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: #fff;
+    border-radius: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: ${palette.white};
+    border-radius: 8px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: 8px;
+    border: 2px solid ${palette.white};
+    background-color: ${palette.coolGrey1};
+  }
 `;
 
 export const ResponseButton = styled(Button)`
