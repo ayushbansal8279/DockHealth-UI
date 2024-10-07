@@ -22,6 +22,10 @@ import DateRangeOptions from '../DateRangeOptions/DateRangeOptions';
 import debounce from 'lodash.debounce';
 import { getPatientsByCriteria } from '@/app/api/patients-api';
 import { mapPatientsToOptions, TextFieldSX } from './helper';
+import { userProfileSelector } from '@/app/selectors/user-selectors';
+import { getCustomerTypeLabel } from '@/app/helpers/customer-type-helper';
+import { useSelector } from 'react-redux';
+import { organizationSelector } from '@/app/selectors/organization-selectors';
 
 const FilterSelect = ({
   finalFilter,
@@ -42,9 +46,17 @@ const FilterSelect = ({
   const [dateStart, setDateStart] = useState('');
   const [dateEnd, setDateEnd] = useState('');
   const [isDateRange, setIsDateRange] = useState(false);
+  const currentUser = useSelector(userProfileSelector);
+  const customerTypeLabel = getCustomerTypeLabel(currentUser);
+  const { emrIntegrationType } = useSelector(organizationSelector) || {};
+  const patientPlaceholder =
+    emrIntegrationType === 'FHIR'
+      ? `Search ${customerTypeLabel} (MRN #)`
+      : `Search ${customerTypeLabel} (first last or last, first)`;
+  const isPatient = filter === `${customerTypeLabel}s`;
 
   useEffect(() => {
-    if (filter !== 'patients') {
+    if (!isPatient) {
       setOptions([
         ...filterOptions.filter(
           (item) => !finalFilter[filter].find((usr) => usr?.key === item?.key),
@@ -95,7 +107,7 @@ const FilterSelect = ({
     }
     setOptions((v) => v.filter((option) => option?.key !== item?.key));
     let currentFilter = { ...finalFilter };
-    const allFilterOptions = filter === 'patients' ? options : filterOptions;
+    const allFilterOptions = isPatient ? options : filterOptions;
     currentFilter[filter] = [
       ...currentFilter[filter],
       ...allFilterOptions.filter((option) => option?.key === item?.key),
@@ -104,13 +116,15 @@ const FilterSelect = ({
   };
 
   const handleSearchOption = (e) => {
-    setOptions(
-      filterOptions.filter((option) =>
-        option?.displayValue
-          .toLowerCase()
-          .includes(e.target.textContent.toLowerCase()),
-      ),
-    );
+    if (!isPatient) {
+      setOptions(
+        filterOptions.filter((option) =>
+          option?.displayValue
+            .toLowerCase()
+            .includes(e.target.textContent.toLowerCase()),
+        ),
+      );
+    }
   };
 
   const handleRemoveSelectedOption = (item) => {
@@ -164,15 +178,13 @@ const FilterSelect = ({
               getOptionLabel={(option) => option?.displayValue}
               renderOption={(props, option) => (
                 <>
-                  {filter === 'patients' &&
-                    options &&
-                    options[0]?.key === option?.key && (
-                      <PatientOptionsContainer>
-                        <PatientTableHeader>Patient Name</PatientTableHeader>
-                        <PatientTableHeader>DOB</PatientTableHeader>
-                        <PatientTableHeader>MRN</PatientTableHeader>
-                      </PatientOptionsContainer>
-                    )}
+                  {isPatient && options && options[0]?.key === option?.key && (
+                    <PatientOptionsContainer>
+                      <PatientTableHeader>Patient Name</PatientTableHeader>
+                      <PatientTableHeader>DOB</PatientTableHeader>
+                      <PatientTableHeader>MRN</PatientTableHeader>
+                    </PatientOptionsContainer>
+                  )}
                   <li {...props}>
                     <DisplayValue>
                       <AvatarContainer>
@@ -183,7 +195,7 @@ const FilterSelect = ({
                           ''
                         )}
                       </AvatarContainer>
-                      {filter !== 'patients' ? (
+                      {!isPatient ? (
                         <Lable>{option?.displayValue}</Lable>
                       ) : (
                         <PatientOptionsContainer>
@@ -212,10 +224,12 @@ const FilterSelect = ({
               renderInput={(params) => (
                 <TextField
                   onChange={(e) => {
-                    if (filter === 'patients')
-                      fetchPatientsWithDebounce(e.target.value);
+                    if (isPatient) fetchPatientsWithDebounce(e.target.value);
                   }}
                   sx={TextFieldSX}
+                  placeholder={
+                    isPatient && options.length === 0 && patientPlaceholder
+                  }
                   {...params}
                 />
               )}
