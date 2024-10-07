@@ -93,10 +93,31 @@ to{
 
 export const DisplayValue = styled.div`
   display: flex;
+  width: 100%;
 `;
 
 export const AvatarContainer = styled.div`
   margin-right: 15px;
+`;
+
+export const PatientOptionsContainer = styled.div`
+  display: grid;
+  grid-template-columns: 40% 20% 40%;
+  gap: 10px;
+  width: 100%;
+  overflow:hidden;
+`;
+
+export const PatientName = styled.div`
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+`;
+export const PatientTableHeader = styled.div`
+  margin-left: 32px;
+  font-weight: 700;
+  font-size: 18px;
+  height: 32px;
 `;
 
 export const Lable = styled.div`
@@ -110,7 +131,6 @@ export const CloseIconContainer = styled.div`
   margin-left: 5px;
   cursor: pointer;
 `;
-
 
 export const PopupContainer = styled.div`
   width: 515px;
