@@ -1,7 +1,8 @@
 import styled from 'styled-components';
-import { fontWeights } from 'styles/font';
+import { fontSizes, fontWeights } from 'styles/font';
 import palette, { typography } from 'styles/palette';
 import spacing from 'styles/spacing';
+import { Popover } from '@mui/material';
 
 export const ReminderContainer = styled.div`
   display: flex;
@@ -37,4 +38,19 @@ export const SelectArrowImg = styled.img`
   height: 7px;
   cursor: pointer;
   pointer-events: none;
+`;
+
+export const StyledPopover = styled(Popover)`
+  .MuiPopover-paper {
+    border: none;
+    box-shadow: none;
+    width: ${({ width }) => width};
+    overflow: visible;
+  }
+`;
+
+export const DateViewText = styled.div`
+  font-family: Outfit;
+  font-size: ${fontSizes.regular};
+  font-weight: ${fontWeights.light};
 `;
