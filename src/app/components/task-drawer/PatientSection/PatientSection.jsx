@@ -331,7 +331,7 @@ const PatientSection = ({
         <PatientLableContainer>
           <PatientContainer>
             {' '}
-            <PatientName onClick={patientProfile}>
+            <PatientName status={selectedPatient.patientStatus} onClick={patientProfile}>
               {selectedPatient.patientName}{' '}
             </PatientName>
             <button
