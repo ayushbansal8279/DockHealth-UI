@@ -169,9 +169,9 @@ const TaskTemplateGroup = ({
     () =>
       tasks.filter(
         (task) =>
-          (showIncompleteTasks && task.status === TaskStatus.INCOMPLETE) ||
-          (showCompletedTasks && task.status === TaskStatus.COMPLETE) ||
-          task.status === tasksStatus,
+          (showIncompleteTasks && task?.status === TaskStatus.INCOMPLETE) ||
+          (showCompletedTasks && task?.status === TaskStatus.COMPLETE) ||
+          task?.status === tasksStatus,
       ),
     [tasks, showIncompleteTasks, showCompletedTasks, tasksStatus],
   );
