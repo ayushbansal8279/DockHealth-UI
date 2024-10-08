@@ -27,8 +27,8 @@ export const LableContainer = styled.div`
   display: Grid;
   grid-template-columns: 10% auto;
   margin-left: 10px;
-  Gap: 30px;
-  padding-top: 10px;
+  gap: 30px;
+  padding-top: 1px;
 `;
 
 export const Title = styled.div`
