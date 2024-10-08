@@ -10,13 +10,13 @@ import {
   organizationStatusesErrorSelector,
 } from 'selectors/organization-selectors';
 import { getOrganizationStatuses } from 'sagas/organization-saga';
+import { Button } from '@mui/material';
 import { StatusListWrapper, StatusList, Divider } from './styled';
 import { RESET_STATUS } from './helpers';
 import StatusEditor from './StatusEditor';
 import PopoverBottomBar from '../PopoverBottomBar/PopoverBottomBar';
 import WorkflowStatusItemButton from '../WorkflowStatusItem/WorkflowStatusItemButton';
 import WorkflowStatusItemLoader from '../WorkflowStatusItem/WorkflowStatusItemLoader';
-import { Button } from '@mui/material';
 
 const TaskWorkflowStatus = ({
   selectedStatusIdentifier,
