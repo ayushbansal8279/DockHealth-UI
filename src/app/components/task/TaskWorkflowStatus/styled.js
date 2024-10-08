@@ -20,6 +20,7 @@ export const StatusListWrapper = styled.div`
   font-weight: ${fontWeights.regularPlus};
   color: ${palette.mediumGrey};
   padding-top: ${spacing.small};
+  padding-right: ${spacing.largePlus};
 `;
 
 export const StatusList = styled.div`

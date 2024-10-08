@@ -64,7 +64,8 @@ export const StatusWrapper = styled.div`
   height: 30px;
   justify-content: center;
   align-items: center;
-  margin-left: 20px;
+  margin-left: 10px;
+  margin-right: 10px;
   margin-bottom: 10px;
   color: ${(property) => property.color || '#7F4334'};
 `;

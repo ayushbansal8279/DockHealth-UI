@@ -29,8 +29,8 @@ export const StatusFlagContainer = styled.div`
 `;
 
 export const Title = styled.div`
-  margin-left: 15px;
-  margin-right: 40px;
+  margin-left: 10px;
+  margin-right: 45px;
   color: ${palette.coolGrey1};
   font-family: Outfit;
   font-size: ${fontSizes.smallPlus};
