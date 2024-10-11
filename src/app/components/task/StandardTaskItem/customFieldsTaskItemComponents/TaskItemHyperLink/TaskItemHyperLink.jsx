@@ -81,13 +81,16 @@ const TaskItemHyperLink = ({
                   color: palette.blueOcean,
                   fontFamily: 'Outfit',
                   textDecoration: 'none',
+                  overflow: 'hidden',
+                  whiteSpace: 'nowrap',
+                  textOverflow: 'ellipsis',
                   '&:hover': {
                     color: palette.brightBlue,
                   },
                 }}
                 disabled={readOnly}
               >
-                {trunc(value, 15)}
+                {value}
               </Link>
               {!(value && value !== '') ? (
                 <TextValue onClick={handleClick}>
