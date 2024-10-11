@@ -1,42 +1,37 @@
-import React, { useCallback, useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import moment from 'moment';
-import { Box } from '@mui/material';
-import RecurringIcon from 'img/recurring-arrows';
-import { isDueDateOverdue } from 'helpers/task-helpers';
 import DueDatePicker from 'components/task/DueDatePicker/DueDatePicker';
-import Spacing from 'components/common/Spacing';
-import Tooltip from 'components/common/Tooltip/Tooltip';
-import Input from 'components/common/Input/Input';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  workflowSelector,
-  workflowAutofocusFieldSelector,
-} from 'selectors/workflow-drawer-selectors';
+import { workflowSelector } from 'selectors/workflow-drawer-selectors';
 import TaskDrawerPopover from 'components/task-drawer/TaskDrawerPopover/TaskDrawerPopover';
 import { updatePartialWorkflow } from 'actions/task-template-actions';
-import { WorkflowDrawerFieldNames } from 'helpers/workflow-drawer-helpers';
 import { openModal, closeModal } from 'modal/actions';
-import { formatDueTime } from './helpers';
-import { AdornmentClear } from '../styled';
 import {
   AnchorDateContentWrapper,
-  AnchorDateContent,
   AnchorDateSectionWrapper,
-  Placeholder,
-  DueDateText,
+  Title,
+  DateViewContainer,
 } from './styled';
+import {
+  DateViewText,
+  SubTitle,
+  NoDateContainer,
+} from '../DueDateSection/styled';
+import AssignMemberIcon from '../../user/AssignMemberIcon/AssingMemberIcon';
 
 const AnchorDateSection = ({ disabled }) => {
   const dispatch = useDispatch();
-  const inputReference = useRef(null);
   const selectedWorkflow = useSelector(workflowSelector);
   const { identifier, anchorDateTime, hasRecurringSchedule } =
     selectedWorkflow || {};
-  const momentDueDate = anchorDateTime ? moment(anchorDateTime) : null;
-  const autoFocusFieldName = useSelector(workflowAutofocusFieldSelector);
+  const momentAnchorDate = anchorDateTime ? moment(anchorDateTime) : null;
+  const [isTimeAvailable, setIsTimeAvailable] = useState(false);
 
   const handleAnchorDateSave = useCallback(
     (date) => {
+      if (date === null) {
+        setIsTimeAvailable(false);
+      }
       const payload = {
         anchorDateTime: date,
       };
@@ -47,7 +42,6 @@ const AnchorDateSection = ({ disabled }) => {
           dispatch(
             updatePartialWorkflow(selectedWorkflow?.identifier, payload),
           );
-
           dispatch(closeModal());
         },
       };
@@ -58,69 +52,48 @@ const AnchorDateSection = ({ disabled }) => {
 
   useEffect(() => {
     if (
-      inputReference.current &&
-      autoFocusFieldName === WorkflowDrawerFieldNames.ANCHOR_DATE
+      momentAnchorDate &&
+      (momentAnchorDate.hour() || momentAnchorDate.minute())
     ) {
-      inputReference.current.scrollIntoView(true);
-      inputReference.current.focus();
+      setIsTimeAvailable(true);
     }
-  }, [autoFocusFieldName]);
+  }, [momentAnchorDate]);
 
   return (
-    <AnchorDateSectionWrapper disabled={disabled}>
-      <Input
-        inputRef={inputReference}
-        label="Anchor date"
-        shrink
-        customInputComponent={() => (
-          <TaskDrawerPopover
-            disabled={disabled}
-            content={({ closePopover }) => (
-              <DueDatePicker
-                taskIdentifier={identifier}
-                selectedDate={anchorDateTime}
-                onDateChange={handleAnchorDateSave}
-                recurring={hasRecurringSchedule}
-                disableRecurring
-                onCloseClick={closePopover}
-              />
-            )}
-          >
-            <AnchorDateContentWrapper>
-              {momentDueDate ? (
-                <AnchorDateContent error={isDueDateOverdue(selectedWorkflow)}>
-                  <DueDateText>
-                    {momentDueDate.format('MM/DD/YY')}
-                    {hasRecurringSchedule && (
-                      <>
-                        <Spacing horizontal={3} />
-                        <Tooltip title="Recurring Task" placement="right">
-                          <Box display="inline-block">
-                            <RecurringIcon />
-                          </Box>
-                        </Tooltip>
-                      </>
-                    )}
-                  </DueDateText>
-                  <DueDateText>{formatDueTime(anchorDateTime)}</DueDateText>
-                  {!disabled && (
-                    <AdornmentClear
-                      style={{ position: 'relative', top: '-6px' }}
-                      onClick={() => handleAnchorDateSave(null)}
-                    />
-                  )}
-                </AnchorDateContent>
-              ) : (
-                <Placeholder>
-                  {disabled
-                    ? 'Not available when creating a template'
-                    : 'Set a Anchor date?'}
-                </Placeholder>
-              )}
-            </AnchorDateContentWrapper>
-          </TaskDrawerPopover>
+    <AnchorDateSectionWrapper>
+      <Title>Anchor date</Title>
+      <TaskDrawerPopover
+        disabled={disabled}
+        content={({ closePopover }) => (
+          <DueDatePicker
+            taskIdentifier={identifier}
+            selectedDate={anchorDateTime}
+            onDateChange={handleAnchorDateSave}
+            recurring={hasRecurringSchedule}
+            disableRecurring
+            onCloseClick={closePopover}
+          />
         )}
-      />
+      >
+        <AnchorDateContentWrapper>
+          {momentAnchorDate ? (
+            <DateViewContainer>
+              <DateViewText>
+                {momentAnchorDate.format('MMM DD, YYYY')}
+              </DateViewText>
+            </DateViewContainer>
+          ) : (
+            <NoDateContainer>
+              <AssignMemberIcon /> <SubTitle>Add Date</SubTitle>
+            </NoDateContainer>
+          )}
+          {isTimeAvailable && (
+            <DateViewContainer>
+              <DateViewText>{momentAnchorDate?.format('hh:mm a')}</DateViewText>
+            </DateViewContainer>
+          )}
+        </AnchorDateContentWrapper>
+      </TaskDrawerPopover>
     </AnchorDateSectionWrapper>
   );
 };
