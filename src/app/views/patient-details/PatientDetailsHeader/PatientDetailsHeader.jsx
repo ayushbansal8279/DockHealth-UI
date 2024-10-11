@@ -65,6 +65,7 @@ const PatientDetailsHeader = () => {
     mrn,
     gender,
     genderIdentity,
+    patientStatus
   } = patient || {};
   const isFetchingPatient = useSelector(isFetchingPatientSelector);
   const currentUser = useSelector(userProfileSelector);
@@ -118,7 +119,7 @@ const PatientDetailsHeader = () => {
                     </button>
                   )}
                 </Box>
-                <PatientName>
+                <PatientName status={patientStatus}>
                   {[`${lastName},`, firstName, middleName].join(' ')}
                 </PatientName>
                 {aiSummaryAvailable && (
@@ -137,6 +138,7 @@ const PatientDetailsHeader = () => {
                   </ButtonContainer>
                 )}
                 <Box mx={1} />
+                <Chip label={patientStatus} />
                 <Box flex="500px 0 0">
                   {patient?.patientLabels?.map(
                     ({ labelIdentifier, labelName }) => (
@@ -149,7 +151,7 @@ const PatientDetailsHeader = () => {
                       </Box>
                     ),
                   )}
-                </Box>
+                </Box> 
               </Grid>
             </Box>
             <ContactContainer>

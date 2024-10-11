@@ -41,7 +41,7 @@ export const PatientContainer = styled.div`
 `;
 
 export const PatientName = styled.div`
-  color: ${palette.black};
+  color: ${(props) => props.status === "ARCHIVED" ? palette.lightGrey : palette.black};
   font-family: Outfit;
 `;
 
