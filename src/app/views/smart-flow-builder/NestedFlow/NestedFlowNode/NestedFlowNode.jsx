@@ -201,7 +201,7 @@ const NestedFlowNode = React.memo(({ data, isConnectable, selected, type }) => {
                 textOverflow: 'ellipsis',
                 flex: 1
               }}>
-               <strong>List:</strong> {taskList?.listName}
+                <strong>List: </strong>{taskList?.listName}
             </span>
             <IconButton
               size="small"
@@ -228,7 +228,7 @@ const NestedFlowNode = React.memo(({ data, isConnectable, selected, type }) => {
                 textOverflow: 'ellipsis',
                 flex: 1
               }}>
-              <strong>Group: </strong>{taskGroup.groupName}
+                <strong>Group: </strong>{taskGroup.groupName}
             </span>
               <IconButton
                 size="small"

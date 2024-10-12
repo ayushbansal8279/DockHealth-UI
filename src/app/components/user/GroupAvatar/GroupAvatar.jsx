@@ -81,7 +81,7 @@ const GroupAvatar = React.forwardRef(
             isSelected={isSelected}
             name={name}
             activityStatus={
-               activityStatus === ActivityStatus.ONLINE
+              activityStatus === ActivityStatus.ONLINE
                 ? activityStatus
                 : ''
             }
