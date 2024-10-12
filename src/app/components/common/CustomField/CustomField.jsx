@@ -292,7 +292,7 @@ const CustomField = ({
         const customFieldHasValue =
           readOnly ||
           task?.taskMetaData?.find(
-            (customField) => customField.customFieldIdentifier === identifier,
+            (customField) => customField?.customFieldIdentifier === identifier,
           )?.value;
         const inputFieldName =
           isEditable || !value || !customFieldHasValue ? fieldName : '';

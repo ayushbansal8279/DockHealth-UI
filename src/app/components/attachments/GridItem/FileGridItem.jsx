@@ -35,10 +35,15 @@ const FileGridItem = (props) => {
 
   const IconComponent = getIconFromContentType(contentType);
 
+  const fileScanStatus =
+    !scanStatus || scanStatus === 'IN_PROGRESS'
+      ? 'IN_PROGRESS'
+      : scanStatus;
+
   return (
     <Container
       onClick={() => {
-        if (!scanStatus || scanStatus === ScanStatus.CLEAN) {
+        if (fileScanStatus === ScanStatus.CLEAN) {
           onClick();
         }
       }}
@@ -68,7 +73,7 @@ const FileGridItem = (props) => {
         >
           <FileNameText>{trunc(fileName, 50)}</FileNameText>
           <CreatedText>{moment(dateCreated).fromNow()}</CreatedText>
-          <StatusText>{ScanStatusText[scanStatus]}</StatusText>
+          <StatusText>{ScanStatusText[fileScanStatus]}</StatusText>
         </Box>
         <OptionsContainer>
           <div onClick={(event) => event.stopPropagation()}>

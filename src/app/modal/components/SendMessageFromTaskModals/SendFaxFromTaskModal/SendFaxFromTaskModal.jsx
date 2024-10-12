@@ -42,6 +42,7 @@ import { ConfirmButton } from '../../ModalButton/ModalButtons';
 const SendFaxFromTaskModal = () => {
   const dispatch = useDispatch();
   const [message, setMessage] = useState(null);
+  const [templateIdentifier, setTemplateIdentifier] = useState('');
   const [isValueReset, setValueReset] = useState(false);
 
   const [faxError, setFaxError] = useState(false);
@@ -185,6 +186,7 @@ const SendFaxFromTaskModal = () => {
                     : data?.details ?? '';
                   setValueReset(true);
                   setMessage(updatedValue);
+                  setTemplateIdentifier(data?.identifier);
                 },
               );
             }}
@@ -248,6 +250,7 @@ const SendFaxFromTaskModal = () => {
                 // taskAttachmentIdentifiers: attachments,
                 taskAttachmentIdentifiers: attachmentsToSend,
                 taskIdentifier: identifier,
+                templateIdentifier,
               }),
             );
             dispatch(closeModal());

@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useRef } from 'react';
-import { Box, Grid } from '@mui/material';
+import { Box, Grid , Checkbox, FormControlLabel } from '@mui/material';
 import Button from 'components/common/Button/Button';
 import { useDispatch, useSelector } from 'react-redux';
 import { userProfileSelector } from 'selectors/user-selectors';
@@ -16,6 +16,7 @@ import ListSelectStep from './Steps/ListSelectStep';
 import GroupSelectStep from './Steps/GroupSelectStep';
 import ParentTaskSelectStep from './Steps/ParentTaskSelectStep';
 import { CancelButton, ConfirmButton } from '../ModalButton/ModalButtons';
+import { TaskOrigin } from '@/app/helpers/task-helpers';
 
 const SelectDestinationModal = ({
   closeModal,
@@ -23,6 +24,8 @@ const SelectDestinationModal = ({
   confirmText,
   preventClosingModal = false,
   selectParentTask,
+  modalLabel,
+  origin
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const dispatch = useDispatch();
@@ -30,7 +33,7 @@ const SelectDestinationModal = ({
   const [selectedList, setSelectedList] = useState(null);
   const [selectedGroup, setSelectedGroup] = useState(null);
   const [selectedParentTask, setSelectedParentTask] = useState(null);
-
+  const [isCheckedForRelativeList, setisCheckedForRelativeList] = useState(false);
   const addListInput = useRef(null);
   const [lists, setLists] = useState(null);
   const [savingList, setSavingList] = useState(false);
@@ -65,23 +68,34 @@ const SelectDestinationModal = ({
 
   const handleConfirm = useCallback(
     (createdList) => {
+
       const taskList = createdList || selectedList;
-
       if (!taskList) return;
-
-      const responseData = {
-        taskListIdentifier: taskList?.taskListIdentifier,
-        listName: taskList?.listName,
-      };
-
+      let responseData = {};
+      
+      if (isCheckedForRelativeList) {
       if (selectedGroup) {
-        responseData.taskGroupIdentifier = selectedGroup.taskGroupIdentifier;
-        responseData.groupName = selectedGroup.groupName;
+        responseData = {
+          taskGroupIdentifier: selectedGroup.taskGroupIdentifier,
+          groupName: selectedGroup.groupName,
+        };
       }
+    } else {
 
-      if (selectedParentTask) {
-        responseData.parentTaskIdentifier = selectedParentTask.taskIdentifier;
-      }
+        responseData = {
+          taskListIdentifier: taskList?.taskListIdentifier,
+          listName: taskList?.listName,
+        };
+
+        if (selectedGroup) {
+          responseData.taskGroupIdentifier = selectedGroup.taskGroupIdentifier;
+          responseData.groupName = selectedGroup.groupName;
+        }
+
+        if (selectedParentTask) {
+          responseData.parentTaskIdentifier = selectedParentTask.taskIdentifier;
+        }
+     }
 
       if (typeof confirm === 'function') {
         confirm(responseData);
@@ -97,6 +111,7 @@ const SelectDestinationModal = ({
       selectedParentTask,
       preventClosingModal,
       closeModal,
+      isCheckedForRelativeList
     ],
   );
 
@@ -133,6 +148,7 @@ const SelectDestinationModal = ({
             setLists={setLists}
             onAddList={handleAddNewList}
             savingList={savingList}
+            modalLabel={modalLabel}
           />
           <GroupSelectStep
             selectedList={selectedList}
@@ -155,7 +171,25 @@ const SelectDestinationModal = ({
           )}
         </StepsContainer>
       </Container>
-      <Box m={2} />
+      { origin === TaskOrigin.TEMPLATE && (
+        <>
+          <Box m={0.5} /> 
+          <FormControlLabel
+            sx={{
+              display: 'flex',
+              justifyContent: 'flex-start',
+              width: '382px'// Ensures the entire component stretches across its container
+              }}
+            control=
+              {<Checkbox 
+                      checked={isCheckedForRelativeList}
+                      onChange={(e) => setisCheckedForRelativeList(e.target.checked)} 
+              />} 
+            label="Deploy to  this group for any list" />
+        </>
+      )}
+      
+      <Box m={1.5} />
       <Grid container direction="row">
         <FlexButtonWrapper>
           <CancelButton
@@ -172,7 +206,9 @@ const SelectDestinationModal = ({
             style={{ width: '190px' }}
             fullWidth
             disabled={
-              selectParentTask
+              isCheckedForRelativeList
+                ? !selectedGroup
+                : selectParentTask
                 ? !selectedList || !selectedGroup || !selectedParentTask
                 : !selectedList
             }

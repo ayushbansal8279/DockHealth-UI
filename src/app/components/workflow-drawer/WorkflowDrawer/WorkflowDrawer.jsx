@@ -140,7 +140,7 @@ const WorkflowDrawer = () => {
           <WorkflowDrawerContainer key={selectedWorkflow?.identifier}>
             <WorkflowDrawerHeader />
             <SectionContainer>
-              <Grid container spacing={4}>
+              <Grid container spacing={1}>
                 <Grid item xs={12}>
                   <Typography sx={{ fontWeight: 'bold' }} component="span">
                     List:{' '}
@@ -226,11 +226,9 @@ const WorkflowDrawer = () => {
               <CommentSection />
             </SectionContainer>
             <SectionSpacer />
-            <SectionContainer>
-              <CustomFieldsSection
-                disabled={restrictions?.customFields === DISABLED || (isTemplateTask && !hasEditorPermissions)}
-              />
-            </SectionContainer>
+            <CustomFieldsSection
+              disabled={restrictions?.customFields === DISABLED || (isTemplateTask && !hasEditorPermissions)}
+            />
             <SectionSpacer />
             <SectionContainer>
               <HistorySection disabled={restrictions?.history === DISABLED || (isTemplateTask && !hasEditorPermissions)} />

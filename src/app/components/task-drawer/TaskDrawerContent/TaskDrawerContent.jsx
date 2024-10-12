@@ -420,7 +420,7 @@ const TaskDrawerContent = (props) => {
             <TaskDrawerEmailBodyContainer />
           </Grid>
         )}
-        <Grid item xs={12} mb={3} style={styleFullRow(isMobile)}>
+        <Grid item xs={12} mb={1} style={styleFullRow(isMobile)}>
           <TaskDetails
             readOnly={restrictions?.description === READ_ONLY}
             disableMentions={restrictMentions}
@@ -550,7 +550,7 @@ const TaskDrawerContent = (props) => {
             </Grid>
           )}
         {restrictions?.customFields !== DISABLED && (
-          <Grid item xs={12} style={styleFullRow(isMobile)}>
+          <Grid item xs={12}>
             <CustomFieldsSection fieldCategoryType="TASK_OTHER" />
           </Grid>
         )}

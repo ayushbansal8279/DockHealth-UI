@@ -62,6 +62,7 @@ export const MemberRow = styled.button`
     isSelected ? `${palette.brightBlue}12` : 'transparent'};
   font-family: inherit;
   cursor: pointer;
+  position: relative;
 
   &:not(:last-of-type) {
     margin-bottom: ${spacing.tiny};
@@ -70,6 +71,24 @@ export const MemberRow = styled.button`
   &:hover {
     background-color: rgba(193, 204, 218, 0.25);
   }
+`;
+
+export const MemberTooltip = styled.div`
+  display: none;
+  position: absolute;
+  right: 10; 
+  left: 10;
+  bottom: -5;
+  color: ${palette.black};
+  background-color: ${palette.whiteSmoke};
+  font-size: 14px;
+  box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.15);
+  border-radius: '4px';
+  padding: 5px 10px;
+  z-index: 2;
+  white-space: normal;
+  overflow-wrap: break-word;
+  transform: translateY(100%);
 `;
 
 export const MemberName = styled.p`
@@ -82,6 +101,25 @@ export const MemberName = styled.p`
   font-size: ${fontSizes.smallPlus};
   font-weight: ${fontWeights.regularPlus};
   margin-bottom: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  &:hover {
+    & ${MemberTooltip} {
+      display: block;
+    }
+  }
+`;
+
+export const TruncatedText = styled.div`
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+`
+
+export const StyledExternalUserIcon = styled.img`
+  width: 16px;
 `;
 
 export const UnassignedIcon = styled.div`

@@ -10,6 +10,7 @@ import {
   FlexButtonWrapper,
 } from '../styled';
 import { CancelButton, ConfirmButton } from '../ModalButton/ModalButtons';
+import { Title } from '../SelectDestinationGroupModal/styled';
 
 const SelectDestinationGroupModal = ({
   closeModal,
@@ -29,6 +30,10 @@ const SelectDestinationGroupModal = ({
 
   return (
     <ModalWrapperWithPadding>
+      <Title>
+        Select Group
+      </Title>
+      <Box m={1} />
       <CloseIconButton onClick={closeModal} size="small" color="secondary">
         <CloseIcon />
       </CloseIconButton>

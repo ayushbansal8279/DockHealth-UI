@@ -8,19 +8,21 @@ import Spacing from 'components/common/Spacing';
 import palette from 'styles/palette';
 import { OutfitTypography } from 'styles/theme-outfit';
 import { Title } from './Title';
+import PasswordRuleMatch from './PasswordRuleMatch';
 
 const MIN_PASSWORD_LENGTH = 8;
 
 const validationSchema = object().shape({
   // code: string().required('Authorization code is required'),
   password: string()
-    .required('Password is required')
+    .required('This field is required')
     .min(
       MIN_PASSWORD_LENGTH,
       `Password needs to be at least ${MIN_PASSWORD_LENGTH} characters long`,
     )
     .matches(/\d/, 'Password needs at least 1 number')
-    .matches(/[A-Z]/, 'Password needs at least 1 capital letter'),
+    .matches(/[A-Z]/, 'Password needs at least 1 capital letter')
+    .matches(/[!@#$%^&*(),.?":{}|<>]/, 'Password needs at least 1 special character')
 });
 
 const ResetPasswordForm = ({ authTokenReceived, onSubmit }) => {
@@ -29,7 +31,9 @@ const ResetPasswordForm = ({ authTokenReceived, onSubmit }) => {
     reValidateMode: 'onSubmit',
   });
 
-  const { handleSubmit } = formMethods;
+  const { handleSubmit, watch } = formMethods;
+
+  const passwordValue = watch('password', '');
 
   return (
     <form style={{ width: '100%' }} onSubmit={handleSubmit(onSubmit)}>
@@ -64,9 +68,9 @@ const ResetPasswordForm = ({ authTokenReceived, onSubmit }) => {
           label="Enter a new password"
         />
         <Spacing vertical={3} />
-        <OutfitTypography variant="h5">
-          * 8 characters • 1 capital • 1 number • 1 special character
-        </OutfitTypography>
+
+        <PasswordRuleMatch password={passwordValue} />
+
         <Spacing vertical={5} />
         <Button
           uppercase={false}

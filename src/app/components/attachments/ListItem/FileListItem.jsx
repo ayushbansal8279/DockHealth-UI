@@ -23,10 +23,15 @@ const FileListItem = (props) => {
   } = props;
   const { fileName, dateCreated, creator, type, scanStatus } = file;
 
+  const fileScanStatus =
+    !scanStatus || scanStatus === 'IN_PROGRESS'
+      ? 'IN_PROGRESS'
+      : scanStatus;
+
   return (
     <Row
       onClick={() => {
-        if (!scanStatus || scanStatus === ScanStatus.CLEAN) {
+        if (fileScanStatus) {
           onClick();
         }
       }}
@@ -50,7 +55,7 @@ const FileListItem = (props) => {
         {fileName}
       </Cell>
       <Cell>{creator?.name || ''}</Cell>
-      <Cell>{ScanStatusText[scanStatus]}</Cell>
+      <Cell>{ScanStatusText[fileScanStatus]}</Cell>
       <Cell>{moment(dateCreated).fromNow()}</Cell>
       <Cell onClick={(event) => event.stopPropagation()}>
         <OptionsMenu customButtonComponent={IconButton} options={options}>
