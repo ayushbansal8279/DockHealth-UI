@@ -24,6 +24,8 @@ import {
 import { StyledDataGrid } from './DataGridStyles';
 import { getTemplateColumns } from './helpers';
 import { ViewContainer } from './styled';
+import { AddIcon } from '../smart-flow-builder/TaskNodeHandles/styled';
+import ToolbarButton from '@/app/components/tasklist/list-toolbar-buttons/ToolbarButton/ToolbarButton';
 
 // const PAGE_SIZE = 30;
 
@@ -115,18 +117,9 @@ const Templates = () => {
 
   const onDuplicateTemplate = useCallback(
     ({ id, ...data }) => {
-      const modalProps = {
-        title: 'Duplicate template',
-        description:
-          'Are you sure you want to duplicate this template? This action cannot be undone.',
-        confirm: () => {
-          dispatch(closeModal());
-          duplicateTemplate(id).then((data) =>
-            setTemplates((s) => [data, ...s]),
-          );
-        },
-      };
-      dispatch(openModal('DuplicateConfirmation', modalProps));
+      duplicateTemplate(id).then((data) => {
+        setTemplates((s) => [data, ...s]);
+      });
     },
     [dispatch, templates],
   );
@@ -145,7 +138,18 @@ const Templates = () => {
     <ViewLayout header={<BasicLayoutHeader title="Templates" />}>
       <ViewContainer>
         <AddEntitiesContainer>
-          <AddButton onClick={onAddTemplate}>Create Template</AddButton>
+          <div style={{ marginBottom: '4px' }}>
+            <ToolbarButton
+              icon={
+                <span style={{ marginLeft: '-5px' }}>
+                  <AddIcon />
+                </span>
+              }
+              onClick={onAddTemplate}
+            >
+              Create Template
+            </ToolbarButton>
+          </div>
         </AddEntitiesContainer>
         <StyledDataGrid
           columns={columns}
