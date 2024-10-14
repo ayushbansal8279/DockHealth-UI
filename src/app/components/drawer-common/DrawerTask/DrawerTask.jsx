@@ -1,7 +1,7 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 /* eslint-disable import/extensions */
 import moment from 'moment';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import pluck from 'ramda/src/pluck';
 import Circle from 'img/circle.svg';
@@ -173,6 +173,17 @@ const DrawerTask = (props) => {
     [dispatch, task],
   );
 
+  const textRef = useRef(null);
+  const [isTruncated, setIsTruncated] = useState(false);
+
+  useEffect(() => {
+    if (textRef.current) {
+      setIsTruncated(textRef.current.scrollWidth > textRef.current.clientWidth);
+    }
+  }, [tokenizedDescription]);
+
+  const TooltipWrapper = isTruncated ? Tooltip : React.Fragment;
+
   return (
     <Container>
       {dragHandleProps && (
@@ -191,17 +202,17 @@ const DrawerTask = (props) => {
         onClick={
           // eslint-disable-next-line unicorn/no-negated-condition
           !isTaskStatusTogglingDisabled &&
-          isDependencyEmptyOrCompleted &&
-          taskListRestrictions?.completeTask !== DISABLED
+            isDependencyEmptyOrCompleted &&
+            taskListRestrictions?.completeTask !== DISABLED
             ? (event) => {
-                updateStatus();
-                event.stopPropagation();
-                (isCompleted
-                  ? onTaskDrawerSubtaskReActivated
-                  : onTaskDrawerSubtaskCompleted)();
-                dispatch(toggleCompleteTask(task, currentUser));
-              }
-            : () => {}
+              updateStatus();
+              event.stopPropagation();
+              (isCompleted
+                ? onTaskDrawerSubtaskReActivated
+                : onTaskDrawerSubtaskCompleted)();
+              dispatch(toggleCompleteTask(task, currentUser));
+            }
+            : () => { }
         }
       />
       <DescriptionContainer
@@ -211,12 +222,20 @@ const DrawerTask = (props) => {
       >
         <Description isCrossedOut={isCompleted}>
           {/* {tokenizedDescription} */}
-          <div>
-            {createMentionsFromTokenizedDescription(
-              tokenizedDescription,
-              taskMentions,
-            )}
-          </div>
+          <TooltipWrapper {...(isTruncated && { placement: 'top', title: tokenizedDescription })}>
+            <div
+              ref={textRef}
+              style={{
+                textOverflow: 'ellipsis',
+                overflow: 'hidden',
+                whiteSpace: 'nowrap',
+              }}>
+              {createMentionsFromTokenizedDescription(
+                tokenizedDescription,
+                taskMentions,
+              )}
+            </div>
+          </TooltipWrapper>
         </Description>
       </DescriptionContainer>
       <IconsSection>
