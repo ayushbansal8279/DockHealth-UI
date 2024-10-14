@@ -30,6 +30,7 @@ import { QuickAddInputWrapper } from '@/app/components/task-template/TaskTemplat
 import QuickAddTaskInput from '@/app/components/tasklist/QuickAddTaskInput/QuickAddTaskInput';
 import { CollapseContext } from '../../VirtualTaskList';
 import { useVirtualTaskListScrollContext } from '../../VirtualTaskListScrollContext';
+import { ListPageContext } from '../../../ListDetailsView';
 
 export interface Props extends Segment {
   task: any;
@@ -66,6 +67,7 @@ function VSubtask(
   };
   const { visibleWidth, droppableHeaderWidth } =
     useVirtualTaskListScrollContext();
+  const { handleHideWorkflowAddTaskRow } = useContext(ListPageContext);
   const screenWidth = typeof window !== 'undefined' ? window.innerWidth : 1920;
   const percentage =
     ((!!droppableHeaderWidth ? droppableHeaderWidth : 0) / screenWidth) * 100;
@@ -286,6 +288,9 @@ function VSubtask(
                     quickAddTask={handleAddBundleTask}
                     onBlur={() => {
                       handleRemoveWorkflowIdentifier(
+                        taskGroup[0]?.taskGroupIdentifier,
+                      );
+                      handleHideWorkflowAddTaskRow(
                         taskGroup[0]?.taskGroupIdentifier,
                       );
                     }}

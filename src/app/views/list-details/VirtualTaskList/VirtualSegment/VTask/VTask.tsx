@@ -64,7 +64,11 @@ function VTask(
   const [subtaskQuickAddOpen, setSubtaskQuickAddOpen] = useState(false);
   const { get, workflowIdentifierMap, handleRemoveWorkflowIdentifier } =
     useContext(CollapseContext);
-  const { changeViewType } = useContext(ListPageContext);
+  const {
+    changeViewType,
+    openWorkflowAddTaskRows,
+    handleHideWorkflowAddTaskRow,
+  } = useContext(ListPageContext);
   const pulledTask = useSelector((state) => {
     // @ts-ignore
     return taskLookupSelector(state, origin, metadata.id);
@@ -255,10 +259,18 @@ function VTask(
                   <QuickAddInputWrapper>
                     <QuickAddTaskInput
                       // autofocus
+                      isAddWorkflowTaskRowOpen={openWorkflowAddTaskRows?.some(
+                        (workflowIdentifier) =>
+                          taskGroup[0]?.taskGroupIdentifier ===
+                          workflowIdentifier,
+                      )}
                       disableMentions
                       quickAddTask={handleAddBundleTask}
                       onBlur={() => {
                         handleRemoveWorkflowIdentifier(
+                          taskGroup[0]?.taskGroupIdentifier,
+                        );
+                        handleHideWorkflowAddTaskRow(
                           taskGroup[0]?.taskGroupIdentifier,
                         );
                       }}

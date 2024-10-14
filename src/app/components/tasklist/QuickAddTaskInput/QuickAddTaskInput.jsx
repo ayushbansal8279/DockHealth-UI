@@ -31,6 +31,7 @@ const QuickAddTaskInput = React.forwardRef(
       iconColorActive,
       origin,
       style,
+      isAddWorkflowTaskRowOpen,
     },
     reference,
     // eslint-disable-next-line sonarjs/cognitive-complexity
@@ -68,7 +69,8 @@ const QuickAddTaskInput = React.forwardRef(
       <>
         {origin === 'LIST' ? (
           <StandardTaskItemContainer
-            isAddingTask
+            workflowAddTask
+            isAddWorkflowTaskRowOpen={isAddWorkflowTaskRowOpen}
             iconColorActive={iconColorActive}
             origin={origin}
           >
@@ -100,6 +102,7 @@ const QuickAddTaskInput = React.forwardRef(
           </StandardTaskItemContainer>
         ) : (
           <AddTaskInputWrapper
+            isAddWorkflowTaskRowOpen={isAddWorkflowTaskRowOpen}
             hasError={!!error}
             iconColor={iconColorActive}
             style={style}

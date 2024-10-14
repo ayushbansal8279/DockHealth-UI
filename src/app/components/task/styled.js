@@ -477,8 +477,17 @@ export const StandardTaskItemContainer = styled.div`
   `
       : ''}
 
-  ${({ isLastChild }) =>
-    isLastChild
+  ${({ workflowAddTask }) =>
+    workflowAddTask
+      ? `
+  border-left: 1px solid rgba(75, 179, 253, 1);
+  border-right: 1px solid rgba(75, 179, 253, 1);
+  border-bottom: 1px solid rgba(75, 179, 253, 1);
+  `
+      : ''}
+
+  ${({ isLastChild, isAddWorkflowTaskRowOpen }) =>
+    isLastChild && !isAddWorkflowTaskRowOpen
       ? `
     border-bottom: 1px solid rgba(75, 179, 253, 1);
   `
@@ -503,6 +512,14 @@ export const StandardTaskItemContainer = styled.div`
 
     ${({ isTaskOfTemplate }) =>
       isTaskOfTemplate ? `border: 1px solid ${palette.blueOcean}` : ``};
+
+    ${({ workflowAddTask }) =>
+      workflowAddTask
+        ? `border-bottom: 1px solid ${palette.blueOcean};
+           border-left: 1px solid${palette.blueOcean};
+          border-right: 1px solid ${palette.blueOcean};
+          `
+        : ``};
   }
 
   @media print {

@@ -132,6 +132,7 @@ import TaskItemComments from './TaskItemComponents/TaskItemComments';
 import { megaFilterSelector } from '@/app/selectors/mega-filter-selectors';
 import SubtaskIcon from '@/app/img/SubtaskIcon';
 import { getTaskDetails } from '@/app/api/task-api';
+import { ListPageContext } from '@/app/views/list-details/ListDetailsView';
 
 const { DISABLED, READ_ONLY } = SINGLE_TASK_RESTRICTIONS_OPTIONS;
 
@@ -323,6 +324,7 @@ const TaskItem = React.memo(
     );
 
     const { bulkEditEnabled } = useContext(BulkEditContext);
+    const { openWorkflowAddTaskRows } = useContext(ListPageContext);
 
     const selectedOrganization = useSelector(selectedUserOrganizationSelector);
     const currentTasklist = useSelector(currentTaskListSelector);
@@ -1037,6 +1039,10 @@ const TaskItem = React.memo(
             isVirtualSubtask={isVirtualSubtask}
             isWorkflowSubtask={isWorkflowSubtask}
             isTaskOfTemplate={!!workflowTaskGroup}
+            isAddWorkflowTaskRowOpen={openWorkflowAddTaskRows?.some(
+              (workflowIdentifier) =>
+                templateBundleIdentifier === workflowIdentifier,
+            )}
           >
             {randerFirstColumnCoverIfNecessary(
               <>

@@ -139,7 +139,8 @@ const TaskTemplateGroupHeader = ({
 
   const { bulkEditIsActive } = useContext(BulkEditContext);
   const { bulkEditEnabled } = useContext(BulkEditContext);
-  const { changeViewType, tasks, handleAddTask } = useContext(ListPageContext);
+  const { changeViewType, tasks, handleAddTask, handleShowWorkflowAddTaskRow } =
+    useContext(ListPageContext);
   const [isEditing, setIsEditing] = useState(false);
   const [nameInputValue, setNameInputValue] = useState(name);
   const [nameInputError, setNameInputError] = useState(false);
@@ -337,6 +338,7 @@ const TaskTemplateGroupHeader = ({
     if (taskListRestrictions?.workflowAddTask !== DISABLED) {
       setIsAddingTask(true);
       if (origin === 'LIST' || origin === 'PATIENT') {
+        handleShowWorkflowAddTaskRow(identifier);
         setOpen(true);
         setVirtualListWorkflowOpen(true);
         collapse.set(identifier, false);
@@ -371,7 +373,7 @@ const TaskTemplateGroupHeader = ({
               ),
             );
           },
-          modalLabel: 'Move to List'
+          modalLabel: 'Move to List',
         }),
       );
     }
