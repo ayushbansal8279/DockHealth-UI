@@ -94,7 +94,8 @@ export const PopoverHeader = styled.div`
   line-height: 135%;
 `;
 
-export const ProgressDisplayArea = styled.div``;
+export const ProgressDisplayArea = styled.div`
+`;
 
 export const ProgressMessage = styled.p`
   font-family: inherit;
@@ -169,4 +170,10 @@ export const ProgressBar = styled.div`
   display: inline-block;
   margin-right: 5px;
   align: left;
+`;
+
+export const HyperLink = styled.a`
+   font-size: 14px;
+   margin-bottom: 10px;
+   
 `;
