@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState, useMemo } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams , useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { Grid, Box, Dialog } from '@mui/material';
 import {
@@ -476,6 +476,12 @@ const PatientsView = () => {
     toggleFilter();
   }, [toggleFilter]);
 
+  const history = useHistory();
+
+  const patientImportStatus = () => {
+    history.push('/patients/import/tracker');
+  };
+
   return (
     <PatientListColumnsConfigProvider>
       <PatientEditContext.Provider value={providerValue}>
@@ -500,6 +506,15 @@ const PatientsView = () => {
                           onClick: () => {
                             setImportPopupOpen(true);
                           },
+                        },
+                        !isGuestOrDockLite &&
+                        !isViewOnly &&
+                        !emrIntegrationEnabled &&
+                        listIdentifier ===
+                          DefaultPatientsListType.ALL_PATIENTS &&
+                        {
+                          name: 'View Import Status',
+                          onClick: () => {patientImportStatus()}
                         },
                       !isGuestOrDockLite &&
                         !isViewOnly && {
