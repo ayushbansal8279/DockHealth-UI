@@ -88,10 +88,6 @@ const ReminderSection = ({ onSave, disabled, selectedTask }) => {
     [onSave, setReminderTypeCustomDate],
   );
 
-  const close = () => {
-    closePopover();
-  }
-
   const handleSelectReminderType = useCallback(
     (value) => {
       setValue(REMINDER_TYPE_FIELD_NAME, value);
@@ -103,8 +99,6 @@ const ReminderSection = ({ onSave, disabled, selectedTask }) => {
         onSave({ reminderType: value, reminderTime: defaultTime });
       } else if (value === ReminderType.ABSOLUTE) {
         openPopover(true);
-        setReminderTypeValue(value);
-        onSave({ reminderType: value });
       }
       else {
         onSave({ reminderType: value });
@@ -167,7 +161,6 @@ const ReminderSection = ({ onSave, disabled, selectedTask }) => {
               onSelect={handleSelectReminderType}
               disabled={sectionDisabled}
               width={145}
-              // height={145}
               options={REMINDER_TYPE_OPTIONS}
               {...register(REMINDER_TYPE_FIELD_NAME)}
               ref={reminderTypeDropdownReference}
@@ -193,7 +186,6 @@ const ReminderSection = ({ onSave, disabled, selectedTask }) => {
               {isPopoverOpen && (
                 <PopoverCard>
                   <Box width="auto" minWidth={buttonReference.current?.offsetWidth}>
-                    {/* <DatePicker selectedDate={reminderDt} onDateChange={handleSelectReminderDate} onCloseClick={closePopover} /> */}
                     <ReminderDatePicker selectedDate={reminderDt} onDateChange={handleSelectReminderDate} onCloseClick={closePopover} onTimeChange={selectReminderTime} />
                   </Box>
                 </PopoverCard>
