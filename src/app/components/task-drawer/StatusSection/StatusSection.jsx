@@ -124,6 +124,9 @@ const StatusSection = ({
                 tabIndex: -1,
                 readOnly: true,
                 value: status?.name || '',
+                style: {
+                  cursor: 'pointer',
+                },
               }}
             />
           )}

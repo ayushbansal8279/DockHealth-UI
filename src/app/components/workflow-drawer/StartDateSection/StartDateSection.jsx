@@ -87,20 +87,24 @@ const StartDateSection = ({ disabled }) => {
       >
         <StartDateContentWrapper>
           {momentStartDate ? (
-            <DateViewContainer>
-              <DateViewText>
-                {momentStartDate.format('MMM DD, YYYY')}
-              </DateViewText>
-            </DateViewContainer>
+            <>
+              <DateViewContainer>
+                <DateViewText>
+                  {momentStartDate.format('MMM DD, YYYY')}
+                </DateViewText>
+              </DateViewContainer>
+              {isTimeAvailable && (
+                <DateViewContainer>
+                  <DateViewText>
+                    {momentStartDate?.format('hh:mm a')}
+                  </DateViewText>
+                </DateViewContainer>
+              )}
+            </>
           ) : (
             <NoDateContainer>
               <AssignMemberIcon /> <SubTitle>Add Date</SubTitle>
             </NoDateContainer>
-          )}
-          {isTimeAvailable && (
-            <DateViewContainer>
-              <DateViewText>{momentStartDate?.format('hh:mm a')}</DateViewText>
-            </DateViewContainer>
           )}
         </StartDateContentWrapper>
       </TaskDrawerPopover>

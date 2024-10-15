@@ -31,11 +31,18 @@ const DueDateSection = ({ disabled }) => {
     selectedWorkflow || {};
   const momentDueDate = dueDateTime ? moment(dueDateTime) : null;
   const [isOverdue, setIsOverdue] = useState(false);
+  const [isTimeAvailable, setIsTimeAvailable] = useState(false);
 
   useEffect(() => {
     if (momentDueDate) {
       setIsOverdue(momentDueDate.isBefore(moment()));
+      if (momentDueDate.hour() || momentDueDate.minute()) {
+        setIsTimeAvailable(true);
+      } else {
+        setIsTimeAvailable(false);
+      }
     }
+
     if (
       inputReference.current &&
       autoFocusFieldName === WorkflowDrawerFieldNames.DUE_DATE
@@ -47,6 +54,9 @@ const DueDateSection = ({ disabled }) => {
 
   const handleSave = useCallback(
     (updatedDueDateTime) => {
+      if (updatedDueDateTime === null) {
+        setIsTimeAvailable(false);
+      }
       const payload = {
         dueDateTime: updatedDueDateTime,
       };
@@ -93,11 +103,20 @@ const DueDateSection = ({ disabled }) => {
       >
         <DueDateContentWrapper>
           {momentDueDate ? (
-            <DateViewContainer isOverdue={isOverdue}>
-              <DateViewText>
-                {momentDueDate.format('MMM DD, YYYY')}
-              </DateViewText>
-            </DateViewContainer>
+            <>
+              <DateViewContainer isOverdue={isOverdue}>
+                <DateViewText>
+                  {momentDueDate.format('MMM DD, YYYY')}
+                </DateViewText>
+              </DateViewContainer>
+              {isTimeAvailable && (
+                <DateViewContainer isOverdue={isOverdue}>
+                  <DateViewText>
+                    {momentDueDate?.format('hh:mm a')}
+                  </DateViewText>
+                </DateViewContainer>
+              )}
+            </>
           ) : (
             <NoDateContainer>
               <AssignMemberIcon /> <SubTitle>Add Date</SubTitle>
