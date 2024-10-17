@@ -46,31 +46,37 @@ export default function CommentsInPopover({
   );
 
   return (
-    <ContainerCard>
-      <Box sx={{ m: 1, textAlign: 'right' }}>
-        <IconButton aria-label="close-comments" onClick={onClose}>
+    <>
+      <Box sx={{ textAlign: 'right' }}>
+        <IconButton
+          sx={{ height: '20px', width: '20px' }}
+          aria-label="close-comments"
+          onClick={onClose}
+        >
           <CloseIcon />
         </IconButton>
       </Box>
-      <Box sx={{ maxHeight: '300px', overflowY: 'scroll', paddingX: 2 }}>
-        {comments?.map((comment) => (
-          <div key={comment.commentIdentifier}>
-            <Comment
-              key={comment.commentIdentifier}
-              comment={comment}
-              onClick={() =>
-                handleClickComment(comment.commentIdentifier ?? '')
-              }
-            />
-            <Divider variant="middle" />
-          </div>
-        ))}
-      </Box>
-      {!disabled && (
-        <Box sx={{ padding: 2, backgroundColor: palette.coolGrey4 }}>
-          <AddComment autoFocus onAdd={addComment} />
+      <ContainerCard>
+        <Box sx={{ maxHeight: '300px', overflowY: 'scroll', paddingX: 2 }}>
+          {comments?.map((comment) => (
+            <div key={comment.commentIdentifier}>
+              <Comment
+                key={comment.commentIdentifier}
+                comment={comment}
+                onClick={() =>
+                  handleClickComment(comment.commentIdentifier ?? '')
+                }
+              />
+              <Divider variant="middle" />
+            </div>
+          ))}
         </Box>
-      )}
-    </ContainerCard>
+        {!disabled && (
+          <Box sx={{ padding: 2, backgroundColor: palette.coolGrey4 }}>
+            <AddComment autoFocus onAdd={addComment} />
+          </Box>
+        )}
+      </ContainerCard>
+    </>
   );
 }

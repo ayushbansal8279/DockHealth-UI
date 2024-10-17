@@ -10,8 +10,13 @@ import {
   ClickablePatient,
   PatientLabel,
   DisabledLink,
+  PatientLableContainer,
+  AISummaryWrapper,
 } from './styled';
-import Tooltip from '../../common/Tooltip/Tooltip';
+import AISummaryModalOpenerHelper from '@/app/modal/components/AISummaryModal/AISummaryModalOpenerHelper';
+import { SummaryType } from '@/app/helpers/ai-helper';
+import { useSelector } from 'react-redux';
+import { userHasAiSummaryViewFeatureSelector } from '@/app/selectors/user-selectors';
 
 const TaskTemplatePatient = ({
   highlightedValue,
@@ -24,6 +29,7 @@ const TaskTemplatePatient = ({
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const [isPopoverOpen, setPopoverOpen] = useState(false);
+  const aiSummaryAvailable = useSelector(userHasAiSummaryViewFeatureSelector);
   const matchPatientMRN = workflow?.searchMetaData?.matchPatientMRN;
   const matchPatient = workflow?.searchMetaData?.matchPatient;
   const { patient } = workflow;
@@ -61,14 +67,7 @@ const TaskTemplatePatient = ({
           closePopover={() => setPopoverOpen(false)}
           origin={origin}
         >
-          <Tooltip
-            placement="top"
-            title={`Add ${customerTypeLabelCapitalized}`}
-          >
-            <AddPlaceholder>
-              + Add {customerTypeLabelCapitalized}
-            </AddPlaceholder>
-          </Tooltip>
+          <AddPlaceholder>+ Add {customerTypeLabelCapitalized}</AddPlaceholder>
         </PatientDropdown>
       )}
       {!readOnly && !patient && openPatientPopover && (
@@ -104,24 +103,35 @@ const TaskTemplatePatient = ({
           disableLink={readOnly}
           patientIdentifier={patient.patientIdentifier}
         >
-          <Link to={`/core/patient/${patient.patientIdentifier}`}>
-            <PatientLabel>
-              {(matchPatient || matchPatientMRN) && highlightedValue ? (
-                <Highlighter
-                  highlightClassName="list-highlight"
-                  searchWords={
-                    matchPatient
-                      ? highlightedValue?.toLowerCase().split(/\s+/)
-                      : `${patientName}`.toLowerCase().split(/\s+/)
-                  }
-                  autoEscape
-                  textToHighlight={`${patient.patientName}`}
+          <PatientLableContainer>
+            {aiSummaryAvailable && (
+              <AISummaryWrapper>
+                <AISummaryModalOpenerHelper
+                  type={SummaryType.PATIENT}
+                  title={`${patient?.lastName}, ${patient?.firstName}`}
+                  identifier={patient?.patientIdentifier}
                 />
-              ) : (
-                `${patientName}`
-              )}
-            </PatientLabel>
-          </Link>
+              </AISummaryWrapper>
+            )}
+            <Link to={`/core/patient/${patient.patientIdentifier}`}>
+              <PatientLabel>
+                {(matchPatient || matchPatientMRN) && highlightedValue ? (
+                  <Highlighter
+                    highlightClassName="list-highlight"
+                    searchWords={
+                      matchPatient
+                        ? highlightedValue?.toLowerCase().split(/\s+/)
+                        : `${patientName}`.toLowerCase().split(/\s+/)
+                    }
+                    autoEscape
+                    textToHighlight={`${patient.patientName}`}
+                  />
+                ) : (
+                  `${patientName}`
+                )}
+              </PatientLabel>
+            </Link>
+          </PatientLableContainer>
         </PatientCard>
       )}
     </ClickablePatient>

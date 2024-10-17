@@ -1,5 +1,5 @@
 import { Grid, Input, MenuItem, Select } from '@mui/material';
-import { ListSelectContainer, ListTitle } from './styled';
+import { ListSelectContainer, ListTitle, ValidationError } from './styled';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import palette from '@/app/styles/palette';
 
@@ -10,19 +10,24 @@ const ListSelectorSection = ({
   searchedKeyword,
   handleListSearch,
   searchedLists,
+  isClicked,
 }) => {
   const CustomIcon = () => <ArrowDropDownIcon sx={{ marginRight: 2 }} />;
 
   return (
     <Grid item xs={12}>
       <ListSelectContainer>
-        <ListTitle>List Name</ListTitle>
+        <ListTitle>List</ListTitle>
         <Select
           sx={{
             '& .MuiOutlinedInput-notchedOutline': {
               border: 'none',
             },
             background: palette.lightGrey2,
+            border:
+              isClicked &&
+              !slectedListIdentifier &&
+              `1px solid ${palette.oPlusRed}`,
           }}
           IconComponent={CustomIcon}
           size="small"
@@ -36,15 +41,15 @@ const ListSelectorSection = ({
             })
           }
         >
-          <div style={{ maxHeight: '400px' }}>
+          {/* <div style={{ maxHeight: '400px' }}>
             <Input
               value={searchedKeyword}
               fullWidth
               placeholder="Search"
               sx={{ padding: '5px 10px 5px 15px' }}
               onChange={handleListSearch}
-            />
-            {searchedLists?.map((list) => (
+            /> */}
+            {lists?.map((list) => (
               <MenuItem
                 onClick={() => {
                   handleListChange(list?.taskListIdentifier);
@@ -54,8 +59,11 @@ const ListSelectorSection = ({
                 {list?.listName}
               </MenuItem>
             ))}
-          </div>
+          {/* </div> */}
         </Select>
+        {isClicked && !slectedListIdentifier && (
+          <ValidationError>List name is required</ValidationError>
+        )}
       </ListSelectContainer>
     </Grid>
   );

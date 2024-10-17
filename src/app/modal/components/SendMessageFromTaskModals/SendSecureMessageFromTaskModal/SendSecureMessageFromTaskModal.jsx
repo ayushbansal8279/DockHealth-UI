@@ -19,10 +19,12 @@ import {
   ModalWrapper,
 } from '../../styled';
 import { InputContainerStyled } from '../styled';
+import { ConfirmButton } from '../../ModalButton/ModalButtons';
 
 const SendSecureMessageFromTaskModal = () => {
   const dispatch = useDispatch();
   const [message, setMessage] = useState('');
+  const [templateIdentifier, setTemplateIdentifier] = useState('');
   const [isValueReset, setValueReset] = useState(false);
 
   const selectedTask = useSelector(selectedTaskSelector);
@@ -34,6 +36,7 @@ const SendSecureMessageFromTaskModal = () => {
         message,
         recipientContact: 'PATIENT',
         taskIdentifier: identifier,
+        templateIdentifier,
       }),
     );
     dispatch(closeModal());
@@ -68,6 +71,7 @@ const SendSecureMessageFromTaskModal = () => {
                 (data) => {
                   setValueReset(true);
                   setMessage(data?.details ?? '');
+                  setTemplateIdentifier(data?.identifier);
                 },
               );
             }}
@@ -83,14 +87,9 @@ const SendSecureMessageFromTaskModal = () => {
         </InputContainerStyled>
       </ModalDescriptionContainer>
       <ModalFooterStyled>
-        <Button
-          uppercase
-          width="150px"
-          variant="primary"
-          onClick={handleSubmit}
-        >
-          send
-        </Button>
+        <ConfirmButton style={{ width: '270px' }} onClick={handleSubmit}>
+          Send
+        </ConfirmButton>
       </ModalFooterStyled>
     </ModalWrapper>
   );

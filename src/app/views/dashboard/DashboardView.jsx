@@ -16,7 +16,6 @@ import { clearFiltersForMegaFilter } from 'actions/mega-filter-actions';
 import * as TaskListActions from 'actions/task-list-actions';
 import * as UserAuthApi from 'api/user-auth-api';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
-import Spacing from 'components/common/Spacing';
 import { openModal } from 'modal/actions';
 import { onNewUserTourEnter } from 'helpers/ga-event-helper';
 import { ColumnsConfigProvider } from 'context-api/columns-config-context';

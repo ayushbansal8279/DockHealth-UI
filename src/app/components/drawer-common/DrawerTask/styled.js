@@ -45,14 +45,13 @@ export const CircleIcon = styled.img`
 
 export const Description = styled.div`
   display: flex;
-  justify-conent: space-between;
+  justify-content: space-between;
   width: 100%;
   padding-right: ${spacing.regularPlus};
   overflow: hidden;
   color: ${palette.mediumGrey};
   font-size: ${fontSizes.smallPlus};
   font-weight: ${fontWeights.regular};
-
   ${(props) => (props.isCrossedOut ? 'text-decoration: line-through;' : '')}
 `;
 

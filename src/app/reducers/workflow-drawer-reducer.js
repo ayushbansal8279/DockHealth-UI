@@ -91,10 +91,7 @@ const WorkflowDrawerReducer = (state = initialState, action) => {
       if (action.taskWorkflowIdentifier === state.workflowIdentifier) {
         return {
           ...state,
-          workflow: {
-            ...state.workflow,
-            ...action.newData,
-          },
+          workflow: action.newData,
         };
       }
       return state;

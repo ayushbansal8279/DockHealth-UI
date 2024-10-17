@@ -3,7 +3,13 @@ import { fontSizes, fontWeights } from 'styles/font';
 import palette from 'styles/palette';
 import MuiCheckIcon from '@mui/icons-material/Check';
 
-const containerBorderStyle = (active, pro) => {
+const containerBorderStyle = (active, pro, selected) => {
+  if (!active && !pro && selected) {
+    return `${palette.newBrightBlue} 2px`;
+  }
+  if (active && !pro && !selected) {
+    return `${palette.coolGrey3} 1px`;
+  }
   if (active) {
     return `${palette.newBrightBlue} 2px`;
   }
@@ -18,7 +24,7 @@ export const Container = styled.div`
   padding: 18px 18px;
   border-radius: 10px;
   border-top: 10px solid ${({ color }) => color};
-  border: ${({ active, pro }) => `solid ${containerBorderStyle(active, pro)}`};
+  border: ${({ active, pro, selected }) => `solid ${containerBorderStyle(active, pro, selected)}`};
   font-family: inherit;
 `;
 
@@ -40,7 +46,6 @@ export const NewText = styled.p`
   position: absolute;
   top: -20px;
   left: 0;
-  margin-bottom;
   color: ${palette.red};
   font-size: ${fontSizes.smallPlus};
   font-weight: ${fontWeights.light};
@@ -112,7 +117,7 @@ export const UnitText = styled.p`
 const buttonBackgroundColor = (active, pro) => {
   if (active) return 'transparent';
   if (pro) return palette.newBrightBlue;
-  return palette.newDarkBlue;
+  return palette.oPlusRed;
 };
 
 export const SubscribeButton = styled.button`
@@ -120,8 +125,8 @@ export const SubscribeButton = styled.button`
   padding: 14px;
   border-radius: 8px;
   background-color: ${({ active, pro }) => buttonBackgroundColor(active, pro)};
-  border: 2px solid ${({ active }) => (active ? palette.newBrightBlue : '')};
-  color: ${({ active }) => (active ? palette.newBrightBlue : palette.white)};
+  border: 2px solid ${({ active }) => (active ? palette.oPlusRed : '')};
+  color: ${({ active }) => (active ? palette.oPlusRed : palette.white)};
   font-size: ${fontSizes.regular};
   font-weight: ${fontWeights.bold};
   display: flex;
@@ -151,8 +156,7 @@ export const ContactUsAnchor = styled.a`
 
 export const Divider = styled.hr`
   width: 100%;
-  margin: 30px 0;
-  border: 1px solid ${palette.coolGrey3};
+  margin: 20px 0;
 `;
 
 export const FeatureText = styled.p`
@@ -165,6 +169,13 @@ export const FeatureText = styled.p`
 
 export const DisclaimerText = styled.p`
   margin-bottom: 0;
+  font-size: 12px;
+  font-weight: 400;
+  color: ${palette.coolGrey10};
+`;
+
+export const SupportText = styled.p`
+  margin-bottom: 10px;
   font-size: 12px;
   font-weight: 400;
   color: ${palette.coolGrey10};

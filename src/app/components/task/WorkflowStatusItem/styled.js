@@ -39,9 +39,8 @@ export const StatusItemWrapper = styled.div`
   justify-content: flex-start;
   align-items: center;
   height: 100%;
-  width: 100%;
-  padding: ${spacing.tiny} ${spacing.smallPlus} ${spacing.tiny}
-    ${spacing.regular};
+  width: fit-content;
+  padding: ${spacing.tiny} 0 ${spacing.tiny} ${spacing.regular};
   overflow: hidden;
 
   &:hover {
@@ -65,9 +64,11 @@ export const StatusWrapper = styled.div`
   height: 30px;
   justify-content: center;
   align-items: center;
-  margin-left: 20px;
+  margin-left: 10px;
+  margin-right: 10px;
   margin-bottom: 10px;
   color: ${(property) => property.color || '#7F4334'};
+  position: relative;
 `;
 
 export const StatusItemContent = styled.div`
@@ -76,20 +77,24 @@ export const StatusItemContent = styled.div`
   flex-direction: row;
   justify-content: flex-start;
   align-items: center;
+  min-width: 100px;
   overflow: hidden;
   background-color: ${({ editing }) =>
     editing ? palette.coolGrey4 : palette.white};
+    width: fit-content;
 `;
 
 export const StatusFlag = styled.div`
   background-color: ${prop('color')};
   height: 24px;
-  flex: 6px 0 0;
+  width: 6px;
+  flex-shrink: 0;
 
   ${({ border }) => border && `border: 1px solid ${palette.coolGrey3};`}
 `;
 
 export const StatusNameInput = styled.input`
+  width: 100%;
   display: block;
   flex: 1;
   min-width: 0;
@@ -99,8 +104,6 @@ export const StatusNameInput = styled.input`
   font-size: ${fontSizes.smallPlus};
   font-weight: ${fontWeights.light};
   outline: none;
-  text-overflow: ellipsis;
-  overflow: hidden;
   background: transparent;
 
   &:disabled {
@@ -126,7 +129,6 @@ export const NameLoader = styled.div`
 
 export const StatusButton = styled.button`
   ${({ selected }) => selected && `background-color: ${palette.coolGrey4};`}
-  overflow: hidden;
   width: ${({ width }) => width}px;
 
   &:hover {
@@ -137,3 +139,29 @@ export const StatusButton = styled.button`
     }
   }
 `;
+
+export const StatusTooltip = styled.div`
+  display: none;
+  position: absolute;
+  right: 10; 
+  left: 10;
+  bottom: -5;
+  color: ${palette.black};
+  background-color: ${palette.whiteSmoke};
+  font-size: 14px;
+  box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.15);
+  border-radius: '4px';
+  padding: 5px 10px;
+  z-index: 100;
+  white-space: normal;
+  overflow-wrap: break-word;
+  transform: translateY(100%);
+`;
+
+export const StatusLabel = styled.div`
+  &:hover {
+    + ${StatusTooltip} {
+      display: block;
+    }
+  }
+`

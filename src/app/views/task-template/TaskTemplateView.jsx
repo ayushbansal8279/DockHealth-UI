@@ -133,6 +133,8 @@ const TaskTemplateView = () => {
       ({ name }) => name === 'tasks.header.textColor',
     ) || {};
 
+  window.disabledVirtualTaskList = true;
+
   useEffect(() => {
     if (
       userProfile?.orgUserRole === 'GUEST' ||

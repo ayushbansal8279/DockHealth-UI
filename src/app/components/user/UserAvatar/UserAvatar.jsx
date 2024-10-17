@@ -18,7 +18,7 @@ import { TooltipContent } from './styled';
 
 const UserAvatar = React.forwardRef(
   (
-    { user, color, size, isSelected, hideTooltip, onClick, isListPage },
+    { user, color, size, isSelected, hideTooltip, onClick },
     reference,
   ) => {
     const activeUsersList = useSelector(activeUsersListSelector);
@@ -36,7 +36,7 @@ const UserAvatar = React.forwardRef(
     const isInactive = useMemo(
       () =>
         [UserStatus.PENDING, UserStatus.INVITED, UserStatus.INACTIVE].includes(
-          userStatus,
+          userStatus
         ),
       [userStatus],
     );
@@ -85,9 +85,9 @@ const UserAvatar = React.forwardRef(
             // eslint-disable-next-line sonarjs/no-nested-template-literals
             name={`${name}${credentials ? `, ${credentials}` : ''}`}
             activityStatus={
-              isListPage && activityStatus === ActivityStatus.ONLINE
+               activityStatus === ActivityStatus.ONLINE
                 ? activityStatus
-                : ActivityStatus.OFFLINE
+                : ''
             }
             isBlurred={isInactive}
             color={color || bubbleColor}

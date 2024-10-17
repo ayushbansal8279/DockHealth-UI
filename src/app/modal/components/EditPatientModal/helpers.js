@@ -53,22 +53,15 @@ export const validationSchema = object().shape({
   gender: string().nullable(),
   dob: mixed()
     .nullable()
-    .transform(newValue => {
-      const dobMoment = moment(newValue, DATE_FORMAT);
+    .transform((newValue) => {
+      const dobMoment = moment(newValue);
 
       if (!newValue) {
         return null;
       }
 
-      if (
-        newValue?.replace(/[/_-]/g, '')?.length <
-        DATE_FORMAT.replace(/\//g, '').length
-      ) {
-        return new Error();
-      }
-
       if (dobMoment.isValid()) {
-        return newValue;
+        return dobMoment.format(DATE_FORMAT);
       }
 
       return new Error();
@@ -84,14 +77,15 @@ export const validationSchema = object().shape({
         return true;
       },
     )
-    .test('pastDate', `Date of birth is in the future`, function pastDate(
-      value,
-    ) {
-      if (moment(value, DATE_FORMAT).isAfter(moment())) {
-        this.createError();
-        return false;
-      }
-      return true;
+    .test(
+      'pastDate',
+      `Date of birth is in the future`,
+      function pastDate(value) {
+        if (moment(value, DATE_FORMAT).isAfter(moment())) {
+          this.createError();
+          return false;
+        }
+        return true;
     }),
   email: string()
     .nullable()

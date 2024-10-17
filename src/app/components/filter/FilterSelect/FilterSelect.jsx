@@ -39,8 +39,8 @@ const FilterSelect = ({
 
   useEffect(() => {
     setFilterdUser([
-      ...filterOptions.filter(
-        (item) => !finalFilter[filter].find((usr) => usr?.key === item?.key),
+      ...filterOptions?.filter(
+        (item) => !finalFilter[filter]?.find((usr) => usr?.key === item?.key),
       ),
     ]);
   }, [filter, finalFilter, filterOptions]);
@@ -56,9 +56,9 @@ const FilterSelect = ({
   useEffect(() => {
     finalFilter[filter].map((item) => {
       if (item?.key?.includes('DATE_RANGE')) {
-        if (item.dateStart && item.dateEnd) {
-          setDateStart(item.dateStart);
-          setDateEnd(item.dateEnd);
+        if (item?.dateStart && item?.dateEnd) {
+          setDateStart(item?.dateStart);
+          setDateEnd(item?.dateEnd);
         }
       }
     });
@@ -67,8 +67,8 @@ const FilterSelect = ({
   useEffect(() => {
     if (dueDate !== null && startDate !== null) {
       let currentFinalFilter = { ...finalFilter };
-      currentFinalFilter[filter].map((item, index) => {
-        if (item.key.includes('DATE_RANGE')) {
+      currentFinalFilter[filter]?.map((item, index) => {
+        if (item?.key?.includes('DATE_RANGE')) {
           currentFinalFilter[filter][index] = {
             ...currentFinalFilter[filter][index],
             dateStart: startDate,
@@ -89,7 +89,7 @@ const FilterSelect = ({
     let currentFilter = { ...finalFilter };
     currentFilter[filter] = [
       ...currentFilter[filter],
-      ...filterOptions.filter((user) => user?.key === item?.key),
+      ...filterOptions?.filter((user) => user?.key === item?.key),
     ];
     setFinalFilter({ ...currentFilter });
   };
@@ -113,8 +113,8 @@ const FilterSelect = ({
       setFinalFilter((v) => ({ ...urs }));
       setFilterdUser((v) => [...v, item]);
       const currentFilter = { ...finalFilter };
-      currentFilter[filter] = currentFilter[filter].filter(
-        (user) => user.key !== item?.key,
+      currentFilter[filter] = currentFilter[filter]?.filter(
+        (user) => user?.key !== item?.key,
       );
     }
   };

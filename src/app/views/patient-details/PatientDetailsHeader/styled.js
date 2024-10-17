@@ -36,6 +36,7 @@ export const PatientName = styled.div`
   font-size: ${fontSizes.regularPlus};
   text-transform: uppercase;
   position: relative;
+  color: ${(props) => props.status === "ARCHIVED" ? palette.lightGrey : ''};
 `;
 
 export const PatientInfo = styled.div`
@@ -95,4 +96,9 @@ export const ArrowBox = styled.div`
 
 export const ArrowBoxIndicator = styled.div`
   height: fit-content;
+`;
+
+export const AISummaryWrapper = styled.div`
+  cursor: pointer;
+  margin-left: 20px;
 `;

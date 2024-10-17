@@ -13,6 +13,7 @@ import Tooltip from 'components/common/Tooltip/Tooltip';
 import {
   userProfileSelector,
   selectedUserOrganizationSelector,
+  userHasAiSummaryViewFeatureSelector,
 } from 'selectors/user-selectors';
 import { PATIENTS_LIST_ALL } from 'routing/helpers/paths';
 import { organizationSelector } from 'selectors/organization-selectors';
@@ -39,7 +40,10 @@ import {
   IconWrapper,
   ContactContainer,
   PatientMRNAnchor,
+  AISummaryWrapper,
 } from './styled';
+import AISummaryModalOpenerHelper from '@/app/modal/components/AISummaryModal/AISummaryModalOpenerHelper';
+import { SummaryType } from '@/app/helpers/ai-helper';
 
 const { DISABLED } = TASK_LIST_RESTRICTIONS_OPTIONS;
 
@@ -61,6 +65,7 @@ const PatientDetailsHeader = () => {
     mrn,
     gender,
     genderIdentity,
+    patientStatus
   } = patient || {};
   const isFetchingPatient = useSelector(isFetchingPatientSelector);
   const currentUser = useSelector(userProfileSelector);
@@ -70,6 +75,7 @@ const PatientDetailsHeader = () => {
     currentOrganization,
   );
   const organization = useSelector(organizationSelector);
+  const aiSummaryAvailable = useSelector(userHasAiSummaryViewFeatureSelector);
   const emrPatientLink = organization?.emrPatientLink;
   const isLoadingDetails = isFetchingPatient || !patient;
   const [cameFrom, setCameFrom] = useState();
@@ -113,9 +119,18 @@ const PatientDetailsHeader = () => {
                     </button>
                   )}
                 </Box>
-                <PatientName>
+                <PatientName status={patientStatus}>
                   {[`${lastName},`, firstName, middleName].join(' ')}
                 </PatientName>
+                {aiSummaryAvailable && (
+                  <AISummaryWrapper>
+                    <AISummaryModalOpenerHelper
+                      type={SummaryType.PATIENT}
+                      title={`${lastName}, ${firstName}`}
+                      identifier={patient?.patientIdentifier}
+                    />
+                  </AISummaryWrapper>
+                )}
                 <Box mx={1} />
                 {taskListRestrictions?.createTask !== DISABLED && (
                   <ButtonContainer onClick={setIsDrawerOpen}>
@@ -123,6 +138,7 @@ const PatientDetailsHeader = () => {
                   </ButtonContainer>
                 )}
                 <Box mx={1} />
+                <Chip label={patientStatus} />
                 <Box flex="500px 0 0">
                   {patient?.patientLabels?.map(
                     ({ labelIdentifier, labelName }) => (
@@ -135,7 +151,7 @@ const PatientDetailsHeader = () => {
                       </Box>
                     ),
                   )}
-                </Box>
+                </Box> 
               </Grid>
             </Box>
             <ContactContainer>

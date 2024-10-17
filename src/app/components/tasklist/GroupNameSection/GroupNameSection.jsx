@@ -13,7 +13,6 @@ const GroupNameSection = ({
   children,
   handleInput,
   closeOnEnter,
-  isEditing,
 }) => {
   const [shouldShowInput, showInput, hideInput] = useBoolean(false);
   const [groupName, setGroupName] = useState('');
@@ -27,7 +26,7 @@ const GroupNameSection = ({
     return (
       <GroupNameInput
         onBlur={() => {
-          if (isEditing) onEnterClick(groupName);
+          onEnterClick(groupName);
           hideInput();
           if (handleInput) handleInput(!shouldShowInput);
         }}

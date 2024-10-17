@@ -29,10 +29,12 @@ import {
   InfoHeaderTextStyled,
 } from '../../styled';
 import { InputContainerStyled } from '../styled';
+import { ConfirmButton } from '../../ModalButton/ModalButtons';
 
 const SendSmsFromTaskModal = ({ setSmsActive }) => {
   const dispatch = useDispatch();
   const [message, setMessage] = useState('');
+  const [templateIdentifier, setTemplateIdentifier] = useState('');
   const [PhoneError, setPhoneError] = useState(false);
   const [selectedContacts, setSelectedContacts] = useState(null);
   const [newContact, setNewContact] = useState([]);
@@ -53,6 +55,7 @@ const SendSmsFromTaskModal = ({ setSmsActive }) => {
         message,
         recipientContact: selectedContacts.map((c) => c.value)[0],
         taskIdentifier: identifier,
+        templateIdentifier,
       }),
     );
     dispatch(closeModal());
@@ -102,7 +105,7 @@ const SendSmsFromTaskModal = ({ setSmsActive }) => {
         <CloseIcon htmlColor="#C1CCDA" />
       </CloseIconButton>
       <ModalHeaderContainerStyled>
-        <ModalHeader>Send sms</ModalHeader>
+        <ModalHeader>Send SMS</ModalHeader>
         <ModalDescription>Send a SMS for this task</ModalDescription>
       </ModalHeaderContainerStyled>
       <ModalDescriptionContainer>
@@ -142,6 +145,7 @@ const SendSmsFromTaskModal = ({ setSmsActive }) => {
               getTemplateDetails(newValue?.identifier, identifier).then(
                 (data) => {
                   setMessage(data?.shortMessage || '');
+                  setTemplateIdentifier(data?.identifier);
                 },
               );
             }}
@@ -175,15 +179,13 @@ const SendSmsFromTaskModal = ({ setSmsActive }) => {
         </TextWaringStyled>
       </ModalDescriptionContainer>
       <ModalFooterStyled>
-        <Button
-          uppercase
-          width="150px"
-          variant="primary"
+        <ConfirmButton
           disabled={PhoneError || !selectedContacts?.length > 0 || !message}
+          style={{ width: '270px' }}
           onClick={handleSubmit}
         >
-          send
-        </Button>
+          Send
+        </ConfirmButton>
       </ModalFooterStyled>
       <ReactModal
         isOpen={show}

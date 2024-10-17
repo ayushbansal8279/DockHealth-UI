@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import spacing from 'styles/spacing';
 import palette from 'styles/palette';
-import { fontSizes } from 'styles/font';
+import { fontSizes, fontWeights } from 'styles/font';
 
 export const Container = styled.div`
   height: 384px;
@@ -95,4 +95,24 @@ export const EmptyMessage = styled.p`
   color: ${palette.coolGrey2};
   margin-top: ${spacing.huge};
   text-align: center;
+`;
+
+export const Title = styled.h2`
+  margin: 0;
+  font-size: ${fontSizes.regularPlus};
+  color: ${palette.offBlack};
+  font-family: inherit;
+  text-align: Center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  gap: 8px;
+  align-self: stretch;
+  text-align: center;
+  font-family: Outfit;
+  font-size: 22px;
+  font-style: normal;
+  font-weight: ${fontWeights.regularPlus};
+  line-height: 25px; /* 113.636% */
+  text-transform: capitalize;
 `;

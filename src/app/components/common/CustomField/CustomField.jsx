@@ -17,12 +17,14 @@ import { taskDrawerFocusFieldSelector } from 'selectors/task-drawer-selectors';
 import { useSelector } from 'react-redux';
 import { TaskItemType } from 'helpers/task-helpers';
 import { workflowAutofocusFieldSelector } from 'selectors/workflow-drawer-selectors';
-import { Box } from '@mui/material';
+import { Box, Link } from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
 import CustomFieldRichTextEditor from './CustomFieldRichTextEditor';
 import { ColorIndicator } from './styled';
-import MultiFormSelect from '../MultiSelect/MultiFormSelect';
 import CustomFieldErrorContext from './CustomFieldErrorContext';
 import CustomFieldAutoComplete from './CustomFieldAutoComplete';
+import AutoCompleteFormSelect from '../Autocomplete/AutoCompleteFormSelect';
+import palette from '@/app/styles/palette';
 
 const CustomField = ({
   readOnly,
@@ -39,12 +41,13 @@ const CustomField = ({
   const { identifier, name, placeholder, fieldType, options, displayOptions } =
     field;
   const isRequired = displayOptions?.includes('TASK_REQUIRED');
+  const isReadOnly = displayOptions?.includes('READONLY') || readOnly;
   const inputReference = useRef(null);
   const componentReference = useRef(null);
   const { setValue, watch, setError, clearErrors } = useFormContext();
   const [wasChanged, setWasChanged] = useState(false);
+  const [isEditable, setIsEditable] = useState(false);
   const [descriptionErrorState, setDescriptionErrorState] = useState(false);
-
   const errorContextValue = useMemo(
     () => ({
       identifier,
@@ -54,6 +57,13 @@ const CustomField = ({
     }),
     [descriptionErrorState, identifier, isRequired],
   );
+
+  const handleEditClick = () => {
+    setIsEditable(true);
+    setTimeout(() => {
+      inputReference.current?.focus();
+    }, 0);
+  };
 
   const isWorkflow =
     task &&
@@ -79,6 +89,7 @@ const CustomField = ({
 
   const handleBlur = useCallback(
     (data, wasDateChanged) => {
+      setIsEditable(false);
       if (onBlur) {
         if (fieldType === FieldType.DATE) {
           onBlur(data, wasDateChanged);
@@ -87,7 +98,7 @@ const CustomField = ({
         }
       }
     },
-    [onBlur, wasChanged],
+    [fieldType, onBlur, wasChanged],
   );
 
   const fieldName = `${fieldsGroupKey}.${identifier}`;
@@ -116,7 +127,7 @@ const CustomField = ({
         return (
           <FormInput
             type="text"
-            readOnly={readOnly}
+            readOnly={isReadOnly}
             label={name}
             name={fieldName}
             placeholder={placeholder}
@@ -132,7 +143,7 @@ const CustomField = ({
       case FieldType.RELATIONSHIP: {
         return (
           <CustomFieldAutoComplete
-            readOnly={readOnly}
+            readOnly={isReadOnly}
             label={name}
             name={fieldName}
             placeholder={placeholder}
@@ -150,7 +161,7 @@ const CustomField = ({
           <CustomFieldRichTextEditor
             characterLimit={FieldCharacterLimit.LONG_TEXT}
             identifier={identifier}
-            readOnly={readOnly}
+            readOnly={isReadOnly}
             label={name}
             name={fieldName}
             placeholder={placeholder}
@@ -167,7 +178,7 @@ const CustomField = ({
         return (
           <FormInput
             type="number"
-            readOnly={readOnly}
+            readOnly={isReadOnly}
             label={name}
             name={fieldName}
             placeholder={placeholder}
@@ -182,7 +193,7 @@ const CustomField = ({
       case FieldType.BOOL: {
         return (
           <FormSelect
-            readOnly={readOnly}
+            readOnly={isReadOnly}
             label={name}
             options={BOOL_SELECT_OPTIONS}
             name={fieldName}
@@ -198,10 +209,11 @@ const CustomField = ({
       case FieldType.DATE: {
         return (
           <FormInput
-            readOnly={readOnly}
+            readOnly={isReadOnly}
             label={name}
             placeholder="MM/DD/YYYY"
             inputComponent={DateInput}
+            timeEnabled
             popoverZindex={popoverZindex}
             name={fieldName}
             onBlur={handleBlur}
@@ -239,8 +251,8 @@ const CustomField = ({
         return (
           <Box position="relative">
             {colorIndicator && <ColorIndicator color={colorIndicator} />}
-            <FormSelect
-              readOnly={readOnly}
+            <AutoCompleteFormSelect
+              readOnly={isReadOnly}
               label={name}
               options={
                 dependantOptions?.length > 0
@@ -260,8 +272,8 @@ const CustomField = ({
       case FieldType.DROPDOWN_MULTI: {
         return (
           <Box position="relative">
-            <MultiFormSelect
-              readOnly={readOnly}
+            <AutoCompleteFormSelect
+              readOnly={isReadOnly}
               label={name}
               options={dropdownOptions}
               name={fieldName}
@@ -270,23 +282,68 @@ const CustomField = ({
               ref={componentReference}
               onChange={() => setWasChanged(true)}
               required={isRequired}
+              multiple={true}
             />
           </Box>
         );
       }
       case FieldType.HYPERLINK: {
+        const value = watch(fieldName);
+        const customFieldHasValue =
+          readOnly ||
+          task?.taskMetaData?.find(
+            (customField) => customField?.customFieldIdentifier === identifier,
+          )?.value;
+        const inputFieldName =
+          isEditable || !value || !customFieldHasValue ? fieldName : '';
+
         return (
           <FormInput
             type="text"
-            readOnly={readOnly}
+            readOnly={!isEditable && !!customFieldHasValue}
             label={name}
-            name={fieldName}
+            name={inputFieldName}
             placeholder={placeholder}
             onBlur={handleBlur}
             inputRef={inputReference}
             ref={componentReference}
             onChange={() => setWasChanged(true)}
             required={isRequired}
+            startAdornment={
+              customFieldHasValue && !isEditable ? (
+                <Link
+                  href={value?.startsWith('http') ? value : `//${value}`}
+                  target="_blank"
+                  sx={{
+                    marginTop: '18px',
+                    color: palette.blueOcean,
+                    fontFamily: 'Outfit',
+                    textDecoration: 'none',
+                    '&:hover': {
+                      color: palette.brightBlue,
+                    },
+                  }}
+                  disabled={!isEditable && !!customFieldHasValue}
+                >
+                  {value}
+                </Link>
+              ) : null
+            }
+            endAdornment={
+              readOnly ||
+              (customFieldHasValue && !isEditable ? (
+                <EditIcon
+                  onClick={handleEditClick}
+                  sx={{
+                    color: palette.coolGrey1,
+                    cursor: 'pointer',
+                    '&:hover': {
+                      color: palette.black,
+                    },
+                  }}
+                />
+              ) : null)
+            }
           />
         );
       }
@@ -315,6 +372,8 @@ const CustomField = ({
     dropdownOptions,
     selected,
     popoverZindex,
+    isEditable,
+    isReadOnly,
   ]);
 
   return (

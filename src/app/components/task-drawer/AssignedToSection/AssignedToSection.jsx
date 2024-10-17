@@ -99,7 +99,7 @@ const AssignedToSection = ({
 
   const handleClick = () => {
     setIsOpen(true);
-    inputRef.current.focus();
+    inputRef?.current?.focus();
   };
 
   const ButtonSx = {
@@ -107,7 +107,6 @@ const AssignedToSection = ({
     borderRadius: '4px',
     borderColor: 'transparent',
     minWidth: '40px',
-    // paddingLeft:'2px',
     backgroundColor: isPopoverOpen ? '#f8f8f9' : 'transparent',
     '&:hover': {
       backgroundColor: '#f8f8f9',
@@ -126,6 +125,9 @@ const AssignedToSection = ({
     },
     '&.Mui-focusVisible': {
       outline: 'none',
+    },
+    '&.Mui-disabled': {
+      border: 'none',
     },
   };
 

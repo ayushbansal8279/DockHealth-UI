@@ -106,7 +106,10 @@ const PatientAttachments = () => {
 
   const getFileOptions = useCallback(
     (file) => [
-      { name: 'Preview', onClick: () => openAttachmentPreview(file) },
+      ...(file.scanStatus && file.scanStatus !== 'IN_PROGRESS' 
+        ? [{ name: 'Preview', onClick: () => openAttachmentPreview(file) }] 
+        : []
+      ),
       { name: 'Rename', onClick: () => renameAttachment(file) },
       {
         name: 'Move',
@@ -341,7 +344,7 @@ const PatientAttachments = () => {
               ))}
             </NamedCollapse>
           )}
-          <NamedCollapse name="Files">
+          <NamedCollapse name="Files"> 
             {activeViewType === FilesViewType.LIST && <FileListHeader />}
             {filesList.length > 0 ? (
               filesList.map((file, index) => (

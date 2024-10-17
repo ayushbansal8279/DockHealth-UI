@@ -5,6 +5,7 @@ import moment from 'moment';
 import { noop, showAlert } from 'helpers/utility-functions';
 import { log } from 'helpers/log';
 import axios from './axios-heydoc';
+import { mapSelectedOptionsToRequestPayload } from '../helpers/filter-options-helpers';
 
 export function searchTasks(
   searchTerm,
@@ -623,4 +624,30 @@ export function bulkEditCustomFieldsByTaskIdentifiers({
     taskIdentifiers,
     taskWorkflowIdentifiers,
   });
+}
+
+export function downloadTaskListData(
+  listIdentifier,
+  selectedTaskListStatus,
+  filename,
+) {
+  return axios({
+    url: `/list/download/${listIdentifier}?taskStatus=${selectedTaskListStatus}`,
+    method: 'POST',
+    responseType: 'blob',
+    headers: {
+      Accept: 'application/octet-stream',
+    },
+    data: {},
+  })
+    .then((response) => {
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.style.display = 'none';
+      link.href = url;
+      link.setAttribute('download', filename);
+      document.body.append(link);
+      link.click();
+    })
+    .catch(noop);
 }

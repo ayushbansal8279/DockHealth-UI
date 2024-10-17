@@ -41,8 +41,8 @@ const StickyMainTaskItemCell = styled.div`
       : '24px'};
   ${({ order }) => (order ? `order: ${order};` : '')}
   border-left: 2px solid
-    ${({ isWorkflowtask, isTamplateGroup }) =>
-    isWorkflowtask || isTamplateGroup
+    ${({ isWorkflowtask, isTamplateGroup, isTaskOfTemplate }) =>
+    isWorkflowtask || isTamplateGroup || isTaskOfTemplate
       ? 'rgba(75, 179, 253, 1)'
       : `${palette.coolGrey3}`};
   margin-left: ${({ isTamplateGroup, origin }) =>
@@ -99,8 +99,8 @@ const StickyMainTaskItemCell = styled.div`
 
   &:hover {
     border-left: 2px solid
-      ${({ isWorkflowtask, isTamplateGroup }) =>
-        isWorkflowtask || isTamplateGroup
+      ${({ isWorkflowtask, isTamplateGroup, isTaskOfTemplate }) =>
+        isWorkflowtask || isTamplateGroup || isTaskOfTemplate
           ? 'rgba(75, 179, 253, 1)'
           : `${palette.coolGrey2}`};
   }

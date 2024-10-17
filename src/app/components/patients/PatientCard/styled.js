@@ -29,7 +29,7 @@ export const PatientName = styled.p`
   font-size: ${fontSizes.regular};
   font-weight: ${fontWeights.bold};
   font-family: 'Outfit', sans-serif;
-  color: ${palette.black};
+  color: ${(props) => props.status === "ARCHIVED" ? palette.lightGrey : palette.black};
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -84,6 +84,9 @@ export const NoteDescription = styled.p`
   margin-bottom: 0;
   font-size: ${fontSizes.regular};
   font-weight: ${fontWeights.light};
+  & p {
+    margin-bottom: 2px;
+  }
 `;
 
 export const NoteInfo = styled(NoteDescription)`

@@ -41,7 +41,7 @@ const StatusEditor = ({ onClose }) => {
 
   const isAddingNewStatus =
     currentlyEditedStatus && !currentlyEditedStatus.identifier;
-  const newStatusButtonVisible = !isAddingNewStatus && statuses?.length < 49;
+  const newStatusButtonVisible = !isAddingNewStatus;
 
   const sensors = useSensors(useSensor(MouseSensor), useSensor(TouchSensor));
 
@@ -135,7 +135,6 @@ const StatusEditor = ({ onClose }) => {
     (statuses?.length || 0) +
     1 +
     (isAddingNewStatus || newStatusButtonVisible ? 1 : 0);
-
   return (
     <StatusListWrapper>
       <DndContext sensors={sensors} onDragEnd={handleDragAndDropEnd}>
@@ -160,6 +159,7 @@ const StatusEditor = ({ onClose }) => {
                   key={status.identifier}
                   itemId={status.identifier}
                   overflowHidden
+                  statusSection
                 >
                   {({ dragHandleProps }) => (
                     <EditableWorkflowStatusItem

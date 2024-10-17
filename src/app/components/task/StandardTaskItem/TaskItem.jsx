@@ -11,7 +11,6 @@ import React, {
 } from 'react';
 import pluck from 'ramda/src/pluck';
 import { useDispatch, useSelector } from 'react-redux';
-import moment from 'moment';
 import * as ListDetailsActions from 'actions/list-details-actions';
 import { isTaskSelectedSelector } from 'selectors/task-drawer-selectors';
 import {
@@ -35,11 +34,6 @@ import {
 } from 'actions/task-actions';
 // eslint-disable-next-line import/no-cycle
 import TaskTemplateGroup from 'components/task-template/TaskTemplateGroup/TaskTemplateGroup';
-import Circle from 'img/circle.svg';
-import CircleCompleted from 'img/circle-completed.svg';
-import CircleCompletedHover from 'img/circle-completed-hover.svg';
-import TaskAutomationPending from 'img/task-automation-pending.svg';
-import TaskAutomationComplete from 'img/task-automation-complete.svg';
 import ThreeDotsIcon from 'img/three-dots.svg';
 import {
   userProfileSelector,
@@ -111,8 +105,9 @@ import TaskItemList from './TaskItemComponents/TaskItemList';
 import TaskItemOrganization from './TaskItemComponents/TaskItemOrganization';
 import TaskItemWorkflowStatus from './TaskItemComponents/TaskItemWorkflowStatus';
 import TaskItemDecision from './TaskItemComponents/TaskItemDecision';
+import TaskItemCompleteIcon from './TaskItemComponents/TaskItemCompleteIcon';
+import { openDrawer as openWorkflowDrawer } from '@/app/actions/workflow-drawer-actions';
 import {
-  CircleIcon,
   MainStandardTaskItemCell,
   StandardTaskItemContainer,
   StandardTaskItemPanel,
@@ -124,12 +119,10 @@ import {
   ActionIconsContainer,
   PatientMRNAnchor,
   TaskScrollVericleLine,
-  TootipCompletedBy,
-  TootipCompletedByDate,
-  TootipCompletedByName,
   // AddPlaceholder,
   ChildTaskTitle,
   ParentTaskLink,
+  WorkflowTitle,
 } from '../styled';
 import TaskItemText from './customFieldsTaskItemComponents/TaskItemText/TaskItemText';
 import TaskItemDropdown from './customFieldsTaskItemComponents/TaskItemDropdown/TaskItemDropdown';
@@ -306,8 +299,16 @@ const TaskItem = React.memo(
       organizationCustomFieldsSelector,
     );
     const listCustomFields = useSelector(listCustomFieldsSelector);
+
     const taskCustomFields = organizationCustomFields
-      ? organizationCustomFields.concat(listCustomFields)
+      ? origin === 'LIST'
+        ? organizationCustomFields.concat(listCustomFields)
+        : organizationCustomFields.concat(
+            listColumns?.filter(
+              (taskListCustomfield) =>
+                taskListCustomfield?.taskListIdentifier === taskListIdentifier,
+            ),
+          )
       : listCustomFields;
 
     const showContextMenu = [move, duplicate, subtasks, del].reduce(
@@ -330,8 +331,6 @@ const TaskItem = React.memo(
 
     const [isPatientDataReadOnly] = useState(true);
 
-    const [showCircleIconOnHover, setShowCircleIconOnHover] = useState(false);
-    const [tooltipsOpen, setTooltipsOpen] = useState(false);
     const { tabName } = useParams();
 
     const customHighlightColor = useMemo(() => {
@@ -352,6 +351,33 @@ const TaskItem = React.memo(
         hasPriorityHighlightItem && hasPriorityHighlightItem?.value === 'true'
       );
     }, [selectedOrganization]);
+
+    const getTaskGroupForWorkflow = (taskItem) => {
+      if (
+        (origin === TaskOrigin.DASHBOARD || origin === TaskOrigin.GLOBAL) &&
+        taskItem?.itemType === 'TASK' &&
+        taskItem?.taskGroups
+      ) {
+        const filteredGroups = taskItem.taskGroups?.filter(
+          (taskGroup) => taskGroup?.groupType === 'TASK_BUNDLE',
+        );
+
+        return filteredGroups?.length > 0 ? filteredGroups[0] : null;
+      }
+      if (
+        (!!selectedFilters && Object.keys(selectedFilters)?.length > 0) ||
+        !!searchValue ||
+        !!sort.key
+      ) {
+        const filteredGroups = taskItem.taskGroups?.filter(
+          (taskGroup) => taskGroup?.groupType === 'TASK_BUNDLE',
+        );
+        return filteredGroups?.length > 0 ? filteredGroups[0] : null;
+      }
+      return null;
+    };
+
+    const workflowTaskGroup = getTaskGroupForWorkflow(task);
 
     useEffect(() => {
       if (task?.status === 'COMPLETE') {
@@ -582,6 +608,15 @@ const TaskItem = React.memo(
       [dispatch, parentTaskGroupIdentifier, task, templateBundleIdentifier],
     );
 
+    const openDrawerForWorkflow = useCallback(
+      (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        dispatch(openWorkflowDrawer(workflowTaskGroup?.taskGroupIdentifier));
+      },
+      [dispatch, workflowTaskGroup],
+    );
+
     const refreshTab = useCallback(
       (withLoader = false) => {
         dispatch(ListDetailsActions.getCurrentTaskListFilterOptions());
@@ -788,14 +823,6 @@ const TaskItem = React.memo(
       [dispatch, task, taskCustomFields],
     );
 
-    const handleTooltipClose = () => {
-      setTooltipsOpen(false);
-    };
-
-    const handleTooltipOpen = () => {
-      setTooltipsOpen(true);
-    };
-
     const randerFirstColumnCoverIfNecessary = useCallback(
       (content, order, width) => {
         if (order !== 0) return content;
@@ -829,6 +856,7 @@ const TaskItem = React.memo(
             }
             isSortApplied={!!sort.key}
             width={width + 25 + 56}
+            isTaskOfTemplate={!!workflowTaskGroup}
           >
             {taskListRestrictions?.createTask !== DISABLED && (
               <DotsContainer
@@ -849,78 +877,14 @@ const TaskItem = React.memo(
                   />
                 )}
               <Box ml="10px" />
-              <Tooltip
-                placement={isCompleted ? 'bottom' : 'top'}
-                title={
-                  isCompleted ? (
-                    <>
-                      <TootipCompletedBy>Completed by</TootipCompletedBy>
-                      <TootipCompletedByName>
-                        {`${task?.completedBy?.firstName} ${task?.completedBy?.lastName}`}
-                      </TootipCompletedByName>
-                      <TootipCompletedByDate>
-                        {`${new Date(task?.completedDt).toLocaleString(
-                          'en-US',
-                          {
-                            weekday: 'long',
-                          },
-                        )}, ${moment(task?.completedDt).format(
-                          'MMM DD, YYYY',
-                        )} @${new Date(task?.completedDt)
-                          .toLocaleTimeString('en-US', {
-                            hour: 'numeric',
-                            minute: '2-digit',
-                            hour12: true,
-                          })
-                          .toLowerCase()}`}
-                      </TootipCompletedByDate>
-                    </>
-                  ) : !task?.systemTask ? (
-                    'Complete task'
-                  ) : (
-                    'System task'
-                  )
-                }
-                open={tooltipsOpen}
-                onClose={() => handleTooltipClose()}
-              >
-                <CircleIcon
-                  src={
-                    isCompleted
-                      ? task?.systemTask
-                        ? TaskAutomationComplete
-                        : CircleCompleted
-                      : showCircleIconOnHover
-                      ? task?.systemTask
-                        ? TaskAutomationPending
-                        : CircleCompletedHover
-                      : task?.systemTask
-                      ? TaskAutomationPending
-                      : Circle
-                  }
-                  onMouseEnter={() => {
-                    setShowCircleIconOnHover(true);
-                    handleTooltipOpen();
-                  }}
-                  onMouseLeave={() => {
-                    setShowCircleIconOnHover(false);
-                    handleTooltipClose();
-                  }}
-                  isClickable={
-                    !isTaskStatusTogglingDisabled &&
-                    isDependencyEmptyOrCompleted &&
-                    taskListRestrictions?.completeTask !== DISABLED
-                  }
-                  isCompleted={isCompleted}
-                  onClick={
-                    // eslint-disable-next-line unicorn/no-negated-condition
-                    taskListRestrictions?.completeTask !== DISABLED &&
-                    !task?.systemTask
-                      ? onCircleClick
-                      : () => {}
-                  }
-                />
-              </Tooltip>
+              <TaskItemCompleteIcon
+                task={task}
+                isCompleted={isCompleted}
+                isTaskStatusTogglingDisabled={isTaskStatusTogglingDisabled}
+                isDependencyEmptyOrCompleted={isDependencyEmptyOrCompleted}
+                taskListRestrictions={taskListRestrictions}
+                onCircleClick={onCircleClick}
+              />
               <Box ml="10px" />
               {/* </Tooltip> */}
             </ActionIconsContainer>
@@ -958,8 +922,6 @@ const TaskItem = React.memo(
         bulkEditEnabled,
         onClickBulkEdit,
         isCompleted,
-        tooltipsOpen,
-        showCircleIconOnHover,
         isTaskStatusTogglingDisabled,
         isDependencyEmptyOrCompleted,
         onCircleClick,
@@ -979,7 +941,7 @@ const TaskItem = React.memo(
 
     const getReduceWidth = (columnName) => {
       return isSubtask &&
-        (origin === 'LIST' || origin === 'PATIENT') &&
+        (origin === 'LIST' || origin === 'PATIENT' || origin === 'TEMPLATE') &&
         !selectedFilters &&
         !searchValue &&
         !sort.key &&
@@ -1074,6 +1036,7 @@ const TaskItem = React.memo(
             origin={origin}
             isVirtualSubtask={isVirtualSubtask}
             isWorkflowSubtask={isWorkflowSubtask}
+            isTaskOfTemplate={!!workflowTaskGroup}
           >
             {randerFirstColumnCoverIfNecessary(
               <>
@@ -1108,32 +1071,50 @@ const TaskItem = React.memo(
                       </DependencyIconContainer>
                     </>
                   )}
-                  <TaskItemDescription
-                    disableMentions={restrictions?.mentions === DISABLED}
-                    disabled={restrictions?.description === READ_ONLY}
-                    task={task}
-                    isCompletedGroup={isCompletedGroup}
-                    highlightedValue={highlightedValue}
-                    isSubtask={isSubtask}
-                    isEditing={isEditingDescription}
-                    setEditing={setEditingDescription}
-                    isEditButtonVisible
-                    hasParentTaskLabel={hasParentTaskLabel}
-                    width={
-                      columns?.find(
-                        ({ identifier }) =>
-                          identifier === TaskItemColumn.DESCRIPTION,
-                      )?.columnWidth -
-                      100 -
-                      (isSubtask &&
-                      !hasParentTaskLabel &&
-                      descriptionColumnOrder === 0
-                        ? 50
-                        : 0) -
-                      (isSubtask ? 0 : 50) -
-                      (showDecisionRow ? 200 : 0)
+                  <Tooltip
+                    placement="bottom"
+                    title={
+                      !!workflowTaskGroup ? (
+                        <>
+                          <WorkflowTitle>Workflow </WorkflowTitle>
+                          <ParentTaskLink onClick={openDrawerForWorkflow}>
+                            {workflowTaskGroup?.groupName}
+                          </ParentTaskLink>
+                        </>
+                      ) : (
+                        ''
+                      )
                     }
-                  />
+                  >
+                    <div style={{ width: '100%', overflow: 'hidden' }}>
+                      <TaskItemDescription
+                        disableMentions={restrictions?.mentions === DISABLED}
+                        disabled={restrictions?.description === READ_ONLY}
+                        task={task}
+                        isCompletedGroup={isCompletedGroup}
+                        highlightedValue={highlightedValue}
+                        isSubtask={isSubtask}
+                        isEditing={isEditingDescription}
+                        setEditing={setEditingDescription}
+                        isEditButtonVisible
+                        hasParentTaskLabel={hasParentTaskLabel}
+                        width={
+                          columns?.find(
+                            ({ identifier }) =>
+                              identifier === TaskItemColumn.DESCRIPTION,
+                          )?.columnWidth -
+                          100 -
+                          (isSubtask &&
+                          !hasParentTaskLabel &&
+                          descriptionColumnOrder === 0
+                            ? 50
+                            : 0) -
+                          (isSubtask ? 0 : 50) -
+                          (showDecisionRow ? 20 : 0)
+                        }
+                      />
+                    </div>
+                  </Tooltip>
                   {!isSubtask && (
                     <TaskItemSubtasks
                       isSubtask={isSubtask}
@@ -1178,20 +1159,32 @@ const TaskItem = React.memo(
                     </Tooltip>
                   </div>
                   {showDecisionRow && (
-                    <DecisionCellContainer
-                      onClick={(event) => event.stopPropagation()}
+                    <div
+                      style={{
+                        display: 'flex',
+                        overflow: 'hidden',
+                      }}
                     >
-                      <TaskItemDecision
-                        outcomes={task?.taskOutcomes}
-                        onSelect={handleDecisionOutcomeSelection}
-                        task={task}
-                        templateBundleIdentifier={templateBundleIdentifier}
-                        disabled={isCompleted || !isDependencyEmptyOrCompleted}
-                        error={taskDecisionError}
-                        clearError={() => setTaskDecisionError(false)}
-                        iconColorActive={iconColorActive}
-                      />
-                    </DecisionCellContainer>
+                      <DecisionCellContainer
+                        onClick={(event) => event.stopPropagation()}
+                      >
+                        <TaskItemDecision
+                          outcomes={task?.taskOutcomes}
+                          onSelect={handleDecisionOutcomeSelection}
+                          task={task}
+                          templateBundleIdentifier={
+                            templateBundleIdentifier ||
+                            workflowTaskGroup?.taskGroupIdentifier
+                          }
+                          disabled={
+                            isCompleted || !isDependencyEmptyOrCompleted
+                          }
+                          error={taskDecisionError}
+                          clearError={() => setTaskDecisionError(false)}
+                          iconColorActive={iconColorActive}
+                        />
+                      </DecisionCellContainer>
+                    </div>
                   )}
                 </MainStandardTaskItemCell>
               </>,

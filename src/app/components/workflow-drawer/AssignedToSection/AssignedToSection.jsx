@@ -24,7 +24,7 @@ import {
 } from './styled';
 import UserAvatar from '../../user/UserAvatar/UserAvatar';
 import MemberGroup from '../../user/MemberGroup/MemberGroup';
-import { Button, TextField } from '@mui/material';
+import { Button, TextField, ClickAwayListener } from '@mui/material';
 import AssignMemberIcon from '../../user/AssignMemberIcon/AssingMemberIcon';
 
 const AssignedToSection = ({ disabled }) => {
@@ -149,67 +149,68 @@ const AssignedToSection = ({ disabled }) => {
             <MemberGroup members={assignedToUsers.slice(4)} size={32} />
           </div>
         )}
-
-        <div>
-          <Button
-            size="small"
-            placeholder="Add Assignee"
-            variant="outlined"
-            disabled={disabled}
-            sx={ButtonSx}
-            onClick={() => {
-              handleClick();
-            }}
-          >
-            <AssignMemberIcon />
-            {!isPopoverOpen && assignedToUsers?.length === 0 && (
-              <HelperText>Add Assignee</HelperText>
-            )}
-            {isPopoverOpen && (
-              <TextField
-                autoFocus
-                inputRef={() => inputRef}
-                variant="outlined"
-                disabled={disabled}
-                // placeholder="Add Assignee"
-                size="small"
-                sx={{
-                  backgroundColor: palette.whiteSmoke,
-                  '& .MuiOutlinedInput-root': {
-                    '& .MuiOutlinedInput-notchedOutline': {
-                      borderColor: 'transparent',
+        <ClickAwayListener onClickAway={() => setIsOpen(false)}>
+          <div>
+            <Button
+              size="small"
+              placeholder="Add Assignee"
+              variant="outlined"
+              disabled={disabled}
+              sx={ButtonSx}
+              onClick={() => {
+                handleClick();
+              }}
+            >
+              <AssignMemberIcon />
+              {!isPopoverOpen && assignedToUsers?.length === 0 && (
+                <HelperText>Add Assignee</HelperText>
+              )}
+              {isPopoverOpen && (
+                <TextField
+                  autoFocus
+                  inputRef={() => inputRef}
+                  variant="outlined"
+                  disabled={disabled}
+                  // placeholder="Add Assignee"
+                  size="small"
+                  sx={{
+                    backgroundColor: palette.whiteSmoke,
+                    '& .MuiOutlinedInput-root': {
+                      '& .MuiOutlinedInput-notchedOutline': {
+                        borderColor: 'transparent',
+                      },
                     },
-                  },
-                  width: '200px',
-                }}
-                inputProps={{
-                  autoComplete: 'off',
-                  value: searchValue,
-                  onChange: handleInputChange,
-                  onClick: handleClick,
-                }}
-              />
+                    width: '200px',
+                  }}
+                  inputProps={{
+                    autoComplete: 'off',
+                    value: searchValue,
+                    onChange: handleInputChange,
+                    onClick: handleClick,
+                  }}
+                />
+              )}
+            </Button>
+            {isPopoverOpen && (
+              <PopupContainer width={245}>
+                <MultiAssignMembersList
+                  value={searchValue}
+                  setValue={setSearchValue}
+                  // width={245}
+                  taskDrawer
+                  closePopup={setIsOpen}
+                  taskListIdentifiers={taskListIdentifier}
+                  selectedMembers={assignedToUsersValue}
+                  onSelect={handleAssignToSelection}
+                  enableLazyLoading={
+                    taskList?.listType === 'PUBLIC' ||
+                    taskList?.listType === 'TEMPLATE'
+                  }
+                />
+              </PopupContainer>
             )}
-          </Button>
-          {isPopoverOpen && (
-            <PopupContainer width={245}>
-              <MultiAssignMembersList
-                value={searchValue}
-                setValue={setSearchValue}
-                // width={245}
-                taskDrawer
-                closePopup={setIsOpen}
-                taskListIdentifiers={taskListIdentifier}
-                selectedMembers={assignedToUsersValue}
-                onSelect={handleAssignToSelection}
-                enableLazyLoading={
-                  taskList?.listType === 'PUBLIC' ||
-                  taskList?.listType === 'TEMPLATE'
-                }
-              />
-            </PopupContainer>
-          )}
-        </div>
+          </div>
+        </ClickAwayListener>
       </AssignMemberContainer>
     </div>
   );

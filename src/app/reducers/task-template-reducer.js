@@ -634,6 +634,42 @@ const TaskTemplateReducer = (state = initialState, action) => {
       };
     }
 
+    case ActionTypes.UPDATE_TASK_SUCCESS: {
+      const { task } = action;
+      if (state.taskTemplates && state.taskTemplates !== '') {
+        return TaskBaseReducer(state, action, updateTasksStateCallback);
+      }
+
+      const updatedTaskState = {
+        ...state,
+        taskTemplateDetails: Object.fromEntries(
+          Object.entries(state.taskTemplateDetails).map(([key, value]) => [
+            key,
+            {
+              ...value,
+              tasks: value.tasks.map((t) =>
+                t.identifier === task.taskIdentifier
+                  ? {
+                      ...t,
+                      ...task,
+                    }
+                  : t,
+              ),
+            },
+          ]),
+        ),
+      };
+
+      return state.taskTemplateDetails &&
+        state.taskTemplateDetails !== undefined
+        ? TaskBaseReducer(
+            updatedTaskState,
+            action,
+            updateTaskTemplateDetailsStateCallback,
+          )
+        : state;
+    }
+
     case ActionTypes.EDIT_TEMPORARY_ELEMENT: {
       const { currentTaskTemplateIdentifier } = state;
       const { elementId, data } = action;

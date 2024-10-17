@@ -100,6 +100,7 @@ export const ReminderType = {
   DAY_BEFORE_1: 'DAY_BEFORE_1',
   DAY_BEFORE_2: 'DAY_BEFORE_2',
   WEEK_BEFORE_1: 'WEEK_BEFORE_1',
+  ABSOLUTE: 'ABSOLUTE'
 };
 
 export function getLabelsIconTooltipTitle(labels) {

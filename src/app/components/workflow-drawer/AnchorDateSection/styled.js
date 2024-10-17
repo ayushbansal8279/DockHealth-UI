@@ -10,11 +10,21 @@ export const AnchorDateLabel = styled.label`
 `;
 
 export const AnchorDateContentWrapper = styled.div`
-  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
   padding: ${spacing.tiny} 0;
-  text-align: left;
-  border-bottom: 1px solid ${palette.coolGrey1};
-  padding: 25px 10px 6px 10px;
+`;
+export const Title = styled.div`
+  margin-left: 1px;
+  margin-right: 30px;
+  color: ${palette.coolGrey1};
+  font-family: Outfit;
+  font-size: ${fontSizes.smallPlus};
+  font-weight: ${fontWeights.light};
+  display: flex;
+  align-items: center;
+  width: 125px;
 `;
 
 export const AnchorDateContent = styled.div`
@@ -22,6 +32,19 @@ export const AnchorDateContent = styled.div`
   grid-template-columns: 1fr 1fr auto;
   color: ${({ error }) => (error ? palette.error : palette.mediumGrey)};
   font-weight: ${fontWeights.bold};
+`;
+
+export const DateViewContainer = styled.div`
+  margin-left: 5px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 4px 8px;
+  border-radius: 8px;
+  color: ${({ isOverdue }) =>
+    isOverdue ? `${palette.white}` : `${palette.black}`};
+  background: ${({ isOverdue }) =>
+    isOverdue ? `${palette.oPlusRed}` : '#F8F8F9'};
 `;
 
 export const AnchorDateText = styled.p`
@@ -35,11 +58,11 @@ export const Placeholder = styled.p`
 
 export const AnchorDateSectionWrapper = styled.div`
   display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  width: 100%;
-  height: 54px;
-  font-family: inherit;
+  align-items: center;
+  font-family: Outfit;
+  width: 20%;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 
   ${({ disabled }) =>
     disabled &&

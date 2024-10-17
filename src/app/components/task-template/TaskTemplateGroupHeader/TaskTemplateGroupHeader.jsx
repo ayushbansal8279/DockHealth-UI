@@ -35,8 +35,8 @@ import ProgressBar from 'components/common/ProgressBar/ProgressBar';
 import RotatableChevron from 'components/common/RotatableChevron/RotatableChevron';
 import { BulkEditContext } from 'components/tasklist/BulkEditSection/BulkEditSection';
 import TaskItemCustomField from 'components/common/CustomField/TaskItemCustomField';
-import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
-import Spacing from 'components/common/Spacing';
+// import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
+// import Spacing from 'components/common/Spacing';
 import { useTaskListColumnsConfig } from 'context-api/columns-config-context';
 import StickyMainTaskItemCell from 'components/task/StickyMainTaskItemCell/StickyMainTaskItemCell';
 import TaskItemCell from 'components/task/TaskItemCell/TaskItemCell';
@@ -54,6 +54,7 @@ import { CUSTOM_FIELD_TYPES } from 'helpers/custom-fields-helpers';
 import {
   userProfileSelector,
   selectedUserOrganizationSelector,
+  userHasAiSummaryViewFeatureSelector,
 } from 'selectors/user-selectors';
 import {
   SINGLE_TASK_RESTRICTIONS_OPTIONS,
@@ -87,6 +88,7 @@ import {
   ActionIconsContainer,
   PatientMRNAnchor,
   ChevronContainer,
+  AISummaryWrapper,
 } from './styled';
 import TaskTemplateDetails from '../TaskTemplateDetails/TaskTemplateDetails';
 import { ListPageContext } from '@/app/views/list-details/ListDetailsView';
@@ -95,6 +97,8 @@ import { TaskScrollVericleLine } from '../../task/styled';
 import TaskTemplateComment from '../TaskTemplateIcons/TaskTemplateComment';
 import palette from '@/app/styles/palette';
 import TaskTemplateContextMenu from '../TaskTemplateContextMenu/TaskTemplateContextMenu';
+import AISummaryModalOpenerHelper from '@/app/modal/components/AISummaryModal/AISummaryModalOpenerHelper';
+import { SummaryType } from '@/app/helpers/ai-helper';
 
 const TaskTemplateGroupHeader = ({
   templateGroup = {},
@@ -141,14 +145,6 @@ const TaskTemplateGroupHeader = ({
   const [nameInputError, setNameInputError] = useState(false);
   const [contextMenu, setContextMenu] = useState(null);
   const isDateHover = false;
-  const [isCellHover, setCellHover] = useState({
-    dueDate: false,
-    startDate: false,
-    assignee: false,
-    comment: false,
-    label: false,
-    file: false,
-  });
   const nameInputReference = useRef(null);
   const currentUser = useSelector(userProfileSelector);
   const currentList = useSelector(currentTaskListSelector);
@@ -271,7 +267,7 @@ const TaskTemplateGroupHeader = ({
     }
     return templateTasks?.reduce(
       (accumulator, currentTask) => {
-        if (currentTask.status === 'COMPLETE') {
+        if (currentTask?.status === 'COMPLETE') {
           accumulator[0] += 1;
         }
         if (currentTask?.subtasks?.length > 0) {
@@ -340,7 +336,10 @@ const TaskTemplateGroupHeader = ({
   const handleAddTaskToWorkflow = () => {
     if (taskListRestrictions?.workflowAddTask !== DISABLED) {
       setIsAddingTask(true);
-      if (origin === 'LIST') {
+      if (origin === 'LIST' || origin === 'PATIENT') {
+        setOpen(true);
+        setVirtualListWorkflowOpen(true);
+        collapse.set(identifier, false);
         collapse.handleAddWorkflowIdentifier(identifier);
       }
     }
@@ -372,6 +371,7 @@ const TaskTemplateGroupHeader = ({
               ),
             );
           },
+          modalLabel: 'Move to List',
         }),
       );
     }
@@ -449,8 +449,10 @@ const TaskTemplateGroupHeader = ({
     () =>
       templateTasks.filter(
         isCompletedTab
-          ? (task) => showIncompleteTasks || task.status === TaskStatus.COMPLETE
-          : (task) => showCompletedTasks || task.status !== TaskStatus.COMPLETE,
+          ? (task) =>
+              showIncompleteTasks || task?.status === TaskStatus.COMPLETE
+          : (task) =>
+              showCompletedTasks || task?.status !== TaskStatus.COMPLETE,
       ),
     [showCompletedTasks, showIncompleteTasks, templateTasks, isCompletedTab],
   );
@@ -533,6 +535,7 @@ const TaskTemplateGroupHeader = ({
   );
 
   const { isVirtualListWorkflowOpen } = useContext(VTaskContext);
+  const aiSummaryAvailable = useSelector(userHasAiSummaryViewFeatureSelector);
 
   const handleOpen = useCallback(() => {
     setOpen(!isOpen);
@@ -667,6 +670,15 @@ const TaskTemplateGroupHeader = ({
               paddingRight="tiny"
               order={getColumnOrder(TaskItemColumn.DESCRIPTION)}
             >
+              {aiSummaryAvailable && (
+                <AISummaryWrapper>
+                  <AISummaryModalOpenerHelper
+                    type={SummaryType.WORKFLOW}
+                    title={`${name}`}
+                    identifier={identifier}
+                  />
+                </AISummaryWrapper>
+              )}
               <TemplateHeaderName
                 templateGroup={templateGroup}
                 isEditing={isEditing}
@@ -993,11 +1005,8 @@ const TaskTemplateGroupHeader = ({
                 paddingLeft="10px"
                 justify="flex-start"
                 order={getColumnOrder(TaskItemColumn.START_DATE)}
-                onMouseEnter={() => setCellHover({ startDate: true })}
-                onMouseLeave={() => setCellHover({ startDate: false })}
               >
                 <TaskTemplateStartDate
-                  isHover={isCellHover.startDate}
                   workflow={templateGroup}
                   disabled={restrictions?.startDate === DISABLED}
                   isDateHover={isDateHover}
@@ -1023,11 +1032,8 @@ const TaskTemplateGroupHeader = ({
                 paddingLeft="10px"
                 justify="flex-start"
                 order={getColumnOrder(TaskItemColumn.DUE_DATE)}
-                onMouseEnter={() => setCellHover({ dueDate: true })}
-                onMouseLeave={() => setCellHover({ dueDate: false })}
               >
                 <TaskTemplateDueDate
-                  isHover={isCellHover.dueDate}
                   workflow={templateGroup}
                   disabled={restrictions?.dueDate === DISABLED}
                   isDateHover={isDateHover}
@@ -1082,11 +1088,8 @@ const TaskTemplateGroupHeader = ({
                 }}
                 order={getColumnOrder(TaskItemColumn.ASSIGNED)}
                 printWidth={TaskItemColumnWidth[TaskItemColumn.ASSIGNED].PRINT}
-                onMouseEnter={() => setCellHover({ assignee: true })}
-                onMouseLeave={() => setCellHover({ assignee: false })}
               >
                 <TaskTemplateMembers
-                  isHover={isCellHover.assignee}
                   readOnly={restrictions?.assigment === READ_ONLY}
                   currentUser={currentUser}
                   multipleAssigneesContext={groupHasMultipleAssignees}
@@ -1201,11 +1204,8 @@ const TaskTemplateGroupHeader = ({
                   )?.columnWidth
                 }
                 order={getColumnOrder(TaskItemColumn.COMMENTS)}
-                onMouseEnter={() => setCellHover({ comment: true })}
-                onMouseLeave={() => setCellHover({ comment: false })}
               >
                 <TaskTemplateComment
-                  isHover={isCellHover.comment}
                   comments={templateGroup.comments}
                   matchAttachComments={templateGroup.matchComments}
                   workflow={templateGroup}
@@ -1228,11 +1228,8 @@ const TaskTemplateGroupHeader = ({
                   )?.columnWidth
                 }
                 order={getColumnOrder(TaskItemColumn.LABELS)}
-                onMouseEnter={() => setCellHover({ label: true })}
-                onMouseLeave={() => setCellHover({ label: false })}
               >
                 <TaskTemplateIcons
-                  isHover={isCellHover}
                   labels={templateGroup.labels}
                   matchLabels={templateGroup.matchLabels}
                   workflow={templateGroup}
@@ -1255,11 +1252,8 @@ const TaskTemplateGroupHeader = ({
                   )?.columnWidth
                 }
                 order={getColumnOrder(TaskItemColumn.FILES)}
-                onMouseEnter={() => setCellHover({ file: true })}
-                onMouseLeave={() => setCellHover({ file: false })}
               >
                 <TaskTemplateIcons
-                  isHover={isCellHover}
                   attachments={templateGroup.attachments}
                   matchAttachments={templateGroup.matchAttachments}
                   workflow={templateGroup}

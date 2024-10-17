@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-expressions */
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { userProfileSelector } from 'selectors/user-selectors';
+import { userHasAiSummaryViewFeatureSelector, userProfileSelector } from 'selectors/user-selectors';
 import { organizationSelector } from 'selectors/organization-selectors';
 import debounce from 'lodash.debounce';
 // import { openModal } from 'modal/actions';
@@ -28,10 +28,13 @@ import {
   PatientContainer,
   Title,
   InstructionText,
-  // AddPatient,
   PatientName,
+  PatientLableContainer,
+  AISummaryWrapper,
 } from './styled';
 import PatientSelectItem from '../../patients/PatientSelectItem/PatientSelectItem';
+import AISummaryModalOpenerHelper from '@/app/modal/components/AISummaryModal/AISummaryModalOpenerHelper';
+import { SummaryType } from '@/app/helpers/ai-helper';
 
 const PATIENT_IDENTIFIER_FIELD_NAME = 'patientIdentifier';
 const MAX_PATIENT_RESULTS = 200;
@@ -76,6 +79,7 @@ const PatientSection = ({
 
   const { emrIntegrationType } = useSelector(organizationSelector) || {};
   const restrictedLookup = hasRestrictedPatientLookup(emrIntegrationType);
+  const aiSummaryAvailable = useSelector(userHasAiSummaryViewFeatureSelector);
 
   useEffect(() => {
     if (
@@ -218,19 +222,33 @@ const PatientSection = ({
     <PatientMainContainer>
       <Title>Patient</Title>
       {selectedPatient && (
-        <PatientContainer>
-          {' '}
-          <PatientName onClick={patientProfile}>
-            {selectedPatient.patientName}{' '}
-          </PatientName>
-          <button
-            style={{ color: '#8492A4' }}
-            onClick={handleClearSelectedPatient}
-            type="button"
-          >
-            x
-          </button>
-        </PatientContainer>
+        <PatientLableContainer>
+          <PatientContainer>
+            {' '}
+            <PatientName status={selectedPatient.patientStatus} onClick={patientProfile}>
+              {selectedPatient.patientName}{' '}
+              {selectedPatient.mrn && selectedPatient.mrn !== ''
+                ? `(${selectedPatient.mrn})`
+                : ''}
+            </PatientName>
+            <button
+              style={{ color: '#8492A4' }}
+              onClick={handleClearSelectedPatient}
+              type="button"
+            >
+              x
+            </button>
+          </PatientContainer>
+          {aiSummaryAvailable && (
+            <AISummaryWrapper>
+              <AISummaryModalOpenerHelper
+                type={SummaryType.PATIENT}
+                title={`${selectedPatient?.lastName}, ${selectedPatient?.firstName}`}
+                identifier={selectedPatient?.patientIdentifier}
+              />
+            </AISummaryWrapper>
+          )}
+        </PatientLableContainer>
       )}
 
       {!selectedPatient && (

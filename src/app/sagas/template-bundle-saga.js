@@ -8,6 +8,7 @@ import { applyTemplate as applyTemplateAction } from 'actions/template-bundle-ac
 import { openModal } from 'modal/actions';
 import { getTasksForTaskGroups } from 'actions/list-details-actions';
 import { log } from 'helpers/log';
+import * as PatientDetailsActions from 'actions/patient-details-actions';
 import store from '../store';
 import { locationParametersSelector } from '../location/selectors';
 
@@ -189,6 +190,7 @@ function* applyTemplate({
         taskListIdentifier,
         template: addedBundle.taskWorkflowDto,
       });
+      yield put(PatientDetailsActions.getCurrentPatientTasks());
     }
   } catch {
     yield put({ type: ActionTypes.APPLY_TEMPLATE_FAILURE });

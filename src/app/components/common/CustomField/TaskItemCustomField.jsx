@@ -6,7 +6,7 @@ import TaskItemDropdown from 'components/task/StandardTaskItem/customFieldsTaskI
 import TaskItemText from 'components/task/StandardTaskItem/customFieldsTaskItemComponents/TaskItemText/TaskItemText';
 import TaskItemLongText from 'components/task/StandardTaskItem/customFieldsTaskItemComponents/TaskItemLongText/TaskItemLongText';
 import TaskItemNumber from 'components/task/StandardTaskItem/customFieldsTaskItemComponents/TaskItemNumber/TaskItemNumber';
-
+import TaskItemHyperLink from 'components/task/StandardTaskItem/customFieldsTaskItemComponents/TaskItemHyperLink/TaskItemHyperLink';
 import { updatePartialWorkflow } from 'actions/task-template-actions';
 import { partialUpdateTask, storeAsCurrentTask } from 'actions/task-actions';
 import { TaskItemType } from 'helpers/task-helpers';
@@ -18,8 +18,6 @@ import {
   createMetaDataObjectToSend,
   CUSTOM_FIELD_TYPES,
 } from 'helpers/custom-fields-helpers';
-import { StyledHyperLink } from 'components/auth/AuthComponents.styled';
-import { trunc } from 'helpers/utility-functions';
 
 const TaskItemCustomField = ({
   readOnly,
@@ -36,8 +34,8 @@ const TaskItemCustomField = ({
   const isWorkflow =
     task.itemType === TaskItemType.BUNDLE ||
     task.itemType === TaskItemType.TEMPLATE;
-
   const dispatch = useDispatch();
+  const isReadOnly = field.displayOptions?.includes('READONLY') || readOnly;
 
   const handleClick = useCallback(() => {
     if (!patientType) {
@@ -111,7 +109,7 @@ const TaskItemCustomField = ({
     case FieldType.BOOL: {
       return (
         <TaskItemBoolean
-          readOnly={readOnly}
+          readOnly={isReadOnly}
           value={value}
           onChange={handleChange}
           field={field}
@@ -124,17 +122,18 @@ const TaskItemCustomField = ({
           value={value}
           onChange={handleChange}
           field={field}
-          readOnly={readOnly}
+          readOnly={isReadOnly}
         />
       );
     }
     case FieldType.DROPDOWN_MULTI: {
       return (
         <TaskItemMultiDropdown
-          readOnly={readOnly}
+          readOnly={isReadOnly}
           value={values || []}
           onChange={handleChange}
           field={field}
+          withSearch
         />
       );
     }
@@ -156,17 +155,18 @@ const TaskItemCustomField = ({
 
       return (
         <TaskItemDropdown
-          readOnly={readOnly}
+          readOnly={isReadOnly}
           value={value}
           onChange={handleChange}
           field={updatedField}
+          withSearch
         />
       );
     }
     case FieldType.TEXT: {
       return (
         <TaskItemText
-          readOnly={readOnly}
+          readOnly={isReadOnly}
           value={value}
           onChange={handleChange}
           field={field}
@@ -176,7 +176,7 @@ const TaskItemCustomField = ({
     case FieldType.LONG_TEXT: {
       return (
         <TaskItemLongText
-          readOnly={readOnly}
+          readOnly={isReadOnly}
           value={value}
           onChange={handleChange}
           openDrawer={patientType ? undefined : handleClick}
@@ -187,7 +187,7 @@ const TaskItemCustomField = ({
     case FieldType.NUMBER: {
       return (
         <TaskItemNumber
-          readOnly={readOnly}
+          readOnly={isReadOnly}
           value={value}
           onChange={handleChange}
           field={field}
@@ -196,12 +196,12 @@ const TaskItemCustomField = ({
     }
     case FieldType.HYPERLINK: {
       return (
-        <StyledHyperLink
-          href={value?.startsWith('http') ? value : `//${value}`}
-          target="_blank"
-        >
-          {trunc(value, 15)}
-        </StyledHyperLink>
+        <TaskItemHyperLink
+          readOnly={isReadOnly}
+          value={value}
+          onChange={handleChange}
+          field={field}
+        />
       );
     }
     default: {

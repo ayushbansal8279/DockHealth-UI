@@ -46,12 +46,14 @@ import {
 } from '../styled';
 import TaskCheckBoxes from '../TaskCheckBoxes';
 import { renderAddOrEdit } from '../helpers';
+import { ConfirmButton } from '../../ModalButton/ModalButtons';
 
 const SendEmailFromTaskModal = ({ setEmailActive }) => {
   const selectedTask = useSelector(selectedTaskSelector);
   const { attachments, identifier } = selectedTask;
   const dispatch = useDispatch();
   const [subject, setSubject] = useState('');
+  const [templateIdentifier, setTemplateIdentifier] = useState('');
   const [selectedContacts, setSelectedContacts] = useState([]);
   const [newContact, setNewContact] = useState([]);
   const [error] = useState(false);
@@ -155,7 +157,7 @@ const SendEmailFromTaskModal = ({ setEmailActive }) => {
         <CloseIcon htmlColor="#C1CCDA" />
       </CloseIconButton>
       <ModalHeaderContainerStyled>
-        <ModalHeader>Send email</ModalHeader>
+        <ModalHeader>Send Email</ModalHeader>
         <ModalDescription>Send an email for this task</ModalDescription>
       </ModalHeaderContainerStyled>
       <ModalDescriptionContainer>
@@ -211,6 +213,7 @@ const SendEmailFromTaskModal = ({ setEmailActive }) => {
                   setValueReset(true);
                   setDetailsState(updatedValue);
                   setSubject(data?.shortMessage ?? '');
+                  setTemplateIdentifier(data?.identifier);
                 },
               );
             }}
@@ -218,7 +221,7 @@ const SendEmailFromTaskModal = ({ setEmailActive }) => {
           />
           <Input
             type="text"
-            label="subject"
+            label="Subject"
             name="email"
             placeholder="Type the email subject"
             shrink
@@ -288,14 +291,12 @@ const SendEmailFromTaskModal = ({ setEmailActive }) => {
         </TextWaringStyled>
       </ModalDescriptionContainer>
       <ModalFooterStyled>
-        <Button
-          uppercase
-          width="150px"
-          variant="primary"
+        <ConfirmButton
           disabled={
             // !validateEmail(contact?.value) ||
             selectedContacts.length === 0 // || !detailsState.getCurrentContent().hasText()
           }
+          style={{ width: '270px' }}
           onClick={() => {
             dispatch(
               sendEmailForTask({
@@ -304,13 +305,14 @@ const SendEmailFromTaskModal = ({ setEmailActive }) => {
                 recipientContacts: selectedContacts.map((c) => c.value),
                 taskAttachmentIdentifiers: attachmentsToSend,
                 taskIdentifier: identifier,
+                templateIdentifier,
               }),
             );
             dispatch(closeModal());
           }}
         >
-          send
-        </Button>
+          Send
+        </ConfirmButton>
       </ModalFooterStyled>
       <ReactModal
         isOpen={show}

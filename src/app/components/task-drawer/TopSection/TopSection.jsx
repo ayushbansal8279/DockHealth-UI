@@ -19,6 +19,7 @@ import {
   userHasPostEMRNoteFeatureSelector,
   userHasShareTaskFeatureSelector,
   userSubscriptionIsProSelector,
+  userHasAiSummaryViewFeatureSelector,
 } from 'selectors/user-selectors';
 import { useDispatch, useSelector } from 'react-redux';
 import { openModal } from 'modal/actions';
@@ -38,7 +39,9 @@ import {
 } from './styled';
 import initializeTaskDrawerTopSectionHooks from './hooks';
 import moment from 'moment';
-import Tooltip from 'components/common/Tooltip/Tooltip';
+import Tooltip from 'components/common/Tooltip/Tooltip';;
+import AISummaryModalOpenerHelper from '@/app/modal/components/AISummaryModal/AISummaryModalOpenerHelper';
+import { SummaryType } from '@/app/helpers/ai-helper';
 
 const { DISABLED } = SINGLE_TASK_RESTRICTIONS_OPTIONS;
 
@@ -83,6 +86,7 @@ const TopSection = ({
   const postToEMRAvailable = useSelector(userHasPostEMRNoteFeatureSelector);
   const shareTaskAvailable = useSelector(userHasShareTaskFeatureSelector);
   const userSubscriptionIsPro = useSelector(userSubscriptionIsProSelector);
+  const aiSummaryAvailable = useSelector(userHasAiSummaryViewFeatureSelector);
 
   const handleMarkAsUnRead = useCallback(() => {
     dispatch(markTaskAsUnRead(selectedTask.taskIdentifier));
@@ -122,18 +126,6 @@ const TopSection = ({
             name: 'Share Task',
             onClick: handleShareTask,
           },
-        {
-          name: 'Copy task link',
-          onClick: handleCopyLink,
-        },
-        // sendEmailAvailable && {
-        //   name: 'Send Email',
-        //   onClick: () => dispatch(openModal('SendEmailFromTask')),
-        // },
-        // sendSmsAvailable && {
-        //   name: 'Send SMS',
-        //   onClick: () => dispatch(openModal('SendSmsFromTask')),
-        // },
         sendSecureMessageAvailable && {
           name: 'Send Patient Message',
           onClick: () => dispatch(openModal('SendSecureMessageFromTask')),
@@ -218,7 +210,7 @@ const TopSection = ({
   }
 
   return (
-    <Paper elevation={3} style={{ width: '800px', height: '60px' }}>
+    <Paper elevation={3} style={{ width: '100%', height: '60px' }}>
       <Box
         width="100%"
         display="flex"
@@ -266,6 +258,15 @@ const TopSection = ({
           )}
         </Box>
         <Box display="flex">
+          {aiSummaryAvailable && (
+            <IconContainer>
+              <AISummaryModalOpenerHelper
+                type={SummaryType.TASK}
+                title={`${selectedTask?.description}`}
+                identifier={selectedTask?.identifier}
+              />
+            </IconContainer>
+          )}
           {handleCopyLink && (
             <Tooltip placement="bottom" title={'Copy Task Link'}>
               <IconContainer

@@ -1,10 +1,11 @@
 import styled from 'styled-components';
 import { fontWeights, fontSizes } from 'styles/font';
 import palette from 'styles/palette';
+import spacing from 'styles/spacing';
 
 export const CustomFieldsSectionContainer = styled.div`
   color: ${palette.coolGrey1};
-  padding: 21px 0;
+  padding: ${spacing.regularPlus} ${spacing.largePlus};
   border-top: 1px solid ${palette.coolGrey2};
 `;
 
@@ -26,6 +27,7 @@ export const Title = styled.h3`
   color: ${palette.greyBlue};
   font-weight: ${fontWeights.regularPlus};
   width: 200px;
+  margin-bottom: 0px;
 `;
 export const rowHeight = 'fit-content';
 
@@ -36,9 +38,9 @@ export const rowHeight = 'fit-content';
 
 export const styleFullRow = (isMobile, extraPadding) => ({
   padding: isMobile
-    ? '0.5rem 1rem'
+    ? '0.2rem 1rem'
     : extraPadding
-    ? '0.5rem 2rem'
-    : '0.5rem 0rem',
+    ? '0.2rem 2rem'
+    : '0.2rem 0rem',
   height: 'fit-content',
 });

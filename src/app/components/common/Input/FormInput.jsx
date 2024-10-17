@@ -12,6 +12,7 @@ const FormInput = React.forwardRef(
       validate,
       disableClearErrorOnKeyUp,
       required,
+      readOnly,
       ...restProps
     },
     reference,
@@ -57,6 +58,7 @@ const FormInput = React.forwardRef(
         errors={errors}
         required={required}
         onKeyUp={() => (disableClearErrorOnKeyUp ? null : clearErrors(name))}
+        readOnly={readOnly}
         {...restProps}
       />
     );

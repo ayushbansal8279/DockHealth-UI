@@ -37,10 +37,12 @@ import {
   AddEditContactLink,
 } from '../styled';
 import { makeFaxNumber, renderAddOrEdit, validateFaxInput } from '../helpers';
+import { ConfirmButton } from '../../ModalButton/ModalButtons';
 
 const SendFaxFromTaskModal = () => {
   const dispatch = useDispatch();
   const [message, setMessage] = useState(null);
+  const [templateIdentifier, setTemplateIdentifier] = useState('');
   const [isValueReset, setValueReset] = useState(false);
 
   const [faxError, setFaxError] = useState(false);
@@ -123,8 +125,8 @@ const SendFaxFromTaskModal = () => {
         <CloseIcon htmlColor="#C1CCDA" />
       </CloseIconButton>
       <ModalHeaderContainerStyled>
-        <ModalHeader>Send fax</ModalHeader>
-        <ModalDescription>Send a fax for this task</ModalDescription>
+        <ModalHeader>Send FAX</ModalHeader>
+        <ModalDescription>Send a FAX for this task</ModalDescription>
       </ModalHeaderContainerStyled>
       <ModalDescriptionContainer>
         <InputContainerStyled>
@@ -144,13 +146,13 @@ const SendFaxFromTaskModal = () => {
           /> */}
           <EmailContactsAutoComplete
             type={CommunicationType.FAX}
-            placeholder="Type the fax number or name of the contact"
+            placeholder="Type the FAX number or name of the contact"
             onChange={handleContactsOnChange}
             error={faxError}
             multiple={false}
             autoFocus
-            label="Fax"
-            errorMessage="Incorrect fax number"
+            label="FAX"
+            errorMessage="Incorrect FAX number"
             // value={contact?.value ?? ''}
             disabled={show}
             setShow={setShow}
@@ -184,18 +186,19 @@ const SendFaxFromTaskModal = () => {
                     : data?.details ?? '';
                   setValueReset(true);
                   setMessage(updatedValue);
+                  setTemplateIdentifier(data?.identifier);
                 },
               );
             }}
             disabled={show}
           />
           <TextEditorContainerStyled>
-            <CustomTextEditor label="Fax Cover Message">
+            <CustomTextEditor label="FAX Cover Message">
               <RichTextEditor
                 value={message}
                 reset={isValueReset}
                 readOnly={false}
-                placeholder="Fax Message"
+                placeholder="FAX Message"
                 onChange={handleTextEditorChange}
                 initOnClick
                 showCharCount
@@ -236,11 +239,9 @@ const SendFaxFromTaskModal = () => {
         </TextWaringStyled>
       </ModalDescriptionContainer>
       <ModalFooterStyled>
-        <Button
-          uppercase
-          width="150px"
-          variant="primary"
+        <ConfirmButton
           disabled={faxError || !isValidToSend}
+          style={{ width: '270px' }}
           onClick={() => {
             dispatch(
               sendFaxForTask({
@@ -249,13 +250,14 @@ const SendFaxFromTaskModal = () => {
                 // taskAttachmentIdentifiers: attachments,
                 taskAttachmentIdentifiers: attachmentsToSend,
                 taskIdentifier: identifier,
+                templateIdentifier,
               }),
             );
             dispatch(closeModal());
           }}
         >
-          send
-        </Button>
+          Send
+        </ConfirmButton>
       </ModalFooterStyled>
       <ReactModal
         isOpen={show}

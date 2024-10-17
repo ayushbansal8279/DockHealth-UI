@@ -7,6 +7,7 @@ import CustomField from 'components/common/CustomField/CustomField';
 import { useBoolean } from 'hooks/useBoolean';
 import { useForm, FormProvider } from 'react-hook-form';
 import compose from 'ramda/src/compose';
+import Spacing from 'components/common/Spacing';
 import CategoryOptions from 'components/common/CategoryOptions/CategoryOptions';
 import { partialUpdateTask } from 'actions/task-actions';
 import { updatePartialWorkflow } from 'actions/task-template-actions';
@@ -171,8 +172,8 @@ const CustomFieldsSection = ({ disabled, fieldCategoryType }) => {
     <FormProvider {...formMethods}>
       {fieldCategoryType === 'TASK_CORE' ? (
         <CustomFieldsSectionContainerNoLine>
+          <Spacing vertical={1} />
           <CategoryOptions
-            coreTask
             visibility={emptyVisible}
             onToggle={toggleEmptyVisible}
           />

@@ -20,7 +20,7 @@ export const TaskWrapper = styled.div`
 `;
 
 export const TaskLinks = styled.div`
-  padding: 0 20px;
+  padding: 0 8px;
   max-width: 280px;
   overflow: hidden;
   white-space: nowrap;

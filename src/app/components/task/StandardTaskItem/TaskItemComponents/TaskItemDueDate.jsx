@@ -13,6 +13,8 @@ import {
   DueDatesContainer,
   DueDateWrapper,
 } from '../../styled';
+import { openModal } from '@/app/modal/actions';
+import { isDueDateValid } from '@/app/helpers/date-validation-helper';
 
 const TaskItemDueDate = ({
   task,
@@ -23,13 +25,35 @@ const TaskItemDueDate = ({
   showRecurring,
 }) => {
   const dispatch = useDispatch();
-  const { taskIdentifier, dueDate, hasRecurringSchedule, reminderType } =
-    task || {};
+  const {
+    taskIdentifier,
+    dueDate,
+    hasRecurringSchedule,
+    reminderType,
+    startDate,
+  } = task || {};
 
-  const handleDueDateChange = useCallback(
+  const handleSave = useCallback(
     (newDueDate) => {
       dispatch(updateTaskDueDate(task, newDueDate));
       onTaskDueDateChanged();
+    },
+    [dispatch, task],
+  );
+
+  const handleDueDateChange = useCallback(
+    (newDueDate) => {
+      const isDateValid = isDueDateValid(startDate, newDueDate);
+      if (isDateValid) {
+        handleSave(newDueDate);
+      } else {
+        dispatch(
+          openModal('DateWarning', {
+            type: 'dueDate',
+            onSave: () => handleSave(newDueDate),
+          }),
+        );
+      }
     },
     [dispatch, task],
   );

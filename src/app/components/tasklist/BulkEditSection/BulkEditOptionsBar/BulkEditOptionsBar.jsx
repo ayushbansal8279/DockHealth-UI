@@ -1,5 +1,5 @@
 /* eslint-disable sonarjs/no-identical-functions */
-import React, { useMemo, useCallback } from 'react';
+import React, { useMemo, useCallback, useState } from 'react';
 import AppRegistrationIcon from '@mui/icons-material/AppRegistration';
 import { useParams } from 'react-router-dom';
 import isEmpty from 'ramda/src/isEmpty';
@@ -80,7 +80,7 @@ const BulkEditOptionsBar = ({
   const filters = useSelector(selectedFiltersInMegaFilterSelector);
   const { parentTasks = [], subtasks = [] } = selectedTasks;
   const modalActions = useActions(ModalActions);
-
+  const [bulkTasksDueDate, setBulkTasksDueDate] = useState();
   const allTasksSameType = useMemo(
     () =>
       (parentTasks.length > 0 && subtasks.length === 0) ||
@@ -320,6 +320,7 @@ const BulkEditOptionsBar = ({
           dispatch(
             bulkEditDueDateSuccess(allSelectedTasksIdentifiers, dueDate),
           );
+          setBulkTasksDueDate(dueDate);
           refreshTaskWorkflows(allSelectedWorkflowIdentifiers);
           dispatch(
             AlertActions.showGlobalAlertWithUndo(
@@ -349,9 +350,9 @@ const BulkEditOptionsBar = ({
             refreshTasks();
           }
 
-          if (onClose && typeof onClose === 'function') {
-            onClose();
-          }
+          // if (onClose && typeof onClose === 'function') {
+          //   onClose();
+          // }
         })
         .catch(() => {
           if (refreshTasks && typeof refreshTasks === 'function') {
@@ -368,7 +369,7 @@ const BulkEditOptionsBar = ({
       allSelectedTasksLength,
       shouldRefreshTasksEveryTime,
       refreshTasks,
-      onClose,
+      // onClose,
       updateTasks,
       refreshTaskWorkflows,
     ],
@@ -618,6 +619,7 @@ const BulkEditOptionsBar = ({
         confirmText: 'Move',
         confirm: confirmAction,
         preventClosingModal,
+        modalLabel: 'Move to List'
       }),
     );
   }, [
@@ -919,6 +921,7 @@ const BulkEditOptionsBar = ({
             <BulkEditDueDateOption
               handleChangeDateTasks={handleChangeDateTasks}
               isDisabled={isDisabled}
+              selectedDate={bulkTasksDueDate}
             />
           </AccessRestrictor>
         )}

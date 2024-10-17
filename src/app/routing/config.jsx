@@ -150,6 +150,7 @@ const CreateList = lazy(() =>
   import('views/OnboardingTutorial/CreateList/CreateList'),
 );
 const Developers = lazy(() => import('views/developers'));
+const PatientImportStatus = lazy(() => import('views/patient-details/PatientImportStatus/PatientImportStatus'));
 
 const {
   CAN_ACCESS_HOME_PAGE,
@@ -302,6 +303,11 @@ export const TEMPLATE_CORE_SUBSCRIPTION_PLAN_ROUTES = [
   {
     path: '/patients/list/:listIdentifier?',
     RouteComponent: PatientsView,
+    permissions: [CAN_ACCESS_MEMBER_LIST_PAGE],
+  },
+  {
+    path: '/patients/import/tracker',
+    RouteComponent: PatientImportStatus,
     permissions: [CAN_ACCESS_MEMBER_LIST_PAGE],
   },
   {

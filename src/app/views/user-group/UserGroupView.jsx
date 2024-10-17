@@ -9,7 +9,10 @@ import { useBoolean } from 'hooks/useBoolean';
 import { getCurrentUserGroupDetailsSelector } from 'selectors/user-groups-selectors';
 import { userProfileSelector } from 'selectors/user-selectors';
 import { getUserGroupIdentifierByUrlParameter } from 'helpers/user-groups-helper';
-import { checkIfUserIsOrganizationAdmin } from 'helpers/user-helper';
+import {
+  checkIfUserIsOrganizationAdmin,
+  isUserViewOnly,
+} from 'helpers/user-helper';
 import {
   setCurrentUserGroup,
   unsetCurrentUserGroup,
@@ -54,6 +57,7 @@ function UserGroupView() {
     groupIdentifierUrlParameter,
   );
   const isOrganizationAdmin = checkIfUserIsOrganizationAdmin(currentUser);
+  const isViewOnly = isUserViewOnly(currentUser);
 
   useEffect(() => {
     dispatch(setCurrentUserGroup(groupIdentifier));
@@ -120,9 +124,11 @@ function UserGroupView() {
             </Grid>
             {groupIdentifier && groupIdentifier !== 'ALL' && (
               <AddEntitiesContainer>
-                <AddButton onClick={onEditUserGroup}>
-                  Manage User Group
-                </AddButton>
+                {isOrganizationAdmin && !isViewOnly && (
+                  <AddButton onClick={onEditUserGroup}>
+                    Manage User Group
+                  </AddButton>
+                )}
               </AddEntitiesContainer>
             )}
           </Grid>
