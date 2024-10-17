@@ -6,6 +6,7 @@ import { DashboardTasksTab } from 'helpers/dashboard-helpers';
 import { PERMISSIONS } from 'helpers/permission-mapper';
 import { onLeaveGlobalSearch } from './TemplateCoreSubscriptionPlan/GlobalSearch';
 import DrChronoLaunch from '../views/auth/DrChronoLaunch';
+import MCPLaunch from '../views/auth/MCPLaunch';
 import {
   onEnterListDetailsView,
   onLeaveListDetailsView,
@@ -504,6 +505,10 @@ export const AUTH_ROUTES = [
   {
     path: '/drchrono',
     RouteComponent: DrChronoLaunch,
+  },
+  {
+    path: '/mcp',
+    RouteComponent: MCPLaunch,
   },
   {
     path: '/signupEmailSent',
