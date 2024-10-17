@@ -194,31 +194,44 @@ const TaskCustomFieldsView = ({ taskListIdentifier, editable = false }) => {
           <Box p={1} />
           {customFields?.length > 0 ? (
             <>
-              <CustomFieldItem editable={editable} type="TASK">
-                <CustomFieldCell>
-                  <CustomFieldHeaderText>Field label</CustomFieldHeaderText>
-                </CustomFieldCell>
-                <CustomFieldCell>
-                  <CustomFieldHeaderText>Field type</CustomFieldHeaderText>
-                </CustomFieldCell>
-                <CustomFieldCell>
-                  <CustomFieldHeaderText>Field category</CustomFieldHeaderText>
-                </CustomFieldCell>
-                <CustomFieldCell>
-                  <CustomFieldHeaderText>Required</CustomFieldHeaderText>
-                </CustomFieldCell>
-                <CustomFieldCell>
-                  <Box width="98px" />
-                  {/* <Box width="68px" /> */}
-                </CustomFieldCell>
-              </CustomFieldItem>
               <div
                 style={{
                   maxHeight: '400px',
                   overflowY: 'auto',
                   position: 'relative',
+                  paddingLeft: '12px',
                 }}
               >
+                <CustomFieldItem editable={editable} type="TASK">
+                  <CustomFieldCell>
+                    <CustomFieldHeaderText>Field label</CustomFieldHeaderText>
+                  </CustomFieldCell>
+                  <CustomFieldCell
+                    style={{
+                      paddingLeft: '12px',
+                    }}
+                  >
+                    <CustomFieldHeaderText>Type</CustomFieldHeaderText>
+                  </CustomFieldCell>
+                  <CustomFieldCell
+                    style={{
+                      paddingLeft: '12px',
+                    }}
+                  >
+                    <CustomFieldHeaderText>Category</CustomFieldHeaderText>
+                  </CustomFieldCell>
+                  <CustomFieldCell
+                    style={{
+                      paddingLeft: '12px',
+                    }}
+                  >
+                    <CustomFieldHeaderText>Required</CustomFieldHeaderText>
+                  </CustomFieldCell>
+                  <CustomFieldCell>
+                    <Box width="98px" />
+                    {/* <Box width="68px" /> */}
+                  </CustomFieldCell>
+                </CustomFieldItem>
                 <DndContext
                   sensors={sensors}
                   onDragEnd={({ active, over }) =>
