@@ -358,6 +358,11 @@ const ListDetailsTableView = () => {
             actions.makeTaskDisappear(data.task);
           }
           dispatch(ListDetailsActions.getTasksGroupsList());
+          loadTasksForTaskGroup({
+            taskGroupIdentifier: data.task?.taskGroups[0].taskGroupIdentifier,
+            startPosition: 0,
+            refresh: false,
+          });
         } else if (data.task?.taskIdentifier) {
           actions.refreshTask(data.task?.identifier);
         }
