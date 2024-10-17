@@ -320,7 +320,7 @@ const TaskTemplateGroup = ({
 
                       return null;
                     }}
-                    isAddWorkflowTaskRowOpen={isAddingTask}
+                    isWorkflowAddTaskRow={isAddingTask}
                     iconColorActive={iconColorActive}
                   />
                 </QuickAddInputWrapper>

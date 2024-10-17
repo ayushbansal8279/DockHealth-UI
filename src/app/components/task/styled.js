@@ -486,8 +486,8 @@ export const StandardTaskItemContainer = styled.div`
   `
       : ''}
 
-  ${({ isLastChild, isAddWorkflowTaskRowOpen }) =>
-    isLastChild && !isAddWorkflowTaskRowOpen
+  ${({ isLastChild }) =>
+    isLastChild
       ? `
     border-bottom: 1px solid rgba(75, 179, 253, 1);
   `

@@ -1039,10 +1039,6 @@ const TaskItem = React.memo(
             isVirtualSubtask={isVirtualSubtask}
             isWorkflowSubtask={isWorkflowSubtask}
             isTaskOfTemplate={!!workflowTaskGroup}
-            isAddWorkflowTaskRowOpen={openWorkflowAddTaskRows?.some(
-              (workflowIdentifier) =>
-                templateBundleIdentifier === workflowIdentifier,
-            )}
           >
             {randerFirstColumnCoverIfNecessary(
               <>

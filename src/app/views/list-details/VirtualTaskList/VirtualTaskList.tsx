@@ -242,13 +242,15 @@ function VirtualTaskList({ groupedTasks, showClearSortFiltersModal }: Props) {
                                   isLastSubtaskParentTask:
                                     subTaskIndex ===
                                       tasksMap[child]?.subtasks.length - 1 &&
-                                    childIndex === children.length - 1,
+                                    children.indexOf(child) ===
+                                      children.length - 1,
                                   isLastGroupOfList:
                                     index === listGroups?.length - 1,
                                   isNextVirtualTaskItemTypeBundle:
                                     subTaskIndex ===
                                       tasksMap[child]?.subtasks.length - 1 &&
-                                    childIndex === children.length - 1
+                                    children.indexOf(child) ===
+                                      children.length - 1
                                       ? tasksMap[groupTasks[groupTaskIndex + 1]]
                                           ?.itemType === 'BUNDLE'
                                       : false,

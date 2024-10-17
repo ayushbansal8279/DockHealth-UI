@@ -67,7 +67,7 @@ function VSubtask(
   };
   const { visibleWidth, droppableHeaderWidth } =
     useVirtualTaskListScrollContext();
-  const { handleHideWorkflowAddTaskRow } = useContext(ListPageContext);
+
   const screenWidth = typeof window !== 'undefined' ? window.innerWidth : 1920;
   const percentage =
     ((!!droppableHeaderWidth ? droppableHeaderWidth : 0) / screenWidth) * 100;
@@ -288,9 +288,6 @@ function VSubtask(
                     quickAddTask={handleAddBundleTask}
                     onBlur={() => {
                       handleRemoveWorkflowIdentifier(
-                        taskGroup[0]?.taskGroupIdentifier,
-                      );
-                      handleHideWorkflowAddTaskRow(
                         taskGroup[0]?.taskGroupIdentifier,
                       );
                     }}

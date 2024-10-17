@@ -15,8 +15,8 @@ export const AddTaskInputWrapper = styled.div`
   color: ${palette.mediumGrey};
   font-family: Outfit;
   font-weight: 400;
-  ${({ isAddWorkflowTaskRowOpen }) =>
-    isAddWorkflowTaskRowOpen
+  ${({ isWorkflowAddTaskRow }) =>
+    isWorkflowAddTaskRow
       ? `
   border-left: 1px solid rgba(75, 179, 253, 1);
   border-right: 1px solid rgba(75, 179, 253, 1);

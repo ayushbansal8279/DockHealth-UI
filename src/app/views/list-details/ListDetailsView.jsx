@@ -29,9 +29,6 @@ export const ListPageContext = createContext({
   patientPopoverOpen: false,
   handlePatientPopoverOpen: (isPopoveOpen) => {},
   handleScrollToAddGroupName: () => {},
-  openWorkflowAddTaskRows: [],
-  handleShowWorkflowAddTaskRow: (workflowIdentifier) => {},
-  handleHideWorkflowAddTaskRow: (workflowIdentifier) => {},
 });
 const ListDetailsView = () => {
   const parameters = useParams();
@@ -46,7 +43,6 @@ const ListDetailsView = () => {
   const [changeViewType, setChangeViewType] = useState('SLIM_VIEW');
   const [showShadow, setShowShadow] = useState(false);
   const [tasks, setTasks] = useState([]);
-  const [openWorkflowAddTaskRows, setOpenWorkflowAddTaskRows] = useState([]);
 
   useEffect(() => {
     dispatch(initializeTaskListState(taskListIdentifier));
@@ -79,23 +75,6 @@ const ListDetailsView = () => {
     } else {
       localStorageHelper.removeItem(`view${taskListIdentifier}`);
     }
-  };
-
-  const handleShowWorkflowAddTaskRow = (workflowIdentifier) => {
-    setOpenWorkflowAddTaskRows((existingWorkflowIdentifiers) => {
-      if (!existingWorkflowIdentifiers.includes(workflowIdentifier)) {
-        return [...existingWorkflowIdentifiers, workflowIdentifier];
-      }
-      return existingWorkflowIdentifiers;
-    });
-  };
-
-  const handleHideWorkflowAddTaskRow = (workflowIdentifier) => {
-    setOpenWorkflowAddTaskRows((existingWorkflowIdentifiers) =>
-      existingWorkflowIdentifiers?.filter(
-        (identifier) => identifier !== workflowIdentifier,
-      ),
-    );
   };
 
   useEffect(() => {
@@ -164,9 +143,6 @@ const ListDetailsView = () => {
     patientPopoverOpen,
     handlePatientPopoverOpen,
     handleScrollToAddGroupName,
-    openWorkflowAddTaskRows,
-    handleShowWorkflowAddTaskRow,
-    handleHideWorkflowAddTaskRow,
   };
 
   return (
