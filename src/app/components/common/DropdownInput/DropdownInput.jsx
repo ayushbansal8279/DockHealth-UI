@@ -149,7 +149,7 @@ const DropdownInput = React.forwardRef(
           isPopoverOpen={isPopoverOpen}
           closePopover={closePopover}
         >
-          <Box sx={{ height: '200px', overflow: 'scroll' }}>
+          <Box sx={{ maxHeight: '230px', overflow: 'auto' }}>
             {children?.map((child, index) => (
               <StyledButton
                 type="button"

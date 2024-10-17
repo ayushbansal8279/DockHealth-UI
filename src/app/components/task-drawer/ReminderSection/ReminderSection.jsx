@@ -10,7 +10,7 @@ import TimeDropdownInput from 'components/common/TimeDropdownInput/TimeDropdownI
 import SecondaryDropdownInput from 'components/common/DropdownInput/SecondaryDropdownInput';
 import ArrowIcon from 'img/arrow.svg';
 import { TIME_12H_FORMAT } from 'helpers/task-drawer-helpers';
-import { ReminderContainer, Description, SelectArrowImg, StyledPopover, DateViewText } from './styled';
+import { ReminderContainer, Description, SelectArrowImg, StyledPopover, DateViewText, DateViewContainer } from './styled';
 import {
   REMINDER_TYPE_FIELD_NAME,
   REMINDER_TIME_FIELD_NAME,
@@ -18,6 +18,7 @@ import {
 } from './helpers';
 import PopoverCard from 'components/common/PopoverCard/PopoverCard';
 import DatePicker from 'components/task/DatePicker/DatePicker';
+import ReminderDatePicker from './ReminderDatePicker';
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const ReminderSection = ({ onSave, disabled, selectedTask }) => {
@@ -74,11 +75,18 @@ const ReminderSection = ({ onSave, disabled, selectedTask }) => {
   }, [onSave, reminderTypeValue, setValue, setReminderTypeValue, isDisabled]);
 
   const handleSelectReminderDate = useCallback((value) => {
-    const utcDateTime = value.utc().format("YYYY-MM-DDTHH:mm:ss.SSSZ");
-    const reminderTime = value.format("hh:mm A");
-    onSave({ reminderType: ReminderType.ABSOLUTE, reminderDt: utcDateTime, reminderTime: reminderTime });
-    closePopover();
-  })
+    onSave({ reminderType: ReminderType.ABSOLUTE, reminderDt: value });
+    setReminderTypeCustomDate(true);
+  },
+    [onSave, setReminderTypeCustomDate],
+  );
+
+  const selectReminderTime = useCallback((value) => {
+    onSave({ reminderType: ReminderType.ABSOLUTE, reminderTime: value });
+    setReminderTypeCustomDate(true);
+  },
+    [onSave, setReminderTypeCustomDate],
+  );
 
   const handleSelectReminderType = useCallback(
     (value) => {
@@ -91,11 +99,9 @@ const ReminderSection = ({ onSave, disabled, selectedTask }) => {
         onSave({ reminderType: value, reminderTime: defaultTime });
       } else if (value === ReminderType.ABSOLUTE) {
         openPopover(true);
-        setReminderTypeCustomDate(true);
       }
       else {
         onSave({ reminderType: value });
-        closePopover();
         setReminderTypeCustomDate(false);
       }
     },
@@ -154,7 +160,7 @@ const ReminderSection = ({ onSave, disabled, selectedTask }) => {
               placeholder="--"
               onSelect={handleSelectReminderType}
               disabled={sectionDisabled}
-              width={136}
+              width={145}
               options={REMINDER_TYPE_OPTIONS}
               {...register(REMINDER_TYPE_FIELD_NAME)}
               ref={reminderTypeDropdownReference}
@@ -180,7 +186,7 @@ const ReminderSection = ({ onSave, disabled, selectedTask }) => {
               {isPopoverOpen && (
                 <PopoverCard>
                   <Box width="auto" minWidth={buttonReference.current?.offsetWidth}>
-                    <DatePicker selectedDate={reminderDt} onDateChange={handleSelectReminderDate} onCloseClick={closePopover} />
+                    <ReminderDatePicker selectedDate={reminderDt} onDateChange={handleSelectReminderDate} onCloseClick={closePopover} onTimeChange={selectReminderTime} />
                   </Box>
                 </PopoverCard>
               )}
@@ -188,10 +194,26 @@ const ReminderSection = ({ onSave, disabled, selectedTask }) => {
             {reminderTypeCustomDate && (
               <>
                 <Spacing horizontal={3} />
-                <DateViewText ref={buttonReference}>
-                  {reminderDate.format('MMM DD, YYYY')}
-                </DateViewText>
+                <DateViewContainer >
+                  <DateViewText ref={buttonReference}
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      openPopover(true);
+                    }}>
+                    {reminderDate.format('MMM DD, YYYY')}
+                  </DateViewText>
+                </DateViewContainer>
                 <Spacing horizontal={3} />
+                <Description>at</Description>
+                <DateViewContainer >
+                  <DateViewText ref={buttonReference}
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      openPopover(true);
+                    }}>
+                    {reminderTime}
+                  </DateViewText>
+                </DateViewContainer>
               </>)}
             {!reminderTypeCustomDate &&
               <>
