@@ -10,9 +10,10 @@ export const DueDateLabel = styled.label`
 `;
 
 export const DueDateContentWrapper = styled.div`
-  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
   padding: ${spacing.tiny} 0;
-  text-align: left;
 `;
 
 export const DueDateContent = styled.div`
@@ -35,10 +36,13 @@ export const DueDateSectionWrapper = styled.div`
   display: flex;
   align-items: center;
   font-family: Outfit;
-
+  width: 33%;
+  white-space: nowrap;
+  text-overflow: ellipsis;
   ${({ disabled }) =>
     disabled &&
     `
+    pointer-events: none;
     & ${Placeholder}, & ${DueDateLabel} {
       color: ${palette.coolGrey2};
     }
@@ -59,10 +63,11 @@ export const Title = styled.div`
   display: flex;
   align-items: center;
   width: 70px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 `;
 
 export const DateViewContainer = styled.div`
-  width: 110px;
   margin-left: 5px;
   display: flex;
   align-items: center;

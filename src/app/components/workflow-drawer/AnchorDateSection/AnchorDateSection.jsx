@@ -77,20 +77,24 @@ const AnchorDateSection = ({ disabled }) => {
       >
         <AnchorDateContentWrapper>
           {momentAnchorDate ? (
-            <DateViewContainer>
-              <DateViewText>
-                {momentAnchorDate.format('MMM DD, YYYY')}
-              </DateViewText>
-            </DateViewContainer>
+            <>
+              <DateViewContainer>
+                <DateViewText>
+                  {momentAnchorDate.format('MMM DD, YYYY')}
+                </DateViewText>
+              </DateViewContainer>
+              {isTimeAvailable && (
+                <DateViewContainer>
+                  <DateViewText>
+                    {momentAnchorDate?.format('hh:mm a')}
+                  </DateViewText>
+                </DateViewContainer>
+              )}
+            </>
           ) : (
             <NoDateContainer>
               <AssignMemberIcon /> <SubTitle>Add Date</SubTitle>
             </NoDateContainer>
-          )}
-          {isTimeAvailable && (
-            <DateViewContainer>
-              <DateViewText>{momentAnchorDate?.format('hh:mm a')}</DateViewText>
-            </DateViewContainer>
           )}
         </AnchorDateContentWrapper>
       </TaskDrawerPopover>

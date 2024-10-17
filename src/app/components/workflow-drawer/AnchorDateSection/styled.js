@@ -60,6 +60,9 @@ export const AnchorDateSectionWrapper = styled.div`
   display: flex;
   align-items: center;
   font-family: Outfit;
+  width: 20%;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 
   ${({ disabled }) =>
     disabled &&

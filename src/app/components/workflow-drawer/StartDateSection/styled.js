@@ -49,7 +49,9 @@ export const StartDateSectionWrapper = styled.div`
   display: flex;
   align-items: center;
   font-family: Outfit;
-
+  width: 20%;
+  white-space: nowrap;
+  text-overflow: ellipsis;
   ${({ disabled }) =>
     disabled &&
     `
@@ -75,6 +77,8 @@ export const Title = styled.div`
   display: flex;
   align-items: center;
   width: 102px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 `;
 
 export const DueDateText = styled.p`
