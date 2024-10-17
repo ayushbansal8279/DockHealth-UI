@@ -11,6 +11,7 @@ import * as Sc from './styled';
 import { TaskOrigin } from '@/app/helpers/task-helpers';
 import { hasFiltersAppliedSelector } from '@/app/selectors/mega-filter-selectors';
 import { searchTermSelector } from '@/app/selectors/list-details-selectors';
+import { currentTaskListTasksStatusSelector } from '@/app/selectors/task-list-selectors';
 
 export interface Props extends Segment {
   name: string;
@@ -36,6 +37,8 @@ function VListGroup(
 ) {
   const dispatch = useDispatch();
 
+  const taskListStatus = useSelector(currentTaskListTasksStatusSelector);
+
   const moveGroup = useCallback(
     // @ts-ignore
     (index, direction) => {
@@ -50,14 +53,14 @@ function VListGroup(
   const loadTasksForTaskGroup = useCallback(() => {
     const payload = {
       taskGroupIdentifier,
-      status: 'INCOMPLETE',
+      status: taskListStatus,
       startPosition: 0,
       sort: {},
       viewMode: ViewType.SLIM_VIEW,
       refresh: true,
     };
     dispatch(getTasksForTaskGroups(payload));
-  }, [dispatch, taskGroupIdentifier]);
+  }, [dispatch, taskGroupIdentifier, taskListStatus]);
 
   return (
     <Sc.VListGroup ref={ref} {...register} bgColor={bgColor}>
