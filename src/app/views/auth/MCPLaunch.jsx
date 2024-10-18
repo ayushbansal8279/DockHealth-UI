@@ -10,7 +10,7 @@ import * as UserAuthApi from 'api/user-auth-api';
 import { useHistory } from 'react-router-dom';
 
 const processLaunchContext = (history, messageEvent) => {
-  if (typeof messageEvent.jwt !== 'undefined') {
+  if (messageEvent.jwt !== 'undefined') {
     const {
       emr,
       parentFrameUrl,
@@ -20,6 +20,8 @@ const processLaunchContext = (history, messageEvent) => {
       userFirstName,
       userLastName,
       fhirPatient,
+      patientFirstName,
+      patientLastName,
       sdJwt,
       gatewayUrl,
     } = messageEvent;
@@ -30,11 +32,11 @@ const processLaunchContext = (history, messageEvent) => {
     );
     console.log('*******************************************************');
 
-    const data = `emr=${emr}&username=${username}&userFirstName=${userFirstName}&userLastName=${userLastName}&userLastName=${userLastName}&fhirPatient=${fhirPatient}&sdJwt=${sdJwt}&gatewayUrl=${gatewayUrl}`;
+    const data = messageEvent;
 
     const requestAuthTokenURL = `${
       import.meta.env.VITE_HEYDOC_SERVICES_BASE_URL
-    }auth/custom/token/mcp`;
+    }auth/custom/token/mcp?redirectUri=dock.health`;
     console.log(`requestAuthTokenURL: ${requestAuthTokenURL}`);
 
     console.log('Exchanging temporary code and requesting access token...');
@@ -61,7 +63,6 @@ const processLaunchContext = (history, messageEvent) => {
   }
 };
 
-
 const MCPLaunch = () => {
   const history = useHistory();
 
@@ -85,18 +86,16 @@ const MCPLaunch = () => {
       // setIncomingContext(contextItems);
       console.log(contextItems);
       processLaunchContext(history, contextItems);
-    }
-
+    };
     const loadData = async () => {
-        window.addEventListener('message', handleMessage, {once: true})
-    }
-  
+      window.addEventListener('message', handleMessage, {once: true})
+    };
     const initiatePage = async () => {
       await loadData();
-    }
-  
+    };
+
     initiatePage();
-  
+
     return () => {
       window.removeEventListener('message', handleMessage);
     };
