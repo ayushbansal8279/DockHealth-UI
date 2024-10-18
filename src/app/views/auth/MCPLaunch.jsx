@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 import { Box, Grid } from '@mui/material';
 import React from 'react';
+import { useEffect, useState } from 'react';
 import { useMount } from 'react-use';
 // import { hashHistory } from 'react-router';
 import queryString from 'query-string';
@@ -10,7 +11,7 @@ import * as UserAuthApi from 'api/user-auth-api';
 import { useHistory } from 'react-router-dom';
 
 const processLaunchContext = (history, messageEvent) => {
-  if (messageEvent.jwt !== 'undefined') {
+  if (typeof messageEvent.jwt !== 'undefined') {
     const {
       emr,
       parentFrameUrl,
@@ -82,13 +83,15 @@ const MCPLaunch = () => {
 
   useEffect(() => {
     const handleMessage = async (event) => {
-      let contextItems = event.data;
+      console.log(event);
+
+      const contextItems = event.data;
       // setIncomingContext(contextItems);
       console.log(contextItems);
       processLaunchContext(history, contextItems);
     };
     const loadData = async () => {
-      window.addEventListener('message', handleMessage, {once: true})
+      window.addEventListener('message', handleMessage, { once: true });
     };
     const initiatePage = async () => {
       await loadData();
