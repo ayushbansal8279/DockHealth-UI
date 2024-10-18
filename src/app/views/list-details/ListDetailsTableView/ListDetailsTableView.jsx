@@ -86,6 +86,7 @@ const ListDetailsTableView = () => {
   const completedGroupedTasks = useSelector(groupCompletedTasksSelector);
   const taskCounters = useSelector(taskCountersSelector);
   const selectedFilters = useSelector(selectedFiltersInMegaFilterSelector);
+  const taskListStatus = useSelector(currentTaskListTasksStatusSelector);
 
   const actions = useActions(TaskActions);
 
@@ -245,7 +246,7 @@ const ListDetailsTableView = () => {
     ({ taskGroupIdentifier, startPosition, viewMode, refresh }) => {
       const payload = {
         taskGroupIdentifier,
-        status: params.tabName || 'INCOMPLETE',
+        status: taskListStatus ?? 'INCOMPLETE',
         startPosition,
         sort,
         viewMode,
@@ -253,7 +254,7 @@ const ListDetailsTableView = () => {
       };
       dispatch(ListDetailsActions.getTasksForTaskGroups(payload));
     },
-    [dispatch, params.tabName, sort],
+    [dispatch, params.tabName, sort, taskListStatus],
   );
 
   useEffect(() => {
