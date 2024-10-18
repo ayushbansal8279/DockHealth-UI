@@ -9,29 +9,37 @@ import Loader from 'components/common/Loader/Loader';
 import * as UserAuthApi from 'api/user-auth-api';
 import { useHistory } from 'react-router-dom';
 
-const processLaunchContext = (history, queryValues) => {
-  if (queryValues.jwt !== 'undefined') {
+const processLaunchContext = (history, messageEvent) => {
+  if (messageEvent.jwt !== 'undefined') {
     const {
-      user_id: userId,
-      doctor_id: doctorId,
-      patient_id: patientId,
-      practice_id: practiceId,
-      jwt,
-      iat,
-    } = queryValues;
+      emr,
+      parentFrameUrl,
+      tokenId,
+      idToken,
+      username,
+      userFirstName,
+      userLastName,
+      fhirPatient,
+      patientFirstName,
+      patientLastName,
+      sdJwt,
+      gatewayUrl,
+    } = messageEvent;
 
     console.log('*******************************************************');
-    console.log('Received patient_id....', patientId);
+    console.log(
+      `Received emr: ${emr} username: ${username} fhirPatient: ${fhirPatient}`,
+    );
     console.log('*******************************************************');
 
-    const data = `user_id=${userId}&doctor_id=${doctorId}&patient_id=${patientId}&practice_id=${practiceId}&jwt=${jwt}&iat=${iat}`;
+    const data = messageEvent;
 
     const requestAuthTokenURL = `${
       import.meta.env.VITE_HEYDOC_SERVICES_BASE_URL
-    }auth/custom/token/drchrono`;
+    }auth/custom/token/mcp?redirectUri=dock.health`;
     console.log(`requestAuthTokenURL: ${requestAuthTokenURL}`);
 
-    console.log('Exchanging temporary code and requesting Access token...');
+    console.log('Exchanging temporary code and requesting access token...');
     console.log(data);
     console.log('Requesting Access Token from URL -', requestAuthTokenURL);
 
@@ -55,7 +63,7 @@ const processLaunchContext = (history, queryValues) => {
   }
 };
 
-const DrChronoLaunch = () => {
+const MCPLaunch = () => {
   const history = useHistory();
 
   useMount(() => {
@@ -69,9 +77,29 @@ const DrChronoLaunch = () => {
       );
       const queryValues = queryString.parse(queryStringVal);
       console.log(queryValues);
-      processLaunchContext(history, queryValues);
     }
   });
+
+  useEffect(() => {
+    const handleMessage = async (event) => {
+      let contextItems = event.data;
+      // setIncomingContext(contextItems);
+      console.log(contextItems);
+      processLaunchContext(history, contextItems);
+    };
+    const loadData = async () => {
+      window.addEventListener('message', handleMessage, {once: true})
+    };
+    const initiatePage = async () => {
+      await loadData();
+    };
+
+    initiatePage();
+
+    return () => {
+      window.removeEventListener('message', handleMessage);
+    };
+  }, []);
 
   return (
     <Grid container direction="column">
@@ -84,4 +112,4 @@ const DrChronoLaunch = () => {
   );
 };
 
-export default DrChronoLaunch;
+export default MCPLaunch;
