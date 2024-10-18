@@ -246,7 +246,7 @@ const ListDetailsTableView = () => {
     ({ taskGroupIdentifier, startPosition, viewMode, refresh }) => {
       const payload = {
         taskGroupIdentifier,
-        status: taskListStatus,
+        status: taskListStatus ?? 'INCOMPLETE',
         startPosition,
         sort,
         viewMode,

@@ -53,7 +53,7 @@ function VListGroup(
   const loadTasksForTaskGroup = useCallback(() => {
     const payload = {
       taskGroupIdentifier,
-      status: taskListStatus,
+      status: taskListStatus ?? 'INCOMPLETE',
       startPosition: 0,
       sort: {},
       viewMode: ViewType.SLIM_VIEW,
