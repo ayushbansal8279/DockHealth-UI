@@ -11,7 +11,7 @@ import * as UserAuthApi from 'api/user-auth-api';
 import { useHistory } from 'react-router-dom';
 
 const processLaunchContext = (history, messageEvent) => {
-  if (typeof messageEvent.jwt !== 'undefined') {
+  if (typeof messageEvent.sdjwt !== 'undefined') {
     const {
       emr,
       parentFrameUrl,
