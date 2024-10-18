@@ -277,7 +277,10 @@ const TaskTemplateGroup = ({
                               isDraggable
                               isBundleTask
                               isTaskTemplate
-                              isLastChild={index === filteredTasks?.length - 1}
+                              isLastChild={
+                                index === filteredTasks?.length - 1 &&
+                                !isAddingTask
+                              }
                               isAddingTask={isAddingTask}
                               isNextTaskItemTypeBundle={
                                 isNextTaskItemTypeBundle
@@ -317,6 +320,7 @@ const TaskTemplateGroup = ({
 
                       return null;
                     }}
+                    isWorkflowAddTaskRow={isAddingTask}
                     iconColorActive={iconColorActive}
                   />
                 </QuickAddInputWrapper>

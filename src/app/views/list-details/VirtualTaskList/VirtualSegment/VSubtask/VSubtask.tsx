@@ -66,6 +66,7 @@ function VSubtask(
   };
   const { visibleWidth, droppableHeaderWidth } =
     useVirtualTaskListScrollContext();
+
   const screenWidth = typeof window !== 'undefined' ? window.innerWidth : 1920;
   const percentage =
     ((!!droppableHeaderWidth ? droppableHeaderWidth : 0) / screenWidth) * 100;
