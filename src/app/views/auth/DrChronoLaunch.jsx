@@ -10,7 +10,7 @@ import * as UserAuthApi from 'api/user-auth-api';
 import { useHistory } from 'react-router-dom';
 
 const processLaunchContext = (history, queryValues) => {
-  if (queryValues.jwt !== 'undefined') {
+  if (typeof queryValues.jwt !== 'undefined') {
     const {
       user_id: userId,
       doctor_id: doctorId,
