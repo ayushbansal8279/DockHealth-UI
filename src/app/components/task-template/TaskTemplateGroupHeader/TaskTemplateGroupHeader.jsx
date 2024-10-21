@@ -326,6 +326,10 @@ const TaskTemplateGroupHeader = ({
               templateGroup,
             ),
           );
+          // for smoother reload of list page task count
+          setTimeout(() => {
+            dispatch(getTasksGroupsList());
+          }, 2000);
         },
         selectedList: currentList,
         onCreateGroup: handleAddGroupTask,
@@ -450,9 +454,9 @@ const TaskTemplateGroupHeader = ({
       templateTasks.filter(
         isCompletedTab
           ? (task) =>
-              showIncompleteTasks || task?.status === TaskStatus.COMPLETE
+            showIncompleteTasks || task?.status === TaskStatus.COMPLETE
           : (task) =>
-              showCompletedTasks || task?.status !== TaskStatus.COMPLETE,
+            showCompletedTasks || task?.status !== TaskStatus.COMPLETE,
       ),
     [showCompletedTasks, showIncompleteTasks, templateTasks, isCompletedTab],
   );

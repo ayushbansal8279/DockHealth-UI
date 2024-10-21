@@ -130,6 +130,7 @@ const ListDetailsTableView = () => {
         ListDetailsActions.getListDetailsTaskCounters(taskListIdentifier),
       );
       dispatch(ListDetailsActions.refreshListDetailsGroupedTasks(withLoader));
+      dispatch(ListDetailsActions.getTasksGroupsList())
     },
     [dispatch, taskListIdentifier],
   );
