@@ -1,8 +1,10 @@
-import { StyledDataGrid } from '../../Contacts/DataGridStyles'
+
 import { useEffect, useState } from 'react';
 import { getPatientImportStatus } from '@/app/api/patient-api';
 import { Grid, Tooltip, Typography } from '@mui/material';
-import { DataGrid } from '@mui/x-data-grid';
+
+import moment from 'moment';
+import { StyledDataGrid } from './DataGridStyles';
 
 const ImportStatusGrid = () => {
 
@@ -44,29 +46,19 @@ const [rows, setRows] = useState([]);
     {
       field: 'createdDateTime',
       headerName: 'IMPORT DATE/TIME',
-      width: 210,
+      width: 200,
       renderCell: ({ row }) => {
-        const date = new Date(row.createdDateTime);
-        const formattedDate = date.toLocaleString('en-US', {
-          year: 'numeric',
-          month: 'numeric',
-          day: 'numeric',
-          hour: '2-digit',
-          minute: '2-digit',
-          second: '2-digit',
-          hour12: false
-        }).replace(',', '');
-    
+        const formattedDate = `${moment(row.createdDateTime).format('MMM DD, YYYY')} @ ${moment(row.createdDateTime).format('hh:mm a')}`;
         return (
           <Tooltip placement="top" title={formattedDate}>
-            <span>{formattedDate}</span>
+              <span>{formattedDate}</span>
           </Tooltip>
         );
       },
       editable: false,
       align: 'center',
       headerAlign: 'center'
-    },
+    }, 
     {
       field: 'recordsToProcess',
       headerName: 'RECORDS TO PROCESS',
@@ -96,7 +88,7 @@ const [rows, setRows] = useState([]);
     {
       field: 'status', 
       headerName: 'STATUS',
-      width: 150,
+      width: 130,
       renderCell: ({ row }) => (
         <Tooltip placement="top" title={row.completed ? 'Completed' : row.inError ? 'Error' : ''}>
           <span>{row.completed ? 'Completed' : row.inError ? 'Error' : ''}</span>
@@ -112,7 +104,13 @@ const [rows, setRows] = useState([]);
       width: 180,
       renderCell: ({ row }) => (
         <Tooltip placement="top" title={row.errorDetails}>
-          <span>{row.errorDetails}</span>
+          <span style={{
+          display: 'inline-block',
+          maxWidth: '100%',
+          whiteSpace: 'nowrap',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+        }}>{row.errorDetails}</span>
         </Tooltip>
       ),
       editable: false,
@@ -122,25 +120,19 @@ const [rows, setRows] = useState([]);
   ];
 
   return (
-    <Grid container xs={12} item justifyContent="center">
+    <Grid container xs={12} item justifyContent="center" sx={{ paddingTop:'25px', overflow: 'hidden' }}>
       <Grid item xs={12} xl={11} md={12} lg={11} >
-          <DataGrid
+          <StyledDataGrid
             columns={defaultColumns}
             getRowId={(row) => row.identifier}
-            rows={rows} 
+            rows={rows}
+            rowCount={rows.length}
             headerHeight={45}
-            getRowHeight={() => '20px'}
-            hideFooterSelectedRowCount={true}
+            getRowHeight={() => 'auto' }  
             disableColumnMenu
             disableSelectionOnClick
             showColumnRightBorder
-            showCellRightBorders
-            sx={{
-                
-                '& .MuiDataGrid-columnHeaders': {
-                  fontWeight: 'bold',
-                },
-              }}
+            showCellRightBorders 
           />
       </Grid>
     </Grid>
