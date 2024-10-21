@@ -6,24 +6,15 @@ import ImportStatusGrid from './ImportStatusGrid'
 
 export default function PatientImportStatus() {
 
-
-
-
   return (
     <ViewLayout>
       <LayoutHeader>
-          {/* <Box
-            position="absolute"
-          /> */}
       <LayoutHeader.Title
-                title="Patient Import Tracking"
-                description=""
-              />
+        title="Patient Import Tracking"
+        description=""
+      />
       </LayoutHeader>
-      
-      <Grid>
-            <ImportStatusGrid/>
-      </Grid>
+      <ImportStatusGrid/>
     </ViewLayout>
   )
 }
