@@ -45,6 +45,9 @@ const DocumentsView = lazy(() =>
 const BillingsView = lazy(() =>
   import('views/self-serve/billings/BillingsView'),
 );
+const MeterBillingView = lazy(() =>
+  import('views/self-serve/metered-billing/MeterBillingView'),
+);
 const PersonDetailsView = lazy(() =>
   import('views/person-details/PersonDetailsView'),
 );
@@ -189,6 +192,11 @@ export const SETTINGS_ROUTES = [
   {
     path: '/billing',
     RouteComponent: BillingsView,
+    permissions: [CAN_ACCESS_SETTINGS_PAGE],
+  },
+  {
+    path: '/metering',
+    RouteComponent: MeterBillingView,
     permissions: [CAN_ACCESS_SETTINGS_PAGE],
   },
   {
