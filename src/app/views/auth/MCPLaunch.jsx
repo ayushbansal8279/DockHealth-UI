@@ -11,7 +11,9 @@ import * as UserAuthApi from 'api/user-auth-api';
 import { useHistory } from 'react-router-dom';
 
 const processLaunchContext = (history, messageEvent) => {
-  if (typeof messageEvent.sdjwt !== 'undefined') {
+  console.log('processing launch context');
+  console.log(messageEvent);
+  if (typeof messageEvent.sdJwt !== 'undefined') {
     const {
       emr,
       parentFrameUrl,
@@ -49,9 +51,13 @@ const processLaunchContext = (history, messageEvent) => {
       requestAuthTokenURL,
     )
       .then(() => {
-        window.location.href = `/#/core/patient/${sessionStorage.getItem(
-          'patientIdentifier',
-        )}`;
+        const patientIdentifier = sessionStorage.getItem('patientIdentifier');
+        console.log(`redirecting to patient view for: ${patientIdentifier}`);
+        if(patientIdentifier && patientIdentifier != 'null'){
+          window.location.href = `/#/core/patient/${patientIdentifier}`;
+        }else{
+          window.location.href = `/#/core/home`;
+        }
       })
       .catch((error) => {
         // toggleAlert(error.message, 'error');
@@ -86,8 +92,6 @@ const MCPLaunch = () => {
       console.log(event);
 
       const contextItems = event.data;
-      // setIncomingContext(contextItems);
-      console.log(contextItems);
       processLaunchContext(history, contextItems);
     };
     const loadData = async () => {
