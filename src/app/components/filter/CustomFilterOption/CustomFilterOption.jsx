@@ -77,14 +77,14 @@ const CustomFilterOption = (props) => {
       for (const key in selectedFilters) {
         if (key !== '') {
           const users = filters
-            .flatMap((item) => item.id === key && item.options)
-            .filter((item) => typeof item !== 'boolean');
+            ?.flatMap((item) => item.id === key && item.options)
+            ?.filter((item) => typeof item !== 'boolean');
 
           let options = selectedFilters[key].options.map((item) => {
             if (item.includes('DATE_RANGE')) {
-              let aa = users.find((user) => user.key === item);
-              aa = {
-                ...aa,
+              let dateOption = users.find((user) => user.key === item);
+              dateOption = {
+                ...dateOption,
                 dateStart: moment(selectedFilters[key].dateStart).format(
                   'YYYY-MM-DD',
                 ),
@@ -92,7 +92,7 @@ const CustomFilterOption = (props) => {
                   'YYYY-MM-DD',
                 ),
               };
-              return aa;
+              return dateOption;
             }
             return users.find((user) => user.key === item);
           });
