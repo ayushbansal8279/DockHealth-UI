@@ -250,7 +250,6 @@ const TaskItemContextMenu = ({
               isDashboardTask,
             ),
           );
-          dispatch(getTasksGroupsList());
           onRightClickAction('Move task');
         },
         selectedList: currentList,

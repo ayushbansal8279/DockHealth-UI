@@ -326,10 +326,6 @@ const TaskTemplateGroupHeader = ({
               templateGroup,
             ),
           );
-          // for smoother reload of list page task count
-          setTimeout(() => {
-            dispatch(getTasksGroupsList());
-          }, 2000);
         },
         selectedList: currentList,
         onCreateGroup: handleAddGroupTask,
