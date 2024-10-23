@@ -196,25 +196,23 @@ const WorkflowDrawer = () => {
                     }
                   />
                 </Grid>
-                <Grid container spacing={6}>
-                  <Grid item xs={6}>
-                    <StartDateSection
-                      disabled={
-                        !!isTemplateTask ||
-                        restrictions?.startDate === DISABLED ||
-                        (isTemplateTask && !hasEditorPermissions)
-                      }
-                    />
-                  </Grid>
-                  <Grid item xs={6}>
-                    <AnchorDateSection
-                      disabled={
-                        !!isTemplateTask ||
-                        restrictions?.anchorDate === DISABLED ||
-                        (isTemplateTask && !hasEditorPermissions)
-                      }
-                    />
-                  </Grid>
+                <Grid item xs={12}>
+                  <AnchorDateSection
+                    disabled={
+                      !!isTemplateTask ||
+                      restrictions?.anchorDate === DISABLED ||
+                      (isTemplateTask && !hasEditorPermissions)
+                    }
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <StartDateSection
+                    disabled={
+                      !!isTemplateTask ||
+                      restrictions?.startDate === DISABLED ||
+                      (isTemplateTask && !hasEditorPermissions)
+                    }
+                  />
                 </Grid>
                 <Grid item xs={12}>
                   <DueDateSection
