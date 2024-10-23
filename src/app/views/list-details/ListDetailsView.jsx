@@ -1,7 +1,6 @@
 import React, { useEffect, createContext, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import { TaskStatus } from 'helpers/task-helpers';
+import { useDispatch, useSelector } from 'react-redux';
 import { ColumnsConfigProvider } from 'context-api/columns-config-context';
 import {
   clearTaskListState,
@@ -13,6 +12,9 @@ import ListDetailsCalendarView from './ListDetailsCalendarView/ListDetailsCalend
 import ListDetailsBoardView from './ListDetailsBoardView/ListDetailsBoardView';
 import useSearchParams from '@/app/hooks/use-search-params';
 import localStorageHelper from '@/app/helpers/local-storage-helper';
+import { currentTaskListSelector } from '@/app/selectors/task-list-selectors';
+import { selectedUserOrganizationSelector } from '@/app/selectors/user-selectors';
+import { selectCurrentOrganizationWithRedirection } from '@/app/api/organization-api';
 
 export const ListPageContext = createContext({
   addNewGroup: false,
@@ -43,6 +45,22 @@ const ListDetailsView = () => {
   const [changeViewType, setChangeViewType] = useState('SLIM_VIEW');
   const [showShadow, setShowShadow] = useState(false);
   const [tasks, setTasks] = useState([]);
+  const taskList = useSelector(currentTaskListSelector);
+  const currentOrganization = useSelector(selectedUserOrganizationSelector);
+
+  useEffect(() => {
+    if (
+      taskList &&
+      currentOrganization &&
+      taskList?.organizationIdentifier !==
+        currentOrganization?.organizationIdentifier
+    ) {
+      selectCurrentOrganizationWithRedirection(
+        taskList?.organizationIdentifier,
+        `#/core/tasks/${taskListIdentifier}`,
+      );
+    }
+  }, [taskList, currentOrganization]);
 
   useEffect(() => {
     dispatch(initializeTaskListState(taskListIdentifier));
