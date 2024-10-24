@@ -49,12 +49,12 @@ const ListDetailsView = () => {
   const currentOrganization = useSelector(selectedUserOrganizationSelector);
 
   useEffect(() => {
-    if (
-      taskList &&
-      currentOrganization &&
+    const organizationsExist = taskList && currentOrganization;
+    const organizationsDiffer =
       taskList?.organizationIdentifier !==
-        currentOrganization?.organizationIdentifier
-    ) {
+      currentOrganization?.organizationIdentifier;
+
+    if (organizationsExist && organizationsDiffer) {
       selectCurrentOrganizationWithRedirection(
         taskList?.organizationIdentifier,
         `#/core/tasks/${taskListIdentifier}`,
