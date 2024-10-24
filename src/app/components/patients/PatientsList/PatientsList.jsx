@@ -289,7 +289,7 @@ const PatientsList = ({
           ],
           newRow,
         );
-        params.dob = dateFormatter(params.dob, 'MM/dd/yyyy');
+        params.dob = dateFormatter(params.dob);
         await updatePatientById.mutateAsync(params);
 
         return newRow;
@@ -384,10 +384,10 @@ const PatientsList = ({
       headerName: 'DOB',
       renderHeader: renderColumnHeader,
       width: 150,
-      valueGetter: ({ value }) => dateFormatter(value, 'M/d/yyyy'),
+      valueGetter: ({ value }) => dateFormatter(value),
       valueSetter: ({ value, row }) => ({
         ...row,
-        dob: dateFormatter(value, 'yyyy-MM-dd'),
+        dob: dateFormatter(value),
       }),
       editable: false,
       renderEditCell: (params) => <DateEditCell {...params} />,
@@ -548,11 +548,19 @@ const PatientsList = ({
           headerName: column.name,
           renderHeader: renderColumnHeader,
           width: 140,
-          renderCell: ({ row }) => (
-            <Tooltip placement="top" title={row[column.identifier]}>
-              <Text>{row[column.identifier]}</Text>
-            </Tooltip>
-          ),
+          renderCell: ({ row }) => {
+            const cellValue = row[column.identifier];
+            const displayValue =
+              column.fieldType === 'DATE'
+                ? dateFormatter(cellValue)
+                : cellValue;
+
+            return (
+              <Tooltip placement="top" title={displayValue}>
+                <Text>{displayValue}</Text>
+              </Tooltip>
+            );
+          },
           sortComparator: (v1, v2, parameters1, parameters2) => {
             const { api } = parameters2;
             const sortModel = api.getSortModel();
