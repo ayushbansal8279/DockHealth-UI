@@ -6,6 +6,7 @@ const PASSWORD_RULES = [
     { label: '8 characters', isValid: (password) => password.length >= MIN_PASSWORD_LENGTH },
     { label: '1 number', isValid: (password) => /\d/.test(password) },
     { label: '1 capital letter', isValid: (password) => /[A-Z]/.test(password) },
+    { label: '1 lowercase letter', isValid: (password) => /[a-z]/.test(password) },
     { label: '1 special character', isValid: (password) => /[!@#$%^&*(),.?":{}|<>]/.test(password) }
 ];
 
