@@ -28,6 +28,7 @@ const initialState = {
   },
   listCustomFields: [],
   searchTerm: '',
+  organizationIdentifier: '',
 };
 
 function updateGroupInState(
