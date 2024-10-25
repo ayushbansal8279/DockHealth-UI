@@ -291,7 +291,7 @@ export const moveTask =
             task: updatedTask,
           });
         }
-
+        dispatch(getTasksGroupsList());
         dispatch(
           AlertActions.showGlobalAlertWithUndo(
             AlertMessages.TASK_MOVED,
@@ -315,7 +315,9 @@ export const moveTask =
             },
           ),
         );
-      })
+        
+      }
+    )
       .catch((error) => {
         throw error;
       });

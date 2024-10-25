@@ -450,9 +450,9 @@ const TaskTemplateGroupHeader = ({
       templateTasks.filter(
         isCompletedTab
           ? (task) =>
-              showIncompleteTasks || task?.status === TaskStatus.COMPLETE
+            showIncompleteTasks || task?.status === TaskStatus.COMPLETE
           : (task) =>
-              showCompletedTasks || task?.status !== TaskStatus.COMPLETE,
+            showCompletedTasks || task?.status !== TaskStatus.COMPLETE,
       ),
     [showCompletedTasks, showIncompleteTasks, templateTasks, isCompletedTab],
   );
