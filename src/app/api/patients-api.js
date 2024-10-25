@@ -74,14 +74,14 @@ export function getPatientsListFilterOptions(
 ) {
   const request = selectedFilters
     ? axios
-        .post(
-          `patient/filter/filterPatientsByCriteria/${patientsListIdentifier}`,
-          mapSelectedOptionsToRequestPayload(selectedFilters),
-        )
-        .then(({ data: { patientFilterOptions } }) => patientFilterOptions)
+      .post(
+        `patient/filter/filterPatientsByCriteria/${patientsListIdentifier}`,
+        mapSelectedOptionsToRequestPayload(selectedFilters),
+      )
+      .then(({ data: { patientFilterOptions } }) => patientFilterOptions)
     : axios
-        .get(`patient/filter/filterOptionsForList/${patientsListIdentifier}`)
-        .then(({ data }) => data);
+      .get(`patient/filter/filterOptionsForList/${patientsListIdentifier}`)
+      .then(({ data }) => data);
 
   return request.then((options) => mapFilterOptions(options));
 }
@@ -117,13 +117,14 @@ export const patientBulkCreateTask = (payload) => {
 };
 
 export const patientBulkCreateWorkflow = (payload) => {
-  const { assignedToUsers, taskListIdentifier, workflowIdentifier } = payload;
+  const { assignedToUsers, taskListIdentifier, workflowIdentifier, taskGroupIdentifier } = payload;
 
   const body = {
     bulkOperationType: PatientBulkActions.CREATE_WORKFLOW,
     workflowIdentifier,
     taskListIdentifier,
     patientIdentifiers: assignedToUsers,
+    taskGroupIdentifier
   };
 
   axios.put(`patient/bulk`, body).then(({ data }) => data);
