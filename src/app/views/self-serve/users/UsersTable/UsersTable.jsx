@@ -340,6 +340,7 @@ const UsersTable = ({
             userStatus !== UserStatus.PENDING &&
             userStatus !== UserStatus.CANCELLED &&
             userStatus !== UserStatus.INACTIVE &&
+            userStatus !== UserStatus.DENIED &&
             showSubscription
           ) {
             return <span>Subscribed</span>;
