@@ -15,7 +15,6 @@ const [rows, setRows] = useState([]);
       try {
         const response = await getPatientImportStatus(); 
         setRows(response);
-        console.log(response,'res')
       } catch (error) {
         console.error('Error fetching patient import status:', error);
       }
