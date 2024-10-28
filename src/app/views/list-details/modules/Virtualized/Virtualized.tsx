@@ -134,9 +134,6 @@ function Virtualized({
                   ),
                 incompleteTasksShown:
                   ['INCOMPLETE', ''].includes(currentTaskListTasksStatus) ||
-                  (showCompletedWorkflowIdentifiers ?? []).some(
-                    (id: any) => id !== destination.parent?.id,
-                  ) ||
                   (showIncompleteWorkflowIdentifiers ?? []).some(
                     (id: any) => id === destination.parent?.id,
                   ),
