@@ -40,6 +40,8 @@ export const DecisionSelect = styled(Select)`
   & .MuiSelect-select {
     padding: 0px;
     background-color: white;
+    width: 38px;
+    text-overflow: ellipsis;
   }
 `;
 
@@ -271,7 +273,10 @@ export const DescriptionBox = styled.div`
   flex-direction: column;
   flex: 1;
   cursor: pointer;
-  width: ${({ width }) => (width ? `${width}px` : '100%')};
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  // width: ${({ width }) => (width ? `${width}px` : '100%')};
   &:hover {
     ${DescriptionEditButton} {
       opacity: 1;
@@ -477,6 +482,15 @@ export const StandardTaskItemContainer = styled.div`
   `
       : ''}
 
+  ${({ workflowAddTask }) =>
+    workflowAddTask
+      ? `
+  border-left: 1px solid rgba(75, 179, 253, 1);
+  border-right: 1px solid rgba(75, 179, 253, 1);
+  border-bottom: 1px solid rgba(75, 179, 253, 1);
+  `
+      : ''}
+
   ${({ isLastChild }) =>
     isLastChild
       ? `
@@ -503,6 +517,14 @@ export const StandardTaskItemContainer = styled.div`
 
     ${({ isTaskOfTemplate }) =>
       isTaskOfTemplate ? `border: 1px solid ${palette.blueOcean}` : ``};
+
+    ${({ workflowAddTask }) =>
+      workflowAddTask
+        ? `border-bottom: 1px solid ${palette.blueOcean};
+           border-left: 1px solid${palette.blueOcean};
+          border-right: 1px solid ${palette.blueOcean};
+          `
+        : ``};
   }
 
   @media print {
@@ -855,6 +877,8 @@ export const DecisionCellContainer = styled.div`
   border-left: 1px solid ${palette.coolGrey3};
   padding-left: 10px;
   margin-left: 8px;
+  position: relative;
+  overflow: hidden;
 `;
 
 export const DisabledLink = styled.span``;

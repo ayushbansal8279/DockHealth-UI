@@ -199,7 +199,7 @@ const PatientsSubmenu = () => {
                     <DrawerItemOptions>
                       <div>{patientsList.patientsCount}</div>
                       <OptionsMenu
-                        disablePortal
+                        disablePortal={false}
                         options={[
                           {
                             name: 'Edit',

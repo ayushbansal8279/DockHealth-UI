@@ -225,7 +225,7 @@ const PatientSection = ({
         <PatientLableContainer>
           <PatientContainer>
             {' '}
-            <PatientName onClick={patientProfile}>
+            <PatientName status={selectedPatient.patientStatus} onClick={patientProfile}>
               {selectedPatient.patientName}{' '}
               {selectedPatient.mrn && selectedPatient.mrn !== ''
                 ? `(${selectedPatient.mrn})`

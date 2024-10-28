@@ -15,7 +15,7 @@ export const ListModalWrapper = styled(Box)`
   transform: translate(-50%, -50%);
   font-family: inherit;
   background-color: white;
-  width: 600px;
+  width: 900px;
   min-height: 340px;
   padding: ${spacing.regularPlus} ${spacing.largePlus} ${spacing.giga};
 `;

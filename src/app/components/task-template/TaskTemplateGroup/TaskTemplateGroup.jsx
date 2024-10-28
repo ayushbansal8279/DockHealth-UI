@@ -169,9 +169,9 @@ const TaskTemplateGroup = ({
     () =>
       tasks.filter(
         (task) =>
-          (showIncompleteTasks && task.status === TaskStatus.INCOMPLETE) ||
-          (showCompletedTasks && task.status === TaskStatus.COMPLETE) ||
-          task.status === tasksStatus,
+          (showIncompleteTasks && task?.status === TaskStatus.INCOMPLETE) ||
+          (showCompletedTasks && task?.status === TaskStatus.COMPLETE) ||
+          task?.status === tasksStatus,
       ),
     [tasks, showIncompleteTasks, showCompletedTasks, tasksStatus],
   );
@@ -277,7 +277,10 @@ const TaskTemplateGroup = ({
                               isDraggable
                               isBundleTask
                               isTaskTemplate
-                              isLastChild={index === filteredTasks?.length - 1}
+                              isLastChild={
+                                index === filteredTasks?.length - 1 &&
+                                !isAddingTask
+                              }
                               isAddingTask={isAddingTask}
                               isNextTaskItemTypeBundle={
                                 isNextTaskItemTypeBundle
@@ -317,6 +320,7 @@ const TaskTemplateGroup = ({
 
                       return null;
                     }}
+                    isWorkflowAddTaskRow={isAddingTask}
                     iconColorActive={iconColorActive}
                   />
                 </QuickAddInputWrapper>

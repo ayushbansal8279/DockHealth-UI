@@ -78,7 +78,9 @@ const ListDetailsView = () => {
   };
 
   useEffect(() => {
-    const storedViewType = localStorageHelper.getItem(`view${taskListIdentifier}`);
+    const storedViewType = localStorageHelper.getItem(
+      `view${taskListIdentifier}`,
+    );
     if (storedViewType === 'FULL_VIEW') {
       setChangeViewType('FULL_VIEW');
     } else {

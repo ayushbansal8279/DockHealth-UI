@@ -4,7 +4,7 @@ import palette from 'styles/palette';
 
 export const StatusFieldContainer = styled.div`
   margin-left: 10px;
-  width: 200px;
+  width: 95px;
   display: flex;
 `;
 
@@ -12,8 +12,8 @@ export const StatusContainer = styled.div`
   display: flex;
   align-items: center;
   margin-top: 5px;
+  width: 20%;
 `;
-
 export const Title = styled.div`
   margin-right: 31px;
   color: ${palette.coolGrey1};

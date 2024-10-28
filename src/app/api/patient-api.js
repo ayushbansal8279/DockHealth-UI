@@ -383,3 +383,14 @@ export const getAllPatientAttachments = (patientIdentifiers) =>
       });
       throw new Error(error?.response?.data?.errorMessage);
     });
+
+   
+export function getPatientImportStatus() {
+  return axios
+    .get('/patient/import/tracking/recent')
+    .then((response) => response.data)
+    .catch((error) => {
+      log(error);
+      throw new Error(error?.response?.data?.errorMessage);
+    });
+}

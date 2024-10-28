@@ -267,7 +267,7 @@ const TaskTemplateGroupHeader = ({
     }
     return templateTasks?.reduce(
       (accumulator, currentTask) => {
-        if (currentTask.status === 'COMPLETE') {
+        if (currentTask?.status === 'COMPLETE') {
           accumulator[0] += 1;
         }
         if (currentTask?.subtasks?.length > 0) {
@@ -371,7 +371,7 @@ const TaskTemplateGroupHeader = ({
               ),
             );
           },
-          modalLabel: 'Move to List'
+          modalLabel: 'Move to List',
         }),
       );
     }
@@ -449,8 +449,10 @@ const TaskTemplateGroupHeader = ({
     () =>
       templateTasks.filter(
         isCompletedTab
-          ? (task) => showIncompleteTasks || task.status === TaskStatus.COMPLETE
-          : (task) => showCompletedTasks || task.status !== TaskStatus.COMPLETE,
+          ? (task) =>
+              showIncompleteTasks || task?.status === TaskStatus.COMPLETE
+          : (task) =>
+              showCompletedTasks || task?.status !== TaskStatus.COMPLETE,
       ),
     [showCompletedTasks, showIncompleteTasks, templateTasks, isCompletedTab],
   );

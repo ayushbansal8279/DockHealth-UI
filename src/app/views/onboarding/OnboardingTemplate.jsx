@@ -19,7 +19,6 @@ const OnboardingTemplate = ({ childRoutes, setRedirection }) => {
   const dispatch = useDispatch();
   const history = useHistory();
   const [isLoading, setIsLoading] = useState(false);
-  const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -35,7 +34,6 @@ const OnboardingTemplate = ({ childRoutes, setRedirection }) => {
       }
 
       setIsLoading(false);
-      setIsLoaded(true);
     })();
   }, [dispatch, history, setRedirection]);
 
@@ -50,7 +48,7 @@ const OnboardingTemplate = ({ childRoutes, setRedirection }) => {
           </OnboardingNavbar>
           <OnboardingMainContainer isSmallScreen={isSmallScreen}>
             <Switch>
-              {isLoaded &&
+              {childRoutes &&
                 childRoutes?.map((route) => (
                   <RouteWrapper
                     permissions={route.permissions}

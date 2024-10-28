@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import moment from 'moment';
 import { useForm, FormProvider } from 'react-hook-form';
 import { isDueDateOverdue, ReminderType } from 'helpers/task-helpers';
+import { useBoolean } from 'hooks/useBoolean';
 import Checkbox from 'components/common/Checkbox/Checkbox';
 import Spacing from 'components/common/Spacing';
 import TimeDropdownInput from 'components/common/TimeDropdownInput/TimeDropdownInput';
@@ -11,12 +12,15 @@ import { TIME_12H_FORMAT } from 'helpers/task-drawer-helpers';
 import { useDispatch, useSelector } from 'react-redux';
 import { workflowSelector } from 'selectors/workflow-drawer-selectors';
 import { updatePartialWorkflow } from 'actions/task-template-actions';
-import { ReminderContainer, Description, SelectArrowImg } from './styled';
+import { ReminderContainer, Description, SelectArrowImg, StyledPopover, DateViewContainer, DateViewText } from './styled';
 import {
   REMINDER_TYPE_FIELD_NAME,
   REMINDER_TIME_FIELD_NAME,
   REMINDER_TYPE_OPTIONS,
 } from './helpers';
+import PopoverCard from 'components/common/PopoverCard/PopoverCard';
+import ReminderDatePicker from '../../task-drawer/ReminderSection/ReminderDatePicker';
+import { Box } from '@mui/material';
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const ReminderSection = ({ disabled }) => {
@@ -25,13 +29,19 @@ const ReminderSection = ({ disabled }) => {
     reminderType,
     reminderTime = null,
     dueDateTime,
+    reminderDateTime
   } = selectedWorkflow || {};
+  const reminderDate = moment(reminderDateTime);
   const isDisabled = !dueDateTime || disabled;
   const reminderTypeDropdownReference = useRef(null);
   const formMethods = useForm();
   const { register, unregister, setValue, watch } = formMethods;
   const [reminderTypeValue, setReminderTypeValue] = useState(reminderType);
   const dispatch = useDispatch();
+  const [reminderTypeCustomDate, setReminderTypeCustomDate] = useState(false);
+  const [isPopoverOpen, openPopover, closePopover] = useBoolean(false);
+  const buttonReference = useRef(null);
+  const reminderDateRef = useRef(null);
 
   useEffect(() => {
     register(REMINDER_TYPE_FIELD_NAME);
@@ -48,7 +58,10 @@ const ReminderSection = ({ disabled }) => {
     setValue(REMINDER_TYPE_FIELD_NAME, reminderType);
     setValue(REMINDER_TIME_FIELD_NAME, reminderTime);
     setReminderTypeValue(reminderType);
-  }, [reminderTime, reminderType, setValue, setReminderTypeValue]);
+    if (reminderType === ReminderType.ABSOLUTE) {
+      setReminderTypeCustomDate(true);
+    }
+  }, [reminderTime, reminderType, setValue, setReminderTypeValue, setReminderTypeCustomDate]);
 
   const handleReminderSave = useCallback(
     (data) => {
@@ -81,6 +94,7 @@ const ReminderSection = ({ disabled }) => {
         reminderType: defaultType,
         reminderTime: defaultTime,
       });
+      setReminderTypeCustomDate(false);
     } else {
       setReminderTypeValue(ReminderType.NONE);
       setValue(REMINDER_TYPE_FIELD_NAME, ReminderType.NONE);
@@ -89,6 +103,7 @@ const ReminderSection = ({ disabled }) => {
         reminderType: ReminderType.NONE,
         reminderTime: null,
       });
+      setReminderTypeCustomDate(false);
     }
   }, [
     handleReminderSave,
@@ -96,17 +111,44 @@ const ReminderSection = ({ disabled }) => {
     setValue,
     setReminderTypeValue,
     isDisabled,
+    setReminderTypeCustomDate
   ]);
+
+  const handleSelectReminderDate = useCallback((value) => {
+    handleReminderSave({ reminderType: ReminderType.ABSOLUTE, reminderDateTime: value });
+    setReminderTypeCustomDate(true);
+  },
+    [handleReminderSave, setReminderTypeCustomDate],
+  );
+
+  const selectReminderTime = useCallback((value) => {
+    handleReminderSave({ reminderType: ReminderType.ABSOLUTE, reminderTime: value });
+    setReminderTypeCustomDate(true);
+  },
+    [handleReminderSave, setReminderTypeCustomDate],
+  );
+
+  const closeCustomDate = () => {
+    closePopover();
+    if (reminderType !== ReminderType.ABSOLUTE) {
+      setReminderTypeValue(reminderType);
+      setValue(REMINDER_TYPE_FIELD_NAME, reminderType);
+    }
+  }
 
   const handleSelectReminderType = useCallback(
     (value) => {
       setValue(REMINDER_TYPE_FIELD_NAME, value);
       if (value === ReminderType.DAY_OF) {
+        setReminderTypeCustomDate(false);
         const defaultTime = undefined;
         setReminderTypeValue(value);
         setValue(REMINDER_TIME_FIELD_NAME, defaultTime);
         handleReminderSave({ reminderType: value, reminderTime: defaultTime });
+      } else if (value === ReminderType.ABSOLUTE) {
+        openPopover(true);
       } else {
+        setReminderTypeCustomDate(false);
         handleReminderSave({ reminderType: value });
       }
     },
@@ -146,11 +188,12 @@ const ReminderSection = ({ disabled }) => {
 
   return (
     <FormProvider {...formMethods}>
-      <ReminderContainer>
+      <ReminderContainer ref={reminderDateRef}>
         <Checkbox
           isDisabled={isCheckboxDisabled}
           isChecked={reminderChecked ?? false}
           onClick={handleToggleReminder}
+          ref={buttonReference}
         />
         <Spacing horizontal={3} />
         <Description isDisabled={sectionDisabled}>Reminder</Description>
@@ -167,26 +210,87 @@ const ReminderSection = ({ disabled }) => {
               width={130}
               options={REMINDER_TYPE_OPTIONS}
             />
-            <Spacing horizontal={2} />
-            <Description>at</Description>
-            <Spacing horizontal={2} />
-            <TimeDropdownInput
-              type="secondary"
-              savedValue={reminderTime}
-              value={watch(REMINDER_TIME_FIELD_NAME)}
-              onValueChange={(newValue) =>
-                setValue(REMINDER_TIME_FIELD_NAME, newValue)
-              }
-              onSave={(updatedReminderTime) =>
-                handleReminderSave({
-                  reminderTime: updatedReminderTime,
-                })
-              }
-              handleReminderSave={handleSelectReminderTime}
-              disabled={sectionDisabled}
-              endAdornment={<SelectArrowImg src={ArrowIcon} alt="arrow" />}
-              validate={validateReminderTime}
-            />
+            <StyledPopover
+              anchorEl={reminderDateRef?.current}
+              anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'left',
+              }}
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'left',
+              }}
+              sx={{ marginLeft: '103px' }}
+              open={isPopoverOpen}
+              onClose={(event) => {
+                event.stopPropagation();
+                closeCustomDate();
+              }}
+              width="auto"
+            >
+              {isPopoverOpen && (
+                <PopoverCard>
+                  <Box width="auto" minWidth={buttonReference.current?.offsetWidth}>
+                    <ReminderDatePicker
+                      selectedDate={reminderTypeValue === ReminderType.ABSOLUTE ? reminderDateTime : null}
+                      selectedTime={reminderTypeValue === ReminderType.ABSOLUTE ? reminderTime : null}
+                      onDateChange={handleSelectReminderDate}
+                      onCloseClick={closeCustomDate}
+                      onTimeChange={selectReminderTime} />
+                  </Box>
+                </PopoverCard>
+              )}
+            </StyledPopover>
+            {reminderTypeCustomDate && (
+              <>
+                <Spacing horizontal={3} />
+                <DateViewContainer >
+                  <DateViewText ref={buttonReference}
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      openPopover(true);
+                    }}>
+                    {reminderDate.format('MMM DD, YYYY')}
+                  </DateViewText>
+                </DateViewContainer>
+                {reminderTime && <>
+                  <Spacing horizontal={3} />
+                  <Description>at</Description>
+                  <DateViewContainer >
+                    <DateViewText ref={buttonReference}
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        openPopover(true);
+                      }}>
+                      {reminderTime}
+                    </DateViewText>
+                  </DateViewContainer>
+                </>}
+              </>)}
+            {!reminderTypeCustomDate &&
+              <>
+                <Spacing horizontal={2} />
+                <Description>at</Description>
+                <Spacing horizontal={2} />
+                <TimeDropdownInput
+                  type="secondary"
+                  savedValue={reminderTime}
+                  value={watch(REMINDER_TIME_FIELD_NAME)}
+                  onValueChange={(newValue) =>
+                    setValue(REMINDER_TIME_FIELD_NAME, newValue)
+                  }
+                  onSave={(updatedReminderTime) =>
+                    handleReminderSave({
+                      reminderTime: updatedReminderTime,
+                    })
+                  }
+                  handleReminderSave={handleSelectReminderTime}
+                  disabled={sectionDisabled}
+                  endAdornment={<SelectArrowImg src={ArrowIcon} alt="arrow" />}
+                  validate={validateReminderTime}
+                />
+              </>
+            }
           </>
         )}
       </ReminderContainer>

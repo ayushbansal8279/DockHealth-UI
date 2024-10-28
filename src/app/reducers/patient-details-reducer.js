@@ -444,37 +444,44 @@ export default (state = INITIAL_STATE, action = {}) => {
     case ActionTypes.ADD_TASK_SUCCESS: {
       const { task: addedTask } = action;
 
-      const bundleIdentifier = addedTask.taskGroups?.find(
+      const bundleIdentifier = addedTask?.taskGroups?.find(
         ({ groupType }) => groupType === TaskGroupType.BUNDLE,
       )?.taskGroupIdentifier;
 
-      if (bundleIdentifier) {
-        return {
-          ...state,
-          lists: state.lists?.map((l) => ({
-            ...l,
-            tasks: l.tasks?.map((t) =>
-              t.identifier === bundleIdentifier
-                ? { ...t, tasks: [...(t.tasks || []), addedTask] }
-                : t,
+      const { taskListIdentifier } = addedTask?.taskList || {};
+      const updatedState = bundleIdentifier
+        ? {
+            ...state,
+            lists: state.lists?.map((l) => ({
+              ...l,
+              tasks: l.tasks?.map((t) =>
+                t.identifier === bundleIdentifier
+                  ? { ...t, tasks: [...(t.tasks || []), addedTask] }
+                  : t,
+              ),
+            })),
+            tasksMap: {
+              ...state.tasksMap,
+              [bundleIdentifier]: {
+                ...state.tasksMap[bundleIdentifier],
+                tasks: [
+                  ...(state.tasksMap[bundleIdentifier]?.tasks || []),
+                  addedTask?.taskIdentifier,
+                ],
+              },
+            },
+          }
+        : {
+            ...state,
+            lists: state.lists?.map((l) =>
+              l.taskListIdentifier === taskListIdentifier
+                ? {
+                    ...l,
+                    tasks: [addedTask, ...(l.tasks || [])],
+                  }
+                : l,
             ),
-          })),
-        };
-      }
-
-      const { taskListIdentifier } = addedTask.taskList || {};
-
-      const updatedState = {
-        ...state,
-        lists: state.lists?.map((l) =>
-          l.taskListIdentifier === taskListIdentifier
-            ? {
-                ...l,
-                tasks: [addedTask, ...(l.tasks || [])],
-              }
-            : l,
-        ),
-      };
+          };
 
       return updateTasksStateCallback(updatedState, addedTask);
     }
@@ -639,22 +646,29 @@ export default (state = INITIAL_STATE, action = {}) => {
       ) {
         return { ...state };
       }
+      const bundleIdentifier = task.taskGroups?.find(
+        ({ groupType }) => groupType === TaskGroupType.BUNDLE,
+      )?.taskGroupIdentifier;
 
-      const updatedState = {
-        ...state,
-        lists: state.lists?.map((l) => {
-          if (
-            l.taskListIdentifier === taskList.taskListIdentifier &&
-            !l.tasks?.some(
-              ({ taskIdentifier }) => taskIdentifier === task.taskIdentifier,
-            )
-          ) {
-            return { ...l, tasks: [task, ...(l.tasks || [])] };
+      const updatedState = bundleIdentifier
+        ? {
+            ...state,
           }
-
-          return l;
-        }),
-      };
+        : {
+            ...state,
+            lists: state.lists?.map((l) => {
+              if (
+                l.taskListIdentifier === taskList.taskListIdentifier &&
+                !l.tasks?.some(
+                  ({ taskIdentifier }) =>
+                    taskIdentifier === task.taskIdentifier,
+                )
+              ) {
+                return { ...l, tasks: [task, ...(l.tasks || [])] };
+              }
+              return l;
+            }),
+          };
 
       return updateTasksStateCallback(updatedState, task);
     }

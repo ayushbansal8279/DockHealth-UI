@@ -19,7 +19,6 @@ const CustomFilterOption = (props) => {
     onDelete,
     autofocus,
     onBlur,
-    editModeEnabled = true,
     setSavePopupOpen,
     selectedQuickFilter,
     setSelectedQuickFilter,
@@ -168,10 +167,7 @@ const CustomFilterOption = (props) => {
   // );
 
   return (
-    <CustomFilterOptionWrapper
-      selected={isSelected}
-      editModeEnabled={editModeEnabled}
-    >
+    <CustomFilterOptionWrapper selected={isSelected}>
       <QuickFilterTitleContainer>
         <QuickFilterTitle
           selected={isSelected}
@@ -214,7 +210,7 @@ const CustomFilterOption = (props) => {
             </Tooltip>
       </IconContainer> */}
         <OptionMenuContainer>
-          {!disableOptions && editModeEnabled && (
+          {!disableOptions && (
             <OptionsMenu color={palette.shadowBlue} options={OPTIONS}>
               <MoreVertIcon />
             </OptionsMenu>

@@ -163,7 +163,7 @@ function VTask(
                 isDraggable
                 isDragging={snapshot.isDragging}
                 isTaskTemplate={isTaskTemplate}
-                isLastChild={isLastChild || false}
+                isLastChild={isLastChild && !addWorkflowTask}
                 origin={TaskOrigin.LIST}
                 pageBackground={bgColor ? palette.aliceBlue : ''}
                 isNestedTask

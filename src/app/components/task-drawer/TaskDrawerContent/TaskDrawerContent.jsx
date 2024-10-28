@@ -57,6 +57,7 @@ import {
   FiledInListName,
 } from './styled';
 import ReminderSection from '../ReminderSection/ReminderSection';
+import StartDateSection from '../StartDateSection/StartDateSection';
 
 const { DISABLED, READ_ONLY } = SINGLE_TASK_RESTRICTIONS_OPTIONS;
 
@@ -456,6 +457,14 @@ const TaskDrawerContent = (props) => {
             onSave={handleUpdateTask}
             quickAddPatientEnabled={quickAddPatientEnabled}
           />
+        </Grid>
+        <Grid item xs={12} mb={2} style={styleLeftColumn(isMobile)}>
+          <div>
+            <StartDateSection
+              disabled={restrictions?.startDate === DISABLED}
+              selectedTask={selectedTask}
+            />
+          </div>
         </Grid>
         <Grid item xs={12} style={styleLeftColumn(isMobile)}>
           <div>

@@ -41,6 +41,7 @@ import { getGroupsForTaskList } from '@/app/api/task-group-list-api';
 import GroupSelectorSection from '../ListSelectorSection/GroupSelectorSection';
 import { getDashboardTasks } from '@/app/actions/dashboard-actions';
 import { showGlobalErrorAlert } from '@/app/alert/actions';
+import StartDateSection from '../StartDateSection/StartDateSection';
 
 const AddTaskDrawerContent = (props) => {
   const {
@@ -75,6 +76,7 @@ const AddTaskDrawerContent = (props) => {
   const [assignedToIdentifiers, setAssignedToIdentifiers] = useState([]);
   const [addTaskAssignees, setAddTaskAssignees] = useState([]);
   const [priority, setPriority] = useState('');
+  const [startDate, setStartDate] = useState('');
   const [dueDate, setDueDate] = useState('');
   const [workflowStatusIdentifier, setWorkflowStatusIdentifier] = useState('');
   const [patientIdentifier, setPatientIdentifier] = useState('');
@@ -151,6 +153,7 @@ const AddTaskDrawerContent = (props) => {
         assignedToIdentifier: userIdentifier,
         assignedToIdentifiers,
         patientIdentifier,
+        startDate,
         dueDate,
         priority,
         workflowStatusIdentifier,
@@ -253,6 +256,11 @@ const AddTaskDrawerContent = (props) => {
               addTaskDrawer
               setPatientIdentifier={setPatientIdentifier}
             />
+          </Grid>
+          <Grid item xs={12} mb={2} style={styleLeftColumn(isMobile)}>
+            <div>
+              <StartDateSection addTaskDrawer setStartDate={setStartDate} />
+            </div>
           </Grid>
           <Grid item xs={12} style={styleLeftColumn(isMobile)}>
             <div>
