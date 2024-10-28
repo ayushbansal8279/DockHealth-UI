@@ -129,16 +129,16 @@ function Virtualized({
                 workflow: tasksMap[destination.parent?.id!],
                 completedTasksShown:
                   ['COMPLETE', ''].includes(currentTaskListTasksStatus) ||
-                  showCompletedWorkflowIdentifiers?.includes(
-                    destination.parent?.id,
+                  showCompletedWorkflowIdentifiers?.some(
+                    (id: any) => id === destination.parent?.id,
                   ),
                 incompleteTasksShown:
                   ['INCOMPLETE', ''].includes(currentTaskListTasksStatus) ||
-                  !showCompletedWorkflowIdentifiers?.includes(
-                    destination.parent?.id,
+                  (showCompletedWorkflowIdentifiers ?? []).some(
+                    (id: any) => id !== destination.parent?.id,
                   ) ||
-                  showIncompleteWorkflowIdentifiers?.includes(
-                    destination.parent?.id,
+                  (showIncompleteWorkflowIdentifiers ?? []).some(
+                    (id: any) => id === destination.parent?.id,
                   ),
               }),
             );
