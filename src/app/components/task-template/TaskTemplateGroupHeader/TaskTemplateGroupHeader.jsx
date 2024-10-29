@@ -277,8 +277,7 @@ const TaskTemplateGroupHeader = ({
             }
           });
         }
-        accumulator[1] =
-          accumulator[1] + (currentTask?.subtasks?.length || 0) + 1;
+        accumulator[1] = accumulator[1] + (currentTask?.subTasksCount || 0) + 1;
 
         return accumulator;
       },
@@ -450,9 +449,9 @@ const TaskTemplateGroupHeader = ({
       templateTasks.filter(
         isCompletedTab
           ? (task) =>
-            showIncompleteTasks || task?.status === TaskStatus.COMPLETE
+              showIncompleteTasks || task?.status === TaskStatus.COMPLETE
           : (task) =>
-            showCompletedTasks || task?.status !== TaskStatus.COMPLETE,
+              showCompletedTasks || task?.status !== TaskStatus.COMPLETE,
       ),
     [showCompletedTasks, showIncompleteTasks, templateTasks, isCompletedTab],
   );
