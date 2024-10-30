@@ -297,7 +297,7 @@ export function downloadPatientListData(
 
 export function uploadPatientData(fileData, additionalConfig = {}) {
   const formData = new FormData();
-  formData.append('file', fileData);
+  formData.append('file', fileData, encodeURIComponent(fileData.name));
 
   return axios
     .post(`patient/uploadData`, formData, {
