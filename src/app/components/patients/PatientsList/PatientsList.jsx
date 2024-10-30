@@ -289,7 +289,7 @@ const PatientsList = ({
           ],
           newRow,
         );
-        params.dob = dateFormatter(params.dob);
+        params.dob = dateFormatter(params.dob, 'MM/DD/YYYY');
         await updatePatientById.mutateAsync(params);
 
         return newRow;
@@ -384,10 +384,10 @@ const PatientsList = ({
       headerName: 'DOB',
       renderHeader: renderColumnHeader,
       width: 150,
-      valueGetter: ({ value }) => dateFormatter(value),
+      valueGetter: ({ value }) => dateFormatter(value, 'MMM DD, YYYY'),
       valueSetter: ({ value, row }) => ({
         ...row,
-        dob: dateFormatter(value),
+        dob: dateFormatter(value, 'yyyy-MM-dd'),
       }),
       editable: false,
       renderEditCell: (params) => <DateEditCell {...params} />,
