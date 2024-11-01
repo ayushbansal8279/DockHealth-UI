@@ -355,6 +355,9 @@ function VirtualTaskList({ groupedTasks, showClearSortFiltersModal }: Props) {
           nodes={nodes}
           tasksMap={tasksMap}
           showClearSortFiltersModal={showClearSortFiltersModal}
+          showCompletedWorkflowIdentifiers={showCompletedWorkflowIdentifiers}
+          showIncompleteWorkflowIdentifiers={showIncompleteWorkflowIdentifiers}
+          currentTaskListTasksStatus={currentTaskListTasksStatus}
         />
       </CollapseContext.Provider>
     </div>

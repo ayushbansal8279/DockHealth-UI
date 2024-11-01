@@ -486,6 +486,42 @@ export default (state = INITIAL_STATE, action = {}) => {
       return updateTasksStateCallback(updatedState, addedTask);
     }
 
+    case ActionTypes.GET_TASKS_FOR_WORKFLOW: {
+      const { workflowIdentifier } = action;
+
+      return {
+        ...state,
+        tasksMap: {
+          ...state.tasksMap,
+          [workflowIdentifier]: {
+            ...state.tasksMap[workflowIdentifier],
+          },
+        },
+      };
+    }
+
+    case ActionTypes.GET_TASKS_FOR_WORKFLOW_SUCCESS: {
+      const { workflowIdentifier, tasks } = action;
+
+      const updatedMap = updateTasksMap(state, {
+        identifier: workflowIdentifier,
+        itemType: TaskItemType.BUNDLE,
+        tasks,
+      });
+
+      return {
+        ...state,
+        tasksMap: {
+          ...state.tasksMap,
+          ...updatedMap,
+          [workflowIdentifier]: {
+            ...state.tasksMap[workflowIdentifier],
+            tasks: tasks.map((task) => task.identifier),
+          },
+        },
+      };
+    }
+
     case ActionTypes.ADD_TEMPLATE_BUNDLE: {
       const { bundle: addedBundle } = action;
 
