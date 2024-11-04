@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { userProfileSelector } from 'selectors/user-selectors';
+import { userHasAiSummaryViewFeatureSelector, userHasDockGuestFeatureSelector, userHasViewOnlyFeatureSelector, userProfileSelector } from 'selectors/user-selectors';
 import { organizationSelector } from 'selectors/organization-selectors';
 import {
   onTaskDrawerPatientAdded,
@@ -29,8 +29,12 @@ import {
   Title,
   InstructionText,
   PatientName,
+  PatientLableContainer,
+  AISummaryWrapper,
 } from './styled';
 import { updatePartialWorkflow } from '@/app/actions/task-template-actions';
+import AISummaryModalOpenerHelper from '@/app/modal/components/AISummaryModal/AISummaryModalOpenerHelper';
+import { SummaryType } from '@/app/helpers/ai-helper';
 
 const PATIENT_IDENTIFIER_FIELD_NAME = 'patientIdentifier';
 const MAX_PATIENT_RESULTS = 200;
@@ -66,6 +70,7 @@ const PatientSection = ({
   const { emrIntegrationType } = useSelector(organizationSelector) || {};
   const restrictedLookup = hasRestrictedPatientLookup(emrIntegrationType);
   const { templateBundleIdentifier } = useSelector(selectedTaskSelector) || {};
+  const aiSummaryAvailable = useSelector(userHasAiSummaryViewFeatureSelector);
 
   const currentOrganizationIdentifier = sessionStorage.getItem(
     'currentOrganizationIdentifier',
@@ -323,19 +328,30 @@ const PatientSection = ({
     <PatientMainContainer>
       <Title>Patient</Title>
       {selectedPatient && (
-        <PatientContainer>
-          {' '}
-          <PatientName onClick={patientProfile}>
-            {selectedPatient.patientName}{' '}
-          </PatientName>
-          <button
-            style={{ color: '#8492A4' }}
-            onClick={handleClearSelectedPatient}
-            type="button"
-          >
-            x
-          </button>
-        </PatientContainer>
+        <PatientLableContainer>
+          <PatientContainer>
+            {' '}
+            <PatientName status={selectedPatient.patientStatus} onClick={patientProfile}>
+              {selectedPatient.patientName}{' '}
+            </PatientName>
+            <button
+              style={{ color: '#8492A4' }}
+              onClick={handleClearSelectedPatient}
+              type="button"
+            >
+              x
+            </button>
+          </PatientContainer>
+          {aiSummaryAvailable && (
+            <AISummaryWrapper>
+              <AISummaryModalOpenerHelper
+                type={SummaryType.PATIENT}
+                title={`${selectedPatient?.lastName}, ${selectedPatient?.firstName}`}
+                identifier={selectedPatient.patientIdentifier}
+              />
+            </AISummaryWrapper>
+          )}
+        </PatientLableContainer>
       )}
 
       {!selectedPatient && (

@@ -158,6 +158,7 @@ function VirtualTaskList({ groupedTasks, showClearSortFiltersModal }: Props) {
               bgColor: !(index % 2 === 0),
               groupWithZeroTask: groupTasks?.length === 0,
               isLastGroupOfList: index === listGroups?.length - 1,
+              isLoadingGroup: listTaskGroup?.isLoadingGroup,
             },
             [],
             true,
@@ -241,13 +242,15 @@ function VirtualTaskList({ groupedTasks, showClearSortFiltersModal }: Props) {
                                   isLastSubtaskParentTask:
                                     subTaskIndex ===
                                       tasksMap[child]?.subtasks.length - 1 &&
-                                    childIndex === children.length - 1,
+                                    children.indexOf(child) ===
+                                      children.length - 1,
                                   isLastGroupOfList:
                                     index === listGroups?.length - 1,
                                   isNextVirtualTaskItemTypeBundle:
                                     subTaskIndex ===
                                       tasksMap[child]?.subtasks.length - 1 &&
-                                    childIndex === children.length - 1
+                                    children.indexOf(child) ===
+                                      children.length - 1
                                       ? tasksMap[groupTasks[groupTaskIndex + 1]]
                                           ?.itemType === 'BUNDLE'
                                       : false,
@@ -352,6 +355,9 @@ function VirtualTaskList({ groupedTasks, showClearSortFiltersModal }: Props) {
           nodes={nodes}
           tasksMap={tasksMap}
           showClearSortFiltersModal={showClearSortFiltersModal}
+          showCompletedWorkflowIdentifiers={showCompletedWorkflowIdentifiers}
+          showIncompleteWorkflowIdentifiers={showIncompleteWorkflowIdentifiers}
+          currentTaskListTasksStatus={currentTaskListTasksStatus}
         />
       </CollapseContext.Provider>
     </div>

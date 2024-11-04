@@ -27,3 +27,7 @@ export function editTemplate(template) {
 export function deleteTemplate(identifier) {
   return axios.delete(`template/${identifier}`).then(({ data }) => data);
 }
+
+export function duplicateTemplate(identifier) {
+  return axios.put(`template/duplicate/${identifier}`).then(({ data }) => data);
+}

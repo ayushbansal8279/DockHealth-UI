@@ -34,7 +34,7 @@ import {
 } from './styled';
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
-const PatientCustomFieldsView = () => {
+  const PatientCustomFieldsView = ({}) => { 
   const dispatch = useDispatch();
   const [customFields, setCustomFields] = useState(null);
   const [isFetching, setIsFetching] = useState(true);
@@ -178,7 +178,7 @@ const PatientCustomFieldsView = () => {
           <Box p={1} />
           {customFields?.length > 0 ? (
             <>
-              <CustomFieldItem>
+              <CustomFieldItem type="PATIENT">
                 <CustomFieldCell>
                   <CustomFieldHeaderText>Field label</CustomFieldHeaderText>
                 </CustomFieldCell>
@@ -192,9 +192,13 @@ const PatientCustomFieldsView = () => {
                   <CustomFieldHeaderText>Show on Header</CustomFieldHeaderText>
                 </CustomFieldCell>
                 <CustomFieldCell>
-                  <CustomFieldHeaderText>
-                    Include in Search
-                  </CustomFieldHeaderText>
+                  <CustomFieldHeaderText>Include in Search</CustomFieldHeaderText>
+                </CustomFieldCell>
+                <CustomFieldCell>
+                  <CustomFieldHeaderText>Readonly</CustomFieldHeaderText>
+                </CustomFieldCell>
+                <CustomFieldCell>
+                  <CustomFieldHeaderText>Hidden</CustomFieldHeaderText>
                 </CustomFieldCell>
                 <CustomFieldCell>
                   <Box width="68px" />
@@ -216,7 +220,7 @@ const PatientCustomFieldsView = () => {
                       >
                         {({ dragHandleProps }) => (
                           <div>
-                            <CustomFieldItem>
+                             <CustomFieldItem type="PATIENT">
                               <DragHandle {...dragHandleProps}>
                                 <DragHandleIcon />
                               </DragHandle>
@@ -242,9 +246,7 @@ const PatientCustomFieldsView = () => {
                               <CustomFieldCell>
                                 <CustomFieldText>
                                   {field.displayOptions &&
-                                  field.displayOptions?.includes(
-                                    'PATIENT_HEADER',
-                                  )
+                                  field.displayOptions?.includes('PATIENT_HEADER')
                                     ? 'Yes'
                                     : ''}
                                 </CustomFieldText>
@@ -252,13 +254,27 @@ const PatientCustomFieldsView = () => {
                               <CustomFieldCell>
                                 <CustomFieldText>
                                   {field.displayOptions &&
-                                  field.displayOptions?.includes(
-                                    'PATIENT_SEARCH',
-                                  )
+                                  field.displayOptions?.includes('PATIENT_SEARCH')
                                     ? 'Yes'
                                     : ''}
                                 </CustomFieldText>
                               </CustomFieldCell>
+                              <CustomFieldCell>
+                              <CustomFieldText>
+                                {field.displayOptions &&
+                                field.displayOptions?.includes('READONLY')
+                                  ? 'Yes'
+                                  : ''}
+                              </CustomFieldText>
+                            </CustomFieldCell>
+                            <CustomFieldCell>
+                              <CustomFieldText>
+                                {field.displayOptions &&
+                                field.displayOptions?.includes('HIDDEN')
+                                  ? 'Yes'
+                                  : ''}
+                              </CustomFieldText>
+                            </CustomFieldCell>
                               <CustomFieldCell>
                                 <IconButton
                                   size="small"

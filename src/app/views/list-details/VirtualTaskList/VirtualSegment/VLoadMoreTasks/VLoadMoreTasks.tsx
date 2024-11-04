@@ -1,13 +1,14 @@
+import { currentTaskListTasksStatusSelector } from 'selectors/task-list-selectors';
+import React, { ForwardedRef, forwardRef, useCallback } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import * as ListDetailsActions from 'actions/list-details-actions';
+import { Segment } from 'views/list-details/modules/Virtualized';
 import StickyContainer from '@/app/components/common/HorizontalScroll/StickyContainer';
 import LoadMoreButton, {
   LoadMoreSection,
 } from '@/app/components/common/LoadMoreButton/LoadMoreButton';
 import TasksSkeletonLoader from '@/app/components/task/TasksSkeletonLoader/TasksSkeletonLoader';
 import { taskDetailsSortSelector } from '@/app/selectors/list-details-selectors';
-import React, { ForwardedRef, forwardRef, useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import * as ListDetailsActions from 'actions/list-details-actions';
-import { Segment } from 'views/list-details/modules/Virtualized';
 import { TaskOrigin } from '@/app/helpers/task-helpers';
 import * as Sc from './styled';
 import { useVirtualTaskListScrollContext } from '../../VirtualTaskListScrollContext';
@@ -26,12 +27,13 @@ function VLoadMoreTasks(
   const screenWidth = typeof window !== 'undefined' ? window.innerWidth : 1920;
   const number = droppableHeaderWidth;
   const percentage = ((!!number ? number : 0) / screenWidth) * 100;
+  const currentStatus = useSelector(currentTaskListTasksStatusSelector);
 
   const loadTasksForTaskGroup = useCallback(
     ({ taskGroupIdentifier, startPosition, viewMode, refresh }) => {
       const payload = {
         taskGroupIdentifier,
-        status: 'INCOMPLETE',
+        status: currentStatus,
         startPosition,
         sort,
         viewMode,
@@ -39,7 +41,7 @@ function VLoadMoreTasks(
       };
       dispatch(ListDetailsActions.getTasksForTaskGroups(payload));
     },
-    [dispatch, sort],
+    [currentStatus, dispatch, sort],
   );
 
   return (

@@ -3,7 +3,11 @@ import ViewLayout from 'components/template/ViewLayout/ViewLayout';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { getAllTemplates, deleteTemplate } from 'api/template-api';
+import {
+  getAllTemplates,
+  deleteTemplate,
+  duplicateTemplate,
+} from 'api/template-api';
 import { openModal, closeModal } from 'modal/actions';
 import AddButton, {
   AddEntitiesContainer,
@@ -20,6 +24,8 @@ import {
 import { StyledDataGrid } from './DataGridStyles';
 import { getTemplateColumns } from './helpers';
 import { ViewContainer } from './styled';
+import { AddIcon } from '../smart-flow-builder/TaskNodeHandles/styled';
+import ToolbarButton from '@/app/components/tasklist/list-toolbar-buttons/ToolbarButton/ToolbarButton';
 
 // const PAGE_SIZE = 30;
 
@@ -109,16 +115,41 @@ const Templates = () => {
     [dispatch],
   );
 
+  const onDuplicateTemplate = useCallback(
+    ({ id, ...data }) => {
+      duplicateTemplate(id).then((data) => {
+        setTemplates((s) => [data, ...s]);
+      });
+    },
+    [dispatch, templates],
+  );
+
   const columns = useMemo(
-    () => getTemplateColumns({ onEditTemplate, onDeteleTemplate }),
-    [onDeteleTemplate, onEditTemplate],
+    () =>
+      getTemplateColumns({
+        onEditTemplate,
+        onDeteleTemplate,
+        onDuplicateTemplate,
+      }),
+    [onDeteleTemplate, onEditTemplate, onDuplicateTemplate],
   );
 
   return (
     <ViewLayout header={<BasicLayoutHeader title="Templates" />}>
       <ViewContainer>
         <AddEntitiesContainer>
-          <AddButton onClick={onAddTemplate}>Create Template</AddButton>
+          <div style={{ marginBottom: '4px' }}>
+            <ToolbarButton
+              icon={
+                <span style={{ marginLeft: '-5px' }}>
+                  <AddIcon />
+                </span>
+              }
+              onClick={onAddTemplate}
+            >
+              Create Template
+            </ToolbarButton>
+          </div>
         </AddEntitiesContainer>
         <StyledDataGrid
           columns={columns}

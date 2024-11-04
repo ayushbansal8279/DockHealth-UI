@@ -9,29 +9,60 @@ const TaskItemMultiDropdown = ({
   onChange,
   field,
   readOnly = false,
+  withSearch = false,
 }) => {
   const { options: initialOptions } = field;
   const [value, setValue] = useState(initialValue);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [isOpen, setIsOpen] = useState(false);
+
   const options = useMemo(() => {
-    return (
+    const mappedOptions =
       initialOptions?.map(({ identifier, name }) => ({
         label: name,
         value: identifier,
-      })) || []
-    );
-  }, [initialOptions]);
+      })) || [];
+    if (searchQuery) {
+      return mappedOptions.filter((option) =>
+        option.label.toLowerCase().includes(searchQuery.toLowerCase()),
+      );
+    }
+    return mappedOptions;
+  }, [initialOptions, searchQuery]);
 
   useEffect(() => {
     setValue(initialValue);
   }, [initialValue]);
 
   const handleChange = useCallback(
-    ({ target }) => {
-      setValue(target.value);
-      onChange(target.value);
+    (event) => {
+      const {
+        target: { value: selectedValue },
+      } = event;
+      setValue(selectedValue);
+      onChange(selectedValue);
     },
     [onChange],
   );
+
+  const handleSearchChange = (event) => {
+    setSearchQuery(event.target.value);
+  };
+
+  const handleKeyDown = (event) => {
+    if (event.target.tagName === 'INPUT') {
+      event.stopPropagation();
+    }
+  };
+
+  const handleDropdownClose = () => {
+    setIsOpen(false);
+    setSearchQuery('');
+  };
+
+  const handleDropdownOpen = () => {
+    setIsOpen(true);
+  };
 
   return (
     <>
@@ -60,20 +91,41 @@ const TaskItemMultiDropdown = ({
           renderValue={(selectedValue) =>
             selectedValue
               .map((selected) => {
-                return options.find((option) => option.value === selected)
-                  ?.label;
+                return initialOptions.find(
+                  (option) => option.identifier === selected,
+                )?.name;
               })
               .join(', ')
           }
+          onClose={handleDropdownClose}
+          onOpen={handleDropdownOpen}
         >
+          {withSearch && isOpen && (
+            <Input
+              sx={{
+                '& .MuiOutlinedInput-notchedOutline': {
+                  borderColor: 'transparent',
+                },
+                '&:hover .MuiOutlinedInput-notchedOutline': {
+                  borderColor: 'transparent',
+                },
+                '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                  borderColor: 'transparent',
+                },
+                height: '35px',
+                padding: '5px 10px 5px 15px',
+              }}
+              fullWidth
+              value={searchQuery}
+              onChange={handleSearchChange}
+              placeholder="Search"
+              onKeyDown={handleKeyDown}
+            />
+          )}
           {options?.map((option) => {
             return (
               <MenuItem key={option.value} value={option.value}>
-                {value.includes(option.value) ? (
-                  <Checkbox checked />
-                ) : (
-                  <Checkbox />
-                )}
+                <Checkbox checked={value.includes(option.value)} />
                 <ListItemText primary={option.label} />
               </MenuItem>
             );

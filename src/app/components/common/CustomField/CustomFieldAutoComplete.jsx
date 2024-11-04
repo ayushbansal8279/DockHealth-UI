@@ -24,7 +24,8 @@ const CustomFieldAutoComplete = ({
     formState: { errors },
     setValue,
     unregister,
-  } = useFormContext();
+    } = useFormContext();
+  
 
   useEffect(() => {
     register(name);

@@ -171,7 +171,7 @@ const PatientForm = forwardRef(
           <Spacing vertical={3} />
           <FormSelect
             readOnly={!edited || !patientAddEnabled}
-            label="Sex at birth"
+            label="Sex at Birth"
             options={GENDER_OPTIONS_BIRTH}
             name="gender"
           />
@@ -194,7 +194,7 @@ const PatientForm = forwardRef(
             inputComponent={DateInput}
             name="dob"
             maxDate={moment().toISOString()}
-            setError={setError}
+            // setError={setError}
             clearErrors={clearErrors}
           />
           <Spacing vertical={3} />
@@ -240,7 +240,7 @@ const PatientForm = forwardRef(
           <Spacing vertical={3} />
           <FormInput
             readOnly={!edited || !patientAddEnabled}
-            label="email"
+            label="Email"
             name="email"
           />
           <Spacing vertical={3} />

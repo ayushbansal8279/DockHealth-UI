@@ -126,18 +126,19 @@ export const CloseIcon = styled(Close)`
 
 export const ModalHeader = styled.p`
   margin-bottom: 0;
-  font-size: ${fontSizes.regularPlus};
-  color: ${palette.brightBlue};
-  text-transform: uppercase;
+  font-size: 22px;
   text-align: ${({ textAlign }) => textAlign ?? 'center'};
+  font-family: Outfit;
+  font-weight: 600;
 `;
 
 export const ModalDescription = styled.p`
   margin-bottom: 0;
   font-size: ${fontSizes.regular};
   font-weight: ${fontWeights.light};
-  color: ${palette.coolGrey1};
+  color: ${palette.black};
   text-align: center;
+  font-family: Outfit;
 `;
 
 export const ModalHeaderContainerStyled = styled.div`

@@ -5,10 +5,14 @@ import isEmpty from 'ramda/src/isEmpty';
 import FilterButton from 'components/filter/FilterButton/FilterButton';
 import FilterPopover from 'components/filter/FilterPopover/FilterPopover';
 import CustomFilters from 'components/filter/CustomFilters/CustomFilters';
+import { useSelector } from 'react-redux';
 import { MegaFilterNoResultsLabel, MegaFilterContainer } from './styled';
 import NewFilterContainer from '../../../filter/NewFilterContainer/NewFilterContainer';
 import SaveFilterPopup from '../../../filter/SaveFilterPopup/SaveFilterPopup';
 import FilterTableLoader from '../../../filter/FilterTableLoader/FilterTableLoader';
+import { organizationSelector } from '@/app/selectors/organization-selectors';
+import { userProfileSelector } from '@/app/selectors/user-selectors';
+// import { ampli, AmpliEventType } from '@/app/amplitude/ampli';
 
 const MegaFilter = ({
   children,
@@ -32,9 +36,6 @@ const MegaFilter = ({
   isDefaultDateFilterApplied = false,
   value,
   focused,
-  multiSelectEnabled,
-  multipleSelectedQuickFilters,
-  updateMultipleSelectedQuickFilters,
 }) => {
   const [isOpen, openPopover] = useState(false);
   const megaFilterButtonReference = useRef(null);
@@ -46,14 +47,24 @@ const MegaFilter = ({
   const [filteredData, setFilteredData] = useState({});
   const [customFilteredData, setCustomFilteredData] = useState({});
   const [selectedQuickFilter, setSelectedQuickFilter] = useState('');
+  const organization = useSelector(organizationSelector);
+  const userProfile = useSelector(userProfileSelector);
+
+  // useEffect(() => {
+  //   if (isOpen) {
+  //     ampli.track(AmpliEventType.MegaFilterOpen, {
+  //       organizationIdentifier: organization.organizationIdentifier ?? '',
+  //       userIdentifier: userProfile.userIdentifier ?? '',
+  //     });
+  //   }
+  // }, [isOpen]);
 
   const isFilterApplied =
-    (selectedFilters && !isEmpty(selectedFilters)) ||
-    multipleSelectedQuickFilters?.length > 0;
+    (selectedFilters && !isEmpty(selectedFilters))
 
   useEffect(() => {
     const data = {};
-    if (selectedQuickFilter === null && selectedFilters && filters) {
+    if (!selectedQuickFilter && selectedFilters && filters) {
       for (const key in selectedFilters) {
         if (key !== '') {
           const users = filters
@@ -80,12 +91,10 @@ const MegaFilter = ({
   }, [selectedFilters, filters, selectedQuickFilter]);
 
   const clearFilters = useCallback(() => {
-    onSelectFilters(null);
     selectQuickFilter(null);
     setFinalFilter({});
     setSelectedQuickFilter('');
-    updateMultipleSelectedQuickFilters('', true);
-  }, [onSelectFilters, selectQuickFilter, updateMultipleSelectedQuickFilters]);
+  }, [selectQuickFilter]);
 
   useEffect(() => {
     if (clearFilter) {
@@ -189,11 +198,6 @@ const MegaFilter = ({
               clearFilters={clearFilters}
               setSelectedCustomFilter={setSelectedCustomFilter}
               origin={origin}
-              multiSelectEnabled={multiSelectEnabled}
-              multipleSelectedQuickFilters={multipleSelectedQuickFilters}
-              updateMultipleSelectedQuickFilters={
-                updateMultipleSelectedQuickFilters
-              }
             />
           ) : (
             <FilterTableLoader />

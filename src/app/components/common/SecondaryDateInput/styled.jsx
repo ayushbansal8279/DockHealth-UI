@@ -12,7 +12,7 @@ export const DateInputMask = styled(
   )),
 )`
   && {
-    width: 100px;
+    width: 110px;
     height: 27px;
     margin: 0;
     padding: ${spacing.tiny} ${spacing.small};

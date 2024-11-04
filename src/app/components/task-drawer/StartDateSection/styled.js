@@ -36,23 +36,24 @@ export const Placeholder = styled.p`
 
 export const StartDateSectionWrapper = styled.div`
   display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  width: 100%;
-  height: 54px;
-  font-family: inherit;
+  align-items: center;
+  font-family: Outfit;
+  margin-left: 10px;
 
   ${({ disabled }) =>
     disabled &&
     `
-    & ${Placeholder}, & ${StartDateLabel} {
-      color: ${palette.coolGrey2};
-    }
-
-    & ${StartDateContent} {
-      border-color: ${palette.coolGrey2};
-    }
+    pointer-events: none;
+    
   `}
+`;
+
+export const AddStartDateButton = styled.button`
+  color: black;
+  margin-left: 1.5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 
 export const StyledButton = styled.button`

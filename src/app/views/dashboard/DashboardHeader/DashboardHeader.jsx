@@ -67,7 +67,10 @@ import {
 } from './styled';
 import { ActionsContainer } from '../DashboardToolbar/styled';
 import HomeTaskViewFilter from '@/app/components/tasklist/list-toolbar-buttons/HomeTaskViewFilter';
-import localStorageHelper from '@/app/helpers/local-storage-helper';
+import localStorageHelper, {
+  getDashboardTaskViewFilter,
+  setDashboardTaskViewFilter,
+} from '@/app/helpers/local-storage-helper';
 import { openAddTaskTaskDrawer } from '@/app/actions/task-drawer-actions';
 import { TaskOrigin } from '@/app/helpers/task-helpers';
 
@@ -138,7 +141,7 @@ const DashboardHeader = ({
 
   const onChangeTaskViewFilter = (newFilter) => {
     dispatch(updateDashboardTaskViewFilter(newFilter));
-    localStorageHelper.setDashboardTaskViewFilter(
+    setDashboardTaskViewFilter(
       currentOrganization?.organizationIdentifier,
       newFilter,
     );
@@ -150,12 +153,13 @@ const DashboardHeader = ({
     dispatch(getQuickFilters({ contextType }));
   }, [contextType, dispatch]);
 
-  const searchTasksWithDebounce = useCallback(() => {
+  const searchTasksWithDebounce = useCallback(
     debounce((value) => {
       onSearchChanged();
       dispatch(searchDashboardTasks(value));
-    }, 1000);
-  }, [dispatch]);
+    }, 1000),
+    [],
+  );
 
   const handleSearchChange = (value) => {
     setSearchValue(value);
@@ -165,7 +169,7 @@ const DashboardHeader = ({
       dispatch(
         initializeDashboardState(
           tabName,
-          localStorageHelper.getDashboardTaskViewFilter(
+          getDashboardTaskViewFilter(
             currentOrganization?.organizationIdentifier,
           ),
         ),
@@ -179,7 +183,7 @@ const DashboardHeader = ({
       dispatch(
         initializeDashboardState(
           tabName,
-          localStorageHelper.getDashboardTaskViewFilter(
+          getDashboardTaskViewFilter(
             currentOrganization?.organizationIdentifier,
           ),
         ),
@@ -297,6 +301,20 @@ const DashboardHeader = ({
     }));
   }, [groupList, groupsPreferences, updateGroupsPreferences]);
 
+  const groupOptions = useMemo(() => {
+    return quickFiltersList?.map((quickFilter) => ({
+      name: quickFilter?.name,
+      onClick: () =>
+        handleUpdateMultipleSelectedQuickFilters(
+          quickFilter.quickFilterIdentifier,
+        ),
+      key: quickFilter.quickFilterIdentifier,
+      checked: multipleSelectedQuickFilters?.includes(
+        quickFilter?.quickFilterIdentifier,
+      ),
+    }));
+  }, [quickFiltersList, multipleSelectedQuickFilters]);
+
   const openAddTaskDrawer = () => {
     setAddTaskDrawer(true);
     dispatch(openAddTaskTaskDrawer());
@@ -330,7 +348,7 @@ const DashboardHeader = ({
       );
 
       setMultipleSelectedQuickFilters(quickFiltersArray);
-      setTimeout(() => dispatch(getDashboardGroups()), 1000); // time delay results in better home view refresh
+      setTimeout(() => dispatch(getDashboardGroups()), 10); // time delay results in better home view refresh
     },
     [dispatch, multipleSelectedQuickFilters, tabName],
   );
@@ -359,6 +377,7 @@ const DashboardHeader = ({
                   showCustomColumnCreate={false}
                   additionalOptionsTitle="Groups"
                   additionalOptions={additionalOptions}
+                  groupOptions={groupOptions}
                   iconColorFilterActive={iconColorFilterActiveItem?.value}
                   isDashboard
                 />
@@ -389,11 +408,6 @@ const DashboardHeader = ({
                   clearFilter={clearFilter}
                   setClearFilter={setClearFilter}
                   origin={TaskOrigin.DASHBOARD}
-                  multiSelectEnabled
-                  multipleSelectedQuickFilters={multipleSelectedQuickFilters}
-                  updateMultipleSelectedQuickFilters={
-                    handleUpdateMultipleSelectedQuickFilters
-                  }
                 />
                 <Box mx={0.5} />
                 <HeaderSearch

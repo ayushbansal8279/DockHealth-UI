@@ -68,10 +68,7 @@ import { checkIfUserIsOrganizationAdmin } from 'helpers/user-helper';
 import DependencyIcon from 'img/dependency-icon.svg';
 import DependencyListPopover from 'components/common/DependencyListPopover/DependencyListPopover';
 import useBooleanWithTimeout from 'hooks/use-boolean-with-timeout';
-import {
-  ColumnsConfigContext,
-  useTaskListColumnsConfig,
-} from 'context-api/columns-config-context';
+import { useTaskListColumnsConfig } from 'context-api/columns-config-context';
 import TaskItemCustomField from 'components/common/CustomField/TaskItemCustomField';
 import StickyMainTaskItemCell from 'components/task/StickyMainTaskItemCell/StickyMainTaskItemCell';
 import TaskItemCell from 'components/task/TaskItemCell/TaskItemCell';
@@ -109,6 +106,7 @@ import TaskItemOrganization from './TaskItemComponents/TaskItemOrganization';
 import TaskItemWorkflowStatus from './TaskItemComponents/TaskItemWorkflowStatus';
 import TaskItemDecision from './TaskItemComponents/TaskItemDecision';
 import TaskItemCompleteIcon from './TaskItemComponents/TaskItemCompleteIcon';
+import { openDrawer as openWorkflowDrawer } from '@/app/actions/workflow-drawer-actions';
 import {
   MainStandardTaskItemCell,
   StandardTaskItemContainer,
@@ -124,6 +122,7 @@ import {
   // AddPlaceholder,
   ChildTaskTitle,
   ParentTaskLink,
+  WorkflowTitle,
 } from '../styled';
 import TaskItemText from './customFieldsTaskItemComponents/TaskItemText/TaskItemText';
 import TaskItemDropdown from './customFieldsTaskItemComponents/TaskItemDropdown/TaskItemDropdown';
@@ -300,13 +299,12 @@ const TaskItem = React.memo(
       organizationCustomFieldsSelector,
     );
     const listCustomFields = useSelector(listCustomFieldsSelector);
-    const { allTaskListCustomFields } = useContext(ColumnsConfigContext);
 
     const taskCustomFields = organizationCustomFields
       ? origin === 'LIST'
         ? organizationCustomFields.concat(listCustomFields)
         : organizationCustomFields.concat(
-            allTaskListCustomFields?.filter(
+            listColumns?.filter(
               (taskListCustomfield) =>
                 taskListCustomfield?.taskListIdentifier === taskListIdentifier,
             ),
@@ -353,6 +351,33 @@ const TaskItem = React.memo(
         hasPriorityHighlightItem && hasPriorityHighlightItem?.value === 'true'
       );
     }, [selectedOrganization]);
+
+    const getTaskGroupForWorkflow = (taskItem) => {
+      if (
+        (origin === TaskOrigin.DASHBOARD || origin === TaskOrigin.GLOBAL) &&
+        taskItem?.itemType === 'TASK' &&
+        taskItem?.taskGroups
+      ) {
+        const filteredGroups = taskItem.taskGroups?.filter(
+          (taskGroup) => taskGroup?.groupType === 'TASK_BUNDLE',
+        );
+
+        return filteredGroups?.length > 0 ? filteredGroups[0] : null;
+      }
+      if (
+        (!!selectedFilters && Object.keys(selectedFilters)?.length > 0) ||
+        !!searchValue ||
+        !!sort.key
+      ) {
+        const filteredGroups = taskItem.taskGroups?.filter(
+          (taskGroup) => taskGroup?.groupType === 'TASK_BUNDLE',
+        );
+        return filteredGroups?.length > 0 ? filteredGroups[0] : null;
+      }
+      return null;
+    };
+
+    const workflowTaskGroup = getTaskGroupForWorkflow(task);
 
     useEffect(() => {
       if (task?.status === 'COMPLETE') {
@@ -581,6 +606,15 @@ const TaskItem = React.memo(
           ),
         ),
       [dispatch, parentTaskGroupIdentifier, task, templateBundleIdentifier],
+    );
+
+    const openDrawerForWorkflow = useCallback(
+      (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        dispatch(openWorkflowDrawer(workflowTaskGroup?.taskGroupIdentifier));
+      },
+      [dispatch, workflowTaskGroup],
     );
 
     const refreshTab = useCallback(
@@ -822,6 +856,7 @@ const TaskItem = React.memo(
             }
             isSortApplied={!!sort.key}
             width={width + 25 + 56}
+            isTaskOfTemplate={!!workflowTaskGroup}
           >
             {taskListRestrictions?.createTask !== DISABLED && (
               <DotsContainer
@@ -906,7 +941,7 @@ const TaskItem = React.memo(
 
     const getReduceWidth = (columnName) => {
       return isSubtask &&
-        (origin === 'LIST' || origin === 'PATIENT') &&
+        (origin === 'LIST' || origin === 'PATIENT' || origin === 'TEMPLATE') &&
         !selectedFilters &&
         !searchValue &&
         !sort.key &&
@@ -1001,6 +1036,7 @@ const TaskItem = React.memo(
             origin={origin}
             isVirtualSubtask={isVirtualSubtask}
             isWorkflowSubtask={isWorkflowSubtask}
+            isTaskOfTemplate={!!workflowTaskGroup}
           >
             {randerFirstColumnCoverIfNecessary(
               <>
@@ -1035,32 +1071,50 @@ const TaskItem = React.memo(
                       </DependencyIconContainer>
                     </>
                   )}
-                  <TaskItemDescription
-                    disableMentions={restrictions?.mentions === DISABLED}
-                    disabled={restrictions?.description === READ_ONLY}
-                    task={task}
-                    isCompletedGroup={isCompletedGroup}
-                    highlightedValue={highlightedValue}
-                    isSubtask={isSubtask}
-                    isEditing={isEditingDescription}
-                    setEditing={setEditingDescription}
-                    isEditButtonVisible
-                    hasParentTaskLabel={hasParentTaskLabel}
-                    width={
-                      columns?.find(
-                        ({ identifier }) =>
-                          identifier === TaskItemColumn.DESCRIPTION,
-                      )?.columnWidth -
-                      100 -
-                      (isSubtask &&
-                      !hasParentTaskLabel &&
-                      descriptionColumnOrder === 0
-                        ? 50
-                        : 0) -
-                      (isSubtask ? 0 : 50) -
-                      (showDecisionRow ? 200 : 0)
+                  <Tooltip
+                    placement="bottom"
+                    title={
+                      !!workflowTaskGroup ? (
+                        <>
+                          <WorkflowTitle>Workflow </WorkflowTitle>
+                          <ParentTaskLink onClick={openDrawerForWorkflow}>
+                            {workflowTaskGroup?.groupName}
+                          </ParentTaskLink>
+                        </>
+                      ) : (
+                        ''
+                      )
                     }
-                  />
+                  >
+                    <div style={{ width: '100%', overflow: 'hidden' }}>
+                      <TaskItemDescription
+                        disableMentions={restrictions?.mentions === DISABLED}
+                        disabled={restrictions?.description === READ_ONLY}
+                        task={task}
+                        isCompletedGroup={isCompletedGroup}
+                        highlightedValue={highlightedValue}
+                        isSubtask={isSubtask}
+                        isEditing={isEditingDescription}
+                        setEditing={setEditingDescription}
+                        isEditButtonVisible
+                        hasParentTaskLabel={hasParentTaskLabel}
+                        width={
+                          columns?.find(
+                            ({ identifier }) =>
+                              identifier === TaskItemColumn.DESCRIPTION,
+                          )?.columnWidth -
+                          100 -
+                          (isSubtask &&
+                          !hasParentTaskLabel &&
+                          descriptionColumnOrder === 0
+                            ? 50
+                            : 0) -
+                          (isSubtask ? 0 : 50) -
+                          (showDecisionRow ? 20 : 0)
+                        }
+                      />
+                    </div>
+                  </Tooltip>
                   {!isSubtask && (
                     <TaskItemSubtasks
                       isSubtask={isSubtask}
@@ -1105,20 +1159,32 @@ const TaskItem = React.memo(
                     </Tooltip>
                   </div>
                   {showDecisionRow && (
-                    <DecisionCellContainer
-                      onClick={(event) => event.stopPropagation()}
+                    <div
+                      style={{
+                        display: 'flex',
+                        overflow: 'hidden',
+                      }}
                     >
-                      <TaskItemDecision
-                        outcomes={task?.taskOutcomes}
-                        onSelect={handleDecisionOutcomeSelection}
-                        task={task}
-                        templateBundleIdentifier={templateBundleIdentifier}
-                        disabled={isCompleted || !isDependencyEmptyOrCompleted}
-                        error={taskDecisionError}
-                        clearError={() => setTaskDecisionError(false)}
-                        iconColorActive={iconColorActive}
-                      />
-                    </DecisionCellContainer>
+                      <DecisionCellContainer
+                        onClick={(event) => event.stopPropagation()}
+                      >
+                        <TaskItemDecision
+                          outcomes={task?.taskOutcomes}
+                          onSelect={handleDecisionOutcomeSelection}
+                          task={task}
+                          templateBundleIdentifier={
+                            templateBundleIdentifier ||
+                            workflowTaskGroup?.taskGroupIdentifier
+                          }
+                          disabled={
+                            isCompleted || !isDependencyEmptyOrCompleted
+                          }
+                          error={taskDecisionError}
+                          clearError={() => setTaskDecisionError(false)}
+                          iconColorActive={iconColorActive}
+                        />
+                      </DecisionCellContainer>
+                    </div>
                   )}
                 </MainStandardTaskItemCell>
               </>,

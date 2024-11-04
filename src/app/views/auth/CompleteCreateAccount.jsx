@@ -44,6 +44,7 @@ import {
 import DockHeaderLogo from 'img/dock-header-logo.svg';
 import { Title, Subtitle } from 'components/auth/Title';
 import { OnboardingDialog } from '../onboarding/OnboardingTemplate.Components';
+import PasswordRuleMatch from '@/app/components/auth/PasswordRuleMatch';
 
 const REQUIRED_MESSAGE = 'This field is required';
 
@@ -197,6 +198,7 @@ const CompleteCreateAccount = (props) => {
   );
 
   const email = formMethods.watch('email');
+  const passwordValue = formMethods.watch('password', '');
   const { setValue } = formMethods;
 
   const locationParameters = queryString.parse(history?.location?.search);
@@ -345,9 +347,7 @@ const CompleteCreateAccount = (props) => {
           <Spacing vertical={5} />
           <FormInput name="password" label="Password" type="password" />
           <Spacing vertical={3} />
-          <OutfitTypography variant="h5">
-            * 8 characters • 1 capital • 1 number • 1 special character
-          </OutfitTypography>
+          <PasswordRuleMatch password={passwordValue} />
           <Spacing vertical={4} />
           <FormInput
             name="confirmPassword"

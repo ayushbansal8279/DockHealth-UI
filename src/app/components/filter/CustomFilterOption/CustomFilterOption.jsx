@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import palette from 'styles/palette';
+import moment from 'moment';
 import {
   CustomFilterOptionWrapper,
   OptionMenuContainer,
@@ -19,7 +20,6 @@ const CustomFilterOption = (props) => {
     onDelete,
     autofocus,
     onBlur,
-    editModeEnabled = true,
     setSavePopupOpen,
     selectedQuickFilter,
     setSelectedQuickFilter,
@@ -32,22 +32,14 @@ const CustomFilterOption = (props) => {
     setSelectedCustomFilter,
     isPatientListPage,
     handleQuickFilterDuplicateForPatientList,
-    multiSelectEnabled,
-    multipleSelectedQuickFilters,
-    // updateMultipleSelectedQuickFilters,
   } = props;
   const [value, setValue] = useState(label);
   const [isSelected, setSelected] = useState(false);
   const inputReference = useRef(null);
 
   useEffect(() => {
-    setSelected(
-      selectedQuickFilter === identifier ||
-        multipleSelectedQuickFilters?.includes(identifier),
-    );
-  }, [selectedQuickFilter, identifier, multipleSelectedQuickFilters]);
-
-  // console.log(selectedDashboardQuickfilters);
+    setSelected(selectedQuickFilter === identifier);
+  }, [selectedQuickFilter, identifier]);
 
   useEffect(() => {
     setValue(label);
@@ -85,14 +77,14 @@ const CustomFilterOption = (props) => {
       for (const key in selectedFilters) {
         if (key !== '') {
           const users = filters
-            .flatMap((item) => item.id === key && item.options)
-            .filter((item) => typeof item !== 'boolean');
+            ?.flatMap((item) => item.id === key && item.options)
+            ?.filter((item) => typeof item !== 'boolean');
 
           let options = selectedFilters[key].options.map((item) => {
             if (item.includes('DATE_RANGE')) {
-              let aa = users.find((user) => user.key === item);
-              aa = {
-                ...aa,
+              let dateOption = users.find((user) => user.key === item);
+              dateOption = {
+                ...dateOption,
                 dateStart: moment(selectedFilters[key].dateStart).format(
                   'YYYY-MM-DD',
                 ),
@@ -100,7 +92,7 @@ const CustomFilterOption = (props) => {
                   'YYYY-MM-DD',
                 ),
               };
-              return aa;
+              return dateOption;
             }
             return users.find((user) => user.key === item);
           });
@@ -140,9 +132,7 @@ const CustomFilterOption = (props) => {
   ];
 
   const handleOptionClick = useCallback(() => {
-    if (multiSelectEnabled) {
-      onOptionClick(identifier);
-    } else if (isSelected) {
+    if (isSelected) {
       clearFilters();
       setSelected(false);
       setSelectedQuickFilter('');
@@ -150,7 +140,6 @@ const CustomFilterOption = (props) => {
       onOptionClick(identifier);
     }
   }, [
-    multiSelectEnabled,
     isSelected,
     onOptionClick,
     identifier,
@@ -179,10 +168,7 @@ const CustomFilterOption = (props) => {
   // );
 
   return (
-    <CustomFilterOptionWrapper
-      selected={isSelected}
-      editModeEnabled={editModeEnabled}
-    >
+    <CustomFilterOptionWrapper selected={isSelected}>
       <QuickFilterTitleContainer>
         <QuickFilterTitle
           selected={isSelected}
@@ -225,7 +211,7 @@ const CustomFilterOption = (props) => {
             </Tooltip>
       </IconContainer> */}
         <OptionMenuContainer>
-          {!disableOptions && editModeEnabled && (
+          {!disableOptions && (
             <OptionsMenu color={palette.shadowBlue} options={OPTIONS}>
               <MoreVertIcon />
             </OptionsMenu>

@@ -118,8 +118,8 @@ const NewFilterContainer = ({
           filter={filter}
           finalFilter={finalFilter}
           filterOptions={filters
-            .flatMap((item) => item?.id === filter && item?.options)
-            .filter((item) => typeof item !== 'boolean')}
+            ?.flatMap((item) => item?.id === filter && item?.options)
+            ?.filter((item) => typeof item !== 'boolean')}
           setFilteredData={setFilteredData}
           filteredData={filteredData}
         />

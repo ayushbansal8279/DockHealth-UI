@@ -3,6 +3,7 @@ import { getGroupByDueDate } from 'helpers/dashboard-helpers';
 import { TaskItemType } from 'helpers/task-helpers';
 import { updateTasksStateCallback } from './reducer-helper';
 import TaskBaseReducer from './task-base-reducer';
+import { move } from 'ramda';
 
 const initialState = {
   tabName: null,
@@ -17,6 +18,11 @@ const initialState = {
   isFetchingFilters: false,
   filterOptionsError: false,
   taskViewFilter: null,
+  sort: {
+    key: null,
+    order: null,
+  },
+  loadingGroups: [],
 };
 
 const addTask = (list, taskToAdd) => {
@@ -179,11 +185,19 @@ const DashboardTasksReducer = (state = initialState, action) => {
       };
     }
 
+    case ActionTypes.SELECT_DASHBOARD_FILTERS: {
+      return {
+        ...state,
+        loadingGroups: state?.tasksList,
+      };
+    }
+
     case ActionTypes.SEARCH_DASHBOARD_TASKS: {
       return {
         ...state,
         isLoading: true,
         searchValue: action.searchTerm,
+        loadingGroups: state?.tasksList,
       };
     }
 
@@ -247,7 +261,7 @@ const DashboardTasksReducer = (state = initialState, action) => {
       const groupToUpdate = state?.tasksList?.find(
         ({ groupType, taskGroupIdentifier }) =>
           groupType === 'QUICK_FILTER'
-            ? taskGroupIdentifier === action.groupIdentifier
+            ? taskGroupIdentifier === action.taskGroupIdentifier
             : groupType === action.groupType,
       );
 
@@ -262,6 +276,13 @@ const DashboardTasksReducer = (state = initialState, action) => {
         ...state,
         tasksList: newTasksList,
       };
+    }
+
+    case ActionTypes.REORDER_DASHBOARD_TASK_GROUPS: {
+      const { newIndex, oldIndex } = action;
+      const newDashboardGroupsOrder = move(oldIndex, newIndex, state.tasksList);
+
+      return { ...state, tasksList: newDashboardGroupsOrder };
     }
 
     case ActionTypes.GET_DASHBOARD_TASKS_FOR_GROUP_SUCCESS: {
@@ -281,6 +302,9 @@ const DashboardTasksReducer = (state = initialState, action) => {
           ...state.tasksMap,
           ...newMap,
         },
+        loadingGroups: state?.loadingGroups?.filter(
+          (taskGroup) => taskGroup?.groupName !== group?.groupName,
+        ),
       };
     }
 
@@ -288,7 +312,7 @@ const DashboardTasksReducer = (state = initialState, action) => {
       const groupToUpdate = state?.tasksList?.find(
         ({ groupType, taskGroupIdentifier }) =>
           groupType === 'QUICK_FILTER'
-            ? taskGroupIdentifier === action.groupIdentifier
+            ? taskGroupIdentifier === action.taskGroupIdentifier
             : groupType === action.groupType,
       );
       const groupToUpdateIndex = state?.tasksList?.indexOf(groupToUpdate);
@@ -324,6 +348,19 @@ const DashboardTasksReducer = (state = initialState, action) => {
       };
     }
 
+    case ActionTypes.SORT_DASHBOARD_TASKS: {
+      const { key, order } = action;
+
+      return {
+        ...state,
+        sort: {
+          key,
+          order,
+        },
+        loadingGroups: state?.tasksList,
+      };
+    }
+
     case ActionTypes.INSERT_CREATED_TASK_SUCCESS: {
       if (!state.tabName) {
         return { ...state };
@@ -348,6 +385,24 @@ const DashboardTasksReducer = (state = initialState, action) => {
           }
 
           return g;
+        }),
+      };
+    }
+
+    case ActionTypes.DELETE_WORKFLOW: {
+      const { identifier } = action;
+      return {
+        ...state,
+        tasksList: state.tasksList.map((g) => {
+          const newTasks = g.tasks?.filter((taskId) => taskId !== identifier);
+          return {
+            ...g,
+            tasks: newTasks,
+            metricValue:
+              newTasks?.length === g.tasks?.length
+                ? g.metricValue
+                : g.metricValue - 1,
+          };
         }),
       };
     }

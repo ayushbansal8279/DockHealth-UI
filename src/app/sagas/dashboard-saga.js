@@ -8,20 +8,17 @@ import {
   takeLatest,
   all,
 } from 'redux-saga/effects';
-import isEmpty from 'ramda/src/isEmpty';
 import * as ActionTypes from 'actions/action-types';
 import * as DashboardActions from 'actions/dashboard-actions';
 import {
   reorderTasksInGroup,
   getDashboardMyTasksFilters,
   getDashboardAllTasksFilters,
-  getDashboardMyTasksByCriteria,
-  getDashboardAllTasksByCriteria,
   getDashboardTaskStasForImplicitGroups,
   getTasksAssignedToUserByImplicitGroup,
   getTasksForOrganizationByImplicitGroup,
-  searchTasksByAssignedToUserGroupedByImplicitGroups,
-  searchTasksForOrganizationGroupedByImplicitGroups,
+  // searchTasksByAssignedToUserGroupedByImplicitGroups,
+  // searchTasksForOrganizationGroupedByImplicitGroups,
   getCalendarTasks,
 } from 'api/dashboard-api';
 import {
@@ -34,6 +31,8 @@ import {
   dashboardGroupTasksCountSelector,
   dashboardTabNameSelector,
   dashboardTaskViewFilterSelector,
+  dashboardSortTasksSelector,
+  dashboardSearchValueSelector,
 } from 'selectors/dashboard-selectors';
 import * as MegaFilterActions from 'actions/mega-filter-actions';
 import { showGlobalErrorAlert } from 'alert/actions';
@@ -77,9 +76,7 @@ function* initializeDashboardView() {
       ),
     );
 
-    yield filters
-      ? put(DashboardActions.getDashboardTasks())
-      : put(DashboardActions.getDashboardGroups());
+    yield put(DashboardActions.getDashboardGroups());
   } catch (error) {
     log(error);
   }
@@ -118,6 +115,9 @@ function* getDashboardTasksForGroup({
     const isAllTasks = tabName === DashboardTasksTab.ALL_TASKS;
     const taskViewFilter = yield select(dashboardTaskViewFilterSelector);
     const includeWorkflows = taskViewFilter?.includeWorkflows ?? true;
+    const selectedFilters = yield select(selectedFiltersInMegaFilterSelector);
+    const searchTerm = yield select(dashboardSearchValueSelector);
+
     const { taskGroups } = yield call(
       isAllTasks
         ? getTasksForOrganizationByImplicitGroup
@@ -129,6 +129,8 @@ function* getDashboardTasksForGroup({
       0,
       0,
       includeWorkflows,
+      selectedFilters,
+      searchTerm,
     );
     const group = taskGroups.find((g) =>
       g.groupType === 'QUICK_FILTER'
@@ -159,57 +161,38 @@ function* loadMoreDashboardTasksForGroup({
   try {
     const tabName = yield select(dashboardTabNameSelector);
     const isAllTasks = tabName === DashboardTasksTab.ALL_TASKS;
+    const taskViewFilter = yield select(dashboardTaskViewFilterSelector);
+    const includeWorkflows = taskViewFilter?.includeWorkflows ?? true;
     const selectedFilters = yield select(selectedFiltersInMegaFilterSelector);
     const customStartPosition = yield select(
       dashboardGroupTasksCountSelector,
       groupType,
     );
 
-    if (!selectedFilters || isEmpty(selectedFilters)) {
-      const { taskGroups } = yield call(
-        isAllTasks
-          ? getTasksForOrganizationByImplicitGroup
-          : getTasksAssignedToUserByImplicitGroup,
-        groupType,
-        taskGroupIdentifier,
-        sortBy,
-        sortDirection,
-        customStartPosition,
-        0,
-      );
-      const group = taskGroups.find((g) =>
-        g.groupType === 'QUICK_FILTER'
-          ? g.groupIdentifier === taskGroupIdentifier
-          : g.groupType === groupType,
-      );
+    const { taskGroups } = yield call(
+      isAllTasks
+        ? getTasksForOrganizationByImplicitGroup
+        : getTasksAssignedToUserByImplicitGroup,
+      groupType,
+      taskGroupIdentifier,
+      sortBy,
+      sortDirection,
+      customStartPosition,
+      0,
+      includeWorkflows,
+      selectedFilters,
+    );
+    const group = taskGroups.find((g) =>
+      g.groupType === 'QUICK_FILTER'
+        ? g.groupIdentifier === taskGroupIdentifier
+        : g.groupType === groupType,
+    );
 
-      yield put({
-        type: ActionTypes.LOAD_MORE_DASHBOARD_TASKS_FOR_GROUP_SUCCESS,
-        groupType,
-        group,
-      });
-    } else {
-      const taskGroups = yield call(
-        isAllTasks
-          ? getDashboardAllTasksByCriteria
-          : getDashboardMyTasksByCriteria,
-        selectedFilters,
-        sortBy,
-        sortDirection,
-        customStartPosition,
-      );
-      const group = taskGroups.find((g) =>
-        g.groupType === 'QUICK_FILTER'
-          ? g.groupIdentifier === taskGroupIdentifier
-          : g.groupType === groupType,
-      );
-
-      yield put({
-        type: ActionTypes.LOAD_MORE_DASHBOARD_TASKS_FOR_GROUP_SUCCESS,
-        groupType,
-        group,
-      });
-    }
+    yield put({
+      type: ActionTypes.LOAD_MORE_DASHBOARD_TASKS_FOR_GROUP_SUCCESS,
+      groupType,
+      group,
+    });
   } catch (error) {
     log(error);
     yield put({
@@ -244,7 +227,7 @@ function* getDashboardGroups() {
   }
 }
 
-function* getDashboardGroupsSuccess({ tasksList }) {
+function* getDashboardGroupsSuccess({ tasksList, sortBy, sortDirection }) {
   yield all(
     tasksList
       .filter(({ defaultOpen }) => defaultOpen)
@@ -253,6 +236,8 @@ function* getDashboardGroupsSuccess({ tasksList }) {
           DashboardActions.getDashboardTasksForGroup(
             groupType,
             taskGroupIdentifier,
+            sortBy,
+            sortDirection,
           ),
         ),
       ),
@@ -261,61 +246,27 @@ function* getDashboardGroupsSuccess({ tasksList }) {
 
 function* searchDashboardTasks({ searchTerm }) {
   try {
-    const tabName = yield select(dashboardTabNameSelector);
-    const isAllTasks = tabName === DashboardTasksTab.ALL_TASKS;
-
-    const dashboardTasksGroups = yield call(
-      isAllTasks
-        ? searchTasksForOrganizationGroupedByImplicitGroups
-        : searchTasksByAssignedToUserGroupedByImplicitGroups,
-      searchTerm,
-    );
-
+    const groups = yield select(dashboardTasksSelector);
+    const { key, order } = yield select(dashboardSortTasksSelector);
+    yield all([
+      put(DashboardActions.getDashboardGroupTasks(groups, key, order)),
+    ]);
+  } catch (error) {
+    log(error);
     yield put({
-      type: ActionTypes.SEARCH_DASHBOARD_TASKS_SUCCESS,
-      tasksList: dashboardTasksGroups?.map((group) => ({
-        ...group,
-        metricValue: group?.tasks?.length || 0,
-        defaultOpen: true,
-      })),
+      type: ActionTypes.GET_DASHBOARD_TASKS_FAILURE,
     });
-  } catch {
-    yield put({ type: ActionTypes.SEARCH_DASHBOARD_TASKS_FAILURE });
     yield put(showGlobalErrorAlert());
   }
 }
 
-function* getDashboardTasks(payload) {
+function* getDashboardTasks() {
   try {
-    const selectedFilters = yield select(selectedFiltersInMegaFilterSelector);
-
-    const tabName = yield select(dashboardTabNameSelector);
-    const isAllTasks = tabName === DashboardTasksTab.ALL_TASKS;
-
-    if (selectedFilters && Object.keys(selectedFilters).length > 0) {
-      const taskGroups = yield call(
-        isAllTasks
-          ? getDashboardAllTasksByCriteria
-          : getDashboardMyTasksByCriteria,
-        selectedFilters,
-        payload?.sortBy,
-        payload?.sortDirection,
-      );
-
-      yield put({
-        type: ActionTypes.GET_DASHBOARD_TASKS_SUCCESS,
-        tasksList: taskGroups?.map((group) => ({
-          ...group,
-          metricValue: group?.tasks?.length || 0,
-          defaultOpen: true,
-        })),
-      });
-    } else {
-      yield all([
-        put(DashboardActions.getDashboardGroups()),
-        put(DashboardActions.getDashboardFilters()),
-      ]);
-    }
+    const groups = yield select(dashboardTasksSelector);
+    const { key, order } = yield select(dashboardSortTasksSelector);
+    yield all([
+      put(DashboardActions.getDashboardGroupTasks(groups, key, order)),
+    ]);
   } catch (error) {
     log(error);
     yield put({
@@ -331,7 +282,11 @@ function* reorderDashboardTasks({
   tasksOrder,
 }) {
   try {
-    yield reorderTasksInGroup({ tasksOrder, taskGroupImplicitType });
+    yield reorderTasksInGroup({
+      tasksOrder,
+      taskGroupImplicitType,
+      taskGroupIdentifier,
+    });
     yield put(
       DashboardActions.getDashboardTasksForGroup(
         taskGroupImplicitType,
@@ -462,4 +417,5 @@ export default function* watchDashboard() {
     ActionTypes.GET_DASHBOARD_CALENDAR_TASKS,
     getDashboardCalendarTasks,
   );
+  yield takeLatest(ActionTypes.REFRESH_ORIGIN, getDashboardTasks);
 }

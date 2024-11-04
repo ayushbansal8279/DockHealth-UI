@@ -22,10 +22,12 @@ import AttachmentProgressBar from 'components/attachments/AttachmentProgressBar/
 import { useBoolean } from 'hooks/useBoolean';
 import { addWorkflowAttachmentSuccess } from 'actions/workflow-actions';
 import AlertMessages from 'alert/AlertMessages';
-import { AttachmentFileInput } from './styled';
 import { OutfitTypography } from 'styles/theme';
 import Spacing from 'components/common/Spacing';
 import palette from 'styles/palette';
+import { ScanStatusText } from '../../task-drawer/AttachmentsSection/helpers';
+import { ScanStatus } from '@/app/views/patient-details/PatientAttachments/helpers';
+import { AttachmentFileInput } from './styled';
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const AttachmentSection = ({ disabled }) => {
@@ -156,24 +158,28 @@ const AttachmentSection = ({ disabled }) => {
   };
 
   const handleAttachmentClick = (attachment) => {
-    setPreviewedAttachment(attachment);
-    loadAttachmentContent(attachment).then(() => {
-      showAttachmentPreview();
-    });
+    if (attachment?.scanStatus === ScanStatus.CLEAN) {
+      setPreviewedAttachment(attachment);
+      loadAttachmentContent(attachment).then(() => {
+        showAttachmentPreview();
+      });
+    }
   };
 
   return (
     <DrawerSection title="Files">
-      <OutfitTypography condensed variant="h4" color={palette.lightGrey}>
-        <Spacing vertical={1} />
-        {isDragActive ? (
-          <span>Drop the files here ...</span>
-        ) : (
-          <span>
-            Drag and drop files or documents here, or click + to select files
-          </span>
-        )}
-      </OutfitTypography>
+      {!disabled && (
+        <OutfitTypography condensed variant="h4" color={palette.lightGrey}>
+          <Spacing vertical={1} />
+          {isDragActive ? (
+            <span>Drop the files here ...</span>
+          ) : (
+            <span>
+              Drag and drop files or documents here, or click + to select files
+            </span>
+          )}
+        </OutfitTypography>
+      )}
       <Spacing vertical={3} />
       <div ref={attachmentReference} />
       <AttachmentPreview
@@ -199,12 +205,21 @@ const AttachmentSection = ({ disabled }) => {
             </>
           ) : (
             attachments?.map((attachment) => (
-              <AttachmentButton
-                key={attachment.attachmentIdentifier}
-                attachment={attachment}
-                onClick={handleAttachmentClick}
-                onRemoveClick={handleDeleteAttachment}
-              />
+              <div style={{ textAlign: 'center' }}>
+                <AttachmentButton
+                  key={attachment.attachmentIdentifier}
+                  attachment={attachment}
+                  onClick={handleAttachmentClick}
+                  onRemoveClick={handleDeleteAttachment}
+                />
+                <p>
+                  {
+                    !attachment?.scanStatus || attachment?.scanStatus === 'IN_PROGRESS'
+                      ? ScanStatusText.IN_PROGRESS
+                      : ScanStatusText[attachment.scanStatus]
+                  }
+                </p>
+              </div>
             ))
           )}
           {isUploadingAttachments && (
@@ -213,6 +228,15 @@ const AttachmentSection = ({ disabled }) => {
           <AddAttachmentButton />
         </AttachmentsDropzoneContainer>
       )}
+      {disabled &&
+        attachments?.map((attachment) => (
+          <AttachmentButton
+            key={attachment.attachmentIdentifier}
+            attachment={attachment}
+            onClick={handleAttachmentClick}
+            onRemoveClick={handleDeleteAttachment}
+          />
+        ))}
     </DrawerSection>
   );
 };

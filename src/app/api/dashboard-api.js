@@ -37,11 +37,13 @@ export function getDashboardMyTasks(status = 'INCOMPLETE') {
 export function reorderTasksInGroup({
   tasksOrder: orderedTaskIds,
   taskGroupImplicitType,
+  taskGroupIdentifier,
 }) {
   return axios
     .put('task/sortTasksInImplicitTaskGroup', {
       taskIdentifiers: orderedTaskIds,
       taskGroupImplicitType,
+      taskGroupIdentifier,
     })
     .then(({ data }) => data)
     .catch((error) => {
@@ -109,30 +111,42 @@ export function getTasksAssignedToUserByImplicitGroup(
   startPosition = 0,
   endPosition = 0,
   includeWorkflows = true,
+  selectedFilters = {},
+  searchTerm,
 ) {
   return axios
-    .get(`/task/findTasksAssignedToUserByImplicitGroup`, {
-      params:
-        sortBy && sortDirection
-          ? {
-              groupType,
-              quickFilterId: taskGroupIdentifier,
-              startPosition,
-              endPosition,
-              status: 'INCOMPLETE',
-              sortBy,
-              sortDirection,
-              includeWorkflows,
-            }
-          : {
-              groupType,
-              quickFilterId: taskGroupIdentifier,
-              startPosition,
-              endPosition,
-              status: 'INCOMPLETE',
-              includeWorkflows,
-            },
-    })
+    .post(
+      `/task/findTasksAssignedToUserByImplicitGroup`,
+      {
+        ...mapSelectedOptionsToRequestPayload(selectedFilters || {}),
+        searchTerm,
+      },
+      {
+        params:
+          sortBy && sortDirection
+            ? {
+                groupType,
+                quickFilterId: taskGroupIdentifier,
+                startPosition,
+                endPosition,
+                status: 'INCOMPLETE',
+                sortBy,
+                sortDirection,
+                includeWorkflows,
+              }
+            : {
+                groupType,
+                quickFilterId: taskGroupIdentifier,
+                startPosition,
+                endPosition,
+                status: 'INCOMPLETE',
+                includeWorkflows,
+              },
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      },
+    )
     .then(({ data }) => includeCustomFieldsPatientsToEachTask(data))
     .catch((error) => {
       throw error;
@@ -147,30 +161,42 @@ export function getTasksForOrganizationByImplicitGroup(
   startPosition = 0,
   endPosition = 0,
   includeWorkflows = true,
+  selectedFilters = {},
+  searchTerm,
 ) {
   return axios
-    .get(`/task/findTasksForOrganizationByImplicitGroup`, {
-      params:
-        sortBy && sortDirection
-          ? {
-              groupType,
-              quickFilterId: taskGroupIdentifier,
-              startPosition,
-              endPosition,
-              status: 'INCOMPLETE',
-              sortBy,
-              sortDirection,
-              includeWorkflows,
-            }
-          : {
-              groupType,
-              quickFilterId: taskGroupIdentifier,
-              startPosition,
-              endPosition,
-              status: 'INCOMPLETE',
-              includeWorkflows,
-            },
-    })
+    .post(
+      `/task/findTasksForOrganizationByImplicitGroup`,
+      {
+        ...mapSelectedOptionsToRequestPayload(selectedFilters || {}),
+        searchTerm,
+      },
+      {
+        params:
+          sortBy && sortDirection
+            ? {
+                groupType,
+                quickFilterId: taskGroupIdentifier,
+                startPosition,
+                endPosition,
+                status: 'INCOMPLETE',
+                sortBy,
+                sortDirection,
+                includeWorkflows,
+              }
+            : {
+                groupType,
+                quickFilterId: taskGroupIdentifier,
+                startPosition,
+                endPosition,
+                status: 'INCOMPLETE',
+                includeWorkflows,
+              },
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      },
+    )
     .then(({ data }) => includeCustomFieldsPatientsToEachTask(data))
     .catch((error) => {
       throw error;

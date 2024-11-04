@@ -40,6 +40,8 @@ export const DecisionSelect = styled(Select)`
   & .MuiSelect-select {
     padding: 0px;
     background-color: white;
+    width: 38px;
+    text-overflow: ellipsis;
   }
 `;
 
@@ -144,6 +146,8 @@ export const PriorityIndicator = styled.div`
 
 export const DependencyIconContainer = styled.div`
   margin-right: ${spacing.small};
+  width: 12px;
+  height: 12px;
 `;
 
 export const BulkContainer = styled.div`
@@ -269,7 +273,10 @@ export const DescriptionBox = styled.div`
   flex-direction: column;
   flex: 1;
   cursor: pointer;
-  width: ${({ width }) => (width ? `${width}px` : '100%')};
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  // width: ${({ width }) => (width ? `${width}px` : '100%')};
   &:hover {
     ${DescriptionEditButton} {
       opacity: 1;
@@ -443,9 +450,15 @@ export const StandardTaskItemContainer = styled.div`
       ? palette.bananaHammockLight
       : // eslint-disable-next-line unicorn/no-nested-ternary
         props.customHighlight ?? palette.white};
-  border-bottom: 1px solid ${palette.coolGrey3};
-  border-right: 1px solid ${palette.coolGrey3};
-  border-top: 1px solid ${palette.coolGrey3};
+  border-bottom: 1px solid
+    ${({ isTaskOfTemplate }) =>
+      isTaskOfTemplate ? palette.blueOcean : palette.coolGrey3};
+  border-right: 1px solid
+    ${({ isTaskOfTemplate }) =>
+      isTaskOfTemplate ? palette.blueOcean : palette.coolGrey3};
+  border-top: 1px solid
+    ${({ isTaskOfTemplate }) =>
+      isTaskOfTemplate ? palette.blueOcean : palette.coolGrey3};
   display: flex;
   justify-content: ${(props) =>
     props.isAddingTask ? 'flex-end' : 'flex-start'};
@@ -466,6 +479,15 @@ export const StandardTaskItemContainer = styled.div`
       ? `
   border-left: 1px solid rgba(75, 179, 253, 1);
   border-right: 1px solid rgba(75, 179, 253, 1);
+  `
+      : ''}
+
+  ${({ workflowAddTask }) =>
+    workflowAddTask
+      ? `
+  border-left: 1px solid rgba(75, 179, 253, 1);
+  border-right: 1px solid rgba(75, 179, 253, 1);
+  border-bottom: 1px solid rgba(75, 179, 253, 1);
   `
       : ''}
 
@@ -492,6 +514,17 @@ export const StandardTaskItemContainer = styled.div`
         border-bottom: 1px solid ${palette.coolGrey2};
       `
         : ''}
+
+    ${({ isTaskOfTemplate }) =>
+      isTaskOfTemplate ? `border: 1px solid ${palette.blueOcean}` : ``};
+
+    ${({ workflowAddTask }) =>
+      workflowAddTask
+        ? `border-bottom: 1px solid ${palette.blueOcean};
+           border-left: 1px solid${palette.blueOcean};
+          border-right: 1px solid ${palette.blueOcean};
+          `
+        : ``};
   }
 
   @media print {
@@ -844,6 +877,8 @@ export const DecisionCellContainer = styled.div`
   border-left: 1px solid ${palette.coolGrey3};
   padding-left: 10px;
   margin-left: 8px;
+  position: relative;
+  overflow: hidden;
 `;
 
 export const DisabledLink = styled.span``;
@@ -881,6 +916,16 @@ export const ChildTaskTitle = styled.div`
   line-height: 16.8px;
   margin: 8px 8px 2px 6px;
   padding: 2px;
+`;
+
+export const WorkflowTitle = styled.div`
+  color: ${palette.black};
+  margin: 4px 4px 0px 6px;
+  text-align: left;
+  font-family: Outfit;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 19.2px;
 `;
 
 export const ParentTaskLink = styled.div`
@@ -1002,4 +1047,17 @@ width: 100%;
   & ${CommentsWrapper} {
     opacity: 1;
   }
+`;
+
+export const PatientLableContainer = styled.div`
+  display: flex;
+  items-align: center;
+`;
+
+export const AISummaryWrapperSubtask = styled.div`
+  margin: 8px 15px 0 2px;
+`;
+
+export const AISummaryWrapper = styled.div`
+  margin: 0 15px 0 2px;
 `;

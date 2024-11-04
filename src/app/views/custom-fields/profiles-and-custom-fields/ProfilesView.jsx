@@ -1,12 +1,15 @@
 import BasicLayoutHeader from 'components/template/BasicLayoutHeader/BasicLayoutHeader';
 import ViewLayout from 'components/template/ViewLayout/ViewLayout';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAllProfileTypes, deleteProfileType } from 'api/profile-type-api';
-import AddButton, {
-  AddEntitiesContainer,
-} from 'components/common/AddButton/AddButton';
 import { openModal, closeModal } from 'modal/actions';
 import { checkIfUserIsOrganizationAdmin } from 'helpers/user-helper';
 import {
@@ -14,8 +17,13 @@ import {
   userProfileSelector,
 } from 'selectors/user-selectors';
 import { StyledDataGrid } from './DataGridStyles';
-import { getTemplateColumns } from './helpers';
-import { ViewContainer } from './styled';
+import { getTemplateColumns, textFieldSx } from './helpers';
+import { ViewContainer, AddButtonWrapper, AddButton, PlusIcon } from './styled';
+import { TextField } from '@mui/material';
+import { createProfileType } from 'api/profile-type-api';
+import { showGlobalAlert, showGlobalErrorAlert } from '@/app/alert/actions';
+import AlertMessages from '@/app/alert/AlertMessages';
+import { useBoolean } from 'react-use';
 
 const PAGE_SIZE = 30;
 
@@ -23,8 +31,11 @@ const ProfilesAndCustomFieldsView = () => {
   const history = useHistory();
   const userProfile = useSelector(userProfileSelector);
   const [profileTypes, setProfileTypes] = useState([]);
+  const [newProfileName, setNewProfileName] = useState('');
+  const [shouldShowInput, showInput] = useBoolean(false);
   const [page, setPage] = useState(0);
   const dispatch = useDispatch();
+  const textFieldRef = useRef(null);
 
   const userHasCustomProfilesAvailable = useSelector(
     userHasCustomProfilesFeatureSelector,
@@ -43,18 +54,6 @@ const ProfilesAndCustomFieldsView = () => {
       setProfileTypes(typeList);
     });
   }, []);
-
-  const onAddProfile = useCallback(() => {
-    dispatch(
-      openModal('CreateProfile', {
-        onAdded: (newTemplate) => {
-          const { identifier } = newTemplate;
-          setProfileTypes((s) => [...s, { id: identifier, ...newTemplate }]);
-        },
-        isCreatingNewField: true,
-      }),
-    );
-  }, [dispatch]);
 
   const onEditProfile = useCallback(
     ({ row: { name, description, id } }) => {
@@ -121,14 +120,40 @@ const ProfilesAndCustomFieldsView = () => {
     profileOptions = profileOptions.concat(profileTypes);
   }
 
+  const onSaveNewProfile = () => {
+    const data = {
+      name: newProfileName,
+    };
+    if (!!newProfileName) {
+      createProfileType(data)
+        .then((newTemplate) => {
+          dispatch(showGlobalAlert(AlertMessages.CREATED));
+          const { identifier } = newTemplate;
+          setProfileTypes((s) => [...s, { id: identifier, ...newTemplate }]);
+          setNewProfileName('');
+        })
+        .catch(() => {
+          dispatch(showGlobalErrorAlert());
+        });
+    }
+  };
+
+  const onAddProfile = () => {
+    showInput();
+    setTimeout(() => {
+      if (textFieldRef.current) textFieldRef.current.focus();
+    }, 100);
+  };
+
   return (
     <ViewLayout header={<BasicLayoutHeader title="Profiles" />}>
+      <AddButtonWrapper>
+        <AddButton onClick={onAddProfile}>
+          <PlusIcon />
+          New Profile
+        </AddButton>
+      </AddButtonWrapper>
       <ViewContainer>
-        {userHasCustomProfilesAvailable && (
-          <AddEntitiesContainer>
-            <AddButton onClick={onAddProfile}>Create Profile</AddButton>
-          </AddEntitiesContainer>
-        )}
         <StyledDataGrid
           columns={columns}
           rows={profileOptions}
@@ -145,6 +170,22 @@ const ProfilesAndCustomFieldsView = () => {
           showColumnRightBorder
           showCellRightBorder
         />
+        {shouldShowInput && (
+          <TextField
+            onChange={(e) => setNewProfileName(e.target.value)}
+            inputRef={textFieldRef}
+            sx={textFieldSx}
+            onKeyDown={(ev) => {
+              if (ev.key === 'Enter') {
+                ev.preventDefault();
+                onSaveNewProfile();
+              }
+            }}
+            value={newProfileName}
+            placeholder="Profile Name here"
+            fullWidth
+          />
+        )}
       </ViewContainer>
     </ViewLayout>
   );

@@ -48,6 +48,7 @@ const StatusSection = ({
             .then((updatedTask) => {
               onTaskDrawerTaskStatusChanged(newWorkflowStatus?.name);
               onTaskUpdate(updatedTask);
+              setStatus(newWorkflowStatus);
               setAutoSaveVisible();
             })
             .catch(() => {
@@ -123,6 +124,9 @@ const StatusSection = ({
                 tabIndex: -1,
                 readOnly: true,
                 value: status?.name || '',
+                style: {
+                  cursor: 'pointer',
+                },
               }}
             />
           )}

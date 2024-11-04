@@ -85,9 +85,6 @@ const TaskItemSubtasks = ({
                     <div style={{ marginBottom: '3px' }}>{subTasksCount}</div>
                   </SubtasksCountText>
                 )}
-                {/* <SubtasksCellText>
-                  {isOpen ? '+' : subTasksCount}
-                </SubtasksCellText> */}
                 <Tooltip
                   placement="top"
                   title={subtasksDisabled ? '' : isOpen ? 'Hide Subtasks' : ''}

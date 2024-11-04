@@ -1,4 +1,13 @@
-import { takeEvery, put, call, all, delay } from 'redux-saga/effects';
+import {
+  takeEvery,
+  put,
+  call,
+  all,
+  delay,
+  fork,
+  take,
+  actionChannel,
+} from 'redux-saga/effects';
 import pluck from 'ramda/src/pluck';
 import move from 'ramda/src/move';
 import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
@@ -240,6 +249,7 @@ function* chooseTaskOutcome({
   try {
     yield call(TaskApi.chooseTaskOutcome, taskOutcomeIdentifier);
     yield call(refreshTemplateBundle, { templateBundleIdentifier });
+    yield put({ type: ActionTypes.REFRESH_ORIGIN });
     yield put(showGlobalAlert(AlertMessages.UPDATED));
   } catch {
     yield put(showGlobalErrorAlert());
@@ -337,6 +347,7 @@ function* updateTaskDueDate({ task, dueDate }) {
       task,
       dueDate: updatedTask.dueDate,
     });
+    yield put({ type: ActionTypes.REFRESH_ORIGIN });
     yield put(showGlobalAlert(AlertMessages.UPDATED));
   } catch {
     yield put({
@@ -428,6 +439,28 @@ function* shareTask({
   }
 }
 
+function* handleAction(action) {
+  try {
+    const response = yield call(TaskApi.bulkEditTasks, action.payload);
+    if (action.callback) {
+      action.callback(null, response);
+    }
+  } catch (error) {
+    if (action.callback) {
+      action.callback(error);
+    }
+  }
+}
+
+function* watchActions() {
+  const requestChannel = yield actionChannel(ActionTypes.BULK_EDIT_TASKS);
+
+  while (true) {
+    const action = yield take(requestChannel);
+    yield call(handleAction, action);
+  }
+}
+
 export default function* watchTask() {
   yield takeEvery(ActionTypes.REORDER_SUBTASKS, reorderSubtasks);
   yield takeEvery(ActionTypes.ADD_TASK_DEPENDENCY_LINK, addTaskDependencyLink);
@@ -457,4 +490,5 @@ export default function* watchTask() {
   yield takeEvery(ActionTypes.SHARE_TASK, shareTask);
   yield takeEvery(ActionTypes.MARK_TASK_AS_READ, markTaskAsRead);
   yield takeEvery(ActionTypes.MARK_TASK_AS_UNREAD, markTaskAsUnRead);
+  yield all([fork(watchActions)]);
 }

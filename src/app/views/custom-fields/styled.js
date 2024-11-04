@@ -10,7 +10,7 @@ export const Header = styled.h2`
 `;
 
 export const ViewContainer = styled.div`
-  max-width: 1000px;
+  max-width: ${({isPatient}) => isPatient ? '1300px' : '1000px' };
   width: 100%;
   margin: 0 auto;
   padding: 50px 20px;
@@ -33,11 +33,17 @@ export const CustomFieldItem = styled.div`
   display: grid;
   grid-template-columns: ${({ type, editable }) => {
     if (type === 'TASK') {
-      if (!editable) return '2fr 1fr 1fr 1fr';
-      return '2fr 1fr 1fr 1fr auto auto';
+      if (!editable) return '2fr 1fr 1fr 1fr 1fr 1fr';
+      return '2fr 1fr 1fr 1fr 1fr 1fr auto auto';
     }
     if (type === 'PROVIDER') {
-      return '1fr 1.75fr 1fr 1fr 1fr auto';
+      return '1fr 1fr 1fr 1fr auto';
+    }
+    if (type === 'PATIENT'){
+      return '1.5fr 1fr 1fr 1fr 1fr 0.8fr 0.8fr auto auto';
+    }
+    if (type === 'PROFILE'){
+      return '1.5fr 1fr 1fr 1fr 0.8fr 0.8fr auto auto';
     }
     return '2fr 1fr 1fr 1fr 1fr auto auto';
   }};
@@ -50,9 +56,10 @@ export const CustomFieldItem = styled.div`
 `;
 
 export const CustomFieldCell = styled.div`
-  padding: 0px 8px;
+  padding: 0px 0px;
   overflow: hidden;
 
+  padding-left: 12px;
   &:first-of-type {
     padding-left: 8px;
   }

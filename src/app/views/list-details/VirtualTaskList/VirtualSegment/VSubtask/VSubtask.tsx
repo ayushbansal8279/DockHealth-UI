@@ -66,6 +66,7 @@ function VSubtask(
   };
   const { visibleWidth, droppableHeaderWidth } =
     useVirtualTaskListScrollContext();
+
   const screenWidth = typeof window !== 'undefined' ? window.innerWidth : 1920;
   const percentage =
     ((!!droppableHeaderWidth ? droppableHeaderWidth : 0) / screenWidth) * 100;
@@ -77,7 +78,7 @@ function VSubtask(
   });
   const [addWorkflowTask, setAddWorkflowTask] = useState(false);
   const parentTask = pulledTask;
-  const { taskList, taskGroups, identifier } = parentTask;
+  const { taskList, taskGroups, identifier, patient } = parentTask;
   const { workflowIdentifierMap, handleRemoveWorkflowIdentifier } =
     useContext(CollapseContext);
 
@@ -111,6 +112,11 @@ function VSubtask(
         taskGroupIdentifier: taskGroup[0]?.taskGroupIdentifier,
         taskListIdentifier: taskList?.taskListIdentifier,
       };
+
+      if (patient) {
+        taskData.patientIdentifier = patient?.patientIdentifier;
+      }
+
       dispatch(TaskActions.saveTask(taskData));
     },
     [
@@ -196,6 +202,7 @@ function VSubtask(
                 isVirtualTask
                 isVirtualSubtask
                 $width={percentage < 90}
+                patient={patient}
               />
             </Sc.VSubtask>
           </div>
@@ -236,8 +243,8 @@ function VSubtask(
                 }
               >
                 <QuickAddSubtask
-                  taskListIdentifier={parentTask.taskList.taskListIdentifier}
-                  parentTaskIdentifier={parentTask.identifier}
+                  taskListIdentifier={parentTask?.taskList?.taskListIdentifier}
+                  parentTaskIdentifier={parentTask?.identifier}
                 />
               </Sc.QuickAddContainer>
             </div>

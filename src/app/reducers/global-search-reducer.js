@@ -1,5 +1,6 @@
 import * as types from 'actions/action-types';
 import { updateTaskOrSubtaskInListsArray } from 'helpers/task-update-helper';
+import { TaskItemType } from 'helpers/task-helpers';
 import { updateTasksStateCallback, updateTasksMap } from './reducer-helper';
 import TaskBaseReducer from './task-base-reducer';
 
@@ -81,6 +82,52 @@ const GlobalSearchReducer = (state = initialState, action) => {
         ...state,
         isLoading: true,
         searchPerformed: false,
+      };
+    }
+
+    case types.DELETE_TASK: {
+      const { taskIdentifier } = action;
+      const taskItem = state.tasksMap[taskIdentifier];
+
+      const { taskListIdentifier } = taskItem?.taskList || {};
+
+      const updatedStateAfterRemovingTaskItem =
+        taskItem?.itemType === TaskItemType.BUNDLE
+          ? {
+              ...state,
+            }
+          : {
+              ...state,
+              lists: state.lists?.map((l) =>
+                l.taskListIdentifier === taskListIdentifier
+                  ? {
+                      ...l,
+                      tasks: l.tasks?.filter(
+                        (task) => task?.taskIdentifier !== taskIdentifier,
+                      ),
+                    }
+                  : l,
+              ),
+            };
+
+      return state.searchPerformed && state.searchPerformed !== ''
+        ? TaskBaseReducer(
+            updatedStateAfterRemovingTaskItem,
+            action,
+            updateTasksStateCallback,
+          )
+        : state;
+    }
+
+    case types.DELETE_WORKFLOW: {
+      const { identifier } = action;
+
+      return {
+        ...state,
+        lists: state.lists?.map((l) => ({
+          ...l,
+          tasks: l.tasks?.filter(({ identifier: id }) => id !== identifier),
+        })),
       };
     }
 

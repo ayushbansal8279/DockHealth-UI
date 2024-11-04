@@ -23,6 +23,7 @@ import Tooltip from 'components/common/Tooltip/Tooltip';
 import * as AlertActions from 'alert/actions';
 import { userProfileSelector } from 'selectors/user-selectors';
 import {
+  bulkEditTasks,
   bulkEditAssignUsers,
   bulkEditUnassignUsers,
   bulkEditUnassignAllUsers,
@@ -407,8 +408,76 @@ const BulkEditOptionsBar = ({
       }
 
       // send api request
-      bulkEditTasksApi(payload)
-        .then(({ transactionIdentifier }) => {
+      // bulkEditTasksApi(payload)
+      //   .then(({ transactionIdentifier }) => {
+      //     dispatch(
+      //       AlertActions.showGlobalAlertWithUndo(
+      //         allSelectedTasksLength > 1
+      //           ? `${allSelectedTasksLength} TASKS ASSIGNED`
+      //           : `${allSelectedTasksLength} TASK ASSIGNED`,
+      //         transactionIdentifier,
+      //         ({ tasks }) => {
+      //           if (
+      //             shouldRefreshTasksEveryTime &&
+      //             refreshTasks &&
+      //             typeof refreshTasks === 'function'
+      //           ) {
+      //             refreshTasks();
+      //           } else {
+      //             updateTasks(tasks);
+      //           }
+      //         },
+      //       ),
+      //     );
+      //     // bulkEditTasks(
+      //     //   payload,
+      //     //   allSelectedTasksLength,
+      //     //   shouldRefreshTasksEveryTime,
+      //     //   refreshTasks,
+      //     //   updateTasks,
+      //     // )(dispatch);
+      //     // NOTE: update assignees in redux state
+      //     if (assignOption === 'unassign_all') {
+      //       bulkEditUnassignAllUsers(
+      //         allSelectedTasksIdentifiers?.length === 0 &&
+      //           allSelectedWorkflowIdentifiers?.length > 0
+      //           ? allSelectedWorkflowIdentifiers
+      //           : allSelectedTasksIdentifiers,
+      //       )(dispatch);
+      //     } else {
+      //       const methods = {
+      //         assignment: bulkEditAssignUsers,
+      //         unassignment: bulkEditUnassignUsers,
+      //       };
+      //       methods[assignOption]?.(
+      //         allSelectedTasksIdentifiers?.length === 0 &&
+      //           allSelectedWorkflowIdentifiers?.length > 0
+      //           ? allSelectedWorkflowIdentifiers
+      //           : allSelectedTasksIdentifiers,
+      //         selectedUsers,
+      //       )(dispatch);
+      //     }
+
+      //     if (
+      //       shouldRefreshTasksEveryTime &&
+      //       refreshTasks &&
+      //       typeof refreshTasks === 'function'
+      //     ) {
+      //       refreshTasks();
+      //     }
+      //   })
+      //   .catch(() => {
+      //     if (refreshTasks && typeof refreshTasks === 'function') {
+      //       refreshTasks();
+      //     }
+      //   });
+      const callback = (error, response) => {
+        if (error) {
+          if (refreshTasks && typeof refreshTasks === 'function') {
+            refreshTasks();
+          }
+        } else {
+          const { transactionIdentifier } = response;
           dispatch(
             AlertActions.showGlobalAlertWithUndo(
               allSelectedTasksLength > 1
@@ -428,33 +497,37 @@ const BulkEditOptionsBar = ({
               },
             ),
           );
-          // NOTE: update assignees in redux state
-          if (assignOption === 'unassign_all') {
-            bulkEditUnassignAllUsers(allSelectedTasksIdentifiers)(dispatch);
-          } else {
-            const methods = {
-              assignment: bulkEditAssignUsers,
-              unassignment: bulkEditUnassignUsers,
-            };
-            methods[assignOption]?.(
-              allSelectedTasksIdentifiers,
-              selectedUsers,
-            )(dispatch);
-          }
+        }
+        if (assignOption === 'unassign_all') {
+          bulkEditUnassignAllUsers(
+            allSelectedTasksIdentifiers?.length === 0 &&
+              allSelectedWorkflowIdentifiers?.length > 0
+              ? allSelectedWorkflowIdentifiers
+              : allSelectedTasksIdentifiers,
+          )(dispatch);
+        } else {
+          const methods = {
+            assignment: bulkEditAssignUsers,
+            unassignment: bulkEditUnassignUsers,
+          };
+          methods[assignOption]?.(
+            allSelectedTasksIdentifiers?.length === 0 &&
+              allSelectedWorkflowIdentifiers?.length > 0
+              ? allSelectedWorkflowIdentifiers
+              : allSelectedTasksIdentifiers,
+            selectedUsers,
+          )(dispatch);
+        }
 
-          if (
-            shouldRefreshTasksEveryTime &&
-            refreshTasks &&
-            typeof refreshTasks === 'function'
-          ) {
-            refreshTasks();
-          }
-        })
-        .catch(() => {
-          if (refreshTasks && typeof refreshTasks === 'function') {
-            refreshTasks();
-          }
-        });
+        if (
+          shouldRefreshTasksEveryTime &&
+          refreshTasks &&
+          typeof refreshTasks === 'function'
+        ) {
+          refreshTasks();
+        }
+      };
+      dispatch(bulkEditTasks(payload, callback));
       onMultiSelectAction('Assigned');
     },
     [
@@ -619,6 +692,7 @@ const BulkEditOptionsBar = ({
         confirmText: 'Move',
         confirm: confirmAction,
         preventClosingModal,
+        modalLabel: 'Move to List'
       }),
     );
   }, [
@@ -933,6 +1007,7 @@ const BulkEditOptionsBar = ({
               handleChangeAssigneTasks={handleChangeAssigneeTasks}
               isDisabled={isDisabled}
               selectedTasks={selectedTasks}
+              isBulkEdit
             />
           </AccessRestrictor>
         )}

@@ -239,6 +239,7 @@ function* updatePartialWorkflow({ taskWorkflowIdentifier, dataToUpdate }) {
       newData,
       taskWorkflowIdentifier,
     });
+    yield put({ type: ActionTypes.REFRESH_ORIGIN });
     yield put(showGlobalAlert(AlertMessages.UPDATED));
   } catch (error) {
     log(error);

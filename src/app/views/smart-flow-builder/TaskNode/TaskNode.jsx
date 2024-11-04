@@ -6,7 +6,7 @@ import SubtaskIcon from 'img/SubtaskIcon';
 import { Box, IconButton } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { isUserGroup } from 'helpers/user-helper';
 import { DrawerFieldEnum } from 'helpers/task-drawer-helpers';
 import { openModal, closeModal } from 'modal/actions';
@@ -34,6 +34,7 @@ import {
   SubtasksLabel,
   DecisionTaskIconWrapper,
 } from './styled';
+import { userProfileSelector } from '@/app/selectors/user-selectors';
 
 const TaskNode = React.memo(({ data, isConnectable, selected, type }) => {
   const { task } = data || {};
@@ -89,9 +90,15 @@ const TaskNode = React.memo(({ data, isConnectable, selected, type }) => {
 
   const handleBlur = () => {
     if (inputValue?.length > 0) {
-      dispatch(partialUpdateTask(taskIdentifier, { description: inputValue }));
+      dispatch(
+        partialUpdateTask(taskIdentifier, {
+          description: inputValue,
+          tokenizedDescription: inputValue,
+        }),
+      ).then(() => {
+        unsetEditing();
+      });
     }
-    unsetEditing();
   };
 
   const handleKeyDown = (event) => {
@@ -114,6 +121,12 @@ const TaskNode = React.memo(({ data, isConnectable, selected, type }) => {
     }
   };
 
+  const memberslist = data?.task?.taskTemplate?.members || [];
+  const currentUser = useSelector(userProfileSelector);
+  const isCurrentMemberPermission = memberslist?.find(({ user }) => 
+    user.identifier === currentUser.identifier)
+    ?.memberPermission === 'VIEW';
+    
   return (
     <TaskNodeHandles
       isConnectable={isConnectable}
@@ -167,6 +180,7 @@ const TaskNode = React.memo(({ data, isConnectable, selected, type }) => {
               justifyContent="space-between"
               alignItems="flex-end"
             >
+              { !isCurrentMemberPermission && (
               <Box display="flex">
                 <button
                   type="button"
@@ -209,13 +223,14 @@ const TaskNode = React.memo(({ data, isConnectable, selected, type }) => {
                   </SubtasksLabel>
                 )}
               </Box>
-              {assignedToUsers.length === 1 &&
+              )}
+              {assignedToUsers?.length === 1 &&
                 (isUserGroup(assignedToUsers[0]) ? (
                   <GroupAvatar group={assignedToUsers[0]} size={35} />
                 ) : (
                   <UserAvatar user={assignedToUsers[0]} size={35} />
                 ))}
-              {assignedToUsers.length > 1 && (
+              {assignedToUsers?.length > 1 && (
                 <AdditionalMembersCounter
                   hiddenMembers={assignedToUsers}
                   size={35}

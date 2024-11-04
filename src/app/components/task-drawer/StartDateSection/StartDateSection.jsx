@@ -1,92 +1,139 @@
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import moment from 'moment';
 import { Box } from '@mui/material';
-import { checkIfTemplateTask, isStartDateInPast } from 'helpers/task-helpers';
+import { checkIfTemplateTask } from 'helpers/task-helpers';
 import DueDatePicker from 'components/task/DueDatePicker/DueDatePicker';
-import Input from 'components/common/Input/Input';
 import { updateTaskStartDate } from 'actions/task-actions';
-import { useDispatch, useSelector } from 'react-redux';
-import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
+import { useDispatch } from 'react-redux';
 import { useBoolean } from 'hooks/useBoolean';
 import PopoverCard from 'components/common/PopoverCard/PopoverCard';
-import { formatStartTime } from './helpers';
-import { AdornmentClear } from '../styled';
+import AssignMemberIcon from 'components/user/AssignMemberIcon/AssingMemberIcon';
+import { StartDateSectionWrapper, AddStartDateButton } from './styled';
 import {
-  StartDateContentWrapper,
-  StartDateContent,
-  StartDateSectionWrapper,
-  Placeholder,
-  StartDateText,
-  StyledButton,
   StyledPopover,
-} from './styled';
+  Title,
+  SubTitle,
+  DateViewContainer,
+  DateViewText,
+} from '../DueDateSection/styled';
+import { isStartDateValid } from '@/app/helpers/date-validation-helper';
+import { openModal } from '@/app/modal/actions';
 
-const StartDateSection = () => {
+const StartDateSection = ({
+  selectedTask,
+  disabled = false,
+  addTaskDrawer,
+  setStartDate,
+}) => {
   const dispatch = useDispatch();
-  const selectedTask = useSelector(selectedTaskSelector);
-  const { taskIdentifier, startDate, hasRecurringSchedule } =
+  const { taskIdentifier, startDate, dueDate, hasRecurringSchedule } =
     selectedTask || {};
-  const momentStartDate = startDate ? moment(startDate) : null;
+  const [momentStartDate, setMomentStartDate] = useState(
+    startDate ? moment(startDate) : null,
+  );
   const isTemplateTask = checkIfTemplateTask(selectedTask);
-  const sectionDisabled = isTemplateTask || !taskIdentifier;
   const buttonReference = useRef(null);
+  const startDateRef = useRef(null);
   const [isPopoverOpen, openPopover, closePopover] = useBoolean(false);
-  const handleStartDateSave = useCallback(
+  const [isTimeAvailable, setIsTimeAvailable] = useState(false);
+  const handleSave = useCallback(
     (updatedStartDateTime) => {
-      dispatch(updateTaskStartDate(selectedTask, updatedStartDateTime));
+      if (updatedStartDateTime === null) {
+        setIsTimeAvailable(false);
+      }
+      if (addTaskDrawer) {
+        setStartDate(updatedStartDateTime);
+        setMomentStartDate(moment(updatedStartDateTime));
+      } else {
+        setMomentStartDate(
+          !!updatedStartDateTime ? moment(updatedStartDateTime) : null,
+        );
+        dispatch(updateTaskStartDate(selectedTask, updatedStartDateTime));
+      }
     },
     [dispatch, selectedTask],
   );
 
+  const handleStartDateSave = useCallback(
+    (newStartDate) => {
+      const isDateValid = isStartDateValid(dueDate, newStartDate);
+      if (isDateValid) {
+        handleSave(newStartDate);
+      } else {
+        dispatch(
+          openModal('DateWarning', {
+            type: 'startDate',
+            onSave: () => handleSave(newStartDate),
+          }),
+        );
+      }
+    },
+    [dispatch, selectedTask],
+  );
+
+  useEffect(() => {
+    if (
+      momentStartDate &&
+      (momentStartDate.hour() || momentStartDate.minute())
+    ) {
+      setIsTimeAvailable(true);
+    }
+  }, [selectedTask, momentStartDate]);
+
   return (
-    <StartDateSectionWrapper disabled={isTemplateTask}>
-      <Input
-        label="Start date"
-        ref={buttonReference}
-        shrink
-        customInputComponent={() => (
-          <StyledButton
-            type="button"
+    <StartDateSectionWrapper
+      ref={startDateRef}
+      disabled={isTemplateTask || disabled}
+    >
+      <Title>Start date</Title>
+      {!momentStartDate && (
+        <AddStartDateButton
+          ref={buttonReference}
+          onClick={(event) => {
+            event.stopPropagation();
+            openPopover(true);
+          }}
+        >
+          <AssignMemberIcon /> <SubTitle>Add Date</SubTitle>
+        </AddStartDateButton>
+      )}
+      {momentStartDate && (
+        <DateViewContainer>
+          <DateViewText
+            ref={buttonReference}
             onClick={(event) => {
               event.stopPropagation();
               openPopover(true);
             }}
           >
-            <StartDateContentWrapper>
-              {momentStartDate ? (
-                <StartDateContent error={isStartDateInPast(selectedTask)}>
-                  <StartDateText>
-                    {momentStartDate.format('MM/DD/YY')}
-                  </StartDateText>
-                  <StartDateText>{formatStartTime(startDate)}</StartDateText>
-                  {!sectionDisabled && (
-                    <AdornmentClear
-                      style={{ position: 'relative', top: '-6px' }}
-                      onClick={() => handleStartDateSave(null)}
-                    />
-                  )}
-                </StartDateContent>
-              ) : (
-                <Placeholder>
-                  {!isTemplateTask
-                    ? 'Set a start date?'
-                    : 'Not available when creating a template'}
-                </Placeholder>
-              )}
-            </StartDateContentWrapper>
-          </StyledButton>
-        )}
-      />
+            {momentStartDate.format('MMM DD, YYYY')}
+          </DateViewText>
+        </DateViewContainer>
+      )}
+      {isTimeAvailable && (
+        <DateViewContainer>
+          <DateViewText
+            ref={buttonReference}
+            onClick={(event) => {
+              event.stopPropagation();
+              openPopover(true);
+            }}
+          >
+            {momentStartDate.format('hh:mm a')}
+          </DateViewText>
+        </DateViewContainer>
+      )}
       <StyledPopover
-        anchorEl={buttonReference?.current}
+        anchorEl={startDateRef?.current}
         anchorOrigin={{
-          vertical: 'top',
-          horizontal: 'right',
+          vertical: 'bottom',
+          horizontal: 'left',
         }}
         transformOrigin={{
           vertical: 'top',
-          horizontal: 'right',
+          horizontal: 'left',
         }}
+        sx={{ marginLeft: '103px' }}
         open={isPopoverOpen}
         onClose={(event) => {
           event.stopPropagation();
@@ -103,7 +150,6 @@ const StartDateSection = () => {
                 onDateChange={handleStartDateSave}
                 recurring={hasRecurringSchedule}
                 onCloseClick={closePopover}
-                disableRecurring
               />
             </Box>
           </PopoverCard>

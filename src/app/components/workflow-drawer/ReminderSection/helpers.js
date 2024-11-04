@@ -9,6 +9,7 @@ export const ReminderLabel = {
   [ReminderType.DAY_BEFORE_1]: '1 day before',
   [ReminderType.DAY_BEFORE_2]: '2 days before',
   [ReminderType.WEEK_BEFORE_1]: '1 week before',
+  [ReminderType.ABSOLUTE]: 'Custom Date'
 };
 
 export const REMINDER_TYPE_OPTIONS = Object.values(ReminderType)

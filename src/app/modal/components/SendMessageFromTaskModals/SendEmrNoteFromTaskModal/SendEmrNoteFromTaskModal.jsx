@@ -29,6 +29,7 @@ import {
   ModalWrapper,
 } from '../../styled';
 import TaskCheckBoxes from '../TaskCheckBoxes';
+import { ConfirmButton } from '../../ModalButton/ModalButtons';
 
 function SendEmrNoteFromTaskModal() {
   const selectedTask = useSelector(selectedTaskSelector);
@@ -84,7 +85,7 @@ function SendEmrNoteFromTaskModal() {
       <ModalHeaderContainerStyled>
         <ModalHeader>Post note to EHR</ModalHeader>
         <ModalDescription>
-          Post a summary to the patient’s health record
+          Post a summary to the patient's health record
         </ModalDescription>
       </ModalHeaderContainerStyled>
       <ModalDescriptionContainer>
@@ -139,11 +140,9 @@ function SendEmrNoteFromTaskModal() {
         </TextEditorContainerStyled>
       </ModalDescriptionContainer>
       <ModalFooterStyled>
-        <Button
-          uppercase
-          width="150px"
-          variant="primary"
+        <ConfirmButton
           disabled={detailsState === ''}
+          style={{ width: '270px' }}
           onClick={() => {
             dispatch(
               sendEmrForTask({
@@ -155,8 +154,8 @@ function SendEmrNoteFromTaskModal() {
             dispatch(closeModal());
           }}
         >
-          post
-        </Button>
+          Post
+        </ConfirmButton>
       </ModalFooterStyled>
     </ModalWrapper>
   );

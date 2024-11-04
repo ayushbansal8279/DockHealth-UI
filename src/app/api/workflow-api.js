@@ -60,7 +60,7 @@ export function addWorkflowAttachment(
   onUploadProgress,
 ) {
   const formData = new FormData();
-  formData.append('file', fileData);
+  formData.append('file', fileData, encodeURIComponent(fileData.name));
 
   return axios
     .post(`task/attachment/${workflowIdentifier}`, formData, {
@@ -80,6 +80,6 @@ export function deleteWorkflowAttachment(attachmentIdentifier) {
 
 export function getWorkflowHistory(workflowIdentifier) {
   return axios
-    .get(`audit/findAuditsByTask/${workflowIdentifier}`)
+    .get(`audit/findAuditsByWorkflow/${workflowIdentifier}`)
     .then(({ data }) => data);
 }

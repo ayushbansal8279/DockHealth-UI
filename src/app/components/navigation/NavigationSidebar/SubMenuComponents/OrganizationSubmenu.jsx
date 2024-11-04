@@ -5,6 +5,7 @@ import { Grid, IconButton } from '@mui/material';
 import { MoreVert } from '@mui/icons-material';
 import { SUBS_SETTINGS_PATH } from 'routing/helpers/paths';
 import { userOrganizationsSelector } from 'selectors/user-selectors';
+import { UserOrganizationRole } from 'helpers/user-helper';
 import { logout } from 'api/user-auth-api';
 import { leaveOrganization, deleteOrganization } from 'api/organization-api';
 import { openNotifications } from 'actions/template-actions';
@@ -35,7 +36,9 @@ import {
 } from './styled';
 
 const MASTER_ROLES = new Set(['ADMIN', 'OWNER']);
-const GUEST_ROLE = 'GUEST';
+const GUEST_ROLE = UserOrganizationRole.GUEST;
+const DOCK_LITE_ROLE = UserOrganizationRole.DOCK_LITE;
+const DOCK_PRO_ROLE = UserOrganizationRole.DOCK_PRO;
 
 const OrganizationSubmenu = ({
   currentUser = {},
@@ -165,7 +168,7 @@ const OrganizationSubmenu = ({
         name: 'Delete Organization',
         onClick: handleDeleteOrganization,
       },
-      GUEST_ROLE === orgUserRole && {
+      [GUEST_ROLE, DOCK_LITE_ROLE, DOCK_PRO_ROLE].includes(orgUserRole) && {
         name: 'Leave Organization',
         onClick: handleLeaveOrganiztion,
       },

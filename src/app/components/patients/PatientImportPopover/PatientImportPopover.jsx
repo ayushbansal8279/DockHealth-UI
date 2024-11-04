@@ -26,7 +26,9 @@ import {
   FixErrorContainer,
   FixErrors,
   ProgressBar,
+  HyperLink,
 } from './styled';
+import { useHistory } from 'react-router-dom';
 
 const PatientImportPopover = ({
   closePopover,
@@ -60,6 +62,12 @@ const PatientImportPopover = ({
   const customerTypeLabel = getCustomerTypeLabel(currentUser);
   const customerTypeLabelCapitalized = capitalize(customerTypeLabel);
 
+  const history = useHistory();
+
+  const patientImportStatus = () => {
+    history.push('/patients/import/tracker');
+  };
+  
   // DEFAULT POPOVER
   return (
     <>
@@ -112,7 +120,7 @@ const PatientImportPopover = ({
               </ProgressMessage>
             </ProgressDisplayArea>
           )}
-
+          <HyperLink onClick={patientImportStatus} >View Import Status</HyperLink>
           {(patientImportDetails?.trackingDetails?.length > 0 ||
             patientImportDetails?.inError ||
             hasImportFailed) && (

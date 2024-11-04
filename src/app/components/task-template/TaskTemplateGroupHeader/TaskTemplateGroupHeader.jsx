@@ -54,6 +54,7 @@ import { CUSTOM_FIELD_TYPES } from 'helpers/custom-fields-helpers';
 import {
   userProfileSelector,
   selectedUserOrganizationSelector,
+  userHasAiSummaryViewFeatureSelector,
 } from 'selectors/user-selectors';
 import {
   SINGLE_TASK_RESTRICTIONS_OPTIONS,
@@ -87,6 +88,7 @@ import {
   ActionIconsContainer,
   PatientMRNAnchor,
   ChevronContainer,
+  AISummaryWrapper,
 } from './styled';
 import TaskTemplateDetails from '../TaskTemplateDetails/TaskTemplateDetails';
 import { ListPageContext } from '@/app/views/list-details/ListDetailsView';
@@ -95,6 +97,8 @@ import { TaskScrollVericleLine } from '../../task/styled';
 import TaskTemplateComment from '../TaskTemplateIcons/TaskTemplateComment';
 import palette from '@/app/styles/palette';
 import TaskTemplateContextMenu from '../TaskTemplateContextMenu/TaskTemplateContextMenu';
+import AISummaryModalOpenerHelper from '@/app/modal/components/AISummaryModal/AISummaryModalOpenerHelper';
+import { SummaryType } from '@/app/helpers/ai-helper';
 
 const TaskTemplateGroupHeader = ({
   templateGroup = {},
@@ -263,7 +267,7 @@ const TaskTemplateGroupHeader = ({
     }
     return templateTasks?.reduce(
       (accumulator, currentTask) => {
-        if (currentTask.status === 'COMPLETE') {
+        if (currentTask?.status === 'COMPLETE') {
           accumulator[0] += 1;
         }
         if (currentTask?.subtasks?.length > 0) {
@@ -273,8 +277,7 @@ const TaskTemplateGroupHeader = ({
             }
           });
         }
-        accumulator[1] =
-          accumulator[1] + (currentTask?.subtasks?.length || 0) + 1;
+        accumulator[1] = accumulator[1] + (currentTask?.subTasksCount || 0) + 1;
 
         return accumulator;
       },
@@ -332,7 +335,10 @@ const TaskTemplateGroupHeader = ({
   const handleAddTaskToWorkflow = () => {
     if (taskListRestrictions?.workflowAddTask !== DISABLED) {
       setIsAddingTask(true);
-      if (origin === 'LIST') {
+      if (origin === 'LIST' || origin === 'PATIENT') {
+        setOpen(true);
+        setVirtualListWorkflowOpen(true);
+        collapse.set(identifier, false);
         collapse.handleAddWorkflowIdentifier(identifier);
       }
     }
@@ -364,6 +370,7 @@ const TaskTemplateGroupHeader = ({
               ),
             );
           },
+          modalLabel: 'Move to List',
         }),
       );
     }
@@ -441,8 +448,10 @@ const TaskTemplateGroupHeader = ({
     () =>
       templateTasks.filter(
         isCompletedTab
-          ? (task) => showIncompleteTasks || task.status === TaskStatus.COMPLETE
-          : (task) => showCompletedTasks || task.status !== TaskStatus.COMPLETE,
+          ? (task) =>
+              showIncompleteTasks || task?.status === TaskStatus.COMPLETE
+          : (task) =>
+              showCompletedTasks || task?.status !== TaskStatus.COMPLETE,
       ),
     [showCompletedTasks, showIncompleteTasks, templateTasks, isCompletedTab],
   );
@@ -525,6 +534,7 @@ const TaskTemplateGroupHeader = ({
   );
 
   const { isVirtualListWorkflowOpen } = useContext(VTaskContext);
+  const aiSummaryAvailable = useSelector(userHasAiSummaryViewFeatureSelector);
 
   const handleOpen = useCallback(() => {
     setOpen(!isOpen);
@@ -659,6 +669,15 @@ const TaskTemplateGroupHeader = ({
               paddingRight="tiny"
               order={getColumnOrder(TaskItemColumn.DESCRIPTION)}
             >
+              {aiSummaryAvailable && (
+                <AISummaryWrapper>
+                  <AISummaryModalOpenerHelper
+                    type={SummaryType.WORKFLOW}
+                    title={`${name}`}
+                    identifier={identifier}
+                  />
+                </AISummaryWrapper>
+              )}
               <TemplateHeaderName
                 templateGroup={templateGroup}
                 isEditing={isEditing}

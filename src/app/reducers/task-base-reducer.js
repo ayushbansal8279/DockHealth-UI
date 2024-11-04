@@ -132,6 +132,7 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
         if (!task) {
           return null;
         }
+
         if (task.identifier === taskIdentifier) {
           // return null to remove the task
           return null;
@@ -518,11 +519,29 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
 
         return {
           ...task,
-          subtasks: task.subtasks?.map((s) => ({
-            ...s,
-            subtask,
-          })),
+          subtasks: [...(task.subtasks || []), subtask],
           subTasksCount: task?.subTasksCount + 1,
+        };
+      };
+
+      return updateStateCallback(state, updateTaskFromAction);
+    }
+
+    case ActionTypes.DELETE_SUBTASK: {
+      const { subTask, parentTaskIdentifier } = action;
+
+      const updateTaskFromAction = (tasksMap) => {
+        const parentTask = tasksMap[parentTaskIdentifier];
+        if (!parentTask) {
+          return null;
+        }
+
+        return {
+          ...parentTask,
+          subtasks: (parentTask?.subtasks || []).filter(
+            (subtask) => subtask?.identifier !== subTask?.identifier,
+          ),
+          subTasksCount: parentTask?.subTasksCount - 1,
         };
       };
 
