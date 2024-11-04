@@ -34,6 +34,7 @@ export default function TaskStatusToolbarSelect({
   origin,
 }: Props) {
   const [isOpen, setIsOpen] = useState(false);
+  const [status, setStatus] = useState(TaskStatus.INCOMPLETE);
 
   const storageKey =
     origin === TaskOrigin.PATIENT
