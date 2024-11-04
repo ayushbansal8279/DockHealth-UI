@@ -32,7 +32,7 @@ import {
 import { ListPageContext } from '../ListDetailsView';
 import { getCurrentListTasks } from '@/app/actions/list-details-actions';
 import CustomizeToolbarButton from '@/app/components/tasklist/list-toolbar-buttons/CustomizeToolbarButton/CustomizeToolbarButton';
-import TaskStatusToolbarSelect from '@/app/components/tasklist/list-toolbar-buttons/TaskStatusToolbarSelect';
+import TaskStatusToolbarSelect from '@/app/components/tasklist/list-toolbar-buttons/TaskStatusToolbarSelect/TaskStatusToolbarSelect';
 import localStorageHelper from '@/app/helpers/local-storage-helper';
 
 const ListDetailsToolbar = ({

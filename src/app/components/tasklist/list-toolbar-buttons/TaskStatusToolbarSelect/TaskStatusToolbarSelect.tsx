@@ -38,7 +38,16 @@ export default function TaskStatusToolbarSelect({
   const storageKey =
     origin === TaskOrigin.PATIENT
       ? 'patientStatus'
-      : getTaskListStatusStorageKey(taskListIdentifier);
+      : getTaskListStatusStorageKey(taskListIdentifier);;
+
+  useEffect(() => {
+    const savedStatus = localStorageHelper.getItem(storageKey);
+    if (savedStatus !== null) {
+      setStatus(savedStatus);
+    } else {
+      setStatus(TaskStatus.INCOMPLETE);
+    }
+  }, [taskListIdentifier]);
 
   const buttonRef = useRef(null);
 
@@ -100,7 +109,11 @@ export default function TaskStatusToolbarSelect({
             horizontal: 'left',
           }}
         >
-          <TaskStatusSelectForm defaultValue={value} onSubmit={handleSubmit} />
+          <TaskStatusSelectForm
+            taskListIdentifier={taskListIdentifier}
+            defaultValue={status}
+            onSubmit={handleSubmit}
+          />
         </Popover>
       )}
     </SelectWrapper>
