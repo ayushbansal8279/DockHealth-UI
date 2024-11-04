@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import pathEq from 'ramda/src/pathEq';
 import SelectorPopover from 'components/common/SelectorPopover/SelectorPopover';
-import Button from 'components/common/Button/Button';
 import Circle from 'img/circle.svg';
 import CircleCompleted from 'img/circle-completed.svg';
 import { openModal } from 'modal/actions';
@@ -14,6 +13,7 @@ import {
   RoleSelectorFooter,
   Header,
 } from './styled';
+import { CancelButton, ConfirmButton } from '@/app/modal/components/ModalButton/ModalButtons';
 
 export const renderUserTypesOptions = ({
   changeUserRole,
@@ -152,9 +152,7 @@ const RoleSelectionPopover = ({
       renderFooter={() => (
         <RoleSelectorFooter multipleButtons={!isInactive}>
           {!isInactive && (
-            <Button
-              variant="secondary"
-              width="200px"
+            <CancelButton
               disabled={!userHasSubscription}
               onClick={() => {
                 closePopover();
@@ -178,10 +176,9 @@ const RoleSelectionPopover = ({
               }}
             >
               Remove user
-            </Button>
+            </CancelButton>
           )}
-          <Button
-            width="200px"
+          <ConfirmButton
             onClick={() => {
               closePopover();
               if (
@@ -203,7 +200,7 @@ const RoleSelectionPopover = ({
             disabled={!selectedRole?.key}
           >
             Save
-          </Button>
+          </ConfirmButton>
         </RoleSelectorFooter>
       )}
       items={renderUserTypesOptions({

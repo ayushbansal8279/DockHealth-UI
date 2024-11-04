@@ -18,6 +18,7 @@ import {
   Header,
   RoleSelectorCancelRemoveUserButton,
 } from './styled';
+import { CancelButton, ConfirmButton } from '@/app/modal/components/ModalButton/ModalButtons';
 
 const USER_TYPES = new Proxy(
   {
@@ -149,15 +150,14 @@ const InactiveRoleSelectionPopover = (props) => {
         )}
       </RoleSelectionList>
       <RoleSelectionFooter>
-        <RoleSelectorCancelRemoveUserButton
+        <CancelButton
           onClick={() => {
             closePopover();
           }}
         >
           Cancel
-        </RoleSelectorCancelRemoveUserButton>
-        <Button
-          width="200px"
+        </CancelButton>
+        <ConfirmButton
           onClick={() => {
             closePopover();
             reactivateUser(userIdentifier, selectedRole?.key).then(() => {
@@ -168,7 +168,7 @@ const InactiveRoleSelectionPopover = (props) => {
           disabled={!selectedRole?.key}
         >
           Save
-        </Button>
+        </ConfirmButton>
       </RoleSelectionFooter>
     </>
   );
