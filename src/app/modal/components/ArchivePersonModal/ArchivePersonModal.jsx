@@ -1,7 +1,5 @@
 import React from 'react';
-import { Typography } from '@mui/material';
 import { ThemeProvider as MuiThemeProvider } from '@mui/material/styles';
-import Button from 'components/common/Button/Button';
 import Spacing from 'components/common/Spacing';
 import RedFolder from 'img/modals/red-folder.svg';
 import { redTheme } from '../../themes/red-theme';

@@ -1,6 +1,5 @@
 import React, { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import Button from 'components/common/Button/Button';
 import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
 import { sendESignForTask } from 'actions/task-actions';
 import { closeModal } from 'modal/actions';

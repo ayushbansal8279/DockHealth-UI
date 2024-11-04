@@ -1,6 +1,5 @@
 import React, { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import Button from 'components/common/Button/Button';
 import RichTextEditor from 'components/common/RichTextEditor/RichTextEditor';
 import { sendSecureMessageForTask } from 'actions/task-actions';
 import { selectedTaskSelector } from 'selectors/task-drawer-selectors';

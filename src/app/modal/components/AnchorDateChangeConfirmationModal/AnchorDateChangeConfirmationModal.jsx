@@ -1,6 +1,4 @@
 import React from 'react';
-import { Typography } from '@mui/material';
-import Button from 'components/common/Button/Button';
 import { ThemeProvider as MuiThemeProvider } from '@mui/material/styles';
 import Spacing from 'components/common/Spacing';
 import Note from 'img/modals/note.svg';
