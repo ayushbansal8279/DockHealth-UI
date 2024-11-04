@@ -49,7 +49,7 @@ const CommentsInPopover: FC<CommentsInPopoverProps> = ({ task, onClose }) => {
     <>
       <Box sx={{ textAlign: 'right' }}>
         <IconButton
-          sx={{ height: '20px', width: '20px' }}
+          sx={{ height: '20px', width: '20px', padding: '15px' }}
           aria-label="close-comments"
           onClick={onClose}
         >
@@ -72,7 +72,7 @@ const CommentsInPopover: FC<CommentsInPopoverProps> = ({ task, onClose }) => {
           ))}
         </Box>
         {restrictions?.comments !== DISABLED && (
-          <Box sx={{ padding: 2, backgroundColor: palette.coolGrey4 }}>
+          <Box sx={{ padding: 2, backgroundColor: palette.coolGrey4, height: "175px", overflowY: "scroll" }}>
             <AddComment autoFocus onAdd={addComment} />
           </Box>
         )}
