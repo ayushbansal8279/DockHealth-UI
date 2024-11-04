@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import palette from 'styles/palette';
-import { fontSizes } from 'styles/font';
+import { fontSizes, fontWeights } from 'styles/font';
 import spacing from 'styles/spacing';
 import { ModalWrapper } from '../styled';
 
@@ -19,9 +19,12 @@ export const Header = styled.div`
 `;
 
 export const Title = styled.h5`
-  font-size: ${fontSizes.regularPlus};
-  color: ${palette.brightBlue};
-  text-transform: uppercase;
+  color: ${palette.offBlack};
+  text-align: center;
+  font-family: Outfit;
+  font-size: 22px;
+  font-style: normal;
+  font-weight: ${fontWeights.regularPlus};
   text-align: center;
 `;
 
