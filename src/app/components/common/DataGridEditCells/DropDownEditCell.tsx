@@ -4,6 +4,7 @@ import {
   useGridApiContext,
   GridRenderEditCellParams,
 } from '@mui/x-data-grid-premium';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 
 interface DropdownEditCellProps extends GridRenderEditCellParams<any, string | undefined> {
   options: { name: string }[]; 
@@ -32,7 +33,9 @@ export default function DropdownEditCell({ id, field, value, options, name }: Dr
         }
         return selected;
       }}
+      IconComponent={ArrowDropDownIcon}
       sx={{
+        marginInline: '8px',
         '& .MuiOutlinedInput-notchedOutline': {
           border: 'none',
         },

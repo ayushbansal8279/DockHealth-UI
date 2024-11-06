@@ -7,29 +7,36 @@ import {
 } from '@mui/material';
 import { useGridApiContext, GridRenderEditCellParams } from '@mui/x-data-grid-premium';
 
-interface MultiDropdownEditCellProps extends GridRenderEditCellParams<any, { customFieldIdentifier: string; values: string[]; displayNames: string[] } | undefined> {
+interface MultiDropdownEditCellProps extends GridRenderEditCellParams<any, { values?: string[]; value?: string } | undefined> {
   options: { name: string; identifier: string }[];
 }
 
 export default function MultiDropdownEditCell({
   id,
   field,
-  value = { customFieldIdentifier: '', values: [], displayNames: [] },
+  value = '',
   options,
 }: MultiDropdownEditCellProps) {
   const apiRef = useGridApiContext();
 
+  let valueToUse = '';
+  if (typeof value === 'string') {
+    valueToUse = value;
+  } else if (value && typeof value === 'object') {
+    valueToUse = value.value ? value.value : (value.values ? value.values.join(',') : '');
+  }
+
   const handleChange = (_, newValue) => {
-    const selectedValues = newValue.map((option) => option.identifier);
-    const selectedNames = newValue.map((option) => option.name);
+    const selectedIdentifiersArray = newValue.map((option) => option.identifier);
+    const selectedNamesArray = newValue.map((option) => option.name);
+    const valueString = selectedNamesArray.join(',');
 
     apiRef.current.setEditCellValue({
       id,
       field,
       value: {
-        customFieldIdentifier: value.customFieldIdentifier,
-        values: selectedValues,
-        displayNames: selectedNames,
+        values: selectedIdentifiersArray, 
+        value: valueString,                
       },
     });
   };
@@ -38,10 +45,10 @@ export default function MultiDropdownEditCell({
     <Autocomplete
       fullWidth
       multiple
-      value={options.filter((option) => value.values && value.values.includes(option.identifier))}
+      value={options.filter((option) => valueToUse.split(',').includes(option.name))}
       onChange={handleChange}
       options={options}
-      getOptionLabel={(option) => option.name} 
+      getOptionLabel={(option) => option.name}
       disableCloseOnSelect
       renderOption={(props, option, { selected }) => (
         <li {...props}>

@@ -297,15 +297,22 @@ const PatientsList = ({
   
             if (index !== -1) {
               updatedMetaData[index].value = newRow[identifier];
-              if (updatedMetaData[index].values && updatedMetaData[index].value) {
-                delete updatedMetaData[index].displayNames;
+              if (typeof newRow[identifier] === 'object') {
+                updatedMetaData[index].values = updatedMetaData[index].value.values;
                 delete updatedMetaData[index].value;
               }
             } else {
-              updatedMetaData.push({
-                customFieldIdentifier: identifier,
-                value: newRow[identifier],
-              });
+              if (typeof newRow[identifier] === 'object' && newRow[identifier] !== null && 'values' in newRow[identifier]) {
+                updatedMetaData.push({
+                  customFieldIdentifier: identifier,
+                  values: newRow[identifier].values,
+                });
+              } else {
+                updatedMetaData.push({
+                  customFieldIdentifier: identifier,
+                  value: newRow[identifier],
+                });
+              }
             }
           }
         });
@@ -314,6 +321,9 @@ const PatientsList = ({
 
         if (newRow.dob) {
           newRow.dob = dateFormatter(newRow.dob, 'MM/dd/yyyy');
+        }
+        else {
+          newRow.dob = null;
         }
 
         await updatePatientById.mutateAsync(newRow);
@@ -667,13 +677,13 @@ const PatientsList = ({
               return (<DateTimeEditCell {...params} readOnly />)
             }
             if (column.fieldType === 'MULTI_SELECT') {
-            
-              const displayValue = Array.isArray(row[column.identifier]?.displayNames) ? row[column.identifier].displayNames : [];
-              const displayText = displayValue.length > 0 ? displayValue.join(', ') : '';
+              const displayValue = typeof row[column.identifier] === 'object' && row[column.identifier] !== null
+                ? row[column.identifier].value
+                : row[column.identifier];  
             
               return (
                 <Tooltip placement="top" title={displayValue}>
-                  <Text>{displayText}</Text>
+                  <Text>{displayValue}</Text>
                 </Tooltip>
               );
             }

@@ -4,6 +4,7 @@ import {
   useGridApiContext,
   GridRenderEditCellParams,
 } from '@mui/x-data-grid-premium';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 
 export default function BooleanDropdownEditCell({ id, field, value, name }: GridRenderEditCellParams<any, boolean | undefined>) {
   const apiRef = useGridApiContext();
@@ -30,7 +31,9 @@ export default function BooleanDropdownEditCell({ id, field, value, name }: Grid
         }
         return selected;
       }}
+      IconComponent={ArrowDropDownIcon}
       sx={{
+        marginInline: '8px',
         '& .MuiOutlinedInput-notchedOutline': {
           border: 'none',
         },

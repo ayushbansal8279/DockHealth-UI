@@ -20,7 +20,6 @@ const CustomTextEditorWithPopover = ({ value = '', openDrawer, readOnly = false,
 
   const handleChange = (newValue: any) => {
     setRawDetails(newValue);
-    // Update grid cell value
     apiRef.current.setEditCellValue({
       id,
       field,
@@ -92,7 +91,7 @@ const CustomTextEditorWithPopover = ({ value = '', openDrawer, readOnly = false,
             placement="right-end"
             title={<pre style={{ fontFamily: "Outfit, sans-serif", fontSize: '16px', whiteSpace: 'pre-wrap', wordBreak: 'keep-all' }}>{unformattedDetails}</pre>}
           >
-            <Text>{unformattedDetails}</Text>
+            <Text style={{paddingInline: '8px'}}>{unformattedDetails}</Text>
           </Tooltip>
         </LongTextBox>
       </TaskItemPopover>
