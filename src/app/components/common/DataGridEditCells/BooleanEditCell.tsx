@@ -23,7 +23,7 @@ export default function BooleanDropdownEditCell({ id, field, value, name }: Grid
     <Select
       displayEmpty
       fullWidth
-      value={value === undefined ? '' : value}
+      value={typeof value === 'string' ? value : ''}
       onChange={handleChange}
       renderValue={(selected) => {
         if (selected === '') {

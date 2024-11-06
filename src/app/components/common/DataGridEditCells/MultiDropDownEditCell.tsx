@@ -14,7 +14,7 @@ interface MultiDropdownEditCellProps extends GridRenderEditCellParams<any, { val
 export default function MultiDropdownEditCell({
   id,
   field,
-  value = '',
+  value = { values: [], value: '' },
   options,
 }: MultiDropdownEditCellProps) {
   const apiRef = useGridApiContext();
@@ -26,7 +26,10 @@ export default function MultiDropdownEditCell({
     valueToUse = value.value ? value.value : (value.values ? value.values.join(',') : '');
   }
 
-  const handleChange = (_, newValue) => {
+  const handleChange = (
+    _: React.ChangeEvent<{}>, 
+    newValue: { identifier: string; name: string }[] 
+  ) => {
     const selectedIdentifiersArray = newValue.map((option) => option.identifier);
     const selectedNamesArray = newValue.map((option) => option.name);
     const valueString = selectedNamesArray.join(',');
