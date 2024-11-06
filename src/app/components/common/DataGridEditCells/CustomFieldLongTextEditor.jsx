@@ -8,17 +8,25 @@ import { convertToSimpleString } from '@/app/helpers/markdown-helper.js';
 import { Text, LongTextBox, Divider } from '@/app/components/task/StandardTaskItem/customFieldsTaskItemComponents/TaskItemLongText/styled.js';
 import { useGridApiContext } from '@mui/x-data-grid-premium';
 
-const CustomTextEditorWithPopover = ({ value = '', openDrawer, readOnly = false, id, field }) => {
+const CustomTextEditorWithPopover = ({
+  value = '',
+  openDrawer,
+  readOnly = false,
+  id,
+  field,
+}) => {
   const apiRef = useGridApiContext();
   const [rawDetails, setRawDetails] = useState(value);
   const [unformattedDetails, setUnformattedDetails] = useState(convertToSimpleString(value));
+
+  console.log(typeof openDrawer, typeof id, typeof field);
 
   useEffect(() => {
     setRawDetails(value);
     setUnformattedDetails(convertToSimpleString(value));
   }, [value]);
 
-  const handleChange = (newValue: any) => {
+  const handleChange = (newValue) => {
     setRawDetails(newValue);
     apiRef.current.setEditCellValue({
       id,
@@ -27,14 +35,14 @@ const CustomTextEditorWithPopover = ({ value = '', openDrawer, readOnly = false,
     });
   };
 
-  const handleBlur = (closePopover: any) => () => {
+  const handleBlur = (closePopover) => () => {
     if (rawDetails !== value) {
       handleChange(rawDetails);
     }
     closePopover();
   };
 
-  const handlePopupClose = (closePopover: any, onClose: any) => () => {
+  const handlePopupClose = (closePopover, onClose) => () => {
     if (rawDetails !== value) {
       handleChange(rawDetails);
     }
