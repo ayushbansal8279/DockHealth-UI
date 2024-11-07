@@ -1,5 +1,4 @@
 import React, { useCallback, useMemo } from 'react';
-import MegaFilter from '@/app/components/tasklist/list-toolbar-buttons/MegaFilter/MegaFilter';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   megaFilterSelector,
@@ -28,6 +27,7 @@ import {
 } from 'selectors/person-details-selectors';
 import { TaskStatus } from 'helpers/task-helpers';
 import equals from 'ramda/src/equals';
+import MegaFilter from '@/app/components/tasklist/list-toolbar-buttons/MegaFilter/MegaFilter';
 import { determineTaskCounts } from './helpers';
 
 const UserDetailsFilters = () => {
@@ -75,7 +75,7 @@ const UserDetailsFilters = () => {
 
   const handleFilterOpen = () => {
     dispatch(getUserTaskFilterOptions());
-    dispatch(getQuickFilters({ personIdentifier: userIdentifier }));
+    dispatch(getQuickFilters({ contextType: 'PERSONS' }));
   };
 
   const wasChangedFilters = useMemo(
@@ -94,20 +94,6 @@ const UserDetailsFilters = () => {
     [dispatch],
   );
 
-  const handleSaveQuickFilter = useCallback(
-    () =>
-      dispatch(
-        updateQuickFilter(
-          selectedQuickFilter,
-          {
-            selectedOptions: selectedFilters,
-          },
-          { personIdentifier: userIdentifier },
-        ),
-      ),
-    [dispatch, selectedFilters, selectedQuickFilter, userIdentifier],
-  );
-
   const handleSelectQuickFilter = useCallback(
     (id, filtersSetup) => {
       dispatch(selectQuickFilter(id));
@@ -124,24 +110,26 @@ const UserDetailsFilters = () => {
   );
 
   const handleQuickFilterCreate = useCallback(
-    (name) =>
+    (name, scope) =>
       dispatch(
         createQuickFilter(
           name,
           { personIdentifier: userIdentifier },
           selectedFilters,
+          scope,
         ),
       ),
     [dispatch, selectedFilters, userIdentifier],
   );
 
   const handleQuickFilterUpdate = useCallback(
-    (quickFilterIdentifier, name) =>
+    (quickFilterIdentifier, name, selectedFilterOptions, scope) =>
       dispatch(
         updateQuickFilter(
           quickFilterIdentifier,
-          { name },
+          { name, selectedOptions: selectedFilterOptions },
           { personIdentifier: userIdentifier },
+          scope,
         ),
       ),
     [dispatch, userIdentifier],
@@ -171,7 +159,6 @@ const UserDetailsFilters = () => {
         addQuickFilterOption={addQuickFilterOption}
         selectedQuickFilter={selectedQuickFilter}
         selectQuickFilter={handleSelectQuickFilter}
-        handleSaveQuickFilter={handleSaveQuickFilter}
         onSaveAsNewClick={handleSaveAsQuickFilter}
         wasChangedFilters={wasChangedFilters}
         onQuickFilterCreate={handleQuickFilterCreate}

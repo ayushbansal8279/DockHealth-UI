@@ -30,13 +30,11 @@ const NewFilterContainer = ({
   setFinalFilter,
   openPopover,
   setSavePopupOpen,
-  handleSaveQuickFilter,
   filteredData,
   setFilteredData,
   isQuickFilterEdit,
   setSelectedQuickFilter,
   handleSelectedFiltersChange,
-  isPatientListPage,
   editModeEnabled = true,
 }) => {
   const popoverReference = useRef(null);
@@ -93,10 +91,9 @@ const NewFilterContainer = ({
   const handleApplyFinalFilter = () => {
     onSelectedFiltersChange(selectFilterOption('', '', filteredData));
     openPopover(false);
-  };
-
-  const handleApplyFinalFilterPatient = () => {
-    handleSelectedFiltersChange();
+    if(handleSelectedFiltersChange){
+      handleSelectedFiltersChange();
+    }
   };
 
   const handleClose = useCallback(() => {
@@ -181,11 +178,7 @@ const NewFilterContainer = ({
             <ConfirmButton
               disabled={!isDisable}
               style={{ width: '270px' }}
-              onClick={
-                isPatientListPage
-                  ? handleApplyFinalFilterPatient
-                  : handleApplyFinalFilter
-              }
+              onClick={handleApplyFinalFilter}
             >
               Apply Filter
             </ConfirmButton>

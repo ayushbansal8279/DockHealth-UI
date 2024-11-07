@@ -91,22 +91,30 @@ export const updateQuickAnalyticsFilter = (
   viewSpecificData: { contextType: quickContextTypes.ANALYTICS },
 });
 
-export const createQuickFilter = (name, viewSpecificData, selectedOptions) => ({
+export const createQuickFilter = (
+  name,
+  viewSpecificData,
+  selectedOptions,
+  scope,
+) => ({
   type: ActionTypes.CREATE_QUICK_FILTER,
   name,
   viewSpecificData,
   selectedOptions,
+  scope,
 });
 
 export const updateQuickFilter = (
   quickFilterIdentifier,
   dataToUpdate,
   viewSpecificData,
+  scope,
 ) => ({
   type: ActionTypes.UPDATE_QUICK_FILTER,
   dataToUpdate,
   quickFilterIdentifier,
   viewSpecificData,
+  scope,
 });
 
 export const deleteQuickFilter = (quickFilterIdentifier) => ({

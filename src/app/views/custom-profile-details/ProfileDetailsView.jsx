@@ -217,20 +217,6 @@ const ProfileDetailsView = () => {
   // //   [dispatch],
   // // );
 
-  // const handleSaveQuickFilter = useCallback(
-  //   () =>
-  //     dispatch(
-  //       updateQuickFilter(
-  //         selectedQuickFilter,
-  //         {
-  //           selectedOptions: selectedFilters,
-  //         },
-  //         { patientIdentifier },
-  //       ),
-  //     ),
-  //   [dispatch, patientIdentifier, selectedFilters, selectedQuickFilter],
-  // );
-
   // const handleSaveAsQuickFilter = useCallback(
   //   () => dispatch(showAddQuickFilterOption()),
   //   [dispatch],
@@ -248,18 +234,19 @@ const ProfileDetailsView = () => {
   // );
 
   // const handleQuickFilterCreate = useCallback(
-  //   (name) =>
-  //     dispatch(createQuickFilter(name, { patientIdentifier }, selectedFilters)),
+  //   (name, scope) =>
+  //     dispatch(createQuickFilter(name, { patientIdentifier }, selectedFilters, scope)),
   //   [dispatch, patientIdentifier, selectedFilters],
   // );
 
   // const handleQuickFilterUpdate = useCallback(
-  //   (quickFilterIdentifier, name) =>
+  //   (quickFilterIdentifier, name, selectedFilterOptions, scope) =>
   //     dispatch(
   //       updateQuickFilter(
   //         quickFilterIdentifier,
-  //         { name },
+  //         { name, selectedOptions: selectedFilterOptions },
   //         { patientIdentifier },
+  //         scope,
   //       ),
   //     ),
   //   [dispatch, patientIdentifier],
@@ -297,7 +284,6 @@ const ProfileDetailsView = () => {
           {/*   addQuickFilterOption={addQuickFilterOption} */}
           {/*   selectedQuickFilter={selectedQuickFilter} */}
           {/*   selectQuickFilter={handleSelectQuickFilter} */}
-          {/*   onSaveClick={handleSaveQuickFilter} */}
           {/*   onSaveAsNewClick={handleSaveAsQuickFilter} */}
           {/*   wasChangedFilters={wasChangedFilters} */}
           {/*   onQuickFilterCreate={handleQuickFilterCreate} */}

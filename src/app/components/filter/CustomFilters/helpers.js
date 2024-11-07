@@ -14,3 +14,8 @@ export const getUniqueQuickFilterLabelName = (
     ? getUniqueQuickFilterLabelName(list, prefix, startCounter + 1)
     : name;
 };
+
+export const QuickFilterScope = {
+  PRIVATE: 'PRIVATE',
+  ORGANIZATION: 'ORGANIZATION',
+};
