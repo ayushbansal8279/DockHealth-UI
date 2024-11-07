@@ -39,7 +39,7 @@ export default function TaskStatusToolbarSelect({
   const storageKey =
     origin === TaskOrigin.PATIENT
       ? 'patientStatus'
-      : getTaskListStatusStorageKey(taskListIdentifier);;
+      : getTaskListStatusStorageKey(taskListIdentifier);
 
   useEffect(() => {
     const savedStatus = localStorageHelper.getItem(storageKey);
@@ -61,6 +61,7 @@ export default function TaskStatusToolbarSelect({
   }, []);
 
   const handleSubmit = (status: string) => {
+    setStatus(status);
     localStorageHelper.setItem(storageKey, status);
     onChange(status);
     handleClose();
