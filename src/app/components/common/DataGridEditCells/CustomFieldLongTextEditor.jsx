@@ -7,6 +7,7 @@ import RichTextEditor from '@/app/components/common/RichTextEditor/RichTextEdito
 import { convertToSimpleString } from '@/app/helpers/markdown-helper.js';
 import { Text, LongTextBox, Divider } from '@/app/components/task/StandardTaskItem/customFieldsTaskItemComponents/TaskItemLongText/styled.js';
 import { useGridApiContext } from '@mui/x-data-grid-premium';
+import { TooltipPre } from './styled';
 
 const CustomTextEditorWithPopover = ({
   value = '',
@@ -18,8 +19,6 @@ const CustomTextEditorWithPopover = ({
   const apiRef = useGridApiContext();
   const [rawDetails, setRawDetails] = useState(value);
   const [unformattedDetails, setUnformattedDetails] = useState(convertToSimpleString(value));
-
-  console.log(typeof openDrawer, typeof id, typeof field);
 
   useEffect(() => {
     setRawDetails(value);
@@ -96,8 +95,8 @@ const CustomTextEditorWithPopover = ({
       >
         <LongTextBox>
           <Tooltip
-            placement="right-end"
-            title={<pre style={{ fontFamily: "Outfit, sans-serif", fontSize: '16px', whiteSpace: 'pre-wrap', wordBreak: 'keep-all' }}>{unformattedDetails}</pre>}
+            placement="top"
+            title={<TooltipPre>{unformattedDetails}</TooltipPre>}
           >
             <Text style={{paddingInline: '8px'}}>{unformattedDetails}</Text>
           </Tooltip>

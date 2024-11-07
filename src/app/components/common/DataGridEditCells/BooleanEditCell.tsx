@@ -5,6 +5,8 @@ import {
   GridRenderEditCellParams,
 } from '@mui/x-data-grid-premium';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import { selectStyles } from './helpers';
+import { PlaceholderText } from './styled';
 
 export default function BooleanDropdownEditCell({ id, field, value, name }: GridRenderEditCellParams<any, boolean | undefined>) {
   const apiRef = useGridApiContext();
@@ -15,7 +17,7 @@ export default function BooleanDropdownEditCell({ id, field, value, name }: Grid
     apiRef.current.setEditCellValue({
       id,
       field,
-      value: selectedValue === 'yes' ? 'yes' : selectedValue === 'no' ? 'no' : undefined,
+      value: selectedValue,
     });
   };
 
@@ -27,23 +29,12 @@ export default function BooleanDropdownEditCell({ id, field, value, name }: Grid
       onChange={handleChange}
       renderValue={(selected) => {
         if (selected === '') {
-          return <span style={{ color: 'gray' }}>{name}</span>;
+          return <PlaceholderText>{name}</PlaceholderText>;
         }
         return selected;
       }}
       IconComponent={ArrowDropDownIcon}
-      sx={{
-        marginInline: '8px',
-        '& .MuiOutlinedInput-notchedOutline': {
-          border: 'none',
-        },
-        '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-          outline: 'none', 
-        },
-        '&.Mui-focused': {
-          backgroundColor: 'transparent',
-        },
-      }}
+      sx={selectStyles}
     >
       <MenuItem value="" disabled>
         {name}

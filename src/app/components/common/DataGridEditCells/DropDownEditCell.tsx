@@ -5,6 +5,8 @@ import {
   GridRenderEditCellParams,
 } from '@mui/x-data-grid-premium';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import { selectStyles } from './helpers';
+import { PlaceholderText } from './styled';
 
 interface DropdownEditCellProps extends GridRenderEditCellParams<any, string | undefined> {
   options: { name: string }[]; 
@@ -29,23 +31,12 @@ export default function DropdownEditCell({ id, field, value, options, name }: Dr
       onChange={handleChange}
       renderValue={(selected) => {
         if (selected === '') {
-          return <span style={{ color: 'gray' }}>{name}</span>;
+          return <PlaceholderText>{name}</PlaceholderText>;
         }
         return selected;
       }}
       IconComponent={ArrowDropDownIcon}
-      sx={{
-        marginInline: '8px',
-        '& .MuiOutlinedInput-notchedOutline': {
-          border: 'none',
-        },
-        '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-          outline: 'none', 
-        },
-        '&.Mui-focused': {
-          backgroundColor: 'transparent',
-        },
-      }}
+      sx={selectStyles}
     >
       <MenuItem value="" disabled sx={{ color: 'gray' }}>
         {name}
