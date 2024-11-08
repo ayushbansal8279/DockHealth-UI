@@ -32,6 +32,7 @@ function* updateListPreferences({ payload }) {
     yield put({
       type: ActionTypes.UPDATE_LIST_PREFERENCES_SUCCESS,
     });
+    yield put(TaskListActions.getCurrentTaskList());
   } catch {
     yield put(showGlobalErrorAlert());
     yield put({ type: ActionTypes.UPDATE_LIST_PREFERENCES_FAILURE });
