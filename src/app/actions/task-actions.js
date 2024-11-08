@@ -390,6 +390,7 @@ export function deleteTask(task) {
         dispatch({
           type: ActionTypes.DELETE_TASK,
           taskIdentifier: task.taskIdentifier,
+          intent: 'TASK_DELETED',
         });
         dispatch({
           type: ActionTypes.DELETE_SUBTASK,

@@ -756,7 +756,7 @@ export default (state = INITIAL_STATE, action = {}) => {
     }
 
     case ActionTypes.DELETE_TASK: {
-      const { taskIdentifier } = action;
+      const { taskIdentifier, intent } = action;
       const taskItem = state.tasksMap[taskIdentifier];
 
       const { taskListIdentifier } = taskItem?.taskList || {};
@@ -773,7 +773,9 @@ export default (state = INITIAL_STATE, action = {}) => {
           : {
               ...state,
               tasksMap:
-                bundleIdentifier && !taskItem?.parentTaskIdentifier
+                intent === 'TASK_DELETED' &&
+                bundleIdentifier &&
+                !taskItem?.parentTaskIdentifier
                   ? {
                       ...state.tasksMap,
                       [bundleIdentifier]: {
