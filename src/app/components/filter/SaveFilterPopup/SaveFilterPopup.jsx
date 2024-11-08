@@ -78,6 +78,11 @@ const SaveFilterPopup = ({
     }
   }, [quickFiltersList, editIdentifier, isQuickFilterEdit]);
 
+  useEffect(() => {
+      setEveryOne(false);
+      setOnlyone(true);
+  }, [editIdentifier]);
+
   // If we need the disable option later
   // const [isDisable, setDisable] = useState(false);
   // useEffect(() => {
