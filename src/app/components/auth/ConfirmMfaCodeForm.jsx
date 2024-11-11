@@ -50,8 +50,8 @@ const ConfirmMFACodeForm = (props) => {
     history.push('/changePhoneNumber');
   }, [history]);
 
-  const handleResend = useCallback(() => {
-    history.push('/resendCode');
+  const handleRetry = useCallback(() => {
+    history.push('/login');
   }, [history]);
 
   return (
@@ -104,8 +104,8 @@ const ConfirmMFACodeForm = (props) => {
                   </div>
                 </OutfitTypography> */}
                 <OutfitTypography variant="h4" weight="600" align="center">
-                  <div style={{ cursor: 'pointer' }} onClick={handleResend}>
-                    Resend
+                  <div style={{ cursor: 'pointer' }} onClick={handleRetry}>
+                    Retry Login
                   </div>
                 </OutfitTypography>
               </div>
