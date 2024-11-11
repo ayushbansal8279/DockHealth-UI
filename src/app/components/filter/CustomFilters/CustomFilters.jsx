@@ -26,7 +26,6 @@ const CustomFilters = ({
   selectedQuickFilter,
   clearFilters,
   setSelectedCustomFilter,
-  isPatientListPage,
   handleQuickFilterDuplicateForPatientList,
 }) => {
   const [editModeFilterIdentifier, setEditModeFilterIdentifier] =
@@ -102,7 +101,6 @@ const CustomFilters = ({
             onQuickFilterCreate={onQuickFilterCreate}
             clearFilters={clearFilters}
             setSelectedCustomFilter={setSelectedCustomFilter}
-            isPatientListPage={isPatientListPage}
             handleQuickFilterDuplicateForPatientList={
               handleQuickFilterDuplicateForPatientList
             }

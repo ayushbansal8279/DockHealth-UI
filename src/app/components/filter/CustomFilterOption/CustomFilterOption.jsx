@@ -1,13 +1,18 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { useSelector } from 'react-redux';
 import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import palette from 'styles/palette';
+import moment from 'moment';
+import { userProfileSelector } from 'selectors/user-selectors';
 import {
   CustomFilterOptionWrapper,
   OptionMenuContainer,
   QuickFilterTitle,
   QuickFilterTitleContainer,
 } from './styled';
+import { QuickFilterScope } from '../CustomFilters/helpers';
+import { fontSizes } from '@/app/styles/font';
 
 const CustomFilterOption = (props) => {
   const {
@@ -29,12 +34,22 @@ const CustomFilterOption = (props) => {
     onQuickFilterCreate,
     clearFilters,
     setSelectedCustomFilter,
-    isPatientListPage,
     handleQuickFilterDuplicateForPatientList,
+    // editModeEnabled,
   } = props;
   const [value, setValue] = useState(label);
   const [isSelected, setSelected] = useState(false);
   const inputReference = useRef(null);
+  const currentUser = useSelector(userProfileSelector);
+
+  const isOrgScoped = filter.scope === QuickFilterScope.ORGANIZATION;
+
+  const isFilterCreator =
+    currentUser.identifier === filter?.creator?.identifier;
+
+  const isOrgScopeEditBlocked =
+    filter.scope === QuickFilterScope.ORGANIZATION &&
+    currentUser.identifier !== filter?.creator?.identifier;
 
   useEffect(() => {
     setSelected(selectedQuickFilter === identifier);
@@ -76,14 +91,14 @@ const CustomFilterOption = (props) => {
       for (const key in selectedFilters) {
         if (key !== '') {
           const users = filters
-            .flatMap((item) => item.id === key && item.options)
-            .filter((item) => typeof item !== 'boolean');
+            ?.flatMap((item) => item.id === key && item.options)
+            ?.filter((item) => typeof item !== 'boolean');
 
           let options = selectedFilters[key].options.map((item) => {
             if (item.includes('DATE_RANGE')) {
-              let aa = users.find((user) => user.key === item);
-              aa = {
-                ...aa,
+              let dateOption = users.find((user) => user.key === item);
+              dateOption = {
+                ...dateOption,
                 dateStart: moment(selectedFilters[key].dateStart).format(
                   'YYYY-MM-DD',
                 ),
@@ -91,7 +106,7 @@ const CustomFilterOption = (props) => {
                   'YYYY-MM-DD',
                 ),
               };
-              return aa;
+              return dateOption;
             }
             return users.find((user) => user.key === item);
           });
@@ -105,10 +120,7 @@ const CustomFilterOption = (props) => {
   };
 
   const handleDuplicate = () => {
-    if (
-      isPatientListPage &&
-      filter.patientSelectedOptions.customFields.length > 0
-    ) {
+    if (filter.patientSelectedOptions.customFields.length > 0) {
       const selectedOptions = {};
       filter.patientSelectedOptions.customFields.forEach((element) => {
         selectedOptions[element.customFieldIdentifier] = {
@@ -174,6 +186,14 @@ const CustomFilterOption = (props) => {
           onClick={() => handleOptionClick()}
         >
           {value}
+          {isFilterCreator && <span style={{ fontSize: '10px' }}> (shared)</span>}
+          {isOrgScoped && (
+            <div style={{ fontSize: '10px', marginTop: '3px' }}>
+              {!isFilterCreator && (
+                <span>Shared by: {filter?.creator.name}</span>
+              )}
+            </div>
+          )}
         </QuickFilterTitle>
         {/* <Input
         onKeyPress={handleKeyPress}
@@ -210,7 +230,7 @@ const CustomFilterOption = (props) => {
             </Tooltip>
       </IconContainer> */}
         <OptionMenuContainer>
-          {!disableOptions && (
+          {!disableOptions && !isOrgScopeEditBlocked && (
             <OptionsMenu color={palette.shadowBlue} options={OPTIONS}>
               <MoreVertIcon />
             </OptionsMenu>

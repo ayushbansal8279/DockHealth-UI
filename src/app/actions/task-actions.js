@@ -291,7 +291,7 @@ export const moveTask =
             task: updatedTask,
           });
         }
-
+        dispatch(getTasksGroupsList());
         dispatch(
           AlertActions.showGlobalAlertWithUndo(
             AlertMessages.TASK_MOVED,
@@ -315,7 +315,9 @@ export const moveTask =
             },
           ),
         );
-      })
+        
+      }
+    )
       .catch((error) => {
         throw error;
       });
@@ -388,6 +390,7 @@ export function deleteTask(task) {
         dispatch({
           type: ActionTypes.DELETE_TASK,
           taskIdentifier: task.taskIdentifier,
+          intent: 'TASK_DELETED',
         });
         dispatch({
           type: ActionTypes.DELETE_SUBTASK,

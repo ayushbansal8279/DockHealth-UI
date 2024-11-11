@@ -214,20 +214,6 @@ const DashboardHeader = ({
     [dispatch],
   );
 
-  const handleSaveQuickFilter = useCallback(
-    (quickFilterIdentifier, selectedFilters) =>
-      dispatch(
-        updateQuickFilter(
-          quickFilterIdentifier,
-          {
-            selectedOptions: selectedFilters,
-          },
-          { contextType },
-        ),
-      ),
-    [contextType, dispatch],
-  );
-
   const handleSaveAsQuickFilter = useCallback(
     () => dispatch(showAddQuickFilterOption()),
     [dispatch],
@@ -245,15 +231,20 @@ const DashboardHeader = ({
   );
 
   const handleQuickFilterCreate = useCallback(
-    (name, selectedFilters) =>
-      dispatch(createQuickFilter(name, { contextType }, selectedFilters)),
+    (name, selectedFilters, scope) =>
+      dispatch(createQuickFilter(name, { contextType }, selectedFilters, scope)),
     [contextType, dispatch],
   );
 
   const handleQuickFilterUpdate = useCallback(
-    (quickFilterIdentifier, name) =>
+    (quickFilterIdentifier, name, selectedFilterOptions, scope) =>
       dispatch(
-        updateQuickFilter(quickFilterIdentifier, { name }, { contextType }),
+        updateQuickFilter(
+          quickFilterIdentifier, 
+          { name, selectedOptions: selectedFilterOptions }, 
+          { contextType }, 
+          scope,
+        ),
       ),
     [contextType, dispatch],
   );
@@ -399,7 +390,6 @@ const DashboardHeader = ({
                   addQuickFilterOption={addQuickFilterOption}
                   selectedQuickFilter={selectedQuickFilter}
                   selectQuickFilter={handleSelectQuickFilter}
-                  handleSaveQuickFilter={handleSaveQuickFilter}
                   onSaveAsNewClick={handleSaveAsQuickFilter}
                   wasChangedFilters={wasChangedFilters}
                   onQuickFilterCreate={handleQuickFilterCreate}

@@ -48,7 +48,7 @@ const UserTypeLabel = ({
   });
 
   const PopoverComponent = (() => {
-    if (userStatus === 'PENDING') {
+    if (userStatus === 'PENDING' || userStatus === 'DENIED') {
       return PendingApprovalPopover;
     }
 

@@ -17,6 +17,8 @@ import isEmpty from 'ramda/src/isEmpty';
 import { TaskViewContainer } from './styled';
 import SingleTaskHeader from './SingleTaskHeader/SingleTaskHeader';
 import SingleTaskSkeleton from './SingleTaskSkeleton';
+import { selectedUserOrganizationSelector } from '@/app/selectors/user-selectors';
+import { selectCurrentOrganizationWithRedirection } from '@/app/api/organization-api';
 
 const SingleTaskView = () => {
   const dispatch = useDispatch();
@@ -25,6 +27,21 @@ const SingleTaskView = () => {
   const selectedTask = useSelector(selectedTaskSelector) || {};
   const { error } = useSelector(taskDrawerSelector) || {};
   const isFetching = isEmpty(selectedTask);
+  const currentOrganization = useSelector(selectedUserOrganizationSelector);
+  const selectedTaskOrgId = selectedTask?.organization?.organizationIdentifier;
+
+  useEffect(() => {
+    const organizationsExist = selectedTaskOrgId && currentOrganization;
+    const organizationsDiffer =
+      selectedTaskOrgId !== currentOrganization?.organizationIdentifier;
+
+    if (organizationsExist && organizationsDiffer) {
+      selectCurrentOrganizationWithRedirection(
+        selectedTaskOrgId,
+        `#/core/task/${identifier}`,
+      );
+    }
+  }, [selectedTaskOrgId, currentOrganization]);
 
   const goToDashboard = useCallback(() => {
     history.push(HOME_PATH);

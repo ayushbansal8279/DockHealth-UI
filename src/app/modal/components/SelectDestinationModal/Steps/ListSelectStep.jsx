@@ -19,6 +19,8 @@ import {
   NextArrow,
   Step,
 } from '../styled';
+import { searchTermSelector } from '@/app/selectors/list-details-selectors';
+import HeaderSearch from '@/app/components/template/HeaderSearch/HeaderSearch';
 
 const ListSelectStep = ({
   selectedList,
@@ -68,17 +70,26 @@ const ListSelectStep = ({
     }
   };
 
+  const [searchQuery, setSearchQuery] = useState('');
+  const filteredLists = lists?.filter((list) => 
+    list.listName.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <Step>
       <Title>
         {modalLabel || 'Select List and Group'}
       </Title>
       <Box m={1} />
+      <Box sx={{ width: '100%', mx: 'auto' }}>
+        <HeaderSearch onChange={(value) => setSearchQuery(value)}  />
+      </Box>
+      <Box m={.5} />
       <ListsWrapper>
         {!isFetchingLists && (
           <>
-            {lists?.length > 0 ? (
-              lists.map((list) => (
+           {filteredLists?.length > 0 ? (
+          filteredLists.map((list) => (
                 <ListItem
                   key={list.taskListIdentifier}
                   isSelected={

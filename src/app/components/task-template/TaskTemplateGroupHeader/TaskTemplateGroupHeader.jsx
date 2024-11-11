@@ -277,8 +277,7 @@ const TaskTemplateGroupHeader = ({
             }
           });
         }
-        accumulator[1] =
-          accumulator[1] + (currentTask?.subtasks?.length || 0) + 1;
+        accumulator[1] = accumulator[1] + (currentTask?.subTasksCount || 0) + 1;
 
         return accumulator;
       },
@@ -531,8 +530,8 @@ const TaskTemplateGroupHeader = ({
   const [isPatientDataReadOnly] = useState(true);
   const collapse = useContext(CollapseContext);
 
-  const [isWorkflowExpanded, setIsWorkflowExpanded] = useState(() =>
-    collapse.get(identifier) === undefined ? false : !collapse.get(identifier),
+  const [isWorkflowExpanded, setIsWorkflowExpanded] = useState(() => 
+    collapse.get(identifier) === undefined ? false : !collapse.get(identifier)
   );
 
   const { isVirtualListWorkflowOpen } = useContext(VTaskContext);
