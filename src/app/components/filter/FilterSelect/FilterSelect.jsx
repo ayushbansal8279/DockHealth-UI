@@ -13,11 +13,19 @@ import {
   Lable,
   CloseIconContainer,
   PopupContainer,
+  PatientOptionsContainer,
+  PatientName,
+  PatientTableHeader,
 } from './style';
 import UserAvatar from '../../user/UserAvatar/UserAvatar';
 import DateRangeOptions from '../DateRangeOptions/DateRangeOptions';
-import palette from '@/app/styles/palette';
-import { fontSizes } from '@/app/styles/font';
+import debounce from 'lodash.debounce';
+import { getPatientsByCriteria } from '@/app/api/patients-api';
+import { mapPatientsToOptions, TextFieldSX } from './helper';
+import { userProfileSelector } from '@/app/selectors/user-selectors';
+import { getCustomerTypeLabel } from '@/app/helpers/customer-type-helper';
+import { useSelector } from 'react-redux';
+import { organizationSelector } from '@/app/selectors/organization-selectors';
 
 const FilterSelect = ({
   finalFilter,
@@ -28,7 +36,9 @@ const FilterSelect = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [optionName, setOptionName] = useState('');
-  const [filterdUser, setFilterdUser] = useState(filterOptions);
+  const [options, setOptions] = useState(
+    filter !== 'patients' ? filterOptions : [],
+  );
   const inputRef = useRef(null);
   const containerRef = useRef(null);
   const [startDate, setStartDate] = useState('');
@@ -36,13 +46,23 @@ const FilterSelect = ({
   const [dateStart, setDateStart] = useState('');
   const [dateEnd, setDateEnd] = useState('');
   const [isDateRange, setIsDateRange] = useState(false);
+  const currentUser = useSelector(userProfileSelector);
+  const customerTypeLabel = getCustomerTypeLabel(currentUser);
+  const { emrIntegrationType } = useSelector(organizationSelector) || {};
+  const patientPlaceholder =
+    emrIntegrationType === 'FHIR'
+      ? `Search ${customerTypeLabel} (MRN #)`
+      : `Search ${customerTypeLabel} (first last or last, first)`;
+  const isPatient = filter === `${customerTypeLabel}s`;
 
   useEffect(() => {
-    setFilterdUser([
-      ...filterOptions?.filter(
-        (item) => !finalFilter[filter]?.find((usr) => usr?.key === item?.key),
-      ),
-    ]);
+    if (!isPatient) {
+      setOptions([
+        ...filterOptions.filter(
+          (item) => !finalFilter[filter].find((usr) => usr?.key === item?.key),
+        ),
+      ]);
+    }
   }, [filter, finalFilter, filterOptions]);
 
   useEffect(() => {
@@ -85,36 +105,39 @@ const FilterSelect = ({
     if (isDateRange) {
       inputRef.current.textContent = '';
     }
-    setFilterdUser((v) => v.filter((option) => option?.key !== item?.key));
+    setOptions((v) => v.filter((option) => option?.key !== item?.key));
     let currentFilter = { ...finalFilter };
+    const allFilterOptions = isPatient ? options : filterOptions;
     currentFilter[filter] = [
       ...currentFilter[filter],
-      ...filterOptions?.filter((user) => user?.key === item?.key),
+      ...allFilterOptions.filter((option) => option?.key === item?.key),
     ];
     setFinalFilter({ ...currentFilter });
   };
 
   const handleSearchOption = (e) => {
-    setFilterdUser(
-      filterOptions.filter((option) =>
-        option?.displayValue
-          .toLowerCase()
-          .includes(e.target.textContent.toLowerCase()),
-      ),
-    );
+    if (!isPatient) {
+      setOptions(
+        filterOptions.filter((option) =>
+          option?.displayValue
+            .toLowerCase()
+            .includes(e.target.textContent.toLowerCase()),
+        ),
+      );
+    }
   };
 
-  const handleRemoveAssign = (item) => {
-    if (finalFilter[filter].find((user) => user.key === item?.key)) {
+  const handleRemoveSelectedOption = (item) => {
+    if (finalFilter[filter].find((option) => option.key === item?.key)) {
       const urs = { ...finalFilter };
       urs[filter] = finalFilter[filter].filter(
         (option) => option?.key !== item?.key,
       );
       setFinalFilter((v) => ({ ...urs }));
-      setFilterdUser((v) => [...v, item]);
+      setOptions((v) => [...v, item]);
       const currentFilter = { ...finalFilter };
-      currentFilter[filter] = currentFilter[filter]?.filter(
-        (user) => user?.key !== item?.key,
+      currentFilter[filter] = currentFilter[filter].filter(
+        (option) => option.key !== item?.key,
       );
     }
   };
@@ -133,34 +156,14 @@ const FilterSelect = ({
     });
   }, [filter, finalFilter]);
 
-  const TextFieldSX = {
-    backgroundColor: palette.whiteSmoke,
-    '& .MuiOutlinedInput-root': {
-      '& .MuiOutlinedInput-notchedOutline': {
-        border: `2px solid ${palette.crystalBlue}`,
-      },
-    },
-    '& .MuiAutocomplete-tag': {
-      height: '40px',
-      backgroundColor: 'transparent',
-      borderRadius: '8px',
-      fontSize: fontSizes.regular,
-      '& .MuiChip-deleteIcon': {
-        backgroundColor: palette.lightGrey,
-        borderRadius: '50%',
-        color: 'white',
-      },
-      '&:hover': {
-        '& .MuiChip-deleteIcon': {
-          color: '#daefff',
-        },
-        backgroundColor: '#daefff',
-      },
-    },
-    '& .MuiAutocomplete-endAdornment .MuiAutocomplete-clearIndicator': {
-      display: 'none',
-    },
-  };
+  const fetchPatientsWithDebounce = debounce((mentionString) => {
+    if (mentionString) {
+      getPatientsByCriteria(mentionString).then((fetchedPatients) => {
+        const formattedPatients = mapPatientsToOptions(fetchedPatients);
+        setOptions(formattedPatients);
+      });
+    }
+  }, 300);
 
   return (
     <>
@@ -170,23 +173,40 @@ const FilterSelect = ({
           <div style={{ display: 'flex' }}>
             <Autocomplete
               multiple
-              options={filterdUser}
+              options={options}
               disableCloseOnSelect
               getOptionLabel={(option) => option?.displayValue}
               renderOption={(props, option) => (
-                <li {...props}>
-                  <DisplayValue>
-                    <AvatarContainer>
-                      {optionName === 'Assigned by' ||
-                      optionName === 'Assigned to' ? (
-                        <UserAvatar user={option?.reference} />
+                <>
+                  {isPatient && options && options[0]?.key === option?.key && (
+                    <PatientOptionsContainer>
+                      <PatientTableHeader>Patient Name</PatientTableHeader>
+                      <PatientTableHeader>DOB</PatientTableHeader>
+                      <PatientTableHeader>MRN</PatientTableHeader>
+                    </PatientOptionsContainer>
+                  )}
+                  <li {...props}>
+                    <DisplayValue>
+                      <AvatarContainer>
+                        {optionName === 'Assigned by' ||
+                        optionName === 'Assigned to' ? (
+                          <UserAvatar user={option?.reference} />
+                        ) : (
+                          ''
+                        )}
+                      </AvatarContainer>
+                      {!isPatient ? (
+                        <Lable>{option?.displayValue}</Lable>
                       ) : (
-                        ''
+                        <PatientOptionsContainer>
+                          <PatientName>{option?.displayValue}</PatientName>
+                          <PatientName>{option?.dob}</PatientName>
+                          <PatientName>{option?.mrn}</PatientName>
+                        </PatientOptionsContainer>
                       )}
-                    </AvatarContainer>
-                    <Lable>{option?.displayValue}</Lable>
-                  </DisplayValue>
-                </li>
+                    </DisplayValue>
+                  </li>
+                </>
               )}
               style={{ width: '517' }}
               value={finalFilter[filter]}
@@ -195,14 +215,23 @@ const FilterSelect = ({
                   handleSelectOption(option.option);
                 }
                 if (action === 'removeOption') {
-                  handleRemoveAssign(option.option);
+                  handleRemoveSelectedOption(option.option);
                 }
                 if (action === 'clear') {
                   handleRemoveOption();
                 }
               }}
               renderInput={(params) => (
-                <TextField sx={TextFieldSX} {...params} />
+                <TextField
+                  onChange={(e) => {
+                    if (isPatient) fetchPatientsWithDebounce(e.target.value);
+                  }}
+                  sx={TextFieldSX}
+                  placeholder={
+                    isPatient && options.length === 0 && patientPlaceholder
+                  }
+                  {...params}
+                />
               )}
             />
             <CloseIconContainer onClick={handleRemoveOption}>
@@ -237,7 +266,7 @@ const FilterSelect = ({
                         <Lable>{item?.displayValue}</Lable>
                       )}
                     </DisplayValue>
-                    <div onClick={() => handleRemoveAssign(item)}>
+                    <div onClick={() => handleRemoveSelectedOption(item)}>
                       <img
                         style={{
                           width: '19px',
@@ -264,7 +293,7 @@ const FilterSelect = ({
             {isOpen && (
               <PopupContainer>
                 <OptionDropDown>
-                  {filterdUser.map((item, i) => (
+                  {options.map((item, i) => (
                     <OptionDropDownItem
                       key={item?.key}
                       onClick={() => handleSelectOption(item)}
