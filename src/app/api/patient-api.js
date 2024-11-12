@@ -3,6 +3,7 @@ import { log } from 'helpers/log';
 import { noop, showAlert } from 'helpers/utility-functions';
 import { mapSelectedOptionsToRequestPayload } from 'helpers/filter-options-helpers';
 import axios from './axios-heydoc';
+import { error } from '../actions/notification-actions';
 
 export function getAllPatients() {
   return axios
@@ -70,6 +71,16 @@ export function getPatientById(patientIdentifier) {
       log(error);
       throw new Error(error?.response?.data?.errorMessage);
     });
+}
+
+export function getPatientByExternalId(externalIdentifier){
+  return axios
+  .get(`patient?externalIdentifier=${externalIdentifier}`)
+  .then((response) => response.data)
+  .catch((error) => {
+    log(error);
+    throw new Error(error?.response?.data?.errorMessage);
+  });
 }
 
 export function lookupEMRPatient(patientId) {

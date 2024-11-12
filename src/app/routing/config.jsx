@@ -52,6 +52,9 @@ const UserGroupView = lazy(() => import('views/user-group/UserGroupView'));
 const PatientDetailsView = lazy(() =>
   import('views/patient-details/PatientDetailsView'),
 );
+const PatientExternalDetailsView = lazy(() =>
+  import('views/patient-details/PatientExternalDetailsView'),
+);
 const OnboardingQuestions = lazy(() =>
   import('views/onboarding/OnboardingQuestions/OnboardingQuestions'),
 );
@@ -314,6 +317,11 @@ export const TEMPLATE_CORE_SUBSCRIPTION_PLAN_ROUTES = [
   {
     path: '/patient/:patientIdentifier',
     RouteComponent: PatientDetailsView,
+    permissions: [CAN_ACCESS_MEMBER_LIST_PAGE],
+  },
+  {
+    path: '/patients/external/:externalIdentifier',
+    RouteComponent: PatientExternalDetailsView,
     permissions: [CAN_ACCESS_MEMBER_LIST_PAGE],
   },
   {
