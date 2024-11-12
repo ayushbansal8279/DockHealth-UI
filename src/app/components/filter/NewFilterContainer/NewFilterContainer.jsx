@@ -49,7 +49,7 @@ const NewFilterContainer = ({
   const currentUser = useSelector(userProfileSelector);
   const customerTypeLabel = getCustomerTypeLabel(currentUser);
   const customerTypeLabelMixedCase = capitalizeWords(customerTypeLabel);
-  const sanitizedFilters = filters.map((item) => {
+  const sanitizedFilters = filters?.map((item) => {
     return item?.id.toLowerCase() === 'patients'
       ? { ...item, label: customerTypeLabelMixedCase }
       : item;
@@ -58,7 +58,7 @@ const NewFilterContainer = ({
   useEffect(() => {
     const data = {};
     for (const key in finalFilter) {
-      if (finalFilter[key].length > 0) {
+      if (finalFilter[key]?.length > 0) {
         setDisable(true);
         const options = [];
         let dateStart = '';
