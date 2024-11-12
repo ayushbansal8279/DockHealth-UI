@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Box } from '@mui/material';
 import { useDispatch } from 'react-redux';
-import Button from 'components/common/Button/Button';
 import * as TaskActions from 'actions/task-actions';
 import { string } from 'yup';
 import Spacing from 'components/common/Spacing';
@@ -18,6 +17,7 @@ import {
 // import { MessageTextarea } from './styled';
 import AddExternalUser from './AddExternalUser/AddExternalUser';
 import UsersSelect from './UsersSelect/UsersSelect';
+import { ConfirmButton } from '../ModalButton/ModalButtons';
 
 const ShareTaskModal = (props) => {
   const { taskIdentifier, closeModal } = props;
@@ -136,14 +136,13 @@ const ShareTaskModal = (props) => {
             </CheckboxContainer>
           </Box>
           <Box display="flex" width="100%" justifyContent="flex-end" mt="16px">
-            <Button
-              type="button"
-              width="auto"
+            <ConfirmButton
+              style={{width: 'auto'}}
               disabled={!selectedUsers || selectedUsers?.length === 0}
               onClick={handleInvite}
             >
               Share
-            </Button>
+            </ConfirmButton>
           </Box>
         </>
       )}

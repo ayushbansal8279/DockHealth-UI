@@ -84,16 +84,6 @@ const AnalyticsView = () => {
     [dispatch],
   );
 
-  const handleSaveQuickFilter = useCallback(
-    () =>
-      dispatch(
-        updateQuickAnalyticsFilter(selectedQuickFilter, {
-          selectedOptions: selectedFilters,
-        }),
-      ),
-    [dispatch, selectedFilters, selectedQuickFilter],
-  );
-
   const wasChangedFilters = useMemo(
     () =>
       !equals(
@@ -111,8 +101,13 @@ const AnalyticsView = () => {
   );
 
   const handleQuickFilterUpdate = useCallback(
-    (quickFilterIdentifier, name) =>
-      dispatch(updateQuickAnalyticsFilter(quickFilterIdentifier, { name })),
+    (quickFilterIdentifier, name, selectedFilterOptions, scope) =>
+      dispatch(
+        updateQuickAnalyticsFilter(
+          quickFilterIdentifier, 
+          { name, selectedOptions: selectedFilterOptions },
+          scope,
+        )),
     [dispatch],
   );
 
@@ -145,7 +140,6 @@ const AnalyticsView = () => {
             addQuickFilterOption={addQuickFilterOption}
             selectedQuickFilter={selectedQuickFilter}
             selectQuickFilter={handleSelectQuickFilter}
-            handleSaveQuickFilter={handleSaveQuickFilter}
             onSaveAsNewClick={handleSaveAsQuickFilter}
             wasChangedFilters={wasChangedFilters}
             onQuickFilterCreate={handleQuickFilterCreate}

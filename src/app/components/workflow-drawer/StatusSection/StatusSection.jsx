@@ -120,6 +120,9 @@ const StatusSection = ({ disabled }) => {
                 tabIndex: -1,
                 readOnly: true,
                 value: workflowStatus?.name || '',
+                style: {
+                  cursor: 'pointer',
+                },
               }}
             />
           )}

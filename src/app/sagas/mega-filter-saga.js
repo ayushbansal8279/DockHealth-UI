@@ -20,11 +20,12 @@ function* createQuickFilter({
   name: newName,
   viewSpecificData,
   selectedOptions,
+  scope,
 }) {
   try {
     const filter = yield call(
       MegaFilterApi.createQuickFilter,
-      { name: newName, selectedOptions },
+      { name: newName, selectedOptions, scope },
       viewSpecificData,
     );
 
@@ -39,6 +40,7 @@ function* updateQuickFilter({
   quickFilterIdentifier,
   dataToUpdate,
   viewSpecificData,
+  scope,
 }) {
   try {
     const quickFilters = yield select(quickFiltersSelector);
@@ -51,6 +53,7 @@ function* updateQuickFilter({
       quickFilterIdentifier,
       updatedOption,
       viewSpecificData,
+      scope,
     );
     yield put({ type: ActionTypes.UPDATE_QUICK_FILTER_SUCCESS });
   } catch (error) {

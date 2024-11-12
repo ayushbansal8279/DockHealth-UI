@@ -2,9 +2,9 @@ import React from 'react';
 import { Box, Grid } from '@mui/material';
 import { FormProvider, useForm } from 'react-hook-form';
 import FormInput from 'components/common/Input/FormInput';
-import Button from 'components/common/Button/Button';
 import { CloseIconButton, CloseIcon } from '../styled';
 import { ListFormModalWrapper, Title, StyledForm } from './styled';
+import { CancelButton, ConfirmButton } from '../ModalButton/ModalButtons';
 
 const validateFolderName = (value) => {
   if (!value || ![...value]?.filter((char) => char !== ' ').length > 0) {
@@ -55,18 +55,9 @@ const PatientFolderModal = ({
             validate={validateFolderName}
           />
           <Grid container direction="row" justifyContent="flex-end">
-            <Button
-              width="auto"
-              variant="secondary"
-              onClick={closeModal}
-              size="small"
-            >
-              Cancel
-            </Button>
+            <CancelButton onClick={closeModal}>Cancel</CancelButton>
             <Box mx={1} />
-            <Button fullWidth type="submit" size="small" width="auto">
-              Save
-            </Button>
+            <ConfirmButton type="submit">Save</ConfirmButton>
           </Grid>
         </FormProvider>
       </StyledForm>

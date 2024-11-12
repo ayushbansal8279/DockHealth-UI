@@ -16,6 +16,7 @@ import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import HardDependencyIcon from 'img/template/hard-dependency';
 import CalendarIcon from 'img/template/calendar-icon';
 import WorkflowLinkIcon from 'img/template/workflow-icon';
+import * as ModalActions from 'modal/actions';
 import {
   createWorkflowFolderPath,
   WORKFLOW_LIBRARY_PATH,
@@ -158,6 +159,31 @@ const SmartFlowBuilderView = () => {
     () => elements.filter((element) => element.selected),
     [elements],
   );
+
+  const [modalUsed, setModalUsed] = useState(false);
+  const [initialTasksLength, setInitialTasksLength] = useState(null);
+
+  useEffect(() => {
+    if (initialTasksLength === null && Array.isArray(tasks)) {
+      setInitialTasksLength(tasks.length);
+    }
+  }, [tasks, initialTasksLength]);
+
+  useEffect(() => {
+      if (isCurrentUserEditor && (initialTasksLength > 0) && !modalUsed ) {
+          dispatch(
+            ModalActions.openModal('Alert', {
+              title:'Changes May Not Be Applied to Deployed Items',
+              description:
+                'These changes will not be reflected on deployed workflow tasks. If a task has yet to deploy, the changes will be applied. All changes will be saved and applied to future workflows.',
+              confirm: () => {
+                dispatch(ModalActions.closeModal());
+              },
+            }),
+          );
+          setModalUsed(true);         
+      }   
+  }, [dispatch, isCurrentUserEditor, modalUsed, initialTasksLength ]);
 
   useEffect(() => {
     if (smartFlowsAvailable === false && templateType === 'SMARTFLOW') {

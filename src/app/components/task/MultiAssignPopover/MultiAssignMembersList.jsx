@@ -11,6 +11,7 @@ import { arrayOf, func, oneOfType, shape, string, bool } from 'prop-types';
 import debounce from 'lodash.debounce';
 import UserAvatar from 'components/user/UserAvatar/UserAvatar';
 import MagnifierIcon from 'img/magnifier.svg';
+import ExternalUserIcon from 'img/external-user.svg'
 import Checkbox from 'components/common/Checkbox/Checkbox';
 import Spacing from 'components/common/Spacing';
 import { useSelector } from 'react-redux';
@@ -38,6 +39,9 @@ import {
   CheckboxSpacing,
   NoRecordsText,
   StyledYouBadge,
+  StyledExternalUserIcon,
+  MemberTooltip,
+  TruncatedText
 } from './styled';
 import { collectJoinedListMembers } from './helpers';
 
@@ -62,6 +66,7 @@ const MultiAssignMembersList = ({
   closePopup,
   setValue,
   taskDrawer,
+  isBulkEdit,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const { emrIntegrationEnabled } = useSelector(organizationSelector);
@@ -70,6 +75,7 @@ const MultiAssignMembersList = ({
   const [membersOptions, setMembersOptions] = useState([]);
   const [selectedMembers, setSelectedMembers] = useState([]);
   const [isFetchingMembers, setIsFetchingMembers] = useState(false);
+  const [isBulkEditAssignModal, setIsBulkEditAssignModal] = useState(false);
   const [searchValue, setSearchValue] = useState('');
   const enableLazyLoading = emrIntegrationEnabled && enabled;
   const isValueSendable = searchValue?.trim()?.length > 2;
@@ -78,10 +84,15 @@ const MultiAssignMembersList = ({
       ({ name }) => name === 'member.assignall.enabled',
     ) || {};
   const memberAssignAllEnabled = memberAssignAllEnabledItem?.value !== 'false';
+  const memberRefs = useRef({});
 
   useEffect(() => {
     if (taskDrawer) setSearchValue(value);
   }, [taskDrawer, value]);
+
+  useEffect(() => {
+    if (isBulkEdit) setIsBulkEditAssignModal(true);
+  }, [isBulkEdit]);
 
   const filteredMembers = useMemo(
     () =>
@@ -235,6 +246,12 @@ const MultiAssignMembersList = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const isTextTruncated = (element) => {
+    if (!element) return false;
+    const { scrollWidth, clientWidth } = element;
+    return scrollWidth > clientWidth;
+  };
+
   const handleOptionClick = useCallback(
     (event, selectedOption) => {
       event.stopPropagation();
@@ -329,9 +346,14 @@ const MultiAssignMembersList = ({
       </MemberName>
     </MemberRow>
   );
+  
+  const isExternalUser = (role) => ['GUEST', 'DOCK_LITE'].includes(role);
 
   const renderSelectOption = useCallback(
     (member, isSelected, extra) => {
+      if (!memberRefs.current[member?.identifier]) {
+        memberRefs.current[member?.identifier] = React.createRef();
+      }
       return (
         <MemberRow
           key={member?.identifier}
@@ -347,12 +369,22 @@ const MultiAssignMembersList = ({
           )}
           <Spacing horizontal={4} />
           <MemberName>
-            <Highlighter
-              highlightStyle={highlightStyle}
-              searchWords={searchValue?.toLowerCase().split(/\s+/)}
-              autoEscape
-              textToHighlight={member?.name}
-            />
+            <TruncatedText ref={memberRefs.current[member?.identifier]}>
+              <Highlighter
+                highlightStyle={highlightStyle}
+                searchWords={searchValue?.toLowerCase().split(/\s+/)}
+                autoEscape
+                textToHighlight={member?.name}
+              />
+            </TruncatedText>
+            {isExternalUser(member?.orgUserRole) && (
+              <StyledExternalUserIcon src={ExternalUserIcon} alt="external-user-icon" />
+            )}
+            {isTextTruncated(memberRefs?.current[member?.identifier]?.current) && (
+              <MemberTooltip>
+                {member?.name}
+              </MemberTooltip>
+            )}
           </MemberName>
           {extra}
         </MemberRow>
@@ -400,6 +432,8 @@ const MultiAssignMembersList = ({
               <>
                 {isFetchingMembers ? (
                   <MemberRowSkeletonLoader />
+                ) : isBulkEditAssignModal ? (
+                  <></>
                 ) : (
                   renderAssignAllOption
                 )}

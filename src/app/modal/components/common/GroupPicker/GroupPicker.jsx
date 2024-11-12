@@ -15,6 +15,8 @@ import {
   QuickAddInputWrapper,
   ListItemTextButton,
 } from '../../SelectDestinationGroupModal/styled';
+import { Box, Step } from '@mui/material';
+import HeaderSearch from '@/app/components/template/HeaderSearch/HeaderSearch';
 
 const GroupPicker = ({
   selectedList,
@@ -73,15 +75,23 @@ const GroupPicker = ({
     }
   }, [selectedList]);
 
+  const [searchQuery, setSearchQuery] = useState('');
+  const filteredGroupList = groups?.filter((group) => 
+    group.groupName.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
-    <>
+    <Step>
       {selectedList && (
-        <>
+        <><Box sx={{ width: '100%', mx: 'auto' }}>
+            <HeaderSearch  onChange={(value) => setSearchQuery(value)} />
+          </Box>
+          <Box m={1} />
           <ListsWrapper ref={container}>
             {!isFetchingGroups && (
               <>
-                {groups?.length > 0 ? (
-                  groups.map((group) => (
+                {filteredGroupList?.length > 0 ? (
+                  filteredGroupList.map((group) => (
                     <ListItem
                       key={group.taskGroupIdentifier}
                       isSelected={
@@ -124,7 +134,7 @@ const GroupPicker = ({
           </QuickAddInputWrapper>
         </>
       )}
-    </>
+    </Step>
   );
 };
 

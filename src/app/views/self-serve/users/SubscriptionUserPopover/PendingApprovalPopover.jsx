@@ -77,7 +77,7 @@ const renderUserTypesOptions = ({
 }) => {
   let renderedArray = [];
 
-  if (userStatus === 'PENDING') {
+  if (userStatus === 'PENDING' || userStatus === 'DENIED') {
     renderedArray = Object.entries(userTypes)
       .filter(pathEq(['1', 'selectable'], true))
       .map(([role, { label, description, isLimitedAccess }]) => ({

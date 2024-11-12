@@ -172,7 +172,7 @@ const CustomFieldsSection = ({ disabled, fieldCategoryType }) => {
     <FormProvider {...formMethods}>
       {fieldCategoryType === 'TASK_CORE' ? (
         <CustomFieldsSectionContainerNoLine>
-          <Spacing vertical={3} />
+          <Spacing vertical={1} />
           <CategoryOptions
             visibility={emptyVisible}
             onToggle={toggleEmptyVisible}

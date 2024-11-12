@@ -3,6 +3,7 @@ import React from 'react';
 import { TextField } from '@mui/material';
 import clsx from 'clsx';
 import { styled } from '@mui/material/styles';
+import { getHelperText } from './helpers';
 
 const StyledTextField = styled(TextField)`
   && {
@@ -57,7 +58,7 @@ const Input = React.forwardRef(
       error={!!error}
       defaultValue={defaultValue}
       size={size}
-      helperText={error || null}
+      helperText={getHelperText(error)}
       disabled={disabled}
       inputProps={{ readOnly }}
       InputProps={{

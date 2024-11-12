@@ -35,13 +35,13 @@ const TaskTemplatePermissions = ({ template }) => {
       }),
     );
   }, [dispatch, members, identifier, template]);
-  const { userIdentifier } = useSelector(userProfileSelector);
+  const { userIdentifier , orgUserRole } = useSelector(userProfileSelector);
   const currentUser = members.find(
     (user) => user.userIdentifier === userIdentifier,
   );
 
-  const hasAccessToEdit =
-    currentUser && currentUser.memberPermission === 'EDITOR';
+  const hasAccessToEdit = 
+    currentUser && currentUser.memberPermission === 'EDITOR' || orgUserRole === 'DOCK_PRO' ;
 
   return (
     <StandardTaskItemCell

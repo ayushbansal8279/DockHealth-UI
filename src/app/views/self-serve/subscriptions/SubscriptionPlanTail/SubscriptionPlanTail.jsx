@@ -25,6 +25,7 @@ import {
   Divider,
 } from './styled';
 import SubscriptionPlanFeature from '../SubscriptionPlanFeature/SubscriptionPlanFeature';
+import { CancelButton, ConfirmButton } from '@/app/modal/components/ModalButton/ModalButtons';
 
 const SubscriptionPlanTail = (props) => {
   const {
@@ -67,6 +68,7 @@ const SubscriptionPlanTail = (props) => {
 
   return (
     <Container
+      selected={selected}
       active={active}
       pro={key === SubscriptionPlan.PRO && !hasExistingSubscription}
     >
@@ -94,7 +96,6 @@ const SubscriptionPlanTail = (props) => {
           disabled={active}
           onClick={() => onSelect(subscriptionPlan)}
         >
-          {!active && selected && <CheckIcon />}
           <Box component="span" position="relative">
             {active ? 'Active' : subscribeLabel}
           </Box>

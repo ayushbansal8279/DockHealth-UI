@@ -444,39 +444,82 @@ export default (state = INITIAL_STATE, action = {}) => {
     case ActionTypes.ADD_TASK_SUCCESS: {
       const { task: addedTask } = action;
 
-      const bundleIdentifier = addedTask.taskGroups?.find(
+      const bundleIdentifier = addedTask?.taskGroups?.find(
         ({ groupType }) => groupType === TaskGroupType.BUNDLE,
       )?.taskGroupIdentifier;
 
-      if (bundleIdentifier) {
-        return {
-          ...state,
-          lists: state.lists?.map((l) => ({
-            ...l,
-            tasks: l.tasks?.map((t) =>
-              t.identifier === bundleIdentifier
-                ? { ...t, tasks: [...(t.tasks || []), addedTask] }
-                : t,
+      const { taskListIdentifier } = addedTask?.taskList || {};
+      const updatedState = bundleIdentifier
+        ? {
+            ...state,
+            lists: state.lists?.map((l) => ({
+              ...l,
+              tasks: l.tasks?.map((t) =>
+                t.identifier === bundleIdentifier
+                  ? { ...t, tasks: [...(t.tasks || []), addedTask] }
+                  : t,
+              ),
+            })),
+            tasksMap: {
+              ...state.tasksMap,
+              [bundleIdentifier]: {
+                ...state.tasksMap[bundleIdentifier],
+                tasks: [
+                  ...(state.tasksMap[bundleIdentifier]?.tasks || []),
+                  addedTask?.taskIdentifier,
+                ],
+              },
+            },
+          }
+        : {
+            ...state,
+            lists: state.lists?.map((l) =>
+              l.taskListIdentifier === taskListIdentifier
+                ? {
+                    ...l,
+                    tasks: [addedTask, ...(l.tasks || [])],
+                  }
+                : l,
             ),
-          })),
-        };
-      }
-
-      const { taskListIdentifier } = addedTask.taskList || {};
-
-      const updatedState = {
-        ...state,
-        lists: state.lists?.map((l) =>
-          l.taskListIdentifier === taskListIdentifier
-            ? {
-                ...l,
-                tasks: [addedTask, ...(l.tasks || [])],
-              }
-            : l,
-        ),
-      };
+          };
 
       return updateTasksStateCallback(updatedState, addedTask);
+    }
+
+    case ActionTypes.GET_TASKS_FOR_WORKFLOW: {
+      const { workflowIdentifier } = action;
+
+      return {
+        ...state,
+        tasksMap: {
+          ...state.tasksMap,
+          [workflowIdentifier]: {
+            ...state.tasksMap[workflowIdentifier],
+          },
+        },
+      };
+    }
+
+    case ActionTypes.GET_TASKS_FOR_WORKFLOW_SUCCESS: {
+      const { workflowIdentifier, tasks } = action;
+
+      const updatedMap = updateTasksMap(state, {
+        identifier: workflowIdentifier,
+        itemType: TaskItemType.BUNDLE,
+        tasks,
+      });
+
+      return {
+        ...state,
+        tasksMap: {
+          ...state.tasksMap,
+          ...updatedMap,
+          [workflowIdentifier]: {
+            ...state.tasksMap[workflowIdentifier],
+            tasks: tasks.map((task) => task.identifier),
+          },
+        },
+      };
     }
 
     case ActionTypes.ADD_TEMPLATE_BUNDLE: {
@@ -639,22 +682,29 @@ export default (state = INITIAL_STATE, action = {}) => {
       ) {
         return { ...state };
       }
+      const bundleIdentifier = task.taskGroups?.find(
+        ({ groupType }) => groupType === TaskGroupType.BUNDLE,
+      )?.taskGroupIdentifier;
 
-      const updatedState = {
-        ...state,
-        lists: state.lists?.map((l) => {
-          if (
-            l.taskListIdentifier === taskList.taskListIdentifier &&
-            !l.tasks?.some(
-              ({ taskIdentifier }) => taskIdentifier === task.taskIdentifier,
-            )
-          ) {
-            return { ...l, tasks: [task, ...(l.tasks || [])] };
+      const updatedState = bundleIdentifier
+        ? {
+            ...state,
           }
-
-          return l;
-        }),
-      };
+        : {
+            ...state,
+            lists: state.lists?.map((l) => {
+              if (
+                l.taskListIdentifier === taskList.taskListIdentifier &&
+                !l.tasks?.some(
+                  ({ taskIdentifier }) =>
+                    taskIdentifier === task.taskIdentifier,
+                )
+              ) {
+                return { ...l, tasks: [task, ...(l.tasks || [])] };
+              }
+              return l;
+            }),
+          };
 
       return updateTasksStateCallback(updatedState, task);
     }
@@ -706,25 +756,50 @@ export default (state = INITIAL_STATE, action = {}) => {
     }
 
     case ActionTypes.DELETE_TASK: {
-      const { taskIdentifier } = action;
+      const { taskIdentifier, intent } = action;
       const taskItem = state.tasksMap[taskIdentifier];
 
       const { taskListIdentifier } = taskItem?.taskList || {};
 
+      const bundle =
+        taskItem?.taskGroups?.find(
+          ({ groupType }) => groupType === TaskGroupType.BUNDLE,
+        ) || {};
+      const bundleIdentifier = bundle?.taskGroupIdentifier;
+
       const updatedStateAfterRemovingTaskItem =
         taskItem?.itemType === TaskItemType.BUNDLE
-          ? {
-              ...state,
-            }
+          ? { ...state }
           : {
               ...state,
+              tasksMap:
+                intent === 'TASK_DELETED' &&
+                bundleIdentifier &&
+                !taskItem?.parentTaskIdentifier
+                  ? {
+                      ...state.tasksMap,
+                      [bundleIdentifier]: {
+                        ...state.tasksMap[bundleIdentifier],
+                        tasks: state.tasksMap[bundleIdentifier]?.tasks?.filter(
+                          (taskId) => taskId !== taskIdentifier,
+                        ),
+                      },
+                    }
+                  : state.tasksMap,
               lists: state.lists?.map((l) =>
                 l.taskListIdentifier === taskListIdentifier
                   ? {
                       ...l,
-                      tasks: l.tasks?.filter(
-                        (task) => task?.taskIdentifier !== taskIdentifier,
-                      ),
+                      tasks:
+                        bundleIdentifier && !taskItem?.parentTaskIdentifier
+                          ? state.tasksMap[bundleIdentifier]?.tasks.length === 1
+                            ? l.tasks?.filter(
+                                (task) => task.identifier !== bundleIdentifier,
+                              )
+                            : l.tasks
+                          : l.tasks?.filter(
+                              (task) => task?.taskIdentifier !== taskIdentifier,
+                            ),
                     }
                   : l,
               ),

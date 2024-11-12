@@ -54,6 +54,7 @@ const AutoCompleteFormSelect = React.forwardRef(
 
     return (
       <Autocomplete
+        disabled={readOnly}
         multiple={multiple}
         ref={reference}
         options={options}

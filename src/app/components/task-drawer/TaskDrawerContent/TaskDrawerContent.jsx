@@ -57,6 +57,7 @@ import {
   FiledInListName,
 } from './styled';
 import ReminderSection from '../ReminderSection/ReminderSection';
+import StartDateSection from '../StartDateSection/StartDateSection';
 
 const { DISABLED, READ_ONLY } = SINGLE_TASK_RESTRICTIONS_OPTIONS;
 
@@ -420,7 +421,7 @@ const TaskDrawerContent = (props) => {
             <TaskDrawerEmailBodyContainer />
           </Grid>
         )}
-        <Grid item xs={12} mb={3} style={styleFullRow(isMobile)}>
+        <Grid item xs={12} mb={1} style={styleFullRow(isMobile)}>
           <TaskDetails
             readOnly={restrictions?.description === READ_ONLY}
             disableMentions={restrictMentions}
@@ -456,6 +457,14 @@ const TaskDrawerContent = (props) => {
             onSave={handleUpdateTask}
             quickAddPatientEnabled={quickAddPatientEnabled}
           />
+        </Grid>
+        <Grid item xs={12} mb={2} style={styleLeftColumn(isMobile)}>
+          <div>
+            <StartDateSection
+              disabled={restrictions?.startDate === DISABLED}
+              selectedTask={selectedTask}
+            />
+          </div>
         </Grid>
         <Grid item xs={12} style={styleLeftColumn(isMobile)}>
           <div>
@@ -550,7 +559,7 @@ const TaskDrawerContent = (props) => {
             </Grid>
           )}
         {restrictions?.customFields !== DISABLED && (
-          <Grid item xs={12} style={styleFullRow(isMobile)}>
+          <Grid item xs={12}>
             <CustomFieldsSection fieldCategoryType="TASK_OTHER" />
           </Grid>
         )}

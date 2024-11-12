@@ -35,8 +35,9 @@ export const StyledDataGrid = styled(DataGrid)`
     line-height: 1.43;
     flex-shrink: 0;
     margin-top: 2px;
-    padding-right: 0 !important;
+    padding-right: 25px !important;
     padding-left: 0;
+    width: 30px;
   }
 
   &.MuiDataGrid-columnHeaderTitleContainer {

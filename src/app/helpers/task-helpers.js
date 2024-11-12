@@ -22,7 +22,7 @@ export const TaskStatus = {
 
 export const TaskStatusLabel = {
   [TaskStatus.ALL]: 'All Tasks',
-  [TaskStatus.INCOMPLETE]: 'Incomplete Tasks',
+  [TaskStatus.INCOMPLETE]: 'Active Tasks',
   [TaskStatus.COMPLETE]: 'Completed Tasks',
 };
 
@@ -100,6 +100,7 @@ export const ReminderType = {
   DAY_BEFORE_1: 'DAY_BEFORE_1',
   DAY_BEFORE_2: 'DAY_BEFORE_2',
   WEEK_BEFORE_1: 'WEEK_BEFORE_1',
+  ABSOLUTE: 'ABSOLUTE'
 };
 
 export function getLabelsIconTooltipTitle(labels) {

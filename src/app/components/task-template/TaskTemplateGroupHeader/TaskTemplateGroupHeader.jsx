@@ -267,7 +267,7 @@ const TaskTemplateGroupHeader = ({
     }
     return templateTasks?.reduce(
       (accumulator, currentTask) => {
-        if (currentTask.status === 'COMPLETE') {
+        if (currentTask?.status === 'COMPLETE') {
           accumulator[0] += 1;
         }
         if (currentTask?.subtasks?.length > 0) {
@@ -277,8 +277,7 @@ const TaskTemplateGroupHeader = ({
             }
           });
         }
-        accumulator[1] =
-          accumulator[1] + (currentTask?.subtasks?.length || 0) + 1;
+        accumulator[1] = accumulator[1] + (currentTask?.subTasksCount || 0) + 1;
 
         return accumulator;
       },
@@ -336,7 +335,10 @@ const TaskTemplateGroupHeader = ({
   const handleAddTaskToWorkflow = () => {
     if (taskListRestrictions?.workflowAddTask !== DISABLED) {
       setIsAddingTask(true);
-      if (origin === 'LIST') {
+      if (origin === 'LIST' || origin === 'PATIENT') {
+        setOpen(true);
+        setIsWorkflowExpanded(true);
+        collapse.set(identifier, false);
         collapse.handleAddWorkflowIdentifier(identifier);
       }
     }
@@ -368,6 +370,7 @@ const TaskTemplateGroupHeader = ({
               ),
             );
           },
+          modalLabel: 'Move to List',
         }),
       );
     }
@@ -445,8 +448,10 @@ const TaskTemplateGroupHeader = ({
     () =>
       templateTasks.filter(
         isCompletedTab
-          ? (task) => showIncompleteTasks || task.status === TaskStatus.COMPLETE
-          : (task) => showCompletedTasks || task.status !== TaskStatus.COMPLETE,
+          ? (task) =>
+              showIncompleteTasks || task?.status === TaskStatus.COMPLETE
+          : (task) =>
+              showCompletedTasks || task?.status !== TaskStatus.COMPLETE,
       ),
     [showCompletedTasks, showIncompleteTasks, templateTasks, isCompletedTab],
   );
@@ -524,8 +529,9 @@ const TaskTemplateGroupHeader = ({
 
   const [isPatientDataReadOnly] = useState(true);
   const collapse = useContext(CollapseContext);
-  const [virtualListWorkflowOpen, setVirtualListWorkflowOpen] = useState(
-    !collapse.get(identifier),
+
+  const [isWorkflowExpanded, setIsWorkflowExpanded] = useState(() => 
+    collapse.get(identifier) === undefined ? false : !collapse.get(identifier)
   );
 
   const { isVirtualListWorkflowOpen } = useContext(VTaskContext);
@@ -533,20 +539,20 @@ const TaskTemplateGroupHeader = ({
 
   const handleOpen = useCallback(() => {
     setOpen(!isOpen);
-    setVirtualListWorkflowOpen(!virtualListWorkflowOpen);
-    collapse.set(identifier, virtualListWorkflowOpen);
+    setIsWorkflowExpanded(!isWorkflowExpanded);
+    collapse.set(identifier, isWorkflowExpanded);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [identifier, isOpen, setOpen, virtualListWorkflowOpen]);
+  }, [identifier, isOpen, setOpen, isWorkflowExpanded]);
 
   useEffect(() => {
     if (changeViewType === 'FULL_VIEW' && !tasks.includes(identifier)) {
-      setVirtualListWorkflowOpen(true);
+      setIsWorkflowExpanded(true);
       collapse.set(identifier, false);
       handleAddTask(identifier);
     }
 
     if (changeViewType === 'SLIM_VIEW' && !tasks.includes(identifier)) {
-      setVirtualListWorkflowOpen(false);
+      setIsWorkflowExpanded(false);
       collapse.set(identifier, true);
       handleAddTask(identifier);
     }
@@ -590,7 +596,7 @@ const TaskTemplateGroupHeader = ({
                   rotated={
                     origin === 'PATIENT' || origin === 'DASHBOARD'
                       ? isOpen
-                      : virtualListWorkflowOpen
+                      : isWorkflowExpanded
                   }
                   onClick={handleOpen}
                   color={palette.crystalBlue}
@@ -620,7 +626,7 @@ const TaskTemplateGroupHeader = ({
       selected,
       handleBundleSelect,
       showTasksWithGroup,
-      virtualListWorkflowOpen,
+      isWorkflowExpanded,
       handleOpen,
     ],
   );
@@ -645,7 +651,7 @@ const TaskTemplateGroupHeader = ({
       <TaskTemplateGroupHeaderContainer
         onContextMenu={handleTaskItemRightClick}
         isSelected={isBundleSelected}
-        isOpen={origin === 'PATIENT' ? isOpen : virtualListWorkflowOpen}
+        isOpen={origin === 'PATIENT' ? isOpen : isWorkflowExpanded}
         isNextVirtualTaskItemTypeBundle={isNextVirtualTaskItemTypeBundle}
         isLastTaskOfGroup={isLastTaskOfGroup}
         origin={origin}

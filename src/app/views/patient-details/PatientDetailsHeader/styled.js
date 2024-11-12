@@ -36,6 +36,7 @@ export const PatientName = styled.div`
   font-size: ${fontSizes.regularPlus};
   text-transform: uppercase;
   position: relative;
+  color: ${(props) => props.status === "ARCHIVED" ? palette.lightGrey : ''};
 `;
 
 export const PatientInfo = styled.div`

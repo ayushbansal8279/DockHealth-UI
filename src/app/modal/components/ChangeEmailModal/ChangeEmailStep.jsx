@@ -5,9 +5,9 @@ import { object, string } from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 // import * as UserAuthApi from 'api/user-auth-api';
 import Spacing from 'components/common/Spacing';
-import Button from 'components/common/Button/Button';
 import { StyledForm, HelperText, GridMaxHeight } from './styled';
 import { REQUIRED_MESSAGE } from './helpers';
+import { ConfirmButton } from '../ModalButton/ModalButtons';
 
 const EMAIL_MASK = !/^[\w%+-.]+@[\d-.a-z]+\.[a-z]{2,10}$/i;
 const MASK_MESSAGE = 'Invalid Email Entered';
@@ -91,9 +91,9 @@ const ChangeEmailStep = ({ goToNextStep, setNewEmail, userProfile }) => {
             <TextField label="Email" required />
           </Grid>
           <Grid item>
-            <Button fullWidth type="submit">
+            <ConfirmButton type="submit">
               Update my Email
-            </Button>
+            </ConfirmButton>
           </Grid>
         </GridMaxHeight>
       </StyledForm>

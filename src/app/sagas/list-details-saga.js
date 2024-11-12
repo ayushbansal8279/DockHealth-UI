@@ -161,7 +161,7 @@ function* getCurrentListTasks() {
     const groupsToGet = groupsWithTasks;
 
     yield all(
-      groupsToGet.map(({ taskGroupIdentifier }) =>
+      groupsToGet.map(({ taskGroupIdentifier }) => 
         put(
           ListDetailsActions.getTasksForTaskGroups({
             taskGroupIdentifier,
@@ -207,6 +207,9 @@ function* getCurrentTaskListFilterOptions() {
 function* refreshGroupedTasks() {
   try {
     yield put(ListDetailsActions.getCurrentListTasks());
+    yield put({
+      type: ActionTypes.GET_TASKS_GROUPS_LIST,
+    });
   } catch (error) {
     log(error);
   }
@@ -720,6 +723,7 @@ function* deleteTaskListGroup(payload) {
   try {
     yield call(deleteGroup, groupIdentifier);
     yield put(ListDetailsActions.getTasksGroupsList());
+    yield take(ActionTypes.GET_TASKS_GROUPS_LIST_SUCCESS);
     yield call(refreshGroupedTasks, {});
     yield put({
       type: ActionTypes.DELETE_TASK_LIST_GROUP_SUCCESS,

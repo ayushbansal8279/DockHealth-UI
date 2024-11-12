@@ -53,6 +53,7 @@ import AddPatientToListModal from './components/AddPatientToListModal/AddPatient
 import InterruptEditModal from './components/InterruptEditModal/InterruptEditModal';
 import EditCustomFieldModal from './components/EditCustomFieldModal/EditCustomFieldModal';
 import DeleteConfirmationModal from './components/DeleteConfirmationModal/DeleteConfirmationModal';
+import DuplicateConfirmationModal from './components/DuplicateConfirmationModal/DuplicateConfirmationModal';
 import EditUserGroupModal from './components/EditUserGroupModal/EditUserGroupModal';
 import AddUserToGroupModal from './components/AddUserToGroupModal/AddUserToGroupModal';
 import DeleteTaskConfirmationModal from './components/DeleteTaskConfirmationModal/DeleteTaskConfirmationModal';
@@ -84,6 +85,7 @@ import PatientCustomFieldsBulkEditModal from './components/PatientCustomFieldsBu
 import TaskListCustomFieldsBulkEditModal from './components/TaskListCustomFieldsBulkEditModal';
 import AISummaryModal from './components/AISummaryModal/AISummaryModal';
 import DateWarningModal from './components/DateWarningModal/DateWarningModal';
+import AlertModal from './components/AlertModal/AlertModal';
 
 const MODAL_MAP = {
   CompleteAllTasks: CompleteAllTasksModal,
@@ -145,6 +147,7 @@ const MODAL_MAP = {
   InterruptEdit: InterruptEditModal,
   EditCustomField: EditCustomFieldModal,
   DeleteConfirmation: DeleteConfirmationModal,
+  DuplicateConfirmation: DuplicateConfirmationModal,
   DeleteTaskConfirmation: DeleteTaskConfirmationModal,
   DeleteCredentialConfirm: DeleteCredentialConfirmModal,
   TaskListCustomFieldsBulkEdit: TaskListCustomFieldsBulkEditModal,
@@ -170,8 +173,9 @@ const MODAL_MAP = {
   AnchorDateChangeConfirmation: AnchorDateChangeConfirmationModal,
   EditPatient: EditPatientModal,
   InviteUsersToChannel: InviteUsersToChannelModal,
-  AISummary:AISummaryModal,
+  AISummary: AISummaryModal,
   DateWarning: DateWarningModal,
+  Alert : AlertModal
 };
 
 export default MODAL_MAP;

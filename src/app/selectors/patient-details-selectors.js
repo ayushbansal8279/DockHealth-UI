@@ -71,6 +71,11 @@ export const patientSelector = createSelector(
   ({ patient }) => patient,
 );
 
+export const patientOrgIdSelector = createSelector(
+  patientDetailsStateSelector,
+  ({ patient }) => patient?.organizationIdentifier || null,
+);
+
 export const patientNotesSelector = createSelector(
   patientDetailsStateSelector,
   ({ patient }) => patient?.allNotes || null,

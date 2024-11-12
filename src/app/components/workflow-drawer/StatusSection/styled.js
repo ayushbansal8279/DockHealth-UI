@@ -2,11 +2,15 @@ import { fontSizes, fontWeights } from '@/app/styles/font';
 import palette from '@/app/styles/palette';
 import prop from 'ramda/src/prop';
 import styled from 'styled-components';
+import spacing from 'styles/spacing';
 
 export const StatusContainer = styled.div`
   display: flex;
   align-items: center;
   margin-top: 5px;
+  width: 20%;
+  justify-content: flex-start;
+  padding: ${spacing.tiny} 0;
 `;
 
 export const StatusFlag = styled.div`
@@ -17,7 +21,7 @@ export const StatusFlag = styled.div`
 
 export const StatusFieldContainer = styled.div`
   margin-left: 1px;
-  width: 200px;
+  width: 90px;
   display: flex;
 `;
 
@@ -29,8 +33,8 @@ export const StatusFlagContainer = styled.div`
 `;
 
 export const Title = styled.div`
-  margin-left: 15px;
-  margin-right: 40px;
+  margin-left: 10px;
+  margin-right: 45px;
   color: ${palette.coolGrey1};
   font-family: Outfit;
   font-size: ${fontSizes.smallPlus};

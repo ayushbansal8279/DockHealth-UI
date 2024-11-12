@@ -69,60 +69,88 @@ const AttachmentsSection = ({
           <Spacing vertical={3} />
           <Title>Files</Title>
         </Grid>
-        <OutfitTypography condensed variant="h4" color="inherit">
-          <Spacing vertical={2} />
-          {isDragActive ? (
-            <span>Drop the files here ...</span>
-          ) : (
-            <span>
-              Drag and drop files or documents here, or click + to select files
-            </span>
-          )}
-        </OutfitTypography>
+        {!disabled && (
+          <OutfitTypography condensed variant="h4" color="inherit">
+            <Spacing vertical={2} />
+            {isDragActive ? (
+              <span>Drop the files here ...</span>
+            ) : (
+              <span>
+                Drag and drop files or documents here, or click + to select files
+              </span>
+            )}
+          </OutfitTypography>
+        )}
         <Grid item xs={12}>
           <Spacing vertical={2} />
         </Grid>
-        <Grid
-          item
-          xs={12}
-          container
-          alignContent="center"
-          {...getRootProps({ style: { outline: 'none' } })}
-        >
-          {attachmentsLoading ? (
-            <>
-              <Loader />
-              <Spacing horizontal={3} />
-            </>
-          ) : (
-            currentTaskAttachments?.map((attachment) => (
-              <div style={{ textAlign: 'center' }}>
-                <AttachmentButton
-                  key={attachment?.attachmentIdentifier}
-                  attachment={attachment}
-                  onClick={() => {
-                    if (
-                      attachment?.scanStatus === null ||
-                      attachment?.scanStatus === ScanStatus.CLEAN
-                    )
-                      openAttachmentPreview(attachment);
-                  }}
-                  onRemoveClick={removeTaskAttachment}
-                />
-                {attachment?.scanStatus && (
-                  <p>{ScanStatusText[attachment?.scanStatus]}</p>
-                )}
-              </div>
-            ))
-          )}
-          {currentlyUploadedAttachment && (
-            <>
-              <AttachmentProgressBar progress={uploadProgress} />
-              <Spacing horizontal={4} />
-            </>
-          )}
-          {!disabled && <AddAttachmentButton />}
-        </Grid>
+        {!disabled && (
+          <Grid
+            item
+            xs={12}
+            container
+            alignContent="center"
+            {...getRootProps({ style: { outline: 'none' } })}
+          >
+            {attachmentsLoading ? (
+              <>
+                <Loader />
+                <Spacing horizontal={3} />
+              </>
+            ) : (
+              currentTaskAttachments?.map((attachment) => (
+                <div style={{ textAlign: 'center' }}>
+                  <AttachmentButton
+                    key={attachment?.attachmentIdentifier}
+                    attachment={attachment}
+                    onClick={() => {
+                      if (
+                        attachment?.scanStatus === null ||
+                        attachment?.scanStatus === ScanStatus.CLEAN
+                      )
+                        openAttachmentPreview(attachment);
+                    }}
+                    onRemoveClick={removeTaskAttachment}
+                  />
+                  <p>
+                  {
+                    !attachment?.scanStatus || attachment?.scanStatus === 'IN_PROGRESS'
+                      ? ScanStatusText.IN_PROGRESS
+                      : ScanStatusText[attachment.scanStatus]
+                  }
+                </p>
+                </div>
+              ))
+            )}
+            {currentlyUploadedAttachment && (
+              <>
+                <AttachmentProgressBar progress={uploadProgress} />
+                <Spacing horizontal={4} />
+              </>
+            )}
+            <AddAttachmentButton />
+          </Grid>
+        )}
+        {disabled &&
+          currentTaskAttachments?.map((attachment) => (
+            <div style={{ textAlign: 'center' }}>
+              <AttachmentButton
+                key={attachment?.attachmentIdentifier}
+                attachment={attachment}
+                onClick={() => {
+                  if (
+                    attachment?.scanStatus === null ||
+                    attachment?.scanStatus === ScanStatus.CLEAN
+                  )
+                    openAttachmentPreview(attachment);
+                }}
+                onRemoveClick={removeTaskAttachment}
+              />
+              {attachment?.scanStatus && (
+                <p>{ScanStatusText[attachment?.scanStatus]}</p>
+              )}
+            </div>
+          ))}
         {currentTaskAttachments && currentTaskAttachments.length > 0 && (
           <Grid item xs={12}>
             <div>

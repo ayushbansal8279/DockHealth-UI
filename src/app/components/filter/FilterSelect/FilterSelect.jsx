@@ -76,9 +76,9 @@ const FilterSelect = ({
   useEffect(() => {
     finalFilter[filter].map((item) => {
       if (item?.key?.includes('DATE_RANGE')) {
-        if (item.dateStart && item.dateEnd) {
-          setDateStart(item.dateStart);
-          setDateEnd(item.dateEnd);
+        if (item?.dateStart && item?.dateEnd) {
+          setDateStart(item?.dateStart);
+          setDateEnd(item?.dateEnd);
         }
       }
     });
@@ -87,8 +87,8 @@ const FilterSelect = ({
   useEffect(() => {
     if (dueDate !== null && startDate !== null) {
       let currentFinalFilter = { ...finalFilter };
-      currentFinalFilter[filter].map((item, index) => {
-        if (item.key.includes('DATE_RANGE')) {
+      currentFinalFilter[filter]?.map((item, index) => {
+        if (item?.key?.includes('DATE_RANGE')) {
           currentFinalFilter[filter][index] = {
             ...currentFinalFilter[filter][index],
             dateStart: startDate,

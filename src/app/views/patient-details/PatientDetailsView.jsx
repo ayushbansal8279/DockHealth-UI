@@ -39,6 +39,8 @@ import {
   PatientDetailsTabsContainer,
   MainTab,
 } from './styled';
+import { patientOrgIdSelector } from '@/app/selectors/patient-details-selectors';
+import { selectCurrentOrganizationWithRedirection } from '@/app/api/organization-api';
 
 const PatientDetailsView = () => {
   const { patientIdentifier } = useParams();
@@ -52,6 +54,7 @@ const PatientDetailsView = () => {
   const customerTypeLabel = getCustomerTypeLabel(currentUser);
 
   const currentOrganization = useSelector(selectedUserOrganizationSelector);
+  const patientOrgIdentifier = useSelector(patientOrgIdSelector);
   const patientNotesDisabled =
     currentOrganization?.disabledFeatures?.includes('PATIENT_NOTES') || false;
 
@@ -60,6 +63,19 @@ const PatientDetailsView = () => {
   const [tabsConfiguration, setTabsConfiguration] = useState(
     patientNotesDisabled ? DEFAULT_TABS_CONFIG : TABS_CONFIG,
   );
+
+  useEffect(() => {
+    const organizationsExist = patientOrgIdentifier && currentOrganization;
+    const organizationsDiffer =
+      patientOrgIdentifier !== currentOrganization?.organizationIdentifier;
+
+    if (organizationsExist && organizationsDiffer) {
+      selectCurrentOrganizationWithRedirection(
+        patientOrgIdentifier,
+        `#/core/patient/${patientIdentifier}`,
+      );
+    }
+  }, [patientOrgIdentifier, currentOrganization]);
 
   useEffect(() => {
     dispatch(PatientDetailsActions.initializePatientState(patientIdentifier));

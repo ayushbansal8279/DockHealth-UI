@@ -1,4 +1,3 @@
-import Button from 'components/common/Button/Button';
 import Checkbox from 'components/common/Checkbox/Checkbox';
 import Input from 'components/common/Input/Input';
 import RichTextEditor from 'components/common/RichTextEditor/RichTextEditor';
@@ -53,6 +52,7 @@ const SendEmailFromTaskModal = ({ setEmailActive }) => {
   const { attachments, identifier } = selectedTask;
   const dispatch = useDispatch();
   const [subject, setSubject] = useState('');
+  const [templateIdentifier, setTemplateIdentifier] = useState('');
   const [selectedContacts, setSelectedContacts] = useState([]);
   const [newContact, setNewContact] = useState([]);
   const [error] = useState(false);
@@ -156,7 +156,7 @@ const SendEmailFromTaskModal = ({ setEmailActive }) => {
         <CloseIcon htmlColor="#C1CCDA" />
       </CloseIconButton>
       <ModalHeaderContainerStyled>
-        <ModalHeader>Send email</ModalHeader>
+        <ModalHeader>Send Email</ModalHeader>
         <ModalDescription>Send an email for this task</ModalDescription>
       </ModalHeaderContainerStyled>
       <ModalDescriptionContainer>
@@ -212,6 +212,7 @@ const SendEmailFromTaskModal = ({ setEmailActive }) => {
                   setValueReset(true);
                   setDetailsState(updatedValue);
                   setSubject(data?.shortMessage ?? '');
+                  setTemplateIdentifier(data?.identifier);
                 },
               );
             }}
@@ -219,7 +220,7 @@ const SendEmailFromTaskModal = ({ setEmailActive }) => {
           />
           <Input
             type="text"
-            label="subject"
+            label="Subject"
             name="email"
             placeholder="Type the email subject"
             shrink
@@ -295,7 +296,7 @@ const SendEmailFromTaskModal = ({ setEmailActive }) => {
             selectedContacts.length === 0 // || !detailsState.getCurrentContent().hasText()
           }
           style={{ width: '270px' }}
-          nClick={() => {
+          onClick={() => {
             dispatch(
               sendEmailForTask({
                 message: subject,
@@ -303,6 +304,7 @@ const SendEmailFromTaskModal = ({ setEmailActive }) => {
                 recipientContacts: selectedContacts.map((c) => c.value),
                 taskAttachmentIdentifiers: attachmentsToSend,
                 taskIdentifier: identifier,
+                templateIdentifier,
               }),
             );
             dispatch(closeModal());

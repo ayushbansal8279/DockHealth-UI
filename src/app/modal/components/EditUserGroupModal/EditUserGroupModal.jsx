@@ -16,7 +16,6 @@ import ColorPicker from 'components/common/ColorPicker/ColorPicker';
 import InitialsInput from 'components/common/InitialsInput/InitialsInput';
 import FormInput from 'components/common/Input/FormInput';
 import Spacing from 'components/common/Spacing';
-import Button from 'components/common/Button/Button';
 import AvatarInput from 'components/user/AvatarInput/AvatarInput';
 import { ORGANIZATION_TILE_COLORS } from 'styles/organization-tile-colors';
 import { openModal } from 'modal/actions';
@@ -35,6 +34,7 @@ import {
   SectionTitle,
 } from './styled';
 import { CloseIconButton, CloseIcon } from '../styled';
+import { CancelButton, ConfirmButton } from '../ModalButton/ModalButtons';
 
 function getRandomTileColor() {
   return ORGANIZATION_TILE_COLORS[
@@ -200,25 +200,25 @@ const EditUserGroupModal = ({ userGroup, closeModal }) => {
             <Grid container direction="row" justifyContent="center">
               <Spacing vertical={3} />
               <ButtonWrapper>
-                <Button
+                <CancelButton
                   fullWidth
                   variant="secondary"
                   onClick={closeModal}
                   size="small"
                 >
                   Cancel
-                </Button>
+                </CancelButton>
               </ButtonWrapper>
               <Spacing horizontal={3} />
               <ButtonWrapper>
-                <Button
+                <ConfirmButton
                   fullWidth
                   type="submit"
                   disabled={isSaving}
                   size="small"
                 >
                   Save
-                </Button>
+                </ConfirmButton>
               </ButtonWrapper>
             </Grid>
           </Grid>

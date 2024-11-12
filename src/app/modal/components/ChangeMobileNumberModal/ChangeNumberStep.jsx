@@ -7,9 +7,9 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as UserAuthApi from 'api/user-auth-api';
 import FormPhoneNumberInput from 'components/common/PhoneNumberInput/FormPhoneNumberInput';
 import Spacing from 'components/common/Spacing';
-import Button from 'components/common/Button/Button';
 import { StyledForm, HelperText, GridMaxHeight } from './styled';
 import { REQUIRED_MESSAGE } from './helpers';
+import { ConfirmButton } from '../ModalButton/ModalButtons';
 
 // const PHONE_MASK = /^(\+?\d{10,15})$/;
 const MASK_MESSAGE = 'Phone number has incorrect format.';
@@ -85,9 +85,9 @@ const ChangeNumberStep = ({ goToNextStep, setNewPhoneNumber, userProfile }) => {
             />
           </Grid>
           <Grid item>
-            <Button fullWidth type="submit">
+            <ConfirmButton fullWidth type="submit">
               Update my mobile number
-            </Button>
+            </ConfirmButton>
           </Grid>
         </GridMaxHeight>
       </StyledForm>

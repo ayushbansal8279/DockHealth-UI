@@ -17,13 +17,14 @@ import { taskDrawerFocusFieldSelector } from 'selectors/task-drawer-selectors';
 import { useSelector } from 'react-redux';
 import { TaskItemType } from 'helpers/task-helpers';
 import { workflowAutofocusFieldSelector } from 'selectors/workflow-drawer-selectors';
-import { Box } from '@mui/material';
+import { Box, Link } from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
 import CustomFieldRichTextEditor from './CustomFieldRichTextEditor';
 import { ColorIndicator } from './styled';
 import CustomFieldErrorContext from './CustomFieldErrorContext';
 import CustomFieldAutoComplete from './CustomFieldAutoComplete';
 import AutoCompleteFormSelect from '../Autocomplete/AutoCompleteFormSelect';
-
+import palette from '@/app/styles/palette';
 
 const CustomField = ({
   readOnly,
@@ -45,6 +46,7 @@ const CustomField = ({
   const componentReference = useRef(null);
   const { setValue, watch, setError, clearErrors } = useFormContext();
   const [wasChanged, setWasChanged] = useState(false);
+  const [isEditable, setIsEditable] = useState(false);
   const [descriptionErrorState, setDescriptionErrorState] = useState(false);
   const errorContextValue = useMemo(
     () => ({
@@ -55,6 +57,13 @@ const CustomField = ({
     }),
     [descriptionErrorState, identifier, isRequired],
   );
+
+  const handleEditClick = () => {
+    setIsEditable(true);
+    setTimeout(() => {
+      inputReference.current?.focus();
+    }, 0);
+  };
 
   const isWorkflow =
     task &&
@@ -80,6 +89,7 @@ const CustomField = ({
 
   const handleBlur = useCallback(
     (data, wasDateChanged) => {
+      setIsEditable(false);
       if (onBlur) {
         if (fieldType === FieldType.DATE) {
           onBlur(data, wasDateChanged);
@@ -244,7 +254,11 @@ const CustomField = ({
             <AutoCompleteFormSelect
               readOnly={isReadOnly}
               label={name}
-              options={dependantOptions?.length > 0 ? dependantOptions : dropdownOptions}
+              options={
+                dependantOptions?.length > 0
+                  ? dependantOptions
+                  : dropdownOptions
+              }
               name={fieldName}
               onBlur={handleBlur}
               inputRef={inputReference}
@@ -274,18 +288,62 @@ const CustomField = ({
         );
       }
       case FieldType.HYPERLINK: {
+        const value = watch(fieldName);
+        const customFieldHasValue =
+          readOnly ||
+          task?.taskMetaData?.find(
+            (customField) => customField?.customFieldIdentifier === identifier,
+          )?.value;
+        const inputFieldName =
+          isEditable || !value || !customFieldHasValue ? fieldName : '';
+
         return (
           <FormInput
             type="text"
-            readOnly={isReadOnly}
+            readOnly={!isEditable && !!customFieldHasValue}
             label={name}
-            name={fieldName}
+            name={inputFieldName}
             placeholder={placeholder}
             onBlur={handleBlur}
             inputRef={inputReference}
             ref={componentReference}
             onChange={() => setWasChanged(true)}
             required={isRequired}
+            startAdornment={
+              customFieldHasValue && !isEditable ? (
+                <Link
+                  href={value?.startsWith('http') ? value : `//${value}`}
+                  target="_blank"
+                  sx={{
+                    marginTop: '18px',
+                    color: palette.blueOcean,
+                    fontFamily: 'Outfit',
+                    textDecoration: 'none',
+                    '&:hover': {
+                      color: palette.brightBlue,
+                    },
+                  }}
+                  disabled={!isEditable && !!customFieldHasValue}
+                >
+                  {value}
+                </Link>
+              ) : null
+            }
+            endAdornment={
+              readOnly ||
+              (customFieldHasValue && !isEditable ? (
+                <EditIcon
+                  onClick={handleEditClick}
+                  sx={{
+                    color: palette.coolGrey1,
+                    cursor: 'pointer',
+                    '&:hover': {
+                      color: palette.black,
+                    },
+                  }}
+                />
+              ) : null)
+            }
           />
         );
       }
@@ -314,6 +372,8 @@ const CustomField = ({
     dropdownOptions,
     selected,
     popoverZindex,
+    isEditable,
+    isReadOnly,
   ]);
 
   return (

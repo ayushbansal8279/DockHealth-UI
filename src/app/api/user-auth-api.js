@@ -599,6 +599,7 @@ export const getCustomLaunchEnterpriseAccessTokensByAuthCode = (
         sessionStorage.setItem('SSO_USEREMAIL', email);
         sessionStorage.setItem('userIdentifier', userIdentifier);
         sessionStorage.setItem('patientIdentifier', patientIdentifier);
+        sessionStorage.setItem('accessToken', userAccessToken);
         resolve('success');
       });
     } catch (error) {

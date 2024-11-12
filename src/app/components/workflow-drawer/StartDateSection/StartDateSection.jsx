@@ -1,117 +1,113 @@
-import React, { useCallback, useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import moment from 'moment';
-import { Box } from '@mui/material';
-import RecurringIcon from 'img/recurring-arrows';
-import { isDueDateOverdue } from 'helpers/task-helpers';
 import DueDatePicker from 'components/task/DueDatePicker/DueDatePicker';
-import Spacing from 'components/common/Spacing';
-import Tooltip from 'components/common/Tooltip/Tooltip';
-import Input from 'components/common/Input/Input';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  workflowSelector,
-  workflowAutofocusFieldSelector,
-} from 'selectors/workflow-drawer-selectors';
+import { workflowSelector } from 'selectors/workflow-drawer-selectors';
 import TaskDrawerPopover from 'components/task-drawer/TaskDrawerPopover/TaskDrawerPopover';
 import { updatePartialWorkflow } from 'actions/task-template-actions';
-import { WorkflowDrawerFieldNames } from 'helpers/workflow-drawer-helpers';
-import { formatDueTime } from './helpers';
-import { AdornmentClear } from '../styled';
 import {
   StartDateContentWrapper,
-  StartDateContent,
   StartDateSectionWrapper,
-  Placeholder,
-  DueDateText,
+  Title,
+  DateViewContainer,
 } from './styled';
+import AssignMemberIcon from '../../user/AssignMemberIcon/AssingMemberIcon';
+import {
+  DateViewText,
+  SubTitle,
+  NoDateContainer,
+} from '../DueDateSection/styled';
+import { isStartDateValid } from '@/app/helpers/date-validation-helper';
+import { openModal } from '@/app/modal/actions';
 
 const StartDateSection = ({ disabled }) => {
   const dispatch = useDispatch();
-  const inputReference = useRef(null);
   const selectedWorkflow = useSelector(workflowSelector);
-  const { identifier, startDateTime, hasRecurringSchedule } =
+  const { identifier, startDateTime, dueDateTime, hasRecurringSchedule } =
     selectedWorkflow || {};
-  const momentDueDate = startDateTime ? moment(startDateTime) : null;
-  const autoFocusFieldName = useSelector(workflowAutofocusFieldSelector);
+  const momentStartDate = startDateTime ? moment(startDateTime) : null;
+  const [isTimeAvailable, setIsTimeAvailable] = useState(false);
 
-  const handleStartDateSave = useCallback(
-    (date) => {
+  const handleSave = useCallback(
+    (updatedStartDateTime) => {
+      if (updatedStartDateTime === null) {
+        setIsTimeAvailable(false);
+      }
       const payload = {
-        startDateTime: date,
+        startDateTime: updatedStartDateTime,
       };
 
-      if (!date) payload.startDateTimeCleared = true;
+      if (!updatedStartDateTime) payload.startDateTimeCleared = true;
 
       dispatch(updatePartialWorkflow(selectedWorkflow?.identifier, payload));
     },
     [dispatch, selectedWorkflow],
   );
 
+  const handleStartDateSave = useCallback(
+    (newStartDate) => {
+      const isDateValid = isStartDateValid(dueDateTime, newStartDate);
+      if (isDateValid) {
+        handleSave(newStartDate);
+      } else {
+        dispatch(
+          openModal('DateWarning', {
+            type: 'startDate',
+            onSave: () => handleSave(newStartDate),
+          }),
+        );
+      }
+    },
+    [dispatch, selectedWorkflow],
+  );
+
   useEffect(() => {
     if (
-      inputReference.current &&
-      autoFocusFieldName === WorkflowDrawerFieldNames.START_DATE
+      momentStartDate &&
+      (momentStartDate.hour() || momentStartDate.minute())
     ) {
-      inputReference.current.scrollIntoView(true);
-      inputReference.current.focus();
+      setIsTimeAvailable(true);
     }
-  }, [autoFocusFieldName]);
+  }, [momentStartDate]);
 
   return (
-    <StartDateSectionWrapper disabled={disabled}>
-      <Input
-        inputRef={inputReference}
-        label="Start date"
-        shrink
-        customInputComponent={() => (
-          <TaskDrawerPopover
-            disabled={disabled}
-            content={({ closePopover }) => (
-              <DueDatePicker
-                taskIdentifier={identifier}
-                selectedDate={startDateTime}
-                onDateChange={handleStartDateSave}
-                recurring={hasRecurringSchedule}
-                disableRecurring
-                onCloseClick={closePopover}
-              />
-            )}
-          >
-            <StartDateContentWrapper>
-              {momentDueDate ? (
-                <StartDateContent error={isDueDateOverdue(selectedWorkflow)}>
-                  <DueDateText>
-                    {momentDueDate.format('MM/DD/YY')}
-                    {hasRecurringSchedule && (
-                      <>
-                        <Spacing horizontal={3} />
-                        <Tooltip title="Recurring Task" placement="right">
-                          <Box display="inline-block">
-                            <RecurringIcon />
-                          </Box>
-                        </Tooltip>
-                      </>
-                    )}
-                  </DueDateText>
-                  <DueDateText>{formatDueTime(startDateTime)}</DueDateText>
-                  {!disabled && (
-                    <AdornmentClear
-                      style={{ position: 'relative', top: '-6px' }}
-                      onClick={() => handleStartDateSave(null)}
-                    />
-                  )}
-                </StartDateContent>
-              ) : (
-                <Placeholder>
-                  {disabled
-                    ? 'Not available when creating a template'
-                    : 'Set a start date?'}
-                </Placeholder>
-              )}
-            </StartDateContentWrapper>
-          </TaskDrawerPopover>
+    <StartDateSectionWrapper>
+      <Title>Start date</Title>
+      <TaskDrawerPopover
+        disabled={disabled}
+        content={({ closePopover }) => (
+          <DueDatePicker
+            taskIdentifier={identifier}
+            selectedDate={startDateTime}
+            onDateChange={handleStartDateSave}
+            recurring={hasRecurringSchedule}
+            onCloseClick={closePopover}
+          />
         )}
-      />
+      >
+        <StartDateContentWrapper>
+          {momentStartDate ? (
+            <>
+              <DateViewContainer>
+                <DateViewText>
+                  {momentStartDate.format('MMM DD, YYYY')}
+                </DateViewText>
+              </DateViewContainer>
+              {isTimeAvailable && (
+                <DateViewContainer>
+                  <DateViewText>
+                    {momentStartDate?.format('hh:mm a')}
+                  </DateViewText>
+                </DateViewContainer>
+              )}
+            </>
+          ) : (
+            <NoDateContainer>
+              <AssignMemberIcon /> <SubTitle>Add Date</SubTitle>
+            </NoDateContainer>
+          )}
+        </StartDateContentWrapper>
+      </TaskDrawerPopover>
     </StartDateSectionWrapper>
   );
 };
