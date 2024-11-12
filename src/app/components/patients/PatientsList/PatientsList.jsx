@@ -64,7 +64,7 @@ import {
 import { getValueLabelHashFromOptions } from '@/app/helpers/select-option-helper';
 import { useUpdatePatientById } from '@/app/react-query/patients/useUpdatePatientById';
 import { closeModal, openModal } from '@/app/modal/actions';
-import DropdownEditCell from '../../common/DataGridEditCells/DropDownEditCell';
+import DropDownEditCell from '../../common/DataGridEditCells/DropDownEditCell';
 import TextEditCell from '../../common/DataGridEditCells/TextEditCell';
 import BooleanEditCell from '../../common/DataGridEditCells/BooleanEditCell';
 import MultiDropdownEditCell from '../../common/DataGridEditCells/MultiDropDownEditCell';
@@ -557,7 +557,7 @@ const PatientsList = ({
   const getRenderEditCell = (fieldType, options = [], name) => {
     switch (fieldType) {
       case 'PICK_LIST':
-        return (params) => <DropdownEditCell {...params} options={options} name={name}/>;
+        return (params) => <DropDownEditCell {...params} options={options} name={name}/>;
       case 'MULTI_SELECT':
         return (params) => <MultiDropdownEditCell {...params} options={options} name={name} />;
       case 'DATE':

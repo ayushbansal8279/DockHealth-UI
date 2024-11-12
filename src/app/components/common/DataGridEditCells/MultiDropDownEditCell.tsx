@@ -7,16 +7,16 @@ import {
 } from '@mui/material';
 import { useGridApiContext, GridRenderEditCellParams } from '@mui/x-data-grid-premium';
 
-interface MultiDropdownEditCellProps extends GridRenderEditCellParams<any, { values?: string[]; value?: string } | undefined> {
+interface MultiDropDownEditCellProps extends GridRenderEditCellParams<any, { values?: string[]; value?: string } | undefined> {
   options: { name: string; identifier: string }[];
 }
 
-export default function MultiDropdownEditCell({
+export default function MultiDropDownEditCell({
   id,
   field,
   value = { values: [], value: '' },
   options,
-}: MultiDropdownEditCellProps) {
+}: MultiDropDownEditCellProps) {
   const apiRef = useGridApiContext();
 
   let valueToUse = '';

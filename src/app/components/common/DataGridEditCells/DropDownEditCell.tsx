@@ -8,11 +8,11 @@ import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { selectStyles } from './helpers';
 import { PlaceholderText } from './styled';
 
-interface DropdownEditCellProps extends GridRenderEditCellParams<any, string | undefined> {
+interface DropDownEditCellProps extends GridRenderEditCellParams<any, string | undefined> {
   options: { name: string }[]; 
 }
 
-export default function DropdownEditCell({ id, field, value, options, name }: DropdownEditCellProps) {
+export default function DropDownEditCell({ id, field, value, options, name }: DropDownEditCellProps) {
   const apiRef = useGridApiContext();
 
   const handleChange = (event: SelectChangeEvent<string>) => {
