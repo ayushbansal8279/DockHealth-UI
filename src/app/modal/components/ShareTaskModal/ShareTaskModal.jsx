@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Box } from '@mui/material';
 import { useDispatch } from 'react-redux';
-import Button from 'components/common/Button/Button';
 import * as TaskActions from 'actions/task-actions';
 import { string } from 'yup';
 import Spacing from 'components/common/Spacing';

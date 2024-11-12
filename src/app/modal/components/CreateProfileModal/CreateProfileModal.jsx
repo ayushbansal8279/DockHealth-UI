@@ -5,7 +5,6 @@ import { Box, Grid } from '@mui/material';
 import { useDispatch } from 'react-redux';
 import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
 import FormInput from 'components/common/Input/FormInput';
-import Button from 'components/common/Button/Button';
 import { createProfileType, editProfileType } from 'api/profile-type-api';
 import AlertMessages from 'alert/AlertMessages';
 import { CloseIconButton, CloseIcon } from '../styled';
@@ -20,6 +19,7 @@ import {
   TEMPLATE_TYPE_OPTIONS,
   validationSchema,
 } from '../EditTemplateModal/helpers';
+import { CancelButton, ConfirmButton } from '../ModalButton/ModalButtons';
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const CreateProfileModal = ({
@@ -128,13 +128,13 @@ const CreateProfileModal = ({
             </FormScrollingContainer>
             <Box m={2} />
             <Grid container justifyContent="flex-end">
-              <Button width="auto" variant="secondary" onClick={closeModal}>
+              <CancelButton onClick={closeModal}>
                 Cancel
-              </Button>
+              </CancelButton>
               <Box m={1} />
-              <Button type="submit" width="auto" disabled={false}>
+              <ConfirmButton type="submit" disabled={false}>
                 {isCreatingNewField ? `Create` : 'Update'}
-              </Button>
+              </ConfirmButton>
             </Grid>
           </TemplateForm>
         </FormProvider>

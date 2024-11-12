@@ -4,7 +4,6 @@ import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
 import { IconButton } from '@mui/material';
 import { Replay } from '@mui/icons-material';
 import palette from 'styles/palette';
-import Button from 'components/common/Button/Button';
 import { closeModal } from 'modal/actions';
 import CustomTextEditor from 'components/common/CustomTextEditor/CustomTextEditor';
 import RichTextEditor from 'components/common/RichTextEditor/RichTextEditor';

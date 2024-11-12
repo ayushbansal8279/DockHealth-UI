@@ -19,8 +19,10 @@ export const Header = styled.div`
 `;
 
 export const Title = styled.h5`
-  font-size: ${fontSizes.regularPlus};
-  color: ${palette.brightBlue};
+  color: ${palette.offBlack};
+  font-size: 22px;
+  font-style: normal;
+  font-weight: ${fontWeights.regularPlus};
   text-transform: uppercase;
   text-align: center;
 `;

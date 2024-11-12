@@ -5,10 +5,10 @@ import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import * as TaskTemplateActions from 'actions/task-template-actions';
 import FormInput from 'components/common/Input/FormInput';
-import Button from 'components/common/Button/Button';
 import Spacing from 'components/common/Spacing';
 import { CloseIconButton, CloseIcon } from '../styled';
 import { ListFormModalWrapper, Header, Title, StyledForm } from './styled';
+import { CancelButton, ConfirmButton } from '../ModalButton/ModalButtons';
 
 const TEMPLATE_NAME_FIELD_NAME = 'name';
 
@@ -74,18 +74,15 @@ const CreateSmartFlowModal = ({ closeModal, onCreateSuccess }) => {
             validate={validateTemplateName}
           />
           <Grid container direction="row" justifyContent="center">
-            <Button
-              width="170px"
-              variant="secondary"
+            <CancelButton
               onClick={closeModal}
-              size="small"
             >
               Cancel
-            </Button>
+            </CancelButton>
             <Spacing horizontal={3} />
-            <Button fullWidth type="submit" size="small" width="170px">
+            <ConfirmButton type="submit">
               Save
-            </Button>
+            </ConfirmButton>
           </Grid>
         </FormProvider>
       </StyledForm>
