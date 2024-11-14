@@ -29,6 +29,14 @@ const initializeAttachmentsSectionHooks = (selectedTask) => {
               action.attachmentIdentifier !== currentAttachmentIdentifier,
           );
         }
+        case 'RENAME_ATTACHMENT': {
+          return state.map((attachment) => {
+            if (attachment.attachmentIdentifier === action.attachmentIdentifier) {
+              return { ...attachment, fileName: action.newFileName };
+            }
+            return attachment;
+          });
+        }
         default: {
           return state;
         }
@@ -204,6 +212,7 @@ const initializeAttachmentsSectionHooks = (selectedTask) => {
       isDragActive,
     },
     downloadAllFiles,
+    currentTaskAttachmentsDispatch
   };
 };
 
