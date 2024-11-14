@@ -2,7 +2,6 @@ import { Box } from '@mui/material';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import FilterListIcon from '@mui/icons-material/FilterList';
-import { selectFilterOption } from 'helpers/filter-options-helpers';
 import { userProfileSelector } from 'selectors/user-selectors';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import { capitalizeWords } from 'helpers/capitalize';
@@ -29,7 +28,6 @@ import FilterOptionsPopover from './FilterOptionsPopover';
 
 const NewFilterContainer = ({
   filters,
-  onSelectedFiltersChange,
   finalFilter,
   setFinalFilter,
   openPopover,
@@ -40,7 +38,6 @@ const NewFilterContainer = ({
   setSelectedQuickFilter,
   handleSelectedFiltersChange,
   editModeEnabled = true,
-  isPatientListPage,
 }) => {
   const popoverReference = useRef(null);
   const [isPopoverOpen, openAddFilterPopover, closeAddFilterPopover] =
@@ -103,12 +100,8 @@ const NewFilterContainer = ({
   };
 
   const handleApplyFinalFilter = () => {
-    onSelectedFiltersChange(selectFilterOption('', '', filteredData));
-    openPopover(false);
-  };
-
-  const handleApplyFinalFilterPatient = () => {
     handleSelectedFiltersChange();
+    openPopover(false);
   };
 
   const handleClose = useCallback(() => {
@@ -193,11 +186,7 @@ const NewFilterContainer = ({
             <ConfirmButton
               disabled={!isDisable}
               style={{ width: '270px' }}
-              onClick={
-                isPatientListPage
-                  ? handleApplyFinalFilterPatient
-                  : handleApplyFinalFilter
-              }
+              onClick={handleApplyFinalFilter}
             >
               Apply Filter
             </ConfirmButton>

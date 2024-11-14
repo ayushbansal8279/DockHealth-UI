@@ -24,7 +24,6 @@ import {
   QuickFilterScope,
 } from '../CustomFilters/helpers';
 import NewFilterContainer from '../NewFilterContainer/NewFilterContainer';
-import { selectFilterOption } from '@/app/helpers/filter-options-helpers';
 import { userProfileSelector } from 'selectors/user-selectors';
 import { checkIfUserIsOrganizationAdmin } from 'helpers/user-helper';
 
@@ -38,7 +37,6 @@ const SaveFilterPopup = ({
   editIdentifier,
   setEditIdentifier,
   filters,
-  onSelectedFiltersChange,
   menuOptions,
   setMenuOption,
   setFinalFilter,
@@ -53,7 +51,6 @@ const SaveFilterPopup = ({
   selectedCustomFilter,
   selectedQuickFilter,
   selectQuickFilter,
-  isPatientListPage,
   handleSelectedFiltersChange,
 }) => {
   const [searchInputValue, setSearchInputValue] = useState('');
@@ -129,10 +126,7 @@ const SaveFilterPopup = ({
       ? QuickFilterScope.ORGANIZATION
       : QuickFilterScope.PRIVATE;
     onQuickFilterCreate(searchInputValue, filteredData, scope);
-    isPatientListPage
-      ? handleSelectedFiltersChange()
-      : onSelectedFiltersChange(selectFilterOption('', '', filteredData));
-    console.log('Four');
+    handleSelectedFiltersChange();
     setSavePopupOpen(false);
     setFinalFilter({});
   };
@@ -236,7 +230,6 @@ const SaveFilterPopup = ({
           <div style={{ margin: '20px 0 0 40px' }}>
             <NewFilterContainer
               filters={filters}
-              onSelectedFiltersChange={onSelectFilters}
               setFinalFilter={setCustomFinalFilter}
               finalFilter={customFinalFilter}
               setMenuOption={setMenuOption}

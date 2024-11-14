@@ -203,7 +203,6 @@ const PatientsFilter = ({
         customFilteredData={customFilteredData}
         setCustomFilteredData={setCustomFilteredData}
         handleSelectedFiltersChange={handleSelectedFiltersChange}
-        isPatientListPage
       />
       <CustomFilters
         quickFiltersList={quickFiltersList}
@@ -237,7 +236,6 @@ const PatientsFilter = ({
         setCustomFinalFilter={setCustomFinalFilter}
         handleSelectedFiltersChange={handleSelectedFiltersChange}
         editModeEnabled={isAdmin}
-        isPatientListPage
       />
     </>
   );
