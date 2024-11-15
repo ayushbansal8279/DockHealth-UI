@@ -19,9 +19,11 @@ import {
   ConfirmButton,
 } from '@/app/modal/components/ModalButton/ModalButtons';
 import Spacing from '../../common/Spacing';
-import { getUniqueQuickFilterLabelName, QuickFilterScope } from '../CustomFilters/helpers';
+import {
+  getUniqueQuickFilterLabelName,
+  QuickFilterScope,
+} from '../CustomFilters/helpers';
 import NewFilterContainer from '../NewFilterContainer/NewFilterContainer';
-import { selectFilterOption } from '@/app/helpers/filter-options-helpers';
 import { userProfileSelector } from 'selectors/user-selectors';
 import { checkIfUserIsOrganizationAdmin } from 'helpers/user-helper';
 
@@ -35,7 +37,6 @@ const SaveFilterPopup = ({
   editIdentifier,
   setEditIdentifier,
   filters,
-  onSelectedFiltersChange,
   menuOptions,
   setMenuOption,
   setFinalFilter,
@@ -50,6 +51,7 @@ const SaveFilterPopup = ({
   selectedCustomFilter,
   selectedQuickFilter,
   selectQuickFilter,
+  handleSelectedFiltersChange,
 }) => {
   const [searchInputValue, setSearchInputValue] = useState('');
   const [quickfilterName, setQuickfilterName] = useState('');
@@ -66,7 +68,7 @@ const SaveFilterPopup = ({
           setSearchInputValue(item.name);
           setQuickfilterName(item.name);
           setIsQuickFilterEdit(true);
-          if(item.scope === QuickFilterScope.ORGANIZATION){
+          if (item.scope === QuickFilterScope.ORGANIZATION) {
             setEveryOne(true);
             setOnlyone(false);
           }
@@ -79,8 +81,8 @@ const SaveFilterPopup = ({
   }, [quickFiltersList, editIdentifier, isQuickFilterEdit]);
 
   useEffect(() => {
-      setEveryOne(false);
-      setOnlyone(true);
+    setEveryOne(false);
+    setOnlyone(true);
   }, [editIdentifier]);
 
   // If we need the disable option later
@@ -120,16 +122,25 @@ const SaveFilterPopup = ({
   };
 
   const handleQuickFilterCreate = () => {
-    const scope = everyOne ? QuickFilterScope.ORGANIZATION : QuickFilterScope.PRIVATE;
+    const scope = everyOne
+      ? QuickFilterScope.ORGANIZATION
+      : QuickFilterScope.PRIVATE;
     onQuickFilterCreate(searchInputValue, filteredData, scope);
-    onSelectedFiltersChange(selectFilterOption('', '', filteredData));
+    handleSelectedFiltersChange();
     setSavePopupOpen(false);
     setFinalFilter({});
   };
 
   const handleQuickFilterUpdate = () => {
-    const scope = everyOne ? QuickFilterScope.ORGANIZATION : QuickFilterScope.PRIVATE;
-    onQuickFilterUpdate(editIdentifier, searchInputValue, customFilteredData, scope);
+    const scope = everyOne
+      ? QuickFilterScope.ORGANIZATION
+      : QuickFilterScope.PRIVATE;
+    onQuickFilterUpdate(
+      editIdentifier,
+      searchInputValue,
+      customFilteredData,
+      scope,
+    );
     selectFilter();
     setEditIdentifier('');
     setSavePopupOpen(false);
@@ -219,7 +230,6 @@ const SaveFilterPopup = ({
           <div style={{ margin: '20px 0 0 40px' }}>
             <NewFilterContainer
               filters={filters}
-              onSelectedFiltersChange={onSelectFilters}
               setFinalFilter={setCustomFinalFilter}
               finalFilter={customFinalFilter}
               setMenuOption={setMenuOption}
