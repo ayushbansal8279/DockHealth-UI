@@ -1,7 +1,7 @@
 import palette from "@/app/styles/palette";
 import styled from "styled-components";
 
-export const FilterOptionsList = styled.div`
+export const OptionsList = styled.div`
   width: 257px;
   max-height: 600;
   overflow-y: auto;
@@ -20,7 +20,7 @@ export const FilterOptionsList = styled.div`
   }
 `;
 
-export const FilterOptionsListContainer = styled.div`
+export const OptionsListContainer = styled.div`
   width: 257px;
 `;
 

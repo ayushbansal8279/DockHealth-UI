@@ -24,7 +24,7 @@ import {
 } from '@/app/components/filter/NewFilterContainer/styled';
 import useBoolean from '@/app/hooks/useBoolean';
 import palette from '@/app/styles/palette';
-import EditFieldPopover from './EditFieldPopover';
+import EditFieldOptionsPopover from './EditFieldOptionsPopover';
 
 interface Props {
   customFields: ICustomField[];
@@ -147,11 +147,11 @@ export default function BulkEditCustomFieldsModal({
                 </AddFilterRotatableChevronButtonWrapper>
               </Box>
             </BoxContainer>
-            <EditFieldPopover
+            <EditFieldOptionsPopover
               anchorEl={popoverReference.current}
               open={isAddFieldPopoverOpen}
               onClose={closeAddFieldPopover}
-              filterOptionsList={customFields}
+              optionsList={customFields}
               onFilterSelect={handleAddField}
               idField="identifier"
               labelField="name"

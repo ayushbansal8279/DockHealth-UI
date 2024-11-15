@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { Divider, Input, MenuItem, Popover } from '@mui/material';
 import {
-  FilterOptionsList,
-  FilterOptionsListContainer,
+  OptionsList,
+  OptionsListContainer,
   SelectOptionsContainer,
 } from './styled';
 
-const EditFieldPopover = ({
+const EditFieldOptionsPopover = ({
   anchorEl,
-  filterOptionsList = [],
+  optionsList = [],
   onFilterSelect,
   open,
   onClose,
@@ -17,23 +17,23 @@ const EditFieldPopover = ({
   labelField = 'label',
   popoverZindex,
 }) => {
-  const [filterOptionLists, setFilterOptionList] = useState(filterOptionsList);
+  const [optionLists, setOptionList] = useState(optionsList);
 
   useEffect(() => {
-    setFilterOptionList(filterOptionsList);
-  }, [filterOptionsList]);
+    setOptionList(optionsList);
+  }, [optionsList]);
 
-  const handleFilterListSearch = (event) => {
-    const filteredList = filterOptionsList.filter((item) =>
+  const handleOptionListSearch = (event) => {
+    const filteredList = optionsList.filter((item) =>
       item[labelField]
         ?.toLowerCase()
         .includes(event.target.value.toLowerCase()),
     );
-    setFilterOptionList(filteredList);
+    setOptionList(filteredList);
   };
 
   const groupedOptions = Object.entries(
-    filterOptionLists.reduce((acc, option) => {
+    optionLists.reduce((acc, option) => {
       const targetType = option.targetType || 'Other';
       if (!acc[targetType]) {
         acc[targetType] = [];
@@ -77,11 +77,11 @@ const EditFieldPopover = ({
         fullWidth
         placeholder="Search"
         sx={{ padding: '5px 10px 5px 15px' }}
-        onChange={handleFilterListSearch}
+        onChange={handleOptionListSearch}
       />
       <SelectOptionsContainer>
-        <FilterOptionsListContainer>
-          <FilterOptionsList>
+        <OptionsListContainer>
+          <OptionsList>
             {Object.entries(groupedOptions).map(([targetType, options], index, array) => (
               <React.Fragment key={targetType}>
                   <MenuItem sx={{ padding: '8px 16px', fontWeight: 'bold' }}>
@@ -104,11 +104,11 @@ const EditFieldPopover = ({
                 {index < array.length - 1 && <Divider sx={{ my: 1 }} />}
                 </React.Fragment>
             ))}
-          </FilterOptionsList>
-        </FilterOptionsListContainer>
+          </OptionsList>
+        </OptionsListContainer>
       </SelectOptionsContainer>
     </Popover>
   );
 };
 
-export default EditFieldPopover;
+export default EditFieldOptionsPopover;
