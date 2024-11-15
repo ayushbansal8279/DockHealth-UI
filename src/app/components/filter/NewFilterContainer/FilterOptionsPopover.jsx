@@ -33,7 +33,7 @@ const FilterOptionsPopover = ({
 
   useEffect(() => {
     setFilterOptions(sanitizedFilters);
-  }, [sanitizedFilters]);
+  }, [filterOptionsList]);
 
   const handleFilterListSearch = (event) => {
     const filteredList = sanitizedFilters.filter((item) =>
