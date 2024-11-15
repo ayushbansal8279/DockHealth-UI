@@ -660,6 +660,7 @@ const PatientsList = ({
                     }
                     pinnedColumns={pinnedColumns}
                     onPinnedColumnsChange={handlePinnedColumnsChange}
+                    disableColumnReorder={true}
                   />
                 </NonEmptyListTable>
               </Grid>
