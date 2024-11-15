@@ -58,7 +58,7 @@ export default function TaskListCustomFieldsBulkEditModal({
       return field?.targetType === 'PATIENT';
     });
 
-    const filteredPatientIdentifiers = patientIdentifiers.filter(id => id !== undefined);
+    const filteredPatientIdentifiers = patientIdentifiers?.filter(id => id !== undefined);
 
     try {
       if (taskFormattedMetaData.length > 0) {

@@ -17,10 +17,10 @@ const EditFieldOptionsPopover = ({
   labelField = 'label',
   popoverZindex,
 }) => {
-  const [optionLists, setOptionList] = useState(optionsList);
+  const [optionLists, setOptionLists] = useState(optionsList);
 
   useEffect(() => {
-    setOptionList(optionsList);
+    setOptionLists(optionsList);
   }, [optionsList]);
 
   const handleOptionListSearch = (event) => {
@@ -29,7 +29,7 @@ const EditFieldOptionsPopover = ({
         ?.toLowerCase()
         .includes(event.target.value.toLowerCase()),
     );
-    setOptionList(filteredList);
+    setOptionLists(filteredList);
   };
 
   const groupedOptions = Object.entries(
