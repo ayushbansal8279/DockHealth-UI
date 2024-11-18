@@ -108,7 +108,7 @@ function SendEmrNoteFromTaskModal({ source, identifier, generatedSummary }) {
         </InputContainerStyled>
         {!fromAiSummary && (
           <>
-            <InputContainerStyled>
+            <InputContainerStyled styled={{"textAlign": "left"}}>
               <TemplateAutoComplete
                 type={CommunicationType.EMR}
                 placeholder="Pick template"
