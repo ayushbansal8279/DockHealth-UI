@@ -1,5 +1,5 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
 import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
@@ -14,6 +14,7 @@ import {
   currentTaskListIdentifierSelector,
   archivedTaskListsSelector,
   currentTaskListSelector,
+  taskListsSelector,
 } from 'selectors/task-list-selectors';
 import { userProfileSelector } from 'selectors/user-selectors';
 import { openModal, closeModal } from 'modal/actions';
@@ -38,11 +39,18 @@ const ListOptionsMenu = (props) => {
   const history = useHistory();
   const currentUser = useSelector(userProfileSelector);
   const listDetails = useSelector(currentTaskListSelector);
-  const {listName , taskListIdentifier} = listDetails || {};
+  const { listName, taskListIdentifier } = listDetails || {};
   const archivedTaskLists = useSelector(archivedTaskListsSelector);
   const activeTaskListIdentifier = useSelector(
     currentTaskListIdentifierSelector,
   );
+  const taskLists = useSelector(taskListsSelector);
+
+  useEffect(() => {
+    if (taskLists === null) {
+      dispatch(TaskListActions.getTaskListForUser());
+    }
+  }, []);
 
   const currentUserMember = list?.listUsers?.find(
     (u) => u.identifier === currentUser?.identifier,
@@ -168,29 +176,26 @@ const ListOptionsMenu = (props) => {
     [dispatch],
   );
 
-  const handleDownloadTaskListData = useCallback(
-    async () => {
-      const filename = `Dock ${listName}.csv`;
-      let selectedTaskListStatus = localStorageHelper.getItem(
-        getTaskListStatusStorageKey(taskListIdentifier),
-      );
-      if (!selectedTaskListStatus) {
-        selectedTaskListStatus = 'ALL'
-      }
-      const { data } = await downloadTaskListData(
-        taskListIdentifier,
-        selectedTaskListStatus,
-        filename,
-      );
-      const url = window.URL.createObjectURL(new Blob([data]));
-      const link = document.createElement('a');
-      link.href = url;
-      link.setAttribute('download', filename);
-      document.body.append(link);
-      link.click();
-    },
-    [taskListIdentifier,listName],
-  )
+  const handleDownloadTaskListData = useCallback(async () => {
+    const filename = `Dock ${listName}.csv`;
+    let selectedTaskListStatus = localStorageHelper.getItem(
+      getTaskListStatusStorageKey(taskListIdentifier),
+    );
+    if (!selectedTaskListStatus) {
+      selectedTaskListStatus = 'ALL';
+    }
+    const { data } = await downloadTaskListData(
+      taskListIdentifier,
+      selectedTaskListStatus,
+      filename,
+    );
+    const url = window.URL.createObjectURL(new Blob([data]));
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', filename);
+    document.body.append(link);
+    link.click();
+  }, [taskListIdentifier, listName]);
 
   const getMenuItems = useCallback(
     (targetList) => {
@@ -286,7 +291,7 @@ const ListOptionsMenu = (props) => {
           },
         ];
       }
-      if(moreOptions){
+      if (moreOptions) {
         baseList = [
           ...baseList,
           {
