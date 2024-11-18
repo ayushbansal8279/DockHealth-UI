@@ -156,10 +156,10 @@ const PatientsFilter = ({
     (quickFilterIdentifier, name, selectedFilterOptions, scope) =>
       dispatch(
         updateQuickFilter(
-          quickFilterIdentifier, 
-          { name, selectedOptions: selectedFilterOptions }, 
+          quickFilterIdentifier,
+          { name, selectedOptions: selectedFilterOptions },
           { organizationIdentifier, contextType: quickContextTypes.PATIENTS },
-          scope
+          scope,
         ),
       ),
     [dispatch, organizationIdentifier],
@@ -202,6 +202,7 @@ const PatientsFilter = ({
         setCustomFinalFilter={setCustomFinalFilter}
         customFilteredData={customFilteredData}
         setCustomFilteredData={setCustomFilteredData}
+        handleSelectedFiltersChange={handleSelectedFiltersChange}
       />
       <CustomFilters
         quickFiltersList={quickFiltersList}

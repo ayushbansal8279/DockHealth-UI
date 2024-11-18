@@ -24,20 +24,19 @@ const FilterOptionsPopover = ({
   const currentUser = useSelector(userProfileSelector);
   const customerTypeLabel = getCustomerTypeLabel(currentUser);
   const customerTypeLabelMixedCase = capitalizeWords(customerTypeLabel);
-  const [filterOptions, setFilterOptions] = useState(
-    filterOptionsList.map((item) => {
-      return item?.id.toLowerCase() === 'patients'
-        ? { ...item, label: customerTypeLabelMixedCase }
-        : item;
-    }),
-  );
+  const sanitizedFilters = filterOptionsList?.map((item) => {
+    return item?.id?.toLowerCase() === 'patients'
+    ? { ...item, label: customerTypeLabelMixedCase }
+    : item;
+  });
+  const [filterOptions, setFilterOptions] = useState(sanitizedFilters);
 
   useEffect(() => {
-    setFilterOptions(filterOptions);
-  }, [filterOptions]);
+    setFilterOptions(sanitizedFilters);
+  }, [filterOptionsList]);
 
   const handleFilterListSearch = (event) => {
-    const filteredList = filterOptionsList.filter((item) =>
+    const filteredList = sanitizedFilters.filter((item) =>
       item[labelField]
         ?.toLowerCase()
         .includes(event.target.value.toLowerCase()),
