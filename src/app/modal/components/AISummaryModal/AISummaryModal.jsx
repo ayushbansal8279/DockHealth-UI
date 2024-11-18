@@ -55,7 +55,8 @@ const AISummaryModal = ({ closeModal, title, onsubmit, type, identifier }) => {
     handleGenerateResponse(false);
   }, []);
 
-  const [promptValue, setPromptValue] = useState('DEFAULT');
+  // const [customPrompt, setCustomPrompt] = useState('');
+  const [promptTypeValue, setPromptTypeValue] = useState('DEFAULT');
   const [copied, setCopied] = useState(false);
   const [summaries, setSummaries] = useState([]);
   const [isFetching, setIsFetching] = useState(false);
@@ -85,14 +86,25 @@ const AISummaryModal = ({ closeModal, title, onsubmit, type, identifier }) => {
     }, 2000);
   };
 
-  const handlePromptChange = (event) => {
-    setPromptValue(event?.target?.value);
-    handleGenerateResponse(true, event?.target?.value);
+  const handlePromptTypeChange = (event) => {
+    const promptType = event?.target?.value;
+    setPromptTypeValue(promptType);
+    handleGenerateResponse(true, promptType);
   };
 
-  const handleGenerateResponse = async (forceRefresh, prompt) => {
+  // const handleCustomPrompt = (event) => {
+  //   const customPrompt = event?.target?.value;
+  //   setCustomPrompt(customPrompt);
+  //   handleGenerateResponse(true, promptTypeValue, customPrompt);
+  // };
+
+  const handleGenerateResponse = async (
+    forceRefresh,
+    promptType,
+    customPrompt,
+  ) => {
     setIsFetching(true);
-    const response = await onsubmit(prompt, forceRefresh);
+    const response = await onsubmit(promptType, customPrompt, forceRefresh);
     setIsFetching(false);
 
     const result = separateTimestamp(response);
@@ -124,7 +136,7 @@ const AISummaryModal = ({ closeModal, title, onsubmit, type, identifier }) => {
           <LuminaStar color={palette.newBrightBlue} />
           <Title>{title}</Title>
         </SubHeader>
-        <Box display={'flex'} gap={1}>
+        <Box display="flex" gap={1}>
           {postToEMRAvailable && (
             <>
               {tooltipHover.note && (
@@ -137,7 +149,7 @@ const AISummaryModal = ({ closeModal, title, onsubmit, type, identifier }) => {
                   dispatch(
                     openModal('SendEmrFromTask', {
                       source: 'Ai Summary Modal',
-                      identifier: identifier,
+                      identifier,
                       generatedSummary: stirngSummary,
                     }),
                   );
@@ -187,9 +199,9 @@ const AISummaryModal = ({ closeModal, title, onsubmit, type, identifier }) => {
             <PromptSelectorWrapper>
               <PromptSelectorLabel>Prompt Type:</PromptSelectorLabel>
               <PromptSelector
-                onChange={handlePromptChange}
-                defaultValue={promptValue}
-                value={promptValue}
+                onChange={handlePromptTypeChange}
+                defaultValue={promptTypeValue}
+                value={promptTypeValue}
               >
                 {promptoptions.map((option) => (
                   <option value={option.value}>{option.key}</option>
@@ -220,10 +232,10 @@ const AISummaryModal = ({ closeModal, title, onsubmit, type, identifier }) => {
         <CustomPromptInput
           maxRows={3}
           disabled={isFetching}
-          value={value}
+          value={customPrompt}
           placeholder="Custom Prompt"
           size="small"
-          onChange={handlePromptChange}
+          onChange={handleCustomPrompt}
           variant="outlined"
         />
         <RefreshWrapper>

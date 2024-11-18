@@ -48,17 +48,17 @@ export function calculateResponseTimeAgo(timestamp) {
 
 export const patientPromptOptions = [
   { key: 'Default', value: '' },
-  { key: 'Patient Journey', value: 'PATIENT JOURNEY SUMMARY' },
-  { key: 'Email Summary', value: 'EMAIL SUMMARY' },
-  { key: 'Clinical Note', value: 'CLINICAL NOTE' },
-  { key: 'One Liner', value: 'ONE LINER' },
-  { key: 'Next Steps', value: 'NEXT STEPS' },
+  { key: 'Patient Journey', value: 'JOURNEY' },
+  { key: 'Email Summary', value: 'EMAIL' },
+  { key: 'Clinical Note', value: 'CLINICAL_NOTE' },
+  { key: 'One Liner', value: 'ONE_LINER' },
+  { key: 'Next Steps', value: 'NEXT_STEPS' },
 ];
 
 export const taskPromptOptions = [
   { key: 'Default', value: '' },
-  { key: 'Email Summary', value: 'EMAIL SUMMARY' },
-  { key: 'Clinical Note', value: 'CLINICAL NOTE' },
-  { key: 'One Liner', value: 'ONE LINER' },
-  { key: 'Next Steps', value: 'NEXT STEPS' },
+  { key: 'Email Summary', value: 'EMAIL' },
+  { key: 'Clinical Note', value: 'CLINICAL_NOTE' },
+  { key: 'One Liner', value: 'ONE_LINER' },
+  { key: 'Next Steps', value: 'NEXT_STEPS' },
 ];
