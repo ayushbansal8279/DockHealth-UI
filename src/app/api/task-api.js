@@ -423,7 +423,6 @@ export function removeTaskAttachment(taskAttachmentId) {
 }
 
 export function getTaskAttachment(taskAttachmentId) {
-  console.log('taskAttachmentId', taskAttachmentId)
   return axios({
     url: `task/attachment/download/${taskAttachmentId}`,
     method: 'GET',

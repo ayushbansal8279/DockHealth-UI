@@ -16,7 +16,7 @@ const AttachmentButton = ({ attachment, onClick, onRemoveClick , renameAttachmen
   const { attachmentIdentifier, fileName, contentType } = attachment;
   const IconComponent = getIconFromContentType({ contentType });
   const dispatch = useDispatch();
-  const [fileName1, setFileName] = useState(fileName);
+  const [renderedName, setRenderedName] = useState(fileName);
 
   const renameTaskWorkflowAttachment = useCallback(
     (file) => {
@@ -26,7 +26,7 @@ const AttachmentButton = ({ attachment, onClick, onRemoveClick , renameAttachmen
           inputLabel: 'File Name',
           currentName: file.fileName,
           onChange: (newFileName) => {
-            setFileName(newFileName);
+            setRenderedName(newFileName);
             dispatch(
               WorkflowActions.updateWorkflowAttachment(
                 file?.taskWorkflowIdentifier,
@@ -49,7 +49,7 @@ const AttachmentButton = ({ attachment, onClick, onRemoveClick , renameAttachmen
           inputLabel: 'File Name',
           currentName: file.fileName,
           onChange: (newFileName) => {
-            setFileName(newFileName);
+            setRenderedName(newFileName);
             renameAttachmentDispatch({
               type: 'RENAME_ATTACHMENT',
               attachmentIdentifier: file?.attachmentIdentifier,
@@ -111,9 +111,9 @@ const AttachmentButton = ({ attachment, onClick, onRemoveClick , renameAttachmen
   );
   
   return (
-    <Tooltip key={attachmentIdentifier} title={fileName1}>
+    <Tooltip key={attachmentIdentifier} title={renderedName}>
       <Container
-        download={fileName1}
+        download={renderedName}
         onClick={(event) => {
           event.stopPropagation();
           event.preventDefault();
@@ -123,7 +123,7 @@ const AttachmentButton = ({ attachment, onClick, onRemoveClick , renameAttachmen
         <IconComponent color="inherit" fontSize="small" />
         <Spacing horizontal={2} />
         <OutfitTypography condensed variant="h4" weight="bold" noWrap>
-          {fileName1}
+          {renderedName}
         </OutfitTypography>
         {typeof onRemoveClick === 'function' && (
           <RemoveAttachmentButtonContainer>

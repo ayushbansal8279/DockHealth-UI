@@ -126,6 +126,32 @@ export function updateWorkflowAttachment(
   };
 }
 
+export function updateWorkflowAttachmentSuccess(
+  taskWorkflowIdentifier,
+  attachmentIdentifier,
+  fileName
+) {
+  return {
+    type: ActionTypes.UPDATE_WORKFLOW_ATTACHMENT_SUCCESS,
+    taskWorkflowIdentifier,
+    attachmentIdentifier,
+    fileName
+  };
+}
+
+export function updateWorkflowAttachmentFailure(
+  taskWorkflowIdentifier,
+  attachmentIdentifier,
+  fileName
+) {
+  return {
+    type: ActionTypes.UPDATE_WORKFLOW_ATTACHMENT_FAILURE,
+    taskWorkflowIdentifier,
+    attachmentIdentifier,
+    fileName
+  };
+}
+
 export function deleteWorkflowAttachment(
   workflowIdentifier,
   attachmentIdentifier,

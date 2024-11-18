@@ -175,10 +175,24 @@ function* updateWorkflowAttachment({
     yield call(WorkflowApi.updateWorkflowAttachment, {taskWorkflowIdentifier, attachmentIdentifier, fileName});
     yield all([
       put(showGlobalAlert(AlertMessages.UPDATED)),
+      put(
+        WorkflowActions.updateWorkflowAttachmentSuccess(
+          taskWorkflowIdentifier,
+          attachmentIdentifier,
+          fileName
+        ),
+      ),
     ]);
   } catch {
     yield all([
       put(showGlobalErrorAlert()),
+      put(
+        WorkflowActions.updateWorkflowAttachmentFailure(
+          taskWorkflowIdentifier,
+          attachmentIdentifier,
+          fileName
+        ),
+      ),
     ]);
   }
 }
