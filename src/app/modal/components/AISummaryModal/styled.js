@@ -171,3 +171,15 @@ export const CopyTooltip = styled.div`
   padding: 2px 5px;
   border-radius: 6px;
 `;
+
+export const CustumTooltip = styled.div`
+  padding: 1px 10px;
+  position: absolute;
+  top: -10;
+  right: ${({ right }) => right || 60};
+  color: black;
+  background-color: ${palette.whiteSmoke};
+  font-size: 14px;
+  box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.15);
+  border-radius: 4px;
+`;

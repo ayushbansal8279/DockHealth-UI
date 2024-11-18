@@ -18,6 +18,7 @@ import {
   PromptSelector,
   PromptSelectorLabel,
   PromptSelectorWrapper,
+  CustumTooltip,
 } from './styled';
 import LuminaStar from 'img/AI/LuminaStar';
 import palette from '@/app/styles/palette';
@@ -31,7 +32,11 @@ import {
   taskPromptOptions,
 } from './helper';
 import { SummaryType } from '@/app/helpers/ai-helper';
-import { selectedUserOrganizationSelector } from '@/app/selectors/user-selectors';
+import {
+  selectedUserOrganizationSelector,
+  userHasPostEMRNoteFeatureSelector,
+  userHasSendEmailFeatureSelector,
+} from '@/app/selectors/user-selectors';
 import { useDispatch, useSelector } from 'react-redux';
 import { openModal } from '../../actions';
 import { DescriptionOutlined } from '@mui/icons-material';
@@ -56,6 +61,10 @@ const AISummaryModal = ({ closeModal, title, onsubmit, type, identifier }) => {
   const [isFetching, setIsFetching] = useState(false);
   const [generateDateTime, setGeneratedDateTime] = useState('');
   const [stirngSummary, setStringSummary] = useState('');
+  const [tooltipHover, setTooltipHover] = useState({
+    email: false,
+    note: false,
+  });
   const dispatch = useDispatch();
 
   const currentOrganization = useSelector(selectedUserOrganizationSelector);
@@ -63,6 +72,9 @@ const AISummaryModal = ({ closeModal, title, onsubmit, type, identifier }) => {
     currentOrganization?.themeSettings?.find(
       ({ name }) => name === 'ai.summary.multiple.prompts',
     ) || {};
+
+  const sendEmailAvailable = useSelector(userHasSendEmailFeatureSelector);
+  const postToEMRAvailable = useSelector(userHasPostEMRNoteFeatureSelector);
 
   const handleCopy = () => {
     const formattedString = summaries.join('\n\n');
@@ -113,31 +125,49 @@ const AISummaryModal = ({ closeModal, title, onsubmit, type, identifier }) => {
           <Title>{title}</Title>
         </SubHeader>
         <Box display={'flex'} gap={1}>
-          <DescriptionOutlined
-            onClick={() => {
-              dispatch(
-                openModal('SendEmrFromTask', {
-                  source: 'Ai Summary Modal',
-                  identifier: identifier,
-                  generatedSummary: stirngSummary,
-                }),
-              );
-            }}
-            style={{ color: palette.coolGrey1, cursor: 'pointer' }}
-          />
-          <IconWrapper
-            onClick={() => {
-              dispatch(
-                openModal('SendEmailFromTask', {
-                  source: 'Ai Summary Modal',
-                  taskIdentifier: identifier,
-                  generatedSummary: stirngSummary,
-                }),
-              );
-            }}
-            src={EmailIcon}
-            alt="email"
-          />
+          {postToEMRAvailable && (
+            <>
+              {tooltipHover.note && (
+                <CustumTooltip right={110}>Post EMR note</CustumTooltip>
+              )}
+              <DescriptionOutlined
+                onMouseEnter={() => setTooltipHover({ note: true })}
+                onMouseLeave={() => setTooltipHover({ note: false })}
+                onClick={() => {
+                  dispatch(
+                    openModal('SendEmrFromTask', {
+                      source: 'Ai Summary Modal',
+                      identifier: identifier,
+                      generatedSummary: stirngSummary,
+                    }),
+                  );
+                }}
+                style={{ color: palette.coolGrey1, cursor: 'pointer' }}
+              />
+            </>
+          )}
+          {sendEmailAvailable && (
+            <>
+              {tooltipHover.email && (
+                <CustumTooltip right={70}>Email Summary</CustumTooltip>
+              )}
+              <IconWrapper
+                onMouseEnter={() => setTooltipHover({ email: true })}
+                onMouseLeave={() => setTooltipHover({ email: false })}
+                onClick={() => {
+                  dispatch(
+                    openModal('SendEmailFromTask', {
+                      source: 'Ai Summary Modal',
+                      taskIdentifier: identifier,
+                      generatedSummary: stirngSummary,
+                    }),
+                  );
+                }}
+                src={EmailIcon}
+                alt="email"
+              />
+            </>
+          )}
           <IconWrapper onClick={handleCopy} src={Copy} alt="copy" />
           <CopyTooltip copied={copied}>
             {copied ? 'Copied to clipboard!' : ''}
