@@ -36,6 +36,7 @@ const AISummaryModalOpenerHelper = ({ type, title, identifier }) => {
             openModal('AISummary', {
               type: type,
               title: `${title}`,
+              identifier: identifier,
               onsubmit: async (promptText, forceRefresh) =>
                 await methodToCall(promptText, forceRefresh),
             }),
