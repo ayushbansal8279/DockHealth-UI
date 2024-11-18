@@ -34,7 +34,7 @@ export const ListPageContext = createContext({
 });
 const ListDetailsView = () => {
   const parameters = useParams();
-  const { taskListIdentifier } = parameters;
+  const { taskListIdentifier, tabName, taskIdentifier } = parameters;
   const { viewType = ViewType.LIST_VIEW } = useSearchParams();
   const dispatch = useDispatch();
 
@@ -54,10 +54,15 @@ const ListDetailsView = () => {
       taskList?.organizationIdentifier !==
       currentOrganization?.organizationIdentifier;
 
+    const redirectUrl =
+      tabName && taskIdentifier
+        ? `#/core/tasks/${taskListIdentifier}/${tabName}/${taskIdentifier}`
+        : `#/core/tasks/${taskListIdentifier}`;
+
     if (organizationsExist && organizationsDiffer) {
       selectCurrentOrganizationWithRedirection(
         taskList?.organizationIdentifier,
-        `#/core/tasks/${taskListIdentifier}`,
+        redirectUrl,
       );
     }
   }, [taskList, currentOrganization]);
