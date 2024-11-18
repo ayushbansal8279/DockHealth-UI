@@ -1,7 +1,7 @@
 import Checkbox from 'components/common/Checkbox/Checkbox';
 import Input from 'components/common/Input/Input';
 import RichTextEditor from 'components/common/RichTextEditor/RichTextEditor';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 // import { convertFromEditorStateToOutput } from 'components/common/TextEditor/helpers';
 import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
@@ -47,9 +47,17 @@ import TaskCheckBoxes from '../TaskCheckBoxes';
 import { renderAddOrEdit } from '../helpers';
 import { ConfirmButton } from '../../ModalButton/ModalButtons';
 
-const SendEmailFromTaskModal = ({ setEmailActive }) => {
+const SendEmailFromTaskModal = ({
+  source,
+  taskIdentifier,
+  generatedSummary,
+  setEmailActive,
+}) => {
+  const fromAiSummary = source === 'Ai Summary Modal';
   const selectedTask = useSelector(selectedTaskSelector);
-  const { attachments, identifier } = selectedTask;
+  const identifier = fromAiSummary ? taskIdentifier : selectedTask?.identifier;
+  const attachments = selectedTask?.attachments;
+
   const dispatch = useDispatch();
   const [subject, setSubject] = useState('');
   const [templateIdentifier, setTemplateIdentifier] = useState('');
@@ -79,6 +87,12 @@ const SendEmailFromTaskModal = ({ setEmailActive }) => {
     },
     [detailsState],
   );
+
+  useEffect(() => {
+    if (fromAiSummary) {
+      setDetailsState(generatedSummary);
+    }
+  }, [fromAiSummary, generatedSummary]);
 
   // const handleEmailBlur = useCallback(
   //   (event) => {
@@ -176,48 +190,52 @@ const SendEmailFromTaskModal = ({ setEmailActive }) => {
             setNewContact={setNewContact}
             patient={selectedTask?.patient}
           />
-          <ContactInfoRow>
-            <div>
-              <LabelName>Recipient: </LabelName>
-              {selectedContacts.map(
-                (contact, index) =>
-                  contact?.identifier && (
-                    <LabelValue>
-                      {contact.label}{' '}
-                      {index < selectedContacts.length - 1 ? ', ' : ' '}
-                    </LabelValue>
-                  ),
-              )}
-            </div>
-            <AddEditContactLink>
-              {renderAddOrEdit(null, setShow)}
-            </AddEditContactLink>
-          </ContactInfoRow>
-          <TemplateAutoComplete
-            type={CommunicationType.EMAIL}
-            placeholder="Pick template"
-            onChange={(_event, newValue, reason) => {
-              handleTextEditorReset();
-              if (reason === 'clear') {
-                setSubject('');
-                return;
-              }
-              getTemplateDetails(newValue?.identifier, identifier).then(
-                (data) => {
-                  // const text = addStylesToText(data?.details ?? '');
-                  // setDetailsState(EditorState.push(detailsState, text));
-                  const updatedValue = detailsState
-                    ? `${detailsState} ${data?.details ?? ''}`
-                    : data?.details ?? '';
-                  setValueReset(true);
-                  setDetailsState(updatedValue);
-                  setSubject(data?.shortMessage ?? '');
-                  setTemplateIdentifier(data?.identifier);
-                },
-              );
-            }}
-            disabled={show}
-          />
+          {!fromAiSummary && (
+            <>
+              <ContactInfoRow>
+                <div>
+                  <LabelName>Recipient: </LabelName>
+                  {selectedContacts.map(
+                    (contact, index) =>
+                      contact?.identifier && (
+                        <LabelValue>
+                          {contact.label}{' '}
+                          {index < selectedContacts.length - 1 ? ', ' : ' '}
+                        </LabelValue>
+                      ),
+                  )}
+                </div>
+                <AddEditContactLink>
+                  {renderAddOrEdit(null, setShow)}
+                </AddEditContactLink>
+              </ContactInfoRow>
+              <TemplateAutoComplete
+                type={CommunicationType.EMAIL}
+                placeholder="Pick template"
+                onChange={(_event, newValue, reason) => {
+                  handleTextEditorReset();
+                  if (reason === 'clear') {
+                    setSubject('');
+                    return;
+                  }
+                  getTemplateDetails(newValue?.identifier, identifier).then(
+                    (data) => {
+                      // const text = addStylesToText(data?.details ?? '');
+                      // setDetailsState(EditorState.push(detailsState, text));
+                      const updatedValue = detailsState
+                        ? `${detailsState} ${data?.details ?? ''}`
+                        : data?.details ?? '';
+                      setValueReset(true);
+                      setDetailsState(updatedValue);
+                      setSubject(data?.shortMessage ?? '');
+                      setTemplateIdentifier(data?.identifier);
+                    },
+                  );
+                }}
+                disabled={show}
+              />
+            </>
+          )}
           <Input
             type="text"
             label="Subject"
@@ -228,22 +246,26 @@ const SendEmailFromTaskModal = ({ setEmailActive }) => {
             value={subject}
           />
         </InputContainerStyled>
-        <IncludeContainerStyled>
-          <InfoHeaderTextStyled>Include the following</InfoHeaderTextStyled>
-          <IconButton onClick={handleTextEditorReset}>
-            <Replay htmlColor={palette.coolGrey9} />
-          </IconButton>
-        </IncludeContainerStyled>
-        <TaskCheckBoxes
-          isTaskDescriptionIncluded={isTaskDescriptionIncluded}
-          setIsTaskDescriptionIncluded={setIsTaskDescriptionIncluded}
-          isTaskDetailsIncluded={isTaskDetailsIncluded}
-          setIsTaskDetailsIncluded={setIsTaskDetailsIncluded}
-          isTaskCommentsIncluded={isTaskCommentsIncluded}
-          setIsTaskCommentsIncluded={setIsTaskCommentsIncluded}
-          insertTextFromTask={insertTextFromTask}
-          selectedTask={selectedTask}
-        />
+        {!fromAiSummary && (
+          <>
+            <IncludeContainerStyled>
+              <InfoHeaderTextStyled>Include the following</InfoHeaderTextStyled>
+              <IconButton onClick={handleTextEditorReset}>
+                <Replay htmlColor={palette.coolGrey9} />
+              </IconButton>
+            </IncludeContainerStyled>
+            <TaskCheckBoxes
+              isTaskDescriptionIncluded={isTaskDescriptionIncluded}
+              setIsTaskDescriptionIncluded={setIsTaskDescriptionIncluded}
+              isTaskDetailsIncluded={isTaskDetailsIncluded}
+              setIsTaskDetailsIncluded={setIsTaskDetailsIncluded}
+              isTaskCommentsIncluded={isTaskCommentsIncluded}
+              setIsTaskCommentsIncluded={setIsTaskCommentsIncluded}
+              insertTextFromTask={insertTextFromTask}
+              selectedTask={selectedTask}
+            />
+          </>
+        )}
         <TextEditorContainerStyled>
           <CustomTextEditor label="Email body">
             <RichTextEditor
@@ -257,7 +279,7 @@ const SendEmailFromTaskModal = ({ setEmailActive }) => {
             />
           </CustomTextEditor>
         </TextEditorContainerStyled>
-        {attachments?.length > 0 && (
+        {!fromAiSummary && attachments?.length > 0 && (
           <>
             <InfoHeaderAttachmentsTextStyled>
               Select attachments to include
@@ -301,7 +323,7 @@ const SendEmailFromTaskModal = ({ setEmailActive }) => {
               sendEmailForTask({
                 message: subject,
                 details: detailsState,
-                recipientContacts: selectedContacts.map((c) => c.value),
+                recipientContacts: selectedContacts?.map((c) => c?.value),
                 taskAttachmentIdentifiers: attachmentsToSend,
                 taskIdentifier: identifier,
                 templateIdentifier,
