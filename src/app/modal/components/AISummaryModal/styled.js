@@ -119,17 +119,35 @@ export const ResponseButton = styled(Button)`
   }
 `;
 
+export const PromptSelector = styled.select`
+  border: 2px solid ${palette.zinc};
+  height: 32px;
+  border-radius: 6px;
+  padding: 0 6px;
+  width: 150px;
+`;
+
+export const PromptSelectorWrapper = styled.div`
+  margin-left: 30px;
+  display: flex;
+  align-items: center;
+`;
+
+export const PromptSelectorLabel = styled.label`
+  margin-right: 10px;
+`;
+
 export const RegenerateWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin: 8px 0;
 `;
 
 export const RefreshWrapper = styled.div`
   display: flex;
   align-items: center;
   height: 32px;
-  margin: 10px 0 0 10px;
   border-radius: 6px;
   background-color: ${palette.whiteSmoke};
   padding-left: 10px;
