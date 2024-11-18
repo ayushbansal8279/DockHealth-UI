@@ -88,7 +88,10 @@ function Virtualized({
               dispatch(
                 reassignTasksToAnotherGroup({
                   destination: {
-                    index: destinationOffsetIndexTask,
+                    index:
+                      destination?.kind === 'QuickAddTask'
+                        ? 0
+                        : destinationOffsetIndexTask,
                     droppableId: destination?.parent?.id,
                   },
                   source: {
@@ -193,17 +196,25 @@ const walk = (
   subTaskState: { index: number } = { index: 0 },
 ): FlatNode[] => {
   return nodes.flatMap((node, index) => {
-    const { id, phantom, type, kind, collapsed, data, handlers } = node;
+    const { id, phantom, type, kind, collapsed, data, handlers, children } =
+      node;
     const isTask = !phantom && kind === 'Task';
     const isSubtask = !phantom && kind === 'Subtask';
     const isTaskOfBundle = !phantom && kind === 'TaskOfBundle';
+
+    const shouldIndex = [
+      'QuickAddTask',
+      'Task',
+      'Subtask',
+      'TaskOfBundle',
+    ].includes(kind);
 
     const flattened: FlatNode = {
       id,
       phantom,
       type,
       kind,
-      index: phantom ? null : state.index,
+      index: shouldIndex ? state.index++ : null,
       taskIndex: isTask ? taskIndex.index : null,
       subtaskIndex: isSubtask ? subTaskState.index : null,
       taskOfBundleIndex: isTaskOfBundle ? taskOfBundleIndex.index : null,
@@ -212,15 +223,13 @@ const walk = (
       parent,
       collapsed,
       data,
-      children: node.children
+      children: children
         .filter((child) => !child.phantom)
         .map((child) => child.id),
       handlers,
     };
 
     if (!phantom) {
-      state.index = state.index + 1;
-
       if (isTask) taskIndex.index = taskIndex.index + 1;
       if (isSubtask) subTaskState.index = subTaskState.index + 1;
       if (isTaskOfBundle) taskOfBundleIndex.index = taskOfBundleIndex.index + 1;
@@ -228,7 +237,7 @@ const walk = (
 
     return [
       flattened,
-      ...walk(collapsed ? [] : node.children, flattened, level + 1, state),
+      ...walk(collapsed ? [] : children, flattened, level + 1, state),
     ];
   });
 };

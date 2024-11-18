@@ -11,13 +11,23 @@ import TaskTemplateApplicator from 'components/task-template/TaskTemplateApplica
 import { applyTaskTemplate } from 'actions/list-details-actions';
 import { TaskOrigin } from '@/app/helpers/task-helpers';
 import { useVirtualTaskListScrollContext } from '../../VirtualTaskListScrollContext';
+import { Draggable } from 'react-beautiful-dnd';
+import palette from '@/app/styles/palette';
 
 export interface Props extends Segment {
   taskGroupIdentifier: string;
+  groupWithZeroTask: boolean;
+  bgColor: boolean;
 }
 
 function VQuickAddTask(
-  { taskGroupIdentifier, register }: Props,
+  {
+    metadata,
+    taskGroupIdentifier,
+    register,
+    groupWithZeroTask,
+    bgColor,
+  }: Props,
   // eslint-disable-next-line unicorn/prevent-abbreviations
   ref: ForwardedRef<HTMLDivElement>,
 ) {
@@ -82,33 +92,60 @@ function VQuickAddTask(
   );
 
   return (
-    <Sc.VQuickAddTaskContainer
-      // $width={droppableHeaderWidth ? `${droppableHeaderWidth}px` : '100%'}
-      $width={percentage > 100 ? `${droppableHeaderWidth}px` : '100%'}
-    >
-      <Sc.VQuickAddTask
-        ref={ref}
-        {...register}
-        $width={visibleWidth ? `${visibleWidth - 87}px` : '100%'}
-        // $width={visibleWidth ? `${visibleWidth - 60}px` : '100%'}
+    <>
+      <Sc.VQuickAddTaskContainer
+        // $width={droppableHeaderWidth ? `${droppableHeaderWidth}px` : '100%'}
+        $width={percentage > 100 ? `${droppableHeaderWidth}px` : '100%'}
       >
-        <QuickAddTaskInput
-          // @ts-ignore
-          taskListIdentifier={taskListIdentifier}
-          quickAddTask={onQuickAddTask}
-          validator={quickTaskInputValidator}
-          iconColorActive={iconColorActiveItem?.value}
-        />
-        <Sc.TaskTemplateApplicatorContainer>
-          <TaskTemplateApplicator
-            onTemplateSelect={applyTemplate}
-            bulkApply={false}
-            isWorkflowSearch
-            origin={TaskOrigin.LIST}
+        <Sc.VQuickAddTask
+          ref={ref}
+          {...register}
+          $width={visibleWidth ? `${visibleWidth - 87}px` : '100%'}
+          // $width={visibleWidth ? `${visibleWidth - 60}px` : '100%'}
+        >
+          <QuickAddTaskInput
+            // @ts-ignore
+            taskListIdentifier={taskListIdentifier}
+            quickAddTask={onQuickAddTask}
+            validator={quickTaskInputValidator}
+            iconColorActive={iconColorActiveItem?.value}
           />
-        </Sc.TaskTemplateApplicatorContainer>
-      </Sc.VQuickAddTask>
-    </Sc.VQuickAddTaskContainer>
+          <Sc.TaskTemplateApplicatorContainer>
+            <TaskTemplateApplicator
+              onTemplateSelect={applyTemplate}
+              bulkApply={false}
+              isWorkflowSearch
+              origin={TaskOrigin.LIST}
+            />
+          </Sc.TaskTemplateApplicatorContainer>
+        </Sc.VQuickAddTask>
+      </Sc.VQuickAddTaskContainer>
+
+      {groupWithZeroTask && (
+        <Draggable
+          draggableId={metadata?.id}
+          index={metadata?.index}
+          key={metadata?.id}
+          isDragDisabled={true}
+        >
+          {(provided) => (
+            <div
+              ref={provided.innerRef}
+              {...provided.draggableProps}
+              {...provided.dragHandleProps}
+            >
+              <div
+                style={{
+                  background: bgColor ? palette.aliceBlue : '',
+                  width: '100%',
+                  height: '50px',
+                }}
+              />
+            </div>
+          )}
+        </Draggable>
+      )}
+    </>
   );
 }
 
