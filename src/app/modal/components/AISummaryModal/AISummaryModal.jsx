@@ -89,7 +89,7 @@ const AISummaryModal = ({ closeModal, title, onsubmit, type, identifier }) => {
   const handlePromptTypeChange = (event) => {
     const promptType = event?.target?.value;
     setPromptTypeValue(promptType);
-    handleGenerateResponse(true, promptType);
+    handleGenerateResponse(false, promptType);
   };
 
   // const handleCustomPrompt = (event) => {
