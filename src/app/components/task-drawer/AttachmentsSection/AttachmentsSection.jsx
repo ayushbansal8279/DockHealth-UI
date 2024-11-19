@@ -33,6 +33,7 @@ const AttachmentsSection = ({
     previewedAttachment,
     dropzone: { getRootProps, getInputProps, isDragActive },
     downloadAllFiles,
+    currentTaskAttachmentsDispatch
   } = initializeAttachmentsSectionHooks(selectedTask);
 
   const attachmentRef = useRef(null);
@@ -111,6 +112,7 @@ const AttachmentsSection = ({
                         openAttachmentPreview(attachment);
                     }}
                     onRemoveClick={removeTaskAttachment}
+                    renameAttachmentDispatch={currentTaskAttachmentsDispatch}
                   />
                   <p>
                   {

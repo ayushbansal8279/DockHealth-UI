@@ -169,6 +169,23 @@ const WorkflowDrawerReducer = (state = initialState, action) => {
       return state;
     }
 
+    case ActionTypes.UPDATE_WORKFLOW_ATTACHMENT_SUCCESS: {
+      const { taskWorkflowIdentifier, attachmentIdentifier, fileName } = action;
+    
+      if (taskWorkflowIdentifier !== state.workflowIdentifier) return state;
+      return {
+        ...state,
+        workflow: {
+          ...state.workflow,
+          attachments: state.workflow.attachments?.map((attachment) =>
+            attachment.attachmentIdentifier === attachmentIdentifier
+              ? { ...attachment, fileName }
+              : attachment
+          ) || null,
+        },
+      };
+    }
+
     case ActionTypes.DELETE_WORKFLOW_ATTACHMENT_SUCCESS: {
       const { workflowIdentifier, attachmentIdentifier } = action;
 

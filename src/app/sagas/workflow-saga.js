@@ -166,6 +166,37 @@ function* deleteWorkflowAttachment({
   }
 }
 
+function* updateWorkflowAttachment({
+  taskWorkflowIdentifier,
+  attachmentIdentifier,
+  fileName
+}) {
+  try {
+    yield call(WorkflowApi.updateWorkflowAttachment, {taskWorkflowIdentifier, attachmentIdentifier, fileName});
+    yield all([
+      put(showGlobalAlert(AlertMessages.UPDATED)),
+      put(
+        WorkflowActions.updateWorkflowAttachmentSuccess(
+          taskWorkflowIdentifier,
+          attachmentIdentifier,
+          fileName
+        ),
+      ),
+    ]);
+  } catch {
+    yield all([
+      put(showGlobalErrorAlert()),
+      put(
+        WorkflowActions.updateWorkflowAttachmentFailure(
+          taskWorkflowIdentifier,
+          attachmentIdentifier,
+          fileName
+        ),
+      ),
+    ]);
+  }
+}
+
 function* reorderWorkflowTasks(payload) {
   const {
     source: { index: sourceIndex },
@@ -231,4 +262,5 @@ export default function* watchWorkflow() {
     deleteWorkflowAttachment,
   );
   yield takeEvery(ActionTypes.REORDER_WORKFLOW_TASKS, reorderWorkflowTasks);
+  yield takeEvery(ActionTypes.UPDATE_WORKFLOW_ATTACHMENT, updateWorkflowAttachment);
 }

@@ -435,6 +435,10 @@ export function getTaskAttachment(taskAttachmentId) {
     .catch(noop);
 }
 
+export function updateTaskAttachment(attachmentIdentifier,fileName) {
+  return axios.put(`task/attachment`, { attachmentIdentifier,fileName}).then(({ data }) => data);
+}
+
 export function getTaskDetails(taskIdentifier) {
   return axios
     .get(`task/${taskIdentifier}`)
