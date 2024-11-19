@@ -14,7 +14,7 @@ import {
   GridRowEditStopReasons,
 } from '@mui/x-data-grid-premium';
 import * as ActionTypes from 'actions/action-types';
-import { Grid } from '@mui/material';
+import { Grid, Link } from '@mui/material';
 import Tooltip from 'components/common/Tooltip/Tooltip';
 import { lookupEMRPatient } from 'api/patient-api';
 import ListSkeletonLoader from 'components/common/ListSkeletonLoader/ListSkeletonLoader';
@@ -33,7 +33,7 @@ import { PatientColumn } from 'helpers/patient-list-helpers';
 import { patientsListSelector } from 'selectors/patients-selectors';
 import moment from 'moment';
 import palette from 'styles/palette';
-import { formatPhoneNumber } from 'helpers/utility-functions';
+import { formatPhoneNumber, showToast } from 'helpers/utility-functions';
 import { dateFormatter } from 'helpers/date-formatter';
 import TaskItemBulkEdit from 'components/task/StandardTaskItem/TaskItemComponents/TaskItemBulkEdit';
 import PatientImportPopover from '../PatientImportPopover/PatientImportPopover';
@@ -63,6 +63,14 @@ import {
 } from '@/app/types/gender';
 import { getValueLabelHashFromOptions } from '@/app/helpers/select-option-helper';
 import { useUpdatePatientById } from '@/app/react-query/patients/useUpdatePatientById';
+import { closeModal, openModal } from '@/app/modal/actions';
+import DropDownEditCell from '../../common/DataGridEditCells/DropDownEditCell';
+import TextEditCell from '../../common/DataGridEditCells/TextEditCell';
+import BooleanEditCell from '../../common/DataGridEditCells/BooleanEditCell';
+import MultiDropdownEditCell from '../../common/DataGridEditCells/MultiDropDownEditCell';
+import NumberEditCell from '../../common/DataGridEditCells/NumberEditCell';
+import DateTimeEditCell from '../../common/DataGridEditCells/DateTimeEditCell';
+import CustomFieldLongTextEditor from '../../common/DataGridEditCells/CustomFieldLongTextEditor';
 
 const renderColumnHeader = (props) => {
   const { colDef } = props;
@@ -120,6 +128,7 @@ const PatientsList = ({
   const [dataGridSortModel, setDataGridSortModel] = useState();
   const [pinnedColumns, setPinnedColumns] = useState({
     left: ['isSelected', 'patient'],
+    right: ['actions']
   });
 
   const selectedPatientsCount = patients?.filter((p) => p.isSelected).length;
@@ -252,10 +261,10 @@ const PatientsList = ({
 
   const handleSaveClick = useCallback(
     (id) => () => {
-      setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
+      confirmSave(id);
     },
-    [rowModesModel],
-  );
+    [confirmSave],
+  );  
 
   const handleCancelClick = useCallback(
     (id) => () => {
@@ -280,24 +289,55 @@ const PatientsList = ({
   const processRowUpdate = useCallback(
     async (newRow, oldRow) => {
       try {
-        const params = pick(
-          [
-            'patientIdentifier',
-            'firstName',
-            'middleName',
-            'lastName',
-            'gender',
-            'genderIdentity',
-            'dob',
-            'mrn',
-            'phoneMobile',
-            'phoneHome',
-          ],
-          newRow,
-        );
-        params.dob = dateFormatter(params.dob, 'MM/DD/YYYY');
-        await updatePatientById.mutateAsync(params);
+        const customColumnIdentifiers = columnsDataSorted
+          .filter((column) => column.targetType === 'PATIENT' && column.isChecked)
+          .map((column) => column.identifier);
 
+        const updatedMetaData = [...(oldRow.patientMetaData || [])];
+
+        customColumnIdentifiers.forEach((identifier) => {
+          if (newRow[identifier] !== undefined) {
+            const index = updatedMetaData.findIndex(
+              (meta) => meta.customFieldIdentifier === identifier
+            );
+  
+            if (index !== -1) {
+              updatedMetaData[index].value = newRow[identifier];
+              if (typeof newRow[identifier] === 'object') {
+                updatedMetaData[index].values = updatedMetaData[index].value.values;
+                delete updatedMetaData[index].value;
+              }
+            } else {
+              if (typeof newRow[identifier] === 'object' && newRow[identifier] !== null && 'values' in newRow[identifier]) {
+                updatedMetaData.push({
+                  customFieldIdentifier: identifier,
+                  values: newRow[identifier].values,
+                });
+              } else {
+                updatedMetaData.push({
+                  customFieldIdentifier: identifier,
+                  value: newRow[identifier],
+                });
+              }
+            }
+          }
+        });
+
+        newRow.patientMetaData = updatedMetaData;
+
+        if (newRow.dob) {
+          newRow.dob = dateFormatter(newRow.dob, 'MM/dd/yyyy');
+        }
+        else {
+          newRow.dob = null;
+        }
+
+        await updatePatientById.mutateAsync(newRow);
+
+        showToast({
+          status: 'success',
+          title: 'User updated successfully',
+        });
         return newRow;
       } catch (error) {
         console.error('processRowUpdate error', error);
@@ -383,7 +423,7 @@ const PatientsList = ({
           <Text width="80">{row.mrn}</Text>
         </Tooltip>
       ),
-      editable: false,
+      editable: true,
     },
     {
       field: 'dob',
@@ -431,7 +471,7 @@ const PatientsList = ({
       renderHeader: renderColumnHeader,
       width: 100,
       valueFormatter: ({ value }) => genderBirthOptionHash[value],
-      editable: false,
+      editable: true,
       renderEditCell: (params) => (
         <GenderSelectCell options={GENDER_OPTIONS_BIRTH} {...params} />
       ),
@@ -442,7 +482,7 @@ const PatientsList = ({
       renderHeader: renderColumnHeader,
       width: 150,
       valueFormatter: ({ value }) => genderIdentityOptionsHash[value],
-      editable: false,
+      editable: true,
       renderEditCell: (params) => (
         <GenderSelectCell options={genderIdentityOptions} {...params} />
       ),
@@ -457,7 +497,7 @@ const PatientsList = ({
           <Text>{row.email}</Text>
         </Tooltip>
       ),
-      editable: false,
+      editable: true,
     },
     {
       field: 'phoneMobile',
@@ -469,7 +509,7 @@ const PatientsList = ({
         </Tooltip>
       ),
       width: 140,
-      editable: false,
+      editable: true,
       preProcessEditCellProps: preProcessPhoneEditCellProps,
       renderEditCell: (params) => <PhoneEditCell {...params} />,
     },
@@ -483,17 +523,80 @@ const PatientsList = ({
         </Tooltip>
       ),
       width: 140,
-      editable: false,
+      editable: true,
       preProcessEditCellProps: preProcessPhoneEditCellProps,
       renderEditCell: (params) => <PhoneEditCell {...params} />,
     },
   ];
 
+  function confirmSave(id) {
+    dispatch(
+      openModal('SavePatient', {
+        description: 'Are you sure you want to save these changes?',
+        confirm: () => {
+          setRowModesModel({
+            ...rowModesModel,
+            [id]: { mode: GridRowModes.View, ignoreModifications: false },
+          });
+          dispatch(closeModal());
+        },
+        onClose: () => {
+          dispatch(closeModal());
+        },
+      }),
+    );
+  }  
+
+  const getRenderEditCell = (fieldType, options = [], name) => {
+    switch (fieldType) {
+      case 'PICK_LIST':
+        return (params) => <DropDownEditCell {...params} options={options} name={name}/>;
+      case 'MULTI_SELECT':
+        return (params) => <MultiDropdownEditCell {...params} options={options} name={name} />;
+      case 'DATE':
+        return (params) => <DateTimeEditCell {...params} />;
+      case 'LONG_TEXT':
+          return (params) => <CustomFieldLongTextEditor {...params} name={name} />;
+      case 'TEXT':
+      case 'HYPERLINK':
+        return (params) => <TextEditCell {...params} name={name} />;
+      case 'BOOLEAN':
+        return (params) => <BooleanEditCell {...params} name={name} />;
+      case 'NUMBER':
+      return (params) => <NumberEditCell {...params} name={name} />;
+      default:
+        return null;
+    }
+  };   
+
+  const getColumnWidth = (fieldType) => {
+    switch (fieldType) {
+      case 'PICK_LIST':
+        return 150;
+      case 'MULTI_SELECT':
+        return 300;
+      case 'DATE':
+        return 150;
+      case 'TEXT':
+        return 150;
+      case 'LONG_TEXT':
+        return 150;
+      case 'HYPERLINK':
+        return 150;
+      case 'BOOLEAN':
+        return 120;
+      case 'NUMBER':
+        return 150;
+      default:
+        return 100; 
+    }
+  };
+  
   const actionsColumn = {
     field: 'actions',
     type: 'actions',
     headerName: 'Actions',
-    width: 80,
+    width: 100,
     cellClassName: 'actions',
     getActions: ({ id }) => {
       const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
@@ -540,20 +643,50 @@ const PatientsList = ({
           field: column.identifier,
           headerName: column.name,
           renderHeader: renderColumnHeader,
-          width: 140,
-          renderCell: ({ row }) => {
-            const cellValue = row[column.identifier];
-            const displayValue =
-              column.fieldType === 'DATE'
-                ? dateFormatter(cellValue)
-                : cellValue;
-
-            return (
-              <Tooltip placement="top" title={displayValue}>
-                <Text>{displayValue}</Text>
-              </Tooltip>
-            );
+          renderCell: (params) => {
+            const {row} = params;
+            if(column.fieldType === 'HYPERLINK') {
+              const link = row[column.identifier]
+              return (
+                <Tooltip placement="top" title={row[column.identifier]}>
+                  <Link
+                    href={link?.startsWith('http') ? link : `//${link}`}
+                    target="_blank"
+                    sx={{
+                      color: palette.blueOcean,
+                      fontFamily: 'Outfit',
+                      textDecoration: 'none',
+                      '&:hover': {
+                        color: palette.brightBlue,
+                      },
+                    }}
+                  >
+                    {link}
+                  </Link>
+                </Tooltip>
+              );
+            }
+            if(column.fieldType === 'DATE') {
+              return (<DateTimeEditCell {...params} readOnly />)
+            }
+            if (column.fieldType === 'MULTI_SELECT') {
+              const displayValue = typeof row[column.identifier] === 'object' && row[column.identifier] !== null
+                ? row[column.identifier].value
+                : row[column.identifier];  
+            
+              return (
+                <Tooltip placement="top" title={displayValue}>
+                  <Text>{displayValue}</Text>
+                </Tooltip>
+              );
+            }
+            return (<Tooltip placement="top" title={row[column.identifier]}>
+              <Text>{row[column.identifier]}</Text>
+            </Tooltip>)
           },
+          editable: true,
+          renderEditCell: getRenderEditCell(column.fieldType, column.options, column.name),
+          width: getColumnWidth(column.fieldType, column),
           sortComparator: (v1, v2, parameters1, parameters2) => {
             const { api } = parameters2;
             const sortModel = api.getSortModel();
@@ -590,7 +723,8 @@ const PatientsList = ({
             return compareValue1.localeCompare(compareValue2);
           },
         })),
-    ); // .concat([actionsColumn])
+    )
+    .concat([actionsColumn]);
 
   useEffect(() => {
     const defaultSortField = localStorage.getItem('PATIENT_LIST_SORT_COLUMN');
@@ -624,8 +758,8 @@ const PatientsList = ({
       ) : (
         <>
           {patients?.length > 0 && formattedPatients ? (
-            <Grid container xs={12} item justifyContent="center">
-              <Grid item xs={12} xl={11} md={12} lg={11}>
+            <Grid container xs={12} item justifyContent="center" >
+              <Grid item xs={12} xl={11} md={12} lg={11} >
                 <NonEmptyListTable listLength={patients?.length ?? 0}>
                   <StyledDataGrid
                     apiRef={apiRef}
