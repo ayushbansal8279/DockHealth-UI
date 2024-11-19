@@ -31,6 +31,7 @@ import {
   useVirtualTaskListScrollContext,
   withVirtualTaskListScrollContext,
 } from './VirtualTaskListScrollContext';
+import localStorageHelper from '@/app/helpers/local-storage-helper';
 
 export interface Props {
   groupedTasks: any[];
@@ -93,8 +94,8 @@ function VirtualTaskList({ groupedTasks, showClearSortFiltersModal }: Props) {
   const currentTaskList = useSelector(currentTaskListSelector);
 
   const isShowCompletedTasksEnabled =
-    currentTaskList?.displayOptions?.includes(
-      'SHOW_WORKFLOW_COMPLETED_TASKS',
+    localStorageHelper.getItem(
+      `workflowStatus${currentTaskList?.taskListIdentifier}`,
     ) ?? false;
 
   const elementRef = useRef(null);
