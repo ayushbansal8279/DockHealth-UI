@@ -98,13 +98,9 @@ const AISummaryModal = ({ closeModal, title, onsubmit, type, identifier }) => {
   //   handleGenerateResponse(true, promptTypeValue, customPrompt);
   // };
 
-  const handleGenerateResponse = async (
-    forceRefresh,
-    promptType,
-    customPrompt,
-  ) => {
+  const handleGenerateResponse = async (force, persona, customPrompt) => {
     setIsFetching(true);
-    const response = await onsubmit(promptType, customPrompt, forceRefresh);
+    const response = await onsubmit(force, persona, customPrompt);
     setIsFetching(false);
 
     const result = separateTimestamp(response);
@@ -117,7 +113,8 @@ const AISummaryModal = ({ closeModal, title, onsubmit, type, identifier }) => {
   };
 
   const handleReGenerateResponse = async () => {
-    handleGenerateResponse(true);
+    const persona = promptTypeValue === 'DEFAULT' ? '' : promptTypeValue;
+    handleGenerateResponse(true, persona);
   };
 
   const AISummaryLoader = () => {
