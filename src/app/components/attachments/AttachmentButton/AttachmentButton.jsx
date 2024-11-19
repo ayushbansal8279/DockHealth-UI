@@ -66,10 +66,14 @@ const AttachmentButton = ({ attachment, onClick, onRemoveClick , renameAttachmen
   const removeAttachmentHandler = useCallback(
     (attachmentIdentifier) => {
       if (onRemoveClick) {
-        onRemoveClick(attachmentIdentifier);
+        dispatch(openModal('DeleteConfirmation',{
+          title: 'Delete Attachment',
+          description: 'Are you sure you want to delete this attachment? This action cannot be undone.',
+          confirm: () => { onRemoveClick(attachmentIdentifier); }
+        }))
       }
     },
-    [onRemoveClick]
+    [dispatch, onRemoveClick]
   );
 
   const getFileOptions = useCallback(
