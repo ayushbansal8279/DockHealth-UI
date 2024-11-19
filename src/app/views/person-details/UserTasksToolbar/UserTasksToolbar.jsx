@@ -12,7 +12,7 @@ import { currentTaskListSelector } from 'selectors/task-list-selectors';
 import { checkIfUserIsOrganizationAdmin } from 'helpers/user-helper';
 import TaskCustomFieldsModal from 'modal/customModals/TaskCustomFieldsModal';
 import CustomizeToolbarButton from '@/app/components/tasklist/list-toolbar-buttons/CustomizeToolbarButton/CustomizeToolbarButton';
-import TaskStatusToolbarSelect from '@/app/components/tasklist/list-toolbar-buttons/TaskStatusToolbarSelect';
+import TaskStatusToolbarSelect from '@/app/components/tasklist/list-toolbar-buttons/TaskStatusToolbarSelect/TaskStatusToolbarSelect';
 import { ToolbarContainer } from './styled';
 import UserDetailsFilters from '../UserDetailsFilters/UserDetailsFilters';
 import { onSearchChanged } from '@/app/helpers/ga-event-helper';

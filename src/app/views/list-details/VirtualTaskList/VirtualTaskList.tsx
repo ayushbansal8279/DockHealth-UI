@@ -18,7 +18,10 @@ import VQuickAddTask from 'views/list-details/VirtualTaskList/VirtualSegment/VQu
 import VTaskHeader from 'views/list-details/VirtualTaskList/VirtualSegment/VTaskHeader/VTaskHeader';
 // import { DropResult } from 'react-beautiful-dnd';
 // import { reorderTasksInGroup } from 'actions/list-details-actions';
-import { currentTaskListTasksStatusSelector } from 'selectors/task-list-selectors';
+import {
+  currentTaskListSelector,
+  currentTaskListTasksStatusSelector,
+} from 'selectors/task-list-selectors';
 // import {
 //   isShowCompletedTasks,
 //   isShowIncompleteTasks,
@@ -28,6 +31,7 @@ import {
   useVirtualTaskListScrollContext,
   withVirtualTaskListScrollContext,
 } from './VirtualTaskListScrollContext';
+import localStorageHelper from '@/app/helpers/local-storage-helper';
 
 export interface Props {
   groupedTasks: any[];
@@ -86,6 +90,13 @@ function VirtualTaskList({ groupedTasks, showClearSortFiltersModal }: Props) {
   const currentTaskListTasksStatus = useSelector(
     currentTaskListTasksStatusSelector,
   );
+
+  const currentTaskList = useSelector(currentTaskListSelector);
+
+  const isShowCompletedTasksEnabled =
+    localStorageHelper.getItem(
+      `workflowStatus${currentTaskList?.taskListIdentifier}`,
+    ) ?? false;
 
   const elementRef = useRef(null);
   const { updateVisibleWidth } = useVirtualTaskListScrollContext();
@@ -189,6 +200,7 @@ function VirtualTaskList({ groupedTasks, showClearSortFiltersModal }: Props) {
                   .filter(
                     (child: any) =>
                       task.itemType === 'TASK' ||
+                      isShowCompletedTasksEnabled ||
                       currentTaskListTasksStatus === TaskStatus.ALL ||
                       tasksMap[child]?.status === currentTaskListTasksStatus ||
                       (currentTaskListTasksStatus === TaskStatus.INCOMPLETE &&
@@ -355,6 +367,9 @@ function VirtualTaskList({ groupedTasks, showClearSortFiltersModal }: Props) {
           nodes={nodes}
           tasksMap={tasksMap}
           showClearSortFiltersModal={showClearSortFiltersModal}
+          showCompletedWorkflowIdentifiers={showCompletedWorkflowIdentifiers}
+          showIncompleteWorkflowIdentifiers={showIncompleteWorkflowIdentifiers}
+          currentTaskListTasksStatus={currentTaskListTasksStatus}
         />
       </CollapseContext.Provider>
     </div>

@@ -1,7 +1,10 @@
 import { Box } from '@mui/material';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { useSelector } from 'react-redux';
 import FilterListIcon from '@mui/icons-material/FilterList';
-import { selectFilterOption } from 'helpers/filter-options-helpers';
+import { userProfileSelector } from 'selectors/user-selectors';
+import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
+import { capitalizeWords } from 'helpers/capitalize';
 import {
   BottomWrapper,
   FilterButtonWrapper,
@@ -25,18 +28,15 @@ import FilterOptionsPopover from './FilterOptionsPopover';
 
 const NewFilterContainer = ({
   filters,
-  onSelectedFiltersChange,
   finalFilter,
   setFinalFilter,
   openPopover,
   setSavePopupOpen,
-  handleSaveQuickFilter,
   filteredData,
   setFilteredData,
   isQuickFilterEdit,
   setSelectedQuickFilter,
   handleSelectedFiltersChange,
-  isPatientListPage,
   editModeEnabled = true,
 }) => {
   const popoverReference = useRef(null);
@@ -44,10 +44,19 @@ const NewFilterContainer = ({
     useBoolean(false);
   const [isDisable, setDisable] = useState(false);
 
+  const currentUser = useSelector(userProfileSelector);
+  const customerTypeLabel = getCustomerTypeLabel(currentUser);
+  const customerTypeLabelMixedCase = capitalizeWords(customerTypeLabel);
+  const sanitizedFilters = filters?.map((item) => {
+    return item?.id.toLowerCase() === 'patients'
+      ? { ...item, label: customerTypeLabelMixedCase }
+      : item;
+  });
+
   useEffect(() => {
     const data = {};
     for (const key in finalFilter) {
-      if (finalFilter[key].length > 0) {
+      if (finalFilter[key]?.length > 0) {
         setDisable(true);
         const options = [];
         let dateStart = '';
@@ -91,12 +100,8 @@ const NewFilterContainer = ({
   };
 
   const handleApplyFinalFilter = () => {
-    onSelectedFiltersChange(selectFilterOption('', '', filteredData));
-    openPopover(false);
-  };
-
-  const handleApplyFinalFilterPatient = () => {
     handleSelectedFiltersChange();
+    openPopover(false);
   };
 
   const handleClose = useCallback(() => {
@@ -113,11 +118,11 @@ const NewFilterContainer = ({
       {Object.keys(finalFilter).map((filter) => (
         <FilterSelect
           key={filter}
-          filters={filters}
+          filters={sanitizedFilters}
           setFinalFilter={setFinalFilter}
           filter={filter}
           finalFilter={finalFilter}
-          filterOptions={filters
+          filterOptions={sanitizedFilters
             ?.flatMap((item) => item?.id === filter && item?.options)
             ?.filter((item) => typeof item !== 'boolean')}
           setFilteredData={setFilteredData}
@@ -159,7 +164,7 @@ const NewFilterContainer = ({
             anchorEl={popoverReference.current}
             open={isPopoverOpen}
             onClose={handleClose}
-            filterOptionsList={filters}
+            filterOptionsList={sanitizedFilters}
             onFilterSelect={handleClick}
           />
           {Object.keys(finalFilter).length > 0 && (
@@ -181,11 +186,7 @@ const NewFilterContainer = ({
             <ConfirmButton
               disabled={!isDisable}
               style={{ width: '270px' }}
-              onClick={
-                isPatientListPage
-                  ? handleApplyFinalFilterPatient
-                  : handleApplyFinalFilter
-              }
+              onClick={handleApplyFinalFilter}
             >
               Apply Filter
             </ConfirmButton>

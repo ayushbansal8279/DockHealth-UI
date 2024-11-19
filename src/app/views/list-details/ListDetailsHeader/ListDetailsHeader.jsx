@@ -165,20 +165,6 @@ const ListDetailsHeader = (props) => {
     [dispatch],
   );
 
-  const handleSaveQuickFilter = useCallback(
-    (quickFilterIdentifier, selectedFilters) =>
-      dispatch(
-        updateQuickFilter(
-          quickFilterIdentifier,
-          {
-            selectedOptions: selectedFilters,
-          },
-          { taskListIdentifier },
-        ),
-      ),
-    [dispatch, taskListIdentifier],
-  );
-
   const handleSelectQuickFilter = useCallback(
     (id, filtersSetup) => {
       dispatch(selectQuickFilter(id));
@@ -188,20 +174,21 @@ const ListDetailsHeader = (props) => {
   );
 
   const handleQuickFilterCreate = useCallback(
-    (name, selectedFilters) =>
+    (name, selectedFilters, scope) =>
       dispatch(
-        createQuickFilter(name, { taskListIdentifier }, selectedFilters),
+        createQuickFilter(name, { taskListIdentifier }, selectedFilters, scope),
       ),
     [dispatch, taskListIdentifier],
   );
 
   const handleQuickFilterUpdate = useCallback(
-    (quickFilterIdentifier, name) =>
+    (quickFilterIdentifier, name, selectedFilterOptions, scope) =>
       dispatch(
         updateQuickFilter(
           quickFilterIdentifier,
-          { name },
+          { name, selectedOptions: selectedFilterOptions },
           { taskListIdentifier },
+          scope,
         ),
       ),
     [dispatch, taskListIdentifier],
@@ -327,7 +314,6 @@ const ListDetailsHeader = (props) => {
           addQuickFilterOption={addQuickFilterOption}
           selectedQuickFilter={selectedQuickFilter}
           selectQuickFilter={handleSelectQuickFilter}
-          handleSaveQuickFilter={handleSaveQuickFilter}
           onSaveAsNewClick={handleSaveAsQuickFilter}
           wasChangedFilters={wasChangedFilters}
           onQuickFilterCreate={handleQuickFilterCreate}

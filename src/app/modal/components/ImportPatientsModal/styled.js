@@ -28,12 +28,13 @@ export const ContentMessage = styled.p`
 `;
 
 export const Title = styled.h5`
-  font-family: inherit;
-  font-size: ${fontSizes.regular};
-  color: ${palette.brightBlue};
-  text-transform: uppercase;
+  color: ${palette.offBlack};
   text-align: center;
-  margin-bottom: 25px;
+  font-family: Outfit;
+  font-size: 22px;
+  font-style: normal;
+  font-weight: ${fontWeights.regularPlus};
+  text-align: center;
 `;
 
 export const AlreadyHaveTemplate = styled.a`

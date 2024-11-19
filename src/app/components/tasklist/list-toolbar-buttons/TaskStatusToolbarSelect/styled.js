@@ -90,3 +90,7 @@ export const BoxContainer = styled.div`
   height: 32px;
   padding-right: 30px;
 `;
+
+export const WorkflowLabel = styled.div`
+  font-weight: bold;
+`;

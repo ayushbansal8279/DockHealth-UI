@@ -117,20 +117,6 @@ const PatientsFilter = ({
     [dispatch],
   );
 
-  const handleSaveQuickFilter = useCallback(
-    (quickFilterIdentifier, selectedFilters) =>
-      dispatch(
-        updateQuickFilter(
-          quickFilterIdentifier,
-          {
-            selectedOptions: selectedFilters,
-          },
-          { organizationIdentifier, contextType: quickContextTypes.PATIENTS },
-        ),
-      ),
-    [dispatch, organizationIdentifier, selectedFilters, selectedQuickFilter],
-  );
-
   const handleSelectQuickFilter = useCallback(
     (id, filtersSetup) => {
       // dispatch(selectQuickFilter(id));
@@ -142,12 +128,13 @@ const PatientsFilter = ({
   );
 
   const handleQuickFilterCreate = useCallback(
-    (name, filteredData) =>
+    (name, filteredData, scope) =>
       dispatch(
         createQuickFilter(
           name,
           { organizationIdentifier, contextType: quickContextTypes.PATIENTS },
           filteredData,
+          scope,
         ),
       ),
     [dispatch, organizationIdentifier, selectedFilters],
@@ -166,9 +153,16 @@ const PatientsFilter = ({
   );
 
   const handleQuickFilterUpdate = useCallback(
-    (quickFilterIdentifier, name) =>
-      dispatch(updateQuickFilter(quickFilterIdentifier, { name })),
-    [dispatch],
+    (quickFilterIdentifier, name, selectedFilterOptions, scope) =>
+      dispatch(
+        updateQuickFilter(
+          quickFilterIdentifier,
+          { name, selectedOptions: selectedFilterOptions },
+          { organizationIdentifier, contextType: quickContextTypes.PATIENTS },
+          scope,
+        ),
+      ),
+    [dispatch, organizationIdentifier],
   );
 
   const handleQuickFilterDelete = useCallback(
@@ -202,14 +196,13 @@ const PatientsFilter = ({
         editIdentifier={editIdentifier}
         filters={filterOptions}
         setFinalFilter={setFinalFilter}
-        handleSaveQuickFilter={handleSaveQuickFilter}
         filteredData={filteredData}
         customFinalFilter={customFinalFilter}
         selectedCustomFilter={selectedCustomFilter}
         setCustomFinalFilter={setCustomFinalFilter}
         customFilteredData={customFilteredData}
         setCustomFilteredData={setCustomFilteredData}
-        isPatientListPage
+        handleSelectedFiltersChange={handleSelectedFiltersChange}
       />
       <CustomFilters
         quickFiltersList={quickFiltersList}
@@ -231,7 +224,6 @@ const PatientsFilter = ({
           handleQuickFilterDuplicateForPatientList
         }
         clearFilters={handleClear}
-        isPatientListPage
       />
       <NewFilterContainer
         filters={filterOptions}
@@ -243,7 +235,6 @@ const PatientsFilter = ({
         customFinalFilter={customFinalFilter}
         setCustomFinalFilter={setCustomFinalFilter}
         handleSelectedFiltersChange={handleSelectedFiltersChange}
-        isPatientListPage
         editModeEnabled={isAdmin}
       />
     </>

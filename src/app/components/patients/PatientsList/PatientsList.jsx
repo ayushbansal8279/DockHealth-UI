@@ -280,6 +280,12 @@ const PatientsList = ({
     setRowModesModel(newRowModesModel);
   }, []);
 
+  function calculateAge(dob) {
+    const diffMs = Date.now() - dob.getTime();
+    const ageDate = new Date(diffMs);
+    return Math.abs(ageDate.getUTCFullYear() - 1970);
+  }
+
   const processRowUpdate = useCallback(
     async (newRow, oldRow) => {
       try {
@@ -424,12 +430,21 @@ const PatientsList = ({
       headerName: 'DOB',
       renderHeader: renderColumnHeader,
       width: 150,
-      valueGetter: ({ value }) => dateFormatter(value, 'M/d/yyyy'),
+      valueGetter: ({ value }) => dateFormatter(value, 'MMM DD, YYYY'),
       valueSetter: ({ value, row }) => ({
         ...row,
         dob: dateFormatter(value, 'yyyy-MM-dd'),
       }),
-      editable: true,
+      sortComparator: (v1, v2) => {
+        const date1 = new Date(v1);
+        const date2 = new Date(v2);
+    
+        if (!date1 || isNaN(date1)) return 1;
+        if (!date2 || isNaN(date2)) return -1;
+    
+        return date1 - date2;
+      },
+      editable: false,
       renderEditCell: (params) => <DateEditCell {...params} />,
     },
     {
@@ -437,39 +452,17 @@ const PatientsList = ({
       headerName: 'AGE',
       renderHeader: renderColumnHeader,
       width: 70,
-      sortComparator: (v1, v2, parameters1, parameters2) => {
-        const { api } = parameters2;
-        const sortModel = api.getSortModel();
+      sortComparator: (_v1, _v2, parameters1, parameters2) => {
         const dob1 = parameters1.api.getCellValue(parameters1.id, 'dob');
         const dob2 = parameters2.api.getCellValue(parameters2.id, 'dob');
 
-        if (dob1 === dob2) {
-          return 0;
-        }
+        if (!dob1) return 1;
+        if (!dob2) return -1;
 
-        if (sortModel[0]?.sort === 'asc' && sortModel[0]?.field === 'age') {
-          // !IMPORTANT it is descending - MaterialUI has problem with passing correctly current order
-          if (dob1 === null || dob1 === '') {
-            return -1;
-          }
+        const age1 = calculateAge(new Date(dob1));
+        const age2 = calculateAge(new Date(dob2));
 
-          if (dob2 === null || dob2 === '') {
-            return 1;
-          }
-
-          return dob2 < dob1 ? -1 : 1;
-        }
-
-        // !IMPORTANT it is ascending - MaterialUI has problem with passing correctly current order
-        if (dob1 === null || dob1 === '') {
-          return 1;
-        }
-
-        if (dob2 === null || dob2 === '') {
-          return -1;
-        }
-
-        return dob1 < dob2 ? 1 : -1;
+        return age1 - age2;
       },
     },
     {
@@ -700,6 +693,9 @@ const PatientsList = ({
             const compareValue1 = v1 || '';
             const compareValue2 = v2 || '';
             // eslint-disable-next-line sonarjs/no-collapsible-if
+            if (column.fieldType === 'NUMBER') {
+              return Number(compareValue1) - Number(compareValue2);
+            }
             if (
               column.fieldType === 'DATE' &&
               compareValue1 !== '' &&
@@ -794,6 +790,7 @@ const PatientsList = ({
                     }
                     pinnedColumns={pinnedColumns}
                     onPinnedColumnsChange={handlePinnedColumnsChange}
+                    disableColumnReorder
                   />
                 </NonEmptyListTable>
               </Grid>

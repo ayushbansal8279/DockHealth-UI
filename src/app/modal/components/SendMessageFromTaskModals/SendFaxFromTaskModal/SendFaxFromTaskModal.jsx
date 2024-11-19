@@ -2,7 +2,6 @@ import CustomTextEditor from 'components/common/CustomTextEditor/CustomTextEdito
 import React, { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { sendFaxForTask } from 'actions/task-actions';
-import Button from 'components/common/Button/Button';
 import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
 import Checkbox from 'components/common/Checkbox/Checkbox';
 import { getTemplateDetails } from 'api/template-api';

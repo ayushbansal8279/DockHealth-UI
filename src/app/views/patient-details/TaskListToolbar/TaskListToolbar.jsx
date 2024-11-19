@@ -31,7 +31,7 @@ import equals from 'ramda/src/equals';
 import debounce from 'lodash.debounce';
 import ToolbarButton from '@/app/components/tasklist/list-toolbar-buttons/ToolbarButton/ToolbarButton';
 import CustomizeToolbarButton from '@/app/components/tasklist/list-toolbar-buttons/CustomizeToolbarButton/CustomizeToolbarButton';
-import TaskStatusToolbarSelect from '@/app/components/tasklist/list-toolbar-buttons/TaskStatusToolbarSelect';
+import TaskStatusToolbarSelect from '@/app/components/tasklist/list-toolbar-buttons/TaskStatusToolbarSelect/TaskStatusToolbarSelect';
 import {
   ListsToolbarContainer,
   ListsTabsContainer,
@@ -177,20 +177,6 @@ const TaskListToolbar = (props) => {
     [dispatch],
   );
 
-  const handleSaveQuickFilter = useCallback(
-    (quickFilterIdentifier, selectedFilters) =>
-      dispatch(
-        updateQuickFilter(
-          quickFilterIdentifier,
-          {
-            selectedOptions: selectedFilters,
-          },
-          { patientIdentifier },
-        ),
-      ),
-    [dispatch, patientIdentifier],
-  );
-
   const handleSaveAsQuickFilter = useCallback(
     () => dispatch(showAddQuickFilterOption()),
     [dispatch],
@@ -208,18 +194,19 @@ const TaskListToolbar = (props) => {
   );
 
   const handleQuickFilterCreate = useCallback(
-    (name) =>
-      dispatch(createQuickFilter(name, { patientIdentifier }, selectedFilters)),
+    (name, scope) =>
+      dispatch(createQuickFilter(name, { patientIdentifier }, selectedFilters, scope)),
     [dispatch, patientIdentifier, selectedFilters],
   );
 
   const handleQuickFilterUpdate = useCallback(
-    (quickFilterIdentifier, name) =>
+    (quickFilterIdentifier, name, selectedFilterOptions, scope) =>
       dispatch(
         updateQuickFilter(
           quickFilterIdentifier,
-          { name },
+          { name, selectedOptions: selectedFilterOptions },
           { patientIdentifier },
+          scope,
         ),
       ),
     [dispatch, patientIdentifier],
@@ -297,7 +284,7 @@ const TaskListToolbar = (props) => {
 
   useEffect(() => {
     dispatch(getPatientFilterOptions(patientIdentifier));
-    dispatch(getQuickFilters({ patientIdentifier }));
+    dispatch(getQuickFilters({ contextType: 'PATIENTS' }));
   }, [patientIdentifier]);
 
   return (
@@ -367,14 +354,13 @@ const TaskListToolbar = (props) => {
             onSelectFilters={handleFilterSelect}
             isFetching={isFetchingLists}
             onOpen={() => {
-              dispatch(getQuickFilters({ patientIdentifier }));
               dispatch(getPatientFilterOptions(patientIdentifier));
+              dispatch(getQuickFilters({ contextType: 'PATIENTS' }));
             }}
             quickFiltersList={quickFiltersList}
             addQuickFilterOption={addQuickFilterOption}
             selectedQuickFilter={selectedQuickFilter}
             selectQuickFilter={handleSelectQuickFilter}
-            handleSaveQuickFilter={handleSaveQuickFilter}
             onSaveAsNewClick={handleSaveAsQuickFilter}
             wasChangedFilters={wasChangedFilters}
             onQuickFilterCreate={handleQuickFilterCreate}

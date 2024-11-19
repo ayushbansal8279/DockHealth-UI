@@ -1,12 +1,9 @@
-export const customPromptBuilder = (prompt, refresh) => {
-  const customPrompt = prompt || '';
-  const forceRefresh = refresh || false;
-
+export const aiSummaryRequestBuilder = (force, persona, customPrompt = '') => {
   return {
-    customPrompt: customPrompt,
-    persona: '',
+    customPrompt,
+    force,
+    persona,
     tone: '',
-    force: forceRefresh,
   };
 };
 

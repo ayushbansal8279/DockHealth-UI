@@ -173,6 +173,18 @@ const BulkEditOptionsBar = ({
     [parentTasks, subtasks],
   );
 
+  const allSelectedTasksPatientIdentifiers = useMemo(
+    () => 
+      {
+        return [
+      ...parentTasks
+        ?.filter((t) => t?.itemType === 'TASK')
+        ?.map(({ patient }) => patient?.patientIdentifier),
+      ...subtasks?.map(({ patient }) => patient?.patientIdentifier),
+    ]},
+    [parentTasks, subtasks],
+  );
+
   const allSelectedWorkflowIdentifiers = useMemo(
     () => [
       ...parentTasks
@@ -813,6 +825,7 @@ const BulkEditOptionsBar = ({
       openModal('TaskListCustomFieldsBulkEdit', {
         taskIdentifiers: allSelectedTasksIdentifiers,
         taskWorkflowIdentifiers: allSelectedWorkflowIdentifiers,
+        patientIdentifiers: allSelectedTasksPatientIdentifiers,
         customFields: allTaskCustomFields,
         onSave: () => {
           dispatch(closeModal());
