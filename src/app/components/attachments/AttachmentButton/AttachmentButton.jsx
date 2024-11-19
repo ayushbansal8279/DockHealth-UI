@@ -10,36 +10,13 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { renameTaskAttachment } from '@/app/actions/task-actions';
 import { openModal } from '@/app/modal/actions';
 import { useDispatch } from 'react-redux';
-import * as WorkflowActions from 'actions/workflow-actions';
+import { updateWorkflowAttachment } from '@/app/actions/workflow-actions';
 
 const AttachmentButton = ({ attachment, onClick, onRemoveClick , renameAttachmentDispatch }) => {
   const { attachmentIdentifier, fileName, contentType } = attachment;
   const IconComponent = getIconFromContentType({ contentType });
   const dispatch = useDispatch();
   const [renderedName, setRenderedName] = useState(fileName);
-
-  const renameTaskWorkflowAttachment = useCallback(
-    (file) => {
-      dispatch(
-        openModal('PatientFolder', {
-          title: 'Rename File',
-          inputLabel: 'File Name',
-          currentName: file.fileName,
-          onChange: (newFileName) => {
-            setRenderedName(newFileName);
-            dispatch(
-              WorkflowActions.updateWorkflowAttachment(
-                file?.taskWorkflowIdentifier,
-                file?.attachmentIdentifier,
-                newFileName
-              )
-            )
-          },
-        })
-      );
-    },
-    [dispatch]
-  );
 
   const renameAttachment = useCallback(
     (file) => {
@@ -50,18 +27,30 @@ const AttachmentButton = ({ attachment, onClick, onRemoveClick , renameAttachmen
           currentName: file.fileName,
           onChange: (newFileName) => {
             setRenderedName(newFileName);
-            renameAttachmentDispatch({
-              type: 'RENAME_ATTACHMENT',
-              attachmentIdentifier: file?.attachmentIdentifier,
-              newFileName: newFileName,
-            });
-            dispatch(
-              renameTaskAttachment(
-                file?.taskIdentifier,
-                file?.attachmentIdentifier,
-                newFileName
+            if(file.taskIdentifier)
+            {
+              renameAttachmentDispatch({
+                type: 'RENAME_ATTACHMENT',
+                attachmentIdentifier: file?.attachmentIdentifier,
+                newFileName: newFileName,
+              });
+              dispatch(
+                renameTaskAttachment(
+                  file?.taskIdentifier,
+                  file?.attachmentIdentifier,
+                  newFileName
+                )
               )
-            )
+            } else if(file.taskWorkflowIdentifier)
+            {
+              dispatch(
+                updateWorkflowAttachment(
+                  file?.taskWorkflowIdentifier,
+                  file?.attachmentIdentifier,
+                  newFileName
+                )
+              )
+            }            
           },
         })
       );
@@ -90,13 +79,7 @@ const AttachmentButton = ({ attachment, onClick, onRemoveClick , renameAttachmen
         : []
       ),
       { name: 'Rename', 
-        onClick: () => {
-          if(attachment.taskIdentifier){
-            renameAttachment(attachment)
-          }else if(attachment.taskWorkflowIdentifier){
-            renameTaskWorkflowAttachment(attachment)
-          }
-        }
+        onClick: () => {renameAttachment(attachment)}
       },
       {
         name: 'Delete',
