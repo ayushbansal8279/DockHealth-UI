@@ -15,15 +15,11 @@ const AISummaryModalOpenerHelper = ({ type, title, identifier }) => {
   const [isAiIconHovered, setAiIconHovered] = useState(false);
   const dispatch = useDispatch();
 
-  const generateAISummary = async (
-    promptTypeValue,
-    customPrompTest,
-    forceRefresh,
-  ) => {
+  const generateAISummary = async (force, persona, customPrompt) => {
     const requestPayload = aiSummaryRequestBuilder(
-      promptTypeValue,
-      customPrompTest,
-      forceRefresh,
+      force,
+      persona,
+      customPrompt,
     );
 
     if (type === SummaryType.PATIENT)

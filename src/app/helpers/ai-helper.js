@@ -1,15 +1,9 @@
-export const aiSummaryRequestBuilder = (
-  promptTypeValue,
-  customPrompTest,
-  forceRefresh = false,
-) => {
-  const customPrompt = customPrompTest || '';
-
+export const aiSummaryRequestBuilder = (force, persona, customPrompt = '') => {
   return {
     customPrompt,
-    persona: promptTypeValue,
+    force,
+    persona,
     tone: '',
-    force: forceRefresh,
   };
 };
 
