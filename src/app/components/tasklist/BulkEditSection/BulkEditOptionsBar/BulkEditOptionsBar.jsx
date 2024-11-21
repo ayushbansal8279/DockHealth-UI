@@ -403,7 +403,7 @@ const BulkEditOptionsBar = ({
       };
 
       const selectedUserIdentifiers = selectedUsers?.map(
-        ({ userIdentifier }) => userIdentifier,
+        ({ userIdentifier, identifier }) => userIdentifier ?? identifier
       );
 
       switch (assignOption) {
