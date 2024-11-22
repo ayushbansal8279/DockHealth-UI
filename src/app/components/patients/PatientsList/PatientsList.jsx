@@ -34,7 +34,6 @@ import { patientsListSelector } from 'selectors/patients-selectors';
 import moment from 'moment';
 import palette from 'styles/palette';
 import { formatPhoneNumber, showToast } from 'helpers/utility-functions';
-import { dateFormatter } from 'helpers/date-formatter';
 import TaskItemBulkEdit from 'components/task/StandardTaskItem/TaskItemComponents/TaskItemBulkEdit';
 import PatientImportPopover from '../PatientImportPopover/PatientImportPopover';
 import EmptyFilteredPatientsList from '../EmptyFilteredPatientsList/EmptyFilteredPatientsList';
@@ -71,7 +70,6 @@ import MultiDropdownEditCell from '../../common/DataGridEditCells/MultiDropDownE
 import NumberEditCell from '../../common/DataGridEditCells/NumberEditCell';
 import DateTimeEditCell from '../../common/DataGridEditCells/DateTimeEditCell';
 import CustomFieldLongTextEditor from '../../common/DataGridEditCells/CustomFieldLongTextEditor';
-import dayjs from 'dayjs';
 
 const renderColumnHeader = (props) => {
   const { colDef } = props;
@@ -327,7 +325,7 @@ const PatientsList = ({
         newRow.patientMetaData = updatedMetaData;
 
         if (newRow.dob) {
-          newRow.dob = dayjs(newRow.dob).format('MM/DD/YYYY')
+          newRow.dob = moment(newRow.dob).format('MM/DD/YYYY')
         }
         else {
           newRow.dob = null;
@@ -431,9 +429,9 @@ const PatientsList = ({
       headerName: 'DOB',
       renderHeader: renderColumnHeader,
       width: 150,
-      valueGetter: ({ value }) => value ? dayjs(value).format('MM/DD/YYYY') : '',
+      valueGetter: ({ value }) => value ? moment(value).format('MM/DD/YYYY') : '',
       valueSetter: ({ value, row }) => {
-        const formattedDate = value ? dayjs(value).format('MM/DD/YYYY') : null;
+        const formattedDate = value ? moment(value).format('MM/DD/YYYY') : null;
         return { ...row, dob: formattedDate };
       },
       sortComparator: (v1, v2) => {
