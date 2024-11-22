@@ -71,6 +71,7 @@ import MultiDropdownEditCell from '../../common/DataGridEditCells/MultiDropDownE
 import NumberEditCell from '../../common/DataGridEditCells/NumberEditCell';
 import DateTimeEditCell from '../../common/DataGridEditCells/DateTimeEditCell';
 import CustomFieldLongTextEditor from '../../common/DataGridEditCells/CustomFieldLongTextEditor';
+import dayjs from 'dayjs';
 
 const renderColumnHeader = (props) => {
   const { colDef } = props;
@@ -326,7 +327,7 @@ const PatientsList = ({
         newRow.patientMetaData = updatedMetaData;
 
         if (newRow.dob) {
-          newRow.dob = dateFormatter(newRow.dob, 'MM/dd/yyyy');
+          newRow.dob = dayjs(newRow.dob).format('MM/DD/YYYY')
         }
         else {
           newRow.dob = null;
@@ -430,11 +431,11 @@ const PatientsList = ({
       headerName: 'DOB',
       renderHeader: renderColumnHeader,
       width: 150,
-      valueGetter: ({ value }) => dateFormatter(value, 'MMM DD, YYYY'),
-      valueSetter: ({ value, row }) => ({
-        ...row,
-        dob: dateFormatter(value, 'yyyy-MM-dd'),
-      }),
+      valueGetter: ({ value }) => value ? dayjs(value).format('MM/DD/YYYY') : '',
+      valueSetter: ({ value, row }) => {
+        const formattedDate = value ? dayjs(value).format('MM/DD/YYYY') : null;
+        return { ...row, dob: formattedDate };
+      },
       sortComparator: (v1, v2) => {
         const date1 = new Date(v1);
         const date2 = new Date(v2);
@@ -444,7 +445,7 @@ const PatientsList = ({
     
         return date1 - date2;
       },
-      editable: false,
+      editable: true,
       renderEditCell: (params) => <DateEditCell {...params} />,
     },
     {
