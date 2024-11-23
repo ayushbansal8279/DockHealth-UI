@@ -34,7 +34,6 @@ import { patientsListSelector } from 'selectors/patients-selectors';
 import moment from 'moment';
 import palette from 'styles/palette';
 import { formatPhoneNumber, showToast } from 'helpers/utility-functions';
-import { dateFormatter } from 'helpers/date-formatter';
 import TaskItemBulkEdit from 'components/task/StandardTaskItem/TaskItemComponents/TaskItemBulkEdit';
 import PatientImportPopover from '../PatientImportPopover/PatientImportPopover';
 import EmptyFilteredPatientsList from '../EmptyFilteredPatientsList/EmptyFilteredPatientsList';
@@ -326,7 +325,7 @@ const PatientsList = ({
         newRow.patientMetaData = updatedMetaData;
 
         if (newRow.dob) {
-          newRow.dob = dateFormatter(newRow.dob, 'MM/dd/yyyy');
+          newRow.dob = moment(newRow.dob).format('MM/DD/YYYY')
         }
         else {
           newRow.dob = null;
@@ -430,11 +429,11 @@ const PatientsList = ({
       headerName: 'DOB',
       renderHeader: renderColumnHeader,
       width: 150,
-      valueGetter: ({ value }) => dateFormatter(value, 'MMM DD, YYYY'),
-      valueSetter: ({ value, row }) => ({
-        ...row,
-        dob: dateFormatter(value, 'yyyy-MM-dd'),
-      }),
+      valueGetter: ({ value }) => value ? moment(value).format('MM/DD/YYYY') : '',
+      valueSetter: ({ value, row }) => {
+        const formattedDate = value ? moment(value).format('MM/DD/YYYY') : null;
+        return { ...row, dob: formattedDate };
+      },
       sortComparator: (v1, v2) => {
         const date1 = new Date(v1);
         const date2 = new Date(v2);
@@ -444,7 +443,7 @@ const PatientsList = ({
     
         return date1 - date2;
       },
-      editable: false,
+      editable: true,
       renderEditCell: (params) => <DateEditCell {...params} />,
     },
     {
