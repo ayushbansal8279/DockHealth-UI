@@ -6,8 +6,6 @@ export function separateTimestamp(inputString) {
 
   if (match) {
     const timestamp = match[0];
-    console.log(timestamp);
-    
     let remainingString = inputString.slice(timestamp.length + 1).trim();
 
     remainingString = remainingString.replace(/^"|"$/g, '');
@@ -47,3 +45,20 @@ export function calculateResponseTimeAgo(timestamp) {
 
   return 'just now';
 }
+
+export const patientPromptOptions = [
+  { key: 'Default', value: '' },
+  { key: 'Patient Journey', value: 'JOURNEY' },
+  { key: 'Email Summary', value: 'EMAIL' },
+  { key: 'Clinical Note', value: 'CLINICAL_NOTE' },
+  { key: 'One Liner', value: 'ONE_LINER' },
+  { key: 'Next Steps', value: 'NEXT_STEPS' },
+];
+
+export const taskPromptOptions = [
+  { key: 'Default', value: '' },
+  { key: 'Email Summary', value: 'EMAIL' },
+  { key: 'Clinical Note', value: 'CLINICAL_NOTE' },
+  { key: 'One Liner', value: 'ONE_LINER' },
+  { key: 'Next Steps', value: 'NEXT_STEPS' },
+];

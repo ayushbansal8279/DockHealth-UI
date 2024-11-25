@@ -24,6 +24,7 @@ const onSubmit =
       organizationIdentifier,
       '/#/onboarding/customer-preference',
     );
+    sessionStorage.removeItem('NEW_ORG_SETUP');
   };
 
 const OnboardingOrgSetupView = () => {

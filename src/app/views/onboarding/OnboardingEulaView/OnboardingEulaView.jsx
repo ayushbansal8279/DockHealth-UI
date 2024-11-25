@@ -28,20 +28,27 @@ const OnboardingEulaView = () => {
 
   const authUser = JSON.parse(sessionStorage.getItem('authUser'));
   let organizationName = '';
-  if (authUser.attributes) {
+  if (userProfile?.organizationName) {
+    organizationName = userProfile?.organizationName;
+  } else if (authUser.attributes) {
     organizationName = authUser.attributes['custom:organization_name'];
   }
+  const isNewOrgSetup = sessionStorage.getItem('NEW_ORG_SETUP') || false;
 
   const onAgreeClick = useCallback(() => {
     acknowledgeEula().then(() => {
       localStorage.setItem('STORAGE_NEW_USER_FIRST_TIME', true);
-      if (organizationName !== '' && organizationName !== undefined) {
+      if (
+        !isNewOrgSetup &&
+        organizationName !== '' &&
+        organizationName !== undefined
+      ) {
         history.push('/onboarding-tutorial/create-list');
       } else {
         history.push('/onboarding/organization-setup');
       }
     });
-  }, [history]);
+  }, [history, isNewOrgSetup, organizationName]);
 
   const isSmallScreen = useSmallScreen();
 

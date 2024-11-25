@@ -44,7 +44,6 @@ const onSubmit =
     setList,
     taskListIdentifier,
     history,
-    isSharedList,
   }) =>
   (data) => {
     event.stopPropagation();
@@ -64,11 +63,7 @@ const onSubmit =
               onListCreationSuccess(updatedList.taskListIdentifier);
             }
             onTaskListAdded();
-            if (nextStep && isSharedList) {
-              nextStep();
-            } else {
-              closeModal();
-            }
+            nextStep();
           } else {
             onTaskListEdited();
             closeModal();
@@ -95,9 +90,6 @@ const ListDetailsForm = ({
 }) => {
   const dispatch = useDispatch();
   const [isSavingList, setIsSavingList] = useState(false);
-  const [isSharedList, setSharedList] = useState(false);
-  const [isPrivateList, setPrivateList] = useState(true);
-  const [isConfigureAllowed, setConfigureAllowed] = useState(false);
   const history = useHistory();
 
   const formMethods = useForm({
@@ -111,10 +103,8 @@ const ListDetailsForm = ({
   });
 
   const { handleSubmit, watch, setValue } = formMethods;
-
   const restrictCustomizationValue = watch('restrictCustomization');
   const discoveryEnabled = watch('discoveryEnabled');
-
   const shareTaskAvailable = useSelector(userHasShareTaskFeatureSelector);
 
   const taskLists = useSelector(taskListsSelector);
@@ -127,18 +117,6 @@ const ListDetailsForm = ({
       return 'List Name already exists';
     }
     return validateListName(value);
-  };
-
-  const toggleSharedList = () => {
-    setPrivateList(false);
-    setSharedList(true);
-  };
-  const togglePrivateList = () => {
-    setPrivateList(true);
-    setSharedList(false);
-  };
-  const toggleConfigure = () => {
-    setConfigureAllowed(!isConfigureAllowed);
   };
 
   const inputStyle = {
@@ -168,7 +146,6 @@ const ListDetailsForm = ({
             setList,
             taskListIdentifier: list?.taskListIdentifier,
             history,
-            isSharedList,
           }),
         )(event)
       }
@@ -201,37 +178,16 @@ const ListDetailsForm = ({
             />
             <Spacing vertical={4} />
             <PrivacyContainer>
-              <PrivacyTitle>Privacy</PrivacyTitle>
-              <CheckboxContainer>
-                <img
-                  onClick={toggleSharedList}
-                  src={isSharedList ? CheckedCircle : BlankCircle}
-                />
-                <Spacing horizontal={3} />
-                <CheckboxDescription>Sharable List</CheckboxDescription>
-                <img
-                  onClick={togglePrivateList}
-                  src={isPrivateList ? CheckedCircle : BlankCircle}
-                />
-                <Spacing horizontal={3} />
-                <CheckboxDescription>Private List</CheckboxDescription>
-              </CheckboxContainer>
-            </PrivacyContainer>
-
-            <Spacing vertical={5} />
-
-            <PrivacyContainer>
               <PrivacyTitle>Configuration settings</PrivacyTitle>
               <CheckboxContainer>
                 <img
                   onClick={() => {
-                    toggleConfigure();
                     setValue(
                       'restrictCustomization',
                       !restrictCustomizationValue,
                     );
                   }}
-                  src={isConfigureAllowed ? CheckedCircle : BlankCircle}
+                  src={restrictCustomizationValue ? CheckedCircle : BlankCircle}
                 />
                 <Spacing horizontal={3} />
                 <CheckboxDescription>

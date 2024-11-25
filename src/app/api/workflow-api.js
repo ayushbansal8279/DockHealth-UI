@@ -78,6 +78,10 @@ export function deleteWorkflowAttachment(attachmentIdentifier) {
     .then(({ data }) => data);
 }
 
+export function updateWorkflowAttachment({taskWorkflowIdentifier, attachmentIdentifier, fileName}) {
+  return axios.put(`task/attachment`, {taskWorkflowIdentifier, attachmentIdentifier, fileName}).then(({ data }) => data);
+}
+
 export function getWorkflowHistory(workflowIdentifier) {
   return axios
     .get(`audit/findAuditsByWorkflow/${workflowIdentifier}`)

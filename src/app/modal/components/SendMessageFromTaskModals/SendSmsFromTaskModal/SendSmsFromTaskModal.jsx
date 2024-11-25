@@ -2,7 +2,6 @@ import Input from 'components/common/Input/Input';
 import React, { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { sendSmsForTask } from 'actions/task-actions';
-import Button from 'components/common/Button/Button';
 import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
 import { closeModal } from 'modal/actions';
 import { getTemplateDetails } from 'api/template-api';

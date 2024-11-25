@@ -1,13 +1,13 @@
 import React from 'react';
-import { Grid } from '@mui/material';
+import { Box, Grid } from '@mui/material';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import * as TaskTemplateActions from 'actions/task-template-actions';
 import FormInput from 'components/common/Input/FormInput';
-import Button from 'components/common/Button/Button';
 import Spacing from 'components/common/Spacing';
 import { CloseIconButton, CloseIcon } from '../styled';
 import { ListFormModalWrapper, Header, Title, StyledForm } from './styled';
+import { CancelButton, ConfirmButton } from '../ModalButton/ModalButtons';
 
 const TEMPLATE_NAME_FIELD_NAME = 'name';
 
@@ -59,20 +59,11 @@ const CreateTemplateFolderModal = ({ closeModal, onCreateSuccess }) => {
             placeholder="What would you like to name this folder?"
             validate={validateTemplateName}
           />
-          <Grid container direction="row" justifyContent="center">
-            <Button
-              width="170px"
-              variant="secondary"
-              onClick={closeModal}
-              size="small"
-            >
-              Cancel
-            </Button>
+          <Box display={'flex'} direction="row" justifyContent="center">
+            <CancelButton onClick={closeModal}>Cancel</CancelButton>
             <Spacing horizontal={3} />
-            <Button fullWidth type="submit" size="small" width="170px">
-              Save
-            </Button>
-          </Grid>
+            <ConfirmButton type="submit">Save</ConfirmButton>
+          </Box>
         </FormProvider>
       </StyledForm>
     </ListFormModalWrapper>

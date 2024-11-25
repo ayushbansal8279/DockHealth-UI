@@ -1,10 +1,9 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
 import { IconButton } from '@mui/material';
 import { Replay } from '@mui/icons-material';
 import palette from 'styles/palette';
-import Button from 'components/common/Button/Button';
 import { closeModal } from 'modal/actions';
 import CustomTextEditor from 'components/common/CustomTextEditor/CustomTextEditor';
 import RichTextEditor from 'components/common/RichTextEditor/RichTextEditor';
@@ -31,9 +30,12 @@ import {
 import TaskCheckBoxes from '../TaskCheckBoxes';
 import { ConfirmButton } from '../../ModalButton/ModalButtons';
 
-function SendEmrNoteFromTaskModal() {
+function SendEmrNoteFromTaskModal({ source, identifier, generatedSummary }) {
+  const fromAiSummary = source === 'Ai Summary Modal';
   const selectedTask = useSelector(selectedTaskSelector);
-  const { taskMentions, taskIdentifier } = selectedTask;
+  const taskIdentifier = fromAiSummary ? identifier : selectedTask?.identifier;
+  const taskMentions = selectedTask?.taskMentions;
+
   const dispatch = useDispatch();
   const [noteType, setNoteType] = useState(null);
   const [isTaskDescriptionIncluded, setIsTaskDescriptionIncluded] =
@@ -52,6 +54,12 @@ function SendEmrNoteFromTaskModal() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [detailsState, taskMentions],
   );
+
+  useEffect(() => {
+    if (fromAiSummary) {
+      setDetailsState(generatedSummary);
+    }
+  }, [fromAiSummary, generatedSummary]);
 
   const handleReset = useCallback(() => {
     setIsTaskCommentsIncluded(false);
@@ -77,6 +85,8 @@ function SendEmrNoteFromTaskModal() {
     value: option,
   }));
 
+  const isDisabled = detailsState === '' || noteType === null;
+
   return (
     <ModalWrapper width="600px">
       <CloseIconButton size="small" onClick={() => dispatch(closeModal())}>
@@ -96,36 +106,39 @@ function SendEmrNoteFromTaskModal() {
             onChange={handleOptionChange}
           />
         </InputContainerStyled>
-        <InputContainerStyled>
-          <TemplateAutoComplete
-            type={CommunicationType.EMR}
-            placeholder="Pick template"
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            onChange={(_event, newValue) => {
-              handleReset();
-              // const text = addStylesToText(newValue?.body ?? '');
-              // setDetailsState(EditorState.push(detailsState, text));
-              // setSubject(newValue?.value ?? '');
-            }}
-            // disabled={show}
-          />
-        </InputContainerStyled>
-        <IncludeContainerStyled>
-          <InfoHeaderTextStyled>Include the following</InfoHeaderTextStyled>
-          <IconButton onClick={handleReset}>
-            <Replay htmlColor={palette.coolGrey9} />
-          </IconButton>
-        </IncludeContainerStyled>
-        <TaskCheckBoxes
-          isTaskDescriptionIncluded={isTaskDescriptionIncluded}
-          setIsTaskDescriptionIncluded={setIsTaskDescriptionIncluded}
-          isTaskDetailsIncluded={isTaskDetailsIncluded}
-          setIsTaskDetailsIncluded={setIsTaskDetailsIncluded}
-          isTaskCommentsIncluded={isTaskCommentsIncluded}
-          setIsTaskCommentsIncluded={setIsTaskCommentsIncluded}
-          insertTextFromTask={insertTextFromTask}
-          selectedTask={selectedTask}
-        />
+        {!fromAiSummary && (
+          <>
+            <InputContainerStyled styled={{"textAlign": "left"}}>
+              <TemplateAutoComplete
+                type={CommunicationType.EMR}
+                placeholder="Pick template"
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                onChange={(_event, newValue) => {
+                  handleReset();
+                  // const text = addStylesToText(newValue?.body ?? '');
+                  // setDetailsState(EditorState.push(detailsState, text));
+                  // setSubject(newValue?.value ?? '');
+                }}
+              />
+            </InputContainerStyled>
+            <IncludeContainerStyled>
+              <InfoHeaderTextStyled>Include the following</InfoHeaderTextStyled>
+              <IconButton onClick={handleReset}>
+                <Replay htmlColor={palette.coolGrey9} />
+              </IconButton>
+            </IncludeContainerStyled>
+            <TaskCheckBoxes
+              isTaskDescriptionIncluded={isTaskDescriptionIncluded}
+              setIsTaskDescriptionIncluded={setIsTaskDescriptionIncluded}
+              isTaskDetailsIncluded={isTaskDetailsIncluded}
+              setIsTaskDetailsIncluded={setIsTaskDetailsIncluded}
+              isTaskCommentsIncluded={isTaskCommentsIncluded}
+              setIsTaskCommentsIncluded={setIsTaskCommentsIncluded}
+              insertTextFromTask={insertTextFromTask}
+              selectedTask={selectedTask}
+            />
+          </>
+        )}
         <TextEditorContainerStyled>
           <CustomTextEditor label="EHR note">
             <RichTextEditor
@@ -141,7 +154,7 @@ function SendEmrNoteFromTaskModal() {
       </ModalDescriptionContainer>
       <ModalFooterStyled>
         <ConfirmButton
-          disabled={detailsState === ''}
+          disabled={isDisabled}
           style={{ width: '270px' }}
           onClick={() => {
             dispatch(

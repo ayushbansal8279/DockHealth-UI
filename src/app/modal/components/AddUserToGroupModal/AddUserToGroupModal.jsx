@@ -38,6 +38,7 @@ import {
   OptionCell,
   optionHighlightStyle,
 } from './styled';
+import { CancelButton, ConfirmButton } from '../ModalButton/ModalButtons';
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const AddUserToGroupModal = ({ closeModal, userGroupIdentifier }) => {
@@ -246,23 +247,18 @@ const AddUserToGroupModal = ({ closeModal, userGroupIdentifier }) => {
       </MainContentWrapper>
       <Spacing vertical={4} />
       <Grid container direction="row" justifyContent="flex-end">
-        <Button
-          variant="secondary"
-          width="150px"
+        <CancelButton
           onClick={closeModal}
-          size="small"
         >
           Cancel
-        </Button>
+        </CancelButton>
         <Spacing horizontal={4} />
-        <Button
-          width="200px"
+        <ConfirmButton
           disabled={isSaving || !hasUnsavedChanges}
           onClick={handleSaveClick}
-          size="small"
         >
           Save user group
-        </Button>
+        </ConfirmButton>
       </Grid>
     </AddPatientModalWrapper>
   );

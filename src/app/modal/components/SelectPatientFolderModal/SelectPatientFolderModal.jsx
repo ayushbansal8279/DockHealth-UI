@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux';
 import { Box, Grid, IconButton } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { PatientAttachmentType } from 'helpers/patient-details-helpers';
-import Button from 'components/common/Button/Button';
 import SelectionList from 'components/common/SelectionList/SelectionList';
 import { currentPatientIdentifierSelector } from 'selectors/patient-details-selectors';
 import * as PatientAttachmentApi from 'api/patient-attachment-api';
@@ -15,6 +14,7 @@ import {
   FlexButtonWrapper,
   ModalHeader,
 } from '../styled';
+import { CancelButton, ConfirmButton } from '../ModalButton/ModalButtons';
 
 const SelectPatientFolderModal = ({ closeModal, onMove }) => {
   const patientIdentifier = useSelector(currentPatientIdentifierSelector);
@@ -83,24 +83,15 @@ const SelectPatientFolderModal = ({ closeModal, onMove }) => {
         />
       </Box>
       <Box m={2} />
-      <Grid container direction="row">
-        <FlexButtonWrapper>
-          <Button
-            fullWidth
-            variant="secondary"
-            onClick={closeModal}
-            size="small"
-          >
-            Cancel
-          </Button>
-        </FlexButtonWrapper>
+      <FlexButtonWrapper>
+        <CancelButton onClick={closeModal}>
+          Cancel
+        </CancelButton>
         <Box m={1} />
-        <FlexButtonWrapper>
-          <Button fullWidth onClick={handleMoveClick} size="small">
-            Move
-          </Button>
-        </FlexButtonWrapper>
-      </Grid>
+        <ConfirmButton fullWidth onClick={handleMoveClick}>
+          Move
+        </ConfirmButton>
+      </FlexButtonWrapper>
     </ModalWrapperWithPadding>
   );
 };

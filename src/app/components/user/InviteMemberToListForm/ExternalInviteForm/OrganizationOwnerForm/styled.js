@@ -56,7 +56,7 @@ export const Step = styled.button`
 `;
 
 export const RoleFormWrapper = styled(Grid)`
-  height: 400px;
+  height: 425px;
   padding: ${spacing.small} 0 0 0;
   font-family: inherit;
   color: ${palette.mediumGrey};

@@ -141,12 +141,18 @@ const useInitializeAttachmentsSectionHooks = () => {
 
   const deleteAttachment = useCallback(
     (identifier) => {
-      dispatch(
-        PatientDetailsActions.deletePatientAttachment(
-          patientIdentifier,
-          identifier,
-        ),
-      );
+      dispatch(openModal('DeleteConfirmation',{
+        title: 'Delete Attachment',
+        description: 'Are you sure you want to delete this attachment? This action cannot be undone.',
+        confirm: () => {
+          dispatch(
+            PatientDetailsActions.deletePatientAttachment(
+              patientIdentifier,
+              identifier,
+            ),
+          );
+        }
+      }))
     },
     [dispatch, patientIdentifier],
   );

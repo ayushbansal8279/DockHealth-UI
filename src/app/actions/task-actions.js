@@ -677,6 +677,25 @@ export const removeTaskAttachment =
         throw error;
       });
 
+export const renameTaskAttachment =
+  (taskIdentifier, attachmentIdentifier ,fileName ) => (dispatch) => {
+    return TaskApi.updateTaskAttachment(attachmentIdentifier,fileName)
+      .then(() => {
+        dispatch({
+          type: ActionTypes.UPDATE_TASK_ATTACHMENT,
+          taskIdentifier,
+          attachmentIdentifier,
+          fileName,
+        });
+        dispatch(
+          AlertActions.showGlobalAlert(AlertMessages.UPDATED),
+        );
+      })
+      .catch((error) => {
+        throw error;
+      });
+  };
+      
 export function refreshTask(taskIdentifier) {
   return {
     type: ActionTypes.REFRESH_TASK,

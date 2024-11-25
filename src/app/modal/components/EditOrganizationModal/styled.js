@@ -12,10 +12,14 @@ export const EditOrganizationModalWrapper = styled(ModalWrapper)`
   text-align: left;
 `;
 
-export const Header = styled.h2`
-  width: 100%;
-  font-size: ${fontSizes.large};
-  font-weight: ${fontWeights.bold};
+export const Title = styled.h5`
+  color: ${palette.offBlack};
+  text-align: center;
+  font-family: Outfit;
+  font-size: 22px;
+  font-style: normal;
+  font-weight: ${fontWeights.regularPlus};
+  text-align: center;
 `;
 
 export const OrganizationForm = styled.form`

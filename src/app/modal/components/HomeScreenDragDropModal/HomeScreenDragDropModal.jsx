@@ -1,7 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Typography } from '@mui/material';
-import Button from 'components/common/Button/Button';
 import { ThemeProvider as MuiThemeProvider } from '@mui/material/styles';
 import SortArrows from 'img/modals/sort-arrows.svg';
 import { redTheme } from '../../themes/red-theme';
