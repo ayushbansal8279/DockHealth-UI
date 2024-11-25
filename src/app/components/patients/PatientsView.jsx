@@ -502,7 +502,7 @@ const PatientsView = () => {
                         !emrIntegrationEnabled &&
                         listIdentifier ===
                           DefaultPatientsListType.ALL_PATIENTS && {
-                          name: 'Import from Excel',
+                          name: 'Import from Excel or CSV',
                           onClick: () => {
                             setImportPopupOpen(true);
                           },
