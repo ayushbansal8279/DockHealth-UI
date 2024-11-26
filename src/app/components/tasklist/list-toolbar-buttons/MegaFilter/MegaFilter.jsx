@@ -44,6 +44,7 @@ const MegaFilter = ({
   const [isSavePopupOpen, setSavePopupOpen] = useState(false);
   const [editIdentifier, setEditIdentifier] = useState('');
   const [filteredData, setFilteredData] = useState({});
+  const [fiterCount, setFilterCount] = useState(-1);
   const [customFilteredData, setCustomFilteredData] = useState({});
   const [selectedQuickFilter, setSelectedQuickFilter] = useState('');
   const organization = useSelector(organizationSelector);
@@ -164,6 +165,8 @@ const MegaFilter = ({
             selectedCustomFilter={selectedCustomFilter}
             selectQuickFilter={selectQuickFilter}
             handleSelectedFiltersChange={handleSelectedFiltersChange}
+            fiterCount={fiterCount}
+                  setFilterCount={setFilterCount}
           />
           {isFilterApplied && tasksAndSubTasksCount === 0 && !isFetching && (
             <MegaFilterNoResultsLabel>
@@ -220,6 +223,8 @@ const MegaFilter = ({
                   setCustomFinalFilter={setCustomFinalFilter}
                   setSelectedQuickFilter={setSelectedQuickFilter}
                   handleSelectedFiltersChange={handleSelectedFiltersChange}
+                  fiterCount={fiterCount}
+                  setFilterCount={setFilterCount}
                 />
               ) : (
                 <></>
