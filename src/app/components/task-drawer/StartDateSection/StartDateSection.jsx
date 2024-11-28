@@ -39,7 +39,8 @@ const StartDateSection = ({
   const handleSave = useCallback(
     (updatedStartDateTime) => {
       if (updatedStartDateTime === null) {
-        setIsTimeAvailable(false);
+        setMomentStartDate(updatedStartDateTime ? moment(updatedStartDateTime) : null);
+        setIsTimeAvailable(updatedStartDateTime ? true : false);
       }
       if (addTaskDrawer) {
         setStartDate(updatedStartDateTime);
@@ -56,6 +57,7 @@ const StartDateSection = ({
 
   const handleStartDateSave = useCallback(
     (newStartDate) => {
+      setMomentStartDate(moment(newStartDate));
       const isDateValid = isStartDateValid(dueDate, newStartDate);
       if (isDateValid) {
         handleSave(newStartDate);
@@ -72,13 +74,12 @@ const StartDateSection = ({
   );
 
   useEffect(() => {
-    if (
-      momentStartDate &&
-      (momentStartDate.hour() || momentStartDate.minute())
-    ) {
+    if (momentStartDate && (momentStartDate.hour() || momentStartDate.minute())) {
       setIsTimeAvailable(true);
+    } else {
+      setIsTimeAvailable(false);
     }
-  }, [selectedTask, momentStartDate]);
+  }, [momentStartDate]);
 
   return (
     <StartDateSectionWrapper
@@ -146,7 +147,7 @@ const StartDateSection = ({
             <Box width="auto" minWidth={buttonReference.current?.offsetWidth}>
               <DueDatePicker
                 taskIdentifier={taskIdentifier}
-                selectedDate={startDate}
+                selectedDate={momentStartDate}
                 onDateChange={handleStartDateSave}
                 recurring={hasRecurringSchedule}
                 onCloseClick={closePopover}

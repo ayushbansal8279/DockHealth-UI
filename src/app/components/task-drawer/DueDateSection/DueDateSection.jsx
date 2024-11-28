@@ -72,6 +72,7 @@ const DueDateSection = ({
 
   const handleDueDateSave = useCallback(
     (newDueDate) => {
+      setMomentDueDate(newDueDate ? moment(newDueDate) : null);
       const isDateValid = isDueDateValid(startDate, newDueDate);
       if (isDateValid) {
         handleSave(newDueDate);
@@ -172,8 +173,8 @@ const DueDateSection = ({
             <Box width="auto" minWidth={buttonReference.current?.offsetWidth}>
               <DueDatePicker
                 taskIdentifier={taskIdentifier}
-                selectedDate={dueDate}
-                onDateChange={handleDueDateSave}
+                selectedDate={momentDueDate ? momentDueDate.toDate() : null}
+                onDateChange={(newDate) => {handleDueDateSave(newDate)}}
                 recurring={hasRecurringSchedule}
                 onCloseClick={closePopover}
               />
