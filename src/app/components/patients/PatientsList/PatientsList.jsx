@@ -263,7 +263,7 @@ const PatientsList = ({
       confirmSave(id);
     },
     [confirmSave],
-  );  
+  );
 
   const handleCancelClick = useCallback(
     (id) => () => {
@@ -299,7 +299,7 @@ const PatientsList = ({
             const index = updatedMetaData.findIndex(
               (meta) => meta.customFieldIdentifier === identifier
             );
-  
+
             if (index !== -1) {
               updatedMetaData[index].value = newRow[identifier];
               if (typeof newRow[identifier] === 'object') {
@@ -437,10 +437,10 @@ const PatientsList = ({
       sortComparator: (v1, v2) => {
         const date1 = new Date(v1);
         const date2 = new Date(v2);
-    
+
         if (!date1 || isNaN(date1)) return 1;
         if (!date2 || isNaN(date2)) return -1;
-    
+
         return date1 - date2;
       },
       editable: true,
@@ -544,29 +544,29 @@ const PatientsList = ({
         },
       }),
     );
-  }  
+  }
 
   const getRenderEditCell = (fieldType, options = [], name) => {
     switch (fieldType) {
       case 'PICK_LIST':
-        return (params) => <DropDownEditCell {...params} options={options} name={name}/>;
+        return (params) => <DropDownEditCell {...params} options={options} name={name} />;
       case 'MULTI_SELECT':
         return (params) => <MultiDropdownEditCell {...params} options={options} name={name} />;
       case 'DATE':
         return (params) => <DateTimeEditCell {...params} />;
       case 'LONG_TEXT':
-          return (params) => <CustomFieldLongTextEditor {...params} name={name} />;
+        return (params) => <CustomFieldLongTextEditor {...params} name={name} />;
       case 'TEXT':
       case 'HYPERLINK':
         return (params) => <TextEditCell {...params} name={name} />;
       case 'BOOLEAN':
         return (params) => <BooleanEditCell {...params} name={name} />;
       case 'NUMBER':
-      return (params) => <NumberEditCell {...params} name={name} />;
+        return (params) => <NumberEditCell {...params} name={name} />;
       default:
         return null;
     }
-  };   
+  };
 
   const getColumnWidth = (fieldType) => {
     switch (fieldType) {
@@ -587,10 +587,10 @@ const PatientsList = ({
       case 'NUMBER':
         return 150;
       default:
-        return 100; 
+        return 100;
     }
   };
-  
+
   const actionsColumn = {
     field: 'actions',
     type: 'actions',
@@ -643,8 +643,8 @@ const PatientsList = ({
           headerName: column.name,
           renderHeader: renderColumnHeader,
           renderCell: (params) => {
-            const {row} = params;
-            if(column.fieldType === 'HYPERLINK') {
+            const { row } = params;
+            if (column.fieldType === 'HYPERLINK') {
               const link = row[column.identifier]
               return (
                 <Tooltip placement="top" title={row[column.identifier]}>
@@ -665,23 +665,28 @@ const PatientsList = ({
                 </Tooltip>
               );
             }
-            if(column.fieldType === 'DATE') {
+            if (column.fieldType === 'DATE') {
               return (<DateTimeEditCell {...params} readOnly />)
             }
-            if (column.fieldType === 'MULTI_SELECT') {
-              const displayValue = typeof row[column.identifier] === 'object' && row[column.identifier] !== null
-                ? row[column.identifier].value
-                : row[column.identifier];  
-            
+            else {
+              let displayValue = row[column.identifier];
+
+              if (column.fieldType === 'MULTI_SELECT') {
+                if (typeof displayValue === 'object' && displayValue !== null) {
+                  displayValue = row[column.identifier].value
+                }
+              }
+              else if (column.fieldType === 'PICK_LIST') {
+                const selectedOption = column.options?.find(option => option.identifier === displayValue);
+                displayValue = selectedOption ? selectedOption.name : displayValue;
+              }
+
               return (
                 <Tooltip placement="top" title={displayValue}>
                   <Text>{displayValue}</Text>
                 </Tooltip>
               );
             }
-            return (<Tooltip placement="top" title={row[column.identifier]}>
-              <Text>{row[column.identifier]}</Text>
-            </Tooltip>)
           },
           editable: true,
           renderEditCell: getRenderEditCell(column.fieldType, column.options, column.name),
@@ -738,11 +743,11 @@ const PatientsList = ({
       setDataGridSortModel(
         defaultSortAvailable
           ? [
-              {
-                field: defaultSortField,
-                sort: defaultSortOrder,
-              },
-            ]
+            {
+              field: defaultSortField,
+              sort: defaultSortOrder,
+            },
+          ]
           : undefined,
       );
     }
@@ -780,10 +785,10 @@ const PatientsList = ({
                     processRowUpdate={processRowUpdate}
                     sortModel={
                       dataGridSortModel &&
-                      columns.some(
-                        (column) =>
-                          column?.field === dataGridSortModel[0]?.field,
-                      )
+                        columns.some(
+                          (column) =>
+                            column?.field === dataGridSortModel[0]?.field,
+                        )
                         ? dataGridSortModel
                         : undefined
                     }

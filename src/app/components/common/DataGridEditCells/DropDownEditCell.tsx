@@ -9,7 +9,7 @@ import { selectStyles } from './helpers';
 import { PlaceholderText } from './styled';
 
 interface DropDownEditCellProps extends GridRenderEditCellParams<any, string | undefined> {
-  options: { name: string }[]; 
+  options: { name: string, identifier: string }[]; 
 }
 
 export default function DropDownEditCell({ id, field, value, options, name }: DropDownEditCellProps) {
@@ -23,6 +23,9 @@ export default function DropDownEditCell({ id, field, value, options, name }: Dr
     });
   };
 
+  const selectedOption = options.find(option => option.identifier === value);
+  const displayValue = selectedOption ? selectedOption.name : value;
+
   return (
     <Select
       displayEmpty
@@ -33,7 +36,7 @@ export default function DropDownEditCell({ id, field, value, options, name }: Dr
         if (selected === '') {
           return <PlaceholderText>{name}</PlaceholderText>;
         }
-        return selected;
+        return displayValue || selected;
       }}
       IconComponent={ArrowDropDownIcon}
       sx={selectStyles}
@@ -41,8 +44,8 @@ export default function DropDownEditCell({ id, field, value, options, name }: Dr
       <MenuItem value="" disabled sx={{ color: 'gray' }}>
         {name}
       </MenuItem>
-      {options.map(({ name }) => (
-        <MenuItem key={name} value={name}>
+      {options.map(({ name, identifier }) => (
+        <MenuItem key={identifier} value={identifier}>
           {name}
         </MenuItem>
       ))}
