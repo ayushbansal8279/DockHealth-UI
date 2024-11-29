@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-no-duplicate-props */
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useRef, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { updateWorkflowStatus } from 'actions/task-actions';
 import * as AlertActions from 'alert/actions';
@@ -17,6 +17,7 @@ import {
 import { IconButton, InputAdornment } from '@mui/material';
 import PrioritySelectIcon from '@/app/img/PrioritySelectIcon';
 import { organizationStatusesSelector } from '@/app/selectors/organization-selectors';
+import Tooltip from 'components/common/Tooltip/Tooltip';
 
 const StatusSection = ({
   selectedTask,
@@ -70,6 +71,17 @@ const StatusSection = ({
     handleUpdateWorkflowStatus(null);
   };
 
+  const textRef = useRef(null);
+  const [isTruncated, setIsTruncated] = useState(false);
+
+  useEffect(() => {
+    if (textRef.current) {
+      setIsTruncated(textRef.current.scrollWidth > textRef.current.clientWidth);
+    }
+  }, [status]);
+
+  const TooltipWrapper = isTruncated ? Tooltip : React.Fragment;
+
   return (
     <StatusContainer>
       <Title>Status</Title>
@@ -89,7 +101,19 @@ const StatusSection = ({
       >
         <StatusFieldContainer>
           {status ? (
-            <StatusWrapper color={status?.color}>{status?.name}</StatusWrapper>
+            <StatusWrapper color={status?.color}>
+              <TooltipWrapper {...(isTruncated && { placement: 'top', title: status?.name })}>
+                <div
+                  ref={textRef}
+                  style={{
+                    textOverflow: 'ellipsis',
+                    overflow: 'hidden',
+                    whiteSpace: 'nowrap',
+                  }}>
+                  {status?.name}
+                </div>
+              </TooltipWrapper>
+            </StatusWrapper>
           ) : (
             <Input
               variant="outlined"
