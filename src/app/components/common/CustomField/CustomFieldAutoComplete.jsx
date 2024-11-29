@@ -24,8 +24,8 @@ const CustomFieldAutoComplete = ({
     formState: { errors },
     setValue,
     unregister,
-    } = useFormContext();
-  
+    watch
+ } = useFormContext();
 
   useEffect(() => {
     register(name);
@@ -71,9 +71,15 @@ const CustomFieldAutoComplete = ({
     [clearErrors, error, name, onChange, setValue],
   );
 
+  const selectedValues = watch(name);
+  const selectedOptions = profiles?.filter((profile) =>
+    selectedValues?.includes(profile.profile.identifier)
+  );
+
   const getInputReference = () => inputRef;
   return (
     <Autocomplete
+      value={selectedOptions || []}
       multiple
       name={name}
       autoFocus={false}
