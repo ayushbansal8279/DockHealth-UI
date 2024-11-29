@@ -188,7 +188,7 @@ const ProfileDetailsHeader = () => {
                       <ProfileInfo>
                         <Typography>{field.profileTypeFieldName}: </Typography>
                         <Box ml={1} />
-                        {field.profileTypeFieldType === FieldType.DROPDOWN_MULTI
+                        {field.profileTypeFieldType === FieldType.DROPDOWN_MULTI || field.profileTypeFieldType === FieldType.RELATIONSHIP
                           ? `${field.values?.join(',') || ''}`
                           : `${
                               customFieldOption?.name ||
