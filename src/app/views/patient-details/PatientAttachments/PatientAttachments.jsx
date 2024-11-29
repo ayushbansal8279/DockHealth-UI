@@ -74,6 +74,7 @@ const PatientAttachments = () => {
     handleAttachmentClick,
     dropzone: { getRootProps, getInputProps, isDragActive },
     downloadAllFiles,
+    downloadAttachment
   } = initializeAttachmentsSectionHooks();
 
   const [foldersList, setFoldersList] = useState([]);
@@ -107,10 +108,14 @@ const PatientAttachments = () => {
   const getFileOptions = useCallback(
     (file) => [
       ...(file.scanStatus && file.scanStatus !== 'IN_PROGRESS' 
-        ? [{ name: 'Preview', onClick: () => openAttachmentPreview(file) }] 
+        ? [{name: 'Preview', onClick: () => openAttachmentPreview(file)},
+          {name: 'Download', onClick: () => {downloadAttachment(file)}} ] 
         : []
       ),
-      { name: 'Rename', onClick: () => renameAttachment(file) },
+      { 
+        name: 'Rename', 
+        onClick: () => renameAttachment(file) 
+      },
       {
         name: 'Move',
         onClick: () => moveFileOrFolder(file),
@@ -126,6 +131,7 @@ const PatientAttachments = () => {
       renameAttachment,
       moveFileOrFolder,
       deleteAttachment,
+      downloadAttachment
     ],
   );
 

@@ -11,6 +11,8 @@ import { renameTaskAttachment } from '@/app/actions/task-actions';
 import { openModal } from '@/app/modal/actions';
 import { useDispatch } from 'react-redux';
 import { updateWorkflowAttachment } from '@/app/actions/workflow-actions';
+import { getWorkflowAttachment } from '@/app/api/workflow-api';
+import { getTaskAttachment } from '@/app/api/task-api';
 
 const AttachmentButton = ({ attachment, onClick, onRemoveClick , renameAttachmentDispatch }) => {
   const { attachmentIdentifier, fileName, contentType } = attachment;
@@ -76,13 +78,39 @@ const AttachmentButton = ({ attachment, onClick, onRemoveClick , renameAttachmen
     [dispatch, onRemoveClick]
   );
 
+  const downloadAttachment = async (attachment) => {
+    const { attachmentIdentifier, fileName, contentType } = attachment;
+    try {
+      let data;
+      if(attachment.taskWorkflowIdentifier){
+        data = await getWorkflowAttachment(attachmentIdentifier);
+      }else if(attachment.taskIdentifier){
+        const response = await getTaskAttachment(attachmentIdentifier);
+        data = response.data;
+      }
+        const blob = new Blob([data], { type: contentType });
+        const url = window.URL.createObjectURL(blob);
+        const anchor = document.createElement('a');
+        anchor.href = url;
+        anchor.download = fileName;
+        document.body.appendChild(anchor);
+        anchor.click();
+        document.body.removeChild(anchor);
+        window.URL.revokeObjectURL(url);
+    } catch (error) {
+        console.error('Error downloading attachment:', error);
+    } 
+};
+
   const getFileOptions = useCallback(
     (attachment) => [
       ...(attachment.scanStatus && attachment.scanStatus !== 'IN_PROGRESS' 
-        ? [{ name: 'Preview', onClick: () => {openAttachmentPreview(attachment)} }] 
+        ? [{ name: 'Preview', onClick: () => {openAttachmentPreview(attachment)}},
+          { name: 'Download', onClick: () => {downloadAttachment(attachment)}} ] 
         : []
-      ),
-      { name: 'Rename', 
+      ), 
+      { 
+        name: 'Rename', 
         onClick: () => {renameAttachment(attachment)}
       },
       {
@@ -94,6 +122,7 @@ const AttachmentButton = ({ attachment, onClick, onRemoveClick , renameAttachmen
       openAttachmentPreview,
       renameAttachment,
       removeAttachmentHandler,
+      downloadAttachment
     ],
   );
   
