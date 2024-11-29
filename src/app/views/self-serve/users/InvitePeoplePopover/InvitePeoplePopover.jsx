@@ -86,12 +86,12 @@ const InvitePeoplePopover = ({
     <Popover
       anchorEl={anchor}
       anchorOrigin={{
-        vertical: 'top',
+        vertical: 'bottom',
         horizontal: 'right',
       }}
       transformOrigin={{
         vertical: 'top',
-        horizontal: 'right',
+        horizontal: 'left',
       }}
       open={open}
       onClose={() => {
