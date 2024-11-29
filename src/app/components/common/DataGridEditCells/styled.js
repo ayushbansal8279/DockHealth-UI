@@ -11,3 +11,9 @@ export const TooltipPre = styled.pre`
 export const PlaceholderText = styled.span`
   color: ${palette.lightGrey};
 `;
+
+export const ErrorText = styled.span`
+  font-size: 10px;
+  color: ${palette.error};
+  margin-top: 4px;
+`;

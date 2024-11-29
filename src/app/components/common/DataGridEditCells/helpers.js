@@ -15,3 +15,8 @@ export const selectStyles = {
         color: palette.lightGrey,
     },
 };
+
+export const phoneLabelStyles = (isPlaceholder) => ({
+    color: isPlaceholder ? palette.coolGrey10 : 'inherit',
+    cursor: 'pointer',
+});
