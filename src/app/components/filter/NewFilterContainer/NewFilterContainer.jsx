@@ -15,6 +15,7 @@ import {
   AddFilterRotatableChevronButtonWrapper,
   AddFilterRotatableChevronButtonLabel,
   AddFilterButtonLabel,
+  FilterCount,
 } from './styled';
 import FilterSelect from '../FilterSelect/FilterSelect';
 import {
@@ -25,6 +26,12 @@ import RotatableChevron from '../../common/RotatableChevron/RotatableChevron';
 import palette from '@/app/styles/palette';
 import useBoolean from '@/app/hooks/useBoolean';
 import FilterOptionsPopover from './FilterOptionsPopover';
+import debounce from 'lodash.debounce';
+import { getFilteredCountsForList } from '@/app/api/list-details-api';
+import {
+  currentTaskListSelector,
+  currentTaskListTasksStatusSelector,
+} from '@/app/selectors/task-list-selectors';
 
 const NewFilterContainer = ({
   filters,
@@ -38,6 +45,8 @@ const NewFilterContainer = ({
   setSelectedQuickFilter,
   handleSelectedFiltersChange,
   editModeEnabled = true,
+  fiterCount,
+  setFilterCount,
 }) => {
   const popoverReference = useRef(null);
   const [isPopoverOpen, openAddFilterPopover, closeAddFilterPopover] =
@@ -45,6 +54,8 @@ const NewFilterContainer = ({
   const [isDisable, setDisable] = useState(false);
 
   const currentUser = useSelector(userProfileSelector);
+  const taskList = useSelector(currentTaskListSelector);
+  const taskListStatus = useSelector(currentTaskListTasksStatusSelector);
   const customerTypeLabel = getCustomerTypeLabel(currentUser);
   const customerTypeLabelMixedCase = capitalizeWords(customerTypeLabel);
   const sanitizedFilters = filters?.map((item) => {
@@ -83,7 +94,22 @@ const NewFilterContainer = ({
       }
     }
     setFilteredData(data);
+
+    if (Object.entries(data)?.length > 0) {
+      fetchfilterCountWithDebounce(data);
+    } else {
+      setFilterCount(-1);
+    }
   }, [finalFilter]);
+
+  const fetchfilterCountWithDebounce = debounce(async (value) => {
+    const count = await getFilteredCountsForList(
+      taskList?.taskListIdentifier,
+      taskListStatus,
+      value,
+    );
+    setFilterCount(count?.count);
+  }, 50);
 
   const handleClick = (option) => {
     filters.map((item) => {
@@ -129,6 +155,9 @@ const NewFilterContainer = ({
           filteredData={filteredData}
         />
       ))}
+      {fiterCount !== -1 && (
+        <FilterCount> {fiterCount} matching result</FilterCount>
+      )}
       {editModeEnabled && (
         <FilterButtonWrapper>
           <BoxContainer ref={popoverReference}>

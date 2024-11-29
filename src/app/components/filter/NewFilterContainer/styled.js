@@ -231,6 +231,15 @@ export const ClearFilterLabel = styled.div`
   margin-top: 10px;
 `;
 
+export const FilterCount = styled.div`
+  color: #8492a4;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 11.189px;
+  margin-top: 20px;
+`;
+
 export const Divider = styled.hr`
   width: 550px; // This controls the width of the Pop Up
   height: 1px;
