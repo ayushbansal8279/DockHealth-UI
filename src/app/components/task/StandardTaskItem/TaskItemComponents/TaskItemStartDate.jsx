@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { updateTaskStartDate } from 'actions/task-actions';
 import DueDatePicker from 'components/task/DueDatePicker/DueDatePicker';
@@ -15,6 +15,7 @@ import {
 } from '../../styled';
 import { openModal } from '@/app/modal/actions';
 import { isStartDateValid } from '@/app/helpers/date-validation-helper';
+import moment from 'moment';
 
 const TaskItemStartDate = ({ task, disabled = false }) => {
   const dispatch = useDispatch();
@@ -26,8 +27,15 @@ const TaskItemStartDate = ({ task, disabled = false }) => {
     dueDate,
   } = task || {};
 
+  const [momentStartDate, setMomentStartDate] = useState(
+    startDate ? moment(startDate) : null,
+  );
+
   const handleSave = useCallback(
     (newStartDate) => {
+      setMomentStartDate(
+        !!newStartDate ? moment(newStartDate) : null,
+      );
       dispatch(updateTaskStartDate(task, newStartDate));
       onTaskStartDateChanged();
     },
@@ -37,6 +45,7 @@ const TaskItemStartDate = ({ task, disabled = false }) => {
   const handleDueDateChange = useCallback(
     (newStartDate) => {
       const isDateValid = isStartDateValid(dueDate, newStartDate);
+      setMomentStartDate(moment(newStartDate));
       if (isDateValid) {
         handleSave(newStartDate);
       } else {
@@ -58,7 +67,7 @@ const TaskItemStartDate = ({ task, disabled = false }) => {
         content={({ closePopover }) => (
           <DueDatePicker
             taskIdentifier={taskIdentifier}
-            selectedDate={startDate}
+            selectedDate={momentStartDate}
             onDateChange={handleDueDateChange}
             recurring={hasRecurringSchedule}
             onCloseClick={closePopover}
@@ -69,7 +78,7 @@ const TaskItemStartDate = ({ task, disabled = false }) => {
         <>
           {startDate ? (
             <DateLabel
-              date={startDate}
+              date={momentStartDate}
               hasReminder={reminderType && reminderType !== ReminderType.NONE}
               hasRecurringSchedule={false}
               tootipTitle="Edit Start Date"

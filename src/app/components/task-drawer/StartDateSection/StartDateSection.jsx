@@ -39,8 +39,7 @@ const StartDateSection = ({
   const handleSave = useCallback(
     (updatedStartDateTime) => {
       if (updatedStartDateTime === null) {
-        setMomentStartDate(updatedStartDateTime ? moment(updatedStartDateTime) : null);
-        setIsTimeAvailable(updatedStartDateTime ? true : false);
+        setIsTimeAvailable(false);
       }
       if (addTaskDrawer) {
         setStartDate(updatedStartDateTime);
@@ -57,8 +56,8 @@ const StartDateSection = ({
 
   const handleStartDateSave = useCallback(
     (newStartDate) => {
-      setMomentStartDate(moment(newStartDate));
       const isDateValid = isStartDateValid(dueDate, newStartDate);
+      setMomentStartDate(moment(newStartDate));
       if (isDateValid) {
         handleSave(newStartDate);
       } else {
