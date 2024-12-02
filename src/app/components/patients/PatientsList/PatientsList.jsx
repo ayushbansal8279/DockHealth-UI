@@ -585,7 +585,7 @@ const PatientsList = ({
       case 'BOOLEAN':
         return 120;
       case 'NUMBER':
-        return 150;
+        return 200;
       default:
         return 100;
     }
