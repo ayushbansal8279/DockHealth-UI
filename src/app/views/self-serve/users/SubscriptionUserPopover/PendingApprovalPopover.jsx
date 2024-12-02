@@ -17,6 +17,8 @@ import {
   ApprovalButtonContainer,
   Header,
   RoleSelectorCancelRemoveUserButton,
+  CancelButton,
+  ConfirmButton,
 } from './styled';
 
 const USER_TYPES = new Proxy(
@@ -98,7 +100,7 @@ const renderUserTypesOptions = ({
               dispatch(
                 showGlobalErrorAlert(
                   error?.message ??
-                    `User's role could not be changed, please try again later`,
+                  `User's role could not be changed, please try again later`,
                 ),
               );
 
@@ -152,7 +154,7 @@ const PendingApprovalSelectionPopover = (props) => {
       </div>
       <RoleSelectionButtonsContainer>
         <DenyButtonContainer>
-          <Button
+          <CancelButton
             onClick={() =>
               denyPendingUser({ userIdentifier })
                 .then(() => {
@@ -168,7 +170,7 @@ const PendingApprovalSelectionPopover = (props) => {
                   dispatch(
                     showGlobalErrorAlert(
                       error?.message ??
-                        `User's pending invitation could not be denied, please try again later`,
+                      `User's pending invitation could not be denied, please try again later`,
                     ),
                   );
 
@@ -179,12 +181,12 @@ const PendingApprovalSelectionPopover = (props) => {
             fullWidth
           >
             DENY
-          </Button>
+          </CancelButton>
         </DenyButtonContainer>
         <ApprovalButtonContainer>
-          <Button onClick={() => setSelectedStep('second')} fullWidth>
+          <ConfirmButton onClick={() => setSelectedStep('second')} fullWidth>
             APPROVE
-          </Button>
+          </ConfirmButton>
         </ApprovalButtonContainer>
       </RoleSelectionButtonsContainer>
     </>
@@ -236,7 +238,7 @@ const PendingApprovalSelectionPopover = (props) => {
                 dispatch(
                   showGlobalErrorAlert(
                     error?.message ??
-                      `User's pending invitation could not be approved, please try again later`,
+                    `User's pending invitation could not be approved, please try again later`,
                   ),
                 );
 
@@ -258,6 +260,9 @@ const PendingApprovalSelectionPopover = (props) => {
         // className: clsx(popoverClasses.root),
         elevation: 0,
         square: true,
+        sx: {
+          boxShadow: '4px 2px 2px 0px rgba(0, 0, 0, 0.1),4px 2px 3px 4px rgba(0, 0, 0, 0.07), 4px 2px 6px 4px rgba(0, 0, 0, 0.06)'
+        }
       }}
       onClose={() => {
         closePopover();
@@ -270,7 +275,7 @@ const PendingApprovalSelectionPopover = (props) => {
         {selectedStep === 'first' && <FirsStepComponent />}
         {selectedStep === 'second' && <SecondStepComponent />}
       </PendingApprovalContainer>
-    </Popover>
+    </Popover >
   );
 };
 
