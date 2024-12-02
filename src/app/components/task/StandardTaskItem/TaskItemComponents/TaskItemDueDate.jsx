@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { updateTaskDueDate } from 'actions/task-actions';
 import DueDatePicker from 'components/task/DueDatePicker/DueDatePicker';
@@ -15,6 +15,7 @@ import {
 } from '../../styled';
 import { openModal } from '@/app/modal/actions';
 import { isDueDateValid } from '@/app/helpers/date-validation-helper';
+import moment from 'moment';
 
 const TaskItemDueDate = ({
   task,
@@ -33,8 +34,15 @@ const TaskItemDueDate = ({
     startDate,
   } = task || {};
 
+  const [momentDueDate, setMomentDueDate] = useState(
+    dueDate ? moment(dueDate) : null,
+  );
+
   const handleSave = useCallback(
     (newDueDate) => {
+      setMomentDueDate(
+        !!newDueDate ? moment(newDueDate) : null,
+      );
       dispatch(updateTaskDueDate(task, newDueDate));
       onTaskDueDateChanged();
     },
@@ -44,6 +52,7 @@ const TaskItemDueDate = ({
   const handleDueDateChange = useCallback(
     (newDueDate) => {
       const isDateValid = isDueDateValid(startDate, newDueDate);
+      setMomentDueDate(newDueDate ? moment(newDueDate) : null);
       if (isDateValid) {
         handleSave(newDueDate);
       } else {
@@ -65,7 +74,7 @@ const TaskItemDueDate = ({
         content={({ closePopover }) => (
           <DueDatePicker
             taskIdentifier={taskIdentifier}
-            selectedDate={dueDate}
+            selectedDate={momentDueDate}
             onDateChange={handleDueDateChange}
             recurring={hasRecurringSchedule}
             onCloseClick={closePopover}
@@ -75,7 +84,7 @@ const TaskItemDueDate = ({
         <>
           {dueDate ? (
             <DateLabel
-              date={dueDate}
+              date={momentDueDate}
               isOverdue={isDueDateOverdue(task)}
               hasReminder={reminderType && reminderType !== ReminderType.NONE}
               hasRecurringSchedule={hasRecurringSchedule}
