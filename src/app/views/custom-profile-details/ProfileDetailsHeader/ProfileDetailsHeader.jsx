@@ -144,7 +144,7 @@ const ProfileDetailsHeader = () => {
                 </Box>
                 <ProfileName>
                   {[
-                    `${profileName?.[1] || ''},`,
+                    `${profileName?.[1] ? profileName?.[1]+',' : ''}`,
                     profileName?.[0],
                     profileName?.[2],
                   ].join(' ')}
@@ -205,7 +205,7 @@ const ProfileDetailsHeader = () => {
           </Box>
           <ProfileDrawer
             title={[
-              `${profileName?.[1]},`,
+              `${profileName?.[1] ? profileName?.[1]+',' : ''}`,
               profileName?.[0],
               profileName?.[2],
             ].join(' ')}
