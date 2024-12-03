@@ -45,6 +45,9 @@ const StandardInput = ({
           '& .MuiOutlinedInput-notchedOutline': {
             borderColor: 'transparent',
           },
+          '& .Mui-disabled': {
+            opacity: '0.7',
+          },
         },
       }}
       label={label}
@@ -60,7 +63,7 @@ const StandardInput = ({
         ...CustomInputProps,
       }}
       {...restParams}
-      />
+    />
   );
 };
 
