@@ -47,7 +47,7 @@ export function calculateResponseTimeAgo(timestamp) {
 }
 
 export const patientPromptOptions = [
-  { key: 'Default', value: '' },
+  { key: 'General', value: '' },
   { key: 'Patient Journey', value: 'JOURNEY' },
   { key: 'Email Summary', value: 'EMAIL' },
   { key: 'Clinical Note', value: 'CLINICAL_NOTE' },
@@ -56,7 +56,7 @@ export const patientPromptOptions = [
 ];
 
 export const taskPromptOptions = [
-  { key: 'Default', value: '' },
+  { key: 'General', value: '' },
   { key: 'Email Summary', value: 'EMAIL' },
   { key: 'Clinical Note', value: 'CLINICAL_NOTE' },
   { key: 'One Liner', value: 'ONE_LINER' },
