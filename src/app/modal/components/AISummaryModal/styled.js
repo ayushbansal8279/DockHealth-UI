@@ -5,11 +5,12 @@ import palette from 'styles/palette';
 import { ModalWrapper } from '../styled';
 import { Button, TextareaAutosize } from '@mui/material';
 import Skeleton from '@mui/material/Skeleton';
+import SelectDown from 'img/AI/SelectDown.svg';
 
 export const AISummaryModalWrapper = styled(ModalWrapper)`
   width: 600px;
   border-radius: 10px;
-  padding: ${spacing.regular} ${spacing.largePlus} ${spacing.largePlus};
+  padding: ${spacing.regular} ${spacing.largePlus} 0 ${spacing.largePlus};
 `;
 
 export const Header = styled.div`
@@ -22,10 +23,15 @@ export const Header = styled.div`
 
 export const SubHeader = styled.div`
   display: flex;
-  gap: 10px;
+  justify-content: space-between;
+  align-items: space-between;
+  width: 100%;
+  margin: 20px 0 10px 0;
 `;
 
 export const Title = styled.div`
+  display: flex;
+  gap: 10px;
   color: ${palette.gunmetal};
   font-size: 21px;
   font-weight: ${fontWeights.bold};
@@ -56,7 +62,6 @@ export const CustomPromptInput = styled(TextareaAutosize)`
 `;
 
 export const IconWrapper = styled.img`
-  margin-left: 10px;
   cursor: pointer;
   width: 24px;
   height: 24px;
@@ -120,21 +125,17 @@ export const ResponseButton = styled(Button)`
 `;
 
 export const PromptSelector = styled.select`
-  border: 2px solid ${palette.zinc};
-  height: 32px;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  padding: 0 40px 0 10px;
+  border: 1px solid ${palette.lightGrey2};
+  background-image: url(${SelectDown});
+  background-repeat: no-repeat;
+  background-position-x: 95%;
+  background-position-y: 60%;
   border-radius: 6px;
-  padding: 0 6px;
-  width: 150px;
-`;
-
-export const PromptSelectorWrapper = styled.div`
-  margin-left: 30px;
-  display: flex;
-  align-items: center;
-`;
-
-export const PromptSelectorLabel = styled.label`
-  margin-right: 10px;
+  font-weight: 500;
+  width: fit-content;
 `;
 
 export const RegenerateWrapper = styled.div`
@@ -150,7 +151,7 @@ export const RefreshWrapper = styled.div`
   height: 32px;
   border-radius: 6px;
   background-color: ${palette.whiteSmoke};
-  padding-left: 10px;
+  padding: 0 2px;
 `;
 
 export const AISummaryLoaderSkeleton = styled(Skeleton)`
@@ -164,8 +165,8 @@ export const AISummaryLoaderSkeleton = styled(Skeleton)`
 
 export const CopyTooltip = styled.div`
   position: absolute;
-  top: -10;
-  right: 10;
+  top: 40;
+  right: 1;
   color: ${palette.coolGrey1};
   background-color: ${({ copied }) => (copied ? palette.mediumGrey : '')};
   padding: 2px 5px;
@@ -173,13 +174,24 @@ export const CopyTooltip = styled.div`
 `;
 
 export const CustumTooltip = styled.div`
-  padding: 1px 10px;
+  padding: 3px 10px;
   position: absolute;
-  top: -10;
-  right: ${({ right }) => right || 60};
+  top: 45;
+  right: ${({ right }) => right || null};
+  left: ${({ left }) => left || null};
   color: black;
   background-color: ${palette.whiteSmoke};
   font-size: 14px;
   box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.15);
   border-radius: 4px;
+  font-weight: 500;
+`;
+
+export const Footer = styled.p`
+  margin-top: 15px;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 16px;
+  text-align: left;
+  color: ${palette.offBlack};
 `;

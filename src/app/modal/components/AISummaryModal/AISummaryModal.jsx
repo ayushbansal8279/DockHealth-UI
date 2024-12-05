@@ -16,14 +16,14 @@ import {
   CustomPromptInput,
   CopyTooltip,
   PromptSelector,
-  PromptSelectorLabel,
-  PromptSelectorWrapper,
   CustumTooltip,
+  Footer,
 } from './styled';
 import LuminaStar from 'img/AI/LuminaStar';
 import palette from '@/app/styles/palette';
 import Copy from 'img/AI/Copy.svg';
 import Close from 'img/AI/XClose.svg';
+import RefreshIcon from 'img/AI/RefreshIcon.svg';
 import EmailIcon from 'img/email-new-icon.svg';
 import {
   calculateResponseTimeAgo,
@@ -65,6 +65,8 @@ const AISummaryModal = ({ closeModal, title, onsubmit, type, identifier }) => {
   const [tooltipHover, setTooltipHover] = useState({
     email: false,
     note: false,
+    copy: false,
+    regenrate: false,
   });
   const dispatch = useDispatch();
 
@@ -129,15 +131,43 @@ const AISummaryModal = ({ closeModal, title, onsubmit, type, identifier }) => {
   return (
     <AISummaryModalWrapper>
       <Header>
-        <SubHeader>
+        <Title>
           <LuminaStar color={palette.newBrightBlue} />
-          <Title>{title}</Title>
-        </SubHeader>
-        <Box display="flex" gap={1}>
+          {title}
+        </Title>
+        <IconWrapper onClick={closeModal} src={Close} alt="close" />
+      </Header>
+      <SubHeader>
+        <Box display="flex" gap={3}>
+          <RefreshWrapper>
+            {tooltipHover.regenrate && (
+              <CustumTooltip left={5}>Regenerate</CustumTooltip>
+            )}
+            <IconWrapper
+              onMouseEnter={() => setTooltipHover({ regenrate: true })}
+              onMouseLeave={() => setTooltipHover({ regenrate: false })}
+              onClick={handleReGenerateResponse}
+              src={RefreshIcon}
+              alt="Refresh"
+            />
+          </RefreshWrapper>
+          {aiSummaryMultiplePrompts?.value && (
+            <PromptSelector
+              onChange={handlePromptTypeChange}
+              defaultValue={promptTypeValue}
+              value={promptTypeValue}
+            >
+              {promptoptions.map((option) => (
+                <option value={option.value}>{option.key}</option>
+              ))}
+            </PromptSelector>
+          )}
+        </Box>
+        <Box display="flex" gap={2}>
           {postToEMRAvailable && (
             <>
               {tooltipHover.note && (
-                <CustumTooltip right={110}>Post EMR note</CustumTooltip>
+                <CustumTooltip right={70}>Post EMR note</CustumTooltip>
               )}
               <DescriptionOutlined
                 onMouseEnter={() => setTooltipHover({ note: true })}
@@ -158,7 +188,7 @@ const AISummaryModal = ({ closeModal, title, onsubmit, type, identifier }) => {
           {sendEmailAvailable && (
             <>
               {tooltipHover.email && (
-                <CustumTooltip right={70}>Email Summary</CustumTooltip>
+                <CustumTooltip right={20}>Email Summary</CustumTooltip>
               )}
               <IconWrapper
                 onMouseEnter={() => setTooltipHover({ email: true })}
@@ -177,13 +207,19 @@ const AISummaryModal = ({ closeModal, title, onsubmit, type, identifier }) => {
               />
             </>
           )}
-          <IconWrapper onClick={handleCopy} src={Copy} alt="copy" />
+          {tooltipHover.copy && <CustumTooltip right={15}>Copy</CustumTooltip>}
+          <IconWrapper
+            onMouseEnter={() => setTooltipHover({ copy: true })}
+            onMouseLeave={() => setTooltipHover({ copy: false })}
+            onClick={handleCopy}
+            src={Copy}
+            alt="copy"
+          />
           <CopyTooltip copied={copied}>
             {copied ? 'Copied to clipboard!' : ''}
           </CopyTooltip>
-          <IconWrapper onClick={closeModal} src={Close} alt="close" />
         </Box>
-      </Header>
+      </SubHeader>
       <Spacing vertical={3} />
       <Grid container direction="column" item wrap="nowrap">
         <RegenerateWrapper>
@@ -192,26 +228,6 @@ const AISummaryModal = ({ closeModal, title, onsubmit, type, identifier }) => {
           ) : (
             <GeneratedTime>Generated {generateDateTime}</GeneratedTime>
           )}
-          {aiSummaryMultiplePrompts?.value && (
-            <PromptSelectorWrapper>
-              <PromptSelectorLabel>Prompt Type:</PromptSelectorLabel>
-              <PromptSelector
-                onChange={handlePromptTypeChange}
-                defaultValue={promptTypeValue}
-                value={promptTypeValue}
-              >
-                {promptoptions.map((option) => (
-                  <option value={option.value}>{option.key}</option>
-                ))}
-              </PromptSelector>
-            </PromptSelectorWrapper>
-          )}
-          <RefreshWrapper>
-            <LuminaStar color={palette.newBrightBlue} />
-            <ResponseButton onClick={handleReGenerateResponse}>
-              Refresh
-            </ResponseButton>
-          </RefreshWrapper>
         </RegenerateWrapper>
         <Spacing vertical={4} />
         {isFetching && AISummaryLoader()}
@@ -242,6 +258,15 @@ const AISummaryModal = ({ closeModal, title, onsubmit, type, identifier }) => {
           </ResponseButton>
         </RefreshWrapper>
       </RegenerateWrapper> */}
+      {isFetching ? (
+        <Footer></Footer>
+      ) : (
+        <Footer>
+          This AI-generated summary is provided for convenience and should be
+          reviewed for accuracy and completeness. Is it helpful? If not, Please
+          share your feedback to help us improve.
+        </Footer>
+      )}
     </AISummaryModalWrapper>
   );
 };
