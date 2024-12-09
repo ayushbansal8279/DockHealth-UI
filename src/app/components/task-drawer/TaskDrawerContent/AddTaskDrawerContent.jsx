@@ -150,7 +150,9 @@ const AddTaskDrawerContent = (props) => {
         taskGroupIdentifier,
         description,
         details,
-        assignedToIdentifiers: [...new Set([...(assignedToIdentifiers || []), userIdentifier])],
+        assignedToIdentifiers: [
+          ...new Set([...(assignedToIdentifiers || []), userIdentifier]),
+        ],
         patientIdentifier,
         startDate,
         dueDate,
@@ -185,14 +187,14 @@ const AddTaskDrawerContent = (props) => {
         }}
       >
         <CreateTaskLable>Create new task</CreateTaskLable>
-        <Tooltip placement="bottom-end" title={'Cancle Create Task'}>
+        <Tooltip placement="bottom-end" title={'Cancel Create Task'}>
           <IconButton
             onClick={() => {
               closeTaskDrawer();
             }}
             size="small"
             color="secondary"
-            style={{ paddingRight: '20px' }}
+            style={{ marginRight: '20px' }}
           >
             <Close />
           </IconButton>

@@ -137,3 +137,23 @@ export const getFirstAndLastNameFromFullName = (fullName) => {
     lastName: lastName ?? '',
   };
 };
+
+export function getCurrentUserBasicDetails(currentUser) {
+  return {
+    itemType: currentUser?.itemType,
+    id: currentUser?.id,
+    identifier: currentUser?.identifier,
+    userId: currentUser?.userId,
+    userIdentifier: currentUser?.userIdentifier,
+    firstName: currentUser?.firstName,
+    lastName: currentUser?.lastName,
+    userName: currentUser?.userName,
+    userStatus: currentUser?.userStatus,
+    initials: currentUser?.initials,
+    bubbleColor: currentUser?.bubbleColor,
+    status: currentUser?.status,
+    orgUserRole: currentUser?.orgUserRole,
+    taskListUserRole: currentUser?.taskListUserRole,
+    name: currentUser?.name,
+  };
+}
