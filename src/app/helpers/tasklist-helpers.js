@@ -39,7 +39,7 @@ export function extractTasksAndSubtasks(listOfTasks) {
               accumulator.parentTasks.push(t);
               // eslint-disable-next-line no-unused-expressions
               if (t.subtasks)
-                for (const subtask of t.subtasks){
+                for (const subtask of t.subtasks) {
                   if (!accumulator.subtasks.includes(subtask)) {
                     accumulator.subtasks.push(subtask);
                   }
@@ -100,4 +100,8 @@ export function checkIfHasIncompleteTasks(tasks) {
 
 export function getTaskListStatusStorageKey(taskListIdentifier) {
   return `status${taskListIdentifier}`;
+}
+
+export function getTaskListWorkflowStatusStorageKey(taskListIdentifier) {
+  return `workflowStatus${taskListIdentifier}`;
 }

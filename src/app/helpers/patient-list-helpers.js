@@ -72,3 +72,6 @@ export const PATIENT_BASE_COLUMN_CONFIG = {
   [PatientHeaderColumn.MOBILE]: true,
   [PatientHeaderColumn.HOME]: true,
 };
+
+
+export const WorkflowCompletedTasksKey = "ShowWorkflowCompletedTasksOnpatientPage"
