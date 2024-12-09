@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from '@mui/material';
 import palette from '@/app/styles/palette';
+import Spacing from '@/app/components/common/Spacing';
 
 const TaskItemRelationship = ({ customFieldValue, field }) => {
   const { name } = field;
@@ -15,26 +16,37 @@ const TaskItemRelationship = ({ customFieldValue, field }) => {
       }))
     : [{ displayName, value }];
 
+  const profileLinkSx = {
+    color: palette.blueOcean,
+    fontFamily: 'Outfit',
+    textDecoration: 'none',
+    overflow: 'hidden',
+    whiteSpace: 'nowrap',
+    textOverflow: 'ellipsis',
+    '&:hover': {
+      color: palette.brightBlue,
+    },
+  };
+
   return (
     <>
-      {profiles.map((profile) => (
-        <Link
-          to={`/core/custom-profiles/${profileTypeIdentifier}/${profile.value}`}
-          sx={{
-            color: palette.blueOcean,
-            fontFamily: 'Outfit',
-            textDecoration: 'none',
-            overflow: 'hidden',
-            whiteSpace: 'nowrap',
-            textOverflow: 'ellipsis',
-            '&:hover': {
-              color: palette.brightBlue,
-            },
-          }}
-        >
-          {profile.displayName || ''}
-        </Link>
-      ))}
+      {profiles?.map((profile) => {
+        if (profile?.displayName) {
+          return (
+            <>
+              <Link
+                key={profile.value}
+                href={`/#/core/custom-profiles/${profileTypeIdentifier}/${profile.value}`}
+                sx={profileLinkSx}
+              >
+                {profile.displayName || ''}
+              </Link>
+              ,
+              <Spacing horizontal={3} />
+            </>
+          );
+        }
+      })}
     </>
   );
 };
