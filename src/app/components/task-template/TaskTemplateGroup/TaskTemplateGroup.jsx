@@ -30,6 +30,8 @@ import { currentTaskListTasksStatusSelector } from 'selectors/task-list-selector
 import { currentListTasksStatusSelector } from 'selectors/patient-details-selectors';
 import { TaskTemplateGroupList, QuickAddInputWrapper } from './styled';
 import TaskTemplateGroupHeader from '../TaskTemplateGroupHeader/TaskTemplateGroupHeader';
+import localStorageHelper from '@/app/helpers/local-storage-helper';
+import { WorkflowCompletedTasksKey } from '@/app/helpers/patient-list-helpers';
 
 const TaskTemplateGroup = ({
   templateGroup: pullGroup = {},
@@ -95,6 +97,10 @@ const TaskTemplateGroup = ({
   );
   const currentPatientTasksStatus = useSelector(currentListTasksStatusSelector);
 
+  const completedWorkflowTask = localStorageHelper.getItem(
+    WorkflowCompletedTasksKey,
+  );
+
   const tasksStatus =
     origin === TaskOrigin.PATIENT
       ? currentPatientTasksStatus
@@ -110,6 +116,8 @@ const TaskTemplateGroup = ({
   //   }
   // }, [SHOW_WORKFLOW_DETAILS, SHOW_WORKFLOW_COMPLETED_TASKS, isCompletedTab]);
 
+  console.log(completedWorkflowTask);
+  
   useEffect(() => {
     if (viewType === 'FULL_VIEW') {
       setOpen(true);
@@ -134,7 +142,7 @@ const TaskTemplateGroup = ({
       }
       case TaskStatus.INCOMPLETE: {
         setShowIncompleteTasks(true);
-        setShowCompletedTasks(false);
+        setShowCompletedTasks(completedWorkflowTask ? true : false);
         break;
       }
       case TaskStatus.ALL: {
@@ -146,7 +154,7 @@ const TaskTemplateGroup = ({
       // No default
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tasksStatus]);
+  }, [tasksStatus,completedWorkflowTask]);
 
   const handleAddBundleTask = useCallback(
     (task) => {

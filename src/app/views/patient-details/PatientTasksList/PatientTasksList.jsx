@@ -13,6 +13,7 @@ import TaskListHeader from 'views/patient-details/TaskListHeader/TaskListHeader'
 import {
   getPatientFilterOptions,
   getCurrentPatientTasks,
+  setCurrentListTasksStatus,
 } from 'actions/patient-details-actions';
 import { openModal } from 'modal/actions';
 import { PatientTasksSagaActions } from 'sagas/patient-details-saga';
@@ -130,7 +131,9 @@ const PatientTasksListView = () => {
   };
 
   useEffect(() => {
-    const storedViewType = localStorageHelper.getItem(`patient${patientIdentifier}`);
+    const storedViewType = localStorageHelper.getItem(
+      `patient${patientIdentifier}`,
+    );
     if (storedViewType === 'FULL_VIEW') {
       setViewType('FULL_VIEW');
     }
@@ -204,6 +207,9 @@ const PatientTasksListView = () => {
   }, [activeList, currentList, isAllTasksView, setCurrentList]);
   useEffect(() => {
     if (patientIdentifier) {
+      const savedStatus = localStorageHelper.getItem('patientPageStatus');
+
+      dispatch(setCurrentListTasksStatus(savedStatus ?? TaskStatus.INCOMPLETE));
       initializeSavedFilters(patientIdentifier);
       dispatch(getCurrentPatientTasks());
     }
