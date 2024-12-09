@@ -54,6 +54,7 @@ const SaveFilterPopup = ({
   handleSelectedFiltersChange,
   fiterCount,
   setFilterCount,
+  showFiterCount,
 }) => {
   const [searchInputValue, setSearchInputValue] = useState('');
   const [quickfilterName, setQuickfilterName] = useState('');
@@ -246,6 +247,7 @@ const SaveFilterPopup = ({
               customFinalFilter={customFinalFilter}
               fiterCount={fiterCount}
               setFilterCount={setFilterCount}
+              showFiterCount={showFiterCount}
             />
           </div>
         )}

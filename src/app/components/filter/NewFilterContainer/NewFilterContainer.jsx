@@ -47,6 +47,7 @@ const NewFilterContainer = ({
   editModeEnabled = true,
   fiterCount,
   setFilterCount,
+  showFiterCount = false,
 }) => {
   const popoverReference = useRef(null);
   const [isPopoverOpen, openAddFilterPopover, closeAddFilterPopover] =
@@ -95,10 +96,12 @@ const NewFilterContainer = ({
     }
     setFilteredData(data);
 
-    if (Object.entries(data)?.length > 0) {
-      fetchfilterCountWithDebounce(data);
-    } else {
-      setFilterCount(-1);
+    if (showFiterCount) {
+      if (Object.entries(data)?.length > 0) {
+        fetchfilterCountWithDebounce(data);
+      } else {
+        setFilterCount(-1);
+      }
     }
   }, [finalFilter]);
 
