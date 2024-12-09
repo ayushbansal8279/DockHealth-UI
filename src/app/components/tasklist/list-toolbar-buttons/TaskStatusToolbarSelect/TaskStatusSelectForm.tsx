@@ -7,16 +7,20 @@ import {
   FormGroup,
   Switch,
 } from '@mui/material';
-import { TaskStatus, TaskStatusLabel } from '@/app/helpers/task-helpers';
+import {
+  TaskOrigin,
+  TaskStatus,
+  TaskStatusLabel,
+} from '@/app/helpers/task-helpers';
 import {
   TaskStatusFormData,
   convertTaskStatusFormDataToStatus,
 } from './helpers';
 import Spacing from '@/app/components/common/Spacing';
-import { updateListPreferences } from '@/app/actions/task-list-actions';
-import { useDispatch } from 'react-redux';
 import { WorkflowLabel } from './styled';
 import localStorageHelper from '@/app/helpers/local-storage-helper';
+import { WorkflowCompletedTasksKey } from '@/app/helpers/patient-list-helpers';
+import { getTaskListWorkflowStatusStorageKey } from '@/app/helpers/tasklist-helpers';
 
 const options = [
   {
@@ -40,22 +44,30 @@ interface Props {
   defaultValue: string;
   taskListIdentifier: string;
   onSubmit: (newStatus: string) => void;
+  origin: string;
 }
 
 export default function TaskStatusSelectForm({
   defaultValue,
   onSubmit,
   taskListIdentifier,
+  origin,
 }: Props) {
   const [formData, setFormData] = useState<TaskStatusFormData>({
     incomplete: [TaskStatus.INCOMPLETE, TaskStatus.ALL].includes(defaultValue),
     complete: [TaskStatus.COMPLETE, TaskStatus.ALL].includes(defaultValue),
   });
 
-  const storageKey = `workflowStatus${taskListIdentifier}`;
+  const storageKey =
+    origin === TaskOrigin.PATIENT
+      ? WorkflowCompletedTasksKey
+      : getTaskListWorkflowStatusStorageKey(taskListIdentifier);
   const storedWorkflowStatus = localStorageHelper.getItem(storageKey);
-  const dispatch = useDispatch();
-  const [completedWorkflowTasks, setCompletedWorkflowTask] = useState(storedWorkflowStatus || false);
+  const [completedWorkflowTasks, setCompletedWorkflowTask] = useState(
+    storedWorkflowStatus || false,
+  );
+
+  console.log(origin);
 
   const applyDisabled = !formData.incomplete && !formData.complete;
 
@@ -70,6 +82,9 @@ export default function TaskStatusSelectForm({
   const handleWorflowChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { checked } = event.target;
     setCompletedWorkflowTask(checked);
+    console.log('storageKey', storageKey);
+    console.log(checked);
+
     checked
       ? localStorageHelper.setItem(storageKey, true)
       : localStorageHelper.removeItem(storageKey);
@@ -78,15 +93,6 @@ export default function TaskStatusSelectForm({
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     onSubmit(convertTaskStatusFormDataToStatus(formData));
-
-    dispatch(
-      updateListPreferences(
-        completedWorkflowTasks
-          ? workflowOption.setup
-          : workflowOption.setupBlank,
-        taskListIdentifier,
-      ),
-    );
   };
 
   return (
@@ -115,6 +121,7 @@ export default function TaskStatusSelectForm({
             key={workflowOption.name}
             control={
               <Switch
+                disabled={formData.complete}
                 name={workflowOption.name}
                 checked={completedWorkflowTasks}
                 onChange={handleWorflowChange}

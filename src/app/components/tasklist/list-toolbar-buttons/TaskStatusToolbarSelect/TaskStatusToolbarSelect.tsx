@@ -38,7 +38,7 @@ export default function TaskStatusToolbarSelect({
 
   const storageKey =
     origin === TaskOrigin.PATIENT
-      ? 'patientStatus'
+      ? 'patientPageStatus'
       : getTaskListStatusStorageKey(taskListIdentifier);
 
   useEffect(() => {
@@ -115,6 +115,7 @@ export default function TaskStatusToolbarSelect({
             taskListIdentifier={taskListIdentifier}
             defaultValue={status}
             onSubmit={handleSubmit}
+            origin={origin}
           />
         </Popover>
       )}
