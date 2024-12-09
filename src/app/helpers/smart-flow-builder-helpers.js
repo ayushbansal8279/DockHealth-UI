@@ -3,6 +3,7 @@ import ELK from 'elkjs/lib/elk.bundled';
 export const TASK_NODE_WIDTH = 230;
 
 export const NodeType = {
+  NEW_AUTOMATION: 'NEW_AUTOMATION',
   NEW_STANDARD: 'NEW_STANDARD',
   NEW_DECISION: 'NEW_DECISION',
   STANDARD: 'STANDARD',

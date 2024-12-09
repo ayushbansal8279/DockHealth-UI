@@ -92,6 +92,7 @@ import {
   SidebarDivider,
   AutoAlignButton,
   EditIconWrapper,
+  AutomationTaskIcon,
 } from './styled';
 import TaskLinkDelayForm from './TaskLinkDelayForm/TaskLinkDelayForm';
 import TemporaryDecisionTaskLink from './TemporaryDecisionTaskLink/TemporaryDecisionTaskLink';
@@ -101,6 +102,7 @@ import NestedFlowNode from './NestedFlow/NestedFlowNode/NestedFlowNode';
 import NewNestedFlowNode from './NestedFlow/NewNestedFlowNode/NewNestedFlowNode';
 
 const nodeTypes = {
+  [NodeType.NEW_AUTOMATION]: NewTaskNode,
   [NodeType.NEW_STANDARD]: NewTaskNode,
   [NodeType.NEW_DECISION]: NewTaskNode,
   [NodeType.STANDARD]: TaskNode,
@@ -313,6 +315,16 @@ const SmartFlowBuilderView = () => {
         id: NodeType.NEW_STANDARD,
         label: 'Task',
         icon: TaskElementIcon,
+        onClick: () => {
+          const position = calculateNewElementPosition(layout);
+          dispatch(addNewTaskElement(position));
+          centerViewToElement(position);
+        },
+      },
+      {
+        id: NodeType.NEW_AUTOMATION,
+        label: 'Automation Task',
+        icon: AutomationTaskIcon,
         onClick: () => {
           const position = calculateNewElementPosition(layout);
           dispatch(addNewTaskElement(position));
