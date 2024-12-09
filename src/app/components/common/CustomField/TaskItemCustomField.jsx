@@ -7,6 +7,7 @@ import TaskItemText from 'components/task/StandardTaskItem/customFieldsTaskItemC
 import TaskItemLongText from 'components/task/StandardTaskItem/customFieldsTaskItemComponents/TaskItemLongText/TaskItemLongText';
 import TaskItemNumber from 'components/task/StandardTaskItem/customFieldsTaskItemComponents/TaskItemNumber/TaskItemNumber';
 import TaskItemHyperLink from 'components/task/StandardTaskItem/customFieldsTaskItemComponents/TaskItemHyperLink/TaskItemHyperLink';
+import TaskItemRelationship from 'components/task/StandardTaskItem/customFieldsTaskItemComponents/TaskItemRelationship/TaskItemRelationship';
 import { updatePartialWorkflow } from 'actions/task-template-actions';
 import { partialUpdateTask, storeAsCurrentTask } from 'actions/task-actions';
 import { TaskItemType } from 'helpers/task-helpers';
@@ -200,6 +201,14 @@ const TaskItemCustomField = ({
           readOnly={isReadOnly}
           value={value}
           onChange={handleChange}
+          field={field}
+        />
+      );
+    }
+    case FieldType.RELATIONSHIP: {
+      return (
+        <TaskItemRelationship
+          customFieldValue={customFieldValue}
           field={field}
         />
       );
