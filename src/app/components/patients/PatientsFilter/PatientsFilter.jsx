@@ -236,7 +236,6 @@ const PatientsFilter = ({
         setCustomFinalFilter={setCustomFinalFilter}
         handleSelectedFiltersChange={handleSelectedFiltersChange}
         editModeEnabled={isAdmin}
-        patientsListPageFilter
       />
     </>
   );

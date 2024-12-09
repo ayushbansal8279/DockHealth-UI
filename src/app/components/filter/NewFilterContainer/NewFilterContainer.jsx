@@ -47,7 +47,7 @@ const NewFilterContainer = ({
   editModeEnabled = true,
   fiterCount,
   setFilterCount,
-  patientsListPageFilter = false,
+  showFiterCount = false,
 }) => {
   const popoverReference = useRef(null);
   const [isPopoverOpen, openAddFilterPopover, closeAddFilterPopover] =
@@ -96,7 +96,7 @@ const NewFilterContainer = ({
     }
     setFilteredData(data);
 
-    if (!patientsListPageFilter) {
+    if (showFiterCount) {
       if (Object.entries(data)?.length > 0) {
         fetchfilterCountWithDebounce(data);
       } else {
@@ -158,7 +158,7 @@ const NewFilterContainer = ({
           filteredData={filteredData}
         />
       ))}
-      {fiterCount && fiterCount !== -1 && (
+      {fiterCount !== -1 && (
         <FilterCount> {fiterCount} matching result</FilterCount>
       )}
       {editModeEnabled && (

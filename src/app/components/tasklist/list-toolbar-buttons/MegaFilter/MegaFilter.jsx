@@ -35,6 +35,7 @@ const MegaFilter = ({
   isDefaultDateFilterApplied = false,
   value,
   focused,
+  showFiterCount,
 }) => {
   const [isOpen, openPopover] = useState(false);
   const megaFilterButtonReference = useRef(null);
@@ -166,7 +167,8 @@ const MegaFilter = ({
             selectQuickFilter={selectQuickFilter}
             handleSelectedFiltersChange={handleSelectedFiltersChange}
             fiterCount={fiterCount}
-                  setFilterCount={setFilterCount}
+            setFilterCount={setFilterCount}
+            showFiterCount={showFiterCount}
           />
           {isFilterApplied && tasksAndSubTasksCount === 0 && !isFetching && (
             <MegaFilterNoResultsLabel>
@@ -225,6 +227,7 @@ const MegaFilter = ({
                   handleSelectedFiltersChange={handleSelectedFiltersChange}
                   fiterCount={fiterCount}
                   setFilterCount={setFilterCount}
+                  showFiterCount={showFiterCount}
                 />
               ) : (
                 <></>
