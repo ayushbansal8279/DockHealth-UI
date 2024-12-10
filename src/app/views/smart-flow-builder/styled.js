@@ -2,8 +2,7 @@ import spacing from '@/app/styles/spacing';
 import styled from 'styled-components';
 import { fontSizes, fontWeights } from 'styles/font';
 import palette, { typography } from 'styles/palette';
-import TaskAutomationComplete from 'img/task-automation-complete.svg';
-import TaskAutomationPending from 'img/task-automation-pending.svg';
+import BoltIcon from '@mui/icons-material/Bolt';
 
 export const ContextMenu = styled.div`
   position: absolute;
@@ -87,16 +86,11 @@ export const TaskElementIcon = styled.div`
   color: inherit;
 `;
 
-export const AutomationTaskIcon = styled.div`
+export const AutomationTaskIcon = styled(BoltIcon)`
   width: 25px;
-  height: 30px;
+  height: 25px;
   border-radius: 3px;
-  color: inherit;
-  background-image: url(${TaskAutomationPending});
-  background-repeat: no-repeat;
-  background-size: contain;
-  background-position: center;
-  fill:  ${palette.white};
+  color="inherit"
 `;
 
 export const BuilderHeader = styled.div`

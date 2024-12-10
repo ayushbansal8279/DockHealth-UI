@@ -35,6 +35,7 @@ import {
   undoTaskTemplateLayout,
   selectTaskTemplate,
   unselectTaskTemplate,
+  addNewAutomationTaskElement,
 } from 'actions/task-template-actions';
 import {
   taskTemplateDetailsSelector,
@@ -327,7 +328,7 @@ const SmartFlowBuilderView = () => {
         icon: AutomationTaskIcon,
         onClick: () => {
           const position = calculateNewElementPosition(layout);
-          dispatch(addNewTaskElement(position));
+          dispatch(addNewAutomationTaskElement(position));
           centerViewToElement(position);
         },
       },
@@ -484,6 +485,10 @@ const SmartFlowBuilderView = () => {
     switch (type) {
       case NodeType.NEW_STANDARD: {
         dispatch(addNewTaskElement(position));
+        break;
+      }
+      case NodeType.NEW_AUTOMATION: {
+        dispatch(addNewAutomationTaskElement(position));
         break;
       }
       case NodeType.NEW_DECISION: {

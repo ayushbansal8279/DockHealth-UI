@@ -133,6 +133,21 @@ export function createDecisionTaskNodes(
   ];
 }
 
+export function createNewAutomationTaskNode(
+  currentTemporaryElements,
+  elementPosition,
+  type = NodeType.NEW_AUTOMATION,
+) {
+  const numberOfNewTasks =
+    currentTemporaryElements?.filter((element) => element.type === type)
+      .length || 0;
+  return {
+    id: `${type}-${numberOfNewTasks}`,
+    type,
+    position: elementPosition,
+  };
+}
+
 export function getTargetNodeType(sourceElementType) {
   if (sourceElementType === NodeType.NEW_DECISION) return NodeType.DECISION;
 

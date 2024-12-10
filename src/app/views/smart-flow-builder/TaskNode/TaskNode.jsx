@@ -4,6 +4,7 @@ import 'reactflow/dist/style.css';
 import { useBoolean } from 'hooks/useBoolean';
 import SubtaskIcon from 'img/SubtaskIcon';
 import { Box, IconButton } from '@mui/material';
+import BoltIcon from '@mui/icons-material/Bolt';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useDispatch, useSelector } from 'react-redux';
@@ -144,6 +145,11 @@ const TaskNode = React.memo(({ data, isConnectable, selected, type }) => {
             {type === NodeType.DECISION && (
               <DecisionTaskIconWrapper>
                 <DecisionTaskElementIcon size={16} />
+              </DecisionTaskIconWrapper>
+            )}
+            {description.includes('[System]') && (
+              <DecisionTaskIconWrapper>
+                <BoltIcon fontSize='verysmall'/>
               </DecisionTaskIconWrapper>
             )}
             <OptionsContainer>
