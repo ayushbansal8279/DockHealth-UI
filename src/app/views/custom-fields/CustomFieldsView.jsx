@@ -7,6 +7,7 @@ import { checkIfUserIsOrganizationAdmin } from 'helpers/user-helper';
 import BasicLayoutHeader from 'components/template/BasicLayoutHeader/BasicLayoutHeader';
 import ViewLayout from 'components/template/ViewLayout/ViewLayout';
 import { ColumnsConfigProvider } from 'context-api/columns-config-context';
+import { getProfileDetailsType } from 'api/profile-type-api';
 import TaskCustomFieldsView from './TaskCustomFieldsView';
 import PatientCustomFieldsView from './PatientCustomFieldsView';
 import { ViewContainer } from './styled';
@@ -23,6 +24,7 @@ const CustomFieldsView = () => {
   const userProfile = useSelector(userProfileSelector);
   const history = useHistory();
   const { tabName, identifier } = useParams();
+  const [profileType, setProfileType] = useState([]);
 
   const initial = Object.entries(TABS).find(([, name]) => name === tabName);
 
@@ -35,22 +37,31 @@ const CustomFieldsView = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userProfile]);
 
+  useEffect(() => {
+    if (identifier) {
+      // get profile type details
+      getProfileDetailsType(identifier).then((profileTypeDetails) => {
+        setProfileType(profileTypeDetails);
+      });
+    }
+  }, [identifier]);
+
   return (
     <ColumnsConfigProvider>
       <ViewLayout
         header={
           <BasicLayoutHeader
             title={`${
-              tabName
-                ? tabName?.charAt(0).toUpperCase() + tabName?.slice(1)
-                : ''
+              profileType?.name ||
+              tabName?.charAt(0).toUpperCase() + tabName?.slice(1) ||
+              ''
             } Custom Fields`}
           />
         }
       >
         <ViewContainer isPatient={selectedTab === 0}>
           <Box p={1} />
-          {selectedTab === 0 && <PatientCustomFieldsView  />}
+          {selectedTab === 0 && <PatientCustomFieldsView />}
           {selectedTab === 1 && <TaskCustomFieldsView editable />}
           {selectedTab === 2 && <UserCustomFieldsView editable />}
           {!selectedTab && selectedTab !== 0 && (
