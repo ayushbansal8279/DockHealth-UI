@@ -102,7 +102,7 @@ const Datepicker = ({
           <KeyboardArrowRight />
         </IconButton>
       </Grid>
-      <Spacing vertical={5} />
+      <Spacing vertical={4} />
       <CalendarGridContainer>
         {DAYS_OF_WEEK.map(renderDayOfWeekHeaderLabel)}
         {dayLabelsToRender}
