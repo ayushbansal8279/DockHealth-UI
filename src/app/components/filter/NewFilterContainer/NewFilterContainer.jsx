@@ -53,7 +53,7 @@ const NewFilterContainer = ({
   editModeEnabled = true,
   fiterCount,
   setFilterCount,
-  showFiterCount = false,
+  showFilterCount = false,
 }) => {
   const popoverReference = useRef(null);
   const [isPopoverOpen, openAddFilterPopover, closeAddFilterPopover] =
@@ -113,14 +113,14 @@ const NewFilterContainer = ({
 
   useEffect(() => {
     setFilteredData(processedData);
-    if (showFiterCount) {
+    if (showFilterCount) {
       if (Object.entries(processedData)?.length > 0) {
         fetchfilterCountWithDebounce(processedData);
       } else {
         setFilterCount(-1);
       }
     }
-  }, [processedData, showFiterCount, fetchfilterCountWithDebounce]);
+  }, [processedData, showFilterCount, fetchfilterCountWithDebounce]);
 
   const handleClick = (option) => {
     filters.map((item) => {

@@ -322,7 +322,7 @@ const ListDetailsHeader = (props) => {
           isDefaultDateFilterApplied={isDefaultDateFilterApplied}
           clearFilter={clearFilter}
           setClearFilter={setClearFilter}
-          showFiterCount
+          showFilterCount
         />
         {restrictions?.editSettings !== DISABLED &&
           !restrictCustomizationFeatures && (
