@@ -7,11 +7,7 @@ import {
   FormGroup,
   Switch,
 } from '@mui/material';
-import {
-  TaskOrigin,
-  TaskStatus,
-  TaskStatusLabel,
-} from '@/app/helpers/task-helpers';
+import { TaskStatus, TaskStatusLabel } from '@/app/helpers/task-helpers';
 import {
   TaskStatusFormData,
   convertTaskStatusFormDataToStatus,
@@ -19,8 +15,7 @@ import {
 import Spacing from '@/app/components/common/Spacing';
 import { WorkflowLabel } from './styled';
 import localStorageHelper from '@/app/helpers/local-storage-helper';
-import { WorkflowCompletedTasksKey } from '@/app/helpers/patient-list-helpers';
-import { getTaskListWorkflowStatusStorageKey } from '@/app/helpers/tasklist-helpers';
+import { getWorkflowStatusStorageKey } from '@/app/helpers/tasklist-helpers';
 
 const options = [
   {
@@ -58,16 +53,11 @@ export default function TaskStatusSelectForm({
     complete: [TaskStatus.COMPLETE, TaskStatus.ALL].includes(defaultValue),
   });
 
-  const storageKey =
-    origin === TaskOrigin.PATIENT
-      ? WorkflowCompletedTasksKey
-      : getTaskListWorkflowStatusStorageKey(taskListIdentifier);
+  const storageKey = getWorkflowStatusStorageKey(origin, taskListIdentifier);
   const storedWorkflowStatus = localStorageHelper.getItem(storageKey);
   const [completedWorkflowTasks, setCompletedWorkflowTask] = useState(
     storedWorkflowStatus || false,
   );
-
-  console.log(origin);
 
   const applyDisabled = !formData.incomplete && !formData.complete;
 

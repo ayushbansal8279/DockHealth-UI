@@ -31,3 +31,6 @@ export const PatientAttachmentType = {
   FILE_LOCAL: 'FILE_LOCAL',
   FILE_GDRIVE: 'FILE_GDRIVE',
 };
+
+export const WorkflowCompletedTasksKey =
+  'patient-show-workflow-completed-tasks';

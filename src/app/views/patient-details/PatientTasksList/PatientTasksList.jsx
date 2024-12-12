@@ -69,6 +69,8 @@ import { ListViewType } from '../helpers';
 import {
   checkIfSelectedListIsPresent,
   groupTasks,
+  patientTaskViewStatusStorageKey,
+  patientViewTypeStorageKey,
   searchTaskInPatientLists,
 } from './helpers';
 import TaskListToolbar from '../TaskListToolbar/TaskListToolbar';
@@ -121,19 +123,18 @@ const PatientTasksListView = () => {
   const patient = useSelector(patientSelector);
   const isAllTasksView = taskListIdentifierParameter === ListViewType.ALL_TASKS;
   const [viewType, setViewType] = useState('SLIM_VIEW');
+  const storageKey = patientViewTypeStorageKey;
   const handlePatientView = (value) => {
     setViewType(value);
     if (value === 'FULL_VIEW') {
-      localStorageHelper.setItem(`patient${patientIdentifier}`, value);
+      localStorageHelper.setItem(storageKey, value);
     } else {
-      localStorageHelper.removeItem(`patient${patientIdentifier}`);
+      localStorageHelper.removeItem(storageKey);
     }
   };
 
   useEffect(() => {
-    const storedViewType = localStorageHelper.getItem(
-      `patient${patientIdentifier}`,
-    );
+    const storedViewType = localStorageHelper.getItem(storageKey);
     if (storedViewType === 'FULL_VIEW') {
       setViewType('FULL_VIEW');
     }
@@ -207,7 +208,9 @@ const PatientTasksListView = () => {
   }, [activeList, currentList, isAllTasksView, setCurrentList]);
   useEffect(() => {
     if (patientIdentifier) {
-      const savedStatus = localStorageHelper.getItem('patientPageStatus');
+      const savedStatus = localStorageHelper.getItem(
+        patientTaskViewStatusStorageKey,
+      );
 
       dispatch(setCurrentListTasksStatus(savedStatus ?? TaskStatus.INCOMPLETE));
       initializeSavedFilters(patientIdentifier);
