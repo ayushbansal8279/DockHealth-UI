@@ -147,7 +147,6 @@ const ProfileDrawer = ({
       })
         // eslint-disable-next-line no-shadow
         .then((data) => {
-          setEditMode(false);
           dispatch(showGlobalAlert(AlertMessages.SAVED));
           onUpdate(data);
         })
@@ -253,9 +252,12 @@ const ProfileDrawer = ({
                         field={field}
                         initialValue={
                           record
-                            ? record?.values?.length > 1 
+                            ? record?.values?.length > 1
                               ? record.values
-                              : (record.values?.[0] || record.values?.[0]?.value || record.values?.[0]?.customFieldOption?.identifier)
+                              : record.values?.[0] ||
+                                record.values?.[0]?.value ||
+                                record.values?.[0]?.customFieldOption
+                                  ?.identifier
                             : ''
                         }
                         fieldsGroupKey="profileMetaData"

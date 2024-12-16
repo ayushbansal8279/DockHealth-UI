@@ -1,5 +1,11 @@
 import { Box } from '@mui/material';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { useSelector } from 'react-redux';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import { userProfileSelector } from 'selectors/user-selectors';
@@ -47,7 +53,7 @@ const NewFilterContainer = ({
   editModeEnabled = true,
   fiterCount,
   setFilterCount,
-  showFiterCount = false,
+  showFilterCount = false,
 }) => {
   const popoverReference = useRef(null);
   const [isPopoverOpen, openAddFilterPopover, closeAddFilterPopover] =
@@ -65,15 +71,16 @@ const NewFilterContainer = ({
       : item;
   });
 
-  useEffect(() => {
+  const processedData = useMemo(() => {
     const data = {};
+    let hasItems = false;
     for (const key in finalFilter) {
       if (finalFilter[key]?.length > 0) {
-        setDisable(true);
+        hasItems = true;
         const options = [];
         let dateStart = '';
         let dateEnd = '';
-        finalFilter[key].map((item) => {
+        finalFilter[key].forEach((item) => {
           if (item?.key?.includes('DATE_RANGE')) {
             dateStart = item?.dateStart;
             dateEnd = item?.dateEnd;
@@ -84,35 +91,36 @@ const NewFilterContainer = ({
         });
         data[key] =
           dateStart !== '' && dateEnd !== ''
-            ? {
-                options,
-                dateStart,
-                dateEnd,
-              }
+            ? { options, dateStart, dateEnd }
             : { options };
-      } else {
-        setDisable(false);
       }
     }
-    setFilteredData(data);
+    setDisable(hasItems);
+    return data;
+  }, [finalFilter]);
 
-    if (showFiterCount) {
-      if (Object.entries(data)?.length > 0) {
-        fetchfilterCountWithDebounce(data);
+  const fetchfilterCountWithDebounce = useCallback(
+    debounce(async (value) => {
+      const count = await getFilteredCountsForList(
+        taskList?.taskListIdentifier,
+        taskListStatus,
+        value,
+      );
+      setFilterCount(count?.count);
+    }, 50),
+    [taskList?.taskListIdentifier, taskListStatus],
+  );
+
+  useEffect(() => {
+    setFilteredData(processedData);
+    if (showFilterCount) {
+      if (Object.entries(processedData)?.length > 0) {
+        fetchfilterCountWithDebounce(processedData);
       } else {
         setFilterCount(-1);
       }
     }
-  }, [finalFilter]);
-
-  const fetchfilterCountWithDebounce = debounce(async (value) => {
-    const count = await getFilteredCountsForList(
-      taskList?.taskListIdentifier,
-      taskListStatus,
-      value,
-    );
-    setFilterCount(count?.count);
-  }, 50);
+  }, [processedData, showFilterCount, fetchfilterCountWithDebounce]);
 
   const handleClick = (option) => {
     filters.map((item) => {
