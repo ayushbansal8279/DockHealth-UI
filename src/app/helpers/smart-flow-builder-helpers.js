@@ -3,6 +3,7 @@ import ELK from 'elkjs/lib/elk.bundled';
 export const TASK_NODE_WIDTH = 230;
 
 export const NodeType = {
+  NEW_AUTOMATION: 'NEW_AUTOMATION',
   NEW_STANDARD: 'NEW_STANDARD',
   NEW_DECISION: 'NEW_DECISION',
   STANDARD: 'STANDARD',
@@ -130,6 +131,21 @@ export function createDecisionTaskNodes(
       temporaryDecisionTask.position,
     ),
   ];
+}
+
+export function createNewAutomationTaskNode(
+  currentTemporaryElements,
+  elementPosition,
+  type = NodeType.NEW_AUTOMATION,
+) {
+  const numberOfNewTasks =
+    currentTemporaryElements?.filter((element) => element.type === type)
+      .length || 0;
+  return {
+    id: `${type}-${numberOfNewTasks}`,
+    type,
+    position: elementPosition,
+  };
 }
 
 export function getTargetNodeType(sourceElementType) {
