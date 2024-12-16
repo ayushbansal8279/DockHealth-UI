@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { updateTaskDueDate } from 'actions/task-actions';
 import DueDatePicker from 'components/task/DueDatePicker/DueDatePicker';
@@ -34,9 +34,11 @@ const TaskItemDueDate = ({
     startDate,
   } = task || {};
 
-  const [momentDueDate, setMomentDueDate] = useState(
-    dueDate ? moment(dueDate) : null,
-  );
+  const [momentDueDate, setMomentDueDate] = useState(() => dueDate ? moment(dueDate) : null);
+
+  useEffect(() => {
+    setMomentDueDate(dueDate ? moment(dueDate) : null)
+  }, [dueDate]);
 
   const handleSave = useCallback(
     (newDueDate) => {
