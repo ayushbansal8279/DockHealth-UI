@@ -3,6 +3,7 @@ import moment from 'moment';
 import { Box } from '@mui/material';
 import RecurringIcon from 'img/recurring-arrows';
 import {
+  checkDateTimeIntent,
   checkIfTemplateTask,
   isDueDateOverdue,
   ReminderType,
@@ -64,7 +65,8 @@ const DueDateSection = ({
         setMomentDueDate(
           !!updatedDueDateTime ? moment(updatedDueDateTime) : null,
         );
-        dispatch(updateTaskDueDate(selectedTask, updatedDueDateTime));
+        const dueDateIntent = checkDateTimeIntent(updatedDueDateTime);
+        dispatch(updateTaskDueDate(selectedTask, updatedDueDateTime, dueDateIntent));
       }
     },
     [dispatch, selectedTask],
@@ -125,7 +127,8 @@ const DueDateSection = ({
           </DateViewText>
         </DateViewContainer>
       )}
-      {isTimeAvailable && (
+      {(selectedTask?.dueDateIntent === 'DATETIME_ABSOLUTE' || 
+        (!selectedTask?.dueDateIntent && momentDueDate?.format('HH:mm') !== '00:00')) && (
         <DateViewContainer isOverdue={isOverdue}>
           <DateViewText
             ref={buttonReference}
@@ -134,7 +137,7 @@ const DueDateSection = ({
               openPopover(true);
             }}
           >
-            {momentDueDate.format('hh:mm a')}
+            {momentDueDate?.format('hh:mm a')}
           </DateViewText>
         </DateViewContainer>
       )}

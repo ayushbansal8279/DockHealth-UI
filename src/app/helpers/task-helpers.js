@@ -167,6 +167,12 @@ export function isDueDateOverdue(task) {
   );
 }
 
+export function checkDateTimeIntent(DateTime) {
+  if(DateTime == null) return null;
+  const momentDateTime = moment(DateTime);
+  return (momentDateTime.hour() || momentDateTime.minute()) ? 'DATETIME_ABSOLUTE' : 'DATE';
+}
+
 export function checkIfTemplateTask(task) {
   return task?.type === 'TEMPLATE';
 }

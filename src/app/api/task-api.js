@@ -244,7 +244,7 @@ export const updateStartDate = (taskIdentifier, startDate) =>
       throw error;
     });
 
-export const updateDueDate = (taskIdentifier, dueDate) =>
+export const updateDueDate = (taskIdentifier, dueDate, dueDateIntent) =>
   axios
     .put(
       `task/addOrUpdateDueDate/${taskIdentifier}`,
@@ -254,6 +254,7 @@ export const updateDueDate = (taskIdentifier, dueDate) =>
           dueDate: dueDate
             ? moment(dueDate).format('MM/DD/YYYY HH:mm:ss ZZ')
             : null,
+          ...(dueDateIntent && {dueDateIntent}),
         },
       },
     )
