@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-expressions */
-import { TaskItemType, TaskStatus } from './task-helpers';
+import { WorkflowCompletedTasksKey } from './patient-details-helpers';
+import { TaskItemType, TaskOrigin, TaskStatus } from './task-helpers';
 
 export const TaskListTabName = {
   OPEN: 'INCOMPLETE',
@@ -39,7 +40,7 @@ export function extractTasksAndSubtasks(listOfTasks) {
               accumulator.parentTasks.push(t);
               // eslint-disable-next-line no-unused-expressions
               if (t.subtasks)
-                for (const subtask of t.subtasks){
+                for (const subtask of t.subtasks) {
                   if (!accumulator.subtasks.includes(subtask)) {
                     accumulator.subtasks.push(subtask);
                   }
@@ -99,5 +100,21 @@ export function checkIfHasIncompleteTasks(tasks) {
 }
 
 export function getTaskListStatusStorageKey(taskListIdentifier) {
-  return `status${taskListIdentifier}`;
+  return `tasklist-tasks-view-status-${taskListIdentifier}`;
+}
+
+export function getStatusStorageKey(origin, taskListIdentifier) {
+  return origin === TaskOrigin.PATIENT
+    ? 'patient-tasks-view-status'
+    : getTaskListStatusStorageKey(taskListIdentifier);
+}
+
+export function getTaskListWorkflowStatusStorageKey(taskListIdentifier) {
+  return `tasklist-show-workflow-completed-tasks-${taskListIdentifier}`;
+}
+
+export function getWorkflowStatusStorageKey(origin, taskListIdentifier) {
+  return origin === TaskOrigin.PATIENT
+    ? WorkflowCompletedTasksKey
+    : getTaskListWorkflowStatusStorageKey(taskListIdentifier);
 }
