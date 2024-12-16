@@ -17,6 +17,7 @@ export const FilterOptionsCategory = {
   ESCALATED: 'escalatedStatusOptions',
   CREATED_BY: 'createdBy',
   COMPLETED_BY: 'completedBy',
+  WORKFLOWS: 'workflows',
 };
 
 const FilterOptionsLabel = {
@@ -35,6 +36,7 @@ const FilterOptionsLabel = {
   [FilterOptionsCategory.ESCALATED]: 'Escalated',
   [FilterOptionsCategory.CREATED_BY]: 'Created By',
   [FilterOptionsCategory.COMPLETED_BY]: 'Completed By',
+  [FilterOptionsCategory.WORKFLOWS]: 'Workflows',
 };
 
 const DATE_FILTER_OPTIONS = new Set([
