@@ -5,6 +5,7 @@ import RecurringIcon from 'img/recurring-arrows';
 import {
   checkDateTimeIntent,
   checkIfTemplateTask,
+  DueDateIntent,
   isDueDateOverdue,
   ReminderType,
 } from 'helpers/task-helpers';
@@ -52,12 +53,8 @@ const DueDateSection = ({
   const dueDateRef = useRef(null);
   const [isPopoverOpen, openPopover, closePopover] = useBoolean(false);
   const [isOverdue, setIsOverdue] = useState(false);
-  const [isTimeAvailable, setIsTimeAvailable] = useState(false);
   const handleSave = useCallback(
     (updatedDueDateTime) => {
-      if (updatedDueDateTime === null) {
-        setIsTimeAvailable(false);
-      }
       if (addTaskDrawer) {
         setDueDate(updatedDueDateTime);
         setMomentDueDate(moment(updatedDueDateTime));
@@ -92,9 +89,6 @@ const DueDateSection = ({
 
   useEffect(() => {
     setIsOverdue(isDueDateOverdue(selectedTask));
-    if (momentDueDate && (momentDueDate.hour() || momentDueDate.minute())) {
-      setIsTimeAvailable(true);
-    }
   }, [selectedTask]);
 
   return (
@@ -127,7 +121,7 @@ const DueDateSection = ({
           </DateViewText>
         </DateViewContainer>
       )}
-      {(selectedTask?.dueDateIntent === 'DATETIME_ABSOLUTE' || 
+      {(selectedTask?.dueDateIntent === DueDateIntent.DATETIME_ABSOLUTE || 
         (!selectedTask?.dueDateIntent && momentDueDate?.format('HH:mm') !== '00:00')) && (
         <DateViewContainer isOverdue={isOverdue}>
           <DateViewText

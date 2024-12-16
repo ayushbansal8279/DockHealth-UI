@@ -11,6 +11,7 @@ import {
   RecurringIconContainer,
 } from './styled';
 import Tooltip from '../Tooltip/Tooltip';
+import { DueDateIntent } from '@/app/helpers/task-helpers';
 
 const DateLabel = (props) => {
   const {
@@ -36,7 +37,7 @@ const DateLabel = (props) => {
           <DateTextContainer isOverdue={isOverdue}>
             <DateText>
               {dueDate.format(dateFormat)}
-              {(dueDateIntent === 'DATETIME_ABSOLUTE' || 
+              {(dueDateIntent === DueDateIntent.DATETIME_ABSOLUTE || 
                 (!dueDateIntent && dueDate?.format(timeFormatToCheckSpecifiedTime) !== '00:00')) &&
                   showTime && (
                     <>

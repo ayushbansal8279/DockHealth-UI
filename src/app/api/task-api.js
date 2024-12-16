@@ -6,6 +6,7 @@ import { noop, showAlert } from 'helpers/utility-functions';
 import { log } from 'helpers/log';
 import axios from './axios-heydoc';
 import { mapSelectedOptionsToRequestPayload } from '../helpers/filter-options-helpers';
+import { DueDateIntent } from '../helpers/task-helpers';
 
 export function searchTasks(
   searchTerm,
@@ -254,7 +255,7 @@ export const updateDueDate = (taskIdentifier, dueDate, dueDateIntent) =>
           dueDate: dueDate
             ? moment(dueDate).format('MM/DD/YYYY HH:mm:ss ZZ')
             : null,
-          ...(dueDateIntent && {dueDateIntent}),
+          dueDateIntent: dueDate ? dueDateIntent : DueDateIntent.DATE,
         },
       },
     )

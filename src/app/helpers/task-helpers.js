@@ -103,6 +103,11 @@ export const ReminderType = {
   ABSOLUTE: 'ABSOLUTE'
 };
 
+export const DueDateIntent = {
+  DATE: 'DATE',
+  DATETIME_ABSOLUTE: 'DATETIME_ABSOLUTE'
+}
+
 export function getLabelsIconTooltipTitle(labels) {
   let toolTipMultiLabelDetails = '';
   if (labels.length === 1) {
