@@ -6,7 +6,7 @@ import TaskItemPopover from 'components/task/TaskItemPopover/TaskItemPopover';
 import TaskIcon from 'components/task/TaskIcon/TaskIcon';
 import Tooltip from 'components/common/Tooltip/Tooltip';
 import DateLabel from 'components/common/DateLabel/DateLabel';
-import { isDueDateOverdue, ReminderType } from 'helpers/task-helpers';
+import { checkDateTimeIntent, isDueDateOverdue, ReminderType } from 'helpers/task-helpers';
 import { onTaskDueDateChanged } from 'helpers/ga-event-helper';
 import {
   AddPlaceholder,
@@ -29,6 +29,7 @@ const TaskItemDueDate = ({
   const {
     taskIdentifier,
     dueDate,
+    dueDateIntent,
     hasRecurringSchedule,
     reminderType,
     startDate,
@@ -45,7 +46,8 @@ const TaskItemDueDate = ({
       setMomentDueDate(
         !!newDueDate ? moment(newDueDate) : null,
       );
-      dispatch(updateTaskDueDate(task, newDueDate));
+      const dueDateIntent = checkDateTimeIntent(newDueDate);
+      dispatch(updateTaskDueDate(task, newDueDate, dueDateIntent));
       onTaskDueDateChanged();
     },
     [dispatch, task],
@@ -87,6 +89,7 @@ const TaskItemDueDate = ({
           {dueDate ? (
             <DateLabel
               date={momentDueDate}
+              dueDateIntent={dueDateIntent}
               isOverdue={isDueDateOverdue(task)}
               hasReminder={reminderType && reminderType !== ReminderType.NONE}
               hasRecurringSchedule={hasRecurringSchedule}

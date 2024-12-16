@@ -335,12 +335,13 @@ function* updateTaskStartDate({ task, startDate }) {
   }
 }
 
-function* updateTaskDueDate({ task, dueDate }) {
+function* updateTaskDueDate({ task, dueDate, dueDateIntent = null }) {
   try {
     const updatedTask = yield call(
       TaskApi.updateDueDate,
       task.identifier,
       dueDate,
+      dueDateIntent
     );
     yield put({
       type: ActionTypes.UPDATE_TASK_DUE_DATE_SUCCESS,

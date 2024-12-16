@@ -559,11 +559,12 @@ export function updateTaskStartDate(task, startDate) {
   };
 }
 
-export function updateTaskDueDate(task, dueDate) {
+export function updateTaskDueDate(task, dueDate, dueDateIntent=null) {
   return {
     type: ActionTypes.UPDATE_TASK_DUE_DATE,
     task,
     dueDate,
+    ...(dueDateIntent && {dueDateIntent})
   };
 }
 
