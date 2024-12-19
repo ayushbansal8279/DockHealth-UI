@@ -61,7 +61,13 @@ const ProfilesAndCustomFieldsView = () => {
         openModal('CreateProfile', {
           onUpdated: (newTemplate) => {
             const { identifier } = newTemplate;
-            setProfileTypes((s) => [...s, { id: identifier, ...newTemplate }]);
+            setProfileTypes((s) =>
+              s.map((profile) =>
+                profile.identifier === identifier
+                  ? { ...profile, ...newTemplate }
+                  : profile
+              )
+            );
           },
           isCreatingNewField: false,
           template: { name, description, identifier: id },
