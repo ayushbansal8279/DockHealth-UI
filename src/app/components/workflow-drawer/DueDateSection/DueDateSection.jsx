@@ -21,26 +21,21 @@ import {
 import AssignMemberIcon from '../../user/AssignMemberIcon/AssingMemberIcon';
 import { openModal } from '@/app/modal/actions';
 import { isDueDateValid } from '@/app/helpers/date-validation-helper';
+import { checkDateTimeIntent, DueDateIntent } from '@/app/helpers/task-helpers';
 
 const DueDateSection = ({ disabled }) => {
   const dispatch = useDispatch();
   const selectedWorkflow = useSelector(workflowSelector);
   const inputReference = useRef(null);
   const autoFocusFieldName = useSelector(workflowAutofocusFieldSelector);
-  const { identifier, startDateTime, dueDateTime, hasRecurringSchedule } =
+  const { identifier, startDateTime, dueDateTime, hasRecurringSchedule, dueDateIntent } =
     selectedWorkflow || {};
   const momentDueDate = dueDateTime ? moment(dueDateTime) : null;
   const [isOverdue, setIsOverdue] = useState(false);
-  const [isTimeAvailable, setIsTimeAvailable] = useState(false);
 
   useEffect(() => {
     if (momentDueDate) {
       setIsOverdue(momentDueDate.isBefore(moment()));
-      if (momentDueDate.hour() || momentDueDate.minute()) {
-        setIsTimeAvailable(true);
-      } else {
-        setIsTimeAvailable(false);
-      }
     }
 
     if (
@@ -54,11 +49,10 @@ const DueDateSection = ({ disabled }) => {
 
   const handleSave = useCallback(
     (updatedDueDateTime) => {
-      if (updatedDueDateTime === null) {
-        setIsTimeAvailable(false);
-      }
+      const dueDateIntent = checkDateTimeIntent(updatedDueDateTime);
       const payload = {
         dueDateTime: updatedDueDateTime,
+        dueDateIntent: updatedDueDateTime ? dueDateIntent : DueDateIntent.DATE,
       };
 
       if (!updatedDueDateTime) payload.dueDateTimeCleared = true;
@@ -109,12 +103,13 @@ const DueDateSection = ({ disabled }) => {
                   {momentDueDate.format('MMM DD, YYYY')}
                 </DateViewText>
               </DateViewContainer>
-              {isTimeAvailable && (
-                <DateViewContainer isOverdue={isOverdue}>
-                  <DateViewText>
-                    {momentDueDate?.format('hh:mm a')}
-                  </DateViewText>
-                </DateViewContainer>
+              {(dueDateIntent === DueDateIntent.DATETIME_ABSOLUTE || 
+                (!dueDateIntent && momentDueDate?.format('HH:mm') !== '00:00')) && (
+                  <DateViewContainer isOverdue={isOverdue}>
+                    <DateViewText>
+                      {momentDueDate?.format('hh:mm a')}
+                    </DateViewText>
+                  </DateViewContainer>
               )}
             </>
           ) : (
