@@ -40,6 +40,7 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { openModal } from '../../actions';
 import { DescriptionOutlined } from '@mui/icons-material';
+import MarkdownRenderer from '@/app/components/ai-summary/MarkdownRenderer';
 
 const AISummaryModal = ({ closeModal, title, onsubmit, type, identifier }) => {
   useEffect(() => {
@@ -108,9 +109,11 @@ const AISummaryModal = ({ closeModal, title, onsubmit, type, identifier }) => {
     const result = separateTimestamp(response);
     const responseDateTime = calculateResponseTimeAgo(result.timestamp);
     setGeneratedDateTime(responseDateTime);
+
+    const res = result?.remainingString.replace(/""/g, '**');
     setStringSummary(result?.remainingString);
 
-    const splitArray = result?.remainingString.split('\n');
+    const splitArray = res.split('\n\n');
     splitArray ? setSummaries(splitArray) : null;
   };
 
@@ -233,12 +236,7 @@ const AISummaryModal = ({ closeModal, title, onsubmit, type, identifier }) => {
         {isFetching && AISummaryLoader()}
         <Info>
           {!isFetching &&
-            summaries?.map((summary) => (
-              <>
-                {summary}
-                <Spacing vertical={4} />
-              </>
-            ))}
+            summaries?.map((summary) => <MarkdownRenderer content={summary} />)}
         </Info>
       </Grid>
       {/* <RegenerateWrapper>
