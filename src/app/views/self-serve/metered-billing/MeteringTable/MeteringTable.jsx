@@ -10,40 +10,40 @@ const MeteringTable = () => {
   const apiRef = useGridApiRef();
   const columns = [
     {
-      field: 'topic',
-      headerName: 'Topic',
+      field: 'type',
+      headerName: 'Type',
       width: 250,
     },
     {
-      field: 'action',
+      field: 'subtype',
       headerName: 'Action',
       width: 250,
     },
     {
-      field: 'type',
-      headerName: 'Type',
+      field: 'entityName',
+      headerName: 'Entity Name',
       width: 150,
     },
     {
-      field: 'typeIdentifier',
-      headerName: 'Type Identifier',
+      field: 'entityIdentifier',
+      headerName: 'Entity Identifier',
       width: 250,
     },
+    // {
+    //   field: 'path',
+    //   headerName: 'Path',
+    //   width: 150,
+    //   renderCell: ({ row }) => {
+    //     const { path } = row;
+    //     return (
+    //       <Link href="https://www.google.co.in/" underline="hover">
+    //         {path}
+    //       </Link>
+    //     );
+    //   },
+    // },
     {
-      field: 'path',
-      headerName: 'Path',
-      width: 150,
-      renderCell: ({ row }) => {
-        const { path } = row;
-        return (
-          <Link href="https://www.google.co.in/" underline="hover">
-            {path}
-          </Link>
-        );
-      },
-    },
-    {
-      field: 'eventDate',
+      field: 'ts',
       headerName: 'Event Date',
       width: 250,
       renderCell: ({ row }) => {
@@ -91,7 +91,7 @@ const MeteringTable = () => {
     <DataGridPremium
       apiRef={apiRef}
       columns={columns}
-      getRowId={(row) => row.typeIdentifier}
+      getRowId={(row) => row.entityIdentifier}
       editMode="row"
       rows={dummyMeteringData}
       rowHeight={40}
