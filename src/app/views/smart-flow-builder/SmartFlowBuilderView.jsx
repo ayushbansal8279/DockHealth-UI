@@ -101,6 +101,7 @@ import BulkEditContainer from './BulkEditContainer/BulkEditContainer';
 import Hotkeys from './Hotkeys/Hotkeys';
 import NestedFlowNode from './NestedFlow/NestedFlowNode/NestedFlowNode';
 import NewNestedFlowNode from './NestedFlow/NewNestedFlowNode/NewNestedFlowNode';
+import { isUserDockPro } from '@/app/helpers/user-helper';
 
 const nodeTypes = {
   [NodeType.NEW_AUTOMATION]: NewTaskNode,
@@ -154,6 +155,7 @@ const SmartFlowBuilderView = () => {
   const smartFlowsAvailable = useSelector(userHasSmartFlowsSelector);
 
   const currentUser = useSelector(userProfileSelector);
+  const isDockProUser = isUserDockPro(currentUser);
   const isCurrentUserEditor =
     members?.find(({ user }) => user.identifier === currentUser.identifier)
       ?.memberPermission === 'EDITOR';
@@ -173,20 +175,20 @@ const SmartFlowBuilderView = () => {
   }, [tasks, initialTasksLength]);
 
   useEffect(() => {
-      if (isCurrentUserEditor && (initialTasksLength > 0) && !modalUsed ) {
-          dispatch(
-            ModalActions.openModal('Alert', {
-              title:'Changes May Not Be Applied to Deployed Items',
-              description:
-                'These changes will not be reflected on deployed workflow tasks. If a task has yet to deploy, the changes will be applied. All changes will be saved and applied to future workflows.',
-              confirm: () => {
-                dispatch(ModalActions.closeModal());
-              },
-            }),
-          );
-          setModalUsed(true);         
-      }   
-  }, [dispatch, isCurrentUserEditor, modalUsed, initialTasksLength ]);
+    if (isCurrentUserEditor && initialTasksLength > 0 && !modalUsed) {
+      dispatch(
+        ModalActions.openModal('Alert', {
+          title: 'Changes May Not Be Applied to Deployed Items',
+          description:
+            'These changes will not be reflected on deployed workflow tasks. If a task has yet to deploy, the changes will be applied. All changes will be saved and applied to future workflows.',
+          confirm: () => {
+            dispatch(ModalActions.closeModal());
+          },
+        }),
+      );
+      setModalUsed(true);
+    }
+  }, [dispatch, isCurrentUserEditor, modalUsed, initialTasksLength]);
 
   useEffect(() => {
     if (smartFlowsAvailable === false && templateType === 'SMARTFLOW') {
@@ -373,7 +375,9 @@ const SmartFlowBuilderView = () => {
           centerViewToElement(position);
         },
       },
-    ];
+    ].filter(
+      (action) => isDockProUser || action.id !== NodeType.NEW_AUTOMATION,
+    );
 
     let actions = [...baseActions];
 
