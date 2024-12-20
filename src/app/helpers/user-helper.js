@@ -57,6 +57,10 @@ export function isUserGuestOrDockLite(user) {
   );
 }
 
+export function isUserDockPro(user) {
+  return user?.orgUserRole === UserOrganizationRole.DOCK_PRO;
+}
+
 export function isUserViewOnly(user) {
   return user?.orgUserRole === UserOrganizationRole.VIEW_ONLY;
 }
