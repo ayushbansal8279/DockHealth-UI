@@ -1,18 +1,18 @@
 import React from 'react';
 import { useGridApiRef, DataGridPremium } from '@mui/x-data-grid-premium';
-import { dummyMeteringData } from './helper';
-import { Link } from '@mui/material';
 import Tooltip from '@/app/components/common/Tooltip/Tooltip';
-import { Left, PropertiesTooltipContainer } from './styled';
+import { List, PropertiesTooltipContainer } from './styled';
 import moment from 'moment';
+import { formatKey } from './helper';
+import { Link } from '@mui/material';
 
-const MeteringTable = () => {
+const MeteringTable = ({ billingData }) => {
   const apiRef = useGridApiRef();
   const columns = [
     {
       field: 'type',
       headerName: 'Type',
-      width: 250,
+      width: 200,
     },
     {
       field: 'subtype',
@@ -20,37 +20,49 @@ const MeteringTable = () => {
       width: 250,
     },
     {
+      field: 'entity',
+      headerName: 'Entity',
+      width: 100,
+    },
+    {
       field: 'entityName',
       headerName: 'Entity Name',
       width: 150,
     },
     {
-      field: 'entityIdentifier',
-      headerName: 'Entity Identifier',
-      width: 250,
+      field: 'path',
+      headerName: 'Path',
+      width: 300,
+      renderCell: ({ row }) => {
+        const { path } = row;
+        return (
+          <Link href={path} underline="hover">
+            <Tooltip title={path} placement="top">
+              <div>{path}</div>
+            </Tooltip>
+          </Link>
+        );
+      },
     },
-    // {
-    //   field: 'path',
-    //   headerName: 'Path',
-    //   width: 150,
-    //   renderCell: ({ row }) => {
-    //     const { path } = row;
-    //     return (
-    //       <Link href="https://www.google.co.in/" underline="hover">
-    //         {path}
-    //       </Link>
-    //     );
-    //   },
-    // },
     {
       field: 'ts',
       headerName: 'Event Date',
-      width: 250,
+      width: 150,
       renderCell: ({ row }) => {
-        const { eventDate } = row;
-        const date = moment(eventDate);
+        const { ts } = row;
+        const date = moment(ts);
         return date.format('MMM DD, YYYY');
       },
+    },
+    {
+      field: 'entityIdentifier',
+      headerName: 'Entity Identifier',
+      width: 300,
+    },
+    {
+      field: 'eventIdentifier',
+      headerName: 'Event Identifier',
+      width: 300,
     },
     {
       field: 'properties',
@@ -58,29 +70,20 @@ const MeteringTable = () => {
       width: 250,
       renderCell: ({ row }) => {
         const { properties } = row;
-                
-        // This is just for display puspose This is gonna change with actual data of properties
         return (
           <Tooltip
             placement="bottom"
             title={
               <PropertiesTooltipContainer>
-                <h4>Properties</h4>
-                <div>
-                  <Left pl={10}>{`Property 1 : {`}</Left>
-                  <Left pl={30}>{`id:  “12345678” , `}</Left>
-                  <Left pl={30}>{`type:  “File”, `}</Left>
-                  <Left pl={30}>{`menuitem: [`}</Left>
-                  <Left pl={50}>{`{name: “New”, type: “API”},`}</Left>
-                  <Left pl={50}>{`{name: “Open”, type: “Filter”},`}</Left>
-                  <Left pl={50}>{`{name: “Close”, type: “Filter”},`}</Left>
-                  <Left pl={30}>{` ]`}</Left>
-                  <Left pl={10}>{` }`}</Left>
-                </div>
+                {Object.entries(properties).map(([key, value]) => (
+                  <List key={key}>
+                    <strong>{formatKey(key)}:</strong> {value}
+                  </List>
+                ))}
               </PropertiesTooltipContainer>
             }
           >
-            <div>Name : New &nbsp; &nbsp; type : API</div>
+            <div>Hover </div>
           </Tooltip>
         );
       },
@@ -91,9 +94,9 @@ const MeteringTable = () => {
     <DataGridPremium
       apiRef={apiRef}
       columns={columns}
-      getRowId={(row) => row.entityIdentifier}
+      getRowId={(row) => row.eventIdentifier}
       editMode="row"
-      rows={dummyMeteringData}
+      rows={billingData}
       rowHeight={40}
       sx={{
         '& .MuiDataGrid-columnHeaders': {

@@ -1,10 +1,10 @@
 import styled from 'styled-components';
 
 export const PropertiesTooltipContainer = styled.div`
-  // width: 600px;
-  // height: 100px;
+  margin: 7px;
+  font-size: 16px;
 `;
 
-export const Left = styled.div`
-  padding-left: ${({ pl }) => `${pl}px`};
+export const List = styled.li`
+  margin-bottom: 7px;
 `;

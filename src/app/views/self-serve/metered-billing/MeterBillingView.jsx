@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import ViewLayout from '@/app/components/template/ViewLayout/ViewLayout';
@@ -14,34 +14,33 @@ import MeteringTable from './MeteringTable/MeteringTable';
 import MeteringFilter from './MeteringFilter/MeteringFilter';
 import MeteringSearch from './MeteringSearch/MeteringSearch';
 import { getMeteringEvents } from '@/app/api/metering-api';
+import { organizationSelector } from '@/app/selectors/organization-selectors';
 
 const MeterBillingView = () => {
   const history = useHistory();
+  const [billingData, setBillingData] = useState({});
 
   const currentUser = useSelector(userProfileSelector);
+  const { organizationIdentifier } = useSelector(organizationSelector);
 
   const getMeteringData = async () => {
     const payload = {
-      start: '2024-12-01T09:08:04.996Z',
-      end: '2024-12-20T09:08:04.996Z',
-      limit: 10,
       meteringEvent: {
         eventIdentifier: null,
         ts: null,
-        organizationIdentifier: '160f8db5-40c2-11ea-a4e8-124feabd863a',
+        organizationIdentifier: organizationIdentifier,
         properties: {},
       },
     };
     return await getMeteringEvents(payload);
   };
 
-  useEffect(() => {
+  useEffect(async () => {
     if (!checkIfUserIsOrganizationAdmin(currentUser)) {
       history.push('/');
     }
-    const aa = getMeteringData();
-    console.log(aa);
-    
+    const result = await getMeteringData();
+    if (result) setBillingData(result);
   }, [currentUser]);
 
   return (
@@ -52,7 +51,7 @@ const MeterBillingView = () => {
             <MeteringFilter />
             <MeteringSearch />
           </MeterBillingSecondHeader>
-          <MeteringTable />
+          <MeteringTable billingData={billingData} />
         </MeterBillingViewContainer>
       </MeterBillingViewOuterContainer>
     </ViewLayout>
