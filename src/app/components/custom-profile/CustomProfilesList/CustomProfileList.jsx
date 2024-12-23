@@ -334,15 +334,17 @@ const CustomProfileList = () => {
                       }
                       case 'PICK_LIST': {
                         return (
-                          record.references?.map(item => item.displayValue).join(", ") ||
-                          record.values?.join(", ") ||
+                          record.references
+                            ?.map((item) => item.displayValue)
+                            .join(', ') ||
+                          record.values?.join(', ') ||
                           ''
                         );
                       }
                       case 'RELATIONSHIP': {
-                        return (
-                          record.references?.map(item => item.displayValue).join(", ")
-                        );
+                        return record.references
+                          ?.map((item) => item.displayValue)
+                          .join(', ');
                       }
                       default: {
                         return '';
