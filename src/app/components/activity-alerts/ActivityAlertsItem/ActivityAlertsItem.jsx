@@ -45,7 +45,7 @@ const AlertItem = ({ itemAlert, onClearAlert, withCrossIcon, closeAlerts }) => {
     activityTask = task;
   }
   const { description, taskIdentifier, comments, dueDate } = activityTask;
-  const { taskListIdentifier, listName } = taskList || activityTask?.taskList;
+  const { listName } = taskList || activityTask?.taskList || {};
   const {
     organizationInitials,
     organizationName,
