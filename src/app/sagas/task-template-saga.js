@@ -89,11 +89,14 @@ function* copyWorkflowToOrganization({
     });
     yield put(showGlobalAlert(AlertMessages.COPIED));
   } catch {
-    yield put({
-      type: ActionTypes.COPY_WORKFLOW_TO_ORGANIZATION_FAILURE,
-      identifier,
-      targetOrganizationIdentifiers,
-    });
+    yield all([
+      put({
+        type: ActionTypes.COPY_WORKFLOW_TO_ORGANIZATION_FAILURE,
+        identifier,
+        targetOrganizationIdentifiers,
+      }),
+      put(showGlobalErrorAlert()),
+    ]);
   }
 }
 
