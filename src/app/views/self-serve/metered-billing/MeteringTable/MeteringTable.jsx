@@ -31,18 +31,8 @@ const MeteringTable = ({ billingData }) => {
     },
     {
       field: 'path',
-      headerName: 'Path',
+      headerName: 'Detail',
       width: 300,
-      renderCell: ({ row }) => {
-        const { path } = row;
-        return (
-          <Link href={path} underline="hover">
-            <Tooltip title={path} placement="top">
-              <div>{path}</div>
-            </Tooltip>
-          </Link>
-        );
-      },
     },
     {
       field: 'ts',
@@ -83,7 +73,7 @@ const MeteringTable = ({ billingData }) => {
               </PropertiesTooltipContainer>
             }
           >
-            <div>Hover </div>
+            <div>More Info... </div>
           </Tooltip>
         );
       },
