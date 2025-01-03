@@ -33,6 +33,7 @@ const FilterSelect = ({
   setFinalFilter,
   filter,
   filters,
+  multiSelectEnabled = true,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [optionName, setOptionName] = useState('');
@@ -172,8 +173,8 @@ const FilterSelect = ({
         {!isDateRange ? (
           <div style={{ display: 'flex' }}>
             <Autocomplete
-              multiple
-              options={options}
+              multiple={multiSelectEnabled}
+              options={multiSelectEnabled ? filterdUser : filterOptions}
               disableCloseOnSelect
               getOptionLabel={(option) => option?.displayValue}
               renderOption={(props, option) => (
@@ -209,7 +210,11 @@ const FilterSelect = ({
                 </>
               )}
               style={{ width: '517' }}
-              value={finalFilter[filter]}
+              value={
+                multiSelectEnabled
+                  ? finalFilter[filter]
+                  : finalFilter[filter][finalFilter[filter].length - 1]
+              }
               onChange={(event, newValue, action, option) => {
                 if (action === 'selectOption') {
                   handleSelectOption(option.option);

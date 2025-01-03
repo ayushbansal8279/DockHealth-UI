@@ -40,6 +40,7 @@ const NewFilterContainer = ({
   setSelectedQuickFilter,
   handleSelectedFiltersChange,
   editModeEnabled = true,
+  multiSelectEnabled = true,
 }) => {
   const popoverReference = useRef(null);
   const [isPopoverOpen, openAddFilterPopover, closeAddFilterPopover] =
@@ -132,6 +133,7 @@ const NewFilterContainer = ({
             ?.filter((item) => typeof item !== 'boolean')}
           setFilteredData={setFilteredData}
           filteredData={filteredData}
+          multiSelectEnabled={multiSelectEnabled}
         />
       ))}
       {editModeEnabled && (
@@ -182,7 +184,7 @@ const NewFilterContainer = ({
           <Divider />
           <BottomWrapper>
             <CancelButton
-              disabled={!isDisable}
+              disabled={!isDisable || !multiSelectEnabled}
               onClick={() => setSavePopupOpen(true)}
               style={{ width: '270px' }}
             >

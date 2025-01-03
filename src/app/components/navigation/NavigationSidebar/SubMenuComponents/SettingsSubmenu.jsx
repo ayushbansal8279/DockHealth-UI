@@ -56,6 +56,9 @@ const SettingsSubmenu = () => {
       {patientCustomFieldsAvailable && (
         <SubMenuLink to={POFILES_SETTINGS_PATH}>Profiles</SubMenuLink>
       )}
+      <AccessRestrictor allowedToRoles={[ADMIN, OWNER]}>
+        <SubMenuLink to="/settings/metering">Metering</SubMenuLink>
+      </AccessRestrictor>
       <SubMenuLink to={USERS_SETTINGS_PATH}>Users</SubMenuLink>
       {(sendEmailAvailable ||
         sendFaxAvailable ||

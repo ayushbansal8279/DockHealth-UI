@@ -17,6 +17,9 @@ export const FilterOptionsCategory = {
   ESCALATED: 'escalatedStatusOptions',
   CREATED_BY: 'createdBy',
   COMPLETED_BY: 'completedBy',
+  EVENT_TYPES: 'eventTypes',
+  EVENT_SUB_TYPES: 'eventSubTypes',
+  EVENT_DATE_OPTIONS: 'eventDateOptions',
 };
 
 const FilterOptionsLabel = {
@@ -35,6 +38,9 @@ const FilterOptionsLabel = {
   [FilterOptionsCategory.ESCALATED]: 'Escalated',
   [FilterOptionsCategory.CREATED_BY]: 'Created By',
   [FilterOptionsCategory.COMPLETED_BY]: 'Completed By',
+  [FilterOptionsCategory.EVENT_TYPES]: 'Event Type',
+  [FilterOptionsCategory.EVENT_SUB_TYPES]: 'Event Sub Type',
+  [FilterOptionsCategory.EVENT_DATE_OPTIONS]: 'Event Date Options',
 };
 
 const DATE_FILTER_OPTIONS = new Set([
