@@ -76,7 +76,7 @@ export const ActionButton = styled.button`
 
 export const SectionWrapper = styled.div`
   width: 100%;
-  padding: ${spacing.regularPlus} ${spacing.regular};
+  padding: ${spacing.regular} ${spacing.regular};
 `;
 
 export const PlusButton = styled(ActionButton)`

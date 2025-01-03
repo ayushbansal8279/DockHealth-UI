@@ -14,7 +14,7 @@ import {
   GridRowEditStopReasons,
 } from '@mui/x-data-grid-premium';
 import * as ActionTypes from 'actions/action-types';
-import { Grid } from '@mui/material';
+import { Grid, Link } from '@mui/material';
 import Tooltip from 'components/common/Tooltip/Tooltip';
 import { lookupEMRPatient } from 'api/patient-api';
 import ListSkeletonLoader from 'components/common/ListSkeletonLoader/ListSkeletonLoader';
@@ -33,8 +33,7 @@ import { PatientColumn } from 'helpers/patient-list-helpers';
 import { patientsListSelector } from 'selectors/patients-selectors';
 import moment from 'moment';
 import palette from 'styles/palette';
-import { formatPhoneNumber } from 'helpers/utility-functions';
-import { dateFormatter } from 'helpers/date-formatter';
+import { formatPhoneNumber, showToast } from 'helpers/utility-functions';
 import TaskItemBulkEdit from 'components/task/StandardTaskItem/TaskItemComponents/TaskItemBulkEdit';
 import PatientImportPopover from '../PatientImportPopover/PatientImportPopover';
 import EmptyFilteredPatientsList from '../EmptyFilteredPatientsList/EmptyFilteredPatientsList';
@@ -63,6 +62,14 @@ import {
 } from '@/app/types/gender';
 import { getValueLabelHashFromOptions } from '@/app/helpers/select-option-helper';
 import { useUpdatePatientById } from '@/app/react-query/patients/useUpdatePatientById';
+import { closeModal, openModal } from '@/app/modal/actions';
+import DropDownEditCell from '../../common/DataGridEditCells/DropDownEditCell';
+import TextEditCell from '../../common/DataGridEditCells/TextEditCell';
+import BooleanEditCell from '../../common/DataGridEditCells/BooleanEditCell';
+import MultiDropdownEditCell from '../../common/DataGridEditCells/MultiDropDownEditCell';
+import NumberEditCell from '../../common/DataGridEditCells/NumberEditCell';
+import DateTimeEditCell from '../../common/DataGridEditCells/DateTimeEditCell';
+import CustomFieldLongTextEditor from '../../common/DataGridEditCells/CustomFieldLongTextEditor';
 
 const renderColumnHeader = (props) => {
   const { colDef } = props;
@@ -120,6 +127,7 @@ const PatientsList = ({
   const [dataGridSortModel, setDataGridSortModel] = useState();
   const [pinnedColumns, setPinnedColumns] = useState({
     left: ['isSelected', 'patient'],
+    right: ['actions']
   });
 
   const selectedPatientsCount = patients?.filter((p) => p.isSelected).length;
@@ -252,9 +260,9 @@ const PatientsList = ({
 
   const handleSaveClick = useCallback(
     (id) => () => {
-      setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
+      confirmSave(id);
     },
-    [rowModesModel],
+    [confirmSave],
   );
 
   const handleCancelClick = useCallback(
@@ -271,27 +279,64 @@ const PatientsList = ({
     setRowModesModel(newRowModesModel);
   }, []);
 
+  function calculateAge(dob) {
+    const diffMs = Date.now() - dob.getTime();
+    const ageDate = new Date(diffMs);
+    return Math.abs(ageDate.getUTCFullYear() - 1970);
+  }
+
   const processRowUpdate = useCallback(
     async (newRow, oldRow) => {
       try {
-        const params = pick(
-          [
-            'patientIdentifier',
-            'firstName',
-            'middleName',
-            'lastName',
-            'gender',
-            'genderIdentity',
-            'dob',
-            'mrn',
-            'phoneMobile',
-            'phoneHome',
-          ],
-          newRow,
-        );
-        params.dob = dateFormatter(params.dob, 'MM/DD/YYYY');
-        await updatePatientById.mutateAsync(params);
+        const customColumnIdentifiers = columnsDataSorted
+          .filter((column) => column.targetType === 'PATIENT' && column.isChecked)
+          .map((column) => column.identifier);
 
+        const updatedMetaData = [...(oldRow.patientMetaData || [])];
+
+        customColumnIdentifiers.forEach((identifier) => {
+          if (newRow[identifier] !== undefined) {
+            const index = updatedMetaData.findIndex(
+              (meta) => meta.customFieldIdentifier === identifier
+            );
+
+            if (index !== -1) {
+              updatedMetaData[index].value = newRow[identifier];
+              if (typeof newRow[identifier] === 'object') {
+                updatedMetaData[index].values = updatedMetaData[index].value.values;
+                delete updatedMetaData[index].value;
+              }
+            } else {
+              if (typeof newRow[identifier] === 'object' && newRow[identifier] !== null && 'values' in newRow[identifier]) {
+                updatedMetaData.push({
+                  customFieldIdentifier: identifier,
+                  values: newRow[identifier].values,
+                });
+              } else {
+                updatedMetaData.push({
+                  customFieldIdentifier: identifier,
+                  value: newRow[identifier],
+                });
+              }
+            }
+          }
+        });
+
+        newRow.patientMetaData = updatedMetaData;
+
+        if (newRow.dob) {
+          newRow.dob = moment(newRow.dob).format('MM/DD/YYYY')
+        }
+        else {
+          newRow.dob = null;
+        }
+
+        await updatePatientById.mutateAsync(newRow);
+
+        showToast({
+          status: 'success',
+          title: 'User updated successfully',
+        });
         return newRow;
       } catch (error) {
         console.error('processRowUpdate error', error);
@@ -377,19 +422,28 @@ const PatientsList = ({
           <Text width="80">{row.mrn}</Text>
         </Tooltip>
       ),
-      editable: false,
+      editable: true,
     },
     {
       field: 'dob',
       headerName: 'DOB',
       renderHeader: renderColumnHeader,
       width: 150,
-      valueGetter: ({ value }) => dateFormatter(value, 'MMM DD, YYYY'),
-      valueSetter: ({ value, row }) => ({
-        ...row,
-        dob: dateFormatter(value, 'yyyy-MM-dd'),
-      }),
-      editable: false,
+      valueGetter: ({ value }) => value ? moment(value).format('MM/DD/YYYY') : '',
+      valueSetter: ({ value, row }) => {
+        const formattedDate = value ? moment(value).format('MM/DD/YYYY') : null;
+        return { ...row, dob: formattedDate };
+      },
+      sortComparator: (v1, v2) => {
+        const date1 = new Date(v1);
+        const date2 = new Date(v2);
+
+        if (!date1 || isNaN(date1)) return 1;
+        if (!date2 || isNaN(date2)) return -1;
+
+        return date1 - date2;
+      },
+      editable: true,
       renderEditCell: (params) => <DateEditCell {...params} />,
     },
     {
@@ -397,39 +451,17 @@ const PatientsList = ({
       headerName: 'AGE',
       renderHeader: renderColumnHeader,
       width: 70,
-      sortComparator: (v1, v2, parameters1, parameters2) => {
-        const { api } = parameters2;
-        const sortModel = api.getSortModel();
+      sortComparator: (_v1, _v2, parameters1, parameters2) => {
         const dob1 = parameters1.api.getCellValue(parameters1.id, 'dob');
         const dob2 = parameters2.api.getCellValue(parameters2.id, 'dob');
 
-        if (dob1 === dob2) {
-          return 0;
-        }
+        if (!dob1) return 1;
+        if (!dob2) return -1;
 
-        if (sortModel[0]?.sort === 'asc' && sortModel[0]?.field === 'age') {
-          // !IMPORTANT it is descending - MaterialUI has problem with passing correctly current order
-          if (dob1 === null || dob1 === '') {
-            return -1;
-          }
+        const age1 = calculateAge(new Date(dob1));
+        const age2 = calculateAge(new Date(dob2));
 
-          if (dob2 === null || dob2 === '') {
-            return 1;
-          }
-
-          return dob2 < dob1 ? -1 : 1;
-        }
-
-        // !IMPORTANT it is ascending - MaterialUI has problem with passing correctly current order
-        if (dob1 === null || dob1 === '') {
-          return 1;
-        }
-
-        if (dob2 === null || dob2 === '') {
-          return -1;
-        }
-
-        return dob1 < dob2 ? 1 : -1;
+        return age1 - age2;
       },
     },
     {
@@ -438,7 +470,7 @@ const PatientsList = ({
       renderHeader: renderColumnHeader,
       width: 100,
       valueFormatter: ({ value }) => genderBirthOptionHash[value],
-      editable: false,
+      editable: true,
       renderEditCell: (params) => (
         <GenderSelectCell options={GENDER_OPTIONS_BIRTH} {...params} />
       ),
@@ -449,7 +481,7 @@ const PatientsList = ({
       renderHeader: renderColumnHeader,
       width: 150,
       valueFormatter: ({ value }) => genderIdentityOptionsHash[value],
-      editable: false,
+      editable: true,
       renderEditCell: (params) => (
         <GenderSelectCell options={genderIdentityOptions} {...params} />
       ),
@@ -464,7 +496,7 @@ const PatientsList = ({
           <Text>{row.email}</Text>
         </Tooltip>
       ),
-      editable: false,
+      editable: true,
     },
     {
       field: 'phoneMobile',
@@ -476,7 +508,7 @@ const PatientsList = ({
         </Tooltip>
       ),
       width: 140,
-      editable: false,
+      editable: true,
       preProcessEditCellProps: preProcessPhoneEditCellProps,
       renderEditCell: (params) => <PhoneEditCell {...params} />,
     },
@@ -490,17 +522,80 @@ const PatientsList = ({
         </Tooltip>
       ),
       width: 140,
-      editable: false,
+      editable: true,
       preProcessEditCellProps: preProcessPhoneEditCellProps,
       renderEditCell: (params) => <PhoneEditCell {...params} />,
     },
   ];
 
+  function confirmSave(id) {
+    dispatch(
+      openModal('SavePatient', {
+        description: 'Are you sure you want to save these changes?',
+        confirm: () => {
+          setRowModesModel({
+            ...rowModesModel,
+            [id]: { mode: GridRowModes.View, ignoreModifications: false },
+          });
+          dispatch(closeModal());
+        },
+        onClose: () => {
+          dispatch(closeModal());
+        },
+      }),
+    );
+  }
+
+  const getRenderEditCell = (fieldType, options = [], name) => {
+    switch (fieldType) {
+      case 'PICK_LIST':
+        return (params) => <DropDownEditCell {...params} options={options} name={name} />;
+      case 'MULTI_SELECT':
+        return (params) => <MultiDropdownEditCell {...params} options={options} name={name} />;
+      case 'DATE':
+        return (params) => <DateTimeEditCell {...params} />;
+      case 'LONG_TEXT':
+        return (params) => <CustomFieldLongTextEditor {...params} name={name} />;
+      case 'TEXT':
+      case 'HYPERLINK':
+        return (params) => <TextEditCell {...params} name={name} />;
+      case 'BOOLEAN':
+        return (params) => <BooleanEditCell {...params} name={name} />;
+      case 'NUMBER':
+        return (params) => <NumberEditCell {...params} name={name} />;
+      default:
+        return null;
+    }
+  };
+
+  const getColumnWidth = (fieldType) => {
+    switch (fieldType) {
+      case 'PICK_LIST':
+        return 150;
+      case 'MULTI_SELECT':
+        return 300;
+      case 'DATE':
+        return 150;
+      case 'TEXT':
+        return 150;
+      case 'LONG_TEXT':
+        return 150;
+      case 'HYPERLINK':
+        return 150;
+      case 'BOOLEAN':
+        return 120;
+      case 'NUMBER':
+        return 200;
+      default:
+        return 100;
+    }
+  };
+
   const actionsColumn = {
     field: 'actions',
     type: 'actions',
     headerName: 'Actions',
-    width: 80,
+    width: 100,
     cellClassName: 'actions',
     getActions: ({ id }) => {
       const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
@@ -547,26 +642,64 @@ const PatientsList = ({
           field: column.identifier,
           headerName: column.name,
           renderHeader: renderColumnHeader,
-          width: 140,
-          renderCell: ({ row }) => {
-            const cellValue = row[column.identifier];
-            const displayValue =
-              column.fieldType === 'DATE'
-                ? dateFormatter(cellValue)
-                : cellValue;
+          renderCell: (params) => {
+            const { row } = params;
+            if (column.fieldType === 'HYPERLINK') {
+              const link = row[column.identifier]
+              return (
+                <Tooltip placement="top" title={row[column.identifier]}>
+                  <Link
+                    href={link?.startsWith('http') ? link : `//${link}`}
+                    target="_blank"
+                    sx={{
+                      color: palette.blueOcean,
+                      fontFamily: 'Outfit',
+                      textDecoration: 'none',
+                      '&:hover': {
+                        color: palette.brightBlue,
+                      },
+                    }}
+                  >
+                    {link}
+                  </Link>
+                </Tooltip>
+              );
+            }
+            if (column.fieldType === 'DATE') {
+              return (<DateTimeEditCell {...params} readOnly />)
+            }
+            else {
+              let displayValue = row[column.identifier];
 
-            return (
-              <Tooltip placement="top" title={displayValue}>
-                <Text>{displayValue}</Text>
-              </Tooltip>
-            );
+              if (column.fieldType === 'MULTI_SELECT') {
+                if (typeof displayValue === 'object' && displayValue !== null) {
+                  displayValue = row[column.identifier].value
+                }
+              }
+              else if (column.fieldType === 'PICK_LIST') {
+                const selectedOption = column.options?.find(option => option.identifier === displayValue);
+                displayValue = selectedOption ? selectedOption.name : displayValue;
+              }
+
+              return (
+                <Tooltip placement="top" title={displayValue}>
+                  <Text>{displayValue}</Text>
+                </Tooltip>
+              );
+            }
           },
+          editable: true,
+          renderEditCell: getRenderEditCell(column.fieldType, column.options, column.name),
+          width: getColumnWidth(column.fieldType, column),
           sortComparator: (v1, v2, parameters1, parameters2) => {
             const { api } = parameters2;
             const sortModel = api.getSortModel();
             const compareValue1 = v1 || '';
             const compareValue2 = v2 || '';
             // eslint-disable-next-line sonarjs/no-collapsible-if
+            if (column.fieldType === 'NUMBER') {
+              return Number(compareValue1) - Number(compareValue2);
+            }
             if (
               column.fieldType === 'DATE' &&
               compareValue1 !== '' &&
@@ -594,7 +727,8 @@ const PatientsList = ({
             return compareValue1.localeCompare(compareValue2);
           },
         })),
-    ); // .concat([actionsColumn])
+    )
+    .concat([actionsColumn]);
 
   useEffect(() => {
     const defaultSortField = localStorage.getItem('PATIENT_LIST_SORT_COLUMN');
@@ -609,11 +743,11 @@ const PatientsList = ({
       setDataGridSortModel(
         defaultSortAvailable
           ? [
-              {
-                field: defaultSortField,
-                sort: defaultSortOrder,
-              },
-            ]
+            {
+              field: defaultSortField,
+              sort: defaultSortOrder,
+            },
+          ]
           : undefined,
       );
     }
@@ -628,8 +762,8 @@ const PatientsList = ({
       ) : (
         <>
           {patients?.length > 0 && formattedPatients ? (
-            <Grid container xs={12} item justifyContent="center">
-              <Grid item xs={12} xl={11} md={12} lg={11}>
+            <Grid container xs={12} item justifyContent="center" >
+              <Grid item xs={12} xl={11} md={12} lg={11} >
                 <NonEmptyListTable listLength={patients?.length ?? 0}>
                   <StyledDataGrid
                     apiRef={apiRef}
@@ -651,15 +785,16 @@ const PatientsList = ({
                     processRowUpdate={processRowUpdate}
                     sortModel={
                       dataGridSortModel &&
-                      columns.some(
-                        (column) =>
-                          column?.field === dataGridSortModel[0]?.field,
-                      )
+                        columns.some(
+                          (column) =>
+                            column?.field === dataGridSortModel[0]?.field,
+                        )
                         ? dataGridSortModel
                         : undefined
                     }
                     pinnedColumns={pinnedColumns}
                     onPinnedColumnsChange={handlePinnedColumnsChange}
+                    disableColumnReorder
                   />
                 </NonEmptyListTable>
               </Grid>

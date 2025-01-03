@@ -270,7 +270,7 @@ export function downloadPatientImportTemplate() {
       const link = document.createElement('a');
       link.style.display = 'none';
       link.href = url;
-      link.setAttribute('download', 'Patient_Data_Upload_Template.xlsx');
+      link.setAttribute('download', 'Patient_Data_Upload_Template.csv');
       document.body.append(link);
       link.click();
     })

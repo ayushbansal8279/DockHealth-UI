@@ -334,10 +334,17 @@ const CustomProfileList = () => {
                       }
                       case 'PICK_LIST': {
                         return (
-                          record.values?.[0] ||
-                          record.values?.[0]?.customFieldOption?.name ||
+                          record.references
+                            ?.map((item) => item.displayValue)
+                            .join(', ') ||
+                          record.values?.join(', ') ||
                           ''
                         );
+                      }
+                      case 'RELATIONSHIP': {
+                        return record.references
+                          ?.map((item) => item.displayValue)
+                          .join(', ');
                       }
                       default: {
                         return '';

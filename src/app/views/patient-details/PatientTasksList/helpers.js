@@ -51,3 +51,7 @@ export function groupTasks(tasks) {
 
   return groupedTasks ? Object.values(groupedTasks) : tasks;
 }
+
+export const patientViewTypeStorageKey = 'patient-view-type';
+
+export const patientTaskViewStatusStorageKey = 'patient-tasks-view-status';

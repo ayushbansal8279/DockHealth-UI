@@ -33,6 +33,7 @@ const PatientFolderModal = ({
   function submit(data) {
     if (data.name !== currentName) {
       onChange(data.name);
+      closeModal();
     } else {
       closeModal();
     }

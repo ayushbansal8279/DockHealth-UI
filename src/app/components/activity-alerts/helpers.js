@@ -87,18 +87,16 @@ export function determineAlertSubTitle(alertSubTitle, description, comment) {
 }
 
 export function triggerActivityAlertForDesktopNotification(alertDetails) {
-  const { activityAlertTitle, task = {}, targetIdentifier } = alertDetails;
-
   const {
-    description,
+    activityAlertTitle,
+    task = {},
     taskList = {},
-    // status,
-    comments,
-    dueDate,
-    identifier: taskIdentifier,
-  } = task;
+    targetIdentifier,
+  } = alertDetails;
 
-  const { listName } = taskList;
+  const { description, comments, dueDate, identifier: taskIdentifier } = task;
+
+  const { listName } = taskList || task?.taskList;
 
   const alertComment =
     comments?.find(

@@ -5,7 +5,7 @@ import TaskItemPopover from 'components/task/TaskItemPopover/TaskItemPopover';
 import TaskIcon from 'components/task/TaskIcon/TaskIcon';
 import DateLabel from 'components/common/DateLabel/DateLabel';
 import { updatePartialWorkflow } from 'actions/task-template-actions';
-import { ReminderType } from 'helpers/task-helpers';
+import { checkDateTimeIntent, DueDateIntent, ReminderType } from 'helpers/task-helpers';
 import { isWorkflowDueDateOverdue } from 'helpers/workflow-helpers';
 import { useDispatch } from 'react-redux';
 import { AddPlaceholder, DueDatesContainer, DueDateWrapper } from './styled';
@@ -20,7 +20,11 @@ const TaskTemplateDueDate = (props) => {
 
   const handleSave = useCallback(
     (updatedDueDateTime) => {
-      const payload = { dueDateTime: updatedDueDateTime };
+      const dueDateIntent = checkDateTimeIntent(updatedDueDateTime);
+      const payload = {
+        dueDateTime: updatedDueDateTime,
+        dueDateIntent: updatedDueDateTime ? dueDateIntent : DueDateIntent.DATE,
+      };
 
       if (!updatedDueDateTime) payload.dueDateTimeCleared = true;
 

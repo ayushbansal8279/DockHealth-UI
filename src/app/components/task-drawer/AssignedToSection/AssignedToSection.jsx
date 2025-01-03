@@ -25,6 +25,7 @@ import {
 import UserAvatar from 'components/user/UserAvatar/UserAvatar';
 import { Button, ClickAwayListener, TextField } from '@mui/material';
 import MemberGroup from '../../user/MemberGroup/MemberGroup';
+import { getCurrentUserBasicDetails } from '@/app/helpers/user-helper';
 
 const AssignedToSection = ({
   selectedTask = {},
@@ -35,6 +36,7 @@ const AssignedToSection = ({
   slectedListIdentifier,
 }) => {
   const currentUser = useSelector(userProfileSelector);
+  const currentUserBasicDetails = getCurrentUserBasicDetails(currentUser);
   const { assignedToUsers, taskList } = selectedTask || {};
   const isTemplateTask = useMemo(
     () => checkIfTemplateTask(selectedTask),
@@ -53,8 +55,10 @@ const AssignedToSection = ({
   const inputRef = useRef(null);
 
   useEffect(() => {
-    !addTaskDrawer && setAssignedToUsersValue(assignedToUsers || []);
-  }, [assignedToUsers]);
+    !addTaskDrawer
+      ? setAssignedToUsersValue(assignedToUsers || [])
+      : setAssignedToUsersValue([currentUserBasicDetails]);
+  }, [assignedToUsers, addTaskDrawer]);
 
   const displayName = (userName) => {
     return userName.length > 16 ? `${userName.slice(0, 16)} ...` : userName;

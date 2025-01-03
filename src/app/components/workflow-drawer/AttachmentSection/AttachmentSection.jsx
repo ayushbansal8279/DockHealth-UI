@@ -209,7 +209,13 @@ const AttachmentSection = ({ disabled }) => {
                 <AttachmentButton
                   key={attachment.attachmentIdentifier}
                   attachment={attachment}
-                  onClick={handleAttachmentClick}
+                  onClick={() => {
+                    if (
+                      attachment?.scanStatus === null ||
+                      attachment?.scanStatus === ScanStatus.CLEAN
+                    )
+                    handleAttachmentClick(attachment);
+                  }}
                   onRemoveClick={handleDeleteAttachment}
                 />
                 <p>

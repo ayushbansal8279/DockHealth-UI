@@ -44,6 +44,7 @@ import {
 } from './styled';
 import AISummaryModalOpenerHelper from '@/app/modal/components/AISummaryModal/AISummaryModalOpenerHelper';
 import { SummaryType } from '@/app/helpers/ai-helper';
+import PatientMetaDataField from './PatientMetaDataField';
 
 const { DISABLED } = TASK_LIST_RESTRICTIONS_OPTIONS;
 
@@ -247,21 +248,13 @@ const PatientDetailsHeader = () => {
                   }) => {
                     return (
                       <React.Fragment key={customFieldIdentifier}>
-                        {fieldType === FieldType.HYPERLINK ? (
-                          <PatientInfo>
-                            <a href={value} target="_blank" rel="noreferrer">
-                              {customFieldName}
-                            </a>
-                          </PatientInfo>
-                        ) : (
-                          <PatientInfo>
-                            <Typography>{customFieldName}: </Typography>
-                            <Box ml={1} />
-                            {fieldType === FieldType.DROPDOWN_MULTI
-                              ? `${displayNames?.join(',') || ''}`
-                              : `${displayName || value}`}
-                          </PatientInfo>
-                        )}
+                        <PatientMetaDataField
+                          fieldType={fieldType}
+                          customFieldName={customFieldName}
+                          value={value}
+                          displayNames={displayNames}
+                          displayName={displayName}
+                        />
                         <PatientInfoDivider />
                       </React.Fragment>
                     );

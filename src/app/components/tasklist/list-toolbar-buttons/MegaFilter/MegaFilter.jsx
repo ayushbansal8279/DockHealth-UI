@@ -12,6 +12,7 @@ import SaveFilterPopup from '../../../filter/SaveFilterPopup/SaveFilterPopup';
 import FilterTableLoader from '../../../filter/FilterTableLoader/FilterTableLoader';
 import { organizationSelector } from '@/app/selectors/organization-selectors';
 import { userProfileSelector } from '@/app/selectors/user-selectors';
+import { selectFilterOption } from '@/app/helpers/filter-options-helpers';
 
 const MegaFilter = ({
   children,
@@ -34,6 +35,7 @@ const MegaFilter = ({
   isDefaultDateFilterApplied = false,
   value,
   focused,
+  showFilterCount,
 }) => {
   const [isOpen, openPopover] = useState(false);
   const megaFilterButtonReference = useRef(null);
@@ -43,6 +45,7 @@ const MegaFilter = ({
   const [isSavePopupOpen, setSavePopupOpen] = useState(false);
   const [editIdentifier, setEditIdentifier] = useState('');
   const [filteredData, setFilteredData] = useState({});
+  const [fiterCount, setFilterCount] = useState(-1);
   const [customFilteredData, setCustomFilteredData] = useState({});
   const [selectedQuickFilter, setSelectedQuickFilter] = useState('');
   const organization = useSelector(organizationSelector);
@@ -57,8 +60,7 @@ const MegaFilter = ({
   //   }
   // }, [isOpen]);
 
-  const isFilterApplied =
-    (selectedFilters && !isEmpty(selectedFilters))
+  const isFilterApplied = selectedFilters && !isEmpty(selectedFilters);
 
   useEffect(() => {
     const data = {};
@@ -117,6 +119,10 @@ const MegaFilter = ({
     (filter) => filter.quickFilterIdentifier === selectedQuickFilter,
   );
 
+  const handleSelectedFiltersChange = () => {
+    onSelectFilters(selectFilterOption('', '', filteredData));
+  };
+
   return (
     <MegaFilterContainer isFilterApplied={isFilterApplied}>
       {children || (
@@ -147,7 +153,6 @@ const MegaFilter = ({
             setEditIdentifier={setEditIdentifier}
             editIdentifier={editIdentifier}
             filters={filters}
-            onSelectedFiltersChange={onSelectFilters}
             setFinalFilter={setFinalFilter}
             openPopover={openPopover}
             setFilteredData={setFilteredData}
@@ -160,6 +165,10 @@ const MegaFilter = ({
             setCustomFilteredData={setCustomFilteredData}
             selectedCustomFilter={selectedCustomFilter}
             selectQuickFilter={selectQuickFilter}
+            handleSelectedFiltersChange={handleSelectedFiltersChange}
+            fiterCount={fiterCount}
+            setFilterCount={setFilterCount}
+            showFilterCount={showFilterCount}
           />
           {isFilterApplied && tasksAndSubTasksCount === 0 && !isFetching && (
             <MegaFilterNoResultsLabel>
@@ -204,7 +213,6 @@ const MegaFilter = ({
               {filters ? (
                 <NewFilterContainer
                   filters={filters}
-                  onSelectedFiltersChange={onSelectFilters}
                   setFinalFilter={setFinalFilter}
                   finalFilter={finalFilter}
                   openPopover={openPopover}
@@ -216,6 +224,10 @@ const MegaFilter = ({
                   customFinalFilter={customFinalFilter}
                   setCustomFinalFilter={setCustomFinalFilter}
                   setSelectedQuickFilter={setSelectedQuickFilter}
+                  handleSelectedFiltersChange={handleSelectedFiltersChange}
+                  fiterCount={fiterCount}
+                  setFilterCount={setFilterCount}
+                  showFilterCount={showFilterCount}
                 />
               ) : (
                 <></>

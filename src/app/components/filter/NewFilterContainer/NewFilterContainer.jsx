@@ -1,8 +1,13 @@
 import { Box } from '@mui/material';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { useSelector } from 'react-redux';
 import FilterListIcon from '@mui/icons-material/FilterList';
-import { selectFilterOption } from 'helpers/filter-options-helpers';
 import { userProfileSelector } from 'selectors/user-selectors';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import { capitalizeWords } from 'helpers/capitalize';
@@ -16,6 +21,7 @@ import {
   AddFilterRotatableChevronButtonWrapper,
   AddFilterRotatableChevronButtonLabel,
   AddFilterButtonLabel,
+  FilterCount,
 } from './styled';
 import FilterSelect from '../FilterSelect/FilterSelect';
 import {
@@ -26,10 +32,15 @@ import RotatableChevron from '../../common/RotatableChevron/RotatableChevron';
 import palette from '@/app/styles/palette';
 import useBoolean from '@/app/hooks/useBoolean';
 import FilterOptionsPopover from './FilterOptionsPopover';
+import debounce from 'lodash.debounce';
+import { getFilteredCountsForList } from '@/app/api/list-details-api';
+import {
+  currentTaskListSelector,
+  currentTaskListTasksStatusSelector,
+} from '@/app/selectors/task-list-selectors';
 
 const NewFilterContainer = ({
   filters,
-  onSelectedFiltersChange,
   finalFilter,
   setFinalFilter,
   openPopover,
@@ -41,6 +52,9 @@ const NewFilterContainer = ({
   handleSelectedFiltersChange,
   editModeEnabled = true,
   multiSelectEnabled = true,
+  fiterCount,
+  setFilterCount,
+  showFilterCount = false,
 }) => {
   const popoverReference = useRef(null);
   const [isPopoverOpen, openAddFilterPopover, closeAddFilterPopover] =
@@ -48,6 +62,8 @@ const NewFilterContainer = ({
   const [isDisable, setDisable] = useState(false);
 
   const currentUser = useSelector(userProfileSelector);
+  const taskList = useSelector(currentTaskListSelector);
+  const taskListStatus = useSelector(currentTaskListTasksStatusSelector);
   const customerTypeLabel = getCustomerTypeLabel(currentUser);
   const customerTypeLabelMixedCase = capitalizeWords(customerTypeLabel);
   const sanitizedFilters = filters?.map((item) => {
@@ -56,15 +72,16 @@ const NewFilterContainer = ({
       : item;
   });
 
-  useEffect(() => {
+  const processedData = useMemo(() => {
     const data = {};
+    let hasItems = false;
     for (const key in finalFilter) {
       if (finalFilter[key]?.length > 0) {
-        setDisable(true);
+        hasItems = true;
         const options = [];
         let dateStart = '';
         let dateEnd = '';
-        finalFilter[key].map((item) => {
+        finalFilter[key].forEach((item) => {
           if (item?.key?.includes('DATE_RANGE')) {
             dateStart = item?.dateStart;
             dateEnd = item?.dateEnd;
@@ -75,18 +92,36 @@ const NewFilterContainer = ({
         });
         data[key] =
           dateStart !== '' && dateEnd !== ''
-            ? {
-                options,
-                dateStart,
-                dateEnd,
-              }
+            ? { options, dateStart, dateEnd }
             : { options };
-      } else {
-        setDisable(false);
       }
     }
-    setFilteredData(data);
+    setDisable(hasItems);
+    return data;
   }, [finalFilter]);
+
+  const fetchfilterCountWithDebounce = useCallback(
+    debounce(async (value) => {
+      const count = await getFilteredCountsForList(
+        taskList?.taskListIdentifier,
+        taskListStatus,
+        value,
+      );
+      setFilterCount(count?.count);
+    }, 50),
+    [taskList?.taskListIdentifier, taskListStatus],
+  );
+
+  useEffect(() => {
+    setFilteredData(processedData);
+    if (showFilterCount) {
+      if (Object.entries(processedData)?.length > 0) {
+        fetchfilterCountWithDebounce(processedData);
+      } else {
+        setFilterCount(-1);
+      }
+    }
+  }, [processedData, showFilterCount, fetchfilterCountWithDebounce]);
 
   const handleClick = (option) => {
     filters.map((item) => {
@@ -103,11 +138,8 @@ const NewFilterContainer = ({
   };
 
   const handleApplyFinalFilter = () => {
-    onSelectedFiltersChange(selectFilterOption('', '', filteredData));
+    handleSelectedFiltersChange();
     openPopover(false);
-    if(handleSelectedFiltersChange){
-      handleSelectedFiltersChange();
-    }
   };
 
   const handleClose = useCallback(() => {
@@ -136,6 +168,9 @@ const NewFilterContainer = ({
           multiSelectEnabled={multiSelectEnabled}
         />
       ))}
+      {fiterCount !== -1 && (
+        <FilterCount> {fiterCount} matching result</FilterCount>
+      )}
       {editModeEnabled && (
         <FilterButtonWrapper>
           <BoxContainer ref={popoverReference}>

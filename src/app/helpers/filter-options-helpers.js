@@ -9,6 +9,7 @@ export const FilterOptionsCategory = {
   ASSIGNED_BY: 'assignedBy',
   DUE_DATE: 'taskDueDateOptions',
   LABELS: 'labels',
+  PATIENT_LABELS: 'patientLabels',
   WORKFLOW_STATUS: 'workflowStatusOptions',
   PRIORITY: 'priorityOptions',
   COMPLETE_DATE: 'taskCompletedDateOptions',
@@ -20,6 +21,8 @@ export const FilterOptionsCategory = {
   EVENT_TYPES: 'eventTypes',
   EVENT_SUB_TYPES: 'eventSubTypes',
   EVENT_DATE_OPTIONS: 'eventDateOptions',
+  WORKFLOWS: 'workflows',
+  PATIENT_LABELS: 'patientLabels',
 };
 
 const FilterOptionsLabel = {
@@ -29,7 +32,8 @@ const FilterOptionsLabel = {
   [FilterOptionsCategory.TASK_LISTS]: 'Task List',
   [FilterOptionsCategory.ASSIGNED_BY]: 'Assigned by',
   [FilterOptionsCategory.DUE_DATE]: 'Due date',
-  [FilterOptionsCategory.LABELS]: 'Label',
+  [FilterOptionsCategory.LABELS]: 'Task Label',
+  [FilterOptionsCategory.PATIENT_LABELS]: 'Patient Label',
   [FilterOptionsCategory.WORKFLOW_STATUS]: 'Workflow Status',
   [FilterOptionsCategory.PRIORITY]: 'Priority',
   [FilterOptionsCategory.COMPLETE_DATE]: 'Task completed date',
@@ -41,6 +45,8 @@ const FilterOptionsLabel = {
   [FilterOptionsCategory.EVENT_TYPES]: 'Event Type',
   [FilterOptionsCategory.EVENT_SUB_TYPES]: 'Event Sub Type',
   [FilterOptionsCategory.EVENT_DATE_OPTIONS]: 'Event Date Options',
+  [FilterOptionsCategory.WORKFLOWS]: 'Workflows',
+  [FilterOptionsCategory.PATIENT_LABELS]: 'Patient Label',
 };
 
 const DATE_FILTER_OPTIONS = new Set([

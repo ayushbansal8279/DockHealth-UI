@@ -2,7 +2,6 @@ import React, { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
 import SelectorPopover from 'components/common/SelectorPopover/SelectorPopover';
-import Button from 'components/common/Button/Button';
 import {
   resendInviteToOrganization,
   cancelInviteToOrganization,
@@ -11,6 +10,8 @@ import {
   InvitationItem,
   InvitationItemLabel,
   InvitationItemDescription,
+  ConfirmButton,
+  CancelButton,
 } from './styled';
 
 const renderInvitations = ({
@@ -82,21 +83,24 @@ const renderInvitationItem = ({
   description,
   isDisabled,
   onSave,
-}) => (
-  <InvitationItem key={key}>
-    <div>
-      <InvitationItemLabel>{label}</InvitationItemLabel>
-      <InvitationItemDescription>{description}</InvitationItemDescription>
-      <Button
-        onClick={onSave}
-        disabled={isDisabled}
-        variant={key === 'cancel' ? 'secondary' : 'primary'}
-      >
-        {label}
-      </Button>
-    </div>
-  </InvitationItem>
-);
+}) => { 
+  const InvitationButton = key === 'cancel' ? CancelButton : ConfirmButton;
+  return (
+    <InvitationItem key={key}>
+      <div>
+        <InvitationItemLabel>{label}</InvitationItemLabel>
+        <InvitationItemDescription>{description}</InvitationItemDescription>
+        <InvitationButton
+          onClick={onSave}
+          disabled={isDisabled}
+          fullWidth
+        >
+          {label}
+        </InvitationButton>
+      </div>
+    </InvitationItem>
+  );
+}
 
 const InvitationPopover = ({
   labelReference,

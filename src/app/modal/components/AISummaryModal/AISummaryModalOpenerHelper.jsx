@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import Tooltip from '@/app/components/common/Tooltip/Tooltip';
 import LuminaStar from '@/app/img/AI/LuminaStar';
 import palette from '@/app/styles/palette';
@@ -8,22 +9,25 @@ import {
   getWorkflowAISummary,
 } from '@/app/api/ai-summary-api';
 import { openModal } from '../../actions';
-import { useDispatch } from 'react-redux';
-import { customPromptBuilder, SummaryType } from '@/app/helpers/ai-helper';
+import { aiSummaryRequestBuilder, SummaryType } from '@/app/helpers/ai-helper';
 
 const AISummaryModalOpenerHelper = ({ type, title, identifier }) => {
   const [isAiIconHovered, setAiIconHovered] = useState(false);
   const dispatch = useDispatch();
 
-  const methodToCall = async (promptText, forceRefresh) => {
-    const customPrompt = customPromptBuilder(promptText, forceRefresh);
+  const generateAISummary = async (force, persona, customPrompt) => {
+    const requestPayload = aiSummaryRequestBuilder(
+      force,
+      persona,
+      customPrompt,
+    );
 
     if (type === SummaryType.PATIENT)
-      return await getPatientAISummary(identifier, customPrompt);
+      return getPatientAISummary(identifier, requestPayload);
     if (type === SummaryType.TASK)
-      return await getTaskAISummary(identifier, customPrompt);
+      return getTaskAISummary(identifier, requestPayload);
     if (type === SummaryType.WORKFLOW)
-      return await getWorkflowAISummary(identifier, customPrompt);
+      return getWorkflowAISummary(identifier, requestPayload);
   };
 
   return (
@@ -36,8 +40,9 @@ const AISummaryModalOpenerHelper = ({ type, title, identifier }) => {
             openModal('AISummary', {
               type: type,
               title: `${title}`,
+              identifier: identifier,
               onsubmit: async (promptText, forceRefresh) =>
-                await methodToCall(promptText, forceRefresh),
+                await generateAISummary(promptText, forceRefresh),
             }),
           )
         }

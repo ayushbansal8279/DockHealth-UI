@@ -23,6 +23,7 @@ import {
 import { EndAdornmentContainer, AdornmentClear } from '../styled';
 import PrioritySelectIcon from '@/app/img/PrioritySelectIcon';
 import { IconButton, InputAdornment } from '@mui/material';
+import Tooltip from 'components/common/Tooltip/Tooltip';
 
 const StatusSection = ({ disabled }) => {
   const dispatch = useDispatch();
@@ -68,6 +69,17 @@ const StatusSection = ({ disabled }) => {
     handleUpdateWorkflowStatus(null);
   };
 
+  const textRef = useRef(null);
+  const [isTruncated, setIsTruncated] = useState(false);
+
+  useEffect(() => {
+    if (textRef.current) {
+      setIsTruncated(textRef.current.scrollWidth > textRef.current.clientWidth);
+    }
+  }, [workflowStatus]);
+
+  const TooltipWrapper = isTruncated ? Tooltip : React.Fragment;
+
   return (
     <StatusContainer>
       <Title>Status</Title>
@@ -86,7 +98,17 @@ const StatusSection = ({ disabled }) => {
         <StatusFieldContainer>
           {workflowStatus ? (
             <StatusWrapper color={workflowStatus?.color}>
-              {workflowStatus?.name}
+              <TooltipWrapper {...(isTruncated && { placement: 'top', title: workflowStatus?.name })}>
+                <div
+                  ref={textRef}
+                  style={{
+                    textOverflow: 'ellipsis',
+                    overflow: 'hidden',
+                    whiteSpace: 'nowrap',
+                  }}>
+                  {workflowStatus?.name}
+                </div>
+              </TooltipWrapper>
             </StatusWrapper>
           ) : (
             <Input

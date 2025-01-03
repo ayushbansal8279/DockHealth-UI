@@ -35,6 +35,7 @@ import { DueDateBasicLabel } from 'components/task/styled';
 import DueDatePicker from 'components/task/DueDatePicker/DueDatePicker';
 import TaskDragHandle from 'components/task/TaskDragHandle/TaskDragHandle';
 import {
+  checkDateTimeIntent,
   checkIfTemplateTask,
   getAttachmentsIconTooltipTitle,
   getCommentsIconTooltipTitle,
@@ -168,7 +169,8 @@ const DrawerTask = (props) => {
 
   const handleDueDateChange = useCallback(
     (newDueDate) => {
-      dispatch(updateTaskDueDate(task, newDueDate));
+      const dueDateIntent = checkDateTimeIntent(newDueDate);
+      dispatch(updateTaskDueDate(task, newDueDate, dueDateIntent));
     },
     [dispatch, task],
   );

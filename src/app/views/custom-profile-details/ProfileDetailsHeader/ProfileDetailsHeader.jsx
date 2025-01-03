@@ -144,7 +144,7 @@ const ProfileDetailsHeader = () => {
                 </Box>
                 <ProfileName>
                   {[
-                    `${profileName?.[1] || ''},`,
+                    `${profileName?.[1] ? profileName?.[1]+',' : ''}`,
                     profileName?.[0],
                     profileName?.[2],
                   ].join(' ')}
@@ -171,31 +171,23 @@ const ProfileDetailsHeader = () => {
                   );
                 })
                 .map((field) => {
-                  const profileTypeField = profileTypeFields?.find(
-                    (ptField) =>
-                      ptField.identifier === field?.profileTypeFieldIdentifier,
-                  );
-                  const customFieldOption =
-                    field.profileTypeFieldType === 'PICK_LIST'
-                      ? profileTypeField?.options?.find(
-                          (opt) =>
-                            opt.identifier ===
-                            (field.values?.[0] || field.values?.[0].value),
-                        )
-                      : undefined;
                   return (
                     <React.Fragment key={field.identifier}>
                       <ProfileInfo>
                         <Typography>{field.profileTypeFieldName}: </Typography>
                         <Box ml={1} />
-                        {field.profileTypeFieldType === FieldType.DROPDOWN_MULTI
-                          ? `${field.values?.join(',') || ''}`
-                          : `${
-                              customFieldOption?.name ||
-                              field.values?.[0] ||
-                              field.values?.[0]?.value ||
+                        {field.profileTypeFieldType === FieldType.DROPDOWN_MULTI ||
+                          field.profileTypeFieldType === FieldType.DROPDOWN ||
+                          field.profileTypeFieldType === FieldType.RELATIONSHIP
+                          ? `${
+                              field.references
+                                ?.map((item) => item.displayValue)
+                                .join(', ') ||
+                              field.values?.join(',') ||
+                              field.value ||
                               ''
-                            }`}
+                            }`
+                          : `${field.values?.join(',') || field.value || ''}`}
                       </ProfileInfo>
                       <ProfileInfoDivider />
                     </React.Fragment>
@@ -205,7 +197,7 @@ const ProfileDetailsHeader = () => {
           </Box>
           <ProfileDrawer
             title={[
-              `${profileName?.[1]},`,
+              `${profileName?.[1] ? profileName?.[1]+',' : ''}`,
               profileName?.[0],
               profileName?.[2],
             ].join(' ')}

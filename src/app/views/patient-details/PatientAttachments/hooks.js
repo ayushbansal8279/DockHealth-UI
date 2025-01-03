@@ -141,15 +141,39 @@ const useInitializeAttachmentsSectionHooks = () => {
 
   const deleteAttachment = useCallback(
     (identifier) => {
-      dispatch(
-        PatientDetailsActions.deletePatientAttachment(
-          patientIdentifier,
-          identifier,
-        ),
-      );
+      dispatch(openModal('DeleteConfirmation',{
+        title: 'Delete Attachment',
+        description: 'Are you sure you want to delete this attachment? This action cannot be undone.',
+        confirm: () => {
+          dispatch(
+            PatientDetailsActions.deletePatientAttachment(
+              patientIdentifier,
+              identifier,
+            ),
+          );
+        }
+      }))
     },
     [dispatch, patientIdentifier],
   );
+
+  const downloadAttachment = async (attachment) => {
+    const { attachmentIdentifier, fileName, contentType } = attachment;
+    try {
+        const {data} = await getMemoPatientAttachment(attachmentIdentifier);
+        const blob = new Blob([data], { type: contentType });
+        const url = window.URL.createObjectURL(blob);
+        const anchor = document.createElement('a');
+        anchor.href = url;
+        anchor.download = fileName;
+        document.body.appendChild(anchor);
+        anchor.click();
+        document.body.removeChild(anchor);
+        window.URL.revokeObjectURL(url);
+    } catch (error) {
+        console.error('Error downloading attachment:', error);
+    } 
+};
 
   const openAttachmentPreview = useCallback(
     (attachment) => {
@@ -313,6 +337,7 @@ const useInitializeAttachmentsSectionHooks = () => {
       isDragActive,
     },
     downloadAllFiles,
+    downloadAttachment,
     getMemoPatientAttachment,
   };
 };

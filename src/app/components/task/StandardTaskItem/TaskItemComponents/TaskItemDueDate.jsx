@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { updateTaskDueDate } from 'actions/task-actions';
 import DueDatePicker from 'components/task/DueDatePicker/DueDatePicker';
@@ -6,7 +6,7 @@ import TaskItemPopover from 'components/task/TaskItemPopover/TaskItemPopover';
 import TaskIcon from 'components/task/TaskIcon/TaskIcon';
 import Tooltip from 'components/common/Tooltip/Tooltip';
 import DateLabel from 'components/common/DateLabel/DateLabel';
-import { isDueDateOverdue, ReminderType } from 'helpers/task-helpers';
+import { checkDateTimeIntent, isDueDateOverdue, ReminderType } from 'helpers/task-helpers';
 import { onTaskDueDateChanged } from 'helpers/ga-event-helper';
 import {
   AddPlaceholder,
@@ -15,6 +15,7 @@ import {
 } from '../../styled';
 import { openModal } from '@/app/modal/actions';
 import { isDueDateValid } from '@/app/helpers/date-validation-helper';
+import moment from 'moment';
 
 const TaskItemDueDate = ({
   task,
@@ -28,14 +29,25 @@ const TaskItemDueDate = ({
   const {
     taskIdentifier,
     dueDate,
+    dueDateIntent,
     hasRecurringSchedule,
     reminderType,
     startDate,
   } = task || {};
 
+  const [momentDueDate, setMomentDueDate] = useState(() => dueDate ? moment(dueDate) : null);
+
+  useEffect(() => {
+    setMomentDueDate(dueDate ? moment(dueDate) : null)
+  }, [dueDate]);
+
   const handleSave = useCallback(
     (newDueDate) => {
-      dispatch(updateTaskDueDate(task, newDueDate));
+      setMomentDueDate(
+        !!newDueDate ? moment(newDueDate) : null,
+      );
+      const dueDateIntent = checkDateTimeIntent(newDueDate);
+      dispatch(updateTaskDueDate(task, newDueDate, dueDateIntent));
       onTaskDueDateChanged();
     },
     [dispatch, task],
@@ -44,6 +56,7 @@ const TaskItemDueDate = ({
   const handleDueDateChange = useCallback(
     (newDueDate) => {
       const isDateValid = isDueDateValid(startDate, newDueDate);
+      setMomentDueDate(newDueDate ? moment(newDueDate) : null);
       if (isDateValid) {
         handleSave(newDueDate);
       } else {
@@ -65,7 +78,7 @@ const TaskItemDueDate = ({
         content={({ closePopover }) => (
           <DueDatePicker
             taskIdentifier={taskIdentifier}
-            selectedDate={dueDate}
+            selectedDate={momentDueDate}
             onDateChange={handleDueDateChange}
             recurring={hasRecurringSchedule}
             onCloseClick={closePopover}
@@ -75,7 +88,8 @@ const TaskItemDueDate = ({
         <>
           {dueDate ? (
             <DateLabel
-              date={dueDate}
+              date={momentDueDate}
+              dueDateIntent={dueDateIntent}
               isOverdue={isDueDateOverdue(task)}
               hasReminder={reminderType && reminderType !== ReminderType.NONE}
               hasRecurringSchedule={hasRecurringSchedule}

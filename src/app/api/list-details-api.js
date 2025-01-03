@@ -127,6 +127,30 @@ export function getFilteredTasksForList(
     );
 }
 
+export function getFilteredCountsForList(
+  taskListIdentifier,
+  taskListStatus,
+  selectedFilters,
+) {
+  const selectedCriteria = {
+    ...mapSelectedOptionsToRequestPayload(selectedFilters),
+  };
+
+  const status = taskListStatus ?? 'INCOMPLETE';
+
+  return axios
+    .post(
+      `task/filter/filterCountsByCriteria/${taskListIdentifier}`,
+      selectedCriteria,
+      {
+        params: {
+          status,
+        },
+      },
+    )
+    .then(({ data }) => data);
+}
+
 export function getTaskListFilterOptions(taskListIdentifier, status) {
   const request = axios
     .get(`task/filter/filterOptionsForTaskList/${taskListIdentifier}`, {

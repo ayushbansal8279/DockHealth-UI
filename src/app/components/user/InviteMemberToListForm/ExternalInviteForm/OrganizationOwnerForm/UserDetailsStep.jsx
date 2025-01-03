@@ -129,7 +129,7 @@ const UserDetailsStep = ({
         <Grid item>
           <Spacing vertical={2} />
           <InfoContainer>
-            {isOrganizationAdmin && (
+            {!isOrganizationAdmin && (
               <>
                 <img src={IIcon} alt="!icon" />
                 <InfoText>Approval Required</InfoText>

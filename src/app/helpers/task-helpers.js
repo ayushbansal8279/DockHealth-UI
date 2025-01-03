@@ -103,6 +103,11 @@ export const ReminderType = {
   ABSOLUTE: 'ABSOLUTE'
 };
 
+export const DueDateIntent = {
+  DATE: 'DATE',
+  DATETIME_ABSOLUTE: 'DATETIME_ABSOLUTE'
+}
+
 export function getLabelsIconTooltipTitle(labels) {
   let toolTipMultiLabelDetails = '';
   if (labels.length === 1) {
@@ -165,6 +170,12 @@ export function isDueDateOverdue(task) {
       ? dueDateObject.isBefore(moment())
       : dueDateObject.isBefore(moment().startOf('day')))
   );
+}
+
+export function checkDateTimeIntent(DateTime) {
+  if(DateTime == null) return null;
+  const momentDateTime = moment(DateTime);
+  return (momentDateTime.hour() || momentDateTime.minute()) ? 'DATETIME_ABSOLUTE' : 'DATE';
 }
 
 export function checkIfTemplateTask(task) {

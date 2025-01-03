@@ -90,7 +90,7 @@ const ProfilesCustomFieldsView = ({ profileTypeIdentifier }) => {
       openModal('DeleteConfirmation', {
         title: 'Delete field',
         description:
-          'Are you sure you want to delete this custom user / provider field? This action cannot be undone.',
+          'Are you sure you want to delete this custom field? This action cannot be undone.',
         confirm: () => {
           setColumnsToState(columns.filter((f) => f.identifier !== id));
           ProfileTypeFieldApi.deleteProfileFieldType(id)

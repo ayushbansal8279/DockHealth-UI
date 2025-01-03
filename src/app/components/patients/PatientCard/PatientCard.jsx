@@ -316,8 +316,9 @@ const PatientCard = ({
                                 <CustomFieldPatientInfo>
                                   <Typography>{customFieldName}: </Typography>
                                   <Box ml={1} />
-                                  {fieldType === FieldType.DROPDOWN_MULTI
-                                    ? `${displayNames?.join(',') || ''}`
+                                  {fieldType === FieldType.DROPDOWN_MULTI ||
+                                  fieldType === FieldType.RELATIONSHIP
+                                    ? `${displayNames?.join(', ') || ''}`
                                     : `${displayName || value}`}
                                 </CustomFieldPatientInfo>
                               )}

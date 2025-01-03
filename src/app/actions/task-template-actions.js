@@ -171,6 +171,13 @@ export function addNewTaskElement(position) {
   };
 }
 
+export function addNewAutomationTaskElement(position) {
+  return {
+    type: ActionTypes.ADD_NEW_AUTOMATION_TASK_ELEMENT,
+    position,
+  };
+}
+
 export function addNewDecisionTaskElement(position) {
   return {
     type: ActionTypes.ADD_NEW_DECISION_TASK_ELEMENT,

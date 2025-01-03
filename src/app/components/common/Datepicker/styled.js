@@ -7,7 +7,7 @@ const DAYS_OF_WEEK_COUNT = 7;
 export const CalendarContainer = styled.div`
   color: ${palette.darkGrey};
   padding: 1rem 1.5rem;
-  min-height: 350px;
+  min-height: 290px;
 `;
 
 export const CurrentMonthLabel = styled.div`

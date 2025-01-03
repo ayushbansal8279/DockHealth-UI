@@ -6,6 +6,7 @@ import { noop, showAlert } from 'helpers/utility-functions';
 import { log } from 'helpers/log';
 import axios from './axios-heydoc';
 import { mapSelectedOptionsToRequestPayload } from '../helpers/filter-options-helpers';
+import { DueDateIntent } from '../helpers/task-helpers';
 
 export function searchTasks(
   searchTerm,
@@ -244,7 +245,7 @@ export const updateStartDate = (taskIdentifier, startDate) =>
       throw error;
     });
 
-export const updateDueDate = (taskIdentifier, dueDate) =>
+export const updateDueDate = (taskIdentifier, dueDate, dueDateIntent) =>
   axios
     .put(
       `task/addOrUpdateDueDate/${taskIdentifier}`,
@@ -254,6 +255,7 @@ export const updateDueDate = (taskIdentifier, dueDate) =>
           dueDate: dueDate
             ? moment(dueDate).format('MM/DD/YYYY HH:mm:ss ZZ')
             : null,
+          dueDateIntent: dueDate ? dueDateIntent : DueDateIntent.DATE,
         },
       },
     )
@@ -433,6 +435,10 @@ export function getTaskAttachment(taskAttachmentId) {
   })
     .then((response) => response)
     .catch(noop);
+}
+
+export function updateTaskAttachment(attachmentIdentifier,fileName) {
+  return axios.put(`task/attachment`, { attachmentIdentifier,fileName}).then(({ data }) => data);
 }
 
 export function getTaskDetails(taskIdentifier) {

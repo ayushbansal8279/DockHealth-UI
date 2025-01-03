@@ -15,6 +15,7 @@ const CustomFieldAutoComplete = ({
   placeholder,
   inputRef,
   relatedProfileType,
+  onBlur,
   ...restProps
 }) => {
   const dispatch = useDispatch();
@@ -24,8 +25,8 @@ const CustomFieldAutoComplete = ({
     formState: { errors },
     setValue,
     unregister,
-    } = useFormContext();
-  
+    watch,
+  } = useFormContext();
 
   useEffect(() => {
     register(name);
@@ -57,7 +58,7 @@ const CustomFieldAutoComplete = ({
           dispatch(showGlobalErrorAlert());
         });
     }
-  }, [dispatch, relatedProfileType]);
+  }, [dispatch,relatedProfileType?.identifier]);
 
   const error = errors?.[name]?.message;
 
@@ -71,9 +72,15 @@ const CustomFieldAutoComplete = ({
     [clearErrors, error, name, onChange, setValue],
   );
 
+  const selectedValues = watch(name);
+  const selectedOptions = profiles?.filter((profile) =>
+    selectedValues?.includes(profile.profile.identifier),
+  );
+
   const getInputReference = () => inputRef;
   return (
     <Autocomplete
+      value={selectedOptions || []}
       multiple
       name={name}
       autoFocus={false}
@@ -84,6 +91,7 @@ const CustomFieldAutoComplete = ({
       getInputReference={getInputReference}
       onInputChange={onChange}
       onChange={handleChange}
+      onBlurInput={(event) => onBlur(event, true)}
       disableClearable
       {...restProps}
     />
