@@ -22,7 +22,7 @@ const MeteringFilter = ({ setBillingData, getInitialMeteringData }) => {
   const clearFilters = () => {
     getInitialMeteringData();
     setIsFilterApplied(false);
-    setFinalFilter({})
+    setFinalFilter({});
   };
 
   useEffect(async () => {
@@ -80,6 +80,7 @@ const MeteringFilter = ({ setBillingData, getInitialMeteringData }) => {
             // customFinalFilter={customFinalFilter}
             // setCustomFinalFilter={setCustomFinalFilter}
             // setSelectedQuickFilter={setSelectedQuickFilter}
+            multiSelectEnabled={false}
           />
         </div>
       </FilterPopover>

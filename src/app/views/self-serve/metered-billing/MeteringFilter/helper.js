@@ -14,9 +14,11 @@ export function convertFilterToPayload(filter, organizationIdentifier) {
   for (const key in filter) {
     if (filter[key]?.options && Array.isArray(filter[key].options)) {
       if (key === 'eventTypes') {
-        payload.meteringEvent.type = filter[key].options[0];
+        payload.meteringEvent.type =
+          filter[key].options[filter[key].options.length - 1];
       } else if (key === 'eventSubTypes') {
-        payload.meteringEvent.subtype = filter[key].options[0];
+        payload.meteringEvent.subtype =
+          filter[key].options[filter[key].options.length - 1];
       } else if (key === 'eventDateOptions') {
         const eventDateOptions = filter[key];
 
@@ -24,7 +26,8 @@ export function convertFilterToPayload(filter, organizationIdentifier) {
           payload.start = moment(eventDateOptions.dateStart).toISOString();
           payload.end = moment(eventDateOptions.dateEnd).toISOString();
         } else {
-          const dateOption = eventDateOptions.options[0];
+          const dateOption =
+            eventDateOptions.options[filter[key].options.length - 1];
           const now = moment();
 
           switch (dateOption) {

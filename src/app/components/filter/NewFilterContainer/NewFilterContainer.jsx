@@ -38,6 +38,7 @@ const NewFilterContainer = ({
   handleSelectedFiltersChange,
   isPatientListPage,
   editModeEnabled = true,
+  multiSelectEnabled = true,
 }) => {
   const popoverReference = useRef(null);
   const [isPopoverOpen, openAddFilterPopover, closeAddFilterPopover] =
@@ -122,6 +123,7 @@ const NewFilterContainer = ({
             ?.filter((item) => typeof item !== 'boolean')}
           setFilteredData={setFilteredData}
           filteredData={filteredData}
+          multiSelectEnabled={multiSelectEnabled}
         />
       ))}
       {editModeEnabled && (
