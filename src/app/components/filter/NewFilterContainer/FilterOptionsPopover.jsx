@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Input, MenuItem, Popover } from '@mui/material';
+import { useSelector } from 'react-redux';
+import { userProfileSelector } from 'selectors/user-selectors';
+import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
+import { capitalizeWords } from 'helpers/capitalize';
 import {
   FilterOptionsList,
   FilterOptionsListContainer,
@@ -17,11 +21,20 @@ const FilterOptionsPopover = ({
   labelField = 'label',
   popoverZindex,
 }) => {
-  const [filterOptionLists, setFilterOptionList] = useState(filterOptionsList);
+  const currentUser = useSelector(userProfileSelector);
+  const customerTypeLabel = getCustomerTypeLabel(currentUser);
+  const customerTypeLabelMixedCase = capitalizeWords(customerTypeLabel);
+  const [filterOptions, setFilterOptions] = useState(
+    filterOptionsList.map((item) => {
+      return item?.id.toLowerCase() === 'patients'
+        ? { ...item, label: customerTypeLabelMixedCase }
+        : item;
+    }),
+  );
 
   useEffect(() => {
-    setFilterOptionList(filterOptionsList);
-  }, [filterOptionsList]);
+    setFilterOptions(filterOptions);
+  }, [filterOptions]);
 
   const handleFilterListSearch = (event) => {
     const filteredList = filterOptionsList.filter((item) =>
@@ -29,7 +42,7 @@ const FilterOptionsPopover = ({
         ?.toLowerCase()
         .includes(event.target.value.toLowerCase()),
     );
-    setFilterOptionList(filteredList);
+    setFilterOptions(filteredList);
   };
 
   return (
@@ -66,7 +79,7 @@ const FilterOptionsPopover = ({
       <SelectOptionsContainer>
         <FilterOptionsListContainer>
           <FilterOptionsList>
-            {filterOptionLists?.map((option) => (
+            {filterOptions?.map((option) => (
               <MenuItem
                 onClick={() => onFilterSelect(option[idField])}
                 value={option[idField]}

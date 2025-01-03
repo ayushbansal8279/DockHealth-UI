@@ -85,13 +85,17 @@ export function reorderTasksForWorkflow(
   let reorderedTasks;
 
   if (completedTasksShown && incompleteTasksShown) {
-    reorderedTasks = move(sourceIndex, destinationIndex, tasks);
+    reorderedTasks = move(
+      sourceIndex,
+      destinationIndex,
+      tasks?.map((task) => task?.taskIdentifier),
+    );
   } else {
     const [openedTasks, completedTasks] = tasks.reduce(
       (accumulator, task) =>
         task.status === TaskStatus.INCOMPLETE
-          ? [[...accumulator[0], task], [...accumulator[1]]]
-          : [[...accumulator[0]], [...accumulator[1], task]],
+          ? [[...accumulator[0], task?.taskIdentifier], [...accumulator[1]]]
+          : [[...accumulator[0]], [...accumulator[1], task?.taskIdentifier]],
       [[], []],
     );
 

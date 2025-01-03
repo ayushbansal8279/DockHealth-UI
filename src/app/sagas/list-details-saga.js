@@ -207,6 +207,9 @@ function* getCurrentTaskListFilterOptions() {
 function* refreshGroupedTasks() {
   try {
     yield put(ListDetailsActions.getCurrentListTasks());
+    yield put({
+      type: ActionTypes.GET_TASKS_GROUPS_LIST,
+    });
   } catch (error) {
     log(error);
   }

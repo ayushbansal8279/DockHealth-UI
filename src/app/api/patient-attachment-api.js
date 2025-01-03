@@ -8,7 +8,7 @@ export function createPatientAttachment(
   additionalConfig = {},
 ) {
   const formData = new FormData();
-  formData.append('file', fileData);
+  formData.append('file', fileData, encodeURIComponent(fileData.name));
   formData.append('parentAttachmentIdentifier', folderIdentifier ?? undefined);
 
   return axios

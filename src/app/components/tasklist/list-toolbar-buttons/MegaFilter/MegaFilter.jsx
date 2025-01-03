@@ -12,7 +12,6 @@ import SaveFilterPopup from '../../../filter/SaveFilterPopup/SaveFilterPopup';
 import FilterTableLoader from '../../../filter/FilterTableLoader/FilterTableLoader';
 import { organizationSelector } from '@/app/selectors/organization-selectors';
 import { userProfileSelector } from '@/app/selectors/user-selectors';
-// import { ampli, AmpliEventType } from '@/app/amplitude/ampli';
 
 const MegaFilter = ({
   children,
@@ -26,7 +25,6 @@ const MegaFilter = ({
   quickFiltersList,
   addQuickFilterOption,
   selectQuickFilter,
-  handleSaveQuickFilter,
   onQuickFilterUpdate,
   wasChangedFilters,
   onQuickFilterCreate,
@@ -152,7 +150,6 @@ const MegaFilter = ({
             onSelectedFiltersChange={onSelectFilters}
             setFinalFilter={setFinalFilter}
             openPopover={openPopover}
-            handleSaveQuickFilter={handleSaveQuickFilter}
             setFilteredData={setFilteredData}
             filteredData={filteredData}
             customFinalFilter={customFinalFilter}
@@ -214,7 +211,6 @@ const MegaFilter = ({
                   quickFiltersList={quickFiltersList}
                   setSavePopupOpen={setSavePopupOpen}
                   onQuickFilterCreate={onQuickFilterCreate}
-                  handleSaveQuickFilter={handleSaveQuickFilter}
                   setFilteredData={setFilteredData}
                   filteredData={filteredData}
                   customFinalFilter={customFinalFilter}

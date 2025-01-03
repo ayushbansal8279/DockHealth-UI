@@ -374,7 +374,7 @@ export function addTaskAttachment(
   additionalConfig = {},
 ) {
   const formData = new FormData();
-  formData.append('file', fileData);
+  formData.append('file', fileData, encodeURIComponent(fileData.name));
 
   return axios
     .post(`task/attachment/${taskIdentifier}`, formData, {

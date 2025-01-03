@@ -55,7 +55,7 @@ export const DueDateSectionWrapper = styled.div`
 
 export const Title = styled.div`
   margin-left: 10px;
-  margin-right: 40px;
+  margin-right: 41px;
   color: ${palette.coolGrey1};
   font-family: Outfit;
   font-size: ${fontSizes.smallPlus};

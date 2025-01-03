@@ -20,6 +20,7 @@ import {
   Step,
   NextArrow,
 } from '../styled';
+import HeaderSearch from '@/app/components/template/HeaderSearch/HeaderSearch';
 
 const GroupSelectStep = ({
   selectedList,
@@ -79,6 +80,12 @@ const GroupSelectStep = ({
     }
   }, [selectedList]);
 
+
+  const [searchQuery, setSearchQuery] = useState('');
+  const filteredGroupList = groups?.filter((group) => 
+    group.groupName.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <Step>
       {selectedList && (
@@ -97,11 +104,15 @@ const GroupSelectStep = ({
             <Title>{selectedList.listName}</Title>
           </TitleWithButtonWrapper>
           <Box m={1} />
+          <Box sx={{ width: '100%', mx: 'auto' }}>
+            <HeaderSearch onChange={(value) => setSearchQuery(value)} />
+          </Box>
+          <Box m={.5} />
           <ListsWrapper>
             {!isFetchingGroups && (
               <>
-                {groups?.length > 0 ? (
-                  groups.map((group) => (
+                {filteredGroupList?.length > 0 ? (
+                  filteredGroupList.map((group) => (
                     <ListItem
                       key={group.taskGroupIdentifier}
                       isSelected={

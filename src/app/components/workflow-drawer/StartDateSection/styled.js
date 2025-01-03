@@ -13,7 +13,7 @@ export const StartDateContentWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  padding: ${spacing.tiny} 0;
+  padding: ${spacing.smallPlus} 0;
 `;
 
 export const StartDateContent = styled.div`
@@ -68,7 +68,7 @@ export const StartDateSectionWrapper = styled.div`
 `;
 
 export const Title = styled.div`
-  margin-left: 17px;
+  margin-left: 10px;
   margin-right: 35px;
   color: ${palette.coolGrey1};
   font-family: Outfit;

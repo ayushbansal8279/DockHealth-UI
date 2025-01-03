@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-
+import { useSelector } from 'react-redux';
 import { Popover, TextField } from '@mui/material';
 import CheckedCircle from 'img/Checks-Radio-Buttons-Checked.svg';
 import BlankCircle from 'img/Checks-Radio-Buttons-Blank.svg';
@@ -19,9 +19,11 @@ import {
   ConfirmButton,
 } from '@/app/modal/components/ModalButton/ModalButtons';
 import Spacing from '../../common/Spacing';
-import { getUniqueQuickFilterLabelName } from '../CustomFilters/helpers';
+import { getUniqueQuickFilterLabelName, QuickFilterScope } from '../CustomFilters/helpers';
 import NewFilterContainer from '../NewFilterContainer/NewFilterContainer';
 import { selectFilterOption } from '@/app/helpers/filter-options-helpers';
+import { userProfileSelector } from 'selectors/user-selectors';
+import { checkIfUserIsOrganizationAdmin } from 'helpers/user-helper';
 
 const SaveFilterPopup = ({
   isSavePopupOpen,
@@ -38,7 +40,6 @@ const SaveFilterPopup = ({
   setMenuOption,
   setFinalFilter,
   openPopover,
-  handleSaveQuickFilter,
   filteredData,
   onSelectFilters,
   setCustomFinalFilter,
@@ -49,13 +50,14 @@ const SaveFilterPopup = ({
   selectedCustomFilter,
   selectedQuickFilter,
   selectQuickFilter,
-  isPatientListPage,
 }) => {
   const [searchInputValue, setSearchInputValue] = useState('');
   const [quickfilterName, setQuickfilterName] = useState('');
   const [onlyone, setOnlyone] = useState(true);
   const [everyOne, setEveryOne] = useState(false);
   const [isQuickFilterEdit, setIsQuickFilterEdit] = useState(false);
+  const currentUser = useSelector(userProfileSelector);
+  const isOwnerOrAdmin = checkIfUserIsOrganizationAdmin(currentUser);
 
   useEffect(() => {
     if (editIdentifier !== '' && editIdentifier !== undefined) {
@@ -64,6 +66,10 @@ const SaveFilterPopup = ({
           setSearchInputValue(item.name);
           setQuickfilterName(item.name);
           setIsQuickFilterEdit(true);
+          if(item.scope === QuickFilterScope.ORGANIZATION){
+            setEveryOne(true);
+            setOnlyone(false);
+          }
         }
       });
     } else {
@@ -71,6 +77,11 @@ const SaveFilterPopup = ({
       setIsQuickFilterEdit(false);
     }
   }, [quickFiltersList, editIdentifier, isQuickFilterEdit]);
+
+  useEffect(() => {
+      setEveryOne(false);
+      setOnlyone(true);
+  }, [editIdentifier]);
 
   // If we need the disable option later
   // const [isDisable, setDisable] = useState(false);
@@ -93,8 +104,7 @@ const SaveFilterPopup = ({
   //   searchInputValue,
   // ]);
 
-  const updateFilter = () => {
-    handleSaveQuickFilter(editIdentifier, customFilteredData);
+  const selectFilter = () => {
     if (selectedQuickFilter === editIdentifier) {
       selectQuickFilter(editIdentifier, customFilteredData);
     }
@@ -110,15 +120,17 @@ const SaveFilterPopup = ({
   };
 
   const handleQuickFilterCreate = () => {
-    onQuickFilterCreate(searchInputValue, filteredData);
+    const scope = everyOne ? QuickFilterScope.ORGANIZATION : QuickFilterScope.PRIVATE;
+    onQuickFilterCreate(searchInputValue, filteredData, scope);
     onSelectedFiltersChange(selectFilterOption('', '', filteredData));
     setSavePopupOpen(false);
     setFinalFilter({});
   };
 
   const handleQuickFilterUpdate = () => {
-    !isPatientListPage && onQuickFilterUpdate(editIdentifier, searchInputValue);
-    updateFilter();
+    const scope = everyOne ? QuickFilterScope.ORGANIZATION : QuickFilterScope.PRIVATE;
+    onQuickFilterUpdate(editIdentifier, searchInputValue, customFilteredData, scope);
+    selectFilter();
     setEditIdentifier('');
     setSavePopupOpen(false);
   };
@@ -191,12 +203,16 @@ const SaveFilterPopup = ({
             />
             <Spacing horizontal={3} />
             <CheckboxDescription>Only You</CheckboxDescription>
-            {/* <img
-              onClick={toggleSharedList}
-              src={everyOne ? CheckedCircle : BlankCircle}
-            />
-            <Spacing horizontal={3} />
-            <CheckboxDescription>Everyone</CheckboxDescription> */}
+            {isOwnerOrAdmin && (
+              <>
+                <img
+                  onClick={toggleSharedList}
+                  src={everyOne ? CheckedCircle : BlankCircle}
+                />
+                <Spacing horizontal={3} />
+                <CheckboxDescription>Everyone</CheckboxDescription>
+              </>
+            )}
           </CheckboxContainer>
         </PrivacyContainer>
         {isQuickFilterEdit && (
@@ -212,7 +228,6 @@ const SaveFilterPopup = ({
               quickFiltersList={quickFiltersList}
               setSavePopupOpen={setSavePopupOpen}
               onQuickFilterCreate={onQuickFilterCreate}
-              handleSaveQuickFilter={handleSaveQuickFilter}
               setFilteredData={setCustomFilteredData}
               filteredData={customFilteredData}
               isQuickFilterEdit={isQuickFilterEdit}

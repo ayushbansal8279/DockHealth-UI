@@ -128,18 +128,7 @@ const UsersSelect = (props) => {
             />
           </div>
         )}
-        noOptionsText={
-          inputValue ? (
-            <AddRecordOption
-              searchValue={inputValue}
-              onClick={() => {
-                onMoveToExternalUserForm(inputValue);
-              }}
-            />
-          ) : (
-            'Type to search...'
-          )
-        }
+        noOptionsText={inputValue ? 'No records found' : 'Type to search...'}
       />
       {selectedUsers.length > 0 && (
         <>

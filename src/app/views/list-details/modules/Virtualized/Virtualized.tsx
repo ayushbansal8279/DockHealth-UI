@@ -17,6 +17,9 @@ export interface Props {
   tasksMap: Record<string, any>;
   context?: any;
   showClearSortFiltersModal?: any;
+  showCompletedWorkflowIdentifiers?: any;
+  showIncompleteWorkflowIdentifiers?: any;
+  currentTaskListTasksStatus?: any;
 }
 
 function Virtualized({
@@ -24,6 +27,9 @@ function Virtualized({
   tasksMap,
   context,
   showClearSortFiltersModal,
+  showCompletedWorkflowIdentifiers,
+  showIncompleteWorkflowIdentifiers,
+  currentTaskListTasksStatus,
   ...props
 }: Props) {
   const dispatch = useDispatch();
@@ -121,8 +127,16 @@ function Virtualized({
                 source: { index: sourceOffsetIndexTaskOfBundle },
                 destination: { index: destinationOffsetIndexTaskOfBundle },
                 workflow: tasksMap[destination.parent?.id!],
-                completedTasksShown: true,
-                incompleteTasksShown: true,
+                completedTasksShown:
+                  ['COMPLETE', ''].includes(currentTaskListTasksStatus) ||
+                  showCompletedWorkflowIdentifiers?.some(
+                    (id: any) => id === destination.parent?.id,
+                  ),
+                incompleteTasksShown:
+                  ['INCOMPLETE', ''].includes(currentTaskListTasksStatus) ||
+                  (showIncompleteWorkflowIdentifiers ?? []).some(
+                    (id: any) => id === destination.parent?.id,
+                  ),
               }),
             );
             break;

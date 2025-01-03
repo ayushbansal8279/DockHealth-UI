@@ -101,6 +101,9 @@ function* moveWorkflowToGroup({
     }
 
     yield put(showGlobalAlert(AlertMessages.MOVED));
+    yield put({
+      type: ActionTypes.GET_TASKS_GROUPS_LIST,
+    });
   } catch {
     yield put(showGlobalErrorAlert());
     yield put({

@@ -16,8 +16,8 @@ export const AnchorDateContentWrapper = styled.div`
   padding: ${spacing.tiny} 0;
 `;
 export const Title = styled.div`
-  margin-left: 1px;
-  margin-right: 30px;
+  margin-left: 9px;
+  margin-right: 22px;
   color: ${palette.coolGrey1};
   font-family: Outfit;
   font-size: ${fontSizes.smallPlus};

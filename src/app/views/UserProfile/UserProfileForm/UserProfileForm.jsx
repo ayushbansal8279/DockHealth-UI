@@ -3,7 +3,6 @@ import React, { useMemo, useEffect } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import { yupResolver } from '@hookform/resolvers/yup';
-import Button from 'components/common/Button/Button';
 import head from 'ramda/src/head';
 import { getCurrentUser, updateCurrentUser } from 'actions/user-actions';
 import { openModal } from 'modal/actions';
@@ -24,6 +23,7 @@ import {
   StyledForm,
 } from './styled';
 import { SettingsSection, SectionHeader } from '../styled';
+import { ConfirmButton } from '@/app/modal/components/ModalButton/ModalButtons';
 
 const UserProfileForm = ({ userProfile }) => {
   const dispatch = useDispatch();
@@ -275,9 +275,9 @@ const UserProfileForm = ({ userProfile }) => {
         </SettingsSection>
         <Grid container>
           <Grid item xs={12} md={4}>
-            <Button fullWidth type="submit" disabled={isSubmitting}>
+            <ConfirmButton type="submit" disabled={isSubmitting}>
               Save
-            </Button>
+            </ConfirmButton>
           </Grid>
         </Grid>
       </StyledForm>

@@ -28,6 +28,8 @@ const initialState = {
   },
   listCustomFields: [],
   searchTerm: '',
+  organizationIdentifier: '',
+  displayOptions: [],
 };
 
 function updateGroupInState(
@@ -641,7 +643,7 @@ const ListDetailsReducer = (state = initialState, action) => {
     }
 
     case ActionTypes.DELETE_TASK: {
-      const { taskIdentifier } = action;
+      const { taskIdentifier, intent } = action;
       const taskItem = state.tasksMap[taskIdentifier];
       const bundle =
         taskItem?.taskGroups?.find(
@@ -655,7 +657,7 @@ const ListDetailsReducer = (state = initialState, action) => {
           : {
               ...state,
               tasksMap:
-                bundleIdentifier && !taskItem?.parentTaskIdentifier
+                intent === 'TASK_DELETED' && bundleIdentifier && !taskItem?.parentTaskIdentifier
                   ? {
                       ...state.tasksMap,
                       [bundleIdentifier]: {

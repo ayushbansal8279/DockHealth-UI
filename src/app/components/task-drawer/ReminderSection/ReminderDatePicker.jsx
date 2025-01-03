@@ -20,7 +20,8 @@ const ReminderDatePicker = ({
     selectedDate,
     onDateChange,
     onCloseClick,
-    onTimeChange
+    onTimeChange,
+    selectedTime
     // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
 
@@ -28,16 +29,13 @@ const ReminderDatePicker = ({
         selectedDate ? moment(selectedDate).format(DATE_MASK_FORMAT) : null,
     );
     const [timeMaskValue, setTimeMaskValue] = useState(
-        selectedDate ? moment(selectedDate).format(TIME_12H_FORMAT) : null,
+        selectedTime ? selectedTime : null,
     );
     const [dateValue, setDateValue] = useState(selectedDate);
 
     useEffect(() => {
         if (selectedDate !== dateValue) {
             setDateMaskValue(moment(selectedDate).format(DATE_MASK_FORMAT));
-            if (selectedDate) {
-                setTimeMaskValue(moment(selectedDate).format(TIME_12H_FORMAT));
-            }
             setDateValue(selectedDate);
         }
     }, [dateValue, selectedDate]);

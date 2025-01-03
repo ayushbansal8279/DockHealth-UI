@@ -4,7 +4,6 @@ import OfficeIcon from 'img/modals/office.svg';
 import { useDispatch, useSelector } from 'react-redux';
 import { openModal } from 'modal/actions';
 import { updateOrganization } from 'actions/organization-actions';
-import Button from 'components/common/Button/Button';
 import InitialsInput from 'components/common/InitialsInput/InitialsInput';
 import ColorPicker from 'components/common/ColorPicker/ColorPicker';
 import Spacing from 'components/common/Spacing';
@@ -14,7 +13,7 @@ import { userProfileSelector } from 'selectors/user-selectors';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import {
   EditOrganizationModalWrapper,
-  Header,
+  Title,
   OrganizationForm,
   InitialsError,
   TileSettingsHeader,
@@ -24,6 +23,7 @@ import {
 } from './styled';
 import { CloseIconButton, CloseIcon } from '../styled';
 import CustomerTypeDropDown from './CustomerTypeDropDown/CustomerTypeDropDown';
+import { ConfirmButton } from '../ModalButton/ModalButtons';
 
 const validateOrganizationName = (value) => {
   if (![...value]?.filter((char) => char !== ' ').length > 0) {
@@ -130,7 +130,7 @@ const EditOrganizationModal = ({ closeModal, userProfile, onSuccess }) => {
       <CloseIconButton onClick={closeModal} size="small" color="secondary">
         <CloseIcon />
       </CloseIconButton>
-      <Header>Edit Your Organization</Header>
+      <Title>Edit Your Organization</Title>
       <Spacing vertical={4} />
       <OrganizationForm
         onSubmit={handleSubmit(
@@ -207,9 +207,9 @@ const EditOrganizationModal = ({ closeModal, userProfile, onSuccess }) => {
             alignItems="center"
           >
             <SaveButtonWrapper>
-              <Button disabled={isSubmitting} type="submit">
+              <ConfirmButton disabled={isSubmitting} type="submit">
                 Save
-              </Button>
+              </ConfirmButton>
             </SaveButtonWrapper>
           </Grid>
         </FormProvider>

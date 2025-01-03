@@ -2,7 +2,7 @@
 import React, { useRef, useState, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import palette from 'styles/palette';
-import { Grid } from '@mui/material';
+import { Box, Grid } from '@mui/material';
 import Spacing from 'components/common/Spacing';
 import { uploadPatientData } from 'api/patient-api';
 import UploadFileIcon from 'img/upload-file.svg';
@@ -21,6 +21,7 @@ import {
   FileInputMessage,
   FileInputImage,
 } from './styled';
+import { CancelButton, ConfirmButton } from '../ModalButton/ModalButtons';
 
 const ImportPatientsModal = ({
   step,
@@ -93,24 +94,18 @@ const ImportPatientsModal = ({
             </ContentMessage>
             <Spacing vertical={5} />
             <Spacing vertical={5} />
-            <Grid container direction="row" spacing={2}>
-              <Grid item xs={4}>
-                <Button variant="secondary" onClick={closeModal}>
-                  Cancel
-                </Button>
-              </Grid>
-              <Grid item xs={8} style={{ textAlign: 'center' }}>
-                <Button
-                  width="250px"
-                  onClick={() => {
-                    downloadTemplate();
-                    setModalStep(2);
-                  }}
-                >
-                  Download Template
-                </Button>
-              </Grid>
-            </Grid>
+            <Box display={'flex'}>
+              <CancelButton onClick={closeModal}>Cancel</CancelButton>
+              <Spacing horizontal={4} />
+              <ConfirmButton
+                onClick={() => {
+                  downloadTemplate();
+                  setModalStep(2);
+                }}
+              >
+                Download Template
+              </ConfirmButton>
+            </Box>
             <Spacing vertical={5} />
             <AlreadyHaveTemplate
               style={{ color: palette.cyanBlue, textAlign: 'center' }}

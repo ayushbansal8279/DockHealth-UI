@@ -9,20 +9,12 @@ import palette from 'styles/palette';
 import { OutfitTypography } from 'styles/theme-outfit';
 import { Title } from './Title';
 import PasswordRuleMatch from './PasswordRuleMatch';
-
-const MIN_PASSWORD_LENGTH = 8;
+import { validPasswordSchema } from '@/app/helpers/validation-helper';
 
 const validationSchema = object().shape({
   // code: string().required('Authorization code is required'),
   password: string()
-    .required('This field is required')
-    .min(
-      MIN_PASSWORD_LENGTH,
-      `Password needs to be at least ${MIN_PASSWORD_LENGTH} characters long`,
-    )
-    .matches(/\d/, 'Password needs at least 1 number')
-    .matches(/[A-Z]/, 'Password needs at least 1 capital letter')
-    .matches(/[!@#$%^&*(),.?":{}|<>]/, 'Password needs at least 1 special character')
+    .required('This field is required').concat(validPasswordSchema),
 });
 
 const ResetPasswordForm = ({ authTokenReceived, onSubmit }) => {

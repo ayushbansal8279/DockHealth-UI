@@ -43,11 +43,13 @@ export function updateQuickFilter(
   quickFilterIdentifier,
   quickFilters,
   viewSpecificData,
+  scope,
 ) {
   return axios
     .put(`quickFilter`, {
       ...quickFilters,
       quickFilterIdentifier,
+      scope,
       selectedOptions:
         viewSpecificData?.contextType === 'PATIENTS'
           ? {}

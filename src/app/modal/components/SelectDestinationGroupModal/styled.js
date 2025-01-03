@@ -60,7 +60,7 @@ export const ListsWrapper = styled.div`
   width: 100%;
   border: 1px solid #c1ccda;
   overflow: auto;
-  height: calc(100% - 50px);
+  height: calc(100% - 85px);
   overflow-y: auto;
 `;
 

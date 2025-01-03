@@ -2,7 +2,6 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import { getTaskListForUser } from 'actions/task-list-actions';
 import { addTaskList } from 'api/task-list-api';
-import Button from 'components/common/Button/Button';
 import { Grid } from '@mui/material';
 import Spacing from 'components/common/Spacing';
 import { ListPickerModalWrapper } from './styled';

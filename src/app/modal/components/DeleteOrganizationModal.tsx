@@ -1,6 +1,4 @@
 import React from 'react';
-import { Typography } from '@mui/material';
-import Button from 'components/common/Button/Button';
 import Spacing from 'components/common/Spacing';
 import DeleteIcon from '@mui/icons-material/Delete';
 import spacing from 'styles/spacing';

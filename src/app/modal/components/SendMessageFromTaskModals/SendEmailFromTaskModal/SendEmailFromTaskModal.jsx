@@ -1,4 +1,3 @@
-import Button from 'components/common/Button/Button';
 import Checkbox from 'components/common/Checkbox/Checkbox';
 import Input from 'components/common/Input/Input';
 import RichTextEditor from 'components/common/RichTextEditor/RichTextEditor';

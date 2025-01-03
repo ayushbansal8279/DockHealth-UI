@@ -8,6 +8,8 @@ import * as ActionTypes from 'actions/action-types';
 import * as WorkflowActions from 'actions/workflow-actions';
 import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
+import { multipleTaskDetailsSelector } from '../selectors/list-details-selectors';
+import { patientMultipleTaskDetailsSelector } from '../selectors/patient-details-selectors';
 
 function* duplicateWorkflow({ identifier, includeAttachments }) {
   try {
@@ -174,18 +176,19 @@ function* reorderWorkflowTasks(payload) {
   } = payload;
 
   try {
-    let taskIdentifiers = workflow.tasks;
-
-    if (typeof workflow.tasks[0] !== 'string') {
-      taskIdentifiers = workflow['tasks']?.flatMap((item) => item.identifier);
-    }
+    const tasks = yield select((state) => {
+      const result = multipleTaskDetailsSelector(state, workflow?.tasks);
+      return result?.some((task) => task === undefined)
+        ? patientMultipleTaskDetailsSelector(state, workflow?.tasks)
+        : result;
+    });
 
     const reorderedTasks = reorderTasksForWorkflow(
       sourceIndex,
       destinationIndex,
       incompleteTasksShown,
       completedTasksShown,
-      taskIdentifiers,
+      tasks,
     );
 
     yield call(

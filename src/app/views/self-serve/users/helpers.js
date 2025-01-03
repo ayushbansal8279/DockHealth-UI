@@ -11,6 +11,9 @@ export const USER_STATUS_TYPES = new Proxy(
       label: 'Invited',
       invitationModifiable: true,
     },
+    DENIED: {
+      label: 'Denied',
+    },
     PENDING: {
       label: 'Approval Pending',
     },
@@ -90,7 +93,7 @@ export const getUserTypeLabel = ({
   orgUserRole,
 }) => {
   let userType = null;
-  if (['CANCELLED', 'INACTIVE', 'PENDING'].includes(userStatus)) {
+  if (['CANCELLED', 'INACTIVE', 'PENDING', 'DENIED'].includes(userStatus)) {
     userType = USER_STATUS_TYPES[userStatus];
   } else {
     const derivedOrgUserRole = ['ACTIVE', 'INACTIVE'].includes(userStatus)
