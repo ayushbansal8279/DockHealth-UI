@@ -58,7 +58,7 @@ const CustomFieldAutoComplete = ({
           dispatch(showGlobalErrorAlert());
         });
     }
-  }, [dispatch, relatedProfileType]);
+  }, [dispatch,relatedProfileType?.identifier]);
 
   const error = errors?.[name]?.message;
 
