@@ -300,7 +300,9 @@ const ActivityAlerts = ({ variant = 'blue', patientIdentifier }) => {
                     </EmptyActivityAlerts>
                   )}
                   {activityAlertsList?.length > 0 &&
-                    activityAlertsList?.map((itemAlert) => (
+                    activityAlertsList
+                      ?.filter((itemAlert) => !!itemAlert.organization)
+                    ?.map((itemAlert) => (
                       <ActivityAlertsItem
                         key={itemAlert.activityAlertIdentifier}
                         itemAlert={itemAlert}
