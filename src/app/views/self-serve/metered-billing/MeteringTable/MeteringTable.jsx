@@ -41,7 +41,7 @@ const MeteringTable = ({ billingData }) => {
       renderCell: ({ row }) => {
         const { ts } = row;
         const date = moment(ts);
-        return date.format('MMM DD, YYYY');
+        return date.format('MMM DD, YYYY @hh:mm a');
       },
     },
     {
