@@ -51,7 +51,7 @@ const AlertItem = ({ itemAlert, onClearAlert, withCrossIcon, closeAlerts }) => {
     organizationName,
     organizationProfileColor,
     organizationIdentifier,
-  } = organization;
+  } = organization || {};
 
   const alertComment =
     comments?.find(
