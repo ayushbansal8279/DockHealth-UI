@@ -80,6 +80,8 @@ import {
   mapElementsToLayout,
   updateNodePosition,
   calculateNewElementPosition,
+  countEndIndicatorInitialPosition,
+  countStartIndicatorInitialPosition,
 } from './helpers';
 import {
   ElementsSidebar,
@@ -102,6 +104,7 @@ import Hotkeys from './Hotkeys/Hotkeys';
 import NestedFlowNode from './NestedFlow/NestedFlowNode/NestedFlowNode';
 import NewNestedFlowNode from './NestedFlow/NewNestedFlowNode/NewNestedFlowNode';
 import { isUserDockPro } from '@/app/helpers/user-helper';
+import IndicatorNode from './IndicatorNode/IndicatorNode';
 
 const nodeTypes = {
   [NodeType.NEW_AUTOMATION]: NewTaskNode,
@@ -111,6 +114,8 @@ const nodeTypes = {
   [NodeType.DECISION]: TaskNode,
   [NodeType.NEW_WORKFLOW_LINK]: NewNestedFlowNode,
   [NodeType.WORKFLOW_LINK]: NestedFlowNode,
+  [NodeType.START_INDICATOR]: IndicatorNode,
+  [NodeType.END_INDICATOR]: IndicatorNode,
 };
 
 const linkTypes = {
@@ -118,6 +123,7 @@ const linkTypes = {
   [LinkType.DECISION]: DecisionTaskLink,
   [LinkType.TEMPORARY]: TemporaryTaskLink,
   [LinkType.TEMPORARY_DECISION]: TemporaryDecisionTaskLink,
+  [LinkType.INDICATOR]: TaskLink,
 };
 
 const DEFAULT_EDGE = {
@@ -168,6 +174,23 @@ const SmartFlowBuilderView = () => {
   const [modalUsed, setModalUsed] = useState(false);
   const [initialTasksLength, setInitialTasksLength] = useState(null);
 
+  const constantVisibleElements = useMemo(() => [
+    {
+      id: 'START_INDICATOR',
+      position:
+        layout?.find(({ id }) => id === 'START_INDICATOR')?.position ||
+        countStartIndicatorInitialPosition(layout),
+      type: 'INDICATOR',
+    },
+    {
+      id: 'END_INDICATOR',
+      position:
+        layout?.find(({ id }) => id === 'END_INDICATOR')?.position ||
+        countEndIndicatorInitialPosition(layout),
+      type: 'INDICATOR',
+    },
+  ], [layout]);
+
   useEffect(() => {
     if (initialTasksLength === null && Array.isArray(tasks)) {
       setInitialTasksLength(tasks.length);
@@ -208,6 +231,7 @@ const SmartFlowBuilderView = () => {
     if (tasks && !isNil(layout)) {
       setElements((previousElements) =>
         [
+          ...constantVisibleElements,
           ...mapLayoutToElements(layout, tasks),
           ...(temporaryElements || []),
         ].map((element) => ({
@@ -228,7 +252,7 @@ const SmartFlowBuilderView = () => {
         })),
       );
     }
-  }, [draggedEdgeSourceId, identifier, layout, tasks, temporaryElements]);
+  }, [draggedEdgeSourceId, identifier, layout, tasks, temporaryElements, constantVisibleElements]);
 
   useEffect(() => {
     if (reactFlowInstance && nodesInitialized && !reactFlowInitialized) {
@@ -437,8 +461,9 @@ const SmartFlowBuilderView = () => {
     let shouldUpdate = false;
 
     for (const node of selectedNodes) {
+      const isIndicator = node?.type === 'INDICATOR';
       const isExistingTask = !!node.data.task;
-      if (isExistingTask) {
+      if (isExistingTask || isIndicator) {
         if (!shouldUpdate) shouldUpdate = true;
         updatedElements = updateNodePosition(
           node.id,

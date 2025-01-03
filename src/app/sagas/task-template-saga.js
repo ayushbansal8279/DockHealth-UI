@@ -567,18 +567,57 @@ function* linkTasks({ source, target, options, outcomeName }) {
       ({ identifier }) => identifier === target.id,
     );
 
-    const checkIfTasksAreLinked = () =>
-      sourceTask?.taskLinks?.some(
-        ({ targetTaskIdentifier }) => targetTaskIdentifier === target.id,
-      ) ||
-      targetTask?.taskLinks?.some(
-        ({ targetTaskIdentifier }) => targetTaskIdentifier === source.id,
+    if (target.id === 'START_INDICATOR') {
+      yield put(showGlobalErrorAlert('Start cannot be a target.'));
+      return;
+    }
+  
+    if (source.id === 'END_INDICATOR') {
+      yield put(showGlobalErrorAlert('End cannot be a source.'));
+      return;
+    }
+ 
+    const checkIfLinkedToIndicator = () => {
+        if (!sourceTask || !targetTask) return false;
+        return (
+          (source.id === 'START_INDICATOR' &&
+            !targetTask?.taskLinks?.some(
+              ({ targetTaskIdentifier }) =>
+                targetTaskIdentifier === 'START_INDICATOR'
+            )) ||
+          (target.id === 'END_INDICATOR' &&
+            !sourceTask?.taskLinks?.some(
+              ({ targetTaskIdentifier }) =>
+                targetTaskIdentifier === 'END_INDICATOR'
+            ))
+        );
+    };
+    
+    const hasIndicator =
+      source.id === 'START_INDICATOR' ||
+      target.id === 'START_INDICATOR' ||
+      source.id === 'END_INDICATOR' ||
+      target.id === 'END_INDICATOR';
+
+    const checkIfTasksAreLinked = () => {
+      if (hasIndicator) {
+        return checkIfLinkedToIndicator();
+      }
+      return (
+        sourceTask?.taskLinks?.some(
+          ({ targetTaskIdentifier }) => targetTaskIdentifier === target.id,
+        ) ||
+        targetTask?.taskLinks?.some(
+          ({ targetTaskIdentifier }) => targetTaskIdentifier === source.id,
+        )
       );
+    };
+
 
     if (!checkIfTasksAreLinked()) {
       const isSourceDecisionType = sourceTask
         ? sourceTask.intentType === NodeType.DECISION
-        : templateDetails.temporaryElements.some(
+        : templateDetails?.temporaryElements?.some(
             ({ id, type }) =>
               id === source.id && type === NodeType.NEW_DECISION,
           );
@@ -592,10 +631,10 @@ function* linkTasks({ source, target, options, outcomeName }) {
           target.id,
           source.handle,
           target.handle,
-        ),
+        )
       );
 
-      if (targetTask && sourceTask) {
+      if ((targetTask && sourceTask) || hasIndicator) {
         if (outcomeName) {
           yield put(TaskTemplateActions.addTaskOutcome(outcomeName, source.id));
 
@@ -609,6 +648,20 @@ function* linkTasks({ source, target, options, outcomeName }) {
           options = {
             ...options,
             decisionOutcome: outcome.taskOutcomeIdentifier,
+          };
+        }
+        if(source.id === 'START_INDICATOR'){
+          source.id = target.id
+          options = {
+            ...options,
+            linkType: 'START',
+          };
+        }
+        if(target.id === 'END_INDICATOR'){
+          target.id = source.id
+          options = {
+            ...options,
+            linkType: 'END',
           };
         }
 

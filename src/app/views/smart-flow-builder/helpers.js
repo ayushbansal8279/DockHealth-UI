@@ -77,7 +77,7 @@ export function mapLayoutToElements(layout, tasks) {
 
 export function mapElementsToLayout(elements) {
   const nodes = elements
-    .filter(({ position, data }) => position && data.task)
+    .filter(({ position, data, type }) => position && (data?.task || type === 'INDICATOR' ))
     .map(pick(['id', 'position']));
 
   const links = elements
@@ -138,3 +138,35 @@ export function isTargetOfStandardNode(node, tasks) {
       ),
   );
 }
+
+export const countStartIndicatorInitialPosition = layout => {
+  if (!layout) return { x: 0, y: 0 };
+  const { x, y } = layout?.reduce(
+    (accumulator, { position }) => {
+      if (!position) return accumulator;
+      return {
+        x: Math.min(accumulator.x, position.x),
+        y: Math.min(accumulator.y, position.y),
+      };
+    },
+    { x: 0, y: 0 },
+  );
+
+  return { x, y: y - 100 };
+};
+
+export const countEndIndicatorInitialPosition = layout => {
+  if (!layout) return { x: 0, y: 400 };
+  const { x, y } = layout?.reduce(
+    (accumulator, { position }) => {
+      if (!position) return accumulator;
+      return {
+        x: Math.min(accumulator.x, position.x),
+        y: Math.max(accumulator.y, position.y),
+      };
+    },
+    { x: 0, y: 0 },
+  );
+
+  return { x, y: y + 200 }
+};
