@@ -6,7 +6,7 @@ export function convertFilterToPayload(filter, organizationIdentifier) {
       eventIdentifier: null,
       ts: null,
       type: null,
-      subType: null,
+      subtype: null,
       organizationIdentifier: organizationIdentifier,
     },
   };
@@ -16,7 +16,7 @@ export function convertFilterToPayload(filter, organizationIdentifier) {
       if (key === 'eventTypes') {
         payload.meteringEvent.type = filter[key].options[0];
       } else if (key === 'eventSubTypes') {
-        payload.meteringEvent.subType = filter[key].options[0];
+        payload.meteringEvent.subtype = filter[key].options[0];
       } else if (key === 'eventDateOptions') {
         const eventDateOptions = filter[key];
 
