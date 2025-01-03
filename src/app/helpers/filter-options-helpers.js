@@ -18,6 +18,8 @@ export const FilterOptionsCategory = {
   ESCALATED: 'escalatedStatusOptions',
   CREATED_BY: 'createdBy',
   COMPLETED_BY: 'completedBy',
+  WORKFLOWS: 'workflows',
+  PATIENT_LABELS: 'patientLabels',
 };
 
 const FilterOptionsLabel = {
@@ -37,6 +39,8 @@ const FilterOptionsLabel = {
   [FilterOptionsCategory.ESCALATED]: 'Escalated',
   [FilterOptionsCategory.CREATED_BY]: 'Created By',
   [FilterOptionsCategory.COMPLETED_BY]: 'Completed By',
+  [FilterOptionsCategory.WORKFLOWS]: 'Workflows',
+  [FilterOptionsCategory.PATIENT_LABELS]: 'Patient Label',
 };
 
 const DATE_FILTER_OPTIONS = new Set([
