@@ -174,7 +174,7 @@ const NewFilterContainer = ({
           <Divider />
           <BottomWrapper>
             <CancelButton
-              disabled={!isDisable}
+              disabled={!isDisable || !multiSelectEnabled}
               onClick={() => setSavePopupOpen(true)}
               style={{ width: '270px' }}
             >
