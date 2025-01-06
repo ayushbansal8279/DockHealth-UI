@@ -168,7 +168,7 @@ const NewFilterContainer = ({
           multiSelectEnabled={multiSelectEnabled}
         />
       ))}
-      {fiterCount !== -1 && (
+      {showFilterCount && fiterCount !== -1 && (
         <FilterCount> {fiterCount} matching result</FilterCount>
       )}
       {editModeEnabled && (
