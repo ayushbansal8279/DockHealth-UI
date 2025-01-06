@@ -67,7 +67,7 @@ const MeteringFilter = ({ setBillingData, getInitialMeteringData }) => {
         <div style={{ marginBottom: '10px' }}>
           <NewFilterContainer
             filters={filters}
-            onSelectedFiltersChange={getFilteredMeteringData}
+            handleSelectedFiltersChange={getFilteredMeteringData}
             setFinalFilter={setFinalFilter}
             finalFilter={finalFilter}
             openPopover={openPopover}

@@ -33,7 +33,6 @@ const CustomFilterOption = (props) => {
     setCustomFinalFilter,
     onQuickFilterCreate,
     clearFilters,
-    setSelectedCustomFilter,
     handleQuickFilterDuplicateForPatientList,
     // editModeEnabled,
   } = props;
@@ -116,7 +115,6 @@ const CustomFilterOption = (props) => {
     }
 
     setCustomFinalFilter(data);
-    setSelectedCustomFilter(data);
   };
 
   const handleDuplicate = () => {

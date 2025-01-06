@@ -174,7 +174,7 @@ const FilterSelect = ({
           <div style={{ display: 'flex' }}>
             <Autocomplete
               multiple={multiSelectEnabled}
-              options={multiSelectEnabled ? filterdUser : filterOptions}
+              options={multiSelectEnabled ? options : filterOptions}
               disableCloseOnSelect
               getOptionLabel={(option) => option?.displayValue}
               renderOption={(props, option) => (
