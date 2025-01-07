@@ -335,7 +335,7 @@ const PatientsList = ({
 
         showToast({
           status: 'success',
-          title: 'User updated successfully',
+          title: 'Updated successfully',
         });
         return newRow;
       } catch (error) {
