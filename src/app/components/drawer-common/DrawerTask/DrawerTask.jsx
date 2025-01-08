@@ -37,6 +37,7 @@ import TaskDragHandle from 'components/task/TaskDragHandle/TaskDragHandle';
 import {
   checkDateTimeIntent,
   checkIfTemplateTask,
+  DueDateIntent,
   getAttachmentsIconTooltipTitle,
   getCommentsIconTooltipTitle,
   getLabelsIconTooltipTitle,
@@ -63,6 +64,7 @@ import {
   DueDateText,
   DragHandleContainer,
 } from './styled';
+import { adjustUTCDateForDateIntent } from '../../task/DueDatePicker/helpers';
 
 const { DISABLED, READ_ONLY } = SINGLE_TASK_RESTRICTIONS_OPTIONS;
 
@@ -85,6 +87,7 @@ const DrawerTask = (props) => {
     taskMentions,
     assignedToUsers,
     dueDate,
+    dueDateIntent,
     comments,
     updatedComment,
     labels,
@@ -301,17 +304,24 @@ const DrawerTask = (props) => {
           content={({ closePopover }) => (
             <DueDatePicker
               taskIdentifier={taskIdentifier}
-              selectedDate={dueDate}
+              selectedDate={adjustUTCDateForDateIntent(moment(dueDate), dueDateIntent)}
               onDateChange={handleDueDateChange}
               recurring={hasRecurringSchedule}
               onCloseClick={closePopover}
+              dueDateIntent={dueDateIntent}
+              dateType="dueDate"
             />
           )}
         >
           {dueDate ? (
             <Tooltip placement="top" title="Edit due date">
               <DueDateBasicLabel isOverdue={isDueDateOverdue(task)}>
-                <DueDateText>{moment(dueDate).format('MM/DD')}</DueDateText>
+                <DueDateText>
+                  {dueDateIntent === DueDateIntent.DATE
+                    ? moment(dueDate).utc().format('MM/DD')
+                    : moment(dueDate).format('MM/DD')
+                  }
+                </DueDateText>
                 {reminderType && reminderType !== ReminderType.NONE && (
                   <>
                     <Spacing horizontal={2} />

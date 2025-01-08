@@ -1,3 +1,6 @@
+import { DueDateIntent } from "@/app/helpers/task-helpers";
+import moment from "moment";
+
 export const FormField = {
   RECURRING_OPTION: 'recurringOption',
   RECURRING_ON_DAYS: 'recurringOnDays',
@@ -84,3 +87,36 @@ export const FORM_DEFAULT_VALUES = {
 };
 
 export const OPTIONS_ALLOWED_TO_DAY_SELECTION = [RecurringOption.WEEKLY];
+
+export const DATE_MASK_FORMAT = 'MM/DD/YYYY';
+
+export function adjustUTCDateForDateIntent(momentDate, intent) {
+
+  if (!momentDate) return momentDate;
+
+  if (intent === DueDateIntent.DATE) {
+    const dateOnly = momentDate?.clone().utc().format("YYYY-MM-DD");
+
+    const offsetMinutes = momentDate?.utcOffset();
+
+    const adjustedTime = moment
+      .utc(`${dateOnly}T00:00:00`)
+      .subtract(offsetMinutes, "minutes")
+      .format("HH:mm:ss");
+
+    const adjustedDateTime = moment
+      .utc(`${dateOnly}T${adjustedTime}+00:00`)
+      .subtract(offsetMinutes > 0 ? 1 : 0, "day")
+      .format("YYYY-MM-DDTHH:mm:ss+00:00");
+    return moment(adjustedDateTime);
+  }
+
+  return momentDate;
+}
+
+export const adjustDateForTimeZone = (selectedDate) => {
+  const date = moment(selectedDate);
+  return date.utcOffset() > 0 
+    ? date.add(1, 'day') 
+    : date;
+};

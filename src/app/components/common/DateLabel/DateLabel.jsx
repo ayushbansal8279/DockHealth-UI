@@ -28,8 +28,12 @@ const DateLabel = (props) => {
     showRecurring = true,
     dueDateIntent
   } = props;
-  const dueDate = moment(date);
+  const dueDate =
+    dueDateIntent === DueDateIntent.DATE
+      ? moment(date).utc()
+      : moment(date);
   const dateFormat = dueDate.isSame(moment(), 'year') ? 'MMM DD, YYYY' : format;
+
   return (
     <>
       <DueDateBasicLabel isOverdue={isOverdue}>

@@ -347,6 +347,7 @@ function* updateTaskDueDate({ task, dueDate, dueDateIntent = null }) {
       type: ActionTypes.UPDATE_TASK_DUE_DATE_SUCCESS,
       task,
       dueDate: updatedTask.dueDate,
+      dueDateIntent: updatedTask.dueDateIntent
     });
     yield put({ type: ActionTypes.REFRESH_ORIGIN });
     yield put(showGlobalAlert(AlertMessages.UPDATED));
@@ -355,6 +356,7 @@ function* updateTaskDueDate({ task, dueDate, dueDateIntent = null }) {
       type: ActionTypes.UPDATE_TASK_DUE_DATE_FAILURE,
       task,
       dueDate: task?.dueDate,
+      dueDateIntent: task?.dueDateIntent
     });
     yield put(showGlobalErrorAlert());
   }

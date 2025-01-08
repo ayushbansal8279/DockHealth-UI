@@ -253,7 +253,9 @@ export const updateDueDate = (taskIdentifier, dueDate, dueDateIntent) =>
       {
         params: {
           dueDate: dueDate
-            ? moment(dueDate).format('MM/DD/YYYY HH:mm:ss ZZ')
+            ? dueDateIntent === DueDateIntent.DATE
+              ? moment.utc(dueDate).startOf('day').format('MM/DD/YYYY HH:mm:ss') + ' +0000'
+              : moment(dueDate).format('MM/DD/YYYY HH:mm:ss ZZ')
             : null,
           dueDateIntent: dueDate ? dueDateIntent : DueDateIntent.DATE,
         },
