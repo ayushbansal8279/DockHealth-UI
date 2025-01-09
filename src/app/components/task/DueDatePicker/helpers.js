@@ -108,6 +108,7 @@ export function adjustUTCDateForDateIntent(momentDate, intent) {
       .utc(`${dateOnly}T${adjustedTime}+00:00`)
       .subtract(offsetMinutes > 0 ? 1 : 0, "day")
       .format("YYYY-MM-DDTHH:mm:ss+00:00");
+      
     return moment(adjustedDateTime);
   }
 
