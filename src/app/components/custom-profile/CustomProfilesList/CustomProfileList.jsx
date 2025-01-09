@@ -332,6 +332,7 @@ const CustomProfileList = () => {
                           record.values?.[0] || record.values?.[0]?.value || ''
                         );
                       }
+                      case 'MULTI_SELECT':
                       case 'PICK_LIST': {
                         return (
                           record.references
