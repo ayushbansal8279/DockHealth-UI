@@ -81,6 +81,7 @@ const MeteringFilter = ({ setBillingData, getInitialMeteringData }) => {
             // setCustomFinalFilter={setCustomFinalFilter}
             // setSelectedQuickFilter={setSelectedQuickFilter}
             multiSelectEnabled={false}
+            isSaveDisabled
           />
         </div>
       </FilterPopover>
