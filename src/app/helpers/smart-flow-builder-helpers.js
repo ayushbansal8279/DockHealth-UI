@@ -15,7 +15,7 @@ export const NodeType = {
 };
 
 export const LinkType = {
-  INDICATOR:'STANDARD_LINK',
+  INDICATOR:'INDICATOR_LINK',
   STANDARD: 'STANDARD_LINK',
   DECISION: 'DECISION_LINK',
   TEMPORARY: 'TEMPORARY_LINK',
@@ -45,7 +45,14 @@ export function createLinkElement(
   targetId,
   sourceHandle,
   targetHandle,
+  indicatorType
 ) {
+  if((sourceId === targetId) && (indicatorType === 'START_INDICATOR')){
+    sourceId = 'START_INDICATOR'
+  } 
+  if((sourceId === targetId) && (indicatorType === 'END_INDICATOR')){
+    targetId = 'END_INDICATOR'
+  } 
   return {
     id: getUniqueLinkId(sourceId, targetId),
     source: sourceId,
@@ -54,6 +61,7 @@ export function createLinkElement(
     targetHandle: targetHandle || NodeTargetHandle.TARGET_A,
     type,
     data: {},
+    indicatorType
   };
 }
 

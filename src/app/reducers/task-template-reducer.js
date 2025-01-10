@@ -564,7 +564,7 @@ const TaskTemplateReducer = (state = initialState, action) => {
 
     case ActionTypes.ADD_TEMPORARY_LINK: {
       const { currentTaskTemplateIdentifier } = state;
-      const { linkType, sourceId, targetId, sourceHandle, targetHandle } =
+      const { linkType, sourceId, targetId, sourceHandle, targetHandle, indicatorType } =
         action;
       const { temporaryElements } =
         state.taskTemplateDetails[currentTaskTemplateIdentifier];
@@ -586,6 +586,7 @@ const TaskTemplateReducer = (state = initialState, action) => {
                 targetId,
                 sourceHandle,
                 targetHandle,
+                indicatorType
               ),
             ],
           },

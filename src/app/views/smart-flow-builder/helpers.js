@@ -17,7 +17,17 @@ export function mapLayoutToElements(layout, tasks) {
     return tasks.reduce((accumulator, t) => {
       if (t.taskLinks) {
         for (const link of t.taskLinks) {
-          const { sourceTaskIdentifier, targetTaskIdentifier } = link;
+          
+          let { sourceTaskIdentifier, targetTaskIdentifier } = link;
+
+          if (sourceTaskIdentifier === targetTaskIdentifier) {
+            if (link.linkType === "START") {
+                sourceTaskIdentifier = "START_INDICATOR";
+            } else if (link.linkType === "END") {
+                targetTaskIdentifier = "END_INDICATOR";
+            }
+        }
+        
           const layoutId = getUniqueLinkId(
             sourceTaskIdentifier,
             targetTaskIdentifier,

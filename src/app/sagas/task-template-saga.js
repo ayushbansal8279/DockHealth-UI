@@ -615,12 +615,30 @@ function* linkTasks({ source, target, options, outcomeName }) {
 
 
     if (!checkIfTasksAreLinked()) {
-      const isSourceDecisionType = sourceTask
+      let isSourceDecisionType = sourceTask
         ? sourceTask.intentType === NodeType.DECISION
         : templateDetails?.temporaryElements?.some(
             ({ id, type }) =>
               id === source.id && type === NodeType.NEW_DECISION,
           );
+          let indicatorType = null
+
+          if(source.id === 'START_INDICATOR'){
+            source.id = target.id
+            options = {
+              ...options,
+              linkType: 'START',
+            };
+            indicatorType = 'START_INDICATOR'
+          }
+          if(target.id === 'END_INDICATOR'){
+            target.id = source.id
+            options = {
+              ...options,
+              linkType: 'END',
+            };
+            indicatorType = 'END_INDICATOR'
+          }
 
       yield put(
         TaskTemplateActions.addTemporaryLink(
@@ -631,6 +649,7 @@ function* linkTasks({ source, target, options, outcomeName }) {
           target.id,
           source.handle,
           target.handle,
+          indicatorType
         )
       );
 
@@ -650,20 +669,6 @@ function* linkTasks({ source, target, options, outcomeName }) {
             decisionOutcome: outcome.taskOutcomeIdentifier,
           };
         }
-        if(source.id === 'START_INDICATOR'){
-          source.id = target.id
-          options = {
-            ...options,
-            linkType: 'START',
-          };
-        }
-        if(target.id === 'END_INDICATOR'){
-          target.id = source.id
-          options = {
-            ...options,
-            linkType: 'END',
-          };
-        }
 
         const link = yield call(
           TaskApi.createTasksLink,
@@ -672,7 +677,13 @@ function* linkTasks({ source, target, options, outcomeName }) {
           options,
         );
 
-        const { sourceTaskIdentifier, targetTaskIdentifier } = link;
+        let { sourceTaskIdentifier, targetTaskIdentifier} = link;        
+
+        if(sourceTaskIdentifier === targetTaskIdentifier){
+          if(indicatorType === 'START_INDICATOR') sourceTaskIdentifier = indicatorType
+          if(indicatorType === 'END_INDICATOR') targetTaskIdentifier = indicatorType
+        }
+        
         const linkId = getUniqueLinkId(
           sourceTaskIdentifier,
           targetTaskIdentifier,

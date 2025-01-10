@@ -1034,6 +1034,12 @@ export function markTaskAsUnRead(taskIdentifier) {
 }
 
 export function deleteTasksLink(sourceTaskIdentifier, targetTaskIdentifier) {
+  if(sourceTaskIdentifier === 'START_INDICATOR') {
+    sourceTaskIdentifier = targetTaskIdentifier
+  }
+  if(targetTaskIdentifier === 'END_INDICATOR') {
+    targetTaskIdentifier = sourceTaskIdentifier
+  }
   return {
     type: ActionTypes.DELETE_TASKS_LINK,
     sourceTaskIdentifier,
