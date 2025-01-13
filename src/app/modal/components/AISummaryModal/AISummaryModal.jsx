@@ -267,7 +267,7 @@ const AISummaryModal = ({ closeModal, title, onsubmit, type, identifier }) => {
             target="#"
             href="https://forms.dock.health/AISummaryFeedback"
           >
-            Please share your feedback to help us improve.
+            please share your feedback to help us improve.
           </FeedbackLink>
         </Footer>
       )}
