@@ -18,6 +18,7 @@ import {
   PromptSelector,
   CustumTooltip,
   Footer,
+  FeedbackLink,
 } from './styled';
 import LuminaStar from 'img/AI/LuminaStar';
 import palette from '@/app/styles/palette';
@@ -261,8 +262,13 @@ const AISummaryModal = ({ closeModal, title, onsubmit, type, identifier }) => {
       ) : (
         <Footer>
           This AI-generated summary is provided for convenience and should be
-          reviewed for accuracy and completeness. Is it helpful? If not, Please
-          share your feedback to help us improve.
+          reviewed for accuracy and completeness. Is it helpful? If not,
+          <FeedbackLink
+            target="#"
+            href="https://forms.dock.health/AISummaryFeedback"
+          >
+            please share your feedback to help us improve.
+          </FeedbackLink>
         </Footer>
       )}
     </AISummaryModalWrapper>

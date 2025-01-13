@@ -195,3 +195,8 @@ export const Footer = styled.p`
   text-align: left;
   color: ${palette.offBlack};
 `;
+
+export const FeedbackLink = styled.a`
+  color: ${palette.newBrightBlue};
+  margin-left: 2px;
+`;
