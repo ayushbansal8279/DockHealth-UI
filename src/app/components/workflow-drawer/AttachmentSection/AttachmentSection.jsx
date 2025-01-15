@@ -86,21 +86,8 @@ const AttachmentSection = ({ disabled }) => {
             dispatch(showGlobalAlert(AlertMessages.ATTACHMENT_ADDED));
             addAttachment(restAttachments);
           })
-          .catch((error) => {
+          .catch(() => {
             unsetUploadingAttachments();
-            if (error.response && error.response.status === 413) {
-              dispatch(
-                showGlobalErrorAlert(
-                  'File exceeded the allowed size of 100 MB',
-                ),
-              );
-            } else {
-              dispatch(
-                showGlobalErrorAlert(
-                  'Error in saving attachment. Please try again.',
-                ),
-              );
-            }
           });
       }
     },
