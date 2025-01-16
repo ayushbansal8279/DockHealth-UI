@@ -32,7 +32,6 @@ export const CalenderTaskWrapper = styled.div`
   display: flex;
   align-items: center;
   border: ${({ bundle }) => bundle && `2px solid ${palette.newBrightBlue}`};
-  height: ${({ bundle }) => bundle && `40px`};
 `;
 
 export const CalendarContainer = styled.div`

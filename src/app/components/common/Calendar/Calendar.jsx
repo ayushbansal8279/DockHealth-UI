@@ -206,6 +206,7 @@ const Calendar = ({ taskListIdentifier }) => {
         <CalenderTaskWrapper bundle={task?.itemType === 'BUNDLE'}>
           <TextEventContainer
             style={{
+              width:"100%",
               backgroundColor: task.taskList?.color || 'white',
               opacity: 0.8,
             }}
