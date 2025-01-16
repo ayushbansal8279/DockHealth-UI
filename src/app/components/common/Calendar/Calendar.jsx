@@ -9,13 +9,15 @@ import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import { useSelector, useDispatch } from 'react-redux';
-// import { extractTasksAndSubtasks } from 'helpers/tasklist-helpers';
 import {
   calendarTasksSelector,
   calendarMultipleTaskDetailsSelector,
 } from 'selectors/calendar-tasks-selectors';
 import * as CalendarTasksActions from 'actions/calendar-tasks-actions';
-import { openDrawer } from 'actions/task-drawer-actions';
+import {
+  openDrawer,
+  openTaskDrawerWithContent,
+} from 'actions/task-drawer-actions';
 import * as TaskActions from 'actions/task-actions';
 import { storeAsCurrentTask, updateTaskDueDate } from 'actions/task-actions';
 import interactionPlugin from '@fullcalendar/interaction';
@@ -36,9 +38,11 @@ import {
   CalendarContainer,
   AddEventInputContainer,
   TextEventContainer,
+  CalenderTaskWrapper,
 } from './styled';
 import MultiAssignCalendar from './MultiAssignCalendar';
 import { createMentionsFromTokenizedDescription } from '../RichTextEditor/CreateMentions';
+import { openDrawer as openWorkflowDrawer } from '@/app/actions/workflow-drawer-actions';
 
 const temporaryTaskId = 'temporaryTaskId';
 
@@ -53,8 +57,6 @@ const Calendar = ({ taskListIdentifier }) => {
       ? calendarMultipleTaskDetailsSelector(state, taskIdentifiers)
       : [];
   });
-  // const { parentTasks, subtasks } = extractTasksAndSubtasks(tasks);
-  // const allTasks = [...parentTasks, ...subtasks];
 
   const transformedTasks = useMemo(
     () => allTasks.map(transformTaskToEvent),
@@ -71,8 +73,13 @@ const Calendar = ({ taskListIdentifier }) => {
       const { id } = data.event;
       if (id !== temporaryTaskId) {
         const task = allTasks.find(({ identifier }) => identifier === id);
-        dispatch(openDrawer());
-        dispatch(storeAsCurrentTask(task));
+        console.log(task);
+        if (task.itemType === 'BUNDLE') {
+          dispatch(openWorkflowDrawer(task?.identifier, task));
+        } else {
+          dispatch(openTaskDrawerWithContent(task));
+        }
+        // dispatch(storeAsCurrentTask(task));
       }
     },
     [dispatch, allTasks],
@@ -196,35 +203,37 @@ const Calendar = ({ taskListIdentifier }) => {
 
     return (
       <Tooltip key={eventInfo?.event?.id} title={eventInfo?.event?.title}>
-        <TextEventContainer
-          style={{
-            backgroundColor: task.taskList?.color || 'white',
-            opacity: 0.8,
-          }}
-        >
-          {task && (
-            <MultiAssignCalendar assignedToUsers={task.assignedToUsers} />
-          )}
-          {eventInfo.timeText && eventInfo?.view?.type === 'dayGridMonth' && (
-            <>
-              <div>
-                <ReminderIcon />
-              </div>
-            </>
-          )}
-          <Typography
+        <CalenderTaskWrapper bundle={task?.itemType === 'BUNDLE'}>
+          <TextEventContainer
             style={{
-              textOverflow: 'ellipsis',
-              whiteSpace: 'nowrap',
-              overflow: 'hidden',
+              backgroundColor: task.taskList?.color || 'white',
+              opacity: 0.8,
             }}
           >
-            {createMentionsFromTokenizedDescription(
-              task?.tokenizedDescription,
-              task?.taskMentions,
+            {task && (
+              <MultiAssignCalendar assignedToUsers={task.assignedToUsers} />
             )}
-          </Typography>
-        </TextEventContainer>
+            {eventInfo.timeText && eventInfo?.view?.type === 'dayGridMonth' && (
+              <>
+                <div>
+                  <ReminderIcon />
+                </div>
+              </>
+            )}
+            <Typography
+              style={{
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+              }}
+            >
+              {createMentionsFromTokenizedDescription(
+                task?.tokenizedDescription || task?.name,
+                task?.taskMentions,
+              )}
+            </Typography>
+          </TextEventContainer>
+        </CalenderTaskWrapper>
       </Tooltip>
     );
   };
