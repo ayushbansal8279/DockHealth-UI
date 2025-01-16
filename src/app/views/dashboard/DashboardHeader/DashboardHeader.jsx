@@ -232,7 +232,9 @@ const DashboardHeader = ({
 
   const handleQuickFilterCreate = useCallback(
     (name, selectedFilters, scope) =>
-      dispatch(createQuickFilter(name, { contextType }, selectedFilters, scope)),
+      dispatch(
+        createQuickFilter(name, { contextType }, selectedFilters, scope),
+      ),
     [contextType, dispatch],
   );
 
@@ -240,9 +242,9 @@ const DashboardHeader = ({
     (quickFilterIdentifier, name, selectedFilterOptions, scope) =>
       dispatch(
         updateQuickFilter(
-          quickFilterIdentifier, 
-          { name, selectedOptions: selectedFilterOptions }, 
-          { contextType }, 
+          quickFilterIdentifier,
+          { name, selectedOptions: selectedFilterOptions },
+          { contextType },
           scope,
         ),
       ),
@@ -360,7 +362,7 @@ const DashboardHeader = ({
         {viewType !== ViewType.CALENDAR_VIEW && (
           <>
             <Spacing horizontal={4} />
-            <Box display="flex" flex={1} justifyContent="flex-start">
+            <Box display="flex" flex={1} justifyContent="flex-start" mr={1}>
               <AccessRestrictor
                 allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST, DOCK_LITE]}
               >
@@ -408,7 +410,7 @@ const DashboardHeader = ({
             </Box>
           </>
         )}
-        <Box mr>
+        <Box mr={1}>
           <AddTaskButtonWrapper onClick={openAddTaskDrawer}>
             <Add />
             <AddTaskButtonLabel>Add Task</AddTaskButtonLabel>
