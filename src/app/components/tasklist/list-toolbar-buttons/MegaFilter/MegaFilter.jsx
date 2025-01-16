@@ -93,6 +93,7 @@ const MegaFilter = ({
     selectQuickFilter(null);
     setFinalFilter({});
     setSelectedQuickFilter('');
+    setClearFilter(true)
   }, [selectQuickFilter]);
 
   useEffect(() => {
