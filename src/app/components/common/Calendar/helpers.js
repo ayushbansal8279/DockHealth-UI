@@ -15,7 +15,8 @@ export function escapeDueTime(dueDate) {
 
 export const transformTaskToEvent = (task) => ({
   id: task?.identifier,
-  title: task?.description,
-  start: escapeDueTime(task?.dueDate),
+  title: task?.description || task?.name,
+  start: escapeDueTime(task?.dueDate || task?.dueDateTime),
+  type: task?.itemType,
   display: 'block',
 });
