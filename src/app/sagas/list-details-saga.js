@@ -69,6 +69,10 @@ import { log } from 'helpers/log';
 import store from '../store';
 import localStorageHelper from '../helpers/local-storage-helper';
 import sessionStorageHelper from '../helpers/session-storage-helper';
+import {
+  extractAllTasksFromGroupsDetail,
+  filterDataForCalender,
+} from '../helpers/list-details-helper';
 
 export const DO_CREATE_TASK = 'DO_CREATE_TASK';
 export const DEFAULT_TASK_GROUPS_TO_LOAD = 3;
@@ -161,7 +165,7 @@ function* getCurrentListTasks() {
     const groupsToGet = groupsWithTasks;
 
     yield all(
-      groupsToGet.map(({ taskGroupIdentifier }) => 
+      groupsToGet.map(({ taskGroupIdentifier }) =>
         put(
           ListDetailsActions.getTasksForTaskGroups({
             taskGroupIdentifier,
@@ -312,6 +316,8 @@ function* getTasksForTaskGroups(payload) {
         startPosition,
       });
     }
+
+    console.log('groupOfTasks', groupOfTasks);
 
     return groupOfTasks;
   } catch (error) {
@@ -783,14 +789,36 @@ function* getListCalendarTasks() {
     const taskListIdentifier = yield select(currentTaskListIdentifierSelector);
     const status = yield select(currentTaskListTasksStatusSelector);
     const { startDate, endDate } = yield select(calendarDateRangeSelector);
-    const tasks = yield call(
-      ListDetailsApi.getTasksForListByDateRange,
-      taskListIdentifier,
-      status,
+    const selectedFilters = yield select(selectedFiltersInMegaFilterSelector);
+    const groups = yield call(getGroupsByListId, taskListIdentifier, status);
+
+    const appliedFilter = filterDataForCalender(
+      selectedFilters,
       startDate,
       endDate,
     );
-    yield put(ListDetailsActions.getListCalendarTasksSuccess(tasks));
+    const startPosition = 0;
+    const endPosition = 0;
+    const sort = null;
+
+    const allGroupedTasks = yield all(
+      groups.map((group) =>
+        call(
+          ListDetailsApi.getFilteredTasksForList,
+          taskListIdentifier,
+          status,
+          startPosition,
+          endPosition,
+          sort,
+          appliedFilter,
+          group.taskGroupIdentifier,
+        ),
+      ),
+    );
+
+    const allTasks = extractAllTasksFromGroupsDetail(allGroupedTasks);
+
+    yield put(ListDetailsActions.getListCalendarTasksSuccess(allTasks));
   } catch {
     yield all([
       put(ListDetailsActions.getListCalendarTasksFailure()),
