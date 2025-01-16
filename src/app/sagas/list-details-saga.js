@@ -317,8 +317,6 @@ function* getTasksForTaskGroups(payload) {
       });
     }
 
-    console.log('groupOfTasks', groupOfTasks);
-
     return groupOfTasks;
   } catch (error) {
     log(error);
