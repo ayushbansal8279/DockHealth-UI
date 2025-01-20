@@ -69,6 +69,7 @@ const DashboardList = ({
   tourModalIsOpen,
   openTourModal,
   setClearSearch,
+  clearFilter,
   setClearFilter,
   isAddTaskDrawer,
   setAddTaskDrawer,
@@ -337,7 +338,9 @@ const DashboardList = ({
           </StickyHeader>
         </StickyContainer>
         <Spacing vertical={1} />
-        {viewType === ViewType.CALENDAR_VIEW && <DashboardCalendar />}
+        {viewType === ViewType.CALENDAR_VIEW && (
+          <DashboardCalendar clearFilter={clearFilter} />
+        )}
         {viewType === ViewType.LIST_VIEW && (
           <VerticalScrollContainer>
             {dashboardTasksIsLoading || completeTaskCount === undefined ? (
