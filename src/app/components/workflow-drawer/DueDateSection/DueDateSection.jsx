@@ -22,6 +22,7 @@ import AssignMemberIcon from '../../user/AssignMemberIcon/AssingMemberIcon';
 import { openModal } from '@/app/modal/actions';
 import { isDueDateValid } from '@/app/helpers/date-validation-helper';
 import { checkDateTimeIntent, DueDateIntent } from '@/app/helpers/task-helpers';
+import { adjustUTCDateForDateIntent } from '../../task/DueDatePicker/helpers';
 
 const DueDateSection = ({ disabled }) => {
   const dispatch = useDispatch();
@@ -51,7 +52,11 @@ const DueDateSection = ({ disabled }) => {
     (updatedDueDateTime) => {
       const dueDateIntent = checkDateTimeIntent(updatedDueDateTime);
       const payload = {
-        dueDateTime: updatedDueDateTime,
+        dueDateTime: updatedDueDateTime
+          ? dueDateIntent === DueDateIntent.DATE
+            ? moment.utc(updatedDueDateTime).startOf('day').toISOString()
+            : moment(updatedDueDateTime).toISOString()
+          : null,
         dueDateIntent: updatedDueDateTime ? dueDateIntent : DueDateIntent.DATE,
       };
 
@@ -87,11 +92,13 @@ const DueDateSection = ({ disabled }) => {
         content={({ closePopover }) => (
           <DueDatePicker
             taskIdentifier={identifier}
-            selectedDate={dueDateTime}
+            selectedDate={adjustUTCDateForDateIntent(dueDateTime ? moment(dueDateTime).local() : null, dueDateIntent)}
             onDateChange={handleDueDateSave}
             recurring={hasRecurringSchedule}
             disableRecurring
             onCloseClick={closePopover}
+            dueDateIntent={dueDateIntent}
+            dateType="dueDate"
           />
         )}
       >

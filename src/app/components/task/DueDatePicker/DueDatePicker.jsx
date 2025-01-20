@@ -18,6 +18,8 @@ import {
   AddSectionWrapper,
 } from './styled';
 import RecurringSection from './RecurringSection';
+import { DueDateIntent } from '@/app/helpers/task-helpers';
+import { adjustDateForTimeZone } from './helpers';
 
 const DATE_ISO_FORMAT = 'YYYY-MM-DD';
 export const DATE_MASK_FORMAT = 'MM/DD/YYYY';
@@ -30,6 +32,8 @@ const DueDatePicker = ({
   disableRecurring,
   onCloseClick,
   disableClearDate,
+  dueDateIntent,
+  dateType=null
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const [recurringSectionVisible, showRecurringSection] = useBoolean(recurring);
@@ -40,31 +44,47 @@ const DueDatePicker = ({
     selectedDate ? moment(selectedDate).format(TIME_12H_FORMAT) : null,
   );
   const [dateValue, setDateValue] = useState(selectedDate);
-  const momentSelectedDate = selectedDate
-    ? moment(dateValue, DATE_ISO_FORMAT)
-    : null;
 
   useEffect(() => {
     if (selectedDate !== dateValue) {
-      setDateMaskValue(moment(selectedDate).format(DATE_MASK_FORMAT));
       if (selectedDate) {
         setTimeMaskValue(moment(selectedDate).format(TIME_12H_FORMAT));
       }
-      setDateValue(selectedDate);
+
+      if(!selectedDate) {
+        setDateMaskValue(null);
+        setDateValue(null);
+      }
+      else {
+        if (dateType === 'dueDate' && (dueDateIntent === DueDateIntent.DATE || !dueDateIntent)) {
+          const adjustedDate = adjustDateForTimeZone(selectedDate);
+          const formattedDate = adjustedDate?.utc().format(DATE_ISO_FORMAT);
+          setDateMaskValue(moment(formattedDate).format(DATE_MASK_FORMAT));
+          setDateValue(formattedDate);
+        } else {
+          setDateMaskValue(moment(selectedDate).format(DATE_MASK_FORMAT));
+          setDateValue(selectedDate);
+        }
+      }
     }
   }, [dateValue, selectedDate]);
 
   const handleDatePick = (pickedDate) => {
-    setDateValue(pickedDate);
     const formattedToMask = moment(pickedDate).format(DATE_MASK_FORMAT);
+    setDateValue(pickedDate);
     setDateMaskValue(formattedToMask);
 
-    onDateChange(
-      moment(
-        `${pickedDate} ${timeMaskValue}`,
-        `${DATE_ISO_FORMAT} ${TIME_12H_FORMAT}`,
-      ).toISOString(),
-    );
+    if (dateType === 'dueDate' && (dueDateIntent === DueDateIntent.DATE || !dueDateIntent)) {
+      const dateOnlyISO = moment(`${pickedDate}T00:00:00.000+00:00`).toISOString();
+      onDateChange(dateOnlyISO);
+    } else {
+      onDateChange(
+        moment(
+          `${pickedDate} ${timeMaskValue}`,
+          `${DATE_ISO_FORMAT} ${TIME_12H_FORMAT}`,
+        ).toISOString(),
+      );
+    }
   };
 
   const handleTimePick = (pickedTime) => {
@@ -106,7 +126,7 @@ const DueDatePicker = ({
           <Label>Date</Label>
           <SecondaryDateInput
             popoverDisabled
-            value={dateMaskValue}
+            value={dateMaskValue || ""}
             onChange={setDateMaskValue}
             onEnter={handleInsertDateAsText}
             onBlur={handleInsertDateAsText}
@@ -128,7 +148,7 @@ const DueDatePicker = ({
         <QuickSelectButton
           fillWidth
           type="button"
-          isSelected={momentSelectedDate?.isSame(moment(), 'd')}
+          isSelected={moment(dateMaskValue)?.isSame(moment(), 'd')}
           onClick={() =>
             handleDatePick(moment().startOf('day').format(DATE_ISO_FORMAT))
           }
@@ -137,7 +157,7 @@ const DueDatePicker = ({
         </QuickSelectButton>
         <QuickSelectButton
           type="button"
-          isSelected={momentSelectedDate?.isSame(
+          isSelected={moment(dateMaskValue)?.isSame(
             moment().add(1, 'days'),
             'day',
           )}

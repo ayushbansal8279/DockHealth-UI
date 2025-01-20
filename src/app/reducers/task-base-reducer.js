@@ -282,11 +282,12 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
     case ActionTypes.UPDATE_TASK_DUE_DATE:
     case ActionTypes.UPDATE_TASK_DUE_DATE_SUCCESS:
     case ActionTypes.UPDATE_TASK_DUE_DATE_FAILURE: {
-      const { task, dueDate } = action;
+      const { task, dueDate, dueDateIntent } = action;
 
       return updateStateCallback(state, {
         ...task,
         dueDate,
+        dueDateIntent
       });
     }
 

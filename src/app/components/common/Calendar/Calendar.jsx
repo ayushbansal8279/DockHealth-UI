@@ -42,7 +42,9 @@ import {
 } from './styled';
 import MultiAssignCalendar from './MultiAssignCalendar';
 import { createMentionsFromTokenizedDescription } from '../RichTextEditor/CreateMentions';
+import { DueDateIntent } from '@/app/helpers/task-helpers';
 import { openDrawer as openWorkflowDrawer } from '@/app/actions/workflow-drawer-actions';
+
 
 const temporaryTaskId = 'temporaryTaskId';
 
@@ -243,7 +245,7 @@ const Calendar = ({ taskListIdentifier }) => {
       const { id, start } = data.event;
       const task = allTasks.find(({ identifier }) => identifier === id);
       const dueDate = moment(start).toISOString();
-      dispatch(updateTaskDueDate(task, dueDate));
+      dispatch(updateTaskDueDate(task, dueDate, DueDateIntent.DATE));
     },
     [dispatch, allTasks],
   );

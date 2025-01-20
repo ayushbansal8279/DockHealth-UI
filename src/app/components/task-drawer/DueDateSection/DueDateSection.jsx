@@ -30,6 +30,7 @@ import {
 } from './styled';
 import { openModal } from '@/app/modal/actions';
 import { isDueDateValid } from '@/app/helpers/date-validation-helper';
+import { adjustUTCDateForDateIntent } from '../../task/DueDatePicker/helpers';
 
 const DueDateSection = ({
   selectedTask,
@@ -118,7 +119,10 @@ const DueDateSection = ({
               openPopover(true);
             }}
           >
-            {momentDueDate.format('MMM DD, YYYY')}
+            {selectedTask?.dueDateIntent === DueDateIntent.DATE
+              ? momentDueDate.utc().format('MMM DD, YYYY')
+              : momentDueDate.format('MMM DD, YYYY')
+            }
           </DateViewText>
         </DateViewContainer>
       )}
@@ -171,10 +175,12 @@ const DueDateSection = ({
             <Box width="auto" minWidth={buttonReference.current?.offsetWidth}>
               <DueDatePicker
                 taskIdentifier={taskIdentifier}
-                selectedDate={momentDueDate}
+                selectedDate={adjustUTCDateForDateIntent(momentDueDate?.local(), selectedTask?.dueDateIntent)}
                 onDateChange={handleDueDateSave}
                 recurring={hasRecurringSchedule}
                 onCloseClick={closePopover}
+                dueDateIntent={selectedTask?.dueDateIntent}
+                dateType="dueDate"
               />
             </Box>
           </PopoverCard>
