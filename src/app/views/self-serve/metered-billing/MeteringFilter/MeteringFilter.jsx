@@ -25,9 +25,13 @@ const MeteringFilter = ({ setBillingData, getInitialMeteringData }) => {
     setFinalFilter({});
   };
 
-  useEffect(async () => {
+  const fetchFilterOptions = useCallback(async () => {
     const filterOptions = await getMeteringFilterOptions();
     setFilters(filterOptions);
+  }, [setFilters]);
+
+  useEffect(async () => {
+    fetchFilterOptions();
   }, []);
 
   const getFilteredMeteringData = async () => {
@@ -38,16 +42,6 @@ const MeteringFilter = ({ setBillingData, getInitialMeteringData }) => {
     const result = await getMeteringEvents(payload);
     if (result) setBillingData(result);
     setIsFilterApplied(true);
-  };
-
-  const payload = {
-    meteringEvent: {
-      type: 'AI',
-      subType: 'WORKFLOW_AI_SUMMARY_CREATED',
-      organizationIdentifier: '160f8db5-40c2-11ea-a4e8-124feabd863a',
-    },
-    start: '2024-11-30T18:30:00.000Z',
-    end: '2024-12-29T18:30:00.000Z',
   };
 
   return (
@@ -80,7 +74,6 @@ const MeteringFilter = ({ setBillingData, getInitialMeteringData }) => {
             // customFinalFilter={customFinalFilter}
             // setCustomFinalFilter={setCustomFinalFilter}
             // setSelectedQuickFilter={setSelectedQuickFilter}
-            multiSelectEnabled={false}
             isSaveDisabled
           />
         </div>

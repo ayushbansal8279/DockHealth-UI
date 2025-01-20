@@ -51,7 +51,6 @@ const NewFilterContainer = ({
   setSelectedQuickFilter,
   handleSelectedFiltersChange,
   editModeEnabled = true,
-  multiSelectEnabled = true,
   fiterCount,
   setFilterCount,
   showFilterCount = false,
@@ -166,7 +165,6 @@ const NewFilterContainer = ({
             ?.filter((item) => typeof item !== 'boolean')}
           setFilteredData={setFilteredData}
           filteredData={filteredData}
-          multiSelectEnabled={multiSelectEnabled}
         />
       ))}
       {showFilterCount && fiterCount !== -1 && (

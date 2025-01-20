@@ -4,7 +4,7 @@ import { mapFilterOptions } from '../helpers/filter-options-helpers';
 
 export async function getMeteringEvents(payload) {
   try {
-    const response = await axios.post(`/metering/event/search`, payload);
+    const response = await axios.post(`/metering/event/query`, payload);
     return response.data;
   } catch (error) {
     log(error);
