@@ -130,16 +130,12 @@ const FilterSelect = ({
 
   const handleRemoveSelectedOption = (item) => {
     if (finalFilter[filter].find((option) => option.key === item?.key)) {
-      const urs = { ...finalFilter };
-      urs[filter] = finalFilter[filter].filter(
+      const currentFilter = { ...finalFilter };
+      currentFilter[filter] = finalFilter[filter].filter(
         (option) => option?.key !== item?.key,
       );
-      setFinalFilter((v) => ({ ...urs }));
+      setFinalFilter(() => ({ ...currentFilter }));
       setOptions((v) => [...v, item]);
-      const currentFilter = { ...finalFilter };
-      currentFilter[filter] = currentFilter[filter].filter(
-        (option) => option.key !== item?.key,
-      );
     }
   };
 
