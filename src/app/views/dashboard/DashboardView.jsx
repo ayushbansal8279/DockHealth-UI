@@ -266,6 +266,7 @@ const DashboardView = ({ tabName }) => {
                     openTourModal={forceOpenTourModal}
                     customerTypeLabel={customerTypeLabel}
                     setClearSearch={setClearSearch}
+                    clearFilter={clearFilter}
                     setClearFilter={setClearFilter}
                     isAddTaskDrawer={isAddTaskDrawer}
                     setAddTaskDrawer={setAddTaskDrawer}

@@ -17,6 +17,7 @@ import {
   searchDashboardTasks,
   selectDashboardFilters,
   updateDashboardTaskViewFilter,
+  getDashboardCalendarTasks,
 } from 'actions/dashboard-actions';
 
 import {
@@ -206,10 +207,21 @@ const DashboardHeader = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tabName]);
 
+  const handleFilterSelect = (newFilters) => {
+    dispatch(selectDashboardFilters(newFilters));
+    if (calendarView) {
+      dispatch(getDashboardCalendarTasks());
+    }
+  };
+
   const handleSelectQuickFilter = useCallback(
     (id, filtersSetup) => {
       dispatch(selectQuickFilter(id));
       dispatch(selectDashboardFilters(filtersSetup, id));
+
+      if (calendarView) {
+        dispatch(getDashboardCalendarTasks());
+      }
     },
     [dispatch],
   );
@@ -232,7 +244,9 @@ const DashboardHeader = ({
 
   const handleQuickFilterCreate = useCallback(
     (name, selectedFilters, scope) =>
-      dispatch(createQuickFilter(name, { contextType }, selectedFilters, scope)),
+      dispatch(
+        createQuickFilter(name, { contextType }, selectedFilters, scope),
+      ),
     [contextType, dispatch],
   );
 
@@ -240,9 +254,9 @@ const DashboardHeader = ({
     (quickFilterIdentifier, name, selectedFilterOptions, scope) =>
       dispatch(
         updateQuickFilter(
-          quickFilterIdentifier, 
-          { name, selectedOptions: selectedFilterOptions }, 
-          { contextType }, 
+          quickFilterIdentifier,
+          { name, selectedOptions: selectedFilterOptions },
+          { contextType },
           scope,
         ),
       ),
@@ -357,68 +371,70 @@ const DashboardHeader = ({
         <LayoutHeader.Title title={`Hello ${currentUser.firstName}`} />
       </LayoutHeader>
       <ActionsContainer>
-        {viewType !== ViewType.CALENDAR_VIEW && (
-          <>
-            <Spacing horizontal={4} />
-            <Box display="flex" flex={1} justifyContent="flex-start">
-              <AccessRestrictor
-                allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST, DOCK_LITE]}
-              >
-                <CustomizeToolbarButton
-                  showCustomColumnCreate={false}
-                  additionalOptionsTitle="Groups"
-                  additionalOptions={additionalOptions}
-                  groupOptions={groupOptions}
-                  iconColorFilterActive={iconColorFilterActiveItem?.value}
-                  isDashboard
-                />
-                <Box mx={0.5} />
-                <HomeTaskViewFilter
-                  filter={taskViewFilter}
-                  onChange={onChangeTaskViewFilter}
-                />
-                <Box mx={0.5} />
-                <MegaFilter
-                  filters={filterOptions}
-                  selectedFilters={selectedFilters}
-                  onSelectFilters={compose(dispatch, selectDashboardFilters)}
-                  taskStatus="INCOMPLETE"
-                  activeItemsAmount={activeTasksCount}
-                  onOpen={handleMegaFilterOpen}
-                  isFetching={isFetchingFilters}
-                  quickFiltersList={quickFiltersList}
-                  addQuickFilterOption={addQuickFilterOption}
-                  selectedQuickFilter={selectedQuickFilter}
-                  selectQuickFilter={handleSelectQuickFilter}
-                  onSaveAsNewClick={handleSaveAsQuickFilter}
-                  wasChangedFilters={wasChangedFilters}
-                  onQuickFilterCreate={handleQuickFilterCreate}
-                  onQuickFilterUpdate={handleQuickFilterUpdate}
-                  onQuickFilterDelete={handleQuickFilterDelete}
-                  clearFilter={clearFilter}
-                  setClearFilter={setClearFilter}
-                  origin={TaskOrigin.DASHBOARD}
-                />
-                <Box mx={0.5} />
-                <HeaderSearch
-                  value={searchValue}
-                  onChange={handleSearchChange}
-                />
-              </AccessRestrictor>
-            </Box>
-          </>
-        )}
-        <Box mr>
-          <AddTaskButtonWrapper onClick={openAddTaskDrawer}>
-            <Add />
-            <AddTaskButtonLabel>Add Task</AddTaskButtonLabel>
-          </AddTaskButtonWrapper>
-        </Box>
-        <Box
-          display="flex"
-          flex={viewType === ViewType.CALENDAR_VIEW ? 1 : 0}
-          justifyContent="flex-end"
-        >
+        <>
+          <Spacing horizontal={4} />
+          <Box display="flex" flex={1} justifyContent="flex-start" mr={1}>
+            <AccessRestrictor
+              allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST, DOCK_LITE]}
+            >
+              {viewType !== ViewType.CALENDAR_VIEW && (
+                <>
+                  <CustomizeToolbarButton
+                    showCustomColumnCreate={false}
+                    additionalOptionsTitle="Groups"
+                    additionalOptions={additionalOptions}
+                    groupOptions={groupOptions}
+                    iconColorFilterActive={iconColorFilterActiveItem?.value}
+                    isDashboard
+                  />
+                  <Box mx={0.5} />
+                  <HomeTaskViewFilter
+                    filter={taskViewFilter}
+                    onChange={onChangeTaskViewFilter}
+                  />
+                  <Box mx={0.5} />
+                </>
+              )}
+              <MegaFilter
+                filters={filterOptions}
+                selectedFilters={selectedFilters}
+                onSelectFilters={handleFilterSelect}
+                taskStatus="INCOMPLETE"
+                activeItemsAmount={activeTasksCount}
+                onOpen={handleMegaFilterOpen}
+                isFetching={isFetchingFilters}
+                quickFiltersList={quickFiltersList}
+                addQuickFilterOption={addQuickFilterOption}
+                selectedQuickFilter={selectedQuickFilter}
+                selectQuickFilter={handleSelectQuickFilter}
+                onSaveAsNewClick={handleSaveAsQuickFilter}
+                wasChangedFilters={wasChangedFilters}
+                onQuickFilterCreate={handleQuickFilterCreate}
+                onQuickFilterUpdate={handleQuickFilterUpdate}
+                onQuickFilterDelete={handleQuickFilterDelete}
+                clearFilter={clearFilter}
+                setClearFilter={setClearFilter}
+                origin={TaskOrigin.DASHBOARD}
+              />
+              {viewType !== ViewType.CALENDAR_VIEW && (
+                <>
+                  <Box mx={0.5} />
+                  <HeaderSearch
+                    value={searchValue}
+                    onChange={handleSearchChange}
+                  />
+                </>
+              )}
+            </AccessRestrictor>
+          </Box>
+        </>
+        <Box display="flex" justifyContent="flex-end">
+          <Box mr={1}>
+            <AddTaskButtonWrapper onClick={openAddTaskDrawer}>
+              <Add />
+              <AddTaskButtonLabel>Add Task</AddTaskButtonLabel>
+            </AddTaskButtonWrapper>
+          </Box>
           <GridContainer>
             <GridItemCalendarView
               active={calendarView}

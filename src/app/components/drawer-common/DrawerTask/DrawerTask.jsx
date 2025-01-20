@@ -85,8 +85,9 @@ const DrawerTask = (props) => {
     // description,
     tokenizedDescription,
     taskMentions,
-    assignedToUsers,
     dueDate,
+    assignedToUsers: taskAssignedToUsers,
+    dueDate: taskDueDate,
     dueDateIntent,
     comments,
     updatedComment,
@@ -101,12 +102,16 @@ const DrawerTask = (props) => {
     dependencyTasksCount,
   } = task;
 
+  const [assignedToUsers, setAssignedToUsers] = useState(taskAssignedToUsers);
+  const [dueDate, setDueDate] = useState(taskDueDate);
   const [isCompleted, setIsCompleted] = useState(task?.status === 'COMPLETE');
 
   useEffect(() => {
     if (task?.status === 'COMPLETE') {
       setIsCompleted(true);
     }
+    setAssignedToUsers(taskAssignedToUsers);
+    setDueDate(taskDueDate);
   }, [task]);
 
   const updateStatus = () => {
@@ -144,6 +149,7 @@ const DrawerTask = (props) => {
 
   const handleReassignSubtask = useCallback(
     (selectedMembers) => {
+      setAssignedToUsers(selectedMembers);
       onTaskDrawerSubtaskAssigned();
       dispatch(
         partialUpdateTask(task.taskIdentifier, {
@@ -172,6 +178,7 @@ const DrawerTask = (props) => {
 
   const handleDueDateChange = useCallback(
     (newDueDate) => {
+      setDueDate(newDueDate);
       const dueDateIntent = checkDateTimeIntent(newDueDate);
       dispatch(updateTaskDueDate(task, newDueDate, dueDateIntent));
     },
@@ -315,7 +322,7 @@ const DrawerTask = (props) => {
         >
           {dueDate ? (
             <Tooltip placement="top" title="Edit due date">
-              <DueDateBasicLabel isOverdue={isDueDateOverdue(task)}>
+              <DueDateBasicLabel isOverdue={isDueDateOverdue({...task, dueDate})}>
                 <DueDateText>
                   {dueDateIntent === DueDateIntent.DATE
                     ? moment(dueDate).utc().format('MM/DD')

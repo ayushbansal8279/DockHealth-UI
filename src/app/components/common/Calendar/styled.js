@@ -27,6 +27,13 @@ export const AddEventInputContainer = styled.div`
     }
   }
 `;
+
+export const CalenderTaskWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  border: ${({ bundle }) => bundle && `2px solid ${palette.newBrightBlue}`};
+`;
+
 export const CalendarContainer = styled.div`
   padding: ${spacing.large};
   width: 100%;

@@ -45,6 +45,7 @@ export const ButtonContainer = styled(Button)`
 export const ButtonLabel = styled(Typography)`
   &&& {
     &.MuiTypography-root {
+      white-space: nowrap;
       font-family: Outfit;
       font-size: 14px;
       font-weight: 500;
@@ -84,6 +85,7 @@ export const RotatableChevronButtonLabel = styled(Typography)`
 `;
 
 export const BoxContainer = styled.div`
+  min-width: 147px;
   display: flex;
   border-radius: 4px;
   overflow: hidden;

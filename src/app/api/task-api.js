@@ -393,9 +393,7 @@ export function addTaskAttachment(
         showAlert({
           status: 'error',
           title: 'Error',
-          text:
-            error?.response?.data?.errorMessage ??
-            'File exceeded the allowed size of 100 MB',
+          text: 'File exceeded the allowed size of 100 MB',
         });
       } else {
         showAlert({

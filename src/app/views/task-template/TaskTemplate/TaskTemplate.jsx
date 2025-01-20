@@ -294,10 +294,11 @@ const TaskTemplate = ({
     [tasks],
   );
 
-  const isTemplateSelected = useSelector(isTaskItemsSelectedSelector(tasks));
+  const taskIdentifiers = tasks?.map((task) => task.taskIdentifier);
+
+  const isTemplateSelected = useSelector(isTaskItemsSelectedSelector(taskIdentifiers));
 
   const handleTemplateSelect = useCallback(() => {
-    const taskIdentifiers = tasks;
     dispatch(
       TaskActions.changeTasksSelectedState(
         !isTemplateSelected,

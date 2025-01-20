@@ -29,6 +29,7 @@ import equals from 'ramda/src/equals';
 import {
   filterListDetailsTasks,
   getCurrentTaskListFilterOptions,
+  getListCalendarTasks,
 } from 'actions/list-details-actions';
 import AvatarFilterMember from 'components/user/AvatarFilterMember/AvatarFilterMember';
 import AdditionalMembersCounterPopover from 'components/user/AdditionalMembersCounterPopover/AdditionalMembersCounterPopover';
@@ -72,6 +73,7 @@ const ListDetailsHeader = (props) => {
     additionalOptions,
     clearFilter,
     setClearFilter,
+    calendarView = false,
   } = props;
   const dispatch = useDispatch();
   const currentTasksStatus = useSelector(currentTaskListTasksStatusSelector);
@@ -120,6 +122,7 @@ const ListDetailsHeader = (props) => {
 
   const handleFilterSelect = (newFilters) => {
     dispatch(filterListDetailsTasks(newFilters));
+    if (calendarView) dispatch(getListCalendarTasks());
   };
 
   const currentUserMember = taskList?.listUsers.find(

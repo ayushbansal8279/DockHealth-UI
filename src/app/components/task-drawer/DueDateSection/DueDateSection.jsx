@@ -89,6 +89,7 @@ const DueDateSection = ({
   );
 
   useEffect(() => {
+    setMomentDueDate(dueDate ? moment(dueDate) : null);
     setIsOverdue(isDueDateOverdue(selectedTask));
   }, [selectedTask]);
 
