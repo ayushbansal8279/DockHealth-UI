@@ -45,6 +45,10 @@ import {
 import { log } from 'helpers/log';
 import localStorageHelper from '../helpers/local-storage-helper';
 import sessionStorageHelper from '../helpers/session-storage-helper';
+import {
+  extractAllTasksFromGroupsDetail,
+  filterDataForCalender,
+} from '../helpers/list-details-helper';
 
 function* initializeDashboardView() {
   try {
@@ -374,7 +378,38 @@ function* getDashboardCalendarTasks() {
     );
     if (!tabName) return;
 
-    const tasks = yield call(getCalendarTasks, tabName, startDate, endDate);
+    const selectedFilters = yield select(selectedFiltersInMegaFilterSelector);
+
+    const appliedFilter = filterDataForCalender(
+      selectedFilters,
+      startDate,
+      endDate,
+    );
+
+    const isAllTasks = tabName === DashboardTasksTab.ALL_TASKS;
+    const includeWorkflows = true;
+    const searchTerm = '';
+    const sortBy = null;
+    const sortDirection = null;
+    const taskGroupIdentifier = null;
+    const groupType = 'UPCOMING';
+
+    const { taskGroups } = yield call(
+      isAllTasks
+        ? getTasksForOrganizationByImplicitGroup
+        : getTasksAssignedToUserByImplicitGroup,
+      groupType,
+      taskGroupIdentifier,
+      sortBy,
+      sortDirection,
+      0,
+      0,
+      includeWorkflows,
+      appliedFilter,
+      searchTerm,
+    );
+
+    const tasks = extractAllTasksFromGroupsDetail(taskGroups);
 
     yield put(DashboardActions.getDashboardCalendarTasksSuccess(tasks));
   } catch {
