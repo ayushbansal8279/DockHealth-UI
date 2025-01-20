@@ -25,9 +25,7 @@ const MeterBillingView = () => {
 
   const getInitialMeteringData = async () => {
     const payload = {
-      meteringEvent: {
-        eventIdentifier: null,
-        ts: null,
+      meteringEventQuery: {
         organizationIdentifier: organizationIdentifier,
       },
     };
@@ -35,7 +33,7 @@ const MeterBillingView = () => {
     if (result) setBillingData(result);
   };
 
-  useEffect(async () => {
+  useEffect(() => {
     if (!checkIfUserIsOrganizationAdmin(currentUser)) {
       history.push('/');
     }
@@ -47,7 +45,10 @@ const MeterBillingView = () => {
       <MeterBillingViewOuterContainer>
         <MeterBillingViewContainer>
           <MeterBillingSecondHeader>
-            <MeteringFilter setBillingData={setBillingData} getInitialMeteringData={getInitialMeteringData}/>
+            <MeteringFilter
+              setBillingData={setBillingData}
+              getInitialMeteringData={getInitialMeteringData}
+            />
             {/* <MeteringSearch /> */}
           </MeterBillingSecondHeader>
           <MeteringTable billingData={billingData} />
