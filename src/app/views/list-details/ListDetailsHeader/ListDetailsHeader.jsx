@@ -73,7 +73,7 @@ const ListDetailsHeader = (props) => {
     additionalOptions,
     clearFilter,
     setClearFilter,
-    CalendarView = false,
+    calendarView = false,
   } = props;
   const dispatch = useDispatch();
   const currentTasksStatus = useSelector(currentTaskListTasksStatusSelector);
@@ -122,7 +122,7 @@ const ListDetailsHeader = (props) => {
 
   const handleFilterSelect = (newFilters) => {
     dispatch(filterListDetailsTasks(newFilters));
-    if (CalendarView) dispatch(getListCalendarTasks());
+    if (calendarView) dispatch(getListCalendarTasks());
   };
 
   const currentUserMember = taskList?.listUsers.find(
