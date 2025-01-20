@@ -47,7 +47,7 @@ const ListDetailsCalendarView = () => {
         <ListDetailsHeader
           clearFilter={clearFilter}
           setClearFilter={setClearFilter}
-          CalendarView
+          calendarView
         />
       }
     >
