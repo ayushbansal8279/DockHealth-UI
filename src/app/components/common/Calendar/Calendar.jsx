@@ -73,7 +73,6 @@ const Calendar = ({ taskListIdentifier }) => {
       const { id } = data.event;
       if (id !== temporaryTaskId) {
         const task = allTasks.find(({ identifier }) => identifier === id);
-        console.log(task);
         if (task.itemType === 'BUNDLE') {
           dispatch(openWorkflowDrawer(task?.identifier, task));
         } else {
