@@ -42,8 +42,9 @@ const TaskItemReducer = (state = INITIAL_STATE, action) => {
       return isSelected
         ? {
             ...state,
-            selectedTaskIdentifiers:
-              state.selectedTaskIdentifiers.concat(taskIdentifiers),
+            selectedTaskIdentifiers: Array.from(
+              new Set([...state.selectedTaskIdentifiers, ...taskIdentifiers]),
+            ),
           }
         : {
             ...state,
