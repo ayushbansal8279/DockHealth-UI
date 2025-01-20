@@ -2,23 +2,18 @@ import moment from 'moment';
 
 export function convertFilterToPayload(filter, organizationIdentifier) {
   const payload = {
-    meteringEvent: {
-      eventIdentifier: null,
-      ts: null,
-      type: null,
-      subtype: null,
+    meteringEventQuery: {
       organizationIdentifier: organizationIdentifier,
+      properties: {},
     },
   };
 
   for (const key in filter) {
     if (filter[key]?.options && Array.isArray(filter[key].options)) {
       if (key === 'eventTypes') {
-        payload.meteringEvent.type =
-          filter[key].options[filter[key].options.length - 1];
+        payload.meteringEventQuery.properties.types = filter[key].options;
       } else if (key === 'eventSubTypes') {
-        payload.meteringEvent.subtype =
-          filter[key].options[filter[key].options.length - 1];
+        payload.meteringEventQuery.properties.subtypes = filter[key].options;
       } else if (key === 'eventDateOptions') {
         const eventDateOptions = filter[key];
 
