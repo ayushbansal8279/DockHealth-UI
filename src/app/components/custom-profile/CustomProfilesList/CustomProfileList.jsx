@@ -16,7 +16,6 @@ import {
   FormGroup,
   ListItemText,
   MenuItem,
-  // Checkbox,
   Stack,
 } from '@mui/material';
 import { getAllProfileTypes } from 'api/profile-type-api';
@@ -24,11 +23,7 @@ import { getAllProfiles } from 'api/profile-api';
 import { getAllProfileFieldTypes } from 'api/profile-type-field-api';
 import { showGlobalErrorAlert } from 'alert/actions';
 import LayoutHeader from 'components/template/LayoutHeader/LayoutHeader';
-import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
-import MoreVert from '@mui/icons-material/MoreVert';
 import ViewLayout from 'components/template/ViewLayout/ViewLayout';
-// import { Add as AddIcon } from '@mui/icons-material';
-// import AdornedButton from 'components/common/AdornedButton/AdornedButton';
 import ProfileDrawer from 'components/custom-profile/CustomProfilesList/ProfileDrawer';
 import SearchInput from 'components/common/SearchInput/SearchInput';
 import Popover from 'ui-toolkit/Element/Popover';
@@ -37,10 +32,9 @@ import { Paper } from 'ui-toolkit/Element';
 import CustomizeIcon from 'img/customize-icon.svg';
 import { CustomizeImg } from 'components/patients/CustomizeToolbarButton/styled';
 import Checkbox from 'components/common/Checkbox/Checkbox';
-import AddButton from 'components/common/AddButton/AddButton';
-import Button from 'components/common/Button/Button';
 import ToolbarButton from '../../tasklist/list-toolbar-buttons/ToolbarButton/ToolbarButton';
 import { AddIcon } from '@/app/views/smart-flow-builder/TaskNodeHandles/styled';
+import ProfileFilter from '../ProfileFilter/ProfileFilter';
 
 const CustomProfileList = () => {
   const dispatch = useDispatch();
@@ -61,7 +55,6 @@ const CustomProfileList = () => {
   }, [dispatch, groupIdentifier]);
 
   const handleRecordClick = (event, { id }) => {
-    // setOpen(id);
     history.push(`/custom-profiles/${profileTypeIdentifier}/${id}`);
   };
 
@@ -77,6 +70,8 @@ const CustomProfileList = () => {
   const [filters, setFilters] = useState([]);
   const [profiles, setProfiles] = useState([]);
   const [searchPhrase, setSearchPhrase] = useState('');
+  // console.log(profiles);
+  
 
   const fetchProfileTypes = useCallback(() => {
     getAllProfileTypes()
@@ -153,12 +148,6 @@ const CustomProfileList = () => {
       <ViewLayout
         header={
           <LayoutHeader>
-            {/* Kept for future to use menu options for CUstom Profile */}
-            {/* <Box position="absolute" top={27} left={10}>
-              <OptionsMenu disablePortal options={[]}>
-                <MoreVert color="primary" />
-              </OptionsMenu>
-            </Box> */}
             <LayoutHeader.Title
               title={currentProfileType?.name}
               description={currentProfileType?.description}
@@ -182,38 +171,13 @@ const CustomProfileList = () => {
           justifyContent="space-between"
           sx={{ m: '16px 32px 0px 32px ' }}
         >
-          {/* <Box display="flex" alignItems="center" width="300px">
-            <SearchInput onValueChange={handleSearchInputChange} />
-          </Box>
-          <Box mx={1} />
-          <Box display="flex" my={2.5}>
-            <Button fullWidth onClick={() => null} size="small">
-              Search
-            </Button>
-          </Box>
-          <Box mx={1} /> */}
-          <Box display="flex" flex="1 1 auto" alignItems="start" my={2}>
-            {/* <Toolbar>
-              <Toolbar.Button ref={buttonReference} onClick={handlePopoverOpen}>
-                <CustomizeImg
-                  src={CustomizeIcon}
-                  alt="view type icon"
-                  iconColorFilterActive={isPopoverOpen}
-                />
-                <Box mr={1} />
-                Customize
-              </Toolbar.Button>
-            </Toolbar> */}
+          <Box display="flex" alignItems="start" my={2}>
             <Toolbar>
               <div style={{ marginTop: '3px' }}>
                 <ToolbarButton
                   ref={buttonReference}
                   icon={
-                    <CustomizeImg
-                      src={CustomizeIcon}
-                      alt="view type icon"
-                      // iconColorFilterActive={isPopoverOpen}
-                    />
+                    <CustomizeImg src={CustomizeIcon} alt="view type icon" />
                   }
                   onClick={handlePopoverOpen}
                   isOpen={isPopoverOpen}
@@ -261,20 +225,19 @@ const CustomProfileList = () => {
                 </FormGroup>
               </Paper>
             </Popover>
-            <Box mx={0.5} />
+            <Box display="flex" alignItems="center" my={0.4} mx={2}>
+              <ProfileFilter profileTypeIdentifier={profileTypeIdentifier} fetchProfiles={fetchProfiles} setProfiles={setProfiles} />
+            </Box>
             <Box display="flex" alignItems="center" width="400px" my={0.4}>
-              {/* <Box display="flex" width="120px"> */}
               <SearchInput
                 value={searchPhrase}
                 onValueChange={handleSearchInputChange}
               />
-              {/* </Box> */}
             </Box>
           </Box>
           <Box m={1} />
           <Box display="flex" alignItems="center">
             <ToolbarButton
-              // ref={buttonReference}
               icon={
                 <span style={{ marginLeft: '-5px' }}>
                   <AddIcon />
@@ -283,13 +246,10 @@ const CustomProfileList = () => {
               onClick={handleProfileAddClick}
               isOpen={open}
               active={open}
-              // hasPopover
             >
-              {/* <AddButton onClick={handleProfileAddClick}> */}
               <span style={{ marginLeft: '-5px' }}>
                 Add a {currentProfileType?.name}
               </span>
-              {/* </AddButton> */}
             </ToolbarButton>
           </Box>
         </Stack>

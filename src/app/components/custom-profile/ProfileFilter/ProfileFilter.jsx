@@ -1,54 +1,49 @@
-import {
-  getMeteringEvents,
-  getMeteringFilterOptions,
-} from '@/app/api/metering-api';
-import FilterButton from '@/app/components/filter/FilterButton/FilterButton';
-import FilterPopover from '@/app/components/filter/FilterPopover/FilterPopover';
-import NewFilterContainer from '@/app/components/filter/NewFilterContainer/NewFilterContainer';
-import { organizationSelector } from '@/app/selectors/organization-selectors';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { useSelector } from 'react-redux';
-import { convertFilterToPayload } from './helper';
+import FilterButton from '../../filter/FilterButton/FilterButton';
+import FilterPopover from '../../filter/FilterPopover/FilterPopover';
+import NewFilterContainer from '@/app/components/filter/NewFilterContainer/NewFilterContainer';
+import {
+  getProfileDetailByFilter,
+  getProfileFilterOptions,
+} from '@/app/api/profile-api';
+import { convertToPayload } from './helper';
 
-const MeteringFilter = ({ setBillingData, getInitialMeteringData }) => {
+const ProfileFilter = ({
+  profileTypeIdentifier,
+  fetchProfiles,
+  setProfiles,
+}) => {
   const megaFilterButtonReference = useRef(null);
   const [isFilterApplied, setIsFilterApplied] = useState(false);
   const [isOpen, openPopover] = useState(false);
   const [filters, setFilters] = useState({});
-  const { organizationIdentifier } = useSelector(organizationSelector);
   const [finalFilter, setFinalFilter] = useState({});
   const [filteredData, setFilteredData] = useState({});
 
-  const clearFilters = () => {
-    getInitialMeteringData();
+  const clearFilters = useCallback(() => {
     setIsFilterApplied(false);
     setFinalFilter({});
-  };
+    fetchProfiles();
+  }, [setIsFilterApplied, setFinalFilter, fetchProfiles]);
 
-  useEffect(async () => {
-    const filterOptions = await getMeteringFilterOptions();
+  const fetchFilterOptions = useCallback(async () => {
+    const filterOptions = await getProfileFilterOptions(profileTypeIdentifier);
     setFilters(filterOptions);
-  }, []);
+  }, [profileTypeIdentifier, setFilters]);
 
-  const getFilteredMeteringData = async () => {
-    const payload = convertFilterToPayload(
-      filteredData,
-      organizationIdentifier,
-    );
-    const result = await getMeteringEvents(payload);
-    if (result) setBillingData(result);
+  const handleApplySelectedFilter = useCallback(async () => {
+    const payload = convertToPayload(filteredData);
     setIsFilterApplied(true);
-  };
+    const result = await getProfileDetailByFilter(
+      profileTypeIdentifier,
+      payload,
+    );
+    setProfiles(result);
+  }, [filteredData, profileTypeIdentifier, setIsFilterApplied, setProfiles]);
 
-  const payload = {
-    meteringEvent: {
-      type: 'AI',
-      subType: 'WORKFLOW_AI_SUMMARY_CREATED',
-      organizationIdentifier: '160f8db5-40c2-11ea-a4e8-124feabd863a',
-    },
-    start: '2024-11-30T18:30:00.000Z',
-    end: '2024-12-29T18:30:00.000Z',
-  };
+  useEffect(() => {
+    fetchFilterOptions();
+  }, []);
 
   return (
     <>
@@ -67,7 +62,7 @@ const MeteringFilter = ({ setBillingData, getInitialMeteringData }) => {
         <div style={{ marginBottom: '10px' }}>
           <NewFilterContainer
             filters={filters}
-            handleSelectedFiltersChange={getFilteredMeteringData}
+            handleSelectedFiltersChange={handleApplySelectedFilter}
             setFinalFilter={setFinalFilter}
             finalFilter={finalFilter}
             openPopover={openPopover}
@@ -80,7 +75,6 @@ const MeteringFilter = ({ setBillingData, getInitialMeteringData }) => {
             // customFinalFilter={customFinalFilter}
             // setCustomFinalFilter={setCustomFinalFilter}
             // setSelectedQuickFilter={setSelectedQuickFilter}
-            multiSelectEnabled={false}
             isSaveDisabled
           />
         </div>
@@ -89,4 +83,4 @@ const MeteringFilter = ({ setBillingData, getInitialMeteringData }) => {
   );
 };
 
-export default MeteringFilter;
+export default ProfileFilter;

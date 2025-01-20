@@ -55,6 +55,7 @@ const NewFilterContainer = ({
   fiterCount,
   setFilterCount,
   showFilterCount = false,
+  isSaveDisabled = false,
 }) => {
   const popoverReference = useRef(null);
   const [isPopoverOpen, openAddFilterPopover, closeAddFilterPopover] =
@@ -219,7 +220,7 @@ const NewFilterContainer = ({
           <Divider />
           <BottomWrapper>
             <CancelButton
-              disabled={!isDisable || !multiSelectEnabled}
+              disabled={!isDisable || isSaveDisabled}
               onClick={() => setSavePopupOpen(true)}
               style={{ width: '270px' }}
             >
