@@ -85,7 +85,6 @@ const DrawerTask = (props) => {
     // description,
     tokenizedDescription,
     taskMentions,
-    dueDate,
     assignedToUsers: taskAssignedToUsers,
     dueDate: taskDueDate,
     dueDateIntent,
