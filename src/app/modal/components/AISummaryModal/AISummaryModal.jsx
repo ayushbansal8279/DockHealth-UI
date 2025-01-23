@@ -19,8 +19,12 @@ import {
   CustumTooltip,
   Footer,
   FeedbackLink,
+  Beta,
+  RefreshIconWrapper,
 } from './styled';
-import LuminaStar from 'img/AI/LuminaStar';
+import Vector from '@/app/img/AI/Vector.svg';
+import New from '@/app/img/AI/New.svg';
+import Expand from '@/app/img/AI/Expand.svg';
 import palette from '@/app/styles/palette';
 import Copy from 'img/AI/Copy.svg';
 import Close from 'img/AI/XClose.svg';
@@ -134,12 +138,18 @@ const AISummaryModal = ({ closeModal, title, onsubmit, type, identifier }) => {
 
   return (
     <AISummaryModalWrapper>
+      <Beta>
+        <img src={New} alt="AI summary New logo" />
+      </Beta>
       <Header>
         <Title>
-          <LuminaStar color={palette.newBrightBlue} />
+          <img src={Vector} alt="AI summary logo" />
           {title}
         </Title>
-        <IconWrapper onClick={closeModal} src={Close} alt="close" />
+        <div>
+          <img style={{cursor:"pointer"}} src={Expand} alt="close" />
+          <IconWrapper onClick={closeModal} src={Close} alt="close" />
+        </div>
       </Header>
       <SubHeader>
         <Box display="flex" gap={3}>
@@ -147,7 +157,7 @@ const AISummaryModal = ({ closeModal, title, onsubmit, type, identifier }) => {
             {tooltipHover.regenrate && (
               <CustumTooltip left={5}>Regenerate</CustumTooltip>
             )}
-            <IconWrapper
+            <RefreshIconWrapper
               onMouseEnter={() => setTooltipHover({ regenrate: true })}
               onMouseLeave={() => setTooltipHover({ regenrate: false })}
               onClick={handleReGenerateResponse}

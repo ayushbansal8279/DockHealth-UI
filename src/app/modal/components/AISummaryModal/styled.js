@@ -21,6 +21,14 @@ export const Header = styled.div`
   margin-top: 5px;
 `;
 
+export const Beta = styled.div`
+  display: flex;
+  align-items: space-between;
+  width: 100%;
+  margin-top: 5px;
+  margin-left: 60px;
+`;
+
 export const SubHeader = styled.div`
   display: flex;
   justify-content: space-between;
@@ -62,6 +70,12 @@ export const CustomPromptInput = styled(TextareaAutosize)`
 `;
 
 export const IconWrapper = styled.img`
+  cursor: pointer;
+  width: 24px;
+  height: 24px;
+  margin-left: 10px;
+`;
+export const RefreshIconWrapper = styled.img`
   cursor: pointer;
   width: 24px;
   height: 24px;
@@ -136,6 +150,7 @@ export const PromptSelector = styled.select`
   border-radius: 6px;
   font-weight: 500;
   width: fit-content;
+  background-color: ${palette.coolGrey2};
 `;
 
 export const RegenerateWrapper = styled.div`

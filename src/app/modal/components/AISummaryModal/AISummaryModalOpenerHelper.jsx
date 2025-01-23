@@ -1,8 +1,7 @@
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import Tooltip from '@/app/components/common/Tooltip/Tooltip';
-import LuminaStar from '@/app/img/AI/LuminaStar';
-import palette from '@/app/styles/palette';
+import Vector from '@/app/img/AI/Vector.svg';
 import {
   getPatientAISummary,
   getTaskAISummary,
@@ -47,11 +46,7 @@ const AISummaryModalOpenerHelper = ({ type, title, identifier }) => {
           )
         }
       >
-        <LuminaStar
-          color={
-            isAiIconHovered ? palette.newBrightBlue : palette.lightGrayishBlue
-          }
-        />
+        <img src={Vector} alt="AI summary logo" />
       </div>
     </Tooltip>
   );
