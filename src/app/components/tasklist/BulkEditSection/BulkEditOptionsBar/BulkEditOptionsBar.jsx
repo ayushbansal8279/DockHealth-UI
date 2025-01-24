@@ -6,7 +6,9 @@ import isEmpty from 'ramda/src/isEmpty';
 import { bulkEditTasks as bulkEditTasksApi } from 'api/task-api';
 import * as ModalActions from 'modal/actions';
 import {
+  checkDateTimeIntent,
   checkIfTemplateTask,
+  DueDateIntent,
   findIncompleteRequiredFields,
 } from 'helpers/task-helpers';
 import useActions from 'hooks/use-actions';
@@ -51,6 +53,7 @@ import BulkEditAssignToOption from './BulkEditAssignToOption';
 import BulkEditDueDateOption from './BulkEditDueDateOption';
 import BulkEditWorkflowStatusOption from './BulkEditWorkflowStatusOption';
 import { Button } from './styled';
+import moment from 'moment';
 
 const { ADMIN, OWNER, MEMBER, GUEST, DOCK_LITE } = UserOrganizationRole;
 
@@ -323,11 +326,18 @@ const BulkEditOptionsBar = ({
     (dueDate) => {
       bulkEditDueDate(allSelectedTasksIdentifiers, dueDate, filters)(dispatch);
 
+      const dueDateIntent = checkDateTimeIntent(dueDate);
+
       bulkEditTasksApi({
         bulkEditType: 'DUE_DATE',
         taskIdentifiers: allSelectedTasksIdentifiers,
         taskWorkflowIdentifiers: allSelectedWorkflowIdentifiers,
-        dueDate,
+        dueDate: dueDate 
+          ? dueDateIntent === DueDateIntent.DATE
+            ? moment.utc(dueDate).startOf('day').toISOString()
+            : moment(dueDate).toISOString()
+          : null,
+        dueDateIntent: dueDate ? dueDateIntent : DueDateIntent.DATE,
       })
         .then(({ transactionIdentifier }) => {
           dispatch(
