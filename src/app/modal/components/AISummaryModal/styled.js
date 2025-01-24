@@ -2,10 +2,10 @@ import styled from 'styled-components';
 import spacing from 'styles/spacing';
 import { fontWeights } from 'styles/font';
 import palette from 'styles/palette';
-import { ModalWrapper } from '../styled';
 import { Button, TextareaAutosize } from '@mui/material';
 import Skeleton from '@mui/material/Skeleton';
 import SelectDown from 'img/AI/SelectDown.svg';
+import { ModalWrapper } from '../styled';
 
 export const AISummaryModalWrapper = styled(ModalWrapper)`
   width: 600px;
@@ -21,12 +21,25 @@ export const Header = styled.div`
   margin-top: 5px;
 `;
 
-export const Beta = styled.div`
+export const LabelContainer = styled.div`
   display: flex;
   align-items: space-between;
   width: 100%;
-  margin-top: 5px;
-  margin-left: 60px;
+`;
+export const LabelWrapper = styled.div`
+  display: flex;
+  align-items: space-between;
+  border-radius: 10px;
+  border: 2px solid ${(property) => property.color || palette.crystalBlue};
+  background-color: ${palette.lightOceanBlue};
+  min-width: 70px;
+  padding: 1px 0.5px;
+  justify-content: center;
+  color: ${(property) => property.color || palette.crystalBlue};
+  font-family: Outfit;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 700;
 `;
 
 export const SubHeader = styled.div`
@@ -142,7 +155,7 @@ export const PromptSelector = styled.select`
   -webkit-appearance: none;
   -moz-appearance: none;
   padding: 0 40px 0 10px;
-  border: 1px solid ${palette.lightGrey2};
+  border: 2px solid ${palette.coolGrey2};
   background-image: url(${SelectDown});
   background-repeat: no-repeat;
   background-position-x: 95%;
@@ -150,7 +163,6 @@ export const PromptSelector = styled.select`
   border-radius: 6px;
   font-weight: 500;
   width: fit-content;
-  background-color: ${palette.coolGrey2};
 `;
 
 export const RegenerateWrapper = styled.div`
