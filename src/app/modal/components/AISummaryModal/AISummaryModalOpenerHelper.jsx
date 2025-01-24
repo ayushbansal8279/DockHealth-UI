@@ -1,7 +1,7 @@
-import { useState } from 'react';
+// import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import Tooltip from '@/app/components/common/Tooltip/Tooltip';
-import Vector from '@/app/img/AI/Vector.svg';
+
 import {
   getPatientAISummary,
   getTaskAISummary,
@@ -9,9 +9,14 @@ import {
 } from '@/app/api/ai-summary-api';
 import { openModal } from '../../actions';
 import { aiSummaryRequestBuilder, SummaryType } from '@/app/helpers/ai-helper';
+import { AIiconImage } from './styled';
 
-const AISummaryModalOpenerHelper = ({ type, title, identifier }) => {
-  const [isAiIconHovered, setAiIconHovered] = useState(false);
+const AISummaryModalOpenerHelper = ({
+  type,
+  title,
+  identifier,
+  subtleDisplay,
+}) => {
   const dispatch = useDispatch();
 
   const tileMessage =
@@ -41,8 +46,6 @@ const AISummaryModalOpenerHelper = ({ type, title, identifier }) => {
   return (
     <Tooltip placement="top" title={tileMessage}>
       <div
-        onMouseEnter={() => setAiIconHovered(true)}
-        onMouseLeave={() => setAiIconHovered(false)}
         onClick={() =>
           dispatch(
             openModal('AISummary', {
@@ -55,7 +58,7 @@ const AISummaryModalOpenerHelper = ({ type, title, identifier }) => {
           )
         }
       >
-        <img src={Vector} alt="AI summary logo" />
+        <AIiconImage subtleDisplay={subtleDisplay} />
       </div>
     </Tooltip>
   );

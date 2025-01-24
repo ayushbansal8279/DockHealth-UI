@@ -614,12 +614,13 @@ function* linkTasks({ source, target, options, outcomeName }) {
     };
 
     if (!checkIfTasksAreLinked()) {
-      const isSourceDecisionType = sourceTask
-        ? sourceTask.intentType === NodeType.DECISION
-        : templateDetails?.temporaryElements?.some(
-            ({ id, type }) =>
-              id === source.id && type === NodeType.NEW_DECISION,
-          );
+      const isSourceDecisionType =
+        source.id !== 'START_INDICATOR' && sourceTask
+          ? sourceTask.intentType === NodeType.DECISION
+          : templateDetails?.temporaryElements?.some(
+              ({ id, type }) =>
+                id === source.id && type === NodeType.NEW_DECISION,
+            );
       let indicatorType = null;
 
       if (source.id === 'START_INDICATOR') {
