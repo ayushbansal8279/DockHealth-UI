@@ -571,28 +571,28 @@ function* linkTasks({ source, target, options, outcomeName }) {
       yield put(showGlobalErrorAlert('Start cannot be a target.'));
       return;
     }
-  
+
     if (source.id === 'END_INDICATOR') {
       yield put(showGlobalErrorAlert('End cannot be a source.'));
       return;
     }
- 
+
     const checkIfLinkedToIndicator = () => {
-        if (!sourceTask || !targetTask) return false;
-        return (
-          (source.id === 'START_INDICATOR' &&
-            !targetTask?.taskLinks?.some(
-              ({ targetTaskIdentifier }) =>
-                targetTaskIdentifier === 'START_INDICATOR'
-            )) ||
-          (target.id === 'END_INDICATOR' &&
-            !sourceTask?.taskLinks?.some(
-              ({ targetTaskIdentifier }) =>
-                targetTaskIdentifier === 'END_INDICATOR'
-            ))
-        );
+      if (!sourceTask || !targetTask) return false;
+      return (
+        (source.id === 'START_INDICATOR' &&
+          !targetTask?.taskLinks?.some(
+            ({ targetTaskIdentifier }) =>
+              targetTaskIdentifier === 'START_INDICATOR',
+          )) ||
+        (target.id === 'END_INDICATOR' &&
+          !sourceTask?.taskLinks?.some(
+            ({ targetTaskIdentifier }) =>
+              targetTaskIdentifier === 'END_INDICATOR',
+          ))
+      );
     };
-    
+
     const hasIndicator =
       source.id === 'START_INDICATOR' ||
       target.id === 'START_INDICATOR' ||
@@ -613,32 +613,31 @@ function* linkTasks({ source, target, options, outcomeName }) {
       );
     };
 
-
     if (!checkIfTasksAreLinked()) {
-      let isSourceDecisionType = sourceTask
+      const isSourceDecisionType = sourceTask
         ? sourceTask.intentType === NodeType.DECISION
         : templateDetails?.temporaryElements?.some(
             ({ id, type }) =>
               id === source.id && type === NodeType.NEW_DECISION,
           );
-          let indicatorType = null
+      let indicatorType = null;
 
-          if(source.id === 'START_INDICATOR'){
-            source.id = target.id
-            options = {
-              ...options,
-              linkType: 'START',
-            };
-            indicatorType = 'START_INDICATOR'
-          }
-          if(target.id === 'END_INDICATOR'){
-            target.id = source.id
-            options = {
-              ...options,
-              linkType: 'END',
-            };
-            indicatorType = 'END_INDICATOR'
-          }
+      if (source.id === 'START_INDICATOR') {
+        source.id = target.id;
+        options = {
+          ...options,
+          linkType: 'START',
+        };
+        indicatorType = 'START_INDICATOR';
+      }
+      if (target.id === 'END_INDICATOR') {
+        target.id = source.id;
+        options = {
+          ...options,
+          linkType: 'END',
+        };
+        indicatorType = 'END_INDICATOR';
+      }
 
       yield put(
         TaskTemplateActions.addTemporaryLink(
@@ -649,8 +648,8 @@ function* linkTasks({ source, target, options, outcomeName }) {
           target.id,
           source.handle,
           target.handle,
-          indicatorType
-        )
+          indicatorType,
+        ),
       );
 
       if ((targetTask && sourceTask) || hasIndicator) {
@@ -677,13 +676,15 @@ function* linkTasks({ source, target, options, outcomeName }) {
           options,
         );
 
-        let { sourceTaskIdentifier, targetTaskIdentifier} = link;        
+        let { sourceTaskIdentifier, targetTaskIdentifier } = link;
 
-        if(sourceTaskIdentifier === targetTaskIdentifier){
-          if(indicatorType === 'START_INDICATOR') sourceTaskIdentifier = indicatorType
-          if(indicatorType === 'END_INDICATOR') targetTaskIdentifier = indicatorType
+        if (sourceTaskIdentifier === targetTaskIdentifier) {
+          if (indicatorType === 'START_INDICATOR')
+            sourceTaskIdentifier = indicatorType;
+          if (indicatorType === 'END_INDICATOR')
+            targetTaskIdentifier = indicatorType;
         }
-        
+
         const linkId = getUniqueLinkId(
           sourceTaskIdentifier,
           targetTaskIdentifier,
@@ -702,12 +703,26 @@ function* linkTasks({ source, target, options, outcomeName }) {
           yield put(TaskTemplateActions.saveTaskTemplateLayout(updatedLayout));
         }
 
-        yield all([
-          put({ type: ActionTypes.LINK_TASKS_SUCCESS, link }),
-          put(TaskActions.refreshTask(sourceTaskIdentifier)),
-          put(TaskActions.refreshTask(targetTaskIdentifier)),
-          put(TaskTemplateActions.deleteTemporaryElement(linkId)),
-        ]);
+        if (sourceTaskIdentifier === 'START_INDICATOR') {
+          yield all([
+            put({ type: ActionTypes.LINK_TASKS_SUCCESS, link }),
+            put(TaskActions.refreshTask(targetTaskIdentifier)),
+            put(TaskTemplateActions.deleteTemporaryElement(linkId)),
+          ]);
+        } else if (targetTaskIdentifier === 'END_INDICATOR') {
+          yield all([
+            put({ type: ActionTypes.LINK_TASKS_SUCCESS, link }),
+            put(TaskActions.refreshTask(sourceTaskIdentifier)),
+            put(TaskTemplateActions.deleteTemporaryElement(linkId)),
+          ]);
+        } else {
+          yield all([
+            put({ type: ActionTypes.LINK_TASKS_SUCCESS, link }),
+            put(TaskActions.refreshTask(sourceTaskIdentifier)),
+            put(TaskActions.refreshTask(targetTaskIdentifier)),
+            put(TaskTemplateActions.deleteTemporaryElement(linkId)),
+          ]);
+        }
       }
     }
   } catch (error) {
