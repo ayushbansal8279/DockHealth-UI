@@ -51,7 +51,7 @@ export const PatientLableContainer = styled.div`
 `;
 
 export const AISummaryWrapper = styled.div`
-  margin: 0 15px 0 2px;
+  margin: 0 5px 0 2px;
 `;
 
 export const DisabledLink = styled.span``;

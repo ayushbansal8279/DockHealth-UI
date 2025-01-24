@@ -29,7 +29,7 @@ import {
   LabelWrapper,
   RefreshIconWrapper,
 } from './styled';
-import Vector from '@/app/img/AI/Vector.svg';
+import MARIColor from 'img/AI/mari-color.png';
 import New from '@/app/img/AI/New.svg';
 import Expand from '@/app/img/AI/Expand.svg';
 import palette from '@/app/styles/palette';
@@ -144,7 +144,7 @@ const AISummaryModal = ({ closeModal, title, onsubmit, type, identifier }) => {
       </LabelContainer>
       <Header>
         <Title>
-          <img src={Vector} alt="AI summary logo" />
+          <img src={MARIColor} alt="AI Summary" style={{ height: 25 }} />
           {title}
         </Title>
         <div>
@@ -269,7 +269,7 @@ const AISummaryModal = ({ closeModal, title, onsubmit, type, identifier }) => {
         </RefreshWrapper>
       </RegenerateWrapper> */}
       {isFetching ? (
-        <Footer></Footer>
+        <Footer />
       ) : (
         <Footer>
           This AI-generated summary is provided for convenience and should be

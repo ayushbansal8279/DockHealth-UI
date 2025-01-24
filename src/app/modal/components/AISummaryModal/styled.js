@@ -5,6 +5,8 @@ import palette from 'styles/palette';
 import { Button, TextareaAutosize } from '@mui/material';
 import Skeleton from '@mui/material/Skeleton';
 import SelectDown from 'img/AI/SelectDown.svg';
+import MARIColor from 'img/AI/mari-color.png';
+import MARIGrey from 'img/AI/mari-grey.png';
 import { ModalWrapper } from '../styled';
 
 export const AISummaryModalWrapper = styled(ModalWrapper)`
@@ -226,4 +228,17 @@ export const Footer = styled.p`
 export const FeedbackLink = styled.a`
   color: ${palette.newBrightBlue};
   margin-left: 2px;
+`;
+
+export const AIiconImage = styled.img.attrs((property) => {
+  return {
+    src: property?.subtleDisplay ? MARIGrey : MARIColor,
+    alt: 'AI Summary',
+  };
+})`
+  height: ${({ subtleDisplay }) => (subtleDisplay ? '18px' : '25px')};
+  vertical-align: middle;
+  &:hover {
+    content: url(${MARIColor});
+  }
 `;

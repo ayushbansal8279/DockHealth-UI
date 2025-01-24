@@ -145,5 +145,5 @@ export const ChevronContainer = styled.div`
 `;
 
 export const AISummaryWrapper = styled.div`
-  margin: 0 5px 0 10px;
+  margin: 0 0px 0 10px;
 `;
