@@ -107,7 +107,10 @@ const DueDateSection = ({ disabled }) => {
             <>
               <DateViewContainer isOverdue={isOverdue}>
                 <DateViewText>
-                  {momentDueDate.format('MMM DD, YYYY')}
+                  {dueDateIntent === DueDateIntent.DATE
+                    ? momentDueDate.utc().format('MMM DD, YYYY')
+                    : momentDueDate.format('MMM DD, YYYY')
+                  }
                 </DateViewText>
               </DateViewContainer>
               {(dueDateIntent === DueDateIntent.DATETIME_ABSOLUTE || 
