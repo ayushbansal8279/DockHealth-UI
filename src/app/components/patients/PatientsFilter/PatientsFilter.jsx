@@ -41,8 +41,6 @@ const PatientsFilter = ({
   setEditIdentifier,
   customFinalFilter,
   setCustomFinalFilter,
-  selectedCustomFilter,
-  setSelectedCustomFilter,
   customFilteredData,
   setCustomFilteredData,
 }) => {
@@ -198,7 +196,6 @@ const PatientsFilter = ({
         setFinalFilter={setFinalFilter}
         filteredData={filteredData}
         customFinalFilter={customFinalFilter}
-        selectedCustomFilter={selectedCustomFilter}
         setCustomFinalFilter={setCustomFinalFilter}
         customFilteredData={customFilteredData}
         setCustomFilteredData={setCustomFilteredData}
@@ -219,7 +216,6 @@ const PatientsFilter = ({
         editIdentifier={editIdentifier}
         customFinalFilter={customFinalFilter}
         setCustomFinalFilter={setCustomFinalFilter}
-        setSelectedCustomFilter={setSelectedCustomFilter}
         handleQuickFilterDuplicateForPatientList={
           handleQuickFilterDuplicateForPatientList
         }

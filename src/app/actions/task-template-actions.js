@@ -259,6 +259,7 @@ export function addTemporaryLink(
   targetId,
   sourceHandle,
   targetHandle,
+  indicatorType
 ) {
   return {
     type: ActionTypes.ADD_TEMPORARY_LINK,
@@ -267,6 +268,7 @@ export function addTemporaryLink(
     targetId,
     sourceHandle,
     targetHandle,
+    indicatorType
   };
 }
 

@@ -1,24 +1,15 @@
 import styled from 'styled-components';
-import palette from 'styles/palette';
-import spacing from 'styles/spacing';
+import Skeleton from '@mui/material/Skeleton';
 
-export const AlertLoader = styled.div`
-  position: relative;
-  width: 100%;
-  max-height: 200px;
-  margin-bottom: ${spacing.regular};
-  border-radius: ${spacing.small};
-  background-color: ${palette.white};
-  overflow: hidden;
-  box-shadow: 0px 0px 11px rgba(0, 0, 0, 0.15);
+export const AlertLoader = styled(Skeleton)`
+  &&& {
+    &.MuiSkeleton-root {
+      height: 15px;
+      border-radius: 4px;
 
-  &:after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 32px;
-    background-color: ${palette.coolGrey4};
+      &:not(:last-of-type) {
+        margin-bottom: 10px;
+      }
+    }
   }
 `;

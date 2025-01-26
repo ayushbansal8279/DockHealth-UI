@@ -37,6 +37,7 @@ import TaskDragHandle from 'components/task/TaskDragHandle/TaskDragHandle';
 import {
   checkDateTimeIntent,
   checkIfTemplateTask,
+  DueDateIntent,
   getAttachmentsIconTooltipTitle,
   getCommentsIconTooltipTitle,
   getLabelsIconTooltipTitle,
@@ -63,6 +64,7 @@ import {
   DueDateText,
   DragHandleContainer,
 } from './styled';
+import { adjustUTCDateForDateIntent } from '../../task/DueDatePicker/helpers';
 
 const { DISABLED, READ_ONLY } = SINGLE_TASK_RESTRICTIONS_OPTIONS;
 
@@ -83,8 +85,9 @@ const DrawerTask = (props) => {
     // description,
     tokenizedDescription,
     taskMentions,
-    assignedToUsers,
-    dueDate,
+    assignedToUsers: taskAssignedToUsers,
+    dueDate: taskDueDate,
+    dueDateIntent,
     comments,
     updatedComment,
     labels,
@@ -98,12 +101,16 @@ const DrawerTask = (props) => {
     dependencyTasksCount,
   } = task;
 
+  const [assignedToUsers, setAssignedToUsers] = useState(taskAssignedToUsers);
+  const [dueDate, setDueDate] = useState(taskDueDate);
   const [isCompleted, setIsCompleted] = useState(task?.status === 'COMPLETE');
 
   useEffect(() => {
     if (task?.status === 'COMPLETE') {
       setIsCompleted(true);
     }
+    setAssignedToUsers(taskAssignedToUsers);
+    setDueDate(taskDueDate);
   }, [task]);
 
   const updateStatus = () => {
@@ -141,6 +148,7 @@ const DrawerTask = (props) => {
 
   const handleReassignSubtask = useCallback(
     (selectedMembers) => {
+      setAssignedToUsers(selectedMembers);
       onTaskDrawerSubtaskAssigned();
       dispatch(
         partialUpdateTask(task.taskIdentifier, {
@@ -169,6 +177,7 @@ const DrawerTask = (props) => {
 
   const handleDueDateChange = useCallback(
     (newDueDate) => {
+      setDueDate(newDueDate);
       const dueDateIntent = checkDateTimeIntent(newDueDate);
       dispatch(updateTaskDueDate(task, newDueDate, dueDateIntent));
     },
@@ -301,17 +310,24 @@ const DrawerTask = (props) => {
           content={({ closePopover }) => (
             <DueDatePicker
               taskIdentifier={taskIdentifier}
-              selectedDate={dueDate}
+              selectedDate={adjustUTCDateForDateIntent(moment(dueDate), dueDateIntent)}
               onDateChange={handleDueDateChange}
               recurring={hasRecurringSchedule}
               onCloseClick={closePopover}
+              dueDateIntent={dueDateIntent}
+              dateType="dueDate"
             />
           )}
         >
           {dueDate ? (
             <Tooltip placement="top" title="Edit due date">
-              <DueDateBasicLabel isOverdue={isDueDateOverdue(task)}>
-                <DueDateText>{moment(dueDate).format('MM/DD')}</DueDateText>
+              <DueDateBasicLabel isOverdue={isDueDateOverdue({...task, dueDate})}>
+                <DueDateText>
+                  {dueDateIntent === DueDateIntent.DATE
+                    ? moment(dueDate).utc().format('MM/DD')
+                    : moment(dueDate).format('MM/DD')
+                  }
+                </DueDateText>
                 {reminderType && reminderType !== ReminderType.NONE && (
                   <>
                     <Spacing horizontal={2} />

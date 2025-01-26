@@ -24,6 +24,7 @@ const Tooltip = ({
       componentsProps={{
         tooltip: {
           sx: {
+            maxWidth: '600px',
             color: 'black',
             backgroundColor: palette.whiteSmoke,
             fontSize: '14px',

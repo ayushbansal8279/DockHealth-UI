@@ -1,6 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Grid } from '@mui/material';
 import Spacing from 'components/common/Spacing';
+import { useDispatch, useSelector } from 'react-redux';
+import { DescriptionOutlined } from '@mui/icons-material';
+import Copy from 'img/AI/Copy.svg';
+import Close from 'img/AI/XClose.svg';
+import RefreshIcon from 'img/AI/RefreshIcon.svg';
+import EmailIcon from 'img/email-new-icon.svg';
 import {
   AISummaryModalWrapper,
   Header,
@@ -18,13 +24,15 @@ import {
   PromptSelector,
   CustumTooltip,
   Footer,
+  FeedbackLink,
+  LabelContainer,
+  LabelWrapper,
+  RefreshIconWrapper,
 } from './styled';
-import LuminaStar from 'img/AI/LuminaStar';
+import MARIColor from 'img/AI/mari-color.png';
+import New from '@/app/img/AI/New.svg';
+import Expand from '@/app/img/AI/Expand.svg';
 import palette from '@/app/styles/palette';
-import Copy from 'img/AI/Copy.svg';
-import Close from 'img/AI/XClose.svg';
-import RefreshIcon from 'img/AI/RefreshIcon.svg';
-import EmailIcon from 'img/email-new-icon.svg';
 import {
   calculateResponseTimeAgo,
   patientPromptOptions,
@@ -37,9 +45,7 @@ import {
   userHasPostEMRNoteFeatureSelector,
   userHasSendEmailFeatureSelector,
 } from '@/app/selectors/user-selectors';
-import { useDispatch, useSelector } from 'react-redux';
 import { openModal } from '../../actions';
-import { DescriptionOutlined } from '@mui/icons-material';
 import MarkdownRenderer from '@/app/components/ai-summary/MarkdownRenderer';
 
 const AISummaryModal = ({ closeModal, title, onsubmit, type, identifier }) => {
@@ -133,12 +139,18 @@ const AISummaryModal = ({ closeModal, title, onsubmit, type, identifier }) => {
 
   return (
     <AISummaryModalWrapper>
+      <LabelContainer>
+        <LabelWrapper>BETA</LabelWrapper>
+      </LabelContainer>
       <Header>
         <Title>
-          <LuminaStar color={palette.newBrightBlue} />
+          <img src={MARIColor} alt="AI Summary" style={{ height: 25 }} />
           {title}
         </Title>
-        <IconWrapper onClick={closeModal} src={Close} alt="close" />
+        <div>
+          {/* <img style={{ cursor: 'pointer' }} src={Expand} alt="close" /> */}
+          <IconWrapper onClick={closeModal} src={Close} alt="close" />
+        </div>
       </Header>
       <SubHeader>
         <Box display="flex" gap={3}>
@@ -146,7 +158,7 @@ const AISummaryModal = ({ closeModal, title, onsubmit, type, identifier }) => {
             {tooltipHover.regenrate && (
               <CustumTooltip left={5}>Regenerate</CustumTooltip>
             )}
-            <IconWrapper
+            <RefreshIconWrapper
               onMouseEnter={() => setTooltipHover({ regenrate: true })}
               onMouseLeave={() => setTooltipHover({ regenrate: false })}
               onClick={handleReGenerateResponse}
@@ -170,7 +182,7 @@ const AISummaryModal = ({ closeModal, title, onsubmit, type, identifier }) => {
           {postToEMRAvailable && (
             <>
               {tooltipHover.note && (
-                <CustumTooltip right={70}>Post EMR note</CustumTooltip>
+                <CustumTooltip right={70}>Post Note to EHR</CustumTooltip>
               )}
               <DescriptionOutlined
                 onMouseEnter={() => setTooltipHover({ note: true })}
@@ -257,12 +269,17 @@ const AISummaryModal = ({ closeModal, title, onsubmit, type, identifier }) => {
         </RefreshWrapper>
       </RegenerateWrapper> */}
       {isFetching ? (
-        <Footer></Footer>
+        <Footer />
       ) : (
         <Footer>
           This AI-generated summary is provided for convenience and should be
-          reviewed for accuracy and completeness. Is it helpful? If not, Please
-          share your feedback to help us improve.
+          reviewed for accuracy and completeness. 
+          <FeedbackLink
+            target="#"
+            href="https://forms.dock.health/AISummaryFeedback"
+          >
+            Please share your feedback to help us improve.
+          </FeedbackLink>
         </Footer>
       )}
     </AISummaryModalWrapper>

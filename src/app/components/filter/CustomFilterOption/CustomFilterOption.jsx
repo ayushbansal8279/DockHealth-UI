@@ -33,7 +33,6 @@ const CustomFilterOption = (props) => {
     setCustomFinalFilter,
     onQuickFilterCreate,
     clearFilters,
-    setSelectedCustomFilter,
     handleQuickFilterDuplicateForPatientList,
     // editModeEnabled,
   } = props;
@@ -110,13 +109,17 @@ const CustomFilterOption = (props) => {
             }
             return users.find((user) => user.key === item);
           });
-          data[key] = options;
+          const optionForDeletedKey = {
+            displayValue: 'Deleted Option',
+            key: '',
+          };
+
+          data[key] = options.map((item) => item ?? optionForDeletedKey);
         }
       }
     }
 
     setCustomFinalFilter(data);
-    setSelectedCustomFilter(data);
   };
 
   const handleDuplicate = () => {
@@ -186,7 +189,9 @@ const CustomFilterOption = (props) => {
           onClick={() => handleOptionClick()}
         >
           {value}
-          {isFilterCreator && <span style={{ fontSize: '10px' }}> (shared)</span>}
+          {isFilterCreator && (
+            <span style={{ fontSize: '10px' }}> (shared)</span>
+          )}
           {isOrgScoped && (
             <div style={{ fontSize: '10px', marginTop: '3px' }}>
               {!isFilterCreator && (

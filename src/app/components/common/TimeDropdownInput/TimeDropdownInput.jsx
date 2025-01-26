@@ -119,18 +119,17 @@ const TimeDropdownInput = ({
     [onSave, savedValue, setTimeValue, validateInput],
   );
 
-  const handleInputBlur = useCallback(() => {
-    if (isTimeInputEmpty(timeValue) || !isTimeValid(timeValue)) {
-      resetDueTimeInput();
-    } else {
-      saveTime(timeValue);
-    }
-    unsetIsPopoverOpen();
-  }, [timeValue, saveTime, resetDueTimeInput, unsetIsPopoverOpen]);
-
-  useEffect(() => {
-    handleInputBlur();
-  }, [timeValue]);
+  const handleInputBlur = useCallback(
+    (value = timeValue) => {
+      if (isTimeInputEmpty(value) || !isTimeValid(value)) {
+        resetDueTimeInput();
+      } else {
+        saveTime(value);
+      }
+      unsetIsPopoverOpen();
+    },
+    [timeValue, saveTime, resetDueTimeInput, unsetIsPopoverOpen]
+  );
 
   const handleInputKeyDown = useCallback(
     // eslint-disable-next-line sonarjs/cognitive-complexity
@@ -255,6 +254,11 @@ const TimeDropdownInput = ({
     [isPopoverOpen, options, setIsPopoverOpen, setTimeValue, timeError],
   );
 
+  function handleBlur() {
+    unsetIsPopoverOpen();
+    handleInputBlur();
+  }
+
   return (
     <TimeDropdownContainer>
       {label && <TimeLabelContainer>{label}</TimeLabelContainer>}
@@ -276,7 +280,7 @@ const TimeDropdownInput = ({
           }}
           value={(timeValue || '').toLowerCase()}
           alwaysShowMask
-          onBlur={unsetIsPopoverOpen}
+          onBlur={handleBlur}
           onFocus={setIsPopoverOpen}
           onChange={handleInputChange}
           onKeyDown={handleInputKeyDown}
@@ -303,6 +307,7 @@ const TimeDropdownInput = ({
               onMouseDown={(event) => {
                 event.preventDefault();
                 setTimeValue(option);
+                handleInputBlur(option);
                 unsetIsPopoverOpen();
                 moveCursorToEnd();
               }}

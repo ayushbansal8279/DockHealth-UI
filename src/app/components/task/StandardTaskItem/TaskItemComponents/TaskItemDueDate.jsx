@@ -16,6 +16,7 @@ import {
 import { openModal } from '@/app/modal/actions';
 import { isDueDateValid } from '@/app/helpers/date-validation-helper';
 import moment from 'moment';
+import { adjustUTCDateForDateIntent } from '../../DueDatePicker/helpers';
 
 const TaskItemDueDate = ({
   task,
@@ -78,10 +79,12 @@ const TaskItemDueDate = ({
         content={({ closePopover }) => (
           <DueDatePicker
             taskIdentifier={taskIdentifier}
-            selectedDate={momentDueDate}
+            selectedDate={adjustUTCDateForDateIntent(momentDueDate, dueDateIntent)}
             onDateChange={handleDueDateChange}
             recurring={hasRecurringSchedule}
             onCloseClick={closePopover}
+            dueDateIntent={dueDateIntent}
+            dateType="dueDate"
           />
         )}
       >

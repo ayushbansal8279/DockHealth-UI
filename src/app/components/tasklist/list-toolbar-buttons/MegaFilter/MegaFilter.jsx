@@ -41,7 +41,6 @@ const MegaFilter = ({
   const megaFilterButtonReference = useRef(null);
   const [finalFilter, setFinalFilter] = useState({});
   const [customFinalFilter, setCustomFinalFilter] = useState({});
-  const [selectedCustomFilter, setSelectedCustomFilter] = useState({});
   const [isSavePopupOpen, setSavePopupOpen] = useState(false);
   const [editIdentifier, setEditIdentifier] = useState('');
   const [filteredData, setFilteredData] = useState({});
@@ -94,6 +93,7 @@ const MegaFilter = ({
     selectQuickFilter(null);
     setFinalFilter({});
     setSelectedQuickFilter('');
+    setClearFilter(true);
   }, [selectQuickFilter]);
 
   useEffect(() => {
@@ -163,7 +163,6 @@ const MegaFilter = ({
             setSelectedQuickFilter={setSelectedQuickFilter}
             customFilteredData={customFilteredData}
             setCustomFilteredData={setCustomFilteredData}
-            selectedCustomFilter={selectedCustomFilter}
             selectQuickFilter={selectQuickFilter}
             handleSelectedFiltersChange={handleSelectedFiltersChange}
             fiterCount={fiterCount}
@@ -202,7 +201,6 @@ const MegaFilter = ({
               selectedQuickFilter={selectedQuickFilter}
               setSelectedQuickFilter={setSelectedQuickFilter}
               clearFilters={clearFilters}
-              setSelectedCustomFilter={setSelectedCustomFilter}
               origin={origin}
             />
           ) : (

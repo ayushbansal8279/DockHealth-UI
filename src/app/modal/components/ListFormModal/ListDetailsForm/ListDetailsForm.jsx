@@ -187,7 +187,7 @@ const ListDetailsForm = ({
                       !restrictCustomizationValue,
                     );
                   }}
-                  src={restrictCustomizationValue ? CheckedCircle : BlankCircle}
+                  src={!restrictCustomizationValue ? CheckedCircle : BlankCircle}
                 />
                 <Spacing horizontal={3} />
                 <CheckboxDescription>

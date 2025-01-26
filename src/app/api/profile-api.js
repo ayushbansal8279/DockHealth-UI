@@ -1,3 +1,4 @@
+import { mapFilterOptions } from '../helpers/filter-options-helpers';
 import axios from './axios-heydoc';
 
 export function getAllProfiles(identifier) {
@@ -18,6 +19,18 @@ export function editProfileDetails(identifier, profile) {
 
 export function deleteProfile(identifier) {
   return axios.delete(`profile/${identifier}`).then(({ data }) => data);
+}
+
+export function getProfileFilterOptions(profileTypeIdentifier) {
+  return axios
+    .get(`/profile/filter/filterOptions/${profileTypeIdentifier}`)
+    .then(({ data }) => mapFilterOptions(data));
+}
+
+export function getProfileDetailByFilter(profileTypeIdentifier, filter) {
+  return axios
+    .post(`/profile/filter/filterByCriteria/${profileTypeIdentifier}`, filter)
+    .then(({ data }) => data);
 }
 
 export const note = {

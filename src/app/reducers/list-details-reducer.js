@@ -58,7 +58,7 @@ function updateGroupInState(
   };
 }
 
-function updateBundleInState(bundleIdentifier, updatedData, state) {
+function updateBundleTasksInState(bundleIdentifier, updatedData, state) {
   const updatedMap = {
     [bundleIdentifier]: {
       ...state.tasksMap[bundleIdentifier],
@@ -91,6 +91,24 @@ function updateBundleInState(bundleIdentifier, updatedData, state) {
     tasksMap: {
       ...state.tasksMap,
       ...updatedMap,
+    },
+  };
+}
+
+function updateBundleInState(bundleIdentifier, updatedData, state) {
+  return {
+    ...state,
+    tasksMap: {
+      ...state.tasksMap,
+      [bundleIdentifier]: {
+        ...updatedData,
+        tasks: [
+          ...new Set([
+            ...(state.tasksMap[bundleIdentifier]?.tasks || []),
+            ...updatedData?.tasks.map((task) => task.identifier),
+          ]),
+        ],
+      },
     },
   };
 }
@@ -612,7 +630,7 @@ const ListDetailsReducer = (state = initialState, action) => {
       const bundleIdentifier = bundle?.taskGroupIdentifier;
 
       if (bundleIdentifier) {
-        return updateBundleInState(
+        return updateBundleTasksInState(
           bundleIdentifier,
           {
             ...bundle,
@@ -657,7 +675,9 @@ const ListDetailsReducer = (state = initialState, action) => {
           : {
               ...state,
               tasksMap:
-                intent === 'TASK_DELETED' && bundleIdentifier && !taskItem?.parentTaskIdentifier
+                intent === 'TASK_DELETED' &&
+                bundleIdentifier &&
+                !taskItem?.parentTaskIdentifier
                   ? {
                       ...state.tasksMap,
                       [bundleIdentifier]: {
