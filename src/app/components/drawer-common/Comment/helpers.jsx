@@ -80,6 +80,9 @@ function createMentionsComment(tokenizedDescription, mentions) {
 export function traverseNodes(nodes, mentions) {
   return nodes && nodes.length > 0
     ? nodes.map((node) => {
+        if (containsHref(node)) {
+          return node;
+        }
         return traverseNode(node, mentions);
       })
     : nodes;
@@ -131,3 +134,18 @@ export const processMarkdownValue = (
   const nodes = ReactHtmlParser(htmlValue || '');
   return nodes;
 };
+
+function containsHref(node) {
+  if (node && node?.props && node.props.children) {
+    const { children } = node.props;
+
+    if (node?.props?.href) {
+      return true;
+    }
+    if (children) {
+      return containsHref(children);
+    }
+  }
+
+  return false;
+}
