@@ -65,6 +65,7 @@ const AISummaryModal = ({ closeModal, title, onsubmit, type, identifier }) => {
   // const [customPrompt, setCustomPrompt] = useState('');
   const [promptTypeValue, setPromptTypeValue] = useState('DEFAULT');
   const [copied, setCopied] = useState(false);
+  const [expanded, setExpanded] = useState(false);
   const [summaries, setSummaries] = useState([]);
   const [isFetching, setIsFetching] = useState(false);
   const [generateDateTime, setGeneratedDateTime] = useState('');
@@ -138,7 +139,7 @@ const AISummaryModal = ({ closeModal, title, onsubmit, type, identifier }) => {
   };
 
   return (
-    <AISummaryModalWrapper>
+    <AISummaryModalWrapper expanded={expanded}>
       <LabelContainer>
         <LabelWrapper>BETA</LabelWrapper>
       </LabelContainer>
@@ -148,7 +149,12 @@ const AISummaryModal = ({ closeModal, title, onsubmit, type, identifier }) => {
           {title}
         </Title>
         <div>
-          {/* <img style={{ cursor: 'pointer' }} src={Expand} alt="close" /> */}
+          <img
+            style={{ cursor: 'pointer' }}
+            onClick={() => setExpanded(!expanded)}
+            src={Expand}
+            alt="expand"
+          />
           <IconWrapper onClick={closeModal} src={Close} alt="close" />
         </div>
       </Header>
@@ -273,7 +279,7 @@ const AISummaryModal = ({ closeModal, title, onsubmit, type, identifier }) => {
       ) : (
         <Footer>
           This AI-generated summary is provided for convenience and should be
-          reviewed for accuracy and completeness. 
+          reviewed for accuracy and completeness.
           <FeedbackLink
             target="#"
             href="https://forms.dock.health/AISummaryFeedback"
