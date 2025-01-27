@@ -79,10 +79,10 @@ const AISummaryModal = ({ closeModal, title, onsubmit, type, identifier }) => {
   const dispatch = useDispatch();
 
   const currentOrganization = useSelector(selectedUserOrganizationSelector);
-  const aiSummaryMultiplePrompts =
-    currentOrganization?.themeSettings?.find(
-      ({ name }) => name === 'ai.summary.multiple.prompts',
-    ) || {};
+  // const aiSummaryMultiplePrompts =
+  //   currentOrganization?.themeSettings?.find(
+  //     ({ name }) => name === 'ai.summary.multiple.prompts',
+  //   ) || {};
 
   const sendEmailAvailable = useSelector(userHasSendEmailFeatureSelector);
   const postToEMRAvailable = useSelector(userHasPostEMRNoteFeatureSelector);
@@ -172,17 +172,17 @@ const AISummaryModal = ({ closeModal, title, onsubmit, type, identifier }) => {
               alt="Refresh"
             />
           </RefreshWrapper>
-          {aiSummaryMultiplePrompts?.value && (
-            <PromptSelector
-              onChange={handlePromptTypeChange}
-              defaultValue={promptTypeValue}
-              value={promptTypeValue}
-            >
-              {promptoptions.map((option) => (
-                <option value={option.value}>{option.key}</option>
-              ))}
-            </PromptSelector>
-          )}
+          {/* {aiSummaryMultiplePrompts?.value && ( */}
+          <PromptSelector
+            onChange={handlePromptTypeChange}
+            defaultValue={promptTypeValue}
+            value={promptTypeValue}
+          >
+            {promptoptions.map((option) => (
+              <option value={option.value}>{option.key}</option>
+            ))}
+          </PromptSelector>
+          {/* )} */}
         </Box>
         <Box display="flex" gap={2}>
           {postToEMRAvailable && (
