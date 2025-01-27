@@ -79,6 +79,7 @@ export default (state = INITIAL_STATE, action = {}) => {
 
     case ActionTypes.GET_USER_TASK_FILTER_OPTIONS:
     case ActionTypes.GET_PATIENT_FILTER_OPTIONS:
+    case ActionTypes.GET_CURRENT_PROFILE_FILTER_OPTIONS:
     case ActionTypes.GET_CURRENT_TASK_LIST_FILTER_OPTIONS: {
       return {
         ...state,
@@ -88,6 +89,7 @@ export default (state = INITIAL_STATE, action = {}) => {
 
     case ActionTypes.GET_PATIENT_FILTER_OPTIONS_SUCCESS:
     case ActionTypes.GET_CURRENT_TASK_LIST_FILTER_OPTIONS_SUCCESS:
+    case ActionTypes.GET_CURRENT_PROFILE_FILTER_OPTIONS_SUCCESS:
     case ActionTypes.GET_USER_TASK_FILTER_OPTIONS_SUCCESS: {
       return {
         ...state,
@@ -98,6 +100,7 @@ export default (state = INITIAL_STATE, action = {}) => {
 
     case ActionTypes.GET_USER_TASK_FILTER_OPTIONS_FAILURE:
     case ActionTypes.GET_PATIENT_FILTER_OPTIONS_FAILURE:
+    case ActionTypes.GET_CURRENT_PROFILE_FILTER_OPTIONS_FAILURE:
     case ActionTypes.GET_CURRENT_TASK_LIST_FILTER_OPTIONS_FAILURE: {
       return { ...state, error, isLoading: false };
     }
