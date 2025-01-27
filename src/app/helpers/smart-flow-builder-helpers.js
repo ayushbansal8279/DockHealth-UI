@@ -10,9 +10,12 @@ export const NodeType = {
   DECISION: 'DECISION',
   NEW_WORKFLOW_LINK: 'NEW_WORKFLOW_LINK',
   WORKFLOW_LINK: 'WORKFLOW_LINK',
+  START_INDICATOR: 'INDICATOR',
+  END_INDICATOR: 'INDICATOR',
 };
 
 export const LinkType = {
+  INDICATOR: 'INDICATOR_LINK',
   STANDARD: 'STANDARD_LINK',
   DECISION: 'DECISION_LINK',
   TEMPORARY: 'TEMPORARY_LINK',
@@ -42,7 +45,14 @@ export function createLinkElement(
   targetId,
   sourceHandle,
   targetHandle,
+  indicatorType
 ) {
+  if((sourceId === targetId) && (indicatorType === 'START_INDICATOR')){
+    sourceId = 'START_INDICATOR'
+  } 
+  if((sourceId === targetId) && (indicatorType === 'END_INDICATOR')){
+    targetId = 'END_INDICATOR'
+  } 
   return {
     id: getUniqueLinkId(sourceId, targetId),
     source: sourceId,
@@ -51,6 +61,7 @@ export function createLinkElement(
     targetHandle: targetHandle || NodeTargetHandle.TARGET_A,
     type,
     data: {},
+    indicatorType
   };
 }
 

@@ -1,48 +1,49 @@
-import {
-  getMeteringEvents,
-  getMeteringFilterOptions,
-} from '@/app/api/metering-api';
-import FilterButton from '@/app/components/filter/FilterButton/FilterButton';
-import FilterPopover from '@/app/components/filter/FilterPopover/FilterPopover';
-import NewFilterContainer from '@/app/components/filter/NewFilterContainer/NewFilterContainer';
-import { organizationSelector } from '@/app/selectors/organization-selectors';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { useSelector } from 'react-redux';
-import { convertFilterToPayload } from './helper';
+import FilterButton from '../../filter/FilterButton/FilterButton';
+import FilterPopover from '../../filter/FilterPopover/FilterPopover';
+import NewFilterContainer from '@/app/components/filter/NewFilterContainer/NewFilterContainer';
+import {
+  getProfileDetailByFilter,
+  getProfileFilterOptions,
+} from '@/app/api/profile-api';
+import { convertToPayload } from './helper';
 
-const MeteringFilter = ({ setBillingData, getInitialMeteringData }) => {
+const ProfileFilter = ({
+  profileTypeIdentifier,
+  fetchProfiles,
+  setProfiles,
+}) => {
   const megaFilterButtonReference = useRef(null);
   const [isFilterApplied, setIsFilterApplied] = useState(false);
   const [isOpen, openPopover] = useState(false);
   const [filters, setFilters] = useState({});
-  const { organizationIdentifier } = useSelector(organizationSelector);
   const [finalFilter, setFinalFilter] = useState({});
   const [filteredData, setFilteredData] = useState({});
 
-  const clearFilters = () => {
-    getInitialMeteringData();
+  const clearFilters = useCallback(() => {
     setIsFilterApplied(false);
     setFinalFilter({});
-  };
+    fetchProfiles();
+  }, [setIsFilterApplied, setFinalFilter, fetchProfiles]);
 
   const fetchFilterOptions = useCallback(async () => {
-    const filterOptions = await getMeteringFilterOptions();
+    const filterOptions = await getProfileFilterOptions(profileTypeIdentifier);
     setFilters(filterOptions);
-  }, [setFilters]);
+  }, [profileTypeIdentifier, setFilters]);
 
-  useEffect(async () => {
+  const handleApplySelectedFilter = useCallback(async () => {
+    const payload = convertToPayload(filteredData);
+    setIsFilterApplied(true);
+    const result = await getProfileDetailByFilter(
+      profileTypeIdentifier,
+      payload,
+    );
+    setProfiles(result);
+  }, [filteredData, profileTypeIdentifier, setIsFilterApplied, setProfiles]);
+
+  useEffect(() => {
     fetchFilterOptions();
   }, []);
-
-  const getFilteredMeteringData = async () => {
-    const payload = convertFilterToPayload(
-      filteredData,
-      organizationIdentifier,
-    );
-    const result = await getMeteringEvents(payload);
-    if (result) setBillingData(result);
-    setIsFilterApplied(true);
-  };
 
   return (
     <>
@@ -61,7 +62,7 @@ const MeteringFilter = ({ setBillingData, getInitialMeteringData }) => {
         <div style={{ marginBottom: '10px' }}>
           <NewFilterContainer
             filters={filters}
-            handleSelectedFiltersChange={getFilteredMeteringData}
+            handleSelectedFiltersChange={handleApplySelectedFilter}
             setFinalFilter={setFinalFilter}
             finalFilter={finalFilter}
             openPopover={openPopover}
@@ -82,4 +83,4 @@ const MeteringFilter = ({ setBillingData, getInitialMeteringData }) => {
   );
 };
 
-export default MeteringFilter;
+export default ProfileFilter;

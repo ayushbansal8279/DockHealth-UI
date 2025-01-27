@@ -93,9 +93,12 @@ function SendEmrNoteFromTaskModal({ source, identifier, generatedSummary }) {
         <CloseIcon htmlColor="#C1CCDA" />
       </CloseIconButton>
       <ModalHeaderContainerStyled>
-        <ModalHeader>Post note to EHR</ModalHeader>
+        <ModalHeader>Post Note to EHR</ModalHeader>
         <ModalDescription>
           Post a summary to the patient's health record
+        </ModalDescription>
+        <ModalDescription>
+          ** Contact Dock Crew to enable this feature **
         </ModalDescription>
       </ModalHeaderContainerStyled>
       <ModalDescriptionContainer>

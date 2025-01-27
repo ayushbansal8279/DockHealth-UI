@@ -1,8 +1,7 @@
-import { useState } from 'react';
+// import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import Tooltip from '@/app/components/common/Tooltip/Tooltip';
-import LuminaStar from '@/app/img/AI/LuminaStar';
-import palette from '@/app/styles/palette';
+
 import {
   getPatientAISummary,
   getTaskAISummary,
@@ -10,10 +9,24 @@ import {
 } from '@/app/api/ai-summary-api';
 import { openModal } from '../../actions';
 import { aiSummaryRequestBuilder, SummaryType } from '@/app/helpers/ai-helper';
+import { AIiconImage } from './styled';
 
-const AISummaryModalOpenerHelper = ({ type, title, identifier }) => {
-  const [isAiIconHovered, setAiIconHovered] = useState(false);
+const AISummaryModalOpenerHelper = ({
+  type,
+  title,
+  identifier,
+  subtleDisplay,
+}) => {
   const dispatch = useDispatch();
+
+  const tileMessage =
+    type === SummaryType.PATIENT
+      ? 'Patient AI Summary'
+      : type === SummaryType.WORKFLOW
+      ? 'Workflow AI Summary'
+      : type === SummaryType.TASK
+      ? 'Task AI Summary'
+      : 'AI Summary';
 
   const generateAISummary = async (force, persona, customPrompt) => {
     const requestPayload = aiSummaryRequestBuilder(
@@ -31,10 +44,8 @@ const AISummaryModalOpenerHelper = ({ type, title, identifier }) => {
   };
 
   return (
-    <Tooltip placement="top" title="AI Summary">
+    <Tooltip placement="top" title={tileMessage}>
       <div
-        onMouseEnter={() => setAiIconHovered(true)}
-        onMouseLeave={() => setAiIconHovered(false)}
         onClick={() =>
           dispatch(
             openModal('AISummary', {
@@ -47,11 +58,7 @@ const AISummaryModalOpenerHelper = ({ type, title, identifier }) => {
           )
         }
       >
-        <LuminaStar
-          color={
-            isAiIconHovered ? palette.newBrightBlue : palette.lightGrayishBlue
-          }
-        />
+        <AIiconImage subtleDisplay={subtleDisplay} />
       </div>
     </Tooltip>
   );

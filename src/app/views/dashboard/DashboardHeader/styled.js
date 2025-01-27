@@ -69,6 +69,7 @@ export const AddTaskButtonWrapper = styled(Button)`
     fill: ${palette.white};
   }
   height: 32px;
+  width: 110px;
 `;
 
 export const AddTaskButtonLabel = styled(Typography)`

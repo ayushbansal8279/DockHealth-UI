@@ -146,8 +146,7 @@ const NestedFlowNode = React.memo(({ data, isConnectable, selected, type }) => {
     }
   }, [dispatch, taskIdentifier, taskGroup]); 
 
-  const description = task?.description || workflow?.name;
-
+  const description = task?.linkedTaskTemplate?.name || workflow?.name;
   const memberslist = data?.task?.taskTemplate?.members || [];
   const currentUser = useSelector(userProfileSelector);
   const isCurrentMemberPermission = memberslist?.find(({ user }) => 
