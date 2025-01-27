@@ -1,85 +1,133 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
-import FilterButton from '../../filter/FilterButton/FilterButton';
-import FilterPopover from '../../filter/FilterPopover/FilterPopover';
-import NewFilterContainer from '@/app/components/filter/NewFilterContainer/NewFilterContainer';
-import {
-  getProfileDetailByFilter,
-  getProfileFilterOptions,
-} from '@/app/api/profile-api';
+import { useCallback } from 'react';
+import { getProfileDetailByFilter } from '@/app/api/profile-api';
 import { convertToPayload } from './helper';
+import MegaFilter from '../../tasklist/list-toolbar-buttons/MegaFilter/MegaFilter';
+import {
+  showAddQuickFilterOption,
+  selectQuickFilter,
+  createQuickFilter,
+  updateQuickFilter,
+  deleteQuickFilter,
+  getQuickFilters,
+  clearFiltersForMegaFilter,
+} from '@/app/actions/mega-filter-actions';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  addQuickFilterOptionSelector,
+  megaFilterSelector,
+  quickFiltersSelector,
+  selectedQuickFilterSelector,
+} from '@/app/selectors/mega-filter-selectors';
+import {
+  selectedProfileFilters,
+  getProfileFilterOptions,
+} from '@/app/actions/profile-actions';
+import React from 'react';
 
 const ProfileFilter = ({
   profileTypeIdentifier,
   fetchProfiles,
   setProfiles,
 }) => {
-  const megaFilterButtonReference = useRef(null);
-  const [isFilterApplied, setIsFilterApplied] = useState(false);
-  const [isOpen, openPopover] = useState(false);
-  const [filters, setFilters] = useState({});
-  const [finalFilter, setFinalFilter] = useState({});
-  const [filteredData, setFilteredData] = useState({});
+  const dispatch = useDispatch();
+  const selectedQuickFilter = useSelector(selectedQuickFilterSelector);
+  const addQuickFilterOption = useSelector(addQuickFilterOptionSelector);
+  const quickFiltersList = useSelector(quickFiltersSelector);
 
-  const clearFilters = useCallback(() => {
-    setIsFilterApplied(false);
-    setFinalFilter({});
-    fetchProfiles();
-  }, [setIsFilterApplied, setFinalFilter, fetchProfiles]);
+  const megaFilter = useSelector(megaFilterSelector);
+  const { filters, selectedFilters } = megaFilter || {};
 
-  const fetchFilterOptions = useCallback(async () => {
-    const filterOptions = await getProfileFilterOptions(profileTypeIdentifier);
-    setFilters(filterOptions);
-  }, [profileTypeIdentifier, setFilters]);
+  const handleFilterOpen = () => {
+    dispatch(getProfileFilterOptions());
+    dispatch(getQuickFilters({ profileTypeIdentifier }));
+  };
 
-  const handleApplySelectedFilter = useCallback(async () => {
-    const payload = convertToPayload(filteredData);
-    setIsFilterApplied(true);
+  const handleFilterSelect = async (newFilters) => {
+    const payload = convertToPayload(newFilters);
     const result = await getProfileDetailByFilter(
       profileTypeIdentifier,
       payload,
     );
     setProfiles(result);
-  }, [filteredData, profileTypeIdentifier, setIsFilterApplied, setProfiles]);
+    dispatch(selectedProfileFilters(newFilters));
+  };
 
-  useEffect(() => {
-    fetchFilterOptions();
-  }, []);
+  const handleSaveAsQuickFilter = useCallback(
+    () => dispatch(showAddQuickFilterOption()),
+    [dispatch],
+  );
+
+  const handleSelectQuickFilter = useCallback(
+    async (id, filtersSetup) => {
+      dispatch(selectQuickFilter(id));
+      const payload = convertToPayload(filtersSetup);
+      const result = await getProfileDetailByFilter(
+        profileTypeIdentifier,
+        payload,
+      );
+      setProfiles(result);
+      dispatch(selectedProfileFilters(filtersSetup, id));
+    },
+    [dispatch],
+  );
+
+  const handleQuickFilterCreate = useCallback(
+    (name, selectedFilters, scope) =>
+      dispatch(
+        createQuickFilter(
+          name,
+          { profileTypeIdentifier },
+          selectedFilters,
+          scope,
+        ),
+      ),
+    [dispatch, profileTypeIdentifier],
+  );
+
+  const handleQuickFilterUpdate = useCallback(
+    (quickFilterIdentifier, name, selectedFilterOptions, scope) =>
+      dispatch(
+        updateQuickFilter(
+          quickFilterIdentifier,
+          { name, selectedOptions: selectedFilterOptions },
+          { profileTypeIdentifier },
+          scope,
+        ),
+      ),
+    [dispatch],
+  );
+
+  const handleQuickFilterDelete = useCallback(
+    (quickFilterIdentifier) =>
+      dispatch(deleteQuickFilter(quickFilterIdentifier)),
+    [dispatch],
+  );
+
+  const clearFilter = () => {
+    dispatch(clearFiltersForMegaFilter());
+    fetchProfiles();
+  };
 
   return (
-    <>
-      <FilterButton
-        ref={megaFilterButtonReference}
-        active={isFilterApplied}
-        onClick={() => openPopover(!isOpen)}
-        onClear={clearFilters}
-        isOpen={isOpen}
-      />
-      <FilterPopover
-        anchorEl={megaFilterButtonReference.current}
-        open={isOpen}
-        onClose={() => openPopover(false)}
-      >
-        <div style={{ marginBottom: '10px' }}>
-          <NewFilterContainer
-            filters={filters}
-            handleSelectedFiltersChange={handleApplySelectedFilter}
-            setFinalFilter={setFinalFilter}
-            finalFilter={finalFilter}
-            openPopover={openPopover}
-            // quickFiltersList={quickFiltersList}
-            // setSavePopupOpen={setSavePopupOpen}
-            // onQuickFilterCreate={onQuickFilterCreate}
-            // handleSaveQuickFilter={handleSaveQuickFilter}
-            setFilteredData={setFilteredData}
-            filteredData={filteredData}
-            // customFinalFilter={customFinalFilter}
-            // setCustomFinalFilter={setCustomFinalFilter}
-            // setSelectedQuickFilter={setSelectedQuickFilter}
-            isSaveDisabled
-          />
-        </div>
-      </FilterPopover>
-    </>
+    <MegaFilter
+      filters={filters}
+      selectedFilters={selectedFilters}
+      onSelectFilters={handleFilterSelect}
+      isFetching={false}
+      onOpen={handleFilterOpen}
+      quickFiltersList={quickFiltersList}
+      addQuickFilterOption={addQuickFilterOption}
+      selectedQuickFilter={selectedQuickFilter}
+      selectQuickFilter={handleSelectQuickFilter}
+      onSaveAsNewClick={handleSaveAsQuickFilter}
+      wasChangedFilters={false}
+      onQuickFilterCreate={handleQuickFilterCreate}
+      onQuickFilterUpdate={handleQuickFilterUpdate}
+      onQuickFilterDelete={handleQuickFilterDelete}
+      isDefaultDateFilterApplied={false}
+      setClearFilter={clearFilter}
+      showFilterCount={false}
+    />
   );
 };
 

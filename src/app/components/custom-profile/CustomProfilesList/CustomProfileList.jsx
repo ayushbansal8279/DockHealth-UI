@@ -11,13 +11,7 @@ import {
   setCurrentUserGroup,
   unsetCurrentUserGroup,
 } from 'actions/user-groups-actions';
-import {
-  Box,
-  FormGroup,
-  ListItemText,
-  MenuItem,
-  Stack,
-} from '@mui/material';
+import { Box, FormGroup, ListItemText, MenuItem, Stack } from '@mui/material';
 import { getAllProfileTypes } from 'api/profile-type-api';
 import { getAllProfiles } from 'api/profile-api';
 import { getAllProfileFieldTypes } from 'api/profile-type-field-api';
@@ -35,6 +29,7 @@ import Checkbox from 'components/common/Checkbox/Checkbox';
 import ToolbarButton from '../../tasklist/list-toolbar-buttons/ToolbarButton/ToolbarButton';
 import { AddIcon } from '@/app/views/smart-flow-builder/TaskNodeHandles/styled';
 import ProfileFilter from '../ProfileFilter/ProfileFilter';
+import { initializeProfileState } from '@/app/actions/profile-actions';
 
 const CustomProfileList = () => {
   const dispatch = useDispatch();
@@ -46,6 +41,11 @@ const CustomProfileList = () => {
   const groupIdentifier = getUserGroupIdentifierByUrlParameter(
     groupIdentifierUrlParameter,
   );
+
+  useEffect(() => {
+    dispatch(initializeProfileState(profileTypeIdentifier));
+  }, [dispatch, profileTypeIdentifier]);
+
   useEffect(() => {
     dispatch(setCurrentUserGroup(groupIdentifier));
 
@@ -70,8 +70,6 @@ const CustomProfileList = () => {
   const [filters, setFilters] = useState([]);
   const [profiles, setProfiles] = useState([]);
   const [searchPhrase, setSearchPhrase] = useState('');
-  // console.log(profiles);
-  
 
   const fetchProfileTypes = useCallback(() => {
     getAllProfileTypes()
@@ -226,7 +224,11 @@ const CustomProfileList = () => {
               </Paper>
             </Popover>
             <Box display="flex" alignItems="center" my={0.4} mx={2}>
-              <ProfileFilter profileTypeIdentifier={profileTypeIdentifier} fetchProfiles={fetchProfiles} setProfiles={setProfiles} />
+              <ProfileFilter
+                profileTypeIdentifier={profileTypeIdentifier}
+                fetchProfiles={fetchProfiles}
+                setProfiles={setProfiles}
+              />
             </Box>
             <Box display="flex" alignItems="center" width="400px" my={0.4}>
               <SearchInput
