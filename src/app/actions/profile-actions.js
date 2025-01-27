@@ -12,3 +12,13 @@ export function getProfileFilterOptions() {
     type: ActionTypes.GET_CURRENT_PROFILE_FILTER_OPTIONS,
   };
 }
+
+export function selectedProfileFilters(filters, selectedQuickFilter) {
+  return {
+    type: ActionTypes.SELECTED_PROFILE_FILTER,
+    payload: {
+      filters,
+      selectedQuickFilter,
+    },
+  };
+}
