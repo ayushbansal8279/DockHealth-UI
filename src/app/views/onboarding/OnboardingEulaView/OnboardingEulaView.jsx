@@ -43,7 +43,8 @@ const OnboardingEulaView = () => {
         organizationName !== '' &&
         organizationName !== undefined
       ) {
-        history.push('/onboarding-tutorial/create-list');
+        // history.push('/onboarding-tutorial/create-list');
+        history.push('/core/home');
       } else {
         history.push('/onboarding/organization-setup');
       }
@@ -55,8 +56,11 @@ const OnboardingEulaView = () => {
   return (
     <div>
       <Spacing vertical={3} />
-      <OutfitTypography weight="700" variant="h3">
+      {/* <OutfitTypography weight="700" variant="h3">
         Welcome to Dock! Let's make it official.
+      </OutfitTypography> */}
+      <OutfitTypography weight="700" variant="h3">
+        Hello Docker!
       </OutfitTypography>
       <Spacing vertical={5} />
       <OutfitTypography
@@ -64,14 +68,17 @@ const OnboardingEulaView = () => {
         variant="h2"
         textDecoration={{ lineHeight: 1.5 }}
       >
-        Review our end user agreement and privacy policy <br />
-        {userProfile?.baaSigned
+        {/* Review our end user agreement and privacy policy <br /> */}
+        Please review our updated End User License Agreement (EULA) <br />
+        {!userProfile?.identifier || userProfile?.baaSigned
           ? null
           : 'and confirm your Business Associate Agreement'}
         <br />
-        {userProfile?.baaSigned ? null : '(BAA) for HIPAA-compliance'}
+        {!userProfile?.identifier || userProfile?.baaSigned
+          ? null
+          : '(BAA) for HIPAA-compliance'}
       </OutfitTypography>
-      {userProfile?.baaSigned ? (
+      {!userProfile?.identifier || userProfile?.baaSigned ? (
         <Spacing vertical={1} />
       ) : (
         <Spacing vertical={5} />
@@ -101,7 +108,7 @@ const OnboardingEulaView = () => {
           </OutfitTypography>
         </Grid>
         <Spacing vertical={4} />
-        {!userProfile?.baaSigned && (
+        {userProfile?.identifier && !userProfile?.baaSigned && (
           <Grid item sm={12} container wrap="nowrap" alignItems="center">
             <CircleIcon
               src={isBaaAccepted ? CircleCompleted : Circle}
