@@ -4,7 +4,7 @@ import DataGrid, {
   useController,
   getValues,
 } from 'ui-toolkit/Composite/DataGrid';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useParams, useHistory } from 'react-router-dom';
 import { getUserGroupIdentifierByUrlParameter } from 'helpers/user-groups-helper';
 import {
@@ -35,6 +35,11 @@ import Checkbox from 'components/common/Checkbox/Checkbox';
 import ToolbarButton from '../../tasklist/list-toolbar-buttons/ToolbarButton/ToolbarButton';
 import { AddIcon } from '@/app/views/smart-flow-builder/TaskNodeHandles/styled';
 import ProfileFilter from '../ProfileFilter/ProfileFilter';
+import OptionsMenu from '../../common/OptionsMenu/OptionsMenu';
+import { MoreVert } from '@mui/icons-material';
+import { userProfileSelector } from '@/app/selectors/user-selectors';
+import { isUserGuestOrDockLite, isUserViewOnly } from '@/app/helpers/user-helper';
+import { downloadProfileData } from '@/app/api/profile-api';
 
 const CustomProfileList = () => {
   const dispatch = useDispatch();
@@ -71,7 +76,10 @@ const CustomProfileList = () => {
   const [profiles, setProfiles] = useState([]);
   const [searchPhrase, setSearchPhrase] = useState('');
   // console.log(profiles);
+  const currentUser = useSelector(userProfileSelector);
   
+  const isGuestOrDockLite = isUserGuestOrDockLite(currentUser);
+  const isViewOnly = isUserViewOnly(currentUser);
 
   const fetchProfileTypes = useCallback(() => {
     getAllProfileTypes()
@@ -143,11 +151,36 @@ const CustomProfileList = () => {
     }
   };
 
+  const handleDownloadProfileData = () => {
+    const filename = `Dock ${currentProfileType?.name}.csv`;
+    downloadProfileData(profileTypeIdentifier, filename);
+};
+  
   return (
     <>
       <ViewLayout
         header={
-          <LayoutHeader>
+          <LayoutHeader> 
+            <Box
+              position="absolute"
+              top={currentProfileType?.description ? 17 : 27}
+              left={10}
+            >
+              <OptionsMenu
+                disablePortal
+                options={[
+                  !isGuestOrDockLite &&
+                    !isViewOnly && {
+                      name: 'Export to CSV',
+                      onClick: () => {
+                        handleDownloadProfileData();
+                      },
+                    }
+                ]}
+              >
+                <MoreVert color="primary" />
+              </OptionsMenu>
+            </Box>
             <LayoutHeader.Title
               title={currentProfileType?.name}
               description={currentProfileType?.description}

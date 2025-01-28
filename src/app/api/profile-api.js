@@ -1,4 +1,6 @@
+import { blobFileDownload } from '../helpers/blob-file-download';
 import { mapFilterOptions } from '../helpers/filter-options-helpers';
+import { noop } from '../helpers/utility-functions';
 import axios from './axios-heydoc';
 
 export function getAllProfiles(identifier) {
@@ -31,6 +33,21 @@ export function getProfileDetailByFilter(profileTypeIdentifier, filter) {
   return axios
     .post(`/profile/filter/filterByCriteria/${profileTypeIdentifier}`, filter)
     .then(({ data }) => data);
+}
+
+export function downloadProfileData(profileTypeIdentifier, filename) {
+  return axios({
+    url: `/profile/list/download/${profileTypeIdentifier}`,
+    method: 'POST',
+    responseType: 'blob',
+    headers: {
+      Accept: 'application/octet-stream',
+    },
+  })
+    .then((response) => {
+      blobFileDownload(new Blob([response.data]), filename);
+    })
+    .catch(noop);
 }
 
 export const note = {
