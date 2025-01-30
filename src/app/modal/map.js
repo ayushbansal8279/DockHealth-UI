@@ -87,6 +87,7 @@ import AISummaryModal from './components/AISummaryModal/AISummaryModal';
 import DateWarningModal from './components/DateWarningModal/DateWarningModal';
 import AlertModal from './components/AlertModal/AlertModal';
 import SavePatientModal from './components/SavePatientModal/SavePatientModal';
+import PatientAttachmentReferenceModal from './components/PatientAttachmentReferenceModal/PatientAttachmentReferenceModal';
 
 const MODAL_MAP = {
   CompleteAllTasks: CompleteAllTasksModal,
@@ -177,7 +178,8 @@ const MODAL_MAP = {
   AISummary: AISummaryModal,
   DateWarning: DateWarningModal,
   Alert: AlertModal,
-  SavePatient: SavePatientModal
-};
+  SavePatient: SavePatientModal,
+  PatientAttachmentReference: PatientAttachmentReferenceModal
+}
 
 export default MODAL_MAP;
