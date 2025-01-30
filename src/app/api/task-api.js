@@ -221,7 +221,7 @@ export function updateTaskDescription(task, description) {
     });
 }
 
-export const updateStartDate = (taskIdentifier, startDate) =>
+export const updateStartDate = (taskIdentifier, startDate, startDateIntent) =>
   axios
     .put(
       `task/addOrUpdateStartDate/${taskIdentifier}`,
@@ -231,6 +231,7 @@ export const updateStartDate = (taskIdentifier, startDate) =>
           startDate: startDate
             ? moment(startDate).format('MM/DD/YYYY HH:mm:ss ZZ')
             : null,
+          startDateIntent: startDate ? startDateIntent : DueDateIntent.DATE,
         },
       },
     )
