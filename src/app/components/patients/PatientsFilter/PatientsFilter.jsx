@@ -4,7 +4,6 @@ import {
   patientsSelectedFiltersSelector,
 } from 'selectors/patients-selectors';
 import { useDispatch, useSelector } from 'react-redux';
-import isEmpty from 'ramda/src/isEmpty';
 import * as PatientsActions from 'actions/patients-actions';
 import { organizationSelector } from 'selectors/organization-selectors';
 import { userProfileSelector } from 'selectors/user-selectors';
@@ -138,18 +137,6 @@ const PatientsFilter = ({
     [dispatch, organizationIdentifier, selectedFilters],
   );
 
-  const handleQuickFilterDuplicateForPatientList = useCallback(
-    (name, updatedFilters) =>
-      dispatch(
-        createQuickFilter(
-          name,
-          { organizationIdentifier, contextType: quickContextTypes.PATIENTS },
-          updatedFilters,
-        ),
-      ),
-    [dispatch, organizationIdentifier, selectedFilters],
-  );
-
   const handleQuickFilterUpdate = useCallback(
     (quickFilterIdentifier, name, selectedFilterOptions, scope) =>
       dispatch(
@@ -216,9 +203,6 @@ const PatientsFilter = ({
         editIdentifier={editIdentifier}
         customFinalFilter={customFinalFilter}
         setCustomFinalFilter={setCustomFinalFilter}
-        handleQuickFilterDuplicateForPatientList={
-          handleQuickFilterDuplicateForPatientList
-        }
         clearFilters={handleClear}
       />
       <NewFilterContainer

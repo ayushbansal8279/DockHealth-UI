@@ -25,7 +25,6 @@ const CustomFilters = ({
   setSelectedQuickFilter,
   selectedQuickFilter,
   clearFilters,
-  handleQuickFilterDuplicateForPatientList,
 }) => {
   const [editModeFilterIdentifier, setEditModeFilterIdentifier] =
     useState(null);
@@ -99,9 +98,6 @@ const CustomFilters = ({
             setCustomFinalFilter={setCustomFinalFilter}
             onQuickFilterCreate={onQuickFilterCreate}
             clearFilters={clearFilters}
-            handleQuickFilterDuplicateForPatientList={
-              handleQuickFilterDuplicateForPatientList
-            }
             openPopover={openPopover}
           />
         ))}
