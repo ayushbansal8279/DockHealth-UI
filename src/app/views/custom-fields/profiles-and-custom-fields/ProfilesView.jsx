@@ -19,7 +19,7 @@ import { ViewContainer } from './styled';
 
 const PAGE_SIZE = 30;
 
-const ProfilesAndCustomFieldsView = () => {
+const ProfilesAndCustomFieldsView = () => {  
   const history = useHistory();
   const userProfile = useSelector(userProfileSelector);
   const [profileTypes, setProfileTypes] = useState([]);
@@ -85,6 +85,19 @@ const ProfilesAndCustomFieldsView = () => {
     [history],
   );
 
+  const onOpenProfileBuilder = useCallback(
+    ({ row: { name, identifier } }) => {
+      // if (name.toLowerCase() === 'users' || name.toLowerCase() === 'patients') {
+      //   history.push(`/settings/custom-fields/${name.toLowerCase()}`);
+      //   return;
+      // }
+      history.push(
+        `/settings/profile-builder/${name.toLowerCase()}/${identifier}`,
+      );
+    },
+    [history],
+  );
+
   const onDeleteProfile = useCallback(
     ({ id }) => {
       const modalProps = {
@@ -108,8 +121,9 @@ const ProfilesAndCustomFieldsView = () => {
         onEditProfile,
         onDeleteProfile,
         onConfigureCustomFields,
+        onOpenProfileBuilder
       }),
-    [onDeleteProfile, onEditProfile, onConfigureCustomFields],
+    [onDeleteProfile, onEditProfile, onConfigureCustomFields,onOpenProfileBuilder],
   );
 
   let profileOptions = [

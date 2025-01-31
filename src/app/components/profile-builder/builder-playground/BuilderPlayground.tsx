@@ -40,6 +40,8 @@ const BuilderPlayground = ({
 
     setSelectedCategories((prev) => [...prev, newCategory]);
   };
+  console.log(selectedCategories);
+  
 
   const AddCategory = () => {
     return (

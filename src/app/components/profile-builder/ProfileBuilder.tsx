@@ -1,4 +1,4 @@
-import React, { SetStateAction, useState } from 'react';
+import React, { SetStateAction, useEffect, useState } from 'react';
 import BasicLayoutHeader from '../template/BasicLayoutHeader/BasicLayoutHeader';
 import ProfileBuilderCategories from './categories/Categories.t/ProfileBuilderCategories';
 import { BuilderContainer, CategoryWrapper, PlayGroungWrapper } from './styled';
@@ -7,8 +7,39 @@ import { DragDropContext, DragStart, DropResult } from 'react-beautiful-dnd';
 import { useBoolean } from 'hooks/useBoolean';
 import { Field, DROPTYPE, Category } from './helper';
 import { dummyFields } from './helper';
+import { useParams } from 'react-router-dom';
+import { showGlobalErrorAlert } from 'alert/actions';
+import * as ProfileTypeFieldApi from 'api/profile-type-field-api';
+import { useDispatch } from 'react-redux';
 
 const ProfileBuilder = () => {
+  const dispatch = useDispatch();
+  const { tabName, identifier } = useParams();
+  console.log("tabName",tabName);
+  console.log("identifier",identifier);
+  
+
+
+  const fetchUserCustomFields = () => {
+    ProfileTypeFieldApi.getAllProfileFieldTypes(identifier)
+      .then((data: any) => {
+        console.log(data);
+         
+        // setCustomFields(data);
+        // setIsFetching(false);
+      })
+      .catch(() => {
+        dispatch(showGlobalErrorAlert());
+      });
+  };
+
+  useEffect(() => {
+    fetchUserCustomFields();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+
+
   const [isAddCategoryDrop, setAddCategoryDrop, unsetAddCategoryDrop] =
     useBoolean(false);
   const [isAddFieldDrop, setAddFieldDrop, unsetAddFieldDrop] =
