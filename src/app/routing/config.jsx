@@ -223,7 +223,7 @@ export const SETTINGS_ROUTES = [
     permissions: [CAN_ACCESS_SETTINGS_PAGE],
   },
   {
-    path: '/profile-builder',
+    path: '/profile-builder/:tabName/:identifier?',
     RouteComponent: ProfileBuilderView,
     permissions: [CAN_ACCESS_SETTINGS_PAGE],
   },
