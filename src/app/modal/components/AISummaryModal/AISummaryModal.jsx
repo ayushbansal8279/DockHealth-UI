@@ -70,6 +70,7 @@ const AISummaryModal = ({ closeModal, title, onsubmit, type, identifier }) => {
   const [isFetching, setIsFetching] = useState(false);
   const [generateDateTime, setGeneratedDateTime] = useState('');
   const [stirngSummary, setStringSummary] = useState('');
+  const [generatedSubject, setGeneratedSubject] = useState('');
   const [tooltipHover, setTooltipHover] = useState({
     email: false,
     note: false,
@@ -118,7 +119,11 @@ const AISummaryModal = ({ closeModal, title, onsubmit, type, identifier }) => {
     setGeneratedDateTime(responseDateTime);
 
     const res = result?.remainingString.replace(/""/g, '**');
-    setStringSummary(result?.remainingString);
+    const generatedSummaryLines = result?.remainingString.split("\n");
+    const generatedSummarySubject = generatedSummaryLines[0].replace(/^Subject:\s*/i, "").trim();
+    const updatedSummary = generatedSummaryLines.slice(1).join("\n").trim();
+    setStringSummary(updatedSummary);
+    setGeneratedSubject(generatedSummarySubject)
 
     const splitArray = res.split('\n\n');
     splitArray ? setSummaries(splitArray) : null;
@@ -199,6 +204,7 @@ const AISummaryModal = ({ closeModal, title, onsubmit, type, identifier }) => {
                       source: 'Ai Summary Modal',
                       identifier,
                       generatedSummary: stirngSummary,
+                      generatedSubject: generatedSubject
                     }),
                   );
                 }}
@@ -220,6 +226,7 @@ const AISummaryModal = ({ closeModal, title, onsubmit, type, identifier }) => {
                       source: 'Ai Summary Modal',
                       taskIdentifier: identifier,
                       generatedSummary: stirngSummary,
+                      generatedSubject: generatedSubject
                     }),
                   );
                 }}
