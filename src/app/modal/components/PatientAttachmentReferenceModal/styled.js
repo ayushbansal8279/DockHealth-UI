@@ -19,22 +19,14 @@ export const Title = styled.h2`
   text-transform: capitalize;
   flex: 1;
 `;
-export const Container = styled.div`
-  height: 380px;
-  width: 384px;
-  overflow-y: auto; /* Allow vertical scrolling */
-  overflow-x: hidden;
-  position: relative;
-  box-sizing: border-box;
-`;
 
 export const ListsWrapper = styled.div`
   flex: 1;
   width: 100%;
-  max-height: 330px; /* Limit height */
+  max-height: 330px;
   min-height: 330px;
   border: 1px solid ${palette.coolGrey2};
-  overflow-y: auto; /* Enable vertical scrolling */
+  overflow-y: auto;
   overflow-x: hidden;
   box-sizing: border-box;
   position: relative;
@@ -80,12 +72,6 @@ export const HeaderSearchWrapper = styled.div`
   pointer-events: auto;
   z-index: 1010; 
 `;
-
-// export const Container = styled.div`
-//   height: 384px;
-//   width: 384px;
-//   overflow: hidden;
-// `;
 
 export const WorkflowFoldersListContainer = styled.div`
   width: 100%;
@@ -136,7 +122,7 @@ export const TitleWithButtonWrapper = styled.div`
   width: 100%;
   
   & > button {
-    position: absolute;  /* Fix the button to the left */
+    position: absolute;
     left: ${spacing.mega};
     top: ${spacing.mega};
     color: ${palette.brightBlue};

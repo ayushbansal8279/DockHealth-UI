@@ -696,7 +696,25 @@ export const renameTaskAttachment =
         throw error;
       });
   };
-      
+
+export const addPatientReferenceAttachment =
+  (taskIdentifier,attachmentId , type ) => (dispatch) => {
+    return TaskApi.addPatientReferenceAttachment(taskIdentifier,attachmentId,type)
+      .then(() => {
+        dispatch({
+          type: ActionTypes.PATIENT_REFERENCE_ATTACHMENT_ADDED,
+          attachmentId,
+          type,
+        });
+        dispatch(
+          AlertActions.showGlobalAlert(AlertMessages.ATTACHMENT_ADDED),
+        );
+      })
+      .catch((error) => {
+        throw error;
+      });
+  };  
+  
 export function refreshTask(taskIdentifier) {
   return {
     type: ActionTypes.REFRESH_TASK,

@@ -6,7 +6,6 @@ import { EmptyMessage,
    ListItem, 
    ListsWrapper, 
    Title, 
-   Container, 
    ListItemTextButton, 
    WorkflowFoldersListContainer,
    FolderIconContainer,
@@ -18,14 +17,18 @@ import { NextArrow } from "../ListPickerModal/styled";
 import { getPatientAttachments } from "@/app/api/patient-attachment-api";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import FolderOpenIcon from '@mui/icons-material/FolderOpen';
+import { addPatientReferenceAttachment } from "@/app/actions/task-actions";
+import { useDispatch } from "react-redux";
 
-const PatientAttachmentReferenceModal = ({ attachmentList, closeModal }) => {
+const PatientAttachmentReferenceModal = ({ attachmentList, taskIdentifier, closeModal }) => {
   const [navigationStack, setNavigationStack] = useState([]);
   const [currentFolders, setCurrentFolders] = useState([]);
   const [currentAttachments, setCurrentAttachments] = useState([]);
   const [selectedAttachment, setSelectedAttachment] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [currentTitle, setCurrentTitle] = useState("Reference File From Patient");
+  const [selectedAttachmentIdentifier, setSelectedAttachmentIdentifier] = useState();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const initialFolders = attachmentList?.filter(({ type }) => type === 'FOLDER');
@@ -34,8 +37,22 @@ const PatientAttachmentReferenceModal = ({ attachmentList, closeModal }) => {
     setCurrentAttachments(initialAttachments);
   }, [attachmentList]);
 
-  const handleRadioChange = (event) => {
+  const handleRadioChange = (attachment,event) => {
+    setSelectedAttachmentIdentifier(attachment.attachmentIdentifier)
     setSelectedAttachment(event.target.value);
+  };
+
+  const handleConfirmWrapper = () => {
+    if (selectedAttachmentIdentifier) {
+      dispatch(
+        addPatientReferenceAttachment(
+            taskIdentifier,
+            selectedAttachmentIdentifier,
+            'PATIENT'
+          )
+        )
+    closeModal()    
+    }
   };
 
   const onFolderClick = async (folder) => {
@@ -64,7 +81,6 @@ const PatientAttachmentReferenceModal = ({ attachmentList, closeModal }) => {
   const filteredAttachments = currentAttachments.filter((attachment) =>
     attachment.fileName.toLowerCase().includes(searchQuery.toLowerCase())
   );
-
 
   const onBack = () => {
     if (navigationStack.length > 0) {
@@ -96,7 +112,6 @@ const PatientAttachmentReferenceModal = ({ attachmentList, closeModal }) => {
   };
 
   return (
-    <div>
     <ModalWrapperWithPadding>
       <TitleWithButtonWrapper>
           {navigationStack.length > 0 && (
@@ -110,14 +125,12 @@ const PatientAttachmentReferenceModal = ({ attachmentList, closeModal }) => {
         <CloseIcon />
       </CloseIconButton>
       <Box m={1} />
-      {/* <Container> */}
         <HeaderSearchWrapper>
           <HeaderSearch
             value={searchQuery}
             onChange={(value) => setSearchQuery(value)}
           />
         </HeaderSearchWrapper>
-        {/* <Box m={0.3} /> */}
         <ListsWrapper>
           {filteredFolders?.length > 0 && (
               <WorkflowFoldersListContainer>
@@ -144,7 +157,7 @@ const PatientAttachmentReferenceModal = ({ attachmentList, closeModal }) => {
                       <Radio
                         value={attachment.fileName}
                         checked={selectedAttachment === attachment.fileName}
-                        onChange={handleRadioChange}
+                        onChange={(event) => handleRadioChange(attachment, event)}
                         size="very small" 
                       />
                     }
@@ -158,7 +171,6 @@ const PatientAttachmentReferenceModal = ({ attachmentList, closeModal }) => {
             <EmptyMessage>No attachments found</EmptyMessage>
           )}
         </ListsWrapper>
-      {/* </Container> */}
       <Box m={1} />
       <Grid container direction="row">
         <FlexButtonWrapper>
@@ -177,13 +189,13 @@ const PatientAttachmentReferenceModal = ({ attachmentList, closeModal }) => {
             fullWidth
             size="small"
             disabled={!selectedAttachment}
+            onClick={() => handleConfirmWrapper()}
           >
             Save
           </ConfirmButton>
         </FlexButtonWrapper>
       </Grid>
     </ModalWrapperWithPadding>
-    </div>
   );
 };
 

@@ -8,34 +8,42 @@ const AddAttachmentButton = ({attachmentOptions}) => {
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
+    if(attachmentOptions.length>0){
+       event.stopPropagation();
+    }
   };
+
   const handleClose = () => {
     setAnchorEl(null);
   };
   
   return (
-    <Container>
-      <div  onClick={handleClick}>
+    <div>
+    <Container onClick={handleClick} >
+      <div   >
         <OutfitTypography condensed variant="h4" color="inherit">
           +
         </OutfitTypography>
       </div>
       {attachmentOptions.length > 0 && 
-      <Menu
-        anchorEl={anchorEl}
-        open={Boolean(anchorEl)}
-        onClose={handleClose}
-      >
-        <MenuItem 
-          onClick={() => handleOptionClick(attachmentOptions[0])}
-          {...attachmentOptions[0]}
-        >{attachmentOptions[0].label}</MenuItem>
-        <MenuItem onClick={() => handleOptionClick(attachmentOptions[1])}
-        {...attachmentOptions[1]}
-        >{attachmentOptions[1].label}</MenuItem>
-      </Menu>
+        <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleClose}>
+          {attachmentOptions.map((option, index) => (
+            <MenuItem 
+              key={index} 
+              onClick={(event) => {
+                handleClose();
+                option.onClick?.(event);
+                event.stopPropagation();
+              }}
+              {...(option.getRootProps ? option.getRootProps() : {})}
+              disabled={option.disabled}>
+              {option.label}
+            </MenuItem>
+          ))}
+        </Menu>
       }
     </Container>
+    </div>
   );
 };
 

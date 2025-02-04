@@ -62,6 +62,7 @@ const AttachmentsSection = ({
   
       dispatch(openModal('PatientAttachmentReference', {
         attachmentList: patientAttachments,
+        taskIdentifier: selectedTask?.identifier
       }));
     } catch (error) {
       console.error(error);
@@ -122,7 +123,7 @@ const AttachmentsSection = ({
             xs={12}
             container
             alignContent="center"
-            {...(!patientIdentifier ? getRootProps({ style: { outline: 'none' } }) : {})}
+            {...getRootProps({ style: { outline: 'none' } })}
           >
             {attachmentsLoading ? (
               <>
