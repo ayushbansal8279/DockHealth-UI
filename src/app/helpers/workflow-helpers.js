@@ -67,12 +67,27 @@ export function isWorkflowDueDateOverdue(workflow) {
     return false;
   }
   const { dueDateTime } = workflow;
+  
+  const dueDateObject = moment.utc(dueDateTime);
+  const now = moment();
 
-  const dueDateObject = moment(dueDateTime);
+  if (dueDateObject.isAfter(now, "minute")) {
+    return false;
+  }
 
-  return dueDateObject.format('HH:mm') !== '00:00' && dueDateObject.hours() > 4
-    ? dueDateObject.isBefore(moment())
-    : dueDateObject.isBefore(moment().startOf('day'));
+  if (
+    dueDateObject.isSame(moment.utc(), "day") &&
+    dueDateObject.hours() === 0 &&
+    dueDateObject.minutes() === 0
+  ) {
+    return false;
+  }
+
+  if (dueDateObject.isSame(moment.utc(), "day")) {
+    return dueDateObject.isBefore(now);
+  }
+
+  return true;
 }
 
 export function reorderTasksForWorkflow(
