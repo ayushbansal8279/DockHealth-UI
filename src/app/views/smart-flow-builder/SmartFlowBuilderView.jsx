@@ -368,7 +368,8 @@ const SmartFlowBuilderView = () => {
             selectedElements.some((se) => !!se.data?.task)
           ) {
             for (const selectedElement of selectedElements) {
-              if (selectedElement?.data.task.taskLinks?.length > 0) {
+              const taskLinks = selectedElement?.data.task.taskLinks;
+              if (taskLinks?.length > 0 && taskLinks.some(link => link.linkType !== 'START')) {
                 dispatch(
                   openModal('Information', {
                     text: 'This task already has linkages to other tasks. If you want to change it to decision tree, please remove existing connections.',
