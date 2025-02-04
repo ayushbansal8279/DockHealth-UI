@@ -27,7 +27,7 @@ export const StyledTextField = styled(TextField)`
       `background-color: ${palette.white};`}
     border-radius: 0.25rem;
     color: ${palette.coolGrey1};
-    height: ${({ isWorkFlowSearch }) => (isWorkFlowSearch ? '48px' : '2.5rem')};
+    height: ${({ isWorkFlowSearch }) => (isWorkFlowSearch ? '32px' : '2.5rem')};
     ${(props) => (props.fullWidth ? 'width: 100%;' : '')}
 
     & .MuiInputBase-root {
@@ -56,7 +56,8 @@ export const StyledTextField = styled(TextField)`
 
     & input {
       caret-color: ${palette.coolGrey1};
-      color: ${palette.coolGrey1};
+      color: ${({ isWorkFlowSearch }) =>
+        isWorkFlowSearch ? `${palette.black}` : `${palette.coolGrey1}`};
       font-family: 'Outfit', sans-serif;
       height: 100%;
       border: none;
@@ -65,12 +66,13 @@ export const StyledTextField = styled(TextField)`
       font-size: 0.875rem;
       font-weight: ${fontWeights.regular};
       padding: 0;
+      margin-left: ${({ isWorkFlowSearch }) =>
+        isWorkFlowSearch ? '5px' : '0'};
 
       &::placeholder {
         font-family: ${({ isWorkFlowSearch }) =>
           isWorkFlowSearch ? 'Outfit' : ''};
-        color: ${({ isWorkFlowSearch }) =>
-          isWorkFlowSearch ? palette.lightGrayishBlue : palette.coolGrey1};
+        color: ${palette.coolGrey1};
         font-size: ${({ isWorkFlowSearch }) =>
           isWorkFlowSearch ? '14px' : '1rem'};
         font-weight: ${({ isWorkFlowSearch }) =>

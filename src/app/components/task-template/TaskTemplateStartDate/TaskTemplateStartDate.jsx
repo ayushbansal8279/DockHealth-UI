@@ -13,16 +13,22 @@ import {
 } from '../TaskTemplateDueDate/styled';
 import { openModal } from '@/app/modal/actions';
 import { isStartDateValid } from '@/app/helpers/date-validation-helper';
+import { adjustUTCDateForDateIntent } from '../../task/DueDatePicker/helpers';
+import { checkDateTimeIntent, DueDateIntent } from '@/app/helpers/task-helpers';
+import moment from 'moment';
+import { formatDateTime } from '@/app/helpers/date-intent-helpers';
 
 const TaskTemplateStartDate = (props) => {
   const { workflow, disabled = false } = props;
-  const { identifier, startDateTime, dueDateTime } = workflow || {};
+  const { identifier, startDateTime, startDateIntent, dueDateTime } = workflow || {};
   const dispatch = useDispatch();
 
   const handleSave = useCallback(
     (updatedDate) => {
+      const startDateIntent = checkDateTimeIntent(updatedDate);
       const payload = {
-        startDateTime: updatedDate,
+        startDateTime: formatDateTime(updatedDate, startDateIntent),
+        startDateIntent: updatedDate ? startDateIntent : DueDateIntent.DATE,
       };
 
       if (!updatedDate) payload.startDateTimeCleared = true;
@@ -56,15 +62,21 @@ const TaskTemplateStartDate = (props) => {
         content={({ closePopover }) => (
           <DueDatePicker
             taskIdentifier={identifier}
-            selectedDate={startDateTime}
+            selectedDate={adjustUTCDateForDateIntent(startDateTime ? moment(startDateTime).local() : null, startDateIntent)}
             disableRecurring
             onDateChange={handleStartDateChange}
             onCloseClick={closePopover}
+            dueDateIntent={startDateIntent}
+            dateType="dueDate"
           />
         )}
       >
         {startDateTime ? (
-          <DateLabel date={startDateTime} tootipTitle="Edit Start Date" />
+          <DateLabel 
+            date={startDateTime} 
+            tootipTitle="Edit Start Date" 
+            dueDateIntent={startDateIntent}
+          />
         ) : (
           <>
             <StartDateWrapper>

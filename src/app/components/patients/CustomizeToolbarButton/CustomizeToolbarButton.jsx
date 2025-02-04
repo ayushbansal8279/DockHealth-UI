@@ -1,6 +1,6 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 /* eslint-disable no-underscore-dangle */
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { Box, List, ListItemText, MenuItem, Popover } from '@mui/material';
 import CustomizeIcon from 'img/customize-icon.svg';
 import Checkbox from 'components/common/Checkbox/Checkbox';
@@ -22,7 +22,13 @@ import {
 } from 'helpers/custom-fields-helpers';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import { capitalize } from 'helpers/capitalize';
+import Search from 'components/task-view/Search/Search';
 import ToolbarButton from '@/app/components/tasklist/list-toolbar-buttons/ToolbarButton/ToolbarButton';
+import {
+  SearchContainer,
+  WorkflowSearchHorizontalLine,
+  WorkflowSearchHorizontalLineContainer,
+} from '@/app/components/task-template/TaskTemplateApplicator/styled';
 import {
   PlusIcon,
   PopoverContainer,
@@ -39,6 +45,7 @@ const CustomizeToolbarButton = ({
   iconColorFilterActive,
 }) => {
   const [open, setOpen] = useState(false);
+  const [searchValue, setSearchValue] = useState('');
   const [openUpgradePopup, setOpenUpgradePopup] = useState(false);
   const buttonReference = useRef(null);
   const addColumnButtonReference = useRef(null);
@@ -47,6 +54,16 @@ const CustomizeToolbarButton = ({
     userHasTaskCustomFieldsFeatureSelector,
   );
   const { columns, setColumns } = usePatientListColumnsConfig();
+  const handleSearch = useCallback(
+    (searchPhrase) => {
+      setSearchValue(searchPhrase);
+    },
+    [setSearchValue],
+  );
+
+  useEffect(() => {
+    setSearchValue('');
+  }, [open]);
 
   const ColumnOptionNames = {
     [PatientHeaderColumn.PATIENT]: 'Name',
@@ -128,6 +145,19 @@ const CustomizeToolbarButton = ({
         }}
       >
         <PopoverContainer>
+          <SearchContainer>
+            <Search
+              fullWidth
+              noBackground
+              value={searchValue}
+              onChange={(event) => handleSearch(event?.target?.value)}
+              placeholder="Search"
+              isWorkFlowSearch
+            />
+          </SearchContainer>
+          <WorkflowSearchHorizontalLineContainer>
+            <WorkflowSearchHorizontalLine />
+          </WorkflowSearchHorizontalLineContainer>
           <Box display="flex" justifyContent="space-between" mt={1}>
             <Box mx={0.5} />
             <ListItemText>
@@ -135,16 +165,42 @@ const CustomizeToolbarButton = ({
             </ListItemText>
           </Box>
           <List>
-            {sort(
-              (a, b) =>
-                ColumnOptionNames[a.identifier]?.localeCompare(
-                  ColumnOptionNames[b.identifier],
-                ),
-              columns,
-            ).map((column) => {
-              const optionName = ColumnOptionNames[column.identifier];
-              return optionName && renderElement(column, optionName);
-            })}
+            {(() => {
+              const sortedColumns = sort(
+                (a, b) =>
+                  ColumnOptionNames[a.identifier]?.localeCompare(
+                    ColumnOptionNames[b.identifier],
+                  ),
+                columns,
+              );
+
+              const filteredColumns = sortedColumns.filter((column) => {
+                const optionName = ColumnOptionNames[column.identifier];
+                return (
+                  !searchValue ||
+                  optionName
+                    ?.toLowerCase()
+                    ?.includes(searchValue?.toLowerCase())
+                );
+              });
+
+              return filteredColumns.length > 0 ? (
+                filteredColumns.map((column) => {
+                  const optionName = ColumnOptionNames[column.identifier];
+                  return optionName && renderElement(column, optionName);
+                })
+              ) : (
+                <div
+                  style={{
+                    textAlign: 'center',
+                    marginTop: '10px',
+                    marginBottom: '10px',
+                  }}
+                >
+                  No columns found
+                </div>
+              );
+            })()}
           </List>
           {additionalOptions && additionalOptions.length > 0 && (
             <>
@@ -187,11 +243,33 @@ const CustomizeToolbarButton = ({
                 </ListItemText>
               </Box>
               <List>
-                {sortAlphabetical(
-                  columns.filter(
-                    (c) => c._customFieldType === CUSTOM_FIELD_TYPES.PATIENT,
-                  ),
-                ).map((column) => renderElement(column))}
+                {(() => {
+                  const filteredColumns = sortAlphabetical(
+                    columns.filter(
+                      (c) => c._customFieldType === CUSTOM_FIELD_TYPES.PATIENT,
+                    ),
+                  ).filter(
+                    (column) =>
+                      !searchValue ||
+                      column?.name
+                        ?.toLowerCase()
+                        ?.includes(searchValue?.toLowerCase()),
+                  );
+
+                  return filteredColumns.length > 0 ? (
+                    filteredColumns.map((column) => renderElement(column))
+                  ) : (
+                    <div
+                      style={{
+                        textAlign: 'center',
+                        marginTop: '10px',
+                        marginBottom: '10px',
+                      }}
+                    >
+                      No columns found
+                    </div>
+                  );
+                })()}
               </List>
             </>
           )}

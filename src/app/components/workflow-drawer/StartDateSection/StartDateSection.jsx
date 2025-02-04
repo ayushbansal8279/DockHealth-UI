@@ -19,22 +19,23 @@ import {
 } from '../DueDateSection/styled';
 import { isStartDateValid } from '@/app/helpers/date-validation-helper';
 import { openModal } from '@/app/modal/actions';
+import { checkDateTimeIntent, DueDateIntent } from '@/app/helpers/task-helpers';
+import { adjustUTCDateForDateIntent } from '../../task/DueDatePicker/helpers';
+import { formatDateBasedOnIntent, formatDateTime, shouldDisplayTime } from '@/app/helpers/date-intent-helpers';
 
 const StartDateSection = ({ disabled }) => {
   const dispatch = useDispatch();
   const selectedWorkflow = useSelector(workflowSelector);
-  const { identifier, startDateTime, dueDateTime, hasRecurringSchedule } =
+  const { identifier, startDateTime, dueDateTime, hasRecurringSchedule, startDateIntent } =
     selectedWorkflow || {};
   const momentStartDate = startDateTime ? moment(startDateTime) : null;
-  const [isTimeAvailable, setIsTimeAvailable] = useState(false);
 
   const handleSave = useCallback(
     (updatedStartDateTime) => {
-      if (updatedStartDateTime === null) {
-        setIsTimeAvailable(false);
-      }
+      const startDateIntent = checkDateTimeIntent(updatedStartDateTime);
       const payload = {
-        startDateTime: updatedStartDateTime,
+        startDateTime: formatDateTime(updatedStartDateTime, startDateIntent),
+        startDateIntent: updatedStartDateTime ? startDateIntent : DueDateIntent.DATE,
       };
 
       if (!updatedStartDateTime) payload.startDateTimeCleared = true;
@@ -61,15 +62,6 @@ const StartDateSection = ({ disabled }) => {
     [dispatch, selectedWorkflow],
   );
 
-  useEffect(() => {
-    if (
-      momentStartDate &&
-      (momentStartDate.hour() || momentStartDate.minute())
-    ) {
-      setIsTimeAvailable(true);
-    }
-  }, [momentStartDate]);
-
   return (
     <StartDateSectionWrapper>
       <Title>Start date</Title>
@@ -78,10 +70,12 @@ const StartDateSection = ({ disabled }) => {
         content={({ closePopover }) => (
           <DueDatePicker
             taskIdentifier={identifier}
-            selectedDate={startDateTime}
+            selectedDate={adjustUTCDateForDateIntent(startDateTime ? moment(startDateTime).local() : null, startDateIntent)}
             onDateChange={handleStartDateSave}
             recurring={hasRecurringSchedule}
             onCloseClick={closePopover}
+            dueDateIntent={startDateIntent}
+            dateType="dueDate"
           />
         )}
       >
@@ -90,16 +84,17 @@ const StartDateSection = ({ disabled }) => {
             <>
               <DateViewContainer>
                 <DateViewText>
-                  {momentStartDate.format('MMM DD, YYYY')}
+                  {formatDateBasedOnIntent(momentStartDate, startDateIntent)}
                 </DateViewText>
               </DateViewContainer>
-              {isTimeAvailable && (
-                <DateViewContainer>
-                  <DateViewText>
-                    {momentStartDate?.format('hh:mm a')}
-                  </DateViewText>
-                </DateViewContainer>
-              )}
+              {shouldDisplayTime(momentStartDate, startDateIntent) && (
+                  <DateViewContainer>
+                    <DateViewText>
+                      {momentStartDate?.format('hh:mm a')}
+                    </DateViewText>
+                  </DateViewContainer>
+                )
+              }
             </>
           ) : (
             <NoDateContainer>

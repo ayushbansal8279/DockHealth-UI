@@ -18,22 +18,23 @@ import {
   NoDateContainer,
 } from '../DueDateSection/styled';
 import AssignMemberIcon from '../../user/AssignMemberIcon/AssingMemberIcon';
+import { checkDateTimeIntent, DueDateIntent } from '@/app/helpers/task-helpers';
+import { adjustUTCDateForDateIntent } from '../../task/DueDatePicker/helpers';
+import { formatDateBasedOnIntent, formatDateTime, shouldDisplayTime } from '@/app/helpers/date-intent-helpers';
 
 const AnchorDateSection = ({ disabled }) => {
   const dispatch = useDispatch();
   const selectedWorkflow = useSelector(workflowSelector);
-  const { identifier, anchorDateTime, hasRecurringSchedule } =
+  const { identifier, anchorDateTime, hasRecurringSchedule, anchorDateIntent } =
     selectedWorkflow || {};
   const momentAnchorDate = anchorDateTime ? moment(anchorDateTime) : null;
-  const [isTimeAvailable, setIsTimeAvailable] = useState(false);
 
   const handleAnchorDateSave = useCallback(
     (date) => {
-      if (date === null) {
-        setIsTimeAvailable(false);
-      }
+      const anchorDateIntent = checkDateTimeIntent(date);
       const payload = {
-        anchorDateTime: date,
+        anchorDateTime: formatDateTime(date, anchorDateIntent),
+        anchorDateIntent: date ? anchorDateIntent : DueDateIntent.DATE,
       };
 
       const modalProps = {
@@ -50,15 +51,6 @@ const AnchorDateSection = ({ disabled }) => {
     [dispatch, selectedWorkflow],
   );
 
-  useEffect(() => {
-    if (
-      momentAnchorDate &&
-      (momentAnchorDate.hour() || momentAnchorDate.minute())
-    ) {
-      setIsTimeAvailable(true);
-    }
-  }, [momentAnchorDate]);
-
   return (
     <AnchorDateSectionWrapper>
       <Title>Anchor date</Title>
@@ -67,11 +59,13 @@ const AnchorDateSection = ({ disabled }) => {
         content={({ closePopover }) => (
           <DueDatePicker
             taskIdentifier={identifier}
-            selectedDate={anchorDateTime}
+            selectedDate={adjustUTCDateForDateIntent(anchorDateTime ? moment(anchorDateTime).local() : null, anchorDateIntent)}
             onDateChange={handleAnchorDateSave}
             recurring={hasRecurringSchedule}
             disableRecurring
             onCloseClick={closePopover}
+            dueDateIntent={anchorDateIntent}
+            dateType="dueDate"
           />
         )}
       >
@@ -80,16 +74,17 @@ const AnchorDateSection = ({ disabled }) => {
             <>
               <DateViewContainer>
                 <DateViewText>
-                  {momentAnchorDate.format('MMM DD, YYYY')}
+                  {formatDateBasedOnIntent(momentAnchorDate, anchorDateIntent)}
                 </DateViewText>
               </DateViewContainer>
-              {isTimeAvailable && (
-                <DateViewContainer>
-                  <DateViewText>
-                    {momentAnchorDate?.format('hh:mm a')}
-                  </DateViewText>
-                </DateViewContainer>
-              )}
+              {shouldDisplayTime(momentAnchorDate, anchorDateIntent) && (
+                  <DateViewContainer>
+                    <DateViewText>
+                      {momentAnchorDate?.format('hh:mm a')}
+                    </DateViewText>
+                  </DateViewContainer>
+                )
+              }
             </>
           ) : (
             <NoDateContainer>

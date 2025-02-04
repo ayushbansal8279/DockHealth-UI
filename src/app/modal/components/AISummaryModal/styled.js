@@ -10,7 +10,7 @@ import MARIGrey from 'img/AI/mari-grey.png';
 import { ModalWrapper } from '../styled';
 
 export const AISummaryModalWrapper = styled(ModalWrapper)`
-  width: 600px;
+  width: ${({ expanded }) => (expanded ? '900px' : '600px')};
   border-radius: 10px;
   padding: ${spacing.regular} ${spacing.largePlus} 0 ${spacing.largePlus};
 `;

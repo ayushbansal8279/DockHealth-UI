@@ -7,7 +7,12 @@ import RichTextEditor from 'components/common/RichTextEditor/RichTextEditor';
 import { convertToSimpleString } from 'helpers/markdown-helper.js';
 import { Text, LongTextBox, Divider } from './styled';
 
-const TaskItemLongText = ({ value = '', onChange, openDrawer, readOnly = false}) => {
+const TaskItemLongText = ({
+  value = '',
+  onChange,
+  openDrawer,
+  readOnly = false,
+}) => {
   const [rawDetails, setRawDetails] = useState(null);
   const [unformattedDetails, setUnformattedDetails] = useState(null);
 
@@ -67,6 +72,7 @@ const TaskItemLongText = ({ value = '', onChange, openDrawer, readOnly = false})
               onBlur={handleBlur(closePopover)}
               initOnClick={false}
               showCharCount
+              disableMentions
             />
             <Divider />
             <PopoverBottomBar align="spread">
@@ -98,7 +104,7 @@ const TaskItemLongText = ({ value = '', onChange, openDrawer, readOnly = false})
             title={
               <pre
                 style={{
-                  fontFamily: "Outfit, sans-serif",
+                  fontFamily: 'Outfit, sans-serif',
                   fontSize: '16px',
                   whiteSpace: 'pre-wrap',
                   wordBreak: 'keep-all',

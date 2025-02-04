@@ -11,13 +11,7 @@ import {
   setCurrentUserGroup,
   unsetCurrentUserGroup,
 } from 'actions/user-groups-actions';
-import {
-  Box,
-  FormGroup,
-  ListItemText,
-  MenuItem,
-  Stack,
-} from '@mui/material';
+import { Box, FormGroup, ListItemText, MenuItem, Stack } from '@mui/material';
 import { getAllProfileTypes } from 'api/profile-type-api';
 import { getAllProfiles } from 'api/profile-api';
 import { getAllProfileFieldTypes } from 'api/profile-type-field-api';
@@ -40,6 +34,8 @@ import { MoreVert } from '@mui/icons-material';
 import { userProfileSelector } from '@/app/selectors/user-selectors';
 import { isUserGuestOrDockLite, isUserViewOnly } from '@/app/helpers/user-helper';
 import { downloadProfileData } from '@/app/api/profile-api';
+import { initializeProfileState } from '@/app/actions/profile-actions';
+
 
 const CustomProfileList = () => {
   const dispatch = useDispatch();
@@ -51,6 +47,11 @@ const CustomProfileList = () => {
   const groupIdentifier = getUserGroupIdentifierByUrlParameter(
     groupIdentifierUrlParameter,
   );
+
+  useEffect(() => {
+    dispatch(initializeProfileState(profileTypeIdentifier));
+  }, [dispatch, profileTypeIdentifier]);
+
   useEffect(() => {
     dispatch(setCurrentUserGroup(groupIdentifier));
 
@@ -259,7 +260,11 @@ const CustomProfileList = () => {
               </Paper>
             </Popover>
             <Box display="flex" alignItems="center" my={0.4} mx={2}>
-              <ProfileFilter profileTypeIdentifier={profileTypeIdentifier} fetchProfiles={fetchProfiles} setProfiles={setProfiles} />
+              <ProfileFilter
+                profileTypeIdentifier={profileTypeIdentifier}
+                fetchProfiles={fetchProfiles}
+                setProfiles={setProfiles}
+              />
             </Box>
             <Box display="flex" alignItems="center" width="400px" my={0.4}>
               <SearchInput

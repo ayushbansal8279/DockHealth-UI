@@ -65,6 +65,7 @@ const AISummaryModal = ({ closeModal, title, onsubmit, type, identifier }) => {
   // const [customPrompt, setCustomPrompt] = useState('');
   const [promptTypeValue, setPromptTypeValue] = useState('DEFAULT');
   const [copied, setCopied] = useState(false);
+  const [expanded, setExpanded] = useState(false);
   const [summaries, setSummaries] = useState([]);
   const [isFetching, setIsFetching] = useState(false);
   const [generateDateTime, setGeneratedDateTime] = useState('');
@@ -78,10 +79,10 @@ const AISummaryModal = ({ closeModal, title, onsubmit, type, identifier }) => {
   const dispatch = useDispatch();
 
   const currentOrganization = useSelector(selectedUserOrganizationSelector);
-  const aiSummaryMultiplePrompts =
-    currentOrganization?.themeSettings?.find(
-      ({ name }) => name === 'ai.summary.multiple.prompts',
-    ) || {};
+  // const aiSummaryMultiplePrompts =
+  //   currentOrganization?.themeSettings?.find(
+  //     ({ name }) => name === 'ai.summary.multiple.prompts',
+  //   ) || {};
 
   const sendEmailAvailable = useSelector(userHasSendEmailFeatureSelector);
   const postToEMRAvailable = useSelector(userHasPostEMRNoteFeatureSelector);
@@ -138,7 +139,7 @@ const AISummaryModal = ({ closeModal, title, onsubmit, type, identifier }) => {
   };
 
   return (
-    <AISummaryModalWrapper>
+    <AISummaryModalWrapper expanded={expanded}>
       <LabelContainer>
         <LabelWrapper>BETA</LabelWrapper>
       </LabelContainer>
@@ -148,7 +149,12 @@ const AISummaryModal = ({ closeModal, title, onsubmit, type, identifier }) => {
           {title}
         </Title>
         <div>
-          {/* <img style={{ cursor: 'pointer' }} src={Expand} alt="close" /> */}
+          <img
+            style={{ cursor: 'pointer' }}
+            onClick={() => setExpanded(!expanded)}
+            src={Expand}
+            alt="expand"
+          />
           <IconWrapper onClick={closeModal} src={Close} alt="close" />
         </div>
       </Header>
@@ -166,17 +172,17 @@ const AISummaryModal = ({ closeModal, title, onsubmit, type, identifier }) => {
               alt="Refresh"
             />
           </RefreshWrapper>
-          {aiSummaryMultiplePrompts?.value && (
-            <PromptSelector
-              onChange={handlePromptTypeChange}
-              defaultValue={promptTypeValue}
-              value={promptTypeValue}
-            >
-              {promptoptions.map((option) => (
-                <option value={option.value}>{option.key}</option>
-              ))}
-            </PromptSelector>
-          )}
+          {/* {aiSummaryMultiplePrompts?.value && ( */}
+          <PromptSelector
+            onChange={handlePromptTypeChange}
+            defaultValue={promptTypeValue}
+            value={promptTypeValue}
+          >
+            {promptoptions.map((option) => (
+              <option value={option.value}>{option.key}</option>
+            ))}
+          </PromptSelector>
+          {/* )} */}
         </Box>
         <Box display="flex" gap={2}>
           {postToEMRAvailable && (
@@ -273,7 +279,7 @@ const AISummaryModal = ({ closeModal, title, onsubmit, type, identifier }) => {
       ) : (
         <Footer>
           This AI-generated summary is provided for convenience and should be
-          reviewed for accuracy and completeness. 
+          reviewed for accuracy and completeness.
           <FeedbackLink
             target="#"
             href="https://forms.dock.health/AISummaryFeedback"
