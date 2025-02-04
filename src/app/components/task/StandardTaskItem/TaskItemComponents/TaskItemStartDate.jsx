@@ -6,7 +6,7 @@ import TaskItemPopover from 'components/task/TaskItemPopover/TaskItemPopover';
 import TaskIcon from 'components/task/TaskIcon/TaskIcon';
 import Tooltip from 'components/common/Tooltip/Tooltip';
 import DateLabel from 'components/common/DateLabel/DateLabel';
-import { ReminderType } from 'helpers/task-helpers';
+import { checkDateTimeIntent, ReminderType } from 'helpers/task-helpers';
 import { onTaskStartDateChanged } from 'helpers/ga-event-helper';
 import {
   AddPlaceholder,
@@ -16,12 +16,14 @@ import {
 import { openModal } from '@/app/modal/actions';
 import { isStartDateValid } from '@/app/helpers/date-validation-helper';
 import moment from 'moment';
+import { adjustUTCDateForDateIntent } from '../../DueDatePicker/helpers';
 
 const TaskItemStartDate = ({ task, disabled = false }) => {
   const dispatch = useDispatch();
   const {
     taskIdentifier,
     startDate,
+    startDateIntent,
     hasRecurringSchedule,
     reminderType,
     dueDate,
@@ -38,7 +40,8 @@ const TaskItemStartDate = ({ task, disabled = false }) => {
       setMomentStartDate(
         !!newStartDate ? moment(newStartDate) : null,
       );
-      dispatch(updateTaskStartDate(task, newStartDate));
+      const startDateIntent = checkDateTimeIntent(newStartDate);
+      dispatch(updateTaskStartDate(task, newStartDate, startDateIntent));
       onTaskStartDateChanged();
     },
     [dispatch, task],
@@ -69,11 +72,13 @@ const TaskItemStartDate = ({ task, disabled = false }) => {
         content={({ closePopover }) => (
           <DueDatePicker
             taskIdentifier={taskIdentifier}
-            selectedDate={momentStartDate}
+            selectedDate={adjustUTCDateForDateIntent(momentStartDate, startDateIntent)}
             onDateChange={handleDueDateChange}
             recurring={hasRecurringSchedule}
             onCloseClick={closePopover}
             disableRecurring
+            dueDateIntent={startDateIntent}
+            dateType="dueDate"
           />
         )}
       >
@@ -81,6 +86,7 @@ const TaskItemStartDate = ({ task, disabled = false }) => {
           {startDate ? (
             <DateLabel
               date={momentStartDate}
+              dueDateIntent={startDateIntent}
               hasReminder={reminderType && reminderType !== ReminderType.NONE}
               hasRecurringSchedule={false}
               tootipTitle="Edit Start Date"

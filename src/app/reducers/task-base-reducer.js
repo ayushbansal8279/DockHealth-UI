@@ -270,12 +270,14 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
     }
 
     case ActionTypes.UPDATE_TASK_START_DATE:
+    case ActionTypes.UPDATE_TASK_START_DATE_SUCCESS:
     case ActionTypes.UPDATE_TASK_START_DATE_FAILURE: {
-      const { task, startDate } = action;
+      const { task, startDate, startDateIntent } = action;
 
       return updateStateCallback(state, {
         ...task,
         startDate,
+        startDateIntent
       });
     }
 

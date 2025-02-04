@@ -551,11 +551,12 @@ export function updateTaskDetails(task, detailsState) {
   };
 }
 
-export function updateTaskStartDate(task, startDate) {
+export function updateTaskStartDate(task, startDate, startDateIntent = null) {
   return {
     type: ActionTypes.UPDATE_TASK_START_DATE,
     task,
     startDate,
+    ...(startDateIntent && {startDateIntent})
   };
 }
 
