@@ -104,6 +104,7 @@ const RichTextEditor = ({
   initOnClick = false,
   taskListIdentifier,
   mentions,
+  disableMentions = false,
 }) => {
   const [rawTextState, setRawTextState] = useState(initialValue);
   const [editor, setEditor] = useState(null);
@@ -166,6 +167,7 @@ const RichTextEditor = ({
   }, [reset, initialValue, mentions, processMarkdownValue]);
 
   const membersTribute = useMemo(() => {
+    if (disableMentions) return null;
     return new Tribute({
       trigger: '@',
       values: fetchMemberesWithDebounce(taskListIdentifier),
@@ -189,7 +191,7 @@ const RichTextEditor = ({
           option.identifier
         }?UserPictureType=PROFILE_THUMBNAIL alt="" />
           </div>
-          <p 
+          <p
             style="margin-bottom: 0;
             color: ${palette.mediumGrey};
             font-size: ${fontSizes.regular};
