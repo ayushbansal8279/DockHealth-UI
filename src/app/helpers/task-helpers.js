@@ -157,41 +157,32 @@ export function isStartDateInPast(task) {
 }
 
 export function isDueDateOverdue(task) {
-  if (!task) {
+  // invalid or non-incomplete tasks
+  if (!task || task.status !== TaskStatus.INCOMPLETE) {
     return false;
   }
-  const { dueDate, status } = task;
-  
-  const dueDateObject = moment.utc(dueDate);
-  const now = moment();
+  const { dueDate } = task;
 
-  if (status !== TaskStatus.INCOMPLETE) {
-    return false;
-  }
+  const dueDateObject =
+    task.dueDateIntent === DueDateIntent.DATE
+      ? moment.utc(dueDate)
+      : moment(dueDate);
 
-  if (dueDateObject.isAfter(now, "minute")) {
-    return false;
-  }
+  // Compare with today's start of day
+  const todayStart = moment(
+    `${moment().startOf('day').format('MM/DD/YYYY HH:mm:ss')} +0000`,
+  );
 
-  if (
-    dueDateObject.isSame(moment.utc(), "day") &&
-    dueDateObject.hours() === 0 &&
-    dueDateObject.minutes() === 0
-  ) {
-    return false;
-  }
-
-  if (dueDateObject.isSame(moment.utc(), "day")) {
-    return dueDateObject.isBefore(now);
-  }
-
-  return true;
+  // overdue if due date is before today
+  return dueDateObject.isBefore(todayStart);
 }
 
 export function checkDateTimeIntent(DateTime) {
-  if(DateTime == null) return null;
+  if (DateTime == null) return null;
   const momentDateTime = moment.utc(DateTime);
-  return (momentDateTime.hour() || momentDateTime.minute()) ? 'DATETIME_ABSOLUTE' : 'DATE';
+  return momentDateTime.hour() || momentDateTime.minute()
+    ? 'DATETIME_ABSOLUTE'
+    : 'DATE';
 }
 
 export function checkIfTemplateTask(task) {

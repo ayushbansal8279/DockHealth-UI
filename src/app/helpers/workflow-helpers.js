@@ -8,7 +8,7 @@ import descend from 'ramda/src/descend';
 import defaultTo from 'ramda/src/defaultTo';
 import toLower from 'ramda/src/toLower';
 import move from 'ramda/src/move';
-import { TaskStatus } from 'helpers/task-helpers';
+import { TaskStatus, DueDateIntent } from 'helpers/task-helpers';
 
 export const TaskTemplateItemColumn = {
   NAME: 'NAME',
@@ -67,27 +67,19 @@ export function isWorkflowDueDateOverdue(workflow) {
     return false;
   }
   const { dueDateTime } = workflow;
-  
-  const dueDateObject = moment.utc(dueDateTime);
-  const now = moment();
 
-  if (dueDateObject.isAfter(now, "minute")) {
-    return false;
-  }
+  const dueDateObject =
+    workflow.dueDateIntent === DueDateIntent.DATE
+      ? moment.utc(dueDateTime)
+      : moment(dueDateTime);
 
-  if (
-    dueDateObject.isSame(moment.utc(), "day") &&
-    dueDateObject.hours() === 0 &&
-    dueDateObject.minutes() === 0
-  ) {
-    return false;
-  }
+  // Compare with today's start of day
+  const todayStart = moment(
+    `${moment().startOf('day').format('MM/DD/YYYY HH:mm:ss')} +0000`,
+  );
 
-  if (dueDateObject.isSame(moment.utc(), "day")) {
-    return dueDateObject.isBefore(now);
-  }
-
-  return true;
+  // overdue if due date is before today
+  return dueDateObject.isBefore(todayStart);
 }
 
 export function reorderTasksForWorkflow(
