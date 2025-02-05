@@ -119,11 +119,17 @@ const AISummaryModal = ({ closeModal, title, onsubmit, type, identifier }) => {
     setGeneratedDateTime(responseDateTime);
 
     const res = result?.remainingString.replace(/""/g, '**');
-    const generatedSummaryLines = result?.remainingString.split("\n");
-    const generatedSummarySubject = generatedSummaryLines[0].replace(/^Subject:\s*/i, "").trim();
-    const updatedSummary = generatedSummaryLines.slice(1).join("\n").trim();
-    setStringSummary(updatedSummary);
-    setGeneratedSubject(generatedSummarySubject)
+    if(persona === 'EMAIL'){
+      const generatedSummaryLines = result?.remainingString.split("\n");
+      const subjectLine = generatedSummaryLines.findIndex(line => /^Subject:\s*/i.test(line));
+      const generatedSummarySubject = generatedSummaryLines[subjectLine].replace(/^Subject:\s*/i, "").trim();
+      const updatedSummary = generatedSummaryLines.slice(subjectLine + 1).join("\n").trim();
+      setStringSummary(updatedSummary);
+      setGeneratedSubject(generatedSummarySubject)
+    }
+    else {
+      setStringSummary(result?.remainingString);
+    }
 
     const splitArray = res.split('\n\n');
     splitArray ? setSummaries(splitArray) : null;
