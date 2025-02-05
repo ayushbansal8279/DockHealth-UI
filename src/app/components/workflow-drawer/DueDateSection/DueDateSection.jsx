@@ -23,6 +23,7 @@ import { openModal } from '@/app/modal/actions';
 import { isDueDateValid } from '@/app/helpers/date-validation-helper';
 import { checkDateTimeIntent, DueDateIntent } from '@/app/helpers/task-helpers';
 import { adjustUTCDateForDateIntent } from '../../task/DueDatePicker/helpers';
+import { isWorkflowDueDateOverdue } from '@/app/helpers/workflow-helpers';
 
 const DueDateSection = ({ disabled }) => {
   const dispatch = useDispatch();
@@ -36,7 +37,7 @@ const DueDateSection = ({ disabled }) => {
 
   useEffect(() => {
     if (momentDueDate) {
-      setIsOverdue(momentDueDate.isBefore(moment()));
+      setIsOverdue(isWorkflowDueDateOverdue(selectedWorkflow));
     }
 
     if (
