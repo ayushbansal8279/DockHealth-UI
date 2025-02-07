@@ -136,7 +136,7 @@ const CustomProfilesSubmenu = () => {
       <DrawerMyListsLabel>
         <div>Profiles</div>
       </DrawerMyListsLabel>
-      <DrawerListsList flexShrink={0}>
+      <DrawerListsList flexShrink={1}>
         {isInitialListFetching ? (
           <>
             <DrawerListsItemLoader />
@@ -180,7 +180,7 @@ const CustomProfilesSubmenu = () => {
       </DrawerListsList>
       {!isGuestOrDockLite && userGroupsAvailable && (
         <>
-          <Box m={6} flexShrink={0} />
+          <Box m={1} flexShrink={0} />
           <DrawerMyListsLabel>
             <div>User Groups</div>
             {isOrganizationAdmin && !isViewOnly && (
