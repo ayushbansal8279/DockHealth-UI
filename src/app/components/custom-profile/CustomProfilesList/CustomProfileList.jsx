@@ -11,7 +11,7 @@ import {
   setCurrentUserGroup,
   unsetCurrentUserGroup,
 } from 'actions/user-groups-actions';
-import { Box, FormGroup, ListItemText, MenuItem, Stack } from '@mui/material';
+import { Box, FormGroup, ListItemText, MenuItem, Stack, Switch } from '@mui/material';
 import { getAllProfileTypes } from 'api/profile-type-api';
 import { getAllProfiles } from 'api/profile-api';
 import { getAllProfileFieldTypes } from 'api/profile-type-field-api';
@@ -248,8 +248,8 @@ const CustomProfileList = () => {
                         key={field.identifier}
                         onClick={handleFilterChange(field)}
                       >
-                        <Checkbox
-                          isChecked={filters.includes(field.identifier)}
+                        <Switch
+                          checked={filters.includes(field.identifier)}
                         />
                         <Box mx={0.5} />
                         <ListItemText>{field.name}</ListItemText>
