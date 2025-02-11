@@ -8,12 +8,11 @@ import { useDispatch } from 'react-redux';
 import { useBoolean } from 'hooks/useBoolean';
 import PopoverCard from 'components/common/PopoverCard/PopoverCard';
 import AssignMemberIcon from 'components/user/AssignMemberIcon/AssingMemberIcon';
-import { StartDateSectionWrapper, AddStartDateButton } from './styled';
+import { StartDateSectionWrapper, AddStartDateButton, DateViewContainer } from './styled';
 import {
   StyledPopover,
   Title,
   SubTitle,
-  DateViewContainer,
   DateViewText,
 } from '../DueDateSection/styled';
 import { isStartDateValid } from '@/app/helpers/date-validation-helper';

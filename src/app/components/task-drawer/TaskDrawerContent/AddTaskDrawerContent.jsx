@@ -258,7 +258,7 @@ const AddTaskDrawerContent = (props) => {
               setPatientIdentifier={setPatientIdentifier}
             />
           </Grid>
-          <Grid item xs={12} mb={2} style={styleLeftColumn(isMobile)}>
+          <Grid item xs={12} mb={1} style={styleLeftColumn(isMobile)}>
             <div>
               <StartDateSection addTaskDrawer setStartDate={setStartDate} />
             </div>

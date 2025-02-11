@@ -71,3 +71,15 @@ export const StyledPopover = styled(Popover)`
     opacity: 0 !important;
   }
 `;
+
+export const DateViewContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 4px 8px;
+  border-radius: 8px;
+  color: ${({ isOverdue }) =>
+    isOverdue ? `${palette.white}` : `${palette.black}`};
+   background: ${({ isOverdue }) =>
+    isOverdue ? `${palette.oPlusRed}` : '#F8F8F9'};
+`;
