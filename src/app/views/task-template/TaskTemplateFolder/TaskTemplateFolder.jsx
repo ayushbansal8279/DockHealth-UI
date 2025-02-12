@@ -93,6 +93,24 @@ const TaskTemplateFolder = ({
             }),
           ),
       },
+      isCurrentUserEditor && {
+        name: 'Copy to another organization',
+        onClick: () =>
+          dispatch(
+            ModalActions.openModal('SelectOrganization', {
+              confirmText: 'Copy',
+              confirm: (selectedItems) => {
+                dispatch(
+                  TaskTemplateActions.copyWorkflowToOrganization(
+                    identifier,
+                    selectedItems?.organizations,
+                  ),
+                );
+                dispatch(ModalActions.closeModal());
+              },
+            }),
+          ),
+      },
     ],
     [
       identifier,
