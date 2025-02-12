@@ -100,13 +100,13 @@ export const ReminderType = {
   DAY_BEFORE_1: 'DAY_BEFORE_1',
   DAY_BEFORE_2: 'DAY_BEFORE_2',
   WEEK_BEFORE_1: 'WEEK_BEFORE_1',
-  ABSOLUTE: 'ABSOLUTE'
+  ABSOLUTE: 'ABSOLUTE',
 };
 
 export const DueDateIntent = {
   DATE: 'DATE',
-  DATETIME_ABSOLUTE: 'DATETIME_ABSOLUTE'
-}
+  DATETIME_ABSOLUTE: 'DATETIME_ABSOLUTE',
+};
 
 export function getLabelsIconTooltipTitle(labels) {
   let toolTipMultiLabelDetails = '';
@@ -177,7 +177,8 @@ export function isDueDateOverdue(task) {
   return dueDateObject.isBefore(todayStart);
 }
 
-export function checkDateTimeIntent(DateTime) {
+export function checkDateTimeIntent(DateTime, addTaskDrawer) {
+  if (DateTime == null && addTaskDrawer) return 'DATE';
   if (DateTime == null) return null;
   const momentDateTime = moment.utc(DateTime);
   return momentDateTime.hour() || momentDateTime.minute()
