@@ -1,47 +1,42 @@
-import React, { useState, Dispatch, SetStateAction } from 'react';
+import React, { useContext } from 'react';
 import { Droppable } from 'react-beautiful-dnd';
 import {
   CategoryDropper,
   NewCategoryContainer,
   NewCategoryWrapper,
+  CloseIcon,
 } from './styled';
-import { Category } from '../helper';
 import SelectedCategory from '../SelectedCategory/SelectedCategory';
 import TextField from '../TextField';
-import { DragIndicator, Close } from '@mui/icons-material';
+import { DragIndicator } from '@mui/icons-material';
+import * as ProfileTypeFieldApi from 'api/profile-type-field-api';
+import { ProfileBuilderContext } from '../ProfileBuilder';
 
-interface Prop {
-  isAddCategoryDrop: boolean;
-  isAddFieldDrop: boolean;
-  setSelectedCategories: Dispatch<SetStateAction<Category[]>>;
-  selectedCategories: Category[];
-  isNewCategory: boolean;
-  setNewCategory: Dispatch<SetStateAction<boolean>>;
-}
+const BuilderPlayground = () => {
+  const {
+    selectedCategories,
+    setSelectedCategories,
+    setNewCategory,
+    isNewCategory,
+    isAddCategoryDrop,
+  } = useContext(ProfileBuilderContext);
 
-const BuilderPlayground = ({
-  isAddCategoryDrop,
-  isAddFieldDrop,
-  setSelectedCategories,
-  selectedCategories,
-  isNewCategory,
-  setNewCategory,
-}: Prop) => {
-  const onNewCategoryAdd = (value: string) => {
-    setNewCategory(false);
-
-    const categoryName = value;
-    const newCategory: Category = {
-      name: categoryName,
-      fieldDropId: categoryName,
-      index: 1,
+  const onNewCategoryAdd = (value) => {
+    const newCategory = {
+      context: 'PATIENT',
+      name: value,
       fields: [],
+      isDefault: true,
     };
 
-    setSelectedCategories((prev) => [...prev, newCategory]);
+    if (value) {
+      setNewCategory(false);
+
+      ProfileTypeFieldApi.saveCustomFiledGroup(newCategory).then((data) => {
+        setSelectedCategories((prev) => [...prev, data]);
+      });
+    }
   };
-  console.log(selectedCategories);
-  
 
   const AddCategory = () => {
     return (
@@ -59,7 +54,7 @@ const BuilderPlayground = ({
               onEnter={onNewCategoryAdd}
             />
           </NewCategoryWrapper>
-          <Close />
+          <CloseIcon onClick={() => setNewCategory(false)} />
         </NewCategoryContainer>
       </>
     );
@@ -68,19 +63,13 @@ const BuilderPlayground = ({
   return (
     <>
       {selectedCategories.map((category) => {
-        return (
-          <SelectedCategory
-            category={category}
-            isAddFieldDrop={isAddFieldDrop}
-          />
-        );
+        return <SelectedCategory category={category} />;
       })}
       {isNewCategory ? (
         <AddCategory></AddCategory>
       ) : (
         <Droppable droppableId="add-category-area">
           {(provided) => (
-            // @ts-ignore
             <CategoryDropper
               isAddCategoryDrop={isAddCategoryDrop}
               {...provided.droppableProps}
