@@ -1,17 +1,6 @@
 import palette from '@/app/styles/palette';
 import { TextField as Input } from '@mui/material';
-import React, { useState } from 'react';
-
-interface Prop {
-  placeholder?: string;
-  size?: string;
-  border?: boolean;
-  fontSize?: string;
-  fontWeight?: string;
-  width?: string;
-  value?: string;
-  onEnter?: (value: string) => void;
-}
+import React, { useEffect, useState } from 'react';
 
 const TextField = ({
   placeholder,
@@ -22,9 +11,13 @@ const TextField = ({
   width,
   onEnter,
   value,
-}: Prop) => {
-  const [inputValue, setValue] = useState(value || '');
-  
+  onBlur,
+}) => {
+  const [inputValue, setValue] = useState();
+  useEffect(() => {
+    setValue(value || '');
+  }, [value]);
+
   const sx = {
     backgroundColor: palette.white,
     width: width || '100%',
@@ -47,30 +40,32 @@ const TextField = ({
     },
   };
 
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+  const handleKeyDown = (event) => {
     if (event.key === 'Enter') {
-      console.log(inputValue);
+      // console.log(inputValue);
       onEnter && onEnter(inputValue);
       // event.preventDefault();
     }
   };
 
-  const handleChange = (
-    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) => {
+  const handleChange = (event) => {
     const value = event.target.value;
     setValue(value);
   };
 
+  const handleBlur = (event) => {
+    onBlur && onBlur(event.target.value);
+  };
+
   return (
     <Input
-      // @ts-ignore
       size={size}
       value={inputValue}
       sx={sx}
       onChange={handleChange}
       onKeyDown={handleKeyDown}
       placeholder={placeholder}
+      onBlur={handleBlur}
     />
   );
 };
