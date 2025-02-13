@@ -9,7 +9,7 @@ import {
 } from './styled';
 import { Box } from '@mui/material';
 import { Draggable, Droppable } from 'react-beautiful-dnd';
-import { dummyFields } from '../../helper';
+import { fieldTypes } from '../../helper';
 
 const ProfileBuilderCategories = () => {
 
@@ -49,8 +49,8 @@ const ProfileBuilderCategories = () => {
               {...provided.droppableProps}
               ref={provided.innerRef}
             >
-              {dummyFields.map((item) => (
-                <Draggable draggableId={item.dragId} index={item.index}>
+              {fieldTypes.map((item) => (
+                <Draggable draggableId={item.fieldType} index={item.index}>
                   {(provided) => (
                     // @ts-ignore
                     <SingleField
@@ -65,7 +65,7 @@ const ProfileBuilderCategories = () => {
                           alt={item.name}
                         />
                       </div>
-                      <CategoryLabel>{item.name}</CategoryLabel>
+                      <CategoryLabel>{item.placeholder}</CategoryLabel>
                     </SingleField>
                   )}
                 </Draggable>
