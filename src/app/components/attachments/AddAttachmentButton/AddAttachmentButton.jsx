@@ -3,7 +3,7 @@ import { OutfitTypography } from 'styles/theme';
 import { Container } from './styled';
 import { Menu , MenuItem } from '@mui/material';
 
-const AddAttachmentButton = ({attachmentOptions}) => {
+const AddAttachmentButton = ({attachmentOptions = []}) => {
   const [anchorEl, setAnchorEl] = useState(null);
 
   const handleClick = (event) => {

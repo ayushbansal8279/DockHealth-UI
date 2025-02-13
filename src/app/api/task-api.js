@@ -445,7 +445,7 @@ export function updateTaskAttachment(attachmentIdentifier,fileName) {
 export function addPatientReferenceAttachment(taskIdentifier,fileIdentifier,type){
   return axios
     .post('task/attachment/other',{taskIdentifier,fileIdentifier,type})
-    .then(({ response }) => response)
+    .then(( response ) => response)
     .catch((error)=>{
       throw error;
     });

@@ -62,7 +62,8 @@ const AttachmentsSection = ({
   
       dispatch(openModal('PatientAttachmentReference', {
         attachmentList: patientAttachments,
-        taskIdentifier: selectedTask?.identifier
+        taskIdentifier: selectedTask?.identifier,
+        currentTaskAttachmentsDispatch: currentTaskAttachmentsDispatch
       }));
     } catch (error) {
       console.error(error);

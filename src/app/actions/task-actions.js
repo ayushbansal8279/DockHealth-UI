@@ -698,17 +698,16 @@ export const renameTaskAttachment =
   };
 
 export const addPatientReferenceAttachment =
-  (taskIdentifier,attachmentId , type ) => (dispatch) => {
-    return TaskApi.addPatientReferenceAttachment(taskIdentifier,attachmentId,type)
-      .then(() => {
+  (taskIdentifier, attachmentIdentifier, type ) => (dispatch) => {
+    return TaskApi.addPatientReferenceAttachment(taskIdentifier, attachmentIdentifier, type)
+      .then((response) => {
         dispatch({
           type: ActionTypes.PATIENT_REFERENCE_ATTACHMENT_ADDED,
-          attachmentId,
-          type,
+          taskIdentifier,
+          taskAttachment: response.data,
         });
-        dispatch(
-          AlertActions.showGlobalAlert(AlertMessages.ATTACHMENT_ADDED),
-        );
+        dispatch(AlertActions.showGlobalAlert(AlertMessages.ATTACHMENT_ADDED));
+        return response.data;
       })
       .catch((error) => {
         throw error;

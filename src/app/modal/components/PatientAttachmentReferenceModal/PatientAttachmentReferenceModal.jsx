@@ -20,11 +20,11 @@ import FolderOpenIcon from '@mui/icons-material/FolderOpen';
 import { addPatientReferenceAttachment } from "@/app/actions/task-actions";
 import { useDispatch } from "react-redux";
 
-const PatientAttachmentReferenceModal = ({ attachmentList, taskIdentifier, closeModal }) => {
+const PatientAttachmentReferenceModal = ({ attachmentList, taskIdentifier, closeModal, currentTaskAttachmentsDispatch }) => {
   const [navigationStack, setNavigationStack] = useState([]);
   const [currentFolders, setCurrentFolders] = useState([]);
   const [currentAttachments, setCurrentAttachments] = useState([]);
-  const [selectedAttachment, setSelectedAttachment] = useState(null);
+  const [selectedAttachmentName, setSelectedAttachmentName] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [currentTitle, setCurrentTitle] = useState("Reference File From Patient");
   const [selectedAttachmentIdentifier, setSelectedAttachmentIdentifier] = useState();
@@ -39,11 +39,12 @@ const PatientAttachmentReferenceModal = ({ attachmentList, taskIdentifier, close
 
   const handleRadioChange = (attachment,event) => {
     setSelectedAttachmentIdentifier(attachment.attachmentIdentifier)
-    setSelectedAttachment(event.target.value);
+    setSelectedAttachmentName(event.target.value);
   };
 
-  const handleConfirmWrapper = () => {
+  const handleConfirmWrapper = async() => {
     if (selectedAttachmentIdentifier) {
+      const response = await
       dispatch(
         addPatientReferenceAttachment(
             taskIdentifier,
@@ -51,6 +52,10 @@ const PatientAttachmentReferenceModal = ({ attachmentList, taskIdentifier, close
             'PATIENT'
           )
         )
+        currentTaskAttachmentsDispatch({
+          type: 'ADD_ATTACHMENTS',
+          attachments: [response],
+        });
     closeModal()    
     }
   };
@@ -156,7 +161,7 @@ const PatientAttachmentReferenceModal = ({ attachmentList, taskIdentifier, close
                     control={
                       <Radio
                         value={attachment.fileName}
-                        checked={selectedAttachment === attachment.fileName}
+                        checked={selectedAttachmentName === attachment.fileName}
                         onChange={(event) => handleRadioChange(attachment, event)}
                         size="very small" 
                       />
@@ -188,7 +193,7 @@ const PatientAttachmentReferenceModal = ({ attachmentList, taskIdentifier, close
             style={{ width: '190px' }}
             fullWidth
             size="small"
-            disabled={!selectedAttachment}
+            disabled={!selectedAttachmentName}
             onClick={() => handleConfirmWrapper()}
           >
             Save
