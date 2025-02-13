@@ -2,7 +2,6 @@ import { FieldArea, FieldIconContainer, DeletIcon, EditIcon } from './styled';
 import { DragIndicator } from '@mui/icons-material';
 import React, { useContext } from 'react';
 import TextField from '../TextField';
-import { addCustomField, updateCustomField } from '@/app/api/custom-fields-api';
 import TEXT from 'img/profile-builder/shortText.svg';
 import LONG_TEXT from 'img/profile-builder/RichText.svg';
 import DATE from 'img/profile-builder/Calender.svg';
@@ -12,7 +11,7 @@ import HYPERLINK from 'img/profile-builder/Link.svg';
 import PICK_LIST from 'img/profile-builder/DropDown.svg';
 import RELATIONSHIP from 'img/profile-builder/Profile.svg';
 import { FieldType } from '../helper';
-import * as ProfileTypeFieldApi from 'api/profile-type-field-api';
+import * as CustomFieldApi from 'api/custom-fields-api';
 import { useDispatch } from 'react-redux';
 import { openModal } from 'modal/actions';
 import { ProfileBuilderContext } from '../ProfileBuilder';
@@ -73,7 +72,7 @@ const SelectedField = ({ field, category }) => {
     updatedSavedRefrenceFields,
     updatedSavedActualFields,
   ) => {
-    ProfileTypeFieldApi.updateCustomFiledGroup(category.identifier, {
+    CustomFieldApi.updateCustomFiledGroup(category.identifier, {
       fields: updatedSavedRefrenceFields,
     });
 
@@ -99,7 +98,7 @@ const SelectedField = ({ field, category }) => {
         (tempField) => tempField.tempId !== field.tempId,
       );
 
-      const newlyAddedField = await addCustomField(payload, 'PATIENT');
+      const newlyAddedField = await CustomFieldApi.addCustomField(payload, 'PATIENT');
 
       const updatedSavedRefrenceFields = [
         ...savedFieldsRefrenceValue,
@@ -117,7 +116,7 @@ const SelectedField = ({ field, category }) => {
         updatedSavedActualFields,
       );
     } else if (field.identifier && value) {
-      updateCustomField({ ...field, name: value });
+      CustomFieldApi.updateCustomField({ ...field, name: value });
     }
   };
 

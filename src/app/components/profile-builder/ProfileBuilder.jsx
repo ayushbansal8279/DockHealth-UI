@@ -10,6 +10,7 @@ import { fieldTypes } from './helper';
 import { useParams } from 'react-router-dom';
 import { showGlobalErrorAlert } from 'alert/actions';
 import * as ProfileTypeFieldApi from 'api/profile-type-field-api';
+import * as CustomFieldApi from 'api/custom-fields-api';
 import { useDispatch } from 'react-redux';
 import uuidv4 from '@/app/views/chat/channel-settings/uuid';
 
@@ -23,7 +24,7 @@ const ProfileBuilder = () => {
   const [allCustomFields, setAllCustomFields] = useState([]);
 
   const fetchProfileCustomGroups = ({ allCustomFields }) => {
-    ProfileTypeFieldApi.searchCustomFiledGroups('PATIENT').then((data) => {
+    CustomFieldApi.searchCustomFiledGroups('PATIENT').then((data) => {
       if (!data || data.length === 0) return;
 
       let data1 = [...data];
@@ -46,7 +47,7 @@ const ProfileBuilder = () => {
   };
 
   const fetchPatientCustomFields = () => {
-    ProfileTypeFieldApi.getAllPatientCustomFields().then((data) => {
+    CustomFieldApi.getAllPatientCustomFields().then((data) => {
       setAllCustomFields(data);
       fetchProfileCustomGroups({ allCustomFields: data });
     });
@@ -126,6 +127,7 @@ const ProfileBuilder = () => {
   };
 
   return (
+    <div style={{height:"100%"}}>
     <ProfileBuilderContext.Provider
       value={{
         selectedCategories,
@@ -138,7 +140,6 @@ const ProfileBuilder = () => {
         isAddCategoryDrop,
       }}
     >
-      <div>
         <BasicLayoutHeader title={'Profile/ Profile Builder'} />
         <DragDropContext
           onDragStart={(e) => handleDragStart(e)}
@@ -153,8 +154,7 @@ const ProfileBuilder = () => {
             </CategoryWrapper>
           </BuilderContainer>
         </DragDropContext>
-      </div>
-    </ProfileBuilderContext.Provider>
+    </ProfileBuilderContext.Provider></div>
   );
 };
 

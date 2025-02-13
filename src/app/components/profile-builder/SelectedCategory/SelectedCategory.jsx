@@ -10,7 +10,7 @@ import { DragIndicator } from '@mui/icons-material';
 import TextField from '../TextField';
 import { Droppable } from 'react-beautiful-dnd';
 import SelectedField from '../SelectedField/SelectedField';
-import * as ProfileTypeFieldApi from 'api/profile-type-field-api';
+import * as CustomFieldApi from 'api/custom-fields-api';
 import { ProfileBuilderContext } from '../ProfileBuilder';
 
 const SelectedCategory = ({ category }) => {
@@ -19,7 +19,7 @@ const SelectedCategory = ({ category }) => {
   );
 
   const handleDeleteGroup = () => {
-    ProfileTypeFieldApi.deleteCustomFiledGroup(category.identifier).then(() => {
+    CustomFieldApi.deleteCustomFiledGroup(category.identifier).then(() => {
       setSelectedCategories((prevCategories) =>
         prevCategories.filter(
           (category1) => category1.identifier !== category.identifier,

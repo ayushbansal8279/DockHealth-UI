@@ -9,7 +9,7 @@ import {
 import SelectedCategory from '../SelectedCategory/SelectedCategory';
 import TextField from '../TextField';
 import { DragIndicator } from '@mui/icons-material';
-import * as ProfileTypeFieldApi from 'api/profile-type-field-api';
+import * as CustomFieldApi from 'api/custom-fields-api';
 import { ProfileBuilderContext } from '../ProfileBuilder';
 
 const BuilderPlayground = () => {
@@ -32,7 +32,7 @@ const BuilderPlayground = () => {
     if (value) {
       setNewCategory(false);
 
-      ProfileTypeFieldApi.saveCustomFiledGroup(newCategory).then((data) => {
+      CustomFieldApi.saveCustomFiledGroup(newCategory).then((data) => {
         setSelectedCategories((prev) => [...prev, data]);
       });
     }
