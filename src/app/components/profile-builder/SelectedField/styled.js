@@ -1,12 +1,13 @@
 import palette from "@/app/styles/palette";
+import { Delete, Edit } from "@mui/icons-material";
 import styled from "styled-components";
 
 export const FieldArea = styled.div`
-  margin: 32px 16px;
+  margin: 32px 20px 32px 20px;
   color: ${palette.coolGrey1};
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 15px;
 `;
 
 export const FieldIconContainer = styled.div`
@@ -18,4 +19,12 @@ export const FieldIconContainer = styled.div`
   border-radius: 4px;
   opacity: 0px;
   background: #f8f8f9;
+`;
+
+export const EditIcon = styled(Edit)`
+  cursor: pointer;
+`;
+
+export const DeletIcon = styled(Delete)`
+  cursor: pointer;
 `;

@@ -1,15 +1,13 @@
 import palette from '@/app/styles/palette';
+import { Close } from '@mui/icons-material';
 import styled from 'styled-components';
 
-interface CategoryDropperProp {
-  isAddCategoryDrop: boolean;
-}
 export const CategoryDropper = styled.div`
   border: 2px dashed ${palette.iron};
   margin: 30px 60px 0 80px;
   text-align: center;
   align-content: center;
-  height: ${({ isAddCategoryDrop }: CategoryDropperProp) =>
+  height: ${({ isAddCategoryDrop }) =>
     isAddCategoryDrop ? '100px' : '50px'};
   font-size: 14px;
   line-height: 17.64px;
@@ -26,8 +24,13 @@ export const NewCategoryContainer = styled.div`
   color: ${palette.coolGrey1};
   border: 2px solid ${palette.iron};
 `;
+
 export const NewCategoryWrapper = styled.div`
   display: flex;
   flex: 1;
   align-items: center;
+`;
+
+export const CloseIcon = styled(Close)`
+  cursor: pointer;
 `;
