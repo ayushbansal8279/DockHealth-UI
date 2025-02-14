@@ -59,19 +59,14 @@ const StartDateSection = ({
         setMomentStartDate(
           !!updatedStartDateTime ? moment(updatedStartDateTime) : null,
         );
-        const addTaskStartDateIntent = checkDateTimeIntent(
-          updatedStartDateTime,
-          addTaskDrawer,
-        );
+        const addTaskStartDateIntent =
+          checkDateTimeIntent(updatedStartDateTime);
         setStartDateIntent(addTaskStartDateIntent);
       } else {
         setMomentStartDate(
           !!updatedStartDateTime ? moment(updatedStartDateTime) : null,
         );
-        const startDateIntent = checkDateTimeIntent(
-          updatedStartDateTime,
-          false,
-        );
+        const startDateIntent = checkDateTimeIntent(updatedStartDateTime);
         dispatch(
           updateTaskStartDate(
             selectedTask,

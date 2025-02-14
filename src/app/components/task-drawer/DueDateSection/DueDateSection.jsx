@@ -67,16 +67,13 @@ const DueDateSection = ({
         setMomentDueDate(
           !!updatedDueDateTime ? moment(updatedDueDateTime) : null,
         );
-        const addTaskDueDateIntent = checkDateTimeIntent(
-          updatedDueDateTime,
-          addTaskDrawer,
-        );
+        const addTaskDueDateIntent = checkDateTimeIntent(updatedDueDateTime);
         setDueDateIntent(addTaskDueDateIntent);
       } else {
         setMomentDueDate(
           !!updatedDueDateTime ? moment(updatedDueDateTime) : null,
         );
-        const dueDateIntent = checkDateTimeIntent(updatedDueDateTime, false);
+        const dueDateIntent = checkDateTimeIntent(updatedDueDateTime);
         dispatch(
           updateTaskDueDate(selectedTask, updatedDueDateTime, dueDateIntent),
         );

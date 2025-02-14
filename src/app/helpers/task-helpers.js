@@ -177,8 +177,7 @@ export function isDueDateOverdue(task) {
   return dueDateObject.isBefore(todayStart);
 }
 
-export function checkDateTimeIntent(DateTime, addTaskDrawer) {
-  if (DateTime == null && addTaskDrawer) return 'DATE';
+export function checkDateTimeIntent(DateTime) {
   if (DateTime == null) return null;
   const momentDateTime = moment.utc(DateTime);
   return momentDateTime.hour() || momentDateTime.minute()
