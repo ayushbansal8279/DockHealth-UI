@@ -1,4 +1,12 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import TEXT from 'img/profile-builder/shortText.svg';
+import LONG_TEXT from 'img/profile-builder/RichText.svg';
+import DATE from 'img/profile-builder/Calender.svg';
+import NUMBER from 'img/profile-builder/Hash.svg';
+import BOOLEAN from 'img/profile-builder/Boolean.svg';
+import HYPERLINK from 'img/profile-builder/Link.svg';
+import PICK_LIST from 'img/profile-builder/DropDown.svg';
+import RELATIONSHIP from 'img/profile-builder/Profile.svg';
 import {
   CategoryContainer,
   AddCategory,
@@ -6,12 +14,43 @@ import {
   CategoryLabel,
   SingleFieldWrapper,
   SingleField,
+  ExistingFieldWrapper,
+  ExistingField,
+  CategoryLabelExisting,
 } from './styled';
-import { Box } from '@mui/material';
+import { Box, Divider } from '@mui/material';
 import { Draggable, Droppable } from 'react-beautiful-dnd';
-import { fieldTypes } from '../../helper';
+import { FieldType, fieldTypes } from '../../helper';
+import Spacing from '@/app/components/common/Spacing';
+import TextField from '../../TextField';
 
-const ProfileBuilderCategories = () => {
+const FieldTypeImages = {
+  [FieldType.TEXT]: TEXT,
+  [FieldType.LONG_TEXT]: LONG_TEXT,
+  [FieldType.DATE]: DATE,
+  [FieldType.NUMBER]: NUMBER,
+  [FieldType.BOOL]: BOOLEAN,
+  [FieldType.HYPERLINK]: HYPERLINK,
+  [FieldType.DROPDOWN]: PICK_LIST,
+  [FieldType.DROPDOWN_MULTI]: PICK_LIST,
+  [FieldType.RELATIONSHIP]: RELATIONSHIP,
+};
+
+const ProfileBuilderCategories = ({ allCustomFields }) => {
+  const [searchedCustomField, setSearchedCustomField] =
+    useState(allCustomFields);
+
+  useEffect(() => {
+    setSearchedCustomField(allCustomFields);
+  }, [allCustomFields]);
+
+  const handleTextChange = (value) => {
+    const filteredList = allCustomFields.filter((item) =>
+      item?.name?.toLowerCase().includes(value.toLowerCase()),
+    );
+
+    setSearchedCustomField(filteredList);
+  };
 
   return (
     <CategoryContainer>
@@ -19,12 +58,10 @@ const ProfileBuilderCategories = () => {
         <CategoryTitle>Add Category</CategoryTitle>
         <Droppable isDropDisabled droppableId="add-category-area-source">
           {(provided) => {
-            // console.log(provided);
             return (
               <div {...provided.droppableProps} ref={provided.innerRef}>
                 <Draggable draggableId="add-category" index={0}>
                   {(provided) => (
-                    // @ts-ignore
                     <AddCategory
                       ref={provided.innerRef}
                       {...provided.draggableProps}
@@ -44,7 +81,6 @@ const ProfileBuilderCategories = () => {
         <CategoryTitle>Fields</CategoryTitle>
         <Droppable isDropDisabled droppableId="add-fields-area-source">
           {(provided) => (
-            // @ts-ignore
             <SingleFieldWrapper
               {...provided.droppableProps}
               ref={provided.innerRef}
@@ -52,7 +88,6 @@ const ProfileBuilderCategories = () => {
               {fieldTypes.map((item) => (
                 <Draggable draggableId={item.fieldType} index={item.index}>
                   {(provided) => (
-                    // @ts-ignore
                     <SingleField
                       ref={provided.innerRef}
                       {...provided.draggableProps}
@@ -61,7 +96,7 @@ const ProfileBuilderCategories = () => {
                       <div>
                         <img
                           style={{ width: 20, marginBottom: 10 }}
-                          src={item.img}
+                          src={FieldTypeImages[item?.fieldType]}
                           alt={item.name}
                         />
                       </div>
@@ -74,6 +109,63 @@ const ProfileBuilderCategories = () => {
             </SingleFieldWrapper>
           )}
         </Droppable>
+      </Box>
+      <Spacing vertical={4} />
+      <Divider />
+      <Spacing vertical={4} />
+      <Box>
+        <TextField
+          // value={category.name}
+          border
+          // fontSize="18px"
+          // fontWeight="600"
+          size="small"
+          placeholder="Search Existing Field"
+          width="50%"
+          onChange={handleTextChange}
+          // onEnter={handleCategoryUpdate}
+        />
+        <Spacing vertical={4} />
+        <Box>
+          <Droppable
+            isDropDisabled
+            droppableId="add-existing-fields-area-source"
+          >
+            {(provided) => (
+              <ExistingFieldWrapper
+                {...provided.droppableProps}
+                ref={provided.innerRef}
+              >
+                {searchedCustomField.slice(0, 6).map((item) => (
+                  <Draggable
+                    draggableId={item.identifier}
+                    index={item.sortIndex}
+                  >
+                    {(provided) => (
+                      <ExistingField
+                        ref={provided.innerRef}
+                        {...provided.draggableProps}
+                        {...provided.dragHandleProps}
+                      >
+                        <div>
+                          <img
+                            style={{ width: 15 }}
+                            src={FieldTypeImages[item?.fieldType]}
+                            alt={item.name}
+                          />
+                        </div>
+                        <CategoryLabelExisting>
+                          {item.name}
+                        </CategoryLabelExisting>
+                      </ExistingField>
+                    )}
+                  </Draggable>
+                ))}
+                {provided.placeholder}
+              </ExistingFieldWrapper>
+            )}
+          </Droppable>
+        </Box>
       </Box>
     </CategoryContainer>
   );

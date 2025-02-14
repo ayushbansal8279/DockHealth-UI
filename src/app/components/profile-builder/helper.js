@@ -88,4 +88,5 @@ export const fieldTypes = [
 export const DROPTYPE = {
   AddCategory: 'add-category-area-source',
   AddField: 'add-fields-area-source',
+  ExistingField: 'add-existing-fields-area-source',
 };

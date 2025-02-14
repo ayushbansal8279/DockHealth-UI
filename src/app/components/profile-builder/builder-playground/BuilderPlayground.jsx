@@ -62,7 +62,7 @@ const BuilderPlayground = () => {
 
   return (
     <>
-      {selectedCategories.map((category) => {
+      {selectedCategories?.map((category) => {
         return <SelectedCategory category={category} />;
       })}
       {isNewCategory ? (

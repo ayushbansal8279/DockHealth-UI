@@ -12,6 +12,7 @@ const TextField = ({
   onEnter,
   value,
   onBlur,
+  onChange,
 }) => {
   const [inputValue, setValue] = useState();
   useEffect(() => {
@@ -51,6 +52,7 @@ const TextField = ({
   const handleChange = (event) => {
     const value = event.target.value;
     setValue(value);
+    onChange(value)
   };
 
   const handleBlur = (event) => {

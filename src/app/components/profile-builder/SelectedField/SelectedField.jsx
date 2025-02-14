@@ -47,7 +47,7 @@ const SelectedField = ({ field, category }) => {
     );
   };
 
-  const { savedFieldsRefrenceValue, savedFieldsActualValue, tempFields } =
+  const { savedFieldsRefrenceValue, savedFieldsActualValue, unSavedFields } =
     category?.fields?.reduce(
       (acc, item) => {
         if (item.identifier) {
@@ -57,25 +57,18 @@ const SelectedField = ({ field, category }) => {
           acc.savedFieldsActualValue.push(item);
           acc.savedFieldsRefrenceValue.push(aa);
         } else if (item.tempId) {
-          acc.tempFields.push(item);
+          acc.unSavedFields.push(item);
         }
         return acc;
       },
       {
         savedFieldsRefrenceValue: [],
         savedFieldsActualValue: [],
-        tempFields: [],
+        unSavedFields: [],
       },
     );
 
-  const updateCustomGroupsData = (
-    updatedSavedRefrenceFields,
-    updatedSavedActualFields,
-  ) => {
-    CustomFieldApi.updateCustomFiledGroup(category.identifier, {
-      fields: updatedSavedRefrenceFields,
-    });
-
+  const updateCustomGroupsData = (updatedSavedActualFields) => {
     const updatedCategory = { ...category, fields: updatedSavedActualFields };
 
     setSelectedCategories((prevCategories) =>
@@ -94,11 +87,14 @@ const SelectedField = ({ field, category }) => {
         contextType: 'CUSTOM',
       };
 
-      const remainingTemporaryFields = tempFields?.filter(
+      const remainingUnsavedFields = unSavedFields?.filter(
         (tempField) => tempField.tempId !== field.tempId,
       );
 
-      const newlyAddedField = await CustomFieldApi.addCustomField(payload, 'PATIENT');
+      const newlyAddedField = await CustomFieldApi.addCustomField(
+        payload,
+        'PATIENT',
+      );
 
       const updatedSavedRefrenceFields = [
         ...savedFieldsRefrenceValue,
@@ -108,13 +104,14 @@ const SelectedField = ({ field, category }) => {
       const updatedSavedActualFields = [
         ...savedFieldsActualValue,
         newlyAddedField,
-        ...remainingTemporaryFields,
+        ...remainingUnsavedFields,
       ];
 
-      updateCustomGroupsData(
-        updatedSavedRefrenceFields,
-        updatedSavedActualFields,
-      );
+      CustomFieldApi.updateCustomFiledGroup(category.identifier, {
+        fields: updatedSavedRefrenceFields,
+      });
+
+      updateCustomGroupsData(updatedSavedActualFields);
     } else if (field.identifier && value) {
       CustomFieldApi.updateCustomField({ ...field, name: value });
     }
@@ -130,10 +127,22 @@ const SelectedField = ({ field, category }) => {
         (field1) => field1.identifier !== field.identifier,
       );
 
-      updateCustomGroupsData(
-        updatedSavedRefrenceFields,
-        updatedSavedActualFields,
+      CustomFieldApi.updateCustomFiledGroup(category.identifier, {
+        fields: updatedSavedRefrenceFields,
+      });
+
+      const allRemainingFields = [
+        ...updatedSavedActualFields,
+        ...unSavedFields,
+      ];
+
+      updateCustomGroupsData(allRemainingFields);
+    } else if (field.tempId) {
+      const updatedSavedActualFields = category.fields.filter(
+        (fiels) => fiels.tempId !== field.tempId,
       );
+
+      updateCustomGroupsData(updatedSavedActualFields);
     }
   };
 
