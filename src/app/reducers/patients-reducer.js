@@ -349,6 +349,20 @@ const PatientsReducer = (state = initialState, action) => {
       };
     }
 
+    case ActionTypes.UPDATE_PATIENTS_LIST_PREFERENCES_SUCCESS: {
+
+      return {
+        ...state,
+        currentPatientsList: {
+          ...state.currentPatientsList,
+          listDetails: {
+            ...state.currentPatientsList.listDetails,
+            listDisplayColumns: action.setup.listDisplayColumns,
+          },
+        },
+      };
+    }
+
     case ActionTypes.SET_SELECTED_PATIENT: {
       const { identifier, isSelected } = action;
       return {
