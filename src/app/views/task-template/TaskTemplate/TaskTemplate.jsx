@@ -112,6 +112,14 @@ const TaskTemplate = ({
     nameInputReference.current?.blur();
   }, [name]);
 
+  const handleShareWorkflow = () => {
+    dispatch(
+      ModalActions.openModal('ShareWorkflow', {
+        workflowIdentifier: identifier,
+      }),
+    );
+  };
+
   const menuOptions = useMemo(
     () => [
       isCurrentUserEditor &&
@@ -191,6 +199,22 @@ const TaskTemplate = ({
               },
             }),
           ),
+      },
+      isCurrentUserEditor && {
+        name: 'Share Workflow',
+        color: palette.oPlusRed,
+        onClick: handleShareWorkflow,
+        // dispatch(
+        //   ModalActions.openModal('ShareWorkflow', {
+        //     // title: 'Delete workflow',
+        //     // description:
+        //     //   'Are you sure you want to delete this workflow? This action cannot be undone.',
+        //     // confirm: () => {
+        //     //   dispatch(WorkflowActions.deleteWorkflow(identifier));
+        //     //   dispatch(ModalActions.closeModal());
+        //     // },
+        //   }),
+        // ),
       },
       isCurrentUserEditor && {
         name: 'Delete Workflow',
@@ -296,7 +320,9 @@ const TaskTemplate = ({
 
   const taskIdentifiers = tasks?.map((task) => task.taskIdentifier);
 
-  const isTemplateSelected = useSelector(isTaskItemsSelectedSelector(taskIdentifiers));
+  const isTemplateSelected = useSelector(
+    isTaskItemsSelectedSelector(taskIdentifiers),
+  );
 
   const handleTemplateSelect = useCallback(() => {
     dispatch(

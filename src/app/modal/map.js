@@ -87,6 +87,7 @@ import AISummaryModal from './components/AISummaryModal/AISummaryModal';
 import DateWarningModal from './components/DateWarningModal/DateWarningModal';
 import AlertModal from './components/AlertModal/AlertModal';
 import SavePatientModal from './components/SavePatientModal/SavePatientModal';
+import ShareWorkflowModal from './components/ShareWorkflowModal/ShareWorkflowModal';
 
 const MODAL_MAP = {
   CompleteAllTasks: CompleteAllTasksModal,
@@ -147,6 +148,7 @@ const MODAL_MAP = {
   AddPatientToList: AddPatientToListModal,
   InterruptEdit: InterruptEditModal,
   EditCustomField: EditCustomFieldModal,
+  ShareWorkflow: ShareWorkflowModal,
   DeleteConfirmation: DeleteConfirmationModal,
   DuplicateConfirmation: DuplicateConfirmationModal,
   DeleteTaskConfirmation: DeleteTaskConfirmationModal,
@@ -177,7 +179,7 @@ const MODAL_MAP = {
   AISummary: AISummaryModal,
   DateWarning: DateWarningModal,
   Alert: AlertModal,
-  SavePatient: SavePatientModal
+  SavePatient: SavePatientModal,
 };
 
 export default MODAL_MAP;
