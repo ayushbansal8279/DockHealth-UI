@@ -15,11 +15,7 @@ export const AddCategory = styled.div`
   color: ${palette.coolGrey1};
   font-weight: 500;
   line-height: 20.16px;
-`;
-export const CategoryLabel = styled.div`
-  font-weight: 500;
-  line-height: 20.16px;
-  text-align: center;
+  background-color: ${palette.whiteSmoke};
 `;
 
 export const CategoryTitle = styled.div`
@@ -36,32 +32,7 @@ export const SingleFieldWrapper = styled.div`
 `;
 
 export const SingleField = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  flex-wrap: wrap;
-  width: 48%;
-  color: ${palette.coolGrey1};
-  height: 74px;
-  border: 2px solid ${palette.iron};
-`;
-
-export const IconContainer = styled.img`
-  width: 20px;
-  height: 33px;
-  margin-bottom: 5px;
-`;
-
-export const ExistingFieldWrapper = styled.div`
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 10px;
-`;
-
-export const ExistingField = styled.div`
-  padding: 0 10px;
+  padding: 0 15px;
   display: flex;
   gap: 20px;
   align-items: center;
@@ -70,9 +41,11 @@ export const ExistingField = styled.div`
   color: ${palette.coolGrey1};
   height: 44px;
   border: 2px solid ${palette.iron};
+  background-color: ${palette.whiteSmoke};
+  border-radius: 4px;
 `;
 
-export const CategoryLabelExisting = styled.div`
+export const CategoryLabel = styled.div`
   font-weight: 500;
   line-height: 20.16px;
   text-align: center;

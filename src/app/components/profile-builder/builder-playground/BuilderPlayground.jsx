@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import { Droppable } from 'react-beautiful-dnd';
 import {
+  BuilderContainer,
   CategoryDropper,
   NewCategoryContainer,
   NewCategoryWrapper,
@@ -61,7 +62,7 @@ const BuilderPlayground = () => {
   };
 
   return (
-    <>
+    <BuilderContainer>
       {selectedCategories?.map((category) => {
         return <SelectedCategory category={category} />;
       })}
@@ -80,7 +81,7 @@ const BuilderPlayground = () => {
           )}
         </Droppable>
       )}
-    </>
+    </BuilderContainer>
   );
 };
 

@@ -14,9 +14,6 @@ import {
   CategoryLabel,
   SingleFieldWrapper,
   SingleField,
-  ExistingFieldWrapper,
-  ExistingField,
-  CategoryLabelExisting,
 } from './styled';
 import { Box, Divider } from '@mui/material';
 import { Draggable, Droppable } from 'react-beautiful-dnd';
@@ -78,7 +75,7 @@ const ProfileBuilderCategories = ({ allCustomFields }) => {
         </Droppable>
       </Box>
       <Box mt={4}>
-        <CategoryTitle>Fields</CategoryTitle>
+        <CategoryTitle>Add New Fields</CategoryTitle>
         <Droppable isDropDisabled droppableId="add-fields-area-source">
           {(provided) => (
             <SingleFieldWrapper
@@ -93,13 +90,11 @@ const ProfileBuilderCategories = ({ allCustomFields }) => {
                       {...provided.draggableProps}
                       {...provided.dragHandleProps}
                     >
-                      <div>
-                        <img
-                          style={{ width: 20, marginBottom: 10 }}
-                          src={FieldTypeImages[item?.fieldType]}
-                          alt={item.name}
-                        />
-                      </div>
+                      <img
+                        style={{ width: 20 }}
+                        src={FieldTypeImages[item?.fieldType]}
+                        alt={item.name}
+                      />
                       <CategoryLabel>{item.placeholder}</CategoryLabel>
                     </SingleField>
                   )}
@@ -111,19 +106,16 @@ const ProfileBuilderCategories = ({ allCustomFields }) => {
         </Droppable>
       </Box>
       <Spacing vertical={4} />
-      <Divider />
-      <Spacing vertical={4} />
+      {/* <Divider /> */}
+      <Spacing vertical={5} />
+      <CategoryTitle>Add Existing Fields</CategoryTitle>
       <Box>
         <TextField
-          // value={category.name}
           border
-          // fontSize="18px"
-          // fontWeight="600"
           size="small"
           placeholder="Search Existing Field"
-          width="50%"
+          width="48%"
           onChange={handleTextChange}
-          // onEnter={handleCategoryUpdate}
         />
         <Spacing vertical={4} />
         <Box>
@@ -132,17 +124,17 @@ const ProfileBuilderCategories = ({ allCustomFields }) => {
             droppableId="add-existing-fields-area-source"
           >
             {(provided) => (
-              <ExistingFieldWrapper
+              <SingleFieldWrapper
                 {...provided.droppableProps}
                 ref={provided.innerRef}
               >
-                {searchedCustomField.slice(0, 6).map((item) => (
+                {searchedCustomField?.slice(0, 8).map((item) => (
                   <Draggable
                     draggableId={item.identifier}
                     index={item.sortIndex}
                   >
                     {(provided) => (
-                      <ExistingField
+                      <SingleField
                         ref={provided.innerRef}
                         {...provided.draggableProps}
                         {...provided.dragHandleProps}
@@ -154,15 +146,13 @@ const ProfileBuilderCategories = ({ allCustomFields }) => {
                             alt={item.name}
                           />
                         </div>
-                        <CategoryLabelExisting>
-                          {item.name}
-                        </CategoryLabelExisting>
-                      </ExistingField>
+                        <CategoryLabel>{item.name}</CategoryLabel>
+                      </SingleField>
                     )}
                   </Draggable>
                 ))}
                 {provided.placeholder}
-              </ExistingFieldWrapper>
+              </SingleFieldWrapper>
             )}
           </Droppable>
         </Box>

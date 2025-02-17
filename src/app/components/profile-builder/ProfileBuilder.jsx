@@ -75,15 +75,11 @@ const ProfileBuilder = () => {
 
   const [isAddCategoryDrop, setAddCategoryDrop, unsetAddCategoryDrop] =
     useBoolean(false);
-  const [isAddFieldDrop, setAddFieldDrop, unsetAddFieldDrop] =
-    useBoolean(false);
 
   const handleDragStart = (e) => {
     const source = e.source.droppableId;
 
     if (source === DROPTYPE.AddCategory) setAddCategoryDrop();
-    if (source === DROPTYPE.AddField) setAddFieldDrop();
-    if (source === DROPTYPE.ExistingField) setAddFieldDrop();
   };
 
   const handleDragEnd = (e) => {
@@ -113,8 +109,6 @@ const ProfileBuilder = () => {
   };
 
   const handleExistingFieldDrop = (e, destination) => {
-    unsetAddFieldDrop();
-
     const updatedCategories = selectedCategories.map((category) => {
       if (category.identifier === destination) {
         const savedFields = category.fields
@@ -125,7 +119,6 @@ const ProfileBuilder = () => {
           ...savedFields,
           { fieldReferenceId: e.draggableId },
         ];
-
         CustomFieldApi.updateCustomFiledGroup(category.identifier, {
           fields: updatedSavedFields,
         });
@@ -146,8 +139,6 @@ const ProfileBuilder = () => {
   };
 
   const handleAddFieldDrop = (e, destination) => {
-    unsetAddFieldDrop();
-
     fieldTypes.forEach((fieldType) => {
       if (e.draggableId === fieldType.fieldType) {
         const updatedCategories = selectedCategories.map((category) => {
@@ -172,7 +163,7 @@ const ProfileBuilder = () => {
   };
 
   return (
-    <div style={{ height: '100%' }}>
+    <div>
       <ProfileBuilderContext.Provider
         value={{
           selectedCategories,
@@ -181,7 +172,6 @@ const ProfileBuilder = () => {
           setAllCustomFields,
           isNewCategory,
           setNewCategory,
-          isAddFieldDrop,
           isAddCategoryDrop,
         }}
       >

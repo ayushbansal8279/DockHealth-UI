@@ -14,9 +14,7 @@ import * as CustomFieldApi from 'api/custom-fields-api';
 import { ProfileBuilderContext } from '../ProfileBuilder';
 
 const SelectedCategory = ({ category }) => {
-  const { isAddFieldDrop, setSelectedCategories } = useContext(
-    ProfileBuilderContext,
-  );
+  const { setSelectedCategories } = useContext(ProfileBuilderContext);
 
   const handleDeleteGroup = () => {
     CustomFieldApi.deleteCustomFiledGroup(category.identifier).then(() => {
@@ -57,11 +55,7 @@ const SelectedCategory = ({ category }) => {
       })}
       <Droppable droppableId={category.identifier}>
         {(provided) => (
-          <FieldDropper
-            {...provided.droppableProps}
-            ref={provided.innerRef}
-            isAddFieldDrop={isAddFieldDrop}
-          >
+          <FieldDropper {...provided.droppableProps} ref={provided.innerRef}>
             Drag and drop field items
           </FieldDropper>
         )}

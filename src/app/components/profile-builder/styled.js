@@ -20,8 +20,7 @@ export const PlayGroungWrapper = styled.div`
   width: 70%;
   height: 100%;
   border-top: 1px solid ${palette.iron};
-  padding: ${spacing.huge}
+  padding: ${spacing.huge};
+  display: flex;
+  justify-content: center;
 `;
-
-
-

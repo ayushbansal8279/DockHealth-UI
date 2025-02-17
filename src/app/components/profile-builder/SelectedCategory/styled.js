@@ -5,6 +5,7 @@ import styled from 'styled-components';
 export const MainContainer = styled.div`
   margin: 10px 60px 0 80px;
   border: 2px solid ${palette.iron};
+  border-radius: 4px;
 `;
 
 export const CategoryHeader = styled.div`
@@ -31,11 +32,12 @@ export const FieldDropper = styled.div`
   margin: 16px;
   text-align: center;
   align-content: center;
-  height: ${({ isAddFieldDrop }) => (isAddFieldDrop ? '100px' : '50px')};
+  height: 70px;
   font-size: 14px;
   line-height: 17.64px;
   letter-spacing: 0.3px;
   color: ${palette.coolGrey1};
+  border-radius: 4px;
 `;
 
 export const DeletIcon = styled(Delete)`
