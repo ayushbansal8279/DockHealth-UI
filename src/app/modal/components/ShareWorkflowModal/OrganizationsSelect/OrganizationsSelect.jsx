@@ -33,8 +33,9 @@ const OrganizationsSelect = (props) => {
     );
   }, [userOrganizations, currentOrganizationIdentifier]);
 
-  const getOrganizationsWithDebounce = useCallback(
+  const getOrganizationsForSearch = useCallback(
     (searchValue) => {
+      setOptions([]);
       availableUserOrganizations
         ?.filter(
           (option) =>
@@ -61,11 +62,16 @@ const OrganizationsSelect = (props) => {
   useEffect(() => {
     if (inputValue) {
       setLoadingOptions(true);
-      getOrganizationsWithDebounce(inputValue);
+      getOrganizationsForSearch(inputValue);
     } else {
-      setOptions([]);
+      setOptions(availableUserOrganizations);
     }
-  }, [inputValue, getOrganizationsWithDebounce, setOptions]);
+  }, [
+    inputValue,
+    getOrganizationsForSearch,
+    setOptions,
+    availableUserOrganizations,
+  ]);
 
   const handleInputChange = (event) => {
     setInputValue(event?.target?.value || '');
