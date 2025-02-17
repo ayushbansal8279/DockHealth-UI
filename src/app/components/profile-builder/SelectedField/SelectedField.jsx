@@ -51,11 +51,11 @@ const SelectedField = ({ field, category }) => {
     category?.fields?.reduce(
       (acc, item) => {
         if (item.identifier) {
-          const aa = {
-            fieldReferenceId: item.fieldReferenceId,
+          const refrence = {
+            fieldReferenceId: item.identifier,
           };
           acc.savedFieldsActualValue.push(item);
-          acc.savedFieldsRefrenceValue.push(aa);
+          acc.savedFieldsRefrenceValue.push(refrence);
         } else if (item.tempId) {
           acc.unSavedFields.push(item);
         }

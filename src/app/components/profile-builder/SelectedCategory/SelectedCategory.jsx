@@ -30,7 +30,7 @@ const SelectedCategory = ({ category }) => {
     const payload = {
       name: value,
     };
-    ProfileTypeFieldApi.updateCustomFiledGroup(category.identifier, payload);
+    CustomFieldApi.updateCustomFiledGroup(category.identifier, payload);
   };
 
   return (
@@ -43,9 +43,9 @@ const SelectedCategory = ({ category }) => {
             fontSize="18px"
             fontWeight="600"
             size="small"
-            placeholder="Add Category Name "
+            placeholder="Add Category Name"
             width="50%"
-            onEnter={handleCategoryUpdate}
+            onBlur={handleCategoryUpdate}
           />
         </HeaderWrapper>
         <DeletIcon onClick={handleDeleteGroup} />

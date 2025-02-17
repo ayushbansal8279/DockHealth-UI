@@ -16,8 +16,9 @@ const TextField = ({
 }) => {
   const [inputValue, setValue] = useState();
   useEffect(() => {
-    setValue(value || '');
+    setValue(value);
   }, [value]);
+  
 
   const sx = {
     backgroundColor: palette.white,
@@ -30,6 +31,7 @@ const TextField = ({
       },
       '&.Mui-focused fieldset': {
         border: `1px solid ${palette.coolGrey1}`,
+        backgroundColor: 'none',
       },
     },
     '& .MuiInputBase-input': {
@@ -43,9 +45,7 @@ const TextField = ({
 
   const handleKeyDown = (event) => {
     if (event.key === 'Enter') {
-      // console.log(inputValue);
       onEnter && onEnter(inputValue);
-      // event.preventDefault();
     }
   };
 
@@ -57,7 +57,9 @@ const TextField = ({
 
   const handleBlur = (event) => {
     onBlur && onBlur(event.target.value);
-    setValue('');
+    if (value === undefined) {
+      setValue('');
+    }
   };
 
   return (

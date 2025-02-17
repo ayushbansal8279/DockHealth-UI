@@ -50,7 +50,7 @@ const BuilderPlayground = () => {
               fontSize="18px"
               fontWeight="600"
               size="small"
-              placeholder="Add Category Name "
+              placeholder="Add category name (Press Enter to save)"
               width="50%"
               onEnter={onNewCategoryAdd}
             />

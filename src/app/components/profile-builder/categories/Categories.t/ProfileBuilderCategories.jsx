@@ -15,7 +15,7 @@ import {
   SingleFieldWrapper,
   SingleField,
 } from './styled';
-import { Box, Divider } from '@mui/material';
+import { Box } from '@mui/material';
 import { Draggable, Droppable } from 'react-beautiful-dnd';
 import { FieldType, fieldTypes } from '../../helper';
 import Spacing from '@/app/components/common/Spacing';
@@ -105,9 +105,7 @@ const ProfileBuilderCategories = ({ allCustomFields }) => {
           )}
         </Droppable>
       </Box>
-      <Spacing vertical={4} />
-      {/* <Divider /> */}
-      <Spacing vertical={5} />
+      <Spacing vertical={6} />
       <CategoryTitle>Add Existing Fields</CategoryTitle>
       <Box>
         <TextField
