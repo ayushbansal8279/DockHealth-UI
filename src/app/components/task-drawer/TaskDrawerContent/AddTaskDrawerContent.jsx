@@ -267,7 +267,7 @@ const AddTaskDrawerContent = (props) => {
               <StartDateSection
                 addTaskDrawer
                 setStartDate={setStartDate}
-                addTaskStartDateIntent={startDateIntent}
+                defaultStartDateIntent={startDateIntent}
                 setStartDateIntent={setStartDateIntent}
               />
             </div>
@@ -277,7 +277,7 @@ const AddTaskDrawerContent = (props) => {
               <DueDateSection
                 addTaskDrawer
                 setDueDate={setDueDate}
-                addTaskDueDateIntent={dueDateIntent}
+                defaultDueDateIntent={dueDateIntent}
                 setDueDateIntent={setDueDateIntent}
               />
             </div>

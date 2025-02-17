@@ -41,7 +41,7 @@ const DueDateSection = ({
   disabled = false,
   addTaskDrawer,
   setDueDate,
-  addTaskDueDateIntent,
+  defaultDueDateIntent,
   setDueDateIntent,
 }) => {
   const dispatch = useDispatch();
@@ -67,8 +67,8 @@ const DueDateSection = ({
         setMomentDueDate(
           !!updatedDueDateTime ? moment(updatedDueDateTime) : null,
         );
-        const addTaskDueDateIntent = checkDateTimeIntent(updatedDueDateTime);
-        setDueDateIntent(addTaskDueDateIntent);
+        const defaultDueDateIntent = checkDateTimeIntent(updatedDueDateTime);
+        setDueDateIntent(defaultDueDateIntent);
       } else {
         setMomentDueDate(
           !!updatedDueDateTime ? moment(updatedDueDateTime) : null,
@@ -135,7 +135,7 @@ const DueDateSection = ({
               momentDueDate,
               selectedTask?.dueDateIntent
                 ? selectedTask?.dueDateIntent
-                : addTaskDueDateIntent,
+                : defaultDueDateIntent,
             )}
           </DateViewText>
         </DateViewContainer>
@@ -144,7 +144,7 @@ const DueDateSection = ({
         momentDueDate,
         selectedTask?.dueDateIntent
           ? selectedTask?.dueDateIntent
-          : addTaskDueDateIntent,
+          : defaultDueDateIntent,
       ) && (
         <DateViewContainer isOverdue={isOverdue}>
           <DateViewText
@@ -197,7 +197,7 @@ const DueDateSection = ({
                   momentDueDate?.local(),
                   selectedTask?.dueDateIntent
                     ? selectedTask?.dueDateIntent
-                    : addTaskDueDateIntent,
+                    : defaultDueDateIntent,
                 )}
                 onDateChange={handleDueDateSave}
                 recurring={hasRecurringSchedule}
@@ -205,7 +205,7 @@ const DueDateSection = ({
                 dueDateIntent={
                   selectedTask?.dueDateIntent
                     ? selectedTask?.dueDateIntent
-                    : addTaskDueDateIntent
+                    : defaultDueDateIntent
                 }
                 dateType="dueDate"
               />

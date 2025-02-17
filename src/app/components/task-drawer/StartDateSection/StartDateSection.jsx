@@ -33,7 +33,7 @@ const StartDateSection = ({
   disabled = false,
   addTaskDrawer,
   setStartDate,
-  addTaskStartDateIntent,
+  defaultStartDateIntent,
   setStartDateIntent,
 }) => {
   const dispatch = useDispatch();
@@ -59,9 +59,9 @@ const StartDateSection = ({
         setMomentStartDate(
           !!updatedStartDateTime ? moment(updatedStartDateTime) : null,
         );
-        const addTaskStartDateIntent =
+        const defaultStartDateIntent =
           checkDateTimeIntent(updatedStartDateTime);
-        setStartDateIntent(addTaskStartDateIntent);
+        setStartDateIntent(defaultStartDateIntent);
       } else {
         setMomentStartDate(
           !!updatedStartDateTime ? moment(updatedStartDateTime) : null,
@@ -125,14 +125,14 @@ const StartDateSection = ({
           >
             {formatDateBasedOnIntent(
               momentStartDate,
-              startDateIntent ? startDateIntent : addTaskStartDateIntent,
+              startDateIntent ? startDateIntent : defaultStartDateIntent,
             )}
           </DateViewText>
         </DateViewContainer>
       )}
       {shouldDisplayTime(
         momentStartDate,
-        startDateIntent ? startDateIntent : addTaskStartDateIntent,
+        startDateIntent ? startDateIntent : defaultStartDateIntent,
       ) && (
         <DateViewContainer>
           <DateViewText
@@ -171,13 +171,13 @@ const StartDateSection = ({
                 taskIdentifier={taskIdentifier}
                 selectedDate={adjustUTCDateForDateIntent(
                   momentStartDate?.local(),
-                  startDateIntent ? startDateIntent : addTaskStartDateIntent,
+                  startDateIntent ? startDateIntent : defaultStartDateIntent,
                 )}
                 onDateChange={handleStartDateSave}
                 recurring={hasRecurringSchedule}
                 onCloseClick={closePopover}
                 dueDateIntent={
-                  startDateIntent ? startDateIntent : addTaskStartDateIntent
+                  startDateIntent ? startDateIntent : defaultStartDateIntent
                 }
                 dateType="dueDate"
               />
