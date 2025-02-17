@@ -50,6 +50,14 @@ export function downloadProfileData(profileTypeIdentifier, filename) {
     .catch(noop);
 }
 
+export function mergeProfile(profileIdentifier, mergeToProfileIdentifier) {
+  return axios
+    .patch(`profile/mergeProfile/${profileIdentifier}`, {
+      mergeToProfileIdentifier: mergeToProfileIdentifier,
+    })
+    .then(({ data }) => data);
+}
+
 export const note = {
   getAll(profileIdentifier) {
     return axios

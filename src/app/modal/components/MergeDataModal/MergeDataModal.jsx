@@ -14,10 +14,11 @@ import {
 } from '../styled';
 import { CancelButton, ConfirmButton } from '../ModalButton/ModalButtons';
 
-const MergePatientsModal = ({
+const MergeDataModal = ({
   closeModal,
-  fromPatient,
-  toPatient,
+  from,
+  to,
+  type,
   confirm,
 }) => {
   return (
@@ -27,17 +28,17 @@ const MergePatientsModal = ({
           <Box mb={1}>
             <MergeTypeIcon fontSize="large" />
           </Box>
-          <ModalHeaderName>Merge Patient</ModalHeaderName>
+          <ModalHeaderName>Merge {type.charAt(0).toUpperCase()+type.slice(1)}</ModalHeaderName>
         </ModalIconContainer>
         <ModalDescriptionContainer>
           <Typography style={{ fontFamily: 'Outfit' }}>
             Please confirm to merge{' '}
             <span style={{ fontWeight: 'bold' }}>
-              {fromPatient.firstName} {fromPatient.lastName}
+              {from}
             </span>{' '}
-            to this selected patient{' '}
+            to this selected {type}{' '}
             <span style={{ fontWeight: 'bold' }}>
-              {toPatient.firstName} {toPatient.lastName}
+              {to}
             </span>
           </Typography>
         </ModalDescriptionContainer>
@@ -55,4 +56,4 @@ const MergePatientsModal = ({
   );
 };
 
-export default MergePatientsModal;
+export default MergeDataModal;

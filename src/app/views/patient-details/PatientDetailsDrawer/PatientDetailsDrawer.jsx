@@ -174,9 +174,10 @@ const PatientDetailsDrawer = ({ patient, isOpenedDetails, closeDetails }) => {
                 patientIdentifiersToExclude: [patient.patientIdentifier],
                 onSelect: (selectedPatient) => {
                   dispatch(
-                    openModal('MergePatients', {
-                      toPatient: selectedPatient,
-                      fromPatient: patient,
+                    openModal('MergeData', {
+                      to: selectedPatient.firstName+" "+selectedPatient.lastName,
+                      from: patient.firstName+" "+patient.lastName,
+                      type: "patient",
                       confirm: () => {
                         dispatch(closeModal());
                         dispatch(
