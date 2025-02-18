@@ -109,11 +109,12 @@ const ProfileBuilder = () => {
   };
 
   const handleExistingFieldDrop = (e, destination) => {
+    
     const updatedCategories = selectedCategories.map((category) => {
       if (category.identifier === destination) {
         const savedFields = category.fields
-          .filter((field) => field.fieldReferenceId)
-          .map((field) => ({ fieldReferenceId: field.fieldReferenceId }));
+          .filter((field) => field.identifier)
+          .map((field) => ({ fieldReferenceId: field.identifier }));
 
         const updatedSavedFields = [
           ...savedFields,

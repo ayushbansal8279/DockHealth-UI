@@ -40,6 +40,10 @@ export const FieldDropper = styled.div`
   border-radius: 4px;
 `;
 
+export const PlaceholderDiv = styled.div`
+  height: 30px;
+`;
+
 export const DeletIcon = styled(Delete)`
   cursor: pointer;
 `;
