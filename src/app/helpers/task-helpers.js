@@ -100,13 +100,13 @@ export const ReminderType = {
   DAY_BEFORE_1: 'DAY_BEFORE_1',
   DAY_BEFORE_2: 'DAY_BEFORE_2',
   WEEK_BEFORE_1: 'WEEK_BEFORE_1',
-  ABSOLUTE: 'ABSOLUTE'
+  ABSOLUTE: 'ABSOLUTE',
 };
 
 export const DueDateIntent = {
   DATE: 'DATE',
-  DATETIME_ABSOLUTE: 'DATETIME_ABSOLUTE'
-}
+  DATETIME_ABSOLUTE: 'DATETIME_ABSOLUTE',
+};
 
 export function getLabelsIconTooltipTitle(labels) {
   let toolTipMultiLabelDetails = '';
