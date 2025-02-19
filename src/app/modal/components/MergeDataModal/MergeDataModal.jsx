@@ -21,6 +21,8 @@ const MergeDataModal = ({
   type,
   confirm,
 }) => {
+  const profileType = type.charAt(0).toUpperCase()+type.slice(1);
+  
   return (
     <MuiThemeProvider theme={redTheme}>
       <ModalWrapper>
@@ -28,7 +30,7 @@ const MergeDataModal = ({
           <Box mb={1}>
             <MergeTypeIcon fontSize="large" />
           </Box>
-          <ModalHeaderName>Merge {type.charAt(0).toUpperCase()+type.slice(1)}</ModalHeaderName>
+          <ModalHeaderName>Merge {profileType}</ModalHeaderName>
         </ModalIconContainer>
         <ModalDescriptionContainer>
           <Typography style={{ fontFamily: 'Outfit' }}>

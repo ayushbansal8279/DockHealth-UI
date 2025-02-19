@@ -12,8 +12,6 @@ export const Row = styled.button`
   cursor: pointer;
   color: ${palette.coolGrey1};
   font-family: inherit;
-  ${({ isHovered }) => isHovered && `background: ${palette.blueGrey};`}
-  ${({ readOnly }) => readOnly && `pointer-events: none;`}
 
   &:not(:last-of-type) {
     margin-bottom: ${spacing.tiny};

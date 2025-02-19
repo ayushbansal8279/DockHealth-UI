@@ -1,5 +1,5 @@
 import { showGlobalErrorAlert } from '@/app/alert/actions';
-import { getAllProfiles, getProfileDetails } from '@/app/api/profile-api';
+import { getAllProfiles } from '@/app/api/profile-api';
 import { getProfileName } from '@/app/views/custom-profile-details/helpers';
 import React, { useCallback, useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux';
@@ -7,7 +7,7 @@ import { Input, InputBox, NoResultText, Row, SearchProfilesResultList } from './
 import { getAllProfileFieldTypes } from '@/app/api/profile-type-field-api';
 import MagnifierIcon from 'img/magnifier.svg';
 
-export default function ProfileList({ profileTypeIdentifier, profile, onSelect }) {
+const ProfileList = ({ profileTypeIdentifier, profile, onSelect }) => {
     const dispatch = useDispatch();
     const [profiles, setProfiles] = useState([]);
     const [profileTypeFields, setProfileTypeFields] = useState([]);
@@ -83,3 +83,5 @@ export default function ProfileList({ profileTypeIdentifier, profile, onSelect }
         </>
     )
 }
+
+export default ProfileList;

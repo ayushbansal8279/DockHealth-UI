@@ -14,19 +14,13 @@ import {
 import { checkIfUserIsOrganizationAdmin } from 'helpers/user-helper';
 import { FormProvider, useForm } from 'react-hook-form';
 import { openModal, closeModal } from 'modal/actions';
-import {
-  createPatientDetailsPath,
-  CUSTOM_FIELDS_SETTINGS_PATH,
-} from 'routing/helpers/paths';
+import { CUSTOM_FIELDS_SETTINGS_PATH } from 'routing/helpers/paths';
 import {
   archivePatient as archivePatientAction,
   unarchivePatient as unarchivePatientAction,
   deletePatientArchive as deletePatientArchiveAction,
 } from 'sagas/patient-details-saga';
-import {
-  mergePatient,
-  updatePatientDetails,
-} from 'actions/patient-details-actions';
+import { updatePatientDetails } from 'actions/patient-details-actions';
 import PatientForm from 'components/patients/PatientForm/PatientForm';
 import PatientDrawer from 'components/patients/PatientDrawer/PatientDrawer';
 import { validationSchema } from 'components/patients/PatientForm/helpers';
@@ -172,27 +166,7 @@ const PatientDetailsDrawer = ({ patient, isOpenedDetails, closeDetails }) => {
             dispatch(
               openModal('PatientPicker', {
                 patientIdentifiersToExclude: [patient.patientIdentifier],
-                onSelect: (selectedPatient) => {
-                  dispatch(
-                    openModal('MergeData', {
-                      to: selectedPatient.firstName+" "+selectedPatient.lastName,
-                      from: patient.firstName+" "+patient.lastName,
-                      type: "patient",
-                      confirm: () => {
-                        dispatch(closeModal());
-                        dispatch(
-                          mergePatient(patient, selectedPatient, () => {
-                            history.push(
-                              createPatientDetailsPath(
-                                selectedPatient.patientIdentifier,
-                              ),
-                            );
-                          }),
-                        );
-                      },
-                    }),
-                  );
-                },
+                patient: patient
               }),
             );
             closeDetails();

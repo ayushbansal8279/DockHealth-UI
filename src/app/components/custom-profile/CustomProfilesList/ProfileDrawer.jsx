@@ -33,8 +33,6 @@ import CustomField from 'components/common/CustomField/CustomField';
 import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
 import { closeModal, openModal } from 'modal/actions';
-import { mergeProfile } from '@/app/actions/profile-actions';
-import { createProfileListPath } from '@/app/routing/helpers/paths';
 
 const ProfileDrawer = ({
   title,
@@ -203,25 +201,6 @@ const ProfileDrawer = ({
             openModal('ProfilePicker', {
               profileTypeIdentifier: profileTypeIdentifier,
               profile: profile,
-              onSelect: (currentProfile, selectedProfile) => {
-                dispatch(
-                  openModal('MergeData', {
-                    to: selectedProfile.displayName,
-                    from: currentProfile.displayName,
-                    type: "profile",
-                    confirm: () => {
-                      dispatch(closeModal());
-                      dispatch(
-                        mergeProfile(currentProfile.identifier, selectedProfile.identifier, () => {
-                          history.push(
-                            createProfileListPath(profileTypeIdentifier, selectedProfile.identifier)
-                          )
-                        })
-                      );
-                    },
-                  }),
-                );
-              },
             })
           );
           onClose();
