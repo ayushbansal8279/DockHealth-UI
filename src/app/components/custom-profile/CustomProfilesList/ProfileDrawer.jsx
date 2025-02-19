@@ -33,6 +33,7 @@ import CustomField from 'components/common/CustomField/CustomField';
 import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
 import { closeModal, openModal } from 'modal/actions';
+import { getProfileName } from '@/app/views/custom-profile-details/helpers';
 
 const ProfileDrawer = ({
   title,
@@ -50,7 +51,7 @@ const ProfileDrawer = ({
   const formMethods = useForm({
     reValidateMode: 'onSubmit',
   });
-  const { register, handleSubmit, getValues, formState: { errors } } = formMethods;
+  const { handleSubmit, getValues, formState: { errors } } = formMethods;
   const formReference = useRef(null);
 
   const hasErrors = Object.keys(errors).length > 0;
@@ -170,6 +171,7 @@ const ProfileDrawer = ({
       dispatch(
         openModal('InterruptEdit', {
           description: 'You have unsaved',
+          profileTypeName: getProfileName(types, profile)?.[0],
           confirm: async () => {
             const isValid = await formMethods.trigger();
             if(isValid) {
