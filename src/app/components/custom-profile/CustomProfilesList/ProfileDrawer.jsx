@@ -170,13 +170,16 @@ const ProfileDrawer = ({
       dispatch(
         openModal('InterruptEdit', {
           description: 'You have unsaved',
-          confirm: () => {
-            editProfile(getValues());
-            dispatch(closeModal());
-            if (!addMode && profile) {
-              setEditMode(false);
+          confirm: async () => {
+            const isValid = await formMethods.trigger();
+            if(isValid) {
+              editProfile(getValues());
+              if (!addMode && profile) {
+                setEditMode(false);
+              }
+              onClose();
             }
-            onClose();
+            dispatch(closeModal());
           },
           onClose: () => {
             if (!addMode && profile) {
