@@ -50,8 +50,10 @@ const ProfileDrawer = ({
   const formMethods = useForm({
     reValidateMode: 'onSubmit',
   });
-  const { register, handleSubmit, getValues } = formMethods;
+  const { register, handleSubmit, getValues, formState: { errors } } = formMethods;
   const formReference = useRef(null);
+
+  const hasErrors = Object.keys(errors).length > 0;
 
   const [isCollapsed, setCollapsed] = useState(true);
   const [editMode, setEditMode] = useState(addMode);
@@ -275,7 +277,7 @@ const ProfileDrawer = ({
               <Stack sx={{ m: '8px 4px' }} direction="row">
                 <Button
                   type="submit"
-                  disabled={profile && !editMode}
+                  disabled={(profile && !editMode) || hasErrors}
                   width="170px"
                   variant="primary"
                   size="small"
