@@ -35,6 +35,7 @@ import { userProfileSelector } from '@/app/selectors/user-selectors';
 import { isUserGuestOrDockLite, isUserViewOnly } from '@/app/helpers/user-helper';
 import { downloadProfileData } from '@/app/api/profile-api';
 import { initializeProfileState } from '@/app/actions/profile-actions';
+import { StyledLink } from './styled';
 
 
 const CustomProfileList = () => {
@@ -325,7 +326,10 @@ const CustomProfileList = () => {
 
                   if (record) {
                     switch (field.fieldType) {
-                      case 'TEXT': {
+                      case 'TEXT':
+                      case 'NUMBER':
+                      case 'BOOLEAN':
+                      case 'LONG_TEXT': {
                         return (
                           record.values?.[0] || record.values?.[0]?.value || ''
                         );
@@ -344,6 +348,19 @@ const CustomProfileList = () => {
                         return record.references
                           ?.map((item) => item.displayValue)
                           .join(', ');
+                      }
+                      case 'HYPERLINK': {
+                        const link = record.values?.[0] || record.values?.[0]?.value || '';
+                        if(!link) return '';
+                        return (
+                          <StyledLink
+                            href={link.startsWith("http") ? link : `//${link}`} 
+                            target="_blank"
+                            onClick={(event) => event.stopPropagation()}
+                          >
+                            {link}
+                          </StyledLink>
+                        );
                       }
                       default: {
                         return '';
