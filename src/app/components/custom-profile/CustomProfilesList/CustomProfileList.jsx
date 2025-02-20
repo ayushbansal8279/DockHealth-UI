@@ -36,6 +36,7 @@ import { isUserGuestOrDockLite, isUserViewOnly } from '@/app/helpers/user-helper
 import { downloadProfileData } from '@/app/api/profile-api';
 import { initializeProfileState } from '@/app/actions/profile-actions';
 import { StyledLink } from './styled';
+import DateLabel from '../../common/DateLabel/DateLabel';
 
 
 const CustomProfileList = () => {
@@ -361,6 +362,11 @@ const CustomProfileList = () => {
                             {link}
                           </StyledLink>
                         );
+                      }
+                      case 'DATE': {
+                        const date = record.values?.[0] || record.values?.[0]?.value || ''
+                        if(!date) return '';
+                        return <DateLabel date={date} />
                       }
                       default: {
                         return '';
