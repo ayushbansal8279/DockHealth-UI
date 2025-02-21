@@ -22,3 +22,10 @@ export function selectedProfileFilters(filters, selectedQuickFilter) {
     },
   };
 }
+
+export function updateProfileListPreferences(setup, profileTypeIdentifier) {
+  return {
+    type: ActionTypes.UPDATE_PROFILE_LIST_PREFERENCES,
+    payload: { setup, profileTypeIdentifier }
+  }
+};

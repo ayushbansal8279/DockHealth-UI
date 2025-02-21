@@ -21,3 +21,15 @@ export function editProfileType(identifier, profile) {
 export function deleteProfileType(identifier) {
   return axios.delete(`profile/type/${identifier}`).then(({ data }) => data);
 }
+
+export function getProfileListPreferences(profileTypeIdentifier) {
+  return axios
+    .get(`profile/type/list/getUserPreferences/${profileTypeIdentifier}`)
+    .then(({data}) => data);
+}
+
+export function updateProfileListPreferences(setup, profileTypeIdentifier) {
+  return axios
+    .put(`profile/type/list/updateUserPreferences/${profileTypeIdentifier}`, setup)
+    .then(({ data }) => data);
+}
