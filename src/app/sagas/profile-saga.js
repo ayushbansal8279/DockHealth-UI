@@ -52,13 +52,8 @@ function* updateProfileListPreferences({ payload }) {
       setup,
       profileTypeIdentifier,
     );
-    yield put({
-      type: ActionTypes.UPDATE_PROFILE_LIST_PREFERENCES_SUCCESS,
-      setup
-    });
   } catch {
     yield put(showGlobalErrorAlert());
-    yield put({ type: ActionTypes.UPDATE_PROFILE_LIST_PREFERENCES_FAILURE });
   }
 }
 
