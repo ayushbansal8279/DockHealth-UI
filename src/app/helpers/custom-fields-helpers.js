@@ -41,3 +41,11 @@ export const createMetaDataObjectToSend = (metaDataField) => {
 
   return null;
 };
+
+export const normalizeHyperlink = (value) => {
+  if (!value) return "";
+
+  const url = value.replace(/^\/+/, "");
+
+  return /^(https?|ftp):\/\//.test(url) ? url : `https://${url}`;
+};
