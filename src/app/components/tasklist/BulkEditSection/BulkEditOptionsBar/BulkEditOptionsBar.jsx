@@ -76,6 +76,7 @@ const BulkEditOptionsBar = ({
   searchValue,
   shouldRefreshTasksEveryTime,
   optionsConfig,
+  allTasks = []
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const currentUser = useSelector(userProfileSelector);
@@ -636,6 +637,36 @@ const BulkEditOptionsBar = ({
   ]);
 
   const handleMoveTasks = useCallback(async () => {
+
+    const itemTasks = allTasks
+      .filter(task => task.itemType === "TASK")
+      .map(task => ({
+        identifier: task.identifier,
+        ...(task.templateTaskIdentifier && { templateTaskIdentifier: task.templateTaskIdentifier }),
+      }));
+
+    const itemBundles = allTasks
+      .filter(task => task.itemType === "BUNDLE")
+      .map(bundle => ({
+        identifier: bundle.identifier,
+        tasks: bundle.tasks || [],
+      }));
+
+    const bundleTaskIdentifiers = new Set(itemBundles.flatMap(bundle => bundle.tasks));
+
+    const unmatchedTasks = itemTasks.filter(task => !bundleTaskIdentifiers.has(task.identifier));
+
+    if (unmatchedTasks.some(task => task.templateTaskIdentifier)) {
+      console.log('treu')
+        dispatch(
+          modalActions.openModal('Alert', {
+            description:'Moving workflow tasks is not permitted. Please unselect tasks that below to a workflow.',
+            confirm: () => {dispatch(modalActions.closeModal());},
+          }),
+        );
+      return;
+    }
+
     // eslint-disable-next-line unicorn/consistent-function-scoping
     const standardConfirmAction = (selectedDestination) => {
       onMultiSelectAction('Moved');
