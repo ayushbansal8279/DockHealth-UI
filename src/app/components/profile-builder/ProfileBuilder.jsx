@@ -26,7 +26,6 @@ const ProfileBuilder = () => {
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [isNewCategory, setNewCategory] = useState(false);
   const [allCustomFields, setAllCustomFields] = useState([]);
-  const [defaultFields, setDefaultFields] = useState([]);
 
   const Context = tabName === 'patients' ? 'PATIENT' : 'PROFILE';
 
@@ -35,11 +34,9 @@ const ProfileBuilder = () => {
       const customGroups = await CustomFieldApi.searchCustomFiledGroups(
         Context,
       );
+      
       const defaultFields = await CustomFieldApi.getDefauldFields(Context);
-
       const enhancedDefaultFields = convertDefaultFields(defaultFields);
-      setDefaultFields(defaultFields);
-
       const customFields = [...enhancedDefaultFields, ...allCustomFields];
 
       const hasDefaultFields = customGroups.some(

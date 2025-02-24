@@ -118,7 +118,7 @@ const toCamelCaseWithSpaces = (fieldName) => {
 };
 
 export const convertDefaultFields = (defaulFields) => {
-  const aa = defaulFields.map((field) => {
+  const updatedGroups = defaulFields.map((field) => {
     return {
       identifier: field.identifier,
       targetType: field.context,
@@ -127,5 +127,5 @@ export const convertDefaultFields = (defaulFields) => {
       contextType: 'DEFAULT',
     };
   });
-  return aa;
+  return updatedGroups;
 };
