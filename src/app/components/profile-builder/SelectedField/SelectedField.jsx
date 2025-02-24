@@ -30,6 +30,7 @@ const FieldTypeImages = {
 
 const SelectedField = ({ field, category }) => {
   const dispatch = useDispatch();
+  const isDefault = field.contextType === 'DEFAULT';
 
   const { setSelectedCategories } = useContext(ProfileBuilderContext);
 
@@ -157,14 +158,21 @@ const SelectedField = ({ field, category }) => {
         />
       </FieldIconContainer>
       <TextField
+        disabled={field.contextType === 'DEFAULT'}
         border
         size="small"
         value={field.name}
         placeholder={field?.placeholder}
         onBlur={handleBlur}
       />
-      <EditIcon onClick={handleEditClick} />
-      <DeletIcon onClick={handleRemoveFieldFromGroup} />
+      <EditIcon
+        sx={{ color: isDefault && '#9e9e9e' }}
+        onClick={!isDefault && handleEditClick}
+      />
+      <DeletIcon
+        sx={{ color: isDefault && '#9e9e9e' }}
+        onClick={!isDefault && handleRemoveFieldFromGroup}
+      />
     </FieldArea>
   );
 };

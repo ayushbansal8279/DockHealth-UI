@@ -124,5 +124,14 @@ export function searchCustomFiledGroups(context) {
   //       throw new Error(error?.response?.data?.errorMessage);
   //     });
   // }
+}
 
+export function getDefauldFields(context) {
+  return axios
+    .get(`/fieldReference/findDefaultsByContext?isDefault=true&context=${context}`)
+    .then(({ data }) => data)
+    .catch((error) => {
+      log(error);
+      throw new Error(error?.response?.data?.errorMessage);
+    });
 }

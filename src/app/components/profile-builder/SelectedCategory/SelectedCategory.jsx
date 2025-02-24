@@ -84,6 +84,7 @@ const SelectedCategory = ({ category }) => {
         <HeaderWrapper>
           <DragIndicator />
           <TextField
+            disabled={category.name === 'Default Group'}
             value={category.name}
             fontSize="18px"
             fontWeight="600"
@@ -93,7 +94,9 @@ const SelectedCategory = ({ category }) => {
             onBlur={handleCategoryUpdate}
           />
         </HeaderWrapper>
-        <DeletIcon onClick={handleDeleteGroup} />
+        {category.name !== 'Default Group' && (
+          <DeletIcon onClick={handleDeleteGroup} />
+        )}
       </CategoryHeader>
       <DragDropContext
         onDragStart={(e) => handleDragStart(e)}

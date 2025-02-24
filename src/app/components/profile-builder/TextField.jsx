@@ -13,12 +13,12 @@ const TextField = ({
   value,
   onBlur,
   onChange,
+  disabled = false,
 }) => {
   const [inputValue, setValue] = useState();
   useEffect(() => {
     setValue(value);
   }, [value]);
-  
 
   const sx = {
     backgroundColor: palette.white,
@@ -64,6 +64,7 @@ const TextField = ({
 
   return (
     <Input
+      disabled={disabled}
       size={size}
       value={inputValue}
       sx={sx}

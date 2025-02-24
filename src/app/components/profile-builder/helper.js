@@ -90,3 +90,42 @@ export const DROPTYPE = {
   AddField: 'add-fields-area-source',
   ExistingField: 'add-existing-fields-area-source',
 };
+
+const desiredDefaultFieldsOrder = [
+  'FIRST_NAME',
+  'MIDDLE_NAME',
+  'LAST_NAME',
+  'GENDER',
+  'GENDER_IDENTITY',
+  'DOB',
+  'MRN',
+  'PHONE_MOBILE',
+  'PHONE_HOME',
+];
+
+export const getDefaultsRefrenceIds = (defaulFields) => {
+  const rearrangedArray = desiredDefaultFieldsOrder.map((columnName) => {
+    const field = defaulFields.find((f) => f.columnName === columnName);
+    return field ? { fieldReferenceId: field.identifier } : null;
+  });
+  return rearrangedArray;
+};
+
+const toCamelCaseWithSpaces = (fieldName) => {
+  if (!fieldName) return '';
+  let result = fieldName.charAt(0).toUpperCase() + fieldName.slice(1);
+  return result.replace(/([A-Z])(?=[a-z]|$)/g, ' $1').trim();
+};
+
+export const convertDefaultFields = (defaulFields) => {
+  const aa = defaulFields.map((field) => {
+    return {
+      identifier: field.identifier,
+      targetType: field.context,
+      fieldType: 'TEXT',
+      name: toCamelCaseWithSpaces(field.fieldName),
+      contextType: 'DEFAULT',
+    };
+  });
+  return aa;
+};

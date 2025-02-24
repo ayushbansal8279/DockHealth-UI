@@ -5,7 +5,11 @@ import { BuilderContainer, CategoryWrapper, PlayGroungWrapper } from './styled';
 import BuilderPlayground from './builder-playground/BuilderPlayground';
 import { DragDropContext } from 'react-beautiful-dnd';
 import { useBoolean } from 'hooks/useBoolean';
-import { DROPTYPE } from './helper';
+import {
+  convertDefaultFields,
+  DROPTYPE,
+  getDefaultsRefrenceIds,
+} from './helper';
 import { fieldTypes } from './helper';
 import { useParams } from 'react-router-dom';
 import { showGlobalErrorAlert } from 'alert/actions';
@@ -22,28 +26,60 @@ const ProfileBuilder = () => {
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [isNewCategory, setNewCategory] = useState(false);
   const [allCustomFields, setAllCustomFields] = useState([]);
+  const [defaultFields, setDefaultFields] = useState([]);
 
-  const fetchProfileCustomGroups = ({ allCustomFields }) => {
-    CustomFieldApi.searchCustomFiledGroups('PATIENT').then((data) => {
-      if (!data || data.length === 0) return;
+  const Context = tabName === 'patients' ? 'PATIENT' : 'PROFILE';
 
-      let data1 = [...data];
+  const fetchProfileCustomGroups = async ({ allCustomFields }) => {
+    try {
+      const customGroups = await CustomFieldApi.searchCustomFiledGroups(
+        Context,
+      );
+      const defaultFields = await CustomFieldApi.getDefauldFields(Context);
 
-      if (data1.length !== 0) {
-        data1.forEach((category) => {
-          if (!category.fields) return;
+      const enhancedDefaultFields = convertDefaultFields(defaultFields);
+      setDefaultFields(defaultFields);
 
-          category.fields = category.fields.map((field) => {
-            const match = allCustomFields?.find(
-              (ele) => ele.identifier === field.fieldReferenceId,
-            );
+      const customFields = [...enhancedDefaultFields, ...allCustomFields];
 
-            return match ? { ...field, ...match } : field;
-          });
-        });
+      const hasDefaultFields = customGroups.some(
+        (group) => group.name === 'Default Group',
+      );
+
+      if (Context === 'PATIENT' && !hasDefaultFields) {
+        const defaultCategory = {
+          context: Context,
+          name: 'Default Group',
+          fields: getDefaultsRefrenceIds(defaultFields),
+          isDefault: true,
+          displayOrder: 0,
+        };
+
+        const savedDefault = await CustomFieldApi.saveCustomFiledGroup(
+          defaultCategory,
+        );
+        setSelectedCategories((prev) => [...prev, savedDefault]);
       }
-      setSelectedCategories(data1);
-    });
+
+      const processedGroups = customGroups.map((category) => {
+        if (!category.fields) {
+          return category;
+        }
+
+        const enrichedFields = category.fields.map((field) => {
+          const matchingField = customFields?.find(
+            (customField) => customField.identifier === field.fieldReferenceId,
+          );
+
+          return matchingField ? { ...field, ...matchingField } : field;
+        });
+
+        return { ...category, fields: enrichedFields };
+      });
+      setSelectedCategories(processedGroups);
+    } catch (error) {
+      console.error('Error fetching custom field groups:', error);
+    }
   };
 
   const fetchPatientCustomFields = () => {
@@ -66,7 +102,7 @@ const ProfileBuilder = () => {
   };
 
   useEffect(() => {
-    if (tabName === 'patients') {
+    if (Context === 'PATIENT') {
       fetchPatientCustomFields();
     } else {
       fetchUserCustomFields();
@@ -109,7 +145,6 @@ const ProfileBuilder = () => {
   };
 
   const handleExistingFieldDrop = (e, destination) => {
-    
     const updatedCategories = selectedCategories.map((category) => {
       if (category.identifier === destination) {
         const savedFields = category.fields
@@ -164,7 +199,7 @@ const ProfileBuilder = () => {
   };
 
   return (
-    <div>
+    <div style={{ minHeight: '110dvh' }}>
       <ProfileBuilderContext.Provider
         value={{
           selectedCategories,
@@ -176,7 +211,7 @@ const ProfileBuilder = () => {
           isAddCategoryDrop,
         }}
       >
-        <BasicLayoutHeader title={'Profile/ Profile Builder'} />
+        <BasicLayoutHeader title={'Patient Profile Builder'} />
         <DragDropContext
           onDragStart={(e) => handleDragStart(e)}
           onDragEnd={(e) => handleDragEnd(e)}
