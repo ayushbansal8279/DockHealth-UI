@@ -7,7 +7,6 @@ import Spacing from 'components/common/Spacing';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import { capitalize } from 'helpers/capitalize';
 import ExcelLogo from 'img/excel-logo.svg';
-import ImportPatientsModal from 'modal/components/ImportPatientsModal/ImportPatientsModal';
 import { userProfileSelector } from 'selectors/user-selectors';
 import {
   EmptyListContainer,
@@ -17,6 +16,7 @@ import {
   DownloadTemplate,
   DownloadIcon,
 } from './styled';
+import { uploadPatientData } from '@/app/api/patient-api';
 
 const EmptyPatientsList = ({
   onAddPatientClick,
@@ -75,7 +75,7 @@ const EmptyPatientsList = ({
             style: {},
           }}
         >
-          <ImportPatientsModal
+          <ImportDataModal
             closeModal={() => {
               setImportPopupOpen(false);
             }}
@@ -83,6 +83,8 @@ const EmptyPatientsList = ({
             setImportPopoverOpen={setImportPopoverOpen}
             refreshPatientList={refreshPatientList}
             step={1}
+            label="patient"
+            uploadFunction={uploadPatientData}
           />
         </Dialog>
       </EmptyListContainer>

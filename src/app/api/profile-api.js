@@ -1,6 +1,6 @@
 import { blobFileDownload } from '../helpers/blob-file-download';
 import { mapFilterOptions } from '../helpers/filter-options-helpers';
-import { noop } from '../helpers/utility-functions';
+import { noop, showAlert } from '../helpers/utility-functions';
 import axios from './axios-heydoc';
 
 export function getAllProfiles(identifier) {
@@ -48,6 +48,51 @@ export function downloadProfileData(profileTypeIdentifier, filename) {
       blobFileDownload(new Blob([response.data]), filename);
     })
     .catch(noop);
+}
+
+export function downloadProfileImportTemplate(profileTypeIdentifier, filename="Profile_Data_Upload_Template.csv") {
+  return axios({
+    url: `/profile/downloadProfileImportTemplate/${profileTypeIdentifier}`,
+    method: 'GET',
+    responseType: 'blob',
+    headers: {
+      Accept: 'application/octet-stream',
+    },
+  })
+    .then((response) => {
+      blobFileDownload(new Blob([response.data]), filename);
+    })
+    .catch(noop);
+}
+
+export function uploadProfileData(fileData, additionalConfig = {}, identifier) {
+  const formData = new FormData();
+  formData.append('file', fileData, encodeURIComponent(fileData.name));
+
+  return axios
+    .post(`/profile/upload/${identifier}`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+      ...additionalConfig,
+    })
+    .then((response) => response.data)
+    .catch((error) => {
+      if (error.response && error.response.status === 413) {
+        showAlert({
+          status: 'error',
+          title: 'Error',
+          text: 'File exceeded the allowed size of 100 MB',
+        });
+      } else if (!error.response) {
+        showAlert({
+          status: 'error',
+          title: 'Error',
+          text: 'Error in uploading data. Please try again.',
+        });
+      }
+      throw error;
+    });
 }
 
 export const note = {
