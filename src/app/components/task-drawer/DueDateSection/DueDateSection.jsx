@@ -31,12 +31,18 @@ import {
 import { openModal } from '@/app/modal/actions';
 import { isDueDateValid } from '@/app/helpers/date-validation-helper';
 import { adjustUTCDateForDateIntent } from '../../task/DueDatePicker/helpers';
+import {
+  formatDateBasedOnIntent,
+  shouldDisplayTime,
+} from '@/app/helpers/date-intent-helpers';
 
 const DueDateSection = ({
   selectedTask,
   disabled = false,
   addTaskDrawer,
   setDueDate,
+  defaultDueDateIntent,
+  setDueDateIntent,
 }) => {
   const dispatch = useDispatch();
   const {
@@ -58,13 +64,19 @@ const DueDateSection = ({
     (updatedDueDateTime) => {
       if (addTaskDrawer) {
         setDueDate(updatedDueDateTime);
-        setMomentDueDate(moment(updatedDueDateTime));
+        setMomentDueDate(
+          !!updatedDueDateTime ? moment(updatedDueDateTime) : null,
+        );
+        const defaultDueDateIntent = checkDateTimeIntent(updatedDueDateTime);
+        setDueDateIntent(defaultDueDateIntent);
       } else {
         setMomentDueDate(
           !!updatedDueDateTime ? moment(updatedDueDateTime) : null,
         );
         const dueDateIntent = checkDateTimeIntent(updatedDueDateTime);
-        dispatch(updateTaskDueDate(selectedTask, updatedDueDateTime, dueDateIntent));
+        dispatch(
+          updateTaskDueDate(selectedTask, updatedDueDateTime, dueDateIntent),
+        );
       }
     },
     [dispatch, selectedTask],
@@ -119,15 +131,21 @@ const DueDateSection = ({
               openPopover(true);
             }}
           >
-            {selectedTask?.dueDateIntent === DueDateIntent.DATE
-              ? momentDueDate.utc().format('MMM DD, YYYY')
-              : momentDueDate.format('MMM DD, YYYY')
-            }
+            {formatDateBasedOnIntent(
+              momentDueDate,
+              selectedTask?.dueDateIntent
+                ? selectedTask?.dueDateIntent
+                : defaultDueDateIntent,
+            )}
           </DateViewText>
         </DateViewContainer>
       )}
-      {(selectedTask?.dueDateIntent === DueDateIntent.DATETIME_ABSOLUTE || 
-        (!selectedTask?.dueDateIntent && momentDueDate?.format('HH:mm') !== '00:00')) && (
+      {shouldDisplayTime(
+        momentDueDate,
+        selectedTask?.dueDateIntent
+          ? selectedTask?.dueDateIntent
+          : defaultDueDateIntent,
+      ) && (
         <DateViewContainer isOverdue={isOverdue}>
           <DateViewText
             ref={buttonReference}
@@ -175,11 +193,20 @@ const DueDateSection = ({
             <Box width="auto" minWidth={buttonReference.current?.offsetWidth}>
               <DueDatePicker
                 taskIdentifier={taskIdentifier}
-                selectedDate={adjustUTCDateForDateIntent(momentDueDate?.local(), selectedTask?.dueDateIntent)}
+                selectedDate={adjustUTCDateForDateIntent(
+                  momentDueDate?.local(),
+                  selectedTask?.dueDateIntent
+                    ? selectedTask?.dueDateIntent
+                    : defaultDueDateIntent,
+                )}
                 onDateChange={handleDueDateSave}
                 recurring={hasRecurringSchedule}
                 onCloseClick={closePopover}
-                dueDateIntent={selectedTask?.dueDateIntent}
+                dueDateIntent={
+                  selectedTask?.dueDateIntent
+                    ? selectedTask?.dueDateIntent
+                    : defaultDueDateIntent
+                }
                 dateType="dueDate"
               />
             </Box>

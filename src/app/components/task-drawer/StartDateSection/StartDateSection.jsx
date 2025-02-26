@@ -1,7 +1,11 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import moment from 'moment';
 import { Box } from '@mui/material';
-import { checkDateTimeIntent, checkIfTemplateTask, DueDateIntent } from 'helpers/task-helpers';
+import {
+  checkDateTimeIntent,
+  checkIfTemplateTask,
+  DueDateIntent,
+} from 'helpers/task-helpers';
 import DueDatePicker from 'components/task/DueDatePicker/DueDatePicker';
 import { updateTaskStartDate } from 'actions/task-actions';
 import { useDispatch } from 'react-redux';
@@ -18,17 +22,27 @@ import {
 import { isStartDateValid } from '@/app/helpers/date-validation-helper';
 import { openModal } from '@/app/modal/actions';
 import { adjustUTCDateForDateIntent } from '../../task/DueDatePicker/helpers';
-import { formatDateBasedOnIntent, shouldDisplayTime } from '@/app/helpers/date-intent-helpers';
+import {
+  formatDateBasedOnIntent,
+  shouldDisplayTime,
+} from '@/app/helpers/date-intent-helpers';
 
 const StartDateSection = ({
   selectedTask,
   disabled = false,
   addTaskDrawer,
   setStartDate,
+  defaultStartDateIntent,
+  setStartDateIntent,
 }) => {
   const dispatch = useDispatch();
-  const { taskIdentifier, startDate, startDateIntent, dueDate, hasRecurringSchedule } =
-    selectedTask || {};
+  const {
+    taskIdentifier,
+    startDate,
+    startDateIntent,
+    dueDate,
+    hasRecurringSchedule,
+  } = selectedTask || {};
   const [momentStartDate, setMomentStartDate] = useState(
     startDate ? moment(startDate) : null,
   );
@@ -41,13 +55,24 @@ const StartDateSection = ({
     (updatedStartDateTime) => {
       if (addTaskDrawer) {
         setStartDate(updatedStartDateTime);
-        setMomentStartDate(moment(updatedStartDateTime));
+        setMomentStartDate(
+          !!updatedStartDateTime ? moment(updatedStartDateTime) : null,
+        );
+        const defaultStartDateIntent =
+          checkDateTimeIntent(updatedStartDateTime);
+        setStartDateIntent(defaultStartDateIntent);
       } else {
         setMomentStartDate(
           !!updatedStartDateTime ? moment(updatedStartDateTime) : null,
         );
         const startDateIntent = checkDateTimeIntent(updatedStartDateTime);
-        dispatch(updateTaskStartDate(selectedTask, updatedStartDateTime, startDateIntent));
+        dispatch(
+          updateTaskStartDate(
+            selectedTask,
+            updatedStartDateTime,
+            startDateIntent,
+          ),
+        );
       }
     },
     [dispatch, selectedTask],
@@ -97,11 +122,17 @@ const StartDateSection = ({
               openPopover(true);
             }}
           >
-            {formatDateBasedOnIntent(momentStartDate, startDateIntent)}
+            {formatDateBasedOnIntent(
+              momentStartDate,
+              startDateIntent ? startDateIntent : defaultStartDateIntent,
+            )}
           </DateViewText>
         </DateViewContainer>
       )}
-      {shouldDisplayTime(momentStartDate, startDateIntent) && (
+      {shouldDisplayTime(
+        momentStartDate,
+        startDateIntent ? startDateIntent : defaultStartDateIntent,
+      ) && (
         <DateViewContainer>
           <DateViewText
             ref={buttonReference}
@@ -137,11 +168,16 @@ const StartDateSection = ({
             <Box width="auto" minWidth={buttonReference.current?.offsetWidth}>
               <DueDatePicker
                 taskIdentifier={taskIdentifier}
-                selectedDate={adjustUTCDateForDateIntent(momentStartDate?.local(), startDateIntent)}
+                selectedDate={adjustUTCDateForDateIntent(
+                  momentStartDate?.local(),
+                  startDateIntent ? startDateIntent : defaultStartDateIntent,
+                )}
                 onDateChange={handleStartDateSave}
                 recurring={hasRecurringSchedule}
                 onCloseClick={closePopover}
-                dueDateIntent={startDateIntent}
+                dueDateIntent={
+                  startDateIntent ? startDateIntent : defaultStartDateIntent
+                }
                 dateType="dueDate"
               />
             </Box>
