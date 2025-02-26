@@ -202,6 +202,17 @@ const ProfileDrawer = ({
   const menu = useMemo(
     () => [
       { name: 'Edit', onClick: () => setEditMode(true) },
+      { name: 'Merge', 
+        onClick: () => {
+          dispatch(
+            openModal('ProfilePicker', {
+              profileTypeIdentifier: profileTypeIdentifier,
+              profile: profile,
+            })
+          );
+          onClose();
+        },
+      },
       {
         name: 'Delete',
         onClick: () => {

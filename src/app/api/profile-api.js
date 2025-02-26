@@ -50,6 +50,14 @@ export function downloadProfileData(profileTypeIdentifier, filename) {
     .catch(noop);
 }
 
+export function mergeProfile(profileIdentifier, mergeToProfileIdentifier) {
+  return axios
+    .patch(`profile/mergeProfile/${profileIdentifier}`, {
+      mergeToProfileIdentifier: mergeToProfileIdentifier,
+    })
+    .then(({ data }) => data);
+}
+
 export function downloadProfileImportTemplate(profileTypeIdentifier, filename="Profile_Data_Upload_Template.csv") {
   return axios({
     url: `/profile/downloadProfileImportTemplate/${profileTypeIdentifier}`,
