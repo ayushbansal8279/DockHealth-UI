@@ -36,8 +36,11 @@ const FormInput = React.forwardRef(
     const value = watch(name);
 
     useMount(() => {
-      register(name, { validate });
-    });
+      register(name, {
+        required: required ? 'This field is required' : false,
+        validate: validate || undefined,
+      });
+    })
 
     useUnmount(() => {
       unregister(name);

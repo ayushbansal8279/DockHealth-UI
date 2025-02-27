@@ -22,3 +22,12 @@ export function selectedProfileFilters(filters, selectedQuickFilter) {
     },
   };
 }
+
+export function mergeProfile(fromProfile, toProfile, onSuccess) {
+  return {
+    type: ActionTypes.MERGE_PROFILE,
+    fromProfile,
+    toProfile,
+    onSuccess
+  };
+}

@@ -9,12 +9,42 @@ import {
   CloseIconButton,
   CloseIcon,
 } from '../styled';
+import { useDispatch } from 'react-redux';
+import { useHistory } from 'react-router-dom';
+import { openModal } from 'modal/actions';
+import { mergePatient } from '@/app/actions/patient-details-actions';
+import { createPatientDetailsPath } from '@/app/routing/helpers/paths';
 
 const PatientPickerModal = ({
   // patientIdentifiersToExclude,
-  closeModal,
-  onSelect,
+  patient,
+  closeModal
 }) => {
+  const dispatch = useDispatch();
+  const history = useHistory();
+
+  const handleSelect = (selectedPatient) => {
+    dispatch(
+      openModal('MergeData', {
+        to: selectedPatient.firstName+" "+selectedPatient.lastName,
+        from: patient.firstName+" "+patient.lastName,
+        type: "patient",
+        confirm: () => {
+          dispatch(closeModal);
+          dispatch(
+            mergePatient(patient, selectedPatient, () => {
+              history.push(
+                createPatientDetailsPath(
+                  selectedPatient.patientIdentifier,
+                ),
+              );
+            }),
+          );
+        },
+      }),
+    );
+  }
+
   return (
     <ModalWrapperWithPadding width="auto">
       <CloseIconButton onClick={closeModal} size="small" color="secondary">
@@ -30,7 +60,7 @@ const PatientPickerModal = ({
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
           onSelect={(patient) => {
             closeModal();
-            onSelect(patient);
+            handleSelect(patient);
           }}
         />
       </PatientListWrapper>

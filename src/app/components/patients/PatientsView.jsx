@@ -36,7 +36,6 @@ import { openModal, closeModal } from 'modal/actions';
 import { PatientListColumnsConfigProvider } from 'context-api/patients-columns-config-context';
 import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
 import MoreVert from '@mui/icons-material/MoreVert';
-import ImportPatientsModal from 'modal/components/ImportPatientsModal/ImportPatientsModal';
 import {
   downloadPatientImportTemplate,
   downloadPatientListData,
@@ -65,6 +64,8 @@ import {
 } from './styled';
 import localStorageHelper from '@/app/helpers/local-storage-helper';
 import sessionStorageHelper from '@/app/helpers/session-storage-helper';
+import ImportDataModal from '@/app/modal/components/ImportDataModal/ImportDataModal';
+import { uploadPatientData } from '@/app/api/patient-api';
 
 const MAX_PATIENT_ALL_RESULTS = 1000;
 
@@ -631,7 +632,7 @@ const PatientsView = () => {
             style: {},
           }}
         >
-          <ImportPatientsModal
+          <ImportDataModal
             closeModal={() => {
               setImportPopupOpen(false);
             }}
@@ -639,6 +640,8 @@ const PatientsView = () => {
             setImportPopoverOpen={setImportPopoverOpen}
             refreshPatientListOnUpload={refreshPatientListOnUpload}
             step={1}
+            label="patient"
+            uploadFunction={uploadPatientData}
           />
         </Dialog>
         {/* <FilterPopover open={filterOpen} onClose={closeFilter}>
