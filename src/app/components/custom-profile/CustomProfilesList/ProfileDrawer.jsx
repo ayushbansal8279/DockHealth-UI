@@ -33,6 +33,8 @@ import CustomField from 'components/common/CustomField/CustomField';
 import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
 import { closeModal, openModal } from 'modal/actions';
+import { FieldType } from '@/app/helpers/field-type-helpers';
+import { normalizeHyperlink } from '@/app/helpers/custom-fields-helpers';
 import { getProfileName } from '@/app/views/custom-profile-details/helpers';
 
 const ProfileDrawer = ({
@@ -78,27 +80,16 @@ const ProfileDrawer = ({
               (fieldType) => fieldType.identifier === identifier,
             );
             return {
-              profileTypeField: {
-                identifier,
-              },
+              profileTypeField: { identifier },
               values: Array.isArray(value)
-                ? value?.map((selectedValue) => {
-                    return {
-                      value: selectedValue,
-                    };
-                  })
+                ? value?.map((selectedValue) => ({ value: selectedValue }))
                 : [
-                    type.fieldType === '"PICK_LIST"'
-                      ? {
-                          customFieldOption: {
-                            identifier: value,
-                          },
-                        }
-                      : {
-                          value,
-                        },
+                    type.fieldType === FieldType.DROPDOWN
+                      ? { customFieldOption: { identifier: value } }
+                      : { value: type.fieldType === FieldType.HYPERLINK ? normalizeHyperlink(value) : value },
                   ],
             };
+            
           },
         ),
         // eslint-disable-next-line no-shadow
