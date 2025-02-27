@@ -30,57 +30,50 @@ const ImportDataModal = ({
   const inputFileReference = useRef(null);
   const [modalStep, setModalStep] = useState(step);
 
-  const onFileInputChange = useCallback(() => {
-    const fileInputElement = inputFileReference.current;
-    if (fileInputElement) {
-      const [uploadedFile] = fileInputElement.files;
+  const handleFileUpload = useCallback(
+    (file) => {
       uploadFunction(
-        uploadedFile, 
+        file,
         {
           onUploadProgress: () => {
             closeModal();
-            setImportPopoverOpen(true);
           },
         },
         identifier
       )
-      .then((response) => {
-        if (setImportResponse) {
-          setImportResponse(response);
-        }
-      })
-      .catch((error) => {
-        console.error("File upload failed:", error);
-      });
-    }
-  }, [closeModal, uploadFunction, identifier, setImportPopoverOpen]);
-
-  const onDrop = useCallback(
-    (acceptedFiles) => {
-      acceptedFiles.forEach((file) => {
-        uploadFunction(
-          file, 
-          {
-            onUploadProgress: () => {
-              closeModal();
-              setImportPopoverOpen(true);
-            },
-          },
-          identifier
-        )
         .then((response) => {
           if (setImportResponse) {
             setImportResponse(response);
           }
         })
         .catch((error) => {
+          setImportResponse(null);
           console.error("File upload failed:", error);
+        })
+        .finally(() => {
+          setImportPopoverOpen(true);
         });
-      });
     },
     [closeModal, uploadFunction, identifier, setImportPopoverOpen]
   );
-
+  
+  const onFileInputChange = useCallback(() => {
+    const fileInputElement = inputFileReference.current;
+    if (fileInputElement) {
+      const [uploadedFile] = fileInputElement.files;
+      if (uploadedFile) {
+        handleFileUpload(uploadedFile);
+      }
+    }
+  }, [handleFileUpload]);
+  
+  const onDrop = useCallback(
+    (acceptedFiles) => {
+      acceptedFiles.forEach(handleFileUpload);
+    },
+    [handleFileUpload]
+  );
+  
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
   return (
