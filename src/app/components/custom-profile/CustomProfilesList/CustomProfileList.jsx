@@ -36,7 +36,7 @@ import { isUserGuestOrDockLite, isUserViewOnly } from '@/app/helpers/user-helper
 import { downloadProfileData, downloadProfileImportTemplate, uploadProfileData } from '@/app/api/profile-api';
 import { initializeProfileState } from '@/app/actions/profile-actions';
 import ImportDataModal from '@/app/modal/components/ImportDataModal/ImportDataModal';
-import ProfileImportPopover from './ProfileImportPopover';
+import FileImportPopover from '../../common/FileImportPopover/FileImportPopover';
 
 
 const CustomProfileList = () => {
@@ -392,7 +392,8 @@ const CustomProfileList = () => {
         />
       </Dialog>
       {importPopoverOpen && (
-        <ProfileImportPopover
+        <FileImportPopover
+          type="Profile"
           closePopover={() => {
             setImportPopoverOpen(false);
           }}

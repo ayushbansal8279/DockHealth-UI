@@ -1,8 +1,9 @@
 import memoize from 'lodash.memoize';
 import uniqBy from 'ramda/src/uniqBy';
 import prop from 'ramda/src/prop';
-import { noop } from 'helpers/utility-functions';
+import { noop, showAlert } from 'helpers/utility-functions';
 import axios from './axios-heydoc';
+import { blobFileDownload } from '../helpers/blob-file-download';
 
 export function getOrganizationUsersAndUserGroups() {
   return axios
@@ -452,4 +453,57 @@ export function selectCurrentOrganization(
       organizationIdentifier;
     window.location.reload();
   });
+}
+
+export function downloadUserInviteTemplate() {
+  return axios({
+    url: `/organization/downloadUserInviteTemplate`,
+    method: 'GET',
+    responseType: 'blob',
+    headers: {
+      Accept: 'application/octet-stream',
+    },
+  })
+    .then((response) => {
+        blobFileDownload(new Blob([response.data]), 'Bulk_Invite_User_Template.csv');
+    })
+    .catch(noop);
+}
+
+export function bulkInviteUser(fileData, additionalConfig = {}) {
+  const formData = new FormData();
+  formData.append('file', fileData, encodeURIComponent(fileData.name));
+
+  return axios
+    .post(`/organization/bulkInviteUsers`,  formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+      ...additionalConfig,
+    })
+    .then((response) => {
+      if (Array.isArray(response.data) && response.data.length === 0) {
+        throw new Error('File upload failed. Please check the template and try again.');
+      }
+      return response.data;
+    })
+    .catch((error) => {
+      if (error.response && error.response.status === 413) {
+        showAlert({
+          status: 'error',
+          title: 'Error',
+          text: 'File exceeded the allowed size of 100 MB',
+        });
+      } else {
+        showAlert({
+          status: 'error',
+          title: 'Error',
+          text:
+            error?.response?.data?.errorMessage ?? 
+            error?.message ??
+            'Invitation could not be sent, please try again later.',
+        });
+      }
+      throw error;
+    });
 }

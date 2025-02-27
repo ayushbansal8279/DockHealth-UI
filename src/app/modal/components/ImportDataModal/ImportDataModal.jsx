@@ -49,6 +49,9 @@ const ImportDataModal = ({
           setImportResponse(response);
         }
       })
+      .catch((error) => {
+        console.error("File upload failed:", error);
+      });
     }
   }, [closeModal, uploadFunction, identifier, setImportPopoverOpen]);
 
@@ -70,6 +73,9 @@ const ImportDataModal = ({
             setImportResponse(response);
           }
         })
+        .catch((error) => {
+          console.error("File upload failed:", error);
+        });
       });
     },
     [closeModal, uploadFunction, identifier, setImportPopoverOpen]
@@ -91,7 +97,7 @@ const ImportDataModal = ({
             Download our template to ensure your {label} list is properly formatted.
           </ContentMessage>
           <ContentMessage style={{ marginBottom: '50px' }}>
-              Copy and paste your {label} lists into the template,
+              Copy and paste your {label}s into the template,
               then upload to Dock here.
           </ContentMessage>
           <Spacing vertical={5} />
