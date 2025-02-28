@@ -1,8 +1,20 @@
+import { Link } from "@mui/material";
 import { fontSizes, fontWeights } from "@/app/styles/font";
 import { CloseIconButton, ModalWrapperWithPadding } from "@/app/modal/components/styled";
 import palette from "@/app/styles/palette";
 import spacing from "@/app/styles/spacing";
 import styled from "styled-components";
+
+export const StyledLink = styled(Link)`
+  color: ${palette.blueOcean};
+  font-family: "Outfit", sans-serif;
+  text-decoration: none;
+  z-index: 1000;
+
+  &:hover {
+    color: ${palette.brightBlue};
+  }
+`;
 
 export const Row = styled.button`
   width: 100%;

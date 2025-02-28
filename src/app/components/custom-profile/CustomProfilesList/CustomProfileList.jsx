@@ -35,6 +35,8 @@ import { userProfileSelector } from '@/app/selectors/user-selectors';
 import { isUserGuestOrDockLite, isUserViewOnly } from '@/app/helpers/user-helper';
 import { downloadProfileData, downloadProfileImportTemplate, uploadProfileData } from '@/app/api/profile-api';
 import { initializeProfileState } from '@/app/actions/profile-actions';
+import { StyledLink } from './styled';
+import DateLabel from '../../common/DateLabel/DateLabel';
 import ImportDataModal from '@/app/modal/components/ImportDataModal/ImportDataModal';
 import ProfileImportPopover from './ProfileImportPopover';
 
@@ -337,7 +339,10 @@ const CustomProfileList = () => {
 
                   if (record) {
                     switch (field.fieldType) {
-                      case 'TEXT': {
+                      case 'TEXT':
+                      case 'NUMBER':
+                      case 'BOOLEAN':
+                      case 'LONG_TEXT': {
                         return (
                           record.values?.[0] || record.values?.[0]?.value || ''
                         );
@@ -356,6 +361,24 @@ const CustomProfileList = () => {
                         return record.references
                           ?.map((item) => item.displayValue)
                           .join(', ');
+                      }
+                      case 'HYPERLINK': {
+                        const link = record.values?.[0] || record.values?.[0]?.value || '';
+                        if(!link) return '';
+                        return (
+                          <StyledLink
+                            href={link.startsWith("http") ? link : `//${link}`} 
+                            target="_blank"
+                            onClick={(event) => event.stopPropagation()}
+                          >
+                            {link}
+                          </StyledLink>
+                        );
+                      }
+                      case 'DATE': {
+                        const date = record.values?.[0] || record.values?.[0]?.value || ''
+                        if(!date) return '';
+                        return <DateLabel date={date} />
                       }
                       default: {
                         return '';
