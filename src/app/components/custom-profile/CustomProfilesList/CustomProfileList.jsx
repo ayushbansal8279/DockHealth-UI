@@ -11,7 +11,7 @@ import {
   setCurrentUserGroup,
   unsetCurrentUserGroup,
 } from 'actions/user-groups-actions';
-import { Box, FormGroup, ListItemText, MenuItem, Stack, Switch } from '@mui/material';
+import { Box, Dialog, FormGroup, ListItemText, MenuItem, Stack, Switch } from '@mui/material';
 import { getAllProfileTypes } from 'api/profile-type-api';
 import { getAllProfiles } from 'api/profile-api';
 import { getAllProfileFieldTypes } from 'api/profile-type-field-api';
@@ -33,10 +33,12 @@ import OptionsMenu from '../../common/OptionsMenu/OptionsMenu';
 import { MoreVert } from '@mui/icons-material';
 import { userProfileSelector } from '@/app/selectors/user-selectors';
 import { isUserGuestOrDockLite, isUserViewOnly } from '@/app/helpers/user-helper';
-import { downloadProfileData } from '@/app/api/profile-api';
+import { downloadProfileData, downloadProfileImportTemplate, uploadProfileData } from '@/app/api/profile-api';
 import { initializeProfileState } from '@/app/actions/profile-actions';
 import { StyledLink } from './styled';
 import DateLabel from '../../common/DateLabel/DateLabel';
+import ImportDataModal from '@/app/modal/components/ImportDataModal/ImportDataModal';
+import ProfileImportPopover from './ProfileImportPopover';
 
 
 const CustomProfileList = () => {
@@ -80,6 +82,9 @@ const CustomProfileList = () => {
   const [searchPhrase, setSearchPhrase] = useState('');
   // console.log(profiles);
   const currentUser = useSelector(userProfileSelector);
+  const [importPopupOpen, setImportPopupOpen] = useState(false);
+  const [importPopoverOpen, setImportPopoverOpen] = useState(false);
+  const [importResponse, setImportResponse] = useState(null);
   
   const isGuestOrDockLite = isUserGuestOrDockLite(currentUser);
   const isViewOnly = isUserViewOnly(currentUser);
@@ -172,6 +177,13 @@ const CustomProfileList = () => {
               <OptionsMenu
                 disablePortal
                 options={[
+                  !isGuestOrDockLite &&
+                    !isViewOnly && {
+                      name: 'Import from Excel or CSV',
+                      onClick: () => {
+                        setImportPopupOpen(true);
+                      },
+                    },
                   !isGuestOrDockLite &&
                     !isViewOnly && {
                       name: 'Export to CSV',
@@ -380,6 +392,36 @@ const CustomProfileList = () => {
             ))}
         </DataGrid>
       </ViewLayout>
+      <Dialog
+        open={importPopupOpen}
+        onClose={() => setImportPopupOpen(false)}
+        PaperProps={{
+          elevation: 0,
+          square: true,
+          style: {},
+        }}
+      >
+        <ImportDataModal
+          closeModal={() => {
+            setImportPopupOpen(false);
+          }}
+          downloadTemplate={() => downloadProfileImportTemplate(profileTypeIdentifier)}
+          setImportPopoverOpen={setImportPopoverOpen}
+          step={1}
+          label="profile"
+          uploadFunction={uploadProfileData}
+          identifier={profileTypeIdentifier}
+          setImportResponse={setImportResponse}
+        />
+      </Dialog>
+      {importPopoverOpen && (
+        <ProfileImportPopover
+          closePopover={() => {
+            setImportPopoverOpen(false);
+          }}
+          uploadResponse={importResponse}
+        />
+      )}
     </>
   );
 };

@@ -61,7 +61,7 @@ import DeleteCredentialConfirmModal from './components/DeleteCredentialConfirmMo
 import InformationModal from './components/InformationModal/InformationModal';
 import UnassignTaskTemplateModal from './components/UnassignTaskTemplateModal/UnassignTaskTemplateModal';
 import PatientPickerModal from './components/PatientPickerModal/PatientPickerModal';
-import MergePatientsModal from './components/MergePatientsModal/MergePatientsModal';
+import MergeDataModal from './components/MergeDataModal/MergeDataModal';
 import SelectDestinationGroupModal from './components/SelectDestinationGroupModal/SelectDestinationGroupModal';
 import ShareTaskModal from './components/ShareTaskModal/ShareTaskModal';
 import PatientFolderModal from './components/PatientFolderModal/PatientFolderModal';
@@ -87,6 +87,7 @@ import AISummaryModal from './components/AISummaryModal/AISummaryModal';
 import DateWarningModal from './components/DateWarningModal/DateWarningModal';
 import AlertModal from './components/AlertModal/AlertModal';
 import SavePatientModal from './components/SavePatientModal/SavePatientModal';
+import ProfilePickerModal from './components/ProfilePickerModal/ProfilePickerModal';
 import PatientAttachmentReferenceModal from './components/PatientAttachmentReferenceModal/PatientAttachmentReferenceModal';
 
 const MODAL_MAP = {
@@ -158,7 +159,7 @@ const MODAL_MAP = {
   Information: InformationModal,
   UnassignTaskTemplate: UnassignTaskTemplateModal,
   PatientPicker: PatientPickerModal,
-  MergePatients: MergePatientsModal,
+  MergeData: MergeDataModal,
   ShareTask: ShareTaskModal,
   PatientFolder: PatientFolderModal,
   SelectPatientFolder: SelectPatientFolderModal,
@@ -179,6 +180,7 @@ const MODAL_MAP = {
   DateWarning: DateWarningModal,
   Alert: AlertModal,
   SavePatient: SavePatientModal,
+  ProfilePicker: ProfilePickerModal,
   PatientAttachmentReference: PatientAttachmentReferenceModal
 }
 
