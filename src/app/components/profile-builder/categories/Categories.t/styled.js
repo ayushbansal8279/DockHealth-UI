@@ -3,7 +3,11 @@ import spacing from '@/app/styles/spacing';
 import styled from 'styled-components';
 
 export const CategoryContainer = styled.div`
+  position: fixed;
   padding: ${spacing.regularPlus};
+  padding-right: ${spacing.huge};
+  border-left: 1px solid ${palette.iron};
+  height: 100%;
 `;
 
 export const AddCategory = styled.div`

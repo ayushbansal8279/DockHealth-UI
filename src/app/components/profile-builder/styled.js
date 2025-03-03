@@ -9,18 +9,31 @@ export const BuilderContainer = styled.div`
   background: ${palette.white};
 `;
 
+export const HeaderContainer = styled.div`
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  border-bottom: 1px solid ${palette.iron};
+`;
+
 export const CategoryWrapper = styled.div`
+  position: relative;
   width: 30%;
   height: 100%;
-  border-left: 1px solid ${palette.iron};
-  border-top: 1px solid ${palette.iron};
 `;
 
 export const PlayGroungWrapper = styled.div`
   width: 70%;
   height: 100%;
-  border-top: 1px solid ${palette.iron};
   padding: ${spacing.huge};
   display: flex;
+  
+  
   justify-content: center;
+`;
+
+export const ProfileBuilderContainer = styled.div`
+  height: 100%;
+  position: relative;
+  overflow: auto;
 `;

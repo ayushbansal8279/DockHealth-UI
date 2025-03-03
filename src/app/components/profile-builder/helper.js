@@ -117,15 +117,27 @@ const toCamelCaseWithSpaces = (fieldName) => {
   return result.replace(/([A-Z])(?=[a-z]|$)/g, ' $1').trim();
 };
 
-export const convertDefaultFields = (defaulFields) => {
-  const updatedGroups = defaulFields.map((field) => {
+export const convertDefaultFields = (defaultFields) => {
+  const updatedGroups = defaultFields.map((field) => {
+    let fieldType = FieldType.TEXT;
+
+    if (field.fieldName === 'dob') {
+      fieldType = FieldType.DATE;
+    } else if (
+      field.fieldName === 'genderIdentity' ||
+      field.fieldName === 'gender'
+    ) {
+      fieldType = FieldType.DROPDOWN;
+    }
+
     return {
       identifier: field.identifier,
       targetType: field.context,
-      fieldType: 'TEXT',
+      fieldType,
       name: toCamelCaseWithSpaces(field.fieldName),
       contextType: 'DEFAULT',
     };
   });
+
   return updatedGroups;
 };

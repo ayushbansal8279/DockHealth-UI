@@ -1,7 +1,13 @@
 import React, { createContext, useEffect, useState } from 'react';
 import BasicLayoutHeader from '../template/BasicLayoutHeader/BasicLayoutHeader';
 import ProfileBuilderCategories from './categories/Categories.t/ProfileBuilderCategories';
-import { BuilderContainer, CategoryWrapper, PlayGroungWrapper } from './styled';
+import {
+  ProfileBuilderContainer,
+  HeaderContainer,
+  BuilderContainer,
+  CategoryWrapper,
+  PlayGroungWrapper,
+} from './styled';
 import BuilderPlayground from './builder-playground/BuilderPlayground';
 import { DragDropContext } from 'react-beautiful-dnd';
 import { useBoolean } from 'hooks/useBoolean';
@@ -34,7 +40,7 @@ const ProfileBuilder = () => {
       const customGroups = await CustomFieldApi.searchCustomFiledGroups(
         Context,
       );
-      
+
       const defaultFields = await CustomFieldApi.getDefauldFields(Context);
       const enhancedDefaultFields = convertDefaultFields(defaultFields);
       const customFields = [...enhancedDefaultFields, ...allCustomFields];
@@ -196,7 +202,7 @@ const ProfileBuilder = () => {
   };
 
   return (
-    <div style={{ minHeight: '110dvh' }}>
+    <ProfileBuilderContainer>
       <ProfileBuilderContext.Provider
         value={{
           selectedCategories,
@@ -208,7 +214,9 @@ const ProfileBuilder = () => {
           isAddCategoryDrop,
         }}
       >
-        <BasicLayoutHeader title={'Patient Profile Builder'} />
+        <HeaderContainer>
+          <BasicLayoutHeader title={'Patient Profile Builder'} />
+        </HeaderContainer>
         <DragDropContext
           onDragStart={(e) => handleDragStart(e)}
           onDragEnd={(e) => handleDragEnd(e)}
@@ -223,7 +231,7 @@ const ProfileBuilder = () => {
           </BuilderContainer>
         </DragDropContext>
       </ProfileBuilderContext.Provider>
-    </div>
+    </ProfileBuilderContainer>
   );
 };
 
