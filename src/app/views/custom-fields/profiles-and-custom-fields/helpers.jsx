@@ -20,6 +20,7 @@ export const getTemplateColumns = ({
   onEditProfile,
   onDeleteProfile,
   onConfigureCustomFields,
+  onOpenProfileBuilder,
 }) => [
   {
     field: 'name',
@@ -44,6 +45,10 @@ export const getTemplateColumns = ({
         {
           name: 'Configure Custom Fields',
           onClick: () => onConfigureCustomFields(data),
+        },
+        {
+          name: 'Open Profile Builder',
+          onClick: () => onOpenProfileBuilder(data),
         },
       ];
 
