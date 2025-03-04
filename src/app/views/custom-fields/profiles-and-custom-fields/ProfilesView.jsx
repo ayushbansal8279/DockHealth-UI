@@ -90,6 +90,19 @@ const ProfilesAndCustomFieldsView = () => {
     [history],
   );
 
+  const onOpenProfileBuilder = useCallback(
+    ({ row: { name, identifier } }) => {
+      if (name.toLowerCase() === 'patients') {
+        history.push(`/settings/profile-builder/${name.toLowerCase()}`);
+        return;
+      }
+      history.push(
+        `/settings/profile-builder/${name.toLowerCase()}/${identifier}`,
+      );
+    },
+    [history],
+  );
+
   const onDeleteProfile = useCallback(
     ({ id }) => {
       const modalProps = {
@@ -113,8 +126,14 @@ const ProfilesAndCustomFieldsView = () => {
         onEditProfile,
         onDeleteProfile,
         onConfigureCustomFields,
+        onOpenProfileBuilder,
       }),
-    [onDeleteProfile, onEditProfile, onConfigureCustomFields],
+    [
+      onDeleteProfile,
+      onEditProfile,
+      onConfigureCustomFields,
+      onOpenProfileBuilder,
+    ],
   );
 
   let profileOptions = [

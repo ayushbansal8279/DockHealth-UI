@@ -74,6 +74,7 @@ const Select = React.forwardRef(
           </InputLabel>
         )}
         <MuiSelect
+          label={label}
           open={isOpen}
           onOpen={() => setIsOpen(true)}
           onClose={() => setIsOpen(false)}

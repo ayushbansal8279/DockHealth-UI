@@ -1,4 +1,5 @@
 import axios from './axios-heydoc';
+import { log } from '../helpers/log';
 
 export function getAllPatientCustomFields(active = true, patientIdentifier) {
   return axios
@@ -73,4 +74,64 @@ export function sortUserCustomFields(identifiers) {
   return axios.put(`custom/field/sortCustomFields/PROVIDER`, {
     customFieldIdentifiers: identifiers,
   });
+}
+
+export function saveCustomFiledGroup(customFiledGroup) {
+  return axios
+    .post('/customFieldGroup', customFiledGroup)
+    .then(({ data }) => data)
+    .catch((error) => {
+      log(error);
+      throw new Error(error?.response?.data?.errorMessage);
+    });
+}
+
+export function updateCustomFiledGroup(customFiledGroupIdentifier, payload) {
+  return axios
+    .patch(`/customFieldGroup/${customFiledGroupIdentifier}`, payload)
+    .then(({ data }) => data)
+    .catch((error) => {
+      log(error);
+      throw new Error(error?.response?.data?.errorMessage);
+    });
+}
+
+export function deleteCustomFiledGroup(customFiledGroupIdentifier) {
+  return axios
+    .delete(`/customFieldGroup/${customFiledGroupIdentifier}`)
+    .catch((error) => {
+      log(error);
+      throw new Error(error?.response?.data?.errorMessage);
+    });
+}
+
+export function searchCustomFiledGroups(context) {
+  if (context === 'PATIENT') {
+    return axios
+      .get(`/customFieldGroup/search?context=${context}`)
+      .then(({ data }) => data)
+      .catch((error) => {
+        log(error);
+        throw new Error(error?.response?.data?.errorMessage);
+      });
+  }
+  // if (context === 'PROFILETYPE') {
+  //   return axios
+  //     .get(`/customFieldGroup/search?context=${context}`)
+  //     .then(({ data }) => data)
+  //     .catch((error) => {
+  //       log(error);
+  //       throw new Error(error?.response?.data?.errorMessage);
+  //     });
+  // }
+}
+
+export function getDefauldFields(context) {
+  return axios
+    .get(`/fieldReference/findDefaultsByContext?isDefault=true&context=${context}`)
+    .then(({ data }) => data)
+    .catch((error) => {
+      log(error);
+      throw new Error(error?.response?.data?.errorMessage);
+    });
 }
