@@ -5,7 +5,7 @@ import styled from 'styled-components';
 export const BuilderContainer = styled.div`
   display: flex;
   justify-content: space-between;
-  height: 100%;
+  min-height: 100vh;
   background: ${palette.white};
 `;
 
@@ -27,8 +27,6 @@ export const PlayGroungWrapper = styled.div`
   height: 100%;
   padding: ${spacing.huge};
   display: flex;
-  
-  
   justify-content: center;
 `;
 

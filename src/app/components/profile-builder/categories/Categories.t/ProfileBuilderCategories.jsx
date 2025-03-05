@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import TEXT from 'img/profile-builder/shortText.svg';
+import TEXT from 'img/profile-builder/ShortText.svg';
 import LONG_TEXT from 'img/profile-builder/RichText.svg';
 import DATE from 'img/profile-builder/Calender.svg';
 import NUMBER from 'img/profile-builder/Hash.svg';
