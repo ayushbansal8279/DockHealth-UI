@@ -39,7 +39,7 @@ import { getProfileListPreferences } from '@/app/api/profile-type-api';
 import { StyledLink } from './styled';
 import DateLabel from '../../common/DateLabel/DateLabel';
 import ImportDataModal from '@/app/modal/components/ImportDataModal/ImportDataModal';
-import ProfileImportPopover from './ProfileImportPopover';
+import FileImportPopover from '../../common/FileImportPopover/FileImportPopover';
 
 const CustomProfileList = () => {
   const dispatch = useDispatch();
@@ -429,7 +429,8 @@ const CustomProfileList = () => {
         />
       </Dialog>
       {importPopoverOpen && (
-        <ProfileImportPopover
+        <FileImportPopover
+          type="Profile"
           closePopover={() => {
             setImportPopoverOpen(false);
           }}
