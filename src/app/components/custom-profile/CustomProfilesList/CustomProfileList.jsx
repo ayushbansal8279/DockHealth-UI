@@ -11,7 +11,7 @@ import {
   setCurrentUserGroup,
   unsetCurrentUserGroup,
 } from 'actions/user-groups-actions';
-import { Box, FormGroup, ListItemText, MenuItem, Stack, Switch } from '@mui/material';
+import { Box, Dialog, FormGroup, ListItemText, MenuItem, Stack, Switch } from '@mui/material';
 import { getAllProfileTypes } from 'api/profile-type-api';
 import { getAllProfiles } from 'api/profile-api';
 import { getAllProfileFieldTypes } from 'api/profile-type-field-api';
@@ -33,10 +33,13 @@ import OptionsMenu from '../../common/OptionsMenu/OptionsMenu';
 import { MoreVert } from '@mui/icons-material';
 import { userProfileSelector } from '@/app/selectors/user-selectors';
 import { isUserGuestOrDockLite, isUserViewOnly } from '@/app/helpers/user-helper';
-import { downloadProfileData } from '@/app/api/profile-api';
+import { downloadProfileData, downloadProfileImportTemplate, uploadProfileData } from '@/app/api/profile-api';
 import { initializeProfileState, updateProfileListPreferences } from '@/app/actions/profile-actions';
 import { getProfileListPreferences } from '@/app/api/profile-type-api';
-
+import { StyledLink } from './styled';
+import DateLabel from '../../common/DateLabel/DateLabel';
+import ImportDataModal from '@/app/modal/components/ImportDataModal/ImportDataModal';
+import ProfileImportPopover from './ProfileImportPopover';
 
 const CustomProfileList = () => {
   const dispatch = useDispatch();
@@ -79,6 +82,9 @@ const CustomProfileList = () => {
   const [searchPhrase, setSearchPhrase] = useState('');
   // console.log(profiles);
   const currentUser = useSelector(userProfileSelector);
+  const [importPopupOpen, setImportPopupOpen] = useState(false);
+  const [importPopoverOpen, setImportPopoverOpen] = useState(false);
+  const [importResponse, setImportResponse] = useState(null);
   
   const isGuestOrDockLite = isUserGuestOrDockLite(currentUser);
   const isViewOnly = isUserViewOnly(currentUser);
@@ -185,6 +191,13 @@ const CustomProfileList = () => {
               <OptionsMenu
                 disablePortal
                 options={[
+                  !isGuestOrDockLite &&
+                    !isViewOnly && {
+                      name: 'Import from Excel or CSV',
+                      onClick: () => {
+                        setImportPopupOpen(true);
+                      },
+                    },
                   !isGuestOrDockLite &&
                     !isViewOnly && {
                       name: 'Export to CSV',
@@ -340,7 +353,10 @@ const CustomProfileList = () => {
 
                   if (record) {
                     switch (field.fieldType) {
-                      case 'TEXT': {
+                      case 'TEXT':
+                      case 'NUMBER':
+                      case 'BOOLEAN':
+                      case 'LONG_TEXT': {
                         return (
                           record.values?.[0] || record.values?.[0]?.value || ''
                         );
@@ -360,6 +376,24 @@ const CustomProfileList = () => {
                           ?.map((item) => item.displayValue)
                           .join(', ');
                       }
+                      case 'HYPERLINK': {
+                        const link = record.values?.[0] || record.values?.[0]?.value || '';
+                        if(!link) return '';
+                        return (
+                          <StyledLink
+                            href={link.startsWith("http") ? link : `//${link}`} 
+                            target="_blank"
+                            onClick={(event) => event.stopPropagation()}
+                          >
+                            {link}
+                          </StyledLink>
+                        );
+                      }
+                      case 'DATE': {
+                        const date = record.values?.[0] || record.values?.[0]?.value || ''
+                        if(!date) return '';
+                        return <DateLabel date={date} />
+                      }
                       default: {
                         return '';
                       }
@@ -372,6 +406,36 @@ const CustomProfileList = () => {
             ))}
         </DataGrid>
       </ViewLayout>
+      <Dialog
+        open={importPopupOpen}
+        onClose={() => setImportPopupOpen(false)}
+        PaperProps={{
+          elevation: 0,
+          square: true,
+          style: {},
+        }}
+      >
+        <ImportDataModal
+          closeModal={() => {
+            setImportPopupOpen(false);
+          }}
+          downloadTemplate={() => downloadProfileImportTemplate(profileTypeIdentifier)}
+          setImportPopoverOpen={setImportPopoverOpen}
+          step={1}
+          label="profile"
+          uploadFunction={uploadProfileData}
+          identifier={profileTypeIdentifier}
+          setImportResponse={setImportResponse}
+        />
+      </Dialog>
+      {importPopoverOpen && (
+        <ProfileImportPopover
+          closePopover={() => {
+            setImportPopoverOpen(false);
+          }}
+          uploadResponse={importResponse}
+        />
+      )}
     </>
   );
 };

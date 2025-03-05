@@ -1,8 +1,9 @@
-import { put, call, takeEvery, takeLatest, select } from 'redux-saga/effects';
+import { put, call, takeEvery, takeLatest, select, all } from 'redux-saga/effects';
 import * as ProfileApi from 'api/profile-api';
 import * as ProfileTypeApi from 'api/profile-type-api'
 import * as ActionTypes from '../actions/action-types';
 import * as MegaFilterActions from 'actions/mega-filter-actions';
+import * as AlertActions from 'alert/actions';
 import { currentProfileIdentifierSelector } from '../selectors/profile-selector';
 import { showGlobalErrorAlert } from '../alert/actions';
 
@@ -44,6 +45,7 @@ function* selectedProfileFilter({ payload }) {
   );
 }
 
+
 function* updateProfileListPreferences({ payload }) {
   try {
     const { setup, profileTypeIdentifier } = payload;
@@ -57,6 +59,22 @@ function* updateProfileListPreferences({ payload }) {
   }
 }
 
+function* mergeProfile({ fromProfile, toProfile, onSuccess }) {
+  try {
+    yield call(
+      ProfileApi.mergeProfile,
+      fromProfile,
+      toProfile,
+    );
+    onSuccess?.();
+  } catch {
+    yield all([
+      put(AlertActions.showGlobalErrorAlert()),
+      put({ type: ActionTypes.MERGE_PROFILE_FAILURE }),
+    ]);
+  }
+}
+
 export default function* watchProfileDetail() {
   yield takeEvery(
     ActionTypes.GET_CURRENT_PROFILE_FILTER_OPTIONS,
@@ -64,4 +82,5 @@ export default function* watchProfileDetail() {
   );
   yield takeLatest(ActionTypes.SELECTED_PROFILE_FILTER, selectedProfileFilter);
   yield takeLatest(ActionTypes.UPDATE_PROFILE_LIST_PREFERENCES, updateProfileListPreferences);
+  yield takeEvery(ActionTypes.MERGE_PROFILE, mergeProfile);
 }

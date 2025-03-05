@@ -115,7 +115,7 @@ const PatientImportPopover = ({
               />
               <ProgressMessage>{fileProgress}% Complete</ProgressMessage> */}
               <ProgressMessage>
-                Patient records are being upload. Please refresh page after some
+                Patient records are being uploaded. Please refresh page after some
                 time.
               </ProgressMessage>
             </ProgressDisplayArea>

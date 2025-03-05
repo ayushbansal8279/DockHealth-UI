@@ -73,3 +73,6 @@ export const createWorkflowFolderPath = (folderIdentifier) =>
 
 export const createUserGroupPath = (groupIdentifier) =>
   USERS_PATH + (groupIdentifier ? `/${groupIdentifier}` : '');
+
+export const createProfileListPath = (profileTypeIdentifier, profileIdentifier) =>
+  `${CUSTOM_PROFILES_PATH}/${profileTypeIdentifier}/${profileIdentifier}`;

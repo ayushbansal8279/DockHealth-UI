@@ -29,3 +29,13 @@ export function updateProfileListPreferences(setup, profileTypeIdentifier) {
     payload: { setup, profileTypeIdentifier }
   }
 };
+
+export function mergeProfile(fromProfile, toProfile, onSuccess) {
+  return {
+    type: ActionTypes.MERGE_PROFILE,
+    fromProfile,
+    toProfile,
+    onSuccess
+  };
+}
+

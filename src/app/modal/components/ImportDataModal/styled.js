@@ -3,7 +3,7 @@ import palette, { typography } from 'styles/palette';
 import { fontSizes, fontWeights } from 'styles/font';
 import { ModalWrapperWithPadding } from '../styled';
 
-export const ImportPatientModalWrapper = styled(ModalWrapperWithPadding)`
+export const ImportDataModalWrapper = styled(ModalWrapperWithPadding)`
   display: flex;
   flex-direction: column;
   width: 479px;
