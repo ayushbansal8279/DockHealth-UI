@@ -177,13 +177,13 @@ const CustomProfileList = () => {
               < 
                 disablePortal
                 options={[
-                  // !isGuestOrDockLite &&
-                  //   !isViewOnly && {
-                  //     name: 'Import from Excel or CSV',
-                  //     onClick: () => {
-                  //       setImportPopupOpen(true);
-                  //     },
-                  //   },
+                  !isGuestOrDockLite &&
+                    !isViewOnly && {
+                      name: 'Import from Excel or CSV',
+                      onClick: () => {
+                        setImportPopupOpen(true);
+                      },
+                    },
                   !isGuestOrDockLite &&
                     !isViewOnly && {
                       name: 'Export to CSV',
