@@ -4,7 +4,12 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { useEffect, useRef, useState } from 'react';
 import ProfileGroup from './ProfileGroup';
 import { IconButton, Stack } from '@mui/material';
-import { StickyHeader, TitleName, MoreActinsWrapper, NewDrawerContainer } from './styled';
+import {
+  StickyHeader,
+  TitleName,
+  MoreActinsWrapper,
+  NewDrawerContainer,
+} from './styled';
 import OptionsMenu from '@/app/components/common/OptionsMenu/OptionsMenu';
 import { CloseIcon } from '@/app/modal/components/styled';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
@@ -22,31 +27,38 @@ const ProfileDetailsDrawer = ({ closeDrawer }) => {
   const patient = useSelector(patientSelector);
 
   const fetchProfileCustomGroups = async () => {
-    const customGroups = await CustomFieldApi.searchCustomFiledGroups(Context);
-    const allCustomFields = await CustomFieldApi.getAllPatientCustomFields();
-    const defaultFields = await CustomFieldApi.getDefauldFields(Context);
+    try {
+      const [customGroups, allCustomFields, defaultFields] = await Promise.all([
+        CustomFieldApi.searchCustomFiledGroups(Context),
+        CustomFieldApi.getAllPatientCustomFields(),
+        CustomFieldApi.getDefauldFields(Context),
+      ]);
 
-    setDefaultFields(defaultFields);
+      setDefaultFields(defaultFields);
 
-    const enhancedDefaultFields = convertDefaultFields(defaultFields);
-    const customFields = [...enhancedDefaultFields, ...allCustomFields];
+      const enhancedDefaultFields = convertDefaultFields(defaultFields);
+      const customFields = [...enhancedDefaultFields, ...allCustomFields];
 
-    const processedGroups = customGroups.map((category) => {
-      if (!category.fields) {
-        return category;
-      }
+      const processedGroups = customGroups.map((category) => {
+        if (!category.fields) {
+          return category;
+        }
 
-      const enrichedFields = category.fields.map((field) => {
-        const matchingField = customFields?.find(
-          (customField) => customField.identifier === field.fieldReferenceId,
-        );
+        const enrichedFields = category.fields.map((field) => {
+          const matchingField = customFields?.find(
+            (customField) => customField.identifier === field.fieldReferenceId,
+          );
 
-        return matchingField ? { ...field, ...matchingField } : field;
+          return matchingField ? { ...field, ...matchingField } : field;
+        });
+
+        return { ...category, fields: enrichedFields };
       });
 
-      return { ...category, fields: enrichedFields };
-    });
-    setSelectedCategories(processedGroups);
+      setSelectedCategories(processedGroups);
+    } catch (error) {
+      console.error('Error fetching profile custom groups:', error);
+    }
   };
 
   useEffect(() => {
