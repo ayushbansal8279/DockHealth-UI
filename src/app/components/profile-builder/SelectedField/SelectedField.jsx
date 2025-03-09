@@ -1,6 +1,6 @@
-import { FieldArea, FieldIconContainer, DeletIcon, EditIcon } from './styled';
-import { DragIndicator } from '@mui/icons-material';
 import React, { useContext } from 'react';
+import { useParams } from 'react-router-dom';
+import { DragIndicator } from '@mui/icons-material';
 import TextField from '../TextField';
 import TEXT from 'img/profile-builder/ShortText.svg';
 import LONG_TEXT from 'img/profile-builder/RichText.svg';
@@ -15,6 +15,8 @@ import * as CustomFieldApi from 'api/custom-fields-api';
 import { useDispatch } from 'react-redux';
 import { openModal } from 'modal/actions';
 import { ProfileBuilderContext } from '../ProfileBuilder';
+import { createProfileFieldType } from '@/app/api/profile-type-field-api';
+import { FieldArea, FieldIconContainer, DeletIcon, EditIcon } from './styled';
 
 const FieldTypeImages = {
   [FieldType.TEXT]: TEXT,
@@ -30,6 +32,8 @@ const FieldTypeImages = {
 
 const SelectedField = ({ field, category }) => {
   const dispatch = useDispatch();
+  const { tabName, identifier } = useParams();
+  const context = tabName === 'patients' ? 'PATIENT' : 'PROFILE';
   const isDefault = field.contextType === 'DEFAULT';
 
   const { setSelectedCategories } = useContext(ProfileBuilderContext);
@@ -81,21 +85,32 @@ const SelectedField = ({ field, category }) => {
 
   const handleBlur = async (value) => {
     if (field.tempId && value) {
-      const payload = {
+      
+      const patientPayload = {
         fieldCategoryType: 'PATIENT_OTHER',
         fieldType: field.fieldType,
         name: value,
         contextType: 'CUSTOM',
+        targetType: context,
+      };
+
+      const profilePayload = {
+        fieldCategoryType: context,
+        fieldType: field.fieldType,
+        name: value,
+        contextType: 'CUSTOM',
+        targetType: context,
+        profileType: {
+          identifier,
+        },
       };
 
       const remainingUnsavedFields = unSavedFields?.filter(
         (tempField) => tempField.tempId !== field.tempId,
       );
 
-      const newlyAddedField = await CustomFieldApi.addCustomField(
-        payload,
-        'PATIENT',
-      );
+      const payload = context === 'PATIENT' ? patientPayload : profilePayload;
+      const newlyAddedField = await createProfileFieldType(payload);
 
       const updatedSavedRefrenceFields = [
         ...savedFieldsRefrenceValue,

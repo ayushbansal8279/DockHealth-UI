@@ -23,6 +23,7 @@ import * as ProfileTypeFieldApi from 'api/profile-type-field-api';
 import * as CustomFieldApi from 'api/custom-fields-api';
 import { useDispatch } from 'react-redux';
 import uuidv4 from '@/app/views/chat/channel-settings/uuid';
+import { getAllProfileFieldTypes } from '@/app/api/profile-type-field-api';
 
 export const ProfileBuilderContext = createContext({});
 
@@ -33,15 +34,17 @@ const ProfileBuilder = () => {
   const [isNewCategory, setNewCategory] = useState(false);
   const [allCustomFields, setAllCustomFields] = useState([]);
 
-  const Context = tabName === 'patients' ? 'PATIENT' : 'PROFILE';
+  const Context = tabName === 'patients' ? 'PATIENT' : 'PROFILETYPE';
 
-  const fetchProfileCustomGroups = async ({ allCustomFields }) => {
+  const initializePatientData = async () => {
     try {
-      const customGroups = await CustomFieldApi.searchCustomFiledGroups(
-        Context,
-      );
+      const [customGroups, allCustomFields, defaultFields] = await Promise.all([
+        CustomFieldApi.searchCustomFiledGroups(Context),
+        CustomFieldApi.getAllPatientCustomFields(),
+        CustomFieldApi.getDefauldFields(Context),
+      ]);
 
-      const defaultFields = await CustomFieldApi.getDefauldFields(Context);
+      setAllCustomFields(allCustomFields);
       const enhancedDefaultFields = convertDefaultFields(defaultFields);
       const customFields = [...enhancedDefaultFields, ...allCustomFields];
 
@@ -49,7 +52,7 @@ const ProfileBuilder = () => {
         (group) => group.name === 'Default Group',
       );
 
-      if (Context === 'PATIENT' && !hasDefaultFields) {
+      if (!hasDefaultFields) {
         const defaultCategory = {
           context: Context,
           name: 'Default Group',
@@ -81,34 +84,45 @@ const ProfileBuilder = () => {
       });
       setSelectedCategories(processedGroups);
     } catch (error) {
-      console.error('Error fetching custom field groups:', error);
+      dispatch(showGlobalErrorAlert());
     }
   };
 
-  const fetchPatientCustomFields = () => {
-    CustomFieldApi.getAllPatientCustomFields().then((data) => {
-      setAllCustomFields(data);
-      fetchProfileCustomGroups({ allCustomFields: data });
-    });
-  };
+  const initializeCustomProfileData = async () => {
+    try {
+      const [customGroups, allCustomFields] = await Promise.all([
+        CustomFieldApi.searchCustomFiledGroups(Context, identifier),
+        getAllProfileFieldTypes(identifier),
+      ]);
 
-  const fetchUserCustomFields = () => {
-    // searchCustomFiledGroups()
-    ProfileTypeFieldApi.getAllProfileFieldTypes(identifier)
-      .then((data) => {
-        // setCustomFields(data);
-        // setIsFetching(false);
-      })
-      .catch(() => {
-        dispatch(showGlobalErrorAlert());
+      setAllCustomFields(allCustomFields);
+
+      const processedGroups = customGroups.map((category) => {
+        if (!category.fields) {
+          return category;
+        }
+
+        const enrichedFields = category.fields.map((field) => {
+          const matchingField = allCustomFields?.find(
+            (customField) => customField.identifier === field.fieldReferenceId,
+          );
+
+          return matchingField ? { ...field, ...matchingField } : field;
+        });
+
+        return { ...category, fields: enrichedFields };
       });
+      setSelectedCategories(processedGroups);
+    } catch (error) {
+      dispatch(showGlobalErrorAlert());
+    }
   };
 
   useEffect(() => {
     if (Context === 'PATIENT') {
-      fetchPatientCustomFields();
-    } else {
-      fetchUserCustomFields();
+      initializePatientData();
+    } else if (Context === 'PROFILETYPE') {
+      initializeCustomProfileData();
     }
   }, []);
 
@@ -223,7 +237,7 @@ const ProfileBuilder = () => {
         >
           <BuilderContainer>
             <PlayGroungWrapper>
-              <BuilderPlayground />
+              <BuilderPlayground context={Context} identifier={identifier} />
             </PlayGroungWrapper>
             <CategoryWrapper>
               <ProfileBuilderCategories allCustomFields={allCustomFields} />
