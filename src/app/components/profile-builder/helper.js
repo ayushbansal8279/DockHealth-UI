@@ -1,4 +1,4 @@
-import ShortText from 'img/profile-builder/shortText.svg';
+import ShortText from 'img/profile-builder/ShortText.svg';
 import RichText from 'img/profile-builder/RichText.svg';
 import Calender from 'img/profile-builder/Calender.svg';
 import Hash from 'img/profile-builder/Hash.svg';

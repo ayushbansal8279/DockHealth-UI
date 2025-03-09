@@ -2,7 +2,7 @@ import { FieldArea, FieldIconContainer, DeletIcon, EditIcon } from './styled';
 import { DragIndicator } from '@mui/icons-material';
 import React, { useContext } from 'react';
 import TextField from '../TextField';
-import TEXT from 'img/profile-builder/shortText.svg';
+import TEXT from 'img/profile-builder/ShortText.svg';
 import LONG_TEXT from 'img/profile-builder/RichText.svg';
 import DATE from 'img/profile-builder/Calender.svg';
 import NUMBER from 'img/profile-builder/Hash.svg';
