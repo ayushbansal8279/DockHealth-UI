@@ -135,21 +135,6 @@ export const processMarkdownValue = (
   return nodes;
 };
 
-// function containsHref(node) {
-//   if (node && node?.props && node.props.children) {
-//     const { children } = node.props;
-
-//     if (node?.props?.href) {
-//       return true;
-//     }
-//     if (children) {
-//       return containsHref(children);
-//     }
-//   }
-
-//   return false;
-// }
-
 function containsHref(node) {
   if (!node || !node.props) return false;
 
@@ -172,16 +157,3 @@ const hasMultipleChildren = (node) => {
 
   return typeof children === 'object' && children !== null;
 };
-
-// const hasMultipleChildren = (node) => {
-//   if (!node || !node.props) return false;
-
-//   const { children } = node.props;
-//   console.log('children:', children);
-
-//   if (Array.isArray(children)) {
-//     return children.some((child) => hasMultipleChildren(child));
-//   }
-
-//   return typeof children === 'object' && children !== null;
-// };
