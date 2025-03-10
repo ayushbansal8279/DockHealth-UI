@@ -262,17 +262,6 @@ const FilterSelect = ({
                         <Lable>{item?.displayValue}</Lable>
                       )}
                     </DisplayValue>
-                    <div onClick={() => handleRemoveSelectedOption(item)}>
-                      <img
-                        style={{
-                          width: '19px',
-                          margin: '2px 4px',
-                          cursor: 'pointer',
-                        }}
-                        src={CloseIcon}
-                        alt="close"
-                      />
-                    </div>
                   </OptionItem>
                 ))}
                 <OptionInput
