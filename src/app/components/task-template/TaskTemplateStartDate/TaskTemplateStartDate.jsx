@@ -20,7 +20,7 @@ import { formatDateTime } from '@/app/helpers/date-intent-helpers';
 
 const TaskTemplateStartDate = (props) => {
   const { workflow, disabled = false } = props;
-  const { identifier, startDateTime, startDateIntent, dueDateTime } = workflow || {};
+  const { identifier, startDateTime, dueDateTime } = workflow || {};
   const dispatch = useDispatch();
 
   const handleSave = useCallback(
@@ -62,11 +62,11 @@ const TaskTemplateStartDate = (props) => {
         content={({ closePopover }) => (
           <DueDatePicker
             taskIdentifier={identifier}
-            selectedDate={adjustUTCDateForDateIntent(startDateTime ? moment(startDateTime).local() : null, startDateIntent)}
+            selectedDate={adjustUTCDateForDateIntent(startDateTime ? moment(startDateTime).local() : null, checkDateTimeIntent(startDateTime))}
             disableRecurring
             onDateChange={handleStartDateChange}
             onCloseClick={closePopover}
-            dueDateIntent={startDateIntent}
+            dueDateIntent={checkDateTimeIntent(startDateTime)}
             dateType="dueDate"
           />
         )}
@@ -75,7 +75,7 @@ const TaskTemplateStartDate = (props) => {
           <DateLabel 
             date={startDateTime} 
             tootipTitle="Edit Start Date" 
-            dueDateIntent={startDateIntent}
+            dueDateIntent={checkDateTimeIntent(startDateTime)}
           />
         ) : (
           <>
