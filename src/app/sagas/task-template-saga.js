@@ -210,6 +210,12 @@ function* addTemplate({ template, parentIdentifier = null, history }) {
     yield put(
       TaskTemplateActions.toggleTemplateOpen(createdTemplate.identifier),
     );
+    const layout = []
+    yield call(
+      TaskTemplateApi.saveTemplateLayout,
+      createdTemplate.identifier,
+      layout,
+    );
 
     yield put(showGlobalAlert(AlertMessages.CREATED));
 
