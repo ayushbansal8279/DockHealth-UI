@@ -54,7 +54,7 @@ export const OptionItem = styled.div`
   align-items: center;
   display: flex;
   height: 40px;
-  padding: 8px 0 8px 8px;
+  padding: 8px 15px 8px 0px;
   margin: 2px;
   align-items: center;
   overflow: hidden;
