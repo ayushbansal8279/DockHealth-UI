@@ -660,7 +660,7 @@ const BulkEditOptionsBar = ({
       console.log('treu')
         dispatch(
           modalActions.openModal('Alert', {
-            description:'Moving workflow tasks is not permitted. Please unselect tasks that below to a workflow.',
+            description:'Moving workflow tasks is not permitted. Please unselect tasks that belong to a workflow.',
             confirm: () => {dispatch(modalActions.closeModal());},
           }),
         );
