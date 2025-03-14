@@ -80,7 +80,7 @@ function createMentionsComment(tokenizedDescription, mentions) {
 export function traverseNodes(nodes, mentions) {
   return nodes && nodes.length > 0
     ? nodes.map((node) => {
-        if (containsHref(node, mentions)) {
+        if (containsHref(node)) {
           return node;
         }
 
@@ -142,7 +142,7 @@ export const processMarkdownValue = (
   return nodes;
 };
 
-function containsHref(node, mentions) {
+function containsHref(node) {
   if (!node || !node.props) return false;
 
   if (node.props.href) {
@@ -152,10 +152,10 @@ function containsHref(node, mentions) {
   const { children } = node.props;
 
   if (Array.isArray(children)) {
-    return children.some((child) => containsHref(child, mentions));
+    return children.some((child) => containsHref(child));
   }
 
-  return containsHref(children, mentions);
+  return containsHref(children);
 }
 
 const hasMultipleChildren = (node, mentions) => {
