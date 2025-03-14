@@ -5,14 +5,15 @@ import { Box } from '@mui/material';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { getGenderIdentityOptions } from '@/app/api/patients-api';
+import { FieldType } from '@/app/helpers/field-type-helpers';
 
-const ProfileGroup = ({ category, finalProfile, editMode }) => {
+const ProfileGroup = ({ category, profileValues, editMode,context }) => {
   const [collapse, setCollapse] = useState(false);
   const [genderIdentityOptions, setGenderIdentityOptions] = useState([]);
 
   const fetchGenderOptions = async () => {
     const genderIdentity = await getGenderIdentityOptions();
-    
+
     const genders = genderIdentity?.map((item) => {
       return {
         identifier: item?.genderIdentityType,
@@ -48,44 +49,66 @@ const ProfileGroup = ({ category, finalProfile, editMode }) => {
       noBorder
     >
       {category?.fields?.map((field) => {
-        const record = finalProfile.find(
-          (pd) => pd.customFieldIdentifier === field.fieldReferenceId,
-        );
+        const record =
+          profileValues.find((pd) => {
+            if (context === 'PATIENT')
+              return pd.customFieldIdentifier === field.fieldReferenceId;
+            if (context === 'PROFILETYPE')
+              return field.fieldReferenceId === pd.profileTypeFieldIdentifier;
+            return false;
+          }) || {};
 
-
-        if (field.name === 'Gender Identity') {
-          field.options = genderIdentityOptions;
+        if (context === 'PATIENT') {
+          switch (field.name) {
+            case 'Gender Identity':
+              field.options = genderIdentityOptions;
+              break;
+            case 'Gender':
+              field.options = GENDER_OPTIONS;
+              break;
+            case 'Dob':
+              record.value = moment(record?.value, 'YYYY-MM-DD')
+                .utc()
+                .toISOString();
+              break;
+            default:
+              break;
+          }
         }
 
-        if (field.name === 'Gender') {
-          field.options = GENDER_OPTIONS;
-        }
+        const initialValue = () => {
+          if (record) {
+            if (context === 'PATIENT') {
+              const value =
+                field.fieldType === FieldType.DROPDOWN_MULTI ||
+                field.fieldType === FieldType.RELATIONSHIP
+                  ? record.values
+                  : record.value;
 
-        if (field.name === 'Dob') {
-          const formattedDate = moment(record?.value, 'YYYY-MM-DD')
-            .utc()
-            .toISOString();
+              return value;
+            }
+            if (context === 'PROFILETYPE') {
+              const value =
+                record?.values?.length > 1
+                  ? record.values
+                  : record.values?.[0] ||
+                    record.values?.[0]?.value ||
+                    record.values?.[0]?.customFieldOption?.identifier;
 
-          record.value = formattedDate;
-        }
+              return value;
+            }
+          } else {
+            return '';
+          }
+        };
 
         const render = () => {
           return (
             <CustomField
               readOnly={!editMode}
               field={field}
-              initialValue={record?.value}
-              // initialValue={
-              //   record
-              //     ? record?.values?.length > 1
-              //       ? record.values
-              //       : record.values?.[0] ||
-              //         record.values?.[0]?.value ||
-              //         record.values?.[0]?.customFieldOption
-              //           ?.identifier
-              //     : ''
-              // }
-              // fieldsGroupKey="profileMetaData"
+              initialValue={initialValue()}
+              fieldsGroupKey="profileMetaData"
             />
           );
         };

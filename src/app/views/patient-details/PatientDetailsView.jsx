@@ -199,7 +199,7 @@ const PatientDetailsView = () => {
     <div style={{ display: 'flex' }}>
       {isDrawerOpen && (
         <NewDrawerContainer>
-          <ProfileDetailsDrawer closeDrawer={closeDrawer} />
+          <ProfileDetailsDrawer closeDrawer={closeDrawer} context={"PATIENT"} />
         </NewDrawerContainer>
       )}
       <div style={{ width: '100%', height: '100%' }}>

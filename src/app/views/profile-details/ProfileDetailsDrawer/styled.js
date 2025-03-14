@@ -5,6 +5,7 @@ import palette from 'styles/palette';
 export const MoreActinsWrapper = styled.div`
   display: flex;
   width: auto;
+  height: 34px;
 `;
 
 export const ContentWrapper = styled.div`
