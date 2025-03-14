@@ -52,7 +52,7 @@ const SelectedCategory = ({ category }) => {
 
       fields.splice(destinationIndex, 0, removed);
 
-      const aa = fields
+      const updatedFiled = fields
         .filter((item) => item.identifier)
         .map((item) => {
           return {
@@ -61,18 +61,19 @@ const SelectedCategory = ({ category }) => {
         });
 
       CustomFieldApi.updateCustomFiledGroup(category.identifier, {
-        fields: aa,
+        fields: updatedFiled,
       });
 
       const updatedCategories = selectedCategories.map((item) => {
         if (item.identifier === category.identifier) {
           return {
-            ...category,
+            ...item,
             fields: fields,
           };
         }
-        return category;
+        return item;
       });
+      
 
       setSelectedCategories(updatedCategories);
     }
