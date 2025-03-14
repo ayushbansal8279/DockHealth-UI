@@ -551,11 +551,12 @@ export function updateTaskDetails(task, detailsState) {
   };
 }
 
-export function updateTaskStartDate(task, startDate) {
+export function updateTaskStartDate(task, startDate, startDateIntent = null) {
   return {
     type: ActionTypes.UPDATE_TASK_START_DATE,
     task,
     startDate,
+    ...(startDateIntent && {startDateIntent})
   };
 }
 
@@ -696,7 +697,24 @@ export const renameTaskAttachment =
         throw error;
       });
   };
-      
+
+export const addPatientReferenceAttachment =
+  (taskIdentifier, attachmentIdentifier, type ) => (dispatch) => {
+    return TaskApi.addPatientReferenceAttachment(taskIdentifier, attachmentIdentifier, type)
+      .then((response) => {
+        dispatch({
+          type: ActionTypes.PATIENT_REFERENCE_ATTACHMENT_ADDED,
+          taskIdentifier,
+          taskAttachment: response.data,
+        });
+        dispatch(AlertActions.showGlobalAlert(AlertMessages.ATTACHMENT_ADDED));
+        return response.data;
+      })
+      .catch((error) => {
+        throw error;
+      });
+  };  
+  
 export function refreshTask(taskIdentifier) {
   return {
     type: ActionTypes.REFRESH_TASK,

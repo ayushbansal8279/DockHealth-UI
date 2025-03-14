@@ -80,6 +80,9 @@ function createMentionsComment(tokenizedDescription, mentions) {
 export function traverseNodes(nodes, mentions) {
   return nodes && nodes.length > 0
     ? nodes.map((node) => {
+        if (containsHref(node) || hasMultipleChildren(node)) {
+          return node;
+        }
         return traverseNode(node, mentions);
       })
     : nodes;
@@ -130,4 +133,27 @@ export const processMarkdownValue = (
   }
   const nodes = ReactHtmlParser(htmlValue || '');
   return nodes;
+};
+
+function containsHref(node) {
+  if (!node || !node.props) return false;
+
+  if (node.props.href) {
+    return true;
+  }
+  const { children } = node.props;
+
+  if (Array.isArray(children)) {
+    return children.some((child) => containsHref(child));
+  }
+
+  return containsHref(children);
+}
+
+const hasMultipleChildren = (node) => {
+  if (!node || !node.props) return false;
+
+  const { children } = node.props;
+
+  return typeof children === 'object' && children !== null;
 };

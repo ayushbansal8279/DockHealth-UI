@@ -95,6 +95,7 @@ function* updatePatientsListPreferences({ payload }) {
     );
     yield put({
       type: ActionTypes.UPDATE_PATIENTS_LIST_PREFERENCES_SUCCESS,
+      setup
     });
   } catch {
     yield put(showGlobalErrorAlert());

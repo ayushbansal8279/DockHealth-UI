@@ -44,6 +44,7 @@ import {
   selectedUserOrganizationSelector,
   userHasPostEMRNoteFeatureSelector,
   userHasSendEmailFeatureSelector,
+  userProfileSelector,
 } from '@/app/selectors/user-selectors';
 import { openModal } from '../../actions';
 import MarkdownRenderer from '@/app/components/ai-summary/MarkdownRenderer';
@@ -70,6 +71,7 @@ const AISummaryModal = ({ closeModal, title, onsubmit, type, identifier }) => {
   const [isFetching, setIsFetching] = useState(false);
   const [generateDateTime, setGeneratedDateTime] = useState('');
   const [stirngSummary, setStringSummary] = useState('');
+  const [generatedSubject, setGeneratedSubject] = useState('');
   const [tooltipHover, setTooltipHover] = useState({
     email: false,
     note: false,
@@ -86,6 +88,7 @@ const AISummaryModal = ({ closeModal, title, onsubmit, type, identifier }) => {
 
   const sendEmailAvailable = useSelector(userHasSendEmailFeatureSelector);
   const postToEMRAvailable = useSelector(userHasPostEMRNoteFeatureSelector);
+  const currentUser = useSelector(userProfileSelector);
 
   const handleCopy = () => {
     const formattedString = summaries.join('\n\n');
@@ -117,8 +120,21 @@ const AISummaryModal = ({ closeModal, title, onsubmit, type, identifier }) => {
     const responseDateTime = calculateResponseTimeAgo(result.timestamp);
     setGeneratedDateTime(responseDateTime);
 
-    const res = result?.remainingString.replace(/""/g, '**');
-    setStringSummary(result?.remainingString);
+    let res = result?.remainingString.replace(/""/g, '**');
+    res = res.replace(/(\[Your Name\])(?=[^\n]*$)/, currentUser?.name || "[Your Name]");
+    
+    if(persona === 'EMAIL'){
+      const generatedSummaryLines = res.split("\n");
+      if (/^Subject:\s*/i.test(generatedSummaryLines[0])) {
+        const generatedSummarySubject = generatedSummaryLines[0].replace(/^Subject:\s*/i, "").trim();
+        const updatedSummary = generatedSummaryLines.slice(1).join("\n").trim();
+        setStringSummary(updatedSummary);
+        setGeneratedSubject(generatedSummarySubject);
+      }
+    }
+    else {
+      setStringSummary(res);
+    }
 
     const splitArray = res.split('\n\n');
     splitArray ? setSummaries(splitArray) : null;
@@ -199,6 +215,7 @@ const AISummaryModal = ({ closeModal, title, onsubmit, type, identifier }) => {
                       source: 'Ai Summary Modal',
                       identifier,
                       generatedSummary: stirngSummary,
+                      generatedSubject: generatedSubject
                     }),
                   );
                 }}
@@ -220,6 +237,7 @@ const AISummaryModal = ({ closeModal, title, onsubmit, type, identifier }) => {
                       source: 'Ai Summary Modal',
                       taskIdentifier: identifier,
                       generatedSummary: stirngSummary,
+                      generatedSubject: generatedSubject
                     }),
                   );
                 }}

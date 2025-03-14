@@ -13,6 +13,10 @@ import initializeAttachmentsSectionHooks from './hooks';
 import { AttachmentsContainer, AttachmentFileInput, Title } from './styled';
 import { ScanStatus, ScanStatusText } from './helpers';
 import { DrawerFieldEnum } from '@/app/helpers/task-drawer-helpers';
+import { useDispatch } from 'react-redux';
+import { openModal } from '@/app/modal/actions';
+import { getPatientAttachments } from '@/app/api/patient-attachment-api';
+
 
 const AttachmentsSection = ({
   selectedTask,
@@ -35,12 +39,13 @@ const AttachmentsSection = ({
     downloadAllFiles,
     currentTaskAttachmentsDispatch
   } = initializeAttachmentsSectionHooks(selectedTask);
-
+  const dispatch = useDispatch();
   const attachmentRef = useRef(null);
 
   const downloadDisabled = currentTaskAttachments?.some(
     ({ scanStatus }) => scanStatus && scanStatus !== ScanStatus.CLEAN,
   );
+  const patientIdentifier = selectedTask?.patient?.patientIdentifier
 
   useEffect(() => {
     if (
@@ -50,6 +55,34 @@ const AttachmentsSection = ({
       attachmentRef.current.scrollIntoView(true);
     }
   }, [taskDrawerFocusField]);
+
+  const referenceAttachment = async () => {
+    try {
+      const patientAttachments = await getPatientAttachments(patientIdentifier);
+  
+      dispatch(openModal('PatientAttachmentReference', {
+        attachmentList: patientAttachments,
+        taskIdentifier: selectedTask?.identifier,
+        currentTaskAttachmentsDispatch: currentTaskAttachmentsDispatch
+      }));
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  
+  const attachmentOptions = patientIdentifier
+  ? [
+      {
+        label: 'Upload Local File',
+        ...getRootProps({ style: { outline: 'none' } }),
+      },
+      {
+        label: 'Reference File from Patient',
+        onClick: referenceAttachment,
+        disabled: !selectedTask?.patient,
+      },
+    ]
+  : [];
 
   return (
     <AttachmentsContainer ref={attachmentRef} isDragActive={isDragActive}>
@@ -130,7 +163,9 @@ const AttachmentsSection = ({
                 <Spacing horizontal={4} />
               </>
             )}
-            <AddAttachmentButton />
+            <AddAttachmentButton
+             attachmentOptions={attachmentOptions}
+            />
           </Grid>
         )}
         {disabled &&

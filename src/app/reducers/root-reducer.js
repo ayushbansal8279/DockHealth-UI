@@ -28,6 +28,7 @@ import WorkflowDrawerReducer from './workflow-drawer-reducer';
 import CalendarTasksReducer from './calendar-tasks-reducer';
 import SendbirdReducer from './sendbird-reducer';
 import TaskItemsReducer from './task-items-reducer';
+import ProfileReducer from './profile-reducer';
 
 // function createNamedWrapperReducer(reducerFunction, reducerName) {
 //   return (state, action) => {
@@ -44,6 +45,7 @@ const appReducer = combineReducers({
   userState: UserReducer,
   notification,
   taskList: TaskListReducer,
+  profile: ProfileReducer,
   userGroups: UserGroupsReducer,
   // form: FormReducer,
   organizationState: OrganizationReducer,

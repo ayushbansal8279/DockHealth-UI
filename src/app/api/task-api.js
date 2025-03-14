@@ -7,6 +7,7 @@ import { log } from 'helpers/log';
 import axios from './axios-heydoc';
 import { mapSelectedOptionsToRequestPayload } from '../helpers/filter-options-helpers';
 import { DueDateIntent } from '../helpers/task-helpers';
+import { error } from '../actions/notification-actions';
 
 export function searchTasks(
   searchTerm,
@@ -221,7 +222,7 @@ export function updateTaskDescription(task, description) {
     });
 }
 
-export const updateStartDate = (taskIdentifier, startDate) =>
+export const updateStartDate = (taskIdentifier, startDate, startDateIntent) =>
   axios
     .put(
       `task/addOrUpdateStartDate/${taskIdentifier}`,
@@ -231,6 +232,7 @@ export const updateStartDate = (taskIdentifier, startDate) =>
           startDate: startDate
             ? moment(startDate).format('MM/DD/YYYY HH:mm:ss ZZ')
             : null,
+          startDateIntent: startDate ? startDateIntent : DueDateIntent.DATE,
         },
       },
     )
@@ -439,6 +441,15 @@ export function getTaskAttachment(taskAttachmentId) {
 
 export function updateTaskAttachment(attachmentIdentifier,fileName) {
   return axios.put(`task/attachment`, { attachmentIdentifier,fileName}).then(({ data }) => data);
+}
+
+export function addPatientReferenceAttachment(taskIdentifier,fileIdentifier,type){
+  return axios
+    .post('task/attachment/other',{taskIdentifier,fileIdentifier,type})
+    .then(( response ) => response)
+    .catch((error)=>{
+      throw error;
+    });
 }
 
 export function getTaskDetails(taskIdentifier) {

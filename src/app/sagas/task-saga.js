@@ -321,15 +321,22 @@ function* updateTaskDetails({ task, detailsState }) {
   }
 }
 
-function* updateTaskStartDate({ task, startDate }) {
+function* updateTaskStartDate({ task, startDate, startDateIntent = null }) {
   try {
-    yield call(TaskApi.updateStartDate, task.identifier, startDate);
+    const updatedTask = yield call(TaskApi.updateStartDate, task.identifier, startDate, startDateIntent);
+    yield put({
+      type: ActionTypes.UPDATE_TASK_START_DATE_SUCCESS,
+      task,
+      startDate: updatedTask.startDate,
+      startDateIntent: updatedTask.startDateIntent
+    });
     yield put(showGlobalAlert(AlertMessages.UPDATED));
   } catch {
     yield put({
       type: ActionTypes.UPDATE_TASK_START_DATE_FAILURE,
       task,
       startDate: task.startDate,
+      startDateIntent: task?.startDateIntent
     });
     yield put(showGlobalErrorAlert());
   }

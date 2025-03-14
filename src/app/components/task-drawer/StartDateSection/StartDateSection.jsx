@@ -1,33 +1,48 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import moment from 'moment';
 import { Box } from '@mui/material';
-import { checkIfTemplateTask } from 'helpers/task-helpers';
+import {
+  checkDateTimeIntent,
+  checkIfTemplateTask,
+  DueDateIntent,
+} from 'helpers/task-helpers';
 import DueDatePicker from 'components/task/DueDatePicker/DueDatePicker';
 import { updateTaskStartDate } from 'actions/task-actions';
 import { useDispatch } from 'react-redux';
 import { useBoolean } from 'hooks/useBoolean';
 import PopoverCard from 'components/common/PopoverCard/PopoverCard';
 import AssignMemberIcon from 'components/user/AssignMemberIcon/AssingMemberIcon';
-import { StartDateSectionWrapper, AddStartDateButton } from './styled';
+import { StartDateSectionWrapper, AddStartDateButton, DateViewContainer } from './styled';
 import {
   StyledPopover,
   Title,
   SubTitle,
-  DateViewContainer,
   DateViewText,
 } from '../DueDateSection/styled';
 import { isStartDateValid } from '@/app/helpers/date-validation-helper';
 import { openModal } from '@/app/modal/actions';
+import { adjustUTCDateForDateIntent } from '../../task/DueDatePicker/helpers';
+import {
+  formatDateBasedOnIntent,
+  shouldDisplayTime,
+} from '@/app/helpers/date-intent-helpers';
 
 const StartDateSection = ({
   selectedTask,
   disabled = false,
   addTaskDrawer,
   setStartDate,
+  defaultStartDateIntent,
+  setStartDateIntent,
 }) => {
   const dispatch = useDispatch();
-  const { taskIdentifier, startDate, dueDate, hasRecurringSchedule } =
-    selectedTask || {};
+  const {
+    taskIdentifier,
+    startDate,
+    startDateIntent,
+    dueDate,
+    hasRecurringSchedule,
+  } = selectedTask || {};
   const [momentStartDate, setMomentStartDate] = useState(
     startDate ? moment(startDate) : null,
   );
@@ -35,20 +50,29 @@ const StartDateSection = ({
   const buttonReference = useRef(null);
   const startDateRef = useRef(null);
   const [isPopoverOpen, openPopover, closePopover] = useBoolean(false);
-  const [isTimeAvailable, setIsTimeAvailable] = useState(false);
+
   const handleSave = useCallback(
     (updatedStartDateTime) => {
-      if (updatedStartDateTime === null) {
-        setIsTimeAvailable(false);
-      }
       if (addTaskDrawer) {
         setStartDate(updatedStartDateTime);
-        setMomentStartDate(moment(updatedStartDateTime));
+        setMomentStartDate(
+          !!updatedStartDateTime ? moment(updatedStartDateTime) : null,
+        );
+        const defaultStartDateIntent =
+          checkDateTimeIntent(updatedStartDateTime);
+        setStartDateIntent(defaultStartDateIntent);
       } else {
         setMomentStartDate(
           !!updatedStartDateTime ? moment(updatedStartDateTime) : null,
         );
-        dispatch(updateTaskStartDate(selectedTask, updatedStartDateTime));
+        const startDateIntent = checkDateTimeIntent(updatedStartDateTime);
+        dispatch(
+          updateTaskStartDate(
+            selectedTask,
+            updatedStartDateTime,
+            startDateIntent,
+          ),
+        );
       }
     },
     [dispatch, selectedTask],
@@ -71,14 +95,6 @@ const StartDateSection = ({
     },
     [dispatch, selectedTask],
   );
-
-  useEffect(() => {
-    if (momentStartDate && (momentStartDate.hour() || momentStartDate.minute())) {
-      setIsTimeAvailable(true);
-    } else {
-      setIsTimeAvailable(false);
-    }
-  }, [momentStartDate]);
 
   return (
     <StartDateSectionWrapper
@@ -106,11 +122,17 @@ const StartDateSection = ({
               openPopover(true);
             }}
           >
-            {momentStartDate.format('MMM DD, YYYY')}
+            {formatDateBasedOnIntent(
+              momentStartDate,
+              startDateIntent ? startDateIntent : defaultStartDateIntent,
+            )}
           </DateViewText>
         </DateViewContainer>
       )}
-      {isTimeAvailable && (
+      {shouldDisplayTime(
+        momentStartDate,
+        startDateIntent ? startDateIntent : defaultStartDateIntent,
+      ) && (
         <DateViewContainer>
           <DateViewText
             ref={buttonReference}
@@ -119,7 +141,7 @@ const StartDateSection = ({
               openPopover(true);
             }}
           >
-            {momentStartDate.format('hh:mm a')}
+            {momentStartDate?.format('hh:mm a')}
           </DateViewText>
         </DateViewContainer>
       )}
@@ -146,10 +168,17 @@ const StartDateSection = ({
             <Box width="auto" minWidth={buttonReference.current?.offsetWidth}>
               <DueDatePicker
                 taskIdentifier={taskIdentifier}
-                selectedDate={momentStartDate}
+                selectedDate={adjustUTCDateForDateIntent(
+                  momentStartDate?.local(),
+                  startDateIntent ? startDateIntent : defaultStartDateIntent,
+                )}
                 onDateChange={handleStartDateSave}
                 recurring={hasRecurringSchedule}
                 onCloseClick={closePopover}
+                dueDateIntent={
+                  startDateIntent ? startDateIntent : defaultStartDateIntent
+                }
+                dateType="dueDate"
               />
             </Box>
           </PopoverCard>

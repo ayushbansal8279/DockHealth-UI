@@ -181,6 +181,7 @@ const PatientNotes = () => {
                 onFocus={handleFocus}
                 initOnClick={false}
                 showCharCount
+                disableMentions
               />
             </div>
           </ClickAwayListener>

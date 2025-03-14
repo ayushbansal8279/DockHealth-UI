@@ -1,7 +1,7 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 /* eslint-disable no-underscore-dangle */
 import React, { useState, useRef, useCallback, useEffect } from 'react';
-import { Box, List, ListItemText, MenuItem, Popover } from '@mui/material';
+import { Box, List, ListItemText, MenuItem, Popover, Switch } from '@mui/material';
 import CustomizeIcon from 'img/customize-icon.svg';
 import Checkbox from 'components/common/Checkbox/Checkbox';
 import { usePatientListColumnsConfig } from 'context-api/patients-columns-config-context';
@@ -99,7 +99,7 @@ const CustomizeToolbarButton = ({
           key={column.identifier}
           onClick={() => onClickCheckbox(column)}
         >
-          <Checkbox isChecked={column.isChecked} />
+          <Switch checked={column.isChecked} />
           <Box mx={0.5} />
           <ListItemText>{name || column.name}</ListItemText>
         </MenuItem>

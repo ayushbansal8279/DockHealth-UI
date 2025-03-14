@@ -4,20 +4,14 @@ import DataGrid, {
   useController,
   getValues,
 } from 'ui-toolkit/Composite/DataGrid';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useParams, useHistory } from 'react-router-dom';
 import { getUserGroupIdentifierByUrlParameter } from 'helpers/user-groups-helper';
 import {
   setCurrentUserGroup,
   unsetCurrentUserGroup,
 } from 'actions/user-groups-actions';
-import {
-  Box,
-  FormGroup,
-  ListItemText,
-  MenuItem,
-  Stack,
-} from '@mui/material';
+import { Box, Dialog, FormGroup, ListItemText, MenuItem, Stack, Switch } from '@mui/material';
 import { getAllProfileTypes } from 'api/profile-type-api';
 import { getAllProfiles } from 'api/profile-api';
 import { getAllProfileFieldTypes } from 'api/profile-type-field-api';
@@ -35,6 +29,17 @@ import Checkbox from 'components/common/Checkbox/Checkbox';
 import ToolbarButton from '../../tasklist/list-toolbar-buttons/ToolbarButton/ToolbarButton';
 import { AddIcon } from '@/app/views/smart-flow-builder/TaskNodeHandles/styled';
 import ProfileFilter from '../ProfileFilter/ProfileFilter';
+import OptionsMenu from '../../common/OptionsMenu/OptionsMenu';
+import { MoreVert } from '@mui/icons-material';
+import { userProfileSelector } from '@/app/selectors/user-selectors';
+import { isUserGuestOrDockLite, isUserViewOnly } from '@/app/helpers/user-helper';
+import { downloadProfileData, downloadProfileImportTemplate, uploadProfileData } from '@/app/api/profile-api';
+import { initializeProfileState, updateProfileListPreferences } from '@/app/actions/profile-actions';
+import { getProfileListPreferences } from '@/app/api/profile-type-api';
+import { StyledLink } from './styled';
+import DateLabel from '../../common/DateLabel/DateLabel';
+import ImportDataModal from '@/app/modal/components/ImportDataModal/ImportDataModal';
+import FileImportPopover from '../../common/FileImportPopover/FileImportPopover';
 
 const CustomProfileList = () => {
   const dispatch = useDispatch();
@@ -46,6 +51,11 @@ const CustomProfileList = () => {
   const groupIdentifier = getUserGroupIdentifierByUrlParameter(
     groupIdentifierUrlParameter,
   );
+
+  useEffect(() => {
+    dispatch(initializeProfileState(profileTypeIdentifier));
+  }, [dispatch, profileTypeIdentifier]);
+
   useEffect(() => {
     dispatch(setCurrentUserGroup(groupIdentifier));
 
@@ -71,7 +81,13 @@ const CustomProfileList = () => {
   const [profiles, setProfiles] = useState([]);
   const [searchPhrase, setSearchPhrase] = useState('');
   // console.log(profiles);
+  const currentUser = useSelector(userProfileSelector);
+  const [importPopupOpen, setImportPopupOpen] = useState(false);
+  const [importPopoverOpen, setImportPopoverOpen] = useState(false);
+  const [importResponse, setImportResponse] = useState(null);
   
+  const isGuestOrDockLite = isUserGuestOrDockLite(currentUser);
+  const isViewOnly = isUserViewOnly(currentUser);
 
   const fetchProfileTypes = useCallback(() => {
     getAllProfileTypes()
@@ -91,12 +107,16 @@ const CustomProfileList = () => {
     getAllProfileFieldTypes(profileTypeIdentifier)
       .then((data) => {
         setProfileTypeFields(data);
-        setFilters(data.map((profileType) => profileType.identifier));
       })
       .catch(() => {
         dispatch(showGlobalErrorAlert());
       });
   }, [dispatch, profileTypeIdentifier]);
+
+  const fetchFilters = () => {
+    getProfileListPreferences(profileTypeIdentifier)
+      .then(setFilters);
+  }
 
   const fetchProfiles = useCallback(() => {
     getAllProfiles(profileTypeIdentifier)
@@ -112,6 +132,7 @@ const CustomProfileList = () => {
     fetchProfileTypes();
     fetchProfileTypeFields();
     fetchProfiles();
+    fetchFilters();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -136,18 +157,59 @@ const CustomProfileList = () => {
   };
 
   const handleFilterChange = (field) => () => {
-    if (filters.includes(field.identifier)) {
-      setFilters(filters.filter((filter) => filter !== field.identifier));
-    } else {
-      setFilters([...filters, field.identifier]);
-    }
-  };
+    const updatedFilters = filters.includes(field.identifier)
+        ? filters.filter((filter) => filter !== field.identifier)
+        : [...filters, field.identifier];
 
+    setFilters(updatedFilters);
+
+    dispatch(
+      updateProfileListPreferences(
+        {
+          listDisplayColumns: updatedFilters,
+        },
+        profileTypeIdentifier
+      ),
+    );
+};
+
+  const handleDownloadProfileData = () => {
+    const filename = `Dock ${currentProfileType?.name}.csv`;
+    downloadProfileData(profileTypeIdentifier, filename);
+};
+  
   return (
     <>
       <ViewLayout
         header={
-          <LayoutHeader>
+          <LayoutHeader> 
+            <Box
+              position="absolute"
+              top={currentProfileType?.description ? 17 : 27}
+              left={10}
+            >
+              <OptionsMenu
+                disablePortal
+                options={[
+                  !isGuestOrDockLite &&
+                    !isViewOnly && {
+                      name: 'Import from Excel or CSV',
+                      onClick: () => {
+                        setImportPopupOpen(true);
+                      },
+                    },
+                  !isGuestOrDockLite &&
+                    !isViewOnly && {
+                      name: 'Export to CSV',
+                      onClick: () => {
+                        handleDownloadProfileData();
+                      },
+                    }
+                ]}
+              >
+                <MoreVert color="primary" />
+              </OptionsMenu>
+            </Box>
             <LayoutHeader.Title
               title={currentProfileType?.name}
               description={currentProfileType?.description}
@@ -214,8 +276,8 @@ const CustomProfileList = () => {
                         key={field.identifier}
                         onClick={handleFilterChange(field)}
                       >
-                        <Checkbox
-                          isChecked={filters.includes(field.identifier)}
+                        <Switch
+                          checked={filters.includes(field.identifier)}
                         />
                         <Box mx={0.5} />
                         <ListItemText>{field.name}</ListItemText>
@@ -226,7 +288,11 @@ const CustomProfileList = () => {
               </Paper>
             </Popover>
             <Box display="flex" alignItems="center" my={0.4} mx={2}>
-              <ProfileFilter profileTypeIdentifier={profileTypeIdentifier} fetchProfiles={fetchProfiles} setProfiles={setProfiles} />
+              <ProfileFilter
+                profileTypeIdentifier={profileTypeIdentifier}
+                fetchProfiles={fetchProfiles}
+                setProfiles={setProfiles}
+              />
             </Box>
             <Box display="flex" alignItems="center" width="400px" my={0.4}>
               <SearchInput
@@ -287,7 +353,10 @@ const CustomProfileList = () => {
 
                   if (record) {
                     switch (field.fieldType) {
-                      case 'TEXT': {
+                      case 'TEXT':
+                      case 'NUMBER':
+                      case 'BOOLEAN':
+                      case 'LONG_TEXT': {
                         return (
                           record.values?.[0] || record.values?.[0]?.value || ''
                         );
@@ -307,6 +376,24 @@ const CustomProfileList = () => {
                           ?.map((item) => item.displayValue)
                           .join(', ');
                       }
+                      case 'HYPERLINK': {
+                        const link = record.values?.[0] || record.values?.[0]?.value || '';
+                        if(!link) return '';
+                        return (
+                          <StyledLink
+                            href={link.startsWith("http") ? link : `//${link}`} 
+                            target="_blank"
+                            onClick={(event) => event.stopPropagation()}
+                          >
+                            {link}
+                          </StyledLink>
+                        );
+                      }
+                      case 'DATE': {
+                        const date = record.values?.[0] || record.values?.[0]?.value || ''
+                        if(!date) return '';
+                        return <DateLabel date={date} />
+                      }
                       default: {
                         return '';
                       }
@@ -319,6 +406,37 @@ const CustomProfileList = () => {
             ))}
         </DataGrid>
       </ViewLayout>
+      <Dialog
+        open={importPopupOpen}
+        onClose={() => setImportPopupOpen(false)}
+        PaperProps={{
+          elevation: 0,
+          square: true,
+          style: {},
+        }}
+      >
+        <ImportDataModal
+          closeModal={() => {
+            setImportPopupOpen(false);
+          }}
+          downloadTemplate={() => downloadProfileImportTemplate(profileTypeIdentifier)}
+          setImportPopoverOpen={setImportPopoverOpen}
+          step={1}
+          label="profile"
+          uploadFunction={uploadProfileData}
+          identifier={profileTypeIdentifier}
+          setImportResponse={setImportResponse}
+        />
+      </Dialog>
+      {importPopoverOpen && (
+        <FileImportPopover
+          type="Profile"
+          closePopover={() => {
+            setImportPopoverOpen(false);
+          }}
+          uploadResponse={importResponse}
+        />
+      )}
     </>
   );
 };

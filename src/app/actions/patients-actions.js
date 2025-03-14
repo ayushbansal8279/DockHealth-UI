@@ -106,6 +106,13 @@ export function updatePatientsList(identifier, dataToUpdate) {
   };
 }
 
+export function updatePatientsListPreferences(payload) {
+  return {
+    type: ActionTypes.UPDATE_PATIENTS_LIST_PREFERENCES,
+    payload
+  };
+}
+
 export function patientBulkCreateTask(payload) {
   return {
     type: ActionTypes.PATIENT_BULK_CREATE_TASK,

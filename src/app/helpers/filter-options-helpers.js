@@ -1,3 +1,4 @@
+import moment from 'moment';
 import isEmpty from 'ramda/src/isEmpty';
 import isNil from 'ramda/src/isNil';
 
@@ -146,8 +147,8 @@ export function mapRequestSelectedOptionsToStore(selectedOptions) {
       return {
         ...accumulator,
         [k]: {
-          dateEnd: v.dateEnd || null,
-          dateStart: v.dateStart || null,
+          dateEnd: v.dateEnd ? moment.utc(v.dateEnd).format("YYYY-MM-DD") : null,
+          dateStart: v.dateStart ? moment.utc(v.dateStart).format("YYYY-MM-DD") : null,
           options: v.dateOptions,
         },
       };

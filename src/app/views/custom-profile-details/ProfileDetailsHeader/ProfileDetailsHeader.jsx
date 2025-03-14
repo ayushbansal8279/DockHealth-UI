@@ -89,7 +89,7 @@ const ProfileDetailsHeader = () => {
     fetchProfileTypeFields();
     fetchProfile();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [profileIdentifier]);
 
   useEffect(() => {
     const profileNameInfo = getProfileName(profileTypeFields, profile);

@@ -33,6 +33,9 @@ import CustomField from 'components/common/CustomField/CustomField';
 import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
 import { closeModal, openModal } from 'modal/actions';
+import { FieldType } from '@/app/helpers/field-type-helpers';
+import { normalizeHyperlink } from '@/app/helpers/custom-fields-helpers';
+import { getProfileName } from '@/app/views/custom-profile-details/helpers';
 
 const ProfileDrawer = ({
   title,
@@ -50,8 +53,10 @@ const ProfileDrawer = ({
   const formMethods = useForm({
     reValidateMode: 'onSubmit',
   });
-  const { register, handleSubmit, getValues } = formMethods;
+  const { handleSubmit, getValues, formState: { errors } } = formMethods;
   const formReference = useRef(null);
+
+  const hasErrors = Object.keys(errors).length > 0;
 
   const [isCollapsed, setCollapsed] = useState(true);
   const [editMode, setEditMode] = useState(addMode);
@@ -75,27 +80,16 @@ const ProfileDrawer = ({
               (fieldType) => fieldType.identifier === identifier,
             );
             return {
-              profileTypeField: {
-                identifier,
-              },
+              profileTypeField: { identifier },
               values: Array.isArray(value)
-                ? value?.map((selectedValue) => {
-                    return {
-                      value: selectedValue,
-                    };
-                  })
+                ? value?.map((selectedValue) => ({ value: selectedValue }))
                 : [
-                    type.fieldType === '"PICK_LIST"'
-                      ? {
-                          customFieldOption: {
-                            identifier: value,
-                          },
-                        }
-                      : {
-                          value,
-                        },
+                    type.fieldType === FieldType.DROPDOWN
+                      ? { customFieldOption: { identifier: value } }
+                      : { value: type.fieldType === FieldType.HYPERLINK ? normalizeHyperlink(value) : value },
                   ],
             };
+            
           },
         ),
         // eslint-disable-next-line no-shadow
@@ -168,13 +162,17 @@ const ProfileDrawer = ({
       dispatch(
         openModal('InterruptEdit', {
           description: 'You have unsaved',
-          confirm: () => {
-            editProfile(getValues());
-            dispatch(closeModal());
-            if (!addMode && profile) {
-              setEditMode(false);
+          profileTypeName: getProfileName(types, profile)?.[0],
+          confirm: async () => {
+            const isValid = await formMethods.trigger();
+            if(isValid) {
+              editProfile(getValues());
+              if (!addMode && profile) {
+                setEditMode(false);
+              }
+              onClose();
             }
-            onClose();
+            dispatch(closeModal());
           },
           onClose: () => {
             if (!addMode && profile) {
@@ -195,6 +193,17 @@ const ProfileDrawer = ({
   const menu = useMemo(
     () => [
       { name: 'Edit', onClick: () => setEditMode(true) },
+      { name: 'Merge', 
+        onClick: () => {
+          dispatch(
+            openModal('ProfilePicker', {
+              profileTypeIdentifier: profileTypeIdentifier,
+              profile: profile,
+            })
+          );
+          onClose();
+        },
+      },
       {
         name: 'Delete',
         onClick: () => {
@@ -275,7 +284,7 @@ const ProfileDrawer = ({
               <Stack sx={{ m: '8px 4px' }} direction="row">
                 <Button
                   type="submit"
-                  disabled={profile && !editMode}
+                  disabled={(profile && !editMode) || hasErrors}
                   width="170px"
                   variant="primary"
                   size="small"

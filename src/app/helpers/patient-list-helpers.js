@@ -72,3 +72,15 @@ export const PATIENT_BASE_COLUMN_CONFIG = {
   [PatientHeaderColumn.MOBILE]: true,
   [PatientHeaderColumn.HOME]: true,
 };
+
+export const patientHeaderMap = {
+  PATIENT: "PATIENT",
+  AGE: "AGE",
+  MOBILE: "MOBILE",
+  HOME: "HOME",
+  GENDER_IDENTITY: "GENDER",
+  GENDER_AT_BIRTH: "SEX",
+  UNIQUE_ID: "MRN",
+  DOB: "DOB",
+  EMAIL: "EMAIL"
+};
