@@ -58,8 +58,8 @@ const ShareWorkflowModal = (props) => {
         />
         <Spacing vertical={6} />
         <ButtonWrapper>
-          <CancelButton onClick={closeModal}>Skip & Save</CancelButton>
-          <ConfirmButton onClick={closeModal}>Share & Save</ConfirmButton>
+          <CancelButton onClick={closeModal}>Cancel</CancelButton>
+          <ConfirmButton onClick={closeModal}>Share</ConfirmButton>
         </ButtonWrapper>
       </Grid>
     </InviteToListModalWrapper>

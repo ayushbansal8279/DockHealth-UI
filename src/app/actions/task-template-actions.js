@@ -32,6 +32,17 @@ export function copyWorkflowToOrganization(
   };
 }
 
+export function shareWorkflowWithOrganization(
+  identifier,
+  targetOrganizationIdentifiers,
+) {
+  return {
+    type: ActionTypes.SHARE_WORKFLOW_WITH_ORGANIZATION,
+    identifier,
+    targetOrganizationIdentifiers,
+  };
+}
+
 export function addTemplate(template) {
   return {
     type: ActionTypes.ADD_TASK_TEMPLATE,
