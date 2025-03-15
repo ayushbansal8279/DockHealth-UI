@@ -1,9 +1,11 @@
 import { put, call, takeEvery, takeLatest, select, all } from 'redux-saga/effects';
 import * as ProfileApi from 'api/profile-api';
+import * as ProfileTypeApi from 'api/profile-type-api'
 import * as ActionTypes from '../actions/action-types';
 import * as MegaFilterActions from 'actions/mega-filter-actions';
 import * as AlertActions from 'alert/actions';
 import { currentProfileIdentifierSelector } from '../selectors/profile-selector';
+import { showGlobalErrorAlert } from '../alert/actions';
 
 function* getCurrentProfileFilterOptions() {
   try {
@@ -43,6 +45,20 @@ function* selectedProfileFilter({ payload }) {
   );
 }
 
+
+function* updateProfileListPreferences({ payload }) {
+  try {
+    const { setup, profileTypeIdentifier } = payload;
+    yield call(
+      ProfileTypeApi.updateProfileListPreferences,
+      setup,
+      profileTypeIdentifier,
+    );
+  } catch {
+    yield put(showGlobalErrorAlert());
+  }
+}
+
 function* mergeProfile({ fromProfile, toProfile, onSuccess }) {
   try {
     yield call(
@@ -65,5 +81,6 @@ export default function* watchProfileDetail() {
     getCurrentProfileFilterOptions,
   );
   yield takeLatest(ActionTypes.SELECTED_PROFILE_FILTER, selectedProfileFilter);
+  yield takeLatest(ActionTypes.UPDATE_PROFILE_LIST_PREFERENCES, updateProfileListPreferences);
   yield takeEvery(ActionTypes.MERGE_PROFILE, mergeProfile);
 }

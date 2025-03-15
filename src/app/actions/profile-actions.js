@@ -23,6 +23,13 @@ export function selectedProfileFilters(filters, selectedQuickFilter) {
   };
 }
 
+export function updateProfileListPreferences(setup, profileTypeIdentifier) {
+  return {
+    type: ActionTypes.UPDATE_PROFILE_LIST_PREFERENCES,
+    payload: { setup, profileTypeIdentifier }
+  }
+};
+
 export function mergeProfile(fromProfile, toProfile, onSuccess) {
   return {
     type: ActionTypes.MERGE_PROFILE,
@@ -31,3 +38,4 @@ export function mergeProfile(fromProfile, toProfile, onSuccess) {
     onSuccess
   };
 }
+

@@ -100,6 +100,33 @@ function* copyWorkflowToOrganization({
   }
 }
 
+function* shareWorkflowWithOrganization({
+  targetOrganizationIdentifiers,
+  identifier,
+}) {
+  try {
+    yield call(
+      TaskTemplateApi.shareWorkflowWithOrganization,
+      identifier,
+      targetOrganizationIdentifiers,
+    );
+    yield put({
+      type: ActionTypes.SHARE_WORKFLOW_WITH_ORGANIZATION_SUCCESS,
+      identifier,
+    });
+    yield put(showGlobalAlert(AlertMessages.COPIED));
+  } catch {
+    yield all([
+      put({
+        type: ActionTypes.SHARE_WORKFLOW_WITH_ORGANIZATION_FAILURE,
+        identifier,
+        targetOrganizationIdentifiers,
+      }),
+      put(showGlobalErrorAlert()),
+    ]);
+  }
+}
+
 function* getWorkflowFolder({ searchPhrase }) {
   try {
     const folderIdentifier = yield select(currentFolderIdentifierSelector);
@@ -209,6 +236,12 @@ function* addTemplate({ template, parentIdentifier = null, history }) {
 
     yield put(
       TaskTemplateActions.toggleTemplateOpen(createdTemplate.identifier),
+    );
+    const layout = []
+    yield call(
+      TaskTemplateApi.saveTemplateLayout,
+      createdTemplate.identifier,
+      layout,
     );
 
     yield put(showGlobalAlert(AlertMessages.CREATED));
@@ -953,6 +986,10 @@ export default function* watchTaskTemplate() {
   yield takeEvery(
     ActionTypes.COPY_WORKFLOW_TO_ORGANIZATION,
     copyWorkflowToOrganization,
+  );
+  yield takeEvery(
+    ActionTypes.SHARE_WORKFLOW_WITH_ORGANIZATION,
+    shareWorkflowWithOrganization,
   );
   yield takeEvery(ActionTypes.ADD_TASK_TEMPLATE, addTemplate);
   yield takeEvery(ActionTypes.ADD_TASK_TEMPLATE_FOLDER, addTemplate);
