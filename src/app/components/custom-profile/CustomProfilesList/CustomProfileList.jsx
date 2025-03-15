@@ -193,7 +193,7 @@ const CustomProfileList = () => {
                 options={[
                   !isGuestOrDockLite &&
                     !isViewOnly && {
-                      name: 'Import from Excel or CSV',
+                      name: 'Import from CSV',
                       onClick: () => {
                         setImportPopupOpen(true);
                       },

@@ -22,6 +22,7 @@ import {
 import {
   userHasSmartFlowsSelector,
   userProfileSelector,
+  userHasShareTaskWorkflowFeatureSelector,
 } from 'selectors/user-selectors';
 import { checkIfUserIsOrganizationAdmin } from 'helpers/user-helper';
 import * as WorkflowActions from 'actions/workflow-actions';
@@ -40,6 +41,7 @@ import QuickAddTaskInput from 'components/tasklist/QuickAddTaskInput/QuickAddTas
 import {
   moveWorkflowToFolder,
   copyWorkflowToOrganization,
+  shareWorkflowWithOrganization,
   switchTemplatePublic,
   updatePartialWorkflow,
   addTaskToTemplate,
@@ -77,6 +79,7 @@ const TaskTemplate = ({
     members,
   } = template;
   const smartFlowsAvailable = useSelector(userHasSmartFlowsSelector);
+  const shareTaskWorkflowAvailable = useSelector(userHasShareTaskWorkflowFeatureSelector);
   const currentUser = useSelector(userProfileSelector);
 
   const [draggableId, setDraggableId] = useState(null);
@@ -116,6 +119,14 @@ const TaskTemplate = ({
     dispatch(
       ModalActions.openModal('ShareWorkflow', {
         workflowIdentifier: identifier,
+        confirm: (selectedItems) => {
+          dispatch(
+            shareWorkflowWithOrganization(
+              identifier,
+              selectedItems?.organizations,
+            ),
+          );
+        },
       }),
     );
   };
@@ -200,21 +211,10 @@ const TaskTemplate = ({
             }),
           ),
       },
-      isCurrentUserEditor && {
+      shareTaskWorkflowAvailable && isAdmin && {
         name: 'Share Workflow',
         color: palette.oPlusRed,
         onClick: handleShareWorkflow,
-        // dispatch(
-        //   ModalActions.openModal('ShareWorkflow', {
-        //     // title: 'Delete workflow',
-        //     // description:
-        //     //   'Are you sure you want to delete this workflow? This action cannot be undone.',
-        //     // confirm: () => {
-        //     //   dispatch(WorkflowActions.deleteWorkflow(identifier));
-        //     //   dispatch(ModalActions.closeModal());
-        //     // },
-        //   }),
-        // ),
       },
       isCurrentUserEditor && {
         name: 'Delete Workflow',

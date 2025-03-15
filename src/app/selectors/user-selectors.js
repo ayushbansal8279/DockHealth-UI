@@ -241,6 +241,16 @@ export const userHasAiSummaryViewFeatureSelector = createSelector(
     ),
 );
 
+export const userHasShareTaskWorkflowFeatureSelector = createSelector(
+  userProfileSelector,
+  ({ organizationAvailableFeatures, userAvailableFeatures }) =>
+    featureSelector(
+      organizationAvailableFeatures,
+      userAvailableFeatures,
+      'SHARE_WORKFLOW',
+    ),
+);
+
 export const userSetupClientViewSelector = createSelector(
   userViewSetupSelector,
   ({ mainSetup }) => mainSetup,
