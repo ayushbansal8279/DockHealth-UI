@@ -143,6 +143,7 @@ const BulkEditSection = React.memo(
             {bulkEditIsActive && (
               <BulkEditOptionsBar
                 selectedTasks={selectedTasks}
+                allTasks={allTasks}
                 onClose={onClearBulkEditTasks}
                 isDisabled={isTaskDrawerOpen}
                 refreshTasks={refreshTasks}

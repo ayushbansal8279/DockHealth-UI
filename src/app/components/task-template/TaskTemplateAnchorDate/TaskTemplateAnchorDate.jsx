@@ -14,7 +14,7 @@ import { formatDateTime } from '@/app/helpers/date-intent-helpers';
 
 const TaskTemplateAnchorDate = (props) => {
   const { workflow } = props;
-  const { identifier, anchorDateTime, anchorDateIntent } = workflow || {};
+  const { identifier, anchorDateTime } = workflow || {};
   const dispatch = useDispatch();
 
   const handleAnchorDateChange = useCallback(
@@ -43,11 +43,11 @@ const TaskTemplateAnchorDate = (props) => {
       content={({ closePopover }) => (
         <DueDatePicker
           taskIdentifier={identifier}
-          selectedDate={adjustUTCDateForDateIntent(anchorDateTime ? moment(anchorDateTime).local() : null, anchorDateIntent)}
+          selectedDate={adjustUTCDateForDateIntent(anchorDateTime ? moment(anchorDateTime).local() : null, checkDateTimeIntent(anchorDateTime))}
           disableRecurring
           onDateChange={handleAnchorDateChange}
           onCloseClick={closePopover}
-          dueDateIntent={anchorDateIntent}
+          dueDateIntent={checkDateTimeIntent(anchorDateTime)}
           dateType="dueDate"
         />
       )}
@@ -60,7 +60,7 @@ const TaskTemplateAnchorDate = (props) => {
         <DateLabel 
           date={anchorDateTime} 
           tootipTitle="Edit Anchor Date" 
-          dueDateIntent={anchorDateIntent}
+          dueDateIntent={checkDateTimeIntent(anchorDateTime)}
         />
       ) : (
         <Tooltip placement="top" title="Add Anchor Date">

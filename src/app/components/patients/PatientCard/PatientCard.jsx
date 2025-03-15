@@ -129,7 +129,7 @@ const PatientCard = ({
           setPatientData(fetchedPatient);
           setPatientNotes(fetchedPatient.allNotes);
         })
-        .catch(() => { });
+        .catch(() => {});
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cardOpen, patientIdentifier]);
@@ -154,7 +154,7 @@ const PatientCard = ({
     phoneMobile,
     phoneHome,
     patientLabels,
-    patientStatus
+    patientStatus,
   } = patientData || {};
 
   const patientStreetAddress = patientData?.patientMetaData?.filter(
@@ -209,9 +209,9 @@ const PatientCard = ({
               <>
                 <TopSection>
                   <PatientName status={patientStatus}>
-                    {[`${lastName},`, firstName, middleName?.slice(0, 1)]
-                      .join(' ')
-                      .toUpperCase()}
+                    {[`${lastName},`, firstName, middleName?.slice(0, 1)].join(
+                      ' ',
+                    )}
                   </PatientName>
                   {!disableLink && (
                     <div style={{ display: 'flex' }}>
@@ -242,53 +242,53 @@ const PatientCard = ({
                   email ||
                   phoneMobile ||
                   phoneHome) && (
-                    <>
-                      <Spacing vertical={2} />
-                      <PatientInfo>
-                        {(age || gender || dob) && (
+                  <>
+                    <Spacing vertical={2} />
+                    <PatientInfo>
+                      {(age || gender || dob) && (
+                        <InfoItem>
+                          {dob && `${moment(dob).format('MMM D, YYYY')} | `}
+                          {age && `${age} | `}
+                          {gender && `${gender?.charAt(0)?.toUpperCase()}`}
+                        </InfoItem>
+                      )}
+                      {!genderIdentityDisabled && genderIdentity && (
+                        <InfoItem>Gender: {genderIdentity}</InfoItem>
+                      )}
+                      {mrn && !emrPatientLink && (
+                        <InfoItem>
+                          {uniqueIdentifierLabel}# {mrn}
+                        </InfoItem>
+                      )}
+                      {mrn && emrPatientLink && (
+                        <InfoItem>
+                          {uniqueIdentifierLabel}#{' '}
+                          <PatientMRNAnchor
+                            href={emrPatientLink.replace('{mrn}', mrn)}
+                            target="_blank"
+                            rel="noreferrer"
+                          >
+                            {mrn}
+                          </PatientMRNAnchor>
+                        </InfoItem>
+                      )}
+                      {(dob || gender || mrn) && <br />}
+                      {email && (
+                        <>
                           <InfoItem>
-                            {dob && `${moment(dob).format('MMM D, YYYY')} | `}
-                            {age && `${age} | `}
-                            {gender && `${gender?.charAt(0)?.toUpperCase()}`}
+                            <a href={`mailto:${email}`}>{email}</a>
                           </InfoItem>
-                        )}
-                        {!genderIdentityDisabled && genderIdentity && (
-                          <InfoItem>Gender: {genderIdentity}</InfoItem>
-                        )}
-                        {mrn && !emrPatientLink && (
-                          <InfoItem>
-                            {uniqueIdentifierLabel}# {mrn}
-                          </InfoItem>
-                        )}
-                        {mrn && emrPatientLink && (
-                          <InfoItem>
-                            {uniqueIdentifierLabel}#{' '}
-                            <PatientMRNAnchor
-                              href={emrPatientLink.replace('{mrn}', mrn)}
-                              target="_blank"
-                              rel="noreferrer"
-                            >
-                              {mrn}
-                            </PatientMRNAnchor>
-                          </InfoItem>
-                        )}
-                        {(dob || gender || mrn) && <br />}
-                        {email && (
-                          <>
-                            <InfoItem>
-                              <a href={`mailto:${email}`}>{email}</a>
-                            </InfoItem>
-                            <br />
-                          </>
-                        )}
-                        {patientAddress && patientAddress !== '' && (
-                          <InfoItem>Address: {patientAddress}</InfoItem>
-                        )}
-                        {phoneMobile && <InfoItem>M {phoneMobile}</InfoItem>}
-                        {phoneHome && <InfoItem>H {phoneHome}</InfoItem>}
-                      </PatientInfo>
-                    </>
-                  )}
+                          <br />
+                        </>
+                      )}
+                      {patientAddress && patientAddress !== '' && (
+                        <InfoItem>Address: {patientAddress}</InfoItem>
+                      )}
+                      {phoneMobile && <InfoItem>M {phoneMobile}</InfoItem>}
+                      {phoneHome && <InfoItem>H {phoneHome}</InfoItem>}
+                    </PatientInfo>
+                  </>
+                )}
                 <Box display="flex" flexWrap="wrap">
                   {patientData?.patientMetaData?.map(
                     ({
