@@ -49,7 +49,7 @@ const UsersView = () => {
                 options={[
                   isOwnerOrAdmin &&
                     {
-                      name: 'Bulk Invite User',
+                      name: 'Bulk Invite Users',
                       onClick: () => {
                         setImportPopupOpen(true);
                       },
