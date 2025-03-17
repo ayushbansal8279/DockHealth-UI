@@ -105,7 +105,7 @@ export function deleteCustomFiledGroup(customFiledGroupIdentifier) {
     });
 }
 
-export function searchCustomFiledGroups(context) {
+export function searchCustomFiledGroups(context, profileTypeIdentifier) {
   if (context === 'PATIENT') {
     return axios
       .get(`/customFieldGroup/search?context=${context}`)
@@ -115,20 +115,26 @@ export function searchCustomFiledGroups(context) {
         throw new Error(error?.response?.data?.errorMessage);
       });
   }
-  // if (context === 'PROFILETYPE') {
-  //   return axios
-  //     .get(`/customFieldGroup/search?context=${context}`)
-  //     .then(({ data }) => data)
-  //     .catch((error) => {
-  //       log(error);
-  //       throw new Error(error?.response?.data?.errorMessage);
-  //     });
-  // }
+  if (context === 'PROFILETYPE') {
+    return axios
+      .get(
+        `/customFieldGroup/search?context=${context}&profileTypeIdentifier=${profileTypeIdentifier
+          
+        }`,
+      )
+      .then(({ data }) => data)
+      .catch((error) => {
+        log(error);
+        throw new Error(error?.response?.data?.errorMessage);
+      });
+  }
 }
 
 export function getDefauldFields(context) {
   return axios
-    .get(`/fieldReference/findDefaultsByContext?isDefault=true&context=${context}`)
+    .get(
+      `/fieldReference/findDefaultsByContext?isDefault=true&context=${context}`,
+    )
     .then(({ data }) => data)
     .catch((error) => {
       log(error);

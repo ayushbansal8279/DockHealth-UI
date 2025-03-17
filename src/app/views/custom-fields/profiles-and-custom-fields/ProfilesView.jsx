@@ -97,7 +97,7 @@ const ProfilesAndCustomFieldsView = () => {
         return;
       }
       history.push(
-        `/settings/profile-builder/${name.toLowerCase()}/${identifier}`,
+        `/settings/profile-builder/profiles/${identifier}`,
       );
     },
     [history],

@@ -13,7 +13,7 @@ import { DragIndicator } from '@mui/icons-material';
 import * as CustomFieldApi from 'api/custom-fields-api';
 import { ProfileBuilderContext } from '../ProfileBuilder';
 
-const BuilderPlayground = () => {
+const BuilderPlayground = ({ context, identifier }) => {
   const {
     selectedCategories,
     setSelectedCategories,
@@ -24,11 +24,14 @@ const BuilderPlayground = () => {
 
   const onNewCategoryAdd = (value) => {
     const newCategory = {
-      context: 'PATIENT',
+      context,
       name: value,
       fields: [],
       isDefault: true,
     };
+    if (context === 'PROFILETYPE') {
+      newCategory.profileTypeIdentifier = identifier;
+    }
 
     if (value) {
       setNewCategory(false);
