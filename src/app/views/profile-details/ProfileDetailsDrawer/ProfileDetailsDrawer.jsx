@@ -41,8 +41,8 @@ const ProfileDetailsDrawer = ({
         CustomFieldApi.getDefauldFields(context),
       ]);
 
-      const title = `${patient.lastName}, ${patient.firstName} ${
-        patient.middleName ?? ''
+      const title = `${patient?.lastName}, ${patient?.firstName} ${
+        patient?.middleName ?? ''
       }`;
       setTitle(title);
 
@@ -68,7 +68,7 @@ const ProfileDetailsDrawer = ({
       setSelectedCategories(processedGroups);
       setLoading(false);
 
-      const profileValue = patient?.patientMetaData;
+      const profileValue = patient?.patientMetaData || [];
 
       const mappedArray = defaultFields?.map(({ fieldName, identifier }) => ({
         customFieldIdentifier: identifier,
@@ -78,7 +78,7 @@ const ProfileDetailsDrawer = ({
       const finalProfile = [...mappedArray, ...profileValue];
       setProfileValues(finalProfile);
     } catch (error) {
-      console.error('Error fetching profile custom groups:', error);
+      console.error('Error fetching Patient custom groups:', error);
     }
   };
 
