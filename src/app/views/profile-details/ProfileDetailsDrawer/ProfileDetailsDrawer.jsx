@@ -4,7 +4,7 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { useEffect, useRef, useState } from 'react';
 import ProfileGroup from './ProfileGroup';
 import { IconButton, Stack } from '@mui/material';
-import { ArrowBack,MoreVertIcon} from '@mui/icons-material';
+import { ArrowBack,MoreVert} from '@mui/icons-material';
 import {
   StickyHeader,
   TitleName,
@@ -166,7 +166,7 @@ const ProfileDetailsDrawer = ({
                   options={options}
                   customButtonComponent={IconButton}
                 >
-                  <MoreVertIcon />
+                  <MoreVert />
                 </OptionsMenu>
               )}
               <IconButton onClick={onClose} style={{ width: '34px' }}>

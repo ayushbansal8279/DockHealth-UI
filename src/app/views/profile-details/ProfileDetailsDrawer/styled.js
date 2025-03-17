@@ -34,5 +34,6 @@ export const TitleName = styled.p`
 
 export const NewDrawerContainer = styled.div`
   padding: 10px;
-  height: 100%;
+  min-height: 100%;
+  width: 400px;
 `;

@@ -127,7 +127,7 @@ const ProfileDetailsHeader = ({ openDrawer }) => {
                 )}
                 {taskListRestrictions?.createTask !== DISABLED && (
                   <ButtonContainer onClick={openDrawer}>
-                    <ProfileDetailsLabel>View Group details</ProfileDetailsLabel>
+                    <ProfileDetailsLabel>View profile</ProfileDetailsLabel>
                   </ButtonContainer>
                 )}
               </Grid>

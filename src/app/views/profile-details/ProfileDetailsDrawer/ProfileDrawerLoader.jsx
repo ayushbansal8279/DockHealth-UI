@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { MoreActinsWrapper } from './styled';
 import OptionsMenu from '@/app/components/common/OptionsMenu/OptionsMenu';
 import { IconButton } from '@mui/material';
-import { ArrowBack,MoreVertIcon } from '@mui/icons-material';
+import { ArrowBack,MoreVert } from '@mui/icons-material';
 
 export const HeaderLoader = styled(Skeleton)`
   &&& {
@@ -42,7 +42,7 @@ const ProfileDrawerLoader = () => {
         ))}
         <MoreActinsWrapper>
           <OptionsMenu customButtonComponent={IconButton}>
-            <MoreVertIcon />
+            <MoreVert />
           </OptionsMenu>
           <IconButton style={{ width: '34px' }}>
             <ArrowBack />

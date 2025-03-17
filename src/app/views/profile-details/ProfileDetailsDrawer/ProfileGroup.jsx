@@ -8,7 +8,7 @@ import { getGenderIdentityOptions } from '@/app/api/patients-api';
 import { FieldType } from '@/app/helpers/field-type-helpers';
 
 const ProfileGroup = ({ category, profileValues, editMode,context }) => {
-  const [collapse, setCollapse] = useState(false);
+  const [collapse, setCollapse] = useState(true);
   const [genderIdentityOptions, setGenderIdentityOptions] = useState([]);
 
   const fetchGenderOptions = async () => {
@@ -32,9 +32,6 @@ const ProfileGroup = ({ category, profileValues, editMode,context }) => {
 
   useEffect(() => {
     fetchGenderOptions();
-    if (category.name === 'Default Group') {
-      setCollapse(true);
-    }
   }, []);
 
   const handleCollapse = () => {

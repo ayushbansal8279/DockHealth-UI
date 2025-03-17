@@ -22,7 +22,7 @@ export const MainTab = styled(Tab)`
 `;
 
 export const NewDrawerContainer = styled.div`
-  width: 400px;
+  min-width: 400px;
   background-color: ${palette.white};
   z-index: 50;
   border-right: 1px solid ${palette.iron};

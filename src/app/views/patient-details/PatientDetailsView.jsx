@@ -196,7 +196,7 @@ const PatientDetailsView = () => {
   };
 
   return (
-    <div style={{ display: 'flex' }}>
+    <div style={{ display: 'flex', minHeight:"100%" }}>
       {isDrawerOpen && (
         <NewDrawerContainer>
           <ProfileDetailsDrawer closeDrawer={closeDrawer} context={"PATIENT"} />

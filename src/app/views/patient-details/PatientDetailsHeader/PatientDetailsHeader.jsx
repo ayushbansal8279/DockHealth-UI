@@ -141,9 +141,7 @@ const PatientDetailsHeader = ({ openDrawer }) => {
                 <Box mx={1} />
                 {taskListRestrictions?.createTask !== DISABLED && (
                   <ButtonContainer onClick={openDrawer}>
-                    <PatientDetailsLabel>
-                      View Group details
-                    </PatientDetailsLabel>
+                    <PatientDetailsLabel>View profile</PatientDetailsLabel>
                   </ButtonContainer>
                 )}
                 <Box mx={1} />
