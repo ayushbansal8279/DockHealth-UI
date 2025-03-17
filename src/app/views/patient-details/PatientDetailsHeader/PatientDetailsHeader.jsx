@@ -49,7 +49,7 @@ import PatientMetaDataField from './PatientMetaDataField';
 const { DISABLED } = TASK_LIST_RESTRICTIONS_OPTIONS;
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
-const PatientDetailsHeader = () => {
+const PatientDetailsHeader = ({ openDrawer }) => {
   const history = useHistory();
   const location = useLocation();
   const [isDrawerOpen, setIsDrawerOpen, unsetIsDrawerOpen] = useBoolean(false);
@@ -66,7 +66,7 @@ const PatientDetailsHeader = () => {
     mrn,
     gender,
     genderIdentity,
-    patientStatus
+    patientStatus,
   } = patient || {};
   const isFetchingPatient = useSelector(isFetchingPatientSelector);
   const currentUser = useSelector(userProfileSelector);
@@ -139,6 +139,14 @@ const PatientDetailsHeader = () => {
                   </ButtonContainer>
                 )}
                 <Box mx={1} />
+                {taskListRestrictions?.createTask !== DISABLED && (
+                  <ButtonContainer onClick={openDrawer}>
+                    <PatientDetailsLabel>
+                      View Group details
+                    </PatientDetailsLabel>
+                  </ButtonContainer>
+                )}
+                <Box mx={1} />
                 <Chip label={patientStatus} />
                 <Box flex="500px 0 0">
                   {patient?.patientLabels?.map(
@@ -152,7 +160,7 @@ const PatientDetailsHeader = () => {
                       </Box>
                     ),
                   )}
-                </Box> 
+                </Box>
               </Grid>
             </Box>
             <ContactContainer>
