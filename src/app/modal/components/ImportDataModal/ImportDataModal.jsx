@@ -30,51 +30,50 @@ const ImportDataModal = ({
   const inputFileReference = useRef(null);
   const [modalStep, setModalStep] = useState(step);
 
-  const onFileInputChange = useCallback(() => {
-    const fileInputElement = inputFileReference.current;
-    if (fileInputElement) {
-      const [uploadedFile] = fileInputElement.files;
+  const handleFileUpload = useCallback(
+    (file) => {
       uploadFunction(
-        uploadedFile, 
+        file,
         {
           onUploadProgress: () => {
             closeModal();
-            setImportPopoverOpen(true);
           },
         },
         identifier
       )
-      .then((response) => {
-        if (setImportResponse) {
-          setImportResponse(response);
-        }
-      })
-    }
-  }, [closeModal, uploadFunction, identifier, setImportPopoverOpen]);
-
-  const onDrop = useCallback(
-    (acceptedFiles) => {
-      acceptedFiles.forEach((file) => {
-        uploadFunction(
-          file, 
-          {
-            onUploadProgress: () => {
-              closeModal();
-              setImportPopoverOpen(true);
-            },
-          },
-          identifier
-        )
         .then((response) => {
           if (setImportResponse) {
             setImportResponse(response);
           }
         })
-      });
+        .catch((error) => {
+          setImportResponse(null);
+          console.error("File upload failed:", error);
+        })
+        .finally(() => {
+          setImportPopoverOpen(true);
+        });
     },
     [closeModal, uploadFunction, identifier, setImportPopoverOpen]
   );
-
+  
+  const onFileInputChange = useCallback(() => {
+    const fileInputElement = inputFileReference.current;
+    if (fileInputElement) {
+      const [uploadedFile] = fileInputElement.files;
+      if (uploadedFile) {
+        handleFileUpload(uploadedFile);
+      }
+    }
+  }, [handleFileUpload]);
+  
+  const onDrop = useCallback(
+    (acceptedFiles) => {
+      acceptedFiles.forEach(handleFileUpload);
+    },
+    [handleFileUpload]
+  );
+  
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
   return (
@@ -91,7 +90,7 @@ const ImportDataModal = ({
             Download our template to ensure your {label} list is properly formatted.
           </ContentMessage>
           <ContentMessage style={{ marginBottom: '50px' }}>
-              Copy and paste your {label} lists into the template,
+              Copy and paste your {label}s into the template,
               then upload to Dock here.
           </ContentMessage>
           <Spacing vertical={5} />

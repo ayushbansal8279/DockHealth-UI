@@ -34,6 +34,30 @@ export function copyWorkflowToOrganization(
     });
 }
 
+export function shareWorkflowWithOrganization(
+  identifier,
+  targetOrganizationIdentifiers,
+) {
+  return axios
+    .patch(`task/template/share`, {
+      targetOrganizationIdentifiers: [...targetOrganizationIdentifiers],
+      identifier,
+    })
+    .then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      showAlert({
+        status: 'error',
+        title: 'Error',
+        // eslint-disable-next-line sonarjs/no-duplicate-string
+        text:
+          error?.response?.data?.errorMessage ?? 'Error in sharing workflow.',
+      });
+      throw error;
+    });
+}
+
 export function getAllTemplatesForOrganization() {
   return axios
     .get(`task/template/getTemplatesForOrganization`)

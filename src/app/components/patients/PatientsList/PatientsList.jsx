@@ -773,8 +773,8 @@ const PatientsList = ({
     ?.map((field) =>
       columns.find(
         (col) =>
-          col.field === field ||
-        col.headerName === (patientHeaderMap[field] || field)
+          col.field?.toUpperCase() === field?.toUpperCase() ||
+        col.headerName === (patientHeaderMap[field] || field || ''),
       )
     )
     .filter(Boolean);

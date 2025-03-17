@@ -34,12 +34,12 @@ import { MoreVert } from '@mui/icons-material';
 import { userProfileSelector } from '@/app/selectors/user-selectors';
 import { isUserGuestOrDockLite, isUserViewOnly } from '@/app/helpers/user-helper';
 import { downloadProfileData, downloadProfileImportTemplate, uploadProfileData } from '@/app/api/profile-api';
-import { initializeProfileState } from '@/app/actions/profile-actions';
+import { initializeProfileState, updateProfileListPreferences } from '@/app/actions/profile-actions';
+import { getProfileListPreferences } from '@/app/api/profile-type-api';
 import { StyledLink } from './styled';
 import DateLabel from '../../common/DateLabel/DateLabel';
 import ImportDataModal from '@/app/modal/components/ImportDataModal/ImportDataModal';
-import ProfileImportPopover from './ProfileImportPopover';
-
+import FileImportPopover from '../../common/FileImportPopover/FileImportPopover';
 
 const CustomProfileList = () => {
   const dispatch = useDispatch();
@@ -107,12 +107,16 @@ const CustomProfileList = () => {
     getAllProfileFieldTypes(profileTypeIdentifier)
       .then((data) => {
         setProfileTypeFields(data);
-        setFilters(data.map((profileType) => profileType.identifier));
       })
       .catch(() => {
         dispatch(showGlobalErrorAlert());
       });
   }, [dispatch, profileTypeIdentifier]);
+
+  const fetchFilters = () => {
+    getProfileListPreferences(profileTypeIdentifier)
+      .then(setFilters);
+  }
 
   const fetchProfiles = useCallback(() => {
     getAllProfiles(profileTypeIdentifier)
@@ -128,6 +132,7 @@ const CustomProfileList = () => {
     fetchProfileTypes();
     fetchProfileTypeFields();
     fetchProfiles();
+    fetchFilters();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -152,12 +157,21 @@ const CustomProfileList = () => {
   };
 
   const handleFilterChange = (field) => () => {
-    if (filters.includes(field.identifier)) {
-      setFilters(filters.filter((filter) => filter !== field.identifier));
-    } else {
-      setFilters([...filters, field.identifier]);
-    }
-  };
+    const updatedFilters = filters.includes(field.identifier)
+        ? filters.filter((filter) => filter !== field.identifier)
+        : [...filters, field.identifier];
+
+    setFilters(updatedFilters);
+
+    dispatch(
+      updateProfileListPreferences(
+        {
+          listDisplayColumns: updatedFilters,
+        },
+        profileTypeIdentifier
+      ),
+    );
+};
 
   const handleDownloadProfileData = () => {
     const filename = `Dock ${currentProfileType?.name}.csv`;
@@ -179,7 +193,7 @@ const CustomProfileList = () => {
                 options={[
                   !isGuestOrDockLite &&
                     !isViewOnly && {
-                      name: 'Import from Excel or CSV',
+                      name: 'Import from CSV',
                       onClick: () => {
                         setImportPopupOpen(true);
                       },
@@ -415,7 +429,8 @@ const CustomProfileList = () => {
         />
       </Dialog>
       {importPopoverOpen && (
-        <ProfileImportPopover
+        <FileImportPopover
+          type="Profile"
           closePopover={() => {
             setImportPopoverOpen(false);
           }}

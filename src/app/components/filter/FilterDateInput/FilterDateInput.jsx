@@ -17,7 +17,7 @@ const DATE_US_FORMAT = 'MM/DD/YYYY';
 
 const FilterDateInput = ({
   date,
-  onDateChange,
+  // onDateChange,
   minDate,
   maxDate,
   setDueDate,
@@ -72,7 +72,7 @@ const FilterDateInput = ({
       closeCalendar();
       if (hasError || date === inputValueIso || (!date && !inputValueIso))
         return;
-      onDateChange(inputValueIso);
+      // onDateChange(inputValueIso);
     }
   }, [
     closeCalendar,
@@ -80,7 +80,7 @@ const FilterDateInput = ({
     hasError,
     inputValueIso,
     isCalendarOpen,
-    onDateChange,
+    // onDateChange,
   ]);
 
   return (
@@ -117,7 +117,7 @@ const FilterDateInput = ({
                     moment(d, DATE_ISO_FORMAT).format(DATE_US_FORMAT),
                   );
                   closeCalendar();
-                  onDateChange(d);
+                  // onDateChange(d);
                 }}
                 minDate={minDate}
                 maxDate={minDate ? null : maxDate}

@@ -34,9 +34,9 @@ export const PatientDetailsContainer = styled.div`
 export const PatientName = styled.div`
   font-weight: ${fontWeights.bold};
   font-size: ${fontSizes.regularPlus};
-  text-transform: uppercase;
+  // text-transform: uppercase;
   position: relative;
-  color: ${(props) => props.status === "ARCHIVED" ? palette.lightGrey : ''};
+  color: ${(props) => (props.status === 'ARCHIVED' ? palette.lightGrey : '')};
 `;
 
 export const PatientInfo = styled.div`

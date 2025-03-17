@@ -22,6 +22,7 @@ import {
 import {
   userHasSmartFlowsSelector,
   userProfileSelector,
+  userHasShareTaskWorkflowFeatureSelector,
 } from 'selectors/user-selectors';
 import { checkIfUserIsOrganizationAdmin } from 'helpers/user-helper';
 import * as WorkflowActions from 'actions/workflow-actions';
@@ -40,6 +41,7 @@ import QuickAddTaskInput from 'components/tasklist/QuickAddTaskInput/QuickAddTas
 import {
   moveWorkflowToFolder,
   copyWorkflowToOrganization,
+  shareWorkflowWithOrganization,
   switchTemplatePublic,
   updatePartialWorkflow,
   addTaskToTemplate,
@@ -77,6 +79,7 @@ const TaskTemplate = ({
     members,
   } = template;
   const smartFlowsAvailable = useSelector(userHasSmartFlowsSelector);
+  const shareTaskWorkflowAvailable = useSelector(userHasShareTaskWorkflowFeatureSelector);
   const currentUser = useSelector(userProfileSelector);
 
   const [draggableId, setDraggableId] = useState(null);
@@ -111,6 +114,22 @@ const TaskTemplate = ({
     // eslint-disable-next-line no-unused-expressions
     nameInputReference.current?.blur();
   }, [name]);
+
+  const handleShareWorkflow = () => {
+    dispatch(
+      ModalActions.openModal('ShareWorkflow', {
+        workflowIdentifier: identifier,
+        confirm: (selectedItems) => {
+          dispatch(
+            shareWorkflowWithOrganization(
+              identifier,
+              selectedItems?.organizations,
+            ),
+          );
+        },
+      }),
+    );
+  };
 
   const menuOptions = useMemo(
     () => [
@@ -191,6 +210,11 @@ const TaskTemplate = ({
               },
             }),
           ),
+      },
+      shareTaskWorkflowAvailable && isAdmin && {
+        name: 'Share Workflow',
+        color: palette.oPlusRed,
+        onClick: handleShareWorkflow,
       },
       isCurrentUserEditor && {
         name: 'Delete Workflow',
@@ -296,7 +320,9 @@ const TaskTemplate = ({
 
   const taskIdentifiers = tasks?.map((task) => task.taskIdentifier);
 
-  const isTemplateSelected = useSelector(isTaskItemsSelectedSelector(taskIdentifiers));
+  const isTemplateSelected = useSelector(
+    isTaskItemsSelectedSelector(taskIdentifiers),
+  );
 
   const handleTemplateSelect = useCallback(() => {
     dispatch(

@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import { Box } from '@mui/material';
 import { useSelector } from 'react-redux';
 import { userOrganizationsSelector } from 'selectors/user-selectors';
+import Checkbox from 'components/common/Checkbox/Checkbox';
 import {
   Title,
   ListItem,
@@ -9,9 +10,8 @@ import {
   ListsWrapper,
   ListItemTextButton,
   Step,
+  Description,
 } from '../styled';
-import Checkbox from 'components/common/Checkbox/Checkbox';
-
 
 const OrganizationSelectStep = ({
   selectedOrganizations,
@@ -35,6 +35,10 @@ const OrganizationSelectStep = ({
   return (
     <Step>
       <Title>Organizations</Title>
+      <Description>
+        <b>Note:</b> please ensure linked workflows are copied first to the
+        target organizations, otherwise the workflow will not be copied.
+      </Description>
       <Box m={1} />
       <ListsWrapper>
         {availableUserOrganizations.length > 0 && (
@@ -43,41 +47,56 @@ const OrganizationSelectStep = ({
               availableUserOrganizations.map((list) => (
                 <ListItem
                   key={list.organizationIdentifier}
-                  isSelected={
-                    selectedOrganizations?.has(list.organizationIdentifier)
-                  }
+                  isSelected={selectedOrganizations?.has(
+                    list.organizationIdentifier,
+                  )}
                 >
                   <Checkbox
-                    isChecked={ selectedOrganizations?.has(list.organizationIdentifier)}
+                    isChecked={selectedOrganizations?.has(
+                      list.organizationIdentifier,
+                    )}
                     onClick={() => {
-                      if (!selectedOrganizations.has(list.organizationIdentifier)){
-                        setSelectedOrganizations(prev => new Set([...prev, list.organizationIdentifier]));
-                      }else{
-                        setSelectedOrganizations(prev => {
-                          return new Set([...prev].filter(orgId => {
-                            return orgId !== list.organizationIdentifier
-                          }))}
+                      if (
+                        !selectedOrganizations.has(list.organizationIdentifier)
+                      ) {
+                        setSelectedOrganizations(
+                          (prev) =>
+                            new Set([...prev, list.organizationIdentifier]),
+                        );
+                      } else {
+                        setSelectedOrganizations((prev) => {
+                          return new Set(
+                            [...prev].filter((orgId) => {
+                              return orgId !== list.organizationIdentifier;
+                            }),
                           );
+                        });
                       }
                     }}
                   />
                   <ListItemTextButton
                     onClick={() => {
-                      if (!selectedOrganizations.has(list.organizationIdentifier)){
-                        setSelectedOrganizations(prev => new Set([...prev, list.organizationIdentifier]));
-                      }else{
-                        setSelectedOrganizations(prev => {
-                          return new Set([...prev].filter(orgId => {
-                            return orgId !== list.organizationIdentifier
-                          }))}
+                      if (
+                        !selectedOrganizations.has(list.organizationIdentifier)
+                      ) {
+                        setSelectedOrganizations(
+                          (prev) =>
+                            new Set([...prev, list.organizationIdentifier]),
+                        );
+                      } else {
+                        setSelectedOrganizations((prev) => {
+                          return new Set(
+                            [...prev].filter((orgId) => {
+                              return orgId !== list.organizationIdentifier;
+                            }),
                           );
+                        });
                       }
-                      
                     }}
                     type="button"
                     isSelected={
                       // selectedOrganizations?.includes(org => org.organizationIdentifier ===
-                      //   list.organizationIdentifier ) 
+                      //   list.organizationIdentifier )
                       selectedOrganizations.has(list.organizationIdentifier)
                     }
                   >

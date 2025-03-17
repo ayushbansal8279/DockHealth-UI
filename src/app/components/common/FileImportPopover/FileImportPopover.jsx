@@ -1,19 +1,16 @@
 import React from 'react'
 import { CloseButtonWord, DownloadIcon, FileDisplayArea, FileName, ImportPopoverWrapper, PopoverHeader, ProgressMessage } from './styled'
 import ExcelLogo from 'img/excel-logo.svg';
+import { getImportMessage } from '@/app/helpers/file-import-helpers';
 
-export default function ProfileImportPopover({closePopover, uploadResponse}) {
-  const { statusCode } = uploadResponse || {};
+export default function FileImportPopover({closePopover, uploadResponse, type}) {
 
-  const message =
-    statusCode === 'SUCCESS'
-      ? 'Profile records are successfully uploaded. Please refresh the page after some time.'
-      : 'File upload failed. Please try again.';
-  
+  const message = getImportMessage(type, uploadResponse);
+
   return (
     <ImportPopoverWrapper>
       <PopoverHeader>
-        Profile Upload
+        {type} Upload
         <CloseButtonWord
           onClick={closePopover}
           size="small"
