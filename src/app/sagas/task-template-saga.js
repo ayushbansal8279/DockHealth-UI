@@ -114,7 +114,7 @@ function* shareWorkflowWithOrganization({
       type: ActionTypes.SHARE_WORKFLOW_WITH_ORGANIZATION_SUCCESS,
       identifier,
     });
-    yield put(showGlobalAlert(AlertMessages.COPIED));
+    yield put(showGlobalAlert(AlertMessages.SHARED));
   } catch {
     yield all([
       put({
