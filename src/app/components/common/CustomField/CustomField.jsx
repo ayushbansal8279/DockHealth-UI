@@ -388,7 +388,7 @@ const CustomField = ({
 CustomField.propTypes = {
   readOnly: propTypes.bool,
   field: propTypes.object.isRequired,
-  selected: propTypes.bool,
+  selected: propTypes.object,
   initialValue: propTypes.oneOfType([propTypes.string, propTypes.number]),
   onBlur: propTypes.func,
   fieldsGroupKey: propTypes.string.isRequired,
