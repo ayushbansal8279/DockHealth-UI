@@ -103,6 +103,12 @@ export function uploadProfileData(fileData, additionalConfig = {}, identifier) {
     });
 }
 
+export function getPatientForProfile(profileIdentifier) {
+  return axios
+    .get(`profile/patients/${profileIdentifier}`)
+    .then(response => response.data)
+}
+
 export const note = {
   getAll(profileIdentifier) {
     return axios

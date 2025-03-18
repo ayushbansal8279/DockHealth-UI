@@ -65,6 +65,8 @@ import {
   ProfileDetailsTabsContainer,
   MainTab,
 } from './styled';
+import PatientList from './PatientList/PatientList';
+import { getPatientForProfile } from '@/app/api/profile-api';
 
 const ProfileDetailsView = () => {
   const { profileTypeIdentifier, profileIdentifier } = useParams();
@@ -174,6 +176,15 @@ const ProfileDetailsView = () => {
       }
     };
   }, [currentUserIdentifier, patientIdentifier, dispatch]);
+
+  const [patients, setPatients] = useState([]);
+
+  useEffect(() => {
+    getPatientForProfile(profileIdentifier)
+      .then(patients => {
+        setPatients(patients);
+      })
+  }, [])
 
   // const activeTabPath = useMemo(() => {
   //   // eslint-disable-next-line no-restricted-syntax
@@ -303,6 +314,10 @@ const ProfileDetailsView = () => {
               <Tabs value={currentTab} onChange={handleTabChange}>
                 <MainTab label="All Tasks" />
                 <MainTab label="Notes" />
+                {
+                  patients.length > 0 &&
+                    <MainTab label="Patients" />
+                }
               </Tabs>
             </Grid>
           </ProfileDetailsTabsContainer>
@@ -339,6 +354,9 @@ const ProfileDetailsView = () => {
           )}
           {currentTab === 1 && (
             <ProfileNotes profileIdentifier={profileIdentifier} />
+          )}
+          {currentTab === 2 && (
+              <PatientList profileIdentifier={profileIdentifier} patients={patients} />
           )}
         </ProfileDetailsContainer>
       </ColumnsConfigProvider>
