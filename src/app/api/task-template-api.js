@@ -208,3 +208,15 @@ export function addUsersToPermissionList(
     })
     .then(({ data }) => data);
 }
+
+export function getPatientCustomField(){
+  return axios
+  .get(`/custom/field/getAll/PATIENT?active=true`)
+  .then((response) => response.data);
+}
+
+export function getWorkflowCustomField(){
+  return axios
+  .get(`/custom/field/getAll/TASK`)
+  .then((response) => response.data);
+}
