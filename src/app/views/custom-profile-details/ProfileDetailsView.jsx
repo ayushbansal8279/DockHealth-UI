@@ -65,8 +65,8 @@ import {
   ProfileDetailsTabsContainer,
   MainTab,
 } from './styled';
-import PatientList from './PatientList/PatientList';
 import { getPatientForProfile } from '@/app/api/profile-api';
+import ProfilePatientList from './ProfilePatientList/ProfilePatientList';
 
 const ProfileDetailsView = () => {
   const { profileTypeIdentifier, profileIdentifier } = useParams();
@@ -356,7 +356,7 @@ const ProfileDetailsView = () => {
             <ProfileNotes profileIdentifier={profileIdentifier} />
           )}
           {currentTab === 2 && (
-              <PatientList profileIdentifier={profileIdentifier} patients={patients} />
+              <ProfilePatientList profileIdentifier={profileIdentifier} patients={patients} />
           )}
         </ProfileDetailsContainer>
       </ColumnsConfigProvider>
