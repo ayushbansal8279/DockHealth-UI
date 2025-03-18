@@ -26,12 +26,10 @@ const DateLabel = (props) => {
     tootipTitle,
     showReminder = true,
     showRecurring = true,
-    dueDateIntent
+    dueDateIntent,
   } = props;
   const dueDate =
-    dueDateIntent === DueDateIntent.DATE
-      ? moment(date).utc()
-      : moment(date);
+    dueDateIntent === DueDateIntent.DATE ? moment(date).utc() : moment(date);
   const dateFormat = dueDate.isSame(moment(), 'year') ? 'MMM DD, YYYY' : format;
 
   return (
@@ -41,15 +39,16 @@ const DateLabel = (props) => {
           <DateTextContainer isOverdue={isOverdue}>
             <DateText>
               {dueDate.format(dateFormat)}
-              {(dueDateIntent === DueDateIntent.DATETIME_ABSOLUTE || 
-                (!dueDateIntent && dueDate?.format(timeFormatToCheckSpecifiedTime) !== '00:00')) &&
-                  showTime && (
-                    <>
-                      <Spacing horizontal={1} />@
-                      <Spacing horizontal={1} />
-                      {dueDate.format(timeFormat)}
-                    </>
-                  )}
+              {(dueDateIntent === DueDateIntent.DATETIME_ABSOLUTE ||
+                (!dueDateIntent &&
+                  dueDate?.format(timeFormatToCheckSpecifiedTime) !==
+                    '00:00')) &&
+                showTime && (
+                  <>
+                    <span style={{ margin: 2 }}>@</span>
+                    {dueDate.format(timeFormat)}
+                  </>
+                )}
             </DateText>
           </DateTextContainer>
         </Tooltip>
