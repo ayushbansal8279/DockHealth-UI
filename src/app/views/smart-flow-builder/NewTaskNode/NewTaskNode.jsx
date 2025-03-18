@@ -21,6 +21,9 @@ const NewTaskNode = React.memo((props) => {
   const clearInput = () => setInputValue('');
 
   const addTask = (description) => {
+    if(type === 'NEW_AUTOMATION') {
+      description = '[System] '+ description;
+    }
     dispatch(
       addTaskToTemplate(
         {

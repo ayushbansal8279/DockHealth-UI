@@ -6,6 +6,8 @@ import { noop, showAlert } from 'helpers/utility-functions';
 import { log } from 'helpers/log';
 import axios from './axios-heydoc';
 import { mapSelectedOptionsToRequestPayload } from '../helpers/filter-options-helpers';
+import { DueDateIntent } from '../helpers/task-helpers';
+import { error } from '../actions/notification-actions';
 
 export function searchTasks(
   searchTerm,
@@ -220,7 +222,7 @@ export function updateTaskDescription(task, description) {
     });
 }
 
-export const updateStartDate = (taskIdentifier, startDate) =>
+export const updateStartDate = (taskIdentifier, startDate, startDateIntent) =>
   axios
     .put(
       `task/addOrUpdateStartDate/${taskIdentifier}`,
@@ -230,6 +232,7 @@ export const updateStartDate = (taskIdentifier, startDate) =>
           startDate: startDate
             ? moment(startDate).format('MM/DD/YYYY HH:mm:ss ZZ')
             : null,
+          startDateIntent: startDate ? startDateIntent : DueDateIntent.DATE,
         },
       },
     )
@@ -244,7 +247,7 @@ export const updateStartDate = (taskIdentifier, startDate) =>
       throw error;
     });
 
-export const updateDueDate = (taskIdentifier, dueDate) =>
+export const updateDueDate = (taskIdentifier, dueDate, dueDateIntent) =>
   axios
     .put(
       `task/addOrUpdateDueDate/${taskIdentifier}`,
@@ -252,8 +255,11 @@ export const updateDueDate = (taskIdentifier, dueDate) =>
       {
         params: {
           dueDate: dueDate
-            ? moment(dueDate).format('MM/DD/YYYY HH:mm:ss ZZ')
+            ? dueDateIntent === DueDateIntent.DATE
+              ? moment.utc(dueDate).startOf('day').format('MM/DD/YYYY HH:mm:ss') + ' +0000'
+              : moment(dueDate).format('MM/DD/YYYY HH:mm:ss ZZ')
             : null,
+          dueDateIntent: dueDate ? dueDateIntent : DueDateIntent.DATE,
         },
       },
     )
@@ -389,9 +395,7 @@ export function addTaskAttachment(
         showAlert({
           status: 'error',
           title: 'Error',
-          text:
-            error?.response?.data?.errorMessage ??
-            'File exceeded the allowed size of 100 MB',
+          text: 'File exceeded the allowed size of 100 MB',
         });
       } else {
         showAlert({
@@ -437,6 +441,15 @@ export function getTaskAttachment(taskAttachmentId) {
 
 export function updateTaskAttachment(attachmentIdentifier,fileName) {
   return axios.put(`task/attachment`, { attachmentIdentifier,fileName}).then(({ data }) => data);
+}
+
+export function addPatientReferenceAttachment(taskIdentifier,fileIdentifier,type){
+  return axios
+    .post('task/attachment/other',{taskIdentifier,fileIdentifier,type})
+    .then(( response ) => response)
+    .catch((error)=>{
+      throw error;
+    });
 }
 
 export function getTaskDetails(taskIdentifier) {

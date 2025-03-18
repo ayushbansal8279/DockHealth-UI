@@ -2,13 +2,15 @@ import styled from 'styled-components';
 import spacing from 'styles/spacing';
 import { fontWeights } from 'styles/font';
 import palette from 'styles/palette';
-import { ModalWrapper } from '../styled';
 import { Button, TextareaAutosize } from '@mui/material';
 import Skeleton from '@mui/material/Skeleton';
 import SelectDown from 'img/AI/SelectDown.svg';
+import MARIColor from 'img/AI/mari-color.png';
+import MARIGrey from 'img/AI/mari-grey.png';
+import { ModalWrapper } from '../styled';
 
 export const AISummaryModalWrapper = styled(ModalWrapper)`
-  width: 600px;
+  width: ${({ expanded }) => (expanded ? '900px' : '600px')};
   border-radius: 10px;
   padding: ${spacing.regular} ${spacing.largePlus} 0 ${spacing.largePlus};
 `;
@@ -19,6 +21,27 @@ export const Header = styled.div`
   align-items: space-between;
   width: 100%;
   margin-top: 5px;
+`;
+
+export const LabelContainer = styled.div`
+  display: flex;
+  align-items: space-between;
+  width: 100%;
+`;
+export const LabelWrapper = styled.div`
+  display: flex;
+  align-items: space-between;
+  border-radius: 10px;
+  border: 2px solid ${(property) => property.color || palette.crystalBlue};
+  background-color: ${palette.lightOceanBlue};
+  min-width: 70px;
+  padding: 1px 0.5px;
+  justify-content: center;
+  color: ${(property) => property.color || palette.crystalBlue};
+  font-family: Outfit;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 700;
 `;
 
 export const SubHeader = styled.div`
@@ -62,6 +85,12 @@ export const CustomPromptInput = styled(TextareaAutosize)`
 `;
 
 export const IconWrapper = styled.img`
+  cursor: pointer;
+  width: 24px;
+  height: 24px;
+  margin-left: 10px;
+`;
+export const RefreshIconWrapper = styled.img`
   cursor: pointer;
   width: 24px;
   height: 24px;
@@ -128,7 +157,7 @@ export const PromptSelector = styled.select`
   -webkit-appearance: none;
   -moz-appearance: none;
   padding: 0 40px 0 10px;
-  border: 1px solid ${palette.lightGrey2};
+  border: 2px solid ${palette.coolGrey2};
   background-image: url(${SelectDown});
   background-repeat: no-repeat;
   background-position-x: 95%;
@@ -194,4 +223,22 @@ export const Footer = styled.p`
   line-height: 16px;
   text-align: left;
   color: ${palette.offBlack};
+`;
+
+export const FeedbackLink = styled.a`
+  color: ${palette.newBrightBlue};
+  margin-left: 2px;
+`;
+
+export const AIiconImage = styled.img.attrs((property) => {
+  return {
+    src: property?.subtleDisplay ? MARIGrey : MARIColor,
+    alt: 'AI Summary',
+  };
+})`
+  height: ${({ subtleDisplay }) => (subtleDisplay ? '18px' : '25px')};
+  vertical-align: middle;
+  &:hover {
+    content: url(${MARIColor});
+  }
 `;

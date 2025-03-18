@@ -1,3 +1,4 @@
+import { showAlert } from '../helpers/utility-functions';
 import axios from './axios-heydoc';
 
 export function getWorkflow(identifier) {
@@ -69,7 +70,25 @@ export function addWorkflowAttachment(
       },
       onUploadProgress,
     })
-    .then(({ data }) => data);
+    .then(({ data }) => data)
+    .catch((error) => {
+      if (error.response && error.response.status === 413) {
+        showAlert({
+          status: 'error',
+          title: 'Error',
+          text: 'File exceeded the allowed size of 100 MB',
+        });
+      } else {
+        showAlert({
+          status: 'error',
+          title: 'Error',
+          text:
+            error?.response?.data?.errorMessage ??
+            'Error in saving attachment. Please try again.',
+        });
+      }
+      throw error;
+    });
 }
 
 export function deleteWorkflowAttachment(attachmentIdentifier) {

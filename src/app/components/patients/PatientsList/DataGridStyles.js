@@ -136,6 +136,9 @@ export const StyledDataGrid = styled(DataGridPremium)`
   &.MuiDataGrid-root--densityStandard .MuiDataGrid-cell {
     height: 75px;
     line-height: 1.5;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
   }
   &.MuiDataGrid-root--densityComfortable .MuiDataGrid-cell {
     padding-top: 22px;

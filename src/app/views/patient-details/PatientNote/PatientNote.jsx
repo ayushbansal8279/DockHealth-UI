@@ -185,6 +185,7 @@ const PatientNote = ({
                 reset={isValueReset}
                 initOnClick
                 showCharCount
+                disableMentions
               />
             ) : (
               <>{traverseNodes(processMarkdownValue(noteState), [])}</>

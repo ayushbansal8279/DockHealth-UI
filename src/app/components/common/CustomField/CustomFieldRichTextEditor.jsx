@@ -115,7 +115,7 @@ const CustomFieldRichTextEditor = React.forwardRef(
     };
 
     const changeData = (textValue) => {
-      setUpdatedValue(textValue)
+      setUpdatedValue(textValue);
     };
 
     return (
@@ -138,6 +138,7 @@ const CustomFieldRichTextEditor = React.forwardRef(
             showCharCount
             taskListIdentifier={task?.taskList?.taskListIdentifier}
             mentions={task?.taskMentions}
+            disableMentions
           />
         </CustomTextEditorContainer>
       </CustomTextEditor>

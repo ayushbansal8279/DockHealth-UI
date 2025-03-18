@@ -6,7 +6,9 @@ import isEmpty from 'ramda/src/isEmpty';
 import { bulkEditTasks as bulkEditTasksApi } from 'api/task-api';
 import * as ModalActions from 'modal/actions';
 import {
+  checkDateTimeIntent,
   checkIfTemplateTask,
+  DueDateIntent,
   findIncompleteRequiredFields,
 } from 'helpers/task-helpers';
 import useActions from 'hooks/use-actions';
@@ -51,6 +53,7 @@ import BulkEditAssignToOption from './BulkEditAssignToOption';
 import BulkEditDueDateOption from './BulkEditDueDateOption';
 import BulkEditWorkflowStatusOption from './BulkEditWorkflowStatusOption';
 import { Button } from './styled';
+import moment from 'moment';
 
 const { ADMIN, OWNER, MEMBER, GUEST, DOCK_LITE } = UserOrganizationRole;
 
@@ -73,6 +76,7 @@ const BulkEditOptionsBar = ({
   searchValue,
   shouldRefreshTasksEveryTime,
   optionsConfig,
+  allTasks = []
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const currentUser = useSelector(userProfileSelector);
@@ -323,11 +327,18 @@ const BulkEditOptionsBar = ({
     (dueDate) => {
       bulkEditDueDate(allSelectedTasksIdentifiers, dueDate, filters)(dispatch);
 
+      const dueDateIntent = checkDateTimeIntent(dueDate);
+
       bulkEditTasksApi({
         bulkEditType: 'DUE_DATE',
         taskIdentifiers: allSelectedTasksIdentifiers,
         taskWorkflowIdentifiers: allSelectedWorkflowIdentifiers,
-        dueDate,
+        dueDate: dueDate 
+          ? dueDateIntent === DueDateIntent.DATE
+            ? moment.utc(dueDate).startOf('day').toISOString()
+            : moment(dueDate).toISOString()
+          : null,
+        dueDateIntent: dueDate ? dueDateIntent : DueDateIntent.DATE,
       })
         .then(({ transactionIdentifier }) => {
           dispatch(
@@ -626,6 +637,36 @@ const BulkEditOptionsBar = ({
   ]);
 
   const handleMoveTasks = useCallback(async () => {
+
+    const itemTasks = allTasks
+      .filter(task => task.itemType === "TASK")
+      .map(task => ({
+        identifier: task.identifier,
+        ...(task.templateTaskIdentifier && { templateTaskIdentifier: task.templateTaskIdentifier }),
+      }));
+
+    const itemBundles = allTasks
+      .filter(task => task.itemType === "BUNDLE")
+      .map(bundle => ({
+        identifier: bundle.identifier,
+        tasks: bundle.tasks || [],
+      }));
+
+    const bundleTaskIdentifiers = new Set(itemBundles.flatMap(bundle => bundle.tasks));
+
+    const unmatchedTasks = itemTasks.filter(task => !bundleTaskIdentifiers.has(task.identifier));
+
+    if (unmatchedTasks.some(task => task.templateTaskIdentifier)) {
+      console.log('treu')
+        dispatch(
+          modalActions.openModal('Alert', {
+            description:'Moving workflow tasks is not permitted. Please unselect tasks that belong to a workflow.',
+            confirm: () => {dispatch(modalActions.closeModal());},
+          }),
+        );
+      return;
+    }
+
     // eslint-disable-next-line unicorn/consistent-function-scoping
     const standardConfirmAction = (selectedDestination) => {
       onMultiSelectAction('Moved');

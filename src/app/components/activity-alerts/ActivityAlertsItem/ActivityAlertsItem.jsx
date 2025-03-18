@@ -35,6 +35,7 @@ const AlertItem = ({ itemAlert, onClearAlert, withCrossIcon, closeAlerts }) => {
     activityAlertSubTitle,
     activityAlertType,
     task = {},
+    taskList = {},
     createdDateTime,
     organization = {},
     targetIdentifier,
@@ -43,21 +44,14 @@ const AlertItem = ({ itemAlert, onClearAlert, withCrossIcon, closeAlerts }) => {
   if (task) {
     activityTask = task;
   }
-  const {
-    description,
-    taskList = {},
-    taskIdentifier,
-    status,
-    comments,
-    dueDate,
-  } = activityTask;
-  const { taskListIdentifier, listName } = taskList;
+  const { description, taskIdentifier, comments, dueDate } = activityTask;
+  const { listName } = taskList || activityTask?.taskList || {};
   const {
     organizationInitials,
     organizationName,
     organizationProfileColor,
     organizationIdentifier,
-  } = organization;
+  } = organization || {};
 
   const alertComment =
     comments?.find(

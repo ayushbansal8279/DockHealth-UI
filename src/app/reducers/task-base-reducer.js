@@ -204,6 +204,36 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
       };
     }
 
+    case ActionTypes.PATIENT_REFERENCE_ATTACHMENT_ADDED: {
+      const { taskAttachment, taskIdentifier } = action;
+
+      if (!state.tasksMap) {
+        return state;
+      }
+
+      const newMap = { ...state.tasksMap };
+      for (const [key, task] of Object.entries(newMap)) {
+        if (task.taskIdentifier === taskIdentifier) {
+          newMap[key] = {
+            ...task,
+            attachments: [taskAttachment].concat(task.attachments),
+          };
+
+          for (const subtask of task.subtasks) {
+            newMap[subtask.identifier] = {
+              ...newMap[subtask.identifier],
+              attachments: [taskAttachment].concat(subtask.attachments),
+            };
+          }
+        }
+      }
+
+      return {
+        ...state,
+        tasksMap: newMap,
+      };
+    }
+
     case ActionTypes.TASK_ATTACHMENT_REMOVED: {
       const { taskAttachmentId, taskIdentifier } = action;
 
@@ -270,23 +300,26 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
     }
 
     case ActionTypes.UPDATE_TASK_START_DATE:
+    case ActionTypes.UPDATE_TASK_START_DATE_SUCCESS:
     case ActionTypes.UPDATE_TASK_START_DATE_FAILURE: {
-      const { task, startDate } = action;
+      const { task, startDate, startDateIntent } = action;
 
       return updateStateCallback(state, {
         ...task,
         startDate,
+        startDateIntent
       });
     }
 
     case ActionTypes.UPDATE_TASK_DUE_DATE:
     case ActionTypes.UPDATE_TASK_DUE_DATE_SUCCESS:
     case ActionTypes.UPDATE_TASK_DUE_DATE_FAILURE: {
-      const { task, dueDate } = action;
+      const { task, dueDate, dueDateIntent } = action;
 
       return updateStateCallback(state, {
         ...task,
         dueDate,
+        dueDateIntent
       });
     }
 

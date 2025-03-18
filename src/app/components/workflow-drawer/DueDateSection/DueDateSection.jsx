@@ -21,26 +21,23 @@ import {
 import AssignMemberIcon from '../../user/AssignMemberIcon/AssingMemberIcon';
 import { openModal } from '@/app/modal/actions';
 import { isDueDateValid } from '@/app/helpers/date-validation-helper';
+import { checkDateTimeIntent, DueDateIntent } from '@/app/helpers/task-helpers';
+import { adjustUTCDateForDateIntent } from '../../task/DueDatePicker/helpers';
+import { isWorkflowDueDateOverdue } from '@/app/helpers/workflow-helpers';
 
 const DueDateSection = ({ disabled }) => {
   const dispatch = useDispatch();
   const selectedWorkflow = useSelector(workflowSelector);
   const inputReference = useRef(null);
   const autoFocusFieldName = useSelector(workflowAutofocusFieldSelector);
-  const { identifier, startDateTime, dueDateTime, hasRecurringSchedule } =
+  const { identifier, startDateTime, dueDateTime, hasRecurringSchedule, dueDateIntent } =
     selectedWorkflow || {};
   const momentDueDate = dueDateTime ? moment(dueDateTime) : null;
   const [isOverdue, setIsOverdue] = useState(false);
-  const [isTimeAvailable, setIsTimeAvailable] = useState(false);
 
   useEffect(() => {
     if (momentDueDate) {
-      setIsOverdue(momentDueDate.isBefore(moment()));
-      if (momentDueDate.hour() || momentDueDate.minute()) {
-        setIsTimeAvailable(true);
-      } else {
-        setIsTimeAvailable(false);
-      }
+      setIsOverdue(isWorkflowDueDateOverdue(selectedWorkflow));
     }
 
     if (
@@ -54,11 +51,14 @@ const DueDateSection = ({ disabled }) => {
 
   const handleSave = useCallback(
     (updatedDueDateTime) => {
-      if (updatedDueDateTime === null) {
-        setIsTimeAvailable(false);
-      }
+      const dueDateIntent = checkDateTimeIntent(updatedDueDateTime);
       const payload = {
-        dueDateTime: updatedDueDateTime,
+        dueDateTime: updatedDueDateTime
+          ? dueDateIntent === DueDateIntent.DATE
+            ? moment.utc(updatedDueDateTime).startOf('day').toISOString()
+            : moment(updatedDueDateTime).toISOString()
+          : null,
+        dueDateIntent: updatedDueDateTime ? dueDateIntent : DueDateIntent.DATE,
       };
 
       if (!updatedDueDateTime) payload.dueDateTimeCleared = true;
@@ -93,11 +93,13 @@ const DueDateSection = ({ disabled }) => {
         content={({ closePopover }) => (
           <DueDatePicker
             taskIdentifier={identifier}
-            selectedDate={dueDateTime}
+            selectedDate={adjustUTCDateForDateIntent(dueDateTime ? moment(dueDateTime).local() : null, dueDateIntent)}
             onDateChange={handleDueDateSave}
             recurring={hasRecurringSchedule}
             disableRecurring
             onCloseClick={closePopover}
+            dueDateIntent={dueDateIntent}
+            dateType="dueDate"
           />
         )}
       >
@@ -106,15 +108,19 @@ const DueDateSection = ({ disabled }) => {
             <>
               <DateViewContainer isOverdue={isOverdue}>
                 <DateViewText>
-                  {momentDueDate.format('MMM DD, YYYY')}
+                  {dueDateIntent === DueDateIntent.DATE
+                    ? momentDueDate.utc().format('MMM DD, YYYY')
+                    : momentDueDate.format('MMM DD, YYYY')
+                  }
                 </DateViewText>
               </DateViewContainer>
-              {isTimeAvailable && (
-                <DateViewContainer isOverdue={isOverdue}>
-                  <DateViewText>
-                    {momentDueDate?.format('hh:mm a')}
-                  </DateViewText>
-                </DateViewContainer>
+              {(dueDateIntent === DueDateIntent.DATETIME_ABSOLUTE || 
+                (!dueDateIntent && momentDueDate?.format('HH:mm') !== '00:00')) && (
+                  <DateViewContainer isOverdue={isOverdue}>
+                    <DateViewText>
+                      {momentDueDate?.format('hh:mm a')}
+                    </DateViewText>
+                  </DateViewContainer>
               )}
             </>
           ) : (

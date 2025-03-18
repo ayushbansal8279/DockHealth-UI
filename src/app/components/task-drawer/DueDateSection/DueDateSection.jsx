@@ -3,7 +3,9 @@ import moment from 'moment';
 import { Box } from '@mui/material';
 import RecurringIcon from 'img/recurring-arrows';
 import {
+  checkDateTimeIntent,
   checkIfTemplateTask,
+  DueDateIntent,
   isDueDateOverdue,
   ReminderType,
 } from 'helpers/task-helpers';
@@ -28,12 +30,19 @@ import {
 } from './styled';
 import { openModal } from '@/app/modal/actions';
 import { isDueDateValid } from '@/app/helpers/date-validation-helper';
+import { adjustUTCDateForDateIntent } from '../../task/DueDatePicker/helpers';
+import {
+  formatDateBasedOnIntent,
+  shouldDisplayTime,
+} from '@/app/helpers/date-intent-helpers';
 
 const DueDateSection = ({
   selectedTask,
   disabled = false,
   addTaskDrawer,
   setDueDate,
+  defaultDueDateIntent,
+  setDueDateIntent,
 }) => {
   const dispatch = useDispatch();
   const {
@@ -51,20 +60,23 @@ const DueDateSection = ({
   const dueDateRef = useRef(null);
   const [isPopoverOpen, openPopover, closePopover] = useBoolean(false);
   const [isOverdue, setIsOverdue] = useState(false);
-  const [isTimeAvailable, setIsTimeAvailable] = useState(false);
   const handleSave = useCallback(
     (updatedDueDateTime) => {
-      if (updatedDueDateTime === null) {
-        setIsTimeAvailable(false);
-      }
       if (addTaskDrawer) {
         setDueDate(updatedDueDateTime);
-        setMomentDueDate(moment(updatedDueDateTime));
+        setMomentDueDate(
+          !!updatedDueDateTime ? moment(updatedDueDateTime) : null,
+        );
+        const defaultDueDateIntent = checkDateTimeIntent(updatedDueDateTime);
+        setDueDateIntent(defaultDueDateIntent);
       } else {
         setMomentDueDate(
           !!updatedDueDateTime ? moment(updatedDueDateTime) : null,
         );
-        dispatch(updateTaskDueDate(selectedTask, updatedDueDateTime));
+        const dueDateIntent = checkDateTimeIntent(updatedDueDateTime);
+        dispatch(
+          updateTaskDueDate(selectedTask, updatedDueDateTime, dueDateIntent),
+        );
       }
     },
     [dispatch, selectedTask],
@@ -89,10 +101,8 @@ const DueDateSection = ({
   );
 
   useEffect(() => {
+    setMomentDueDate(dueDate ? moment(dueDate) : null);
     setIsOverdue(isDueDateOverdue(selectedTask));
-    if (momentDueDate && (momentDueDate.hour() || momentDueDate.minute())) {
-      setIsTimeAvailable(true);
-    }
   }, [selectedTask]);
 
   return (
@@ -121,11 +131,21 @@ const DueDateSection = ({
               openPopover(true);
             }}
           >
-            {momentDueDate.format('MMM DD, YYYY')}
+            {formatDateBasedOnIntent(
+              momentDueDate,
+              selectedTask?.dueDateIntent
+                ? selectedTask?.dueDateIntent
+                : defaultDueDateIntent,
+            )}
           </DateViewText>
         </DateViewContainer>
       )}
-      {isTimeAvailable && (
+      {shouldDisplayTime(
+        momentDueDate,
+        selectedTask?.dueDateIntent
+          ? selectedTask?.dueDateIntent
+          : defaultDueDateIntent,
+      ) && (
         <DateViewContainer isOverdue={isOverdue}>
           <DateViewText
             ref={buttonReference}
@@ -134,7 +154,7 @@ const DueDateSection = ({
               openPopover(true);
             }}
           >
-            {momentDueDate.format('hh:mm a')}
+            {momentDueDate?.format('hh:mm a')}
           </DateViewText>
         </DateViewContainer>
       )}
@@ -173,10 +193,21 @@ const DueDateSection = ({
             <Box width="auto" minWidth={buttonReference.current?.offsetWidth}>
               <DueDatePicker
                 taskIdentifier={taskIdentifier}
-                selectedDate={momentDueDate}
+                selectedDate={adjustUTCDateForDateIntent(
+                  momentDueDate?.local(),
+                  selectedTask?.dueDateIntent
+                    ? selectedTask?.dueDateIntent
+                    : defaultDueDateIntent,
+                )}
                 onDateChange={handleDueDateSave}
                 recurring={hasRecurringSchedule}
                 onCloseClick={closePopover}
+                dueDateIntent={
+                  selectedTask?.dueDateIntent
+                    ? selectedTask?.dueDateIntent
+                    : defaultDueDateIntent
+                }
+                dateType="dueDate"
               />
             </Box>
           </PopoverCard>

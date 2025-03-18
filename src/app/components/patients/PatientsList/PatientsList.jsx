@@ -14,6 +14,7 @@ import {
   GridRowEditStopReasons,
 } from '@mui/x-data-grid-premium';
 import * as ActionTypes from 'actions/action-types';
+import * as PatientsActions from 'actions/patients-actions';
 import { Grid, Link } from '@mui/material';
 import Tooltip from 'components/common/Tooltip/Tooltip';
 import { lookupEMRPatient } from 'api/patient-api';
@@ -28,7 +29,7 @@ import {
 } from 'selectors/user-selectors';
 import Checkbox from 'components/common/Checkbox/Checkbox';
 import { usePatientListColumnsConfig } from 'context-api/patients-columns-config-context';
-import { PatientColumn } from 'helpers/patient-list-helpers';
+import { patientHeaderMap, PatientColumn } from 'helpers/patient-list-helpers';
 
 import { patientsListSelector } from 'selectors/patients-selectors';
 import moment from 'moment';
@@ -147,6 +148,11 @@ const PatientsList = ({
   const apiRef = useGridApiRef();
   const [rowModesModel, setRowModesModel] = useState({});
 
+  const pinnedColumnsStart = ["isSelected", "PATIENT"];
+  const pinnedColumnsEnd = ["actions"];
+
+  const [columnOrder, setColumnOrder] = useState([]);
+
   const genderIdentityOptions = useMemo(
     () =>
       convertGenderIdentitiesToSelectOptions(
@@ -195,6 +201,16 @@ const PatientsList = ({
       }),
     [patients],
   );
+
+  useEffect(() => {
+    if (patientsList?.listDetails?.listDisplayColumns) {
+      const filteredOrder = patientsList.listDetails.listDisplayColumns.filter(
+        (col) => !pinnedColumnsStart.includes(col)
+      );
+
+      setColumnOrder([...pinnedColumnsStart, ...filteredOrder, ...pinnedColumnsEnd]);
+    }
+  }, [patientsList]);
 
   useEffect(() => {
     return () => {
@@ -335,7 +351,7 @@ const PatientsList = ({
 
         showToast({
           status: 'success',
-          title: 'User updated successfully',
+          title: 'Updated successfully',
         });
         return newRow;
       } catch (error) {
@@ -753,6 +769,48 @@ const PatientsList = ({
     }
   }, [columns, dataGridSortModel]);
 
+  const orderedColumns = columnOrder
+    ?.map((field) =>
+      columns.find(
+        (col) =>
+          col.field?.toUpperCase() === field?.toUpperCase() ||
+        col.headerName === (patientHeaderMap[field] || field || ''),
+      )
+    )
+    .filter(Boolean);
+
+  const pinnedColumnsAtEnd = pinnedColumnsEnd
+    ?.map((field) =>
+      columns.find((col) => col.field === field || col.headerName === field)
+    )
+    .filter(Boolean);
+
+  if (pinnedColumnsAtEnd.length) {
+    orderedColumns.push(...pinnedColumnsAtEnd);
+  }
+
+  const handleColumnOrderChange = ({ column, oldIndex, targetIndex }) => {
+    setColumnOrder((prevOrder) => {
+      const newOrder = [...prevOrder];
+
+      if (pinnedColumnsStart.includes(newOrder[oldIndex])) return prevOrder;
+
+      const movedColumn = newOrder.splice(oldIndex, 1)[0];
+      newOrder.splice(targetIndex, 0, movedColumn);
+
+      const setup = newOrder.filter(
+        (item) => !pinnedColumnsStart.includes(item) && !pinnedColumnsEnd.includes(item)
+      );
+
+      dispatch(PatientsActions.updatePatientsListPreferences({
+        patientListIdentifier: patientsList?.listDetails?.patientListIdentifier,
+        setup: {listDisplayColumns: setup}
+      }))
+
+      return newOrder;
+    });
+  };
+
   return (
     <>
       {isFetching ? (
@@ -768,7 +826,7 @@ const PatientsList = ({
                   <StyledDataGrid
                     apiRef={apiRef}
                     getRowId={(row) => row.patientIdentifier}
-                    columns={columns}
+                    columns={orderedColumns}
                     editMode="row"
                     rows={formattedPatients}
                     headerHeight={45}
@@ -794,7 +852,7 @@ const PatientsList = ({
                     }
                     pinnedColumns={pinnedColumns}
                     onPinnedColumnsChange={handlePinnedColumnsChange}
-                    disableColumnReorder
+                    onColumnOrderChange={handleColumnOrderChange}
                   />
                 </NonEmptyListTable>
               </Grid>

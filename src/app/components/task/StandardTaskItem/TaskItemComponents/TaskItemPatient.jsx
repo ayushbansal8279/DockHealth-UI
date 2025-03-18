@@ -137,6 +137,7 @@ const TaskItemPatient = ({
                     type={SummaryType.PATIENT}
                     title={`${patient?.lastName}, ${patient?.firstName}`}
                     identifier={patient.patientIdentifier}
+                    subtleDisplay
                   />
                 </AISummaryWrapperSubtask>
               )}
@@ -185,6 +186,7 @@ const TaskItemPatient = ({
                     type={SummaryType.PATIENT}
                     title={`${patient?.lastName}, ${patient?.firstName}`}
                     identifier={patient.patientIdentifier}
+                    subtleDisplay
                   />
                 </AISummaryWrapper>
               )}

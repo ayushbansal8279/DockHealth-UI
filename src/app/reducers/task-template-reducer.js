@@ -8,6 +8,7 @@ import {
   createLinkElement,
   LinkType,
   NodeType,
+  createNewAutomationTaskNode,
 } from 'helpers/smart-flow-builder-helpers';
 import TaskBaseReducer from './task-base-reducer';
 import { updateTasksStateCallback } from './reducer-helper';
@@ -480,6 +481,28 @@ const TaskTemplateReducer = (state = initialState, action) => {
       };
     }
 
+    case ActionTypes.ADD_NEW_AUTOMATION_TASK_ELEMENT: {
+      const { currentTaskTemplateIdentifier } = state;
+      const { position } = action;
+
+      const { temporaryElements } =
+        state.taskTemplateDetails[currentTaskTemplateIdentifier];
+        
+      return {
+        ...state,
+        taskTemplateDetails: updateTaskTemplateDetailsState(
+          currentTaskTemplateIdentifier,
+          state.taskTemplateDetails,
+          {
+            temporaryElements: [
+              ...(temporaryElements || []),
+              createNewAutomationTaskNode(temporaryElements, position),
+            ],
+          },
+        ),
+      };
+    }
+
     case ActionTypes.ADD_NEW_WORKFLOW_LINK_ELEMENT: {
       const { currentTaskTemplateIdentifier } = state;
       const { position } = action;
@@ -541,7 +564,7 @@ const TaskTemplateReducer = (state = initialState, action) => {
 
     case ActionTypes.ADD_TEMPORARY_LINK: {
       const { currentTaskTemplateIdentifier } = state;
-      const { linkType, sourceId, targetId, sourceHandle, targetHandle } =
+      const { linkType, sourceId, targetId, sourceHandle, targetHandle, indicatorType } =
         action;
       const { temporaryElements } =
         state.taskTemplateDetails[currentTaskTemplateIdentifier];
@@ -563,6 +586,7 @@ const TaskTemplateReducer = (state = initialState, action) => {
                 targetId,
                 sourceHandle,
                 targetHandle,
+                indicatorType
               ),
             ],
           },

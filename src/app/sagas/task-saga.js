@@ -321,31 +321,40 @@ function* updateTaskDetails({ task, detailsState }) {
   }
 }
 
-function* updateTaskStartDate({ task, startDate }) {
+function* updateTaskStartDate({ task, startDate, startDateIntent = null }) {
   try {
-    yield call(TaskApi.updateStartDate, task.identifier, startDate);
+    const updatedTask = yield call(TaskApi.updateStartDate, task.identifier, startDate, startDateIntent);
+    yield put({
+      type: ActionTypes.UPDATE_TASK_START_DATE_SUCCESS,
+      task,
+      startDate: updatedTask.startDate,
+      startDateIntent: updatedTask.startDateIntent
+    });
     yield put(showGlobalAlert(AlertMessages.UPDATED));
   } catch {
     yield put({
       type: ActionTypes.UPDATE_TASK_START_DATE_FAILURE,
       task,
       startDate: task.startDate,
+      startDateIntent: task?.startDateIntent
     });
     yield put(showGlobalErrorAlert());
   }
 }
 
-function* updateTaskDueDate({ task, dueDate }) {
+function* updateTaskDueDate({ task, dueDate, dueDateIntent = null }) {
   try {
     const updatedTask = yield call(
       TaskApi.updateDueDate,
       task.identifier,
       dueDate,
+      dueDateIntent
     );
     yield put({
       type: ActionTypes.UPDATE_TASK_DUE_DATE_SUCCESS,
       task,
       dueDate: updatedTask.dueDate,
+      dueDateIntent: updatedTask.dueDateIntent
     });
     yield put({ type: ActionTypes.REFRESH_ORIGIN });
     yield put(showGlobalAlert(AlertMessages.UPDATED));
@@ -354,6 +363,7 @@ function* updateTaskDueDate({ task, dueDate }) {
       type: ActionTypes.UPDATE_TASK_DUE_DATE_FAILURE,
       task,
       dueDate: task?.dueDate,
+      dueDateIntent: task?.dueDateIntent
     });
     yield put(showGlobalErrorAlert());
   }

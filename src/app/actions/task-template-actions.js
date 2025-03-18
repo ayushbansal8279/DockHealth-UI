@@ -32,6 +32,17 @@ export function copyWorkflowToOrganization(
   };
 }
 
+export function shareWorkflowWithOrganization(
+  identifier,
+  targetOrganizationIdentifiers,
+) {
+  return {
+    type: ActionTypes.SHARE_WORKFLOW_WITH_ORGANIZATION,
+    identifier,
+    targetOrganizationIdentifiers,
+  };
+}
+
 export function addTemplate(template) {
   return {
     type: ActionTypes.ADD_TASK_TEMPLATE,
@@ -171,6 +182,13 @@ export function addNewTaskElement(position) {
   };
 }
 
+export function addNewAutomationTaskElement(position) {
+  return {
+    type: ActionTypes.ADD_NEW_AUTOMATION_TASK_ELEMENT,
+    position,
+  };
+}
+
 export function addNewDecisionTaskElement(position) {
   return {
     type: ActionTypes.ADD_NEW_DECISION_TASK_ELEMENT,
@@ -252,6 +270,7 @@ export function addTemporaryLink(
   targetId,
   sourceHandle,
   targetHandle,
+  indicatorType
 ) {
   return {
     type: ActionTypes.ADD_TEMPORARY_LINK,
@@ -260,6 +279,7 @@ export function addTemporaryLink(
     targetId,
     sourceHandle,
     targetHandle,
+    indicatorType
   };
 }
 

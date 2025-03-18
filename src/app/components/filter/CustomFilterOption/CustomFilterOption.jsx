@@ -12,7 +12,6 @@ import {
   QuickFilterTitleContainer,
 } from './styled';
 import { QuickFilterScope } from '../CustomFilters/helpers';
-import { fontSizes } from '@/app/styles/font';
 
 const CustomFilterOption = (props) => {
   const {
@@ -23,7 +22,6 @@ const CustomFilterOption = (props) => {
     disableOptions = false,
     onDelete,
     autofocus,
-    onBlur,
     setSavePopupOpen,
     selectedQuickFilter,
     setSelectedQuickFilter,
@@ -33,9 +31,6 @@ const CustomFilterOption = (props) => {
     setCustomFinalFilter,
     onQuickFilterCreate,
     clearFilters,
-    setSelectedCustomFilter,
-    handleQuickFilterDuplicateForPatientList,
-    // editModeEnabled,
   } = props;
   const [value, setValue] = useState(label);
   const [isSelected, setSelected] = useState(false);
@@ -110,30 +105,21 @@ const CustomFilterOption = (props) => {
             }
             return users.find((user) => user.key === item);
           });
-          data[key] = options;
+          const optionForDeletedKey = {
+            displayValue: 'Deleted Option',
+            key: '',
+          };
+
+          data[key] = options.map((item) => item ?? optionForDeletedKey);
         }
       }
     }
 
     setCustomFinalFilter(data);
-    setSelectedCustomFilter(data);
   };
 
   const handleDuplicate = () => {
-    if (filter.patientSelectedOptions.customFields.length > 0) {
-      const selectedOptions = {};
-      filter.patientSelectedOptions.customFields.forEach((element) => {
-        selectedOptions[element.customFieldIdentifier] = {
-          options: element.selectedOptionIdentifiers,
-        };
-      });
-      handleQuickFilterDuplicateForPatientList(
-        `Copy of ${filter.name}`,
-        selectedOptions,
-      );
-    } else {
-      onQuickFilterCreate(`Copy of ${filter.name}`, filter.selectedOptions);
-    }
+    onQuickFilterCreate(`Copy of ${filter.name}`, filter.selectedOptions);
   };
 
   const OPTIONS = [
@@ -158,26 +144,6 @@ const CustomFilterOption = (props) => {
     setSelectedQuickFilter,
   ]);
 
-  // const handleKeyPress = useCallback(
-  //   (event) => {
-  //     const { key } = event;
-
-  //     switch (key) {
-  //       case 'Enter': {
-  //         onBlur(identifier, value);
-  //         break;
-  //       }
-  //       case 'Escape': {
-  //         break;
-  //       }
-  //       default: {
-  //         break;
-  //       }
-  //     }
-  //   },
-  //   [identifier, onBlur, value],
-  // );
-
   return (
     <CustomFilterOptionWrapper selected={isSelected}>
       <QuickFilterTitleContainer>
@@ -186,7 +152,9 @@ const CustomFilterOption = (props) => {
           onClick={() => handleOptionClick()}
         >
           {value}
-          {isFilterCreator && <span style={{ fontSize: '10px' }}> (shared)</span>}
+          {isFilterCreator && (
+            <span style={{ fontSize: '10px' }}> (shared)</span>
+          )}
           {isOrgScoped && (
             <div style={{ fontSize: '10px', marginTop: '3px' }}>
               {!isFilterCreator && (
@@ -195,40 +163,6 @@ const CustomFilterOption = (props) => {
             </div>
           )}
         </QuickFilterTitle>
-        {/* <Input
-        onKeyPress={handleKeyPress}
-        inputRef={inputReference}
-        readOnly={disabled}
-        value={value}
-        onChange={(event) => setValue(event.target.value)}
-        InputProps={{ disableUnderline: true }}
-        onBlur={() => !disabled && onBlur(identifier, value)}
-        onClick={() => handleOptionClick()}
-      /> */}
-        {/* <IconContainer>
-        <Tooltip placement="top" title={'Rename'}>
-          <img
-            onClick={handleEnableEditMode}
-            style={{
-              width: '19px',
-              margin: '2px 4px',
-            }}
-            src={RenameIcon}
-            alt="close"
-          />
-        </Tooltip>
-        <Tooltip placement="top" title={'Delete'}>
-          <img
-            onClick={handleDelete}
-            style={{
-              width: '19px',
-              margin: '2px 4px',
-            }}
-            src={CloseIcon}
-            alt="close"
-            />
-            </Tooltip>
-      </IconContainer> */}
         <OptionMenuContainer>
           {!disableOptions && !isOrgScopeEditBlocked && (
             <OptionsMenu color={palette.shadowBlue} options={OPTIONS}>

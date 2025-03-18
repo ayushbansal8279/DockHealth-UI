@@ -89,11 +89,41 @@ function* copyWorkflowToOrganization({
     });
     yield put(showGlobalAlert(AlertMessages.COPIED));
   } catch {
-    yield put({
-      type: ActionTypes.COPY_WORKFLOW_TO_ORGANIZATION_FAILURE,
+    yield all([
+      put({
+        type: ActionTypes.COPY_WORKFLOW_TO_ORGANIZATION_FAILURE,
+        identifier,
+        targetOrganizationIdentifiers,
+      }),
+      put(showGlobalErrorAlert()),
+    ]);
+  }
+}
+
+function* shareWorkflowWithOrganization({
+  targetOrganizationIdentifiers,
+  identifier,
+}) {
+  try {
+    yield call(
+      TaskTemplateApi.shareWorkflowWithOrganization,
       identifier,
       targetOrganizationIdentifiers,
+    );
+    yield put({
+      type: ActionTypes.SHARE_WORKFLOW_WITH_ORGANIZATION_SUCCESS,
+      identifier,
     });
+    yield put(showGlobalAlert(AlertMessages.COPIED));
+  } catch {
+    yield all([
+      put({
+        type: ActionTypes.SHARE_WORKFLOW_WITH_ORGANIZATION_FAILURE,
+        identifier,
+        targetOrganizationIdentifiers,
+      }),
+      put(showGlobalErrorAlert()),
+    ]);
   }
 }
 
@@ -206,6 +236,12 @@ function* addTemplate({ template, parentIdentifier = null, history }) {
 
     yield put(
       TaskTemplateActions.toggleTemplateOpen(createdTemplate.identifier),
+    );
+    const layout = []
+    yield call(
+      TaskTemplateApi.saveTemplateLayout,
+      createdTemplate.identifier,
+      layout,
     );
 
     yield put(showGlobalAlert(AlertMessages.CREATED));
@@ -564,21 +600,78 @@ function* linkTasks({ source, target, options, outcomeName }) {
       ({ identifier }) => identifier === target.id,
     );
 
-    const checkIfTasksAreLinked = () =>
-      sourceTask?.taskLinks?.some(
-        ({ targetTaskIdentifier }) => targetTaskIdentifier === target.id,
-      ) ||
-      targetTask?.taskLinks?.some(
-        ({ targetTaskIdentifier }) => targetTaskIdentifier === source.id,
+    if (target.id === 'START_INDICATOR') {
+      yield put(showGlobalErrorAlert('Start cannot be a target.'));
+      return;
+    }
+
+    if (source.id === 'END_INDICATOR') {
+      yield put(showGlobalErrorAlert('End cannot be a source.'));
+      return;
+    }
+
+    const checkIfLinkedToIndicator = () => {
+      if (!sourceTask || !targetTask) return false;
+      return (
+        (source.id === 'START_INDICATOR' &&
+          !targetTask?.taskLinks?.some(
+            ({ targetTaskIdentifier }) =>
+              targetTaskIdentifier === 'START_INDICATOR',
+          )) ||
+        (target.id === 'END_INDICATOR' &&
+          !sourceTask?.taskLinks?.some(
+            ({ targetTaskIdentifier }) =>
+              targetTaskIdentifier === 'END_INDICATOR',
+          ))
       );
+    };
+
+    const hasIndicator =
+      source.id === 'START_INDICATOR' ||
+      target.id === 'START_INDICATOR' ||
+      source.id === 'END_INDICATOR' ||
+      target.id === 'END_INDICATOR';
+
+    const checkIfTasksAreLinked = () => {
+      if (hasIndicator) {
+        return checkIfLinkedToIndicator();
+      }
+      return (
+        sourceTask?.taskLinks?.some(
+          ({ targetTaskIdentifier }) => targetTaskIdentifier === target.id,
+        ) ||
+        targetTask?.taskLinks?.some(
+          ({ targetTaskIdentifier }) => targetTaskIdentifier === source.id,
+        )
+      );
+    };
 
     if (!checkIfTasksAreLinked()) {
-      const isSourceDecisionType = sourceTask
-        ? sourceTask.intentType === NodeType.DECISION
-        : templateDetails.temporaryElements.some(
-            ({ id, type }) =>
-              id === source.id && type === NodeType.NEW_DECISION,
-          );
+      const isSourceDecisionType =
+        source.id !== 'START_INDICATOR' && sourceTask
+          ? sourceTask.intentType === NodeType.DECISION
+          : templateDetails?.temporaryElements?.some(
+              ({ id, type }) =>
+                id === source.id && type === NodeType.NEW_DECISION,
+            );
+      let indicatorType = null;
+
+      if (source.id === 'START_INDICATOR') {
+        source.id = target.id;
+        options = {
+          ...options,
+          linkType: 'START',
+        };
+        indicatorType = 'START_INDICATOR';
+      }
+      if (target.id === 'END_INDICATOR') {
+        target.id = source.id;
+        options = {
+          ...options,
+          linkType: 'END',
+        };
+        indicatorType = 'END_INDICATOR';
+      }
 
       yield put(
         TaskTemplateActions.addTemporaryLink(
@@ -589,10 +682,11 @@ function* linkTasks({ source, target, options, outcomeName }) {
           target.id,
           source.handle,
           target.handle,
+          indicatorType,
         ),
       );
 
-      if (targetTask && sourceTask) {
+      if ((targetTask && sourceTask) || hasIndicator) {
         if (outcomeName) {
           yield put(TaskTemplateActions.addTaskOutcome(outcomeName, source.id));
 
@@ -616,7 +710,15 @@ function* linkTasks({ source, target, options, outcomeName }) {
           options,
         );
 
-        const { sourceTaskIdentifier, targetTaskIdentifier } = link;
+        let { sourceTaskIdentifier, targetTaskIdentifier } = link;
+
+        if (sourceTaskIdentifier === targetTaskIdentifier) {
+          if (indicatorType === 'START_INDICATOR')
+            sourceTaskIdentifier = indicatorType;
+          if (indicatorType === 'END_INDICATOR')
+            targetTaskIdentifier = indicatorType;
+        }
+
         const linkId = getUniqueLinkId(
           sourceTaskIdentifier,
           targetTaskIdentifier,
@@ -635,12 +737,26 @@ function* linkTasks({ source, target, options, outcomeName }) {
           yield put(TaskTemplateActions.saveTaskTemplateLayout(updatedLayout));
         }
 
-        yield all([
-          put({ type: ActionTypes.LINK_TASKS_SUCCESS, link }),
-          put(TaskActions.refreshTask(sourceTaskIdentifier)),
-          put(TaskActions.refreshTask(targetTaskIdentifier)),
-          put(TaskTemplateActions.deleteTemporaryElement(linkId)),
-        ]);
+        if (sourceTaskIdentifier === 'START_INDICATOR') {
+          yield all([
+            put({ type: ActionTypes.LINK_TASKS_SUCCESS, link }),
+            put(TaskActions.refreshTask(targetTaskIdentifier)),
+            put(TaskTemplateActions.deleteTemporaryElement(linkId)),
+          ]);
+        } else if (targetTaskIdentifier === 'END_INDICATOR') {
+          yield all([
+            put({ type: ActionTypes.LINK_TASKS_SUCCESS, link }),
+            put(TaskActions.refreshTask(sourceTaskIdentifier)),
+            put(TaskTemplateActions.deleteTemporaryElement(linkId)),
+          ]);
+        } else {
+          yield all([
+            put({ type: ActionTypes.LINK_TASKS_SUCCESS, link }),
+            put(TaskActions.refreshTask(sourceTaskIdentifier)),
+            put(TaskActions.refreshTask(targetTaskIdentifier)),
+            put(TaskTemplateActions.deleteTemporaryElement(linkId)),
+          ]);
+        }
       }
     }
   } catch (error) {
@@ -870,6 +986,10 @@ export default function* watchTaskTemplate() {
   yield takeEvery(
     ActionTypes.COPY_WORKFLOW_TO_ORGANIZATION,
     copyWorkflowToOrganization,
+  );
+  yield takeEvery(
+    ActionTypes.SHARE_WORKFLOW_WITH_ORGANIZATION,
+    shareWorkflowWithOrganization,
   );
   yield takeEvery(ActionTypes.ADD_TASK_TEMPLATE, addTemplate);
   yield takeEvery(ActionTypes.ADD_TASK_TEMPLATE_FOLDER, addTemplate);

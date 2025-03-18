@@ -1,6 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Grid } from '@mui/material';
 import Spacing from 'components/common/Spacing';
+import { useDispatch, useSelector } from 'react-redux';
+import { DescriptionOutlined } from '@mui/icons-material';
+import Copy from 'img/AI/Copy.svg';
+import Close from 'img/AI/XClose.svg';
+import RefreshIcon from 'img/AI/RefreshIcon.svg';
+import EmailIcon from 'img/email-new-icon.svg';
 import {
   AISummaryModalWrapper,
   Header,
@@ -18,13 +24,15 @@ import {
   PromptSelector,
   CustumTooltip,
   Footer,
+  FeedbackLink,
+  LabelContainer,
+  LabelWrapper,
+  RefreshIconWrapper,
 } from './styled';
-import LuminaStar from 'img/AI/LuminaStar';
+import MARIColor from 'img/AI/mari-color.png';
+import New from '@/app/img/AI/New.svg';
+import Expand from '@/app/img/AI/Expand.svg';
 import palette from '@/app/styles/palette';
-import Copy from 'img/AI/Copy.svg';
-import Close from 'img/AI/XClose.svg';
-import RefreshIcon from 'img/AI/RefreshIcon.svg';
-import EmailIcon from 'img/email-new-icon.svg';
 import {
   calculateResponseTimeAgo,
   patientPromptOptions,
@@ -36,10 +44,10 @@ import {
   selectedUserOrganizationSelector,
   userHasPostEMRNoteFeatureSelector,
   userHasSendEmailFeatureSelector,
+  userProfileSelector,
 } from '@/app/selectors/user-selectors';
-import { useDispatch, useSelector } from 'react-redux';
 import { openModal } from '../../actions';
-import { DescriptionOutlined } from '@mui/icons-material';
+import MarkdownRenderer from '@/app/components/ai-summary/MarkdownRenderer';
 
 const AISummaryModal = ({ closeModal, title, onsubmit, type, identifier }) => {
   useEffect(() => {
@@ -58,10 +66,12 @@ const AISummaryModal = ({ closeModal, title, onsubmit, type, identifier }) => {
   // const [customPrompt, setCustomPrompt] = useState('');
   const [promptTypeValue, setPromptTypeValue] = useState('DEFAULT');
   const [copied, setCopied] = useState(false);
+  const [expanded, setExpanded] = useState(false);
   const [summaries, setSummaries] = useState([]);
   const [isFetching, setIsFetching] = useState(false);
   const [generateDateTime, setGeneratedDateTime] = useState('');
   const [stirngSummary, setStringSummary] = useState('');
+  const [generatedSubject, setGeneratedSubject] = useState('');
   const [tooltipHover, setTooltipHover] = useState({
     email: false,
     note: false,
@@ -71,13 +81,14 @@ const AISummaryModal = ({ closeModal, title, onsubmit, type, identifier }) => {
   const dispatch = useDispatch();
 
   const currentOrganization = useSelector(selectedUserOrganizationSelector);
-  const aiSummaryMultiplePrompts =
-    currentOrganization?.themeSettings?.find(
-      ({ name }) => name === 'ai.summary.multiple.prompts',
-    ) || {};
+  // const aiSummaryMultiplePrompts =
+  //   currentOrganization?.themeSettings?.find(
+  //     ({ name }) => name === 'ai.summary.multiple.prompts',
+  //   ) || {};
 
   const sendEmailAvailable = useSelector(userHasSendEmailFeatureSelector);
   const postToEMRAvailable = useSelector(userHasPostEMRNoteFeatureSelector);
+  const currentUser = useSelector(userProfileSelector);
 
   const handleCopy = () => {
     const formattedString = summaries.join('\n\n');
@@ -108,9 +119,24 @@ const AISummaryModal = ({ closeModal, title, onsubmit, type, identifier }) => {
     const result = separateTimestamp(response);
     const responseDateTime = calculateResponseTimeAgo(result.timestamp);
     setGeneratedDateTime(responseDateTime);
-    setStringSummary(result?.remainingString);
 
-    const splitArray = result?.remainingString.split('\n');
+    let res = result?.remainingString.replace(/""/g, '**');
+    res = res.replace(/(\[Your Name\])(?=[^\n]*$)/, currentUser?.name || "[Your Name]");
+    
+    if(persona === 'EMAIL'){
+      const generatedSummaryLines = res.split("\n");
+      if (/^Subject:\s*/i.test(generatedSummaryLines[0])) {
+        const generatedSummarySubject = generatedSummaryLines[0].replace(/^Subject:\s*/i, "").trim();
+        const updatedSummary = generatedSummaryLines.slice(1).join("\n").trim();
+        setStringSummary(updatedSummary);
+        setGeneratedSubject(generatedSummarySubject);
+      }
+    }
+    else {
+      setStringSummary(res);
+    }
+
+    const splitArray = res.split('\n\n');
     splitArray ? setSummaries(splitArray) : null;
   };
 
@@ -129,13 +155,24 @@ const AISummaryModal = ({ closeModal, title, onsubmit, type, identifier }) => {
   };
 
   return (
-    <AISummaryModalWrapper>
+    <AISummaryModalWrapper expanded={expanded}>
+      <LabelContainer>
+        <LabelWrapper>BETA</LabelWrapper>
+      </LabelContainer>
       <Header>
         <Title>
-          <LuminaStar color={palette.newBrightBlue} />
+          <img src={MARIColor} alt="AI Summary" style={{ height: 25 }} />
           {title}
         </Title>
-        <IconWrapper onClick={closeModal} src={Close} alt="close" />
+        <div>
+          <img
+            style={{ cursor: 'pointer' }}
+            onClick={() => setExpanded(!expanded)}
+            src={Expand}
+            alt="expand"
+          />
+          <IconWrapper onClick={closeModal} src={Close} alt="close" />
+        </div>
       </Header>
       <SubHeader>
         <Box display="flex" gap={3}>
@@ -143,7 +180,7 @@ const AISummaryModal = ({ closeModal, title, onsubmit, type, identifier }) => {
             {tooltipHover.regenrate && (
               <CustumTooltip left={5}>Regenerate</CustumTooltip>
             )}
-            <IconWrapper
+            <RefreshIconWrapper
               onMouseEnter={() => setTooltipHover({ regenrate: true })}
               onMouseLeave={() => setTooltipHover({ regenrate: false })}
               onClick={handleReGenerateResponse}
@@ -151,23 +188,23 @@ const AISummaryModal = ({ closeModal, title, onsubmit, type, identifier }) => {
               alt="Refresh"
             />
           </RefreshWrapper>
-          {aiSummaryMultiplePrompts?.value && (
-            <PromptSelector
-              onChange={handlePromptTypeChange}
-              defaultValue={promptTypeValue}
-              value={promptTypeValue}
-            >
-              {promptoptions.map((option) => (
-                <option value={option.value}>{option.key}</option>
-              ))}
-            </PromptSelector>
-          )}
+          {/* {aiSummaryMultiplePrompts?.value && ( */}
+          <PromptSelector
+            onChange={handlePromptTypeChange}
+            defaultValue={promptTypeValue}
+            value={promptTypeValue}
+          >
+            {promptoptions.map((option) => (
+              <option value={option.value}>{option.key}</option>
+            ))}
+          </PromptSelector>
+          {/* )} */}
         </Box>
         <Box display="flex" gap={2}>
           {postToEMRAvailable && (
             <>
               {tooltipHover.note && (
-                <CustumTooltip right={70}>Post EMR note</CustumTooltip>
+                <CustumTooltip right={70}>Post Note to EHR</CustumTooltip>
               )}
               <DescriptionOutlined
                 onMouseEnter={() => setTooltipHover({ note: true })}
@@ -178,6 +215,7 @@ const AISummaryModal = ({ closeModal, title, onsubmit, type, identifier }) => {
                       source: 'Ai Summary Modal',
                       identifier,
                       generatedSummary: stirngSummary,
+                      generatedSubject: generatedSubject
                     }),
                   );
                 }}
@@ -199,6 +237,7 @@ const AISummaryModal = ({ closeModal, title, onsubmit, type, identifier }) => {
                       source: 'Ai Summary Modal',
                       taskIdentifier: identifier,
                       generatedSummary: stirngSummary,
+                      generatedSubject: generatedSubject
                     }),
                   );
                 }}
@@ -233,12 +272,7 @@ const AISummaryModal = ({ closeModal, title, onsubmit, type, identifier }) => {
         {isFetching && AISummaryLoader()}
         <Info>
           {!isFetching &&
-            summaries?.map((summary) => (
-              <>
-                {summary}
-                <Spacing vertical={4} />
-              </>
-            ))}
+            summaries?.map((summary) => <MarkdownRenderer content={summary} />)}
         </Info>
       </Grid>
       {/* <RegenerateWrapper>
@@ -259,12 +293,17 @@ const AISummaryModal = ({ closeModal, title, onsubmit, type, identifier }) => {
         </RefreshWrapper>
       </RegenerateWrapper> */}
       {isFetching ? (
-        <Footer></Footer>
+        <Footer />
       ) : (
         <Footer>
           This AI-generated summary is provided for convenience and should be
-          reviewed for accuracy and completeness. Is it helpful? If not, Please
-          share your feedback to help us improve.
+          reviewed for accuracy and completeness.
+          <FeedbackLink
+            target="#"
+            href="https://forms.dock.health/AISummaryFeedback"
+          >
+            Please share your feedback to help us improve.
+          </FeedbackLink>
         </Footer>
       )}
     </AISummaryModalWrapper>

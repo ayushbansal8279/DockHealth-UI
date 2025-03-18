@@ -1,3 +1,4 @@
+import moment from 'moment';
 import isEmpty from 'ramda/src/isEmpty';
 import isNil from 'ramda/src/isNil';
 
@@ -9,6 +10,7 @@ export const FilterOptionsCategory = {
   ASSIGNED_BY: 'assignedBy',
   DUE_DATE: 'taskDueDateOptions',
   LABELS: 'labels',
+  PATIENT_LABELS: 'patientLabels',
   WORKFLOW_STATUS: 'workflowStatusOptions',
   PRIORITY: 'priorityOptions',
   COMPLETE_DATE: 'taskCompletedDateOptions',
@@ -17,6 +19,11 @@ export const FilterOptionsCategory = {
   ESCALATED: 'escalatedStatusOptions',
   CREATED_BY: 'createdBy',
   COMPLETED_BY: 'completedBy',
+  EVENT_TYPES: 'eventTypes',
+  EVENT_SUB_TYPES: 'eventSubTypes',
+  EVENT_DATE_OPTIONS: 'eventDateOptions',
+  WORKFLOWS: 'workflows',
+  PATIENT_LABELS: 'patientLabels',
 };
 
 const FilterOptionsLabel = {
@@ -26,7 +33,8 @@ const FilterOptionsLabel = {
   [FilterOptionsCategory.TASK_LISTS]: 'Task List',
   [FilterOptionsCategory.ASSIGNED_BY]: 'Assigned by',
   [FilterOptionsCategory.DUE_DATE]: 'Due date',
-  [FilterOptionsCategory.LABELS]: 'Label',
+  [FilterOptionsCategory.LABELS]: 'Task Label',
+  [FilterOptionsCategory.PATIENT_LABELS]: 'Patient Label',
   [FilterOptionsCategory.WORKFLOW_STATUS]: 'Workflow Status',
   [FilterOptionsCategory.PRIORITY]: 'Priority',
   [FilterOptionsCategory.COMPLETE_DATE]: 'Task completed date',
@@ -35,6 +43,11 @@ const FilterOptionsLabel = {
   [FilterOptionsCategory.ESCALATED]: 'Escalated',
   [FilterOptionsCategory.CREATED_BY]: 'Created By',
   [FilterOptionsCategory.COMPLETED_BY]: 'Completed By',
+  [FilterOptionsCategory.EVENT_TYPES]: 'Event Type',
+  [FilterOptionsCategory.EVENT_SUB_TYPES]: 'Event Sub Type',
+  [FilterOptionsCategory.EVENT_DATE_OPTIONS]: 'Event Date Options',
+  [FilterOptionsCategory.WORKFLOWS]: 'Workflows',
+  [FilterOptionsCategory.PATIENT_LABELS]: 'Patient Label',
 };
 
 const DATE_FILTER_OPTIONS = new Set([
@@ -134,8 +147,8 @@ export function mapRequestSelectedOptionsToStore(selectedOptions) {
       return {
         ...accumulator,
         [k]: {
-          dateEnd: v.dateEnd || null,
-          dateStart: v.dateStart || null,
+          dateEnd: v.dateEnd ? moment.utc(v.dateEnd).format("YYYY-MM-DD") : null,
+          dateStart: v.dateStart ? moment.utc(v.dateStart).format("YYYY-MM-DD") : null,
           options: v.dateOptions,
         },
       };

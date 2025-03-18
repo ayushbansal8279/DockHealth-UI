@@ -43,10 +43,12 @@ const CustomFieldAutoComplete = ({
         .then((profileTypeFields) => {
           getAllProfiles(relatedProfileType.identifier)
             .then((data) => {
-              const newProfiles = data.map((profile) => ({
-                profile,
-                label: getProfileName(profileTypeFields, profile)?.join(' '),
-              }));
+              const newProfiles = data
+                .filter(profile => profile.fields)
+                .map((profile) => ({
+                  profile,
+                  label: getProfileName(profileTypeFields, profile)?.join(' '),
+                }));
               setProfiles(newProfiles);
             })
             .catch((error) => {
@@ -58,7 +60,7 @@ const CustomFieldAutoComplete = ({
           dispatch(showGlobalErrorAlert());
         });
     }
-  }, [dispatch, relatedProfileType]);
+  }, [dispatch,relatedProfileType?.identifier]);
 
   const error = errors?.[name]?.message;
 

@@ -16,8 +16,10 @@ export const PopoverContainer = styled.div`
   min-width: 233px;
   box-shadow: 0px 4px 11px grey;
   max-height: 800px;
+  min-height: 600px;
+  max-height: 600px;
   overflow-x: hidden;
-  overflow-y: auto;
+  overflow-y: visible;
 `;
 
 export const PlusIcon = styled.div`

@@ -676,6 +676,7 @@ const TaskTemplateGroupHeader = ({
                     type={SummaryType.WORKFLOW}
                     title={`${name}`}
                     identifier={identifier}
+                    subtleDisplay
                   />
                 </AISummaryWrapper>
               )}

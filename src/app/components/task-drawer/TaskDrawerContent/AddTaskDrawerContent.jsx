@@ -77,7 +77,9 @@ const AddTaskDrawerContent = (props) => {
   const [addTaskAssignees, setAddTaskAssignees] = useState([]);
   const [priority, setPriority] = useState('');
   const [startDate, setStartDate] = useState('');
+  const [startDateIntent, setStartDateIntent] = useState('');
   const [dueDate, setDueDate] = useState('');
+  const [dueDateIntent, setDueDateIntent] = useState('');
   const [workflowStatusIdentifier, setWorkflowStatusIdentifier] = useState('');
   const [patientIdentifier, setPatientIdentifier] = useState('');
   const [searchedKeyword, setSearchedKeyword] = useState();
@@ -155,7 +157,9 @@ const AddTaskDrawerContent = (props) => {
         ],
         patientIdentifier,
         startDate,
+        startDateIntent,
         dueDate,
+        dueDateIntent,
         priority,
         workflowStatusIdentifier,
       };
@@ -258,14 +262,24 @@ const AddTaskDrawerContent = (props) => {
               setPatientIdentifier={setPatientIdentifier}
             />
           </Grid>
-          <Grid item xs={12} mb={2} style={styleLeftColumn(isMobile)}>
+          <Grid item xs={12} mb={1} style={styleLeftColumn(isMobile)}>
             <div>
-              <StartDateSection addTaskDrawer setStartDate={setStartDate} />
+              <StartDateSection
+                addTaskDrawer
+                setStartDate={setStartDate}
+                defaultStartDateIntent={startDateIntent}
+                setStartDateIntent={setStartDateIntent}
+              />
             </div>
           </Grid>
           <Grid item xs={12} style={styleLeftColumn(isMobile)}>
             <div>
-              <DueDateSection addTaskDrawer setDueDate={setDueDate} />
+              <DueDateSection
+                addTaskDrawer
+                setDueDate={setDueDate}
+                defaultDueDateIntent={dueDateIntent}
+                setDueDateIntent={setDueDateIntent}
+              />
             </div>
           </Grid>
           <Grid item xs={12} style={styleLeftColumn(isMobile)}>

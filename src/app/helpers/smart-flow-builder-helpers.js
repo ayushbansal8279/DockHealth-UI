@@ -3,15 +3,19 @@ import ELK from 'elkjs/lib/elk.bundled';
 export const TASK_NODE_WIDTH = 230;
 
 export const NodeType = {
+  NEW_AUTOMATION: 'NEW_AUTOMATION',
   NEW_STANDARD: 'NEW_STANDARD',
   NEW_DECISION: 'NEW_DECISION',
   STANDARD: 'STANDARD',
   DECISION: 'DECISION',
   NEW_WORKFLOW_LINK: 'NEW_WORKFLOW_LINK',
   WORKFLOW_LINK: 'WORKFLOW_LINK',
+  START_INDICATOR: 'INDICATOR',
+  END_INDICATOR: 'INDICATOR',
 };
 
 export const LinkType = {
+  INDICATOR: 'INDICATOR_LINK',
   STANDARD: 'STANDARD_LINK',
   DECISION: 'DECISION_LINK',
   TEMPORARY: 'TEMPORARY_LINK',
@@ -41,7 +45,14 @@ export function createLinkElement(
   targetId,
   sourceHandle,
   targetHandle,
+  indicatorType
 ) {
+  if((sourceId === targetId) && (indicatorType === 'START_INDICATOR')){
+    sourceId = 'START_INDICATOR'
+  } 
+  if((sourceId === targetId) && (indicatorType === 'END_INDICATOR')){
+    targetId = 'END_INDICATOR'
+  } 
   return {
     id: getUniqueLinkId(sourceId, targetId),
     source: sourceId,
@@ -50,6 +61,7 @@ export function createLinkElement(
     targetHandle: targetHandle || NodeTargetHandle.TARGET_A,
     type,
     data: {},
+    indicatorType
   };
 }
 
@@ -130,6 +142,21 @@ export function createDecisionTaskNodes(
       temporaryDecisionTask.position,
     ),
   ];
+}
+
+export function createNewAutomationTaskNode(
+  currentTemporaryElements,
+  elementPosition,
+  type = NodeType.NEW_AUTOMATION,
+) {
+  const numberOfNewTasks =
+    currentTemporaryElements?.filter((element) => element.type === type)
+      .length || 0;
+  return {
+    id: `${type}-${numberOfNewTasks}`,
+    type,
+    position: elementPosition,
+  };
 }
 
 export function getTargetNodeType(sourceElementType) {

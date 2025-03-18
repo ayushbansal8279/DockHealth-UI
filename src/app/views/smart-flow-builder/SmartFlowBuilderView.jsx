@@ -35,6 +35,7 @@ import {
   undoTaskTemplateLayout,
   selectTaskTemplate,
   unselectTaskTemplate,
+  addNewAutomationTaskElement,
 } from 'actions/task-template-actions';
 import {
   taskTemplateDetailsSelector,
@@ -79,6 +80,8 @@ import {
   mapElementsToLayout,
   updateNodePosition,
   calculateNewElementPosition,
+  countEndIndicatorInitialPosition,
+  countStartIndicatorInitialPosition,
 } from './helpers';
 import {
   ElementsSidebar,
@@ -92,6 +95,7 @@ import {
   SidebarDivider,
   AutoAlignButton,
   EditIconWrapper,
+  AutomationTaskIcon,
 } from './styled';
 import TaskLinkDelayForm from './TaskLinkDelayForm/TaskLinkDelayForm';
 import TemporaryDecisionTaskLink from './TemporaryDecisionTaskLink/TemporaryDecisionTaskLink';
@@ -99,14 +103,19 @@ import BulkEditContainer from './BulkEditContainer/BulkEditContainer';
 import Hotkeys from './Hotkeys/Hotkeys';
 import NestedFlowNode from './NestedFlow/NestedFlowNode/NestedFlowNode';
 import NewNestedFlowNode from './NestedFlow/NewNestedFlowNode/NewNestedFlowNode';
+import { isUserDockPro } from '@/app/helpers/user-helper';
+import IndicatorNode from './IndicatorNode/IndicatorNode';
 
 const nodeTypes = {
+  [NodeType.NEW_AUTOMATION]: NewTaskNode,
   [NodeType.NEW_STANDARD]: NewTaskNode,
   [NodeType.NEW_DECISION]: NewTaskNode,
   [NodeType.STANDARD]: TaskNode,
   [NodeType.DECISION]: TaskNode,
   [NodeType.NEW_WORKFLOW_LINK]: NewNestedFlowNode,
   [NodeType.WORKFLOW_LINK]: NestedFlowNode,
+  [NodeType.START_INDICATOR]: IndicatorNode,
+  [NodeType.END_INDICATOR]: IndicatorNode,
 };
 
 const linkTypes = {
@@ -114,6 +123,7 @@ const linkTypes = {
   [LinkType.DECISION]: DecisionTaskLink,
   [LinkType.TEMPORARY]: TemporaryTaskLink,
   [LinkType.TEMPORARY_DECISION]: TemporaryDecisionTaskLink,
+  [LinkType.INDICATOR]: TaskLink,
 };
 
 const DEFAULT_EDGE = {
@@ -151,6 +161,7 @@ const SmartFlowBuilderView = () => {
   const smartFlowsAvailable = useSelector(userHasSmartFlowsSelector);
 
   const currentUser = useSelector(userProfileSelector);
+  const isDockProUser = isUserDockPro(currentUser);
   const isCurrentUserEditor =
     members?.find(({ user }) => user.identifier === currentUser.identifier)
       ?.memberPermission === 'EDITOR';
@@ -163,6 +174,23 @@ const SmartFlowBuilderView = () => {
   const [modalUsed, setModalUsed] = useState(false);
   const [initialTasksLength, setInitialTasksLength] = useState(null);
 
+  const constantVisibleElements = useMemo(() => [
+    {
+      id: 'START_INDICATOR',
+      position:
+        layout?.find(({ id }) => id === 'START_INDICATOR')?.position ||
+        countStartIndicatorInitialPosition(layout),
+      type: 'INDICATOR',
+    },
+    {
+      id: 'END_INDICATOR',
+      position:
+        layout?.find(({ id }) => id === 'END_INDICATOR')?.position ||
+        countEndIndicatorInitialPosition(layout),
+      type: 'INDICATOR',
+    },
+  ], [layout]);
+
   useEffect(() => {
     if (initialTasksLength === null && Array.isArray(tasks)) {
       setInitialTasksLength(tasks.length);
@@ -170,20 +198,20 @@ const SmartFlowBuilderView = () => {
   }, [tasks, initialTasksLength]);
 
   useEffect(() => {
-      if (isCurrentUserEditor && (initialTasksLength > 0) && !modalUsed ) {
-          dispatch(
-            ModalActions.openModal('Alert', {
-              title:'Changes May Not Be Applied to Deployed Items',
-              description:
-                'These changes will not be reflected on deployed workflow tasks. If a task has yet to deploy, the changes will be applied. All changes will be saved and applied to future workflows.',
-              confirm: () => {
-                dispatch(ModalActions.closeModal());
-              },
-            }),
-          );
-          setModalUsed(true);         
-      }   
-  }, [dispatch, isCurrentUserEditor, modalUsed, initialTasksLength ]);
+    if (isCurrentUserEditor && initialTasksLength > 0 && !modalUsed) {
+      dispatch(
+        ModalActions.openModal('Alert', {
+          title: 'Changes May Not Be Applied to Deployed Items',
+          description:
+            'These changes will not be reflected on deployed workflow tasks. If a task has yet to deploy, the changes will be applied. All changes will be saved and applied to future workflows.',
+          confirm: () => {
+            dispatch(ModalActions.closeModal());
+          },
+        }),
+      );
+      setModalUsed(true);
+    }
+  }, [dispatch, isCurrentUserEditor, modalUsed, initialTasksLength]);
 
   useEffect(() => {
     if (smartFlowsAvailable === false && templateType === 'SMARTFLOW') {
@@ -203,6 +231,7 @@ const SmartFlowBuilderView = () => {
     if (tasks && !isNil(layout)) {
       setElements((previousElements) =>
         [
+          ...constantVisibleElements,
           ...mapLayoutToElements(layout, tasks),
           ...(temporaryElements || []),
         ].map((element) => ({
@@ -223,7 +252,7 @@ const SmartFlowBuilderView = () => {
         })),
       );
     }
-  }, [draggedEdgeSourceId, identifier, layout, tasks, temporaryElements]);
+  }, [draggedEdgeSourceId, identifier, layout, tasks, temporaryElements, constantVisibleElements]);
 
   useEffect(() => {
     if (reactFlowInstance && nodesInitialized && !reactFlowInitialized) {
@@ -320,6 +349,16 @@ const SmartFlowBuilderView = () => {
         },
       },
       {
+        id: NodeType.NEW_AUTOMATION,
+        label: 'Automation Task',
+        icon: AutomationTaskIcon,
+        onClick: () => {
+          const position = calculateNewElementPosition(layout);
+          dispatch(addNewAutomationTaskElement(position));
+          centerViewToElement(position);
+        },
+      },
+      {
         id: NodeType.NEW_DECISION,
         label: 'Decision tree',
         icon: DecisionTaskElementIcon,
@@ -329,7 +368,8 @@ const SmartFlowBuilderView = () => {
             selectedElements.some((se) => !!se.data?.task)
           ) {
             for (const selectedElement of selectedElements) {
-              if (selectedElement?.data.task.taskLinks?.length > 0) {
+              const taskLinks = selectedElement?.data.task.taskLinks;
+              if (taskLinks?.length > 0 && taskLinks.some(link => link.linkType !== 'START')) {
                 dispatch(
                   openModal('Information', {
                     text: 'This task already has linkages to other tasks. If you want to change it to decision tree, please remove existing connections.',
@@ -360,7 +400,9 @@ const SmartFlowBuilderView = () => {
           centerViewToElement(position);
         },
       },
-    ];
+    ].filter(
+      (action) => isDockProUser || action.id !== NodeType.NEW_AUTOMATION,
+    );
 
     let actions = [...baseActions];
 
@@ -420,8 +462,9 @@ const SmartFlowBuilderView = () => {
     let shouldUpdate = false;
 
     for (const node of selectedNodes) {
+      const isIndicator = node?.type === 'INDICATOR';
       const isExistingTask = !!node.data.task;
-      if (isExistingTask) {
+      if (isExistingTask || isIndicator) {
         if (!shouldUpdate) shouldUpdate = true;
         updatedElements = updateNodePosition(
           node.id,
@@ -472,6 +515,10 @@ const SmartFlowBuilderView = () => {
     switch (type) {
       case NodeType.NEW_STANDARD: {
         dispatch(addNewTaskElement(position));
+        break;
+      }
+      case NodeType.NEW_AUTOMATION: {
+        dispatch(addNewAutomationTaskElement(position));
         break;
       }
       case NodeType.NEW_DECISION: {

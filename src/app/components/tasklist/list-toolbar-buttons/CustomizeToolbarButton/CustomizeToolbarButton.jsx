@@ -1,4 +1,10 @@
-import React, { useState, useRef, useMemo, useCallback } from 'react';
+import React, {
+  useState,
+  useRef,
+  useMemo,
+  useCallback,
+  useEffect,
+} from 'react';
 import {
   Box,
   List,
@@ -32,6 +38,7 @@ import {
   sortAlphabetical,
 } from 'helpers/custom-fields-helpers';
 import sort from 'ramda/src/sort';
+import Search from 'components/task-view/Search/Search';
 import {
   PlusIcon,
   PopoverContainer,
@@ -42,6 +49,11 @@ import {
 } from './styled';
 import { limitToConfigurableKeys } from './helpers';
 import ToolbarButton from '../ToolbarButton/ToolbarButton';
+import {
+  SearchContainer,
+  WorkflowSearchHorizontalLine,
+  WorkflowSearchHorizontalLineContainer,
+} from '@/app/components/task-template/TaskTemplateApplicator/styled';
 
 const CustomizeToolbarButton = ({
   openCustomFieldModal,
@@ -55,6 +67,7 @@ const CustomizeToolbarButton = ({
   groupOptions,
 }) => {
   const [open, setOpen] = useState(false);
+  const [searchValue, setSearchValue] = useState('');
   const [openUpgradePopup, setOpenUpgradePopup] = useState(false);
   const buttonReference = useRef(null);
   const addColumnButtonReference = useRef(null);
@@ -71,6 +84,13 @@ const CustomizeToolbarButton = ({
   const uniqueIdentifierLabel = getCustomerUniqueIDShortLabel(
     userProfile,
     currentOrganization,
+  );
+
+  const handleSearch = useCallback(
+    (searchPhrase) => {
+      setSearchValue(searchPhrase);
+    },
+    [setSearchValue],
   );
 
   const ColumnOptionNames = {
@@ -106,6 +126,10 @@ const CustomizeToolbarButton = ({
   };
 
   const [selectedTab, setSelectedTab] = useState(0);
+
+  useEffect(() => {
+    setSearchValue('');
+  }, [selectedTab, open]);
 
   const onClickCheckbox = useCallback(
     (column) => {
@@ -238,6 +262,19 @@ const CustomizeToolbarButton = ({
           <Box p={1} />
           {selectedTab === 0 && (
             <>
+              <SearchContainer>
+                <Search
+                  fullWidth
+                  noBackground
+                  value={searchValue}
+                  onChange={(event) => handleSearch(event?.target?.value)}
+                  placeholder="Search"
+                  isWorkFlowSearch
+                />
+              </SearchContainer>
+              <WorkflowSearchHorizontalLineContainer>
+                <WorkflowSearchHorizontalLine />
+              </WorkflowSearchHorizontalLineContainer>
               <Box display="flex" justifyContent="space-between" mt={1}>
                 <Box mx={0.5} />
                 <ListItemText>
@@ -245,16 +282,41 @@ const CustomizeToolbarButton = ({
                 </ListItemText>
               </Box>
               <List>
-                {sort(
-                  (a, b) =>
-                    ColumnOptionNames[a?.identifier]?.localeCompare(
-                      ColumnOptionNames[b?.identifier],
-                    ),
-                  columnsConfigToDisplay,
-                ).map((column) => {
-                  const optionName = ColumnOptionNames[column.identifier];
-                  return optionName && renderElement(column, optionName);
-                })}
+                {(() => {
+                  const sortedColumns = sort(
+                    (a, b) =>
+                      ColumnOptionNames[a.identifier]?.localeCompare(
+                        ColumnOptionNames[b.identifier],
+                      ),
+                    columnsConfigToDisplay,
+                  );
+                  const filteredColumns = sortedColumns.filter((column) => {
+                    const optionName = ColumnOptionNames[column.identifier];
+                    return (
+                      !searchValue ||
+                      optionName
+                        ?.toLowerCase()
+                        ?.includes(searchValue?.toLowerCase())
+                    );
+                  });
+
+                  return filteredColumns.length > 0 ? (
+                    filteredColumns.map((column) => {
+                      const optionName = ColumnOptionNames[column.identifier];
+                      return optionName && renderElement(column, optionName);
+                    })
+                  ) : (
+                    <div
+                      style={{
+                        textAlign: 'center',
+                        marginTop: '20px',
+                        marginBottom: '20px',
+                      }}
+                    >
+                      No columns found
+                    </div>
+                  );
+                })()}
               </List>
             </>
           )}
@@ -263,6 +325,19 @@ const CustomizeToolbarButton = ({
               {userHasTaskCustomFieldsFeature && (
                 <>
                   <Spacer />
+                  <SearchContainer>
+                    <Search
+                      fullWidth
+                      noBackground
+                      value={searchValue}
+                      onChange={(event) => handleSearch(event?.target?.value)}
+                      placeholder="Search"
+                      isWorkFlowSearch
+                    />
+                  </SearchContainer>
+                  <WorkflowSearchHorizontalLineContainer>
+                    <WorkflowSearchHorizontalLine />
+                  </WorkflowSearchHorizontalLineContainer>
                   <Box display="flex" justifyContent="space-between" mt={1}>
                     <Box mx={0.5} />
                     <ListItemText>
@@ -280,14 +355,37 @@ const CustomizeToolbarButton = ({
                         <ListItemText>Create/Edit Custom Column</ListItemText>
                       </MenuItem>
                     )}
-                    {sortAlphabetical(
-                      columns.filter(
-                        (c) =>
-                          c._customFieldType === CUSTOM_FIELD_TYPES.TASK_LIST ||
-                          c._customFieldType ===
-                            CUSTOM_FIELD_TYPES.ORGANIZATION,
-                      ),
-                    ).map((column) => renderElement(column))}
+                    {(() => {
+                      const filteredColumns = sortAlphabetical(
+                        columns.filter(
+                          (c) =>
+                            c._customFieldType ===
+                              CUSTOM_FIELD_TYPES.TASK_LIST ||
+                            c._customFieldType ===
+                              CUSTOM_FIELD_TYPES.ORGANIZATION,
+                        ),
+                      ).filter(
+                        (column) =>
+                          !searchValue ||
+                          column?.name
+                            ?.toLowerCase()
+                            ?.includes(searchValue?.toLowerCase()),
+                      );
+
+                      return filteredColumns.length > 0 ? (
+                        filteredColumns.map((column) => renderElement(column))
+                      ) : (
+                        <div
+                          style={{
+                            textAlign: 'center',
+                            marginTop: '20px',
+                            marginBottom: '20px',
+                          }}
+                        >
+                          No columns found
+                        </div>
+                      );
+                    })()}
                   </List>
                 </>
               )}
@@ -297,6 +395,19 @@ const CustomizeToolbarButton = ({
             additionalOptions &&
             additionalOptions.length > 0 && (
               <>
+                <SearchContainer>
+                  <Search
+                    fullWidth
+                    noBackground
+                    value={searchValue}
+                    onChange={(event) => handleSearch(event?.target?.value)}
+                    placeholder="Search"
+                    isWorkFlowSearch
+                  />
+                </SearchContainer>
+                <WorkflowSearchHorizontalLineContainer>
+                  <WorkflowSearchHorizontalLine />
+                </WorkflowSearchHorizontalLineContainer>
                 <Box display="flex" justifyContent="space-between" mt={1}>
                   <Box mx={0.5} />
                   <ListItemText>
@@ -304,17 +415,44 @@ const CustomizeToolbarButton = ({
                   </ListItemText>
                 </Box>
                 <List>
-                  {sort(
-                    (a, b) =>
-                      PatientColumnOptionNames[a?.identifier]?.localeCompare(
-                        PatientColumnOptionNames[b?.identifier],
-                      ),
-                    columnsConfigToDisplay,
-                  ).map((column) => {
-                    const optionName =
-                      PatientColumnOptionNames[column.identifier];
-                    return optionName && renderElement(column, optionName);
-                  })}
+                  {(() => {
+                    const sortedColumns = sort(
+                      (a, b) =>
+                        PatientColumnOptionNames[a.identifier]?.localeCompare(
+                          PatientColumnOptionNames[b.identifier],
+                        ),
+                      columns,
+                    );
+
+                    const filteredColumns = sortedColumns.filter((column) => {
+                      const optionName =
+                        PatientColumnOptionNames[column.identifier];
+                      return (
+                        !searchValue ||
+                        optionName
+                          ?.toLowerCase()
+                          ?.includes(searchValue?.toLowerCase())
+                      );
+                    });
+
+                    return filteredColumns.length > 0 ? (
+                      filteredColumns.map((column) => {
+                        const optionName =
+                          PatientColumnOptionNames[column.identifier];
+                        return optionName && renderElement(column, optionName);
+                      })
+                    ) : (
+                      <div
+                        style={{
+                          textAlign: 'center',
+                          marginTop: '20px',
+                          marginBottom: '20px',
+                        }}
+                      >
+                        No columns found
+                      </div>
+                    );
+                  })()}
                 </List>
                 {userHasPatientCustomFieldsFeatureSelector &&
                   columns?.length > 0 && (
@@ -326,12 +464,37 @@ const CustomizeToolbarButton = ({
                         </ListItemText>
                       </Box>
                       <List>
-                        {sortAlphabetical(
-                          columns.filter(
-                            (c) =>
-                              c._customFieldType === CUSTOM_FIELD_TYPES.PATIENT,
-                          ),
-                        ).map((column) => renderElement(column))}
+                        {(() => {
+                          const filteredColumns = sortAlphabetical(
+                            columns.filter(
+                              (c) =>
+                                c._customFieldType ===
+                                CUSTOM_FIELD_TYPES.PATIENT,
+                            ),
+                          ).filter(
+                            (column) =>
+                              !searchValue ||
+                              column?.name
+                                ?.toLowerCase()
+                                ?.includes(searchValue?.toLowerCase()),
+                          );
+
+                          return filteredColumns.length > 0 ? (
+                            filteredColumns.map((column) =>
+                              renderElement(column),
+                            )
+                          ) : (
+                            <div
+                              style={{
+                                textAlign: 'center',
+                                marginTop: '20px',
+                                marginBottom: '20px',
+                              }}
+                            >
+                              No columns found
+                            </div>
+                          );
+                        })()}
                       </List>
                     </>
                   )}
@@ -339,6 +502,19 @@ const CustomizeToolbarButton = ({
             )}
           {selectedTab === 3 && isDashboard && (
             <>
+              <SearchContainer>
+                <Search
+                  fullWidth
+                  noBackground
+                  value={searchValue}
+                  onChange={(event) => handleSearch(event?.target?.value)}
+                  placeholder="Search"
+                  isWorkFlowSearch
+                />
+              </SearchContainer>
+              <WorkflowSearchHorizontalLineContainer>
+                <WorkflowSearchHorizontalLine />
+              </WorkflowSearchHorizontalLineContainer>
               <Box display="flex" justifyContent="space-between" mt={1}>
                 <Box mx={0.5} />
                 <ListItemText>
@@ -346,24 +522,47 @@ const CustomizeToolbarButton = ({
                 </ListItemText>
               </Box>
               <List>
-                {groupOptions &&
-                  groupOptions?.map((option) => {
-                    const { name, key, checked, onClick } = option;
-                    return (
-                      name && (
-                        <MenuItem
-                          key={key}
-                          onClick={() => {
-                            if (typeof onClick === 'function') onClick();
-                          }}
-                        >
-                          <Switch checked={checked} />
-                          <Box mx={0.5} />
-                          <ListItemText>{name}</ListItemText>
-                        </MenuItem>
+                {(() => {
+                  const filteredOptions = groupOptions
+                    ? groupOptions.filter(
+                        (option) =>
+                          !searchValue ||
+                          option.name
+                            ?.toLowerCase()
+                            ?.includes(searchValue?.toLowerCase()),
                       )
-                    );
-                  })}
+                    : [];
+
+                  return filteredOptions.length > 0 ? (
+                    filteredOptions.map((option) => {
+                      const { name, key, checked, onClick } = option;
+                      return (
+                        name && (
+                          <MenuItem
+                            key={key}
+                            onClick={() => {
+                              if (typeof onClick === 'function') onClick();
+                            }}
+                          >
+                            <Switch checked={checked} />
+                            <Box mx={0.5} />
+                            <ListItemText>{name}</ListItemText>
+                          </MenuItem>
+                        )
+                      );
+                    })
+                  ) : (
+                    <div
+                      style={{
+                        textAlign: 'center',
+                        marginTop: '20px',
+                        marginBottom: '20px',
+                      }}
+                    >
+                      No groups found
+                    </div>
+                  );
+                })()}
               </List>
             </>
           )}

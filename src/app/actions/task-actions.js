@@ -551,19 +551,21 @@ export function updateTaskDetails(task, detailsState) {
   };
 }
 
-export function updateTaskStartDate(task, startDate) {
+export function updateTaskStartDate(task, startDate, startDateIntent = null) {
   return {
     type: ActionTypes.UPDATE_TASK_START_DATE,
     task,
     startDate,
+    ...(startDateIntent && {startDateIntent})
   };
 }
 
-export function updateTaskDueDate(task, dueDate) {
+export function updateTaskDueDate(task, dueDate, dueDateIntent=null) {
   return {
     type: ActionTypes.UPDATE_TASK_DUE_DATE,
     task,
     dueDate,
+    ...(dueDateIntent && {dueDateIntent})
   };
 }
 
@@ -695,7 +697,24 @@ export const renameTaskAttachment =
         throw error;
       });
   };
-      
+
+export const addPatientReferenceAttachment =
+  (taskIdentifier, attachmentIdentifier, type ) => (dispatch) => {
+    return TaskApi.addPatientReferenceAttachment(taskIdentifier, attachmentIdentifier, type)
+      .then((response) => {
+        dispatch({
+          type: ActionTypes.PATIENT_REFERENCE_ATTACHMENT_ADDED,
+          taskIdentifier,
+          taskAttachment: response.data,
+        });
+        dispatch(AlertActions.showGlobalAlert(AlertMessages.ATTACHMENT_ADDED));
+        return response.data;
+      })
+      .catch((error) => {
+        throw error;
+      });
+  };  
+  
 export function refreshTask(taskIdentifier) {
   return {
     type: ActionTypes.REFRESH_TASK,
@@ -1033,6 +1052,12 @@ export function markTaskAsUnRead(taskIdentifier) {
 }
 
 export function deleteTasksLink(sourceTaskIdentifier, targetTaskIdentifier) {
+  if(sourceTaskIdentifier === 'START_INDICATOR') {
+    sourceTaskIdentifier = targetTaskIdentifier
+  }
+  if(targetTaskIdentifier === 'END_INDICATOR') {
+    targetTaskIdentifier = sourceTaskIdentifier
+  }
   return {
     type: ActionTypes.DELETE_TASKS_LINK,
     sourceTaskIdentifier,

@@ -141,13 +141,13 @@ export const WorkflowFoldersHeaderLabel = styled(Typography)`
 `;
 
 export const WorkflowSearchHorizontalLineContainer = styled.div`
-  width: 317px;
+  width: 100%;
   height: 16px;
   padding: 8px 0px 8px 0px;
   gap: 10px;
 `;
 export const WorkflowSearchHorizontalLine = styled.div`
-  width: 317px;
+  width: 100%;
   border: 1px solid ${palette.lightGrayishBlue};
 `;
 

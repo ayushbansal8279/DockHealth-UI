@@ -73,7 +73,6 @@ const PatientsToolbar = ({ searchValue, setSearchValue }) => {
   const [isSavePopupOpen, setSavePopupOpen] = useState(false);
   const [editIdentifier, setEditIdentifier] = useState('');
   const [customFinalFilter, setCustomFinalFilter] = useState({});
-  const [selectedCustomFilter, setSelectedCustomFilter] = useState({});
   const [customFilteredData, setCustomFilteredData] = useState({});
   const { 0: filterOpen, 2: closeFilter, 3: toggleFilter } = useBoolean(false);
   const filterButtonReference = useRef(null);
@@ -316,8 +315,6 @@ const PatientsToolbar = ({ searchValue, setSearchValue }) => {
           setEditIdentifier={setEditIdentifier}
           customFinalFilter={customFinalFilter}
           setCustomFinalFilter={setCustomFinalFilter}
-          selectedCustomFilter={selectedCustomFilter}
-          setSelectedCustomFilter={setSelectedCustomFilter}
           customFilteredData={customFilteredData}
           setCustomFilteredData={setCustomFilteredData}
         />

@@ -42,22 +42,18 @@ const SaveFilterPopup = ({
   setFinalFilter,
   openPopover,
   filteredData,
-  onSelectFilters,
   setCustomFinalFilter,
   customFinalFilter,
-  setSelectedQuickFilter,
   customFilteredData,
   setCustomFilteredData,
-  selectedCustomFilter,
   selectedQuickFilter,
   selectQuickFilter,
   handleSelectedFiltersChange,
   fiterCount,
   setFilterCount,
-  showFiterCount,
+  showFilterCount,
 }) => {
   const [searchInputValue, setSearchInputValue] = useState('');
-  const [quickfilterName, setQuickfilterName] = useState('');
   const [onlyone, setOnlyone] = useState(true);
   const [everyOne, setEveryOne] = useState(false);
   const [isQuickFilterEdit, setIsQuickFilterEdit] = useState(false);
@@ -69,7 +65,6 @@ const SaveFilterPopup = ({
       quickFiltersList.map((item) => {
         if (item.quickFilterIdentifier === editIdentifier) {
           setSearchInputValue(item.name);
-          setQuickfilterName(item.name);
           setIsQuickFilterEdit(true);
           if (item.scope === QuickFilterScope.ORGANIZATION) {
             setEveryOne(true);
@@ -88,26 +83,6 @@ const SaveFilterPopup = ({
     setOnlyone(true);
   }, [editIdentifier]);
 
-  // If we need the disable option later
-  // const [isDisable, setDisable] = useState(false);
-  // useEffect(() => {
-  //   const isFilterOptionsSame =
-  //     isQuickFilterEdit &&
-  //     JSON.stringify(selectedCustomFilter) ===
-  //       JSON.stringify(customFinalFilter);
-
-  //   const isQuickfilterNameSame =
-  //     quickfilterName && searchInputValue === quickfilterName;
-
-  //   setDisable(
-  //     searchInputValue === '' || (isFilterOptionsSame && isQuickfilterNameSame),
-  //   );
-  // }, [
-  //   isQuickFilterEdit,
-  //   selectedCustomFilter,
-  //   customFinalFilter,
-  //   searchInputValue,
-  // ]);
 
   const selectFilter = () => {
     if (selectedQuickFilter === editIdentifier) {
@@ -247,7 +222,7 @@ const SaveFilterPopup = ({
               customFinalFilter={customFinalFilter}
               fiterCount={fiterCount}
               setFilterCount={setFilterCount}
-              showFiterCount={showFiterCount}
+              showFilterCount={showFilterCount}
             />
           </div>
         )}

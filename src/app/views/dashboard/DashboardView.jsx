@@ -40,7 +40,7 @@ import newUserTourHooks from './new-user-tour-hooks';
 import { organizationSelector } from '@/app/selectors/organization-selectors';
 import { getDashboardTaskViewFilter } from '@/app/helpers/local-storage-helper';
 
-const { ADMIN, OWNER, MEMBER, GUEST, DOCK_LITE } = UserOrganizationRole;
+const { ADMIN, OWNER, MEMBER, GUEST, DOCK_LITE, DOCK_PRO } = UserOrganizationRole;
 
 const DashboardView = ({ tabName }) => {
   const pusher = useRef(initializePusher());
@@ -64,11 +64,11 @@ const DashboardView = ({ tabName }) => {
 
   const TAB_RESTRICTIONS = {
     [DashboardTasksTab.MY_TASKS]: {
-      allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST, DOCK_LITE],
+      allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST, DOCK_LITE, DOCK_PRO],
       path: HOME_PATH,
     },
     [DashboardTasksTab.ALL_TASKS]: {
-      allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST, DOCK_LITE],
+      allowedToRoles: [ADMIN, OWNER, MEMBER, GUEST, DOCK_LITE, DOCK_PRO],
       path: HOME_ALL_TASKS_PATH,
     },
   };
@@ -266,6 +266,7 @@ const DashboardView = ({ tabName }) => {
                     openTourModal={forceOpenTourModal}
                     customerTypeLabel={customerTypeLabel}
                     setClearSearch={setClearSearch}
+                    clearFilter={clearFilter}
                     setClearFilter={setClearFilter}
                     isAddTaskDrawer={isAddTaskDrawer}
                     setAddTaskDrawer={setAddTaskDrawer}

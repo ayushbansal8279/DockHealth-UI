@@ -20,7 +20,7 @@ export const TitleName = styled.p`
   font-size: ${fontSizes.regular};
   font-weight: ${fontWeights.regularPlus};
   font-family: 'Outfit', sans-serif;
-  text-transform: uppercase;
+  // text-transform: uppercase;
 `;
 
 export const StickyHeader = styled.div`

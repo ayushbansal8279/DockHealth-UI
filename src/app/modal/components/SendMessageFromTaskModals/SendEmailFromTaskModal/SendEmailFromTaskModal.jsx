@@ -50,6 +50,7 @@ import { ConfirmButton } from '../../ModalButton/ModalButtons';
 const SendEmailFromTaskModal = ({
   source,
   taskIdentifier,
+  generatedSubject,
   generatedSummary,
   setEmailActive,
 }) => {
@@ -90,6 +91,7 @@ const SendEmailFromTaskModal = ({
 
   useEffect(() => {
     if (fromAiSummary) {
+      setSubject(generatedSubject);
       setDetailsState(generatedSummary);
     }
   }, [fromAiSummary, generatedSummary]);

@@ -32,6 +32,7 @@ import {
   withVirtualTaskListScrollContext,
 } from './VirtualTaskListScrollContext';
 import localStorageHelper from '@/app/helpers/local-storage-helper';
+import { getTaskListWorkflowStatusStorageKey } from '@/app/helpers/tasklist-helpers';
 
 export interface Props {
   groupedTasks: any[];
@@ -93,10 +94,12 @@ function VirtualTaskList({ groupedTasks, showClearSortFiltersModal }: Props) {
 
   const currentTaskList = useSelector(currentTaskListSelector);
 
+  const storageKey = getTaskListWorkflowStatusStorageKey(
+    currentTaskList?.taskListIdentifier,
+  );
+
   const isShowCompletedTasksEnabled =
-    localStorageHelper.getItem(
-      `workflowStatus${currentTaskList?.taskListIdentifier}`,
-    ) ?? false;
+    localStorageHelper.getItem(storageKey) ?? false;
 
   const elementRef = useRef(null);
   const { updateVisibleWidth } = useVirtualTaskListScrollContext();

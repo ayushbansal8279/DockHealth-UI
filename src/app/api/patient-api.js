@@ -3,7 +3,7 @@ import { log } from 'helpers/log';
 import { noop, showAlert } from 'helpers/utility-functions';
 import { mapSelectedOptionsToRequestPayload } from 'helpers/filter-options-helpers';
 import axios from './axios-heydoc';
-import { error } from '../actions/notification-actions';
+import { blobFileDownload } from '../helpers/blob-file-download';
 
 export function getAllPatients() {
   return axios
@@ -295,13 +295,7 @@ export function downloadPatientListData(
       : {},
   })
     .then((response) => {
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement('a');
-      link.style.display = 'none';
-      link.href = url;
-      link.setAttribute('download', filename);
-      document.body.append(link);
-      link.click();
+      blobFileDownload(new Blob([response.data]), filename);
     })
     .catch(noop);
 }

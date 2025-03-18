@@ -5,12 +5,14 @@ import TaskItemPopover from 'components/task/TaskItemPopover/TaskItemPopover';
 import TaskIcon from 'components/task/TaskIcon/TaskIcon';
 import DateLabel from 'components/common/DateLabel/DateLabel';
 import { updatePartialWorkflow } from 'actions/task-template-actions';
-import { ReminderType } from 'helpers/task-helpers';
+import { checkDateTimeIntent, DueDateIntent, ReminderType } from 'helpers/task-helpers';
 import { isWorkflowDueDateOverdue } from 'helpers/workflow-helpers';
 import { useDispatch } from 'react-redux';
 import { AddPlaceholder, DueDatesContainer, DueDateWrapper } from './styled';
 import { openModal } from '@/app/modal/actions';
 import { isDueDateValid } from '@/app/helpers/date-validation-helper';
+import { adjustUTCDateForDateIntent } from '../../task/DueDatePicker/helpers';
+import moment from 'moment';
 
 const TaskTemplateDueDate = (props) => {
   const { workflow, disabled = false } = props;
@@ -20,7 +22,15 @@ const TaskTemplateDueDate = (props) => {
 
   const handleSave = useCallback(
     (updatedDueDateTime) => {
-      const payload = { dueDateTime: updatedDueDateTime };
+      const dueDateIntent = checkDateTimeIntent(updatedDueDateTime);
+      const payload = {
+        dueDateTime: updatedDueDateTime
+          ? dueDateIntent === DueDateIntent.DATE
+            ? moment.utc(updatedDueDateTime).startOf('day').toISOString()
+            : moment(updatedDueDateTime).toISOString()
+          : null,
+        dueDateIntent: updatedDueDateTime ? dueDateIntent : DueDateIntent.DATE,
+      };
 
       if (!updatedDueDateTime) payload.dueDateTimeCleared = true;
 
@@ -53,10 +63,12 @@ const TaskTemplateDueDate = (props) => {
         content={({ closePopover }) => (
           <DueDatePicker
             taskIdentifier={identifier}
-            selectedDate={dueDateTime}
+            selectedDate={adjustUTCDateForDateIntent(dueDateTime ? moment(dueDateTime).local() : null, checkDateTimeIntent(dueDateTime))}
             disableRecurring
             onDateChange={handleDueDateChange}
             onCloseClick={closePopover}
+            dueDateIntent={checkDateTimeIntent(dueDateTime)}
+            dateType="dueDate"
           />
         )}
       >
@@ -66,6 +78,7 @@ const TaskTemplateDueDate = (props) => {
             isOverdue={isWorkflowDueDateOverdue(workflow)}
             hasReminder={reminderType && reminderType !== ReminderType.NONE}
             tootipTitle="Edit Due Date"
+            dueDateIntent={checkDateTimeIntent(dueDateTime)}
           />
         ) : (
           <DueDateWrapper>
