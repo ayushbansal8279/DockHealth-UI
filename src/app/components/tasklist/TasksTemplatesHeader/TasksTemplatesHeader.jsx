@@ -12,6 +12,7 @@ const TasksTemplatesHeader = ({
   taskItemConfig = {},
   tasksHeaderTextTransform,
   tasksHeaderTextColor,
+  shareTaskWorkflowAvailable,
 }) => {
   const mergedConfig = useMemo(
     () => ({
@@ -20,6 +21,11 @@ const TasksTemplatesHeader = ({
     }),
     [taskItemConfig],
   );
+
+  if (!shareTaskWorkflowAvailable) {
+    delete mergedConfig[TaskTemplateItemColumn.SHARED_BY];
+    delete mergedConfig[TaskTemplateItemColumn.SHARED_WITH];
+  }
 
   return (
     <SortHeaderRow>
@@ -35,6 +41,24 @@ const TasksTemplatesHeader = ({
           label="Name"
           sort={sort}
           onSortChange={onSortChange}
+          tasksHeaderTextTransform={tasksHeaderTextTransform}
+          tasksHeaderTextColor={tasksHeaderTextColor}
+        />
+      )}
+      {mergedConfig[TaskTemplateItemColumn.SHARED_BY] && (
+        <ColumnSortHeader
+          id={TaskTemplateItemColumn.SHARED_BY}
+          label="Shared by"
+          width={150}
+          tasksHeaderTextTransform={tasksHeaderTextTransform}
+          tasksHeaderTextColor={tasksHeaderTextColor}
+        />
+      )}
+      {mergedConfig[TaskTemplateItemColumn.SHARED_WITH] && (
+        <ColumnSortHeader
+          id={TaskTemplateItemColumn.SHARED_WITH}
+          label="Shared with"
+          width={150}
           tasksHeaderTextTransform={tasksHeaderTextTransform}
           tasksHeaderTextColor={tasksHeaderTextColor}
         />

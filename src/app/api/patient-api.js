@@ -245,7 +245,7 @@ export const archivePatient = (patientNoteIdentifier) =>
 
 export const deletePatientArchive = (patientNoteIdentifier) =>
   axios
-    .delete(`/patient/archivePatient/${patientNoteIdentifier}`)
+    .delete(`/patient/${patientNoteIdentifier}`)
     .then((response) => response.data)
     .catch((error) => {
       showAlert({
