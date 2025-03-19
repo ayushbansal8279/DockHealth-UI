@@ -56,10 +56,12 @@ const EditCustomFieldModal = ({
   taskListIdentifier,
   profileTypeIdentifier,
   fetchUserCustomFields,
+  origin,
 }) => {
   const [displayOptionsState, setDisplayOptionsState] = useState({
     displayOptions: customField?.displayOptions || [],
   });
+  const isDisabled = origin === 'Profile Builder';
 
   const handleDisplayOptionChange = useCallback(
     (value, displayOption) => {
@@ -467,6 +469,7 @@ const EditCustomFieldModal = ({
                         <FormSelect
                           variant="outlined"
                           required
+                          disabled={isDisabled}
                           label="Field Category Type"
                           name="fieldCategoryType"
                           options={CATEGORY_OPTIONS}

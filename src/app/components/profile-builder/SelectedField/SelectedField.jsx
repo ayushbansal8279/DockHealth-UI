@@ -51,6 +51,7 @@ const SelectedField = ({ field, category }) => {
         options: {
           type: 'PATIENT',
         },
+        origin:'Profile Builder',
         customField: field,
         onUpdated: (updatedField) => {
           // setFieldName(updatedField.name);
