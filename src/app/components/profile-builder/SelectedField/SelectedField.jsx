@@ -49,7 +49,7 @@ const SelectedField = ({ field, category }) => {
     dispatch(
       openModal('EditCustomField', {
         options: {
-          type: 'PATIENT',
+          type: context,
         },
         origin:'Profile Builder',
         customField: field,
@@ -185,7 +185,7 @@ const SelectedField = ({ field, category }) => {
         size="small"
         value={field.name}
         placeholder={field?.placeholder}
-        onBlur={handleBlur}
+        onEnter={handleBlur}
       />
       <IconWrapper>
         {!isDefault && !isPredefined ? (
