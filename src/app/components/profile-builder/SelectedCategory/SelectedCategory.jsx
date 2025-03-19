@@ -133,9 +133,6 @@ const SelectedCategory = ({ category }) => {
           )}
         </Droppable>
       </DragDropContext>
-      {/* {category?.fields?.map((field) => {
-        return <SelectedField category={category} field={field} />;
-      })} */}
       <Droppable droppableId={category.identifier}>
         {(provided) => (
           <FieldDropper {...provided.droppableProps} ref={provided.innerRef}>

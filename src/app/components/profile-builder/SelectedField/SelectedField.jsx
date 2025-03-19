@@ -16,7 +16,13 @@ import { useDispatch } from 'react-redux';
 import { openModal } from 'modal/actions';
 import { ProfileBuilderContext } from '../ProfileBuilder';
 import { createProfileFieldType } from '@/app/api/profile-type-field-api';
-import { FieldArea, FieldIconContainer, DeletIcon, EditIcon } from './styled';
+import {
+  FieldArea,
+  FieldIconContainer,
+  DeletIcon,
+  EditIcon,
+  IconWrapper,
+} from './styled';
 
 const FieldTypeImages = {
   [FieldType.TEXT]: TEXT,
@@ -35,6 +41,7 @@ const SelectedField = ({ field, category }) => {
   const { tabName, identifier } = useParams();
   const context = tabName === 'patients' ? 'PATIENT' : 'PROFILE';
   const isDefault = field.contextType === 'DEFAULT';
+  const isPredefined = field.contextType === 'PREDEFINED';
 
   const { setSelectedCategories } = useContext(ProfileBuilderContext);
 
@@ -85,7 +92,6 @@ const SelectedField = ({ field, category }) => {
 
   const handleBlur = async (value) => {
     if (field.tempId && value) {
-      
       const patientPayload = {
         fieldCategoryType: 'PATIENT_OTHER',
         fieldType: field.fieldType,
@@ -173,21 +179,27 @@ const SelectedField = ({ field, category }) => {
         />
       </FieldIconContainer>
       <TextField
-        disabled={field.contextType === 'DEFAULT'}
+        disabled={isDefault || isPredefined}
         border
         size="small"
         value={field.name}
         placeholder={field?.placeholder}
         onBlur={handleBlur}
       />
-      <EditIcon
-        sx={{ color: isDefault && '#9e9e9e' }}
-        onClick={!isDefault && handleEditClick}
-      />
-      <DeletIcon
-        sx={{ color: isDefault && '#9e9e9e' }}
-        onClick={!isDefault && handleRemoveFieldFromGroup}
-      />
+      <IconWrapper>
+        {!isDefault && !isPredefined ? (
+          <EditIcon onClick={handleEditClick} />
+        ) : (
+          <></>
+        )}
+      </IconWrapper>
+      <IconWrapper>
+        {!isDefault ? (
+          <DeletIcon onClick={handleRemoveFieldFromGroup} />
+        ) : (
+          <></>
+        )}
+      </IconWrapper>
     </FieldArea>
   );
 };

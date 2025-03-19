@@ -40,7 +40,6 @@ export const SingleField = styled.div`
   display: flex;
   gap: 20px;
   align-items: center;
-  flex-wrap: wrap;
   width: 48%;
   color: ${palette.coolGrey1};
   height: 44px;
