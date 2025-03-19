@@ -25,10 +25,19 @@ export const getProfileName = (profileTypeFields, profile) => {
       return profileTypeField?.displayOptions?.includes('PROFILE_NAME');
     })
     .map(
-      (field) =>
-        field.values?.[0] ||
-        field.values?.[0].value ||
-        field.values?.[0]?.customFieldOption?.name,
+      (field) => {
+        if (["MULTI_SELECT", "PICK_LIST", "RELATIONSHIP"].includes(field.profileTypeFieldType)) {
+          const reference = field.references?.find(
+            (ref) => ref.identifier === field.values?.[0]
+          );
+          return reference?.displayValue || "";
+        }
+        return (
+          field.values?.[0] ||
+          field.values?.[0].value ||
+          field.values?.[0]?.customFieldOption?.name
+        )
+      }
     );
-  return profileName;
+    return profileName;
 };
