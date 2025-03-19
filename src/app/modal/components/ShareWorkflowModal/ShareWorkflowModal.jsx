@@ -16,9 +16,9 @@ import {
 import OrganizationsSelect from './OrganizationsSelect/OrganizationsSelect';
 
 const ShareWorkflowModal = (props) => {
-  const { closeModal, confirm } = props;
+  const { closeModal, confirm, sharedWithOrganizations = []} = props;
 
-  const [selectedOrganizations, setSelectedOrganizations] = useState([]);
+  const [selectedOrganizations, setSelectedOrganizations] = useState(sharedWithOrganizations);
 
   const handleConfirm = useCallback(() => {
 

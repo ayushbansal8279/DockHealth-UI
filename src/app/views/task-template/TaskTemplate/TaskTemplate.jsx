@@ -119,6 +119,7 @@ const TaskTemplate = ({
     dispatch(
       ModalActions.openModal('ShareWorkflow', {
         workflowIdentifier: identifier,
+        sharedWithOrganizations: template?.sharedWithOrganizations,
         confirm: (selectedItems) => {
           dispatch(
             shareWorkflowWithOrganization(
