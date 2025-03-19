@@ -51,7 +51,7 @@ const SelectedField = ({ field, category }) => {
         options: {
           type: context,
         },
-        origin:'Profile Builder',
+        fieldCategoryDisabled: true,
         customField: field,
         onUpdated: (updatedField) => {
           // setFieldName(updatedField.name);
