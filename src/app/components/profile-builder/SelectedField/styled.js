@@ -28,3 +28,7 @@ export const EditIcon = styled(Edit)`
 export const DeletIcon = styled(Delete)`
   cursor: pointer;
 `;
+
+export const IconWrapper = styled.div`
+  width: 30px;
+`;

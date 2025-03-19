@@ -56,6 +56,7 @@ const EditCustomFieldModal = ({
   taskListIdentifier,
   profileTypeIdentifier,
   fetchUserCustomFields,
+  fieldCategoryDisabled = false,
 }) => {
   const [displayOptionsState, setDisplayOptionsState] = useState({
     displayOptions: customField?.displayOptions || [],
@@ -467,6 +468,7 @@ const EditCustomFieldModal = ({
                         <FormSelect
                           variant="outlined"
                           required
+                          disabled={fieldCategoryDisabled}
                           label="Field Category Type"
                           name="fieldCategoryType"
                           options={CATEGORY_OPTIONS}
