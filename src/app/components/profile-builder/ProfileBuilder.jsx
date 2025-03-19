@@ -35,14 +35,14 @@ const ProfileBuilder = () => {
   const [allCustomFields, setAllCustomFields] = useState([]);
   const [profileName, setProfileName] = useState('');
 
-  const Context = tabName === 'patients' ? 'PATIENT' : 'PROFILETYPE';
+  const context = tabName === 'patients' ? 'PATIENT' : 'PROFILETYPE';
 
   const initializePatientData = async () => {
     try {
       const [customGroups, allCustomFields, defaultFields] = await Promise.all([
-        CustomFieldApi.searchCustomFiledGroups(Context),
+        CustomFieldApi.searchCustomFiledGroups(context),
         CustomFieldApi.getAllPatientCustomFields(),
-        CustomFieldApi.getDefauldFields(Context),
+        CustomFieldApi.getDefauldFields(context),
       ]);
 
       setAllCustomFields(allCustomFields);
@@ -55,7 +55,7 @@ const ProfileBuilder = () => {
 
       if (!hasDefaultFields) {
         const defaultCategory = {
-          context: Context,
+          context,
           name: 'Default Group',
           fields: getDefaultsRefrenceIds(defaultFields),
           isDefault: true,
@@ -92,7 +92,7 @@ const ProfileBuilder = () => {
   const initializeCustomProfileData = async () => {
     try {
       const [customGroups, allCustomFields] = await Promise.all([
-        CustomFieldApi.searchCustomFiledGroups(Context, identifier),
+        CustomFieldApi.searchCustomFiledGroups(context, identifier),
         getAllProfileFieldTypes(identifier),
       ]);
 
@@ -120,10 +120,10 @@ const ProfileBuilder = () => {
   };
 
   useEffect(() => {
-    if (Context === 'PATIENT') {
+    if (context === 'PATIENT') {
       setProfileName('Patient Profile Builder');
       initializePatientData();
-    } else if (Context === 'PROFILETYPE') {
+    } else if (context === 'PROFILETYPE') {
       getProfileDetailsType(identifier).then((profileTypeDetails) => {
         const profileName = `${profileTypeDetails?.name} Profile Builder`
         setProfileName(profileName);
@@ -243,7 +243,7 @@ const ProfileBuilder = () => {
         >
           <BuilderContainer>
             <PlayGroungWrapper>
-              <BuilderPlayground context={Context} identifier={identifier} />
+              <BuilderPlayground context={context} identifier={identifier} />
             </PlayGroungWrapper>
             <CategoryWrapper>
               <ProfileBuilderCategories allCustomFields={allCustomFields} />
