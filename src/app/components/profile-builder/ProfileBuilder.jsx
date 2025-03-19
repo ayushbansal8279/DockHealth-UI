@@ -19,11 +19,11 @@ import {
 import { fieldTypes } from './helper';
 import { useParams } from 'react-router-dom';
 import { showGlobalErrorAlert } from 'alert/actions';
-import * as ProfileTypeFieldApi from 'api/profile-type-field-api';
 import * as CustomFieldApi from 'api/custom-fields-api';
 import { useDispatch } from 'react-redux';
 import uuidv4 from '@/app/views/chat/channel-settings/uuid';
 import { getAllProfileFieldTypes } from '@/app/api/profile-type-field-api';
+import { getProfileDetailsType } from '@/app/api/profile-type-api';
 
 export const ProfileBuilderContext = createContext({});
 
@@ -33,6 +33,7 @@ const ProfileBuilder = () => {
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [isNewCategory, setNewCategory] = useState(false);
   const [allCustomFields, setAllCustomFields] = useState([]);
+  const [profileName, setProfileName] = useState('');
 
   const Context = tabName === 'patients' ? 'PATIENT' : 'PROFILETYPE';
 
@@ -120,8 +121,13 @@ const ProfileBuilder = () => {
 
   useEffect(() => {
     if (Context === 'PATIENT') {
+      setProfileName('Patient Profile Builder');
       initializePatientData();
     } else if (Context === 'PROFILETYPE') {
+      getProfileDetailsType(identifier).then((profileTypeDetails) => {
+        const profileName = `${profileTypeDetails?.name} Profile Builder`
+        setProfileName(profileName);
+      });
       initializeCustomProfileData();
     }
   }, []);
@@ -229,7 +235,7 @@ const ProfileBuilder = () => {
         }}
       >
         <HeaderContainer>
-          <BasicLayoutHeader title={'Patient Profile Builder'} />
+          <BasicLayoutHeader title={profileName} />
         </HeaderContainer>
         <DragDropContext
           onDragStart={(e) => handleDragStart(e)}
