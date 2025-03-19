@@ -23,8 +23,8 @@ const TasksTemplatesHeader = ({
   );
 
   if (!shareTaskWorkflowAvailable) {
-    mergedConfig.remove(TaskTemplateItemColumn.SHARED_BY);
-    mergedConfig.remove(TaskTemplateItemColumn.SHARED_WITH);
+    delete mergedConfig[TaskTemplateItemColumn.SHARED_BY];
+    delete mergedConfig[TaskTemplateItemColumn.SHARED_WITH];
   }
 
   return (

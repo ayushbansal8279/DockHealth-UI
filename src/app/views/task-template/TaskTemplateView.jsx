@@ -305,7 +305,7 @@ const TaskTemplateView = () => {
               onSortChange={handleSortChange}
               tasksHeaderTextTransform={tasksHeaderTextTransformItem?.value}
               tasksHeaderTextColor={tasksHeaderTextColorItem?.value}
-              shareTaskWorkflowAvailable
+              shareTaskWorkflowAvailable={shareTaskWorkflowAvailable}
             />
             {isFetchingTaskTemplates ? (
               <TaskTemplatesLoader />
@@ -324,7 +324,7 @@ const TaskTemplateView = () => {
                         'MM/DD/YYYY',
                       )}
                       taskTemplate={template}
-                      shareTaskWorkflowAvailable
+                      shareTaskWorkflowAvailable={shareTaskWorkflowAvailable}
                     />
                   </TaskTemplateFolder>
                 ))}
@@ -342,7 +342,7 @@ const TaskTemplateView = () => {
                         'MM/DD/YYYY',
                       )}
                       taskTemplate={template}
-                      shareTaskWorkflowAvailable
+                      shareTaskWorkflowAvailable={shareTaskWorkflowAvailable}
                     />
                   </TaskTemplate>
                 ))}
