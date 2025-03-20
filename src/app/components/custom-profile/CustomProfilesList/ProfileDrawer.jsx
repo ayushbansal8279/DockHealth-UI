@@ -53,7 +53,11 @@ const ProfileDrawer = ({
   const formMethods = useForm({
     reValidateMode: 'onSubmit',
   });
-  const { handleSubmit, getValues, formState: { errors } } = formMethods;
+  const {
+    handleSubmit,
+    getValues,
+    formState: { errors },
+  } = formMethods;
   const formReference = useRef(null);
 
   const hasErrors = Object.keys(errors).length > 0;
@@ -86,10 +90,14 @@ const ProfileDrawer = ({
                 : [
                     type.fieldType === FieldType.DROPDOWN
                       ? { customFieldOption: { identifier: value } }
-                      : { value: type.fieldType === FieldType.HYPERLINK ? normalizeHyperlink(value) : value },
+                      : {
+                          value:
+                            type.fieldType === FieldType.HYPERLINK
+                              ? normalizeHyperlink(value)
+                              : value,
+                        },
                   ],
             };
-            
           },
         ),
         // eslint-disable-next-line no-shadow
@@ -162,10 +170,10 @@ const ProfileDrawer = ({
       dispatch(
         openModal('InterruptEdit', {
           description: 'You have unsaved',
-          profileTypeName: getProfileName(types, profile)?.[0],
+          profileTypeName: getProfileName(types, profile)?.[0] || title,
           confirm: async () => {
             const isValid = await formMethods.trigger();
-            if(isValid) {
+            if (isValid) {
               editProfile(getValues());
               if (!addMode && profile) {
                 setEditMode(false);
@@ -193,13 +201,14 @@ const ProfileDrawer = ({
   const menu = useMemo(
     () => [
       { name: 'Edit', onClick: () => setEditMode(true) },
-      { name: 'Merge', 
+      {
+        name: 'Merge',
         onClick: () => {
           dispatch(
             openModal('ProfilePicker', {
               profileTypeIdentifier: profileTypeIdentifier,
               profile: profile,
-            })
+            }),
           );
           onClose();
         },
