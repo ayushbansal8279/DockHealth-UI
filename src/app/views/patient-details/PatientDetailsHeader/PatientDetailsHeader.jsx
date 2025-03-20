@@ -14,6 +14,7 @@ import {
   userProfileSelector,
   selectedUserOrganizationSelector,
   userHasAiSummaryViewFeatureSelector,
+  userHasProfileBuilderFeatureSelector,
 } from 'selectors/user-selectors';
 import { PATIENTS_LIST_ALL } from 'routing/helpers/paths';
 import { organizationSelector } from 'selectors/organization-selectors';
@@ -85,6 +86,9 @@ const PatientDetailsHeader = ({ openDrawer }) => {
   const genderIdentityDisabled =
     currentOrganization?.disabledFeatures?.includes('PATIENT_GENDER') || false;
   const embeddedMode = sessionStorage.getItem('EmbeddedMode') || false;
+  const profileBuilderFeatureAvailable = useSelector(
+    userHasProfileBuilderFeatureSelector,
+  );
 
   const goBack = useCallback(() => {
     if (cameFrom) {
@@ -139,7 +143,7 @@ const PatientDetailsHeader = ({ openDrawer }) => {
                   </ButtonContainer>
                 )}
                 <Box mx={1} />
-                {taskListRestrictions?.createTask !== DISABLED && (
+                {profileBuilderFeatureAvailable && (
                   <ButtonContainer onClick={openDrawer}>
                     <PatientDetailsLabel>View profile</PatientDetailsLabel>
                   </ButtonContainer>

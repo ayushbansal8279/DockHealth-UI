@@ -4,6 +4,7 @@ import { useHistory, useLocation, useParams } from 'react-router-dom';
 import ArrowLeftIcon from 'img/arrow-left.svg';
 import { Box, Grid, Typography } from '@mui/material';
 import {
+  userHasProfileBuilderFeatureSelector,
   userProfileSelector,
 } from 'selectors/user-selectors';
 import { CUSTOM_PROFILES_PATH } from 'routing/helpers/paths';
@@ -77,6 +78,9 @@ const ProfileDetailsHeader = ({ openDrawer }) => {
   const taskListRestrictions =
     TASK_LIST_RESTRICTIONS_PROFILES[currentUser?.orgUserRole];
   const embeddedMode = sessionStorage.getItem('EmbeddedMode') || false;
+  const profileBuilderFeatureAvailable = useSelector(
+    userHasProfileBuilderFeatureSelector,
+  );
 
   const goBack = useCallback(() => {
     if (cameFrom) {
@@ -125,7 +129,7 @@ const ProfileDetailsHeader = ({ openDrawer }) => {
                     <ProfileDetailsLabel>View details</ProfileDetailsLabel>
                   </ButtonContainer>
                 )}
-                {taskListRestrictions?.createTask !== DISABLED && (
+                {profileBuilderFeatureAvailable && (
                   <ButtonContainer onClick={openDrawer}>
                     <ProfileDetailsLabel>View profile</ProfileDetailsLabel>
                   </ButtonContainer>

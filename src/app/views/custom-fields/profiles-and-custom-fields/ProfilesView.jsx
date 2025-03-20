@@ -14,6 +14,7 @@ import { openModal, closeModal } from 'modal/actions';
 import { checkIfUserIsOrganizationAdmin } from 'helpers/user-helper';
 import {
   userHasCustomProfilesFeatureSelector,
+  userHasProfileBuilderFeatureSelector,
   userProfileSelector,
 } from 'selectors/user-selectors';
 import { StyledDataGrid } from './DataGridStyles';
@@ -39,6 +40,10 @@ const ProfilesAndCustomFieldsView = () => {
 
   const userHasCustomProfilesAvailable = useSelector(
     userHasCustomProfilesFeatureSelector,
+  );
+
+  const profileBuilderFeatureAvailable = useSelector(
+    userHasProfileBuilderFeatureSelector,
   );
 
   useEffect(() => {
@@ -127,6 +132,7 @@ const ProfilesAndCustomFieldsView = () => {
         onDeleteProfile,
         onConfigureCustomFields,
         onOpenProfileBuilder,
+        profileBuilderFeatureAvailable,
       }),
     [
       onDeleteProfile,
