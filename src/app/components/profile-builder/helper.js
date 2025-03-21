@@ -21,21 +21,21 @@ export const FieldType = {
 
 export const fieldTypes = [
   {
-    placeholder: 'Short Filed',
+    placeholder: 'Short Text Filed',
     dragId: FieldType.TEXT,
     fieldType: FieldType.TEXT,
     img: ShortText,
     index: 1,
   },
   {
-    placeholder: 'Rich Text Paragraph',
+    placeholder: 'Rich Text Filed',
     dragId: FieldType.LONG_TEXT,
     fieldType: FieldType.LONG_TEXT,
     img: RichText,
     index: 2,
   },
   {
-    placeholder: 'Date',
+    placeholder: 'Calender Date',
     dragId: FieldType.DATE,
     fieldType: FieldType.DATE,
     img: Calender,
@@ -49,35 +49,35 @@ export const fieldTypes = [
     index: 4,
   },
   {
-    placeholder: 'Boolean',
+    placeholder: 'Yes/No',
     dragId: FieldType.BOOL,
     fieldType: FieldType.BOOL,
     img: Boolean,
     index: 5,
   },
   {
-    placeholder: 'Link Field',
+    placeholder: 'Link',
     dragId: FieldType.HYPERLINK,
     fieldType: FieldType.HYPERLINK,
     img: Link,
     index: 6,
   },
   {
-    placeholder: 'Single Select',
+    placeholder: 'Dropdown Selection',
     dragId: FieldType.DROPDOWN,
     fieldType: FieldType.DROPDOWN,
     img: DropDown,
     index: 7,
   },
   {
-    placeholder: 'Multi-Selection',
+    placeholder: 'Dropdown Multi-Selection',
     dragId: FieldType.DROPDOWN_MULTI,
     fieldType: FieldType.DROPDOWN_MULTI,
     img: DropDown,
     index: 8,
   },
   {
-    placeholder: 'Link Profile',
+    placeholder: 'Relationship',
     dragId: FieldType.RELATIONSHIP,
     fieldType: FieldType.RELATIONSHIP,
     img: Profile,
@@ -113,8 +113,22 @@ export const getDefaultsRefrenceIds = (defaulFields) => {
 
 const toCamelCaseWithSpaces = (fieldName) => {
   if (!fieldName) return '';
-  let result = fieldName.charAt(0).toUpperCase() + fieldName.slice(1);
-  return result.replace(/([A-Z])(?=[a-z]|$)/g, ' $1').trim();
+
+  const nameMap = {
+    firstName: 'First Name',
+    lastName: 'Last Name',
+    middleName: 'Middle Name',
+    gender: 'Sex at Birth',
+    genderIdentity: 'Gender Identity',
+    dob: 'Date of Birth',
+    mrn: 'MRN',
+    phoneMobile: 'Mobile Phone',
+    phoneHome: 'Home Phone',
+  };
+
+  if (nameMap[fieldName]) {
+    return nameMap[fieldName];
+  }
 };
 
 export const convertDefaultFields = (defaultFields) => {
