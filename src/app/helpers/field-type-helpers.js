@@ -3,7 +3,8 @@ import FieldTypeNumberImg from 'img/patient/field-type-number.svg';
 import FieldTypeDateImg from 'img/patient/field-type-date.svg';
 import FieldTypeTextImg from 'img/patient/field-type-text.svg';
 import FieldTypeDropdownImg from 'img/patient/field-type-dropdown.svg';
-import FieldTypeLink from 'img/patient/field-type-link.svg';
+import FieldTypeLinkImg from 'img/patient/field-type-link.svg';
+import FieldTypeRelationshipImg from 'img/patient/field-type-relationship.svg';
 
 export const FieldType = {
   DATE: 'DATE',
@@ -101,7 +102,7 @@ export const FIELD_TYPES = [
   },
   {
     key: FieldType.HYPERLINK,
-    image: FieldTypeLink,
+    image: FieldTypeLinkImg,
     title: FieldTypeLabel[FieldType.HYPERLINK],
     description: 'Add a named link for a website',
   },
@@ -139,7 +140,7 @@ export const FIELD_TYPES = [
   },
   {
     key: FieldType.RELATIONSHIP,
-    image: FieldTypeLink,
+    image: FieldTypeRelationshipImg,
     title: FieldTypeLabel[FieldType.RELATIONSHIP],
     description: 'Link to other custom profiles',
   },

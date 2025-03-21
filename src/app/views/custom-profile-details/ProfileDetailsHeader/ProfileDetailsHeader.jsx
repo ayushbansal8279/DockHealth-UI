@@ -2,15 +2,12 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useLocation, useParams } from 'react-router-dom';
 import ArrowLeftIcon from 'img/arrow-left.svg';
-import { Box, Chip, Grid, Typography } from '@mui/material';
-// import Tooltip from 'components/common/Tooltip/Tooltip';
+import { Box, Grid, Typography } from '@mui/material';
 import {
+  userHasProfileBuilderFeatureSelector,
   userProfileSelector,
-  // selectedUserOrganizationSelector,
 } from 'selectors/user-selectors';
 import { CUSTOM_PROFILES_PATH } from 'routing/helpers/paths';
-// import { organizationSelector } from 'selectors/organization-selectors';
-// import { FieldType } from 'helpers/field-type-helpers';
 import {
   TASK_LIST_RESTRICTIONS_OPTIONS,
   TASK_LIST_RESTRICTIONS_PROFILES,
@@ -35,7 +32,7 @@ import {
 const { DISABLED } = TASK_LIST_RESTRICTIONS_OPTIONS;
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
-const ProfileDetailsHeader = () => {
+const ProfileDetailsHeader = ({ openDrawer }) => {
   const dispatch = useDispatch();
   const { name, profileTypeIdentifier, profileIdentifier } = useParams();
   const [profileTypeFields, setProfileTypeFields] = useState([]);
@@ -62,29 +59,6 @@ const ProfileDetailsHeader = () => {
       });
   };
 
-  // const profile = useMemo(
-  //   () => profiles.find(({ identifier }) => identifier === profileIdentifier),
-  //   [profiles, profileIdentifier],
-  // );
-
-  // const profileHeader = useMemo(
-  //   () =>
-  //     Object.fromEntries(
-  //       profile?.fields
-  //         .filter((field) =>
-  //           field?.profileTypeField?.displayOptions?.includes('PROFILE_HEADER'),
-  //         )
-  //         .map((field) => {
-  //           return [
-  //             field.profileTypeField.name,
-  //             field.values?.[0].value ||
-  //               field.values?.[0]?.customFieldOption.name,
-  //           ];
-  //         }) || [],
-  //     ),
-  //   [profile],
-  // );
-
   useEffect(() => {
     fetchProfileTypeFields();
     fetchProfile();
@@ -98,15 +72,15 @@ const ProfileDetailsHeader = () => {
 
   const history = useHistory();
   const location = useLocation();
-  // const [isDrawerOpen, setIsDrawerOpen, unsetIsDrawerOpen] = useBoolean(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const currentUser = useSelector(userProfileSelector);
-  // const currentOrganization = useSelector(selectedUserOrganizationSelector);
-  // const organization = useSelector(organizationSelector);
   const [cameFrom, setCameFrom] = useState();
   const taskListRestrictions =
     TASK_LIST_RESTRICTIONS_PROFILES[currentUser?.orgUserRole];
   const embeddedMode = sessionStorage.getItem('EmbeddedMode') || false;
+  const profileBuilderFeatureAvailable = useSelector(
+    userHasProfileBuilderFeatureSelector,
+  );
 
   const goBack = useCallback(() => {
     if (cameFrom) {
@@ -153,6 +127,11 @@ const ProfileDetailsHeader = () => {
                 {taskListRestrictions?.createTask !== DISABLED && (
                   <ButtonContainer onClick={() => setIsDrawerOpen(true)}>
                     <ProfileDetailsLabel>View details</ProfileDetailsLabel>
+                  </ButtonContainer>
+                )}
+                {profileBuilderFeatureAvailable && (
+                  <ButtonContainer onClick={openDrawer}>
+                    <ProfileDetailsLabel>View profile</ProfileDetailsLabel>
                   </ButtonContainer>
                 )}
               </Grid>

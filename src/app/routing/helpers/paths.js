@@ -22,6 +22,7 @@ export const SUBS_PAYMENT_FINISHED_PATH =
   '/settings/subscription-payment-finished';
 export const USERS_SETTINGS_PATH = '/settings/users';
 export const POFILES_SETTINGS_PATH = '/settings/profiles';
+export const POFILE_BUILDER_SETTINGS_PATH = '/settings/profile-builder';
 export const TASK_CUSTOMIZATIONS_PATH = '/settings/task-customizations';
 export const CUSTOM_FIELDS_SETTINGS_PATH = '/settings/custom-fields';
 export const DEVELOPERS_PATH = '/settings/developers';

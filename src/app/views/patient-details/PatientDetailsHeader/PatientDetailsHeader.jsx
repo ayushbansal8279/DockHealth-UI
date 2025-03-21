@@ -14,6 +14,7 @@ import {
   userProfileSelector,
   selectedUserOrganizationSelector,
   userHasAiSummaryViewFeatureSelector,
+  userHasProfileBuilderFeatureSelector,
 } from 'selectors/user-selectors';
 import { PATIENTS_LIST_ALL } from 'routing/helpers/paths';
 import { organizationSelector } from 'selectors/organization-selectors';
@@ -49,7 +50,7 @@ import PatientMetaDataField from './PatientMetaDataField';
 const { DISABLED } = TASK_LIST_RESTRICTIONS_OPTIONS;
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
-const PatientDetailsHeader = () => {
+const PatientDetailsHeader = ({ openDrawer }) => {
   const history = useHistory();
   const location = useLocation();
   const [isDrawerOpen, setIsDrawerOpen, unsetIsDrawerOpen] = useBoolean(false);
@@ -66,7 +67,7 @@ const PatientDetailsHeader = () => {
     mrn,
     gender,
     genderIdentity,
-    patientStatus
+    patientStatus,
   } = patient || {};
   const isFetchingPatient = useSelector(isFetchingPatientSelector);
   const currentUser = useSelector(userProfileSelector);
@@ -85,6 +86,9 @@ const PatientDetailsHeader = () => {
   const genderIdentityDisabled =
     currentOrganization?.disabledFeatures?.includes('PATIENT_GENDER') || false;
   const embeddedMode = sessionStorage.getItem('EmbeddedMode') || false;
+  const profileBuilderFeatureAvailable = useSelector(
+    userHasProfileBuilderFeatureSelector,
+  );
 
   const goBack = useCallback(() => {
     if (cameFrom) {
@@ -139,6 +143,12 @@ const PatientDetailsHeader = () => {
                   </ButtonContainer>
                 )}
                 <Box mx={1} />
+                {profileBuilderFeatureAvailable && (
+                  <ButtonContainer onClick={openDrawer}>
+                    <PatientDetailsLabel>View profile</PatientDetailsLabel>
+                  </ButtonContainer>
+                )}
+                <Box mx={1} />
                 <Chip label={patientStatus} />
                 <Box flex="500px 0 0">
                   {patient?.patientLabels?.map(
@@ -152,7 +162,7 @@ const PatientDetailsHeader = () => {
                       </Box>
                     ),
                   )}
-                </Box> 
+                </Box>
               </Grid>
             </Box>
             <ContactContainer>
