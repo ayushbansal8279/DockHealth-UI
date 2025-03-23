@@ -16,6 +16,10 @@ import { useDispatch } from 'react-redux';
 import { openModal } from 'modal/actions';
 import { ProfileBuilderContext } from '../ProfileBuilder';
 import { createProfileFieldType } from '@/app/api/profile-type-field-api';
+import { showAlert } from 'helpers/utility-functions';
+import { showGlobalAlert } from 'alert/actions';
+import AlertMessages from 'alert/AlertMessages';
+import { addCustomField } from '@/app/api/custom-fields-api';
 import {
   FieldArea,
   FieldIconContainer,
@@ -116,28 +120,42 @@ const SelectedField = ({ field, category }) => {
         (tempField) => tempField.tempId !== field.tempId,
       );
 
-      const payload = context === 'PATIENT' ? patientPayload : profilePayload;
-      const newlyAddedField = await createProfileFieldType(payload);
+      let newlyAddedField = null;
+      try{
+        newlyAddedField = context === 'PATIENT' ? await addCustomField(patientPayload, context) : await createProfileFieldType(profilePayload);
+      }catch(errorMessage){
+        showAlert({
+          status: 'error',
+          title: 'Error',
+          text:
+            errorMessage ??
+            'Error creating field. Please try again.',
+        });
+        return;
+      }
 
-      const updatedSavedRefrenceFields = [
-        ...savedFieldsRefrenceValue,
-        { fieldReferenceId: newlyAddedField.identifier },
-      ];
+      if (newlyAddedField) {
+        const updatedSavedRefrenceFields = [
+          ...savedFieldsRefrenceValue,
+          { fieldReferenceId: newlyAddedField.identifier },
+        ];
 
-      const updatedSavedActualFields = [
-        ...savedFieldsActualValue,
-        newlyAddedField,
-        ...remainingUnsavedFields,
-      ];
+        const updatedSavedActualFields = [
+          ...savedFieldsActualValue,
+          newlyAddedField,
+          ...remainingUnsavedFields,
+        ];
 
-      CustomFieldApi.updateCustomFiledGroup(category.identifier, {
-        fields: updatedSavedRefrenceFields,
-      });
+        CustomFieldApi.updateCustomFiledGroup(category.identifier, {
+          fields: updatedSavedRefrenceFields,
+        });
 
-      updateCustomGroupsData(updatedSavedActualFields);
+        updateCustomGroupsData(updatedSavedActualFields);
+      }
     } else if (field.identifier && value) {
       CustomFieldApi.updateCustomField({ ...field, name: value });
     }
+    dispatch(showGlobalAlert(AlertMessages.UPDATED));
   };
 
   const handleRemoveFieldFromGroup = async () => {
@@ -167,6 +185,7 @@ const SelectedField = ({ field, category }) => {
 
       updateCustomGroupsData(updatedSavedActualFields);
     }
+    dispatch(showGlobalAlert(AlertMessages.UPDATED));
   };
 
   return (
