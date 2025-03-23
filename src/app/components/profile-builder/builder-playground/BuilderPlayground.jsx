@@ -79,7 +79,7 @@ const BuilderPlayground = ({ context, identifier }) => {
               {...provided.droppableProps}
               ref={provided.innerRef}
             >
-              Drag and drop a new Category
+              Drag and drop a new category
             </CategoryDropper>
           )}
         </Droppable>

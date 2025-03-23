@@ -21,14 +21,14 @@ export const FieldType = {
 
 export const fieldTypes = [
   {
-    placeholder: 'Short Text Filed',
+    placeholder: 'Short Text Field',
     dragId: FieldType.TEXT,
     fieldType: FieldType.TEXT,
     img: ShortText,
     index: 1,
   },
   {
-    placeholder: 'Rich Text Filed',
+    placeholder: 'Rich Text Field',
     dragId: FieldType.LONG_TEXT,
     fieldType: FieldType.LONG_TEXT,
     img: RichText,
@@ -42,7 +42,7 @@ export const fieldTypes = [
     index: 3,
   },
   {
-    placeholder: 'Numeric Input',
+    placeholder: 'Number',
     dragId: FieldType.NUMBER,
     fieldType: FieldType.NUMBER,
     img: Hash,

@@ -24,6 +24,8 @@ import { useDispatch } from 'react-redux';
 import uuidv4 from '@/app/views/chat/channel-settings/uuid';
 import { getAllProfileFieldTypes } from '@/app/api/profile-type-field-api';
 import { getProfileDetailsType } from '@/app/api/profile-type-api';
+import { showGlobalAlert } from 'alert/actions';
+import AlertMessages from 'alert/AlertMessages';
 
 export const ProfileBuilderContext = createContext({});
 
@@ -195,6 +197,7 @@ const ProfileBuilder = () => {
     });
 
     setSelectedCategories(updatedCategories);
+    dispatch(showGlobalAlert(AlertMessages.UPDATED));
   };
 
   const handleAddFieldDrop = (e, destination) => {

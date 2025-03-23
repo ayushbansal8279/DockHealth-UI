@@ -6,7 +6,11 @@ export function getAllPatientCustomFields(active = true, patientIdentifier) {
     .get(`custom/field/getAll/PATIENT`, {
       params: { active, targetIdentifier: patientIdentifier },
     })
-    .then(({ data }) => data);
+    .then(({ data }) => data)
+    .catch((error) => {
+      log(error);
+      throw new Error(error?.response?.data?.errorMessage);
+    });
 }
 
 export function getAllTaskListCustomFields(taskListIdentifier) {
@@ -14,11 +18,21 @@ export function getAllTaskListCustomFields(taskListIdentifier) {
     .get(`custom/field/getAll/TASK`, {
       params: { taskListIdentifier },
     })
-    .then(({ data }) => data);
+    .then(({ data }) => data)
+    .catch((error) => {
+      log(error);
+      throw new Error(error?.response?.data?.errorMessage);
+    });
 }
 
 export function getAllProviderCustomFields() {
-  return axios.get(`custom/field/getAll/PROVIDER`).then(({ data }) => data);
+  return axios
+    .get(`custom/field/getAll/PROVIDER`)
+    .then(({ data }) => data)
+    .catch((error) => {
+      log(error);
+      throw new Error(error?.response?.data?.errorMessage);
+    });
 }
 
 export function getAllTaskCustomFields(targetIdentifier, taskListIdentifier) {
@@ -26,7 +40,11 @@ export function getAllTaskCustomFields(targetIdentifier, taskListIdentifier) {
     .get(`custom/field/getAll/TASK`, {
       params: { targetIdentifier, taskListIdentifier },
     })
-    .then(({ data }) => data);
+    .then(({ data }) => data)
+    .catch((error) => {
+      log(error);
+      throw new Error(error?.response?.data?.errorMessage);
+    });
 }
 
 export function addCustomField(customField, targetType, taskListIdentifier) {
@@ -37,38 +55,63 @@ export function addCustomField(customField, targetType, taskListIdentifier) {
       targetType,
       taskListIdentifier,
     })
-    .then(({ data }) => data);
+    .then(({ data }) => data)
+    .catch((error) => {
+      log(error);
+      throw new Error(error?.response?.data?.errorMessage);
+    });
 }
 
 export function updateCustomField(customField, targetType, taskListIdentifier) {
-  return axios.put(`custom/field`, {
-    ...customField,
-    contextType: 'CUSTOM',
-    targetType,
-    taskListIdentifier,
-  });
+  return axios
+    .put(`custom/field`, {
+      ...customField,
+      contextType: 'CUSTOM',
+      targetType,
+      taskListIdentifier,
+    })
+    .catch((error) => {
+      log(error);
+      throw new Error(error?.response?.data?.errorMessage);
+    });
 }
 
 export function deleteCustomField(identifier) {
-  return axios.delete(`custom/field/${identifier}`).then(({ data }) => data);
+  return axios
+    .delete(`custom/field/${identifier}`)
+    .then(({ data }) => data)
+    .catch((error) => {
+      log(error);
+      throw new Error(error?.response?.data?.errorMessage);
+    });
 }
 
 export function sortPatientCustomFields(identifiers) {
-  return axios.put(`custom/field/sortCustomFields/PATIENT`, {
-    customFieldIdentifiers: identifiers,
-  });
+  return axios
+    .put(`custom/field/sortCustomFields/PATIENT`, {
+      customFieldIdentifiers: identifiers,
+    })
+    .catch((error) => {
+      log(error);
+      throw new Error(error?.response?.data?.errorMessage);
+    });
 }
 
 export function sortTaskCustomFields(identifiers, taskListIdentifier) {
   const taskListParameter = `?taskListIdentifier=${taskListIdentifier}`;
-  return axios.put(
-    `custom/field/sortCustomFields/TASK${
-      taskListIdentifier ? taskListParameter : ''
-    }`,
-    {
-      customFieldIdentifiers: identifiers,
-    },
-  );
+  return axios
+    .put(
+      `custom/field/sortCustomFields/TASK${
+        taskListIdentifier ? taskListParameter : ''
+      }`,
+      {
+        customFieldIdentifiers: identifiers,
+      },
+    )
+    .catch((error) => {
+      log(error);
+      throw new Error(error?.response?.data?.errorMessage);
+    });
 }
 export function sortUserCustomFields(identifiers) {
   return axios.put(`custom/field/sortCustomFields/PROVIDER`, {
@@ -118,9 +161,7 @@ export function searchCustomFiledGroups(context, profileTypeIdentifier) {
   if (context === 'PROFILETYPE') {
     return axios
       .get(
-        `/customFieldGroup/search?context=${context}&profileTypeIdentifier=${profileTypeIdentifier
-          
-        }`,
+        `/customFieldGroup/search?context=${context}&profileTypeIdentifier=${profileTypeIdentifier}`,
       )
       .then(({ data }) => data)
       .catch((error) => {

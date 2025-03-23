@@ -1,4 +1,5 @@
 import React, { useContext, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import {
   CategoryHeader,
   FieldDropper,
@@ -13,8 +14,11 @@ import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import SelectedField from '../SelectedField/SelectedField';
 import * as CustomFieldApi from 'api/custom-fields-api';
 import { ProfileBuilderContext } from '../ProfileBuilder';
+import { showGlobalAlert } from 'alert/actions';
+import AlertMessages from 'alert/AlertMessages';
 
 const SelectedCategory = ({ category }) => {
+  const dispatch = useDispatch();
   const { selectedCategories, setSelectedCategories } = useContext(
     ProfileBuilderContext,
   );
@@ -35,6 +39,7 @@ const SelectedCategory = ({ category }) => {
       name: value,
     };
     CustomFieldApi.updateCustomFiledGroup(category.identifier, payload);
+    dispatch(showGlobalAlert(AlertMessages.UPDATED));
   };
 
   const handleDragStart = () => {
@@ -76,6 +81,7 @@ const SelectedCategory = ({ category }) => {
       
 
       setSelectedCategories(updatedCategories);
+      dispatch(showGlobalAlert(AlertMessages.UPDATED));
     }
   };
 
