@@ -36,8 +36,9 @@ const OrganizationSelectStep = ({
     <Step>
       <Title>Organizations</Title>
       <Description>
-        <b>Note:</b> please ensure linked workflows are copied first to the
-        target organizations, otherwise the workflow will not be copied.
+        <b>Note:</b> Linked workflows will be automatically copied to the target
+        organizations. Additionally, target list and group if configured for
+        linked workflows will be created.
       </Description>
       <Box m={1} />
       <ListsWrapper>
