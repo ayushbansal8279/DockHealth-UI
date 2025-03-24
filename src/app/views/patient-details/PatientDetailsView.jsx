@@ -38,12 +38,10 @@ import {
   PatientDetailsContainer,
   PatientDetailsTabsContainer,
   MainTab,
-  HeaderContainer,
   NewDrawerContainer,
 } from './styled';
 import { patientOrgIdSelector } from '@/app/selectors/patient-details-selectors';
 import { selectCurrentOrganizationWithRedirection } from '@/app/api/organization-api';
-import BasicLayoutHeader from '@/app/components/template/BasicLayoutHeader/BasicLayoutHeader';
 import ProfileDetailsDrawer from '../profile-details/ProfileDetailsDrawer/ProfileDetailsDrawer';
 import useBoolean from '@/app/hooks/useBoolean';
 
@@ -196,34 +194,39 @@ const PatientDetailsView = () => {
   };
 
   return (
-    <div style={{ display: 'flex', minHeight:"100%" }}>
+    <div style={{ display: 'flex' }}>
       {isDrawerOpen && (
         <NewDrawerContainer>
-          <ProfileDetailsDrawer closeDrawer={closeDrawer} context={"PATIENT"} />
+          <ProfileDetailsDrawer closeDrawer={closeDrawer} context={'PATIENT'} />
         </NewDrawerContainer>
       )}
-      <div style={{ width: '100%', height: '100%' }}>
-        <HeaderContainer>
-          <BasicLayoutHeader
-            title={embeddedMode ? '' : capitalize(customerTypeLabel)}
-          />
-        </HeaderContainer>
-        <ColumnsConfigProvider>
-          <div>
-            <PatientDetailsHeader openDrawer={openDrawer} />
-            <PatientDetailsTabsContainer>
-              <Grid container>
-                <Tabs value={activeTabPath} onChange={handleTabChange}>
-                  {tabsConfiguration.map((t) => (
-                    <MainTab
-                      key={t.mainPath}
-                      value={t.mainPath}
-                      label={t.label}
-                    />
-                  ))}
-                </Tabs>
-              </Grid>
-            </PatientDetailsTabsContainer>
+      <div style={{ width: '100%', overflow: 'auto' }}>
+        <HorizontallyScrolledViewLayout
+          header={
+            <LayoutHeader>
+              <LayoutHeader.Title
+                title={embeddedMode ? '' : capitalize(customerTypeLabel)}
+              />
+            </LayoutHeader>
+          }
+        >
+          <ColumnsConfigProvider>
+            <StickyContainer>
+              <PatientDetailsHeader openDrawer={openDrawer} />
+              <PatientDetailsTabsContainer>
+                <Grid container>
+                  <Tabs value={activeTabPath} onChange={handleTabChange}>
+                    {tabsConfiguration.map((t) => (
+                      <MainTab
+                        key={t.mainPath}
+                        value={t.mainPath}
+                        label={t.label}
+                      />
+                    ))}
+                  </Tabs>
+                </Grid>
+              </PatientDetailsTabsContainer>
+            </StickyContainer>
             <PatientDetailsContainer>
               <Switch>
                 {tabsConfiguration?.map((route) => (
@@ -252,8 +255,8 @@ const PatientDetailsView = () => {
                 <Redirect to={`${path}/${DEFAULT_TAB.mainPath}`} />
               </Switch>
             </PatientDetailsContainer>
-          </div>
-        </ColumnsConfigProvider>
+          </ColumnsConfigProvider>
+        </HorizontallyScrolledViewLayout>
       </div>
     </div>
   );
