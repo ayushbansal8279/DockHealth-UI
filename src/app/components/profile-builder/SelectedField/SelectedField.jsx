@@ -58,7 +58,24 @@ const SelectedField = ({ field, category }) => {
         fieldCategoryDisabled: true,
         customField: field,
         onUpdated: (updatedField) => {
-          // setFieldName(updatedField.name);
+          if (updatedField.name !== field.name) {
+            const updatedCategory = {
+              ...category,
+              fields: category?.fields?.map((field) =>
+                field.identifier === updatedField.identifier
+                  ? { ...field, name: updatedField.name }
+                  : field,
+              ),
+            };
+
+            setSelectedCategories((prevCategories) =>
+              prevCategories.map((category) =>
+                category.identifier === updatedCategory.identifier
+                  ? updatedCategory
+                  : category,
+              ),
+            );
+          }
         },
       }),
     );
@@ -121,15 +138,16 @@ const SelectedField = ({ field, category }) => {
       );
 
       let newlyAddedField = null;
-      try{
-        newlyAddedField = context === 'PATIENT' ? await addCustomField(patientPayload, context) : await createProfileFieldType(profilePayload);
-      }catch(errorMessage){
+      try {
+        newlyAddedField =
+          context === 'PATIENT'
+            ? await addCustomField(patientPayload, context)
+            : await createProfileFieldType(profilePayload);
+      } catch (errorMessage) {
         showAlert({
           status: 'error',
           title: 'Error',
-          text:
-            errorMessage ??
-            'Error creating field. Please try again.',
+          text: errorMessage ?? 'Error creating field. Please try again.',
         });
         return;
       }
