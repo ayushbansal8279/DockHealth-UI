@@ -127,7 +127,7 @@ const ProfileBuilder = () => {
       initializePatientData();
     } else if (context === 'PROFILETYPE') {
       getProfileDetailsType(identifier).then((profileTypeDetails) => {
-        const profileName = `${profileTypeDetails?.name} Profile Builder`
+        const profileName = `${profileTypeDetails?.name} Profile Builder`;
         setProfileName(profileName);
       });
       initializeCustomProfileData();
@@ -170,8 +170,18 @@ const ProfileBuilder = () => {
   };
 
   const handleExistingFieldDrop = (e, destination) => {
-    const updatedCategories = selectedCategories.map((category) => {
-      if (category.identifier === destination) {
+    setSelectedCategories((prevCategories) =>
+      prevCategories.map((category) => {
+        if (category.identifier !== destination) return category;
+
+        const fieldExists = category.fields.some(
+          (field) => field.identifier === e.draggableId,
+        );
+        if (fieldExists) {
+          dispatch(showGlobalErrorAlert('Field Already Exists in Group'));
+          return category;
+        }
+
         const savedFields = category.fields
           .filter((field) => field.identifier)
           .map((field) => ({ fieldReferenceId: field.identifier }));
@@ -180,24 +190,22 @@ const ProfileBuilder = () => {
           ...savedFields,
           { fieldReferenceId: e.draggableId },
         ];
+
         CustomFieldApi.updateCustomFiledGroup(category.identifier, {
           fields: updatedSavedFields,
         });
 
-        const field = allCustomFields.find(
+        const newField = allCustomFields.find(
           (item) => item.identifier === e.draggableId,
         );
+        dispatch(showGlobalAlert(AlertMessages.UPDATED));
 
         return {
           ...category,
-          fields: [...category.fields, field],
+          fields: [...category.fields, newField],
         };
-      }
-      return category;
-    });
-
-    setSelectedCategories(updatedCategories);
-    dispatch(showGlobalAlert(AlertMessages.UPDATED));
+      }),
+    );
   };
 
   const handleAddFieldDrop = (e, destination) => {

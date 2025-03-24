@@ -3,7 +3,7 @@ import { Delete, Edit } from '@mui/icons-material';
 import styled from 'styled-components';
 
 export const FieldArea = styled.div`
-  margin: 32px 20px 32px 20px;
+  padding: 32px 20px 2px 20px;
   color: ${palette.coolGrey1};
   display: flex;
   align-items: center;
