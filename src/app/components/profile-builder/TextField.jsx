@@ -15,9 +15,9 @@ const TextField = ({
   onChange,
   disabled = false,
 }) => {
-  const [inputValue, setValue] = useState();
+  const [inputValue, setValue] = useState(value ?? "");
   useEffect(() => {
-    setValue(value);
+    setValue(value ?? "");
   }, [value]);
 
   const sx = {
