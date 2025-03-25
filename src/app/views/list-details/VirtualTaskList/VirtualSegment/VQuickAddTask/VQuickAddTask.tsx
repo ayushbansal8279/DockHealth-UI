@@ -13,6 +13,7 @@ import { TaskOrigin } from '@/app/helpers/task-helpers';
 import { useVirtualTaskListScrollContext } from '../../VirtualTaskListScrollContext';
 import { Draggable } from 'react-beautiful-dnd';
 import palette from '@/app/styles/palette';
+import { useDroppable } from '@dnd-kit/core';
 
 export interface Props extends Segment {
   taskGroupIdentifier: string;
@@ -46,6 +47,10 @@ function VQuickAddTask(
       return 'The task description is too short (min. 2 characters)';
     return null;
   };
+
+  const { setNodeRef, isOver } = useDroppable({
+    id: metadata.id,
+  });
 
   const quickAddTask = useCallback(
     (task: any) => {
@@ -122,28 +127,18 @@ function VQuickAddTask(
       </Sc.VQuickAddTaskContainer>
 
       {groupWithZeroTask && (
-        <Draggable
-          draggableId={metadata?.id}
-          index={metadata?.index}
-          key={metadata?.id}
-          isDragDisabled={true}
-        >
-          {(provided) => (
-            <div
-              ref={provided.innerRef}
-              {...provided.draggableProps}
-              {...provided.dragHandleProps}
-            >
-              <div
-                style={{
-                  background: bgColor ? palette.aliceBlue : '',
-                  width: '100%',
-                  height: '50px',
-                }}
-              />
-            </div>
-          )}
-        </Draggable>
+        <div
+          ref={setNodeRef}
+          style={{
+            background: bgColor
+              ? isOver
+                ? palette.lightBlue
+                : palette.aliceBlue
+              : '',
+            width: '100%',
+            height: '35px',
+          }}
+        />
       )}
     </>
   );

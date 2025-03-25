@@ -11,7 +11,13 @@ import { reorderSubtasks } from 'actions/task-actions';
 import { reorderWorkflowTasks } from 'actions/workflow-actions';
 import VSegment from './VSegment';
 import { FlatNode, Node } from './types';
-import { DndContext, DragEndEvent } from '@dnd-kit/core';
+import {
+  DndContext,
+  DragEndEvent,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
 
 export interface Props {
   nodes?: Node[];
@@ -39,122 +45,132 @@ function Virtualized({
 
   const handleDragEnd = useCallback(
     (drop: DragEndEvent) => {
-      console.log('drop12345', drop);
-      // if (drop.destination && drop.source) {
-      //   const destination = flatNodes.find(
-      //     (node) => node.index === drop.destination?.index,
-      //   )!;
-      //   const source = flatNodes.find(
-      //     (node) => node.index === drop.source?.index,
-      //   )!;
-      //   const destinationParentFirstChild = flatNodes.find(
-      //     (node) => node.id === destination.parent?.children[0],
-      //   );
-      //   const sourceParentFirstChild = flatNodes.find(
-      //     (node) => node.id === source.parent?.children[0],
-      //   );
-      //   // const destinationOffsetIndex =
-      //   //   (destination.index as number) -
-      //   //   (destinationParentFirstChild?.index as number);
-      //   // const sourceOffsetIndex =
-      //   //   (source.index as number) - (sourceParentFirstChild?.index as number);
+      if (drop?.over && drop?.active) {
+        const destination = flatNodes.find(
+          (node) => node?.id === drop?.over?.id,
+        )!;
 
-      //   // For Indexing Task
-      //   const destinationOffsetIndexTask =
-      //     (destination.taskIndex as number) -
-      //     (destinationParentFirstChild?.taskIndex as number);
-      //   const sourceOffsetIndexTask =
-      //     (source.taskIndex as number) -
-      //     (sourceParentFirstChild?.taskIndex as number);
+        const source = flatNodes.find((node) => node?.id === drop?.active?.id)!;
 
-      //   // For Indexing Subtask
-      //   const destinationOffsetIndexSubtask =
-      //     (destination.subtaskIndex as number) -
-      //     (destinationParentFirstChild?.subtaskIndex as number);
-      //   const sourceOffsetIndexSubtask =
-      //     (source.subtaskIndex as number) -
-      //     (sourceParentFirstChild?.subtaskIndex as number);
+        const destinationParentFirstChild = flatNodes.find(
+          (node) => node.id === destination.parent?.children[0],
+        );
 
-      //   // For Indexing TaskOfBundle
-      //   const destinationOffsetIndexTaskOfBundle =
-      //     (destination.taskOfBundleIndex as number) -
-      //     (destinationParentFirstChild?.taskOfBundleIndex as number);
-      //   const sourceOffsetIndexTaskOfBundle =
-      //     (source.taskOfBundleIndex as number) -
-      //     (sourceParentFirstChild?.taskOfBundleIndex as number);
+        const sourceParentFirstChild = flatNodes.find(
+          (node) => node.id === source.parent?.children[0],
+        );
 
-      //   // eslint-disable-next-line default-case
-      //   switch (source.kind) {
-      //     case 'Task': {
-      //       if (destination?.parent?.id !== source?.parent?.id) {
-      //         dispatch(
-      //           reassignTasksToAnotherGroup({
-      //             destination: {
-      //               index:
-      //                 destination?.kind === 'QuickAddTask'
-      //                   ? 0
-      //                   : destinationOffsetIndexTask,
-      //               droppableId: destination?.parent?.id,
-      //             },
-      //             source: {
-      //               index: sourceOffsetIndexTask,
-      //               droppableId: source?.parent?.id,
-      //             },
-      //           }),
-      //         );
-      //       }
-      //       dispatch(
-      //         reorderTasksInGroup({
-      //           destination: {
-      //             index: destinationOffsetIndexTask,
-      //             droppableId: destination?.parent?.id,
-      //           },
-      //           source: {
-      //             index: sourceOffsetIndexTask,
-      //           },
-      //         }),
-      //       );
-      //       break;
-      //     }
-      //     case 'Subtask': {
-      //       dispatch(
-      //         reorderSubtasks({
-      //           source: { index: sourceOffsetIndexSubtask },
-      //           destination: { index: destinationOffsetIndexSubtask },
-      //           parentTask: tasksMap[source?.parent?.id!],
-      //         }),
-      //       );
-      //       break;
-      //     }
-      //     case 'TaskOfBundle': {
-      //       dispatch(
-      //         reorderWorkflowTasks({
-      //           source: { index: sourceOffsetIndexTaskOfBundle },
-      //           destination: { index: destinationOffsetIndexTaskOfBundle },
-      //           workflow: tasksMap[destination.parent?.id!],
-      //           completedTasksShown:
-      //             ['COMPLETE', ''].includes(currentTaskListTasksStatus) ||
-      //             showCompletedWorkflowIdentifiers?.some(
-      //               (id: any) => id === destination.parent?.id,
-      //             ),
-      //           incompleteTasksShown:
-      //             ['INCOMPLETE', ''].includes(currentTaskListTasksStatus) ||
-      //             (showIncompleteWorkflowIdentifiers ?? []).some(
-      //               (id: any) => id === destination.parent?.id,
-      //             ),
-      //         }),
-      //       );
-      //       break;
-      //     }
-      //   }
-      // }
+        // const destinationOffsetIndex =
+        //   (destination.index as number) -
+        //   (destinationParentFirstChild?.index as number);
+        // const sourceOffsetIndex =
+        //   (source.index as number) - (sourceParentFirstChild?.index as number);
+
+        // For Indexing Task
+        const destinationOffsetIndexTask =
+          (destination.taskIndex as number) -
+          (destinationParentFirstChild?.taskIndex as number);
+        const sourceOffsetIndexTask =
+          (source.taskIndex as number) -
+          (sourceParentFirstChild?.taskIndex as number);
+
+        // For Indexing Subtask
+        const destinationOffsetIndexSubtask =
+          (destination.subtaskIndex as number) -
+          (destinationParentFirstChild?.subtaskIndex as number);
+        const sourceOffsetIndexSubtask =
+          (source.subtaskIndex as number) -
+          (sourceParentFirstChild?.subtaskIndex as number);
+
+        // For Indexing TaskOfBundle
+        const destinationOffsetIndexTaskOfBundle =
+          (destination.taskOfBundleIndex as number) -
+          (destinationParentFirstChild?.taskOfBundleIndex as number);
+        const sourceOffsetIndexTaskOfBundle =
+          (source.taskOfBundleIndex as number) -
+          (sourceParentFirstChild?.taskOfBundleIndex as number);
+
+        // eslint-disable-next-line default-case
+        switch (source.kind) {
+          case 'Task': {
+            if (destination?.parent?.id !== source?.parent?.id) {
+              dispatch(
+                reassignTasksToAnotherGroup({
+                  destination: {
+                    index:
+                      destination?.kind === 'QuickAddTask'
+                        ? 0
+                        : destinationOffsetIndexTask,
+                    droppableId: destination?.parent?.id,
+                  },
+                  source: {
+                    index: sourceOffsetIndexTask,
+                    droppableId: source?.parent?.id,
+                  },
+                }),
+              );
+            }
+            dispatch(
+              reorderTasksInGroup({
+                destination: {
+                  index: destinationOffsetIndexTask,
+                  droppableId: destination?.parent?.id,
+                },
+                source: {
+                  index: sourceOffsetIndexTask,
+                },
+              }),
+            );
+            break;
+          }
+          case 'Subtask': {
+            dispatch(
+              reorderSubtasks({
+                source: { index: sourceOffsetIndexSubtask },
+                destination: { index: destinationOffsetIndexSubtask },
+                parentTask: tasksMap[source?.parent?.id!],
+              }),
+            );
+            break;
+          }
+          case 'TaskOfBundle': {
+            dispatch(
+              reorderWorkflowTasks({
+                source: { index: sourceOffsetIndexTaskOfBundle },
+                destination: { index: destinationOffsetIndexTaskOfBundle },
+                workflow: tasksMap[destination.parent?.id!],
+                completedTasksShown:
+                  ['COMPLETE', ''].includes(currentTaskListTasksStatus) ||
+                  showCompletedWorkflowIdentifiers?.some(
+                    (id: any) => id === destination.parent?.id,
+                  ),
+                incompleteTasksShown:
+                  ['INCOMPLETE', ''].includes(currentTaskListTasksStatus) ||
+                  (showIncompleteWorkflowIdentifiers ?? []).some(
+                    (id: any) => id === destination.parent?.id,
+                  ),
+              }),
+            );
+            break;
+          }
+        }
+      }
     },
     [flatNodes, dispatch, tasksMap],
   );
 
   return (
     <>
-      <DndContext onDragEnd={handleDragEnd}>
+      <DndContext
+        onDragEnd={handleDragEnd}
+        sensors={useSensors(
+          useSensor(PointerSensor, {
+            activationConstraint: {
+              distance: 3,
+            },
+          }),
+        )}
+      >
         <Virtuoso
           // @ts-ignore
           // scrollerRef={provided.innerRef}

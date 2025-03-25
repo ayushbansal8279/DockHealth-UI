@@ -99,6 +99,8 @@ import palette from '@/app/styles/palette';
 import TaskTemplateContextMenu from '../TaskTemplateContextMenu/TaskTemplateContextMenu';
 import AISummaryModalOpenerHelper from '@/app/modal/components/AISummaryModal/AISummaryModalOpenerHelper';
 import { SummaryType } from '@/app/helpers/ai-helper';
+import { useDraggable, useDroppable } from '@dnd-kit/core';
+import { CSS } from '@dnd-kit/utilities';
 
 const TaskTemplateGroupHeader = ({
   templateGroup = {},
@@ -136,6 +138,17 @@ const TaskTemplateGroupHeader = ({
     selected,
     creator,
   } = templateGroup;
+
+  const { attributes, listeners, setNodeRef, transform, transition } =
+    useDraggable({ id: identifier });
+
+  const {
+    setNodeRef: setDroppableRef,
+    isOver,
+    active,
+  } = useDroppable({
+    id: identifier,
+  });
 
   const { bulkEditIsActive } = useContext(BulkEditContext);
   const { bulkEditEnabled } = useContext(BulkEditContext);
@@ -530,8 +543,8 @@ const TaskTemplateGroupHeader = ({
   const [isPatientDataReadOnly] = useState(true);
   const collapse = useContext(CollapseContext);
 
-  const [isWorkflowExpanded, setIsWorkflowExpanded] = useState(() => 
-    collapse.get(identifier) === undefined ? false : !collapse.get(identifier)
+  const [isWorkflowExpanded, setIsWorkflowExpanded] = useState(() =>
+    collapse.get(identifier) === undefined ? false : !collapse.get(identifier),
   );
 
   const { isVirtualListWorkflowOpen } = useContext(VTaskContext);
@@ -656,6 +669,21 @@ const TaskTemplateGroupHeader = ({
         isLastTaskOfGroup={isLastTaskOfGroup}
         origin={origin}
         isNextTaskItemTypeBundle={isNextTaskItemTypeBundle}
+        ref={(node) => {
+          setNodeRef(node);
+          setDroppableRef(node);
+        }}
+        style={{
+          transform: CSS.Transform?.toString(transform),
+          // transition:
+          //   !!active && active?.id === identifier
+          //     ? 'none'
+          //     : 'transform 300ms ease',
+          zIndex: !!active && active?.id === identifier ? 1000 : 'auto',
+          position: !!active && active?.id === identifier ? 'relative' : '',
+        }}
+        {...attributes}
+        {...listeners}
       >
         {randerFirstColumnCoverIfNecessary(
           <>

@@ -90,13 +90,6 @@ function VSubtask(
       )
     : '';
 
-  const { attributes, listeners, setNodeRef, transform, transition } =
-    useDraggable({ id: metadata.id });
-
-  const { setNodeRef: setDroppableRef } = useDroppable({
-    id: metadata.id,
-  });
-
   useEffect(() => {
     setSubtaskQuickAddOpen(parentTask?.subtaskQuickAddOpen);
     workflowIdentifierMap.some(
@@ -165,16 +158,6 @@ function VSubtask(
         }}
       >
         <Sc.VSubtask
-          ref={(node) => {
-            setNodeRef(node);
-            setDroppableRef(node);
-          }}
-          style={{
-            transform: CSS.Transform.toString(transform),
-            transition,
-          }}
-          {...attributes}
-          {...listeners}
           {...register}
           $subitem={metadata.level > 1}
           isWorkflowSubtask={isWorkflowSubTask}

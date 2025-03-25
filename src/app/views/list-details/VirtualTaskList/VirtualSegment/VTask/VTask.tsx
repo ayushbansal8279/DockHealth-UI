@@ -85,12 +85,6 @@ function VTask(
       )
     : '';
 
-  const { attributes, listeners, setNodeRef, transform, transition } =
-    useDraggable({ id: metadata.id });
-  const { setNodeRef: setDroppableRef } = useDroppable({
-    id: metadata.id,
-  });
-
   useEffect(() => {
     setSubtaskQuickAddOpen(task?.subtaskQuickAddOpen);
     workflowIdentifierMap.some(
@@ -138,16 +132,6 @@ function VTask(
     <>
       <Sc.VTask
         {...register}
-        ref={(node) => {
-          setNodeRef(node);
-          setDroppableRef(node);
-        }}
-        style={{
-          transform: CSS.Transform.toString(transform),
-          transition,
-        }}
-        {...attributes}
-        {...listeners}
         $subitem={metadata.level > 1}
         // @ts-ignore
         $workflow={record.itemType === 'BUNDLE'}
@@ -270,8 +254,9 @@ function VTask(
                     );
                   }}
                   validator={(value) => {
-                    if ([...value]?.filter((char) => char !== ' ').length < 2)
+                    if ([...value]?.filter((char) => char !== ' ').length < 2) {
                       return 'The task description is too short (min. 2 characters)';
+                    }
 
                     return null;
                   }}

@@ -132,6 +132,8 @@ import TaskItemComments from './TaskItemComponents/TaskItemComments';
 import { megaFilterSelector } from '@/app/selectors/mega-filter-selectors';
 import SubtaskIcon from '@/app/img/SubtaskIcon';
 import { getTaskDetails } from '@/app/api/task-api';
+import { useDraggable, useDroppable } from '@dnd-kit/core';
+import { CSS } from '@dnd-kit/utilities';
 
 const { DISABLED, READ_ONLY } = SINGLE_TASK_RESTRICTIONS_OPTIONS;
 
@@ -220,6 +222,17 @@ const TaskItem = React.memo(
       hasEscalations,
       priority,
     } = task || {};
+
+    const { attributes, listeners, setNodeRef, transform, transition } =
+      useDraggable({ id: taskIdentifier });
+
+    const {
+      setNodeRef: setDroppableRef,
+      isOver,
+      active,
+    } = useDroppable({
+      id: taskIdentifier,
+    });
 
     const patient = parentPatient ?? taskPatient ?? parentTask?.patient;
 
@@ -823,6 +836,22 @@ const TaskItem = React.memo(
       [dispatch, task, taskCustomFields],
     );
 
+    const onParentLabelClick = useCallback(
+      (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        dispatch(openTaskDrawerWithContent(parent));
+      },
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      [parent, dispatch],
+    );
+
+    const fetchParentTask = async () => {
+      if (!parent?.identifier) {
+        setParent(await getTaskDetails(parentTaskIdentifier));
+      }
+    };
+
     const randerFirstColumnCoverIfNecessary = useCallback(
       (content, order, width) => {
         if (order !== 0) return content;
@@ -995,28 +1024,25 @@ const TaskItem = React.memo(
       );
     }
 
-    const onParentLabelClick = useCallback(
-      (event) => {
-        event.preventDefault();
-        event.stopPropagation();
-        dispatch(openTaskDrawerWithContent(parent));
-      },
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-      [parent, dispatch],
-    );
-
-    const fetchParentTask = async () => {
-      if (!parent?.identifier) {
-        setParent(await getTaskDetails(parentTaskIdentifier));
-      }
-    };
-
     return (
       <>
         <StandardTaskItemPanel
           onContextMenu={handleTaskItemRightClick}
           origin={origin}
           $isDragging={isDragging}
+          ref={(node) => {
+            setNodeRef(node);
+            setDroppableRef(node);
+          }}
+          style={{
+            transform: CSS.Transform?.toString(transform),
+            // transition: !!active ? 'none' : 'transform 300ms ease',
+            zIndex: !!active && active?.id === taskIdentifier ? 1000 : 'auto',
+            position:
+              !!active && active?.id === taskIdentifier ? 'relative' : '',
+          }}
+          {...attributes}
+          {...listeners}
         >
           <StandardTaskItemContainer
             isTaskTemplate={isTaskTemplate}
