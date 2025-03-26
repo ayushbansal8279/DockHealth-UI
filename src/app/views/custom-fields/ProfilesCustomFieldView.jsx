@@ -3,7 +3,6 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import map from 'ramda/src/map';
 import pluck from 'ramda/src/pluck';
-import move from 'ramda/src/move';
 import { Box, IconButton } from '@mui/material';
 import Skeleton from '@mui/material/Skeleton';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -34,6 +33,7 @@ import {
   DragHandle,
   CenterBox,
 } from './styled';
+import { getSortedFields, handleDragAndSort } from '@/app/helpers/custom-fields-helpers';
 
 const ProfilesCustomFieldsView = ({ profileTypeIdentifier }) => {
   const dispatch = useDispatch();
@@ -109,11 +109,7 @@ const ProfilesCustomFieldsView = ({ profileTypeIdentifier }) => {
     );
   };
 
-  const sortedFields = useMemo(() => {
-    return customFields?.slice().sort((a, b) => {
-      return a?.sortIndex - b?.sortIndex;
-    });
-  }, [customFields]);
+  const sortedFields = useMemo(() => getSortedFields(customFields), [customFields]);
 
   const handleAddFieldClick = () => {
     dispatch(
@@ -135,31 +131,17 @@ const ProfilesCustomFieldsView = ({ profileTypeIdentifier }) => {
     );
   };
 
-  const moveElementByIDs = (originID, destinationID, fields) => {
-    if (!originID || !destinationID) return fields;
-    const idents = pluck('identifier', fields);
-    const indexFrom = idents.indexOf(originID);
-    const indexTo = idents.indexOf(destinationID);
-    return move(indexFrom, indexTo, fields).map((field, index) => ({
-      ...field,
-      sortIndex: index,
-    }));
-  };
-
   const handleOnDragEnd = async (originID, destinationID) => {
-    const result = moveElementByIDs(originID, destinationID, sortedFields);
-    const lastWorkingOrder = [...customFields];
-
-    setCustomFields(result);
-    try {
-      await CustomFieldsApi.sortProfileCustomFields(
-        pluck('identifier', result),
-        profileTypeIdentifier
-      );
-    } catch {
-      dispatch(showGlobalErrorAlert());
-      setCustomFields(lastWorkingOrder);
-    }
+    await handleDragAndSort({
+      originID,
+      destinationID,
+      sortedFields,
+      customFields,
+      setCustomFields,
+      dispatch,
+      apiMethod: CustomFieldsApi.sortProfileCustomFields,
+      apiParams: (identifiers) => [identifiers, profileTypeIdentifier]
+    });
   };
 
   return (
