@@ -498,9 +498,13 @@ export const StandardTaskItemContainer = styled.div`
   `
       : ''}
 
-  ${({ isLastChild }) =>
+  ${({ isLastChild, isDraggedOver }) =>
     isLastChild
-      ? `
+      ? isDraggedOver
+        ? `
+      border-bottom: 2px solid ${palette.azureBlue};
+      `
+        : `
     border-bottom: 1px solid rgba(75, 179, 253, 1);
   `
       : ''}
