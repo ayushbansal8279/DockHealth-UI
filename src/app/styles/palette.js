@@ -27,6 +27,7 @@ const palette = {
   columbiaBlue: '#bbdefb',
   lightSkyBlue: '#90caf9',
   dodgerBlue: '#2196f3',
+  azureBlue: '#3B82F6',
 
   // secondary
   purplePassion: '#553bbe',

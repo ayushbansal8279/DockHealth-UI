@@ -474,6 +474,13 @@ export const StandardTaskItemContainer = styled.div`
         `
       : ''};
 
+  ${({ isDraggedOver }) =>
+    isDraggedOver
+      ? `
+      border-bottom: 2px solid ${palette.azureBlue};
+      `
+      : ''}
+
   ${({ isTaskTemplate }) =>
     isTaskTemplate
       ? `

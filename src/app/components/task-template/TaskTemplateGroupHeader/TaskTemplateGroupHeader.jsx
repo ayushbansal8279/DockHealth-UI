@@ -684,6 +684,7 @@ const TaskTemplateGroupHeader = ({
         }}
         {...attributes}
         {...listeners}
+        isDraggedOver={isOver && active.id !== identifier}
       >
         {randerFirstColumnCoverIfNecessary(
           <>

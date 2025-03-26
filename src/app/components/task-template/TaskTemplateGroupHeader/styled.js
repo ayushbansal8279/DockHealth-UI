@@ -83,6 +83,12 @@ export const TaskTemplateGroupHeaderContainer = styled.div`
 
   border-right: 1px solid rgba(75, 179, 253, 1);
   z-index: 2;
+  ${({ isDraggedOver }) =>
+    isDraggedOver
+      ? `
+      border-bottom: 2px solid ${palette.azureBlue};
+      `
+      : ''}
 
   &:hover {
     & ${TemplateHandle}, ${AddPlaceholder} {

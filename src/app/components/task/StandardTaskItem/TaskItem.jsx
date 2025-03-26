@@ -1063,6 +1063,7 @@ const TaskItem = React.memo(
             isVirtualSubtask={isVirtualSubtask}
             isWorkflowSubtask={isWorkflowSubtask}
             isTaskOfTemplate={!!workflowTaskGroup}
+            isDraggedOver={isOver && active.id !== taskIdentifier}
           >
             {randerFirstColumnCoverIfNecessary(
               <>
