@@ -179,13 +179,14 @@ const ProfileDetailsDrawer = ({
             <ContentWrapper>
               <FormProvider {...formMethods}>
                 <form onSubmit={handleSubmit(onSubmit)} ref={formReference}>
-                  {selectedCategories?.map((category) => {
+                  {selectedCategories?.map((category, key) => {
                     return (
                         <ProfileGroup
                           category={category}
                           profileValues={profileValues}
                           editMode={editMode}
                           context={context}
+                          key={key}
                         />
                     );
                   })}
