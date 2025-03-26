@@ -97,6 +97,14 @@ export function sortPatientCustomFields(identifiers) {
     });
 }
 
+export function sortProfileCustomFields(identifiers, profileTypeIdentifier) {
+  return axios.put(`custom/field/sortCustomFields/PROFILE`, {
+    customFieldIdentifiers: identifiers
+  }, {
+    params: { profileTypeIdentifier }
+  });
+}
+
 export function sortTaskCustomFields(identifiers, taskListIdentifier) {
   const taskListParameter = `?taskListIdentifier=${taskListIdentifier}`;
   return axios

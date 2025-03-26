@@ -3,12 +3,14 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import map from 'ramda/src/map';
 import pluck from 'ramda/src/pluck';
+import move from 'ramda/src/move';
 import { Box, IconButton } from '@mui/material';
 import Skeleton from '@mui/material/Skeleton';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import { showGlobalErrorAlert } from 'alert/actions';
 import * as ProfileTypeFieldApi from 'api/profile-type-field-api';
+import * as CustomFieldsApi from 'api/custom-fields-api';
 import { FieldType, FieldTypeLabel } from 'helpers/field-type-helpers';
 import { openModal } from 'modal/actions';
 import AddButton from 'components/common/AddButton/AddButton';
@@ -133,6 +135,33 @@ const ProfilesCustomFieldsView = ({ profileTypeIdentifier }) => {
     );
   };
 
+  const moveElementByIDs = (originID, destinationID, fields) => {
+    if (!originID || !destinationID) return fields;
+    const idents = pluck('identifier', fields);
+    const indexFrom = idents.indexOf(originID);
+    const indexTo = idents.indexOf(destinationID);
+    return move(indexFrom, indexTo, fields).map((field, index) => ({
+      ...field,
+      sortIndex: index,
+    }));
+  };
+
+  const handleOnDragEnd = async (originID, destinationID) => {
+    const result = moveElementByIDs(originID, destinationID, sortedFields);
+    const lastWorkingOrder = [...customFields];
+
+    setCustomFields(result);
+    try {
+      await CustomFieldsApi.sortProfileCustomFields(
+        pluck('identifier', result),
+        profileTypeIdentifier
+      );
+    } catch {
+      dispatch(showGlobalErrorAlert());
+      setCustomFields(lastWorkingOrder);
+    }
+  };
+
   return (
     <>
       {isFetching ? (
@@ -181,8 +210,9 @@ const ProfilesCustomFieldsView = ({ profileTypeIdentifier }) => {
                 sensors={sensors}
                 onDragEnd={
                   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                  ({ active, over }) => {}
-                  // handleOnDragEnd(active.id, over.id)
+                  ({ active, over }) => {
+                    handleOnDragEnd(active.id, over.id)
+                  }
                 }
               >
                 <SortableContext items={pluck('identifier', sortedFields)}>
