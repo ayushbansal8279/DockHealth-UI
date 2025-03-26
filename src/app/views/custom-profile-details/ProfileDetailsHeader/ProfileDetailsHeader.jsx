@@ -28,11 +28,13 @@ import {
   ProfileDetailsLabel,
   ButtonContainer,
 } from './styled';
+import ProfileDetailsDrawer from '../../profile-details/ProfileDetailsDrawer/ProfileDetailsDrawer';
+import { useBoolean } from 'hooks/useBoolean';
 
 const { DISABLED } = TASK_LIST_RESTRICTIONS_OPTIONS;
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
-const ProfileDetailsHeader = ({ openDrawer }) => {
+const ProfileDetailsHeader = () => {
   const dispatch = useDispatch();
   const { name, profileTypeIdentifier, profileIdentifier } = useParams();
   const [profileTypeFields, setProfileTypeFields] = useState([]);
@@ -73,6 +75,8 @@ const ProfileDetailsHeader = ({ openDrawer }) => {
   const history = useHistory();
   const location = useLocation();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [isProfileOpen, setIsProfileOpen, unsetIsProfileOpen] =
+    useBoolean(false);
   const currentUser = useSelector(userProfileSelector);
   const [cameFrom, setCameFrom] = useState();
   const taskListRestrictions =
@@ -118,7 +122,7 @@ const ProfileDetailsHeader = ({ openDrawer }) => {
                 </Box>
                 <ProfileName>
                   {[
-                    `${profileName?.[1] ? profileName?.[1]+',' : ''}`,
+                    `${profileName?.[1] ? profileName?.[1] + ',' : ''}`,
                     profileName?.[0],
                     profileName?.[2],
                   ].join(' ')}
@@ -130,7 +134,7 @@ const ProfileDetailsHeader = ({ openDrawer }) => {
                   </ButtonContainer>
                 )}
                 {profileBuilderFeatureAvailable && (
-                  <ButtonContainer onClick={openDrawer}>
+                  <ButtonContainer onClick={setIsProfileOpen}>
                     <ProfileDetailsLabel>View profile</ProfileDetailsLabel>
                   </ButtonContainer>
                 )}
@@ -155,9 +159,10 @@ const ProfileDetailsHeader = ({ openDrawer }) => {
                       <ProfileInfo>
                         <Typography>{field.profileTypeFieldName}: </Typography>
                         <Box ml={1} />
-                        {field.profileTypeFieldType === FieldType.DROPDOWN_MULTI ||
-                          field.profileTypeFieldType === FieldType.DROPDOWN ||
-                          field.profileTypeFieldType === FieldType.RELATIONSHIP
+                        {field.profileTypeFieldType ===
+                          FieldType.DROPDOWN_MULTI ||
+                        field.profileTypeFieldType === FieldType.DROPDOWN ||
+                        field.profileTypeFieldType === FieldType.RELATIONSHIP
                           ? `${
                               field.references
                                 ?.map((item) => item.displayValue)
@@ -176,7 +181,7 @@ const ProfileDetailsHeader = ({ openDrawer }) => {
           </Box>
           <ProfileDrawer
             title={[
-              `${profileName?.[1] ? profileName?.[1]+',' : ''}`,
+              `${profileName?.[1] ? profileName?.[1] + ',' : ''}`,
               profileName?.[0],
               profileName?.[2],
             ].join(' ')}
@@ -191,6 +196,13 @@ const ProfileDetailsHeader = ({ openDrawer }) => {
             onUpdate={() => {
               fetchProfile();
             }}
+          />
+          <ProfileDetailsDrawer
+            isOpenedDetails={isProfileOpen}
+            closeDrawer={unsetIsProfileOpen}
+            context={'PROFILETYPE'}
+            profileTypeIdentifier={profileTypeIdentifier}
+            profileIdentifier={profileIdentifier}
           />
         </>
       )}
