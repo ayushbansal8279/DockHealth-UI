@@ -38,12 +38,9 @@ import {
   PatientDetailsContainer,
   PatientDetailsTabsContainer,
   MainTab,
-  NewDrawerContainer,
 } from './styled';
 import { patientOrgIdSelector } from '@/app/selectors/patient-details-selectors';
 import { selectCurrentOrganizationWithRedirection } from '@/app/api/organization-api';
-import ProfileDetailsDrawer from '../profile-details/ProfileDetailsDrawer/ProfileDetailsDrawer';
-import useBoolean from '@/app/hooks/useBoolean';
 
 const PatientDetailsView = () => {
   const { patientIdentifier } = useParams();
@@ -66,7 +63,6 @@ const PatientDetailsView = () => {
   const [tabsConfiguration, setTabsConfiguration] = useState(
     patientNotesDisabled ? DEFAULT_TABS_CONFIG : TABS_CONFIG,
   );
-  const [isDrawerOpen, openDrawer, closeDrawer] = useBoolean(false);
 
   useEffect(() => {
     const organizationsExist = patientOrgIdentifier && currentOrganization;
@@ -205,7 +201,7 @@ const PatientDetailsView = () => {
     >
       <ColumnsConfigProvider>
         <StickyContainer>
-          <PatientDetailsHeader openDrawer={openDrawer} />
+          <PatientDetailsHeader />
           <PatientDetailsTabsContainer>
             <Grid container>
               <Tabs value={activeTabPath} onChange={handleTabChange}>
