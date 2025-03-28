@@ -1,6 +1,5 @@
 /* eslint-disable import/no-cycle */
 import Spacing from 'components/common/Spacing';
-import RichTextEditor from 'components/common/RichTextEditor/RichTextEditor';
 import moment from 'moment';
 import React from 'react';
 import {

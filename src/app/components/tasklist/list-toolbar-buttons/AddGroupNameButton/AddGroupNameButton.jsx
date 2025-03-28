@@ -26,20 +26,22 @@ export const AddGroupButtonLabel = styled(Typography)`
   }
 `;
 
-const AddGroupNameButton = React.forwardRef(({ active, onClick }) => (
-  <ButtonContainer>
-    <ButtonWrapper
-      variant="text"
-      size="large"
-      onClick={onClick}
-      active={active}
-    >
-      <AddIcon />
-      <AddGroupButtonLabel variant="body1" component="span">
-        Group
-      </AddGroupButtonLabel>
-    </ButtonWrapper>
-  </ButtonContainer>
-));
+const AddGroupNameButton = React.forwardRef(
+  ({ active, onClick }, reference) => (
+    <ButtonContainer ref={reference}>
+      <ButtonWrapper
+        variant="text"
+        size="large"
+        onClick={onClick}
+        active={active}
+      >
+        <AddIcon />
+        <AddGroupButtonLabel variant="body1" component="span">
+          Group
+        </AddGroupButtonLabel>
+      </ButtonWrapper>
+    </ButtonContainer>
+  ),
+);
 
 export default AddGroupNameButton;
