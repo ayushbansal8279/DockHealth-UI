@@ -9,6 +9,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import { showGlobalErrorAlert } from 'alert/actions';
 import * as ProfileTypeFieldApi from 'api/profile-type-field-api';
+import * as CustomFieldsApi from 'api/custom-fields-api';
 import { FieldType, FieldTypeLabel } from 'helpers/field-type-helpers';
 import { openModal } from 'modal/actions';
 import AddButton from 'components/common/AddButton/AddButton';
@@ -32,6 +33,7 @@ import {
   DragHandle,
   CenterBox,
 } from './styled';
+import { getSortedFields, handleDragAndSort } from '@/app/helpers/custom-fields-helpers';
 
 const ProfilesCustomFieldsView = ({ profileTypeIdentifier }) => {
   const dispatch = useDispatch();
@@ -107,11 +109,7 @@ const ProfilesCustomFieldsView = ({ profileTypeIdentifier }) => {
     );
   };
 
-  const sortedFields = useMemo(() => {
-    return customFields?.slice().sort((a, b) => {
-      return a?.sortIndex - b?.sortIndex;
-    });
-  }, [customFields]);
+  const sortedFields = useMemo(() => getSortedFields(customFields), [customFields]);
 
   const handleAddFieldClick = () => {
     dispatch(
@@ -131,6 +129,19 @@ const ProfilesCustomFieldsView = ({ profileTypeIdentifier }) => {
         },
       }),
     );
+  };
+
+  const handleOnDragEnd = async (originID, destinationID) => {
+    await handleDragAndSort({
+      originID,
+      destinationID,
+      sortedFields,
+      customFields,
+      setCustomFields,
+      dispatch,
+      apiMethod: CustomFieldsApi.sortProfileCustomFields,
+      apiParams: (identifiers) => [identifiers, profileTypeIdentifier]
+    });
   };
 
   return (
@@ -181,8 +192,9 @@ const ProfilesCustomFieldsView = ({ profileTypeIdentifier }) => {
                 sensors={sensors}
                 onDragEnd={
                   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                  ({ active, over }) => {}
-                  // handleOnDragEnd(active.id, over.id)
+                  ({ active, over }) => {
+                    handleOnDragEnd(active.id, over.id)
+                  }
                 }
               >
                 <SortableContext items={pluck('identifier', sortedFields)}>
