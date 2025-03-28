@@ -26,6 +26,7 @@ export const handleMixedResponse = (response) => {
   const { totalRecords, errorCount, updateCount, createCount } = result;
 
   let messages = [];
+  let additionalMessage = '';
 
   const formatMessage = (count, singular, plural) => {
     return `${count} ${count === 1 ? singular : plural}`;
@@ -43,6 +44,7 @@ export const handleMixedResponse = (response) => {
       if (csvContent) {
         const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
         blobFileDownload(blob, "error_records.csv");
+        additionalMessage = `A file has been downloaded containing the records that failed. Refer to the last column in the file for the reason of failure.`;
       }
     }
 
@@ -74,7 +76,7 @@ export const handleMixedResponse = (response) => {
     return showAlert({
       status,
       title,
-      text: messages.join(', '),
+      html: `${messages.join(', ')}${additionalMessage ? `<br><br>${additionalMessage}` : ''}`
     });
   }
 
