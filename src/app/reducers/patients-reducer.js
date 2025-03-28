@@ -404,8 +404,8 @@ const PatientsReducer = (state = initialState, action) => {
       };
     }
 
-    case (ActionTypes.PATIENT_BULK_DELETE_PATIENTS_SUCCESS,
-    ActionTypes.PATIENT_BULK_UPDATE_PATIENTS_SUCCESS): {
+    case (ActionTypes.PATIENT_BULK_DELETE_PATIENTS_SUCCESS):
+    case (ActionTypes.PATIENT_BULK_UPDATE_PATIENTS_SUCCESS): {
       const { patientIdentifiers } = action;
 
       return {
