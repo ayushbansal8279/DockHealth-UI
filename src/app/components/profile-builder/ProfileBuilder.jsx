@@ -178,7 +178,7 @@ const ProfileBuilder = () => {
           (field) => field.identifier === e.draggableId,
         );
         if (fieldExists) {
-          dispatch(showGlobalErrorAlert('Field Already Exists in Group'));
+          dispatch(showGlobalErrorAlert('Field already exists in group'));
           return category;
         }
 
