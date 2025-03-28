@@ -1,10 +1,5 @@
-export function getImportMessage(type, uploadResponse) {
+export function getImportMessage(type) {
   switch (type) {
-    case "Profile":
-      return uploadResponse?.statusCode === "SUCCESS"
-        ? "Profile records are successfully uploaded. Please refresh the page after some time."
-        : "File upload failed. Please check the template and try again.";
-
     case "User":
       return "Invitation sent successfully."
 

@@ -1,5 +1,6 @@
 import { blobFileDownload } from '../helpers/blob-file-download';
 import { mapFilterOptions } from '../helpers/filter-options-helpers';
+import { handleMixedResponse } from '../helpers/handle-mixed-response';
 import { noop, showAlert } from '../helpers/utility-functions';
 import axios from './axios-heydoc';
 
@@ -84,7 +85,7 @@ export function uploadProfileData(fileData, additionalConfig = {}, identifier) {
       },
       ...additionalConfig,
     })
-    .then((response) => response.data)
+    .then((response) => handleMixedResponse(response))
     .catch((error) => {
       if (error.response && error.response.status === 413) {
         showAlert({
@@ -92,11 +93,14 @@ export function uploadProfileData(fileData, additionalConfig = {}, identifier) {
           title: 'Error',
           text: 'File exceeded the allowed size of 100 MB',
         });
-      } else if (!error.response) {
+      } else {
         showAlert({
           status: 'error',
           title: 'Error',
-          text: 'Error in uploading data. Please try again.',
+          text:
+            error?.response?.data?.errorMessage ??
+            error?.message ??
+            'Error in uploading data. Please try again.'
         });
       }
       throw error;
