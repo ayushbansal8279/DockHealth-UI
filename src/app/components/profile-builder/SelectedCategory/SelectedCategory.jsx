@@ -22,7 +22,6 @@ const SelectedCategory = ({ category }) => {
   const { selectedCategories, setSelectedCategories } = useContext(
     ProfileBuilderContext,
   );
-  const [isDragging, setDragging] = useState(false);
 
   const handleDeleteGroup = () => {
     CustomFieldApi.deleteCustomFiledGroup(category.identifier).then(() => {
@@ -42,43 +41,31 @@ const SelectedCategory = ({ category }) => {
     dispatch(showGlobalAlert(AlertMessages.UPDATED));
   };
 
-  const handleDragStart = () => {
-    setDragging(true);
-  };
 
   const handleDragEnd = (e) => {
-    setDragging(false);
+    if (!e.destination) return;
+
     const sourceIndex = e.source.index;
     const destinationIndex = e.destination.index;
 
     if (sourceIndex !== destinationIndex) {
       let fields = [...category?.fields];
       const [removed] = fields.splice(sourceIndex, 1);
-
       fields.splice(destinationIndex, 0, removed);
 
       const updatedFiled = fields
         .filter((item) => item.identifier)
-        .map((item) => {
-          return {
-            fieldReferenceId: item.identifier,
-          };
-        });
+        .map((item) => ({
+          fieldReferenceId: item.identifier,
+        }));
 
       CustomFieldApi.updateCustomFiledGroup(category.identifier, {
         fields: updatedFiled,
       });
 
-      const updatedCategories = selectedCategories.map((item) => {
-        if (item.identifier === category.identifier) {
-          return {
-            ...item,
-            fields: fields,
-          };
-        }
-        return item;
-      });
-      
+      const updatedCategories = selectedCategories.map((item) =>
+        item.identifier === category.identifier ? { ...item, fields } : item,
+      );
 
       setSelectedCategories(updatedCategories);
       dispatch(showGlobalAlert(AlertMessages.UPDATED));
@@ -106,35 +93,35 @@ const SelectedCategory = ({ category }) => {
         )}
       </CategoryHeader>
       <DragDropContext
-        onDragStart={(e) => handleDragStart(e)}
         onDragEnd={(e) => handleDragEnd(e)}
       >
         <Droppable droppableId={category.identifier}>
           {(provided) => (
             <div {...provided.droppableProps} ref={provided.innerRef}>
-              {isDragging && <PlaceholderDiv />}
               {category?.fields?.map((field, key) => {
-                const id = field.identifier || field.tempId;
+                const id = `${field.identifier || field.tempId}-${key}`;
                 return (
-                  <Draggable draggableId={id} index={key}>
+                  <Draggable key={id} draggableId={id} index={key}>
                     {(provided1) => (
                       <div
                         ref={provided1.innerRef}
                         {...provided1.draggableProps}
                         {...provided1.dragHandleProps}
                       >
-                        <SelectedField
-                          category={category}
-                          field={field}
-                          index={key}
-                        />
-                        {provided1.placeholder}
+                        <>
+                          <SelectedField
+                            category={category}
+                            field={field}
+                            index={key}
+                          />
+                          {provided1.placeholder}
+                        </>
                       </div>
                     )}
                   </Draggable>
                 );
               })}
-              {isDragging && <PlaceholderDiv />}
+              {provided.placeholder}
             </div>
           )}
         </Droppable>

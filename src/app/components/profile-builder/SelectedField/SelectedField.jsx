@@ -15,7 +15,10 @@ import * as CustomFieldApi from 'api/custom-fields-api';
 import { useDispatch } from 'react-redux';
 import { openModal } from 'modal/actions';
 import { ProfileBuilderContext } from '../ProfileBuilder';
-import { createProfileFieldType } from '@/app/api/profile-type-field-api';
+import {
+  createProfileFieldType,
+  editProfileFieldType,
+} from '@/app/api/profile-type-field-api';
 import { showAlert } from 'helpers/utility-functions';
 import { showGlobalAlert } from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
@@ -55,12 +58,34 @@ const SelectedField = ({ field, category }) => {
         options: {
           type: context,
         },
+        fetchUserCustomFields: () => () => {},
         fieldCategoryDisabled: true,
         customField: field,
         onUpdated: (updatedField) => {
-          // setFieldName(updatedField.name);
+          if (updatedField.name !== field.name) {
+            updateFieldNameInCategory(updatedField);
+            dispatch(showGlobalAlert(AlertMessages.UPDATED));
+          }
         },
       }),
+    );
+  };
+
+  const updateFieldNameInCategory = (updatedField) => {
+    const updatedCategory = {
+      ...category,
+      fields: category?.fields?.map((field) =>
+        field.identifier === updatedField.fieldReferenceId
+          ? { ...field, name: updatedField.name }
+          : field,
+      ),
+    };
+    setSelectedCategories((prevCategories) =>
+      prevCategories.map((category) =>
+        category.identifier === updatedCategory.identifier
+          ? updatedCategory
+          : category,
+      ),
     );
   };
 
@@ -121,15 +146,16 @@ const SelectedField = ({ field, category }) => {
       );
 
       let newlyAddedField = null;
-      try{
-        newlyAddedField = context === 'PATIENT' ? await addCustomField(patientPayload, context) : await createProfileFieldType(profilePayload);
-      }catch(errorMessage){
+      try {
+        newlyAddedField =
+          context === 'PATIENT'
+            ? await addCustomField(patientPayload, context)
+            : await createProfileFieldType(profilePayload);
+      } catch (errorMessage) {
         showAlert({
           status: 'error',
           title: 'Error',
-          text:
-            errorMessage ??
-            'Error creating field. Please try again.',
+          text: errorMessage ?? 'Error creating field. Please try again.',
         });
         return;
       }
@@ -153,7 +179,16 @@ const SelectedField = ({ field, category }) => {
         updateCustomGroupsData(updatedSavedActualFields);
       }
     } else if (field.identifier && value) {
-      CustomFieldApi.updateCustomField({ ...field, name: value });
+      if (context === 'PATIENT') {
+        CustomFieldApi.updateCustomField({ ...field, name: value });
+        const updatedField = { ...field, name: value };
+        updateFieldNameInCategory(updatedField);
+      }
+      if (context === 'PROFILE') {
+        editProfileFieldType(field.identifier, { ...field, name: value });
+        const updatedField = { ...field, name: value };
+        updateFieldNameInCategory(updatedField);
+      }
     }
     dispatch(showGlobalAlert(AlertMessages.UPDATED));
   };
