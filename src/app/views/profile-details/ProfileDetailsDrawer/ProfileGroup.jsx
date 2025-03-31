@@ -1,27 +1,19 @@
+import React, { useState } from 'react';
 import CustomField from '@/app/components/common/CustomField/CustomField';
 import LabeledCollapse from '@/app/components/common/LabeledCollapse/LabeledCollapse';
 import { GENDER_OPTIONS_BIRTH } from '@/app/types/gender';
 import { Box } from '@mui/material';
 import moment from 'moment';
-import React, { useEffect, useState } from 'react';
-import { getGenderIdentityOptions } from '@/app/api/patients-api';
 import { FieldType } from '@/app/helpers/field-type-helpers';
 
-const ProfileGroup = ({ category, profileValues, editMode,context }) => {
+const ProfileGroup = ({
+  category,
+  profileValues,
+  editMode,
+  context,
+  genderIdentityOptions,
+}) => {
   const [collapse, setCollapse] = useState(true);
-  const [genderIdentityOptions, setGenderIdentityOptions] = useState([]);
-
-  const fetchGenderOptions = async () => {
-    const genderIdentity = await getGenderIdentityOptions();
-
-    const genders = genderIdentity?.map((item) => {
-      return {
-        identifier: item?.genderIdentityType,
-        name: item?.description,
-      };
-    });
-    setGenderIdentityOptions(genders);
-  };
 
   const GENDER_OPTIONS = GENDER_OPTIONS_BIRTH?.map((item) => {
     return {
@@ -29,10 +21,6 @@ const ProfileGroup = ({ category, profileValues, editMode,context }) => {
       name: item?.label,
     };
   });
-
-  useEffect(() => {
-    fetchGenderOptions();
-  }, []);
 
   const handleCollapse = () => {
     setCollapse(!collapse);
