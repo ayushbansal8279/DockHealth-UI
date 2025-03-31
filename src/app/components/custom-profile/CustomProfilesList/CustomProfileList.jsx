@@ -39,7 +39,6 @@ import { getProfileListPreferences } from '@/app/api/profile-type-api';
 import { StyledLink } from './styled';
 import DateLabel from '../../common/DateLabel/DateLabel';
 import ImportDataModal from '@/app/modal/components/ImportDataModal/ImportDataModal';
-import FileImportPopover from '../../common/FileImportPopover/FileImportPopover';
 
 const CustomProfileList = () => {
   const dispatch = useDispatch();
@@ -83,8 +82,6 @@ const CustomProfileList = () => {
   // console.log(profiles);
   const currentUser = useSelector(userProfileSelector);
   const [importPopupOpen, setImportPopupOpen] = useState(false);
-  const [importPopoverOpen, setImportPopoverOpen] = useState(false);
-  const [importResponse, setImportResponse] = useState(null);
   
   const isGuestOrDockLite = isUserGuestOrDockLite(currentUser);
   const isViewOnly = isUserViewOnly(currentUser);
@@ -420,23 +417,12 @@ const CustomProfileList = () => {
             setImportPopupOpen(false);
           }}
           downloadTemplate={() => downloadProfileImportTemplate(profileTypeIdentifier)}
-          setImportPopoverOpen={setImportPopoverOpen}
           step={1}
           label="profile"
           uploadFunction={uploadProfileData}
           identifier={profileTypeIdentifier}
-          setImportResponse={setImportResponse}
         />
       </Dialog>
-      {importPopoverOpen && (
-        <FileImportPopover
-          type="Profile"
-          closePopover={() => {
-            setImportPopoverOpen(false);
-          }}
-          uploadResponse={importResponse}
-        />
-      )}
     </>
   );
 };
