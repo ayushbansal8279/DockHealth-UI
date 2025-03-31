@@ -46,14 +46,17 @@ import {
 import AISummaryModalOpenerHelper from '@/app/modal/components/AISummaryModal/AISummaryModalOpenerHelper';
 import { SummaryType } from '@/app/helpers/ai-helper';
 import PatientMetaDataField from './PatientMetaDataField';
+import ProfileDetailsDrawer from '../../profile-details/ProfileDetailsDrawer/ProfileDetailsDrawer';
 
 const { DISABLED } = TASK_LIST_RESTRICTIONS_OPTIONS;
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
-const PatientDetailsHeader = ({ openDrawer }) => {
+const PatientDetailsHeader = () => {
   const history = useHistory();
   const location = useLocation();
   const [isDrawerOpen, setIsDrawerOpen, unsetIsDrawerOpen] = useBoolean(false);
+  const [isProfileOpen, setIsProfileOpen, unsetIsProfileOpen] =
+    useBoolean(false);
   const patient = useSelector(patientSelector);
   const {
     firstName,
@@ -144,7 +147,7 @@ const PatientDetailsHeader = ({ openDrawer }) => {
                 )}
                 <Box mx={1} />
                 {profileBuilderFeatureAvailable && (
-                  <ButtonContainer onClick={openDrawer}>
+                  <ButtonContainer onClick={setIsProfileOpen}>
                     <PatientDetailsLabel>View profile</PatientDetailsLabel>
                   </ButtonContainer>
                 )}
@@ -300,6 +303,12 @@ const PatientDetailsHeader = ({ openDrawer }) => {
             patient={patient}
             isOpenedDetails={isDrawerOpen}
             closeDetails={unsetIsDrawerOpen}
+          />
+          <ProfileDetailsDrawer
+            patient={patient}
+            isOpenedDetails={isProfileOpen}
+            closeDrawer={unsetIsProfileOpen}
+            context={'PATIENT'}
           />
         </>
       )}

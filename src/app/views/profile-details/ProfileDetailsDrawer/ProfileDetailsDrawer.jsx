@@ -1,32 +1,33 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useEffect, useRef, useState } from 'react';
 import ProfileGroup from './ProfileGroup';
-import { IconButton, Stack } from '@mui/material';
-import { ArrowBack,MoreVert} from '@mui/icons-material';
+import { IconButton } from '@mui/material';
+import { ArrowBack, MoreVert } from '@mui/icons-material';
 import {
   StickyHeader,
   TitleName,
   MoreActinsWrapper,
   NewDrawerContainer,
+  ContentWrapper,
 } from './styled';
 import OptionsMenu from '@/app/components/common/OptionsMenu/OptionsMenu';
 import * as CustomFieldApi from 'api/custom-fields-api';
 import { convertDefaultFields } from '@/app/components/profile-builder/helper';
-import { patientSelector } from '@/app/selectors/patient-details-selectors';
 import { getProfileDetails } from '@/app/api/profile-api';
 import { getAllProfileFieldTypes } from '@/app/api/profile-type-field-api';
 import { getProfileName } from '../../custom-profile-details/helpers';
 import ProfileDrawerLoader from './ProfileDrawerLoader';
+import { DrawerWrapper } from '@/app/components/patients/PatientDrawer/styled';
 
 const ProfileDetailsDrawer = ({
+  isOpenedDetails,
   closeDrawer,
   context,
   profileTypeIdentifier,
   profileIdentifier,
+  patient,
 }) => {
-  const patient = useSelector(patientSelector);
   const [title, setTitle] = useState('');
   const [profileValues, setProfileValues] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
@@ -153,51 +154,49 @@ const ProfileDetailsDrawer = ({
   ];
 
   return (
-    <NewDrawerContainer>
-      {loading ? (
-        <ProfileDrawerLoader />
-      ) : (
-        <>
-          <StickyHeader>
-            <TitleName>{title}</TitleName>
-            <MoreActinsWrapper>
-              {options && (
-                <OptionsMenu
-                  options={options}
-                  customButtonComponent={IconButton}
-                >
-                  <MoreVert />
-                </OptionsMenu>
-              )}
-              <IconButton onClick={onClose} style={{ width: '34px' }}>
-                <ArrowBack />
-              </IconButton>
-            </MoreActinsWrapper>
-          </StickyHeader>
-          <div>
-            <Stack>
+    <DrawerWrapper open={isOpenedDetails} anchor="left" onClose={onClose}>
+      <NewDrawerContainer>
+        {loading ? (
+          <ProfileDrawerLoader />
+        ) : (
+          <>
+            <StickyHeader>
+              <TitleName>{title}</TitleName>
+              <MoreActinsWrapper>
+                {options && (
+                  <OptionsMenu
+                    options={options}
+                    customButtonComponent={IconButton}
+                  >
+                    <MoreVert />
+                  </OptionsMenu>
+                )}
+                <IconButton onClick={onClose} style={{ width: '34px' }}>
+                  <ArrowBack />
+                </IconButton>
+              </MoreActinsWrapper>
+            </StickyHeader>
+            <ContentWrapper>
               <FormProvider {...formMethods}>
                 <form onSubmit={handleSubmit(onSubmit)} ref={formReference}>
-                  {selectedCategories?.map((category) => {
+                  {selectedCategories?.map((category, key) => {
                     return (
-                      <>
                         <ProfileGroup
                           category={category}
                           profileValues={profileValues}
                           editMode={editMode}
                           context={context}
+                          key={key}
                         />
-                        <div></div>
-                      </>
                     );
                   })}
                 </form>
               </FormProvider>
-            </Stack>
-          </div>
-        </>
-      )}
-    </NewDrawerContainer>
+            </ContentWrapper>
+          </>
+        )}
+      </NewDrawerContainer>
+    </DrawerWrapper>
   );
 };
 
