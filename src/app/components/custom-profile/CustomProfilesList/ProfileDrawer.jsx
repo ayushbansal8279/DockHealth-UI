@@ -88,7 +88,7 @@ const ProfileDrawer = ({
               values: Array.isArray(value)
                 ? value?.map((selectedValue) => ({ value: selectedValue }))
                 : [
-                    type.fieldType === FieldType.DROPDOWN
+                    type.fieldType === '"PICK_LIST"'
                       ? { customFieldOption: { identifier: value } }
                       : {
                           value:
