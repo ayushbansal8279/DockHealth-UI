@@ -1,22 +1,18 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, {
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Tabs, Grid } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  useParams,
-} from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { initializePusher } from 'helpers/pusher-instance';
 import {
   userProfileSelector,
   selectedUserOrganizationSelector,
 } from 'selectors/user-selectors';
 import * as TaskActions from 'actions/task-actions';
+import LayoutHeader from 'components/template/LayoutHeader/LayoutHeader';
 import { ColumnsConfigProvider } from 'context-api/columns-config-context';
+import HorizontallyScrolledViewLayout from 'components/template/HorizontallyScrolledViewLayout/HorizontallyScrolledViewLayout';
+import StickyContainer from 'components/common/HorizontalScroll/StickyContainer';
 import ProfileNotes from 'views/custom-profile-details/ProfileNotes/ProfileNotes';
 import ProfileTasksListView from 'views/custom-profile-details/ProfileTasksList/ProfileTasksList';
 import ProfileDetailsHeader from 'views/custom-profile-details/ProfileDetailsHeader/ProfileDetailsHeader';
@@ -24,14 +20,9 @@ import {
   ProfileDetailsContainer,
   ProfileDetailsTabsContainer,
   MainTab,
-  HeaderContainer,
-  NewDrawerContainer,
 } from './styled';
 import { getPatientForProfile } from '@/app/api/profile-api';
 import ProfilePatientList from './ProfilePatientList/ProfilePatientList';
-import useBoolean from '@/app/hooks/useBoolean';
-import ProfileDetailsDrawer from '../profile-details/ProfileDetailsDrawer/ProfileDetailsDrawer';
-import BasicLayoutHeader from '@/app/components/template/BasicLayoutHeader/BasicLayoutHeader';
 
 const ProfileDetailsView = () => {
   const { profileTypeIdentifier, profileIdentifier } = useParams();
@@ -44,8 +35,6 @@ const ProfileDetailsView = () => {
   const handleTabChange = (_, value) => {
     setCurrentTab(value);
   };
-  const [isDrawerOpen, openDrawer, closeDrawer] = useBoolean(false);
-  const context = "PROFILETYPE"
 
   const currentOrganization = useSelector(selectedUserOrganizationSelector);
 
@@ -132,11 +121,10 @@ const ProfileDetailsView = () => {
   const [patients, setPatients] = useState([]);
 
   useEffect(() => {
-    getPatientForProfile(profileIdentifier)
-      .then(patients => {
-        setPatients(patients);
-      })
-  }, [])
+    getPatientForProfile(profileIdentifier).then((patients) => {
+      setPatients(patients);
+    });
+  }, []);
 
   // const activeTabPath = useMemo(() => {
   //   // eslint-disable-next-line no-restricted-syntax
@@ -222,48 +210,44 @@ const ProfileDetailsView = () => {
   // );
 
   return (
-    <div style={{ display: 'flex', minHeight:"100%" }}>
-      {isDrawerOpen && (
-        <NewDrawerContainer>
-          <ProfileDetailsDrawer context={context} closeDrawer={closeDrawer} profileTypeIdentifier={profileTypeIdentifier} profileIdentifier={profileIdentifier} />
-        </NewDrawerContainer>
-      )}
-      <div style={{ width: '100%', height: '100%' }}>
-        <HeaderContainer>
-          <BasicLayoutHeader title={'Custom Profile'} />
-        </HeaderContainer>
-        <ColumnsConfigProvider>
-          <div>
-            <ProfileDetailsHeader
-              openDrawer={openDrawer}
+    <HorizontallyScrolledViewLayout
+      header={
+        <LayoutHeader>
+          <LayoutHeader.Title title="Custom Profile" />
+          <LayoutHeader.Spacer />
+          <LayoutHeader.Spacer />
+        </LayoutHeader>
+      }
+    >
+      <ColumnsConfigProvider>
+        <StickyContainer>
+          <ProfileDetailsHeader />
+          <ProfileDetailsTabsContainer>
+            <Grid container>
+              <Tabs value={currentTab} onChange={handleTabChange}>
+                <MainTab label="All Tasks" />
+                <MainTab label="Notes" />
+                {patients.length > 0 && <MainTab label="Patients" />}
+              </Tabs>
+            </Grid>
+          </ProfileDetailsTabsContainer>
+        </StickyContainer>
+        <ProfileDetailsContainer>
+          {currentTab === 0 && (
+            <ProfileTasksListView profileIdentifier={profileIdentifier} />
+          )}
+          {currentTab === 1 && (
+            <ProfileNotes profileIdentifier={profileIdentifier} />
+          )}
+          {currentTab === 2 && (
+            <ProfilePatientList
+              profileIdentifier={profileIdentifier}
+              patients={patients}
             />
-            <ProfileDetailsTabsContainer>
-              <Grid container>
-                <Tabs value={currentTab} onChange={handleTabChange}>
-                  <MainTab label="All Tasks" />
-                  <MainTab label="Notes" />                  
-                  {
-                    patients.length > 0 &&
-                      <MainTab label="Patients" />
-                  }
-                </Tabs>
-              </Grid>
-            </ProfileDetailsTabsContainer>
-            <ProfileDetailsContainer>
-              {currentTab === 0 && (
-                <ProfileTasksListView profileIdentifier={profileIdentifier} />
-              )}
-              {currentTab === 1 && (
-                <ProfileNotes profileIdentifier={profileIdentifier} />
-              )}
-              {currentTab === 2 && (
-                  <ProfilePatientList profileIdentifier={profileIdentifier} patients={patients} />
-              )}              
-            </ProfileDetailsContainer>
-          </div>
-        </ColumnsConfigProvider>
-      </div>
-    </div>
+          )}
+        </ProfileDetailsContainer>
+      </ColumnsConfigProvider>
+    </HorizontallyScrolledViewLayout>
   );
 };
 

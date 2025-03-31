@@ -1,11 +1,11 @@
 import styled from 'styled-components';
 import { fontSizes, fontWeights } from 'styles/font';
 import palette from 'styles/palette';
+import Drawer from '@mui/material/Drawer';
 
 export const MoreActinsWrapper = styled.div`
   display: flex;
   width: auto;
-  height: 34px;
 `;
 
 export const ContentWrapper = styled.div`
@@ -34,6 +34,18 @@ export const TitleName = styled.p`
 
 export const NewDrawerContainer = styled.div`
   padding: 10px;
-  min-height: 100%;
-  width: 400px;
+`;
+
+export const DrawerWrapper = styled(Drawer)`
+  border: 2px solid red;
+  &.MuiDrawer-docked {
+    position: relative;
+    z-index: 10;
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+
+  .MuiDrawer-paper {
+    width: 400px;
+  }
 `;

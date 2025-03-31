@@ -38,14 +38,9 @@ import {
   PatientDetailsContainer,
   PatientDetailsTabsContainer,
   MainTab,
-  HeaderContainer,
-  NewDrawerContainer,
 } from './styled';
 import { patientOrgIdSelector } from '@/app/selectors/patient-details-selectors';
 import { selectCurrentOrganizationWithRedirection } from '@/app/api/organization-api';
-import BasicLayoutHeader from '@/app/components/template/BasicLayoutHeader/BasicLayoutHeader';
-import ProfileDetailsDrawer from '../profile-details/ProfileDetailsDrawer/ProfileDetailsDrawer';
-import useBoolean from '@/app/hooks/useBoolean';
 
 const PatientDetailsView = () => {
   const { patientIdentifier } = useParams();
@@ -68,7 +63,6 @@ const PatientDetailsView = () => {
   const [tabsConfiguration, setTabsConfiguration] = useState(
     patientNotesDisabled ? DEFAULT_TABS_CONFIG : TABS_CONFIG,
   );
-  const [isDrawerOpen, openDrawer, closeDrawer] = useBoolean(false);
 
   useEffect(() => {
     const organizationsExist = patientOrgIdentifier && currentOrganization;
@@ -196,66 +190,62 @@ const PatientDetailsView = () => {
   };
 
   return (
-    <div style={{ display: 'flex', minHeight:"100%" }}>
-      {isDrawerOpen && (
-        <NewDrawerContainer>
-          <ProfileDetailsDrawer closeDrawer={closeDrawer} context={"PATIENT"} />
-        </NewDrawerContainer>
-      )}
-      <div style={{ width: '100%', height: '100%' }}>
-        <HeaderContainer>
-          <BasicLayoutHeader
+    <HorizontallyScrolledViewLayout
+      header={
+        <LayoutHeader>
+          <LayoutHeader.Title
             title={embeddedMode ? '' : capitalize(customerTypeLabel)}
           />
-        </HeaderContainer>
-        <ColumnsConfigProvider>
-          <div>
-            <PatientDetailsHeader openDrawer={openDrawer} />
-            <PatientDetailsTabsContainer>
-              <Grid container>
-                <Tabs value={activeTabPath} onChange={handleTabChange}>
-                  {tabsConfiguration.map((t) => (
-                    <MainTab
-                      key={t.mainPath}
-                      value={t.mainPath}
-                      label={t.label}
-                    />
-                  ))}
-                </Tabs>
-              </Grid>
-            </PatientDetailsTabsContainer>
-            <PatientDetailsContainer>
-              <Switch>
-                {tabsConfiguration?.map((route) => (
-                  <RouteWrapper
-                    allowedToRoles={route.allowedToRoles}
-                    key={route.mainPath}
-                    path={`${path}/${route.mainPath}${
-                      route.additionalPath ? `/${route.additionalPath}` : ''
-                    }`}
-                    RouteComponent={
-                      route.type === 'widget'
-                        ? () => (
-                            <PatientWidget
-                              url={route.url}
-                              height={route.height}
-                              width={route.width}
-                              identifier={route.identifier}
-                            />
-                          )
-                        : route.RouteComponent
-                    }
-                    onEnter={route.onEnter}
-                    exact={route.exact}
+        </LayoutHeader>
+      }
+    >
+      <ColumnsConfigProvider>
+        <StickyContainer>
+          <PatientDetailsHeader />
+          <PatientDetailsTabsContainer>
+            <Grid container>
+              <Tabs value={activeTabPath} onChange={handleTabChange}>
+                {tabsConfiguration.map((t) => (
+                  <MainTab
+                    key={t.mainPath}
+                    value={t.mainPath}
+                    label={t.label}
                   />
                 ))}
-                <Redirect to={`${path}/${DEFAULT_TAB.mainPath}`} />
-              </Switch>
-            </PatientDetailsContainer>
-          </div>
-        </ColumnsConfigProvider>
-      </div>
-    </div>
+              </Tabs>
+            </Grid>
+          </PatientDetailsTabsContainer>
+        </StickyContainer>
+        <PatientDetailsContainer>
+          <Switch>
+            {tabsConfiguration?.map((route) => (
+              <RouteWrapper
+                allowedToRoles={route.allowedToRoles}
+                key={route.mainPath}
+                path={`${path}/${route.mainPath}${
+                  route.additionalPath ? `/${route.additionalPath}` : ''
+                }`}
+                RouteComponent={
+                  route.type === 'widget'
+                    ? () => (
+                        <PatientWidget
+                          url={route.url}
+                          height={route.height}
+                          width={route.width}
+                          identifier={route.identifier}
+                        />
+                      )
+                    : route.RouteComponent
+                }
+                onEnter={route.onEnter}
+                exact={route.exact}
+              />
+            ))}
+            <Redirect to={`${path}/${DEFAULT_TAB.mainPath}`} />
+          </Switch>
+        </PatientDetailsContainer>
+      </ColumnsConfigProvider>
+    </HorizontallyScrolledViewLayout>
   );
 };
 
