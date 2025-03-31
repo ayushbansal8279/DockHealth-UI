@@ -90,6 +90,8 @@ export const TaskTemplateGroupHeaderContainer = styled.div`
       `
       : ''}
 
+  ${({ isDragActive }) => (isDragActive ? 'opacity: 0;' : 'opacity: 1;')}
+
   &:hover {
     & ${TemplateHandle}, ${AddPlaceholder} {
       opacity: 1;

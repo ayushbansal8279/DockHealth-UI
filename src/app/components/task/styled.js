@@ -481,6 +481,8 @@ export const StandardTaskItemContainer = styled.div`
       `
       : ''}
 
+  ${({ isDragActive }) => (isDragActive ? 'opacity: 0;' : 'opacity: 1;')}
+
   ${({ isTaskTemplate }) =>
     isTaskTemplate
       ? `

@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { DragDropContext, Droppable, DropResult } from 'react-beautiful-dnd';
 import { Virtuoso } from 'react-virtuoso';
 import { useDispatch } from 'react-redux';
@@ -17,6 +17,8 @@ import {
   PointerSensor,
   useSensor,
   useSensors,
+  DragOverlay,
+  DragStartEvent,
 } from '@dnd-kit/core';
 
 export interface Props {
@@ -42,6 +44,11 @@ function Virtualized({
   const dispatch = useDispatch();
 
   const flatNodes = useMemo(() => walk(nodes), [nodes]);
+  const [activeId, setActiveId] = useState<string | number | null>(null);
+
+  const handleDragStart = (event: DragStartEvent) => {
+    setActiveId(event?.active?.id);
+  };
 
   const handleDragEnd = useCallback(
     (drop: DragEndEvent) => {
@@ -155,6 +162,7 @@ function Virtualized({
           }
         }
       }
+      setActiveId(null);
     },
     [flatNodes, dispatch, tasksMap],
   );
@@ -162,6 +170,7 @@ function Virtualized({
   return (
     <>
       <DndContext
+        onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
         sensors={useSensors(
           useSensor(PointerSensor, {
@@ -182,6 +191,9 @@ function Virtualized({
           }}
           {...props}
         />
+        <DragOverlay>
+          {activeId ? <Placeholder id={activeId} /> : null}
+        </DragOverlay>
       </DndContext>
     </>
   );

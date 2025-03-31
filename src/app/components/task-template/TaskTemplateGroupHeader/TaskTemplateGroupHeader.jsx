@@ -675,16 +675,17 @@ const TaskTemplateGroupHeader = ({
         }}
         style={{
           transform: CSS.Transform?.toString(transform),
-          // transition:
-          //   !!active && active?.id === identifier
-          //     ? 'none'
-          //     : 'transform 300ms ease',
           zIndex: !!active && active?.id === identifier ? 1000 : 'auto',
           position: !!active && active?.id === identifier ? 'relative' : '',
+          transition:
+            !!active && active?.id === identifier
+              ? 'none'
+              : 'transform 300ms ease',
         }}
         {...attributes}
         {...listeners}
-        isDraggedOver={isOver && active.id !== identifier}
+        isDraggedOver={isOver && active?.id !== identifier}
+        isDragActive={!!active && active?.id === identifier}
       >
         {randerFirstColumnCoverIfNecessary(
           <>

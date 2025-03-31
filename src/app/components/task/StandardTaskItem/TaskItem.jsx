@@ -1036,10 +1036,13 @@ const TaskItem = React.memo(
           }}
           style={{
             transform: CSS.Transform?.toString(transform),
-            // transition: !!active ? 'none' : 'transform 300ms ease',
             zIndex: !!active && active?.id === taskIdentifier ? 1000 : 'auto',
             position:
               !!active && active?.id === taskIdentifier ? 'relative' : '',
+            transition:
+              !!active && active?.id === taskIdentifier
+                ? 'none'
+                : 'transform 300ms ease',
           }}
           {...attributes}
           {...listeners}
@@ -1063,7 +1066,8 @@ const TaskItem = React.memo(
             isVirtualSubtask={isVirtualSubtask}
             isWorkflowSubtask={isWorkflowSubtask}
             isTaskOfTemplate={!!workflowTaskGroup}
-            isDraggedOver={isOver && active.id !== taskIdentifier}
+            isDraggedOver={isOver && active?.id !== taskIdentifier}
+            isDragActive={!!active && active?.id === taskIdentifier}
           >
             {randerFirstColumnCoverIfNecessary(
               <>
