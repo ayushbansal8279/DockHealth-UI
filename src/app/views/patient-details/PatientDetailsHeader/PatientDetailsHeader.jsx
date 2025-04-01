@@ -258,6 +258,7 @@ const PatientDetailsHeader = () => {
                     displayNames,
                     fieldType,
                     customFieldIdentifier,
+                    dateTimeIntent
                   }) => {
                     return (
                       <React.Fragment key={customFieldIdentifier}>
@@ -267,6 +268,7 @@ const PatientDetailsHeader = () => {
                           value={value}
                           displayNames={displayNames}
                           displayName={displayName}
+                          dueDateIntent={dateTimeIntent}
                         />
                         <PatientInfoDivider />
                       </React.Fragment>

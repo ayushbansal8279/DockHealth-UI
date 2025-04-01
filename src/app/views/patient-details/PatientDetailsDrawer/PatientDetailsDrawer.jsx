@@ -29,6 +29,7 @@ import {
   getCustomerUniqueIDLabel,
 } from 'helpers/customer-type-helper';
 import PatientLabels from '../PatientLabels/PatientLabels';
+import { DueDateIntent } from '@/app/helpers/task-helpers';
 
 const PatientDetailsDrawer = ({ patient, isOpenedDetails, closeDetails }) => {
   const history = useHistory();
@@ -146,7 +147,28 @@ const PatientDetailsDrawer = ({ patient, isOpenedDetails, closeDetails }) => {
     updateData.patientLabels = undefined;
     updateData.createdDateTime = undefined;
     updateData.updatedDateTime = undefined;
-    dispatch(updatePatientDetails(patientIdentifier, updateData));
+
+    const updatedData = {
+      ...updateData,
+      patientMetaData: updateData.patientMetaData.map((meta) => {
+        const { value } = meta;
+        const isDate = moment(value, moment.ISO_8601, true).isValid();
+        if (isDate) {
+          const dateTimeIntent = value.includes("T00:00:00.000Z")
+            ? DueDateIntent.DATE
+            : DueDateIntent.DATETIME_ABSOLUTE;
+  
+          return {
+            ...meta,
+            dateTimeIntent,
+          };
+        }
+    
+        return meta;
+      }),
+    };
+  
+    dispatch(updatePatientDetails(patientIdentifier, updatedData));
   };
 
   const handleAddButtonClick = useCallback(() => {

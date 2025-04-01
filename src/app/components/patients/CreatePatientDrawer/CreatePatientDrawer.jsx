@@ -17,11 +17,37 @@ import { showAlert } from 'helpers/utility-functions';
 import PatientForm from 'components/patients/PatientForm/PatientForm';
 import { validationSchema } from 'components/patients/PatientForm/helpers';
 import PatientDrawer from 'components/patients/PatientDrawer/PatientDrawer';
+import { DueDateIntent } from '@/app/helpers/task-helpers';
+import moment from 'moment';
+
+const isDate = (value) => moment(value, moment.ISO_8601, true).isValid();
+
+const transformMetadata = (data) => {
+  if (!data?.patientMetaData || !Array.isArray(data.patientMetaData)) return data;
+
+  data.patientMetaData = data.patientMetaData.map((item) => {
+    const { value } = item;
+
+    if (isDate(value)) {
+      return {
+        ...item,
+        dateTimeIntent: value.includes("T00:00:00.000Z")
+          ? DueDateIntent.DATE
+          : DueDateIntent.DATETIME_ABSOLUTE,
+      };
+    }
+
+    return item;
+  });
+
+  return data;
+};
 
 const onSubmit =
   ({ onClose, onPatientCreated, uniqueIdentifierLabel }) =>
   (data) => {
-    const patientApiMethod = PatientApi.addPatient(data);
+    const newData = transformMetadata(data);
+    const patientApiMethod = PatientApi.addPatient(newData);
 
     patientApiMethod
       .then((response) => {
