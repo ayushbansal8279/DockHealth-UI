@@ -37,7 +37,11 @@ import {
   CenterBox,
 } from './styled';
 
-const TaskCustomFieldsView = ({ taskListIdentifier, editable = false }) => {
+const TaskCustomFieldsView = ({
+  taskListIdentifier,
+  editable = false,
+  height,
+}) => {
   const dispatch = useDispatch();
   const [customFields, setCustomFields] = useState(null);
   const [isFetching, setIsFetching] = useState(true);
@@ -210,7 +214,7 @@ const TaskCustomFieldsView = ({ taskListIdentifier, editable = false }) => {
             <>
               <div
                 style={{
-                  maxHeight: '400px',
+                  maxHeight: height || '400px',
                   overflowY: 'auto',
                   position: 'relative',
                   paddingLeft: '12px',
