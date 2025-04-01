@@ -17,28 +17,15 @@ import { showAlert } from 'helpers/utility-functions';
 import PatientForm from 'components/patients/PatientForm/PatientForm';
 import { validationSchema } from 'components/patients/PatientForm/helpers';
 import PatientDrawer from 'components/patients/PatientDrawer/PatientDrawer';
-import { DueDateIntent } from '@/app/helpers/task-helpers';
-import moment from 'moment';
-
-const isDate = (value) => moment(value, moment.ISO_8601, true).isValid();
+import { getDateTimeIntent } from '@/app/helpers/date-intent-helpers';
 
 const transformMetadata = (data) => {
   if (!data?.patientMetaData || !Array.isArray(data.patientMetaData)) return data;
 
-  data.patientMetaData = data.patientMetaData.map((item) => {
-    const { value } = item;
-
-    if (isDate(value)) {
-      return {
-        ...item,
-        dateTimeIntent: value.includes("T00:00:00.000Z")
-          ? DueDateIntent.DATE
-          : DueDateIntent.DATETIME_ABSOLUTE,
-      };
-    }
-
-    return item;
-  });
+  data.patientMetaData = data.patientMetaData.map((item) => ({
+    ...item,
+    ...getDateTimeIntent(item.value),
+  }));
 
   return data;
 };

@@ -36,8 +36,7 @@ import { closeModal, openModal } from 'modal/actions';
 import { FieldType } from '@/app/helpers/field-type-helpers';
 import { normalizeHyperlink } from '@/app/helpers/custom-fields-helpers';
 import { getProfileName } from '@/app/views/custom-profile-details/helpers';
-import { DueDateIntent } from '@/app/helpers/task-helpers';
-import moment from 'moment';
+import { getDateTimeIntent } from '@/app/helpers/date-intent-helpers';
 
 const ProfileDrawer = ({
   title,
@@ -76,15 +75,6 @@ const ProfileDrawer = ({
   useUnmount(() => {
     setEditMode(false);
   });
-
-  const getDateTimeIntent = (value) => {
-    if (!moment(value, moment.ISO_8601, true).isValid()) return {};
-    return {
-      dateTimeIntent: value.includes("T00:00:00.000Z")
-        ? DueDateIntent.DATE
-        : DueDateIntent.DATETIME_ABSOLUTE,
-    };
-  };  
 
   const editProfile = useCallback(
     (data) => {

@@ -21,3 +21,14 @@ export function formatDateTime(date, intent) {
       ? moment.utc(date).startOf('day').toISOString()
       : moment(date).toISOString();
 }
+
+export const isDate = (value) => moment(value, moment.ISO_8601, true).isValid();
+
+export const getDateTimeIntent = (value) => {
+  if (!isDate(value)) return {};
+  return {
+    dateTimeIntent: value.includes("T00:00:00.000Z")
+      ? DueDateIntent.DATE
+      : DueDateIntent.DATETIME_ABSOLUTE,
+  };
+};

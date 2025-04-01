@@ -29,7 +29,7 @@ import {
   getCustomerUniqueIDLabel,
 } from 'helpers/customer-type-helper';
 import PatientLabels from '../PatientLabels/PatientLabels';
-import { DueDateIntent } from '@/app/helpers/task-helpers';
+import { getDateTimeIntent } from '@/app/helpers/date-intent-helpers';
 
 const PatientDetailsDrawer = ({ patient, isOpenedDetails, closeDetails }) => {
   const history = useHistory();
@@ -150,22 +150,10 @@ const PatientDetailsDrawer = ({ patient, isOpenedDetails, closeDetails }) => {
 
     const updatedData = {
       ...updateData,
-      patientMetaData: updateData.patientMetaData.map((meta) => {
-        const { value } = meta;
-        const isDate = moment(value, moment.ISO_8601, true).isValid();
-        if (isDate) {
-          const dateTimeIntent = value.includes("T00:00:00.000Z")
-            ? DueDateIntent.DATE
-            : DueDateIntent.DATETIME_ABSOLUTE;
-  
-          return {
-            ...meta,
-            dateTimeIntent,
-          };
-        }
-    
-        return meta;
-      }),
+      patientMetaData: updateData.patientMetaData.map((meta) => ({
+        ...meta,
+        ...getDateTimeIntent(meta.value),
+      })),
     };
   
     dispatch(updatePatientDetails(patientIdentifier, updatedData));
