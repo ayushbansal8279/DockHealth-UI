@@ -40,7 +40,7 @@ import {
 const TaskCustomFieldsView = ({
   taskListIdentifier,
   editable = false,
-  height,
+  fullWidth,
 }) => {
   const dispatch = useDispatch();
   const [customFields, setCustomFields] = useState(null);
@@ -214,7 +214,7 @@ const TaskCustomFieldsView = ({
             <>
               <div
                 style={{
-                  maxHeight: height || '400px',
+                  ...(fullWidth ? {} : { maxHeight: '400px' }),
                   overflowY: 'auto',
                   position: 'relative',
                   paddingLeft: '12px',
