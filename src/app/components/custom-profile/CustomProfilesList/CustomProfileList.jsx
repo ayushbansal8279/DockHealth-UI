@@ -389,7 +389,7 @@ const CustomProfileList = () => {
                       case 'DATE': {
                         const date = record.values?.[0] || record.values?.[0]?.value || ''
                         if(!date) return '';
-                        return <DateLabel date={date} />
+                        return <DateLabel date={date} dueDateIntent={record.dateTimeIntents[0]} />
                       }
                       default: {
                         return '';

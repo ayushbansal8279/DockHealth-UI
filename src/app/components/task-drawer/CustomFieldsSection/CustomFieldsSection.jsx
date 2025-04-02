@@ -11,7 +11,7 @@ import Spacing from 'components/common/Spacing';
 import CategoryOptions from 'components/common/CategoryOptions/CategoryOptions';
 import { partialUpdateTask } from 'actions/task-actions';
 import { updatePartialWorkflow } from 'actions/task-template-actions';
-import { TaskItemType } from 'helpers/task-helpers';
+import { DueDateIntent, TaskItemType } from 'helpers/task-helpers';
 import {
   selectedTaskSelector,
   taskCustomFieldsSelector,
@@ -33,6 +33,8 @@ import {
   Title,
   styleFullRow,
 } from './styled';
+import moment from 'moment';
+import { isDate, UTC_DATE_ONLY, UTC_DATE_TIME } from '@/app/helpers/date-intent-helpers';
 
 const CustomFieldsSection = ({ disabled, fieldCategoryType }) => {
   const dispatch = useDispatch();
@@ -85,12 +87,30 @@ const CustomFieldsSection = ({ disabled, fieldCategoryType }) => {
   const updateCustomFields = useCallback(
     ({ taskMetaData }) => {
       if (taskMetaData.length > 0) {
+
+        let updatedTaskMetaData = taskMetaData.map((meta) => {
+          if (isDate(meta.value)) { 
+            const localDate = moment(meta.value);
+            const recalculatedUtcMidnight = moment(localDate).startOf('day').utc();  
+            const isDateIntent = meta.value === recalculatedUtcMidnight.format(UTC_DATE_TIME);
+            
+            return {
+              ...meta,
+              value: isDateIntent
+                ? moment(meta.value).format(UTC_DATE_ONLY)
+                : moment.utc(meta.value).format(UTC_DATE_TIME),
+              dateTimeIntent: isDateIntent ? DueDateIntent.DATE : DueDateIntent.DATETIME_ABSOLUTE,
+            };
+          }
+          return meta;
+        });
+  
         isWorkflow
-          ? dispatch(updatePartialWorkflow(task?.identifier, { taskMetaData }))
-          : dispatch(partialUpdateTask(task?.identifier, { taskMetaData }));
+          ? dispatch(updatePartialWorkflow(task?.identifier, { taskMetaData: updatedTaskMetaData }))
+          : dispatch(partialUpdateTask(task?.identifier, { taskMetaData: updatedTaskMetaData }));
       }
     },
-    [dispatch, isWorkflow, task],
+    [dispatch, isWorkflow, task]
   );
 
   const formMethods = useForm();
@@ -124,7 +144,12 @@ const CustomFieldsSection = ({ disabled, fieldCategoryType }) => {
           const hasMissingParts = data.target?.value?.includes('_');
           if (hasMissingParts) return;
         }
-        handleSubmit(compose(updateCustomFields, formatMetaDataOutput))(data);
+        handleSubmit(
+          compose(
+            (formattedData) => updateCustomFields(formattedData, fieldType),
+            formatMetaDataOutput
+          )
+        )(data);
       }
     },
     [handleSubmit, updateCustomFields],

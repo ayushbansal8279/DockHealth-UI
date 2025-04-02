@@ -9,6 +9,7 @@ const PatientMetaDataField = ({
   value,
   displayNames,
   displayName,
+  dueDateIntent
 }) => {
   if (fieldType === FieldType.HYPERLINK) {
     return (
@@ -22,7 +23,7 @@ const PatientMetaDataField = ({
     return (
       <PatientInfo>
         <Typography>{customFieldName}: </Typography>
-        <DateLabel date={value} />
+        <DateLabel date={value} dueDateIntent={dueDateIntent} />
       </PatientInfo>
     );
   } else {
