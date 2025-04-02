@@ -88,14 +88,12 @@ const ProfileDrawer = ({
               values: Array.isArray(value)
                 ? value?.map((selectedValue) => ({ value: selectedValue }))
                 : [
-                    type.fieldType === '"PICK_LIST"'
-                      ? { customFieldOption: { identifier: value } }
-                      : {
-                          value:
-                            type.fieldType === FieldType.HYPERLINK
-                              ? normalizeHyperlink(value)
-                              : value,
-                        },
+                    {
+                      value:
+                        type.fieldType === FieldType.HYPERLINK
+                          ? normalizeHyperlink(value)
+                          : value,
+                    },
                   ],
             };
           },
