@@ -314,14 +314,22 @@ const RichTextEditor = ({
           if (onBlur) {
             event.preventDefault();
             event.stopPropagation();
-            const markdown = turndownService.turndown(value);
+            const fixedValue = value.replace(
+              /(<span class="fr-deletable fr-tribute"[^>]*>.*?<\/a>)([^<]*)(<\/span>)/g,
+              '$1</span>$2',
+            );
+            const markdown = turndownService.turndown(fixedValue);
             onBlur(markdown);
           }
         },
         contentChanged() {
           const value = this.html.get();
           if (onChange) {
-            const markdown = turndownService.turndown(value);
+            const fixedValue = value.replace(
+              /(<span class="fr-deletable fr-tribute"[^>]*>.*?<\/a>)([^<]*)(<\/span>)/g,
+              '$1</span>$2',
+            );
+            const markdown = turndownService.turndown(fixedValue);
             onChange(markdown);
           }
         },
@@ -334,7 +342,11 @@ const RichTextEditor = ({
               keydownEvent.preventDefault();
               keydownEvent.stopPropagation();
               const value = this.html.get();
-              const markdown = turndownService.turndown(value);
+              const fixedValue = value.replace(
+                /(<span class="fr-deletable fr-tribute"[^>]*>.*?<\/a>)([^<]*)(<\/span>)/g,
+                '$1</span>$2',
+              );
+              const markdown = turndownService.turndown(fixedValue);
               setEditorState('');
               this.html.set('');
               onKeyEnter(markdown);
