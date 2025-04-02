@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
 import CustomField from '@/app/components/common/CustomField/CustomField';
 import LabeledCollapse from '@/app/components/common/LabeledCollapse/LabeledCollapse';
-import { GENDER_OPTIONS_BIRTH } from '@/app/types/gender';
 import { Box } from '@mui/material';
-import moment from 'moment';
 import { FieldType } from '@/app/helpers/field-type-helpers';
 
 const ProfileGroup = ({
@@ -11,16 +9,8 @@ const ProfileGroup = ({
   profileValues,
   editMode,
   context,
-  genderIdentityOptions,
 }) => {
   const [collapse, setCollapse] = useState(true);
-
-  const GENDER_OPTIONS = GENDER_OPTIONS_BIRTH?.map((item) => {
-    return {
-      identifier: item?.value,
-      name: item?.label,
-    };
-  });
 
   const handleCollapse = () => {
     setCollapse(!collapse);
@@ -42,24 +32,6 @@ const ProfileGroup = ({
               return field.fieldReferenceId === pd.profileTypeFieldIdentifier;
             return false;
           }) || {};
-
-        if (context === 'PATIENT') {
-          switch (field.name) {
-            case 'Gender Identity':
-              field.options = genderIdentityOptions;
-              break;
-            case 'Gender':
-              field.options = GENDER_OPTIONS;
-              break;
-            case 'Dob':
-              record.value = moment(record?.value, 'YYYY-MM-DD')
-                .utc()
-                .toISOString();
-              break;
-            default:
-              break;
-          }
-        }
 
         const initialValue = () => {
           if (record) {
