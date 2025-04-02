@@ -89,15 +89,12 @@ const ProfileDrawer = ({
               values: Array.isArray(value)
                 ? value?.map((selectedValue) => ({ value: selectedValue }))
                 : [
-                    type.fieldType === FieldType.DROPDOWN
-                      ? { customFieldOption: { identifier: value } }
-                      : {
-                          value:
-                            type.fieldType === FieldType.HYPERLINK
-                              ? normalizeHyperlink(value)
-                              : value,
-                          ...getDateTimeIntent(value),
-                        },
+                    {
+                      value:
+                        type.fieldType === FieldType.HYPERLINK
+                          ? normalizeHyperlink(value)
+                          : value,
+                    },
                   ],
             };
           },

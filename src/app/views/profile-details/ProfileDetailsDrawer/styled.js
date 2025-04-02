@@ -49,3 +49,9 @@ export const DrawerWrapper = styled(Drawer)`
     width: 400px;
   }
 `;
+
+export const SaveWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+`;
