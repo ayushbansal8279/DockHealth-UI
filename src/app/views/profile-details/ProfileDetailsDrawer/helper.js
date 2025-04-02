@@ -98,7 +98,10 @@ function getGenderIdentityOptions(genderIdentity) {
   });
 }
 
-export function addFieldOptionsInDefaultCategory(processedGroups, GENDER_OPTIONS) {
+export function addFieldOptionsInDefaultCategory(
+  processedGroups,
+  GENDER_OPTIONS,
+) {
   return processedGroups.map((category) => {
     if (category.name === 'Default Group') {
       const newFields = category?.fields?.map((field) => {
@@ -124,17 +127,17 @@ export function addFieldOptionsInDefaultCategory(processedGroups, GENDER_OPTIONS
   });
 }
 
-
 export function mapDefaultFields(defaultFields, patient) {
   return defaultFields?.map(({ fieldName, identifier }) => {
-    let patient1 = patient;
+    let value = patient[fieldName] ?? '';
+
     if (fieldName === 'dob') {
-      patient1.dob = moment(patient1[fieldName]).format(UTC_DATE_ONLY);
+      value = moment(value).format(UTC_DATE_ONLY);
     }
 
     return {
       customFieldIdentifier: identifier,
-      value: patient1[fieldName] ?? '',
+      value: value,
     };
   });
 }
