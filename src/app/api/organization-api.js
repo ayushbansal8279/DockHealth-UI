@@ -4,6 +4,7 @@ import prop from 'ramda/src/prop';
 import { noop, showAlert } from 'helpers/utility-functions';
 import axios from './axios-heydoc';
 import { blobFileDownload } from '../helpers/blob-file-download';
+import { handleMixedResponse } from '../helpers/handle-mixed-response';
 
 export function getOrganizationUsersAndUserGroups() {
   return axios
@@ -481,12 +482,7 @@ export function bulkInviteUser(fileData, additionalConfig = {}) {
       },
       ...additionalConfig,
     })
-    .then((response) => {
-      if (Array.isArray(response.data) && response.data.length === 0) {
-        throw new Error('File upload failed. Please check the template and try again.');
-      }
-      return response.data;
-    })
+    .then((response) => handleMixedResponse(response))
     .catch((error) => {
       if (error.response && error.response.status === 413) {
         showAlert({
