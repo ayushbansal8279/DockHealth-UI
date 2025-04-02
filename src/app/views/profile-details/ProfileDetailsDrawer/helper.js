@@ -1,4 +1,6 @@
 import { GENDER_OPTIONS_BIRTH } from '@/app/types/gender';
+import { UTC_DATE_ONLY } from '@/app/helpers/date-intent-helpers';
+import moment from 'moment';
 
 export function mapFieldsFromIdentifiers(mappings, data) {
   const mappedFields = {};
@@ -119,5 +121,20 @@ export function addFieldOptionsInDefaultCategory(processedGroups, GENDER_OPTIONS
       return { ...category, fields: newFields };
     }
     return category;
+  });
+}
+
+
+export function mapDefaultFields(defaultFields, patient) {
+  return defaultFields?.map(({ fieldName, identifier }) => {
+    let patient1 = patient;
+    if (fieldName === 'dob') {
+      patient1.dob = moment(patient1[fieldName]).format(UTC_DATE_ONLY);
+    }
+
+    return {
+      customFieldIdentifier: identifier,
+      value: patient1[fieldName] ?? '',
+    };
   });
 }
