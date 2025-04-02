@@ -33,7 +33,14 @@ import { useDispatch } from 'react-redux';
 import { getGenderIdentityOptions } from '@/app/api/patients-api';
 import { mergeDeepRight } from 'ramda';
 import { updatePatientDetails } from '@/app/actions/patient-details-actions';
-import { mapFieldsFromIdentifiers, processCustomFields } from './helper';
+import {
+  addFieldOptionsInDefaultCategory,
+  enrichCategoryGroups,
+  formatPatientName,
+  formatProfileTitle,
+  mapFieldsFromIdentifiers,
+  processCustomFields,
+} from './helper';
 
 const ProfileDetailsDrawer = ({
   isOpenedDetails,
@@ -49,54 +56,39 @@ const ProfileDetailsDrawer = ({
   const [editMode, setEditMode] = useState(false);
   const [loading, setLoading] = useState(true);
   const [profileTypeFields, setProfileTypeFields] = useState([]);
-  const [genderIdentityOptions, setGenderIdentityOptions] = useState([]);
   const [defaultFields, setDefaultFields] = useState([]);
   const [allCustomFields, setAllCustomFields] = useState([]);
   const dispatch = useDispatch();
 
   const fetchPatientCustomGroups = async () => {
     try {
-      const [customGroups, allCustomFields, defaultFields, genderIdentity] =
-        await Promise.all([
-          CustomFieldApi.searchCustomFiledGroups(context),
-          CustomFieldApi.getAllPatientCustomFields(),
-          CustomFieldApi.getDefauldFields(context),
-          getGenderIdentityOptions(),
-        ]);
+      const [
+        customGroups,
+        allCustomFields,
+        defaultFields,
+        genderIdentityOptions,
+      ] = await Promise.all([
+        CustomFieldApi.searchCustomFiledGroups(context),
+        CustomFieldApi.getAllPatientCustomFields(),
+        CustomFieldApi.getDefauldFields(context),
+        getGenderIdentityOptions(),
+      ]);
+
       setDefaultFields(defaultFields);
       setAllCustomFields(allCustomFields);
 
-      const genders = genderIdentity?.map((item) => {
-        return {
-          identifier: item?.genderIdentityType,
-          name: item?.description,
-        };
-      });
-      setGenderIdentityOptions(genders);
-
-      const title = `${patient?.lastName}, ${patient?.firstName} ${
-        patient?.middleName ?? ''
-      }`;
+      const title = formatPatientName(patient);
       setTitle(title);
 
       const enhancedDefaultFields = convertDefaultFields(defaultFields);
       const customFields = [...enhancedDefaultFields, ...allCustomFields];
 
-      const processedGroups = customGroups.map((category) => {
-        if (!category.fields) {
-          return category;
-        }
+      const enrichedGroups = enrichCategoryGroups(customGroups, customFields);
 
-        const enrichedFields = category.fields.map((field) => {
-          const matchingField = customFields?.find(
-            (customField) => customField.identifier === field.fieldReferenceId,
-          );
-
-          return matchingField ? { ...field, ...matchingField } : field;
-        });
-
-        return { ...category, fields: enrichedFields };
-      });
+      const processedGroups = addFieldOptionsInDefaultCategory(
+        enrichedGroups,
+        genderIdentityOptions,
+      );
 
       setSelectedCategories(processedGroups);
       setLoading(false);
@@ -125,32 +117,18 @@ const ProfileDetailsDrawer = ({
       setProfileTypeFields(profileTypeFields);
 
       const profileName = getProfileName(profileTypeFields, profile);
-      const title = [
-        `${profileName?.[1] ? profileName?.[1] + ',' : ''}`,
-        profileName?.[0],
-        profileName?.[2],
-      ].join(' ');
+
+      const title = formatProfileTitle(profileName);
       setTitle(title);
 
       setProfileValues(profile?.fields);
 
-      const processedGroups = customGroups.map((category) => {
-        if (!category.fields) {
-          return category;
-        }
+      const enrichedGroups = enrichCategoryGroups(
+        customGroups,
+        profileTypeFields,
+      );
 
-        const enrichedFields = category.fields.map((field) => {
-          const matchingField = profileTypeFields?.find(
-            (customField) => customField.identifier === field.fieldReferenceId,
-          );
-
-          return matchingField ? { ...field, ...matchingField } : field;
-        });
-
-        return { ...category, fields: enrichedFields };
-      });
-
-      setSelectedCategories(processedGroups);
+      setSelectedCategories(enrichedGroups);
       setLoading(false);
     } catch (error) {
       console.error('Error fetching profile custom groups:', error);
@@ -185,21 +163,17 @@ const ProfileDetailsDrawer = ({
             values: Array.isArray(value)
               ? value?.map((selectedValue) => ({ value: selectedValue }))
               : [
-                  type?.fieldType === '"PICK_LIST"'
-                    ? { customFieldOption: { identifier: value } }
-                    : {
-                        value:
-                          type?.fieldType === FieldType.HYPERLINK
-                            ? normalizeHyperlink(value)
-                            : value,
-                      },
+                  {
+                    value:
+                      type?.fieldType === FieldType.HYPERLINK
+                        ? normalizeHyperlink(value)
+                        : value,
+                  },
                 ],
           };
         },
       ),
-      // eslint-disable-next-line no-shadow
     })
-      // eslint-disable-next-line no-shadow
       .then(async () => {
         setEditMode(false);
         dispatch(showGlobalAlert(AlertMessages.SAVED));
@@ -301,7 +275,6 @@ const ProfileDetailsDrawer = ({
                   {selectedCategories?.map((category, key) => {
                     return (
                       <ProfileGroup
-                        genderIdentityOptions={genderIdentityOptions}
                         category={category}
                         profileValues={profileValues}
                         editMode={editMode}
