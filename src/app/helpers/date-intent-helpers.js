@@ -1,6 +1,9 @@
 import moment from "moment";
 import { DueDateIntent } from "./task-helpers";
 
+export const UTC_DATE_ONLY = "YYYY-MM-DDT00:00:00.000[Z]";
+export const UTC_DATE_TIME = "YYYY-MM-DDTHH:mm:ss.SSS[Z]";
+
 export function formatDateBasedOnIntent(date, intent) {
     return intent === DueDateIntent.DATE
         ? moment(date).utc().format('MMM DD, YYYY')

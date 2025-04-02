@@ -3,6 +3,7 @@ import { useFormContext } from 'react-hook-form';
 import { useMount, useUnmount } from 'react-use';
 import Input from './Input';
 import moment from 'moment';
+import { isDate, UTC_DATE_ONLY, UTC_DATE_TIME } from '@/app/helpers/date-intent-helpers';
 
 const FormInput = React.forwardRef(
   (
@@ -14,8 +15,7 @@ const FormInput = React.forwardRef(
       disableClearErrorOnKeyUp,
       required,
       readOnly,
-      isDate,
-      isTask,
+      autoSave,
       ...restProps
     },
     reference,
@@ -54,12 +54,13 @@ const FormInput = React.forwardRef(
       if (typeof onChange === 'function') onChange(event);
     };
 
-    if(isDate && !isTask) {
+    const shouldRecalculateValue = !autoSave && isDate(value);
+    if(shouldRecalculateValue) {
       const localDate = moment(value);
       const recalculatedUtcMidnight = moment(localDate).startOf('day').utc();  
-      const isDateIntent = value === recalculatedUtcMidnight.format("YYYY-MM-DDTHH:mm:ss.SSS[Z]");
+      const isDateIntent = value === recalculatedUtcMidnight.format(UTC_DATE_TIME);
       
-      const newValue = isDateIntent ? moment(value).format("YYYY-MM-DDT00:00:00.000[Z]") : value;
+      const newValue = isDateIntent ? moment(value).format(UTC_DATE_ONLY) : value;
 
       if (newValue !== value) {
         setValue(name, newValue);  
