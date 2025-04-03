@@ -1,4 +1,5 @@
 import React, { useCallback } from 'react';
+import moment from 'moment';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useEffect, useRef, useState } from 'react';
 import ProfileGroup from './ProfileGroup';
@@ -39,6 +40,7 @@ import {
   formatPatientName,
   formatProfileTitle,
   mapFieldsFromIdentifiers,
+  mapPatientFieldValues,
   processCustomFields,
 } from './helper';
 
@@ -93,15 +95,8 @@ const ProfileDetailsDrawer = ({
       setSelectedCategories(processedGroups);
       setLoading(false);
 
-      const profileValue = patient?.patientMetaData || [];
-
-      const mappedArray = defaultFields?.map(({ fieldName, identifier }) => ({
-        customFieldIdentifier: identifier,
-        value: patient[fieldName] ?? '',
-      }));
-
-      const finalProfile = [...mappedArray, ...profileValue];
-      setProfileValues(finalProfile);
+      const finalProfileValues = mapPatientFieldValues(defaultFields, patient);
+      setProfileValues(finalProfileValues);
     } catch (error) {
       console.error('Error fetching Patient custom groups:', error);
     }
@@ -204,7 +199,7 @@ const ProfileDetailsDrawer = ({
 
     const finalPatientData = { ...updatedPatientData };
 
-    delete finalPatientData.dob; // need to work on for DOB
+    finalPatientData.dob = moment(finalPatientData.dob).format('MM/DD/YYYY');
 
     finalPatientData.patientMetaData = processedCustomFields;
 
@@ -237,6 +232,11 @@ const ProfileDetailsDrawer = ({
 
   const onClose = () => {
     closeDrawer();
+    if (context === 'PATIENT' && editMode) {
+      const finalProfileValues = mapPatientFieldValues(defaultFields, patient);
+      setProfileValues(finalProfileValues);
+    }
+    setEditMode(false);
   };
 
   const options = [
