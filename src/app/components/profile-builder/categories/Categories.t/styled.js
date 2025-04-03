@@ -8,6 +8,7 @@ export const CategoryContainer = styled.div`
   padding-right: ${spacing.huge};
   border-left: 1px solid ${palette.iron};
   height: 100%;
+  overflow: auto;
 `;
 
 export const AddCategory = styled.div`
