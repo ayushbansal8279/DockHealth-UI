@@ -31,6 +31,7 @@ const SelectedCategory = ({ category }) => {
         ),
       );
     });
+    dispatch(showGlobalAlert(AlertMessages.DELETED));
   };
 
   const handleCategoryUpdate = (value) => {
@@ -85,7 +86,7 @@ const SelectedCategory = ({ category }) => {
             size="small"
             placeholder="Add Category Name"
             width="50%"
-            onBlur={handleCategoryUpdate}
+            onEnter={handleCategoryUpdate}
           />
         </HeaderWrapper>
         {category.name !== 'Default Group' && (

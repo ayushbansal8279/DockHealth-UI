@@ -12,8 +12,12 @@ import TextField from '../TextField';
 import { DragIndicator } from '@mui/icons-material';
 import * as CustomFieldApi from 'api/custom-fields-api';
 import { ProfileBuilderContext } from '../ProfileBuilder';
+import { showGlobalAlert } from 'alert/actions';
+import AlertMessages from 'alert/AlertMessages';
+import { useDispatch } from 'react-redux';
 
 const BuilderPlayground = ({ context, identifier }) => {
+  const dispatch = useDispatch();
   const {
     selectedCategories,
     setSelectedCategories,
@@ -40,6 +44,7 @@ const BuilderPlayground = ({ context, identifier }) => {
         setSelectedCategories((prev) => [...prev, data]);
       });
     }
+    dispatch(showGlobalAlert(AlertMessages.CREATED));
   };
 
   const AddCategory = () => {
