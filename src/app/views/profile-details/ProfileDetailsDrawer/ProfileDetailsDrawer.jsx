@@ -39,8 +39,8 @@ import {
   enrichCategoryGroups,
   formatPatientName,
   formatProfileTitle,
-  mapDefaultFields,
   mapFieldsFromIdentifiers,
+  mapPatientFieldValues,
   processCustomFields,
 } from './helper';
 
@@ -95,12 +95,8 @@ const ProfileDetailsDrawer = ({
       setSelectedCategories(processedGroups);
       setLoading(false);
 
-      const profileValue = patient?.patientMetaData || [];
-
-      const mappedDefaultFields = mapDefaultFields(defaultFields, patient);
-
-      const finalProfilevalues = [...mappedDefaultFields, ...profileValue];
-      setProfileValues(finalProfilevalues);
+      const finalProfileValues = mapPatientFieldValues(defaultFields, patient);
+      setProfileValues(finalProfileValues);
     } catch (error) {
       console.error('Error fetching Patient custom groups:', error);
     }
@@ -236,6 +232,11 @@ const ProfileDetailsDrawer = ({
 
   const onClose = () => {
     closeDrawer();
+    if (context === 'PATIENT' && editMode) {
+      const finalProfileValues = mapPatientFieldValues(defaultFields, patient);
+      setProfileValues(finalProfileValues);
+    }
+    setEditMode(false);
   };
 
   const options = [

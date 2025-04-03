@@ -127,17 +127,22 @@ export function addFieldOptionsInDefaultCategory(
   });
 }
 
-export function mapDefaultFields(defaultFields, patient) {
-  return defaultFields?.map(({ fieldName, identifier }) => {
-    let value = patient[fieldName] ?? '';
+export function mapPatientFieldValues(defaultFields, patient) {
+  const profileValue = patient?.patientMetaData || [];
 
-    if (fieldName === 'dob' && value) {
-      value = moment(value).format(UTC_DATE_ONLY);
-    }
+  const mappedDefaultFields = defaultFields?.map(
+    ({ fieldName, identifier }) => {
+      let value = patient[fieldName] ?? '';
+      if (fieldName === 'dob' && value) {
+        value = moment(value).format(UTC_DATE_ONLY);
+      }
+      return {
+        customFieldIdentifier: identifier,
+        value: value,
+      };
+    },
+  );
 
-    return {
-      customFieldIdentifier: identifier,
-      value: value,
-    };
-  });
+  const finalProfileValues = [...mappedDefaultFields, ...profileValue];
+  return finalProfileValues;
 }
