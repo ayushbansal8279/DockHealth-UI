@@ -131,7 +131,7 @@ export function mapDefaultFields(defaultFields, patient) {
   return defaultFields?.map(({ fieldName, identifier }) => {
     let value = patient[fieldName] ?? '';
 
-    if (fieldName === 'dob') {
+    if (fieldName === 'dob' && value) {
       value = moment(value).format(UTC_DATE_ONLY);
     }
 
