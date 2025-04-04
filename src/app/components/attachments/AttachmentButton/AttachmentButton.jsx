@@ -14,7 +14,12 @@ import { updateWorkflowAttachment } from '@/app/actions/workflow-actions';
 import { getWorkflowAttachment } from '@/app/api/workflow-api';
 import { getTaskAttachment } from '@/app/api/task-api';
 
-const AttachmentButton = ({ attachment, onClick, onRemoveClick , renameAttachmentDispatch }) => {
+const AttachmentButton = ({
+  attachment,
+  onClick,
+  onRemoveClick,
+  renameAttachmentDispatch,
+}) => {
   const { attachmentIdentifier, fileName, contentType } = attachment;
   const IconComponent = getIconFromContentType({ contentType });
   const dispatch = useDispatch();
@@ -29,8 +34,7 @@ const AttachmentButton = ({ attachment, onClick, onRemoveClick , renameAttachmen
           currentName: file.fileName,
           onChange: (newFileName) => {
             setRenderedName(newFileName);
-            if(file.taskIdentifier)
-            {
+            if (file.taskIdentifier) {
               renameAttachmentDispatch({
                 type: 'RENAME_ATTACHMENT',
                 attachmentIdentifier: file?.attachmentIdentifier,
@@ -40,92 +44,111 @@ const AttachmentButton = ({ attachment, onClick, onRemoveClick , renameAttachmen
                 renameTaskAttachment(
                   file?.taskIdentifier,
                   file?.attachmentIdentifier,
-                  newFileName
-                )
-              )
-            } else if(file.taskWorkflowIdentifier)
-            {
+                  newFileName,
+                ),
+              );
+            } else if (file.taskWorkflowIdentifier) {
               dispatch(
                 updateWorkflowAttachment(
                   file?.taskWorkflowIdentifier,
                   file?.attachmentIdentifier,
-                  newFileName
-                )
-              )
-            }            
+                  newFileName,
+                ),
+              );
+            }
           },
-        })
+        }),
       );
     },
-    [dispatch]
+    [dispatch],
   );
-  
+
   const openAttachmentPreview = useCallback(() => {
     onClick(attachment);
   }, [onClick, attachment]);
-  
 
   const removeAttachmentHandler = useCallback(
     (attachmentIdentifier) => {
       if (onRemoveClick) {
-        dispatch(openModal('DeleteConfirmation',{
-          title: 'Delete Attachment',
-          description: 'Are you sure you want to delete this attachment? This action cannot be undone.',
-          confirm: () => { onRemoveClick(attachmentIdentifier); }
-        }))
+        dispatch(
+          openModal('DeleteConfirmation', {
+            title: 'Delete Attachment',
+            description:
+              'Are you sure you want to delete this attachment? This action cannot be undone.',
+            confirm: () => {
+              onRemoveClick(attachmentIdentifier);
+            },
+          }),
+        );
       }
     },
-    [dispatch, onRemoveClick]
+    [dispatch, onRemoveClick],
   );
 
   const downloadAttachment = async (attachment) => {
     const { attachmentIdentifier, fileName, contentType } = attachment;
     try {
+      if (scanStatus === ScanStatus.INFECTED) return;
       let data;
-      if(attachment.taskWorkflowIdentifier){
+      if (attachment.taskWorkflowIdentifier) {
         data = await getWorkflowAttachment(attachmentIdentifier);
-      }else if(attachment.taskIdentifier){
+      } else if (attachment.taskIdentifier) {
         const response = await getTaskAttachment(attachmentIdentifier);
         data = response.data;
       }
-        const blob = new Blob([data], { type: contentType });
-        const url = window.URL.createObjectURL(blob);
-        const anchor = document.createElement('a');
-        anchor.href = url;
-        anchor.download = fileName;
-        document.body.appendChild(anchor);
-        anchor.click();
-        document.body.removeChild(anchor);
-        window.URL.revokeObjectURL(url);
+      const blob = new Blob([data], { type: contentType });
+      const url = window.URL.createObjectURL(blob);
+      const anchor = document.createElement('a');
+      anchor.href = url;
+      anchor.download = fileName;
+      document.body.appendChild(anchor);
+      anchor.click();
+      document.body.removeChild(anchor);
+      window.URL.revokeObjectURL(url);
     } catch (error) {
-        console.error('Error downloading attachment:', error);
-    } 
-};
+      console.error('Error downloading attachment:', error);
+    }
+  };
 
   const getFileOptions = useCallback(
     (attachment) => [
-      ...(attachment.scanStatus && attachment.scanStatus !== 'IN_PROGRESS' 
-        ? [{ name: 'Preview', onClick: () => {openAttachmentPreview(attachment)}},
-          { name: 'Download', onClick: () => {downloadAttachment(attachment)}} ] 
-        : []
-      ), 
-      { 
-        name: 'Rename', 
-        onClick: () => {renameAttachment(attachment)}
+      ...(attachment.scanStatus && attachment.scanStatus !== 'IN_PROGRESS'
+        ? [
+            {
+              name: 'Preview',
+              onClick: () => {
+                openAttachmentPreview(attachment);
+              },
+            },
+            {
+              name: 'Download',
+              onClick: () => {
+                downloadAttachment(attachment);
+              },
+            },
+          ]
+        : []),
+      {
+        name: 'Rename',
+        onClick: () => {
+          renameAttachment(attachment);
+        },
       },
       {
         name: 'Delete',
-        onClick: () => {removeAttachmentHandler(attachment?.attachmentIdentifier)},
+        onClick: () => {
+          removeAttachmentHandler(attachment?.attachmentIdentifier);
+        },
       },
     ],
     [
       openAttachmentPreview,
       renameAttachment,
       removeAttachmentHandler,
-      downloadAttachment
+      downloadAttachment,
     ],
   );
-  
+
   return (
     <Tooltip key={attachmentIdentifier} title={renderedName}>
       <Container
@@ -143,11 +166,11 @@ const AttachmentButton = ({ attachment, onClick, onRemoveClick , renameAttachmen
         </OutfitTypography>
         {typeof onRemoveClick === 'function' && (
           <RemoveAttachmentButtonContainer>
-             <div onClick={(event) => event.stopPropagation()} >
-             <OptionsMenu options={getFileOptions(attachment)}>
-              <MoreVertIcon />
-            </OptionsMenu>
-           </div>
+            <div onClick={(event) => event.stopPropagation()}>
+              <OptionsMenu options={getFileOptions(attachment)}>
+                <MoreVertIcon />
+              </OptionsMenu>
+            </div>
           </RemoveAttachmentButtonContainer>
         )}
       </Container>
