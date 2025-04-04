@@ -106,7 +106,7 @@ const RichTextEditor = ({
   taskListIdentifier,
   mentions,
   disableMentions = false,
-  templatePlaceholders = false
+  templatePlaceholders = false,
 }) => {
   const [rawTextState, setRawTextState] = useState(initialValue);
   const [editor, setEditor] = useState(null);
@@ -117,7 +117,14 @@ const RichTextEditor = ({
         return value;
       }
       let mdValue = value.replace(/\\+\*/g, '*');
-      mdValue = mdValue.replace(/\n {2}\n/g, '<p><br/></p>');
+      mdValue = mdValue.replace(/((?:\n[ \t]*){2,})/g, (match) => {
+        const blankLineCount = (match.match(/\n[ \t]*\n/g) || []).length;
+
+        return blankLineCount > 1
+          ? '<p><br/></p>'.repeat(blankLineCount - 1)
+          : '\n';
+      });
+
       const htmlValue = md.render(mdValue || '');
       let processedValue = htmlValue;
       if (mentions && value !== '') {
@@ -274,32 +281,35 @@ const RichTextEditor = ({
     });
   }, []);
 
-  if (!FroalaEditorComponent.COMMANDS || !FroalaEditorComponent.COMMANDS.placeholders) {
-    FroalaEditorComponent.DefineIcon('placeholders', { 
+  if (
+    !FroalaEditorComponent.COMMANDS ||
+    !FroalaEditorComponent.COMMANDS.placeholders
+  ) {
+    FroalaEditorComponent.DefineIcon('placeholders', {
       template: 'text',
-      NAME: 'Placeholder'
+      NAME: 'Placeholder',
     });
     FroalaEditorComponent.RegisterCommand('placeholders', {
       title: 'Insert Placeholder',
       type: 'dropdown',
       focus: true,
       options: {
-          '{{patient.name}}': 'Patient Name',
-          '{{patient.firstName}}': 'Patient First Name',
-          '{{patient.lastName}}': 'Patient Last Name',
-          '{{patient.middleName}}': 'Patient Middle Name',
-          '{{patient.dob}}': 'Patient Date of Birth',
-          '{{patient.gender}}': 'Patient Gender',
-          '{{patient.mobilePhone}}': 'Patient Mobile Phone',
-          '{{patient.homePhone}}': 'Patient Home Phone',
-          '{{patient.email}}': 'Patient Email',
-          '{{patient.mrn}}': 'Patient MRN',
-          '{{patient.addressFull}}': 'Patient Full Address',
-          "{{patient.CUSTOM_FIELD_NAME}}": 'Patient Custom Field'
+        '{{patient.name}}': 'Patient Name',
+        '{{patient.firstName}}': 'Patient First Name',
+        '{{patient.lastName}}': 'Patient Last Name',
+        '{{patient.middleName}}': 'Patient Middle Name',
+        '{{patient.dob}}': 'Patient Date of Birth',
+        '{{patient.gender}}': 'Patient Gender',
+        '{{patient.mobilePhone}}': 'Patient Mobile Phone',
+        '{{patient.homePhone}}': 'Patient Home Phone',
+        '{{patient.email}}': 'Patient Email',
+        '{{patient.mrn}}': 'Patient MRN',
+        '{{patient.addressFull}}': 'Patient Full Address',
+        '{{patient.CUSTOM_FIELD_NAME}}': 'Patient Custom Field',
       },
       callback: function (cmd, val) {
-          this.html.insert(val);
-      }
+        this.html.insert(val);
+      },
     });
   }
 
@@ -314,8 +324,11 @@ const RichTextEditor = ({
       toolbarVisibleWithoutSelection: true,
       heightMax: multiline ? 150 : 500,
       toolbarButtons: disableToolbar
-      ? []
-      : [...toolbarOptions, ...(templatePlaceholders ? ['placeholders'] : [])],
+        ? []
+        : [
+            ...toolbarOptions,
+            ...(templatePlaceholders ? ['placeholders'] : []),
+          ],
       events: {
         initialized() {
           if (readonly) {
@@ -438,7 +451,7 @@ const RichTextEditor = ({
       patientsTribute,
       onFocus,
       onKeyEscape,
-      templatePlaceholders
+      templatePlaceholders,
     ],
   );
 
