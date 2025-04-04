@@ -199,7 +199,9 @@ const ProfileDetailsDrawer = ({
 
     const finalPatientData = { ...updatedPatientData };
 
-    finalPatientData.dob = moment(finalPatientData.dob).format('MM/DD/YYYY');
+    if (finalPatientData.dob) {
+      finalPatientData.dob = moment(finalPatientData.dob).format('MM/DD/YYYY');
+    }
 
     finalPatientData.patientMetaData = processedCustomFields;
 
