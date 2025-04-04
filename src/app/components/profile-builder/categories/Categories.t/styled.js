@@ -9,6 +9,7 @@ export const CategoryContainer = styled.div`
   border-left: 1px solid ${palette.iron};
   height: 100%;
   overflow: auto;
+  margin-right: 15px;
 `;
 
 export const AddCategory = styled.div`

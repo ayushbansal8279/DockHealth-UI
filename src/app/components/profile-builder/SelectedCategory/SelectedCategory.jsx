@@ -114,6 +114,7 @@ const SelectedCategory = ({ category }) => {
                             category={category}
                             field={field}
                             index={key}
+                            key={key}
                           />
                           {provided1.placeholder}
                         </>

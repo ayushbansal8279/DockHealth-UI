@@ -49,6 +49,7 @@ const SelectedField = ({ field, category }) => {
   const context = tabName === 'patients' ? 'PATIENT' : 'PROFILE';
   const isDefault = field.contextType === 'DEFAULT';
   const isPredefined = field.contextType === 'PREDEFINED';
+  const isUnsavedField = Boolean(field?.name);
 
   const { setSelectedCategories } = useContext(ProfileBuilderContext);
 
@@ -62,10 +63,9 @@ const SelectedField = ({ field, category }) => {
         fieldCategoryDisabled: true,
         customField: field,
         onUpdated: (updatedField) => {
-          if (updatedField.name !== field.name) {
-            updateFieldNameInCategory(updatedField);
-            dispatch(showGlobalAlert(AlertMessages.UPDATED));
-          }
+          updatedField.identifier = updatedField.fieldReferenceId;
+          updateFieldNameInCategory(updatedField);
+          dispatch(showGlobalAlert(AlertMessages.UPDATED));
         },
       }),
     );
@@ -75,9 +75,7 @@ const SelectedField = ({ field, category }) => {
     const updatedCategory = {
       ...category,
       fields: category?.fields?.map((field) =>
-        field.identifier === updatedField.fieldReferenceId
-          ? { ...field, name: updatedField.name }
-          : field,
+        field?.identifier === updatedField?.identifier ? updatedField : field,
       ),
     };
     setSelectedCategories((prevCategories) =>
@@ -177,20 +175,23 @@ const SelectedField = ({ field, category }) => {
         });
 
         updateCustomGroupsData(updatedSavedActualFields);
+        dispatch(showGlobalAlert(AlertMessages.UPDATED));
       }
     } else if (field.identifier && value) {
-      if (context === 'PATIENT') {
-        CustomFieldApi.updateCustomField({ ...field, name: value });
-        const updatedField = { ...field, name: value };
-        updateFieldNameInCategory(updatedField);
-      }
-      if (context === 'PROFILE') {
-        editProfileFieldType(field.identifier, { ...field, name: value });
-        const updatedField = { ...field, name: value };
-        updateFieldNameInCategory(updatedField);
+      if (field.name !== value) {
+        if (context === 'PATIENT') {
+          CustomFieldApi.updateCustomField({ ...field, name: value });
+          const updatedField = { ...field, name: value };
+          updateFieldNameInCategory(updatedField);
+        }
+        if (context === 'PROFILE') {
+          editProfileFieldType(field.identifier, { ...field, name: value });
+          const updatedField = { ...field, name: value };
+          updateFieldNameInCategory(updatedField);
+        }
+        dispatch(showGlobalAlert(AlertMessages.UPDATED));
       }
     }
-    dispatch(showGlobalAlert(AlertMessages.UPDATED));
   };
 
   const handleRemoveFieldFromGroup = async () => {
@@ -240,9 +241,10 @@ const SelectedField = ({ field, category }) => {
         value={field.name}
         placeholder={field?.placeholder}
         onEnter={handleBlur}
+        onBlur={handleBlur}
       />
       <IconWrapper>
-        {!isDefault && !isPredefined ? (
+        {!isDefault && !isPredefined && isUnsavedField ? (
           <EditIcon onClick={handleEditClick} />
         ) : (
           <></>
