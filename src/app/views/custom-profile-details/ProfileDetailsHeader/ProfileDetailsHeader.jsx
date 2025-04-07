@@ -128,14 +128,14 @@ const ProfileDetailsHeader = () => {
                   ].join(' ')}
                 </ProfileName>
                 <Box mx={1} />
-                {taskListRestrictions?.createTask !== DISABLED && (
-                  <ButtonContainer onClick={() => setIsDrawerOpen(true)}>
-                    <ProfileDetailsLabel>View details</ProfileDetailsLabel>
-                  </ButtonContainer>
-                )}
                 {profileBuilderFeatureAvailable && (
                   <ButtonContainer onClick={setIsProfileOpen}>
                     <ProfileDetailsLabel>View profile</ProfileDetailsLabel>
+                  </ButtonContainer>
+                )}
+                {taskListRestrictions?.createTask !== DISABLED && (
+                  <ButtonContainer onClick={() => setIsDrawerOpen(true)}>
+                    <ProfileDetailsLabel>View details</ProfileDetailsLabel>
                   </ButtonContainer>
                 )}
               </Grid>

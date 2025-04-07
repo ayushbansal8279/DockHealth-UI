@@ -140,15 +140,15 @@ const PatientDetailsHeader = () => {
                   </AISummaryWrapper>
                 )}
                 <Box mx={1} />
-                {taskListRestrictions?.createTask !== DISABLED && (
-                  <ButtonContainer onClick={setIsDrawerOpen}>
-                    <PatientDetailsLabel>View details</PatientDetailsLabel>
-                  </ButtonContainer>
-                )}
-                <Box mx={1} />
                 {profileBuilderFeatureAvailable && (
                   <ButtonContainer onClick={setIsProfileOpen}>
                     <PatientDetailsLabel>View profile</PatientDetailsLabel>
+                  </ButtonContainer>
+                )}
+                <Box mx={1} />
+                {taskListRestrictions?.createTask !== DISABLED && (
+                  <ButtonContainer onClick={setIsDrawerOpen}>
+                    <PatientDetailsLabel>View details</PatientDetailsLabel>
                   </ButtonContainer>
                 )}
                 <Box mx={1} />
@@ -258,7 +258,7 @@ const PatientDetailsHeader = () => {
                     displayNames,
                     fieldType,
                     customFieldIdentifier,
-                    dateTimeIntent
+                    dateTimeIntent,
                   }) => {
                     return (
                       <React.Fragment key={customFieldIdentifier}>
