@@ -13,6 +13,7 @@ import { useDispatch } from 'react-redux';
 import { updateWorkflowAttachment } from '@/app/actions/workflow-actions';
 import { getWorkflowAttachment } from '@/app/api/workflow-api';
 import { getTaskAttachment } from '@/app/api/task-api';
+import { ScanStatus } from '../../task-drawer/AttachmentsSection/helpers';
 
 const AttachmentButton = ({
   attachment,
@@ -88,7 +89,6 @@ const AttachmentButton = ({
   const downloadAttachment = async (attachment) => {
     const { attachmentIdentifier, fileName, contentType } = attachment;
     try {
-      if (scanStatus === ScanStatus.INFECTED) return;
       let data;
       if (attachment.taskWorkflowIdentifier) {
         data = await getWorkflowAttachment(attachmentIdentifier);
@@ -120,12 +120,16 @@ const AttachmentButton = ({
                 openAttachmentPreview(attachment);
               },
             },
-            {
-              name: 'Download',
-              onClick: () => {
-                downloadAttachment(attachment);
-              },
-            },
+            ...(attachment.scanStatus !== ScanStatus.INFECTED
+              ? [
+                  {
+                    name: 'Download',
+                    onClick: () => {
+                      downloadAttachment(attachment);
+                    },
+                  },
+                ]
+              : []),
           ]
         : []),
       {
