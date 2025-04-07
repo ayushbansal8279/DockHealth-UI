@@ -63,7 +63,7 @@ const SelectedField = ({ field, category }) => {
         fieldCategoryDisabled: true,
         customField: field,
         onUpdated: (updatedField) => {
-          updatedField.identifier = updatedField.fieldReferenceId;
+          updatedField.identifier = field.identifier;
           updateFieldNameInCategory(updatedField);
           dispatch(showGlobalAlert(AlertMessages.UPDATED));
         },
@@ -120,6 +120,13 @@ const SelectedField = ({ field, category }) => {
 
   const handleBlur = async (value) => {
     if (field.tempId && value) {
+      const options = [
+        {
+          identifier: 0,
+          name: 'Option 1',
+        },
+      ];
+
       const patientPayload = {
         fieldCategoryType: 'PATIENT_OTHER',
         fieldType: field.fieldType,
@@ -138,6 +145,14 @@ const SelectedField = ({ field, category }) => {
           identifier,
         },
       };
+
+      if (
+        field.fieldType === FieldType.DROPDOWN ||
+        field.fieldType === FieldType.DROPDOWN_MULTI
+      ) {
+        patientPayload.options = options;
+        profilePayload.options = options;
+      }
 
       const remainingUnsavedFields = unSavedFields?.filter(
         (tempField) => tempField.tempId !== field.tempId,
