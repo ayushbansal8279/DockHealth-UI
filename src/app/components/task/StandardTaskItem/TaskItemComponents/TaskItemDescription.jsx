@@ -143,7 +143,12 @@ const TaskItemDescription = ({
           />
         )}
         {!isEditing && (
-          <TooltipWrapper {...(isTruncated && { placement: 'top', title: tokenizedDescription })}>
+          <TooltipWrapper
+            {...(isTruncated && {
+              placement: 'top',
+              title: tokenizedDescription,
+            })}
+          >
             <div
               ref={textRef}
               style={{
@@ -155,7 +160,7 @@ const TaskItemDescription = ({
                 fontWeight: read ? fontWeights.light : fontWeights.bold,
               }}
             >
-              {tokenizedDescription.split(/\s/).map((word) => {
+              {tokenizedDescription.split(/\s/).map((word, key) => {
                 // eslint-disable-next-line unicorn/prefer-ternary
                 // console.log(`word:`, word);
                 if (word.includes('[http') || word.includes('http')) {
@@ -173,6 +178,7 @@ const TaskItemDescription = ({
                   if (currentMention) {
                     return (
                       <UserMention
+                        key={key}
                         mention={currentMention}
                         className="fr-deletable fr-tribute"
                       >
@@ -202,6 +208,7 @@ const TaskItemDescription = ({
                   if (currentMention) {
                     return (
                       <PatientMention
+                        key={key}
                         mention={currentMention}
                         className="fr-deletable fr-tribute"
                       >
@@ -215,6 +222,7 @@ const TaskItemDescription = ({
 
                 return (
                   <Highlighter
+                    key={key}
                     highlightClassName="list-highlight"
                     searchWords={
                       highlightedValue

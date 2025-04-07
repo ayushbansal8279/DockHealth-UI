@@ -8,7 +8,8 @@ import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import CloseIcon from '@mui/icons-material/Close';
 import { useBoolean } from 'hooks/useBoolean';
 import DatePicker from '../../task/DatePicker/DatePicker';
-import { DEFAULT_DATE_TIME_FORMAT, getMomenDateFromString } from './helpers';
+import { DEFAULT_DATE_FORMAT, DEFAULT_DATE_TIME_FORMAT, getMomenDateFromString } from './helpers';
+import { DueDateIntent } from '@/app/helpers/task-helpers';
 
 const CustomDateInput = ({ inputRef, ...otherProps }) => (
   <InputMask
@@ -63,13 +64,18 @@ const DateInput = React.forwardRef(
       showCalanderIcon = true,
       popoverZindex,
       timeEnabled = false,
+      dateIntent,
       ...otherProps
     },
     reference,
     // eslint-disable-next-line sonarjs/cognitive-complexity
   ) => {
     const [open, setOpen, unsetOpen] = useBoolean(false);
-    const [isTime, setTime] = useState(timeEnabled);
+    const [isTime, setTime] = useState(() => {
+      if (dateIntent === DueDateIntent.DATE) return false;
+      if (dateIntent === DueDateIntent.DATETIME_ABSOLUTE) return true;
+      return timeEnabled;
+    });
     const innerReference = useRef(null);
     const textFieldReference = reference || innerReference;
     const innerTextInputReference = useRef(null);
@@ -87,7 +93,9 @@ const DateInput = React.forwardRef(
         : undefined;
     const dateValue =
       value && value !== '' && !value.includes('_')
-        ? momentDate?.format(DEFAULT_DATE_TIME_FORMAT)
+        ? dateIntent === DueDateIntent.DATE
+          ? momentDate?.utc().format(DEFAULT_DATE_FORMAT)
+          : momentDate?.format(DEFAULT_DATE_TIME_FORMAT)
         : value;
 
     const handleChange = ({ target: { value: date } }) => {
@@ -139,6 +147,11 @@ const DateInput = React.forwardRef(
       } else if (typeof clearErrors === 'function') clearErrors?.(name);
     }, [clearErrors, dateValue, name, setError, value]);
 
+    useEffect(() => {
+      if (dateIntent === DueDateIntent.DATE) setTime(false);
+      else if (dateIntent === DueDateIntent.DATETIME_ABSOLUTE) setTime(true);
+    }, [dateIntent]);
+
     return (
       <>
         <Input
@@ -169,7 +182,7 @@ const DateInput = React.forwardRef(
             </Box>
           }
           {...otherProps}
-          customInputComponent={isTime ? CustomDateTimeInput : CustomDateInput}
+          customInputComponent={isTime ? CustomDateTimeInput : CustomDateInput} //update this to also include 00:00?
         />
         <Popover
           anchorOrigin={{
@@ -190,6 +203,7 @@ const DateInput = React.forwardRef(
               momentDate?.isValid() ? momentDate?.toISOString() : undefined
             }
             onDateChange={handleDatepickerChange}
+            showTime={isTime}
           />
         </Popover>
       </>

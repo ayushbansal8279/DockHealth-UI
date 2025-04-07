@@ -34,24 +34,18 @@ const ImportDataModal = ({
     (file) => {
       uploadFunction(
         file,
-        {
-          onUploadProgress: () => {
-            closeModal();
-          },
-        },
+        { onUploadProgress: closeModal },
         identifier
       )
         .then((response) => {
-          if (setImportResponse) {
-            setImportResponse(response);
-          }
+          setImportResponse?.(response);
         })
         .catch((error) => {
-          setImportResponse(null);
           console.error("File upload failed:", error);
+          setImportResponse?.(null);
         })
         .finally(() => {
-          setImportPopoverOpen(true);
+          setImportPopoverOpen?.(true);
         });
     },
     [closeModal, uploadFunction, identifier, setImportPopoverOpen]

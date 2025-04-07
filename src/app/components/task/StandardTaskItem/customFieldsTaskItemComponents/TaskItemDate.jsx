@@ -6,8 +6,9 @@ import Tooltip from 'components/common/Tooltip/Tooltip';
 import DateLabel from 'components/common/DateLabel/DateLabel';
 import moment from 'moment';
 import { DateWrapper, DateIconWrapper } from './styled';
+import { DueDateIntent } from '@/app/helpers/task-helpers';
 
-const TaskItemDate = ({ value, onChange, readOnly = false}) => {
+const TaskItemDate = ({ value, onChange, readOnly = false, dateTimeIntent }) => {
   const handleDateChange = useCallback(
     (newDate) => {
       onChange(newDate);
@@ -28,7 +29,7 @@ const TaskItemDate = ({ value, onChange, readOnly = false}) => {
             selectedDate={dateTimeValue}
             onDateChange={handleDateChange}
             onCloseClick={closePopover}
-            // hideDateTime
+            showTime={dateTimeIntent === DueDateIntent.DATETIME_ABSOLUTE}
           />
         )}
         disabled={readOnly}
@@ -38,7 +39,11 @@ const TaskItemDate = ({ value, onChange, readOnly = false}) => {
           title={dateTimeValue ? 'Edit date' : 'Add date'}
         >
           {dateTimeValue ? (
-            <DateLabel date={dateTimeValue} format="MM/DD/YYYY" />
+            <DateLabel
+              date={dateTimeValue} 
+              format="MM/DD/YYYY" 
+              dueDateIntent={dateTimeIntent}
+            />
           ) : (
             <DateIconWrapper>
               <TaskIcon type="calendar" />

@@ -10,7 +10,7 @@ import TaskItemHyperLink from 'components/task/StandardTaskItem/customFieldsTask
 import TaskItemRelationship from 'components/task/StandardTaskItem/customFieldsTaskItemComponents/TaskItemRelationship/TaskItemRelationship';
 import { updatePartialWorkflow } from 'actions/task-template-actions';
 import { partialUpdateTask, storeAsCurrentTask } from 'actions/task-actions';
-import { TaskItemType } from 'helpers/task-helpers';
+import { DueDateIntent, TaskItemType } from 'helpers/task-helpers';
 import { openDrawer } from 'actions/task-drawer-actions';
 import { useDispatch } from 'react-redux';
 import { updatePatientDetails } from 'actions/patient-details-actions';
@@ -19,6 +19,7 @@ import {
   createMetaDataObjectToSend,
   CUSTOM_FIELD_TYPES,
 } from 'helpers/custom-fields-helpers';
+import moment from 'moment';
 
 const TaskItemCustomField = ({
   readOnly,
@@ -93,10 +94,26 @@ const TaskItemCustomField = ({
           values: newValue,
         });
       } else {
-        taskMetaData.push({
-          customFieldIdentifier: field.identifier,
-          value: newValue,
-        });
+        if (moment.isMoment(newValue)) {
+          const dateTimeIntent = newValue._i.includes("null") ? "DATE" : "DATETIME_ABSOLUTE";
+
+          const newDate = newValue
+            ? dateTimeIntent === DueDateIntent.DATE
+              ? moment(newValue, 'YYYY-MM-DD hh:mm A').format('YYYY-MM-DDT00:00:00.000[Z]')
+              : moment.utc(newValue).format('YYYY-MM-DDTHH:mm:ss.SSSZ')
+            : null;
+        
+            taskMetaData.push({
+            customFieldIdentifier: field.identifier,
+            value: newDate,
+            dateTimeIntent
+          });
+        } else {
+          taskMetaData.push({
+            customFieldIdentifier: field.identifier,
+            value: newValue,
+          });
+        }
       }
 
       if (isWorkflow) {
@@ -121,6 +138,7 @@ const TaskItemCustomField = ({
       return (
         <TaskItemDate
           value={value}
+          dateTimeIntent={customFieldValue?.dateTimeIntent}
           onChange={handleChange}
           field={field}
           readOnly={isReadOnly}

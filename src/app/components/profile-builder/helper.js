@@ -35,7 +35,7 @@ export const fieldTypes = [
     index: 2,
   },
   {
-    placeholder: 'Calender Date',
+    placeholder: 'Calendar Date',
     dragId: FieldType.DATE,
     fieldType: FieldType.DATE,
     img: Calender,

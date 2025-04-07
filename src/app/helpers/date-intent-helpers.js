@@ -1,6 +1,9 @@
 import moment from "moment";
 import { DueDateIntent } from "./task-helpers";
 
+export const UTC_DATE_ONLY = "YYYY-MM-DDT00:00:00.000[Z]";
+export const UTC_DATE_TIME = "YYYY-MM-DDTHH:mm:ss.SSS[Z]";
+
 export function formatDateBasedOnIntent(date, intent) {
     return intent === DueDateIntent.DATE
         ? moment(date).utc().format('MMM DD, YYYY')
@@ -21,3 +24,14 @@ export function formatDateTime(date, intent) {
       ? moment.utc(date).startOf('day').toISOString()
       : moment(date).toISOString();
 }
+
+export const isDate = (value) => moment(value, moment.ISO_8601, true).isValid();
+
+export const getDateTimeIntent = (value) => {
+  if (!isDate(value)) return {};
+  return {
+    dateTimeIntent: value.includes("T00:00:00.000Z")
+      ? DueDateIntent.DATE
+      : DueDateIntent.DATETIME_ABSOLUTE,
+  };
+};

@@ -36,6 +36,7 @@ import { closeModal, openModal } from 'modal/actions';
 import { FieldType } from '@/app/helpers/field-type-helpers';
 import { normalizeHyperlink } from '@/app/helpers/custom-fields-helpers';
 import { getProfileName } from '@/app/views/custom-profile-details/helpers';
+import { getDateTimeIntent } from '@/app/helpers/date-intent-helpers';
 
 const ProfileDrawer = ({
   title,
@@ -88,14 +89,12 @@ const ProfileDrawer = ({
               values: Array.isArray(value)
                 ? value?.map((selectedValue) => ({ value: selectedValue }))
                 : [
-                    type.fieldType === FieldType.DROPDOWN
-                      ? { customFieldOption: { identifier: value } }
-                      : {
-                          value:
-                            type.fieldType === FieldType.HYPERLINK
-                              ? normalizeHyperlink(value)
-                              : value,
-                        },
+                    {
+                      value:
+                        type.fieldType === FieldType.HYPERLINK
+                          ? normalizeHyperlink(value)
+                          : value,
+                    },
                   ],
             };
           },
@@ -137,6 +136,7 @@ const ProfileDrawer = ({
                 : [
                     {
                       value,
+                      ...getDateTimeIntent(value),
                     },
                   ],
             };

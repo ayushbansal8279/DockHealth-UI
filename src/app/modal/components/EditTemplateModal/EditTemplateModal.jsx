@@ -148,6 +148,7 @@ const EditTemplateModal = ({ closeModal, template, onAdded, onUpdated }) => {
                           onBlur={(value) => setValue('details', value)}
                           initOnClick
                           showCharCount
+                          templatePlaceholders={true}
                         />
                       </CustomTextEditor>
                     </Grid>

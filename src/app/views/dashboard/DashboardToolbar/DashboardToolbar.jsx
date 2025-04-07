@@ -153,7 +153,7 @@ const DashboardToolbar = ({ iconColorFilterActive, iconColorActive }) => {
             <DashboardTab
               label={
                 <DashboardTabsLabel
-                  isActive={tabName === DashboardTasksTab.MY_TASKS}
+                  $isActive={tabName === DashboardTasksTab.MY_TASKS}
                 >
                   My Tasks
                 </DashboardTabsLabel>
@@ -169,15 +169,15 @@ const DashboardToolbar = ({ iconColorFilterActive, iconColorActive }) => {
               label={
                 <>
                   <DashboardTabsLabel
-                    isActive={tabName === DashboardTasksTab.SHARED_TASKS}
+                    $isActive={tabName === DashboardTasksTab.SHARED_TASKS}
                   >
                     Shared with me
                   </DashboardTabsLabel>
                   <DashboardTabsNumericalBadgeContainer
-                    isActive={tabName === DashboardTasksTab.SHARED_TASKS}
+                    $isActive={tabName === DashboardTasksTab.SHARED_TASKS}
                   >
                     <DashboardTabsNumericalBadge
-                      isActive={tabName === DashboardTasksTab.SHARED_TASKS}
+                      $isActive={tabName === DashboardTasksTab.SHARED_TASKS}
                     >
                       {sharedTasksCount}
                     </DashboardTabsNumericalBadge>
@@ -197,7 +197,7 @@ const DashboardToolbar = ({ iconColorFilterActive, iconColorActive }) => {
                 label={
                   <>
                     <DashboardTabsLabel
-                      isActive={tabName === DashboardTasksTab.ALL_TASKS}
+                      $isActive={tabName === DashboardTasksTab.ALL_TASKS}
                     >
                       Org Tasks
                     </DashboardTabsLabel>
