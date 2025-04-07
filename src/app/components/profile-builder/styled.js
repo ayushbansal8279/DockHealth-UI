@@ -20,14 +20,22 @@ export const CategoryWrapper = styled.div`
   position: relative;
   width: 30%;
   height: 100%;
+
+  @media (max-width: 1500px) {
+    width: 40%;
+  }
 `;
 
 export const PlayGroungWrapper = styled.div`
   width: 70%;
   height: 100%;
-  padding: ${spacing.huge};
+  padding: ${spacing.huge} 0;
   display: flex;
   justify-content: center;
+
+  @media (max-width: 1500px) {
+    width: 60%;
+  }
 `;
 
 export const ProfileBuilderContainer = styled.div`
