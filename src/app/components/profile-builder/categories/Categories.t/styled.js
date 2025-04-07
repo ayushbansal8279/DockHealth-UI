@@ -4,12 +4,17 @@ import styled from 'styled-components';
 
 export const CategoryContainer = styled.div`
   position: fixed;
-  padding: ${spacing.regularPlus};
-  padding-right: ${spacing.huge};
   border-left: 1px solid ${palette.iron};
   height: 100%;
+`;
+
+export const CategoryWrapper = styled.div`
+  padding: ${spacing.regularPlus};
+  padding-right: ${spacing.huge};
+  height: 85%;
   overflow: auto;
   margin-right: 15px;
+  padding-bottom: 0;
 `;
 
 export const AddCategory = styled.div`

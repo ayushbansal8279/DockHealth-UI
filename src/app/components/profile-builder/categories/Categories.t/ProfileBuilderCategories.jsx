@@ -14,6 +14,7 @@ import {
   CategoryLabel,
   SingleFieldWrapper,
   SingleField,
+  CategoryWrapper,
 } from './styled';
 import { Box } from '@mui/material';
 import { Draggable, Droppable } from 'react-beautiful-dnd';
@@ -51,100 +52,52 @@ const ProfileBuilderCategories = ({ allCustomFields }) => {
 
   return (
     <CategoryContainer>
-      <Box>
-        <CategoryTitle>Add Category</CategoryTitle>
-        <Droppable isDropDisabled droppableId="add-category-area-source">
-          {(provided) => {
-            return (
-              <div {...provided.droppableProps} ref={provided.innerRef}>
-                <Draggable draggableId="add-category" index={0}>
-                  {(provided) => (
-                    <AddCategory
-                      ref={provided.innerRef}
-                      {...provided.draggableProps}
-                      {...provided.dragHandleProps}
-                    >
-                      Add Category
-                    </AddCategory>
-                  )}
-                </Draggable>
-                {provided.placeholder}
-              </div>
-            );
-          }}
-        </Droppable>
-      </Box>
-      <Box mt={4}>
-        <CategoryTitle>Add New Fields</CategoryTitle>
-        <Droppable isDropDisabled droppableId="add-fields-area-source">
-          {(provided) => (
-            <SingleFieldWrapper
-              {...provided.droppableProps}
-              ref={provided.innerRef}
-            >
-              {fieldTypes.map((item) => (
-                <Draggable draggableId={item.fieldType} index={item.index}>
-                  {(provided) => (
-                    <SingleField
-                      ref={provided.innerRef}
-                      {...provided.draggableProps}
-                      {...provided.dragHandleProps}
-                    >
-                      <img
-                        style={{ width: 20 }}
-                        src={FieldTypeImages[item?.fieldType]}
-                        alt={item.name}
-                      />
-                      <CategoryLabel>{item.placeholder}</CategoryLabel>
-                    </SingleField>
-                  )}
-                </Draggable>
-              ))}
-              {provided.placeholder}
-            </SingleFieldWrapper>
-          )}
-        </Droppable>
-      </Box>
-      <Spacing vertical={6} />
-      <CategoryTitle>Add Existing Fields</CategoryTitle>
-      <Box>
-        <TextField
-          border
-          size="small"
-          placeholder="Search Existing Field"
-          width="48%"
-          onChange={handleTextChange}
-        />
-        <Spacing vertical={4} />
+      <CategoryWrapper>
         <Box>
-          <Droppable
-            isDropDisabled
-            droppableId="add-existing-fields-area-source"
-          >
+          <CategoryTitle>Add Category</CategoryTitle>
+          <Droppable isDropDisabled droppableId="add-category-area-source">
+            {(provided) => {
+              return (
+                <div {...provided.droppableProps} ref={provided.innerRef}>
+                  <Draggable draggableId="add-category" index={0}>
+                    {(provided) => (
+                      <AddCategory
+                        ref={provided.innerRef}
+                        {...provided.draggableProps}
+                        {...provided.dragHandleProps}
+                      >
+                        Add Category
+                      </AddCategory>
+                    )}
+                  </Draggable>
+                  {provided.placeholder}
+                </div>
+              );
+            }}
+          </Droppable>
+        </Box>
+        <Box mt={4}>
+          <CategoryTitle>Add New Fields</CategoryTitle>
+          <Droppable isDropDisabled droppableId="add-fields-area-source">
             {(provided) => (
               <SingleFieldWrapper
                 {...provided.droppableProps}
                 ref={provided.innerRef}
               >
-                {searchedCustomField?.slice(0, 8).map((item) => (
-                  <Draggable
-                    draggableId={item.identifier}
-                    index={item.sortIndex}
-                  >
+                {fieldTypes.map((item) => (
+                  <Draggable draggableId={item.fieldType} index={item.index}>
                     {(provided) => (
                       <SingleField
                         ref={provided.innerRef}
                         {...provided.draggableProps}
                         {...provided.dragHandleProps}
                       >
-                        <div>
-                          <img
-                            style={{ width: 15 }}
-                            src={FieldTypeImages[item?.fieldType]}
-                            alt={item.name}
-                          />
-                        </div>
-                        <CategoryLabel>{item.name}</CategoryLabel>
+                        <img
+                          style={{ width: 20 }}
+                          src={FieldTypeImages[item?.fieldType]}
+                          alt={item.name}
+                        />
+                        <CategoryLabel>{item.placeholder}</CategoryLabel>
                       </SingleField>
                     )}
                   </Draggable>
@@ -154,7 +107,57 @@ const ProfileBuilderCategories = ({ allCustomFields }) => {
             )}
           </Droppable>
         </Box>
-      </Box>
+        <Spacing vertical={6} />
+        <CategoryTitle>Add Existing Fields</CategoryTitle>
+        <Box>
+          <TextField
+            border
+            size="small"
+            placeholder="Search Existing Field"
+            width="48%"
+            onChange={handleTextChange}
+          />
+          <Spacing vertical={4} />
+          <Box>
+            <Droppable
+              isDropDisabled
+              droppableId="add-existing-fields-area-source"
+            >
+              {(provided) => (
+                <SingleFieldWrapper
+                  {...provided.droppableProps}
+                  ref={provided.innerRef}
+                >
+                  {searchedCustomField?.slice(0, 8).map((item) => (
+                    <Draggable
+                      draggableId={item.identifier}
+                      index={item.sortIndex}
+                    >
+                      {(provided) => (
+                        <SingleField
+                          ref={provided.innerRef}
+                          {...provided.draggableProps}
+                          {...provided.dragHandleProps}
+                        >
+                          <div>
+                            <img
+                              style={{ width: 15 }}
+                              src={FieldTypeImages[item?.fieldType]}
+                              alt={item.name}
+                            />
+                          </div>
+                          <CategoryLabel>{item.name}</CategoryLabel>
+                        </SingleField>
+                      )}
+                    </Draggable>
+                  ))}
+                  {provided.placeholder}
+                </SingleFieldWrapper>
+              )}
+            </Droppable>
+          </Box>
+        </Box>
+      </CategoryWrapper>
     </CategoryContainer>
   );
 };
