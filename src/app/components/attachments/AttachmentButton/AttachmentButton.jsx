@@ -112,7 +112,9 @@ const AttachmentButton = ({
 
   const getFileOptions = useCallback(
     (attachment) => [
-      ...(attachment.scanStatus && attachment.scanStatus !== 'IN_PROGRESS'
+      ...(attachment.scanStatus &&
+      attachment.scanStatus !== ScanStatus.IN_PROGRESS &&
+      attachment.scanStatus !== ScanStatus.INFECTED
         ? [
             {
               name: 'Preview',
@@ -120,16 +122,12 @@ const AttachmentButton = ({
                 openAttachmentPreview(attachment);
               },
             },
-            ...(attachment.scanStatus !== ScanStatus.INFECTED
-              ? [
-                  {
-                    name: 'Download',
-                    onClick: () => {
-                      downloadAttachment(attachment);
-                    },
-                  },
-                ]
-              : []),
+            {
+              name: 'Download',
+              onClick: () => {
+                downloadAttachment(attachment);
+              },
+            },
           ]
         : []),
       {
