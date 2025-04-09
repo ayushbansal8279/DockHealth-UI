@@ -104,7 +104,7 @@ export function updatePartialWorkflow(taskWorkflowIdentifier, dataToUpdate) {
   return {
     type: ActionTypes.UPDATE_PARTIAL_WORKFLOW,
     taskWorkflowIdentifier,
-    transformedDataToUpdate,
+    dataToUpdate: transformedDataToUpdate,
   };
 }
 
