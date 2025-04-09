@@ -1,6 +1,6 @@
+import moment from 'moment';
 import { GENDER_OPTIONS_BIRTH } from '@/app/types/gender';
 import { UTC_DATE_ONLY } from '@/app/helpers/date-intent-helpers';
-import moment from 'moment';
 
 export function mapFieldsFromIdentifiers(mappings, data) {
   const mappedFields = {};
