@@ -1,4 +1,11 @@
-import React, { ForwardedRef, forwardRef, useCallback, useMemo } from 'react';
+import React, {
+  ForwardedRef,
+  forwardRef,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+} from 'react';
 import { Segment } from 'views/list-details/modules/Virtualized';
 import QuickAddTaskInput from 'components/tasklist/QuickAddTaskInput/QuickAddTaskInput';
 import { useDispatch, useSelector } from 'react-redux';
@@ -40,6 +47,11 @@ function VQuickAddTask(
   const screenWidth = typeof window !== 'undefined' ? window.innerWidth : 1920;
   const number = droppableHeaderWidth;
   const percentage = ((!!number ? number : 0) / screenWidth) * 100;
+  const taskGroupIdentifierRef = useRef(taskGroupIdentifier);
+
+  useEffect(() => {
+    taskGroupIdentifierRef.current = taskGroupIdentifier;
+  }, [taskGroupIdentifier]);
 
   const quickTaskInputValidator = (value: string) => {
     if ([...value]?.filter((char) => char !== ' ').length < 2)
@@ -65,10 +77,10 @@ function VQuickAddTask(
     (task: any) => {
       quickAddTask({
         ...task,
-        taskGroupIdentifier,
+        taskGroupIdentifier: taskGroupIdentifierRef?.current,
       });
     },
-    [taskGroupIdentifier, quickAddTask],
+    [quickAddTask],
   );
 
   const iconColorActiveItem = useMemo(
