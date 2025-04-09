@@ -8,6 +8,10 @@ import * as ListDetailsApi from 'api/list-details-api';
 import { CommunicationType, TaskItemType } from 'helpers/task-helpers';
 import * as ActionTypes from './action-types';
 import AlertMessages from '../alert/AlertMessages';
+import {
+  determineDateTimeIntent,
+  determineDateValueFromIntent,
+} from '@/app/helpers/date-intent-helpers';
 
 export function storeAsCurrentTask(task) {
   return (dispatch) => {
@@ -176,20 +180,43 @@ export function saveTask(newTask, shouldReloadGroups = false) {
   };
 }
 
+const transformMetadata = (data) => {
+  if (!data?.taskMetaData || !Array.isArray(data.taskMetaData)) return data;
+
+  const transformedTaskMetaData = data.taskMetaData.map((item) => {
+    const dateTimeIntent = determineDateTimeIntent(item.value);
+    if (dateTimeIntent) {
+      return {
+        ...item,
+        dateTimeIntent,
+        value: determineDateValueFromIntent(item.value, dateTimeIntent),
+      };
+    }
+    return item;
+  });
+
+  return {
+    ...data,
+    taskMetaData: transformedTaskMetaData,
+  };
+};
+
 export function partialUpdateTask(taskIdentifier, dataToUpdate) {
+  const transformedDataToUpdate = transformMetadata(dataToUpdate);
+
   return (dispatch) => {
     dispatch({
       type: ActionTypes.UPDATE_TASK_SUCCESS,
       task: {
-        ...dataToUpdate,
+        ...transformedDataToUpdate,
         taskIdentifier,
       },
     });
     return (
-      TaskApi.partialUpdateTask(taskIdentifier, dataToUpdate)
+      TaskApi.partialUpdateTask(taskIdentifier, transformedDataToUpdate)
         // eslint-disable-next-line sonarjs/no-identical-functions
         .then((task) => {
-          if (dataToUpdate.details) {
+          if (transformedDataToUpdate.details) {
             dispatch({
               type: ActionTypes.UPDATE_TASK_SUCCESS,
               task,

@@ -33,8 +33,6 @@ import {
   Title,
   styleFullRow,
 } from './styled';
-import moment from 'moment';
-import { isDate, UTC_DATE_ONLY, UTC_DATE_TIME } from '@/app/helpers/date-intent-helpers';
 
 const CustomFieldsSection = ({ disabled, fieldCategoryType }) => {
   const dispatch = useDispatch();
@@ -85,29 +83,11 @@ const CustomFieldsSection = ({ disabled, fieldCategoryType }) => {
   const { 0: emptyVisible, 3: toggleEmptyVisible } = useBoolean(false);
 
   const updateCustomFields = useCallback(
-    ({ taskMetaData }) => {
+    ({ taskMetaData }, fieldType) => {
       if (taskMetaData.length > 0) {
-
-        let updatedTaskMetaData = taskMetaData.map((meta) => {
-          if (isDate(meta.value)) { 
-            const localDate = moment(meta.value);
-            const recalculatedUtcMidnight = moment(localDate).startOf('day').utc();  
-            const isDateIntent = meta.value === recalculatedUtcMidnight.format(UTC_DATE_TIME);
-            
-            return {
-              ...meta,
-              value: isDateIntent
-                ? moment(meta.value).format(UTC_DATE_ONLY)
-                : moment.utc(meta.value).format(UTC_DATE_TIME),
-              dateTimeIntent: isDateIntent ? DueDateIntent.DATE : DueDateIntent.DATETIME_ABSOLUTE,
-            };
-          }
-          return meta;
-        });
-  
         isWorkflow
-          ? dispatch(updatePartialWorkflow(task?.identifier, { taskMetaData: updatedTaskMetaData }))
-          : dispatch(partialUpdateTask(task?.identifier, { taskMetaData: updatedTaskMetaData }));
+          ? dispatch(updatePartialWorkflow(task?.identifier, { taskMetaData: taskMetaData }))
+          : dispatch(partialUpdateTask(task?.identifier, { taskMetaData: taskMetaData }));
       }
     },
     [dispatch, isWorkflow, task]
