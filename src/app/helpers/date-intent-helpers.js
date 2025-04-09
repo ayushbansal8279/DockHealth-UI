@@ -25,11 +25,24 @@ export function formatDateTime(date, intent) {
     : moment(date).toISOString();
 }
 
-export const isISODateAndTime = (value) =>
-  value.includes('-') &&
-  value.includes('T') &&
-  value.includes(':') &&
-  moment(value, 'YYYY-MM-DDTHH:mm:ss.sssZ', true).isValid();
+export const isISODateAndTime = (value) => {
+  if (!value) return false;
+
+  if (typeof value === 'string') {
+    return (
+      value.includes('-') &&
+      value.includes('T') &&
+      value.includes(':') &&
+      moment(value, 'YYYY-MM-DDTHH:mm:ss.sssZ', true).isValid()
+    );
+  }
+
+  if (moment.isMoment(value)) {
+    return value.isValid();
+  }
+
+  return false;
+};
 
 export const determineDateTimeIntent = (value) => {
   if (value == null || !isISODateAndTime(value)) return null;
