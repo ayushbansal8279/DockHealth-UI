@@ -34,9 +34,8 @@ const onSubmit =
   ({ onClose, onPatientCreated, uniqueIdentifierLabel }) =>
   (data) => {
     const newData = transformMetadata(data);
-    const patientApiMethod = PatientApi.addPatient(newData);
 
-    patientApiMethod
+    PatientApi.addPatient(newData)
       .then((response) => {
         onPatientAddedEvent();
         if (typeof onPatientCreated === 'function') {

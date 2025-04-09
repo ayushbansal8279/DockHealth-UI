@@ -1,4 +1,8 @@
 import * as ActionTypes from 'actions/action-types';
+import {
+  determineDateTimeIntent,
+  determineDateValueFromIntent,
+} from '@/app/helpers/date-intent-helpers';
 
 export function initializeWorkflowLibraryState(folderIdentifier) {
   return {
@@ -73,11 +77,34 @@ export function switchTemplatePublic(taskTemplateIdentifier, flagPublic) {
   };
 }
 
+const transformMetadata = (data) => {
+  if (!data?.taskMetaData || !Array.isArray(data.taskMetaData)) return data;
+
+  const transformedTaskMetaData = data.taskMetaData.map((item) => {
+    const dateTimeIntent = determineDateTimeIntent(item.value);
+    if (dateTimeIntent) {
+      return {
+        ...item,
+        dateTimeIntent,
+        value: determineDateValueFromIntent(item.value, dateTimeIntent),
+      };
+    }
+    return item;
+  });
+
+  return {
+    ...data,
+    taskMetaData: transformedTaskMetaData,
+  };
+};
+
 export function updatePartialWorkflow(taskWorkflowIdentifier, dataToUpdate) {
+  const transformedDataToUpdate = transformMetadata(dataToUpdate);
+
   return {
     type: ActionTypes.UPDATE_PARTIAL_WORKFLOW,
     taskWorkflowIdentifier,
-    dataToUpdate,
+    transformedDataToUpdate,
   };
 }
 

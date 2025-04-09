@@ -227,7 +227,6 @@ const CustomField = ({
             clearErrors={clearErrors}
             required={isRequired}
             dateIntent={dateIntent}
-            autoSave={task?.itemType === "TASK"}
           />
         );
       }
