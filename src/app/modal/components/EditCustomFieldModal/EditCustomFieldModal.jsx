@@ -10,7 +10,7 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { string, object, array } from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import partial from 'ramda/src/partial';
-import { Box, Grid, IconButton } from '@mui/material';
+import { Box, Dialog, Grid, IconButton } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useDispatch } from 'react-redux';
 import { showGlobalErrorAlert } from 'alert/actions';
@@ -44,6 +44,8 @@ import {
   SelectParentOption,
 } from '../../customModals/styled';
 import { CancelButton, ConfirmButton } from '../ModalButton/ModalButtons';
+import ImportDataModal from '../ImportDataModal/ImportDataModal';
+import { downloadCustomFieldImportTemplate, uploadCustomFieldOptions } from '@/app/api/custom-fields-api';
 
 const REQUIRED_MESSAGE = 'This field is required';
 
@@ -154,6 +156,7 @@ const EditCustomFieldModal = ({
     formMethods;
 
   const [customFields, setCustomFields] = useState([]);
+  const [importPopupOpen, setImportPopupOpen] = useState(false);
 
   useEffect(() => {
     getAllTaskListCustomFields(taskListIdentifier ? 'ALL' : null).then(
@@ -624,6 +627,17 @@ const EditCustomFieldModal = ({
                         >
                           <span style={{ color: 'orange' }}>+</span> Add option
                         </Button>
+                        {
+                          customField && (
+                            <Button
+                              variant="text"
+                              width="auto"
+                              onClick={() => setImportPopupOpen(true)}
+                            >
+                              <span style={{ color: 'orange' }}>+</span> Add options using File 
+                            </Button>
+                          )
+                        }
                       </>
                     )}
                   </Grid>
@@ -651,6 +665,28 @@ const EditCustomFieldModal = ({
             </FieldForm>
           </FormProvider>
         )}
+        <Dialog
+          open={importPopupOpen}
+          onClose={() => setImportPopupOpen(false)}
+          style={{ zIndex: 5001 }}
+          PaperProps={{
+            elevation: 0,
+            square: true,
+            style: {}
+          }}
+        >
+          <ImportDataModal
+            closeModal={() => {
+              setImportPopupOpen(false);
+            }}
+            downloadTemplate={downloadCustomFieldImportTemplate}
+            step={1}
+            label="option"
+            uploadFunction={uploadCustomFieldOptions}
+            identifier={customField?.identifier}
+            type={type}
+          />
+        </Dialog>
       </Box>
     </AddPatientFieldModalWrapper>
   );
