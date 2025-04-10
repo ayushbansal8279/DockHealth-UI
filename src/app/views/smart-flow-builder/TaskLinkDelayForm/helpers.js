@@ -18,8 +18,8 @@ export const TIME_REFERENCE = {
   PREV_TASK_COMPLETION_DATE_TIME: 'Previous task complete',
   WORKFLOW_ANCHOR_DATE: 'Workflow anchor date',
   WORKFLOW_DEPLOY_DATE: 'Workflow deploy date',
-  PATIENT_CUSTOM_FIELD:'Patient Custom Field',
-  WORKFLOW_CUSTOM_FIELD: 'Workflow Custom Field'
+  PATIENT_CUSTOM_FIELD_DATE:'Patient Custom Field',
+  WORKFLOW_CUSTOM_FIELD_DATE: 'Workflow Custom Field'
 };
 
 export const TIME_REFERENCE_OPTIONS = Object.keys(TIME_REFERENCE).map(
