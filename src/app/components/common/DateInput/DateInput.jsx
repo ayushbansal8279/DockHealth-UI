@@ -182,7 +182,7 @@ const DateInput = React.forwardRef(
             </Box>
           }
           {...otherProps}
-          customInputComponent={isTime ? CustomDateTimeInput : CustomDateInput} //update this to also include 00:00?
+          customInputComponent={isTime ? CustomDateTimeInput : CustomDateInput}
         />
         <Popover
           anchorOrigin={{
@@ -204,6 +204,7 @@ const DateInput = React.forwardRef(
             }
             onDateChange={handleDatepickerChange}
             showTime={isTime}
+            onCloseClick={handleClose}
           />
         </Popover>
       </>
