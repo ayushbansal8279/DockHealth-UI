@@ -237,7 +237,7 @@ export function uploadCustomFieldOptions(fileData, additionalConfig = {}, custom
       showAlert({
         status: 'success',
         title: 'Upload Complete',
-        html: 'Custom field options uploaded successfully.<br><br>Please refresh the page after a short while to view the updates.',
+        html: 'Custom field options uploaded successfully.',
       });      
 
       return res;

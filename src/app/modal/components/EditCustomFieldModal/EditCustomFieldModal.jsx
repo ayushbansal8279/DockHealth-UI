@@ -402,6 +402,12 @@ const EditCustomFieldModal = ({
     }
   };
 
+  const handleImportModalClose = () => {
+    setImportPopupOpen(false);
+    fetchUserCustomFields();
+    closeModal();
+  };  
+
   const inputStyle = {
     '& .MuiOutlinedInput-root': {
       borderRadius: '10px',
@@ -628,7 +634,7 @@ const EditCustomFieldModal = ({
                           <span style={{ color: 'orange' }}>+</span> Add option
                         </Button>
                         {
-                          customField && (
+                          !isCreatingNewField && (
                             <Button
                               variant="text"
                               width="auto"
@@ -676,9 +682,7 @@ const EditCustomFieldModal = ({
           }}
         >
           <ImportDataModal
-            closeModal={() => {
-              setImportPopupOpen(false);
-            }}
+            closeModal={handleImportModalClose}
             downloadTemplate={downloadCustomFieldImportTemplate}
             step={1}
             label="option"
