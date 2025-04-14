@@ -50,7 +50,8 @@ const PersonForm = forwardRef(
             field.identifier === customFieldIdentifier,
         );
 
-        return field.fieldType === FieldType.DROPDOWN_MULTI || fieldType === FieldType.RELATIONSHIP ? (
+        return field.fieldType === FieldType.DROPDOWN_MULTI ||
+          field.fieldType === FieldType.RELATIONSHIP ? (
           <HidableContainer
             key={field.identifier}
             visible={!showEmpty && !providerCustomField?.values}
