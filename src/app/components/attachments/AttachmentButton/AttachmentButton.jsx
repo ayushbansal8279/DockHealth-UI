@@ -112,10 +112,7 @@ const AttachmentButton = ({
 
   const getFileOptions = useCallback(
     (attachment) => [
-      ...(!('scanStatus' in attachment) ||
-      attachment.scanStatus === null ||
-      attachment.scanStatus === undefined ||
-      attachment.scanStatus === ScanStatus.CLEAN
+      ...(!attachment.scanStatus || attachment.scanStatus === ScanStatus.CLEAN
         ? [
             {
               name: 'Preview',
