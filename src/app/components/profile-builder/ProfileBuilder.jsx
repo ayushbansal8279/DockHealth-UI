@@ -170,12 +170,13 @@ const ProfileBuilder = () => {
   };
 
   const handleExistingFieldDrop = (e, destination) => {
+    const draggableId = e.draggableId.split('#')[0];
     setSelectedCategories((prevCategories) =>
       prevCategories.map((category) => {
         if (category.identifier !== destination) return category;
 
         const fieldExists = category.fields.some(
-          (field) => field.identifier === e.draggableId,
+          (field) => field.identifier === draggableId,
         );
         if (fieldExists) {
           dispatch(showGlobalErrorAlert('Field already exists in group'));
@@ -188,7 +189,7 @@ const ProfileBuilder = () => {
 
         const updatedSavedFields = [
           ...savedFields,
-          { fieldReferenceId: e.draggableId },
+          { fieldReferenceId: draggableId },
         ];
 
         CustomFieldApi.updateCustomFiledGroup(category.identifier, {
@@ -196,7 +197,7 @@ const ProfileBuilder = () => {
         });
 
         const newField = allCustomFields.find(
-          (item) => item.identifier === e.draggableId,
+          (item) => item.identifier === draggableId,
         );
         dispatch(showGlobalAlert(AlertMessages.UPDATED));
 
