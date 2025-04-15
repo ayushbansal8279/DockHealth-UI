@@ -103,7 +103,7 @@ const DateInput = React.forwardRef(
         date && date !== '' && !date.includes('_')
           ? moment(date).toISOString()
           : date;
-      onChange({ target: { value: standardizedDate } });
+      onChange({ target: { value: standardizedDate, name: name } });
     };
 
     const handleBlur = ({ target: { value: date } }) => {
@@ -112,7 +112,7 @@ const DateInput = React.forwardRef(
           date && date !== '' && !date.includes('_')
             ? moment(date).toISOString()
             : date;
-        onBlur({ target: { value: standardizedDate } }, true);
+        onBlur({ target: { value: standardizedDate, name: name } }, true);
       }
     };
 

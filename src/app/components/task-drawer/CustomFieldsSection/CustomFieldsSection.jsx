@@ -120,6 +120,7 @@ const CustomFieldsSection = ({ disabled, fieldCategoryType }) => {
   const handleBlur = useCallback(
     (data, wasChanged = false, fieldType) => {
       if (wasChanged) {
+        const updatedField = data.target.name;
         if (fieldType === FieldType.DATE) {
           const hasMissingParts = data.target?.value?.includes('_');
           if (hasMissingParts) return;
@@ -127,7 +128,7 @@ const CustomFieldsSection = ({ disabled, fieldCategoryType }) => {
         handleSubmit(
           compose(
             (formattedData) => updateCustomFields(formattedData, fieldType),
-            formatMetaDataOutput
+            (data) => formatMetaDataOutput(data, updatedField)
           )
         )(data);
       }

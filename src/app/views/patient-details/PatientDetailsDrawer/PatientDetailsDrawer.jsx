@@ -29,7 +29,7 @@ import {
   getCustomerUniqueIDLabel,
 } from 'helpers/customer-type-helper';
 import PatientLabels from '../PatientLabels/PatientLabels';
-import { getDateTimeIntent } from '@/app/helpers/date-intent-helpers';
+import { transformMetaData } from '@/app/helpers/date-intent-helpers';
 
 const PatientDetailsDrawer = ({ patient, isOpenedDetails, closeDetails }) => {
   const history = useHistory();
@@ -150,10 +150,7 @@ const PatientDetailsDrawer = ({ patient, isOpenedDetails, closeDetails }) => {
 
     const updatedData = {
       ...updateData,
-      patientMetaData: updateData.patientMetaData.map((meta) => ({
-        ...meta,
-        ...getDateTimeIntent(meta.value),
-      })),
+      patientMetaData: transformMetaData(updateData.patientMetaData),
     };
   
     dispatch(updatePatientDetails(patientIdentifier, updatedData));

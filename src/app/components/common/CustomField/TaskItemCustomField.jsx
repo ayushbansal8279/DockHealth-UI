@@ -19,6 +19,7 @@ import {
   createMetaDataObjectToSend,
   CUSTOM_FIELD_TYPES,
 } from 'helpers/custom-fields-helpers';
+import { transformMetaData } from '@/app/helpers/date-intent-helpers';
 
 const TaskItemCustomField = ({
   readOnly,
@@ -68,15 +69,20 @@ const TaskItemCustomField = ({
           patientMetaData.push({
             customFieldIdentifier: field.identifier,
             values: newValue,
+            isFieldUpdated: true,
           });
         } else {
           patientMetaData.push({
             customFieldIdentifier: field.identifier,
             value: newValue,
+            isFieldUpdated: true,
           });
         }
+
+        const transformedPatientMetaData = transformMetaData(patientMetaData);
+
         const patientIdentifier = task?.patient?.patientIdentifier;
-        dispatch(updatePatientDetails(patientIdentifier, { patientMetaData }));
+        dispatch(updatePatientDetails(patientIdentifier, { patientMetaData: transformedPatientMetaData }));
       }
     } else {
       const taskMetaData =
@@ -91,11 +97,13 @@ const TaskItemCustomField = ({
         taskMetaData.push({
           customFieldIdentifier: field.identifier,
           values: newValue,
+          isFieldUpdated: true
         });
       } else {
         taskMetaData.push({
           customFieldIdentifier: field.identifier,
           value: newValue,
+          isFieldUpdated: true
         });
       }
 
