@@ -23,7 +23,10 @@ import DeleteIcon from 'img/bulk-edit/DeleteIcon';
 import { onMultiSelectAction } from 'helpers/ga-event-helper';
 import Tooltip from 'components/common/Tooltip/Tooltip';
 import * as AlertActions from 'alert/actions';
-import { userProfileSelector } from 'selectors/user-selectors';
+import {
+  selectedUserOrganizationSelector,
+  userProfileSelector,
+} from 'selectors/user-selectors';
 import {
   bulkEditTasks,
   bulkEditAssignUsers,
@@ -47,13 +50,18 @@ import { listCustomFieldsSelector } from 'selectors/list-details-selectors';
 import BulkEditOption from 'components/bulk-edit/BulkEditOption/BulkEditOption';
 import { selectedFiltersInMegaFilterSelector } from 'selectors/mega-filter-selectors';
 import BulkEditBar from 'components/bulk-edit/BulkEditBar/BulkEditBar';
-import { UserOrganizationRole } from 'helpers/user-helper';
+import {
+  checkIfUserIsOrganizationAdmin,
+  UserOrganizationRole,
+} from 'helpers/user-helper';
 import AccessRestrictor from 'components/access/AccessRestrictor/AccessRestrictor';
 import BulkEditAssignToOption from './BulkEditAssignToOption';
 import BulkEditDueDateOption from './BulkEditDueDateOption';
 import BulkEditWorkflowStatusOption from './BulkEditWorkflowStatusOption';
 import { Button } from './styled';
 import moment from 'moment';
+import { currentTaskListSelector } from '@/app/selectors/task-list-selectors';
+import { isMemberAdmin } from '@/app/helpers/list-members-helper';
 
 const { ADMIN, OWNER, MEMBER, GUEST, DOCK_LITE } = UserOrganizationRole;
 
@@ -76,10 +84,12 @@ const BulkEditOptionsBar = ({
   searchValue,
   shouldRefreshTasksEveryTime,
   optionsConfig,
-  allTasks = []
+  allTasks = [],
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const currentUser = useSelector(userProfileSelector);
+  const selectedOrganization = useSelector(selectedUserOrganizationSelector);
+  const currentTasklist = useSelector(currentTaskListSelector);
   const dispatch = useDispatch();
   const { taskListIdentifier } = useParams();
   const filters = useSelector(selectedFiltersInMegaFilterSelector);
@@ -167,6 +177,45 @@ const BulkEditOptionsBar = ({
     [parentTasks, subtasks],
   );
 
+  const isListAdmin = useMemo(() => {
+    const currentUserMember = currentTasklist?.listUsers?.find(
+      (u) => u.identifier === currentUser?.identifier,
+    );
+    const isOwnerOrAdmin = checkIfUserIsOrganizationAdmin(currentUser);
+    return isMemberAdmin(currentUserMember) || isOwnerOrAdmin;
+  }, [currentUser, currentTasklist]);
+
+  const checkIsCreatorOrIsAssigneeToAllSelectedTasks = useMemo(() => {
+    const currentUserIdentifier = currentUser.userIdentifier;
+    return allSelectedTasks.every((task) => {
+      const isCreator = task.creator.userIdentifier === currentUserIdentifier;
+
+      const isAssigned = task.assignedToUsers.some(
+        (user) => user.userIdentifier === currentUserIdentifier,
+      );
+
+      return isCreator || isAssigned;
+    });
+  }, [allSelectedTasks]);
+
+  const nonAssigneeCompleteDisabled = useMemo(() => {
+    const nonAssigneeCompleteDisabledItem =
+      selectedOrganization?.themeSettings?.find(
+        ({ name }) => name === 'list.tasks.non-assignee.complete.enabled',
+      ) || {};
+
+    return (
+      nonAssigneeCompleteDisabledItem &&
+      nonAssigneeCompleteDisabledItem?.value === 'true' &&
+      !checkIsCreatorOrIsAssigneeToAllSelectedTasks &&
+      !isListAdmin
+    );
+  }, [
+    checkIsCreatorOrIsAssigneeToAllSelectedTasks,
+    selectedOrganization,
+    isListAdmin,
+  ]);
+
   const allSelectedTasksIdentifiers = useMemo(
     () => [
       ...parentTasks
@@ -177,17 +226,14 @@ const BulkEditOptionsBar = ({
     [parentTasks, subtasks],
   );
 
-  const allSelectedTasksPatientIdentifiers = useMemo(
-    () => 
-      {
-        return [
+  const allSelectedTasksPatientIdentifiers = useMemo(() => {
+    return [
       ...parentTasks
         ?.filter((t) => t?.itemType === 'TASK')
         ?.map(({ patient }) => patient?.patientIdentifier),
       ...subtasks?.map(({ patient }) => patient?.patientIdentifier),
-    ]},
-    [parentTasks, subtasks],
-  );
+    ];
+  }, [parentTasks, subtasks]);
 
   const allSelectedWorkflowIdentifiers = useMemo(
     () => [
@@ -333,7 +379,7 @@ const BulkEditOptionsBar = ({
         bulkEditType: 'DUE_DATE',
         taskIdentifiers: allSelectedTasksIdentifiers,
         taskWorkflowIdentifiers: allSelectedWorkflowIdentifiers,
-        dueDate: dueDate 
+        dueDate: dueDate
           ? dueDateIntent === DueDateIntent.DATE
             ? moment.utc(dueDate).startOf('day').toISOString()
             : moment(dueDate).toISOString()
@@ -414,7 +460,7 @@ const BulkEditOptionsBar = ({
       };
 
       const selectedUserIdentifiers = selectedUsers?.map(
-        ({ userIdentifier, identifier }) => userIdentifier ?? identifier
+        ({ userIdentifier, identifier }) => userIdentifier ?? identifier,
       );
 
       switch (assignOption) {
@@ -637,33 +683,40 @@ const BulkEditOptionsBar = ({
   ]);
 
   const handleMoveTasks = useCallback(async () => {
-
     const itemTasks = allTasks
-      .filter(task => task.itemType === "TASK")
-      .map(task => ({
+      .filter((task) => task.itemType === 'TASK')
+      .map((task) => ({
         identifier: task.identifier,
-        ...(task.templateTaskIdentifier && { templateTaskIdentifier: task.templateTaskIdentifier }),
+        ...(task.templateTaskIdentifier && {
+          templateTaskIdentifier: task.templateTaskIdentifier,
+        }),
       }));
 
     const itemBundles = allTasks
-      .filter(task => task.itemType === "BUNDLE")
-      .map(bundle => ({
+      .filter((task) => task.itemType === 'BUNDLE')
+      .map((bundle) => ({
         identifier: bundle.identifier,
         tasks: bundle.tasks || [],
       }));
 
-    const bundleTaskIdentifiers = new Set(itemBundles.flatMap(bundle => bundle.tasks));
+    const bundleTaskIdentifiers = new Set(
+      itemBundles.flatMap((bundle) => bundle.tasks),
+    );
 
-    const unmatchedTasks = itemTasks.filter(task => !bundleTaskIdentifiers.has(task.identifier));
+    const unmatchedTasks = itemTasks.filter(
+      (task) => !bundleTaskIdentifiers.has(task.identifier),
+    );
 
-    if (unmatchedTasks.some(task => task.templateTaskIdentifier)) {
-      console.log('treu')
-        dispatch(
-          modalActions.openModal('Alert', {
-            description:'Moving workflow tasks is not permitted. Please unselect tasks that belong to a workflow.',
-            confirm: () => {dispatch(modalActions.closeModal());},
-          }),
-        );
+    if (unmatchedTasks.some((task) => task.templateTaskIdentifier)) {
+      dispatch(
+        modalActions.openModal('Alert', {
+          description:
+            'Moving workflow tasks is not permitted. Please unselect tasks that belong to a workflow.',
+          confirm: () => {
+            dispatch(modalActions.closeModal());
+          },
+        }),
+      );
       return;
     }
 
@@ -745,7 +798,7 @@ const BulkEditOptionsBar = ({
         confirmText: 'Move',
         confirm: confirmAction,
         preventClosingModal,
-        modalLabel: 'Move to List'
+        modalLabel: 'Move to List',
       }),
     );
   }, [
@@ -1013,12 +1066,12 @@ const BulkEditOptionsBar = ({
           <Button
             type="button"
             onClick={handleCompleteTasks}
-            disabled={isDisabled}
+            disabled={isDisabled || nonAssigneeCompleteDisabled}
           >
             <BulkEditOption
               iconComponent={CompleteIcon}
               title="Complete"
-              isDisabled={isDisabled}
+              isDisabled={isDisabled || nonAssigneeCompleteDisabled}
             />
           </Button>
         )}
