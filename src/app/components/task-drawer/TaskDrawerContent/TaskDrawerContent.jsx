@@ -259,10 +259,11 @@ const TaskDrawerContent = (props) => {
       ) || {};
     return (
       nonAssigneeCompleteDisabledItem &&
-      nonAssigneeCompleteDisabledItem?.value === 'false' &&
+      nonAssigneeCompleteDisabledItem?.value === 'true' &&
       selectedTask?.assignedToUsers?.filter(
         (user) => user.identifier === currentUser.identifier,
       ).length === 0 &&
+      !isListAdmin &&
       !isCreator
     );
   }, [selectedTask, currentUser, selectedOrganization, isCreator]);

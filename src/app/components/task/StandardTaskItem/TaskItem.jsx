@@ -503,7 +503,7 @@ const TaskItem = React.memo(
         ) || {};
       return (
         nonAssigneeCompleteDisabledItem &&
-        nonAssigneeCompleteDisabledItem?.value === 'false' &&
+        nonAssigneeCompleteDisabledItem?.value === 'true' &&
         assignedToUsers?.filter((user) =>
           user.itemType === 'USER'
             ? user.identifier === currentUser.identifier
