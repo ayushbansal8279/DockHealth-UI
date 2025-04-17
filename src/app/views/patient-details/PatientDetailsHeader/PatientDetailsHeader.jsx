@@ -320,6 +320,7 @@ const PatientDetailsHeader = () => {
             context={'PATIENT'}
           />
            <PatientActivityHistoryDrawer
+            patient={patient}
             title="Activity History"
             isOpen={isactivityHistoryDrawerOpen}
             onClose={unsetIsactivityHistoryDrawerOpen}

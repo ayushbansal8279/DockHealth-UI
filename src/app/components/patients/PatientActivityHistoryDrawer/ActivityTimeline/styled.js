@@ -64,17 +64,31 @@ export const ActivityDescription =  styled(Typography).attrs({
     variant: "caption",
     color: "textSecondary",
   })`
-  font-size: ${fontSizes.smallPlus};
-  font-family: 'Outfit', sans-serif;
+  
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+
+  span {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 250px;
+    display: block;
+  }
 `;
 
 export const TimelineCenterIcon = styled(TimelineDot)`
-  boxShadow: none;
+ 
   margin: 0;
+  background-color: #f5f5f5;
+  color: #616161;
+  border-color:  ${palette.lightGrey};
+  border-width: 0.5px;
 `;
 
 export const TimelineCenterLine = styled(TimelineConnector)`
-  backgroundColor: #e0e0e0;
+  background-color: ${palette.lightGrey};
   height: 100%;
 `;
 
@@ -86,13 +100,36 @@ export const Container = styled.a`
   display: inline-flex;
   flex-flow: row nowrap;
   height: 2rem;
-  padding: ${spacing.tiny} ${spacing.small};
+  padding: 0 3px 0 3px;
   margin: ${spacing.tiny};
   max-width: 196px; // per design
   transition: all 0.25s ease-out;
+  margin: 0 2px 3px 0;
 
   &:hover {
     
     color: ${palette.darkGrey};
+  }
+`;
+
+export const MembersContainer = styled(Typography).attrs({
+  variant: "caption",
+  color: "textSecondary",
+})`
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex-wrap: wrap;
+
+  strong {
+    white-space: nowrap;
+    margin-right: 4px;
+    margin-top:  2px
+  }
+
+  & > div {
+    display: flex;
+    align-items: center;
+    gap: 4px;
   }
 `;
