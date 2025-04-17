@@ -44,70 +44,41 @@ export const isISODateAndTime = (value) => {
   return false;
 };
 
-export const determineDateTimeIntent = (value) => {
+export const calculateDateTimeIntent = (value) => {
   if (value == null || !isISODateAndTime(value)) return null;
 
-  const localDate = moment(value);
-  const isDateIntent = localDate.hours() === 0 && localDate.minutes() === 0;
-
-  const dateTimeIntent = isDateIntent
-    ? DueDateIntent.DATE
-    : DueDateIntent.DATETIME_ABSOLUTE;
-  return dateTimeIntent;
-};
-
-export const determineDateValueFromIntent = (value, dateIntent) => {
-  if (dateIntent == null) return value;
-  return dateIntent === DueDateIntent.DATE
-    ? moment(value).format(UTC_DATE_ONLY)
-    : moment.utc(value).format(UTC_DATE_TIME);
-};
-
-// for calculating intent from api date response
-export const determineDateTimeIntentFromApiDate = (value) => {
-  if (!value) return null;
-
-  if (moment.isMoment(value)) {
-    const rawInput = value._i;
-    if (typeof rawInput === 'string' && rawInput.includes('null')) {
-      return DueDateIntent.DATE;
-    }
-    return DueDateIntent.DATETIME_ABSOLUTE;
-  }
-
-  if (typeof value === 'string' && isISODateAndTime(value)) {
-    return value.includes('T00:00:00.000Z')
+  return value.includes('T00:00:00.000Z')
       ? DueDateIntent.DATE
       : DueDateIntent.DATETIME_ABSOLUTE;
-  }
-
-  return null;
-};
+}
 
 export const transformMetaData = (dataArray) => {
   return dataArray.map((item) => {
-    const dateTimeIntent = determineDateTimeIntent(item.value);
+    const dateTimeIntent = calculateDateTimeIntent(item.value);
     if (!dateTimeIntent) return item;
 
-    return item.isFieldUpdated
-      ? {
-          ...item,
-          dateTimeIntent,
-          value: determineDateValueFromIntent(item.value, dateTimeIntent),
-        }
-      : {
-          ...item,
-          value: item.value,
-          dateTimeIntent: determineDateTimeIntentFromApiDate(item.value),
-        };
+    return {
+      ...item,
+      value: item.value,
+      dateTimeIntent,
+    }
   });
 };
 
-export const getDateTimeIntent = (value) => {
-  if (!isISODateAndTime(value)) return {};
-  return {
-    dateTimeIntent: value.includes('T00:00:00.000Z')
-      ? DueDateIntent.DATE
-      : DueDateIntent.DATETIME_ABSOLUTE,
-  };
-};
+export const convertForIntent = (date) => {
+  if(!date) return null;
+
+  let finalIso;
+
+  const rawInput = date?._i;
+  const hasValidTime = rawInput && !rawInput.includes('null');
+
+  if (hasValidTime) {
+    finalIso = moment(date).toISOString();
+  } else {
+    finalIso = `${moment(date).format('YYYY-MM-DD')}T00:00:00.000Z`;
+  }
+
+  return finalIso;
+
+}

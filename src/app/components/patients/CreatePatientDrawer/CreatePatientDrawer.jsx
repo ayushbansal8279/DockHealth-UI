@@ -17,25 +17,12 @@ import { showAlert } from 'helpers/utility-functions';
 import PatientForm from 'components/patients/PatientForm/PatientForm';
 import { validationSchema } from 'components/patients/PatientForm/helpers';
 import PatientDrawer from 'components/patients/PatientDrawer/PatientDrawer';
-import { getDateTimeIntent } from '@/app/helpers/date-intent-helpers';
 
-const transformMetadata = (data) => {
-  if (!data?.patientMetaData || !Array.isArray(data.patientMetaData)) return data;
-
-  data.patientMetaData = data.patientMetaData.map((item) => ({
-    ...item,
-    ...getDateTimeIntent(item.value),
-  }));
-
-  return data;
-};
 
 const onSubmit =
   ({ onClose, onPatientCreated, uniqueIdentifierLabel }) =>
   (data) => {
-    const newData = transformMetadata(data);
-
-    PatientApi.addPatient(newData)
+    PatientApi.addPatient(data)
       .then((response) => {
         onPatientAddedEvent();
         if (typeof onPatientCreated === 'function') {

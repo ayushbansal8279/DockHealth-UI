@@ -11,7 +11,7 @@ import Spacing from 'components/common/Spacing';
 import CategoryOptions from 'components/common/CategoryOptions/CategoryOptions';
 import { partialUpdateTask } from 'actions/task-actions';
 import { updatePartialWorkflow } from 'actions/task-template-actions';
-import { DueDateIntent, TaskItemType } from 'helpers/task-helpers';
+import { TaskItemType } from 'helpers/task-helpers';
 import {
   selectedTaskSelector,
   taskCustomFieldsSelector,
@@ -120,7 +120,6 @@ const CustomFieldsSection = ({ disabled, fieldCategoryType }) => {
   const handleBlur = useCallback(
     (data, wasChanged = false, fieldType) => {
       if (wasChanged) {
-        const updatedField = data.target.name;
         if (fieldType === FieldType.DATE) {
           const hasMissingParts = data.target?.value?.includes('_');
           if (hasMissingParts) return;
@@ -128,7 +127,7 @@ const CustomFieldsSection = ({ disabled, fieldCategoryType }) => {
         handleSubmit(
           compose(
             (formattedData) => updateCustomFields(formattedData, fieldType),
-            (data) => formatMetaDataOutput(data, updatedField)
+            (data) => formatMetaDataOutput(data)
           )
         )(data);
       }

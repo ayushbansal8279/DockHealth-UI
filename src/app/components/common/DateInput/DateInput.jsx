@@ -10,6 +10,7 @@ import { useBoolean } from 'hooks/useBoolean';
 import DatePicker from '../../task/DatePicker/DatePicker';
 import { DEFAULT_DATE_FORMAT, DEFAULT_DATE_TIME_FORMAT, getMomenDateFromString } from './helpers';
 import { DueDateIntent } from '@/app/helpers/task-helpers';
+import { convertForIntent } from '@/app/helpers/date-intent-helpers';
 
 const CustomDateInput = ({ inputRef, ...otherProps }) => (
   <InputMask
@@ -103,7 +104,7 @@ const DateInput = React.forwardRef(
         date && date !== '' && !date.includes('_')
           ? moment(date).toISOString()
           : date;
-      onChange({ target: { value: standardizedDate, name: name } });
+      onChange({ target: { value: standardizedDate } });
     };
 
     const handleBlur = ({ target: { value: date } }) => {
@@ -112,7 +113,7 @@ const DateInput = React.forwardRef(
           date && date !== '' && !date.includes('_')
             ? moment(date).toISOString()
             : date;
-        onBlur({ target: { value: standardizedDate, name: name } }, true);
+        onBlur({ target: { value: standardizedDate } }, true);
       }
     };
 
@@ -126,7 +127,7 @@ const DateInput = React.forwardRef(
     };
 
     const handleDatepickerChange = (isoDate) => {
-      const date = moment(isoDate).toISOString();
+      const date = convertForIntent(isoDate);
       handleChange({ target: { value: date } });
       handleBlur({ target: { value: date } });
       setTimeout(() => {

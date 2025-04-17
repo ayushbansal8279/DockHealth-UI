@@ -33,10 +33,7 @@ import CustomField from 'components/common/CustomField/CustomField';
 import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
 import { closeModal, openModal } from 'modal/actions';
-import { FieldType } from '@/app/helpers/field-type-helpers';
-import { normalizeHyperlink } from '@/app/helpers/custom-fields-helpers';
 import { getProfileName } from '@/app/views/custom-profile-details/helpers';
-import { getDateTimeIntent } from '@/app/helpers/date-intent-helpers';
 
 const ProfileDrawer = ({
   title,
@@ -78,29 +75,7 @@ const ProfileDrawer = ({
 
   const editProfile = useCallback(
     (data) => {
-      editProfileDetails(profile?.identifier, {
-        fields: Object.entries(data?.profileMetaData)?.map(
-          ([identifier, value]) => {
-            const type = types.find(
-              (fieldType) => fieldType.identifier === identifier,
-            );
-            return {
-              profileTypeField: { identifier },
-              values: Array.isArray(value)
-                ? value?.map((selectedValue) => ({ value: selectedValue }))
-                : [
-                    {
-                      value:
-                        type.fieldType === FieldType.HYPERLINK
-                          ? normalizeHyperlink(value)
-                          : value,
-                    },
-                  ],
-            };
-          },
-        ),
-        // eslint-disable-next-line no-shadow
-      })
+      editProfileDetails(profile?.identifier, data?.profileMetaData, types)
         // eslint-disable-next-line no-shadow
         .then((data) => {
           setEditMode(false);
@@ -120,33 +95,7 @@ const ProfileDrawer = ({
     if (profile && editMode) {
       editProfile(data);
     } else {
-      createProfile({
-        fields: Object.entries(data?.profileMetaData)?.map(
-          ([identifier, value]) => {
-            return {
-              profileTypeField: {
-                identifier,
-              },
-              values: Array.isArray(value)
-                ? value?.map((selectedValue) => {
-                    return {
-                      value: selectedValue,
-                    };
-                  })
-                : [
-                    {
-                      value,
-                      ...getDateTimeIntent(value),
-                    },
-                  ],
-            };
-          },
-        ),
-        profileType: {
-          identifier: profileTypeIdentifier,
-        },
-        // eslint-disable-next-line no-shadow
-      })
+      createProfile(profileTypeIdentifier, data?.profileMetaData, types)
         // eslint-disable-next-line no-shadow
         .then((data) => {
           dispatch(showGlobalAlert(AlertMessages.SAVED));

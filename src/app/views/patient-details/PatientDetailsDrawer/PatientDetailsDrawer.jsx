@@ -29,7 +29,6 @@ import {
   getCustomerUniqueIDLabel,
 } from 'helpers/customer-type-helper';
 import PatientLabels from '../PatientLabels/PatientLabels';
-import { transformMetaData } from '@/app/helpers/date-intent-helpers';
 
 const PatientDetailsDrawer = ({ patient, isOpenedDetails, closeDetails }) => {
   const history = useHistory();
@@ -148,12 +147,7 @@ const PatientDetailsDrawer = ({ patient, isOpenedDetails, closeDetails }) => {
     updateData.createdDateTime = undefined;
     updateData.updatedDateTime = undefined;
 
-    const updatedData = {
-      ...updateData,
-      patientMetaData: transformMetaData(updateData.patientMetaData),
-    };
-  
-    dispatch(updatePatientDetails(patientIdentifier, updatedData));
+    dispatch(updatePatientDetails(patientIdentifier, updateData));
   };
 
   const handleAddButtonClick = useCallback(() => {

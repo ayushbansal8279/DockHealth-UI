@@ -7,20 +7,10 @@ const DATE_FORMAT = 'MM/DD/YYYY';
 const REQUIRED_MESSAGE = 'This field is required';
 const MASK_MESSAGE = 'Invalid phone number';
 
-const isEqual = (a, b) => JSON.stringify(a) === JSON.stringify(b);
-
 export function formatMetaDataOutput(outputData) {
   const metadata = outputData.patientMetaData;
 
   if (!metadata || isEmpty(metadata)) return outputData;
-
-  const filteredMetaDataObj = Object.values(metadata).filter(
-    (val) =>
-      typeof val === "object" &&
-      val !== null &&
-      val.customFieldIdentifier &&
-      (val.value !== undefined || val.values !== undefined)
-  );
 
   // remove metadata with no values - only keep UUID keys
   const filteredMetaDataKeys = Object.keys(metadata).filter(
@@ -28,19 +18,12 @@ export function formatMetaDataOutput(outputData) {
   );
 
   const formattedMetadata = filteredMetaDataKeys.map((key) => {
-    const match = filteredMetaDataObj.find(
-      (m) => m.customFieldIdentifier === key
-    );
 
     if (Array.isArray(metadata[key])) {
       const result = {
         customFieldIdentifier: key,
         values: metadata[key],
       };
-
-      if (match && !isEqual(match.values, metadata[key])) {
-        result.isFieldUpdated = true;
-      }
 
       return result;
     }
@@ -49,10 +32,6 @@ export function formatMetaDataOutput(outputData) {
       customFieldIdentifier: key,
       value: metadata[key],
     };
-
-    if (match && match.value !== metadata[key]) {
-      result.isFieldUpdated = true;
-    }
 
     return result;
   });
