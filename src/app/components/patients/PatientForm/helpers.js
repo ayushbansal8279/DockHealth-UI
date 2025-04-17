@@ -17,24 +17,17 @@ export function formatMetaDataOutput(outputData) {
     (key) => key.length === 36,
   );
 
-  const formattedMetadata = filteredMetaDataKeys.map((key) => {
-
-    if (Array.isArray(metadata[key])) {
-      const result = {
-        customFieldIdentifier: key,
-        values: metadata[key],
-      };
-
-      return result;
-    }
-    
-    const result = {
-      customFieldIdentifier: key,
-      value: metadata[key],
-    };
-
-    return result;
-  });
+  const formattedMetadata = filteredMetaDataKeys.map((key) =>
+    Array.isArray(metadata[key])
+      ? {
+          customFieldIdentifier: key,
+          values: metadata[key],
+        }
+      : {
+          customFieldIdentifier: key,
+          value: metadata[key],
+        }
+  );  
 
   return { ...outputData, patientMetaData: formattedMetadata };
 }
