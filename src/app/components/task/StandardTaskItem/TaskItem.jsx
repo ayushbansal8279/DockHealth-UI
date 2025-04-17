@@ -62,6 +62,7 @@ import {
   findIncompleteRequiredFields,
   PatientTaskItemColumn,
   TaskOrigin,
+  validateAssigneeCompleteDisabled,
 } from 'helpers/task-helpers';
 import { isMemberAdmin } from 'helpers/list-members-helper';
 import { checkIfUserIsOrganizationAdmin } from 'helpers/user-helper';
@@ -497,30 +498,14 @@ const TaskItem = React.memo(
     );
 
     const nonAssigneeCompleteDisabled = useMemo(() => {
-      const nonAssigneeCompleteDisabledItem =
-        selectedOrganization?.themeSettings?.find(
-          ({ name }) => name === 'list.tasks.non-assignee.complete.enabled',
-        ) || {};
-      return (
-        nonAssigneeCompleteDisabledItem &&
-        nonAssigneeCompleteDisabledItem?.value === 'true' &&
-        assignedToUsers?.filter((user) =>
-          user.itemType === 'USER'
-            ? user.identifier === currentUser.identifier
-            : user?.users?.filter(
-                (u) => u.identifier === currentUser.identifier,
-              ).length !== 0,
-        ).length === 0 &&
-        !isListAdmin &&
-        !isCreator
+      return validateAssigneeCompleteDisabled(
+        selectedOrganization,
+        task,
+        currentUser,
+        isListAdmin,
+        isCreator,
       );
-    }, [
-      assignedToUsers,
-      currentUser,
-      selectedOrganization,
-      isListAdmin,
-      isCreator,
-    ]);
+    }, [task, currentUser, selectedOrganization, isListAdmin, isCreator]);
     if (nonAssigneeCompleteDisabled) {
       taskListRestrictions.completeTask = DISABLED;
     }

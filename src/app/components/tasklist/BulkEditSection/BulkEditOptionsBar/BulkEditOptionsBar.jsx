@@ -12,7 +12,10 @@ import {
   findIncompleteRequiredFields,
 } from 'helpers/task-helpers';
 import useActions from 'hooks/use-actions';
-import { BulkEditOptionsConfig } from 'helpers/bulk-edit-helpers';
+import {
+  BulkEditOptionsConfig,
+  validateNonAssigneeCompleteDisabled,
+} from 'helpers/bulk-edit-helpers';
 import palette from 'styles/palette';
 import { useDispatch, useSelector } from 'react-redux';
 import { openModal, closeModal } from 'modal/actions';
@@ -185,36 +188,14 @@ const BulkEditOptionsBar = ({
     return isMemberAdmin(currentUserMember) || isOwnerOrAdmin;
   }, [currentUser, currentTasklist]);
 
-  const checkIsCreatorOrIsAssigneeToAllSelectedTasks = useMemo(() => {
-    const currentUserIdentifier = currentUser.userIdentifier;
-    return allSelectedTasks.every((task) => {
-      const isCreator = task.creator.userIdentifier === currentUserIdentifier;
-
-      const isAssigned = task.assignedToUsers.some(
-        (user) => user.userIdentifier === currentUserIdentifier,
-      );
-
-      return isCreator || isAssigned;
-    });
-  }, [allSelectedTasks]);
-
   const nonAssigneeCompleteDisabled = useMemo(() => {
-    const nonAssigneeCompleteDisabledItem =
-      selectedOrganization?.themeSettings?.find(
-        ({ name }) => name === 'list.tasks.non-assignee.complete.enabled',
-      ) || {};
-
-    return (
-      nonAssigneeCompleteDisabledItem &&
-      nonAssigneeCompleteDisabledItem?.value === 'true' &&
-      !checkIsCreatorOrIsAssigneeToAllSelectedTasks &&
-      !isListAdmin
+    return validateNonAssigneeCompleteDisabled(
+      selectedOrganization,
+      allSelectedTasks,
+      currentUser,
+      isListAdmin,
     );
-  }, [
-    checkIsCreatorOrIsAssigneeToAllSelectedTasks,
-    selectedOrganization,
-    isListAdmin,
-  ]);
+  }, [allSelectedTasks, selectedOrganization, currentUser, isListAdmin]);
 
   const allSelectedTasksIdentifiers = useMemo(
     () => [

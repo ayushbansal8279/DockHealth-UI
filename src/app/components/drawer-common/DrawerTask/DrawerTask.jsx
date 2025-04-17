@@ -49,6 +49,7 @@ import {
   getLabelsIconTooltipTitle,
   isDueDateOverdue,
   ReminderType,
+  validateAssigneeCompleteDisabled,
 } from 'helpers/task-helpers';
 // import { userProfileSelector } from 'selectors/user-selectors';
 // import { DrawerFieldEnum } from 'helpers/task-drawer-helpers';
@@ -205,26 +206,14 @@ const DrawerTask = (props) => {
   }, [currentUser, currentTasklist]);
 
   const nonAssigneeCompleteDisabled = useMemo(() => {
-    const nonAssigneeCompleteDisabledItem =
-      selectedOrganization?.themeSettings?.find(
-        ({ name }) => name === 'list.tasks.non-assignee.complete.enabled',
-      ) || {};
-    return (
-      nonAssigneeCompleteDisabledItem &&
-      nonAssigneeCompleteDisabledItem?.value === 'true' &&
-      assignedToUsers?.filter(
-        (user) => user.identifier === currentUser.identifier,
-      ).length === 0 &&
-      !isListAdmin &&
-      !isCreator
+    return validateAssigneeCompleteDisabled(
+      selectedOrganization,
+      task,
+      currentUser,
+      isListAdmin,
+      isCreator,
     );
   }, [task, currentUser, selectedOrganization, isCreator, isListAdmin]);
-  if (task.description === 'Task A') {
-    console.log('task', task);
-    console.log('isCreator', isCreator);
-    console.log('isListAdmin', isListAdmin);
-    console.log('nonAssigneeCompleteDisabled', nonAssigneeCompleteDisabled);
-  }
 
   if (nonAssigneeCompleteDisabled) {
     taskListRestrictions.completeTask = DISABLED;

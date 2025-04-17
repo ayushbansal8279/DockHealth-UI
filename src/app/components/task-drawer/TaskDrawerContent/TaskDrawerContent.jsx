@@ -1,7 +1,11 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import React, { useCallback, useMemo } from 'react';
 import { Box, Grid, Typography, useMediaQuery } from '@mui/material';
-import { checkIfBundleTask, isDueDateOverdue } from 'helpers/task-helpers';
+import {
+  checkIfBundleTask,
+  isDueDateOverdue,
+  validateAssigneeCompleteDisabled,
+} from 'helpers/task-helpers';
 import Spacing from 'components/common/Spacing';
 import RichTextEditor from 'components/common/RichTextEditor/RichTextEditor';
 import TaskDescription from 'components/task-drawer/TaskDescription/TaskDescription';
@@ -253,18 +257,12 @@ const TaskDrawerContent = (props) => {
     DISABLED,
   );
   const nonAssigneeCompleteDisabled = useMemo(() => {
-    const nonAssigneeCompleteDisabledItem =
-      selectedOrganization?.themeSettings?.find(
-        ({ name }) => name === 'list.tasks.non-assignee.complete.enabled',
-      ) || {};
-    return (
-      nonAssigneeCompleteDisabledItem &&
-      nonAssigneeCompleteDisabledItem?.value === 'true' &&
-      selectedTask?.assignedToUsers?.filter(
-        (user) => user.identifier === currentUser.identifier,
-      ).length === 0 &&
-      !isListAdmin &&
-      !isCreator
+    return validateAssigneeCompleteDisabled(
+      selectedOrganization,
+      selectedTask,
+      currentUser,
+      isListAdmin,
+      isCreator,
     );
   }, [selectedTask, currentUser, selectedOrganization, isCreator]);
   if (nonAssigneeCompleteDisabled) {
