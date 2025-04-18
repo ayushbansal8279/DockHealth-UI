@@ -80,17 +80,13 @@ function createMentionsComment(tokenizedDescription, mentions) {
 export function traverseNodes(nodes, mentions) {
   return nodes && nodes.length > 0
     ? nodes.map((node) => {
-        if (containsHref(node)) {
-          return node;
-        }
-
         return hasMultipleChildren(node, mentions);
       })
     : nodes;
 }
 
 export function traverseNode(node, mentions) {
-  if (typeof node === 'string') {
+  if (typeof node === 'string' && node?.includes('@')) {
     return createMentionsComment(node, mentions);
   }
   if (node && node?.props && node.props.children) {
@@ -135,44 +131,58 @@ export const processMarkdownValue = (
 ) => {
   let htmlValue = md.render(markdownText || '');
   if (preserveNewLines) {
-    const mdValue = markdownText?.replace(/\n {2}\n/g, '<p><br/></p>');
+    const mdValue = markdownText?.replace(/((?:\n[ \t]*){2,})/g, (match) => {
+      const blankLineCount = (match.match(/\n[ \t]*\n/g) || []).length;
+
+      return blankLineCount > 1
+        ? '<p><br/></p>'.repeat(blankLineCount - 1)
+        : '\n';
+    });
     htmlValue = md.render(mdValue || '');
   }
   const nodes = ReactHtmlParser(htmlValue || '');
   return nodes;
 };
 
-function containsHref(node) {
-  if (!node || !node.props) return false;
-
-  if (node.props.href) {
-    return true;
-  }
-
-  const { children } = node.props;
-
-  if (Array.isArray(children)) {
-    return children.some((child) => containsHref(child));
-  }
-
-  return containsHref(children);
-}
-
 const hasMultipleChildren = (node, mentions) => {
-  if (!node || !node.props) return false;
+  if (!node) return node;
+
+  if (typeof node === 'string') {
+    return traverseNode(node, mentions);
+  }
+
+  if (typeof node !== 'object' || !node.props) {
+    return node;
+  }
+
+  if (node.type === 'a') {
+    return node;
+  }
 
   const { children } = node?.props;
 
   if (Array.isArray(children)) {
-    return children.map((child) =>
-      typeof child === 'string'
-        ? traverseNode(child, mentions)
-        : hasMultipleChildren(child, mentions),
-    );
+    return {
+      ...node,
+      props: {
+        ...node.props,
+        children: children.map((child) =>
+          typeof child === 'string'
+            ? traverseNode(child, mentions)
+            : hasMultipleChildren(child, mentions),
+        ),
+      },
+    };
   }
 
   if (typeof children === 'object' && children !== null) {
-    return node;
+    return {
+      ...node,
+      props: {
+        ...node.props,
+        children: hasMultipleChildren(children, mentions),
+      },
+    };
   }
 
   return traverseNode(node, mentions);
