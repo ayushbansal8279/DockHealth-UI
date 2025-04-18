@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { Box } from '@mui/material';
 import TasksStatusSwitchIcon from 'img/tasks-status-switch-icon.svg';
 import ToolbarSelect from 'components/tasklist/ToolbarSelect/ToolbarSelect';
@@ -26,7 +26,11 @@ import {
   UsersTableContainer,
   ListLoaderContainer,
   StyledDataGrid,
+  BulkContainer,
 } from './styled';
+import TaskItemBulkEdit from '@/app/components/task/StandardTaskItem/TaskItemComponents/TaskItemBulkEdit';
+import { UserEditContext } from '@/app/context-api/user-edit-context';
+import Checkbox from '@/app/components/common/Checkbox/Checkbox';
 
 const getFilteredOrganizationUsers = ({
   organizationUsers,
@@ -124,6 +128,15 @@ const UsersTable = ({
 
   const history = useHistory();
 
+  const userContext = useContext(UserEditContext);
+  const {
+    selectableUsers,
+    setSelectableUsers,
+    toggleUser,
+    toggleAllUser,
+    isListChecked,
+  } = userContext;
+
   const USER_SUBSCRIPTION_VALUES = {
     [UserSubscriptionStatus.ALL]: 'ALL',
     [UserSubscriptionStatus.SUBSCRIBED]: 'SUBSCRIBED',
@@ -136,8 +149,35 @@ const UsersTable = ({
     { value: 'UNSUBSCRIBED', label: 'Unsubscribed' },
   ];
 
+  const renderCheckboxColumnHeader = ({ isListChecked, onListSelect }) => (
+    <BulkContainer>
+      <Checkbox isChecked={isListChecked} onClick={onListSelect} />
+    </BulkContainer>
+  );
+
   const columns = useMemo(
     () => [
+      {
+        field: 'isSelected',
+        headerName: '',
+        sortable: false,
+        renderHeader: () =>
+          renderCheckboxColumnHeader({
+            isListChecked,
+            onListSelect: toggleAllUser,
+          }),
+        renderCell: ({ row }) => {
+          return (
+            <span>
+              <TaskItemBulkEdit
+                isChecked={row?.isSelected}
+                onClick={() => toggleUser(row.id)}
+              />
+            </span>
+          )
+        },
+        width: 40,
+      },
       {
         field: 'userName',
         headerName: 'USER',
@@ -359,6 +399,8 @@ const UsersTable = ({
       showSubscription,
       toggleSelectedUser,
       changeUserRole,
+      isListChecked,
+      toggleAllUser
     ],
   );
 
@@ -374,10 +416,15 @@ const UsersTable = ({
     () =>
       filteredOrganizationUsers.map((member) => ({
         id: member.userIdentifier,
+        isSelected: false,
         ...member,
       })),
     [filteredOrganizationUsers],
   );
+  
+  useEffect(() => {
+    setSelectableUsers(filteredOrganizationUsersWithId);
+  }, [filteredOrganizationUsersWithId]);
 
   return (
     <UsersTableContainer>
@@ -426,7 +473,7 @@ const UsersTable = ({
             ) : (
               <StyledDataGrid
                 columns={columns}
-                rows={filteredOrganizationUsersWithId}
+                rows={selectableUsers}
                 rowHeight={35}
                 headerHeight={45}
                 hideFooterSelectedRowCount

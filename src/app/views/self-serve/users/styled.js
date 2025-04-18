@@ -20,3 +20,16 @@ export const UsersViewContainer = styled.div`
   max-width: 1200px;
   width: 1200px;
 `;
+
+export const BulkEditSectionContainer = styled.div`
+  width: 90%;
+  margin-left: auto;
+  margin-right: auto;
+`;
+
+export const TaskTemplateApplicatorContainer = styled.div`
+  margin-bottom: 60px;
+  justify-content: center;
+  display: flex;
+  padding-top: 10px;
+`;

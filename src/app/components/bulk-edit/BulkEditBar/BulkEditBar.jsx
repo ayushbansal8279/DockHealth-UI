@@ -6,16 +6,26 @@ const BulkEditBar = (props) => {
     numberOfSelectedItems,
     onClose,
     children,
-    patientView,
+    viewType = 'task',
     isDisabled,
     includedWorkflow,
   } = props;
+
+  const getLabel = () => {
+    if (viewType === 'user') return 'User';
+    if (viewType === 'patient') return 'Patient';
+    if (viewType === 'task') return `Task${includedWorkflow ? '/Workflow' : ''}`;
+    return '';
+  };
+
+  const pluralize = (word, count) => `${word}${count !== 1 ? 's' : ''}`;
+
+  const label = getLabel();
+
   return (
     <Container>
       <TasksText>
-        {`${numberOfSelectedItems} ${
-          patientView ? `Patient` : `Task${includedWorkflow ? '/Workflow' : ''}`
-        }${numberOfSelectedItems > 1 ? 's' : ''} Selected`}
+        {`${numberOfSelectedItems} ${pluralize(label, numberOfSelectedItems)} Selected`}
       </TasksText>
       {children}
       <CloseButton type="button" onClick={onClose} isDisabled={isDisabled}>

@@ -12,7 +12,7 @@ import {
   onLeaveListDetailsView,
 } from './TemplateCoreSubscriptionPlan/ListDetails';
 
-const UsersView = lazy(() => import('views/self-serve/users/UsersView'));
+const UsersView = lazy(() => import('views/self-serve/users/UsersViewWrapper'));
 const Contacts = lazy(() => import('views/Contacts/Contacts'));
 const Templates = lazy(() => import('views/Templates/Templates'));
 const SingleTaskView = lazy(() => import('views/single-task/SingleTaskView'));

@@ -145,3 +145,13 @@ export const StyledDataGrid = styled(DataGrid)`
     transform: translate(25px, -2px);
   }
 `;
+
+export const BulkContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: ${({ visible }) => (visible ? '1' : '0.5')};
+  &:hover {
+    opacity: 1;
+  }
+`;
