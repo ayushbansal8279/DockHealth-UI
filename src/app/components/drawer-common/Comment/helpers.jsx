@@ -80,7 +80,7 @@ function createMentionsComment(tokenizedDescription, mentions) {
 export function traverseNodes(nodes, mentions) {
   return nodes && nodes.length > 0
     ? nodes.map((node) => {
-        return hasMultipleChildren(node, mentions);
+        return walkAndTransformNode(node, mentions);
       })
     : nodes;
 }
@@ -144,7 +144,7 @@ export const processMarkdownValue = (
   return nodes;
 };
 
-const hasMultipleChildren = (node, mentions) => {
+const walkAndTransformNode = (node, mentions) => {
   if (!node) return node;
 
   if (typeof node === 'string') {
@@ -169,7 +169,7 @@ const hasMultipleChildren = (node, mentions) => {
         children: children.map((child) =>
           typeof child === 'string'
             ? traverseNode(child, mentions)
-            : hasMultipleChildren(child, mentions),
+            : walkAndTransformNode(child, mentions),
         ),
       },
     };
@@ -180,7 +180,7 @@ const hasMultipleChildren = (node, mentions) => {
       ...node,
       props: {
         ...node.props,
-        children: hasMultipleChildren(children, mentions),
+        children: walkAndTransformNode(children, mentions),
       },
     };
   }
