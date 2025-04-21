@@ -25,8 +25,6 @@ import {
   CancelButton,
   ConfirmButton,
 } from '@/app/modal/components/ModalButton/ModalButtons';
-import { normalizeHyperlink } from '@/app/helpers/custom-fields-helpers';
-import { FieldType } from '@/app/helpers/field-type-helpers';
 import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
 import { editProfileDetails } from 'api/profile-api';
@@ -146,29 +144,7 @@ const ProfileDetailsDrawer = ({
   const formReference = useRef(null);
 
   const updateProfile = useCallback((data) => {
-    editProfileDetails(profileIdentifier, {
-      fields: Object.entries(data?.profileMetaData)?.map(
-        ([identifier, value]) => {
-          const type = profileTypeFields.find(
-            (fieldType) => fieldType.identifier === identifier,
-          );
-
-          return {
-            profileTypeField: { identifier },
-            values: Array.isArray(value)
-              ? value?.map((selectedValue) => ({ value: selectedValue }))
-              : [
-                  {
-                    value:
-                      type?.fieldType === FieldType.HYPERLINK
-                        ? normalizeHyperlink(value)
-                        : value,
-                  },
-                ],
-          };
-        },
-      ),
-    })
+    editProfileDetails(profileIdentifier, data?.profileMetaData, profileTypeFields)
       .then(async () => {
         setEditMode(false);
         dispatch(showGlobalAlert(AlertMessages.SAVED));

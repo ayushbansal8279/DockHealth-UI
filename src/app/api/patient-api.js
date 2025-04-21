@@ -4,6 +4,7 @@ import { noop, showAlert } from 'helpers/utility-functions';
 import { mapSelectedOptionsToRequestPayload } from 'helpers/filter-options-helpers';
 import axios from './axios-heydoc';
 import { blobFileDownload } from '../helpers/blob-file-download';
+import { transformPatientDetails } from '../helpers/patient-details-helpers';
 
 export function getAllPatients() {
   return axios
@@ -103,7 +104,8 @@ export function removePatient(patientIdentifier) {
     });
 }
 
-export function addPatient(patient) {
+export function addPatient(details) {
+  const patient = transformPatientDetails(details);
   return axios
     .post('patient', patient)
     .then((response) => response.data)
