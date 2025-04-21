@@ -16,18 +16,18 @@ export function formatMetaDataOutput(outputData) {
   const filteredMetaDataKeys = Object.keys(metadata).filter(
     (key) => key.length === 36,
   );
-  const formattedMetadata = filteredMetaDataKeys.map((key) => {
-    if (Array.isArray(metadata[key])) {
-      return {
-        customFieldIdentifier: key,
-        values: metadata[key],
-      };
-    }
-    return {
-      customFieldIdentifier: key,
-      value: metadata[key],
-    };
-  });
+
+  const formattedMetadata = filteredMetaDataKeys.map((key) =>
+    Array.isArray(metadata[key])
+      ? {
+          customFieldIdentifier: key,
+          values: metadata[key],
+        }
+      : {
+          customFieldIdentifier: key,
+          value: metadata[key],
+        }
+  );  
 
   return { ...outputData, patientMetaData: formattedMetadata };
 }

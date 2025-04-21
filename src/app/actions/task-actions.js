@@ -5,7 +5,7 @@ import { getTasksGroupsList } from 'actions/list-details-actions';
 import { openDrawer } from 'actions/task-drawer-actions';
 import { TASK_DISAPPEAR_DELAY } from 'helpers/task-update-helper';
 import * as ListDetailsApi from 'api/list-details-api';
-import { CommunicationType, TaskItemType } from 'helpers/task-helpers';
+import { CommunicationType, TaskItemType, transformTaskMetadata } from 'helpers/task-helpers';
 import * as ActionTypes from './action-types';
 import AlertMessages from '../alert/AlertMessages';
 
@@ -177,19 +177,21 @@ export function saveTask(newTask, shouldReloadGroups = false) {
 }
 
 export function partialUpdateTask(taskIdentifier, dataToUpdate) {
+  const transformedDataToUpdate = transformTaskMetadata(dataToUpdate);
+
   return (dispatch) => {
     dispatch({
       type: ActionTypes.UPDATE_TASK_SUCCESS,
       task: {
-        ...dataToUpdate,
+        ...transformedDataToUpdate,
         taskIdentifier,
       },
     });
     return (
-      TaskApi.partialUpdateTask(taskIdentifier, dataToUpdate)
+      TaskApi.partialUpdateTask(taskIdentifier, transformedDataToUpdate)
         // eslint-disable-next-line sonarjs/no-identical-functions
         .then((task) => {
-          if (dataToUpdate.details) {
+          if (transformedDataToUpdate.details) {
             dispatch({
               type: ActionTypes.UPDATE_TASK_SUCCESS,
               task,

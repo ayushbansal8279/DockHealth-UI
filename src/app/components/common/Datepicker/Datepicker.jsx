@@ -26,11 +26,15 @@ const Datepicker = ({
   initialMonthMomentValue,
   showRange,
   disablePast,
+  showTime,
   onMonthChange = () => null,
 }) => {
   const [currentMonthMoment, setCurrentMonthMoment] = useState(null);
 
-  const momentSelectedDate = selectedDate ? moment(selectedDate) : null;
+  const momentSelectedDate = showTime === true || showTime === undefined
+    ? (selectedDate ? moment(selectedDate) : null)
+    : (selectedDate ? moment.utc(selectedDate).startOf('day') : null);    
+
   const currentDay = moment();
   const currentDayString = currentDay.format('YYYY-MM-DD');
 

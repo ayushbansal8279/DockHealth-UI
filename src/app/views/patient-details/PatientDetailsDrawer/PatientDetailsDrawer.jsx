@@ -146,6 +146,7 @@ const PatientDetailsDrawer = ({ patient, isOpenedDetails, closeDetails }) => {
     updateData.patientLabels = undefined;
     updateData.createdDateTime = undefined;
     updateData.updatedDateTime = undefined;
+
     dispatch(updatePatientDetails(patientIdentifier, updateData));
   };
 

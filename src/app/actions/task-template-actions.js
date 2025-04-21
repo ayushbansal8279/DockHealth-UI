@@ -1,4 +1,5 @@
 import * as ActionTypes from 'actions/action-types';
+import { transformTaskMetadata } from '../helpers/task-helpers';
 
 export function initializeWorkflowLibraryState(folderIdentifier) {
   return {
@@ -74,10 +75,12 @@ export function switchTemplatePublic(taskTemplateIdentifier, flagPublic) {
 }
 
 export function updatePartialWorkflow(taskWorkflowIdentifier, dataToUpdate) {
+  const transformedDataToUpdate = transformTaskMetadata(dataToUpdate);
+
   return {
     type: ActionTypes.UPDATE_PARTIAL_WORKFLOW,
     taskWorkflowIdentifier,
-    dataToUpdate,
+    dataToUpdate: transformedDataToUpdate,
   };
 }
 

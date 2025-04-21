@@ -1,5 +1,7 @@
 import { blobFileDownload } from '../helpers/blob-file-download';
 import { mapFilterOptions } from '../helpers/filter-options-helpers';
+import { handleMixedResponse } from '../helpers/handle-mixed-response';
+import { getTransformedProfileFields } from '../helpers/profile-helpers';
 import { noop, showAlert } from '../helpers/utility-functions';
 import axios from './axios-heydoc';
 
@@ -11,12 +13,19 @@ export function getProfileDetails(identifier) {
   return axios.get(`profile/${identifier}`).then(({ data }) => data);
 }
 
-export function createProfile(profile) {
-  return axios.post('profile', profile).then(({ data }) => data);
+export function createProfile(profileTypeIdentifier, details, types) {
+  const transformedDetails = getTransformedProfileFields(details, types);
+  return axios.post('profile', {
+    fields: transformedDetails,
+    profileType: {
+      identifier: profileTypeIdentifier,
+    },
+  }).then(({ data }) => data);
 }
 
-export function editProfileDetails(identifier, profile) {
-  return axios.put(`profile/${identifier}`, profile).then(({ data }) => data);
+export function editProfileDetails(identifier, details, types) {
+  const transformedDetails = getTransformedProfileFields(details, types);
+  return axios.put(`profile/${identifier}`, { fields: transformedDetails }).then(({ data }) => data);
 }
 
 export function deleteProfile(identifier) {
@@ -84,7 +93,7 @@ export function uploadProfileData(fileData, additionalConfig = {}, identifier) {
       },
       ...additionalConfig,
     })
-    .then((response) => response.data)
+    .then((response) => handleMixedResponse(response))
     .catch((error) => {
       if (error.response && error.response.status === 413) {
         showAlert({
@@ -92,15 +101,24 @@ export function uploadProfileData(fileData, additionalConfig = {}, identifier) {
           title: 'Error',
           text: 'File exceeded the allowed size of 100 MB',
         });
-      } else if (!error.response) {
+      } else {
         showAlert({
           status: 'error',
           title: 'Error',
-          text: 'Error in uploading data. Please try again.',
+          text:
+            error?.response?.data?.errorMessage ??
+            error?.message ??
+            'Error in uploading data. Please try again.'
         });
       }
       throw error;
     });
+}
+
+export function getPatientForProfile(profileIdentifier) {
+  return axios
+    .get(`profile/patients/${profileIdentifier}`)
+    .then(response => response.data)
 }
 
 export const note = {

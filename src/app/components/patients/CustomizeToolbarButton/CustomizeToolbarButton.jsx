@@ -1,7 +1,14 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 /* eslint-disable no-underscore-dangle */
 import React, { useState, useRef, useCallback, useEffect } from 'react';
-import { Box, List, ListItemText, MenuItem, Popover, Switch } from '@mui/material';
+import {
+  Box,
+  List,
+  ListItemText,
+  MenuItem,
+  Popover,
+  Switch,
+} from '@mui/material';
 import CustomizeIcon from 'img/customize-icon.svg';
 import Checkbox from 'components/common/Checkbox/Checkbox';
 import { usePatientListColumnsConfig } from 'context-api/patients-columns-config-context';
@@ -66,7 +73,7 @@ const CustomizeToolbarButton = ({
   }, [open]);
 
   const ColumnOptionNames = {
-    [PatientHeaderColumn.PATIENT]: 'Name',
+    [PatientHeaderColumn.PATIENT]: null,
     [PatientHeaderColumn.UNIQUE_ID]: 'Unique Identifier',
     [PatientHeaderColumn.DOB]: 'DOB',
     [PatientHeaderColumn.AGE]: 'Age',

@@ -20,6 +20,7 @@ import {
 import {
   userProfileSelector,
   userHasSmartFlowsSelector,
+  userHasShareTaskWorkflowFeatureSelector,
   selectedUserOrganizationSelector,
 } from 'selectors/user-selectors';
 import AddButton, {
@@ -91,6 +92,7 @@ const TaskTemplateView = () => {
     !localStorageHelper.getItem(TASK_TEMPLATES_BANNER_CLOSED_STORAGE_KEY),
   );
   const smartFlowAvailable = useSelector(userHasSmartFlowsSelector);
+  const shareTaskWorkflowAvailable = useSelector(userHasShareTaskWorkflowFeatureSelector);
   const isFetchingTaskTemplates = useSelector(isFetchingTaskTemplatesSelector);
   const taskTemplates = useSelector(taskTemplatesSelector);
   const userProfile = useSelector(userProfileSelector);
@@ -303,6 +305,7 @@ const TaskTemplateView = () => {
               onSortChange={handleSortChange}
               tasksHeaderTextTransform={tasksHeaderTextTransformItem?.value}
               tasksHeaderTextColor={tasksHeaderTextColorItem?.value}
+              shareTaskWorkflowAvailable={shareTaskWorkflowAvailable}
             />
             {isFetchingTaskTemplates ? (
               <TaskTemplatesLoader />
@@ -321,6 +324,7 @@ const TaskTemplateView = () => {
                         'MM/DD/YYYY',
                       )}
                       taskTemplate={template}
+                      shareTaskWorkflowAvailable={shareTaskWorkflowAvailable}
                     />
                   </TaskTemplateFolder>
                 ))}
@@ -338,6 +342,7 @@ const TaskTemplateView = () => {
                         'MM/DD/YYYY',
                       )}
                       taskTemplate={template}
+                      shareTaskWorkflowAvailable={shareTaskWorkflowAvailable}
                     />
                   </TaskTemplate>
                 ))}

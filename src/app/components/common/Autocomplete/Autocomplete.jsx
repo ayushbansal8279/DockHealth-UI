@@ -59,7 +59,6 @@ const StandardInput = ({
       disabled={isInputDisabled}
       InputProps={{
         ...InputPropsParams,
-        disableUnderline: true,
         ...CustomInputProps,
       }}
       {...restParams}

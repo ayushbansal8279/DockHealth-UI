@@ -164,7 +164,7 @@ const SmartFlowBuilderView = () => {
   const isDockProUser = isUserDockPro(currentUser);
   const isCurrentUserEditor =
     members?.find(({ user }) => user.identifier === currentUser.identifier)
-      ?.memberPermission === 'EDITOR';
+      ?.memberPermission === 'EDITOR' && !workflow?.sharedByOrganization;
 
   const selectedElements = useMemo(
     () => elements.filter((element) => element.selected),

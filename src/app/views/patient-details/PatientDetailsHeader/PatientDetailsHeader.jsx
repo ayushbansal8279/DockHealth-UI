@@ -14,6 +14,7 @@ import {
   userProfileSelector,
   selectedUserOrganizationSelector,
   userHasAiSummaryViewFeatureSelector,
+  userHasProfileBuilderFeatureSelector,
 } from 'selectors/user-selectors';
 import { PATIENTS_LIST_ALL } from 'routing/helpers/paths';
 import { organizationSelector } from 'selectors/organization-selectors';
@@ -41,10 +42,14 @@ import {
   ContactContainer,
   PatientMRNAnchor,
   AISummaryWrapper,
+  ActivityHistoryButton,
+  ActivityHistoryButtonContainer,
 } from './styled';
 import AISummaryModalOpenerHelper from '@/app/modal/components/AISummaryModal/AISummaryModalOpenerHelper';
 import { SummaryType } from '@/app/helpers/ai-helper';
 import PatientMetaDataField from './PatientMetaDataField';
+import ProfileDetailsDrawer from '../../profile-details/ProfileDetailsDrawer/ProfileDetailsDrawer';
+import PatientActivityHistoryDrawer from '@/app/components/patients/PatientActivityHistoryDrawer/PatientActivityHistoryDrawer';
 
 const { DISABLED } = TASK_LIST_RESTRICTIONS_OPTIONS;
 
@@ -53,6 +58,9 @@ const PatientDetailsHeader = () => {
   const history = useHistory();
   const location = useLocation();
   const [isDrawerOpen, setIsDrawerOpen, unsetIsDrawerOpen] = useBoolean(false);
+  const [isProfileOpen, setIsProfileOpen, unsetIsProfileOpen] =
+    useBoolean(false);
+  const [isactivityHistoryDrawerOpen,setIsactivityHistoryDrawerOpen, unsetIsactivityHistoryDrawerOpen] = useBoolean(false);
   const patient = useSelector(patientSelector);
   const {
     firstName,
@@ -66,7 +74,7 @@ const PatientDetailsHeader = () => {
     mrn,
     gender,
     genderIdentity,
-    patientStatus
+    patientStatus,
   } = patient || {};
   const isFetchingPatient = useSelector(isFetchingPatientSelector);
   const currentUser = useSelector(userProfileSelector);
@@ -85,6 +93,9 @@ const PatientDetailsHeader = () => {
   const genderIdentityDisabled =
     currentOrganization?.disabledFeatures?.includes('PATIENT_GENDER') || false;
   const embeddedMode = sessionStorage.getItem('EmbeddedMode') || false;
+  const profileBuilderFeatureAvailable = useSelector(
+    userHasProfileBuilderFeatureSelector,
+  );
 
   const goBack = useCallback(() => {
     if (cameFrom) {
@@ -133,6 +144,12 @@ const PatientDetailsHeader = () => {
                   </AISummaryWrapper>
                 )}
                 <Box mx={1} />
+                {profileBuilderFeatureAvailable && (
+                  <ButtonContainer onClick={setIsProfileOpen}>
+                    <PatientDetailsLabel>View profile</PatientDetailsLabel>
+                  </ButtonContainer>
+                )}
+                <Box mx={1} />
                 {taskListRestrictions?.createTask !== DISABLED && (
                   <ButtonContainer onClick={setIsDrawerOpen}>
                     <PatientDetailsLabel>View details</PatientDetailsLabel>
@@ -152,10 +169,13 @@ const PatientDetailsHeader = () => {
                       </Box>
                     ),
                   )}
-                </Box> 
+                </Box>
               </Grid>
             </Box>
             <ContactContainer>
+                <ActivityHistoryButtonContainer>
+                  <ActivityHistoryButton onClick={setIsactivityHistoryDrawerOpen}>Activity History</ActivityHistoryButton>
+                </ActivityHistoryButtonContainer>
               {email && (
                 <Tooltip title={email} placement="bottom">
                   <IconWrapper href={`mailto:${email}`}>
@@ -245,6 +265,7 @@ const PatientDetailsHeader = () => {
                     displayNames,
                     fieldType,
                     customFieldIdentifier,
+                    dateTimeIntent,
                   }) => {
                     return (
                       <React.Fragment key={customFieldIdentifier}>
@@ -254,6 +275,7 @@ const PatientDetailsHeader = () => {
                           value={value}
                           displayNames={displayNames}
                           displayName={displayName}
+                          dueDateIntent={dateTimeIntent}
                         />
                         <PatientInfoDivider />
                       </React.Fragment>
@@ -290,6 +312,18 @@ const PatientDetailsHeader = () => {
             patient={patient}
             isOpenedDetails={isDrawerOpen}
             closeDetails={unsetIsDrawerOpen}
+          />
+          <ProfileDetailsDrawer
+            patient={patient}
+            isOpenedDetails={isProfileOpen}
+            closeDrawer={unsetIsProfileOpen}
+            context={'PATIENT'}
+          />
+           <PatientActivityHistoryDrawer
+            patient={patient}
+            title="Activity History"
+            isOpen={isactivityHistoryDrawerOpen}
+            onClose={unsetIsactivityHistoryDrawerOpen}
           />
         </>
       )}

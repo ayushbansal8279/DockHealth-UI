@@ -75,8 +75,10 @@ const TaskItemCustomField = ({
             value: newValue,
           });
         }
+
+
         const patientIdentifier = task?.patient?.patientIdentifier;
-        dispatch(updatePatientDetails(patientIdentifier, { patientMetaData }));
+        dispatch(updatePatientDetails(patientIdentifier, { patientMetaData: patientMetaData }));
       }
     } else {
       const taskMetaData =
@@ -121,6 +123,7 @@ const TaskItemCustomField = ({
       return (
         <TaskItemDate
           value={value}
+          dateTimeIntent={customFieldValue?.dateTimeIntent}
           onChange={handleChange}
           field={field}
           readOnly={isReadOnly}

@@ -20,6 +20,8 @@ export const getTemplateColumns = ({
   onEditProfile,
   onDeleteProfile,
   onConfigureCustomFields,
+  onOpenProfileBuilder,
+  profileBuilderFeatureAvailable,
 }) => [
   {
     field: 'name',
@@ -46,6 +48,13 @@ export const getTemplateColumns = ({
           onClick: () => onConfigureCustomFields(data),
         },
       ];
+
+      if (data.id !== 'users' && profileBuilderFeatureAvailable) {
+        contextMenuOptions.push({
+          name: 'Open Profile Builder',
+          onClick: () => onOpenProfileBuilder(data),
+        });
+      }
 
       if (data.id !== 'users' && data.id !== 'patient') {
         contextMenuOptions.push(

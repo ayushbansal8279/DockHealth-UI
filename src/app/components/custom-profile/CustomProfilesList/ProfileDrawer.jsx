@@ -33,8 +33,6 @@ import CustomField from 'components/common/CustomField/CustomField';
 import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
 import { closeModal, openModal } from 'modal/actions';
-import { FieldType } from '@/app/helpers/field-type-helpers';
-import { normalizeHyperlink } from '@/app/helpers/custom-fields-helpers';
 import { getProfileName } from '@/app/views/custom-profile-details/helpers';
 
 const ProfileDrawer = ({
@@ -53,7 +51,11 @@ const ProfileDrawer = ({
   const formMethods = useForm({
     reValidateMode: 'onSubmit',
   });
-  const { handleSubmit, getValues, formState: { errors } } = formMethods;
+  const {
+    handleSubmit,
+    getValues,
+    formState: { errors },
+  } = formMethods;
   const formReference = useRef(null);
 
   const hasErrors = Object.keys(errors).length > 0;
@@ -73,27 +75,7 @@ const ProfileDrawer = ({
 
   const editProfile = useCallback(
     (data) => {
-      editProfileDetails(profile?.identifier, {
-        fields: Object.entries(data?.profileMetaData)?.map(
-          ([identifier, value]) => {
-            const type = types.find(
-              (fieldType) => fieldType.identifier === identifier,
-            );
-            return {
-              profileTypeField: { identifier },
-              values: Array.isArray(value)
-                ? value?.map((selectedValue) => ({ value: selectedValue }))
-                : [
-                    type.fieldType === FieldType.DROPDOWN
-                      ? { customFieldOption: { identifier: value } }
-                      : { value: type.fieldType === FieldType.HYPERLINK ? normalizeHyperlink(value) : value },
-                  ],
-            };
-            
-          },
-        ),
-        // eslint-disable-next-line no-shadow
-      })
+      editProfileDetails(profile?.identifier, data?.profileMetaData, types)
         // eslint-disable-next-line no-shadow
         .then((data) => {
           setEditMode(false);
@@ -113,32 +95,7 @@ const ProfileDrawer = ({
     if (profile && editMode) {
       editProfile(data);
     } else {
-      createProfile({
-        fields: Object.entries(data?.profileMetaData)?.map(
-          ([identifier, value]) => {
-            return {
-              profileTypeField: {
-                identifier,
-              },
-              values: Array.isArray(value)
-                ? value?.map((selectedValue) => {
-                    return {
-                      value: selectedValue,
-                    };
-                  })
-                : [
-                    {
-                      value,
-                    },
-                  ],
-            };
-          },
-        ),
-        profileType: {
-          identifier: profileTypeIdentifier,
-        },
-        // eslint-disable-next-line no-shadow
-      })
+      createProfile(profileTypeIdentifier, data?.profileMetaData, types)
         // eslint-disable-next-line no-shadow
         .then((data) => {
           dispatch(showGlobalAlert(AlertMessages.SAVED));
@@ -162,10 +119,10 @@ const ProfileDrawer = ({
       dispatch(
         openModal('InterruptEdit', {
           description: 'You have unsaved',
-          profileTypeName: getProfileName(types, profile)?.[0],
+          profileTypeName: getProfileName(types, profile)?.[0] || title,
           confirm: async () => {
             const isValid = await formMethods.trigger();
-            if(isValid) {
+            if (isValid) {
               editProfile(getValues());
               if (!addMode && profile) {
                 setEditMode(false);
@@ -193,13 +150,14 @@ const ProfileDrawer = ({
   const menu = useMemo(
     () => [
       { name: 'Edit', onClick: () => setEditMode(true) },
-      { name: 'Merge', 
+      {
+        name: 'Merge',
         onClick: () => {
           dispatch(
             openModal('ProfilePicker', {
               profileTypeIdentifier: profileTypeIdentifier,
               profile: profile,
-            })
+            }),
           );
           onClose();
         },

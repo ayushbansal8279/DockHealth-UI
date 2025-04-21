@@ -21,13 +21,13 @@ function createMentionsComment(tokenizedDescription, mentions) {
     return tokenizedDescription;
   }
 
-  return tokenizedDescription.split(/\s/).map((word) => {
-    if (word.includes('[http') || word.includes('http')) {
+  return tokenizedDescription?.split(/\s/)?.map((word) => {
+    if (word?.includes('[http') || word?.includes('http')) {
       return ReactHtmlParser(linkifyTextWithMentions(`${word} `, mentions));
     }
 
     if (word[0] === '@') {
-      const wordMentionIdentifier = word.split(/@{(.*?)}/)[1];
+      const wordMentionIdentifier = word?.split(/@{(.*?)}/)[1];
       const currentMention = mentions?.find(
         (m) => m.identifier === wordMentionIdentifier,
       );
@@ -38,8 +38,8 @@ function createMentionsComment(tokenizedDescription, mentions) {
             mention={currentMention}
             className="fr-deletable fr-tribute"
           >
-            <span data={currentMention.identifier}>
-              @{currentMention.name}{' '}
+            <span data={currentMention?.identifier}>
+              @{currentMention?.name}{' '}
             </span>
           </UserMention>
         );
@@ -47,7 +47,7 @@ function createMentionsComment(tokenizedDescription, mentions) {
     }
 
     if (word[0] === '#') {
-      const wordMentionIdentifier = word.split(/#{(.*?)}/)[1];
+      const wordMentionIdentifier = word?.split(/#{(.*?)}/)[1];
       const currentMention = mentions?.find(
         (m) => m.identifier === wordMentionIdentifier,
       );
@@ -58,8 +58,8 @@ function createMentionsComment(tokenizedDescription, mentions) {
             mention={currentMention}
             className="fr-deletable fr-tribute"
           >
-            <span data={currentMention.identifier}>
-              #{currentMention.name}{' '}
+            <span data={currentMention?.identifier}>
+              #{currentMention?.name}{' '}
             </span>
           </PatientMention>
         );
@@ -80,21 +80,24 @@ function createMentionsComment(tokenizedDescription, mentions) {
 export function traverseNodes(nodes, mentions) {
   return nodes && nodes.length > 0
     ? nodes.map((node) => {
-        if (containsHref(node) || hasMultipleChildren(node)) {
-          return node;
-        }
-        return traverseNode(node, mentions);
+        return walkAndTransformNode(node, mentions);
       })
     : nodes;
 }
 
 export function traverseNode(node, mentions) {
+  if (typeof node === 'string' && node?.includes('@')) {
+    return createMentionsComment(node, mentions);
+  }
   if (node && node?.props && node.props.children) {
     const { children } = node.props;
+
     if (typeof children === 'string') {
       return {
         ...node,
-        props: { children: createMentionsComment(children, mentions) },
+        props: {
+          children: createMentionsComment(children, mentions),
+        },
       };
     }
     return traverseNode(children, mentions);
@@ -128,32 +131,59 @@ export const processMarkdownValue = (
 ) => {
   let htmlValue = md.render(markdownText || '');
   if (preserveNewLines) {
-    const mdValue = markdownText?.replace(/\n {2}\n/g, '<p><br/></p>');
+    const mdValue = markdownText?.replace(/((?:\n[ \t]*){2,})/g, (match) => {
+      const blankLineCount = (match.match(/\n[ \t]*\n/g) || []).length;
+
+      return blankLineCount > 1
+        ? '<p><br/></p>'.repeat(blankLineCount - 1)
+        : '\n';
+    });
     htmlValue = md.render(mdValue || '');
   }
   const nodes = ReactHtmlParser(htmlValue || '');
   return nodes;
 };
 
-function containsHref(node) {
-  if (!node || !node.props) return false;
+const walkAndTransformNode = (node, mentions) => {
+  if (!node) return node;
 
-  if (node.props.href) {
-    return true;
+  if (typeof node === 'string') {
+    return traverseNode(node, mentions);
   }
-  const { children } = node.props;
+
+  if (typeof node !== 'object' || !node.props) {
+    return node;
+  }
+
+  if (node.type === 'a') {
+    return node;
+  }
+
+  const { children } = node?.props;
 
   if (Array.isArray(children)) {
-    return children.some((child) => containsHref(child));
+    return {
+      ...node,
+      props: {
+        ...node.props,
+        children: children.map((child) =>
+          typeof child === 'string'
+            ? traverseNode(child, mentions)
+            : walkAndTransformNode(child, mentions),
+        ),
+      },
+    };
   }
 
-  return containsHref(children);
-}
+  if (typeof children === 'object' && children !== null) {
+    return {
+      ...node,
+      props: {
+        ...node.props,
+        children: walkAndTransformNode(children, mentions),
+      },
+    };
+  }
 
-const hasMultipleChildren = (node) => {
-  if (!node || !node.props) return false;
-
-  const { children } = node.props;
-
-  return typeof children === 'object' && children !== null;
+  return traverseNode(node, mentions);
 };

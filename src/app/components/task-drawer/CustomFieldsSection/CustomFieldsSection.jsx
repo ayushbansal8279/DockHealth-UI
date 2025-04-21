@@ -83,14 +83,14 @@ const CustomFieldsSection = ({ disabled, fieldCategoryType }) => {
   const { 0: emptyVisible, 3: toggleEmptyVisible } = useBoolean(false);
 
   const updateCustomFields = useCallback(
-    ({ taskMetaData }) => {
+    ({ taskMetaData }, fieldType) => {
       if (taskMetaData.length > 0) {
         isWorkflow
-          ? dispatch(updatePartialWorkflow(task?.identifier, { taskMetaData }))
-          : dispatch(partialUpdateTask(task?.identifier, { taskMetaData }));
+          ? dispatch(updatePartialWorkflow(task?.identifier, { taskMetaData: taskMetaData }))
+          : dispatch(partialUpdateTask(task?.identifier, { taskMetaData: taskMetaData }));
       }
     },
-    [dispatch, isWorkflow, task],
+    [dispatch, isWorkflow, task]
   );
 
   const formMethods = useForm();
@@ -124,7 +124,12 @@ const CustomFieldsSection = ({ disabled, fieldCategoryType }) => {
           const hasMissingParts = data.target?.value?.includes('_');
           if (hasMissingParts) return;
         }
-        handleSubmit(compose(updateCustomFields, formatMetaDataOutput))(data);
+        handleSubmit(
+          compose(
+            (formattedData) => updateCustomFields(formattedData, fieldType),
+            (data) => formatMetaDataOutput(data)
+          )
+        )(data);
       }
     },
     [handleSubmit, updateCustomFields],

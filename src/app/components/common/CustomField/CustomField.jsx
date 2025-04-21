@@ -15,7 +15,7 @@ import DateInput from 'components/common/DateInput/DateInput';
 import { useFormContext } from 'react-hook-form';
 import { taskDrawerFocusFieldSelector } from 'selectors/task-drawer-selectors';
 import { useSelector } from 'react-redux';
-import { TaskItemType } from 'helpers/task-helpers';
+import { checkDateTimeIntent, TaskItemType } from 'helpers/task-helpers';
 import { workflowAutofocusFieldSelector } from 'selectors/workflow-drawer-selectors';
 import { Box, Link } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
@@ -207,6 +207,8 @@ const CustomField = ({
         );
       }
       case FieldType.DATE: {
+        const value = watch(fieldName) || '';
+        const dateIntent = checkDateTimeIntent(value);
         return (
           <FormInput
             readOnly={isReadOnly}
@@ -224,6 +226,7 @@ const CustomField = ({
             setError={setError}
             clearErrors={clearErrors}
             required={isRequired}
+            dateIntent={dateIntent}
           />
         );
       }
@@ -388,7 +391,7 @@ const CustomField = ({
 CustomField.propTypes = {
   readOnly: propTypes.bool,
   field: propTypes.object.isRequired,
-  selected: propTypes.bool,
+  selected: propTypes.object,
   initialValue: propTypes.oneOfType([propTypes.string, propTypes.number]),
   onBlur: propTypes.func,
   fieldsGroupKey: propTypes.string.isRequired,

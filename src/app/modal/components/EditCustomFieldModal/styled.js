@@ -85,9 +85,9 @@ export const InfoText = styled.p`
 export const BlueCheckbox = styled(Checkbox)`
   &&& {
     &.MuiCheckbox-root {
-      color: ${palette.brightBlue};
+      color: ${palette.oPlusRed};
       & .checked {
-        color: ${palette.brightBlue};
+        color: ${palette.oPlusRed};
       }
     }
   }

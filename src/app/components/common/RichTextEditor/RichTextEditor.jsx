@@ -19,6 +19,7 @@ import './styles.css';
 import { mapPatientsToSuggestions } from '../TextEditor/helpers';
 import turndownService from './TurndownServiceSingleton';
 import { dateFormatter } from '@/app/helpers/date-formatter';
+import FroalaEditorComponent from 'froala-editor';
 
 const md = new MarkdownIt({
   html: true,
@@ -76,7 +77,7 @@ const toolbarOptions = [
   // 'indent',
   'insertLink',
   // 'lineHeight',
-  '|',
+
   // 'emoticons',
   // 'undo',
   // 'redo',
@@ -105,6 +106,7 @@ const RichTextEditor = ({
   taskListIdentifier,
   mentions,
   disableMentions = false,
+  templatePlaceholders = false,
 }) => {
   const [rawTextState, setRawTextState] = useState(initialValue);
   const [editor, setEditor] = useState(null);
@@ -115,7 +117,14 @@ const RichTextEditor = ({
         return value;
       }
       let mdValue = value.replace(/\\+\*/g, '*');
-      mdValue = mdValue.replace(/\n {2}\n/g, '<p><br/></p>');
+      mdValue = mdValue.replace(/((?:\n[ \t]*){2,})/g, (match) => {
+        const blankLineCount = (match.match(/\n[ \t]*\n/g) || []).length;
+
+        return blankLineCount > 1
+          ? '<p><br/></p>'.repeat(blankLineCount - 1)
+          : '\n';
+      });
+
       const htmlValue = md.render(mdValue || '');
       let processedValue = htmlValue;
       if (mentions && value !== '') {
@@ -272,17 +281,55 @@ const RichTextEditor = ({
     });
   }, []);
 
+  if (
+    !FroalaEditorComponent.COMMANDS ||
+    !FroalaEditorComponent.COMMANDS.placeholders
+  ) {
+    FroalaEditorComponent.DefineIcon('placeholders', {
+      template: 'text',
+      NAME: 'Placeholder',
+    });
+    FroalaEditorComponent.RegisterCommand('placeholders', {
+      title: 'Insert Placeholder',
+      type: 'dropdown',
+      focus: true,
+      options: {
+        '{{patient.name}}': 'Patient Name',
+        '{{patient.firstName}}': 'Patient First Name',
+        '{{patient.lastName}}': 'Patient Last Name',
+        '{{patient.middleName}}': 'Patient Middle Name',
+        '{{patient.dob}}': 'Patient Date of Birth',
+        '{{patient.gender}}': 'Patient Gender',
+        '{{patient.mobilePhone}}': 'Patient Mobile Phone',
+        '{{patient.homePhone}}': 'Patient Home Phone',
+        '{{patient.email}}': 'Patient Email',
+        '{{patient.mrn}}': 'Patient MRN',
+        '{{patient.addressFull}}': 'Patient Full Address',
+        '{{patient.CUSTOM_FIELD_NAME}}': 'Patient Custom Field',
+      },
+      callback: function (cmd, val) {
+        this.html.insert(val);
+      },
+    });
+  }
+
   const config = useMemo(
     () => ({
       key: FROALA_PRODUCT_KEY,
       attribution: false,
       placeholderText: placeholder,
       multiLine: multiline,
-      charCounterCount: false,
+      charCounterCount: showCharCount || !!showToolbar,
+      charCounterMax: characterLimit,
       toolbarInline: showToolbarInline,
       toolbarVisibleWithoutSelection: true,
       heightMax: multiline ? 150 : 500,
-      toolbarButtons: disableToolbar ? [] : toolbarOptions,
+      toolbarButtons: disableToolbar
+        ? []
+        : [
+            ...toolbarOptions,
+            ...(templatePlaceholders ? ['placeholders'] : []),
+          ],
       events: {
         initialized() {
           if (readonly) {
@@ -314,14 +361,22 @@ const RichTextEditor = ({
           if (onBlur) {
             event.preventDefault();
             event.stopPropagation();
-            const markdown = turndownService.turndown(value);
+            const fixedValue = value.replace(
+              /(<span class="fr-deletable fr-tribute"[^>]*>.*?<\/a>)([^<]*)(<\/span>)/g,
+              '$1</span>$2',
+            );
+            const markdown = turndownService.turndown(fixedValue);
             onBlur(markdown);
           }
         },
         contentChanged() {
           const value = this.html.get();
           if (onChange) {
-            const markdown = turndownService.turndown(value);
+            const fixedValue = value.replace(
+              /(<span class="fr-deletable fr-tribute"[^>]*>.*?<\/a>)([^<]*)(<\/span>)/g,
+              '$1</span>$2',
+            );
+            const markdown = turndownService.turndown(fixedValue);
             onChange(markdown);
           }
         },
@@ -334,7 +389,11 @@ const RichTextEditor = ({
               keydownEvent.preventDefault();
               keydownEvent.stopPropagation();
               const value = this.html.get();
-              const markdown = turndownService.turndown(value);
+              const fixedValue = value.replace(
+                /(<span class="fr-deletable fr-tribute"[^>]*>.*?<\/a>)([^<]*)(<\/span>)/g,
+                '$1</span>$2',
+              );
+              const markdown = turndownService.turndown(fixedValue);
               setEditorState('');
               this.html.set('');
               onKeyEnter(markdown);
@@ -393,6 +452,7 @@ const RichTextEditor = ({
       patientsTribute,
       onFocus,
       onKeyEscape,
+      templatePlaceholders,
     ],
   );
 

@@ -1,99 +1,42 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, {
-  // useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Tabs, Grid } from '@mui/material';
-// import compose from 'ramda/src/compose';
-// import equals from 'ramda/src/equals';
 import { useDispatch, useSelector } from 'react-redux';
-// import debounce from 'lodash.debounce';
-import {
-  // useHistory,
-  // useRouteMatch,
-  // Switch,
-  // useLocation,
-  // Redirect,
-  useParams,
-} from 'react-router-dom';
-// import * as PatientDetailsActions from 'actions/patient-details-actions';
+import { useParams } from 'react-router-dom';
 import { initializePusher } from 'helpers/pusher-instance';
-// import { isFetchingPatientsListsSelector } from 'selectors/patients-selectors';
-// import {
-//   availableFiltersInInMegaFilterSelector,
-//   selectedFiltersInMegaFilterSelector,
-//   addQuickFilterOptionSelector,
-//   quickFiltersSelector,
-//   selectedQuickFilterSelector,
-// } from 'selectors/mega-filter-selectors';
 import {
   userProfileSelector,
   selectedUserOrganizationSelector,
 } from 'selectors/user-selectors';
-// import { setPatientTaskSearch } from 'sagas/patient-details-saga';
-// import { onSearchChanged } from 'helpers/ga-event-helper';
-// import { RouteWrapper } from 'routing/components';
-// import MegaFilter from 'components/tasklist/MegaFilter/MegaFilter';
 import * as TaskActions from 'actions/task-actions';
 import LayoutHeader from 'components/template/LayoutHeader/LayoutHeader';
-// import HeaderSearch from 'components/template/HeaderSearch/HeaderSearch';
-// import { getPatientFilterOptions } from 'actions/patient-details-actions';
-// import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
-// import { capitalize } from 'helpers/capitalize';
 import { ColumnsConfigProvider } from 'context-api/columns-config-context';
 import HorizontallyScrolledViewLayout from 'components/template/HorizontallyScrolledViewLayout/HorizontallyScrolledViewLayout';
 import StickyContainer from 'components/common/HorizontalScroll/StickyContainer';
-// import {
-//   showAddQuickFilterOption,
-//   createQuickFilter,
-//   updateQuickFilter,
-//   deleteQuickFilter,
-//   getQuickFilters,
-//   selectQuickFilter,
-// } from 'actions/mega-filter-actions';
-// import ProfileTasksList from 'views/custom-profile-details/ProfileTasksList/ProfileTasksList';
 import ProfileNotes from 'views/custom-profile-details/ProfileNotes/ProfileNotes';
 import ProfileTasksListView from 'views/custom-profile-details/ProfileTasksList/ProfileTasksList';
 import ProfileDetailsHeader from 'views/custom-profile-details/ProfileDetailsHeader/ProfileDetailsHeader';
-// import ProfileWidget from 'views/custom-profile-details/ProfileWidget/ProfileWidget';
-// import { DEFAULT_TAB, DEFAULT_TABS_CONFIG, TABS_CONFIG } from './helpers';
 import {
   ProfileDetailsContainer,
   ProfileDetailsTabsContainer,
   MainTab,
 } from './styled';
+import { getPatientForProfile } from '@/app/api/profile-api';
+import ProfilePatientList from './ProfilePatientList/ProfilePatientList';
 
 const ProfileDetailsView = () => {
   const { profileTypeIdentifier, profileIdentifier } = useParams();
   const { patientIdentifier } = useParams();
-  // const [searchValue, setSearchValue] = useState('');
   const dispatch = useDispatch();
-  // const history = useHistory();
-  // const { path, url } = useRouteMatch();
-  // const { pathname } = useLocation();
   const currentUser = useSelector(userProfileSelector);
   const { userIdentifier: currentUserIdentifier } = currentUser || {};
-  // const isFetchingLists = useSelector(isFetchingPatientsListsSelector);
-  // const filters = useSelector(availableFiltersInInMegaFilterSelector);
-  // const selectedFilters = useSelector(selectedFiltersInMegaFilterSelector);
   const pusher = useRef(initializePusher());
-  // const customerTypeLabel = getCustomerTypeLabel(currentUser);
-  // const quickFiltersList = useSelector(quickFiltersSelector);
-  // const addQuickFilterOption = useSelector(addQuickFilterOptionSelector);
-  // const selectedQuickFilter = useSelector(selectedQuickFilterSelector);
   const [currentTab, setCurrentTab] = useState(0);
   const handleTabChange = (_, value) => {
     setCurrentTab(value);
   };
 
   const currentOrganization = useSelector(selectedUserOrganizationSelector);
-  // const patientNotesDisabled =
-  //   currentOrganization?.disabledFeatures?.includes('PATIENT_NOTES') || false;
-
-  // const embeddedMode = sessionStorage.getItem('EmbeddedMode') || false;
 
   const tabsConfiguration = useMemo(
     () => [
@@ -174,6 +117,14 @@ const ProfileDetailsView = () => {
       }
     };
   }, [currentUserIdentifier, patientIdentifier, dispatch]);
+
+  const [patients, setPatients] = useState([]);
+
+  useEffect(() => {
+    getPatientForProfile(profileIdentifier).then((patients) => {
+      setPatients(patients);
+    });
+  }, []);
 
   // const activeTabPath = useMemo(() => {
   //   // eslint-disable-next-line no-restricted-syntax
@@ -264,81 +215,35 @@ const ProfileDetailsView = () => {
         <LayoutHeader>
           <LayoutHeader.Title title="Custom Profile" />
           <LayoutHeader.Spacer />
-          {/* HERE: */}
-          {/* <HeaderSearch */}
-          {/*   value={searchValue} */}
-          {/*   onChange={handleSearchValueChange} */}
-          {/* /> */}
           <LayoutHeader.Spacer />
-          {/* HERE */}
-          {/* <MegaFilter */}
-          {/*   filters={filters} */}
-          {/*   selectedFilters={selectedFilters} */}
-          {/*   onSelectFilters={handleFilterChange} */}
-          {/*   isFetching={isFetchingLists} */}
-          {/*   onOpen={() => { */}
-          {/*     dispatch(getQuickFilters({ patientIdentifier })); */}
-          {/*     dispatch(getPatientFilterOptions(patientIdentifier)); */}
-          {/*   }} */}
-          {/*   quickFiltersList={quickFiltersList} */}
-          {/*   addQuickFilterOption={addQuickFilterOption} */}
-          {/*   selectedQuickFilter={selectedQuickFilter} */}
-          {/*   selectQuickFilter={handleSelectQuickFilter} */}
-          {/*   onSaveAsNewClick={handleSaveAsQuickFilter} */}
-          {/*   wasChangedFilters={wasChangedFilters} */}
-          {/*   onQuickFilterCreate={handleQuickFilterCreate} */}
-          {/*   onQuickFilterUpdate={handleQuickFilterUpdate} */}
-          {/*   onQuickFilterDelete={handleQuickFilterDelete} */}
-          {/* /> */}
         </LayoutHeader>
       }
     >
       <ColumnsConfigProvider>
         <StickyContainer>
-          <ProfileDetailsHeader
-          // onViewDetailsClick={handleDrawerOpen}
-          />
+          <ProfileDetailsHeader />
           <ProfileDetailsTabsContainer>
             <Grid container>
               <Tabs value={currentTab} onChange={handleTabChange}>
                 <MainTab label="All Tasks" />
                 <MainTab label="Notes" />
+                {patients.length > 0 && <MainTab label="Patients" />}
               </Tabs>
             </Grid>
           </ProfileDetailsTabsContainer>
         </StickyContainer>
         <ProfileDetailsContainer>
-          {/* <Switch> */}
-          {/*   {tabsConfiguration?.map((route) => ( */}
-          {/*     <RouteWrapper */}
-          {/*       allowedToRoles={route.allowedToRoles} */}
-          {/*       key={route.mainPath} */}
-          {/*       path={`${path}/${route.mainPath}${ */}
-          {/*         route.additionalPath ? `/${route.additionalPath}` : '' */}
-          {/*       }`} */}
-          {/*       RouteComponent={ */}
-          {/*         route.type === 'widget' */}
-          {/*           ? () => ( */}
-          {/*               <ProfileWidget */}
-          {/*                 url={route.url} */}
-          {/*                 height={route.height} */}
-          {/*                 width={route.width} */}
-          {/*                 identifier={route.identifier} */}
-          {/*               /> */}
-          {/*             ) */}
-          {/*           : route.RouteComponent */}
-          {/*       } */}
-          {/*       onEnter={route.onEnter} */}
-          {/*       exact={route.exact} */}
-          {/*     /> */}
-          {/*   ))} */}
-          {/*   <Redirect to={`${path}/${DEFAULT_TAB.mainPath}`} /> */}
-          {/* </Switch> */}
           {currentTab === 0 && (
             <ProfileTasksListView profileIdentifier={profileIdentifier} />
           )}
           {currentTab === 1 && (
             <ProfileNotes profileIdentifier={profileIdentifier} />
+          )}
+          {currentTab === 2 && (
+            <ProfilePatientList
+              profileIdentifier={profileIdentifier}
+              patients={patients}
+            />
           )}
         </ProfileDetailsContainer>
       </ColumnsConfigProvider>

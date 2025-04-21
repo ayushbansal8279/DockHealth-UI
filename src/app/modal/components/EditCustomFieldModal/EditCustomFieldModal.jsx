@@ -10,7 +10,7 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { string, object, array } from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import partial from 'ramda/src/partial';
-import { Box, Grid, IconButton } from '@mui/material';
+import { Box, Dialog, Grid, IconButton } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useDispatch } from 'react-redux';
 import { showGlobalErrorAlert } from 'alert/actions';
@@ -43,6 +43,9 @@ import {
   SelectParentDropdown,
   SelectParentOption,
 } from '../../customModals/styled';
+import { CancelButton, ConfirmButton } from '../ModalButton/ModalButtons';
+import ImportDataModal from '../ImportDataModal/ImportDataModal';
+import { downloadCustomFieldImportTemplate, uploadCustomFieldOptions } from '@/app/api/custom-fields-api';
 
 const REQUIRED_MESSAGE = 'This field is required';
 
@@ -55,6 +58,7 @@ const EditCustomFieldModal = ({
   taskListIdentifier,
   profileTypeIdentifier,
   fetchUserCustomFields,
+  fieldCategoryDisabled = false,
 }) => {
   const [displayOptionsState, setDisplayOptionsState] = useState({
     displayOptions: customField?.displayOptions || [],
@@ -65,18 +69,24 @@ const EditCustomFieldModal = ({
       let updatedOptions = displayOptionsState?.displayOptions || [];
 
       if (value) {
-        const isRequired = displayOption.endsWith('_REQUIRED')
+        const isRequired = displayOption.endsWith('_REQUIRED');
         if (displayOption === 'READONLY' || displayOption === 'HIDDEN') {
-          updatedOptions = updatedOptions.filter((item) => !item.endsWith('_REQUIRED'));
+          updatedOptions = updatedOptions.filter(
+            (item) => !item.endsWith('_REQUIRED'),
+          );
         }
         if (isRequired) {
-          updatedOptions = updatedOptions.filter((item) => item !== 'READONLY' && item !== 'HIDDEN');
+          updatedOptions = updatedOptions.filter(
+            (item) => item !== 'READONLY' && item !== 'HIDDEN',
+          );
         }
         if (!updatedOptions.includes(displayOption)) {
           updatedOptions.push(displayOption);
         }
       } else {
-        updatedOptions = updatedOptions.filter((item) => item !== displayOption);
+        updatedOptions = updatedOptions.filter(
+          (item) => item !== displayOption,
+        );
       }
       setDisplayOptionsState((s) => ({
         ...s,
@@ -146,6 +156,7 @@ const EditCustomFieldModal = ({
     formMethods;
 
   const [customFields, setCustomFields] = useState([]);
+  const [importPopupOpen, setImportPopupOpen] = useState(false);
 
   useEffect(() => {
     getAllTaskListCustomFields(taskListIdentifier ? 'ALL' : null).then(
@@ -391,6 +402,25 @@ const EditCustomFieldModal = ({
     }
   };
 
+  const handleImportModalClose = () => {
+    setImportPopupOpen(false);
+    fetchUserCustomFields();
+    closeModal();
+  };  
+
+  const inputStyle = {
+    '& .MuiOutlinedInput-root': {
+      borderRadius: '10px',
+      '&.Mui-focused fieldset': {
+        borderColor: 'black',
+        borderWidth: '1px',
+      },
+    },
+    '& .MuiInputLabel-root.Mui-focused': {
+      color: 'grey',
+    },
+  };
+
   return (
     <AddPatientFieldModalWrapper>
       <CloseIconButton onClick={closeModal} size="small" color="secondary">
@@ -411,8 +441,10 @@ const EditCustomFieldModal = ({
               <FormScrollingContainer>
                 <Box overflow="hidden">
                   <Grid container spacing={2}>
-                    <Grid item xs={12}>
+                    <Grid item mt={1} xs={15}>
                       <FormInput
+                        variant="outlined"
+                        sx={inputStyle}
                         required
                         autoFocus
                         name="name"
@@ -423,6 +455,8 @@ const EditCustomFieldModal = ({
                       fieldTypeValue !== FieldType.HYPERLINK && (
                         <Grid item xs={12}>
                           <FormInput
+                            variant="outlined"
+                            sx={inputStyle}
                             name="placeholder"
                             label="Field label placeholder"
                           />
@@ -432,16 +466,19 @@ const EditCustomFieldModal = ({
                       <FormSelect
                         readOnly={!!customField}
                         required
-                        label="Field type"
+                        variant="outlined"
                         name="fieldType"
+                        label="Field type"
                         options={FIELD_TYPE_OPTIONS}
                       />
                     </Grid>
                     {type === 'PATIENT' && (
                       <Grid item xs={6}>
                         <FormSelect
+                          variant="outlined"
                           required
-                          label="Category"
+                          disabled={fieldCategoryDisabled}
+                          label="Field Category Type"
                           name="fieldCategoryType"
                           options={CATEGORY_OPTIONS}
                         />
@@ -596,6 +633,17 @@ const EditCustomFieldModal = ({
                         >
                           <span style={{ color: 'orange' }}>+</span> Add option
                         </Button>
+                        {
+                          !isCreatingNewField && (
+                            <Button
+                              variant="text"
+                              width="auto"
+                              onClick={() => setImportPopupOpen(true)}
+                            >
+                              <span style={{ color: 'orange' }}>+</span> Add options using File 
+                            </Button>
+                          )
+                        }
                       </>
                     )}
                   </Grid>
@@ -608,17 +656,41 @@ const EditCustomFieldModal = ({
               </FormScrollingContainer>
               <Box m={2} />
               <Grid container justifyContent="flex-end">
-                <Button width="auto" variant="secondary" onClick={closeModal}>
+                <CancelButton
+                  width="auto"
+                  variant="secondary"
+                  onClick={closeModal}
+                >
                   Cancel
-                </Button>
+                </CancelButton>
                 <Box m={1} />
-                <Button type="submit" width="auto" disabled={isSaving}>
+                <ConfirmButton type="submit" width="auto" disabled={isSaving}>
                   Save custom field
-                </Button>
+                </ConfirmButton>
               </Grid>
             </FieldForm>
           </FormProvider>
         )}
+        <Dialog
+          open={importPopupOpen}
+          onClose={() => setImportPopupOpen(false)}
+          style={{ zIndex: 5001 }}
+          PaperProps={{
+            elevation: 0,
+            square: true,
+            style: {}
+          }}
+        >
+          <ImportDataModal
+            closeModal={handleImportModalClose}
+            downloadTemplate={downloadCustomFieldImportTemplate}
+            step={1}
+            label="option"
+            uploadFunction={uploadCustomFieldOptions}
+            identifier={customField?.identifier}
+            type={type}
+          />
+        </Dialog>
       </Box>
     </AddPatientFieldModalWrapper>
   );

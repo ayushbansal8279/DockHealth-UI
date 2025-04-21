@@ -25,7 +25,8 @@ const ImportDataModal = ({
   uploadFunction,
   label,
   identifier,
-  setImportResponse
+  setImportResponse,
+  type,
 }) => {
   const inputFileReference = useRef(null);
   const [modalStep, setModalStep] = useState(step);
@@ -34,24 +35,19 @@ const ImportDataModal = ({
     (file) => {
       uploadFunction(
         file,
-        {
-          onUploadProgress: () => {
-            closeModal();
-          },
-        },
-        identifier
+        { onUploadProgress: closeModal },
+        identifier,
+        type
       )
         .then((response) => {
-          if (setImportResponse) {
-            setImportResponse(response);
-          }
+          setImportResponse?.(response);
         })
         .catch((error) => {
-          setImportResponse(null);
           console.error("File upload failed:", error);
+          setImportResponse?.(null);
         })
         .finally(() => {
-          setImportPopoverOpen(true);
+          setImportPopoverOpen?.(true);
         });
     },
     [closeModal, uploadFunction, identifier, setImportPopoverOpen]

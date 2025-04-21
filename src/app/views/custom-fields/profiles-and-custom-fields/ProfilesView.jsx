@@ -14,6 +14,7 @@ import { openModal, closeModal } from 'modal/actions';
 import { checkIfUserIsOrganizationAdmin } from 'helpers/user-helper';
 import {
   userHasCustomProfilesFeatureSelector,
+  userHasProfileBuilderFeatureSelector,
   userProfileSelector,
 } from 'selectors/user-selectors';
 import { StyledDataGrid } from './DataGridStyles';
@@ -39,6 +40,10 @@ const ProfilesAndCustomFieldsView = () => {
 
   const userHasCustomProfilesAvailable = useSelector(
     userHasCustomProfilesFeatureSelector,
+  );
+
+  const profileBuilderFeatureAvailable = useSelector(
+    userHasProfileBuilderFeatureSelector,
   );
 
   useEffect(() => {
@@ -90,6 +95,19 @@ const ProfilesAndCustomFieldsView = () => {
     [history],
   );
 
+  const onOpenProfileBuilder = useCallback(
+    ({ row: { name, identifier } }) => {
+      if (name.toLowerCase() === 'patients') {
+        history.push(`/settings/profile-builder/${name.toLowerCase()}`);
+        return;
+      }
+      history.push(
+        `/settings/profile-builder/profiles/${identifier}`,
+      );
+    },
+    [history],
+  );
+
   const onDeleteProfile = useCallback(
     ({ id }) => {
       const modalProps = {
@@ -113,8 +131,15 @@ const ProfilesAndCustomFieldsView = () => {
         onEditProfile,
         onDeleteProfile,
         onConfigureCustomFields,
+        onOpenProfileBuilder,
+        profileBuilderFeatureAvailable,
       }),
-    [onDeleteProfile, onEditProfile, onConfigureCustomFields],
+    [
+      onDeleteProfile,
+      onEditProfile,
+      onConfigureCustomFields,
+      onOpenProfileBuilder,
+    ],
   );
 
   let profileOptions = [

@@ -1,4 +1,5 @@
 import * as ActionTypes from 'actions/action-types';
+import { transformPatientDetails } from '../helpers/patient-details-helpers';
 
 export function initializePatientState(patientIdentifier) {
   return {
@@ -61,10 +62,13 @@ export const updatePatientNote = (patientNoteIdentifier, note) => ({
   payload: { patientNoteIdentifier, note },
 });
 
-export const updatePatientDetails = (patientIdentifier, details) => ({
-  type: ActionTypes.UPDATE_PATIENT_DETAILS,
-  payload: { patientIdentifier, details },
-});
+export const updatePatientDetails = (patientIdentifier, details) => {
+  const transformedDetails = transformPatientDetails(details);
+  return {
+    type: ActionTypes.UPDATE_PATIENT_DETAILS,
+    payload: { patientIdentifier, details: transformedDetails },
+  }
+};
 
 export const addPatientNote = (note) => ({
   type: ActionTypes.ADD_PATIENT_NOTE,

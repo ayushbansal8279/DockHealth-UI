@@ -18,12 +18,11 @@ import PatientForm from 'components/patients/PatientForm/PatientForm';
 import { validationSchema } from 'components/patients/PatientForm/helpers';
 import PatientDrawer from 'components/patients/PatientDrawer/PatientDrawer';
 
+
 const onSubmit =
   ({ onClose, onPatientCreated, uniqueIdentifierLabel }) =>
   (data) => {
-    const patientApiMethod = PatientApi.addPatient(data);
-
-    patientApiMethod
+    PatientApi.addPatient(data)
       .then((response) => {
         onPatientAddedEvent();
         if (typeof onPatientCreated === 'function') {

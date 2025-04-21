@@ -20,6 +20,7 @@ const TaskItemMembers = ({
   matchAssignedTo,
   readOnly,
   additionalUsers,
+  maxIconDisplay
 }) => {
   const assigneeRef = useRef(null);
   return (
@@ -54,7 +55,7 @@ const TaskItemMembers = ({
               {matchAssignedTo && (
                 <AssigneeMatchingWrapper matched={matchAssignedTo} />
               )}
-              <MemberGroup members={assignedToUsers} size={28} />
+              <MemberGroup members={assignedToUsers} size={28} max={maxIconDisplay} />
             </>
           ) : (
             <>
