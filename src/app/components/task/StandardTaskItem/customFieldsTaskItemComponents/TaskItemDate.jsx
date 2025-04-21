@@ -7,11 +7,13 @@ import DateLabel from 'components/common/DateLabel/DateLabel';
 import moment from 'moment';
 import { DateWrapper, DateIconWrapper } from './styled';
 import { DueDateIntent } from '@/app/helpers/task-helpers';
+import { convertForIntent } from '@/app/helpers/date-intent-helpers';
 
 const TaskItemDate = ({ value, onChange, readOnly = false, dateTimeIntent }) => {
   const handleDateChange = useCallback(
     (newDate) => {
-      onChange(newDate);
+      const date = convertForIntent(newDate);
+      onChange(date);
     },
     [onChange],
   );

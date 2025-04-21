@@ -75,8 +75,10 @@ const TaskItemCustomField = ({
             value: newValue,
           });
         }
+
+
         const patientIdentifier = task?.patient?.patientIdentifier;
-        dispatch(updatePatientDetails(patientIdentifier, { patientMetaData }));
+        dispatch(updatePatientDetails(patientIdentifier, { patientMetaData: patientMetaData }));
       }
     } else {
       const taskMetaData =
