@@ -42,11 +42,14 @@ import {
   ContactContainer,
   PatientMRNAnchor,
   AISummaryWrapper,
+  ActivityHistoryButton,
+  ActivityHistoryButtonContainer,
 } from './styled';
 import AISummaryModalOpenerHelper from '@/app/modal/components/AISummaryModal/AISummaryModalOpenerHelper';
 import { SummaryType } from '@/app/helpers/ai-helper';
 import PatientMetaDataField from './PatientMetaDataField';
 import ProfileDetailsDrawer from '../../profile-details/ProfileDetailsDrawer/ProfileDetailsDrawer';
+import PatientActivityHistoryDrawer from '@/app/components/patients/PatientActivityHistoryDrawer/PatientActivityHistoryDrawer';
 
 const { DISABLED } = TASK_LIST_RESTRICTIONS_OPTIONS;
 
@@ -57,6 +60,7 @@ const PatientDetailsHeader = () => {
   const [isDrawerOpen, setIsDrawerOpen, unsetIsDrawerOpen] = useBoolean(false);
   const [isProfileOpen, setIsProfileOpen, unsetIsProfileOpen] =
     useBoolean(false);
+  const [isactivityHistoryDrawerOpen,setIsactivityHistoryDrawerOpen, unsetIsactivityHistoryDrawerOpen] = useBoolean(false);
   const patient = useSelector(patientSelector);
   const {
     firstName,
@@ -169,6 +173,9 @@ const PatientDetailsHeader = () => {
               </Grid>
             </Box>
             <ContactContainer>
+                <ActivityHistoryButtonContainer>
+                  <ActivityHistoryButton onClick={setIsactivityHistoryDrawerOpen}>Activity History</ActivityHistoryButton>
+                </ActivityHistoryButtonContainer>
               {email && (
                 <Tooltip title={email} placement="bottom">
                   <IconWrapper href={`mailto:${email}`}>
@@ -311,6 +318,12 @@ const PatientDetailsHeader = () => {
             isOpenedDetails={isProfileOpen}
             closeDrawer={unsetIsProfileOpen}
             context={'PATIENT'}
+          />
+           <PatientActivityHistoryDrawer
+            patient={patient}
+            title="Activity History"
+            isOpen={isactivityHistoryDrawerOpen}
+            onClose={unsetIsactivityHistoryDrawerOpen}
           />
         </>
       )}

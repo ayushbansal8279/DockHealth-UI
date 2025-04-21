@@ -3,6 +3,7 @@ import spacing from 'styles/spacing';
 import { fontSizes, fontWeights } from 'styles/font';
 import palette, { typography } from 'styles/palette';
 import Button from '@mui/material/Button';
+import { Typography } from '@mui/material';
 
 export const ButtonContainer = styled(Button)``;
 export const IconWrapper = styled.a`
@@ -101,4 +102,38 @@ export const ArrowBoxIndicator = styled.div`
 export const AISummaryWrapper = styled.div`
   cursor: pointer;
   margin-left: 20px;
+`;
+
+export const ActivityHistoryButton = styled(Typography)`
+  &&& {
+    &.MuiTypography-root {
+      font-family: Outfit;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 11.19px;
+      text-align: center;
+      color: ${palette.white};
+      text-transform: none;
+    }
+  }
+`;
+
+export const ActivityHistoryButtonContainer = styled(Button)`
+  @media print {
+    display: none;
+  }
+  && {
+    border-radius: 2;
+    background-color: ${palette.newDarkBlue};
+    border-right: 1px solid ${palette.white};
+    z-index: 11;
+    :hover {
+      background-color: ${(props) =>
+        props.active ? palette.cornFlowerBlue : palette.purpleNavy};
+    }
+  }
+  & .MuiSvgIcon-root > path {
+    fill: ${palette.white};
+  }
+  height: 32px;
 `;
