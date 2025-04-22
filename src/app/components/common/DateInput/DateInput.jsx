@@ -10,6 +10,7 @@ import { useBoolean } from 'hooks/useBoolean';
 import DatePicker from '../../task/DatePicker/DatePicker';
 import { DEFAULT_DATE_FORMAT, DEFAULT_DATE_TIME_FORMAT, getMomenDateFromString } from './helpers';
 import { DueDateIntent } from '@/app/helpers/task-helpers';
+import { convertForIntent } from '@/app/helpers/date-intent-helpers';
 
 const CustomDateInput = ({ inputRef, ...otherProps }) => (
   <InputMask
@@ -126,7 +127,7 @@ const DateInput = React.forwardRef(
     };
 
     const handleDatepickerChange = (isoDate) => {
-      const date = moment(isoDate).toISOString();
+      const date = convertForIntent(isoDate);
       handleChange({ target: { value: date } });
       handleBlur({ target: { value: date } });
       setTimeout(() => {
@@ -182,7 +183,7 @@ const DateInput = React.forwardRef(
             </Box>
           }
           {...otherProps}
-          customInputComponent={isTime ? CustomDateTimeInput : CustomDateInput} //update this to also include 00:00?
+          customInputComponent={isTime ? CustomDateTimeInput : CustomDateInput}
         />
         <Popover
           anchorOrigin={{
@@ -204,6 +205,7 @@ const DateInput = React.forwardRef(
             }
             onDateChange={handleDatepickerChange}
             showTime={isTime}
+            onCloseClick={handleClose}
           />
         </Popover>
       </>

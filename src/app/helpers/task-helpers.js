@@ -13,6 +13,7 @@ import isNil from 'ramda/src/isNil';
 import unless from 'ramda/src/unless';
 
 import palette from 'styles/palette';
+import { transformMetaData } from './date-intent-helpers';
 
 export const TaskStatus = {
   ALL: '',
@@ -682,3 +683,13 @@ export const validateAssigneeCompleteDisabled = (
     !isCreator
   );
 };
+
+export const transformTaskMetadata = (data) => {
+  if (!data?.taskMetaData || !Array.isArray(data.taskMetaData)) return data;
+
+  return {
+    ...data,
+    taskMetaData: transformMetaData(data.taskMetaData),
+  };
+};
+

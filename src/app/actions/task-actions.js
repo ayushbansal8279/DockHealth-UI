@@ -5,13 +5,9 @@ import { getTasksGroupsList } from 'actions/list-details-actions';
 import { openDrawer } from 'actions/task-drawer-actions';
 import { TASK_DISAPPEAR_DELAY } from 'helpers/task-update-helper';
 import * as ListDetailsApi from 'api/list-details-api';
-import { CommunicationType, TaskItemType } from 'helpers/task-helpers';
+import { CommunicationType, TaskItemType, transformTaskMetadata } from 'helpers/task-helpers';
 import * as ActionTypes from './action-types';
 import AlertMessages from '../alert/AlertMessages';
-import {
-  determineDateTimeIntent,
-  determineDateValueFromIntent,
-} from '@/app/helpers/date-intent-helpers';
 
 export function storeAsCurrentTask(task) {
   return (dispatch) => {
@@ -180,29 +176,8 @@ export function saveTask(newTask, shouldReloadGroups = false) {
   };
 }
 
-const transformMetadata = (data) => {
-  if (!data?.taskMetaData || !Array.isArray(data.taskMetaData)) return data;
-
-  const transformedTaskMetaData = data.taskMetaData.map((item) => {
-    const dateTimeIntent = determineDateTimeIntent(item.value);
-    if (dateTimeIntent) {
-      return {
-        ...item,
-        dateTimeIntent,
-        value: determineDateValueFromIntent(item.value, dateTimeIntent),
-      };
-    }
-    return item;
-  });
-
-  return {
-    ...data,
-    taskMetaData: transformedTaskMetaData,
-  };
-};
-
 export function partialUpdateTask(taskIdentifier, dataToUpdate) {
-  const transformedDataToUpdate = transformMetadata(dataToUpdate);
+  const transformedDataToUpdate = transformTaskMetadata(dataToUpdate);
 
   return (dispatch) => {
     dispatch({
