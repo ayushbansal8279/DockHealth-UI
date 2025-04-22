@@ -659,6 +659,31 @@ export function findIncompleteRequiredFields(customFields, task, taskBundle) {
   return incompleteCustomFields;
 }
 
+export const validateAssigneeCompleteDisabled = (
+  selectedOrganization,
+  selectedTask,
+  currentUser,
+  isListAdmin,
+  isCreator,
+) => {
+  const nonAssigneeCompleteDisabledItem =
+    selectedOrganization?.themeSettings?.find(
+      ({ name }) => name === 'list.tasks.non-assignee.complete.enabled',
+    ) || {};
+  return (
+    nonAssigneeCompleteDisabledItem &&
+    nonAssigneeCompleteDisabledItem?.value === 'false' &&
+    selectedTask?.assignedToUsers?.filter((user) =>
+      user.itemType === 'USER'
+        ? user.identifier === currentUser.identifier
+        : user?.users?.filter((u) => u.identifier === currentUser.identifier)
+            .length !== 0,
+    ).length === 0 &&
+    !isListAdmin &&
+    !isCreator
+  );
+};
+
 export const transformTaskMetadata = (data) => {
   if (!data?.taskMetaData || !Array.isArray(data.taskMetaData)) return data;
 
@@ -667,3 +692,4 @@ export const transformTaskMetadata = (data) => {
     taskMetaData: transformMetaData(data.taskMetaData),
   };
 };
+
