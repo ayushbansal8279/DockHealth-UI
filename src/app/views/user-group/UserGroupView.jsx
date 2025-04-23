@@ -44,8 +44,8 @@ import {
 } from './styled';
 import { UserEditContext, UserEditProvider } from '@/app/context-api/user-edit-context';
 import TaskTemplateApplicator from '@/app/components/task-template/TaskTemplateApplicator/TaskTemplateApplicator';
-import BulkEditCreateTask from '../self-serve/users/BulkEditSection/BulkEditCreateTask';
-import BulkEditSection from '../self-serve/users/BulkEditSection/BulkEditSection';
+import BulkEditCreateTask from '../../components/user/BulkEditSection/BulkEditCreateTask';
+import BulkEditSection from '../../components/user/BulkEditSection/BulkEditSection';
 import * as UsersActions from 'actions/user-actions';
 import { getTaskListForUser } from '@/app/api/task-list-api';
 
