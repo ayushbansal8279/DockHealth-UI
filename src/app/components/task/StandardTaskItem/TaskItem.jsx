@@ -123,6 +123,8 @@ import {
   ChildTaskTitle,
   ParentTaskLink,
   WorkflowTitle,
+  DragPreviewWrapper,
+  DragPreviewText,
 } from '../styled';
 import TaskItemText from './customFieldsTaskItemComponents/TaskItemText/TaskItemText';
 import TaskItemDropdown from './customFieldsTaskItemComponents/TaskItemDropdown/TaskItemDropdown';
@@ -186,6 +188,7 @@ const TaskItem = React.memo(
     isNextVirtualTaskItemTypeBundle,
     isLastTaskOfGroup,
     viewType,
+    isDragPreview,
   }) => {
     const dependencyIconReference = useRef(null);
     const task = useSelector((state) => {
@@ -852,6 +855,22 @@ const TaskItem = React.memo(
       }
     };
 
+    if (isDragPreview) {
+      return (
+        <DragPreviewWrapper
+          isBundleOrSubtask={
+            task?.itemType === TaskItemType.BUNDLE || !!task?.subTaskSortIndex
+          }
+        >
+          <DragPreviewText>
+            {task?.itemType === TaskItemType.BUNDLE
+              ? task?.name
+              : task?.description}
+          </DragPreviewText>
+        </DragPreviewWrapper>
+      );
+    }
+
     const randerFirstColumnCoverIfNecessary = useCallback(
       (content, order, width) => {
         if (order !== 0) return content;
@@ -886,12 +905,15 @@ const TaskItem = React.memo(
             isSortApplied={!!sort.key}
             width={width + 25 + 56}
             isTaskOfTemplate={!!workflowTaskGroup}
+            isDragActive={!!active && active?.id === taskIdentifier}
           >
             {taskListRestrictions?.createTask !== DISABLED && (
-              <DotsContainer
-                showDraggableDots
-                dragHandleProps={dragHandleProps}
-              />
+              <div {...attributes} {...listeners}>
+                <DotsContainer
+                  showDraggableDots
+                  dragHandleProps={dragHandleProps}
+                />
+              </div>
             )}
             {showPriority && (
               <PriorityIndicator color={getPriorityColor(task?.priority)} />
@@ -1034,18 +1056,6 @@ const TaskItem = React.memo(
             setNodeRef(node);
             setDroppableRef(node);
           }}
-          style={{
-            transform: CSS.Transform?.toString(transform),
-            zIndex: !!active && active?.id === taskIdentifier ? 1000 : 'auto',
-            position:
-              !!active && active?.id === taskIdentifier ? 'relative' : '',
-            transition:
-              !!active && active?.id === taskIdentifier
-                ? 'none'
-                : 'transform 300ms ease',
-          }}
-          {...attributes}
-          {...listeners}
         >
           <StandardTaskItemContainer
             isTaskTemplate={isTaskTemplate}

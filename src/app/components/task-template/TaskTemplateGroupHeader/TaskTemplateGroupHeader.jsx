@@ -585,15 +585,18 @@ const TaskTemplateGroupHeader = ({
           order={0}
           width={width + 25 + 56}
           origin={origin}
+          isDragActive={!!active && active?.id === identifier}
         >
           {!groupDragAndDropDisabled &&
             !bulkEditIsActive &&
             taskListRestrictions?.completeTask !== DISABLED && (
-              <TemplateHandle
-                src={ThreeDotsIcon}
-                alt="Handle"
-                {...dragHandleProps}
-              />
+              <div {...attributes} {...listeners}>
+                <TemplateHandle
+                  src={ThreeDotsIcon}
+                  alt="Handle"
+                  {...dragHandleProps}
+                />
+              </div>
             )}
           <ActionIconsContainer isOpen={!isVirtualListWorkflowOpen}>
             {taskListRestrictions?.completeTask !== DISABLED &&
@@ -673,17 +676,6 @@ const TaskTemplateGroupHeader = ({
           setNodeRef(node);
           setDroppableRef(node);
         }}
-        style={{
-          transform: CSS.Transform?.toString(transform),
-          zIndex: !!active && active?.id === identifier ? 1000 : 'auto',
-          position: !!active && active?.id === identifier ? 'relative' : '',
-          transition:
-            !!active && active?.id === identifier
-              ? 'none'
-              : 'transform 300ms ease',
-        }}
-        {...attributes}
-        {...listeners}
         isDraggedOver={isOver && active?.id !== identifier}
         isDragActive={!!active && active?.id === identifier}
       >

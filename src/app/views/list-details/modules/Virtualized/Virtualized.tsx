@@ -116,18 +116,19 @@ function Virtualized({
                   },
                 }),
               );
+            } else {
+              dispatch(
+                reorderTasksInGroup({
+                  destination: {
+                    index: destinationOffsetIndexTask,
+                    droppableId: destination?.parent?.id,
+                  },
+                  source: {
+                    index: sourceOffsetIndexTask,
+                  },
+                }),
+              );
             }
-            dispatch(
-              reorderTasksInGroup({
-                destination: {
-                  index: destinationOffsetIndexTask,
-                  droppableId: destination?.parent?.id,
-                },
-                source: {
-                  index: sourceOffsetIndexTask,
-                },
-              }),
-            );
             break;
           }
           case 'Subtask': {
@@ -258,7 +259,7 @@ const walk = (
 const Placeholder = ({ id }: any) => {
   return (
     // @ts-ignore
-    <StandardTaskItem taskIdentifier={id} />
+    <StandardTaskItem taskIdentifier={id} isDragPreview />
   );
 };
 
