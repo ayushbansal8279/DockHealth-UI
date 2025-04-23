@@ -7,7 +7,7 @@ import { Link, useParams, useLocation, useHistory } from 'react-router-dom';
 import { USERS_SETTINGS_PATH } from 'routing/helpers/paths';
 import { useBoolean } from 'hooks/useBoolean';
 import { getCurrentUserGroupDetailsSelector } from 'selectors/user-groups-selectors';
-import { userProfileSelector } from 'selectors/user-selectors';
+import { selectedUserOrganizationSelector, userProfileSelector } from 'selectors/user-selectors';
 import { getUserGroupIdentifierByUrlParameter } from 'helpers/user-groups-helper';
 import {
   checkIfUserIsOrganizationAdmin,
@@ -56,16 +56,22 @@ function UserGroupView() {
 
   const { groupIdentifier: groupIdentifierUrlParameter } = useParams();
   const history = useHistory();
+  const dispatch = useDispatch();
   const { search } = useLocation();
   const currentUser = useSelector(userProfileSelector);
   const { users, name } = useSelector(getCurrentUserGroupDetailsSelector) || {};
-  const dispatch = useDispatch();
+  const currentOrganization = useSelector(selectedUserOrganizationSelector);
 
   const groupIdentifier = getUserGroupIdentifierByUrlParameter(
     groupIdentifierUrlParameter,
   );
   const isOrganizationAdmin = checkIfUserIsOrganizationAdmin(currentUser);
   const isViewOnly = isUserViewOnly(currentUser);
+
+  const iconColorActiveItem =
+    currentOrganization?.themeSettings?.find(
+      ({ name }) => name === 'icon.active.color',
+    ) || {};
 
   const userContext = useContext(UserEditContext);
   const {
@@ -117,14 +123,6 @@ function UserGroupView() {
     );
   }, [dispatch, groupIdentifier]);
 
-  
-  // even needed?
-  // const currentOrganization = useSelector(selectedUserOrganizationSelector);
-  // const iconColorActiveItem =
-  //   currentOrganization?.themeSettings?.find(
-  //     ({ name }) => name === 'icon.active.color',
-  //   ) || {};
-
   // helper? together with task one!?
   const handleTemplateSelect = useCallback(
     (template) => {
@@ -132,7 +130,7 @@ function UserGroupView() {
       dispatch(
         openModal('ListPicker', {
           enableSelectingGroupStep: true,
-          fetchMethod: getTaskListForUser, // direct api? or action
+          fetchMethod: getTaskListForUser,
           confirm: (listId, taskGroupIdentifier) =>
             dispatch(
               UsersActions.userBulkCreateWorkflow({
@@ -229,7 +227,7 @@ function UserGroupView() {
         <BulkEditSectionContainer>
           {createTaskOption && (
             <BulkEditCreateTask
-              // iconColorActive={iconColorActiveItem?.value}
+              iconColorActive={iconColorActiveItem?.value}
               context={UserEditContext}
               createTaskAction={UsersActions.userBulkCreateTask}
             />
@@ -239,7 +237,7 @@ function UserGroupView() {
               <TaskTemplateApplicator
                 onTemplateSelect={handleTemplateSelect}
                 bulkApply
-                // iconColorActive={iconColorActiveItem?.value}
+                iconColorActive={iconColorActiveItem?.value}
               />
             </TaskTemplateApplicatorContainer>
           )}
