@@ -1,5 +1,8 @@
 import React from 'react';
 import { Container, TasksText, CloseButton, CloseIcon } from './styled';
+import { useSelector } from 'react-redux';
+import { getCustomerTypeLabel } from '@/app/helpers/customer-type-helper';
+import { userProfileSelector } from '@/app/selectors/user-selectors';
 
 const BulkEditBar = (props) => {
   const {
@@ -11,9 +14,12 @@ const BulkEditBar = (props) => {
     includedWorkflow,
   } = props;
 
+  const currentUser = useSelector(userProfileSelector); 
+  const customerTypeLabel = getCustomerTypeLabel(currentUser);
+
   const getLabel = () => {
     if (viewType === 'user') return 'User';
-    if (viewType === 'patient') return 'Patient';
+    if (viewType === 'patient') return customerTypeLabel.charAt(0).toUpperCase() + customerTypeLabel.slice(1);
     if (viewType === 'task') return `Task${includedWorkflow ? '/Workflow' : ''}`;
     return '';
   };
