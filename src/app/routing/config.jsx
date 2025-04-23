@@ -12,7 +12,7 @@ import {
   onLeaveListDetailsView,
 } from './TemplateCoreSubscriptionPlan/ListDetails';
 
-const UsersView = lazy(() => import('views/self-serve/users/UsersViewWrapper'));
+const UsersView = lazy(() => import('views/self-serve/users/UsersView'));
 const Contacts = lazy(() => import('views/Contacts/Contacts'));
 const Templates = lazy(() => import('views/Templates/Templates'));
 const SingleTaskView = lazy(() => import('views/single-task/SingleTaskView'));
@@ -51,7 +51,7 @@ const MeterBillingView = lazy(() =>
 const PersonDetailsView = lazy(() =>
   import('views/person-details/PersonDetailsView'),
 );
-const UserGroupView = lazy(() => import('views/user-group/UserGroupView'));
+const UserGroupView = lazy(() => import('views/user-group/UserGroupViewWrapper'));
 const PatientDetailsView = lazy(() =>
   import('views/patient-details/PatientDetailsView'),
 );

@@ -168,3 +168,20 @@ export const PeopleCell = styled.div`
   display: flex;
   cursor: pointer;
 `;
+
+export const BulkContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: ${({ visible }) => (visible ? '1' : '0.5')};
+  &:hover {
+    opacity: 1;
+  }
+`;
+
+export const TaskTemplateApplicatorContainer = styled.div`
+  margin-bottom: 60px;
+  justify-content: center;
+  display: flex;
+  padding-top: 10px;
+`;
