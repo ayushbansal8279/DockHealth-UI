@@ -123,7 +123,6 @@ function UserGroupView() {
     );
   }, [dispatch, groupIdentifier]);
 
-  // helper? together with task one!?
   const handleTemplateSelect = useCallback(
     (template) => {
       const assignedEntities = selectableUsers?.filter(item => item.isSelected).map(item => item.identifier);
