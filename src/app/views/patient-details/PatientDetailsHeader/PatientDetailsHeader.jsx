@@ -100,7 +100,7 @@ const PatientDetailsHeader = () => {
   const profileBuilderFeatureAvailable = useSelector(
     userHasProfileBuilderFeatureSelector,
   );
-  const PatientTimelineFeatureAvailable = useSelector(
+  const patientTimelineFeatureAvailable = useSelector(
     userHasPatientTimelineFeatureSelector,
   );
 
@@ -180,7 +180,7 @@ const PatientDetailsHeader = () => {
               </Grid>
             </Box>
             <ContactContainer>
-              {PatientTimelineFeatureAvailable && (
+              {patientTimelineFeatureAvailable && (
                 <ActivityHistoryButton onClick={setIsactivityHistoryDrawerOpen}>
                   <ActivityHistoryText>Timeline</ActivityHistoryText>
                 </ActivityHistoryButton>
