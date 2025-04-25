@@ -20,7 +20,8 @@ const TaskItemMembers = ({
   matchAssignedTo,
   readOnly,
   additionalUsers,
-  maxIconDisplay
+  maxIconDisplay,
+  isBorderColumnItem,
 }) => {
   const assigneeRef = useRef(null);
   return (
@@ -55,11 +56,15 @@ const TaskItemMembers = ({
               {matchAssignedTo && (
                 <AssigneeMatchingWrapper matched={matchAssignedTo} />
               )}
-              <MemberGroup members={assignedToUsers} size={28} max={maxIconDisplay} />
+              <MemberGroup
+                members={assignedToUsers}
+                size={28}
+                max={maxIconDisplay}
+              />
             </>
           ) : (
             <>
-              <AssigneeWrapper>
+              <AssigneeWrapper isBorderColumnItem={isBorderColumnItem}>
                 <Tooltip placement="top" title="Add assignee">
                   <div style={{ display: 'flex', marginLeft: '2px' }}>
                     {!readOnly && <AssignMemberIcon />}

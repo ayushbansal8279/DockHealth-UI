@@ -19,15 +19,19 @@ interface Props {
   workflow: any;
   comments: IComment[];
   matchComments: any[];
+  isBorderColumnItem: boolean;
 }
 
 export default function TaskTemplateComment({
   workflow,
   comments,
   matchComments,
+  isBorderColumnItem,
 }: Props) {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const commentPopoverOpen = Boolean(anchorEl);
+  const hasComments = comments?.length > 0;
+  const tooltipTitle = hasComments ? 'Show Comments' : 'Add Comment';
 
   const { orgUserRole } = useSelector(userProfileSelector);
   const restrictions = SINGLE_WORKFLOW_RESTRICTIONS_PROFILES[orgUserRole];
@@ -44,16 +48,12 @@ export default function TaskTemplateComment({
     <CommentsContainer>
       <Grid container>
         <GridImg item xs={12} matched={matchComments}>
-          <Tooltip
-            placement="top"
-            title={
-              comments?.length > 0
-                ? getCommentsIconTooltipTitle(comments)
-                : 'Add Comment'
-            }
-          >
+          <Tooltip placement="top" title={tooltipTitle}>
             <button type="button" onClick={onCommentClick}>
-              <CommentsWrapper hasComments={comments?.length > 0}>
+              <CommentsWrapper
+                isBorderColumnItem={isBorderColumnItem}
+                hasComments={comments?.length > 0}
+              >
                 <TaskIcon type="comments" isActive={comments?.length > 0} />
               </CommentsWrapper>
             </button>

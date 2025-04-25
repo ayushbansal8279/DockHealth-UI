@@ -1555,6 +1555,7 @@ const TaskItem = React.memo(
                       handleReasignTask={handleReasignTask}
                       matchAssignedTo={matchAssignedTo}
                       additionalUsers={sharedWithUsers || []}
+                      maxIconDisplay={2}
                     />
                   </TaskItemCell>,
                   getColumnOrder(TaskItemColumn.ASSIGNED),

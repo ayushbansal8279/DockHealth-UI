@@ -36,7 +36,7 @@ width: 100%;
 `;
 export const DueDateWrapper = styled.div`
   width: fit-content;
-  opacity: 0;
+  opacity: ${({ isBorderColumnItem }) => (isBorderColumnItem ? 1 : 0)};
 `;
 
 export const DueDatesContainer = styled.div`

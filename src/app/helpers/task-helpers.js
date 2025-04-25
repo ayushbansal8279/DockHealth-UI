@@ -123,6 +123,17 @@ export function getLabelsIconTooltipTitle(labels) {
   return toolTipMultiLabelDetails;
 }
 
+export function getBorderColumnLabelTooltip(labels) {
+  let toolTipMultiLabelDetails = '';
+
+  toolTipMultiLabelDetails = labels?.map((label, index) =>
+    index === labels.length - 1
+      ? `${label?.labelName}`
+      : `${label?.labelName}, `,
+  );
+  return toolTipMultiLabelDetails;
+}
+
 export function getAttachmentsIconTooltipTitle(attachments) {
   let attachmentLabelDetails = '';
   if (attachments.length === 1) {
@@ -692,4 +703,3 @@ export const transformTaskMetadata = (data) => {
     taskMetaData: transformMetaData(data.taskMetaData),
   };
 };
-
