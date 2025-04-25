@@ -4,6 +4,7 @@ import {
   GridRenderEditCellParams,
 } from '@mui/x-data-grid-premium';
 import TaskItemDate from '@/app/components/task/StandardTaskItem/customFieldsTaskItemComponents/TaskItemDate';
+import { calculateDateTimeIntent } from '@/app/helpers/date-intent-helpers';
 
 export default function CustomDateEditCell(
   props: GridRenderEditCellParams<any, string | null>,
@@ -24,6 +25,7 @@ export default function CustomDateEditCell(
       value={value}
       onChange={handleDateChange}
       readOnly={readOnly}
+      dateTimeIntent={calculateDateTimeIntent(value)}
     />
   );
 }
