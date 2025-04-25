@@ -36,6 +36,7 @@ import TaskTemplateMembers from '../../task-template/TaskTemplateMembers/TaskTem
 import { updatePartialWorkflow } from '@/app/actions/task-template-actions';
 import { compose } from 'redux';
 import TaskTemplateDueDate from '../../task-template/TaskTemplateDueDate/TaskTemplateDueDate';
+import * as TaskActions from 'actions/task-actions';
 
 const BoardColumnTask = ({
   task: taskItemIdentifier,
@@ -257,7 +258,11 @@ const BoardColumnTask = ({
                 // matchPatient={matchPatient}
                 task={task}
                 // openPatientPopover={openPatientPopover}
-                // onTaskUpdate={onTaskUpdate}
+                onTaskUpdate={
+                  isWorkflow
+                    ? compose(dispatch, updatePartialWorkflow)
+                    : compose(dispatch, TaskActions.partialUpdateTask)
+                }
                 currentUser={currentUser}
                 readOnly={restrictions?.patient === READ_ONLY}
               />
