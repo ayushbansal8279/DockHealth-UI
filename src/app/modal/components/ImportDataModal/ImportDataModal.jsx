@@ -25,7 +25,8 @@ const ImportDataModal = ({
   uploadFunction,
   label,
   identifier,
-  setImportResponse
+  setImportResponse,
+  type,
 }) => {
   const inputFileReference = useRef(null);
   const [modalStep, setModalStep] = useState(step);
@@ -35,7 +36,8 @@ const ImportDataModal = ({
       uploadFunction(
         file,
         { onUploadProgress: closeModal },
-        identifier
+        identifier,
+        type
       )
         .then((response) => {
           setImportResponse?.(response);

@@ -251,6 +251,16 @@ export const userHasProfileBuilderFeatureSelector = createSelector(
     ),
 );
 
+export const userHasPatientTimelineFeatureSelector = createSelector(
+  userProfileSelector,
+  ({ organizationAvailableFeatures, userAvailableFeatures }) =>
+    featureSelector(
+      organizationAvailableFeatures,
+      userAvailableFeatures,
+      'PATIENT_TIMELINE',
+    ),
+);
+
 export const userHasShareTaskWorkflowFeatureSelector = createSelector(
   userProfileSelector,
   ({ organizationAvailableFeatures, userAvailableFeatures }) =>

@@ -15,6 +15,7 @@ import {
   selectedUserOrganizationSelector,
   userHasAiSummaryViewFeatureSelector,
   userHasProfileBuilderFeatureSelector,
+  userHasPatientTimelineFeatureSelector,
 } from 'selectors/user-selectors';
 import { PATIENTS_LIST_ALL } from 'routing/helpers/paths';
 import { organizationSelector } from 'selectors/organization-selectors';
@@ -22,7 +23,6 @@ import {
   patientSelector,
   isFetchingPatientSelector,
 } from 'selectors/patient-details-selectors';
-import { FieldType } from 'helpers/field-type-helpers';
 import {
   TASK_LIST_RESTRICTIONS_OPTIONS,
   TASK_LIST_RESTRICTIONS_PROFILES,
@@ -42,11 +42,14 @@ import {
   ContactContainer,
   PatientMRNAnchor,
   AISummaryWrapper,
+  ActivityHistoryButton,
+  ActivityHistoryText,
 } from './styled';
 import AISummaryModalOpenerHelper from '@/app/modal/components/AISummaryModal/AISummaryModalOpenerHelper';
 import { SummaryType } from '@/app/helpers/ai-helper';
 import PatientMetaDataField from './PatientMetaDataField';
 import ProfileDetailsDrawer from '../../profile-details/ProfileDetailsDrawer/ProfileDetailsDrawer';
+import PatientActivityHistoryDrawer from '@/app/components/patients/PatientActivityHistoryDrawer/PatientActivityHistoryDrawer';
 
 const { DISABLED } = TASK_LIST_RESTRICTIONS_OPTIONS;
 
@@ -57,6 +60,11 @@ const PatientDetailsHeader = () => {
   const [isDrawerOpen, setIsDrawerOpen, unsetIsDrawerOpen] = useBoolean(false);
   const [isProfileOpen, setIsProfileOpen, unsetIsProfileOpen] =
     useBoolean(false);
+  const [
+    isactivityHistoryDrawerOpen,
+    setIsactivityHistoryDrawerOpen,
+    unsetIsactivityHistoryDrawerOpen,
+  ] = useBoolean(false);
   const patient = useSelector(patientSelector);
   const {
     firstName,
@@ -91,6 +99,9 @@ const PatientDetailsHeader = () => {
   const embeddedMode = sessionStorage.getItem('EmbeddedMode') || false;
   const profileBuilderFeatureAvailable = useSelector(
     userHasProfileBuilderFeatureSelector,
+  );
+  const patientTimelineFeatureAvailable = useSelector(
+    userHasPatientTimelineFeatureSelector,
   );
 
   const goBack = useCallback(() => {
@@ -169,6 +180,11 @@ const PatientDetailsHeader = () => {
               </Grid>
             </Box>
             <ContactContainer>
+              {patientTimelineFeatureAvailable && (
+                <ActivityHistoryButton onClick={setIsactivityHistoryDrawerOpen}>
+                  <ActivityHistoryText>Timeline</ActivityHistoryText>
+                </ActivityHistoryButton>
+              )}
               {email && (
                 <Tooltip title={email} placement="bottom">
                   <IconWrapper href={`mailto:${email}`}>
@@ -311,6 +327,12 @@ const PatientDetailsHeader = () => {
             isOpenedDetails={isProfileOpen}
             closeDrawer={unsetIsProfileOpen}
             context={'PATIENT'}
+          />
+          <PatientActivityHistoryDrawer
+            patient={patient}
+            title="Timeline"
+            isOpen={isactivityHistoryDrawerOpen}
+            onClose={unsetIsactivityHistoryDrawerOpen}
           />
         </>
       )}

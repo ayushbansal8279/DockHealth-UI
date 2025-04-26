@@ -21,6 +21,7 @@ import { Draggable, Droppable } from 'react-beautiful-dnd';
 import { FieldType, fieldTypes } from '../../helper';
 import Spacing from '@/app/components/common/Spacing';
 import TextField from '../../TextField';
+import Tooltip from '@/app/components/common/Tooltip/Tooltip';
 
 const FieldTypeImages = {
   [FieldType.TEXT]: TEXT,
@@ -37,12 +38,14 @@ const FieldTypeImages = {
 const ProfileBuilderCategories = ({ allCustomFields }) => {
   const [searchedCustomField, setSearchedCustomField] =
     useState(allCustomFields);
+  const [searchTextValue, setSearchTextValue] = useState(allCustomFields);
 
   useEffect(() => {
     setSearchedCustomField(allCustomFields);
   }, [allCustomFields]);
 
   const handleTextChange = (value) => {
+    setSearchTextValue(value);
     const filteredList = allCustomFields.filter((item) =>
       item?.name?.toLowerCase().includes(value.toLowerCase()),
     );
@@ -84,24 +87,33 @@ const ProfileBuilderCategories = ({ allCustomFields }) => {
                 {...provided.droppableProps}
                 ref={provided.innerRef}
               >
-                {fieldTypes.map((item) => (
-                  <Draggable draggableId={item.fieldType} index={item.index}>
-                    {(provided) => (
-                      <SingleField
-                        ref={provided.innerRef}
-                        {...provided.draggableProps}
-                        {...provided.dragHandleProps}
-                      >
-                        <img
-                          style={{ width: 20 }}
-                          src={FieldTypeImages[item?.fieldType]}
-                          alt={item.name}
-                        />
-                        <CategoryLabel>{item.placeholder}</CategoryLabel>
-                      </SingleField>
-                    )}
-                  </Draggable>
-                ))}
+                {fieldTypes.map((item) => {
+                  const isTrauncated = item.placeholder.length >= 15;
+                  return (
+                    <Draggable draggableId={item.fieldType} index={item.index}>
+                      {(provided) => (
+                        <SingleField
+                          ref={provided.innerRef}
+                          {...provided.draggableProps}
+                          {...provided.dragHandleProps}
+                        >
+                          <img
+                            style={{ width: 20 }}
+                            src={FieldTypeImages[item?.fieldType]}
+                            alt={item.name}
+                          />
+                          {isTrauncated ? (
+                            <Tooltip placement="top" title={item.placeholder}>
+                              <CategoryLabel>{item.placeholder}</CategoryLabel>
+                            </Tooltip>
+                          ) : (
+                            <CategoryLabel>{item.placeholder}</CategoryLabel>
+                          )}
+                        </SingleField>
+                      )}
+                    </Draggable>
+                  );
+                })}
                 {provided.placeholder}
               </SingleFieldWrapper>
             )}
@@ -115,6 +127,7 @@ const ProfileBuilderCategories = ({ allCustomFields }) => {
             size="small"
             placeholder="Search Existing Field"
             width="48%"
+            value={searchTextValue}
             onChange={handleTextChange}
           />
           <Spacing vertical={4} />
@@ -128,29 +141,38 @@ const ProfileBuilderCategories = ({ allCustomFields }) => {
                   {...provided.droppableProps}
                   ref={provided.innerRef}
                 >
-                  {searchedCustomField?.slice(0, 8).map((item) => (
-                    <Draggable
-                      draggableId={item.identifier}
-                      index={item.sortIndex}
-                    >
-                      {(provided) => (
-                        <SingleField
-                          ref={provided.innerRef}
-                          {...provided.draggableProps}
-                          {...provided.dragHandleProps}
-                        >
-                          <div>
-                            <img
-                              style={{ width: 15 }}
-                              src={FieldTypeImages[item?.fieldType]}
-                              alt={item.name}
-                            />
-                          </div>
-                          <CategoryLabel>{item.name}</CategoryLabel>
-                        </SingleField>
-                      )}
-                    </Draggable>
-                  ))}
+                  {searchedCustomField?.slice(0, 8).map((item, index) => {
+                    const isTrauncated = item.name.length >= 15;
+                    return (
+                      <Draggable
+                        draggableId={item.identifier + `#${index}`}
+                        index={item.sortIndex}
+                      >
+                        {(provided) => (
+                          <SingleField
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                            {...provided.dragHandleProps}
+                          >
+                            <div>
+                              <img
+                                style={{ width: 15 }}
+                                src={FieldTypeImages[item?.fieldType]}
+                                alt={item.name}
+                              />
+                            </div>
+                            {isTrauncated ? (
+                              <Tooltip placement="top" title={item.name}>
+                                <CategoryLabel>{item.name}</CategoryLabel>
+                              </Tooltip>
+                            ) : (
+                              <CategoryLabel>{item.name}</CategoryLabel>
+                            )}
+                          </SingleField>
+                        )}
+                      </Draggable>
+                    );
+                  })}
                   {provided.placeholder}
                 </SingleFieldWrapper>
               )}

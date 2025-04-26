@@ -1,5 +1,7 @@
 import axios from './axios-heydoc';
 import { log } from '../helpers/log';
+import { blobFileDownload } from '../helpers/blob-file-download';
+import { noop, showAlert } from '../helpers/utility-functions';
 
 export function getAllPatientCustomFields(active = true, patientIdentifier) {
   return axios
@@ -188,5 +190,75 @@ export function getDefauldFields(context) {
     .catch((error) => {
       log(error);
       throw new Error(error?.response?.data?.errorMessage);
+    });
+}
+
+export function downloadCustomFieldImportTemplate() {
+  return axios({
+    url: `/custom/field/downloadCustomFieldImportTemplate`,
+    method: 'GET',
+    responseType: 'blob',
+    headers: {
+      Accept: 'application/octet-stream',
+    },
+  })
+    .then((response) => {
+        blobFileDownload(new Blob([response.data]), 'Custom_Field_Options_Template.csv');
+    })
+    .catch(noop);
+}
+
+export function uploadCustomFieldOptions(fileData, additionalConfig = {}, customFieldIdentifier, targetType) {
+  const formData = new FormData();
+  formData.append('file', fileData, encodeURIComponent(fileData.name));
+
+  return axios
+    .post(`/custom/field/upload/${targetType}`,  formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+      params: {
+        customFieldIdentifier,
+      },
+      ...additionalConfig,
+    })
+    .then((response) => {
+      const res = response.data;
+
+      if (res?.statusCode !== 'SUCCESS') {
+        showAlert({
+          status: 'error',
+          title: 'Upload Failed',
+          text: res?.errorMessage ?? 'Something went wrong during file upload.',
+        });
+        throw new Error(res?.errorMessage ?? 'Upload failed with unknown error');
+      }
+
+      showAlert({
+        status: 'success',
+        title: 'Upload Complete',
+        html: 'Custom field options uploaded successfully.',
+      });      
+
+      return res;
+    })
+    .catch((error) => {
+      if (error.response && error.response.status === 413) {
+        showAlert({
+          status: 'error',
+          title: 'Error',
+          text: 'File exceeded the allowed size of 100 MB',
+        });
+      } else {
+        showAlert({
+          status: 'error',
+          title: 'Error',
+          text:
+            error?.response?.data?.errorMessage ?? 
+            error?.message ??
+            'Something went wrong, please try again later.',
+        });
+      }
+      throw error;
     });
 }
