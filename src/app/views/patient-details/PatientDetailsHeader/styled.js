@@ -104,7 +104,7 @@ export const AISummaryWrapper = styled.div`
   margin-left: 20px;
 `;
 
-export const ActivityHistoryButton = styled(Typography)`
+export const ActivityHistoryText = styled(Typography)`
   &&& {
     &.MuiTypography-root {
       font-family: Outfit;
@@ -114,26 +114,23 @@ export const ActivityHistoryButton = styled(Typography)`
       text-align: center;
       color: ${palette.white};
       text-transform: none;
+      padding: 10px;
     }
   }
 `;
 
-export const ActivityHistoryButtonContainer = styled(Button)`
+export const ActivityHistoryButton = styled(Button)`
   @media print {
     display: none;
   }
   && {
-    border-radius: 2;
+    height: 32px;
+    margin-right: 30px;
+    border-radius: 4px;
     background-color: ${palette.newDarkBlue};
-    border-right: 1px solid ${palette.white};
-    z-index: 11;
+    
     :hover {
-      background-color: ${(props) =>
-        props.active ? palette.cornFlowerBlue : palette.purpleNavy};
+      background-color: ${palette.purpleNavy};
     }
   }
-  & .MuiSvgIcon-root > path {
-    fill: ${palette.white};
-  }
-  height: 32px;
 `;
