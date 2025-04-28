@@ -184,3 +184,15 @@ export function getUsersByName(name, limit = 100) {
 export function userLogout() {
   return axios.put(`/user/logout`).then(({ data }) => data);
 }
+
+export function getUserActivity(userIdentifier, fromDateTime, toDateTime) {
+  return axios
+    .get(`/usage/events`, {
+      params: {
+        fromDateTime,
+        toDateTime,
+        userIdentifier
+      },
+    })
+    .then((response) => response.data);
+}
