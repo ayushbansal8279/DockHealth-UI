@@ -24,7 +24,8 @@ export const AddCommentInputContainer = styled.div`
   outline: 0;
   padding: ${spacing.tiny} ${spacing.small};
   overflow: hidden;
-  min-height: 120px;
+  min-height: ${({ expandEditorHeight }) =>
+    expandEditorHeight ? '220px' : '120px'};
   overflow-y: auto;
 
   ${({ isFocused }) =>
