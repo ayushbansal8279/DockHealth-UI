@@ -90,3 +90,16 @@ export const handleDragAndSort = async ({
     setCustomFields(lastWorkingOrder);
   }
 };
+
+export const stringToRegex = (str) => {
+  const match = str.match(/^\/(.+)\/([a-z]*)$/i);
+  if (!match) {
+    throw new Error(
+      'Invalid regex string format. Expected format: /pattern/flags',
+    );
+  }
+
+  const pattern = match[1];
+  const flags = match[2];
+  return new RegExp(pattern, flags);
+};

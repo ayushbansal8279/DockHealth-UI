@@ -8,7 +8,10 @@ import React, {
 } from 'react';
 import propTypes from 'prop-types';
 import { FieldCharacterLimit, FieldType } from 'helpers/field-type-helpers';
-import { BOOL_SELECT_OPTIONS } from 'helpers/custom-fields-helpers';
+import {
+  BOOL_SELECT_OPTIONS,
+  stringToRegex,
+} from 'helpers/custom-fields-helpers';
 import FormInput from 'components/common/Input/FormInput';
 import FormSelect from 'components/common/Select/FormSelect';
 import DateInput from 'components/common/DateInput/DateInput';
@@ -38,9 +41,18 @@ const CustomField = ({
   popoverZindex,
 }) => {
   const containerReference = useRef(null);
-  const { identifier, name, placeholder, fieldType, options, displayOptions } =
-    field;
-  const isRequired = displayOptions?.includes('TASK_REQUIRED') || displayOptions?.includes('PROFILE_NAME');
+  const {
+    identifier,
+    name,
+    placeholder,
+    fieldType,
+    options,
+    displayOptions,
+    validationRegex,
+  } = field;
+  const isRequired =
+    displayOptions?.includes('TASK_REQUIRED') ||
+    displayOptions?.includes('PROFILE_NAME');
   const isReadOnly = displayOptions?.includes('READONLY') || readOnly;
   const inputReference = useRef(null);
   const componentReference = useRef(null);
@@ -121,6 +133,15 @@ const CustomField = ({
     }
   }, [fieldType, identifier, taskDrawerFocusField]);
 
+  const validateWithRegex = (value) => {
+    const regex = stringToRegex(validationRegex);
+    if (!(regex instanceof RegExp)) {
+      return true;
+    }
+    const isMatch = regex.test(value);
+    return isMatch ? true : 'Not satisfying validation regex';
+  };
+
   const renderCustomField = useCallback(() => {
     switch (fieldType) {
       case FieldType.TEXT: {
@@ -137,6 +158,8 @@ const CustomField = ({
             onChange={() => setWasChanged(true)}
             required={isRequired}
             characterLimit={FieldCharacterLimit.TEXT}
+            validate={validateWithRegex}
+            disableClearErrorOnKeyUp
           />
         );
       }
@@ -187,6 +210,8 @@ const CustomField = ({
             ref={componentReference}
             onChange={() => setWasChanged(true)}
             required={isRequired}
+            validate={validateWithRegex}
+            disableClearErrorOnKeyUp
           />
         );
       }

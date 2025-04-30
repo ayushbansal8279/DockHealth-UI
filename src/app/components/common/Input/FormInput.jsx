@@ -40,14 +40,17 @@ const FormInput = React.forwardRef(
         required: required ? 'This field is required' : false,
         validate: validate || undefined,
       });
-    })
+    });
 
     useUnmount(() => {
       unregister(name);
     });
 
     const handleChange = (event) => {
-      setValue(name, event.target.value, { shouldDirty: true });
+      setValue(name, event.target.value, {
+        shouldDirty: true,
+        shouldValidate: true,
+      });
       if (typeof onChange === 'function') onChange(event);
     };
 
