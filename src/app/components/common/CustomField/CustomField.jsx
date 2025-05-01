@@ -135,6 +135,9 @@ const CustomField = ({
 
   const validateWithRegex = (value) => {
     const regex = stringToRegex(validationRegex);
+    if (!value) {
+      return true;
+    }
     if (!(regex instanceof RegExp)) {
       return true;
     }
@@ -158,7 +161,7 @@ const CustomField = ({
             onChange={() => setWasChanged(true)}
             required={isRequired}
             characterLimit={FieldCharacterLimit.TEXT}
-            validate={validateWithRegex}
+            validate={validationRegex && validateWithRegex}
             disableClearErrorOnKeyUp
           />
         );
@@ -210,7 +213,7 @@ const CustomField = ({
             ref={componentReference}
             onChange={() => setWasChanged(true)}
             required={isRequired}
-            validate={validateWithRegex}
+            validate={validationRegex && validateWithRegex}
             disableClearErrorOnKeyUp
           />
         );
