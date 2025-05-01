@@ -60,7 +60,14 @@ export default function Field({ label, value, ellipsis }: Props) {
           <Button
             variant="text"
             onClick={copyToClipboard}
-            sx={{ textTransform: 'none' }}
+            sx={{
+              textTransform: 'none',
+              whiteSpace: 'normal',
+              wordBreak: 'break-word',
+              textAlign: 'left',
+              maxWidth: '100%',
+              display: 'inline-block'
+            }}
           >
             {valueToShow || 'Empty'}
           </Button>

@@ -1,23 +1,24 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Credential } from 'types/developer';
-import { createDeveloperCredential } from '@/app/api/developers-api';
+import { createDeveloperCredential, createDeveloperCredentialWithScopes } from '@/app/api/developers-api';
 import { ApiError, UseExtendedMutationOptions } from '../types';
 import { developerCredentialQueryKey } from './useCredentialsQuery';
 
 interface Config {
   orgId: string;
-  options?: UseExtendedMutationOptions<Credential, ApiError, unknown>;
+  options?: UseExtendedMutationOptions<Credential, ApiError,  string[]>;
 }
 
 export const useCreateCredential = ({ orgId, options = {} }: Config) => {
   const queryClient = useQueryClient();
 
-  const mutationFn = createDeveloperCredential;
+  const mutationFn = (scopes: string[]) =>
+    createDeveloperCredentialWithScopes(scopes);
 
   const defaultOptions: UseExtendedMutationOptions<
     Credential,
     ApiError,
-    unknown
+    string[]
   > = {
     onSuccess: (data) => {
       queryClient.setQueryData(
@@ -27,7 +28,7 @@ export const useCreateCredential = ({ orgId, options = {} }: Config) => {
     },
   };
 
-  return useMutation<Credential, ApiError>({
+  return useMutation<Credential, ApiError, string[]>({
     mutationFn,
     ...defaultOptions,
     ...options,

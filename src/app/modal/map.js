@@ -90,6 +90,7 @@ import SavePatientModal from './components/SavePatientModal/SavePatientModal';
 import ShareWorkflowModal from './components/ShareWorkflowModal/ShareWorkflowModal';
 import ProfilePickerModal from './components/ProfilePickerModal/ProfilePickerModal';
 import PatientAttachmentReferenceModal from './components/PatientAttachmentReferenceModal/PatientAttachmentReferenceModal';
+import DeveloperScopeModal from './components/DeveloperScopeModal/DeveloperScopeModal';
 
 
 const MODAL_MAP = {
@@ -184,7 +185,8 @@ const MODAL_MAP = {
   Alert: AlertModal,
   SavePatient: SavePatientModal,
   ProfilePicker: ProfilePickerModal,
-  PatientAttachmentReference: PatientAttachmentReferenceModal
+  PatientAttachmentReference: PatientAttachmentReferenceModal,
+  DeveloperScopeList: DeveloperScopeModal
 };
 
 export default MODAL_MAP;
