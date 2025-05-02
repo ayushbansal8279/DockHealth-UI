@@ -271,6 +271,16 @@ export const userHasShareTaskWorkflowFeatureSelector = createSelector(
     ),
 );
 
+export const userHasAutomationMeteringFeatureSelector = createSelector(
+  userProfileSelector,
+  ({ organizationAvailableFeatures, userAvailableFeatures }) =>
+    featureSelector(
+      organizationAvailableFeatures,
+      userAvailableFeatures,
+      'AUTOMATION_METERING',
+    ),
+);
+
 export const userSetupClientViewSelector = createSelector(
   userViewSetupSelector,
   ({ mainSetup }) => mainSetup,

@@ -1,47 +1,60 @@
-import {
-  getMeteringEvents,
-  getMeteringFilterOptions,
-} from '@/app/api/metering-api';
+import React from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { getMeteringFilterOptions } from '@/app/api/metering-api';
 import FilterButton from '@/app/components/filter/FilterButton/FilterButton';
 import FilterPopover from '@/app/components/filter/FilterPopover/FilterPopover';
 import NewFilterContainer from '@/app/components/filter/NewFilterContainer/NewFilterContainer';
-import { organizationSelector } from '@/app/selectors/organization-selectors';
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { useSelector } from 'react-redux';
-import { convertFilterToPayload } from './helper';
+import { determineDateOptions } from './helper';
 
-const MeteringFilter = ({ setBillingData, getInitialMeteringData }) => {
+const MeteringFilter = ({ onFilterChange }) => {
   const megaFilterButtonReference = useRef(null);
   const [isFilterApplied, setIsFilterApplied] = useState(false);
   const [isOpen, openPopover] = useState(false);
   const [filters, setFilters] = useState({});
-  const { organizationIdentifier } = useSelector(organizationSelector);
   const [finalFilter, setFinalFilter] = useState({});
   const [filteredData, setFilteredData] = useState({});
 
   const clearFilters = () => {
-    getInitialMeteringData();
     setIsFilterApplied(false);
     setFinalFilter({});
+    setFilteredData({});
+    onFilterChange?.({});
   };
 
   const fetchFilterOptions = useCallback(async () => {
     const filterOptions = await getMeteringFilterOptions();
     setFilters(filterOptions);
-  }, [setFilters]);
-
-  useEffect(async () => {
-    fetchFilterOptions();
   }, []);
 
+  useEffect(() => {
+    fetchFilterOptions();
+  }, [fetchFilterOptions]);
+
   const getFilteredMeteringData = async () => {
-    const payload = convertFilterToPayload(
-      filteredData,
-      organizationIdentifier,
-    );
-    const result = await getMeteringEvents(payload);
-    if (result) setBillingData(result);
+    let filteredDataForPayload = filteredData;
+    if (
+      !(
+        filteredData?.eventTypes?.options?.length > 0 ||
+        filteredData?.eventSubTypes?.options?.length > 0
+      )
+    ) {
+      filteredDataForPayload = {
+        ...filteredData,
+        eventTypes: {
+          options: ['AUTOMATION', 'EHR', 'API'],
+        },
+      };
+    }
+
+    if (
+      !filteredDataForPayload.eventDateOptions.dateStart ||
+      !filteredDataForPayload.eventDateOptions.dateEnd
+    ) {
+      filteredDataForPayload = determineDateOptions(filteredDataForPayload);
+    }
+
     setIsFilterApplied(true);
+    onFilterChange?.(filteredDataForPayload);
   };
 
   return (
@@ -65,15 +78,8 @@ const MeteringFilter = ({ setBillingData, getInitialMeteringData }) => {
             setFinalFilter={setFinalFilter}
             finalFilter={finalFilter}
             openPopover={openPopover}
-            // quickFiltersList={quickFiltersList}
-            // setSavePopupOpen={setSavePopupOpen}
-            // onQuickFilterCreate={onQuickFilterCreate}
-            // handleSaveQuickFilter={handleSaveQuickFilter}
             setFilteredData={setFilteredData}
             filteredData={filteredData}
-            // customFinalFilter={customFinalFilter}
-            // setCustomFinalFilter={setCustomFinalFilter}
-            // setSelectedQuickFilter={setSelectedQuickFilter}
             isSaveDisabled
           />
         </div>
