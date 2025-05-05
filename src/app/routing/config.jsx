@@ -161,6 +161,7 @@ const CreateList = lazy(() =>
   import('views/OnboardingTutorial/CreateList/CreateList'),
 );
 const Developers = lazy(() => import('views/developers'));
+const Workspaces = lazy(() => import('views/workspaces/Workspaces'));
 const PatientImportStatus = lazy(() => import('views/patient-details/PatientImportStatus/PatientImportStatus'));
 
 const {
@@ -258,6 +259,11 @@ export const SETTINGS_ROUTES = [
   {
     path: '/developers',
     RouteComponent: Developers,
+    permissions: [CAN_ACCESS_SETTINGS_PAGE],
+  },
+  {
+    path: '/workspaces',
+    RouteComponent: Workspaces,
     permissions: [CAN_ACCESS_SETTINGS_PAGE],
   },
 ];
