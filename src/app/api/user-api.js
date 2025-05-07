@@ -185,6 +185,68 @@ export function userLogout() {
   return axios.put(`/user/logout`).then(({ data }) => data);
 }
 
+export const UserBulkActions = {
+  CREATE_TASK: 'CREATE_TASK',
+  CREATE_WORKFLOW: 'CREATE_WORKFLOW',
+};
+
+export const userBulkCreateTask = (payload) => {
+  const {
+    assignedTo,
+    taskListIdentifier,
+    taskGroupIdentifier,
+    description,
+  } = payload;
+  const body = {
+    bulkOperationType: UserBulkActions.CREATE_TASK,
+    taskDescription: description,
+    taskListIdentifier,
+    taskGroupIdentifier,
+    userIdentifiers: assignedTo,
+  };
+
+  return axios
+    .put('user/bulk', body)
+    .then((response) => response.data)
+    .catch((error) => {
+      const message =
+        error?.response?.data?.errorMessage ??
+        error?.message ??
+        'Failed to create task. Please try again.';
+        
+      throw new Error(message);
+    });
+};
+
+export const userBulkCreateWorkflow = (payload) => {
+  const {
+    assignedToUsers,
+    taskListIdentifier,
+    workflowIdentifier,
+    taskGroupIdentifier,
+  } = payload;
+
+  const body = {
+    bulkOperationType: UserBulkActions.CREATE_WORKFLOW,
+    workflowIdentifier,
+    taskListIdentifier,
+    userIdentifiers: assignedToUsers,
+    taskGroupIdentifier,
+  };
+
+  return axios
+    .put('user/bulk', body)
+    .then((response) => response.data)
+    .catch((error) => {
+      const message =
+        error?.response?.data?.errorMessage ??
+        error?.message ??
+        'Failed to create workflow. Please try again.';
+
+      throw new Error(message);
+    });
+};
+
 export function getUserActivity(userIdentifier, fromDateTime, toDateTime) {
   return axios
     .get(`/usage/events`, {
@@ -195,4 +257,4 @@ export function getUserActivity(userIdentifier, fromDateTime, toDateTime) {
       },
     })
     .then((response) => response.data);
-}
+};

@@ -51,7 +51,7 @@ const MeterBillingView = lazy(() =>
 const PersonDetailsView = lazy(() =>
   import('views/person-details/PersonDetailsView'),
 );
-const UserGroupView = lazy(() => import('views/user-group/UserGroupView'));
+const UserGroupView = lazy(() => import('views/user-group/UserGroupViewWrapper'));
 const PatientDetailsView = lazy(() =>
   import('views/patient-details/PatientDetailsView'),
 );

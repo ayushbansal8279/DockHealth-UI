@@ -47,3 +47,16 @@ export const SearchInputWrapper = styled.div`
   width: ${({ fullWidth }) => (fullWidth ? '100%' : '300px')};
   transition: all 0.25s ease-in-out;
 `;
+
+export const BulkEditSectionContainer = styled.div`
+  width: 90%;
+  margin-left: auto;
+  margin-right: auto;
+`;
+
+export const TaskTemplateApplicatorContainer = styled.div`
+  margin-bottom: 60px;
+  justify-content: center;
+  display: flex;
+  padding-top: 10px;
+`;

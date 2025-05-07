@@ -14,6 +14,7 @@ import { Context } from './DataGrid';
  * @param editable {boolean}            - is a flag whether column should be editable or not.
  * @param unsortable {boolean}          - is a flag whether column should be sortable or not.
  * @param flex
+ * @param headerRenderer {() => JSX.Element} - custom renderer for the column header
  * @returns {null}
  * @constructor
  */
@@ -26,6 +27,7 @@ export default function Data({
   editable = false,
   unsortable = false,
   flex = 1,
+  headerRenderer = null,
 }) {
   const { register, unregister } = useContext(Context);
 
@@ -44,6 +46,7 @@ export default function Data({
       unsortable,
       editable,
       flex,
+      headerRenderer,
       renderCell(cell) {
         if (typeof cell.value === 'string') {
           return cell.value;
