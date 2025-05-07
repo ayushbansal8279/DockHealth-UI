@@ -127,6 +127,14 @@ const RichTextEditor = ({
 
       const htmlValue = md.render(mdValue || '');
       let processedValue = htmlValue;
+      processedValue = processedValue.replace(
+        /href="(.*?)"/gi,
+        (match, url) => {
+          const decodedUrl = url.replace(/%7B/gi, '{').replace(/%7D/gi, '}');
+          return `href="${decodedUrl}"`;
+        },
+      );
+
       if (mentions && value !== '') {
         for (const mentionInfo of mentions) {
           processedValue = processedValue.replace(
