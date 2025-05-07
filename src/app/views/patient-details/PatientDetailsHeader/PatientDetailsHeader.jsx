@@ -180,7 +180,7 @@ const PatientDetailsHeader = () => {
               </Grid>
             </Box>
             <ContactContainer>
-              {patientTimelineFeatureAvailable && (
+              { patientTimelineFeatureAvailable && (
                 <ActivityHistoryButton onClick={setIsactivityHistoryDrawerOpen}>
                   <ActivityHistoryText>Timeline</ActivityHistoryText>
                 </ActivityHistoryButton>

@@ -1,8 +1,8 @@
 import { fontSizes, fontWeights } from "@/app/styles/font";
-import palette, { opacify } from "@/app/styles/palette";
+import palette from "@/app/styles/palette";
 import spacing from "@/app/styles/spacing";
 import { TimelineConnector, TimelineDot, TimelineOppositeContent } from "@mui/lab";
-import { Card, Icon, IconButton, Typography } from "@mui/material";
+import { Card, IconButton, Typography } from "@mui/material";
 import styled from "styled-components";
 
 
@@ -107,7 +107,6 @@ export const Container = styled.a`
   margin: 0 2px 3px 0;
 
   &:hover {
-    
     color: ${palette.darkGrey};
   }
 `;
@@ -132,4 +131,14 @@ export const MembersContainer = styled(Typography).attrs({
     align-items: center;
     gap: 4px;
   }
+`;
+
+export const WorkflowIconContainer = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: ${({ filterIcon }) => (filterIcon ? '18px' : '16px')};
+    height: ${({ filterIcon }) => (filterIcon ? '18px' : '16px')};
+    color: inherit;
+    border-color:  ${palette.lightGrey};
 `;
