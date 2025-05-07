@@ -18,6 +18,7 @@ const AddComment = ({
   onAdd,
   onFocus = () => {},
   onBlur = () => {},
+  expandEditorHeight,
 }) => {
   const addCommentReference = useRef();
   const addCommentContainerReference = useRef();
@@ -74,7 +75,10 @@ const AddComment = ({
       <AvatarWrapper>
         <UserAvatar user={currentUser} size={35} />
       </AvatarWrapper>
-      <AddCommentInputContainer isFocused={isFocused}>
+      <AddCommentInputContainer
+        isFocused={isFocused}
+        expandEditorHeight={expandEditorHeight}
+      >
         <RichTextEditor
           placeholder="New comment"
           height={120}
@@ -85,8 +89,9 @@ const AddComment = ({
           onKeyEnter={handleTextEditorKeyEnter}
           taskListIdentifier={selectedTask?.taskList?.taskListIdentifier}
           mentions={selectedTask?.taskMentions}
-          initOnClick
+          initOnClick={!expandEditorHeight}
           showCharCount
+          expandEditorHeight={expandEditorHeight}
         />
       </AddCommentInputContainer>
       {isAddingComment && (
