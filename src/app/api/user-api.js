@@ -246,3 +246,15 @@ export const userBulkCreateWorkflow = (payload) => {
       throw new Error(message);
     });
 };
+
+export function getUserActivity(userIdentifier, fromDateTime, toDateTime) {
+  return axios
+    .get(`/usage/events`, {
+      params: {
+        fromDateTime,
+        toDateTime,
+        userIdentifier
+      },
+    })
+    .then((response) => response.data);
+};

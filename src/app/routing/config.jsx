@@ -163,6 +163,8 @@ const CreateList = lazy(() =>
 const Developers = lazy(() => import('views/developers'));
 const PatientImportStatus = lazy(() => import('views/patient-details/PatientImportStatus/PatientImportStatus'));
 
+const UserActivity = lazy(() => import('views/self-serve/users/UserActivity/UserActivity'));
+
 const {
   CAN_ACCESS_HOME_PAGE,
   CAN_ACCESS_SEARCH_PAGE,
@@ -260,6 +262,11 @@ export const SETTINGS_ROUTES = [
     RouteComponent: Developers,
     permissions: [CAN_ACCESS_SETTINGS_PAGE],
   },
+  {
+    path: '/user-activity/:userIdentifier',
+    RouteComponent: UserActivity,
+    permissions: [CAN_ACCESS_SETTINGS_PAGE],
+  }
 ];
 
 export const TEMPLATE_CORE_SUBSCRIPTION_PLAN_ROUTES = [

@@ -72,8 +72,15 @@ const CommentsInPopover: FC<CommentsInPopoverProps> = ({ task, onClose }) => {
           ))}
         </Box>
         {restrictions?.comments !== DISABLED && (
-          <Box sx={{ padding: 2, backgroundColor: palette.coolGrey4, height: "175px", overflowY: "scroll" }}>
-            <AddComment autoFocus onAdd={addComment} />
+          <Box
+            sx={{
+              padding: 2,
+              backgroundColor: palette.coolGrey4,
+              // height: '260px',
+              // overflowY: 'scroll',
+            }}
+          >
+            <AddComment autoFocus onAdd={addComment} expandEditorHeight />
           </Box>
         )}
       </ContainerCard>

@@ -11,7 +11,7 @@ import Spacing from 'components/common/Spacing';
 import CategoryOptions from 'components/common/CategoryOptions/CategoryOptions';
 import { partialUpdateTask } from 'actions/task-actions';
 import { updatePartialWorkflow } from 'actions/task-template-actions';
-import { DueDateIntent, TaskItemType } from 'helpers/task-helpers';
+import { TaskItemType } from 'helpers/task-helpers';
 import {
   selectedTaskSelector,
   taskCustomFieldsSelector,
@@ -127,7 +127,7 @@ const CustomFieldsSection = ({ disabled, fieldCategoryType }) => {
         handleSubmit(
           compose(
             (formattedData) => updateCustomFields(formattedData, fieldType),
-            formatMetaDataOutput
+            (data) => formatMetaDataOutput(data)
           )
         )(data);
       }

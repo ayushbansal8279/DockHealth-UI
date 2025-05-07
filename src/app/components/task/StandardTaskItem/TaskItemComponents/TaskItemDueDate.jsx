@@ -6,7 +6,11 @@ import TaskItemPopover from 'components/task/TaskItemPopover/TaskItemPopover';
 import TaskIcon from 'components/task/TaskIcon/TaskIcon';
 import Tooltip from 'components/common/Tooltip/Tooltip';
 import DateLabel from 'components/common/DateLabel/DateLabel';
-import { checkDateTimeIntent, isDueDateOverdue, ReminderType } from 'helpers/task-helpers';
+import {
+  checkDateTimeIntent,
+  isDueDateOverdue,
+  ReminderType,
+} from 'helpers/task-helpers';
 import { onTaskDueDateChanged } from 'helpers/ga-event-helper';
 import {
   AddPlaceholder,
@@ -25,6 +29,7 @@ const TaskItemDueDate = ({
   showTime,
   showReminder,
   showRecurring,
+  isBorderColumnItem,
 }) => {
   const dispatch = useDispatch();
   const {
@@ -36,17 +41,17 @@ const TaskItemDueDate = ({
     startDate,
   } = task || {};
 
-  const [momentDueDate, setMomentDueDate] = useState(() => dueDate ? moment(dueDate) : null);
+  const [momentDueDate, setMomentDueDate] = useState(() =>
+    dueDate ? moment(dueDate) : null,
+  );
 
   useEffect(() => {
-    setMomentDueDate(dueDate ? moment(dueDate) : null)
+    setMomentDueDate(dueDate ? moment(dueDate) : null);
   }, [dueDate]);
 
   const handleSave = useCallback(
     (newDueDate) => {
-      setMomentDueDate(
-        !!newDueDate ? moment(newDueDate) : null,
-      );
+      setMomentDueDate(!!newDueDate ? moment(newDueDate) : null);
       const dueDateIntent = checkDateTimeIntent(newDueDate);
       dispatch(updateTaskDueDate(task, newDueDate, dueDateIntent));
       onTaskDueDateChanged();
@@ -79,7 +84,10 @@ const TaskItemDueDate = ({
         content={({ closePopover }) => (
           <DueDatePicker
             taskIdentifier={taskIdentifier}
-            selectedDate={adjustUTCDateForDateIntent(momentDueDate, dueDateIntent)}
+            selectedDate={adjustUTCDateForDateIntent(
+              momentDueDate,
+              dueDateIntent,
+            )}
             onDateChange={handleDueDateChange}
             recurring={hasRecurringSchedule}
             onCloseClick={closePopover}
@@ -103,9 +111,9 @@ const TaskItemDueDate = ({
               showRecurring={showRecurring}
             />
           ) : (
-            <DueDateWrapper>
+            <DueDateWrapper isBorderColumnItem={isBorderColumnItem}>
               <Tooltip placement="top" title="Add Due Date">
-                <AddPlaceholder>
+                <AddPlaceholder isBorderColumnItem={isBorderColumnItem}>
                   <div style={{ display: 'flex' }}>
                     <TaskIcon type="calendar" isActive />
                   </div>

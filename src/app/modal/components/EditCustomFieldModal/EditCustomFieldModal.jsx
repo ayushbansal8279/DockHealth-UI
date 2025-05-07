@@ -37,7 +37,7 @@ import {
   InfoText,
 } from './styled';
 import AdditionalOptions from './AdditionalOptions';
-import { getAdditionalOptions } from './helpers';
+import { getAdditionalOptions, regexValidator } from './helpers';
 import {
   SelectOptionColor,
   SelectParentDropdown,
@@ -45,7 +45,10 @@ import {
 } from '../../customModals/styled';
 import { CancelButton, ConfirmButton } from '../ModalButton/ModalButtons';
 import ImportDataModal from '../ImportDataModal/ImportDataModal';
-import { downloadCustomFieldImportTemplate, uploadCustomFieldOptions } from '@/app/api/custom-fields-api';
+import {
+  downloadCustomFieldImportTemplate,
+  uploadCustomFieldOptions,
+} from '@/app/api/custom-fields-api';
 
 const REQUIRED_MESSAGE = 'This field is required';
 
@@ -116,6 +119,7 @@ const EditCustomFieldModal = ({
       name: string().required(REQUIRED_MESSAGE),
       placeholder: string().nullable(),
       fieldType: string().required(REQUIRED_MESSAGE),
+      validationRegex: regexValidator(),
       options: array()
         .of(
           object().shape({
@@ -406,7 +410,7 @@ const EditCustomFieldModal = ({
     setImportPopupOpen(false);
     fetchUserCustomFields();
     closeModal();
-  };  
+  };
 
   const inputStyle = {
     '& .MuiOutlinedInput-root': {
@@ -462,6 +466,17 @@ const EditCustomFieldModal = ({
                           />
                         </Grid>
                       )}
+                    {(fieldTypeValue === FieldType.TEXT ||
+                      fieldTypeValue === FieldType.NUMBER) && (
+                      <Grid item xs={12}>
+                        <FormInput
+                          variant="outlined"
+                          sx={inputStyle}
+                          name="validationRegex"
+                          label="Field Validation Regex"
+                        />
+                      </Grid>
+                    )}
                     <Grid item xs={6}>
                       <FormSelect
                         readOnly={!!customField}
@@ -633,25 +648,24 @@ const EditCustomFieldModal = ({
                         >
                           <span style={{ color: 'orange' }}>+</span> Add option
                         </Button>
-                        {
-                          !isCreatingNewField && (
-                            <Button
-                              variant="text"
-                              width="auto"
-                              onClick={() => setImportPopupOpen(true)}
-                            >
-                              <span style={{ color: 'orange' }}>+</span> Add options using File 
-                            </Button>
-                          )
-                        }
+                        {!isCreatingNewField && (
+                          <Button
+                            variant="text"
+                            width="auto"
+                            onClick={() => setImportPopupOpen(true)}
+                          >
+                            <span style={{ color: 'orange' }}>+</span> Add
+                            options using File
+                          </Button>
+                        )}
                       </>
                     )}
                   </Grid>
-                  {(ADDITIONAL_OPTIONS?.length > 0) && (
-                      <Box m={2}>
-                        <AdditionalOptions options={ADDITIONAL_OPTIONS} />
-                      </Box>
-                    )}
+                  {ADDITIONAL_OPTIONS?.length > 0 && (
+                    <Box m={2}>
+                      <AdditionalOptions options={ADDITIONAL_OPTIONS} />
+                    </Box>
+                  )}
                 </Box>
               </FormScrollingContainer>
               <Box m={2} />
@@ -678,7 +692,7 @@ const EditCustomFieldModal = ({
           PaperProps={{
             elevation: 0,
             square: true,
-            style: {}
+            style: {},
           }}
         >
           <ImportDataModal

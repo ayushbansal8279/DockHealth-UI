@@ -1,33 +1,45 @@
 import React from 'react';
 import { useGridApiRef, DataGridPremium } from '@mui/x-data-grid-premium';
+import moment from 'moment';
 import Tooltip from '@/app/components/common/Tooltip/Tooltip';
 import { List, PropertiesTooltipContainer } from './styled';
-import moment from 'moment';
 import { formatKey } from './helper';
-import { Link } from '@mui/material';
 
-const MeteringTable = ({ billingData }) => {
+const MeteringTable = ({
+  billingData,
+  onPaginationChange,
+  defaultPageSize,
+  rowCount,
+}) => {
+  const [paginationModel, setPaginationModel] = React.useState({
+    pageSize: defaultPageSize,
+    page: 0,
+  });
   const apiRef = useGridApiRef();
   const columns = [
     {
       field: 'type',
       headerName: 'Type',
-      width: 200,
+      width: 150,
     },
     {
       field: 'subtype',
-      headerName: 'Action',
-      width: 250,
+      headerName: 'Sub Type',
+      width: 150,
     },
     {
-      field: 'entity',
-      headerName: 'Entity',
-      width: 100,
+      field: 'workflow',
+      headerName: 'Workflow',
+      width: 250,
+      renderCell: ({ row }) => {
+        const { properties } = row;
+        return properties?.templateName || properties?.workflowName;
+      },
     },
     {
       field: 'entityName',
-      headerName: 'Entity Name',
-      width: 150,
+      headerName: 'Task / Action',
+      width: 350,
     },
     {
       field: 'path',
@@ -37,22 +49,12 @@ const MeteringTable = ({ billingData }) => {
     {
       field: 'ts',
       headerName: 'Event Date',
-      width: 150,
+      width: 200,
       renderCell: ({ row }) => {
         const { ts } = row;
         const date = moment(ts);
         return date.format('MMM DD, YYYY @hh:mm a');
       },
-    },
-    {
-      field: 'entityIdentifier',
-      headerName: 'Entity Identifier',
-      width: 300,
-    },
-    {
-      field: 'eventIdentifier',
-      headerName: 'Event Identifier',
-      width: 300,
     },
     {
       field: 'properties',
@@ -85,7 +87,6 @@ const MeteringTable = ({ billingData }) => {
       apiRef={apiRef}
       columns={columns}
       getRowId={(row) => row.eventIdentifier}
-      editMode="row"
       rows={billingData}
       rowHeight={40}
       sx={{
@@ -97,6 +98,18 @@ const MeteringTable = ({ billingData }) => {
       columnHeaderHeight={50}
       showCellVerticalBorder
       showColumnVerticalBorder
+      pagination
+      pageSizeOptions={[defaultPageSize]}
+      rowCount={rowCount}
+      paginationMode="server"
+      paginationModel={paginationModel}
+      onPaginationModelChange={(newPaginationModel) => {
+        setPaginationModel(newPaginationModel);
+        onPaginationChange(
+          newPaginationModel.page,
+          newPaginationModel.pageSize,
+        );
+      }}
     />
   );
 };

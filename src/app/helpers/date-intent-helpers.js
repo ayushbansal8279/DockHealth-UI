@@ -44,31 +44,64 @@ export const isISODateAndTime = (value) => {
   return false;
 };
 
-export const determineDateTimeIntent = (value) => {
+export const calculateDateTimeIntent = (value) => {
   if (value == null || !isISODateAndTime(value)) return null;
 
-  const localDate = moment(value);
-  const recalculatedUtcMidnight = moment(localDate).startOf('day').utc();
-  const isDateIntent = value === recalculatedUtcMidnight.format(UTC_DATE_TIME);
-
-  const dateTimeIntent = isDateIntent
-    ? DueDateIntent.DATE
-    : DueDateIntent.DATETIME_ABSOLUTE;
-  return dateTimeIntent;
-};
-
-export const determineDateValueFromIntent = (value, dateIntent) => {
-  if (dateIntent == null) return value;
-  return dateIntent === DueDateIntent.DATE
-    ? moment(value).format(UTC_DATE_ONLY)
-    : moment.utc(value).format(UTC_DATE_TIME);
-};
-
-export const getDateTimeIntent = (value) => {
-  if (!isISODateAndTime(value)) return {};
-  return {
-    dateTimeIntent: value.includes('T00:00:00.000Z')
+  return value.includes('T00:00:00.000Z')
       ? DueDateIntent.DATE
-      : DueDateIntent.DATETIME_ABSOLUTE,
-  };
+      : DueDateIntent.DATETIME_ABSOLUTE;
+}
+
+export const transformMetaData = (dataArray) => {
+  return dataArray.map((item) => {
+    const dateTimeIntent = calculateDateTimeIntent(item.value);
+    if (!dateTimeIntent) return item;
+
+    return {
+      ...item,
+      value: item.value,
+      dateTimeIntent,
+    }
+  });
+};
+
+export const convertForIntent = (date) => {
+  if(!date) return null;
+
+  let finalIso;
+
+  const rawInput = date?._i;
+  const hasValidTime = rawInput && !rawInput.includes('null');
+
+  if (hasValidTime) {
+    finalIso = moment(date).toISOString();
+  } else {
+    finalIso = `${moment(date).format('YYYY-MM-DD')}T00:00:00.000Z`;
+  }
+
+  return finalIso;
+
+}
+
+export const normalizeDateOnlyIntent = (isoDateString) => {
+  if (!isoDateString) return null;
+
+  const utcMoment = moment.utc(isoDateString);
+  const localMoment = utcMoment.clone().local();
+
+  const isLocalMidnight =
+    localMoment.hour() === 0 &&
+    localMoment.minute() === 0 &&
+    localMoment.second() === 0 &&
+    localMoment.millisecond() === 0;
+
+  if (isLocalMidnight) {
+    const normalized = moment
+      .utc(localMoment.format('YYYY-MM-DD'))
+      .toISOString();
+
+    return normalized;
+  }
+
+  return isoDateString;
 };
