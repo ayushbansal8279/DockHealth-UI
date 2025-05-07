@@ -99,6 +99,8 @@ import palette from '@/app/styles/palette';
 import TaskTemplateContextMenu from '../TaskTemplateContextMenu/TaskTemplateContextMenu';
 import AISummaryModalOpenerHelper from '@/app/modal/components/AISummaryModal/AISummaryModalOpenerHelper';
 import { SummaryType } from '@/app/helpers/ai-helper';
+import { useDraggable, useDroppable } from '@dnd-kit/core';
+import { CSS } from '@dnd-kit/utilities';
 
 const TaskTemplateGroupHeader = ({
   templateGroup = {},
@@ -136,6 +138,17 @@ const TaskTemplateGroupHeader = ({
     selected,
     creator,
   } = templateGroup;
+
+  const { attributes, listeners, setNodeRef, transform, transition } =
+    useDraggable({ id: identifier });
+
+  const {
+    setNodeRef: setDroppableRef,
+    isOver,
+    active,
+  } = useDroppable({
+    id: identifier,
+  });
 
   const { bulkEditIsActive } = useContext(BulkEditContext);
   const { bulkEditEnabled } = useContext(BulkEditContext);
@@ -572,15 +585,18 @@ const TaskTemplateGroupHeader = ({
           order={0}
           width={width + 25 + 56}
           origin={origin}
+          isDragActive={!!active && active?.id === identifier}
         >
           {!groupDragAndDropDisabled &&
             !bulkEditIsActive &&
             taskListRestrictions?.completeTask !== DISABLED && (
-              <TemplateHandle
-                src={ThreeDotsIcon}
-                alt="Handle"
-                {...dragHandleProps}
-              />
+              <div {...attributes} {...listeners}>
+                <TemplateHandle
+                  src={ThreeDotsIcon}
+                  alt="Handle"
+                  {...dragHandleProps}
+                />
+              </div>
             )}
           <ActionIconsContainer isOpen={!isVirtualListWorkflowOpen}>
             {taskListRestrictions?.completeTask !== DISABLED &&
@@ -656,6 +672,12 @@ const TaskTemplateGroupHeader = ({
         isLastTaskOfGroup={isLastTaskOfGroup}
         origin={origin}
         isNextTaskItemTypeBundle={isNextTaskItemTypeBundle}
+        ref={(node) => {
+          setNodeRef(node);
+          setDroppableRef(node);
+        }}
+        isDraggedOver={isOver && active?.id !== identifier}
+        isDragActive={!!active && active?.id === identifier}
       >
         {randerFirstColumnCoverIfNecessary(
           <>

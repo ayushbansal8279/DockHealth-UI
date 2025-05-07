@@ -24,6 +24,10 @@ const palette = {
   shadowBlue: '#8492A4',
   gunmetal: '#292D34',
   softSteelBlue: '#C1CCDA',
+  columbiaBlue: '#bbdefb',
+  lightSkyBlue: '#90caf9',
+  dodgerBlue: '#2196f3',
+  azureBlue: '#3B82F6',
 
   // secondary
   purplePassion: '#553bbe',

@@ -440,10 +440,34 @@ export const ClickablePatient = styled.span`
   overflow: hidden;
 `;
 
+export const DragPreviewWrapper = styled.div`
+  display: inline-flex;
+  align-items: center;
+  background-color: rgba(155, 217, 236, 0.6);
+  color: black;
+  padding: 6px 12px;
+  margin-left: ${({ isBundleOrSubtask }) =>
+    isBundleOrSubtask ? '-50px' : '0'};
+  font-size: 13px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  position: relative;
+  width: 350px;
+  height: 34px;
+  cursor: grabbing;
+  user-select: none;
+`;
+
+export const DragPreviewText = styled.div`
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  font-weight: bold;
+`;
+
 export const StandardTaskItemContainer = styled.div`
   position: relative;
   background-color: ${(props) =>
-    props.isSelected
+    props.isSelected || props.isDragActive
       ? palette.brightBlueWithAlpha
       : // eslint-disable-next-line unicorn/no-nested-ternary
       props.hasEscalations
@@ -474,6 +498,15 @@ export const StandardTaskItemContainer = styled.div`
         `
       : ''};
 
+  ${({ isDraggedOver }) =>
+    isDraggedOver
+      ? `
+      border-bottom: 3px solid ${palette.azureBlue};
+      `
+      : ''}
+
+  // ${({ isDragActive }) => (isDragActive ? 'opacity: 0;' : 'opacity: 1;')}
+
   ${({ isTaskTemplate }) =>
     isTaskTemplate
       ? `
@@ -491,9 +524,13 @@ export const StandardTaskItemContainer = styled.div`
   `
       : ''}
 
-  ${({ isLastChild }) =>
+  ${({ isLastChild, isDraggedOver }) =>
     isLastChild
-      ? `
+      ? isDraggedOver
+        ? `
+      border-bottom: 3px solid ${palette.azureBlue};
+      `
+        : `
     border-bottom: 1px solid rgba(75, 179, 253, 1);
   `
       : ''}
@@ -571,6 +608,7 @@ export const StandardTaskThreeDots = styled(ThreeDots)`
   background-color: ${palette.coolGrey4};
   padding: 2px 1px 2px 2px;
   z-index: 12;
+  cursor: grab;
 `;
 
 export const StandardTaskItemPanel = styled.div`
