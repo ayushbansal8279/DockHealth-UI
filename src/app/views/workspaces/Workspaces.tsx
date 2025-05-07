@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import BasicLayoutHeader from 'components/template/BasicLayoutHeader/BasicLayoutHeader';
 import ViewLayout from 'components/template/ViewLayout/ViewLayout';
@@ -11,7 +11,7 @@ import {
   MainTab,
   WorkspaceDetailsContainer,
 } from './styled';
-import { DEFAULT_TAB, TABS_CONFIG } from './helper';
+import { DEFAULT_TAB, INITIAL_TABS_CONFIG, TABS_CONFIG } from './helper';
 import {
   Redirect,
   Switch,
@@ -24,13 +24,20 @@ import { RouteWrapper } from '@/app/routing/components';
 
 const Workspaces = () => {
   const organization = useSelector(organizationSelector) as TOrganization;
-  const [tabsConfiguration, setTabsConfiguration] = useState(TABS_CONFIG);
+  const [tabsConfiguration, setTabsConfiguration] =
+    useState(INITIAL_TABS_CONFIG);
   const { pathname } = useLocation();
   const { path, url } = useRouteMatch();
   const history = useHistory();
+  const isWorkspaceEnabled = true;
+
+  useEffect(() => {
+    if (isWorkspaceEnabled) {
+      setTabsConfiguration(TABS_CONFIG);
+    }
+  }, []);
 
   const activeTabPath = useMemo(() => {
-    // eslint-disable-next-line no-restricted-syntax
     for (const tab of tabsConfiguration) {
       const regex = new RegExp(`/${tab.mainPath}/|/${tab.mainPath}$`, 'gi');
       if (regex.test(pathname)) {
@@ -39,8 +46,6 @@ const Workspaces = () => {
     }
     return DEFAULT_TAB.mainPath;
   }, [pathname, tabsConfiguration]);
-
-  console.log('path', activeTabPath);
 
   const handleTabChange = (_: any, newTabValue: any) => {
     history.push(`${url}/${newTabValue}`);
@@ -63,9 +68,6 @@ const Workspaces = () => {
           </Tabs>
         </Grid>
       </WorkspaceTabsContainer>
-      {/* <Box sx={{ p: 5, display: 'flex', flexDirection: 'column', gap: 3 }}>
-        Hiiii
-      </Box> */}
       <WorkspaceDetailsContainer>
         <Switch>
           {tabsConfiguration?.map((route) => (

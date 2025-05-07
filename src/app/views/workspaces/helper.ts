@@ -14,4 +14,12 @@ export const TABS_CONFIG = [
   },
 ];
 
+export const INITIAL_TABS_CONFIG = [
+  {
+    label: 'Configure',
+    mainPath: 'configure',
+    RouteComponent: WorkspaceConfigure,
+  },
+];
+
 export const DEFAULT_TAB = TABS_CONFIG[0];

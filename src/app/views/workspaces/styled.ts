@@ -24,6 +24,5 @@ export const WorkspaceTabsContainer = styled.div`
 `;
 
 export const WorkspaceDetailsContainer = styled.div`
-  padding: ${spacing.huge} ${spacing.large};
   min-height: 100vh;
 `;
