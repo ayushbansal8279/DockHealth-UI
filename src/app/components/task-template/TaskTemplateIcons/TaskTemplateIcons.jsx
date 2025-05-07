@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { Grid } from '@mui/material';
+import { Box, Grid } from '@mui/material';
 import { openDrawer } from 'actions/workflow-drawer-actions';
 import {
   getLabelsIconTooltipTitle,
@@ -17,14 +17,17 @@ import {
   LabelWrapper,
 } from './styled';
 import TaskLabel from '../../common/TaskLabel/TaskLabel';
+import TaskTemplateComment from './TaskTemplateComment';
 
 const TaskTemplateIcons = ({
+  comments,
   workflow,
   dispatch,
   labels,
   matchLabels,
   attachments,
   matchAttachments,
+  isBorderColumnItem,
 }) => {
   const { restrictions } = workflow ?? {};
 
@@ -47,16 +50,36 @@ const TaskTemplateIcons = ({
   }, [workflow]);
 
   return (
-    <Grid container>
+    <Grid container wrap="nowrap">
+      {comments ? (
+        <TaskTemplateComment
+          comments={workflow?.comments}
+          matchAttachComments={workflow?.matchComments}
+          workflow={workflow}
+          isBorderColumnItem={isBorderColumnItem}
+        />
+      ) : null}
       {labels ? (
-        <LabelContainer>
-          {labels.length > 0 ? (
+        labels.length > 0 ? (
+          isBorderColumnItem ? (
+            <Box marginLeft="5px" marginTop="-2px">
+              <TaskLabel
+                getLabelsIconTooltipTitle={getLabelsIconTooltipTitle}
+                labels={labels}
+                onClick={onLabelClick}
+                isBorderColumnItem={isBorderColumnItem}
+              />
+            </Box>
+          ) : (
             <TaskLabel
               getLabelsIconTooltipTitle={getLabelsIconTooltipTitle}
               labels={labels}
               onClick={onLabelClick}
+              isBorderColumnItem={isBorderColumnItem}
             />
-          ) : (
+          )
+        ) : (
+          <LabelContainer>
             <GridImg item xs={12} matched={matchLabels}>
               <Tooltip placement="top" title="Add Label">
                 <button
@@ -67,14 +90,14 @@ const TaskTemplateIcons = ({
                   type="button"
                   onClick={onLabelClick}
                 >
-                  <LabelWrapper>
+                  <LabelWrapper isBorderColumnItem={isBorderColumnItem}>
                     <TaskIcon type="labels" isActive={labels?.length > 0} />
                   </LabelWrapper>
                 </button>
               </Tooltip>
             </GridImg>
-          )}
-        </LabelContainer>
+          </LabelContainer>
+        )
       ) : null}
       {attachments ? (
         <FilesContainer>
@@ -88,7 +111,10 @@ const TaskTemplateIcons = ({
               }
             >
               <button type="button" onClick={onAttachmentsClick}>
-                <FilesWrapper attachments={attachments?.length > 0}>
+                <FilesWrapper
+                  isBorderColumnItem={isBorderColumnItem}
+                  attachments={attachments?.length > 0}
+                >
                   <TaskIcon
                     type="attachments"
                     isActive={attachments?.length > 0}
