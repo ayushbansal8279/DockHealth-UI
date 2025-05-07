@@ -50,3 +50,38 @@ export function deleteDeveloperCredential(apiKey: string) {
       throw new Error(error?.response?.data?.errorMessage);
     });
 }
+
+export function getDeveloperOauthScopes() {
+  return axios
+    .get<Credential[]>('organization/settings/developer/scopes')
+    .then(({ data }) => data)
+    .catch((error) => {
+      showAlert({
+        status: 'error',
+        title: 'Error',
+        text:
+          error?.response?.data?.errorMessage ??
+          'Error in Fetching Scopes. Please try again.',
+      });
+      throw new Error(error?.response?.data?.errorMessage);
+    });
+}
+
+export function createDeveloperCredentialWithScopes(selectedScopes: any) {
+  return axios
+    .post<Credential>('organization/settings/developer/credentialWithScopes',{
+      scopes: selectedScopes
+    })
+    .then(({ data }) => data)
+    .catch((error) => {
+      showAlert({
+        status: 'error',
+        title: 'Error',
+        text:
+          error?.response?.data?.errorMessage ??
+          'Error in Creating Credentials. Please try again.',
+      });
+
+      throw new Error(error?.response?.data?.errorMessage);
+    });
+}

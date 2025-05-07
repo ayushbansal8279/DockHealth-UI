@@ -39,7 +39,16 @@ export default function ApiKeyCard({ data, idx }: Props) {
       label: 'Client Secret',
       ellipsis: true,
     },
+    {
+      value: getScopesString(data.scopes),
+      label: 'Scopes',
+      ellipsis: false,
+    },
   ];
+
+  function getScopesString(scopes: string[]): string {
+    return Array.isArray(scopes) ? scopes.join(', ') : '';
+  }
 
   const handleDeleteClick = () => {
     const modalProps = {
