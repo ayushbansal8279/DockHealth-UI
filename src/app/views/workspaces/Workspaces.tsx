@@ -2,7 +2,6 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import BasicLayoutHeader from 'components/template/BasicLayoutHeader/BasicLayoutHeader';
 import ViewLayout from 'components/template/ViewLayout/ViewLayout';
-import { Box } from '@mui/material';
 import { TOrganization } from 'types/organization';
 import { organizationSelector } from 'selectors/organization-selectors';
 import { Tabs, Grid } from '@mui/material';
@@ -20,7 +19,6 @@ import {
   useRouteMatch,
 } from 'react-router-dom';
 import { RouteWrapper } from '@/app/routing/components';
-// import Loader, { LoaderSizes } from '@/app/components/common/Loader/Loader';
 
 const Workspaces = () => {
   const organization = useSelector(organizationSelector) as TOrganization;
@@ -90,20 +88,8 @@ const Workspaces = () => {
 
 export default Workspaces;
 
-{
-  /* <Box sx={{ p: 5, display: 'flex', flexDirection: 'column', gap: 3 }}>
-  {credentialsQuery.isLoading && (
-    <Box display="flex" justifyContent="center">
-      <Loader size={LoaderSizes.medium} />
-    </Box>
-  )}
-  {credentialsQuery.data && (
-    <>
-      <HeaderCard credentialsExist={!!credentialsQuery.data.length} />
-      {credentialsQuery.data.map((credential, idx) => (
-        <ApiKeyCard key={credential.clientId} data={credential} idx={idx} />
-      ))}
-    </>
-  )}
-</Box>; */
-}
+
+// import Loader, { LoaderSizes } from '@/app/components/common/Loader/Loader';
+{/* <Box display="flex" justifyContent="center">
+  <Loader size={LoaderSizes.medium} />
+</Box>; */}
