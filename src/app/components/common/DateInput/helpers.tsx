@@ -38,3 +38,22 @@ export const getMomenDateFromString = (value: string | null): moment.Moment => {
 
   return moment(newValue, DEFAULT_DATE_FORMAT);
 };
+
+export function isValidDateInput(value: string): boolean {
+  if (!value || value.trim() === '' || value === '__/__/____ __:__ _M') {
+    return false;
+  }
+
+  const datePart = value.substring(0, 10);
+  const hasValidDate = moment(datePart, ['MM/DD/YYYY', 'YYYY-MM-DD'], true).isValid();
+
+  const hasFullTime = /\d{2}:\d{2} [AP]M$/.test(value); // e.g. 12:12 AM
+  const hasMissingTime = /__:__ [AP]_M$|__:__ _M$/.test(value); // __:__ AM or _M
+  const hasPartialTime = /(\d{2}:\d{1}_|\d{2}:__|\d_:__)/.test(value); // 12:1_
+
+  if (!hasValidDate || (value.includes('_') && !(hasMissingTime || hasFullTime)) || hasPartialTime) {
+    return false;
+  }
+
+  return true;
+}

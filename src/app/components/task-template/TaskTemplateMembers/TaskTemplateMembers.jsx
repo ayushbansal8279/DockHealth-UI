@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useRef } from 'react';
 import AssignMemberIcon from 'components/user/AssignMemberIcon/AssingMemberIcon';
 import MemberGroup from 'components/user/MemberGroup/MemberGroup';
 import Tooltip from 'components/common/Tooltip/Tooltip';
@@ -16,6 +16,8 @@ const TaskTemplateMembers = ({
   workflow = {},
   onWorkflowUpdate,
   readOnly,
+  maxIconDisplay,
+  isBorderColumnItem,
 }) => {
   const {
     assignedToUsers = [],
@@ -23,6 +25,7 @@ const TaskTemplateMembers = ({
     identifier,
     taskListIdentifier,
   } = workflow;
+  const assigneeRef = useRef(null);
 
   const handleWorkflowUpdate = useCallback(
     (selectedMembers) => {
@@ -37,8 +40,9 @@ const TaskTemplateMembers = ({
   return (
     <AssigneeContainer>
       <TaskItemPopover
+        reference={assigneeRef}
         disabled={readOnly}
-        contentWidth={230}
+        contentWidth={246}
         content={({ closePopover }) => (
           <MultiAssignMembersList
             taskListIdentifiers={taskListIdentifier}
@@ -54,24 +58,33 @@ const TaskTemplateMembers = ({
         )}
         fullWidth={multipleAssigneesContext}
       >
-        {assignedToUsers?.length ? (
-          <>
-            <AssigneeMatchingWrapper
-              matched={searchMetaData?.matchAssignedTo}
-            />
-            <MemberGroup members={assignedToUsers} />
-          </>
-        ) : (
-          <>
-            <AssigneeWrapper>
-              <Tooltip placement="top" title="Add assignee">
-                <div style={{ marginLeft: '2px' }}>
-                  <AssignMemberIcon />
-                </div>
-              </Tooltip>
-            </AssigneeWrapper>
-          </>
-        )}
+        <div ref={assigneeRef} style={{ minWidth: '100px' }}>
+          {assignedToUsers?.length ? (
+            <>
+              {searchMetaData?.matchAssignedTo && (
+                <AssigneeMatchingWrapper
+                  matched={searchMetaData?.matchAssignedTo}
+                />
+              )}
+
+              <MemberGroup
+                members={assignedToUsers}
+                size={28}
+                max={maxIconDisplay}
+              />
+            </>
+          ) : (
+            <>
+              <AssigneeWrapper isBorderColumnItem={isBorderColumnItem}>
+                <Tooltip placement="top" title="Add assignee">
+                  <div style={{ display: 'flex', marginLeft: '2px' }}>
+                    {!readOnly && <AssignMemberIcon />}
+                  </div>
+                </Tooltip>
+              </AssigneeWrapper>
+            </>
+          )}
+        </div>
       </TaskItemPopover>
     </AssigneeContainer>
   );

@@ -107,6 +107,7 @@ const RichTextEditor = ({
   mentions,
   disableMentions = false,
   templatePlaceholders = false,
+  expandEditorHeight = false,
 }) => {
   const [rawTextState, setRawTextState] = useState(initialValue);
   const [editor, setEditor] = useState(null);
@@ -319,10 +320,12 @@ const RichTextEditor = ({
       attribution: false,
       placeholderText: placeholder,
       multiLine: multiline,
-      charCounterCount: false,
+      charCounterCount: showCharCount || !!showToolbar,
+      charCounterMax: characterLimit,
       toolbarInline: showToolbarInline,
       toolbarVisibleWithoutSelection: true,
       heightMax: multiline ? 150 : 500,
+      heightMin: expandEditorHeight ? 150 : 0,
       toolbarButtons: disableToolbar
         ? []
         : [

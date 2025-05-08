@@ -27,8 +27,8 @@ const MemberGroup = ({ members, max, size }) => {
     () =>
       sortedUsersOrAndGroups?.length > max
         ? [
-            sortedUsersOrAndGroups.slice(0, max - 1),
-            sortedUsersOrAndGroups.slice(max - 1),
+            sortedUsersOrAndGroups.slice(0, max),
+            sortedUsersOrAndGroups.slice(max),
           ]
         : [sortedUsersOrAndGroups, null],
 

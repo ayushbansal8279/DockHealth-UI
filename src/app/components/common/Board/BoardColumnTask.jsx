@@ -30,6 +30,13 @@ import {
   WorkflowIndicator,
   WorkflowActionsContainer,
 } from './styled';
+import TaskTemplateIcons from '../../task-template/TaskTemplateIcons/TaskTemplateIcons';
+import { onTaskAssigned } from '@/app/helpers/ga-event-helper';
+import TaskTemplateMembers from '../../task-template/TaskTemplateMembers/TaskTemplateMembers';
+import { updatePartialWorkflow } from '@/app/actions/task-template-actions';
+import { compose } from 'redux';
+import TaskTemplateDueDate from '../../task-template/TaskTemplateDueDate/TaskTemplateDueDate';
+import * as TaskActions from 'actions/task-actions';
 
 const BoardColumnTask = ({
   task: taskItemIdentifier,
@@ -73,11 +80,14 @@ const BoardColumnTask = ({
 
   const handleReasignTask = useCallback(
     (selectedMembers) => {
-      partialUpdateTask(identifier, {
-        assignedToUsers: selectedMembers,
-        assignedToIdentifiers: pluck('userIdentifier', selectedMembers),
-        assignedBy: selectedMembers?.length ? currentUser : null,
-      });
+      dispatch(
+        partialUpdateTask(identifier, {
+          assignedToUsers: selectedMembers,
+          assignedToIdentifiers: pluck('userIdentifier', selectedMembers),
+          assignedBy: selectedMembers?.length ? currentUser : null,
+        }),
+      );
+      onTaskAssigned();
     },
     [currentUser, identifier],
   );
@@ -106,7 +116,9 @@ const BoardColumnTask = ({
             {...dragProvided.dragHandleProps}
           >
             <Header>
-              <TaskName onClick={handleOpenDrawer}>{trunc(title, 50)}</TaskName>
+              <TaskName onClick={handleOpenDrawer} isWorkflow={isWorkflow}>
+                {trunc(title, 50)}
+              </TaskName>
               {!isWorkflow && (
                 <OptionsContainer>
                   {taskContextMenuOptions?.length && (
@@ -122,60 +134,34 @@ const BoardColumnTask = ({
             </Header>
             {!isWorkflow && (
               <TaskActionsContainer>
-                <Box flex="1">
-                  <TaskItemIcons
-                    restrictions={restrictions}
-                    matchComments={matchComments}
-                    comments={comments}
-                    task={task}
-                    matchLabels={matchLabels}
-                    labels={labels}
-                    matchAttachments={matchAttachments}
-                    attachments={attachments}
-                    dispatch={dispatch}
-                  />
-                </Box>
-                <Box flex="1" display="flex" justifyContent="center">
-                  <TaskItemDueDate
-                    task={task}
-                    format="MM/DD"
-                    showTime={false}
-                    showRecurring={false}
-                  />
-                </Box>
                 <Box
-                  flex="1"
                   display="flex"
-                  justifyContent="center"
-                  padding="0 2px"
+                  justifyContent="space-between"
+                  alignItems="center"
                 >
-                  <TaskItemSubtasks
-                    subtaskQuickAddOpen={subtaskQuickAddOpen}
-                    subtasksDisabled
-                    subTasksCount={subTasksCount || '0'}
-                    taskIdentifier={identifier}
-                    dispatch={dispatch}
-                    readOnly={restrictions?.subtasks === READ_ONLY}
-                  />
+                  <Box flex={1} textAlign="left">
+                    <TaskItemMembers
+                      readOnly={restrictions?.assigment === READ_ONLY}
+                      task={task}
+                      assignedToUsers={assignedToUsers}
+                      handleReasignTask={handleReasignTask}
+                      matchAssignedTo={matchAssignedTo}
+                      maxIconDisplay={1}
+                      isBorderColumnItem
+                    />
+                  </Box>
+                  <Box flex={1} textAlign="center">
+                    <TaskItemDueDate
+                      task={task}
+                      format="MM/DD"
+                      showTime={false}
+                      showRecurring={false}
+                      isBorderColumnItem
+                    />
+                  </Box>
                 </Box>
-                <Box flex="1" display="flex" justifyContent="center">
-                  <TaskItemMembers
-                    readOnly={restrictions?.assigment === READ_ONLY}
-                    task={task}
-                    assignedToUsers={assignedToUsers}
-                    handleReasignTask={handleReasignTask}
-                    matchAssignedTo={matchAssignedTo}
-                  />
-                </Box>
-              </TaskActionsContainer>
-            )}
-            {isWorkflow && (
-              <>
-                <div>
-                  <WorkflowIndicator>workflow</WorkflowIndicator>
-                </div>
-                <WorkflowActionsContainer>
-                  <Box flex="3">
+                <Box display="flex" justifyContent="flex-end" gap={1}>
+                  <Box>
                     <TaskItemIcons
                       restrictions={restrictions}
                       matchComments={matchComments}
@@ -186,22 +172,10 @@ const BoardColumnTask = ({
                       matchAttachments={matchAttachments}
                       attachments={attachments}
                       dispatch={dispatch}
+                      isBorderColumnItem
                     />
                   </Box>
-                  <Box flex="1" display="flex" justifyContent="center">
-                    <TaskItemDueDate
-                      task={task}
-                      format="MM/DD"
-                      showTime={false}
-                      showRecurring={false}
-                    />
-                  </Box>
-                  <Box
-                    flex="1"
-                    display="flex"
-                    justifyContent="center"
-                    padding="0 2px"
-                  >
+                  <Box>
                     <TaskItemSubtasks
                       subtaskQuickAddOpen={subtaskQuickAddOpen}
                       subtasksDisabled
@@ -211,33 +185,88 @@ const BoardColumnTask = ({
                       readOnly={restrictions?.subtasks === READ_ONLY}
                     />
                   </Box>
-                  <Box flex="1" display="flex" justifyContent="center">
-                    <TaskItemMembers
-                      readOnly={restrictions?.assigment === READ_ONLY}
-                      task={task}
-                      assignedToUsers={assignedToUsers}
-                      handleReasignTask={handleReasignTask}
-                      matchAssignedTo={matchAssignedTo}
-                    />
+                </Box>
+              </TaskActionsContainer>
+            )}
+            {isWorkflow && (
+              <>
+                <WorkflowActionsContainer>
+                  <Box
+                    display="flex"
+                    justifyContent="space-between"
+                    alignItems="center"
+                  >
+                    <Box flex={1} textAlign="left">
+                      <TaskTemplateMembers
+                        readOnly={restrictions?.assigment === READ_ONLY}
+                        currentUser={currentUser}
+                        workflow={task}
+                        onWorkflowUpdate={compose(
+                          dispatch,
+                          updatePartialWorkflow,
+                        )}
+                        maxIconDisplay={1}
+                        isBorderColumnItem
+                      />
+                    </Box>
+                    <Box flex={1} textAlign="center">
+                      <TaskTemplateDueDate
+                        workflow={task}
+                        format="MM/DD"
+                        showTime={false}
+                        showRecurring={false}
+                        isBorderColumnItem
+                      />
+                    </Box>
+                  </Box>
+                  <Box display="flex" justifyContent="flex-end" gap={1}>
+                    <Box>
+                      <TaskTemplateIcons
+                        comments={comments}
+                        workflow={task}
+                        matchLabels={matchLabels}
+                        labels={labels}
+                        matchAttachments={matchAttachments}
+                        attachments={attachments}
+                        dispatch={dispatch}
+                        isBorderColumnItem
+                      />
+                    </Box>
+                    <Box>
+                      <TaskItemSubtasks
+                        subtaskQuickAddOpen={subtaskQuickAddOpen}
+                        subtasksDisabled
+                        subTasksCount={subTasksCount || '0'}
+                        taskIdentifier={identifier}
+                        dispatch={dispatch}
+                        readOnly={restrictions?.subtasks === READ_ONLY}
+                      />
+                    </Box>
                   </Box>
                 </WorkflowActionsContainer>
               </>
             )}
-            <TaskItemPatient
-              // highlightedValue={highlightedValue}
-              taskStatus={task?.status}
-              isSubtask={false}
-              parentHasPatient
-              hasParentTaskLabel={false}
-              matchPatientMRN={false}
-              patient={patient}
-              // matchPatient={matchPatient}
-              task={task}
-              // openPatientPopover={openPatientPopover}
-              // onTaskUpdate={onTaskUpdate}
-              currentUser={currentUser}
-              readOnly={restrictions?.patient === READ_ONLY}
-            />
+            <Box marginTop="-5px">
+              <TaskItemPatient
+                // highlightedValue={highlightedValue}
+                taskStatus={task?.status}
+                isSubtask={false}
+                parentHasPatient
+                hasParentTaskLabel={false}
+                matchPatientMRN={false}
+                patient={patient}
+                // matchPatient={matchPatient}
+                task={task}
+                // openPatientPopover={openPatientPopover}
+                onTaskUpdate={
+                  isWorkflow
+                    ? compose(dispatch, updatePartialWorkflow)
+                    : compose(dispatch, TaskActions.partialUpdateTask)
+                }
+                currentUser={currentUser}
+                readOnly={restrictions?.patient === READ_ONLY}
+              />
+            </Box>
             {/* {isWorkflow && <WorkflowIndicator>workflow</WorkflowIndicator>} */}
           </TaskContainer>
         </Box>

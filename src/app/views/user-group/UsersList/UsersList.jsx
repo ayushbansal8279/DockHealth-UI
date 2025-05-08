@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext, useEffect, useMemo } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Grid } from '@mui/material';
 import { createFilter } from 'react-search-input';
@@ -8,14 +8,27 @@ import { OutfitTypography } from 'styles/theme';
 import DataGrid, { Data } from 'ui-toolkit/Composite/DataGrid';
 import UserAvatar from 'components/user/UserAvatar/UserAvatar';
 import {
+  BulkContainer,
   ListContainer,
   ListEntryContainer,
   UsersListContainer,
 } from './styled';
+import TaskItemBulkEdit from '@/app/components/task/StandardTaskItem/TaskItemComponents/TaskItemBulkEdit';
+import Checkbox from '@/app/components/common/Checkbox/Checkbox';
+import { UserEditContext } from '@/app/context-api/user-edit-context';
 
 const UsersList = (props) => {
   const { users, searchTerm } = props;
   const history = useHistory();
+
+  const userContext = useContext(UserEditContext);
+  const {
+    selectableUsers,
+    setSelectableUsers,
+    isListChecked,
+    toggleUser,
+    toggleAllUser
+  } = userContext;
 
   const KEYS_TO_FILTERS = [
     'name',
@@ -25,18 +38,35 @@ const UsersList = (props) => {
     'workPhoneNumber',
   ];
 
-  const usersWithId = users.map((user) => ({
-    id: user?.userIdentifier,
-    ...user,
-  }));
+  const usersWithId = useMemo(() => {
+    return users.map((user) => ({
+      id: user?.userIdentifier,
+      isSelected: false,
+      ...user,
+    }));
+  }, [users]);  
 
-  const filteredUsers = searchTerm
-    ? usersWithId?.filter(createFilter(searchTerm, KEYS_TO_FILTERS)) ?? []
-    : usersWithId;
+  const filteredUsers = useMemo(
+    () =>
+      searchTerm
+        ? usersWithId?.filter(createFilter(searchTerm, KEYS_TO_FILTERS)) ?? []
+        : usersWithId,
+    [usersWithId, searchTerm]
+  );
+
+  useEffect(() => {
+    setSelectableUsers(filteredUsers);
+  }, [filteredUsers]);
+
+  const renderCheckboxColumnHeader = ({ isListChecked, onListSelect }) => (
+    <BulkContainer>
+      <Checkbox isChecked={isListChecked} onClick={onListSelect} />
+    </BulkContainer>
+  );
 
   return (
     <UsersListContainer>
-      {isEmpty(filteredUsers) ? (
+      {isEmpty(selectableUsers) ? (
         <ListContainer>
           <ListEntryContainer>
             <Grid container justifyContent="center" alignItems="center">
@@ -47,10 +77,28 @@ const UsersList = (props) => {
       ) : (
         <DataGrid
           fluid
-          dataset={filteredUsers}
+          dataset={selectableUsers}
           hideFooterSelectedRowCount
           autoHeight
         >
+          <Data
+            name="SELECT"
+            field="isSelected"
+            headerRenderer={() =>
+              renderCheckboxColumnHeader({
+                isListChecked,
+                onListSelect: toggleAllUser,
+              })
+            }
+            value={(data) =>
+              <TaskItemBulkEdit
+                isChecked={data?.isSelected}
+                onClick={() => toggleUser(data.id)}
+              />
+            }
+            unsortable
+            flex={0.15}
+          />
           <Data
             name="USER"
             value={(data) => (

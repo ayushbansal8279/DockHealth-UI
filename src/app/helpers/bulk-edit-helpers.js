@@ -38,3 +38,38 @@ export const BulkEditOptionsConfig = {
   ASSIGN_OPTION: 'BulkEditAssignOption',
   DELETE_OPTION: 'BulkEditDeleteOption',
 };
+
+const isCreatorOrIsAssigneeToAllSelectedTasks = (
+  allSelectedTasks,
+  currentUser,
+) => {
+  const currentUserIdentifier = currentUser.userIdentifier;
+  return allSelectedTasks.every((task) => {
+    const isCreator = task.creator.userIdentifier === currentUserIdentifier;
+
+    const isAssigned = task.assignedToUsers.some(
+      (user) => user.userIdentifier === currentUserIdentifier,
+    );
+
+    return isCreator || isAssigned;
+  });
+};
+
+export const validateNonAssigneeCompleteDisabled = (
+  selectedOrganization,
+  allSelectedTasks,
+  currentUser,
+  isListAdmin,
+) => {
+  const nonAssigneeCompleteDisabledItem =
+    selectedOrganization?.themeSettings?.find(
+      ({ name }) => name === 'list.tasks.non-assignee.complete.enabled',
+    ) || {};
+
+  return (
+    nonAssigneeCompleteDisabledItem &&
+    nonAssigneeCompleteDisabledItem?.value === 'false' &&
+    !isCreatorOrIsAssigneeToAllSelectedTasks(allSelectedTasks, currentUser) &&
+    !isListAdmin
+  );
+};
