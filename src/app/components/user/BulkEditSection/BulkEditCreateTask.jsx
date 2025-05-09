@@ -8,7 +8,7 @@ import Spacing from 'components/common/Spacing';
 import QuickAddTaskInput from 'components/tasklist/QuickAddTaskInput/QuickAddTaskInput';
 import { openModal } from 'modal/actions';
 import { getTaskListForUser } from 'api/task-list-api';
-import ModalNote from '@/app/modal/components/ModalNote/ModalNote';
+import ModalMessage from '@/app/modal/components/ModalMessage/ModalMessage';
 
 const EmptyListContainer = styled.div`
   margin: ${spacing.huge} 0;
@@ -45,9 +45,10 @@ const BulkEditCreateTask = ({
               }),
             ),
           renderDescription: () => (
-            <ModalNote>
-              Task will only be assigned to users who are part of the selected list.
-            </ModalNote>
+            <ModalMessage type="warning">
+              This action will fail if any selected user is not part of the selected list. 
+              Please ensure all selected users are in the list.
+            </ModalMessage>
           )
         })
       );
