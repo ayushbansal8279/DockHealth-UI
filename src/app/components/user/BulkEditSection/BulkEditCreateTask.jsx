@@ -1,7 +1,6 @@
 import React, { useCallback, useContext } from 'react';
 import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
-import { Typography } from '@mui/material';
 
 import { fontSizes, fontWeights } from 'styles/font';
 import spacing from 'styles/spacing';
@@ -9,6 +8,7 @@ import Spacing from 'components/common/Spacing';
 import QuickAddTaskInput from 'components/tasklist/QuickAddTaskInput/QuickAddTaskInput';
 import { openModal } from 'modal/actions';
 import { getTaskListForUser } from 'api/task-list-api';
+import ModalNote from '@/app/modal/components/ModalNote/ModalNote';
 
 const EmptyListContainer = styled.div`
   margin: ${spacing.huge} 0;
@@ -28,12 +28,6 @@ const BulkEditCreateTask = ({
   const { selectableUsers, unselectAllUser, selectedOptionsHandler } = contextValue;
   const { turnOffAllOptions } = selectedOptionsHandler;
 
-  const InfoNote = ({ children }) => (
-    <Typography variant="body2" sx={{ mb: 2 }}>
-      <strong>Note:</strong> {children}
-    </Typography>
-  );
-
   const quickAddTask = useCallback(
     ({ description }) => {
       const assignedEntities = selectableUsers?.filter(item => item.isSelected).map(item => item.identifier);
@@ -51,9 +45,9 @@ const BulkEditCreateTask = ({
               }),
             ),
           renderDescription: () => (
-            <InfoNote>
+            <ModalNote>
               Task will only be assigned to users who are part of the selected list.
-            </InfoNote>
+            </ModalNote>
           )
         })
       );

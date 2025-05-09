@@ -1,4 +1,4 @@
-import { Grid, Typography } from '@mui/material';
+import { Grid } from '@mui/material';
 import queryString from 'query-string';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import isNil from 'ramda/src/isNil';
@@ -48,6 +48,7 @@ import BulkEditCreateTask from '../../components/user/BulkEditSection/BulkEditCr
 import BulkEditSection from '../../components/user/BulkEditSection/BulkEditSection';
 import * as UsersActions from 'actions/user-actions';
 import { getTaskListForUser } from '@/app/api/task-list-api';
+import ModalNote from '@/app/modal/components/ModalNote/ModalNote';
 
 function UserGroupView() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -123,12 +124,6 @@ function UserGroupView() {
     );
   }, [dispatch, groupIdentifier]);
 
-  const InfoNote = ({ children }) => (
-    <Typography variant="body2" sx={{ mb: 2 }}>
-      <strong>Note:</strong> {children}
-    </Typography>
-  );
-
   const handleTemplateSelect = useCallback(
     (template) => {
       const assignedEntities = selectableUsers?.filter(item => item.isSelected).map(item => item.identifier);
@@ -146,9 +141,9 @@ function UserGroupView() {
               }),
             ),
             renderDescription: () => (
-              <InfoNote>
+              <ModalNote>
                 Workflow will only be assigned to users who are part of the selected list.
-              </InfoNote>
+              </ModalNote>
             )
         }),
       );
