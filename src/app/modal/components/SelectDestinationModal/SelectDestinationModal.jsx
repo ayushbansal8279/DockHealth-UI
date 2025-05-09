@@ -25,7 +25,8 @@ const SelectDestinationModal = ({
   preventClosingModal = false,
   selectParentTask,
   modalLabel,
-  origin
+  origin,
+  renderDescription
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const dispatch = useDispatch();
@@ -149,6 +150,7 @@ const SelectDestinationModal = ({
             onAddList={handleAddNewList}
             savingList={savingList}
             modalLabel={modalLabel}
+            renderDescription={renderDescription}
           />
           <GroupSelectStep
             selectedList={selectedList}

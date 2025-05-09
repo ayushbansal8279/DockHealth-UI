@@ -1,4 +1,4 @@
-import { Grid } from '@mui/material';
+import { Grid, Typography } from '@mui/material';
 import queryString from 'query-string';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import isNil from 'ramda/src/isNil';
@@ -123,6 +123,12 @@ function UserGroupView() {
     );
   }, [dispatch, groupIdentifier]);
 
+  const InfoNote = ({ children }) => (
+    <Typography variant="body2" sx={{ mb: 2 }}>
+      <strong>Note:</strong> {children}
+    </Typography>
+  );
+
   const handleTemplateSelect = useCallback(
     (template) => {
       const assignedEntities = selectableUsers?.filter(item => item.isSelected).map(item => item.identifier);
@@ -139,6 +145,11 @@ function UserGroupView() {
                 taskGroupIdentifier,
               }),
             ),
+            renderDescription: () => (
+              <InfoNote>
+                Workflow will only be assigned to users who are part of the selected list.
+              </InfoNote>
+            )
         }),
       );
 

@@ -1,6 +1,7 @@
 import React, { useCallback, useContext } from 'react';
 import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
+import { Typography } from '@mui/material';
 
 import { fontSizes, fontWeights } from 'styles/font';
 import spacing from 'styles/spacing';
@@ -27,6 +28,12 @@ const BulkEditCreateTask = ({
   const { selectableUsers, unselectAllUser, selectedOptionsHandler } = contextValue;
   const { turnOffAllOptions } = selectedOptionsHandler;
 
+  const InfoNote = ({ children }) => (
+    <Typography variant="body2" sx={{ mb: 2 }}>
+      <strong>Note:</strong> {children}
+    </Typography>
+  );
+
   const quickAddTask = useCallback(
     ({ description }) => {
       const assignedEntities = selectableUsers?.filter(item => item.isSelected).map(item => item.identifier);
@@ -43,6 +50,11 @@ const BulkEditCreateTask = ({
                 assignedTo: assignedEntities,
               }),
             ),
+          renderDescription: () => (
+            <InfoNote>
+              Task will only be assigned to users who are part of the selected list.
+            </InfoNote>
+          )
         })
       );
 
