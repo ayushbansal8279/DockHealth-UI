@@ -36,7 +36,7 @@ export const BoardContainer = styled.div`
 
 export const BoardColumnContainer = styled.div`
   width: 245px;
-  margin: 15px 25px 0 25px;
+  margin: 15px 11px 0 25px;
   display: flex;
   flex-direction: column;
 `;
