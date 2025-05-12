@@ -8,6 +8,7 @@ import Spacing from 'components/common/Spacing';
 import QuickAddTaskInput from 'components/tasklist/QuickAddTaskInput/QuickAddTaskInput';
 import { openModal } from 'modal/actions';
 import { getTaskListForUser } from 'api/task-list-api';
+import ModalMessage from '@/app/modal/components/ModalMessage/ModalMessage';
 
 const EmptyListContainer = styled.div`
   margin: ${spacing.huge} 0;
@@ -43,6 +44,12 @@ const BulkEditCreateTask = ({
                 assignedTo: assignedEntities,
               }),
             ),
+          renderDescription: () => (
+            <ModalMessage type="warning">
+              This action will fail if any selected user is not part of the selected list. 
+              Please ensure all selected users are in the list.
+            </ModalMessage>
+          )
         })
       );
 
