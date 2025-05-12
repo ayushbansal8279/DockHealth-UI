@@ -137,6 +137,7 @@ import SubtaskIcon from '@/app/img/SubtaskIcon';
 import { getTaskDetails } from '@/app/api/task-api';
 import { useDraggable, useDroppable } from '@dnd-kit/core';
 import { CSS } from '@dnd-kit/utilities';
+import TaskItemProfile from './TaskItemComponents/TaskItemProfile/TaskItemProfile';
 
 const { DISABLED, READ_ONLY } = SINGLE_TASK_RESTRICTIONS_OPTIONS;
 
@@ -1279,6 +1280,21 @@ const TaskItem = React.memo(
                     />
                   </TaskItemCell>,
                   getColumnOrder(TaskItemColumn.PRIORITY),
+                )}
+              </>
+            )}
+            {isColumnChecked(columns, TaskItemColumn.PROFILE) && (
+              <>
+                {randerFirstColumnCoverIfNecessary(
+                  <TaskItemCell
+                    isSubtask={isSubtask}
+                    key={`profile_${taskIdentifier}`}
+                    width={getWidth(TaskItemColumn.PROFILE)}
+                    order={getColumnOrder(TaskItemColumn.PROFILE)}
+                  >
+                    <TaskItemProfile task={task} />
+                  </TaskItemCell>,
+                  getColumnOrder(TaskItemColumn.PROFILE)
                 )}
               </>
             )}
