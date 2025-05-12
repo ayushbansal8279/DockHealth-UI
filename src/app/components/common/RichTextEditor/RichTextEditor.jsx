@@ -369,22 +369,70 @@ const RichTextEditor = ({
           if (onBlur) {
             event.preventDefault();
             event.stopPropagation();
-            const fixedValue = value.replace(
+            let finalValue = value.replace(
+              /<a\s+[^>]*?href="([^"]+)"[^>]*?>(.*?)<\/a>/gi,
+              (match, href, text) => {
+                let trimmedText = text.trim();
+
+                //Link text starts with www
+                if (trimmedText.startsWith('www')) {
+                  return `<a href="//${trimmedText}">${trimmedText}</a>`;
+                }
+
+                // If text is a full URL and doesn't match href, fix the href
+                if (
+                  (trimmedText.startsWith('http://') ||
+                    trimmedText.startsWith('https://')) &&
+                  trimmedText !== href
+                ) {
+                  return `<a href="${trimmedText}">${trimmedText}</a>`;
+                }
+
+                return match;
+              },
+            );
+
+            finalValue = finalValue.replace(
               /(<span class="fr-deletable fr-tribute"[^>]*>.*?<\/a>)([^<]*)(<\/span>)/g,
               '$1</span>$2',
             );
-            const markdown = turndownService.turndown(fixedValue);
+
+            const markdown = turndownService.turndown(finalValue);
             onBlur(markdown);
           }
         },
         contentChanged() {
           const value = this.html.get();
           if (onChange) {
-            const fixedValue = value.replace(
+            let finalValue = value.replace(
+              /<a\s+[^>]*?href="([^"]+)"[^>]*?>(.*?)<\/a>/gi,
+              (match, href, text) => {
+                let trimmedText = text.trim();
+
+                //Link text starts with www
+                if (trimmedText.startsWith('www')) {
+                  return `<a href="//${trimmedText}">${trimmedText}</a>`;
+                }
+
+                // If text is a full URL and doesn't match href, fix the href
+                if (
+                  (trimmedText.startsWith('http://') ||
+                    trimmedText.startsWith('https://')) &&
+                  trimmedText !== href
+                ) {
+                  return `<a href="${trimmedText}">${trimmedText}</a>`;
+                }
+
+                return match;
+              },
+            );
+
+            finalValue = finalValue.replace(
               /(<span class="fr-deletable fr-tribute"[^>]*>.*?<\/a>)([^<]*)(<\/span>)/g,
               '$1</span>$2',
             );
-            const markdown = turndownService.turndown(fixedValue);
+
+            const markdown = turndownService.turndown(finalValue);
             onChange(markdown);
           }
         },
@@ -397,11 +445,34 @@ const RichTextEditor = ({
               keydownEvent.preventDefault();
               keydownEvent.stopPropagation();
               const value = this.html.get();
-              const fixedValue = value.replace(
+              let finalValue = value.replace(
+                /<a\s+[^>]*?href="([^"]+)"[^>]*?>(.*?)<\/a>/gi,
+                (match, href, text) => {
+                  let trimmedText = text.trim();
+
+                  //Link text starts with www
+                  if (trimmedText.startsWith('www')) {
+                    return `<a href="//${trimmedText}">${trimmedText}</a>`;
+                  }
+
+                  // If text is a full URL and doesn't match href, fix the href
+                  if (
+                    (trimmedText.startsWith('http://') ||
+                      trimmedText.startsWith('https://')) &&
+                    trimmedText !== href
+                  ) {
+                    return `<a href="${trimmedText}">${trimmedText}</a>`;
+                  }
+
+                  return match;
+                },
+              );
+
+              finalValue = finalValue.replace(
                 /(<span class="fr-deletable fr-tribute"[^>]*>.*?<\/a>)([^<]*)(<\/span>)/g,
                 '$1</span>$2',
               );
-              const markdown = turndownService.turndown(fixedValue);
+              const markdown = turndownService.turndown(finalValue);
               setEditorState('');
               this.html.set('');
               onKeyEnter(markdown);
