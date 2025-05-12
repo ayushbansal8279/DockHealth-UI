@@ -205,7 +205,7 @@ const ActivityTimeline = ({ activities }) => {
                         <ActivityDescription>
                           <NotesHistoryContainer>
                             <Tooltip title={activity?.contextualData?.state?.current || "N/A"}>
-                              {activity?.contextualData?.state?.current}                
+                              <span>{activity?.contextualData?.state?.current}</span>                
                             </Tooltip>
                             <Tooltip title='More Info'>
                               <IconButton sx={{padding: '1px'}} onClick={(e)=>handleClick(e,activity?.contextualData)}>
