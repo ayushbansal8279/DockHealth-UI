@@ -88,7 +88,7 @@ const ActivityTimeline = ({ activities }) => {
 
   const handleClick = (event, contextualData) => {
     setAnchorEl(event.currentTarget);
-    console.log(contextualData?.state?.current.length)
+    console.log(contextualData)
     setSelectedData(contextualData)
   
     // const matchingActivity = sortedActivities.find(
@@ -198,17 +198,17 @@ const ActivityTimeline = ({ activities }) => {
                       </MembersContainer>)}
                     </>
                   )}
-                  {activity.targetType === "PATIENT_NOTE" && (
+                  {activity?.targetType === "PATIENT_NOTE" && (
                     <>
                       <ActivityName>Note</ActivityName>
-                      {activity.actionType === 'UPDATE_PATIENT_NOTE' &&
+                      {activity?.actionType === 'UPDATE_PATIENT_NOTE' &&
                         <ActivityDescription>
                           <NotesHistoryContainer>
                             <Tooltip title={activity?.contextualData?.state?.current || "N/A"}>
-                              {activity?.contextualData?.state?.current}                      
+                              {activity?.contextualData?.state?.current}                
                             </Tooltip>
                             <Tooltip title='More Info'>
-                              <IconButton sx={{padding: '1px'}} onClick={(e)=>handleClick(e,activity.contextualData)}>
+                              <IconButton sx={{padding: '1px'}} onClick={(e)=>handleClick(e,activity?.contextualData)}>
                                 <InfoIcon fontSize="small" />
                               </IconButton>
                             </Tooltip>
@@ -232,7 +232,7 @@ const ActivityTimeline = ({ activities }) => {
                                 <EditorWrapper>
                                 <RichTextEditor
                                   readonly={true}
-                                  value={selectedData?.state.current}
+                                  value={selectedData?.state?.current}
                                   disableToolbar={true}
                                   showToolbar = {false}
                                 />
@@ -244,7 +244,7 @@ const ActivityTimeline = ({ activities }) => {
                                 <EditorWrapper>
                                 <RichTextEditor
                                   readonly={true}
-                                  value={selectedData?.state.previous}
+                                  value={selectedData?.state?.previous}
                                   disableToolbar={true}
                                   showToolbar = {false}
                                 />
