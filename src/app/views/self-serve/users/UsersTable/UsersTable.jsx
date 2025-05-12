@@ -27,6 +27,10 @@ import {
   ListLoaderContainer,
   StyledDataGrid,
 } from './styled';
+import { MoreActionsWrapper } from '@/app/views/person-details/PersonDetailsDrawer/styled';
+import OptionsMenu from '@/app/components/common/OptionsMenu/OptionsMenu';
+import { IconButton } from '@mui/material';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 
 const getFilteredOrganizationUsers = ({
   organizationUsers,
@@ -347,6 +351,31 @@ const UsersTable = ({
           }
 
           return <span>-</span>;
+        },
+      },
+      {
+        field: 'options',
+        headerName: 'OPTIONS',
+        renderHeader: renderColumnHeader,
+        sortable: false,
+        renderCell: (row) => {
+          const { userIdentifier } = row?.row;
+          const contextMenuOptions = [
+            {
+              name: 'View Activity',
+              onClick: () =>  history.push(`/user-activity/${userIdentifier}`)
+            },
+          ];
+          return (
+            <MoreActionsWrapper>
+              <OptionsMenu
+                options={contextMenuOptions}
+                customButtonComponent={IconButton}
+              >
+                <MoreVertIcon />
+              </OptionsMenu>
+            </MoreActionsWrapper>
+          );
         },
       },
     ],

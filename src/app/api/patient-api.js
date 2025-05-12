@@ -401,3 +401,12 @@ export function getPatientImportStatus() {
       throw new Error(error?.response?.data?.errorMessage);
     });
 }
+
+export const getPatientActivity = (patientIdentifier) =>
+  axios
+    .post(`/patient/activities/${patientIdentifier}`)
+    .then((response) => response.data)
+    .catch((error) => {
+      error(error);
+      throw new Error(error?.response?.data?.errorMessage);
+    });

@@ -82,3 +82,26 @@ export const convertForIntent = (date) => {
   return finalIso;
 
 }
+
+export const normalizeDateOnlyIntent = (isoDateString) => {
+  if (!isoDateString) return null;
+
+  const utcMoment = moment.utc(isoDateString);
+  const localMoment = utcMoment.clone().local();
+
+  const isLocalMidnight =
+    localMoment.hour() === 0 &&
+    localMoment.minute() === 0 &&
+    localMoment.second() === 0 &&
+    localMoment.millisecond() === 0;
+
+  if (isLocalMidnight) {
+    const normalized = moment
+      .utc(localMoment.format('YYYY-MM-DD'))
+      .toISOString();
+
+    return normalized;
+  }
+
+  return isoDateString;
+};

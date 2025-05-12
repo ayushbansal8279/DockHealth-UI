@@ -91,6 +91,7 @@ import ShareWorkflowModal from './components/ShareWorkflowModal/ShareWorkflowMod
 import ProfilePickerModal from './components/ProfilePickerModal/ProfilePickerModal';
 import PatientAttachmentReferenceModal from './components/PatientAttachmentReferenceModal/PatientAttachmentReferenceModal';
 import AddWorkspaceModal from '../components/workspace/AddWorkspaceModal/AddWorkspaceModal';
+import DeveloperScopeModal from './components/DeveloperScopeModal/DeveloperScopeModal';
 
 const MODAL_MAP = {
   CompleteAllTasks: CompleteAllTasksModal,
@@ -186,6 +187,7 @@ const MODAL_MAP = {
   ProfilePicker: ProfilePickerModal,
   PatientAttachmentReference: PatientAttachmentReferenceModal,
   AddWorkspace: AddWorkspaceModal,
+  DeveloperScopeList: DeveloperScopeModal,
 };
 
 export default MODAL_MAP;

@@ -1,8 +1,14 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 /* eslint-disable import/extensions */
 import moment from 'moment';
-import React, { useCallback, useEffect, useState, useRef } from 'react';
-import { useDispatch } from 'react-redux';
+import React, {
+  useCallback,
+  useEffect,
+  useState,
+  useRef,
+  useMemo,
+} from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import pluck from 'ramda/src/pluck';
 import Circle from 'img/circle.svg';
 import CircleCompleted from 'img/circle-completed.svg';
@@ -43,6 +49,7 @@ import {
   getLabelsIconTooltipTitle,
   isDueDateOverdue,
   ReminderType,
+  validateAssigneeCompleteDisabled,
 } from 'helpers/task-helpers';
 // import { userProfileSelector } from 'selectors/user-selectors';
 // import { DrawerFieldEnum } from 'helpers/task-drawer-helpers';
@@ -65,6 +72,10 @@ import {
   DragHandleContainer,
 } from './styled';
 import { adjustUTCDateForDateIntent } from '../../task/DueDatePicker/helpers';
+import { selectedUserOrganizationSelector } from '@/app/selectors/user-selectors';
+import { isMemberAdmin } from '@/app/helpers/list-members-helper';
+import { checkIfUserIsOrganizationAdmin } from '@/app/helpers/user-helper';
+import { currentTaskListSelector } from '@/app/selectors/task-list-selectors';
 
 const { DISABLED, READ_ONLY } = SINGLE_TASK_RESTRICTIONS_OPTIONS;
 
@@ -72,7 +83,7 @@ const DrawerTask = (props) => {
   const {
     task,
     taskRestrictions,
-    taskListRestrictions,
+    taskListRestrictions: taskListRestriction,
     currentUser,
     dragHandleProps,
   } = props;
@@ -88,6 +99,7 @@ const DrawerTask = (props) => {
     assignedToUsers: taskAssignedToUsers,
     dueDate: taskDueDate,
     dueDateIntent,
+    creator,
     comments,
     updatedComment,
     labels,
@@ -104,6 +116,12 @@ const DrawerTask = (props) => {
   const [assignedToUsers, setAssignedToUsers] = useState(taskAssignedToUsers);
   const [dueDate, setDueDate] = useState(taskDueDate);
   const [isCompleted, setIsCompleted] = useState(task?.status === 'COMPLETE');
+  const selectedOrganization = useSelector(selectedUserOrganizationSelector);
+  const currentTasklist = useSelector(currentTaskListSelector);
+  let taskListRestrictions = taskListRestriction;
+  if (!taskListRestrictions) {
+    taskListRestrictions = {};
+  }
 
   useEffect(() => {
     if (task?.status === 'COMPLETE') {
@@ -175,6 +193,32 @@ const DrawerTask = (props) => {
     // dispatch(openDrawer(DrawerFieldEnum.ATTACHMENT));
   };
 
+  const isCreator = useMemo(() => {
+    return creator?.identifier === currentUser?.identifier;
+  }, [currentUser, creator]);
+
+  const isListAdmin = useMemo(() => {
+    const currentUserMember = currentTasklist?.listUsers?.find(
+      (u) => u.identifier === currentUser?.identifier,
+    );
+    const isOwnerOrAdmin = checkIfUserIsOrganizationAdmin(currentUser);
+    return isMemberAdmin(currentUserMember) || isOwnerOrAdmin;
+  }, [currentUser, currentTasklist]);
+
+  const nonAssigneeCompleteDisabled = useMemo(() => {
+    return validateAssigneeCompleteDisabled(
+      selectedOrganization,
+      task,
+      currentUser,
+      isListAdmin,
+      isCreator,
+    );
+  }, [task, currentUser, selectedOrganization, isCreator, isListAdmin]);
+
+  if (nonAssigneeCompleteDisabled) {
+    taskListRestrictions.completeTask = DISABLED;
+  }
+
   const handleDueDateChange = useCallback(
     (newDueDate) => {
       setDueDate(newDueDate);
@@ -213,17 +257,17 @@ const DrawerTask = (props) => {
         onClick={
           // eslint-disable-next-line unicorn/no-negated-condition
           !isTaskStatusTogglingDisabled &&
-            isDependencyEmptyOrCompleted &&
-            taskListRestrictions?.completeTask !== DISABLED
+          isDependencyEmptyOrCompleted &&
+          taskListRestrictions?.completeTask !== DISABLED
             ? (event) => {
-              updateStatus();
-              event.stopPropagation();
-              (isCompleted
-                ? onTaskDrawerSubtaskReActivated
-                : onTaskDrawerSubtaskCompleted)();
-              dispatch(toggleCompleteTask(task, currentUser));
-            }
-            : () => { }
+                updateStatus();
+                event.stopPropagation();
+                (isCompleted
+                  ? onTaskDrawerSubtaskReActivated
+                  : onTaskDrawerSubtaskCompleted)();
+                dispatch(toggleCompleteTask(task, currentUser));
+              }
+            : () => {}
         }
       />
       <DescriptionContainer
@@ -233,14 +277,20 @@ const DrawerTask = (props) => {
       >
         <Description isCrossedOut={isCompleted}>
           {/* {tokenizedDescription} */}
-          <TooltipWrapper {...(isTruncated && { placement: 'top', title: tokenizedDescription })}>
+          <TooltipWrapper
+            {...(isTruncated && {
+              placement: 'top',
+              title: tokenizedDescription,
+            })}
+          >
             <div
               ref={textRef}
               style={{
                 textOverflow: 'ellipsis',
                 overflow: 'hidden',
                 whiteSpace: 'nowrap',
-              }}>
+              }}
+            >
               {createMentionsFromTokenizedDescription(
                 tokenizedDescription,
                 taskMentions,
@@ -310,7 +360,10 @@ const DrawerTask = (props) => {
           content={({ closePopover }) => (
             <DueDatePicker
               taskIdentifier={taskIdentifier}
-              selectedDate={adjustUTCDateForDateIntent(moment(dueDate), dueDateIntent)}
+              selectedDate={adjustUTCDateForDateIntent(
+                moment(dueDate),
+                dueDateIntent,
+              )}
               onDateChange={handleDueDateChange}
               recurring={hasRecurringSchedule}
               onCloseClick={closePopover}
@@ -321,12 +374,13 @@ const DrawerTask = (props) => {
         >
           {dueDate ? (
             <Tooltip placement="top" title="Edit due date">
-              <DueDateBasicLabel isOverdue={isDueDateOverdue({...task, dueDate})}>
+              <DueDateBasicLabel
+                isOverdue={isDueDateOverdue({ ...task, dueDate })}
+              >
                 <DueDateText>
                   {dueDateIntent === DueDateIntent.DATE
                     ? moment(dueDate).utc().format('MM/DD')
-                    : moment(dueDate).format('MM/DD')
-                  }
+                    : moment(dueDate).format('MM/DD')}
                 </DueDateText>
                 {reminderType && reminderType !== ReminderType.NONE && (
                   <>

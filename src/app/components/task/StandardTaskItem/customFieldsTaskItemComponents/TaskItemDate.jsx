@@ -43,7 +43,7 @@ const TaskItemDate = ({ value, onChange, readOnly = false, dateTimeIntent }) => 
           {dateTimeValue ? (
             <DateLabel
               date={dateTimeValue} 
-              format="MM/DD/YYYY" 
+              format="MMM DD, YYYY" 
               dueDateIntent={dateTimeIntent}
             />
           ) : (

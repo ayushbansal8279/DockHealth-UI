@@ -13,12 +13,14 @@ interface TaskItemCommentsProps {
   matchComments: boolean;
   comments: Array<IComment>;
   task: Task;
+  isBorderColumnItem: boolean;
 }
 
 const TaskItemComments: FC<TaskItemCommentsProps> = ({
   matchComments,
   comments,
   task,
+  isBorderColumnItem,
 }) => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const commentPopoverOpen = Boolean(anchorEl);
@@ -39,7 +41,10 @@ const TaskItemComments: FC<TaskItemCommentsProps> = ({
         <GridImg item xs={12} matched={matchComments}>
           <Tooltip placement="top" title={tooltipTitle}>
             <button type="button" onClick={onCommentClick}>
-              <CommentsWrapper hasComments={hasComments}>
+              <CommentsWrapper
+                isBorderColumnItem={isBorderColumnItem}
+                hasComments={hasComments}
+              >
                 <TaskIcon
                   type="comments"
                   isActive={hasComments}

@@ -62,6 +62,7 @@ import {
   findIncompleteRequiredFields,
   PatientTaskItemColumn,
   TaskOrigin,
+  validateAssigneeCompleteDisabled,
 } from 'helpers/task-helpers';
 import { isMemberAdmin } from 'helpers/list-members-helper';
 import { checkIfUserIsOrganizationAdmin } from 'helpers/user-helper';
@@ -123,6 +124,8 @@ import {
   ChildTaskTitle,
   ParentTaskLink,
   WorkflowTitle,
+  DragPreviewWrapper,
+  DragPreviewText,
 } from '../styled';
 import TaskItemText from './customFieldsTaskItemComponents/TaskItemText/TaskItemText';
 import TaskItemDropdown from './customFieldsTaskItemComponents/TaskItemDropdown/TaskItemDropdown';
@@ -132,6 +135,8 @@ import TaskItemComments from './TaskItemComponents/TaskItemComments';
 import { megaFilterSelector } from '@/app/selectors/mega-filter-selectors';
 import SubtaskIcon from '@/app/img/SubtaskIcon';
 import { getTaskDetails } from '@/app/api/task-api';
+import { useDraggable, useDroppable } from '@dnd-kit/core';
+import { CSS } from '@dnd-kit/utilities';
 
 const { DISABLED, READ_ONLY } = SINGLE_TASK_RESTRICTIONS_OPTIONS;
 
@@ -184,6 +189,7 @@ const TaskItem = React.memo(
     isNextVirtualTaskItemTypeBundle,
     isLastTaskOfGroup,
     viewType,
+    isDragPreview,
   }) => {
     const dependencyIconReference = useRef(null);
     const task = useSelector((state) => {
@@ -220,6 +226,17 @@ const TaskItem = React.memo(
       hasEscalations,
       priority,
     } = task || {};
+
+    const { attributes, listeners, setNodeRef, transform, transition } =
+      useDraggable({ id: taskIdentifier });
+
+    const {
+      setNodeRef: setDroppableRef,
+      isOver,
+      active,
+    } = useDroppable({
+      id: taskIdentifier,
+    });
 
     const patient = parentPatient ?? taskPatient ?? parentTask?.patient;
 
@@ -497,30 +514,14 @@ const TaskItem = React.memo(
     );
 
     const nonAssigneeCompleteDisabled = useMemo(() => {
-      const nonAssigneeCompleteDisabledItem =
-        selectedOrganization?.themeSettings?.find(
-          ({ name }) => name === 'list.tasks.non-assignee.complete.enabled',
-        ) || {};
-      return (
-        nonAssigneeCompleteDisabledItem &&
-        nonAssigneeCompleteDisabledItem?.value === 'false' &&
-        assignedToUsers?.filter((user) =>
-          user.itemType === 'USER'
-            ? user.identifier === currentUser.identifier
-            : user?.users?.filter(
-                (u) => u.identifier === currentUser.identifier,
-              ).length !== 0,
-        ).length === 0 &&
-        !isListAdmin &&
-        !isCreator
+      return validateAssigneeCompleteDisabled(
+        selectedOrganization,
+        task,
+        currentUser,
+        isListAdmin,
+        isCreator,
       );
-    }, [
-      assignedToUsers,
-      currentUser,
-      selectedOrganization,
-      isListAdmin,
-      isCreator,
-    ]);
+    }, [task, currentUser, selectedOrganization, isListAdmin, isCreator]);
     if (nonAssigneeCompleteDisabled) {
       taskListRestrictions.completeTask = DISABLED;
     }
@@ -823,6 +824,38 @@ const TaskItem = React.memo(
       [dispatch, task, taskCustomFields],
     );
 
+    const onParentLabelClick = useCallback(
+      (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        dispatch(openTaskDrawerWithContent(parent));
+      },
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      [parent, dispatch],
+    );
+
+    const fetchParentTask = async () => {
+      if (!parent?.identifier) {
+        setParent(await getTaskDetails(parentTaskIdentifier));
+      }
+    };
+
+    if (isDragPreview) {
+      return (
+        <DragPreviewWrapper
+          isBundleOrSubtask={
+            task?.itemType === TaskItemType.BUNDLE || !!task?.subTaskSortIndex
+          }
+        >
+          <DragPreviewText>
+            {task?.itemType === TaskItemType.BUNDLE
+              ? task?.name
+              : task?.description}
+          </DragPreviewText>
+        </DragPreviewWrapper>
+      );
+    }
+
     const randerFirstColumnCoverIfNecessary = useCallback(
       (content, order, width) => {
         if (order !== 0) return content;
@@ -857,12 +890,15 @@ const TaskItem = React.memo(
             isSortApplied={!!sort.key}
             width={width + 25 + 56}
             isTaskOfTemplate={!!workflowTaskGroup}
+            isDragActive={!!active && active?.id === taskIdentifier}
           >
             {taskListRestrictions?.createTask !== DISABLED && (
-              <DotsContainer
-                showDraggableDots
-                dragHandleProps={dragHandleProps}
-              />
+              <div {...attributes} {...listeners}>
+                <DotsContainer
+                  showDraggableDots
+                  dragHandleProps={dragHandleProps}
+                />
+              </div>
             )}
             {showPriority && (
               <PriorityIndicator color={getPriorityColor(task?.priority)} />
@@ -995,28 +1031,16 @@ const TaskItem = React.memo(
       );
     }
 
-    const onParentLabelClick = useCallback(
-      (event) => {
-        event.preventDefault();
-        event.stopPropagation();
-        dispatch(openTaskDrawerWithContent(parent));
-      },
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-      [parent, dispatch],
-    );
-
-    const fetchParentTask = async () => {
-      if (!parent?.identifier) {
-        setParent(await getTaskDetails(parentTaskIdentifier));
-      }
-    };
-
     return (
       <>
         <StandardTaskItemPanel
           onContextMenu={handleTaskItemRightClick}
           origin={origin}
           $isDragging={isDragging}
+          ref={(node) => {
+            setNodeRef(node);
+            setDroppableRef(node);
+          }}
         >
           <StandardTaskItemContainer
             isTaskTemplate={isTaskTemplate}
@@ -1037,6 +1061,8 @@ const TaskItem = React.memo(
             isVirtualSubtask={isVirtualSubtask}
             isWorkflowSubtask={isWorkflowSubtask}
             isTaskOfTemplate={!!workflowTaskGroup}
+            isDraggedOver={isOver && active?.id !== taskIdentifier}
+            isDragActive={!!active && active?.id === taskIdentifier}
           >
             {randerFirstColumnCoverIfNecessary(
               <>
@@ -1570,6 +1596,7 @@ const TaskItem = React.memo(
                       handleReasignTask={handleReasignTask}
                       matchAssignedTo={matchAssignedTo}
                       additionalUsers={sharedWithUsers || []}
+                      maxIconDisplay={2}
                     />
                   </TaskItemCell>,
                   getColumnOrder(TaskItemColumn.ASSIGNED),

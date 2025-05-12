@@ -755,6 +755,27 @@ export default (state = INITIAL_STATE, action = {}) => {
       };
     }
 
+    case ActionTypes.ADD_WORKFLOW_COMMENT_SUCCESS: {
+      const { workflowIdentifier, comment } = action;
+
+      if (state.tasksMap?.[workflowIdentifier]) {
+        return {
+          ...state,
+          tasksMap: {
+            ...state.tasksMap,
+            [workflowIdentifier]: {
+              ...state.tasksMap[workflowIdentifier],
+              comments: [
+                comment,
+                ...state.tasksMap[workflowIdentifier].comments,
+              ],
+            },
+          },
+        };
+      }
+      return state;
+    }
+
     case ActionTypes.DELETE_TASK: {
       const { taskIdentifier, intent } = action;
       const taskItem = state.tasksMap[taskIdentifier];

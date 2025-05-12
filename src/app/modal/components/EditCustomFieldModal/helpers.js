@@ -1,3 +1,5 @@
+import * as Yup from 'yup';
+
 const commonOptions = (displayOptionsState, handleDisplayOptionChange) => [
   {
     label: 'Readonly',
@@ -16,7 +18,6 @@ const commonOptions = (displayOptionsState, handleDisplayOptionChange) => [
     onChange: (value) => handleDisplayOptionChange(value, 'HIDDEN'),
   },
 ];
-
 
 export const getAdditionalPatientOptions = ({
   displayOptionsState,
@@ -67,8 +68,7 @@ export const getAdditionalUserOptions = ({
 export const getAdditionalTaskOptions = ({
   displayOptionsState,
   handleDisplayOptionChange,
-}) => 
- [
+}) => [
   {
     label: 'Required for Task completion',
     key: 'TASK_REQUIRED',
@@ -141,4 +141,23 @@ export const getAdditionalOptions = ({
       return null;
     }
   }
+};
+
+export const regexValidator = () => {
+  const INVALID_REGEX_MESSAGE =
+    'Enter a valid regular expression (e.g. /^[a-z]+$/i)';
+
+  return Yup.string()
+    .nullable()
+    .test('is-valid-regex', INVALID_REGEX_MESSAGE, (value) => {
+      if (!value) return true;
+      const match = value.match(/^\/(.+)\/([a-z]*)$/i);
+      if (!match) return false;
+      try {
+        new RegExp(match[1], match[2]);
+        return true;
+      } catch {
+        return false;
+      }
+    });
 };

@@ -73,7 +73,7 @@ export default function CommentsInPopover({
         </Box>
         {!disabled && (
           <Box sx={{ padding: 2, backgroundColor: palette.coolGrey4 }}>
-            <AddComment autoFocus onAdd={addComment} />
+            <AddComment autoFocus onAdd={addComment} expandEditorHeight />
           </Box>
         )}
       </ContainerCard>

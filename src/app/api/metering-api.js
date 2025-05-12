@@ -21,3 +21,13 @@ export async function getMeteringFilterOptions() {
     throw new Error(error?.response?.data?.errorMessage);
   }
 }
+
+export async function getMeteringAggregationEvents(payload) {
+  try {
+    const response = await axios.post(`/metering/aggregation/search`, payload);
+    return response.data;
+  } catch (error) {
+    log(error);
+    throw new Error(error?.response?.data?.errorMessage);
+  }
+}

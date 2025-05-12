@@ -20,6 +20,7 @@ import { TaskOrigin } from '@/app/helpers/task-helpers';
 import { useVirtualTaskListScrollContext } from '../../VirtualTaskListScrollContext';
 import { Draggable } from 'react-beautiful-dnd';
 import palette from '@/app/styles/palette';
+import { useDroppable } from '@dnd-kit/core';
 
 export interface Props extends Segment {
   taskGroupIdentifier: string;
@@ -58,6 +59,10 @@ function VQuickAddTask(
       return 'The task description is too short (min. 2 characters)';
     return null;
   };
+
+  const { setNodeRef, isOver } = useDroppable({
+    id: metadata.id,
+  });
 
   const quickAddTask = useCallback(
     (task: any) => {
@@ -134,28 +139,44 @@ function VQuickAddTask(
       </Sc.VQuickAddTaskContainer>
 
       {groupWithZeroTask && (
-        <Draggable
-          draggableId={metadata?.id}
-          index={metadata?.index}
-          key={metadata?.id}
-          isDragDisabled={true}
+        <div
+          style={{
+            width: percentage > 100 ? `${droppableHeaderWidth}px` : '100%',
+            display: 'flex',
+            paddingLeft: '54.5px',
+            paddingBottom: '8px',
+            paddingTop: '8px',
+            background: bgColor ? palette.aliceBlue : '',
+          }}
         >
-          {(provided) => (
-            <div
-              ref={provided.innerRef}
-              {...provided.draggableProps}
-              {...provided.dragHandleProps}
-            >
-              <div
-                style={{
-                  background: bgColor ? palette.aliceBlue : '',
-                  width: '100%',
-                  height: '50px',
-                }}
-              />
-            </div>
-          )}
-        </Draggable>
+          <div
+            ref={setNodeRef}
+            style={{
+              background: bgColor
+                ? isOver
+                  ? palette.columbiaBlue
+                  : palette.aliceBlue
+                : isOver
+                ? palette.columbiaBlue
+                : '',
+              width: visibleWidth ? `${visibleWidth - 87}px` : '100%',
+              height: '40px',
+              borderRadius: '8px',
+              border: isOver
+                ? `2px solid ${palette.lightSkyBlue}`
+                : `2px dashed ${palette.lightSkyBlue}`,
+              textAlign: 'center',
+              lineHeight: '40px',
+              color: palette.dodgerBlue,
+              fontWeight: 500,
+              fontSize: '14px',
+              transition: 'all 0.2s ease-in-out',
+              boxShadow: isOver ? '0 2px 8px rgba(33, 150, 243, 0.2)' : 'none',
+            }}
+          >
+            Drop task here
+          </div>
+        </div>
       )}
     </>
   );

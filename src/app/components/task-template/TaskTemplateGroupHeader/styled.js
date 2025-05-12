@@ -12,6 +12,7 @@ export const TemplateHandle = styled.img`
   padding: ${spacing.regular} ${spacing.tiny} ${spacing.regular} 0;
   opacity: 0;
   z-index: 12;
+  cursor: grab;
 
   &:active {
     opacity: 1;
@@ -51,7 +52,9 @@ export const TaskTemplateGroupHeaderContainer = styled.div`
   width: 100%;
   height: 37px;
   background-color: ${(props) =>
-    props.isSelected ? palette.dockBlueLight : palette.white};
+    props.isSelected || props.isDragActive
+      ? palette.dockBlueLight
+      : palette.white};
 
   border-top: 2px solid rgba(75, 179, 253, 1);
   margin-top: 10px;
@@ -83,6 +86,14 @@ export const TaskTemplateGroupHeaderContainer = styled.div`
 
   border-right: 1px solid rgba(75, 179, 253, 1);
   z-index: 2;
+  ${({ isDraggedOver }) =>
+    isDraggedOver
+      ? `
+      border-bottom: 3px solid ${palette.azureBlue};
+      `
+      : ''}
+
+  // ${({ isDragActive }) => (isDragActive ? 'opacity: 0;' : 'opacity: 1;')}
 
   &:hover {
     & ${TemplateHandle}, ${AddPlaceholder} {

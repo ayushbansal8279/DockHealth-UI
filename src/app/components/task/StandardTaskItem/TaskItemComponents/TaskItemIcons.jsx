@@ -1,5 +1,5 @@
-import React, { useCallback, useEffect, useRef } from 'react';
-import { Grid } from '@mui/material';
+import React, { useCallback } from 'react';
+import { Box, Grid } from '@mui/material';
 import { storeAsCurrentTask } from 'actions/task-actions';
 import { openDrawer } from 'actions/task-drawer-actions';
 import {
@@ -19,6 +19,7 @@ import {
   LabelWrapper,
 } from '../../styled';
 import TaskLabel from '@/app/components/common/TaskLabel/TaskLabel';
+import TaskItemComments from './TaskItemComments';
 
 const TaskItemIcons = ({
   matchComments,
@@ -30,13 +31,8 @@ const TaskItemIcons = ({
   attachments,
   dispatch,
   restrictions,
+  isBorderColumnItem,
 }) => {
-  const onCommentClick = useCallback(() => {
-    dispatch(openDrawer(DrawerFieldEnum.COMMENT));
-    dispatch(storeAsCurrentTask(task));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [task]);
-
   const onLabelClick = useCallback(() => {
     dispatch(openDrawer(DrawerFieldEnum.LABEL));
     dispatch(storeAsCurrentTask(task));
@@ -51,32 +47,32 @@ const TaskItemIcons = ({
   return (
     <Grid container wrap="nowrap">
       {comments ? (
-        <GridImg item xs={12} matched={matchComments}>
-          <Tooltip
-            placement="top"
-            title={
-              comments?.length > 0
-                ? getCommentsIconTooltipTitle(comments)
-                : 'Add Comment'
-            }
-          >
-            <button type="button" onClick={onCommentClick}>
-              <TaskIcon
-                type="comments"
-                isActive={comments?.length > 0}
-                isNew={task.updatedComment}
-              />
-            </button>
-          </Tooltip>
-        </GridImg>
+        <TaskItemComments
+          matchComments={matchComments}
+          comments={comments}
+          task={task}
+          isBorderColumnItem={isBorderColumnItem}
+        />
       ) : null}
       {labels ? (
         labels.length > 0 ? (
-          <TaskLabel
-            getLabelsIconTooltipTitle={getLabelsIconTooltipTitle}
-            labels={labels}
-            onClick={onLabelClick}
-          />
+          isBorderColumnItem ? (
+            <Box marginLeft="5px" marginTop="-2px">
+              <TaskLabel
+                getLabelsIconTooltipTitle={getLabelsIconTooltipTitle}
+                labels={labels}
+                onClick={onLabelClick}
+                isBorderColumnItem={isBorderColumnItem}
+              />
+            </Box>
+          ) : (
+            <TaskLabel
+              getLabelsIconTooltipTitle={getLabelsIconTooltipTitle}
+              labels={labels}
+              onClick={onLabelClick}
+              isBorderColumnItem={isBorderColumnItem}
+            />
+          )
         ) : (
           <LabelContainer>
             <GridImg item xs={12} matched={matchLabels}>
@@ -96,7 +92,7 @@ const TaskItemIcons = ({
                   type="button"
                   onClick={onLabelClick}
                 >
-                  <LabelWrapper>
+                  <LabelWrapper isBorderColumnItem={isBorderColumnItem}>
                     <TaskIcon
                       type="labels"
                       isActive={labels?.length > 0}
@@ -121,7 +117,10 @@ const TaskItemIcons = ({
               }
             >
               <button type="button" onClick={onAttachmentsClick}>
-                <FilesWrapper attachments={attachments?.length > 0}>
+                <FilesWrapper
+                  isBorderColumnItem={isBorderColumnItem}
+                  attachments={attachments?.length > 0}
+                >
                   <TaskIcon
                     type="attachments"
                     isActive={attachments?.length > 0}

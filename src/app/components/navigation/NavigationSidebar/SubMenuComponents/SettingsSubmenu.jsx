@@ -18,12 +18,13 @@ import {
   userHasSendSmsFeatureSelector,
   userHasSendSecureMessageFeatureSelector,
   userHasPostEMRNoteFeatureSelector,
+  userHasAutomationMeteringFeatureSelector,
 } from 'selectors/user-selectors';
 import { organizationSelector } from 'selectors/organization-selectors';
 import { isPlanPro, isPlanTrial } from 'helpers/subscription-helper';
 import { SubMenuLink } from './styled';
 
-const { ADMIN, OWNER } = UserOrganizationRole;
+const { ADMIN, OWNER, MEMBER } = UserOrganizationRole;
 
 const SettingsSubmenu = () => {
   const patientCustomFieldsAvailable = useSelector(
@@ -39,6 +40,9 @@ const SettingsSubmenu = () => {
     userHasSendSecureMessageFeatureSelector,
   );
   const postToEMRAvailable = useSelector(userHasPostEMRNoteFeatureSelector);
+  const automationMeteringAvailable = useSelector(
+    userHasAutomationMeteringFeatureSelector,
+  );
 
   const organization = useSelector(organizationSelector);
   const subscription = organization?.subscriptionDetails;
@@ -54,12 +58,14 @@ const SettingsSubmenu = () => {
         <SubMenuLink to="/settings/billing">Billing &amp; Invoices</SubMenuLink>
       )}
       <SubMenuLink to={SUBS_SETTINGS_PATH}>Subscriptions</SubMenuLink>
+      {automationMeteringAvailable && (
+        <AccessRestrictor allowedToRoles={[ADMIN, OWNER]}>
+          <SubMenuLink to="/settings/metering">Metering</SubMenuLink>
+        </AccessRestrictor>
+      )}
       {patientCustomFieldsAvailable && (
         <SubMenuLink to={POFILES_SETTINGS_PATH}>Profiles</SubMenuLink>
       )}
-      <AccessRestrictor allowedToRoles={[ADMIN, OWNER]}>
-        <SubMenuLink to="/settings/metering">Metering</SubMenuLink>
-      </AccessRestrictor>
       <SubMenuLink to={USERS_SETTINGS_PATH}>Users</SubMenuLink>
       {(sendEmailAvailable ||
         sendFaxAvailable ||
