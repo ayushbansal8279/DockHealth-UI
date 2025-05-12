@@ -1,16 +1,20 @@
 import React, { useState } from "react";
 import { Timeline, TimelineItem, TimelineSeparator, TimelineContent } from "@mui/lab";
-import { CardContent, Box,} from "@mui/material";
+import { CardContent, Box, Popover, Typography, IconButton, Divider,} from "@mui/material";
 import { Assignment, Note, AttachFile, Person } from "@mui/icons-material";
 import { format, parseISO } from "date-fns";
 import { 
   ActivityDescription, 
   ActivityName, 
   ActivityWrapper, 
+  CommentContainer, 
+  CommentDetails, 
   Container, 
   DateAndTime, 
+  EditorWrapper, 
   FilterIcons, 
   MembersContainer, 
+  NotesHistoryContainer, 
   TimelineCenterIcon, 
   TimelineCenterLine, 
   TimelineLeftSideContent, 
@@ -26,6 +30,9 @@ import FolderOpenIcon from '@mui/icons-material/FolderOpen';
 import AttachmentPreview from "@/app/components/attachments/AttachmentPreview/AttachmentPreview";
 import TemplatesIcon from 'img/navigation/TemplatesIcon';
 import { useActivityTimeline } from "./hooks";
+import CommentIcon from "@/app/components/task/TaskIcon/icons/CommentIcon";
+import InfoIcon from '@mui/icons-material/Info';
+import RichTextEditor from "@/app/components/common/RichTextEditor/RichTextEditor";
 
 const ActivityTimeline = ({ activities }) => {
   const {
@@ -75,6 +82,34 @@ const ActivityTimeline = ({ activities }) => {
       </Box>
     );
   };
+
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [selectedData, setSelectedData] = useState(null);
+
+  const handleClick = (event, contextualData) => {
+    setAnchorEl(event.currentTarget);
+    console.log(contextualData?.state?.current.length)
+    setSelectedData(contextualData)
+  
+    // const matchingActivity = sortedActivities.find(
+    //   (act) =>
+    //     act.targetTypeIdentifier === targetTypeIdentifier 
+    // );
+  
+    // if (matchingActivity) {
+    //   console.log("MATCH FOUND:", matchingActivity);
+    // } else {
+    //   console.log("No matching UPDATE_PATIENT_NOTE found.");
+    // }
+  };
+  
+
+  const handleClose = () => {
+    setAnchorEl(null);
+    setSelectedData(null);
+  };
+
+  const open = Boolean(anchorEl);
 
   return (
     <Box sx={{ pt: '12px' }}>
@@ -168,9 +203,55 @@ const ActivityTimeline = ({ activities }) => {
                       <ActivityName>Note</ActivityName>
                       {activity.actionType === 'UPDATE_PATIENT_NOTE' &&
                         <ActivityDescription>
-                        <Tooltip title={activity.contextualData.state.current || "N/A"}>
-                          <span>{activity.contextualData.state.current}</span>
-                        </Tooltip>
+                          <NotesHistoryContainer>
+                            <Tooltip title={activity?.contextualData?.state?.current || "N/A"}>
+                              {activity?.contextualData?.state?.current}                      
+                            </Tooltip>
+                            <Tooltip title='More Info'>
+                              <IconButton sx={{padding: '1px'}} onClick={(e)=>handleClick(e,activity.contextualData)}>
+                                <InfoIcon fontSize="small" />
+                              </IconButton>
+                            </Tooltip>
+                        </NotesHistoryContainer>
+                        <Popover
+                          open={open}
+                          anchorEl={anchorEl}
+                          onClose={handleClose}
+                          anchorOrigin={{
+                            vertical: 'bottom',
+                            horizontal: 'center',
+                          }}
+                          transformOrigin={{
+                            vertical: 'top',
+                            horizontal: 'center',
+                          }}
+                        >
+                            <CommentContainer>
+                              <CommentDetails>
+                                <strong>Current:</strong>
+                                <EditorWrapper>
+                                <RichTextEditor
+                                  readonly={true}
+                                  value={selectedData?.state.current}
+                                  disableToolbar={true}
+                                  showToolbar = {false}
+                                />
+                                </EditorWrapper>
+                              </CommentDetails>
+                              <Divider />
+                              <CommentDetails>
+                                <strong>Previous:</strong>
+                                <EditorWrapper>
+                                <RichTextEditor
+                                  readonly={true}
+                                  value={selectedData?.state.previous}
+                                  disableToolbar={true}
+                                  showToolbar = {false}
+                                />
+                                </EditorWrapper>
+                              </CommentDetails>
+                            </CommentContainer>
+                        </Popover>
                       </ActivityDescription>
                       }
                       <ActivityDescription>
