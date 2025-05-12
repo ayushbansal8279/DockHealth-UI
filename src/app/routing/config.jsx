@@ -161,6 +161,8 @@ const CreateList = lazy(() =>
   import('views/OnboardingTutorial/CreateList/CreateList'),
 );
 const Developers = lazy(() => import('views/developers'));
+const Workspaces = lazy(() => import('views/workspaces/Workspaces'));
+const Workspace = lazy(() => import('views/workspace/Workspace'));
 const PatientImportStatus = lazy(() => import('views/patient-details/PatientImportStatus/PatientImportStatus'));
 
 const UserActivity = lazy(() => import('views/self-serve/users/UserActivity/UserActivity'));
@@ -260,6 +262,16 @@ export const SETTINGS_ROUTES = [
   {
     path: '/developers',
     RouteComponent: Developers,
+    permissions: [CAN_ACCESS_SETTINGS_PAGE],
+  },
+  {
+    path: '/workspaces',
+    RouteComponent: Workspaces,
+    permissions: [CAN_ACCESS_SETTINGS_PAGE],
+  },
+  {
+    path: '/workspace/:identifier',
+    RouteComponent: Workspace,
     permissions: [CAN_ACCESS_SETTINGS_PAGE],
   },
   {

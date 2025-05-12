@@ -255,3 +255,7 @@ export function isPlanTrial(subscription) {
 export function isPlanFree(subscription) {
   return subscription?.subscriptionPlan === 'PLAN_FREE';
 }
+
+export function isPlanPro(subscription) {
+  return subscription?.subscriptionPlan === 'PLAN_PRO';
+}

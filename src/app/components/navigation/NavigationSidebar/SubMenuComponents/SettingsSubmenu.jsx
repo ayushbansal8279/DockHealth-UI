@@ -21,7 +21,7 @@ import {
   userHasAutomationMeteringFeatureSelector,
 } from 'selectors/user-selectors';
 import { organizationSelector } from 'selectors/organization-selectors';
-import { isPlanTrial } from 'helpers/subscription-helper';
+import { isPlanPro, isPlanTrial } from 'helpers/subscription-helper';
 import { SubMenuLink } from './styled';
 
 const { ADMIN, OWNER, MEMBER } = UserOrganizationRole;
@@ -47,6 +47,7 @@ const SettingsSubmenu = () => {
   const organization = useSelector(organizationSelector);
   const subscription = organization?.subscriptionDetails;
   const isInTrial = isPlanTrial(subscription);
+  const isProPlan = isPlanPro(subscription);
 
   const isApiAllowed = organization?.availableFeatures?.includes('API');
 
@@ -81,6 +82,12 @@ const SettingsSubmenu = () => {
       {isApiAllowed && (
         <AccessRestrictor allowedToRoles={[ADMIN, OWNER]}>
           <SubMenuLink to={DEVELOPERS_PATH}>Developers</SubMenuLink>
+        </AccessRestrictor>
+      )}
+      {true && (
+      // {isProPlan && (
+        <AccessRestrictor allowedToRoles={[ADMIN, OWNER]}>
+          <SubMenuLink to="/settings/workspaces">Workspaces</SubMenuLink>
         </AccessRestrictor>
       )}
     </Box>
