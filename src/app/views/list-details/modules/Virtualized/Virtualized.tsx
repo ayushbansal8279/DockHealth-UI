@@ -1,4 +1,10 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, {
+  createContext,
+  useCallback,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { DragDropContext, Droppable, DropResult } from 'react-beautiful-dnd';
 import { Virtuoso } from 'react-virtuoso';
 import { useDispatch } from 'react-redux';
@@ -30,6 +36,7 @@ export interface Props {
   showIncompleteWorkflowIdentifiers?: any;
   currentTaskListTasksStatus?: any;
 }
+export const DropDirectionContext = createContext(null);
 
 function Virtualized({
   nodes = [],
@@ -45,6 +52,7 @@ function Virtualized({
 
   const flatNodes = useMemo(() => walk(nodes), [nodes]);
   const [activeId, setActiveId] = useState<string | number | null>(null);
+  const dropDirectionRef = useRef(null);
 
   const handleDragStart = (event: DragStartEvent) => {
     setActiveId(event?.active?.id);
@@ -107,7 +115,9 @@ function Virtualized({
                     index:
                       destination?.kind === 'QuickAddTask'
                         ? 0
-                        : destinationOffsetIndexTask,
+                        : dropDirectionRef?.current === 'top'
+                        ? 0
+                        : destinationOffsetIndexTask + 1,
                     droppableId: destination?.parent?.id,
                   },
                   source: {
@@ -170,32 +180,34 @@ function Virtualized({
 
   return (
     <>
-      <DndContext
-        onDragStart={handleDragStart}
-        onDragEnd={handleDragEnd}
-        sensors={useSensors(
-          useSensor(PointerSensor, {
-            activationConstraint: {
-              distance: 3,
-            },
-          }),
-        )}
-      >
-        <Virtuoso
-          // @ts-ignore
-          // scrollerRef={provided.innerRef}
-          style={{ height: '100%' }}
-          data={flatNodes}
-          context={context}
-          components={{
-            Item: VSegment,
-          }}
-          {...props}
-        />
-        <DragOverlay>
-          {activeId ? <Placeholder id={activeId} /> : null}
-        </DragOverlay>
-      </DndContext>
+      <DropDirectionContext.Provider value={dropDirectionRef}>
+        <DndContext
+          onDragStart={handleDragStart}
+          onDragEnd={handleDragEnd}
+          sensors={useSensors(
+            useSensor(PointerSensor, {
+              activationConstraint: {
+                distance: 3,
+              },
+            }),
+          )}
+        >
+          <Virtuoso
+            // @ts-ignore
+            // scrollerRef={provided.innerRef}
+            style={{ height: '100%' }}
+            data={flatNodes}
+            context={context}
+            components={{
+              Item: VSegment,
+            }}
+            {...props}
+          />
+          <DragOverlay>
+            {activeId ? <Placeholder id={activeId} /> : null}
+          </DragOverlay>
+        </DndContext>
+      </DropDirectionContext.Provider>
     </>
   );
 }

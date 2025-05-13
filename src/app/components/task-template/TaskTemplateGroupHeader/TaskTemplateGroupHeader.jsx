@@ -101,6 +101,7 @@ import AISummaryModalOpenerHelper from '@/app/modal/components/AISummaryModal/AI
 import { SummaryType } from '@/app/helpers/ai-helper';
 import { useDraggable, useDroppable } from '@dnd-kit/core';
 import { CSS } from '@dnd-kit/utilities';
+import { DropDirectionContext } from '@/app/views/list-details/modules/Virtualized/Virtualized';
 
 const TaskTemplateGroupHeader = ({
   templateGroup = {},
@@ -125,8 +126,10 @@ const TaskTemplateGroupHeader = ({
   origin,
   isNextVirtualTaskItemTypeBundle,
   isLastTaskOfGroup,
+  isFirstTaskOfGroup,
   isNextTaskItemTypeBundle,
   tasksStatus,
+  taskGroupIdentifier,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const {
@@ -140,24 +143,36 @@ const TaskTemplateGroupHeader = ({
   } = templateGroup;
 
   const { attributes, listeners, setNodeRef, transform, transition } =
-    useDraggable({ id: identifier });
+    useDraggable({
+      id: identifier,
+      data: {
+        groupId: taskGroupIdentifier,
+      },
+    });
 
   const {
     setNodeRef: setDroppableRef,
     isOver,
     active,
+    over,
   } = useDroppable({
     id: identifier,
+    data: {
+      groupId: taskGroupIdentifier,
+    },
   });
 
   const { bulkEditIsActive } = useContext(BulkEditContext);
   const { bulkEditEnabled } = useContext(BulkEditContext);
+  const dropDirectionRef = useContext(DropDirectionContext);
   const { changeViewType, tasks, handleAddTask } = useContext(ListPageContext);
   const [isEditing, setIsEditing] = useState(false);
   const [nameInputValue, setNameInputValue] = useState(name);
   const [nameInputError, setNameInputError] = useState(false);
   const [contextMenu, setContextMenu] = useState(null);
   const isDateHover = false;
+  const elementRef = useRef(null);
+  const [hoverBorder, setHoverBorder] = useState(null);
   const nameInputReference = useRef(null);
   const currentUser = useSelector(userProfileSelector);
   const currentList = useSelector(currentTaskListSelector);
@@ -171,6 +186,35 @@ const TaskTemplateGroupHeader = ({
       f.columnWidth,
     ),
   }));
+
+  useEffect(() => {
+    if (origin === 'LIST') {
+      if (
+        !isFirstTaskOfGroup ||
+        !active ||
+        !isOver ||
+        active?.data?.current?.groupId === taskGroupIdentifier
+      ) {
+        setHoverBorder(null);
+        dropDirectionRef.current = null;
+        return;
+      }
+
+      const handlePointerMove = (e) => {
+        const rect = elementRef?.current?.getBoundingClientRect();
+        if (!rect) return;
+
+        const isTop = e?.clientY < rect?.top + rect?.height / 2;
+        const direction = isTop ? 'top' : 'bottom';
+
+        dropDirectionRef.current = direction;
+        setHoverBorder(direction);
+      };
+
+      window.addEventListener('pointermove', handlePointerMove);
+      return () => window.removeEventListener('pointermove', handlePointerMove);
+    }
+  }, [active?.id, over?.id, isFirstTaskOfGroup, origin, taskGroupIdentifier]);
 
   useEffect(() => {
     setNameInputValue(name);
@@ -675,8 +719,10 @@ const TaskTemplateGroupHeader = ({
         ref={(node) => {
           setNodeRef(node);
           setDroppableRef(node);
+          elementRef.current = node;
         }}
         isDraggedOver={isOver && active?.id !== identifier}
+        hoverBorder={hoverBorder === 'top'}
         isDragActive={!!active && active?.id === identifier}
       >
         {randerFirstColumnCoverIfNecessary(

@@ -53,7 +53,9 @@ const TaskTemplateGroup = ({
   highlightedValue,
   isNextVirtualTaskItemTypeBundle,
   isLastTaskOfGroup,
+  isFirstTaskOfGroup,
   isNextTaskItemTypeBundle,
+  taskGroupIdentifier,
   viewType,
 }) => {
   const templateGroup = useSelector((state) => {
@@ -115,7 +117,6 @@ const TaskTemplateGroup = ({
   //     setShowCompletedTasks(SHOW_WORKFLOW_COMPLETED_TASKS);
   //   }
   // }, [SHOW_WORKFLOW_DETAILS, SHOW_WORKFLOW_COMPLETED_TASKS, isCompletedTab]);
-  
   useEffect(() => {
     if (viewType === 'FULL_VIEW') {
       setOpen(true);
@@ -152,7 +153,7 @@ const TaskTemplateGroup = ({
       // No default
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tasksStatus,showCompletedWorkflowTaskFlag]);
+  }, [tasksStatus, showCompletedWorkflowTaskFlag]);
 
   const handleAddBundleTask = useCallback(
     (task) => {
@@ -213,8 +214,10 @@ const TaskTemplateGroup = ({
         pageBackground={pageBackground}
         isNextVirtualTaskItemTypeBundle={isNextVirtualTaskItemTypeBundle}
         isLastTaskOfGroup={isLastTaskOfGroup}
+        isFirstTaskOfGroup={isFirstTaskOfGroup}
         isNextTaskItemTypeBundle={isNextTaskItemTypeBundle}
         tasksStatus={tasksStatus}
+        taskGroupIdentifier={taskGroupIdentifier}
       />
       {!isStartedDnD && window.disabledVirtualTaskList && (
         <TaskTemplateGroupList timeout={150} in={isOpen && !isStartedDnD}>
