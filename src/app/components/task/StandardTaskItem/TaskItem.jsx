@@ -1245,6 +1245,7 @@ const TaskItem = React.memo(
                       currentUser={currentUser}
                       readOnly={restrictions?.patient === READ_ONLY}
                       origin={origin}
+                      width={getWidth(TaskItemColumn.PATIENT)}
                     />
                   </TaskItemCell>,
                   getColumnOrder(TaskItemColumn.PATIENT),
