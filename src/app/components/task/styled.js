@@ -498,9 +498,13 @@ export const StandardTaskItemContainer = styled.div`
         `
       : ''};
 
-  ${({ isDraggedOver }) =>
+  ${({ isDraggedOver, hoverBorder }) =>
     isDraggedOver
-      ? `
+      ? hoverBorder
+        ? `
+      border-top: 3px solid ${palette.azureBlue};
+      `
+        : `
       border-bottom: 3px solid ${palette.azureBlue};
       `
       : ''}

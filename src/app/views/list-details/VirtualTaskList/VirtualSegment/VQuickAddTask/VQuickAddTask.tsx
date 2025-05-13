@@ -26,6 +26,7 @@ export interface Props extends Segment {
   taskGroupIdentifier: string;
   groupWithZeroTask: boolean;
   bgColor: boolean;
+  isLoadingGroup: boolean;
 }
 
 function VQuickAddTask(
@@ -35,6 +36,7 @@ function VQuickAddTask(
     register,
     groupWithZeroTask,
     bgColor,
+    isLoadingGroup,
   }: Props,
   // eslint-disable-next-line unicorn/prevent-abbreviations
   ref: ForwardedRef<HTMLDivElement>,
@@ -138,7 +140,7 @@ function VQuickAddTask(
         </Sc.VQuickAddTask>
       </Sc.VQuickAddTaskContainer>
 
-      {groupWithZeroTask && (
+      {groupWithZeroTask && !isLoadingGroup && (
         <div
           style={{
             width: percentage > 100 ? `${droppableHeaderWidth}px` : '100%',
@@ -174,7 +176,7 @@ function VQuickAddTask(
               boxShadow: isOver ? '0 2px 8px rgba(33, 150, 243, 0.2)' : 'none',
             }}
           >
-            Drop task here
+            Drop Task or Workflow here
           </div>
         </div>
       )}
