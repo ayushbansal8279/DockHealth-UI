@@ -42,6 +42,7 @@ const TaskItemPatient = ({
   currentUser,
   readOnly,
   origin,
+  width,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const { pathname } = useLocation();
@@ -211,7 +212,14 @@ const TaskItemPatient = ({
                       textToHighlight={`${patient.patientName}`}
                     />
                   ) : (
-                    `${patientName}`
+                    <div
+                      style={{
+                        width: width ? `${width - 50}px` : '180px',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        whiteSpace: 'nowrap',
+                      }}
+                    >{`${patientName}`}</div>
                   )}
                   <PatientPrintAdditionalInfo>
                     {patient.mrn && (
