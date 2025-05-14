@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState } from "react";
 import { Timeline, TimelineItem, TimelineSeparator, TimelineContent } from "@mui/lab";
 import { CardContent, Box,} from "@mui/material";
 import { Assignment, Note, AttachFile, Person } from "@mui/icons-material";
@@ -14,7 +14,8 @@ import {
   TimelineCenterIcon, 
   TimelineCenterLine, 
   TimelineLeftSideContent, 
-  TitleName 
+  TitleName,
+  WorkflowIconContainer,
 } from "./styled";
 import TaskAltIcon from '@mui/icons-material/TaskAlt';
 import { OutfitTypography } from "@/app/styles/theme";
@@ -22,78 +23,42 @@ import Tooltip from "@/app/components/common/Tooltip/Tooltip";
 import { getIconFromContentType } from "@/app/components/attachments/AttachmentButton/helpers";
 import TaskItemMembers from "@/app/components/task/StandardTaskItem/TaskItemComponents/TaskItemMembers";
 import FolderOpenIcon from '@mui/icons-material/FolderOpen';
-import { getMemoPatientAttachment } from "@/app/views/patient-details/PatientAttachments/hooks";
 import AttachmentPreview from "@/app/components/attachments/AttachmentPreview/AttachmentPreview";
-
-const iconMapping = {
-  PATIENT: <Person fontSize="verysmall" />,
-  TASK: <TaskAltIcon fontSize="verysmall"/>,
-  PATIENT_NOTE: <Note fontSize="verysmall"/>,
-  ATTACHMENT: <AttachFile fontSize="verysmall"/>,
-};
-
-const activityFilters = [
-  { type: "TASK", icon:  <TaskAltIcon fontSize="verysmall"/>, label: "Tasks" },
-  { type: "PATIENT_NOTE", icon: <Note fontSize="verysmall" />, label: "Notes" },
-  { type: "ATTACHMENT", icon: <AttachFile fontSize="verysmall" />, label: "Attachments" },
-  { type: "PATIENT", icon: <Person fontSize="verysmall" />, label: "Patients" },
-];
+import TemplatesIcon from 'img/navigation/TemplatesIcon';
+import { useActivityTimeline } from "./hooks";
 
 const ActivityTimeline = ({ activities }) => {
-  const [selectedFilters, setSelectedFilters] = useState([]);
-  const [previewedAttachment, setPreviewedAttachment] = useState(null);
-  const [attachmentsSources, setAttachmentSources] = useState([]);
-  const [isAttachmentPreviewOpen, setIsAttachmentPreviewOpen] = useState(false);
-  const [attachmentsLoading, setAttachmentsLoading] = useState(false);
-
-  const hideAttachmentPreview = () => setIsAttachmentPreviewOpen(false);
-
-  const sortedActivities = useMemo(() => {
-    const grouped = [];
-    const attachmentsGroupMap = {};
+  const {
+    sortedActivities,
+    selectedFilters,
+    toggleFilter,
+    openPreview,
+    hideAttachmentPreview,
+    previewedAttachment,
+    attachmentsSources,
+    isAttachmentPreviewOpen,
+    attachmentsLoading,
+  } = useActivityTimeline(activities);
   
-    activities
-      .slice()
-      .sort((a, b) => new Date(b.activityDateTime) - new Date(a.activityDateTime))
-      .forEach((activity) => {
-        if (activity.targetType === "ATTACHMENT") {
-          const key = format(parseISO(activity.activityDateTime), "yyyy-MM-dd HH:mm");
-          if (!attachmentsGroupMap[key]) {
-            attachmentsGroupMap[key] = [];
-          }
-          attachmentsGroupMap[key].push(activity);
-        } else {
-          grouped.push(activity);
-        }
-      });
-  
-    Object.values(attachmentsGroupMap).forEach((group) => {
-      if (group.length === 1) {
-        grouped.push(group[0]);
-      } else {
-        grouped.push({
-          ...group[0],
-          isGroupedAttachment: true,
-          groupedAttachments: group,
-        });
-      }
-    });
-  
-    return grouped
-      .sort((a, b) => new Date(b.activityDateTime) - new Date(a.activityDateTime))
-      .filter(
-        (activity) =>
-          selectedFilters.length === 0 ||
-          selectedFilters.includes(activity.targetType)
-      );
-  }, [activities, selectedFilters]);
-  
-
-  const handleFilterClick = (type) => {
-    setSelectedFilters((prev) =>
-      prev.includes(type) ? prev.filter((item) => item !== type) : [...prev, type]
-    );
+  const iconMapping = {
+    PATIENT: <Person fontSize="verysmall" />,
+    TASK: <TaskAltIcon fontSize="verysmall"/>,
+    PATIENT_NOTE: <Note fontSize="verysmall"/>,
+    ATTACHMENT: <AttachFile fontSize="verysmall"/>,
+    TASK_GROUP: <WorkflowIconContainer><TemplatesIcon size={21} /></WorkflowIconContainer>,
+    PATIENT_META_DATA: <Person fontSize="verysmall" />,
   };
+  
+  const activityFilters = [
+    { type: "TASK", icon:  <TaskAltIcon fontSize="verysmall"/>, label: "Tasks" },
+    { type: "PATIENT_NOTE", icon: <Note fontSize="verysmall" />, label: "Notes" },
+    { type: "ATTACHMENT", icon: <AttachFile fontSize="verysmall" />, label: "Attachments" },
+    { type: "PATIENT", icon: <Person fontSize="verysmall" />, label: "Patients" },
+    { type: "TASK_GROUP", 
+      icon: <WorkflowIconContainer filterIcon ><TemplatesIcon size={22} /></WorkflowIconContainer>, 
+      label: "Workflow"
+    }
+  ];
 
   const AttachmentIcon = ({ contentType, fileType }) => {
     if (fileType === 'FOLDER') {
@@ -111,47 +76,6 @@ const ActivityTimeline = ({ activities }) => {
     );
   };
 
-  const openPreview = async (contextualData, activity) => {
-    try {
-      const { targetTypeIdentifier } = activity;
-      const { fileName, contentType } = contextualData;
-  
-      setAttachmentsLoading(true);
-  
-      const { data } = await getMemoPatientAttachment(targetTypeIdentifier);
-  
-      const fileSource = await new Promise((resolve, reject) => {
-        const reader = new FileReader();
-  
-        reader.onloadend = () => {
-          const result = reader.result?.replace(
-            /data:[^;]+;base64/,
-            `data:${contentType};base64`
-          );
-          resolve(result);
-        };
-  
-        reader.onerror = () => reject(new Error("FileReader error"));
-        reader.readAsDataURL(data);
-      });
-  
-      const attachment = {
-        attachmentIdentifier: targetTypeIdentifier,
-        fileName,
-        fileSource,
-        contentType,
-      };
-
-      setPreviewedAttachment(attachment);
-      setAttachmentSources([attachment]);
-      setIsAttachmentPreviewOpen(true);
-      setAttachmentsLoading(false);
-    } catch (error) {
-      setAttachmentsLoading(false);
-      console.error("Failed to open preview:", error);
-    }
-  };
-  
   return (
     <Box sx={{ pt: '12px' }}>
       <Box display="flex" alignItems="center" gap={2} mb={4}>
@@ -160,7 +84,7 @@ const ActivityTimeline = ({ activities }) => {
           {activityFilters.map((filter) => (
             <Tooltip key={filter.type} title={filter.label}>
               <FilterIcons 
-                onClick={() => handleFilterClick(filter.type)} 
+                onClick={() => toggleFilter(filter.type)} 
                 selected={selectedFilters.includes(filter.type)}
               >
                 {filter.icon}
@@ -172,7 +96,7 @@ const ActivityTimeline = ({ activities }) => {
 
       <Timeline sx={{ padding: 0, ml: '-15px' }}>
         {sortedActivities.map((activity, index) => (
-          <TimelineItem key={activity.targetTypeIdentifier || index} sx={{ height: 'auto' }}>
+          <TimelineItem key={index} sx={{ height: 'auto' }}>
             <TimelineLeftSideContent>
               <DateAndTime>
                 {format(parseISO(activity.activityDateTime), "MMM dd, yyyy")}
@@ -192,47 +116,39 @@ const ActivityTimeline = ({ activities }) => {
             <TimelineContent sx={{ flex: 0.83, mt: '-13px', ml: '-12px' }}>
               <ActivityWrapper>
                 <CardContent sx={{ p: 1, '&:last-child': { pb: 2 } }}>
-                  {activity.targetType === "ATTACHMENT" && !activity.isGroupedAttachment && (
+                  {activity.targetType === "ATTACHMENT" && (
                     <>
-                      <Container
-                        onClick={()=>{openPreview(activity?.contextualData,activity)}}
-                      >
-                        <AttachmentIcon
-                          contentType={activity?.contextualData?.contentType}
-                          fileType={activity?.contextualData?.fileType}
-                        />
-                        <OutfitTypography condensed variant="h4" weight="bold" noWrap>
-                          {activity.name}
-                        </OutfitTypography>
-                      </Container>
-                      <ActivityDescription>
-                        <span><strong>Added By:</strong> {activity?.activityPerformedBy?.userName}</span>
-                      </ActivityDescription>
-                    </>
-                    )}
-                  {activity.isGroupedAttachment && (
-                    <>
-                      {activity.groupedAttachments.map((att, idx) => (
-                        <Container key={att.targetTypeIdentifier || idx} onClick={() => openPreview(att.contextualData, att)}>
+                      {(activity.isGroupedAttachment ? activity.groupedAttachments : [activity]).map((attachment, index) => (
+                        <Container
+                          key={attachment.targetTypeIdentifier || index}
+                          onClick={() => {
+                            if(attachment.contextualData?.contentType){
+                              openPreview(attachment.contextualData, attachment)
+                            }}
+                          }
+                        >
                           <AttachmentIcon
-                            contentType={att.contextualData?.contentType}
-                            fileType={att.contextualData?.fileType}
+                            contentType={attachment.contextualData?.contentType}
+                            fileType={attachment.contextualData?.fileType}
                           />
                           <OutfitTypography condensed variant="h4" weight="bold" noWrap>
-                            {att.name}
+                            {attachment.description}
                           </OutfitTypography>
                         </Container>
                       ))}
+
                       <ActivityDescription>
                         <span><strong>Added By:</strong> {activity.activityPerformedBy?.userName}</span>
                       </ActivityDescription>
                     </>
                   )}
-                  {activity.targetType === "TASK" && (
+                  {(activity.targetType === "TASK" || activity.targetType === 'TASK_GROUP')  && (
                     <>
                       <ActivityName>{activity.description}</ActivityName>
                       <ActivityDescription>
-                        <span><strong>Status:</strong> {activity.contextualData?.status || "Unknown"}</span>
+                        { activity.targetType === "TASK" && 
+                          <span><strong>Status:</strong> {activity.contextualData?.status || "Unknown"}</span>
+                        }
                         <Tooltip title={activity.contextualData?.taskListName || "N/A"}>
                           <span><strong>List:</strong> {activity.contextualData?.taskListName || "N/A"}</span>
                         </Tooltip>
@@ -250,21 +166,44 @@ const ActivityTimeline = ({ activities }) => {
                   {activity.targetType === "PATIENT_NOTE" && (
                     <>
                       <ActivityName>Note</ActivityName>
+                      {activity.actionType === 'UPDATE_PATIENT_NOTE' &&
+                        <ActivityDescription>
+                        <Tooltip title={activity.contextualData.state.current || "N/A"}>
+                          <span>{activity.contextualData.state.current}</span>
+                        </Tooltip>
+                      </ActivityDescription>
+                      }
                       <ActivityDescription>
                         <Tooltip title={activity.description || "N/A"}>
                           <span>{activity.description}</span>
                         </Tooltip>
                       </ActivityDescription>
                       <ActivityDescription>
-                      <span><strong>Created By:</strong> {activity?.activityPerformedBy?.userName}</span>
+                      <span>
+                        <strong>{activity.actionType === "UPDATE_PATIENT_NOTE" ? "Updated By: " : "Created By: "}</strong>
+                        {activity?.activityPerformedBy?.userName}
+                      </span>
                       </ActivityDescription>
                     </>
                   )}
-                  {activity.targetType === "PATIENT" && (
+                  {activity.activityType === "PATIENT" && (
                     <>
-                    <ActivityName>{activity.name}</ActivityName>
-                    <ActivityDescription>
-                      <span><strong>Created By:</strong> {activity?.activityPerformedBy?.userName}</span>
+                      <ActivityName>{activity.description || 'Patient Updated'}</ActivityName>
+                      {Object.entries(activity.contextualData || {}).map(([key, value]) => (
+                        value && (
+                          <> 
+                          <ActivityDescription key={key}>
+                            <Tooltip title={`${key}: ${value.current} (current) ⟵ ${value.previous || 'NA'} (previous)`}>
+                              <span><strong>{key}:</strong> {value.current}</span>
+                            </Tooltip>
+                          </ActivityDescription></>
+                        )
+                      ))}
+                      <ActivityDescription>
+                        <span>
+                          <strong>{activity.actionType === "UPDATE_PATIENT" ? "Updated By:" : "Created By:"}</strong>{" "}
+                          {activity?.activityPerformedBy?.userName}
+                        </span>
                       </ActivityDescription>
                     </>
                   )}

@@ -53,7 +53,7 @@ const StickyMainTaskItemCell = styled.div`
     isEditingDescription ? '12' : '11'};
 
   background-color: ${(props) =>
-    props.isSelected
+    props.isSelected || props.isDragActive
       ? palette.brightBlueWithAlpha
       : // eslint-disable-next-line unicorn/no-nested-ternary
       props.hasEscalations

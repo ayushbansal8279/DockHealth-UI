@@ -998,6 +998,7 @@ const BulkEditOptionsBar = ({
       isDisabled={isDisabled}
       onClose={onClose}
       includedWorkflow={allSelectedTasks.some((t) => t?.itemType === 'BUNDLE')}
+      viewType="task"
     >
       <>
         {mergedConfig[BulkEditOptionsConfig.DUPLICATE_OPTION] && (

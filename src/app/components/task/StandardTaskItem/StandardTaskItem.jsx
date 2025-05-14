@@ -58,9 +58,11 @@ const Task = React.memo(
     $width,
     isNextVirtualTaskItemTypeBundle,
     isLastTaskOfGroup,
+    isFirstTaskOfGroup,
     isNextTaskItemTypeBundle,
     isAddingTask,
     viewType,
+    isDragPreview,
     ...restProps
   }) => {
     const parentTaskReference = useRef(null);
@@ -283,7 +285,9 @@ const Task = React.memo(
             {...restProps}
             isNextVirtualTaskItemTypeBundle={isNextVirtualTaskItemTypeBundle}
             isLastTaskOfGroup={isLastTaskOfGroup}
+            isFirstTaskOfGroup={isFirstTaskOfGroup}
             viewType={viewType}
+            isDragPreview={isDragPreview}
           />
         </TaskContainer>
         {showComments && window.disabledVirtualTaskList && (

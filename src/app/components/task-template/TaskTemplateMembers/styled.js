@@ -19,7 +19,7 @@ export const AssigneeMatchingWrapper = styled(MatchingWrapper)`
 `;
 
 export const AssigneeWrapper = styled.div`
-  opacity: 0;
+  opacity: ${({ isBorderColumnItem }) => (isBorderColumnItem ? 1 : 0)};
 `;
 
 export const AssigneeContainer = styled.div`

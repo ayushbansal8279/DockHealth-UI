@@ -31,6 +31,7 @@ const ListSelectStep = ({
   onAddList,
   savingList,
   enableSelectingGroupStep,
+  renderDescription
 }) => {
   const [isFetchingLists, setIsFetchingLists] = useState(true);
   const [listInputFocused, setListInputFocused, unsetListInputFocused] =
@@ -72,6 +73,7 @@ const ListSelectStep = ({
     <Step>
       <Title>Select List</Title>
       <Box m={1} />
+      {renderDescription?.()}
       <ListsWrapper>
         {!isFetchingLists && (
           <>

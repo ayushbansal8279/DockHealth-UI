@@ -120,7 +120,7 @@ export default function DataGrid({
   const columns = useMemo(
     () =>
       definitions.map(
-        ({ field, type, name, unsortable, editable, flex, renderCell }) => {
+        ({ field, type, name, unsortable, editable, flex, renderCell, headerRenderer }) => {
           const optional = {};
           if (fluid) {
             optional.flex = flex ?? 1;
@@ -132,6 +132,7 @@ export default function DataGrid({
             sortable: !unsortable,
             editable,
             renderCell,
+            renderHeader: headerRenderer,
             ...optional,
           };
         },

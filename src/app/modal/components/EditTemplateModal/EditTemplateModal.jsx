@@ -38,6 +38,11 @@ const EditTemplateModal = ({ closeModal, template, onAdded, onUpdated }) => {
   });
 
   const { register, unregister, handleSubmit, setValue, watch } = formMethods;
+  const [currentValue, setCurrentValue] = useState(template?.details);
+
+  const handleTextEditorChange = (value) => {
+    setCurrentValue(value);
+  };
 
   useEffect(() => {
     register('type');
@@ -144,8 +149,9 @@ const EditTemplateModal = ({ closeModal, template, onAdded, onUpdated }) => {
                     <Grid item xs={12}>
                       <CustomTextEditor label="Message">
                         <RichTextEditor
-                          value={template?.details}
+                          value={currentValue}
                           onBlur={(value) => setValue('details', value)}
+                          onChange={handleTextEditorChange}
                           initOnClick
                           showCharCount
                           templatePlaceholders={true}

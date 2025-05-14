@@ -125,6 +125,24 @@ function* updateUserViewSetup({ payload }) {
   }
 }
 
+function* addUserBulkTask({ payload }) {
+  try {
+    yield call(UserApi.userBulkCreateTask, payload);
+    yield put(showGlobalAlert(AlertMessages.TASK_CREATED));
+  } catch (error) {
+    yield put(showGlobalErrorAlert(error.message));
+  }
+}
+
+function* addUserBulkWorkflow({ payload }) {
+  try {
+    yield call(UserApi.userBulkCreateWorkflow, payload);
+    yield put(showGlobalAlert(AlertMessages.WORKFLOW_CREATED));
+  } catch (error) {
+    yield put(showGlobalErrorAlert(error.message));
+  }
+}
+
 export default function* watchUser() {
   yield takeLatest(ActionTypes.UPDATE_USER_VIEW_SETUP, updateUserViewSetup);
   yield takeLatest(
@@ -145,4 +163,6 @@ export default function* watchUser() {
     ActionTypes.UPDATE_CURRENT_USER_SUCCESS,
     updateCurrentUserSuccess,
   );
+  yield takeEvery(ActionTypes.USER_BULK_CREATE_TASK, addUserBulkTask);
+  yield takeEvery(ActionTypes.USER_BULK_CREATE_WORKFLOW, addUserBulkWorkflow);
 }

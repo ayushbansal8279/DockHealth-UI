@@ -74,13 +74,32 @@ const ListDetailsToolbar = ({
   const [fullView, setFullView] = useState(false);
 
   useEffect(() => {
-    if (viewType === ViewType.LIST_VIEW && changeViewType === 'SLIM_VIEW')
-      setSlimView(true);
-    if (viewType === ViewType.LIST_VIEW && changeViewType === 'FULL_VIEW')
-      setFullView(true);
-    if (queryViewType === ViewType.BOARD_VIEW) setBoardView(true);
-    if (queryViewType === ViewType.CALENDAR_VIEW) setCalendarView(true);
-  }, [viewType, queryViewType, changeViewType]);
+    const viewType = localStorageHelper.getItem(`view${taskListIdentifier}`);
+
+    if (queryViewType === ViewType.LIST_VIEW) {
+      if (viewType === 'FULL_VIEW') {
+        setFullView(true);
+        setSlimView(false);
+        setCalendarView(false);
+        setBoardView(false);
+      } else {
+        setFullView(false);
+        setSlimView(true);
+        setCalendarView(false);
+        setBoardView(false);
+      }
+    } else if (queryViewType === ViewType.BOARD_VIEW) {
+      setBoardView(true);
+      setFullView(false);
+      setSlimView(false);
+      setCalendarView(false);
+    } else if (queryViewType === ViewType.CALENDAR_VIEW) {
+      setCalendarView(true);
+      setBoardView(false);
+      setFullView(false);
+      setSlimView(false);
+    }
+  }, [taskListIdentifier, viewType, queryViewType, changeViewType]);
 
   const handleChangeViewType = useCallback(
     (newViewType) => {
@@ -100,17 +119,6 @@ const ListDetailsToolbar = ({
     },
     [dispatch],
   );
-
-  useEffect(() => {
-    const viewType = localStorageHelper.getItem(`view${taskListIdentifier}`);
-    if (viewType === 'FULL_VIEW') {
-      setFullView(true);
-      setSlimView(false);
-    } else if (!boardView && !calendarView) {
-      setFullView(false);
-      setSlimView(true);
-    }
-  }, [taskListIdentifier]);
 
   const boardViewAvailable = useSelector(userHasBoardViewFeatureSelector);
 
@@ -206,8 +214,6 @@ const ListDetailsToolbar = ({
             handleChangeViewType(ViewType.LIST_VIEW);
             handleSetChangeViewType('FULL_VIEW');
             handleRemoveAllTasks();
-            setSlimView(false);
-            setFullView(true);
           }}
         >
           <FullViewIcon />
@@ -218,8 +224,6 @@ const ListDetailsToolbar = ({
             handleChangeViewType(ViewType.LIST_VIEW);
             handleSetChangeViewType('SLIM_VIEW');
             handleRemoveAllTasks();
-            setFullView(false);
-            setSlimView(true);
           }}
         >
           <SlimViewIcon />
