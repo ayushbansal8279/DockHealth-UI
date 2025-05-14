@@ -130,7 +130,12 @@ function Virtualized({
               dispatch(
                 reorderTasksInGroup({
                   destination: {
-                    index: destinationOffsetIndexTask,
+                    index:
+                      dropDirectionRef?.current === 'top'
+                        ? 0
+                        : sourceOffsetIndexTask <= destinationOffsetIndexTask
+                        ? destinationOffsetIndexTask
+                        : destinationOffsetIndexTask + 1,
                     droppableId: destination?.parent?.id,
                   },
                   source: {
@@ -145,7 +150,15 @@ function Virtualized({
             dispatch(
               reorderSubtasks({
                 source: { index: sourceOffsetIndexSubtask },
-                destination: { index: destinationOffsetIndexSubtask },
+                destination: {
+                  index:
+                    dropDirectionRef?.current === 'top'
+                      ? 0
+                      : sourceOffsetIndexSubtask <=
+                        destinationOffsetIndexSubtask
+                      ? destinationOffsetIndexSubtask
+                      : destinationOffsetIndexSubtask + 1,
+                },
                 parentTask: tasksMap[source?.parent?.id!],
               }),
             );
@@ -155,7 +168,15 @@ function Virtualized({
             dispatch(
               reorderWorkflowTasks({
                 source: { index: sourceOffsetIndexTaskOfBundle },
-                destination: { index: destinationOffsetIndexTaskOfBundle },
+                destination: {
+                  index:
+                    dropDirectionRef?.current === 'top'
+                      ? 0
+                      : sourceOffsetIndexTaskOfBundle <=
+                        destinationOffsetIndexTaskOfBundle
+                      ? destinationOffsetIndexTaskOfBundle
+                      : destinationOffsetIndexTaskOfBundle + 1,
+                },
                 workflow: tasksMap[destination.parent?.id!],
                 completedTasksShown:
                   ['COMPLETE', ''].includes(currentTaskListTasksStatus) ||

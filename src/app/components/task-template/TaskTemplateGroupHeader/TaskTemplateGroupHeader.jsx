@@ -146,6 +146,7 @@ const TaskTemplateGroupHeader = ({
     useDraggable({
       id: identifier,
       data: {
+        level: 'top',
         groupId: taskGroupIdentifier,
       },
     });
@@ -158,6 +159,7 @@ const TaskTemplateGroupHeader = ({
   } = useDroppable({
     id: identifier,
     data: {
+      level: 'top',
       groupId: taskGroupIdentifier,
     },
   });
@@ -189,12 +191,7 @@ const TaskTemplateGroupHeader = ({
 
   useEffect(() => {
     if (origin === 'LIST') {
-      if (
-        !isFirstTaskOfGroup ||
-        !active ||
-        !isOver ||
-        active?.data?.current?.groupId === taskGroupIdentifier
-      ) {
+      if (!isFirstTaskOfGroup || !active || !isOver) {
         setHoverBorder(null);
         dropDirectionRef.current = null;
         return;
@@ -721,7 +718,11 @@ const TaskTemplateGroupHeader = ({
           setDroppableRef(node);
           elementRef.current = node;
         }}
-        isDraggedOver={isOver && active?.id !== identifier}
+        isDraggedOver={
+          isOver &&
+          active?.id !== identifier &&
+          active?.data?.current?.level === 'top'
+        }
         hoverBorder={hoverBorder === 'top'}
         isDragActive={!!active && active?.id === identifier}
       >
