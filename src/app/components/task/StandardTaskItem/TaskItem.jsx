@@ -244,6 +244,7 @@ const TaskItem = React.memo(
       isWorkflowTask,
       isWorkflowSubtask,
       task,
+      taskGroupIdentifier,
     });
 
     const overMetaData = getDNDMetaData({
