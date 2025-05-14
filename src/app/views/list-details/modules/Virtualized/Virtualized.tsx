@@ -136,6 +136,7 @@ function Virtualized({
                         : sourceOffsetIndexTask <= destinationOffsetIndexTask
                         ? destinationOffsetIndexTask
                         : destinationOffsetIndexTask + 1,
+
                     droppableId: destination?.parent?.id,
                   },
                   source: {
