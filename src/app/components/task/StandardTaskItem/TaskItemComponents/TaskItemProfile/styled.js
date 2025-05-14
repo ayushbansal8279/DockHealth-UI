@@ -1,7 +1,8 @@
+import styled from "styled-components";
+import { Link } from "react-router-dom";
+
 import { fontWeights } from "@/app/styles/font";
 import palette from "@/app/styles/palette";
-import { Link } from "react-router-dom";
-import styled from "styled-components";
 
 export const ProfileLabel = styled.span`
   color: ${palette.mediumGrey};
@@ -24,8 +25,7 @@ export const StyledProfileLink = styled(Link)({
   fontFamily: 'Outfit',
   textDecoration: 'none',
   overflow: 'hidden',
-  whiteSpace: 'nowrap',
-  textOverflow: 'ellipsis',
+
   '&:hover': {
     color: palette.brightBlue,
   },

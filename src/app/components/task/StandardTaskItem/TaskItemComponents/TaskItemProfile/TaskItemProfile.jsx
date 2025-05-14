@@ -16,8 +16,8 @@ const TaskItemProfile = ({ task }) => {
   } = profile;
 
   const displayNames = profileDisplayNames
-  .flatMap(name => (Array.isArray(name) ? name : [name]))
-  .filter(Boolean);
+    .flatMap(name => (Array.isArray(name) ? name : [name]))
+    .filter(Boolean);
 
   const displayName = displayNames.join(', ') || '-';
 
