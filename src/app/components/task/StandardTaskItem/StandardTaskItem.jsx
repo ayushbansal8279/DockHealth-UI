@@ -58,6 +58,7 @@ const Task = React.memo(
     $width,
     isNextVirtualTaskItemTypeBundle,
     isLastTaskOfGroup,
+    isFirstTaskOfGroup,
     isNextTaskItemTypeBundle,
     isAddingTask,
     viewType,
@@ -284,6 +285,7 @@ const Task = React.memo(
             {...restProps}
             isNextVirtualTaskItemTypeBundle={isNextVirtualTaskItemTypeBundle}
             isLastTaskOfGroup={isLastTaskOfGroup}
+            isFirstTaskOfGroup={isFirstTaskOfGroup}
             viewType={viewType}
             isDragPreview={isDragPreview}
           />

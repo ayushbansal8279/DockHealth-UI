@@ -138,6 +138,7 @@ import { getTaskDetails } from '@/app/api/task-api';
 import { useDraggable, useDroppable } from '@dnd-kit/core';
 import { CSS } from '@dnd-kit/utilities';
 import TaskItemProfile from './TaskItemComponents/TaskItemProfile/TaskItemProfile';
+import { DropDirectionContext } from '@/app/views/list-details/modules/Virtualized/Virtualized';
 
 const { DISABLED, READ_ONLY } = SINGLE_TASK_RESTRICTIONS_OPTIONS;
 
@@ -189,9 +190,11 @@ const TaskItem = React.memo(
     isLastChild,
     isNextVirtualTaskItemTypeBundle,
     isLastTaskOfGroup,
+    isFirstTaskOfGroup,
     viewType,
     isDragPreview,
   }) => {
+    const elementRef = useRef(null);
     const dependencyIconReference = useRef(null);
     const task = useSelector((state) => {
       return taskLookupSelector(state, origin, taskItemIdentifier);
@@ -228,15 +231,25 @@ const TaskItem = React.memo(
       priority,
     } = task || {};
 
+    const [hoverBorder, setHoverBorder] = useState(null);
     const { attributes, listeners, setNodeRef, transform, transition } =
-      useDraggable({ id: taskIdentifier });
+      useDraggable({
+        id: taskIdentifier,
+        data: {
+          groupId: taskGroupIdentifier,
+        },
+      });
 
     const {
       setNodeRef: setDroppableRef,
       isOver,
       active,
+      over,
     } = useDroppable({
       id: taskIdentifier,
+      data: {
+        groupId: taskGroupIdentifier,
+      },
     });
 
     const patient = parentPatient ?? taskPatient ?? parentTask?.patient;
@@ -341,6 +354,7 @@ const TaskItem = React.memo(
     );
 
     const { bulkEditEnabled } = useContext(BulkEditContext);
+    const dropDirectionRef = useContext(DropDirectionContext);
 
     const selectedOrganization = useSelector(selectedUserOrganizationSelector);
     const currentTasklist = useSelector(currentTaskListSelector);
@@ -396,6 +410,36 @@ const TaskItem = React.memo(
     };
 
     const workflowTaskGroup = getTaskGroupForWorkflow(task);
+
+    useEffect(() => {
+      if (origin === 'LIST') {
+        if (
+          !isFirstTaskOfGroup ||
+          !active ||
+          !isOver ||
+          active?.data?.current?.groupId === taskGroupIdentifier
+        ) {
+          setHoverBorder(null);
+          dropDirectionRef.current = null;
+          return;
+        }
+
+        const handlePointerMove = (e) => {
+          const rect = elementRef?.current?.getBoundingClientRect();
+          if (!rect) return;
+
+          const isTop = e?.clientY < rect?.top + rect?.height / 2;
+          const direction = isTop ? 'top' : 'bottom';
+
+          dropDirectionRef.current = direction;
+          setHoverBorder(direction);
+        };
+
+        window.addEventListener('pointermove', handlePointerMove);
+        return () =>
+          window.removeEventListener('pointermove', handlePointerMove);
+      }
+    }, [active?.id, over?.id, isFirstTaskOfGroup, origin, taskGroupIdentifier]);
 
     useEffect(() => {
       if (task?.status === 'COMPLETE') {
@@ -1027,7 +1071,9 @@ const TaskItem = React.memo(
           pageBackground={pageBackground}
           isNextVirtualTaskItemTypeBundle={isNextVirtualTaskItemTypeBundle}
           isLastTaskOfGroup={isLastTaskOfGroup}
+          isFirstTaskOfGroup={isFirstTaskOfGroup}
           viewType={viewType}
+          taskGroupIdentifier={taskGroupIdentifier}
         />
       );
     }
@@ -1041,6 +1087,7 @@ const TaskItem = React.memo(
           ref={(node) => {
             setNodeRef(node);
             setDroppableRef(node);
+            elementRef.current = node;
           }}
         >
           <StandardTaskItemContainer
@@ -1063,6 +1110,7 @@ const TaskItem = React.memo(
             isWorkflowSubtask={isWorkflowSubtask}
             isTaskOfTemplate={!!workflowTaskGroup}
             isDraggedOver={isOver && active?.id !== taskIdentifier}
+            hoverBorder={hoverBorder === 'top'}
             isDragActive={!!active && active?.id === taskIdentifier}
           >
             {randerFirstColumnCoverIfNecessary(
@@ -1246,6 +1294,7 @@ const TaskItem = React.memo(
                       currentUser={currentUser}
                       readOnly={restrictions?.patient === READ_ONLY}
                       origin={origin}
+                      width={getWidth(TaskItemColumn.PATIENT)}
                     />
                   </TaskItemCell>,
                   getColumnOrder(TaskItemColumn.PATIENT),
