@@ -16,6 +16,7 @@ import {
   FilterIcons, 
   MembersContainer, 
   NotesHistoryContainer, 
+  PatientNoteDescription, 
   TimelineCenterIcon, 
   TimelineCenterLine, 
   TimelineLeftSideContent, 
@@ -194,7 +195,9 @@ const ActivityTimeline = ({ activities }) => {
                         <ActivityDescription>
                           <NotesHistoryContainer>
                             <Tooltip title={processMarkdownValue(activity?.contextualData?.state?.current) || "N/A"}>
-                              <span>{processMarkdownValue(activity?.contextualData?.state?.current)}</span>                
+                              <PatientNoteDescription>
+                                {processMarkdownValue(activity?.contextualData?.state?.current)}
+                              </PatientNoteDescription>              
                             </Tooltip>
                             <Tooltip title='More Info'>
                               <IconButton sx={{padding: '1px'}} onClick={(e)=>handleClick(e,activity?.contextualData)}>
@@ -235,7 +238,9 @@ const ActivityTimeline = ({ activities }) => {
                       }
                       <ActivityDescription>
                         <Tooltip title={processMarkdownValue(activity.description) || "N/A"}>
-                          <span>{processMarkdownValue(activity.description)}</span>
+                          <PatientNoteDescription>
+                            {processMarkdownValue(activity.description)}
+                          </PatientNoteDescription>
                         </Tooltip>
                       </ActivityDescription>
                       <ActivityDescription>
