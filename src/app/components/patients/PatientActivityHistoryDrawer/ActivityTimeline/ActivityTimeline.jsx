@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Timeline, TimelineItem, TimelineSeparator, TimelineContent } from "@mui/lab";
-import { CardContent, Box, Popover, Typography, IconButton, Divider,} from "@mui/material";
+import { CardContent, Box, Popover, IconButton, Divider,} from "@mui/material";
 import { Assignment, Note, AttachFile, Person } from "@mui/icons-material";
 import { format, parseISO } from "date-fns";
 import { 
@@ -9,9 +9,10 @@ import {
   ActivityWrapper, 
   CommentContainer, 
   CommentDetails, 
+  CommentText, 
+  CommentTextWrapper, 
   Container, 
   DateAndTime, 
-  EditorWrapper, 
   FilterIcons, 
   MembersContainer, 
   NotesHistoryContainer, 
@@ -30,9 +31,7 @@ import FolderOpenIcon from '@mui/icons-material/FolderOpen';
 import AttachmentPreview from "@/app/components/attachments/AttachmentPreview/AttachmentPreview";
 import TemplatesIcon from 'img/navigation/TemplatesIcon';
 import { useActivityTimeline } from "./hooks";
-import CommentIcon from "@/app/components/task/TaskIcon/icons/CommentIcon";
 import InfoIcon from '@mui/icons-material/Info';
-import RichTextEditor from "@/app/components/common/RichTextEditor/RichTextEditor";
 
 const ActivityTimeline = ({ activities }) => {
   const {
@@ -45,6 +44,7 @@ const ActivityTimeline = ({ activities }) => {
     attachmentsSources,
     isAttachmentPreviewOpen,
     attachmentsLoading,
+    processMarkdownValue
   } = useActivityTimeline(activities);
   
   const iconMapping = {
@@ -90,17 +90,6 @@ const ActivityTimeline = ({ activities }) => {
     setAnchorEl(event.currentTarget);
     console.log(contextualData)
     setSelectedData(contextualData)
-  
-    // const matchingActivity = sortedActivities.find(
-    //   (act) =>
-    //     act.targetTypeIdentifier === targetTypeIdentifier 
-    // );
-  
-    // if (matchingActivity) {
-    //   console.log("MATCH FOUND:", matchingActivity);
-    // } else {
-    //   console.log("No matching UPDATE_PATIENT_NOTE found.");
-    // }
   };
   
 
@@ -204,59 +193,49 @@ const ActivityTimeline = ({ activities }) => {
                       {activity?.actionType === 'UPDATE_PATIENT_NOTE' &&
                         <ActivityDescription>
                           <NotesHistoryContainer>
-                            <Tooltip title={activity?.contextualData?.state?.current || "N/A"}>
-                              <span>{activity?.contextualData?.state?.current}</span>                
+                            <Tooltip title={processMarkdownValue(activity?.contextualData?.state?.current) || "N/A"}>
+                              <span>{processMarkdownValue(activity?.contextualData?.state?.current)}</span>                
                             </Tooltip>
                             <Tooltip title='More Info'>
                               <IconButton sx={{padding: '1px'}} onClick={(e)=>handleClick(e,activity?.contextualData)}>
                                 <InfoIcon fontSize="small" />
                               </IconButton>
                             </Tooltip>
-                        </NotesHistoryContainer>
-                        <Popover
-                          open={open}
-                          anchorEl={anchorEl}
-                          onClose={handleClose}
-                          anchorOrigin={{
-                            vertical: 'bottom',
-                            horizontal: 'center',
-                          }}
-                          transformOrigin={{
-                            vertical: 'top',
-                            horizontal: 'center',
-                          }}
-                        >
+                          </NotesHistoryContainer>
+                          <Popover
+                            open={open}
+                            anchorEl={anchorEl}
+                            onClose={handleClose}
+                            anchorOrigin={{
+                              vertical: 'bottom',
+                              horizontal: 'center',
+                            }}
+                            transformOrigin={{
+                              vertical: 'top',
+                              horizontal: 'center',
+                            }}
+                          >
                             <CommentContainer>
                               <CommentDetails>
                                 <strong>Current:</strong>
-                                <EditorWrapper>
-                                <RichTextEditor
-                                  readonly={true}
-                                  value={selectedData?.state?.current}
-                                  disableToolbar={true}
-                                  showToolbar = {false}
-                                />
-                                </EditorWrapper>
+                                <CommentTextWrapper>
+                                <CommentText>{processMarkdownValue(selectedData?.state?.current)}</CommentText>
+                                </CommentTextWrapper>
                               </CommentDetails>
                               <Divider />
                               <CommentDetails>
                                 <strong>Previous:</strong>
-                                <EditorWrapper>
-                                <RichTextEditor
-                                  readonly={true}
-                                  value={selectedData?.state?.previous}
-                                  disableToolbar={true}
-                                  showToolbar = {false}
-                                />
-                                </EditorWrapper>
+                                <CommentTextWrapper>
+                                <CommentText>{processMarkdownValue(selectedData?.state?.previous)}</CommentText>
+                                </CommentTextWrapper>
                               </CommentDetails>
                             </CommentContainer>
-                        </Popover>
-                      </ActivityDescription>
+                          </Popover>
+                        </ActivityDescription>
                       }
                       <ActivityDescription>
-                        <Tooltip title={activity.description || "N/A"}>
-                          <span>{activity.description}</span>
+                        <Tooltip title={processMarkdownValue(activity.description) || "N/A"}>
+                          <span>{processMarkdownValue(activity.description)}</span>
                         </Tooltip>
                       </ActivityDescription>
                       <ActivityDescription>

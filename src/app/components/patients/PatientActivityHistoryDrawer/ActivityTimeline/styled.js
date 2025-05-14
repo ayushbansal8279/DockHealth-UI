@@ -73,8 +73,18 @@ export const ActivityDescription =  styled(Typography).attrs({
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: 250px;
+    max-width: 270px;
     display: block;
+  }
+
+  p {
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 270px;
+    display: block;
+      
   }
 `;
 
@@ -174,11 +184,29 @@ export const CommentDetails = styled.div`
   }
 `;
 
-export const EditorWrapper = styled.div`
-  width: 220; 
+export const CommentTextWrapper = styled.div`
+  width: 220;
 `;
 
 export const NotesHistoryContainer = styled(Box)`
   display: flex;
   align-items: center;
+`;
+
+export const CommentText = styled.div`
+  color: ${palette.mediumGrey};
+  font-weight: normal;
+  // max-width: 475px;
+  width: 100%;
+  max-height: 150px;
+  overflow-y: auto;
+  border: 1px solid ${palette.lightGrey};
+  border-radius: 4px;
+  padding: 8px;
+  & p {
+    margin-bottom: 2px;
+  }
+  word-break: break-word;
+  white-space: normal;
+  overflow-wrap: anywhere;
 `;
