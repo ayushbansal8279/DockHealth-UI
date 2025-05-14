@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 
 import Tooltip from '@/app/components/common/Tooltip/Tooltip';
 import { ProfileLabel, StyledProfileLink } from './styled';
@@ -15,13 +15,18 @@ const TaskItemProfile = ({ task }) => {
     identifier
   } = profile;
 
-  const flatNames = profileDisplayNames.flatMap(name =>
-    Array.isArray(name) ? name : [name]
-  );
+  const displayNames = profileDisplayNames
+  .flatMap(name => (Array.isArray(name) ? name : [name]))
+  .filter(Boolean);
 
-  const displayNames = flatNames.filter(Boolean);
-  const displayName = displayNames[0] || '-';
-  const tooltip = `${displayNames.join(', ')}${profileTypeName ? ` (${profileTypeName})` : ''}`;
+  const displayName = displayNames.join(', ') || '-';
+
+  const tooltip = useMemo(() => (
+    <div>
+      <div><strong>name:</strong> {displayName}</div>
+      <div><strong>type:</strong> {profileTypeName || '-'}</div>
+    </div>
+  ), [displayName, profileTypeName]);
 
   const profileUrl = `/core/custom-profiles/${profileTypeIdentifier}/${identifier}`;
 
@@ -32,7 +37,7 @@ const TaskItemProfile = ({ task }) => {
         title={tooltip}
       >
         <ProfileLabel>
-          {displayName} ({profileTypeName})
+          {displayName}
         </ProfileLabel>
       </Tooltip>
     </StyledProfileLink>
