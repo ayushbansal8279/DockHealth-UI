@@ -130,7 +130,9 @@ function Virtualized({
               dispatch(
                 reorderTasksInGroup({
                   destination: {
-                    index: destinationOffsetIndexTask,
+                    index: sourceOffsetIndexTask > destinationOffsetIndexTask 
+                      ? destinationOffsetIndexTask + 1 
+                      : destinationOffsetIndexTask,
                     droppableId: destination?.parent?.id,
                   },
                   source: {
@@ -155,7 +157,9 @@ function Virtualized({
             dispatch(
               reorderWorkflowTasks({
                 source: { index: sourceOffsetIndexTaskOfBundle },
-                destination: { index: destinationOffsetIndexTaskOfBundle },
+                destination: { index: sourceOffsetIndexTaskOfBundle > destinationOffsetIndexTaskOfBundle 
+                  ? destinationOffsetIndexTaskOfBundle + 1 
+                  : destinationOffsetIndexTaskOfBundle },
                 workflow: tasksMap[destination.parent?.id!],
                 completedTasksShown:
                   ['COMPLETE', ''].includes(currentTaskListTasksStatus) ||
