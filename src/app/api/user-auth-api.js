@@ -585,7 +585,6 @@ export const getFHIREnterpriseAccessTokensByAuthCode = (
 ) => {
   return new Promise((resolve, reject) => {
     try {
-      // const authUrl = `${process.env.REACT_APP_HEYDOC_SERVICES_BASE_URL}fhir`;
       const authData = `grant_type=authorization_code&code=${authCode}`;
 
       return axios.post(requestAuthTokenURL, authData).then((response) => {
@@ -615,7 +614,6 @@ export const getFHIREnterpriseAccessTokensByRefreshToken = (
 ) => {
   return new Promise((resolve, reject) => {
     try {
-      // const authUrl = `${process.env.REACT_APP_HEYDOC_SERVICES_BASE_URL}fhir`;
       const authData = `grant_type=refresh_token&refresh_token=${refreshToken}`;
 
       return axios.post(requestAuthTokenURL, authData).then((response) => {

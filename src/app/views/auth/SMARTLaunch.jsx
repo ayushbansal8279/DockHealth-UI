@@ -49,7 +49,9 @@ const processLaunchContext = (queryValues, history) => {
       11. The FHIR® resource server returns the desired resource.
     */
 
-    let authorizationUrl = `${process.env.REACT_APP_HEYDOC_SERVICES_BASE_URL}fhir/authorize?iss=${issUriVal}&launch=${launchContextId}&redirectUri=${redirectUriVal}`;
+    const authorizationUrl = `${
+      import.meta.env.VITE_HEYDOC_SERVICES_BASE_URL
+    }fhir/authorize?iss=${issUriVal}&launch=${launchContextId}&redirectUri=${redirectUriVal}`;
     console.log('authorizationUrl:', authorizationUrl);
     window.location.href = authorizationUrl;
   } else if (queryValues.code && queryValues.code !== 'undefined') {
@@ -74,7 +76,9 @@ const processLaunchContext = (queryValues, history) => {
     //   },
     //   body: data,
     // };
-    const requestAuthTokenURL = `${process.env.REACT_APP_HEYDOC_SERVICES_BASE_URL}fhir/token?iss=${issUriVal}&redirectUri=${redirectUriVal}`;
+    const requestAuthTokenURL = `${
+      import.meta.env.VITE_HEYDOC_SERVICES_BASE_URL
+    }fhir/token?iss=${issUriVal}&redirectUri=${redirectUriVal}`;
     console.log(`requestAuthTokenURL: ${requestAuthTokenURL}`);
 
     console.log('Exchanging temporary code and requesting Access token...');
@@ -102,7 +106,9 @@ const processLaunchContext = (queryValues, history) => {
     const issUriVal = queryValues.iss;
     const redirectUriVal = queryValues.redirectUri;
 
-    const requestAuthTokenURL = `${process.env.REACT_APP_HEYDOC_SERVICES_BASE_URL}fhir/token?iss=${issUriVal}&redirectUri=${redirectUriVal}`;
+    const requestAuthTokenURL = `${
+      import.meta.env.VITE_HEYDOC_SERVICES_BASE_URL
+    }fhir/token?iss=${issUriVal}&redirectUri=${redirectUriVal}`;
     console.log(`requestAuthTokenURL: ${requestAuthTokenURL}`);
 
     UserAuthApi.getFHIREnterpriseAccessTokensByRefreshToken(
