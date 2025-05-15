@@ -90,9 +90,15 @@ const processLaunchContext = (queryValues, history) => {
       requestAuthTokenURL,
     )
       .then(() => {
-        window.location.href = `/patient/${sessionStorage.getItem(
-          'patientIdentifier',
-        )}`;
+        const patientIdentifier = sessionStorage.getItem('patientIdentifier');
+        console.log(`patientIdentifier: ${patientIdentifier}`);
+        if (patientIdentifier && patientIdentifier !== 'null') {
+          console.log(`redirecting to patient view`);
+          window.location.href = `/#/core/patient/${patientIdentifier}`;
+        } else {
+          console.log(`redirecting to home view`);
+          window.location.href = `/#/core/home`;
+        }
       })
       .catch((error) => {
         // toggleAlert(error.message, 'error');
