@@ -52,10 +52,12 @@ const processLaunchContext = (history, messageEvent) => {
     )
       .then(() => {
         const patientIdentifier = sessionStorage.getItem('patientIdentifier');
-        console.log(`redirecting to patient view for: ${patientIdentifier}`);
-        if(patientIdentifier && patientIdentifier != 'null'){
+        console.log(`patientIdentifier: ${patientIdentifier}`);
+        if (patientIdentifier && patientIdentifier !== 'null') {
+          console.log(`redirecting to patient view`);
           window.location.href = `/#/core/patient/${patientIdentifier}`;
-        }else{
+        } else {
+          console.log(`redirecting to home view`);
           window.location.href = `/#/core/home`;
         }
       })
