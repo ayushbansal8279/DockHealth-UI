@@ -7,6 +7,7 @@ import { PERMISSIONS } from 'helpers/permission-mapper';
 import { onLeaveGlobalSearch } from './TemplateCoreSubscriptionPlan/GlobalSearch';
 import DrChronoLaunch from '../views/auth/DrChronoLaunch';
 import MCPLaunch from '../views/auth/MCPLaunch';
+import SMARTLaunch from '../views/auth/SMARTLaunch';
 import {
   onEnterListDetailsView,
   onLeaveListDetailsView,
@@ -547,6 +548,10 @@ export const AUTH_ROUTES = [
   {
     path: '/mcp',
     RouteComponent: MCPLaunch,
+  },
+  {
+    path: '/smart-launch',
+    RouteComponent: SMARTLaunch,
   },
   {
     path: '/signupEmailSent',

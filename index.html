@@ -169,6 +169,11 @@
     </div>
 
     <script>
+      if(window.location.href.indexOf('?redirect=launch') > -1) { // /?redirect=launch&iss=athenahealth.com
+        window.location.href = window.location.href.replace('/?redirect=launch', '/#/auth/smart-launch/?');
+      }else if(window.location.href.indexOf('?iss=athenahealth.com') > -1) { // /?iss=athenahealth.com
+        window.location.href = window.location.href.replace('/?iss=athenahealth.com', '/#/auth/smart-launch/?iss=athenahealth.com');
+      }
       let userAgentString = navigator.userAgent;
 
       // Detect Internet Explorer

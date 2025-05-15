@@ -579,6 +579,66 @@ export function getEnterpriseAccessTokensForEmbeddedSSO(
   });
 }
 
+export const getFHIREnterpriseAccessTokensByAuthCode = (
+  authCode,
+  requestAuthTokenURL,
+) => {
+  return new Promise((resolve, reject) => {
+    try {
+      // const authUrl = `${process.env.REACT_APP_HEYDOC_SERVICES_BASE_URL}fhir`;
+      const authData = `grant_type=authorization_code&code=${authCode}`;
+
+      return axios.post(requestAuthTokenURL, authData).then((response) => {
+        const userRefreshToken = response?.data.refresh_token;
+        const userAccessToken = response?.data.access_token;
+        const email = response?.data.profile;
+        const userIdentifier = response?.data.userIdentifier;
+        const patientIdentifier = response?.data.patientIdentifier;
+        sessionStorage.setItem('EnterpriseUserFlag', true);
+        sessionStorage.setItem('SSO_ACCESSTOKEN', userAccessToken);
+        sessionStorage.setItem('SSO_REFRESHTOKEN', userRefreshToken);
+        sessionStorage.setItem('SSO_USEREMAIL', email);
+        sessionStorage.setItem('userIdentifier', userIdentifier);
+        sessionStorage.setItem('patientIdentifier', patientIdentifier);
+        resolve('success');
+      });
+    } catch (error) {
+      reject(error);
+      return Promise.reject(error);
+    }
+  });
+};
+
+export const getFHIREnterpriseAccessTokensByRefreshToken = (
+  refreshToken,
+  requestAuthTokenURL,
+) => {
+  return new Promise((resolve, reject) => {
+    try {
+      // const authUrl = `${process.env.REACT_APP_HEYDOC_SERVICES_BASE_URL}fhir`;
+      const authData = `grant_type=refresh_token&refresh_token=${refreshToken}`;
+
+      return axios.post(requestAuthTokenURL, authData).then((response) => {
+        const userRefreshToken = response?.data.refresh_token;
+        const userAccessToken = response?.data.access_token;
+        const email = response?.data.profile;
+        const userIdentifier = response?.data.userIdentifier;
+        const patientIdentifier = response?.data.patientIdentifier;
+        sessionStorage.setItem('EnterpriseUserFlag', true);
+        sessionStorage.setItem('SSO_ACCESSTOKEN', userAccessToken);
+        sessionStorage.setItem('SSO_REFRESHTOKEN', userRefreshToken);
+        sessionStorage.setItem('SSO_USEREMAIL', email);
+        sessionStorage.setItem('userIdentifier', userIdentifier);
+        sessionStorage.setItem('patientIdentifier', patientIdentifier);
+        resolve('success');
+      });
+    } catch (error) {
+      reject(error);
+      return Promise.reject(error);
+    }
+  });
+};
+
 export const getCustomLaunchEnterpriseAccessTokensByAuthCode = (
   authData,
   requestAuthTokenURL,
