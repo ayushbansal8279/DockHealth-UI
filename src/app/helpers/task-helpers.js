@@ -230,6 +230,7 @@ export const TaskItemColumn = {
   LABELS: 'LABELS',
   FILES: 'FILES',
   PRIORITY: 'PRIORITY',
+  PROFILE: 'PROFILE',
 };
 
 export const PatientTaskItemColumn = {
@@ -308,6 +309,7 @@ export const TaskItemColumnWidth = {
   [TaskItemColumn.SUBTASKS_COUNT]: 60,
   [TaskItemColumn.WORKFLOW_STATUS]: 120,
   [TaskItemColumn.PRIORITY]: 120,
+  [TaskItemColumn.PROFILE]: 164,
 };
 
 export const TASK_ITEM_BASE_COLUMN_CONFIG = {
@@ -338,6 +340,7 @@ export const TASK_ITEM_BASE_COLUMN_CONFIG = {
   [TaskItemColumn.LIST_NAME]: false,
   [TaskItemColumn.ORG_NAME]: false,
   [TaskItemColumn.PRIORITY]: true,
+  [TaskItemColumn.PROFILE]: true,
 };
 
 export const SHOW_COLUMNS_CONFIG = {
@@ -366,6 +369,7 @@ export const SHOW_COLUMNS_CONFIG = {
   [PatientTaskItemColumn.MRN]: true,
   [PatientTaskItemColumn.HOME_PHONE]: true,
   [PatientTaskItemColumn.MOBILE_PHONE]: true,
+  [TaskItemColumn.PROFILE]: true,
 };
 
 export const TASK_ITEM_SORT_METHODS = {
