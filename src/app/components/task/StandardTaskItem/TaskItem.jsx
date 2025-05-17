@@ -412,7 +412,7 @@ const TaskItem = React.memo(
       false,
     );
 
-    const { bulkEditEnabled } = useContext(BulkEditContext);
+    const { bulkEditEnabled, bulkEditIsActive } = useContext(BulkEditContext);
     const dropDirectionRef = useContext(DropDirectionContext);
 
     const selectedOrganization = useSelector(selectedUserOrganizationSelector);
@@ -423,6 +423,20 @@ const TaskItem = React.memo(
     const [isPatientDataReadOnly] = useState(true);
 
     const { tabName } = useParams();
+
+    const userSortingSupportEnabledItem = useMemo(
+      () =>
+        selectedOrganization?.themeSettings?.find(
+          ({ name }) => name === 'list.tasks.user.sort.enabled',
+        ) || {},
+      [selectedOrganization?.themeSettings],
+    );
+    const userSortingSupportDisabled =
+      userSortingSupportEnabledItem?.value === 'false';
+    const isDragAndDropDisabled =
+      origin === 'LIST'
+        ? bulkEditIsActive || userSortingSupportDisabled
+        : false;
 
     const customHighlightColor = useMemo(() => {
       const customHighlightItem =
@@ -1004,14 +1018,15 @@ const TaskItem = React.memo(
             isTaskOfTemplate={!!workflowTaskGroup}
             isDragActive={!!active && active?.id === taskIdentifier}
           >
-            {taskListRestrictions?.createTask !== DISABLED && (
-              <div {...attributes} {...listeners}>
-                <DotsContainer
-                  showDraggableDots
-                  dragHandleProps={dragHandleProps}
-                />
-              </div>
-            )}
+            {taskListRestrictions?.createTask !== DISABLED &&
+              !isDragAndDropDisabled && (
+                <div {...attributes} {...listeners}>
+                  <DotsContainer
+                    showDraggableDots
+                    dragHandleProps={dragHandleProps}
+                  />
+                </div>
+              )}
             {showPriority && (
               <PriorityIndicator color={getPriorityColor(task?.priority)} />
             )}
