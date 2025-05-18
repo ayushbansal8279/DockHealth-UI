@@ -35,6 +35,7 @@ import Tooltip from 'components/common/Tooltip/Tooltip';
 import TasksHeader from 'components/tasklist/TasksHeader/TasksHeader';
 import RotatableChevron from 'components/common/RotatableChevron/RotatableChevron';
 import StandardTaskItemContainer from 'components/task/StandardTaskItemContainer/StandardTaskItemContainer';
+import StandardTaskItem from 'components/task/StandardTaskItem/StandardTaskItem';
 import TasksSkeletonLoader from 'components/task/TasksSkeletonLoader/TasksSkeletonLoader';
 import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
 import QuickAddTaskInput from 'components/tasklist/QuickAddTaskInput/QuickAddTaskInput';
@@ -63,6 +64,15 @@ import {
   CheckboxPlaceholder,
   Spacer,
 } from './styled';
+import {
+  DndContext,
+  DragOverlay,
+  MouseSensor,
+  TouchSensor,
+  useSensors,
+  useSensor,
+} from '@dnd-kit/core';
+import TaskItem from '@/app/components/task/StandardTaskItem/TaskItem';
 
 const TaskTemplate = ({
   template,
@@ -79,15 +89,19 @@ const TaskTemplate = ({
     members,
   } = template;
   const smartFlowsAvailable = useSelector(userHasSmartFlowsSelector);
-  const shareTaskWorkflowAvailable = useSelector(userHasShareTaskWorkflowFeatureSelector);
+  const shareTaskWorkflowAvailable = useSelector(
+    userHasShareTaskWorkflowFeatureSelector,
+  );
   const currentUser = useSelector(userProfileSelector);
 
   const [draggableId, setDraggableId] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
+  const [activeId, setActiveId] = useState(null);
   const [nameInputValue, setNameInputValue] = useState(name);
   const [nameInputError, setNameInputError] = useState(false);
   const nameInputReference = useRef(null);
   const history = useHistory();
+  const sensors = useSensors(useSensor(MouseSensor), useSensor(TouchSensor));
 
   const isCurrentUserEditor =
     members?.find(({ user }) => user.identifier === currentUser.identifier)
@@ -212,11 +226,12 @@ const TaskTemplate = ({
             }),
           ),
       },
-      shareTaskWorkflowAvailable && isAdmin && {
-        name: 'Share Workflow',
-        color: palette.oPlusRed,
-        onClick: handleShareWorkflow,
-      },
+      shareTaskWorkflowAvailable &&
+        isAdmin && {
+          name: 'Share Workflow',
+          color: palette.oPlusRed,
+          onClick: handleShareWorkflow,
+        },
       isCurrentUserEditor && {
         name: 'Delete Workflow',
         color: palette.oPlusRed,
@@ -288,20 +303,32 @@ const TaskTemplate = ({
     setDraggableId(id);
   }, []);
 
+  const taskIdentifiers = tasks?.map((task) => task.taskIdentifier);
+
+  const handleDragStart = (event) => {
+    setActiveId(event?.active?.id);
+  };
+
   const onDragEnd = useCallback(
-    ({ destination, source }) => {
+    (event) => {
+      const { active, over } = event;
+      const sourceIndex = taskIdentifiers?.findIndex((id) => id === active?.id);
+      const destinationIndex = taskIdentifiers?.findIndex(
+        (id) => id === over?.id,
+      );
       setDraggableId(null);
+      setActiveId(null);
       onTaskOrderChanged();
 
       dispatch(
         reorderTasksForTemplate({
           taskTemplateIdentifier: identifier,
-          source,
-          destination,
+          source: { ...active, index: sourceIndex },
+          destination: { ...over, index: destinationIndex },
         }),
       );
     },
-    [dispatch, identifier],
+    [dispatch, identifier, taskIdentifiers],
   );
 
   const containsMultipleAssignees = useMemo(
@@ -318,8 +345,6 @@ const TaskTemplate = ({
       ),
     [tasks],
   );
-
-  const taskIdentifiers = tasks?.map((task) => task.taskIdentifier);
 
   const isTemplateSelected = useSelector(
     isTaskItemsSelectedSelector(taskIdentifiers),
@@ -413,7 +438,7 @@ const TaskTemplate = ({
           ) : (
             <>
               <TasksHeader bulkEditEnabled={false} isGroupSelected={false} />
-              <DragDropContext
+              {/* <DragDropContext
                 onBeforeCapture={onBeforeCapture}
                 onDragEnd={onDragEnd}
               >
@@ -422,11 +447,19 @@ const TaskTemplate = ({
                     <div
                       {...droppableProvided.droppableProps}
                       ref={droppableProvided.innerRef}
+                    > */}
+              <DndContext
+                onDragStart={handleDragStart}
+                onDragEnd={onDragEnd}
+                sensors={sensors}
+              >
+                {tasks?.map((taskOrIdentifier, index) => {
+                  return (
+                    <div
+                      key={taskOrIdentifier?.taskIdentifier || taskOrIdentifier}
+                      style={{ marginBottom: '1px' }}
                     >
-                      {tasks?.map((taskOrIdentifier, index) => {
-                        return (
-                          <div style={{ marginBottom: '1px' }}>
-                            <Draggable
+                      {/* <Draggable
                               key={
                                 taskOrIdentifier?.taskIdentifier ||
                                 taskOrIdentifier
@@ -437,38 +470,48 @@ const TaskTemplate = ({
                               )}
                               index={index}
                             >
-                              {(draggableProvided, draggableSnapshot) => (
-                                <StandardTaskItemContainer
-                                  isStartedDnD={
-                                    draggableId ===
-                                    (taskOrIdentifier?.taskIdentifier ||
-                                      taskOrIdentifier)
-                                  }
-                                  isDragging={draggableSnapshot.isDragging}
-                                  draggableProvided={draggableProvided}
-                                  isDraggable
-                                  taskIdentifier={
-                                    taskOrIdentifier?.taskIdentifier ||
-                                    taskOrIdentifier
-                                  }
-                                  isFullView={isFullView}
-                                  multipleAssigneesContext={
-                                    containsMultipleAssignees
-                                  }
-                                  noMargin
-                                  iconColorActive={iconColorActive}
-                                  origin={TaskOrigin.TEMPLATE}
-                                />
-                              )}
-                            </Draggable>
-                          </div>
-                        );
-                      })}
-                      {droppableProvided.placeholder}
+                              {(draggableProvided, draggableSnapshot) => ( */}
+
+                      <StandardTaskItemContainer
+                        // isStartedDnD={
+                        //   draggableId ===
+                        //   (taskOrIdentifier?.taskIdentifier || taskOrIdentifier)
+                        // }
+                        // isDragging={draggableSnapshot.isDragging}
+                        // draggableProvided={draggableProvided}
+                        // isDraggable
+
+                        taskIdentifier={
+                          taskOrIdentifier?.taskIdentifier || taskOrIdentifier
+                        }
+                        isFullView={isFullView}
+                        multipleAssigneesContext={containsMultipleAssignees}
+                        noMargin
+                        iconColorActive={iconColorActive}
+                        isWorkflowTask={!taskOrIdentifier?.subTaskSortIndex}
+                        isWorkflowSubtask={taskOrIdentifier?.subTaskSortIndex}
+                        origin={TaskOrigin.TEMPLATE}
+                      />
                     </div>
-                  )}
-                </Droppable>
-              </DragDropContext>
+                  );
+                })}
+                <DragOverlay>
+                  {activeId ? (
+                    <Placeholder
+                      dragPreviewTask={tasks?.find(
+                        (t) => t.identifier === activeId,
+                      )}
+                    />
+                  ) : null}
+                </DragOverlay>
+                {/* )}
+                            </Draggable> */}
+              </DndContext>
+              {/* {droppableProvided.placeholder} */}
+              {/* </div>
+              //     )}
+              //   </Droppable>
+              // </DragDropContext> */}
               <QuickAddInputWrapper>
                 <QuickAddTaskInput
                   disableMentions
@@ -481,6 +524,14 @@ const TaskTemplate = ({
         </>
       </Collapse>
     </TaskTemplateContainer>
+  );
+};
+
+const Placeholder = ({ dragPreviewTask }) => {
+  return (
+    // @ts-ignore
+    <TaskItem dragPreviewTask={dragPreviewTask} isDragPreview />
+    // <StandardTaskItemContainer taskIdentifier={id} isDragPreview />
   );
 };
 

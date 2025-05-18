@@ -27,6 +27,9 @@ const StandardTaskItemContainer = ({
   isAddingTask,
   origin,
   viewType,
+  isDragPreview,
+  isWorkflowTask,
+  isWorkflowSubtask,
   ...restProps
 }) => {
   const organizationCustomFields = useSelector(
@@ -134,6 +137,9 @@ const StandardTaskItemContainer = ({
       isLastChild={isLastChild}
       isAddingTask={isAddingTask}
       isNextTaskItemTypeBundle={isNextTaskItemTypeBundle}
+      isDragPreview={isDragPreview}
+      isWorkflowTask={isWorkflowTask}
+      isWorkflowSubtask={isWorkflowSubtask}
       {...restProps}
       viewType={viewType}
     />

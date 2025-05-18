@@ -199,6 +199,7 @@ const TaskItem = React.memo(
     isWorkflowTask,
     isSubtaskOfTask,
     isFirstSubtaskOfWorkflowTask,
+    dragPreviewTask,
   }) => {
     const elementRef = useRef(null);
     const dependencyIconReference = useRef(null);
@@ -967,16 +968,18 @@ const TaskItem = React.memo(
     };
 
     if (isDragPreview) {
+      const finalTask = task ?? dragPreviewTask;
       return (
         <DragPreviewWrapper
           isBundleOrSubtask={
-            task?.itemType === TaskItemType.BUNDLE || !!task?.subTaskSortIndex
+            finalTask?.itemType === TaskItemType.BUNDLE ||
+            !!finalTask?.subTaskSortIndex
           }
         >
           <DragPreviewText>
-            {task?.itemType === TaskItemType.BUNDLE
-              ? task?.name
-              : task?.description}
+            {finalTask?.itemType === TaskItemType.BUNDLE
+              ? finalTask?.name
+              : finalTask?.description}
           </DragPreviewText>
         </DragPreviewWrapper>
       );
