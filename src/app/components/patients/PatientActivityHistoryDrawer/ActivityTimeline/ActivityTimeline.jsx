@@ -1,16 +1,22 @@
 import React, { useState } from "react";
 import { Timeline, TimelineItem, TimelineSeparator, TimelineContent } from "@mui/lab";
-import { CardContent, Box,} from "@mui/material";
+import { CardContent, Box, Popover, IconButton, Divider,} from "@mui/material";
 import { Assignment, Note, AttachFile, Person } from "@mui/icons-material";
 import { format, parseISO } from "date-fns";
 import { 
   ActivityDescription, 
   ActivityName, 
   ActivityWrapper, 
+  CommentContainer, 
+  CommentDetails, 
+  CommentText, 
+  CommentTextWrapper, 
   Container, 
   DateAndTime, 
   FilterIcons, 
   MembersContainer, 
+  NotesHistoryContainer, 
+  PatientNoteDescription, 
   TimelineCenterIcon, 
   TimelineCenterLine, 
   TimelineLeftSideContent, 
@@ -26,6 +32,7 @@ import FolderOpenIcon from '@mui/icons-material/FolderOpen';
 import AttachmentPreview from "@/app/components/attachments/AttachmentPreview/AttachmentPreview";
 import TemplatesIcon from 'img/navigation/TemplatesIcon';
 import { useActivityTimeline } from "./hooks";
+import InfoIcon from '@mui/icons-material/Info';
 
 const ActivityTimeline = ({ activities }) => {
   const {
@@ -38,6 +45,7 @@ const ActivityTimeline = ({ activities }) => {
     attachmentsSources,
     isAttachmentPreviewOpen,
     attachmentsLoading,
+    processMarkdownValue
   } = useActivityTimeline(activities);
   
   const iconMapping = {
@@ -75,6 +83,23 @@ const ActivityTimeline = ({ activities }) => {
       </Box>
     );
   };
+
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [selectedData, setSelectedData] = useState(null);
+
+  const handleClick = (event, contextualData) => {
+    setAnchorEl(event.currentTarget);
+    console.log(contextualData)
+    setSelectedData(contextualData)
+  };
+  
+
+  const handleClose = () => {
+    setAnchorEl(null);
+    setSelectedData(null);
+  };
+
+  const open = Boolean(anchorEl);
 
   return (
     <Box sx={{ pt: '12px' }}>
@@ -163,19 +188,59 @@ const ActivityTimeline = ({ activities }) => {
                       </MembersContainer>)}
                     </>
                   )}
-                  {activity.targetType === "PATIENT_NOTE" && (
+                  {activity?.targetType === "PATIENT_NOTE" && (
                     <>
                       <ActivityName>Note</ActivityName>
-                      {activity.actionType === 'UPDATE_PATIENT_NOTE' &&
+                      {activity?.actionType === 'UPDATE_PATIENT_NOTE' &&
                         <ActivityDescription>
-                        <Tooltip title={activity.contextualData.state.current || "N/A"}>
-                          <span>{activity.contextualData.state.current}</span>
-                        </Tooltip>
-                      </ActivityDescription>
+                          <NotesHistoryContainer>
+                            <Tooltip title={processMarkdownValue(activity?.contextualData?.state?.current) || "N/A"}>
+                              <PatientNoteDescription>
+                                {processMarkdownValue(activity?.contextualData?.state?.current)}
+                              </PatientNoteDescription>              
+                            </Tooltip>
+                            <Tooltip title='More Info'>
+                              <IconButton sx={{padding: '1px'}} onClick={(e)=>handleClick(e,activity?.contextualData)}>
+                                <InfoIcon fontSize="small" />
+                              </IconButton>
+                            </Tooltip>
+                          </NotesHistoryContainer>
+                          <Popover
+                            open={open}
+                            anchorEl={anchorEl}
+                            onClose={handleClose}
+                            anchorOrigin={{
+                              vertical: 'bottom',
+                              horizontal: 'center',
+                            }}
+                            transformOrigin={{
+                              vertical: 'top',
+                              horizontal: 'center',
+                            }}
+                          >
+                            <CommentContainer>
+                              <CommentDetails>
+                                <strong>Current:</strong>
+                                <CommentTextWrapper>
+                                <CommentText>{processMarkdownValue(selectedData?.state?.current)}</CommentText>
+                                </CommentTextWrapper>
+                              </CommentDetails>
+                              <Divider />
+                              <CommentDetails>
+                                <strong>Previous:</strong>
+                                <CommentTextWrapper>
+                                <CommentText>{processMarkdownValue(selectedData?.state?.previous)}</CommentText>
+                                </CommentTextWrapper>
+                              </CommentDetails>
+                            </CommentContainer>
+                          </Popover>
+                        </ActivityDescription>
                       }
                       <ActivityDescription>
-                        <Tooltip title={activity.description || "N/A"}>
-                          <span>{activity.description}</span>
+                        <Tooltip title={processMarkdownValue(activity.description) || "N/A"}>
+                          <PatientNoteDescription>
+                            {processMarkdownValue(activity.description)}
+                          </PatientNoteDescription>
                         </Tooltip>
                       </ActivityDescription>
                       <ActivityDescription>

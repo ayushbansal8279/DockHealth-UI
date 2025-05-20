@@ -2,7 +2,7 @@ import { fontSizes, fontWeights } from "@/app/styles/font";
 import palette from "@/app/styles/palette";
 import spacing from "@/app/styles/spacing";
 import { TimelineConnector, TimelineDot, TimelineOppositeContent } from "@mui/lab";
-import { Card, IconButton, Typography } from "@mui/material";
+import { Box, Card, IconButton, Typography } from "@mui/material";
 import styled from "styled-components";
 
 
@@ -73,7 +73,7 @@ export const ActivityDescription =  styled(Typography).attrs({
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: 250px;
+    max-width: 270px;
     display: block;
   }
 `;
@@ -141,4 +141,98 @@ export const WorkflowIconContainer = styled.div`
     height: ${({ filterIcon }) => (filterIcon ? '18px' : '16px')};
     color: inherit;
     border-color:  ${palette.lightGrey};
+`;
+
+export const CommentContainer = styled.div`
+  max-width: 300px;
+  width: 100%;
+  padding: ${spacing.tiny} ${spacing.small};
+  word-break: break-word;
+  padding: 5px;
+  margin: 2px;
+`;
+
+export const CommentDetails = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin: 4px 0;
+  color: ${palette.coolGrey1};
+  font-size: 14px;
+
+
+  & > .label {
+    font-weight: bold;
+    white-space: nowrap;
+  }
+
+  & > .value {
+    flex: 1;
+    text-align: left;
+    word-break: break-word;
+  }
+`;
+
+export const CommentTextWrapper = styled.div`
+  width: 220;
+`;
+
+export const NotesHistoryContainer = styled(Box)`
+  display: flex;
+  align-items: center;
+`;
+
+export const CommentText = styled.div`
+  color: ${palette.mediumGrey};
+  font-weight: normal;
+  // max-width: 475px;
+  width: 100%;
+  max-height: 150px;
+  overflow-y: auto;
+  border: 1px solid ${palette.lightGrey};
+  border-radius: 4px;
+  padding: 8px;
+  & p {
+    margin-bottom: 2px;
+  }
+  word-break: break-word;
+  white-space: normal;
+  overflow-wrap: anywhere;
+`;
+
+export const PatientNoteDescription = styled.div`
+  display: block;
+  max-width: 270px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  &, * {
+    display: inline;
+    white-space: nowrap;
+    padding: 0;
+    margin: 0;
+    vertical-align: baseline;
+    list-style: none;
+  }
+
+  ul li::before {
+    content: "• ";
+    margin-right: 2px;
+  }
+
+  ol {
+    counter-reset: item;
+  }
+
+  ol li::before {
+    counter-increment: item;
+    content: counter(item) ". ";
+    margin-right: 2px;
+  }
+
+  li, li * {
+    display: inline;
+  }
 `;

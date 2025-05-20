@@ -1,6 +1,10 @@
 import { useMemo, useState, useCallback } from "react";
 import { format, isValid, parseISO } from "date-fns";
 import { getMemoPatientAttachment } from "@/app/views/patient-details/PatientAttachments/hooks";
+import ReactHtmlParser from 'html-react-parser';
+import MarkdownIt from 'markdown-it';
+import DOMPurify from 'dompurify';
+import { markdownItUnderline } from 'components/common/RichTextEditor/helpers';
 
 export const useActivityTimeline = (activities) => {
     const [selectedFilters, setSelectedFilters] = useState([]);
@@ -116,6 +120,26 @@ export const useActivityTimeline = (activities) => {
       );
     };
   
+    const md = new MarkdownIt({
+      html: true,
+      breaks: false,
+      linkify: true,
+    }).use(markdownItUnderline);
+    
+    const processMarkdownValue = (markdownText) => {
+      if (!markdownText) return null;
+    
+      let htmlValue = md.render(markdownText);
+      htmlValue = htmlValue.replace(/href="(.*?)"/gi, (match, url) => {
+        const decodedUrl = url.replace(/%7B/gi, '{').replace(/%7D/gi, '}');
+        return `href="${decodedUrl}"`;
+      });
+      const sanitizedHtml = DOMPurify.sanitize(htmlValue);
+      const finaltext = ReactHtmlParser(sanitizedHtml)
+      console.log(finaltext)
+      return finaltext;
+    };
+
     return {
       sortedActivities,
       selectedFilters,
@@ -126,5 +150,6 @@ export const useActivityTimeline = (activities) => {
       attachmentsSources,
       isAttachmentPreviewOpen,
       attachmentsLoading,
+      processMarkdownValue
     };
   };
