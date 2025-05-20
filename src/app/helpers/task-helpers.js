@@ -703,3 +703,44 @@ export const transformTaskMetadata = (data) => {
     taskMetaData: transformMetaData(data.taskMetaData),
   };
 };
+
+export const getWorkflowTaskGroup = (taskItem) => {
+  if (!taskItem?.taskGroups?.length) return null;
+
+  const filteredGroups = taskItem.taskGroups.filter(
+    (group) => group?.groupType === 'TASK_BUNDLE',
+  );
+
+  return filteredGroups.length > 0 ? filteredGroups[0] : null;
+};
+
+export const getDNDMetaData = ({
+  isTopLevelTaskOrWorkflowHeader,
+  isSubtaskOfTask,
+  isWorkflowTask,
+  isWorkflowSubtask,
+  task,
+  taskGroupIdentifier,
+}) => {
+  let level = null;
+
+  if (isTopLevelTaskOrWorkflowHeader) {
+    level = 'top';
+  } else if (isSubtaskOfTask) {
+    level = 'subtask';
+  } else if (isWorkflowTask) {
+    level = 'workflowTask';
+  } else if (isWorkflowSubtask) {
+    level = 'workflowSubtask';
+  }
+
+  return {
+    level,
+    parentId: isWorkflowTask
+      ? getWorkflowTaskGroup(task)?.taskGroupIdentifier ?? null
+      : isSubtaskOfTask || isWorkflowSubtask
+      ? task?.parentTaskIdentifier ?? null
+      : null,
+    groupId: isTopLevelTaskOrWorkflowHeader ? taskGroupIdentifier : null,
+  };
+};

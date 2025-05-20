@@ -40,6 +40,10 @@ export interface Props extends Segment {
   isLastGroupOfList: boolean;
   isLastSubtaskParentTask: boolean;
   isNextVirtualTaskItemTypeBundle: boolean;
+  isWorkflowSubTask: boolean;
+  isFirstSubTaskOfParentTask: boolean;
+  isSubtaskOfTask: boolean;
+  isFirstSubtaskOfWorkflowTask: boolean;
 }
 
 function VSubtask(
@@ -53,6 +57,9 @@ function VSubtask(
     isLastSubtaskParentTask,
     isNextVirtualTaskItemTypeBundle,
     isWorkflowSubTask,
+    isFirstSubTaskOfParentTask,
+    isSubtaskOfTask,
+    isFirstSubtaskOfWorkflowTask,
     ...record
   }: Props,
   // eslint-disable-next-line unicorn/prevent-abbreviations
@@ -198,6 +205,9 @@ function VSubtask(
             isVirtualSubtask
             $width={percentage < 90}
             patient={patient}
+            isFirstSubTaskOfParentTask={isFirstSubTaskOfParentTask}
+            isSubtaskOfTask={isSubtaskOfTask}
+            isFirstSubtaskOfWorkflowTask={isFirstSubtaskOfWorkflowTask}
           />
         </Sc.VSubtask>
       </div>

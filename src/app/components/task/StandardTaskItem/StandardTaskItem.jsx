@@ -63,6 +63,12 @@ const Task = React.memo(
     isAddingTask,
     viewType,
     isDragPreview,
+    isFirstTaskOfWorkflow,
+    isFirstSubTaskOfParentTask,
+    isTopLevelTaskOrWorkflowHeader,
+    isWorkflowTask,
+    isSubtaskOfTask,
+    isFirstSubtaskOfWorkflowTask,
     ...restProps
   }) => {
     const parentTaskReference = useRef(null);
@@ -288,6 +294,12 @@ const Task = React.memo(
             isFirstTaskOfGroup={isFirstTaskOfGroup}
             viewType={viewType}
             isDragPreview={isDragPreview}
+            isFirstTaskOfWorkflow={isFirstTaskOfWorkflow}
+            isFirstSubTaskOfParentTask={isFirstSubTaskOfParentTask}
+            isTopLevelTaskOrWorkflowHeader={isTopLevelTaskOrWorkflowHeader}
+            isWorkflowTask={isWorkflowTask}
+            isSubtaskOfTask={isSubtaskOfTask}
+            isFirstSubtaskOfWorkflowTask={isFirstSubtaskOfWorkflowTask}
           />
         </TaskContainer>
         {showComments && window.disabledVirtualTaskList && (
