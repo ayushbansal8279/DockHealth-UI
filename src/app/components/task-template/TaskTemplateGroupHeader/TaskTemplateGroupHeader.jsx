@@ -317,7 +317,21 @@ const TaskTemplateGroupHeader = ({
   if (workflowAddTaskDisabled) {
     taskListRestrictions.workflowAddTask = DISABLED;
   }
-
+  const userSortingSupportDisabled = useMemo(() => {
+    const disabledSettingItem =
+      selectedOrganization?.themeSettings?.find(
+        ({ name: themeName }) =>
+          themeName === 'list.tasks.user.sort.enabled',
+      ) || {};
+    return (
+      disabledSettingItem &&
+      disabledSettingItem?.value === 'false'
+    );
+  }, [selectedOrganization]);
+  
+  const isDragAndDropEnabled =
+    origin === 'LIST' ? !userSortingSupportDisabled : true;
+    
   const [completedTasksAmount, allTasksAmount] = useMemo(() => {
     if (templateTasks?.length === 0) {
       return [tasksCompletedCount, tasksCount];
@@ -633,6 +647,7 @@ const TaskTemplateGroupHeader = ({
         >
           {!groupDragAndDropDisabled &&
             !bulkEditIsActive &&
+            isDragAndDropEnabled &&
             taskListRestrictions?.completeTask !== DISABLED && (
               <div {...attributes} {...listeners}>
                 <TemplateHandle
