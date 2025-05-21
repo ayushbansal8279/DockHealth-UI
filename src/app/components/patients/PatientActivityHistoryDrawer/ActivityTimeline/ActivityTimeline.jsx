@@ -144,6 +144,13 @@ const ActivityTimeline = ({ activities }) => {
                       <ActivityName>{activityLabels[activity?.actionType] || ''}</ActivityName>
                       <Box mb={.5}/>
                       {(activity.isGroupedAttachment ? activity.groupedAttachments : [activity]).map((attachment, index) => (
+                        <Tooltip
+                        title={
+                          attachment?.description ||
+                          `${attachment?.contextualData?.state?.current || 'NA'}(current) ⟵
+                          ${attachment?.contextualData?.state?.previous || 'NA'}(previous)`
+                        }
+                        >
                         <Container
                           key={attachment.targetTypeIdentifier || index}
                           onClick={() => {
@@ -160,6 +167,7 @@ const ActivityTimeline = ({ activities }) => {
                             {attachment?.description || attachment?.contextualData?.state?.current}
                           </OutfitTypography>
                         </Container>
+                        </Tooltip>
                       ))}
 
                       <ActivityDescription>
