@@ -383,6 +383,21 @@ const TaskItem = React.memo(
       );
     }, [selectedOrganization]);
 
+    const userSortingSupportDisabled = useMemo(() => {
+      const disabledSettingItem =
+        selectedOrganization?.themeSettings?.find(
+          ({ name: themeName }) =>
+            themeName === 'list.tasks.user.sort.enabled',
+        ) || {};
+      return (
+        disabledSettingItem &&
+        disabledSettingItem?.value === 'false'
+      );
+    }, [selectedOrganization]);
+    
+    const isDragAndDropEnabled =
+      origin === 'LIST' ? !userSortingSupportDisabled : true;
+
     const getTaskGroupForWorkflow = (taskItem) => {
       if (
         (origin === TaskOrigin.DASHBOARD || origin === TaskOrigin.GLOBAL) &&
@@ -936,7 +951,7 @@ const TaskItem = React.memo(
             isTaskOfTemplate={!!workflowTaskGroup}
             isDragActive={!!active && active?.id === taskIdentifier}
           >
-            {taskListRestrictions?.createTask !== DISABLED && (
+            {taskListRestrictions?.createTask !== DISABLED && isDragAndDropEnabled && (
               <div {...attributes} {...listeners}>
                 <DotsContainer
                   showDraggableDots
