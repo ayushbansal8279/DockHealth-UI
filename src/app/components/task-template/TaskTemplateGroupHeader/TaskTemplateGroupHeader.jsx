@@ -288,18 +288,6 @@ const TaskTemplateGroupHeader = ({
     );
   }, [selectedOrganization, isListAdmin, isCreator]);
 
-  const userSortingSupportEnabledItem = useMemo(
-    () =>
-      selectedOrganization?.themeSettings?.find(
-        ({ name }) => name === 'list.tasks.user.sort.enabled',
-      ) || {},
-    [selectedOrganization?.themeSettings],
-  );
-  const userSortingSupportDisabled =
-    userSortingSupportEnabledItem?.value === 'false';
-  const isDragAndDropDisabled =
-    origin === 'LIST' ? bulkEditIsActive || userSortingSupportDisabled : false;
-
   const workflowAddTaskDisabled = useMemo(() => {
     const disabledSettingItem =
       selectedOrganization?.themeSettings?.find(
@@ -326,7 +314,21 @@ const TaskTemplateGroupHeader = ({
   if (workflowAddTaskDisabled) {
     taskListRestrictions.workflowAddTask = DISABLED;
   }
-
+  const userSortingSupportDisabled = useMemo(() => {
+    const disabledSettingItem =
+      selectedOrganization?.themeSettings?.find(
+        ({ name: themeName }) =>
+          themeName === 'list.tasks.user.sort.enabled',
+      ) || {};
+    return (
+      disabledSettingItem &&
+      disabledSettingItem?.value === 'false'
+    );
+  }, [selectedOrganization]);
+  
+  const isDragAndDropEnabled =
+    origin === 'LIST' ? !userSortingSupportDisabled : true;
+    
   const [completedTasksAmount, allTasksAmount] = useMemo(() => {
     if (templateTasks?.length === 0) {
       return [tasksCompletedCount, tasksCount];
@@ -641,7 +643,8 @@ const TaskTemplateGroupHeader = ({
           isDragActive={!!active && active?.id === identifier}
         >
           {!groupDragAndDropDisabled &&
-            !isDragAndDropDisabled &&
+            !bulkEditIsActive &&
+            isDragAndDropEnabled &&
             taskListRestrictions?.completeTask !== DISABLED && (
               <div {...attributes} {...listeners}>
                 <TemplateHandle

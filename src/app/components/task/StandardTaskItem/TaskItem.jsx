@@ -424,20 +424,6 @@ const TaskItem = React.memo(
 
     const { tabName } = useParams();
 
-    const userSortingSupportEnabledItem = useMemo(
-      () =>
-        selectedOrganization?.themeSettings?.find(
-          ({ name }) => name === 'list.tasks.user.sort.enabled',
-        ) || {},
-      [selectedOrganization?.themeSettings],
-    );
-    const userSortingSupportDisabled =
-      userSortingSupportEnabledItem?.value === 'false';
-    const isDragAndDropDisabled =
-      origin === 'LIST'
-        ? bulkEditIsActive || userSortingSupportDisabled
-        : false;
-
     const customHighlightColor = useMemo(() => {
       const customHighlightItem =
         selectedOrganization?.themeSettings?.find(
@@ -456,6 +442,21 @@ const TaskItem = React.memo(
         hasPriorityHighlightItem && hasPriorityHighlightItem?.value === 'true'
       );
     }, [selectedOrganization]);
+
+    const userSortingSupportDisabled = useMemo(() => {
+      const disabledSettingItem =
+        selectedOrganization?.themeSettings?.find(
+          ({ name: themeName }) =>
+            themeName === 'list.tasks.user.sort.enabled',
+        ) || {};
+      return (
+        disabledSettingItem &&
+        disabledSettingItem?.value === 'false'
+      );
+    }, [selectedOrganization]);
+    
+    const isDragAndDropEnabled =
+      origin === 'LIST' ? !userSortingSupportDisabled : true;
 
     const getTaskGroupForWorkflow = (taskItem) => {
       if (
@@ -1018,15 +1019,14 @@ const TaskItem = React.memo(
             isTaskOfTemplate={!!workflowTaskGroup}
             isDragActive={!!active && active?.id === taskIdentifier}
           >
-            {taskListRestrictions?.createTask !== DISABLED &&
-              !isDragAndDropDisabled && (
-                <div {...attributes} {...listeners}>
-                  <DotsContainer
-                    showDraggableDots
-                    dragHandleProps={dragHandleProps}
-                  />
-                </div>
-              )}
+            {taskListRestrictions?.createTask !== DISABLED && isDragAndDropEnabled && (
+              <div {...attributes} {...listeners}>
+                <DotsContainer
+                  showDraggableDots
+                  dragHandleProps={dragHandleProps}
+                />
+              </div>
+            )}
             {showPriority && (
               <PriorityIndicator color={getPriorityColor(task?.priority)} />
             )}
