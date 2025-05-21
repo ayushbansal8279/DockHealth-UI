@@ -157,7 +157,7 @@ const ActivityTimeline = ({ activities }) => {
                             fileType={attachment.contextualData?.fileType}
                           />
                           <OutfitTypography condensed variant="h4" weight="500" noWrap>
-                            {attachment.description}
+                            {attachment?.description || attachment?.contextualData?.state?.current}
                           </OutfitTypography>
                         </Container>
                       ))}
