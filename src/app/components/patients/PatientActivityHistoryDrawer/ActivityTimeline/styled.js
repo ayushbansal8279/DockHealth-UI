@@ -55,7 +55,7 @@ export const ActivityWrapper = styled(Card).attrs({
 
 export const ActivityName =  styled.p`
   font-size: ${fontSizes.regular};
-  font-weight: ${fontWeights.regularPlus};
+  font-weight: ${fontWeights.regular};
   font-family: 'Outfit', sans-serif;
    margin: 0;
 `;
