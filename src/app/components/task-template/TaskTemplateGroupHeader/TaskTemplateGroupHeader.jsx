@@ -146,6 +146,7 @@ const TaskTemplateGroupHeader = ({
     useDraggable({
       id: identifier,
       data: {
+        level: 'top',
         groupId: taskGroupIdentifier,
       },
     });
@@ -158,6 +159,7 @@ const TaskTemplateGroupHeader = ({
   } = useDroppable({
     id: identifier,
     data: {
+      level: 'top',
       groupId: taskGroupIdentifier,
     },
   });
@@ -189,12 +191,7 @@ const TaskTemplateGroupHeader = ({
 
   useEffect(() => {
     if (origin === 'LIST') {
-      if (
-        !isFirstTaskOfGroup ||
-        !active ||
-        !isOver ||
-        active?.data?.current?.groupId === taskGroupIdentifier
-      ) {
+      if (!isFirstTaskOfGroup || !active || !isOver) {
         setHoverBorder(null);
         dropDirectionRef.current = null;
         return;
@@ -317,7 +314,21 @@ const TaskTemplateGroupHeader = ({
   if (workflowAddTaskDisabled) {
     taskListRestrictions.workflowAddTask = DISABLED;
   }
-
+  const userSortingSupportDisabled = useMemo(() => {
+    const disabledSettingItem =
+      selectedOrganization?.themeSettings?.find(
+        ({ name: themeName }) =>
+          themeName === 'list.tasks.user.sort.enabled',
+      ) || {};
+    return (
+      disabledSettingItem &&
+      disabledSettingItem?.value === 'false'
+    );
+  }, [selectedOrganization]);
+  
+  const isDragAndDropEnabled =
+    origin === 'LIST' ? !userSortingSupportDisabled : true;
+    
   const [completedTasksAmount, allTasksAmount] = useMemo(() => {
     if (templateTasks?.length === 0) {
       return [tasksCompletedCount, tasksCount];
@@ -633,6 +644,7 @@ const TaskTemplateGroupHeader = ({
         >
           {!groupDragAndDropDisabled &&
             !bulkEditIsActive &&
+            isDragAndDropEnabled &&
             taskListRestrictions?.completeTask !== DISABLED && (
               <div {...attributes} {...listeners}>
                 <TemplateHandle
@@ -721,7 +733,11 @@ const TaskTemplateGroupHeader = ({
           setDroppableRef(node);
           elementRef.current = node;
         }}
-        isDraggedOver={isOver && active?.id !== identifier}
+        isDraggedOver={
+          isOver &&
+          active?.id !== identifier &&
+          active?.data?.current?.level === 'top'
+        }
         hoverBorder={hoverBorder === 'top'}
         isDragActive={!!active && active?.id === identifier}
       >
