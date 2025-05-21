@@ -202,7 +202,6 @@ export const useActivityTimeline = (activities) => {
       });
       const sanitizedHtml = DOMPurify.sanitize(htmlValue);
       const finaltext = ReactHtmlParser(sanitizedHtml)
-      console.log(finaltext)
       return finaltext;
     };
 

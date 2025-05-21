@@ -27,7 +27,6 @@ import TaskAltIcon from '@mui/icons-material/TaskAlt';
 import { OutfitTypography } from "@/app/styles/theme";
 import Tooltip from "@/app/components/common/Tooltip/Tooltip";
 import { getIconFromContentType } from "@/app/components/attachments/AttachmentButton/helpers";
-import TaskItemMembers from "@/app/components/task/StandardTaskItem/TaskItemComponents/TaskItemMembers";
 import FolderOpenIcon from '@mui/icons-material/FolderOpen';
 import AttachmentPreview from "@/app/components/attachments/AttachmentPreview/AttachmentPreview";
 import TemplatesIcon from 'img/navigation/TemplatesIcon';
@@ -147,8 +146,8 @@ const ActivityTimeline = ({ activities }) => {
                         <Tooltip
                         title={
                           attachment?.description ||
-                          `${attachment?.contextualData?.state?.current || 'NA'}(current) ⟵
-                          ${attachment?.contextualData?.state?.previous || 'NA'}(previous)`
+                          `${attachment?.contextualData?.state?.current || 'NA'} (current) ⟵
+                           ${attachment?.contextualData?.state?.previous || 'NA'} (previous)`
                         }
                         >
                         <Container
@@ -183,7 +182,10 @@ const ActivityTimeline = ({ activities }) => {
                       <ActivityName>{activityLabels[activity?.actionType] || ''}</ActivityName>
                       <ActivityDescription>
                         <Tooltip title={activity?.description}>
-                          <span><strong>Task Name:</strong> {activity?.description}</span>
+                          <span>
+                            <strong>{activity?.targetType === "TASK" ? 'Task Name: ' : 'Workflow Name: '}</strong> 
+                            {activity?.description}
+                          </span>
                         </Tooltip>
                         <Tooltip title={activity.contextualData?.taskListName || "N/A"}>
                           <span><strong>List:</strong> {activity.contextualData?.taskListName || "N/A"}</span>
