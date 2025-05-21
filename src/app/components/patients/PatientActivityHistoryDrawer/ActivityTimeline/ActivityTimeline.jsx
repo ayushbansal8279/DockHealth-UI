@@ -27,7 +27,6 @@ import TaskAltIcon from '@mui/icons-material/TaskAlt';
 import { OutfitTypography } from "@/app/styles/theme";
 import Tooltip from "@/app/components/common/Tooltip/Tooltip";
 import { getIconFromContentType } from "@/app/components/attachments/AttachmentButton/helpers";
-import TaskItemMembers from "@/app/components/task/StandardTaskItem/TaskItemComponents/TaskItemMembers";
 import FolderOpenIcon from '@mui/icons-material/FolderOpen';
 import AttachmentPreview from "@/app/components/attachments/AttachmentPreview/AttachmentPreview";
 import TemplatesIcon from 'img/navigation/TemplatesIcon';
@@ -45,9 +44,24 @@ const ActivityTimeline = ({ activities }) => {
     attachmentsSources,
     isAttachmentPreviewOpen,
     attachmentsLoading,
-    processMarkdownValue
+    processMarkdownValue,
+    activityLabels,
+    activityPerformedType
   } = useActivityTimeline(activities);
   
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [selectedData, setSelectedData] = useState(null);
+  const handleClick = (event, contextualData) => {
+    setAnchorEl(event.currentTarget);
+    console.log(contextualData)
+    setSelectedData(contextualData)
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+    setSelectedData(null);
+  };
+  const open = Boolean(anchorEl);
+
   const iconMapping = {
     PATIENT: <Person fontSize="verysmall" />,
     TASK: <TaskAltIcon fontSize="verysmall"/>,
@@ -72,7 +86,7 @@ const ActivityTimeline = ({ activities }) => {
     if (fileType === 'FOLDER') {
       return (
         <Box mt="-2px" mr={.5}>
-          <FolderOpenIcon />
+          <FolderOpenIcon fontSize="small"/>
         </Box>
       );
     }
@@ -83,23 +97,6 @@ const ActivityTimeline = ({ activities }) => {
       </Box>
     );
   };
-
-  const [anchorEl, setAnchorEl] = useState(null);
-  const [selectedData, setSelectedData] = useState(null);
-
-  const handleClick = (event, contextualData) => {
-    setAnchorEl(event.currentTarget);
-    console.log(contextualData)
-    setSelectedData(contextualData)
-  };
-  
-
-  const handleClose = () => {
-    setAnchorEl(null);
-    setSelectedData(null);
-  };
-
-  const open = Boolean(anchorEl);
 
   return (
     <Box sx={{ pt: '12px' }}>
@@ -143,7 +140,16 @@ const ActivityTimeline = ({ activities }) => {
                 <CardContent sx={{ p: 1, '&:last-child': { pb: 2 } }}>
                   {activity.targetType === "ATTACHMENT" && (
                     <>
+                      <ActivityName>{activityLabels[activity?.actionType] || ''}</ActivityName>
+                      <Box mb={.5}/>
                       {(activity.isGroupedAttachment ? activity.groupedAttachments : [activity]).map((attachment, index) => (
+                        <Tooltip
+                        title={
+                          attachment?.description ||
+                          `${attachment?.contextualData?.state?.current || 'NA'} (current) ⟵
+                           ${attachment?.contextualData?.state?.previous || 'NA'} (previous)`
+                        }
+                        >
                         <Container
                           key={attachment.targetTypeIdentifier || index}
                           onClick={() => {
@@ -156,41 +162,54 @@ const ActivityTimeline = ({ activities }) => {
                             contentType={attachment.contextualData?.contentType}
                             fileType={attachment.contextualData?.fileType}
                           />
-                          <OutfitTypography condensed variant="h4" weight="bold" noWrap>
-                            {attachment.description}
+                          <OutfitTypography condensed variant="h4" weight="500" noWrap>
+                            {attachment?.description || attachment?.contextualData?.state?.current}
                           </OutfitTypography>
                         </Container>
+                        </Tooltip>
                       ))}
 
                       <ActivityDescription>
-                        <span><strong>Added By:</strong> {activity.activityPerformedBy?.userName}</span>
+                        <span>
+                          <strong>{activityPerformedType(activity?.actionType)}</strong>
+                            {activity.activityPerformedBy?.userName}
+                          </span>
                       </ActivityDescription>
                     </>
                   )}
                   {(activity.targetType === "TASK" || activity.targetType === 'TASK_GROUP')  && (
                     <>
-                      <ActivityName>{activity.description}</ActivityName>
+                      <ActivityName>{activityLabels[activity?.actionType] || ''}</ActivityName>
                       <ActivityDescription>
-                        { activity.targetType === "TASK" && 
-                          <span><strong>Status:</strong> {activity.contextualData?.status || "Unknown"}</span>
-                        }
+                        <Tooltip title={activity?.description}>
+                          <span>
+                            <strong>{activity?.targetType === "TASK" ? 'Task Name: ' : 'Workflow Name: '}</strong> 
+                            {activity?.description}
+                          </span>
+                        </Tooltip>
                         <Tooltip title={activity.contextualData?.taskListName || "N/A"}>
                           <span><strong>List:</strong> {activity.contextualData?.taskListName || "N/A"}</span>
                         </Tooltip>
                       </ActivityDescription>
-                      {activity?.contextualData?.assignedTo && (<MembersContainer>
-                      <strong>Assigned To:</strong>
-                        <TaskItemMembers
-                          readOnly={true}
-                          assignedToUsers={activity?.contextualData?.assignedTo}
-                          maxIconDisplay={4}
-                        />
-                      </MembersContainer>)}
+                      {activity?.contextualData?.assignedToName && (
+                        <ActivityDescription>
+                          <Tooltip title={activity?.contextualData?.assignedToName}>
+                            <span><strong>Assigned To: </strong>{activity?.contextualData?.assignedToName}</span>
+                          </Tooltip>
+                          <span><strong>Assigned By: </strong>{activity?.activityPerformedBy?.userName}</span>
+                        </ActivityDescription>
+                     )}
+                      {!activity?.contextualData?.assignedToName && (<ActivityDescription>
+                      <span>
+                        <strong>{activityPerformedType(activity?.actionType)}</strong>
+                        {" "}{activity?.activityPerformedBy?.userName}
+                      </span>
+                      </ActivityDescription>)}
                     </>
                   )}
                   {activity?.targetType === "PATIENT_NOTE" && (
                     <>
-                      <ActivityName>Note</ActivityName>
+                      <ActivityName>{activityLabels[activity?.actionType] || ''}</ActivityName>
                       {activity?.actionType === 'UPDATE_PATIENT_NOTE' &&
                         <ActivityDescription>
                           <NotesHistoryContainer>
@@ -245,7 +264,7 @@ const ActivityTimeline = ({ activities }) => {
                       </ActivityDescription>
                       <ActivityDescription>
                       <span>
-                        <strong>{activity.actionType === "UPDATE_PATIENT_NOTE" ? "Updated By: " : "Created By: "}</strong>
+                        <strong>{activityPerformedType(activity?.actionType)}</strong>
                         {activity?.activityPerformedBy?.userName}
                       </span>
                       </ActivityDescription>
@@ -253,7 +272,14 @@ const ActivityTimeline = ({ activities }) => {
                   )}
                   {activity.activityType === "PATIENT" && (
                     <>
-                      <ActivityName>{activity.description || 'Patient Updated'}</ActivityName>
+                       <ActivityName>{(activity.description ? 'Patient Created' : 'Patient Updated')}</ActivityName>
+                      {(activity.description) && (
+                        <ActivityDescription>
+                          <Tooltip title={activity.description}>
+                              <span><strong>Patient Name:</strong> {activity.description}</span>
+                            </Tooltip>
+                        </ActivityDescription>
+                      )}
                       {Object.entries(activity.contextualData || {}).map(([key, value]) => (
                         value && (
                           <> 
@@ -266,7 +292,9 @@ const ActivityTimeline = ({ activities }) => {
                       ))}
                       <ActivityDescription>
                         <span>
-                          <strong>{activity.actionType === "UPDATE_PATIENT" ? "Updated By:" : "Created By:"}</strong>{" "}
+                          <strong>
+                            {["UPDATE_PATIENT", "SAVE_PATIENT_META_DATA"].includes(activity.actionType) ? "Updated By:" : "Created By:"}
+                          </strong>{" "}
                           {activity?.activityPerformedBy?.userName}
                         </span>
                       </ActivityDescription>
