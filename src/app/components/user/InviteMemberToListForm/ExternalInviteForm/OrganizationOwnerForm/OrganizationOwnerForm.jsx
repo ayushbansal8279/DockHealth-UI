@@ -77,6 +77,8 @@ const OrganizationOwnerForm = ({
               setCurrentFormStep(FormStep.USER_DETAILS)
             }
             disabled={disabled}
+          // contextName="Workspace" // TODO: replace with dynamic context
+          // visibleRoles={['MEMBER']} // TODO: allow dynamic roles later
           />
         )}
         <Spacing vertical={4} />

@@ -11,12 +11,20 @@ import {
 import { CloseIconButton, CloseIcon } from '../styled';
 import { CancelButton, ConfirmButton } from '@/app/modal/components/ModalButton/ModalButtons';
 
-const InviteToListModal = ({ closeModal, onMembersRefresh, list = null }) => {
+const InviteToListModal = ({
+  closeModal,
+  onMembersRefresh,
+  list = null,
+  title = 'Invite Others to this list',
+  CustomForm = null,
+}) => {
   useEffect(() => {
     if (!list) {
       closeModal();
     }
   }, [closeModal, list]);
+
+  const FormComponent = CustomForm || InviteUserOrGroupToListForm;
 
   return (
     <InviteToListModalWrapper>
@@ -25,9 +33,9 @@ const InviteToListModal = ({ closeModal, onMembersRefresh, list = null }) => {
       </CloseIconButton>
       <Grid container direction="column" item wrap="nowrap">
         <Header>
-          <Title>Invite Others to this list</Title>
+          <Title>{title}</Title>
         </Header>
-        <InviteUserOrGroupToListForm
+        <FormComponent
           list={list}
           onMembersRefresh={onMembersRefresh}
         />
