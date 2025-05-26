@@ -51,7 +51,9 @@ const MeterBillingView = lazy(() =>
 const PersonDetailsView = lazy(() =>
   import('views/person-details/PersonDetailsView'),
 );
-const UserGroupView = lazy(() => import('views/user-group/UserGroupViewWrapper'));
+const UserGroupView = lazy(() =>
+  import('views/user-group/UserGroupViewWrapper'),
+);
 const PatientDetailsView = lazy(() =>
   import('views/patient-details/PatientDetailsView'),
 );
@@ -163,9 +165,13 @@ const CreateList = lazy(() =>
 const Developers = lazy(() => import('views/developers'));
 const Workspaces = lazy(() => import('views/workspaces/Workspaces'));
 const Workspace = lazy(() => import('views/workspace/Workspace'));
-const PatientImportStatus = lazy(() => import('views/patient-details/PatientImportStatus/PatientImportStatus'));
+const PatientImportStatus = lazy(() =>
+  import('views/patient-details/PatientImportStatus/PatientImportStatus'),
+);
 
-const UserActivity = lazy(() => import('views/self-serve/users/UserActivity/UserActivity'));
+const UserActivity = lazy(() =>
+  import('views/self-serve/users/UserActivity/UserActivity'),
+);
 
 const {
   CAN_ACCESS_HOME_PAGE,
@@ -270,15 +276,10 @@ export const SETTINGS_ROUTES = [
     permissions: [CAN_ACCESS_SETTINGS_PAGE],
   },
   {
-    path: '/workspace/:identifier',
-    RouteComponent: Workspace,
-    permissions: [CAN_ACCESS_SETTINGS_PAGE],
-  },
-  {
     path: '/user-activity/:userIdentifier',
     RouteComponent: UserActivity,
     permissions: [CAN_ACCESS_SETTINGS_PAGE],
-  }
+  },
 ];
 
 export const TEMPLATE_CORE_SUBSCRIPTION_PLAN_ROUTES = [
@@ -415,6 +416,11 @@ export const TEMPLATE_CORE_SUBSCRIPTION_PLAN_ROUTES = [
     path: '/chat',
     RouteComponent: ChatView,
     permissions: [CAN_ACCESS_CHAT_PAGE],
+  },
+  {
+    path: '/workspace/:identifier',
+    RouteComponent: Workspace,
+    permissions: [CAN_ACCESS_SETTINGS_PAGE],
   },
 ];
 
