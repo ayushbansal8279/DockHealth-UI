@@ -26,3 +26,8 @@ export const UserListWrapper = styled.div`
     background-color: ${palette.coolGrey1};
   }
 `;
+
+export const IconContainer = styled.img`
+  transform: rotate(90deg);
+  margin:5px;
+`

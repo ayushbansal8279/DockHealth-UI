@@ -1,15 +1,15 @@
 // @ts-nocheck
 
 import React, { useContext } from "react";
-import { Box } from "@mui/material";
+import { Box, MenuItem, Select } from "@mui/material";
 import { GridColDef, useGridApiRef } from "@mui/x-data-grid-premium";
 
 import Checkbox from "@/app/components/common/Checkbox/Checkbox";
 import TaskItemBulkEdit from "@/app/components/task/StandardTaskItem/TaskItemComponents/TaskItemBulkEdit";
-import { BulkContainer } from "./styled";
+import { BulkContainer, StyledDataGrid } from "./styled";
 import { CheckboxHeaderProps, CheckboxProps, IWorkspaceUser } from "./types";
-import { StyledDataGrid } from "../../workspaces/workspace-table/styled";
 import { UserEditContext } from "@/app/context-api/workspace-user-context";
+import palette from "@/app/styles/palette";
 
 const TypedCheckbox = Checkbox as React.FC<CheckboxProps>;
 
@@ -34,6 +34,8 @@ const WorkspaceUserTable = () => {
     </BulkContainer>
   );
   
+  const handleRoleChange = () => {}
+
   const columns: GridColDef<IWorkspaceUser>[] = [
     {
       field: 'isSelected',
@@ -68,6 +70,26 @@ const WorkspaceUserTable = () => {
       field: 'role',
       headerName: 'Workspace role',
       flex: 0.75,
+      renderCell: ({ row }) => (
+        <Select
+          value={row.role}
+          onChange={handleRoleChange}
+          size="small"
+          fullWidth
+          variant="standard"
+          disableUnderline
+          sx={{
+            backgroundColor: 'transparent',
+            '& .MuiSelect-select': {
+              padding: 0,
+              fontSize: '14px',
+            },
+          }}
+        >
+          <MenuItem value="member">Member</MenuItem>
+          <MenuItem value="admin">Admin</MenuItem>
+        </Select>
+  ),
     },
     {
       field: 'status',

@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
-import { ClickAwayListener } from '@mui/material'
+import { ClickAwayListener, IconButton } from '@mui/material'
 
 import Spacing from '@/app/components/common/Spacing'
 import OptionsMenu from '@/app/components/common/OptionsMenu/OptionsMenu'
@@ -14,7 +14,8 @@ import { userProfileSelector } from '@/app/selectors/user-selectors'
 import { workspaceUsersDummyData } from '@/app/views/workspace/workspace-users/helper'
 import ListUsersAndGroupsSelect from '@/app/components/user/InviteMemberToListForm/ListUsersAndGroupsSelect/ListUsersAndGroupsSelect'
 import ExternalInviteForm from '@/app/components/user/InviteMemberToListForm/ExternalInviteForm/ExternalInviteForm'
-import { UserListWrapper } from './styled'
+import { IconContainer, UserListWrapper } from './styled'
+import ArrowRight from 'img/simple-arrow-right.svg';
 
 const InviteUserToWorkspaceForm = () => {
   const [workspaceUsers, setWorkspaceUsers] = useState([
@@ -31,10 +32,13 @@ const InviteUserToWorkspaceForm = () => {
     opened: false,
   });
 
+  // TODO: get it from list
+  const currentUserListRole = 'ADMIN';
+
   const userProfile = useSelector(userProfileSelector);
 
   const handleInviteMembers = () => {
-    console.log("handle invite members func")
+    // TODO: handle invite member to list
   }
 
   const handleOpenExternalInviteForm = (searchedValue) => {
@@ -58,17 +62,14 @@ const InviteUserToWorkspaceForm = () => {
   const refreshWorkspaceUsers = () => {}
 
   const handleCustomInvite = (data) => {
-    console.log("handle invite", data);
-    // return CustomApi.inviteToSomething(data);
+    // TODO: handle invite
   };
 
   return (
     <Container>
       <ListUsersAndGroupsSelect
         // disabled={isSavingList}
-        // usersAndGroups={organizationUsersAndGroupsNotInTheList}
         usersAndGroups={workspaceUsersDummyData}
-        // isLoadingAvailablePeople={!allOrganizationUsersAndGroupsFetched}
         isLoadingAvailablePeople={false}
         onActionButtonClick={handleInviteMembers}
         emptyListAction={handleOpenExternalInviteForm}
@@ -79,12 +80,8 @@ const InviteUserToWorkspaceForm = () => {
           const status = getMemberStatus(user);
           return (
             <ListItem key={user.identifier}>
-              <ItemAvatarWrapper isPending={isMemberPending(user)}>
-                {/* {isUserGroup(user) ? (
-                  <GroupAvatar size={35} group={user} />
-                ) : ( */}
-                  <UserAvatar size={35} user={user} />
-                {/* )} */}
+              <ItemAvatarWrapper isPending={isMemberPending(user)}>                
+                <UserAvatar size={35} user={user} />
               </ItemAvatarWrapper>
               <ItemFullNameWrapper isPending={isMemberPending(user)}>
                 <ItemFullName>
@@ -99,27 +96,24 @@ const InviteUserToWorkspaceForm = () => {
                 <ItemStatusLabel>
                   {status ? status : 'Member'}
                 </ItemStatusLabel>
-                {/* {user.itemType === 'GROUP' && (
-                  <ItemStatusLabel>Group</ItemStatusLabel>
-                )} */}
                 <OptionMenuWrapper>
-                {/* {(currentUserListRole === 'ADMIN' ||
+                {(currentUserListRole === 'ADMIN' ||
                   currentUserListRole === 'OWNER') && (
                   <OptionsMenu
                     placement="bottom-end"
-                    options={getMenuOptionsForMember(user, {
-                      changeUserRole,
-                      removeUserFromList,
-                      cancelInviteToList,
-                      resendInvitationToList,
-                      resendApprovalRequestToList,
-                    })}
+                    // options={getMenuOptionsForMember(user, { //TODO: impl options
+                    //   changeUserRole,
+                    //   removeUserFromList,
+                    //   cancelInviteToList,
+                    //   resendInvitationToList,
+                    //   resendApprovalRequestToList,
+                    // })}
                     customButtonComponent={IconButton}
-                    isDisabled={isUpdatingUsersAndGroupsList}
+                    isDisabled={false}
                   >
                     <IconContainer src={ArrowRight} alt="arrow" />
                   </OptionsMenu>
-                )} */}
+                )}
                 </OptionMenuWrapper>
               </OptionContainer>
             </ListItem>
@@ -130,9 +124,7 @@ const InviteUserToWorkspaceForm = () => {
         <ClickAwayListener
           onClickAway={() => setExternalInviteFormState({ opened: false })}
         >
-          <ExternalUserInviteFormWrapper
-            // externalInvitePosition={externalInvitePosition}
-          >
+          <ExternalUserInviteFormWrapper>
             <ExternalInviteForm
               initialValues={externalInviteFormState?.initialValues}
               customInviteMethod={handleCustomInvite}
