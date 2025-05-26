@@ -11,7 +11,8 @@ import {
 } from './styled';
 
 const WorkspaceConfigure = () => {
-  const [enabled, setEnabled] = useState(false);
+  // TODO : Will be based on API
+  const [enabled, setEnabled] = useState(true);
   const [label, setLabel] = useState('Workspaces');
 
   const handleToggle = () => {
