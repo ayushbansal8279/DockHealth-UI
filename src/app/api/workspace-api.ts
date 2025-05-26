@@ -17,15 +17,6 @@ export async function getWorkspaceByIdentifier(workspaceIdentifier: string) {
     .then((response) => response.data);
 }
 
-interface WorkspacePayload {
-  workspaceIdentifier?: string;
-  externalIdentifier: string;
-  parentOrganizationIdentifier: string;
-  workspaceName: string;
-  workspaceInitials: string;
-  workspaceProfileColor: string;
-}
-
 export async function createWorkspace(workspace: createWorkspacePayload) {
   return axios
     .post('workspace', workspace)
@@ -43,7 +34,7 @@ export async function createWorkspace(workspace: createWorkspacePayload) {
     });
 }
 
-export async function updateWorkspace(workspace: WorkspacePayload) {
+export async function updateWorkspace(workspace: createWorkspacePayload) {
   return axios
     .post('workspace', workspace)
     .then((response) => response.data)
