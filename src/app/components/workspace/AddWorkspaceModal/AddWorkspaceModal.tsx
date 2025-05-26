@@ -7,18 +7,25 @@ import {
 } from '@/app/modal/components/styled';
 import { Box, TextField } from '@mui/material';
 import { AddWorkspaceModalWrapper, InputSx, Title } from './styled';
+import { createWorkspace } from '@/app/api/workspace-api';
+import { selectedUserOrganizationSelector } from '@/app/selectors/user-selectors';
+import { useSelector } from 'react-redux';
+import { Workspace } from '@/app/types/workspace';
 
 interface AddWorkspaceModalProps {
   closeModal: () => void;
+  onConfirm: (createdWorkspace: Workspace) => void;
 }
 
 const AddWorkspaceModal: React.FC<AddWorkspaceModalProps> = ({
   closeModal,
+  onConfirm,
 }) => {
   const [workspace, setWorkspace] = useState({
     workspaceName: '',
     workspaceDescription: '',
   });
+  const selectedOrganization = useSelector(selectedUserOrganizationSelector);
 
   const handleWorkspaceNameChange = (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -32,8 +39,13 @@ const AddWorkspaceModal: React.FC<AddWorkspaceModalProps> = ({
     setWorkspace({ ...workspace, workspaceName: e.target.value });
   };
 
-  const handleAddWorkspace = () => {
-    console.log('workspace', workspace);
+  const handleAddWorkspace = async () => {
+    const payload = {
+      parentOrganizationIdentifier: selectedOrganization.organizationIdentifier,
+      workspaceName: workspace.workspaceName,
+    };
+    const createdWorkspace: Workspace = await createWorkspace(payload);
+    onConfirm(createdWorkspace);
     closeModal();
   };
 
