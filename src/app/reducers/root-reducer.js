@@ -29,6 +29,7 @@ import CalendarTasksReducer from './calendar-tasks-reducer';
 import SendbirdReducer from './sendbird-reducer';
 import TaskItemsReducer from './task-items-reducer';
 import ProfileReducer from './profile-reducer';
+import WorkspaceReducer from './workspace-reducer';
 
 // function createNamedWrapperReducer(reducerFunction, reducerName) {
 //   return (state, action) => {
@@ -70,6 +71,7 @@ const appReducer = combineReducers({
   sendbird: SendbirdReducer,
   // taskItemList: createNamedWrapperReducer(TaskItemReducer, TaskOrigin.LIST),
   taskItems: TaskItemsReducer,
+  workspace: WorkspaceReducer,
 });
 
 export default function rootReducer(state, action) {
