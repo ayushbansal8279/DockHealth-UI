@@ -1,4 +1,4 @@
-import React, {  useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import BasicLayoutHeader from 'components/template/BasicLayoutHeader/BasicLayoutHeader';
 import ViewLayout from 'components/template/ViewLayout/ViewLayout';
 import {
@@ -6,6 +6,7 @@ import {
   Switch,
   useHistory,
   useLocation,
+  useParams,
   useRouteMatch,
 } from 'react-router-dom';
 import { RouteWrapper } from '@/app/routing/components';
@@ -15,20 +16,35 @@ import {
   MainTab,
   WorkspaceDetailsContainer,
   WorkspaceTitle,
+  MoreVertIcon,
 } from './styled';
 import { DEFAULT_TAB, TABS_CONFIG } from './helper';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-
-const workspaceDummydata = {
-  identifier: 1,
-  name: "Neurology",
-}
+import { workspaceSelector } from '@/app/selectors/workspace-selectors';
+import { useDispatch, useSelector } from 'react-redux';
+import { initializeWorkspaceState } from '@/app/actions/workspace-actions';
+import { Workspace as WorkspaceType } from '@/app/types/workspace';
+import WorkspaceTile from '@/app/components/workspace/WorkspaceTile/WorkspaceTile';
 
 const Workspace = () => {
   const [tabsConfiguration, setTabsConfiguration] = useState(TABS_CONFIG);
   const { pathname } = useLocation();
   const { path, url } = useRouteMatch();
+  const { identifier } = useParams<{ identifier: string }>();
+  const dispatch = useDispatch();
   const history = useHistory();
+  const workspace = useSelector(workspaceSelector);
+  const [renderedWorkspace, setRenderedWorkspace] =
+    useState<WorkspaceType>(workspace);
+
+  useEffect(() => {
+    if (workspace.workspaceIdentifier) {
+      setRenderedWorkspace(workspace);
+    }
+  }, [workspace]);
+
+  useEffect(() => {
+    dispatch(initializeWorkspaceState(identifier));
+  }, [identifier]);
 
   const activeTabPath = useMemo(() => {
     for (const tab of tabsConfiguration) {
@@ -47,13 +63,12 @@ const Workspace = () => {
 
   const renderTitle = (
     <WorkspaceTitle>
-      <ArrowBackIcon
-        style={{ cursor: 'pointer' }}
-        onClick={() => {
-          history.push('/settings/workspaces');
-        }}
+      <MoreVertIcon />
+      <WorkspaceTile
+        workspaceProfileColor={renderedWorkspace.workspaceProfileColor}
+        workspaceInitials={renderedWorkspace.workspaceInitials}
       />
-      <div>Workspace / {workspaceDummydata.name}</div>
+      <div>Workspace / {renderedWorkspace.workspaceName}</div>
     </WorkspaceTitle>
   );
 
