@@ -9,6 +9,7 @@ import {
   POFILES_SETTINGS_PATH,
   TASK_CUSTOMIZATIONS_PATH,
   DEVELOPERS_PATH,
+  INTEGRATIONS_PATH
 } from 'routing/helpers/paths';
 import {
   userHasPatientCustomFieldsFeatureSelector,
@@ -81,6 +82,11 @@ const SettingsSubmenu = () => {
       {isApiAllowed && (
         <AccessRestrictor allowedToRoles={[ADMIN, OWNER]}>
           <SubMenuLink to={DEVELOPERS_PATH}>Developers</SubMenuLink>
+        </AccessRestrictor>
+      )}
+      {isApiAllowed && (
+        <AccessRestrictor allowedToRoles={[ADMIN, OWNER]}>
+          <SubMenuLink to={INTEGRATIONS_PATH}>Integrations</SubMenuLink>
         </AccessRestrictor>
       )}
     </Box>
