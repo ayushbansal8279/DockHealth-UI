@@ -102,6 +102,7 @@ import { SummaryType } from '@/app/helpers/ai-helper';
 import { useDraggable, useDroppable } from '@dnd-kit/core';
 import { CSS } from '@dnd-kit/utilities';
 import { DropDirectionContext } from '@/app/views/list-details/modules/Virtualized/Virtualized';
+import TaskItemProfile from '../../task/StandardTaskItem/TaskItemComponents/TaskItemProfile/TaskItemProfile';
 
 const TaskTemplateGroupHeader = ({
   templateGroup = {},
@@ -824,6 +825,24 @@ const TaskTemplateGroupHeader = ({
               columns?.find(
                 ({ identifier: id }) => id === TaskItemColumn.PATIENT,
               ).columnWidth,
+            )}
+          </>
+        )}
+        {isColumnChecked(columns, TaskItemColumn.PROFILE) && (
+          <>
+            {randerFirstColumnCoverIfNecessary(
+              <TaskItemCell
+                key={`profile_${identifier}`}
+                width={
+                  columns?.find(
+                    ({ identifier: id }) => id === TaskItemColumn.PROFILE,
+                  ).columnWidth
+                }
+                order={getColumnOrder(TaskItemColumn.PROFILE)}
+              >
+                <TaskItemProfile task={templateGroup} />
+              </TaskItemCell>,
+              getColumnOrder(TaskItemColumn.PROFILE)
             )}
           </>
         )}
