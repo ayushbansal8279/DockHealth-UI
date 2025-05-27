@@ -2,7 +2,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import { Grid } from '@mui/material';
+import { Grid, TextField } from '@mui/material';
 import spacing from 'styles/spacing';
 import { fontWeights, fontSizes } from 'styles/font';
 import palette, { featurePalette } from 'styles/palette';
@@ -502,6 +502,31 @@ export const DateWrapper = styled.div`
   &:hover {
     & ${DateIconWrapper} {
       opacity: 1;
+    }
+  }
+`;
+
+export const StyledCompactTextField = styled(TextField)`
+  & .MuiInputBase-root {
+    height: 33px;
+    font-size: 0.75rem;
+    padding: 0;
+    align-items: center;
+
+    &::before {
+      border-bottom: none !important;
+    }
+
+    &::after {
+      border-bottom: none !important;
+    }
+
+    &.Mui-error::before {
+      border-bottom: 1px solid red !important;
+    }
+
+    &.Mui-error::after {
+      border-bottom: 2px solid red !important;
     }
   }
 `;
