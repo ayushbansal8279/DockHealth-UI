@@ -4,7 +4,7 @@ import React, { useContext, useEffect } from "react";
 import { Add } from "@mui/icons-material";
 
 import HeaderSearch from "@/app/components/template/HeaderSearch/HeaderSearch";
-import { WorkspaceUsersHeader, WorkspaceUsersTableWrapper, WorkspaceUsersContainer, StyledActionButtonLabel, StyledActionButtonWrapper } from "./styled";
+import { WorkspaceUsersHeader, WorkspaceUsersTableWrapper, WorkspaceUsersContainer } from "./styled";
 import WorkspaceUserTable from "./WorkspaceUserTable";
 import { workspaceUsersDummyData } from "./helper";
 import { useDispatch } from "react-redux";
@@ -13,6 +13,7 @@ import { BulkEditSectionContainer } from "../../user-group/styled";
 import BulkEditSection from "@/app/components/workspace/BulkEditSection/BulkEditSection";
 import { UserEditContext } from "@/app/context-api/workspace-user-context";
 import InviteUserToWorkspaceForm from "@/app/components/workspace/InviteUserToWorkspaceForm/InviteUserToWorkspaceForm";
+import Button from "@/app/components/common/Button/Button";
 
 const WorkspaceUsers = () => {
   const dispatch = useDispatch();
@@ -38,10 +39,15 @@ const WorkspaceUsers = () => {
     <WorkspaceUsersContainer>
       <WorkspaceUsersHeader>
         <HeaderSearch />
-        <StyledActionButtonWrapper onClick={openAddUserModal}>
-          <Add />
-          <StyledActionButtonLabel>Add User</StyledActionButtonLabel>
-        </StyledActionButtonWrapper>
+        <Button
+          onClick={openAddUserModal}
+          startIcon={<Add/>}
+          uppercase={false}
+          width={'fit-content'}
+          size={'small'}
+        >
+          Add User
+        </Button>
       </WorkspaceUsersHeader>
       <WorkspaceUsersTableWrapper>
         <WorkspaceUserTable />
