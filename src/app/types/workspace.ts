@@ -9,6 +9,7 @@ export type Workspace = {
 };
 
 export type createWorkspacePayload = {
+  workspaceIdentifier: string;
   parentOrganizationIdentifier: string;
   workspaceName: string;
 };

@@ -1,10 +1,17 @@
 import * as ActionTypes from 'actions/action-types';
-import AlertMessages from '../alert/AlertMessages';
+import { createWorkspacePayload } from '../types/workspace';
 
-export function initializeWorkspaceState(workspaceIdentifier: string) {
+export function getCurrentWorkspace(workspaceIdentifier: string) {
   return {
     type: ActionTypes.GET_SELECTED_WORKSPACE,
     workspaceIdentifier,
+  };
+}
+
+export function updateSelectedWorkspace(workspace: createWorkspacePayload) {
+  return {
+    type: ActionTypes.UPDATE_SELECTED_WORKSPACE,
+    workspace,
   };
 }
 

@@ -21,9 +21,10 @@ import {
 import { DEFAULT_TAB, TABS_CONFIG } from './helper';
 import { workspaceSelector } from '@/app/selectors/workspace-selectors';
 import { useDispatch, useSelector } from 'react-redux';
-import { initializeWorkspaceState } from '@/app/actions/workspace-actions';
+import { getCurrentWorkspace } from '@/app/actions/workspace-actions';
 import { Workspace as WorkspaceType } from '@/app/types/workspace';
 import WorkspaceTile from '@/app/components/workspace/WorkspaceTile/WorkspaceTile';
+import WorkspaceOptionsMenu from '@/app/components/workspace/WorkspaceOptionsMenu/WorkspaceOptionsMenu';
 
 const Workspace = () => {
   const [tabsConfiguration, setTabsConfiguration] = useState(TABS_CONFIG);
@@ -33,6 +34,7 @@ const Workspace = () => {
   const dispatch = useDispatch();
   const history = useHistory();
   const workspace = useSelector(workspaceSelector);
+  const [menuOptionsOpen, setMenuOptionsOpen] = useState(false);
   const [renderedWorkspace, setRenderedWorkspace] =
     useState<WorkspaceType>(workspace);
 
@@ -43,7 +45,7 @@ const Workspace = () => {
   }, [workspace]);
 
   useEffect(() => {
-    dispatch(initializeWorkspaceState(identifier));
+    dispatch(getCurrentWorkspace(identifier));
   }, [identifier]);
 
   const activeTabPath = useMemo(() => {
@@ -58,12 +60,17 @@ const Workspace = () => {
 
   const handleTabChange = (_: any, newTabValue: any) => {
     history.push(`${url}/${newTabValue}`);
-    console.log('newTabValue', newTabValue);
   };
 
   const renderTitle = (
     <WorkspaceTitle>
-      <MoreVertIcon />
+      <WorkspaceOptionsMenu
+        onClose={() => setMenuOptionsOpen(false)}
+        open={menuOptionsOpen}
+        selectedWorkspace={renderedWorkspace}
+      >
+        <MoreVertIcon />
+      </WorkspaceOptionsMenu>
       <WorkspaceTile
         workspaceProfileColor={renderedWorkspace.workspaceProfileColor}
         workspaceInitials={renderedWorkspace.workspaceInitials}

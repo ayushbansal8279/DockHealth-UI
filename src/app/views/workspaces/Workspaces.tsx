@@ -38,7 +38,6 @@ const Workspaces = () => {
 
   const handleTabChange = (_: any, newTabValue: any) => {
     history.push(`${url}/${newTabValue}`);
-    console.log('newTabValue', newTabValue);
   };
 
   return (

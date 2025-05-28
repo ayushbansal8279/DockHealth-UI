@@ -1,6 +1,6 @@
 import { log } from '../helpers/log';
 import { showAlert } from '../helpers/utility-functions';
-import { createWorkspacePayload, Workspace } from '../types/workspace';
+import { createWorkspacePayload } from '../types/workspace';
 import axios from './axios-heydoc';
 
 export async function getAllUserWorkspaces() {
@@ -36,7 +36,7 @@ export async function createWorkspace(workspace: createWorkspacePayload) {
 
 export async function updateWorkspace(workspace: createWorkspacePayload) {
   return axios
-    .post('workspace', workspace)
+    .patch(`workspace/${workspace.workspaceIdentifier}`, workspace)
     .then((response) => response.data)
     .catch((error) => {
       log(error);
