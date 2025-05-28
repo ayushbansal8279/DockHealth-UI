@@ -1,4 +1,4 @@
-import WorkspaceLists from './workspace-lists/WorkspaceLists';
+import WorkspaceLists from './workspace-lists';
 import WorkspacePatients from './workspace-patients/WorkspacePatients';
 import WorkspaceUsers from './workspace-users/WorkspaceUsers';
 

@@ -87,10 +87,13 @@ const ListDetailsForm = ({
   nextStep,
   list,
   setList,
+  showPrivacyOptions = false,
 }) => {
   const dispatch = useDispatch();
   const [isSavingList, setIsSavingList] = useState(false);
   const history = useHistory();
+  const [isSharedList, setSharedList] = useState(false);
+  const [isPrivateList, setPrivateList] = useState(true);
 
   const formMethods = useForm({
     defaultValues: {
@@ -117,6 +120,15 @@ const ListDetailsForm = ({
       return 'List Name already exists';
     }
     return validateListName(value);
+  };
+
+  const toggleSharedList = () => {
+    setPrivateList(false);
+    setSharedList(true);
+  };
+  const togglePrivateList = () => {
+    setPrivateList(true);
+    setSharedList(false);
   };
 
   const inputStyle = {
@@ -177,6 +189,26 @@ const ListDetailsForm = ({
               placeholder="Do you want to add a desciption for the list?"
             />
             <Spacing vertical={4} />
+            {showPrivacyOptions && (
+              <PrivacyContainer>
+                <PrivacyTitle>Privacy</PrivacyTitle>
+                <CheckboxContainer>
+                  <img
+                    onClick={toggleSharedList}
+                    src={isSharedList ? CheckedCircle : BlankCircle}
+                  />
+                  <Spacing horizontal={3} />
+                  <CheckboxDescription>Sharable List</CheckboxDescription>
+                  <img
+                    onClick={togglePrivateList}
+                    src={isPrivateList ? CheckedCircle : BlankCircle}
+                  />
+                  <Spacing horizontal={3} />
+                  <CheckboxDescription>Private List</CheckboxDescription>
+                </CheckboxContainer>
+              </PrivacyContainer>
+            )}
+            <Spacing vertical={5} />
             <PrivacyContainer>
               <PrivacyTitle>Configuration settings</PrivacyTitle>
               <CheckboxContainer>
