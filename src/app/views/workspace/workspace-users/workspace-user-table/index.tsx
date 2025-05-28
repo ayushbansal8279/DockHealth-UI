@@ -1,3 +1,4 @@
+// @ts-nocheck
 
 import React, { useContext } from "react";
 import { Box } from "@mui/material";
@@ -5,11 +6,11 @@ import { GridColDef } from "@mui/x-data-grid-premium";
 
 import Checkbox from "@/app/components/common/Checkbox/Checkbox";
 import TaskItemBulkEdit from "@/app/components/task/StandardTaskItem/TaskItemComponents/TaskItemBulkEdit";
-import { BulkContainer } from "./styled";
-import { CheckboxHeaderProps, CheckboxProps, IWorkspaceUser } from "./types";
 import { UserEditContext } from "@/app/context-api/workspace-user-context";
 import Select from "@/app/components/common/Select/Select";
-import { StyledDataGrid } from "../../Templates/DataGridStyles";
+import { StyledDataGrid } from "../../../workspaces/workspace-table/styled";
+import { CheckboxHeaderProps, CheckboxProps, IWorkspaceUser } from "../types";
+import { BulkContainer } from "./styled";
 
 const TypedCheckbox = Checkbox as React.FC<CheckboxProps>;
 
@@ -88,6 +89,7 @@ const WorkspaceUserTable = () => {
             sx={{
               '& .MuiSelect-select': {
                 width: '100px !important',
+                fontSize: '14px',
               },
             }}
           />

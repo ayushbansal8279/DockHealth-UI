@@ -1,19 +1,17 @@
-//@ts-nocheck
-
 import React, { useContext, useEffect } from "react";
+import { useDispatch } from "react-redux";
 import { Add } from "@mui/icons-material";
 
 import HeaderSearch from "@/app/components/template/HeaderSearch/HeaderSearch";
-import { WorkspaceUsersHeader, WorkspaceUsersTableWrapper, WorkspaceUsersContainer } from "./styled";
-import WorkspaceUserTable from "./WorkspaceUserTable";
-import { workspaceUsersDummyData } from "./helper";
-import { useDispatch } from "react-redux";
 import { openModal } from "@/app/modal/actions";
-import { BulkEditSectionContainer } from "../../user-group/styled";
 import BulkEditSection from "@/app/components/workspace/BulkEditSection/BulkEditSection";
 import { UserEditContext } from "@/app/context-api/workspace-user-context";
 import InviteUserToWorkspaceForm from "@/app/components/workspace/InviteUserToWorkspaceForm/InviteUserToWorkspaceForm";
 import Button from "@/app/components/common/Button/Button";
+import { BulkEditSectionContainer } from "../../user-group/styled";
+import { workspaceUsersDummyData } from "./helper";
+import WorkspaceUserTable from "./workspace-user-table";
+import { WorkspaceUsersHeader, WorkspaceUsersTableWrapper, WorkspaceUsersContainer } from "./styled";
 
 const WorkspaceUsers = () => {
   const dispatch = useDispatch();
@@ -43,8 +41,8 @@ const WorkspaceUsers = () => {
           onClick={openAddUserModal}
           startIcon={<Add/>}
           uppercase={false}
-          width={'fit-content'}
-          size={'small'}
+          width='fit-content'
+          size='small'
         >
           Add User
         </Button>

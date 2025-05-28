@@ -1,12 +1,5 @@
 import styled from "styled-components";
 
-export const BulkContainer = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  left: 24px;
-`;
-
 export const WorkspaceUsersContainer = styled.div``;
 
 export const WorkspaceUsersHeader = styled.div`
