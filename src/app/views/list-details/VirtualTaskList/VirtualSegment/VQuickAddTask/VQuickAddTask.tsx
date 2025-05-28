@@ -98,6 +98,20 @@ function VQuickAddTask(
     [currentOrganization?.themeSettings],
   );
 
+  const userSortingSupportDisabled = useMemo(() => {
+      const disabledSettingItem =
+        currentOrganization?.themeSettings?.find(
+          ({ name: themeName }) =>
+            themeName === 'list.tasks.user.sort.enabled',
+        ) || {};
+      return (
+        disabledSettingItem &&
+        disabledSettingItem?.value === 'false'
+      );
+    }, [currentOrganization]);
+    
+    const isDragAndDropEnabled = !userSortingSupportDisabled;
+
   const applyTemplate = useCallback(
     (template) =>
       dispatch(
@@ -134,13 +148,14 @@ function VQuickAddTask(
               onTemplateSelect={applyTemplate}
               bulkApply={false}
               isWorkflowSearch
-              origin={TaskOrigin.LIST}
+              origin={TaskOrigin.LIST} 
+              iconColorActive={undefined}            
             />
           </Sc.TaskTemplateApplicatorContainer>
         </Sc.VQuickAddTask>
       </Sc.VQuickAddTaskContainer>
 
-      {groupWithZeroTask && !isLoadingGroup && (
+      {groupWithZeroTask && !isLoadingGroup && isDragAndDropEnabled && (
         <div
           style={{
             width: percentage > 100 ? `${droppableHeaderWidth}px` : '100%',
