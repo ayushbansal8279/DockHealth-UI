@@ -420,6 +420,7 @@ const DashboardTasksGroup = ({
                         origin={TaskOrigin.DASHBOARD}
                         isTopLevelTaskOrWorkflowHeader
                         isFirstTaskOfWorkflow={index === 0}
+                        isFirstTaskOfGroup={index === 0}
                       />
                     </DashboardTaskItemContainer>
                   ))}
