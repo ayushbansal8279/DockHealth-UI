@@ -190,27 +190,28 @@ const TaskTemplateGroupHeader = ({
   }));
 
   useEffect(() => {
-    if (origin === 'LIST') {
-      if (!isFirstTaskOfGroup || !active || !isOver) {
-        setHoverBorder(null);
+    if (!isFirstTaskOfGroup || !active || !isOver) {
+      setHoverBorder(null);
+      if (dropDirectionRef) {
         dropDirectionRef.current = null;
-        return;
       }
-
-      const handlePointerMove = (e) => {
-        const rect = elementRef?.current?.getBoundingClientRect();
-        if (!rect) return;
-
-        const isTop = e?.clientY < rect?.top + rect?.height / 2;
-        const direction = isTop ? 'top' : 'bottom';
-
-        dropDirectionRef.current = direction;
-        setHoverBorder(direction);
-      };
-
-      window.addEventListener('pointermove', handlePointerMove);
-      return () => window.removeEventListener('pointermove', handlePointerMove);
+      return;
     }
+
+    const handlePointerMove = (e) => {
+      const rect = elementRef?.current?.getBoundingClientRect();
+      if (!rect) return;
+
+      const isTop = e?.clientY < rect?.top + rect?.height / 2;
+      const direction = isTop ? 'top' : 'bottom';
+      if (dropDirectionRef) {
+        dropDirectionRef.current = direction;
+      }
+      setHoverBorder(direction);
+    };
+
+    window.addEventListener('pointermove', handlePointerMove);
+    return () => window.removeEventListener('pointermove', handlePointerMove);
   }, [active?.id, over?.id, isFirstTaskOfGroup, origin, taskGroupIdentifier]);
 
   useEffect(() => {
