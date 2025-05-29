@@ -28,6 +28,7 @@ import {
   MouseSensor,
   TouchSensor,
 } from '@dnd-kit/core';
+import { DropDirectionContext } from '@/app/context-api/DropDirectionContext';
 
 export interface Props {
   nodes?: Node[];
@@ -38,7 +39,6 @@ export interface Props {
   showIncompleteWorkflowIdentifiers?: any;
   currentTaskListTasksStatus?: any;
 }
-export const DropDirectionContext = createContext(null);
 
 function Virtualized({
   nodes = [],

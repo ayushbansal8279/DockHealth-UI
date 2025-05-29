@@ -29,7 +29,6 @@ const StandardTaskItemContainer = ({
   viewType,
   isDragPreview,
   isWorkflowTask,
-  isWorkflowSubtask,
   ...restProps
 }) => {
   const organizationCustomFields = useSelector(
@@ -139,7 +138,6 @@ const StandardTaskItemContainer = ({
       isNextTaskItemTypeBundle={isNextTaskItemTypeBundle}
       isDragPreview={isDragPreview}
       isWorkflowTask={isWorkflowTask}
-      isWorkflowSubtask={isWorkflowSubtask}
       {...restProps}
       viewType={viewType}
     />

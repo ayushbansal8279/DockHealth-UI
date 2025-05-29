@@ -326,6 +326,8 @@ const Task = React.memo(
               showClearSortFiltersModal={showClearSortFiltersModal}
               shouldShowBlockModalOnDrag={shouldShowBlockModalOnDrag}
               origin={origin}
+              isWorkflowSubtask={isWorkflowTask}
+              isSubtaskOfTask={isTopLevelTaskOrWorkflowHeader}
               {...restProps}
             />
             {subtaskQuickAddOpen &&
