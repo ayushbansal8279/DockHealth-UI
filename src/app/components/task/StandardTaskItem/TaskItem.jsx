@@ -138,7 +138,7 @@ import SubtaskIcon from '@/app/img/SubtaskIcon';
 import { getTaskDetails } from '@/app/api/task-api';
 import { useDraggable, useDroppable } from '@dnd-kit/core';
 import { CSS } from '@dnd-kit/utilities';
-import { DropDirectionContext } from '@/app/views/list-details/modules/Virtualized/Virtualized';
+import { useDropDirection } from '@/app/context-api/DropDirectionContext';
 
 const { DISABLED, READ_ONLY } = SINGLE_TASK_RESTRICTIONS_OPTIONS;
 
@@ -199,7 +199,6 @@ const TaskItem = React.memo(
     isWorkflowTask,
     isSubtaskOfTask,
     isFirstSubtaskOfWorkflowTask,
-    dragPreviewTask,
   }) => {
     const elementRef = useRef(null);
     const dependencyIconReference = useRef(null);
@@ -414,7 +413,7 @@ const TaskItem = React.memo(
     );
 
     const { bulkEditEnabled, bulkEditIsActive } = useContext(BulkEditContext);
-    const dropDirectionRef = useContext(DropDirectionContext);
+    const dropDirectionRef = useDropDirection();
 
     const selectedOrganization = useSelector(selectedUserOrganizationSelector);
     const currentTasklist = useSelector(currentTaskListSelector);
@@ -486,33 +485,33 @@ const TaskItem = React.memo(
     const workflowTaskGroup = getTaskGroupForWorkflow(task);
 
     useEffect(() => {
-      if (origin === 'LIST') {
-        const isFirstValidTarget =
-          isFirstTaskOfGroup ||
-          isFirstTaskOfWorkflow ||
-          isFirstSubTaskOfParentTask ||
-          isFirstSubtaskOfWorkflowTask;
-        if (!isFirstValidTarget || !active || !isOver) {
-          setHoverBorder(null);
+      const isFirstValidTarget =
+        isFirstTaskOfGroup ||
+        isFirstTaskOfWorkflow ||
+        isFirstSubTaskOfParentTask ||
+        isFirstSubtaskOfWorkflowTask;
+      if (!isFirstValidTarget || !active || !isOver) {
+        setHoverBorder(null);
+        if (dropDirectionRef) {
           dropDirectionRef.current = null;
-          return;
         }
-
-        const handlePointerMove = (e) => {
-          const rect = elementRef?.current?.getBoundingClientRect();
-          if (!rect) return;
-
-          const isTop = e?.clientY < rect?.top + rect?.height / 2;
-          const direction = isTop ? 'top' : 'bottom';
-
-          dropDirectionRef.current = direction;
-          setHoverBorder(direction);
-        };
-
-        window.addEventListener('pointermove', handlePointerMove);
-        return () =>
-          window.removeEventListener('pointermove', handlePointerMove);
+        return;
       }
+
+      const handlePointerMove = (e) => {
+        const rect = elementRef?.current?.getBoundingClientRect();
+        if (!rect) return;
+
+        const isTop = e?.clientY < rect?.top + rect?.height / 2;
+        const direction = isTop ? 'top' : 'bottom';
+        if (dropDirectionRef) {
+          dropDirectionRef.current = direction;
+        }
+        setHoverBorder(direction);
+      };
+
+      window.addEventListener('pointermove', handlePointerMove);
+      return () => window.removeEventListener('pointermove', handlePointerMove);
     }, [
       active?.id,
       over?.id,
@@ -968,18 +967,21 @@ const TaskItem = React.memo(
     };
 
     if (isDragPreview) {
-      const finalTask = task ?? dragPreviewTask;
       return (
         <DragPreviewWrapper
-          isBundleOrSubtask={
-            finalTask?.itemType === TaskItemType.BUNDLE ||
-            !!finalTask?.subTaskSortIndex
+          shouldOffsetLeft={
+            task?.itemType === TaskItemType.BUNDLE ||
+            !!task?.subTaskSortIndex ||
+            origin === 'TEMPLATE' ||
+            origin === 'DASHBOARD' ||
+            origin === 'PATIENT' ||
+            origin === 'CUSTOM_PROFILE'
           }
         >
           <DragPreviewText>
-            {finalTask?.itemType === TaskItemType.BUNDLE
-              ? finalTask?.name
-              : finalTask?.description}
+            {task?.itemType === TaskItemType.BUNDLE
+              ? task?.name
+              : task?.description}
           </DragPreviewText>
         </DragPreviewWrapper>
       );

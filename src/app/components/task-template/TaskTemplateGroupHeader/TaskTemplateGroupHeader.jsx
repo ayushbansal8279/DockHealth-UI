@@ -101,7 +101,7 @@ import AISummaryModalOpenerHelper from '@/app/modal/components/AISummaryModal/AI
 import { SummaryType } from '@/app/helpers/ai-helper';
 import { useDraggable, useDroppable } from '@dnd-kit/core';
 import { CSS } from '@dnd-kit/utilities';
-import { DropDirectionContext } from '@/app/views/list-details/modules/Virtualized/Virtualized';
+import { useDropDirection } from '@/app/context-api/DropDirectionContext';
 
 const TaskTemplateGroupHeader = ({
   templateGroup = {},
@@ -166,7 +166,7 @@ const TaskTemplateGroupHeader = ({
 
   const { bulkEditIsActive } = useContext(BulkEditContext);
   const { bulkEditEnabled } = useContext(BulkEditContext);
-  const dropDirectionRef = useContext(DropDirectionContext);
+  const dropDirectionRef = useDropDirection();
   const { changeViewType, tasks, handleAddTask } = useContext(ListPageContext);
   const [isEditing, setIsEditing] = useState(false);
   const [nameInputValue, setNameInputValue] = useState(name);

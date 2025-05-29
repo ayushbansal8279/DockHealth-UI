@@ -264,6 +264,7 @@ const ProfileTasksListView = ({ profileIdentifier }) => {
                   multipleAssigneesContext={groupHasMultipleAssignees}
                   iconColorActive={iconColorActiveItem?.value}
                   origin={TaskOrigin.CUSTOM_PROFILE}
+                  isTopLevelTaskOrWorkflowHeader
                 />
               ) : (
                 <TaskTemplateGroup
