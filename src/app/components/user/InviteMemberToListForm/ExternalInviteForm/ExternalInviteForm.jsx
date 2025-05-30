@@ -12,6 +12,7 @@ const ExternalInviteForm = ({
   initialValues,
   onInviteSuccess,
   taskListIdentifier,
+  customInviteMethod
 }) => {
   const [isInviting, setIsInviting] = useState(false);
 
@@ -41,7 +42,12 @@ const ExternalInviteForm = ({
   const handleSubmitForm = useCallback(
     (data) => {
       setIsInviting(true);
-      TaskListApi.invitePersonToTaskList(taskListIdentifier, data)
+
+      const submitPromise = customInviteMethod
+        ? customInviteMethod(data)
+        : TaskListApi.invitePersonToTaskList(taskListIdentifier, data);
+
+      submitPromise
         .then(() => {
           setIsInviting(false);
           onInviteSuccess();
@@ -56,7 +62,7 @@ const ExternalInviteForm = ({
           });
         });
     },
-    [taskListIdentifier, onInviteSuccess, closeInviteForm],
+    [taskListIdentifier, onInviteSuccess, closeInviteForm, customInviteMethod],
   );
 
   return (

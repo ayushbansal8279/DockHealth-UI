@@ -1,6 +1,6 @@
 import WorkspaceLists from './workspace-lists';
 import WorkspacePatients from './workspace-patients/WorkspacePatients';
-import WorkspaceUsers from './workspace-users/WorkspaceUsers';
+import WorkspaceUsers from './workspace-users';
 
 export const TABS_CONFIG = [
   {
