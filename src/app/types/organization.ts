@@ -41,4 +41,5 @@ export interface TOrganization {
   whiteLabelEnabled: any | null;
   emrPatientLink: any | null;
   themeSettings: any | null;
+  workspaceLabel: string | null;
 }

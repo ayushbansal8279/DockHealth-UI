@@ -237,3 +237,10 @@ export function getOrganizationCustomFields() {
     type: ActionTypes.GET_ORGANIZATION_CUSTOM_FIELDS,
   };
 }
+
+export function updateOrganizationWorkspaceLabel(workspaceLabel) {
+  return {
+    type: ActionTypes.UPDATE_ORGANIZATION_WORKSPACE_LABEL,
+    workspaceLabel,
+  };
+}

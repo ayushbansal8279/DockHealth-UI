@@ -466,7 +466,10 @@ export function downloadUserInviteTemplate() {
     },
   })
     .then((response) => {
-        blobFileDownload(new Blob([response.data]), 'Bulk_Invite_User_Template.csv');
+      blobFileDownload(
+        new Blob([response.data]),
+        'Bulk_Invite_User_Template.csv',
+      );
     })
     .catch(noop);
 }
@@ -476,7 +479,7 @@ export function bulkInviteUser(fileData, additionalConfig = {}) {
   formData.append('file', fileData, encodeURIComponent(fileData.name));
 
   return axios
-    .post(`/organization/bulkInviteUsers`,  formData, {
+    .post(`/organization/bulkInviteUsers`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
@@ -495,11 +498,17 @@ export function bulkInviteUser(fileData, additionalConfig = {}) {
           status: 'error',
           title: 'Error',
           text:
-            error?.response?.data?.errorMessage ?? 
+            error?.response?.data?.errorMessage ??
             error?.message ??
             'Invitation could not be sent, please try again later.',
         });
       }
       throw error;
     });
+}
+
+export function updateOrganizationWorkspaceLabel(workspaceLabel) {
+  return axios
+    .patch(`/organization`, { workspaceLabel })
+    .then(({ data }) => data);
 }

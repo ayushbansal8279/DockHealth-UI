@@ -75,6 +75,7 @@ import {
 } from './styled';
 import { workspaceSelector } from '@/app/selectors/workspace-selectors';
 import WorkspaceTile from '../../workspace/WorkspaceTile/WorkspaceTile';
+import { organizationSelector } from '@/app/selectors/organization-selectors';
 
 export const SubmenuKey = {
   ORGANIZATION: 'ORGANIZATION',
@@ -108,6 +109,7 @@ const NavigationSidebar = () => {
   const location = useLocation();
   const currentUser = useSelector(userProfileSelector);
   const currentOrganization = useSelector(selectedUserOrganizationSelector);
+  const organization = useSelector(organizationSelector)
   const workspace = useSelector(workspaceSelector);
 
   const showChatPopover = useSelector(showChatPopoverSelector);
@@ -328,11 +330,11 @@ const NavigationSidebar = () => {
             {!embeddedMode && !isOnboardingPage && (
               <AccessRestrictor required={[CAN_ACCESS_MEMBER_LIST_PAGE]}>
                 <IconNavigationItem
-                  // name={`${customerTypeLabelCapitalized}s`}
-                  // TODO : name will be selected Name for "workspaces"
                   name={
                     workspace.workspaceIdentifier
                       ? `${workspace.workspaceName}`
+                      : organization?.workspaceLabel
+                      ? organization.workspaceLabel
                       : `Workspaces`
                   }
                   icon={() =>
