@@ -89,6 +89,7 @@ export default function IntegrationsHeader() {
       openModal('Confirmation', {
         title: `Confirm ${actionLabel}`,
         description: `Are you sure you want to ${actionLabel} the integration "${integration.integrationName}"?`,
+        timeout: 5000,
         confirm: async () => {
           dispatch(closeModal());
           try{
@@ -110,7 +111,7 @@ export default function IntegrationsHeader() {
   };
   
   const handleSave = (integrationId) => {
-    //save integration settings 
+    //use api to save integration settings 
     console.log('Saved values for', integrationId, fieldValues[integrationId]);
     toggleEditMode(integrationId);
   };

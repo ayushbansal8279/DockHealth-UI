@@ -7,24 +7,24 @@ const ConfirmationModal = ({
   icon,
   description,
   iconAlt = '',
-  // timeout = 2000,
+  timeout = 2000,
   closeModal,
   title,
   confirm,
   confirmButtonText = 'Confirm',
 }) => {
-  // const timeoutReference = useRef(null);
+  const timeoutReference = useRef(null);
 
-  // useEffect(() => {
-  //   timeoutReference.current = setTimeout(() => {
-  //     closeModal();
-  //   }, timeout);
+  useEffect(() => {
+    timeoutReference.current = setTimeout(() => {
+      closeModal();
+    }, timeout);
 
-  //   return () => {
-  //     clearTimeout(timeoutReference.current);
-  //   };
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, []);
+    return () => {
+      clearTimeout(timeoutReference.current);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <ModalWrapper>

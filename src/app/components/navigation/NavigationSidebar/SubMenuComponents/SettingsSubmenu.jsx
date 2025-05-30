@@ -84,11 +84,9 @@ const SettingsSubmenu = () => {
           <SubMenuLink to={DEVELOPERS_PATH}>Developers</SubMenuLink>
         </AccessRestrictor>
       )}
-      {isApiAllowed && (
         <AccessRestrictor allowedToRoles={[ADMIN, OWNER]}>
           <SubMenuLink to={INTEGRATIONS_PATH}>Integrations</SubMenuLink>
         </AccessRestrictor>
-      )}
     </Box>
   );
 };

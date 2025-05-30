@@ -34,9 +34,8 @@ const DockIntegrationsModal = ({ onConfirm, confirmText = 'Confirm' }) => {
         try {
           const response = await getAllDockIntegrations();
           setDockIntegrations(response)
-          console.log(response);
         } catch (error) {
-          console.log(error);
+          console.error();
         }
       };
       fetchIntegrations();
