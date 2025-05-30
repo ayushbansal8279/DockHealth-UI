@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Switch, TextField, Box } from '@mui/material';
 import {
   Container,
@@ -9,21 +9,39 @@ import {
   TitleWrapper,
   UpdateButton,
 } from './styled';
+import { TOrganization } from '@/app/types/organization';
+import { organizationSelector } from '@/app/selectors/organization-selectors';
+import { useDispatch, useSelector } from 'react-redux';
+import { updateOrganizationWorkspaceLabel } from '@/app/actions/organization-actions';
 
 const WorkspaceConfigure = () => {
-  const [enabled, setEnabled] = useState(false);
-  const [label, setLabel] = useState('Workspaces');
+  const [enabled, setEnabled] = useState(true);
+  const dispatch = useDispatch();
+  const organization = useSelector(organizationSelector) as TOrganization;
+  const [workspaceLabel, setWorkspaceLabel] = useState(
+    organization?.workspaceLabel || 'Workspaces',
+  );
+  const [label, setLabel] = useState(
+    organization?.workspaceLabel || 'Workspaces',
+  );
+
+  useEffect(() => {
+    setLabel(organization?.workspaceLabel || 'Workspaces');
+    setWorkspaceLabel(organization?.workspaceLabel || 'Workspaces');
+  }, [organization]);
 
   const handleToggle = () => {
     setEnabled((prev) => !prev);
   };
 
-  const handleLabelChange = (e: { target: { value: React.SetStateAction<string>; }; }) => {
+  const handleLabelChange = (e: {
+    target: { value: React.SetStateAction<string> };
+  }) => {
     setLabel(e.target.value);
   };
 
-  const handleUpdate = () => {
-    console.log('Updated label:', label);
+  const handleLabelUpdate = async () => {
+    dispatch(updateOrganizationWorkspaceLabel(workspaceLabel));
   };
 
   return (
@@ -60,7 +78,8 @@ const WorkspaceConfigure = () => {
           <UpdateButton
             variant="contained"
             color="primary"
-            onClick={handleUpdate}
+            onClick={handleLabelUpdate}
+            disabled={workspaceLabel === label}
           >
             Update
           </UpdateButton>

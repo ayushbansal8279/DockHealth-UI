@@ -1,0 +1,76 @@
+import React, { useCallback } from 'react';
+import OptionsMenu from '../../common/OptionsMenu/OptionsMenu';
+import { useDispatch } from 'react-redux';
+import { openModal } from '@/app/modal/actions';
+import { Workspace } from '@/app/types/workspace';
+import { clearWorkspaceState } from '@/app/actions/workspace-actions';
+import { removeWorkspace } from '@/app/api/workspace-api';
+import { useHistory } from 'react-router-dom';
+import { showGlobalAlert, showGlobalErrorAlert } from '@/app/alert/actions';
+import AlertMessages from '@/app/alert/AlertMessages';
+
+interface Prop {
+  children: any;
+  open: boolean;
+  selectedWorkspace: Workspace;
+  onClose: () => void;
+}
+const WorkspaceOptionsMenu = ({
+  children,
+  open,
+  onClose,
+  selectedWorkspace,
+}: Prop) => {
+  const dispatch = useDispatch();
+  const history = useHistory();
+
+  const handleWorkspaceEdit = () => {
+    const modalProps = {
+      selectedWorkspace,
+      onConfirm: () => {
+        dispatch(showGlobalAlert(AlertMessages.UPDATED));
+      },
+    };
+    dispatch(openModal('AddWorkspace', modalProps));
+  };
+
+  const handleWorkspaceDelete = useCallback(() => {
+    const modalProps = {
+      title: 'Delete Workspace',
+      description:
+        'Are you sure you want to delete this Workspace? This action cannot be undone.',
+      confirm: async () => {
+        try {
+          await removeWorkspace(selectedWorkspace.workspaceIdentifier);
+          dispatch(showGlobalAlert(AlertMessages.DELETED));
+          dispatch(clearWorkspaceState());
+          history.push(`/core/home/my-tasks`);
+        } catch {
+          dispatch(showGlobalErrorAlert());
+        }
+      },
+    };
+    dispatch(openModal('DeleteConfirmation', modalProps));
+  }, [selectedWorkspace, dispatch]);
+
+  const options = [
+    { name: 'Edit', onClick: () => handleWorkspaceEdit() },
+    { name: 'Delete', onClick: () => handleWorkspaceDelete() },
+  ];
+
+  return (
+    <OptionsMenu
+      placement="bottom-start"
+      options={options}
+      onClose={onClose}
+      open={open}
+      footer={undefined}
+      color={undefined}
+      setOptionActive={undefined}
+    >
+      {children}
+    </OptionsMenu>
+  );
+};
+
+export default WorkspaceOptionsMenu;

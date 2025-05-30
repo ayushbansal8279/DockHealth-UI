@@ -7,6 +7,7 @@ import palette, { typography } from 'styles/palette';
 import { fontWeights, fontSizes } from 'styles/font';
 import Skeleton from '@mui/material/Skeleton';
 import prop from 'ramda/src/prop';
+import { ArrowForwardIos, MoreVert, ArrowBack } from '@mui/icons-material';
 
 export const ColorIndicator = styled.span`
   display: block;
@@ -508,4 +509,81 @@ export const Version = styled.p`
 
 export const MenuWrapper = styled.div`
   opacity: 0;
+`;
+
+export const WorkspacesTitleWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: ${spacing.smallExtraPlus} ${spacing.small};
+`;
+
+export const WorkspacesSubWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: ${spacing.smallPlus};
+`;
+
+export const WorkspacesTitle = styled.div`
+  font-size: ${fontSizes.regularPlus};
+  font-weight: ${fontWeights.regular};
+`;
+
+export const WorkspaceSettingsIcon = styled.img`
+  cursor: pointer;
+`;
+
+export const AddworkspaceButton = styled.button`
+  all: unset;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  width: 80px;
+  border-radius: ${spacing.tiny};
+  color: ${palette.white};
+  background-color: ${palette.newDarkBlue};
+  height: 35px;
+  gap: 1px;
+  padding-right: ${spacing.small};
+`;
+
+export const WorkspaceWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  height: 50px;
+`;
+
+export const WorkspaceTitle = styled.div`
+  font-size: 18px;
+  font-weight: ${fontWeights.light};
+`;
+
+export const WorkspaceSubWrapper = styled.div`
+  margin-left: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  cursor: pointer;
+`;
+
+export const MoreVertIcon = styled(MoreVert)`
+  color: ${palette.coolGrey2};
+  font-size: 26px;|
+  cursor: pointer;
+`;
+
+export const ArrowForwardIcon = styled(ArrowForwardIos)`
+  font-size: 20px;
+  margin-right: 10px;
+`;
+
+export const ArrowBackIcon = styled(ArrowBack)`
+  cursor: pointer;
+`;
+
+export const Spacing = styled.div`
+  margin-bottom: 15px;
 `;

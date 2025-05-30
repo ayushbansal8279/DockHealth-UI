@@ -10,7 +10,7 @@ import {
   MainTab,
   WorkspaceDetailsContainer,
 } from './styled';
-import { DEFAULT_TAB, INITIAL_TABS_CONFIG, TABS_CONFIG } from './helper';
+import { DEFAULT_TAB, TABS_CONFIG } from './helper';
 import {
   Redirect,
   Switch,
@@ -21,33 +21,23 @@ import {
 import { RouteWrapper } from '@/app/routing/components';
 
 const Workspaces = () => {
-  const organization = useSelector(organizationSelector) as TOrganization;
-  const [tabsConfiguration, setTabsConfiguration] =
-    useState(INITIAL_TABS_CONFIG);
   const { pathname } = useLocation();
   const { path, url } = useRouteMatch();
   const history = useHistory();
-  const isWorkspaceEnabled = true;
-
-  useEffect(() => {
-    if (isWorkspaceEnabled) {
-      setTabsConfiguration(TABS_CONFIG);
-    }
-  }, []);
+  const organization = useSelector(organizationSelector) as TOrganization;
 
   const activeTabPath = useMemo(() => {
-    for (const tab of tabsConfiguration) {
+    for (const tab of TABS_CONFIG) {
       const regex = new RegExp(`/${tab.mainPath}/|/${tab.mainPath}$`, 'gi');
       if (regex.test(pathname)) {
         return tab.mainPath;
       }
     }
     return DEFAULT_TAB.mainPath;
-  }, [pathname, tabsConfiguration]);
+  }, [pathname, TABS_CONFIG]);
 
   const handleTabChange = (_: any, newTabValue: any) => {
     history.push(`${url}/${newTabValue}`);
-    console.log('newTabValue', newTabValue);
   };
 
   return (
@@ -55,7 +45,7 @@ const Workspaces = () => {
       <WorkspaceTabsContainer>
         <Grid container>
           <Tabs value={activeTabPath} onChange={handleTabChange}>
-            {tabsConfiguration.map((t) => (
+            {TABS_CONFIG.map((t) => (
               <MainTab
                 key={t.mainPath}
                 value={t.mainPath}
@@ -68,7 +58,7 @@ const Workspaces = () => {
       </WorkspaceTabsContainer>
       <WorkspaceDetailsContainer>
         <Switch>
-          {tabsConfiguration?.map((route) => (
+          {TABS_CONFIG?.map((route) => (
             <RouteWrapper
               key={route.mainPath}
               path={`${path}/${route.mainPath}`}
@@ -88,8 +78,9 @@ const Workspaces = () => {
 
 export default Workspaces;
 
-
 // import Loader, { LoaderSizes } from '@/app/components/common/Loader/Loader';
-{/* <Box display="flex" justifyContent="center">
+{
+  /* <Box display="flex" justifyContent="center">
   <Loader size={LoaderSizes.medium} />
-</Box>; */}
+</Box>; */
+}

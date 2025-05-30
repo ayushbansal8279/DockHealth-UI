@@ -1,6 +1,7 @@
 import { fontWeights, fontSizes } from '@/app/styles/font';
 import palette from '@/app/styles/palette';
 import spacing from '@/app/styles/spacing';
+import { MoreVert } from '@mui/icons-material';
 import { Tab, TabProps } from '@mui/material';
 import styled from 'styled-components';
 
@@ -32,4 +33,10 @@ export const WorkspaceTitle = styled.div`
   align-items: center;
   justify-content: center;
   gap: 10px;
+`;
+
+export const MoreVertIcon = styled(MoreVert)`
+  color: ${palette.coolGrey2};
+  font-size: 26px;
+  cursor: pointer;
 `;

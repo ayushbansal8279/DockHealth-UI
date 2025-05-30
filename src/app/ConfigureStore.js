@@ -22,6 +22,7 @@ import watchMegaFilters from './sagas/mega-filter-saga';
 import watchPersonDetails from './sagas/person-details-saga';
 import watchCustomProfileDetails from './sagas/custom-profile-details-saga';
 import watchProfileDetail from './sagas/profile-saga';
+import watchWorkspaces from './sagas/workspace-saga';
 
 function* rootSaga() {
   yield all([
@@ -47,6 +48,7 @@ function* rootSaga() {
     watchMegaFilters(),
     watchPersonDetails(),
     watchCustomProfileDetails(),
+    watchWorkspaces(),
   ]);
 }
 

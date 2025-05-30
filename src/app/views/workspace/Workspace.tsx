@@ -1,4 +1,4 @@
-import React, {  useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import BasicLayoutHeader from 'components/template/BasicLayoutHeader/BasicLayoutHeader';
 import ViewLayout from 'components/template/ViewLayout/ViewLayout';
 import {
@@ -6,6 +6,7 @@ import {
   Switch,
   useHistory,
   useLocation,
+  useParams,
   useRouteMatch,
 } from 'react-router-dom';
 import { RouteWrapper } from '@/app/routing/components';
@@ -15,20 +16,37 @@ import {
   MainTab,
   WorkspaceDetailsContainer,
   WorkspaceTitle,
+  MoreVertIcon,
 } from './styled';
 import { DEFAULT_TAB, TABS_CONFIG } from './helper';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-
-const workspaceDummydata = {
-  identifier: 1,
-  name: "Neurology",
-}
+import { workspaceSelector } from '@/app/selectors/workspace-selectors';
+import { useDispatch, useSelector } from 'react-redux';
+import { getCurrentWorkspace } from '@/app/actions/workspace-actions';
+import { Workspace as WorkspaceType } from '@/app/types/workspace';
+import WorkspaceTile from '@/app/components/workspace/WorkspaceTile/WorkspaceTile';
+import WorkspaceOptionsMenu from '@/app/components/workspace/WorkspaceOptionsMenu/WorkspaceOptionsMenu';
 
 const Workspace = () => {
   const [tabsConfiguration, setTabsConfiguration] = useState(TABS_CONFIG);
   const { pathname } = useLocation();
   const { path, url } = useRouteMatch();
+  const { identifier } = useParams<{ identifier: string }>();
+  const dispatch = useDispatch();
   const history = useHistory();
+  const workspace = useSelector(workspaceSelector);
+  const [menuOptionsOpen, setMenuOptionsOpen] = useState(false);
+  const [renderedWorkspace, setRenderedWorkspace] =
+    useState<WorkspaceType>(workspace);
+
+  useEffect(() => {
+    if (workspace.workspaceIdentifier) {
+      setRenderedWorkspace(workspace);
+    }
+  }, [workspace]);
+
+  useEffect(() => {
+    dispatch(getCurrentWorkspace(identifier));
+  }, [identifier]);
 
   const activeTabPath = useMemo(() => {
     for (const tab of tabsConfiguration) {
@@ -42,18 +60,22 @@ const Workspace = () => {
 
   const handleTabChange = (_: any, newTabValue: any) => {
     history.push(`${url}/${newTabValue}`);
-    console.log('newTabValue', newTabValue);
   };
 
   const renderTitle = (
     <WorkspaceTitle>
-      <ArrowBackIcon
-        style={{ cursor: 'pointer' }}
-        onClick={() => {
-          history.push('/settings/workspaces');
-        }}
+      <WorkspaceOptionsMenu
+        onClose={() => setMenuOptionsOpen(false)}
+        open={menuOptionsOpen}
+        selectedWorkspace={renderedWorkspace}
+      >
+        <MoreVertIcon />
+      </WorkspaceOptionsMenu>
+      <WorkspaceTile
+        workspaceProfileColor={renderedWorkspace.workspaceProfileColor}
+        workspaceInitials={renderedWorkspace.workspaceInitials}
       />
-      <div>Workspace / {workspaceDummydata.name}</div>
+      <div>Workspace / {renderedWorkspace.workspaceName}</div>
     </WorkspaceTitle>
   );
 
