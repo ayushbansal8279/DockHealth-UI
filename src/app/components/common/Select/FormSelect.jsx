@@ -2,9 +2,10 @@ import React from 'react';
 import { useFormContext } from 'react-hook-form';
 import { useMount, useUnmount } from 'react-use';
 import Select from './Select';
+import { getRegexLabelByValue } from '@/app/helpers/field-type-helpers';
 
 const FormSelect = React.forwardRef(
-  ({ name, label, onChange, required,readOnly, ...restProps }, reference) => {
+  ({ name, label, onChange, required, readOnly, ...restProps }, reference) => {
     const {
       register,
       clearErrors,
@@ -29,6 +30,11 @@ const FormSelect = React.forwardRef(
       if (error) clearErrors(name);
       setValue(name, event.target.value);
       if (typeof onChange === 'function') onChange(event.target.value);
+
+      if (name === 'validationRegexSelector') {
+        setValue('validationRegex', event.target.value);
+        setValue('validationRegexDescription', getRegexLabelByValue(event.target.value));
+      }
     };
 
     return (
