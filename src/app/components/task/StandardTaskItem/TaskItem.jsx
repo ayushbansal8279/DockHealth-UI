@@ -139,6 +139,8 @@ import { getTaskDetails } from '@/app/api/task-api';
 import { useDraggable, useDroppable } from '@dnd-kit/core';
 import { CSS } from '@dnd-kit/utilities';
 import { useDropDirection } from '@/app/context-api/DropDirectionContext';
+import TaskItemProfile from './TaskItemComponents/TaskItemProfile/TaskItemProfile';
+
 
 const { DISABLED, READ_ONLY } = SINGLE_TASK_RESTRICTIONS_OPTIONS;
 
@@ -424,20 +426,6 @@ const TaskItem = React.memo(
 
     const { tabName } = useParams();
 
-    const userSortingSupportEnabledItem = useMemo(
-      () =>
-        selectedOrganization?.themeSettings?.find(
-          ({ name }) => name === 'list.tasks.user.sort.enabled',
-        ) || {},
-      [selectedOrganization?.themeSettings],
-    );
-    const userSortingSupportDisabled =
-      userSortingSupportEnabledItem?.value === 'false';
-    const isDragAndDropDisabled =
-      origin === 'LIST'
-        ? bulkEditIsActive || userSortingSupportDisabled
-        : false;
-
     const customHighlightColor = useMemo(() => {
       const customHighlightItem =
         selectedOrganization?.themeSettings?.find(
@@ -456,6 +444,21 @@ const TaskItem = React.memo(
         hasPriorityHighlightItem && hasPriorityHighlightItem?.value === 'true'
       );
     }, [selectedOrganization]);
+
+    const userSortingSupportDisabled = useMemo(() => {
+      const disabledSettingItem =
+        selectedOrganization?.themeSettings?.find(
+          ({ name: themeName }) =>
+            themeName === 'list.tasks.user.sort.enabled',
+        ) || {};
+      return (
+        disabledSettingItem &&
+        disabledSettingItem?.value === 'false'
+      );
+    }, [selectedOrganization]);
+    
+    const isDragAndDropEnabled =
+      origin === 'LIST' ? !userSortingSupportDisabled : true;
 
     const getTaskGroupForWorkflow = (taskItem) => {
       if (
@@ -1023,15 +1026,14 @@ const TaskItem = React.memo(
             isTaskOfTemplate={!!workflowTaskGroup}
             isDragActive={!!active && active?.id === taskIdentifier}
           >
-            {taskListRestrictions?.createTask !== DISABLED &&
-              !isDragAndDropDisabled && (
-                <div {...attributes} {...listeners}>
-                  <DotsContainer
-                    showDraggableDots
-                    dragHandleProps={dragHandleProps}
-                  />
-                </div>
-              )}
+            {taskListRestrictions?.createTask !== DISABLED && isDragAndDropEnabled && (
+              <div {...attributes} {...listeners}>
+                <DotsContainer
+                  showDraggableDots
+                  dragHandleProps={dragHandleProps}
+                />
+              </div>
+            )}
             {showPriority && (
               <PriorityIndicator color={getPriorityColor(task?.priority)} />
             )}
@@ -1416,6 +1418,21 @@ const TaskItem = React.memo(
                     />
                   </TaskItemCell>,
                   getColumnOrder(TaskItemColumn.PRIORITY),
+                )}
+              </>
+            )}
+            {isColumnChecked(columns, TaskItemColumn.PROFILE) && (
+              <>
+                {randerFirstColumnCoverIfNecessary(
+                  <TaskItemCell
+                    isSubtask={isSubtask}
+                    key={`profile_${taskIdentifier}`}
+                    width={getWidth(TaskItemColumn.PROFILE)}
+                    order={getColumnOrder(TaskItemColumn.PROFILE)}
+                  >
+                    <TaskItemProfile task={task} />
+                  </TaskItemCell>,
+                  getColumnOrder(TaskItemColumn.PROFILE)
                 )}
               </>
             )}

@@ -102,6 +102,8 @@ import { SummaryType } from '@/app/helpers/ai-helper';
 import { useDraggable, useDroppable } from '@dnd-kit/core';
 import { CSS } from '@dnd-kit/utilities';
 import { useDropDirection } from '@/app/context-api/DropDirectionContext';
+import TaskItemProfile from '../../task/StandardTaskItem/TaskItemComponents/TaskItemProfile/TaskItemProfile';
+
 
 const TaskTemplateGroupHeader = ({
   templateGroup = {},
@@ -289,18 +291,6 @@ const TaskTemplateGroupHeader = ({
     );
   }, [selectedOrganization, isListAdmin, isCreator]);
 
-  const userSortingSupportEnabledItem = useMemo(
-    () =>
-      selectedOrganization?.themeSettings?.find(
-        ({ name }) => name === 'list.tasks.user.sort.enabled',
-      ) || {},
-    [selectedOrganization?.themeSettings],
-  );
-  const userSortingSupportDisabled =
-    userSortingSupportEnabledItem?.value === 'false';
-  const isDragAndDropDisabled =
-    origin === 'LIST' ? bulkEditIsActive || userSortingSupportDisabled : false;
-
   const workflowAddTaskDisabled = useMemo(() => {
     const disabledSettingItem =
       selectedOrganization?.themeSettings?.find(
@@ -327,7 +317,21 @@ const TaskTemplateGroupHeader = ({
   if (workflowAddTaskDisabled) {
     taskListRestrictions.workflowAddTask = DISABLED;
   }
-
+  const userSortingSupportDisabled = useMemo(() => {
+    const disabledSettingItem =
+      selectedOrganization?.themeSettings?.find(
+        ({ name: themeName }) =>
+          themeName === 'list.tasks.user.sort.enabled',
+      ) || {};
+    return (
+      disabledSettingItem &&
+      disabledSettingItem?.value === 'false'
+    );
+  }, [selectedOrganization]);
+  
+  const isDragAndDropEnabled =
+    origin === 'LIST' ? !userSortingSupportDisabled : true;
+    
   const [completedTasksAmount, allTasksAmount] = useMemo(() => {
     if (templateTasks?.length === 0) {
       return [tasksCompletedCount, tasksCount];
@@ -642,7 +646,8 @@ const TaskTemplateGroupHeader = ({
           isDragActive={!!active && active?.id === identifier}
         >
           {!groupDragAndDropDisabled &&
-            !isDragAndDropDisabled &&
+            !bulkEditIsActive &&
+            isDragAndDropEnabled &&
             taskListRestrictions?.completeTask !== DISABLED && (
               <div {...attributes} {...listeners}>
                 <TemplateHandle
@@ -822,6 +827,24 @@ const TaskTemplateGroupHeader = ({
               columns?.find(
                 ({ identifier: id }) => id === TaskItemColumn.PATIENT,
               ).columnWidth,
+            )}
+          </>
+        )}
+        {isColumnChecked(columns, TaskItemColumn.PROFILE) && (
+          <>
+            {randerFirstColumnCoverIfNecessary(
+              <TaskItemCell
+                key={`profile_${identifier}`}
+                width={
+                  columns?.find(
+                    ({ identifier: id }) => id === TaskItemColumn.PROFILE,
+                  ).columnWidth
+                }
+                order={getColumnOrder(TaskItemColumn.PROFILE)}
+              >
+                <TaskItemProfile task={templateGroup} />
+              </TaskItemCell>,
+              getColumnOrder(TaskItemColumn.PROFILE)
             )}
           </>
         )}

@@ -7,6 +7,7 @@ import { PERMISSIONS } from 'helpers/permission-mapper';
 import { onLeaveGlobalSearch } from './TemplateCoreSubscriptionPlan/GlobalSearch';
 import DrChronoLaunch from '../views/auth/DrChronoLaunch';
 import MCPLaunch from '../views/auth/MCPLaunch';
+import SMARTLaunch from '../views/auth/SMARTLaunch';
 import {
   onEnterListDetailsView,
   onLeaveListDetailsView,
@@ -164,7 +165,7 @@ const Developers = lazy(() => import('views/developers'));
 const PatientImportStatus = lazy(() => import('views/patient-details/PatientImportStatus/PatientImportStatus'));
 
 const UserActivity = lazy(() => import('views/self-serve/users/UserActivity/UserActivity'));
-
+const Integrations = lazy(() => import('views/Integrations/IntegrationsHeader'));
 const {
   CAN_ACCESS_HOME_PAGE,
   CAN_ACCESS_SEARCH_PAGE,
@@ -265,6 +266,11 @@ export const SETTINGS_ROUTES = [
   {
     path: '/user-activity/:userIdentifier',
     RouteComponent: UserActivity,
+    permissions: [CAN_ACCESS_SETTINGS_PAGE],
+  },
+  {
+    path: '/integrations',
+    RouteComponent: Integrations,
     permissions: [CAN_ACCESS_SETTINGS_PAGE],
   }
 ];
@@ -547,6 +553,10 @@ export const AUTH_ROUTES = [
   {
     path: '/mcp',
     RouteComponent: MCPLaunch,
+  },
+  {
+    path: '/smart-launch',
+    RouteComponent: SMARTLaunch,
   },
   {
     path: '/signupEmailSent',

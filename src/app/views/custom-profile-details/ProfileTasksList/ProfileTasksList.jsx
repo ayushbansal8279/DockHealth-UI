@@ -27,7 +27,6 @@ import {
 import TaskDrawer from 'components/task-drawer/TaskDrawer/TaskDrawer';
 import BulkEditSection from 'components/tasklist/BulkEditSection/BulkEditSection';
 import StandardTaskItem from 'components/task/StandardTaskItem/StandardTaskItem';
-import EmptyListViewWithQuickAddTask from 'components/tasklist/EmptyListView/EmptyListViewWithQuickAddTask';
 import GroupedListSkeletonLoader from 'components/tasklist/GroupedListSkeletonLoader/GroupedListSkeletonLoader';
 import { getTaskListForUser } from 'api/task-list-api';
 import NoFilterResultsView from 'components/tasklist/EmptyListView/NoFilterResultsView';
@@ -191,12 +190,13 @@ const ProfileTasksListView = ({ profileIdentifier }) => {
   const renderEmptyListView = () => {
     if (areFiltersApplied) return <NoFilterResultsView />;
     return (
-      <EmptyListViewWithQuickAddTask
-        quickAddTask={quickAddTask}
-        iconColorActive={iconColorActiveItem?.value}
-      >
+      <>
+        <TasksToolbar
+          onQuickAddTask={quickAddTask}
+          iconColorActive={iconColorActiveItem?.value}
+        />
         <EmptyListView title="No tasks" description="Add tasks above." />
-      </EmptyListViewWithQuickAddTask>
+      </>
     );
   };
 

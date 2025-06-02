@@ -1,5 +1,7 @@
 import React, { useEffect, useRef } from 'react';
-import { ConfirmationContainer, Image, Description } from './styled';
+import { CancelButton, ConfirmationContainer, Image, Description, ModalWrapper, CloseIconContainer, ModalCloseIcon, ModalIconContainer, ModalDescriptionContainer, ButtonsContainer, ConfirmButton } from './styled';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import Spacing from 'components/common/Spacing';
 
 const ConfirmationModal = ({
   icon,
@@ -7,6 +9,9 @@ const ConfirmationModal = ({
   iconAlt = '',
   timeout = 2000,
   closeModal,
+  title,
+  confirm,
+  confirmButtonText = 'Confirm',
 }) => {
   const timeoutReference = useRef(null);
 
@@ -22,10 +27,28 @@ const ConfirmationModal = ({
   }, []);
 
   return (
-    <ConfirmationContainer>
-      {icon && <Image src={icon} alt={iconAlt} />}
-      <Description>{description}</Description>
-    </ConfirmationContainer>
+    <ModalWrapper>
+      <CloseIconContainer>
+        <ModalCloseIcon/>
+      </CloseIconContainer>
+      <InfoOutlinedIcon style={{ fontSize: 40 }} />
+      <ModalIconContainer>
+        {title}
+      </ModalIconContainer>
+      <ModalDescriptionContainer>{description}</ModalDescriptionContainer>
+      <ButtonsContainer>
+        <CancelButton onClick={closeModal}>Cancel</CancelButton>
+        <Spacing horizontal={4} />
+        <ConfirmButton
+          onClick={() => {
+            confirm();
+            closeModal();
+          }}
+        >
+          {confirmButtonText}
+        </ConfirmButton>
+      </ButtonsContainer>
+    </ModalWrapper>
   );
 };
 
