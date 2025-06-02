@@ -41,7 +41,7 @@ const WorkspaceConfigure = () => {
   };
 
   const handleLabelUpdate = async () => {
-    dispatch(updateOrganizationWorkspaceLabel(workspaceLabel));
+    dispatch(updateOrganizationWorkspaceLabel(label));
   };
 
   return (
