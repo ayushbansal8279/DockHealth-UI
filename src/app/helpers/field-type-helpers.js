@@ -145,3 +145,39 @@ export const FIELD_TYPES = [
     description: 'Link to other custom profiles',
   },
 ];
+
+export const REGEX_OPTIONS = [
+  {
+    label: 'Custom Regex',
+    value: '',
+  },
+  {
+    label: 'Only letters',
+    value: '/^[A-Za-z]+$/',
+  },
+  {
+    label: 'Letters & spaces',
+    value: '/^[A-Za-z\\s]+$/',
+  },
+  {
+    label: 'Alphanumeric',
+    value: '/^[A-Za-z0-9]+$/',
+  },
+  {
+    label: 'Length limited (3-30 characters)',
+    value: '/^.{3,30}$/',
+  },
+  {
+    label: 'Email Address',
+    value: '/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/',
+  },
+  {
+    label: 'Numbers Only (1-100 Only)',
+    value: '/^(?:[1-9][0-9]?|100)$/',
+  },
+];
+
+export function getRegexLabelByValue(value) {
+  const match = REGEX_OPTIONS.find((option) => option.value === value);
+  return match.label === 'Custom Regex' ? '' : match.label;
+}
