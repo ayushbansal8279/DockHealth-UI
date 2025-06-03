@@ -47,6 +47,7 @@ export const PatientColumn = {
   EMAIL: 'email',
   MOBILE: 'phoneMobile',
   HOME: 'phoneHome',
+  LABELS: 'patientLabels',
 };
 
 export const PatientHeaderColumn = {
@@ -59,6 +60,7 @@ export const PatientHeaderColumn = {
   EMAIL: 'EMAIL',
   MOBILE: 'MOBILE',
   HOME: 'HOME',
+  LABELS: 'LABELS',
 };
 
 export const PATIENT_BASE_COLUMN_CONFIG = {
@@ -71,16 +73,18 @@ export const PATIENT_BASE_COLUMN_CONFIG = {
   [PatientHeaderColumn.EMAIL]: true,
   [PatientHeaderColumn.MOBILE]: true,
   [PatientHeaderColumn.HOME]: true,
+  [PatientHeaderColumn.LABELS]: true,
 };
 
 export const patientHeaderMap = {
-  PATIENT: "PATIENT",
-  AGE: "AGE",
-  MOBILE: "MOBILE",
-  HOME: "HOME",
-  GENDER_IDENTITY: "GENDER",
-  GENDER_AT_BIRTH: "SEX",
-  UNIQUE_ID: "MRN",
-  DOB: "DOB",
-  EMAIL: "EMAIL"
+  PATIENT: 'PATIENT',
+  AGE: 'AGE',
+  MOBILE: 'MOBILE',
+  HOME: 'HOME',
+  GENDER_IDENTITY: 'GENDER',
+  GENDER_AT_BIRTH: 'SEX',
+  UNIQUE_ID: 'MRN',
+  DOB: 'DOB',
+  EMAIL: 'EMAIL',
+  LABELS: 'LABELS',
 };
