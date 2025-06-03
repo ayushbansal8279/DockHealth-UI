@@ -52,7 +52,11 @@ const PatientListLabels = ({
       }}
     >
       {visibleLabels?.map((label) => (
-        <Tooltip title={label?.labelName} key={label?.labelIdentifier}>
+        <Tooltip
+          title={label?.labelName}
+          key={label?.labelIdentifier}
+          placement="top"
+        >
           <Chip
             label={label?.labelName}
             sx={{
@@ -69,7 +73,8 @@ const PatientListLabels = ({
       {hiddenLabels.length > 0 && (
         <Tooltip
           title={hiddenLabels?.map((l) => l?.labelName).join(', ')}
-          key="more-chip"
+          key="hidden-labels"
+          placement="top"
         >
           <Chip label={`+${hiddenLabels?.length}`} />
         </Tooltip>
