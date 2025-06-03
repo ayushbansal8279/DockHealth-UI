@@ -75,7 +75,10 @@ import {
 } from './styled';
 import { workspaceSelector } from '@/app/selectors/workspace-selectors';
 import WorkspaceTile from '../../workspace/WorkspaceTile/WorkspaceTile';
-import { organizationSelector } from '@/app/selectors/organization-selectors';
+import {
+  organizationSelector,
+  organizationWorkspaceLabelSelector,
+} from '@/app/selectors/organization-selectors';
 
 export const SubmenuKey = {
   ORGANIZATION: 'ORGANIZATION',
@@ -109,7 +112,8 @@ const NavigationSidebar = () => {
   const location = useLocation();
   const currentUser = useSelector(userProfileSelector);
   const currentOrganization = useSelector(selectedUserOrganizationSelector);
-  const organization = useSelector(organizationSelector)
+  const organization = useSelector(organizationSelector);
+  const workspaceLabel = useSelector(organizationWorkspaceLabelSelector);
   const workspace = useSelector(workspaceSelector);
 
   const showChatPopover = useSelector(showChatPopoverSelector);
@@ -333,9 +337,7 @@ const NavigationSidebar = () => {
                   name={
                     workspace.workspaceIdentifier
                       ? `${workspace.workspaceName}`
-                      : organization?.workspaceLabel
-                      ? organization.workspaceLabel
-                      : `Workspaces`
+                      : `${workspaceLabel}`
                   }
                   icon={() =>
                     workspace.workspaceIdentifier ? (

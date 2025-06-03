@@ -25,7 +25,7 @@ export const ColorIndicator = styled.span`
 export const MainHeader = styled.div`
   width: 100%;
   height: 80px;
-  padding: 12px 32px;
+  padding: 12px 12px;
   display: flex;
   flex-direction: row;
   align-items: center;

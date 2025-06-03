@@ -10,12 +10,11 @@ import {
   useRouteMatch,
 } from 'react-router-dom';
 import { RouteWrapper } from '@/app/routing/components';
-import { Tabs, Grid } from '@mui/material';
+import { Tabs, Grid, Box } from '@mui/material';
 import {
   WorkspaceTabsContainer,
   MainTab,
   WorkspaceDetailsContainer,
-  WorkspaceTitle,
   MoreVertIcon,
 } from './styled';
 import { DEFAULT_TAB, TABS_CONFIG } from './helper';
@@ -25,6 +24,8 @@ import { getCurrentWorkspace } from '@/app/actions/workspace-actions';
 import { Workspace as WorkspaceType } from '@/app/types/workspace';
 import WorkspaceTile from '@/app/components/workspace/WorkspaceTile/WorkspaceTile';
 import WorkspaceOptionsMenu from '@/app/components/workspace/WorkspaceOptionsMenu/WorkspaceOptionsMenu';
+import { organizationWorkspaceLabelSelector } from '@/app/selectors/organization-selectors';
+import { Flex } from '@/app/components/common/Flex/styled';
 
 const Workspace = () => {
   const [tabsConfiguration, setTabsConfiguration] = useState(TABS_CONFIG);
@@ -34,6 +35,7 @@ const Workspace = () => {
   const dispatch = useDispatch();
   const history = useHistory();
   const workspace = useSelector(workspaceSelector);
+  const workspaceLabel = useSelector(organizationWorkspaceLabelSelector);
   const [menuOptionsOpen, setMenuOptionsOpen] = useState(false);
   const [renderedWorkspace, setRenderedWorkspace] =
     useState<WorkspaceType>(workspace);
@@ -63,7 +65,7 @@ const Workspace = () => {
   };
 
   const renderTitle = (
-    <WorkspaceTitle>
+    <Flex>
       <WorkspaceOptionsMenu
         onClose={() => setMenuOptionsOpen(false)}
         open={menuOptionsOpen}
@@ -75,8 +77,10 @@ const Workspace = () => {
         workspaceProfileColor={renderedWorkspace.workspaceProfileColor}
         workspaceInitials={renderedWorkspace.workspaceInitials}
       />
-      <div>Workspace / {renderedWorkspace.workspaceName}</div>
-    </WorkspaceTitle>
+      <Box ml={0.5}>
+        {workspaceLabel} / {renderedWorkspace.workspaceName}
+      </Box>
+    </Flex>
   );
 
   return (
