@@ -158,19 +158,10 @@ function* applyTaskBundleFailure({
   }
 }
 
-function* applyTemplate({
-  taskTemplateIdentifier,
-  taskListIdentifier,
-  taskGroupIdentifier,
-  patientIdentifier,
-  options: { unassign = false },
-}) {
+function* applyTemplate({ template, unassign = false }) {
   try {
     const addedBundle = yield call(TemplateBundleApi.applyTemplate, {
-      taskTemplateIdentifier,
-      taskListIdentifier,
-      taskGroupIdentifier,
-      patientIdentifier,
+      template,
       unassign,
     });
     const isWarning = addedBundle.statusCode === 'WARNING';
@@ -179,18 +170,13 @@ function* applyTemplate({
       yield applyTaskBundleFailure({
         errorType: ERROR_TYPES.ASSIGNED_USERS_ARE_NOT_IN_THE_TASK_LIST,
         failureDetails: { taskCount: addedBundle.assignmentsMismatchCount },
-        templateDetails: {
-          taskTemplateIdentifier,
-          taskGroupIdentifier,
-          taskListIdentifier,
-          patientIdentifier,
-        },
+        templateDetails: template,
       });
     } else {
       yield put(showGlobalAlert(AlertMessages.CREATED));
       yield put({
         type: ActionTypes.APPLY_TEMPLATE_SUCCESS,
-        taskListIdentifier,
+        taskListIdentifier: template.taskListIdentifier,
         template: addedBundle.taskWorkflowDto,
       });
       yield put(PatientDetailsActions.getCurrentPatientTasks());

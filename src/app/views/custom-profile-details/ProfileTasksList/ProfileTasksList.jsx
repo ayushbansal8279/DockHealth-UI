@@ -276,7 +276,7 @@ const ProfileTasksListView = ({ profileIdentifier }) => {
                   disablePatientAssignment
                   iconColorActive={iconColorActiveItem?.value}
                   isCompletedTab={tasksStatus !== TaskStatus.INCOMPLETE}
-                  origin={TaskOrigin.PATIENT}
+                  origin={TaskOrigin.CUSTOM_PROFILE}
                 />
               );
             })}
