@@ -11,6 +11,7 @@ import { log } from 'helpers/log';
 import * as PatientDetailsActions from 'actions/patient-details-actions';
 import store from '../store';
 import { locationParametersSelector } from '../location/selectors';
+import { getTasksForProfile } from '../actions/task-actions';
 
 const ERROR_TYPES = {
   ASSIGNED_USERS_ARE_NOT_IN_THE_TASK_LIST:
@@ -179,7 +180,11 @@ function* applyTemplate({ template, unassign = false }) {
         taskListIdentifier: template.taskListIdentifier,
         template: addedBundle.taskWorkflowDto,
       });
-      yield put(PatientDetailsActions.getCurrentPatientTasks());
+      if(template.profileIdentifier) {
+        yield put(getTasksForProfile(template.profileIdentifier));
+      } else {
+        yield put(PatientDetailsActions.getCurrentPatientTasks());
+      }
     }
   } catch {
     yield put({ type: ActionTypes.APPLY_TEMPLATE_FAILURE });
