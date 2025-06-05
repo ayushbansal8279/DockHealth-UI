@@ -478,7 +478,7 @@ const EditCustomFieldModal = ({
                         <FormSelect
                           variant="outlined"
                           name="validationRegexSelector"
-                          label="Regex Selector"
+                          label="Data validation"
                           options={REGEX_OPTIONS}
                         />
                         <FormInput

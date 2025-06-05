@@ -12,6 +12,7 @@ const TaskItemText = ({
   onChange,
   readOnly = false,
   validationRegex,
+  validationRegexDescription,
   placeholder,
 }) => {
   const [value, setValue] = useState(initialValue);
@@ -23,6 +24,8 @@ const TaskItemText = ({
   }, [initialValue]);
 
   const [isEditing, setEditing, unsetEditing] = useBoolean(false);
+  const validationDescription =
+    validationRegexDescription || 'Not satisfying validation regex';
 
   useEffect(() => {
     setValue(initialValue);
@@ -55,7 +58,7 @@ const TaskItemText = ({
       return null;
     }
     const isMatch = regex.test(value);
-    return isMatch ? null : 'Not satisfying validation regex';
+    return isMatch ? null : validationDescription;
   };
 
   const handleOnChange = useCallback((event) => {

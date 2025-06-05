@@ -178,6 +178,7 @@ const TaskItemCustomField = ({
           onChange={handleChange}
           field={field}
           validationRegex={field.validationRegex}
+          validationRegexDescription={field.validationRegexDescription}
         />
       );
     }
@@ -200,6 +201,7 @@ const TaskItemCustomField = ({
           onChange={handleChange}
           field={field}
           validationRegex={field.validationRegex}
+          validationRegexDescription={field.validationRegexDescription}
         />
       );
     }

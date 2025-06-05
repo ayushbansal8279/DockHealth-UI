@@ -49,6 +49,7 @@ const CustomField = ({
     options,
     displayOptions,
     validationRegex,
+    validationRegexDescription,
   } = field;
   const isRequired =
     displayOptions?.includes('TASK_REQUIRED') ||
@@ -69,6 +70,9 @@ const CustomField = ({
     }),
     [descriptionErrorState, identifier, isRequired],
   );
+
+  const validationDescription =
+    validationRegexDescription || 'Not satisfying validation regex';
 
   const handleEditClick = () => {
     setIsEditable(true);
@@ -142,7 +146,7 @@ const CustomField = ({
       return true;
     }
     const isMatch = regex.test(value);
-    return isMatch ? true : 'Not satisfying validation regex';
+    return isMatch ? true : validationDescription;
   };
 
   const renderCustomField = useCallback(() => {

@@ -148,7 +148,7 @@ export const FIELD_TYPES = [
 
 export const REGEX_OPTIONS = [
   {
-    label: 'Custom Regex',
+    label: 'Custom regex',
     value: '',
   },
   {
@@ -168,11 +168,11 @@ export const REGEX_OPTIONS = [
     value: '/^.{3,30}$/',
   },
   {
-    label: 'Email Address',
+    label: 'Email address',
     value: '/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/',
   },
   {
-    label: 'Numbers Only (1-100 Only)',
+    label: 'Numbers only (1-100 Only)',
     value: '/^(?:[1-9][0-9]?|100)$/',
   },
 ];
