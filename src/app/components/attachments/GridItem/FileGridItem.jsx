@@ -9,6 +9,7 @@ import { trunc } from 'helpers/utility-functions';
 import {
   ScanStatus,
   ScanStatusText,
+  UNSUPPORTED_WARNING_MESSAGE,
 } from 'views/patient-details/PatientAttachments/helpers';
 import { getIconFromContentType } from './helpers';
 import {
@@ -19,7 +20,10 @@ import {
   IconContainer,
   OptionsContainer,
   StatusText,
+  AttachmentStatusMessage,
 } from './styled';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import Tooltip from '../../common/Tooltip/Tooltip';
 
 const FileGridItem = (props) => {
   const {
@@ -35,15 +39,15 @@ const FileGridItem = (props) => {
 
   const IconComponent = getIconFromContentType(contentType);
 
-  const fileScanStatus =
-    !scanStatus || scanStatus === 'IN_PROGRESS'
-      ? 'IN_PROGRESS'
-      : scanStatus;
+  const isNotDisabled =
+    !scanStatus ||
+    scanStatus === ScanStatus.CLEAN ||
+    scanStatus === ScanStatus.UNSUPPORTED;
 
   return (
     <Container
       onClick={() => {
-        if (fileScanStatus === ScanStatus.CLEAN) {
+        if (isNotDisabled) {
           onClick();
         }
       }}
@@ -73,7 +77,22 @@ const FileGridItem = (props) => {
         >
           <FileNameText>{trunc(fileName, 50)}</FileNameText>
           <CreatedText>{moment(dateCreated).fromNow()}</CreatedText>
-          <StatusText>{ScanStatusText[fileScanStatus]}</StatusText>
+          <StatusText>
+            {!scanStatus || scanStatus === ScanStatus.IN_PROGRESS ? (
+              ScanStatusText.IN_PROGRESS
+            ) : scanStatus === ScanStatus.UNSUPPORTED ? (
+              <AttachmentStatusMessage>
+                {ScanStatusText.UNSUPPORTED}
+                <Tooltip title={UNSUPPORTED_WARNING_MESSAGE}>
+                  <InfoOutlinedIcon
+                    sx={{ color: 'error.main', cursor: 'pointer' }}
+                  />
+                </Tooltip>
+              </AttachmentStatusMessage>
+            ) : (
+              ScanStatusText[scanStatus]
+            )}
+          </StatusText>
         </Box>
         <OptionsContainer>
           <div onClick={(event) => event.stopPropagation()}>
