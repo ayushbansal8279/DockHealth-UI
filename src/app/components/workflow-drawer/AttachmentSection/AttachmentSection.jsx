@@ -28,6 +28,9 @@ import palette from 'styles/palette';
 import { ScanStatusText } from '../../task-drawer/AttachmentsSection/helpers';
 import { ScanStatus } from '@/app/views/patient-details/PatientAttachments/helpers';
 import { AttachmentFileInput } from './styled';
+import { AttachmentStatusMessage } from '../../task-drawer/AttachmentsSection/styled';
+import Tooltip from '../../common/Tooltip/Tooltip';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const AttachmentSection = ({ disabled }) => {
@@ -145,7 +148,11 @@ const AttachmentSection = ({ disabled }) => {
   };
 
   const handleAttachmentClick = (attachment) => {
-    if (attachment?.scanStatus === ScanStatus.CLEAN) {
+    if (
+      !attachment?.scanStatus ||
+      attachment?.scanStatus === ScanStatus.CLEAN ||
+      attachment?.scanStatus === ScanStatus.UNSUPPORTED
+    ) {
       setPreviewedAttachment(attachment);
       loadAttachmentContent(attachment).then(() => {
         showAttachmentPreview();
@@ -201,16 +208,26 @@ const AttachmentSection = ({ disabled }) => {
                       attachment?.scanStatus === null ||
                       attachment?.scanStatus === ScanStatus.CLEAN
                     )
-                    handleAttachmentClick(attachment);
+                      handleAttachmentClick(attachment);
                   }}
                   onRemoveClick={handleDeleteAttachment}
                 />
                 <p>
-                  {
-                    !attachment?.scanStatus || attachment?.scanStatus === 'IN_PROGRESS'
-                      ? ScanStatusText.IN_PROGRESS
-                      : ScanStatusText[attachment.scanStatus]
-                  }
+                  {!attachment?.scanStatus ||
+                  attachment?.scanStatus === ScanStatus.IN_PROGRESS ? (
+                    ScanStatusText.IN_PROGRESS
+                  ) : attachment?.scanStatus === ScanStatus.UNSUPPORTED ? (
+                    <AttachmentStatusMessage>
+                      {ScanStatusText.UNSUPPORTED}
+                      <Tooltip title={UNSUPPORTED_WARNING_MESSAGE}>
+                        <InfoOutlinedIcon
+                          sx={{ color: 'error.main', cursor: 'pointer' }}
+                        />
+                      </Tooltip>
+                    </AttachmentStatusMessage>
+                  ) : (
+                    ScanStatusText[attachment.scanStatus]
+                  )}
                 </p>
               </div>
             ))
