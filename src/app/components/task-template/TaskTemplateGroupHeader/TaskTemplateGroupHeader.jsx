@@ -318,18 +318,14 @@ const TaskTemplateGroupHeader = ({
   const userSortingSupportDisabled = useMemo(() => {
     const disabledSettingItem =
       selectedOrganization?.themeSettings?.find(
-        ({ name: themeName }) =>
-          themeName === 'list.tasks.user.sort.enabled',
+        ({ name: themeName }) => themeName === 'list.tasks.user.sort.enabled',
       ) || {};
-    return (
-      disabledSettingItem &&
-      disabledSettingItem?.value === 'false'
-    );
+    return disabledSettingItem && disabledSettingItem?.value === 'false';
   }, [selectedOrganization]);
-  
+
   const isDragAndDropEnabled =
     origin === 'LIST' ? !userSortingSupportDisabled : true;
-    
+
   const [completedTasksAmount, allTasksAmount] = useMemo(() => {
     if (templateTasks?.length === 0) {
       return [tasksCompletedCount, tasksCount];
@@ -345,6 +341,8 @@ const TaskTemplateGroupHeader = ({
               accumulator[0] += 1;
             }
           });
+        } else {
+          accumulator[0] += currentTask?.subTasksCompletedCount || 0;
         }
         accumulator[1] = accumulator[1] + (currentTask?.subTasksCount || 0) + 1;
 
@@ -842,7 +840,7 @@ const TaskTemplateGroupHeader = ({
               >
                 <TaskItemProfile task={templateGroup} />
               </TaskItemCell>,
-              getColumnOrder(TaskItemColumn.PROFILE)
+              getColumnOrder(TaskItemColumn.PROFILE),
             )}
           </>
         )}
