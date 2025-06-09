@@ -101,8 +101,9 @@ import AISummaryModalOpenerHelper from '@/app/modal/components/AISummaryModal/AI
 import { SummaryType } from '@/app/helpers/ai-helper';
 import { useDraggable, useDroppable } from '@dnd-kit/core';
 import { CSS } from '@dnd-kit/utilities';
-import { DropDirectionContext } from '@/app/views/list-details/modules/Virtualized/Virtualized';
+import { useDropDirection } from '@/app/context-api/DropDirectionContext';
 import TaskItemProfile from '../../task/StandardTaskItem/TaskItemComponents/TaskItemProfile/TaskItemProfile';
+
 
 const TaskTemplateGroupHeader = ({
   templateGroup = {},
@@ -167,7 +168,7 @@ const TaskTemplateGroupHeader = ({
 
   const { bulkEditIsActive } = useContext(BulkEditContext);
   const { bulkEditEnabled } = useContext(BulkEditContext);
-  const dropDirectionRef = useContext(DropDirectionContext);
+  const dropDirectionRef = useDropDirection();
   const { changeViewType, tasks, handleAddTask } = useContext(ListPageContext);
   const [isEditing, setIsEditing] = useState(false);
   const [nameInputValue, setNameInputValue] = useState(name);
@@ -191,27 +192,28 @@ const TaskTemplateGroupHeader = ({
   }));
 
   useEffect(() => {
-    if (origin === 'LIST') {
-      if (!isFirstTaskOfGroup || !active || !isOver) {
-        setHoverBorder(null);
+    if (!isFirstTaskOfGroup || !active || !isOver) {
+      setHoverBorder(null);
+      if (dropDirectionRef) {
         dropDirectionRef.current = null;
-        return;
       }
-
-      const handlePointerMove = (e) => {
-        const rect = elementRef?.current?.getBoundingClientRect();
-        if (!rect) return;
-
-        const isTop = e?.clientY < rect?.top + rect?.height / 2;
-        const direction = isTop ? 'top' : 'bottom';
-
-        dropDirectionRef.current = direction;
-        setHoverBorder(direction);
-      };
-
-      window.addEventListener('pointermove', handlePointerMove);
-      return () => window.removeEventListener('pointermove', handlePointerMove);
+      return;
     }
+
+    const handlePointerMove = (e) => {
+      const rect = elementRef?.current?.getBoundingClientRect();
+      if (!rect) return;
+
+      const isTop = e?.clientY < rect?.top + rect?.height / 2;
+      const direction = isTop ? 'top' : 'bottom';
+      if (dropDirectionRef) {
+        dropDirectionRef.current = direction;
+      }
+      setHoverBorder(direction);
+    };
+
+    window.addEventListener('pointermove', handlePointerMove);
+    return () => window.removeEventListener('pointermove', handlePointerMove);
   }, [active?.id, over?.id, isFirstTaskOfGroup, origin, taskGroupIdentifier]);
 
   useEffect(() => {

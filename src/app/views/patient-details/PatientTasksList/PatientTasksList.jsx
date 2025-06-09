@@ -409,6 +409,7 @@ const PatientTasksListView = () => {
                   iconColorActive={iconColorActiveItem?.value}
                   origin={TaskOrigin.PATIENT}
                   viewType={patientViewType}
+                  isTopLevelTaskOrWorkflowHeader
                 />
               ) : (
                 <TaskTemplateGroup

@@ -741,7 +741,9 @@ export const getDNDMetaData = ({
   return {
     level,
     parentId: isWorkflowTask
-      ? getWorkflowTaskGroup(task)?.taskGroupIdentifier ?? null
+      ? (getWorkflowTaskGroup(task)?.taskGroupIdentifier ||
+          task?.taskTemplateIdentifier) ??
+        null
       : isSubtaskOfTask || isWorkflowSubtask
       ? task?.parentTaskIdentifier ?? null
       : null,

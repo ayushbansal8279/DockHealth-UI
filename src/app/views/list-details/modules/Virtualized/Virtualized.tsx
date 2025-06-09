@@ -25,7 +25,10 @@ import {
   useSensors,
   DragOverlay,
   DragStartEvent,
+  MouseSensor,
+  TouchSensor,
 } from '@dnd-kit/core';
+import { DropDirectionContext } from '@/app/context-api/DropDirectionContext';
 
 export interface Props {
   nodes?: Node[];
@@ -36,7 +39,6 @@ export interface Props {
   showIncompleteWorkflowIdentifiers?: any;
   currentTaskListTasksStatus?: any;
 }
-export const DropDirectionContext = createContext(null);
 
 function Virtualized({
   nodes = [],
@@ -53,6 +55,7 @@ function Virtualized({
   const flatNodes = useMemo(() => walk(nodes), [nodes]);
   const [activeId, setActiveId] = useState<string | number | null>(null);
   const dropDirectionRef = useRef(null);
+  const sensors = useSensors(useSensor(MouseSensor), useSensor(TouchSensor));
 
   const handleDragStart = (event: DragStartEvent) => {
     setActiveId(event?.active?.id);
@@ -206,13 +209,16 @@ function Virtualized({
         <DndContext
           onDragStart={handleDragStart}
           onDragEnd={handleDragEnd}
-          sensors={useSensors(
-            useSensor(PointerSensor, {
-              activationConstraint: {
-                distance: 3,
-              },
-            }),
-          )}
+          sensors={
+            sensors
+            // useSensors(
+            //   useSensor(PointerSensor, {
+            //     activationConstraint: {
+            //       distance: 3,
+            //     },
+            //   }),
+            // )
+          }
         >
           <Virtuoso
             // @ts-ignore
