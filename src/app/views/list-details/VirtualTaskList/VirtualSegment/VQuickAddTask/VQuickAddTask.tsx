@@ -62,7 +62,7 @@ function VQuickAddTask(
     return null;
   };
 
-  const { setNodeRef, isOver } = useDroppable({
+  const { setNodeRef, isOver, active } = useDroppable({
     id: metadata.id,
   });
 
@@ -99,18 +99,14 @@ function VQuickAddTask(
   );
 
   const userSortingSupportDisabled = useMemo(() => {
-      const disabledSettingItem =
-        currentOrganization?.themeSettings?.find(
-          ({ name: themeName }) =>
-            themeName === 'list.tasks.user.sort.enabled',
-        ) || {};
-      return (
-        disabledSettingItem &&
-        disabledSettingItem?.value === 'false'
-      );
-    }, [currentOrganization]);
-    
-    const isDragAndDropEnabled = !userSortingSupportDisabled;
+    const disabledSettingItem =
+      currentOrganization?.themeSettings?.find(
+        ({ name: themeName }) => themeName === 'list.tasks.user.sort.enabled',
+      ) || {};
+    return disabledSettingItem && disabledSettingItem?.value === 'false';
+  }, [currentOrganization]);
+
+  const isDragAndDropEnabled = !userSortingSupportDisabled;
 
   const applyTemplate = useCallback(
     (template) =>
@@ -148,53 +144,58 @@ function VQuickAddTask(
               onTemplateSelect={applyTemplate}
               bulkApply={false}
               isWorkflowSearch
-              origin={TaskOrigin.LIST} 
-              iconColorActive={undefined}            
+              origin={TaskOrigin.LIST}
+              iconColorActive={undefined}
             />
           </Sc.TaskTemplateApplicatorContainer>
         </Sc.VQuickAddTask>
       </Sc.VQuickAddTaskContainer>
 
-      {groupWithZeroTask && !isLoadingGroup && isDragAndDropEnabled && (
-        <div
-          style={{
-            width: percentage > 100 ? `${droppableHeaderWidth}px` : '100%',
-            display: 'flex',
-            paddingLeft: '54.5px',
-            paddingBottom: '8px',
-            paddingTop: '8px',
-            background: bgColor ? palette.aliceBlue : '',
-          }}
-        >
+      {groupWithZeroTask &&
+        !isLoadingGroup &&
+        isDragAndDropEnabled &&
+        active && (
           <div
-            ref={setNodeRef}
             style={{
-              background: bgColor
-                ? isOver
-                  ? palette.columbiaBlue
-                  : palette.aliceBlue
-                : isOver
-                ? palette.columbiaBlue
-                : '',
-              width: visibleWidth ? `${visibleWidth - 87}px` : '100%',
-              height: '40px',
-              borderRadius: '8px',
-              border: isOver
-                ? `2px solid ${palette.lightSkyBlue}`
-                : `2px dashed ${palette.lightSkyBlue}`,
-              textAlign: 'center',
-              lineHeight: '40px',
-              color: palette.dodgerBlue,
-              fontWeight: 500,
-              fontSize: '14px',
-              transition: 'all 0.2s ease-in-out',
-              boxShadow: isOver ? '0 2px 8px rgba(33, 150, 243, 0.2)' : 'none',
+              width: percentage > 100 ? `${droppableHeaderWidth}px` : '100%',
+              display: 'flex',
+              paddingLeft: '54.5px',
+              paddingBottom: '8px',
+              paddingTop: '8px',
+              background: bgColor ? palette.aliceBlue : '',
             }}
           >
-            Drop Task or Workflow here
+            <div
+              ref={setNodeRef}
+              style={{
+                background: bgColor
+                  ? isOver
+                    ? palette.columbiaBlue
+                    : palette.aliceBlue
+                  : isOver
+                  ? palette.columbiaBlue
+                  : '',
+                width: visibleWidth ? `${visibleWidth - 87}px` : '100%',
+                height: '40px',
+                borderRadius: '8px',
+                border: isOver
+                  ? `2px solid ${palette.lightSkyBlue}`
+                  : `2px dashed ${palette.lightSkyBlue}`,
+                textAlign: 'center',
+                lineHeight: '40px',
+                color: palette.dodgerBlue,
+                fontWeight: 500,
+                fontSize: '14px',
+                transition: 'all 0.2s ease-in-out',
+                boxShadow: isOver
+                  ? '0 2px 8px rgba(33, 150, 243, 0.2)'
+                  : 'none',
+              }}
+            >
+              Drop Task or Workflow here
+            </div>
           </div>
-        </div>
-      )}
+        )}
     </>
   );
 }
