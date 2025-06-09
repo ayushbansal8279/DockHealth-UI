@@ -9,26 +9,19 @@ import {
   TitleWrapper,
   UpdateButton,
 } from './styled';
-import { TOrganization } from '@/app/types/organization';
-import { organizationSelector } from '@/app/selectors/organization-selectors';
+import { organizationWorkspaceLabelSelector } from '@/app/selectors/organization-selectors';
 import { useDispatch, useSelector } from 'react-redux';
 import { updateOrganizationWorkspaceLabel } from '@/app/actions/organization-actions';
 
 const WorkspaceConfigure = () => {
   const [enabled, setEnabled] = useState(true);
   const dispatch = useDispatch();
-  const organization = useSelector(organizationSelector) as TOrganization;
-  const [workspaceLabel, setWorkspaceLabel] = useState(
-    organization?.workspaceLabel || 'Workspaces',
-  );
-  const [label, setLabel] = useState(
-    organization?.workspaceLabel || 'Workspaces',
-  );
+  const workspaceLabel = useSelector(organizationWorkspaceLabelSelector);
+  const [label, setLabel] = useState(workspaceLabel);
 
   useEffect(() => {
-    setLabel(organization?.workspaceLabel || 'Workspaces');
-    setWorkspaceLabel(organization?.workspaceLabel || 'Workspaces');
-  }, [organization]);
+    setLabel(workspaceLabel);
+  }, [workspaceLabel]);
 
   const handleToggle = () => {
     setEnabled((prev) => !prev);

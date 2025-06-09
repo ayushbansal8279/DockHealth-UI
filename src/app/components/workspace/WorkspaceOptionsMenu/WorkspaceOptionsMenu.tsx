@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 import OptionsMenu from '../../common/OptionsMenu/OptionsMenu';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { openModal } from '@/app/modal/actions';
 import { Workspace } from '@/app/types/workspace';
 import { clearWorkspaceState } from '@/app/actions/workspace-actions';
@@ -8,6 +8,7 @@ import { removeWorkspace } from '@/app/api/workspace-api';
 import { useHistory } from 'react-router-dom';
 import { showGlobalAlert, showGlobalErrorAlert } from '@/app/alert/actions';
 import AlertMessages from '@/app/alert/AlertMessages';
+import { organizationWorkspaceLabelSelector } from '@/app/selectors/organization-selectors';
 
 interface Prop {
   children: any;
@@ -23,6 +24,7 @@ const WorkspaceOptionsMenu = ({
 }: Prop) => {
   const dispatch = useDispatch();
   const history = useHistory();
+  const workspaceLabel = useSelector(organizationWorkspaceLabelSelector);
 
   const handleWorkspaceEdit = () => {
     const modalProps = {
@@ -36,9 +38,8 @@ const WorkspaceOptionsMenu = ({
 
   const handleWorkspaceDelete = useCallback(() => {
     const modalProps = {
-      title: 'Delete Workspace',
-      description:
-        'Are you sure you want to delete this Workspace? This action cannot be undone.',
+      title: `Delete ${workspaceLabel}`,
+      description: `Are you sure you want to delete this ${workspaceLabel}? This action cannot be undone.`,
       confirm: async () => {
         try {
           await removeWorkspace(selectedWorkspace.workspaceIdentifier);

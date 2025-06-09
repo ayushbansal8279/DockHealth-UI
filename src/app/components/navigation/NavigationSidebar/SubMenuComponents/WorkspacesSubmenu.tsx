@@ -23,6 +23,7 @@ import { Workspace } from '@/app/types/workspace';
 import WorkspaceSubmenuStepTwo from './WorkspaceSubmenuStepTwo';
 import { workspaceSelector } from '@/app/selectors/workspace-selectors';
 import WorkspaceTile from '@/app/components/workspace/WorkspaceTile/WorkspaceTile';
+import { organizationWorkspaceLabelSelector } from '@/app/selectors/organization-selectors';
 
 const WorkspacesSubmenu = () => {
   const history = useHistory();
@@ -30,6 +31,7 @@ const WorkspacesSubmenu = () => {
   const [workspaces, setWorkspaces] = useState<Workspace[]>([]);
   const [loading, setLoading] = useState(true);
   const workspace = useSelector(workspaceSelector);
+  const workspaceLabel = useSelector(organizationWorkspaceLabelSelector);
 
   const openAddWorkspaceModal = () => {
     const modalProps = {
@@ -58,7 +60,7 @@ const WorkspacesSubmenu = () => {
       {!workspace.workspaceIdentifier ? (
         <>
           <WorkspacesTitleWrapper>
-            <WorkspacesTitle>Workspaces</WorkspacesTitle>
+            <WorkspacesTitle>{workspaceLabel}s</WorkspacesTitle>
             <WorkspacesSubWrapper>
               <WorkspaceSettingsIcon
                 src={SettingsIcon}

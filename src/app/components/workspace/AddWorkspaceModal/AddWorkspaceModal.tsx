@@ -12,6 +12,7 @@ import { selectedUserOrganizationSelector } from '@/app/selectors/user-selectors
 import { useDispatch, useSelector } from 'react-redux';
 import { Workspace } from '@/app/types/workspace';
 import { updateSelectedWorkspace } from '@/app/actions/workspace-actions';
+import { organizationWorkspaceLabelSelector } from '@/app/selectors/organization-selectors';
 
 interface AddWorkspaceModalProps {
   selectedWorkspace: Workspace;
@@ -28,7 +29,6 @@ const AddWorkspaceModal: React.FC<AddWorkspaceModalProps> = ({
   const [workspace, setWorkspace] = useState({
     workspaceIdentifier: '',
     workspaceName: '',
-    workspaceDescription: '',
   });
 
   const isEdit = Boolean(selectedWorkspace?.workspaceIdentifier);
@@ -38,19 +38,13 @@ const AddWorkspaceModal: React.FC<AddWorkspaceModalProps> = ({
       setWorkspace({
         workspaceIdentifier: selectedWorkspace.workspaceIdentifier,
         workspaceName: selectedWorkspace.workspaceName,
-        workspaceDescription: '',
       });
     }
   }, []);
   const selectedOrganization = useSelector(selectedUserOrganizationSelector);
+  const workspaceLabel = useSelector(organizationWorkspaceLabelSelector);
 
   const handleWorkspaceNameChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    setWorkspace({ ...workspace, workspaceName: e.target.value });
-  };
-
-  const handleWorkspaceDescriptionChange = (
     e: React.ChangeEvent<HTMLInputElement>,
   ) => {
     setWorkspace({ ...workspace, workspaceName: e.target.value });
@@ -77,28 +71,21 @@ const AddWorkspaceModal: React.FC<AddWorkspaceModalProps> = ({
       <CloseIconButton onClick={closeModal} size="small" color="secondary">
         <CloseIcon />
       </CloseIconButton>
-      <Title>{isEdit ? 'Edit' : 'Add'} Workspace</Title>
+      <Title>
+        {isEdit ? 'Edit' : 'Add'} {workspaceLabel}
+      </Title>
       <Box m={2} />
       <TextField
         value={workspace.workspaceName}
         onChange={handleWorkspaceNameChange}
         variant="outlined"
         size="small"
-        placeholder="Workspace name"
-        sx={InputSx}
-      />
-      <Box m={1.5} />
-      <TextField
-        value={workspace.workspaceDescription}
-        onChange={handleWorkspaceDescriptionChange}
-        variant="outlined"
-        size="small"
-        placeholder="Workspace Description"
+        placeholder={`${workspaceLabel} name`}
         sx={InputSx}
       />
       <Box m={1.5} />
       <ConfirmButton onClick={handleAddWorkspace} style={{ width: '100%' }}>
-        {isEdit ? 'Edit' : 'Add'} Workspace
+        {isEdit ? 'Edit' : 'Add'} {workspaceLabel}
       </ConfirmButton>
     </AddWorkspaceModalWrapper>
   );

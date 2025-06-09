@@ -8,6 +8,11 @@ export const organizationSelector = createSelector(
   ({ organization }) => organization,
 );
 
+export const organizationWorkspaceLabelSelector = createSelector(
+  organizationStateSelector,
+  ({ organization }) => organization?.workspaceLabel || 'Workspaces',
+);
+
 export const isFetchingOrganizationSelector = createSelector(
   organizationStateSelector,
   ({ isFetching }) => isFetching,

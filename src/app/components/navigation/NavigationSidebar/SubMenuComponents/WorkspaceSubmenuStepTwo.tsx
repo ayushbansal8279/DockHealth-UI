@@ -10,11 +10,12 @@ import {
 import { clearWorkspaceState } from '@/app/actions/workspace-actions';
 import WorkspaceTile from '@/app/components/workspace/WorkspaceTile/WorkspaceTile';
 import { Flex } from '@/app/components/common/Flex/styled';
-import ListsSubmenu from './ListsSubmenu';
+import { organizationWorkspaceLabelSelector } from '@/app/selectors/organization-selectors';
 
 const WorkspaceSubmenuStepTwo = () => {
   const dispatch = useDispatch();
   const workspace = useSelector(workspaceSelector);
+  const workspaceLabel = useSelector(organizationWorkspaceLabelSelector);
 
   const handleBackClick = () => {
     dispatch(clearWorkspaceState());
@@ -25,7 +26,7 @@ const WorkspaceSubmenuStepTwo = () => {
       <WorkspacesTitleWrapper>
         <WorkspacesSubWrapper>
           <ArrowBackIcon onClick={handleBackClick} />
-          <WorkspacesTitle>Workspaces</WorkspacesTitle>
+          <WorkspacesTitle>{workspaceLabel}s</WorkspacesTitle>
         </WorkspacesSubWrapper>
       </WorkspacesTitleWrapper>
       <Flex j={'start'} gap={10} pl={10} pt={10}>
@@ -35,7 +36,6 @@ const WorkspaceSubmenuStepTwo = () => {
         />
         <div>{workspace.workspaceName}</div>
       </Flex>
-      {/* <ListsSubmenu /> */}
     </>
   );
 };
