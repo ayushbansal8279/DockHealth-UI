@@ -16,8 +16,11 @@ import ProfilesCustomFieldsView from './ProfilesCustomFieldView';
 
 const TABS = {
   0: 'patients',
-  1: 'task',
-  2: 'users',
+  1: 'customers',
+  2: 'clients',
+  3: 'members',
+  4: 'task',
+  5: 'users',
 };
 
 const CustomFieldsView = () => {
@@ -61,9 +64,12 @@ const CustomFieldsView = () => {
       >
         <ViewContainer isPatient={selectedTab === 0}>
           <Box p={1} />
-          {selectedTab === 0 && <PatientCustomFieldsView />}
-          {selectedTab === 1 && <TaskCustomFieldsView editable />}
-          {selectedTab === 2 && <UserCustomFieldsView editable />}
+          {(selectedTab === 0 ||
+            selectedTab === 1 ||
+            selectedTab === 2 ||
+            selectedTab === 3) && <PatientCustomFieldsView />}
+          {selectedTab === 4 && <TaskCustomFieldsView editable />}
+          {selectedTab === 5 && <UserCustomFieldsView editable />}
           {!selectedTab && selectedTab !== 0 && (
             <ProfilesCustomFieldsView
               editable
