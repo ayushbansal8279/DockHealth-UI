@@ -74,7 +74,7 @@ const PatientAttachments = () => {
     handleAttachmentClick,
     dropzone: { getRootProps, getInputProps, isDragActive },
     downloadAllFiles,
-    downloadAttachment
+    downloadAttachment,
   } = initializeAttachmentsSectionHooks();
 
   const [foldersList, setFoldersList] = useState([]);
@@ -96,7 +96,10 @@ const PatientAttachments = () => {
   const isFetching = useSelector(isFetchingPatientAttachmentsSelector);
 
   const downloadDisabled = currentPatientAttachments?.some(
-    ({ scanStatus }) => scanStatus && scanStatus !== ScanStatus.CLEAN,
+    ({ scanStatus }) =>
+      scanStatus &&
+      (scanStatus !== ScanStatus.CLEAN ||
+        scanStatus !== ScanStatus.UNSUPPORTED),
   );
 
   const FileItemComponent =
@@ -107,14 +110,22 @@ const PatientAttachments = () => {
 
   const getFileOptions = useCallback(
     (file) => [
-      ...(file.scanStatus && file.scanStatus !== 'IN_PROGRESS' 
-        ? [{name: 'Preview', onClick: () => openAttachmentPreview(file)},
-          {name: 'Download', onClick: () => {downloadAttachment(file)}} ] 
-        : []
-      ),
-      { 
-        name: 'Rename', 
-        onClick: () => renameAttachment(file) 
+      ...(!file.scanStatus ||
+      file.scanStatus === ScanStatus.CLEAN ||
+      file.scanStatus === ScanStatus.UNSUPPORTED
+        ? [
+            { name: 'Preview', onClick: () => openAttachmentPreview(file) },
+            {
+              name: 'Download',
+              onClick: () => {
+                downloadAttachment(file);
+              },
+            },
+          ]
+        : []),
+      {
+        name: 'Rename',
+        onClick: () => renameAttachment(file),
       },
       {
         name: 'Move',
@@ -131,7 +142,7 @@ const PatientAttachments = () => {
       renameAttachment,
       moveFileOrFolder,
       deleteAttachment,
-      downloadAttachment
+      downloadAttachment,
     ],
   );
 
@@ -350,7 +361,7 @@ const PatientAttachments = () => {
               ))}
             </NamedCollapse>
           )}
-          <NamedCollapse name="Files"> 
+          <NamedCollapse name="Files">
             {activeViewType === FilesViewType.LIST && <FileListHeader />}
             {filesList.length > 0 ? (
               filesList.map((file, index) => (

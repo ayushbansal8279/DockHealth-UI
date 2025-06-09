@@ -72,3 +72,9 @@ export const OptionsContainer = styled.div`
   right: 4px;
   color: ${palette.coolGrey2};
 `;
+
+export const AttachmentStatusMessage = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+`;
