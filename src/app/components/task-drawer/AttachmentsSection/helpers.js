@@ -51,6 +51,7 @@ export const ScanStatus = {
   INFECTED: 'INFECTED',
   IN_PROGRESS: 'IN_PROGRESS',
   ERROR: 'ERROR',
+  UNSUPPORTED: 'UNSUPPORTED',
 };
 
 export const ScanStatusText = {
@@ -58,4 +59,8 @@ export const ScanStatusText = {
   INFECTED: 'Quarantined',
   IN_PROGRESS: 'Scanning in progress',
   ERROR: 'Error in file scanning',
+  UNSUPPORTED: 'Not Scanned',
 };
+
+export const UNSUPPORTED_WARNING_MESSAGE =
+  'This file could not be scanned for malware since it may be password protected';

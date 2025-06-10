@@ -345,6 +345,8 @@ const TaskTemplateGroupHeader = ({
               accumulator[0] += 1;
             }
           });
+        } else {
+          accumulator[0] += currentTask?.subTasksCompletedCount || 0;
         }
         accumulator[1] = accumulator[1] + (currentTask?.subTasksCount || 0) + 1;
 

@@ -8,8 +8,12 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import {
   ScanStatus,
   ScanStatusText,
+  UNSUPPORTED_WARNING_MESSAGE,
 } from 'views/patient-details/PatientAttachments/helpers';
 import { Cell, Row } from './styled';
+import Tooltip from '../../common/Tooltip/Tooltip';
+import { AttachmentStatusMessage } from '../GridItem/styled';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 
 const FileListItem = (props) => {
   const {
@@ -21,17 +25,21 @@ const FileListItem = (props) => {
     onDragEnd,
     draggable = false,
   } = props;
-  const { fileName, dateCreated, creator, type, scanStatus } = file;
+  const { fileName, dateCreated, creator, type } = file;
+  const scanStatus = 'UNSUPPORTED';
 
   const fileScanStatus =
-    !scanStatus || scanStatus === 'IN_PROGRESS'
-      ? 'IN_PROGRESS'
-      : scanStatus;
+    !scanStatus || scanStatus === 'IN_PROGRESS' ? 'IN_PROGRESS' : scanStatus;
+
+  const isNotDisabled =
+    !scanStatus ||
+    scanStatus === ScanStatus.CLEAN ||
+    scanStatus === ScanStatus.UNSUPPORTED;
 
   return (
     <Row
       onClick={() => {
-        if (fileScanStatus) {
+        if (isNotDisabled) {
           onClick();
         }
       }}
@@ -55,7 +63,22 @@ const FileListItem = (props) => {
         {fileName}
       </Cell>
       <Cell>{creator?.name || ''}</Cell>
-      <Cell>{ScanStatusText[fileScanStatus]}</Cell>
+      <Cell>
+        {!scanStatus || scanStatus === ScanStatus.IN_PROGRESS ? (
+          ScanStatusText.IN_PROGRESS
+        ) : scanStatus === ScanStatus.UNSUPPORTED ? (
+          <AttachmentStatusMessage>
+            {ScanStatusText.UNSUPPORTED}
+            <Tooltip title={UNSUPPORTED_WARNING_MESSAGE} placement={'left'}>
+              <InfoOutlinedIcon
+                sx={{ color: 'error.main', cursor: 'pointer' }}
+              />
+            </Tooltip>
+          </AttachmentStatusMessage>
+        ) : (
+          ScanStatusText[scanStatus]
+        )}
+      </Cell>
       <Cell>{moment(dateCreated).fromNow()}</Cell>
       <Cell onClick={(event) => event.stopPropagation()}>
         <OptionsMenu customButtonComponent={IconButton} options={options}>
