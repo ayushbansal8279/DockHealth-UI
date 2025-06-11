@@ -1,44 +1,76 @@
 // @ts-nocheck
 
-import React, { useState } from 'react'
-import { useSelector } from 'react-redux'
+import React, { useEffect, useMemo, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { ClickAwayListener, IconButton } from '@mui/material'
 
 import Spacing from '@/app/components/common/Spacing'
 import OptionsMenu from '@/app/components/common/OptionsMenu/OptionsMenu'
-import { getMenuOptionsForMember, isEmail } from '@/app/components/user/InviteMemberToListForm/helpers'
+import { isEmail } from '@/app/components/user/InviteMemberToListForm/helpers'
 import { Container, ExternalUserInviteFormWrapper, ItemAvatarWrapper, ItemFullName, ItemFullNameWrapper, ItemStatusLabel, ListItem, OptionContainer, OptionMenuWrapper } from '@/app/components/user/InviteMemberToListForm/styled'
 import UserAvatar from '@/app/components/user/UserAvatar/UserAvatar'
-import { getMemberStatus, isMemberPending } from '@/app/helpers/list-members-helper'
+import { isMemberPending } from '@/app/helpers/list-members-helper'
 import { userProfileSelector } from '@/app/selectors/user-selectors'
-import { workspaceUsersDummyData } from '@/app/views/workspace/workspace-users/helper'
 import ListUsersAndGroupsSelect from '@/app/components/user/InviteMemberToListForm/ListUsersAndGroupsSelect/ListUsersAndGroupsSelect'
 import ExternalInviteForm from '@/app/components/user/InviteMemberToListForm/ExternalInviteForm/ExternalInviteForm'
 import { IconContainer, UserListWrapper } from './styled'
 import ArrowRight from 'img/simple-arrow-right.svg';
+import * as OrganizationApi from '@/app/api/organization-api';
+import { changeWorkspaceUserRole, invitePersonToWorkspace, inviteUserToWorkspace, removeUserFromWorkspace } from '@/app/actions/workspace-actions'
+import { getMenuOptionsForWorkspaceUser } from './helpers'
+import { getWorkspaceMemberStatus } from '@/app/helpers/workspace-helpers'
+import { workspaceUsersSelector } from '@/app/selectors/workspace-selectors'
 
-const InviteUserToWorkspaceForm = () => {
-  const [workspaceUsers, setWorkspaceUsers] = useState([
-    {
-      identifier: 5,
-      name: 'AVeryLong UserNameMore',
-      email: 'averylong.username@example.com',
-      role: 'member',
-      status: 'resend invite',
-      isSelected: false,
-    }
-  ]);
+const InviteUserToWorkspaceForm = ({
+  identifier: workspaceIdentifier,
+}) => {
+  const dispatch = useDispatch();
   const [externalInviteFormState, setExternalInviteFormState] = useState({
     opened: false,
   });
+  const [allOrganizationUsersAndGroupsFetched, setAllOrganizationUsersAndGroupsFetched] = useState(false);
+  const [allOrganizationUsersAndGroups, setAllOrganizationUsersAndGroups] = useState([]);
+  const [isSavingList, setIsSavingList] = useState(false);
+
+  const listUsersAndGroups = useSelector(workspaceUsersSelector);
+  // const isLoading = useSelector(isFetchingWorkspaceUsersSelector);
+  
+  useEffect(() => {
+    setAllOrganizationUsersAndGroupsFetched(false);
+    OrganizationApi.getOrganizationUsersAndUserGroups().then(
+      (organizationMembers) => {
+        setAllOrganizationUsersAndGroups(organizationMembers);
+        setAllOrganizationUsersAndGroupsFetched(true);
+      },
+    );
+  }, []);
+
+  // TODO: reuse
+  const organizationUsersAndGroupsNotInTheList = useMemo(
+    () =>
+      allOrganizationUsersAndGroups.filter(
+        (organizationMember) =>
+          !listUsersAndGroups.some(
+            ({ identifier }) => organizationMember.identifier === identifier,
+          ),
+      ),
+    [allOrganizationUsersAndGroups, listUsersAndGroups],
+  );
 
   // TODO: get it from list
   const currentUserListRole = 'ADMIN';
 
   const userProfile = useSelector(userProfileSelector);
 
-  const handleInviteMembers = () => {
-    // TODO: handle invite member to list
+  const handleInviteMembers = (members) => {
+    setIsSavingList(true);
+    const newMemberIdentifier = members[0].identifier;
+
+    dispatch(inviteUserToWorkspace({
+      userIdentifier: newMemberIdentifier,
+      workspaceIdentifier,
+      onDone: () => setIsSavingList(false),
+    }));
   }
 
   const handleOpenExternalInviteForm = (searchedValue) => {
@@ -59,25 +91,51 @@ const InviteUserToWorkspaceForm = () => {
     });
   };
 
-  const refreshWorkspaceUsers = () => {}
+  const handleCustomInvite = (data) => (
+    new Promise((resolve, reject) => {
+      dispatch(
+        invitePersonToWorkspace({
+          workspaceIdentifier,
+          data,
+          onSuccess: resolve,
+          onFailure: reject,
+        })
+      );
+    })
+  )
 
-  const handleCustomInvite = (data) => {
-    // TODO: handle invite
-  };
+  const handleRemoveUser = (userIdentifier) => {
+    dispatch(
+      removeUserFromWorkspace({
+        userIdentifier,
+        workspaceIdentifier
+      })
+    );
+  }
+
+  const changeUserRole = (userIdentifier, role) => {
+    dispatch(changeWorkspaceUserRole({ 
+      workspaceIdentifier, 
+      userIdentifier, 
+      role, 
+    }));
+  }
 
   return (
     <Container>
       <ListUsersAndGroupsSelect
-        // disabled={isSavingList}
-        usersAndGroups={workspaceUsersDummyData}
+        disabled={isSavingList}
+        usersAndGroups={organizationUsersAndGroupsNotInTheList}
         isLoadingAvailablePeople={false}
         onActionButtonClick={handleInviteMembers}
         emptyListAction={handleOpenExternalInviteForm}
       />
       <Spacing vertical={4} />
       <UserListWrapper>
-        {workspaceUsers.map((user) => {
-          const status = getMemberStatus(user);
+        {listUsersAndGroups
+          .filter(user => user.userStatus === 'ACTIVE')
+          .map((user) => {
+          const status = getWorkspaceMemberStatus(user);
           return (
             <ListItem key={user.identifier}>
               <ItemAvatarWrapper isPending={isMemberPending(user)}>                
@@ -101,13 +159,13 @@ const InviteUserToWorkspaceForm = () => {
                   currentUserListRole === 'OWNER') && (
                   <OptionsMenu
                     placement="bottom-end"
-                    // options={getMenuOptionsForMember(user, { //TODO: impl options
-                    //   changeUserRole,
-                    //   removeUserFromList,
-                    //   cancelInviteToList,
-                    //   resendInvitationToList,
-                    //   resendApprovalRequestToList,
-                    // })}
+                    options={getMenuOptionsForWorkspaceUser(user, {
+                      changeUserRole,
+                      removeUserFromWorkspace: handleRemoveUser,
+                      // cancelInviteToWorkspace,
+                      // resendInvitationToWorkspace,
+                      // resendApprovalRequestToList,
+                    })}
                     customButtonComponent={IconButton}
                     isDisabled={false}
                   >

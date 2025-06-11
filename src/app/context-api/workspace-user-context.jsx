@@ -36,16 +36,16 @@ export const UserEditProvider = ({ children, optionNames = [] }) => {
   }, []);
 
   const selectedUsers = useMemo(() => {
-    return selectableUsers.filter(user => user.isSelected);
+    return selectableUsers?.filter(user => user.isSelected);
   }, [selectableUsers]);
 
   const bulkEditIsActive = useMemo(() => {
-    return selectedUsers.length > 0;
+    return selectedUsers?.length > 0;
   }, [selectedUsers]);
 
   const isListChecked = useMemo(() => {
-    const selectedCount = selectableUsers.filter(user => user.isSelected).length;
-    return selectableUsers.length > 0 && selectedCount > 0 && selectableUsers.length === selectedCount;
+    const selectedCount = selectableUsers?.filter(user => user.isSelected).length;
+    return selectableUsers?.length > 0 && selectedCount > 0 && selectableUsers?.length === selectedCount;
   }, [selectableUsers]);
 
   const toggleOption = useCallback((optionName) => {

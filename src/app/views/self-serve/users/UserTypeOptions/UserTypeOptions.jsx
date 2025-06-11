@@ -9,6 +9,7 @@ import {
 } from 'selectors/user-selectors';
 import UserTypeLabel from './UserTypeLabel';
 import { getUserTypeLabel, USER_TYPES } from '../helpers';
+import { useRoleContext } from '@/app/views/workspace/workspace-users/RoleContext';
 
 const UserTypeOptions = ({
   firstName,
@@ -28,9 +29,11 @@ const UserTypeOptions = ({
 }) => {
   const [isPopoverOpen, openPopover, closePopover] = useBoolean(false);
 
+  const { roleConfig } = useRoleContext();
+
   const userType = useMemo(
-    () => getUserTypeLabel({ userStatus, eulaAcknowledged, orgUserRole }),
-    [eulaAcknowledged, orgUserRole, userStatus],
+    () => getUserTypeLabel({ userStatus, eulaAcknowledged, orgUserRole, roleConfig }),
+    [eulaAcknowledged, orgUserRole, userStatus, roleConfig],
   );
 
   const displayName = `${firstName} ${lastName}${
@@ -99,7 +102,7 @@ const UserTypeOptions = ({
       email={email}
       userIdentifier={userIdentifier}
       userType={userType}
-      userTypes={USER_TYPES}
+      userTypes={roleConfig}
       removeSubscription={removeSubscription}
       removeSubscriptionWithNewOwnerFlow={removeSubscriptionWithNewOwnerFlow}
       addSubscription={addSubscription}

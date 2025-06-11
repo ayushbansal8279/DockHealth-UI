@@ -1,20 +1,30 @@
 // @ts-nocheck
 
 import React, { useContext } from "react";
-import { Box } from "@mui/material";
+import { Box, Grid } from "@mui/material";
 import { GridColDef } from "@mui/x-data-grid-premium";
+import { isEmpty } from "ramda";
+import { useDispatch } from "react-redux";
+import { useParams } from "react-router-dom";
 
 import Checkbox from "@/app/components/common/Checkbox/Checkbox";
 import TaskItemBulkEdit from "@/app/components/task/StandardTaskItem/TaskItemComponents/TaskItemBulkEdit";
 import { UserEditContext } from "@/app/context-api/workspace-user-context";
-import Select from "@/app/components/common/Select/Select";
+import { OutfitTypography } from "@/app/styles/theme";
+import UserTypeOptions from "@/app/views/self-serve/users/UserTypeOptions/UserTypeOptions";
+import { changeWorkspaceUserRole } from "@/app/actions/workspace-actions";
+import UserAvatar from "@/app/components/user/UserAvatar/UserAvatar";
+import Spacing from "@/app/components/common/Spacing";
+import { RoleContextProvider } from "../RoleContext";
 import { StyledDataGrid } from "../../../workspaces/workspace-table/styled";
 import { CheckboxHeaderProps, CheckboxProps, IWorkspaceUser } from "../types";
-import { BulkContainer } from "./styled";
+import { BulkContainer, ListContainer, ListEntryContainer } from "./styled";
 
 const TypedCheckbox = Checkbox as React.FC<CheckboxProps>;
 
 const WorkspaceUserTable = () => {
+  const dispatch = useDispatch();
+  const { identifier: workspaceIdentifier } = useParams<{ identifier: string }>();
 
   const userContext = useContext(UserEditContext);
   const {
@@ -32,6 +42,10 @@ const WorkspaceUserTable = () => {
       />
     </BulkContainer>
   );
+
+  const changeUserRole = ({ userIdentifier, role }) => {
+    dispatch(changeWorkspaceUserRole({ workspaceIdentifier, userIdentifier, role }));
+  }
 
   const columns: GridColDef<IWorkspaceUser>[] = [
     {
@@ -52,11 +66,20 @@ const WorkspaceUserTable = () => {
           isDisabled={false}
         />
       ),
-    },    
+    },
     {
       field: 'name',
       headerName: 'Users',
       flex: 1.75,
+      renderCell: ({ row }) => {
+        return (
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <UserAvatar size={22} user={row} />
+            <Spacing horizontal={4} />
+            <span>{row?.name}</span>
+          </div>
+        );
+      },
     },
     {
       field: 'email',
@@ -64,58 +87,57 @@ const WorkspaceUserTable = () => {
       flex: 2,
     },
     {
-      field: 'role',
+      field: 'workspaceUserRole',
       headerName: 'Workspace role',
-      flex: 0.75,
+      flex: 0.6,
       renderCell: ({ row }) => {
-        const options = [
-          { label: 'Member', value: 'member' },
-          { label: 'Admin', value: 'admin' },
-        ];
-
-        const handleChange = (event) => {
-          const newValue = event.target.value;
-          console.log(`Role for ${row.id} changed to ${newValue}`);
-        };
+        const { firstName, lastName, email, userIdentifier, userStatus } = row;
+        const key = `${firstName}${lastName}${userIdentifier}${email}`;
 
         return (
-          <Select
-            name="role"
-            value={row.role}
-            options={options}
-            onChange={handleChange}
-            variant="standard"
-            disableUnderline
-            sx={{
-              '& .MuiSelect-select': {
-                width: '100px !important',
-                fontSize: '14px',
-              },
-            }}
+          <UserTypeOptions
+            key={key}
+            isUserSelected={() => false}
+            showJoined={true}
+            showSubscription={true}
+            organizationMembers={[]}
+            isInvited={userStatus === 'INVITED'}
+            userIdentifier={userIdentifier}
+            selectedUsers={[]}
+            changeUserRole={changeUserRole}
+            orgUserRole={row.workspaceUserRole}
+            {...row}
           />
         );
       },
-    },
-    {
-      field: 'status',
-      headerName: 'Active',
-      flex: 0.75,
-    },
+    }
   ];
 
   let rows: IWorkspaceUser[] = users || [];
 
   return (
     <Box sx={{ height: 'calc(80vh - 100px)', p: 2, width: '1179px' }}>
-      <StyledDataGrid
-        columns={columns}
-        getRowId={(row) => row.identifier}
-        rows={rows}
-        rowHeight={40}
-        headerHeight={45}
-        autoHeight
-        hideFooterSelectedRowCount
-      />
+      {isEmpty(users) ? (
+        <ListContainer>
+          <ListEntryContainer>
+            <Grid container justifyContent="center" alignItems="center">
+              <OutfitTypography variant="h4">No users found</OutfitTypography>
+            </Grid>
+          </ListEntryContainer>
+        </ListContainer>
+      ) : (
+        <RoleContextProvider contextType="workspace">
+          <StyledDataGrid
+            columns={columns}
+            getRowId={(row) => row.identifier}
+            rows={rows}
+            rowHeight={40}
+            headerHeight={45}
+            autoHeight
+            hideFooterSelectedRowCount
+          />
+        </RoleContextProvider>
+      )}
     </Box>
   )
 }

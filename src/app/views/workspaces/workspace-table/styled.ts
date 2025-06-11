@@ -4,7 +4,9 @@ import styled from "styled-components";
 export const StyledDataGrid = styled(DataGridPremium)`
   &.MuiDataGrid-root {
     background-color: white;
-    max-width: 1179px;
+    width: 100%;
+    margin: 0 auto;
+    min-width: 768px;
     border-radius: 10px;
     overflow: hidden;
     height: 100%;
