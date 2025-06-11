@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useMemo } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Add } from "@mui/icons-material";
 import { useParams } from "react-router-dom";
@@ -19,11 +19,11 @@ import { WorkspaceUsersHeader, WorkspaceUsersTableWrapper, WorkspaceUsersContain
 
 const WorkspaceUsers = () => {
   const dispatch = useDispatch();
-
   const { identifier: workspaceIdentifier } = useParams<{ identifier: string }>();
 
   const users = useSelector(workspaceUsersSelector);
   const isLoading = useSelector(isFetchingWorkspaceUsersSelector);
+  const [searchTerm, setSearchTerm] = useState('');
 
   const usersWithSelection	 = useMemo(() => {
     return users?.map((user) => ({
@@ -57,7 +57,10 @@ const WorkspaceUsers = () => {
     <WorkspaceContextProvider workspaceIdentifier={workspaceIdentifier}>
       <WorkspaceUsersContainer>
         <WorkspaceUsersHeader>
-          <HeaderSearch />
+          <HeaderSearch 
+            value={searchTerm}
+            onChange={setSearchTerm}
+          />
           <ToolbarButton
             icon={
               <span style={{ marginLeft: '-5px' }}>
@@ -75,7 +78,7 @@ const WorkspaceUsers = () => {
             </ListLoaderContainer>
           ) : (
             <WorkspaceUsersTableWrapper>
-              <WorkspaceUserTable />
+              <WorkspaceUserTable searchTerm={searchTerm} />
             </WorkspaceUsersTableWrapper>
           )}
         <BulkEditSection context={UserEditContext}>

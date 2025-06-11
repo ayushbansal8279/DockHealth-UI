@@ -1,11 +1,12 @@
 // @ts-nocheck
 
-import React, { useContext } from "react";
+import React, { useContext, useMemo } from "react";
 import { Box, Grid } from "@mui/material";
 import { GridColDef } from "@mui/x-data-grid-premium";
 import { isEmpty } from "ramda";
 import { useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
+import { createFilter } from 'react-search-input';
 
 import Checkbox from "@/app/components/common/Checkbox/Checkbox";
 import TaskItemBulkEdit from "@/app/components/task/StandardTaskItem/TaskItemComponents/TaskItemBulkEdit";
@@ -22,7 +23,7 @@ import { BulkContainer, ListContainer, ListEntryContainer } from "./styled";
 
 const TypedCheckbox = Checkbox as React.FC<CheckboxProps>;
 
-const WorkspaceUserTable = () => {
+const WorkspaceUserTable = ({ searchTerm }: { searchTerm: string }) => {
   const dispatch = useDispatch();
   const { identifier: workspaceIdentifier } = useParams<{ identifier: string }>();
 
@@ -113,7 +114,14 @@ const WorkspaceUserTable = () => {
     }
   ];
 
-  let rows: IWorkspaceUser[] = users || [];
+  const KEYS_TO_FILTERS = ['name', 'email'];
+
+  const filteredRows: IWorkspaceUser[] = useMemo(() => {
+    if (!users) return [];
+    return searchTerm
+      ? users.filter(createFilter(searchTerm, KEYS_TO_FILTERS))
+      : users;
+  }, [users, searchTerm]);
 
   return (
     <Box sx={{ height: 'calc(80vh - 100px)', p: 2, width: '1179px' }}>
@@ -130,7 +138,7 @@ const WorkspaceUserTable = () => {
           <StyledDataGrid
             columns={columns}
             getRowId={(row) => row.identifier}
-            rows={rows}
+            rows={filteredRows}
             rowHeight={40}
             headerHeight={45}
             autoHeight
