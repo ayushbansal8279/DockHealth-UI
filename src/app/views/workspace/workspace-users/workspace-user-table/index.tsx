@@ -63,7 +63,7 @@ const WorkspaceUserTable = ({ searchTerm }: { searchTerm: string }) => {
       renderCell: ({ row }) => (
         <TaskItemBulkEdit
           isChecked={row?.isSelected}
-          onClick={() => toggleUser(row.id)}
+          onClick={() => toggleUser(row.identifier)}
           isDisabled={false}
         />
       ),

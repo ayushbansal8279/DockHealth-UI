@@ -11,7 +11,7 @@ export const UserEditProvider = ({ children, optionNames = [] }) => {
   const toggleUser = useCallback((userId) => {
     setSelectableUsers(prev =>
       prev.map(user =>
-        user.id === userId ? { ...user, isSelected: !user.isSelected } : user
+        user.identifier === userId ? { ...user, isSelected: !user.isSelected } : user
       )
     );
   }, []);
