@@ -410,6 +410,7 @@ const PatientTasksListView = () => {
                   origin={TaskOrigin.PATIENT}
                   viewType={patientViewType}
                   isTopLevelTaskOrWorkflowHeader
+                  taskItemDragAndDropDisabled
                 />
               ) : (
                 <TaskTemplateGroup

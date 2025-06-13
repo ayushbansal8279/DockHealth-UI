@@ -265,6 +265,7 @@ const ProfileTasksListView = ({ profileIdentifier }) => {
                   iconColorActive={iconColorActiveItem?.value}
                   origin={TaskOrigin.CUSTOM_PROFILE}
                   isTopLevelTaskOrWorkflowHeader
+                  taskItemDragAndDropDisabled
                 />
               ) : (
                 <TaskTemplateGroup
