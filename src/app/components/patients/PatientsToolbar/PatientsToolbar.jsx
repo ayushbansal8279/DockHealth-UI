@@ -65,7 +65,7 @@ const OPTIONS = [
   },
 ];
 
-const PatientsToolbar = ({ searchValue, setSearchValue }) => {
+const PatientsToolbar = ({ searchValue, setSearchValue, showAddButton }) => {
   const [isSidebarOpen, setIsSidebarOpen, unsetIsSidebarOpen] =
     useBoolean(false);
   const [finalFilter, setFinalFilter] = useState({});
@@ -247,7 +247,8 @@ const PatientsToolbar = ({ searchValue, setSearchValue }) => {
             patientAddEnabled &&
             listIdentifier &&
             (listIdentifier === DefaultPatientsListType.ALL_PATIENTS ||
-              listIdentifier === DefaultPatientsListType.ACTIVE_PATIENTS) && (
+              listIdentifier === DefaultPatientsListType.ACTIVE_PATIENTS ||
+              showAddButton ) && (
               <AddEntitiesContainer>
                 {/* <AddButton onClick={setIsSidebarOpen}>
                   Add a {customerTypeLabel}
