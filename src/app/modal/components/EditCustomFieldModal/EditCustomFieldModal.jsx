@@ -485,7 +485,7 @@ const EditCustomFieldModal = ({
                           variant="outlined"
                           sx={inputStyle}
                           name="validationRegex"
-                          label="Field Validation Regex"
+                          label="Field validation regex"
                         />
                       </Grid>
                     )}
@@ -496,7 +496,7 @@ const EditCustomFieldModal = ({
                           variant="outlined"
                           sx={inputStyle}
                           name="validationRegexDescription"
-                          label="Validation Description"
+                          label="Validation description"
                         />
                       </Grid>
                     )}
