@@ -138,8 +138,8 @@ import SubtaskIcon from '@/app/img/SubtaskIcon';
 import { getTaskDetails } from '@/app/api/task-api';
 import { useDraggable, useDroppable } from '@dnd-kit/core';
 import { CSS } from '@dnd-kit/utilities';
+import { useDropDirection } from '@/app/context-api/DropDirectionContext';
 import TaskItemProfile from './TaskItemComponents/TaskItemProfile/TaskItemProfile';
-import { DropDirectionContext } from '@/app/views/list-details/modules/Virtualized/Virtualized';
 
 const { DISABLED, READ_ONLY } = SINGLE_TASK_RESTRICTIONS_OPTIONS;
 
@@ -200,6 +200,7 @@ const TaskItem = React.memo(
     isWorkflowTask,
     isSubtaskOfTask,
     isFirstSubtaskOfWorkflowTask,
+    taskItemDragAndDropDisabled,
   }) => {
     const elementRef = useRef(null);
     const dependencyIconReference = useRef(null);
@@ -414,7 +415,7 @@ const TaskItem = React.memo(
     );
 
     const { bulkEditEnabled, bulkEditIsActive } = useContext(BulkEditContext);
-    const dropDirectionRef = useContext(DropDirectionContext);
+    const dropDirectionRef = useDropDirection();
 
     const selectedOrganization = useSelector(selectedUserOrganizationSelector);
     const currentTasklist = useSelector(currentTaskListSelector);
@@ -447,15 +448,11 @@ const TaskItem = React.memo(
     const userSortingSupportDisabled = useMemo(() => {
       const disabledSettingItem =
         selectedOrganization?.themeSettings?.find(
-          ({ name: themeName }) =>
-            themeName === 'list.tasks.user.sort.enabled',
+          ({ name: themeName }) => themeName === 'list.tasks.user.sort.enabled',
         ) || {};
-      return (
-        disabledSettingItem &&
-        disabledSettingItem?.value === 'false'
-      );
+      return disabledSettingItem && disabledSettingItem?.value === 'false';
     }, [selectedOrganization]);
-    
+
     const isDragAndDropEnabled =
       origin === 'LIST' ? !userSortingSupportDisabled : true;
 
@@ -487,33 +484,33 @@ const TaskItem = React.memo(
     const workflowTaskGroup = getTaskGroupForWorkflow(task);
 
     useEffect(() => {
-      if (origin === 'LIST') {
-        const isFirstValidTarget =
-          isFirstTaskOfGroup ||
-          isFirstTaskOfWorkflow ||
-          isFirstSubTaskOfParentTask ||
-          isFirstSubtaskOfWorkflowTask;
-        if (!isFirstValidTarget || !active || !isOver) {
-          setHoverBorder(null);
+      const isFirstValidTarget =
+        isFirstTaskOfGroup ||
+        isFirstTaskOfWorkflow ||
+        isFirstSubTaskOfParentTask ||
+        isFirstSubtaskOfWorkflowTask;
+      if (!isFirstValidTarget || !active || !isOver) {
+        setHoverBorder(null);
+        if (dropDirectionRef) {
           dropDirectionRef.current = null;
-          return;
         }
-
-        const handlePointerMove = (e) => {
-          const rect = elementRef?.current?.getBoundingClientRect();
-          if (!rect) return;
-
-          const isTop = e?.clientY < rect?.top + rect?.height / 2;
-          const direction = isTop ? 'top' : 'bottom';
-
-          dropDirectionRef.current = direction;
-          setHoverBorder(direction);
-        };
-
-        window.addEventListener('pointermove', handlePointerMove);
-        return () =>
-          window.removeEventListener('pointermove', handlePointerMove);
+        return;
       }
+
+      const handlePointerMove = (e) => {
+        const rect = elementRef?.current?.getBoundingClientRect();
+        if (!rect) return;
+
+        const isTop = e?.clientY < rect?.top + rect?.height / 2;
+        const direction = isTop ? 'top' : 'bottom';
+        if (dropDirectionRef) {
+          dropDirectionRef.current = direction;
+        }
+        setHoverBorder(direction);
+      };
+
+      window.addEventListener('pointermove', handlePointerMove);
+      return () => window.removeEventListener('pointermove', handlePointerMove);
     }, [
       active?.id,
       over?.id,
@@ -971,8 +968,13 @@ const TaskItem = React.memo(
     if (isDragPreview) {
       return (
         <DragPreviewWrapper
-          isBundleOrSubtask={
-            task?.itemType === TaskItemType.BUNDLE || !!task?.subTaskSortIndex
+          shouldOffsetLeft={
+            task?.itemType === TaskItemType.BUNDLE ||
+            !!task?.subTaskSortIndex ||
+            origin === 'TEMPLATE' ||
+            origin === 'DASHBOARD' ||
+            origin === 'PATIENT' ||
+            origin === 'CUSTOM_PROFILE'
           }
         >
           <DragPreviewText>
@@ -1020,14 +1022,16 @@ const TaskItem = React.memo(
             isTaskOfTemplate={!!workflowTaskGroup}
             isDragActive={!!active && active?.id === taskIdentifier}
           >
-            {taskListRestrictions?.createTask !== DISABLED && isDragAndDropEnabled && (
-              <div {...attributes} {...listeners}>
-                <DotsContainer
-                  showDraggableDots
-                  dragHandleProps={dragHandleProps}
-                />
-              </div>
-            )}
+            {taskListRestrictions?.createTask !== DISABLED &&
+              isDragAndDropEnabled &&
+              !taskItemDragAndDropDisabled && (
+                <div {...attributes} {...listeners}>
+                  <DotsContainer
+                    showDraggableDots
+                    dragHandleProps={dragHandleProps}
+                  />
+                </div>
+              )}
             {showPriority && (
               <PriorityIndicator color={getPriorityColor(task?.priority)} />
             )}
@@ -1426,7 +1430,7 @@ const TaskItem = React.memo(
                   >
                     <TaskItemProfile task={task} />
                   </TaskItemCell>,
-                  getColumnOrder(TaskItemColumn.PROFILE)
+                  getColumnOrder(TaskItemColumn.PROFILE),
                 )}
               </>
             )}

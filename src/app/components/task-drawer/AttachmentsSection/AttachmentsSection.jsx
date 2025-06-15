@@ -16,7 +16,7 @@ import {
   Title,
   AttachmentStatusMessage,
 } from './styled';
-import { ScanStatus, ScanStatusText } from './helpers';
+import { ScanStatus, ScanStatusText, UNSUPPORTED_WARNING_MESSAGE } from './helpers';
 import { DrawerFieldEnum } from '@/app/helpers/task-drawer-helpers';
 import { useDispatch } from 'react-redux';
 import { openModal } from '@/app/modal/actions';
@@ -80,20 +80,20 @@ const AttachmentsSection = ({
       console.error(error);
     }
   };
-  
+
   const attachmentOptions = patientIdentifier
-  ? [
-      {
-        label: 'Upload Local File',
-        ...getRootProps({ style: { outline: 'none' } }),
-      },
-      {
-        label: 'Reference File from Patient',
-        onClick: referenceAttachment,
-        disabled: !selectedTask?.patient,
-      },
-    ]
-  : [];
+    ? [
+        {
+          label: 'Upload Local File',
+          ...getRootProps({ style: { outline: 'none' } }),
+        },
+        {
+          label: 'Reference File from Patient',
+          onClick: referenceAttachment,
+          disabled: !selectedTask?.patient,
+        },
+      ]
+    : [];
 
   return (
     <AttachmentsContainer ref={attachmentRef} isDragActive={isDragActive}>
@@ -121,7 +121,8 @@ const AttachmentsSection = ({
               <span>Drop the files here ...</span>
             ) : (
               <span>
-                Drag and drop files or documents here, or click + to select files
+                Drag and drop files or documents here, or click + to select
+                files
               </span>
             )}
           </OutfitTypography>
@@ -184,7 +185,7 @@ const AttachmentsSection = ({
                 <AttachmentProgressBar progress={uploadProgress} />
                 <Spacing horizontal={4} />
               </>
-            )}            
+            )}
             <AddAttachmentButton attachmentOptions={attachmentOptions} />
           </Grid>
         )}

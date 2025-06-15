@@ -55,7 +55,7 @@ export const ScanStatus = {
 };
 
 export const ScanStatusText = {
-  CLEAN: 'Scanned',
+  CLEAN: 'Not Scanned',
   INFECTED: 'Quarantined',
   IN_PROGRESS: 'Scanning in progress',
   ERROR: 'Error in file scanning',

@@ -5,6 +5,7 @@ import React, {
   useEffect,
   useMemo,
   useContext,
+  useRef,
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import usePrevious from 'hooks/use-previous';
@@ -32,6 +33,16 @@ import { TaskTemplateGroupList, QuickAddInputWrapper } from './styled';
 import TaskTemplateGroupHeader from '../TaskTemplateGroupHeader/TaskTemplateGroupHeader';
 import localStorageHelper from '@/app/helpers/local-storage-helper';
 import { WorkflowCompletedTasksKey } from '@/app/helpers/patient-details-helpers';
+import {
+  DndContext,
+  DragOverlay,
+  MouseSensor,
+  TouchSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
+import { DropDirectionContext } from '@/app/context-api/DropDirectionContext';
+import TaskItem from '../../task/StandardTaskItem/TaskItem';
 
 const TaskTemplateGroup = ({
   templateGroup: pullGroup = {},
@@ -86,8 +97,11 @@ const TaskTemplateGroup = ({
   const [showCompletedTasks, setShowCompletedTasks] = useState(false);
   const [showIncompleteTasks, setShowIncompleteTasks] = useState(true);
   const [isAddingTask, setIsAddingTask] = useState(false);
+  const [activeId, setActiveId] = useState(null);
   const dispatch = useDispatch();
   const previousIsOpen = usePrevious(isOpen);
+  const dropDirectionRef = useRef(null);
+  const sensors = useSensors(useSensor(MouseSensor), useSensor(TouchSensor));
 
   const currentUser = useSelector(userProfileSelector);
   const restrictions =
@@ -185,6 +199,45 @@ const TaskTemplateGroup = ({
 
   const filteredTasks = filteredTasksByStatus.map((t) => t.identifier);
 
+  const handleDragStart = (event) => {
+    setDraggedTaskIdentifier(event?.active?.id);
+    setActiveId(event?.active?.id);
+  };
+
+  const onDragEnd = useCallback(
+    (event) => {
+      const { active, over } = event;
+      const sourceIndex = taskIdentifiers?.findIndex((id) => id === active?.id);
+      const destinationIndex = taskIdentifiers?.findIndex(
+        (id) => id === over?.id,
+      );
+
+      setDraggedTaskIdentifier(null);
+      setActiveId(null);
+
+      if (over) {
+        dispatch(
+          WorkflowActions.reorderWorkflowTasks({
+            source: { ...active, index: sourceIndex },
+            destination: {
+              ...over,
+              index:
+                dropDirectionRef?.current === 'top'
+                  ? 0
+                  : sourceIndex <= destinationIndex
+                  ? destinationIndex
+                  : destinationIndex + 1,
+            },
+            workflow: templateGroup,
+            completedTasksShown: showCompletedTasks,
+            incompleteTasksShown: showIncompleteTasks,
+          }),
+        );
+      }
+    },
+    [dispatch, identifier, taskIdentifiers],
+  );
+
   return (
     <div
     // ref={innerRef} {...draggableProps}
@@ -225,93 +278,51 @@ const TaskTemplateGroup = ({
             <TasksSkeletonLoader rows={3} />
           ) : (
             <>
-              <DragDropContext
-                onBeforeCapture={({ draggableId: id }) =>
-                  setDraggedTaskIdentifier(id)
-                }
-                onDragEnd={({ source, destination }) => {
-                  setDraggedTaskIdentifier(null);
-
-                  if (destination) {
-                    dispatch(
-                      WorkflowActions.reorderWorkflowTasks({
-                        source,
-                        destination,
-                        workflow: templateGroup,
-                        completedTasksShown: showCompletedTasks,
-                        incompleteTasksShown: showIncompleteTasks,
-                      }),
-                    );
-                  }
-                }}
-              >
-                <Droppable
-                  droppableId={templateGroup?.identifier || templateGroup}
+              <DropDirectionContext.Provider value={dropDirectionRef}>
+                <DndContext
+                  onDragStart={handleDragStart}
+                  onDragEnd={onDragEnd}
+                  sensors={sensors}
                 >
-                  {(templateDroppableProvided) => (
-                    <div
-                      ref={templateDroppableProvided.innerRef}
-                      {...templateDroppableProvided.droppableProps}
-                    >
-                      {filteredTasks?.map((taskOrIdentifier, index) => (
-                        <Draggable
-                          key={taskOrIdentifier?.identifier || taskOrIdentifier}
-                          draggableId={
-                            taskOrIdentifier?.identifier || taskOrIdentifier
-                          }
-                          index={index}
-                          isDragDisabled={restrictions?.createTask === DISABLED}
-                        >
-                          {(
-                            templateTaskDraggableProvided,
-                            draggableSnapshot,
-                          ) => (
-                            <StandardTaskItemContainer
-                              isStartedDnD={
-                                draggedTaskIdentifier ===
-                                (taskOrIdentifier?.identifier ||
-                                  taskOrIdentifier)
-                              }
-                              isDragging={draggableSnapshot.isDragging}
-                              draggableProvided={templateTaskDraggableProvided}
-                              taskIdentifier={
-                                taskOrIdentifier?.identifier || taskOrIdentifier
-                              }
-                              isFullView={isFullView}
-                              isCompletedGroup={isCompletedGroup}
-                              multipleAssigneesContext={
-                                groupHasMultipleAssignees
-                              }
-                              dragAndDropDisabled={tasksDragAndDropDisabled}
-                              isDraggable
-                              isBundleTask
-                              isTaskTemplate
-                              isLastChild={
-                                index === filteredTasks?.length - 1 &&
-                                !isAddingTask
-                              }
-                              isAddingTask={isAddingTask}
-                              isNextTaskItemTypeBundle={
-                                isNextTaskItemTypeBundle
-                              }
-                              templateBundleIdentifier={identifier}
-                              parentTaskGroupIdentifier={
-                                parentTaskGroupIdentifier
-                              }
-                              patient={patient}
-                              noMargin
-                              iconColorActive={iconColorActive}
-                              origin={origin}
-                              viewType={viewType}
-                            />
-                          )}
-                        </Draggable>
-                      ))}
-                      {templateDroppableProvided.placeholder}
-                    </div>
-                  )}
-                </Droppable>
-              </DragDropContext>
+                  {filteredTasks?.map((taskOrIdentifier, index) => (
+                    <StandardTaskItemContainer
+                      isStartedDnD={
+                        draggedTaskIdentifier ===
+                        (taskOrIdentifier?.identifier || taskOrIdentifier)
+                      }
+                      taskIdentifier={
+                        taskOrIdentifier?.identifier || taskOrIdentifier
+                      }
+                      isFullView={isFullView}
+                      isCompletedGroup={isCompletedGroup}
+                      multipleAssigneesContext={groupHasMultipleAssignees}
+                      dragAndDropDisabled={tasksDragAndDropDisabled}
+                      isDraggable
+                      isBundleTask
+                      isTaskTemplate
+                      isLastChild={
+                        index === filteredTasks?.length - 1 && !isAddingTask
+                      }
+                      isAddingTask={isAddingTask}
+                      isNextTaskItemTypeBundle={isNextTaskItemTypeBundle}
+                      templateBundleIdentifier={identifier}
+                      parentTaskGroupIdentifier={parentTaskGroupIdentifier}
+                      patient={patient}
+                      noMargin
+                      iconColorActive={iconColorActive}
+                      origin={origin}
+                      viewType={viewType}
+                      isWorkflowTask
+                      isFirstTaskOfWorkflow={index === 0}
+                    />
+                  ))}
+                  <DragOverlay>
+                    {activeId ? (
+                      <Placeholder taskIdentifier={activeId} origin={origin} />
+                    ) : null}
+                  </DragOverlay>
+                </DndContext>
+              </DropDirectionContext.Provider>
               {isAddingTask && (
                 <QuickAddInputWrapper
                   isNextTaskItemTypeBundle={isNextTaskItemTypeBundle}
@@ -339,6 +350,17 @@ const TaskTemplateGroup = ({
         </TaskTemplateGroupList>
       )}
     </div>
+  );
+};
+
+const Placeholder = ({ taskIdentifier, origin }) => {
+  return (
+    // @ts-ignore
+    <TaskItem
+      taskItemIdentifier={taskIdentifier}
+      isDragPreview
+      origin={origin}
+    />
   );
 };
 

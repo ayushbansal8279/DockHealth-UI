@@ -25,7 +25,10 @@ import AlertMessages from 'alert/AlertMessages';
 import { OutfitTypography } from 'styles/theme';
 import Spacing from 'components/common/Spacing';
 import palette from 'styles/palette';
-import { ScanStatusText } from '../../task-drawer/AttachmentsSection/helpers';
+import {
+  ScanStatusText,
+  UNSUPPORTED_WARNING_MESSAGE,
+} from '../../task-drawer/AttachmentsSection/helpers';
 import { ScanStatus } from '@/app/views/patient-details/PatientAttachments/helpers';
 import { AttachmentFileInput } from './styled';
 import { AttachmentStatusMessage } from '../../task-drawer/AttachmentsSection/styled';
@@ -209,7 +212,7 @@ const AttachmentSection = ({ disabled }) => {
                       attachment?.scanStatus === ScanStatus.CLEAN ||
                       attachment?.scanStatus === ScanStatus.UNSUPPORTED
                     )
-                    handleAttachmentClick(attachment);
+                      handleAttachmentClick(attachment);
                   }}
                   onRemoveClick={handleDeleteAttachment}
                 />

@@ -15,7 +15,11 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { useDispatch } from 'react-redux';
 import { showGlobalErrorAlert } from 'alert/actions';
 import * as CustomFieldsApi from 'api/custom-fields-api';
-import { FieldType, FIELD_TYPE_OPTIONS } from 'helpers/field-type-helpers';
+import {
+  FieldType,
+  FIELD_TYPE_OPTIONS,
+  REGEX_OPTIONS,
+} from 'helpers/field-type-helpers';
 import { CATEGORY_OPTIONS, Category } from 'helpers/patient-details-helpers';
 import { CATEGORY_OPTIONS as TASK_CATEGORY_OPTIONS } from 'helpers/task-details-helpers';
 import FormInput from 'components/common/Input/FormInput';
@@ -309,6 +313,7 @@ const EditCustomFieldModal = ({
       delete updatedField.createdDateTime;
       delete updatedField.identifier;
       delete updatedField.sortIndex;
+      delete updatedField.validationRegexSelector;
 
       ProfileTypeFieldsApi.editProfileFieldType(data.identifier, updatedField)
         .then(() => {
@@ -339,6 +344,7 @@ const EditCustomFieldModal = ({
           identifier: data.relatedProfileType,
         },
       };
+      delete updatedField.validationRegexSelector;
       CustomFieldsApi.updateCustomField(updatedField, type, taskListIdentifier)
         .then(() => {
           onUpdated({ ...updatedField, selectedProfileType });
@@ -468,12 +474,29 @@ const EditCustomFieldModal = ({
                       )}
                     {(fieldTypeValue === FieldType.TEXT ||
                       fieldTypeValue === FieldType.NUMBER) && (
-                      <Grid item xs={12}>
+                      <Grid item xs={12} style={{ display: 'flex', gap: 10 }}>
+                        <FormSelect
+                          variant="outlined"
+                          name="validationRegexSelector"
+                          label="Data validation"
+                          options={REGEX_OPTIONS}
+                        />
                         <FormInput
                           variant="outlined"
                           sx={inputStyle}
                           name="validationRegex"
-                          label="Field Validation Regex"
+                          label="Field validation regex"
+                        />
+                      </Grid>
+                    )}
+                    {(fieldTypeValue === FieldType.TEXT ||
+                      fieldTypeValue === FieldType.NUMBER) && (
+                      <Grid item xs={12}>
+                        <FormInput
+                          variant="outlined"
+                          sx={inputStyle}
+                          name="validationRegexDescription"
+                          label="Validation description"
                         />
                       </Grid>
                     )}
