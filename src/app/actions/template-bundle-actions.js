@@ -39,11 +39,24 @@ export function completeTemplateBundle(bundleIdentifier) {
   };
 }
 
-export function applyTemplate({ unassign = false, ...template }) {
+export function applyTemplate({
+  taskTemplateIdentifier,
+  taskListIdentifier,
+  taskGroupIdentifier,
+  patientIdentifier,
+  profileIdentifier,
+  unassign = false,
+}) {
   return {
     type: ActionTypes.APPLY_TEMPLATE,
-    template,
-    unassign,
+    taskTemplateIdentifier,
+    taskListIdentifier,
+    taskGroupIdentifier,
+    patientIdentifier,
+    profileIdentifier,
+    options: {
+      unassign,
+    },
   };
 }
 

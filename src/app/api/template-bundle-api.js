@@ -41,13 +41,21 @@ export function moveWorkflowToGroup(identifier, taskGroupIdentifier) {
     .then(({ data }) => data);
 }
 
-export function applyTemplate({
-  template,
+export function useTemplate({
+  taskTemplateIdentifier,
+  taskGroupIdentifier,
+  taskListIdentifier,
+  patientIdentifier,
+  profileIdentifier,
   unassign = false,
 }) {
   return axios
     .post(`task/workflow/useTemplate`, {
-      ...template,
+      taskTemplateIdentifier,
+      taskGroupIdentifier,
+      taskListIdentifier,
+      patientIdentifier,
+      profileIdentifier,
       overrideAssignmentMismatch: unassign,
     })
     .then((response) => response.data)
