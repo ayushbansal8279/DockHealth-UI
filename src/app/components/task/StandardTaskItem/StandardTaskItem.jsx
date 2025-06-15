@@ -69,6 +69,7 @@ const Task = React.memo(
     isWorkflowTask,
     isSubtaskOfTask,
     isFirstSubtaskOfWorkflowTask,
+    taskItemDragAndDropDisabled,
     ...restProps
   }) => {
     const parentTaskReference = useRef(null);
@@ -300,6 +301,7 @@ const Task = React.memo(
             isWorkflowTask={isWorkflowTask}
             isSubtaskOfTask={isSubtaskOfTask}
             isFirstSubtaskOfWorkflowTask={isFirstSubtaskOfWorkflowTask}
+            taskItemDragAndDropDisabled={taskItemDragAndDropDisabled}
           />
         </TaskContainer>
         {showComments && window.disabledVirtualTaskList && (
