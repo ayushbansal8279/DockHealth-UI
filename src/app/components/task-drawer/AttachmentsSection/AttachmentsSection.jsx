@@ -16,7 +16,7 @@ import {
   Title,
   AttachmentStatusMessage,
 } from './styled';
-import { ScanStatus, ScanStatusText } from './helpers';
+import { ScanStatus, ScanStatusText, UNSUPPORTED_WARNING_MESSAGE } from './helpers';
 import { DrawerFieldEnum } from '@/app/helpers/task-drawer-helpers';
 import { useDispatch } from 'react-redux';
 import { openModal } from '@/app/modal/actions';
