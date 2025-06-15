@@ -38,7 +38,7 @@ const FileGridItem = (props) => {
   const { fileName, contentType, dateCreated, type, scanStatus } = file;
 
   const IconComponent = getIconFromContentType(contentType);
-
+  
   const isNotDisabled =
     !scanStatus ||
     scanStatus === ScanStatus.CLEAN ||

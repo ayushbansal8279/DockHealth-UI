@@ -68,7 +68,7 @@ const AttachmentsSection = ({
   const referenceAttachment = async () => {
     try {
       const patientAttachments = await getPatientAttachments(patientIdentifier);
-
+  
       dispatch(
         openModal('PatientAttachmentReference', {
           attachmentList: patientAttachments,
@@ -152,7 +152,8 @@ const AttachmentsSection = ({
                     onClick={() => {
                       if (
                         attachment?.scanStatus === null ||
-                        attachment?.scanStatus === ScanStatus.CLEAN
+                        attachment?.scanStatus === ScanStatus.CLEAN ||
+                        attachment?.scanStatus === ScanStatus.UNSUPPORTED
                       )
                         openAttachmentPreview(attachment);
                     }}
@@ -197,7 +198,8 @@ const AttachmentsSection = ({
                 onClick={() => {
                   if (
                     attachment?.scanStatus === null ||
-                    attachment?.scanStatus === ScanStatus.CLEAN
+                    attachment?.scanStatus === ScanStatus.CLEAN||
+                    attachment?.scanStatus === ScanStatus.UNSUPPORTED
                   )
                     openAttachmentPreview(attachment);
                 }}

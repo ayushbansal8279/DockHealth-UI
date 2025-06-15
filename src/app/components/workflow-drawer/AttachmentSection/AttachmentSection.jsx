@@ -206,7 +206,8 @@ const AttachmentSection = ({ disabled }) => {
                   onClick={() => {
                     if (
                       attachment?.scanStatus === null ||
-                      attachment?.scanStatus === ScanStatus.CLEAN
+                      attachment?.scanStatus === ScanStatus.CLEAN ||
+                      attachment?.scanStatus === ScanStatus.UNSUPPORTED
                     )
                       handleAttachmentClick(attachment);
                   }}
