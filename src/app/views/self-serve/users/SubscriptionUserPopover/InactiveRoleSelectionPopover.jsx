@@ -19,52 +19,9 @@ import {
   RoleSelectorCancelRemoveUserButton,
 } from './styled';
 import { CancelButton, ConfirmButton } from '@/app/modal/components/ModalButton/ModalButtons';
-
-const USER_TYPES = new Proxy(
-  {
-    OWNER: {
-      label: 'Owner/Admin',
-      selectable: true,
-      changeable: true,
-      description:
-        'Full access to everything including billing and payments and approving new members.',
-    },
-    MEMBER: {
-      label: 'Member',
-      selectable: true,
-      changeable: true,
-      description:
-        'Part of your Organization. Can add and invite members who are already part of your organization. Can access all patients/clients and people in the group/practice.',
-    },
-    GUEST: {
-      label: 'Guest',
-      selectable: false,
-      changeable: true,
-      isLimitedAccess: true,
-      description:
-        'An outside collaborator you can invite into selected lists, who will only have access to the tasks, patients/clients and people who are part of those lists.',
-    },
-    DOCK_LITE: {
-      label: 'Dock Lite',
-      selectable: true,
-      changeable: true,
-      isLimitedAccess: true,
-      description:
-        'A limited use member of your organization or an outside collaborator you can invite into a single list, who will only have access to the tasks, patients/clients and people who are part of that list.',
-    },
-    DOCK_PRO: {
-      label: 'Dock Crew',
-      selectable: true,
-      changeable: true,
-      isLimitedAccess: true,
-      description:
-        'Dock Crew user will help configure your account and with building out Workflows and Smartflows for your team.',
-    },
-  },
-  {
-    get: (object, path) => object[path?.toUpperCase()] || object.DEFAULT,
-  },
-);
+import { useRoleContext } from '@/app/views/workspace/workspace-users/RoleContext';
+import { inviteUserToWorkspace } from '@/app/actions/workspace-actions';
+import { useWorkspace } from '@/app/views/workspace/workspace-users/WorkspaceContext';
 
 const renderUserTypesOptions = ({ userTypes, selectedRoleKey }) => {
   return Object.entries(userTypes).map(
@@ -94,53 +51,78 @@ const InactiveRoleSelectionPopover = (props) => {
     reloadUsers,
     displayName,
   } = props;
+  const { contextType, roleConfig } = useRoleContext();
+  const { workspaceIdentifier } = useWorkspace();
+  
   const [selectedStep, setSelectedStep] = useState('first');
   const [selectedRole, setSelectedRole] = useState({});
   const dispatch = useDispatch();
 
-  const FirsStepComponent = () => (
-    <>
-      <Header>Inactive User</Header>
-      <RoleSelectionDescriptionOne>
-        You can reactivate or archive this user. Which would you like to do?
-      </RoleSelectionDescriptionOne>
-      <RoleSelectionButtonsContainer>
-        <DenyButtonContainer>
-          <Button
-            onClick={() => {
-              dispatch(
-                openModal('ArchiveUser', {
-                  confirm: () => {
-                    archiveUser(userIdentifier).then(() => {
-                      dispatch(showGlobalAlert(`${displayName} is archived`));
-                      reloadUsers();
-                    });
-                  },
-                }),
-              );
-              closePopover();
-            }}
-            variant="secondary"
-            fullWidth
-          >
-            ARCHIVE
-          </Button>
-        </DenyButtonContainer>
-        <ApprovalButtonContainer>
-          <Button onClick={() => setSelectedStep('second')} fullWidth>
-            REACTIVATE
-          </Button>
-        </ApprovalButtonContainer>
-      </RoleSelectionButtonsContainer>
-    </>
-  );
+  const FirsStepComponent = () => {
+    const isWorkspace = contextType === 'workspace';
+
+    return (
+      <>
+        <Header>Inactive User</Header>
+        <RoleSelectionDescriptionOne>
+          {isWorkspace
+            ? 'You can reactivate this user to give them access to the workspace.'
+            : 'You can reactivate or archive this user. Which would you like to do?'
+          }
+        </RoleSelectionDescriptionOne>
+        <RoleSelectionButtonsContainer>
+          {!isWorkspace && (
+            <DenyButtonContainer>
+              <Button
+                onClick={() => {
+                  dispatch(
+                    openModal('ArchiveUser', {
+                      confirm: () => {
+                        archiveUser(userIdentifier).then(() => {
+                          dispatch(showGlobalAlert(`${displayName} is archived`));
+                          reloadUsers();
+                        });
+                      },
+                    }),
+                  );
+                  closePopover();
+                }}
+                variant="secondary"
+                fullWidth
+              >
+                ARCHIVE
+              </Button>
+            </DenyButtonContainer>
+          )}
+          <ApprovalButtonContainer>
+            <Button 
+              onClick={() => {
+                if (isWorkspace) {
+                  dispatch(inviteUserToWorkspace({
+                    userIdentifier,
+                    workspaceIdentifier
+                  }));
+                  closePopover();
+                } else {
+                  setSelectedStep('second');
+                }
+              }}
+              fullWidth
+            >
+              REACTIVATE
+            </Button>
+          </ApprovalButtonContainer>
+        </RoleSelectionButtonsContainer>
+      </>
+    )
+  };
 
   const SecondStepComponent = () => (
     <>
-      <Header>Select their role in your Organization</Header>
+      <Header>Select their role in your {contextType === 'workspace' ? 'Workspace' : 'Organization'}</Header>
       <RoleSelectionList>
         {renderUserTypesOptions({
-          userTypes: USER_TYPES,
+          userTypes: roleConfig,
           selectedRoleKey: selectedRole?.key,
         })?.map((item) =>
           renderRoleItem({

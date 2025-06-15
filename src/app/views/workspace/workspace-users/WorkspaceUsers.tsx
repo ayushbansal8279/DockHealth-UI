@@ -1,61 +1,93 @@
-import React, { useContext, useEffect } from "react";
-import { useDispatch } from "react-redux";
+import React, { useContext, useEffect, useMemo, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Add } from "@mui/icons-material";
+import { useParams } from "react-router-dom";
 
 import HeaderSearch from "@/app/components/template/HeaderSearch/HeaderSearch";
 import { openModal } from "@/app/modal/actions";
 import BulkEditSection from "@/app/components/workspace/BulkEditSection/BulkEditSection";
 import { UserEditContext } from "@/app/context-api/workspace-user-context";
 import InviteUserToWorkspaceForm from "@/app/components/workspace/InviteUserToWorkspaceForm/InviteUserToWorkspaceForm";
-import Button from "@/app/components/common/Button/Button";
+import { getWorkspaceUsers } from "@/app/actions/workspace-actions";
+import { isFetchingWorkspaceUsersSelector, workspaceUsersSelector } from "@/app/selectors/workspace-selectors";
+import ListSkeletonLoader from "@/app/components/common/ListSkeletonLoader/ListSkeletonLoader";
+import ToolbarButton from "@/app/components/tasklist/list-toolbar-buttons/ToolbarButton/ToolbarButton";
 import { BulkEditSectionContainer } from "../../user-group/styled";
-import { workspaceUsersDummyData } from "./helper";
+import { WorkspaceContextProvider } from "./WorkspaceContext";
 import WorkspaceUserTable from "./workspace-user-table";
-import { WorkspaceUsersHeader, WorkspaceUsersTableWrapper, WorkspaceUsersContainer } from "./styled";
+import { WorkspaceUsersHeader, WorkspaceUsersTableWrapper, WorkspaceUsersContainer, ListLoaderContainer } from "./styled";
 
 const WorkspaceUsers = () => {
   const dispatch = useDispatch();
+  const { identifier: workspaceIdentifier } = useParams<{ identifier: string }>();
+
+  const users = useSelector(workspaceUsersSelector);
+  const isLoading = useSelector(isFetchingWorkspaceUsersSelector);
+  const [searchTerm, setSearchTerm] = useState('');
+
+  const usersWithSelection	 = useMemo(() => {
+    return users?.map((user) => ({
+      isSelected: false,
+      ...user,
+    }));
+  }, [users]);  
+
+  useEffect(() => {
+    if (workspaceIdentifier) {
+      dispatch(getWorkspaceUsers(workspaceIdentifier));
+    }
+  }, [workspaceIdentifier, dispatch]);
 
   const { setSelectableUsers } = useContext(UserEditContext);
 
   useEffect(() => {
-    setSelectableUsers(workspaceUsersDummyData);
-  }, [workspaceUsersDummyData]);
-
-  const refreshMembers = () => {}
+    setSelectableUsers(usersWithSelection	);
+  }, [usersWithSelection	]);
   
   const openAddUserModal = () => {
     dispatch(openModal('InviteToList', {
       list: [],
-      onMembersRefresh: refreshMembers,
       title: "Add User to the Workspace",
-      CustomForm: InviteUserToWorkspaceForm
+      CustomForm: InviteUserToWorkspaceForm,
+      identifier: workspaceIdentifier,
     }))
   };
 
   return (
-    <WorkspaceUsersContainer>
-      <WorkspaceUsersHeader>
-        <HeaderSearch />
-        <Button
-          onClick={openAddUserModal}
-          startIcon={<Add/>}
-          uppercase={false}
-          width='fit-content'
-          size='small'
-        >
-          Add User
-        </Button>
-      </WorkspaceUsersHeader>
-      <WorkspaceUsersTableWrapper>
-        <WorkspaceUserTable />
-      </WorkspaceUsersTableWrapper>
-      <BulkEditSection context={UserEditContext}>
-        <BulkEditSectionContainer>
-          {/* TODO: bulk actions */}
-        </BulkEditSectionContainer>
-      </BulkEditSection>
-    </WorkspaceUsersContainer>
+    <WorkspaceContextProvider workspaceIdentifier={workspaceIdentifier}>
+      <WorkspaceUsersContainer>
+        <WorkspaceUsersHeader>
+          <HeaderSearch 
+            value={searchTerm}
+            onChange={setSearchTerm}
+          />
+          <ToolbarButton
+            icon={
+              <span style={{ marginLeft: '-5px' }}>
+                <Add />
+              </span>
+            }
+            onClick={openAddUserModal}
+          >
+            <span style={{ marginLeft: '-5px' }}>Add User</span>
+          </ToolbarButton>
+        </WorkspaceUsersHeader>
+          {isLoading ? (
+            <ListLoaderContainer>
+              <ListSkeletonLoader header />
+            </ListLoaderContainer>
+          ) : (
+            <WorkspaceUsersTableWrapper>
+              <WorkspaceUserTable searchTerm={searchTerm} />
+            </WorkspaceUsersTableWrapper>
+          )}
+        <BulkEditSection context={UserEditContext}>
+          <BulkEditSectionContainer>
+            {/* TODO: bulk actions */}
+          </BulkEditSectionContainer>
+        </BulkEditSection>
+      </WorkspaceUsersContainer>
+    </WorkspaceContextProvider>
   );
 };
 
