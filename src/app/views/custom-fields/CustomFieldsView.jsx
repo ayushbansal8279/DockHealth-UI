@@ -15,12 +15,9 @@ import UserCustomFieldsView from './UserCustomFieldsView';
 import ProfilesCustomFieldsView from './ProfilesCustomFieldView';
 
 const TABS = {
-  0: 'patients',
-  1: 'customers',
-  2: 'clients',
-  3: 'members',
-  4: 'task',
-  5: 'users',
+  0: ['patients', 'customers', 'clients', 'members'],
+  1: 'task',
+  2: 'users',
 };
 
 const CustomFieldsView = () => {
@@ -28,8 +25,9 @@ const CustomFieldsView = () => {
   const history = useHistory();
   const { tabName, identifier } = useParams();
   const [profileType, setProfileType] = useState([]);
-
-  const initial = Object.entries(TABS).find(([, name]) => name === tabName);
+  const initial = Object.entries(TABS).find(([, name]) =>
+    Array.isArray(name) ? name?.includes(tabName) : name === tabName,
+  );
 
   const [selectedTab] = useState(initial ? Number(initial[0]) : null);
 
@@ -64,12 +62,9 @@ const CustomFieldsView = () => {
       >
         <ViewContainer isPatient={selectedTab === 0}>
           <Box p={1} />
-          {(selectedTab === 0 ||
-            selectedTab === 1 ||
-            selectedTab === 2 ||
-            selectedTab === 3) && <PatientCustomFieldsView />}
-          {selectedTab === 4 && <TaskCustomFieldsView editable />}
-          {selectedTab === 5 && <UserCustomFieldsView editable />}
+          {selectedTab === 0 && <PatientCustomFieldsView />}
+          {selectedTab === 1 && <TaskCustomFieldsView editable />}
+          {selectedTab === 2 && <UserCustomFieldsView editable />}
           {!selectedTab && selectedTab !== 0 && (
             <ProfilesCustomFieldsView
               editable
