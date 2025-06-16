@@ -58,10 +58,18 @@ const Task = React.memo(
     $width,
     isNextVirtualTaskItemTypeBundle,
     isLastTaskOfGroup,
+    isFirstTaskOfGroup,
     isNextTaskItemTypeBundle,
     isAddingTask,
     viewType,
     isDragPreview,
+    isFirstTaskOfWorkflow,
+    isFirstSubTaskOfParentTask,
+    isTopLevelTaskOrWorkflowHeader,
+    isWorkflowTask,
+    isSubtaskOfTask,
+    isFirstSubtaskOfWorkflowTask,
+    taskItemDragAndDropDisabled,
     ...restProps
   }) => {
     const parentTaskReference = useRef(null);
@@ -284,8 +292,16 @@ const Task = React.memo(
             {...restProps}
             isNextVirtualTaskItemTypeBundle={isNextVirtualTaskItemTypeBundle}
             isLastTaskOfGroup={isLastTaskOfGroup}
+            isFirstTaskOfGroup={isFirstTaskOfGroup}
             viewType={viewType}
             isDragPreview={isDragPreview}
+            isFirstTaskOfWorkflow={isFirstTaskOfWorkflow}
+            isFirstSubTaskOfParentTask={isFirstSubTaskOfParentTask}
+            isTopLevelTaskOrWorkflowHeader={isTopLevelTaskOrWorkflowHeader}
+            isWorkflowTask={isWorkflowTask}
+            isSubtaskOfTask={isSubtaskOfTask}
+            isFirstSubtaskOfWorkflowTask={isFirstSubtaskOfWorkflowTask}
+            taskItemDragAndDropDisabled={taskItemDragAndDropDisabled}
           />
         </TaskContainer>
         {showComments && window.disabledVirtualTaskList && (
@@ -312,6 +328,8 @@ const Task = React.memo(
               showClearSortFiltersModal={showClearSortFiltersModal}
               shouldShowBlockModalOnDrag={shouldShowBlockModalOnDrag}
               origin={origin}
+              isWorkflowSubtask={isWorkflowTask}
+              isSubtaskOfTask={isTopLevelTaskOrWorkflowHeader}
               {...restProps}
             />
             {subtaskQuickAddOpen &&

@@ -48,6 +48,7 @@ import BulkEditCreateTask from '../../components/user/BulkEditSection/BulkEditCr
 import BulkEditSection from '../../components/user/BulkEditSection/BulkEditSection';
 import * as UsersActions from 'actions/user-actions';
 import { getTaskListForUser } from '@/app/api/task-list-api';
+import ModalMessage from '@/app/modal/components/ModalMessage/ModalMessage';
 
 function UserGroupView() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -139,6 +140,12 @@ function UserGroupView() {
                 taskGroupIdentifier,
               }),
             ),
+            renderDescription: () => (
+              <ModalMessage type="warning">
+                This action will fail if any selected user is not part of the selected list. 
+                Please ensure all selected users are in the list.
+              </ModalMessage>
+            )
         }),
       );
 

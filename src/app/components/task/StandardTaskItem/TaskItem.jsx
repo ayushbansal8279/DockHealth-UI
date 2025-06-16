@@ -63,6 +63,7 @@ import {
   PatientTaskItemColumn,
   TaskOrigin,
   validateAssigneeCompleteDisabled,
+  getDNDMetaData,
 } from 'helpers/task-helpers';
 import { isMemberAdmin } from 'helpers/list-members-helper';
 import { checkIfUserIsOrganizationAdmin } from 'helpers/user-helper';
@@ -137,6 +138,8 @@ import SubtaskIcon from '@/app/img/SubtaskIcon';
 import { getTaskDetails } from '@/app/api/task-api';
 import { useDraggable, useDroppable } from '@dnd-kit/core';
 import { CSS } from '@dnd-kit/utilities';
+import { useDropDirection } from '@/app/context-api/DropDirectionContext';
+import TaskItemProfile from './TaskItemComponents/TaskItemProfile/TaskItemProfile';
 
 const { DISABLED, READ_ONLY } = SINGLE_TASK_RESTRICTIONS_OPTIONS;
 
@@ -188,9 +191,18 @@ const TaskItem = React.memo(
     isLastChild,
     isNextVirtualTaskItemTypeBundle,
     isLastTaskOfGroup,
+    isFirstTaskOfGroup,
     viewType,
     isDragPreview,
+    isFirstTaskOfWorkflow,
+    isFirstSubTaskOfParentTask,
+    isTopLevelTaskOrWorkflowHeader,
+    isWorkflowTask,
+    isSubtaskOfTask,
+    isFirstSubtaskOfWorkflowTask,
+    taskItemDragAndDropDisabled,
   }) => {
+    const elementRef = useRef(null);
     const dependencyIconReference = useRef(null);
     const task = useSelector((state) => {
       return taskLookupSelector(state, origin, taskItemIdentifier);
@@ -227,16 +239,79 @@ const TaskItem = React.memo(
       priority,
     } = task || {};
 
+    const [hoverBorder, setHoverBorder] = useState(null);
+    const dragMetaData = getDNDMetaData({
+      isTopLevelTaskOrWorkflowHeader,
+      isSubtaskOfTask,
+      isWorkflowTask,
+      isWorkflowSubtask,
+      task,
+      taskGroupIdentifier,
+    });
+
+    const overMetaData = getDNDMetaData({
+      isTopLevelTaskOrWorkflowHeader,
+      isSubtaskOfTask,
+      isWorkflowTask,
+      isWorkflowSubtask,
+      task,
+      taskGroupIdentifier,
+    });
+
     const { attributes, listeners, setNodeRef, transform, transition } =
-      useDraggable({ id: taskIdentifier });
+      useDraggable({
+        id: taskIdentifier,
+        data: dragMetaData,
+      });
 
     const {
       setNodeRef: setDroppableRef,
       isOver,
       active,
+      over,
     } = useDroppable({
       id: taskIdentifier,
+      data: overMetaData,
     });
+
+    const isDraggedOver = useMemo(() => {
+      if (!isOver || !active || active?.id === taskIdentifier) return false;
+
+      const dragged = active?.data?.current;
+      const hoveredItem = over?.data?.current;
+      if (!dragged) return false;
+
+      // 🧱 Rule 1: Top-level(workflowHeaders and Tasks) items should only hover over other top-level items
+      if (dragged.level === 'top') {
+        return hoveredItem?.level === 'top';
+      }
+
+      // 🧱 Rule 2: Subtasks of regular tasks can only hover over sibling subtasks
+      if (dragged.level === 'subtask') {
+        return (
+          hoveredItem?.level === 'subtask' &&
+          dragged.parentId === hoveredItem?.parentId
+        );
+      }
+
+      // 🧱 Rule 3: Workflow tasks (inside a workflow) should only hover inside same workflow
+      if (dragged.level === 'workflowTask') {
+        return (
+          hoveredItem?.level === 'workflowTask' &&
+          dragged.parentId === hoveredItem?.parentId
+        );
+      }
+
+      // 🧱 Rule 4: Subtasks of workflow tasks must stay within their workflow task
+      if (dragged.level === 'workflowSubtask') {
+        return (
+          hoveredItem?.level === 'workflowSubtask' &&
+          dragged.parentId === hoveredItem?.parentId
+        );
+      }
+
+      return false;
+    }, [isOver, active, taskIdentifier, over]);
 
     const patient = parentPatient ?? taskPatient ?? parentTask?.patient;
 
@@ -339,7 +414,8 @@ const TaskItem = React.memo(
       false,
     );
 
-    const { bulkEditEnabled } = useContext(BulkEditContext);
+    const { bulkEditEnabled, bulkEditIsActive } = useContext(BulkEditContext);
+    const dropDirectionRef = useDropDirection();
 
     const selectedOrganization = useSelector(selectedUserOrganizationSelector);
     const currentTasklist = useSelector(currentTaskListSelector);
@@ -369,6 +445,17 @@ const TaskItem = React.memo(
       );
     }, [selectedOrganization]);
 
+    const userSortingSupportDisabled = useMemo(() => {
+      const disabledSettingItem =
+        selectedOrganization?.themeSettings?.find(
+          ({ name: themeName }) => themeName === 'list.tasks.user.sort.enabled',
+        ) || {};
+      return disabledSettingItem && disabledSettingItem?.value === 'false';
+    }, [selectedOrganization]);
+
+    const isDragAndDropEnabled =
+      origin === 'LIST' ? !userSortingSupportDisabled : true;
+
     const getTaskGroupForWorkflow = (taskItem) => {
       if (
         (origin === TaskOrigin.DASHBOARD || origin === TaskOrigin.GLOBAL) &&
@@ -395,6 +482,44 @@ const TaskItem = React.memo(
     };
 
     const workflowTaskGroup = getTaskGroupForWorkflow(task);
+
+    useEffect(() => {
+      const isFirstValidTarget =
+        isFirstTaskOfGroup ||
+        isFirstTaskOfWorkflow ||
+        isFirstSubTaskOfParentTask ||
+        isFirstSubtaskOfWorkflowTask;
+      if (!isFirstValidTarget || !active || !isOver) {
+        setHoverBorder(null);
+        if (dropDirectionRef) {
+          dropDirectionRef.current = null;
+        }
+        return;
+      }
+
+      const handlePointerMove = (e) => {
+        const rect = elementRef?.current?.getBoundingClientRect();
+        if (!rect) return;
+
+        const isTop = e?.clientY < rect?.top + rect?.height / 2;
+        const direction = isTop ? 'top' : 'bottom';
+        if (dropDirectionRef) {
+          dropDirectionRef.current = direction;
+        }
+        setHoverBorder(direction);
+      };
+
+      window.addEventListener('pointermove', handlePointerMove);
+      return () => window.removeEventListener('pointermove', handlePointerMove);
+    }, [
+      active?.id,
+      over?.id,
+      isFirstTaskOfGroup,
+      isFirstTaskOfWorkflow,
+      isFirstSubTaskOfParentTask,
+      isFirstSubtaskOfWorkflowTask,
+      origin,
+    ]);
 
     useEffect(() => {
       if (task?.status === 'COMPLETE') {
@@ -843,8 +968,13 @@ const TaskItem = React.memo(
     if (isDragPreview) {
       return (
         <DragPreviewWrapper
-          isBundleOrSubtask={
-            task?.itemType === TaskItemType.BUNDLE || !!task?.subTaskSortIndex
+          shouldOffsetLeft={
+            task?.itemType === TaskItemType.BUNDLE ||
+            !!task?.subTaskSortIndex ||
+            origin === 'TEMPLATE' ||
+            origin === 'DASHBOARD' ||
+            origin === 'PATIENT' ||
+            origin === 'CUSTOM_PROFILE'
           }
         >
           <DragPreviewText>
@@ -892,14 +1022,16 @@ const TaskItem = React.memo(
             isTaskOfTemplate={!!workflowTaskGroup}
             isDragActive={!!active && active?.id === taskIdentifier}
           >
-            {taskListRestrictions?.createTask !== DISABLED && (
-              <div {...attributes} {...listeners}>
-                <DotsContainer
-                  showDraggableDots
-                  dragHandleProps={dragHandleProps}
-                />
-              </div>
-            )}
+            {taskListRestrictions?.createTask !== DISABLED &&
+              isDragAndDropEnabled &&
+              !taskItemDragAndDropDisabled && (
+                <div {...attributes} {...listeners}>
+                  <DotsContainer
+                    showDraggableDots
+                    dragHandleProps={dragHandleProps}
+                  />
+                </div>
+              )}
             {showPriority && (
               <PriorityIndicator color={getPriorityColor(task?.priority)} />
             )}
@@ -1026,7 +1158,9 @@ const TaskItem = React.memo(
           pageBackground={pageBackground}
           isNextVirtualTaskItemTypeBundle={isNextVirtualTaskItemTypeBundle}
           isLastTaskOfGroup={isLastTaskOfGroup}
+          isFirstTaskOfGroup={isFirstTaskOfGroup}
           viewType={viewType}
+          taskGroupIdentifier={taskGroupIdentifier}
         />
       );
     }
@@ -1040,6 +1174,7 @@ const TaskItem = React.memo(
           ref={(node) => {
             setNodeRef(node);
             setDroppableRef(node);
+            elementRef.current = node;
           }}
         >
           <StandardTaskItemContainer
@@ -1061,7 +1196,8 @@ const TaskItem = React.memo(
             isVirtualSubtask={isVirtualSubtask}
             isWorkflowSubtask={isWorkflowSubtask}
             isTaskOfTemplate={!!workflowTaskGroup}
-            isDraggedOver={isOver && active?.id !== taskIdentifier}
+            isDraggedOver={isDraggedOver}
+            hoverBorder={hoverBorder === 'top'}
             isDragActive={!!active && active?.id === taskIdentifier}
           >
             {randerFirstColumnCoverIfNecessary(
@@ -1245,6 +1381,7 @@ const TaskItem = React.memo(
                       currentUser={currentUser}
                       readOnly={restrictions?.patient === READ_ONLY}
                       origin={origin}
+                      width={getWidth(TaskItemColumn.PATIENT)}
                     />
                   </TaskItemCell>,
                   getColumnOrder(TaskItemColumn.PATIENT),
@@ -1279,6 +1416,21 @@ const TaskItem = React.memo(
                     />
                   </TaskItemCell>,
                   getColumnOrder(TaskItemColumn.PRIORITY),
+                )}
+              </>
+            )}
+            {isColumnChecked(columns, TaskItemColumn.PROFILE) && (
+              <>
+                {randerFirstColumnCoverIfNecessary(
+                  <TaskItemCell
+                    isSubtask={isSubtask}
+                    key={`profile_${taskIdentifier}`}
+                    width={getWidth(TaskItemColumn.PROFILE)}
+                    order={getColumnOrder(TaskItemColumn.PROFILE)}
+                  >
+                    <TaskItemProfile task={task} />
+                  </TaskItemCell>,
+                  getColumnOrder(TaskItemColumn.PROFILE),
                 )}
               </>
             )}

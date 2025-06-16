@@ -92,6 +92,8 @@ import ProfilePickerModal from './components/ProfilePickerModal/ProfilePickerMod
 import PatientAttachmentReferenceModal from './components/PatientAttachmentReferenceModal/PatientAttachmentReferenceModal';
 import AddWorkspaceModal from '../components/workspace/AddWorkspaceModal/AddWorkspaceModal';
 import DeveloperScopeModal from './components/DeveloperScopeModal/DeveloperScopeModal';
+import DockIntegrationsModal from './components/DockIntegrationsModal/DockIntegrationsModal';
+
 
 const MODAL_MAP = {
   CompleteAllTasks: CompleteAllTasksModal,
@@ -188,6 +190,7 @@ const MODAL_MAP = {
   PatientAttachmentReference: PatientAttachmentReferenceModal,
   AddWorkspace: AddWorkspaceModal,
   DeveloperScopeList: DeveloperScopeModal,
+  DockIntegrations: DockIntegrationsModal
 };
 
 export default MODAL_MAP;

@@ -26,6 +26,7 @@ export const POFILE_BUILDER_SETTINGS_PATH = '/settings/profile-builder';
 export const TASK_CUSTOMIZATIONS_PATH = '/settings/task-customizations';
 export const CUSTOM_FIELDS_SETTINGS_PATH = '/settings/custom-fields';
 export const DEVELOPERS_PATH = '/settings/developers';
+export const INTEGRATIONS_PATH ='/settings/integrations';
 export const WORKFLOW_LIBRARY_PATH = '/core/workflows/library';
 export const WORKFLOW_BUILDER_PATH = '/core/workflows/builder';
 export const CUSTOM_PROFILES_PATH = '/core/custom-profiles';

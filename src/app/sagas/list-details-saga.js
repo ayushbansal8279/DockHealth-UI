@@ -651,7 +651,7 @@ function* applyTaskTemplate({
 }) {
   try {
     const { statusCode, assignmentsMismatchCount, taskWorkflowDto } =
-      yield call(TemplateBundleApi.applyTemplate, {
+      yield call(TemplateBundleApi.useTemplate, {
         taskTemplateIdentifier,
         taskGroupIdentifier,
         taskListIdentifier,

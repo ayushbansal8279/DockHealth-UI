@@ -39,6 +39,10 @@ export interface Props extends Segment {
   isLastGroupOfList: boolean;
   isNextVirtualTaskItemTypeBundle: boolean;
   taskGroupIdentifier: string;
+  isFirstTaskOfGroup: boolean;
+  isFirstTaskOfWorkflow: boolean;
+  isTopLevelTaskOrWorkflowHeader: boolean;
+  isWorkflowTask: boolean;
 }
 
 export const VTaskContext = createContext({
@@ -56,6 +60,10 @@ function VTask(
     isLastGroupOfList,
     isNextVirtualTaskItemTypeBundle,
     taskGroupIdentifier,
+    isFirstTaskOfGroup,
+    isFirstTaskOfWorkflow,
+    isTopLevelTaskOrWorkflowHeader,
+    isWorkflowTask,
     ...record
   }: Props,
   // eslint-disable-next-line unicorn/prevent-abbreviations, @typescript-eslint/no-unused-vars
@@ -166,7 +174,11 @@ function VTask(
             $width={percentage < 90}
             isNextVirtualTaskItemTypeBundle={isNextVirtualTaskItemTypeBundle}
             isLastTaskOfGroup={isLastTaskOfGroup}
+            isFirstTaskOfGroup={isFirstTaskOfGroup}
+            isFirstTaskOfWorkflow={isFirstTaskOfWorkflow}
             viewType={changeViewType}
+            isTopLevelTaskOrWorkflowHeader={isTopLevelTaskOrWorkflowHeader}
+            isWorkflowTask={isWorkflowTask}
           />
         </VTaskContext.Provider>
       </Sc.VTask>

@@ -140,6 +140,10 @@ export const processMarkdownValue = (
     });
     htmlValue = md.render(mdValue || '');
   }
+  htmlValue = htmlValue?.replace(/href="(.*?)"/gi, (match, url) => {
+    const decodedUrl = url.replace(/%7B/gi, '{').replace(/%7D/gi, '}');
+    return `href="${decodedUrl}"`;
+  });
   const nodes = ReactHtmlParser(htmlValue || '');
   return nodes;
 };

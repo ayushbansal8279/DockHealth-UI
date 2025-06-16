@@ -76,9 +76,12 @@ const TaskItemCustomField = ({
           });
         }
 
-
         const patientIdentifier = task?.patient?.patientIdentifier;
-        dispatch(updatePatientDetails(patientIdentifier, { patientMetaData: patientMetaData }));
+        dispatch(
+          updatePatientDetails(patientIdentifier, {
+            patientMetaData: patientMetaData,
+          }),
+        );
       }
     } else {
       const taskMetaData =
@@ -174,6 +177,8 @@ const TaskItemCustomField = ({
           value={value}
           onChange={handleChange}
           field={field}
+          validationRegex={field.validationRegex}
+          validationRegexDescription={field.validationRegexDescription}
         />
       );
     }
@@ -195,6 +200,8 @@ const TaskItemCustomField = ({
           value={value}
           onChange={handleChange}
           field={field}
+          validationRegex={field.validationRegex}
+          validationRegexDescription={field.validationRegexDescription}
         />
       );
     }

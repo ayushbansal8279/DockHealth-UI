@@ -10,13 +10,19 @@ import AttachmentButton from 'components/attachments/AttachmentButton/Attachment
 import AttachmentProgressBar from 'components/attachments/AttachmentProgressBar/AttachmentProgressBar';
 import AddAttachmentButton from 'components/attachments/AddAttachmentButton/AddAttachmentButton';
 import initializeAttachmentsSectionHooks from './hooks';
-import { AttachmentsContainer, AttachmentFileInput, Title } from './styled';
-import { ScanStatus, ScanStatusText } from './helpers';
+import {
+  AttachmentsContainer,
+  AttachmentFileInput,
+  Title,
+  AttachmentStatusMessage,
+} from './styled';
+import { ScanStatus, ScanStatusText, UNSUPPORTED_WARNING_MESSAGE } from './helpers';
 import { DrawerFieldEnum } from '@/app/helpers/task-drawer-helpers';
 import { useDispatch } from 'react-redux';
 import { openModal } from '@/app/modal/actions';
 import { getPatientAttachments } from '@/app/api/patient-attachment-api';
-
+import Tooltip from '../../common/Tooltip/Tooltip';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 
 const AttachmentsSection = ({
   selectedTask,
@@ -37,15 +43,18 @@ const AttachmentsSection = ({
     previewedAttachment,
     dropzone: { getRootProps, getInputProps, isDragActive },
     downloadAllFiles,
-    currentTaskAttachmentsDispatch
+    currentTaskAttachmentsDispatch,
   } = initializeAttachmentsSectionHooks(selectedTask);
   const dispatch = useDispatch();
   const attachmentRef = useRef(null);
 
   const downloadDisabled = currentTaskAttachments?.some(
-    ({ scanStatus }) => scanStatus && scanStatus !== ScanStatus.CLEAN,
+    ({ scanStatus }) =>
+      scanStatus &&
+      (scanStatus !== ScanStatus.CLEAN ||
+        scanStatus !== ScanStatus.UNSUPPORTED),
   );
-  const patientIdentifier = selectedTask?.patient?.patientIdentifier
+  const patientIdentifier = selectedTask?.patient?.patientIdentifier;
 
   useEffect(() => {
     if (
@@ -60,29 +69,31 @@ const AttachmentsSection = ({
     try {
       const patientAttachments = await getPatientAttachments(patientIdentifier);
   
-      dispatch(openModal('PatientAttachmentReference', {
-        attachmentList: patientAttachments,
-        taskIdentifier: selectedTask?.identifier,
-        currentTaskAttachmentsDispatch: currentTaskAttachmentsDispatch
-      }));
+      dispatch(
+        openModal('PatientAttachmentReference', {
+          attachmentList: patientAttachments,
+          taskIdentifier: selectedTask?.identifier,
+          currentTaskAttachmentsDispatch: currentTaskAttachmentsDispatch,
+        }),
+      );
     } catch (error) {
       console.error(error);
     }
   };
-  
+
   const attachmentOptions = patientIdentifier
-  ? [
-      {
-        label: 'Upload Local File',
-        ...getRootProps({ style: { outline: 'none' } }),
-      },
-      {
-        label: 'Reference File from Patient',
-        onClick: referenceAttachment,
-        disabled: !selectedTask?.patient,
-      },
-    ]
-  : [];
+    ? [
+        {
+          label: 'Upload Local File',
+          ...getRootProps({ style: { outline: 'none' } }),
+        },
+        {
+          label: 'Reference File from Patient',
+          onClick: referenceAttachment,
+          disabled: !selectedTask?.patient,
+        },
+      ]
+    : [];
 
   return (
     <AttachmentsContainer ref={attachmentRef} isDragActive={isDragActive}>
@@ -110,7 +121,8 @@ const AttachmentsSection = ({
               <span>Drop the files here ...</span>
             ) : (
               <span>
-                Drag and drop files or documents here, or click + to select files
+                Drag and drop files or documents here, or click + to select
+                files
               </span>
             )}
           </OutfitTypography>
@@ -140,7 +152,8 @@ const AttachmentsSection = ({
                     onClick={() => {
                       if (
                         attachment?.scanStatus === null ||
-                        attachment?.scanStatus === ScanStatus.CLEAN
+                        attachment?.scanStatus === ScanStatus.CLEAN ||
+                        attachment?.scanStatus === ScanStatus.UNSUPPORTED
                       )
                         openAttachmentPreview(attachment);
                     }}
@@ -148,12 +161,22 @@ const AttachmentsSection = ({
                     renameAttachmentDispatch={currentTaskAttachmentsDispatch}
                   />
                   <p>
-                  {
-                    !attachment?.scanStatus || attachment?.scanStatus === 'IN_PROGRESS'
-                      ? ScanStatusText.IN_PROGRESS
-                      : ScanStatusText[attachment.scanStatus]
-                  }
-                </p>
+                    {!attachment?.scanStatus ||
+                    attachment?.scanStatus === ScanStatus.IN_PROGRESS ? (
+                      ScanStatusText.IN_PROGRESS
+                    ) : attachment?.scanStatus === ScanStatus.UNSUPPORTED ? (
+                      <AttachmentStatusMessage>
+                        {ScanStatusText.UNSUPPORTED}
+                        <Tooltip title={UNSUPPORTED_WARNING_MESSAGE}>
+                          <InfoOutlinedIcon
+                            sx={{ color: 'error.main', cursor: 'pointer' }}
+                          />
+                        </Tooltip>
+                      </AttachmentStatusMessage>
+                    ) : (
+                      ScanStatusText[attachment.scanStatus]
+                    )}
+                  </p>
                 </div>
               ))
             )}
@@ -163,9 +186,7 @@ const AttachmentsSection = ({
                 <Spacing horizontal={4} />
               </>
             )}
-            <AddAttachmentButton
-             attachmentOptions={attachmentOptions}
-            />
+            <AddAttachmentButton attachmentOptions={attachmentOptions} />
           </Grid>
         )}
         {disabled &&
@@ -177,7 +198,8 @@ const AttachmentsSection = ({
                 onClick={() => {
                   if (
                     attachment?.scanStatus === null ||
-                    attachment?.scanStatus === ScanStatus.CLEAN
+                    attachment?.scanStatus === ScanStatus.CLEAN||
+                    attachment?.scanStatus === ScanStatus.UNSUPPORTED
                   )
                     openAttachmentPreview(attachment);
                 }}

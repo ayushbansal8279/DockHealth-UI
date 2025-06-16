@@ -169,6 +169,17 @@
     </div>
 
     <script>
+      console.log(window.location.href);
+      if(window.location.href.indexOf('?redirect=launch') > -1) { // /?redirect=launch&iss=athenahealth.com
+        console.log('redirecting ...');
+        window.location.href = window.location.href.replace('/?redirect=launch', '/#/auth/smart-launch/?');
+      }else if(window.location.href.indexOf('?iss=athenahealth.com') > -1) { // /?iss=athenahealth.com
+        console.log('redirecting ...');
+        window.location.href = window.location.href.replace('/?iss=athenahealth.com', '/#/auth/smart-launch/?iss=athenahealth.com');
+      }else if(window.location.href.indexOf('?iss=athenahealth%2Ecom') > -1) { // /?iss=athenahealth%2Ecom
+        console.log('redirecting ...');
+        window.location.href = window.location.href.replace('/?iss=athenahealth%2Ecom', '/#/auth/smart-launch/?iss=athenahealth.com');
+      }
       let userAgentString = navigator.userAgent;
 
       // Detect Internet Explorer

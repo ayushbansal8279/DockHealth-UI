@@ -160,6 +160,7 @@ function VirtualTaskList({ groupedTasks, showClearSortFiltersModal }: Props) {
               taskGroupIdentifier: group.taskGroupIdentifier,
               bgColor: !(index % 2 === 0),
               groupWithZeroTask: groupTasks?.length === 0,
+              isLoadingGroup: listTaskGroup?.isLoadingGroup,
             },
             [],
             true,
@@ -197,8 +198,10 @@ function VirtualTaskList({ groupedTasks, showClearSortFiltersModal }: Props) {
                         'BUNDLE',
                   bgColor: !(index % 2 === 0),
                   isLastTaskOfGroup: groupTaskIndex === groupTasks.length - 1,
+                  isFirstTaskOfGroup: groupTaskIndex === 0,
                   isLastGroupOfList: index === listGroups?.length - 1,
                   taskGroupIdentifier: group?.taskGroupIdentifier,
+                  isTopLevelTaskOrWorkflowHeader: true,
                 },
                 children
                   .filter(
@@ -236,9 +239,13 @@ function VirtualTaskList({ groupedTasks, showClearSortFiltersModal }: Props) {
                         isLastTaskOfGroup:
                           groupTaskIndex === groupTasks.length - 1 &&
                           childIndex === children.length - 1,
+                        isFirstTaskOfWorkflow: childIndex === 0,
+                        isFirstSubTaskOfParentTask: childIndex === 0,
                         isLastSubtaskParentTask:
                           childIndex === children.length - 1,
                         isLastGroupOfList: index === listGroups?.length - 1,
+                        isSubtaskOfTask: true,
+                        isWorkflowTask: true,
                       },
                       !!tasksMap[child]?.subtasks.length
                         ? tasksMap[child].subtasks.map(
@@ -271,6 +278,8 @@ function VirtualTaskList({ groupedTasks, showClearSortFiltersModal }: Props) {
                                           ?.itemType === 'BUNDLE'
                                       : false,
                                   isWorkflowSubTask: true,
+                                  isFirstSubtaskOfWorkflowTask:
+                                    subTaskIndex === 0,
                                 },
                                 [],
                               );

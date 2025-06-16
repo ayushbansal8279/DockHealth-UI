@@ -66,13 +66,18 @@ const MeterBillingView = () => {
   const getAggregatedStats = async () => {
     try {
       setIsLoading(true);
+
+      var duration = moment.duration(endDate.diff(startDate));
+      var days = duration.days();
+      var months = duration.months();
+
       const aggregationsPayload = {
         aggregationEvent: {
           organizationIdentifier: organizationIdentifier,
           start: startDate.format("YYYY-MM-DD")+'T00:00:00.000Z',
           end: endDate.format("YYYY-MM-DD")+'T00:00:00.000Z',
           eventIdentifier: null,
-          duration: 'HOURLY',
+          duration: days > 1 || months >= 1 ? 'DAILY' : 'HOURLY',
           ts: null
         },
       };

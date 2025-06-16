@@ -32,7 +32,8 @@ const ListSelectStep = ({
   setLists,
   onAddList,
   savingList,
-  modalLabel
+  modalLabel,
+  renderDescription
 }) => {
   const [isFetchingLists, setIsFetchingLists] = useState(true);
   const [listInputFocused, setListInputFocused, unsetListInputFocused] =
@@ -81,6 +82,7 @@ const ListSelectStep = ({
         {modalLabel || 'Select List and Group'}
       </Title>
       <Box m={1} />
+      {renderDescription?.()}
       <Box sx={{ width: '100%', mx: 'auto' }}>
         <HeaderSearch onChange={(value) => setSearchQuery(value)}  />
       </Box>

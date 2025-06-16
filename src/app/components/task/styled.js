@@ -446,8 +446,7 @@ export const DragPreviewWrapper = styled.div`
   background-color: rgba(155, 217, 236, 0.6);
   color: black;
   padding: 6px 12px;
-  margin-left: ${({ isBundleOrSubtask }) =>
-    isBundleOrSubtask ? '-50px' : '0'};
+  margin-left: ${({ shouldOffsetLeft }) => (shouldOffsetLeft ? '-50px' : '0')};
   font-size: 13px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
   position: relative;
@@ -498,9 +497,13 @@ export const StandardTaskItemContainer = styled.div`
         `
       : ''};
 
-  ${({ isDraggedOver }) =>
+  ${({ isDraggedOver, hoverBorder }) =>
     isDraggedOver
-      ? `
+      ? hoverBorder
+        ? `
+      border-top: 3px solid ${palette.azureBlue};
+      `
+        : `
       border-bottom: 3px solid ${palette.azureBlue};
       `
       : ''}
