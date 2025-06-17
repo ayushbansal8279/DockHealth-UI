@@ -108,6 +108,7 @@ const RichTextEditor = ({
   disableMentions = false,
   templatePlaceholders = false,
   expandEditorHeight = false,
+  templatePlaceholderOptions
 }) => {
   const [rawTextState, setRawTextState] = useState(initialValue);
   const [editor, setEditor] = useState(null);
@@ -302,20 +303,7 @@ const RichTextEditor = ({
       title: 'Insert Placeholder',
       type: 'dropdown',
       focus: true,
-      options: {
-        '{{patient.name}}': 'Patient Name',
-        '{{patient.firstName}}': 'Patient First Name',
-        '{{patient.lastName}}': 'Patient Last Name',
-        '{{patient.middleName}}': 'Patient Middle Name',
-        '{{patient.dob}}': 'Patient Date of Birth',
-        '{{patient.gender}}': 'Patient Gender',
-        '{{patient.mobilePhone}}': 'Patient Mobile Phone',
-        '{{patient.homePhone}}': 'Patient Home Phone',
-        '{{patient.email}}': 'Patient Email',
-        '{{patient.mrn}}': 'Patient MRN',
-        '{{patient.addressFull}}': 'Patient Full Address',
-        '{{patient.CUSTOM_FIELD_NAME}}': 'Patient Custom Field',
-      },
+      options: templatePlaceholderOptions,
       callback: function (cmd, val) {
         this.html.insert(val);
       },
