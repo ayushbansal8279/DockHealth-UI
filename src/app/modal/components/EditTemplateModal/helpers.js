@@ -50,7 +50,6 @@ export const defaultPlaceHolderOptions = [
   'Email',
   'MRN',
   'Full Address',
-  'Custom Field',
 ];
 
 export function generatePlaceholderObject(fields, origin) {
@@ -70,7 +69,7 @@ export function generatePlaceholderObject(fields, origin) {
 
   fields.forEach((label) => {
     const camelKey = toCamelCase(label);
-    result[`{{${origin}.${camelKey}}}`] = label;
+    result[`{{${origin}.${camelKey}}}`] = `${capitalize(origin)} : ${label}`;
   });
 
   return result;
