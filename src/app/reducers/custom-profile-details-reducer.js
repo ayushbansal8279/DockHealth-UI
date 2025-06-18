@@ -1,12 +1,56 @@
 import * as ActionTypes from 'actions/action-types';
 import TaskBaseReducer from 'reducers/task-base-reducer';
 import { updateTasksStateCallback } from 'reducers/reducer-helper';
+import { TaskItemType } from '../helpers/task-helpers';
 
 const initial = {
   lists: null,
   tasksMap: {},
   isFetching: false,
 };
+
+export const updateProfileTaskOrSubtaskInListsArray = (
+  lists,
+  newTaskData,
+  taskIdentifier
+) =>
+  lists.map((list) => {
+    const updatedTasks = updateProfileTaskOrSubtask(
+      list.tasks,
+      taskIdentifier,
+      newTaskData
+    );
+    return { ...list, tasks: updatedTasks };
+  });
+
+export const updateProfileTaskOrSubtask = (
+  tasks,
+  taskIdentifier,
+  newTaskData
+) =>
+  tasks.map((task) => {
+    let updatedSubtasks = [];
+    if (task.subtasks?.length) {
+      updatedSubtasks = updateProfileTaskOrSubtask(
+        task.subtasks,
+        taskIdentifier,
+        newTaskData
+      );
+    }
+
+    if (task.identifier === taskIdentifier) {
+      return {
+        ...task,
+        ...newTaskData,
+        subtasks: updatedSubtasks,
+      };
+    }
+
+    return {
+      ...task,
+      subtasks: updatedSubtasks,
+    };
+  });
 
 export default (state = initial, action) => {
   // eslint-disable-next-line sonarjs/no-small-switch
@@ -21,9 +65,31 @@ export default (state = initial, action) => {
     }
 
     case ActionTypes.FIND_TASKS_BY_PROFILE_GROUPED_BY_TASK_LIST_SUCCESS: {
-      const newMap = { ...state.tasksMap };
-      for (const task of action.lists?.flatMap((taskList) => taskList.tasks)) {
-        newMap[task.identifier] = task;
+      const newMap = {};
+
+      for (const list of action.lists || []) {
+        for (const taskItem of list.tasks || []) {
+          if (taskItem.itemType === TaskItemType.TASK) {
+            newMap[taskItem.identifier] = taskItem;
+
+            for (const subtask of taskItem.subtasks || []) {
+              newMap[subtask.identifier] = subtask;
+            }
+          } else {
+            for (const groupTask of taskItem.tasks || []) {
+              newMap[groupTask.identifier] = groupTask;
+
+              for (const subtask of groupTask.subtasks || []) {
+                newMap[subtask.identifier] = subtask;
+              }
+            }
+
+            newMap[taskItem.identifier] = {
+              ...taskItem,
+              tasks: taskItem.tasks.map((t) => t.identifier),
+            };
+          }
+        }
       }
 
       return {
@@ -70,6 +136,30 @@ export default (state = initial, action) => {
       };
 
       return updateTasksStateCallback(updatedState, addedTask);
+    }
+
+    case ActionTypes.UPDATE_PROFILE_TASK: {
+      const { updatedTaskData, taskIdentifier } = action.payload;
+
+      const updatedLists = updateProfileTaskOrSubtaskInListsArray(
+        state.lists,
+        updatedTaskData,
+        taskIdentifier
+      );
+
+      const updatedTaskMap = {
+        ...state.tasksMap,
+        [taskIdentifier]: {
+          ...state.tasksMap[taskIdentifier],
+          ...updatedTaskData,
+        },
+      };
+
+      return {
+        ...state,
+        lists: updatedLists,
+        tasksMap: updatedTaskMap,
+      };
     }
 
     default: {

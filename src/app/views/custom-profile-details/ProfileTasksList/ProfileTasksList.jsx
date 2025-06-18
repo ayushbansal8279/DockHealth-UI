@@ -54,6 +54,8 @@ import { groupTasks } from './helpers';
 import TaskListToolbar from '../TaskListToolbar/TaskListToolbar';
 import TaskListGroupCollapse from '../TaskListGroupCollapse/TaskListGroupCollapse';
 import TasksToolbar from '../TasksToolbar/TasksToolbar';
+import useActions from '@/app/hooks/use-actions';
+import { CustomProfileDetailsActions } from '@/app/actions/custom-profile-details-action';
 
 const SPECIFIC_LIST_VIEW_COLUMNS_CONFIG = {
   ...TASK_ITEM_BASE_COLUMN_CONFIG,
@@ -68,6 +70,7 @@ const ALL_JOINED_LISTS_VIEW_COLUMNS_CONFIG = {
 };
 
 const ProfileTasksListView = ({ profileIdentifier }) => {
+  const { updateProfileTaskInList } = useActions(CustomProfileDetailsActions);
   const {
     taskListIdentifier: taskListIdentifierParameter = ListViewType.ALL_TASKS,
   } = useParams();
@@ -218,6 +221,8 @@ const ProfileTasksListView = ({ profileIdentifier }) => {
     dispatch(changeTasksSelectedState(!isTaskGroupSelected, taskIdentifiers));
   }, [activeList?.tasks, dispatch, isTaskGroupSelected]);
 
+  window.disabledVirtualTaskList = true;
+
   const renderTasks = useCallback(
     (tasks, { isFullView, taskGroupIdentifier }) => {
       const taskIdentifiers = tasks;
@@ -257,6 +262,7 @@ const ProfileTasksListView = ({ profileIdentifier }) => {
                   isFullView={isFullView}
                   taskIdentifier={task.identifier}
                   taskGroupIdentifier={taskGroupIdentifier}
+                  onTaskUpdate={updateProfileTaskInList}
                   dragAndDropDisabled
                   addingNewSubtask={
                     addingNewSubtaskParentId === task.identifier
@@ -328,7 +334,7 @@ const ProfileTasksListView = ({ profileIdentifier }) => {
                       />
                     </StickyContainer>
                     {isAllTasksView ? (
-                      renderTasks(profileTasks, {
+                      renderTasks(activeList.tasks, {
                         isFullView: false,
                         profileIdentifier,
                       })
