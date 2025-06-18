@@ -25,7 +25,7 @@ const WorkspaceTemplateBreadcrumbs = () => {
         aria-label="breadcrumb"
       >
         <Link to={breadcrumbsPath}>Workflows</Link>
-        {breadcrumbs.slice(0, -1).map(({ id, name }) => (
+        {breadcrumbs.slice(0, -1).map(({ id, name }: { id: string; name: string }) => (
           <Link key={id} to={createWorkflowFolderPath(id)}>
             {name}
           </Link>
