@@ -24,8 +24,8 @@ function* getCurrentProfileTasks({ profileIdentifier }) {
 function* updateProfileTaskInList({ payload }) {
   const { taskIdentifier, updatedTaskData } = payload;
   try {
-    yield put(updateTaskInStore(taskIdentifier, updatedTaskData));
     yield call(TaskApi.partialUpdateTask, taskIdentifier, updatedTaskData);
+    yield put(updateTaskInStore(taskIdentifier, updatedTaskData));
     // yield put(getTasksForProfile(profileIdentifier));
   } catch {
     // yield put(getTasksForProfile(profileIdentifier));

@@ -2,6 +2,7 @@ import * as ActionTypes from 'actions/action-types';
 import TaskBaseReducer from 'reducers/task-base-reducer';
 import { updateTasksStateCallback } from 'reducers/reducer-helper';
 import { TaskItemType } from '../helpers/task-helpers';
+import { updateWorkflowInState } from './patient-details-reducer';
 
 const initial = {
   lists: null,
@@ -62,6 +63,14 @@ export default (state = initial, action) => {
         tasksMap: {},
         isFetching: true,
       };
+    }
+
+    case ActionTypes.UPDATE_PARTIAL_WORKFLOW_SUCCESS: {
+      return updateWorkflowInState(
+        action.taskWorkflowIdentifier,
+        action.newData,
+        state,
+      );
     }
 
     case ActionTypes.FIND_TASKS_BY_PROFILE_GROUPED_BY_TASK_LIST_SUCCESS: {
