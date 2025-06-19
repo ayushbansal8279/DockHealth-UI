@@ -41,6 +41,16 @@ export type WorkspaceUser = {
   name: string;
 };
 
+export type WorkspaceTemplate = {
+  identifier: string;
+  name: string;
+  templateType: string;
+  createdDateTime: string;
+  creator: {
+    userName: string;
+  };
+};
+
 export interface ChangeUserRolePayload {
   workspaceIdentifier: string;
   userIdentifier: string;
