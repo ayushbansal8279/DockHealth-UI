@@ -37,3 +37,40 @@ export const validationSchema = object().shape({
   shortMessage: string(),
   details: string(),
 });
+
+export const defaultPlaceHolderOptions = [
+  'Name',
+  'First Name',
+  'Last Name',
+  'Middle Name',
+  'Date of Birth',
+  'Gender',
+  'Mobile Phone',
+  'Home Phone',
+  'Email',
+  'MRN',
+  'Full Address',
+];
+
+export function generatePlaceholderObject(fields, origin) {
+  const toCamelCase = (str) => {
+    return str
+      .replace(/[^a-zA-Z0-9 ]/g, '')
+      .split(' ')
+      .map((word, index) =>
+        index === 0
+          ? word.toLowerCase()
+          : word.charAt(0).toUpperCase() + word.slice(1).toLowerCase(),
+      )
+      .join('');
+  };
+
+  const result = {};
+
+  fields.forEach((label) => {
+    const camelKey = toCamelCase(label);
+    result[`{{${origin}.${camelKey}}}`] = `${capitalize(origin)} : ${label}`;
+  });
+
+  return result;
+}
