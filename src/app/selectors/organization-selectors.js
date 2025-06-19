@@ -10,7 +10,7 @@ export const organizationSelector = createSelector(
 
 export const organizationWorkspaceLabelSelector = createSelector(
   organizationStateSelector,
-  ({ organization }) => organization?.workspaceLabel || 'Workspaces',
+  ({ organization }) => organization?.workspaceLabel || 'Workspace',
 );
 
 export const isFetchingOrganizationSelector = createSelector(

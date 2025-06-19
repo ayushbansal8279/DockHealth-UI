@@ -558,6 +558,9 @@ export const WorkspaceWrapper = styled.div`
 export const WorkspaceTitle = styled.div`
   font-size: 18px;
   font-weight: ${fontWeights.light};
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 `;
 
 export const WorkspaceSubWrapper = styled.div`
@@ -565,7 +568,7 @@ export const WorkspaceSubWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  width: 100%;
+  width: 80%;
   cursor: pointer;
 `;
 
@@ -586,4 +589,31 @@ export const ArrowBackIcon = styled(ArrowBack)`
 
 export const Spacing = styled.div`
   margin-bottom: 15px;
+`;
+
+export const WorkspaceListWrapper = styled.div`
+  margin-top: 20px;
+`;
+
+export const WorkspaceItemWrapper = styled.div`
+  margin-top: 10px;
+`;
+
+export const WorkspaceContainer = styled.div`
+  height: 100%;
+  overflow: hidden;
+`;
+
+export const WorkspaceListItems = styled.div`
+  max-height: 65vh;
+  overflow-y: auto;
+  border-bottom: 1px solid ${palette.coolGrey2};
+  padding: ${spacing.regular} 0 ${spacing.regular} 0;
+`;
+
+export const WorkspaceUserItems = styled.div`
+  max-height: 65vh;
+  overflow-y: auto;
+  border-bottom: 1px solid ${palette.coolGrey2};
+  padding: ${spacing.regular} 0 ${spacing.regular} ${spacing.regular};
 `;
