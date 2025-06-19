@@ -56,7 +56,10 @@ export const getTemplateColumns = ({
         });
       }
 
-      if (data.id !== 'users' && data.id !== 'patient') {
+      if (
+        data.id !== 'users' &&
+        !['patient', 'client', 'member', 'customer']?.includes(data.id)
+      ) {
         contextMenuOptions.push(
           {
             name: 'Edit',

@@ -20,12 +20,14 @@ import { fieldTypes } from './helper';
 import { useParams } from 'react-router-dom';
 import { showGlobalErrorAlert } from 'alert/actions';
 import * as CustomFieldApi from 'api/custom-fields-api';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import uuidv4 from '@/app/views/chat/channel-settings/uuid';
 import { getAllProfileFieldTypes } from '@/app/api/profile-type-field-api';
 import { getProfileDetailsType } from '@/app/api/profile-type-api';
 import { showGlobalAlert } from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
+import { userProfileSelector } from '@/app/selectors/user-selectors';
+import { getCustomerTypeLabel } from '@/app/helpers/customer-type-helper';
 
 export const ProfileBuilderContext = createContext({});
 
@@ -36,8 +38,11 @@ const ProfileBuilder = () => {
   const [isNewCategory, setNewCategory] = useState(false);
   const [allCustomFields, setAllCustomFields] = useState([]);
   const [profileName, setProfileName] = useState('');
+  const currentUser = useSelector(userProfileSelector);
+  const customerTypeLabel = getCustomerTypeLabel(currentUser);
 
-  const context = tabName === 'patients' ? 'PATIENT' : 'PROFILETYPE';
+  const context =
+    tabName === `${customerTypeLabel}s` ? 'PATIENT' : 'PROFILETYPE';
 
   const initializePatientData = async () => {
     try {
@@ -123,7 +128,12 @@ const ProfileBuilder = () => {
 
   useEffect(() => {
     if (context === 'PATIENT') {
-      setProfileName('Patient Profile Builder');
+      setProfileName(
+        `${
+          customerTypeLabel?.charAt(0)?.toUpperCase() +
+          customerTypeLabel?.slice(1)
+        } Profile Builder`,
+      );
       initializePatientData();
     } else if (context === 'PROFILETYPE') {
       getProfileDetailsType(identifier).then((profileTypeDetails) => {
