@@ -360,13 +360,13 @@ export const ListNameText = styled.div`
   text-overflow: ellipsis;
   white-space: nowrap;
   ${({ color }) => (color ? `color: ${color};` : undefined)}
-  ${({ isActive, $isSubMenu }) =>
+  ${({ isActive, $isSubMenu, $isDragging }) =>
     isActive
       ? `
         color: ${palette.brightBlue};
       `
       : `
-          cursor: pointer;
+          cursor: ${$isDragging ? `grabbing` : `pointer`};
         ${
           !$isSubMenu
             ? `&:hover {
