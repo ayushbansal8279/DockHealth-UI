@@ -15,7 +15,7 @@ export const updateProfileTaskOrSubtaskInListsArray = (
   newTaskData,
   taskIdentifier
 ) =>
-  lists.map((list) => {
+  lists?.map((list) => {
     const updatedTasks = updateProfileTaskOrSubtask(
       list.tasks,
       taskIdentifier,
@@ -29,7 +29,7 @@ export const updateProfileTaskOrSubtask = (
   taskIdentifier,
   newTaskData
 ) =>
-  tasks.map((task) => {
+  tasks?.map((task) => {
     let updatedSubtasks = [];
     if (task.subtasks?.length) {
       updatedSubtasks = updateProfileTaskOrSubtask(
@@ -117,7 +117,7 @@ export default (state = initial, action) => {
 
             newMap[taskItem.identifier] = {
               ...taskItem,
-              tasks: taskItem.tasks.map((t) => t.identifier),
+              tasks: taskItem.tasks?.map((t) => t.identifier),
             };
           }
         }
