@@ -16,7 +16,16 @@ export const updateProfileTaskInList = (taskIdentifier, updatedTaskData) => ({
   },
 });
 
+export const updateProfileTaskWorkflowStatus = (task, workflowStatus) => ({
+  type: ActionTypes.UPDATE_PROFILE_WORKFLOW_STATUS,
+  payload: {
+    task,
+    workflowStatus,
+  },
+});
+
 export const CustomProfileDetailsActions = {
+  updateTaskInStore,
   updateProfileTaskInList,
-  updateTaskInStore
+  updateProfileTaskWorkflowStatus
 }

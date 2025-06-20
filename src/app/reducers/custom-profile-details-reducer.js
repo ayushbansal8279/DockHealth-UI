@@ -53,6 +53,28 @@ export const updateProfileTaskOrSubtask = (
     };
   });
 
+const updateProfileTaskReducer = (state, updatedTaskData, taskIdentifier) => {
+  const updatedLists = updateProfileTaskOrSubtaskInListsArray(
+    state.lists,
+    updatedTaskData,
+    taskIdentifier
+  );
+
+  const updatedTaskMap = {
+    ...state.tasksMap,
+    [taskIdentifier]: {
+      ...state.tasksMap[taskIdentifier],
+      ...updatedTaskData,
+    },
+  };
+
+  return {
+    ...state,
+    lists: updatedLists,
+    tasksMap: updatedTaskMap,
+  };
+};
+
 export default (state = initial, action) => {
   // eslint-disable-next-line sonarjs/no-small-switch
   switch (action.type) {
@@ -109,6 +131,15 @@ export default (state = initial, action) => {
       };
     }
 
+    case ActionTypes.UPDATE_TASK_SUCCESS: {
+      const { task } = action;
+
+      if (!task || !task.taskIdentifier) return state;
+
+      const { taskIdentifier, ...updatedTaskData } = task;
+      return updateProfileTaskReducer(state, updatedTaskData, taskIdentifier);
+    }
+
     case ActionTypes.ADD_TASK_SUCCESS: {
       const { task: addedTask } = action;
 
@@ -150,25 +181,7 @@ export default (state = initial, action) => {
     case ActionTypes.UPDATE_PROFILE_TASK: {
       const { updatedTaskData, taskIdentifier } = action.payload;
 
-      const updatedLists = updateProfileTaskOrSubtaskInListsArray(
-        state.lists,
-        updatedTaskData,
-        taskIdentifier
-      );
-
-      const updatedTaskMap = {
-        ...state.tasksMap,
-        [taskIdentifier]: {
-          ...state.tasksMap[taskIdentifier],
-          ...updatedTaskData,
-        },
-      };
-
-      return {
-        ...state,
-        lists: updatedLists,
-        tasksMap: updatedTaskMap,
-      };
+      return updateProfileTaskReducer(state, updatedTaskData, taskIdentifier);
     }
 
     default: {

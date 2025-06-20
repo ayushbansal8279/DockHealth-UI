@@ -70,7 +70,7 @@ const ALL_JOINED_LISTS_VIEW_COLUMNS_CONFIG = {
 };
 
 const ProfileTasksListView = ({ profileIdentifier }) => {
-  const { updateProfileTaskInList } = useActions(CustomProfileDetailsActions);
+  const { updateProfileTaskInList, updateProfileTaskWorkflowStatus } = useActions(CustomProfileDetailsActions);
   const {
     taskListIdentifier: taskListIdentifierParameter = ListViewType.ALL_TASKS,
   } = useParams();
@@ -263,6 +263,7 @@ const ProfileTasksListView = ({ profileIdentifier }) => {
                   taskIdentifier={task.identifier}
                   taskGroupIdentifier={taskGroupIdentifier}
                   onTaskUpdate={updateProfileTaskInList}
+                  updateWorkflowStatus={updateProfileTaskWorkflowStatus}
                   dragAndDropDisabled
                   addingNewSubtask={
                     addingNewSubtaskParentId === task.identifier
