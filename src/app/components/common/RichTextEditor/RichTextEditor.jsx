@@ -108,7 +108,7 @@ const RichTextEditor = ({
   disableMentions = false,
   templatePlaceholders = false,
   expandEditorHeight = false,
-  templatePlaceholderOptions
+  templatePlaceholderOptions,
 }) => {
   const [rawTextState, setRawTextState] = useState(initialValue);
   const [editor, setEditor] = useState(null);
@@ -291,10 +291,7 @@ const RichTextEditor = ({
     });
   }, []);
 
-  if (
-    !FroalaEditorComponent.COMMANDS ||
-    !FroalaEditorComponent.COMMANDS.placeholders
-  ) {
+  if (templatePlaceholderOptions) {
     FroalaEditorComponent.DefineIcon('placeholders', {
       template: 'text',
       NAME: 'Placeholder',
