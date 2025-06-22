@@ -178,19 +178,17 @@ const EditTemplateModal = ({ closeModal, template, onAdded, onUpdated }) => {
                     )}
                   {templateTypeValue !== TEMPLATE_TYPES.SMS && (
                     <Grid item xs={12}>
-                      {Object.entries(templatePlaceholderOptions).length > 0 && (
-                        <CustomTextEditor label="Message">
-                          <RichTextEditor
-                            value={currentValue}
-                            onBlur={(value) => setValue('details', value)}
-                            onChange={handleTextEditorChange}
-                            initOnClick
-                            showCharCount
-                            templatePlaceholders={true}
-                            templatePlaceholderOptions={templatePlaceholderOptions}
-                          />
-                        </CustomTextEditor>
-                      )}
+                      <CustomTextEditor label="Message">
+                        <RichTextEditor
+                          value={currentValue}
+                          onBlur={(value) => setValue('details', value)}
+                          onChange={handleTextEditorChange}
+                          initOnClick
+                          showCharCount
+                          templatePlaceholders={true}
+                          templatePlaceholderOptions={templatePlaceholderOptions}
+                        />
+                      </CustomTextEditor>
                     </Grid>
                   )}
                 </Grid>
