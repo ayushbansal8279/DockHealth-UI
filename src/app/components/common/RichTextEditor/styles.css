@@ -82,3 +82,10 @@
 .fr-box * {
   font-family: Outfit !important;
 }
+
+.fr-command[data-cmd="placeholders"] + .fr-dropdown-menu {
+  max-height: 155px;
+  max-width : 280px;
+  overflow-y: auto;
+}
+
