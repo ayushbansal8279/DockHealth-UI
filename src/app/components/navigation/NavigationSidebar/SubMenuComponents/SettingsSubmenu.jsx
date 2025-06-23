@@ -84,9 +84,11 @@ const SettingsSubmenu = () => {
           <SubMenuLink to={DEVELOPERS_PATH}>Developers</SubMenuLink>
         </AccessRestrictor>
       )}
+      {/* {isIntegrationsAllowed && (
         <AccessRestrictor allowedToRoles={[ADMIN, OWNER]}>
           <SubMenuLink to={INTEGRATIONS_PATH}>Integrations</SubMenuLink>
         </AccessRestrictor>
+      )} */}
     </Box>
   );
 };
