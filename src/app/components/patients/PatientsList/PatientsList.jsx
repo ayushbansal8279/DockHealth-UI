@@ -566,6 +566,38 @@ const PatientsList = ({
       ),
       width: 140,
     },
+    {
+      field: 'sourceEhr',
+      headerName: 'SOURCE EHR',
+      renderHeader: renderColumnHeader,
+      renderCell: ({ row }) => (
+        <Tooltip placement="top" title={row.sourceEhr}>
+          <Text>{row.sourceEhr}</Text>
+        </Tooltip>
+      ),
+      width: 140,
+    },
+    {
+      field: 'sourceLastSyncDt',
+      headerName: 'EHR LAST SYNCED',
+      renderHeader: renderColumnHeader,
+      renderCell: (params) => {
+        const date = params.value;
+        return <span>{date ? moment(date).format('MM/DD/YYYY') : ''}</span>;
+      },
+      width: 140,
+    },
+    {
+      field: 'sourceStatus',
+      headerName: 'EHR STATUS',
+      renderHeader: renderColumnHeader,
+      renderCell: ({ row }) => (
+        <Tooltip placement="top" title={row.sourceStatus}>
+          <Text>{row.sourceStatus}</Text>
+        </Tooltip>
+      ),
+      width: 140,
+    },
   ];
 
   function confirmSave(id) {
