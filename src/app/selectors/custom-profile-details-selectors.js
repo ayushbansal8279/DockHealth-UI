@@ -13,6 +13,13 @@ export const profileTaskDetailsSelector = createSelector(
   (profileDetails, taskId) => profileDetails.tasksMap[taskId],
 );
 
+export const profileMultipleTaskDetailsSelector = createSelector(
+  profileDetailsStateSelector,
+  (_, taskIds) => taskIds,
+  (profileDetails, taskIds) => {
+    return taskIds.map((taskId) => profileDetails.tasksMap[taskId])},
+);
+
 export const profileTaskListsSelector = createSelector(
   profileDetailsStateSelector,
   ({ lists }) => lists,
