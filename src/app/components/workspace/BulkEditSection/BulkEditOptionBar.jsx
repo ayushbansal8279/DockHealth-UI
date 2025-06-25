@@ -2,42 +2,40 @@ import { useContext } from "react";
 
 import BulkEditBar from "@/app/components/bulk-edit/BulkEditBar/BulkEditBar";
 import BulkEditOption from "@/app/components/bulk-edit/BulkEditOption/BulkEditOption";
-import DeleteIcon from "@/app/img/bulk-edit/DeleteIcon";
-import MoveIcon from "@/app/img/bulk-edit/MoveIcon";
-import { UserEditContext } from "@/app/context-api/workspace-user-context";
+import { BulkEditContext } from "@/app/context-api/bulk-edit-context";
 import { Button } from "./styled";
 
-const BulkEditOptionsBar = ({ selectedUsers = [], onClose }) => {
+const BulkEditOptionsBar = () => {
   const {
     selectedOptionsHandler: { toggleOption },
-  } = useContext(UserEditContext);
+    viewType,
+    selectedItems,
+    bulkOptions,
+    unselectAllItems,
+    selectedOptionsHandler: { resetOptions }
+  } = useContext(BulkEditContext);
+
+  const onClose = () => {
+    unselectAllItems();
+    resetOptions();
+  };
 
   return (
     <BulkEditBar
-      numberOfSelectedItems={selectedUsers?.length}
+      numberOfSelectedItems={selectedItems.length}
       onClose={onClose}
-      viewType="user"
+      viewType={viewType}
     >
-      <Button
-        type="button"
-        onClick={() => toggleOption("changeRoleOption")}
-      >
-        <BulkEditOption
-          iconComponent={MoveIcon}
-          title="Change role"
-        />
-      </Button>
-      <Button
-        type="button"
-        onClick={() => toggleOption("removeOption")}
-      >
-        <BulkEditOption
-          iconComponent={DeleteIcon}
-          title={`Remove user${selectedUsers?.length !== 1 ? 's' : ''}`}
-        />
-      </Button>
+      {bulkOptions.map(({ key, title, icon, onClick }) => (
+        <Button key={key} type="button" onClick={() => {
+          toggleOption(key);
+          onClick?.();
+        }}>
+          <BulkEditOption iconComponent={icon} title={title} />
+        </Button>
+      ))}
     </BulkEditBar>
-  )
-}
+  );
+};
 
 export default BulkEditOptionsBar;

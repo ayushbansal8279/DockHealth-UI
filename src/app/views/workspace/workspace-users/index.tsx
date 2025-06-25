@@ -1,15 +1,14 @@
-//@ts-nocheck
-
 import React from "react";
 
 import WorkspaceUsers from './WorkspaceUsers';
-import { UserEditProvider } from "@/app/context-api/workspace-user-context";
+import { BulkEditProvider } from "@/app/context-api/bulk-edit-context";
+import { listBulkOptions } from "./workspaceUserBulkOption";
 
 const WorkspaceUsersWrapper = () => {
   return (
-    <UserEditProvider optionNames={['removeOption', 'changeRoleOption']}>
+    <BulkEditProvider bulkOptions={listBulkOptions} viewType="user">
       <WorkspaceUsers />
-    </UserEditProvider>
+    </BulkEditProvider>
   );
 };
 

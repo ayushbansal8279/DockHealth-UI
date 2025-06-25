@@ -19,6 +19,7 @@ const BulkEditBar = (props) => {
 
   const getLabel = () => {
     if (viewType === 'user') return 'User';
+    if (viewType === 'list') return 'List';
     if (viewType === 'patient') return customerTypeLabel.charAt(0).toUpperCase() + customerTypeLabel.slice(1);
     if (viewType === 'task') return `Task${includedWorkflow ? '/Workflow' : ''}`;
     return '';

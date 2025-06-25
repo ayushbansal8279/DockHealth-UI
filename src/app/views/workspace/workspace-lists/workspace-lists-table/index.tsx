@@ -1,6 +1,6 @@
 // @ts-nocheck
 
-import React from "react";
+import React, { useContext } from "react";
 import { Box, Button } from "@mui/material";
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { MoreVert } from "@mui/icons-material";
@@ -16,14 +16,18 @@ import { EditableLabel } from "@/app/components/workspace/EditableLabel/Editable
 import { StyledDataGrid } from "@/app/views/workspaces/workspace-table/styled";
 import { workspaceListsDummyData } from "../helpers";
 import { BulkContainer } from "./styled";
+import { BulkEditContext } from "@/app/context-api/bulk-edit-context";
 
 const WorkspaceListTable = () => {
   const dispatch = useDispatch();
 
-  // TODO: use context
-  const toggleAllUser = () => {}
-  const toggleUser = (id) => {}
-  const isListChecked = false;
+  const listContext = useContext(BulkEditContext);
+  const {
+    selectableItems: lists,
+    isListChecked,
+    toggleItem,
+    toggleAllItems
+  } = listContext;
 
   const renderCheckboxColumnHeader = ({ isListChecked, onListSelect }) => (
     <BulkContainer>
@@ -53,12 +57,12 @@ const WorkspaceListTable = () => {
       renderHeader: () =>
         renderCheckboxColumnHeader({
           isListChecked,
-          onListSelect: toggleAllUser,
+          onListSelect: toggleAllItems,
         }),
       renderCell: ({ row }) => (
         <TaskItemBulkEdit
           isChecked={row?.isSelected}
-          onClick={() => toggleUser(row.id)}
+          onClick={() => toggleItem(row.id)}
           isDisabled={false}
         />
       ),
@@ -156,12 +160,14 @@ const WorkspaceListTable = () => {
     },
   ];
 
+  let rows: any[] = lists || [];
+
   return (
     <Box sx={{ height: 'calc(80vh - 100px)', p: 2, width: '1179px' }}>
       <StyledDataGrid
         columns={columns}
         getRowId={(row) => row.identifier}
-        rows={workspaceListsDummyData}
+        rows={rows}
         rowHeight={40}
         headerHeight={45}
         autoHeight

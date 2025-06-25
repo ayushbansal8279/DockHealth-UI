@@ -1,39 +1,26 @@
 import { useContext } from "react";
 
+import { BulkEditContext } from "@/app/context-api/bulk-edit-context";
 import BulkEditOptionsBar from "./BulkEditOptionBar";
 import { BulkEditOptionsBarContainer } from "./styled";
 
-const BulkEditSection = ({ context, children }) => {
-
-  const UserContext = useContext(context);
+const BulkEditSection = ({ children }) => {
+  const bulkEditContext = useContext(BulkEditContext);
   const {
     bulkEditIsActive,
-    selectedUsers,
-    unselectAllUser,
     selectedOptionsHandler,
-  } = UserContext;
+  } = bulkEditContext;
+
   const { resetOptions } = selectedOptionsHandler;
 
-  const onClose = () => {
-    unselectAllUser();
-    resetOptions();
-  }
-
-  return (
-    bulkEditIsActive && (
-      <>
-        {children}
-        <BulkEditOptionsBarContainer isOpen={bulkEditIsActive}>
-          {bulkEditIsActive && (
-            <BulkEditOptionsBar
-              selectedUsers={selectedUsers}
-              onClose={onClose}
-            />
-          )}
-        </BulkEditOptionsBarContainer>
-      </>
-    )
-  )
-}
+  return bulkEditIsActive && (
+    <>
+      {children}
+      <BulkEditOptionsBarContainer isOpen={bulkEditIsActive}>
+        <BulkEditOptionsBar />
+      </BulkEditOptionsBarContainer>
+    </>
+  );
+};
 
 export default BulkEditSection;
