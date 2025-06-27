@@ -269,9 +269,14 @@ function* getCurrentPatientAttachments() {
         patientIdentifier,
         folderIdentifier,
       );
+      const patientTaskAttachments = yield call(
+        PatientAttachmentApi.getTaskAndWorkflowAttachmentsForPatient,
+        patientIdentifier,
+      )
       yield put({
         type: ActionTypes.GET_CURRENT_PATIENT_ATTACHMENTS_SUCCESS,
         attachments,
+        patientTaskAttachments,
       });
     }
   } catch {
@@ -888,6 +893,36 @@ function* updatePatientAttachment({ attachment, dataToUpdate }) {
   }
 }
 
+function* updatePatientTaskAttachment({ attachmentIdentifier, updatedFileName }) { 
+  try {
+    const updatedTaskAttachment = yield call(
+      TaskApi.updateTaskAttachment,
+      attachmentIdentifier,
+      updatedFileName,
+     
+    )
+    console.log(updatedTaskAttachment);
+    
+    yield all([
+      put({
+        type: ActionTypes.UPDATE_PATIENT_TASK_ATTACHMENT_SUCCESS,
+        attachment: updatedTaskAttachment,
+      }),
+      put(showGlobalAlert(AlertMessages.UPDATED)),
+      put(closeModal()),
+    ]);
+  } catch {
+    yield all([
+      // put({
+      //   type: ActionTypes.UPDATE_PATIENT_TASK_ATTACHMENT_SUCCESS,
+      //   attachment,
+      // }),
+      put(showGlobalErrorAlert()),
+    ]);
+  }
+}
+
+
 function* movePatientAttachment({ attachment, destinationFolderIdentifier }) {
   try {
     const updatedAttachment = yield call(
@@ -992,6 +1027,11 @@ export default function* watchPatientDetails() {
     ActionTypes.UPDATE_PATIENT_ATTACHMENT,
     updatePatientAttachment,
   );
+  yield takeEvery(
+    ActionTypes.UPDATE_PATIENT_TASK_ATTACHMENT,
+    updatePatientTaskAttachment,
+  );
+  //create similar for update task attachment
   yield takeEvery(ActionTypes.MOVE_PATIENT_ATTACHMENT, movePatientAttachment);
   yield takeEvery(ActionTypes.ADD_PATIENT_ATTACHMENT, createPatientAttachment);
   yield takeEvery(

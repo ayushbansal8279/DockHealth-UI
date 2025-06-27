@@ -49,6 +49,14 @@ export function getPatientAttachments(patientIdentifier, folderIdentifier) {
     .then(({ data }) => data);
 }
 
+export function getTaskAndWorkflowAttachmentsForPatient(patientIdentifier){
+  return axios
+    .get(
+      `task/attachment/getTaskAndWorkflowAttachmentsForPatient/${patientIdentifier}`,
+    )
+    .then(({data})=>data)
+}
+
 export function createAttachmentFolder(
   patientIdentifier,
   name,
@@ -88,6 +96,8 @@ export function createAttachmentReference(
 export function updatePatientAttachment(attachment) {
   return axios.put(`patient/attachment`, attachment).then(({ data }) => data);
 }
+
+
 
 export function getPatientFolderStructureHierarchy(identifier) {
   return axios

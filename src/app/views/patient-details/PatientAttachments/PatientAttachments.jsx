@@ -75,10 +75,13 @@ const PatientAttachments = () => {
     dropzone: { getRootProps, getInputProps, isDragActive },
     downloadAllFiles,
     downloadAttachment,
+    patientTaskAttachments,
+    renamePatientTaskAttachment,
   } = initializeAttachmentsSectionHooks();
 
   const [foldersList, setFoldersList] = useState([]);
   const [filesList, setFilesList] = useState([]);
+  const [taskFileList, setTaskFilelist] = useState([])
 
   useEffect(() => {
     setFoldersList(folders);
@@ -87,6 +90,11 @@ const PatientAttachments = () => {
   useEffect(() => {
     setFilesList(currentPatientAttachments);
   }, [currentPatientAttachments]);
+
+  useEffect(() => {
+    setTaskFilelist(patientTaskAttachments);
+  }, [patientTaskAttachments]);
+  
 
   const dispatch = useDispatch();
 
@@ -140,6 +148,40 @@ const PatientAttachments = () => {
     [
       openAttachmentPreview,
       renameAttachment,
+      moveFileOrFolder,
+      deleteAttachment,
+      downloadAttachment,
+    ],
+  );
+
+  const getTaskFileOptions = useCallback(
+    (file) => [
+      ...(!file.scanStatus ||
+      file.scanStatus === ScanStatus.CLEAN ||
+      file.scanStatus === ScanStatus.UNSUPPORTED
+        ? [
+            { name: 'Preview', onClick: () => openAttachmentPreview(file) },
+            {
+              name: 'Download',
+              onClick: () => {
+                downloadAttachment(file);
+              },
+            },
+          ]
+        : []),
+      {
+        name: 'Rename',
+        onClick: () => renamePatientTaskAttachment(file),
+      },
+      {
+        name: 'Delete',
+        onClick: () => deleteAttachment(file.attachmentIdentifier),
+        color: palette.oPlusRed,
+      },
+    ],
+    [
+      openAttachmentPreview,
+      renamePatientTaskAttachment,
       moveFileOrFolder,
       deleteAttachment,
       downloadAttachment,
@@ -370,6 +412,47 @@ const PatientAttachments = () => {
                   onClick={() => handleAttachmentClick(file)}
                   file={file}
                   options={getFileOptions(file)}
+                  onDragStart={(event) => dragStart(event, index, true)}
+                  onDragEnter={(event) => dragEnter(event, index, true)}
+                  onDragEnd={drop}
+                  draggable
+                />
+              ))
+            ) : (
+              // eslint-disable-next-line react/jsx-no-useless-fragment
+              <>
+                {!currentlyUploadedAttachment && (
+                  <EmptyListText>List of files is empty</EmptyListText>
+                )}
+              </>
+            )}
+            {currentlyUploadedAttachment && (
+              // eslint-disable-next-line react/jsx-no-useless-fragment
+              <>
+                {activeViewType === FilesViewType.LIST ? (
+                  <FileListItemProgressBar value={uploadProgress} />
+                ) : (
+                  <FileGridItemProgressBar value={uploadProgress} />
+                )}
+              </>
+            )}
+            {!downloadDisabled && currentPatientAttachments.length > 0 && (
+              <div>
+                <DownloadAllLink onClick={downloadAllFiles}>
+                  Download All
+                </DownloadAllLink>
+              </div>
+            )}
+          </NamedCollapse>
+           <NamedCollapse name="Task Files">
+            {activeViewType === FilesViewType.LIST && <FileListHeader />}
+            {taskFileList.length > 0 ? (
+              taskFileList.map((file, index) => (
+                <FileItemComponent
+                  key={file.attachmentIdentifier}
+                  onClick={() => handleAttachmentClick(file)}
+                  file={file}
+                  options={getTaskFileOptions(file)}
                   onDragStart={(event) => dragStart(event, index, true)}
                   onDragEnter={(event) => dragEnter(event, index, true)}
                   onDragEnd={drop}

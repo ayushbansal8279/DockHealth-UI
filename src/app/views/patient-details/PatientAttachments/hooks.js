@@ -11,6 +11,7 @@ import {
   patientSelector,
   patientFoldersSelector,
   patientAttachmentsSelector,
+  patientTaskAttachementSelector,
 } from 'selectors/patient-details-selectors';
 import { downloadPatientAttachment } from 'api/patient-attachment-api';
 import { useBoolean } from 'hooks/useBoolean';
@@ -46,6 +47,7 @@ const useInitializeAttachmentsSectionHooks = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const attachments = useSelector(patientAttachmentsSelector) || [];
   const folders = useSelector(patientFoldersSelector) || [];
+  const patientTaskAttachments = useSelector(patientTaskAttachementSelector) || []
 
   const [attachmentsSources, setAttachmentSources] = useState([]);
   const [attachmentsLoading, setAttachmentsLoading, unsetAttachmentsLoading] =
@@ -225,6 +227,27 @@ const useInitializeAttachmentsSectionHooks = () => {
     );
   };
 
+  const renamePatientTaskAttachment = (fileOrFolder) => {
+    dispatch(
+      openModal('PatientFolder', {
+        title: `Rename ${
+          fileOrFolder.type === PatientAttachmentType.FOLDER ? 'folder' : 'file'
+        }`,
+        inputLabel: `${
+          fileOrFolder.type === PatientAttachmentType.FOLDER ? 'Folder' : 'File'
+        } name`,
+        currentName: fileOrFolder.fileName,
+        onChange: (name) => {
+          dispatch(
+            PatientDetailsActions.updatePatientTaskAttachment(fileOrFolder.attachmentIdentifier,
+              name,
+            ),
+          );
+        },
+      }),
+    );
+  };
+
   const navigateToFolder = useCallback(
     (folder) => {
       history.push(
@@ -339,6 +362,8 @@ const useInitializeAttachmentsSectionHooks = () => {
     downloadAllFiles,
     downloadAttachment,
     getMemoPatientAttachment,
+    patientTaskAttachments,
+    renamePatientTaskAttachment,
   };
 };
 

@@ -124,6 +124,16 @@ export function updatePatientAttachment(attachment, dataToUpdate) {
   };
 }
 
+export function updatePatientTaskAttachment(attachmentIdentifier, updatedFileName)
+{
+  return{
+     type: ActionTypes.UPDATE_PATIENT_TASK_ATTACHMENT,
+     attachmentIdentifier,
+     updatedFileName,
+    //I need to create an action for update patient task attachment
+  }
+}
+
 export function movePatientAttachment(attachment, destinationFolderIdentifier) {
   return {
     type: ActionTypes.MOVE_PATIENT_ATTACHMENT,
