@@ -43,7 +43,7 @@ const StandardTaskItemContainer = ({
       taskActions
         .partialUpdateTask(taskId, dataToUpdate)
         .then(() => {
-          if (typeof onTaskChenged === 'function') onTaskChanged();
+          if (typeof onTaskChanged === 'function') onTaskChanged();
           alertActions.showGlobalAlert(AlertMessages.UPDATED);
         })
         .catch(() => {
@@ -58,7 +58,7 @@ const StandardTaskItemContainer = ({
       taskActions
         .updateWorkflowStatus(task, workflowStatus)
         .then(() => {
-          if (typeof onTaskChenged === 'function') onTaskChanged();
+          if (typeof onTaskChanged === 'function') onTaskChanged();
           alertActions.showGlobalAlert(AlertMessages.UPDATED);
         })
         .catch(() => {
