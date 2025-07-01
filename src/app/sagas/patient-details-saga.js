@@ -898,11 +898,8 @@ function* updatePatientTaskAttachment({ attachmentIdentifier, updatedFileName })
     const updatedTaskAttachment = yield call(
       TaskApi.updateTaskAttachment,
       attachmentIdentifier,
-      updatedFileName,
-     
+      updatedFileName, 
     )
-    console.log(updatedTaskAttachment);
-    
     yield all([
       put({
         type: ActionTypes.UPDATE_PATIENT_TASK_ATTACHMENT_SUCCESS,
@@ -913,15 +910,31 @@ function* updatePatientTaskAttachment({ attachmentIdentifier, updatedFileName })
     ]);
   } catch {
     yield all([
-      // put({
-      //   type: ActionTypes.UPDATE_PATIENT_TASK_ATTACHMENT_SUCCESS,
-      //   attachment,
-      // }),
       put(showGlobalErrorAlert()),
     ]);
   }
 }
 
+function* deletePatientTaskAttachment({ identifier }) { 
+  try {
+    yield call(
+      TaskApi.removeTaskAttachment,
+      identifier,
+    )
+    yield all([
+      put({
+        type: ActionTypes.DELETE_PATIENT_TASK_ATTACHMENT_SUCCESS,
+        identifier: identifier,
+      }),
+      put(showGlobalAlert(AlertMessages.DELETED)),
+      put(closeModal()),
+    ]);
+  } catch {
+    yield all([
+      put(showGlobalErrorAlert()),
+    ]);
+  }
+}
 
 function* movePatientAttachment({ attachment, destinationFolderIdentifier }) {
   try {
@@ -1030,6 +1043,10 @@ export default function* watchPatientDetails() {
   yield takeEvery(
     ActionTypes.UPDATE_PATIENT_TASK_ATTACHMENT,
     updatePatientTaskAttachment,
+  );
+  yield takeEvery(
+    ActionTypes.DELETE_PATIENT_TASK_ATTACHMENT,
+    deletePatientTaskAttachment,
   );
   //create similar for update task attachment
   yield takeEvery(ActionTypes.MOVE_PATIENT_ATTACHMENT, movePatientAttachment);

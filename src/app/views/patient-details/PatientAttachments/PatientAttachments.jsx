@@ -77,6 +77,8 @@ const PatientAttachments = () => {
     downloadAttachment,
     patientTaskAttachments,
     renamePatientTaskAttachment,
+    deletePatientTaskAttachment,
+    downloadPatientTaskAttachment,
   } = initializeAttachmentsSectionHooks();
 
   const [foldersList, setFoldersList] = useState([]);
@@ -122,7 +124,7 @@ const PatientAttachments = () => {
       file.scanStatus === ScanStatus.CLEAN ||
       file.scanStatus === ScanStatus.UNSUPPORTED
         ? [
-            { name: 'Preview', onClick: () => openAttachmentPreview(file) },
+            { name: 'Preview', onClick: () => openAttachmentPreview(file, "patient") },
             {
               name: 'Download',
               onClick: () => {
@@ -160,11 +162,11 @@ const PatientAttachments = () => {
       file.scanStatus === ScanStatus.CLEAN ||
       file.scanStatus === ScanStatus.UNSUPPORTED
         ? [
-            { name: 'Preview', onClick: () => openAttachmentPreview(file) },
+            { name: 'Preview', onClick: () => openAttachmentPreview(file, "task") },
             {
               name: 'Download',
               onClick: () => {
-                downloadAttachment(file);
+                downloadPatientTaskAttachment(file);
               },
             },
           ]
@@ -175,7 +177,7 @@ const PatientAttachments = () => {
       },
       {
         name: 'Delete',
-        onClick: () => deleteAttachment(file.attachmentIdentifier),
+        onClick: () => deletePatientTaskAttachment(file.attachmentIdentifier),
         color: palette.oPlusRed,
       },
     ],
@@ -183,8 +185,8 @@ const PatientAttachments = () => {
       openAttachmentPreview,
       renamePatientTaskAttachment,
       moveFileOrFolder,
-      deleteAttachment,
-      downloadAttachment,
+      deletePatientTaskAttachment,
+      downloadPatientTaskAttachment,
     ],
   );
 

@@ -130,7 +130,14 @@ export function updatePatientTaskAttachment(attachmentIdentifier, updatedFileNam
      type: ActionTypes.UPDATE_PATIENT_TASK_ATTACHMENT,
      attachmentIdentifier,
      updatedFileName,
-    //I need to create an action for update patient task attachment
+  }
+}
+
+export function deletePatientTaskAttachement(identifier)
+{
+  return{
+     type: ActionTypes.DELETE_PATIENT_TASK_ATTACHMENT,
+     identifier,
   }
 }
 
