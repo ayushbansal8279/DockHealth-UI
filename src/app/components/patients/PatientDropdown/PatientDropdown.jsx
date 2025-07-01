@@ -126,6 +126,7 @@ const PatientDropdown = ({
           onSelect={handlePatientSelect}
           selectedPatientIdentifier={selectedPatientIdentifier}
           disableAdding={!quickAddPatientEnabled}
+          closePopover={closePopover}
         />
       </StyledPopover>
     </>
