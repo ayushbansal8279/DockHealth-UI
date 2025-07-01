@@ -1,6 +1,11 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { userHasAiSummaryViewFeatureSelector, userHasDockGuestFeatureSelector, userHasViewOnlyFeatureSelector, userProfileSelector } from 'selectors/user-selectors';
+import {
+  userHasAiSummaryViewFeatureSelector,
+  userHasDockGuestFeatureSelector,
+  userHasViewOnlyFeatureSelector,
+  userProfileSelector,
+} from 'selectors/user-selectors';
 import { organizationSelector } from 'selectors/organization-selectors';
 import {
   onTaskDrawerPatientAdded,
@@ -305,19 +310,27 @@ const PatientSection = ({
         data = { firstName, lastName: lastNames.join(' ') };
       }
 
-      onTaskDrawerPatientAdded();
+      dispatch(
+        openModal('EditPatient', {
+          patient: data,
+          onAdded: (newPatientData) => {
+            onTaskDrawerPatientAdded();
 
-      addPatient(data)
-        .then(async ({ patientIdentifier, firstName, lastName }) => {
-          await fetchPatients(patient);
-          await handlePatientSelect({
-            value: patientIdentifier,
-            displayLabel: `${lastName}, ${firstName} `,
-          });
-        })
-        .catch(noop);
+            addPatient(newPatientData)
+              .then(async ({ patientIdentifier, firstName, lastName }) => {
+                await fetchPatients(patient);
+                await handlePatientSelect({
+                  value: patientIdentifier,
+                  displayLabel: `${lastName}, ${firstName} `,
+                });
+              })
+              .catch(noop);
+          },
+          mode: 'add',
+        }),
+      );
     },
-    [patientAddEnabled, fetchPatients, handlePatientSelect],
+    [patientAddEnabled, dispatch, fetchPatients, handlePatientSelect],
   );
 
   const patientProfile = () => {
@@ -331,7 +344,10 @@ const PatientSection = ({
         <PatientLableContainer>
           <PatientContainer>
             {' '}
-            <PatientName status={selectedPatient.patientStatus} onClick={patientProfile}>
+            <PatientName
+              status={selectedPatient.patientStatus}
+              onClick={patientProfile}
+            >
               {selectedPatient.patientName}{' '}
             </PatientName>
             <button

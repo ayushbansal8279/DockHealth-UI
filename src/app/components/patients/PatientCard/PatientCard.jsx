@@ -184,6 +184,7 @@ const PatientCard = ({
         onAdded: (newPatientData) => {
           setPatientData(newPatientData);
         },
+        mode: 'edit',
       }),
     );
   }, [dispatch, patientData]);
@@ -318,15 +319,19 @@ const PatientCard = ({
                                 <CustomFieldPatientInfo>
                                   <Typography>{customFieldName}: </Typography>
                                   <Box ml={1} />
-                                  {
-                                    fieldType === FieldType.DROPDOWN_MULTI || fieldType === FieldType.RELATIONSHIP ? (
-                                      `${displayNames?.join(', ') || ''}`
-                                    ) : fieldType === FieldType.DATE ? (
-                                      <DateLabel date={value} dueDateIntent={calculateDateTimeIntent(value)} />
-                                    ) : (
-                                      `${displayName || value}`
-                                    )
-                                  }
+                                  {fieldType === FieldType.DROPDOWN_MULTI ||
+                                  fieldType === FieldType.RELATIONSHIP ? (
+                                    `${displayNames?.join(', ') || ''}`
+                                  ) : fieldType === FieldType.DATE ? (
+                                    <DateLabel
+                                      date={value}
+                                      dueDateIntent={calculateDateTimeIntent(
+                                        value,
+                                      )}
+                                    />
+                                  ) : (
+                                    `${displayName || value}`
+                                  )}
                                 </CustomFieldPatientInfo>
                               )}
                           </>

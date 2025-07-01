@@ -13,7 +13,10 @@ import {
 } from 'selectors/workflow-drawer-selectors';
 import WorkflowDrawerHeader from 'components/workflow-drawer/DrawerHeader/DrawerHeader';
 import { checkIfTemplateWorkflow } from 'helpers/workflow-helpers';
-import { userProfileSelector } from 'selectors/user-selectors';
+import {
+  selectedUserOrganizationSelector,
+  userProfileSelector,
+} from 'selectors/user-selectors';
 import {
   SINGLE_WORKFLOW_RESTRICTIONS_PROFILES,
   WORKFLOW_LIST_RESTRICTIONS_OPTIONS,
@@ -64,6 +67,7 @@ const WorkflowDrawer = () => {
   const commentIdentifierToScroll = useSelector(
     commentIdentifierToScrollSelector,
   );
+  const currentOrganization = useSelector(selectedUserOrganizationSelector);
   const isTemplateTask = useMemo(
     () => checkIfTemplateWorkflow(selectedWorkflow),
     [selectedWorkflow],
@@ -85,6 +89,12 @@ const WorkflowDrawer = () => {
   const hasEditorPermissions =
     memberslist?.find(({ user }) => user.identifier === currentUser.identifier)
       ?.memberPermission === 'EDITOR';
+
+  const quickAddPatientEnabledItem =
+    currentOrganization?.themeSettings?.find(
+      ({ name }) => name === 'patient.quickadd.enabled',
+    ) || {};
+  const quickAddPatientEnabled = quickAddPatientEnabledItem?.value !== 'false';
 
   useEffect(() => {
     if (momentDueDate) {
@@ -194,6 +204,7 @@ const WorkflowDrawer = () => {
                       restrictions?.patient === DISABLED ||
                       (isTemplateTask && !hasEditorPermissions)
                     }
+                    quickAddPatientEnabled={quickAddPatientEnabled}
                   />
                 </Grid>
                 <Grid item xs={12}>
