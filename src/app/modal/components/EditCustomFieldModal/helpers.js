@@ -2,7 +2,7 @@ import * as Yup from 'yup';
 
 const commonOptions = (displayOptionsState, handleDisplayOptionChange) => [
   {
-    label: 'Readonly',
+    label: 'Read only',
     key: 'READONLY',
     value: !!displayOptionsState?.displayOptions?.find(
       (option) => option === 'READONLY',
@@ -70,7 +70,7 @@ export const getAdditionalTaskOptions = ({
   handleDisplayOptionChange,
 }) => [
   {
-    label: 'Required for Task completion',
+    label: 'Required for task completion',
     key: 'TASK_REQUIRED',
     value: !!displayOptionsState?.displayOptions?.find(
       (option) => option === 'TASK_REQUIRED',
