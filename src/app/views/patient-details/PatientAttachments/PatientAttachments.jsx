@@ -98,8 +98,8 @@ const PatientAttachments = () => {
   const downloadDisabled = currentPatientAttachments?.some(
     ({ scanStatus }) =>
       scanStatus &&
-      (scanStatus !== ScanStatus.CLEAN ||
-        scanStatus !== ScanStatus.UNSUPPORTED),
+      !(scanStatus === ScanStatus.CLEAN ||
+        scanStatus === ScanStatus.UNSUPPORTED),
   );
 
   const FileItemComponent =
