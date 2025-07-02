@@ -700,7 +700,6 @@ export const renameTaskAttachment =
       });
   };
 
-
 export const addPatientReferenceAttachment =
   (taskIdentifier, attachmentIdentifier, type ) => (dispatch) => {
     return TaskApi.addPatientReferenceAttachment(taskIdentifier, attachmentIdentifier, type)

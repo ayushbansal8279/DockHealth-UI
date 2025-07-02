@@ -12,7 +12,7 @@ const INITIAL_STATE = {
   patient: null,
   currentFolderIdentifier: null,
   attachments: null,
-  patientTaskAttachments:null,
+  patientTaskAttachments: null,
   isFetchingPatient: false,
   labels: null,
   isFetchingLabels: false,
@@ -170,8 +170,6 @@ export default (state = INITIAL_STATE, action = {}) => {
       };
     }
 
-
-
     case ActionTypes.GET_CURRENT_PATIENT_ATTACHMENTS_FAILURE: {
       return {
         ...state,
@@ -189,7 +187,6 @@ export default (state = INITIAL_STATE, action = {}) => {
 
     case ActionTypes.UPDATE_PATIENT_ATTACHMENT_SUCCESS: {
       const { attachment: updatedAttachment } = action;
-
       return {
         ...state,
         attachments:
@@ -201,7 +198,7 @@ export default (state = INITIAL_STATE, action = {}) => {
       };
     }
 
-     case ActionTypes.DELETE_PATIENT_TASK_ATTACHMENT_SUCCESS: {
+    case ActionTypes.DELETE_PATIENT_TASK_ATTACHMENT_SUCCESS: {
       const { identifier } = action;
       return {
         ...state,
@@ -214,7 +211,7 @@ export default (state = INITIAL_STATE, action = {}) => {
 
     case ActionTypes.UPDATE_PATIENT_TASK_ATTACHMENT_SUCCESS: {
       const { attachment: updatedAttachment } = action;
-     
+
       return {
         ...state,
         patientTaskAttachments:

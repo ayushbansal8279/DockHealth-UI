@@ -425,6 +425,7 @@ export function removeTaskAttachment(taskAttachmentId) {
       throw error;
     });
 }
+
 export function getTaskAttachment(taskAttachmentId) {
   return axios({
     url: `task/attachment/download/${taskAttachmentId}`,

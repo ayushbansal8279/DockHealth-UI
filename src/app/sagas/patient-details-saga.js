@@ -1048,7 +1048,6 @@ export default function* watchPatientDetails() {
     ActionTypes.DELETE_PATIENT_TASK_ATTACHMENT,
     deletePatientTaskAttachment,
   );
-  //create similar for update task attachment
   yield takeEvery(ActionTypes.MOVE_PATIENT_ATTACHMENT, movePatientAttachment);
   yield takeEvery(ActionTypes.ADD_PATIENT_ATTACHMENT, createPatientAttachment);
   yield takeEvery(
