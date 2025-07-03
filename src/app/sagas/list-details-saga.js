@@ -680,8 +680,16 @@ function* applyTaskTemplate({
             taskGroupIdentifier,
           });
         }
+      } else {
+        yield put({
+          type: ActionTypes.APPLY_TASK_TEMPLATE_SUCCESS,
+          template: taskWorkflowDto,
+          taskListIdentifier,
+          taskGroupIdentifier,
+        });
       }
     }
+    yield put(showGlobalAlert(AlertMessages.WORKFLOW_CREATED));
   } catch {
     yield put(showGlobalErrorAlert());
   }
