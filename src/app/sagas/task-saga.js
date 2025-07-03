@@ -199,6 +199,12 @@ function* refreshTemplateBundle({ templateBundleIdentifier }) {
           dataToUpdate: templateBundle,
         });
       }
+    } else {
+      yield put({
+        type: ActionTypes.UPDATE_TEMPLATE_BUNDLE_SUCCESS,
+        bundleIdentifier: templateBundleIdentifier,
+        dataToUpdate: templateBundle,
+      });
     }
 
     yield put(
@@ -213,7 +219,7 @@ function* refreshTemplateBundle({ templateBundleIdentifier }) {
         TemplateBundleActions.completeTemplateBundle(templateBundleIdentifier),
       );
     }
-    yield put(showGlobalAlert(AlertMessages.WORKFLOW_CREATED));
+
   } catch {
     yield put(showGlobalErrorAlert());
   }
