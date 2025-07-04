@@ -15,6 +15,7 @@ const BoardColumnHeader = ({
   columnContextMenuOptions,
   onAddWorkflow,
   onAddTaskOption,
+  isDragging,
 }) => {
   const addWorkflowOption = { name: 'Add Workflow', onClick: onAddWorkflow };
   const mergedColumnContextMenuOptions = addWorkflowOption
@@ -22,7 +23,7 @@ const BoardColumnHeader = ({
     : columnContextMenuOptions;
 
   return (
-    <BoardColumnHeaderContainer>
+    <BoardColumnHeaderContainer isDragging={isDragging}>
       <ColumnName>{`${name} (${tasksLength})`}</ColumnName>
       <ActionsContainer>
         <Button onClick={onAddTaskOption}>
