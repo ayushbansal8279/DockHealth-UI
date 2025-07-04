@@ -171,15 +171,15 @@ const PatientAttachments = () => {
             },
           ]
         : []),
-      {
-        name: 'Rename',
-        onClick: () => renamePatientTaskAttachment(file),
-      },
-      {
-        name: 'Delete',
-        onClick: () => deletePatientTaskAttachment(file.attachmentIdentifier),
-        color: palette.oPlusRed,
-      },
+      // {
+      //   name: 'Rename',
+      //   onClick: () => renamePatientTaskAttachment(file),
+      // },
+      // {
+      //   name: 'Delete',
+      //   onClick: () => deletePatientTaskAttachment(file.attachmentIdentifier),
+      //   color: palette.oPlusRed,
+      // },
     ],
     [
       openAttachmentPreview,
