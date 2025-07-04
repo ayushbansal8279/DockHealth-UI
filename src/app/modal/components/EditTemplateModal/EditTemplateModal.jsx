@@ -107,11 +107,11 @@ const EditTemplateModal = ({ closeModal, template, onAdded, onUpdated }) => {
 
     const customFields = await getAllPatientCustomFields()
     const customFieldOptions = customFields.map((f) => f.name)
-    const patientPlaceholders = generatePlaceholderObject(customFieldOptions, 'patient');
+    const patientPlaceholders = generatePlaceholderObject(customFieldOptions, 'patient', true);
 
     const customtaskFieldsResponse = await getAllTaskListCustomFields();
     const customTaskFieldsOptions = customtaskFieldsResponse.map((f) => f.name);
-    const taskPlaceholders = generatePlaceholderObject(customTaskFieldsOptions, 'task');
+    const taskPlaceholders = generatePlaceholderObject(customTaskFieldsOptions, 'task', true);
 
     const allPlaceholders = {
       ...defaultPlaceHolders,
