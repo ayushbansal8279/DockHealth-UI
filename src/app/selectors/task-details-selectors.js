@@ -23,7 +23,7 @@ import {
   globalTaskDetailsSelector,
   globalMultipleTaskDetailsSelector,
 } from 'selectors/global-search-selectors';
-import { profileTaskDetailsSelector } from 'selectors/custom-profile-details-selectors';
+import { profileMultipleTaskDetailsSelector, profileTaskDetailsSelector } from 'selectors/custom-profile-details-selectors';
 
 export const taskLookupSelector = (state, origin, task) => {
   if (origin === TaskOrigin.LIST) {
@@ -85,6 +85,9 @@ export const multipleTaskLookupSelector = (state, origin, taskIdentifiers) => {
   }
   if (origin === TaskOrigin.PATIENT) {
     return patientMultipleTaskDetailsSelector(state, taskIdentifiers);
+  }
+  if (origin === TaskOrigin.CUSTOM_PROFILE) {
+    return profileMultipleTaskDetailsSelector(state, taskIdentifiers);
   }
   if (origin === TaskOrigin.TEMPLATE) {
     return templateMultipleTaskDetailsSelector(state, taskIdentifiers);

@@ -30,7 +30,7 @@ const INITIAL_STATE = {
   },
 };
 
-function updateWorkflowInState(workflowIdentifier, updatedData, state) {
+export function updateWorkflowInState(workflowIdentifier, updatedData, state) {
   const updatedMap = {
     [workflowIdentifier]: {
       ...state.tasksMap[workflowIdentifier],
