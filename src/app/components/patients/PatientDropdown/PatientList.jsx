@@ -46,6 +46,7 @@ const PatientList = ({
   disableAdding,
   onSelect,
   closePopover,
+  openAddPatientModal,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const [searchValue, setSearchValue] = useState('');
@@ -180,34 +181,51 @@ const PatientList = ({
       const [firstName, ...lastNames] = patient.split(' ');
       data = { firstName, lastName: lastNames.join(' ') };
     }
+    if (openAddPatientModal) {
+      dispatch(
+        openModal('EditPatient', {
+          patient: data,
+          onAdded: (newPatientData) => {
+            onTaskDrawerPatientAdded();
 
-    dispatch(
-      openModal('EditPatient', {
-        patient: data,
-        onAdded: (newPatientData) => {
-          onTaskDrawerPatientAdded();
+            addPatient(newPatientData)
+              .then(async ({ patientIdentifier, firstName, lastName }) => {
+                await onSelect({
+                  firstName,
+                  lastName,
+                  value: patientIdentifier,
+                  patientIdentifier,
+                  displayLabel: `${lastName}, ${firstName} `,
+                });
+              })
+              .catch(noop);
+          },
+          mode: 'add',
+        }),
+      );
+    } else {
+      onTaskDrawerPatientAdded();
 
-          addPatient(newPatientData)
-            .then(async ({ patientIdentifier, firstName, lastName }) => {
-              await onSelect({
-                firstName,
-                lastName,
-                value: patientIdentifier,
-                patientIdentifier,
-                displayLabel: `${lastName}, ${firstName} `,
-              });
-            })
-            .catch(noop);
-        },
-        mode: 'add',
-      }),
-    );
+      addPatient(data)
+        .then(async ({ patientIdentifier, firstName, lastName }) => {
+          clearInput();
+          await onSelect({
+            firstName,
+            lastName,
+            value: patientIdentifier,
+            patientIdentifier,
+            displayLabel: `${lastName}, ${firstName} `,
+          });
+        })
+        .catch(noop);
+    }
   }, [
     searchValue,
     patientAddEnabled,
     // fetchPatients,
     onSelect,
     dispatch,
+    openAddPatientModal,
     closePopover,
   ]);
 
