@@ -5,7 +5,7 @@ import React, {
   useCallback,
   useMemo,
 } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import debounce from 'lodash.debounce';
 import MagnifierIcon from 'img/magnifier.svg';
 import { getPatientsByCriteria } from 'api/patients-api';
@@ -36,6 +36,7 @@ import {
   RefineSearchRow,
   SearchPatientsResultList,
 } from './styled';
+import { openModal } from '@/app/modal/actions';
 
 const MAX_PATIENT_RESULTS = 200;
 
@@ -44,6 +45,7 @@ const PatientList = ({
   patientIdentifiersToExclude = [],
   disableAdding,
   onSelect,
+  closePopover,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const [searchValue, setSearchValue] = useState('');
@@ -57,6 +59,7 @@ const PatientList = ({
   const currentOrganizationIdentifier = sessionStorage.getItem(
     'currentOrganizationIdentifier',
   );
+  const dispatch = useDispatch();
   const currentOrganization =
     currentUser?.userOrganizations?.find(
       ({ organizationIdentifier }) =>
@@ -166,7 +169,9 @@ const PatientList = ({
     if (!patientAddEnabled) {
       return;
     }
-
+    if (closePopover) {
+      closePopover();
+    }
     let data = {};
     if (patient.includes(',')) {
       const [lastName, ...firstNames] = patient.split(',');
@@ -176,25 +181,34 @@ const PatientList = ({
       data = { firstName, lastName: lastNames.join(' ') };
     }
 
-    onTaskDrawerPatientAdded();
+    dispatch(
+      openModal('EditPatient', {
+        patient: data,
+        onAdded: (newPatientData) => {
+          onTaskDrawerPatientAdded();
 
-    addPatient(data)
-      .then(async ({ patientIdentifier, firstName, lastName }) => {
-        clearInput();
-        await onSelect({
-          firstName,
-          lastName,
-          value: patientIdentifier,
-          patientIdentifier,
-          displayLabel: `${lastName}, ${firstName} `,
-        });
-      })
-      .catch(noop);
+          addPatient(newPatientData)
+            .then(async ({ patientIdentifier, firstName, lastName }) => {
+              await onSelect({
+                firstName,
+                lastName,
+                value: patientIdentifier,
+                patientIdentifier,
+                displayLabel: `${lastName}, ${firstName} `,
+              });
+            })
+            .catch(noop);
+        },
+        mode: 'add',
+      }),
+    );
   }, [
     searchValue,
     patientAddEnabled,
     // fetchPatients,
     onSelect,
+    dispatch,
+    closePopover,
   ]);
 
   // eslint-disable-next-line unicorn/consistent-function-scoping

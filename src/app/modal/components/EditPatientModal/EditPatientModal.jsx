@@ -26,8 +26,8 @@ import {
 } from './styled';
 import { GENDER_OPTIONS_BIRTH, validationSchema } from './helpers';
 
-const EditPatientModal = ({ closeModal, patient, onAdded }) => {
-  const editMode = !!patient;
+const EditPatientModal = ({ closeModal, patient, onAdded, mode }) => {
+  const editMode = mode === 'edit';
   const dispatch = useDispatch();
   const currentUser = useSelector(userProfileSelector);
   const currentOrganization = useSelector(selectedUserOrganizationSelector);
@@ -51,15 +51,19 @@ const EditPatientModal = ({ closeModal, patient, onAdded }) => {
     defaultValues: patientValues,
   });
 
-  const onSubmit = data => {
-    const { patientIdentifier } = patient;
-    const updateData = mergeDeepRight(patient, data);
-    updateData.allNotes = undefined;
-    updateData.patientLabels = undefined;
-    updateData.createdDateTime = undefined;
-    updateData.updatedDateTime = undefined;
-    onAdded(updateData);
-    dispatch(updatePatientDetails(patientIdentifier, updateData));
+  const onSubmit = (data) => {
+    if (editMode) {
+      const { patientIdentifier } = patient;
+      const updateData = mergeDeepRight(patient, data);
+      updateData.allNotes = undefined;
+      updateData.patientLabels = undefined;
+      updateData.createdDateTime = undefined;
+      updateData.updatedDateTime = undefined;
+      onAdded(updateData);
+      dispatch(updatePatientDetails(patientIdentifier, updateData));
+    } else {
+      onAdded(data);
+    }
     closeModal();
   };
 
@@ -171,7 +175,7 @@ const EditPatientModal = ({ closeModal, patient, onAdded }) => {
                   >
                     Cancel
                   </Button>
-                  <Button type="submit">Save</Button>
+                  <Button type="submit">{editMode ? 'Save' : 'Add'}</Button>
                 </ButtonGroupFlexStyled>
               </Grid>
             </Grid>
