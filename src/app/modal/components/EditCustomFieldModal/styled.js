@@ -100,3 +100,9 @@ export const CheckboxContainer = styled.div`
   justify-content: center;
   align-items: center;
 `;
+
+export const ErrorMessage = styled.p`
+  color: ${palette.red}; 
+  font-size: 0.875rem;
+  margin: 10px 0 0 0;
+`;
