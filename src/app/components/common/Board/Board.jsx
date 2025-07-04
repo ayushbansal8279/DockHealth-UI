@@ -85,12 +85,19 @@ const Board = ({
       setActiveTask(null);
       setActiveTaskIndex(null);
       if (!over) return;
-      const type =
-        active?.data?.current?.type === 'COLUMN' &&
-        over?.data?.current?.type === 'COLUMN'
-          ? 'COLUMN'
-          : 'TASK_LIST';
-      if (active?.id === over?.id && type === 'COLUMN') return;
+      const activeId = active?.id;
+      const overId = over?.id;
+      const activeType = active?.data?.current?.type;
+      const overType = over?.data?.current?.type;
+
+      const isActiveATask = activeType === 'TASK_LIST';
+      const isOverATask = overType === 'TASK_LIST';
+      const isActiveAColumn = activeType === 'COLUMN';
+      const isOverAColumn = overType === 'COLUMN';
+
+      const type = isActiveAColumn && isOverAColumn ? 'COLUMN' : 'TASK_LIST';
+      if (isActiveATask && isOverAColumn) return;
+      if (activeId === overId && type === 'COLUMN') return;
       switch (type) {
         case 'COLUMN':
           onReorderColumns(
