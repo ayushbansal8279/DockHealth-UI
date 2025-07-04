@@ -7,9 +7,11 @@ import {
   fork,
   take,
   actionChannel,
+  select,
 } from 'redux-saga/effects';
 import pluck from 'ramda/src/pluck';
 import move from 'ramda/src/move';
+import isEmpty from 'ramda/src/isEmpty';
 import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
 import { closeModal } from 'modal/actions';
@@ -21,6 +23,8 @@ import { getTemplateBundle } from 'api/template-bundle-api';
 import { TASK_DISAPPEAR_DELAY } from 'helpers/task-update-helper';
 import * as TemplateBundleActions from 'actions/template-bundle-actions';
 import { checkIfHasIncompleteTasks } from 'helpers/tasklist-helpers';
+import { selectedFiltersInMegaFilterSelector } from '../selectors/mega-filter-selectors';
+import checkIfTaskMatchesFilters from '../helpers/filters-helpers';
 
 function* reorderSubtasks(payload) {
   const {
@@ -185,11 +189,24 @@ function* refreshTemplateBundle({ templateBundleIdentifier }) {
       getTemplateBundle,
       templateBundleIdentifier,
     );
-    yield put({
-      type: ActionTypes.UPDATE_TEMPLATE_BUNDLE_SUCCESS,
-      bundleIdentifier: templateBundleIdentifier,
-      dataToUpdate: templateBundle,
-    });
+    const filters = yield select(selectedFiltersInMegaFilterSelector);
+
+    if (filters && !isEmpty(filters)) {
+      if (checkIfTaskMatchesFilters(templateBundle, filters)) {
+        yield put({
+          type: ActionTypes.UPDATE_TEMPLATE_BUNDLE_SUCCESS,
+          bundleIdentifier: templateBundleIdentifier,
+          dataToUpdate: templateBundle,
+        });
+      }
+    }else {
+      yield put({
+        type: ActionTypes.UPDATE_TEMPLATE_BUNDLE_SUCCESS,
+        bundleIdentifier: templateBundleIdentifier,
+        dataToUpdate: templateBundle,
+      });
+    }
+
     yield put(
       ListDetailsActions.getListDetailsTaskCounters(
         templateBundle.taskListIdentifier,
@@ -202,6 +219,7 @@ function* refreshTemplateBundle({ templateBundleIdentifier }) {
         TemplateBundleActions.completeTemplateBundle(templateBundleIdentifier),
       );
     }
+
   } catch {
     yield put(showGlobalErrorAlert());
   }
@@ -323,12 +341,17 @@ function* updateTaskDetails({ task, detailsState }) {
 
 function* updateTaskStartDate({ task, startDate, startDateIntent = null }) {
   try {
-    const updatedTask = yield call(TaskApi.updateStartDate, task.identifier, startDate, startDateIntent);
+    const updatedTask = yield call(
+      TaskApi.updateStartDate,
+      task.identifier,
+      startDate,
+      startDateIntent,
+    );
     yield put({
       type: ActionTypes.UPDATE_TASK_START_DATE_SUCCESS,
       task,
       startDate: updatedTask.startDate,
-      startDateIntent: updatedTask.startDateIntent
+      startDateIntent: updatedTask.startDateIntent,
     });
     yield put(showGlobalAlert(AlertMessages.UPDATED));
   } catch {
@@ -336,7 +359,7 @@ function* updateTaskStartDate({ task, startDate, startDateIntent = null }) {
       type: ActionTypes.UPDATE_TASK_START_DATE_FAILURE,
       task,
       startDate: task.startDate,
-      startDateIntent: task?.startDateIntent
+      startDateIntent: task?.startDateIntent,
     });
     yield put(showGlobalErrorAlert());
   }
@@ -348,13 +371,13 @@ function* updateTaskDueDate({ task, dueDate, dueDateIntent = null }) {
       TaskApi.updateDueDate,
       task.identifier,
       dueDate,
-      dueDateIntent
+      dueDateIntent,
     );
     yield put({
       type: ActionTypes.UPDATE_TASK_DUE_DATE_SUCCESS,
       task,
       dueDate: updatedTask.dueDate,
-      dueDateIntent: updatedTask.dueDateIntent
+      dueDateIntent: updatedTask.dueDateIntent,
     });
     yield put({ type: ActionTypes.REFRESH_ORIGIN });
     yield put(showGlobalAlert(AlertMessages.UPDATED));
@@ -363,7 +386,7 @@ function* updateTaskDueDate({ task, dueDate, dueDateIntent = null }) {
       type: ActionTypes.UPDATE_TASK_DUE_DATE_FAILURE,
       task,
       dueDate: task?.dueDate,
-      dueDateIntent: task?.dueDateIntent
+      dueDateIntent: task?.dueDateIntent,
     });
     yield put(showGlobalErrorAlert());
   }
