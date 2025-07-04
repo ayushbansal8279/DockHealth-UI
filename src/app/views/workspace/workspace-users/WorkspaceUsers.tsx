@@ -6,7 +6,7 @@ import { useParams } from "react-router-dom";
 import HeaderSearch from "@/app/components/template/HeaderSearch/HeaderSearch";
 import { openModal } from "@/app/modal/actions";
 import BulkEditSection from "@/app/components/workspace/BulkEditSection/BulkEditSection";
-import { UserEditContext } from "@/app/context-api/workspace-user-context";
+import { BulkEditContext } from "@/app/context-api/bulk-edit-context";
 import InviteUserToWorkspaceForm from "@/app/components/workspace/InviteUserToWorkspaceForm/InviteUserToWorkspaceForm";
 import { getWorkspaceUsers } from "@/app/actions/workspace-actions";
 import { isFetchingWorkspaceUsersSelector, workspaceUsersSelector } from "@/app/selectors/workspace-selectors";
@@ -38,10 +38,10 @@ const WorkspaceUsers = () => {
     }
   }, [workspaceIdentifier, dispatch]);
 
-  const { setSelectableUsers } = useContext(UserEditContext);
+  const { setSelectableItems } = useContext(BulkEditContext);
 
   useEffect(() => {
-    setSelectableUsers(usersWithSelection	);
+    setSelectableItems(usersWithSelection	);
   }, [usersWithSelection	]);
   
   const openAddUserModal = () => {
@@ -72,18 +72,17 @@ const WorkspaceUsers = () => {
             <span style={{ marginLeft: '-5px' }}>Add User</span>
           </ToolbarButton>
         </WorkspaceUsersHeader>
-          {isLoading ? (
-            <ListLoaderContainer>
-              <ListSkeletonLoader header />
-            </ListLoaderContainer>
-          ) : (
-            <WorkspaceUsersTableWrapper>
-              <WorkspaceUserTable searchTerm={searchTerm} />
-            </WorkspaceUsersTableWrapper>
-          )}
-        <BulkEditSection context={UserEditContext}>
+        {isLoading ? (
+          <ListLoaderContainer>
+            <ListSkeletonLoader header />
+          </ListLoaderContainer>
+        ) : (
+          <WorkspaceUsersTableWrapper>
+            <WorkspaceUserTable searchTerm={searchTerm} />
+          </WorkspaceUsersTableWrapper>
+        )}
+        <BulkEditSection>
           <BulkEditSectionContainer>
-            {/* TODO: bulk actions */}
           </BulkEditSectionContainer>
         </BulkEditSection>
       </WorkspaceUsersContainer>

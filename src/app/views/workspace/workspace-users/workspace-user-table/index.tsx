@@ -10,7 +10,7 @@ import { createFilter } from 'react-search-input';
 
 import Checkbox from "@/app/components/common/Checkbox/Checkbox";
 import TaskItemBulkEdit from "@/app/components/task/StandardTaskItem/TaskItemComponents/TaskItemBulkEdit";
-import { UserEditContext } from "@/app/context-api/workspace-user-context";
+import { BulkEditContext } from "@/app/context-api/bulk-edit-context";
 import { OutfitTypography } from "@/app/styles/theme";
 import UserTypeOptions from "@/app/views/self-serve/users/UserTypeOptions/UserTypeOptions";
 import { changeWorkspaceUserRole } from "@/app/actions/workspace-actions";
@@ -27,12 +27,12 @@ const WorkspaceUserTable = ({ searchTerm }: { searchTerm: string }) => {
   const dispatch = useDispatch();
   const { identifier: workspaceIdentifier } = useParams<{ identifier: string }>();
 
-  const userContext = useContext(UserEditContext);
+  const userContext = useContext(BulkEditContext);
   const {
-    selectableUsers: users,
+    selectableItems: users,
     isListChecked,
-    toggleUser,
-    toggleAllUser
+    toggleItem,
+    toggleAllItems
   } = userContext;
 
   const renderCheckboxColumnHeader = ({ isListChecked, onListSelect }: CheckboxHeaderProps) => (
@@ -58,12 +58,12 @@ const WorkspaceUserTable = ({ searchTerm }: { searchTerm: string }) => {
       renderHeader: () =>
         renderCheckboxColumnHeader({
           isListChecked,
-          onListSelect: toggleAllUser,
+          onListSelect: toggleAllItems,
         }),
       renderCell: ({ row }) => (
         <TaskItemBulkEdit
           isChecked={row?.isSelected}
-          onClick={() => toggleUser(row.identifier)}
+          onClick={() => toggleItem(row.identifier)}
           isDisabled={false}
         />
       ),

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { Add } from "@mui/icons-material";
 
@@ -7,9 +7,19 @@ import { openModal } from "@/app/modal/actions";
 import WorkspaceListTable from "./workspace-lists-table"
 import { WorkspaceListsContainer, WorkspaceListsHeader, WorkspaceListsTableWrapper } from "./styled";
 import Button from "@/app/components/common/Button/Button";
+import BulkEditSection from "@/app/components/workspace/BulkEditSection/BulkEditSection";
+import { BulkEditSectionContainer } from "../../user-group/styled";
+import { BulkEditContext } from "@/app/context-api/bulk-edit-context";
+import { workspaceListsDummyData } from "./helpers";
 
 const WorkspaceLists = () => {
   const dispatch = useDispatch();
+
+  const { setSelectableItems } = useContext(BulkEditContext);
+  
+  useEffect(() => {
+    setSelectableItems(workspaceListsDummyData);
+  }, [workspaceListsDummyData]);
   
   const openAddListModal = () => {
     dispatch(openModal('ListForm', {
@@ -34,6 +44,10 @@ const WorkspaceLists = () => {
       <WorkspaceListsTableWrapper>
         <WorkspaceListTable />
       </WorkspaceListsTableWrapper>
+      <BulkEditSection>
+        <BulkEditSectionContainer>
+        </BulkEditSectionContainer>
+      </BulkEditSection>
     </WorkspaceListsContainer>
   );
 };
