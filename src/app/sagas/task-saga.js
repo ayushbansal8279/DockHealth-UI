@@ -199,7 +199,7 @@ function* refreshTemplateBundle({ templateBundleIdentifier }) {
           dataToUpdate: templateBundle,
         });
       }
-    }else {
+    } else {
       yield put({
         type: ActionTypes.UPDATE_TEMPLATE_BUNDLE_SUCCESS,
         bundleIdentifier: templateBundleIdentifier,

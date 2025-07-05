@@ -111,6 +111,7 @@ export const checkIfTaskMatchesFilters = (task, filters) => {
       filters.workflowStatusOptions.options.some(
         (workflowStatusOption) =>
           workflowStatusOption === workflowStatus ||
+          workflowStatusOption === workflowStatus?.identifier ||
           (workflowStatusOption === 'NO_STATUS' && !workflowStatus),
       )) &&
     (!filters.assignedTo ||
