@@ -661,7 +661,7 @@ function* applyTaskTemplate({
     const filters = yield select(selectedFiltersInMegaFilterSelector);
 
     if (isWarning) {
-      applyTaskTemplateFailure({
+      yield applyTaskTemplateFailure({
         errorType: ERROR_TYPES.ASSIGNED_USERS_ARE_NOT_IN_THE_TASK_LIST,
         failureDetails: { taskCount: assignmentsMismatchCount },
         templateDetails: {
@@ -688,8 +688,8 @@ function* applyTaskTemplate({
           taskGroupIdentifier,
         });
       }
+      yield put(showGlobalAlert(AlertMessages.WORKFLOW_CREATED));
     }
-    yield put(showGlobalAlert(AlertMessages.WORKFLOW_CREATED));
   } catch {
     yield put(showGlobalErrorAlert());
   }
