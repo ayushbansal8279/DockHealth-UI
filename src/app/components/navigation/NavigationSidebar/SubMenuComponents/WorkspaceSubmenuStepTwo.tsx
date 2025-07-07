@@ -75,7 +75,7 @@ const WorkspaceSubmenuStepTwo = () => {
   };
 
   useEffect(() => {
-    dispatch(TaskListActions.getTaskListForUser() as any);
+    dispatch(TaskListActions.getTaskListForUser(workspaceIdentifier) as any);
     dispatch(PatientsActions.getPatientsLists() as any);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -84,6 +84,7 @@ const WorkspaceSubmenuStepTwo = () => {
     dispatch(
       openModal('ListForm', {
         showPrivacyOptions: true,
+        workspaceIdentifier
       }),
     );
   };

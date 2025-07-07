@@ -62,7 +62,7 @@ const WorkspaceListTable = () => {
       renderCell: ({ row }) => (
         <TaskItemBulkEdit
           isChecked={row?.isSelected}
-          onClick={() => toggleItem(row.id)}
+          onClick={() => toggleItem(row.taskListIdentifier)}
           isDisabled={false}
         />
       ),
@@ -99,42 +99,42 @@ const WorkspaceListTable = () => {
         );
       },
     },
-    {
-      field: 'users',
-      headerName: 'Users',
-      flex: 1,
-      renderCell: ({ row }) => {
-        const users = row.users;
-        return (
-          <div style={{ display: 'flex', marginLeft: '15px' }}>
-            {users?.length}
-          </div>
-        );
-      },
-    },
-    {
-      field: 'admins',
-      headerName: 'Admins',
-      flex: 2,
-      renderCell: ({ row }) => {
-        const admins = row.admins;
-        return (
-          <div style={{ display: 'flex' }}>
-            {admins.map((admin, index) => (
-              <Box
-                display="flex"
-                alignItems="center"
-                key={admin.identifier}
-                pl={index === 0 ? 0 : 0.5}
-              >
-                <AvatarFilterMember member={admin} size={30} />
-                <Box pl={0.5}></Box>
-              </Box>
-            ))}
-          </div>
-        );
-      },
-    },
+    // {
+    //   field: 'users',
+    //   headerName: 'Users',
+    //   flex: 1,
+    //   renderCell: ({ row }) => {
+    //     const users = row.users;
+    //     return (
+    //       <div style={{ display: 'flex', marginLeft: '15px' }}>
+    //         {users?.length}
+    //       </div>
+    //     );
+    //   },
+    // },
+    // {
+    //   field: 'admins',
+    //   headerName: 'Admins',
+    //   flex: 2,
+    //   renderCell: ({ row }) => {
+    //     const admins = row.admins;
+    //     return (
+    //       <div style={{ display: 'flex' }}>
+    //         {admins?.map((admin, index) => (
+    //           <Box
+    //             display="flex"
+    //             alignItems="center"
+    //             key={admin.identifier}
+    //             pl={index === 0 ? 0 : 0.5}
+    //           >
+    //             <AvatarFilterMember member={admin} size={30} />
+    //             <Box pl={0.5}></Box>
+    //           </Box>
+    //         ))}
+    //       </div>
+    //     );
+    //   },
+    // },
     {
       field: 'action',
       headerName: 'Actions',
@@ -166,7 +166,7 @@ const WorkspaceListTable = () => {
     <Box sx={{ height: 'calc(80vh - 100px)', p: 2, width: '1179px' }}>
       <StyledDataGrid
         columns={columns}
-        getRowId={(row) => row.identifier}
+        getRowId={(row) => row.taskListIdentifier}
         rows={rows}
         rowHeight={40}
         headerHeight={45}

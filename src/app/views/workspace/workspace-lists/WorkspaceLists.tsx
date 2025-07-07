@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Add } from "@mui/icons-material";
 
 import HeaderSearch from "@/app/components/template/HeaderSearch/HeaderSearch";
@@ -10,20 +10,31 @@ import Button from "@/app/components/common/Button/Button";
 import BulkEditSection from "@/app/components/workspace/BulkEditSection/BulkEditSection";
 import { BulkEditSectionContainer } from "../../user-group/styled";
 import { BulkEditContext } from "@/app/context-api/bulk-edit-context";
-import { workspaceListsDummyData } from "./helpers";
+import { taskListsSelector } from "@/app/selectors/task-list-selectors";
+import * as TaskListActions from 'actions/task-list-actions';
+import { workspaceSelector } from "@/app/selectors/workspace-selectors";
 
 const WorkspaceLists = () => {
   const dispatch = useDispatch();
+  
+  const workspace = useSelector(workspaceSelector);
+  const workspaceIdentifier = workspace.workspaceIdentifier;
+  const taskLists = useSelector(taskListsSelector);
+
+  useEffect(() => {
+    dispatch(TaskListActions.getTaskListForUser(workspaceIdentifier) as any);
+  }, [workspaceIdentifier]);
 
   const { setSelectableItems } = useContext(BulkEditContext);
-  
+
   useEffect(() => {
-    setSelectableItems(workspaceListsDummyData);
-  }, [workspaceListsDummyData]);
+    setSelectableItems(taskLists);
+  }, [taskLists]);
   
   const openAddListModal = () => {
     dispatch(openModal('ListForm', {
       showPrivacyOptions: true,
+      workspaceIdentifier
     }));
   }
 

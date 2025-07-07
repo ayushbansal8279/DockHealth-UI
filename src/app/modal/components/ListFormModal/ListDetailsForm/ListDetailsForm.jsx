@@ -44,13 +44,14 @@ const onSubmit =
     setList,
     taskListIdentifier,
     history,
+    workspaceIdentifier
   }) =>
   (data) => {
     event.stopPropagation();
     event.preventDefault();
 
     setIsSavingList(true);
-    dispatch(TaskListActions.saveTaskList({ ...data, taskListIdentifier }))
+    dispatch(TaskListActions.saveTaskList({ ...data, taskListIdentifier, workspaceIdentifier }))
       .then((updatedList) => {
         history.push(createTaskListPath(updatedList.taskListIdentifier));
         if (updatedList) {
@@ -88,6 +89,7 @@ const ListDetailsForm = ({
   list,
   setList,
   showPrivacyOptions = false,
+  workspaceIdentifier,
 }) => {
   const dispatch = useDispatch();
   const [isSavingList, setIsSavingList] = useState(false);
@@ -158,6 +160,7 @@ const ListDetailsForm = ({
             setList,
             taskListIdentifier: list?.taskListIdentifier,
             history,
+            workspaceIdentifier
           }),
         )(event)
       }

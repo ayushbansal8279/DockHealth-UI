@@ -4,10 +4,13 @@ import {
 } from 'helpers/ga-event-helper';
 import axios from './axios-heydoc';
 
-export function getTaskListForUser() {
+export function getTaskListForUser(workspaceIdentifier) {
   return axios({
     url: 'list/findTaskListsForUser?basicDetails=true',
     method: 'get',
+    headers: workspaceIdentifier
+      ? { CurrentWorkspaceIdentifier: workspaceIdentifier }
+      : undefined,
   })
     .then((response) => response?.data)
     .catch((error) => {
@@ -44,9 +47,15 @@ export function getPendingTaskListsForUser() {
     });
 }
 
-export function addTaskList(tasklist) {
-  return axios
-    .post('list/', tasklist)
+export function addTaskList({workspaceIdentifier, ...taskList}) {
+  return axios({
+    url: 'list/',
+    method: 'post',
+    data: taskList,
+    headers: workspaceIdentifier
+      ? { CurrentWorkspaceIdentifier: workspaceIdentifier }
+      : undefined,
+  })
     .then((response) => response?.data)
     .catch((error) => {
       throw new Error(error?.response?.data?.errorMessage);
