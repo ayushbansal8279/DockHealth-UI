@@ -51,8 +51,8 @@ const AttachmentsSection = ({
   const downloadDisabled = currentTaskAttachments?.some(
     ({ scanStatus }) =>
       scanStatus &&
-      (scanStatus !== ScanStatus.CLEAN ||
-        scanStatus !== ScanStatus.UNSUPPORTED),
+      !(scanStatus === ScanStatus.CLEAN ||
+        scanStatus === ScanStatus.UNSUPPORTED),
   );
   const patientIdentifier = selectedTask?.patient?.patientIdentifier;
 
@@ -210,7 +210,7 @@ const AttachmentsSection = ({
               )}
             </div>
           ))}
-        {currentTaskAttachments && currentTaskAttachments.length > 0 && (
+        {currentTaskAttachments?.length > 0 && (
           <Grid item xs={12}>
             <div>
               <Button

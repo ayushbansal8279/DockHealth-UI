@@ -658,23 +658,38 @@ function* applyTaskTemplate({
         unassign,
       });
     const isWarning = statusCode === 'WARNING';
+    const filters = yield select(selectedFiltersInMegaFilterSelector);
 
-    yield isWarning
-      ? applyTaskTemplateFailure({
-          errorType: ERROR_TYPES.ASSIGNED_USERS_ARE_NOT_IN_THE_TASK_LIST,
-          failureDetails: { taskCount: assignmentsMismatchCount },
-          templateDetails: {
-            taskTemplateIdentifier,
-            taskGroupIdentifier,
+    if (isWarning) {
+      yield applyTaskTemplateFailure({
+        errorType: ERROR_TYPES.ASSIGNED_USERS_ARE_NOT_IN_THE_TASK_LIST,
+        failureDetails: { taskCount: assignmentsMismatchCount },
+        templateDetails: {
+          taskTemplateIdentifier,
+          taskGroupIdentifier,
+          taskListIdentifier,
+        },
+      });
+    } else {
+      if (filters && !isEmpty(filters)) {
+        if (checkIfTaskMatchesFilters(taskWorkflowDto, filters)) {
+          yield put({
+            type: ActionTypes.APPLY_TASK_TEMPLATE_SUCCESS,
+            template: taskWorkflowDto,
             taskListIdentifier,
-          },
-        })
-      : put({
+            taskGroupIdentifier,
+          });
+        }
+      } else {
+        yield put({
           type: ActionTypes.APPLY_TASK_TEMPLATE_SUCCESS,
           template: taskWorkflowDto,
           taskListIdentifier,
           taskGroupIdentifier,
         });
+      }
+      yield put(showGlobalAlert(AlertMessages.WORKFLOW_CREATED));
+    }
   } catch {
     yield put(showGlobalErrorAlert());
   }

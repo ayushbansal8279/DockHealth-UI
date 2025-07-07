@@ -86,7 +86,6 @@ const SettingsSubmenu = () => {
         </AccessRestrictor>
       )}
       {true && (
-        // {isProPlan && (
         <AccessRestrictor allowedToRoles={[ADMIN, OWNER]}>
           <SubMenuLink to="/settings/workspaces">Workspaces</SubMenuLink>
         </AccessRestrictor>
@@ -94,6 +93,7 @@ const SettingsSubmenu = () => {
       <AccessRestrictor allowedToRoles={[ADMIN, OWNER]}>
         <SubMenuLink to={INTEGRATIONS_PATH}>Integrations</SubMenuLink>
       </AccessRestrictor>
+
     </Box>
   );
 };

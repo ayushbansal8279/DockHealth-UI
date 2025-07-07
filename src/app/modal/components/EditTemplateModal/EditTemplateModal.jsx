@@ -21,9 +21,12 @@ import {
 import {
   TEMPLATE_TYPES,
   TEMPLATE_TYPE_OPTIONS,
+  defaultPlaceHolderOptions,
+  generatePlaceholderObject,
   validationSchema,
 } from './helpers';
 import { CancelButton, ConfirmButton } from '../ModalButton/ModalButtons';
+import { getAllPatientCustomFields, getAllTaskListCustomFields } from '@/app/api/custom-fields-api';
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const EditTemplateModal = ({ closeModal, template, onAdded, onUpdated }) => {
@@ -39,6 +42,7 @@ const EditTemplateModal = ({ closeModal, template, onAdded, onUpdated }) => {
 
   const { register, unregister, handleSubmit, setValue, watch } = formMethods;
   const [currentValue, setCurrentValue] = useState(template?.details);
+  const [templatePlaceholderOptions, setTemplatePlaceholderOptions] = useState({});
 
   const handleTextEditorChange = (value) => {
     setCurrentValue(value);
@@ -96,6 +100,33 @@ const EditTemplateModal = ({ closeModal, template, onAdded, onUpdated }) => {
       });
   };
 
+
+  const fetchTemplatePlaceholders = async () => {
+
+    const defaultPlaceHolders = generatePlaceholderObject(defaultPlaceHolderOptions, 'patient');
+
+    const customFields = await getAllPatientCustomFields()
+    const customFieldOptions = customFields.map((f) => f.name)
+    const patientPlaceholders = generatePlaceholderObject(customFieldOptions, 'patient', true);
+
+    const customtaskFieldsResponse = await getAllTaskListCustomFields();
+    const customTaskFieldsOptions = customtaskFieldsResponse.map((f) => f.name);
+    const taskPlaceholders = generatePlaceholderObject(customTaskFieldsOptions, 'task', true);
+
+    const allPlaceholders = {
+      ...defaultPlaceHolders,
+      ...patientPlaceholders,
+      ...taskPlaceholders
+    };
+
+    setTemplatePlaceholderOptions(allPlaceholders)
+  };
+
+  useEffect(() => {
+    fetchTemplatePlaceholders()
+  }, []);
+
+
   return (
     <AddPatientFieldModalWrapper>
       <CloseIconButton onClick={closeModal} size="small" color="secondary">
@@ -132,19 +163,19 @@ const EditTemplateModal = ({ closeModal, template, onAdded, onUpdated }) => {
                   </Grid>
                   {(templateTypeValue === TEMPLATE_TYPES.EMAIL ||
                     templateTypeValue === TEMPLATE_TYPES.SMS) && (
-                    <Grid item xs={12}>
-                      <FormInput
-                        required
-                        autoFocus
-                        name="shortMessage"
-                        label={
-                          templateTypeValue === TEMPLATE_TYPES.EMAIL
-                            ? 'Subject'
-                            : 'Message'
-                        }
-                      />
-                    </Grid>
-                  )}
+                      <Grid item xs={12}>
+                        <FormInput
+                          required
+                          autoFocus
+                          name="shortMessage"
+                          label={
+                            templateTypeValue === TEMPLATE_TYPES.EMAIL
+                              ? 'Subject'
+                              : 'Message'
+                          }
+                        />
+                      </Grid>
+                    )}
                   {templateTypeValue !== TEMPLATE_TYPES.SMS && (
                     <Grid item xs={12}>
                       <CustomTextEditor label="Message">
@@ -155,6 +186,7 @@ const EditTemplateModal = ({ closeModal, template, onAdded, onUpdated }) => {
                           initOnClick
                           showCharCount
                           templatePlaceholders={true}
+                          templatePlaceholderOptions={templatePlaceholderOptions}
                         />
                       </CustomTextEditor>
                     </Grid>

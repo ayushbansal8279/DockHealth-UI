@@ -48,6 +48,9 @@ export const PatientColumn = {
   MOBILE: 'phoneMobile',
   HOME: 'phoneHome',
   LABELS: 'patientLabels',
+  SOURCE_EHR: 'sourceEhr',
+  EHR_LAST_SYNCED: 'sourceLastSyncDt',
+  EHR_STATUS: 'sourceStatus',
 };
 
 export const PatientHeaderColumn = {
@@ -61,6 +64,9 @@ export const PatientHeaderColumn = {
   MOBILE: 'MOBILE',
   HOME: 'HOME',
   LABELS: 'LABELS',
+  SOURCE_EHR: 'SOURCE_EHR',
+  EHR_LAST_SYNCED: 'EHR_LAST_SYNCED',
+  EHR_STATUS: 'EHR_STATUS',
 };
 
 export const PATIENT_BASE_COLUMN_CONFIG = {
@@ -74,6 +80,9 @@ export const PATIENT_BASE_COLUMN_CONFIG = {
   [PatientHeaderColumn.MOBILE]: true,
   [PatientHeaderColumn.HOME]: true,
   [PatientHeaderColumn.LABELS]: true,
+  [PatientHeaderColumn.SOURCE_EHR]: true,
+  [PatientHeaderColumn.EHR_LAST_SYNCED]: true,
+  [PatientHeaderColumn.EHR_STATUS]: true,
 };
 
 export const patientHeaderMap = {
@@ -87,4 +96,7 @@ export const patientHeaderMap = {
   DOB: 'DOB',
   EMAIL: 'EMAIL',
   LABELS: 'LABELS',
+  SOURCE_EHR: 'SOURCE EHR',
+  EHR_LAST_SYNCED: 'EHR LAST SYNCED',
+  EHR_STATUS: 'EHR STATUS',
 };

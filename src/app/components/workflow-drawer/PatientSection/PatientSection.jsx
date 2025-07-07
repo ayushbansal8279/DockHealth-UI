@@ -1,7 +1,10 @@
 /* eslint-disable no-unused-expressions */
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { userHasAiSummaryViewFeatureSelector, userProfileSelector } from 'selectors/user-selectors';
+import {
+  userHasAiSummaryViewFeatureSelector,
+  userProfileSelector,
+} from 'selectors/user-selectors';
 import { organizationSelector } from 'selectors/organization-selectors';
 import debounce from 'lodash.debounce';
 // import { openModal } from 'modal/actions';
@@ -35,6 +38,7 @@ import {
 import PatientSelectItem from '../../patients/PatientSelectItem/PatientSelectItem';
 import AISummaryModalOpenerHelper from '@/app/modal/components/AISummaryModal/AISummaryModalOpenerHelper';
 import { SummaryType } from '@/app/helpers/ai-helper';
+import { openModal } from '@/app/modal/actions';
 
 const PATIENT_IDENTIFIER_FIELD_NAME = 'patientIdentifier';
 const MAX_PATIENT_RESULTS = 200;
@@ -180,6 +184,7 @@ const PatientSection = ({
       };
       setAssignedPatient(patient);
       savePatient(patient);
+      setSelectedPatient(patient);
       // eslint-disable-next-line no-unused-expressions
       patientInputReference.current?.querySelector('input')?.blur();
     },
@@ -201,17 +206,25 @@ const PatientSection = ({
         data = { firstName, lastName: lastNames.join(' ') };
       }
 
-      addPatient(data)
-        .then(async ({ patientIdentifier, firstName, lastName }) => {
-          await fetchPatients(patient);
-          await handlePatientSelect({
-            value: patientIdentifier,
-            displayLabel: `${lastName}, ${firstName} `,
-          });
-        })
-        .catch(noop);
+      dispatch(
+        openModal('EditPatient', {
+          patient: data,
+          onAdded: (newPatientData) => {
+            addPatient(newPatientData)
+              .then(async ({ patientIdentifier, firstName, lastName }) => {
+                await fetchPatients(patient);
+                await handlePatientSelect({
+                  value: patientIdentifier,
+                  displayLabel: `${lastName}, ${firstName} `,
+                });
+              })
+              .catch(noop);
+          },
+          mode: 'add',
+        }),
+      );
     },
-    [patientAddEnabled, fetchPatients, handlePatientSelect],
+    [patientAddEnabled, fetchPatients, dispatch, handlePatientSelect],
   );
 
   const patientProfile = () => {
@@ -225,7 +238,10 @@ const PatientSection = ({
         <PatientLableContainer>
           <PatientContainer>
             {' '}
-            <PatientName status={selectedPatient.patientStatus} onClick={patientProfile}>
+            <PatientName
+              status={selectedPatient.patientStatus}
+              onClick={patientProfile}
+            >
               {selectedPatient.patientName}{' '}
               {selectedPatient.mrn && selectedPatient.mrn !== ''
                 ? `(${selectedPatient.mrn})`

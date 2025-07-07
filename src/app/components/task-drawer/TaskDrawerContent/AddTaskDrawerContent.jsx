@@ -3,7 +3,10 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { Grid, IconButton, useMediaQuery } from '@mui/material';
 import TaskDescription from 'components/task-drawer/TaskDescription/TaskDescription';
 import { useSelector, useDispatch } from 'react-redux';
-import { userProfileSelector } from 'selectors/user-selectors';
+import {
+  selectedUserOrganizationSelector,
+  userProfileSelector,
+} from 'selectors/user-selectors';
 import PrioritySection from '../PrioritySection/PrioritySection';
 import StatusSection from '../StatusSection/StatusSection';
 import TaskDrawerEmailBodyContainer from '../EmailBody/EmailBody';
@@ -86,9 +89,15 @@ const AddTaskDrawerContent = (props) => {
   const [searchedLists, setSearchedLists] = useState([]);
   const [lists, setLists] = useState([]);
   const currentUser = useSelector(userProfileSelector);
+  const currentOrganization = useSelector(selectedUserOrganizationSelector);
   const { userIdentifier } = currentUser;
   const dispatch = useDispatch();
   const isMobile = useMediaQuery((theme) => theme.breakpoints.down('sm'));
+  const quickAddPatientEnabledItem =
+    currentOrganization?.themeSettings?.find(
+      ({ name }) => name === 'patient.quickadd.enabled',
+    ) || {};
+  const quickAddPatientEnabled = quickAddPatientEnabledItem?.value !== 'false';
 
   useEffect(() => {
     const fetchList = async () => {
@@ -260,6 +269,7 @@ const AddTaskDrawerContent = (props) => {
             <PatientSection
               addTaskDrawer
               setPatientIdentifier={setPatientIdentifier}
+              quickAddPatientEnabled={quickAddPatientEnabled}
             />
           </Grid>
           <Grid item xs={12} mb={1} style={styleLeftColumn(isMobile)}>

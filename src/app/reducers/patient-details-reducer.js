@@ -12,6 +12,7 @@ const INITIAL_STATE = {
   patient: null,
   currentFolderIdentifier: null,
   attachments: null,
+  patientTaskAttachments: null,
   isFetchingPatient: false,
   labels: null,
   isFetchingLabels: false,
@@ -30,7 +31,7 @@ const INITIAL_STATE = {
   },
 };
 
-function updateWorkflowInState(workflowIdentifier, updatedData, state) {
+export function updateWorkflowInState(workflowIdentifier, updatedData, state) {
   const updatedMap = {
     [workflowIdentifier]: {
       ...state.tasksMap[workflowIdentifier],
@@ -93,20 +94,20 @@ export default (state = INITIAL_STATE, action = {}) => {
           if (l?.listType === 'PUBLIC') {
             return l.taskListIdentifier === taskListIdentifier
               ? {
-                  ...l,
-                  listDisplayColumns,
-                }
+                ...l,
+                listDisplayColumns,
+              }
               : l;
           }
           return l.taskListIdentifier === taskListIdentifier
             ? {
-                ...l,
-                listUsers: l.listUsers.map((u) =>
-                  u.identifier === currentUserIdentifier
-                    ? { ...u, listDisplayColumns }
-                    : u,
-                ),
-              }
+              ...l,
+              listUsers: l.listUsers.map((u) =>
+                u.identifier === currentUserIdentifier
+                  ? { ...u, listDisplayColumns }
+                  : u,
+              ),
+            }
             : l;
         }),
       };
@@ -164,6 +165,7 @@ export default (state = INITIAL_STATE, action = {}) => {
       return {
         ...state,
         attachments: action.attachments,
+        patientTaskAttachments: action.patientTaskAttachments,
         isFetchingAttachments: false,
       };
     }
@@ -185,11 +187,35 @@ export default (state = INITIAL_STATE, action = {}) => {
 
     case ActionTypes.UPDATE_PATIENT_ATTACHMENT_SUCCESS: {
       const { attachment: updatedAttachment } = action;
-
       return {
         ...state,
         attachments:
           state.attachments?.map((a) =>
+            a.attachmentIdentifier === updatedAttachment.attachmentIdentifier
+              ? { ...a, ...updatedAttachment }
+              : a,
+          ) ?? null,
+      };
+    }
+
+    case ActionTypes.DELETE_PATIENT_TASK_ATTACHMENT_SUCCESS: {
+      const { identifier } = action;
+      return {
+        ...state,
+        patientTaskAttachments:
+          state.patientTaskAttachments?.filter(
+            ({ attachmentIdentifier }) => attachmentIdentifier !== identifier,
+          ) || null,
+      };
+    }
+
+    case ActionTypes.UPDATE_PATIENT_TASK_ATTACHMENT_SUCCESS: {
+      const { attachment: updatedAttachment } = action;
+
+      return {
+        ...state,
+        patientTaskAttachments:
+          state.patientTaskAttachments?.map((a) =>
             a.attachmentIdentifier === updatedAttachment.attachmentIdentifier
               ? { ...a, ...updatedAttachment }
               : a,
@@ -380,13 +406,13 @@ export default (state = INITIAL_STATE, action = {}) => {
         lists: state.lists?.map((l) => {
           return l?.taskListIdentifier === dataToUpdate?.taskListIdentifier
             ? {
-                ...l,
-                tasks: updateBundleInList(
-                  dataToUpdate,
-                  dataToUpdate.identifier,
-                  l.tasks,
-                ),
-              }
+              ...l,
+              tasks: updateBundleInList(
+                dataToUpdate,
+                dataToUpdate.identifier,
+                l.tasks,
+              ),
+            }
             : { ...l };
         }),
         tasksMap: newMap,
@@ -451,37 +477,37 @@ export default (state = INITIAL_STATE, action = {}) => {
       const { taskListIdentifier } = addedTask?.taskList || {};
       const updatedState = bundleIdentifier
         ? {
-            ...state,
-            lists: state.lists?.map((l) => ({
-              ...l,
-              tasks: l.tasks?.map((t) =>
-                t.identifier === bundleIdentifier
-                  ? { ...t, tasks: [...(t.tasks || []), addedTask] }
-                  : t,
-              ),
-            })),
-            tasksMap: {
-              ...state.tasksMap,
-              [bundleIdentifier]: {
-                ...state.tasksMap[bundleIdentifier],
-                tasks: [
-                  ...(state.tasksMap[bundleIdentifier]?.tasks || []),
-                  addedTask?.taskIdentifier,
-                ],
-              },
-            },
-          }
-        : {
-            ...state,
-            lists: state.lists?.map((l) =>
-              l.taskListIdentifier === taskListIdentifier
-                ? {
-                    ...l,
-                    tasks: [addedTask, ...(l.tasks || [])],
-                  }
-                : l,
+          ...state,
+          lists: state.lists?.map((l) => ({
+            ...l,
+            tasks: l.tasks?.map((t) =>
+              t.identifier === bundleIdentifier
+                ? { ...t, tasks: [...(t.tasks || []), addedTask] }
+                : t,
             ),
-          };
+          })),
+          tasksMap: {
+            ...state.tasksMap,
+            [bundleIdentifier]: {
+              ...state.tasksMap[bundleIdentifier],
+              tasks: [
+                ...(state.tasksMap[bundleIdentifier]?.tasks || []),
+                addedTask?.taskIdentifier,
+              ],
+            },
+          },
+        }
+        : {
+          ...state,
+          lists: state.lists?.map((l) =>
+            l.taskListIdentifier === taskListIdentifier
+              ? {
+                ...l,
+                tasks: [addedTask, ...(l.tasks || [])],
+              }
+              : l,
+          ),
+        };
 
       return updateTasksStateCallback(updatedState, addedTask);
     }
@@ -532,9 +558,9 @@ export default (state = INITIAL_STATE, action = {}) => {
         lists: state.lists?.map((l) =>
           l.taskListIdentifier === taskListIdentifier
             ? {
-                ...l,
-                tasks: [addedBundle, ...(l.tasks || [])],
-              }
+              ...l,
+              tasks: [addedBundle, ...(l.tasks || [])],
+            }
             : l,
         ),
       };
@@ -550,9 +576,9 @@ export default (state = INITIAL_STATE, action = {}) => {
         lists: state.lists?.map((l) =>
           l.taskListIdentifier === taskListIdentifier
             ? {
-                ...l,
-                tasks: [workflow, ...(l.tasks || [])],
-              }
+              ...l,
+              tasks: [workflow, ...(l.tasks || [])],
+            }
             : l,
         ),
       };
@@ -688,23 +714,23 @@ export default (state = INITIAL_STATE, action = {}) => {
 
       const updatedState = bundleIdentifier
         ? {
-            ...state,
-          }
+          ...state,
+        }
         : {
-            ...state,
-            lists: state.lists?.map((l) => {
-              if (
-                l.taskListIdentifier === taskList.taskListIdentifier &&
-                !l.tasks?.some(
-                  ({ taskIdentifier }) =>
-                    taskIdentifier === task.taskIdentifier,
-                )
-              ) {
-                return { ...l, tasks: [task, ...(l.tasks || [])] };
-              }
-              return l;
-            }),
-          };
+          ...state,
+          lists: state.lists?.map((l) => {
+            if (
+              l.taskListIdentifier === taskList.taskListIdentifier &&
+              !l.tasks?.some(
+                ({ taskIdentifier }) =>
+                  taskIdentifier === task.taskIdentifier,
+              )
+            ) {
+              return { ...l, tasks: [task, ...(l.tasks || [])] };
+            }
+            return l;
+          }),
+        };
 
       return updateTasksStateCallback(updatedState, task);
     }
@@ -716,9 +742,9 @@ export default (state = INITIAL_STATE, action = {}) => {
         lists: state.lists?.map((l) =>
           taskListIdentifier === l.taskListIdentifier
             ? {
-                ...l,
-                tasks: [template, ...(l.tasks || [])],
-              }
+              ...l,
+              tasks: [template, ...(l.tasks || [])],
+            }
             : l,
         ),
       };
@@ -792,46 +818,46 @@ export default (state = INITIAL_STATE, action = {}) => {
         taskItem?.itemType === TaskItemType.BUNDLE
           ? { ...state }
           : {
-              ...state,
-              tasksMap:
-                intent === 'TASK_DELETED' &&
+            ...state,
+            tasksMap:
+              intent === 'TASK_DELETED' &&
                 bundleIdentifier &&
                 !taskItem?.parentTaskIdentifier
-                  ? {
-                      ...state.tasksMap,
-                      [bundleIdentifier]: {
-                        ...state.tasksMap[bundleIdentifier],
-                        tasks: state.tasksMap[bundleIdentifier]?.tasks?.filter(
-                          (taskId) => taskId !== taskIdentifier,
-                        ),
-                      },
-                    }
-                  : state.tasksMap,
-              lists: state.lists?.map((l) =>
-                l.taskListIdentifier === taskListIdentifier
-                  ? {
-                      ...l,
-                      tasks:
-                        bundleIdentifier && !taskItem?.parentTaskIdentifier
-                          ? state.tasksMap[bundleIdentifier]?.tasks.length === 1
-                            ? l.tasks?.filter(
-                                (task) => task.identifier !== bundleIdentifier,
-                              )
-                            : l.tasks
-                          : l.tasks?.filter(
-                              (task) => task?.taskIdentifier !== taskIdentifier,
-                            ),
-                    }
-                  : l,
-              ),
-            };
+                ? {
+                  ...state.tasksMap,
+                  [bundleIdentifier]: {
+                    ...state.tasksMap[bundleIdentifier],
+                    tasks: state.tasksMap[bundleIdentifier]?.tasks?.filter(
+                      (taskId) => taskId !== taskIdentifier,
+                    ),
+                  },
+                }
+                : state.tasksMap,
+            lists: state.lists?.map((l) =>
+              l.taskListIdentifier === taskListIdentifier
+                ? {
+                  ...l,
+                  tasks:
+                    bundleIdentifier && !taskItem?.parentTaskIdentifier
+                      ? state.tasksMap[bundleIdentifier]?.tasks.length === 1
+                        ? l.tasks?.filter(
+                          (task) => task.identifier !== bundleIdentifier,
+                        )
+                        : l.tasks
+                      : l.tasks?.filter(
+                        (task) => task?.taskIdentifier !== taskIdentifier,
+                      ),
+                }
+                : l,
+            ),
+          };
 
       return state.patientIdentifier && state.patientIdentifier !== ''
         ? TaskBaseReducer(
-            updatedStateAfterRemovingTaskItem,
-            action,
-            updateTasksStateCallback,
-          )
+          updatedStateAfterRemovingTaskItem,
+          action,
+          updateTasksStateCallback,
+        )
         : state;
     }
 

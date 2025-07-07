@@ -25,6 +25,7 @@ import { createProfileType } from 'api/profile-type-api';
 import { showGlobalAlert, showGlobalErrorAlert } from '@/app/alert/actions';
 import AlertMessages from '@/app/alert/AlertMessages';
 import { useBoolean } from 'react-use';
+import { getCustomerTypeLabel } from '@/app/helpers/customer-type-helper';
 
 const PAGE_SIZE = 30;
 
@@ -37,6 +38,7 @@ const ProfilesAndCustomFieldsView = () => {
   const [page, setPage] = useState(0);
   const dispatch = useDispatch();
   const textFieldRef = useRef(null);
+  const customerTypeLabel = getCustomerTypeLabel(userProfile);
 
   const userHasCustomProfilesAvailable = useSelector(
     userHasCustomProfilesFeatureSelector,
@@ -70,8 +72,8 @@ const ProfilesAndCustomFieldsView = () => {
               s.map((profile) =>
                 profile.identifier === identifier
                   ? { ...profile, ...newTemplate }
-                  : profile
-              )
+                  : profile,
+              ),
             );
           },
           isCreatingNewField: false,
@@ -84,26 +86,25 @@ const ProfilesAndCustomFieldsView = () => {
 
   const onConfigureCustomFields = useCallback(
     ({ row: { name, identifier } }) => {
-      if (name.toLowerCase() === 'users' || name.toLowerCase() === 'patients') {
+      if (
+        name.toLowerCase() === 'users' ||
+        name.toLowerCase() === `${customerTypeLabel}s`
+      ) {
         history.push(`/settings/custom-fields/${name.toLowerCase()}`);
         return;
       }
-      history.push(
-        `/settings/custom-fields/profiles/${identifier}`,
-      );
+      history.push(`/settings/custom-fields/profiles/${identifier}`);
     },
     [history],
   );
 
   const onOpenProfileBuilder = useCallback(
     ({ row: { name, identifier } }) => {
-      if (name.toLowerCase() === 'patients') {
+      if (name.toLowerCase() === `${customerTypeLabel}s`) {
         history.push(`/settings/profile-builder/${name.toLowerCase()}`);
         return;
       }
-      history.push(
-        `/settings/profile-builder/profiles/${identifier}`,
-      );
+      history.push(`/settings/profile-builder/profiles/${identifier}`);
     },
     [history],
   );
@@ -144,7 +145,14 @@ const ProfilesAndCustomFieldsView = () => {
 
   let profileOptions = [
     { id: 'users', name: 'Users', link: 'provider' },
-    { id: 'patient', name: 'Patients', link: 'patient' },
+    {
+      id: customerTypeLabel,
+      name: `${
+        customerTypeLabel?.charAt(0)?.toUpperCase() +
+        customerTypeLabel?.slice(1)
+      }s`,
+      link: customerTypeLabel,
+    },
   ];
 
   if (userHasCustomProfilesAvailable) {

@@ -39,6 +39,7 @@ import {
   FieldForm,
   FormScrollingContainer,
   InfoText,
+  ErrorMessage,
 } from './styled';
 import AdditionalOptions from './AdditionalOptions';
 import { getAdditionalOptions, regexValidator } from './helpers';
@@ -130,7 +131,17 @@ const EditCustomFieldModal = ({
             name: string().required(REQUIRED_MESSAGE),
           }),
         )
-        .nullable(),
+        .nullable()
+        .test(
+          'unique-names',
+          'Duplicate option names are not allowed',
+          (options) => {
+            if (!options) return true;
+            const names = options.map((o) => o.name?.trim().toLowerCase());
+            const unique = new Set(names);
+            return unique.size === names.length;
+          },
+        ),
 
       ...(type === 'PROFILE'
         ? {}
@@ -160,7 +171,7 @@ const EditCustomFieldModal = ({
       return baseCustomField;
     }, [customField, isCreatingNewField, type]),
   });
-  const { register, unregister, handleSubmit, setValue, watch, errors } =
+  const { register, unregister, handleSubmit, setValue, watch, formState: { errors } } =
     formMethods;
 
   const [customFields, setCustomFields] = useState([]);
@@ -205,27 +216,22 @@ const EditCustomFieldModal = ({
         fieldTypeValue === FieldType.DROPDOWN ||
         fieldTypeValue === FieldType.DROPDOWN_MULTI
       ) {
-        setValue('options', [
-          {
-            identifier: optionsValue?.length || 0,
-            name: '',
-          },
-        ]);
+        setValue(
+          'options', 
+          [
+            {
+              identifier: optionsValue?.length || 0,
+              name: '',
+            },
+          ],
+          { shouldValidate: false }
+        );
       } else {
-        setValue('options', null);
+        setValue('options', null, { shouldValidate: false });
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fieldTypeValue]);
-
-  const handleOptionValueChange = (optionId, event) => {
-    setValue(
-      'options',
-      optionsValue.map((o) =>
-        o.identifier === optionId ? { ...o, name: event.target.value } : o,
-      ),
-    );
-  };
 
   // eslint-disable-next-line unicorn/consistent-function-scoping,sonarjs/no-identical-functions
   const handleOptionColorChange = (optionId) => (event) => {
@@ -558,6 +564,9 @@ const EditCustomFieldModal = ({
                         <Box m={2} />
                         <Grid item xs={12}>
                           <InfoText>Dropdown options</InfoText>
+                          {errors?.options?.message && (
+                            <ErrorMessage>{errors.options.message}</ErrorMessage>
+                          )}
                         </Grid>
                         {optionsValue.map((option, index) => {
                           const {
@@ -572,11 +581,7 @@ const EditCustomFieldModal = ({
                               <Input
                                 required
                                 label={`Option ${index + 1}`}
-                                name={`options[${identifier}]`}
-                                value={name}
-                                onChange={partial(handleOptionValueChange, [
-                                  identifier,
-                                ])}
+                                {...register(`options.${index}.name`)}
                                 error={errors?.options?.[index]?.name?.message}
                                 endAdornment={
                                   optionsValue.length > 1 ? (
