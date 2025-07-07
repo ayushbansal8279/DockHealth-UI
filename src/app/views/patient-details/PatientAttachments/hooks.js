@@ -11,18 +11,29 @@ import {
   patientSelector,
   patientFoldersSelector,
   patientAttachmentsSelector,
+  patientTaskAttachementSelector,
 } from 'selectors/patient-details-selectors';
 import { downloadPatientAttachment } from 'api/patient-attachment-api';
 import { useBoolean } from 'hooks/useBoolean';
 import { openModal } from 'modal/actions';
 import { createPatientAttachmentsPath } from 'routing/helpers/paths';
 import { PatientAttachmentType } from 'helpers/patient-details-helpers';
+import { getTaskAttachment } from '@/app/api/task-api';
+import { blobFileDownload } from '@/app/helpers/blob-file-download';
 
 export const getMemoPatientAttachment = memoizeWith(
   identity,
   (attachmentIdentifier) =>
     attachmentIdentifier
       ? downloadPatientAttachment(attachmentIdentifier)
+      : Promise.reject(),
+);
+
+export const getMemoTaskAttachment = memoizeWith(
+  identity,
+  (attachmentIdentifier) =>
+    attachmentIdentifier
+      ? getTaskAttachment(attachmentIdentifier)
       : Promise.reject(),
 );
 
@@ -46,6 +57,7 @@ const useInitializeAttachmentsSectionHooks = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const attachments = useSelector(patientAttachmentsSelector) || [];
   const folders = useSelector(patientFoldersSelector) || [];
+  const patientTaskAttachments = useSelector(patientTaskAttachementSelector) || []
 
   const [attachmentsSources, setAttachmentSources] = useState([]);
   const [attachmentsLoading, setAttachmentsLoading, unsetAttachmentsLoading] =
@@ -95,13 +107,13 @@ const useInitializeAttachmentsSectionHooks = () => {
   });
 
   const loadAttachmentsContent = useCallback(
-    ({ attachmentsToReload }) => {
+    ({ attachmentsToReload, getAttachement }) => {
       setAttachmentsLoading();
 
       Promise.all(
         attachmentsToReload.map(
           async ({ attachmentIdentifier, fileName, contentType }) => {
-            const { data } = await getMemoPatientAttachment(
+            const { data } = await getAttachement(
               attachmentIdentifier,
             );
 
@@ -141,7 +153,7 @@ const useInitializeAttachmentsSectionHooks = () => {
 
   const deleteAttachment = useCallback(
     (identifier) => {
-      dispatch(openModal('DeleteConfirmation',{
+      dispatch(openModal('DeleteConfirmation', {
         title: 'Delete Attachment',
         description: 'Are you sure you want to delete this attachment? This action cannot be undone.',
         confirm: () => {
@@ -159,27 +171,34 @@ const useInitializeAttachmentsSectionHooks = () => {
 
   const downloadAttachment = async (attachment) => {
     const { attachmentIdentifier, fileName, contentType } = attachment;
+    console.log(attachmentIdentifier, fileName, contentType);
+
     try {
-        const {data} = await getMemoPatientAttachment(attachmentIdentifier);
-        const blob = new Blob([data], { type: contentType });
-        const url = window.URL.createObjectURL(blob);
-        const anchor = document.createElement('a');
-        anchor.href = url;
-        anchor.download = fileName;
-        document.body.appendChild(anchor);
-        anchor.click();
-        document.body.removeChild(anchor);
-        window.URL.revokeObjectURL(url);
+      const { data } = await getMemoPatientAttachment(attachmentIdentifier);
+      blobFileDownload(new Blob([data], { type: contentType }), fileName || 'download');
     } catch (error) {
-        console.error('Error downloading attachment:', error);
-    } 
-};
+      console.error('Error downloading attachment:', error);
+    }
+  };
+
+  const downloadPatientTaskAttachment = async (attachment) => {
+    const { attachmentIdentifier, fileName, contentType } = attachment;
+    try {
+      const response = await getTaskAttachment(attachmentIdentifier);
+      blobFileDownload(new Blob([response.data], { type: contentType }), fileName || 'download');
+
+    } catch (error) {
+      console.error('Error downloading attachment:', error);
+    }
+  };
+
 
   const openAttachmentPreview = useCallback(
-    (attachment) => {
+    (attachment, type) => {
       setPreviewedAttachment(attachment);
       loadAttachmentsContent({
         attachmentsToReload: [attachment],
+        getAttachement: type === 'patient' ? getMemoPatientAttachment : getMemoTaskAttachment
       });
       showAttachmentPreview();
     },
@@ -207,12 +226,10 @@ const useInitializeAttachmentsSectionHooks = () => {
   const renameAttachment = (fileOrFolder) => {
     dispatch(
       openModal('PatientFolder', {
-        title: `Rename ${
-          fileOrFolder.type === PatientAttachmentType.FOLDER ? 'folder' : 'file'
-        }`,
-        inputLabel: `${
-          fileOrFolder.type === PatientAttachmentType.FOLDER ? 'Folder' : 'File'
-        } name`,
+        title: `Rename ${fileOrFolder.type === PatientAttachmentType.FOLDER ? 'folder' : 'file'
+          }`,
+        inputLabel: `${fileOrFolder.type === PatientAttachmentType.FOLDER ? 'Folder' : 'File'
+          } name`,
         currentName: fileOrFolder.fileName,
         onChange: (name) => {
           dispatch(
@@ -224,6 +241,42 @@ const useInitializeAttachmentsSectionHooks = () => {
       }),
     );
   };
+
+  const renamePatientTaskAttachment = (fileOrFolder) => {
+    dispatch(
+      openModal('PatientFolder', {
+        title: `Rename ${fileOrFolder.type === PatientAttachmentType.FOLDER ? 'folder' : 'file'
+          }`,
+        inputLabel: `${fileOrFolder.type === PatientAttachmentType.FOLDER ? 'Folder' : 'File'
+          } name`,
+        currentName: fileOrFolder.fileName,
+        onChange: (name) => {
+          dispatch(
+            PatientDetailsActions.updatePatientTaskAttachment(fileOrFolder.attachmentIdentifier,
+              name,
+            ),
+          );
+        },
+      }),
+    );
+  };
+
+  const deletePatientTaskAttachment = useCallback(
+    (identifier) => {
+      dispatch(openModal('DeleteConfirmation', {
+        title: 'Delete Attachment',
+        description: 'Are you sure you want to delete this attachment? This action cannot be undone.',
+        confirm: () => {
+          dispatch(
+            PatientDetailsActions.deletePatientTaskAttachement(
+              identifier,
+            ),
+          );
+        }
+      }))
+    },
+    [dispatch],
+  );
 
   const navigateToFolder = useCallback(
     (folder) => {
@@ -339,6 +392,10 @@ const useInitializeAttachmentsSectionHooks = () => {
     downloadAllFiles,
     downloadAttachment,
     getMemoPatientAttachment,
+    patientTaskAttachments,
+    renamePatientTaskAttachment,
+    deletePatientTaskAttachment,
+    downloadPatientTaskAttachment,
   };
 };
 
