@@ -46,13 +46,11 @@ export const DecisionSelect = styled(Select)`
 `;
 
 export const ListItemLink = styled(Link)`
-  color: ${palette.mediumGrey};
+  color: ${palette.brightBlue};
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
-  color: ${palette.brightBlue};
   text-decoration: underline;
-  
 `;
 
 export const PublicInfoWrapper = styled.span`
