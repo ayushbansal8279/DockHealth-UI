@@ -12,12 +12,13 @@ export const CategoryWrapper = styled.div`
   padding: ${spacing.regularPlus};
   padding-right: ${spacing.huge};
   height: 85%;
-  overflow: auto;
+  overflow-y: ${({ isDragging }) => (isDragging ? 'hidden' : 'auto')};
+  overflow-x: hidden;
   margin-right: 15px;
   padding-bottom: 0;
 `;
 
-export const AddCategory = styled.div`
+export const AddCategoryWrapper = styled.div`
   border: 2px dashed ${palette.iron};
   border-radius: 6px;
   height: 52px;

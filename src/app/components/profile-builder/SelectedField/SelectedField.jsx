@@ -30,6 +30,8 @@ import {
   EditIcon,
   IconWrapper,
 } from './styled';
+import { useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 
 const FieldTypeImages = {
   [FieldType.TEXT]: TEXT,
@@ -43,13 +45,28 @@ const FieldTypeImages = {
   [FieldType.RELATIONSHIP]: RELATIONSHIP,
 };
 
-const SelectedField = ({ field, category }) => {
+const SelectedField = ({ field, category, id }) => {
   const dispatch = useDispatch();
   const { tabName, identifier } = useParams();
   const context = tabName === 'patients' ? 'PATIENT' : 'PROFILE';
   const isDefault = field.contextType === 'DEFAULT';
   const isPredefined = field.contextType === 'PREDEFINED';
   const isUnsavedField = Boolean(field?.name);
+  const {
+    setNodeRef,
+    attributes,
+    listeners,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    position: 'relative',
+    zIndex: isDragging ? 9999 : 'auto',
+  };
 
   const { setSelectedCategories } = useContext(ProfileBuilderContext);
 
@@ -112,8 +129,8 @@ const SelectedField = ({ field, category }) => {
     const updatedCategory = { ...category, fields: updatedSavedActualFields };
 
     setSelectedCategories((prevCategories) =>
-      prevCategories.map((obj) =>
-        obj.identifier === updatedCategory.identifier ? updatedCategory : obj,
+      prevCategories?.map((obj) =>
+        obj?.identifier === updatedCategory?.identifier ? updatedCategory : obj,
       ),
     );
   };
@@ -240,39 +257,45 @@ const SelectedField = ({ field, category }) => {
   };
 
   return (
-    <FieldArea>
-      <DragIndicator />
-      <FieldIconContainer>
-        <img
-          style={{ width: '22px', height: '22px' }}
-          src={FieldTypeImages[field?.fieldType]}
-          alt={field?.name}
+    <>
+      <FieldArea key={id} ref={setNodeRef} style={style}>
+        <DragIndicator
+          style={{ cursor: isDragging ? 'grabbing' : 'grab' }}
+          {...attributes}
+          {...listeners}
         />
-      </FieldIconContainer>
-      <TextField
-        disabled={isDefault || isPredefined}
-        border
-        size="small"
-        value={field.name}
-        placeholder={field?.placeholder}
-        onEnter={handleBlur}
-        onBlur={handleBlur}
-      />
-      <IconWrapper>
-        {!isDefault && !isPredefined && isUnsavedField ? (
-          <EditIcon onClick={handleEditClick} />
-        ) : (
-          <></>
-        )}
-      </IconWrapper>
-      <IconWrapper>
-        {!isDefault ? (
-          <DeletIcon onClick={handleRemoveFieldFromGroup} />
-        ) : (
-          <></>
-        )}
-      </IconWrapper>
-    </FieldArea>
+        <FieldIconContainer>
+          <img
+            style={{ width: '22px', height: '22px' }}
+            src={FieldTypeImages[field?.fieldType]}
+            alt={field?.name}
+          />
+        </FieldIconContainer>
+        <TextField
+          disabled={isDefault || isPredefined}
+          border
+          size="small"
+          value={field.name}
+          placeholder={field?.placeholder}
+          onEnter={handleBlur}
+          onBlur={handleBlur}
+        />
+        <IconWrapper>
+          {!isDefault && !isPredefined && isUnsavedField ? (
+            <EditIcon onClick={handleEditClick} />
+          ) : (
+            <></>
+          )}
+        </IconWrapper>
+        <IconWrapper>
+          {!isDefault ? (
+            <DeletIcon onClick={handleRemoveFieldFromGroup} />
+          ) : (
+            <></>
+          )}
+        </IconWrapper>
+      </FieldArea>
+    </>
   );
 };
 
