@@ -171,17 +171,18 @@ const WorkflowDrawerReducer = (state = initialState, action) => {
 
     case ActionTypes.UPDATE_WORKFLOW_ATTACHMENT_SUCCESS: {
       const { taskWorkflowIdentifier, attachmentIdentifier, fileName } = action;
-    
+
       if (taskWorkflowIdentifier !== state.workflowIdentifier) return state;
       return {
         ...state,
         workflow: {
           ...state.workflow,
-          attachments: state.workflow.attachments?.map((attachment) =>
-            attachment.attachmentIdentifier === attachmentIdentifier
-              ? { ...attachment, fileName }
-              : attachment
-          ) || null,
+          attachments:
+            state.workflow.attachments?.map((attachment) =>
+              attachment.attachmentIdentifier === attachmentIdentifier
+                ? { ...attachment, fileName }
+                : attachment,
+            ) || null,
         },
       };
     }
@@ -230,11 +231,25 @@ const WorkflowDrawerReducer = (state = initialState, action) => {
         workflow.tasks,
       );
 
+      const isArrayOfObjects =
+        Array.isArray(state?.workflow?.tasks) &&
+        state?.workflow?.tasks?.every(
+          (item) => typeof item === 'object' && item !== null,
+        );
+
+      const reorderedTaskObjects = isArrayOfObjects
+        ? reorderedTasks
+            ?.map((id) =>
+              state?.workflow?.tasks?.find((task) => task?.identifier === id),
+            )
+            .filter(Boolean) // Remove undefined if any ID doesn't match
+        : state.workflow.tasks;
+
       return {
         ...state,
         workflow: {
           ...state.workflow,
-          tasks: reorderedTasks,
+          tasks: reorderedTaskObjects,
         },
       };
     }
