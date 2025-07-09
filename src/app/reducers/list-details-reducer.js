@@ -980,6 +980,102 @@ const ListDetailsReducer = (state = initialState, action) => {
       return state;
     }
 
+    case ActionTypes.REFRESH_TASK_SUCCESS: {
+      const { task } = action;
+
+      if (!state.taskListIdentifier || state.taskListIdentifier === '') {
+        return state;
+      }
+
+      const { taskGroupIdentifier } =
+        task.taskGroups?.find(
+          ({ groupType }) =>
+            groupType === TaskGroupType.TASKLIST ||
+            groupType === TaskGroupType.TASKLIST_DEFAULT,
+        ) || {};
+
+      const updatedState = updateGroupInState(
+        (group) => ({
+          ...group,
+          tasks: group.tasks?.find((taskId) => taskId === task?.identifier)
+            ? group.tasks
+            : [task?.identifier, ...(group.tasks || [])],
+        }),
+        taskGroupIdentifier,
+        task,
+        state,
+      );
+
+      return updateTasksStateCallback(updatedState, task);
+    }
+
+    case ActionTypes.REMOVE_TASK_FROM_VIEW: {
+      const { taskIdentifier, intent } = action;
+      const taskItem = state.tasksMap[taskIdentifier];
+
+      const bundle =
+        taskItem?.taskGroups?.find(
+          ({ groupType }) => groupType === TaskGroupType.BUNDLE,
+        ) || {};
+      const bundleIdentifier = bundle?.taskGroupIdentifier;
+
+      const updatedStateAfterRemovingTaskItem = {
+        ...state,
+        tasksMap:
+          intent === 'TASK_DELETED' &&
+          bundleIdentifier &&
+          !taskItem?.parentTaskIdentifier
+            ? {
+                ...state.tasksMap,
+                [bundleIdentifier]: {
+                  ...state.tasksMap[bundleIdentifier],
+                  tasks: state.tasksMap[bundleIdentifier]?.tasks?.filter(
+                    (taskId) => taskId !== taskIdentifier,
+                  ),
+                },
+              }
+            : state.tasksMap,
+        groupedTasks: {
+          ...state.groupedTasks,
+          taskGroups: state.groupedTasks?.taskGroups?.map((group) =>
+            bundleIdentifier && !taskItem?.parentTaskIdentifier
+              ? group.groupIdentifier === bundle?.parentTaskGroupIdentifier
+                ? {
+                    ...group,
+                    tasks:
+                      state.tasksMap[bundleIdentifier]?.tasks.length === 1
+                        ? group.tasks?.filter(
+                            (taskId) => taskId !== bundleIdentifier,
+                          )
+                        : group.tasks,
+                  }
+                : group
+              : {
+                  ...group,
+                  tasks: group.tasks?.filter(
+                    (itemId) => itemId !== taskIdentifier,
+                  ),
+                },
+          ),
+        },
+        completedGroupedTasks: {
+          ...state.completedGroupedTasks,
+          taskGroups: state.completedGroupedTasks?.taskGroups?.map((g) => ({
+            ...g,
+            tasks: g.tasks?.filter((taskId) => taskId !== taskIdentifier),
+          })),
+        },
+      };
+
+      return state.taskListIdentifier && state.taskListIdentifier !== ''
+        ? TaskBaseReducer(
+            updatedStateAfterRemovingTaskItem,
+            action,
+            updateTasksStateCallback,
+          )
+        : state;
+    }
+
     default: {
       return state.taskListIdentifier && state.taskListIdentifier !== ''
         ? TaskBaseReducer(state, action, updateTasksStateCallback)
