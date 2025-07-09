@@ -983,6 +983,10 @@ const ListDetailsReducer = (state = initialState, action) => {
     case ActionTypes.REFRESH_TASK_SUCCESS: {
       const { task } = action;
 
+      if (task.templateTaskIdentifier) {
+        return state;
+      }
+
       if (!state.taskListIdentifier || state.taskListIdentifier === '') {
         return state;
       }
