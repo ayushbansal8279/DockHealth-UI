@@ -1,6 +1,6 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 /* eslint-disable no-underscore-dangle */
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Box } from '@mui/material';
 import Checkbox from 'components/common/Checkbox/Checkbox';
@@ -28,6 +28,15 @@ import {
   TaskHeaderColumn,
 } from './helpers';
 import ColumnSortHeader from '../ColumnSortHeader/ColumnSortHeader';
+import {
+  DndContext,
+  DragOverlay,
+  KeyboardSensor,
+  PointerSensor,
+  TouchSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
 import { TaskScrollVericleLine } from '../../task/styled';
 
 const TasksHeader = ({
@@ -41,9 +50,15 @@ const TasksHeader = ({
   isWidthGreaterThanHundredPercent,
   origin,
 }) => {
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 3 } }),
+    useSensor(KeyboardSensor),
+    useSensor(TouchSensor),
+  );
   const taskList = useSelector(currentTaskListSelector);
   const currentUser = useSelector(userProfileSelector);
   const currentOrganization = useSelector(selectedUserOrganizationSelector);
+  const [activeTaskHeader, setActiveTaskHeader] = useState(null);
   const {
     columns,
     setColumns,
@@ -82,15 +97,25 @@ const TasksHeader = ({
     [onGroupSelect],
   );
 
+  const onDragStart = (column) => {
+    setActiveTaskHeader(column.active?.data);
+  };
+
   const onDragEnd = useCallback(
     (column) => {
-      if (!column.destination) {
+      setActiveTaskHeader(null);
+      if (
+        !column.over ||
+        !column.over?.data?.current ||
+        column.active?.data?.current?.index ===
+          column.over?.data?.current?.index
+      ) {
         return;
       }
       const newOrder = reorderColumns(
         columns.filter((f) => f.isChecked),
-        column.source.index,
-        column.destination.index,
+        column.active?.data?.current?.index,
+        column.over?.data?.current?.index,
       );
       if (newOrder) {
         setColumns([
@@ -140,7 +165,7 @@ const TasksHeader = ({
             !restrictCustomizationFeatures &&
             ![TaskHeaderColumn.SUBTASKS_COUNT].includes(f.identifier)
           }
-          isDraggingOver={snapshot.isDraggingOver}
+          // isDraggingOver={snapshot?.isDraggingOver}
           disabled={f.sortDisabled}
           truncateEnabled
           id={f.identifier}
@@ -173,79 +198,83 @@ const TasksHeader = ({
   );
 
   return (
-    <DragDropContext onDragEnd={onDragEnd}>
-      <Droppable
-        isDropDisabled={restrictCustomizationFeatures}
-        droppableId="droppableHeader"
-        direction="horizontal"
+    <DndContext
+      sensors={sensors}
+      onDragStart={onDragStart}
+      onDragEnd={onDragEnd}
+    >
+      <SortHeaderRow
+        origin={origin}
+        listPageGroupHeader={listPageGroupHeader}
+        isWidthGreaterThanHundredPercent={isWidthGreaterThanHundredPercent}
+        $width={
+          !window.disabledVirtualTaskList
+            ? columns
+                .filter((f) => f.isChecked)
+                .reduce(
+                  (accumulator, column) => accumulator + column.columnWidth,
+                  0,
+                )
+            : null
+        }
       >
-        {(provided, snapshot) => (
-          <SortHeaderRow
-            origin={origin}
-            listPageGroupHeader={listPageGroupHeader}
-            isWidthGreaterThanHundredPercent={isWidthGreaterThanHundredPercent}
-            ref={provided.innerRef}
-            {...provided.droppableProps}
-            $width={
-              !window.disabledVirtualTaskList
-                ? columns
-                    .filter((f) => f.isChecked)
-                    .reduce(
-                      (accumulator, column) => accumulator + column.columnWidth,
-                      0,
-                    )
-                : null
-            }
-          >
-            <StickyColumnContainer
-              backgroundColor={pageBackground}
-              customWidthExists
-            >
-              {bulkEditEnabled && (
-                <BulkContainer>
-                  <Checkbox
-                    isChecked={isGroupSelected}
-                    onClick={handleClickCheckbox}
-                  />
-                </BulkContainer>
-              )}
-              {!bulkEditEnabled && (
-                <BulkContainer style={{ width: '65px' }}>&nbsp;</BulkContainer>
-              )}
-              {renderColumn(
-                getTaskHeaderOptions(
+        <StickyColumnContainer
+          backgroundColor={pageBackground}
+          customWidthExists
+        >
+          {bulkEditEnabled && (
+            <BulkContainer>
+              <Checkbox
+                isChecked={isGroupSelected}
+                onClick={handleClickCheckbox}
+              />
+            </BulkContainer>
+          )}
+          {!bulkEditEnabled && (
+            <BulkContainer style={{ width: '65px' }}>&nbsp;</BulkContainer>
+          )}
+          {renderColumn(
+            getTaskHeaderOptions(
+              customerTypeLabel,
+              uniqueIdentifierLabel,
+              columns.find((f) => f.isChecked),
+              restrictions,
+            ),
+            0,
+          )}
+          <Box ml="1px" />
+          <TaskScrollVericleLine style={{ marginLeft: '-1.0px' }}>
+            &nbsp;
+          </TaskScrollVericleLine>
+        </StickyColumnContainer>
+        {columns
+          .filter((f) => f.isChecked)
+          .filter((_, index) => index !== 0)
+          .map((c) =>
+            c._customFieldType === CUSTOM_FIELD_TYPES.REGULAR
+              ? getTaskHeaderOptions(
                   customerTypeLabel,
                   uniqueIdentifierLabel,
-                  columns.find((f) => f.isChecked),
+                  c,
                   restrictions,
-                ),
-                0,
-                snapshot,
-              )}
-              <Box ml="1px" />
-              <TaskScrollVericleLine style={{ marginLeft: '-1.0px' }}>
-                &nbsp;
-              </TaskScrollVericleLine>
-            </StickyColumnContainer>
-            {columns
-              .filter((f) => f.isChecked)
-              .filter((_, index) => index !== 0)
-              .map((c) =>
-                c._customFieldType === CUSTOM_FIELD_TYPES.REGULAR
-                  ? getTaskHeaderOptions(
-                      customerTypeLabel,
-                      uniqueIdentifierLabel,
-                      c,
-                      restrictions,
-                    )
-                  : c,
-              )
-              .map((c, index) => renderColumn(c, index + 1, snapshot))}
-            {provided.placeholder}
-          </SortHeaderRow>
+                )
+              : c,
+          )
+          .map((c, index) => renderColumn(c, index + 1))}
+      </SortHeaderRow>
+      <DragOverlay>
+        {activeTaskHeader && (
+          <ColumnSortHeader
+            label={activeTaskHeader?.current?.label}
+            width={activeTaskHeader?.current?.width}
+            tasksHeaderTextTransform={
+              activeTaskHeader?.current?.tasksHeaderTextTransform
+            }
+            isDragPreview
+          />
         )}
-      </Droppable>
-    </DragDropContext>
+      </DragOverlay>
+    </DndContext>
   );
 };
 

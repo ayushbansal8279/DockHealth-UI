@@ -14,8 +14,11 @@ import {
   // DescriptionTooltipWrapper,
   ThreeDots,
   ResizeHandler,
+  DragPreviewWrapper,
+  DragPreviewText,
 } from './styled';
 import SortDoubleArrow from 'img/SortDoubleArrow';
+import { useDraggable, useDroppable } from '@dnd-kit/core';
 
 const ColumnSortHeader = ({
   id,
@@ -35,12 +38,27 @@ const ColumnSortHeader = ({
   flex,
   tasksHeaderTextTransform,
   tasksHeaderTextColor,
+  isDragPreview,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const descriptionTextReference = useRef();
   const [columnWidth, setcolumnWidth] = useState(+width);
   const [isResizing, setIsResizing] = useState(false);
   const previousWidth = usePrevious(width);
+
+  const { setNodeRef: dropRef, isOver } = useDroppable({
+    id,
+    data: { index, label, width, tasksHeaderTextTransform },
+  });
+
+  const {
+    attributes,
+    listeners,
+    setNodeRef: dragRef,
+  } = useDraggable({
+    id,
+    data: { index, label, width, tasksHeaderTextTransform },
+  });
 
   useEffect(() => {
     if (width && previousWidth !== width && width !== columnWidth)
@@ -52,7 +70,7 @@ const ColumnSortHeader = ({
       isResizing ||
       disabled ||
       typeof onSortChange !== 'function' ||
-      isDraggingOver
+      isOver // isDraggingOver
     )
       return;
 
@@ -80,7 +98,7 @@ const ColumnSortHeader = ({
         }
       }
     }
-  }, [isResizing, disabled, onSortChange, isDraggingOver, sort, id]);
+  }, [isResizing, disabled, onSortChange, isOver, sort, id]);
 
   const handleResize = useCallback((_, data) => {
     setcolumnWidth(data.size.width);
@@ -108,7 +126,7 @@ const ColumnSortHeader = ({
               <Box p="0 5px 0 5px" position="relative">
                 <Box position="absolute" left="5px" top="0px">
                   {draggable && (
-                    <ThreeDots hideIcon={isDraggingOver} src={ThreeDotsIcon} />
+                    <ThreeDots hideIcon={isOver} src={ThreeDotsIcon} />
                   )}
                 </Box>
               </Box>
@@ -164,7 +182,8 @@ const ColumnSortHeader = ({
       children,
       draggable,
       id,
-      isDraggingOver,
+      isOver,
+      disabled,
       label,
       onSortChange,
       sort,
@@ -172,43 +191,23 @@ const ColumnSortHeader = ({
     ],
   );
 
-  if (!draggable)
+  if (isDragPreview) {
     return (
-      <Resizable
-        onResizeStart={() => setIsResizing(true)}
-        minConstraints={[20, 20]}
-        maxConstraints={[1000, 35]}
-        height={35}
-        width={columnWidth}
-        onResize={handleResize}
-        onResizeStop={handleResizeStop}
-        axis={typeof onResize === 'function' ? 'x' : 'none'}
-        handle={
-          <Box
-            onClick={(event) => {
-              event.stopPropagation();
-              event.preventDefault();
-            }}
-          >
-            <ResizeHandler enabled={typeof onResize === 'function'} />
-          </Box>
-        }
-      >
-        <SortButton
-          flex={flex}
-          disabled={!label || disabled}
-          type="button"
-          width={columnWidth}
-          onClick={switchSort}
+      <>
+        <DragPreviewWrapper
+          width={width}
           tasksHeaderTextTransform={tasksHeaderTextTransform}
         >
-          {randerContent(tasksHeaderTextColor)}
-        </SortButton>
-      </Resizable>
+          <DragPreviewText>{label}</DragPreviewText>
+        </DragPreviewWrapper>{' '}
+      </>
     );
+  }
 
   return (
     <Resizable
+      {...attributes}
+      {...listeners}
       onResizeStart={() => setIsResizing(true)}
       minConstraints={[20, 20]}
       maxConstraints={[1000, 35]}
@@ -231,29 +230,18 @@ const ColumnSortHeader = ({
       }
     >
       <SortButton
+        ref={(node) => {
+          dropRef(node);
+          dragRef(node);
+        }}
         type="button"
         width={snapshot?.draggingOverWith === id ? 0 : columnWidth}
         onClick={switchSort}
         printWidth={printWidth}
         tasksHeaderTextTransform={tasksHeaderTextTransform}
+        isOver={isOver}
       >
-        <Draggable
-          isDragDisabled={!draggable}
-          key={id}
-          draggableId={id}
-          index={index}
-        >
-          {(provided) => (
-            <div
-              ref={provided.innerRef}
-              {...provided.draggableProps}
-              {...provided.dragHandleProps}
-              style={provided.draggableProps.style}
-            >
-              {randerContent(tasksHeaderTextColor)}
-            </div>
-          )}
-        </Draggable>
+        <div>{randerContent(tasksHeaderTextColor)}</div>
       </SortButton>
     </Resizable>
   );
