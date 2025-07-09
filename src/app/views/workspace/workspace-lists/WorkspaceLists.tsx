@@ -1,21 +1,23 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Add } from "@mui/icons-material";
 
 import HeaderSearch from "@/app/components/template/HeaderSearch/HeaderSearch";
 import { openModal } from "@/app/modal/actions";
 import WorkspaceListTable from "./workspace-lists-table"
-import { WorkspaceListsContainer, WorkspaceListsHeader, WorkspaceListsTableWrapper } from "./styled";
-import Button from "@/app/components/common/Button/Button";
 import BulkEditSection from "@/app/components/workspace/BulkEditSection/BulkEditSection";
 import { BulkEditSectionContainer } from "../../user-group/styled";
 import { BulkEditContext } from "@/app/context-api/bulk-edit-context";
 import { taskListsSelector } from "@/app/selectors/task-list-selectors";
 import * as TaskListActions from 'actions/task-list-actions';
 import { workspaceSelector } from "@/app/selectors/workspace-selectors";
+import ToolbarButton from "@/app/components/tasklist/list-toolbar-buttons/ToolbarButton/ToolbarButton";
+import { WorkspaceListsContainer, WorkspaceListsHeader, WorkspaceListsTableWrapper } from "./styled";
 
 const WorkspaceLists = () => {
   const dispatch = useDispatch();
+
+  const [searchTerm, setSearchTerm] = useState('');
   
   const workspace = useSelector(workspaceSelector);
   const workspaceIdentifier = workspace.workspaceIdentifier;
@@ -41,19 +43,23 @@ const WorkspaceLists = () => {
   return (
     <WorkspaceListsContainer>
       <WorkspaceListsHeader>
-        <HeaderSearch />
-        <Button 
+        <HeaderSearch 
+          value={searchTerm}
+          onChange={setSearchTerm}
+        />
+        <ToolbarButton
+          icon={
+            <span style={{ marginLeft: '-5px' }}>
+              <Add />
+            </span>
+          }
           onClick={openAddListModal}
-          uppercase={false}
-          width='fit-content'
-          startIcon={<Add/>}
-          size='small'
         >
-          Add List
-        </Button>
+          <span style={{ marginLeft: '-5px' }}>Add List</span>
+        </ToolbarButton>
       </WorkspaceListsHeader>
       <WorkspaceListsTableWrapper>
-        <WorkspaceListTable />
+        <WorkspaceListTable searchTerm={searchTerm} />
       </WorkspaceListsTableWrapper>
       <BulkEditSection>
         <BulkEditSectionContainer>

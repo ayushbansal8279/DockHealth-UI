@@ -1,3 +1,5 @@
+import { createFilter } from 'react-search-input';
+
 interface WorkspaceMember {
   userStatus: 'ACTIVE' | 'INVITED' | 'PENDING' | 'DENIED';
   workspaceUserRole: 'ADMIN' | 'MEMBER';
@@ -29,4 +31,13 @@ export const getWorkspaceMemberStatus = (member: WorkspaceMember): string | null
       return null;
     }
   }
+};
+
+export const getFilteredRows = <T>(
+  rows: T[] | undefined,
+  searchTerm: string,
+  keys: string[],
+): T[] => {
+  if (!rows) return [];
+  return searchTerm ? rows.filter(createFilter(searchTerm, keys)) : rows;
 };

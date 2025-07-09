@@ -1,10 +1,11 @@
 // @ts-nocheck
 
-import React, { useContext } from "react";
+import React, { useContext, useMemo } from "react";
 import { Box, Button } from "@mui/material";
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { MoreVert } from "@mui/icons-material";
 import { useDispatch } from "react-redux";
+import { createFilter } from 'react-search-input';
 
 import AvatarFilterMember from "@/app/components/user/AvatarFilterMember/AvatarFilterMember";
 import Checkbox from "@/app/components/common/Checkbox/Checkbox";
@@ -15,10 +16,11 @@ import { openModal } from "@/app/modal/actions";
 import { EditableLabel } from "@/app/components/workspace/EditableLabel/EditableLabel";
 import { StyledDataGrid } from "@/app/views/workspaces/workspace-table/styled";
 import { workspaceListsDummyData } from "../helpers";
-import { BulkContainer } from "./styled";
 import { BulkEditContext } from "@/app/context-api/bulk-edit-context";
+import { getFilteredRows } from "@/app/helpers/workspace-helpers";
+import { BulkContainer } from "./styled";
 
-const WorkspaceListTable = () => {
+const WorkspaceListTable = ({ searchTerm }: { searchTerm: string }) => {
   const dispatch = useDispatch();
 
   const listContext = useContext(BulkEditContext);
@@ -160,14 +162,17 @@ const WorkspaceListTable = () => {
     },
   ];
 
-  let rows: any[] = lists || [];
+  const filteredRows = useMemo(
+    () => getFilteredRows(lists, searchTerm, ['listName']),
+    [lists, searchTerm],
+  );
 
   return (
     <Box sx={{ height: 'calc(80vh - 100px)', p: 2, width: '1179px' }}>
       <StyledDataGrid
         columns={columns}
         getRowId={(row) => row.taskListIdentifier}
-        rows={rows}
+        rows={filteredRows}
         rowHeight={40}
         headerHeight={45}
         autoHeight

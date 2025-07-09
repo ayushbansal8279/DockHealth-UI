@@ -1,6 +1,11 @@
 import styled from 'styled-components';
 
-export const WorkspaceListsContainer = styled.div``;
+export const WorkspaceListsContainer = styled.div`
+  width: 100%;
+  max-width: 1179px;
+  margin: 0 auto;
+  padding: 0 16px;
+`;
 
 export const WorkspaceListsHeader = styled.div`
   display: flex;
