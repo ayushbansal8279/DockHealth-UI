@@ -5,7 +5,7 @@ const data = {
   title: 'Forward your emails to Dock and put them to work.',
   descriptions: [
     `Turn an email into a task on Dock by forwarding it to: ${
-      process.env.VITE_APP_ENV === 'dev'
+      import.meta.env.VITE_APP_ENV === 'dev'
         ? 'Task-dev@dockhealth.email'
         : 'Task@DockHealth.email'
     }`,
