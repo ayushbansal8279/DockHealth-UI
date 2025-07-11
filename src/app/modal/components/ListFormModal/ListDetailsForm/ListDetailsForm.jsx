@@ -59,7 +59,9 @@ const onSubmit =
 
     dispatch(saveAction({ ...data, taskListIdentifier, workspaceIdentifier }))
       .then((updatedList) => {
-        history.push(createTaskListPath(updatedList.taskListIdentifier));
+        if (!workspaceIdentifier) {
+          history.push(createTaskListPath(updatedList.taskListIdentifier));
+        }
         if (updatedList) {
           setList(updatedList);
 
