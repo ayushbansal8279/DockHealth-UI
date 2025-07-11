@@ -23,14 +23,12 @@ const WorkspaceLists = () => {
   const workspaceIdentifier = workspace.workspaceIdentifier;
   const taskLists = useSelector(workspaceTaskListsSelector);
   const isFetching = useSelector(isFetchingWorkspaceTaskListsSelector);
-  const archivedTaskLists = useSelector(archivedWorkspaceTaskListsSelector);
+  // const archivedTaskLists = useSelector(archivedWorkspaceTaskListsSelector);
 
   useEffect(() => {
     dispatch(getWorkspaceTaskLists(workspaceIdentifier));
     dispatch(getArchivedWorkspaceTaskLists(workspaceIdentifier));
   }, [workspaceIdentifier]);
-
-  console.log("archived", archivedTaskLists);
 
   const { setSelectableItems } = useContext(BulkEditContext);
 

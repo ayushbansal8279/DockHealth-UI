@@ -121,10 +121,10 @@ const ListDetailsForm = ({
   const taskLists = useSelector(taskListsSelector);
   const validateExistingListName = (value) => {
     const activeLists = taskLists
-      .map((task) => task.listName)
+      ?.map((task) => task.listName)
       .filter((name) => name !== value || !list || list.listName !== value);
 
-    if (activeLists.includes(value)) {
+    if (activeLists?.includes(value)) {
       return 'List Name already exists';
     }
     return validateListName(value);

@@ -1,5 +1,3 @@
-import * as ActionTypes from 'actions/action-types';
-
 export type Workspace = {
   workspaceIdentifier: string;
   workspaceName: string;
@@ -11,7 +9,7 @@ export type Workspace = {
   isFetchingWorkspaceUsers?: boolean;
   workspaceUsers?: WorkspaceUser[] | null;
   workspaceUsersError?: any;
-  workspaceTaskLists: [] | null, // TODO: add type
+  workspaceTaskLists: [] | null,
   isFetchingWorkspaceTaskLists: boolean,
   isSavingWorkspaceTaskList: boolean,
   archivedWorkspaceTaskLists: [] | null
