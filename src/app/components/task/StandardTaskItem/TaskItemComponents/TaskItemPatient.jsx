@@ -45,7 +45,7 @@ const TaskItemPatient = ({
   width,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
-  const { pathname } = useLocation();
+  const { pathname, search } = useLocation();
   const [isPopoverOpen, setPopoverOpen] = useState(false);
   const isCompleted = taskStatus === 'COMPLETE';
   const isTemplateTask = checkIfTemplateTask(task);
@@ -147,7 +147,7 @@ const TaskItemPatient = ({
                 to={{
                   pathname: `/core/patient/${patient.patientIdentifier}`,
                   state: {
-                    from: pathname,
+                    from: search ? pathname + search : pathname,
                   },
                 }}
               >
@@ -195,7 +195,7 @@ const TaskItemPatient = ({
                 to={{
                   pathname: `/core/patient/${patient.patientIdentifier}`,
                   state: {
-                    from: pathname,
+                    from: search ? pathname + search : pathname,
                   },
                 }}
               >

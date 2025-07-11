@@ -3,7 +3,7 @@ import PatientCard from 'components/patients/PatientCard/PatientCard';
 import PatientDropdown from 'components/patients/PatientDropdown/PatientDropdown';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import { capitalize } from 'helpers/capitalize';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, useLocation } from 'react-router-dom';
 import Highlighter from 'react-highlight-words';
 import {
   AddPlaceholder,
@@ -28,6 +28,7 @@ const TaskTemplatePatient = ({
   origin,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
+  const { pathname } = useLocation();
   const [isPopoverOpen, setPopoverOpen] = useState(false);
   const aiSummaryAvailable = useSelector(userHasAiSummaryViewFeatureSelector);
   const matchPatientMRN = workflow?.searchMetaData?.matchPatientMRN;
@@ -78,7 +79,14 @@ const TaskTemplatePatient = ({
           disableLink={readOnly}
           patientIdentifier={patient.patientIdentifier}
         >
-          <Link to={`/core/patient/${patient.patientIdentifier}`}>
+          <Link
+            to={{
+              pathname: `/core/patient/${patient.patientIdentifier}`,
+              state: {
+                from: pathname,
+              },
+            }}
+          >
             <PatientLabel>
               {(matchPatient || matchPatientMRN) && highlightedValue ? (
                 <Highlighter
@@ -114,7 +122,14 @@ const TaskTemplatePatient = ({
                 />
               </AISummaryWrapper>
             )}
-            <Link to={`/core/patient/${patient.patientIdentifier}`}>
+            <Link
+              to={{
+                pathname: `/core/patient/${patient.patientIdentifier}`,
+                state: {
+                  from: pathname,
+                },
+              }}
+            >
               <PatientLabel>
                 {(matchPatient || matchPatientMRN) && highlightedValue ? (
                   <Highlighter
