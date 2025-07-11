@@ -8,11 +8,11 @@ import WorkspaceListTable from "./workspace-lists-table"
 import BulkEditSection from "@/app/components/workspace/BulkEditSection/BulkEditSection";
 import { BulkEditSectionContainer } from "../../user-group/styled";
 import { BulkEditContext } from "@/app/context-api/bulk-edit-context";
-import { taskListsSelector } from "@/app/selectors/task-list-selectors";
-import * as TaskListActions from 'actions/task-list-actions';
-import { workspaceSelector } from "@/app/selectors/workspace-selectors";
+import { archivedWorkspaceTaskListsSelector, isFetchingWorkspaceTaskListsSelector, workspaceSelector, workspaceTaskListsSelector } from "@/app/selectors/workspace-selectors";
 import ToolbarButton from "@/app/components/tasklist/list-toolbar-buttons/ToolbarButton/ToolbarButton";
-import { WorkspaceListsContainer, WorkspaceListsHeader, WorkspaceListsTableWrapper } from "./styled";
+import ListSkeletonLoader from "@/app/components/common/ListSkeletonLoader/ListSkeletonLoader";
+import { ListLoaderContainer, WorkspaceListsContainer, WorkspaceListsHeader, WorkspaceListsTableWrapper } from "./styled";
+import { getArchivedWorkspaceTaskLists, getWorkspaceTaskLists } from "@/app/actions/workspace-actions";
 
 const WorkspaceLists = () => {
   const dispatch = useDispatch();
@@ -21,11 +21,16 @@ const WorkspaceLists = () => {
   
   const workspace = useSelector(workspaceSelector);
   const workspaceIdentifier = workspace.workspaceIdentifier;
-  const taskLists = useSelector(taskListsSelector);
+  const taskLists = useSelector(workspaceTaskListsSelector);
+  const isFetching = useSelector(isFetchingWorkspaceTaskListsSelector);
+  const archivedTaskLists = useSelector(archivedWorkspaceTaskListsSelector);
 
   useEffect(() => {
-    dispatch(TaskListActions.getTaskListForUser(workspaceIdentifier) as any);
+    dispatch(getWorkspaceTaskLists(workspaceIdentifier));
+    dispatch(getArchivedWorkspaceTaskLists(workspaceIdentifier));
   }, [workspaceIdentifier]);
+
+  console.log("archived", archivedTaskLists);
 
   const { setSelectableItems } = useContext(BulkEditContext);
 
@@ -58,9 +63,15 @@ const WorkspaceLists = () => {
           <span style={{ marginLeft: '-5px' }}>Add List</span>
         </ToolbarButton>
       </WorkspaceListsHeader>
-      <WorkspaceListsTableWrapper>
-        <WorkspaceListTable searchTerm={searchTerm} />
-      </WorkspaceListsTableWrapper>
+      {isFetching ? (
+        <ListLoaderContainer>
+          <ListSkeletonLoader header />
+        </ListLoaderContainer>
+      ) : (
+        <WorkspaceListsTableWrapper>
+          <WorkspaceListTable searchTerm={searchTerm} />
+        </WorkspaceListsTableWrapper>
+      )}
       <BulkEditSection>
         <BulkEditSectionContainer>
         </BulkEditSectionContainer>

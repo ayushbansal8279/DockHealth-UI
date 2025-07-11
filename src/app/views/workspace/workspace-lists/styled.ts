@@ -14,7 +14,12 @@ export const WorkspaceListsHeader = styled.div`
 `;
 
 export const WorkspaceListsTableWrapper = styled.div`
+  width: 100%;
+  overflow-x: auto;
   display: flex;
-  align-items: center;
   justify-content: center;
+`;
+
+export const ListLoaderContainer = styled.div`
+  margin: 38px auto 16px auto;
 `;

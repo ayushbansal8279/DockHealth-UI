@@ -11,6 +11,10 @@ export type Workspace = {
   isFetchingWorkspaceUsers?: boolean;
   workspaceUsers?: WorkspaceUser[] | null;
   workspaceUsersError?: any;
+  workspaceTaskLists: [] | null, // TODO: add type
+  isFetchingWorkspaceTaskLists: boolean,
+  isSavingWorkspaceTaskList: boolean,
+  archivedWorkspaceTaskLists: [] | null
 };
 
 export type createWorkspacePayload = {
@@ -79,4 +83,42 @@ export interface InvitePersonToWorkspacePayload {
   };
   onSuccess?: () => void;
   onFailure?: (error?: any) => void;
+}
+
+export interface TaskList {
+  taskListIdentifier: string;
+  listName: string;
+  listDescription?: string;
+  role: 'OWNER' | 'MEMBER';
+  numberOfTasks: number;
+  status: 'ACCEPTED';
+  listType: 'INBOX' | 'SHARED';
+  archived: boolean;
+  active: boolean;
+}
+
+export interface GetWorkspaceTaskListsPayload {
+  workspaceIdentifier: string;
+}
+
+export interface GetArchivedWorkspaceTaskListsPayload {
+  workspaceIdentifier: string;
+}
+
+export interface SaveWorkspaceTaskListPayload {
+  formProps: any;
+  onSuccess?: (taskList?: any) => void;
+  onFailure?: (error?: any) => void;
+}
+
+export interface DeleteWorkspaceTaskListPayload {
+  taskListIdentifier: string;
+}
+
+export interface LeaveWorkspaceTaskListPayload {
+  taskListIdentifier: string;
+}
+
+export interface ArchiveWorkspaceTaskListPayload {
+  taskListIdentifier: string;
 }

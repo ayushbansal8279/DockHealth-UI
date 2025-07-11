@@ -18,9 +18,14 @@ export function getTaskListForUser(workspaceIdentifier) {
     });
 }
 
-export function getArchivedTaskListForUser() {
-  return axios
-    .get('list/findArchivedTaskListsForUser?basicDetails=true')
+export function getArchivedTaskListForUser(workspaceIdentifier) {
+  return axios({
+    url: 'list/findArchivedTaskListsForUser?basicDetails=true',
+    method: 'get',
+    headers: workspaceIdentifier
+      ? { CurrentWorkspaceIdentifier: workspaceIdentifier }
+      : undefined,
+  })
     .then((response) => response?.data)
     .catch((error) => {
       throw new Error(error?.response?.data?.errorMessage);

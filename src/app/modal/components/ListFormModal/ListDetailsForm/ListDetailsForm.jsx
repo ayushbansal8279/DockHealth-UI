@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { showAlert } from 'helpers/utility-functions';
 import { onTaskListAdded, onTaskListEdited } from 'helpers/ga-event-helper';
 import * as TaskListActions from 'actions/task-list-actions';
+import * as WorkspaceTaskListActions from 'actions/workspace-actions';
 import { userHasShareTaskFeatureSelector } from 'selectors/user-selectors';
 import { Grid } from '@mui/material';
 import FormInput from 'components/common/Input/FormInput';
@@ -51,7 +52,12 @@ const onSubmit =
     event.preventDefault();
 
     setIsSavingList(true);
-    dispatch(TaskListActions.saveTaskList({ ...data, taskListIdentifier, workspaceIdentifier }))
+
+    const saveAction = workspaceIdentifier
+      ? WorkspaceTaskListActions.saveWorkspaceTaskList
+      : TaskListActions.saveTaskList;
+
+    dispatch(saveAction({ ...data, taskListIdentifier, workspaceIdentifier }))
       .then((updatedList) => {
         history.push(createTaskListPath(updatedList.taskListIdentifier));
         if (updatedList) {

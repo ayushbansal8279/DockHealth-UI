@@ -4,7 +4,7 @@ import React, { useContext, useMemo } from "react";
 import { Box, Button } from "@mui/material";
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { MoreVert } from "@mui/icons-material";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { createFilter } from 'react-search-input';
 
 import AvatarFilterMember from "@/app/components/user/AvatarFilterMember/AvatarFilterMember";
@@ -18,10 +18,14 @@ import { StyledDataGrid } from "@/app/views/workspaces/workspace-table/styled";
 import { workspaceListsDummyData } from "../helpers";
 import { BulkEditContext } from "@/app/context-api/bulk-edit-context";
 import { getFilteredRows } from "@/app/helpers/workspace-helpers";
+import { workspaceSelector } from "@/app/selectors/workspace-selectors";
 import { BulkContainer } from "./styled";
 
 const WorkspaceListTable = ({ searchTerm }: { searchTerm: string }) => {
   const dispatch = useDispatch();
+
+  const workspace = useSelector(workspaceSelector);
+  const workspaceIdentifier = workspace.workspaceIdentifier;
 
   const listContext = useContext(BulkEditContext);
   const {
@@ -154,7 +158,7 @@ const WorkspaceListTable = ({ searchTerm }: { searchTerm: string }) => {
           <Button onClick={() => openAddUserModal(row)}>
             <AssignMemberIcon size={20} />
           </Button>
-          <ListOptionsMenu list={row}>
+          <ListOptionsMenu list={row} workspaceIdentifier={workspaceIdentifier}>
             <MoreVert color="primary" /> 
           </ListOptionsMenu>
         </div>
