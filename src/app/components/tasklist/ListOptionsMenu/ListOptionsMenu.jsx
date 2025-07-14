@@ -60,7 +60,10 @@ const ListOptionsMenu = (props) => {
 
   const openListEditModal = useCallback(
     (targetList) => {
-      dispatch(openModal('ListForm', { list: targetList }));
+      dispatch(openModal('ListForm', { 
+        list: targetList,
+        workspaceIdentifier: props?.workspaceIdentifier
+      }));
       dispatch(hideSubMenu());
     },
     [dispatch],

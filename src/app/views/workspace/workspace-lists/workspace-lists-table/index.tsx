@@ -54,25 +54,25 @@ const WorkspaceListTable = ({ searchTerm }: { searchTerm: string }) => {
   };
 
   const columns = [
-    {
-      field: 'isSelected',
-      headerName: 'SELECT',
-      flex: 0.5,
-      sortable: false,
-      headerClassName: 'no-sort-icon',
-      renderHeader: () =>
-        renderCheckboxColumnHeader({
-          isListChecked,
-          onListSelect: toggleAllItems,
-        }),
-      renderCell: ({ row }) => (
-        <TaskItemBulkEdit
-          isChecked={row?.isSelected}
-          onClick={() => toggleItem(row.taskListIdentifier)}
-          isDisabled={false}
-        />
-      ),
-    },
+    // {
+    //   field: 'isSelected',
+    //   headerName: 'SELECT',
+    //   flex: 0.5,
+    //   sortable: false,
+    //   headerClassName: 'no-sort-icon',
+    //   renderHeader: () =>
+    //     renderCheckboxColumnHeader({
+    //       isListChecked,
+    //       onListSelect: toggleAllItems,
+    //     }),
+    //   renderCell: ({ row }) => (
+    //     <TaskItemBulkEdit
+    //       isChecked={row?.isSelected}
+    //       onClick={() => toggleItem(row.taskListIdentifier)}
+    //       isDisabled={false}
+    //     />
+    //   ),
+    // },
     {
       field: 'listName',
       headerName: 'Name',
@@ -81,7 +81,7 @@ const WorkspaceListTable = ({ searchTerm }: { searchTerm: string }) => {
         <EditableLabel 
           value={row.listName}
           placeholder="Enter List Name"
-          onEdit={(newName) => console.log('Edited:', newName)}
+          onEdit={(newName) => {}}
           tooltip={row.listName}
         />
       )
@@ -94,30 +94,24 @@ const WorkspaceListTable = ({ searchTerm }: { searchTerm: string }) => {
         const listType = row.listType;
         return (
           <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-            {listType === 'PRIVATE' ? (
-              <>
-                <LockOutlinedIcon fontSize="small" /> Private
-              </>
-            ) : (
-              'Public'
-            )}
+            {listType}
           </div>
         );
       },
     },
-    // {
-    //   field: 'users',
-    //   headerName: 'Users',
-    //   flex: 1,
-    //   renderCell: ({ row }) => {
-    //     const users = row.users;
-    //     return (
-    //       <div style={{ display: 'flex', marginLeft: '15px' }}>
-    //         {users?.length}
-    //       </div>
-    //     );
-    //   },
-    // },
+    {
+      field: 'users',
+      headerName: 'Users',
+      flex: 1,
+      renderCell: ({ row }) => {
+        const users = row.users;
+        return (
+          <div style={{ display: 'flex', marginLeft: '15px' }}>
+            {users?.length}
+          </div>
+        );
+      },
+    },
     // {
     //   field: 'admins',
     //   headerName: 'Admins',
