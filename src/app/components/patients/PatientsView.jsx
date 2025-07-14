@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState, useMemo } from 'react';
-import { useParams , useHistory } from 'react-router-dom';
+import { useParams, useHistory, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { Grid, Box, Dialog } from '@mui/material';
 import {
@@ -105,6 +105,7 @@ const PatientsView = () => {
     currentOrganization?.themeSettings?.find(
       ({ name }) => name === 'icon.active.color',
     ) || {};
+  const location = useLocation();
 
   const isGuestOrDockLite = isUserGuestOrDockLite(currentUser);
   const isViewOnly = isUserViewOnly(currentUser);
@@ -132,12 +133,15 @@ const PatientsView = () => {
 
   useEffect(() => {
     const patientListIdentifier = listIdentifier;
-    if (!isDynamicPatientList) {
+    const cameFromPatientProfile =
+      location?.state?.from?.includes('/core/patient');
+
+    if (!isDynamicPatientList && !cameFromPatientProfile) {
       dispatch(
         PatientsActions.initializePatientsListState(patientListIdentifier),
       );
     }
-  }, [dispatch, isDynamicPatientList, listIdentifier]);
+  }, [dispatch, isDynamicPatientList, listIdentifier, location?.state]);
 
   useEffect(() => {
     if (isDynamicPatientList && selectedQuickFilter) {
@@ -502,14 +506,15 @@ const PatientsView = () => {
                             setImportPopupOpen(true);
                           },
                         },
-                        !isGuestOrDockLite &&
+                      !isGuestOrDockLite &&
                         !isViewOnly &&
                         !emrIntegrationEnabled &&
                         listIdentifier ===
-                          DefaultPatientsListType.ALL_PATIENTS &&
-                        {
+                          DefaultPatientsListType.ALL_PATIENTS && {
                           name: 'View Import Status',
-                          onClick: () => {patientImportStatus()}
+                          onClick: () => {
+                            patientImportStatus();
+                          },
                         },
                       !isGuestOrDockLite &&
                         !isViewOnly && {

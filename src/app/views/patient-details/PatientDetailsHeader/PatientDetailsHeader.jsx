@@ -106,9 +106,12 @@ const PatientDetailsHeader = () => {
 
   const goBack = useCallback(() => {
     if (cameFrom) {
-      history.push(cameFrom);
+      history.push({ pathname: cameFrom, state: { from: location?.pathname } });
     } else {
-      history.push(PATIENTS_LIST_ALL);
+      history.push({
+        pathname: PATIENTS_LIST_ALL,
+        state: { from: location?.pathname },
+      });
     }
   }, [cameFrom, history]);
 
@@ -180,7 +183,7 @@ const PatientDetailsHeader = () => {
               </Grid>
             </Box>
             <ContactContainer>
-              { patientTimelineFeatureAvailable && (
+              {patientTimelineFeatureAvailable && (
                 <ActivityHistoryButton onClick={setIsactivityHistoryDrawerOpen}>
                   <ActivityHistoryText>Timeline</ActivityHistoryText>
                 </ActivityHistoryButton>
