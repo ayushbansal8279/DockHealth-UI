@@ -38,7 +38,7 @@ const FileGridItem = (props) => {
   const { fileName, contentType, dateCreated, type, scanStatus } = file;
 
   const IconComponent = getIconFromContentType(contentType);
-  
+
   const isNotDisabled =
     !scanStatus ||
     scanStatus === ScanStatus.CLEAN ||
@@ -75,7 +75,12 @@ const FileGridItem = (props) => {
           justifyContent="space-between"
           flex={1}
         >
-          <FileNameText>{trunc(fileName, 50)}</FileNameText>
+          {fileName?.length > 40 ?
+            <Tooltip title={fileName}>
+              <FileNameText>{trunc(fileName, 40)}</FileNameText>
+            </Tooltip>
+            : <FileNameText>{fileName}</FileNameText>
+          }
           <CreatedText>{moment(dateCreated).fromNow()}</CreatedText>
           <StatusText>
             {!scanStatus || scanStatus === ScanStatus.IN_PROGRESS ? (
