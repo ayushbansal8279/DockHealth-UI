@@ -85,8 +85,12 @@ const DrawerTask = (props) => {
     taskRestrictions,
     taskListRestrictions: taskListRestriction,
     currentUser,
-    dragHandleProps,
+    dragListeners,
+    dragAttributes,
+    isDraggable,
+    isDragging,
   } = props;
+
   const dispatch = useDispatch();
   const restrictions = taskRestrictions;
 
@@ -241,9 +245,9 @@ const DrawerTask = (props) => {
 
   return (
     <Container>
-      {dragHandleProps && (
-        <DragHandleContainer>
-          <TaskDragHandle {...dragHandleProps} />
+      {isDraggable && (
+        <DragHandleContainer isDragging={isDragging}>
+          <TaskDragHandle {...dragListeners} {...dragAttributes} />
         </DragHandleContainer>
       )}
       <CircleIcon

@@ -10,6 +10,7 @@ import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
 import { multipleTaskDetailsSelector } from '../selectors/list-details-selectors';
 import { patientMultipleTaskDetailsSelector } from '../selectors/patient-details-selectors';
+import { isWorkflowDrawerOpenSelector } from '../selectors/workflow-drawer-selectors';
 
 function* duplicateWorkflow({ identifier, includeAttachments }) {
   try {
@@ -169,17 +170,21 @@ function* deleteWorkflowAttachment({
 function* updateWorkflowAttachment({
   taskWorkflowIdentifier,
   attachmentIdentifier,
-  fileName
+  fileName,
 }) {
   try {
-    yield call(WorkflowApi.updateWorkflowAttachment, {taskWorkflowIdentifier, attachmentIdentifier, fileName});
+    yield call(WorkflowApi.updateWorkflowAttachment, {
+      taskWorkflowIdentifier,
+      attachmentIdentifier,
+      fileName,
+    });
     yield all([
       put(showGlobalAlert(AlertMessages.UPDATED)),
       put(
         WorkflowActions.updateWorkflowAttachmentSuccess(
           taskWorkflowIdentifier,
           attachmentIdentifier,
-          fileName
+          fileName,
         ),
       ),
     ]);
@@ -190,7 +195,7 @@ function* updateWorkflowAttachment({
         WorkflowActions.updateWorkflowAttachmentFailure(
           taskWorkflowIdentifier,
           attachmentIdentifier,
-          fileName
+          fileName,
         ),
       ),
     ]);
@@ -207,12 +212,18 @@ function* reorderWorkflowTasks(payload) {
   } = payload;
 
   try {
-    const tasks = yield select((state) => {
-      const result = multipleTaskDetailsSelector(state, workflow?.tasks);
-      return result?.some((task) => task === undefined)
-        ? patientMultipleTaskDetailsSelector(state, workflow?.tasks)
-        : result;
-    });
+    const isWorkflowDrawerOpen = yield select(isWorkflowDrawerOpenSelector);
+    let tasks;
+    if (isWorkflowDrawerOpen) {
+      tasks = workflow.tasks;
+    } else {
+      tasks = yield select((state) => {
+        const result = multipleTaskDetailsSelector(state, workflow?.tasks);
+        return result?.some((task) => task === undefined)
+          ? patientMultipleTaskDetailsSelector(state, workflow?.tasks)
+          : result;
+      });
+    }
 
     const reorderedTasks = reorderTasksForWorkflow(
       sourceIndex,
@@ -262,5 +273,8 @@ export default function* watchWorkflow() {
     deleteWorkflowAttachment,
   );
   yield takeEvery(ActionTypes.REORDER_WORKFLOW_TASKS, reorderWorkflowTasks);
-  yield takeEvery(ActionTypes.UPDATE_WORKFLOW_ATTACHMENT, updateWorkflowAttachment);
+  yield takeEvery(
+    ActionTypes.UPDATE_WORKFLOW_ATTACHMENT,
+    updateWorkflowAttachment,
+  );
 }

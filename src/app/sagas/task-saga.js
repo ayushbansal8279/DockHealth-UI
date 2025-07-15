@@ -198,6 +198,11 @@ function* refreshTemplateBundle({ templateBundleIdentifier }) {
           bundleIdentifier: templateBundleIdentifier,
           dataToUpdate: templateBundle,
         });
+      } else {
+        yield put({
+          type: ActionTypes.REMOVE_TASK_FROM_VIEW,
+          taskIdentifier: templateBundle.identifier,
+        });
       }
     } else {
       yield put({
@@ -423,8 +428,20 @@ function* changeTaskPriority({ task, priority }) {
 function* refreshTask({ taskIdentifier }) {
   try {
     const task = yield call(TaskApi.getTaskDetails, taskIdentifier);
+    const filters = yield select(selectedFiltersInMegaFilterSelector);
 
-    yield put({ type: ActionTypes.REFRESH_TASK_SUCCESS, task });
+    if (filters && !isEmpty(filters)) {
+      if (checkIfTaskMatchesFilters(task, filters)) {
+        yield put({ type: ActionTypes.REFRESH_TASK_SUCCESS, task });
+      } else {
+        yield put({
+          type: ActionTypes.REMOVE_TASK_FROM_VIEW,
+          taskIdentifier: task.identifier,
+        });
+      }
+    } else {
+      yield put({ type: ActionTypes.REFRESH_TASK_SUCCESS, task });
+    }
   } catch {
     yield put({ type: ActionTypes.REFRESH_TASK_FAILURE });
   }

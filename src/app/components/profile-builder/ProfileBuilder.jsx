@@ -9,7 +9,6 @@ import {
   PlayGroungWrapper,
 } from './styled';
 import BuilderPlayground from './builder-playground/BuilderPlayground';
-import { DragDropContext } from 'react-beautiful-dnd';
 import { useBoolean } from 'hooks/useBoolean';
 import {
   convertDefaultFields,
@@ -20,24 +19,47 @@ import { fieldTypes } from './helper';
 import { useParams } from 'react-router-dom';
 import { showGlobalErrorAlert } from 'alert/actions';
 import * as CustomFieldApi from 'api/custom-fields-api';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import uuidv4 from '@/app/views/chat/channel-settings/uuid';
 import { getAllProfileFieldTypes } from '@/app/api/profile-type-field-api';
 import { getProfileDetailsType } from '@/app/api/profile-type-api';
 import { showGlobalAlert } from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
+import { userProfileSelector } from '@/app/selectors/user-selectors';
+import { getCustomerTypeLabel } from '@/app/helpers/customer-type-helper';
+import {
+  closestCenter,
+  DndContext,
+  DragOverlay,
+  KeyboardSensor,
+  PointerSensor,
+  TouchSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
+import AddCategory from './categories/Categories.t/AddCategory';
+import AddExistingFieldsCategory from './categories/Categories.t/AddExistingFieldsCategory';
+import AddNewFieldsCategory from './categories/Categories.t/AddNewFieldsCategory';
 
 export const ProfileBuilderContext = createContext({});
 
 const ProfileBuilder = () => {
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 3 } }),
+    useSensor(KeyboardSensor),
+    useSensor(TouchSensor),
+  );
   const dispatch = useDispatch();
   const { tabName, identifier } = useParams();
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [isNewCategory, setNewCategory] = useState(false);
   const [allCustomFields, setAllCustomFields] = useState([]);
   const [profileName, setProfileName] = useState('');
+  const currentUser = useSelector(userProfileSelector);
+  const customerTypeLabel = getCustomerTypeLabel(currentUser);
 
-  const context = tabName === 'patients' ? 'PATIENT' : 'PROFILETYPE';
+  const context =
+    tabName === `${customerTypeLabel}s` ? 'PATIENT' : 'PROFILETYPE';
 
   const initializePatientData = async () => {
     try {
@@ -123,7 +145,12 @@ const ProfileBuilder = () => {
 
   useEffect(() => {
     if (context === 'PATIENT') {
-      setProfileName('Patient Profile Builder');
+      setProfileName(
+        `${
+          customerTypeLabel?.charAt(0)?.toUpperCase() +
+          customerTypeLabel?.slice(1)
+        } Profile Builder`,
+      );
       initializePatientData();
     } else if (context === 'PROFILETYPE') {
       getProfileDetailsType(identifier).then((profileTypeDetails) => {
@@ -137,15 +164,29 @@ const ProfileBuilder = () => {
   const [isAddCategoryDrop, setAddCategoryDrop, unsetAddCategoryDrop] =
     useBoolean(false);
 
+  const [activeDragItem, setActiveDragItem] = useState(null);
+  const [dragOverlayWidth, setDragOverlayWidth] = useState(null);
   const handleDragStart = (e) => {
-    const source = e.source.droppableId;
-
+    const source = e?.active?.id;
     if (source === DROPTYPE.AddCategory) setAddCategoryDrop();
+    const node = document.querySelector(`[data-drag-id="${e?.active.id}"]`);
+
+    if (node) {
+      const rect = node?.getBoundingClientRect();
+      setDragOverlayWidth(rect?.width);
+    }
+    setActiveDragItem(e);
   };
 
   const handleDragEnd = (e) => {
-    const source = e.source.droppableId;
-    const destination = e.destination?.droppableId;
+    setActiveDragItem(null);
+    setDragOverlayWidth(null);
+
+    const { active, over } = e;
+
+    if (!over?.data?.current) return;
+    const source = active?.data?.current?.type;
+    const destination = over?.data?.current?.type;
 
     switch (source) {
       case DROPTYPE.AddCategory:
@@ -170,10 +211,10 @@ const ProfileBuilder = () => {
   };
 
   const handleExistingFieldDrop = (e, destination) => {
-    const draggableId = e.draggableId.split('#')[0];
+    const draggableId = e?.active?.id.split('#')[0];
     setSelectedCategories((prevCategories) =>
       prevCategories.map((category) => {
-        if (category.identifier !== destination) return category;
+        if (category?.identifier !== destination) return category;
 
         const fieldExists = category.fields.some(
           (field) => field.identifier === draggableId,
@@ -211,7 +252,7 @@ const ProfileBuilder = () => {
 
   const handleAddFieldDrop = (e, destination) => {
     fieldTypes.forEach((fieldType) => {
-      if (e.draggableId === fieldType.fieldType) {
+      if (e?.active?.id === fieldType.fieldType) {
         const updatedCategories = selectedCategories.map((category) => {
           if (category.identifier === destination) {
             const tempF = {
@@ -244,12 +285,19 @@ const ProfileBuilder = () => {
           isNewCategory,
           setNewCategory,
           isAddCategoryDrop,
+          activeDragItem,
         }}
       >
         <HeaderContainer>
           <BasicLayoutHeader title={profileName} />
         </HeaderContainer>
-        <DragDropContext
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCenter}
+          autoScroll={{
+            layoutShiftCompensation: true,
+            scrollableAncestors: true,
+          }}
           onDragStart={(e) => handleDragStart(e)}
           onDragEnd={(e) => handleDragEnd(e)}
         >
@@ -261,7 +309,32 @@ const ProfileBuilder = () => {
               <ProfileBuilderCategories allCustomFields={allCustomFields} />
             </CategoryWrapper>
           </BuilderContainer>
-        </DragDropContext>
+          <DragOverlay adjustScale={false} zIndex={9999}>
+            {activeDragItem?.active?.data?.current?.type ===
+              DROPTYPE.AddCategory && <AddCategory />}
+            {activeDragItem?.active?.data?.current?.type ===
+              DROPTYPE.AddField && (
+              <AddNewFieldsCategory
+                item={activeDragItem?.active?.data?.current?.item}
+                fieldTypeImages={
+                  activeDragItem?.active?.data?.current?.fieldTypeImages
+                }
+                overlayWidth={dragOverlayWidth}
+              />
+            )}
+            {activeDragItem?.active?.data?.current?.type ===
+              DROPTYPE.ExistingField && (
+              <AddExistingFieldsCategory
+                item={activeDragItem?.active?.data?.current?.item}
+                fieldTypeImages={
+                  activeDragItem?.active?.data?.current?.fieldTypeImages
+                }
+                index={activeDragItem?.active?.data?.current?.index}
+                overlayWidth={dragOverlayWidth}
+              />
+            )}
+          </DragOverlay>
+        </DndContext>
       </ProfileBuilderContext.Provider>
     </ProfileBuilderContainer>
   );

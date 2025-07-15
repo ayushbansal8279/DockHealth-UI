@@ -1,5 +1,4 @@
 import React, { useContext } from 'react';
-import { Droppable } from 'react-beautiful-dnd';
 import {
   BuilderContainer,
   CategoryDropper,
@@ -15,6 +14,7 @@ import { ProfileBuilderContext } from '../ProfileBuilder';
 import { showGlobalAlert } from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
 import { useDispatch } from 'react-redux';
+import { useDroppable } from '@dnd-kit/core';
 
 const BuilderPlayground = ({ context, identifier }) => {
   const dispatch = useDispatch();
@@ -25,6 +25,12 @@ const BuilderPlayground = ({ context, identifier }) => {
     isNewCategory,
     isAddCategoryDrop,
   } = useContext(ProfileBuilderContext);
+  const { setNodeRef, isOver, active, over } = useDroppable({
+    id: 'add-category-area',
+    data: {
+      type: 'add-category-area',
+    },
+  });
 
   const onNewCategoryAdd = (value) => {
     const newCategory = {
@@ -77,17 +83,9 @@ const BuilderPlayground = ({ context, identifier }) => {
       {isNewCategory ? (
         <AddCategory></AddCategory>
       ) : (
-        <Droppable droppableId="add-category-area">
-          {(provided) => (
-            <CategoryDropper
-              isAddCategoryDrop={isAddCategoryDrop}
-              {...provided.droppableProps}
-              ref={provided.innerRef}
-            >
-              Drag and drop a new category
-            </CategoryDropper>
-          )}
-        </Droppable>
+        <CategoryDropper isAddCategoryDrop={isAddCategoryDrop} ref={setNodeRef}>
+          Drag and drop a new category
+        </CategoryDropper>
       )}
     </BuilderContainer>
   );
