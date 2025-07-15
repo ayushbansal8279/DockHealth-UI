@@ -1,10 +1,13 @@
-import { fontSizes, fontWeights } from "@/app/styles/font";
-import palette from "@/app/styles/palette";
-import spacing from "@/app/styles/spacing";
-import { TimelineConnector, TimelineDot, TimelineOppositeContent } from "@mui/lab";
-import { Box, Card, IconButton, Typography } from "@mui/material";
-import styled from "styled-components";
-
+import { fontSizes, fontWeights } from '@/app/styles/font';
+import palette from '@/app/styles/palette';
+import spacing from '@/app/styles/spacing';
+import {
+  TimelineConnector,
+  TimelineDot,
+  TimelineOppositeContent,
+} from '@mui/lab';
+import { Box, Card, IconButton, Typography } from '@mui/material';
+import styled from 'styled-components';
 
 export const TitleName = styled.p`
   margin-bottom: 0;
@@ -15,12 +18,11 @@ export const TitleName = styled.p`
 `;
 
 export const DateAndTime = styled(Typography).attrs({
-    variant: "caption",
-    color: "textSecondary",
-  })`
-    display: block;
-  `;
-  
+  variant: 'caption',
+  color: 'textSecondary',
+})`
+  display: block;
+`;
 
 export const TimelineLeftSideContent = styled(TimelineOppositeContent)`
   flex: 0.23;
@@ -29,11 +31,11 @@ export const TimelineLeftSideContent = styled(TimelineOppositeContent)`
   align-self: top;
 `;
 
-
 export const FilterIcons = styled(IconButton)`
   && {
-    background-color: ${({ selected }) => (selected ? palette.brightBlue : "#f5f5f5")};
-    color: ${({ selected }) => (selected ? "#fff" : "#616161")};
+    background-color: ${({ selected }) =>
+      selected ? palette.brightBlue : '#f5f5f5'};
+    color: ${({ selected }) => (selected ? '#fff' : '#616161')};
     border-radius: 50%;
     transition: 0.3s;
 
@@ -44,7 +46,7 @@ export const FilterIcons = styled(IconButton)`
 `;
 
 export const ActivityWrapper = styled(Card).attrs({
-    variant: 'outlined'
+  variant: 'outlined',
 })`
   alignSelf: 'top',
   borderRadius: 2, 
@@ -53,18 +55,17 @@ export const ActivityWrapper = styled(Card).attrs({
   mb: 2
 `;
 
-export const ActivityName =  styled.p`
+export const ActivityName = styled.p`
   font-size: ${fontSizes.regular};
   font-weight: ${fontWeights.regular};
   font-family: 'Outfit', sans-serif;
-   margin: 0;
+  margin: 0;
 `;
 
-export const ActivityDescription =  styled(Typography).attrs({
-    variant: "caption",
-    color: "textSecondary",
-  })`
-  
+export const ActivityDescription = styled(Typography).attrs({
+  variant: 'caption',
+  color: 'textSecondary',
+})`
   display: flex;
   flex-direction: column;
   gap: 2px;
@@ -79,11 +80,10 @@ export const ActivityDescription =  styled(Typography).attrs({
 `;
 
 export const TimelineCenterIcon = styled(TimelineDot)`
- 
   margin: 0;
   background-color: #f5f5f5;
   color: #616161;
-  border-color:  ${palette.lightGrey};
+  border-color: ${palette.lightGrey};
   border-width: 0.5px;
 `;
 
@@ -112,8 +112,8 @@ export const Container = styled.a`
 `;
 
 export const MembersContainer = styled(Typography).attrs({
-  variant: "caption",
-  color: "textSecondary",
+  variant: 'caption',
+  color: 'textSecondary',
 })`
   display: flex;
   align-items: center;
@@ -123,7 +123,7 @@ export const MembersContainer = styled(Typography).attrs({
   strong {
     white-space: nowrap;
     margin-right: 4px;
-    margin-top:  2px
+    margin-top: 2px;
   }
 
   & > div {
@@ -134,17 +134,17 @@ export const MembersContainer = styled(Typography).attrs({
 `;
 
 export const WorkflowIconContainer = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: ${({ filterIcon }) => (filterIcon ? '18px' : '16px')};
-    height: ${({ filterIcon }) => (filterIcon ? '18px' : '16px')};
-    color: inherit;
-    border-color:  ${palette.lightGrey};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: ${({ filterIcon }) => (filterIcon ? '18px' : '16px')};
+  height: ${({ filterIcon }) => (filterIcon ? '18px' : '16px')};
+  color: inherit;
+  border-color: ${palette.lightGrey};
 `;
 
 export const CommentContainer = styled.div`
-  max-width: 300px;
+  max-width: 470px;
   width: 100%;
   padding: ${spacing.tiny} ${spacing.small};
   word-break: break-word;
@@ -161,7 +161,6 @@ export const CommentDetails = styled.div`
   color: ${palette.coolGrey1};
   font-size: 14px;
 
-
   & > .label {
     font-weight: bold;
     white-space: nowrap;
@@ -175,7 +174,7 @@ export const CommentDetails = styled.div`
 `;
 
 export const CommentTextWrapper = styled.div`
-  width: 220;
+  width: 390px;
 `;
 
 export const NotesHistoryContainer = styled(Box)`
@@ -208,7 +207,8 @@ export const PatientNoteDescription = styled.div`
   overflow: hidden;
   text-overflow: ellipsis;
 
-  &, * {
+  &,
+  * {
     display: inline;
     white-space: nowrap;
     padding: 0;
@@ -218,7 +218,7 @@ export const PatientNoteDescription = styled.div`
   }
 
   ul li::before {
-    content: "• ";
+    content: '• ';
     margin-right: 2px;
   }
 
@@ -228,11 +228,18 @@ export const PatientNoteDescription = styled.div`
 
   ol li::before {
     counter-increment: item;
-    content: counter(item) ". ";
+    content: counter(item) '. ';
     margin-right: 2px;
   }
 
-  li, li * {
+  li,
+  li * {
     display: inline;
   }
+`;
+
+export const PatientNoteTooltipText = styled.div`
+  max-height: 400px;
+  overflow-x: hidden;
+  overflow-y: scroll;
 `;
