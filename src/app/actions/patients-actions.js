@@ -20,9 +20,10 @@ export function getCurrentPatientsListDetails() {
   };
 }
 
-export function getCurrentPatients() {
+export function getCurrentPatients(workspaceIdentifier = null) {
   return {
     type: ActionTypes.GET_CURRENT_PATIENTS,
+    payload: { workspaceIdentifier },
   };
 }
 
@@ -85,9 +86,10 @@ export function clearPatientsFilters() {
   };
 }
 
-export function getPatientsLists() {
+export function getPatientsLists(workspaceIdentifier = null) {
   return {
     type: ActionTypes.GET_PATIENTS_LISTS,
+    payload: { workspaceIdentifier }
   };
 }
 

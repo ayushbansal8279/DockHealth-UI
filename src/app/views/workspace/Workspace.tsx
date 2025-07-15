@@ -114,6 +114,7 @@ const Workspace = () => {
               allowedToRoles={undefined}
             />
           ))}
+          <Redirect exact from={`${path}/patients`} to={`${path}/patients/list/all`} />
           <Redirect to={`${path}/${DEFAULT_TAB.mainPath}`} />
         </Switch>
       </WorkspaceDetailsContainer>

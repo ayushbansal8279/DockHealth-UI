@@ -23,9 +23,10 @@ import {
 } from 'helpers/patient-list-helpers';
 import AlertMessages from 'alert/AlertMessages';
 
-function* getPatientsLists() {
+function* getPatientsLists({ payload }) {
   try {
-    const lists = yield call(PatientsApi.getPatientsLists);
+    const { workspaceIdentifier } = payload || {};
+    const lists = yield call(PatientsApi.getPatientsLists, workspaceIdentifier);
 
     const defaultPatientsLists = lists.filter(
       ({ listType }) => listType === PatientsListType.DEFAULT,
@@ -192,7 +193,7 @@ function* getCurrentPatientsListDetails() {
   }
 }
 
-function* fetchCurrentPatients() {
+function* fetchCurrentPatients(workspaceIdentifier) {
   try {
     const currentPatientsListIdentifier = yield select(
       currentPatientsListIdentifierSelector,
@@ -230,6 +231,7 @@ function* fetchCurrentPatients() {
       patients = yield call(
         PatientsApi.getPatientsByListId,
         currentPatientsListIdentifier,
+        workspaceIdentifier
       );
     }
 
@@ -242,9 +244,10 @@ function* fetchCurrentPatients() {
   }
 }
 
-function* getCurrentPatients() {
+function* getCurrentPatients({ payload }) {
   try {
-    const patients = yield call(fetchCurrentPatients);
+    const { workspaceIdentifier } = payload || {};
+    const patients = yield call(fetchCurrentPatients, workspaceIdentifier);
     if (patients) {
       yield put({
         type: ActionTypes.GET_CURRENT_PATIENTS_SUCCESS,

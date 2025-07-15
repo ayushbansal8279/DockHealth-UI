@@ -15,11 +15,10 @@ const WorkspacePatients = () => {
   const [searchValue, setSearchValue] = useState(null);
   const [importPopoverOpen, setImportPopoverOpen] = useState(false);
 
-  // const { listIdentifier: listIdentifierParameter } = useParams();
+  const { workspaceIdentifier, listIdentifier: listIdentifierParameter } = useParams();
+
   const patients = useSelector(patientsSelector);
 
-  // TODO: get workspace patient list identifier
-  const listIdentifierParameter = 'cd2d38ae-d4fd-497b-907e-fa97708a28f5';
   const patientListIdentifier = getPatientListIdentifierByUrlParameter(listIdentifierParameter);
 
   useEffect(() => {
@@ -27,7 +26,7 @@ const WorkspacePatients = () => {
   }, [dispatch, patientListIdentifier]);
 
   const refreshPatients = useCallback(() => {
-    dispatch(PatientsActions.getCurrentPatients());
+    dispatch(PatientsActions.getCurrentPatients(workspaceIdentifier));
   }, [dispatch]);
 
   return (
