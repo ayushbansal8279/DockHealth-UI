@@ -31,7 +31,7 @@ const Workspace = () => {
   const [tabsConfiguration, setTabsConfiguration] = useState(TABS_CONFIG);
   const { pathname } = useLocation();
   const { path, url } = useRouteMatch();
-  const { identifier } = useParams<{ identifier: string }>();
+  const { workspaceIdentifier } = useParams<{ workspaceIdentifier: string }>();
   const dispatch = useDispatch();
   const history = useHistory();
   const workspace = useSelector(workspaceSelector);
@@ -47,8 +47,8 @@ const Workspace = () => {
   }, [workspace]);
 
   useEffect(() => {
-    dispatch(getCurrentWorkspace(identifier));
-  }, [identifier]);
+    dispatch(getCurrentWorkspace(workspaceIdentifier));
+  }, [workspaceIdentifier]);
 
   const activeTabPath = useMemo(() => {
     for (const tab of tabsConfiguration) {
@@ -104,7 +104,9 @@ const Workspace = () => {
           {tabsConfiguration?.map((route) => (
             <RouteWrapper
               key={route.mainPath}
-              path={`${path}/${route.mainPath}`}
+              path={`${path}/${route.mainPath}${
+                route.additionalPath ? `/${route.additionalPath}` : ''
+              }`}
               RouteComponent={route.RouteComponent}
               onEnter={undefined}
               onLeave={undefined}
