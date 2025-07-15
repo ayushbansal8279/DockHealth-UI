@@ -26,16 +26,23 @@ function createSubmit({
   event,
   dispatch,
   history,
+  workspaceIdentifier,
 }) {
   return function onSubmit(data) {
     event.preventDefault();
-    dispatch(TaskTemplateActions.addSmartFlow(data, history));
+    dispatch(
+      TaskTemplateActions.addSmartFlow(data, history, workspaceIdentifier),
+    );
     if (typeof onCreateSuccess === 'function') onCreateSuccess(data);
     closeModal();
   };
 }
 
-const CreateSmartFlowModal = ({ closeModal, onCreateSuccess }) => {
+const CreateSmartFlowModal = ({
+  closeModal,
+  onCreateSuccess,
+  workspaceIdentifier,
+}) => {
   const dispatch = useDispatch();
   const history = useHistory();
   const formMethods = useForm({
@@ -60,6 +67,7 @@ const CreateSmartFlowModal = ({ closeModal, onCreateSuccess }) => {
               closeModal,
               dispatch,
               history,
+              workspaceIdentifier,
             }),
           )(event)
         }
@@ -74,15 +82,9 @@ const CreateSmartFlowModal = ({ closeModal, onCreateSuccess }) => {
             validate={validateTemplateName}
           />
           <Grid container direction="row" justifyContent="center">
-            <CancelButton
-              onClick={closeModal}
-            >
-              Cancel
-            </CancelButton>
+            <CancelButton onClick={closeModal}>Cancel</CancelButton>
             <Spacing horizontal={3} />
-            <ConfirmButton type="submit">
-              Save
-            </ConfirmButton>
+            <ConfirmButton type="submit">Save</ConfirmButton>
           </Grid>
         </FormProvider>
       </StyledForm>
