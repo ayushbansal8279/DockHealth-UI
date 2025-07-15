@@ -170,8 +170,13 @@ const PatientImportStatus = lazy(() =>
   import('views/patient-details/PatientImportStatus/PatientImportStatus'),
 );
 
-const UserActivity = lazy(() => import('views/self-serve/users/UserActivity/UserActivity'));
-const Integrations = lazy(() => import('views/Integrations/IntegrationsHeader'));
+const UserActivity = lazy(() =>
+  import('views/self-serve/users/UserActivity/UserActivity'),
+);
+const Integrations = lazy(() =>
+  import('views/Integrations/IntegrationsHeader'),
+);
+
 const {
   CAN_ACCESS_HOME_PAGE,
   CAN_ACCESS_SEARCH_PAGE,
@@ -398,7 +403,7 @@ export const TEMPLATE_CORE_SUBSCRIPTION_PLAN_ROUTES = [
     permissions: [CAN_ACCESS_TASK_LIST_PAGE],
   },
   {
-    path: '/workflows/library/:identifier?',
+    path: '/workflows/library/:folderIdentifier?',
     RouteComponent: React.lazy(() =>
       import('views/task-template/TaskTemplateView'),
     ),
@@ -422,7 +427,7 @@ export const TEMPLATE_CORE_SUBSCRIPTION_PLAN_ROUTES = [
     permissions: [CAN_ACCESS_CHAT_PAGE],
   },
   {
-    path: '/workspace/:identifier',
+    path: '/workspace/:workspaceIdentifier',
     RouteComponent: Workspace,
     permissions: [CAN_ACCESS_SETTINGS_PAGE],
   },

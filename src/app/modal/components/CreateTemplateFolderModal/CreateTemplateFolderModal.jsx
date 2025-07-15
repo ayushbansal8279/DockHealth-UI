@@ -19,16 +19,28 @@ const validateTemplateName = (value) => {
   return true;
 };
 
-function createSubmit({ onCreateSuccess, closeModal, event, dispatch }) {
+function createSubmit({
+  onCreateSuccess,
+  closeModal,
+  event,
+  dispatch,
+  workspaceIdentifier,
+}) {
   return function onSubmit(data) {
     event.preventDefault();
-    dispatch(TaskTemplateActions.addTemplateFolder(data));
+    dispatch(
+      TaskTemplateActions.addTemplateFolder(data, null, workspaceIdentifier),
+    );
     if (typeof onCreateSuccess === 'function') onCreateSuccess(data);
     closeModal();
   };
 }
 
-const CreateTemplateFolderModal = ({ closeModal, onCreateSuccess }) => {
+const CreateTemplateFolderModal = ({
+  closeModal,
+  onCreateSuccess,
+  workspaceIdentifier,
+}) => {
   const dispatch = useDispatch();
   const formMethods = useForm({
     mode: 'onSubmit',
@@ -46,7 +58,13 @@ const CreateTemplateFolderModal = ({ closeModal, onCreateSuccess }) => {
       <StyledForm
         onSubmit={(event) =>
           handleSubmit(
-            createSubmit({ event, onCreateSuccess, closeModal, dispatch }),
+            createSubmit({
+              event,
+              onCreateSuccess,
+              closeModal,
+              dispatch,
+              workspaceIdentifier,
+            }),
           )(event)
         }
       >

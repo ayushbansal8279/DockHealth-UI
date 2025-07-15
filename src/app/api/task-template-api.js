@@ -64,7 +64,15 @@ export function getAllTemplatesForOrganization() {
     .then((response) => response.data);
 }
 
-export function getTemplates(includeAll) {
+export function getTemplates(includeAll, workspaceIdentifier) {
+  if (workspaceIdentifier) {
+    return axios({
+      method: 'get',
+      url: `task/template/getRootWorkflowTemplates?includeAll=${includeAll}`,
+      headers: { CurrentWorkspaceIdentifier: workspaceIdentifier },
+    }).then((response) => response.data);
+  }
+
   return axios
     .get(
       `task/template/getRootTemplatesForOrganization?includeAll=${includeAll}`,
@@ -100,7 +108,21 @@ export function getTemplateBasicDetails(identifier) {
     .then(({ data }) => data);
 }
 
-export function addTemplate(newTemplate, parentTaskWorkflowIdentifier) {
+export function addTemplate(
+  newTemplate,
+  parentTaskWorkflowIdentifier,
+  workspaceIdentifier,
+) {
+  if (workspaceIdentifier) {
+    return axios
+      .post(
+        `task/workflow`,
+        { ...newTemplate, parentTaskWorkflowIdentifier },
+        { headers: { CurrentWorkspaceIdentifier: workspaceIdentifier } },
+      )
+      .then((response) => response.data);
+  }
+
   return axios
     .post(`task/workflow`, { ...newTemplate, parentTaskWorkflowIdentifier })
     .then((response) => response.data);

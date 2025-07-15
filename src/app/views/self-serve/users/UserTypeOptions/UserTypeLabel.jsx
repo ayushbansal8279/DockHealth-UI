@@ -82,7 +82,7 @@ const UserTypeLabel = ({
             isOpen={isPopoverOpen}
             label={
               label === 'Invited'
-                ? `${label} (${orgUserRole.toLowerCase()})`
+                ? `${label} (${orgUserRole?.toLowerCase()})`
                 : label
             }
           />
@@ -90,7 +90,7 @@ const UserTypeLabel = ({
         {isDisabledRemovingSubscription && (
           <CurrentUserLabel>
             {label === 'Invited'
-              ? `${label} (${orgUserRole.toLowerCase()})`
+              ? `${label} (${orgUserRole?.toLowerCase()})`
               : label}
           </CurrentUserLabel>
         )}

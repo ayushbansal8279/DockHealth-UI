@@ -120,13 +120,18 @@ const WorkspaceSubmenuStepTwo = () => {
             <WorkspacesTitle>{workspaceLabel}s</WorkspacesTitle>
           </WorkspacesSubWrapper>
         </WorkspacesTitleWrapper>
-        <Flex j={'start'} gap={10} pl={10} pt={10}>
-          <WorkspaceTile
-            workspaceProfileColor={workspace.workspaceProfileColor}
-            workspaceInitials={workspace.workspaceInitials}
-          />
-          <div>{workspace.workspaceName}</div>
-        </Flex>
+        <div
+          style={{ cursor: 'pointer' }}
+          onClick={() => history.push(`/core/workspace/${workspaceIdentifier}`)}
+        >
+          <Flex j={'start'} gap={10} pl={10} pt={10}>
+            <WorkspaceTile
+              workspaceProfileColor={workspace.workspaceProfileColor}
+              workspaceInitials={workspace.workspaceInitials}
+            />
+            <div>{workspace.workspaceName}</div>
+          </Flex>
+        </div>
         <WorkspaceListWrapper>
           <NewLabeledCollapse
             name="Lists"
