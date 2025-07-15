@@ -1,11 +1,9 @@
 import React, { useCallback } from 'react';
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import ReactDOM from 'react-dom';
 import * as TaskActions from 'actions/task-actions';
 import { useSelector, useDispatch } from 'react-redux';
 import { onSubtaskOrderChanged } from 'helpers/ga-event-helper';
 import { userProfileSelector } from 'selectors/user-selectors';
-import DrawerTask from 'components/drawer-common/DrawerTask/DrawerTask';
 import DrawerTaskLoader from 'components/drawer-common/DrawerTaskLoader/DrawerTaskLoader';
 import {
   SINGLE_TASK_RESTRICTIONS_OPTIONS,
@@ -14,6 +12,15 @@ import {
 } from 'restrictions/task-restrictions';
 import { Container, Title } from './styled';
 import QuickAddSubtask from '../QuickAddSubtask/QuickAddSubtask';
+import {
+  DndContext,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
+import { SortableContext } from '@dnd-kit/sortable';
+import DraggableTaskItem from '../DraggableTaskItem/DraggableTaskItem';
 
 const { READ_ONLY } = SINGLE_TASK_RESTRICTIONS_OPTIONS;
 
@@ -24,6 +31,10 @@ const SubtasksSection = ({
   taskListRestrictions,
 }) => {
   const dispatch = useDispatch();
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 3 } }),
+    useSensor(KeyboardSensor),
+  );
 
   const currentUser = useSelector(userProfileSelector);
   const subtasks = selectedTask?.subtasks;
@@ -31,10 +42,16 @@ const SubtasksSection = ({
   const readOnly = isReadOnly === READ_ONLY;
 
   const handleDragEnd = useCallback(
-    ({ destination, source }) => {
+    ({ active, over }) => {
+      const activeIndex = active?.data?.current?.sortable?.index;
+      const overIndex = over?.data?.current?.sortable?.index;
+      if (!over || activeIndex === overIndex) return;
+
       onSubtaskOrderChanged();
 
-      if (destination) {
+      if (over) {
+        const source = { index: activeIndex };
+        const destination = { index: overIndex };
         dispatch(
           TaskActions.reorderSubtasks({
             source,
@@ -51,28 +68,6 @@ const SubtasksSection = ({
     TASK_LIST_RESTRICTIONS_PROFILES[currentUser?.orgUserRole];
   const { DISABLED } = TASK_LIST_RESTRICTIONS_OPTIONS;
 
-  const renderDraggableItem = ({
-    task,
-    // eslint-disable-next-line no-shadow
-    taskRestrictions,
-    // eslint-disable-next-line no-shadow
-    taskListRestrictions,
-    draggableInnerReference,
-    draggableProps,
-    dragHandleProps,
-  }) => (
-    <div ref={draggableInnerReference} {...draggableProps}>
-      <DrawerTask
-        key={task.taskIdentifier}
-        task={task}
-        taskRestrictions={taskRestrictions}
-        taskListRestrictions={taskListRestrictions}
-        currentUser={currentUser}
-        dragHandleProps={dragHandleProps}
-      />
-    </div>
-  );
-
   return (
     <Container>
       <Title>Subtasks</Title>
@@ -80,53 +75,22 @@ const SubtasksSection = ({
         <DrawerTaskLoader rows={tasksCount || 4} />
       ) : (
         <>
-          <DragDropContext onDragEnd={handleDragEnd}>
-            <Droppable droppableId={selectedTask.identifier}>
-              {(provided) => (
-                <div ref={provided.innerRef} {...provided.droppableProps}>
-                  {subtasks?.map((task, index) => (
-                    <Draggable
-                      key={task.identifier}
-                      draggableId={String(task.identifier)}
-                      index={index}
-                      isDragDisabled={restrictions?.createTask === DISABLED}
-                    >
-                      {(
-                        {
-                          innerRef: draggableInnerReference,
-                          draggableProps,
-                          dragHandleProps,
-                        },
-                        { isDragging },
-                      ) =>
-                        isDragging
-                          ? ReactDOM.createPortal(
-                              renderDraggableItem({
-                                task,
-                                taskRestrictions,
-                                taskListRestrictions,
-                                draggableInnerReference,
-                                draggableProps,
-                                dragHandleProps,
-                              }),
-                              document.querySelector('body'),
-                            )
-                          : renderDraggableItem({
-                              task,
-                              taskRestrictions,
-                              taskListRestrictions,
-                              draggableInnerReference,
-                              draggableProps,
-                              dragHandleProps,
-                            })
-                      }
-                    </Draggable>
-                  ))}
-                  {provided.placeholder}
-                </div>
-              )}
-            </Droppable>
-          </DragDropContext>
+          <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
+            <SortableContext
+              items={(subtasks ?? [])?.map((subtask) => subtask?.identifier)}
+            >
+              {(subtasks ?? [])?.map((task, index) => (
+                <DraggableTaskItem
+                  key={task?.taskIdentifier}
+                  task={task}
+                  taskRestrictions={taskRestrictions}
+                  taskListRestrictions={taskListRestrictions}
+                  currentUser={currentUser}
+                  isDragDisabled={restrictions?.createTask === DISABLED}
+                />
+              ))}
+            </SortableContext>
+          </DndContext>
         </>
       )}
       {!readOnly && <QuickAddSubtask />}

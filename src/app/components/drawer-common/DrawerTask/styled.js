@@ -104,4 +104,5 @@ export const DragHandleContainer = styled.div`
   width: 12px;
   transform: translateY(-50%);
   padding-right: 6px;
+  cursor: ${({ isDragging }) => (isDragging ? `grabbing` : `grab`)};
 `;

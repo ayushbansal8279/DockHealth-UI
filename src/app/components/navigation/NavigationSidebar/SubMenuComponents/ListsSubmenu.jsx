@@ -93,7 +93,7 @@ const ListsSubmenu = () => {
   const organization = useSelector(organizationSelector);
   const { subscriptionDetails } = organization;
   const sensors = useSensors(
-    useSensor(PointerSensor),
+    useSensor(PointerSensor, { activationConstraint: { distance: 3 } }),
     useSensor(KeyboardSensor),
   );
 

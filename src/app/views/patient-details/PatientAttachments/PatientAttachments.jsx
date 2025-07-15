@@ -74,6 +74,7 @@ const PatientAttachments = () => {
     handleAttachmentClick,
     dropzone: { getRootProps, getInputProps, isDragActive },
     downloadAllFiles,
+    downloadAllTaskFiles,
     downloadAttachment,
     patientTaskAttachments,
     renamePatientTaskAttachment,
@@ -481,7 +482,7 @@ const PatientAttachments = () => {
             )}
             {!downloadDisabled && currentPatientAttachments.length > 0 && (
               <div>
-                <DownloadAllLink onClick={downloadAllFiles}>
+                <DownloadAllLink onClick={downloadAllTaskFiles}>
                   Download All
                 </DownloadAllLink>
               </div>

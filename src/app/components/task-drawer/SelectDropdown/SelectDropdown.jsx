@@ -94,6 +94,10 @@ const SelectDropdown = React.forwardRef(
     }, [patientIdentifier]);
 
     useEffect(() => {
+      if (!isFocused && inputValue) setIsFocused();
+    }, [isFocused, inputValue, setIsFocused]);
+
+    useEffect(() => {
       if (isFocused) onInputChange(inputValue);
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isFocused]);
