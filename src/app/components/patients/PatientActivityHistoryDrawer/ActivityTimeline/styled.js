@@ -240,6 +240,5 @@ export const PatientNoteDescription = styled.div`
 
 export const PatientNoteTooltipText = styled.div`
   max-height: 400px;
-  overflow-x: hidden;
-  overflow-y: scroll;
+  overflow: auto;
 `;
