@@ -26,7 +26,7 @@ export const POFILE_BUILDER_SETTINGS_PATH = '/settings/profile-builder';
 export const TASK_CUSTOMIZATIONS_PATH = '/settings/task-customizations';
 export const CUSTOM_FIELDS_SETTINGS_PATH = '/settings/custom-fields';
 export const DEVELOPERS_PATH = '/settings/developers';
-export const INTEGRATIONS_PATH ='/settings/integrations';
+export const INTEGRATIONS_PATH = '/settings/integrations';
 export const WORKFLOW_LIBRARY_PATH = '/core/workflows/library';
 export const WORKFLOW_BUILDER_PATH = '/core/workflows/builder';
 export const CUSTOM_PROFILES_PATH = '/core/custom-profiles';
@@ -39,6 +39,7 @@ export const PATIENTS_LIST_WITH_TASKS = '/core/patients/list/active';
 export const PATIENTS_LIST_ARCHIVED = '/core/patients/list/archived';
 export const PATIENTS_LIST = '/core/patients/list';
 export const PATIENTS_LIST_CUSTOM = '/core/patients/list/custom';
+export const WORKSPACE_PATH = '/core/workspace';
 
 export const CHAT_PATH = '/core/chat';
 
@@ -73,8 +74,16 @@ export const createWorkflowBuilderPath = (workflowIdentifier) =>
 export const createWorkflowFolderPath = (folderIdentifier) =>
   `${WORKFLOW_LIBRARY_PATH}/${folderIdentifier}`;
 
+export const createWorkflowFolderPathForWorkspace = (
+  workspaceIdentifier,
+  folderIdentifier,
+) =>
+  `${WORKSPACE_PATH}/${workspaceIdentifier}/workflowLibrary/${folderIdentifier}`;
+
 export const createUserGroupPath = (groupIdentifier) =>
   USERS_PATH + (groupIdentifier ? `/${groupIdentifier}` : '');
 
-export const createProfileListPath = (profileTypeIdentifier, profileIdentifier) =>
-  `${CUSTOM_PROFILES_PATH}/${profileTypeIdentifier}/${profileIdentifier}`;
+export const createProfileListPath = (
+  profileTypeIdentifier,
+  profileIdentifier,
+) => `${CUSTOM_PROFILES_PATH}/${profileTypeIdentifier}/${profileIdentifier}`;
