@@ -44,13 +44,14 @@ export function getPatientsListDetails(identifier) {
   );
 }
 
-export function getPatientsByCriteria(searchCriteria, patientListIdentifier) {
+export function getPatientsByCriteria(searchCriteria, patientListIdentifier, workspaceIdentifier) {
   return axios
     .get(`patient/getPatientsByCriteria`, {
       params: {
         searchCriteria,
         patientListIdentifier,
       },
+      ...withWorkspaceHeaders(workspaceIdentifier),
     })
     .then((response) => response.data);
 }

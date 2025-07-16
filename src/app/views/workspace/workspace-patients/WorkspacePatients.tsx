@@ -36,6 +36,7 @@ const WorkspacePatients = () => {
         setSearchValue={setSearchValue}
         setImportPopoverOpen={setImportPopoverOpen}
         showAddButton
+        workspaceIdentifier={workspaceIdentifier}
       />
       <WorkspacePatientsTableWrapper>
         <PatientsList

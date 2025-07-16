@@ -226,6 +226,7 @@ function* fetchCurrentPatients(workspaceIdentifier) {
         PatientsApi.getPatientsByCriteria,
         searchTerm,
         currentPatientsListIdentifier,
+        workspaceIdentifier
       );
     } else {
       patients = yield call(
@@ -273,14 +274,14 @@ function* silentlyGetCurrentPatients() {
   }
 }
 
-function* searchPatients({ searchTerm }) {
+function* searchPatients({ searchTerm, workspaceIdentifier }) {
   yield put({
     type: ActionTypes.CHANGE_PATIENTS_SEARCH_TERM,
     searchTerm,
   });
   yield put({
     type: ActionTypes.GET_CURRENT_PATIENTS,
-    searchTerm,
+    payload: { workspaceIdentifier },
   });
 }
 

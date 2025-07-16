@@ -65,7 +65,7 @@ const OPTIONS = [
   },
 ];
 
-const PatientsToolbar = ({ searchValue, setSearchValue, showAddButton }) => {
+const PatientsToolbar = ({ searchValue, setSearchValue, showAddButton, workspaceIdentifier = null }) => {
   const [isSidebarOpen, setIsSidebarOpen, unsetIsSidebarOpen] =
     useBoolean(false);
   const [finalFilter, setFinalFilter] = useState({});
@@ -108,7 +108,7 @@ const PatientsToolbar = ({ searchValue, setSearchValue, showAddButton }) => {
   };
 
   const handleSearch = useCallback(() => {
-    dispatch(PatientsActions.searchPatients(searchValue));
+    dispatch(PatientsActions.searchPatients(searchValue, workspaceIdentifier));
   }, [dispatch, searchValue]);
 
   const optionBasedUrl = useMemo(

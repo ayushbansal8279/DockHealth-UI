@@ -45,10 +45,11 @@ export function getCurrentPatientsListFilterOptions() {
   };
 }
 
-export function searchPatients(searchTerm) {
+export function searchPatients(searchTerm, workspaceIdentifier = null) {
   return {
     type: ActionTypes.SEARCH_PATIENTS,
     searchTerm,
+    workspaceIdentifier
   };
 }
 
