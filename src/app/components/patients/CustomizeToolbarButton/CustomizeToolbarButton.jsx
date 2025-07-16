@@ -83,9 +83,9 @@ const CustomizeToolbarButton = ({
     [PatientHeaderColumn.MOBILE]: 'Mobile Phone',
     [PatientHeaderColumn.HOME]: 'Home Phone',
     [PatientHeaderColumn.LABELS]: 'Labels',
-    [PatientHeaderColumn.SOURCE_EHR]: 'Source EHR',
-    [PatientHeaderColumn.EHR_LAST_SYNCED]: 'EHR Last Synced',
-    [PatientHeaderColumn.EHR_STATUS]: 'EHR Status',
+    [PatientHeaderColumn.SOURCE_EHR]: 'EHR Source',
+    [PatientHeaderColumn.EHR_LAST_SYNCED]: 'EHR Patient Last Synced',
+    [PatientHeaderColumn.EHR_STATUS]: 'EHR Patient Status',
   };
 
   const customerTypeLabel = capitalize(getCustomerTypeLabel(userProfile));
