@@ -109,6 +109,7 @@ const TaskItemPatient = ({
               taskWorkflow={taskWorkflow}
               hasSubtasks={hasSubtasks}
               origin={origin}
+              openAddPatientModal
             >
               <PatientWrapper>
                 <PlaceholderText>

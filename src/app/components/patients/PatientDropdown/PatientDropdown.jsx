@@ -20,6 +20,7 @@ const PatientDropdown = ({
   hasSubtasks,
   taskWorkflow,
   origin,
+  openAddPatientModal,
 }) => {
   const popoverReference = useRef(null);
   const dispatch = useDispatch();
@@ -127,6 +128,7 @@ const PatientDropdown = ({
           selectedPatientIdentifier={selectedPatientIdentifier}
           disableAdding={!quickAddPatientEnabled}
           closePopover={closePopover}
+          openAddPatientModal={openAddPatientModal}
         />
       </StyledPopover>
     </>
