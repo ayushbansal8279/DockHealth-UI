@@ -66,6 +66,7 @@ const TaskTemplatePatient = ({
           openPopover={() => setPopoverOpen(true)}
           closePopover={() => setPopoverOpen(false)}
           origin={origin}
+          openAddPatientModal
         >
           <AddPlaceholder>+ Add {customerTypeLabelCapitalized}</AddPlaceholder>
         </PatientDropdown>
