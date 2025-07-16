@@ -6,7 +6,6 @@ import React, {
   useMemo,
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useDispatch, useSelector } from 'react-redux';
 import debounce from 'lodash.debounce';
 import MagnifierIcon from 'img/magnifier.svg';
 import { getPatientsByCriteria } from 'api/patients-api';
@@ -38,7 +37,6 @@ import {
   SearchPatientsResultList,
 } from './styled';
 import { openModal } from '@/app/modal/actions';
-import { openModal } from '@/app/modal/actions';
 
 const MAX_PATIENT_RESULTS = 200;
 
@@ -62,7 +60,6 @@ const PatientList = ({
   const currentOrganizationIdentifier = sessionStorage.getItem(
     'currentOrganizationIdentifier',
   );
-  const dispatch = useDispatch();
   const dispatch = useDispatch();
   const currentOrganization =
     currentUser?.userOrganizations?.find(
