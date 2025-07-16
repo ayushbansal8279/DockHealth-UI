@@ -7,7 +7,10 @@ import { useDispatch, useSelector } from "react-redux";
 import * as PatientsActions from 'actions/patients-actions';
 import { useParams } from "react-router-dom";
 import PatientsToolbar from "@/app/components/patients/PatientsToolbar/PatientsToolbar";
-import { patientsSelector } from "@/app/selectors/patients-selectors";
+import { patientsListDetailsSelector, patientsSelector } from "@/app/selectors/patients-selectors";
+import AddButton, { AddEntitiesContainer } from "@/app/components/common/AddButton/AddButton";
+import Spacing from "@/app/components/common/Spacing";
+import { openModal } from "@/app/modal/actions";
 
 const WorkspacePatients = () => {
   const dispatch = useDispatch();
@@ -29,15 +32,33 @@ const WorkspacePatients = () => {
     dispatch(PatientsActions.getCurrentPatients(workspaceIdentifier));
   }, [dispatch]);
 
+  const listDetails = useSelector(patientsListDetailsSelector);
+
+  const onEditPatientList = useCallback(() => {
+    dispatch(
+      openModal('AddPatientToList', {
+        patientsList: listDetails,
+        workspaceIdentifier
+      }),
+    );
+  }, [dispatch, listDetails]);
+
   return (
     <WorkspacePatientsContainer>
       <PatientsToolbar
         searchValue={searchValue}
         setSearchValue={setSearchValue}
         setImportPopoverOpen={setImportPopoverOpen}
-        showAddButton
         workspaceIdentifier={workspaceIdentifier}
       />
+      {patientListIdentifier && patientListIdentifier.length === 36 && (
+        <AddEntitiesContainer>
+          <AddButton onClick={onEditPatientList}>
+            Manage Patient List
+          </AddButton>
+          <Spacing horizontal={5} />
+        </AddEntitiesContainer>
+      )}
       <WorkspacePatientsTableWrapper>
         <PatientsList
           patients={patients}

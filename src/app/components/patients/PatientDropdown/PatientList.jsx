@@ -46,6 +46,7 @@ const PatientList = ({
   disableAdding,
   onSelect,
   closePopover,
+  workspaceIdentifier = null
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const [searchValue, setSearchValue] = useState('');
@@ -98,7 +99,7 @@ const PatientList = ({
 
   const fetchPatients = useCallback(
     (value) =>
-      getPatientsByCriteria(value).then((fetchedPatients) => {
+      getPatientsByCriteria(value, null, workspaceIdentifier).then((fetchedPatients) => {
         const p = fetchedPatients.filter(
           ({ patientIdentifier }) =>
             !patientIdentifiersToExclude.includes(patientIdentifier),
