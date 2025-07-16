@@ -317,7 +317,7 @@ const useInitializeAttachmentsSectionHooks = () => {
     [dispatch],
   );
 
-  const handleAttachmentClick = (attachment) => {
+  const handleAttachmentClick = (attachment, type) => {
     if (attachment.type === PatientAttachmentType.FILE_GDRIVE) {
       // TODO: check property name for file url when backend will be done
       if (attachment.fileUrl) {
@@ -326,7 +326,7 @@ const useInitializeAttachmentsSectionHooks = () => {
         dispatch(showGlobalErrorAlert());
       }
     } else {
-      openAttachmentPreview(attachment);
+      openAttachmentPreview(attachment, type);
     }
   };
 
