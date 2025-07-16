@@ -412,7 +412,7 @@ const PatientAttachments = () => {
               filesList.map((file, index) => (
                 <FileItemComponent
                   key={file.attachmentIdentifier}
-                  onClick={() => handleAttachmentClick(file)}
+                  onClick={() => handleAttachmentClick(file, 'patient')}
                   file={file}
                   options={getFileOptions(file)}
                   onDragStart={(event) => dragStart(event, index, true)}
@@ -453,7 +453,7 @@ const PatientAttachments = () => {
               taskFileList.map((file, index) => (
                 <FileItemComponent
                   key={file.attachmentIdentifier}
-                  onClick={() => handleAttachmentClick(file)}
+                  onClick={() => handleAttachmentClick(file, 'task')}
                   file={file}
                   options={getTaskFileOptions(file)}
                   onDragStart={(event) => dragStart(event, index, true)}
