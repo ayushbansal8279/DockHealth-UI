@@ -186,12 +186,13 @@ const ProfilesAndCustomFieldsView = () => {
 
   return (
     <ViewLayout header={<BasicLayoutHeader title="Profiles" />}>
-      <AddButtonWrapper>
+      {userHasCustomProfilesAvailable && <AddButtonWrapper>
         <AddButton onClick={onAddProfile}>
           <PlusIcon />
-          New Profile
-        </AddButton>
-      </AddButtonWrapper>
+            New Profile
+          </AddButton>
+        </AddButtonWrapper>
+      }
       <ViewContainer>
         <StyledDataGrid
           columns={columns}

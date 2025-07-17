@@ -74,6 +74,7 @@ const PatientAttachments = () => {
     handleAttachmentClick,
     dropzone: { getRootProps, getInputProps, isDragActive },
     downloadAllFiles,
+    downloadAllTaskFiles,
     downloadAttachment,
     patientTaskAttachments,
     renamePatientTaskAttachment,
@@ -411,7 +412,7 @@ const PatientAttachments = () => {
               filesList.map((file, index) => (
                 <FileItemComponent
                   key={file.attachmentIdentifier}
-                  onClick={() => handleAttachmentClick(file)}
+                  onClick={() => handleAttachmentClick(file, 'patient')}
                   file={file}
                   options={getFileOptions(file)}
                   onDragStart={(event) => dragStart(event, index, true)}
@@ -452,7 +453,7 @@ const PatientAttachments = () => {
               taskFileList.map((file, index) => (
                 <FileItemComponent
                   key={file.attachmentIdentifier}
-                  onClick={() => handleAttachmentClick(file)}
+                  onClick={() => handleAttachmentClick(file, 'task')}
                   file={file}
                   options={getTaskFileOptions(file)}
                   onDragStart={(event) => dragStart(event, index, true)}
@@ -481,7 +482,7 @@ const PatientAttachments = () => {
             )}
             {!downloadDisabled && currentPatientAttachments.length > 0 && (
               <div>
-                <DownloadAllLink onClick={downloadAllFiles}>
+                <DownloadAllLink onClick={downloadAllTaskFiles}>
                   Download All
                 </DownloadAllLink>
               </div>

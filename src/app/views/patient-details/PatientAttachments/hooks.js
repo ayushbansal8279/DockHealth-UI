@@ -317,7 +317,7 @@ const useInitializeAttachmentsSectionHooks = () => {
     [dispatch],
   );
 
-  const handleAttachmentClick = (attachment) => {
+  const handleAttachmentClick = (attachment, type) => {
     if (attachment.type === PatientAttachmentType.FILE_GDRIVE) {
       // TODO: check property name for file url when backend will be done
       if (attachment.fileUrl) {
@@ -326,7 +326,7 @@ const useInitializeAttachmentsSectionHooks = () => {
         dispatch(showGlobalErrorAlert());
       }
     } else {
-      openAttachmentPreview(attachment);
+      openAttachmentPreview(attachment, type);
     }
   };
 
@@ -363,6 +363,22 @@ const useInitializeAttachmentsSectionHooks = () => {
     });
   }, [attachments]);
 
+  const downloadAllTaskFiles = useCallback(async () => {
+    let timeout = 0;
+    patientTaskAttachments.map(async ({ attachmentIdentifier, fileName }) => {
+      timeout += 500;
+      setTimeout(async () => {
+        const { data } = await getMemoTaskAttachment(attachmentIdentifier);
+        const url = window.URL.createObjectURL(new Blob([data]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', fileName);
+        document.body.append(link);
+        link.click();
+      }, timeout);
+    });
+  }, [patientTaskAttachments]);
+
   return {
     dispatch,
     handleAttachmentClick,
@@ -396,6 +412,7 @@ const useInitializeAttachmentsSectionHooks = () => {
     renamePatientTaskAttachment,
     deletePatientTaskAttachment,
     downloadPatientTaskAttachment,
+    downloadAllTaskFiles,
   };
 };
 

@@ -142,6 +142,7 @@ export default (state = initial, action) => {
 
     case ActionTypes.ADD_TASK_SUCCESS: {
       const { task: addedTask } = action;
+      const { taskListIdentifier } = addedTask.taskList || {};
 
       // const bundleIdentifier = addedTask.taskGroups?.find(
       //   ({ groupType }) => groupType === TaskGroupType.BUNDLE,
@@ -161,18 +162,33 @@ export default (state = initial, action) => {
       //   };
       // }
 
-      const { taskListIdentifier } = addedTask.taskList || {};
+      const listToUpdate = state.lists?.find(
+        (l) => l.taskListIdentifier === taskListIdentifier
+      );
 
-      const updatedState = {
-        ...state,
-        lists: state.lists?.map((l) =>
+      let updatedLists;
+
+      if (listToUpdate) {
+        updatedLists = state.lists?.map((l) =>
           l.taskListIdentifier === taskListIdentifier
             ? {
                 ...l,
                 tasks: [addedTask, ...(l.tasks || [])],
               }
-            : l,
-        ),
+            : l
+        );
+      } else {
+        const newList = {
+          taskListIdentifier,
+          tasks: [addedTask],
+        };
+
+        updatedLists = [...(state.lists || []), newList];
+      }
+
+      const updatedState = {
+        ...state,
+        lists: updatedLists,
       };
 
       return updateTasksStateCallback(updatedState, addedTask);

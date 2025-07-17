@@ -318,7 +318,7 @@ class App extends PureComponent {
           <RotateScreen />
         ) : (
           <>
-            <SendbirdProvider
+            {/* <SendbirdProvider
               appId={dockChatAvailable ? this.appId : ''}
               userId={dockChatAvailable ? userProfile?.identifier : ''}
               nickname={dockChatAvailable ? userProfile?.name : ''}
@@ -330,7 +330,7 @@ class App extends PureComponent {
                   : ''
               }
               colorSet={sendbirdColorSet}
-            >
+            > */}
               <div id="portal" />
               <Modal />
               <WorkflowDrawer />
@@ -361,7 +361,7 @@ class App extends PureComponent {
               />
               <MainContainer>{children}</MainContainer>
               <Notification />
-            </SendbirdProvider>
+            {/* </SendbirdProvider> */}
           </>
         )}
       </AppContainer>

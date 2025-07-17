@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import LongPressWrapper from '@/app/components/interaction/LongPressWrapper';
 
 const DraggableDroppableListItem = ({
   list,
@@ -35,11 +34,9 @@ const DraggableDroppableListItem = ({
   }, [setDragActiveId, active]);
 
   return (
-    <LongPressWrapper onLongPress={listeners.onPointerDown}>
-      <div ref={dragDropRef} {...attributes} style={style}>
-        {children}
-      </div>
-    </LongPressWrapper>
+    <div ref={dragDropRef} {...listeners} {...attributes} style={style}>
+      {children}
+    </div>
   );
 };
 export default DraggableDroppableListItem;
