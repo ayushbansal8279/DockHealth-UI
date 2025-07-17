@@ -25,6 +25,7 @@ import {
   translateInitialColumnsConfig,
   translateStateToApi,
 } from './helpers';
+import { useParams } from 'react-router-dom';
 
 export const PatientListColumnsConfigContext = createContext();
 
@@ -45,6 +46,8 @@ export function PatientListColumnsConfigProvider({
   const [columns, setColumnsToState] = useState([]);
   const [viewSpecificConfig, setViewSpecificConfig] = useState(initialColumns);
   const [hasWidthPreferences, setHasWidthPreferences] = useState(false);
+
+  const { workspaceIdentifier } = useParams();
 
   const organizationCustomFields = useSelector(
     organizationCustomFieldsSelector,
@@ -102,6 +105,7 @@ export function PatientListColumnsConfigProvider({
             },
             currentPatientList?.patientListIdentifier,
             userIdentifier,
+            workspaceIdentifier
           ),
         );
       }

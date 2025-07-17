@@ -26,11 +26,13 @@ export function getPatientsByListId(patientsListIdentifier, workspaceIdentifier)
 export function getPatientsByFilterCriteria(
   patientsListIdentifier,
   filterOptions,
+  workspaceIdentifier
 ) {
   return axios
     .post(
       `patient/filter/filterPatientsByCriteria/${patientsListIdentifier}`,
       mapSelectedOptionsToRequestPayload(filterOptions),
+      withWorkspaceHeaders(workspaceIdentifier)
     )
     .then(({ data: { patients } }) => patients);
 }
@@ -180,9 +182,9 @@ export const patientBulkDeleteLabel = (payload) => {
   axios.put(`patient/bulk`, body).then(({ data }) => data);
 };
 
-export function updatePatientListPreferences(setup, patientListIdentifier) {
+export function updatePatientListPreferences(setup, patientListIdentifier, workspaceIdentifier) {
   return axios
-    .put(`patient/list/updateUserPreferences/${patientListIdentifier}`, setup)
+    .put(`patient/list/updateUserPreferences/${patientListIdentifier}`, setup, withWorkspaceHeaders(workspaceIdentifier))
     .then(({ data }) => data);
 }
 

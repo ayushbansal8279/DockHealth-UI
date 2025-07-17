@@ -88,11 +88,12 @@ function* updatePatientsList({ identifier, dataToUpdate }) {
 
 function* updatePatientsListPreferences({ payload }) {
   try {
-    const { setup, patientListIdentifier } = payload;
+    const { setup, patientListIdentifier, workspaceIdentifier } = payload;
     yield call(
       PatientsApi.updatePatientListPreferences,
       setup,
       patientListIdentifier,
+      workspaceIdentifier
     );
     yield put({
       type: ActionTypes.UPDATE_PATIENTS_LIST_PREFERENCES_SUCCESS,
@@ -220,6 +221,7 @@ function* fetchCurrentPatients(workspaceIdentifier) {
         PatientsApi.getPatientsByFilterCriteria,
         currentPatientsListIdentifier,
         selectedFilters,
+        workspaceIdentifier
       );
     } else if (searchTerm) {
       patients = yield call(
@@ -285,8 +287,8 @@ function* searchPatients({ searchTerm, workspaceIdentifier }) {
   });
 }
 
-function* filtersChange() {
-  yield put(PatientsActions.getCurrentPatients());
+function* filtersChange({ workspaceIdentifier }) {
+  yield put(PatientsActions.getCurrentPatients(workspaceIdentifier));
   // yield put(PatientsActions.getCurrentPatientsListFilterOptions());
 }
 

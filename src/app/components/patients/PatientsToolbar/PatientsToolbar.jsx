@@ -123,9 +123,19 @@ const PatientsToolbar = ({ searchValue, setSearchValue, workspaceIdentifier = nu
     (event) => {
       const { value } = event.target;
       const { url } = OPTIONS.find((o) => o.value === value);
-      if (url) history.push(url);
+      
+      if (!url) return;
+
+      const updatedUrl = workspaceIdentifier
+        ? url.replace(
+            '/core',
+            `/core/workspace/${workspaceIdentifier}`
+          )
+        : url;
+
+      history.push(updatedUrl);
     },
-    [history],
+    [history, workspaceIdentifier],
   );
 
   const { emrIntegrationEnabled, emrIntegrationType } =
