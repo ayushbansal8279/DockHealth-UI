@@ -26,6 +26,7 @@ import {
   getFormattedPatients,
   hasRestrictedPatientLookup,
 } from 'components/task-drawer/PatientSection/helpers';
+import { useHistory, useLocation } from 'react-router-dom';
 import {
   PatientMainContainer,
   PatientContainer,
@@ -49,6 +50,8 @@ const PatientSection = ({
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const dispatch = useDispatch();
+  const { pathname, search } = useLocation();
+  const history = useHistory();
   const patientInputReference = useRef(null);
   const [patients, setPatients] = useState([]);
   const [assignedPatient, setAssignedPatient] = useState(null);
@@ -228,7 +231,10 @@ const PatientSection = ({
   );
 
   const patientProfile = () => {
-    history.push(`/core/patient/${selectedPatient.patientIdentifier}`);
+    history.push({
+      pathname: `/core/patient/${selectedPatient.patientIdentifier}`,
+      state: { from: search ? pathname + search : pathname },
+    });
   };
 
   return (
