@@ -105,12 +105,12 @@ export function PatientListColumnsConfigProvider({
             },
             currentPatientList?.patientListIdentifier,
             userIdentifier,
-            workspaceIdentifier
+            workspaceIdentifier,
           ),
         );
       }
     },
-    [currentPatientList, dispatch, userIdentifier],
+    [currentPatientList, dispatch, userIdentifier, workspaceIdentifier],
   );
 
   useEffect(() => {
