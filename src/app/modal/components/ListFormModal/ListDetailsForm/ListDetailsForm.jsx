@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { showAlert } from 'helpers/utility-functions';
 import { onTaskListAdded, onTaskListEdited } from 'helpers/ga-event-helper';
 import * as TaskListActions from 'actions/task-list-actions';
+import * as WorkspaceTaskListActions from 'actions/workspace-actions';
 import { userHasShareTaskFeatureSelector } from 'selectors/user-selectors';
 import { Grid } from '@mui/material';
 import FormInput from 'components/common/Input/FormInput';
@@ -44,15 +45,23 @@ const onSubmit =
     setList,
     taskListIdentifier,
     history,
+    workspaceIdentifier
   }) =>
   (data) => {
     event.stopPropagation();
     event.preventDefault();
 
     setIsSavingList(true);
-    dispatch(TaskListActions.saveTaskList({ ...data, taskListIdentifier }))
+
+    const saveAction = workspaceIdentifier
+      ? WorkspaceTaskListActions.saveWorkspaceTaskList
+      : TaskListActions.saveTaskList;
+
+    dispatch(saveAction({ ...data, taskListIdentifier, workspaceIdentifier }))
       .then((updatedList) => {
-        history.push(createTaskListPath(updatedList.taskListIdentifier));
+        if (!workspaceIdentifier) {
+          history.push(createTaskListPath(updatedList.taskListIdentifier));
+        }
         if (updatedList) {
           setList(updatedList);
 
@@ -88,6 +97,7 @@ const ListDetailsForm = ({
   list,
   setList,
   showPrivacyOptions = false,
+  workspaceIdentifier,
 }) => {
   const dispatch = useDispatch();
   const [isSavingList, setIsSavingList] = useState(false);
@@ -113,10 +123,10 @@ const ListDetailsForm = ({
   const taskLists = useSelector(taskListsSelector);
   const validateExistingListName = (value) => {
     const activeLists = taskLists
-      .map((task) => task.listName)
+      ?.map((task) => task.listName)
       .filter((name) => name !== value || !list || list.listName !== value);
 
-    if (activeLists.includes(value)) {
+    if (activeLists?.includes(value)) {
       return 'List Name already exists';
     }
     return validateListName(value);
@@ -158,6 +168,7 @@ const ListDetailsForm = ({
             setList,
             taskListIdentifier: list?.taskListIdentifier,
             history,
+            workspaceIdentifier
           }),
         )(event)
       }
