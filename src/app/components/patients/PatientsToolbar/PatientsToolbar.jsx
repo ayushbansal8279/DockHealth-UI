@@ -109,7 +109,7 @@ const PatientsToolbar = ({ searchValue, setSearchValue, workspaceIdentifier = nu
 
   const handleSearch = useCallback(() => {
     dispatch(PatientsActions.searchPatients(searchValue, workspaceIdentifier));
-  }, [dispatch, searchValue]);
+  }, [dispatch, searchValue, workspaceIdentifier]);
 
   const optionBasedUrl = useMemo(
     () =>
