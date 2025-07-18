@@ -124,7 +124,7 @@ const PatientsFilter = ({
       dispatch(selectQuickFilter(id));
       dispatch(PatientsActions.setPatientsSelectedFilters(filtersSetup, workspaceIdentifier));
     },
-    [dispatch],
+    [dispatch, workspaceIdentifier],
   );
 
   const handleQuickFilterCreate = useCallback(
