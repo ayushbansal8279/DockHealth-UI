@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { workspaceSelector } from '@/app/selectors/workspace-selectors';
+import { workspaceSelector, workspaceTaskListsSelector } from '@/app/selectors/workspace-selectors';
 import {
   ArrowBackIcon,
   WorkspacesTitleWrapper,
@@ -19,11 +19,10 @@ import {
   WorkspaceUserItems,
   DrawerMyListsLabel,
 } from './styled';
-import { clearWorkspaceState } from '@/app/actions/workspace-actions';
+import { clearWorkspaceState, getWorkspaceTaskLists } from '@/app/actions/workspace-actions';
 import WorkspaceTile from '@/app/components/workspace/WorkspaceTile/WorkspaceTile';
 import { Flex } from '@/app/components/common/Flex/styled';
 import { organizationWorkspaceLabelSelector } from '@/app/selectors/organization-selectors';
-import { taskListsSelector } from '@/app/selectors/task-list-selectors';
 import ListOptionsMenu from '@/app/components/tasklist/ListOptionsMenu/ListOptionsMenu';
 import { MoreVert } from '@mui/icons-material';
 import { Box } from '@mui/material';
@@ -40,7 +39,6 @@ import {
 } from '@/app/selectors/patients-selectors';
 import { locationParametersSelector } from '@/app/location/selectors';
 import * as PatientsActions from 'actions/patients-actions';
-import * as TaskListActions from 'actions/task-list-actions';
 import NewLabeledCollapse from '@/app/components/common/NewLabeledCollapse/NewLabeledCollapse';
 import { openModal } from '@/app/modal/actions';
 import InviteUserToWorkspaceForm from '@/app/components/workspace/InviteUserToWorkspaceForm/InviteUserToWorkspaceForm';
@@ -64,7 +62,7 @@ const WorkspaceSubmenuStepTwo = () => {
   const isViewOnly = isUserViewOnly(currentUser);
 
   // TODO: get task lists, Users and Patients from workspace
-  const taskLists = useSelector(taskListsSelector);
+  const taskLists = useSelector(workspaceTaskListsSelector);
   const defaultPatientsLists = useSelector(defaultPatientsListsSelector);
   const customPatientsLists = useSelector(customPatientsListsSelector);
   const isFetching = useSelector(isFetchingPatientsListsSelector);
@@ -83,8 +81,9 @@ const WorkspaceSubmenuStepTwo = () => {
   };
 
   useEffect(() => {
-    dispatch(TaskListActions.getTaskListForUser() as any);
+    dispatch(getWorkspaceTaskLists(workspaceIdentifier));
     dispatch(PatientsActions.getPatientsLists(workspaceIdentifier) as any);
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -92,6 +91,7 @@ const WorkspaceSubmenuStepTwo = () => {
     dispatch(
       openModal('ListForm', {
         showPrivacyOptions: true,
+        workspaceIdentifier
       }),
     );
   };

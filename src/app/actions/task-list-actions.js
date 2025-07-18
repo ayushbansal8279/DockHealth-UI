@@ -43,9 +43,9 @@ export const updateUserPageViewSetup = (setup) => ({
   payload: { setup },
 });
 
-export function getTaskListForUser() {
+export function getTaskListForUser(workspaceIdentifier) {
   return (dispatch) =>
-    TaskListApi.getTaskListForUser()
+    TaskListApi.getTaskListForUser(workspaceIdentifier)
       .then((taskLists) => {
         dispatch({ type: ActionTypes.GET_TASKLIST_SUCCESS, taskLists });
       })

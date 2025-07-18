@@ -19,6 +19,7 @@ import Spacing from "@/app/components/common/Spacing";
 import { RoleContextProvider } from "../RoleContext";
 import { StyledDataGrid } from "../../../workspaces/workspace-table/styled";
 import { CheckboxHeaderProps, CheckboxProps, IWorkspaceUser } from "../types";
+import { getFilteredRows } from "@/app/helpers/workspace-helpers";
 import { BulkContainer, ListContainer, ListEntryContainer } from "./styled";
 
 const TypedCheckbox = Checkbox as React.FC<CheckboxProps>;
@@ -114,14 +115,10 @@ const WorkspaceUserTable = ({ searchTerm }: { searchTerm: string }) => {
     }
   ];
 
-  const KEYS_TO_FILTERS = ['name', 'email'];
-
-  const filteredRows: IWorkspaceUser[] = useMemo(() => {
-    if (!users) return [];
-    return searchTerm
-      ? users.filter(createFilter(searchTerm, KEYS_TO_FILTERS))
-      : users;
-  }, [users, searchTerm]);
+  const filteredRows = useMemo(
+    () => getFilteredRows<IWorkspaceUser>(users, searchTerm, ['name', 'email']),
+    [users, searchTerm],
+  );
 
   return (
     <Box sx={{ height: 'calc(80vh - 100px)', p: 2, width: '1179px' }}>

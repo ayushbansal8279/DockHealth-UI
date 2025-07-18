@@ -20,6 +20,7 @@ import { userProfileSelector } from 'selectors/user-selectors';
 import { openModal, closeModal } from 'modal/actions';
 import { hideSubMenu } from 'actions/template-actions';
 import * as TaskListActions from 'actions/task-list-actions';
+import * as WorkspaceTaskListActions from 'actions/workspace-actions';
 import palette from 'styles/palette';
 import ColorPicker from 'components/common/ColorPicker/ColorPicker';
 import { isMemberAdmin } from 'helpers/list-members-helper';
@@ -59,7 +60,10 @@ const ListOptionsMenu = (props) => {
 
   const openListEditModal = useCallback(
     (targetList) => {
-      dispatch(openModal('ListForm', { list: targetList }));
+      dispatch(openModal('ListForm', { 
+        list: targetList,
+        workspaceIdentifier: props?.workspaceIdentifier
+      }));
       dispatch(hideSubMenu());
     },
     [dispatch],
@@ -81,9 +85,12 @@ const ListOptionsMenu = (props) => {
           'Are you sure you want to delete this list? This action cannot be undone.',
         confirm: () => {
           onTaskListDeleted();
-          dispatch(
-            TaskListActions.deleteTaskListById(targetList?.taskListIdentifier),
-          );
+          const deleteAction = props?.workspaceIdentifier
+            ? WorkspaceTaskListActions.deleteWorkspaceTaskListById
+            : TaskListActions.deleteTaskListById;
+
+          dispatch(deleteAction(targetList?.taskListIdentifier));
+
           if (targetList?.taskListIdentifier === activeTaskListIdentifier) {
             history.push(`/`);
           }
@@ -107,7 +114,11 @@ const ListOptionsMenu = (props) => {
             dispatch(TaskListActions.rejectInviteToTaskList(targetList));
           } else {
             onTaskListLeave();
-            dispatch(TaskListActions.leaveList(taskListIdentifier));
+            const leaveAction = props?.workspaceIdentifier
+              ? WorkspaceTaskListActions.leaveWorkspaceTaskList
+              : TaskListActions.leaveList;
+
+            dispatch(leaveAction(taskListIdentifier));
           }
           dispatch(closeModal());
         },
@@ -158,9 +169,12 @@ const ListOptionsMenu = (props) => {
 
   const handleArchiveList = useCallback(
     (targetList) => {
-      dispatch(
-        TaskListActions.archiveTaskListById(targetList?.taskListIdentifier),
-      );
+      const archiveAction = props?.workspaceIdentifier
+        ? WorkspaceTaskListActions.archiveWorkspaceTaskList
+        : TaskListActions.archiveTaskListById;
+
+      dispatch(archiveAction(targetList?.taskListIdentifier));
+
       if (targetList?.taskListIdentifier === activeTaskListIdentifier)
         history.push(`/`);
     },
