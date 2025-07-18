@@ -4,7 +4,11 @@ import React from 'react';
 const data = {
   title: 'Forward your emails to Dock and put them to work.',
   descriptions: [
-    'Turn an email into a task on Dock by forwarding it to: Task@DockHealth.email',
+    `Turn an email into a task on Dock by forwarding it to: ${
+      import.meta.env.VITE_APP_ENV === 'dev'
+        ? 'Task-dev@dockhealth.email'
+        : 'Task@DockHealth.email'
+    }`,
     'Add any or all special characters below into the subject line of the email you are forwarding and Dock will organize them accordingly.',
   ],
   tips: [
