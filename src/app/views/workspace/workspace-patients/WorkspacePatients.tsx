@@ -30,7 +30,7 @@ const WorkspacePatients = () => {
 
   const refreshPatients = useCallback(() => {
     dispatch(PatientsActions.getCurrentPatients(workspaceIdentifier));
-  }, [dispatch]);
+  }, [dispatch, workspaceIdentifier]);
 
   const listDetails = useSelector(patientsListDetailsSelector);
 
