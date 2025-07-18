@@ -65,7 +65,7 @@ const OPTIONS = [
   },
 ];
 
-const PatientsToolbar = ({ searchValue, setSearchValue, showAddButton }) => {
+const PatientsToolbar = ({ searchValue, setSearchValue, workspaceIdentifier = null }) => {
   const [isSidebarOpen, setIsSidebarOpen, unsetIsSidebarOpen] =
     useBoolean(false);
   const [finalFilter, setFinalFilter] = useState({});
@@ -108,8 +108,8 @@ const PatientsToolbar = ({ searchValue, setSearchValue, showAddButton }) => {
   };
 
   const handleSearch = useCallback(() => {
-    dispatch(PatientsActions.searchPatients(searchValue));
-  }, [dispatch, searchValue]);
+    dispatch(PatientsActions.searchPatients(searchValue, workspaceIdentifier));
+  }, [dispatch, searchValue, workspaceIdentifier]);
 
   const optionBasedUrl = useMemo(
     () =>
@@ -123,9 +123,19 @@ const PatientsToolbar = ({ searchValue, setSearchValue, showAddButton }) => {
     (event) => {
       const { value } = event.target;
       const { url } = OPTIONS.find((o) => o.value === value);
-      if (url) history.push(url);
+      
+      if (!url) return;
+
+      const updatedUrl = workspaceIdentifier
+        ? url.replace(
+            '/core',
+            `/core/workspace/${workspaceIdentifier}`
+          )
+        : url;
+
+      history.push(updatedUrl);
     },
-    [history],
+    [history, workspaceIdentifier],
   );
 
   const { emrIntegrationEnabled, emrIntegrationType } =
@@ -247,8 +257,7 @@ const PatientsToolbar = ({ searchValue, setSearchValue, showAddButton }) => {
             patientAddEnabled &&
             listIdentifier &&
             (listIdentifier === DefaultPatientsListType.ALL_PATIENTS ||
-              listIdentifier === DefaultPatientsListType.ACTIVE_PATIENTS ||
-              showAddButton ) && (
+              listIdentifier === DefaultPatientsListType.ACTIVE_PATIENTS) && (
               <AddEntitiesContainer>
                 {/* <AddButton onClick={setIsSidebarOpen}>
                   Add a {customerTypeLabel}

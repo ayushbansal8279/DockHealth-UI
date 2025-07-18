@@ -30,7 +30,7 @@ const validatePatientListName = (value) => {
 };
 
 const onSubmit =
-  ({ patientListIdentifier, event, dispatch, setIsSaving }) =>
+  ({ patientListIdentifier, event, dispatch, setIsSaving, workspaceIdentifier }) =>
   (data) => {
     event.stopPropagation();
     event.preventDefault();
@@ -53,7 +53,7 @@ const onSubmit =
         })
         .catch(errorCallback);
     } else {
-      PatientsApi.createPatientsList(data)
+      PatientsApi.createPatientsList(data, workspaceIdentifier)
         .then((createdPatientList) => {
           setIsSaving(false);
           dispatch(showGlobalAlert(AlertMessages.CREATED));
@@ -65,7 +65,7 @@ const onSubmit =
     }
   };
 
-const EditPatientListModal = ({ closeModal, patientsList }) => {
+const EditPatientListModal = ({ closeModal, patientsList, workspaceIdentifier }) => {
   const dispatch = useDispatch();
   const [isSaving, setIsSaving] = useState(false);
 
@@ -96,6 +96,7 @@ const EditPatientListModal = ({ closeModal, patientsList }) => {
               dispatch,
               setIsSaving,
               patientListIdentifier: patientsList?.patientListIdentifier,
+              workspaceIdentifier,
             }),
           )(event)
         }

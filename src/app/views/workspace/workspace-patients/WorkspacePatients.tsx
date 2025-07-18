@@ -7,7 +7,10 @@ import { useDispatch, useSelector } from "react-redux";
 import * as PatientsActions from 'actions/patients-actions';
 import { useParams } from "react-router-dom";
 import PatientsToolbar from "@/app/components/patients/PatientsToolbar/PatientsToolbar";
-import { patientsSelector } from "@/app/selectors/patients-selectors";
+import { patientsListDetailsSelector, patientsSelector } from "@/app/selectors/patients-selectors";
+import AddButton, { AddEntitiesContainer } from "@/app/components/common/AddButton/AddButton";
+import Spacing from "@/app/components/common/Spacing";
+import { openModal } from "@/app/modal/actions";
 
 const WorkspacePatients = () => {
   const dispatch = useDispatch();
@@ -15,11 +18,10 @@ const WorkspacePatients = () => {
   const [searchValue, setSearchValue] = useState(null);
   const [importPopoverOpen, setImportPopoverOpen] = useState(false);
 
-  // const { listIdentifier: listIdentifierParameter } = useParams();
+  const { workspaceIdentifier, listIdentifier: listIdentifierParameter } = useParams();
+
   const patients = useSelector(patientsSelector);
 
-  // TODO: get workspace patient list identifier
-  const listIdentifierParameter = 'cd2d38ae-d4fd-497b-907e-fa97708a28f5';
   const patientListIdentifier = getPatientListIdentifierByUrlParameter(listIdentifierParameter);
 
   useEffect(() => {
@@ -27,8 +29,19 @@ const WorkspacePatients = () => {
   }, [dispatch, patientListIdentifier]);
 
   const refreshPatients = useCallback(() => {
-    dispatch(PatientsActions.getCurrentPatients());
-  }, [dispatch]);
+    dispatch(PatientsActions.getCurrentPatients(workspaceIdentifier));
+  }, [dispatch, workspaceIdentifier]);
+
+  const listDetails = useSelector(patientsListDetailsSelector);
+
+  const onEditPatientList = useCallback(() => {
+    dispatch(
+      openModal('AddPatientToList', {
+        patientsList: listDetails,
+        workspaceIdentifier
+      }),
+    );
+  }, [dispatch, listDetails]);
 
   return (
     <WorkspacePatientsContainer>
@@ -36,8 +49,16 @@ const WorkspacePatients = () => {
         searchValue={searchValue}
         setSearchValue={setSearchValue}
         setImportPopoverOpen={setImportPopoverOpen}
-        showAddButton
+        workspaceIdentifier={workspaceIdentifier}
       />
+      {patientListIdentifier && patientListIdentifier.length === 36 && (
+        <AddEntitiesContainer>
+          <AddButton onClick={onEditPatientList}>
+            Manage Patient List
+          </AddButton>
+          <Spacing horizontal={5} />
+        </AddEntitiesContainer>
+      )}
       <WorkspacePatientsTableWrapper>
         <PatientsList
           patients={patients}

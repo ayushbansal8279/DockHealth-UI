@@ -3,6 +3,7 @@ import {
   mapSelectedOptionsToRequestPayload,
 } from 'helpers/filter-options-helpers';
 import axios from './axios-heydoc';
+import { withWorkspaceHeaders } from '../helpers/api-helpers';
 
 export function getGenderIdentityOptions() {
   return axios
@@ -10,23 +11,28 @@ export function getGenderIdentityOptions() {
     .then((response) => response.data);
 }
 
-export const getPatientsLists = () =>
-  axios.get('patient/list/getAll').then((response) => response.data);
-
-export function getPatientsByListId(patientsListIdentifier) {
+export const getPatientsLists = (workspaceIdentifier) => {
   return axios
-    .get(`patient/list/${patientsListIdentifier}`)
+    .get('patient/list/getAll', withWorkspaceHeaders(workspaceIdentifier))
+    .then((response) => response.data);
+}
+
+export function getPatientsByListId(patientsListIdentifier, workspaceIdentifier) {
+  return axios
+    .get(`patient/list/${patientsListIdentifier}`, withWorkspaceHeaders(workspaceIdentifier))
     .then(({ data: { patients } }) => patients);
 }
 
 export function getPatientsByFilterCriteria(
   patientsListIdentifier,
   filterOptions,
+  workspaceIdentifier
 ) {
   return axios
     .post(
       `patient/filter/filterPatientsByCriteria/${patientsListIdentifier}`,
       mapSelectedOptionsToRequestPayload(filterOptions),
+      withWorkspaceHeaders(workspaceIdentifier)
     )
     .then(({ data: { patients } }) => patients);
 }
@@ -40,19 +46,22 @@ export function getPatientsListDetails(identifier) {
   );
 }
 
-export function getPatientsByCriteria(searchCriteria, patientListIdentifier) {
+export function getPatientsByCriteria(searchCriteria, patientListIdentifier, workspaceIdentifier) {
   return axios
     .get(`patient/getPatientsByCriteria`, {
       params: {
         searchCriteria,
         patientListIdentifier,
       },
+      ...withWorkspaceHeaders(workspaceIdentifier),
     })
     .then((response) => response.data);
 }
 
-export function createPatientsList(patientList) {
-  return axios.post(`patient/list`, patientList).then(({ data }) => data);
+export function createPatientsList(patientList, workspaceIdentifier) {
+  return axios
+    .post(`patient/list`, patientList, withWorkspaceHeaders(workspaceIdentifier))
+    .then(({ data }) => data);
 }
 
 export function updatePatientsList(identifier, patientListData) {
@@ -173,9 +182,9 @@ export const patientBulkDeleteLabel = (payload) => {
   axios.put(`patient/bulk`, body).then(({ data }) => data);
 };
 
-export function updatePatientListPreferences(setup, patientListIdentifier) {
+export function updatePatientListPreferences(setup, patientListIdentifier, workspaceIdentifier) {
   return axios
-    .put(`patient/list/updateUserPreferences/${patientListIdentifier}`, setup)
+    .put(`patient/list/updateUserPreferences/${patientListIdentifier}`, setup, withWorkspaceHeaders(workspaceIdentifier))
     .then(({ data }) => data);
 }
 

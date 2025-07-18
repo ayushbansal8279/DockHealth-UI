@@ -43,7 +43,7 @@ const CustomFilters = ({
   const handleSelect = useCallback(
     (_, identifier, { selectedOptions }) => {
       setSelected(identifier, selectedOptions);
-      setSelectedQuickFilter(identifier);
+      setSelectedQuickFilter?.(identifier);
     },
     [openPopover, setSelected, setSelectedQuickFilter],
   );

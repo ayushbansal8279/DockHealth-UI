@@ -17,6 +17,7 @@ import {
   WorkspaceListWrapper,
   WorkspaceListItems,
   WorkspaceUserItems,
+  DrawerMyListsLabel,
 } from './styled';
 import { clearWorkspaceState, getWorkspaceTaskLists } from '@/app/actions/workspace-actions';
 import WorkspaceTile from '@/app/components/workspace/WorkspaceTile/WorkspaceTile';
@@ -32,6 +33,7 @@ import {
 } from '@/app/routing/helpers/paths';
 import { useHistory } from 'react-router-dom';
 import {
+  customPatientsListsSelector,
   defaultPatientsListsSelector,
   isFetchingPatientsListsSelector,
 } from '@/app/selectors/patients-selectors';
@@ -44,6 +46,10 @@ import useBoolean from '@/app/hooks/useBoolean';
 import CreatePatientDrawer from '@/app/components/patients/CreatePatientDrawer/CreatePatientDrawer';
 import { userProfileSelector } from '@/app/selectors/user-selectors';
 import { getCustomerTypeLabel } from '@/app/helpers/customer-type-helper';
+import { DefaultPatientListUrl } from '@/app/helpers/patient-list-helpers';
+import AddButton from '@/app/components/common/AddButton/AddButton';
+import { hideSubMenu } from '@/app/actions/template-actions';
+import { isUserViewOnly } from '@/app/helpers/user-helper';
 
 const WorkspaceSubmenuStepTwo = () => {
   const dispatch = useDispatch();
@@ -53,10 +59,12 @@ const WorkspaceSubmenuStepTwo = () => {
   const history = useHistory();
   const currentUser = useSelector(userProfileSelector);
   const customerTypeLabel = getCustomerTypeLabel(currentUser);
+  const isViewOnly = isUserViewOnly(currentUser);
 
   // TODO: get task lists, Users and Patients from workspace
   const taskLists = useSelector(workspaceTaskListsSelector);
   const defaultPatientsLists = useSelector(defaultPatientsListsSelector);
+  const customPatientsLists = useSelector(customPatientsListsSelector);
   const isFetching = useSelector(isFetchingPatientsListsSelector);
   const isInitialListFetching = isFetching && !defaultPatientsLists;
 
@@ -74,7 +82,8 @@ const WorkspaceSubmenuStepTwo = () => {
 
   useEffect(() => {
     dispatch(getWorkspaceTaskLists(workspaceIdentifier));
-    dispatch(PatientsActions.getPatientsLists() as any);
+    dispatch(PatientsActions.getPatientsLists(workspaceIdentifier) as any);
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -109,6 +118,11 @@ const WorkspaceSubmenuStepTwo = () => {
       usersCount: 9,
     },
   ];
+
+  const handleAddCustomListClick = () => {
+    dispatch(openModal('EditPatientList', { workspaceIdentifier }));
+    dispatch(hideSubMenu());
+  };
 
   return (
     <>
@@ -232,7 +246,40 @@ const WorkspaceSubmenuStepTwo = () => {
                       <ListNameText
                         onClick={() => {
                           history.push(
-                            `/core/workspace/${workspaceIdentifier}/patients`,
+                            `/core/workspace/${workspaceIdentifier}/patients/list/${DefaultPatientListUrl[patientType.patientListIdentifier]}`,
+                          );
+                        }}
+                      >
+                        {patientType.listName}
+                      </ListNameText>
+                      <DrawerItemOptions>
+                        <div>{patientType.patientsCount}</div>
+                        <Box m={1.5} />
+                      </DrawerItemOptions>
+                    </DrawerListsItem>
+                  ))}
+                </>
+              )}
+            </WorkspaceUserItems>
+            <DrawerMyListsLabel>
+              <div>Custom Lists</div>
+              {!isViewOnly && (
+                <AddButton onClick={handleAddCustomListClick}>Add</AddButton>
+              )}
+            </DrawerMyListsLabel>
+            <WorkspaceUserItems>
+              {isInitialListFetching ? (
+                Array.from({ length: 2 }, () => null).map((_, index) => (
+                  <DrawerListsItemLoader key={index} />
+                ))
+              ) : (
+                <>
+                  {customPatientsLists?.map((patientType: any) => (
+                    <DrawerListsItem key={patientType.patientListIdentifier}>
+                      <ListNameText
+                        onClick={() => {
+                          history.push(
+                            `/core/workspace/${workspaceIdentifier}/patients/list/${patientType.patientListIdentifier}`,
                           );
                         }}
                       >

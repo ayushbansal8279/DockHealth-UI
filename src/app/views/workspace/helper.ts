@@ -17,6 +17,7 @@ export const TABS_CONFIG = [
   {
     label: 'Patients ',
     mainPath: 'patients',
+    additionalPath: 'list/:listIdentifier?',
     RouteComponent: WorkspacePatients,
   },
   {
