@@ -45,7 +45,7 @@ const onSubmit =
     setList,
     taskListIdentifier,
     history,
-    workspaceIdentifier
+    workspaceIdentifier,
   }) =>
   (data) => {
     event.stopPropagation();
@@ -168,7 +168,7 @@ const ListDetailsForm = ({
             setList,
             taskListIdentifier: list?.taskListIdentifier,
             history,
-            workspaceIdentifier
+            workspaceIdentifier,
           }),
         )(event)
       }
@@ -200,7 +200,7 @@ const ListDetailsForm = ({
               placeholder="Do you want to add a desciption for the list?"
             />
             <Spacing vertical={4} />
-            {showPrivacyOptions && (
+            {/* {showPrivacyOptions && (
               <PrivacyContainer>
                 <PrivacyTitle>Privacy</PrivacyTitle>
                 <CheckboxContainer>
@@ -218,7 +218,7 @@ const ListDetailsForm = ({
                   <CheckboxDescription>Private List</CheckboxDescription>
                 </CheckboxContainer>
               </PrivacyContainer>
-            )}
+            )} */}
             <Spacing vertical={5} />
             <PrivacyContainer>
               <PrivacyTitle>Configuration settings</PrivacyTitle>
@@ -230,7 +230,9 @@ const ListDetailsForm = ({
                       !restrictCustomizationValue,
                     );
                   }}
-                  src={!restrictCustomizationValue ? CheckedCircle : BlankCircle}
+                  src={
+                    !restrictCustomizationValue ? CheckedCircle : BlankCircle
+                  }
                 />
                 <Spacing horizontal={3} />
                 <CheckboxDescription>
