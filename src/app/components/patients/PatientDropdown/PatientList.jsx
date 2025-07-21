@@ -46,7 +46,7 @@ const PatientList = ({
   disableAdding,
   onSelect,
   closePopover,
-  workspaceIdentifier = null
+  workspaceIdentifier = null,
   openAddPatientModal,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
