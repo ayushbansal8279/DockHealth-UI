@@ -43,7 +43,7 @@ const WorkspaceUsers = () => {
 
   useEffect(() => {
     if(workspaceIdentifier) {
-      setSelectableItems(usersWithSelection	);
+      setSelectableItems(usersWithSelection);
     }
   }, [usersWithSelection, setSelectableItems, workspaceIdentifier]);
   

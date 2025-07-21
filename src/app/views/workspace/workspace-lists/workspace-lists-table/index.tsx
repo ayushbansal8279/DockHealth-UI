@@ -152,21 +152,11 @@ const WorkspaceListTable = ({ searchTerm }: { searchTerm: string }) => {
     {
       field: 'action',
       headerName: 'Actions',
-      flex: 1,
-      headerAlign: 'right',
+      flex: 0.5,
       renderCell: ({ row }) => (
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'flex-end',
-            alignItems: 'center',
-            width: '100%',
-          }}
-        >
-          <ListOptionsMenu list={row} workspaceIdentifier={workspaceIdentifier}>
-            <MoreVert color="primary" /> 
-          </ListOptionsMenu>
-        </div>
+        <ListOptionsMenu list={row} workspaceIdentifier={workspaceIdentifier}>
+          <MoreVert color="primary" /> 
+        </ListOptionsMenu>
       )
     },
   ];

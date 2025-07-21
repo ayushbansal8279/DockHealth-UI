@@ -50,25 +50,25 @@ const WorkspaceUserTable = ({ searchTerm }: { searchTerm: string }) => {
   }
 
   const columns: GridColDef<IWorkspaceUser>[] = [
-    {
-      field: 'isSelected',
-      headerName: 'SELECT',
-      flex: 0.25,
-      sortable: false,
-      headerClassName: 'no-sort-icon',
-      renderHeader: () =>
-        renderCheckboxColumnHeader({
-          isListChecked,
-          onListSelect: toggleAllItems,
-        }),
-      renderCell: ({ row }) => (
-        <TaskItemBulkEdit
-          isChecked={row?.isSelected}
-          onClick={() => toggleItem(row.identifier)}
-          isDisabled={false}
-        />
-      ),
-    },
+    // {
+    //   field: 'isSelected',
+    //   headerName: 'SELECT',
+    //   flex: 0.25,
+    //   sortable: false,
+    //   headerClassName: 'no-sort-icon',
+    //   renderHeader: () =>
+    //     renderCheckboxColumnHeader({
+    //       isListChecked,
+    //       onListSelect: toggleAllItems,
+    //     }),
+    //   renderCell: ({ row }) => (
+    //     <TaskItemBulkEdit
+    //       isChecked={row?.isSelected}
+    //       onClick={() => toggleItem(row.identifier)}
+    //       isDisabled={false}
+    //     />
+    //   ),
+    // },
     {
       field: 'name',
       headerName: 'Users',
