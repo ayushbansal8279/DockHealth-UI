@@ -83,7 +83,7 @@ const WorkspacesSubmenu = () => {
             ) : (
               <>
                 {workspaces.map((workspace) => (
-                  <WorkspaceWrapper>
+                  <WorkspaceWrapper key={workspace.workspaceIdentifier}>
                     <MoreVertIcon />
                     <WorkspaceTile
                       workspaceProfileColor={workspace.workspaceProfileColor}
