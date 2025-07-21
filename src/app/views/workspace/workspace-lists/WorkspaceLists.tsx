@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Add } from "@mui/icons-material";
 
-import HeaderSearch from "@/app/components/template/HeaderSearch/HeaderSearch";
 import { openModal } from "@/app/modal/actions";
 import WorkspaceListTable from "./workspace-lists-table"
 import BulkEditSection from "@/app/components/workspace/BulkEditSection/BulkEditSection";
@@ -13,6 +12,7 @@ import ToolbarButton from "@/app/components/tasklist/list-toolbar-buttons/Toolba
 import ListSkeletonLoader from "@/app/components/common/ListSkeletonLoader/ListSkeletonLoader";
 import { ListLoaderContainer, WorkspaceListsContainer, WorkspaceListsHeader, WorkspaceListsTableWrapper } from "./styled";
 import { getArchivedWorkspaceTaskLists, getWorkspaceTaskLists } from "@/app/actions/workspace-actions";
+import SearchInput from "@/app/components/common/SearchInput/SearchInput";
 
 const WorkspaceLists = () => {
   const dispatch = useDispatch();
@@ -26,14 +26,18 @@ const WorkspaceLists = () => {
   // const archivedTaskLists = useSelector(archivedWorkspaceTaskListsSelector);
 
   useEffect(() => {
-    dispatch(getWorkspaceTaskLists(workspaceIdentifier));
-    dispatch(getArchivedWorkspaceTaskLists(workspaceIdentifier));
+    if (workspaceIdentifier) {
+      dispatch(getWorkspaceTaskLists(workspaceIdentifier));
+      dispatch(getArchivedWorkspaceTaskLists(workspaceIdentifier));
+    }
   }, [workspaceIdentifier]);
 
   const { setSelectableItems } = useContext(BulkEditContext);
 
   useEffect(() => {
-    setSelectableItems(taskLists);
+    if (workspaceIdentifier) {
+      setSelectableItems(taskLists);
+    }
   }, [taskLists]);
   
   const openAddListModal = () => {
@@ -46,9 +50,9 @@ const WorkspaceLists = () => {
   return (
     <WorkspaceListsContainer>
       <WorkspaceListsHeader>
-        <HeaderSearch 
+        <SearchInput
           value={searchTerm}
-          onChange={setSearchTerm}
+          onValueChange={setSearchTerm}
         />
         <ToolbarButton
           icon={

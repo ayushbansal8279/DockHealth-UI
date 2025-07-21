@@ -298,5 +298,6 @@ export default function* watchWorkspaces() {
   yield takeLatest(ActionTypes.SAVE_WORKSPACE_TASKLIST, saveWorkspaceTaskListSaga);
   yield takeLatest(ActionTypes.DELETE_WORKSPACE_TASKLIST, deleteWorkspaceTaskListSaga);
   yield takeLatest(ActionTypes.LEAVE_WORKSPACE_TASKLIST, leaveWorkspaceTaskListSaga);
+  yield takeLatest(ActionTypes.ARCHIVE_WORKSPACE_TASKLIST, archiveWorkspaceTaskListSaga);
   yield takeLatest(ActionTypes.GET_ARCHIVED_WORKSPACE_TASKLISTS, getArchivedWorkspaceTaskListsSaga);
 }

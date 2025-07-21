@@ -26,6 +26,8 @@ import WorkspaceTile from '@/app/components/workspace/WorkspaceTile/WorkspaceTil
 import WorkspaceOptionsMenu from '@/app/components/workspace/WorkspaceOptionsMenu/WorkspaceOptionsMenu';
 import { organizationWorkspaceLabelSelector } from '@/app/selectors/organization-selectors';
 import { Flex } from '@/app/components/common/Flex/styled';
+import { userProfileSelector } from '@/app/selectors/user-selectors';
+import { getCustomerTypeLabel } from '@/app/helpers/customer-type-helper';
 
 const Workspace = () => {
   const [tabsConfiguration, setTabsConfiguration] = useState(TABS_CONFIG);
@@ -39,6 +41,8 @@ const Workspace = () => {
   const [menuOptionsOpen, setMenuOptionsOpen] = useState(false);
   const [renderedWorkspace, setRenderedWorkspace] =
     useState<WorkspaceType>(workspace);
+  const currentUser = useSelector(userProfileSelector);    
+  const customerTypeLabel = getCustomerTypeLabel(currentUser);
 
   useEffect(() => {
     if (workspace.workspaceIdentifier) {
@@ -92,7 +96,11 @@ const Workspace = () => {
               <MainTab
                 key={t.mainPath}
                 value={t.mainPath}
-                label={t.label}
+                label={
+                  t.label?.trim().toLowerCase() === 'patients'
+                    ? customerTypeLabel.charAt(0).toUpperCase() + customerTypeLabel.slice(1)
+                    : t.label
+                }
                 $isActive={t.mainPath === activeTabPath}
               />
             ))}
