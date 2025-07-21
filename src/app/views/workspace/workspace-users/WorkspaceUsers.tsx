@@ -12,6 +12,7 @@ import { getWorkspaceUsers } from "@/app/actions/workspace-actions";
 import { isFetchingWorkspaceUsersSelector, workspaceUsersSelector } from "@/app/selectors/workspace-selectors";
 import ListSkeletonLoader from "@/app/components/common/ListSkeletonLoader/ListSkeletonLoader";
 import ToolbarButton from "@/app/components/tasklist/list-toolbar-buttons/ToolbarButton/ToolbarButton";
+import SearchInput from "@/app/components/common/SearchInput/SearchInput";
 import { BulkEditSectionContainer } from "../../user-group/styled";
 import { WorkspaceContextProvider } from "./WorkspaceContext";
 import WorkspaceUserTable from "./workspace-user-table";
@@ -19,7 +20,7 @@ import { WorkspaceUsersHeader, WorkspaceUsersTableWrapper, WorkspaceUsersContain
 
 const WorkspaceUsers = () => {
   const dispatch = useDispatch();
-  const { identifier: workspaceIdentifier } = useParams<{ identifier: string }>();
+  const { workspaceIdentifier } = useParams();
 
   const users = useSelector(workspaceUsersSelector);
   const isLoading = useSelector(isFetchingWorkspaceUsersSelector);
@@ -41,8 +42,10 @@ const WorkspaceUsers = () => {
   const { setSelectableItems } = useContext(BulkEditContext);
 
   useEffect(() => {
-    setSelectableItems(usersWithSelection	);
-  }, [usersWithSelection	]);
+    if(workspaceIdentifier) {
+      setSelectableItems(usersWithSelection	);
+    }
+  }, [usersWithSelection, setSelectableItems, workspaceIdentifier]);
   
   const openAddUserModal = () => {
     dispatch(openModal('InviteToList', {
@@ -57,9 +60,9 @@ const WorkspaceUsers = () => {
     <WorkspaceContextProvider workspaceIdentifier={workspaceIdentifier}>
       <WorkspaceUsersContainer>
         <WorkspaceUsersHeader>
-          <HeaderSearch 
+          <SearchInput
             value={searchTerm}
-            onChange={setSearchTerm}
+            onValueChange={setSearchTerm}
           />
           <ToolbarButton
             icon={

@@ -6,6 +6,7 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { MoreVert } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import { createFilter } from 'react-search-input';
+import { useHistory } from "react-router-dom";
 
 import AvatarFilterMember from "@/app/components/user/AvatarFilterMember/AvatarFilterMember";
 import Checkbox from "@/app/components/common/Checkbox/Checkbox";
@@ -13,16 +14,18 @@ import TaskItemBulkEdit from "@/app/components/task/StandardTaskItem/TaskItemCom
 import AssignMemberIcon from "@/app/components/user/AssignMemberIcon/AssingMemberIcon";
 import ListOptionsMenu from "@/app/components/tasklist/ListOptionsMenu/ListOptionsMenu";
 import { openModal } from "@/app/modal/actions";
-import { EditableLabel } from "@/app/components/workspace/EditableLabel/EditableLabel";
 import { StyledDataGrid } from "@/app/views/workspaces/workspace-table/styled";
 import { workspaceListsDummyData } from "../helpers";
 import { BulkEditContext } from "@/app/context-api/bulk-edit-context";
 import { getFilteredRows } from "@/app/helpers/workspace-helpers";
 import { workspaceSelector } from "@/app/selectors/workspace-selectors";
-import { BulkContainer } from "./styled";
+import Tooltip from "@/app/components/common/Tooltip/Tooltip";
+import { createTaskListPath } from "@/app/routing/helpers/paths";
+import { AssignMemberIconContainer, BulkContainer, StyledListLink } from "./styled";
 
 const WorkspaceListTable = ({ searchTerm }: { searchTerm: string }) => {
   const dispatch = useDispatch();
+  const history = useHistory();
 
   const workspace = useSelector(workspaceSelector);
   const workspaceIdentifier = workspace.workspaceIdentifier;
@@ -77,14 +80,20 @@ const WorkspaceListTable = ({ searchTerm }: { searchTerm: string }) => {
       field: 'listName',
       headerName: 'Name',
       flex: 3,
-      renderCell: ({ row }) => (
-        <EditableLabel 
-          value={row.listName}
-          placeholder="Enter List Name"
-          onEdit={(newName) => {}}
-          tooltip={row.listName}
-        />
-      )
+      renderCell: ({ row }) => {
+        const { taskListIdentifier, listName } = row;
+        return (
+          <StyledListLink
+            onClick={() => {
+              history.push(
+                createTaskListPath(taskListIdentifier),
+              );
+            }}
+          > 
+            {listName}
+          </StyledListLink>
+        )
+      }
     },
     {
       field: 'listType',
@@ -100,41 +109,46 @@ const WorkspaceListTable = ({ searchTerm }: { searchTerm: string }) => {
       },
     },
     {
+      field: 'archived',
+      headerName: 'Status',
+      flex: 1,
+      renderCell: ({ row }) => {
+        const archived = row.archived;
+        return (
+          <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+            {archived ? 'Archived' : 'Active'}
+          </div>
+        );
+      },
+    },
+    {
       field: 'users',
       headerName: 'Users',
       flex: 1,
       renderCell: ({ row }) => {
         const users = row.users;
         return (
-          <div style={{ display: 'flex', marginLeft: '15px' }}>
-            {users?.length}
+          <div style={{ display: 'flex' }}>
+            {users?.map((user, index) => (
+              <Box
+                display="flex"
+                alignItems="center"
+                key={user.identifier}
+                pl={index === 0 ? 0 : 0.5}
+              >
+                <AvatarFilterMember member={user} size={30} />
+                <Box pl={0.5}></Box>
+              </Box>
+            ))}
+            <Tooltip placement="bottom" title="Add Users">
+              <AssignMemberIconContainer onClick={() => openAddUserModal(row)}>
+                <AssignMemberIcon size={30} />
+              </AssignMemberIconContainer>
+            </Tooltip>
           </div>
         );
       },
     },
-    // {
-    //   field: 'admins',
-    //   headerName: 'Admins',
-    //   flex: 2,
-    //   renderCell: ({ row }) => {
-    //     const admins = row.admins;
-    //     return (
-    //       <div style={{ display: 'flex' }}>
-    //         {admins?.map((admin, index) => (
-    //           <Box
-    //             display="flex"
-    //             alignItems="center"
-    //             key={admin.identifier}
-    //             pl={index === 0 ? 0 : 0.5}
-    //           >
-    //             <AvatarFilterMember member={admin} size={30} />
-    //             <Box pl={0.5}></Box>
-    //           </Box>
-    //         ))}
-    //       </div>
-    //     );
-    //   },
-    // },
     {
       field: 'action',
       headerName: 'Actions',
@@ -149,9 +163,6 @@ const WorkspaceListTable = ({ searchTerm }: { searchTerm: string }) => {
             width: '100%',
           }}
         >
-          <Button onClick={() => openAddUserModal(row)}>
-            <AssignMemberIcon size={20} />
-          </Button>
           <ListOptionsMenu list={row} workspaceIdentifier={workspaceIdentifier}>
             <MoreVert color="primary" /> 
           </ListOptionsMenu>
