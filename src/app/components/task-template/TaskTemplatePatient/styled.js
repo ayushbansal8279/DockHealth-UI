@@ -11,13 +11,13 @@ export const ClickablePatient = styled.span`
 `;
 
 export const PatientLabel = styled.span`
- color: ${palette.brightBlue};
+  color: ${palette.brightBlue};
   font-weight: ${fontWeights.light};
 `;
 
 export const Placeholder = styled.div`
   width: 100%;
-  color: ${palette.brightBlue};
+  color: ${palette.mediumGrey};
   cursor: pointer;
   overflow: hidden;
   white-space: nowrap;
