@@ -6,7 +6,7 @@ import React, {
   useRef,
   useCallback,
 } from 'react';
-import { useParams, Link, useHistory } from 'react-router-dom';
+import { useParams, Link, useHistory, useLocation } from 'react-router-dom';
 import compose from 'ramda/src/compose';
 import isNil from 'ramda/src/isNil';
 import not from 'ramda/src/not';
@@ -170,26 +170,30 @@ const SmartFlowBuilderView = () => {
     () => elements.filter((element) => element.selected),
     [elements],
   );
+  const location = useLocation();
 
   const [modalUsed, setModalUsed] = useState(false);
   const [initialTasksLength, setInitialTasksLength] = useState(null);
 
-  const constantVisibleElements = useMemo(() => [
-    {
-      id: 'START_INDICATOR',
-      position:
-        layout?.find(({ id }) => id === 'START_INDICATOR')?.position ||
-        countStartIndicatorInitialPosition(layout),
-      type: 'INDICATOR',
-    },
-    {
-      id: 'END_INDICATOR',
-      position:
-        layout?.find(({ id }) => id === 'END_INDICATOR')?.position ||
-        countEndIndicatorInitialPosition(layout),
-      type: 'INDICATOR',
-    },
-  ], [layout]);
+  const constantVisibleElements = useMemo(
+    () => [
+      {
+        id: 'START_INDICATOR',
+        position:
+          layout?.find(({ id }) => id === 'START_INDICATOR')?.position ||
+          countStartIndicatorInitialPosition(layout),
+        type: 'INDICATOR',
+      },
+      {
+        id: 'END_INDICATOR',
+        position:
+          layout?.find(({ id }) => id === 'END_INDICATOR')?.position ||
+          countEndIndicatorInitialPosition(layout),
+        type: 'INDICATOR',
+      },
+    ],
+    [layout],
+  );
 
   useEffect(() => {
     if (initialTasksLength === null && Array.isArray(tasks)) {
@@ -252,7 +256,14 @@ const SmartFlowBuilderView = () => {
         })),
       );
     }
-  }, [draggedEdgeSourceId, identifier, layout, tasks, temporaryElements, constantVisibleElements]);
+  }, [
+    draggedEdgeSourceId,
+    identifier,
+    layout,
+    tasks,
+    temporaryElements,
+    constantVisibleElements,
+  ]);
 
   useEffect(() => {
     if (reactFlowInstance && nodesInitialized && !reactFlowInitialized) {
@@ -369,7 +380,10 @@ const SmartFlowBuilderView = () => {
           ) {
             for (const selectedElement of selectedElements) {
               const taskLinks = selectedElement?.data.task.taskLinks;
-              if (taskLinks?.length > 0 && taskLinks.some(link => link.linkType !== 'START')) {
+              if (
+                taskLinks?.length > 0 &&
+                taskLinks.some((link) => link.linkType !== 'START')
+              ) {
                 dispatch(
                   openModal('Information', {
                     text: 'This task already has linkages to other tasks. If you want to change it to decision tree, please remove existing connections.',
@@ -627,11 +641,18 @@ const SmartFlowBuilderView = () => {
         <Box ref={builderWrapperReference} position="relative" flex={1}>
           <BuilderHeader>
             <Link
-              to={
-                parentTaskWorkflowIdentifier
+              to={(() => {
+                const urlParams = new URLSearchParams(location.search);
+                const returnToParam = urlParams.get('returnTo');
+
+                if (returnToParam) {
+                  return decodeURIComponent(returnToParam);
+                }
+
+                return parentTaskWorkflowIdentifier
                   ? createWorkflowFolderPath(parentTaskWorkflowIdentifier)
-                  : WORKFLOW_LIBRARY_PATH
-              }
+                  : WORKFLOW_LIBRARY_PATH;
+              })()}
             >
               <BuilderHeaderText color={palette.brightBlue}>
                 Workflows

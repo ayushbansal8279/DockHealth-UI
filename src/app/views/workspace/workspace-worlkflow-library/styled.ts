@@ -8,6 +8,6 @@ export const WorkspaceWorkflowLibraryContainer = styled.div`
 `;
 
 export const WorkspaceWorkflowLibraryContent = styled.div`
-  width: 70%;
+  width: 85%;
 `;
 

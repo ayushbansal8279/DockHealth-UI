@@ -7,7 +7,7 @@ import React, {
   useState,
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import palette from 'styles/palette';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import Checkbox from 'components/common/Checkbox/Checkbox';
@@ -89,6 +89,7 @@ const TaskTemplate = ({
     publicAccess = false,
     members,
   } = template;
+  const location = useLocation();
   const smartFlowsAvailable = useSelector(userHasSmartFlowsSelector);
   const shareTaskWorkflowAvailable = useSelector(
     userHasShareTaskWorkflowFeatureSelector,
@@ -381,7 +382,10 @@ const TaskTemplate = ({
   };
 
   const onSmartFlowClick = () => {
-    history.push(createWorkflowBuilderPath(identifier));
+    const currentPath = location.pathname + location.search;
+    const builderPath = createWorkflowBuilderPath(identifier);
+    const returnToParam = encodeURIComponent(currentPath);
+    history.push(`${builderPath}?returnTo=${returnToParam}`);
   };
 
   const onChangeName = (event) => {

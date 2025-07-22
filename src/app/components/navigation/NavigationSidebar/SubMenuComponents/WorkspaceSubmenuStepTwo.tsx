@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { workspaceSelector, workspaceTaskListsSelector } from '@/app/selectors/workspace-selectors';
+import {
+  workspaceSelector,
+  workspaceTaskListsSelector,
+  workspaceUsersSelector,
+} from '@/app/selectors/workspace-selectors';
 import {
   ArrowBackIcon,
   WorkspacesTitleWrapper,
@@ -19,7 +23,11 @@ import {
   WorkspaceUserItems,
   DrawerMyListsLabel,
 } from './styled';
-import { clearWorkspaceState, getWorkspaceTaskLists } from '@/app/actions/workspace-actions';
+import {
+  clearWorkspaceState,
+  getWorkspaceTaskLists,
+  getWorkspaceUsers,
+} from '@/app/actions/workspace-actions';
 import WorkspaceTile from '@/app/components/workspace/WorkspaceTile/WorkspaceTile';
 import { Flex } from '@/app/components/common/Flex/styled';
 import { organizationWorkspaceLabelSelector } from '@/app/selectors/organization-selectors';
@@ -65,8 +73,10 @@ const WorkspaceSubmenuStepTwo = () => {
   const taskLists = useSelector(workspaceTaskListsSelector);
   const defaultPatientsLists = useSelector(defaultPatientsListsSelector);
   const customPatientsLists = useSelector(customPatientsListsSelector);
+  const users = useSelector(workspaceUsersSelector);
   const isFetching = useSelector(isFetchingPatientsListsSelector);
   const isInitialListFetching = isFetching && !defaultPatientsLists;
+  const userGroups = users?.filter((user) => user.itemType === 'GROUP');
 
   const [activeCollapse, setActiveCollapse] = useState('list');
   const [isSidebarOpen, setIsSidebarOpen, unsetIsSidebarOpen] =
@@ -83,7 +93,7 @@ const WorkspaceSubmenuStepTwo = () => {
   useEffect(() => {
     dispatch(getWorkspaceTaskLists(workspaceIdentifier));
     dispatch(PatientsActions.getPatientsLists(workspaceIdentifier) as any);
-
+    dispatch(getWorkspaceUsers(workspaceIdentifier));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -91,7 +101,7 @@ const WorkspaceSubmenuStepTwo = () => {
     dispatch(
       openModal('ListForm', {
         showPrivacyOptions: true,
-        workspaceIdentifier
+        workspaceIdentifier,
       }),
     );
   };
@@ -106,18 +116,6 @@ const WorkspaceSubmenuStepTwo = () => {
       }),
     );
   };
-
-  const dummyUsersList = [
-    {
-      patientListIdentifier: 'ALL_USERS',
-      listName: 'All Active Users',
-      listDescription:
-        'This is a list of all active users from your organization',
-      users: [],
-      listType: 'DEFAULT',
-      usersCount: 9,
-    },
-  ];
 
   const handleAddCustomListClick = () => {
     dispatch(openModal('EditPatientList', { workspaceIdentifier }));
@@ -189,7 +187,7 @@ const WorkspaceSubmenuStepTwo = () => {
         </WorkspaceListWrapper>
         <WorkspaceItemWrapper>
           <NewLabeledCollapse
-            name="Users and User Groups"
+            name="User Groups"
             isOpened={activeCollapse === 'users'}
             onClick={() => handleCollapse('users')}
             addButtonClick={openAddUserModal}
@@ -201,25 +199,28 @@ const WorkspaceSubmenuStepTwo = () => {
                 ))
               ) : (
                 <>
-                  {dummyUsersList?.map(
-                    ({ patientListIdentifier, listName, usersCount }) => (
-                      <DrawerListsItem key={patientListIdentifier}>
-                        <ListNameText
-                          onClick={() => {
-                            history.push(
-                              `/core/workspace/${workspaceIdentifier}/users`,
-                            );
-                          }}
-                        >
-                          {listName}
-                        </ListNameText>
-                        <DrawerItemOptions>
-                          <div>{usersCount}</div>
-                          <Box m={1.5} />
-                        </DrawerItemOptions>
-                      </DrawerListsItem>
-                    ),
-                  )}
+                  {userGroups?.map(({ identifier, name, usersCount }) => (
+                    <DrawerListsItem key={identifier}>
+                      <ListNameText
+                        onClick={() => {
+                          history.push(
+                            `/core/workspace/${workspaceIdentifier}/users`,
+                          );
+                        }}
+                      >
+                        {name}
+                      </ListNameText>
+                      <DrawerItemOptions>
+                        <div>{usersCount}</div>
+                        <Box m={1.5} />
+                      </DrawerItemOptions>
+                    </DrawerListsItem>
+                  ))}
+                  <div>
+                    {userGroups?.length === 0 && (
+                      <div>No user groups found</div>
+                    )}
+                  </div>
                 </>
               )}
             </WorkspaceUserItems>
@@ -246,7 +247,11 @@ const WorkspaceSubmenuStepTwo = () => {
                       <ListNameText
                         onClick={() => {
                           history.push(
-                            `/core/workspace/${workspaceIdentifier}/patients/list/${DefaultPatientListUrl[patientType.patientListIdentifier]}`,
+                            `/core/workspace/${workspaceIdentifier}/patients/list/${
+                              DefaultPatientListUrl[
+                                patientType.patientListIdentifier
+                              ]
+                            }`,
                           );
                         }}
                       >
