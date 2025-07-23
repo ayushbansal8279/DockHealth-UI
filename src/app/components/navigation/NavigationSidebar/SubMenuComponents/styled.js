@@ -523,6 +523,19 @@ export const WorkspacesSubWrapper = styled.div`
   align-items: center;
   justify-content: space-between;
   gap: ${spacing.smallPlus};
+  ${({ $fullWidth }) => $fullWidth && 'width: 100%;'}
+`;
+
+export const WorkspacesLeftWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${spacing.smallPlus};
+`;
+
+export const HomeIconWrapper = styled.div`
+  cursor: pointer;
+  display: flex;
+  align-items: center;
 `;
 
 export const WorkspacesTitle = styled.div`

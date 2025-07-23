@@ -1,15 +1,13 @@
 import React, { useContext, useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Add } from "@mui/icons-material";
-import { useParams } from "react-router-dom";
 
-import HeaderSearch from "@/app/components/template/HeaderSearch/HeaderSearch";
 import { openModal } from "@/app/modal/actions";
 import BulkEditSection from "@/app/components/workspace/BulkEditSection/BulkEditSection";
 import { BulkEditContext } from "@/app/context-api/bulk-edit-context";
 import InviteUserToWorkspaceForm from "@/app/components/workspace/InviteUserToWorkspaceForm/InviteUserToWorkspaceForm";
 import { getWorkspaceUsers } from "@/app/actions/workspace-actions";
-import { isFetchingWorkspaceUsersSelector, workspaceUsersSelector } from "@/app/selectors/workspace-selectors";
+import { isFetchingWorkspaceUsersSelector, workspaceSelector, workspaceUsersSelector } from "@/app/selectors/workspace-selectors";
 import ListSkeletonLoader from "@/app/components/common/ListSkeletonLoader/ListSkeletonLoader";
 import ToolbarButton from "@/app/components/tasklist/list-toolbar-buttons/ToolbarButton/ToolbarButton";
 import SearchInput from "@/app/components/common/SearchInput/SearchInput";
@@ -20,8 +18,8 @@ import { WorkspaceUsersHeader, WorkspaceUsersTableWrapper, WorkspaceUsersContain
 
 const WorkspaceUsers = () => {
   const dispatch = useDispatch();
-  const { workspaceIdentifier } = useParams();
-
+  const workspace = useSelector(workspaceSelector);
+  const workspaceIdentifier = workspace.workspaceIdentifier;
   const users = useSelector(workspaceUsersSelector);
   const isLoading = useSelector(isFetchingWorkspaceUsersSelector);
   const [searchTerm, setSearchTerm] = useState('');

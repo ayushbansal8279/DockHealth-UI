@@ -32,6 +32,7 @@ const WorkspacesSubmenu = () => {
   const [loading, setLoading] = useState(true);
   const workspace = useSelector(workspaceSelector);
   const workspaceLabel = useSelector(organizationWorkspaceLabelSelector);
+  const [showStepTwo, setShowStepTwo] = useState(!!workspace?.workspaceIdentifier);
 
   const openAddWorkspaceModal = () => {
     const modalProps = {
@@ -52,12 +53,13 @@ const WorkspacesSubmenu = () => {
   }, []);
 
   const handleWorkspaceSelect = (workspaceIdentifier: string) => {
+    setShowStepTwo(true);
     history.push(`/core/workspace/${workspaceIdentifier}`);
   };
 
   return (
     <>
-      {!workspace.workspaceIdentifier ? (
+      {!showStepTwo  ? (
         <>
           <WorkspacesTitleWrapper>
             <WorkspacesTitle>{workspaceLabel}s</WorkspacesTitle>
@@ -104,7 +106,7 @@ const WorkspacesSubmenu = () => {
           </>
         </>
       ) : (
-        <WorkspaceSubmenuStepTwo />
+        <WorkspaceSubmenuStepTwo setShowStepTwo={setShowStepTwo} />
       )}
     </>
   );
