@@ -16,11 +16,12 @@ import {
   MainTab,
   WorkspaceDetailsContainer,
   MoreVertIcon,
+  StyledListLink,
 } from './styled';
 import { DEFAULT_TAB, TABS_CONFIG } from './helper';
 import { workspaceSelector } from '@/app/selectors/workspace-selectors';
 import { useDispatch, useSelector } from 'react-redux';
-import { getCurrentWorkspace } from '@/app/actions/workspace-actions';
+import { clearWorkspaceState, getCurrentWorkspace } from '@/app/actions/workspace-actions';
 import { Workspace as WorkspaceType } from '@/app/types/workspace';
 import WorkspaceTile from '@/app/components/workspace/WorkspaceTile/WorkspaceTile';
 import WorkspaceOptionsMenu from '@/app/components/workspace/WorkspaceOptionsMenu/WorkspaceOptionsMenu';
@@ -54,6 +55,11 @@ const Workspace = () => {
     dispatch(getCurrentWorkspace(workspaceIdentifier));
   }, [workspaceIdentifier]);
 
+  const handleNavigateHome = () => {
+    dispatch(clearWorkspaceState());
+    history.push(`/core/workspace`);
+  };
+
   const activeTabPath = useMemo(() => {
     for (const tab of tabsConfiguration) {
       const regex = new RegExp(`/${tab.mainPath}/|/${tab.mainPath}$`, 'gi');
@@ -82,7 +88,11 @@ const Workspace = () => {
         workspaceInitials={renderedWorkspace.workspaceInitials}
       />
       <Box ml={0.5}>
-        {workspaceLabel} / {renderedWorkspace.workspaceName}
+        <StyledListLink onClick={handleNavigateHome}>
+          {workspaceLabel}
+        </StyledListLink>
+        {' / '}
+        {renderedWorkspace.workspaceName}
       </Box>
     </Flex>
   );
