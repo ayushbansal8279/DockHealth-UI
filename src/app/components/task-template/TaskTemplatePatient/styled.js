@@ -11,13 +11,8 @@ export const ClickablePatient = styled.span`
 `;
 
 export const PatientLabel = styled.span`
-  color: ${palette.mediumGrey};
+  color: ${palette.brightBlue};
   font-weight: ${fontWeights.light};
-
-  &:hover {
-    color: ${palette.brightBlue};
-    text-decoration: underline;
-  }
 `;
 
 export const Placeholder = styled.div`
