@@ -119,45 +119,48 @@ const NestedFlowNode = React.memo(({ data, isConnectable, selected, type }) => {
             setTaskGroup(null);
           }
         },
-        modalLabel : 'Select List and Group',
-        origin : TaskOrigin.TEMPLATE
+        modalLabel: 'Select List and Group',
+        origin: TaskOrigin.TEMPLATE,
       }),
     );
   };
 
-  const handleClose = useCallback((type) => {
-    if(type === 'taskList'){
-      dispatch(
-        partialUpdateTask(taskIdentifier, {
-          linkedWorkflowTaskListIdentifier: null,
-          ...(taskGroup && {linkedWorkflowTaskGroupIdentifier: null})
-        }),
-      );
-      setTaskList(null);
-      setTaskGroup(null);
-    }
-    else if(type === 'taskGroup'){
-      dispatch(
-        partialUpdateTask(taskIdentifier, {
-          linkedWorkflowTaskGroupIdentifier: null
-        }),
-      );
-      setTaskGroup(null);
-    }
-  }, [dispatch, taskIdentifier, taskGroup]); 
+  const handleClose = useCallback(
+    (type) => {
+      if (type === 'taskList') {
+        dispatch(
+          partialUpdateTask(taskIdentifier, {
+            linkedWorkflowTaskListIdentifier: null,
+            ...(taskGroup && { linkedWorkflowTaskGroupIdentifier: null }),
+          }),
+        );
+        setTaskList(null);
+        setTaskGroup(null);
+      } else if (type === 'taskGroup') {
+        dispatch(
+          partialUpdateTask(taskIdentifier, {
+            linkedWorkflowTaskGroupIdentifier: null,
+          }),
+        );
+        setTaskGroup(null);
+      }
+    },
+    [dispatch, taskIdentifier, taskGroup],
+  );
 
   const description = task?.linkedTaskTemplate?.name || workflow?.name;
   const memberslist = data?.task?.taskTemplate?.members || [];
   const currentUser = useSelector(userProfileSelector);
-  const isCurrentMemberPermission = memberslist?.find(({ user }) => 
-    user.identifier === currentUser.identifier)
-    ?.memberPermission === 'VIEW';
+  const isCurrentMemberPermission =
+    memberslist?.find(({ user }) => user.identifier === currentUser.identifier)
+      ?.memberPermission === 'VIEW';
 
   return (
     <TaskNodeHandles
       isConnectable={isConnectable}
       isConnecting={data.draggedEdgeSourceId}
       onTargetHandleHover={data.onTargetHandleHover}
+      draggedEdgeSourceId={data?.draggedEdgeSourceId}
     >
       <TaskWrapper>
         <TaskNodeWrapper selected={selected} type={type} width={280}>
@@ -167,20 +170,19 @@ const NestedFlowNode = React.memo(({ data, isConnectable, selected, type }) => {
               {description?.slice(0, 40)}
               {description?.length > 40 && '...'}
             </Typography>
-            { !isCurrentMemberPermission && (
+            {!isCurrentMemberPermission && (
               <IconContainerStyled>
-              <IconButton onClick={handleDelete}>
-                <Delete htmlColor={palette.white} />
-              </IconButton>
-              <IconButton onClick={handleOpenModal}>
-                <Edit htmlColor={palette.white} />
-              </IconButton>
-              <IconButton onClick={handleOpenListPicker}>
-                <ListsIcon color="white" />
-              </IconButton>
-            </IconContainerStyled>
-             )
-            }           
+                <IconButton onClick={handleDelete}>
+                  <Delete htmlColor={palette.white} />
+                </IconButton>
+                <IconButton onClick={handleOpenModal}>
+                  <Edit htmlColor={palette.white} />
+                </IconButton>
+                <IconButton onClick={handleOpenListPicker}>
+                  <ListsIcon color="white" />
+                </IconButton>
+              </IconContainerStyled>
+            )}
           </NestedFlowNodeStyled>
         </TaskNodeWrapper>
         <TaskLinks>
@@ -190,25 +192,27 @@ const NestedFlowNode = React.memo(({ data, isConnectable, selected, type }) => {
               style={{
                 display: 'flex',
                 alignItems: 'center',
-                padding:'5px 0 3px 0'
+                padding: '5px 0 3px 0',
               }}
             >
-            <span 
-              style={{
-                overflow: 'hidden',
-                whiteSpace: 'nowrap',
-                textOverflow: 'ellipsis',
-                flex: 1
-              }}>
-                <strong>List: </strong>{taskList?.listName}
-            </span>
-            <IconButton
-              size="small"
-              onClick={() => handleClose('taskList')}
-              style={{ padding: '2px' ,textAlign:'right'}}
-            >
-              <CloseIcon htmlColor={palette.white} fontSize='small'/>
-             </IconButton>
+              <span
+                style={{
+                  overflow: 'hidden',
+                  whiteSpace: 'nowrap',
+                  textOverflow: 'ellipsis',
+                  flex: 1,
+                }}
+              >
+                <strong>List: </strong>
+                {taskList?.listName}
+              </span>
+              <IconButton
+                size="small"
+                onClick={() => handleClose('taskList')}
+                style={{ padding: '2px', textAlign: 'right' }}
+              >
+                <CloseIcon htmlColor={palette.white} fontSize="small" />
+              </IconButton>
             </Typography>
           )}
           {taskGroup && (
@@ -217,25 +221,27 @@ const NestedFlowNode = React.memo(({ data, isConnectable, selected, type }) => {
               style={{
                 display: 'flex',
                 alignItems: 'center',
-                padding:'1px 0 5px 0'
+                padding: '1px 0 5px 0',
               }}
             >
-            <span 
-              style={{
-                overflow: 'hidden',
-                whiteSpace: 'nowrap',
-                textOverflow: 'ellipsis',
-                flex: 1
-              }}>
-                <strong>Group: </strong>{taskGroup.groupName}
-            </span>
+              <span
+                style={{
+                  overflow: 'hidden',
+                  whiteSpace: 'nowrap',
+                  textOverflow: 'ellipsis',
+                  flex: 1,
+                }}
+              >
+                <strong>Group: </strong>
+                {taskGroup.groupName}
+              </span>
               <IconButton
                 size="small"
                 onClick={() => handleClose('taskGroup')}
-                style={{ padding: '2px',textAlign:'right'}}
+                style={{ padding: '2px', textAlign: 'right' }}
               >
-              <CloseIcon htmlColor={palette.white} fontSize='small'/>
-             </IconButton>
+                <CloseIcon htmlColor={palette.white} fontSize="small" />
+              </IconButton>
             </Typography>
           )}
         </TaskLinks>

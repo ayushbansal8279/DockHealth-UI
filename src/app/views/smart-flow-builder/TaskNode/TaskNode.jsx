@@ -124,15 +124,16 @@ const TaskNode = React.memo(({ data, isConnectable, selected, type }) => {
 
   const memberslist = data?.task?.taskTemplate?.members || [];
   const currentUser = useSelector(userProfileSelector);
-  const isCurrentMemberPermission = memberslist?.find(({ user }) => 
-    user.identifier === currentUser.identifier)
-    ?.memberPermission === 'VIEW';
-    
+  const isCurrentMemberPermission =
+    memberslist?.find(({ user }) => user.identifier === currentUser.identifier)
+      ?.memberPermission === 'VIEW';
+
   return (
     <TaskNodeHandles
       isConnectable={isConnectable}
       isConnecting={data.draggedEdgeSourceId}
       onTargetHandleHover={data.onTargetHandleHover}
+      draggedEdgeSourceId={data?.draggedEdgeSourceId}
     >
       <TaskNodeWrapper selected={selected} type={type}>
         <ContentWrapper onDoubleClick={setEditing}>
@@ -149,7 +150,7 @@ const TaskNode = React.memo(({ data, isConnectable, selected, type }) => {
             )}
             {description.includes('[System]') && (
               <DecisionTaskIconWrapper>
-                <BoltIcon fontSize='verysmall'/>
+                <BoltIcon fontSize="verysmall" />
               </DecisionTaskIconWrapper>
             )}
             <OptionsContainer>
@@ -186,49 +187,49 @@ const TaskNode = React.memo(({ data, isConnectable, selected, type }) => {
               justifyContent="space-between"
               alignItems="flex-end"
             >
-              { !isCurrentMemberPermission && (
-              <Box display="flex">
-                <button
-                  type="button"
-                  onClick={() => openTaskDrawer(DrawerFieldEnum.COMMENT)}
-                >
-                  <TaskIcon
-                    type="comments"
-                    isActive={comments?.length > 0}
-                    isNew={updatedComment}
-                  />
-                </button>
-                <Box p={1} />
-                <button
-                  type="button"
-                  onClick={() => openTaskDrawer(DrawerFieldEnum.LABEL)}
-                >
-                  <TaskIcon
-                    type="labels"
-                    isActive={labels?.length > 0}
-                    isNew={updatedLabel}
-                  />
-                </button>
-                <Box p={1} />
-                <button
-                  type="button"
-                  onClick={() => openTaskDrawer(DrawerFieldEnum.ATTACHMENT)}
-                >
-                  <TaskIcon
-                    type="attachments"
-                    isActive={attachments?.length > 0}
-                    isNew={updatedAttachment}
-                  />
-                </button>
-                <Box px={1} />
-                {subtasks?.length > 0 && (
-                  <SubtasksLabel>
-                    {subtasks.length}
-                    <Box px={0.2} />
-                    <SubtaskIcon color="currentColor" size={12} />
-                  </SubtasksLabel>
-                )}
-              </Box>
+              {!isCurrentMemberPermission && (
+                <Box display="flex">
+                  <button
+                    type="button"
+                    onClick={() => openTaskDrawer(DrawerFieldEnum.COMMENT)}
+                  >
+                    <TaskIcon
+                      type="comments"
+                      isActive={comments?.length > 0}
+                      isNew={updatedComment}
+                    />
+                  </button>
+                  <Box p={1} />
+                  <button
+                    type="button"
+                    onClick={() => openTaskDrawer(DrawerFieldEnum.LABEL)}
+                  >
+                    <TaskIcon
+                      type="labels"
+                      isActive={labels?.length > 0}
+                      isNew={updatedLabel}
+                    />
+                  </button>
+                  <Box p={1} />
+                  <button
+                    type="button"
+                    onClick={() => openTaskDrawer(DrawerFieldEnum.ATTACHMENT)}
+                  >
+                    <TaskIcon
+                      type="attachments"
+                      isActive={attachments?.length > 0}
+                      isNew={updatedAttachment}
+                    />
+                  </button>
+                  <Box px={1} />
+                  {subtasks?.length > 0 && (
+                    <SubtasksLabel>
+                      {subtasks.length}
+                      <Box px={0.2} />
+                      <SubtaskIcon color="currentColor" size={12} />
+                    </SubtasksLabel>
+                  )}
+                </Box>
               )}
               {assignedToUsers?.length === 1 &&
                 (isUserGroup(assignedToUsers[0]) ? (

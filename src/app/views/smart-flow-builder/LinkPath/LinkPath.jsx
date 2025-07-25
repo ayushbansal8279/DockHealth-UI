@@ -1,6 +1,7 @@
 import React from 'react';
-import { getSmoothStepPath, Position } from 'reactflow';
+import { BaseEdge, getSmoothStepPath, Position } from 'reactflow';
 import palette from 'styles/palette';
+import './AnimatedEdge.css';
 
 const LinkPath = (props) => {
   const {
@@ -19,10 +20,10 @@ const LinkPath = (props) => {
   let targetPos = targetPosition;
 
   // temporary bugfix related to wbkd/react-flow/issues/1403
-  if (sourcePosition === Position.Left && targetPosition === Position.Right) {
-    sourcePos = targetPosition;
-    targetPos = sourcePosition;
-  }
+  // if (sourcePosition === Position.Left && targetPosition === Position.Right) {
+  //   sourcePos = targetPosition;
+  //   targetPos = sourcePosition;
+  // }
 
   const [edgePath] = getSmoothStepPath({
     sourceX,
@@ -35,14 +36,21 @@ const LinkPath = (props) => {
   // const markerEnd = getMarkerEnd('arrowclosed', markerEndId);
 
   return (
-    <path
+    <BaseEdge
       id={id}
+      path={edgePath}
       style={{
         stroke: selected ? palette.brightBlue : undefined,
-        strokeWidth: '3px',
+        strokeWidth: 4,
+        fill: 'none',
+        ...(selected
+          ? {}
+          : {
+              strokeDasharray: 10,
+              strokeDashoffset: 10,
+              animation: 'dashmove 0.5s linear infinite',
+            }),
       }}
-      className="react-flow__edge-path"
-      d={edgePath}
       markerEnd={markerEnd}
       onClick={onClick}
     />

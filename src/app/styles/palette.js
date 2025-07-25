@@ -79,7 +79,7 @@ const palette = {
   memberGreen: '#00a73c',
   taskCheckboxGreen: '#20b255',
   inProgressGreen: '#BAD440',
-  featureBlue1: '#011845',
+  parrotGreen: '#61f241ff',
   featureBlue2: '#1a2d56',
   scrollbarGrey: '#939aa4',
   red: '#e94739',

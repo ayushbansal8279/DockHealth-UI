@@ -21,8 +21,8 @@ const NewTaskNode = React.memo((props) => {
   const clearInput = () => setInputValue('');
 
   const addTask = (description) => {
-    if(type === 'NEW_AUTOMATION') {
-      description = '[System] '+ description;
+    if (type === 'NEW_AUTOMATION') {
+      description = '[System] ' + description;
     }
     dispatch(
       addTaskToTemplate(
@@ -70,6 +70,7 @@ const NewTaskNode = React.memo((props) => {
       isConnectable={isConnectable}
       isConnecting={data.draggedEdgeSourceId}
       onTargetHandleHover={data.onTargetHandleHover}
+      draggedEdgeSourceId={data?.draggedEdgeSourceId}
     >
       <TaskNodeWrapper selected={selected} type={type}>
         <NewTaskWrapper>

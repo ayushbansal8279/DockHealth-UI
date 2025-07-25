@@ -105,6 +105,7 @@ import NestedFlowNode from './NestedFlow/NestedFlowNode/NestedFlowNode';
 import NewNestedFlowNode from './NestedFlow/NewNestedFlowNode/NewNestedFlowNode';
 import { isUserDockPro } from '@/app/helpers/user-helper';
 import IndicatorNode from './IndicatorNode/IndicatorNode';
+import ConnectionLineComponent from './ConnectionLineComponent/ConnectionLineComponent';
 
 const nodeTypes = {
   [NodeType.NEW_AUTOMATION]: NewTaskNode,
@@ -675,7 +676,8 @@ const SmartFlowBuilderView = () => {
           </BuilderHeader>
           {elements && (
             <ReactFlowAdapter
-              // connectionLineComponent={ConnectionLineComponent}
+              connectionLineComponent={ConnectionLineComponent}
+              connectionRadius={0}
               elements={elements}
               onConnect={onConnect}
               connectionLineType="default"

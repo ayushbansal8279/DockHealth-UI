@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 import { Box } from '@mui/material';
 import { useBoolean } from 'hooks/useBoolean';
-import { Handle, Position } from 'reactflow';
+import { Handle, Position, useNodeId, useReactFlow } from 'reactflow';
 import palette from 'styles/palette';
 import {
   NodeSourceHandle,
@@ -12,11 +12,21 @@ import { AddIcon, targetHandleStyles, TargetHandlesWrapper } from './styled';
 function validateConnection({ source, target }) {
   return source !== target;
 }
-
 const TaskNodeHandles = (props) => {
-  const { children, isConnectable, isConnecting, onTargetHandleHover } = props;
+  const {
+    children,
+    isConnectable,
+    isConnecting,
+    onTargetHandleHover,
+    draggedEdgeSourceId,
+  } = props;
   const [isHovered, setHovered, unsetHovered] = useBoolean(false);
-
+  const [isHoveredOnTargetHandle, setIsHoveredOnTargetHandle] = useState(false);
+  const [isValidHandle, setIsValidHandle] = useState(true);
+  const [hoveredTargetHandleName, setHoveredTargetHandleName] = useState(null);
+  const currentNodeId = useNodeId();
+  const { getEdges } = useReactFlow();
+  const edges = getEdges();
   const nodeHandleSize = isHovered ? 14 : 0;
 
   const sourceHandleStyles = {
@@ -27,13 +37,55 @@ const TaskNodeHandles = (props) => {
     width: nodeHandleSize,
     borderRadius: nodeHandleSize / 2,
     backgroundColor: palette.brightBlue,
-    visibility: isHovered ? 'visible' : 'hidden',
+    visibility: isHovered && !isConnecting ? 'visible' : 'hidden',
   };
 
   const iconStyles = {
     pointerEvents: 'none',
     color: 'white',
     width: '12px',
+  };
+
+  const validateTargetHandle = useCallback(
+    (event) => {
+      const { source, target } = event;
+
+      if (
+        source === target ||
+        (source === 'START_INDICATOR' && target === 'END_INDICATOR') ||
+        source === 'END_INDICATOR' ||
+        target === 'START_INDICATOR'
+      ) {
+        return false;
+      }
+      const edgeExists = edges?.some((edge) => {
+        return (
+          (edge.source === source && edge.target === target) ||
+          (edge.source === target && edge.target === source)
+        );
+      });
+      return !edgeExists;
+    },
+    [edges],
+  );
+
+  const handleMouseEnter = useCallback(
+    (handleId) => {
+      setIsHoveredOnTargetHandle(true);
+      setHoveredTargetHandleName(handleId);
+      const isValid = validateTargetHandle({
+        source: draggedEdgeSourceId,
+        target: currentNodeId,
+      });
+      setIsValidHandle(isValid);
+    },
+    [validateTargetHandle, currentNodeId, draggedEdgeSourceId],
+  );
+
+  const handleMouseLeave = () => {
+    setIsHoveredOnTargetHandle(false);
+    setIsValidHandle(true);
+    setHoveredTargetHandleName(null);
   };
 
   return (
@@ -49,12 +101,22 @@ const TaskNodeHandles = (props) => {
           position={Position.Top}
           style={{
             ...targetHandleStyles,
-            gridColumnStart: 2,
-            gridColumnEnd: 4,
-            gridRow: 1,
+            top: isConnecting ? 0 : 5,
+            left: '50%',
+            background:
+              isHoveredOnTargetHandle &&
+              hoveredTargetHandleName === NodeTargetHandle.TARGET_A
+                ? isValidHandle
+                  ? palette.parrotGreen
+                  : palette.red
+                : palette.white,
           }}
           isConnectable={isConnectable}
-          onMouseEnter={() => onTargetHandleHover(Position.Top)}
+          onMouseEnter={() => {
+            onTargetHandleHover(Position.Top);
+            handleMouseEnter(NodeTargetHandle.TARGET_A);
+          }}
+          onMouseLeave={handleMouseLeave}
         />
         <Handle
           id={NodeTargetHandle.TARGET_B}
@@ -62,12 +124,22 @@ const TaskNodeHandles = (props) => {
           position={Position.Bottom}
           style={{
             ...targetHandleStyles,
-            gridColumnStart: 2,
-            gridColumnEnd: 4,
-            gridRow: 2,
+            bottom: isConnecting ? -12 : -7,
+            left: '50%',
+            background:
+              isHoveredOnTargetHandle &&
+              hoveredTargetHandleName === NodeTargetHandle.TARGET_B
+                ? isValidHandle
+                  ? palette.parrotGreen
+                  : palette.red
+                : palette.white,
           }}
           isConnectable={isConnectable}
-          onMouseEnter={() => onTargetHandleHover(Position.Bottom)}
+          onMouseEnter={() => {
+            onTargetHandleHover(Position.Bottom);
+            handleMouseEnter(NodeTargetHandle.TARGET_B);
+          }}
+          onMouseLeave={handleMouseLeave}
         />
         <Handle
           id={NodeTargetHandle.TARGET_C}
@@ -75,12 +147,22 @@ const TaskNodeHandles = (props) => {
           position={Position.Left}
           style={{
             ...targetHandleStyles,
-            gridColumn: 1,
-            gridRowStart: 1,
-            gridRowEnd: 3,
+            left: isConnecting ? 0 : 5,
+            top: '50%',
+            background:
+              isHoveredOnTargetHandle &&
+              hoveredTargetHandleName === NodeTargetHandle.TARGET_C
+                ? isValidHandle
+                  ? palette.parrotGreen
+                  : palette.red
+                : palette.white,
           }}
           isConnectable={isConnectable}
-          onMouseEnter={() => onTargetHandleHover(Position.Left)}
+          onMouseEnter={() => {
+            onTargetHandleHover(Position.Left);
+            handleMouseEnter(NodeTargetHandle.TARGET_C);
+          }}
+          onMouseLeave={handleMouseLeave}
         />
         <Handle
           id={NodeTargetHandle.TARGET_D}
@@ -88,12 +170,22 @@ const TaskNodeHandles = (props) => {
           position={Position.Right}
           style={{
             ...targetHandleStyles,
-            gridColumn: 4,
-            gridRowStart: 1,
-            gridRowEnd: 3,
+            right: isConnecting ? -12 : -7,
+            top: '50%',
+            background:
+              isHoveredOnTargetHandle &&
+              hoveredTargetHandleName === NodeTargetHandle.TARGET_D
+                ? isValidHandle
+                  ? palette.parrotGreen
+                  : palette.red
+                : palette.white,
           }}
           isConnectable={isConnectable}
-          onMouseEnter={() => onTargetHandleHover(Position.Right)}
+          onMouseEnter={() => {
+            onTargetHandleHover(Position.Right);
+            handleMouseEnter(NodeTargetHandle.TARGET_D);
+          }}
+          onMouseLeave={handleMouseLeave}
         />
       </TargetHandlesWrapper>
       {children}
