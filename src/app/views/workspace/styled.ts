@@ -39,3 +39,14 @@ export const MoreVertIcon = styled(MoreVert)`
   font-size: 26px;
   cursor: pointer;
 `;
+
+export const StyledListLink = styled.span`
+  color: inherit;
+  text-decoration: none;
+  cursor: pointer;
+
+  &:hover {
+    color: ${palette.brightBlue};
+    text-decoration: underline;
+  }
+`;

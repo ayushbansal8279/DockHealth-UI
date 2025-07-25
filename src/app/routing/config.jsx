@@ -12,6 +12,7 @@ import {
   onEnterListDetailsView,
   onLeaveListDetailsView,
 } from './TemplateCoreSubscriptionPlan/ListDetails';
+import WorkspaceHome from '../views/workspaces/workspace-home';
 
 const UsersView = lazy(() => import('views/self-serve/users/UsersView'));
 const Contacts = lazy(() => import('views/Contacts/Contacts'));
@@ -429,6 +430,11 @@ export const TEMPLATE_CORE_SUBSCRIPTION_PLAN_ROUTES = [
   {
     path: '/workspace/:workspaceIdentifier',
     RouteComponent: Workspace,
+    permissions: [CAN_ACCESS_SETTINGS_PAGE],
+  },
+  {
+    path: '/workspace',
+    RouteComponent: WorkspaceHome,
     permissions: [CAN_ACCESS_SETTINGS_PAGE],
   },
 ];

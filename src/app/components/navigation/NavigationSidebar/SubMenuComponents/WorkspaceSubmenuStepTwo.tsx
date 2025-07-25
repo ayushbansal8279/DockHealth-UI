@@ -22,6 +22,8 @@ import {
   WorkspaceListItems,
   WorkspaceUserItems,
   DrawerMyListsLabel,
+  WorkspacesLeftWrapper,
+  HomeIconWrapper,
 } from './styled';
 import {
   clearWorkspaceState,
@@ -58,8 +60,9 @@ import { DefaultPatientListUrl } from '@/app/helpers/patient-list-helpers';
 import AddButton from '@/app/components/common/AddButton/AddButton';
 import { hideSubMenu } from '@/app/actions/template-actions';
 import { isUserViewOnly } from '@/app/helpers/user-helper';
+import HomeIcon from '@/app/img/navigation/HomeIcon';
 
-const WorkspaceSubmenuStepTwo = () => {
+const WorkspaceSubmenuStepTwo = ({ setShowStepTwo }) => {
   const dispatch = useDispatch();
   const workspace = useSelector(workspaceSelector);
   const workspaceLabel = useSelector(organizationWorkspaceLabelSelector);
@@ -87,7 +90,13 @@ const WorkspaceSubmenuStepTwo = () => {
   };
 
   const handleBackClick = () => {
+    setShowStepTwo(false);
+  };
+
+  const handleClose = () => {
+    setShowStepTwo(false);
     dispatch(clearWorkspaceState());
+    history.push(`/core/workspace`);
   };
 
   useEffect(() => {
@@ -126,9 +135,14 @@ const WorkspaceSubmenuStepTwo = () => {
     <>
       <WorkspaceContainer>
         <WorkspacesTitleWrapper>
-          <WorkspacesSubWrapper>
-            <ArrowBackIcon onClick={handleBackClick} />
-            <WorkspacesTitle>{workspaceLabel}s</WorkspacesTitle>
+          <WorkspacesSubWrapper $fullWidth>
+            <WorkspacesLeftWrapper>
+              <ArrowBackIcon onClick={handleBackClick} />
+              <WorkspacesTitle>{workspaceLabel}s</WorkspacesTitle>
+            </WorkspacesLeftWrapper>
+            <HomeIconWrapper onClick={handleClose}>
+              <HomeIcon />
+            </HomeIconWrapper>
           </WorkspacesSubWrapper>
         </WorkspacesTitleWrapper>
         <div

@@ -1,18 +1,11 @@
 import * as ActionTypes from 'actions/action-types';
-import { ChangeUserRolePayload, createWorkspacePayload, InvitePersonToWorkspacePayload, InviteUserToWorkspacePayload, RemoveUserFromWorkspacePayload } from '../types/workspace';
+import { ChangeUserRolePayload, InvitePersonToWorkspacePayload, InviteUserToWorkspacePayload, RemoveUserFromWorkspacePayload } from '../types/workspace';
 import { Dispatch } from 'redux';
 
 export function getCurrentWorkspace(workspaceIdentifier: string) {
   return {
     type: ActionTypes.GET_SELECTED_WORKSPACE,
     workspaceIdentifier,
-  };
-}
-
-export function updateSelectedWorkspace(workspace: createWorkspacePayload) {
-  return {
-    type: ActionTypes.UPDATE_SELECTED_WORKSPACE,
-    workspace,
   };
 }
 

@@ -5,10 +5,11 @@ import { noop, showAlert } from 'helpers/utility-functions';
 import axios from './axios-heydoc';
 import { blobFileDownload } from '../helpers/blob-file-download';
 import { handleMixedResponse } from '../helpers/handle-mixed-response';
+import { withWorkspaceHeaders } from '../helpers/api-helpers';
 
-export function getOrganizationUsersAndUserGroups() {
+export function getOrganizationUsersAndUserGroups(workspaceIdentifier = null) {
   return axios
-    .get('user/findAllUsersByOrganizationId?includeGroups=true')
+    .get('user/findAllUsersByOrganizationId?includeGroups=true', withWorkspaceHeaders(workspaceIdentifier))
     .then((response) => response.data)
     .catch((error) => error?.response?.data);
 }

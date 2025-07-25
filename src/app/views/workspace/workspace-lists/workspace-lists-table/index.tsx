@@ -21,6 +21,7 @@ import { getFilteredRows } from "@/app/helpers/workspace-helpers";
 import { workspaceSelector } from "@/app/selectors/workspace-selectors";
 import Tooltip from "@/app/components/common/Tooltip/Tooltip";
 import { createTaskListPath } from "@/app/routing/helpers/paths";
+import { WorkspaceContainer } from "@/app/views/workspaces/workspace-home/styled";
 import { AssignMemberIconContainer, BulkContainer, StyledListLink } from "./styled";
 
 const WorkspaceListTable = ({ searchTerm }: { searchTerm: string }) => {
@@ -52,7 +53,8 @@ const WorkspaceListTable = ({ searchTerm }: { searchTerm: string }) => {
   const openAddUserModal = (list) => {
     dispatch(openModal('InviteToList', {
       list,
-      onMembersRefresh: refreshMembers
+      onMembersRefresh: refreshMembers,
+      workspaceIdentifier,
     }))
   };
 
@@ -167,7 +169,7 @@ const WorkspaceListTable = ({ searchTerm }: { searchTerm: string }) => {
   );
 
   return (
-    <Box sx={{ height: 'calc(80vh - 100px)', p: 2, width: '1179px' }}>
+    <WorkspaceContainer>
       <StyledDataGrid
         columns={columns}
         getRowId={(row) => row.taskListIdentifier}
@@ -177,7 +179,7 @@ const WorkspaceListTable = ({ searchTerm }: { searchTerm: string }) => {
         autoHeight
         hideFooterSelectedRowCount
       />
-    </Box>
+    </WorkspaceContainer>
   );
 };
 
