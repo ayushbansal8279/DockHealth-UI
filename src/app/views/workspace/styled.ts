@@ -3,6 +3,7 @@ import palette from '@/app/styles/palette';
 import spacing from '@/app/styles/spacing';
 import { MoreVert } from '@mui/icons-material';
 import { Tab, TabProps } from '@mui/material';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
 interface MainTabProps extends TabProps {
@@ -40,7 +41,7 @@ export const MoreVertIcon = styled(MoreVert)`
   cursor: pointer;
 `;
 
-export const StyledListLink = styled.span`
+export const StyledListLink = styled(Link)`
   color: inherit;
   text-decoration: none;
   cursor: pointer;
