@@ -256,7 +256,7 @@ function* addTemplate({
     yield put(showGlobalAlert(AlertMessages.CREATED));
 
     try {
-      if (history) {
+      if (history && !workspaceIdentifier) {
         yield call(
           history.push,
           createWorkflowBuilderPath(createdTemplate.identifier),
