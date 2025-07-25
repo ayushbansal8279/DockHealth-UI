@@ -30,6 +30,7 @@ import SendbirdReducer from './sendbird-reducer';
 import TaskItemsReducer from './task-items-reducer';
 import ProfileReducer from './profile-reducer';
 import WorkspaceReducer from './workspace-reducer';
+import workspaceListReducer from './workspace-list-reducer';
 
 // function createNamedWrapperReducer(reducerFunction, reducerName) {
 //   return (state, action) => {
@@ -72,6 +73,7 @@ const appReducer = combineReducers({
   // taskItemList: createNamedWrapperReducer(TaskItemReducer, TaskOrigin.LIST),
   taskItems: TaskItemsReducer,
   workspace: WorkspaceReducer,
+  workspaceList: workspaceListReducer,
 });
 
 export default function rootReducer(state, action) {

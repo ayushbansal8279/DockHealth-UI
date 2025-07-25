@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Add } from "@mui/icons-material";
 
@@ -23,7 +23,8 @@ const WorkspaceLists = () => {
   const workspaceIdentifier = workspace.workspaceIdentifier;
   const taskLists = useSelector(workspaceTaskListsSelector);
   const isFetching = useSelector(isFetchingWorkspaceTaskListsSelector);
-  // const archivedTaskLists = useSelector(archivedWorkspaceTaskListsSelector);
+  const archivedTaskLists = useSelector(archivedWorkspaceTaskListsSelector);
+  const { setSelectableItems } = useContext(BulkEditContext);
 
   useEffect(() => {
     if (workspaceIdentifier) {
@@ -32,13 +33,15 @@ const WorkspaceLists = () => {
     }
   }, [workspaceIdentifier]);
 
-  const { setSelectableItems } = useContext(BulkEditContext);
+  const allTaskLists = useMemo(() => {
+    return [...taskLists, ...(archivedTaskLists || [])];
+  }, [taskLists, archivedTaskLists]);
 
   useEffect(() => {
     if (workspaceIdentifier) {
-      setSelectableItems(taskLists);
+      setSelectableItems(allTaskLists);
     }
-  }, [taskLists]);
+  }, [workspaceIdentifier, allTaskLists]);
   
   const openAddListModal = () => {
     dispatch(openModal('ListForm', {

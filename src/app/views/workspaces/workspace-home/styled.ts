@@ -41,6 +41,7 @@ export const ListEntryContainer = styled.div`
 export const WorkspaceContainer = styled.div`
   width: 100%;
   max-width: 1179px;
+  min-height: 600px;
   margin: 20px auto;
   padding: 0 16px;
   `;

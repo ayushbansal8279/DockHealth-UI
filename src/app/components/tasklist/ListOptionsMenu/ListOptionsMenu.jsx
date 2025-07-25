@@ -12,7 +12,6 @@ import {
 } from 'helpers/ga-event-helper';
 import {
   currentTaskListIdentifierSelector,
-  archivedTaskListsSelector,
   currentTaskListSelector,
   taskListsSelector,
 } from 'selectors/task-list-selectors';
@@ -28,7 +27,6 @@ import useSearchParams from '@/app/hooks/use-search-params';
 import { downloadTaskListData } from '@/app/api/task-api';
 import { getTaskListStatusStorageKey } from '@/app/helpers/tasklist-helpers';
 import localStorageHelper from '@/app/helpers/local-storage-helper';
-import sessionStorageHelper from '@/app/helpers/session-storage-helper';
 
 const MASTER_ROLES = new Set(['ADMIN', 'OWNER']);
 const PRIVILEGE_ROLES = new Set(['ADMIN', 'OWNER', 'MEMBER']);
@@ -41,7 +39,6 @@ const ListOptionsMenu = (props) => {
   const currentUser = useSelector(userProfileSelector);
   const listDetails = useSelector(currentTaskListSelector);
   const { listName, taskListIdentifier } = listDetails || {};
-  const archivedTaskLists = useSelector(archivedTaskListsSelector);
   const activeTaskListIdentifier = useSelector(
     currentTaskListIdentifierSelector,
   );
@@ -156,17 +153,6 @@ const ListOptionsMenu = (props) => {
     // });
   }, [searchParams]);
 
-  // TODO: change to flag inside list object
-  const isListArchived = useCallback(
-    (targetList) => {
-      return !!archivedTaskLists?.find(
-        (taskList) =>
-          taskList.taskListIdentifier === targetList.taskListIdentifier,
-      );
-    },
-    [archivedTaskLists],
-  );
-
   const handleArchiveList = useCallback(
     (targetList) => {
       const archiveAction = props?.workspaceIdentifier
@@ -213,7 +199,7 @@ const ListOptionsMenu = (props) => {
 
   const getMenuItems = useCallback(
     (targetList) => {
-      if (MASTER_ROLES.has(targetList?.role) && isListArchived(targetList)) {
+      if (MASTER_ROLES.has(targetList?.role) && targetList?.archived) {
         return [
           {
             name: 'Unarchive list',
@@ -318,7 +304,6 @@ const ListOptionsMenu = (props) => {
       return baseList;
     },
     [
-      isListArchived,
       handleUnarchiveList,
       openLeaveListModal,
       currentUser,

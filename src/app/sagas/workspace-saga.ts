@@ -5,8 +5,7 @@ import AlertMessages from '../alert/AlertMessages';
 import * as ActionTypes from 'actions/action-types';
 import * as WorkspaceApi from '../api/workspace-api';
 import * as TaskListApi from '../api/task-list-api';
-import * as WorkspaceActions from 'actions/workspace-actions';
-import { ArchiveWorkspaceTaskListPayload, ChangeUserRolePayload, createWorkspacePayload, DeleteWorkspaceTaskListPayload, GetArchivedWorkspaceTaskListsPayload, GetWorkspaceTaskListsPayload, InvitePersonToWorkspacePayload, InviteUserToWorkspacePayload, LeaveWorkspaceTaskListPayload, RemoveUserFromWorkspacePayload, SaveWorkspaceTaskListPayload, TaskList } from '../types/workspace';
+import { ArchiveWorkspaceTaskListPayload, ChangeUserRolePayload, DeleteWorkspaceTaskListPayload, GetArchivedWorkspaceTaskListsPayload, GetWorkspaceTaskListsPayload, InvitePersonToWorkspacePayload, InviteUserToWorkspacePayload, LeaveWorkspaceTaskListPayload, RemoveUserFromWorkspacePayload, SaveWorkspaceTaskListPayload, TaskList } from '../types/workspace';
 import { getWorkspaceUsers as getWorkspaceUsersAction } from '@/app/actions/workspace-actions'
 
 function* handleSagaError(error: any, failureActionType: string) {
@@ -28,22 +27,6 @@ function* getCurrentWorkspace({
   } catch {
     yield put(showGlobalErrorAlert());
     yield put({ type: ActionTypes.GET_SELECTED_WORKSPACE_FAILURE });
-  }
-}
-
-interface UpdateWorkspaceProp {
-  workspace: createWorkspacePayload;
-}
-
-function* updateCurrentWorkspace({ workspace }: UpdateWorkspaceProp) {
-  try {
-    yield call(WorkspaceApi.updateWorkspace, workspace);
-    yield put(
-      WorkspaceActions.getCurrentWorkspace(workspace.workspaceIdentifier),
-    );
-    yield put(showGlobalAlert(AlertMessages.UPDATED));
-  } catch {
-    yield put(showGlobalErrorAlert());
   }
 }
 
@@ -285,10 +268,6 @@ export function* archiveWorkspaceTaskListSaga({ payload }: { payload: ArchiveWor
 export default function* watchWorkspaces() {
   // @ts-ignore
   yield takeEvery(ActionTypes.GET_SELECTED_WORKSPACE, getCurrentWorkspace);
-  yield takeLatest(
-    ActionTypes.UPDATE_SELECTED_WORKSPACE,
-    updateCurrentWorkspace,
-  );
   yield takeEvery(ActionTypes.GET_WORKSPACE_USERS, getWorkspaceUsers);
   yield takeLatest(ActionTypes.CHANGE_WORKSPACE_USER_ROLE, changeWorkspaceUserRole);
   yield takeLatest(ActionTypes.INVITE_USER_TO_WORKSPACE, inviteUserToWorkspace);

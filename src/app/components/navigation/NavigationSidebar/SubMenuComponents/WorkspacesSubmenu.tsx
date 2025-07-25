@@ -18,18 +18,19 @@ import { useHistory } from 'react-router-dom';
 import { Add } from '@mui/icons-material';
 import { useDispatch, useSelector } from 'react-redux';
 import { closeModal, openModal } from '@/app/modal/actions';
-import { getAllUserWorkspaces } from '@/app/api/workspace-api';
 import { Workspace } from '@/app/types/workspace';
 import WorkspaceSubmenuStepTwo from './WorkspaceSubmenuStepTwo';
 import { workspaceSelector } from '@/app/selectors/workspace-selectors';
 import WorkspaceTile from '@/app/components/workspace/WorkspaceTile/WorkspaceTile';
 import { organizationWorkspaceLabelSelector } from '@/app/selectors/organization-selectors';
+import { isFetchingWorkspaceListSelector, workspaceListSelector } from '@/app/selectors/workspace-list-selector';
+import { getAllUserWorkspaces } from "@/app/actions/workspace-list-actions";
 
 const WorkspacesSubmenu = () => {
   const history = useHistory();
   const dispatch = useDispatch();
-  const [workspaces, setWorkspaces] = useState<Workspace[]>([]);
-  const [loading, setLoading] = useState(true);
+  const workspaces = useSelector(workspaceListSelector);
+  const isFetching = useSelector(isFetchingWorkspaceListSelector);
   const workspace = useSelector(workspaceSelector);
   const workspaceLabel = useSelector(organizationWorkspaceLabelSelector);
   const [showStepTwo, setShowStepTwo] = useState(!!workspace?.workspaceIdentifier);
@@ -45,11 +46,7 @@ const WorkspacesSubmenu = () => {
   };
 
   useEffect(() => {
-    (async () => {
-      const workspaces = await getAllUserWorkspaces();
-      setWorkspaces(workspaces);
-      setLoading(false);
-    })();
+    dispatch(getAllUserWorkspaces());
   }, []);
 
   const handleWorkspaceSelect = (workspaceIdentifier: string) => {
@@ -78,7 +75,7 @@ const WorkspacesSubmenu = () => {
           </WorkspacesTitleWrapper>
           <Spacing />
           <>
-            {loading ? (
+            {isFetching ? (
               Array.from({ length: 6 })
                 .fill(undefined)
                 .map((_, index) => <DrawerListsItemLoader key={index} />)

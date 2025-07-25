@@ -20,6 +20,7 @@ import { RoleContextProvider } from "../RoleContext";
 import { StyledDataGrid } from "../../../workspaces/workspace-table/styled";
 import { CheckboxHeaderProps, CheckboxProps, IWorkspaceUser } from "../types";
 import { getFilteredRows } from "@/app/helpers/workspace-helpers";
+import { WorkspaceContainer } from "@/app/views/workspaces/workspace-home/styled";
 import { BulkContainer, ListContainer, ListEntryContainer } from "./styled";
 
 const TypedCheckbox = Checkbox as React.FC<CheckboxProps>;
@@ -121,7 +122,7 @@ const WorkspaceUserTable = ({ searchTerm }: { searchTerm: string }) => {
   );
 
   return (
-    <Box sx={{ height: 'calc(80vh - 100px)', p: 2, width: '1179px' }}>
+    <WorkspaceContainer>
       {isEmpty(users) ? (
         <ListContainer>
           <ListEntryContainer>
@@ -143,7 +144,7 @@ const WorkspaceUserTable = ({ searchTerm }: { searchTerm: string }) => {
           />
         </RoleContextProvider>
       )}
-    </Box>
+    </WorkspaceContainer>
   )
 }
 

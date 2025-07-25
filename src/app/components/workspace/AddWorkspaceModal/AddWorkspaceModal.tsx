@@ -11,8 +11,8 @@ import { createWorkspace } from '@/app/api/workspace-api';
 import { selectedUserOrganizationSelector } from '@/app/selectors/user-selectors';
 import { useDispatch, useSelector } from 'react-redux';
 import { Workspace } from '@/app/types/workspace';
-import { updateSelectedWorkspace } from '@/app/actions/workspace-actions';
 import { organizationWorkspaceLabelSelector } from '@/app/selectors/organization-selectors';
+import { updateWorkspaceAction } from '@/app/actions/workspace-list-actions';
 
 interface AddWorkspaceModalProps {
   selectedWorkspace: Workspace;
@@ -57,13 +57,14 @@ const AddWorkspaceModal: React.FC<AddWorkspaceModalProps> = ({
       workspaceName: workspace.workspaceName,
     };
     if (isEdit) {
-      dispatch(updateSelectedWorkspace(payload));
+      dispatch(updateWorkspaceAction(payload));
       closeModal();
-      return;
+    } else {
+      createWorkspace(payload).then((createdWorkspace: Workspace) => {
+        onConfirm(createdWorkspace);
+        closeModal();
+      })
     }
-    const createdWorkspace: Workspace = await createWorkspace(payload);
-    onConfirm(createdWorkspace);
-    closeModal();
   };
 
   return (

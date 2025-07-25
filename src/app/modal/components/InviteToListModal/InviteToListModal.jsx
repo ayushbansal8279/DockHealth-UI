@@ -18,6 +18,7 @@ const InviteToListModal = ({
   title = 'Invite Others to this list',
   CustomForm = null,
   identifier = null,
+  workspaceIdentifier = null,
 }) => {
   useEffect(() => {
     if (!list) {
@@ -40,6 +41,7 @@ const InviteToListModal = ({
           list={list}
           onMembersRefresh={onMembersRefresh}
           identifier={identifier}
+          workspaceIdentifier={workspaceIdentifier}
         />
         <Spacing vertical={4} />
         <ButtonWrapper>

@@ -3,12 +3,11 @@ import OptionsMenu from '../../common/OptionsMenu/OptionsMenu';
 import { useDispatch, useSelector } from 'react-redux';
 import { openModal } from '@/app/modal/actions';
 import { Workspace } from '@/app/types/workspace';
-import { clearWorkspaceState } from '@/app/actions/workspace-actions';
-import { removeWorkspace } from '@/app/api/workspace-api';
 import { useHistory } from 'react-router-dom';
 import { showGlobalAlert, showGlobalErrorAlert } from '@/app/alert/actions';
 import AlertMessages from '@/app/alert/AlertMessages';
 import { organizationWorkspaceLabelSelector } from '@/app/selectors/organization-selectors';
+import { deleteWorkspaceAction } from '@/app/actions/workspace-list-actions';
 
 interface Prop {
   children: any;
@@ -42,10 +41,8 @@ const WorkspaceOptionsMenu = ({
       description: `Are you sure you want to delete this ${workspaceLabel}? This action cannot be undone.`,
       confirm: async () => {
         try {
-          await removeWorkspace(selectedWorkspace.workspaceIdentifier);
-          dispatch(showGlobalAlert(AlertMessages.DELETED));
-          dispatch(clearWorkspaceState());
-          history.push(`/core/home/my-tasks`);
+          dispatch(deleteWorkspaceAction(selectedWorkspace.workspaceIdentifier));
+          // history.push(`/core/home/my-tasks`);
         } catch {
           dispatch(showGlobalErrorAlert());
         }

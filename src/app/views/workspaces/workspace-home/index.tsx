@@ -1,32 +1,31 @@
 import React, { useEffect, useState } from "react";
 import { Box, Grid, Typography } from "@mui/material";
 import { GridColDef } from "@mui/x-data-grid";
+import { useDispatch, useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
 
-import { getAllUserWorkspaces } from "@/app/api/workspace-api";
 import { Workspace as WorkspaceType } from "@/app/types/workspace";
 import WorkspaceTile from "@/app/components/workspace/WorkspaceTile/WorkspaceTile";
 import { OutfitTypography } from "@/app/styles/theme";
 import Spacing from "@/app/components/common/Spacing";
 import { StyledDataGrid } from "../workspace-table/styled";
 import { ListContainer, ListEntryContainer, WorkspaceContainer, WorkspaceTableWrapper } from "./styled";
-import { useHistory } from "react-router-dom";
 import { MoreVertIcon } from "../../workspace/styled";
 import WorkspaceOptionsMenu from "@/app/components/workspace/WorkspaceOptionsMenu/WorkspaceOptionsMenu";
 import ViewLayout from "@/app/components/template/ViewLayout/ViewLayout";
 import BasicLayoutHeader from "@/app/components/template/BasicLayoutHeader/BasicLayoutHeader";
+import { isFetchingWorkspaceListSelector, workspaceListSelector } from "@/app/selectors/workspace-list-selector";
+import { getAllUserWorkspaces } from "@/app/actions/workspace-list-actions";
 
 const WorkspaceHome = () => {
   const history = useHistory();
-  const [workspaces, setWorkspaces] = useState<WorkspaceType[]>([]);
-  const [loading, setLoading] = useState(true);
+  const dispatch = useDispatch();
+  const workspaces = useSelector(workspaceListSelector);
+  const isFetching = useSelector(isFetchingWorkspaceListSelector);
   const [menuOptionsOpen, setMenuOptionsOpen] = useState(false);
-  
+
   useEffect(() => {
-    (async () => {
-      const workspaces = await getAllUserWorkspaces();
-      setWorkspaces(workspaces);
-      setLoading(false);
-    })();
+    dispatch(getAllUserWorkspaces());
   }, []);
 
   const handleWorkspaceSelect = (workspaceIdentifier: string) => {
@@ -77,7 +76,7 @@ const WorkspaceHome = () => {
       header={<BasicLayoutHeader title="All Workspaces" />}
     >
       <WorkspaceContainer>
-        {loading ? (
+        {isFetching ? (
           <ListContainer>
             <ListEntryContainer>
               <Grid container justifyContent="center" alignItems="center">
