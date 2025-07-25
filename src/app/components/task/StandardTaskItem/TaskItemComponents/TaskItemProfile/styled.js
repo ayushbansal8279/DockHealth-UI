@@ -5,7 +5,7 @@ import { fontWeights } from "@/app/styles/font";
 import palette from "@/app/styles/palette";
 
 export const ProfileLabel = styled.span`
-  color: ${palette.mediumGrey};
+  color: ${palette.brightBlue};
   font-weight: ${fontWeights.light};
   font-size: 0.65 rem;
   white-space: nowrap;
@@ -13,11 +13,7 @@ export const ProfileLabel = styled.span`
   text-overflow: ellipsis;
   max-width: 100%;
   display: inline-block;
-
-  &:hover {
-    color: ${palette.brightBlue};
-    text-decoration: underline;
-  }
+  text-decoration: underline;
 `;
 
 export const StyledProfileLink = styled(Link)({

@@ -46,15 +46,11 @@ export const DecisionSelect = styled(Select)`
 `;
 
 export const ListItemLink = styled(Link)`
-  color: ${palette.mediumGrey};
+  color: ${palette.brightBlue};
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
-
-  &:hover {
-    color: ${palette.brightBlue};
-    text-decoration: underline;
-  }
+  text-decoration: underline;
 `;
 
 export const PublicInfoWrapper = styled.span`
@@ -872,14 +868,10 @@ export const TaskItemDescriptionIndicators = styled.div`
 `;
 
 export const PatientLabel = styled.span`
-  color: ${palette.mediumGrey};
+  color: ${palette.brightBlue};
   font-weight: ${fontWeights.light};
   font-size: 0.65 rem;
-
-  &:hover {
-    color: ${palette.brightBlue};
-    text-decoration: underline;
-  }
+  text-decoration: underline;
 `;
 
 export const DisabledPatientLabel = styled(PatientLabel)`

@@ -1,4 +1,10 @@
-import React, { useRef, useCallback, useMemo, useState } from 'react';
+import React, {
+  useRef,
+  useCallback,
+  useMemo,
+  useState,
+  useEffect,
+} from 'react';
 import { Box } from '@mui/material';
 import { useBoolean } from 'hooks/useBoolean';
 import { useHistory, useParams } from 'react-router-dom';
@@ -27,7 +33,7 @@ import {
 } from 'selectors/user-selectors';
 import {
   currentPatientsListIdentifierSelector,
-  // patientsListSearchTermSelector,
+  patientsListSearchTermSelector,
   filtersActiveSelector,
 } from 'selectors/patients-selectors';
 
@@ -78,7 +84,7 @@ const PatientsToolbar = ({ searchValue, setSearchValue, workspaceIdentifier = nu
   const filterButtonReference = useRef(null);
   const history = useHistory();
   const dispatch = useDispatch();
-  // const searchValue = useSelector(patientsListSearchTermSelector);
+  const searchText = useSelector(patientsListSearchTermSelector);
   const filtersActive = useSelector(filtersActiveSelector);
   const listIdentifier = useSelector(currentPatientsListIdentifierSelector);
   const currentUser = useSelector(userProfileSelector);
@@ -155,6 +161,10 @@ const PatientsToolbar = ({ searchValue, setSearchValue, workspaceIdentifier = nu
   const isDynamicPatientList =
     listIdentifierParameter?.toUpperCase() ===
     PatientsListType.DYNAMIC.toUpperCase();
+
+  useEffect(() => {
+    setSearchValue(searchText);
+  }, [searchText]);
 
   return (
     <>
