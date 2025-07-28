@@ -34,7 +34,7 @@ import { MoreVert } from '@mui/icons-material';
 import { userProfileSelector } from '@/app/selectors/user-selectors';
 import { isUserGuestOrDockLite, isUserViewOnly } from '@/app/helpers/user-helper';
 import { downloadProfileData, downloadProfileImportTemplate, uploadProfileData } from '@/app/api/profile-api';
-import { initializeProfileState, updateProfileListPreferences } from '@/app/actions/profile-actions';
+import { initializeProfileTypeState, updateProfileListPreferences } from '@/app/actions/profile-actions';
 import { getProfileListPreferences } from '@/app/api/profile-type-api';
 import { StyledLink } from './styled';
 import DateLabel from '../../common/DateLabel/DateLabel';
@@ -52,7 +52,7 @@ const CustomProfileList = () => {
   );
 
   useEffect(() => {
-    dispatch(initializeProfileState(profileTypeIdentifier));
+    dispatch(initializeProfileTypeState(profileTypeIdentifier));
   }, [dispatch, profileTypeIdentifier]);
 
   useEffect(() => {

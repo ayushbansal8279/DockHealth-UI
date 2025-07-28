@@ -1,7 +1,7 @@
 import { blobFileDownload } from '../helpers/blob-file-download';
 import { mapFilterOptions } from '../helpers/filter-options-helpers';
 import { handleMixedResponse } from '../helpers/handle-mixed-response';
-import { getTransformedProfileFields } from '../helpers/profile-helpers';
+import { getTransformedProfileFields, ProfileAttachmentType } from '../helpers/profile-helpers';
 import { noop, showAlert } from '../helpers/utility-functions';
 import axios from './axios-heydoc';
 
@@ -67,7 +67,7 @@ export function mergeProfile(profileIdentifier, mergeToProfileIdentifier) {
     .then(({ data }) => data);
 }
 
-export function downloadProfileImportTemplate(profileTypeIdentifier, filename="Profile_Data_Upload_Template.csv") {
+export function downloadProfileImportTemplate(profileTypeIdentifier, filename = "Profile_Data_Upload_Template.csv") {
   return axios({
     url: `/profile/downloadProfileImportTemplate/${profileTypeIdentifier}`,
     method: 'GET',
@@ -119,6 +119,61 @@ export function getPatientForProfile(profileIdentifier) {
   return axios
     .get(`profile/patients/${profileIdentifier}`)
     .then(response => response.data)
+}
+
+export function getProfileAttachments(profileIdentifier, folderIdentifier) {
+  return axios
+    .get(`profile/attachment/getProfileAttachments/${profileIdentifier}`, {
+      params: { parentAttachmentIdentifier: folderIdentifier ?? undefined },
+    },)
+    .then(response => response.data)
+}
+
+export function createProfileAttachment(
+  profileIdentifier,
+  // folderIdentifier,
+  fileData,
+  additionalConfig = {},
+) {
+  const formData = new FormData();
+  formData.append('file', fileData, encodeURIComponent(fileData.name));
+  // formData.append('parentAttachmentIdentifier', folderIdentifier ?? undefined);
+  formData.append('parentAttachmentIdentifier', undefined);
+
+  return axios
+    .post(`profile/attachment/${profileIdentifier}`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+      ...additionalConfig,
+    })
+    .then(({ data }) => data);
+}
+
+export function updateProfileAttachment(attachment) {
+  return axios.put(`profile/attachment`, attachment)
+    .then(({ data }) => data);
+}
+
+export function createProfileAttachmentFolder(
+  profileIdentifier,
+  name,
+  folderIdentifier,
+) {
+  return axios
+    .post(`profile/attachment/other`, {
+      profileIdentifier,
+      fileName: name,
+      type: ProfileAttachmentType.FOLDER,
+      parentAttachmentIdentifier: folderIdentifier ?? undefined,
+    })
+    .then(({ data }) => data);
+}
+
+export function deleteProfileAttachment(identifier) {
+  return axios
+    .delete(`profile/attachment/${identifier}`)
+    .then((response) => response);
 }
 
 export const note = {

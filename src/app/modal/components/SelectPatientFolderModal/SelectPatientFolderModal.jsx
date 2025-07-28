@@ -15,9 +15,12 @@ import {
   ModalHeader,
 } from '../styled';
 import { CancelButton, ConfirmButton } from '../ModalButton/ModalButtons';
+import { currentProfileIdentifierSelector } from '@/app/selectors/profile-selector';
+import { getProfileAttachments } from '@/app/api/profile-api';
 
-const SelectPatientFolderModal = ({ closeModal, onMove }) => {
+const SelectPatientFolderModal = ({ closeModal, onMove, context }) => {
   const patientIdentifier = useSelector(currentPatientIdentifierSelector);
+  const profileIdentifier = useSelector(currentProfileIdentifierSelector);
   const [nestedFoldersHierarchy, setNestedFoldersHierarchy] = useState([]);
   const [foldersList, setFoldersList] = useState(null);
 
@@ -25,6 +28,18 @@ const SelectPatientFolderModal = ({ closeModal, onMove }) => {
     nestedFoldersHierarchy[nestedFoldersHierarchy.length - 1];
 
   useEffect(() => {
+    if (context === 'profile') {
+      setFoldersList(null);
+      getProfileAttachments(
+        profileIdentifier,
+        currentFolder?.attachmentIdentifier ?? null,
+      ).then((a) => {
+        setFoldersList(
+          a.filter(({ type }) => type === PatientAttachmentType.FOLDER),
+        );
+      });
+      return ;
+    }
     setFoldersList(null);
     PatientAttachmentApi.getPatientAttachments(
       patientIdentifier,

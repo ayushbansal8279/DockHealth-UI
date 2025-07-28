@@ -23,6 +23,8 @@ import {
 } from './styled';
 import { getPatientForProfile } from '@/app/api/profile-api';
 import ProfilePatientList from './ProfilePatientList/ProfilePatientList';
+import ProfileAttachments from './ProfileAttachments/ProfileAttachments';
+import { initializeProfileState } from '@/app/actions/profile-actions';
 
 const ProfileDetailsView = () => {
   const { profileTypeIdentifier, profileIdentifier } = useParams();
@@ -55,6 +57,10 @@ const ProfileDetailsView = () => {
     ],
     [],
   );
+
+  useEffect(() => {
+    dispatch(initializeProfileState(profileIdentifier));
+  }, [dispatch, profileIdentifier]);
 
   useEffect(() => {
     // eslint-disable-next-line unicorn/consistent-function-scoping
@@ -228,6 +234,7 @@ const ProfileDetailsView = () => {
                 <MainTab label="All Tasks" />
                 <MainTab label="Notes" />
                 {patients.length > 0 && <MainTab label="Patients" />}
+                <MainTab label="Files" />
               </Tabs>
             </Grid>
           </ProfileDetailsTabsContainer>
@@ -244,6 +251,9 @@ const ProfileDetailsView = () => {
               profileIdentifier={profileIdentifier}
               patients={patients}
             />
+          )}
+          {currentTab === 3 && (
+            <ProfileAttachments profileIdentifier={profileIdentifier} />
           )}
         </ProfileDetailsContainer>
       </ColumnsConfigProvider>
