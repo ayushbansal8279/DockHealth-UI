@@ -1,7 +1,8 @@
 import React from 'react';
-import { BaseEdge, getSmoothStepPath, Position } from 'reactflow';
+import { BaseEdge, getSmoothStepPath, Position, useReactFlow } from 'reactflow';
 import palette from 'styles/palette';
 import './AnimatedEdge.css';
+import { getEdgeParams } from './helpers';
 
 const LinkPath = (props) => {
   const {
@@ -15,9 +16,21 @@ const LinkPath = (props) => {
     targetPosition,
     markerEnd,
     onClick,
+    source,
+    target,
   } = props;
-  let sourcePos = sourcePosition;
-  let targetPos = targetPosition;
+  const { getNodes } = useReactFlow();
+  const nodes = getNodes();
+  const sourceNode = nodes.find((n) => n.id === source);
+  const targetNode = nodes.find((n) => n.id === target);
+  if (!sourceNode || !targetNode) return null;
+  const { sx, sy, tx, ty, sourcePos, targetPos } = getEdgeParams(
+    sourceNode,
+    targetNode,
+  );
+
+  // let sourcePos = sourcePosition;
+  // let targetPos = targetPosition;
 
   // temporary bugfix related to wbkd/react-flow/issues/1403
   // if (sourcePosition === Position.Left && targetPosition === Position.Right) {
@@ -26,11 +39,11 @@ const LinkPath = (props) => {
   // }
 
   const [edgePath] = getSmoothStepPath({
-    sourceX,
-    sourceY,
+    sourceX: sx,
+    sourceY: sy,
     sourcePosition: sourcePos,
-    targetX,
-    targetY,
+    targetX: tx,
+    targetY: ty,
     targetPosition: targetPos,
   });
   // const markerEnd = getMarkerEnd('arrowclosed', markerEndId);
