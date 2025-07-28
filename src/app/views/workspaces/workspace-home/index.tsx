@@ -4,18 +4,22 @@ import { GridColDef } from "@mui/x-data-grid";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 
-import { Workspace as WorkspaceType } from "@/app/types/workspace";
+import { Workspace, Workspace as WorkspaceType } from "@/app/types/workspace";
 import WorkspaceTile from "@/app/components/workspace/WorkspaceTile/WorkspaceTile";
 import { OutfitTypography } from "@/app/styles/theme";
 import Spacing from "@/app/components/common/Spacing";
 import { StyledDataGrid } from "../workspace-table/styled";
-import { ListContainer, ListEntryContainer, WorkspaceContainer, WorkspaceTableWrapper } from "./styled";
+import { AddWorkspaceButtonWrapper, ListContainer, ListEntryContainer, WorkspaceContainer, WorkspaceTableWrapper } from "./styled";
 import { MoreVertIcon } from "../../workspace/styled";
 import WorkspaceOptionsMenu from "@/app/components/workspace/WorkspaceOptionsMenu/WorkspaceOptionsMenu";
 import ViewLayout from "@/app/components/template/ViewLayout/ViewLayout";
 import BasicLayoutHeader from "@/app/components/template/BasicLayoutHeader/BasicLayoutHeader";
 import { isFetchingWorkspaceListSelector, workspaceListSelector } from "@/app/selectors/workspace-list-selector";
 import { getAllUserWorkspaces } from "@/app/actions/workspace-list-actions";
+import { closeModal, openModal } from "@/app/modal/actions";
+import { Add } from "@mui/icons-material";
+import ToolbarButton from "@/app/components/tasklist/list-toolbar-buttons/ToolbarButton/ToolbarButton";
+import { organizationWorkspaceLabelSelector } from "@/app/selectors/organization-selectors";
 
 const WorkspaceHome = () => {
   const history = useHistory();
@@ -23,10 +27,21 @@ const WorkspaceHome = () => {
   const workspaces = useSelector(workspaceListSelector);
   const isFetching = useSelector(isFetchingWorkspaceListSelector);
   const [menuOptionsOpen, setMenuOptionsOpen] = useState(false);
+  const workspaceLabel = useSelector(organizationWorkspaceLabelSelector);
 
   useEffect(() => {
     dispatch(getAllUserWorkspaces());
   }, []);
+
+  const openAddWorkspaceModal = () => {
+    const modalProps = {
+      onConfirm: async (createdWorkspace: Workspace) => {
+        dispatch(closeModal());
+        handleWorkspaceSelect(createdWorkspace.workspaceIdentifier);
+      },
+    };
+    dispatch(openModal('AddWorkspace', modalProps));
+  };
 
   const handleWorkspaceSelect = (workspaceIdentifier: string) => {
     history.push(`/core/workspace/${workspaceIdentifier}`);
@@ -35,7 +50,7 @@ const WorkspaceHome = () => {
   const columns: GridColDef<any>[] = [
     {
       field: 'workspaceName',
-      headerName: 'Workspace Name',
+      headerName: `${workspaceLabel} Name`,
       flex: 1.8,
       renderCell: ({ row }) => {
         return (
@@ -73,9 +88,21 @@ const WorkspaceHome = () => {
 
   return (
     <ViewLayout
-      header={<BasicLayoutHeader title="All Workspaces" />}
+      header={<BasicLayoutHeader title={`All ${workspaceLabel}s`} />}
     >
       <WorkspaceContainer>
+        <AddWorkspaceButtonWrapper>
+          <ToolbarButton
+            icon={
+              <span style={{ marginLeft: '-5px' }}>
+                <Add />
+              </span>
+            }
+            onClick={openAddWorkspaceModal}
+          >
+            <span style={{ marginLeft: '-5px' }}>Add {workspaceLabel}</span>
+          </ToolbarButton>
+        </AddWorkspaceButtonWrapper>
         {isFetching ? (
           <ListContainer>
             <ListEntryContainer>

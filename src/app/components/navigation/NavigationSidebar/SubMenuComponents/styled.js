@@ -553,7 +553,6 @@ export const AddworkspaceButton = styled.button`
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  width: 80px;
   border-radius: ${spacing.tiny};
   color: ${palette.white};
   background-color: ${palette.newDarkBlue};

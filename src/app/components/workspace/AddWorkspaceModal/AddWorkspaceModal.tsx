@@ -86,7 +86,7 @@ const AddWorkspaceModal: React.FC<AddWorkspaceModalProps> = ({
       />
       <Box m={1.5} />
       <ConfirmButton onClick={handleAddWorkspace} style={{ width: '100%' }}>
-        {isEdit ? 'Edit' : 'Add'} {workspaceLabel}
+        Save
       </ConfirmButton>
     </AddWorkspaceModalWrapper>
   );

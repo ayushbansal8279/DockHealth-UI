@@ -44,7 +44,13 @@ export const WorkspaceContainer = styled.div`
   min-height: 600px;
   margin: 20px auto;
   padding: 0 16px;
-  `;
+`;
+
+export const AddWorkspaceButtonWrapper = styled.div`
+  margin-bottom: 12px;
+  display: flex;
+  justify-content: flex-end;
+`;
 
 export const WorkspaceTableWrapper = styled.div`
   width: 100%;
