@@ -542,7 +542,7 @@ const TaskTemplateReducer = (state = initialState, action) => {
 
       const aa = {
         id: 'fbfd2sdc6c-0d66-4d7c-b39a-0bc71a51c',
-        type: NodeType.EMAIL,
+        type: NodeType.NEW_EMAIL,
         data: {
           draggedEdgeSourceId: null,
           taskTemplateIdentifier: 'ce6f3dcc-426f-4bff-ab14-227d88ef8139',
@@ -560,7 +560,7 @@ const TaskTemplateReducer = (state = initialState, action) => {
         identifier: '123',
         description: '123',
         taskTemplateIdentifier: currentTaskTemplateIdentifier,
-        intentType: NodeType.EMAIL,
+        intentType: NodeType.NEW_EMAIL,
       };
 
       // return {
