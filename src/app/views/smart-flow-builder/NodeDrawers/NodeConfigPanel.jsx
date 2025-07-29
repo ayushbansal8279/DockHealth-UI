@@ -29,21 +29,17 @@ const NodeConfigPanel = ({ selectedNode, handleUpdateNodeData, onClose }) => {
 
   const renderNodeSpecificConfig = () => {
     switch (type) {
-      case NodeType.EMAIL:
       case NodeType.NEW_EMAIL:
         return (
           <EmailNodeDrawer nodeData={data} onUpdate={handleUpdateNodeData} />
         );
 
-      case NodeType.WEBHOOK:
       case NodeType.NEW_WEBHOOK:
         return (
           <WebhookNodeDrawer nodeData={data} onUpdate={handleUpdateNodeData} />
         );
 
-      case NodeType.AI_ANALYZER:
       case NodeType.NEW_AI_ANALYZER:
-      case NodeType.AI_ASSISTANT:
       case NodeType.NEW_AI_ASSISTANT:
         return <AINodeDrawer nodeData={data} onUpdate={handleUpdateNodeData} />;
 
