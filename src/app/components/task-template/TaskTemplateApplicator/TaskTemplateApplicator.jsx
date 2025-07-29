@@ -39,6 +39,7 @@ import AddIcon from '@mui/icons-material/Add';
 import { ListPageContext } from '@/app/views/list-details/ListDetailsView';
 import { Box } from '@mui/material';
 import palette from '@/app/styles/palette';
+import { useIsWorkspaceScopedList } from '@/app/hooks/useIsWorkspaceScopedList';
 
 const { DISABLED } = TASK_LIST_RESTRICTIONS_OPTIONS;
 
@@ -56,6 +57,7 @@ const TaskTemplateApplicator = ({
   const [taskTemplatesList, setTaskTemplatesList] = useState(null);
   const [taskTemplatesIsLoading, setTaskTemplatesIsLoading] = useState(null);
   const { handleWorkflowPopoverOpen } = useContext(ListPageContext);
+  const { workspaceIdentifier } = useIsWorkspaceScopedList();
 
   const currentUser = useSelector(userProfileSelector);
   const taskListRestrictions =
@@ -80,7 +82,7 @@ const TaskTemplateApplicator = ({
   const getRootTemplatesList = useCallback(() => {
     setTaskTemplatesIsLoading(true);
     setParentList([]);
-    getTemplates(true)
+    getTemplates(true, workspaceIdentifier)
       .then((templatesList) => {
         setTaskTemplatesList(templatesList);
         setTaskTemplatesIsLoading(false);
@@ -147,7 +149,7 @@ const TaskTemplateApplicator = ({
       if (searchPhrase.length > 2) {
         setParentList([]);
         setTaskTemplatesIsLoading(true);
-        searchTemplates(searchPhrase)
+        searchTemplates(searchPhrase, workspaceIdentifier)
           .then((templatesList) => {
             setTaskTemplatesList(templatesList);
             setTaskTemplatesIsLoading(false);

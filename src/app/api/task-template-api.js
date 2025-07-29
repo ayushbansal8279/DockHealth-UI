@@ -1,5 +1,6 @@
 import { showAlert } from 'helpers/utility-functions';
 import axios from './axios-heydoc';
+import { withWorkspaceHeaders } from '../helpers/api-helpers';
 
 export function moveTemplateToFolder(identifier, parentTaskWorkflowIdentifier) {
   return axios
@@ -65,24 +66,20 @@ export function getAllTemplatesForOrganization() {
 }
 
 export function getTemplates(includeAll, workspaceIdentifier) {
-  if (workspaceIdentifier) {
-    return axios({
-      method: 'get',
-      url: `task/template/getRootWorkflowTemplates?includeAll=${includeAll}`,
-      headers: { CurrentWorkspaceIdentifier: workspaceIdentifier },
-    }).then((response) => response.data);
-  }
+  const url = workspaceIdentifier
+    ? `task/template/getRootWorkflowTemplates?includeAll=${includeAll}`
+    : `task/template/getRootTemplatesForOrganization?includeAll=${includeAll}`;
 
   return axios
-    .get(
-      `task/template/getRootTemplatesForOrganization?includeAll=${includeAll}`,
-    )
+    .get(url, withWorkspaceHeaders(workspaceIdentifier))
     .then((response) => response.data);
 }
 
-export function searchTemplates(searchPhrase) {
+export function searchTemplates(searchPhrase, workspaceIdentifier) {
+  const url = `task/template/searchTemplatesByName?searchTerm=${searchPhrase}`;
+
   return axios
-    .get(`task/template/searchTemplatesByName?searchTerm=${searchPhrase}`)
+    .get(url, withWorkspaceHeaders(workspaceIdentifier))
     .then((response) => response.data);
 }
 

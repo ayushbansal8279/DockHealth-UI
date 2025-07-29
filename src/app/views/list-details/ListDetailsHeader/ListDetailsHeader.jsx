@@ -62,7 +62,7 @@ import {
 } from './styled';
 import { ListPageContext } from '../ListDetailsView';
 import InboxTips from '@/app/components/tasklist/list-toolbar-buttons/InboxTips/InboxTips';
-import { workspaceTaskListsSelector } from '@/app/selectors/workspace-selectors';
+import { useIsWorkspaceScopedList } from '@/app/hooks/useIsWorkspaceScopedList';
 
 const ListDetailsHeader = (props) => {
   const {
@@ -87,14 +87,8 @@ const ListDetailsHeader = (props) => {
     taskListIdentifier,
     color,
     restrictCustomization,
-    organizationIdentifier
   } = taskList || {};
-
-  const currentWorkspaceTaskLists = useSelector(workspaceTaskListsSelector);
-
-  const isWorkspaceScopedList = currentWorkspaceTaskLists.some(
-    (list) => list.taskListIdentifier === taskListIdentifier
-  );
+  const { workspaceIdentifier } = useIsWorkspaceScopedList();
 
   const megaFilter = useSelector(megaFilterSelector);
   const { filters, selectedFilters } = megaFilter || {};
@@ -298,7 +292,7 @@ const ListDetailsHeader = (props) => {
                               'ALL',
                             ),
                           ),
-                        workspaceIdentifier: isWorkspaceScopedList ? organizationIdentifier : null
+                        workspaceIdentifier: workspaceIdentifier
                       }),
                     )
                   }
