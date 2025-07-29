@@ -20,10 +20,11 @@ import { createPatientAttachmentsPath } from 'routing/helpers/paths';
 import { PatientAttachmentType } from 'helpers/patient-details-helpers';
 import { getTaskAttachment } from '@/app/api/task-api';
 import { blobFileDownload } from '@/app/helpers/blob-file-download';
-import { currentProfileIdentifierSelector, currentProfileTypeIdentifierSelector, profileAttachmentsSelector, profileFoldersSelector } from '@/app/selectors/profile-selector';
+import { currentProfileIdentifierSelector, currentProfileTypeIdentifierSelector, profileAttachmentsSelector, profileFoldersSelector, profileSelector, profileTaskAttachmentSelector } from '@/app/selectors/profile-selector';
 import { createProfileAttachment, createProfileAttachmentFolder, deleteProfileAttachment, getCurrentProfileAttachments, moveProfileAttachment, updateProfileAttachment } from '@/app/actions/profile-actions';
 import { ProfileAttachmentType } from '@/app/helpers/profile-helpers';
 import { createProfileAttachmentsPath } from '@/app/routing/helpers/paths';
+import { downloadProfileAttachment } from '@/app/api/profile-api';
 
 
 export const getMemoPatientAttachment = memoizeWith(
@@ -31,6 +32,14 @@ export const getMemoPatientAttachment = memoizeWith(
   (attachmentIdentifier) =>
     attachmentIdentifier
       ? downloadPatientAttachment(attachmentIdentifier)
+      : Promise.reject(),
+);
+
+export const getMemoProfileAttachment = memoizeWith(
+  identity,
+  (attachmentIdentifier) =>
+    attachmentIdentifier
+      ? downloadProfileAttachment(attachmentIdentifier)
       : Promise.reject(),
 );
 
@@ -47,6 +56,7 @@ const useInitializeAttachmentsSectionHooks = () => {
   const dispatch = useDispatch();
   const history = useHistory();
   const patient = useSelector(patientSelector);
+  const profile = useSelector(profileSelector);
   const patientIdentifier = patient?.patientIdentifier;
 
   useEffect(() => {
@@ -72,10 +82,10 @@ const useInitializeAttachmentsSectionHooks = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const attachments = useSelector(profileAttachmentsSelector) || [];
   const profileIdentifier = useSelector(currentProfileIdentifierSelector)
+  const profileTaskAttachments = useSelector(profileTaskAttachmentSelector) || [];
   
   const folders = useSelector(profileFoldersSelector) || [];
-  const patientTaskAttachments = useSelector(patientTaskAttachementSelector) || []
-
+  
   const [attachmentsSources, setAttachmentSources] = useState([]);
   const [attachmentsLoading, setAttachmentsLoading, unsetAttachmentsLoading] =
     useBoolean(false);
@@ -102,7 +112,7 @@ const useInitializeAttachmentsSectionHooks = () => {
         dispatch(
           createProfileAttachment(
             profileIdentifier,
-            // folderIdentifier,
+            folderIdentifier,
             newAttachment,
             {
               onUploadProgress: ({ loaded, total }) => {
@@ -116,7 +126,7 @@ const useInitializeAttachmentsSectionHooks = () => {
         );
       }
     },
-    [dispatch, patient, folderIdentifier],
+    [dispatch, profile, folderIdentifier],
   );
 
   const { getRootProps, getInputProps, isDragActive, inputRef } = useDropzone({
@@ -188,10 +198,8 @@ const useInitializeAttachmentsSectionHooks = () => {
 
   const downloadAttachment = async (attachment) => {
     const { attachmentIdentifier, fileName, contentType } = attachment;
-    console.log(attachmentIdentifier, fileName, contentType);
-
     try {
-      const { data } = await getMemoPatientAttachment(attachmentIdentifier);
+      const { data } = await getMemoProfileAttachment(attachmentIdentifier);
       blobFileDownload(new Blob([data], { type: contentType }), fileName || 'download');
     } catch (error) {
       console.error('Error downloading attachment:', error);
@@ -215,7 +223,7 @@ const useInitializeAttachmentsSectionHooks = () => {
       setPreviewedAttachment(attachment);
       loadAttachmentsContent({
         attachmentsToReload: [attachment],
-        getAttachement: type === 'patient' ? getMemoPatientAttachment : getMemoTaskAttachment
+        getAttachement: getMemoProfileAttachment
       });
       showAttachmentPreview();
     },
@@ -410,7 +418,7 @@ const useInitializeAttachmentsSectionHooks = () => {
     downloadAllFiles,
     downloadAttachment,
     getMemoPatientAttachment,
-    patientTaskAttachments,
+    profileTaskAttachments,
     renamePatientTaskAttachment,
     deletePatientTaskAttachment,
     downloadPatientTaskAttachment,

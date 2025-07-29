@@ -176,6 +176,25 @@ export function deleteProfileAttachment(identifier) {
     .then((response) => response);
 }
 
+export function downloadProfileAttachment(attachmentIdentifier) {
+  return axios({
+    url: `profile/attachment/download/${attachmentIdentifier}`,
+    method: 'GET',
+    responseType: 'blob',
+    headers: {
+      Accept: 'application/octet-stream',
+    },
+  }).then((response) => response);
+}
+
+export function getTaskAndWorkflowAttachmentsForProfile(profileIdentifier){
+  return axios
+    .get(
+      `task/attachment/getTaskAndWorkflowAttachmentsForProfile/${profileIdentifier}`,
+    )
+    .then(({data})=>data)
+}
+
 export const note = {
   getAll(profileIdentifier) {
     return axios

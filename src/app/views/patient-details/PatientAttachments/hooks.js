@@ -171,8 +171,6 @@ const useInitializeAttachmentsSectionHooks = () => {
 
   const downloadAttachment = async (attachment) => {
     const { attachmentIdentifier, fileName, contentType } = attachment;
-    console.log(attachmentIdentifier, fileName, contentType);
-
     try {
       const { data } = await getMemoPatientAttachment(attachmentIdentifier);
       blobFileDownload(new Blob([data], { type: contentType }), fileName || 'download');

@@ -31,7 +31,7 @@ const ProfileReducer = (state = initialState, action) => {
       return {
         ...state,
         attachments: action.attachments,
-        // patientTaskAttachments: action.patientTaskAttachments,
+        profileTaskAttachments:action.profileTaskAttachments,
         isFetchingAttachments: false,
       };
     }

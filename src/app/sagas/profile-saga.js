@@ -81,10 +81,16 @@ function* getCurrentProfileAttachments() {
     const attachments = yield call(
       ProfileApi.getProfileAttachments,
       profileIdentifier,
+      // folderIdentifier,
     );
+    const profileTaskAttachments = yield call(
+      ProfileApi.getTaskAndWorkflowAttachmentsForProfile,
+      profileIdentifier,
+    )
     yield put({
       type: ActionTypes.GET_CURRENT_PROFILE_ATTACHMENTS_SUCCESS,
       attachments,
+      profileTaskAttachments,
     });
   } catch {
     yield put({

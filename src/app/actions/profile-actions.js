@@ -62,7 +62,7 @@ export function updateProfileAttachment(attachment, dataToUpdate) {
 
 export const createProfileAttachment = (
   profileIdentifier,
-  // folderIdentifier,
+  folderIdentifier,
   fileData,
   additionalConfig,
   setCurrentlyUploadedAttachment,
@@ -71,7 +71,7 @@ export const createProfileAttachment = (
 ) => ({
   type: ActionTypes.ADD_PROFILE_ATTACHMENT,
   profileIdentifier,
-  // folderIdentifier,
+  folderIdentifier,
   fileData,
   additionalConfig,
   setCurrentlyUploadedAttachment,

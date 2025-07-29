@@ -75,7 +75,7 @@ const ProfileAttachments = () => {
     dropzone: { getRootProps, getInputProps, isDragActive },
     downloadAllFiles,
     downloadAttachment,
-    patientTaskAttachments,
+    profileTaskAttachments,
     renamePatientTaskAttachment,
     deletePatientTaskAttachment,
     downloadPatientTaskAttachment,
@@ -96,8 +96,8 @@ const ProfileAttachments = () => {
   }, [currentPatientAttachments]);
 
   useEffect(() => {
-    setTaskFilelist(patientTaskAttachments);
-  }, [patientTaskAttachments]);
+    setTaskFilelist(profileTaskAttachments);
+  }, [profileTaskAttachments]);
   
 
   const dispatch = useDispatch();
@@ -120,43 +120,78 @@ const ProfileAttachments = () => {
   const FolderItemComponent =
     activeViewType === FilesViewType.GRID ? FolderGridItem : FolderListItem;
 
+  // const getFileOptions = useCallback(
+  //   (file) => [
+  //     ...(!file.scanStatus ||
+  //     file.scanStatus === ScanStatus.CLEAN ||
+  //     file.scanStatus === ScanStatus.UNSUPPORTED
+  //       ? [
+  //           { name: 'Preview', onClick: () => openAttachmentPreview(file, "patient") },
+  //           {
+  //             name: 'Download',
+  //             onClick: () => {
+  //               downloadAttachment(file);
+  //             },
+  //           },
+  //         ]
+  //       : []),
+  //     {
+  //       name: 'Rename',
+  //       onClick: () => renameAttachment(file),
+  //     },
+  //     {
+  //       name: 'Move',
+  //       onClick: () => moveFileOrFolder(file),
+  //     },
+  //     {
+  //       name: 'Delete',
+  //       onClick: () => deleteAttachment(file.attachmentIdentifier),
+  //       color: palette.oPlusRed,
+  //     },
+  //   ],
+  //   [
+  //     openAttachmentPreview,
+  //     renameAttachment,
+  //     moveFileOrFolder,
+  //     deleteAttachment,
+  //     downloadAttachment,
+  //   ],
+  // );
+
   const getFileOptions = useCallback(
-    (file) => [
-      ...(!file.scanStatus ||
-      file.scanStatus === ScanStatus.CLEAN ||
-      file.scanStatus === ScanStatus.UNSUPPORTED
-        ? [
-            { name: 'Preview', onClick: () => openAttachmentPreview(file, "patient") },
-            {
-              name: 'Download',
-              onClick: () => {
-                downloadAttachment(file);
-              },
-            },
-          ]
-        : []),
-      {
-        name: 'Rename',
-        onClick: () => renameAttachment(file),
+  (file) => [
+    {
+      name: 'Preview',
+      onClick: () => openAttachmentPreview(file, "patient"),
+    },
+    {
+      name: 'Download',
+      onClick: () => {
+        downloadAttachment(file);
       },
-      {
-        name: 'Move',
-        onClick: () => moveFileOrFolder(file),
-      },
-      {
-        name: 'Delete',
-        onClick: () => deleteAttachment(file.attachmentIdentifier),
-        color: palette.oPlusRed,
-      },
-    ],
-    [
-      openAttachmentPreview,
-      renameAttachment,
-      moveFileOrFolder,
-      deleteAttachment,
-      downloadAttachment,
-    ],
-  );
+    },
+    {
+      name: 'Rename',
+      onClick: () => renameAttachment(file),
+    },
+    {
+      name: 'Move',
+      onClick: () => moveFileOrFolder(file),
+    },
+    {
+      name: 'Delete',
+      onClick: () => deleteAttachment(file.attachmentIdentifier),
+      color: palette.oPlusRed,
+    },
+  ],
+  [
+    openAttachmentPreview,
+    renameAttachment,
+    moveFileOrFolder,
+    deleteAttachment,
+    downloadAttachment,
+  ],
+);
 
   const getTaskFileOptions = useCallback(
     (file) => [
