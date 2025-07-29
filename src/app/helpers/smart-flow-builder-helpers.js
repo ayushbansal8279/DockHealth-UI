@@ -12,6 +12,10 @@ export const NodeType = {
   WORKFLOW_LINK: 'WORKFLOW_LINK',
   START_INDICATOR: 'INDICATOR',
   END_INDICATOR: 'INDICATOR',
+  NEW_EMAIL: 'NEW_EMAIL',
+  NEW_WEBHOOK: 'NEW_WEBHOOK',
+  NEW_AI_ANALYZER: 'NEW_AI_ANALYZER',
+  NEW_AI_ASSISTANT: 'NEW_AI_ASSISTANT',
 };
 
 export const LinkType = {
@@ -45,14 +49,14 @@ export function createLinkElement(
   targetId,
   sourceHandle,
   targetHandle,
-  indicatorType
+  indicatorType,
 ) {
-  if((sourceId === targetId) && (indicatorType === 'START_INDICATOR')){
-    sourceId = 'START_INDICATOR'
-  } 
-  if((sourceId === targetId) && (indicatorType === 'END_INDICATOR')){
-    targetId = 'END_INDICATOR'
-  } 
+  if (sourceId === targetId && indicatorType === 'START_INDICATOR') {
+    sourceId = 'START_INDICATOR';
+  }
+  if (sourceId === targetId && indicatorType === 'END_INDICATOR') {
+    targetId = 'END_INDICATOR';
+  }
   return {
     id: getUniqueLinkId(sourceId, targetId),
     source: sourceId,
@@ -61,7 +65,7 @@ export function createLinkElement(
     targetHandle: targetHandle || NodeTargetHandle.TARGET_A,
     type,
     data: {},
-    indicatorType
+    indicatorType,
   };
 }
 
@@ -78,6 +82,88 @@ export function createTemporaryTaskNode(
     id: `${type}-${numberOfNewTasks}`,
     type,
     position: elementPosition,
+  };
+}
+
+export function createEmailNode(currentTemporaryElements, elementPosition) {
+  const numberOfNewNodes =
+    currentTemporaryElements?.filter(
+      (element) => element.type === NodeType.NEW_EMAIL,
+    ).length || 0;
+
+  return {
+    id: `NEW_EMAIL-${numberOfNewNodes}`,
+    type: 'NEW_EMAIL',
+    position: elementPosition,
+    data: {
+      label: 'Send Email',
+      subject: '',
+      recipients: [],
+      status: 'Ready',
+    },
+  };
+}
+
+export function createWebhookNode(currentTemporaryElements, elementPosition) {
+  const numberOfNewNodes =
+    currentTemporaryElements?.filter(
+      (element) => element.type === 'NEW_WEBHOOK',
+    ).length || 0;
+
+  return {
+    id: `NEW_WEBHOOK-${numberOfNewNodes}`,
+    type: 'NEW_WEBHOOK',
+    position: elementPosition,
+    data: {
+      label: 'Webhook',
+      url: '',
+      method: 'POST',
+      status: 'Ready',
+    },
+  };
+}
+
+export function createAIAnalyzerNode(
+  currentTemporaryElements,
+  elementPosition,
+) {
+  const numberOfNewNodes =
+    currentTemporaryElements?.filter(
+      (element) => element.type === 'NEW_AI_ANALYZER',
+    ).length || 0;
+
+  return {
+    id: `NEW_AI_ANALYZER-${numberOfNewNodes}`,
+    type: 'NEW_AI_ANALYZER',
+    position: elementPosition,
+    data: {
+      label: 'AI Analyzer',
+      model: 'GPT-4',
+      analysisType: 'Text Analysis',
+      status: 'AI Ready',
+    },
+  };
+}
+
+export function createAIAssistantNode(
+  currentTemporaryElements,
+  elementPosition,
+) {
+  const numberOfNewNodes =
+    currentTemporaryElements?.filter(
+      (element) => element.type === 'NEW_AI_ASSISTANT',
+    ).length || 0;
+
+  return {
+    id: `NEW_AI_ASSISTANT-${numberOfNewNodes}`,
+    type: 'NEW_AI_ASSISTANT',
+    position: elementPosition,
+    data: {
+      label: 'AI Assistant',
+      capability: 'General',
+      persona: 'Professional',
+      status: 'Assistant Ready',
+    },
   };
 }
 
