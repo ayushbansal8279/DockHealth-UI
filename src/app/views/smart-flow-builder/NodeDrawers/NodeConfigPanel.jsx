@@ -5,6 +5,7 @@ import {
   ConfigActions,
   ConfigPanel,
   ConfigSubPanel,
+  ConfigButtonWrapper,
 } from './styled';
 import {
   Close,
@@ -21,6 +22,7 @@ import styled from 'styled-components';
 import WebhookNodeDrawer from './WebhookNodeDrawer';
 import AINodeDrawer from './AINodeDrawer';
 import palette from '@/app/styles/palette';
+import { ConfirmButton, CancelButton } from '@/app/modal/components/ModalButton/ModalButtons';
 
 const NodeConfigPanel = ({ selectedNode, handleUpdateNodeData, onClose }) => {
   if (!selectedNode) return null;
@@ -121,6 +123,10 @@ const NodeConfigPanel = ({ selectedNode, handleUpdateNodeData, onClose }) => {
           </ConfigActions>
         </ConfigHeader>
         <ConfigSubPanel>{renderNodeSpecificConfig()}</ConfigSubPanel>
+        <ConfigButtonWrapper>
+          <ConfirmButton>Save</ConfirmButton>
+          <CancelButton >Cancel</CancelButton>
+        </ConfigButtonWrapper>
       </ConfigPanel>
     </div>
   );
