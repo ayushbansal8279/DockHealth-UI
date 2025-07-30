@@ -20,12 +20,25 @@ import { createPatientAttachmentsPath } from 'routing/helpers/paths';
 import { PatientAttachmentType } from 'helpers/patient-details-helpers';
 import { getTaskAttachment } from '@/app/api/task-api';
 import { blobFileDownload } from '@/app/helpers/blob-file-download';
-import { currentProfileIdentifierSelector, currentProfileTypeIdentifierSelector, profileAttachmentsSelector, profileFoldersSelector, profileSelector, profileTaskAttachmentSelector } from '@/app/selectors/profile-selector';
-import { createProfileAttachment, createProfileAttachmentFolder, deleteProfileAttachment, getCurrentProfileAttachments, moveProfileAttachment, updateProfileAttachment } from '@/app/actions/profile-actions';
+import {
+  currentProfileIdentifierSelector,
+  currentProfileTypeIdentifierSelector,
+  profileAttachmentsSelector,
+  profileFoldersSelector,
+  profileSelector,
+  profileTaskAttachmentSelector,
+} from '@/app/selectors/profile-selector';
+import {
+  createProfileAttachment,
+  createProfileAttachmentFolder,
+  deleteProfileAttachment,
+  getCurrentProfileAttachments,
+  moveProfileAttachment,
+  updateProfileAttachment,
+} from '@/app/actions/profile-actions';
 import { ProfileAttachmentType } from '@/app/helpers/profile-helpers';
 import { createProfileAttachmentsPath } from '@/app/routing/helpers/paths';
 import { downloadProfileAttachment } from '@/app/api/profile-api';
-
 
 export const getMemoPatientAttachment = memoizeWith(
   identity,
@@ -52,40 +65,25 @@ export const getMemoTaskAttachment = memoizeWith(
 );
 
 const useInitializeAttachmentsSectionHooks = () => {
-  const { folderIdentifier } = useParams();
+  const { folderIdentifier, profileTypeIdentifier } = useParams();
   const dispatch = useDispatch();
   const history = useHistory();
-  const patient = useSelector(patientSelector);
   const profile = useSelector(profileSelector);
-  const patientIdentifier = patient?.patientIdentifier;
+  const profileIdentifier = useSelector(currentProfileIdentifierSelector);
 
   useEffect(() => {
-    if (patientIdentifier) {
-      dispatch(
-        PatientDetailsActions.initializePatientAttachmentsFolder(
-          folderIdentifier ?? null,
-        ),
-      );
+    if (profileIdentifier) {
+      dispatch(getCurrentProfileAttachments(folderIdentifier ?? null));
     }
-  }, [dispatch, patientIdentifier, folderIdentifier]);
-
-  useEffect(() => {
-    // if (patientIdentifier) {
-      dispatch(
-        getCurrentProfileAttachments(
-          // folderIdentifier ?? null,
-        ),
-      );
-    // }
-  }, []);
+  }, [dispatch, profileIdentifier, folderIdentifier]);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const attachments = useSelector(profileAttachmentsSelector) || [];
-  const profileIdentifier = useSelector(currentProfileIdentifierSelector)
-  const profileTaskAttachments = useSelector(profileTaskAttachmentSelector) || [];
-  
+  const profileTaskAttachments =
+    useSelector(profileTaskAttachmentSelector) || [];
+
   const folders = useSelector(profileFoldersSelector) || [];
-  
+
   const [attachmentsSources, setAttachmentSources] = useState([]);
   const [attachmentsLoading, setAttachmentsLoading, unsetAttachmentsLoading] =
     useBoolean(false);
@@ -140,9 +138,7 @@ const useInitializeAttachmentsSectionHooks = () => {
       Promise.all(
         attachmentsToReload.map(
           async ({ attachmentIdentifier, fileName, contentType }) => {
-            const { data } = await getAttachement(
-              attachmentIdentifier,
-            );
+            const { data } = await getAttachement(attachmentIdentifier);
 
             const fileSource = await new Promise((resolve, reject) => {
               const reader = new FileReader();
@@ -180,18 +176,16 @@ const useInitializeAttachmentsSectionHooks = () => {
 
   const deleteAttachment = useCallback(
     (identifier) => {
-      dispatch(openModal('DeleteConfirmation', {
-        title: 'Delete Attachment',
-        description: 'Are you sure you want to delete this attachment? This action cannot be undone.',
-        confirm: () => {
-          dispatch(
-            deleteProfileAttachment(
-              profileIdentifier,
-              identifier,
-            ),
-          );
-        }
-      }))
+      dispatch(
+        openModal('DeleteConfirmation', {
+          title: 'Delete Attachment',
+          description:
+            'Are you sure you want to delete this attachment? This action cannot be undone.',
+          confirm: () => {
+            dispatch(deleteProfileAttachment(profileIdentifier, identifier));
+          },
+        }),
+      );
     },
     [dispatch, profileIdentifier],
   );
@@ -200,7 +194,10 @@ const useInitializeAttachmentsSectionHooks = () => {
     const { attachmentIdentifier, fileName, contentType } = attachment;
     try {
       const { data } = await getMemoProfileAttachment(attachmentIdentifier);
-      blobFileDownload(new Blob([data], { type: contentType }), fileName || 'download');
+      blobFileDownload(
+        new Blob([data], { type: contentType }),
+        fileName || 'download',
+      );
     } catch (error) {
       console.error('Error downloading attachment:', error);
     }
@@ -210,20 +207,21 @@ const useInitializeAttachmentsSectionHooks = () => {
     const { attachmentIdentifier, fileName, contentType } = attachment;
     try {
       const response = await getTaskAttachment(attachmentIdentifier);
-      blobFileDownload(new Blob([response.data], { type: contentType }), fileName || 'download');
-
+      blobFileDownload(
+        new Blob([response.data], { type: contentType }),
+        fileName || 'download',
+      );
     } catch (error) {
       console.error('Error downloading attachment:', error);
     }
   };
-
 
   const openAttachmentPreview = useCallback(
     (attachment, type) => {
       setPreviewedAttachment(attachment);
       loadAttachmentsContent({
         attachmentsToReload: [attachment],
-        getAttachement: getMemoProfileAttachment
+        getAttachement: getMemoProfileAttachment,
       });
       showAttachmentPreview();
     },
@@ -251,10 +249,12 @@ const useInitializeAttachmentsSectionHooks = () => {
   const renameAttachment = (fileOrFolder) => {
     dispatch(
       openModal('PatientFolder', {
-        title: `Rename ${fileOrFolder.type === ProfileAttachmentType.FOLDER ? 'folder' : 'file'
-          }`,
-        inputLabel: `${fileOrFolder.type === ProfileAttachmentType.FOLDER ? 'Folder' : 'File'
-          } name`,
+        title: `Rename ${
+          fileOrFolder.type === ProfileAttachmentType.FOLDER ? 'folder' : 'file'
+        }`,
+        inputLabel: `${
+          fileOrFolder.type === ProfileAttachmentType.FOLDER ? 'Folder' : 'File'
+        } name`,
         currentName: fileOrFolder.fileName,
         onChange: (name) => {
           dispatch(
@@ -270,14 +270,17 @@ const useInitializeAttachmentsSectionHooks = () => {
   const renamePatientTaskAttachment = (fileOrFolder) => {
     dispatch(
       openModal('PatientFolder', {
-        title: `Rename ${fileOrFolder.type === PatientAttachmentType.FOLDER ? 'folder' : 'file'
-          }`,
-        inputLabel: `${fileOrFolder.type === PatientAttachmentType.FOLDER ? 'Folder' : 'File'
-          } name`,
+        title: `Rename ${
+          fileOrFolder.type === PatientAttachmentType.FOLDER ? 'folder' : 'file'
+        }`,
+        inputLabel: `${
+          fileOrFolder.type === PatientAttachmentType.FOLDER ? 'Folder' : 'File'
+        } name`,
         currentName: fileOrFolder.fileName,
         onChange: (name) => {
           dispatch(
-            PatientDetailsActions.updatePatientTaskAttachment(fileOrFolder.attachmentIdentifier,
+            PatientDetailsActions.updatePatientTaskAttachment(
+              fileOrFolder.attachmentIdentifier,
               name,
             ),
           );
@@ -288,17 +291,18 @@ const useInitializeAttachmentsSectionHooks = () => {
 
   const deletePatientTaskAttachment = useCallback(
     (identifier) => {
-      dispatch(openModal('DeleteConfirmation', {
-        title: 'Delete Attachment',
-        description: 'Are you sure you want to delete this attachment? This action cannot be undone.',
-        confirm: () => {
-          dispatch(
-            PatientDetailsActions.deletePatientTaskAttachement(
-              identifier,
-            ),
-          );
-        }
-      }))
+      dispatch(
+        openModal('DeleteConfirmation', {
+          title: 'Delete Attachment',
+          description:
+            'Are you sure you want to delete this attachment? This action cannot be undone.',
+          confirm: () => {
+            dispatch(
+              PatientDetailsActions.deletePatientTaskAttachement(identifier),
+            );
+          },
+        }),
+      );
     },
     [dispatch],
   );
@@ -307,17 +311,19 @@ const useInitializeAttachmentsSectionHooks = () => {
     (folder) => {
       history.push(
         createProfileAttachmentsPath(
+          profileTypeIdentifier,
           profileIdentifier,
           folder.attachmentIdentifier,
         ),
       );
     },
-    [history, profileIdentifier],
+    [history, profileIdentifier, profileTypeIdentifier],
   );
 
   const openFolderInNewTab = (folder) => {
     window.open(
       `#${createProfileAttachmentsPath(
+        profileTypeIdentifier,
         profileIdentifier,
         folder.attachmentIdentifier,
       )}`,
@@ -328,14 +334,9 @@ const useInitializeAttachmentsSectionHooks = () => {
     (attachment) => {
       dispatch(
         openModal('SelectPatientFolder', {
-          context:"profile",
+          context: 'profile',
           onMove: (destinationFolderId) => {
-            dispatch(
-              moveProfileAttachment(
-                attachment,
-                destinationFolderId,
-              ),
-            );
+            dispatch(moveProfileAttachment(attachment, destinationFolderId));
           },
         }),
       );
