@@ -983,12 +983,30 @@ const ListDetailsReducer = (state = initialState, action) => {
     case ActionTypes.REFRESH_TASK_SUCCESS: {
       const { task } = action;
 
-      if (task.templateTaskIdentifier) {
+      if (!state.taskListIdentifier || state.taskListIdentifier === '') {
         return state;
       }
 
-      if (!state.taskListIdentifier || state.taskListIdentifier === '') {
-        return state;
+      const isTaskOfTemplate = task.taskGroups.some(
+        (group) => group.groupType === TaskGroupType.BUNDLE,
+      );
+
+      const isSubTask = Boolean(task.parentTaskIdentifier);
+
+      if (isTaskOfTemplate || isSubTask) {
+        const existingTask = state.tasksMap[task.identifier];
+
+        if (!existingTask) {
+          return state;
+        }
+
+        return {
+          ...state,
+          tasksMap: {
+            ...state.tasksMap,
+            [task.identifier]: task,
+          },
+        };
       }
 
       const { taskGroupIdentifier } =
