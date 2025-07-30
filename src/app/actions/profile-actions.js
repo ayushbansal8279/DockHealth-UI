@@ -33,22 +33,23 @@ export function selectedProfileFilters(filters, selectedQuickFilter) {
 export function updateProfileListPreferences(setup, profileTypeIdentifier) {
   return {
     type: ActionTypes.UPDATE_PROFILE_LIST_PREFERENCES,
-    payload: { setup, profileTypeIdentifier }
-  }
-};
+    payload: { setup, profileTypeIdentifier },
+  };
+}
 
 export function mergeProfile(fromProfile, toProfile, onSuccess) {
   return {
     type: ActionTypes.MERGE_PROFILE,
     fromProfile,
     toProfile,
-    onSuccess
+    onSuccess,
   };
 }
 
-export function getCurrentProfileAttachments() {
+export function getCurrentProfileAttachments(folderIdentifier) {
   return {
     type: ActionTypes.GET_CURRENT_PROFILE_ATTACHMENTS,
+    folderIdentifier,
   };
 }
 
@@ -107,4 +108,3 @@ export function deleteProfileAttachment(profileIdentifier, identifier) {
     identifier,
   };
 }
-

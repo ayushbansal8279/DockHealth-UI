@@ -1,10 +1,20 @@
-import { put, call, takeEvery, takeLatest, select, all } from 'redux-saga/effects';
+import {
+  put,
+  call,
+  takeEvery,
+  takeLatest,
+  select,
+  all,
+} from 'redux-saga/effects';
 import * as ProfileApi from 'api/profile-api';
-import * as ProfileTypeApi from 'api/profile-type-api'
+import * as ProfileTypeApi from 'api/profile-type-api';
 import * as ActionTypes from '../actions/action-types';
 import * as MegaFilterActions from 'actions/mega-filter-actions';
 import * as AlertActions from 'alert/actions';
-import { currentProfileIdentifierSelector, currentProfileTypeIdentifierSelector } from '../selectors/profile-selector';
+import {
+  currentProfileIdentifierSelector,
+  currentProfileTypeIdentifierSelector,
+} from '../selectors/profile-selector';
 import { showGlobalAlert, showGlobalErrorAlert } from '../alert/actions';
 import AlertMessages from 'alert/AlertMessages';
 import { closeModal } from 'modal/actions';
@@ -33,7 +43,9 @@ function* getCurrentProfileFilterOptions() {
 
 function* selectedProfileFilter({ payload }) {
   const { filters, selectedQuickFilter } = payload;
-  const profileTypeIdentifier = yield select(currentProfileTypeIdentifierSelector);
+  const profileTypeIdentifier = yield select(
+    currentProfileTypeIdentifierSelector,
+  );
   const status = '';
   yield put(
     MegaFilterActions.selectFiltersForMegaFilter(
@@ -60,11 +72,7 @@ function* updateProfileListPreferences({ payload }) {
 
 function* mergeProfile({ fromProfile, toProfile, onSuccess }) {
   try {
-    yield call(
-      ProfileApi.mergeProfile,
-      fromProfile,
-      toProfile,
-    );
+    yield call(ProfileApi.mergeProfile, fromProfile, toProfile);
     onSuccess?.();
   } catch {
     yield all([
@@ -74,19 +82,19 @@ function* mergeProfile({ fromProfile, toProfile, onSuccess }) {
   }
 }
 
-function* getCurrentProfileAttachments() {
+function* getCurrentProfileAttachments({ folderIdentifier }) {
   const profileIdentifier = yield select(currentProfileIdentifierSelector);
-  // const folderIdentifier = yield select(currentFolderIdentifierSelector);
+
   try {
     const attachments = yield call(
       ProfileApi.getProfileAttachments,
       profileIdentifier,
-      // folderIdentifier,
+      folderIdentifier,
     );
     const profileTaskAttachments = yield call(
       ProfileApi.getTaskAndWorkflowAttachmentsForProfile,
       profileIdentifier,
-    )
+    );
     yield put({
       type: ActionTypes.GET_CURRENT_PROFILE_ATTACHMENTS_SUCCESS,
       attachments,
@@ -103,48 +111,51 @@ function* getCurrentProfileAttachments() {
 
 function* createProfileAttachment({
   profileIdentifier,
+  folderIdentifier,
   fileData,
   additionalConfig,
+  setCurrentlyUploadedAttachment,
+  onAttachmentFileInputChange,
+  restAttachments,
 }) {
   try {
     const attachment = yield call(
       ProfileApi.createProfileAttachment,
       profileIdentifier,
+      folderIdentifier,
       fileData,
       additionalConfig,
     );
-    // setCurrentlyUploadedAttachment(null);
-    // onAttachmentFileInputChange(restAttachments);
+    setCurrentlyUploadedAttachment(null);
+    onAttachmentFileInputChange(restAttachments);
+
     yield put({ type: ActionTypes.ADD_PROFILE_ATTACHMENT_SUCCESS, attachment });
   } catch (error) {
-    // setCurrentlyUploadedAttachment(null);
-    // onAttachmentFileInputChange(restAttachments);
+    setCurrentlyUploadedAttachment(null);
+    onAttachmentFileInputChange(restAttachments);
 
     yield put({
       type: ActionTypes.ADD_PROFILE_ATTACHMENT_FAILURE,
       profileIdentifier,
-      // folderIdentifier,
+      folderIdentifier,
     });
 
     yield error.response && error.response.status === 413
       ? put(
-        AlertActions.showGlobalErrorAlert(
-          'File exceeded the allowed size of 100 MB',
-        ),
-      )
+          AlertActions.showGlobalErrorAlert(
+            'File exceeded the allowed size of 100 MB',
+          ),
+        )
       : put(AlertActions.showGlobalErrorAlert());
   }
 }
 
 function* updateProfileAttachment({ attachment, dataToUpdate }) {
   try {
-    const updatedAttachment = yield call(
-      ProfileApi.updateProfileAttachment,
-      {
-        ...attachment,
-        ...dataToUpdate,
-      },
-    );
+    const updatedAttachment = yield call(ProfileApi.updateProfileAttachment, {
+      ...attachment,
+      ...dataToUpdate,
+    });
 
     yield all([
       put({
@@ -154,11 +165,8 @@ function* updateProfileAttachment({ attachment, dataToUpdate }) {
       put(showGlobalAlert(AlertMessages.UPDATED)),
       put(closeModal()),
     ]);
-
   } catch (error) {
-    yield all([
-      put(showGlobalErrorAlert()),
-    ]);
+    yield all([put(showGlobalErrorAlert())]);
   }
 }
 
@@ -196,13 +204,10 @@ export function* createProfileAttachmentFolder({
 
 function* moveProfileAttachment({ attachment, destinationFolderIdentifier }) {
   try {
-    const updatedAttachment = yield call(
-      ProfileApi.updateProfileAttachment,
-      {
-        ...attachment,
-        parentAttachmentIdentifier: destinationFolderIdentifier,
-      },
-    );
+    const updatedAttachment = yield call(ProfileApi.updateProfileAttachment, {
+      ...attachment,
+      parentAttachmentIdentifier: destinationFolderIdentifier,
+    });
     yield all([
       put({
         type: ActionTypes.MOVE_PROFILE_ATTACHMENT_SUCCESS,
@@ -253,16 +258,16 @@ export default function* watchProfileDetail() {
     getCurrentProfileFilterOptions,
   );
   yield takeLatest(ActionTypes.SELECTED_PROFILE_FILTER, selectedProfileFilter);
-  yield takeLatest(ActionTypes.UPDATE_PROFILE_LIST_PREFERENCES, updateProfileListPreferences);
+  yield takeLatest(
+    ActionTypes.UPDATE_PROFILE_LIST_PREFERENCES,
+    updateProfileListPreferences,
+  );
   yield takeEvery(ActionTypes.MERGE_PROFILE, mergeProfile);
   yield takeLatest(
     ActionTypes.GET_CURRENT_PROFILE_ATTACHMENTS,
     getCurrentProfileAttachments,
   );
-  yield takeEvery(
-    ActionTypes.ADD_PROFILE_ATTACHMENT,
-    createProfileAttachment,
-  );
+  yield takeEvery(ActionTypes.ADD_PROFILE_ATTACHMENT, createProfileAttachment);
   yield takeEvery(
     ActionTypes.UPDATE_PROFILE_ATTACHMENT,
     updateProfileAttachment,

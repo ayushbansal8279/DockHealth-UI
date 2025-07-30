@@ -1,7 +1,10 @@
 import { blobFileDownload } from '../helpers/blob-file-download';
 import { mapFilterOptions } from '../helpers/filter-options-helpers';
 import { handleMixedResponse } from '../helpers/handle-mixed-response';
-import { getTransformedProfileFields, ProfileAttachmentType } from '../helpers/profile-helpers';
+import {
+  getTransformedProfileFields,
+  ProfileAttachmentType,
+} from '../helpers/profile-helpers';
 import { noop, showAlert } from '../helpers/utility-functions';
 import axios from './axios-heydoc';
 
@@ -15,17 +18,21 @@ export function getProfileDetails(identifier) {
 
 export function createProfile(profileTypeIdentifier, details, types) {
   const transformedDetails = getTransformedProfileFields(details, types);
-  return axios.post('profile', {
-    fields: transformedDetails,
-    profileType: {
-      identifier: profileTypeIdentifier,
-    },
-  }).then(({ data }) => data);
+  return axios
+    .post('profile', {
+      fields: transformedDetails,
+      profileType: {
+        identifier: profileTypeIdentifier,
+      },
+    })
+    .then(({ data }) => data);
 }
 
 export function editProfileDetails(identifier, details, types) {
   const transformedDetails = getTransformedProfileFields(details, types);
-  return axios.put(`profile/${identifier}`, { fields: transformedDetails }).then(({ data }) => data);
+  return axios
+    .put(`profile/${identifier}`, { fields: transformedDetails })
+    .then(({ data }) => data);
 }
 
 export function deleteProfile(identifier) {
@@ -67,7 +74,10 @@ export function mergeProfile(profileIdentifier, mergeToProfileIdentifier) {
     .then(({ data }) => data);
 }
 
-export function downloadProfileImportTemplate(profileTypeIdentifier, filename = "Profile_Data_Upload_Template.csv") {
+export function downloadProfileImportTemplate(
+  profileTypeIdentifier,
+  filename = 'Profile_Data_Upload_Template.csv',
+) {
   return axios({
     url: `/profile/downloadProfileImportTemplate/${profileTypeIdentifier}`,
     method: 'GET',
@@ -108,7 +118,7 @@ export function uploadProfileData(fileData, additionalConfig = {}, identifier) {
           text:
             error?.response?.data?.errorMessage ??
             error?.message ??
-            'Error in uploading data. Please try again.'
+            'Error in uploading data. Please try again.',
         });
       }
       throw error;
@@ -118,27 +128,29 @@ export function uploadProfileData(fileData, additionalConfig = {}, identifier) {
 export function getPatientForProfile(profileIdentifier) {
   return axios
     .get(`profile/patients/${profileIdentifier}`)
-    .then(response => response.data)
+    .then((response) => response.data);
 }
 
 export function getProfileAttachments(profileIdentifier, folderIdentifier) {
   return axios
-    .get(`profile/attachment/getProfileAttachments/${profileIdentifier}`, {
-      params: { parentAttachmentIdentifier: folderIdentifier ?? undefined },
-    },)
-    .then(response => response.data)
+    .get(
+      `profile/attachment/getProfileAttachmentsInFolder/${profileIdentifier}`,
+      {
+        params: { parentAttachmentIdentifier: folderIdentifier ?? undefined },
+      },
+    )
+    .then((response) => response.data);
 }
 
 export function createProfileAttachment(
   profileIdentifier,
-  // folderIdentifier,
+  folderIdentifier,
   fileData,
   additionalConfig = {},
 ) {
   const formData = new FormData();
   formData.append('file', fileData, encodeURIComponent(fileData.name));
-  // formData.append('parentAttachmentIdentifier', folderIdentifier ?? undefined);
-  formData.append('parentAttachmentIdentifier', undefined);
+  formData.append('parentAttachmentIdentifier', folderIdentifier ?? undefined);
 
   return axios
     .post(`profile/attachment/${profileIdentifier}`, formData, {
@@ -151,8 +163,7 @@ export function createProfileAttachment(
 }
 
 export function updateProfileAttachment(attachment) {
-  return axios.put(`profile/attachment`, attachment)
-    .then(({ data }) => data);
+  return axios.put(`profile/attachment`, attachment).then(({ data }) => data);
 }
 
 export function createProfileAttachmentFolder(
@@ -187,12 +198,12 @@ export function downloadProfileAttachment(attachmentIdentifier) {
   }).then((response) => response);
 }
 
-export function getTaskAndWorkflowAttachmentsForProfile(profileIdentifier){
+export function getTaskAndWorkflowAttachmentsForProfile(profileIdentifier) {
   return axios
     .get(
       `task/attachment/getTaskAndWorkflowAttachmentsForProfile/${profileIdentifier}`,
     )
-    .then(({data})=>data)
+    .then(({ data }) => data);
 }
 
 export const note = {

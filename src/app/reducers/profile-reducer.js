@@ -1,4 +1,7 @@
-import { INITIALIZE_PROFILE_STATE, INITIALIZE_PROFILE_TYPE_STATE } from 'actions/action-types';
+import {
+  INITIALIZE_PROFILE_STATE,
+  INITIALIZE_PROFILE_TYPE_STATE,
+} from 'actions/action-types';
 import * as ActionTypes from '../actions/action-types';
 const initialState = {
   currentProfileTypeIdentifier: null,
@@ -31,7 +34,7 @@ const ProfileReducer = (state = initialState, action) => {
       return {
         ...state,
         attachments: action.attachments,
-        profileTaskAttachments:action.profileTaskAttachments,
+        profileTaskAttachments: action.profileTaskAttachments,
         isFetchingAttachments: false,
       };
     }
@@ -57,7 +60,7 @@ const ProfileReducer = (state = initialState, action) => {
       };
     }
 
-    case ActionTypes.ADD_PATIENT_ATTACHMENT_SUCCESS: {
+    case ActionTypes.ADD_PROFILE_ATTACHMENT_SUCCESS: {
       return {
         ...state,
         attachments: [...(state.attachments || []), action.attachment],
