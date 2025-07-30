@@ -215,7 +215,7 @@ const PatientSection = ({
         openModal('EditPatient', {
           patient: data,
           onAdded: (newPatientData) => {
-            addPatient(newPatientData)
+            addPatient(newPatientData, workspaceIdentifier)
               .then(async ({ patientIdentifier, firstName, lastName }) => {
                 await fetchPatients(patient);
                 await handlePatientSelect({

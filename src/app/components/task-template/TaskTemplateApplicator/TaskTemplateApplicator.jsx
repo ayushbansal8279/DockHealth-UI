@@ -89,7 +89,7 @@ const TaskTemplateApplicator = ({
       .catch(() => {
         setTaskTemplatesIsLoading(false);
       });
-  }, []);
+  }, [workspaceIdentifier]);
 
   useEffect(() => {
     if (origin === 'LIST') {

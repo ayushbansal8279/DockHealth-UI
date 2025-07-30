@@ -319,7 +319,7 @@ const PatientSection = ({
           onAdded: (newPatientData) => {
             onTaskDrawerPatientAdded();
 
-            addPatient(newPatientData)
+            addPatient(newPatientData, workspaceIdentifier)
               .then(async ({ patientIdentifier, firstName, lastName }) => {
                 await fetchPatients(patient);
                 await handlePatientSelect({
