@@ -13,6 +13,11 @@ export const currentProfileTypeIdentifierSelector = createSelector(
   ({ currentProfileTypeIdentifier }) => currentProfileTypeIdentifier,
 );
 
+export const profileTypeNameSelector = createSelector(
+  ProfileStateSelector,
+  ({ profileTypeName }) => profileTypeName,
+);
+
 export const currentProfileIdentifierSelector = createSelector(
   ProfileStateSelector,
   ({ currentProfileIdentifier }) => currentProfileIdentifier,

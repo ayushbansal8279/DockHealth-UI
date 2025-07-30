@@ -30,6 +30,7 @@ import { getPatientForProfile } from '@/app/api/profile-api';
 import { initializeProfileState } from '@/app/actions/profile-actions';
 import { RouteWrapper } from 'routing/components';
 import { DEFAULT_TABS_CONFIG, TABS_CONFIG } from './helpers';
+import { profileTypeNameSelector } from '@/app/selectors/profile-selector';
 
 const ProfileDetailsView = () => {
   const { profileTypeIdentifier, profileIdentifier } = useParams();
@@ -39,6 +40,7 @@ const ProfileDetailsView = () => {
   const { path, url } = useRouteMatch();
   const { pathname } = useLocation();
   const currentUser = useSelector(userProfileSelector);
+  const currentProfileTypeName = useSelector(profileTypeNameSelector);
   const { userIdentifier: currentUserIdentifier } = currentUser || {};
   const pusher = useRef(initializePusher());
   const handleTabChange = (_, newTabValue) => {
@@ -120,8 +122,6 @@ const ProfileDetailsView = () => {
       setPatients(patients);
     });
   }, []);
-
-
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   // const onSearchChangedWithDebounce = useCallback(
@@ -212,7 +212,9 @@ const ProfileDetailsView = () => {
     <HorizontallyScrolledViewLayout
       header={
         <LayoutHeader>
-          <LayoutHeader.Title title="Custom Profile" />
+          <LayoutHeader.Title
+            title={currentProfileTypeName ?? 'Custom Profile'}
+          />
           <LayoutHeader.Spacer />
           <LayoutHeader.Spacer />
         </LayoutHeader>

@@ -5,6 +5,7 @@ import {
 import * as ActionTypes from '../actions/action-types';
 const initialState = {
   currentProfileTypeIdentifier: null,
+  profileTypeName: null,
   currentProfileIdentifier: null,
   attachments: null,
   profileTaskAttachments: null,
@@ -14,9 +15,11 @@ const initialState = {
 const ProfileReducer = (state = initialState, action) => {
   switch (action.type) {
     case INITIALIZE_PROFILE_TYPE_STATE: {
+      const { identifier, name } = action.currentProfileType;
       return {
         ...state,
-        currentProfileTypeIdentifier: action.profileTypeIdentifier,
+        currentProfileTypeIdentifier: identifier,
+        profileTypeName: name,
       };
     }
     case INITIALIZE_PROFILE_STATE: {

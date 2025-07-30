@@ -1,9 +1,9 @@
 import * as ActionTypes from './action-types';
 
-export function initializeProfileTypeState(profileTypeIdentifier) {
+export function initializeProfileTypeState(currentProfileType) {
   return {
     type: ActionTypes.INITIALIZE_PROFILE_TYPE_STATE,
-    profileTypeIdentifier,
+    currentProfileType,
   };
 }
 
