@@ -6,10 +6,10 @@ export const NodeContainer = styled.div`
   background: white;
   border-radius: 12px;
   padding: 16px;
-  min-width: 180px;
+  min-width: 200px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   transition: all 0.2s ease;
-  min-height: 100px;
+  min-height: 115px;
 
   &:hover {
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
@@ -27,9 +27,10 @@ export const EmailNodeContainer = styled.div`
   border: 2px solid ${palette.orangeJulius};
   border-radius: 12px;
   padding: 16px;
-  min-width: 180px;
+  min-width: 200px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   transition: all 0.2s ease;
+  min-height: 115px;
 
   &:hover {
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
@@ -59,16 +60,16 @@ export const NodeIcon = styled.div`
   color: white;
 `;
 
-export const NodeTitle = styled.h3`
+export const NodeTitle = styled.div`
   margin: 0;
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 600;
   color: ${palette.gunmetal};
 `;
 
 export const NodeDescription = styled.p`
   margin: 0;
-  font-size: 12px;
+  font-size: 14px;
   color: ${palette.coolGrey10};
   line-height: 1.4;
 `;

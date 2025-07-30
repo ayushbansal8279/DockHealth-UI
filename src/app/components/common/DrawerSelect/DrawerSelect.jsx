@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Select, MenuItem, InputLabel, FormControl } from '@mui/material';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import palette from '@/app/styles/palette';
@@ -11,11 +11,18 @@ const arrowSx = {
 
 const selectSx = {
   borderRadius: '10px',
+  height: '45px',
 };
 
 const labelSx = {
   textTransform: 'none',
   fontSize: '16px',
+  '&.MuiInputLabel-outlined': {
+    transform: 'translate(14px, 10px) scale(1)',
+    '&.MuiInputLabel-shrink': {
+      transform: 'translate(14px, -9px) scale(0.75)',
+    },
+  },
 };
 
 const Arrow = () => {
