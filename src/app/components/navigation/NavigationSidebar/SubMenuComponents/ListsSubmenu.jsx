@@ -79,6 +79,12 @@ import {
   restrictToFirstScrollableAncestor,
   restrictToVerticalAxis,
 } from '@dnd-kit/modifiers';
+import {
+  SearchContainer,
+  HorizontalLine,
+  HorizontalLineContainer,
+} from '@/app/components/task-template/TaskTemplateApplicator/styled';
+import Search from '@/app/components/task-view/Search/Search';
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const ListsSubmenu = () => {
@@ -104,6 +110,7 @@ const ListsSubmenu = () => {
   const [myLists, setMyLists] = useState([]);
   const [orgLevelLists, setOrgLevelLists] = useState([]);
   const [dragActiveId, setDragActiveId] = useState(null);
+  const [searchValue, setSearchValue] = useState('');
   const { 0: orgListsVisible, 3: toggleOrgLists } = useBoolean(true);
   const { 0: archivedVisible, 3: toggleArchived } = useBoolean(false);
   const { 0: myListsVisible, 3: toggleMyLists } = useBoolean(true);
@@ -127,9 +134,16 @@ const ListsSubmenu = () => {
         : null;
     const myLevelLists = lists?.filter((list) => list.listType !== 'PUBLIC');
     const orgLists = lists?.filter((list) => list.listType === 'PUBLIC');
-    setMyLists(myLevelLists);
+    if (searchValue) {
+      const filterMyList = myLevelLists?.filter((list) =>
+        list?.listName?.toLowerCase()?.includes(searchValue?.toLowerCase()),
+      );
+      setMyLists(filterMyList);
+    } else {
+      setMyLists(myLevelLists);
+    }
     setOrgLevelLists(orgLists);
-  }, [taskLists, pendingTaskLists]);
+  }, [taskLists, pendingTaskLists, searchValue]);
 
   const [isOverflowing, setIsOverflowing] = useState(false);
 
@@ -143,6 +157,17 @@ const ListsSubmenu = () => {
     dispatch(TaskListActions.getPendingTaskListsForUser());
     dispatch(TaskListActions.getArchivedTaskListForUser());
     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const handleSearch = useCallback(
+    (searchPhrase) => {
+      setSearchValue(searchPhrase);
+    },
+    [setSearchValue],
+  );
+
+  useEffect(() => {
+    setSearchValue('');
   }, []);
 
   const handleMouseEnter = (event, listName) => {
@@ -181,7 +206,13 @@ const ListsSubmenu = () => {
 
   const renderLists = useCallback(
     // eslint-disable-next-line sonarjs/cognitive-complexity
-    (listsList, archived = true, isTextOverflowing, dragActiveId) => {
+    (
+      listsList,
+      archived = true,
+      isTextOverflowing,
+      dragActiveId,
+      searchPhrase,
+    ) => {
       if (archived) {
         return listsList
           ? listsList.map((list) => (
@@ -356,6 +387,7 @@ const ListsSubmenu = () => {
                 index={index}
                 key={list.taskListIdentifier}
                 setDragActiveId={setDragActiveId}
+                searchValue={searchPhrase}
               >
                 <DrawerListsItem
                   key={`listsubmenu_${list.taskListIdentifier}`}
@@ -504,12 +536,30 @@ const ListsSubmenu = () => {
             )}
         </div>
       </DrawerMyListsLabel>
+      <SearchContainer isWorkFlowSearch>
+        <Search
+          fullWidth
+          noBackground
+          value={searchValue}
+          onChange={(event) => handleSearch(event?.target?.value)}
+          placeholder="Search"
+          isWorkFlowSearch
+        />
+      </SearchContainer>
+      <HorizontalLineContainer>
+        <HorizontalLine />
+      </HorizontalLineContainer>
       <DrawerListsList $isSubMenu $isOpen={myListsVisible}>
         <Collapse in={myListsVisible}>
           {hasAnyPendingList && (
             <DrawerListsNewLabel>
               Hooray you have a new list!
             </DrawerListsNewLabel>
+          )}
+          {searchValue && myLists?.length === 0 && (
+            <div style={{ textAlign: 'center', padding: '10px' }}>
+              No lists found
+            </div>
           )}
           <DndContext
             sensors={sensors}
@@ -523,7 +573,13 @@ const ListsSubmenu = () => {
               items={(myLists ?? [])?.map((list) => list?.taskListIdentifier)}
               strategy={verticalListSortingStrategy}
             >
-              {renderLists(myLists, false, isOverflowing, dragActiveId)}
+              {renderLists(
+                myLists,
+                false,
+                isOverflowing,
+                dragActiveId,
+                searchValue,
+              )}
             </SortableContext>
           </DndContext>
         </Collapse>

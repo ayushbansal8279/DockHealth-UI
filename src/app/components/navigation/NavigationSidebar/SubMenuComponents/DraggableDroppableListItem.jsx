@@ -7,6 +7,7 @@ const DraggableDroppableListItem = ({
   index,
   children,
   setDragActiveId,
+  searchValue,
 }) => {
   const {
     attributes,
@@ -19,6 +20,7 @@ const DraggableDroppableListItem = ({
   } = useSortable({
     id: list?.taskListIdentifier,
     data: { index },
+    disabled: !!searchValue,
   });
 
   const style = {
