@@ -39,7 +39,6 @@ import AddIcon from '@mui/icons-material/Add';
 import { ListPageContext } from '@/app/views/list-details/ListDetailsView';
 import { Box } from '@mui/material';
 import palette from '@/app/styles/palette';
-import { useIsWorkspaceScopedList } from '@/app/hooks/useIsWorkspaceScopedList';
 
 const { DISABLED } = TASK_LIST_RESTRICTIONS_OPTIONS;
 
@@ -49,6 +48,7 @@ const TaskTemplateApplicator = ({
   iconColorActive,
   isWorkflowSearch,
   origin,
+  workspaceIdentifier
 }) => {
   const popoverReference = useRef(null);
   const [isPopoverOpen, openPopover, closePopover] = useBoolean(false);
@@ -57,7 +57,6 @@ const TaskTemplateApplicator = ({
   const [taskTemplatesList, setTaskTemplatesList] = useState(null);
   const [taskTemplatesIsLoading, setTaskTemplatesIsLoading] = useState(null);
   const { handleWorkflowPopoverOpen } = useContext(ListPageContext);
-  const { workspaceIdentifier } = useIsWorkspaceScopedList();
 
   const currentUser = useSelector(userProfileSelector);
   const taskListRestrictions =

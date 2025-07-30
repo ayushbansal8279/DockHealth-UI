@@ -3,6 +3,7 @@ import {
   onTaskListInvitationRejected,
 } from 'helpers/ga-event-helper';
 import axios from './axios-heydoc';
+import { withWorkspaceHeaders } from '../helpers/api-helpers';
 
 export function getTaskListForUser(workspaceIdentifier) {
   return axios({
@@ -22,9 +23,7 @@ export function getArchivedTaskListForUser(workspaceIdentifier) {
   return axios({
     url: 'list/findArchivedTaskListsForUser?basicDetails=true',
     method: 'get',
-    headers: workspaceIdentifier
-      ? { CurrentWorkspaceIdentifier: workspaceIdentifier }
-      : undefined,
+    ...withWorkspaceHeaders(workspaceIdentifier),
   })
     .then((response) => response?.data)
     .catch((error) => {
@@ -32,10 +31,11 @@ export function getArchivedTaskListForUser(workspaceIdentifier) {
     });
 }
 
-export function getSharedTaskListsWithCurrentUser(userIdentifier) {
+export function getSharedTaskListsWithCurrentUser(userIdentifier, workspaceIdentifier) {
   return axios({
     url: `list/findSharedTaskListsWithCurrentUser/${userIdentifier}?basicDetails=true`,
     method: 'get',
+    ...withWorkspaceHeaders(workspaceIdentifier),
   })
     .then((response) => response?.data)
     .catch((error) => {
