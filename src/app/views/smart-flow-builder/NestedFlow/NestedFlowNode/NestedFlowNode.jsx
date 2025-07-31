@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
-import { IconButton, Typography } from '@mui/material';
+import { Fab, IconButton, Typography } from '@mui/material';
 import { openModal, closeModal } from 'modal/actions';
 import { deleteTask, partialUpdateTask } from 'actions/task-actions';
 import { getTemplates } from 'api/task-template-api';
@@ -16,6 +16,14 @@ import NestedFlowNodeStyled, { TaskLinks, TaskWrapper } from '../styled';
 import { userProfileSelector } from '@/app/selectors/user-selectors';
 import { workflowSelector } from '@/app/selectors/workflow-drawer-selectors';
 import { TaskOrigin } from '@/app/helpers/task-helpers';
+import BaseNode from '../../BaseNode/BaseNode';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { EditIcon } from '@/app/components/profile-builder/SelectedField/styled';
+import {
+  DecisionTaskIconWrapper,
+  TaskDescription,
+} from '../../TaskNode/styled';
+import WorkflowLinkIcon from 'img/template/workflow-icon';
 
 const NestedFlowNode = React.memo(({ data, isConnectable, selected, type }) => {
   const { task } = data || {};
@@ -162,9 +170,50 @@ const NestedFlowNode = React.memo(({ data, isConnectable, selected, type }) => {
       onTargetHandleHover={data.onTargetHandleHover}
       draggedEdgeSourceId={data?.draggedEdgeSourceId}
     >
-      <TaskWrapper>
-        <TaskNodeWrapper selected={selected} type={type} width={280}>
-          <TaskNodeEllipsis />
+      <BaseNode
+        selected={selected}
+        type={type}
+        optionButtons={
+          !isCurrentMemberPermission && [
+            <Fab
+              key="delete"
+              aria-label="add"
+              size="small"
+              onClick={handleDelete}
+            >
+              <DeleteIcon fontSize="small" color="inherit" />
+            </Fab>,
+            <Fab
+              key="edit"
+              aria-label="add"
+              size="small"
+              onClick={handleOpenModal}
+            >
+              <EditIcon fontSize="small" color="inherit" />
+            </Fab>,
+            <Fab
+              key="List"
+              aria-label="add"
+              size="small"
+              onClick={handleOpenListPicker}
+            >
+              <ListsIcon color="black" />
+            </Fab>,
+          ]
+        }
+        headerTitle={
+          <TaskDescription>
+            {description?.slice(0, 40)}
+            {description?.length > 40 && '...'}
+          </TaskDescription>
+        }
+        headerIcon={
+          <DecisionTaskIconWrapper>
+            <WorkflowLinkIcon />
+          </DecisionTaskIconWrapper>
+        }
+      />
+      {/* <TaskNodeEllipsis />
           <NestedFlowNodeStyled>
             <Typography component="p" style={{ maxHeight: '100%' }}>
               {description?.slice(0, 40)}
@@ -183,9 +232,9 @@ const NestedFlowNode = React.memo(({ data, isConnectable, selected, type }) => {
                 </IconButton>
               </IconContainerStyled>
             )}
-          </NestedFlowNodeStyled>
-        </TaskNodeWrapper>
-        <TaskLinks>
+          </NestedFlowNodeStyled> */}
+      {/* </TaskNodeWrapper> */}
+      {/* <TaskLinks>
           {taskList && (
             <Typography
               component="p"
@@ -244,8 +293,8 @@ const NestedFlowNode = React.memo(({ data, isConnectable, selected, type }) => {
               </IconButton>
             </Typography>
           )}
-        </TaskLinks>
-      </TaskWrapper>
+        </TaskLinks> */}
+      {/* </TaskWrapper> */}
     </TaskNodeHandles>
   );
 });
