@@ -88,6 +88,7 @@ const NewNestedFlowNode = React.memo((props) => {
       isConnectable={isConnectable}
       isConnecting={data.draggedEdgeSourceId}
       onTargetHandleHover={data.onTargetHandleHover}
+      draggedEdgeSourceId={data?.draggedEdgeSourceId}
     >
       <TaskWrapper>
         <TaskNodeWrapper selected={selected} type={type} width={280}>

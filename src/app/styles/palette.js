@@ -28,6 +28,8 @@ const palette = {
   lightSkyBlue: '#90caf9',
   dodgerBlue: '#2196f3',
   azureBlue: '#3B82F6',
+  purple: '#9B59B6',
+  green: '#2ECC71',
 
   // secondary
   purplePassion: '#553bbe',
@@ -79,7 +81,7 @@ const palette = {
   memberGreen: '#00a73c',
   taskCheckboxGreen: '#20b255',
   inProgressGreen: '#BAD440',
-  featureBlue1: '#011845',
+  parrotGreen: '#61f241ff',
   featureBlue2: '#1a2d56',
   scrollbarGrey: '#939aa4',
   red: '#e94739',

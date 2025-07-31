@@ -105,6 +105,7 @@ import NestedFlowNode from './NestedFlow/NestedFlowNode/NestedFlowNode';
 import NewNestedFlowNode from './NestedFlow/NewNestedFlowNode/NewNestedFlowNode';
 import { isUserDockPro } from '@/app/helpers/user-helper';
 import IndicatorNode from './IndicatorNode/IndicatorNode';
+import ConnectionLineComponent from './ConnectionLineComponent/ConnectionLineComponent';
 
 const nodeTypes = {
   [NodeType.NEW_AUTOMATION]: NewTaskNode,
@@ -133,8 +134,9 @@ const DEFAULT_EDGE = {
   },
   markerEnd: {
     type: MarkerType.ArrowClosed,
-    width: 8,
-    height: 8,
+    color: palette.newBrightBlue,
+    width: 24,
+    height: 24,
     strokeWidth: 1,
   },
 };
@@ -675,7 +677,8 @@ const SmartFlowBuilderView = () => {
           </BuilderHeader>
           {elements && (
             <ReactFlowAdapter
-              // connectionLineComponent={ConnectionLineComponent}
+              connectionLineComponent={ConnectionLineComponent}
+              connectionRadius={0}
               elements={elements}
               onConnect={onConnect}
               connectionLineType="default"
@@ -702,9 +705,8 @@ const SmartFlowBuilderView = () => {
               defaultEdgeOptions={DEFAULT_EDGE}
               selectionMode="partial"
               selectNodesOnDrag={false}
-            >
-              <Controls showInteractive={isCurrentUserEditor} />
-            </ReactFlowAdapter>
+              isCurrentUserEditor={isCurrentUserEditor}
+            />
           )}
 
           <BulkEditContainer

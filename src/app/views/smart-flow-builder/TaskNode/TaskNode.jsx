@@ -3,7 +3,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import 'reactflow/dist/style.css';
 import { useBoolean } from 'hooks/useBoolean';
 import SubtaskIcon from 'img/SubtaskIcon';
-import { Box, IconButton } from '@mui/material';
+import { Box, Fab, IconButton, Typography } from '@mui/material';
 import BoltIcon from '@mui/icons-material/Bolt';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -27,15 +27,15 @@ import { createMentionsFromTokenizedDescription } from 'components/common/RichTe
 import TaskNodeWrapper from '../TaskNodeWrapper/TaskNodeWrapper';
 import TaskNodeHandles from '../TaskNodeHandles/TaskNodeHandles';
 import {
-  OptionsContainer,
   TaskInfoWrapper,
   TaskDescription,
   TaskDescriptionInput,
-  ContentWrapper,
   SubtasksLabel,
   DecisionTaskIconWrapper,
 } from './styled';
 import { userProfileSelector } from '@/app/selectors/user-selectors';
+import BaseNode from '../BaseNode/BaseNode';
+import { TaskElementIcon } from '../styled';
 
 const TaskNode = React.memo(({ data, isConnectable, selected, type }) => {
   const { task } = data || {};
@@ -124,128 +124,150 @@ const TaskNode = React.memo(({ data, isConnectable, selected, type }) => {
 
   const memberslist = data?.task?.taskTemplate?.members || [];
   const currentUser = useSelector(userProfileSelector);
-  const isCurrentMemberPermission = memberslist?.find(({ user }) => 
-    user.identifier === currentUser.identifier)
-    ?.memberPermission === 'VIEW';
-    
+  const isCurrentMemberPermission =
+    memberslist?.find(({ user }) => user.identifier === currentUser.identifier)
+      ?.memberPermission === 'VIEW';
+
   return (
     <TaskNodeHandles
       isConnectable={isConnectable}
       isConnecting={data.draggedEdgeSourceId}
       onTargetHandleHover={data.onTargetHandleHover}
+      draggedEdgeSourceId={data?.draggedEdgeSourceId}
     >
-      <TaskNodeWrapper selected={selected} type={type}>
-        <ContentWrapper onDoubleClick={setEditing}>
-          <Box
-            width="100%"
-            display="flex"
-            justifyContent="space-between"
-            alignItems="center"
+      <BaseNode
+        selected={selected}
+        type={type}
+        onDoubleClick={setEditing}
+        optionButtons={[
+          <Fab
+            key="delete"
+            aria-label="add"
+            size="small"
+            onClick={handleDelete}
           >
+            <DeleteIcon fontSize="small" color="inherit" />
+          </Fab>,
+          <Fab key="edit" aria-label="add" size="small" onClick={handleEdit}>
+            <EditIcon fontSize="small" color="inherit" />
+          </Fab>,
+        ]}
+        headerIcon={
+          <>
             {type === NodeType.DECISION && (
               <DecisionTaskIconWrapper>
-                <DecisionTaskElementIcon size={16} />
+                <DecisionTaskElementIcon size={21} />
               </DecisionTaskIconWrapper>
             )}
             {description.includes('[System]') && (
               <DecisionTaskIconWrapper>
-                <BoltIcon fontSize='verysmall'/>
+                <BoltIcon fontSize="verysmall" />
               </DecisionTaskIconWrapper>
             )}
-            <OptionsContainer>
-              <IconButton onClick={handleDelete}>
-                <DeleteIcon fontSize="small" color="inherit" />
-              </IconButton>
-              <IconButton onClick={handleEdit}>
-                <EditIcon fontSize="small" color="inherit" />
-              </IconButton>
-            </OptionsContainer>
-          </Box>
-          <TaskInfoWrapper>
-            {editing ? (
-              <TaskDescriptionInput
-                ref={descriptionInputReference}
-                value={inputValue}
-                onKeyDown={handleKeyDown}
-                onBlur={handleBlur}
-                onChange={(event) => setInputValue(event.target?.value || '')}
-              />
-            ) : (
-              <TaskDescription>
-                {createMentionsFromTokenizedDescription(
-                  tokenizedDescription,
-                  taskMentions,
-                )}
-              </TaskDescription>
+            {type === NodeType.STANDARD && (
+              <DecisionTaskIconWrapper>
+                <TaskElementIcon />
+              </DecisionTaskIconWrapper>
             )}
-            <Box p={1.2} />
+          </>
+        }
+        headerTitle={
+          editing ? (
+            <TaskDescriptionInput
+              ref={descriptionInputReference}
+              value={inputValue}
+              onKeyDown={handleKeyDown}
+              onBlur={handleBlur}
+              onChange={(event) => setInputValue(event.target?.value || '')}
+            />
+          ) : (
+            <TaskDescription>
+              {createMentionsFromTokenizedDescription(
+                tokenizedDescription,
+                taskMentions,
+              )}
+            </TaskDescription>
+          )
+        }
+        footerContent={
+          <TaskInfoWrapper>
             <Box
               display="flex"
               width="100%"
-              height={35}
               justifyContent="space-between"
-              alignItems="flex-end"
+              alignItems="center"
             >
-              { !isCurrentMemberPermission && (
-              <Box display="flex">
-                <button
-                  type="button"
-                  onClick={() => openTaskDrawer(DrawerFieldEnum.COMMENT)}
-                >
-                  <TaskIcon
-                    type="comments"
-                    isActive={comments?.length > 0}
-                    isNew={updatedComment}
+              {!isCurrentMemberPermission && (
+                <Box display="flex">
+                  <button
+                    type="button"
+                    onClick={() => openTaskDrawer(DrawerFieldEnum.COMMENT)}
+                  >
+                    <TaskIcon
+                      type="comments"
+                      isActive={comments?.length > 0}
+                      isNew={updatedComment}
+                    />
+                  </button>
+                  <Box p={1} />
+                  <button
+                    type="button"
+                    onClick={() => openTaskDrawer(DrawerFieldEnum.LABEL)}
+                  >
+                    <TaskIcon
+                      type="labels"
+                      isActive={labels?.length > 0}
+                      isNew={updatedLabel}
+                    />
+                  </button>
+                  <Box p={1} />
+                  <button
+                    type="button"
+                    onClick={() => openTaskDrawer(DrawerFieldEnum.ATTACHMENT)}
+                  >
+                    <TaskIcon
+                      type="attachments"
+                      isActive={attachments?.length > 0}
+                      isNew={updatedAttachment}
+                    />
+                  </button>
+                  <Box px={1} />
+                  {subtasks?.length > 0 && (
+                    <SubtasksLabel>
+                      {subtasks.length}
+                      <Box px={0.2} />
+                      <SubtaskIcon color="currentColor" size={12} />
+                    </SubtasksLabel>
+                  )}
+                </Box>
+              )}
+              <Box
+                sx={{
+                  display: 'flex',
+                }}
+              >
+                <Box p={2} />
+                {
+                  <Box sx={{ paddingRight: '10px' }}>
+                    {assignedToUsers?.length === 1 &&
+                      (isUserGroup(assignedToUsers[0]) ? (
+                        <GroupAvatar group={assignedToUsers[0]} size={35} />
+                      ) : (
+                        <UserAvatar user={assignedToUsers[0]} size={35} />
+                      ))}
+                  </Box>
+                }
+                {assignedToUsers?.length > 1 && (
+                  <AdditionalMembersCounter
+                    hiddenMembers={assignedToUsers}
+                    size={35}
                   />
-                </button>
-                <Box p={1} />
-                <button
-                  type="button"
-                  onClick={() => openTaskDrawer(DrawerFieldEnum.LABEL)}
-                >
-                  <TaskIcon
-                    type="labels"
-                    isActive={labels?.length > 0}
-                    isNew={updatedLabel}
-                  />
-                </button>
-                <Box p={1} />
-                <button
-                  type="button"
-                  onClick={() => openTaskDrawer(DrawerFieldEnum.ATTACHMENT)}
-                >
-                  <TaskIcon
-                    type="attachments"
-                    isActive={attachments?.length > 0}
-                    isNew={updatedAttachment}
-                  />
-                </button>
-                <Box px={1} />
-                {subtasks?.length > 0 && (
-                  <SubtasksLabel>
-                    {subtasks.length}
-                    <Box px={0.2} />
-                    <SubtaskIcon color="currentColor" size={12} />
-                  </SubtasksLabel>
                 )}
               </Box>
-              )}
-              {assignedToUsers?.length === 1 &&
-                (isUserGroup(assignedToUsers[0]) ? (
-                  <GroupAvatar group={assignedToUsers[0]} size={35} />
-                ) : (
-                  <UserAvatar user={assignedToUsers[0]} size={35} />
-                ))}
-              {assignedToUsers?.length > 1 && (
-                <AdditionalMembersCounter
-                  hiddenMembers={assignedToUsers}
-                  size={35}
-                />
-              )}
             </Box>
           </TaskInfoWrapper>
-        </ContentWrapper>
-      </TaskNodeWrapper>
+        }
+      />
     </TaskNodeHandles>
   );
 });
