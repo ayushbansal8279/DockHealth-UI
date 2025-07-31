@@ -1,6 +1,7 @@
 import ELK from 'elkjs/lib/elk.bundled';
+import palette from '../styles/palette';
 
-export const TASK_NODE_WIDTH = 230;
+export const TASK_NODE_WIDTH = 320;
 
 export const NodeType = {
   NEW_AUTOMATION: 'NEW_AUTOMATION',
@@ -45,14 +46,14 @@ export function createLinkElement(
   targetId,
   sourceHandle,
   targetHandle,
-  indicatorType
+  indicatorType,
 ) {
-  if((sourceId === targetId) && (indicatorType === 'START_INDICATOR')){
-    sourceId = 'START_INDICATOR'
-  } 
-  if((sourceId === targetId) && (indicatorType === 'END_INDICATOR')){
-    targetId = 'END_INDICATOR'
-  } 
+  if (sourceId === targetId && indicatorType === 'START_INDICATOR') {
+    sourceId = 'START_INDICATOR';
+  }
+  if (sourceId === targetId && indicatorType === 'END_INDICATOR') {
+    targetId = 'END_INDICATOR';
+  }
   return {
     id: getUniqueLinkId(sourceId, targetId),
     source: sourceId,
@@ -61,7 +62,7 @@ export function createLinkElement(
     targetHandle: targetHandle || NodeTargetHandle.TARGET_A,
     type,
     data: {},
-    indicatorType
+    indicatorType,
   };
 }
 
@@ -213,4 +214,30 @@ export async function getAutoLayout(tasks, startX = 0, startY = 0) {
       y: y + startY,
     },
   }));
+}
+
+export function getMiniMapNodeColor(node) {
+  const nodeType = node?.type;
+
+  switch (nodeType) {
+    case NodeType.NEW_AUTOMATION:
+      return palette.purple;
+    case NodeType.NEW_STANDARD:
+      return palette.lightSkyBlue;
+    case NodeType.NEW_DECISION:
+      return palette.orange;
+    case NodeType.STANDARD:
+      return palette.blueOcean;
+    case NodeType.DECISION:
+      return palette.brightOrange;
+    case NodeType.NEW_WORKFLOW_LINK:
+      return palette.cyanBlue;
+    case NodeType.WORKFLOW_LINK:
+      return palette.darkBlue;
+    case NodeType.START_INDICATOR:
+    case NodeType.END_INDICATOR:
+      return palette.green;
+    default:
+      return palette.lightGrey;
+  }
 }

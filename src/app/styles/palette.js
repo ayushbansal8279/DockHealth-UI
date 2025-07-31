@@ -28,6 +28,8 @@ const palette = {
   lightSkyBlue: '#90caf9',
   dodgerBlue: '#2196f3',
   azureBlue: '#3B82F6',
+  purple: '#9B59B6',
+  green: '#2ECC71',
 
   // secondary
   purplePassion: '#553bbe',
