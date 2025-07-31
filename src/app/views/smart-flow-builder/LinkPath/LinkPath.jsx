@@ -54,7 +54,7 @@ const LinkPath = (props) => {
       path={edgePath}
       style={{
         stroke: selected ? palette.brightBlue : undefined,
-        strokeWidth: 4,
+        strokeWidth: 2,
         fill: 'none',
         ...(selected
           ? {}

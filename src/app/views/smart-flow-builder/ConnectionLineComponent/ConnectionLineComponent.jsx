@@ -23,7 +23,7 @@ const ConnectionLineComponent = ({
           markerEnd="url(#arrowhead)"
           style={{
             stroke: undefined,
-            strokeWidth: 4,
+            strokeWidth: 2,
             strokeDasharray: 10,
             strokeDashoffset: 10,
             animation: 'dashmove 0.5s linear infinite',

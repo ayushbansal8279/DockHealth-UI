@@ -135,8 +135,8 @@ const DEFAULT_EDGE = {
   markerEnd: {
     type: MarkerType.ArrowClosed,
     color: palette.newBrightBlue,
-    width: 14,
-    height: 14,
+    width: 24,
+    height: 24,
     strokeWidth: 1,
   },
 };
