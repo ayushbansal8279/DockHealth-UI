@@ -28,7 +28,6 @@ import ViewTypeIcon from 'img/view-type-icon.svg';
 import * as PatientDetailsActions from 'actions/patient-details-actions';
 import compose from 'ramda/src/compose';
 import equals from 'ramda/src/equals';
-import debounce from 'lodash.debounce';
 import ToolbarButton from '@/app/components/tasklist/list-toolbar-buttons/ToolbarButton/ToolbarButton';
 import CustomizeToolbarButton from '@/app/components/tasklist/list-toolbar-buttons/CustomizeToolbarButton/CustomizeToolbarButton';
 import TaskStatusToolbarSelect from '@/app/components/tasklist/list-toolbar-buttons/TaskStatusToolbarSelect/TaskStatusToolbarSelect';
@@ -218,17 +217,14 @@ const TaskListToolbar = (props) => {
     [dispatch],
   );
 
-  const onSearchChangedWithDebounce = useCallback(
-    debounce((value) => {
-      dispatch(setPatientTaskSearch(value));
-      onSearchChanged();
-    }, 500),
-    [setPatientTaskSearch, onSearchChanged],
-  );
+  const performSearch = useCallback((value) => {
+    dispatch(setPatientTaskSearch(value));
+    onSearchChanged();
+  }, [setPatientTaskSearch, onSearchChanged]);
 
   const handleSearchValueChange = (newValue) => {
     setSearchValue(newValue);
-    onSearchChangedWithDebounce(newValue);
+    performSearch(newValue);
   };
 
   const OPTIONS = [
@@ -371,6 +367,7 @@ const TaskListToolbar = (props) => {
           <HeaderSearch
             value={searchValue}
             onChange={handleSearchValueChange}
+            needEnterToSearch
           />
         </Box>
         <GridContainer columns={2}>
