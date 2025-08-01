@@ -39,9 +39,11 @@ import {
   PatientDetailsTabsContainer,
   MainTab,
 } from './styled';
-import { patientOrgIdSelector } from '@/app/selectors/patient-details-selectors';
+import { patientOrgIdSelector, patientSelector } from '@/app/selectors/patient-details-selectors';
 import { selectCurrentOrganizationWithRedirection } from '@/app/api/organization-api';
 import { useIsWorkspaceScopedPatient } from '@/app/hooks/useIsWorkspaceScopedPatient';
+import { getWorkspaceByIdentifier } from '@/app/api/workspace-api';
+import { getWorkspaceTitle } from '../workspaces/workspace-title-helpers';
 
 const PatientDetailsView = () => {
   const { patientIdentifier } = useParams();
@@ -66,6 +68,25 @@ const PatientDetailsView = () => {
   );
 
   const { workspaceIdentifier } = useIsWorkspaceScopedPatient();
+
+  const [workspace, setWorkspace] = useState();
+  const patient = useSelector(patientSelector);
+
+  const isWorkspacePatient = patient?.organizationIdentifier !== currentOrganization?.organizationIdentifier;
+  
+  useEffect(() => {
+    if (isWorkspacePatient) {
+      getWorkspaceByIdentifier(patient?.organizationIdentifier)
+        .then(setWorkspace)
+    }
+  }, [isWorkspacePatient, patient?.organizationIdentifier]);
+
+  const patientTitle = getWorkspaceTitle({
+    embeddedMode,
+    isWorkspaceScoped: isWorkspacePatient,
+    workspace,
+    titleText: customerTypeLabel,
+  });
 
   useEffect(() => {
     if (workspaceIdentifier) {
@@ -199,9 +220,7 @@ const PatientDetailsView = () => {
     <HorizontallyScrolledViewLayout
       header={
         <LayoutHeader>
-          <LayoutHeader.Title
-            title={embeddedMode ? '' : capitalize(customerTypeLabel)}
-          />
+          <LayoutHeader.Title title={patientTitle} />
         </LayoutHeader>
       }
     >

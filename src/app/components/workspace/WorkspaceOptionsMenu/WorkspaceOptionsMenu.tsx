@@ -42,7 +42,7 @@ const WorkspaceOptionsMenu = ({
       confirm: async () => {
         try {
           dispatch(deleteWorkspaceAction(selectedWorkspace.workspaceIdentifier));
-          // history.push(`/core/home/my-tasks`);
+          history.push(`/core/workspace`);
         } catch {
           dispatch(showGlobalErrorAlert());
         }
