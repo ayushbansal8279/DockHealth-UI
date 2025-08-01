@@ -103,9 +103,9 @@ const AddWorkspaceModal: React.FC<AddWorkspaceModalProps> = ({
         sx={InputSx}
       />
       <Spacing vertical={4} />
-      <TileSettingsHeader>Create your workspace tile</TileSettingsHeader>
+      <TileSettingsHeader>Create your {workspaceLabel} tile</TileSettingsHeader>
       <Spacing vertical={3} />
-      <TileSettingsDescription>2-3 initials to represent your workspace</TileSettingsDescription>
+      <TileSettingsDescription>2-3 initials to represent your {workspaceLabel}</TileSettingsDescription>
       <Spacing vertical={3} />
       <InitialsInput
         name="initials"

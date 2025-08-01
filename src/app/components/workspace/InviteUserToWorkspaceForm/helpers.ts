@@ -9,6 +9,7 @@ interface WorkspaceMenuHandlers {
   removeUserFromWorkspace: (userId: string) => void;
   cancelInviteToWorkspace?: (userId: string) => void;
   resendInvitationToWorkspace?: (userId: string) => void;
+  workspaceLabel: string;
 }
 
 export const getMenuOptionsForWorkspaceUser = (
@@ -18,6 +19,7 @@ export const getMenuOptionsForWorkspaceUser = (
     removeUserFromWorkspace,
     cancelInviteToWorkspace,
     resendInvitationToWorkspace,
+    workspaceLabel,
   }: WorkspaceMenuHandlers
 ) => {
   const { userIdentifier, userStatus, workspaceUserRole } = member;
@@ -32,7 +34,7 @@ export const getMenuOptionsForWorkspaceUser = (
           onClick: () => changeUserRole(userIdentifier, oppositeRole),
         },
         {
-          name: 'Remove From Workspace',
+          name: `Remove From ${workspaceLabel}`,
           onClick: () => removeUserFromWorkspace(userIdentifier),
         },
       ];
@@ -55,7 +57,7 @@ export const getMenuOptionsForWorkspaceUser = (
     case 'DENIED': {
       return [
         {
-          name: 'Remove From Workspace',
+          name: `Remove From ${workspaceLabel}`,
           onClick: () => removeUserFromWorkspace(userIdentifier),
         },
       ];

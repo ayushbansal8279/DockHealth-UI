@@ -142,7 +142,7 @@ export function* getWorkspaceTaskListsSaga({ payload }: { payload: GetWorkspaceT
 
   } catch (error) {
     yield put({ type: ActionTypes.GET_WORKSPACE_TASKLISTS_FAILURE });
-    yield* handleSagaError(error, 'Failed to fetch workspace task lists');
+    yield* handleSagaError(error, 'Failed to fetch task lists');
   }
 }
 
@@ -165,7 +165,7 @@ export function* getArchivedWorkspaceTaskListsSaga({ payload}: { payload: GetArc
 
   } catch (error) {
     yield put({ type: ActionTypes.GET_ARCHIVED_WORKSPACE_TASKLISTS_FAILURE });
-    yield* handleSagaError(error, 'Failed to fetch archived workspace task lists');
+    yield* handleSagaError(error, 'Failed to fetch archived task lists');
   }
 }
 
@@ -215,13 +215,13 @@ export function* deleteWorkspaceTaskListSaga({ payload }: { payload: DeleteWorks
     });
 
     yield put(
-      showGlobalAlert('Workspace task list deleted successfully!')
+      showGlobalAlert('Task list deleted successfully!')
     );
   } catch (error) {
     yield put({ type: ActionTypes.DELETE_WORKSPACE_TASKLIST_FAILURE });
 
     yield put(
-      showGlobalAlert('Error in deleting workspace task list', 'error')
+      showGlobalAlert('Error in deleting task list', 'error')
     );
 
     yield* handleSagaError(error);
@@ -240,7 +240,7 @@ export function* leaveWorkspaceTaskListSaga({ payload }: { payload: LeaveWorkspa
     });
   } catch (error) {
     yield put({ type: ActionTypes.LEAVE_WORKSPACE_TASKLIST_FAILURE });
-    yield* handleSagaError(error, 'Failed to leave workspace task list');
+    yield* handleSagaError(error, 'Failed to leave task list');
   }
 }
 

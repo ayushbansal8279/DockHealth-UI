@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Popover } from '@mui/material';
 import clsx from 'clsx';
 import { showGlobalAlert } from 'alert/actions';
@@ -22,6 +22,7 @@ import { CancelButton, ConfirmButton } from '@/app/modal/components/ModalButton/
 import { useRoleContext } from '@/app/views/workspace/workspace-users/RoleContext';
 import { inviteUserToWorkspace } from '@/app/actions/workspace-actions';
 import { useWorkspace } from '@/app/views/workspace/workspace-users/WorkspaceContext';
+import { organizationWorkspaceLabelSelector } from '@/app/selectors/organization-selectors';
 
 const renderUserTypesOptions = ({ userTypes, selectedRoleKey }) => {
   return Object.entries(userTypes).map(
@@ -53,6 +54,7 @@ const InactiveRoleSelectionPopover = (props) => {
   } = props;
   const { contextType, roleConfig } = useRoleContext();
   const { workspaceIdentifier } = useWorkspace();
+  const workspaceLabel = useSelector(organizationWorkspaceLabelSelector);
   
   const [selectedStep, setSelectedStep] = useState('first');
   const [selectedRole, setSelectedRole] = useState({});
@@ -119,7 +121,7 @@ const InactiveRoleSelectionPopover = (props) => {
 
   const SecondStepComponent = () => (
     <>
-      <Header>Select their role in your {contextType === 'workspace' ? 'Workspace' : 'Organization'}</Header>
+      <Header>Select their role in your {contextType === 'workspace' ? workspaceLabel : 'Organization'}</Header>
       <RoleSelectionList>
         {renderUserTypesOptions({
           userTypes: roleConfig,
