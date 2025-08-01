@@ -14,6 +14,7 @@ import { Box, Dialog, Grid, IconButton } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useDispatch } from 'react-redux';
 import { showGlobalErrorAlert } from 'alert/actions';
+import AlertMessages from 'alert/AlertMessages';
 import * as CustomFieldsApi from 'api/custom-fields-api';
 import {
   FieldType,
@@ -54,6 +55,7 @@ import {
   downloadCustomFieldImportTemplate,
   uploadCustomFieldOptions,
 } from '@/app/api/custom-fields-api';
+import { showGlobalAlert } from '@/app/alert/actions';
 
 const REQUIRED_MESSAGE = 'This field is required';
 
@@ -128,7 +130,9 @@ const EditCustomFieldModal = ({
       options: array()
         .of(
           object().shape({
-            name: string().required(REQUIRED_MESSAGE),
+            name: string()
+              .required(REQUIRED_MESSAGE)
+              .max(255, 'Option name must be at most 255 characters'),
           }),
         )
         .nullable(),
@@ -318,12 +322,12 @@ const EditCustomFieldModal = ({
             relatedProfileTypeName: selectedProfileType,
           });
           fetchUserCustomFields();
+          dispatch(showGlobalAlert(AlertMessages.UPDATED));
           setIsSaving(false);
           closeModal();
         })
         .catch((error) => {
           console.error(error);
-          dispatch(showGlobalErrorAlert());
           setIsSaving(false);
         });
     } else {
@@ -372,11 +376,11 @@ const EditCustomFieldModal = ({
       })
         .then((addedField) => {
           onAdded({ ...addedField, selectedProfileType });
+          dispatch(showGlobalAlert(AlertMessages.CREATED));
           setIsSaving(false);
           closeModal();
         })
         .catch(() => {
-          dispatch(showGlobalErrorAlert());
           setIsSaving(false);
         });
     } else {
