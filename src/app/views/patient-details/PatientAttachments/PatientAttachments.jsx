@@ -305,7 +305,7 @@ const PatientAttachments = () => {
             entityIdentifierSelector={currentPatientIdentifierSelector}
              currentFolderIdentifierSelector={currentFolderIdentifierSelector} 
              getFolderStructureHierarchy={getPatientFolderStructureHierarchy} 
-             createAttachmentsPath={createPatientAttachmentsPath } />
+             />
 
         </Box>
         <Box display="flex" alignItems="center" flex="0 0 auto">

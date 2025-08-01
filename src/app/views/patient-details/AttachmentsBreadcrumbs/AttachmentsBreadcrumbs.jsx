@@ -13,100 +13,23 @@ import {
   BreadcrumbText,
   BreadcrumbWrapper,
 } from './styled';
+import { currentProfileTypeIdentifierSelector } from '@/app/selectors/profile-selector';
+import { createPatientAttachmentsPath, createProfileAttachmentsPath } from '@/app/routing/helpers/paths';
 
-// const AttachmentsBreadcrumbs = ({entityIdentifierSelector,
-//   currentFolderIdentifierSelector,
-//   getFolderStructureHierarchy,
-//   createAttachmentsPath,}) => {
-//   // console.log(currententityIdentifierSelectorSelector);
-  
-  
-//   // const entityIdentifierSelector = useSelector(currententityIdentifierSelectorSelector);
-//   // const currentFolderIdentifierSelector = useSelector(currentFolderIdentifierSelectorSelector);
-
-//   const [breadcrumbs, setBreadcrumbs] = useState(null);
-
-//   useEffect(() => {
-//     setBreadcrumbs(null);
-
-//     if (currentFolderIdentifier) {
-//       getFolderStructureHierarchy(currentFolderIdentifier,).then(
-//         (folder) => {
-//           const formattedFoldersHierarchy = [];
-//           let currentFolder = folder;
-//           while (currentFolder) {
-//             formattedFoldersHierarchy.unshift({
-//               id: currentFolder.attachmentIdentifier,
-//               name: currentFolder.fileName,
-//             });
-//             currentFolder = currentFolder.parentAttachment;
-//           }
-//           setBreadcrumbs(formattedFoldersHierarchy);
-//         },
-//       );
-//     }
-//   }, [currentFolderIdentifierSelector]);
-
-//   return (
-//     <>
-//       {breadcrumbs && (
-//         <Box display="flex" overflow="hidden">
-//           <BreadcrumbLink to={createAttachmentsPath(entityIdentifierSelector)}>
-//             Files
-//           </BreadcrumbLink>
-//           {breadcrumbs.map(({ id, name }, index) => (
-//             <React.Fragment key={id}>
-//               {index === breadcrumbs.length - 3 && (
-//                 <>
-//                   <BreadcrumbSeparator />
-//                   <BreadcrumbText>..</BreadcrumbText>
-//                 </>
-//               )}
-//               {index === breadcrumbs.length - 2 && (
-//                 <>
-//                   <BreadcrumbSeparator />
-//                   <BreadcrumbWrapper>
-//                     <BreadcrumbLink
-//                       to={createAttachmentsPath(entityIdentifierSelector, id)}
-//                     >
-//                       {name}
-//                     </BreadcrumbLink>
-//                   </BreadcrumbWrapper>
-//                 </>
-//               )}
-//               {index === breadcrumbs.length - 1 && (
-//                 <>
-//                   <BreadcrumbSeparator />
-//                   <BreadcrumbWrapper>
-//                     <BreadcrumbText>{name}</BreadcrumbText>
-//                   </BreadcrumbWrapper>
-//                 </>
-//               )}
-//             </React.Fragment>
-//           ))}
-//         </Box>
-//       )}
-//     </>
-//   );
-// };
 
 const AttachmentsBreadcrumbs = ({
   entityIdentifierSelector,
   currentFolderIdentifierSelector,
   getFolderStructureHierarchy,
-  createAttachmentsPath,
 }) => {
 
   const entityIdentifier = useSelector(entityIdentifierSelector);
   const currentFolderIdentifier = useSelector(currentFolderIdentifierSelector);
   const [breadcrumbs, setBreadcrumbs] = useState(null);
-  console.log(entityIdentifier);
-  console.log(currentFolderIdentifier);
-  
-  
+  const profileTypeIndentifier = useSelector(currentProfileTypeIdentifierSelector);
+
   useEffect(() => {
     setBreadcrumbs(null);
-
     if (currentFolderIdentifier) {
       getFolderStructureHierarchy(currentFolderIdentifier).then((folder) => {
         const formatted = [];
@@ -123,13 +46,15 @@ const AttachmentsBreadcrumbs = ({
     }
   }, [currentFolderIdentifier, getFolderStructureHierarchy]);
 
-  const createPath = (id) => createAttachmentsPath(entityIdentifier, id);
-
   return (
     <>
       {breadcrumbs && (
         <Box display="flex" overflow="hidden">
-          <BreadcrumbLink to={createPath()}>
+          <BreadcrumbLink to={
+            profileTypeIndentifier
+              ? createProfileAttachmentsPath(profileTypeIndentifier, entityIdentifier)
+              : createPatientAttachmentsPath(entityIdentifier)
+          }>
             Files
           </BreadcrumbLink>
           {breadcrumbs.map(({ id, name }, index) => (

@@ -342,7 +342,7 @@ const ProfileAttachments = () => {
           <AttachmentsBreadcrumbs  entityIdentifierSelector={currentProfileIdentifierSelector}
                        currentFolderIdentifierSelector={currentFolderIdentifierSelector} 
                        getFolderStructureHierarchy={getProfileFolderStructureHierarchy} 
-                       createAttachmentsPath={createProfileAttachmentsPath } />
+                     />
         </Box>
         <Box display="flex" alignItems="center" flex="0 0 auto">
           {import.meta.env.VITE_GOOGLE_DRIVE_API_CLIENT_ID &&
