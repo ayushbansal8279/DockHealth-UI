@@ -206,6 +206,14 @@ export function getTaskAndWorkflowAttachmentsForProfile(profileIdentifier) {
     .then(({ data }) => data);
 }
 
+export function getProfileFolderStructureHierarchy(identifier) {
+  return axios
+    .get(`profile/attachment/${identifier}`, {
+      params: { parentDetails: true },
+    })
+    .then(({ data }) => data);
+}
+
 export const note = {
   getAll(profileIdentifier) {
     return axios

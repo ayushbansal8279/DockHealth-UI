@@ -41,3 +41,8 @@ export const profileTaskAttachmentSelector = createSelector(
   ProfileStateSelector,
   ({profileTaskAttachments}) => profileTaskAttachments
 )
+
+export const currentFolderIdentifierSelector = createSelector(
+  ProfileStateSelector,
+  ({ currentFolderIdentifier }) => currentFolderIdentifier,
+);

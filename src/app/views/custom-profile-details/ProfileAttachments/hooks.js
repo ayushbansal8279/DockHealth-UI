@@ -33,6 +33,7 @@ import {
   createProfileAttachmentFolder,
   deleteProfileAttachment,
   getCurrentProfileAttachments,
+  initializeProfileAttachmentsFolder,
   moveProfileAttachment,
   updateProfileAttachment,
 } from '@/app/actions/profile-actions';
@@ -74,6 +75,7 @@ const useInitializeAttachmentsSectionHooks = () => {
   useEffect(() => {
     if (profileIdentifier) {
       dispatch(getCurrentProfileAttachments(folderIdentifier ?? null));
+      dispatch(initializeProfileAttachmentsFolder(folderIdentifier ?? null));
     }
   }, [dispatch, profileIdentifier, folderIdentifier]);
 

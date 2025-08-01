@@ -8,7 +8,7 @@ import localStorageHelper from 'helpers/local-storage-helper';
 import { Box, IconButton } from '@mui/material';
 import ViewModuleIcon from '@mui/icons-material/ViewModule';
 import ViewHeadlineIcon from '@mui/icons-material/ViewHeadline';
-import { isFetchingPatientAttachmentsSelector } from 'selectors/patient-details-selectors';
+import { currentFolderIdentifierSelector, currentPatientIdentifierSelector, isFetchingPatientAttachmentsSelector } from 'selectors/patient-details-selectors';
 import AttachmentsBreadcrumbs from 'views/patient-details/AttachmentsBreadcrumbs/AttachmentsBreadcrumbs';
 import AddButton from 'components/common/AddButton/AddButton';
 import AttachmentPreview from 'components/attachments/AttachmentPreview/AttachmentPreview';
@@ -37,7 +37,8 @@ import {
 } from './styled';
 import initializeAttachmentsSectionHooks from './hooks';
 import { FilesViewType, PATIENT_FILES_VIEW_TYPE, ScanStatus } from './helpers';
-
+import { getPatientFolderStructureHierarchy } from '@/app/api/patient-attachment-api';
+import { createPatientAttachmentsPath } from '@/app/routing/helpers/paths';
 const PatientAttachments = () => {
   const [activeViewType, setActiveViewType] = useState(
     localStorageHelper.getItem(PATIENT_FILES_VIEW_TYPE) || FilesViewType.GRID,
@@ -97,7 +98,7 @@ const PatientAttachments = () => {
   useEffect(() => {
     setTaskFilelist(patientTaskAttachments);
   }, [patientTaskAttachments]);
-  
+
 
   const dispatch = useDispatch();
 
@@ -122,17 +123,17 @@ const PatientAttachments = () => {
   const getFileOptions = useCallback(
     (file) => [
       ...(!file.scanStatus ||
-      file.scanStatus === ScanStatus.CLEAN ||
-      file.scanStatus === ScanStatus.UNSUPPORTED
+        file.scanStatus === ScanStatus.CLEAN ||
+        file.scanStatus === ScanStatus.UNSUPPORTED
         ? [
-            { name: 'Preview', onClick: () => openAttachmentPreview(file, "patient") },
-            {
-              name: 'Download',
-              onClick: () => {
-                downloadAttachment(file);
-              },
+          { name: 'Preview', onClick: () => openAttachmentPreview(file, "patient") },
+          {
+            name: 'Download',
+            onClick: () => {
+              downloadAttachment(file);
             },
-          ]
+          },
+        ]
         : []),
       {
         name: 'Rename',
@@ -160,17 +161,17 @@ const PatientAttachments = () => {
   const getTaskFileOptions = useCallback(
     (file) => [
       ...(!file.scanStatus ||
-      file.scanStatus === ScanStatus.CLEAN ||
-      file.scanStatus === ScanStatus.UNSUPPORTED
+        file.scanStatus === ScanStatus.CLEAN ||
+        file.scanStatus === ScanStatus.UNSUPPORTED
         ? [
-            { name: 'Preview', onClick: () => openAttachmentPreview(file, "task") },
-            {
-              name: 'Download',
-              onClick: () => {
-                downloadPatientTaskAttachment(file);
-              },
+          { name: 'Preview', onClick: () => openAttachmentPreview(file, "task") },
+          {
+            name: 'Download',
+            onClick: () => {
+              downloadPatientTaskAttachment(file);
             },
-          ]
+          },
+        ]
         : []),
       // {
       //   name: 'Rename',
@@ -300,7 +301,12 @@ const PatientAttachments = () => {
           alignItems="center"
           overflow="hidden"
         >
-          <AttachmentsBreadcrumbs />
+          <AttachmentsBreadcrumbs
+            entityIdentifierSelector={currentPatientIdentifierSelector}
+             currentFolderIdentifierSelector={currentFolderIdentifierSelector} 
+             getFolderStructureHierarchy={getPatientFolderStructureHierarchy} 
+             createAttachmentsPath={createPatientAttachmentsPath } />
+
         </Box>
         <Box display="flex" alignItems="center" flex="0 0 auto">
           {import.meta.env.VITE_GOOGLE_DRIVE_API_CLIENT_ID &&
@@ -447,7 +453,7 @@ const PatientAttachments = () => {
               </div>
             )}
           </NamedCollapse>
-           <NamedCollapse name="Task Files">
+          <NamedCollapse name="Task Files">
             {activeViewType === FilesViewType.LIST && <FileListHeader />}
             {taskFileList.length > 0 ? (
               taskFileList.map((file, index) => (

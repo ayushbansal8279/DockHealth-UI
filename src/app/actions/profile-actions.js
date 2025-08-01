@@ -108,3 +108,10 @@ export function deleteProfileAttachment(profileIdentifier, identifier) {
     identifier,
   };
 }
+
+export function initializeProfileAttachmentsFolder(folderIdentifier) {
+  return {
+    type: ActionTypes.INITIALIZE_PROFILE_ATTACHMENTS_FOLDER,
+    folderIdentifier,
+  };
+}
