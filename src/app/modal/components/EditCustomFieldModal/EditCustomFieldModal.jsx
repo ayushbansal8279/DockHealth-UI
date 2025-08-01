@@ -14,6 +14,7 @@ import { Box, Dialog, Grid, IconButton } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useDispatch } from 'react-redux';
 import { showGlobalErrorAlert } from 'alert/actions';
+import AlertMessages from 'alert/AlertMessages';
 import * as CustomFieldsApi from 'api/custom-fields-api';
 import {
   FieldType,
@@ -54,6 +55,7 @@ import {
   downloadCustomFieldImportTemplate,
   uploadCustomFieldOptions,
 } from '@/app/api/custom-fields-api';
+import { showGlobalAlert } from '@/app/alert/actions';
 
 const REQUIRED_MESSAGE = 'This field is required';
 
@@ -128,20 +130,12 @@ const EditCustomFieldModal = ({
       options: array()
         .of(
           object().shape({
-            name: string().required(REQUIRED_MESSAGE),
+            name: string()
+              .required(REQUIRED_MESSAGE)
+              .max(255, 'Option name must be at most 255 characters'),
           }),
         )
-        .nullable()
-        .test(
-          'unique-names',
-          'Duplicate option names are not allowed',
-          (options) => {
-            if (!options) return true;
-            const names = options.map((o) => o.name?.trim().toLowerCase());
-            const unique = new Set(names);
-            return unique.size === names.length;
-          },
-        ),
+        .nullable(),
 
       ...(type === 'PROFILE'
         ? {}
@@ -328,12 +322,12 @@ const EditCustomFieldModal = ({
             relatedProfileTypeName: selectedProfileType,
           });
           fetchUserCustomFields();
+          dispatch(showGlobalAlert(AlertMessages.UPDATED));
           setIsSaving(false);
           closeModal();
         })
         .catch((error) => {
           console.error(error);
-          dispatch(showGlobalErrorAlert());
           setIsSaving(false);
         });
     } else {
@@ -382,11 +376,11 @@ const EditCustomFieldModal = ({
       })
         .then((addedField) => {
           onAdded({ ...addedField, selectedProfileType });
+          dispatch(showGlobalAlert(AlertMessages.CREATED));
           setIsSaving(false);
           closeModal();
         })
         .catch(() => {
-          dispatch(showGlobalErrorAlert());
           setIsSaving(false);
         });
     } else {
@@ -437,6 +431,62 @@ const EditCustomFieldModal = ({
     },
   };
 
+  const getDuplicateOptionIndices = (options = []) => {
+    const nameToIndices = {};
+
+    options.forEach((option, index) => {
+      const key = option.name?.trim().toLowerCase();
+      if (!key) return;
+      if (!nameToIndices[key]) nameToIndices[key] = [];
+      nameToIndices[key].push(index);
+    });
+
+    return Object.values(nameToIndices).filter((arr) => arr.length > 1).flat();
+  };
+
+  const setDuplicateOptionErrors = (options = []) => {
+    const duplicates = getDuplicateOptionIndices(options);
+
+    options.forEach((_, index) =>
+      formMethods.clearErrors(`options.${index}.name`)
+    );
+
+    duplicates.forEach((i) => {
+      formMethods.setError(`options.${i}.name`, {
+        type: 'manual',
+        message: 'Duplicate option name',
+      });
+    });
+
+    return duplicates.length > 0;
+  };
+
+  useEffect(() => {
+    const subscription = formMethods.watch((value, { name }) => {
+      if (!name?.startsWith("options")) return;
+
+      setDuplicateOptionErrors(value?.options ?? []);
+    });
+
+    return () => subscription.unsubscribe();
+  }, [formMethods]);
+
+  const withDuplicateValidation = (handler) => (data) => {
+    const hasDuplicates = setDuplicateOptionErrors(data.options);
+    if (hasDuplicates) return;
+
+    handler(data);
+  };
+
+  const submitHandler = customField?.identifier
+    ? handleEditSubmit
+    : handleAddSubmit;
+
+  const finalSubmitHandler =
+    fieldTypeValue === FieldType.DROPDOWN || fieldTypeValue === FieldType.DROPDOWN_MULTI
+      ? withDuplicateValidation(submitHandler)
+      : submitHandler;
+
   return (
     <AddPatientFieldModalWrapper>
       <CloseIconButton onClick={closeModal} size="small" color="secondary">
@@ -449,11 +499,7 @@ const EditCustomFieldModal = ({
           <FiledTypeStep onSelect={partial(setValue, ['fieldType'])} />
         ) : (
           <FormProvider {...formMethods}>
-            <FieldForm
-              onSubmit={handleSubmit(
-                customField?.identifier ? handleEditSubmit : handleAddSubmit,
-              )}
-            >
+            <FieldForm onSubmit={handleSubmit(finalSubmitHandler)}>
               <FormScrollingContainer>
                 <Box overflow="hidden">
                   <Grid container spacing={2}>
@@ -564,9 +610,6 @@ const EditCustomFieldModal = ({
                         <Box m={2} />
                         <Grid item xs={12}>
                           <InfoText>Dropdown options</InfoText>
-                          {errors?.options?.message && (
-                            <ErrorMessage>{errors.options.message}</ErrorMessage>
-                          )}
                         </Grid>
                         {optionsValue.map((option, index) => {
                           const {

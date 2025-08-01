@@ -374,6 +374,7 @@ const ListDetailsHeader = (props) => {
             focused={focused}
             setFocused={setFocused}
             unsetFocused={unsetFocused}
+            needEnterToSearch
           />
         )}
         <Box mx={0.5} />
@@ -386,6 +387,7 @@ const ListDetailsHeader = (props) => {
             focused={focused}
             setFocused={setFocused}
             unsetFocused={unsetFocused}
+            needEnterToSearch
           />
         </HeaderSearchContainer>
       )}

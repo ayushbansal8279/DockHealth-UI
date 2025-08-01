@@ -7,7 +7,7 @@ export const SearchInputWrapper = styled.div`
   display: flex;
   align-items: center;
   padding: 8px;
-  flex-basis: ${({ wide }) => (wide ? 580 : 106)}px;
+  flex-basis: ${({ wide }) => (wide ? 680 : 206)}px;
   transition: flex-basis 0.25s ease-out;
   border: 1px solid ${palette.zinc};
   color: ${palette.coolGrey1};
@@ -32,7 +32,7 @@ export const SearchInput = styled.input`
   font-weight: 400;
   line-height: 18.75px;
   font-size: ${fontSizes.regular};
-  width: 50px;
+  width: 100%;
   height: 19px;
   background: transparent;
 
