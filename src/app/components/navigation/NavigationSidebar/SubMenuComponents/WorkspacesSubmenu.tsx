@@ -25,6 +25,7 @@ import WorkspaceTile from '@/app/components/workspace/WorkspaceTile/WorkspaceTil
 import { organizationWorkspaceLabelSelector } from '@/app/selectors/organization-selectors';
 import { isFetchingWorkspaceListSelector, workspaceListSelector } from '@/app/selectors/workspace-list-selector';
 import { getAllUserWorkspaces } from "@/app/actions/workspace-list-actions";
+import ToolbarButton from '@/app/components/tasklist/list-toolbar-buttons/ToolbarButton/ToolbarButton';
 
 const WorkspacesSubmenu = () => {
   const history = useHistory();
@@ -68,9 +69,16 @@ const WorkspacesSubmenu = () => {
                   history.push('/settings/workspaces/configure');
                 }}
               />
-              <AddworkspaceButton onClick={openAddWorkspaceModal}>
-                <Add sx={{ height: '22px' }} /> New
-              </AddworkspaceButton>
+              <ToolbarButton
+                icon={
+                  <span style={{ marginLeft: '-5px' }}>
+                    <Add />
+                  </span>
+                }
+                onClick={openAddWorkspaceModal}
+              >
+                <span style={{ marginLeft: '-5px' }}>New</span>
+              </ToolbarButton>
             </WorkspacesSubWrapper>
           </WorkspacesTitleWrapper>
           <Spacing />

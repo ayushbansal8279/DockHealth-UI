@@ -192,7 +192,7 @@ const PatientList = ({
           onAdded: (newPatientData) => {
             onTaskDrawerPatientAdded();
 
-            addPatient(newPatientData)
+            addPatient(newPatientData, workspaceIdentifier)
               .then(async ({ patientIdentifier, firstName, lastName }) => {
                 await onSelect({
                   firstName,

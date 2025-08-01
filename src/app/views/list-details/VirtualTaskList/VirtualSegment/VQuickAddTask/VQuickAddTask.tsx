@@ -21,6 +21,7 @@ import { useVirtualTaskListScrollContext } from '../../VirtualTaskListScrollCont
 import { Draggable } from 'react-beautiful-dnd';
 import palette from '@/app/styles/palette';
 import { useDroppable } from '@dnd-kit/core';
+import { useIsWorkspaceScopedList } from '@/app/hooks/useIsWorkspaceScopedList';
 
 export interface Props extends Segment {
   taskGroupIdentifier: string;
@@ -51,6 +52,7 @@ function VQuickAddTask(
   const number = droppableHeaderWidth;
   const percentage = ((!!number ? number : 0) / screenWidth) * 100;
   const taskGroupIdentifierRef = useRef(taskGroupIdentifier);
+  const { workspaceIdentifier } = useIsWorkspaceScopedList();
 
   useEffect(() => {
     taskGroupIdentifierRef.current = taskGroupIdentifier;
@@ -146,6 +148,7 @@ function VQuickAddTask(
               isWorkflowSearch
               origin={TaskOrigin.LIST}
               iconColorActive={undefined}
+              workspaceIdentifier={workspaceIdentifier}
             />
           </Sc.TaskTemplateApplicatorContainer>
         </Sc.VQuickAddTask>

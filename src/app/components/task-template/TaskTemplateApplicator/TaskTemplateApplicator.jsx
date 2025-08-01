@@ -48,6 +48,7 @@ const TaskTemplateApplicator = ({
   iconColorActive,
   isWorkflowSearch,
   origin,
+  workspaceIdentifier
 }) => {
   const popoverReference = useRef(null);
   const [isPopoverOpen, openPopover, closePopover] = useBoolean(false);
@@ -80,7 +81,7 @@ const TaskTemplateApplicator = ({
   const getRootTemplatesList = useCallback(() => {
     setTaskTemplatesIsLoading(true);
     setParentList([]);
-    getTemplates(true)
+    getTemplates(true, workspaceIdentifier)
       .then((templatesList) => {
         setTaskTemplatesList(templatesList);
         setTaskTemplatesIsLoading(false);
@@ -88,7 +89,7 @@ const TaskTemplateApplicator = ({
       .catch(() => {
         setTaskTemplatesIsLoading(false);
       });
-  }, []);
+  }, [workspaceIdentifier]);
 
   useEffect(() => {
     if (origin === 'LIST') {
@@ -147,7 +148,7 @@ const TaskTemplateApplicator = ({
       if (searchPhrase.length > 2) {
         setParentList([]);
         setTaskTemplatesIsLoading(true);
-        searchTemplates(searchPhrase)
+        searchTemplates(searchPhrase, workspaceIdentifier)
           .then((templatesList) => {
             setTaskTemplatesList(templatesList);
             setTaskTemplatesIsLoading(false);

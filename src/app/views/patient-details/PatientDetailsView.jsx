@@ -41,6 +41,7 @@ import {
 } from './styled';
 import { patientOrgIdSelector, patientSelector } from '@/app/selectors/patient-details-selectors';
 import { selectCurrentOrganizationWithRedirection } from '@/app/api/organization-api';
+import { useIsWorkspaceScopedPatient } from '@/app/hooks/useIsWorkspaceScopedPatient';
 import { getWorkspaceByIdentifier } from '@/app/api/workspace-api';
 import { getWorkspaceTitle } from '../workspaces/workspace-title-helpers';
 
@@ -66,6 +67,8 @@ const PatientDetailsView = () => {
     patientNotesDisabled ? DEFAULT_TABS_CONFIG : TABS_CONFIG,
   );
 
+  const { workspaceIdentifier } = useIsWorkspaceScopedPatient();
+
   const [workspace, setWorkspace] = useState();
   const patient = useSelector(patientSelector);
 
@@ -86,6 +89,9 @@ const PatientDetailsView = () => {
   });
 
   useEffect(() => {
+    if (workspaceIdentifier) {
+      return;
+    }
     const organizationsExist = patientOrgIdentifier && currentOrganization;
     const organizationsDiffer =
       patientOrgIdentifier !== currentOrganization?.organizationIdentifier;
