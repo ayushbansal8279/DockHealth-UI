@@ -1,12 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Box } from '@mui/material';
-// import {
-//   currentFolderIdentifierSelectorSelector,
-//   currententityIdentifierSelectorSelector,
-// } from 'selectors/patient-details-selectors';
-// import { getFolderStructureHierarchy } from 'api/patient-attachment-api';
-// import { createAttachmentsPath } from 'routing/helpers/paths';
 import {
   BreadcrumbLink,
   BreadcrumbSeparator,
