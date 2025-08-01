@@ -26,8 +26,8 @@ import {
   WorkflowFoldersHeaderLabel,
   WorkflowFoldersListContainer,
   FolderNameContainer,
-  WorkflowSearchHorizontalLineContainer,
-  WorkflowSearchHorizontalLine,
+  HorizontalLineContainer,
+  HorizontalLine,
   WorkflowListsContainer,
   WorkflowLists,
   WorkflowNameContainer,
@@ -136,9 +136,9 @@ const TaskTemplatePopover = ({
           isWorkFlowSearch={isWorkflowSearch}
         />
       </SearchContainer>
-      <WorkflowSearchHorizontalLineContainer>
-        <WorkflowSearchHorizontalLine />
-      </WorkflowSearchHorizontalLineContainer>
+      <HorizontalLineContainer>
+        <HorizontalLine />
+      </HorizontalLineContainer>
       {parentList && (
         <>
           <PopoverHeader onClick={onBack}>
@@ -154,9 +154,9 @@ const TaskTemplatePopover = ({
               {/* {trunc(parentList.name, 25)} */}
             </HeaderTextContainer>
           </PopoverHeader>
-          <WorkflowSearchHorizontalLineContainer>
-            <WorkflowSearchHorizontalLine />
-          </WorkflowSearchHorizontalLineContainer>
+          <HorizontalLineContainer>
+            <HorizontalLine />
+          </HorizontalLineContainer>
         </>
       )}
       <SelectOptionsContainer>
@@ -181,9 +181,9 @@ const TaskTemplatePopover = ({
                     .map((folder) => renderFolder(folder))}
               </WorkflowFoldersListContainer>
             </WorkflowFoldersContainer>
-            <WorkflowSearchHorizontalLineContainer>
-              <WorkflowSearchHorizontalLine />
-            </WorkflowSearchHorizontalLineContainer>
+            <HorizontalLineContainer>
+              <HorizontalLine />
+            </HorizontalLineContainer>
           </>
         )}
         <WorkflowListsContainer>
