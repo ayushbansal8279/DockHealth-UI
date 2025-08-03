@@ -9,10 +9,10 @@ import palette, { typography } from 'styles/palette';
 export const DecisionTaskIconWrapper = styled.div`
   display: flex;
   justify-content: center;
-  margin: 4px 0 5px 10px;
+  // margin: 4px 0 5px 10px;
   align-items: center;
-  width: 40px;
-  height: 30px;
+  width: 38px;
+  height: 28px;
   border-radius: 4px;
   color: ${palette.white};
   background-color: ${palette.brightBlue};
@@ -27,9 +27,13 @@ export const OptionsContainer = styled.div`
 `;
 
 export const TaskInfoWrapper = styled.div`
-  padding: 5px 10px 12px;
+  padding: 5px 10px 1px;
   width: 100%;
   height: 100%;
+  text-align: center;
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
 `;
 
 export const TaskDescription = styled.p`

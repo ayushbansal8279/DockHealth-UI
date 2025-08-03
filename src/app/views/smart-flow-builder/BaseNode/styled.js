@@ -1,6 +1,9 @@
 import styled from 'styled-components';
 import palette from 'styles/palette';
-import { TASK_NODE_WIDTH } from '@/app/helpers/smart-flow-builder-helpers';
+import {
+  NodeType,
+  TASK_NODE_WIDTH,
+} from '@/app/helpers/smart-flow-builder-helpers';
 
 export const OptionsContainer = styled.div`
   opacity: 0;
@@ -19,12 +22,20 @@ export const BaseNodeWrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: ${({ width }) => (width ? `${width}px` : `${TASK_NODE_WIDTH}px`)};
-  height: 180px;
+  height: 200px;
   background-color: ${palette.white};
   box-shadow: 0px 0px 11px rgba(0, 0, 0, 0.15);
   overflow: visible;
-  border-radius: 14px;
   border: 3px solid ${palette.brightBlue};
+  border-radius: 14px;
+  ${({ type }) =>
+    [
+      NodeType.NEW_WORKFLOW_LINK,
+      NodeType.NEW_STANDARD,
+      NodeType.NEW_DECISION,
+      NodeType.NEW_AUTOMATION,
+    ].includes(type) && `border: 3px solid ${palette.coolGrey3};`}
+
   ${({ selected }) => selected && `background-color: #ddedf8;`}
 
   &:hover {
@@ -49,6 +60,7 @@ export const GrowButton = styled.div`
 export const NodeHeaderWrapper = styled.div`
   width: 100%;
   height: 25%;
+  padding: 0 18px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -58,6 +70,7 @@ export const NodeHeaderWrapper = styled.div`
 export const NodeFooterWrapper = styled.div`
   width: 100%;
   height: 25%;
+  padding: 0 12px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -67,4 +80,7 @@ export const NodeFooterWrapper = styled.div`
 export const NodeContentWrapper = styled.div`
   width: 100%;
   height: 50%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 `;

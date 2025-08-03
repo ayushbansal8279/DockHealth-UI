@@ -1,15 +1,22 @@
 import React, { useState } from 'react';
-import { IconButton } from '@mui/material';
+import { Fab, IconButton } from '@mui/material';
 import { useDispatch } from 'react-redux';
 import DeleteIcon from '@mui/icons-material/Delete';
+import DecisionTaskElementIcon from 'img/template/decision-task-icon';
 import {
   addTaskToTemplate,
   deleteTemporaryElement,
 } from 'actions/task-template-actions';
-import { getTargetNodeType } from 'helpers/smart-flow-builder-helpers';
+import {
+  getTargetNodeType,
+  NodeType,
+} from 'helpers/smart-flow-builder-helpers';
 import TaskNodeWrapper from '../TaskNodeWrapper/TaskNodeWrapper';
 import { NewTaskInput, NewTaskWrapper } from './styled';
 import TaskNodeHandles from '../TaskNodeHandles/TaskNodeHandles';
+import BaseNode from '../BaseNode/BaseNode';
+import { DecisionTaskIconWrapper } from '../TaskNode/styled';
+import { TaskElementIcon } from '../styled';
 
 const NewTaskNode = React.memo((props) => {
   const { id, type, data, selected, xPos, yPos, isConnectable } = props;
@@ -72,20 +79,45 @@ const NewTaskNode = React.memo((props) => {
       onTargetHandleHover={data.onTargetHandleHover}
       draggedEdgeSourceId={data?.draggedEdgeSourceId}
     >
-      <TaskNodeWrapper selected={selected} type={type}>
-        <NewTaskWrapper>
-          <NewTaskInput
-            value={inputValue}
-            placeholder="Add Task Description"
-            onChange={handleInputChange}
-            onKeyDown={handleKeyDown}
-            onBlur={handleBlur}
-          />
-          <IconButton onClick={() => dispatch(deleteTemporaryElement(id))}>
-            <DeleteIcon />
-          </IconButton>
-        </NewTaskWrapper>
-      </TaskNodeWrapper>
+      <BaseNode
+        selected={selected}
+        type={type}
+        optionButtons={[
+          <Fab
+            key="delete"
+            aria-label="delete"
+            size="small"
+            onClick={() => dispatch(deleteTemporaryElement(id))}
+          >
+            <DeleteIcon fontSize="small" color="inherit" />
+          </Fab>,
+        ]}
+        headerIcon={
+          <>
+            {type === NodeType.NEW_DECISION && (
+              <DecisionTaskIconWrapper>
+                <DecisionTaskElementIcon size={21} />
+              </DecisionTaskIconWrapper>
+            )}
+            {type === NodeType.NEW_STANDARD && (
+              <DecisionTaskIconWrapper>
+                <TaskElementIcon />
+              </DecisionTaskIconWrapper>
+            )}
+          </>
+        }
+        headerTitle={
+          <NewTaskWrapper>
+            <NewTaskInput
+              value={inputValue}
+              placeholder="Add Task Description"
+              onChange={handleInputChange}
+              onKeyDown={handleKeyDown}
+              onBlur={handleBlur}
+            />
+          </NewTaskWrapper>
+        }
+      />
     </TaskNodeHandles>
   );
 });
