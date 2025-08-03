@@ -13,6 +13,7 @@ const BaseNode = (props) => {
     headerTitle,
     headerIcon,
     footerContent,
+    content,
   } = props;
 
   return (
@@ -26,7 +27,7 @@ const BaseNode = (props) => {
         headerTitle={headerTitle}
         headerIcon={headerIcon}
       />
-      <BaseNodeContent />
+      <BaseNodeContent content={content} />
       <BaseNodeFooter footerContent={footerContent} />
     </BaseNodeWrapper>
   );

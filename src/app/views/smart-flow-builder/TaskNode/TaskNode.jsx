@@ -142,13 +142,13 @@ const TaskNode = React.memo(({ data, isConnectable, selected, type }) => {
         optionButtons={[
           <Fab
             key="delete"
-            aria-label="add"
+            aria-label="delete"
             size="small"
             onClick={handleDelete}
           >
             <DeleteIcon fontSize="small" color="inherit" />
           </Fab>,
-          <Fab key="edit" aria-label="add" size="small" onClick={handleEdit}>
+          <Fab key="edit" aria-label="edit" size="small" onClick={handleEdit}>
             <EditIcon fontSize="small" color="inherit" />
           </Fab>,
         ]}
@@ -191,79 +191,72 @@ const TaskNode = React.memo(({ data, isConnectable, selected, type }) => {
         }
         footerContent={
           <TaskInfoWrapper>
-            <Box
-              display="flex"
-              width="100%"
-              justifyContent="space-between"
-              alignItems="center"
-            >
-              {!isCurrentMemberPermission && (
-                <Box display="flex">
-                  <button
-                    type="button"
-                    onClick={() => openTaskDrawer(DrawerFieldEnum.COMMENT)}
-                  >
-                    <TaskIcon
-                      type="comments"
-                      isActive={comments?.length > 0}
-                      isNew={updatedComment}
-                    />
-                  </button>
-                  <Box p={1} />
-                  <button
-                    type="button"
-                    onClick={() => openTaskDrawer(DrawerFieldEnum.LABEL)}
-                  >
-                    <TaskIcon
-                      type="labels"
-                      isActive={labels?.length > 0}
-                      isNew={updatedLabel}
-                    />
-                  </button>
-                  <Box p={1} />
-                  <button
-                    type="button"
-                    onClick={() => openTaskDrawer(DrawerFieldEnum.ATTACHMENT)}
-                  >
-                    <TaskIcon
-                      type="attachments"
-                      isActive={attachments?.length > 0}
-                      isNew={updatedAttachment}
-                    />
-                  </button>
-                  <Box px={1} />
-                  {subtasks?.length > 0 && (
-                    <SubtasksLabel>
-                      {subtasks.length}
-                      <Box px={0.2} />
-                      <SubtaskIcon color="currentColor" size={12} />
-                    </SubtasksLabel>
-                  )}
-                </Box>
-              )}
-              <Box
-                sx={{
-                  display: 'flex',
-                }}
-              >
-                <Box p={2} />
-                {
-                  <Box sx={{ paddingRight: '10px' }}>
-                    {assignedToUsers?.length === 1 &&
-                      (isUserGroup(assignedToUsers[0]) ? (
-                        <GroupAvatar group={assignedToUsers[0]} size={35} />
-                      ) : (
-                        <UserAvatar user={assignedToUsers[0]} size={35} />
-                      ))}
-                  </Box>
-                }
-                {assignedToUsers?.length > 1 && (
-                  <AdditionalMembersCounter
-                    hiddenMembers={assignedToUsers}
-                    size={35}
+            {!isCurrentMemberPermission && (
+              <Box display="flex">
+                <button
+                  type="button"
+                  onClick={() => openTaskDrawer(DrawerFieldEnum.COMMENT)}
+                >
+                  <TaskIcon
+                    type="comments"
+                    isActive={comments?.length > 0}
+                    isNew={updatedComment}
                   />
+                </button>
+                <Box p={1} />
+                <button
+                  type="button"
+                  onClick={() => openTaskDrawer(DrawerFieldEnum.LABEL)}
+                >
+                  <TaskIcon
+                    type="labels"
+                    isActive={labels?.length > 0}
+                    isNew={updatedLabel}
+                  />
+                </button>
+                <Box p={1} />
+                <button
+                  type="button"
+                  onClick={() => openTaskDrawer(DrawerFieldEnum.ATTACHMENT)}
+                >
+                  <TaskIcon
+                    type="attachments"
+                    isActive={attachments?.length > 0}
+                    isNew={updatedAttachment}
+                  />
+                </button>
+                <Box px={1} />
+                {subtasks?.length > 0 && (
+                  <SubtasksLabel>
+                    {subtasks.length}
+                    <Box px={0.2} />
+                    <SubtaskIcon color="currentColor" size={12} />
+                  </SubtasksLabel>
                 )}
               </Box>
+            )}
+            <Box
+              sx={{
+                display: 'flex',
+              }}
+            >
+              <Box p={2} />
+              {
+                <Box sx={{ paddingRight: '10px' }}>
+                  {assignedToUsers?.length === 1 &&
+                    (isUserGroup(assignedToUsers[0]) ? (
+                      <GroupAvatar group={assignedToUsers[0]} size={30} />
+                    ) : (
+                      <UserAvatar user={assignedToUsers[0]} size={30} />
+                    ))}
+                </Box>
+              }
+              {assignedToUsers?.length > 1 && (
+                <AdditionalMembersCounter
+                  hiddenMembers={assignedToUsers}
+                  size={30}
+                />
+              )}
             </Box>
           </TaskInfoWrapper>
         }

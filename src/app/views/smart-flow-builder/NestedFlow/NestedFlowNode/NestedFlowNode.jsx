@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
-import { Fab, IconButton, Typography } from '@mui/material';
+import { Chip, Fab, IconButton, Typography } from '@mui/material';
 import { openModal, closeModal } from 'modal/actions';
 import { deleteTask, partialUpdateTask } from 'actions/task-actions';
 import { getTemplates } from 'api/task-template-api';
@@ -24,6 +24,7 @@ import {
   TaskDescription,
 } from '../../TaskNode/styled';
 import WorkflowLinkIcon from 'img/template/workflow-icon';
+import Tooltip from '@/app/components/common/Tooltip/Tooltip';
 
 const NestedFlowNode = React.memo(({ data, isConnectable, selected, type }) => {
   const { task } = data || {};
@@ -177,7 +178,7 @@ const NestedFlowNode = React.memo(({ data, isConnectable, selected, type }) => {
           !isCurrentMemberPermission && [
             <Fab
               key="delete"
-              aria-label="add"
+              aria-label="delete"
               size="small"
               onClick={handleDelete}
             >
@@ -185,7 +186,7 @@ const NestedFlowNode = React.memo(({ data, isConnectable, selected, type }) => {
             </Fab>,
             <Fab
               key="edit"
-              aria-label="add"
+              aria-label="edit"
               size="small"
               onClick={handleOpenModal}
             >
@@ -193,11 +194,11 @@ const NestedFlowNode = React.memo(({ data, isConnectable, selected, type }) => {
             </Fab>,
             <Fab
               key="List"
-              aria-label="add"
+              aria-label="list"
               size="small"
               onClick={handleOpenListPicker}
             >
-              <ListsIcon color="black" />
+              <ListsIcon color="black" height="16" width="22" />
             </Fab>,
           ]
         }
@@ -212,89 +213,93 @@ const NestedFlowNode = React.memo(({ data, isConnectable, selected, type }) => {
             <WorkflowLinkIcon />
           </DecisionTaskIconWrapper>
         }
-      />
-      {/* <TaskNodeEllipsis />
-          <NestedFlowNodeStyled>
-            <Typography component="p" style={{ maxHeight: '100%' }}>
-              {description?.slice(0, 40)}
-              {description?.length > 40 && '...'}
-            </Typography>
-            {!isCurrentMemberPermission && (
-              <IconContainerStyled>
-                <IconButton onClick={handleDelete}>
-                  <Delete htmlColor={palette.white} />
-                </IconButton>
-                <IconButton onClick={handleOpenModal}>
-                  <Edit htmlColor={palette.white} />
-                </IconButton>
-                <IconButton onClick={handleOpenListPicker}>
-                  <ListsIcon color="white" />
-                </IconButton>
-              </IconContainerStyled>
+        content={
+          <TaskLinks>
+            {taskList && (
+              <Typography
+                component="p"
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  padding: '5px 0',
+                }}
+              >
+                <span
+                  style={{
+                    display: 'flex',
+                    gap: '5px',
+                    overflow: 'hidden',
+                    flexWrap: 'nowrap',
+                  }}
+                >
+                  <strong>List: </strong>
+                  <Tooltip
+                    title={taskList?.listName}
+                    key={taskList?.listName}
+                    placement="top"
+                  >
+                    <Chip
+                      variant="outlined"
+                      key={taskList?.listName}
+                      onDelete={() => handleClose('taskList')}
+                      label={taskList?.listName}
+                      sx={{
+                        maxWidth: 200,
+                        whiteSpace: 'nowrap',
+                        textOverflow: 'ellipsis',
+                        overflow: 'hidden',
+                        fontWeight: '600',
+                      }}
+                    />
+                  </Tooltip>
+                </span>
+              </Typography>
             )}
-          </NestedFlowNodeStyled> */}
-      {/* </TaskNodeWrapper> */}
-      {/* <TaskLinks>
-          {taskList && (
-            <Typography
-              component="p"
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                padding: '5px 0 3px 0',
-              }}
-            >
-              <span
+            {taskGroup && (
+              <Typography
+                component="p"
                 style={{
-                  overflow: 'hidden',
-                  whiteSpace: 'nowrap',
-                  textOverflow: 'ellipsis',
-                  flex: 1,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  padding: '5px 0',
                 }}
               >
-                <strong>List: </strong>
-                {taskList?.listName}
-              </span>
-              <IconButton
-                size="small"
-                onClick={() => handleClose('taskList')}
-                style={{ padding: '2px', textAlign: 'right' }}
-              >
-                <CloseIcon htmlColor={palette.white} fontSize="small" />
-              </IconButton>
-            </Typography>
-          )}
-          {taskGroup && (
-            <Typography
-              component="p"
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                padding: '1px 0 5px 0',
-              }}
-            >
-              <span
-                style={{
-                  overflow: 'hidden',
-                  whiteSpace: 'nowrap',
-                  textOverflow: 'ellipsis',
-                  flex: 1,
-                }}
-              >
-                <strong>Group: </strong>
-                {taskGroup.groupName}
-              </span>
-              <IconButton
-                size="small"
-                onClick={() => handleClose('taskGroup')}
-                style={{ padding: '2px', textAlign: 'right' }}
-              >
-                <CloseIcon htmlColor={palette.white} fontSize="small" />
-              </IconButton>
-            </Typography>
-          )}
-        </TaskLinks> */}
-      {/* </TaskWrapper> */}
+                <span
+                  style={{
+                    display: 'flex',
+                    gap: '5px',
+                    overflow: 'hidden',
+                    flexWrap: 'nowrap',
+                  }}
+                >
+                  <strong>Group:</strong>
+                  <Tooltip
+                    title={taskGroup?.groupName}
+                    key={taskGroup?.groupName}
+                    placement="top"
+                  >
+                    <Chip
+                      variant="outlined"
+                      key={taskGroup?.groupName}
+                      onDelete={() => handleClose('taskGroup')}
+                      label={taskGroup?.groupName}
+                      sx={{
+                        maxWidth: 200,
+                        whiteSpace: 'nowrap',
+                        textOverflow: 'ellipsis',
+                        overflow: 'hidden',
+                        fontWeight: '600',
+                      }}
+                    />
+                  </Tooltip>
+                </span>
+              </Typography>
+            )}
+          </TaskLinks>
+        }
+      />
     </TaskNodeHandles>
   );
 });

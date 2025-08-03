@@ -3,10 +3,11 @@ import palette, { typography } from 'styles/palette';
 
 export const NewTaskWrapper = styled.div`
   width: 100%;
-  padding: 0 15px;
+  padding: 12px 0 12px 10px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  text-align: center;
 
   & button {
     transition: opacity 0.3s linear;
