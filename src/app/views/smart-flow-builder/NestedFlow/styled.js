@@ -20,11 +20,19 @@ export const TaskWrapper = styled.div`
 `;
 
 export const TaskLinks = styled.div`
-  padding: 0 8px;
-  max-width: 280px;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
+  width: 100%;
+  padding: 12px 20px;
+`;
+
+export const NewNestedFlowNodeWrapper = styled.div`
+  width: 100%;
+  padding: 12px 0 12px 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  text-align: center;
+  color: ${palette.coolGrey2};
+  background: transparent;
 `;
 
 export default NestedFlowNodeStyled;

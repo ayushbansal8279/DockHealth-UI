@@ -1,12 +1,21 @@
 import React, { useCallback, useMemo } from 'react';
-import ReactFlow, { applyEdgeChanges, applyNodeChanges } from 'reactflow';
-import { NodeType } from 'helpers/smart-flow-builder-helpers';
+import ReactFlow, {
+  applyEdgeChanges,
+  applyNodeChanges,
+  Controls,
+  MiniMap,
+} from 'reactflow';
+import {
+  getMiniMapNodeColor,
+  NodeType,
+} from 'helpers/smart-flow-builder-helpers';
 
 const ReactFlowAdapter = ({
   elements,
   onElementsChange,
   onLoad,
   onPanelClick,
+  isCurrentUserEditor,
   ...props
 }) => {
   const isNode = useCallback(
@@ -53,7 +62,23 @@ const ReactFlowAdapter = ({
       onNodesChange={onNodesChange}
       onEdgesChange={onEdgesChange}
       onPaneClick={onPanelClick}
-    />
+    >
+      <Controls showInteractive={isCurrentUserEditor} />
+      <MiniMap
+        nodeBorderRadius={4}
+        nodeStrokeColor={() => '#ffffff'}
+        nodeColor={getMiniMapNodeColor}
+        maskColor="rgba(0, 0, 0, 0.1)"
+        style={{
+          position: 'absolute',
+          right: 60,
+          bottom: 60,
+          borderRadius: 4,
+          border: '1px solid #e0e0e0',
+          boxShadow: '0 0 6px rgba(0, 0, 0, 0.1)',
+        }}
+      />
+    </ReactFlow>
   );
 };
 
