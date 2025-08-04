@@ -1,11 +1,22 @@
 import DataGrid, { Data } from 'ui-toolkit/Composite/DataGrid';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { PatientCell } from './styled';
 import { useHistory, useLocation } from 'react-router-dom';
+import { getPatientForProfile } from '@/app/api/profile-api';
+import { useSelector } from 'react-redux';
+import { currentProfileIdentifierSelector } from '@/app/selectors/profile-selector';
 
-const ProfilePatientList = ({ patients }) => {
+const ProfilePatientList = () => {
   const history = useHistory();
   const { pathname } = useLocation();
+  const profileIdentifier = useSelector(currentProfileIdentifierSelector);
+  const [patients, setPatients] = useState([]);
+
+  useEffect(() => {
+    getPatientForProfile(profileIdentifier).then((patients) => {
+      setPatients(patients ?? []);
+    });
+  }, [profileIdentifier]);
 
   const mappedPatients = patients.map((patient) => ({
     ...patient,
@@ -40,9 +51,8 @@ const ProfilePatientList = ({ patients }) => {
       <Data
         name="Relationship"
         value={(data) =>
-          data.patientRelationFields
-            ?.map((field) => field.name)
-            .join(', ') || 'No relationship'
+          data.patientRelationFields?.map((field) => field.name).join(', ') ||
+          'No relationship'
         }
         flex={1}
       />

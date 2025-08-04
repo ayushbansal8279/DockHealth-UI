@@ -11,7 +11,15 @@ import {
   setCurrentUserGroup,
   unsetCurrentUserGroup,
 } from 'actions/user-groups-actions';
-import { Box, Dialog, FormGroup, ListItemText, MenuItem, Stack, Switch } from '@mui/material';
+import {
+  Box,
+  Dialog,
+  FormGroup,
+  ListItemText,
+  MenuItem,
+  Stack,
+  Switch,
+} from '@mui/material';
 import { getAllProfileTypes } from 'api/profile-type-api';
 import { getAllProfiles } from 'api/profile-api';
 import { getAllProfileFieldTypes } from 'api/profile-type-field-api';
@@ -32,9 +40,19 @@ import ProfileFilter from '../ProfileFilter/ProfileFilter';
 import OptionsMenu from '../../common/OptionsMenu/OptionsMenu';
 import { MoreVert } from '@mui/icons-material';
 import { userProfileSelector } from '@/app/selectors/user-selectors';
-import { isUserGuestOrDockLite, isUserViewOnly } from '@/app/helpers/user-helper';
-import { downloadProfileData, downloadProfileImportTemplate, uploadProfileData } from '@/app/api/profile-api';
-import { initializeProfileState, updateProfileListPreferences } from '@/app/actions/profile-actions';
+import {
+  isUserGuestOrDockLite,
+  isUserViewOnly,
+} from '@/app/helpers/user-helper';
+import {
+  downloadProfileData,
+  downloadProfileImportTemplate,
+  uploadProfileData,
+} from '@/app/api/profile-api';
+import {
+  initializeProfileTypeState,
+  updateProfileListPreferences,
+} from '@/app/actions/profile-actions';
 import { getProfileListPreferences } from '@/app/api/profile-type-api';
 import { StyledLink } from './styled';
 import DateLabel from '../../common/DateLabel/DateLabel';
@@ -50,10 +68,6 @@ const CustomProfileList = () => {
   const groupIdentifier = getUserGroupIdentifierByUrlParameter(
     groupIdentifierUrlParameter,
   );
-
-  useEffect(() => {
-    dispatch(initializeProfileState(profileTypeIdentifier));
-  }, [dispatch, profileTypeIdentifier]);
 
   useEffect(() => {
     dispatch(setCurrentUserGroup(groupIdentifier));
@@ -79,12 +93,15 @@ const CustomProfileList = () => {
   const [filters, setFilters] = useState([]);
   const [profiles, setProfiles] = useState([]);
   const [searchPhrase, setSearchPhrase] = useState('');
-  // console.log(profiles);
   const currentUser = useSelector(userProfileSelector);
   const [importPopupOpen, setImportPopupOpen] = useState(false);
-  
+
   const isGuestOrDockLite = isUserGuestOrDockLite(currentUser);
   const isViewOnly = isUserViewOnly(currentUser);
+
+  useEffect(() => {
+    dispatch(initializeProfileTypeState(currentProfileType));
+  }, [dispatch, profileTypeIdentifier, currentProfileType]);
 
   const fetchProfileTypes = useCallback(() => {
     getAllProfileTypes()
@@ -111,9 +128,8 @@ const CustomProfileList = () => {
   }, [dispatch, profileTypeIdentifier]);
 
   const fetchFilters = () => {
-    getProfileListPreferences(profileTypeIdentifier)
-      .then(setFilters);
-  }
+    getProfileListPreferences(profileTypeIdentifier).then(setFilters);
+  };
 
   const fetchProfiles = useCallback(() => {
     getAllProfiles(profileTypeIdentifier)
@@ -155,8 +171,8 @@ const CustomProfileList = () => {
 
   const handleFilterChange = (field) => () => {
     const updatedFilters = filters.includes(field.identifier)
-        ? filters.filter((filter) => filter !== field.identifier)
-        : [...filters, field.identifier];
+      ? filters.filter((filter) => filter !== field.identifier)
+      : [...filters, field.identifier];
 
     setFilters(updatedFilters);
 
@@ -165,21 +181,21 @@ const CustomProfileList = () => {
         {
           listDisplayColumns: updatedFilters,
         },
-        profileTypeIdentifier
+        profileTypeIdentifier,
       ),
     );
-};
+  };
 
   const handleDownloadProfileData = () => {
     const filename = `Dock ${currentProfileType?.name}.csv`;
     downloadProfileData(profileTypeIdentifier, filename);
-};
-  
+  };
+
   return (
     <>
       <ViewLayout
         header={
-          <LayoutHeader> 
+          <LayoutHeader>
             <Box
               position="absolute"
               top={currentProfileType?.description ? 17 : 27}
@@ -201,7 +217,7 @@ const CustomProfileList = () => {
                       onClick: () => {
                         handleDownloadProfileData();
                       },
-                    }
+                    },
                 ]}
               >
                 <MoreVert color="primary" />
@@ -273,9 +289,7 @@ const CustomProfileList = () => {
                         key={field.identifier}
                         onClick={handleFilterChange(field)}
                       >
-                        <Switch
-                          checked={filters.includes(field.identifier)}
-                        />
+                        <Switch checked={filters.includes(field.identifier)} />
                         <Box mx={0.5} />
                         <ListItemText>{field.name}</ListItemText>
                       </MenuItem>
@@ -374,11 +388,12 @@ const CustomProfileList = () => {
                           .join(', ');
                       }
                       case 'HYPERLINK': {
-                        const link = record.values?.[0] || record.values?.[0]?.value || '';
-                        if(!link) return '';
+                        const link =
+                          record.values?.[0] || record.values?.[0]?.value || '';
+                        if (!link) return '';
                         return (
                           <StyledLink
-                            href={link.startsWith("http") ? link : `//${link}`} 
+                            href={link.startsWith('http') ? link : `//${link}`}
                             target="_blank"
                             onClick={(event) => event.stopPropagation()}
                           >
@@ -387,9 +402,15 @@ const CustomProfileList = () => {
                         );
                       }
                       case 'DATE': {
-                        const date = record.values?.[0] || record.values?.[0]?.value || ''
-                        if(!date) return '';
-                        return <DateLabel date={date} dueDateIntent={record.dateTimeIntents[0]} />
+                        const date =
+                          record.values?.[0] || record.values?.[0]?.value || '';
+                        if (!date) return '';
+                        return (
+                          <DateLabel
+                            date={date}
+                            dueDateIntent={record.dateTimeIntents[0]}
+                          />
+                        );
                       }
                       default: {
                         return '';
@@ -416,7 +437,9 @@ const CustomProfileList = () => {
           closeModal={() => {
             setImportPopupOpen(false);
           }}
-          downloadTemplate={() => downloadProfileImportTemplate(profileTypeIdentifier)}
+          downloadTemplate={() =>
+            downloadProfileImportTemplate(profileTypeIdentifier)
+          }
           step={1}
           label="profile"
           uploadFunction={uploadProfileData}

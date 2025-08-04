@@ -21,8 +21,10 @@ import {
   ButtonContainer,
   ButtonWrapper,
 } from './styled';
+import { useParams } from 'react-router-dom';
 
-const ProfileNotes = ({ profileIdentifier }) => {
+const ProfileNotes = () => {
+  const { profileIdentifier } = useParams();
   const dispatch = useDispatch();
   const isFetching = useSelector(isFetchingNotesSelector);
   const currentUser = useSelector(userProfileSelector);
