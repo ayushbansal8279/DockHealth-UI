@@ -16,6 +16,10 @@ import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import HardDependencyIcon from 'img/template/hard-dependency';
 import CalendarIcon from 'img/template/calendar-icon';
 import WorkflowLinkIcon from 'img/template/workflow-icon';
+import EmailIcon from '@mui/icons-material/Email';
+import WebhookIcon from '@mui/icons-material/Webhook';
+import PsychologyIcon from '@mui/icons-material/Psychology';
+import SmartToyIcon from '@mui/icons-material/SmartToy';
 import * as ModalActions from 'modal/actions';
 import {
   createWorkflowFolderPath,
@@ -36,6 +40,10 @@ import {
   selectTaskTemplate,
   unselectTaskTemplate,
   addNewAutomationTaskElement,
+  addNewEmailElement,
+  addNewWebhookElement,
+  addNewAIAnalyzerElement,
+  addNewAIAssistantElement,
 } from 'actions/task-template-actions';
 import {
   taskTemplateDetailsSelector,
@@ -46,9 +54,8 @@ import {
   userProfileSelector,
 } from 'selectors/user-selectors';
 import { openDrawer } from 'actions/workflow-drawer-actions';
-import { Box, ClickAwayListener, Paper, Popper } from '@mui/material';
+import { Box } from '@mui/material';
 import DecisionTaskElementIcon from 'img/template/decision-task-icon';
-import Tooltip from 'components/common/Tooltip/Tooltip';
 import {
   Controls,
   Position,
@@ -66,7 +73,6 @@ import {
 } from 'helpers/smart-flow-builder-helpers';
 import { TaskOrigin } from 'helpers/task-helpers';
 import { useBoolean } from 'hooks/useBoolean';
-import palette from 'styles/palette';
 import * as AlertActions from 'alert/actions';
 import EditIcon from '@mui/icons-material/Edit';
 import ReactFlowAdapter from 'views/smart-flow-builder/ReactFlowAdapter';
@@ -75,6 +81,11 @@ import TaskNode from './TaskNode/TaskNode';
 import TaskLink from './TaskLink/TaskLink';
 import DecisionTaskLink from './DecisionTaskLink/DecisionTaskLink';
 import TemporaryTaskLink from './TemporaryTaskLink/TemporaryTaskLink';
+import EmailNode from './Nodes/EmailNode';
+import WebhookNode from './Nodes/WebhookNode';
+import AIAnalyzerNode from './Nodes/AIAnalyzerNode';
+import AIAssistantNode from './Nodes/AIAssistantNode';
+import SmartflowSidebar from './SmartflowSidebar/SmartflowSidebar';
 import {
   mapLayoutToElements,
   mapElementsToLayout,
@@ -84,17 +95,12 @@ import {
   countStartIndicatorInitialPosition,
 } from './helpers';
 import {
-  ElementsSidebar,
-  SidebarTitle,
-  ElementButton,
-  ElementIconBackground,
-  ElementDescription,
-  TaskElementIcon,
   BuilderHeader,
-  BuilderHeaderText,
-  SidebarDivider,
-  AutoAlignButton,
+  HeaderBreadcrumb,
+  HeaderTitle,
   EditIconWrapper,
+  CanvasContainer,
+  TaskElementIcon,
   AutomationTaskIcon,
 } from './styled';
 import TaskLinkDelayForm from './TaskLinkDelayForm/TaskLinkDelayForm';
@@ -105,6 +111,7 @@ import NestedFlowNode from './NestedFlow/NestedFlowNode/NestedFlowNode';
 import NewNestedFlowNode from './NestedFlow/NewNestedFlowNode/NewNestedFlowNode';
 import { isUserDockPro } from '@/app/helpers/user-helper';
 import IndicatorNode from './IndicatorNode/IndicatorNode';
+import NodeConfigPanel from './NodeDrawers/NodeConfigPanel';
 import ConnectionLineComponent from './ConnectionLineComponent/ConnectionLineComponent';
 
 const nodeTypes = {
@@ -117,6 +124,11 @@ const nodeTypes = {
   [NodeType.WORKFLOW_LINK]: NestedFlowNode,
   [NodeType.START_INDICATOR]: IndicatorNode,
   [NodeType.END_INDICATOR]: IndicatorNode,
+
+  [NodeType.NEW_EMAIL]: EmailNode,
+  [NodeType.NEW_WEBHOOK]: WebhookNode,
+  [NodeType.NEW_AI_ANALYZER]: AIAnalyzerNode,
+  [NodeType.NEW_AI_ASSISTANT]: AIAssistantNode,
 };
 
 const linkTypes = {
@@ -152,11 +164,16 @@ const SmartFlowBuilderView = () => {
   const [, setHoveredTargetHandle] = useState(Position.Top);
   const [isDelayPopoverOpen, openDelayPopover, closeDelayPopover] =
     useBoolean(false);
+
+  const [selectedNode, setSelectedNode] = useState(null);
+  const [isNodeDrawerOpen, setIsNodeDrawerOpen] = useState(false);
+
   const { identifier } = useParams();
   const dispatch = useDispatch();
   const history = useHistory();
-  const { tasks, layout, temporaryElements } =
+  const { tasks, layout, temporaryElements, emails } =
     useSelector(taskTemplateDetailsSelector(identifier)) || {};
+
   const workflow = useSelector(currentTaskTemplateSelector);
   const { name, templateType, parentTaskWorkflowIdentifier, members } =
     workflow || {};
@@ -240,6 +257,7 @@ const SmartFlowBuilderView = () => {
           ...constantVisibleElements,
           ...mapLayoutToElements(layout, tasks),
           ...(temporaryElements || []),
+          ...(emails || []),// TODO treat everything as Task or Other Nodes ?
         ].map((element) => ({
           ...Object.fromEntries(
             previousElements.map((previousElement) => [
@@ -265,6 +283,7 @@ const SmartFlowBuilderView = () => {
     tasks,
     temporaryElements,
     constantVisibleElements,
+    emails,
   ]);
 
   useEffect(() => {
@@ -293,6 +312,45 @@ const SmartFlowBuilderView = () => {
       ),
     );
   };
+
+  const handleNodeClick = useCallback((event, node) => {
+    const drawerCompatibleTypes = [
+      NodeType.NEW_EMAIL,
+      NodeType.NEW_WEBHOOK,
+      NodeType.NEW_AI_ANALYZER,
+      NodeType.NEW_AI_ASSISTANT,
+    ];
+
+    if (drawerCompatibleTypes.includes(node.type)) {
+      setSelectedNode(node);
+      setIsNodeDrawerOpen(true);
+    }
+  }, []);
+
+  const closeNodeDrawer = useCallback(() => {
+    setIsNodeDrawerOpen(false);
+    setSelectedNode(null);
+  }, []);
+
+  const handleUpdateNodeData = useCallback(
+    (updatedData) => {
+      if (selectedNode) {
+        setElements((prevElements) =>
+          prevElements.map((element) =>
+            element.id === selectedNode.id
+              ? { ...element, data: { ...element.data, ...updatedData } }
+              : element,
+          ),
+        );
+
+        setSelectedNode((prevNode) => ({
+          ...prevNode,
+          data: { ...prevNode.data, ...updatedData },
+        }));
+      }
+    },
+    [selectedNode],
+  );
 
   const handleMakeSelectionDependent = useCallback(() => {
     if (!selectedElements) return;
@@ -347,6 +405,22 @@ const SmartFlowBuilderView = () => {
         }
     }
     closeDelayPopover();
+  };
+
+  const addNewEmailElementLocal = (position) => {
+    dispatch(addNewEmailElement(position));
+  };
+
+  const addNewWebhookElementLocal = (position) => {
+    dispatch(addNewWebhookElement(position));
+  };
+
+  const addNewAIAnalyzerElementLocal = (position) => {
+    dispatch(addNewAIAnalyzerElement(position));
+  };
+
+  const addNewAIAssistantElementLocal = (position) => {
+    dispatch(addNewAIAssistantElement(position));
   };
 
   const toolkitActions = useMemo(() => {
@@ -416,6 +490,46 @@ const SmartFlowBuilderView = () => {
           centerViewToElement(position);
         },
       },
+      {
+        id: NodeType.NEW_EMAIL,
+        label: 'Email',
+        icon: EmailIcon,
+        onClick: () => {
+          const position = calculateNewElementPosition(layout);
+          addNewEmailElementLocal(position);
+          centerViewToElement(position);
+        },
+      },
+      {
+        id: NodeType.NEW_WEBHOOK,
+        label: 'Webhook',
+        icon: WebhookIcon,
+        onClick: () => {
+          const position = calculateNewElementPosition(layout);
+          addNewWebhookElementLocal(position);
+          centerViewToElement(position);
+        },
+      },
+      {
+        id: NodeType.NEW_AI_ANALYZER,
+        label: 'AI Analyzer',
+        icon: PsychologyIcon,
+        onClick: () => {
+          const position = calculateNewElementPosition(layout);
+          addNewAIAnalyzerElementLocal(position);
+          centerViewToElement(position);
+        },
+      },
+      {
+        id: NodeType.NEW_AI_ASSISTANT,
+        label: 'AI Assistant',
+        icon: SmartToyIcon,
+        onClick: () => {
+          const position = calculateNewElementPosition(layout);
+          addNewAIAssistantElementLocal(position);
+          centerViewToElement(position);
+        },
+      },
     ].filter(
       (action) => isDockProUser || action.id !== NodeType.NEW_AUTOMATION,
     );
@@ -472,6 +586,7 @@ const SmartFlowBuilderView = () => {
     dispatch,
     handleMakeSelectionDependent,
     openDelayPopover,
+    isDockProUser,
   ]);
   const updateSelectedElementsPosition = (selectedNodes) => {
     let updatedElements = elements;
@@ -545,9 +660,25 @@ const SmartFlowBuilderView = () => {
         dispatch(addNewNestedFlowElement(position));
         break;
       }
+      case 'NEW_EMAIL': {
+        addNewEmailElementLocal(position);
+        break;
+      }
+      case 'NEW_WEBHOOK': {
+        addNewWebhookElementLocal(position);
+        break;
+      }
+      case 'NEW_AI_ANALYZER': {
+        addNewAIAnalyzerElementLocal(position);
+        break;
+      }
+      case 'NEW_AI_ASSISTANT': {
+        addNewAIAssistantElementLocal(position);
+        break;
+      }
       default: {
         // eslint-disable-next-line no-console
-        console.error('UNHANDLED NODE TYPE');
+        console.error('UNHANDLED NODE TYPE:', type);
         break;
       }
     }
@@ -586,62 +717,22 @@ const SmartFlowBuilderView = () => {
 
   return (
     <div style={{ display: 'flex', width: '100vw', height: '100vh' }}>
-      <Box position="relative" display="flex" height="100%" width="100%">
-        <ElementsSidebar>
-          <Box>
-            <SidebarTitle>SmartFlow Toolkit</SidebarTitle>
-            {isCurrentUserEditor &&
-              toolkitActions.map(({ id, label, icon: Icon, ref, onClick }) => (
-                <ElementButton
-                  key={id}
-                  type="button"
-                  ref={ref}
-                  onClick={onClick}
-                  onDragStart={(event) => {
-                    event.dataTransfer.setData('application/reactflow', id);
-                    // eslint-disable-next-line no-param-reassign
-                    event.dataTransfer.effectAllowed = 'move';
-                  }}
-                  draggable
-                >
-                  <ElementIconBackground>
-                    <Icon />
-                  </ElementIconBackground>
-                  <ElementDescription>{label}</ElementDescription>
-                </ElementButton>
-              ))}
-            <SidebarDivider />
-            {/* {isCurrentUserEditor && (
-              <Tooltip title="Auto Align will organize  your layout ">
-                <AutoAlignButton type="button" onClick={handleAutoAlignClick}>
-                  Auto Align Layout
-                </AutoAlignButton>
-              </Tooltip>
-            )} */}
-            {isDelayPopoverOpen && (
-              <Popper
-                anchorEl={delayPeriodOptionReference.current}
-                placement="right"
-                open
-                style={{ zIndex: 10 }}
-              >
-                <ClickAwayListener onClickAway={closeDelayPopover}>
-                  <Paper>
-                    <TaskLinkDelayForm
-                      onSubmit={handleDelayForSubmit}
-                      onClose={closeDelayPopover}
-                    />
-                  </Paper>
-                </ClickAwayListener>
-              </Popper>
-            )}
-          </Box>
-          <Box>
-            <Hotkeys />
-          </Box>
-        </ElementsSidebar>
-        <Box ref={builderWrapperReference} position="relative" flex={1}>
-          <BuilderHeader>
+      <SmartflowSidebar
+        isDockProUser={isDockProUser}
+        isCurrentUserEditor={isCurrentUserEditor}
+        toolkitActions={toolkitActions}
+        onAutoAlignClick={handleAutoAlignClick}
+        isDelayPopoverOpen={isDelayPopoverOpen}
+        delayPeriodOptionReference={delayPeriodOptionReference}
+        TaskLinkDelayForm={TaskLinkDelayForm}
+        closeDelayPopover={closeDelayPopover}
+        handleDelayForSubmit={handleDelayForSubmit}
+        Hotkeys={Hotkeys}
+      />
+
+      <Box position="relative" display="flex" flexDirection="column" flex={1}>
+        <BuilderHeader>
+          <HeaderBreadcrumb>
             <Link
               to={(() => {
                 const urlParams = new URLSearchParams(location.search);
@@ -655,26 +746,24 @@ const SmartFlowBuilderView = () => {
                   ? createWorkflowFolderPath(parentTaskWorkflowIdentifier)
                   : WORKFLOW_LIBRARY_PATH;
               })()}
+              style={{ textDecoration: 'none' }}
             >
-              <BuilderHeaderText color={palette.brightBlue}>
-                Workflows
-              </BuilderHeaderText>
+              <HeaderTitle>Workflows</HeaderTitle>
             </Link>
-            <Box px={1}>
-              <NavigateNextIcon fontSize="small" />
-            </Box>
-            <button
-              type="button"
+            <NavigateNextIcon fontSize="small" />
+            <HeaderTitle
+              $isActive
               onClick={() => dispatch(openDrawer(workflow.identifier, null))}
             >
-              <BuilderHeaderText>
-                {name}
-                <EditIconWrapper>
-                  <EditIcon fontSize="small" color="inherit" />
-                </EditIconWrapper>
-              </BuilderHeaderText>
-            </button>
-          </BuilderHeader>
+              {name}
+              <EditIconWrapper>
+                <EditIcon fontSize="small" />
+              </EditIconWrapper>
+            </HeaderTitle>
+          </HeaderBreadcrumb>
+        </BuilderHeader>
+
+        <CanvasContainer ref={builderWrapperReference}>
           {elements && (
             <ReactFlowAdapter
               connectionLineComponent={ConnectionLineComponent}
@@ -697,6 +786,7 @@ const SmartFlowBuilderView = () => {
               }}
               onSelectionDragStop={handleSelectionDragStop}
               onNodeDragStop={handleNodeDragStop}
+              onNodeClick={handleNodeClick}
               selectionKeyCode={['Meta', 'Shift']}
               multiSelectionKeyCode={['Meta', 'Shift']}
               nodesDraggable={isCurrentUserEditor}
@@ -705,6 +795,7 @@ const SmartFlowBuilderView = () => {
               defaultEdgeOptions={DEFAULT_EDGE}
               selectionMode="partial"
               selectNodesOnDrag={false}
+              onPanelClick={closeNodeDrawer}
               isCurrentUserEditor={isCurrentUserEditor}
             />
           )}
@@ -713,9 +804,18 @@ const SmartFlowBuilderView = () => {
             selectedTasks={selectedTasks}
             onClose={resetSelection}
           />
-        </Box>
+        </CanvasContainer>
       </Box>
+
       <TaskDrawer origin={TaskOrigin.TEMPLATE} />
+
+      {isNodeDrawerOpen && selectedNode && (
+        <NodeConfigPanel
+          selectedNode={selectedNode}
+          handleUpdateNodeData={handleUpdateNodeData}
+          onClose={() => closeNodeDrawer()}
+        />
+      )}
     </div>
   );
 };

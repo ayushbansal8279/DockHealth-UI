@@ -14,6 +14,7 @@ const ReactFlowAdapter = ({
   elements,
   onElementsChange,
   onLoad,
+  onPanelClick,
   isCurrentUserEditor,
   ...props
 }) => {
@@ -60,6 +61,7 @@ const ReactFlowAdapter = ({
       {...props}
       onNodesChange={onNodesChange}
       onEdgesChange={onEdgesChange}
+      onPaneClick={onPanelClick}
     >
       <Controls showInteractive={isCurrentUserEditor} />
       <MiniMap

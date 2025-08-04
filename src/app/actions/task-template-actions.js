@@ -218,6 +218,34 @@ export function addNewNestedFlowElement(position) {
   };
 }
 
+export function addNewEmailElement(position) {
+  return {
+    type: ActionTypes.ADD_NEW_EMAIL_ELEMENT,
+    position,
+  };
+}
+
+export function addNewWebhookElement(position) {
+  return {
+    type: ActionTypes.ADD_NEW_WEBHOOK_ELEMENT,
+    position,
+  };
+}
+
+export function addNewAIAnalyzerElement(position) {
+  return {
+    type: ActionTypes.ADD_NEW_AI_ANALYZER_ELEMENT,
+    position,
+  };
+}
+
+export function addNewAIAssistantElement(position) {
+  return {
+    type: ActionTypes.ADD_NEW_AI_ASSISTANT_ELEMENT,
+    position,
+  };
+}
+
 export function addTemporaryElements(elements) {
   return {
     type: ActionTypes.ADD_TEMPORARY_ELEMENTS,
