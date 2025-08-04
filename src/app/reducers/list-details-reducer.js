@@ -333,7 +333,7 @@ const ListDetailsReducer = (state = initialState, action) => {
         ...state,
         groupedTasks: {
           taskGroups: state.groupedTasks.taskGroups?.map((g) => {
-            const matchedGroup = groupOfTasks.taskGroups.find(
+            const matchedGroup = groupOfTasks?.taskGroups?.find(
               (updatedGroup) =>
                 g.groupIdentifier === updatedGroup.groupIdentifier,
             );
@@ -987,14 +987,14 @@ const ListDetailsReducer = (state = initialState, action) => {
         return state;
       }
 
-      const isTaskOfTemplate = task.taskGroups.some(
-        (group) => group.groupType === TaskGroupType.BUNDLE,
+      const isTaskOfTemplate = task?.taskGroups?.some(
+        (group) => group?.groupType === TaskGroupType.BUNDLE,
       );
 
-      const isSubTask = Boolean(task.parentTaskIdentifier);
+      const isSubTask = Boolean(task?.parentTaskIdentifier);
 
       if (isTaskOfTemplate || isSubTask) {
-        const existingTask = state.tasksMap[task.identifier];
+        const existingTask = state.tasksMap[task?.identifier];
 
         if (!existingTask) {
           return state;
@@ -1010,7 +1010,7 @@ const ListDetailsReducer = (state = initialState, action) => {
       }
 
       const { taskGroupIdentifier } =
-        task.taskGroups?.find(
+        task?.taskGroups?.find(
           ({ groupType }) =>
             groupType === TaskGroupType.TASKLIST ||
             groupType === TaskGroupType.TASKLIST_DEFAULT,
