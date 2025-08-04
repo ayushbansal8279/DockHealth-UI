@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default ({ size = 23 }) => (
+export default ({ size = 23, stroke = 'white' }) => (
   <svg
     width={size / 1.77}
     height={size}
@@ -14,7 +14,7 @@ export default ({ size = 23 }) => (
       width="6.51705"
       height="14.9716"
       rx="3.25852"
-      stroke="white"
+      stroke={stroke}
       strokeWidth="1.9375"
     />
     <rect
@@ -23,7 +23,7 @@ export default ({ size = 23 }) => (
       width="6.51705"
       height="14.9716"
       rx="3.25852"
-      stroke="white"
+      stroke={stroke}
       strokeWidth="1.9375"
     />
   </svg>
