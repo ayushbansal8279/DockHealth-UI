@@ -18,7 +18,7 @@ import { CancelButton, ConfirmButton } from '../ModalButton/ModalButtons';
 import { currentProfileIdentifierSelector } from '@/app/selectors/profile-selector';
 import { getProfileAttachments } from '@/app/api/profile-api';
 
-const SelectPatientFolderModal = ({ closeModal, onMove, context }) => {
+const SelectFileFolderModal = ({ closeModal, onMove, context }) => {
   const patientIdentifier = useSelector(currentPatientIdentifierSelector);
   const profileIdentifier = useSelector(currentProfileIdentifierSelector);
   const [nestedFoldersHierarchy, setNestedFoldersHierarchy] = useState([]);
@@ -111,4 +111,4 @@ const SelectPatientFolderModal = ({ closeModal, onMove, context }) => {
   );
 };
 
-export default SelectPatientFolderModal;
+export default SelectFileFolderModal;

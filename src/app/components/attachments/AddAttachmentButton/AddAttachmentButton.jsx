@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { OutfitTypography } from 'styles/theme';
 import { Container } from './styled';
 import { Menu , MenuItem } from '@mui/material';
 
 const AddAttachmentButton = ({attachmentOptions = []}) => {
   const [anchorEl, setAnchorEl] = useState(null);
+  const ref = useRef(null);
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -13,13 +14,27 @@ const AddAttachmentButton = ({attachmentOptions = []}) => {
     }
   };
 
+  useEffect(() => {
+  const handleClick = (event) => {
+    if (ref.current && !ref.current.contains(event.target)) {
+      setAnchorEl(null);
+    }
+  };
+
+  document.addEventListener('mousedown', handleClick);
+
+  return () => {
+    document.removeEventListener('mousedown', handleClick);
+  };
+}, []);
+
   const handleClose = () => {
     setAnchorEl(null);
   };
   
   return (
     <div>
-    <Container onClick={handleClick} >
+    <Container onClick={handleClick} ref={ref} >
       <div   >
         <OutfitTypography condensed variant="h4" color="inherit">
           +

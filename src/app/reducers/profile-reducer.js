@@ -10,7 +10,7 @@ const initialState = {
   attachments: null,
   profileTaskAttachments: null,
   isFetchingAttachments: false,
-  currentFolderIdentifier : null,
+  currentFolderIdentifier: null,
 };
 
 const ProfileReducer = (state = initialState, action) => {
@@ -102,19 +102,11 @@ const ProfileReducer = (state = initialState, action) => {
     }
 
     case ActionTypes.INITIALIZE_PROFILE_ATTACHMENTS_FOLDER: {
-          return {
-            ...state,
-            currentFolderIdentifier: action.folderIdentifier,
-          };
-        }
-    
-        // case ActionTypes.CLEAR_PATIENT_ATTACHMENTS_FOLDER: {
-        //   return {
-        //     ...state,
-        //     currentFolderIdentifier: null,
-        //   };
-        // }
-
+      return {
+        ...state,
+        currentFolderIdentifier: action.folderIdentifier,
+      };
+    }
     default: {
       return state;
     }

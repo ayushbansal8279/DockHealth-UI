@@ -65,7 +65,7 @@ import MergeDataModal from './components/MergeDataModal/MergeDataModal';
 import SelectDestinationGroupModal from './components/SelectDestinationGroupModal/SelectDestinationGroupModal';
 import ShareTaskModal from './components/ShareTaskModal/ShareTaskModal';
 import PatientFolderModal from './components/PatientFolderModal/PatientFolderModal';
-import SelectPatientFolderModal from './components/SelectPatientFolderModal/SelectPatientFolderModal';
+import SelectFileFolderModal from './components/SelectFileFolderModal/SelectFileFolderModal';
 import SmartFlowListModal from './components/SmartFlowListModal/SmartFlowListModal';
 import UnarchivePatientModal from './components/UnarchivePatientModal/UnarchivePatientModal';
 import SendEmailFromTaskModal from './components/SendMessageFromTaskModals/SendEmailFromTaskModal/SendEmailFromTaskModal';
@@ -166,7 +166,7 @@ const MODAL_MAP = {
   MergeData: MergeDataModal,
   ShareTask: ShareTaskModal,
   PatientFolder: PatientFolderModal,
-  SelectPatientFolder: SelectPatientFolderModal,
+  SelectPatientFolder: SelectFileFolderModal,
   SmartFlowList: SmartFlowListModal,
   SendFaxFromTask: SendFaxFromTaskModal,
   SendEmailFromTask: SendEmailFromTaskModal,
