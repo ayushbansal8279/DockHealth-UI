@@ -534,34 +534,36 @@ const TaskTemplateReducer = (state = initialState, action) => {
     }
 
     case ActionTypes.ADD_NEW_EMAIL_ELEMENT: {
-      const { currentTaskTemplateIdentifier } = state;
-      const { position } = action;
+      // Todo After Api Integration
 
-      const { temporaryElements } =
-        state.taskTemplateDetails[currentTaskTemplateIdentifier];
+      // const { currentTaskTemplateIdentifier } = state;
+      // const { position } = action;
 
-      const aa = {
-        id: 'fbfd2sdc6c-0d66-4d7c-b39a-0bc71a51c',
-        type: NodeType.NEW_EMAIL,
-        data: {
-          draggedEdgeSourceId: null,
-          taskTemplateIdentifier: 'ce6f3dcc-426f-4bff-ab14-227d88ef8139',
-        },
-        position: {
-          x: 1461.2980025578743,
-          y: 329.8232009925558,
-        },
-        isConnectable: true,
-        width: 230,
-        height: 232,
-      };
+      // const { temporaryElements } =
+      //   state.taskTemplateDetails[currentTaskTemplateIdentifier];
 
-      const email = {
-        identifier: '123',
-        description: '123',
-        taskTemplateIdentifier: currentTaskTemplateIdentifier,
-        intentType: NodeType.NEW_EMAIL,
-      };
+      // const aa = {
+      //   id: 'fbfd2sdc6c-0d66-4d7c-b39a-0bc71a51c',
+      //   type: NodeType.NEW_EMAIL,
+      //   data: {
+      //     draggedEdgeSourceId: null,
+      //     taskTemplateIdentifier: 'ce6f3dcc-426f-4bff-ab14-227d88ef8139',
+      //   },
+      //   position: {
+      //     x: 1461.2980025578743,
+      //     y: 329.8232009925558,
+      //   },
+      //   isConnectable: true,
+      //   width: 230,
+      //   height: 232,
+      // };
+
+      // const email = {
+      //   identifier: '123',
+      //   description: '123',
+      //   taskTemplateIdentifier: currentTaskTemplateIdentifier,
+      //   intentType: NodeType.NEW_EMAIL,
+      // };
 
       // return {
       //   ...state,
@@ -589,7 +591,11 @@ const TaskTemplateReducer = (state = initialState, action) => {
       //   ),
       // };
 
-      // return updateTasksStateCallback(updatedState, action.task);
+      const { currentTaskTemplateIdentifier } = state;
+      const { position } = action;
+
+      const { temporaryElements } =
+        state.taskTemplateDetails[currentTaskTemplateIdentifier];
 
       return {
         ...state,
@@ -597,7 +603,7 @@ const TaskTemplateReducer = (state = initialState, action) => {
           currentTaskTemplateIdentifier,
           state.taskTemplateDetails,
           {
-            emails: [
+            temporaryElements: [
               ...(temporaryElements || []),
               createEmailNode(temporaryElements, position),
             ],

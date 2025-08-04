@@ -113,6 +113,7 @@ import { isUserDockPro } from '@/app/helpers/user-helper';
 import IndicatorNode from './IndicatorNode/IndicatorNode';
 import NodeConfigPanel from './NodeDrawers/NodeConfigPanel';
 import ConnectionLineComponent from './ConnectionLineComponent/ConnectionLineComponent';
+import palette from '@/app/styles/palette';
 
 const nodeTypes = {
   [NodeType.NEW_AUTOMATION]: NewTaskNode,
