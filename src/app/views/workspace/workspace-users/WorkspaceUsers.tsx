@@ -14,6 +14,7 @@ import SearchInput from "@/app/components/common/SearchInput/SearchInput";
 import { BulkEditSectionContainer } from "../../user-group/styled";
 import { WorkspaceContextProvider } from "./WorkspaceContext";
 import WorkspaceUserTable from "./workspace-user-table";
+import { organizationWorkspaceLabelSelector } from "@/app/selectors/organization-selectors";
 import { WorkspaceUsersHeader, WorkspaceUsersTableWrapper, WorkspaceUsersContainer, ListLoaderContainer } from "./styled";
 
 const WorkspaceUsers = () => {
@@ -23,6 +24,7 @@ const WorkspaceUsers = () => {
   const users = useSelector(workspaceUsersSelector);
   const isLoading = useSelector(isFetchingWorkspaceUsersSelector);
   const [searchTerm, setSearchTerm] = useState('');
+  const workspaceLabel = useSelector(organizationWorkspaceLabelSelector);
 
   const usersWithSelection	 = useMemo(() => {
     return users?.map((user) => ({
@@ -48,7 +50,7 @@ const WorkspaceUsers = () => {
   const openAddUserModal = () => {
     dispatch(openModal('InviteToList', {
       list: [],
-      title: "Add User to the Workspace",
+      title: `Add User to the ${workspaceLabel}`,
       CustomForm: InviteUserToWorkspaceForm,
       identifier: workspaceIdentifier,
     }))

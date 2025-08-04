@@ -119,7 +119,7 @@ const WorkspaceSubmenuStepTwo = ({ setShowStepTwo }) => {
     dispatch(
       openModal('InviteToList', {
         list: [],
-        title: 'Add User to the Workspace',
+        title: `Add User to the ${workspaceLabel}`,
         CustomForm: InviteUserToWorkspaceForm,
         identifier: workspaceIdentifier,
       }),

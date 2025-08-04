@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import pathEq from 'ramda/src/pathEq';
 import SelectorPopover from 'components/common/SelectorPopover/SelectorPopover';
 import Circle from 'img/circle.svg';
@@ -17,6 +17,7 @@ import { CancelButton, ConfirmButton } from '@/app/modal/components/ModalButton/
 import { useRoleContext } from '@/app/views/workspace/workspace-users/RoleContext';
 import { removeUserFromWorkspace } from '@/app/actions/workspace-actions';
 import { useWorkspace } from '@/app/views/workspace/workspace-users/WorkspaceContext';
+import { organizationWorkspaceLabelSelector } from '@/app/selectors/organization-selectors';
 
 export const renderUserTypesOptions = ({
   changeUserRole,
@@ -124,6 +125,7 @@ const RoleSelectionPopover = ({
 }) => {
   const { contextType } = useRoleContext();
   const { workspaceIdentifier } = useWorkspace();
+  const workspaceLabel = useSelector(organizationWorkspaceLabelSelector);
 
   const [selectedRole, setSelectedRole] = useState({});
   const dispatch = useDispatch();
@@ -153,7 +155,7 @@ const RoleSelectionPopover = ({
       open={isPopoverOpen}
       withPadding
       renderHeader={() => (
-        <Header>Select their role in your {contextType === 'workspace' ? 'Workspace' : 'Organization'}</Header>
+        <Header>Select their role in your {contextType === 'workspace' ? workspaceLabel : 'Organization'}</Header>
       )}
       renderFooter={() => (
         <RoleSelectorFooter multipleButtons={!isInactive}>

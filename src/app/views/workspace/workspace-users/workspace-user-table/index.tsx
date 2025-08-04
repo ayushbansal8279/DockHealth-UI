@@ -4,7 +4,7 @@ import React, { useContext, useMemo } from "react";
 import { Box, Grid } from "@mui/material";
 import { GridColDef } from "@mui/x-data-grid-premium";
 import { isEmpty } from "ramda";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { createFilter } from 'react-search-input';
 
@@ -21,6 +21,7 @@ import { StyledDataGrid } from "../../../workspaces/workspace-table/styled";
 import { CheckboxHeaderProps, CheckboxProps, IWorkspaceUser } from "../types";
 import { getFilteredRows } from "@/app/helpers/workspace-helpers";
 import { WorkspaceContainer } from "@/app/views/workspaces/workspace-home/styled";
+import { organizationWorkspaceLabelSelector } from "@/app/selectors/organization-selectors";
 import { BulkContainer, ListContainer, ListEntryContainer } from "./styled";
 
 const TypedCheckbox = Checkbox as React.FC<CheckboxProps>;
@@ -28,6 +29,7 @@ const TypedCheckbox = Checkbox as React.FC<CheckboxProps>;
 const WorkspaceUserTable = ({ searchTerm }: { searchTerm: string }) => {
   const dispatch = useDispatch();
   const { identifier: workspaceIdentifier } = useParams<{ identifier: string }>();
+  const workspaceLabel = useSelector(organizationWorkspaceLabelSelector);
 
   const userContext = useContext(BulkEditContext);
   const {
@@ -91,7 +93,7 @@ const WorkspaceUserTable = ({ searchTerm }: { searchTerm: string }) => {
     },
     {
       field: 'workspaceUserRole',
-      headerName: 'Workspace role',
+      headerName: `${workspaceLabel} role`,
       flex: 0.6,
       renderCell: ({ row }) => {
         const { firstName, lastName, email, userIdentifier, userStatus } = row;

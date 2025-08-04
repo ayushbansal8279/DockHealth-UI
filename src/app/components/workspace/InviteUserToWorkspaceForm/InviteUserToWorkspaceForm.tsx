@@ -35,6 +35,7 @@ import {
 import { getMenuOptionsForWorkspaceUser } from './helpers';
 import { getWorkspaceMemberStatus } from '@/app/helpers/workspace-helpers';
 import { workspaceUsersSelector } from '@/app/selectors/workspace-selectors';
+import { organizationWorkspaceLabelSelector } from '@/app/selectors/organization-selectors';
 
 const InviteUserToWorkspaceForm = ({ identifier: workspaceIdentifier }) => {
   const dispatch = useDispatch();
@@ -51,6 +52,7 @@ const InviteUserToWorkspaceForm = ({ identifier: workspaceIdentifier }) => {
 
   const listUsersAndGroups = useSelector(workspaceUsersSelector);
   // const isLoading = useSelector(isFetchingWorkspaceUsersSelector);
+  const workspaceLabel = useSelector(organizationWorkspaceLabelSelector);
 
   useEffect(() => {
     setAllOrganizationUsersAndGroupsFetched(false);
@@ -141,6 +143,8 @@ const InviteUserToWorkspaceForm = ({ identifier: workspaceIdentifier }) => {
     );
   };
 
+  const refreshWorkspaceUsers = () => {}
+
   return (
     <Container>
       <ListUsersAndGroupsSelect
@@ -182,6 +186,7 @@ const InviteUserToWorkspaceForm = ({ identifier: workspaceIdentifier }) => {
                         options={getMenuOptionsForWorkspaceUser(user, {
                           changeUserRole,
                           removeUserFromWorkspace: handleRemoveUser,
+                          workspaceLabel,
                           // cancelInviteToWorkspace,
                           // resendInvitationToWorkspace,
                           // resendApprovalRequestToList,
