@@ -156,7 +156,7 @@ const PatientDetailsHeader = () => {
                 <Box mx={1} />
                 {profileBuilderFeatureAvailable && (
                   <ButtonContainer onClick={setIsProfileOpen}>
-                    <PatientDetailsLabel>View profile</PatientDetailsLabel>
+                    <PatientDetailsLabel>View object</PatientDetailsLabel>
                   </ButtonContainer>
                 )}
                 <Box mx={1} />

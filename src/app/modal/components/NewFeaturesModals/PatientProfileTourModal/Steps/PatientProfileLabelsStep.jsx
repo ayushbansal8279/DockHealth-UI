@@ -6,7 +6,7 @@ import { Image, Title, Description } from '../../styled';
 
 const PatientProfileLabelsStep = () => {
   useEffect(() => {
-    onTourModalStepEnter('Patient Profile modal', 'Patient Profile Labels');
+    onTourModalStepEnter('Patient Object modal', 'Patient Object Labels');
   }, []);
 
   return (
@@ -15,7 +15,7 @@ const PatientProfileLabelsStep = () => {
       <Image
         height={310}
         src={PatientProfileLabelsImage}
-        alt="Patient Profile"
+        alt="Patient Object"
       />
       <Spacing vertical={5} />
       <Title>Patient Labels</Title>
