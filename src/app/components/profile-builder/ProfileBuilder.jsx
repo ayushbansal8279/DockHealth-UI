@@ -149,12 +149,12 @@ const ProfileBuilder = () => {
         `${
           customerTypeLabel?.charAt(0)?.toUpperCase() +
           customerTypeLabel?.slice(1)
-        } Profile Builder`,
+        } Object Builder`,
       );
       initializePatientData();
     } else if (context === 'PROFILETYPE') {
       getProfileDetailsType(identifier).then((profileTypeDetails) => {
-        const profileName = `${profileTypeDetails?.name} Profile Builder`;
+        const profileName = `${profileTypeDetails?.name} Object Builder`;
         setProfileName(profileName);
       });
       initializeCustomProfileData();

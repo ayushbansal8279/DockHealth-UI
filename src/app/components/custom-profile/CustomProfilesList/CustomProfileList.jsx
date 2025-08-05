@@ -441,7 +441,7 @@ const CustomProfileList = () => {
             downloadProfileImportTemplate(profileTypeIdentifier)
           }
           step={1}
-          label="profile"
+          label="object"
           uploadFunction={uploadProfileData}
           identifier={profileTypeIdentifier}
         />

@@ -18,7 +18,7 @@ export function createProfileType(profile) {
         status: 'error',
         title: 'Error',
         text:
-          error.response?.data?.errorMessage ?? 'Error creating profile type',
+          error.response?.data?.errorMessage ?? 'Error creating object type',
       });
     });
 }
@@ -32,7 +32,7 @@ export function editProfileType(identifier, profile) {
         status: 'error',
         title: 'Error',
         text:
-          error.response?.data?.errorMessage ?? 'Error updating profile type',
+          error.response?.data?.errorMessage ?? 'Error updating object type',
       });
     });
 }
@@ -46,7 +46,7 @@ export function deleteProfileType(identifier) {
         status: 'error',
         title: 'Error',
         text:
-          error.response?.data?.errorMessage ?? 'Error deleting profile type',
+          error.response?.data?.errorMessage ?? 'Error deleting object type',
       });
     });
 }

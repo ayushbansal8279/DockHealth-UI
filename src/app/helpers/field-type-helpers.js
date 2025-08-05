@@ -142,7 +142,7 @@ export const FIELD_TYPES = [
     key: FieldType.RELATIONSHIP,
     image: FieldTypeRelationshipImg,
     title: FieldTypeLabel[FieldType.RELATIONSHIP],
-    description: 'Link to other custom profiles',
+    description: 'Link to other custom objects',
   },
 ];
 

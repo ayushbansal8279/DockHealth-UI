@@ -112,9 +112,9 @@ const ProfilesAndCustomFieldsView = () => {
   const onDeleteProfile = useCallback(
     ({ id }) => {
       const modalProps = {
-        title: 'Delete Profile',
+        title: 'Delete Object',
         description:
-          'Are you sure you want to delete this profile? This action cannot be undone.',
+          'Are you sure you want to delete this object? This action cannot be undone.',
         confirm: () => {
           dispatch(closeModal());
           deleteProfileType(id);
@@ -185,14 +185,15 @@ const ProfilesAndCustomFieldsView = () => {
   };
 
   return (
-    <ViewLayout header={<BasicLayoutHeader title="Profiles" />}>
-      {userHasCustomProfilesAvailable && <AddButtonWrapper>
-        <AddButton onClick={onAddProfile}>
-          <PlusIcon />
-            New Profile
+    <ViewLayout header={<BasicLayoutHeader title="Objects" />}>
+      {userHasCustomProfilesAvailable && (
+        <AddButtonWrapper>
+          <AddButton onClick={onAddProfile}>
+            <PlusIcon />
+            New Object
           </AddButton>
         </AddButtonWrapper>
-      }
+      )}
       <ViewContainer>
         <StyledDataGrid
           columns={columns}
@@ -222,7 +223,7 @@ const ProfilesAndCustomFieldsView = () => {
               }
             }}
             value={newProfileName}
-            placeholder="Profile Name here"
+            placeholder="Object Name here"
             fullWidth
           />
         )}

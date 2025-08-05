@@ -167,7 +167,7 @@ const ProfileDrawer = ({
         onClick: () => {
           dispatch(
             openModal('DeleteConfirmation', {
-              description: 'Are you sure to delete this profile?',
+              description: 'Are you sure to delete this object?',
               confirm: () => {
                 deleteProfile(profile.identifier).then(() => {
                   dispatch(showGlobalAlert(AlertMessages.DELETED));

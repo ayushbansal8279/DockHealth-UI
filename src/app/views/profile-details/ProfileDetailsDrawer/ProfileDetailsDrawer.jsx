@@ -124,7 +124,7 @@ const ProfileDetailsDrawer = ({
       setSelectedCategories(enrichedGroups);
       setLoading(false);
     } catch (error) {
-      console.error('Error fetching profile custom groups:', error);
+      console.error('Error fetching object custom groups:', error);
     }
   };
 
@@ -144,7 +144,11 @@ const ProfileDetailsDrawer = ({
   const formReference = useRef(null);
 
   const updateProfile = useCallback((data) => {
-    editProfileDetails(profileIdentifier, data?.profileMetaData, profileTypeFields)
+    editProfileDetails(
+      profileIdentifier,
+      data?.profileMetaData,
+      profileTypeFields,
+    )
       .then(async () => {
         setEditMode(false);
         dispatch(showGlobalAlert(AlertMessages.SAVED));
@@ -219,7 +223,7 @@ const ProfileDetailsDrawer = ({
 
   const options = [
     {
-      name: 'Edit Profile Details',
+      name: 'Edit Object Details',
       onClick: handleEditButtonClick,
     },
   ];

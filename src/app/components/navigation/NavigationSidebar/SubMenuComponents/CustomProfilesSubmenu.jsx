@@ -134,7 +134,7 @@ const CustomProfilesSubmenu = () => {
   return (
     <>
       <DrawerMyListsLabel>
-        <div>Profiles</div>
+        <div>Objects</div>
       </DrawerMyListsLabel>
       <DrawerListsList flexShrink={1}>
         {isInitialListFetching ? (
