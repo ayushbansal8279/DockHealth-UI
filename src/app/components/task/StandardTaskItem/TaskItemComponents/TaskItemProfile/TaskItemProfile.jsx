@@ -28,7 +28,7 @@ const TaskItemProfile = ({ task }) => {
     </div>
   ), [displayName, profileTypeName]);
 
-  const profileUrl = `/core/custom-profiles/${profileTypeIdentifier}/${identifier}`;
+  const profileUrl = `/core/custom-objects/${profileTypeIdentifier}/${identifier}`;
 
   return (
     <StyledProfileLink to={profileUrl}>

@@ -36,7 +36,7 @@ const TaskItemRelationship = ({ customFieldValue, field }) => {
             <>
               <Link
                 key={profile.value}
-                href={`/#/core/custom-profiles/${profileTypeIdentifier}/${profile.value}`}
+                href={`/#/core/custom-objects/${profileTypeIdentifier}/${profile.value}`}
                 sx={profileLinkSx}
               >
                 {profile.displayName || ''}

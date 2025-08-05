@@ -171,7 +171,7 @@ const ProfileDrawer = ({
               confirm: () => {
                 deleteProfile(profile.identifier).then(() => {
                   dispatch(showGlobalAlert(AlertMessages.DELETED));
-                  history.push(`/custom-profiles/${profileTypeIdentifier}`);
+                  history.push(`/custom-objects/${profileTypeIdentifier}`);
                 });
                 dispatch(closeModal());
               },

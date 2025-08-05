@@ -93,7 +93,7 @@ const ProfilesAndCustomFieldsView = () => {
         history.push(`/settings/custom-fields/${name.toLowerCase()}`);
         return;
       }
-      history.push(`/settings/custom-fields/profiles/${identifier}`);
+      history.push(`/settings/custom-fields/objects/${identifier}`);
     },
     [history],
   );
@@ -101,10 +101,10 @@ const ProfilesAndCustomFieldsView = () => {
   const onOpenProfileBuilder = useCallback(
     ({ row: { name, identifier } }) => {
       if (name.toLowerCase() === `${customerTypeLabel}s`) {
-        history.push(`/settings/profile-builder/${name.toLowerCase()}`);
+        history.push(`/settings/object-builder/${name.toLowerCase()}`);
         return;
       }
-      history.push(`/settings/profile-builder/profiles/${identifier}`);
+      history.push(`/settings/object-builder/objects/${identifier}`);
     },
     [history],
   );

@@ -78,7 +78,7 @@ const CustomProfileList = () => {
   }, [dispatch, groupIdentifier]);
 
   const handleRecordClick = (event, { id }) => {
-    history.push(`/custom-profiles/${profileTypeIdentifier}/${id}`);
+    history.push(`/custom-objects/${profileTypeIdentifier}/${id}`);
   };
 
   const [open, setOpen] = useState(null);
