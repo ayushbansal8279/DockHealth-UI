@@ -89,6 +89,9 @@ const DrawerTask = (props) => {
     dragAttributes,
     isDraggable,
     isDragging,
+    isDragActive,
+    isDraggedOver,
+    hoverBorder,
   } = props;
 
   const dispatch = useDispatch();
@@ -244,7 +247,11 @@ const DrawerTask = (props) => {
   const TooltipWrapper = isTruncated ? Tooltip : React.Fragment;
 
   return (
-    <Container>
+    <Container
+      isDragActive={isDragActive}
+      isDraggedOver={isDraggedOver}
+      hoverBorder={hoverBorder}
+    >
       {isDraggable && (
         <DragHandleContainer isDragging={isDragging}>
           <TaskDragHandle {...dragListeners} {...dragAttributes} />
