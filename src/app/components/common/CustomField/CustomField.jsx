@@ -39,6 +39,7 @@ const CustomField = ({
   taskIdentifier,
   task,
   popoverZindex,
+  formMethods,
 }) => {
   const containerReference = useRef(null);
   const {
@@ -57,7 +58,8 @@ const CustomField = ({
   const isReadOnly = displayOptions?.includes('READONLY') || readOnly;
   const inputReference = useRef(null);
   const componentReference = useRef(null);
-  const { setValue, watch, setError, clearErrors } = useFormContext();
+  const formContext = useFormContext();
+  const { setValue, watch, setError, clearErrors } = formMethods || formContext;
   const [wasChanged, setWasChanged] = useState(false);
   const [isEditable, setIsEditable] = useState(false);
   const [descriptionErrorState, setDescriptionErrorState] = useState(false);
@@ -137,17 +139,25 @@ const CustomField = ({
     }
   }, [fieldType, identifier, taskDrawerFocusField]);
 
-  const validateWithRegex = (value) => {
-    const regex = stringToRegex(validationRegex);
-    if (!value) {
-      return true;
-    }
-    if (!(regex instanceof RegExp)) {
-      return true;
-    }
-    const isMatch = regex.test(value);
-    return isMatch ? true : validationDescription;
-  };
+  const validateWithRegex = useCallback(
+    (value) => {
+      if (!validationRegex) return true;
+
+      const regex = stringToRegex(validationRegex);
+      if (!value) {
+        return true;
+      }
+      if (!(regex instanceof RegExp)) {
+        return true;
+      }
+      const isMatch = regex.test(value);
+      const result = isMatch
+        ? true
+        : validationDescription || 'Validation failed';
+      return result;
+    },
+    [validationRegex, validationDescription],
+  );
 
   const renderCustomField = useCallback(() => {
     switch (fieldType) {
@@ -165,8 +175,9 @@ const CustomField = ({
             onChange={() => setWasChanged(true)}
             required={isRequired}
             characterLimit={FieldCharacterLimit.TEXT}
-            validate={validationRegex && validateWithRegex}
+            validate={validationRegex ? validateWithRegex : undefined}
             disableClearErrorOnKeyUp
+            formMethods={formMethods}
           />
         );
       }
@@ -217,8 +228,9 @@ const CustomField = ({
             ref={componentReference}
             onChange={() => setWasChanged(true)}
             required={isRequired}
-            validate={validationRegex && validateWithRegex}
+            validate={validationRegex ? validateWithRegex : undefined}
             disableClearErrorOnKeyUp
+            formMethods={formMethods}
           />
         );
       }
@@ -430,6 +442,7 @@ CustomField.propTypes = {
   taskIdentifier: propTypes.string,
   task: propTypes.object,
   popoverZindex: propTypes.number,
+  formMethods: propTypes.object,
 };
 
 export default CustomField;

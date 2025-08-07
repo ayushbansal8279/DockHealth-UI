@@ -2,6 +2,7 @@ import React from 'react';
 import { useFormContext } from 'react-hook-form';
 import { useMount, useUnmount } from 'react-use';
 import Input from './Input';
+import { validateAndSetError } from '../../patients/PatientForm/helpers';
 
 const FormInput = React.forwardRef(
   (
@@ -13,19 +14,23 @@ const FormInput = React.forwardRef(
       disableClearErrorOnKeyUp,
       required,
       readOnly,
+      formMethods,
       ...restProps
     },
     reference,
   ) => {
+    const formContext = useFormContext();
     const {
       register,
       formState: { errors },
       watch,
       setValue,
       unregister,
+      setError,
       clearErrors,
-    } = useFormContext();
+    } = formMethods || formContext;
 
+    const isPatientCustomField = name?.includes('patientMetaData.');
     const isNested = name?.includes('.');
     const nestedParts = name?.split('.');
 
@@ -38,7 +43,11 @@ const FormInput = React.forwardRef(
     useMount(() => {
       register(name, {
         required: required ? 'This field is required' : false,
-        validate: validate || undefined,
+        validate: isPatientCustomField
+          ? undefined
+          : validate
+          ? validate
+          : undefined,
       });
     });
 
@@ -47,7 +56,12 @@ const FormInput = React.forwardRef(
     });
 
     const handleChange = (event) => {
-      setValue(name, event.target.value, {
+      const newValue = event.target.value;
+      if (isPatientCustomField) {
+        validateAndSetError(name, newValue, validate, setError, clearErrors);
+      }
+
+      setValue(name, newValue, {
         shouldDirty: true,
         shouldValidate: validate ? true : false,
       });
