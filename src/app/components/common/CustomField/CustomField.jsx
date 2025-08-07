@@ -183,6 +183,7 @@ const CustomField = ({
             onChange={() => setWasChanged(true)}
             required={isRequired}
             relatedProfileType={field.relatedProfileType}
+            multiple={!displayOptions?.includes('SINGLE_SELECT')}
           />
         );
       }

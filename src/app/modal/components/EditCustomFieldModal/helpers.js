@@ -2,6 +2,14 @@ import * as Yup from 'yup';
 
 const commonOptions = (displayOptionsState, handleDisplayOptionChange) => [
   {
+    label: 'Single Select',
+    key: 'SINGLE_SELECT',
+    value: !!displayOptionsState?.displayOptions?.find(
+      (option) => option === 'SINGLE_SELECT',
+    ),
+    onChange: (value) => handleDisplayOptionChange(value, 'SINGLE_SELECT'),
+  },
+  {
     label: 'Read only',
     key: 'READONLY',
     value: !!displayOptionsState?.displayOptions?.find(
