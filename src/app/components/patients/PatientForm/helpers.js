@@ -92,3 +92,35 @@ export const validationSchema = object().shape({
       return isValidPhoneNumber(String(value));
     }),
 });
+
+export const validateAndSetError = (
+  name,
+  newValue,
+  validate,
+  setError,
+  clearErrors,
+) => {
+  if (validate) {
+    const result = validate(newValue);
+
+    if (typeof result === 'string') {
+      const errorObj = {
+        type: 'validate',
+        message: result,
+        ref: {
+          name: name,
+          value: newValue,
+        },
+      };
+      setTimeout(() => {
+        setError(name, errorObj);
+      }, 100);
+      return false;
+    } else {
+      clearErrors(name);
+      return true;
+    }
+  }
+  return true;
+};
+
