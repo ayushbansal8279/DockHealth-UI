@@ -131,6 +131,7 @@ const PatientsList = ({
     left: ['isSelected', 'patient'],
     right: ['actions'],
   });
+  const [errors, setErrors] = useState([]);
 
   const selectedPatientsCount = patients?.filter((p) => p.isSelected).length;
   const patientsCount = patients?.length;
@@ -618,7 +619,8 @@ const PatientsList = ({
     );
   }
 
-  const getRenderEditCell = (fieldType, options = [], name) => {
+  const getRenderEditCell = (column) => {
+    const { fieldType, options, name } = column;
     switch (fieldType) {
       case 'PICK_LIST':
         return (params) => (
@@ -636,11 +638,27 @@ const PatientsList = ({
         );
       case 'TEXT':
       case 'HYPERLINK':
-        return (params) => <TextEditCell {...params} name={name} />;
+        return (params) => (
+          <TextEditCell
+            {...params}
+            name={name}
+            column={column}
+            errors={errors}
+            setErrors={setErrors}
+          />
+        );
       case 'BOOLEAN':
         return (params) => <BooleanEditCell {...params} name={name} />;
       case 'NUMBER':
-        return (params) => <NumberEditCell {...params} name={name} />;
+        return (params) => (
+          <NumberEditCell
+            {...params}
+            name={name}
+            column={column}
+            errors={errors}
+            setErrors={setErrors}
+          />
+        );
       default:
         return null;
     }
@@ -681,9 +699,16 @@ const PatientsList = ({
       if (isInEditMode) {
         return [
           <GridActionsCellItem
-            icon={<SaveIcon sx={{ color: palette.lightBlue }} />}
+            icon={
+              <SaveIcon
+                sx={{
+                  color: errors.length > 0 ? palette.grey : palette.lightBlue,
+                }}
+              />
+            }
             label="Save"
             onClick={handleSaveClick(id)}
+            disabled={errors.length > 0}
           />,
           <GridActionsCellItem
             icon={<CloseIcon sx={{ color: palette.unknownGrey1 }} />}
@@ -769,11 +794,7 @@ const PatientsList = ({
             }
           },
           editable: true,
-          renderEditCell: getRenderEditCell(
-            column.fieldType,
-            column.options,
-            column.name,
-          ),
+          renderEditCell: getRenderEditCell(column),
           width: getColumnWidth(column.fieldType, column),
           sortComparator: (v1, v2, parameters1, parameters2) => {
             const { api } = parameters2;

@@ -1,4 +1,10 @@
-import React, { useEffect, useRef, useCallback, useMemo } from 'react';
+import React, {
+  useEffect,
+  useRef,
+  useCallback,
+  useMemo,
+  useState,
+} from 'react';
 import { Box } from '@mui/material';
 import { useHistory } from 'react-router-dom';
 import { useBoolean } from 'hooks/useBoolean';
@@ -29,6 +35,7 @@ import {
   getCustomerUniqueIDLabel,
 } from 'helpers/customer-type-helper';
 import PatientLabels from '../PatientLabels/PatientLabels';
+import { scrollToError } from '@/app/helpers/ui-helper';
 
 const PatientDetailsDrawer = ({ patient, isOpenedDetails, closeDetails }) => {
   const history = useHistory();
@@ -59,6 +66,7 @@ const PatientDetailsDrawer = ({ patient, isOpenedDetails, closeDetails }) => {
   const formReference = useRef(null);
   const userProfile = useSelector(userProfileSelector);
   const isAdmin = checkIfUserIsOrganizationAdmin(userProfile);
+  const [customFieldErrors, setCustomFieldErrors] = useState([]);
 
   const { emrIntegrationEnabled } = currentOrganization || {};
   const quickAddPatientEnabledItem =
@@ -81,10 +89,13 @@ const PatientDetailsDrawer = ({ patient, isOpenedDetails, closeDetails }) => {
         openModal('InterruptEdit', {
           isWorkflowModal: true,
           confirm: () => {
-            formReference.current.dispatchEvent(
-              new Event('submit', { cancelable: true, bubbles: true }),
-            );
-            // formReference.current.requestSubmit(); -- alternative
+            if (Object.keys(customFieldErrors).length > 0) {
+              scrollToError(customFieldErrors);
+            } else {
+              formReference.current.dispatchEvent(
+                new Event('submit', { cancelable: true, bubbles: true }),
+              );
+            }
             dispatch(closeModal());
           },
           onClose: close,
@@ -167,7 +178,7 @@ const PatientDetailsDrawer = ({ patient, isOpenedDetails, closeDetails }) => {
             dispatch(
               openModal('PatientPicker', {
                 patientIdentifiersToExclude: [patient.patientIdentifier],
-                patient: patient
+                patient: patient,
               }),
             );
             closeDetails();
@@ -231,6 +242,7 @@ const PatientDetailsDrawer = ({ patient, isOpenedDetails, closeDetails }) => {
           edited={isActive}
           customerTypeLabel={customerTypeLabel}
           buttonLabel="Save Edits"
+          setCustomFieldErrors={setCustomFieldErrors}
         />
       </PatientDrawer>
     </FormProvider>
