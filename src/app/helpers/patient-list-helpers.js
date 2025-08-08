@@ -85,18 +85,20 @@ export const PATIENT_BASE_COLUMN_CONFIG = {
   [PatientHeaderColumn.EHR_STATUS]: true,
 };
 
-export const patientHeaderMap = {
-  PATIENT: 'PATIENT',
-  AGE: 'AGE',
-  MOBILE: 'MOBILE',
-  HOME: 'HOME',
-  GENDER_IDENTITY: 'GENDER',
-  GENDER_AT_BIRTH: 'SEX',
-  UNIQUE_ID: 'MRN',
-  DOB: 'DOB',
-  EMAIL: 'EMAIL',
-  LABELS: 'LABELS',
-  SOURCE_EHR: 'SOURCE EHR',
-  EHR_LAST_SYNCED: 'EHR LAST SYNCED',
-  EHR_STATUS: 'EHR STATUS',
+export const patientHeaderMap = (uniqueIdentifierLabel) => {
+  return {
+    PATIENT: 'PATIENT',
+    AGE: 'AGE',
+    MOBILE: 'MOBILE',
+    HOME: 'HOME',
+    GENDER_IDENTITY: 'GENDER',
+    GENDER_AT_BIRTH: 'SEX',
+    UNIQUE_ID: uniqueIdentifierLabel,
+    DOB: 'DOB',
+    EMAIL: 'EMAIL',
+    LABELS: 'LABELS',
+    SOURCE_EHR: 'SOURCE EHR',
+    EHR_LAST_SYNCED: 'EHR LAST SYNCED',
+    EHR_STATUS: 'EHR STATUS',
+  };
 };
