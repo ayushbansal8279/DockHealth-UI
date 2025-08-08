@@ -21,7 +21,7 @@ import { changePatientForTemplateBundle } from 'actions/template-bundle-actions'
 import { noop } from 'helpers/utility-functions';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import SelectDropdown from '../SelectDropdown/SelectDropdown';
 import {
   getFormattedPatient,
@@ -57,6 +57,7 @@ const PatientSection = ({
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const dispatch = useDispatch();
+  const { pathname, search } = useLocation();
   const patientInputReference = useRef(null);
   const [patients, setPatients] = useState([]);
   const [assignedPatient, setAssignedPatient] = useState(null);
@@ -334,7 +335,10 @@ const PatientSection = ({
   );
 
   const patientProfile = () => {
-    history.push(`/core/patient/${selectedPatient.patientIdentifier}`);
+    history.push({
+      pathname: `/core/patient/${selectedPatient.patientIdentifier}`,
+      state: { from: search ? pathname + search : pathname },
+    });
   };
 
   return (

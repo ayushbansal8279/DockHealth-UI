@@ -2,49 +2,53 @@ import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Box } from '@mui/material';
 import {
-  currentFolderIdentifierSelector,
-  currentPatientIdentifierSelector,
-} from 'selectors/patient-details-selectors';
-import { getPatientFolderStructureHierarchy } from 'api/patient-attachment-api';
-import { createPatientAttachmentsPath } from 'routing/helpers/paths';
-import {
   BreadcrumbLink,
   BreadcrumbSeparator,
   BreadcrumbText,
   BreadcrumbWrapper,
 } from './styled';
+import { currentProfileTypeIdentifierSelector } from '@/app/selectors/profile-selector';
+import { createPatientAttachmentsPath, createProfileAttachmentsPath } from '@/app/routing/helpers/paths';
 
-const AttachmentsBreadcrumbs = () => {
-  const patientIdentifier = useSelector(currentPatientIdentifierSelector);
+
+const AttachmentsBreadcrumbs = ({
+  entityIdentifierSelector,
+  currentFolderIdentifierSelector,
+  getFolderStructureHierarchy,
+}) => {
+
+  const entityIdentifier = useSelector(entityIdentifierSelector);
   const currentFolderIdentifier = useSelector(currentFolderIdentifierSelector);
   const [breadcrumbs, setBreadcrumbs] = useState(null);
+  const profileTypeIndentifier = useSelector(currentProfileTypeIdentifierSelector);
 
   useEffect(() => {
     setBreadcrumbs(null);
-
     if (currentFolderIdentifier) {
-      getPatientFolderStructureHierarchy(currentFolderIdentifier).then(
-        (folder) => {
-          const formattedFoldersHierarchy = [];
-          let currentFolder = folder;
-          while (currentFolder) {
-            formattedFoldersHierarchy.unshift({
-              id: currentFolder.attachmentIdentifier,
-              name: currentFolder.fileName,
-            });
-            currentFolder = currentFolder.parentAttachment;
-          }
-          setBreadcrumbs(formattedFoldersHierarchy);
-        },
-      );
+      getFolderStructureHierarchy(currentFolderIdentifier).then((folder) => {
+        const formatted = [];
+        let current = folder;
+        while (current) {
+          formatted.unshift({
+            id: current.attachmentIdentifier,
+            name: current.fileName,
+          });
+          current = current.parentAttachment;
+        }
+        setBreadcrumbs(formatted);
+      });
     }
-  }, [currentFolderIdentifier]);
+  }, [currentFolderIdentifier, getFolderStructureHierarchy]);
 
   return (
     <>
       {breadcrumbs && (
         <Box display="flex" overflow="hidden">
-          <BreadcrumbLink to={createPatientAttachmentsPath(patientIdentifier)}>
+          <BreadcrumbLink to={
+            profileTypeIndentifier
+              ? createProfileAttachmentsPath(profileTypeIndentifier, entityIdentifier)
+              : createPatientAttachmentsPath(entityIdentifier)
+          }>
             Files
           </BreadcrumbLink>
           {breadcrumbs.map(({ id, name }, index) => (
@@ -59,9 +63,7 @@ const AttachmentsBreadcrumbs = () => {
                 <>
                   <BreadcrumbSeparator />
                   <BreadcrumbWrapper>
-                    <BreadcrumbLink
-                      to={createPatientAttachmentsPath(patientIdentifier, id)}
-                    >
+                    <BreadcrumbLink to={createPath(id)}>
                       {name}
                     </BreadcrumbLink>
                   </BreadcrumbWrapper>

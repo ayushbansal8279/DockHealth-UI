@@ -33,8 +33,8 @@ import Search from 'components/task-view/Search/Search';
 import ToolbarButton from '@/app/components/tasklist/list-toolbar-buttons/ToolbarButton/ToolbarButton';
 import {
   SearchContainer,
-  WorkflowSearchHorizontalLine,
-  WorkflowSearchHorizontalLineContainer,
+  HorizontalLine,
+  HorizontalLineContainer,
 } from '@/app/components/task-template/TaskTemplateApplicator/styled';
 import {
   PlusIcon,
@@ -166,9 +166,9 @@ const CustomizeToolbarButton = ({
               isWorkFlowSearch
             />
           </SearchContainer>
-          <WorkflowSearchHorizontalLineContainer>
-            <WorkflowSearchHorizontalLine />
-          </WorkflowSearchHorizontalLineContainer>
+          <HorizontalLineContainer>
+            <HorizontalLine />
+          </HorizontalLineContainer>
           <Box display="flex" justifyContent="space-between" mt={1}>
             <Box mx={0.5} />
             <ListItemText>

@@ -2,7 +2,14 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Tabs, Grid } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
+import {
+  Redirect,
+  Switch,
+  useHistory,
+  useLocation,
+  useParams,
+  useRouteMatch,
+} from 'react-router-dom';
 import { initializePusher } from 'helpers/pusher-instance';
 import {
   userProfileSelector,
@@ -13,8 +20,6 @@ import LayoutHeader from 'components/template/LayoutHeader/LayoutHeader';
 import { ColumnsConfigProvider } from 'context-api/columns-config-context';
 import HorizontallyScrolledViewLayout from 'components/template/HorizontallyScrolledViewLayout/HorizontallyScrolledViewLayout';
 import StickyContainer from 'components/common/HorizontalScroll/StickyContainer';
-import ProfileNotes from 'views/custom-profile-details/ProfileNotes/ProfileNotes';
-import ProfileTasksListView from 'views/custom-profile-details/ProfileTasksList/ProfileTasksList';
 import ProfileDetailsHeader from 'views/custom-profile-details/ProfileDetailsHeader/ProfileDetailsHeader';
 import {
   ProfileDetailsContainer,
@@ -22,39 +27,31 @@ import {
   MainTab,
 } from './styled';
 import { getPatientForProfile } from '@/app/api/profile-api';
-import ProfilePatientList from './ProfilePatientList/ProfilePatientList';
+import { initializeProfileState } from '@/app/actions/profile-actions';
+import { RouteWrapper } from 'routing/components';
+import { DEFAULT_TABS_CONFIG, TABS_CONFIG } from './helpers';
+import { profileTypeNameSelector } from '@/app/selectors/profile-selector';
 
 const ProfileDetailsView = () => {
   const { profileTypeIdentifier, profileIdentifier } = useParams();
   const { patientIdentifier } = useParams();
   const dispatch = useDispatch();
+  const history = useHistory();
+  const { path, url } = useRouteMatch();
+  const { pathname } = useLocation();
   const currentUser = useSelector(userProfileSelector);
+  const currentProfileTypeName = useSelector(profileTypeNameSelector);
   const { userIdentifier: currentUserIdentifier } = currentUser || {};
   const pusher = useRef(initializePusher());
-  const [currentTab, setCurrentTab] = useState(0);
-  const handleTabChange = (_, value) => {
-    setCurrentTab(value);
+  const handleTabChange = (_, newTabValue) => {
+    history.push(`${url}/${newTabValue}`);
   };
 
   const currentOrganization = useSelector(selectedUserOrganizationSelector);
 
-  const tabsConfiguration = useMemo(
-    () => [
-      {
-        label: 'All tasks',
-        mainPath: 'tasks',
-        additionalPath: ':taskListIdentifier?',
-        // RouteComponent: ProfileTasksList,
-        exact: true,
-      },
-      {
-        label: 'Notes',
-        mainPath: 'notes',
-        // RouteComponent: ProfileNotes,
-      },
-    ],
-    [],
-  );
+  useEffect(() => {
+    dispatch(initializeProfileState(profileIdentifier));
+  }, [dispatch, profileIdentifier]);
 
   useEffect(() => {
     // eslint-disable-next-line unicorn/consistent-function-scoping
@@ -126,21 +123,6 @@ const ProfileDetailsView = () => {
     });
   }, []);
 
-  // const activeTabPath = useMemo(() => {
-  //   // eslint-disable-next-line no-restricted-syntax
-  //   for (const tab of tabsConfiguration) {
-  //     const regex = new RegExp(`/${tab.mainPath}/|/${tab.mainPath}$`, 'gi');
-  //     if (regex.test(pathname)) {
-  //       return tab.mainPath;
-  //     }
-  //   }
-  //   return DEFAULT_TAB.mainPath;
-  // }, [pathname, tabsConfiguration]);
-
-  // const handleTabChange = (_, newTabValue) => {
-  //   history.push(`${url}/${newTabValue}`);
-  // };
-
   // eslint-disable-next-line react-hooks/exhaustive-deps
   // const onSearchChangedWithDebounce = useCallback(
   //   debounce((value) => {
@@ -209,11 +191,30 @@ const ProfileDetailsView = () => {
   //   [dispatch],
   // );
 
+  const [tabsConfiguration, setTabsConfiguration] = useState(TABS_CONFIG);
+
+  useEffect(() => {
+    setTabsConfiguration(TABS_CONFIG);
+  }, []);
+
+  const activeTabPath = useMemo(() => {
+    // eslint-disable-next-line no-restricted-syntax
+    for (const tab of tabsConfiguration) {
+      const regex = new RegExp(`/${tab.mainPath}/|/${tab.mainPath}$`, 'gi');
+      if (regex.test(pathname)) {
+        return tab.mainPath;
+      }
+    }
+    return DEFAULT_TABS_CONFIG[0].mainPath;
+  }, [pathname, tabsConfiguration]);
+
   return (
     <HorizontallyScrolledViewLayout
       header={
         <LayoutHeader>
-          <LayoutHeader.Title title="Custom Profile" />
+          <LayoutHeader.Title
+            title={currentProfileTypeName ?? 'Custom Profile'}
+          />
           <LayoutHeader.Spacer />
           <LayoutHeader.Spacer />
         </LayoutHeader>
@@ -224,16 +225,35 @@ const ProfileDetailsView = () => {
           <ProfileDetailsHeader />
           <ProfileDetailsTabsContainer>
             <Grid container>
-              <Tabs value={currentTab} onChange={handleTabChange}>
-                <MainTab label="All Tasks" />
-                <MainTab label="Notes" />
-                {patients.length > 0 && <MainTab label="Patients" />}
+              <Tabs value={activeTabPath} onChange={handleTabChange}>
+                {tabsConfiguration.map((t) => (
+                  <MainTab
+                    key={t.mainPath}
+                    value={t.mainPath}
+                    label={t.label}
+                  />
+                ))}
               </Tabs>
             </Grid>
           </ProfileDetailsTabsContainer>
         </StickyContainer>
         <ProfileDetailsContainer>
-          {currentTab === 0 && (
+          <Switch>
+            {tabsConfiguration?.map((route) => (
+              <RouteWrapper
+                allowedToRoles={route.allowedToRoles}
+                key={route.mainPath}
+                path={`${path}/${route.mainPath}${
+                  route.additionalPath ? `/${route.additionalPath}` : ''
+                }`}
+                RouteComponent={route.RouteComponent}
+                onEnter={route.onEnter}
+                exact={route.exact}
+              />
+            ))}
+            <Redirect to={`${path}/${DEFAULT_TABS_CONFIG[0].mainPath}`} />
+          </Switch>
+          {/* {currentTab === 0 && (
             <ProfileTasksListView profileIdentifier={profileIdentifier} />
           )}
           {currentTab === 1 && (
@@ -245,6 +265,9 @@ const ProfileDetailsView = () => {
               patients={patients}
             />
           )}
+          {currentTab === 3 && (
+            <ProfileAttachments profileIdentifier={profileIdentifier} />
+          )} */}
         </ProfileDetailsContainer>
       </ColumnsConfigProvider>
     </HorizontallyScrolledViewLayout>
