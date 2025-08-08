@@ -85,9 +85,7 @@ const AddAttachmentButton = ({ attachmentOptions = [] }) => {
             </MenuList>
           </Paper>
         </ClickAwayListener>
-      </Popper>
-
-      
+      </Popper> 
       <input
         ref={inputRef}
         type="file"
