@@ -26,16 +26,18 @@ export function getWorkspaceTitle({
         {' / '}
         {workspace?.workspaceIdentifier ? (
           <>
-            <StyledListLink to={`/core/workspace/${workspace.workspaceIdentifier}`}>
+            <StyledListLink
+              to={`/core/workspace/${workspace.workspaceIdentifier}`}
+            >
               {workspace.workspaceName}
             </StyledListLink>
             {' / '}
           </>
         ) : null}
-        {capitalize(titleText)}
+        {titleText}
       </>
     );
   }
 
-  return capitalize(titleText);
+  return titleText;
 }
