@@ -13,7 +13,6 @@ export const ProfileLabel = styled.span`
   text-overflow: ellipsis;
   max-width: 100%;
   display: inline-block;
-  text-decoration: underline;
 `;
 
 export const StyledProfileLink = styled(Link)({

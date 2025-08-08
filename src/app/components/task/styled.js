@@ -50,7 +50,6 @@ export const ListItemLink = styled(Link)`
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
-  text-decoration: underline;
 `;
 
 export const PublicInfoWrapper = styled.span`
@@ -871,7 +870,6 @@ export const PatientLabel = styled.span`
   color: ${palette.brightBlue};
   font-weight: ${fontWeights.light};
   font-size: 0.65 rem;
-  text-decoration: underline;
 `;
 
 export const DisabledPatientLabel = styled(PatientLabel)`
