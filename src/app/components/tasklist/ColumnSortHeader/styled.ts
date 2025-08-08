@@ -71,6 +71,10 @@ export const SortButton = styled.button<{
   width?: number;
   flex?: number;
   tasksHeaderTextTransform?: string;
+  isDragActive: Boolean;
+  isDraggedOver: Boolean;
+  hoverBorder: String;
+  hoveredIndex: number;
 }>`
   position: relative;
   ${({ width }) => {
@@ -82,8 +86,8 @@ export const SortButton = styled.button<{
   height: 35px;
   text-align: left;
   font-family: inherit;
-  background-color: ${({ isOver }) =>
-    isOver ? palette.coolGrey3 : palette.white};
+  background: ${({ isDragActive }) =>
+    isDragActive ? palette.brightBlueWithAlpha : palette.white};
   font-size: ${fontSizes.smallPlus};
   font-weight: ${fontWeights.regularPlus};
   ${({ tasksHeaderTextTransform }) =>
@@ -91,6 +95,35 @@ export const SortButton = styled.button<{
       ? `text-transform: ${tasksHeaderTextTransform};`
       : 'text-transform: uppercase;'};
   ${({ flex }) => (flex ? `flex: ${flex};` : '')};
+
+  ${({ isDraggedOver, hoverBorder, hoveredIndex }) => {
+    if (!isDraggedOver) return '';
+
+    if (hoveredIndex === 0) {
+      if (hoverBorder === 'left') {
+        return `
+        background-color: ${palette.coolGrey3};
+        border-left: 3px solid ${palette.azureBlue};
+      `;
+      }
+
+      if (hoverBorder === 'right') {
+        return `
+        background-color: ${palette.coolGrey3};
+      `;
+      }
+    }
+
+    if (hoveredIndex !== 0 && hoverBorder == null) {
+      return `
+      background-color: ${palette.coolGrey3};
+      border-right: 3px solid ${palette.azureBlue};
+    `;
+    }
+
+    return '';
+  }};
+
   &:hover {
     background-color: ${palette.coolGrey3};
   }

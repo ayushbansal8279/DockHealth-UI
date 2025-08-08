@@ -1,6 +1,6 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 /* eslint-disable no-underscore-dangle */
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Box } from '@mui/material';
 import Checkbox from 'components/common/Checkbox/Checkbox';
@@ -55,10 +55,15 @@ const TasksHeader = ({
     useSensor(KeyboardSensor),
     useSensor(TouchSensor),
   );
+  const dropDirectionRef = useRef(null);
   const taskList = useSelector(currentTaskListSelector);
   const currentUser = useSelector(userProfileSelector);
   const currentOrganization = useSelector(selectedUserOrganizationSelector);
   const [activeTaskHeader, setActiveTaskHeader] = useState(null);
+  const [dragDropDisabled, setDragDropDisabled] = useState(false);
+  const [isHoveringFirstColumnRightZone, setIsHoveringFirstColumnRightZone] =
+    useState(false);
+  const [hoveredIndex, setHoveredIndex] = useState(null);
   const {
     columns,
     setColumns,
@@ -100,10 +105,22 @@ const TasksHeader = ({
   const onDragStart = (column) => {
     setActiveTaskHeader(column.active?.data);
   };
+  const onDragMove = (column) => {
+    setHoveredIndex(column.over?.data?.current?.index);
+    if (dropDirectionRef?.current) {
+      setIsHoveringFirstColumnRightZone(
+        dropDirectionRef?.current === 'right' ? true : false,
+      );
+    } else {
+      setIsHoveringFirstColumnRightZone(false);
+    }
+  };
 
   const onDragEnd = useCallback(
     (column) => {
       setActiveTaskHeader(null);
+      setIsHoveringFirstColumnRightZone(false);
+      setHoveredIndex(null);
       if (
         !column.over ||
         !column.over?.data?.current ||
@@ -115,7 +132,12 @@ const TasksHeader = ({
       const newOrder = reorderColumns(
         columns.filter((f) => f.isChecked),
         column.active?.data?.current?.index,
-        column.over?.data?.current?.index,
+        dropDirectionRef?.current === 'left'
+          ? 0
+          : column.active?.data?.current?.index <=
+            column.over?.data?.current?.index
+          ? column.over?.data?.current?.index
+          : column.over?.data?.current?.index + 1,
       );
       if (newOrder) {
         setColumns([
@@ -183,6 +205,10 @@ const TasksHeader = ({
           printWidth={+customPrintWidth}
           tasksHeaderTextTransform={tasksHeaderTextTransformItem?.value}
           tasksHeaderTextColor={tasksHeaderTextColorItem?.value}
+          dragDropDisabled={dragDropDisabled}
+          setDragDropDisabled={setDragDropDisabled}
+          dropDirectionRef={dropDirectionRef}
+          hoveredIndex={hoveredIndex}
         />
       );
     },
@@ -194,6 +220,10 @@ const TasksHeader = ({
       tasksHeaderTextTransformItem?.value,
       tasksHeaderTextColorItem?.value,
       handleResizeColumn,
+      dragDropDisabled,
+      setDragDropDisabled,
+      dropDirectionRef,
+      hoveredIndex,
     ],
   );
 
@@ -202,6 +232,7 @@ const TasksHeader = ({
       sensors={sensors}
       onDragStart={onDragStart}
       onDragEnd={onDragEnd}
+      onDragMove={onDragMove}
     >
       <SortHeaderRow
         origin={origin}
@@ -243,7 +274,10 @@ const TasksHeader = ({
             0,
           )}
           <Box ml="1px" />
-          <TaskScrollVericleLine style={{ marginLeft: '-1.0px' }}>
+          <TaskScrollVericleLine
+            isHoveringFirstColumnRightZone={isHoveringFirstColumnRightZone}
+            style={{ marginLeft: '-1.0px' }}
+          >
             &nbsp;
           </TaskScrollVericleLine>
         </StickyColumnContainer>
@@ -271,6 +305,9 @@ const TasksHeader = ({
               activeTaskHeader?.current?.tasksHeaderTextTransform
             }
             isDragPreview
+            dragDropDisabled={dragDropDisabled}
+            setDragDropDisabled={setDragDropDisabled}
+            hoveredIndex={hoveredIndex}
           />
         )}
       </DragOverlay>

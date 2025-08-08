@@ -39,16 +39,27 @@ const ColumnSortHeader = ({
   tasksHeaderTextTransform,
   tasksHeaderTextColor,
   isDragPreview,
+  dragDropDisabled,
+  setDragDropDisabled,
+  dropDirectionRef,
+  hoveredIndex,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const descriptionTextReference = useRef();
   const [columnWidth, setcolumnWidth] = useState(+width);
   const [isResizing, setIsResizing] = useState(false);
+  const [hoverBorder, setHoverBorder] = useState(null);
   const previousWidth = usePrevious(width);
 
-  const { setNodeRef: dropRef, isOver } = useDroppable({
+  const {
+    setNodeRef: dropRef,
+    isOver,
+    active,
+    over,
+  } = useDroppable({
     id,
     data: { index, label, width, tasksHeaderTextTransform },
+    disabled: dragDropDisabled,
   });
 
   const {
@@ -58,7 +69,36 @@ const ColumnSortHeader = ({
   } = useDraggable({
     id,
     data: { index, label, width, tasksHeaderTextTransform },
+    disabled: dragDropDisabled,
   });
+
+  useEffect(() => {
+    const isFirstColumnHeader = index === 0;
+
+    if (!isFirstColumnHeader || !active || !isOver) {
+      setHoverBorder(null);
+      if (dropDirectionRef) {
+        dropDirectionRef.current = null;
+      }
+      return;
+    }
+
+    const handlePointerMove = (e) => {
+      const rect = descriptionTextReference?.current?.getBoundingClientRect();
+      if (!rect) return;
+
+      const isLeft = e?.clientX < rect?.left + rect?.width / 2;
+      const direction = isLeft ? 'left' : 'right';
+
+      if (dropDirectionRef) {
+        dropDirectionRef.current = direction;
+      }
+      setHoverBorder(direction);
+    };
+
+    window.addEventListener('pointermove', handlePointerMove);
+    return () => window.removeEventListener('pointermove', handlePointerMove);
+  }, [active?.id, over?.id, index]);
 
   useEffect(() => {
     if (width && previousWidth !== width && width !== columnWidth)
@@ -106,6 +146,7 @@ const ColumnSortHeader = ({
 
   const handleResizeStop = useCallback(
     (event, data) => {
+      setDragDropDisabled(false);
       if (typeof onResize === 'function') onResize(id, event, data);
       setTimeout(() => setIsResizing(false), 1000);
     },
@@ -191,7 +232,7 @@ const ColumnSortHeader = ({
     ],
   );
 
-  if (isDragPreview) {
+  if (isDragPreview && !dragDropDisabled) {
     return (
       <>
         <DragPreviewWrapper
@@ -199,7 +240,7 @@ const ColumnSortHeader = ({
           tasksHeaderTextTransform={tasksHeaderTextTransform}
         >
           <DragPreviewText>{label}</DragPreviewText>
-        </DragPreviewWrapper>{' '}
+        </DragPreviewWrapper>
       </>
     );
   }
@@ -208,7 +249,10 @@ const ColumnSortHeader = ({
     <Resizable
       {...attributes}
       {...listeners}
-      onResizeStart={() => setIsResizing(true)}
+      onResizeStart={() => {
+        setDragDropDisabled(true);
+        setIsResizing(true);
+      }}
       minConstraints={[20, 20]}
       maxConstraints={[1000, 35]}
       height={35}
@@ -233,6 +277,7 @@ const ColumnSortHeader = ({
         ref={(node) => {
           dropRef(node);
           dragRef(node);
+          descriptionTextReference.current = node;
         }}
         type="button"
         width={snapshot?.draggingOverWith === id ? 0 : columnWidth}
@@ -240,6 +285,10 @@ const ColumnSortHeader = ({
         printWidth={printWidth}
         tasksHeaderTextTransform={tasksHeaderTextTransform}
         isOver={isOver}
+        isDragActive={!!active && active?.id === id && !dragDropDisabled}
+        isDraggedOver={isOver && active?.id !== id && !dragDropDisabled}
+        hoverBorder={hoverBorder}
+        hoveredIndex={hoveredIndex}
       >
         <div>{randerContent(tasksHeaderTextColor)}</div>
       </SortButton>
