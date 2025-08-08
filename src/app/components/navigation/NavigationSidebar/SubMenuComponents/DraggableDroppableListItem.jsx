@@ -28,7 +28,7 @@ const DraggableDroppableListItem = ({
     transition,
     position: 'relative',
     zIndex: isDragging ? 9999 : 'auto',
-    cursor: isDragging ? 'grabbing' : 'grab',
+    cursor: isDragging ? 'grabbing' : 'pointer',
   };
 
   useEffect(() => {

@@ -221,6 +221,17 @@ const ListsSubmenu = () => {
                 data-list-id={list.taskListIdentifier}
                 className="drawer-menu-list-item"
                 $isSubMenu
+                onClick={() => {
+                  if (activeTaskListIdentifier === list?.taskListIdentifier)
+                    return;
+
+                  if (list?.status === 'PENDING') {
+                    onTaskListInvitationAccepted();
+                    dispatch(TaskListActions.acceptInviteToTaskList(list));
+                  }
+                  history.push(createTaskListPath(list.taskListIdentifier));
+                }}
+                style={{ cursor: 'pointer' }}
               >
                 <ListOptionsMenu list={list}>
                   <MoreVert color="primary" />
@@ -243,16 +254,6 @@ const ListsSubmenu = () => {
                       handleMouseEnter(event, list?.listName)
                     }
                     onMouseLeave={() => setIsOverflowing(false)}
-                    onClick={() => {
-                      if (activeTaskListIdentifier === list?.taskListIdentifier)
-                        return;
-
-                      if (list?.status === 'PENDING') {
-                        onTaskListInvitationAccepted();
-                        dispatch(TaskListActions.acceptInviteToTaskList(list));
-                      }
-                      history.push(createTaskListPath(list.taskListIdentifier));
-                    }}
                     $isSubMenu
                   >
                     <ListNameLabel
@@ -302,6 +303,18 @@ const ListsSubmenu = () => {
                       : `drawer-menu-list-item`
                   }
                   $isSubMenu
+                  onClick={() => {
+                    if (activeTaskListIdentifier === list?.taskListIdentifier) {
+                      return;
+                    }
+
+                    if (list?.status === 'PENDING') {
+                      onTaskListInvitationAccepted();
+                      dispatch(TaskListActions.acceptInviteToTaskList(list));
+                    }
+                    history.push(createTaskListPath(list.taskListIdentifier));
+                  }}
+                  style={{ cursor: 'pointer' }}
                 >
                   <Box ml={1} />
                   {['INBOX', 'PUBLIC'].includes(list?.listType) ? (
@@ -331,24 +344,6 @@ const ListsSubmenu = () => {
                         handleMouseEnter(event, list?.listName)
                       }
                       onMouseLeave={() => setIsOverflowing(false)}
-                      // eslint-disable-next-line sonarjs/no-identical-functions
-                      onClick={() => {
-                        if (
-                          activeTaskListIdentifier === list?.taskListIdentifier
-                        ) {
-                          return;
-                        }
-
-                        if (list?.status === 'PENDING') {
-                          onTaskListInvitationAccepted();
-                          dispatch(
-                            TaskListActions.acceptInviteToTaskList(list),
-                          );
-                        }
-                        history.push(
-                          createTaskListPath(list.taskListIdentifier),
-                        );
-                      }}
                       $isSubMenu
                     >
                       <ListNameLabel
@@ -400,6 +395,15 @@ const ListsSubmenu = () => {
                   $isSubMenu
                   $isDraggable
                   $isDragging={dragActiveId === list?.taskListIdentifier}
+                  onClick={() => {
+                    if (activeTaskListIdentifier === list?.taskListIdentifier)
+                      return;
+                    if (list?.status === 'PENDING') {
+                      onTaskListInvitationAccepted();
+                      dispatch(TaskListActions.acceptInviteToTaskList(list));
+                    }
+                    history.push(createTaskListPath(list.taskListIdentifier));
+                  }}
                 >
                   <Box ml={1} />
                   {['INBOX', 'PUBLIC'].includes(list?.listType) ? (
@@ -437,22 +441,6 @@ const ListsSubmenu = () => {
                         handleMouseEnter(event, list?.listName)
                       }
                       onMouseLeave={() => setIsOverflowing(false)}
-                      // eslint-disable-next-line sonarjs/no-identical-functions
-                      onClick={() => {
-                        if (
-                          activeTaskListIdentifier === list?.taskListIdentifier
-                        )
-                          return;
-                        if (list?.status === 'PENDING') {
-                          onTaskListInvitationAccepted();
-                          dispatch(
-                            TaskListActions.acceptInviteToTaskList(list),
-                          );
-                        }
-                        history.push(
-                          createTaskListPath(list.taskListIdentifier),
-                        );
-                      }}
                       $isSubMenu
                       $isDragging={dragActiveId === list?.taskListIdentifier}
                     >
