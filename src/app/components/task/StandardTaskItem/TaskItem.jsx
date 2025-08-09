@@ -462,7 +462,7 @@ const TaskItem = React.memo(
         taskItem?.itemType === 'TASK' &&
         taskItem?.taskGroups
       ) {
-        const filteredGroups = taskItem.taskGroups?.filter(
+        const filteredGroups = taskItem?.taskGroups?.filter(
           (taskGroup) => taskGroup?.groupType === 'TASK_BUNDLE',
         );
 
@@ -473,7 +473,7 @@ const TaskItem = React.memo(
         !!searchValue ||
         !!sort.key
       ) {
-        const filteredGroups = taskItem.taskGroups?.filter(
+        const filteredGroups = taskItem?.taskGroups?.filter(
           (taskGroup) => taskGroup?.groupType === 'TASK_BUNDLE',
         );
         return filteredGroups?.length > 0 ? filteredGroups[0] : null;
