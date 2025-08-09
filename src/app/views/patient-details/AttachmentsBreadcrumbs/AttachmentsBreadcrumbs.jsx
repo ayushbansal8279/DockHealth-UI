@@ -8,19 +8,22 @@ import {
   BreadcrumbWrapper,
 } from './styled';
 import { currentProfileTypeIdentifierSelector } from '@/app/selectors/profile-selector';
-import { createPatientAttachmentsPath, createProfileAttachmentsPath } from '@/app/routing/helpers/paths';
-
+import {
+  createPatientAttachmentsPath,
+  createProfileAttachmentsPath,
+} from '@/app/routing/helpers/paths';
 
 const AttachmentsBreadcrumbs = ({
   entityIdentifierSelector,
   currentFolderIdentifierSelector,
   getFolderStructureHierarchy,
 }) => {
-
   const entityIdentifier = useSelector(entityIdentifierSelector);
   const currentFolderIdentifier = useSelector(currentFolderIdentifierSelector);
   const [breadcrumbs, setBreadcrumbs] = useState(null);
-  const profileTypeIndentifier = useSelector(currentProfileTypeIdentifierSelector);
+  const profileTypeIndentifier = useSelector(
+    currentProfileTypeIdentifierSelector,
+  );
 
   useEffect(() => {
     setBreadcrumbs(null);
@@ -44,11 +47,16 @@ const AttachmentsBreadcrumbs = ({
     <>
       {breadcrumbs && (
         <Box display="flex" overflow="hidden">
-          <BreadcrumbLink to={
-            profileTypeIndentifier
-              ? createProfileAttachmentsPath(profileTypeIndentifier, entityIdentifier)
-              : createPatientAttachmentsPath(entityIdentifier)
-          }>
+          <BreadcrumbLink
+            to={
+              profileTypeIndentifier
+                ? createProfileAttachmentsPath(
+                    profileTypeIndentifier,
+                    entityIdentifier,
+                  )
+                : createPatientAttachmentsPath(entityIdentifier)
+            }
+          >
             Files
           </BreadcrumbLink>
           {breadcrumbs.map(({ id, name }, index) => (
@@ -63,7 +71,16 @@ const AttachmentsBreadcrumbs = ({
                 <>
                   <BreadcrumbSeparator />
                   <BreadcrumbWrapper>
-                    <BreadcrumbLink to={createPath(id)}>
+                    <BreadcrumbLink
+                      to={
+                        profileTypeIndentifier
+                          ? createProfileAttachmentsPath(
+                              profileTypeIndentifier,
+                              entityIdentifier,
+                            )
+                          : createPatientAttachmentsPath(entityIdentifier)
+                      }
+                    >
                       {name}
                     </BreadcrumbLink>
                   </BreadcrumbWrapper>
