@@ -69,9 +69,11 @@ const ALL_JOINED_LISTS_VIEW_COLUMNS_CONFIG = {
   [TaskItemColumn.LIST_NAME]: true,
 };
 
-const ProfileTasksListView = ({ profileIdentifier }) => {
-  const { updateProfileTaskInList, updateProfileTaskWorkflowStatus } = useActions(CustomProfileDetailsActions);
+const ProfileTasksListView = () => {
+  const { updateProfileTaskInList, updateProfileTaskWorkflowStatus } =
+    useActions(CustomProfileDetailsActions);
   const {
+    profileIdentifier,
     taskListIdentifier: taskListIdentifierParameter = ListViewType.ALL_TASKS,
   } = useParams();
   const viewSetup = useSelector(userSetupClientViewSelector);

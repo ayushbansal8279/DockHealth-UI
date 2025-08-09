@@ -1,3 +1,8 @@
+import ProfileAttachments from './ProfileAttachments/ProfileAttachments';
+import ProfileNotes from './ProfileNotes/ProfileNotes';
+import ProfilePatientList from './ProfilePatientList/ProfilePatientList';
+import ProfileTasksListView from './ProfileTasksList/ProfileTasksList';
+
 export const ListViewType = {
   LIST_VIEW: 'list-view',
   ALL_TASKS: 'all',
@@ -24,20 +29,50 @@ export const getProfileName = (profileTypeFields, profile) => {
       );
       return profileTypeField?.displayOptions?.includes('PROFILE_NAME');
     })
-    .map(
-      (field) => {
-        if (["MULTI_SELECT", "PICK_LIST", "RELATIONSHIP"].includes(field.profileTypeFieldType)) {
-          const reference = field.references?.find(
-            (ref) => ref.identifier === field.values?.[0]
-          );
-          return reference?.displayValue || "";
-        }
-        return (
-          field.values?.[0] ||
-          field.values?.[0].value ||
-          field.values?.[0]?.customFieldOption?.name
+    .map((field) => {
+      if (
+        ['MULTI_SELECT', 'PICK_LIST', 'RELATIONSHIP'].includes(
+          field.profileTypeFieldType,
         )
+      ) {
+        const reference = field.references?.find(
+          (ref) => ref.identifier === field.values?.[0],
+        );
+        return reference?.displayValue || '';
       }
-    );
-    return profileName;
+      return (
+        field.values?.[0] ||
+        field.values?.[0].value ||
+        field.values?.[0]?.customFieldOption?.name
+      );
+    });
+  return profileName;
 };
+
+export const TABS_CONFIG = [
+  {
+    label: 'All tasks',
+    mainPath: 'tasks',
+    additionalPath: ':taskListIdentifier?',
+    RouteComponent: ProfileTasksListView,
+    exact: true,
+  },
+  {
+    label: 'Notes',
+    mainPath: 'notes',
+    RouteComponent: ProfileNotes,
+  },
+  {
+    label: 'Patients',
+    mainPath: 'patients',
+    RouteComponent: ProfilePatientList,
+  },
+  {
+    label: 'Files',
+    mainPath: 'files',
+    additionalPath: ':folderIdentifier?',
+    RouteComponent: ProfileAttachments,
+  },
+];
+
+export const DEFAULT_TABS_CONFIG = [TABS_CONFIG[0]];

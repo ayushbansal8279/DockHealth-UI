@@ -78,3 +78,12 @@ export const createUserGroupPath = (groupIdentifier) =>
 
 export const createProfileListPath = (profileTypeIdentifier, profileIdentifier) =>
   `${CUSTOM_PROFILES_PATH}/${profileTypeIdentifier}/${profileIdentifier}`;
+
+export const createProfileAttachmentsPath = (
+  profileTypeIdentifier,
+  profileIdentifier,
+  folderIdentifier = null,
+) =>
+  `/core/custom-profiles/${profileTypeIdentifier}/${profileIdentifier}/files${
+    folderIdentifier ? `/${folderIdentifier}` : ``
+  }`;

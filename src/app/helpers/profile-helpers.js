@@ -30,3 +30,9 @@ export const getTransformedProfileFields = (profileMetaData, types) => {
     };
   });
 };
+
+export const ProfileAttachmentType = {
+  FOLDER : 'FOLDER',
+  FILE_LOCAL : 'FILE_LOCAL',
+  FILE_GDRIVE : 'FILE_GDRIVE',
+};

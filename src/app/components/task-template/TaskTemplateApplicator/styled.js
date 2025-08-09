@@ -140,13 +140,13 @@ export const WorkflowFoldersHeaderLabel = styled(Typography)`
   line-height: 19.07px;
 `;
 
-export const WorkflowSearchHorizontalLineContainer = styled.div`
+export const HorizontalLineContainer = styled.div`
   width: 100%;
   height: 16px;
   padding: 8px 0px 8px 0px;
   gap: 10px;
 `;
-export const WorkflowSearchHorizontalLine = styled.div`
+export const HorizontalLine = styled.div`
   width: 100%;
   border: 1px solid ${palette.lightGrayishBlue};
 `;

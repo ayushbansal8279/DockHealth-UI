@@ -8,6 +8,7 @@ import Skeleton from '@mui/material/Skeleton';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import { showGlobalErrorAlert } from 'alert/actions';
+import AlertMessages from 'alert/AlertMessages';
 import * as ProfileTypeFieldApi from 'api/profile-type-field-api';
 import * as CustomFieldsApi from 'api/custom-fields-api';
 import { FieldType, FieldTypeLabel } from 'helpers/field-type-helpers';
@@ -34,6 +35,7 @@ import {
   CenterBox,
 } from './styled';
 import { getSortedFields, handleDragAndSort } from '@/app/helpers/custom-fields-helpers';
+import { showGlobalAlert } from '@/app/alert/actions';
 
 const ProfilesCustomFieldsView = ({ profileTypeIdentifier }) => {
   const dispatch = useDispatch();
@@ -96,14 +98,12 @@ const ProfilesCustomFieldsView = ({ profileTypeIdentifier }) => {
         confirm: () => {
           setColumnsToState(columns.filter((f) => f.identifier !== id));
           ProfileTypeFieldApi.deleteProfileFieldType(id)
-            .then(() =>
+            .then(() => {
               setCustomFields((previousValue) =>
                 previousValue.filter(({ identifier }) => id !== identifier),
-              ),
-            )
-            .catch(() => {
-              dispatch(showGlobalErrorAlert());
-            });
+              );
+              dispatch(showGlobalAlert(AlertMessages.DELETED));
+            })
         },
       }),
     );
