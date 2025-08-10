@@ -72,9 +72,16 @@ const CustomizeToolbarButton = ({
     setSearchValue('');
   }, [open]);
 
+  const customerTypeLabel = capitalize(getCustomerTypeLabel(userProfile));
+
+  const uniqueIdentifierLabel =
+    customerTypeLabel === 'Patient'
+      ? 'Unique Identifier (MRN)'
+      : 'Unique Identifier';
+
   const ColumnOptionNames = {
     [PatientHeaderColumn.PATIENT]: null,
-    [PatientHeaderColumn.UNIQUE_ID]: 'Unique Identifier',
+    [PatientHeaderColumn.UNIQUE_ID]: uniqueIdentifierLabel,
     [PatientHeaderColumn.DOB]: 'DOB',
     [PatientHeaderColumn.AGE]: 'Age',
     [PatientHeaderColumn.GENDER_AT_BIRTH]: 'Sex at birth',
@@ -87,8 +94,6 @@ const CustomizeToolbarButton = ({
     [PatientHeaderColumn.EHR_LAST_SYNCED]: 'EHR Patient Last Synced',
     [PatientHeaderColumn.EHR_STATUS]: 'EHR Patient Status',
   };
-
-  const customerTypeLabel = capitalize(getCustomerTypeLabel(userProfile));
 
   const onClickCheckbox = useCallback(
     (column) => {
