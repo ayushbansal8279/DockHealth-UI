@@ -52,7 +52,7 @@ const CustomFieldAutoComplete = ({
               setProfiles(newProfiles);
             })
             .catch((error) => {
-              console.error('error getting profile types');
+              console.error('error getting object types');
               console.error(error);
             });
         })

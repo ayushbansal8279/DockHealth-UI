@@ -64,7 +64,7 @@ export const getTaskHeaderOptions = (
     },
     {
       identifier: TaskHeaderColumn.PROFILE,
-      label: 'Profile',
+      label: 'Object',
       draggable: true,
     },
     {

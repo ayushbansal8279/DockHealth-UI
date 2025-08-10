@@ -51,7 +51,7 @@ export const getTemplateColumns = ({
 
       if (data.id !== 'users' && profileBuilderFeatureAvailable) {
         contextMenuOptions.push({
-          name: 'Open Profile Builder',
+          name: 'Open Object Builder',
           onClick: () => onOpenProfileBuilder(data),
         });
       }

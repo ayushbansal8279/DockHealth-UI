@@ -260,7 +260,7 @@ const NavigationSidebar = () => {
             {!embeddedMode && !isOnboardingPage && (
               <AccessRestrictor>
                 <IconNavigationItem
-                  name="Profiles"
+                  name="Objects"
                   icon={ProfilesIcon}
                   path={CUSTOM_PROFILES_PATH}
                   subMenuKey={SubmenuKey.CUSTOM_PROFILES}
@@ -379,7 +379,7 @@ const NavigationSidebar = () => {
                 </>
               </NavigationItem>
             </AccessRestrictor> */}
-            <div style={{marginLeft:"-7px"}} ref={profileMenuReference}>
+            <div style={{ marginLeft: '-7px' }} ref={profileMenuReference}>
               <NavigationItem
                 name="Account"
                 subMenuKey={SubmenuKey.PROFILE}

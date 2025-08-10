@@ -130,7 +130,7 @@ const ProfileDetailsHeader = () => {
                 <Box mx={1} />
                 {profileBuilderFeatureAvailable && (
                   <ButtonContainer onClick={setIsProfileOpen}>
-                    <ProfileDetailsLabel>View profile</ProfileDetailsLabel>
+                    <ProfileDetailsLabel>View object</ProfileDetailsLabel>
                   </ButtonContainer>
                 )}
                 {taskListRestrictions?.createTask !== DISABLED && (

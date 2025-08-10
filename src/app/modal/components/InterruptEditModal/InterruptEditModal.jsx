@@ -33,9 +33,8 @@ const InterruptEditModal = ({
         <ModalIconContainer>
           <ModalMainIcon src={DownArrow} alt="Task" />
           <ModalHeaderName>
-            You have unsaved changes to the{' '}
-            {(profileTypeName ?? customerTypeLabel).toUpperCase()}
-            &apos;s profile
+            You have unsaved changes to this{' '}
+            {(profileTypeName ?? customerTypeLabel).toLowerCase()}
           </ModalHeaderName>
         </ModalIconContainer>
         <ModalDescriptionContainer />

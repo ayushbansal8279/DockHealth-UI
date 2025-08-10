@@ -85,7 +85,7 @@ export const getAdditionalProfileOptions = ({
   handleDisplayOptionChange,
 }) => [
   {
-    label: 'Profile Name',
+    label: 'Object Name',
     key: 'PROFILE_NAME',
     value: !!displayOptionsState?.displayOptions?.find(
       (option) => option === 'PROFILE_NAME',
@@ -93,7 +93,7 @@ export const getAdditionalProfileOptions = ({
     onChange: (value) => handleDisplayOptionChange(value, 'PROFILE_NAME'),
   },
   {
-    label: 'Profile Header',
+    label: 'Object Header',
     key: 'PROFILE_HEADER',
     value: !!displayOptionsState?.displayOptions?.find(
       (option) => option === 'PROFILE_HEADER',

@@ -591,7 +591,7 @@ const EditCustomFieldModal = ({
                       <Grid item xs={6}>
                         <FormSelect
                           required
-                          label="Profile Type"
+                          label="Object Type"
                           name="relatedProfileType"
                           options={profileTypeOptions}
                           onChange={(event) =>

@@ -48,8 +48,8 @@ const ProfilePickerModal = ({
       <CloseIconButton onClick={closeModal} size="small" color="secondary">
         <CloseIcon />
       </CloseIconButton>
-      <ModalHeader>Select profile</ModalHeader>
-      <ModalDescription>Select Profile to Merge To</ModalDescription>
+      <ModalHeader>Select object</ModalHeader>
+      <ModalDescription>Select Object to Merge To</ModalDescription>
       <Box my={1} />
       <ProfileListWrapper>
         <ProfileList

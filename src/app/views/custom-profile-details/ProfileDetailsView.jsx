@@ -213,7 +213,7 @@ const ProfileDetailsView = () => {
       header={
         <LayoutHeader>
           <LayoutHeader.Title
-            title={currentProfileTypeName ?? 'Custom Profile'}
+            title={currentProfileTypeName ?? 'Custom Object'}
           />
           <LayoutHeader.Spacer />
           <LayoutHeader.Spacer />
