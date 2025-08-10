@@ -50,9 +50,6 @@ const TaskLink = (props) => {
       updateTasksLink({
         ...link,
         isDependent: !isDependent,
-        delayPeriod: null,
-        delayPeriodUnit: null,
-        delayIsBusinessDays: null,
       }),
     );
   };
@@ -120,7 +117,6 @@ const TaskLink = (props) => {
     dispatch(
       updateTasksLink({
         ...link,
-        isDependent: true,
         ...delayPeriodData,
       }),
     );

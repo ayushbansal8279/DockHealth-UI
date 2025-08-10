@@ -174,22 +174,25 @@ const SmartFlowBuilderView = () => {
   const [modalUsed, setModalUsed] = useState(false);
   const [initialTasksLength, setInitialTasksLength] = useState(null);
 
-  const constantVisibleElements = useMemo(() => [
-    {
-      id: 'START_INDICATOR',
-      position:
-        layout?.find(({ id }) => id === 'START_INDICATOR')?.position ||
-        countStartIndicatorInitialPosition(layout),
-      type: 'INDICATOR',
-    },
-    {
-      id: 'END_INDICATOR',
-      position:
-        layout?.find(({ id }) => id === 'END_INDICATOR')?.position ||
-        countEndIndicatorInitialPosition(layout),
-      type: 'INDICATOR',
-    },
-  ], [layout]);
+  const constantVisibleElements = useMemo(
+    () => [
+      {
+        id: 'START_INDICATOR',
+        position:
+          layout?.find(({ id }) => id === 'START_INDICATOR')?.position ||
+          countStartIndicatorInitialPosition(layout),
+        type: 'INDICATOR',
+      },
+      {
+        id: 'END_INDICATOR',
+        position:
+          layout?.find(({ id }) => id === 'END_INDICATOR')?.position ||
+          countEndIndicatorInitialPosition(layout),
+        type: 'INDICATOR',
+      },
+    ],
+    [layout],
+  );
 
   useEffect(() => {
     if (initialTasksLength === null && Array.isArray(tasks)) {
@@ -252,7 +255,14 @@ const SmartFlowBuilderView = () => {
         })),
       );
     }
-  }, [draggedEdgeSourceId, identifier, layout, tasks, temporaryElements, constantVisibleElements]);
+  }, [
+    draggedEdgeSourceId,
+    identifier,
+    layout,
+    tasks,
+    temporaryElements,
+    constantVisibleElements,
+  ]);
 
   useEffect(() => {
     if (reactFlowInstance && nodesInitialized && !reactFlowInitialized) {
@@ -326,7 +336,6 @@ const SmartFlowBuilderView = () => {
             dispatch(
               updateTasksLink({
                 ...link,
-                isDependent: true,
                 ...delayPeriodData,
               }),
             );
@@ -369,7 +378,10 @@ const SmartFlowBuilderView = () => {
           ) {
             for (const selectedElement of selectedElements) {
               const taskLinks = selectedElement?.data.task.taskLinks;
-              if (taskLinks?.length > 0 && taskLinks.some(link => link.linkType !== 'START')) {
+              if (
+                taskLinks?.length > 0 &&
+                taskLinks.some((link) => link.linkType !== 'START')
+              ) {
                 dispatch(
                   openModal('Information', {
                     text: 'This task already has linkages to other tasks. If you want to change it to decision tree, please remove existing connections.',
