@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import ReactDOM from 'react-dom';
 import * as WorkflowActions from 'actions/workflow-actions';
@@ -11,13 +11,13 @@ import DrawerSection from 'components/drawer-common/DrawerSection/DrawerSection'
 import DrawerTaskLoader from 'components/drawer-common/DrawerTaskLoader/DrawerTaskLoader';
 import {
   DndContext,
+  DragOverlay,
   KeyboardSensor,
   PointerSensor,
   useSensor,
   useSensors,
 } from '@dnd-kit/core';
 import DraggableTaskItem from '../../task-drawer/DraggableTaskItem/DraggableTaskItem';
-import { SortableContext } from '@dnd-kit/sortable';
 
 const TasksSection = () => {
   const dispatch = useDispatch();
@@ -29,16 +29,30 @@ const TasksSection = () => {
   const { tasks } = workflow || {};
   const isFetching = useSelector(isFetchingWorkflowDetailsSelector);
   const currentUser = useSelector(userProfileSelector);
+  const [activeTask, setActiveTask] = useState(null);
+  const dropDirectionRef = useRef(null);
+
+  const handleDragStart = (event) => {
+    setActiveTask(event?.active?.data?.current?.task);
+  };
 
   const handleDragEnd = useCallback(
     ({ active, over }) => {
-      const activeIndex = active?.data?.current?.sortable?.index;
-      const overIndex = over?.data?.current?.sortable?.index;
+      setActiveTask(null);
+      const activeIndex = active?.data?.current?.index;
+      const overIndex = over?.data?.current?.index;
       if (!over || activeIndex === overIndex) return;
 
       if (over) {
         const source = { index: activeIndex };
-        const destination = { index: overIndex };
+        const destination = {
+          index:
+            dropDirectionRef?.current === 'top'
+              ? 0
+              : activeIndex <= overIndex
+              ? overIndex
+              : overIndex + 1,
+        };
         dispatch(
           WorkflowActions.reorderWorkflowTasks({
             destination,
@@ -62,21 +76,33 @@ const TasksSection = () => {
           <DrawerTaskLoader />
         </>
       ) : (
-        <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
-          <SortableContext
-            items={(tasks ?? [])?.map((task) => task.identifier)}
-          >
-            {(tasks ?? [])?.map((task, index) => (
-              <DraggableTaskItem
-                key={task.identifier}
-                task={task}
-                currentUser={currentUser}
-              />
-            ))}
-          </SortableContext>
+        <DndContext
+          sensors={sensors}
+          onDragStart={handleDragStart}
+          onDragEnd={handleDragEnd}
+        >
+          {(tasks ?? [])?.map((task, index) => (
+            <DraggableTaskItem
+              key={task.identifier}
+              task={task}
+              currentUser={currentUser}
+              index={index}
+              dropDirectionRef={dropDirectionRef}
+            />
+          ))}
+          <DragOverlay>
+            {activeTask ? <Placeholder task={activeTask} /> : null}
+          </DragOverlay>
         </DndContext>
       )}
     </DrawerSection>
+  );
+};
+
+const Placeholder = ({ task }) => {
+  return (
+    // @ts-ignore
+    <DraggableTaskItem key={task.identifier} task={task} isDragPreview />
   );
 };
 
