@@ -10,7 +10,7 @@ export const Header = styled.h2`
 `;
 
 export const ViewContainer = styled.div`
-  max-width: ${({isPatient}) => isPatient ? '1300px' : '1000px' };
+  max-width: ${({ isUser }) => (isUser ? '1000px' : '1300px')};
   width: 100%;
   margin: 0 auto;
   padding: 50px 20px;
