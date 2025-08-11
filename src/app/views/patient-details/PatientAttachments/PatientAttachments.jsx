@@ -107,6 +107,8 @@ const PatientAttachments = () => {
 
   const isFetching = useSelector(isFetchingPatientAttachmentsSelector);
 
+  const currentFolderId = useSelector(currentFolderIdentifierSelector);
+  
   const downloadDisabled = currentPatientAttachments?.some(
     ({ scanStatus }) =>
       scanStatus &&
@@ -453,7 +455,7 @@ const PatientAttachments = () => {
               </div>
             )}
           </NamedCollapse>
-          <NamedCollapse name="Task Files">
+          {!currentFolderId && (<NamedCollapse name="Task Files">
             {activeViewType === FilesViewType.LIST && <FileListHeader />}
             {taskFileList.length > 0 ? (
               taskFileList.map((file, index) => (
@@ -493,7 +495,7 @@ const PatientAttachments = () => {
                 </DownloadAllLink>
               </div>
             )}
-          </NamedCollapse>
+          </NamedCollapse>)}
           <AttachmentPreview
             attachment={previewedAttachment}
             attachmentsSources={attachmentsSources}
