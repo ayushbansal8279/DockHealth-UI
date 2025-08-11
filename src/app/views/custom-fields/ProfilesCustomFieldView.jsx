@@ -11,7 +11,11 @@ import { showGlobalErrorAlert } from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
 import * as ProfileTypeFieldApi from 'api/profile-type-field-api';
 import * as CustomFieldsApi from 'api/custom-fields-api';
-import { FieldType, FieldTypeLabel } from 'helpers/field-type-helpers';
+import {
+  DisplayOption,
+  FieldType,
+  FieldTypeLabel,
+} from 'helpers/field-type-helpers';
 import { openModal } from 'modal/actions';
 import AddButton from 'components/common/AddButton/AddButton';
 import {
@@ -34,7 +38,10 @@ import {
   DragHandle,
   CenterBox,
 } from './styled';
-import { getSortedFields, handleDragAndSort } from '@/app/helpers/custom-fields-helpers';
+import {
+  getSortedFields,
+  handleDragAndSort,
+} from '@/app/helpers/custom-fields-helpers';
 import { showGlobalAlert } from '@/app/alert/actions';
 
 const ProfilesCustomFieldsView = ({ profileTypeIdentifier }) => {
@@ -68,7 +75,7 @@ const ProfilesCustomFieldsView = ({ profileTypeIdentifier }) => {
           type: 'PROFILE',
         },
         customField: field,
-        fetchUserCustomFields : () => fetchUserCustomFields(),
+        fetchUserCustomFields: () => fetchUserCustomFields(),
         onUpdated: (updatedField) => {
           setColumnsToState(
             columns.map((f) =>
@@ -97,19 +104,21 @@ const ProfilesCustomFieldsView = ({ profileTypeIdentifier }) => {
           'Are you sure you want to delete this custom field? This action cannot be undone.',
         confirm: () => {
           setColumnsToState(columns.filter((f) => f.identifier !== id));
-          ProfileTypeFieldApi.deleteProfileFieldType(id)
-            .then(() => {
-              setCustomFields((previousValue) =>
-                previousValue.filter(({ identifier }) => id !== identifier),
-              );
-              dispatch(showGlobalAlert(AlertMessages.DELETED));
-            })
+          ProfileTypeFieldApi.deleteProfileFieldType(id).then(() => {
+            setCustomFields((previousValue) =>
+              previousValue.filter(({ identifier }) => id !== identifier),
+            );
+            dispatch(showGlobalAlert(AlertMessages.DELETED));
+          });
         },
       }),
     );
   };
 
-  const sortedFields = useMemo(() => getSortedFields(customFields), [customFields]);
+  const sortedFields = useMemo(
+    () => getSortedFields(customFields),
+    [customFields],
+  );
 
   const handleAddFieldClick = () => {
     dispatch(
@@ -140,7 +149,7 @@ const ProfilesCustomFieldsView = ({ profileTypeIdentifier }) => {
       setCustomFields,
       dispatch,
       apiMethod: CustomFieldsApi.sortProfileCustomFields,
-      apiParams: (identifiers) => [identifiers, profileTypeIdentifier]
+      apiParams: (identifiers) => [identifiers, profileTypeIdentifier],
     });
   };
 
@@ -173,7 +182,9 @@ const ProfilesCustomFieldsView = ({ profileTypeIdentifier }) => {
                   <CustomFieldHeaderText>Field type</CustomFieldHeaderText>
                 </CustomFieldCell>
                 <CustomFieldCell>
-                  <CustomFieldHeaderText>Included in Name</CustomFieldHeaderText>
+                  <CustomFieldHeaderText>
+                    Included in Name
+                  </CustomFieldHeaderText>
                 </CustomFieldCell>
                 <CustomFieldCell>
                   <CustomFieldHeaderText>Show on Header</CustomFieldHeaderText>
@@ -193,7 +204,7 @@ const ProfilesCustomFieldsView = ({ profileTypeIdentifier }) => {
                 onDragEnd={
                   // eslint-disable-next-line @typescript-eslint/no-unused-vars
                   ({ active, over }) => {
-                    handleOnDragEnd(active.id, over.id)
+                    handleOnDragEnd(active.id, over.id);
                   }
                 }
               >
@@ -215,9 +226,13 @@ const ProfilesCustomFieldsView = ({ profileTypeIdentifier }) => {
                             <CustomFieldCell>
                               <CustomFieldText>
                                 {field.fieldType === FieldType.RELATIONSHIP
-                                  ? `${FieldTypeLabel[field.fieldType]} - ${
-                                      field.relatedProfileType?.name
-                                    }`
+                                  ? `${FieldTypeLabel[field.fieldType]} (${
+                                      field.displayOptions?.includes(
+                                        DisplayOption.SINGLE_SELECT,
+                                      )
+                                        ? 'Single'
+                                        : 'Multiple'
+                                    }) - ${field.relatedProfileType?.name}`
                                   : FieldTypeLabel[field.fieldType]}
                               </CustomFieldText>
                             </CustomFieldCell>

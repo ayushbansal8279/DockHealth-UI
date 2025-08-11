@@ -7,7 +7,11 @@ import React, {
   useState,
 } from 'react';
 import propTypes from 'prop-types';
-import { FieldCharacterLimit, FieldType } from 'helpers/field-type-helpers';
+import {
+  DisplayOption,
+  FieldCharacterLimit,
+  FieldType,
+} from 'helpers/field-type-helpers';
 import {
   BOOL_SELECT_OPTIONS,
   stringToRegex,
@@ -183,6 +187,7 @@ const CustomField = ({
             onChange={() => setWasChanged(true)}
             required={isRequired}
             relatedProfileType={field.relatedProfileType}
+            multiple={!displayOptions?.includes(DisplayOption.SINGLE_SELECT)}
           />
         );
       }

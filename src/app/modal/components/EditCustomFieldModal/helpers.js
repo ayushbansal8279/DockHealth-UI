@@ -1,6 +1,16 @@
 import * as Yup from 'yup';
+import { DisplayOption } from '@/app/helpers/field-type-helpers';
 
 const commonOptions = (displayOptionsState, handleDisplayOptionChange) => [
+  {
+    label: 'Single Select',
+    key: DisplayOption.SINGLE_SELECT,
+    value: !!displayOptionsState?.displayOptions?.find(
+      (option) => option === DisplayOption.SINGLE_SELECT,
+    ),
+    onChange: (value) =>
+      handleDisplayOptionChange(value, DisplayOption.SINGLE_SELECT),
+  },
   {
     label: 'Read only',
     key: 'READONLY',

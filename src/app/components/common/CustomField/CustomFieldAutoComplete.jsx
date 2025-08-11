@@ -16,6 +16,8 @@ const CustomFieldAutoComplete = ({
   inputRef,
   relatedProfileType,
   onBlur,
+  multiple = true,
+  value: externalValue,
   ...restProps
 }) => {
   const dispatch = useDispatch();
@@ -44,7 +46,7 @@ const CustomFieldAutoComplete = ({
           getAllProfiles(relatedProfileType.identifier)
             .then((data) => {
               const newProfiles = data
-                .filter(profile => profile.fields)
+                .filter((profile) => profile.fields)
                 .map((profile) => ({
                   profile,
                   label: getProfileName(profileTypeFields, profile)?.join(' '),
@@ -60,30 +62,62 @@ const CustomFieldAutoComplete = ({
           dispatch(showGlobalErrorAlert());
         });
     }
-  }, [dispatch,relatedProfileType?.identifier]);
+  }, [dispatch, relatedProfileType?.identifier]);
 
   const error = errors?.[name]?.message;
 
   const handleChange = useCallback(
     (event) => {
       if (error) clearErrors(name);
-      const selectedValues = event?.map((value) => value?.profile?.identifier);
+
+      let selectedValues;
+      let selectedOptions;
+
+      if (multiple) {
+        selectedOptions = event || [];
+        selectedValues = selectedOptions.map(
+          (option) => option?.profile?.identifier,
+        );
+      } else {
+        selectedOptions = event ? [event] : [];
+        selectedValues = event?.profile?.identifier || null;
+      }
+
       setValue(name, selectedValues);
       if (typeof onChange === 'function') onChange(event);
     },
-    [clearErrors, error, name, onChange, setValue],
+    [clearErrors, error, name, onChange, setValue, multiple],
   );
 
-  const selectedValues = watch(name);
-  const selectedOptions = profiles?.filter((profile) =>
-    selectedValues?.includes(profile.profile.identifier),
-  );
+  const formValue = watch(name);
+
+  const currentValue = externalValue !== undefined ? externalValue : formValue;
+
+  const selectedOptions = useCallback(() => {
+    if (!profiles || !currentValue) return multiple ? [] : null;
+
+    if (multiple) {
+      const valueArray = Array.isArray(currentValue) ? currentValue : [];
+      return profiles.filter((profile) =>
+        valueArray.includes(profile.profile.identifier),
+      );
+    } else {
+      const singleValue =
+        typeof currentValue === 'string' ? currentValue : currentValue?.[0];
+      return (
+        profiles.find(
+          (profile) => profile.profile.identifier === singleValue,
+        ) || null
+      );
+    }
+  }, [profiles, currentValue, multiple]);
 
   const getInputReference = () => inputRef;
+
   return (
     <Autocomplete
-      value={selectedOptions || []}
-      multiple
+      value={selectedOptions()}
+      multiple={multiple}
       name={name}
       autoFocus={false}
       options={profiles ?? []}
