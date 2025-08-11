@@ -20,6 +20,7 @@ import {
   FieldType,
   FIELD_TYPE_OPTIONS,
   REGEX_OPTIONS,
+  DisplayOption,
 } from 'helpers/field-type-helpers';
 import { CATEGORY_OPTIONS, Category } from 'helpers/patient-details-helpers';
 import { CATEGORY_OPTIONS as TASK_CATEGORY_OPTIONS } from 'helpers/task-details-helpers';
@@ -64,7 +65,7 @@ const filterAdditionalOptionsByFieldType = (
   fieldTypeValue,
 ) => {
   return additionalOptions.filter((option) => {
-    if (option.key !== 'SINGLE_SELECT') return true;
+    if (option.key !== DisplayOption.SINGLE_SELECT) return true;
     return fieldTypeValue === FieldType.RELATIONSHIP;
   });
 };

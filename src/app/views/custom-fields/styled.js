@@ -37,13 +37,13 @@ export const CustomFieldItem = styled.div`
       return '2fr 1fr 1fr 1fr 1fr 1fr auto auto';
     }
     if (type === 'PROVIDER') {
-      return '1fr 1fr 1fr 1fr auto';
+      return '1fr 1.5fr 1fr 1fr auto';
     }
-    if (type === 'PATIENT'){
-      return '1.5fr 1fr 1fr 1fr 1fr 0.8fr 0.8fr auto auto';
+    if (type === 'PATIENT') {
+      return '1.5fr 1.5fr 1fr 1fr 1fr 0.8fr 0.8fr auto auto';
     }
-    if (type === 'PROFILE'){
-      return '1.5fr 1fr 1fr 1fr 0.8fr 0.8fr auto auto';
+    if (type === 'PROFILE') {
+      return '1.5fr 1.5fr 1fr 1fr 0.8fr 0.8fr auto auto';
     }
     return '2fr 1fr 1fr 1fr 1fr auto auto';
   }};
