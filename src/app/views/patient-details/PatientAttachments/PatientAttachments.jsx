@@ -107,6 +107,8 @@ const PatientAttachments = () => {
 
   const isFetching = useSelector(isFetchingPatientAttachmentsSelector);
 
+  const currentFolderIdentifier = useSelector(currentFolderIdentifierSelector);
+
   const downloadDisabled = currentPatientAttachments?.some(
     ({ scanStatus }) =>
       scanStatus &&
