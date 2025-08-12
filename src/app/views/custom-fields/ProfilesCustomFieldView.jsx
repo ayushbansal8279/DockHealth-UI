@@ -196,6 +196,9 @@ const ProfilesCustomFieldsView = ({ profileTypeIdentifier }) => {
                   <CustomFieldHeaderText>Hidden</CustomFieldHeaderText>
                 </CustomFieldCell>
                 <CustomFieldCell>
+                  <CustomFieldHeaderText>Required</CustomFieldHeaderText>
+                </CustomFieldCell>
+                <CustomFieldCell>
                   <Box width="68px" />
                 </CustomFieldCell>
               </CustomFieldItem>
@@ -271,6 +274,14 @@ const ProfilesCustomFieldsView = ({ profileTypeIdentifier }) => {
                               <CustomFieldText>
                                 {field.displayOptions &&
                                 field.displayOptions?.includes('HIDDEN')
+                                  ? 'Yes'
+                                  : ''}
+                              </CustomFieldText>
+                            </CustomFieldCell>
+                            <CustomFieldCell>
+                              <CustomFieldText>
+                                {field.displayOptions &&
+                                field.displayOptions?.includes(DisplayOption.TASK_REQUIRED)
                                   ? 'Yes'
                                   : ''}
                               </CustomFieldText>

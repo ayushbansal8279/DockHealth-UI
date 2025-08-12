@@ -9,7 +9,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import { showGlobalErrorAlert } from 'alert/actions';
 import * as CustomFieldsApi from 'api/custom-fields-api';
-import { FieldType, FieldTypeLabel } from 'helpers/field-type-helpers';
+import { DisplayOption, FieldType, FieldTypeLabel } from 'helpers/field-type-helpers';
 import { openModal } from 'modal/actions';
 import AddButton from 'components/common/AddButton/AddButton';
 import {
@@ -185,6 +185,9 @@ const UserCustomFieldsView = () => {
                   <CustomFieldHeaderText>Hidden</CustomFieldHeaderText>
                 </CustomFieldCell>
                 <CustomFieldCell>
+                  <CustomFieldHeaderText>Required</CustomFieldHeaderText>
+                </CustomFieldCell>
+                <CustomFieldCell>
                   <Box width="68px" />
                 </CustomFieldCell>
               </CustomFieldItem>
@@ -230,6 +233,14 @@ const UserCustomFieldsView = () => {
                               <CustomFieldText>
                                 {field.displayOptions &&
                                 field.displayOptions?.includes('HIDDEN')
+                                  ? 'Yes'
+                                  : ''}
+                              </CustomFieldText>
+                            </CustomFieldCell>
+                            <CustomFieldCell>
+                              <CustomFieldText>
+                                {field.displayOptions &&
+                                field.displayOptions?.includes(DisplayOption.TASK_REQUIRED)
                                   ? 'Yes'
                                   : ''}
                               </CustomFieldText>
