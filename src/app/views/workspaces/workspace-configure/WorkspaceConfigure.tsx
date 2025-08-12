@@ -58,8 +58,8 @@ const WorkspaceConfigure = () => {
         </TitleWrapper>
         <Description>
           By default, we call them Workspaces, but you can customize the label
-          to better fit your organization — for example, Departments, Clinics,
-          or any other term you prefer.
+          to better fit your organization — for example, Department, Clinic, or
+          any other term you prefer.
         </Description>
         <InputRow>
           <TextField
@@ -67,12 +67,13 @@ const WorkspaceConfigure = () => {
             onChange={handleLabelChange}
             variant="outlined"
             size="small"
+            disabled={!enabled}
           />
           <UpdateButton
             variant="contained"
             color="primary"
             onClick={handleLabelUpdate}
-            disabled={workspaceLabel === label}
+            disabled={workspaceLabel === label || !enabled}
           >
             Update
           </UpdateButton>

@@ -21,7 +21,10 @@ import {
 import { DEFAULT_TAB, TABS_CONFIG } from './helper';
 import { workspaceSelector } from '@/app/selectors/workspace-selectors';
 import { useDispatch, useSelector } from 'react-redux';
-import { clearWorkspaceState, getCurrentWorkspace } from '@/app/actions/workspace-actions';
+import {
+  clearWorkspaceState,
+  getCurrentWorkspace,
+} from '@/app/actions/workspace-actions';
 import { Workspace as WorkspaceType } from '@/app/types/workspace';
 import WorkspaceTile from '@/app/components/workspace/WorkspaceTile/WorkspaceTile';
 import WorkspaceOptionsMenu from '@/app/components/workspace/WorkspaceOptionsMenu/WorkspaceOptionsMenu';
@@ -29,9 +32,14 @@ import { organizationWorkspaceLabelSelector } from '@/app/selectors/organization
 import { Flex } from '@/app/components/common/Flex/styled';
 import { userProfileSelector } from '@/app/selectors/user-selectors';
 import { getCustomerTypeLabel } from '@/app/helpers/customer-type-helper';
+import pluralize from 'pluralize';
 
 const Workspace = () => {
-  const [tabsConfiguration, setTabsConfiguration] = useState(TABS_CONFIG);
+  const currentUser = useSelector(userProfileSelector);
+  const customerTypeLabel = getCustomerTypeLabel(currentUser);
+  const [tabsConfiguration] = useState(
+    TABS_CONFIG(pluralize(customerTypeLabel)),
+  );
   const { pathname } = useLocation();
   const { path, url } = useRouteMatch();
   const { workspaceIdentifier } = useParams<{ workspaceIdentifier: string }>();
@@ -42,8 +50,6 @@ const Workspace = () => {
   const [menuOptionsOpen, setMenuOptionsOpen] = useState(false);
   const [renderedWorkspace, setRenderedWorkspace] =
     useState<WorkspaceType>(workspace);
-  const currentUser = useSelector(userProfileSelector);    
-  const customerTypeLabel = getCustomerTypeLabel(currentUser);
 
   useEffect(() => {
     if (workspace.workspaceIdentifier) {
@@ -81,7 +87,7 @@ const Workspace = () => {
         open={menuOptionsOpen}
         selectedWorkspace={renderedWorkspace}
       >
-        <MoreVertIcon />
+        <MoreVertIcon onClick={() => setMenuOptionsOpen(true)} />
       </WorkspaceOptionsMenu>
       <WorkspaceTile
         workspaceProfileColor={renderedWorkspace.workspaceProfileColor}
@@ -106,11 +112,7 @@ const Workspace = () => {
               <MainTab
                 key={t.mainPath}
                 value={t.mainPath}
-                label={
-                  t.label?.trim().toLowerCase() === 'patients'
-                    ? customerTypeLabel.charAt(0).toUpperCase() + customerTypeLabel.slice(1)
-                    : t.label
-                }
+                label={t.label}
                 $isActive={t.mainPath === activeTabPath}
               />
             ))}
@@ -132,7 +134,11 @@ const Workspace = () => {
               allowedToRoles={undefined}
             />
           ))}
-          <Redirect exact from={`${path}/patients`} to={`${path}/patients/list/all`} />
+          <Redirect
+            exact
+            from={`${path}/patients`}
+            to={`${path}/patients/list/all`}
+          />
           <Redirect to={`${path}/${DEFAULT_TAB.mainPath}`} />
         </Switch>
       </WorkspaceDetailsContainer>
