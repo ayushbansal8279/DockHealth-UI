@@ -28,6 +28,7 @@ import CustomFieldErrorContext from './CustomFieldErrorContext';
 import CustomFieldAutoComplete from './CustomFieldAutoComplete';
 import AutoCompleteFormSelect from '../Autocomplete/AutoCompleteFormSelect';
 import palette from '@/app/styles/palette';
+import { validateAndSetError } from '../../patients/PatientForm/helpers';
 
 const CustomField = ({
   readOnly,
@@ -120,6 +121,8 @@ const CustomField = ({
   );
 
   const fieldName = `${fieldsGroupKey}.${identifier}`;
+  const isPatientCustomField = fieldsGroupKey === 'patientMetaData';
+
   useEffect(() => {
     if (initialValue) setValue(fieldName, initialValue);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -159,6 +162,34 @@ const CustomField = ({
     [validationRegex, validationDescription],
   );
 
+  const handleCustomFieldChange = useCallback(
+    (event) => {
+      if (isPatientCustomField && validateWithRegex) {
+        const newValue = event.target.value;
+        validateAndSetError(
+          fieldName,
+          newValue,
+          validateWithRegex,
+          setError,
+          clearErrors,
+        );
+      }
+      setWasChanged(true);
+    },
+    [isPatientCustomField, validateWithRegex, fieldName, setError, clearErrors],
+  );
+
+  const getChangeHandler = useCallback(() => {
+    return isPatientCustomField
+      ? handleCustomFieldChange
+      : () => setWasChanged(true);
+  }, [isPatientCustomField, handleCustomFieldChange]);
+
+  const getValidateFunction = useCallback(() => {
+    if (isPatientCustomField) return undefined;
+    return validationRegex ? validateWithRegex : undefined;
+  }, [isPatientCustomField, validationRegex, validateWithRegex]);
+
   const renderCustomField = useCallback(() => {
     switch (fieldType) {
       case FieldType.TEXT: {
@@ -172,10 +203,10 @@ const CustomField = ({
             onBlur={handleBlur}
             inputRef={inputReference}
             ref={componentReference}
-            onChange={() => setWasChanged(true)}
+            onChange={getChangeHandler()}
             required={isRequired}
             characterLimit={FieldCharacterLimit.TEXT}
-            validate={validationRegex ? validateWithRegex : undefined}
+            validate={getValidateFunction()}
             disableClearErrorOnKeyUp
             formMethods={formMethods}
           />
@@ -226,9 +257,9 @@ const CustomField = ({
             onBlur={handleBlur}
             inputRef={inputReference}
             ref={componentReference}
-            onChange={() => setWasChanged(true)}
+            onChange={getChangeHandler()}
             required={isRequired}
-            validate={validationRegex ? validateWithRegex : undefined}
+            validate={getValidateFunction()}
             disableClearErrorOnKeyUp
             formMethods={formMethods}
           />
@@ -354,7 +385,7 @@ const CustomField = ({
             onBlur={handleBlur}
             inputRef={inputReference}
             ref={componentReference}
-            onChange={() => setWasChanged(true)}
+            onChange={getChangeHandler()}
             required={isRequired}
             startAdornment={
               customFieldHasValue && !isEditable ? (
@@ -421,6 +452,8 @@ const CustomField = ({
     popoverZindex,
     isEditable,
     isReadOnly,
+    getChangeHandler,
+    getValidateFunction,
   ]);
 
   return (
