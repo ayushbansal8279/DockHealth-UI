@@ -61,6 +61,7 @@ import AddButton from '@/app/components/common/AddButton/AddButton';
 import { hideSubMenu } from '@/app/actions/template-actions';
 import { isUserViewOnly } from '@/app/helpers/user-helper';
 import HomeIcon from '@/app/img/navigation/HomeIcon';
+import pluralize from 'pluralize';
 
 const WorkspaceSubmenuStepTwo = ({ setShowStepTwo }) => {
   const dispatch = useDispatch();
@@ -138,7 +139,7 @@ const WorkspaceSubmenuStepTwo = ({ setShowStepTwo }) => {
           <WorkspacesSubWrapper $fullWidth>
             <WorkspacesLeftWrapper>
               <ArrowBackIcon onClick={handleBackClick} />
-              <WorkspacesTitle>{workspaceLabel}s</WorkspacesTitle>
+              <WorkspacesTitle>{pluralize(workspaceLabel)}</WorkspacesTitle>
             </WorkspacesLeftWrapper>
             <HomeIconWrapper onClick={handleClose}>
               <HomeIcon />
