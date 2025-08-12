@@ -225,6 +225,7 @@ function* addTemplate({
   parentIdentifier = null,
   history,
   workspaceIdentifier,
+  location,
 }) {
   try {
     const folderIdentifier = yield select(currentFolderIdentifierSelector);
@@ -256,11 +257,13 @@ function* addTemplate({
     yield put(showGlobalAlert(AlertMessages.CREATED));
 
     try {
-      if (history && !workspaceIdentifier) {
-        yield call(
-          history.push,
-          createWorkflowBuilderPath(createdTemplate.identifier),
+      if (history) {
+        const currentPath = location.pathname + location.search;
+        const builderPath = createWorkflowBuilderPath(
+          createdTemplate.identifier,
         );
+        const returnToParam = encodeURIComponent(currentPath);
+        yield call(history.push, `${builderPath}?returnTo=${returnToParam}`);
       }
     } catch (error) {
       // eslint-disable-next-line no-console
