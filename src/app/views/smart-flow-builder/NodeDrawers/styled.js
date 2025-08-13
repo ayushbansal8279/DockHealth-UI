@@ -2,7 +2,7 @@ import { Paper } from '@mui/material';
 import styled from 'styled-components';
 
 export const ConfigPanel = styled(Paper)`
-  width: 450px;
+  width: 550px;
   height: 100%;
   background: white;
   border-left: 1px solid #e2e8f0;

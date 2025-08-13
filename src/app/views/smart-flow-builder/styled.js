@@ -128,7 +128,12 @@ export const ElementIconBackground = styled.div`
     );
   }
   &.email,
-  &.webhook {
+  &.webhook,
+  &.api,
+  &.sms,
+  &.patient,
+  &.appointment,
+  &.note {
     background: linear-gradient(
       45deg,
       ${palette.dirtyBanana},
