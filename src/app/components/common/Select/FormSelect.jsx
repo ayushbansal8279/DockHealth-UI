@@ -14,12 +14,26 @@ const FormSelect = React.forwardRef(
       setValue,
       unregister,
     } = useFormContext();
-    const error = errors?.[name]?.message;
+    const isNested = name?.includes('.');
+    const nestedParts = name?.split('.');
+
+    const error = isNested
+      ? errors?.[nestedParts[0]]?.[nestedParts[1]]?.message
+      : errors?.[name]?.message;
 
     const value = watch(name) || '';
 
     useMount(() => {
-      register(name);
+      if (required) {
+        register(name, {
+          required: 'This field is required',
+          validate: (value) => {
+            return value && value !== '' ? true : 'This field is required';
+          },
+        });
+      } else {
+        register(name);
+      }
     });
 
     useUnmount(() => {
@@ -28,12 +42,19 @@ const FormSelect = React.forwardRef(
 
     const handleChange = (event) => {
       if (error) clearErrors(name);
-      setValue(name, event.target.value);
-      if (typeof onChange === 'function') onChange(event.target.value);
+
+      const newValue = event?.target?.value || event;
+
+      setValue(name, newValue, {
+        shouldValidate: false,
+        shouldDirty: true,
+      });
+
+      if (typeof onChange === 'function') onChange(newValue);
 
       if (name === 'validationRegexSelector') {
-        setValue('validationRegex', event.target.value);
-        setValue('validationRegexDescription', getRegexLabelByValue(event.target.value));
+        setValue('validationRegex', newValue);
+        setValue('validationRegexDescription', getRegexLabelByValue(newValue));
       }
     };
 
