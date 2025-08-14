@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Fab, IconButton } from '@mui/material';
+import { AccountTree as DecisionIcon } from '@mui/icons-material';
 import { useDispatch } from 'react-redux';
 import DeleteIcon from '@mui/icons-material/Delete';
 import DecisionTaskElementIcon from 'img/template/decision-task-icon';
@@ -95,18 +96,13 @@ const NewTaskNode = React.memo((props) => {
         headerIcon={
           <>
             {type === NodeType.NEW_DECISION && (
-              <DecisionTaskIconWrapper>
-                <DecisionTaskElementIcon size={21} />
-              </DecisionTaskIconWrapper>
+              <DecisionIcon fontSize="small" />
             )}
-            {type === NodeType.NEW_STANDARD && (
-              <DecisionTaskIconWrapper>
-                <TaskElementIcon />
-              </DecisionTaskIconWrapper>
-            )}
+            {type === NodeType.NEW_STANDARD && <TaskElementIcon />}
           </>
         }
-        headerTitle={
+        headerTitle={'Task'}
+        content={
           <NewTaskWrapper>
             <NewTaskInput
               value={inputValue}

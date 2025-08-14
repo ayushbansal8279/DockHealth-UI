@@ -12,17 +12,18 @@ import TaskNodeHandles from 'views/smart-flow-builder/TaskNodeHandles/TaskNodeHa
 import TaskNodeWrapper from 'views/smart-flow-builder/TaskNodeWrapper/TaskNodeWrapper';
 import { TaskNodeEllipsis } from 'views/smart-flow-builder/TaskNodeWrapper/styled';
 import { IconContainerStyled } from './styled';
-import NestedFlowNodeStyled, { TaskLinks, TaskWrapper } from '../styled';
+import NestedFlowNodeStyled, {
+  DescriptionAndLinksWrapper,
+  TaskLinks,
+  TaskWrapper,
+  WorkflowDescription,
+} from '../styled';
 import { userProfileSelector } from '@/app/selectors/user-selectors';
 import { workflowSelector } from '@/app/selectors/workflow-drawer-selectors';
 import { TaskOrigin } from '@/app/helpers/task-helpers';
 import BaseNode from '../../BaseNode/BaseNode';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { EditIcon } from '@/app/components/profile-builder/SelectedField/styled';
-import {
-  DecisionTaskIconWrapper,
-  TaskDescription,
-} from '../../TaskNode/styled';
 import WorkflowLinkIcon from 'img/template/workflow-icon';
 import Tooltip from '@/app/components/common/Tooltip/Tooltip';
 
@@ -202,102 +203,100 @@ const NestedFlowNode = React.memo(({ data, isConnectable, selected, type }) => {
             </Fab>,
           ]
         }
-        headerTitle={
-          <TaskDescription>
-            {description?.slice(0, 40)}
-            {description?.length > 40 && '...'}
-          </TaskDescription>
-        }
-        headerIcon={
-          <DecisionTaskIconWrapper>
-            <WorkflowLinkIcon />
-          </DecisionTaskIconWrapper>
-        }
+        headerTitle={'Workflow Task'}
+        headerIcon={<WorkflowLinkIcon size={18} />}
         content={
-          <TaskLinks>
-            {taskList && (
-              <Typography
-                component="p"
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  padding: '5px 0',
-                }}
-              >
-                <span
+          <DescriptionAndLinksWrapper>
+            <Tooltip title={description} key={description} placement="top">
+              <WorkflowDescription>{description}</WorkflowDescription>
+            </Tooltip>
+            <TaskLinks>
+              {taskList && (
+                <Typography
+                  component="p"
                   style={{
                     display: 'flex',
-                    gap: '5px',
-                    overflow: 'hidden',
-                    flexWrap: 'nowrap',
+                    alignItems: 'center',
                   }}
                 >
-                  <strong>List: </strong>
-                  <Tooltip
-                    title={taskList?.listName}
-                    key={taskList?.listName}
-                    placement="top"
+                  <span
+                    style={{
+                      display: 'flex',
+                      gap: '5px',
+                      overflow: 'hidden',
+                      flexWrap: 'nowrap',
+                      fontSize: '14px',
+                    }}
                   >
-                    <Chip
-                      variant="outlined"
+                    <strong>List: </strong>
+                    <Tooltip
+                      title={taskList?.listName}
                       key={taskList?.listName}
-                      onDelete={() => handleClose('taskList')}
-                      label={taskList?.listName}
-                      sx={{
-                        maxWidth: 200,
-                        whiteSpace: 'nowrap',
-                        textOverflow: 'ellipsis',
-                        overflow: 'hidden',
-                        fontWeight: '600',
-                      }}
-                    />
-                  </Tooltip>
-                </span>
-              </Typography>
-            )}
-            {taskGroup && (
-              <Typography
-                component="p"
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  padding: '5px 0',
-                }}
-              >
-                <span
+                      placement="top"
+                    >
+                      <Chip
+                        variant="outlined"
+                        key={taskList?.listName}
+                        onDelete={() => handleClose('taskList')}
+                        label={taskList?.listName}
+                        size="small"
+                        sx={{
+                          maxWidth: 200,
+                          whiteSpace: 'nowrap',
+                          textOverflow: 'ellipsis',
+                          overflow: 'hidden',
+                          fontWeight: '600',
+                          fontSize: '12px',
+                        }}
+                      />
+                    </Tooltip>
+                  </span>
+                </Typography>
+              )}
+              {taskGroup && (
+                <Typography
+                  component="p"
                   style={{
                     display: 'flex',
-                    gap: '5px',
-                    overflow: 'hidden',
-                    flexWrap: 'nowrap',
+                    alignItems: 'center',
                   }}
                 >
-                  <strong>Group:</strong>
-                  <Tooltip
-                    title={taskGroup?.groupName}
-                    key={taskGroup?.groupName}
-                    placement="top"
+                  <span
+                    style={{
+                      display: 'flex',
+                      gap: '5px',
+                      overflow: 'hidden',
+                      flexWrap: 'nowrap',
+                      fontSize: '14px',
+                    }}
                   >
-                    <Chip
-                      variant="outlined"
+                    <strong>Group:</strong>
+                    <Tooltip
+                      title={taskGroup?.groupName}
                       key={taskGroup?.groupName}
-                      onDelete={() => handleClose('taskGroup')}
-                      label={taskGroup?.groupName}
-                      sx={{
-                        maxWidth: 200,
-                        whiteSpace: 'nowrap',
-                        textOverflow: 'ellipsis',
-                        overflow: 'hidden',
-                        fontWeight: '600',
-                      }}
-                    />
-                  </Tooltip>
-                </span>
-              </Typography>
-            )}
-          </TaskLinks>
+                      placement="top"
+                    >
+                      <Chip
+                        variant="outlined"
+                        key={taskGroup?.groupName}
+                        onDelete={() => handleClose('taskGroup')}
+                        label={taskGroup?.groupName}
+                        size="small"
+                        sx={{
+                          maxWidth: 200,
+                          whiteSpace: 'nowrap',
+                          textOverflow: 'ellipsis',
+                          overflow: 'hidden',
+                          fontWeight: '600',
+                          fontSize: '12px',
+                        }}
+                      />
+                    </Tooltip>
+                  </span>
+                </Typography>
+              )}
+            </TaskLinks>
+          </DescriptionAndLinksWrapper>
         }
       />
     </TaskNodeHandles>

@@ -1,3 +1,4 @@
+import { fontWeights } from '@/app/styles/font';
 import styled from 'styled-components';
 import palette from 'styles/palette';
 
@@ -21,7 +22,40 @@ export const TaskWrapper = styled.div`
 
 export const TaskLinks = styled.div`
   width: 100%;
-  padding: 12px 20px;
+  margin-top: 5px;
+  padding: 0px 25px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+`;
+
+export const DescriptionAndLinksWrapper = styled.div`
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  width: 100%;
+`;
+
+export const WorkflowDescription = styled.div`
+  margin: 5px;
+  padding: 0px 18px;
+  font-size: 16px;
+  font-weight: ${fontWeights.bold};
+  color: #555;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+`;
+
+export const NewWorkflowDescription = styled.div`
+  margin: 5px;
+  padding: 0px 18px;
+  font-size: 16px;
+  font-weight: ${fontWeights.regular};
+  color: ${palette.coolGrey2};
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
 
 export const NewNestedFlowNodeWrapper = styled.div`
