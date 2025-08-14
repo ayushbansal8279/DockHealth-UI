@@ -53,7 +53,7 @@ const renderListItems = (list) =>
   list?.map(({ name, identifier }) => (
     <DrawerListsItem>
       <ListNameText>
-        <MenuLink to={`/custom-profiles/${identifier}`}>{name}</MenuLink>
+        <MenuLink to={`/custom-objects/${identifier}`}>{name}</MenuLink>
       </ListNameText>
     </DrawerListsItem>
   ));
@@ -134,7 +134,7 @@ const CustomProfilesSubmenu = () => {
   return (
     <>
       <DrawerMyListsLabel>
-        <div>Profiles</div>
+        <div>Objects</div>
       </DrawerMyListsLabel>
       <DrawerListsList flexShrink={1}>
         {isInitialListFetching ? (

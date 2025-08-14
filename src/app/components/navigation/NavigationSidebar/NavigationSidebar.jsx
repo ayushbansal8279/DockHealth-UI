@@ -273,7 +273,7 @@ const NavigationSidebar = () => {
             {!embeddedMode && !isOnboardingPage && (
               <AccessRestrictor>
                 <IconNavigationItem
-                  name="Profiles"
+                  name="Objects"
                   icon={ProfilesIcon}
                   path={CUSTOM_PROFILES_PATH}
                   subMenuKey={SubmenuKey.CUSTOM_PROFILES}

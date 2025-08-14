@@ -337,7 +337,6 @@ const SmartFlowBuilderView = () => {
             dispatch(
               updateTasksLink({
                 ...link,
-                isDependent: true,
                 ...delayPeriodData,
               }),
             );

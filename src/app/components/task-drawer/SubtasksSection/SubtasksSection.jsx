@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import ReactDOM from 'react-dom';
 import * as TaskActions from 'actions/task-actions';
 import { useSelector, useDispatch } from 'react-redux';
@@ -14,12 +14,12 @@ import { Container, Title } from './styled';
 import QuickAddSubtask from '../QuickAddSubtask/QuickAddSubtask';
 import {
   DndContext,
+  DragOverlay,
   KeyboardSensor,
   PointerSensor,
   useSensor,
   useSensors,
 } from '@dnd-kit/core';
-import { SortableContext } from '@dnd-kit/sortable';
 import DraggableTaskItem from '../DraggableTaskItem/DraggableTaskItem';
 
 const { READ_ONLY } = SINGLE_TASK_RESTRICTIONS_OPTIONS;
@@ -40,18 +40,32 @@ const SubtasksSection = ({
   const subtasks = selectedTask?.subtasks;
   const tasksCount = selectedTask.subTasksCount;
   const readOnly = isReadOnly === READ_ONLY;
+  const [activeTask, setActiveTask] = useState(null);
+  const dropDirectionRef = useRef(null);
+
+  const handleDragStart = (event) => {
+    setActiveTask(event?.active?.data?.current?.task);
+  };
 
   const handleDragEnd = useCallback(
     ({ active, over }) => {
-      const activeIndex = active?.data?.current?.sortable?.index;
-      const overIndex = over?.data?.current?.sortable?.index;
+      setActiveTask(null);
+      const activeIndex = active?.data?.current?.index;
+      const overIndex = over?.data?.current?.index;
       if (!over || activeIndex === overIndex) return;
 
       onSubtaskOrderChanged();
 
       if (over) {
         const source = { index: activeIndex };
-        const destination = { index: overIndex };
+        const destination = {
+          index:
+            dropDirectionRef?.current === 'top'
+              ? 0
+              : activeIndex <= overIndex
+              ? overIndex
+              : overIndex + 1,
+        };
         dispatch(
           TaskActions.reorderSubtasks({
             source,
@@ -75,26 +89,38 @@ const SubtasksSection = ({
         <DrawerTaskLoader rows={tasksCount || 4} />
       ) : (
         <>
-          <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
-            <SortableContext
-              items={(subtasks ?? [])?.map((subtask) => subtask?.identifier)}
-            >
-              {(subtasks ?? [])?.map((task, index) => (
-                <DraggableTaskItem
-                  key={task?.taskIdentifier}
-                  task={task}
-                  taskRestrictions={taskRestrictions}
-                  taskListRestrictions={taskListRestrictions}
-                  currentUser={currentUser}
-                  isDragDisabled={restrictions?.createTask === DISABLED}
-                />
-              ))}
-            </SortableContext>
+          <DndContext
+            sensors={sensors}
+            onDragStart={handleDragStart}
+            onDragEnd={handleDragEnd}
+          >
+            {(subtasks ?? [])?.map((task, index) => (
+              <DraggableTaskItem
+                key={task?.taskIdentifier}
+                task={task}
+                taskRestrictions={taskRestrictions}
+                taskListRestrictions={taskListRestrictions}
+                currentUser={currentUser}
+                isDragDisabled={restrictions?.createTask === DISABLED}
+                index={index}
+                dropDirectionRef={dropDirectionRef}
+              />
+            ))}
+            <DragOverlay>
+              {activeTask ? <Placeholder task={activeTask} /> : null}
+            </DragOverlay>
           </DndContext>
         </>
       )}
       {!readOnly && <QuickAddSubtask />}
     </Container>
+  );
+};
+
+const Placeholder = ({ task }) => {
+  return (
+    // @ts-ignore
+    <DraggableTaskItem key={task.identifier} task={task} isDragPreview />
   );
 };
 

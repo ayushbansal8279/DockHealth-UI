@@ -20,6 +20,7 @@ import {
   FieldType,
   FIELD_TYPE_OPTIONS,
   REGEX_OPTIONS,
+  DisplayOption,
 } from 'helpers/field-type-helpers';
 import { CATEGORY_OPTIONS, Category } from 'helpers/patient-details-helpers';
 import { CATEGORY_OPTIONS as TASK_CATEGORY_OPTIONS } from 'helpers/task-details-helpers';
@@ -58,6 +59,16 @@ import {
 import { showGlobalAlert } from '@/app/alert/actions';
 
 const REQUIRED_MESSAGE = 'This field is required';
+
+const filterAdditionalOptionsByFieldType = (
+  additionalOptions,
+  fieldTypeValue,
+) => {
+  return additionalOptions.filter((option) => {
+    if (option.key !== DisplayOption.SINGLE_SELECT) return true;
+    return fieldTypeValue === FieldType.RELATIONSHIP;
+  });
+};
 
 const EditCustomFieldModal = ({
   closeModal,
@@ -106,7 +117,7 @@ const EditCustomFieldModal = ({
     [displayOptionsState],
   );
 
-  const ADDITIONAL_OPTIONS = useMemo(
+  const availableAdditionalOptions = useMemo(
     () =>
       getAdditionalOptions({
         type,
@@ -165,8 +176,14 @@ const EditCustomFieldModal = ({
       return baseCustomField;
     }, [customField, isCreatingNewField, type]),
   });
-  const { register, unregister, handleSubmit, setValue, watch, formState: { errors } } =
-    formMethods;
+  const {
+    register,
+    unregister,
+    handleSubmit,
+    setValue,
+    watch,
+    formState: { errors },
+  } = formMethods;
 
   const [customFields, setCustomFields] = useState([]);
   const [importPopupOpen, setImportPopupOpen] = useState(false);
@@ -193,10 +210,20 @@ const EditCustomFieldModal = ({
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  const fieldNameValue = watch('name'); // Track the "Field label name" input check here for changes
+
+  const fieldNameValue = watch('name');
   const fieldTypeValue = watch('fieldType');
   const optionsValue = watch('options');
   const numberOfOptions = optionsValue?.length;
+
+  const filteredAdditionalOptions = useMemo(
+    () =>
+      filterAdditionalOptionsByFieldType(
+        availableAdditionalOptions,
+        fieldTypeValue,
+      ),
+    [availableAdditionalOptions, fieldTypeValue],
+  );
 
   useEffect(() => {
     if (numberOfOptions) {
@@ -211,14 +238,14 @@ const EditCustomFieldModal = ({
         fieldTypeValue === FieldType.DROPDOWN_MULTI
       ) {
         setValue(
-          'options', 
+          'options',
           [
             {
               identifier: optionsValue?.length || 0,
               name: '',
             },
           ],
-          { shouldValidate: false }
+          { shouldValidate: false },
         );
       } else {
         setValue('options', null, { shouldValidate: false });
@@ -441,14 +468,16 @@ const EditCustomFieldModal = ({
       nameToIndices[key].push(index);
     });
 
-    return Object.values(nameToIndices).filter((arr) => arr.length > 1).flat();
+    return Object.values(nameToIndices)
+      .filter((arr) => arr.length > 1)
+      .flat();
   };
 
   const setDuplicateOptionErrors = (options = []) => {
     const duplicates = getDuplicateOptionIndices(options);
 
     options.forEach((_, index) =>
-      formMethods.clearErrors(`options.${index}.name`)
+      formMethods.clearErrors(`options.${index}.name`),
     );
 
     duplicates.forEach((i) => {
@@ -463,7 +492,7 @@ const EditCustomFieldModal = ({
 
   useEffect(() => {
     const subscription = formMethods.watch((value, { name }) => {
-      if (!name?.startsWith("options")) return;
+      if (!name?.startsWith('options')) return;
 
       setDuplicateOptionErrors(value?.options ?? []);
     });
@@ -483,7 +512,8 @@ const EditCustomFieldModal = ({
     : handleAddSubmit;
 
   const finalSubmitHandler =
-    fieldTypeValue === FieldType.DROPDOWN || fieldTypeValue === FieldType.DROPDOWN_MULTI
+    fieldTypeValue === FieldType.DROPDOWN ||
+    fieldTypeValue === FieldType.DROPDOWN_MULTI
       ? withDuplicateValidation(submitHandler)
       : submitHandler;
 
@@ -591,7 +621,7 @@ const EditCustomFieldModal = ({
                       <Grid item xs={6}>
                         <FormSelect
                           required
-                          label="Profile Type"
+                          label="Object Type"
                           name="relatedProfileType"
                           options={profileTypeOptions}
                           onChange={(event) =>
@@ -732,9 +762,9 @@ const EditCustomFieldModal = ({
                       </>
                     )}
                   </Grid>
-                  {ADDITIONAL_OPTIONS?.length > 0 && (
+                  {filteredAdditionalOptions?.length > 0 && (
                     <Box m={2}>
-                      <AdditionalOptions options={ADDITIONAL_OPTIONS} />
+                      <AdditionalOptions options={filteredAdditionalOptions} />
                     </Box>
                   )}
                 </Box>

@@ -65,7 +65,7 @@ const SettingsSubmenu = () => {
         </AccessRestrictor>
       )}
       {patientCustomFieldsAvailable && (
-        <SubMenuLink to={POFILES_SETTINGS_PATH}>Profiles</SubMenuLink>
+        <SubMenuLink to={POFILES_SETTINGS_PATH}>Objects</SubMenuLink>
       )}
       <SubMenuLink to={USERS_SETTINGS_PATH}>Users</SubMenuLink>
       {(sendEmailAvailable ||

@@ -12,17 +12,17 @@ const TaskDrawer = (props) => {
   const taskDrawerOpen = useSelector(taskDrawerOpenSelector);
 
   return ReactDOM.createPortal(
-    <AnimatedContainer
-      style={{
-        transform: taskDrawerOpen ? 'translateX(0%)' : 'translateX(100%)',
-      }}
-    >
-      {isAddTaskDrawer ? (
-        <AddTaskDrawerContent {...props} />
-      ) : (
-        <TaskDrawerContent {...props} stickyHeader origin={props.origin} />
+    <div>
+      {taskDrawerOpen && (
+        <AnimatedContainer>
+          {isAddTaskDrawer ? (
+            <AddTaskDrawerContent {...props} />
+          ) : (
+            <TaskDrawerContent {...props} stickyHeader origin={props.origin} />
+          )}
+        </AnimatedContainer>
       )}
-    </AnimatedContainer>,
+    </div>,
     document.body,
   );
 };

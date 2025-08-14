@@ -1,6 +1,16 @@
 import * as Yup from 'yup';
+import { DisplayOption } from '@/app/helpers/field-type-helpers';
 
 const commonOptions = (displayOptionsState, handleDisplayOptionChange) => [
+  {
+    label: 'Single Select',
+    key: DisplayOption.SINGLE_SELECT,
+    value: !!displayOptionsState?.displayOptions?.find(
+      (option) => option === DisplayOption.SINGLE_SELECT,
+    ),
+    onChange: (value) =>
+      handleDisplayOptionChange(value, DisplayOption.SINGLE_SELECT),
+  },
   {
     label: 'Read only',
     key: 'READONLY',
@@ -85,7 +95,7 @@ export const getAdditionalProfileOptions = ({
   handleDisplayOptionChange,
 }) => [
   {
-    label: 'Profile Name',
+    label: 'Object Name',
     key: 'PROFILE_NAME',
     value: !!displayOptionsState?.displayOptions?.find(
       (option) => option === 'PROFILE_NAME',
@@ -93,7 +103,7 @@ export const getAdditionalProfileOptions = ({
     onChange: (value) => handleDisplayOptionChange(value, 'PROFILE_NAME'),
   },
   {
-    label: 'Profile Header',
+    label: 'Object Header',
     key: 'PROFILE_HEADER',
     value: !!displayOptionsState?.displayOptions?.find(
       (option) => option === 'PROFILE_HEADER',

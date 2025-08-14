@@ -312,7 +312,7 @@ const initializeListDetailsViewHooks = () => {
   useEffect(() => {
     if (
       taskCounters?.complete === 0 &&
-      params.taskListIdentifier === prevParams?.taskListIdentifier &&
+      params?.taskListIdentifier === prevParams?.taskListIdentifier &&
       params.tabName === TaskListTabName.COMPLETE
     ) {
       navigateToTab(TaskListTabName.OPEN);
@@ -335,7 +335,7 @@ const initializeListDetailsViewHooks = () => {
     archivedTaskLists,
     currentUser,
     params.tabName,
-    params.taskListIdentifier,
+    params?.taskListIdentifier,
     navigateToTab,
     openTourModal,
     pendingTaskLists,
@@ -418,8 +418,8 @@ const initializeListDetailsViewHooks = () => {
     const taskBundleCallback = (data) => {
       // eslint-disable-next-line sonarjs/no-collapsible-if
       if (
-        data.taskListIdentifier &&
-        data.taskListIdentifier === taskListIdentifierParam
+        data?.taskListIdentifier &&
+        data?.taskListIdentifier === taskListIdentifierParam
       ) {
         if (
           (data.eventType?.startsWith('CREATE_TASK_BUNDLE') ||

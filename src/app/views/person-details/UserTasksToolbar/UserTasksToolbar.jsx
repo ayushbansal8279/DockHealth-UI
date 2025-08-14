@@ -55,7 +55,7 @@ const UserTasksToolbar = ({ searchValue, setSearchValue }) => {
         <Box mx={0.5} />
         <TaskStatusToolbarSelect
           value={tasksStatus}
-          onChange={(event) => handleSelectTab(event.target.value)}
+          onChange={(status) => handleSelectTab(status)}
         />
         <Box mx={0.5} />
         <TaskCustomFieldsModal

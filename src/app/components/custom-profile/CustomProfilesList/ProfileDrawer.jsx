@@ -167,11 +167,11 @@ const ProfileDrawer = ({
         onClick: () => {
           dispatch(
             openModal('DeleteConfirmation', {
-              description: 'Are you sure to delete this profile?',
+              description: 'Are you sure to delete this object?',
               confirm: () => {
                 deleteProfile(profile.identifier).then(() => {
                   dispatch(showGlobalAlert(AlertMessages.DELETED));
-                  history.push(`/custom-profiles/${profileTypeIdentifier}`);
+                  history.push(`/custom-objects/${profileTypeIdentifier}`);
                 });
                 dispatch(closeModal());
               },
@@ -188,9 +188,11 @@ const ProfileDrawer = ({
       <StickyHeader>
         <TitleName>{title}</TitleName>
         <MoreActinsWrapper>
-          <OptionsMenu options={menu} customButtonComponent={IconButton}>
-            <MoreVertIcon />
-          </OptionsMenu>
+          {!addMode && (
+            <OptionsMenu options={menu} customButtonComponent={IconButton}>
+              <MoreVertIcon />
+            </OptionsMenu>
+          )}
           <IconButton onClick={handleClose}>
             <CloseIcon />
           </IconButton>

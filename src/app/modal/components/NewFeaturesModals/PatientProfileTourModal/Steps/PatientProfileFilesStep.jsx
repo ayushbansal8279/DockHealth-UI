@@ -6,21 +6,17 @@ import { Image, Title, Description } from '../../styled';
 
 const PatientProfileFilesStep = () => {
   useEffect(() => {
-    onTourModalStepEnter('Patient Profile modal', 'Patient Profile Files');
+    onTourModalStepEnter('Patient Object modal', 'Patient Object Files');
   }, []);
 
   return (
     <>
       <Spacing vertical={5} />
-      <Image
-        height={310}
-        src={PatientProfileFilesImage}
-        alt="Patient Profile"
-      />
+      <Image height={310} src={PatientProfileFilesImage} alt="Patient Object" />
       <Spacing vertical={5} />
       <Title>Patient Files</Title>
       <Description>
-        Add files and documents to a patient&apos;s profile for better
+        Add files and documents to a patient&apos;s object for better
         organization and access to key information.
       </Description>
     </>

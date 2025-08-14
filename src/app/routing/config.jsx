@@ -246,12 +246,12 @@ export const SETTINGS_ROUTES = [
     permissions: [CAN_ACCESS_SETTINGS_PAGE],
   },
   {
-    path: '/profiles',
+    path: '/objects',
     RouteComponent: ProfilesAndCustomFieldsView,
     permissions: [CAN_ACCESS_SETTINGS_PAGE],
   },
   {
-    path: '/profile-builder/:tabName/:identifier?',
+    path: '/object-builder/:tabName/:identifier?',
     RouteComponent: ProfileBuilderView,
     permissions: [CAN_ACCESS_SETTINGS_PAGE],
   },
@@ -289,7 +289,7 @@ export const SETTINGS_ROUTES = [
     path: '/integrations',
     RouteComponent: Integrations,
     permissions: [CAN_ACCESS_SETTINGS_PAGE],
-  }
+  },
 ];
 
 export const TEMPLATE_CORE_SUBSCRIPTION_PLAN_ROUTES = [
@@ -342,12 +342,12 @@ export const TEMPLATE_CORE_SUBSCRIPTION_PLAN_ROUTES = [
     permissions: [CAN_ACCESS_SEARCH_PAGE],
   },
   {
-    path: '/custom-profiles/:profileTypeIdentifier/:profileIdentifier',
+    path: '/custom-objects/:profileTypeIdentifier/:profileIdentifier',
     RouteComponent: CustomProfileView,
     permissions: [CAN_ACCESS_SEARCH_PAGE],
   },
   {
-    path: '/custom-profiles/:profileTypeIdentifier',
+    path: '/custom-objects/:profileTypeIdentifier',
     RouteComponent: CustomProfileList,
     permissions: [CAN_ACCESS_SEARCH_PAGE],
   },

@@ -114,7 +114,7 @@ const CustomizeToolbarButton = ({
     [TaskItemColumn.TASK_DETAILS]: 'Details',
     [TaskItemColumn.PRIORITY]: 'Priority',
     [TaskItemColumn.PATIENT]: customerTypeLabel,
-    [TaskItemColumn.PROFILE]: 'Profile',
+    [TaskItemColumn.PROFILE]: 'Object',
   };
 
   const PatientColumnOptionNames = {

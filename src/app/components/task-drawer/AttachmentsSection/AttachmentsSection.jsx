@@ -54,8 +54,8 @@ const AttachmentsSection = ({
       !(scanStatus === ScanStatus.CLEAN ||
         scanStatus === ScanStatus.UNSUPPORTED),
   );
-  const patientIdentifier = selectedTask?.patient?.patientIdentifier;
-
+  const isSubTask = Boolean(selectedTask?.parentTask)
+  const patientIdentifier = isSubTask ? selectedTask?.parentTask?.patient?.patientIdentifier : selectedTask?.patient?.patientIdentifier;
   useEffect(() => {
     if (
       attachmentRef.current &&
@@ -90,7 +90,7 @@ const AttachmentsSection = ({
         {
           label: 'Reference File from Patient',
           onClick: referenceAttachment,
-          disabled: !selectedTask?.patient,
+          disabled: isSubTask ? !selectedTask?.parentTask?.patient : !selectedTask?.patient,
         },
       ]
     : [];

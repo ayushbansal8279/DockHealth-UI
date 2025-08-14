@@ -167,7 +167,7 @@ const PatientDetailsDrawer = ({ patient, isOpenedDetails, closeDetails }) => {
             dispatch(
               openModal('PatientPicker', {
                 patientIdentifiersToExclude: [patient.patientIdentifier],
-                patient: patient
+                patient: patient,
               }),
             );
             closeDetails();
@@ -188,7 +188,7 @@ const PatientDetailsDrawer = ({ patient, isOpenedDetails, closeDetails }) => {
       },
       isAdmin &&
         patientCustomFieldsAvailable && {
-          name: 'Edit Profile Details',
+          name: 'Edit Object Details',
           onClick: handleAddButtonClick,
         },
     ],

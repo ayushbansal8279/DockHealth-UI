@@ -444,7 +444,7 @@ const PatientsList = ({
     {
       field: 'mrn',
       headerName: uniqueIdentifierLabel.toUpperCase(),
-      // renderHeader: renderColumnHeader,
+      renderHeader: renderColumnHeader,
       width: 100,
       renderCell: ({ row }) => (
         <Tooltip placement="top" title={row.mrn}>
@@ -839,12 +839,14 @@ const PatientsList = ({
     }
   }, [columns, dataGridSortModel]);
 
+  const patientHeaders = patientHeaderMap(uniqueIdentifierLabel.toUpperCase());
+
   const orderedColumns = columnOrder
     ?.map((field) =>
       columns.find(
         (col) =>
           col.field?.toUpperCase() === field?.toUpperCase() ||
-          col.headerName === (patientHeaderMap[field] || field || ''),
+          col.headerName === (patientHeaders[field] || field || ''),
       ),
     )
     .filter(Boolean);
