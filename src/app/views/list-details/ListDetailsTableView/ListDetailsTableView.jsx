@@ -265,7 +265,7 @@ const ListDetailsTableView = () => {
   useEffect(() => {
     if (
       taskCounters?.complete === 0 &&
-      params.taskListIdentifier === prevParams?.taskListIdentifier &&
+      params?.taskListIdentifier === prevParams?.taskListIdentifier &&
       params.tabName === TaskListTabName.COMPLETE
     ) {
       navigateToTab(TaskListTabName.OPEN);
@@ -372,8 +372,8 @@ const ListDetailsTableView = () => {
     const taskBundleCallback = (data) => {
       // eslint-disable-next-line sonarjs/no-collapsible-if
       if (
-        data.taskListIdentifier &&
-        data.taskListIdentifier === taskListIdentifier &&
+        data?.taskListIdentifier &&
+        data?.taskListIdentifier === taskListIdentifier &&
         (data.eventType?.startsWith('CREATE_TASK_BUNDLE') ||
           data.eventType?.startsWith('UPDATE_TASK_BUNDLE') ||
           data.eventType?.startsWith('DUPLICATE_TASK_BUNDLE') ||

@@ -263,7 +263,7 @@ export const moveTask =
       refiled: true,
       ...shapeTask(task),
       taskList,
-      taskListIdentifier: taskList.taskListIdentifier,
+      taskListIdentifier: taskList?.taskListIdentifier,
     };
 
     if (taskGroupIdentifier) {
