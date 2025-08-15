@@ -70,11 +70,7 @@ const TaskLink = (props) => {
   };
 
   const togglePeriodDelay = () => {
-    if (delayOptionsVisible) {
-      removeDelayPeriod();
-    } else {
-      openDelayPopover();
-    }
+    openDelayPopover();
   };
 
   const deleteLink = () => {
@@ -102,12 +98,9 @@ const TaskLink = (props) => {
       key: 'delay',
       icon: <CalendarIcon size={20} fill="black" />,
       label: `${
-        delayPeriod && delayPeriodUnit ? 'Remove' : 'Add'
+        delayPeriod && delayPeriodUnit ? 'Edit' : 'Add'
       } time until task`,
-      onClick: () =>
-        delayPeriod && delayPeriodUnit
-          ? handleDelete(togglePeriodDelay, 'Remove time until task')
-          : togglePeriodDelay(),
+      onClick: () => togglePeriodDelay(),
     },
     {
       key: 'delete',
@@ -170,6 +163,10 @@ const TaskLink = (props) => {
                   link={link}
                   onSubmit={handleDelayPeriodSubmit}
                   onClose={closeDelayPopover}
+                  onRemove={() => {
+                    handleDelete(removeDelayPeriod, 'Remove time until task');
+                  }}
+                  removeButtonVisible={delayOptionsVisible}
                 />
               </Paper>
             </ClickAwayListener>

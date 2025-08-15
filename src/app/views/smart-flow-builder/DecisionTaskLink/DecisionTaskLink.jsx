@@ -91,11 +91,7 @@ const DecisionTaskLink = (props) => {
   };
 
   const togglePeriodDelay = () => {
-    if (delayOptionsVisible) {
-      removeDelayPeriod();
-    } else {
-      openDelayPopover();
-    }
+    openDelayPopover();
   };
 
   const handleDelete = (callback, actionName = 'do this action') => {
@@ -119,7 +115,7 @@ const DecisionTaskLink = (props) => {
       key: 'delay',
       icon: <CalendarIcon size={20} fill="black" />,
       label: `${
-        delayPeriod && delayPeriodUnit ? 'Remove' : 'Add'
+        delayPeriod && delayPeriodUnit ? 'Edit' : 'Add'
       } time until task`,
       onClick: togglePeriodDelay,
     },
@@ -247,6 +243,10 @@ const DecisionTaskLink = (props) => {
                   link={link}
                   onSubmit={handleDelayPeriodSubmit}
                   onClose={closeDelayPopover}
+                  removeButtonVisible={delayOptionsVisible}
+                  onRemove={() => {
+                    handleDelete(removeDelayPeriod, 'Remove time until task');
+                  }}
                 />
               </Paper>
             </ClickAwayListener>

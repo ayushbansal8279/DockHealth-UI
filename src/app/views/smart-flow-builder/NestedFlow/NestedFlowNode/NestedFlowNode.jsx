@@ -203,7 +203,7 @@ const NestedFlowNode = React.memo(({ data, isConnectable, selected, type }) => {
             </Fab>,
           ]
         }
-        headerTitle={'Workflow Task'}
+        headerTitle={'Linked Workflow'}
         headerIcon={<WorkflowLinkIcon size={18} />}
         content={
           <DescriptionAndLinksWrapper>

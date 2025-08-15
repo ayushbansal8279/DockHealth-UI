@@ -1,12 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {
-  EdgeLabel,
-  EdgeLabelEditor,
-  EdgeLabelText,
-  Footer,
-  SendButton,
-  TextAreaWrapper,
-} from './styled';
+import { EdgeLabel, EdgeLabelEditor, EdgeLabelText } from './styled';
 import Tooltip from '@/app/components/common/Tooltip/Tooltip';
 
 const OutcomeInputLabel = React.forwardRef((props, reference) => {
@@ -53,19 +46,22 @@ const OutcomeInputLabel = React.forwardRef((props, reference) => {
     <>
       {isEditorActive ? (
         <>
-          <TextAreaWrapper>
-            <EdgeLabelEditor
-              ref={inputRef}
-              autoFocus
-              value={isEditorActive ? value : ''}
-              placeholder="Type here..."
-              onChange={onChange}
-              onBlur={handleBlur}
-            />
-            <Footer>
-              <SendButton>➤</SendButton>
-            </Footer>
-          </TextAreaWrapper>
+          <EdgeLabelEditor
+            ref={inputRef}
+            autoFocus
+            value={isEditorActive ? value : ''}
+            placeholder="Type here..."
+            onChange={onChange}
+            onBlur={handleBlur}
+            onKeyDown={(event) => {
+              if (event.key === 'Enter') {
+                setEditorActive(false);
+              }
+              if (typeof onKeyPress === 'function') {
+                onKeyPress(event);
+              }
+            }}
+          />
         </>
       ) : (
         <EdgeLabel

@@ -164,7 +164,7 @@ const TaskNode = React.memo(({ data, isConnectable, selected, type }) => {
           <>
             {type === NodeType.DECISION && <DecisionIcon fontSize="small" />}
             {description.includes('[System]') && type === NodeType.STANDARD && (
-              <BoltIcon fontSize="verysmall" />
+              <BoltIcon fontSize="medium" />
             )}
             {type === NodeType.STANDARD &&
               !description.includes('[System]') && <TaskElementIcon />}

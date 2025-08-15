@@ -131,7 +131,7 @@ const NewNestedFlowNode = React.memo((props) => {
           </Fab>,
         ]}
         headerIcon={<WorkflowLinkIcon size={18} />}
-        headerTitle={'Workflow Task'}
+        headerTitle={'Linked Workflow'}
         content={
           <DescriptionAndLinksWrapper>
             <NewWorkflowDescription>
