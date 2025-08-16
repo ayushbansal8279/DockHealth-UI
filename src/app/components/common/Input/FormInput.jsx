@@ -13,10 +13,12 @@ const FormInput = React.forwardRef(
       disableClearErrorOnKeyUp,
       required,
       readOnly,
+      formMethods,
       ...restProps
     },
     reference,
   ) => {
+    const formContext = useFormContext();
     const {
       register,
       formState: { errors },
@@ -24,7 +26,7 @@ const FormInput = React.forwardRef(
       setValue,
       unregister,
       clearErrors,
-    } = useFormContext();
+    } = formMethods || formContext;
 
     const isNested = name?.includes('.');
     const nestedParts = name?.split('.');
