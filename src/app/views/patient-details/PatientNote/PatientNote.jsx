@@ -31,6 +31,10 @@ import {
   traverseNodes,
   processMarkdownValue,
 } from '../../../components/drawer-common/Comment/helpers';
+import {
+  CancelButton,
+  ConfirmButton,
+} from '@/app/modal/components/ModalButton/ModalButtons';
 
 const PatientNote = ({
   note,
@@ -212,23 +216,20 @@ const PatientNote = ({
         {isEdited && (
           <ButtonContainer>
             <ButtonWrapper>
-              <Button
-                color="secondary"
-                variant="secondary"
+              <CancelButton
+                style={{ width: '180px', padding: 0, height: '30px' }}
                 onClick={handleCancel}
-                size="small"
               >
                 Cancel
-              </Button>
+              </CancelButton>
               <Spacing horizontal={4} />
-              <Button
-                color="primary"
+              <ConfirmButton
+                style={{ width: '180px', padding: 0, height: '30px' }}
                 disabled={isEmpty}
-                size="small"
                 onClick={updateNote}
               >
                 Save
-              </Button>
+              </ConfirmButton>
             </ButtonWrapper>
           </ButtonContainer>
         )}
