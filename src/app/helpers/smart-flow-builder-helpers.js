@@ -16,7 +16,6 @@ export const NodeType = {
   NEW_EMAIL: 'NEW_EMAIL',
   NEW_SEND_SMS: 'NEW_SEND_SMS',
   NEW_WEBHOOK: 'NEW_WEBHOOK',
-  NEW_CALL_WEBHOOK: 'NEW_CALL_WEBHOOK',
   NEW_CALL_API: 'NEW_CALL_API',
   NEW_CREATE_PATIENT: 'NEW_CREATE_PATIENT',
   NEW_CREATE_APPOINTMENT: 'NEW_CREATE_APPOINTMENT',
@@ -194,24 +193,6 @@ export function createSendSMSNode(currentTemporaryElements, elementPosition) {
   };
 }
 
-export function createCallWebhookNode(currentTemporaryElements, elementPosition) {
-  const numberOfNewNodes =
-    currentTemporaryElements?.filter(
-      (element) => element.type === NodeType.NEW_CALL_WEBHOOK,
-    ).length || 0;
-
-  return {
-    id: `NEW_CALL_WEBHOOK-${numberOfNewNodes}`,
-    type: NodeType.NEW_CALL_WEBHOOK,
-    position: elementPosition,
-    data: {
-      label: 'Call Webhook',
-      url: '',
-      method: 'POST',
-      status: 'Ready',
-    },
-  };
-}
 
 export function createCallAPINode(currentTemporaryElements, elementPosition) {
   const numberOfNewNodes =

@@ -67,16 +67,16 @@ const SmartflowSidebar = ({
   });
 
   const toggleCategory = (categoryId) => {
-    setExpandedCategories(prev => ({
+    setExpandedCategories((prev) => ({
       ...prev,
-      [categoryId]: !prev[categoryId]
+      [categoryId]: !prev[categoryId],
     }));
   };
 
   const toggleSubCategory = (subCategoryId) => {
-    setExpandedSubCategories(prev => ({
+    setExpandedSubCategories((prev) => ({
       ...prev,
-      [subCategoryId]: !prev[subCategoryId]
+      [subCategoryId]: !prev[subCategoryId],
     }));
   };
 
@@ -85,7 +85,13 @@ const SmartflowSidebar = ({
       id: NodeType.NEW_STANDARD,
       title: 'Task',
       description: 'Create and assign a new task',
-      icon: () => <img src={CircleCompleted} alt="Task" style={{ width: 18, height: 18 }} />,
+      icon: () => (
+        <img
+          src={CircleCompleted}
+          alt="Task"
+          style={{ width: 18, height: 18 }}
+        />
+      ),
       iconClass: 'task',
       category: 'basic',
     },
@@ -139,7 +145,7 @@ const SmartflowSidebar = ({
           category: 'communication',
           subCategory: 'communication',
         },
-      ]
+      ],
     },
     ehr: {
       id: 'communication-ehr',
@@ -181,21 +187,12 @@ const SmartflowSidebar = ({
           category: 'communication',
           subCategory: 'ehr',
         },
-      ]
+      ],
     },
     other: {
       id: 'communication-other',
       title: 'Other',
       elements: [
-        {
-          id: NodeType.NEW_CALL_WEBHOOK,
-          title: 'Call Webhook',
-          description: 'Send HTTP requests to external APIs',
-          icon: () => <CallIcon fontSize="small" />,
-          iconClass: 'webhook',
-          category: 'communication',
-          subCategory: 'other',
-        },
         {
           id: NodeType.NEW_CALL_API,
           title: 'Call API',
@@ -205,8 +202,8 @@ const SmartflowSidebar = ({
           category: 'communication',
           subCategory: 'other',
         },
-      ]
-    }
+      ],
+    },
   };
 
   const agentElements = [
@@ -236,7 +233,9 @@ const SmartflowSidebar = ({
         );
       case 'communication':
         // Return all elements from all communication sub-categories
-        return Object.values(communicationSubCategories).flatMap(subCat => subCat.elements);
+        return Object.values(communicationSubCategories).flatMap(
+          (subCat) => subCat.elements,
+        );
       case 'agents':
         return agentElements;
       default:
@@ -320,105 +319,116 @@ const SmartflowSidebar = ({
       <SidebarContent>
         {categories.map((category) => (
           <CategorySection key={category.id}>
-            <CategoryTitle 
+            <CategoryTitle
               onClick={() => toggleCategory(category.id)}
-              style={{ 
-                cursor: 'pointer', 
-                display: 'flex', 
-                alignItems: 'center', 
+              style={{
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
                 justifyContent: 'space-between',
-                userSelect: 'none'
+                userSelect: 'none',
               }}
             >
               {category.title}
-              {expandedCategories[category.id] ? 
-                <ExpandMoreIcon fontSize="small" /> : 
+              {expandedCategories[category.id] ? (
+                <ExpandMoreIcon fontSize="small" />
+              ) : (
                 <ChevronRightIcon fontSize="small" />
-              }
+              )}
             </CategoryTitle>
 
             {expandedCategories[category.id] && (
               <>
-                {category.id === 'communication' ? (
-                  // Render sub-categories for communication
-                  Object.entries(communicationSubCategories).map(([subKey, subCategory]) => (
-                    <div key={subCategory.id} style={{ marginLeft: '16px' }}>
-                      <CategoryTitle 
-                        onClick={() => toggleSubCategory(subCategory.id)}
-                        style={{ 
-                          cursor: 'pointer', 
-                          display: 'flex', 
-                          alignItems: 'center', 
-                          justifyContent: 'space-between',
-                          userSelect: 'none',
-                          fontSize: '14px',
-                          fontWeight: 'normal',
-                          marginTop: '8px',
-                          marginBottom: '4px'
-                        }}
-                      >
-                        {subCategory.title}
-                        {expandedSubCategories[subCategory.id] ? 
-                          <ExpandMoreIcon fontSize="small" /> : 
-                          <ChevronRightIcon fontSize="small" />
+                {category.id === 'communication'
+                  ? // Render sub-categories for communication
+                    Object.entries(communicationSubCategories).map(
+                      ([subKey, subCategory]) => (
+                        <div
+                          key={subCategory.id}
+                          style={{ marginLeft: '16px', marginTop: '20px' }}
+                        >
+                          <CategoryTitle
+                            onClick={() => toggleSubCategory(subCategory.id)}
+                            style={{
+                              cursor: 'pointer',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'space-between',
+                              userSelect: 'none',
+                              fontSize: '14px',
+                              fontWeight: 'normal',
+                              marginTop: '8px',
+                            }}
+                          >
+                            {subCategory.title}
+                            {expandedSubCategories[subCategory.id] ? (
+                              <ExpandMoreIcon fontSize="small" />
+                            ) : (
+                              <ChevronRightIcon fontSize="small" />
+                            )}
+                          </CategoryTitle>
+
+                          {expandedSubCategories[subCategory.id] && (
+                            <>
+                              {subCategory.elements.map((element) => (
+                                <ElementButton
+                                  key={element.id}
+                                  onClick={() => handleElementClick(element.id)}
+                                  onDragStart={(event) =>
+                                    handleElementDragStart(event, element.id)
+                                  }
+                                  draggable={isCurrentUserEditor}
+                                  disabled={!isCurrentUserEditor}
+                                  style={{ marginLeft: '8px' }}
+                                >
+                                  <ElementIconBackground
+                                    className={element.iconClass}
+                                  >
+                                    <element.icon />
+                                  </ElementIconBackground>
+
+                                  <ElementInfo>
+                                    <ElementTitle>{element.title}</ElementTitle>
+                                    <ElementDescription>
+                                      {element.description}
+                                    </ElementDescription>
+                                  </ElementInfo>
+                                </ElementButton>
+                              ))}
+                            </>
+                          )}
+                        </div>
+                      ),
+                    )
+                  : // Render normal elements for other categories
+                    getElementsWithQuickActions(category.id).map((element) => (
+                      <ElementButton
+                        key={element.id}
+                        onClick={() =>
+                          element.isAction
+                            ? element.onClick()
+                            : handleElementClick(element.id)
                         }
-                      </CategoryTitle>
-                      
-                      {expandedSubCategories[subCategory.id] && (
-                        <>
-                          {subCategory.elements.map((element) => (
-                            <ElementButton
-                              key={element.id}
-                              onClick={() => handleElementClick(element.id)}
-                              onDragStart={(event) =>
-                                handleElementDragStart(event, element.id)
-                              }
-                              draggable={isCurrentUserEditor}
-                              disabled={!isCurrentUserEditor}
-                              style={{ marginLeft: '8px' }}
-                            >
-                              <ElementIconBackground className={element.iconClass}>
-                                <element.icon />
-                              </ElementIconBackground>
+                        onDragStart={(event) =>
+                          !element.isAction &&
+                          handleElementDragStart(event, element.id)
+                        }
+                        draggable={isCurrentUserEditor && !element.isAction}
+                        disabled={!isCurrentUserEditor}
+                        ref={element.ref}
+                      >
+                        <ElementIconBackground className={element.iconClass}>
+                          <element.icon />
+                        </ElementIconBackground>
 
-                              <ElementInfo>
-                                <ElementTitle>{element.title}</ElementTitle>
-                                <ElementDescription>{element.description}</ElementDescription>
-                              </ElementInfo>
-                            </ElementButton>
-                          ))}
-                        </>
-                      )}
-                    </div>
-                  ))
-                ) : (
-                  // Render normal elements for other categories
-                  getElementsWithQuickActions(category.id).map((element) => (
-                    <ElementButton
-                      key={element.id}
-                      onClick={() =>
-                        element.isAction
-                          ? element.onClick()
-                          : handleElementClick(element.id)
-                      }
-                      onDragStart={(event) =>
-                        !element.isAction && handleElementDragStart(event, element.id)
-                      }
-                      draggable={isCurrentUserEditor && !element.isAction}
-                      disabled={!isCurrentUserEditor}
-                      ref={element.ref}
-                    >
-                      <ElementIconBackground className={element.iconClass}>
-                        <element.icon />
-                      </ElementIconBackground>
-
-                      <ElementInfo>
-                        <ElementTitle>{element.title}</ElementTitle>
-                        <ElementDescription>{element.description}</ElementDescription>
-                      </ElementInfo>
-                    </ElementButton>
-                  ))
-                )}
+                        <ElementInfo>
+                          <ElementTitle>{element.title}</ElementTitle>
+                          <ElementDescription>
+                            {element.description}
+                          </ElementDescription>
+                        </ElementInfo>
+                      </ElementButton>
+                    ))}
               </>
             )}
           </CategorySection>

@@ -14,7 +14,6 @@ import {
   createAIAnalyzerNode,
   createAIAssistantNode,
   createSendSMSNode,
-  createCallWebhookNode,
   createCallAPINode,
   createCreatePatientNode,
   createCreateAppointmentNode,
@@ -701,28 +700,6 @@ const TaskTemplateReducer = (state = initialState, action) => {
             temporaryElements: [
               ...(temporaryElements || []),
               createSendSMSNode(temporaryElements, position),
-            ],
-          },
-        ),
-      };
-    }
-
-    case ActionTypes.ADD_NEW_CALL_WEBHOOK_ELEMENT: {
-      const { currentTaskTemplateIdentifier } = state;
-      const { position } = action;
-
-      const { temporaryElements } =
-        state.taskTemplateDetails[currentTaskTemplateIdentifier];
-
-      return {
-        ...state,
-        taskTemplateDetails: updateTaskTemplateDetailsState(
-          currentTaskTemplateIdentifier,
-          state.taskTemplateDetails,
-          {
-            temporaryElements: [
-              ...(temporaryElements || []),
-              createCallWebhookNode(temporaryElements, position),
             ],
           },
         ),

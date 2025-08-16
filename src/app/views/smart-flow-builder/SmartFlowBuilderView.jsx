@@ -45,7 +45,6 @@ import {
   addNewAIAnalyzerElement,
   addNewAIAssistantElement,
   addNewSendSMSElement,
-  addNewCallWebhookElement,
   addNewCallAPIElement,
   addNewCreatePatientElement,
   addNewCreateAppointmentElement,
@@ -340,7 +339,6 @@ const SmartFlowBuilderView = () => {
       NodeType.NEW_AI_ANALYZER,
       NodeType.NEW_AI_ASSISTANT,
       NodeType.NEW_SEND_SMS,
-      NodeType.NEW_CALL_WEBHOOK,
       NodeType.NEW_CALL_API,
       NodeType.NEW_CREATE_PATIENT,
       NodeType.NEW_CREATE_APPOINTMENT,
@@ -452,10 +450,6 @@ const SmartFlowBuilderView = () => {
 
   const addNewSendSMSElementLocal = (position) => {
     dispatch(addNewSendSMSElement(position));
-  };
-
-  const addNewCallWebhookElementLocal = (position) => {
-    dispatch(addNewCallWebhookElement(position));
   };
 
   const addNewCallAPIElementLocal = (position) => {
@@ -725,10 +719,6 @@ const SmartFlowBuilderView = () => {
       }
       case NodeType.NEW_WEBHOOK: {
         addNewWebhookElementLocal(position);
-        break;
-      }
-      case NodeType.NEW_CALL_WEBHOOK: {
-        addNewCallWebhookElementLocal(position);
         break;
       }
       case NodeType.NEW_CALL_API: {

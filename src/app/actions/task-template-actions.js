@@ -253,13 +253,6 @@ export function addNewSendSMSElement(position) {
   };
 }
 
-export function addNewCallWebhookElement(position) {
-  return {
-    type: ActionTypes.ADD_NEW_CALL_WEBHOOK_ELEMENT,
-    position,
-  };
-}
-
 export function addNewCallAPIElement(position) {
   return {
     type: ActionTypes.ADD_NEW_CALL_API_ELEMENT,

@@ -16,7 +16,7 @@ const CreateNoteNode = ({ data, selected }) => {
 
   return (
     <NodeContainer
-      style={{ border: `2px solid ${palette.green}` }}
+      style={{ border: `2px solid ${palette.orangeJulius}` }}
       className={selected ? 'selected' : ''}
     >
       <CustomNodeHandle type="target" position={Position.Top} />
@@ -24,7 +24,7 @@ const CreateNoteNode = ({ data, selected }) => {
       <NodeHeader>
         <NodeIcon
           style={{
-            background: `linear-gradient(45deg, ${palette.green}, ${palette.memberGreen})`,
+            background: `linear-gradient(45deg, ${palette.orangeJulius}, ${palette.orangeJulius})`,
           }}
         >
           <NoteAddIcon fontSize="small" />

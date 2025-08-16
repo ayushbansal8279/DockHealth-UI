@@ -16,7 +16,7 @@ const CreateAppointmentNode = ({ data, selected }) => {
 
   return (
     <NodeContainer
-      style={{ border: `2px solid ${palette.blueOcean}` }}
+      style={{ border: `2px solid ${palette.orangeJulius}` }}
       className={selected ? 'selected' : ''}
     >
       <CustomNodeHandle type="target" position={Position.Top} />
@@ -24,7 +24,7 @@ const CreateAppointmentNode = ({ data, selected }) => {
       <NodeHeader>
         <NodeIcon
           style={{
-            background: `linear-gradient(45deg, ${palette.blueOcean}, ${palette.purplePassion})`,
+            background: `linear-gradient(45deg, ${palette.orangeJulius}, ${palette.orangeJulius})`,
           }}
         >
           <EventAvailableIcon fontSize="small" />
