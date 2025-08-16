@@ -18,6 +18,12 @@ export const FieldType = {
   RELATIONSHIP: 'RELATIONSHIP',
 };
 
+export const DisplayOption = {
+  SINGLE_SELECT: 'SINGLE_SELECT',
+  PROFILE_NAME: 'PROFILE_NAME',
+  PROFILE_HEADER: 'PROFILE_HEADER',
+};
+
 export const FieldCharacterLimit = {
   TEXT: 500,
   LONG_TEXT: 5000,

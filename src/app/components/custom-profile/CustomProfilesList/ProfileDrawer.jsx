@@ -188,9 +188,11 @@ const ProfileDrawer = ({
       <StickyHeader>
         <TitleName>{title}</TitleName>
         <MoreActinsWrapper>
-          <OptionsMenu options={menu} customButtonComponent={IconButton}>
-            <MoreVertIcon />
-          </OptionsMenu>
+          {!addMode && (
+            <OptionsMenu options={menu} customButtonComponent={IconButton}>
+              <MoreVertIcon />
+            </OptionsMenu>
+          )}
           <IconButton onClick={handleClose}>
             <CloseIcon />
           </IconButton>

@@ -29,6 +29,10 @@ import {
   ButtonContainer,
   ButtonWrapper,
 } from './styled';
+import {
+  CancelButton,
+  ConfirmButton,
+} from '@/app/modal/components/ModalButton/ModalButtons';
 
 const PatientNotes = () => {
   const dispatch = useDispatch();
@@ -188,22 +192,19 @@ const PatientNotes = () => {
           {editMode && (
             <ButtonContainer>
               <ButtonWrapper>
-                <Button
-                  color="secondary"
-                  variant="secondary"
+                <CancelButton
+                  style={{ width: '180px', padding: 0, height: '30px' }}
                   onClick={() => {
                     setEditMode(false);
                     setNoteState('');
                   }}
-                  size="small"
                 >
                   Cancel
-                </Button>
+                </CancelButton>
                 <Spacing horizontal={4} />
-                <Button
-                  color="primary"
+                <ConfirmButton
+                  style={{ width: '180px', padding: 0, height: '30px' }}
                   disabled={isEmpty}
-                  size="small"
                   onClick={() => {
                     dispatch(addPatientNote(patientIdentifier, noteState));
                     setEditMode(false);
@@ -211,7 +212,7 @@ const PatientNotes = () => {
                   }}
                 >
                   Save
-                </Button>
+                </ConfirmButton>
               </ButtonWrapper>
             </ButtonContainer>
           )}

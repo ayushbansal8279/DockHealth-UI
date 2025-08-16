@@ -94,23 +94,20 @@ export function triggerActivityAlertForDesktopNotification(alertDetails) {
     targetIdentifier,
   } = alertDetails;
 
-  const { description, comments, dueDate, identifier: taskIdentifier } = task;
-
-  const { listName } = taskList || task?.taskList;
+  const listName = taskList?.listName || task?.taskList?.listName || '';
 
   const alertComment =
-    comments?.find(
+    task?.comments?.find(
       ({ commentIdentifier }) => targetIdentifier === commentIdentifier,
     ) || {};
-  const { creator = {} } = alertComment;
-  const { userName } = creator;
+  const userName = alertComment?.creator?.userName || '';
 
   const title = determineAlertTitle(
     activityAlertTitle,
     listName,
-    description,
+    task?.description || '',
     userName,
-    dueDate,
+    task?.dueDate,
   );
-  triggerDesktopNotification(title || 'Notification', taskIdentifier);
+  triggerDesktopNotification(title || 'Notification', task?.identifier);
 }

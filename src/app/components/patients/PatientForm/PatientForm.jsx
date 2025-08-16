@@ -51,15 +51,17 @@ const PatientForm = forwardRef(
       patientAddEnabled,
       edited = true,
       buttonLabel,
+      setCustomFieldErrors,
     },
     reference,
   ) => {
+    const formMethods = useFormContext();
     const {
       handleSubmit,
       formState: { errors },
       setError,
       clearErrors,
-    } = useFormContext();
+    } = formMethods;
     const [isOpenedPersonal, setIsOpenedPersonal] = useState(true);
     const [isOpenedContact, setIsOpenedContact] = useState(true);
     const [isOpenedOther, setIsOpenedOther] = useState(true);
@@ -96,6 +98,10 @@ const PatientForm = forwardRef(
       });
     }, [patient]);
 
+    useEffect(() => {
+      setCustomFieldErrors(errors);
+    }, [errors]);
+
     const renderCustomField = useCallback(
       (field, index, showEmpty = true) => {
         const patientCustomField = patient?.patientMetaData?.find(
@@ -115,6 +121,7 @@ const PatientForm = forwardRef(
               field={field}
               initialValue={patientCustomField?.values}
               fieldsGroupKey="patientMetaData"
+              formMethods={formMethods}
             />
           </HidableContainer>
         ) : (
@@ -128,11 +135,12 @@ const PatientForm = forwardRef(
               field={field}
               initialValue={patientCustomField?.value}
               fieldsGroupKey="patientMetaData"
+              formMethods={formMethods}
             />
           </HidableContainer>
         );
       },
-      [patient, edited],
+      [patient, edited, formMethods],
     );
 
     return (

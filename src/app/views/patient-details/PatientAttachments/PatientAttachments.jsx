@@ -455,7 +455,7 @@ const PatientAttachments = () => {
               </div>
             )}
           </NamedCollapse>
-          <NamedCollapse name="Task Files">
+          {!currentFolderIdentifier && (<NamedCollapse name="Task Files">
             {activeViewType === FilesViewType.LIST && <FileListHeader />}
             {taskFileList.length > 0 ? (
               taskFileList.map((file, index) => (
@@ -495,7 +495,7 @@ const PatientAttachments = () => {
                 </DownloadAllLink>
               </div>
             )}
-          </NamedCollapse>
+          </NamedCollapse>)}
           <AttachmentPreview
             attachment={previewedAttachment}
             attachmentsSources={attachmentsSources}

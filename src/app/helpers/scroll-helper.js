@@ -21,8 +21,8 @@ export const scrollToByQuerySelector = (query) => {
 };
 
 export const isOutsideScrollViewAtTheTop = (containerElement, itemElement) => {
-  const { offsetTop: itemOffsetTop } = itemElement;
-  const { scrollTop: containerScrollTop } = containerElement;
+  const itemOffsetTop = itemElement?.offsetTop || 0;
+  const containerScrollTop = containerElement?.scrollTop || 0;
 
   return itemOffsetTop < containerScrollTop;
 };
