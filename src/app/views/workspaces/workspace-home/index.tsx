@@ -20,6 +20,7 @@ import { closeModal, openModal } from "@/app/modal/actions";
 import { Add } from "@mui/icons-material";
 import ToolbarButton from "@/app/components/tasklist/list-toolbar-buttons/ToolbarButton/ToolbarButton";
 import { organizationWorkspaceLabelSelector } from "@/app/selectors/organization-selectors";
+import pluralize from 'pluralize';
 
 const WorkspaceHome = () => {
   const history = useHistory();
@@ -88,7 +89,7 @@ const WorkspaceHome = () => {
 
   return (
     <ViewLayout
-      header={<BasicLayoutHeader title={`All ${workspaceLabel}s`} />}
+      header={<BasicLayoutHeader title={`All ${pluralize(workspaceLabel)}`} />}
     >
       <WorkspaceContainer>
         <AddWorkspaceButtonWrapper>

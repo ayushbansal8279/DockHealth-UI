@@ -1,11 +1,14 @@
 import { createFilter } from 'react-search-input';
+import pluralize from 'pluralize';
 
 interface WorkspaceMember {
   userStatus: 'ACTIVE' | 'INVITED' | 'PENDING' | 'DENIED';
   workspaceUserRole: 'ADMIN' | 'MEMBER';
 }
 
-export const getWorkspaceMemberStatus = (member: WorkspaceMember): string | null => {
+export const getWorkspaceMemberStatus = (
+  member: WorkspaceMember,
+): string | null => {
   const { userStatus, workspaceUserRole } = member;
 
   switch (userStatus) {
@@ -40,4 +43,9 @@ export const getFilteredRows = <T>(
 ): T[] => {
   if (!rows) return [];
   return searchTerm ? rows.filter(createFilter(searchTerm, keys)) : rows;
+};
+
+export const ensureSingular = (word: string) => {
+  if (!word) return 'Workspace';
+  return pluralize.isSingular(word) ? word : pluralize.singular(word);
 };

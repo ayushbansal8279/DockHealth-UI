@@ -23,9 +23,14 @@ import WorkspaceSubmenuStepTwo from './WorkspaceSubmenuStepTwo';
 import { workspaceSelector } from '@/app/selectors/workspace-selectors';
 import WorkspaceTile from '@/app/components/workspace/WorkspaceTile/WorkspaceTile';
 import { organizationWorkspaceLabelSelector } from '@/app/selectors/organization-selectors';
-import { isFetchingWorkspaceListSelector, workspaceListSelector } from '@/app/selectors/workspace-list-selector';
-import { getAllUserWorkspaces } from "@/app/actions/workspace-list-actions";
+import {
+  isFetchingWorkspaceListSelector,
+  workspaceListSelector,
+} from '@/app/selectors/workspace-list-selector';
+import { getAllUserWorkspaces } from '@/app/actions/workspace-list-actions';
 import ToolbarButton from '@/app/components/tasklist/list-toolbar-buttons/ToolbarButton/ToolbarButton';
+import pluralize from 'pluralize';
+import WorkspaceOptionsMenu from '@/app/components/workspace/WorkspaceOptionsMenu/WorkspaceOptionsMenu';
 
 const WorkspacesSubmenu = () => {
   const history = useHistory();
@@ -34,7 +39,10 @@ const WorkspacesSubmenu = () => {
   const isFetching = useSelector(isFetchingWorkspaceListSelector);
   const workspace = useSelector(workspaceSelector);
   const workspaceLabel = useSelector(organizationWorkspaceLabelSelector);
-  const [showStepTwo, setShowStepTwo] = useState(!!workspace?.workspaceIdentifier);
+  const [showStepTwo, setShowStepTwo] = useState(
+    !!workspace?.workspaceIdentifier,
+  );
+  const [menuOptionsOpen, setMenuOptionsOpen] = useState(false);
 
   const openAddWorkspaceModal = () => {
     const modalProps = {
@@ -57,10 +65,10 @@ const WorkspacesSubmenu = () => {
 
   return (
     <>
-      {!showStepTwo  ? (
+      {!showStepTwo ? (
         <>
           <WorkspacesTitleWrapper>
-            <WorkspacesTitle>{workspaceLabel}s</WorkspacesTitle>
+            <WorkspacesTitle>{pluralize(workspaceLabel)}</WorkspacesTitle>
             <WorkspacesSubWrapper>
               <WorkspaceSettingsIcon
                 src={SettingsIcon}
@@ -89,9 +97,15 @@ const WorkspacesSubmenu = () => {
                 .map((_, index) => <DrawerListsItemLoader key={index} />)
             ) : (
               <>
-                {workspaces.map((workspace) => (
+                {workspaces.map((workspace: Workspace) => (
                   <WorkspaceWrapper key={workspace.workspaceIdentifier}>
-                    <MoreVertIcon />
+                    <WorkspaceOptionsMenu
+                      onClose={() => setMenuOptionsOpen(false)}
+                      open={menuOptionsOpen}
+                      selectedWorkspace={workspace}
+                    >
+                      <MoreVertIcon onClick={() => setMenuOptionsOpen(true)} />
+                    </WorkspaceOptionsMenu>
                     <WorkspaceTile
                       workspaceProfileColor={workspace.workspaceProfileColor}
                       workspaceInitials={workspace.workspaceInitials}

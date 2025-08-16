@@ -56,12 +56,13 @@ export function addTemplate(template, workspaceIdentifier) {
   };
 }
 
-export function addSmartFlow(template, history, workspaceIdentifier) {
+export function addSmartFlow(template, history, workspaceIdentifier, location) {
   return {
     type: ActionTypes.ADD_TASK_TEMPLATE,
     template: { ...template, templateType: 'SMARTFLOW' },
     history,
     workspaceIdentifier,
+    location,
   };
 }
 

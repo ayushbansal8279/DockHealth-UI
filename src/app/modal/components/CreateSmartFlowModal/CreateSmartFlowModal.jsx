@@ -9,6 +9,7 @@ import Spacing from 'components/common/Spacing';
 import { CloseIconButton, CloseIcon } from '../styled';
 import { ListFormModalWrapper, Header, Title, StyledForm } from './styled';
 import { CancelButton, ConfirmButton } from '../ModalButton/ModalButtons';
+import { useLocation } from 'react-router-dom';
 
 const TEMPLATE_NAME_FIELD_NAME = 'name';
 
@@ -27,11 +28,12 @@ function createSubmit({
   dispatch,
   history,
   workspaceIdentifier,
+  location,
 }) {
   return function onSubmit(data) {
     event.preventDefault();
     dispatch(
-      TaskTemplateActions.addSmartFlow(data, history, workspaceIdentifier),
+      TaskTemplateActions.addSmartFlow(data, history, workspaceIdentifier, location),
     );
     if (typeof onCreateSuccess === 'function') onCreateSuccess(data);
     closeModal();
@@ -49,6 +51,7 @@ const CreateSmartFlowModal = ({
     mode: 'onSubmit',
   });
   const { handleSubmit } = formMethods;
+  const location = useLocation();
 
   return (
     <ListFormModalWrapper>
@@ -68,6 +71,7 @@ const CreateSmartFlowModal = ({
               dispatch,
               history,
               workspaceIdentifier,
+              location,
             }),
           )(event)
         }
