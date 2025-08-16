@@ -3,11 +3,8 @@ import palette, { typography } from 'styles/palette';
 
 export const NewTaskWrapper = styled.div`
   width: 100%;
-  padding: 12px 0 12px 10px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  text-align: center;
+  margin: 5px;
+  padding: 0px 18px;
 
   & button {
     transition: opacity 0.3s linear;
@@ -19,8 +16,8 @@ export const NewTaskWrapper = styled.div`
 `;
 
 export const NewTaskInput = styled.input`
-  padding: 15px 0;
   font-family: inherit;
+  font-size: 16px;
   border: none;
   outline: none;
   color: ${palette.mediumGrey};

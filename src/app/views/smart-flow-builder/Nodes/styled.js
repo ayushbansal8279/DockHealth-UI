@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import { Handle } from 'reactflow';
 import palette from '@/app/styles/palette';
+import { NodeType } from '@/app/helpers/smart-flow-builder-helpers';
 
 export const NodeContainer = styled.div`
   background: white;
@@ -58,6 +59,18 @@ export const NodeIcon = styled.div`
   align-items: center;
   justify-content: center;
   color: white;
+  background: ${({ type }) => {
+    switch (type) {
+      case NodeType.NEW_EMAIL:
+      case NodeType.NEW_WEBHOOK:
+        return `linear-gradient(45deg, ${palette.dirtyBanana}, ${palette.orangeJulius})`;
+      case NodeType.NEW_AI_ANALYZER:
+      case NodeType.NEW_AI_ASSISTANT:
+        return `linear-gradient(45deg, ${palette.tomatoInYoFace}, ${palette.oPlusRed})`;
+      default:
+        return `linear-gradient(45deg, ${palette.blueOcean}, ${palette.purplePassion})`;
+    }
+  }};
 `;
 
 export const NodeTitle = styled.div`

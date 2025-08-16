@@ -36,20 +36,41 @@ export const TaskInfoWrapper = styled.div`
   justify-content: space-between;
 `;
 
+export const TaskDescriptionWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-width: 0;
+  margin: 5px;
+  padding: 0px 5px 0px 18px;
+`;
+
 export const TaskDescription = styled.p`
-  margin-bottom: 0;
-  padding: 12px 0 12px 10px;
   font-family: inherit;
   font-weight: ${fontWeights.bold};
   font-size: 16px;
+  color: #555;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2; /* Limit to 2 lines */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: normal;
+  word-break: break-word;
+`;
+
+export const TaskDescriptionInputWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
   width: 100%;
-  color: ${palette.mediumGrey};
+  min-width: 0;
+  margin: 5px;
+  padding: 0px 17px;
 `;
 
 export const TaskDescriptionInput = styled.input`
   width: 100%;
   border: none;
-  padding: 12px 0 12px 10px;
   font-family: inherit;
   font-weight: ${fontWeights.regular};
   color: ${palette.mediumGrey};

@@ -26,7 +26,7 @@ export const BaseNodeWrapper = styled.div`
   background-color: ${palette.white};
   box-shadow: 0px 0px 11px rgba(0, 0, 0, 0.15);
   overflow: visible;
-  border: 3px solid ${palette.brightBlue};
+  border: 2px solid ${palette.azureBlue};
   border-radius: 14px;
   ${({ type }) =>
     [
@@ -34,11 +34,13 @@ export const BaseNodeWrapper = styled.div`
       NodeType.NEW_STANDARD,
       NodeType.NEW_DECISION,
       NodeType.NEW_AUTOMATION,
-    ].includes(type) && `border: 3px solid ${palette.coolGrey3};`}
+    ].includes(type) && `border: 2px solid ${palette.coolGrey3};`}
 
   ${({ selected }) => selected && `background-color: #ddedf8;`}
 
   &:hover {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
     ${OptionsContainer} {
       opacity: 1;
     }
@@ -59,17 +61,17 @@ export const GrowButton = styled.div`
 
 export const NodeHeaderWrapper = styled.div`
   width: 100%;
-  height: 25%;
-  padding: 0 18px;
+  height: 30%;
+  padding: 10px 20px 0;
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  gap: 8px;
   border-bottom: 1px solid ${palette.coolGrey3};
 `;
 
 export const NodeFooterWrapper = styled.div`
   width: 100%;
-  height: 25%;
+  height: 20%;
   padding: 0 12px;
   display: flex;
   justify-content: space-between;
@@ -81,6 +83,4 @@ export const NodeContentWrapper = styled.div`
   width: 100%;
   height: 50%;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
 `;

@@ -4,6 +4,7 @@ import 'reactflow/dist/style.css';
 import { useBoolean } from 'hooks/useBoolean';
 import SubtaskIcon from 'img/SubtaskIcon';
 import { Box, Fab, IconButton, Typography } from '@mui/material';
+import { AccountTree as DecisionIcon } from '@mui/icons-material';
 import BoltIcon from '@mui/icons-material/Bolt';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -32,10 +33,13 @@ import {
   TaskDescriptionInput,
   SubtasksLabel,
   DecisionTaskIconWrapper,
+  TaskDescriptionWrapper,
+  TaskDescriptionInputWrapper,
 } from './styled';
 import { userProfileSelector } from '@/app/selectors/user-selectors';
 import BaseNode from '../BaseNode/BaseNode';
 import { TaskElementIcon } from '../styled';
+import Tooltip from '@/app/components/common/Tooltip/Tooltip';
 
 const TaskNode = React.memo(({ data, isConnectable, selected, type }) => {
   const { task } = data || {};
@@ -57,6 +61,10 @@ const TaskNode = React.memo(({ data, isConnectable, selected, type }) => {
   const [inputValue, setInputValue] = useState('');
   const [editing, setEditing, unsetEditing] = useBoolean(false);
   const dispatch = useDispatch();
+  const titles = {
+    [NodeType.DECISION]: 'Decision Task',
+    [NodeType.STANDARD]: 'Task',
+  };
 
   useEffect(() => {
     if (editing) {
@@ -154,40 +162,48 @@ const TaskNode = React.memo(({ data, isConnectable, selected, type }) => {
         ]}
         headerIcon={
           <>
-            {type === NodeType.DECISION && (
-              <DecisionTaskIconWrapper>
-                <DecisionTaskElementIcon size={21} />
-              </DecisionTaskIconWrapper>
+            {type === NodeType.DECISION && <DecisionIcon fontSize="small" />}
+            {description.includes('[System]') && type === NodeType.STANDARD && (
+              <BoltIcon fontSize="medium" />
             )}
-            {description.includes('[System]') && (
-              <DecisionTaskIconWrapper>
-                <BoltIcon fontSize="verysmall" />
-              </DecisionTaskIconWrapper>
-            )}
-            {type === NodeType.STANDARD && (
-              <DecisionTaskIconWrapper>
-                <TaskElementIcon />
-              </DecisionTaskIconWrapper>
-            )}
+            {type === NodeType.STANDARD &&
+              !description.includes('[System]') && <TaskElementIcon />}
           </>
         }
         headerTitle={
-          editing ? (
-            <TaskDescriptionInput
-              ref={descriptionInputReference}
-              value={inputValue}
-              onKeyDown={handleKeyDown}
-              onBlur={handleBlur}
-              onChange={(event) => setInputValue(event.target?.value || '')}
-            />
-          ) : (
-            <TaskDescription>
-              {createMentionsFromTokenizedDescription(
-                tokenizedDescription,
-                taskMentions,
-              )}
-            </TaskDescription>
-          )
+          description.includes('[System]')
+            ? 'Automation Task'
+            : titles[type] || ''
+        }
+        content={
+          <>
+            {editing ? (
+              <TaskDescriptionInputWrapper>
+                <TaskDescriptionInput
+                  ref={descriptionInputReference}
+                  value={inputValue}
+                  onKeyDown={handleKeyDown}
+                  onBlur={handleBlur}
+                  onChange={(event) => setInputValue(event.target?.value || '')}
+                />
+              </TaskDescriptionInputWrapper>
+            ) : (
+              <Tooltip
+                title={tokenizedDescription}
+                key={tokenizedDescription}
+                placement="top"
+              >
+                <TaskDescriptionWrapper>
+                  <TaskDescription>
+                    {createMentionsFromTokenizedDescription(
+                      tokenizedDescription,
+                      taskMentions,
+                    )}
+                  </TaskDescription>
+                </TaskDescriptionWrapper>
+              </Tooltip>
+            )}
+          </>
         }
         footerContent={
           <TaskInfoWrapper>

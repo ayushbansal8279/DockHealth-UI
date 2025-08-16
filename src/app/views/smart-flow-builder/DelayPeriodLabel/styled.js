@@ -6,9 +6,9 @@ export const Label = styled.div`
 
   width: ${({ fixedWidth }) => (fixedWidth ? '180px' : 'fit-content')};
   height: fit-content;
-  padding-right: 10px;
-  padding-left: 10px;
-  border-radius: 15px;
+  padding: 10px;
+  line-height: 1.2;
+  border-radius: 8px;
   background-color: ${palette.brightBlue};
   color: ${palette.white};
   user-select: none;
