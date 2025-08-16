@@ -15,11 +15,10 @@ import {
 
 const AttachmentsBreadcrumbs = ({
   entityIdentifierSelector,
-  currentFolderIdentifierSelector,
+  currentFolderIdentifier,
   getFolderStructureHierarchy,
 }) => {
   const entityIdentifier = useSelector(entityIdentifierSelector);
-  const currentFolderIdentifier = useSelector(currentFolderIdentifierSelector);
   const [breadcrumbs, setBreadcrumbs] = useState(null);
   const profileTypeIndentifier = useSelector(
     currentProfileTypeIdentifierSelector,
@@ -43,6 +42,12 @@ const AttachmentsBreadcrumbs = ({
     }
   }, [currentFolderIdentifier, getFolderStructureHierarchy]);
 
+  const buildPath = (folderId = null) => {
+    return profileTypeIndentifier
+      ? createProfileAttachmentsPath(profileTypeIndentifier, entityIdentifier, folderId)
+      : createPatientAttachmentsPath(entityIdentifier, folderId);
+  };
+
   return (
     <>
       {breadcrumbs && (
@@ -51,9 +56,9 @@ const AttachmentsBreadcrumbs = ({
             to={
               profileTypeIndentifier
                 ? createProfileAttachmentsPath(
-                    profileTypeIndentifier,
-                    entityIdentifier,
-                  )
+                  profileTypeIndentifier,
+                  entityIdentifier,
+                )
                 : createPatientAttachmentsPath(entityIdentifier)
             }
           >
@@ -71,16 +76,7 @@ const AttachmentsBreadcrumbs = ({
                 <>
                   <BreadcrumbSeparator />
                   <BreadcrumbWrapper>
-                    <BreadcrumbLink
-                      to={
-                        profileTypeIndentifier
-                          ? createProfileAttachmentsPath(
-                              profileTypeIndentifier,
-                              entityIdentifier,
-                            )
-                          : createPatientAttachmentsPath(entityIdentifier)
-                      }
-                    >
+                    <BreadcrumbLink to={buildPath(id)}>
                       {name}
                     </BreadcrumbLink>
                   </BreadcrumbWrapper>
