@@ -14,7 +14,13 @@ export const NodeType = {
   START_INDICATOR: 'INDICATOR',
   END_INDICATOR: 'INDICATOR',
   NEW_EMAIL: 'NEW_EMAIL',
+  NEW_SEND_SMS: 'NEW_SEND_SMS',
   NEW_WEBHOOK: 'NEW_WEBHOOK',
+  NEW_CALL_API: 'NEW_CALL_API',
+  NEW_CREATE_PATIENT: 'NEW_CREATE_PATIENT',
+  NEW_CREATE_APPOINTMENT: 'NEW_CREATE_APPOINTMENT',
+  NEW_UPDATE_APPOINTMENT: 'NEW_UPDATE_APPOINTMENT',
+  NEW_CREATE_NOTE: 'NEW_CREATE_NOTE',
   NEW_AI_ANALYZER: 'NEW_AI_ANALYZER',
   NEW_AI_ASSISTANT: 'NEW_AI_ASSISTANT',
 };
@@ -164,6 +170,117 @@ export function createAIAssistantNode(
       capability: 'General',
       persona: 'Professional',
       status: 'Assistant Ready',
+    },
+  };
+}
+
+export function createSendSMSNode(currentTemporaryElements, elementPosition) {
+  const numberOfNewNodes =
+    currentTemporaryElements?.filter(
+      (element) => element.type === NodeType.NEW_SEND_SMS,
+    ).length || 0;
+
+  return {
+    id: `NEW_SEND_SMS-${numberOfNewNodes}`,
+    type: NodeType.NEW_SEND_SMS,
+    position: elementPosition,
+    data: {
+      label: 'Send SMS',
+      message: '',
+      recipients: [],
+      status: 'Ready',
+    },
+  };
+}
+
+
+export function createCallAPINode(currentTemporaryElements, elementPosition) {
+  const numberOfNewNodes =
+    currentTemporaryElements?.filter(
+      (element) => element.type === NodeType.NEW_CALL_API,
+    ).length || 0;
+
+  return {
+    id: `NEW_CALL_API-${numberOfNewNodes}`,
+    type: NodeType.NEW_CALL_API,
+    position: elementPosition,
+    data: {
+      label: 'Call API',
+      endpoint: '',
+      method: 'GET',
+      status: 'Ready',
+    },
+  };
+}
+
+export function createCreatePatientNode(currentTemporaryElements, elementPosition) {
+  const numberOfNewNodes =
+    currentTemporaryElements?.filter(
+      (element) => element.type === NodeType.NEW_CREATE_PATIENT,
+    ).length || 0;
+
+  return {
+    id: `NEW_CREATE_PATIENT-${numberOfNewNodes}`,
+    type: NodeType.NEW_CREATE_PATIENT,
+    position: elementPosition,
+    data: {
+      label: 'Create Patient',
+      patientData: {},
+      status: 'Ready',
+    },
+  };
+}
+
+export function createCreateAppointmentNode(currentTemporaryElements, elementPosition) {
+  const numberOfNewNodes =
+    currentTemporaryElements?.filter(
+      (element) => element.type === NodeType.NEW_CREATE_APPOINTMENT,
+    ).length || 0;
+
+  return {
+    id: `NEW_CREATE_APPOINTMENT-${numberOfNewNodes}`,
+    type: NodeType.NEW_CREATE_APPOINTMENT,
+    position: elementPosition,
+    data: {
+      label: 'Create Appointment',
+      appointmentData: {},
+      status: 'Ready',
+    },
+  };
+}
+
+export function createUpdateAppointmentNode(currentTemporaryElements, elementPosition) {
+  const numberOfNewNodes =
+    currentTemporaryElements?.filter(
+      (element) => element.type === NodeType.NEW_UPDATE_APPOINTMENT,
+    ).length || 0;
+
+  return {
+    id: `NEW_UPDATE_APPOINTMENT-${numberOfNewNodes}`,
+    type: NodeType.NEW_UPDATE_APPOINTMENT,
+    position: elementPosition,
+    data: {
+      label: 'Update Appointment',
+      appointmentData: {},
+      status: 'Ready',
+    },
+  };
+}
+
+export function createCreateNoteNode(currentTemporaryElements, elementPosition) {
+  const numberOfNewNodes =
+    currentTemporaryElements?.filter(
+      (element) => element.type === NodeType.NEW_CREATE_NOTE,
+    ).length || 0;
+
+  return {
+    id: `NEW_CREATE_NOTE-${numberOfNewNodes}`,
+    type: NodeType.NEW_CREATE_NOTE,
+    position: elementPosition,
+    data: {
+      label: 'Create Note',
+      noteData: {},
+      status: 'Ready',
     },
   };
 }

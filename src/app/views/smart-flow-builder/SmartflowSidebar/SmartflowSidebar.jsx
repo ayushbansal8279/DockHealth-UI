@@ -8,6 +8,11 @@ import {
   AutoFixHigh as AutoAlignIcon,
   ExpandMore as ExpandMoreIcon,
   ChevronRight as ChevronRightIcon,
+  Sms as SmsIcon,
+  PersonAdd as PersonAddIcon,
+  EventAvailable as EventAvailableIcon,
+  NoteAdd as NoteAddIcon,
+  Call as CallIcon,
 } from '@mui/icons-material';
 import { Popper, ClickAwayListener, Paper } from '@mui/material';
 
@@ -32,6 +37,10 @@ import {
 
 import WorkflowLinkIcon from 'img/template/workflow-icon';
 import { NodeType } from 'helpers/smart-flow-builder-helpers';
+import CircleCompleted from 'img/circle-completed.svg';
+import CircleCompletedHover from 'img/circle-completed-hover.svg';
+import TaskAutomationPending from 'img/task-automation-pending.svg';
+import TaskAutomationComplete from 'img/task-automation-complete.svg';
 
 const SmartflowSidebar = ({
   isDockProUser,
@@ -51,10 +60,23 @@ const SmartflowSidebar = ({
     agents: true,
   });
 
+  const [expandedSubCategories, setExpandedSubCategories] = React.useState({
+    'communication-communication': true,
+    'communication-ehr': true,
+    'communication-other': true,
+  });
+
   const toggleCategory = (categoryId) => {
-    setExpandedCategories(prev => ({
+    setExpandedCategories((prev) => ({
       ...prev,
-      [categoryId]: !prev[categoryId]
+      [categoryId]: !prev[categoryId],
+    }));
+  };
+
+  const toggleSubCategory = (subCategoryId) => {
+    setExpandedSubCategories((prev) => ({
+      ...prev,
+      [subCategoryId]: !prev[subCategoryId],
     }));
   };
 
@@ -63,7 +85,13 @@ const SmartflowSidebar = ({
       id: NodeType.NEW_STANDARD,
       title: 'Task',
       description: 'Create and assign a new task',
-      icon: () => <TaskElementIcon />,
+      icon: () => (
+        <img
+          src={CircleCompleted}
+          alt="Task"
+          style={{ width: 18, height: 18 }}
+        />
+      ),
       iconClass: 'task',
       category: 'basic',
     },
@@ -94,24 +122,89 @@ const SmartflowSidebar = ({
     },
   ];
 
-  const communicationElements = [
-    {
-      id: NodeType.NEW_EMAIL,
-      title: 'Email',
-      description: 'Send email notifications',
-      icon: () => <EmailIcon fontSize="small" />,
-      iconClass: 'email',
-      category: 'communication',
+  const communicationSubCategories = {
+    communication: {
+      id: 'communication-communication',
+      title: 'Communication',
+      elements: [
+        {
+          id: NodeType.NEW_EMAIL,
+          title: 'Email',
+          description: 'Send email notifications',
+          icon: () => <EmailIcon fontSize="small" />,
+          iconClass: 'email',
+          category: 'communication',
+          subCategory: 'communication',
+        },
+        {
+          id: NodeType.NEW_SEND_SMS,
+          title: 'Send SMS',
+          description: 'Send SMS messages',
+          icon: () => <SmsIcon fontSize="small" />,
+          iconClass: 'sms',
+          category: 'communication',
+          subCategory: 'communication',
+        },
+      ],
     },
-    {
-      id: 'NEW_WEBHOOK',
-      title: 'Webhook',
-      description: 'Send HTTP requests to external APIs',
-      icon: () => <WebhookIcon fontSize="small" />,
-      iconClass: 'webhook',
-      category: 'communication',
+    ehr: {
+      id: 'communication-ehr',
+      title: 'EHR Update',
+      elements: [
+        {
+          id: NodeType.NEW_CREATE_PATIENT,
+          title: 'Create Patient',
+          description: 'Create a new patient record',
+          icon: () => <PersonAddIcon fontSize="small" />,
+          iconClass: 'patient',
+          category: 'communication',
+          subCategory: 'ehr',
+        },
+        {
+          id: NodeType.NEW_CREATE_APPOINTMENT,
+          title: 'Create Appointment',
+          description: 'Schedule a new appointment',
+          icon: () => <EventAvailableIcon fontSize="small" />,
+          iconClass: 'appointment',
+          category: 'communication',
+          subCategory: 'ehr',
+        },
+        {
+          id: NodeType.NEW_UPDATE_APPOINTMENT,
+          title: 'Update Appointment',
+          description: 'Modify existing appointment',
+          icon: () => <EventAvailableIcon fontSize="small" />,
+          iconClass: 'appointment',
+          category: 'communication',
+          subCategory: 'ehr',
+        },
+        {
+          id: NodeType.NEW_CREATE_NOTE,
+          title: 'Create Note',
+          description: 'Add clinical notes',
+          icon: () => <NoteAddIcon fontSize="small" />,
+          iconClass: 'note',
+          category: 'communication',
+          subCategory: 'ehr',
+        },
+      ],
     },
-  ];
+    other: {
+      id: 'communication-other',
+      title: 'Other',
+      elements: [
+        {
+          id: NodeType.NEW_CALL_API,
+          title: 'Call API',
+          description: 'Make API calls to external services',
+          icon: () => <WebhookIcon fontSize="small" />,
+          iconClass: 'api',
+          category: 'communication',
+          subCategory: 'other',
+        },
+      ],
+    },
+  };
 
   const agentElements = [
     {
@@ -139,12 +232,19 @@ const SmartflowSidebar = ({
           (element) => !element.requiresDockPro || isDockProUser,
         );
       case 'communication':
-        return communicationElements;
+        // Return all elements from all communication sub-categories
+        return Object.values(communicationSubCategories).flatMap(
+          (subCat) => subCat.elements,
+        );
       case 'agents':
         return agentElements;
       default:
         return [];
     }
+  };
+
+  const getSubCategoryElements = (subCategoryKey) => {
+    return communicationSubCategories[subCategoryKey]?.elements || [];
   };
 
   const handleElementClick = (elementId) => {
@@ -167,7 +267,7 @@ const SmartflowSidebar = ({
     },
     {
       id: 'communication',
-      title: 'Automation',
+      title: 'Automations',
       description: 'External integrations and messaging',
     },
     {
@@ -219,50 +319,116 @@ const SmartflowSidebar = ({
       <SidebarContent>
         {categories.map((category) => (
           <CategorySection key={category.id}>
-            <CategoryTitle 
+            <CategoryTitle
               onClick={() => toggleCategory(category.id)}
-              style={{ 
-                cursor: 'pointer', 
-                display: 'flex', 
-                alignItems: 'center', 
+              style={{
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
                 justifyContent: 'space-between',
-                userSelect: 'none'
+                userSelect: 'none',
               }}
             >
               {category.title}
-              {expandedCategories[category.id] ? 
-                <ExpandMoreIcon fontSize="small" /> : 
+              {expandedCategories[category.id] ? (
+                <ExpandMoreIcon fontSize="small" />
+              ) : (
                 <ChevronRightIcon fontSize="small" />
-              }
+              )}
             </CategoryTitle>
 
             {expandedCategories[category.id] && (
               <>
-                {getElementsWithQuickActions(category.id).map((element) => (
-                  <ElementButton
-                    key={element.id}
-                    onClick={() =>
-                      element.isAction
-                        ? element.onClick()
-                        : handleElementClick(element.id)
-                    }
-                    onDragStart={(event) =>
-                      !element.isAction && handleElementDragStart(event, element.id)
-                    }
-                    draggable={isCurrentUserEditor && !element.isAction}
-                    disabled={!isCurrentUserEditor}
-                    ref={element.ref}
-                  >
-                    <ElementIconBackground className={element.iconClass}>
-                      <element.icon />
-                    </ElementIconBackground>
+                {category.id === 'communication'
+                  ? // Render sub-categories for communication
+                    Object.entries(communicationSubCategories).map(
+                      ([subKey, subCategory]) => (
+                        <div
+                          key={subCategory.id}
+                          style={{ marginLeft: '16px', marginTop: '20px' }}
+                        >
+                          <CategoryTitle
+                            onClick={() => toggleSubCategory(subCategory.id)}
+                            style={{
+                              cursor: 'pointer',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'space-between',
+                              userSelect: 'none',
+                              fontSize: '14px',
+                              fontWeight: 'normal',
+                              marginTop: '8px',
+                            }}
+                          >
+                            {subCategory.title}
+                            {expandedSubCategories[subCategory.id] ? (
+                              <ExpandMoreIcon fontSize="small" />
+                            ) : (
+                              <ChevronRightIcon fontSize="small" />
+                            )}
+                          </CategoryTitle>
 
-                    <ElementInfo>
-                      <ElementTitle>{element.title}</ElementTitle>
-                      <ElementDescription>{element.description}</ElementDescription>
-                    </ElementInfo>
-                  </ElementButton>
-                ))}
+                          {expandedSubCategories[subCategory.id] && (
+                            <>
+                              {subCategory.elements.map((element) => (
+                                <ElementButton
+                                  key={element.id}
+                                  onClick={() => handleElementClick(element.id)}
+                                  onDragStart={(event) =>
+                                    handleElementDragStart(event, element.id)
+                                  }
+                                  draggable={isCurrentUserEditor}
+                                  disabled={!isCurrentUserEditor}
+                                  style={{ marginLeft: '8px' }}
+                                >
+                                  <ElementIconBackground
+                                    className={element.iconClass}
+                                  >
+                                    <element.icon />
+                                  </ElementIconBackground>
+
+                                  <ElementInfo>
+                                    <ElementTitle>{element.title}</ElementTitle>
+                                    <ElementDescription>
+                                      {element.description}
+                                    </ElementDescription>
+                                  </ElementInfo>
+                                </ElementButton>
+                              ))}
+                            </>
+                          )}
+                        </div>
+                      ),
+                    )
+                  : // Render normal elements for other categories
+                    getElementsWithQuickActions(category.id).map((element) => (
+                      <ElementButton
+                        key={element.id}
+                        onClick={() =>
+                          element.isAction
+                            ? element.onClick()
+                            : handleElementClick(element.id)
+                        }
+                        onDragStart={(event) =>
+                          !element.isAction &&
+                          handleElementDragStart(event, element.id)
+                        }
+                        draggable={isCurrentUserEditor && !element.isAction}
+                        disabled={!isCurrentUserEditor}
+                        ref={element.ref}
+                      >
+                        <ElementIconBackground className={element.iconClass}>
+                          <element.icon />
+                        </ElementIconBackground>
+
+                        <ElementInfo>
+                          <ElementTitle>{element.title}</ElementTitle>
+                          <ElementDescription>
+                            {element.description}
+                          </ElementDescription>
+                        </ElementInfo>
+                      </ElementButton>
+                    ))}
               </>
             )}
           </CategorySection>

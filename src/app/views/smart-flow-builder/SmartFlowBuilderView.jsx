@@ -44,6 +44,12 @@ import {
   addNewWebhookElement,
   addNewAIAnalyzerElement,
   addNewAIAssistantElement,
+  addNewSendSMSElement,
+  addNewCallAPIElement,
+  addNewCreatePatientElement,
+  addNewCreateAppointmentElement,
+  addNewUpdateAppointmentElement,
+  addNewCreateNoteElement,
 } from 'actions/task-template-actions';
 import {
   taskTemplateDetailsSelector,
@@ -114,6 +120,12 @@ import IndicatorNode from './IndicatorNode/IndicatorNode';
 import NodeConfigPanel from './NodeDrawers/NodeConfigPanel';
 import ConnectionLineComponent from './ConnectionLineComponent/ConnectionLineComponent';
 import palette from '@/app/styles/palette';
+import SMSNode from './Nodes/SMSNode';
+import PatientNode from './Nodes/CreatePatientNode';
+import AppointmentNode from './Nodes/CreateAppointmentNode';
+import NoteNode from './Nodes/CreateNoteNode';
+import APINode from './Nodes/APINode';
+// import PatientNode from '';
 
 const nodeTypes = {
   [NodeType.NEW_AUTOMATION]: NewTaskNode,
@@ -130,6 +142,12 @@ const nodeTypes = {
   [NodeType.NEW_WEBHOOK]: WebhookNode,
   [NodeType.NEW_AI_ANALYZER]: AIAnalyzerNode,
   [NodeType.NEW_AI_ASSISTANT]: AIAssistantNode,
+  [NodeType.NEW_SEND_SMS]: SMSNode,
+  [NodeType.NEW_CREATE_PATIENT]: PatientNode,
+  [NodeType.NEW_CREATE_APPOINTMENT]: AppointmentNode,
+  [NodeType.NEW_UPDATE_APPOINTMENT]: AppointmentNode,
+  [NodeType.NEW_CREATE_NOTE]: NoteNode,
+  [NodeType.NEW_CALL_API]: APINode,
 };
 
 const linkTypes = {
@@ -320,6 +338,12 @@ const SmartFlowBuilderView = () => {
       NodeType.NEW_WEBHOOK,
       NodeType.NEW_AI_ANALYZER,
       NodeType.NEW_AI_ASSISTANT,
+      NodeType.NEW_SEND_SMS,
+      NodeType.NEW_CALL_API,
+      NodeType.NEW_CREATE_PATIENT,
+      NodeType.NEW_CREATE_APPOINTMENT,
+      NodeType.NEW_UPDATE_APPOINTMENT,
+      NodeType.NEW_CREATE_NOTE,
     ];
 
     if (drawerCompatibleTypes.includes(node.type)) {
@@ -422,6 +446,30 @@ const SmartFlowBuilderView = () => {
 
   const addNewAIAssistantElementLocal = (position) => {
     dispatch(addNewAIAssistantElement(position));
+  };
+
+  const addNewSendSMSElementLocal = (position) => {
+    dispatch(addNewSendSMSElement(position));
+  };
+
+  const addNewCallAPIElementLocal = (position) => {
+    dispatch(addNewCallAPIElement(position));
+  };
+
+  const addNewCreatePatientElementLocal = (position) => {
+    dispatch(addNewCreatePatientElement(position));
+  };
+
+  const addNewCreateAppointmentElementLocal = (position) => {
+    dispatch(addNewCreateAppointmentElement(position));
+  };
+
+  const addNewUpdateAppointmentElementLocal = (position) => {
+    dispatch(addNewUpdateAppointmentElement(position));
+  };
+
+  const addNewCreateNoteElementLocal = (position) => {
+    dispatch(addNewCreateNoteElement(position));
   };
 
   const toolkitActions = useMemo(() => {
@@ -661,19 +709,43 @@ const SmartFlowBuilderView = () => {
         dispatch(addNewNestedFlowElement(position));
         break;
       }
-      case 'NEW_EMAIL': {
+      case NodeType.NEW_EMAIL: {
         addNewEmailElementLocal(position);
         break;
       }
-      case 'NEW_WEBHOOK': {
+      case NodeType.NEW_SEND_SMS: {
+        addNewSendSMSElementLocal(position);
+        break;
+      }
+      case NodeType.NEW_WEBHOOK: {
         addNewWebhookElementLocal(position);
         break;
       }
-      case 'NEW_AI_ANALYZER': {
+      case NodeType.NEW_CALL_API: {
+        addNewCallAPIElementLocal(position);
+        break;
+      }
+      case NodeType.NEW_CREATE_PATIENT: {
+        addNewCreatePatientElementLocal(position);
+        break;
+      }
+      case NodeType.NEW_CREATE_APPOINTMENT: {
+        addNewCreateAppointmentElementLocal(position);
+        break;
+      }
+      case NodeType.NEW_UPDATE_APPOINTMENT: {
+        addNewUpdateAppointmentElementLocal(position);
+        break;
+      }
+      case NodeType.NEW_CREATE_NOTE: {
+        addNewCreateNoteElementLocal(position);
+        break;
+      }
+      case NodeType.NEW_AI_ANALYZER: {
         addNewAIAnalyzerElementLocal(position);
         break;
       }
-      case 'NEW_AI_ASSISTANT': {
+      case NodeType.NEW_AI_ASSISTANT: {
         addNewAIAssistantElementLocal(position);
         break;
       }
