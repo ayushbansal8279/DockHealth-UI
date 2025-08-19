@@ -9,6 +9,16 @@ import {
   LinkType,
   NodeType,
   createNewAutomationTaskNode,
+  createEmailNode,
+  createWebhookNode,
+  createAIAnalyzerNode,
+  createAIAssistantNode,
+  createSendSMSNode,
+  createCallAPINode,
+  createCreatePatientNode,
+  createCreateAppointmentNode,
+  createUpdateAppointmentNode,
+  createCreateNoteNode,
 } from 'helpers/smart-flow-builder-helpers';
 import TaskBaseReducer from './task-base-reducer';
 import { updateTasksStateCallback } from './reducer-helper';
@@ -529,6 +539,283 @@ const TaskTemplateReducer = (state = initialState, action) => {
       };
     }
 
+    case ActionTypes.ADD_NEW_EMAIL_ELEMENT: {
+      // Todo After Api Integration
+
+      // const { currentTaskTemplateIdentifier } = state;
+      // const { position } = action;
+
+      // const { temporaryElements } =
+      //   state.taskTemplateDetails[currentTaskTemplateIdentifier];
+
+      // const aa = {
+      //   id: 'fbfd2sdc6c-0d66-4d7c-b39a-0bc71a51c',
+      //   type: NodeType.NEW_EMAIL,
+      //   data: {
+      //     draggedEdgeSourceId: null,
+      //     taskTemplateIdentifier: 'ce6f3dcc-426f-4bff-ab14-227d88ef8139',
+      //   },
+      //   position: {
+      //     x: 1461.2980025578743,
+      //     y: 329.8232009925558,
+      //   },
+      //   isConnectable: true,
+      //   width: 230,
+      //   height: 232,
+      // };
+
+      // const email = {
+      //   identifier: '123',
+      //   description: '123',
+      //   taskTemplateIdentifier: currentTaskTemplateIdentifier,
+      //   intentType: NodeType.NEW_EMAIL,
+      // };
+
+      // return {
+      //   ...state,
+      //   taskTemplateDetails: updateTaskTemplateDetailsState(
+      //     currentTaskTemplateIdentifier,
+      //     state.taskTemplateDetails,
+      //     {
+      //       emails: [aa],
+      //     },
+      //   ),
+      // };
+
+      // const updatedState = {
+      //   ...state,
+      //   taskTemplateDetails: updateTaskTemplateDetailsState(
+      //     currentTaskTemplateIdentifier,
+      //     state.taskTemplateDetails,
+      //     {
+      //       emails: [
+      //         ...(state.taskTemplateDetails[currentTaskTemplateIdentifier]
+      //           ?.emails || []),
+      //         email,
+      //       ],
+      //     },
+      //   ),
+      // };
+
+      const { currentTaskTemplateIdentifier } = state;
+      const { position } = action;
+
+      const { temporaryElements } =
+        state.taskTemplateDetails[currentTaskTemplateIdentifier];
+
+      return {
+        ...state,
+        taskTemplateDetails: updateTaskTemplateDetailsState(
+          currentTaskTemplateIdentifier,
+          state.taskTemplateDetails,
+          {
+            temporaryElements: [
+              ...(temporaryElements || []),
+              createEmailNode(temporaryElements, position),
+            ],
+          },
+        ),
+      };
+    }
+
+    case ActionTypes.ADD_NEW_WEBHOOK_ELEMENT: {
+      const { currentTaskTemplateIdentifier } = state;
+      const { position } = action;
+
+      const { temporaryElements } =
+        state.taskTemplateDetails[currentTaskTemplateIdentifier];
+
+      return {
+        ...state,
+        taskTemplateDetails: updateTaskTemplateDetailsState(
+          currentTaskTemplateIdentifier,
+          state.taskTemplateDetails,
+          {
+            temporaryElements: [
+              ...(temporaryElements || []),
+              createWebhookNode(temporaryElements, position),
+            ],
+          },
+        ),
+      };
+    }
+
+    case ActionTypes.ADD_NEW_AI_ANALYZER_ELEMENT: {
+      const { currentTaskTemplateIdentifier } = state;
+      const { position } = action;
+
+      const { temporaryElements } =
+        state.taskTemplateDetails[currentTaskTemplateIdentifier];
+
+      return {
+        ...state,
+        taskTemplateDetails: updateTaskTemplateDetailsState(
+          currentTaskTemplateIdentifier,
+          state.taskTemplateDetails,
+          {
+            temporaryElements: [
+              ...(temporaryElements || []),
+              createAIAnalyzerNode(temporaryElements, position),
+            ],
+          },
+        ),
+      };
+    }
+
+    case ActionTypes.ADD_NEW_AI_ASSISTANT_ELEMENT: {
+      const { currentTaskTemplateIdentifier } = state;
+      const { position } = action;
+
+      const { temporaryElements } =
+        state.taskTemplateDetails[currentTaskTemplateIdentifier];
+
+      return {
+        ...state,
+        taskTemplateDetails: updateTaskTemplateDetailsState(
+          currentTaskTemplateIdentifier,
+          state.taskTemplateDetails,
+          {
+            temporaryElements: [
+              ...(temporaryElements || []),
+              createAIAssistantNode(temporaryElements, position),
+            ],
+          },
+        ),
+      };
+    }
+
+    case ActionTypes.ADD_NEW_SEND_SMS_ELEMENT: {
+      const { currentTaskTemplateIdentifier } = state;
+      const { position } = action;
+
+      const { temporaryElements } =
+        state.taskTemplateDetails[currentTaskTemplateIdentifier];
+
+      return {
+        ...state,
+        taskTemplateDetails: updateTaskTemplateDetailsState(
+          currentTaskTemplateIdentifier,
+          state.taskTemplateDetails,
+          {
+            temporaryElements: [
+              ...(temporaryElements || []),
+              createSendSMSNode(temporaryElements, position),
+            ],
+          },
+        ),
+      };
+    }
+
+    case ActionTypes.ADD_NEW_CALL_API_ELEMENT: {
+      const { currentTaskTemplateIdentifier } = state;
+      const { position } = action;
+
+      const { temporaryElements } =
+        state.taskTemplateDetails[currentTaskTemplateIdentifier];
+
+      return {
+        ...state,
+        taskTemplateDetails: updateTaskTemplateDetailsState(
+          currentTaskTemplateIdentifier,
+          state.taskTemplateDetails,
+          {
+            temporaryElements: [
+              ...(temporaryElements || []),
+              createCallAPINode(temporaryElements, position),
+            ],
+          },
+        ),
+      };
+    }
+
+    case ActionTypes.ADD_NEW_CREATE_PATIENT_ELEMENT: {
+      const { currentTaskTemplateIdentifier } = state;
+      const { position } = action;
+
+      const { temporaryElements } =
+        state.taskTemplateDetails[currentTaskTemplateIdentifier];
+
+      return {
+        ...state,
+        taskTemplateDetails: updateTaskTemplateDetailsState(
+          currentTaskTemplateIdentifier,
+          state.taskTemplateDetails,
+          {
+            temporaryElements: [
+              ...(temporaryElements || []),
+              createCreatePatientNode(temporaryElements, position),
+            ],
+          },
+        ),
+      };
+    }
+
+    case ActionTypes.ADD_NEW_CREATE_APPOINTMENT_ELEMENT: {
+      const { currentTaskTemplateIdentifier } = state;
+      const { position } = action;
+
+      const { temporaryElements } =
+        state.taskTemplateDetails[currentTaskTemplateIdentifier];
+
+      return {
+        ...state,
+        taskTemplateDetails: updateTaskTemplateDetailsState(
+          currentTaskTemplateIdentifier,
+          state.taskTemplateDetails,
+          {
+            temporaryElements: [
+              ...(temporaryElements || []),
+              createCreateAppointmentNode(temporaryElements, position),
+            ],
+          },
+        ),
+      };
+    }
+
+    case ActionTypes.ADD_NEW_UPDATE_APPOINTMENT_ELEMENT: {
+      const { currentTaskTemplateIdentifier } = state;
+      const { position } = action;
+
+      const { temporaryElements } =
+        state.taskTemplateDetails[currentTaskTemplateIdentifier];
+
+      return {
+        ...state,
+        taskTemplateDetails: updateTaskTemplateDetailsState(
+          currentTaskTemplateIdentifier,
+          state.taskTemplateDetails,
+          {
+            temporaryElements: [
+              ...(temporaryElements || []),
+              createUpdateAppointmentNode(temporaryElements, position),
+            ],
+          },
+        ),
+      };
+    }
+
+    case ActionTypes.ADD_NEW_CREATE_NOTE_ELEMENT: {
+      const { currentTaskTemplateIdentifier } = state;
+      const { position } = action;
+
+      const { temporaryElements } =
+        state.taskTemplateDetails[currentTaskTemplateIdentifier];
+
+      return {
+        ...state,
+        taskTemplateDetails: updateTaskTemplateDetailsState(
+          currentTaskTemplateIdentifier,
+          state.taskTemplateDetails,
+          {
+            temporaryElements: [
+              ...(temporaryElements || []),
+              createCreateNoteNode(temporaryElements, position),
+            ],
+          },
+        ),
+      };
+    }
+
     case ActionTypes.ADD_DECISION_BRANCH: {
       const { currentTaskTemplateIdentifier } = state;
       const { sourceTaskIdentifier } = action;
@@ -564,8 +851,14 @@ const TaskTemplateReducer = (state = initialState, action) => {
 
     case ActionTypes.ADD_TEMPORARY_LINK: {
       const { currentTaskTemplateIdentifier } = state;
-      const { linkType, sourceId, targetId, sourceHandle, targetHandle, indicatorType } =
-        action;
+      const {
+        linkType,
+        sourceId,
+        targetId,
+        sourceHandle,
+        targetHandle,
+        indicatorType,
+      } = action;
       const { temporaryElements } =
         state.taskTemplateDetails[currentTaskTemplateIdentifier];
 
@@ -586,7 +879,7 @@ const TaskTemplateReducer = (state = initialState, action) => {
                 targetId,
                 sourceHandle,
                 targetHandle,
-                indicatorType
+                indicatorType,
               ),
             ],
           },

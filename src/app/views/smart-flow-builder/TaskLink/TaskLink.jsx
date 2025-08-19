@@ -14,6 +14,7 @@ import { LabelsWrapper, HardDependencyLabel } from './styled';
 import TaskLinkDelayForm from '../TaskLinkDelayForm/TaskLinkDelayForm';
 import TaskLinkOptions from '../TaskLinkOptions/TaskLinkOptions';
 import DelayPeriodLabel from '../DelayPeriodLabel/DelayPeriodLabel';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const TaskLink = (props) => {
@@ -66,11 +67,7 @@ const TaskLink = (props) => {
   };
 
   const togglePeriodDelay = () => {
-    if (delayOptionsVisible) {
-      removeDelayPeriod();
-    } else {
-      openDelayPopover();
-    }
+    openDelayPopover();
   };
 
   const deleteLink = () => {
@@ -90,24 +87,21 @@ const TaskLink = (props) => {
   const menuOptions = [
     {
       key: 'dependency',
-      icon: <HardDependencyIcon size={11} />,
+      icon: <HardDependencyIcon size={20} stroke="black" />,
       label: `${isDependent ? 'Remove' : 'Make'} dependent`,
       onClick: toggleDependent,
     },
     {
       key: 'delay',
-      icon: <CalendarIcon size={11} />,
+      icon: <CalendarIcon size={20} fill="black" />,
       label: `${
-        delayPeriod && delayPeriodUnit ? 'Remove' : 'Add'
+        delayPeriod && delayPeriodUnit ? 'Edit' : 'Add'
       } time until task`,
-      onClick: () =>
-        delayPeriod && delayPeriodUnit
-          ? handleDelete(togglePeriodDelay, 'Remove time until task')
-          : togglePeriodDelay(),
+      onClick: () => togglePeriodDelay(),
     },
     {
       key: 'delete',
-      icon: <DeleteOutlineIcon style={{ height: 13 }} />,
+      icon: <DeleteIcon fontSize="small" color="inherit" />,
       label: `Delete link`,
       onClick: () => handleDelete(deleteLink, 'Delete link'),
     },
@@ -165,6 +159,10 @@ const TaskLink = (props) => {
                   link={link}
                   onSubmit={handleDelayPeriodSubmit}
                   onClose={closeDelayPopover}
+                  onRemove={() => {
+                    handleDelete(removeDelayPeriod, 'Remove time until task');
+                  }}
+                  removeButtonVisible={delayOptionsVisible}
                 />
               </Paper>
             </ClickAwayListener>

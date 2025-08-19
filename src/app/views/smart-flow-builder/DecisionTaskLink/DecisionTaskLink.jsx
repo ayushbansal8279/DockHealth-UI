@@ -10,6 +10,7 @@ import {
 } from 'actions/task-template-actions';
 import { useBoolean } from 'hooks/useBoolean';
 import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import { useStore, getSmoothStepPath } from 'reactflow';
 import { useDispatch } from 'react-redux';
@@ -90,11 +91,7 @@ const DecisionTaskLink = (props) => {
   };
 
   const togglePeriodDelay = () => {
-    if (delayOptionsVisible) {
-      removeDelayPeriod();
-    } else {
-      openDelayPopover();
-    }
+    openDelayPopover();
   };
 
   const handleDelete = (callback, actionName = 'do this action') => {
@@ -110,21 +107,21 @@ const DecisionTaskLink = (props) => {
   const menuOptions = [
     {
       key: 'edit',
-      icon: <EditIcon style={{ height: 13 }} />,
+      icon: <EditIcon fontSize="small" color="inherit" />,
       label: `Edit outcome`,
       onClick: setEdited,
     },
     {
       key: 'delay',
-      icon: <CalendarIcon size={11} />,
+      icon: <CalendarIcon size={20} fill="black" />,
       label: `${
-        delayPeriod && delayPeriodUnit ? 'Remove' : 'Add'
+        delayPeriod && delayPeriodUnit ? 'Edit' : 'Add'
       } time until task`,
       onClick: togglePeriodDelay,
     },
     {
       key: 'delete',
-      icon: <DeleteOutlineIcon style={{ height: 13 }} />,
+      icon: <DeleteIcon fontSize="small" color="inherit" />,
       label: `Delete link`,
       onClick: () => handleDelete(deleteLink, 'Delete link'),
     },
@@ -246,6 +243,10 @@ const DecisionTaskLink = (props) => {
                   link={link}
                   onSubmit={handleDelayPeriodSubmit}
                   onClose={closeDelayPopover}
+                  removeButtonVisible={delayOptionsVisible}
+                  onRemove={() => {
+                    handleDelete(removeDelayPeriod, 'Remove time until task');
+                  }}
                 />
               </Paper>
             </ClickAwayListener>

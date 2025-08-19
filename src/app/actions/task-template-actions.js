@@ -219,6 +219,76 @@ export function addNewNestedFlowElement(position) {
   };
 }
 
+export function addNewEmailElement(position) {
+  return {
+    type: ActionTypes.ADD_NEW_EMAIL_ELEMENT,
+    position,
+  };
+}
+
+export function addNewWebhookElement(position) {
+  return {
+    type: ActionTypes.ADD_NEW_WEBHOOK_ELEMENT,
+    position,
+  };
+}
+
+export function addNewAIAnalyzerElement(position) {
+  return {
+    type: ActionTypes.ADD_NEW_AI_ANALYZER_ELEMENT,
+    position,
+  };
+}
+
+export function addNewAIAssistantElement(position) {
+  return {
+    type: ActionTypes.ADD_NEW_AI_ASSISTANT_ELEMENT,
+    position,
+  };
+}
+
+export function addNewSendSMSElement(position) {
+  return {
+    type: ActionTypes.ADD_NEW_SEND_SMS_ELEMENT,
+    position,
+  };
+}
+
+export function addNewCallAPIElement(position) {
+  return {
+    type: ActionTypes.ADD_NEW_CALL_API_ELEMENT,
+    position,
+  };
+}
+
+export function addNewCreatePatientElement(position) {
+  return {
+    type: ActionTypes.ADD_NEW_CREATE_PATIENT_ELEMENT,
+    position,
+  };
+}
+
+export function addNewCreateAppointmentElement(position) {
+  return {
+    type: ActionTypes.ADD_NEW_CREATE_APPOINTMENT_ELEMENT,
+    position,
+  };
+}
+
+export function addNewUpdateAppointmentElement(position) {
+  return {
+    type: ActionTypes.ADD_NEW_UPDATE_APPOINTMENT_ELEMENT,
+    position,
+  };
+}
+
+export function addNewCreateNoteElement(position) {
+  return {
+    type: ActionTypes.ADD_NEW_CREATE_NOTE_ELEMENT,
+    position,
+  };
+}
+
 export function addTemporaryElements(elements) {
   return {
     type: ActionTypes.ADD_TEMPORARY_ELEMENTS,

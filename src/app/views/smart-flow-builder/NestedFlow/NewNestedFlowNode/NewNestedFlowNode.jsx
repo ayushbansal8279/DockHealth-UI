@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { IconButton, Typography } from '@mui/material';
+import { Chip, Fab, IconButton, Typography } from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
+import AddIcon from '@mui/icons-material/Add';
 import { openModal, closeModal } from 'modal/actions';
 import {
   addTaskToTemplate,
@@ -11,9 +13,19 @@ import { Add, Delete } from '@mui/icons-material';
 import palette from 'styles/palette';
 import { NodeType } from 'helpers/smart-flow-builder-helpers';
 import ListsIcon from 'img/navigation/ListsIcon';
+import WorkflowLinkIcon from 'img/template/workflow-icon';
 import TaskNodeWrapper from '../../TaskNodeWrapper/TaskNodeWrapper';
 import TaskNodeHandles from '../../TaskNodeHandles/TaskNodeHandles';
-import NestedFlowNodeStyled, { TaskLinks, TaskWrapper } from '../styled';
+import NestedFlowNodeStyled, {
+  DescriptionAndLinksWrapper,
+  NewNestedFlowNodeWrapper,
+  NewWorkflowDescription,
+  TaskLinks,
+  TaskWrapper,
+} from '../styled';
+import BaseNode from '../../BaseNode/BaseNode';
+import { DecisionTaskIconWrapper } from '../../TaskNode/styled';
+import Tooltip from '@/app/components/common/Tooltip/Tooltip';
 
 const NewNestedFlowNode = React.memo((props) => {
   const { id, type, data, selected, xPos, yPos, isConnectable } = props;
@@ -43,7 +55,6 @@ const NewNestedFlowNode = React.memo((props) => {
           taskGroupIdentifier,
           groupName,
         }) => {
-          // console.log(listName, groupName);
           if (taskListIdentifier) {
             setTaskList({ taskListIdentifier, listName });
           }
@@ -88,51 +99,131 @@ const NewNestedFlowNode = React.memo((props) => {
       isConnectable={isConnectable}
       isConnecting={data.draggedEdgeSourceId}
       onTargetHandleHover={data.onTargetHandleHover}
+      draggedEdgeSourceId={data?.draggedEdgeSourceId}
     >
-      <TaskWrapper>
-        <TaskNodeWrapper selected={selected} type={type} width={280}>
-          <NestedFlowNodeStyled>
-            <Typography component="p">
+      <BaseNode
+        selected={selected}
+        type={type}
+        optionButtons={[
+          <Fab
+            key="delete"
+            aria-label="delete"
+            size="small"
+            onClick={() => dispatch(deleteTemporaryElement(id))}
+          >
+            <DeleteIcon fontSize="small" color="inherit" />
+          </Fab>,
+          <Fab
+            key="add"
+            aria-label="add"
+            size="small"
+            onClick={handleOpenModal}
+          >
+            <AddIcon fontSize="medium" color="inherit" />
+          </Fab>,
+          <Fab
+            key="List"
+            aria-label="list"
+            size="small"
+            onClick={handleOpenListPicker}
+          >
+            <ListsIcon color="black" height="16" width="22" />
+          </Fab>,
+        ]}
+        headerIcon={<WorkflowLinkIcon size={18} />}
+        headerTitle={'Linked Workflow'}
+        content={
+          <DescriptionAndLinksWrapper>
+            <NewWorkflowDescription>
               {workflow?.workflowName ?? 'Connect to Workflow'}
-            </Typography>
-            <IconButton onClick={() => dispatch(deleteTemporaryElement(id))}>
-              <Delete htmlColor={palette.white} />
-            </IconButton>
-            <IconButton onClick={handleOpenModal}>
-              <Add htmlColor={palette.white} />
-            </IconButton>
-            <IconButton onClick={handleOpenListPicker}>
-              <ListsIcon color="white" />
-            </IconButton>
-          </NestedFlowNodeStyled>
-        </TaskNodeWrapper>
-        <TaskLinks>
-          {taskList && (
-            <Typography
-              component="p"
-              style={{
-                overflow: 'hidden',
-                whiteSpace: 'nowrap',
-                textOverflow: 'ellipsis',
-              }}
-            >
-              {taskList.listName}
-            </Typography>
-          )}
-          {taskGroup && (
-            <Typography
-              component="p"
-              style={{
-                overflow: 'hidden',
-                whiteSpace: 'nowrap',
-                textOverflow: 'ellipsis',
-              }}
-            >
-              {taskGroup.groupName}
-            </Typography>
-          )}
-        </TaskLinks>
-      </TaskWrapper>
+            </NewWorkflowDescription>
+            <TaskLinks>
+              {taskList && (
+                <Typography
+                  component="p"
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                  }}
+                >
+                  <span
+                    style={{
+                      display: 'flex',
+                      gap: '5px',
+                      overflow: 'hidden',
+                      flexWrap: 'nowrap',
+                      fontSize: '14px',
+                    }}
+                  >
+                    <strong>List: </strong>
+                    <Tooltip
+                      title={taskList?.listName}
+                      key={taskList?.listName}
+                      placement="top"
+                    >
+                      <Chip
+                        variant="outlined"
+                        key={taskList?.listName}
+                        label={taskList?.listName}
+                        size="small"
+                        sx={{
+                          maxWidth: 200,
+                          whiteSpace: 'nowrap',
+                          textOverflow: 'ellipsis',
+                          overflow: 'hidden',
+                          fontWeight: '600',
+                          fontSize: '12px',
+                        }}
+                      />
+                    </Tooltip>
+                  </span>
+                </Typography>
+              )}
+              {taskGroup && (
+                <Typography
+                  component="p"
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                  }}
+                >
+                  <span
+                    style={{
+                      display: 'flex',
+                      gap: '5px',
+                      overflow: 'hidden',
+                      flexWrap: 'nowrap',
+                      fontSize: '14px',
+                    }}
+                  >
+                    <strong>Group:</strong>
+                    <Tooltip
+                      title={taskGroup?.groupName}
+                      key={taskGroup?.groupName}
+                      placement="top"
+                    >
+                      <Chip
+                        variant="outlined"
+                        key={taskGroup?.groupName}
+                        label={taskGroup?.groupName}
+                        size="small"
+                        sx={{
+                          maxWidth: 200,
+                          whiteSpace: 'nowrap',
+                          textOverflow: 'ellipsis',
+                          overflow: 'hidden',
+                          fontWeight: '600',
+                          fontSize: '12px',
+                        }}
+                      />
+                    </Tooltip>
+                  </span>
+                </Typography>
+              )}
+            </TaskLinks>
+          </DescriptionAndLinksWrapper>
+        }
+      />
     </TaskNodeHandles>
   );
 });

@@ -3,7 +3,8 @@ import React, { useState, useRef, useEffect } from 'react';
 import 'reactflow/dist/style.css';
 import { useBoolean } from 'hooks/useBoolean';
 import SubtaskIcon from 'img/SubtaskIcon';
-import { Box, IconButton } from '@mui/material';
+import { Box, Fab, IconButton, Typography } from '@mui/material';
+import { AccountTree as DecisionIcon } from '@mui/icons-material';
 import BoltIcon from '@mui/icons-material/Bolt';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -27,15 +28,18 @@ import { createMentionsFromTokenizedDescription } from 'components/common/RichTe
 import TaskNodeWrapper from '../TaskNodeWrapper/TaskNodeWrapper';
 import TaskNodeHandles from '../TaskNodeHandles/TaskNodeHandles';
 import {
-  OptionsContainer,
   TaskInfoWrapper,
   TaskDescription,
   TaskDescriptionInput,
-  ContentWrapper,
   SubtasksLabel,
   DecisionTaskIconWrapper,
+  TaskDescriptionWrapper,
+  TaskDescriptionInputWrapper,
 } from './styled';
 import { userProfileSelector } from '@/app/selectors/user-selectors';
+import BaseNode from '../BaseNode/BaseNode';
+import { TaskElementIcon } from '../styled';
+import Tooltip from '@/app/components/common/Tooltip/Tooltip';
 
 const TaskNode = React.memo(({ data, isConnectable, selected, type }) => {
   const { task } = data || {};
@@ -57,6 +61,10 @@ const TaskNode = React.memo(({ data, isConnectable, selected, type }) => {
   const [inputValue, setInputValue] = useState('');
   const [editing, setEditing, unsetEditing] = useBoolean(false);
   const dispatch = useDispatch();
+  const titles = {
+    [NodeType.DECISION]: 'Decision Task',
+    [NodeType.STANDARD]: 'Task',
+  };
 
   useEffect(() => {
     if (editing) {
@@ -124,69 +132,82 @@ const TaskNode = React.memo(({ data, isConnectable, selected, type }) => {
 
   const memberslist = data?.task?.taskTemplate?.members || [];
   const currentUser = useSelector(userProfileSelector);
-  const isCurrentMemberPermission = memberslist?.find(({ user }) => 
-    user.identifier === currentUser.identifier)
-    ?.memberPermission === 'VIEW';
-    
+  const isCurrentMemberPermission =
+    memberslist?.find(({ user }) => user.identifier === currentUser.identifier)
+      ?.memberPermission === 'VIEW';
+
   return (
     <TaskNodeHandles
       isConnectable={isConnectable}
       isConnecting={data.draggedEdgeSourceId}
       onTargetHandleHover={data.onTargetHandleHover}
+      draggedEdgeSourceId={data?.draggedEdgeSourceId}
     >
-      <TaskNodeWrapper selected={selected} type={type}>
-        <ContentWrapper onDoubleClick={setEditing}>
-          <Box
-            width="100%"
-            display="flex"
-            justifyContent="space-between"
-            alignItems="center"
+      <BaseNode
+        selected={selected}
+        type={type}
+        onDoubleClick={setEditing}
+        optionButtons={[
+          <Fab
+            key="delete"
+            aria-label="delete"
+            size="small"
+            onClick={handleDelete}
           >
-            {type === NodeType.DECISION && (
-              <DecisionTaskIconWrapper>
-                <DecisionTaskElementIcon size={16} />
-              </DecisionTaskIconWrapper>
+            <DeleteIcon fontSize="small" color="inherit" />
+          </Fab>,
+          <Fab key="edit" aria-label="edit" size="small" onClick={handleEdit}>
+            <EditIcon fontSize="small" color="inherit" />
+          </Fab>,
+        ]}
+        headerIcon={
+          <>
+            {type === NodeType.DECISION && <DecisionIcon fontSize="small" />}
+            {description.includes('[System]') && type === NodeType.STANDARD && (
+              <BoltIcon fontSize="medium" />
             )}
-            {description.includes('[System]') && (
-              <DecisionTaskIconWrapper>
-                <BoltIcon fontSize='verysmall'/>
-              </DecisionTaskIconWrapper>
-            )}
-            <OptionsContainer>
-              <IconButton onClick={handleDelete}>
-                <DeleteIcon fontSize="small" color="inherit" />
-              </IconButton>
-              <IconButton onClick={handleEdit}>
-                <EditIcon fontSize="small" color="inherit" />
-              </IconButton>
-            </OptionsContainer>
-          </Box>
-          <TaskInfoWrapper>
+            {type === NodeType.STANDARD &&
+              !description.includes('[System]') && <TaskElementIcon />}
+          </>
+        }
+        headerTitle={
+          description.includes('[System]')
+            ? 'Automation Task'
+            : titles[type] || ''
+        }
+        content={
+          <>
             {editing ? (
-              <TaskDescriptionInput
-                ref={descriptionInputReference}
-                value={inputValue}
-                onKeyDown={handleKeyDown}
-                onBlur={handleBlur}
-                onChange={(event) => setInputValue(event.target?.value || '')}
-              />
+              <TaskDescriptionInputWrapper>
+                <TaskDescriptionInput
+                  ref={descriptionInputReference}
+                  value={inputValue}
+                  onKeyDown={handleKeyDown}
+                  onBlur={handleBlur}
+                  onChange={(event) => setInputValue(event.target?.value || '')}
+                />
+              </TaskDescriptionInputWrapper>
             ) : (
-              <TaskDescription>
-                {createMentionsFromTokenizedDescription(
-                  tokenizedDescription,
-                  taskMentions,
-                )}
-              </TaskDescription>
+              <Tooltip
+                title={tokenizedDescription}
+                key={tokenizedDescription}
+                placement="top"
+              >
+                <TaskDescriptionWrapper>
+                  <TaskDescription>
+                    {createMentionsFromTokenizedDescription(
+                      tokenizedDescription,
+                      taskMentions,
+                    )}
+                  </TaskDescription>
+                </TaskDescriptionWrapper>
+              </Tooltip>
             )}
-            <Box p={1.2} />
-            <Box
-              display="flex"
-              width="100%"
-              height={35}
-              justifyContent="space-between"
-              alignItems="flex-end"
-            >
-              { !isCurrentMemberPermission && (
+          </>
+        }
+        footerContent={
+          <TaskInfoWrapper>
+            {!isCurrentMemberPermission && (
               <Box display="flex">
                 <button
                   type="button"
@@ -229,23 +250,33 @@ const TaskNode = React.memo(({ data, isConnectable, selected, type }) => {
                   </SubtasksLabel>
                 )}
               </Box>
-              )}
-              {assignedToUsers?.length === 1 &&
-                (isUserGroup(assignedToUsers[0]) ? (
-                  <GroupAvatar group={assignedToUsers[0]} size={35} />
-                ) : (
-                  <UserAvatar user={assignedToUsers[0]} size={35} />
-                ))}
+            )}
+            <Box
+              sx={{
+                display: 'flex',
+              }}
+            >
+              <Box p={2} />
+              {
+                <Box sx={{ paddingRight: '10px' }}>
+                  {assignedToUsers?.length === 1 &&
+                    (isUserGroup(assignedToUsers[0]) ? (
+                      <GroupAvatar group={assignedToUsers[0]} size={30} />
+                    ) : (
+                      <UserAvatar user={assignedToUsers[0]} size={30} />
+                    ))}
+                </Box>
+              }
               {assignedToUsers?.length > 1 && (
                 <AdditionalMembersCounter
                   hiddenMembers={assignedToUsers}
-                  size={35}
+                  size={30}
                 />
               )}
             </Box>
           </TaskInfoWrapper>
-        </ContentWrapper>
-      </TaskNodeWrapper>
+        }
+      />
     </TaskNodeHandles>
   );
 });

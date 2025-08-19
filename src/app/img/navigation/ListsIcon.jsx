@@ -1,9 +1,9 @@
 import React from 'react';
 
-export default ({ color = 'currentColor' }) => (
+export default ({ color = 'currentColor', width = '25', height = '18' }) => (
   <svg
-    width="25"
-    height="18"
+    width={width}
+    height={height}
     viewBox="0 0 17 11"
     xmlns="http://www.w3.org/2000/svg"
     fill={color}

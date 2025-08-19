@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { EdgeLabel, OutcomeInput } from './styled';
+import { EdgeLabel, EdgeLabelEditor, EdgeLabelText } from './styled';
+import Tooltip from '@/app/components/common/Tooltip/Tooltip';
 
 const OutcomeInputLabel = React.forwardRef((props, reference) => {
   const {
@@ -42,25 +43,46 @@ const OutcomeInputLabel = React.forwardRef((props, reference) => {
   };
 
   return (
-    <EdgeLabel
-      ref={reference}
-      hasOutcome={hasOutcome}
-      placeholder="Type option"
-      value={value}
-      onChange={onChange}
-      onKeyPress={onKeyPress}
-      onFocus={onFocus}
-      onBlur={handleBlur}
-      onClick={handleClick}
-    >
-      {!isEditorActive && (value || 'Type option')}
-      <OutcomeInput
-        ref={inputRef}
-        value={isEditorActive ? value : ''}
-        onChange={onChange}
-        isEditorActive={isEditorActive}
-      />
-    </EdgeLabel>
+    <>
+      {isEditorActive ? (
+        <>
+          <EdgeLabelEditor
+            ref={inputRef}
+            autoFocus
+            value={isEditorActive ? value : ''}
+            placeholder="Type here..."
+            onChange={onChange}
+            onBlur={handleBlur}
+            onKeyDown={(event) => {
+              if (event.key === 'Enter') {
+                setEditorActive(false);
+              }
+              if (typeof onKeyPress === 'function') {
+                onKeyPress(event);
+              }
+            }}
+          />
+        </>
+      ) : (
+        <EdgeLabel
+          ref={reference}
+          hasOutcome={hasOutcome}
+          placeholder="Type option"
+          value={value}
+          onChange={onChange}
+          onKeyPress={onKeyPress}
+          onFocus={onFocus}
+          onBlur={handleBlur}
+          onClick={handleClick}
+        >
+          <Tooltip title={value} key={value} placement="top">
+            <EdgeLabelText>
+              {!isEditorActive && (value || 'Type option')}
+            </EdgeLabelText>
+          </Tooltip>
+        </EdgeLabel>
+      )}
+    </>
   );
 });
 

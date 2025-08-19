@@ -16,7 +16,7 @@ import {
 import { DelayPeriodForm, Title, CheckboxLabel } from './styled';
 
 const TaskLinkDelayForm = (props) => {
-  const { link, onSubmit, onClose } = props;
+  const { link, onSubmit, onClose, removeButtonVisible, onRemove } = props;
   const formMethods = useForm({
     mode: 'onSubmit',
     defaultValues: {
@@ -114,15 +114,31 @@ const TaskLinkDelayForm = (props) => {
             </Box>
           )}
         </Box>
-        <PopoverBottomBar>
-          <PopoverBottomBar.Button
-            type="button"
-            theme="light"
-            onClick={onClose}
-          >
-            Close
-          </PopoverBottomBar.Button>
-          <PopoverBottomBar.Button type="submit">Ok</PopoverBottomBar.Button>
+
+        <PopoverBottomBar align="spread">
+          <div style={{ display: 'flex', flex: 1 }}>
+            {removeButtonVisible && (
+              <PopoverBottomBar.RemoveButton
+                type="button"
+                onClick={() => {
+                  onRemove();
+                  onClose();
+                }}
+              >
+                Remove
+              </PopoverBottomBar.RemoveButton>
+            )}
+          </div>
+          <div style={{ display: 'flex' }}>
+            <PopoverBottomBar.Button
+              type="button"
+              theme="light"
+              onClick={onClose}
+            >
+              Close
+            </PopoverBottomBar.Button>
+            <PopoverBottomBar.Button type="submit">Ok</PopoverBottomBar.Button>
+          </div>
         </PopoverBottomBar>
       </DelayPeriodForm>
     </FormProvider>
