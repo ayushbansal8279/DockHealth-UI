@@ -30,5 +30,6 @@ export const CAN_ACCESS_CHAT_PAGE = 'canAccessChatPage';
 export const CAN_ACCESS_SETTINGS_PAGE = 'canAccessSettingsPage';
 export const CAN_ACCESS_PROFILE_PAGE = 'canAccessProfilePage';
 export const CAN_ACCESS_EDUCATION_CENTER_PAGE = 'canAccessEducationCenterPage';
+export const CAN_ACCESS_WORKSPACE_PAGE = 'canAccessWorkspacePage';
 
 export default RestrictAccess;
