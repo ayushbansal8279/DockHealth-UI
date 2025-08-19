@@ -12,12 +12,20 @@ import {
 import { organizationWorkspaceLabelSelector } from '@/app/selectors/organization-selectors';
 import { useDispatch, useSelector } from 'react-redux';
 import { updateOrganizationWorkspaceLabel } from '@/app/actions/organization-actions';
+import { userHasWorkspacesFeatureSelector } from '@/app/selectors/user-selectors';
+import { useHistory } from 'react-router-dom';
 
 const WorkspaceConfigure = () => {
+  const history = useHistory();
   const [enabled, setEnabled] = useState(true);
   const dispatch = useDispatch();
   const workspaceLabel = useSelector(organizationWorkspaceLabelSelector);
   const [label, setLabel] = useState(workspaceLabel);
+
+  const workspacesAvailable = useSelector(userHasWorkspacesFeatureSelector);
+  if (!workspacesAvailable) {
+    history.push(`/core/home`);
+  }
 
   useEffect(() => {
     setLabel(workspaceLabel);
@@ -39,7 +47,7 @@ const WorkspaceConfigure = () => {
 
   return (
     <Container>
-      <Section elevation={1}>
+      {/* <Section elevation={1}>
         <TitleWrapper>
           <Title>Enable Workspaces</Title>
           <Switch checked={enabled} onChange={handleToggle} />
@@ -50,7 +58,7 @@ const WorkspaceConfigure = () => {
           while maintaining precise access control.
         </Description>
         <Box mt={2} />
-      </Section>
+      </Section> */}
 
       <Section elevation={1}>
         <TitleWrapper>

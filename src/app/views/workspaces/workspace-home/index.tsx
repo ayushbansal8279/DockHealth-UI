@@ -21,6 +21,7 @@ import { Add } from "@mui/icons-material";
 import ToolbarButton from "@/app/components/tasklist/list-toolbar-buttons/ToolbarButton/ToolbarButton";
 import { organizationWorkspaceLabelSelector } from "@/app/selectors/organization-selectors";
 import pluralize from 'pluralize';
+import { userHasWorkspacesFeatureSelector } from "@/app/selectors/user-selectors";
 
 const WorkspaceHome = () => {
   const history = useHistory();
@@ -29,6 +30,11 @@ const WorkspaceHome = () => {
   const isFetching = useSelector(isFetchingWorkspaceListSelector);
   const [menuOptionsOpen, setMenuOptionsOpen] = useState(false);
   const workspaceLabel = useSelector(organizationWorkspaceLabelSelector);
+
+  const workspacesAvailable = useSelector(userHasWorkspacesFeatureSelector);
+  if (!workspacesAvailable) {
+    history.push(`/core/home`);
+  }
 
   useEffect(() => {
     dispatch(getAllUserWorkspaces());
