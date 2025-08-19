@@ -43,3 +43,12 @@ export const CompletedByLabel = styled.p`
   font-weight: ${fontWeights.light};
   color: ${palette.coolGrey1};
 `;
+
+export const ErrorMessage = styled.div`
+  color: ${palette.red};
+  font-size: 12px;
+  font-weight: ${fontWeights.light};
+  margin-top: 4px;
+  margin-bottom: 8px;
+  font-family: inherit;
+`;

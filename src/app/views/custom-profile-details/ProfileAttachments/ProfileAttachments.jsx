@@ -42,6 +42,8 @@ import { getProfileFolderStructureHierarchy } from '@/app/api/profile-api';
 import { createProfileAttachmentsPath } from '@/app/routing/helpers/paths';
 
 const ProfileAttachments = () => {
+
+  const currentFolderIdentifier = useSelector(currentFolderIdentifierSelector)
   const [activeViewType, setActiveViewType] = useState(
     localStorageHelper.getItem(PATIENT_FILES_VIEW_TYPE) || FilesViewType.GRID,
   );
@@ -85,7 +87,7 @@ const ProfileAttachments = () => {
   } = initializeAttachmentsSectionHooks();
 
   // console.log(currentPatientAttachments);
-  
+
   const [foldersList, setFoldersList] = useState([]);
   const [filesList, setFilesList] = useState([]);
   const [taskFileList, setTaskFilelist] = useState([])
@@ -101,7 +103,7 @@ const ProfileAttachments = () => {
   useEffect(() => {
     setTaskFilelist(profileTaskAttachments);
   }, [profileTaskAttachments]);
-  
+
 
   const dispatch = useDispatch();
 
@@ -162,54 +164,54 @@ const ProfileAttachments = () => {
   // );
 
   const getFileOptions = useCallback(
-  (file) => [
-    {
-      name: 'Preview',
-      onClick: () => openAttachmentPreview(file, "patient"),
-    },
-    {
-      name: 'Download',
-      onClick: () => {
-        downloadAttachment(file);
+    (file) => [
+      {
+        name: 'Preview',
+        onClick: () => openAttachmentPreview(file, "patient"),
       },
-    },
-    {
-      name: 'Rename',
-      onClick: () => renameAttachment(file),
-    },
-    {
-      name: 'Move',
-      onClick: () => moveFileOrFolder(file),
-    },
-    {
-      name: 'Delete',
-      onClick: () => deleteAttachment(file.attachmentIdentifier),
-      color: palette.oPlusRed,
-    },
-  ],
-  [
-    openAttachmentPreview,
-    renameAttachment,
-    moveFileOrFolder,
-    deleteAttachment,
-    downloadAttachment,
-  ],
-);
+      {
+        name: 'Download',
+        onClick: () => {
+          downloadAttachment(file);
+        },
+      },
+      {
+        name: 'Rename',
+        onClick: () => renameAttachment(file),
+      },
+      {
+        name: 'Move',
+        onClick: () => moveFileOrFolder(file),
+      },
+      {
+        name: 'Delete',
+        onClick: () => deleteAttachment(file.attachmentIdentifier),
+        color: palette.oPlusRed,
+      },
+    ],
+    [
+      openAttachmentPreview,
+      renameAttachment,
+      moveFileOrFolder,
+      deleteAttachment,
+      downloadAttachment,
+    ],
+  );
 
   const getTaskFileOptions = useCallback(
     (file) => [
       ...(!file.scanStatus ||
-      file.scanStatus === ScanStatus.CLEAN ||
-      file.scanStatus === ScanStatus.UNSUPPORTED
+        file.scanStatus === ScanStatus.CLEAN ||
+        file.scanStatus === ScanStatus.UNSUPPORTED
         ? [
-            { name: 'Preview', onClick: () => openAttachmentPreview(file, "task") },
-            {
-              name: 'Download',
-              onClick: () => {
-                downloadPatientTaskAttachment(file);
-              },
+          { name: 'Preview', onClick: () => openAttachmentPreview(file, "task") },
+          {
+            name: 'Download',
+            onClick: () => {
+              downloadPatientTaskAttachment(file);
             },
-          ]
+          },
+        ]
         : []),
       // {
       //   name: 'Rename',
@@ -339,10 +341,10 @@ const ProfileAttachments = () => {
           alignItems="center"
           overflow="hidden"
         >
-          <AttachmentsBreadcrumbs  entityIdentifierSelector={currentProfileIdentifierSelector}
-                       currentFolderIdentifierSelector={currentFolderIdentifierSelector} 
-                       getFolderStructureHierarchy={getProfileFolderStructureHierarchy} 
-                     />
+          <AttachmentsBreadcrumbs entityIdentifierSelector={currentProfileIdentifierSelector}
+            currentFolderIdentifier={currentFolderIdentifier}
+            getFolderStructureHierarchy={getProfileFolderStructureHierarchy}
+          />
         </Box>
         <Box display="flex" alignItems="center" flex="0 0 auto">
           {import.meta.env.VITE_GOOGLE_DRIVE_API_CLIENT_ID &&
@@ -489,7 +491,7 @@ const ProfileAttachments = () => {
               </div>
             )}
           </NamedCollapse>
-           <NamedCollapse name="Task Files">
+          <NamedCollapse name="Task Files">
             {activeViewType === FilesViewType.LIST && <FileListHeader />}
             {taskFileList.length > 0 ? (
               taskFileList.map((file, index) => (

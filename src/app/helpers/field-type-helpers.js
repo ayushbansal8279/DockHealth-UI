@@ -22,6 +22,8 @@ export const DisplayOption = {
   SINGLE_SELECT: 'SINGLE_SELECT',
   PROFILE_NAME: 'PROFILE_NAME',
   PROFILE_HEADER: 'PROFILE_HEADER',
+  TASK_REQUIRED: 'TASK_REQUIRED',
+  REQUIRED: 'REQUIRED',
 };
 
 export const FieldCharacterLimit = {

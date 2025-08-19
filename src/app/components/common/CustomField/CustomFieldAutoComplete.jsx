@@ -6,6 +6,7 @@ import { getAllProfileFieldTypes } from 'api/profile-type-field-api';
 import { getAllProfiles } from 'api/profile-api';
 import { getProfileName } from 'views/custom-profile-details/helpers';
 import Autocomplete from '../Autocomplete/Autocomplete';
+import { FormHelperText } from '@mui/material';
 
 const CustomFieldAutoComplete = ({
   readOnly,
@@ -16,6 +17,7 @@ const CustomFieldAutoComplete = ({
   inputRef,
   relatedProfileType,
   onBlur,
+  required,
   multiple = true,
   value: externalValue,
   ...restProps
@@ -31,11 +33,23 @@ const CustomFieldAutoComplete = ({
   } = useFormContext();
 
   useEffect(() => {
-    register(name);
+    if (required) {
+      register(name, {
+        required: 'This field is required',
+        validate: (value) => {
+          if (!value || !Array.isArray(value) || value.length === 0) {
+            return 'This field is required';
+          }
+          return true;
+        },
+      });
+    } else {
+      register(name);
+    }
     return () => {
       unregister(name);
     };
-  }, [name, register, unregister]);
+  }, [name, register, unregister, required]);
 
   const [profiles, setProfiles] = useState(null);
 
@@ -64,73 +78,59 @@ const CustomFieldAutoComplete = ({
     }
   }, [dispatch, relatedProfileType?.identifier]);
 
-  const error = errors?.[name]?.message;
+  const isNested = name?.includes('.');
+  const nestedParts = name?.split('.');
+
+  const error = isNested
+    ? errors?.[nestedParts[0]]?.[nestedParts[1]]?.message
+    : errors?.[name]?.message;
+
 
   const handleChange = useCallback(
     (event) => {
       if (error) clearErrors(name);
+      const selectedValues =
+        event?.map((value) => value?.profile?.identifier) || [];
+      setValue(name, selectedValues, {
+        shouldValidate: true,
+        shouldDirty: true,
+      });
 
-      let selectedValues;
-      let selectedOptions;
-
-      if (multiple) {
-        selectedOptions = event || [];
-        selectedValues = selectedOptions.map(
-          (option) => option?.profile?.identifier,
-        );
-      } else {
-        selectedOptions = event ? [event] : [];
-        selectedValues = event?.profile?.identifier || null;
-      }
-
-      setValue(name, selectedValues);
       if (typeof onChange === 'function') onChange(event);
     },
-    [clearErrors, error, name, onChange, setValue, multiple],
+    [clearErrors, error, name, onChange, setValue],
   );
 
-  const formValue = watch(name);
-
-  const currentValue = externalValue !== undefined ? externalValue : formValue;
-
-  const selectedOptions = useCallback(() => {
-    if (!profiles || !currentValue) return multiple ? [] : null;
-
-    if (multiple) {
-      const valueArray = Array.isArray(currentValue) ? currentValue : [];
-      return profiles.filter((profile) =>
-        valueArray.includes(profile.profile.identifier),
-      );
-    } else {
-      const singleValue =
-        typeof currentValue === 'string' ? currentValue : currentValue?.[0];
-      return (
-        profiles.find(
-          (profile) => profile.profile.identifier === singleValue,
-        ) || null
-      );
-    }
-  }, [profiles, currentValue, multiple]);
+  const selectedValues = watch(name);
+  const selectedOptions = profiles?.filter((profile) =>
+    selectedValues?.includes(profile.profile.identifier),
+  );
 
   const getInputReference = () => inputRef;
 
   return (
-    <Autocomplete
-      value={selectedOptions()}
-      multiple={multiple}
-      name={name}
-      autoFocus={false}
-      options={profiles ?? []}
-      label={label}
-      placeholder={placeholder ?? `Are there any ${label} you'd like to add?`}
-      isDisabled={readOnly}
-      getInputReference={getInputReference}
-      onInputChange={onChange}
-      onChange={handleChange}
-      onBlurInput={(event) => onBlur(event, true)}
-      disableClearable
-      {...restProps}
-    />
+    <>
+      <Autocomplete
+        value={selectedOptions || []}
+        multiple
+        name={name}
+        autoFocus={false}
+        options={profiles ?? []}
+        label={label}
+        placeholder={placeholder ?? `Are there any ${label} you'd like to add?`}
+        isDisabled={readOnly}
+        getInputReference={getInputReference}
+        onInputChange={onChange}
+        onChange={handleChange}
+        onBlurInput={(event) => onBlur(event, true)}
+        disableClearable
+        hasError={!!error}
+        errorMessage={error}
+        required={required}
+        {...restProps}
+      />
+      {error && <FormHelperText error>{error}</FormHelperText>}
+    </>
   );
 };
 

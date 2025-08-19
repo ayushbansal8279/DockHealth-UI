@@ -5,6 +5,7 @@ import {
   TextEditorFormStyleContainer,
   TextEditorInputLabel,
   DescriptionLabel,
+  ErrorMessage,
 } from './styled';
 
 const CustomTextEditor = React.forwardRef(
@@ -17,6 +18,7 @@ const CustomTextEditor = React.forwardRef(
       label,
       richTextEnabled = false,
       hasError,
+      errorMessage,
       isSelectedTaskComplete = false,
       selectedTask,
     },
@@ -44,6 +46,9 @@ const CustomTextEditor = React.forwardRef(
           </>
         </TextEditorInputLabel>
         <div>{children}</div>
+        {hasError && errorMessage && (
+          <ErrorMessage>{errorMessage}</ErrorMessage>
+        )}
       </TextEditorFormStyleContainer>
     );
   },
