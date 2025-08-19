@@ -6,7 +6,7 @@ import React, {
   useRef,
   useCallback,
 } from 'react';
-import { useParams, Link, useHistory } from 'react-router-dom';
+import { useParams, Link, useHistory, useLocation } from 'react-router-dom';
 import compose from 'ramda/src/compose';
 import isNil from 'ramda/src/isNil';
 import not from 'ramda/src/not';
@@ -170,6 +170,7 @@ const SmartFlowBuilderView = () => {
     () => elements.filter((element) => element.selected),
     [elements],
   );
+  const location = useLocation();
 
   const [modalUsed, setModalUsed] = useState(false);
   const [initialTasksLength, setInitialTasksLength] = useState(null);
@@ -639,11 +640,18 @@ const SmartFlowBuilderView = () => {
         <Box ref={builderWrapperReference} position="relative" flex={1}>
           <BuilderHeader>
             <Link
-              to={
-                parentTaskWorkflowIdentifier
+              to={(() => {
+                const urlParams = new URLSearchParams(location.search);
+                const returnToParam = urlParams.get('returnTo');
+
+                if (returnToParam) {
+                  return decodeURIComponent(returnToParam);
+                }
+
+                return parentTaskWorkflowIdentifier
                   ? createWorkflowFolderPath(parentTaskWorkflowIdentifier)
-                  : WORKFLOW_LIBRARY_PATH
-              }
+                  : WORKFLOW_LIBRARY_PATH;
+              })()}
             >
               <BuilderHeaderText color={palette.brightBlue}>
                 Workflows

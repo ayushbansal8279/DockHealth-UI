@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import pathEq from 'ramda/src/pathEq';
 import SelectorPopover from 'components/common/SelectorPopover/SelectorPopover';
 import Circle from 'img/circle.svg';
@@ -14,6 +14,10 @@ import {
   Header,
 } from './styled';
 import { CancelButton, ConfirmButton } from '@/app/modal/components/ModalButton/ModalButtons';
+import { useRoleContext } from '@/app/views/workspace/workspace-users/RoleContext';
+import { removeUserFromWorkspace } from '@/app/actions/workspace-actions';
+import { useWorkspace } from '@/app/views/workspace/workspace-users/WorkspaceContext';
+import { organizationWorkspaceLabelSelector } from '@/app/selectors/organization-selectors';
 
 export const renderUserTypesOptions = ({
   changeUserRole,
@@ -119,6 +123,10 @@ const RoleSelectionPopover = ({
   ownersCount,
   currentActiveUsers,
 }) => {
+  const { contextType } = useRoleContext();
+  const { workspaceIdentifier } = useWorkspace();
+  const workspaceLabel = useSelector(organizationWorkspaceLabelSelector);
+
   const [selectedRole, setSelectedRole] = useState({});
   const dispatch = useDispatch();
 
@@ -147,31 +155,41 @@ const RoleSelectionPopover = ({
       open={isPopoverOpen}
       withPadding
       renderHeader={() => (
-        <Header>Select their role in your Organization</Header>
+        <Header>Select their role in your {contextType === 'workspace' ? workspaceLabel : 'Organization'}</Header>
       )}
       renderFooter={() => (
         <RoleSelectorFooter multipleButtons={!isInactive}>
           {!isInactive && (
             <CancelButton
-              disabled={!userHasSubscription}
+              disabled={contextType === 'workspace' ? false : !userHasSubscription}
               onClick={() => {
                 closePopover();
-                if (
-                  ownersCount < 2 &&
-                  isCurrrentUser &&
-                  orgUserRole === 'OWNER'
-                ) {
-                  removeSubscriptionWithNewOwnerFlow((modalProps) =>
-                    dispatch(
-                      openModal('SelectOwner', {
-                        currentActiveUsers,
-                        isRemovingFlow: true,
-                        ...modalProps,
-                      }),
-                    ),
+                if (contextType === 'workspace') {
+                  dispatch(
+                    removeUserFromWorkspace({
+                      userIdentifier,
+                      workspaceIdentifier,
+                      // refreshListUsersAndGroups, //TODO: refresh after remove
+                    }),
                   );
                 } else {
-                  removeSubscription();
+                  if (
+                    ownersCount < 2 &&
+                    isCurrrentUser &&
+                    orgUserRole === 'OWNER'
+                  ) {
+                    removeSubscriptionWithNewOwnerFlow((modalProps) =>
+                      dispatch(
+                        openModal('SelectOwner', {
+                          currentActiveUsers,
+                          isRemovingFlow: true,
+                          ...modalProps,
+                        }),
+                      ),
+                    );
+                  } else {
+                    removeSubscription();
+                  }
                 }
               }}
             >

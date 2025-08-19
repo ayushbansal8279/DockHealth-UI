@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { showAlert } from 'helpers/utility-functions';
 import { onTaskListAdded, onTaskListEdited } from 'helpers/ga-event-helper';
 import * as TaskListActions from 'actions/task-list-actions';
+import * as WorkspaceTaskListActions from 'actions/workspace-actions';
 import { userHasShareTaskFeatureSelector } from 'selectors/user-selectors';
 import { Grid } from '@mui/material';
 import FormInput from 'components/common/Input/FormInput';
@@ -44,15 +45,23 @@ const onSubmit =
     setList,
     taskListIdentifier,
     history,
+    workspaceIdentifier,
   }) =>
   (data) => {
     event.stopPropagation();
     event.preventDefault();
 
     setIsSavingList(true);
-    dispatch(TaskListActions.saveTaskList({ ...data, taskListIdentifier }))
+
+    const saveAction = workspaceIdentifier
+      ? WorkspaceTaskListActions.saveWorkspaceTaskList
+      : TaskListActions.saveTaskList;
+
+    dispatch(saveAction({ ...data, taskListIdentifier, workspaceIdentifier }))
       .then((updatedList) => {
-        history.push(createTaskListPath(updatedList.taskListIdentifier));
+        if (!workspaceIdentifier) {
+          history.push(createTaskListPath(updatedList.taskListIdentifier));
+        }
         if (updatedList) {
           setList(updatedList);
 
@@ -87,10 +96,14 @@ const ListDetailsForm = ({
   nextStep,
   list,
   setList,
+  showPrivacyOptions = false,
+  workspaceIdentifier,
 }) => {
   const dispatch = useDispatch();
   const [isSavingList, setIsSavingList] = useState(false);
   const history = useHistory();
+  const [isSharedList, setSharedList] = useState(false);
+  const [isPrivateList, setPrivateList] = useState(true);
 
   const formMethods = useForm({
     defaultValues: {
@@ -110,13 +123,22 @@ const ListDetailsForm = ({
   const taskLists = useSelector(taskListsSelector);
   const validateExistingListName = (value) => {
     const activeLists = taskLists
-      .map((task) => task.listName)
+      ?.map((task) => task.listName)
       .filter((name) => name !== value || !list || list.listName !== value);
 
-    if (activeLists.includes(value)) {
+    if (activeLists?.includes(value)) {
       return 'List Name already exists';
     }
     return validateListName(value);
+  };
+
+  const toggleSharedList = () => {
+    setPrivateList(false);
+    setSharedList(true);
+  };
+  const togglePrivateList = () => {
+    setPrivateList(true);
+    setSharedList(false);
   };
 
   const inputStyle = {
@@ -146,6 +168,7 @@ const ListDetailsForm = ({
             setList,
             taskListIdentifier: list?.taskListIdentifier,
             history,
+            workspaceIdentifier,
           }),
         )(event)
       }
@@ -177,6 +200,26 @@ const ListDetailsForm = ({
               placeholder="Do you want to add a desciption for the list?"
             />
             <Spacing vertical={4} />
+            {/* {showPrivacyOptions && (
+              <PrivacyContainer>
+                <PrivacyTitle>Privacy</PrivacyTitle>
+                <CheckboxContainer>
+                  <img
+                    onClick={toggleSharedList}
+                    src={isSharedList ? CheckedCircle : BlankCircle}
+                  />
+                  <Spacing horizontal={3} />
+                  <CheckboxDescription>Sharable List</CheckboxDescription>
+                  <img
+                    onClick={togglePrivateList}
+                    src={isPrivateList ? CheckedCircle : BlankCircle}
+                  />
+                  <Spacing horizontal={3} />
+                  <CheckboxDescription>Private List</CheckboxDescription>
+                </CheckboxContainer>
+              </PrivacyContainer>
+            )} */}
+            <Spacing vertical={5} />
             <PrivacyContainer>
               <PrivacyTitle>Configuration settings</PrivacyTitle>
               <CheckboxContainer>
@@ -187,7 +230,9 @@ const ListDetailsForm = ({
                       !restrictCustomizationValue,
                     );
                   }}
-                  src={!restrictCustomizationValue ? CheckedCircle : BlankCircle}
+                  src={
+                    !restrictCustomizationValue ? CheckedCircle : BlankCircle
+                  }
                 />
                 <Spacing horizontal={3} />
                 <CheckboxDescription>

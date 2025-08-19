@@ -23,6 +23,37 @@ export const USER_STATUS_TYPES = new Proxy(
   },
 );
 
+export const WORKSPACE_USER_TYPES = new Proxy(
+  {
+    ADMIN: {
+      label: 'Admin',
+      selectable: true,
+      changeable: true,
+      description:
+        'Full access to everything including billing and payments and approving new members.',
+    },
+    MEMBER: {
+      label: 'Member',
+      selectable: true,
+      changeable: true,
+      description:
+        'Part of your Workspace. Can add and invite members who are already part of your workspace. Can access all patients/clients and people in the group/practice.',
+    },
+    DEFAULT: {
+      label: 'Invited',
+      invitationModifiable: true,
+    },
+  },
+  {
+    get: (object, path) => object[path?.toUpperCase()] || object.DEFAULT,
+    delete: (target, property) => {
+      if (property in target) {
+        delete target[property];
+      }
+    },
+  },
+);
+
 export const USER_TYPES = new Proxy(
   {
     OWNER: {
@@ -91,6 +122,7 @@ export const getUserTypeLabel = ({
   userStatus,
   // eulaAcknowledged,
   orgUserRole,
+  roleConfig = USER_TYPES,
 }) => {
   let userType = null;
   if (['CANCELLED', 'INACTIVE', 'PENDING', 'DENIED'].includes(userStatus)) {
@@ -99,7 +131,7 @@ export const getUserTypeLabel = ({
     const derivedOrgUserRole = ['ACTIVE', 'INACTIVE'].includes(userStatus)
       ? orgUserRole
       : '';
-    userType = USER_TYPES[derivedOrgUserRole];
+    userType = roleConfig[derivedOrgUserRole];
   }
 
   return userType;

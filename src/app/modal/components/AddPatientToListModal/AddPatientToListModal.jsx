@@ -36,6 +36,7 @@ import {
 const AddPatientToListModal = ({
   closeModal,
   patientsList,
+  workspaceIdentifier
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const [fetchingPatients, setFetchingPatients] = useState(false);
@@ -152,7 +153,7 @@ const AddPatientToListModal = ({
           <Column width={320}>
             <Header>Add {customerTypeLabel}s</Header>
             <Spacing vertical={4} />
-            <PatientList onSelect={handleSelectPatient} />
+            <PatientList onSelect={handleSelectPatient} workspaceIdentifier={workspaceIdentifier} />
           </Column>
           <Spacing horizontal={4} />
           <Column maxHeight={325}>

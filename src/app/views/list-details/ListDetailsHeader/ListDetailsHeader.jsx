@@ -16,7 +16,7 @@ import {
   addQuickFilterOptionSelector,
   selectedQuickFilterSelector,
 } from 'selectors/mega-filter-selectors';
-import { userProfileSelector } from 'selectors/user-selectors';
+import { selectedUserOrganizationSelector, userProfileSelector } from 'selectors/user-selectors';
 import {
   currentTaskListSelector,
   currentTaskListTasksStatusSelector,
@@ -62,6 +62,9 @@ import {
 } from './styled';
 import { ListPageContext } from '../ListDetailsView';
 import InboxTips from '@/app/components/tasklist/list-toolbar-buttons/InboxTips/InboxTips';
+import { useIsWorkspaceScopedList } from '@/app/hooks/useIsWorkspaceScopedList';
+import { getWorkspaceByIdentifier } from '@/app/api/workspace-api';
+import { getWorkspaceTitle } from '../../workspaces/workspace-title-helpers';
 
 const ListDetailsHeader = (props) => {
   const {
@@ -86,7 +89,10 @@ const ListDetailsHeader = (props) => {
     taskListIdentifier,
     color,
     restrictCustomization,
+    organizationIdentifier,
   } = taskList || {};
+  const { workspaceIdentifier } = useIsWorkspaceScopedList();
+
   const megaFilter = useSelector(megaFilterSelector);
   const { filters, selectedFilters } = megaFilter || {};
   const currentUser = useSelector(userProfileSelector);
@@ -114,6 +120,24 @@ const ListDetailsHeader = (props) => {
   const [isListOpen, openList] = useState(false);
   const [focused, setFocused, unsetFocused] = useBoolean(false);
   const [shownUsers, hiddenUsers] = splitAt(4, sortedUsers);
+
+  const currentOrganization = useSelector(selectedUserOrganizationSelector);
+  const [workspace, setWorkspace] = useState();
+
+  const isWorkspaceList = organizationIdentifier !== currentOrganization?.organizationIdentifier;
+
+  useEffect(() => {
+    if (isWorkspaceList && organizationIdentifier) {
+      getWorkspaceByIdentifier(organizationIdentifier)
+        .then(setWorkspace)
+    }
+  }, [organizationIdentifier, isWorkspaceList]);
+
+  const listTitle = getWorkspaceTitle({
+    isWorkspaceScoped: isWorkspaceList,
+    workspace,
+    titleText: listName,
+  });
 
   const handleFilterOpen = () => {
     dispatch(getCurrentTaskListFilterOptions());
@@ -229,7 +253,7 @@ const ListDetailsHeader = (props) => {
       <LayoutHeader horizontalSticky>
         {taskList && (
           <LayoutHeader.Title
-            title={listName}
+            title={listTitle}
             description={listDescription}
             colorIndicator={color}
           >
@@ -289,6 +313,7 @@ const ListDetailsHeader = (props) => {
                               'ALL',
                             ),
                           ),
+                        workspaceIdentifier: workspaceIdentifier
                       }),
                     )
                   }

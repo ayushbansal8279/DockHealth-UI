@@ -37,7 +37,7 @@ Checkbox.defaultProps = {
   size: 12,
   isChecked: false,
   isDisabled: false,
-  onClick: null,
+  onClick: () => { },
 };
 
 export default Checkbox;

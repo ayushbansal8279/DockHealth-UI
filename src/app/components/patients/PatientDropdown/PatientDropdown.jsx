@@ -7,6 +7,7 @@ import { StyledPopover } from './styled';
 import { ListPageContext } from '@/app/views/list-details/ListDetailsView';
 import { updatePartialWorkflow } from '@/app/actions/task-template-actions';
 import { changePatientForTemplateBundle } from '@/app/actions/template-bundle-actions';
+import { useIsWorkspaceScopedList } from '@/app/hooks/useIsWorkspaceScopedList';
 
 const PatientDropdown = ({
   children,
@@ -31,6 +32,7 @@ const PatientDropdown = ({
       ({ name }) => name === 'patient.quickadd.enabled',
     ) || {};
   const quickAddPatientEnabled = quickAddPatientEnabledItem?.value !== 'false';
+  const { workspaceIdentifier } = useIsWorkspaceScopedList();
 
   useEffect(() => {
     origin === 'LIST' && handlePatientPopoverOpen(isPopoverOpen);
@@ -129,6 +131,7 @@ const PatientDropdown = ({
           disableAdding={!quickAddPatientEnabled}
           closePopover={closePopover}
           openAddPatientModal={openAddPatientModal}
+          workspaceIdentifier={workspaceIdentifier}
         />
       </StyledPopover>
     </>

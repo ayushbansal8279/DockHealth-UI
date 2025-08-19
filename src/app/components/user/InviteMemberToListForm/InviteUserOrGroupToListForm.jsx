@@ -45,6 +45,7 @@ const InviteUserOrGroupToListForm = ({
   list,
   onMembersRefresh,
   externalInvitePosition,
+  workspaceIdentifier,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const dispatch = useDispatch();
@@ -66,7 +67,7 @@ const InviteUserOrGroupToListForm = ({
 
   useEffect(() => {
     setAllOrganizationUsersAndGroupsFetched(false);
-    OrganizationApi.getOrganizationUsersAndUserGroups().then(
+    OrganizationApi.getOrganizationUsersAndUserGroups(workspaceIdentifier).then(
       (organizationMembers) => {
         setAllOrganizationUsersAndGroups(organizationMembers);
         setAllOrganizationUsersAndGroupsFetched(true);

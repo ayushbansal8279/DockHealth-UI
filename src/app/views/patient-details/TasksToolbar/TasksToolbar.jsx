@@ -10,6 +10,7 @@ import { applyTemplate } from 'actions/template-bundle-actions';
 
 import TaskTemplateApplicator from 'components/task-template/TaskTemplateApplicator/TaskTemplateApplicator';
 import QuickAddTaskInput from 'components/tasklist/QuickAddTaskInput/QuickAddTaskInput';
+import { useIsWorkspaceScopedPatient } from '@/app/hooks/useIsWorkspaceScopedPatient';
 
 const TasksToolbar = (props) => {
   const {
@@ -21,6 +22,7 @@ const TasksToolbar = (props) => {
   const quickAddTaskInputReference = useRef(null);
   const dispatch = useDispatch();
   const { patientIdentifier } = useParams();
+  const { workspaceIdentifier } = useIsWorkspaceScopedPatient();
 
   const handleApplyTemplate = useCallback(
     ({ identifier }) => {
@@ -77,6 +79,7 @@ const TasksToolbar = (props) => {
         onTemplateSelect={handleApplyTemplate}
         iconColorActive={iconColorActive}
         isWorkflowSearch
+        workspaceIdentifier={workspaceIdentifier}
       />
     </Grid>
   );

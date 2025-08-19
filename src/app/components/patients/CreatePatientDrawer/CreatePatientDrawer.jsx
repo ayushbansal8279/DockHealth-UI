@@ -1,5 +1,6 @@
 import React, { useRef } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
+import { useParams } from 'react-router-dom';
 import {
   getCustomerTypeLabel,
   getCustomerUniqueIDLabel,
@@ -20,9 +21,9 @@ import PatientDrawer from 'components/patients/PatientDrawer/PatientDrawer';
 
 
 const onSubmit =
-  ({ onClose, onPatientCreated, uniqueIdentifierLabel }) =>
+  ({ onClose, onPatientCreated, uniqueIdentifierLabel, workspaceIdentifier }) =>
   (data) => {
-    PatientApi.addPatient(data)
+    PatientApi.addPatient(data, workspaceIdentifier)
       .then((response) => {
         onPatientAddedEvent();
         if (typeof onPatientCreated === 'function') {
@@ -61,6 +62,8 @@ const CreatePatientDrawer = ({ isSidebarOpen, onPatientCreated, onClose }) => {
   const { clearErrors, getValues } = formMethods;
   const formReference = useRef(null);
 
+  const { workspaceIdentifier } = useParams();
+
   const close = () => {
     clearErrors();
     onClose();
@@ -91,6 +94,7 @@ const CreatePatientDrawer = ({ isSidebarOpen, onPatientCreated, onClose }) => {
     onClose,
     onPatientCreated,
     uniqueIdentifierLabel,
+    workspaceIdentifier,
   });
 
   return (

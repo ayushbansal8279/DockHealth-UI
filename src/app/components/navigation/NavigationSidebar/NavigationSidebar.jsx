@@ -28,6 +28,7 @@ import * as TemplateActions from 'actions/template-actions';
 import SearchIcon from 'img/navigation/SearchIcon';
 import HomeIcon from 'img/navigation/HomeIcon';
 import ListsIcon from 'img/navigation/ListsIcon';
+import WorkspacesIcon from 'img/navigation/WorkspacesIcon';
 import ProfilesIcon from 'img/navigation/ProfilesIcon';
 import PatientsIcon from 'img/navigation/PatientsIcon';
 import SettingsIcon from 'img/navigation/SettingsIcon';
@@ -60,6 +61,7 @@ import SettingsSubmenu from './SubMenuComponents/SettingsSubmenu';
 import ListsSubmenu from './SubMenuComponents/ListsSubmenu';
 import PatientsSubmenu from './SubMenuComponents/PatientsSubmenu';
 import UserGroupsSubmenu from './SubMenuComponents/UserGroupsSubmenu';
+import WorkspacesSubmenu from './SubMenuComponents/WorkspacesSubmenu';
 import menuTourHooks from './menu-tour-hooks';
 import IconNavigationItem from './IconNavigationItem';
 import NavigationItem from './NavigationItem';
@@ -71,6 +73,12 @@ import {
   NavigationIconContainer,
   BarChartIcon,
 } from './styled';
+import { workspaceSelector } from '@/app/selectors/workspace-selectors';
+import WorkspaceTile from '../../workspace/WorkspaceTile/WorkspaceTile';
+import {
+  organizationSelector,
+  organizationWorkspaceLabelSelector,
+} from '@/app/selectors/organization-selectors';
 
 export const SubmenuKey = {
   ORGANIZATION: 'ORGANIZATION',
@@ -80,6 +88,7 @@ export const SubmenuKey = {
   PATIENTS: 'PATIENTS',
   USER_GROUPS: 'USER_GROUPS',
   SETTINGS: 'SETTINGS',
+  WORKSPACES: 'WORKSPACES',
   EDUCATION_CENTER: 'EDUCATION_CENTER',
   DOCKCOIN: 'DOCKCOIN',
   DOCKCHAT: 'DOCKCHAT',
@@ -93,6 +102,7 @@ const SubmenuComponents = {
   [SubmenuKey.USER_GROUPS]: UserGroupsSubmenu,
   [SubmenuKey.PATIENTS]: PatientsSubmenu,
   [SubmenuKey.SETTINGS]: SettingsSubmenu,
+  [SubmenuKey.WORKSPACES]: WorkspacesSubmenu,
   [SubmenuKey.EDUCATION_CENTER]: EducationCenterSubmenu,
 };
 
@@ -102,6 +112,9 @@ const NavigationSidebar = () => {
   const location = useLocation();
   const currentUser = useSelector(userProfileSelector);
   const currentOrganization = useSelector(selectedUserOrganizationSelector);
+  const organization = useSelector(organizationSelector);
+  const workspaceLabel = useSelector(organizationWorkspaceLabelSelector);
+  const workspace = useSelector(workspaceSelector);
 
   const showChatPopover = useSelector(showChatPopoverSelector);
   const openedSubMenuKey = useSelector(subMenuKeySelector);
@@ -313,6 +326,31 @@ const NavigationSidebar = () => {
                   name="Analytics"
                   icon={BarChartIcon}
                   path="/core/analytics"
+                  onItemClick={handleNavigationItemClick}
+                  navSelectedColor={navSelectedColorItem?.value}
+                />
+              </AccessRestrictor>
+            )}
+            {!embeddedMode && !isOnboardingPage && (
+              <AccessRestrictor required={[CAN_ACCESS_MEMBER_LIST_PAGE]}>
+                <IconNavigationItem
+                  name={
+                    workspace.workspaceIdentifier
+                      ? `${workspace.workspaceName}`
+                      : `${workspaceLabel}`
+                  }
+                  icon={() =>
+                    workspace.workspaceIdentifier ? (
+                      <WorkspaceTile
+                        workspaceProfileColor={workspace.workspaceProfileColor}
+                        workspaceInitials={workspace.workspaceInitials}
+                      />
+                    ) : (
+                      <WorkspacesIcon />
+                    )
+                  }
+                  subMenuKey={SubmenuKey.WORKSPACES}
+                  subMenuOpen={openedSubMenuKey === SubmenuKey.WORKSPACES}
                   onItemClick={handleNavigationItemClick}
                   navSelectedColor={navSelectedColorItem?.value}
                 />

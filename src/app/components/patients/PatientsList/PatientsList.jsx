@@ -1,7 +1,7 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useHistory, useLocation, useParams } from 'react-router-dom';
 import { ascend, compose, propOr, sortWith, toLower } from 'ramda';
 import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';
@@ -154,6 +154,8 @@ const PatientsList = ({
   const pinnedColumnsEnd = ['actions'];
 
   const [columnOrder, setColumnOrder] = useState([]);
+
+  const { workspaceIdentifier } = useParams();
 
   const genderIdentityOptions = useMemo(
     () =>
@@ -900,6 +902,7 @@ const PatientsList = ({
           patientListIdentifier:
             patientsList?.listDetails?.patientListIdentifier,
           setup: { listDisplayColumns: setup },
+          workspaceIdentifier
         }),
       );
 

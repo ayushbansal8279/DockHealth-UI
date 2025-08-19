@@ -132,7 +132,7 @@ const CustomFilterOption = (props) => {
     if (isSelected) {
       clearFilters();
       setSelected(false);
-      setSelectedQuickFilter('');
+      setSelectedQuickFilter?.('');
     } else {
       onOptionClick(identifier);
     }

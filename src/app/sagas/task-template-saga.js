@@ -42,10 +42,13 @@ import {
 import { getLabels } from 'actions/workflow-drawer-actions';
 import { log } from 'helpers/log';
 
-function* initializeWorkflowLibraryState({ folderIdentifier }) {
+function* initializeWorkflowLibraryState({
+  folderIdentifier,
+  workspaceIdentifier,
+}) {
   yield all([
     folderIdentifier && put(TaskTemplateActions.getFolderBreadcrumbs()),
-    put(TaskTemplateActions.getWorkflowFolder()),
+    put(TaskTemplateActions.getWorkflowFolder(null, workspaceIdentifier)),
   ]);
 }
 
@@ -127,7 +130,7 @@ function* shareWorkflowWithOrganization({
   }
 }
 
-function* getWorkflowFolder({ searchPhrase }) {
+function* getWorkflowFolder({ searchPhrase, workspaceIdentifier }) {
   try {
     const folderIdentifier = yield select(currentFolderIdentifierSelector);
     let workflows;
@@ -142,7 +145,7 @@ function* getWorkflowFolder({ searchPhrase }) {
         searchPhrase && searchPhrase !== '' && searchPhrase !== ' ';
       const api = searchPhraseExist
         ? TaskTemplateApi.searchTemplates.bind(null, searchPhrase)
-        : TaskTemplateApi.getTemplates.bind(null, true);
+        : TaskTemplateApi.getTemplates.bind(null, true, workspaceIdentifier);
       workflows = yield call(api, searchPhrase);
     }
 
@@ -217,13 +220,20 @@ function* getWorkflowDetails({ taskWorkflowIdentifier }) {
   }
 }
 
-function* addTemplate({ template, parentIdentifier = null, history }) {
+function* addTemplate({
+  template,
+  parentIdentifier = null,
+  history,
+  workspaceIdentifier,
+  location,
+}) {
   try {
     const folderIdentifier = yield select(currentFolderIdentifierSelector);
     const createdTemplate = yield call(
       TaskTemplateApi.addTemplate,
       template,
       parentIdentifier || folderIdentifier,
+      workspaceIdentifier,
     );
     yield put({
       type: ActionTypes.ADD_TASK_TEMPLATE_SUCCESS,
@@ -237,7 +247,7 @@ function* addTemplate({ template, parentIdentifier = null, history }) {
     yield put(
       TaskTemplateActions.toggleTemplateOpen(createdTemplate.identifier),
     );
-    const layout = []
+    const layout = [];
     yield call(
       TaskTemplateApi.saveTemplateLayout,
       createdTemplate.identifier,
@@ -248,10 +258,12 @@ function* addTemplate({ template, parentIdentifier = null, history }) {
 
     try {
       if (history) {
-        yield call(
-          history.push,
-          createWorkflowBuilderPath(createdTemplate.identifier),
+        const currentPath = location.pathname + location.search;
+        const builderPath = createWorkflowBuilderPath(
+          createdTemplate.identifier,
         );
+        const returnToParam = encodeURIComponent(currentPath);
+        yield call(history.push, `${builderPath}?returnTo=${returnToParam}`);
       }
     } catch (error) {
       // eslint-disable-next-line no-console

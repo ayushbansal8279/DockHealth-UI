@@ -5,6 +5,7 @@ import { mapSelectedOptionsToRequestPayload } from 'helpers/filter-options-helpe
 import axios from './axios-heydoc';
 import { blobFileDownload } from '../helpers/blob-file-download';
 import { transformPatientDetails } from '../helpers/patient-details-helpers';
+import { withWorkspaceHeaders } from '../helpers/api-helpers';
 
 export function getAllPatients() {
   return axios
@@ -104,10 +105,10 @@ export function removePatient(patientIdentifier) {
     });
 }
 
-export function addPatient(details) {
+export function addPatient(details, workspaceIdentifier) {
   const patient = transformPatientDetails(details);
   return axios
-    .post('patient', patient)
+    .post('patient', patient, withWorkspaceHeaders(workspaceIdentifier))
     .then((response) => response.data)
     .catch((error) => {
       log(error);

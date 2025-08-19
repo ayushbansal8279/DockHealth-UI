@@ -40,6 +40,7 @@ import PatientSelectItem from '../../patients/PatientSelectItem/PatientSelectIte
 import AISummaryModalOpenerHelper from '@/app/modal/components/AISummaryModal/AISummaryModalOpenerHelper';
 import { SummaryType } from '@/app/helpers/ai-helper';
 import { openModal } from '@/app/modal/actions';
+import { useIsWorkspaceScopedList } from '@/app/hooks/useIsWorkspaceScopedList';
 
 const PATIENT_IDENTIFIER_FIELD_NAME = 'patientIdentifier';
 const MAX_PATIENT_RESULTS = 200;
@@ -87,6 +88,7 @@ const PatientSection = ({
   const { emrIntegrationType } = useSelector(organizationSelector) || {};
   const restrictedLookup = hasRestrictedPatientLookup(emrIntegrationType);
   const aiSummaryAvailable = useSelector(userHasAiSummaryViewFeatureSelector);
+  const { workspaceIdentifier } = useIsWorkspaceScopedList();
 
   useEffect(() => {
     if (
@@ -124,7 +126,7 @@ const PatientSection = ({
 
   const fetchPatients = useCallback(
     (value) =>
-      getPatientsByCriteria(value).then((fetchedPatients) => {
+      getPatientsByCriteria(value, null, workspaceIdentifier).then((fetchedPatients) => {
         setPatients(fetchedPatients);
         return fetchedPatients;
       }),
@@ -213,7 +215,7 @@ const PatientSection = ({
         openModal('EditPatient', {
           patient: data,
           onAdded: (newPatientData) => {
-            addPatient(newPatientData)
+            addPatient(newPatientData, workspaceIdentifier)
               .then(async ({ patientIdentifier, firstName, lastName }) => {
                 await fetchPatients(patient);
                 await handlePatientSelect({

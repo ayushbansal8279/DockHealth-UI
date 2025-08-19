@@ -45,7 +45,10 @@ import eqBy from 'ramda/src/eqBy';
 import prop from 'ramda/src/prop';
 import { SortOrderType } from 'helpers/sorting-helper';
 import moment from 'moment';
-import { createWorkflowFolderPath } from 'routing/helpers/paths';
+import {
+  createWorkflowFolderPath,
+  createWorkflowFolderPathForWorkspace,
+} from 'routing/helpers/paths';
 import ViewLayout from 'components/template/ViewLayout/ViewLayout';
 import BasicLayoutHeader from 'components/template/BasicLayoutHeader/BasicLayoutHeader';
 import Search from 'components/task-view/Search/Search';
@@ -79,7 +82,9 @@ const TASK_TEMPLATES_BANNER_CLOSED_STORAGE_KEY =
   'TASK_TEMPLATES_BANNER_CLOSED_STORAGE_KEY';
 
 const TaskTemplateView = () => {
-  const { identifier: folderIdentifier } = useParams();
+  const { workspaceIdentifier, folderIdentifier } = useParams();
+  const isWorkspaceView = Boolean(workspaceIdentifier);
+
   const [openUpgradePopup, setOpenUpgradePopup] = useState(false);
   const dispatch = useDispatch();
   const addSmartflowButtonReference = useRef(null);
@@ -92,7 +97,9 @@ const TaskTemplateView = () => {
     !localStorageHelper.getItem(TASK_TEMPLATES_BANNER_CLOSED_STORAGE_KEY),
   );
   const smartFlowAvailable = useSelector(userHasSmartFlowsSelector);
-  const shareTaskWorkflowAvailable = useSelector(userHasShareTaskWorkflowFeatureSelector);
+  const shareTaskWorkflowAvailable = useSelector(
+    userHasShareTaskWorkflowFeatureSelector,
+  );
   const isFetchingTaskTemplates = useSelector(isFetchingTaskTemplatesSelector);
   const taskTemplates = useSelector(taskTemplatesSelector);
   const userProfile = useSelector(userProfileSelector);
@@ -148,27 +155,42 @@ const TaskTemplateView = () => {
   }, [userProfile]);
 
   const handleCreateTemplate = useCallback(() => {
-    dispatch(openModal('CreateTemplate'));
-  }, [dispatch]);
+    dispatch(
+      openModal('CreateTemplate', {
+        workspaceIdentifier,
+      }),
+    );
+  }, [dispatch, workspaceIdentifier]);
 
   const handleCreateTemplateFolder = useCallback(() => {
-    dispatch(openModal('CreateTemplateFolder'));
-  }, [dispatch]);
+    dispatch(
+      openModal('CreateTemplateFolder', {
+        workspaceIdentifier,
+      }),
+    );
+  }, [dispatch, workspaceIdentifier]);
 
   const handleCreateSmartFlow = useCallback(() => {
     if (smartFlowAvailable) {
-      dispatch(openModal('CreateSmartFlow'));
+      dispatch(
+        openModal('CreateSmartFlow', {
+          workspaceIdentifier,
+        }),
+      );
     } else {
       setOpenUpgradePopup(true);
     }
-  }, [dispatch, smartFlowAvailable]);
+  }, [dispatch, smartFlowAvailable, workspaceIdentifier]);
 
   useEffect(() => {
     dispatch(
-      TaskTemplateActions.initializeWorkflowLibraryState(folderIdentifier),
+      TaskTemplateActions.initializeWorkflowLibraryState(
+        folderIdentifier,
+        workspaceIdentifier,
+      ),
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [folderIdentifier]);
+  }, [folderIdentifier, workspaceIdentifier]);
 
   useEffect(() => {
     return () => {
@@ -203,9 +225,15 @@ const TaskTemplateView = () => {
 
   const handleGoToFolder = useCallback(
     (id) => {
-      history.push(createWorkflowFolderPath(id));
+      if (!isWorkspaceView) {
+        history.push(createWorkflowFolderPath(id));
+      } else {
+        history.push(
+          createWorkflowFolderPathForWorkspace(workspaceIdentifier, id),
+        );
+      }
     },
-    [history],
+    [history, workspaceIdentifier],
   );
 
   const debouncedGetTemplate = useCallback(
@@ -238,7 +266,11 @@ const TaskTemplateView = () => {
       hidePatientCustomColumns
       restrictToInitialColumns
     >
-      <ViewLayout header={<BasicLayoutHeader title="Workflow Library" />}>
+      <ViewLayout
+        header={
+          !isWorkspaceView && <BasicLayoutHeader title="Workflow Library" />
+        }
+      >
         <BulkEditSection
           optionsConfig={BULK_EDIT_OPTIONS_CONFIG}
           allTasks={bulkEditTasks}
@@ -247,42 +279,48 @@ const TaskTemplateView = () => {
           }
         >
           <TaskTemplateViewContainer>
-            {isBannerOpen && (
+            {!isWorkspaceView && (
               <>
-                <TaskTemplateBanner
-                  firstTemplate={taskTemplates?.length <= 2}
-                  onCreateTemplate={handleCreateTemplate}
-                  onClose={() => {
-                    setIsBannerOpen(false);
-                    localStorageHelper.setItem(
-                      TASK_TEMPLATES_BANNER_CLOSED_STORAGE_KEY,
-                      true,
-                    );
-                  }}
-                />
-                <Spacing vertical={4} />
+                {isBannerOpen && (
+                  <>
+                    <TaskTemplateBanner
+                      firstTemplate={taskTemplates?.length <= 2}
+                      onCreateTemplate={handleCreateTemplate}
+                      onClose={() => {
+                        setIsBannerOpen(false);
+                        localStorageHelper.setItem(
+                          TASK_TEMPLATES_BANNER_CLOSED_STORAGE_KEY,
+                          true,
+                        );
+                      }}
+                    />
+                    <Spacing vertical={4} />
+                  </>
+                )}
               </>
             )}
-            <TemplateBreadcrumbs />
+            <TemplateBreadcrumbs workspaceIdentifier={workspaceIdentifier} />
             <Spacing vertical={4} />
             <SearchAndFilterContainer>
-              <SearchWrapper fullWidth={isSearchFocused}>
-                {!folderIdentifier && (
-                  <Search
-                    fullWidth
-                    noBackground
-                    value={searchPhrase}
-                    onFocus={() => setSearchFocused(true)}
-                    onBlur={() => setSearchFocused(false)}
-                    onChange={onSearchHandle}
-                    placeholder={
-                      isSearchFocused
-                        ? 'Search Workflows and Folders'
-                        : 'Search'
-                    }
-                  />
-                )}
-              </SearchWrapper>
+              {!isWorkspaceView && (
+                <SearchWrapper fullWidth={isSearchFocused}>
+                  {!folderIdentifier && (
+                    <Search
+                      fullWidth
+                      noBackground
+                      value={searchPhrase}
+                      onFocus={() => setSearchFocused(true)}
+                      onBlur={() => setSearchFocused(false)}
+                      onChange={onSearchHandle}
+                      placeholder={
+                        isSearchFocused
+                          ? 'Search Workflows and Folders'
+                          : 'Search'
+                      }
+                    />
+                  )}
+                </SearchWrapper>
+              )}
               <AddEntitiesContainer>
                 <AddButton onClick={handleCreateTemplate}>
                   Add Workflow

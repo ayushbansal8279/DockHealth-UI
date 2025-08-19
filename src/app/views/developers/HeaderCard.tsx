@@ -1,11 +1,12 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
+import React, { useCallback } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { userProfileSelector } from '@/app/selectors/user-selectors';
 import { Box, Card, Typography } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { LoadingButton } from '@mui/lab';
 import Field from './Field';
 import { useCreateCredential } from '@/app/react-query/developer-credentials/useCreateCredential';
+import { openModal } from '@/app/modal/actions';
 
 const noCredentialHelperText =
   "No credentials exist. Please click 'Create credential' to get your first set.";
@@ -20,6 +21,7 @@ export default function HeaderCard({ credentialsExist }: Props) {
   const createCredential = useCreateCredential({
     orgId: organizationIdentifier,
   });
+  const dispatch = useDispatch();
 
   const fields = [
     {
@@ -34,9 +36,13 @@ export default function HeaderCard({ credentialsExist }: Props) {
     },
   ];
 
-  const handleCreateCredentialClick = () => {
-    createCredential.mutate();
-  };
+  const handleScopesConfirm = useCallback((scopes: string[]) => {
+    createCredential.mutate(scopes);
+  }, [createCredential]);
+
+  const openDeveloperScopePopup = useCallback(() => {
+      dispatch(openModal('DeveloperScopeList',{onConfirm: handleScopesConfirm}));
+    }, [dispatch,handleScopesConfirm]);
 
   return (
     <Card sx={{ p: 3 }}>
@@ -50,7 +56,7 @@ export default function HeaderCard({ credentialsExist }: Props) {
       >
         <Typography variant="h3">Credentials</Typography>
         <LoadingButton
-          onClick={handleCreateCredentialClick}
+          onClick={openDeveloperScopePopup}
           variant="contained"
           startIcon={<AddIcon />}
           loading={createCredential.isPending}

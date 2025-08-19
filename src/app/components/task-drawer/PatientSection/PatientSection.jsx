@@ -40,6 +40,7 @@ import {
 import { updatePartialWorkflow } from '@/app/actions/task-template-actions';
 import AISummaryModalOpenerHelper from '@/app/modal/components/AISummaryModal/AISummaryModalOpenerHelper';
 import { SummaryType } from '@/app/helpers/ai-helper';
+import { useIsWorkspaceScopedList } from '@/app/hooks/useIsWorkspaceScopedList';
 
 const PATIENT_IDENTIFIER_FIELD_NAME = 'patientIdentifier';
 const MAX_PATIENT_RESULTS = 200;
@@ -99,6 +100,7 @@ const PatientSection = ({
   const formattedPatients = getFormattedPatients({ patients });
   const customerTypeLabel = getCustomerTypeLabel(currentUser);
   // const customerTypeLabelCapitalized = customerTypeLabel;
+  const { workspaceIdentifier } = useIsWorkspaceScopedList();
 
   useEffect(() => {
     if (patientInputReference?.current && autofocus)
@@ -222,7 +224,7 @@ const PatientSection = ({
 
   const fetchPatients = useCallback(
     (value) =>
-      getPatientsByCriteria(value).then((fetchedPatients) => {
+      getPatientsByCriteria(value, null, workspaceIdentifier).then((fetchedPatients) => {
         setPatients(fetchedPatients);
         return fetchedPatients;
       }),
@@ -317,7 +319,7 @@ const PatientSection = ({
           onAdded: (newPatientData) => {
             onTaskDrawerPatientAdded();
 
-            addPatient(newPatientData)
+            addPatient(newPatientData, workspaceIdentifier)
               .then(async ({ patientIdentifier, firstName, lastName }) => {
                 await fetchPatients(patient);
                 await handlePatientSelect({

@@ -26,7 +26,12 @@ import {
 
 const { DOCK_PRO, VIEW_ONLY } = UserOrganizationRole;
 
-const UserRoleStep = ({ navigateToPreviousStep, disabled }) => {
+const UserRoleStep = ({ 
+  navigateToPreviousStep, 
+  disabled, 
+  contextName = "Organization", 
+  visibleRoles 
+}) => {
   const { watch, setValue } = useFormContext();
 
   const roleValue = watch('userRole');
@@ -34,6 +39,8 @@ const UserRoleStep = ({ navigateToPreviousStep, disabled }) => {
   const guestRoleAvailable = useSelector(userHasDockGuestFeatureSelector);
   const email = watch('email');
   const dockProEnabled = email?.includes('@dock.health');
+
+  const allowedRoles = visibleRoles || ['MEMBER', 'GUEST', 'DOCK_LITE', 'DOCK_PRO', 'VIEW_ONLY'];
 
   return (
     <RoleFormWrapper
@@ -43,31 +50,35 @@ const UserRoleStep = ({ navigateToPreviousStep, disabled }) => {
     >
       <Grid item>
         <RoleSelectionHeader>
-          Select their role in your Organization
+          Select their role in your {contextName}
         </RoleSelectionHeader>
         <Divider />
       </Grid>
       <RoleSelectionWrapper>
-        <input
-          id="Member"
-          type="radio"
-          name="userRole"
-          value="MEMBER"
-          checked={roleValue === 'MEMBER'}
-          onChange={(event) => setValue(event.target.name, event.target.value)}
-        />
-        <RoleOptionLabel isSelected={roleValue === 'MEMBER'} htmlFor="Member">
-          <RoleOptionHeaderWrapper>
-            <RoleOptionHeader>Member</RoleOptionHeader>
-          </RoleOptionHeaderWrapper>
-          <RoleOptionDescription>
-            Part of your Organization. Can add and invite members who are
-            already part of your organization. Can access all patients/clients
-            and people in the group/practice.
-          </RoleOptionDescription>
-        </RoleOptionLabel>
-        <Divider />
-        {guestRoleAvailable && (
+        {allowedRoles.includes('MEMBER') && (
+          <>
+            <input
+              id="Member"
+              type="radio"
+              name="userRole"
+              value="MEMBER"
+              checked={roleValue === 'MEMBER'}
+              onChange={(event) => setValue(event.target.name, event.target.value)}
+            />
+            <RoleOptionLabel isSelected={roleValue === 'MEMBER'} htmlFor="Member">
+              <RoleOptionHeaderWrapper>
+                <RoleOptionHeader>Member</RoleOptionHeader>
+              </RoleOptionHeaderWrapper>
+              <RoleOptionDescription>
+                Part of your Organization. Can add and invite members who are
+                already part of your organization. Can access all patients/clients
+                and people in the group/practice.
+              </RoleOptionDescription>
+            </RoleOptionLabel>
+            <Divider />
+          </>
+        )}
+        {guestRoleAvailable && allowedRoles.includes('GUEST') && (
           <>
             <input
               id="Guest"
@@ -95,32 +106,36 @@ const UserRoleStep = ({ navigateToPreviousStep, disabled }) => {
             <Divider />
           </>
         )}
-        <input
-          id="DockLite"
-          type="radio"
-          name="userRole"
-          value="DOCK_LITE"
-          checked={roleValue === 'DOCK_LITE'}
-          onChange={(event) => setValue(event.target.name, event.target.value)}
-        />
-        <RoleOptionLabel
-          isSelected={roleValue === 'DOCK_LITE'}
-          htmlFor="DockLite"
-        >
-          <RoleOptionHeaderWrapper>
-            <RoleOptionHeader>Dock Lite</RoleOptionHeader>
-            <RoleOptionHeaderAdditionalInfo>
-              *Limited Access
-            </RoleOptionHeaderAdditionalInfo>
-          </RoleOptionHeaderWrapper>
-          <RoleOptionDescription>
-            A limited use member of your organization or an outside collaborator
-            you can invite into a single list, who will only have access to the
-            tasks, patients/clients and people who are part of that list.
-          </RoleOptionDescription>
-        </RoleOptionLabel>
-        <Divider />
-        {dockProEnabled && (
+        {allowedRoles.includes('DOCK_LITE') && (
+          <>
+            <input
+              id="DockLite"
+              type="radio"
+              name="userRole"
+              value="DOCK_LITE"
+              checked={roleValue === 'DOCK_LITE'}
+              onChange={(event) => setValue(event.target.name, event.target.value)}
+            />
+            <RoleOptionLabel
+              isSelected={roleValue === 'DOCK_LITE'}
+              htmlFor="DockLite"
+            >
+              <RoleOptionHeaderWrapper>
+                <RoleOptionHeader>Dock Lite</RoleOptionHeader>
+                <RoleOptionHeaderAdditionalInfo>
+                  *Limited Access
+                </RoleOptionHeaderAdditionalInfo>
+              </RoleOptionHeaderWrapper>
+              <RoleOptionDescription>
+                A limited use member of your organization or an outside collaborator
+                you can invite into a single list, who will only have access to the
+                tasks, patients/clients and people who are part of that list.
+              </RoleOptionDescription>
+            </RoleOptionLabel>
+            <Divider />
+          </>
+        )}
+        {dockProEnabled && allowedRoles.includes('DOCK_PRO') && (
           <>
             <input
               id="DockPro"
@@ -150,7 +165,7 @@ const UserRoleStep = ({ navigateToPreviousStep, disabled }) => {
             <Divider />
           </>
         )}
-        {viewOnlyRoleAvailable && (
+        {viewOnlyRoleAvailable && allowedRoles.includes('VIEW_ONLY') && (
           <>
             <input
               id="ViewOnly"

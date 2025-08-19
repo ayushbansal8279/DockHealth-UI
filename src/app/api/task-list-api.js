@@ -3,11 +3,15 @@ import {
   onTaskListInvitationRejected,
 } from 'helpers/ga-event-helper';
 import axios from './axios-heydoc';
+import { withWorkspaceHeaders } from '../helpers/api-helpers';
 
-export function getTaskListForUser() {
+export function getTaskListForUser(workspaceIdentifier) {
   return axios({
     url: 'list/findTaskListsForUser?basicDetails=true',
     method: 'get',
+    headers: workspaceIdentifier
+      ? { CurrentWorkspaceIdentifier: workspaceIdentifier }
+      : undefined,
   })
     .then((response) => response?.data)
     .catch((error) => {
@@ -15,19 +19,23 @@ export function getTaskListForUser() {
     });
 }
 
-export function getArchivedTaskListForUser() {
-  return axios
-    .get('list/findArchivedTaskListsForUser?basicDetails=true')
+export function getArchivedTaskListForUser(workspaceIdentifier) {
+  return axios({
+    url: 'list/findArchivedTaskListsForUser?basicDetails=true',
+    method: 'get',
+    ...withWorkspaceHeaders(workspaceIdentifier),
+  })
     .then((response) => response?.data)
     .catch((error) => {
       throw new Error(error?.response?.data?.errorMessage);
     });
 }
 
-export function getSharedTaskListsWithCurrentUser(userIdentifier) {
+export function getSharedTaskListsWithCurrentUser(userIdentifier, workspaceIdentifier) {
   return axios({
     url: `list/findSharedTaskListsWithCurrentUser/${userIdentifier}?basicDetails=true`,
     method: 'get',
+    ...withWorkspaceHeaders(workspaceIdentifier),
   })
     .then((response) => response?.data)
     .catch((error) => {
@@ -44,9 +52,15 @@ export function getPendingTaskListsForUser() {
     });
 }
 
-export function addTaskList(tasklist) {
-  return axios
-    .post('list/', tasklist)
+export function addTaskList({workspaceIdentifier, ...taskList}) {
+  return axios({
+    url: 'list/',
+    method: 'post',
+    data: taskList,
+    headers: workspaceIdentifier
+      ? { CurrentWorkspaceIdentifier: workspaceIdentifier }
+      : undefined,
+  })
     .then((response) => response?.data)
     .catch((error) => {
       throw new Error(error?.response?.data?.errorMessage);

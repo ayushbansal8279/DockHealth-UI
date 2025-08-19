@@ -29,6 +29,10 @@ const AlertMessages = {
   SECURE_MSG_SENT: 'Patient Message Sent',
   MAIL_SENT: 'Email Sent',
   EMR_SENT: 'EHR Note posted',
+  WORKSPACE_USER_ROLE_CHANGED: 'Role changed',
+  USER_INVITED_TO_WORKSPACE: 'User invited',
+  USER_REMOVED_FROM_WORKSPACE: 'User removed',
+  PERSON_INVITED_TO_WORKSPACE: 'Invitation sent',
 };
 
 export default AlertMessages;

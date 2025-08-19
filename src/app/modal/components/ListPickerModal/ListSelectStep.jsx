@@ -19,6 +19,7 @@ import {
   NextArrow,
   Step,
 } from './styled';
+import { useIsWorkspaceScopedPatient } from '@/app/hooks/useIsWorkspaceScopedPatient';
 
 const ListSelectStep = ({
   selectedList,
@@ -47,10 +48,11 @@ const ListSelectStep = ({
       ({ name }) => name === 'list.add.adminonly.enabled',
     ) || {};
   const listAddAdminOnly = quickAddPatientEnabledItem?.value === 'true';
+  const { workspaceIdentifier } = useIsWorkspaceScopedPatient();
 
   useEffect(() => {
     if (currentUser?.userIdentifier) {
-      getSharedTaskListsWithCurrentUser(currentUser.userIdentifier)
+      getSharedTaskListsWithCurrentUser(currentUser.userIdentifier, workspaceIdentifier)
         .then((responseLists) => {
           setLists(responseLists);
           setIsFetchingLists(false);

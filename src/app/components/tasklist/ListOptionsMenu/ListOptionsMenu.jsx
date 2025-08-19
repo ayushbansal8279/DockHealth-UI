@@ -12,7 +12,6 @@ import {
 } from 'helpers/ga-event-helper';
 import {
   currentTaskListIdentifierSelector,
-  archivedTaskListsSelector,
   currentTaskListSelector,
   taskListsSelector,
 } from 'selectors/task-list-selectors';
@@ -20,6 +19,7 @@ import { userProfileSelector } from 'selectors/user-selectors';
 import { openModal, closeModal } from 'modal/actions';
 import { hideSubMenu } from 'actions/template-actions';
 import * as TaskListActions from 'actions/task-list-actions';
+import * as WorkspaceTaskListActions from 'actions/workspace-actions';
 import palette from 'styles/palette';
 import ColorPicker from 'components/common/ColorPicker/ColorPicker';
 import { isMemberAdmin } from 'helpers/list-members-helper';
@@ -27,7 +27,6 @@ import useSearchParams from '@/app/hooks/use-search-params';
 import { downloadTaskListData } from '@/app/api/task-api';
 import { getTaskListStatusStorageKey } from '@/app/helpers/tasklist-helpers';
 import localStorageHelper from '@/app/helpers/local-storage-helper';
-import sessionStorageHelper from '@/app/helpers/session-storage-helper';
 
 const MASTER_ROLES = new Set(['ADMIN', 'OWNER']);
 const PRIVILEGE_ROLES = new Set(['ADMIN', 'OWNER', 'MEMBER']);
@@ -40,7 +39,6 @@ const ListOptionsMenu = (props) => {
   const currentUser = useSelector(userProfileSelector);
   const listDetails = useSelector(currentTaskListSelector);
   const { listName, taskListIdentifier } = listDetails || {};
-  const archivedTaskLists = useSelector(archivedTaskListsSelector);
   const activeTaskListIdentifier = useSelector(
     currentTaskListIdentifierSelector,
   );
@@ -59,7 +57,10 @@ const ListOptionsMenu = (props) => {
 
   const openListEditModal = useCallback(
     (targetList) => {
-      dispatch(openModal('ListForm', { list: targetList }));
+      dispatch(openModal('ListForm', { 
+        list: targetList,
+        workspaceIdentifier: props?.workspaceIdentifier
+      }));
       dispatch(hideSubMenu());
     },
     [dispatch],
@@ -81,9 +82,12 @@ const ListOptionsMenu = (props) => {
           'Are you sure you want to delete this list? This action cannot be undone.',
         confirm: () => {
           onTaskListDeleted();
-          dispatch(
-            TaskListActions.deleteTaskListById(targetList?.taskListIdentifier),
-          );
+          const deleteAction = props?.workspaceIdentifier
+            ? WorkspaceTaskListActions.deleteWorkspaceTaskListById
+            : TaskListActions.deleteTaskListById;
+
+          dispatch(deleteAction(targetList?.taskListIdentifier));
+
           if (targetList?.taskListIdentifier === activeTaskListIdentifier) {
             history.push(`/`);
           }
@@ -107,7 +111,11 @@ const ListOptionsMenu = (props) => {
             dispatch(TaskListActions.rejectInviteToTaskList(targetList));
           } else {
             onTaskListLeave();
-            dispatch(TaskListActions.leaveList(taskListIdentifier));
+            const leaveAction = props?.workspaceIdentifier
+              ? WorkspaceTaskListActions.leaveWorkspaceTaskList
+              : TaskListActions.leaveList;
+
+            dispatch(leaveAction(taskListIdentifier));
           }
           dispatch(closeModal());
         },
@@ -145,22 +153,14 @@ const ListOptionsMenu = (props) => {
     // });
   }, [searchParams]);
 
-  // TODO: change to flag inside list object
-  const isListArchived = useCallback(
-    (targetList) => {
-      return !!archivedTaskLists?.find(
-        (taskList) =>
-          taskList.taskListIdentifier === targetList.taskListIdentifier,
-      );
-    },
-    [archivedTaskLists],
-  );
-
   const handleArchiveList = useCallback(
     (targetList) => {
-      dispatch(
-        TaskListActions.archiveTaskListById(targetList?.taskListIdentifier),
-      );
+      const archiveAction = props?.workspaceIdentifier
+        ? WorkspaceTaskListActions.archiveWorkspaceTaskList
+        : TaskListActions.archiveTaskListById;
+
+      dispatch(archiveAction(targetList?.taskListIdentifier));
+
       if (targetList?.taskListIdentifier === activeTaskListIdentifier)
         history.push(`/`);
     },
@@ -199,7 +199,7 @@ const ListOptionsMenu = (props) => {
 
   const getMenuItems = useCallback(
     (targetList) => {
-      if (MASTER_ROLES.has(targetList?.role) && isListArchived(targetList)) {
+      if (MASTER_ROLES.has(targetList?.role) && targetList?.archived) {
         return [
           {
             name: 'Unarchive list',
@@ -304,7 +304,6 @@ const ListOptionsMenu = (props) => {
       return baseList;
     },
     [
-      isListArchived,
       handleUnarchiveList,
       openLeaveListModal,
       currentUser,

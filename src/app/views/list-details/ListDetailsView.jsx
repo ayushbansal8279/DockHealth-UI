@@ -15,6 +15,7 @@ import localStorageHelper from '@/app/helpers/local-storage-helper';
 import { currentTaskListSelector } from '@/app/selectors/task-list-selectors';
 import { selectedUserOrganizationSelector } from '@/app/selectors/user-selectors';
 import { selectCurrentOrganizationWithRedirection } from '@/app/api/organization-api';
+import { useIsWorkspaceScopedList } from '@/app/hooks/useIsWorkspaceScopedList';
 
 export const ListPageContext = createContext({
   addNewGroup: false,
@@ -47,8 +48,12 @@ const ListDetailsView = () => {
   const [tasks, setTasks] = useState([]);
   const taskList = useSelector(currentTaskListSelector);
   const currentOrganization = useSelector(selectedUserOrganizationSelector);
+  const { workspaceIdentifier } = useIsWorkspaceScopedList();
 
   useEffect(() => {
+    if (workspaceIdentifier) {
+      return;
+    }
     const organizationsExist = taskList && currentOrganization;
     const organizationsDiffer =
       taskList?.organizationIdentifier !==
@@ -65,7 +70,7 @@ const ListDetailsView = () => {
         redirectUrl,
       );
     }
-  }, [taskList, currentOrganization]);
+  }, [taskList, currentOrganization, workspaceIdentifier]);
 
   useEffect(() => {
     dispatch(initializeTaskListState(taskListIdentifier));

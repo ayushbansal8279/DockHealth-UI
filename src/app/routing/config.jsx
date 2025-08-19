@@ -12,6 +12,7 @@ import {
   onEnterListDetailsView,
   onLeaveListDetailsView,
 } from './TemplateCoreSubscriptionPlan/ListDetails';
+import WorkspaceHome from '../views/workspaces/workspace-home';
 
 const UsersView = lazy(() => import('views/self-serve/users/UsersView'));
 const Contacts = lazy(() => import('views/Contacts/Contacts'));
@@ -52,7 +53,9 @@ const MeterBillingView = lazy(() =>
 const PersonDetailsView = lazy(() =>
   import('views/person-details/PersonDetailsView'),
 );
-const UserGroupView = lazy(() => import('views/user-group/UserGroupViewWrapper'));
+const UserGroupView = lazy(() =>
+  import('views/user-group/UserGroupViewWrapper'),
+);
 const PatientDetailsView = lazy(() =>
   import('views/patient-details/PatientDetailsView'),
 );
@@ -162,10 +165,19 @@ const CreateList = lazy(() =>
   import('views/OnboardingTutorial/CreateList/CreateList'),
 );
 const Developers = lazy(() => import('views/developers'));
-const PatientImportStatus = lazy(() => import('views/patient-details/PatientImportStatus/PatientImportStatus'));
+const Workspaces = lazy(() => import('views/workspaces/Workspaces'));
+const Workspace = lazy(() => import('views/workspace/Workspace'));
+const PatientImportStatus = lazy(() =>
+  import('views/patient-details/PatientImportStatus/PatientImportStatus'),
+);
 
-const UserActivity = lazy(() => import('views/self-serve/users/UserActivity/UserActivity'));
-const Integrations = lazy(() => import('views/Integrations/IntegrationsHeader'));
+const UserActivity = lazy(() =>
+  import('views/self-serve/users/UserActivity/UserActivity'),
+);
+const Integrations = lazy(() =>
+  import('views/Integrations/IntegrationsHeader'),
+);
+
 const {
   CAN_ACCESS_HOME_PAGE,
   CAN_ACCESS_SEARCH_PAGE,
@@ -261,6 +273,11 @@ export const SETTINGS_ROUTES = [
   {
     path: '/developers',
     RouteComponent: Developers,
+    permissions: [CAN_ACCESS_SETTINGS_PAGE],
+  },
+  {
+    path: '/workspaces',
+    RouteComponent: Workspaces,
     permissions: [CAN_ACCESS_SETTINGS_PAGE],
   },
   {
@@ -387,7 +404,7 @@ export const TEMPLATE_CORE_SUBSCRIPTION_PLAN_ROUTES = [
     permissions: [CAN_ACCESS_TASK_LIST_PAGE],
   },
   {
-    path: '/workflows/library/:identifier?',
+    path: '/workflows/library/:folderIdentifier?',
     RouteComponent: React.lazy(() =>
       import('views/task-template/TaskTemplateView'),
     ),
@@ -409,6 +426,16 @@ export const TEMPLATE_CORE_SUBSCRIPTION_PLAN_ROUTES = [
     path: '/chat',
     RouteComponent: ChatView,
     permissions: [CAN_ACCESS_CHAT_PAGE],
+  },
+  {
+    path: '/workspace/:workspaceIdentifier',
+    RouteComponent: Workspace,
+    permissions: [CAN_ACCESS_SETTINGS_PAGE],
+  },
+  {
+    path: '/workspace',
+    RouteComponent: WorkspaceHome,
+    permissions: [CAN_ACCESS_SETTINGS_PAGE],
   },
 ];
 
