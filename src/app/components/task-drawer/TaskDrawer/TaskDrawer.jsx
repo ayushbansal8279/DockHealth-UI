@@ -14,7 +14,11 @@ const TaskDrawer = (props) => {
   return ReactDOM.createPortal(
     <div>
       {taskDrawerOpen && (
-        <AnimatedContainer>
+        <AnimatedContainer
+          style={{
+            transform: taskDrawerOpen ? 'translateX(0%)' : 'translateX(100%)',
+          }}  
+        >
           {isAddTaskDrawer ? (
             <AddTaskDrawerContent {...props} />
           ) : (
