@@ -3,6 +3,15 @@ import { DisplayOption } from '@/app/helpers/field-type-helpers';
 
 const commonOptions = (displayOptionsState, handleDisplayOptionChange) => [
   {
+    label: 'Required',
+    key: DisplayOption.REQUIRED,
+    value: !!displayOptionsState?.displayOptions?.includes(
+      DisplayOption.TASK_REQUIRED,
+    ),
+    onChange: (value) =>
+      handleDisplayOptionChange(value, DisplayOption.TASK_REQUIRED),
+  },
+  {
     label: 'Single Select',
     key: DisplayOption.SINGLE_SELECT,
     value: !!displayOptionsState?.displayOptions?.find(
@@ -134,10 +143,12 @@ export const getAdditionalOptions = ({
     }
 
     case 'TASK': {
-      return getAdditionalTaskOptions({
+      let options = getAdditionalTaskOptions({
         displayOptionsState,
         handleDisplayOptionChange,
       });
+      options = options.filter((opt) => opt.key !== DisplayOption.REQUIRED);
+      return options;
     }
 
     case 'PROFILE': {

@@ -8,7 +8,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import { showGlobalErrorAlert } from 'alert/actions';
 import * as CustomFieldsApi from 'api/custom-fields-api';
-import { FieldType, FieldTypeLabel } from 'helpers/field-type-helpers';
+import { DisplayOption, FieldType, FieldTypeLabel } from 'helpers/field-type-helpers';
 import { CategoryLabel } from 'helpers/patient-details-helpers';
 import { openModal } from 'modal/actions';
 import AddButton from 'components/common/AddButton/AddButton';
@@ -176,13 +176,18 @@ import { getSortedFields, handleDragAndSort } from '@/app/helpers/custom-fields-
                   <CustomFieldHeaderText>Show on Header</CustomFieldHeaderText>
                 </CustomFieldCell>
                 <CustomFieldCell>
-                  <CustomFieldHeaderText>Include in Search</CustomFieldHeaderText>
+                  <CustomFieldHeaderText>
+                    Include in Search
+                  </CustomFieldHeaderText>
                 </CustomFieldCell>
                 <CustomFieldCell>
                   <CustomFieldHeaderText>Readonly</CustomFieldHeaderText>
                 </CustomFieldCell>
                 <CustomFieldCell>
                   <CustomFieldHeaderText>Hidden</CustomFieldHeaderText>
+                </CustomFieldCell>
+                <CustomFieldCell>
+                  <CustomFieldHeaderText>Required</CustomFieldHeaderText>
                 </CustomFieldCell>
                 <CustomFieldCell>
                   <Box width="68px" />
@@ -204,7 +209,7 @@ import { getSortedFields, handleDragAndSort } from '@/app/helpers/custom-fields-
                       >
                         {({ dragHandleProps }) => (
                           <div>
-                             <CustomFieldItem type="PATIENT">
+                            <CustomFieldItem type="PATIENT">
                               <DragHandle {...dragHandleProps}>
                                 <DragHandleIcon />
                               </DragHandle>
@@ -230,7 +235,9 @@ import { getSortedFields, handleDragAndSort } from '@/app/helpers/custom-fields-
                               <CustomFieldCell>
                                 <CustomFieldText>
                                   {field.displayOptions &&
-                                  field.displayOptions?.includes('PATIENT_HEADER')
+                                  field.displayOptions?.includes(
+                                    'PATIENT_HEADER',
+                                  )
                                     ? 'Yes'
                                     : ''}
                                 </CustomFieldText>
@@ -238,27 +245,39 @@ import { getSortedFields, handleDragAndSort } from '@/app/helpers/custom-fields-
                               <CustomFieldCell>
                                 <CustomFieldText>
                                   {field.displayOptions &&
-                                  field.displayOptions?.includes('PATIENT_SEARCH')
+                                  field.displayOptions?.includes(
+                                    'PATIENT_SEARCH',
+                                  )
                                     ? 'Yes'
                                     : ''}
                                 </CustomFieldText>
                               </CustomFieldCell>
                               <CustomFieldCell>
-                              <CustomFieldText>
-                                {field.displayOptions &&
-                                field.displayOptions?.includes('READONLY')
-                                  ? 'Yes'
-                                  : ''}
-                              </CustomFieldText>
-                            </CustomFieldCell>
-                            <CustomFieldCell>
-                              <CustomFieldText>
-                                {field.displayOptions &&
-                                field.displayOptions?.includes('HIDDEN')
-                                  ? 'Yes'
-                                  : ''}
-                              </CustomFieldText>
-                            </CustomFieldCell>
+                                <CustomFieldText>
+                                  {field.displayOptions &&
+                                  field.displayOptions?.includes('READONLY')
+                                    ? 'Yes'
+                                    : ''}
+                                </CustomFieldText>
+                              </CustomFieldCell>
+                              <CustomFieldCell>
+                                <CustomFieldText>
+                                  {field.displayOptions &&
+                                  field.displayOptions?.includes('HIDDEN')
+                                    ? 'Yes'
+                                    : ''}
+                                </CustomFieldText>
+                              </CustomFieldCell>
+                              <CustomFieldCell>
+                                <CustomFieldText>
+                                  {field.displayOptions &&
+                                  field.displayOptions?.includes(
+                                    DisplayOption.TASK_REQUIRED,
+                                  )
+                                    ? 'Yes'
+                                    : ''}
+                                </CustomFieldText>
+                              </CustomFieldCell>
                               <CustomFieldCell>
                                 <IconButton
                                   size="small"

@@ -11,6 +11,7 @@ import CustomTextEditor from 'components/common/CustomTextEditor/CustomTextEdito
 import RichTextEditor from 'components/common/RichTextEditor/RichTextEditor';
 import { CustomTextEditorContainer } from './styled';
 import CustomFieldErrorContext from './CustomFieldErrorContext';
+import { FormHelperText } from '@mui/material';
 
 const CustomFieldRichTextEditor = React.forwardRef(
   (
@@ -23,6 +24,7 @@ const CustomFieldRichTextEditor = React.forwardRef(
       identifier,
       task,
       fieldsGroupKey,
+      onChange,
       // inputRef,
       // characterLimit,
       // oneline,
@@ -31,8 +33,14 @@ const CustomFieldRichTextEditor = React.forwardRef(
     reference,
   ) => {
     const dispatch = useDispatch();
-    const { getValues, watch, register, unregister, setValue } =
-      useFormContext();
+    const {
+      getValues,
+      watch,
+      register,
+      unregister,
+      setValue,
+      formState: { errors },
+    } = useFormContext();
     const value = watch(name);
     const [isFocused, setIsFocused] = useState(false);
     const [updatedValue, setUpdatedValue] = useState(value);
@@ -40,8 +48,27 @@ const CustomFieldRichTextEditor = React.forwardRef(
     const { descriptionErrorState, setDescriptionErrorState, isRequired } =
       useContext(CustomFieldErrorContext);
 
+    const isNested = name?.includes('.');
+    const nestedParts = name?.split('.');
+
+    const error = isNested
+      ? errors?.[nestedParts[0]]?.[nestedParts[1]]?.message
+      : errors?.[name]?.message;
+
     useEffect(() => {
-      register(name);
+      if (isRequired) {
+        register(name, {
+          required: 'This field is required',
+          validate: (value) => {
+            if (!value || value.trim().length === 0) {
+              return 'This field is required';
+            }
+            return true;
+          },
+        });
+      } else {
+        register(name);
+      }
       return () => {
         unregister(name);
       };
@@ -116,32 +143,39 @@ const CustomFieldRichTextEditor = React.forwardRef(
 
     const changeData = (textValue) => {
       setUpdatedValue(textValue);
+      
+      setValue(name, textValue, { shouldValidate: true });
+
+      if (onChange) {
+        onChange(textValue);
+      }
     };
 
     return (
-      <CustomTextEditor
-        hasError={descriptionErrorState}
-        empty={value?.length > 0}
-        focused={isFocused}
-        label={label}
-        required={isRequired}
-      >
-        <CustomTextEditorContainer>
-          <RichTextEditor
-            ref={reference}
-            value={updatedValue}
-            readonly={readOnly}
-            placeholder={placeholder}
-            onBlur={handleBlur}
-            onChange={changeData}
-            initOnClick
-            showCharCount
-            taskListIdentifier={task?.taskList?.taskListIdentifier}
-            mentions={task?.taskMentions}
-            disableMentions
-          />
-        </CustomTextEditorContainer>
-      </CustomTextEditor>
+      <>
+        <CustomTextEditor
+          empty={value?.length > 0}
+          focused={isFocused}
+          label={label}
+        >
+          <CustomTextEditorContainer>
+            <RichTextEditor
+              ref={reference}
+              value={updatedValue}
+              readonly={readOnly}
+              placeholder={placeholder}
+              onBlur={handleBlur}
+              onChange={changeData}
+              initOnClick
+              showCharCount
+              taskListIdentifier={task?.taskList?.taskListIdentifier}
+              mentions={task?.taskMentions}
+              disableMentions
+            />
+          </CustomTextEditorContainer>
+        </CustomTextEditor>
+        {error && <FormHelperText error>{error}</FormHelperText>}
+      </>
     );
   },
 );

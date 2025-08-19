@@ -98,6 +98,7 @@ const Autocomplete = ({
   disableClearable,
   isOptionEqualToValue,
   limitTags,
+  required,
 }) => {
   const textFieldReference = useRef(null);
 
@@ -129,6 +130,7 @@ const Autocomplete = ({
           placeholder={placeholder}
           textFieldReference={textFieldReference}
           CustomInputProps={InputProps}
+          required={required}
         />
       ) : (
         <StandardInput
@@ -140,6 +142,7 @@ const Autocomplete = ({
           placeholder={placeholder}
           textFieldReference={textFieldReference}
           CustomInputProps={InputProps}
+          required={required}
         />
       ),
     [
@@ -179,6 +182,7 @@ const Autocomplete = ({
       isOptionEqualToValue={isOptionEqualToValue}
       disableClearable={disableClearable}
       limitTags={limitTags}
+      required={required}
     />
   );
 };

@@ -51,7 +51,7 @@ const FormInput = React.forwardRef(
     const handleChange = (event) => {
       setValue(name, event.target.value, {
         shouldDirty: true,
-        shouldValidate: validate ? true : false,
+        shouldValidate: required || validate ? true : false,
       });
       if (typeof onChange === 'function') onChange(event);
     };
