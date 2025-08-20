@@ -99,7 +99,7 @@ const PatientForm = forwardRef(
     }, [patient]);
 
     useEffect(() => {
-      setCustomFieldErrors(errors);
+      setCustomFieldErrors?.(errors);
     }, [errors]);
 
     const renderCustomField = useCallback(

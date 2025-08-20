@@ -36,18 +36,31 @@ const StandardInput = ({
 
   return (
     <TextField
-      size="small"
+      variant="standard"
       sx={{
-        backgroundColor: '#f8f8f9',
-        '& .MuiOutlinedInput-root': {
-          minHeight: '40px',
-          padding: '5px 3px 2px 5px  !important',
-          '& .MuiOutlinedInput-notchedOutline': {
-            borderColor: 'transparent',
-          },
-          '& .Mui-disabled': {
-            opacity: '0.7',
-          },
+        backgroundColor: '#f5f8fa',
+        borderRadius: '4px',
+        '& .MuiInputLabel-root': {
+          color: '#7d91a2',
+          paddingLeft: '10px',
+          textTransform: 'none',
+        },
+        '& .MuiInputLabel-shrink': {
+          color: '#7d91a2',
+          paddingTop: '15px',
+          paddingLeft: '15px',
+          textTransform: 'none',
+        },
+        '& .MuiInputBase-root': {
+          borderRadius: '4px',
+          padding: '8px 10px',
+        },
+        '& .MuiAutocomplete-popupIndicator': {
+          color: '#ffac33',
+          marginRight: '6px',
+        },
+        '& .MuiInput-underline:before': {
+          display: 'none',
         },
       }}
       label={label}
