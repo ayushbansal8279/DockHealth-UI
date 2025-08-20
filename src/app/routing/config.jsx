@@ -144,7 +144,9 @@ const GlobalSearchView = lazy(() =>
 const TaskTourView = lazy(() => import('views/TaskTour/TaskTourView'));
 const PatientsView = lazy(() => import('components/patients/PatientsView'));
 const CustomProfileList = lazy(() =>
-  import('components/custom-profile/CustomProfilesList/CustomProfileList'),
+  import(
+    'components/custom-profile/CustomProfilesList/CustomProfileListContainer'
+  ),
 );
 const CustomProfileView = lazy(() =>
   import('components/custom-profile/CustomProfilesList/CustomProfileView'),

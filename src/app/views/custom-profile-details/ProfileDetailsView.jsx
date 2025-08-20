@@ -31,6 +31,8 @@ import { initializeProfileState } from '@/app/actions/profile-actions';
 import { RouteWrapper } from 'routing/components';
 import { DEFAULT_TABS_CONFIG, TABS_CONFIG } from './helpers';
 import { profileTypeNameSelector } from '@/app/selectors/profile-selector';
+import ProfileRelationship from './ProfileRelationship/ProfileRelationship';
+import { getRelationshipTypes } from '@/app/api/profile-type-api';
 
 const ProfileDetailsView = () => {
   const { profileTypeIdentifier, profileIdentifier } = useParams();
@@ -116,12 +118,19 @@ const ProfileDetailsView = () => {
   }, [currentUserIdentifier, patientIdentifier, dispatch]);
 
   const [patients, setPatients] = useState([]);
+  const [relationshipTypes, setRelationshipTypes] = useState([]);
 
   useEffect(() => {
     getPatientForProfile(profileIdentifier).then((patients) => {
       setPatients(patients);
     });
   }, []);
+
+  useEffect(() => {
+    getRelationshipTypes(profileTypeIdentifier).then((data) => {
+      setRelationshipTypes(data);
+    });
+  }, [profileTypeIdentifier]);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   // const onSearchChangedWithDebounce = useCallback(
@@ -194,8 +203,18 @@ const ProfileDetailsView = () => {
   const [tabsConfiguration, setTabsConfiguration] = useState(TABS_CONFIG);
 
   useEffect(() => {
-    setTabsConfiguration(TABS_CONFIG);
-  }, []);
+    const baseTabs = [...TABS_CONFIG];
+
+    const relationshipTabs = relationshipTypes.map((relationshipType) => ({
+      label: relationshipType.name,
+      mainPath: `relationships/${relationshipType.identifier}`,
+      routePath: `relationships/:relationshipProfileIdentifier`,
+      RouteComponent: ProfileRelationship,
+      exact: true,
+    }));
+
+    setTabsConfiguration([...baseTabs, ...relationshipTabs]);
+  }, [relationshipTypes, profileTypeIdentifier, profileIdentifier, history]);
 
   const activeTabPath = useMemo(() => {
     // eslint-disable-next-line no-restricted-syntax
@@ -243,7 +262,7 @@ const ProfileDetailsView = () => {
               <RouteWrapper
                 allowedToRoles={route.allowedToRoles}
                 key={route.mainPath}
-                path={`${path}/${route.mainPath}${
+                path={`${path}/${route.routePath || route.mainPath}${
                   route.additionalPath ? `/${route.additionalPath}` : ''
                 }`}
                 RouteComponent={route.RouteComponent}
