@@ -13,7 +13,6 @@ const CustomFieldAutoComplete = ({
   name,
   label,
   onChange,
-  placeholder,
   inputRef,
   relatedProfileType,
   onBlur,
@@ -37,10 +36,13 @@ const CustomFieldAutoComplete = ({
       register(name, {
         required: 'This field is required',
         validate: (value) => {
-          if (!value || !Array.isArray(value) || value.length === 0) {
-            return 'This field is required';
+          if (multiple) {
+            return value && Array.isArray(value) && value.length > 0
+              ? true
+              : 'This field is required';
+          } else {
+            return value ? true : 'This field is required';
           }
-          return true;
         },
       });
     } else {
@@ -85,12 +87,23 @@ const CustomFieldAutoComplete = ({
     ? errors?.[nestedParts[0]]?.[nestedParts[1]]?.message
     : errors?.[name]?.message;
 
-
   const handleChange = useCallback(
     (event) => {
       if (error) clearErrors(name);
-      const selectedValues =
-        event?.map((value) => value?.profile?.identifier) || [];
+
+      let selectedValues;
+      let selectedOptions;
+
+      if (multiple) {
+        selectedOptions = event || [];
+        selectedValues = selectedOptions.map(
+          (option) => option?.profile?.identifier,
+        );
+      } else {
+        selectedOptions = event ? [event] : [];
+        selectedValues = event?.profile?.identifier || null;
+      }
+
       setValue(name, selectedValues, {
         shouldValidate: true,
         shouldDirty: true,
@@ -98,26 +111,43 @@ const CustomFieldAutoComplete = ({
 
       if (typeof onChange === 'function') onChange(event);
     },
-    [clearErrors, error, name, onChange, setValue],
+    [clearErrors, error, name, onChange, setValue, multiple],
   );
 
-  const selectedValues = watch(name);
-  const selectedOptions = profiles?.filter((profile) =>
-    selectedValues?.includes(profile.profile.identifier),
-  );
+  const formValue = watch(name);
+
+  const currentValue = externalValue !== undefined ? externalValue : formValue;
+
+  const selectedOptions = useCallback(() => {
+    if (!profiles || !currentValue) return multiple ? [] : null;
+
+    if (multiple) {
+      const valueArray = Array.isArray(currentValue) ? currentValue : [];
+      return profiles.filter((profile) =>
+        valueArray.includes(profile.profile.identifier),
+      );
+    } else {
+      const singleValue =
+        typeof currentValue === 'string' ? currentValue : currentValue?.[0];
+      return (
+        profiles.find(
+          (profile) => profile.profile.identifier === singleValue,
+        ) || null
+      );
+    }
+  }, [profiles, currentValue, multiple]);
 
   const getInputReference = () => inputRef;
 
   return (
     <>
       <Autocomplete
-        value={selectedOptions || []}
-        multiple
+        value={selectedOptions()}
+        multiple={multiple}
         name={name}
         autoFocus={false}
         options={profiles ?? []}
         label={label}
-        placeholder={placeholder ?? `Are there any ${label} you'd like to add?`}
         isDisabled={readOnly}
         getInputReference={getInputReference}
         onInputChange={onChange}
