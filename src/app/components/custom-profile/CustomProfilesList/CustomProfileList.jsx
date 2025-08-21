@@ -104,8 +104,10 @@ const CustomProfileList = ({
   const isViewOnly = isUserViewOnly(currentUser);
 
   useEffect(() => {
-    dispatch(initializeProfileTypeState(currentProfileType));
-  }, [dispatch, profileTypeIdentifier, currentProfileType]);
+    if (showHeader) {
+      dispatch(initializeProfileTypeState(currentProfileType));
+    }
+  }, [dispatch, profileTypeIdentifier, currentProfileType, showHeader]);
 
   const fetchProfileTypesInternal = useCallback(() => {
     getAllProfileTypes()
