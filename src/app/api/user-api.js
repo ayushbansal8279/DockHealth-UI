@@ -129,10 +129,11 @@ export function getUserTaskStats(userIdentifier) {
 }
 
 export function getUserTasks(userIdentifier, sortBy, status) {
+  const statusParam = status === 'ALL' ? '' : status;
   return axios
     .get(`task/findTasksAssignedToSpecificUser?userId=${userIdentifier}`, {
       params: {
-        status,
+        status: statusParam,
         sortBy: sortBy?.key || undefined,
         sortDirection: sortBy?.order || undefined,
       },
