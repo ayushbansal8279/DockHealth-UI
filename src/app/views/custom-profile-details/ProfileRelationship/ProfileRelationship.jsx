@@ -43,7 +43,6 @@ const ProfileRelationship = () => {
       fetchProfileTypeFields={fetchProfileTypeFields}
       fetchProfiles={fetchRelationships}
       showHeader={false}
-      noTopMargin
     />
   );
 };

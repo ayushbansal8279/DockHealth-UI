@@ -46,6 +46,7 @@ import {
 import {
   downloadProfileData,
   downloadProfileImportTemplate,
+  getAllProfiles,
   uploadProfileData,
 } from '@/app/api/profile-api';
 import {
@@ -62,7 +63,6 @@ const CustomProfileList = ({
   groupIdentifier: groupIdentifierProp,
   fetchProfiles,
   showHeader = true,
-  noTopMargin = false,
 }) => {
   const dispatch = useDispatch();
   const history = useHistory();
@@ -141,7 +141,12 @@ const CustomProfileList = ({
     if (fetchProfiles) {
       fetchProfiles().then(setProfiles);
     } else {
-      console.warn('fetchProfiles prop is required for CustomProfileList');
+      return getAllProfiles(profileTypeIdentifier)
+        .then(setProfiles)
+        .catch(() => {
+          dispatch(showGlobalErrorAlert());
+          setProfiles([]);
+        });
     }
   }, [fetchProfiles]);
 
@@ -254,9 +259,9 @@ const CustomProfileList = ({
         <Stack
           direction="row"
           justifyContent="space-between"
-          sx={{ m: noTopMargin ? '0px 32px 0px 32px ' : '16px 32px 0px 32px ' }}
+          sx={{ m: !showHeader ? '0px 32px 0px 32px ' : '16px 32px 0px 32px ' }}
         >
-          <Box display="flex" alignItems="start" my={noTopMargin ? 0 : 2}>
+          <Box display="flex" alignItems="start" my={!showHeader ? 0 : 2}>
             <Toolbar>
               <div style={{ marginTop: '3px' }}>
                 <ToolbarButton
