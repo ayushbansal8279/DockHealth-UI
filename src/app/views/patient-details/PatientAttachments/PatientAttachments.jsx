@@ -8,7 +8,11 @@ import localStorageHelper from 'helpers/local-storage-helper';
 import { Box, IconButton } from '@mui/material';
 import ViewModuleIcon from '@mui/icons-material/ViewModule';
 import ViewHeadlineIcon from '@mui/icons-material/ViewHeadline';
-import { currentFolderIdentifierSelector, currentPatientIdentifierSelector, isFetchingPatientAttachmentsSelector } from 'selectors/patient-details-selectors';
+import {
+  currentFolderIdentifierSelector,
+  currentPatientIdentifierSelector,
+  isFetchingPatientAttachmentsSelector,
+} from 'selectors/patient-details-selectors';
 import AttachmentsBreadcrumbs from 'views/patient-details/AttachmentsBreadcrumbs/AttachmentsBreadcrumbs';
 import AddButton from 'components/common/AddButton/AddButton';
 import AttachmentPreview from 'components/attachments/AttachmentPreview/AttachmentPreview';
@@ -85,7 +89,7 @@ const PatientAttachments = () => {
 
   const [foldersList, setFoldersList] = useState([]);
   const [filesList, setFilesList] = useState([]);
-  const [taskFileList, setTaskFilelist] = useState([])
+  const [taskFileList, setTaskFilelist] = useState([]);
 
   useEffect(() => {
     setFoldersList(folders);
@@ -99,7 +103,6 @@ const PatientAttachments = () => {
     setTaskFilelist(patientTaskAttachments);
   }, [patientTaskAttachments]);
 
-
   const dispatch = useDispatch();
 
   const [didDragFile, setDidDragFile] = useState(false);
@@ -112,8 +115,9 @@ const PatientAttachments = () => {
   const downloadDisabled = currentPatientAttachments?.some(
     ({ scanStatus }) =>
       scanStatus &&
-      !(scanStatus === ScanStatus.CLEAN ||
-        scanStatus === ScanStatus.UNSUPPORTED),
+      !(
+        scanStatus === ScanStatus.CLEAN || scanStatus === ScanStatus.UNSUPPORTED
+      ),
   );
 
   const FileItemComponent =
@@ -125,17 +129,20 @@ const PatientAttachments = () => {
   const getFileOptions = useCallback(
     (file) => [
       ...(!file.scanStatus ||
-        file.scanStatus === ScanStatus.CLEAN ||
-        file.scanStatus === ScanStatus.UNSUPPORTED
+      file.scanStatus === ScanStatus.CLEAN ||
+      file.scanStatus === ScanStatus.UNSUPPORTED
         ? [
-          { name: 'Preview', onClick: () => openAttachmentPreview(file, "patient") },
-          {
-            name: 'Download',
-            onClick: () => {
-              downloadAttachment(file);
+            {
+              name: 'Preview',
+              onClick: () => openAttachmentPreview(file, 'patient'),
             },
-          },
-        ]
+            {
+              name: 'Download',
+              onClick: () => {
+                downloadAttachment(file);
+              },
+            },
+          ]
         : []),
       {
         name: 'Rename',
@@ -163,17 +170,20 @@ const PatientAttachments = () => {
   const getTaskFileOptions = useCallback(
     (file) => [
       ...(!file.scanStatus ||
-        file.scanStatus === ScanStatus.CLEAN ||
-        file.scanStatus === ScanStatus.UNSUPPORTED
+      file.scanStatus === ScanStatus.CLEAN ||
+      file.scanStatus === ScanStatus.UNSUPPORTED
         ? [
-          { name: 'Preview', onClick: () => openAttachmentPreview(file, "task") },
-          {
-            name: 'Download',
-            onClick: () => {
-              downloadPatientTaskAttachment(file);
+            {
+              name: 'Preview',
+              onClick: () => openAttachmentPreview(file, 'task'),
             },
-          },
-        ]
+            {
+              name: 'Download',
+              onClick: () => {
+                downloadPatientTaskAttachment(file);
+              },
+            },
+          ]
         : []),
       // {
       //   name: 'Rename',
@@ -305,10 +315,9 @@ const PatientAttachments = () => {
         >
           <AttachmentsBreadcrumbs
             entityIdentifierSelector={currentPatientIdentifierSelector}
-             currentFolderIdentifierSelector={currentFolderIdentifierSelector} 
-             getFolderStructureHierarchy={getPatientFolderStructureHierarchy} 
-             />
-
+            currentFolderIdentifier={currentFolderIdentifier}
+            getFolderStructureHierarchy={getPatientFolderStructureHierarchy}
+          />
         </Box>
         <Box display="flex" alignItems="center" flex="0 0 auto">
           {import.meta.env.VITE_GOOGLE_DRIVE_API_CLIENT_ID &&
@@ -455,47 +464,49 @@ const PatientAttachments = () => {
               </div>
             )}
           </NamedCollapse>
-          {!currentFolderIdentifier && (<NamedCollapse name="Task Files">
-            {activeViewType === FilesViewType.LIST && <FileListHeader />}
-            {taskFileList.length > 0 ? (
-              taskFileList.map((file, index) => (
-                <FileItemComponent
-                  key={file.attachmentIdentifier}
-                  onClick={() => handleAttachmentClick(file, 'task')}
-                  file={file}
-                  options={getTaskFileOptions(file)}
-                  onDragStart={(event) => dragStart(event, index, true)}
-                  onDragEnter={(event) => dragEnter(event, index, true)}
-                  onDragEnd={drop}
-                  draggable
-                />
-              ))
-            ) : (
-              // eslint-disable-next-line react/jsx-no-useless-fragment
-              <>
-                {!currentlyUploadedAttachment && (
-                  <EmptyListText>List of files is empty</EmptyListText>
-                )}
-              </>
-            )}
-            {currentlyUploadedAttachment && (
-              // eslint-disable-next-line react/jsx-no-useless-fragment
-              <>
-                {activeViewType === FilesViewType.LIST ? (
-                  <FileListItemProgressBar value={uploadProgress} />
-                ) : (
-                  <FileGridItemProgressBar value={uploadProgress} />
-                )}
-              </>
-            )}
-            {!downloadDisabled && currentPatientAttachments.length > 0 && (
-              <div>
-                <DownloadAllLink onClick={downloadAllTaskFiles}>
-                  Download All
-                </DownloadAllLink>
-              </div>
-            )}
-          </NamedCollapse>)}
+          {!currentFolderIdentifier && (
+            <NamedCollapse name="Task Files">
+              {activeViewType === FilesViewType.LIST && <FileListHeader />}
+              {taskFileList.length > 0 ? (
+                taskFileList.map((file, index) => (
+                  <FileItemComponent
+                    key={file.attachmentIdentifier}
+                    onClick={() => handleAttachmentClick(file, 'task')}
+                    file={file}
+                    options={getTaskFileOptions(file)}
+                    onDragStart={(event) => dragStart(event, index, true)}
+                    onDragEnter={(event) => dragEnter(event, index, true)}
+                    onDragEnd={drop}
+                    draggable
+                  />
+                ))
+              ) : (
+                // eslint-disable-next-line react/jsx-no-useless-fragment
+                <>
+                  {!currentlyUploadedAttachment && (
+                    <EmptyListText>List of files is empty</EmptyListText>
+                  )}
+                </>
+              )}
+              {currentlyUploadedAttachment && (
+                // eslint-disable-next-line react/jsx-no-useless-fragment
+                <>
+                  {activeViewType === FilesViewType.LIST ? (
+                    <FileListItemProgressBar value={uploadProgress} />
+                  ) : (
+                    <FileGridItemProgressBar value={uploadProgress} />
+                  )}
+                </>
+              )}
+              {!downloadDisabled && currentPatientAttachments.length > 0 && (
+                <div>
+                  <DownloadAllLink onClick={downloadAllTaskFiles}>
+                    Download All
+                  </DownloadAllLink>
+                </div>
+              )}
+            </NamedCollapse>
+          )}
           <AttachmentPreview
             attachment={previewedAttachment}
             attachmentsSources={attachmentsSources}
