@@ -21,6 +21,7 @@ import {
   userHasPostEMRNoteFeatureSelector,
   userHasAutomationMeteringFeatureSelector,
   userHasWorkspacesFeatureSelector,
+  userHasConfigIntegrationsFeatureSelector,
 } from 'selectors/user-selectors';
 import { organizationSelector } from 'selectors/organization-selectors';
 import { isPlanTrial } from 'helpers/subscription-helper';
@@ -46,6 +47,9 @@ const SettingsSubmenu = () => {
     userHasAutomationMeteringFeatureSelector,
   );
   const workspacesAvailable = useSelector(userHasWorkspacesFeatureSelector);
+  const configIntegrationsAvailable = useSelector(
+    userHasConfigIntegrationsFeatureSelector,
+  );
 
   const organization = useSelector(organizationSelector);
   const subscription = organization?.subscriptionDetails;
@@ -91,9 +95,11 @@ const SettingsSubmenu = () => {
           <SubMenuLink to="/settings/workspaces">Workspaces</SubMenuLink>
         </AccessRestrictor>
       )}
-      <AccessRestrictor allowedToRoles={[ADMIN, OWNER]}>
-        <SubMenuLink to={INTEGRATIONS_PATH}>Integrations</SubMenuLink>
-      </AccessRestrictor>
+      {configIntegrationsAvailable && (
+        <AccessRestrictor allowedToRoles={[ADMIN, OWNER]}>
+          <SubMenuLink to={INTEGRATIONS_PATH}>Integrations</SubMenuLink>
+        </AccessRestrictor>
+      )}
     </Box>
   );
 };

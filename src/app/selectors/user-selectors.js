@@ -293,6 +293,26 @@ export const userHasWorkspacesFeatureSelector = createSelector(
     ),
 );
 
+export const userHasConfigIntegrationsFeatureSelector = createSelector(
+  userProfileSelector,
+  ({ organizationAvailableFeatures, userAvailableFeatures }) =>
+    featureSelector(
+      organizationAvailableFeatures,
+      userAvailableFeatures,
+      'CONFIG_INTEGRATIONS',
+    ),
+);
+
+export const userHasConfigInboundEmailsFeatureSelector = createSelector(
+  userProfileSelector,
+  ({ organizationAvailableFeatures, userAvailableFeatures }) =>
+    featureSelector(
+      organizationAvailableFeatures,
+      userAvailableFeatures,
+      'CONFIG_INBOUND_EMAILS',
+    ),
+);
+
 export const userSetupClientViewSelector = createSelector(
   userViewSetupSelector,
   ({ mainSetup }) => mainSetup,
