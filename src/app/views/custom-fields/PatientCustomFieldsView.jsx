@@ -219,7 +219,13 @@ import { getSortedFields, handleDragAndSort } from '@/app/helpers/custom-fields-
                               <CustomFieldCell>
                                 <CustomFieldText>
                                   {field.fieldType === FieldType.RELATIONSHIP
-                                    ? `${FieldTypeLabel[field.fieldType]} - ${
+                                    ? `${FieldTypeLabel[field.fieldType]} (${
+                                        field.displayOptions?.includes(
+                                          DisplayOption.SINGLE_SELECT,
+                                        )
+                                          ? 'Single'
+                                          : 'Multiple'
+                                      }) - ${
                                         field.selectedProfileType?.label ??
                                         field.relatedProfileType?.name ??
                                         ''

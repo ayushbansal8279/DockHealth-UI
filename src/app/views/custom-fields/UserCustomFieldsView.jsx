@@ -215,9 +215,13 @@ const UserCustomFieldsView = () => {
                             <CustomFieldCell>
                               <CustomFieldText>
                                 {field.fieldType === FieldType.RELATIONSHIP
-                                  ? `${FieldTypeLabel[field.fieldType]} - ${
-                                      field.relatedProfileType?.name
-                                    }`
+                                  ? `${FieldTypeLabel[field.fieldType]} (${
+                                      field.displayOptions?.includes(
+                                        DisplayOption.SINGLE_SELECT,
+                                      )
+                                        ? 'Single'
+                                        : 'Multiple'
+                                    }) - ${field.relatedProfileType?.name}`
                                   : FieldTypeLabel[field.fieldType]}
                               </CustomFieldText>
                             </CustomFieldCell>
@@ -240,7 +244,9 @@ const UserCustomFieldsView = () => {
                             <CustomFieldCell>
                               <CustomFieldText>
                                 {field.displayOptions &&
-                                field.displayOptions?.includes(DisplayOption.TASK_REQUIRED)
+                                field.displayOptions?.includes(
+                                  DisplayOption.TASK_REQUIRED,
+                                )
                                   ? 'Yes'
                                   : ''}
                               </CustomFieldText>

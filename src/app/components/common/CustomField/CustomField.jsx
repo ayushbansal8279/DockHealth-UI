@@ -222,7 +222,6 @@ const CustomField = ({
             readOnly={isReadOnly}
             label={name}
             name={fieldName}
-            placeholder={placeholder}
             onBlur={handleBlur}
             inputRef={inputReference}
             ref={componentReference}

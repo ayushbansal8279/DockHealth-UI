@@ -33,14 +33,14 @@ export const CustomFieldItem = styled.div`
   display: grid;
   grid-template-columns: ${({ type, editable }) => {
     if (type === 'TASK') {
-      if (!editable) return '2fr 1fr 1fr 1fr 1fr 1fr';
-      return '2fr 1fr 1fr 1fr 1fr 1fr auto auto';
+      if (!editable) return '2fr 2fr 1fr 1fr 1fr 1fr';
+      return '2fr 2fr 1fr 1fr 1fr 1fr auto auto';
     }
     if (type === 'PROVIDER') {
       return '1fr 1.5fr 1fr 1fr 1fr auto';
     }
     if (type === 'PATIENT') {
-      return '1.5fr 1.5fr 1fr 1fr 1fr 0.8fr 0.8fr 0.8fr auto auto';
+      return '1.5fr 2fr 0.8fr 1fr 1fr 0.8fr 0.8fr 0.8fr auto auto';
     }
     if (type === 'PROFILE') {
       return '1.5fr 1.5fr 1fr 1fr 0.8fr 0.8fr 0.8fr auto auto';
