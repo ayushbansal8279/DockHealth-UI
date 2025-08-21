@@ -1,5 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { MoreVert } from '@mui/icons-material';
+import { Box } from '@mui/material';
+import { useHistory } from 'react-router-dom';
+import * as PatientsActions from 'actions/patients-actions';
+import pluralize from 'pluralize';
 import {
   workspaceSelector,
   workspaceTaskListsSelector,
@@ -34,21 +39,17 @@ import WorkspaceTile from '@/app/components/workspace/WorkspaceTile/WorkspaceTil
 import { Flex } from '@/app/components/common/Flex/styled';
 import { organizationWorkspaceLabelSelector } from '@/app/selectors/organization-selectors';
 import ListOptionsMenu from '@/app/components/tasklist/ListOptionsMenu/ListOptionsMenu';
-import { MoreVert } from '@mui/icons-material';
-import { Box } from '@mui/material';
 import Tooltip from '@/app/components/common/Tooltip/Tooltip';
 import {
   createPatientDetailsPath,
   createTaskListPath,
+  WORKSPACE_PATH,
 } from '@/app/routing/helpers/paths';
-import { useHistory } from 'react-router-dom';
 import {
   customPatientsListsSelector,
   defaultPatientsListsSelector,
   isFetchingPatientsListsSelector,
 } from '@/app/selectors/patients-selectors';
-import { locationParametersSelector } from '@/app/location/selectors';
-import * as PatientsActions from 'actions/patients-actions';
 import NewLabeledCollapse from '@/app/components/common/NewLabeledCollapse/NewLabeledCollapse';
 import { openModal } from '@/app/modal/actions';
 import InviteUserToWorkspaceForm from '@/app/components/workspace/InviteUserToWorkspaceForm/InviteUserToWorkspaceForm';
@@ -61,7 +62,6 @@ import AddButton from '@/app/components/common/AddButton/AddButton';
 import { hideSubMenu } from '@/app/actions/template-actions';
 import { isUserViewOnly } from '@/app/helpers/user-helper';
 import HomeIcon from '@/app/img/navigation/HomeIcon';
-import pluralize from 'pluralize';
 
 const WorkspaceSubmenuStepTwo = ({ setShowStepTwo }) => {
   const dispatch = useDispatch();
@@ -80,7 +80,7 @@ const WorkspaceSubmenuStepTwo = ({ setShowStepTwo }) => {
   const users = useSelector(workspaceUsersSelector);
   const isFetching = useSelector(isFetchingPatientsListsSelector);
   const isInitialListFetching = isFetching && !defaultPatientsLists;
-  const userGroups = users?.filter((user) => user.itemType === 'GROUP');
+  const userGroups = users?.filter((user: any) => user?.itemType === 'GROUP');
 
   const [activeCollapse, setActiveCollapse] = useState('list');
   const [isSidebarOpen, setIsSidebarOpen, unsetIsSidebarOpen] =
@@ -97,7 +97,7 @@ const WorkspaceSubmenuStepTwo = ({ setShowStepTwo }) => {
   const handleClose = () => {
     setShowStepTwo(false);
     dispatch(clearWorkspaceState());
-    history.push(`/core/workspace`);
+    history.push(WORKSPACE_PATH);
   };
 
   useEffect(() => {
@@ -284,7 +284,9 @@ const WorkspaceSubmenuStepTwo = ({ setShowStepTwo }) => {
             <DrawerMyListsLabel>
               <div>Custom Lists</div>
               {!isViewOnly && (
-                <AddButton onClick={handleAddCustomListClick}>Add</AddButton>
+                <AddButton buttonRef={null} onClick={handleAddCustomListClick}>
+                  Add
+                </AddButton>
               )}
             </DrawerMyListsLabel>
             <WorkspaceUserItems>

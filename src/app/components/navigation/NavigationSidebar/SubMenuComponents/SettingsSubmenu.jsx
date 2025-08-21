@@ -9,7 +9,7 @@ import {
   POFILES_SETTINGS_PATH,
   TASK_CUSTOMIZATIONS_PATH,
   DEVELOPERS_PATH,
-  INTEGRATIONS_PATH
+  INTEGRATIONS_PATH,
 } from 'routing/helpers/paths';
 import {
   userHasPatientCustomFieldsFeatureSelector,
@@ -20,12 +20,14 @@ import {
   userHasSendSecureMessageFeatureSelector,
   userHasPostEMRNoteFeatureSelector,
   userHasAutomationMeteringFeatureSelector,
+  userHasWorkspacesFeatureSelector,
+  userHasConfigIntegrationsFeatureSelector,
 } from 'selectors/user-selectors';
 import { organizationSelector } from 'selectors/organization-selectors';
-import { isPlanPro, isPlanTrial } from 'helpers/subscription-helper';
+import { isPlanTrial } from 'helpers/subscription-helper';
 import { SubMenuLink } from './styled';
 
-const { ADMIN, OWNER, MEMBER } = UserOrganizationRole;
+const { ADMIN, OWNER } = UserOrganizationRole;
 
 const SettingsSubmenu = () => {
   const patientCustomFieldsAvailable = useSelector(
@@ -44,11 +46,14 @@ const SettingsSubmenu = () => {
   const automationMeteringAvailable = useSelector(
     userHasAutomationMeteringFeatureSelector,
   );
+  const workspacesAvailable = useSelector(userHasWorkspacesFeatureSelector);
+  const configIntegrationsAvailable = useSelector(
+    userHasConfigIntegrationsFeatureSelector,
+  );
 
   const organization = useSelector(organizationSelector);
   const subscription = organization?.subscriptionDetails;
   const isInTrial = isPlanTrial(subscription);
-  const isProPlan = isPlanPro(subscription);
 
   const isApiAllowed = organization?.availableFeatures?.includes('API');
 
@@ -85,12 +90,16 @@ const SettingsSubmenu = () => {
           <SubMenuLink to={DEVELOPERS_PATH}>Developers</SubMenuLink>
         </AccessRestrictor>
       )}
-      <AccessRestrictor allowedToRoles={[ADMIN, OWNER]}>
-        <SubMenuLink to="/settings/workspaces">Workspaces</SubMenuLink>
-      </AccessRestrictor>
-      <AccessRestrictor allowedToRoles={[ADMIN, OWNER]}>
-        <SubMenuLink to={INTEGRATIONS_PATH}>Integrations</SubMenuLink>
-      </AccessRestrictor>
+      {workspacesAvailable && (
+        <AccessRestrictor allowedToRoles={[ADMIN, OWNER]}>
+          <SubMenuLink to="/settings/workspaces">Workspaces</SubMenuLink>
+        </AccessRestrictor>
+      )}
+      {configIntegrationsAvailable && (
+        <AccessRestrictor allowedToRoles={[ADMIN, OWNER]}>
+          <SubMenuLink to={INTEGRATIONS_PATH}>Integrations</SubMenuLink>
+        </AccessRestrictor>
+      )}
     </Box>
   );
 };

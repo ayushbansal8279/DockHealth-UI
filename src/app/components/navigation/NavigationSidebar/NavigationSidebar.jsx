@@ -15,6 +15,7 @@ import {
   userProfileSelector,
   userHasDockChatFeatureSelector,
   selectedUserOrganizationSelector,
+  userHasWorkspacesFeatureSelector,
 } from 'selectors/user-selectors';
 import {
   showChatPopoverSelector,
@@ -49,6 +50,7 @@ import AccessRestrictor, {
   CAN_ACCESS_SETTINGS_PAGE,
   CAN_ACCESS_TASK_LIST_PAGE,
   CAN_ACCESS_WORKFLOW_LIST_PAGE,
+  CAN_ACCESS_WORKSPACE_PAGE,
 } from 'components/access/AccessRestrictor/AccessRestrictor';
 import ChatPopover from 'views/chat/ChatPopover';
 import ChatIcon from 'views/chat/Icons/ChatIcon';
@@ -79,6 +81,7 @@ import {
   organizationSelector,
   organizationWorkspaceLabelSelector,
 } from '@/app/selectors/organization-selectors';
+import pluralize from 'pluralize';
 
 export const SubmenuKey = {
   ORGANIZATION: 'ORGANIZATION',
@@ -129,6 +132,7 @@ const NavigationSidebar = () => {
   );
 
   const dockChatAvailable = useSelector(userHasDockChatFeatureSelector);
+  const workspacesAvailable = useSelector(userHasWorkspacesFeatureSelector);
   const embeddedMode = sessionStorage.getItem('EmbeddedMode') || false;
 
   const { organizationProfileColor, organizationInitials } =
@@ -331,13 +335,13 @@ const NavigationSidebar = () => {
                 />
               </AccessRestrictor>
             )}
-            {!embeddedMode && !isOnboardingPage && (
-              <AccessRestrictor required={[CAN_ACCESS_MEMBER_LIST_PAGE]}>
+            {workspacesAvailable && !embeddedMode && !isOnboardingPage && (
+              <AccessRestrictor required={[CAN_ACCESS_WORKSPACE_PAGE]}>
                 <IconNavigationItem
                   name={
                     workspace.workspaceIdentifier
                       ? `${workspace.workspaceName}`
-                      : `${workspaceLabel}`
+                      : `${pluralize(workspaceLabel)}`
                   }
                   icon={() =>
                     workspace.workspaceIdentifier ? (
