@@ -149,7 +149,11 @@ const AutoCompleteFormSelect = React.forwardRef(
             />
           )}
         />
-        {error && <FormHelperText error>{error}</FormHelperText>}
+        {error && (
+          <FormHelperText error sx={{ pl: 1.5 }}>
+            {error}
+          </FormHelperText>
+        )}
       </>
     );
   },

@@ -161,7 +161,11 @@ const CustomFieldAutoComplete = ({
         required={required}
         {...restProps}
       />
-      {error && <FormHelperText error>{error}</FormHelperText>}
+      {error && (
+        <FormHelperText error sx={{ pl: 1.5 }}>
+          {error}
+        </FormHelperText>
+      )}
     </>
   );
 };
