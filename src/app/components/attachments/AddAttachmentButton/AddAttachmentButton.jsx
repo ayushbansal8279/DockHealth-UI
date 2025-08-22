@@ -21,7 +21,11 @@ const AddAttachmentButton = ({ attachmentOptions = [] }) => {
 
   const handleToggle = (e) => {
     e.stopPropagation();
+     if (attachmentOptions.length === 0) {
+    inputRef.current?.click();
+  } else {
     setIsOpen((prev) => !prev);
+  }
   };
 
   const handleClickAway = (event) => {
