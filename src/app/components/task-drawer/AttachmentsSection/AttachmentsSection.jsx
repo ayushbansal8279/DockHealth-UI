@@ -145,7 +145,9 @@ const AttachmentsSection = ({
             xs={12}
             container
             alignContent="center"
-            // {...getRootProps({ style: { outline: 'none' } })}
+            {...getRootProps({ style: { outline: 'none' },
+              onClick : (e) => e.stopPropagation(),
+            })}
           >
             {attachmentsLoading ? (
               <>
