@@ -1,4 +1,4 @@
- import React, { useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import {
   Paper,
   Popper,
@@ -6,13 +6,13 @@ import {
   ClickAwayListener,
   ListItemText,
   Box,
-  MenuList
+  MenuList,
 } from '@mui/material';
 import { OutfitTypography } from 'styles/theme';
 import Tooltip from 'components/common/Tooltip/Tooltip';
 import zIndex from 'styles/z-index';
 import palette from 'styles/palette';
-import { Container } from './styled'; 
+import { Container } from './styled';
 
 const AddAttachmentButton = ({ attachmentOptions = [] }) => {
   const buttonRef = useRef(null);
@@ -21,11 +21,11 @@ const AddAttachmentButton = ({ attachmentOptions = [] }) => {
 
   const handleToggle = (e) => {
     e.stopPropagation();
-     if (attachmentOptions.length === 0) {
-    inputRef.current?.click();
-  } else {
-    setIsOpen((prev) => !prev);
-  }
+    if (attachmentOptions.length === 0) {
+      inputRef.current?.click();
+    } else {
+      setIsOpen((prev) => !prev);
+    }
   };
 
   const handleClickAway = (event) => {
@@ -37,8 +37,8 @@ const AddAttachmentButton = ({ attachmentOptions = [] }) => {
   const handleOptionClick = (option) => {
     if (option.label === 'Upload Local File') {
       inputRef.current?.click();
-    }else{
-      option.onClick?.()
+    } else {
+      option.onClick?.();
     }
   };
 
@@ -51,7 +51,7 @@ const AddAttachmentButton = ({ attachmentOptions = [] }) => {
   };
 
   return (
-    <div>   
+    <div>
       <Container ref={buttonRef} onClick={handleToggle}>
         <OutfitTypography condensed variant="h4" color="inherit">
           +
@@ -71,16 +71,14 @@ const AddAttachmentButton = ({ attachmentOptions = [] }) => {
                 <Tooltip key={option.name} title={option.tooltipText || ''}>
                   <div>
                     <MenuItem
-                      onClick={(e) => {          
+                      onClick={(e) => {
                         e.stopPropagation();
                         setIsOpen(false);
                         handleOptionClick(option);
                       }}
                       disabled={option.disabled}
                     >
-                      <ListItemText
-                        primary={option.label}
-                      />
+                      <ListItemText primary={option.label} />
                     </MenuItem>
                   </div>
                 </Tooltip>
@@ -89,7 +87,7 @@ const AddAttachmentButton = ({ attachmentOptions = [] }) => {
             </MenuList>
           </Paper>
         </ClickAwayListener>
-      </Popper> 
+      </Popper>
       <input
         ref={inputRef}
         type="file"
@@ -101,4 +99,3 @@ const AddAttachmentButton = ({ attachmentOptions = [] }) => {
 };
 
 export default AddAttachmentButton;
-
