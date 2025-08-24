@@ -7,9 +7,13 @@ import {
 } from 'selectors/person-details-selectors';
 import { TaskListTabName } from 'helpers/tasklist-helpers';
 import { Box } from '@mui/material';
-import { userProfileSelector } from 'selectors/user-selectors';
+import {
+  userProfileSelector,
+  selectedUserOrganizationSelector,
+} from 'selectors/user-selectors';
 import { currentTaskListSelector } from 'selectors/task-list-selectors';
 import { checkIfUserIsOrganizationAdmin } from 'helpers/user-helper';
+import { TaskOrigin } from 'helpers/task-helpers';
 import TaskCustomFieldsModal from 'modal/customModals/TaskCustomFieldsModal';
 import CustomizeToolbarButton from '@/app/components/tasklist/list-toolbar-buttons/CustomizeToolbarButton/CustomizeToolbarButton';
 import TaskStatusToolbarSelect from '@/app/components/tasklist/list-toolbar-buttons/TaskStatusToolbarSelect/TaskStatusToolbarSelect';
@@ -24,18 +28,27 @@ const UserTasksToolbar = ({ searchValue, setSearchValue }) => {
   const tasksStatus = useSelector(currentTasksStatusSelector);
   const [customFieldsModalOpened, setCustomFieldsModalOpened] = useState(false);
   const currentUser = useSelector(userProfileSelector);
+  const currentOrganization = useSelector(selectedUserOrganizationSelector);
   const isOrganizationAdmin = checkIfUserIsOrganizationAdmin(currentUser);
   const taskList = useSelector(currentTaskListSelector);
   const isListCreator =
     taskList?.creator?.identifier === currentUser.identifier;
 
+  const iconColorActiveItem =
+    currentOrganization?.themeSettings?.find(
+      ({ name }) => name === 'icon.active.color',
+    ) || {};
+
   const handleSelectTab = useCallback(
     (tab) => {
-      history.push(
-        `/core/assignedToPerson/${userIdentifier}${
-          tab === TaskListTabName.OPEN ? '' : `/${TaskListTabName.COMPLETE}`
-        }`,
-      );
+      let route = `/core/assignedToPerson/${userIdentifier}`;
+      if (tab === 'COMPLETE') {
+        route += `/${TaskListTabName.COMPLETE}`;
+      } else if (tab === '') {
+        route += `/${TaskListTabName.ALL}`;
+      }
+
+      history.push(route);
     },
     [history, userIdentifier],
   );
@@ -54,8 +67,11 @@ const UserTasksToolbar = ({ searchValue, setSearchValue }) => {
         />
         <Box mx={0.5} />
         <TaskStatusToolbarSelect
-          value={tasksStatus}
+          value={tasksStatus === 'ALL' ? '' : tasksStatus}
           onChange={(status) => handleSelectTab(status)}
+          iconColorFilterActive={iconColorActiveItem?.value}
+          taskListIdentifier={userIdentifier}
+          origin={TaskOrigin.PERSON}
         />
         <Box mx={0.5} />
         <TaskCustomFieldsModal
