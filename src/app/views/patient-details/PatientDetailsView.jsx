@@ -55,6 +55,7 @@ const PatientDetailsView = () => {
   const { userIdentifier: currentUserIdentifier } = currentUser || {};
   const pusher = useRef(initializePusher());
   const customerTypeLabel = getCustomerTypeLabel(currentUser);
+  const customerTypeLabelCapitalized = capitalize(customerTypeLabel);
 
   const currentOrganization = useSelector(selectedUserOrganizationSelector);
   const patientOrgIdentifier = useSelector(patientOrgIdSelector);
@@ -85,7 +86,7 @@ const PatientDetailsView = () => {
     embeddedMode,
     isWorkspaceScoped: isWorkspacePatient,
     workspace,
-    titleText: customerTypeLabel,
+    titleText: customerTypeLabelCapitalized,
   });
 
   useEffect(() => {
