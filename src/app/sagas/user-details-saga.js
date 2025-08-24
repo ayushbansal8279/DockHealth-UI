@@ -55,9 +55,7 @@ function* initializeUserTasks(status) {
     );
   else {
     yield put(clearFiltersForMegaFilter());
-    yield status === TaskStatus.COMPLETE
-      ? put(PersonDetailsActions.getUserCompletedTasks())
-      : put(PersonDetailsActions.getUserTasks());
+    yield put(PersonDetailsActions.getUserTasks(status));
   }
 }
 
@@ -129,23 +127,14 @@ function* getTasks(status) {
     : call(UserApi.getUserTasks, userIdentifier, sort, status);
 }
 
-function* getUserTasks() {
+function* getUserTasks({ status }) {
   try {
-    const tasks = yield call(getTasks, TaskStatus.INCOMPLETE);
-    yield put({ type: ActionTypes.GET_USER_TASKS_SUCCESS, tasks });
+    const taskStatus = status || TaskStatus.INCOMPLETE;
+    const tasks = yield call(getTasks, taskStatus);
+    yield put({ type: ActionTypes.GET_USER_TASKS_SUCCESS, tasks, status: taskStatus });
   } catch {
     yield put(showGlobalErrorAlert());
     yield put({ type: ActionTypes.GET_USER_TASKS_FAILURE });
-  }
-}
-
-function* getUserCompletedTasks() {
-  try {
-    const tasks = yield call(getTasks, TaskStatus.COMPLETE);
-    yield put({ type: ActionTypes.GET_USER_COMPLETED_TASKS_SUCCESS, tasks });
-  } catch {
-    yield put(showGlobalErrorAlert());
-    yield put({ type: ActionTypes.GET_USER_COMPLETED_TASKS_FAILURE });
   }
 }
 
@@ -157,9 +146,7 @@ function* selectFiltersFromMegaFilter({ id, status }) {
   if (userIdentifier === id && currentStatus === status) {
     yield all([
       // put(PersonDetailsActions.getUserTaskFilterOptions()),
-      status === TaskStatus.COMPLETE
-        ? put(PersonDetailsActions.getUserCompletedTasks())
-        : put(PersonDetailsActions.getUserTasks()),
+      put(PersonDetailsActions.getUserTasks(status)),
     ]);
   }
 }
@@ -167,18 +154,14 @@ function* selectFiltersFromMegaFilter({ id, status }) {
 function* sortUserTasks() {
   const currentStatus = yield select(currentTasksStatusSelector);
 
-  yield currentStatus === TaskStatus.COMPLETE
-    ? put(PersonDetailsActions.getUserCompletedTasks())
-    : put(PersonDetailsActions.getUserTasks());
+  yield put(PersonDetailsActions.getUserTasks(currentStatus));
 }
 
 function* refreshUserTasks() {
   const currentStatus = yield select(currentTasksStatusSelector);
   yield put(PersonDetailsActions.getUserTaskCounters());
 
-  yield currentStatus === TaskStatus.COMPLETE
-    ? put(PersonDetailsActions.getUserCompletedTasks())
-    : put(PersonDetailsActions.getUserTasks());
+  yield put(PersonDetailsActions.getUserTasks(currentStatus));
 }
 
 function* getUserTaskFilterOptions() {
@@ -212,7 +195,6 @@ export default function* watchUserDetails() {
   yield takeLatest(ActionTypes.GET_USER_DETAILS, getUserDetails);
   yield takeLatest(ActionTypes.GET_USER_TASK_COUNTERS, getUserTaskCounters);
   yield takeLatest(ActionTypes.GET_USER_TASKS, getUserTasks);
-  yield takeLatest(ActionTypes.GET_USER_COMPLETED_TASKS, getUserCompletedTasks);
   yield takeLatest(
     ActionTypes.CHANGE_CURRENT_TASKS_STATUS,
     changeCurrentTasksStatus,
