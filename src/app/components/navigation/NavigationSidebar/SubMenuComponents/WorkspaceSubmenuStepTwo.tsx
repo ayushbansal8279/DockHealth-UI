@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { MoreVert } from '@mui/icons-material';
 import { Box } from '@mui/material';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import * as PatientsActions from 'actions/patients-actions';
 import pluralize from 'pluralize';
 import {
@@ -29,6 +29,7 @@ import {
   DrawerMyListsLabel,
   WorkspacesLeftWrapper,
   HomeIconWrapper,
+  MenuWrapper,
 } from './styled';
 import {
   clearWorkspaceState,
@@ -72,6 +73,9 @@ const WorkspaceSubmenuStepTwo = ({ setShowStepTwo }) => {
   const currentUser = useSelector(userProfileSelector);
   const customerTypeLabel = getCustomerTypeLabel(currentUser);
   const isViewOnly = isUserViewOnly(currentUser);
+  const location = useLocation();
+  const parts = location.pathname.split('/');
+  const activeTaskListIdentifier = parts[3];
 
   // TODO: get task lists, Users and Patients from workspace
   const taskLists = useSelector(workspaceTaskListsSelector);
@@ -167,10 +171,12 @@ const WorkspaceSubmenuStepTwo = ({ setShowStepTwo }) => {
           >
             <WorkspaceListItems>
               {taskLists?.map((list: any) => (
-                <Flex key={list.taskListIdentifier} gap={10} pb={10}>
-                  <ListOptionsMenu list={list}>
-                    <MoreVert color="primary" />
-                  </ListOptionsMenu>
+                <DrawerListsItem key={list.taskListIdentifier} $isDraggable>
+                  <MenuWrapper>
+                    <ListOptionsMenu list={list}>
+                      <MoreVert color="primary" />
+                    </ListOptionsMenu>
+                  </MenuWrapper>
                   {list.color && (
                     <Box mr={1}>
                       <ColorIndicator color={list.color} />
@@ -179,6 +185,9 @@ const WorkspaceSubmenuStepTwo = ({ setShowStepTwo }) => {
                   {/* @ts-ignore */}
                   <Tooltip placement="top" title={list?.listName || ''}>
                     <ListNameText
+                      isActive={
+                        activeTaskListIdentifier === list?.taskListIdentifier
+                      }
                       onClick={() => {
                         history.push(
                           createTaskListPath(list.taskListIdentifier),
@@ -195,7 +204,7 @@ const WorkspaceSubmenuStepTwo = ({ setShowStepTwo }) => {
                       </ListNameLabel>
                     </ListNameText>
                   </Tooltip>
-                </Flex>
+                </DrawerListsItem>
               ))}
             </WorkspaceListItems>
           </NewLabeledCollapse>
