@@ -19,8 +19,10 @@ const CustomFieldAutoComplete = ({
   required,
   multiple = true,
   value: externalValue,
+  formMethods,
   ...restProps
 }) => {
+  const formContext = useFormContext();
   const dispatch = useDispatch();
   const {
     register,
@@ -29,7 +31,7 @@ const CustomFieldAutoComplete = ({
     setValue,
     unregister,
     watch,
-  } = useFormContext();
+  } = formMethods || formContext;
 
   useEffect(() => {
     if (required) {
@@ -159,7 +161,11 @@ const CustomFieldAutoComplete = ({
         required={required}
         {...restProps}
       />
-      {error && <FormHelperText error>{error}</FormHelperText>}
+      {error && (
+        <FormHelperText error sx={{ pl: 1.5 }}>
+          {error}
+        </FormHelperText>
+      )}
     </>
   );
 };
