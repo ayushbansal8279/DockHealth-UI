@@ -100,31 +100,31 @@ const PatientForm = forwardRef(
       });
     }, [patient]);
 
-    useEffect(() => {
-      if (!customFields || !formMethods) return;
+    // useEffect(() => {
+    //   if (!customFields || !formMethods) return;
       
-      const { register, unregister } = formMethods;
+    //   const { register, unregister } = formMethods;
       
-      Object.values(customFields).flat().forEach((field) => {
-        const fieldName = `patientMetaData.${field.identifier}`;
-        const isRequired = field.displayOptions?.includes('TASK_REQUIRED');
+    //   Object.values(customFields).flat().forEach((field) => {
+    //     const fieldName = `patientMetaData.${field.identifier}`;
+    //     const isRequired = field.displayOptions?.includes('TASK_REQUIRED');
         
-        if (isRequired) {
-          register(fieldName, {
-            required: 'This field is required',
-          });
-        } else {
-          register(fieldName);
-        }
-      });
+    //     if (isRequired) {
+    //       register(fieldName, {
+    //         required: 'This field is required',
+    //       });
+    //     } else {
+    //       register(fieldName);
+    //     }
+    //   });
       
-      return () => {
-        Object.values(customFields).flat().forEach((field) => {
-          const fieldName = `patientMetaData.${field.identifier}`;
-          unregister(fieldName);
-        });
-      };
-    }, [customFields]);
+    //   return () => {
+    //     Object.values(customFields).flat().forEach((field) => {
+    //       const fieldName = `patientMetaData.${field.identifier}`;
+    //       unregister(fieldName);
+    //     });
+    //   };
+    // }, [customFields]);
 
     useEffect(() => {
       setCustomFieldErrors?.(errors);

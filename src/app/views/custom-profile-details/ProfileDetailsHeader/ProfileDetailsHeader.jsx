@@ -30,6 +30,7 @@ import {
 } from './styled';
 import ProfileDetailsDrawer from '../../profile-details/ProfileDetailsDrawer/ProfileDetailsDrawer';
 import { useBoolean } from 'hooks/useBoolean';
+import DateLabel from '@/app/components/common/DateLabel/DateLabel';
 
 const { DISABLED } = TASK_LIST_RESTRICTIONS_OPTIONS;
 
@@ -159,19 +160,40 @@ const ProfileDetailsHeader = () => {
                       <ProfileInfo>
                         <Typography>{field.profileTypeFieldName}: </Typography>
                         <Box ml={1} />
-                        {field.profileTypeFieldType ===
-                          FieldType.DROPDOWN_MULTI ||
-                        field.profileTypeFieldType === FieldType.DROPDOWN ||
-                        field.profileTypeFieldType === FieldType.RELATIONSHIP
-                          ? `${
+                        {field.profileTypeFieldType === FieldType.HYPERLINK && (
+                          <a href={field.value} target="_blank" rel="noreferrer">
+                            {field.profileTypeFieldName}
+                          </a>
+                        )}
+                        {(field.profileTypeFieldType === FieldType.DATE || field.profileTypeFieldType === FieldType.DATE_TIME) && (
+                          <>
+                            <DateLabel date={field.value} dueDateIntent={field.dateTimeIntent} />
+                          </>
+                        )}
+                        {(field.profileTypeFieldType === FieldType.DROPDOWN_MULTI 
+                          || field.profileTypeFieldType === FieldType.DROPDOWN 
+                          || field.profileTypeFieldType === FieldType.RELATIONSHIP) && (
+                          <>
+                            <Box ml={1} />
+                            {`${
                               field.references
                                 ?.map((item) => item.displayValue)
                                 .join(', ') ||
                               field.values?.join(',') ||
                               field.value ||
                               ''
-                            }`
-                          : `${field.values?.join(',') || field.value || ''}`}
+                            }`}
+                          </>
+                        )}
+                        {(field.profileTypeFieldType === FieldType.TEXT 
+                          || field.profileTypeFieldType === FieldType.LONG_TEXT 
+                          || field.profileTypeFieldType === FieldType.NUMBER 
+                          || field.profileTypeFieldType === FieldType.BOOL) && (
+                          <>
+                            <Box ml={1} />
+                            {`${field.values?.join(',') || field.value || ''}`}
+                          </>
+                        )}
                       </ProfileInfo>
                       <ProfileInfoDivider />
                     </React.Fragment>

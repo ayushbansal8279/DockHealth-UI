@@ -73,7 +73,7 @@ const PatientDetailsView = () => {
   const [workspace, setWorkspace] = useState();
   const patient = useSelector(patientSelector);
 
-  const isWorkspacePatient = patient?.organizationIdentifier !== currentOrganization?.organizationIdentifier;
+  const isWorkspacePatient = patient && patient?.organizationIdentifier !== currentOrganization?.organizationIdentifier;
   
   useEffect(() => {
     if (isWorkspacePatient) {

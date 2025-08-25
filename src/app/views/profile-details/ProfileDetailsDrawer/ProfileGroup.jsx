@@ -1,15 +1,12 @@
 import React, { useState } from 'react';
+import { useFormContext } from 'react-hook-form';
+import { Box } from '@mui/material';
 import CustomField from '@/app/components/common/CustomField/CustomField';
 import LabeledCollapse from '@/app/components/common/LabeledCollapse/LabeledCollapse';
-import { Box } from '@mui/material';
 import { FieldType } from '@/app/helpers/field-type-helpers';
 
-const ProfileGroup = ({
-  category,
-  profileValues,
-  editMode,
-  context,
-}) => {
+const ProfileGroup = ({ category, profileValues, editMode, context }) => {
+  const formMethods = useFormContext();
   const [collapse, setCollapse] = useState(true);
 
   const handleCollapse = () => {
@@ -66,6 +63,7 @@ const ProfileGroup = ({
               field={field}
               initialValue={initialValue()}
               fieldsGroupKey="profileMetaData"
+              formMethods={formMethods}
             />
           );
         };
