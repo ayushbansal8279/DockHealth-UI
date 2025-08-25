@@ -173,20 +173,19 @@ const PatientForm = forwardRef(
 
     return (
       <form
-        onSubmit={async (event) => {
-          event.preventDefault();
+        onSubmit={handleSubmit(async (data, e) => {
           await formMethods.trigger();
-          
-          const hasErrors = Object.keys(formMethods.formState.errors).length > 0;
-          
+
+          const hasErrors =
+            Object.keys(formMethods.formState.errors).length > 0;
+
           if (hasErrors) {
             scrollToError(formMethods.formState.errors);
             return false;
           }
 
-          const formData = formMethods.getValues();
-          compose(onSubmit, formatMetaDataOutput)(formData);
-        }}
+          return compose(onSubmit, formatMetaDataOutput)(data, e);
+        }, scrollToError)}
         ref={reference}
         noValidate
       >
@@ -334,21 +333,27 @@ const PatientForm = forwardRef(
               disabled={!customFields}
               onClick={async (event) => {
                 if (customFields) {
-                  Object.values(customFields).flat().forEach((field) => {
-                    const fieldName = `patientMetaData.${field.identifier}`;
-                    const isRequired = field.displayOptions?.includes('TASK_REQUIRED');
-                    
-                    if (isRequired) {
-                      const fieldValue = formMethods.getValues(fieldName);
-                      
-                      if (!fieldValue || (Array.isArray(fieldValue) && fieldValue.length === 0)) {
-                        formMethods.setError(fieldName, {
-                          type: 'required',
-                          message: 'This field is required',
-                        });
+                  Object.values(customFields)
+                    .flat()
+                    .forEach((field) => {
+                      const fieldName = `patientMetaData.${field.identifier}`;
+                      const isRequired =
+                        field.displayOptions?.includes('TASK_REQUIRED');
+
+                      if (isRequired) {
+                        const fieldValue = formMethods.getValues(fieldName);
+
+                        if (
+                          !fieldValue ||
+                          (Array.isArray(fieldValue) && fieldValue.length === 0)
+                        ) {
+                          formMethods.setError(fieldName, {
+                            type: 'required',
+                            message: 'This field is required',
+                          });
+                        }
                       }
-                    }
-                  });
+                    });
                 }
               }}
             >
