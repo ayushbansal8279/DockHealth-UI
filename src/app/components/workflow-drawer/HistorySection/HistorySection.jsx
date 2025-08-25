@@ -39,12 +39,19 @@ const HistorySection = () => {
                 taskHistoryType,
                 createdDateTime,
                 user,
+                currentState,
+                previousState,
+                auditEventType,
               }) => (
                 <HistoryItem
                   key={auditId}
-                  description={`${user?.userName ?? ''} ${taskHistoryDetails}`}
                   date={createdDateTime}
                   type={taskHistoryType}
+                  currentState={currentState}
+                  previousState={previousState}
+                  auditEventType={auditEventType}
+                  userName={user?.userName || 'DOCK ADMIN'}
+                  taskHistoryDetails={taskHistoryDetails || ''}
                 />
               ),
             )
