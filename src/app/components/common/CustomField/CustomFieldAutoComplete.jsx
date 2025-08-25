@@ -103,7 +103,7 @@ const CustomFieldAutoComplete = ({
         );
       } else {
         selectedOptions = event ? [event] : [];
-        selectedValues = event?.profile?.identifier || null;
+        selectedValues = [event?.profile?.identifier] || null;
       }
 
       setValue(name, selectedValues, {
