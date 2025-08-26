@@ -19,9 +19,7 @@ import { getUserTaskFilterOptions } from 'actions/person-details-actions';
 import {
   taskCountersSelector,
   tasksIsFetchingSelector,
-  completedTasksIsFetchingSelector,
   taskIdentifiersSelector,
-  completedTaskIdentifiersSelector,
   currentTasksStatusSelector,
   userIdentifierSelector,
 } from 'selectors/person-details-selectors';
@@ -36,13 +34,7 @@ const UserDetailsFilters = () => {
   const selectedTab = useSelector(currentTasksStatusSelector);
   const userIdentifier = useSelector(userIdentifierSelector);
   const isFetching = useSelector(tasksIsFetchingSelector);
-  const isCompletedTasksFetching = useSelector(
-    completedTasksIsFetchingSelector,
-  );
   const taskIdentifiers = useSelector(taskIdentifiersSelector);
-  const completedTaskIdentifiers = useSelector(
-    completedTaskIdentifiersSelector,
-  );
   const taskCounters = useSelector(taskCountersSelector);
   const quickFiltersList = useSelector(quickFiltersSelector);
   const addQuickFilterOption = useSelector(addQuickFilterOptionSelector);
@@ -50,22 +42,13 @@ const UserDetailsFilters = () => {
   const { filters, selectedFilters } = megaFilter || {};
 
   // @TODO - fix this
-  const tasksAndSubTasksCount =
-    selectedTab === TaskStatus.INCOMPLETE
-      ? determineTaskCounts({
-          selectedFilters,
-          isFetching,
-          tasks: taskIdentifiers,
-          tasksCount: taskCounters.incomplete,
-          status: 'INCOMPLETE',
-        })
-      : determineTaskCounts({
-          selectedFilters,
-          isFetching,
-          tasks: completedTaskIdentifiers,
-          tasksCount: taskCounters.complete,
-          status: 'COMPLETE',
-        });
+  const tasksAndSubTasksCount = determineTaskCounts({
+    selectedFilters,
+    isFetching,
+    tasks: taskIdentifiers,
+    tasksCount: selectedTab === TaskStatus.INCOMPLETE ? taskCounters.incomplete : taskCounters.complete,
+    status: selectedTab === TaskStatus.INCOMPLETE ? 'INCOMPLETE' : 'COMPLETE',
+  });
 
   const handleFilterChange = (updatedFilters) => {
     dispatch(
@@ -153,7 +136,7 @@ const UserDetailsFilters = () => {
             ? taskCounters.incomplete
             : taskCounters.complete
         }
-        isFetching={isFetching || isCompletedTasksFetching}
+        isFetching={isFetching}
         onOpen={handleFilterOpen}
         quickFiltersList={quickFiltersList}
         addQuickFilterOption={addQuickFilterOption}

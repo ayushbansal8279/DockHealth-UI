@@ -9,10 +9,8 @@ const initialState = {
   userDetails: null,
   isFetchingUserDetails: false,
   taskIdentifiers: null,
-  completedTaskIdentifiers: null,
   tasksMap: {},
   isFetching: false,
-  isCompletedTasksFetching: false,
   taskCounters: {},
   sort: {
     key: null,
@@ -119,45 +117,7 @@ const PersonDetailsReducer = (state = initialState, action) => {
       // return { ...state, tasks: tasks.map(mapTasksSuccess), isFetching: false };
     }
 
-    case ActionTypes.GET_USER_COMPLETED_TASKS: {
-      return {
-        ...state,
-        isCompletedTasksFetching: true,
-      };
-    }
 
-    case ActionTypes.GET_USER_COMPLETED_TASKS_SUCCESS: {
-      const { tasks } = action;
-
-      const newMap = {};
-      for (const task of tasks) {
-        if (task.itemType === TaskItemType.TASK) {
-          newMap[task.identifier] = task;
-        } else {
-          newMap[task.identifier] = task;
-          for (const grpTask of task.tasks) {
-            newMap[grpTask.identifier] = grpTask;
-          }
-        }
-      }
-      return {
-        ...state,
-        tasksMap: {
-          ...state.tasksMap,
-          ...newMap,
-        },
-        completedTaskIdentifiers: tasks.map((task) => task.identifier),
-        isCompletedTasksFetching: false,
-        isFetching: false,
-      };
-
-      // return {
-      //   ...state,
-      //   completedTasks: tasks.map(mapTasksSuccess),
-      //   isCompletedTasksFetching: false,
-      //   isFetching: false,
-      // };
-    }
 
     case ActionTypes.GET_USER_TASK_COUNTERS_SUCCESS: {
       return {
@@ -175,7 +135,6 @@ const PersonDetailsReducer = (state = initialState, action) => {
           key,
           order,
         },
-        completedTasks: null,
         taskIdentifiers: null,
       };
     }

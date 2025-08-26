@@ -25,6 +25,7 @@ const CustomFieldRichTextEditor = React.forwardRef(
       task,
       fieldsGroupKey,
       onChange,
+      formMethods,
       // inputRef,
       // characterLimit,
       // oneline,
@@ -33,6 +34,7 @@ const CustomFieldRichTextEditor = React.forwardRef(
     reference,
   ) => {
     const dispatch = useDispatch();
+    const formContext = useFormContext();
     const {
       getValues,
       watch,
@@ -40,7 +42,7 @@ const CustomFieldRichTextEditor = React.forwardRef(
       unregister,
       setValue,
       formState: { errors },
-    } = useFormContext();
+    } = formMethods || formContext;
     const value = watch(name);
     const [isFocused, setIsFocused] = useState(false);
     const [updatedValue, setUpdatedValue] = useState(value);
@@ -143,7 +145,7 @@ const CustomFieldRichTextEditor = React.forwardRef(
 
     const changeData = (textValue) => {
       setUpdatedValue(textValue);
-      
+
       setValue(name, textValue, { shouldValidate: true });
 
       if (onChange) {
@@ -174,7 +176,11 @@ const CustomFieldRichTextEditor = React.forwardRef(
             />
           </CustomTextEditorContainer>
         </CustomTextEditor>
-        {error && <FormHelperText error>{error}</FormHelperText>}
+        {error && (
+          <FormHelperText error sx={{ pl: 1.5 }}>
+            {error}
+          </FormHelperText>
+        )}
       </>
     );
   },

@@ -3,6 +3,7 @@ import { capitalize } from 'lodash';
 import { useSelector } from 'react-redux';
 import { StyledListLink } from '../workspace/styled';
 import { organizationWorkspaceLabelSelector } from '@/app/selectors/organization-selectors';
+import { WORKSPACE_PATH } from '@/app/routing/helpers/paths';
 
 export function getWorkspaceTitle({
   embeddedMode,
@@ -22,7 +23,7 @@ export function getWorkspaceTitle({
   if (isWorkspaceScoped) {
     return (
       <>
-        <StyledListLink to="/core/workspace">{workspaceLabel}</StyledListLink>
+        <StyledListLink to={WORKSPACE_PATH}>{workspaceLabel}</StyledListLink>
         {' / '}
         {workspace?.workspaceIdentifier ? (
           <>

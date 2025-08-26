@@ -7,6 +7,7 @@ import {
   tasksSelector,
   sortSelector,
   selectedTasksSelector,
+  currentTasksStatusSelector,
 } from 'selectors/person-details-selectors';
 import { userProfileSelector } from 'selectors/user-selectors';
 import { hasFiltersAppliedSelector } from 'selectors/mega-filter-selectors';
@@ -32,13 +33,13 @@ import TaskListGroupCollapse from 'views/patient-details/TaskListGroupCollapse/T
 import TasksHeader from 'components/tasklist/TasksHeader/TasksHeader';
 import QuickAddTaskInput from 'components/tasklist/QuickAddTaskInput/QuickAddTaskInput';
 import { isTaskItemsSelectedSelector } from 'selectors/task-items-selectors';
-import { TaskOrigin } from 'helpers/task-helpers';
+import { TaskOrigin, TaskStatus } from 'helpers/task-helpers';
 import { changeTasksSelectedState } from 'actions/task-actions';
 import { useTaskListColumnsConfig } from 'context-api/columns-config-context';
 import StickyContainer from 'components/common/HorizontalScroll/StickyContainer';
 import { TaskGroupsContainer } from '../styled';
 
-const PersonDetailsOpenedTasks = ({
+const PersonDetailsTasks = ({
   taskItemConfig,
   searchValue,
   toggleCompleteTask,
@@ -46,6 +47,7 @@ const PersonDetailsOpenedTasks = ({
   updateWorkflowStatus,
   onOrderChange,
   iconColorActive,
+  listUniqueKey,
 }) => {
   const dispatch = useDispatch();
   const userIdentifier = useSelector(userIdentifierSelector);
@@ -54,6 +56,7 @@ const PersonDetailsOpenedTasks = ({
   const sort = useSelector(sortSelector);
   const areFiltersApplied = useSelector(hasFiltersAppliedSelector);
   const currentUser = useSelector(userProfileSelector);
+  const currentTasksStatus = useSelector(currentTasksStatusSelector);
   const addingNewSubtaskParentId = useSelector(
     addingNewSubtaskParentIdSelector,
   );
@@ -127,78 +130,79 @@ const PersonDetailsOpenedTasks = ({
   }, [dispatch, isGroupSelected, tasks]);
 
   const bulkEditTasks = useSelector(selectedTasksSelector);
-
   const bulkEditIsDisabled = false;
+
+  if (isFetchingTasks && !tasks) {
+    return <GroupedListSkeletonLoader numberOfGroups={1} />;
+  }
+
+  const isCompletedGroup = currentTasksStatus === TaskStatus.COMPLETE;
 
   return (
     <BulkEditSection
       allTasks={bulkEditTasks}
-      refreshTasks={() => dispatch(getUserTasks())}
+      refreshTasks={() => dispatch(getUserTasks(currentTasksStatus))}
       disabled={bulkEditIsDisabled}
       searchValue={searchValue}
     >
-      {isFetchingTasks && !tasks ? (
-        <GroupedListSkeletonLoader numberOfGroups={1} />
-      ) : (
-        <TaskGroupsContainer>
-          {!isEmpty(tasks) ? (
-            <TaskListGroupCollapse
-              group={{ groupName: 'All tasks' }}
-              stickyHeader
-            >
-              {({ isFullView }) => (
-                <>
-                  <StickyContainer left={24} decreaseWidth={2 * 24} zIndex={13}>
-                    <QuickAddTaskInput
-                      ref={quickAddTaskInputReference}
-                      quickAddTask={(task) => {
-                        handleQuickAddTask(task);
-                        setTimeout(() => {
-                          quickAddTaskInputReference?.current?.focus();
-                        }, 0);
-                      }}
-                      iconColorActive={iconColorActive}
-                    />
-                  </StickyContainer>
-                  <TasksHeader
-                    onOrderChange={onOrderChange}
-                    bulkEditEnabled
-                    sort={sort}
-                    onSortChange={handleSortChange}
-                    groupHasMultipleAssignees
-                    isGroupSelected={isGroupSelected}
-                    onGroupSelect={handleGroupSelect}
+      <TaskGroupsContainer>
+        {!isEmpty(tasks) ? (
+          <TaskListGroupCollapse
+            group={{ groupName: 'All tasks' }}
+            stickyHeader
+          >
+            {({ isFullView }) => (
+              <>
+                <StickyContainer left={24} decreaseWidth={2 * 24} zIndex={13}>
+                  <QuickAddTaskInput
+                    ref={quickAddTaskInputReference}
+                    quickAddTask={(task) => {
+                      handleQuickAddTask(task);
+                      setTimeout(() => {
+                        quickAddTaskInputReference?.current?.focus();
+                      }, 0);
+                    }}
+                    iconColorActive={iconColorActive}
                   />
-                  {tasks?.map((task) => (
-                    <StandardTaskItem
-                      key={task.identifier}
-                      isFullView={isFullView}
-                      taskIdentifier={task.identifier}
-                      isCompletedGroup={false}
-                      toggleCompleteTask={toggleCompleteTask}
-                      onTaskUpdate={onTaskUpdate}
-                      updateWorkflowStatus={updateWorkflowStatus}
-                      addingNewSubtask={
-                        addingNewSubtaskParentId === task.identifier
-                      }
-                      areFiltersApplied={areFiltersApplied}
-                      isSearchApplied={searchValue}
-                      multipleAssigneesContext
-                      dragAndDropDisabled
-                      iconColorActive={iconColorActive}
-                      origin={TaskOrigin.PERSON}
-                    />
-                  ))}
-                </>
-              )}
-            </TaskListGroupCollapse>
-          ) : (
-            renderEmptyState()
-          )}
-        </TaskGroupsContainer>
-      )}
+                </StickyContainer>
+                <TasksHeader
+                  onOrderChange={onOrderChange}
+                  bulkEditEnabled
+                  sort={sort}
+                  onSortChange={handleSortChange}
+                  groupHasMultipleAssignees
+                  isGroupSelected={isGroupSelected}
+                  onGroupSelect={handleGroupSelect}
+                />
+                {tasks?.map((task) => (
+                  <StandardTaskItem
+                    key={task.identifier}
+                    isFullView={isFullView}
+                    taskIdentifier={task.identifier}
+                    isCompletedGroup={isCompletedGroup}
+                    toggleCompleteTask={toggleCompleteTask}
+                    onTaskUpdate={onTaskUpdate}
+                    updateWorkflowStatus={updateWorkflowStatus}
+                    addingNewSubtask={
+                      addingNewSubtaskParentId === task.identifier
+                    }
+                    areFiltersApplied={areFiltersApplied}
+                    isSearchApplied={searchValue}
+                    multipleAssigneesContext
+                    dragAndDropDisabled
+                    iconColorActive={iconColorActive}
+                    origin={TaskOrigin.PERSON}
+                  />
+                ))}
+              </>
+            )}
+          </TaskListGroupCollapse>
+        ) : (
+          renderEmptyState()
+        )}
+      </TaskGroupsContainer>
     </BulkEditSection>
   );
 };
 
-export default PersonDetailsOpenedTasks;
+export default PersonDetailsTasks;

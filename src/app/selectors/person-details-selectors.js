@@ -17,19 +17,9 @@ export const tasksIsFetchingSelector = createSelector(
   ({ isFetching }) => isFetching,
 );
 
-export const completedTasksIsFetchingSelector = createSelector(
-  personStateSelector,
-  ({ isCompletedTasksFetching }) => isCompletedTasksFetching,
-);
-
 export const taskIdentifiersSelector = createSelector(
   personStateSelector,
   ({ taskIdentifiers }) => taskIdentifiers,
-);
-
-export const completedTaskIdentifiersSelector = createSelector(
-  personStateSelector,
-  ({ completedTaskIdentifiers }) => completedTaskIdentifiers,
 );
 
 export const tasksSelector = createSelector(
@@ -38,19 +28,6 @@ export const tasksSelector = createSelector(
     const tasks = [];
     if (taskIdentifiers) {
       for (const taskId of taskIdentifiers) {
-        tasks.push(tasksMap[taskId]);
-      }
-    }
-    return tasks;
-  },
-);
-
-export const completedTasksSelector = createSelector(
-  personStateSelector,
-  ({ completedTaskIdentifiers, tasksMap }) => {
-    const tasks = [];
-    if (completedTaskIdentifiers) {
-      for (const taskId of completedTaskIdentifiers) {
         tasks.push(tasksMap[taskId]);
       }
     }

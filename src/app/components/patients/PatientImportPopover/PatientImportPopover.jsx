@@ -6,6 +6,8 @@ import circleCompleted from 'img/circle-completed.svg';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import { capitalize } from 'helpers/capitalize';
 import { userProfileSelector } from 'selectors/user-selectors';
+import { useHistory } from 'react-router-dom';
+import pluralize from 'pluralize';
 import {
   ImportPatientPopoverWrapper,
   ImportPatientPopoverWrapperMinimized,
@@ -25,10 +27,8 @@ import {
   ErrorMessage,
   FixErrorContainer,
   FixErrors,
-  ProgressBar,
   HyperLink,
 } from './styled';
-import { useHistory } from 'react-router-dom';
 
 const PatientImportPopover = ({
   closePopover,
@@ -115,12 +115,14 @@ const PatientImportPopover = ({
               />
               <ProgressMessage>{fileProgress}% Complete</ProgressMessage> */}
               <ProgressMessage>
-                Patient records are being uploaded. Please refresh page after some
+                Patient records are being uploaded. Please refresh page after
                 time.
               </ProgressMessage>
             </ProgressDisplayArea>
           )}
-          <HyperLink onClick={patientImportStatus} >View Import Status</HyperLink>
+          <HyperLink onClick={patientImportStatus}>
+            View Import Status
+          </HyperLink>
           {(patientImportDetails?.trackingDetails?.length > 0 ||
             patientImportDetails?.inError ||
             hasImportFailed) && (
@@ -144,7 +146,7 @@ const PatientImportPopover = ({
                   Re-upload corrected file
                 </FixErrors>
                 <FixErrors onClick={closePopover}>
-                  Add {customerTypeLabel}s manually
+                  Add {pluralize(customerTypeLabel)} manually
                 </FixErrors>
               </FixErrorContainer>
             </ErrorDisplayArea>
