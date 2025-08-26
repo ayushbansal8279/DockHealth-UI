@@ -417,6 +417,7 @@ const PatientsList = ({
                   from: pathname,
                 },
               });
+              localStorage.setItem('from', pathname);
             } else {
               history.push({
                 pathname: `/core/patient/${patientIdentifier}`,
@@ -424,6 +425,7 @@ const PatientsList = ({
                   from: pathname,
                 },
               });
+              localStorage.setItem('from', pathname);
             }
           }}
           className="patient-cell"
@@ -902,7 +904,7 @@ const PatientsList = ({
           patientListIdentifier:
             patientsList?.listDetails?.patientListIdentifier,
           setup: { listDisplayColumns: setup },
-          workspaceIdentifier
+          workspaceIdentifier,
         }),
       );
 

@@ -224,10 +224,12 @@ const PatientSection = ({
 
   const fetchPatients = useCallback(
     (value) =>
-      getPatientsByCriteria(value, null, workspaceIdentifier).then((fetchedPatients) => {
-        setPatients(fetchedPatients);
-        return fetchedPatients;
-      }),
+      getPatientsByCriteria(value, null, workspaceIdentifier).then(
+        (fetchedPatients) => {
+          setPatients(fetchedPatients);
+          return fetchedPatients;
+        },
+      ),
     [],
   );
 
@@ -341,6 +343,7 @@ const PatientSection = ({
       pathname: `/core/patient/${selectedPatient.patientIdentifier}`,
       state: { from: search ? pathname + search : pathname },
     });
+    localStorage.setItem('from', search ? pathname + search : pathname);
   };
 
   return (

@@ -87,6 +87,9 @@ const TaskTemplatePatient = ({
                 from: pathname,
               },
             }}
+            onClick={() => {
+              localStorage.setItem('from', pathname);
+            }}
           >
             <PatientLabel>
               {(matchPatient || matchPatientMRN) && highlightedValue ? (
@@ -129,6 +132,9 @@ const TaskTemplatePatient = ({
                 state: {
                   from: pathname,
                 },
+              }}
+              onClick={() => {
+                localStorage.setItem('from', pathname);
               }}
             >
               <PatientLabel>
