@@ -43,6 +43,7 @@ const ProfileRelationship = () => {
       fetchProfileTypeFields={fetchProfileTypeFields}
       fetchProfiles={fetchRelationships}
       showHeader={false}
+      noDataMessage="No relationships"
     />
   );
 };

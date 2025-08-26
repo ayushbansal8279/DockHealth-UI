@@ -19,6 +19,7 @@ import {
   MenuItem,
   Stack,
   Switch,
+  Typography,
 } from '@mui/material';
 import { getAllProfileTypes } from 'api/profile-type-api';
 import { getAllProfileFieldTypes } from 'api/profile-type-field-api';
@@ -63,6 +64,7 @@ const CustomProfileList = ({
   groupIdentifier: groupIdentifierProp,
   fetchProfiles,
   showHeader = true,
+  noDataMessage,
 }) => {
   const dispatch = useDispatch();
   const history = useHistory();
@@ -345,99 +347,132 @@ const CustomProfileList = ({
             </ToolbarButton>
           </Box>
         </Stack>
-        <DataGrid
-          fluid
-          sx={{
-            '& .MuiTablePagination-select': {
-              paddingLeft: '1rem',
-            },
-          }}
-          controller={controller}
-          dataset={profiles.filter(
-            (profile) =>
-              profile.fields &&
-              getValues(profile).some(
-                (value) => value && value?.includes(searchPhrase),
+        {profiles.length === 0 && noDataMessage ? (
+          <DataGrid
+            hideFooter
+            controller={controller}
+            sx={{
+              minHeight: 250,
+              border: (theme) => `1px solid ${theme.palette.divider}`,
+              '& .MuiDataGrid-virtualScroller': {
+                minHeight: 250,
+                overflow: 'hidden',
+              },
+            }}
+            slots={{
+              noRowsOverlay: () => (
+                <Typography
+                  variant="body1"
+                  sx={{ color: 'text.secondary', textAlign: 'center', mt: 10 }}
+                >
+                  No relationships yet
+                </Typography>
               ),
-          )}
-          onRecordClick={handleRecordClick}
-        >
-          {profileTypeFields
-            .filter((profileTypeField) =>
-              filters.includes(profileTypeField.identifier),
-            )
-            .map((field) => (
-              <Data
-                key={field.identifier}
-                name={field.name}
-                value={(data) => {
-                  const record = data.fields?.find(
-                    (profileField) =>
-                      field.identifier ===
-                      profileField.profileTypeFieldIdentifier,
-                  );
+            }}
+          />
+        ) : (
+          <DataGrid
+            fluid
+            sx={{
+              '& .MuiTablePagination-select': {
+                paddingLeft: '1rem',
+              },
+            }}
+            controller={controller}
+            dataset={profiles.filter(
+              (profile) =>
+                profile.fields &&
+                getValues(profile).some(
+                  (value) => value && value?.includes(searchPhrase),
+                ),
+            )}
+            onRecordClick={handleRecordClick}
+          >
+            {profileTypeFields
+              .filter((profileTypeField) =>
+                filters.includes(profileTypeField.identifier),
+              )
+              .map((field) => (
+                <Data
+                  key={field.identifier}
+                  name={field.name}
+                  value={(data) => {
+                    const record = data.fields?.find(
+                      (profileField) =>
+                        field.identifier ===
+                        profileField.profileTypeFieldIdentifier,
+                    );
 
-                  if (record) {
-                    switch (field.fieldType) {
-                      case 'TEXT':
-                      case 'NUMBER':
-                      case 'BOOLEAN':
-                      case 'LONG_TEXT': {
-                        return (
-                          record.values?.[0] || record.values?.[0]?.value || ''
-                        );
-                      }
-                      case 'MULTI_SELECT':
-                      case 'PICK_LIST': {
-                        return (
-                          record.references
+                    if (record) {
+                      switch (field.fieldType) {
+                        case 'TEXT':
+                        case 'NUMBER':
+                        case 'BOOLEAN':
+                        case 'LONG_TEXT': {
+                          return (
+                            record.values?.[0] ||
+                            record.values?.[0]?.value ||
+                            ''
+                          );
+                        }
+                        case 'MULTI_SELECT':
+                        case 'PICK_LIST': {
+                          return (
+                            record.references
+                              ?.map((item) => item.displayValue)
+                              .join(', ') ||
+                            record.values?.join(', ') ||
+                            ''
+                          );
+                        }
+                        case 'RELATIONSHIP': {
+                          return record.references
                             ?.map((item) => item.displayValue)
-                            .join(', ') ||
-                          record.values?.join(', ') ||
-                          ''
-                        );
-                      }
-                      case 'RELATIONSHIP': {
-                        return record.references
-                          ?.map((item) => item.displayValue)
-                          .join(', ');
-                      }
-                      case 'HYPERLINK': {
-                        const link =
-                          record.values?.[0] || record.values?.[0]?.value || '';
-                        if (!link) return '';
-                        return (
-                          <StyledLink
-                            href={link.startsWith('http') ? link : `//${link}`}
-                            target="_blank"
-                            onClick={(event) => event.stopPropagation()}
-                          >
-                            {link}
-                          </StyledLink>
-                        );
-                      }
-                      case 'DATE': {
-                        const date =
-                          record.values?.[0] || record.values?.[0]?.value || '';
-                        if (!date) return '';
-                        return (
-                          <DateLabel
-                            date={date}
-                            dueDateIntent={record.dateTimeIntents[0]}
-                          />
-                        );
-                      }
-                      default: {
-                        return '';
+                            .join(', ');
+                        }
+                        case 'HYPERLINK': {
+                          const link =
+                            record.values?.[0] ||
+                            record.values?.[0]?.value ||
+                            '';
+                          if (!link) return '';
+                          return (
+                            <StyledLink
+                              href={
+                                link.startsWith('http') ? link : `//${link}`
+                              }
+                              target="_blank"
+                              onClick={(event) => event.stopPropagation()}
+                            >
+                              {link}
+                            </StyledLink>
+                          );
+                        }
+                        case 'DATE': {
+                          const date =
+                            record.values?.[0] ||
+                            record.values?.[0]?.value ||
+                            '';
+                          if (!date) return '';
+                          return (
+                            <DateLabel
+                              date={date}
+                              dueDateIntent={record.dateTimeIntents[0]}
+                            />
+                          );
+                        }
+                        default: {
+                          return '';
+                        }
                       }
                     }
-                  }
 
-                  return '';
-                }}
-              />
-            ))}
-        </DataGrid>
+                    return '';
+                  }}
+                />
+              ))}
+          </DataGrid>
+        )}
       </ViewLayout>
       <Dialog
         open={importPopupOpen}

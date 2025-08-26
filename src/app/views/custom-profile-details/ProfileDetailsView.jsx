@@ -244,7 +244,20 @@ const ProfileDetailsView = () => {
           <ProfileDetailsHeader />
           <ProfileDetailsTabsContainer>
             <Grid container>
-              <Tabs value={activeTabPath} onChange={handleTabChange}>
+              <Tabs
+                value={activeTabPath}
+                onChange={handleTabChange}
+                variant="scrollable"
+                scrollButtons="auto"
+                sx={{
+                  '& .MuiTabs-scrollButtons ~ .MuiTabs-scroller': {
+                    px: 0,
+                  },
+                  '& .MuiTabs-scroller': {
+                    px: 4,
+                  },
+                }}
+              >
                 {tabsConfiguration.map((t) => (
                   <MainTab
                     key={t.mainPath}
