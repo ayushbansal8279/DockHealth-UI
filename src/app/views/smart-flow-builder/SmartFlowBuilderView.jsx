@@ -127,27 +127,32 @@ import NoteNode from './Nodes/CreateNoteNode';
 import APINode from './Nodes/APINode';
 // import PatientNode from '';
 
-const nodeTypes = {
-  [NodeType.NEW_AUTOMATION]: NewTaskNode,
-  [NodeType.NEW_STANDARD]: NewTaskNode,
-  [NodeType.NEW_DECISION]: NewTaskNode,
-  [NodeType.STANDARD]: TaskNode,
-  [NodeType.DECISION]: TaskNode,
-  [NodeType.NEW_WORKFLOW_LINK]: NewNestedFlowNode,
-  [NodeType.WORKFLOW_LINK]: NestedFlowNode,
-  [NodeType.START_INDICATOR]: IndicatorNode,
-  [NodeType.END_INDICATOR]: IndicatorNode,
+export const createNodeTypes = (handleNodeDrawerOpen) => {
+  const withExtraProps = (Component) => (props) =>
+    <Component {...props} onEditClick={handleNodeDrawerOpen} />;
 
-  [NodeType.NEW_EMAIL]: EmailNode,
-  [NodeType.NEW_WEBHOOK]: WebhookNode,
-  [NodeType.NEW_AI_ANALYZER]: AIAnalyzerNode,
-  [NodeType.NEW_AI_ASSISTANT]: AIAssistantNode,
-  [NodeType.NEW_SEND_SMS]: SMSNode,
-  [NodeType.NEW_CREATE_PATIENT]: PatientNode,
-  [NodeType.NEW_CREATE_APPOINTMENT]: AppointmentNode,
-  [NodeType.NEW_UPDATE_APPOINTMENT]: AppointmentNode,
-  [NodeType.NEW_CREATE_NOTE]: NoteNode,
-  [NodeType.NEW_CALL_API]: APINode,
+  return {
+    [NodeType.NEW_AUTOMATION]: NewTaskNode,
+    [NodeType.NEW_STANDARD]: NewTaskNode,
+    [NodeType.NEW_DECISION]: NewTaskNode,
+    [NodeType.STANDARD]: TaskNode,
+    [NodeType.DECISION]: TaskNode,
+    [NodeType.NEW_WORKFLOW_LINK]: NewNestedFlowNode,
+    [NodeType.WORKFLOW_LINK]: NestedFlowNode,
+    [NodeType.START_INDICATOR]: IndicatorNode,
+    [NodeType.END_INDICATOR]: IndicatorNode,
+
+    [NodeType.NEW_EMAIL]: withExtraProps(EmailNode),
+    [NodeType.NEW_WEBHOOK]: withExtraProps(WebhookNode),
+    [NodeType.NEW_AI_ANALYZER]: withExtraProps(AIAnalyzerNode),
+    [NodeType.NEW_AI_ASSISTANT]: withExtraProps(AIAssistantNode),
+    [NodeType.NEW_SEND_SMS]: withExtraProps(SMSNode),
+    [NodeType.NEW_CREATE_PATIENT]: withExtraProps(PatientNode),
+    [NodeType.NEW_CREATE_APPOINTMENT]: withExtraProps(AppointmentNode),
+    [NodeType.NEW_UPDATE_APPOINTMENT]: withExtraProps(AppointmentNode),
+    [NodeType.NEW_CREATE_NOTE]: withExtraProps(NoteNode),
+    [NodeType.NEW_CALL_API]: withExtraProps(APINode),
+  };
 };
 
 const linkTypes = {
@@ -276,7 +281,7 @@ const SmartFlowBuilderView = () => {
           ...constantVisibleElements,
           ...mapLayoutToElements(layout, tasks),
           ...(temporaryElements || []),
-          ...(emails || []),// TODO treat everything as Task or Other Nodes ?
+          ...(emails || []), // TODO treat everything as Task or Other Nodes ?
         ].map((element) => ({
           ...Object.fromEntries(
             previousElements.map((previousElement) => [
@@ -332,25 +337,16 @@ const SmartFlowBuilderView = () => {
     );
   };
 
-  const handleNodeClick = useCallback((event, node) => {
-    const drawerCompatibleTypes = [
-      NodeType.NEW_EMAIL,
-      NodeType.NEW_WEBHOOK,
-      NodeType.NEW_AI_ANALYZER,
-      NodeType.NEW_AI_ASSISTANT,
-      NodeType.NEW_SEND_SMS,
-      NodeType.NEW_CALL_API,
-      NodeType.NEW_CREATE_PATIENT,
-      NodeType.NEW_CREATE_APPOINTMENT,
-      NodeType.NEW_UPDATE_APPOINTMENT,
-      NodeType.NEW_CREATE_NOTE,
-    ];
-
-    if (drawerCompatibleTypes.includes(node.type)) {
-      setSelectedNode(node);
-      setIsNodeDrawerOpen(true);
-    }
+  const handleNodeDrawerOpen = useCallback((node) => {
+    setSelectedNode(node);
+    setIsNodeDrawerOpen(true);
   }, []);
+
+  // const nodeTypes = createNodeTypes(handleNodeDrawerOpen);
+  const nodeTypes = useMemo(
+    () => createNodeTypes(handleNodeDrawerOpen),
+    [handleNodeDrawerOpen],
+  );
 
   const closeNodeDrawer = useCallback(() => {
     setIsNodeDrawerOpen(false);
@@ -858,7 +854,6 @@ const SmartFlowBuilderView = () => {
               }}
               onSelectionDragStop={handleSelectionDragStop}
               onNodeDragStop={handleNodeDragStop}
-              onNodeClick={handleNodeClick}
               selectionKeyCode={['Meta', 'Shift']}
               multiSelectionKeyCode={['Meta', 'Shift']}
               nodesDraggable={isCurrentUserEditor}

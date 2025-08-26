@@ -8,11 +8,21 @@ import {
   NodeTitle,
   NodeDescription,
   CustomNodeHandle,
+  OptionsContainer,
+  GrowButton,
 } from './styled';
 import palette from '@/app/styles/palette';
+import { useDispatch } from 'react-redux';
+import { Fab } from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { deleteTemporaryElement } from '@/app/actions/task-template-actions';
 
-const CreateNoteNode = ({ data, selected }) => {
-  const { label, description, status, noteType, patientName, title } = data || {};
+const CreateNoteNode = (props) => {
+  const { data, selected, id, onEditClick } = props;
+  const { label, description, status, noteType, patientName, title } =
+    data || {};
+  const dispatch = useDispatch();
 
   return (
     <NodeContainer
@@ -30,6 +40,28 @@ const CreateNoteNode = ({ data, selected }) => {
           <NoteAddIcon fontSize="small" />
         </NodeIcon>
         <NodeTitle>{label || 'Create Note'}</NodeTitle>
+        <OptionsContainer>
+          <GrowButton key="delete" index={0}>
+            <Fab
+              key="delete"
+              aria-label="delete"
+              size="small"
+              onClick={() => dispatch(deleteTemporaryElement(id))}
+            >
+              <DeleteIcon fontSize="small" color="inherit" />
+            </Fab>
+          </GrowButton>
+          <GrowButton key="edit" index={1}>
+            <Fab
+              key="edit"
+              aria-label="edit"
+              size="small"
+              onClick={() => onEditClick(props)}
+            >
+              <EditIcon fontSize="small" color="inherit" />
+            </Fab>
+          </GrowButton>
+        </OptionsContainer>
       </NodeHeader>
 
       <NodeDescription>
