@@ -362,10 +362,10 @@ const CustomProfileList = ({
             slots={{
               noRowsOverlay: () => (
                 <Typography
-                  variant="body1"
-                  sx={{ color: 'text.secondary', textAlign: 'center', mt: 10 }}
+                  variant="body2"
+                  sx={{ textAlign: 'center', mt: 10 }}
                 >
-                  No relationships yet
+                  {noDataMessage}
                 </Typography>
               ),
             }}
