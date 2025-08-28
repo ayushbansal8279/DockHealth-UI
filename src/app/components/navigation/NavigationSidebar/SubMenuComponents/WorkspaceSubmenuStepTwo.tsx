@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { MoreVert } from '@mui/icons-material';
 import { Box } from '@mui/material';
 import { useHistory, useLocation } from 'react-router-dom';
 import * as PatientsActions from 'actions/patients-actions';
+// @ts-ignore
 import pluralize from 'pluralize';
 import {
   workspaceSelector,
@@ -31,6 +32,11 @@ import {
   HomeIconWrapper,
   MenuWrapper,
 } from './styled';
+// Cast styled components to any for TSX prop compatibility in this file
+const AnyWorkspacesSubWrapper: any = WorkspacesSubWrapper as any;
+const AnyDrawerListsItem: any = DrawerListsItem as any;
+const AnyListNameText: any = ListNameText as any;
+const AnyListNameLabel: any = ListNameLabel as any;
 import {
   clearWorkspaceState,
   getWorkspaceTaskLists,
@@ -63,8 +69,30 @@ import AddButton from '@/app/components/common/AddButton/AddButton';
 import { hideSubMenu } from '@/app/actions/template-actions';
 import { isUserViewOnly } from '@/app/helpers/user-helper';
 import HomeIcon from '@/app/img/navigation/HomeIcon';
+import {
+  DndContext,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
+import {
+  SortableContext,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
+import {
+  restrictToFirstScrollableAncestor,
+  restrictToVerticalAxis,
+} from '@dnd-kit/modifiers';
+import move from 'ramda/src/move';
+import DraggableDroppableListItem from './DraggableDroppableListItem';
+import * as TaskListActions from 'actions/task-list-actions';
 
-const WorkspaceSubmenuStepTwo = ({ setShowStepTwo }) => {
+type WorkspaceSubmenuStepTwoProps = {
+  setShowStepTwo: (value: boolean) => void;
+};
+
+const WorkspaceSubmenuStepTwo = ({ setShowStepTwo }: WorkspaceSubmenuStepTwoProps) => {
   const dispatch = useDispatch();
   const workspace = useSelector(workspaceSelector);
   const workspaceLabel = useSelector(organizationWorkspaceLabelSelector);
@@ -84,11 +112,18 @@ const WorkspaceSubmenuStepTwo = ({ setShowStepTwo }) => {
   const users = useSelector(workspaceUsersSelector);
   const isFetching = useSelector(isFetchingPatientsListsSelector);
   const isInitialListFetching = isFetching && !defaultPatientsLists;
-  const userGroups = users?.filter((user: any) => user?.itemType === 'GROUP');
+  const userGroups = (users as any[])?.filter((user: any) => user?.itemType === 'GROUP');
 
   const [activeCollapse, setActiveCollapse] = useState('list');
   const [isSidebarOpen, setIsSidebarOpen, unsetIsSidebarOpen] =
-    useBoolean(false);
+    (useBoolean(false) as any);
+  const [dragActiveId, setDragActiveId] = useState<string | null>(null);
+  const [localTaskLists, setLocalTaskLists] = useState<any[]>([]);
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 3 } }),
+    useSensor(KeyboardSensor),
+  );
 
   const handleCollapse = (section: string) => {
     setActiveCollapse((current) => (current === section ? '' : section));
@@ -106,10 +141,30 @@ const WorkspaceSubmenuStepTwo = ({ setShowStepTwo }) => {
 
   useEffect(() => {
     dispatch(getWorkspaceTaskLists(workspaceIdentifier));
-    dispatch(PatientsActions.getPatientsLists(workspaceIdentifier) as any);
+    dispatch((PatientsActions as any).getPatientsLists(workspaceIdentifier));
     dispatch(getWorkspaceUsers(workspaceIdentifier));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    setLocalTaskLists(taskLists ?? []);
+  }, [taskLists]);
+
+  const handleDragEnd = useCallback(
+    ({ active, over }: any) => {
+      if (!over || active?.data?.current?.index === over?.data?.current?.index)
+        return;
+
+      const reorderedLists = move(
+        active?.data?.current?.index,
+        over?.data?.current?.index,
+        localTaskLists,
+      );
+      setLocalTaskLists(reorderedLists);
+      dispatch(TaskListActions.reorderTaskLists(reorderedLists) as any);
+    },
+    [localTaskLists, dispatch],
+  );
 
   const openAddListModal = () => {
     dispatch(
@@ -140,7 +195,7 @@ const WorkspaceSubmenuStepTwo = ({ setShowStepTwo }) => {
     <>
       <WorkspaceContainer>
         <WorkspacesTitleWrapper>
-          <WorkspacesSubWrapper $fullWidth>
+          <AnyWorkspacesSubWrapper $fullWidth>
             <WorkspacesLeftWrapper>
               <ArrowBackIcon onClick={handleBackClick} />
               <WorkspacesTitle>{pluralize(workspaceLabel)}</WorkspacesTitle>
@@ -148,7 +203,7 @@ const WorkspaceSubmenuStepTwo = ({ setShowStepTwo }) => {
             <HomeIconWrapper onClick={handleClose}>
               <HomeIcon />
             </HomeIconWrapper>
-          </WorkspacesSubWrapper>
+          </AnyWorkspacesSubWrapper>
         </WorkspacesTitleWrapper>
         <div
           style={{ cursor: 'pointer' }}
@@ -170,42 +225,86 @@ const WorkspaceSubmenuStepTwo = ({ setShowStepTwo }) => {
             addButtonClick={openAddListModal}
           >
             <WorkspaceListItems>
-              {taskLists?.map((list: any) => (
-                <DrawerListsItem key={list.taskListIdentifier} $isDraggable>
-                  <MenuWrapper>
-                    <ListOptionsMenu list={list}>
-                      <MoreVert color="primary" />
-                    </ListOptionsMenu>
-                  </MenuWrapper>
-                  {list.color && (
-                    <Box mr={1}>
-                      <ColorIndicator color={list.color} />
-                    </Box>
+              <DndContext
+                sensors={sensors}
+                onDragEnd={handleDragEnd}
+                modifiers={[
+                  restrictToVerticalAxis,
+                  restrictToFirstScrollableAncestor,
+                ]}
+              >
+                <SortableContext
+                  items={(localTaskLists ?? [])?.map(
+                    (list: any) => list?.taskListIdentifier,
                   )}
-                  {/* @ts-ignore */}
-                  <Tooltip placement="top" title={list?.listName || ''}>
-                    <ListNameText
-                      isActive={
-                        activeTaskListIdentifier === list?.taskListIdentifier
-                      }
-                      onClick={() => {
-                        history.push(
-                          createTaskListPath(list.taskListIdentifier),
-                        );
-                      }}
+                  strategy={verticalListSortingStrategy}
+                >
+                  {localTaskLists?.map((list: any, index: number) => (
+                    <DraggableDroppableListItem
+                      list={list}
+                      index={index}
+                      key={list.taskListIdentifier}
+                      setDragActiveId={setDragActiveId}
+                      searchValue={''}
                     >
-                      {/* @ts-ignore */}
-                      <ListNameLabel
-                        isNewList={
-                          list.hasUpdatesForMember || list?.status === 'PENDING'
-                        }
+                      <AnyDrawerListsItem
+                        key={list.taskListIdentifier}
+                        style={{ paddingBottom: '10px' }}
+                        {...({
+                          $isDraggable: true,
+                          $isDragging:
+                            dragActiveId === list?.taskListIdentifier,
+                        } as any)}
                       >
-                        {list?.listName}
-                      </ListNameLabel>
-                    </ListNameText>
-                  </Tooltip>
-                </DrawerListsItem>
-              ))}
+                        <MenuWrapper>
+                          <ListOptionsMenu list={list}>
+                            <MoreVert
+                              color="primary"
+                              style={{
+                                cursor:
+                                  dragActiveId === list?.taskListIdentifier
+                                    ? 'grabbing'
+                                    : 'pointer',
+                              }}
+                            />
+                          </ListOptionsMenu>
+                        </MenuWrapper>
+                        {list.color && (
+                          <Box mr={1}>
+                            <ColorIndicator color={list.color} />
+                          </Box>
+                        )}
+                        <Tooltip placement="top" title={list?.listName || ''}>
+                          <AnyListNameText
+                            {...({
+                              isActive:
+                                activeTaskListIdentifier ===
+                                list?.taskListIdentifier,
+                              $isDragging:
+                                dragActiveId === list?.taskListIdentifier,
+                            } as any)}
+                            onClick={() => {
+                              history.push(
+                                createTaskListPath(list.taskListIdentifier),
+                              );
+                            }}
+                          >
+                            <AnyListNameLabel
+                              {...({
+                                isNewList:
+                                  list.hasUpdatesForMember ||
+                                  list?.status === 'PENDING',
+                              } as any)}
+                            >
+                              {list?.listName}
+                            </AnyListNameLabel>
+                          </AnyListNameText>
+                        </Tooltip>
+                      </AnyDrawerListsItem>
+                    </DraggableDroppableListItem>
+                  ))}
+                </SortableContext>
+              </DndContext>
             </WorkspaceListItems>
           </NewLabeledCollapse>
         </WorkspaceListWrapper>
@@ -223,7 +322,7 @@ const WorkspaceSubmenuStepTwo = ({ setShowStepTwo }) => {
                 ))
               ) : (
                 <>
-                  {userGroups?.map(({ identifier, name, usersCount }) => (
+                  {userGroups?.map(({ identifier, name, usersCount }: any) => (
                     <DrawerListsItem key={identifier}>
                       <ListNameText
                         onClick={() => {
@@ -257,7 +356,8 @@ const WorkspaceSubmenuStepTwo = ({ setShowStepTwo }) => {
               .toUpperCase()}${customerTypeLabel.slice(1).toLowerCase()}s`}
             isOpened={activeCollapse === 'patients'}
             onClick={() => handleCollapse('patients')}
-            addButtonClick={() => setIsSidebarOpen()}
+            // @ts-ignore
+            addButtonClick={() => (setIsSidebarOpen as any)()}
           >
             <WorkspaceUserItems>
               {isInitialListFetching ? (
