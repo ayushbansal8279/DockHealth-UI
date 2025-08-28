@@ -22,7 +22,7 @@ export const BaseNodeWrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: ${({ width }) => (width ? `${width}px` : `${TASK_NODE_WIDTH}px`)};
-  height: 200px;
+  height: 175px;
   background-color: ${palette.white};
   box-shadow: 0px 0px 11px rgba(0, 0, 0, 0.15);
   overflow: visible;
@@ -68,7 +68,7 @@ export const GrowButton = styled.div`
 export const NodeHeaderWrapper = styled.div`
   width: 100%;
   height: 30%;
-  padding: 10px 20px 0;
+  padding: 5px 20px 5px;
   display: flex;
   align-items: center;
   gap: 8px;

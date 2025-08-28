@@ -44,7 +44,6 @@ import GroupAvatar from 'components/user/GroupAvatar/GroupAvatar';
 import UserAvatar from 'components/user/UserAvatar/UserAvatar';
 import AdditionalMembersCounter from 'components/user/AdditionalMembersCounter/AdditionalMembersCounter';
 import TaskIcon from 'components/task/TaskIcon/TaskIcon';
-import DecisionTaskElementIcon from 'img/template/decision-task-icon';
 import { NodeType } from 'helpers/smart-flow-builder-helpers';
 import { createMentionsFromTokenizedDescription } from 'components/common/RichTextEditor/CreateMentions';
 import TaskNodeWrapper from '../TaskNodeWrapper/TaskNodeWrapper';
@@ -60,7 +59,8 @@ import {
 } from './styled';
 import { userProfileSelector } from '@/app/selectors/user-selectors';
 import BaseNode from '../BaseNode/BaseNode';
-import { TaskElementIcon } from '../styled';
+import DecisionTaskElementIcon from 'img/template/decision-task-icon';
+import TaskElementIcon from '@/app/img/task-icon';
 import Tooltip from '@/app/components/common/Tooltip/Tooltip';
 
 const TaskNode = React.memo(({ data, isConnectable, selected, type }) => {

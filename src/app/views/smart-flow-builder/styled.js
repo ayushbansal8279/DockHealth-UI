@@ -124,7 +124,7 @@ export const ElementIconBackground = styled.div`
     background: linear-gradient(
       45deg,
       ${palette.blueOcean},
-      ${palette.purplePassion}
+      ${palette.blueOcean}
     );
   }
   &.email,
@@ -217,7 +217,7 @@ export const HeaderTitle = styled.button`
   font-size: 16px;
   font-weight: 600;
   color: ${({ $isActive }) =>
-    $isActive ? palette.azureBlue : palette.gunmetal};
+    $isActive ? palette.blueOcean : palette.gunmetal};
   text-decoration: none;
   transition: all 0.2s ease;
   cursor: pointer;

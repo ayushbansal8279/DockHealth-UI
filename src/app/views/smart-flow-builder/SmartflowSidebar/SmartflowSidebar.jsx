@@ -20,6 +20,7 @@ import {
   Call as CallIcon,
 } from '@mui/icons-material';
 import { Popper, ClickAwayListener, Paper } from '@mui/material';
+import TaskElementIcon from '@/app/img/task-icon';
 
 import {
   ElementsSidebar,
@@ -34,7 +35,6 @@ import {
   ElementInfo,
   ElementTitle,
   ElementDescription,
-  TaskElementIcon,
   AutomationTaskIcon,
   AutoAlignButton,
   UtilitySection,
@@ -90,13 +90,7 @@ const SmartflowSidebar = ({
       id: NodeType.NEW_STANDARD,
       title: 'Task',
       description: 'Create and assign a new task',
-      icon: () => (
-        <img
-          src={CircleCompleted}
-          alt="Task"
-          style={{ width: 18, height: 18 }}
-        />
-      ),
+      icon: () => <TaskElementIcon />,
       iconClass: 'task',
       category: 'basic',
     },
