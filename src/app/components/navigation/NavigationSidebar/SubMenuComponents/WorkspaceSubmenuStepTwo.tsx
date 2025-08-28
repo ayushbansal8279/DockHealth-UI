@@ -82,11 +82,9 @@ import move from 'ramda/src/move';
 import DraggableDroppableListItem from './DraggableDroppableListItem';
 import * as TaskListActions from 'actions/task-list-actions';
 
-type WorkspaceSubmenuStepTwoProps = {
-  setShowStepTwo: (value: boolean) => void;
-};
-
-const WorkspaceSubmenuStepTwo = ({ setShowStepTwo }: WorkspaceSubmenuStepTwoProps) => {
+const WorkspaceSubmenuStepTwo = ({
+  setShowStepTwo,
+}: WorkspaceSubmenuStepTwoProps) => {
   const dispatch = useDispatch();
   const workspace = useSelector(workspaceSelector);
   const workspaceLabel = useSelector(organizationWorkspaceLabelSelector);
@@ -105,11 +103,11 @@ const WorkspaceSubmenuStepTwo = ({ setShowStepTwo }: WorkspaceSubmenuStepTwoProp
   const users = useSelector(workspaceUsersSelector);
   const isFetching = useSelector(isFetchingPatientsListsSelector);
   const isInitialListFetching = isFetching && !defaultPatientsLists;
-  const userGroups = (users)?.filter((user: any) => user?.itemType === 'GROUP');
+  const userGroups = users?.filter((user: any) => user?.itemType === 'GROUP');
 
   const [activeCollapse, setActiveCollapse] = useState('list');
   const [isSidebarOpen, setIsSidebarOpen, unsetIsSidebarOpen] =
-    (useBoolean(false));
+    useBoolean(false);
   const [dragActiveId, setDragActiveId] = useState<string | null>(null);
   const [localTaskLists, setLocalTaskLists] = useState<any[]>([]);
 
@@ -134,7 +132,7 @@ const WorkspaceSubmenuStepTwo = ({ setShowStepTwo }: WorkspaceSubmenuStepTwoProp
 
   useEffect(() => {
     dispatch(getWorkspaceTaskLists(workspaceIdentifier));
-    dispatch(PatientsActions.getPatientsLists(workspaceIdentifier) as any);;
+    dispatch(PatientsActions.getPatientsLists(workspaceIdentifier) as any);
     dispatch(getWorkspaceUsers(workspaceIdentifier));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -349,7 +347,7 @@ const WorkspaceSubmenuStepTwo = ({ setShowStepTwo }: WorkspaceSubmenuStepTwoProp
               .toUpperCase()}${customerTypeLabel.slice(1).toLowerCase()}s`}
             isOpened={activeCollapse === 'patients'}
             onClick={() => handleCollapse('patients')}
-            addButtonClick={() => (setIsSidebarOpen)()}
+            addButtonClick={() => setIsSidebarOpen()}
           >
             <WorkspaceUserItems>
               {isInitialListFetching ? (
