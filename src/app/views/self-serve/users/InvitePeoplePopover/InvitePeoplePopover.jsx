@@ -114,6 +114,7 @@ const InvitePeoplePopover = ({
               onSubmit={onSubmit}
               closeInviteForm={closePopover}
               disabled={isInviting}
+              isOrganizationAdmin={isOwnerOrAdmin}
             />
           </FormProvider>
         )}
