@@ -8,6 +8,7 @@ const BaseNode = (props) => {
   const {
     selected,
     type,
+    subType,
     optionButtons,
     onDoubleClick,
     headerTitle,
@@ -20,12 +21,14 @@ const BaseNode = (props) => {
     <BaseNodeWrapper
       selected={selected}
       type={type}
+      subType={subType}
       onDoubleClick={onDoubleClick}
     >
       <BaseNodeHeader
         optionButtons={optionButtons}
         headerTitle={headerTitle}
         headerIcon={headerIcon}
+        subType={subType}
       />
       <BaseNodeContent content={content} />
       <BaseNodeFooter footerContent={footerContent} />

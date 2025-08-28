@@ -247,6 +247,41 @@ export function addNewAIAssistantElement(position) {
   };
 }
 
+export function addNewDocumentParsingAgentElement(position) {
+  return {
+    type: ActionTypes.ADD_NEW_DOCUMENT_PARSING_AGENT_ELEMENT,
+    position,
+  };
+}
+
+export function addNewEligibilityAgentElement(position) {
+  return {
+    type: ActionTypes.ADD_NEW_ELIGIBILITY_AGENT_ELEMENT,
+    position,
+  };
+}
+
+export function addNewMedicalRecordGatheringAgentElement(position) {
+  return {
+    type: ActionTypes.ADD_NEW_MEDICAL_RECORD_GATHERING_AGENT_ELEMENT,
+    position,
+  };
+}
+
+export function addNewMissingRecordsAgentElement(position) {
+  return {
+    type: ActionTypes.ADD_NEW_MISSING_RECORDS_AGENT_ELEMENT,
+    position,
+  };
+}
+
+export function addNewVoiceAgentElement(position) {
+  return {
+    type: ActionTypes.ADD_NEW_VOICE_AGENT_ELEMENT,
+    position,
+  };
+}
+
 export function addNewSendSMSElement(position) {
   return {
     type: ActionTypes.ADD_NEW_SEND_SMS_ELEMENT,

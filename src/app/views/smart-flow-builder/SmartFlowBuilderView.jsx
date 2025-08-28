@@ -20,6 +20,11 @@ import EmailIcon from '@mui/icons-material/Email';
 import WebhookIcon from '@mui/icons-material/Webhook';
 import PsychologyIcon from '@mui/icons-material/Psychology';
 import SmartToyIcon from '@mui/icons-material/SmartToy';
+import Description from '@mui/icons-material/Description';
+import VerifiedUser from '@mui/icons-material/VerifiedUser';
+import FolderOpen from '@mui/icons-material/FolderOpen';
+import FindInPage from '@mui/icons-material/FindInPage';
+import RecordVoiceOver from '@mui/icons-material/RecordVoiceOver';
 import * as ModalActions from 'modal/actions';
 import {
   createWorkflowFolderPath,
@@ -44,6 +49,11 @@ import {
   addNewWebhookElement,
   addNewAIAnalyzerElement,
   addNewAIAssistantElement,
+  addNewDocumentParsingAgentElement,
+  addNewEligibilityAgentElement,
+  addNewMedicalRecordGatheringAgentElement,
+  addNewMissingRecordsAgentElement,
+  addNewVoiceAgentElement,
   addNewSendSMSElement,
   addNewCallAPIElement,
   addNewCreatePatientElement,
@@ -91,6 +101,11 @@ import EmailNode from './Nodes/EmailNode';
 import WebhookNode from './Nodes/WebhookNode';
 import AIAnalyzerNode from './Nodes/AIAnalyzerNode';
 import AIAssistantNode from './Nodes/AIAssistantNode';
+import DocumentParsingAgentNode from './Nodes/DocumentParsingAgentNode';
+import EligibilityAgentNode from './Nodes/EligibilityAgentNode';
+import MedicalRecordGatheringAgentNode from './Nodes/MedicalRecordGatheringAgentNode';
+import MissingRecordsAgentNode from './Nodes/MissingRecordsAgentNode';
+import VoiceAgentNode from './Nodes/VoiceAgentNode';
 import SmartflowSidebar from './SmartflowSidebar/SmartflowSidebar';
 import {
   mapLayoutToElements,
@@ -120,6 +135,7 @@ import IndicatorNode from './IndicatorNode/IndicatorNode';
 import NodeConfigPanel from './NodeDrawers/NodeConfigPanel';
 import ConnectionLineComponent from './ConnectionLineComponent/ConnectionLineComponent';
 import palette from '@/app/styles/palette';
+import AgentDrawer from './AgentDrawer/AgentDrawer';
 import SMSNode from './Nodes/SMSNode';
 import PatientNode from './Nodes/CreatePatientNode';
 import AppointmentNode from './Nodes/CreateAppointmentNode';
@@ -142,6 +158,11 @@ const nodeTypes = {
   [NodeType.NEW_WEBHOOK]: WebhookNode,
   [NodeType.NEW_AI_ANALYZER]: AIAnalyzerNode,
   [NodeType.NEW_AI_ASSISTANT]: AIAssistantNode,
+  [NodeType.NEW_DOCUMENT_PARSING_AGENT]: DocumentParsingAgentNode,
+  [NodeType.NEW_ELIGIBILITY_AGENT]: EligibilityAgentNode,
+  [NodeType.NEW_MEDICAL_RECORD_GATHERING_AGENT]: MedicalRecordGatheringAgentNode,
+  [NodeType.NEW_MISSING_RECORDS_AGENT]: MissingRecordsAgentNode,
+  [NodeType.NEW_VOICE_AGENT]: VoiceAgentNode,
   [NodeType.NEW_SEND_SMS]: SMSNode,
   [NodeType.NEW_CREATE_PATIENT]: PatientNode,
   [NodeType.NEW_CREATE_APPOINTMENT]: AppointmentNode,
@@ -165,7 +186,7 @@ const DEFAULT_EDGE = {
   },
   markerEnd: {
     type: MarkerType.ArrowClosed,
-    color: palette.newBrightBlue,
+    color: palette.blueOcean,
     width: 24,
     height: 24,
     strokeWidth: 1,
@@ -338,6 +359,11 @@ const SmartFlowBuilderView = () => {
       NodeType.NEW_WEBHOOK,
       NodeType.NEW_AI_ANALYZER,
       NodeType.NEW_AI_ASSISTANT,
+      NodeType.NEW_DOCUMENT_PARSING_AGENT,
+      NodeType.NEW_ELIGIBILITY_AGENT,
+      NodeType.NEW_MEDICAL_RECORD_GATHERING_AGENT,
+      NodeType.NEW_MISSING_RECORDS_AGENT,
+      NodeType.NEW_VOICE_AGENT,
       NodeType.NEW_SEND_SMS,
       NodeType.NEW_CALL_API,
       NodeType.NEW_CREATE_PATIENT,
@@ -445,6 +471,26 @@ const SmartFlowBuilderView = () => {
 
   const addNewAIAssistantElementLocal = (position) => {
     dispatch(addNewAIAssistantElement(position));
+  };
+
+  const addNewDocumentParsingAgentElementLocal = (position) => {
+    dispatch(addNewDocumentParsingAgentElement(position));
+  };
+
+  const addNewEligibilityAgentElementLocal = (position) => {
+    dispatch(addNewEligibilityAgentElement(position));
+  };
+
+  const addNewMedicalRecordGatheringAgentElementLocal = (position) => {
+    dispatch(addNewMedicalRecordGatheringAgentElement(position));
+  };
+
+  const addNewMissingRecordsAgentElementLocal = (position) => {
+    dispatch(addNewMissingRecordsAgentElement(position));
+  };
+
+  const addNewVoiceAgentElementLocal = (position) => {
+    dispatch(addNewVoiceAgentElement(position));
   };
 
   const addNewSendSMSElementLocal = (position) => {
@@ -575,6 +621,56 @@ const SmartFlowBuilderView = () => {
         onClick: () => {
           const position = calculateNewElementPosition(layout);
           addNewAIAssistantElementLocal(position);
+          centerViewToElement(position);
+        },
+      },
+      {
+        id: NodeType.NEW_DOCUMENT_PARSING_AGENT,
+        label: 'Document Parsing Agent',
+        icon: () => <Description fontSize="small" />,
+        onClick: () => {
+          const position = calculateNewElementPosition(layout);
+          addNewDocumentParsingAgentElementLocal(position);
+          centerViewToElement(position);
+        },
+      },
+      {
+        id: NodeType.NEW_ELIGIBILITY_AGENT,
+        label: 'Eligibility Agent',
+        icon: () => <VerifiedUser fontSize="small" />,
+        onClick: () => {
+          const position = calculateNewElementPosition(layout);
+          addNewEligibilityAgentElementLocal(position);
+          centerViewToElement(position);
+        },
+      },
+      {
+        id: NodeType.NEW_MEDICAL_RECORD_GATHERING_AGENT,
+        label: 'Medical Record Gathering Agent',
+        icon: () => <FolderOpen fontSize="small" />,
+        onClick: () => {
+          const position = calculateNewElementPosition(layout);
+          addNewMedicalRecordGatheringAgentElementLocal(position);
+          centerViewToElement(position);
+        },
+      },
+      {
+        id: NodeType.NEW_MISSING_RECORDS_AGENT,
+        label: 'Missing Records Agent',
+        icon: () => <FindInPage fontSize="small" />,
+        onClick: () => {
+          const position = calculateNewElementPosition(layout);
+          addNewMissingRecordsAgentElementLocal(position);
+          centerViewToElement(position);
+        },
+      },
+      {
+        id: NodeType.NEW_VOICE_AGENT,
+        label: 'Voice Call AI Agent',
+        icon: () => <RecordVoiceOver fontSize="small" />,
+        onClick: () => {
+          const position = calculateNewElementPosition(layout);
+          addNewVoiceAgentElementLocal(position);
           centerViewToElement(position);
         },
       },
@@ -748,6 +844,26 @@ const SmartFlowBuilderView = () => {
         addNewAIAssistantElementLocal(position);
         break;
       }
+      case NodeType.NEW_DOCUMENT_PARSING_AGENT: {
+        addNewDocumentParsingAgentElementLocal(position);
+        break;
+      }
+      case NodeType.NEW_ELIGIBILITY_AGENT: {
+        addNewEligibilityAgentElementLocal(position);
+        break;
+      }
+      case NodeType.NEW_MEDICAL_RECORD_GATHERING_AGENT: {
+        addNewMedicalRecordGatheringAgentElementLocal(position);
+        break;
+      }
+      case NodeType.NEW_MISSING_RECORDS_AGENT: {
+        addNewMissingRecordsAgentElementLocal(position);
+        break;
+      }
+      case NodeType.NEW_VOICE_AGENT: {
+        addNewVoiceAgentElementLocal(position);
+        break;
+      }
       default: {
         // eslint-disable-next-line no-console
         console.error('UNHANDLED NODE TYPE:', type);
@@ -888,6 +1004,8 @@ const SmartFlowBuilderView = () => {
           onClose={() => closeNodeDrawer()}
         />
       )}
+
+      <AgentDrawer />
     </div>
   );
 };

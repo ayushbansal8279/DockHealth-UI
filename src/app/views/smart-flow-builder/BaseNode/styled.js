@@ -26,7 +26,13 @@ export const BaseNodeWrapper = styled.div`
   background-color: ${palette.white};
   box-shadow: 0px 0px 11px rgba(0, 0, 0, 0.15);
   overflow: visible;
-  border: 2px solid ${palette.azureBlue};
+  border: 2px solid
+    ${({ subType }) => {
+      if (subType === 'AUTOMATION') return palette.orangeJulius;
+      if (subType === 'AGENT') return palette.oPlusRed;
+      if (subType === 'DECISION') return palette.blueOcean;
+      return palette.blueOcean;
+    }};
   border-radius: 14px;
   ${({ type }) =>
     [

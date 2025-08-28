@@ -13,6 +13,11 @@ import {
   createWebhookNode,
   createAIAnalyzerNode,
   createAIAssistantNode,
+  createDocumentParsingAgentNode,
+  createEligibilityAgentNode,
+  createMedicalRecordGatheringAgentNode,
+  createMissingRecordsAgentNode,
+  createVoiceAgentNode,
   createSendSMSNode,
   createCallAPINode,
   createCreatePatientNode,
@@ -678,6 +683,116 @@ const TaskTemplateReducer = (state = initialState, action) => {
             temporaryElements: [
               ...(temporaryElements || []),
               createAIAssistantNode(temporaryElements, position),
+            ],
+          },
+        ),
+      };
+    }
+
+    case ActionTypes.ADD_NEW_DOCUMENT_PARSING_AGENT_ELEMENT: {
+      const { currentTaskTemplateIdentifier } = state;
+      const { position } = action;
+
+      const { temporaryElements } =
+        state.taskTemplateDetails[currentTaskTemplateIdentifier];
+
+      return {
+        ...state,
+        taskTemplateDetails: updateTaskTemplateDetailsState(
+          currentTaskTemplateIdentifier,
+          state.taskTemplateDetails,
+          {
+            temporaryElements: [
+              ...(temporaryElements || []),
+              createDocumentParsingAgentNode(temporaryElements, position),
+            ],
+          },
+        ),
+      };
+    }
+
+    case ActionTypes.ADD_NEW_ELIGIBILITY_AGENT_ELEMENT: {
+      const { currentTaskTemplateIdentifier } = state;
+      const { position } = action;
+
+      const { temporaryElements } =
+        state.taskTemplateDetails[currentTaskTemplateIdentifier];
+
+      return {
+        ...state,
+        taskTemplateDetails: updateTaskTemplateDetailsState(
+          currentTaskTemplateIdentifier,
+          state.taskTemplateDetails,
+          {
+            temporaryElements: [
+              ...(temporaryElements || []),
+              createEligibilityAgentNode(temporaryElements, position),
+            ],
+          },
+        ),
+      };
+    }
+
+    case ActionTypes.ADD_NEW_MEDICAL_RECORD_GATHERING_AGENT_ELEMENT: {
+      const { currentTaskTemplateIdentifier } = state;
+      const { position } = action;
+
+      const { temporaryElements } =
+        state.taskTemplateDetails[currentTaskTemplateIdentifier];
+
+      return {
+        ...state,
+        taskTemplateDetails: updateTaskTemplateDetailsState(
+          currentTaskTemplateIdentifier,
+          state.taskTemplateDetails,
+          {
+            temporaryElements: [
+              ...(temporaryElements || []),
+              createMedicalRecordGatheringAgentNode(temporaryElements, position),
+            ],
+          },
+        ),
+      };
+    }
+
+    case ActionTypes.ADD_NEW_MISSING_RECORDS_AGENT_ELEMENT: {
+      const { currentTaskTemplateIdentifier } = state;
+      const { position } = action;
+
+      const { temporaryElements } =
+        state.taskTemplateDetails[currentTaskTemplateIdentifier];
+
+      return {
+        ...state,
+        taskTemplateDetails: updateTaskTemplateDetailsState(
+          currentTaskTemplateIdentifier,
+          state.taskTemplateDetails,
+          {
+            temporaryElements: [
+              ...(temporaryElements || []),
+              createMissingRecordsAgentNode(temporaryElements, position),
+            ],
+          },
+        ),
+      };
+    }
+
+    case ActionTypes.ADD_NEW_VOICE_AGENT_ELEMENT: {
+      const { currentTaskTemplateIdentifier } = state;
+      const { position } = action;
+
+      const { temporaryElements } =
+        state.taskTemplateDetails[currentTaskTemplateIdentifier];
+
+      return {
+        ...state,
+        taskTemplateDetails: updateTaskTemplateDetailsState(
+          currentTaskTemplateIdentifier,
+          state.taskTemplateDetails,
+          {
+            temporaryElements: [
+              ...(temporaryElements || []),
+              createVoiceAgentNode(temporaryElements, position),
             ],
           },
         ),

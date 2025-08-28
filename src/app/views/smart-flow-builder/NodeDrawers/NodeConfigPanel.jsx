@@ -15,6 +15,11 @@ import {
   Psychology,
   Webhook,
   SmartToy,
+  Description,
+  VerifiedUser,
+  FolderOpen,
+  FindInPage,
+  RecordVoiceOver,
   Sms,
   Http,
   Api,
@@ -28,6 +33,8 @@ import EmailNodeDrawer from './EmailNodeDrawer';
 import styled from 'styled-components';
 import WebhookNodeDrawer from './WebhookNodeDrawer';
 import AINodeDrawer from './AINodeDrawer';
+import VoiceAgentNodeDrawer from './VoiceAgentNodeDrawer';
+import MissingRecordsAgentNodeDrawer from './MissingRecordsAgentNodeDrawer';
 import SMSNodeDrawer from './SMSNodeDrawer';
 import CallWebhookNodeDrawer from './CallWebhookNodeDrawer';
 import APINodeDrawer from './APINodeDrawer';
@@ -60,7 +67,14 @@ const NodeConfigPanel = ({ selectedNode, handleUpdateNodeData, onClose }) => {
 
       case NodeType.NEW_AI_ANALYZER:
       case NodeType.NEW_AI_ASSISTANT:
+      case NodeType.NEW_DOCUMENT_PARSING_AGENT:
+      case NodeType.NEW_ELIGIBILITY_AGENT:
+      case NodeType.NEW_MEDICAL_RECORD_GATHERING_AGENT:
         return <AINodeDrawer nodeData={data} onUpdate={handleUpdateNodeData} />;
+      case NodeType.NEW_MISSING_RECORDS_AGENT:
+        return <MissingRecordsAgentNodeDrawer nodeData={data} onUpdate={handleUpdateNodeData} />;
+      case NodeType.NEW_VOICE_AGENT:
+        return <VoiceAgentNodeDrawer nodeData={data} onUpdate={handleUpdateNodeData} />;
 
       case NodeType.NEW_SEND_SMS:
         return (
@@ -114,6 +128,11 @@ const NodeConfigPanel = ({ selectedNode, handleUpdateNodeData, onClose }) => {
       NEW_EMAIL: <Email />,
       NEW_AI_ANALYZER: <Psychology />,
       NEW_AI_ASSISTANT: <SmartToy />,
+      NEW_DOCUMENT_PARSING_AGENT: <Description />,
+      NEW_ELIGIBILITY_AGENT: <VerifiedUser />,
+      NEW_MEDICAL_RECORD_GATHERING_AGENT: <FolderOpen />,
+      NEW_MISSING_RECORDS_AGENT: <FindInPage />,
+      NEW_VOICE_AGENT: <RecordVoiceOver />,
       NEW_WEBHOOK: <Webhook />,
       NEW_SEND_SMS: <Sms />,
       NEW_CALL_API: <Api />,
@@ -142,6 +161,11 @@ const NodeConfigPanel = ({ selectedNode, handleUpdateNodeData, onClose }) => {
           return `linear-gradient(45deg, ${palette.dirtyBanana}, ${palette.orangeJulius})`;
         case NodeType.NEW_AI_ANALYZER:
         case NodeType.NEW_AI_ASSISTANT:
+        case NodeType.NEW_DOCUMENT_PARSING_AGENT:
+        case NodeType.NEW_ELIGIBILITY_AGENT:
+        case NodeType.NEW_MEDICAL_RECORD_GATHERING_AGENT:
+        case NodeType.NEW_MISSING_RECORDS_AGENT:
+        case NodeType.NEW_VOICE_AGENT:
           return `linear-gradient(45deg, ${palette.tomatoInYoFace}, ${palette.oPlusRed})`;
         default:
           return `linear-gradient(45deg, ${palette.blueOcean}, ${palette.purplePassion})`;
@@ -163,6 +187,11 @@ const NodeConfigPanel = ({ selectedNode, handleUpdateNodeData, onClose }) => {
       NEW_WEBHOOK: 'Webhook',
       NEW_AI_ANALYZER: 'AI Analyzer',
       NEW_AI_ASSISTANT: 'AI Assistant',
+      NEW_DOCUMENT_PARSING_AGENT: 'Document Parsing Agent',
+      NEW_ELIGIBILITY_AGENT: 'Eligibility Agent',
+      NEW_MEDICAL_RECORD_GATHERING_AGENT: 'Medical Record Gathering Agent',
+      NEW_MISSING_RECORDS_AGENT: 'Missing Records Agent',
+      NEW_VOICE_AGENT: 'Voice Call AI Agent',
       NEW_SEND_SMS: 'Send SMS',
       NEW_CALL_API: 'Call API',
       NEW_CREATE_PATIENT: 'Create Patient',

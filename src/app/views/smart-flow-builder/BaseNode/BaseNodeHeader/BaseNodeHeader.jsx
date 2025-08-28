@@ -3,10 +3,10 @@ import BaseNodeHeaderTitle from '../BaseNodeHeaderTitle/BaseNodeHeaderTitle';
 import { GrowButton, NodeHeaderWrapper, OptionsContainer } from '../styled';
 import { NodeIcon } from '../../Nodes/styled';
 const BaseNodeHeader = (props) => {
-  const { optionButtons, headerTitle, headerIcon } = props;
+  const { optionButtons, headerTitle, headerIcon, subType } = props;
   return (
     <NodeHeaderWrapper>
-      <NodeIcon>{headerIcon}</NodeIcon>
+      <NodeIcon subType={subType}>{headerIcon}</NodeIcon>
       <BaseNodeHeaderTitle headerTitle={headerTitle} />
       <OptionsContainer>
         {optionButtons?.map((optionButton, index) => (

@@ -141,7 +141,12 @@ export const ElementIconBackground = styled.div`
     );
   }
   &.ai,
-  &.ai-assistant {
+  &.ai-assistant,
+  &.document-parsing,
+  &.eligibility,
+  &.medical-record,
+  &.missing-records,
+  &.voice {
     background: linear-gradient(
       45deg,
       ${palette.tomatoInYoFace},
