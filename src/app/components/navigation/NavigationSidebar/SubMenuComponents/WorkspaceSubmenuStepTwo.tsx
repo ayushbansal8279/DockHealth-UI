@@ -4,7 +4,6 @@ import { MoreVert } from '@mui/icons-material';
 import { Box } from '@mui/material';
 import { useHistory, useLocation } from 'react-router-dom';
 import * as PatientsActions from 'actions/patients-actions';
-// @ts-ignore
 import pluralize from 'pluralize';
 import {
   workspaceSelector,
@@ -32,7 +31,6 @@ import {
   HomeIconWrapper,
   MenuWrapper,
 } from './styled';
-// Cast styled components to any for TSX prop compatibility in this file
 const AnyWorkspacesSubWrapper: any = WorkspacesSubWrapper as any;
 const AnyDrawerListsItem: any = DrawerListsItem as any;
 const AnyListNameText: any = ListNameText as any;
@@ -105,7 +103,6 @@ const WorkspaceSubmenuStepTwo = ({ setShowStepTwo }: WorkspaceSubmenuStepTwoProp
   const parts = location.pathname.split('/');
   const activeTaskListIdentifier = parts[3];
 
-  // TODO: get task lists, Users and Patients from workspace
   const taskLists = useSelector(workspaceTaskListsSelector);
   const defaultPatientsLists = useSelector(defaultPatientsListsSelector);
   const customPatientsLists = useSelector(customPatientsListsSelector);
