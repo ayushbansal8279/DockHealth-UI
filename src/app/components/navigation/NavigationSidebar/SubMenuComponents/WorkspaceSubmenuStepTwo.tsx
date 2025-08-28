@@ -31,10 +31,6 @@ import {
   HomeIconWrapper,
   MenuWrapper,
 } from './styled';
-const AnyWorkspacesSubWrapper: any = WorkspacesSubWrapper as any;
-const AnyDrawerListsItem: any = DrawerListsItem as any;
-const AnyListNameText: any = ListNameText as any;
-const AnyListNameLabel: any = ListNameLabel as any;
 import {
   clearWorkspaceState,
   getWorkspaceTaskLists,
@@ -109,11 +105,11 @@ const WorkspaceSubmenuStepTwo = ({ setShowStepTwo }: WorkspaceSubmenuStepTwoProp
   const users = useSelector(workspaceUsersSelector);
   const isFetching = useSelector(isFetchingPatientsListsSelector);
   const isInitialListFetching = isFetching && !defaultPatientsLists;
-  const userGroups = (users as any[])?.filter((user: any) => user?.itemType === 'GROUP');
+  const userGroups = (users)?.filter((user: any) => user?.itemType === 'GROUP');
 
   const [activeCollapse, setActiveCollapse] = useState('list');
   const [isSidebarOpen, setIsSidebarOpen, unsetIsSidebarOpen] =
-    (useBoolean(false) as any);
+    (useBoolean(false));
   const [dragActiveId, setDragActiveId] = useState<string | null>(null);
   const [localTaskLists, setLocalTaskLists] = useState<any[]>([]);
 
@@ -138,7 +134,7 @@ const WorkspaceSubmenuStepTwo = ({ setShowStepTwo }: WorkspaceSubmenuStepTwoProp
 
   useEffect(() => {
     dispatch(getWorkspaceTaskLists(workspaceIdentifier));
-    dispatch((PatientsActions as any).getPatientsLists(workspaceIdentifier));
+    dispatch(PatientsActions.getPatientsLists(workspaceIdentifier) as any);;
     dispatch(getWorkspaceUsers(workspaceIdentifier));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -192,7 +188,7 @@ const WorkspaceSubmenuStepTwo = ({ setShowStepTwo }: WorkspaceSubmenuStepTwoProp
     <>
       <WorkspaceContainer>
         <WorkspacesTitleWrapper>
-          <AnyWorkspacesSubWrapper $fullWidth>
+          <WorkspacesSubWrapper $fullWidth>
             <WorkspacesLeftWrapper>
               <ArrowBackIcon onClick={handleBackClick} />
               <WorkspacesTitle>{pluralize(workspaceLabel)}</WorkspacesTitle>
@@ -200,7 +196,7 @@ const WorkspaceSubmenuStepTwo = ({ setShowStepTwo }: WorkspaceSubmenuStepTwoProp
             <HomeIconWrapper onClick={handleClose}>
               <HomeIcon />
             </HomeIconWrapper>
-          </AnyWorkspacesSubWrapper>
+          </WorkspacesSubWrapper>
         </WorkspacesTitleWrapper>
         <div
           style={{ cursor: 'pointer' }}
@@ -244,7 +240,7 @@ const WorkspaceSubmenuStepTwo = ({ setShowStepTwo }: WorkspaceSubmenuStepTwoProp
                       setDragActiveId={setDragActiveId}
                       searchValue={''}
                     >
-                      <AnyDrawerListsItem
+                      <DrawerListsItem
                         key={list.taskListIdentifier}
                         style={{ paddingBottom: '10px' }}
                         {...({
@@ -272,7 +268,7 @@ const WorkspaceSubmenuStepTwo = ({ setShowStepTwo }: WorkspaceSubmenuStepTwoProp
                           </Box>
                         )}
                         <Tooltip placement="top" title={list?.listName || ''}>
-                          <AnyListNameText
+                          <ListNameText
                             {...({
                               isActive:
                                 activeTaskListIdentifier ===
@@ -286,7 +282,7 @@ const WorkspaceSubmenuStepTwo = ({ setShowStepTwo }: WorkspaceSubmenuStepTwoProp
                               );
                             }}
                           >
-                            <AnyListNameLabel
+                            <ListNameLabel
                               {...({
                                 isNewList:
                                   list.hasUpdatesForMember ||
@@ -294,10 +290,10 @@ const WorkspaceSubmenuStepTwo = ({ setShowStepTwo }: WorkspaceSubmenuStepTwoProp
                               } as any)}
                             >
                               {list?.listName}
-                            </AnyListNameLabel>
-                          </AnyListNameText>
+                            </ListNameLabel>
+                          </ListNameText>
                         </Tooltip>
-                      </AnyDrawerListsItem>
+                      </DrawerListsItem>
                     </DraggableDroppableListItem>
                   ))}
                 </SortableContext>
@@ -353,8 +349,7 @@ const WorkspaceSubmenuStepTwo = ({ setShowStepTwo }: WorkspaceSubmenuStepTwoProp
               .toUpperCase()}${customerTypeLabel.slice(1).toLowerCase()}s`}
             isOpened={activeCollapse === 'patients'}
             onClick={() => handleCollapse('patients')}
-            // @ts-ignore
-            addButtonClick={() => (setIsSidebarOpen as any)()}
+            addButtonClick={() => (setIsSidebarOpen)()}
           >
             <WorkspaceUserItems>
               {isInitialListFetching ? (
