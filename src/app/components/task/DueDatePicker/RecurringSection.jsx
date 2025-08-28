@@ -154,9 +154,11 @@ const RecurringSection = ({
       setIsSaving(true);
       if (bulkEditDueDate) {
         bulkEditRecurringSchedule({
-          ...requestData,
-          taskIdentifiers: allSelectedTasksIdentifiers,
-          taskWorkflowIdentifiers: allSelectedWorkflowIdentifiers,
+          recurringSchedule: { ...requestData },
+          bulkEditRequest: {
+            taskIdentifiers: allSelectedTasksIdentifiers,
+            taskWorkflowIdentifiers: allSelectedWorkflowIdentifiers,
+          },
         })
           .then(() => {
             setIsSaving(false);
