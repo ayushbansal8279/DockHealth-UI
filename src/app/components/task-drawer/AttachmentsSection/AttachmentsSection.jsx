@@ -16,7 +16,11 @@ import {
   Title,
   AttachmentStatusMessage,
 } from './styled';
-import { ScanStatus, ScanStatusText, UNSUPPORTED_WARNING_MESSAGE } from './helpers';
+import {
+  ScanStatus,
+  ScanStatusText,
+  UNSUPPORTED_WARNING_MESSAGE,
+} from './helpers';
 import { DrawerFieldEnum } from '@/app/helpers/task-drawer-helpers';
 import { useDispatch } from 'react-redux';
 import { openModal } from '@/app/modal/actions';
@@ -51,10 +55,14 @@ const AttachmentsSection = ({
   const downloadDisabled = currentTaskAttachments?.some(
     ({ scanStatus }) =>
       scanStatus &&
-      !(scanStatus === ScanStatus.CLEAN ||
-        scanStatus === ScanStatus.UNSUPPORTED),
+      !(
+        scanStatus === ScanStatus.CLEAN || scanStatus === ScanStatus.UNSUPPORTED
+      ),
   );
-  const patientIdentifier = selectedTask?.patient?.patientIdentifier;
+  const isSubTask = Boolean(selectedTask?.parentTask);
+  const patientIdentifier = isSubTask
+    ? selectedTask?.parentTask?.patient?.patientIdentifier
+    : selectedTask?.patient?.patientIdentifier;
 
   useEffect(() => {
     if (
@@ -90,7 +98,9 @@ const AttachmentsSection = ({
         {
           label: 'Reference File from Patient',
           onClick: referenceAttachment,
-          disabled: !selectedTask?.patient,
+          disabled: isSubTask
+            ? !selectedTask?.parentTask?.patient
+            : !selectedTask?.patient,
         },
       ]
     : [];
@@ -198,7 +208,7 @@ const AttachmentsSection = ({
                 onClick={() => {
                   if (
                     attachment?.scanStatus === null ||
-                    attachment?.scanStatus === ScanStatus.CLEAN||
+                    attachment?.scanStatus === ScanStatus.CLEAN ||
                     attachment?.scanStatus === ScanStatus.UNSUPPORTED
                   )
                     openAttachmentPreview(attachment);

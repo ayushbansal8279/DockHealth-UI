@@ -1,53 +1,46 @@
 import React, { useState } from 'react';
 import { OutfitTypography } from 'styles/theme';
 import { Container } from './styled';
-import { Menu, MenuItem } from '@mui/material';
+import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
 
 const AddAttachmentButton = ({ attachmentOptions = [] }) => {
-  const [anchorEl, setAnchorEl] = useState(null);
 
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-    if (attachmentOptions.length > 0) {
+  const menuOptions = attachmentOptions.map((option, index) => ({
+    name: option.label,
+    onClick: (event) => {
+      option.onClick?.(event);
       event.stopPropagation();
-    }
-  };
+    },
+    disabled: option.disabled,
+    ...(option.getRootProps ? option.getRootProps() : {}),
+  }));
 
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
+  if (attachmentOptions.length === 0) {
+    return (
+      <div>
+        <Container>
+          <div>
+            <OutfitTypography condensed variant="h4" color="inherit">
+              +
+            </OutfitTypography>
+          </div>
+        </Container>
+      </div>
+    );
+  }
 
   return (
     <div>
-      <Container onClick={handleClick}>
+      <OptionsMenu
+        options={menuOptions}
+        customButtonComponent={Container}
+      >
         <div>
           <OutfitTypography condensed variant="h4" color="inherit">
             +
           </OutfitTypography>
         </div>
-        {attachmentOptions.length > 0 && (
-          <Menu
-            anchorEl={anchorEl}
-            open={Boolean(anchorEl)}
-            onClose={handleClose}
-          >
-            {attachmentOptions.map((option, index) => (
-              <MenuItem
-                key={index}
-                onClick={(event) => {
-                  handleClose();
-                  option.onClick?.(event);
-                  event.stopPropagation();
-                }}
-                {...(option.getRootProps ? option.getRootProps() : {})}
-                disabled={option.disabled}
-              >
-                {option.label}
-              </MenuItem>
-            ))}
-          </Menu>
-        )}
-      </Container>
+      </OptionsMenu>
     </div>
   );
 };
