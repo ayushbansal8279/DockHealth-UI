@@ -19,6 +19,7 @@ import {
   dashboardTabNameSelector,
   dashboardSearchValueSelector,
   selectedTasksSelector,
+  dashboardSortTasksSelector,
 } from 'selectors/dashboard-selectors';
 import DashboardNewUserInfo from 'views/dashboard/DashboardNewUserInfo/DashboardNewUserInfo';
 import NoSearchResultsView from 'components/tasklist/EmptyListView/NoSearchResultsView';
@@ -92,6 +93,7 @@ const DashboardList = ({
   const dashboardTasks = useSelector(dashboardTasksSelector);
   const dashboardTasksIsLoading = useSelector(dashboardTasksIsLoadingSelector);
   const areFiltersApplied = useSelector(hasFiltersAppliedSelector);
+  const storedSort = useSelector(dashboardSortTasksSelector);
 
   const [currentSort, setCurrentSort] = useState({
     key: null,
@@ -122,6 +124,14 @@ const DashboardList = ({
     });
   }
 
+  const clearSort = useCallback(() => {
+    setCurrentSort({
+      key: null,
+      order: null,
+    });
+    dispatch(updateSortDashboardTasks(null, null));
+  }, [dispatch]);
+
   useEffect(() => {
     if (currentUser) {
       if (tabName === DashboardTasksTab.MY_TASKS) {
@@ -143,6 +153,15 @@ const DashboardList = ({
   useEffect(() => {
     resetSort();
   }, [tabName]);
+
+  useEffect(() => {
+    if (storedSort && (storedSort.key || storedSort.order)) {
+      setCurrentSort({
+        key: storedSort.key,
+        order: storedSort.order,
+      });
+    }
+  }, [storedSort]);
 
   const handleSortChange = useCallback(
     (key, order) => {
@@ -175,7 +194,7 @@ const DashboardList = ({
     if (isSortApplied || areFiltersApplied || isSearchApplied) {
       openModal('ClearSortFilters', {
         confirm: () => {
-          if (isSortApplied) resetSort();
+          if (isSortApplied) clearSort();
           if (isSearchApplied) setClearSearch(true);
           if (areFiltersApplied) setClearFilter(true);
         },
@@ -189,6 +208,7 @@ const DashboardList = ({
     openModal,
     setClearFilter,
     setClearSearch,
+    clearSort,
   ]);
 
   const renderEmptyState = () => {
