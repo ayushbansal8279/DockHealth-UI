@@ -151,6 +151,12 @@ const TaskItemPatient = ({
                     from: search ? pathname + search : pathname,
                   },
                 }}
+                onClick={() => {
+                  localStorage.setItem(
+                    'navigation-from',
+                    search ? pathname + search : pathname,
+                  );
+                }}
               >
                 <PatientLabelComponent>
                   {(matchPatient || matchPatientMRN) && highlightedValue ? (
@@ -198,6 +204,12 @@ const TaskItemPatient = ({
                   state: {
                     from: search ? pathname + search : pathname,
                   },
+                }}
+                onClick={() => {
+                  localStorage.setItem(
+                    'navigation-from',
+                    search ? pathname + search : pathname,
+                  );
                 }}
               >
                 <PatientLabelComponent>
