@@ -88,7 +88,7 @@ const TaskTemplatePatient = ({
               },
             }}
             onClick={() => {
-              localStorage.setItem('from', pathname);
+              localStorage.setItem('navigation-from', pathname);
             }}
           >
             <PatientLabel>
@@ -134,7 +134,7 @@ const TaskTemplatePatient = ({
                 },
               }}
               onClick={() => {
-                localStorage.setItem('from', pathname);
+                localStorage.setItem('navigation-from', pathname);
               }}
             >
               <PatientLabel>
