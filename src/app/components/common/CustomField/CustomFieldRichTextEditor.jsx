@@ -140,7 +140,6 @@ const CustomFieldRichTextEditor = React.forwardRef(
 
     const handleBlur = (textValue) => {
       updateCustomFields(textValue);
-      setIsFocused(false);
     };
 
     const changeData = (textValue) => {
@@ -153,10 +152,14 @@ const CustomFieldRichTextEditor = React.forwardRef(
       }
     };
 
+    const handleFocus = () => {
+      setIsFocused(true);
+    };
+
     return (
       <>
         <CustomTextEditor
-          empty={value?.length > 0}
+          empty={value?.length > 0 || value !== null}
           focused={isFocused}
           label={label}
         >
@@ -168,6 +171,7 @@ const CustomFieldRichTextEditor = React.forwardRef(
               placeholder={placeholder}
               onBlur={handleBlur}
               onChange={changeData}
+              onFocus={handleFocus}
               initOnClick
               showCharCount
               taskListIdentifier={task?.taskList?.taskListIdentifier}
