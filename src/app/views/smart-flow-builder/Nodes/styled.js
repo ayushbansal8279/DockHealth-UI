@@ -86,16 +86,16 @@ export const NodeIcon = styled.div`
   align-items: center;
   justify-content: center;
   color: white;
-  background: ${({ type }) => {
-    switch (type) {
-      case NodeType.NEW_EMAIL:
-      case NodeType.NEW_WEBHOOK:
-        return `linear-gradient(45deg, ${palette.dirtyBanana}, ${palette.orangeJulius})`;
-      case NodeType.NEW_AI_ANALYZER:
-      case NodeType.NEW_AI_ASSISTANT:
-        return `linear-gradient(45deg, ${palette.tomatoInYoFace}, ${palette.oPlusRed})`;
+  background: ${({ subType }) => {
+    switch (subType) {
+      case 'AUTOMATION':
+        return `linear-gradient(45deg, ${palette.orangeJulius}, ${palette.orangeJulius})`;
+      case 'AGENT':
+        return `linear-gradient(45deg, ${palette.oPlusRed}, ${palette.oPlusRed})`;
+      case 'DECISION':
+        return `linear-gradient(45deg, ${palette.blueOcean}, ${palette.blueOcean})`;
       default:
-        return `linear-gradient(45deg, ${palette.blueOcean}, ${palette.purplePassion})`;
+        return `linear-gradient(45deg, ${palette.blueOcean}, ${palette.blueOcean})`;
     }
   }};
 `;

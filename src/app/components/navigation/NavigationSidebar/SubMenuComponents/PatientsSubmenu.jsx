@@ -39,6 +39,7 @@ import {
 } from 'actions/mega-filter-actions';
 import { quickFiltersSelector } from 'selectors/mega-filter-selectors';
 import PatientListsIcon from 'img/premium/patient-lists.svg';
+import pluralize from 'pluralize';
 import {
   DrawerMyListsLabel,
   DrawerListsItem,
@@ -65,7 +66,6 @@ const PatientsSubmenu = () => {
   const isInitialListFetching = isFetching && !defaultPatientsLists;
 
   const customerTypeLabel = getCustomerTypeLabel(currentUser);
-  const customerTypeLabelCapitalized = capitalize(customerTypeLabel);
   const customListsAvailable = useSelector(
     userHasPatientCustomListsFeatureSelector,
   );
@@ -126,7 +126,7 @@ const PatientsSubmenu = () => {
   return (
     <>
       <DrawerMyListsLabel>
-        <div>{`${customerTypeLabelCapitalized}s`} </div>
+        <div>{`${capitalize(pluralize(customerTypeLabel))}`} </div>
       </DrawerMyListsLabel>
       <DrawerListsList flexShrink={0}>
         {isInitialListFetching ? (

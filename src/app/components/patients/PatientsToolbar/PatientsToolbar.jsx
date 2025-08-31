@@ -52,6 +52,7 @@ import {
 } from './styled';
 import ToolbarButton from '../../tasklist/list-toolbar-buttons/ToolbarButton/ToolbarButton';
 import { AddIcon } from '@/app/views/smart-flow-builder/TaskNodeHandles/styled';
+import pluralize from 'pluralize';
 
 const OPTIONS = [
   {
@@ -312,7 +313,7 @@ const PatientsToolbar = ({ searchValue, setSearchValue, workspaceIdentifier = nu
         <>
           <SearchHelperText>
             Search by first name, last name or medical record number. You may
-            filter to retrieve specific {customerTypeLabel.toLowerCase()}s in
+            filter to retrieve specific {pluralize(customerTypeLabel).toLowerCase()} in
             Dock.
           </SearchHelperText>
         </>

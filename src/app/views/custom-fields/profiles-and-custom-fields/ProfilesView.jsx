@@ -17,6 +17,7 @@ import {
   userHasProfileBuilderFeatureSelector,
   userProfileSelector,
 } from 'selectors/user-selectors';
+import { capitalize } from 'helpers/capitalize';
 import { StyledDataGrid } from './DataGridStyles';
 import { getTemplateColumns, textFieldSx } from './helpers';
 import { ViewContainer, AddButtonWrapper, AddButton, PlusIcon } from './styled';
@@ -85,28 +86,28 @@ const ProfilesAndCustomFieldsView = () => {
   );
 
   const onConfigureCustomFields = useCallback(
-    ({ row: { name, identifier } }) => {
+    ({ row: { id, name, identifier } }) => {
       if (
-        name.toLowerCase() === 'users' ||
-        name.toLowerCase() === `${customerTypeLabel}s`
+        id.toLowerCase() === 'users' ||
+        id.toLowerCase() === `${customerTypeLabel}s`
       ) {
-        history.push(`/settings/custom-fields/${name.toLowerCase()}`);
+        history.push(`/settings/custom-fields/${id.toLowerCase()}`);
         return;
       }
       history.push(`/settings/custom-fields/objects/${identifier}`);
     },
-    [history],
+    [history, customerTypeLabel],
   );
 
   const onOpenProfileBuilder = useCallback(
-    ({ row: { name, identifier } }) => {
-      if (name.toLowerCase() === `${customerTypeLabel}s`) {
-        history.push(`/settings/object-builder/${name.toLowerCase()}`);
+    ({ row: { id, name, identifier } }) => {
+      if (id.toLowerCase() === `${customerTypeLabel}s`) {
+        history.push(`/settings/object-builder/${id.toLowerCase()}`);
         return;
       }
       history.push(`/settings/object-builder/objects/${identifier}`);
     },
-    [history],
+    [history, customerTypeLabel],
   );
 
   const onDeleteProfile = useCallback(
@@ -135,22 +136,14 @@ const ProfilesAndCustomFieldsView = () => {
         onOpenProfileBuilder,
         profileBuilderFeatureAvailable,
       }),
-    [
-      onDeleteProfile,
-      onEditProfile,
-      onConfigureCustomFields,
-      onOpenProfileBuilder,
-    ],
+    [onEditProfile, onDeleteProfile, onConfigureCustomFields, onOpenProfileBuilder, profileBuilderFeatureAvailable],
   );
 
   let profileOptions = [
-    { id: 'users', name: 'Users', link: 'provider' },
+    { id: 'users', name: 'User', link: 'provider' },
     {
-      id: customerTypeLabel,
-      name: `${
-        customerTypeLabel?.charAt(0)?.toUpperCase() +
-        customerTypeLabel?.slice(1)
-      }s`,
+      id: `${customerTypeLabel}s`,
+      name: `${capitalize(customerTypeLabel)}`,
       link: customerTypeLabel,
     },
   ];

@@ -8,6 +8,7 @@ import { showGlobalAlert, showGlobalErrorAlert } from '@/app/alert/actions';
 import AlertMessages from '@/app/alert/AlertMessages';
 import { organizationWorkspaceLabelSelector } from '@/app/selectors/organization-selectors';
 import { deleteWorkspaceAction } from '@/app/actions/workspace-list-actions';
+import { WORKSPACE_PATH } from '@/app/routing/helpers/paths';
 
 interface Prop {
   children: any;
@@ -42,7 +43,7 @@ const WorkspaceOptionsMenu = ({
       confirm: async () => {
         try {
           dispatch(deleteWorkspaceAction(selectedWorkspace.workspaceIdentifier));
-          history.push(`/core/workspace`);
+          history.push(WORKSPACE_PATH);
         } catch {
           dispatch(showGlobalErrorAlert());
         }

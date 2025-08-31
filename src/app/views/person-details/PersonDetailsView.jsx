@@ -25,8 +25,7 @@ import { TASK_DISAPPEAR_DELAY } from 'helpers/task-update-helper';
 import { ColumnsConfigProvider } from 'context-api/columns-config-context';
 import HorizontallyScrolledViewLayout from 'components/template/HorizontallyScrolledViewLayout/HorizontallyScrolledViewLayout';
 import StickyContainer from 'components/common/HorizontalScroll/StickyContainer';
-import OpenedTasksView from './PersonDetailsOpenedTasksContainer/PersonDetailsOpenedTasks';
-import CompletedTasksView from './PersonDetailsCompletedTasksContainer/PersonDetailsCompletedTasks';
+import PersonDetailsTasks from './PersonDetailsTasksContainer/PersonDetailsTasks';
 import PersonInfoPanel from './PersonInfoPanel/PersonInfoPanel';
 import UserTasksToolbar from './UserTasksToolbar/UserTasksToolbar';
 import { TaskViewContainer } from './styled';
@@ -169,28 +168,16 @@ const PersonDetailsView = () => {
               setSearchValue={setSearchValue}
             />
           </StickyContainer>
-          {selectedTab === TaskListTabName.COMPLETE ? (
-            <CompletedTasksView
-              taskItemConfig={PERSON_VIEW_COLUMNS_CONFIG}
-              listUniqueKey={userIdentifier}
-              searchValue={searchValue}
-              toggleCompleteTask={toggleTaskCompletedStatus}
-              onTaskUpdate={handleTaskUpdate}
-              onOrderChange={handleOrderChange}
-              iconColorActive={iconColorActiveItem?.value}
-            />
-          ) : (
-            <OpenedTasksView
-              taskItemConfig={PERSON_VIEW_COLUMNS_CONFIG}
-              listUniqueKey={userIdentifier}
-              searchValue={searchValue}
-              toggleCompleteTask={toggleTaskCompletedStatus}
-              onTaskUpdate={handleTaskUpdate}
-              updateWorkflowStatus={handleUpdateWorkflowStatus}
-              onOrderChange={handleOrderChange}
-              iconColorActive={iconColorActiveItem?.value}
-            />
-          )}
+          <PersonDetailsTasks
+            taskItemConfig={PERSON_VIEW_COLUMNS_CONFIG}
+            listUniqueKey={userIdentifier}
+            searchValue={searchValue}
+            toggleCompleteTask={toggleTaskCompletedStatus}
+            onTaskUpdate={handleTaskUpdate}
+            updateWorkflowStatus={handleUpdateWorkflowStatus}
+            onOrderChange={handleOrderChange}
+            iconColorActive={iconColorActiveItem?.value}
+          />
         </TaskViewContainer>
       </HorizontallyScrolledViewLayout>
       <TaskDrawer

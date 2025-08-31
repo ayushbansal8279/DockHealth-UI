@@ -30,7 +30,9 @@ import { useBoolean } from 'hooks/useBoolean';
 import CategoryOptions from 'components/common/CategoryOptions/CategoryOptions';
 import { FieldType } from 'helpers/field-type-helpers';
 import { scrollToError } from 'helpers/ui-helper';
-import { formatMetaDataOutput } from './helpers';
+import {
+  formatMetaDataOutput,
+} from './helpers';
 import {
   GENDER_OPTIONS_BIRTH,
   convertGenderIdentitiesToSelectOptions,
@@ -98,8 +100,34 @@ const PatientForm = forwardRef(
       });
     }, [patient]);
 
+    // useEffect(() => {
+    //   if (!customFields || !formMethods) return;
+      
+    //   const { register, unregister } = formMethods;
+      
+    //   Object.values(customFields).flat().forEach((field) => {
+    //     const fieldName = `patientMetaData.${field.identifier}`;
+    //     const isRequired = field.displayOptions?.includes('TASK_REQUIRED');
+        
+    //     if (isRequired) {
+    //       register(fieldName, {
+    //         required: 'This field is required',
+    //       });
+    //     } else {
+    //       register(fieldName);
+    //     }
+    //   });
+      
+    //   return () => {
+    //     Object.values(customFields).flat().forEach((field) => {
+    //       const fieldName = `patientMetaData.${field.identifier}`;
+    //       unregister(fieldName);
+    //     });
+    //   };
+    // }, [customFields]);
+
     useEffect(() => {
-      setCustomFieldErrors(errors);
+      setCustomFieldErrors?.(errors);
     }, [errors]);
 
     const renderCustomField = useCallback(
@@ -145,11 +173,21 @@ const PatientForm = forwardRef(
 
     return (
       <form
-        onSubmit={handleSubmit(
-          compose(onSubmit, formatMetaDataOutput),
-          scrollToError,
-        )}
+        onSubmit={handleSubmit(async (data, e) => {
+          await formMethods.trigger();
+
+          const hasErrors =
+            Object.keys(formMethods.formState.errors).length > 0;
+
+          if (hasErrors) {
+            scrollToError(formMethods.formState.errors);
+            return false;
+          }
+
+          return compose(onSubmit, formatMetaDataOutput)(data, e);
+        }, scrollToError)}
         ref={reference}
+        noValidate
       >
         <LabeledCollapse
           name={`${capitalize(customerTypeLabel)} ${CategoryLabel[
@@ -292,11 +330,30 @@ const PatientForm = forwardRef(
           {edited && (
             <ConfirmButton
               style={{ width: 'auto' }}
-              onClick={(event) => {
-                if (!isEmpty(errors)) {
-                  event.preventDefault();
-                  event.stopPropagation();
-                  scrollToError(errors);
+              disabled={!customFields}
+              onClick={async (event) => {
+                if (customFields) {
+                  Object.values(customFields)
+                    .flat()
+                    .forEach((field) => {
+                      const fieldName = `patientMetaData.${field.identifier}`;
+                      const isRequired =
+                        field.displayOptions?.includes('TASK_REQUIRED');
+
+                      if (isRequired) {
+                        const fieldValue = formMethods.getValues(fieldName);
+
+                        if (
+                          !fieldValue ||
+                          (Array.isArray(fieldValue) && fieldValue.length === 0)
+                        ) {
+                          formMethods.setError(fieldName, {
+                            type: 'required',
+                            message: 'This field is required',
+                          });
+                        }
+                      }
+                    });
                 }
               }}
             >

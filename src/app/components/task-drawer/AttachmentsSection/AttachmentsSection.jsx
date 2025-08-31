@@ -16,7 +16,11 @@ import {
   Title,
   AttachmentStatusMessage,
 } from './styled';
-import { ScanStatus, ScanStatusText, UNSUPPORTED_WARNING_MESSAGE } from './helpers';
+import {
+  ScanStatus,
+  ScanStatusText,
+  UNSUPPORTED_WARNING_MESSAGE,
+} from './helpers';
 import { DrawerFieldEnum } from '@/app/helpers/task-drawer-helpers';
 import { useDispatch } from 'react-redux';
 import { openModal } from '@/app/modal/actions';
@@ -51,11 +55,14 @@ const AttachmentsSection = ({
   const downloadDisabled = currentTaskAttachments?.some(
     ({ scanStatus }) =>
       scanStatus &&
-      !(scanStatus === ScanStatus.CLEAN ||
-        scanStatus === ScanStatus.UNSUPPORTED),
+      !(
+        scanStatus === ScanStatus.CLEAN || scanStatus === ScanStatus.UNSUPPORTED
+      ),
   );
-  const isSubTask = Boolean(selectedTask?.parentTask)
-  const patientIdentifier = isSubTask ? selectedTask?.parentTask?.patient?.patientIdentifier : selectedTask?.patient?.patientIdentifier;
+  const isSubTask = Boolean(selectedTask?.parentTask);
+  const patientIdentifier = isSubTask
+    ? selectedTask?.parentTask?.patient?.patientIdentifier
+    : selectedTask?.patient?.patientIdentifier;
   useEffect(() => {
     if (
       attachmentRef.current &&
@@ -68,7 +75,7 @@ const AttachmentsSection = ({
   const referenceAttachment = async () => {
     try {
       const patientAttachments = await getPatientAttachments(patientIdentifier);
-  
+
       dispatch(
         openModal('PatientAttachmentReference', {
           attachmentList: patientAttachments,
@@ -90,7 +97,9 @@ const AttachmentsSection = ({
         {
           label: 'Reference File from Patient',
           onClick: referenceAttachment,
-          disabled: isSubTask ? !selectedTask?.parentTask?.patient : !selectedTask?.patient,
+          disabled: isSubTask
+            ? !selectedTask?.parentTask?.patient
+            : !selectedTask?.patient,
         },
       ]
     : [];
@@ -136,7 +145,9 @@ const AttachmentsSection = ({
             xs={12}
             container
             alignContent="center"
-            {...getRootProps({ style: { outline: 'none' } })}
+            {...getRootProps({ style: { outline: 'none' },
+              onClick : (e) => e.stopPropagation(),
+            })}
           >
             {attachmentsLoading ? (
               <>
@@ -198,7 +209,7 @@ const AttachmentsSection = ({
                 onClick={() => {
                   if (
                     attachment?.scanStatus === null ||
-                    attachment?.scanStatus === ScanStatus.CLEAN||
+                    attachment?.scanStatus === ScanStatus.CLEAN ||
                     attachment?.scanStatus === ScanStatus.UNSUPPORTED
                   )
                     openAttachmentPreview(attachment);

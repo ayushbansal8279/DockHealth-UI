@@ -4,7 +4,26 @@ import 'reactflow/dist/style.css';
 import { useBoolean } from 'hooks/useBoolean';
 import SubtaskIcon from 'img/SubtaskIcon';
 import { Box, Fab, IconButton, Typography } from '@mui/material';
-import { AccountTree as DecisionIcon } from '@mui/icons-material';
+import {
+  AccountTree as DecisionIcon,
+  Email as EmailIcon,
+  Webhook as WebhookIcon,
+  Psychology as AIIcon,
+  SmartToy as AIAssistantIcon,
+  Description as DocumentParsingIcon,
+  VerifiedUser as EligibilityIcon,
+  FolderOpen as MedicalRecordIcon,
+  FindInPage as MissingRecordsIcon,
+  RecordVoiceOver as VoiceIcon,
+  AutoFixHigh as AutoAlignIcon,
+  ExpandMore as ExpandMoreIcon,
+  ChevronRight as ChevronRightIcon,
+  Sms as SmsIcon,
+  PersonAdd as PersonAddIcon,
+  EventAvailable as EventAvailableIcon,
+  NoteAdd as NoteAddIcon,
+  Call as CallIcon,
+} from '@mui/icons-material';
 import BoltIcon from '@mui/icons-material/Bolt';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -12,6 +31,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { isUserGroup } from 'helpers/user-helper';
 import { DrawerFieldEnum } from 'helpers/task-drawer-helpers';
 import { openModal, closeModal } from 'modal/actions';
+import VoiceAgentNodeDrawer from '../NodeDrawers/VoiceAgentNodeDrawer';
+import MissingRecordsAgentNodeDrawer from '../NodeDrawers/MissingRecordsAgentNodeDrawer';
+import { openAgentDrawer, closeAgentDrawer } from 'actions/agent-drawer-actions';
 import {
   deleteTask,
   partialUpdateTask,
@@ -22,7 +44,6 @@ import GroupAvatar from 'components/user/GroupAvatar/GroupAvatar';
 import UserAvatar from 'components/user/UserAvatar/UserAvatar';
 import AdditionalMembersCounter from 'components/user/AdditionalMembersCounter/AdditionalMembersCounter';
 import TaskIcon from 'components/task/TaskIcon/TaskIcon';
-import DecisionTaskElementIcon from 'img/template/decision-task-icon';
 import { NodeType } from 'helpers/smart-flow-builder-helpers';
 import { createMentionsFromTokenizedDescription } from 'components/common/RichTextEditor/CreateMentions';
 import TaskNodeWrapper from '../TaskNodeWrapper/TaskNodeWrapper';
@@ -38,7 +59,8 @@ import {
 } from './styled';
 import { userProfileSelector } from '@/app/selectors/user-selectors';
 import BaseNode from '../BaseNode/BaseNode';
-import { TaskElementIcon } from '../styled';
+import DecisionTaskElementIcon from 'img/template/decision-task-icon';
+import TaskElementIcon from '@/app/img/task-icon';
 import Tooltip from '@/app/components/common/Tooltip/Tooltip';
 
 const TaskNode = React.memo(({ data, isConnectable, selected, type }) => {
@@ -66,6 +88,15 @@ const TaskNode = React.memo(({ data, isConnectable, selected, type }) => {
     [NodeType.STANDARD]: 'Task',
   };
 
+  const subType =
+    type === NodeType.STANDARD && description.includes('[System]')
+      ? 'AUTOMATION'
+      : type === NodeType.STANDARD && description.includes('[Agent]')
+      ? 'AGENT'
+      : type === NodeType.DECISION
+      ? 'DECISION'
+      : 'STANDARD';
+
   useEffect(() => {
     if (editing) {
       setInputValue(description);
@@ -90,6 +121,90 @@ const TaskNode = React.memo(({ data, isConnectable, selected, type }) => {
   const handleEdit = () => {
     dispatch(storeAsCurrentTask(task));
     dispatch(openDrawer());
+  };
+
+  const openAgentSpecificDrawer = () => {
+    // Check if this is an agent task and determine the specific agent type
+    if (subType === 'AGENT') {
+      // Extract agent type from description or task data
+      const agentType = determineAgentType(description);
+      
+      switch (agentType) {
+        case 'voice':
+          // Open Voice Agent specific drawer
+          openVoiceAgentDrawer();
+          break;
+        case 'missing-records':
+          // Open Missing Records Agent specific drawer
+          openMissingRecordsAgentDrawer();
+          break;
+        case 'document-parsing':
+          // Open Document Parsing Agent specific drawer
+          openDocumentParsingAgentDrawer();
+          break;
+        case 'eligibility':
+          // Open Eligibility Agent specific drawer
+          openEligibilityAgentDrawer();
+          break;
+        case 'medical-record-gathering':
+          // Open Medical Record Gathering Agent specific drawer
+          openMedicalRecordGatheringAgentDrawer();
+          break;
+        default:
+          // Fallback to standard task drawer
+          dispatch(storeAsCurrentTask(task));
+          dispatch(openDrawer());
+          break;
+      }
+    } else {
+      // For non-agent tasks, use the standard task drawer
+      dispatch(storeAsCurrentTask(task));
+      dispatch(openDrawer());
+    }
+  };
+
+  const determineAgentType = (taskDescription) => {
+    if (!taskDescription) return null;
+    
+    const description = taskDescription.toLowerCase();
+    
+    if (description.includes('voice') || description.includes('call')) {
+      return 'voice';
+    }
+    if (description.includes('missing') && description.includes('record')) {
+      return 'missing-records';
+    }
+    if (description.includes('document') && description.includes('parsing')) {
+      return 'document-parsing';
+    }
+    if (description.includes('eligibility')) {
+      return 'eligibility';
+    }
+    if (description.includes('medical') && description.includes('record') && description.includes('gathering')) {
+      return 'medical-record-gathering';
+    }
+    
+    return null;
+  };
+
+  const openVoiceAgentDrawer = () => {
+    dispatch(openAgentDrawer('voice', task));
+  };
+
+  const openMissingRecordsAgentDrawer = () => {
+    dispatch(openAgentDrawer('missing-records', task));
+  };
+
+  const openDocumentParsingAgentDrawer = () => {
+    dispatch(openAgentDrawer('document-parsing', task));
+  };
+
+  const openEligibilityAgentDrawer = () => {
+    dispatch(openAgentDrawer('eligibility', task));
+  };
+
+  const openMedicalRecordGatheringAgentDrawer = () => {
+    dispatch(openAgentDrawer('medical-record-gathering', task));
   };
 
   const openTaskDrawer = (filed) => {
@@ -146,6 +261,7 @@ const TaskNode = React.memo(({ data, isConnectable, selected, type }) => {
       <BaseNode
         selected={selected}
         type={type}
+        subType={subType}
         onDoubleClick={setEditing}
         optionButtons={[
           <Fab
@@ -156,23 +272,30 @@ const TaskNode = React.memo(({ data, isConnectable, selected, type }) => {
           >
             <DeleteIcon fontSize="small" color="inherit" />
           </Fab>,
-          <Fab key="edit" aria-label="edit" size="small" onClick={handleEdit}>
+          <Fab 
+            key="edit" 
+            aria-label="edit" 
+            size="small" 
+            onClick={subType === 'AGENT' ? openAgentSpecificDrawer : handleEdit}
+          >
             <EditIcon fontSize="small" color="inherit" />
           </Fab>,
         ]}
         headerIcon={
           <>
-            {type === NodeType.DECISION && <DecisionIcon fontSize="small" />}
-            {description.includes('[System]') && type === NodeType.STANDARD && (
-              <BoltIcon fontSize="medium" />
-            )}
-            {type === NodeType.STANDARD &&
-              !description.includes('[System]') && <TaskElementIcon />}
+            {subType === 'AUTOMATION' && <BoltIcon fontSize="medium" />}
+            {subType === 'AGENT' && <AIIcon />}
+            {subType === 'DECISION' && <DecisionIcon fontSize="small" />}
+            {subType === 'STANDARD' && <TaskElementIcon />}
           </>
         }
         headerTitle={
-          description.includes('[System]')
+          subType === 'AUTOMATION'
             ? 'Automation Task'
+            : subType === 'AGENT'
+            ? 'Agent'
+            : subType === 'DECISION'
+            ? 'Decision Task'
             : titles[type] || ''
         }
         content={

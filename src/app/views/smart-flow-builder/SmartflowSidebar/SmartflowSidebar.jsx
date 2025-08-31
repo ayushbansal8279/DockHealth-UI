@@ -5,6 +5,11 @@ import {
   Webhook as WebhookIcon,
   Psychology as AIIcon,
   SmartToy as AIAssistantIcon,
+  Description as DocumentParsingIcon,
+  VerifiedUser as EligibilityIcon,
+  FolderOpen as MedicalRecordIcon,
+  FindInPage as MissingRecordsIcon,
+  RecordVoiceOver as VoiceIcon,
   AutoFixHigh as AutoAlignIcon,
   ExpandMore as ExpandMoreIcon,
   ChevronRight as ChevronRightIcon,
@@ -15,6 +20,7 @@ import {
   Call as CallIcon,
 } from '@mui/icons-material';
 import { Popper, ClickAwayListener, Paper } from '@mui/material';
+import TaskElementIcon from '@/app/img/task-icon';
 
 import {
   ElementsSidebar,
@@ -29,7 +35,6 @@ import {
   ElementInfo,
   ElementTitle,
   ElementDescription,
-  TaskElementIcon,
   AutomationTaskIcon,
   AutoAlignButton,
   UtilitySection,
@@ -85,13 +90,7 @@ const SmartflowSidebar = ({
       id: NodeType.NEW_STANDARD,
       title: 'Task',
       description: 'Create and assign a new task',
-      icon: () => (
-        <img
-          src={CircleCompleted}
-          alt="Task"
-          style={{ width: 18, height: 18 }}
-        />
-      ),
+      icon: () => <TaskElementIcon />,
       iconClass: 'task',
       category: 'basic',
     },
@@ -208,7 +207,7 @@ const SmartflowSidebar = ({
 
   const agentElements = [
     {
-      id: 'NEW_AI_ANALYZER',
+      id: NodeType.NEW_AI_ANALYZER,
       title: 'AI Analyzer',
       description: 'Analyze data using artificial intelligence',
       icon: () => <AIIcon fontSize="small" />,
@@ -216,11 +215,51 @@ const SmartflowSidebar = ({
       category: 'agents',
     },
     {
-      id: 'NEW_AI_ASSISTANT',
+      id: NodeType.NEW_AI_ASSISTANT,
       title: 'AI Assistant',
       description: 'Intelligent assistant for task automation',
       icon: () => <AIAssistantIcon fontSize="small" />,
       iconClass: 'ai-assistant',
+      category: 'agents',
+    },
+    {
+      id: NodeType.NEW_DOCUMENT_PARSING_AGENT,
+      title: 'Document Parsing Agent',
+      description: 'Intelligent document parsing and analysis',
+      icon: () => <DocumentParsingIcon fontSize="small" />,
+      iconClass: 'document-parsing',
+      category: 'agents',
+    },
+    {
+      id: NodeType.NEW_ELIGIBILITY_AGENT,
+      title: 'Eligibility Agent',
+      description: 'Intelligent eligibility verification and benefits analysis',
+      icon: () => <EligibilityIcon fontSize="small" />,
+      iconClass: 'eligibility',
+      category: 'agents',
+    },
+    {
+      id: NodeType.NEW_MEDICAL_RECORD_GATHERING_AGENT,
+      title: 'Medical Record Gathering Agent',
+      description: 'Intelligent medical record collection and organization',
+      icon: () => <MedicalRecordIcon fontSize="small" />,
+      iconClass: 'medical-record',
+      category: 'agents',
+    },
+    {
+      id: NodeType.NEW_MISSING_RECORDS_AGENT,
+      title: 'Missing Records Agent',
+      description: 'Intelligent missing records identification and gap analysis',
+      icon: () => <MissingRecordsIcon fontSize="small" />,
+      iconClass: 'missing-records',
+      category: 'agents',
+    },
+    {
+      id: NodeType.NEW_VOICE_AGENT,
+      title: 'Voice Call AI Agent',
+      description: 'Intelligent voice communication and interaction',
+      icon: () => <VoiceIcon fontSize="small" />,
+      iconClass: 'voice',
       category: 'agents',
     },
   ];
@@ -256,6 +295,7 @@ const SmartflowSidebar = ({
 
   const handleElementDragStart = (event, elementId) => {
     event.dataTransfer.setData('application/reactflow', elementId);
+    event.dataTransfer.setData('application/reactflow/metadata', event);
     event.dataTransfer.effectAllowed = 'move';
   };
 
@@ -345,7 +385,7 @@ const SmartflowSidebar = ({
                       ([subKey, subCategory]) => (
                         <div
                           key={subCategory.id}
-                          style={{ marginLeft: '16px', marginTop: '20px' }}
+                          style={{ marginTop: '20px' }}
                         >
                           <CategoryTitle
                             onClick={() => toggleSubCategory(subCategory.id)}
@@ -379,7 +419,6 @@ const SmartflowSidebar = ({
                                   }
                                   draggable={isCurrentUserEditor}
                                   disabled={!isCurrentUserEditor}
-                                  style={{ marginLeft: '8px' }}
                                 >
                                   <ElementIconBackground
                                     className={element.iconClass}

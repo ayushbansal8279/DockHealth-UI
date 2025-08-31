@@ -23,6 +23,11 @@ export const NodeType = {
   NEW_CREATE_NOTE: 'NEW_CREATE_NOTE',
   NEW_AI_ANALYZER: 'NEW_AI_ANALYZER',
   NEW_AI_ASSISTANT: 'NEW_AI_ASSISTANT',
+  NEW_DOCUMENT_PARSING_AGENT: 'NEW_DOCUMENT_PARSING_AGENT',
+  NEW_ELIGIBILITY_AGENT: 'NEW_ELIGIBILITY_AGENT',
+  NEW_MEDICAL_RECORD_GATHERING_AGENT: 'NEW_MEDICAL_RECORD_GATHERING_AGENT',
+  NEW_MISSING_RECORDS_AGENT: 'NEW_MISSING_RECORDS_AGENT',
+  NEW_VOICE_AGENT: 'NEW_VOICE_AGENT',
 };
 
 export const LinkType = {
@@ -170,6 +175,116 @@ export function createAIAssistantNode(
       capability: 'General',
       persona: 'Professional',
       status: 'Assistant Ready',
+    },
+  };
+}
+
+export function createDocumentParsingAgentNode(
+  currentTemporaryElements,
+  elementPosition,
+) {
+  const numberOfNewNodes =
+    currentTemporaryElements?.filter(
+      (element) => element.type === NodeType.NEW_DOCUMENT_PARSING_AGENT,
+    ).length || 0;
+
+  return {
+    id: `NEW_DOCUMENT_PARSING_AGENT-${numberOfNewNodes}`,
+    type: NodeType.NEW_DOCUMENT_PARSING_AGENT,
+    position: elementPosition,
+    data: {
+      label: 'Document Parsing Agent',
+      capability: 'Document Analysis',
+      persona: 'Document Specialist',
+      status: 'Agent Ready',
+    },
+  };
+}
+
+export function createEligibilityAgentNode(
+  currentTemporaryElements,
+  elementPosition,
+) {
+  const numberOfNewNodes =
+    currentTemporaryElements?.filter(
+      (element) => element.type === NodeType.NEW_ELIGIBILITY_AGENT,
+    ).length || 0;
+
+  return {
+    id: `NEW_ELIGIBILITY_AGENT-${numberOfNewNodes}`,
+    type: NodeType.NEW_ELIGIBILITY_AGENT,
+    position: elementPosition,
+    data: {
+      label: 'Eligibility Agent',
+      capability: 'Eligibility Verification',
+      persona: 'Benefits Specialist',
+      status: 'Agent Ready',
+    },
+  };
+}
+
+export function createMedicalRecordGatheringAgentNode(
+  currentTemporaryElements,
+  elementPosition,
+) {
+  const numberOfNewNodes =
+    currentTemporaryElements?.filter(
+      (element) => element.type === NodeType.NEW_MEDICAL_RECORD_GATHERING_AGENT,
+    ).length || 0;
+
+  return {
+    id: `NEW_MEDICAL_RECORD_GATHERING_AGENT-${numberOfNewNodes}`,
+    type: NodeType.NEW_MEDICAL_RECORD_GATHERING_AGENT,
+    position: elementPosition,
+    data: {
+      label: 'Medical Record Gathering Agent',
+      capability: 'Record Collection',
+      persona: 'Medical Records Specialist',
+      status: 'Agent Ready',
+    },
+  };
+}
+
+export function createMissingRecordsAgentNode(
+  currentTemporaryElements,
+  elementPosition,
+) {
+  const numberOfNewNodes =
+    currentTemporaryElements?.filter(
+      (element) => element.type === NodeType.NEW_MISSING_RECORDS_AGENT,
+    ).length || 0;
+
+  return {
+    id: `NEW_MISSING_RECORDS_AGENT-${numberOfNewNodes}`,
+    type: NodeType.NEW_MISSING_RECORDS_AGENT,
+    position: elementPosition,
+    data: {
+      label: 'Missing Records Agent',
+      capability: 'Record Gap Analysis',
+      persona: 'Records Auditor',
+      status: 'Agent Ready',
+    },
+  };
+}
+
+export function createVoiceAgentNode(
+  currentTemporaryElements,
+  elementPosition,
+) {
+  const numberOfNewNodes =
+    currentTemporaryElements?.filter(
+      (element) => element.type === NodeType.NEW_VOICE_AGENT,
+    ).length || 0;
+
+  return {
+    id: `NEW_VOICE_AGENT-${numberOfNewNodes}`,
+    type: NodeType.NEW_VOICE_AGENT,
+    position: elementPosition,
+    data: {
+      label: 'Voice Call AI Agent',
+      capability: 'Voice Communication',
+      persona: 'Voice Assistant',
+      status: 'Agent Ready',
     },
   };
 }

@@ -10,7 +10,11 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import { showGlobalErrorAlert } from 'alert/actions';
 import * as CustomFieldsApi from 'api/custom-fields-api';
-import { FieldType, FieldTypeLabel } from 'helpers/field-type-helpers';
+import {
+  DisplayOption,
+  FieldType,
+  FieldTypeLabel,
+} from 'helpers/field-type-helpers';
 import { CategoryLabel } from 'helpers/task-details-helpers';
 import { openModal } from 'modal/actions';
 import AddButton from 'components/common/AddButton/AddButton';
@@ -270,9 +274,13 @@ const TaskCustomFieldsView = ({
                               <CustomFieldCell>
                                 <CustomFieldText>
                                   {field.fieldType === FieldType.RELATIONSHIP
-                                    ? `${FieldTypeLabel[field.fieldType]} - ${
-                                        field.relatedProfileType?.name
-                                      }`
+                                    ? `${FieldTypeLabel[field.fieldType]} (${
+                                        field.displayOptions?.includes(
+                                          DisplayOption.SINGLE_SELECT,
+                                        )
+                                          ? 'Single'
+                                          : 'Multiple'
+                                      }) - ${field.relatedProfileType?.name}`
                                     : FieldTypeLabel[field.fieldType]}
                                 </CustomFieldText>
                               </CustomFieldCell>

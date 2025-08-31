@@ -189,6 +189,7 @@ const {
   CAN_ACCESS_CHAT_PAGE,
   CAN_ACCESS_SETTINGS_PAGE,
   CAN_ACCESS_PROFILE_PAGE,
+  CAN_ACCESS_WORKSPACE_PAGE,
 } = PERMISSIONS;
 
 export const SETTINGS_ROUTES = [
@@ -278,7 +279,7 @@ export const SETTINGS_ROUTES = [
   {
     path: '/workspaces',
     RouteComponent: Workspaces,
-    permissions: [CAN_ACCESS_SETTINGS_PAGE],
+    permissions: [CAN_ACCESS_WORKSPACE_PAGE],
   },
   {
     path: '/user-activity/:userIdentifier',
@@ -430,12 +431,12 @@ export const TEMPLATE_CORE_SUBSCRIPTION_PLAN_ROUTES = [
   {
     path: '/workspace/:workspaceIdentifier',
     RouteComponent: Workspace,
-    permissions: [CAN_ACCESS_SETTINGS_PAGE],
+    permissions: [CAN_ACCESS_WORKSPACE_PAGE],
   },
   {
-    path: '/workspace',
+    path: '/workspaces',
     RouteComponent: WorkspaceHome,
-    permissions: [CAN_ACCESS_SETTINGS_PAGE],
+    permissions: [CAN_ACCESS_WORKSPACE_PAGE],
   },
 ];
 
