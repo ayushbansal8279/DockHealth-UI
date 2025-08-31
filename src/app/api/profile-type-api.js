@@ -62,3 +62,8 @@ export function updateProfileListPreferences(setup, profileTypeIdentifier) {
     .put(`profile/type/list/updateUserPreferences/${profileTypeIdentifier}`, setup)
     .then(({ data }) => data);
 }
+
+export const getRelationshipTypes = (customProfileIdentifier) =>
+  axios
+    .get(`/profile/type/getAll/relationshipTypes/${customProfileIdentifier}`)
+    .then(({ data }) => data);

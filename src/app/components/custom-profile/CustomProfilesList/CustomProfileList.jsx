@@ -5,7 +5,7 @@ import DataGrid, {
   getValues,
 } from 'ui-toolkit/Composite/DataGrid';
 import { useDispatch, useSelector } from 'react-redux';
-import { useParams, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { getUserGroupIdentifierByUrlParameter } from 'helpers/user-groups-helper';
 import {
   setCurrentUserGroup,
@@ -19,9 +19,9 @@ import {
   MenuItem,
   Stack,
   Switch,
+  Typography,
 } from '@mui/material';
 import { getAllProfileTypes } from 'api/profile-type-api';
-import { getAllProfiles } from 'api/profile-api';
 import { getAllProfileFieldTypes } from 'api/profile-type-field-api';
 import { showGlobalErrorAlert } from 'alert/actions';
 import LayoutHeader from 'components/template/LayoutHeader/LayoutHeader';
@@ -47,6 +47,7 @@ import {
 import {
   downloadProfileData,
   downloadProfileImportTemplate,
+  getAllProfiles,
   uploadProfileData,
 } from '@/app/api/profile-api';
 import {
@@ -58,23 +59,27 @@ import { StyledLink } from './styled';
 import DateLabel from '../../common/DateLabel/DateLabel';
 import ImportDataModal from '@/app/modal/components/ImportDataModal/ImportDataModal';
 
-const CustomProfileList = () => {
+const CustomProfileList = ({
+  profileTypeIdentifier,
+  groupIdentifier: groupIdentifierProp,
+  fetchProfiles,
+  showHeader = true,
+}) => {
   const dispatch = useDispatch();
   const history = useHistory();
-  const {
-    groupIdentifier: groupIdentifierUrlParameter,
-    profileTypeIdentifier,
-  } = useParams();
-  const groupIdentifier = getUserGroupIdentifierByUrlParameter(
-    groupIdentifierUrlParameter,
-  );
+
+  const groupIdentifier =
+    groupIdentifierProp ||
+    getUserGroupIdentifierByUrlParameter(groupIdentifierProp);
 
   useEffect(() => {
-    dispatch(setCurrentUserGroup(groupIdentifier));
+    if (groupIdentifier) {
+      dispatch(setCurrentUserGroup(groupIdentifier));
 
-    return () => {
-      dispatch(unsetCurrentUserGroup());
-    };
+      return () => {
+        dispatch(unsetCurrentUserGroup());
+      };
+    }
   }, [dispatch, groupIdentifier]);
 
   const handleRecordClick = (event, { id }) => {
@@ -100,10 +105,12 @@ const CustomProfileList = () => {
   const isViewOnly = isUserViewOnly(currentUser);
 
   useEffect(() => {
-    dispatch(initializeProfileTypeState(currentProfileType));
-  }, [dispatch, profileTypeIdentifier, currentProfileType]);
+    if (showHeader) {
+      dispatch(initializeProfileTypeState(currentProfileType));
+    }
+  }, [dispatch, profileTypeIdentifier, currentProfileType, showHeader]);
 
-  const fetchProfileTypes = useCallback(() => {
+  const fetchProfileTypesInternal = useCallback(() => {
     getAllProfileTypes()
       .then((data) => {
         setProfileTypes(data);
@@ -117,7 +124,7 @@ const CustomProfileList = () => {
       });
   }, [dispatch, profileTypeIdentifier]);
 
-  const fetchProfileTypeFields = useCallback(() => {
+  const fetchProfileTypeFieldsInternal = useCallback(() => {
     getAllProfileFieldTypes(profileTypeIdentifier)
       .then((data) => {
         setProfileTypeFields(data);
@@ -127,27 +134,34 @@ const CustomProfileList = () => {
       });
   }, [dispatch, profileTypeIdentifier]);
 
-  const fetchFilters = () => {
+  const fetchFiltersInternal = useCallback(() => {
     getProfileListPreferences(profileTypeIdentifier).then(setFilters);
-  };
+  }, [profileTypeIdentifier]);
 
-  const fetchProfiles = useCallback(() => {
-    getAllProfiles(profileTypeIdentifier)
-      .then((data) => {
-        setProfiles(data);
-      })
-      .catch(() => {
-        dispatch(showGlobalErrorAlert());
-      });
-  }, [dispatch, profileTypeIdentifier]);
+  const fetchProfilesInternal = useCallback(() => {
+    if (fetchProfiles) {
+      fetchProfiles().then(setProfiles);
+    } else {
+      return getAllProfiles(profileTypeIdentifier)
+        .then(setProfiles)
+        .catch(() => {
+          dispatch(showGlobalErrorAlert());
+          setProfiles([]);
+        });
+    }
+  }, [fetchProfiles]);
 
   useEffect(() => {
-    fetchProfileTypes();
-    fetchProfileTypeFields();
-    fetchProfiles();
-    fetchFilters();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    fetchProfileTypesInternal();
+    fetchProfileTypeFieldsInternal();
+    fetchProfilesInternal();
+    fetchFiltersInternal();
+  }, [
+    fetchProfileTypesInternal,
+    fetchProfileTypeFieldsInternal,
+    fetchProfilesInternal,
+    fetchFiltersInternal,
+  ]);
 
   const handleProfileAddClick = () => {
     setOpen(true);
@@ -195,39 +209,41 @@ const CustomProfileList = () => {
     <>
       <ViewLayout
         header={
-          <LayoutHeader>
-            <Box
-              position="absolute"
-              top={currentProfileType?.description ? 17 : 27}
-              left={10}
-            >
-              <OptionsMenu
-                disablePortal
-                options={[
-                  !isGuestOrDockLite &&
-                    !isViewOnly && {
-                      name: 'Import from CSV',
-                      onClick: () => {
-                        setImportPopupOpen(true);
-                      },
-                    },
-                  !isGuestOrDockLite &&
-                    !isViewOnly && {
-                      name: 'Export to CSV',
-                      onClick: () => {
-                        handleDownloadProfileData();
-                      },
-                    },
-                ]}
+          showHeader && (
+            <LayoutHeader>
+              <Box
+                position="absolute"
+                top={currentProfileType?.description ? 17 : 27}
+                left={10}
               >
-                <MoreVert color="primary" />
-              </OptionsMenu>
-            </Box>
-            <LayoutHeader.Title
-              title={currentProfileType?.name}
-              description={currentProfileType?.description}
-            />
-          </LayoutHeader>
+                <OptionsMenu
+                  disablePortal
+                  options={[
+                    !isGuestOrDockLite &&
+                      !isViewOnly && {
+                        name: 'Import from CSV',
+                        onClick: () => {
+                          setImportPopupOpen(true);
+                        },
+                      },
+                    !isGuestOrDockLite &&
+                      !isViewOnly && {
+                        name: 'Export to CSV',
+                        onClick: () => {
+                          handleDownloadProfileData();
+                        },
+                      },
+                  ]}
+                >
+                  <MoreVert color="primary" />
+                </OptionsMenu>
+              </Box>
+              <LayoutHeader.Title
+                title={currentProfileType?.name}
+                description={currentProfileType?.description}
+              />
+            </LayoutHeader>
+          )
         }
       >
         <ProfileDrawer
@@ -237,16 +253,16 @@ const CustomProfileList = () => {
           types={profileTypeFields}
           onClose={handleClose}
           onUpdate={() => {
-            fetchProfiles();
+            fetchProfilesInternal();
           }}
           addMode
         />
         <Stack
           direction="row"
           justifyContent="space-between"
-          sx={{ m: '16px 32px 0px 32px ' }}
+          sx={{ m: !showHeader ? '0px 32px 0px 32px ' : '16px 32px 0px 32px ' }}
         >
-          <Box display="flex" alignItems="start" my={2}>
+          <Box display="flex" alignItems="start" my={!showHeader ? 0 : 2}>
             <Toolbar>
               <div style={{ marginTop: '3px' }}>
                 <ToolbarButton
@@ -301,7 +317,7 @@ const CustomProfileList = () => {
             <Box display="flex" alignItems="center" my={0.4} mx={2}>
               <ProfileFilter
                 profileTypeIdentifier={profileTypeIdentifier}
-                fetchProfiles={fetchProfiles}
+                fetchProfiles={fetchProfilesInternal}
                 setProfiles={setProfiles}
               />
             </Box>
@@ -333,6 +349,11 @@ const CustomProfileList = () => {
         <DataGrid
           fluid
           sx={{
+            minHeight: 300,
+            '& .MuiDataGrid-virtualScroller': {
+              minHeight: 300,
+              overflow: 'hidden',
+            },
             '& .MuiTablePagination-select': {
               paddingLeft: '1rem',
             },
