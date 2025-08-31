@@ -33,7 +33,10 @@ const DueDatePicker = ({
   onCloseClick,
   disableClearDate,
   dueDateIntent,
-  dateType=null
+  dateType = null,
+  allSelectedTasksIdentifiers,
+  allSelectedWorkflowIdentifiers,
+  bulkEditDueDate = false,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const [recurringSectionVisible, showRecurringSection] = useBoolean(recurring);
@@ -51,12 +54,14 @@ const DueDatePicker = ({
         setTimeMaskValue(moment(selectedDate).format(TIME_12H_FORMAT));
       }
 
-      if(!selectedDate) {
+      if (!selectedDate) {
         setDateMaskValue(null);
         setDateValue(null);
-      }
-      else {
-        if (dateType === 'dueDate' && (dueDateIntent === DueDateIntent.DATE || !dueDateIntent)) {
+      } else {
+        if (
+          dateType === 'dueDate' &&
+          (dueDateIntent === DueDateIntent.DATE || !dueDateIntent)
+        ) {
           const adjustedDate = adjustDateForTimeZone(selectedDate);
           const formattedDate = adjustedDate?.utc().format(DATE_ISO_FORMAT);
           setDateMaskValue(moment(formattedDate).format(DATE_MASK_FORMAT));
@@ -74,8 +79,13 @@ const DueDatePicker = ({
     setDateValue(pickedDate);
     setDateMaskValue(formattedToMask);
 
-    if (dateType === 'dueDate' && (dueDateIntent === DueDateIntent.DATE || !dueDateIntent)) {
-      const dateOnlyISO = moment(`${pickedDate}T00:00:00.000+00:00`).toISOString();
+    if (
+      dateType === 'dueDate' &&
+      (dueDateIntent === DueDateIntent.DATE || !dueDateIntent)
+    ) {
+      const dateOnlyISO = moment(
+        `${pickedDate}T00:00:00.000+00:00`,
+      ).toISOString();
       onDateChange(dateOnlyISO);
     } else {
       onDateChange(
@@ -126,7 +136,7 @@ const DueDatePicker = ({
           <Label>Date</Label>
           <SecondaryDateInput
             popoverDisabled
-            value={dateMaskValue || ""}
+            value={dateMaskValue || ''}
             onChange={setDateMaskValue}
             onEnter={handleInsertDateAsText}
             onBlur={handleInsertDateAsText}
@@ -181,6 +191,9 @@ const DueDatePicker = ({
               selectedDueDate={selectedDate}
               recurring={recurring}
               onClose={onCloseClick}
+              allSelectedTasksIdentifiers={allSelectedTasksIdentifiers}
+              allSelectedWorkflowIdentifiers={allSelectedWorkflowIdentifiers}
+              bulkEditDueDate={bulkEditDueDate}
             />
           ) : (
             <>

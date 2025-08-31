@@ -256,7 +256,10 @@ export const updateDueDate = (taskIdentifier, dueDate, dueDateIntent) =>
         params: {
           dueDate: dueDate
             ? dueDateIntent === DueDateIntent.DATE
-              ? moment.utc(dueDate).startOf('day').format('MM/DD/YYYY HH:mm:ss') + ' +0000'
+              ? moment
+                  .utc(dueDate)
+                  .startOf('day')
+                  .format('MM/DD/YYYY HH:mm:ss') + ' +0000'
               : moment(dueDate).format('MM/DD/YYYY HH:mm:ss ZZ')
             : null,
           dueDateIntent: dueDate ? dueDateIntent : DueDateIntent.DATE,
@@ -439,15 +442,21 @@ export function getTaskAttachment(taskAttachmentId) {
     .catch(noop);
 }
 
-export function updateTaskAttachment(attachmentIdentifier,fileName) {
-  return axios.put(`task/attachment`, { attachmentIdentifier,fileName}).then(({ data }) => data);
+export function updateTaskAttachment(attachmentIdentifier, fileName) {
+  return axios
+    .put(`task/attachment`, { attachmentIdentifier, fileName })
+    .then(({ data }) => data);
 }
 
-export function addPatientReferenceAttachment(taskIdentifier,fileIdentifier,type){
+export function addPatientReferenceAttachment(
+  taskIdentifier,
+  fileIdentifier,
+  type,
+) {
   return axios
-    .post('task/attachment/other',{taskIdentifier,fileIdentifier,type})
-    .then(( response ) => response)
-    .catch((error)=>{
+    .post('task/attachment/other', { taskIdentifier, fileIdentifier, type })
+    .then((response) => response)
+    .catch((error) => {
       throw error;
     });
 }
@@ -489,6 +498,21 @@ export const reassignTasksToAnotherGroup = (
 export const bulkEditTasks = (bulkEditOption) =>
   axios
     .put('/task/bulkEdit', bulkEditOption)
+    .then(({ data }) => data)
+    .catch((error) => {
+      showAlert({
+        status: 'error',
+        title: 'Error',
+        text:
+          error?.response?.data?.errorMessage ??
+          'Error in bulk operation. Please try again.',
+      });
+      throw error;
+    });
+
+export const bulkEditRecurringSchedule = (recurringOption) =>
+  axios
+    .put('/task/bulkSetRecurringSchedule', recurringOption)
     .then(({ data }) => data)
     .catch((error) => {
       showAlert({

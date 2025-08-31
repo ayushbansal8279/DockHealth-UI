@@ -1084,6 +1084,8 @@ const BulkEditOptionsBar = ({
               handleChangeDateTasks={handleChangeDateTasks}
               isDisabled={isDisabled}
               selectedDate={bulkTasksDueDate}
+              allSelectedTasksIdentifiers={allSelectedTasksIdentifiers}
+              allSelectedWorkflowIdentifiers={allSelectedWorkflowIdentifiers}
             />
           </AccessRestrictor>
         )}
