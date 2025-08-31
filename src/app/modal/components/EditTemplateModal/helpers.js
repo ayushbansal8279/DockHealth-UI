@@ -43,7 +43,7 @@ export const defaultPlaceHolderOptions = [
   'First Name',
   'Last Name',
   'Middle Name',
-  'Date of Birth',
+  'DOB',
   'Gender',
   'Mobile Phone',
   'Home Phone',
@@ -55,24 +55,26 @@ export const defaultPlaceHolderOptions = [
 export function generatePlaceholderObject(fields, origin, sort = false) {
   const toCamelCase = (str) => {
     return str
-      .replace(/[^a-zA-Z0-9 ]/g, '')
+      .replace(/[{}]/g, '')
       .split(' ')
       .filter(Boolean)
       .map((word, index) =>
         index === 0
           ? word.toLowerCase()
-          : word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+          : word.charAt(0).toUpperCase() + word.slice(1).toLowerCase(),
       )
       .join('');
   };
 
-  const capitalize = str => str[0].toUpperCase() + str.slice(1);
+  const capitalize = (str) => str[0].toUpperCase() + str.slice(1);
 
   return Object.fromEntries(
-    (sort ? [...fields].sort((a, b) => a.localeCompare(b)) : fields).map(label => {
-      const key = `{{${origin}.${toCamelCase(label)}}}`;
-      const value = `${capitalize(origin)} : ${label}`;
-      return [key, value];
-    })
+    (sort ? [...fields].sort((a, b) => a.localeCompare(b)) : fields).map(
+      (label) => {
+        const key = `{{${origin}.${toCamelCase(label)}}}`;
+        const value = `${capitalize(origin)} : ${label}`;
+        return [key, value];
+      },
+    ),
   );
 }

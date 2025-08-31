@@ -222,7 +222,6 @@ const CustomField = ({
             readOnly={isReadOnly}
             label={name}
             name={fieldName}
-            placeholder={placeholder}
             onBlur={handleBlur}
             inputRef={inputReference}
             ref={componentReference}
@@ -230,6 +229,7 @@ const CustomField = ({
             required={isRequired}
             relatedProfileType={field.relatedProfileType}
             multiple={!displayOptions?.includes(DisplayOption.SINGLE_SELECT)}
+            formMethods={formMethods}
           />
         );
       }
@@ -248,6 +248,7 @@ const CustomField = ({
             inputRef={inputReference}
             onChange={() => setWasChanged(true)}
             enableRichText
+            formMethods={formMethods}
           />
         );
       }
@@ -283,6 +284,7 @@ const CustomField = ({
             ref={componentReference}
             onChange={() => setWasChanged(true)}
             required={isRequired}
+            formMethods={formMethods}
           />
         );
       }
@@ -307,6 +309,7 @@ const CustomField = ({
             clearErrors={clearErrors}
             required={isRequired}
             dateIntent={dateIntent}
+            formMethods={formMethods}
           />
         );
       }
@@ -348,6 +351,7 @@ const CustomField = ({
               ref={componentReference}
               onChange={() => setWasChanged(true)}
               required={isRequired}
+              formMethods={formMethods}
             />
           </Box>
         );
@@ -366,6 +370,7 @@ const CustomField = ({
               onChange={() => setWasChanged(true)}
               required={isRequired}
               multiple={true}
+              formMethods={formMethods}
             />
           </Box>
         );
@@ -392,6 +397,7 @@ const CustomField = ({
             ref={componentReference}
             onChange={getChangeHandler()}
             required={isRequired}
+            formMethods={formMethods}
             startAdornment={
               customFieldHasValue && !isEditable ? (
                 <Link

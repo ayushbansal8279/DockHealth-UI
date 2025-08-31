@@ -5,7 +5,11 @@ import Select from './Select';
 import { getRegexLabelByValue } from '@/app/helpers/field-type-helpers';
 
 const FormSelect = React.forwardRef(
-  ({ name, label, onChange, required, readOnly, ...restProps }, reference) => {
+  (
+    { name, label, onChange, required, readOnly, formMethods, ...restProps },
+    reference,
+  ) => {
+    const formContext = useFormContext();
     const {
       register,
       clearErrors,
@@ -13,7 +17,7 @@ const FormSelect = React.forwardRef(
       watch,
       setValue,
       unregister,
-    } = useFormContext();
+    } = formMethods || formContext;
     const isNested = name?.includes('.');
     const nestedParts = name?.split('.');
 

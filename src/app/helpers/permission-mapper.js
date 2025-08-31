@@ -12,6 +12,7 @@ export const PERMISSIONS = {
   CAN_ACCESS_SETTINGS_PAGE: 'canAccessSettingsPage',
   CAN_ACCESS_PROFILE_PAGE: 'canAccessProfilePage',
   CAN_ACCESS_EDUCATION_CENTER_PAGE: 'canAccessEducationCenterPage',
+  CAN_ACCESS_WORKSPACE_PAGE: 'canAccessWorkspacePage',
 };
 
 export default {
@@ -27,6 +28,7 @@ export default {
     canAccessSettingsPage: true,
     canAccessProfilePage: true,
     canAccessEducationCenterPage: true,
+    canAccessWorkspacePage: true,
   },
   [UserOrganizationRole.ADMIN]: {
     canAccessHomePage: true,
@@ -40,6 +42,7 @@ export default {
     canAccessSettingsPage: true,
     canAccessProfilePage: true,
     canAccessEducationCenterPage: true,
+    canAccessWorkspacePage: true,
   },
   [UserOrganizationRole.MEMBER]: {
     canAccessHomePage: true,
@@ -53,6 +56,7 @@ export default {
     canAccessSettingsPage: false,
     canAccessProfilePage: true,
     canAccessEducationCenterPage: true,
+    canAccessWorkspacePage: true,
   },
   [UserOrganizationRole.GUEST]: {
     canAccessHomePage: true,
@@ -66,6 +70,7 @@ export default {
     canAccessSettingsPage: false,
     canAccessProfilePage: true,
     canAccessEducationCenterPage: true,
+    canAccessWorkspacePage: true,
   },
   [UserOrganizationRole.DOCK_LITE]: {
     canAccessHomePage: true,
@@ -79,6 +84,7 @@ export default {
     canAccessSettingsPage: false,
     canAccessProfilePage: true,
     canAccessEducationCenterPage: true,
+    canAccessWorkspacePage: true,
   },
   [UserOrganizationRole.EXTERNAL]: {
     canAccessHomePage: true,
@@ -92,6 +98,7 @@ export default {
     canAccessSettingsPage: false,
     canAccessProfilePage: true,
     canAccessEducationCenterPage: true,
+    canAccessWorkspacePage: true,
   },
   [UserOrganizationRole.DOCK_PRO]: {
     canAccessHomePage: true,
@@ -105,6 +112,7 @@ export default {
     canAccessSettingsPage: true,
     canAccessProfilePage: true,
     canAccessEducationCenterPage: true,
+    canAccessWorkspacePage: true,
   },
   [UserOrganizationRole.VIEW_ONLY]: {
     canAccessHomePage: true,
@@ -118,5 +126,6 @@ export default {
     canAccessSettingsPage: false,
     canAccessProfilePage: true,
     canAccessEducationCenterPage: true,
+    canAccessWorkspacePage: true,
   },
 };

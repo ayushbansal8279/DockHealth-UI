@@ -21,10 +21,12 @@ const AutoCompleteFormSelect = React.forwardRef(
       readOnly,
       onChange,
       multiple = false,
+      formMethods,
       ...restProps
     },
     reference,
   ) => {
+    const formContext = useFormContext();
     const {
       register,
       setValue,
@@ -32,7 +34,7 @@ const AutoCompleteFormSelect = React.forwardRef(
       formState: { errors },
       clearErrors,
       unregister,
-    } = useFormContext();
+    } = formMethods || formContext;
 
     const isNested = name?.includes('.');
     const nestedParts = name?.split('.');
@@ -147,7 +149,11 @@ const AutoCompleteFormSelect = React.forwardRef(
             />
           )}
         />
-        {error && <FormHelperText error>{error}</FormHelperText>}
+        {error && (
+          <FormHelperText error sx={{ pl: 1.5 }}>
+            {error}
+          </FormHelperText>
+        )}
       </>
     );
   },

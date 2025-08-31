@@ -30,9 +30,10 @@ import WorkspaceTile from '@/app/components/workspace/WorkspaceTile/WorkspaceTil
 import WorkspaceOptionsMenu from '@/app/components/workspace/WorkspaceOptionsMenu/WorkspaceOptionsMenu';
 import { organizationWorkspaceLabelSelector } from '@/app/selectors/organization-selectors';
 import { Flex } from '@/app/components/common/Flex/styled';
-import { userProfileSelector } from '@/app/selectors/user-selectors';
+import { userHasWorkspacesFeatureSelector, userProfileSelector } from '@/app/selectors/user-selectors';
 import { getCustomerTypeLabel } from '@/app/helpers/customer-type-helper';
 import pluralize from 'pluralize';
+import { WORKSPACE_PATH } from '@/app/routing/helpers/paths';
 
 const Workspace = () => {
   const currentUser = useSelector(userProfileSelector);
@@ -51,6 +52,11 @@ const Workspace = () => {
   const [renderedWorkspace, setRenderedWorkspace] =
     useState<WorkspaceType>(workspace);
 
+  const workspacesAvailable = useSelector(userHasWorkspacesFeatureSelector);
+  if (!workspacesAvailable) {
+    history.push(`/core/home`);
+  }
+
   useEffect(() => {
     if (workspace.workspaceIdentifier) {
       setRenderedWorkspace(workspace);
@@ -63,7 +69,7 @@ const Workspace = () => {
 
   const handleNavigateHome = () => {
     dispatch(clearWorkspaceState());
-    history.push(`/core/workspace`);
+    history.push(WORKSPACE_PATH);
   };
 
   const activeTabPath = useMemo(() => {
@@ -94,7 +100,7 @@ const Workspace = () => {
         workspaceInitials={renderedWorkspace.workspaceInitials}
       />
       <Box ml={0.5}>
-        <StyledListLink onClick={handleNavigateHome}>
+        <StyledListLink onClick={handleNavigateHome} to={WORKSPACE_PATH}>
           {workspaceLabel}
         </StyledListLink>
         {' / '}

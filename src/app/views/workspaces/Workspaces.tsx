@@ -19,12 +19,18 @@ import {
   useRouteMatch,
 } from 'react-router-dom';
 import { RouteWrapper } from '@/app/routing/components';
+import { userHasWorkspacesFeatureSelector } from '@/app/selectors/user-selectors';
 
 const Workspaces = () => {
   const { pathname } = useLocation();
   const { path, url } = useRouteMatch();
   const history = useHistory();
   const organization = useSelector(organizationSelector) as TOrganization;
+
+  const workspacesAvailable = useSelector(userHasWorkspacesFeatureSelector);
+  if (!workspacesAvailable) {
+    history.push(`/core/home`);
+  }
 
   const activeTabPath = useMemo(() => {
     for (const tab of TABS_CONFIG) {

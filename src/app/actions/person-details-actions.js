@@ -34,15 +34,10 @@ export function getUserTaskFilterOptions() {
   };
 }
 
-export function getUserTasks() {
+export function getUserTasks(status) {
   return {
     type: ActionTypes.GET_USER_TASKS,
-  };
-}
-
-export function getUserCompletedTasks() {
-  return {
-    type: ActionTypes.GET_USER_COMPLETED_TASKS,
+    status,
   };
 }
 export function changeCurrentTasksStatus(status) {

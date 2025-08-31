@@ -5,6 +5,7 @@ import { TaskItemType, TaskOrigin, TaskStatus } from './task-helpers';
 export const TaskListTabName = {
   OPEN: 'INCOMPLETE',
   COMPLETE: 'COMPLETE',
+  ALL: 'ALL',
 };
 
 export function checkIfTasksHaveSubtasksOrComments(tasks) {

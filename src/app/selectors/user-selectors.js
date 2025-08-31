@@ -167,7 +167,8 @@ export const userHasShareTaskFeatureSelector = createSelector(
 
 export const userHasDockChatFeatureSelector = createSelector(
   userProfileSelector,
-  ({ organizationAvailableFeatures, userAvailableFeatures }) =>
+  () =>
+    // ({ organizationAvailableFeatures, userAvailableFeatures }) =>
     //   featureSelector(
     //     organizationAvailableFeatures,
     //     userAvailableFeatures,
@@ -279,6 +280,36 @@ export const userHasAutomationMeteringFeatureSelector = createSelector(
       organizationAvailableFeatures,
       userAvailableFeatures,
       'AUTOMATION_METERING',
+    ),
+);
+
+export const userHasWorkspacesFeatureSelector = createSelector(
+  userProfileSelector,
+  ({ organizationAvailableFeatures, userAvailableFeatures }) =>
+    featureSelector(
+      organizationAvailableFeatures,
+      userAvailableFeatures,
+      'WORKSPACES',
+    ),
+);
+
+export const userHasConfigIntegrationsFeatureSelector = createSelector(
+  userProfileSelector,
+  ({ organizationAvailableFeatures, userAvailableFeatures }) =>
+    featureSelector(
+      organizationAvailableFeatures,
+      userAvailableFeatures,
+      'CONFIG_INTEGRATIONS',
+    ),
+);
+
+export const userHasConfigInboundEmailsFeatureSelector = createSelector(
+  userProfileSelector,
+  ({ organizationAvailableFeatures, userAvailableFeatures }) =>
+    featureSelector(
+      organizationAvailableFeatures,
+      userAvailableFeatures,
+      'CONFIG_INBOUND_EMAILS',
     ),
 );
 
