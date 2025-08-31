@@ -8,11 +8,20 @@ import {
   NodeTitle,
   NodeDescription,
   CustomNodeHandle,
+  GrowButton,
+  OptionsContainer,
 } from './styled';
 import palette from '@/app/styles/palette';
+import { Fab } from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { deleteTemporaryElement } from '@/app/actions/task-template-actions';
+import { useDispatch } from 'react-redux';
 
-const EmailNode = ({ data, selected }) => {
+const EmailNode = (props) => {
+  const { data, selected, id, onEditClick } = props;
   const { label, description, status, recipients, subject } = data || {};
+  const dispatch = useDispatch();
 
   return (
     <NodeContainer
@@ -30,6 +39,28 @@ const EmailNode = ({ data, selected }) => {
           <EmailIcon fontSize="small" />
         </NodeIcon>
         <NodeTitle>{label || 'Send Email'}</NodeTitle>
+        <OptionsContainer>
+          <GrowButton key="delete" index={0}>
+            <Fab
+              key="delete"
+              aria-label="delete"
+              size="small"
+              onClick={() => dispatch(deleteTemporaryElement(id))}
+            >
+              <DeleteIcon fontSize="small" color="inherit" />
+            </Fab>
+          </GrowButton>
+          <GrowButton key="edit" index={1}>
+            <Fab
+              key="edit"
+              aria-label="edit"
+              size="small"
+              onClick={() => onEditClick(props)}
+            >
+              <EditIcon fontSize="small" color="inherit" />
+            </Fab>
+          </GrowButton>
+        </OptionsContainer>
       </NodeHeader>
 
       <NodeDescription>

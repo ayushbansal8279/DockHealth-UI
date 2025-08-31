@@ -3,6 +3,18 @@ import { Handle } from 'reactflow';
 import palette from '@/app/styles/palette';
 import { NodeType } from '@/app/helpers/smart-flow-builder-helpers';
 
+export const OptionsContainer = styled.div`
+  opacity: 0;
+  transition: opacity 0.3s linear;
+  position: absolute;
+  top: 0px;
+  right: -50px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 9999;
+`;
+
 export const NodeContainer = styled.div`
   background: white;
   border-radius: 12px;
@@ -15,11 +27,26 @@ export const NodeContainer = styled.div`
   &:hover {
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
     transform: translateY(-2px);
+    ${OptionsContainer} {
+      opacity: 1;
+    }
   }
 
   &.selected {
     border-color: ${palette.azureBlue};
     box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2);
+  }
+`;
+
+export const GrowButton = styled.div`
+  opacity: 0;
+  transform: scale(0.8);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  transition-delay: ${({ index }) => index * 0.18}s;
+
+  ${NodeContainer}:hover & {
+    opacity: 1;
+    transform: scale(1);
   }
 `;
 
