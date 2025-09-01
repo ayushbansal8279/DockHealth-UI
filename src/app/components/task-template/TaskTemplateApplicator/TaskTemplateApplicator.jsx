@@ -8,7 +8,6 @@ import React, {
 } from 'react';
 import { useBoolean } from 'hooks/useBoolean';
 // import palette from 'styles/palette';
-import Spacing from 'components/common/Spacing';
 import RotatableChevron, {
   RotatableHeaderChevron,
 } from 'components/common/RotatableChevron/RotatableChevron';
@@ -25,6 +24,8 @@ import {
   TASK_LIST_RESTRICTIONS_OPTIONS,
 } from 'restrictions/task-restrictions';
 import { userProfileSelector } from 'selectors/user-selectors';
+import AddIcon from '@mui/icons-material/Add';
+import { Box } from '@mui/material';
 import TaskTemplatePopover from './TaskTemplatePopover';
 import {
   TaskTemplateApplicatorContainer,
@@ -35,9 +36,7 @@ import {
   TaskTemplateApplicatorRotatableChevronWrapper,
   TaskTemplateApplicatorRotatableChevronLabel,
 } from './styled';
-import AddIcon from '@mui/icons-material/Add';
 import { ListPageContext } from '@/app/views/list-details/ListDetailsView';
-import { Box } from '@mui/material';
 import palette from '@/app/styles/palette';
 
 const { DISABLED } = TASK_LIST_RESTRICTIONS_OPTIONS;
@@ -48,7 +47,7 @@ const TaskTemplateApplicator = ({
   iconColorActive,
   isWorkflowSearch,
   origin,
-  workspaceIdentifier
+  workspaceIdentifier,
 }) => {
   const popoverReference = useRef(null);
   const [isPopoverOpen, openPopover, closePopover] = useBoolean(false);
@@ -160,7 +159,7 @@ const TaskTemplateApplicator = ({
         getRootTemplatesList();
       }
     }, 300),
-    [],
+    [workspaceIdentifier, getRootTemplatesList],
   );
 
   const handleSearch = useCallback(
