@@ -152,22 +152,19 @@ const PatientDetailsView = () => {
           eventType?.startsWith('DUPLICATE_TASK')
         ) {
           dispatch(TaskActions.insertCreatedTask(task.taskIdentifier));
-        } else {
+        } else if (
+          eventType?.startsWith('MARK_COMPLETE') &&
+          !workflowIdentifier // not part of workflow
+        ) {
+          dispatch(TaskActions.refreshTask(task.taskIdentifier));
+          if (task) {
+            dispatch(TaskActions.makeTaskDisappear(task));
+          }
+        } else if (task?.taskIdentifier) {
           dispatch(TaskActions.refreshTask(task.taskIdentifier));
         }
-      } else if (
-        eventType?.startsWith('MARK_COMPLETE') &&
-        !workflowIdentifier // not part of workflow
-      ) {
-        dispatch(TaskActions.refreshTask(task.taskIdentifier));
-        if (task) {
-          dispatch(TaskActions.makeTaskDisappear(task));
-        }
-      } else if (task?.taskIdentifier) {
-        dispatch(TaskActions.refreshTask(task.taskIdentifier));
       }
     };
-
     // eslint-disable-next-line unicorn/consistent-function-scoping
     const taskBundleCallback = ({ eventType, taskBundle }) => {
       // eslint-disable-next-line sonarjs/no-collapsible-if
