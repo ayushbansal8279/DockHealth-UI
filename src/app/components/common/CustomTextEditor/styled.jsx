@@ -13,6 +13,8 @@ export const TextEditorFormStyleContainer = styled.div`
   padding-left: 20px;
   color: #3D4858;
   font-size: 16px;
+  min-height: 50px;
+  position: relative;
   border-bottom: ${({ focused, hasError }) => {
     if (hasError) {
       return focused ? '' : '1px solid #e40909';
@@ -22,15 +24,24 @@ export const TextEditorFormStyleContainer = styled.div`
 `;
 
 export const TextEditorInputLabel = styled(
-  ({ richTextEnabled, hasError, ...props }) => <InputLabel {...props} />,
-)``;
+  ({ richTextEnabled, hasError, shouldShrinkLabel, ...props }) => (
+    <InputLabel {...props} />
+  ),
+)`
+  position: ${({ shouldShrinkLabel }) =>
+    shouldShrinkLabel ? 'absolute' : 'relative'};
+  top: ${({ shouldShrinkLabel }) => (shouldShrinkLabel ? '20px' : '0')};
+  left: ${({ shouldShrinkLabel }) => (shouldShrinkLabel ? '10px' : '0')};
+`;
 
 export const DescriptionLabel = styled.label`
   display: block;
   font-family: inherit;
-  font-size: ${fontSizes.tinyPlus};
+  font-size: ${({ shouldShrinkLabel }) =>
+    shouldShrinkLabel ? '22px' : fontSizes.small};
   font-weight: ${fontWeights.light};
   color: ${palette.coolGrey1};
+  text-transform: none;
 
   & > span {
     text-transform: none;
