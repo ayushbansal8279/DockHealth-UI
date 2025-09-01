@@ -78,3 +78,10 @@ export function generatePlaceholderObject(fields, origin, sort = false) {
     ),
   );
 }
+
+export function convertToKeyValueArray(obj) {
+  return Object.entries(obj).map(([key, value]) => ({
+    label: value,
+    value: key
+  }));
+}
