@@ -438,14 +438,13 @@ function* doUpdatePatientTaskInList({ payload }) {
 
 function* changePatientTasksFilters({ selectedFilters, selectedQuickFilter }) {
   try {
-    const patientIdentifier = yield select(currentPatientIdentifierSelector);
     const completeTasksVisible = yield select(completeTasksVisibilitySelector);
     const status = completeTasksVisible ? 'ALL' : 'INCOMPLETE';
 
     yield put(
       MegaFilterActions.selectFiltersForMegaFilter(
         selectedFilters,
-        patientIdentifier,
+        'patient',
         status,
         selectedQuickFilter,
       ),
@@ -462,24 +461,24 @@ function* doInitializeSavedFiltersForPatient({ patientIdentifier }) {
     const status = completeTasksVisible ? 'ALL' : 'INCOMPLETE';
 
     let filters = localStorageHelper.getItem(
-      getFiltersStorageKey(patientIdentifier, status),
+      getFiltersStorageKey('patient', status),
     );
     if (!filters) {
       filters = sessionStorageHelper.getItem(
-        getFiltersStorageKey(patientIdentifier, status),
+        getFiltersStorageKey('patient', status),
       );
     }
     let selectedQuickFilter = localStorageHelper.getItem(
-      getQuickFilterStorageKey(patientIdentifier, status),
+      getQuickFilterStorageKey('patient', status),
     );
     if (!selectedQuickFilter) {
       selectedQuickFilter = sessionStorageHelper.getItem(
-        getQuickFilterStorageKey(patientIdentifier, status),
+        getQuickFilterStorageKey('patient', status),
       );
     }
 
     let sort = localStorageHelper.getItem(
-      getSortStorageKey(patientIdentifier, status),
+      getSortStorageKey('patient', status),
     );
 
     if (sort && sort.key && sort.order) {
@@ -495,7 +494,7 @@ function* doInitializeSavedFiltersForPatient({ patientIdentifier }) {
     yield put(
       MegaFilterActions.selectFiltersForMegaFilter(
         filters,
-        patientIdentifier,
+        'patient',
         status,
         selectedQuickFilter,
       ),
@@ -578,17 +577,16 @@ function* doSortPatientTasks({ payload }) {
     const { key, order } = payload;
     onSortChanged(order ? key : null, order);
 
-    const patientIdentifier = yield select(currentPatientIdentifierSelector);
     const completeTasksVisible = yield select(completeTasksVisibilitySelector);
     const status = completeTasksVisible ? 'ALL' : 'INCOMPLETE';
 
     if (order) {
       localStorageHelper.setItem(
-        getSortStorageKey(patientIdentifier, status),
+        getSortStorageKey('patient', status),
         { key, order },
       );
     } else if (order === null) {
-      localStorageHelper.removeItem(getSortStorageKey(patientIdentifier, status));
+      localStorageHelper.removeItem(getSortStorageKey('patient', status));
     }
 
     yield put({
