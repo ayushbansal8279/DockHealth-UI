@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Box, Grid, Select, MenuItem } from '@mui/material';
@@ -50,7 +50,12 @@ const EditTemplateModal = ({ closeModal, template, onAdded, onUpdated }) => {
   const [templatePlaceholderOptions, setTemplatePlaceholderOptions] = useState(
     {},
   );
-  const [smsPlaceholdersOptions, setSmsPlaceholderOptions] = useState([]);
+  const [selectedPlaceholder, setSelectedPlaceholder] = useState('');
+
+  const placeholderOptions = useMemo(
+    () => convertToKeyValueArray(templatePlaceholderOptions),
+    [templatePlaceholderOptions],
+  );
 
   const handleTextEditorChange = (value) => {
     setCurrentValue(value);
@@ -136,9 +141,6 @@ const EditTemplateModal = ({ closeModal, template, onAdded, onUpdated }) => {
       ...taskPlaceholders,
     };
 
-    const smsPlaceholders = convertToKeyValueArray(allPlaceholders);
-    setSmsPlaceholderOptions(smsPlaceholders);
-
     setTemplatePlaceholderOptions(allPlaceholders);
   };
 
@@ -146,7 +148,7 @@ const EditTemplateModal = ({ closeModal, template, onAdded, onUpdated }) => {
     fetchTemplatePlaceholders();
   }, []);
 
-  const handleSmsPlacholderSelect = (value) => {
+  const handleShortTextPlaceholderSelect = (value) => {
     const previousValue = watch('shortMessage');
     const newValue = previousValue + value;
     setValue('shortMessage', newValue);
@@ -199,46 +201,53 @@ const EditTemplateModal = ({ closeModal, template, onAdded, onUpdated }) => {
                             : 'Message'
                         }
                       />
-                      <Select
-                        fullWidth
-                        variant="standard"
-                        disableUnderline
-                        value={smsPlaceholdersOptions || ''}
-                        displayEmpty
-                        renderValue={() => 'Select placeholder'}
-                        MenuProps={{
-                          disablePortal: true,
-                          anchorOrigin: {
-                            vertical: 'bottom',
-                            horizontal: 'left',
-                          },
-                          transformOrigin: {
-                            vertical: 'top',
-                            horizontal: 'left',
-                          },
-                          PaperProps: {
-                            style: {
-                              maxHeight: 250,
+                      {templateTypeValue === TEMPLATE_TYPES.SMS && (
+                        <Select
+                          fullWidth
+                          variant="standard"
+                          disableUnderline
+                          value={selectedPlaceholder}
+                          displayEmpty
+                          renderValue={() =>
+                            selectedPlaceholder
+                              ? selectedPlaceholder
+                              : 'Select placeholder'
+                          }
+                          MenuProps={{
+                            disablePortal: true,
+                            anchorOrigin: {
+                              vertical: 'bottom',
+                              horizontal: 'left',
                             },
-                          },
-                        }}
-                        placeholder="SelectPlaceHolder"
-                        onChange={(e) =>
-                          handleSmsPlacholderSelect(e.target.value)
-                        }
-                        sx={{
-                          mt: 2,
-                          backgroundColor: '#f9fbfc',
-                          borderRadius: '8px',
-                          padding: '8px 12px',
-                        }}
-                      >
-                        {smsPlaceholdersOptions.map((option) => (
-                          <MenuItem key={option.value} value={option.value}>
-                            {option.label}
-                          </MenuItem>
-                        ))}
-                      </Select>
+                            transformOrigin: {
+                              vertical: 'top',
+                              horizontal: 'left',
+                            },
+                            PaperProps: {
+                              style: {
+                                maxHeight: 250,
+                              },
+                            },
+                          }}
+                          placeholder="SelectPlaceHolder"
+                          onChange={(e) => {
+                            setSelectedPlaceholder(e.target.value);
+                            handleShortTextPlaceholderSelect(e.target.value);
+                          }}
+                          sx={{
+                            mt: 2,
+                            backgroundColor: '#f9fbfc',
+                            borderRadius: '8px',
+                            padding: '8px 12px',
+                          }}
+                        >
+                          {placeholderOptions.map((option) => (
+                            <MenuItem key={option.value} value={option.value}>
+                              {option.label}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      )}
                     </Grid>
                   )}
                   {templateTypeValue !== TEMPLATE_TYPES.SMS && (
