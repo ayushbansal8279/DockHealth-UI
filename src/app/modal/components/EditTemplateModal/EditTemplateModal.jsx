@@ -208,11 +208,7 @@ const EditTemplateModal = ({ closeModal, template, onAdded, onUpdated }) => {
                           disableUnderline
                           value={selectedPlaceholder}
                           displayEmpty
-                          renderValue={() =>
-                            selectedPlaceholder
-                              ? selectedPlaceholder
-                              : 'Select placeholder'
-                          }
+                          renderValue={() => 'Select placeholder'}
                           MenuProps={{
                             disablePortal: true,
                             anchorOrigin: {
