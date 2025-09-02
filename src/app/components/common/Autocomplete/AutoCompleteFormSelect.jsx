@@ -8,7 +8,6 @@ import {
   ListItemText,
   MenuItem,
 } from '@mui/material';
-import { none } from 'ramda';
 import { ColorIndicator } from '../Select/styled';
 
 const AutoCompleteFormSelect = React.forwardRef(
@@ -76,7 +75,7 @@ const AutoCompleteFormSelect = React.forwardRef(
           shouldDirty: true,
         });
       } else {
-        setValue(name, newValue?.value || none, {
+        setValue(name, newValue?.value || null, {
           shouldValidate: true,
           shouldDirty: true,
         });

@@ -136,7 +136,10 @@ const PatientsView = () => {
     const cameFromPatientProfile =
       location?.state?.from?.includes('/core/patient');
 
-    if (!isDynamicPatientList && !cameFromPatientProfile) {
+    if (
+      (!isDynamicPatientList && !cameFromPatientProfile) ||
+      (cameFromPatientProfile && !listDetails)
+    ) {
       dispatch(
         PatientsActions.initializePatientsListState(patientListIdentifier),
       );
