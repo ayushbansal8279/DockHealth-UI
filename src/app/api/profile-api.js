@@ -241,3 +241,14 @@ export const note = {
       .then(({ data }) => data);
   },
 };
+
+export const getProfileRelationships = (
+  profileIdentifier,
+  relationshipProfileTypeIdentifier,
+) => {
+  return axios
+    .get(
+      `profile/${profileIdentifier}/relationships/${relationshipProfileTypeIdentifier}`,
+    )
+    .then(({ data }) => data);
+};

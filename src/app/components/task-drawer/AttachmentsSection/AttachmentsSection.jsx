@@ -63,6 +63,7 @@ const AttachmentsSection = ({
   const patientIdentifier = isSubTask
     ? selectedTask?.parentTask?.patient?.patientIdentifier
     : selectedTask?.patient?.patientIdentifier;
+
   useEffect(() => {
     if (
       attachmentRef.current &&
@@ -75,7 +76,7 @@ const AttachmentsSection = ({
   const referenceAttachment = async () => {
     try {
       const patientAttachments = await getPatientAttachments(patientIdentifier);
-
+  
       dispatch(
         openModal('PatientAttachmentReference', {
           attachmentList: patientAttachments,
@@ -145,9 +146,7 @@ const AttachmentsSection = ({
             xs={12}
             container
             alignContent="center"
-            {...getRootProps({ style: { outline: 'none' },
-              onClick : (e) => e.stopPropagation(),
-            })}
+            {...getRootProps({ style: { outline: 'none' } })}
           >
             {attachmentsLoading ? (
               <>

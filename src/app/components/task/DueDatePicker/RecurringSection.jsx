@@ -37,12 +37,16 @@ import {
   REPEAT_UNIT_OPTIONS,
   RepeatUnitOption,
 } from './helpers';
+import { bulkEditRecurringSchedule } from '@/app/api/task-api';
 
 const RecurringSection = ({
   taskIdentifier,
   selectedDueDate,
   recurring,
   onClose,
+  allSelectedTasksIdentifiers,
+  allSelectedWorkflowIdentifiers,
+  bulkEditDueDate,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const [endDateError, setEndDateError] = useState(false);
@@ -148,31 +152,72 @@ const RecurringSection = ({
       }
 
       setIsSaving(true);
-      saveTaskRecurringSchedule(taskIdentifier, requestData)
-        .then(() => {
-          setIsSaving(false);
-
-          const hasRecurringScheduleAfterSave =
-            requestData[FormField.RECURRING_OPTION] !==
-            RecurringOption.DO_NOT_REPEAT;
-
-          if (recurring !== hasRecurringScheduleAfterSave) {
-            dispatch(
-              setRecurringScheduleFlag(
-                taskIdentifier,
-                hasRecurringScheduleAfterSave,
-              ),
-            );
-          }
-          dispatch(showGlobalAlert(AlertMessages.UPDATED));
-          onClose();
+      if (bulkEditDueDate) {
+        bulkEditRecurringSchedule({
+          recurringSchedule: { ...requestData },
+          bulkEditRequest: {
+            taskIdentifiers: allSelectedTasksIdentifiers,
+            taskWorkflowIdentifiers: allSelectedWorkflowIdentifiers,
+          },
         })
-        .catch(() => {
-          setIsSaving(false);
-          dispatch(showGlobalErrorAlert());
-        });
+          .then(() => {
+            setIsSaving(false);
+            const hasRecurringScheduleAfterSave =
+              requestData[FormField.RECURRING_OPTION] !==
+              RecurringOption.DO_NOT_REPEAT;
+
+            allSelectedTasksIdentifiers.forEach((taskIdentifier) => {
+              if (recurring !== hasRecurringScheduleAfterSave) {
+                dispatch(
+                  setRecurringScheduleFlag(
+                    taskIdentifier,
+                    hasRecurringScheduleAfterSave,
+                  ),
+                );
+              }
+            });
+            dispatch(showGlobalAlert(AlertMessages.UPDATED));
+            onClose();
+          })
+          .catch(() => {
+            setIsSaving(false);
+            dispatch(showGlobalErrorAlert());
+          });
+      } else {
+        saveTaskRecurringSchedule(taskIdentifier, requestData)
+          .then(() => {
+            setIsSaving(false);
+
+            const hasRecurringScheduleAfterSave =
+              requestData[FormField.RECURRING_OPTION] !==
+              RecurringOption.DO_NOT_REPEAT;
+
+            if (recurring !== hasRecurringScheduleAfterSave) {
+              dispatch(
+                setRecurringScheduleFlag(
+                  taskIdentifier,
+                  hasRecurringScheduleAfterSave,
+                ),
+              );
+            }
+            dispatch(showGlobalAlert(AlertMessages.UPDATED));
+            onClose();
+          })
+          .catch(() => {
+            setIsSaving(false);
+            dispatch(showGlobalErrorAlert());
+          });
+      }
     },
-    [dispatch, onClose, recurring, taskIdentifier],
+    [
+      dispatch,
+      onClose,
+      recurring,
+      taskIdentifier,
+      bulkEditDueDate,
+      allSelectedTasksIdentifiers,
+      allSelectedWorkflowIdentifiers,
+    ],
   );
 
   const handleRecurringOptionSelect = (newValue) => {

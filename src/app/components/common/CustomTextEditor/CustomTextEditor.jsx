@@ -24,6 +24,7 @@ const CustomTextEditor = React.forwardRef(
     },
     reference,
   ) => {
+    const shouldShrinkLabel = label && !empty && !focused;
     return (
       <TextEditorFormStyleContainer focused={focused} ref={reference}>
         <TextEditorInputLabel
@@ -31,9 +32,10 @@ const CustomTextEditor = React.forwardRef(
           focused={focused}
           shrink={!empty}
           hasError={hasError}
+          shouldShrinkLabel={shouldShrinkLabel}
         >
           <>
-            <DescriptionLabel>
+            <DescriptionLabel shouldShrinkLabel={shouldShrinkLabel}>
               {label}
               <Spacing horizontal={3} />
               {required && <span>*</span>}

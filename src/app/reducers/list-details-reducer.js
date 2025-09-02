@@ -993,9 +993,8 @@ const ListDetailsReducer = (state = initialState, action) => {
 
       const isSubTask = Boolean(task?.parentTaskIdentifier);
 
+      const existingTask = state.tasksMap[task?.identifier];
       if (isTaskOfTemplate || isSubTask) {
-        const existingTask = state.tasksMap[task?.identifier];
-
         if (!existingTask) {
           return state;
         }
@@ -1007,6 +1006,10 @@ const ListDetailsReducer = (state = initialState, action) => {
             [task.identifier]: task,
           },
         };
+      }
+
+      if (existingTask && existingTask?.subtaskQuickAddOpen) {
+        task.subtaskQuickAddOpen = existingTask?.subtaskQuickAddOpen;
       }
 
       const { taskGroupIdentifier } =

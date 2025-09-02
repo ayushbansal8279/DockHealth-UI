@@ -7,6 +7,7 @@ import { getAllProfiles } from 'api/profile-api';
 import { getProfileName } from 'views/custom-profile-details/helpers';
 import Autocomplete from '../Autocomplete/Autocomplete';
 import { FormHelperText } from '@mui/material';
+import { useParams } from 'react-router-dom';
 
 const CustomFieldAutoComplete = ({
   readOnly,
@@ -32,6 +33,7 @@ const CustomFieldAutoComplete = ({
     unregister,
     watch,
   } = formMethods || formContext;
+  const { profileIdentifier, relationshipProfileIdentifier } = useParams();
 
   useEffect(() => {
     if (required) {
@@ -56,6 +58,7 @@ const CustomFieldAutoComplete = ({
   }, [name, register, unregister, required]);
 
   const [profiles, setProfiles] = useState(null);
+  const [isAutoSelected, setIsAutoSelected] = useState(false);
 
   useEffect(() => {
     if (relatedProfileType) {
@@ -63,13 +66,33 @@ const CustomFieldAutoComplete = ({
         .then((profileTypeFields) => {
           getAllProfiles(relatedProfileType.identifier)
             .then((data) => {
-              const newProfiles = data
-                .filter((profile) => profile.fields)
-                .map((profile) => ({
-                  profile,
-                  label: getProfileName(profileTypeFields, profile)?.join(' '),
-                }));
+              let filteredProfiles = data.filter((profile) => profile.fields);
+
+              if (relationshipProfileIdentifier && profileIdentifier) {
+                filteredProfiles = filteredProfiles.filter(
+                  (profile) => profile.identifier === profileIdentifier,
+                );
+              }
+
+              const newProfiles = filteredProfiles.map((profile) => ({
+                profile,
+                label: getProfileName(profileTypeFields, profile)?.join(' '),
+              }));
+
               setProfiles(newProfiles);
+
+              if (
+                relationshipProfileIdentifier &&
+                profileIdentifier &&
+                newProfiles.length === 1
+              ) {
+                const singleProfile = newProfiles[0];
+                setValue(name, [singleProfile.profile.identifier], {
+                  shouldValidate: true,
+                  shouldDirty: true,
+                });
+                setIsAutoSelected(true);
+              }
             })
             .catch((error) => {
               console.error('error getting object types');
@@ -80,7 +103,16 @@ const CustomFieldAutoComplete = ({
           dispatch(showGlobalErrorAlert());
         });
     }
-  }, [dispatch, relatedProfileType?.identifier]);
+  }, [
+    dispatch,
+    relatedProfileType?.identifier,
+    relationshipProfileIdentifier,
+    profileIdentifier,
+    name,
+    setValue,
+  ]);
+
+  const isFieldReadOnly = readOnly || isAutoSelected;
 
   const isNested = name?.includes('.');
   const nestedParts = name?.split('.');
@@ -91,6 +123,10 @@ const CustomFieldAutoComplete = ({
 
   const handleChange = useCallback(
     (event) => {
+      if (isAutoSelected) {
+        return;
+      }
+
       if (error) clearErrors(name);
 
       let selectedValues;
@@ -103,7 +139,7 @@ const CustomFieldAutoComplete = ({
         );
       } else {
         selectedOptions = event ? [event] : [];
-        selectedValues = event?.profile?.identifier || null;
+        selectedValues = [event?.profile?.identifier] || null;
       }
 
       setValue(name, selectedValues, {
@@ -113,7 +149,7 @@ const CustomFieldAutoComplete = ({
 
       if (typeof onChange === 'function') onChange(event);
     },
-    [clearErrors, error, name, onChange, setValue, multiple],
+    [clearErrors, error, name, onChange, setValue, multiple, isAutoSelected],
   );
 
   const formValue = watch(name);

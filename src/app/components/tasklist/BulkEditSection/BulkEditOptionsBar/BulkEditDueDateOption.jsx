@@ -11,8 +11,9 @@ const BulkEditDueDateOption = ({
   handleChangeDateTasks,
   isDisabled,
   selectedDate,
+  allSelectedTasksIdentifiers,
+  allSelectedWorkflowIdentifiers,
 }) => {
-
   const dueDateIntent = checkDateTimeIntent(selectedDate);
 
   return (
@@ -23,11 +24,16 @@ const BulkEditDueDateOption = ({
           onDateChange={(newDueDate) => {
             handleChangeDateTasks(newDueDate);
           }}
-          selectedDate={adjustUTCDateForDateIntent(selectedDate ? moment(selectedDate).local() : null, dueDateIntent)}
-          disableRecurring
+          selectedDate={adjustUTCDateForDateIntent(
+            selectedDate ? moment(selectedDate).local() : null,
+            dueDateIntent,
+          )}
+          allSelectedTasksIdentifiers={allSelectedTasksIdentifiers}
+          allSelectedWorkflowIdentifiers={allSelectedWorkflowIdentifiers}
           onCloseClick={closePopover}
           dueDateIntent={dueDateIntent}
           dateType="dueDate"
+          bulkEditDueDate
         />
       )}
     >

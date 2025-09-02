@@ -5,7 +5,6 @@ import { fontWeights, fontSizes } from 'styles/font';
 import { Tab } from '@mui/material';
 
 export const ProfileDetailsTabsContainer = styled.div`
-  padding: 0 ${spacing.huge};
   background-color: ${palette.white};
 `;
 
