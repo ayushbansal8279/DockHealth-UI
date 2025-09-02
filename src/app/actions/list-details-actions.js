@@ -78,6 +78,23 @@ export function setListDetailsTasksSort(key, order) {
   };
 }
 
+export function setSortForListDetails(sort, taskListIdentifier, status) {
+  return {
+    type: ActionTypes.SET_SORT_FOR_LIST_DETAILS,
+    sort,
+    taskListIdentifier,
+    status,
+  };
+}
+
+export function clearSortForListDetails(taskListIdentifier, status) {
+  return {
+    type: ActionTypes.CLEAR_SORT_FOR_LIST_DETAILS,
+    taskListIdentifier,
+    status,
+  };
+}
+
 export function requestAllListDetailsGroups() {
   return {
     type: ActionTypes.REQUEST_ALL_LIST_DETAILS_GROUPS,

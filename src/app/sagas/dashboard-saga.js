@@ -41,6 +41,7 @@ import {
   getFiltersStorageKey,
   getQuickFilterStorageKey,
   getMultipleSelectedQuickFilterStorageKey,
+  getSortStorageKey,
 } from 'helpers/mega-filter-helper';
 import { log } from 'helpers/log';
 import localStorageHelper from '../helpers/local-storage-helper';
@@ -69,6 +70,18 @@ function* initializeDashboardView() {
       selectedQuickFilter = sessionStorageHelper.getItem(
         getQuickFilterStorageKey('dashboard', tabName),
       );
+    }
+
+    let sort = localStorageHelper.getItem(
+      getSortStorageKey('dashboard', tabName),
+    );
+
+    if (sort && sort.key && sort.order) {
+      yield put({
+        type: ActionTypes.SORT_DASHBOARD_TASKS,
+        key: sort.key,
+        order: sort.order,
+      });
     }
 
     yield put(
@@ -231,7 +244,15 @@ function* getDashboardGroups() {
   }
 }
 
-function* getDashboardGroupsSuccess({ tasksList, sortBy, sortDirection }) {
+function* getDashboardGroupsSuccess({ tasksList }) {
+  const tabName = yield select(dashboardTabNameSelector);
+  
+  let sort = localStorageHelper.getItem(
+    getSortStorageKey('dashboard', tabName),
+  );
+  
+  const { key, order } = sort || { key: null, order: null };
+  
   yield all(
     tasksList
       .filter(({ defaultOpen }) => defaultOpen)
@@ -240,8 +261,8 @@ function* getDashboardGroupsSuccess({ tasksList, sortBy, sortDirection }) {
           DashboardActions.getDashboardTasksForGroup(
             groupType,
             taskGroupIdentifier,
-            sortBy,
-            sortDirection,
+            key,
+            order,
           ),
         ),
       ),
@@ -420,6 +441,23 @@ function* getDashboardCalendarTasks() {
   }
 }
 
+function* sortDashboardTasks({ key, order }) {
+  try {
+    const tabName = yield select(dashboardTabNameSelector);
+
+    if (order) {
+      localStorageHelper.setItem(
+        getSortStorageKey('dashboard', tabName),
+        { key, order },
+      );
+    } else if (order === null) {
+      localStorageHelper.removeItem(getSortStorageKey('dashboard', tabName));
+    }
+  } catch (error) {
+    log(error);
+  }
+}
+
 export default function* watchDashboard() {
   yield takeEvery(
     ActionTypes.INITIALIZE_DASHBOARD_STATE,
@@ -453,4 +491,5 @@ export default function* watchDashboard() {
     getDashboardCalendarTasks,
   );
   yield takeLatest(ActionTypes.REFRESH_ORIGIN, getDashboardTasks);
+  yield takeEvery(ActionTypes.SORT_DASHBOARD_TASKS, sortDashboardTasks);
 }

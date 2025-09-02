@@ -52,6 +52,7 @@ import {
 import {
   getFiltersStorageKey,
   getQuickFilterStorageKey,
+  getSortStorageKey,
 } from 'helpers/mega-filter-helper';
 import { calendarDateRangeSelector } from 'selectors/calendar-tasks-selectors';
 import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
@@ -481,6 +482,14 @@ function* initializeListDetailsTableState() {
         );
       }
 
+      let sort = localStorageHelper.getItem(
+        getSortStorageKey(taskListIdentifier, status),
+      );
+
+      if (sort) {
+        yield put(ListDetailsActions.setListDetailsTasksSort(sort.key, sort.order));
+      }
+
       if (filters) {
         yield put(
           MegaFilterActions.selectFiltersForMegaFilter(
@@ -593,6 +602,20 @@ function* searchCurrentListTasks() {
 function* sortListDetailsTasks({ payload }) {
   const { key, order } = payload;
   onSortChanged(order ? key : null, order);
+  
+  const taskListIdentifier = yield select(currentTaskListIdentifierSelector);
+  const status = yield select(currentTaskListTasksStatusSelector);
+
+  const sortToSave = order ? { key, order } : null;
+  if (sortToSave) {
+    localStorageHelper.setItem(
+      getSortStorageKey(taskListIdentifier, status),
+      sortToSave,
+    );
+  } else {
+    localStorageHelper.removeItem(getSortStorageKey(taskListIdentifier, status));
+  }
+
   yield all([
     put(ListDetailsActions.requestAllListDetailsGroups()),
     put(ListDetailsActions.setListDetailsTasksSort(order ? key : null, order)),
