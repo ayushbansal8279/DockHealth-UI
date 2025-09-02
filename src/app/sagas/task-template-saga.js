@@ -962,16 +962,17 @@ function* bulkEditDuplicateTasksSuccess({
     // Find bounding box of originals
     const minX = Math.min(...originals.map((n) => n.position.x));
     const maxX = Math.max(...originals.map((n) => n.position.x));
-    // const minY = Math.min(...originals.map((n) => n.position.y));
-    // const maxY = Math.max(...originals.map((n) => n.position.y));
 
     // Horizontal shift (place duplicates to the right of the group)
     const shiftX = maxX - minX + 300;
     const shiftY = 0; // keep same Y alignment
 
     // Map duplicates with same relative pattern
-    const autoLayout = duplicatedTasks.map((dup, i) => {
-      const original = originals[i]; // map by order
+    const autoLayout = duplicatedTasks?.map((dup) => {
+      const original = originals?.find(
+        (orig) => orig?.id === dup?.referenceTaskIdentifier,
+      );
+      if (!original) return null; // skip if not found
       return {
         id: dup.identifier,
         position: {
