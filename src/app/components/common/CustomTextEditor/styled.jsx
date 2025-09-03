@@ -9,8 +9,7 @@ export const TextEditorFormStyleContainer = styled.div`
   background-color: #f7fafb !important;
   border-top-left-radius: 4px;
   border-top-right-radius: 4px;
-  padding-top: 5px;
-  padding-left: 20px;
+  padding: 0 0 5px 15px;
   color: #3D4858;
   font-size: 16px;
   min-height: 50px;
@@ -30,15 +29,15 @@ export const TextEditorInputLabel = styled(
 )`
   position: ${({ shouldShrinkLabel }) =>
     shouldShrinkLabel ? 'absolute' : 'relative'};
-  top: ${({ shouldShrinkLabel }) => (shouldShrinkLabel ? '20px' : '0')};
-  left: ${({ shouldShrinkLabel }) => (shouldShrinkLabel ? '10px' : '0')};
+  top: ${({ shouldShrinkLabel }) => (shouldShrinkLabel ? '20px' : '0px')};
+  left: ${({ shouldShrinkLabel }) => (shouldShrinkLabel ? '10px' : '0px')};
 `;
 
 export const DescriptionLabel = styled.label`
   display: block;
   font-family: inherit;
   font-size: ${({ shouldShrinkLabel }) =>
-    shouldShrinkLabel ? '22px' : fontSizes.small};
+    shouldShrinkLabel ? '22px' : fontSizes.tiny};
   font-weight: ${fontWeights.light};
   color: ${palette.coolGrey1};
   text-transform: none;
