@@ -18,15 +18,14 @@ import {
   userProfileSelector,
 } from 'selectors/user-selectors';
 import { capitalize } from 'helpers/capitalize';
-import { StyledDataGrid } from './DataGridStyles';
 import { getTemplateColumns, textFieldSx } from './helpers';
 import { ViewContainer, AddButtonWrapper, AddButton, PlusIcon } from './styled';
-import { TextField } from '@mui/material';
 import { createProfileType } from 'api/profile-type-api';
 import { showGlobalAlert, showGlobalErrorAlert } from '@/app/alert/actions';
 import AlertMessages from '@/app/alert/AlertMessages';
 import { useBoolean } from 'react-use';
 import { getCustomerTypeLabel } from '@/app/helpers/customer-type-helper';
+import ReusableDataGrid from '@/app/components/custom-profile/CustomProfilesList/DataGrid/DataGrid';
 
 const PAGE_SIZE = 30;
 
@@ -136,7 +135,13 @@ const ProfilesAndCustomFieldsView = () => {
         onOpenProfileBuilder,
         profileBuilderFeatureAvailable,
       }),
-    [onEditProfile, onDeleteProfile, onConfigureCustomFields, onOpenProfileBuilder, profileBuilderFeatureAvailable],
+    [
+      onEditProfile,
+      onDeleteProfile,
+      onConfigureCustomFields,
+      onOpenProfileBuilder,
+      profileBuilderFeatureAvailable,
+    ],
   );
 
   let profileOptions = [
@@ -179,32 +184,21 @@ const ProfilesAndCustomFieldsView = () => {
 
   return (
     <ViewLayout header={<BasicLayoutHeader title="Objects" />}>
-      {userHasCustomProfilesAvailable && (
-        <AddButtonWrapper>
-          <AddButton onClick={onAddProfile}>
-            <PlusIcon />
-            New Object
-          </AddButton>
-        </AddButtonWrapper>
-      )}
       <ViewContainer>
-        <StyledDataGrid
+        {userHasCustomProfilesAvailable && (
+          <AddButtonWrapper>
+            <AddButton onClick={onAddProfile}>
+              <PlusIcon />
+              New Object
+            </AddButton>
+          </AddButtonWrapper>
+        )}
+        <ReusableDataGrid
           columns={columns}
           rows={profileOptions}
           rowHeight={35}
-          headerHeight={45}
-          page={page}
-          onPageChange={({ page: p }) => setPage(p)}
-          pageSize={PAGE_SIZE}
-          hideFooter
-          hideFooterSelectedRowCount
-          autoHeight
-          disableColumnMenu
-          disableSelectionOnClick
-          showColumnRightBorder
-          showCellRightBorder
         />
-        {shouldShowInput && (
+        {/* {shouldShowInput && (
           <TextField
             onChange={(e) => setNewProfileName(e.target.value)}
             inputRef={textFieldRef}
@@ -219,7 +213,7 @@ const ProfilesAndCustomFieldsView = () => {
             placeholder="Object Name here"
             fullWidth
           />
-        )}
+        )} */}
       </ViewContainer>
     </ViewLayout>
   );

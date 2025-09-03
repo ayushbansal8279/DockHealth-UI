@@ -25,12 +25,13 @@ import {
   StyledUsersTable,
   UsersTableContainer,
   ListLoaderContainer,
-  StyledDataGrid,
+  TableHeaderContainer,
 } from './styled';
 import { MoreActionsWrapper } from '@/app/views/person-details/PersonDetailsDrawer/styled';
 import OptionsMenu from '@/app/components/common/OptionsMenu/OptionsMenu';
 import { IconButton } from '@mui/material';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
+import ReusableDataGrid from '@/app/components/custom-profile/CustomProfilesList/DataGrid/DataGrid';
 
 const getFilteredOrganizationUsers = ({
   organizationUsers,
@@ -363,7 +364,7 @@ const UsersTable = ({
           const contextMenuOptions = [
             {
               name: 'View Activity',
-              onClick: () =>  history.push(`/user-activity/${userIdentifier}`)
+              onClick: () => history.push(`/user-activity/${userIdentifier}`),
             },
           ];
           return (
@@ -417,53 +418,41 @@ const UsersTable = ({
       ) : (
         <>
           {showTableHeader && (
-            <Box p="16px" display="flex" width="100%">
-              <Box display="flex" flex={1} alignItems="center">
-                <Box mx={-1} />
-                <ToolbarSelect
-                  options={SUBSCRIPTION_OPTIONS}
-                  value={USER_SUBSCRIPTION_VALUES[userSubscriptionStatus]}
-                  name="user-list-type"
-                  onChange={(event) =>
-                    setUserSubscriptionStatus(
-                      UserSubscriptionStatus[event?.target?.value],
-                    )
-                  }
-                  icon={
-                    <PatientsListImg
-                      src={TasksStatusSwitchIcon}
-                      alt="list type icon"
-                    />
-                  }
-                />
-                <Spacing horizontal={3} />
-                <InviteButton
-                  getAllUsers={getAllUsers}
-                  fullWidth={isSmallScreen}
-                />
-                <Spacing horizontal={3} />
-                <SearchInput
-                  value={currentSearch}
-                  onValueChange={setCurrentSearch}
-                />
-              </Box>
-            </Box>
+            <TableHeaderContainer>
+              <ToolbarSelect
+                options={SUBSCRIPTION_OPTIONS}
+                value={USER_SUBSCRIPTION_VALUES[userSubscriptionStatus]}
+                name="user-list-type"
+                onChange={(event) =>
+                  setUserSubscriptionStatus(
+                    UserSubscriptionStatus[event?.target?.value],
+                  )
+                }
+                icon={
+                  <PatientsListImg
+                    src={TasksStatusSwitchIcon}
+                    alt="list type icon"
+                  />
+                }
+              />
+              <InviteButton
+                getAllUsers={getAllUsers}
+                fullWidth={isSmallScreen}
+              />
+              <SearchInput
+                value={currentSearch}
+                onValueChange={setCurrentSearch}
+              />
+            </TableHeaderContainer>
           )}
           <StyledUsersTable isSmallScreen={isSmallScreen}>
             {isEmpty(filteredOrganizationUsers) ? (
               <EmptyOrganizationMemberRow />
             ) : (
-              <StyledDataGrid
+              <ReusableDataGrid
                 columns={columns}
                 rows={filteredOrganizationUsersWithId}
                 rowHeight={35}
-                headerHeight={45}
-                hideFooterSelectedRowCount
-                autoHeight
-                disableColumnMenu
-                disableSelectionOnClick
-                showColumnRightBorder
-                showCellRightBorder
               />
             )}
           </StyledUsersTable>

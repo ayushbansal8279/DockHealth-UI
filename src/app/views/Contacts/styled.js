@@ -6,9 +6,14 @@ export const ViewContainer = styled.div`
   max-width: 1200px;
   width: 100%;
   margin: 0 auto;
-  padding: 50px 20px;
   color: ${palette.mediumGrey};
   font-family: inherit;
+  padding: 32px 0px;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  min-height: 0;
+  gap: 32px;
 `;
 
 export const AddContactWrapper = styled.div`
