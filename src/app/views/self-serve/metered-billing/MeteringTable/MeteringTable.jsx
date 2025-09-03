@@ -4,6 +4,7 @@ import moment from 'moment';
 import Tooltip from '@/app/components/common/Tooltip/Tooltip';
 import { List, PropertiesTooltipContainer } from './styled';
 import { formatKey } from './helper';
+import ReusableDataGrid from '@/app/components/custom-profile/CustomProfilesList/DataGrid/DataGrid';
 
 const MeteringTable = ({
   billingData,
@@ -83,26 +84,19 @@ const MeteringTable = ({
   ];
 
   return (
-    <DataGridPremium
+    <ReusableDataGrid
       apiRef={apiRef}
       columns={columns}
-      getRowId={(row) => row.eventIdentifier}
       rows={billingData}
+      getRowId={(row) => row.eventIdentifier}
       rowHeight={40}
-      sx={{
-        '& .MuiDataGrid-columnHeaders': {
-          fontSize: '16px',
-          fontWeight: '600',
-        },
-      }}
-      columnHeaderHeight={50}
-      showCellVerticalBorder
-      showColumnVerticalBorder
+      // showColumnVerticalBorder
+      // showCellVerticalBorder
       pagination
       pageSizeOptions={[defaultPageSize]}
-      rowCount={rowCount}
       paginationMode="server"
       paginationModel={paginationModel}
+      rowCount={rowCount}
       onPaginationModelChange={(newPaginationModel) => {
         setPaginationModel(newPaginationModel);
         onPaginationChange(
