@@ -169,7 +169,7 @@ const PatientsToolbar = ({ searchValue, setSearchValue, workspaceIdentifier = nu
 
   return (
     <>
-      <Box p="16px">
+      <Box>
         <Box display="flex" width="100%">
           <Box
             display="flex"
@@ -313,8 +313,8 @@ const PatientsToolbar = ({ searchValue, setSearchValue, workspaceIdentifier = nu
         <>
           <SearchHelperText>
             Search by first name, last name or medical record number. You may
-            filter to retrieve specific {pluralize(customerTypeLabel).toLowerCase()} in
-            Dock.
+            filter to retrieve specific{' '}
+            {pluralize(customerTypeLabel).toLowerCase()} in Dock.
           </SearchHelperText>
         </>
       )}

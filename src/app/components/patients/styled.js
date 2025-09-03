@@ -4,14 +4,29 @@ import palette from 'styles/palette';
 export const PatientsViewContainer = styled.div`
   display: flex;
   flex-direction: column;
+  flex-grow: 1;
   height: 100%;
   max-height: 100%;
   overflow: hidden;
+  padding: 32px;
+  gap: 16px;
 `;
 
 export const PatientsListContainer = styled.div`
-  flex: 1;
-  overflow-y: auto;
+  // flex: 1;
+  // min-height: 0;
+  // // overflow: hidden;
+  // display: flex;
+  // flex-direction: column;
+`;
+
+export const GridWrapper = styled.div`
+  // flex: 1;
+  // min-height: 0;
+
+  // .MuiDataGrid-root {
+  //   flex: 1;
+  // }
 `;
 
 export const SidebarInnerContainer = styled.div`
