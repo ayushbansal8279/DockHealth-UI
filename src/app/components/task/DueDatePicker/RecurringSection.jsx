@@ -38,6 +38,7 @@ import {
   RepeatUnitOption,
 } from './helpers';
 import { bulkEditRecurringSchedule } from '@/app/api/task-api';
+import { bulkEditTasks as bulkEditTasksApi } from '@/app/api/task-api';
 
 const RecurringSection = ({
   taskIdentifier,
@@ -153,12 +154,11 @@ const RecurringSection = ({
 
       setIsSaving(true);
       if (bulkEditDueDate) {
-        bulkEditRecurringSchedule({
+        bulkEditTasksApi({
+          bulkEditType: 'RECURRING_SCHEDULE',
           recurringSchedule: { ...requestData },
-          bulkEditRequest: {
-            taskIdentifiers: allSelectedTasksIdentifiers,
-            taskWorkflowIdentifiers: allSelectedWorkflowIdentifiers,
-          },
+          taskIdentifiers: allSelectedTasksIdentifiers,
+          taskWorkflowIdentifiers: allSelectedWorkflowIdentifiers,
         })
           .then(() => {
             setIsSaving(false);
