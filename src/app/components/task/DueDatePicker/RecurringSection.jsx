@@ -26,6 +26,7 @@ import {
   RowLabel,
   SelectWrapper,
 } from './styled';
+import * as AlertActions from 'alert/actions';
 import {
   RECURRING_OPTIONS,
   FORM_DEFAULT_VALUES,
@@ -160,23 +161,32 @@ const RecurringSection = ({
           taskIdentifiers: allSelectedTasksIdentifiers,
           taskWorkflowIdentifiers: allSelectedWorkflowIdentifiers,
         })
-          .then(() => {
+          .then(({ transactionIdentifier }) => {
             setIsSaving(false);
             const hasRecurringScheduleAfterSave =
               requestData[FormField.RECURRING_OPTION] !==
               RecurringOption.DO_NOT_REPEAT;
+            dispatch(
+              AlertActions.showGlobalAlertWithUndo(
+                allSelectedTasksIdentifiers.length > 1
+                  ? `${allSelectedTasksIdentifiers.length} TASKS RECURRING SCHEDULE UPDATED`
+                  : `${allSelectedTasksIdentifiers.length} TASK RECURRING SCHEDULE UPDATED`,
+                transactionIdentifier,
+                () => {
+                  allSelectedTasksIdentifiers.forEach((taskIdentifier) => {
+                    if (recurring !== hasRecurringScheduleAfterSave) {
+                      dispatch(
+                        setRecurringScheduleFlag(
+                          taskIdentifier,
+                          hasRecurringScheduleAfterSave,
+                        ),
+                      );
+                    }
+                  });
+                },
+              ),
+            );
 
-            allSelectedTasksIdentifiers.forEach((taskIdentifier) => {
-              if (recurring !== hasRecurringScheduleAfterSave) {
-                dispatch(
-                  setRecurringScheduleFlag(
-                    taskIdentifier,
-                    hasRecurringScheduleAfterSave,
-                  ),
-                );
-              }
-            });
-            dispatch(showGlobalAlert(AlertMessages.UPDATED));
             onClose();
           })
           .catch(() => {
