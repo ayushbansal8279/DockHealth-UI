@@ -48,7 +48,7 @@ export const StyledDataGrid = styled(DataGridPremium)`
     padding-bottom: 5px;
   }
 
- & .MuiDataGrid-filterFormDeleteIcon {
+  & .MuiDataGrid-filterFormDeleteIcon {
     width: auto;
     margin-right: 4px;
     padding: 15px 0 0 0;
@@ -65,20 +65,16 @@ export const StyledDataGrid = styled(DataGridPremium)`
   }
 
   & .MuiDataGrid-filterFormColumnInput {
-    width: 40%
+    width: 40%;
   }
 
-  & .MuiDataGrid-filterFormLogicOperatorInput{
-    width: 15%
+  & .MuiDataGrid-filterFormLogicOperatorInput {
+    width: 15%;
   }
 
   & .MuiPopper-root {
     left: auto !important;
     right: 0 !important;
-  }
-
-  & .MuiInputBase-root {
-    width: 150px
   }
 
   & .MuiDataGrid-toolbarContainer .MuiInputBase-root {

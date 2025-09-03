@@ -1,5 +1,9 @@
 import React from 'react';
-import { GridToolbar, GridToolbarContainer, GridToolbarQuickFilter } from '@mui/x-data-grid-premium';
+import {
+  GridToolbar,
+  GridToolbarContainer,
+  GridToolbarQuickFilter,
+} from '@mui/x-data-grid-premium';
 import { StyledDataGrid } from './styled';
 import { Box } from '@mui/material';
 
@@ -10,16 +14,29 @@ export function DefaultToolbar() {
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
-        p: 1
+        padding: '4px 8px',
       }}
     >
       <GridToolbarQuickFilter
         variant="outlined"
         size="small"
         placeholder="Search"
+        sx={{
+          '& .MuiInputBase-root': {
+            fontSize: '0.8rem',
+            paddingRight: 0,
+            height: 32,
+          },
+          '& .MuiOutlinedInput-input': {
+            padding: '4px 8px',
+          },
+          '& .MuiSvgIcon-root': {
+            fontSize: '1rem',
+          },
+        }}
       />
       <Box sx={{ display: 'flex', gap: 1 }}>
-        <GridToolbar />
+        <GridToolbar sx={{ pb: 1 }} />
       </Box>
     </GridToolbarContainer>
   );
@@ -40,7 +57,7 @@ const ReusableDataGrid = ({
       sx={{
         '& .MuiDataGrid-toolbarContainer .MuiButton-root': {
           color: 'grey.600',
-        }
+        },
       }}
       columns={columns}
       rows={rows}
