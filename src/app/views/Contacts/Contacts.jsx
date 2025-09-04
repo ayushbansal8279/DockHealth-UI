@@ -5,10 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { openModal, closeModal } from 'modal/actions';
 import { userProfileSelector } from 'selectors/user-selectors';
 import { getAllContacts, deleteContact } from 'api/contacts-api';
-import AddButton, {
-  AddEntitiesContainer,
-} from 'components/common/AddButton/AddButton';
-import { StyledDataGrid } from './DataGridStyles';
+import { AddEntitiesContainer } from 'components/common/AddButton/AddButton';
 import { getContactColumns } from './helpers';
 import { ViewContainer } from './styled';
 import ToolbarButton from '@/app/components/tasklist/list-toolbar-buttons/ToolbarButton/ToolbarButton';

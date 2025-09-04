@@ -157,6 +157,7 @@ const Templates = () => {
           rowHeight={35}
           headerHeight={45}
           disableSelectionOnClick
+          showExport={false}
         />
       </ViewContainer>
     </ViewLayout>

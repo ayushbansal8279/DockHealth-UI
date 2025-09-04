@@ -1,13 +1,15 @@
 import React from 'react';
 import {
-  GridToolbar,
+  GridToolbarColumnsButton,
   GridToolbarContainer,
+  GridToolbarExport,
+  GridToolbarFilterButton,
   GridToolbarQuickFilter,
 } from '@mui/x-data-grid-premium';
 import { StyledDataGrid } from './styled';
 import { Box } from '@mui/material';
 
-export function DefaultToolbar() {
+export function DefaultToolbar({ showExport = true, showSearch = true }) {
   return (
     <GridToolbarContainer
       sx={{
@@ -17,26 +19,32 @@ export function DefaultToolbar() {
         padding: '4px 8px',
       }}
     >
-      <GridToolbarQuickFilter
-        variant="outlined"
-        size="small"
-        placeholder="Search"
-        sx={{
-          '& .MuiInputBase-root': {
-            fontSize: '0.8rem',
-            paddingRight: 0,
-            height: 32,
-          },
-          '& .MuiOutlinedInput-input': {
-            padding: '4px 8px',
-          },
-          '& .MuiSvgIcon-root': {
-            fontSize: '1rem',
-          },
-        }}
-      />
+      {showSearch ? (
+        <GridToolbarQuickFilter
+          variant="outlined"
+          size="small"
+          placeholder="Search"
+          sx={{
+            '& .MuiInputBase-root': {
+              fontSize: '0.8rem',
+              paddingRight: 0,
+              height: 32,
+            },
+            '& .MuiOutlinedInput-input': {
+              padding: '4px 8px',
+            },
+            '& .MuiSvgIcon-root': {
+              fontSize: '1rem',
+            },
+          }}
+        />
+      ) : (
+        <Box></Box>
+      )}
       <Box sx={{ display: 'flex', gap: 1 }}>
-        <GridToolbar sx={{ pb: 1 }} />
+        <GridToolbarColumnsButton />
+        <GridToolbarFilterButton />
+        {showExport && <GridToolbarExport />}
       </Box>
     </GridToolbarContainer>
   );
@@ -50,6 +58,9 @@ const ReusableDataGrid = ({
   toolbar: Toolbar = DefaultToolbar,
   loading,
   onRecordClick,
+  showToolbar = true,
+  showExport = true,
+  showSearch = true,
   ...props
 }) => {
   return (
@@ -68,8 +79,16 @@ const ReusableDataGrid = ({
       showColumnRightBorder
       showCellRightBorders
       filterMode="client"
-      slots={{ toolbar: Toolbar }}
-      slotProps={{ panel: { disablePortal: true } }}
+      slots={
+        showToolbar
+          ? {
+              toolbar: () => (
+                <Toolbar showExport={showExport} showSearch={showSearch} />
+              ),
+            }
+          : {}
+      }
+      slotProps={showToolbar ? { panel: { disablePortal: true } } : {}}
       disableColumnMenu
       disableSelectionOnClick
       disableRowSelectionOnClick

@@ -16,6 +16,7 @@ import {
 import TaskItemBulkEdit from '@/app/components/task/StandardTaskItem/TaskItemComponents/TaskItemBulkEdit';
 import Checkbox from '@/app/components/common/Checkbox/Checkbox';
 import { UserEditContext } from '@/app/context-api/user-edit-context';
+import ReusableDataGrid from '@/app/components/custom-profile/CustomProfilesList/DataGrid/DataGrid';
 
 const UsersList = (props) => {
   const { users, searchTerm } = props;
@@ -27,7 +28,7 @@ const UsersList = (props) => {
     setSelectableUsers,
     isListChecked,
     toggleUser,
-    toggleAllUser
+    toggleAllUser,
   } = userContext;
 
   const KEYS_TO_FILTERS = [
@@ -44,14 +45,14 @@ const UsersList = (props) => {
       isSelected: false,
       ...user,
     }));
-  }, [users]);  
+  }, [users]);
 
   const filteredUsers = useMemo(
     () =>
       searchTerm
         ? usersWithId?.filter(createFilter(searchTerm, KEYS_TO_FILTERS)) ?? []
         : usersWithId,
-    [usersWithId, searchTerm]
+    [usersWithId, searchTerm],
   );
 
   useEffect(() => {
@@ -64,6 +65,60 @@ const UsersList = (props) => {
     </BulkContainer>
   );
 
+  const columns = [
+    {
+      field: 'isSelected',
+      headerName: '',
+      flex: 0.1,
+      sortable: false,
+      renderHeader: () =>
+        renderCheckboxColumnHeader({
+          isListChecked,
+          onListSelect: toggleAllUser,
+        }),
+      renderCell: (params) => (
+        <TaskItemBulkEdit
+          isChecked={params.row.isSelected}
+          onClick={() => toggleUser(params.row.id)}
+        />
+      ),
+    },
+    {
+      field: 'user',
+      headerName: 'USER',
+      flex: 1,
+      renderCell: (params) => (
+        <div
+          className="people-cell-container"
+          style={{ display: 'flex' }}
+          onClick={() =>
+            history.push(
+              `/core/assignedToPerson/${encodeURIComponent(
+                params.row.userIdentifier,
+              )}`,
+            )
+          }
+        >
+          <UserAvatar size={22} user={params.row} />
+          <Spacing horizontal={4} />
+          <span className="people-cell">{params.row?.name}</span>
+        </div>
+      ),
+    },
+    {
+      field: 'email',
+      headerName: 'EMAIL',
+      flex: 2,
+      valueGetter: (params) => params.row.email,
+    },
+    {
+      field: 'orgUserRole',
+      headerName: 'USER STATUS',
+      flex: 0.75,
+      valueGetter: (params) => params.row.orgUserRole,
+    },
+  ];
+
   return (
     <UsersListContainer>
       {isEmpty(selectableUsers) ? (
@@ -75,57 +130,7 @@ const UsersList = (props) => {
           </ListEntryContainer>
         </ListContainer>
       ) : (
-        <DataGrid
-          fluid
-          dataset={selectableUsers}
-          hideFooterSelectedRowCount
-          autoHeight
-        >
-          <Data
-            name="SELECT"
-            field="isSelected"
-            headerRenderer={() =>
-              renderCheckboxColumnHeader({
-                isListChecked,
-                onListSelect: toggleAllUser,
-              })
-            }
-            value={(data) =>
-              <TaskItemBulkEdit
-                isChecked={data?.isSelected}
-                onClick={() => toggleUser(data.id)}
-              />
-            }
-            unsortable
-            flex={0.15}
-          />
-          <Data
-            name="USER"
-            value={(data) => (
-              <div
-                className="people-cell-container"
-                style={{ display: 'flex' }}
-                onClick={() =>
-                  history.push(
-                    `/core/assignedToPerson/${encodeURIComponent(
-                      data.userIdentifier,
-                    )}`,
-                  )
-                }
-              >
-                <UserAvatar size={22} user={data} />
-                <Spacing horizontal={4} />
-                <span className="people-cell">{data?.name}</span>
-              </div>
-            )}
-          />
-          <Data name="EMAIL" value={(data) => data.email} />
-          <Data
-            name="USER STATUS"
-            value={(data) => data.orgUserRole}
-            flex={0.5}
-          />
-        </DataGrid>
+        <ReusableDataGrid rows={selectableUsers} columns={columns} />
       )}
     </UsersListContainer>
   );

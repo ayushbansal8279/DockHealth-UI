@@ -8,26 +8,13 @@ export const PatientsViewContainer = styled.div`
   height: 100%;
   max-height: 100%;
   overflow: hidden;
-  padding: 32px;
+  padding: 32px 52px;
   gap: 16px;
 `;
 
-export const PatientsListContainer = styled.div`
-  // flex: 1;
-  // min-height: 0;
-  // // overflow: hidden;
-  // display: flex;
-  // flex-direction: column;
-`;
+export const PatientsListContainer = styled.div``;
 
-export const GridWrapper = styled.div`
-  // flex: 1;
-  // min-height: 0;
-
-  // .MuiDataGrid-root {
-  //   flex: 1;
-  // }
-`;
+export const GridWrapper = styled.div``;
 
 export const SidebarInnerContainer = styled.div`
   max-height: ${(props) => props.height ?? 0}px;

@@ -90,8 +90,6 @@ const MeteringTable = ({
       rows={billingData}
       getRowId={(row) => row.eventIdentifier}
       rowHeight={40}
-      // showColumnVerticalBorder
-      // showCellVerticalBorder
       pagination
       pageSizeOptions={[defaultPageSize]}
       paginationMode="server"

@@ -171,6 +171,7 @@ const ProfilesAndCustomFieldsView = () => {
           columns={columns}
           rows={profileOptions}
           rowHeight={35}
+          showExport={false}
         />
       </ViewContainer>
     </ViewLayout>
