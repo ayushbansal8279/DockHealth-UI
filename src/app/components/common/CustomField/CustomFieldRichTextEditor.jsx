@@ -7,11 +7,11 @@ import { TaskItemType } from 'helpers/task-helpers';
 import { showGlobalAlert } from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
 import { formatMetaDataOutput } from 'components/task-drawer/CustomFieldsSection/helpers';
-import CustomTextEditor from 'components/common/CustomTextEditor/CustomTextEditor';
 import RichTextEditor from 'components/common/RichTextEditor/RichTextEditor';
 import { CustomTextEditorContainer } from './styled';
 import CustomFieldErrorContext from './CustomFieldErrorContext';
 import { FormHelperText } from '@mui/material';
+import CustomFieldTextEditor from '../CustomFieldTextEditor/CustomFieldTextEditor';
 
 const CustomFieldRichTextEditor = React.forwardRef(
   (
@@ -158,8 +158,8 @@ const CustomFieldRichTextEditor = React.forwardRef(
 
     return (
       <>
-        <CustomTextEditor
-          empty={value?.length > 0 || value !== null}
+        <CustomFieldTextEditor
+          empty={!value || value?.length === 0}
           focused={isFocused}
           label={label}
         >
@@ -168,7 +168,6 @@ const CustomFieldRichTextEditor = React.forwardRef(
               ref={reference}
               value={updatedValue}
               readonly={readOnly}
-              placeholder={placeholder}
               onBlur={handleBlur}
               onChange={changeData}
               onFocus={handleFocus}
@@ -179,7 +178,7 @@ const CustomFieldRichTextEditor = React.forwardRef(
               disableMentions
             />
           </CustomTextEditorContainer>
-        </CustomTextEditor>
+        </CustomFieldTextEditor>
         {error && (
           <FormHelperText error sx={{ pl: 1.5 }}>
             {error}
