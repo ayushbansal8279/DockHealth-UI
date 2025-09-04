@@ -80,15 +80,22 @@ export const SectionWrapper = styled.div`
 `;
 
 export const PlusButton = styled(ActionButton)`
-  color: ${palette.coolGrey1};
+  color: ${({ disabled }) =>
+    disabled ? palette.coolGrey2 : palette.coolGrey1};
 
   &:before {
     display: inline-block;
     margin-right: ${spacing.tiny};
     content: '+';
     vertical-align: middle;
-    color: ${palette.orange};
+    color: ${({ disabled }) => (disabled ? palette.coolGrey2 : palette.orange)};
   }
+`;
+
+export const DisabledRepeatHint = styled.div`
+  margin-left: 10px;
+  color: ${palette.coolGrey1};
+  font-size: 11px;
 `;
 
 export const RecurringForm = styled.form`
