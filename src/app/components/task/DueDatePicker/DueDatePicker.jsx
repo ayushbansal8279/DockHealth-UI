@@ -209,7 +209,7 @@ const DueDatePicker = ({
                 </PlusButton>
                 {!selectedDate && (
                   <DisabledRepeatHint>
-                    Select a date to enable repeat
+                    Select a date to enable repeating options
                   </DisabledRepeatHint>
                 )}
               </SectionWrapper>
