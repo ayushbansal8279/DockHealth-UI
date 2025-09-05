@@ -82,6 +82,29 @@ export function generatePlaceholderObject(fields, origin, sort = false) {
 export function convertToKeyValueArray(obj) {
   return Object.entries(obj).map(([key, value]) => ({
     label: value,
-    value: key
+    value: key,
   }));
 }
+
+export const menuProps = {
+  disablePortal: true,
+  anchorOrigin: {
+    vertical: 'bottom',
+    horizontal: 'left',
+  },
+  transformOrigin: {
+    vertical: 'top',
+    horizontal: 'left',
+  },
+  PaperProps: {
+    style: {
+      maxHeight: 250,
+    },
+  },
+};
+
+export const selectSx = {
+  backgroundColor: '#f9fbfc',
+  borderRadius: '8px',
+  padding: '8px 12px',
+};
