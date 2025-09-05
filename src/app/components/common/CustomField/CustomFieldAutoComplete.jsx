@@ -41,9 +41,8 @@ const CustomFieldAutoComplete = ({
         required: 'This field is required',
         validate: (value) => {
           if (multiple) {
-            return value && Array.isArray(value) && value.length > 0
-              ? true
-              : 'This field is required';
+            const arr = Array.isArray(value) ? value : value ? [value] : [];
+            return arr.length > 0 ? true : 'This field is required';
           } else {
             return value ? true : 'This field is required';
           }
