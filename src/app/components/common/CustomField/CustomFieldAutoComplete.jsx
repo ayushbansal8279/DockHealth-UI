@@ -160,7 +160,11 @@ const CustomFieldAutoComplete = ({
     if (!profiles || !currentValue) return multiple ? [] : null;
 
     if (multiple) {
-      const valueArray = Array.isArray(currentValue) ? currentValue : [];
+      const valueArray = Array.isArray(currentValue)
+        ? currentValue
+        : currentValue
+        ? [currentValue]
+        : [];
       return profiles.filter((profile) =>
         valueArray.includes(profile.profile.identifier),
       );
