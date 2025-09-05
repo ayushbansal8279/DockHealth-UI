@@ -52,6 +52,8 @@ import {
 import { getProfileListPreferences } from '@/app/api/profile-type-api';
 import ImportDataModal from '@/app/modal/components/ImportDataModal/ImportDataModal';
 import ReusableDataGrid from './DataGrid/DataGrid';
+import DateLabel from '../../common/DateLabel/DateLabel';
+import { StyledLink } from './styled';
 
 const CustomProfileList = ({
   profileTypeIdentifier,
@@ -214,6 +216,30 @@ const CustomProfileList = ({
             valueGetter: (params) => {
               return params.row[field.name] ?? '';
             },
+            renderCell: (params) => {
+              const value = params.row[field.name];
+
+              if (field.fieldType === 'DATE' && value) {
+                return (
+                  <DateLabel date={value.date} dueDateIntent={value.intent} />
+                );
+              }
+
+              if (field.fieldType === 'HYPERLINK') {
+                if (!value) return '';
+                return (
+                  <StyledLink
+                    href={value.startsWith('http') ? value : `//${value}`}
+                    target="_blank"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    {value}
+                  </StyledLink>
+                );
+              }
+
+              return value;
+            },
           }
         : null;
     })
@@ -278,7 +304,10 @@ const CustomProfileList = ({
                   break;
 
                 case 'DATE':
-                  value = profileField.values?.[0] || '';
+                  value = {
+                    date: profileField.values?.[0] || '',
+                    intent: profileField.dateTimeIntents?.[0] || null,
+                  };
                   break;
 
                 default:
