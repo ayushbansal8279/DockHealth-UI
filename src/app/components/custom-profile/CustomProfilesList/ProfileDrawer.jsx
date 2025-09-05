@@ -91,15 +91,14 @@ const ProfileDrawer = ({
     [dispatch, onUpdate, profile, types],
   );
 
-  const onSubmit = (data) => {
+  const submitProfile = async (data) => {
     if (profile && editMode) {
       editProfile(data);
     } else {
-      createProfile(profileTypeIdentifier, data?.profileMetaData, types)
-        // eslint-disable-next-line no-shadow
-        .then((data) => {
+      return createProfile(profileTypeIdentifier, data?.profileMetaData, types)
+        .then((res) => {
           dispatch(showGlobalAlert(AlertMessages.SAVED));
-          onUpdate(data);
+          onUpdate(res);
         })
         .catch((error) => {
           dispatch(
@@ -107,6 +106,10 @@ const ProfileDrawer = ({
           );
         });
     }
+  };
+
+  const onSubmit = (data) => {
+    submitProfile(data);
     onClose();
   };
 
@@ -123,7 +126,9 @@ const ProfileDrawer = ({
           confirm: async () => {
             const isValid = await formMethods.trigger();
             if (isValid) {
-              editProfile(getValues());
+              const data = getValues();
+              await submitProfile(data);
+
               if (!addMode && profile) {
                 setEditMode(false);
               }

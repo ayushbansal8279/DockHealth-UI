@@ -1,6 +1,7 @@
 import { capitalize } from 'helpers/capitalize';
 
 export const DelayPeriodUnit = {
+  MINUTE: 'MINUTE',
   HOUR: 'HOUR',
   DAY: 'DAY',
   WEEK: 'WEEK',
