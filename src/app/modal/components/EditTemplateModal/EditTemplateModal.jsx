@@ -206,8 +206,8 @@ const EditTemplateModal = ({ closeModal, template, onAdded, onUpdated }) => {
                       options={TEMPLATE_TYPE_OPTIONS}
                     />
                   </Grid>
-                  <Grid item xs={4} style={{ marginLeft: 'auto' }}>
-                    {templateTypeValue === TEMPLATE_TYPES.SMS && (
+                  {templateTypeValue === TEMPLATE_TYPES.SMS && (
+                    <Grid item xs={4} style={{ marginLeft: 'auto' }}>
                       <Select
                         fullWidth
                         variant="standard"
@@ -229,8 +229,8 @@ const EditTemplateModal = ({ closeModal, template, onAdded, onUpdated }) => {
                           </MenuItem>
                         ))}
                       </Select>
-                    )}
-                  </Grid>
+                    </Grid>
+                  )}
                   {(templateTypeValue === TEMPLATE_TYPES.EMAIL ||
                     templateTypeValue === TEMPLATE_TYPES.SMS) && (
                     <Grid item xs={12}>
