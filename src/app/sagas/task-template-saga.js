@@ -262,12 +262,10 @@ function* addTemplate({
 
     try {
       if (history) {
-        const currentPath = location.pathname + location.search;
         const builderPath = createWorkflowBuilderPath(
           createdTemplate.identifier,
         );
-        const returnToParam = encodeURIComponent(currentPath);
-        yield call(history.push, `${builderPath}?returnTo=${returnToParam}`);
+        yield call(history.push, `${builderPath}`);
       }
     } catch (error) {
       // eslint-disable-next-line no-console
