@@ -417,7 +417,7 @@ const PatientsList = ({
                   from: pathname,
                 },
               });
-              localStorage.setItem('navigation-from', pathname);
+              sessionStorage.setItem('navigation-from', pathname);
             } else {
               history.push({
                 pathname: `/core/patient/${patientIdentifier}`,
@@ -425,7 +425,7 @@ const PatientsList = ({
                   from: pathname,
                 },
               });
-              localStorage.setItem('navigation-from', pathname);
+              sessionStorage.setItem('navigation-from', pathname);
             }
           }}
           className="patient-cell"
