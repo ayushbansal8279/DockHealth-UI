@@ -5,7 +5,6 @@ import { Box, Grid, Select, MenuItem } from '@mui/material';
 import { useDispatch } from 'react-redux';
 import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
 import FormInput from 'components/common/Input/FormInput';
-import Button from 'components/common/Button/Button';
 import FormSelect from 'components/common/Select/FormSelect';
 import { createTemplate, editTemplate } from 'api/template-api';
 import CustomTextEditor from 'components/common/CustomTextEditor/CustomTextEditor';
@@ -24,6 +23,8 @@ import {
   convertToKeyValueArray,
   defaultPlaceHolderOptions,
   generatePlaceholderObject,
+  menuProps,
+  selectSx,
   validationSchema,
 } from './helpers';
 import { CancelButton, ConfirmButton } from '../ModalButton/ModalButtons';
@@ -31,7 +32,6 @@ import {
   getAllPatientCustomFields,
   getAllTaskListCustomFields,
 } from '@/app/api/custom-fields-api';
-import zIndex from 'styles/z-index';
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const EditTemplateModal = ({ closeModal, template, onAdded, onUpdated }) => {
@@ -51,6 +51,7 @@ const EditTemplateModal = ({ closeModal, template, onAdded, onUpdated }) => {
     {},
   );
   const [selectedPlaceholder, setSelectedPlaceholder] = useState('');
+  const [cursorPosition, setCursorPosition] = useState(0);
 
   const placeholderOptions = useMemo(
     () => convertToKeyValueArray(templatePlaceholderOptions),
@@ -148,10 +149,27 @@ const EditTemplateModal = ({ closeModal, template, onAdded, onUpdated }) => {
     fetchTemplatePlaceholders();
   }, []);
 
+  useEffect(() => {
+    const currentShortMessage = watch('shortMessage');
+    if (currentShortMessage) {
+      setCursorPosition(currentShortMessage.length);
+    }
+  }, [watch]);
+
+  const handleCursorPositionChange = (event) => {
+    setCursorPosition(event.target.selectionStart);
+  };
+
   const handleShortTextPlaceholderSelect = (value) => {
-    const previousValue = watch('shortMessage');
-    const newValue = previousValue + value;
+    const previousValue = watch('shortMessage') || '';
+    const beforeCursor = previousValue.substring(0, cursorPosition);
+    const afterCursor = previousValue.substring(cursorPosition);
+    const newValue = beforeCursor + value + afterCursor;
+
     setValue('shortMessage', newValue);
+
+    const newCursorPosition = cursorPosition + value.length;
+    setCursorPosition(newCursorPosition);
   };
 
   return (
@@ -188,6 +206,31 @@ const EditTemplateModal = ({ closeModal, template, onAdded, onUpdated }) => {
                       options={TEMPLATE_TYPE_OPTIONS}
                     />
                   </Grid>
+                  {templateTypeValue === TEMPLATE_TYPES.SMS && (
+                    <Grid item xs={4} style={{ marginLeft: 'auto' }}>
+                      <Select
+                        fullWidth
+                        variant="standard"
+                        disableUnderline
+                        value={selectedPlaceholder}
+                        displayEmpty
+                        renderValue={() => 'Insert placeholder'}
+                        MenuProps={menuProps}
+                        placeholder="SelectPlaceHolder"
+                        onChange={(e) => {
+                          setSelectedPlaceholder(e.target.value);
+                          handleShortTextPlaceholderSelect(e.target.value);
+                        }}
+                        sx={selectSx}
+                      >
+                        {placeholderOptions.map((option) => (
+                          <MenuItem key={option.value} value={option.value}>
+                            {option.label}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </Grid>
+                  )}
                   {(templateTypeValue === TEMPLATE_TYPES.EMAIL ||
                     templateTypeValue === TEMPLATE_TYPES.SMS) && (
                     <Grid item xs={12}>
@@ -200,50 +243,12 @@ const EditTemplateModal = ({ closeModal, template, onAdded, onUpdated }) => {
                             ? 'Subject'
                             : 'Message'
                         }
+                        onSelect={handleCursorPositionChange}
+                        onKeyUp={(e) => {
+                          handleCursorPositionChange(e);
+                        }}
+                        onClick={handleCursorPositionChange}
                       />
-                      {templateTypeValue === TEMPLATE_TYPES.SMS && (
-                        <Select
-                          fullWidth
-                          variant="standard"
-                          disableUnderline
-                          value={selectedPlaceholder}
-                          displayEmpty
-                          renderValue={() => 'Select placeholder'}
-                          MenuProps={{
-                            disablePortal: true,
-                            anchorOrigin: {
-                              vertical: 'bottom',
-                              horizontal: 'left',
-                            },
-                            transformOrigin: {
-                              vertical: 'top',
-                              horizontal: 'left',
-                            },
-                            PaperProps: {
-                              style: {
-                                maxHeight: 250,
-                              },
-                            },
-                          }}
-                          placeholder="SelectPlaceHolder"
-                          onChange={(e) => {
-                            setSelectedPlaceholder(e.target.value);
-                            handleShortTextPlaceholderSelect(e.target.value);
-                          }}
-                          sx={{
-                            mt: 2,
-                            backgroundColor: '#f9fbfc',
-                            borderRadius: '8px',
-                            padding: '8px 12px',
-                          }}
-                        >
-                          {placeholderOptions.map((option) => (
-                            <MenuItem key={option.value} value={option.value}>
-                              {option.label}
-                            </MenuItem>
-                          ))}
-                        </Select>
-                      )}
                     </Grid>
                   )}
                   {templateTypeValue !== TEMPLATE_TYPES.SMS && (
