@@ -559,6 +559,7 @@ const PatientsView = () => {
               setSearchValue={setSearchValue}
               refreshPatientListOnUpload={refreshPatientListOnUpload}
               setImportPopoverOpen={setImportPopoverOpen}
+              placeholder="Search All Patients"
             />
             <PatientsListContainer>
               {listIdentifier && listIdentifier.length === 36 && (
