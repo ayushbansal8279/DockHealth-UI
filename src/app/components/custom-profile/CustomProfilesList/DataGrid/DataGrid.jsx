@@ -7,7 +7,7 @@ import {
   GridToolbarQuickFilter,
 } from '@mui/x-data-grid-premium';
 import { StyledDataGrid } from './styled';
-import { Box } from '@mui/material';
+import { Box, Tooltip } from '@mui/material';
 
 export function DefaultToolbar({
   showExport = true,
@@ -48,9 +48,21 @@ export function DefaultToolbar({
         <Box></Box>
       )}
       <Box sx={{ display: 'flex', gap: 1 }}>
-        {showColumns && <GridToolbarColumnsButton />}
-        {showFilter && <GridToolbarFilterButton />}
-        {showExport && <GridToolbarExport />}
+        {showColumns && (
+          <Tooltip title="Show/Hide columns" arrow>
+            <GridToolbarColumnsButton />
+          </Tooltip>
+        )}
+        {showFilter && (
+          <Tooltip title="Filter results" arrow>
+            <GridToolbarFilterButton />
+          </Tooltip>
+        )}
+        {showExport && (
+          <Tooltip title="Export data" arrow>
+            <GridToolbarExport />
+          </Tooltip>
+        )}
       </Box>
     </GridToolbarContainer>
   );
