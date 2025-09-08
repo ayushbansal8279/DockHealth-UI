@@ -479,6 +479,7 @@ const CustomProfileList = ({
             rows={rows}
             apiRef={apiRef}
             onRecordClick={handleRecordClick}
+            showSearch={false}
           />
         </Box>
       </ViewLayout>

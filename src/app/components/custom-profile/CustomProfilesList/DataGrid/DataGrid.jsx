@@ -9,7 +9,12 @@ import {
 import { StyledDataGrid } from './styled';
 import { Box } from '@mui/material';
 
-export function DefaultToolbar({ showExport = true, showSearch = true }) {
+export function DefaultToolbar({
+  showExport = true,
+  showSearch = true,
+  showColumns = true,
+  showFilter = true,
+}) {
   return (
     <GridToolbarContainer
       sx={{
@@ -42,8 +47,8 @@ export function DefaultToolbar({ showExport = true, showSearch = true }) {
         <Box></Box>
       )}
       <Box sx={{ display: 'flex', gap: 1 }}>
-        <GridToolbarColumnsButton />
-        <GridToolbarFilterButton />
+        {showColumns && <GridToolbarColumnsButton />}
+        {showFilter && <GridToolbarFilterButton />}
         {showExport && <GridToolbarExport />}
       </Box>
     </GridToolbarContainer>
@@ -61,6 +66,8 @@ const ReusableDataGrid = ({
   showToolbar = true,
   showExport = true,
   showSearch = true,
+  showColumns = true,
+  showFilter = true,
   ...props
 }) => {
   return (
@@ -83,7 +90,12 @@ const ReusableDataGrid = ({
         showToolbar
           ? {
               toolbar: () => (
-                <Toolbar showExport={showExport} showSearch={showSearch} />
+                <Toolbar
+                  showExport={showExport}
+                  showSearch={showSearch}
+                  showColumns={showColumns}
+                  showFilter={showFilter}
+                />
               ),
             }
           : {}
