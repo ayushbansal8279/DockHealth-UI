@@ -21,6 +21,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import * as Sc from './styled';
 import { TaskOrigin } from '@/app/helpers/task-helpers';
 import { taskLookupSelector } from '@/app/selectors/task-details-selectors';
+import { useSubtaskQuickAddState } from '@/app/hooks/useSubtaskQuickAdd';
 import QuickAddSubtask from '@/app/components/task/StandardTaskItem/QuickAddSubtask';
 import { QuickAddInputWrapper } from '@/app/components/task-template/TaskTemplateGroup/styled';
 import QuickAddTaskInput from '@/app/components/tasklist/QuickAddTaskInput/QuickAddTaskInput';
@@ -71,7 +72,6 @@ function VTask(
 ) {
   const dispatch = useDispatch();
   const parentTaskReference = useRef(null);
-  const [subtaskQuickAddOpen, setSubtaskQuickAddOpen] = useState(false);
   const { get, workflowIdentifierMap, handleRemoveWorkflowIdentifier } =
     useContext(CollapseContext);
   const { changeViewType } = useContext(ListPageContext);
@@ -87,6 +87,8 @@ function VTask(
   const task = pulledTask;
   // const { taskList, taskGroups, identifier, subTasksCount, patient } = task;
   const taskList = task?.taskList;
+
+  const subtaskQuickAddOpen = useSubtaskQuickAddState(task?.identifier);
   const taskGroups = task?.taskGroups || [];
   const identifier = task?.identifier || '0';
   const subTasksCount = task?.subTasksCount || 0;
@@ -100,7 +102,6 @@ function VTask(
     : '';
 
   useEffect(() => {
-    setSubtaskQuickAddOpen(task?.subtaskQuickAddOpen);
     workflowIdentifierMap.some(
       (identifier) => identifier === taskGroup[0]?.taskGroupIdentifier,
     )

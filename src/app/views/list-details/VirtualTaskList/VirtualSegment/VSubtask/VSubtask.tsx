@@ -18,6 +18,7 @@ import {
 import * as Sc from './styled';
 import { useDispatch, useSelector } from 'react-redux';
 import { taskLookupSelector } from '@/app/selectors/task-details-selectors';
+import { useSubtaskQuickAddState } from '@/app/hooks/useSubtaskQuickAdd';
 import { TaskOrigin } from '@/app/helpers/task-helpers';
 import {
   searchTermSelector,
@@ -79,7 +80,6 @@ function VSubtask(
   const screenWidth = typeof window !== 'undefined' ? window.innerWidth : 1920;
   const percentage =
     ((!!droppableHeaderWidth ? droppableHeaderWidth : 0) / screenWidth) * 100;
-  const [subtaskQuickAddOpen, setSubtaskQuickAddOpen] = useState(false);
   const dispatch = useDispatch();
   const pulledTask = useSelector((state) => {
     // @ts-ignore
@@ -87,6 +87,8 @@ function VSubtask(
   });
   const [addWorkflowTask, setAddWorkflowTask] = useState(false);
   const parentTask = pulledTask;
+
+  const subtaskQuickAddOpen = useSubtaskQuickAddState(parentTask?.identifier);
   const { taskList, taskGroups, identifier, patient } = parentTask;
   const { workflowIdentifierMap, handleRemoveWorkflowIdentifier } =
     useContext(CollapseContext);
@@ -98,7 +100,6 @@ function VSubtask(
     : '';
 
   useEffect(() => {
-    setSubtaskQuickAddOpen(parentTask?.subtaskQuickAddOpen);
     workflowIdentifierMap.some(
       (identifier) => identifier === taskGroup[0]?.taskGroupIdentifier,
     )

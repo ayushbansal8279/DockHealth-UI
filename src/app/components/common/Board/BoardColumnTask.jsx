@@ -10,6 +10,7 @@ import TaskItemSubtasks from 'components/task/StandardTaskItem/TaskItemComponent
 import TaskItemMembers from 'components/task/StandardTaskItem/TaskItemComponents/TaskItemMembers';
 import { userProfileSelector } from 'selectors/user-selectors';
 import { taskLookupSelector } from 'selectors/task-details-selectors';
+import { useSubtaskQuickAddState } from 'hooks/useSubtaskQuickAdd';
 import { partialUpdateTask, storeAsCurrentTask } from 'actions/task-actions';
 import { openDrawer } from 'actions/task-drawer-actions';
 import { openDrawer as openWorkflowDrawer } from 'actions/workflow-drawer-actions';
@@ -81,13 +82,14 @@ const BoardColumnTask = ({
     comments,
     labels,
     attachments,
-    subtaskQuickAddOpen,
     subTasksCount,
     assignedToUsers,
     itemType,
     name,
     patient,
   } = task;
+
+  const subtaskQuickAddOpen = useSubtaskQuickAddState(task?.identifier);
   const { matchAssignedTo, matchAttachments, matchComments, matchLabels } =
     searchMetaData;
 
