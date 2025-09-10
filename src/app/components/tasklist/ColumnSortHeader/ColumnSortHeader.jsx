@@ -41,14 +41,13 @@ const ColumnSortHeader = ({
   isDragPreview,
   dragDropDisabled,
   setDragDropDisabled,
-  dropDirectionRef,
   hoveredIndex,
+  activeIndex,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const descriptionTextReference = useRef();
   const [columnWidth, setcolumnWidth] = useState(+width);
   const [isResizing, setIsResizing] = useState(false);
-  const [hoverBorder, setHoverBorder] = useState(null);
   const previousWidth = usePrevious(width);
 
   const {
@@ -71,34 +70,6 @@ const ColumnSortHeader = ({
     data: { index, label, width, tasksHeaderTextTransform },
     disabled: dragDropDisabled,
   });
-
-  useEffect(() => {
-    const isFirstColumnHeader = index === 0;
-
-    if (!isFirstColumnHeader || !active || !isOver) {
-      setHoverBorder(null);
-      if (dropDirectionRef) {
-        dropDirectionRef.current = null;
-      }
-      return;
-    }
-
-    const handlePointerMove = (e) => {
-      const rect = descriptionTextReference?.current?.getBoundingClientRect();
-      if (!rect) return;
-
-      const isLeft = e?.clientX < rect?.left + rect?.width / 2;
-      const direction = isLeft ? 'left' : 'right';
-
-      if (dropDirectionRef) {
-        dropDirectionRef.current = direction;
-      }
-      setHoverBorder(direction);
-    };
-
-    window.addEventListener('pointermove', handlePointerMove);
-    return () => window.removeEventListener('pointermove', handlePointerMove);
-  }, [active?.id, over?.id, index]);
 
   useEffect(() => {
     if (width && previousWidth !== width && width !== columnWidth)
@@ -287,8 +258,8 @@ const ColumnSortHeader = ({
         isOver={isOver}
         isDragActive={!!active && active?.id === id && !dragDropDisabled}
         isDraggedOver={isOver && active?.id !== id && !dragDropDisabled}
-        hoverBorder={hoverBorder}
         hoveredIndex={hoveredIndex}
+        hoverBorderSide={activeIndex > hoveredIndex ? 'left' : 'right'}
       >
         <div>{randerContent(tasksHeaderTextColor)}</div>
       </SortButton>
