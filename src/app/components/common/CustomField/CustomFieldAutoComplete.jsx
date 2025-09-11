@@ -173,7 +173,7 @@ const CustomFieldAutoComplete = ({
       if (isAutoSelected) return;
       if (error) clearErrors(name);
 
-      setSearchValue('');
+      // setSearchValue('');
 
       let selectedValues;
 
@@ -279,7 +279,7 @@ const CustomFieldAutoComplete = ({
         label={label}
         isDisabled={readOnly}
         getInputReference={getInputReference}
-        inputValue={searchValue}
+        {...(multiple ? { inputValue: searchValue } : {})}
         onInputChange={handleInputChange}
         onChange={handleChange}
         onBlurInput={(event) => onBlur(event, true)}
