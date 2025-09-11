@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import { showGlobalErrorAlert } from 'alert/actions';
@@ -8,6 +8,9 @@ import { getProfileName } from 'views/custom-profile-details/helpers';
 import Autocomplete from '../Autocomplete/Autocomplete';
 import { FormHelperText } from '@mui/material';
 import { useParams } from 'react-router-dom';
+import debounce from 'lodash.debounce';
+import { getPatientsByCriteria } from '@/app/api/patients-api';
+import { getPatientById } from '@/app/api/patient-api';
 
 const CustomFieldAutoComplete = ({
   readOnly,
@@ -33,7 +36,15 @@ const CustomFieldAutoComplete = ({
     unregister,
     watch,
   } = formMethods || formContext;
-  const { profileIdentifier, relationshipProfileIdentifier } = useParams();
+  const {
+    profileIdentifier,
+    relationshipProfileIdentifier,
+    patientIdentifier,
+  } = useParams();
+
+  const isPatientMode =
+    relatedProfileType?.contextType === 'PREDEFINED' &&
+    relatedProfileType?.name?.toLowerCase() === 'patients';
 
   useEffect(() => {
     if (required) {
@@ -61,6 +72,9 @@ const CustomFieldAutoComplete = ({
   const [isAutoSelected, setIsAutoSelected] = useState(false);
 
   useEffect(() => {
+    if (!relatedProfileType) return;
+    if (isPatientMode) return;
+
     if (relatedProfileType) {
       getAllProfileFieldTypes(relatedProfileType?.identifier)
         .then((profileTypeFields) => {
@@ -108,9 +122,42 @@ const CustomFieldAutoComplete = ({
     relatedProfileType?.identifier,
     relationshipProfileIdentifier,
     profileIdentifier,
+    patientIdentifier,
     name,
     setValue,
   ]);
+
+  const debouncedFetchPatients = useMemo(
+    () =>
+      debounce(async (search) => {
+        if (!isPatientMode || !search) return;
+        try {
+          const patients = await getPatientsByCriteria(search);
+          const mappedPatients = patients.map((patient) => ({
+            patient,
+            label: patient.patientName,
+          }));
+          setProfiles(mappedPatients);
+        } catch (e) {
+          console.error('Error fetching patients:', e);
+        }
+      }, 400),
+    [isPatientMode],
+  );
+
+  const [searchValue, setSearchValue] = useState('');
+  const handleInputChange = (event, newInputValue, reason) => {
+    if (reason === 'input') {
+      setSearchValue(newInputValue);
+      if (isPatientMode) {
+        debouncedFetchPatients(newInputValue);
+      }
+    }
+
+    if (typeof onChange === 'function') {
+      onChange(event, newInputValue, reason);
+    }
+  };
 
   const isFieldReadOnly = readOnly || isAutoSelected;
 
@@ -122,58 +169,102 @@ const CustomFieldAutoComplete = ({
     : errors?.[name]?.message;
 
   const handleChange = useCallback(
-    (event) => {
-      if (isAutoSelected) {
-        return;
-      }
-
+    (event, reason) => {
+      if (isAutoSelected) return;
       if (error) clearErrors(name);
 
+      setSearchValue('');
+
       let selectedValues;
-      let selectedOptions;
 
       if (multiple) {
-        selectedOptions = event || [];
-        selectedValues = selectedOptions.map(
-          (option) => option?.profile?.identifier,
+        selectedValues = (event || []).map((option) =>
+          isPatientMode
+            ? option?.patient?.patientIdentifier
+            : option?.profile?.identifier,
         );
       } else {
-        selectedOptions = event ? [event] : [];
-        selectedValues = [event?.profile?.identifier] || null;
+        const option = event || null;
+        selectedValues = option
+          ? [
+              isPatientMode
+                ? option.patient.patientIdentifier
+                : option.profile.identifier,
+            ]
+          : null;
       }
 
       setValue(name, selectedValues, {
         shouldValidate: true,
         shouldDirty: true,
       });
-
-      if (typeof onChange === 'function') onChange(event);
+      if (typeof onChange === 'function') onChange(event, reason);
     },
-    [clearErrors, error, name, onChange, setValue, multiple, isAutoSelected],
+    [
+      clearErrors,
+      error,
+      name,
+      onChange,
+      setValue,
+      multiple,
+      isAutoSelected,
+      isPatientMode,
+    ],
   );
 
   const formValue = watch(name);
 
   const currentValue = externalValue !== undefined ? externalValue : formValue;
 
+  useEffect(() => {
+    if (!isPatientMode) return;
+    if (!currentValue) return;
+
+    const valueArray = Array.isArray(currentValue)
+      ? currentValue
+      : [currentValue];
+
+    Promise.all(valueArray.map((id) => getPatientById(id)))
+      .then((patients) => {
+        const mapped = patients.map((patient) => ({
+          patient,
+          label: patient.patientName,
+        }));
+        setProfiles(mapped);
+      })
+      .catch((err) => {
+        console.error('Error fetching patients by ID:', err);
+      });
+  }, [isPatientMode, currentValue]);
+
   const selectedOptions = useCallback(() => {
     if (!profiles || !currentValue) return multiple ? [] : null;
 
     if (multiple) {
-      const valueArray = Array.isArray(currentValue) ? currentValue : [];
-      return profiles.filter((profile) =>
-        valueArray.includes(profile.profile.identifier),
+      const valueArray = Array.isArray(currentValue)
+        ? currentValue
+        : currentValue
+        ? [currentValue]
+        : [];
+      return profiles.filter((option) =>
+        valueArray.includes(
+          isPatientMode
+            ? option.patient.patientIdentifier
+            : option.profile.identifier,
+        ),
       );
     } else {
       const singleValue =
         typeof currentValue === 'string' ? currentValue : currentValue?.[0];
       return (
-        profiles.find(
-          (profile) => profile.profile.identifier === singleValue,
+        profiles.find((option) =>
+          isPatientMode
+            ? option.patient.patientIdentifier === singleValue
+            : option.profile.identifier === singleValue,
         ) || null
       );
     }
-  }, [profiles, currentValue, multiple]);
+  }, [profiles, currentValue, multiple, isPatientMode]);
 
   const getInputReference = () => inputRef;
 
@@ -188,7 +279,8 @@ const CustomFieldAutoComplete = ({
         label={label}
         isDisabled={readOnly}
         getInputReference={getInputReference}
-        onInputChange={onChange}
+        inputValue={searchValue}
+        onInputChange={handleInputChange}
         onChange={handleChange}
         onBlurInput={(event) => onBlur(event, true)}
         disableClearable

@@ -138,11 +138,16 @@ const CustomProfileList = ({
     getProfileListPreferences(profileTypeIdentifier).then(setFilters);
   }, [profileTypeIdentifier]);
 
+  const removeDuplicatesByIdentifier = (profiles) => {
+    return Array.from(new Map(profiles.map((p) => [p.identifier, p])).values());
+  };
+
   const fetchProfilesInternal = useCallback(() => {
     if (fetchProfiles) {
-      fetchProfiles().then(setProfiles);
+      fetchProfiles().then(removeDuplicatesByIdentifier).then(setProfiles);
     } else {
       return getAllProfiles(profileTypeIdentifier)
+        .then(removeDuplicatesByIdentifier)
         .then(setProfiles)
         .catch(() => {
           dispatch(showGlobalErrorAlert());

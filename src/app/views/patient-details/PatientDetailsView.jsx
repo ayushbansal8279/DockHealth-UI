@@ -44,6 +44,11 @@ import { selectCurrentOrganizationWithRedirection } from '@/app/api/organization
 import { useIsWorkspaceScopedPatient } from '@/app/hooks/useIsWorkspaceScopedPatient';
 import { getWorkspaceByIdentifier } from '@/app/api/workspace-api';
 import { getWorkspaceTitle } from '../workspaces/workspace-title-helpers';
+import {
+  getAllProfileTypes,
+  getRelationshipTypes,
+} from '@/app/api/profile-type-api';
+import ProfileRelationship from '../custom-profile-details/ProfileRelationship/ProfileRelationship';
 
 const PatientDetailsView = () => {
   const { patientIdentifier } = useParams();
@@ -73,12 +78,16 @@ const PatientDetailsView = () => {
   const [workspace, setWorkspace] = useState();
   const patient = useSelector(patientSelector);
 
-  const isWorkspacePatient = patient && patient?.organizationIdentifier !== currentOrganization?.organizationIdentifier;
-  
+  const isWorkspacePatient =
+    patient &&
+    patient?.organizationIdentifier !==
+      currentOrganization?.organizationIdentifier;
+
   useEffect(() => {
     if (isWorkspacePatient) {
-      getWorkspaceByIdentifier(patient?.organizationIdentifier)
-        .then(setWorkspace)
+      getWorkspaceByIdentifier(patient?.organizationIdentifier).then(
+        setWorkspace,
+      );
     }
   }, [isWorkspacePatient, patient?.organizationIdentifier]);
 
@@ -116,29 +125,58 @@ const PatientDetailsView = () => {
 
   useEffect(() => {
     (async () => {
-      const widgetDetails = await getPatientWidgets();
-      const widgets = widgetDetails?.widgets;
+      try {
+        const baseTabs = patientNotesDisabled
+          ? [...DEFAULT_TABS_CONFIG]
+          : [...TABS_CONFIG];
 
-      const widgetTabs = [];
+        const profileTypes = await getAllProfileTypes('PREDEFINED');
+        const patientProfileType = profileTypes.find(
+          (pt) => pt.name.toLowerCase() === 'patients',
+        );
 
-      if (widgets && widgets.length > 0) {
-        widgetTabs.push({
-          label: widgets[0].name,
-          mainPath: `widget/${widgets[0].identifier}`,
+        let relationshipTabs = [];
+        if (patientProfileType) {
+          const relationshipTypes = await getRelationshipTypes(
+            patientProfileType.identifier,
+          );
+
+          const uniqueRelationshipTypes = Array.from(
+            new Map(
+              relationshipTypes.map((rel) => [rel.identifier, rel]),
+            ).values(),
+          );
+
+          relationshipTabs = uniqueRelationshipTypes.map((rel) => ({
+            label: rel.name,
+            mainPath: `relationships/${rel.identifier}`,
+            routePath: `relationships/:relationshipProfileIdentifier`,
+            RouteComponent: ProfileRelationship,
+            exact: true,
+          }));
+        }
+
+        const widgetDetails = await getPatientWidgets();
+        const widgets = widgetDetails?.widgets || [];
+
+        const widgetTabs = widgets.map((w) => ({
+          label: w.name,
+          mainPath: `widget/${w.identifier}`,
           url: widgetDetails?.authToken
-            ? `${widgets[0].url}?authToken=${widgetDetails?.authToken}&idToken=${widgetDetails?.idToken}`
-            : widgets[0].url,
-          height: widgets[0].height,
-          width: widgets[0].width,
+            ? `${w.url}?authToken=${widgetDetails?.authToken}&idToken=${widgetDetails?.idToken}`
+            : w.url,
+          height: w.height,
+          width: w.width,
           type: 'widget',
           RouteComponent: PatientWidget,
-        });
+        }));
 
-        setTabsConfiguration([...tabsConfiguration, ...widgetTabs]);
+        setTabsConfiguration([...baseTabs, ...widgetTabs, ...relationshipTabs]);
+      } catch (err) {
+        console.error('Error setting up patient tabs:', err);
       }
     })();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [patientNotesDisabled]);
 
   useEffect(() => {
     // eslint-disable-next-line unicorn/consistent-function-scoping
@@ -245,7 +283,7 @@ const PatientDetailsView = () => {
               <RouteWrapper
                 allowedToRoles={route.allowedToRoles}
                 key={route.mainPath}
-                path={`${path}/${route.mainPath}${
+                path={`${path}/${route.routePath || route.mainPath}${
                   route.additionalPath ? `/${route.additionalPath}` : ''
                 }`}
                 RouteComponent={
