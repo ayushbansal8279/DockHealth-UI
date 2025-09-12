@@ -237,6 +237,29 @@ const CustomFieldAutoComplete = ({
       });
   }, [isPatientMode, currentValue]);
 
+  useEffect(() => {
+    if (!isPatientMode) return;
+    if (!patientIdentifier) return;
+
+    getPatientById(patientIdentifier)
+      .then((patient) => {
+        const mappedPatient = {
+          patient,
+          label: patient.patientName,
+        };
+        setProfiles([mappedPatient]);
+
+        setValue(name, [patient.patientIdentifier], {
+          shouldValidate: true,
+          shouldDirty: true,
+        });
+        setIsAutoSelected(true);
+      })
+      .catch((error) => {
+        console.error('Error fetching patient for auto-selection:', error);
+      });
+  }, [isPatientMode, patientIdentifier, name, setValue]);
+
   const selectedOptions = useCallback(() => {
     if (!profiles || !currentValue) return multiple ? [] : null;
 
@@ -277,7 +300,7 @@ const CustomFieldAutoComplete = ({
         autoFocus={false}
         options={profiles ?? []}
         label={label}
-        isDisabled={readOnly}
+        isDisabled={isFieldReadOnly}
         getInputReference={getInputReference}
         {...(multiple ? { inputValue: searchValue } : {})}
         onInputChange={handleInputChange}
