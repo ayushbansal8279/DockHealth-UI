@@ -137,7 +137,18 @@ const CustomFieldAutoComplete = ({
             patient,
             label: patient.patientName,
           }));
-          setProfiles(mappedPatients);
+
+          setProfiles((prev) => {
+            const prevMap = new Map(
+              (prev ?? []).map((p) => [p.patient.patientIdentifier, p]),
+            );
+
+            mappedPatients.forEach((p) => {
+              prevMap.set(p.patient.patientIdentifier, p);
+            });
+
+            return Array.from(prevMap.values());
+          });
         } catch (e) {
           console.error('Error fetching patients:', e);
         }
@@ -172,8 +183,6 @@ const CustomFieldAutoComplete = ({
     (event, reason) => {
       if (isAutoSelected) return;
       if (error) clearErrors(name);
-
-      // setSearchValue('');
 
       let selectedValues;
 
