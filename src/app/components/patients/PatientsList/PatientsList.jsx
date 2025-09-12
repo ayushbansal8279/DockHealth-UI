@@ -44,6 +44,7 @@ import {
   BulkContainer,
   Text,
   PatientCell,
+  Label,
 } from './styled';
 import { StyledDataGrid } from './DataGridStyles';
 import FullNameEditCell, {
@@ -431,9 +432,9 @@ const PatientsList = ({
           className="patient-cell"
         >
           <Tooltip placement="top" title={`${row.lastName}, ${row.firstName}`}>
-            <Text width="180">
+            <Label width="180">
               {row.lastName}, {row.firstName}
-            </Text>
+            </Label>
           </Tooltip>
         </PatientCell>
       ),

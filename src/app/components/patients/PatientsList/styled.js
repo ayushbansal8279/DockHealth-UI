@@ -29,6 +29,14 @@ export const Text = styled.span`
   text-overflow: ellipsis;
 `;
 
+export const Label = styled.span`
+  width: ${(props) => (props.width ? `${props.width}px;` : '')}
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: ${palette.brightBlue};
+`;
+
 export const PatientCell = styled.span`
   cursor: pointer;
 `;
