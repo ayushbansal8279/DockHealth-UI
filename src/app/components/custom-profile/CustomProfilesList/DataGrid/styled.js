@@ -5,7 +5,7 @@ import styled from "styled-components";
 export const StyledDataGrid = styled(DataGridPremium)`
   background-color: white;
   flex: 1;
-  min-height: 0;
+  min-height: 200px;
 
   &.MuiDataGrid-cell {
     font-family: inherit;
@@ -31,7 +31,6 @@ export const StyledDataGrid = styled(DataGridPremium)`
   }
 
   & .MuiDataGrid-footerContainer {
-
     z-index: 1000;
     background-color: white;
     p {
