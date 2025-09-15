@@ -93,7 +93,7 @@ import PatientAttachmentReferenceModal from './components/PatientAttachmentRefer
 import AddWorkspaceModal from '../components/workspace/AddWorkspaceModal/AddWorkspaceModal';
 import DeveloperScopeModal from './components/DeveloperScopeModal/DeveloperScopeModal';
 import DockIntegrationsModal from './components/DockIntegrationsModal/DockIntegrationsModal';
-
+import ClearDueDateConfirmationModal from './components/ClearDueDateConfirmationModal/ClearDueDateConfirmationModal';
 
 const MODAL_MAP = {
   CompleteAllTasks: CompleteAllTasksModal,
@@ -190,7 +190,8 @@ const MODAL_MAP = {
   PatientAttachmentReference: PatientAttachmentReferenceModal,
   AddWorkspace: AddWorkspaceModal,
   DeveloperScopeList: DeveloperScopeModal,
-  DockIntegrations: DockIntegrationsModal
+  DockIntegrations: DockIntegrationsModal,
+  ClearDueDateConfirmation: ClearDueDateConfirmationModal,
 };
 
 export default MODAL_MAP;

@@ -76,6 +76,7 @@ import { selectedUserOrganizationSelector } from '@/app/selectors/user-selectors
 import { isMemberAdmin } from '@/app/helpers/list-members-helper';
 import { checkIfUserIsOrganizationAdmin } from '@/app/helpers/user-helper';
 import { currentTaskListSelector } from '@/app/selectors/task-list-selectors';
+import { openModal } from '@/app/modal/actions';
 
 const { DISABLED, READ_ONLY } = SINGLE_TASK_RESTRICTIONS_OPTIONS;
 
@@ -235,6 +236,17 @@ const DrawerTask = (props) => {
     [dispatch, task],
   );
 
+  const handleClearDateClick = useCallback(
+    (clearCallback) => {
+      dispatch(
+        openModal('ClearDueDateConfirmation', {
+          confirm: clearCallback,
+        }),
+      );
+    },
+    [dispatch],
+  );
+
   const textRef = useRef(null);
   const [isTruncated, setIsTruncated] = useState(false);
 
@@ -380,6 +392,7 @@ const DrawerTask = (props) => {
               onCloseClick={closePopover}
               dueDateIntent={dueDateIntent}
               dateType="dueDate"
+              onClearDateClick={handleClearDateClick}
             />
           )}
         >

@@ -37,6 +37,7 @@ const DueDatePicker = ({
   allSelectedTasksIdentifiers,
   allSelectedWorkflowIdentifiers,
   bulkEditDueDate = false,
+  onClearDateClick,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const [recurringSectionVisible, showRecurringSection] = useBoolean(recurring);
@@ -129,6 +130,19 @@ const DueDatePicker = ({
     handleDatePick(formattedDate);
   };
 
+  const handleClearDateClick = () => {
+    if (onClearDateClick) {
+      onClearDateClick(() => {
+        onDateChange(null);
+        setTimeMaskValue(null);
+      });
+    } else {
+      // Fallback to direct clear if no callback provided
+      onDateChange(null);
+      setTimeMaskValue(null);
+    }
+  };
+
   return (
     <ContentWrapper>
       <QuickAddSectionWrapper>
@@ -208,13 +222,7 @@ const DueDatePicker = ({
       )}
       <PopoverBottomBar align="spread">
         {!disableClearDate && (
-          <PopoverBottomBar.Button
-            type="button"
-            onClick={() => {
-              onDateChange(null);
-              setTimeMaskValue(null);
-            }}
-          >
+          <PopoverBottomBar.Button type="button" onClick={handleClearDateClick}>
             Clear Date
           </PopoverBottomBar.Button>
         )}
