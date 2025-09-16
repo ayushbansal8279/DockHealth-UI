@@ -6,14 +6,13 @@ import {
   TimelineDot,
   TimelineOppositeContent,
 } from '@mui/lab';
-import { Box, Card, IconButton, Typography } from '@mui/material';
+import { Box, Card, IconButton, Skeleton, Typography } from '@mui/material';
 import styled from 'styled-components';
 
 export const TitleName = styled.p`
   margin-bottom: 0;
   font-size: ${fontSizes.regular};
   font-family: 'Outfit', sans-serif;
-  // text-transform: uppercase;
   padding: 5px 0 5px 10px;
 `;
 
@@ -108,28 +107,6 @@ export const Container = styled.a`
 
   &:hover {
     color: ${palette.darkGrey};
-  }
-`;
-
-export const MembersContainer = styled(Typography).attrs({
-  variant: 'caption',
-  color: 'textSecondary',
-})`
-  display: flex;
-  align-items: center;
-  gap: 2px;
-  flex-wrap: wrap;
-
-  strong {
-    white-space: nowrap;
-    margin-right: 4px;
-    margin-top: 2px;
-  }
-
-  & > div {
-    display: flex;
-    align-items: center;
-    gap: 4px;
   }
 `;
 
@@ -241,4 +218,16 @@ export const PatientNoteDescription = styled.div`
 export const PatientNoteTooltipText = styled.div`
   max-height: 400px;
   overflow: auto;
+`;
+
+export const ActivityLoader = styled(Skeleton)`
+  &&& {
+    &.MuiSkeleton-root {
+      height: 30px;
+      width: 90%;
+      margin: 0 auto;
+      border-radius: 4px;
+      margin-bottom: 20px;
+    }
+  }
 `;
