@@ -1,7 +1,7 @@
-import styled from '@mui/styled-engine';
+import styled from 'styled-components';
 import palette, { featurePalette, typography } from 'styles/palette';
 
-export const VSubtask = styled('div')`
+export const VSubtask = styled.div`
   position: relative;
   display: flex;
   font-size: 13px;
@@ -25,7 +25,7 @@ export const VSubtask = styled('div')`
   background: ${({ bgColor }) => (bgColor ? palette.aliceBlue : '')};
 `;
 
-export const QuickAddContainer = styled('div')`
+export const QuickAddContainer = styled.div`
   border-left: 1px solid ${palette.coolGrey3};
   width: ${({ $width }) => $width};
   position: sticky;
@@ -36,7 +36,7 @@ export const QuickAddContainer = styled('div')`
   }
 `;
 
-export const WorkflowQuickAddTaskContainer = styled('div')`
+export const WorkflowQuickAddTaskContainer = styled.div`
   border-left: 1px solid ${palette.coolGrey3};
   // width: 90%;
   width: ${({ $width }) => $width};
