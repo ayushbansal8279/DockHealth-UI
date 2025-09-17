@@ -461,9 +461,9 @@ const PatientsList = ({
       headerName: 'DOB',
       renderHeader: renderColumnHeader,
       width: 150,
-      valueGetter: ({ value }) =>
+      valueGetter: (value) =>
         value ? moment(value).format('MM/DD/YYYY') : '',
-      valueSetter: ({ value, row }) => {
+      valueSetter: (value, row) => {
         const formattedDate = value ? moment(value).format('MM/DD/YYYY') : null;
         return { ...row, dob: formattedDate };
       },
@@ -502,7 +502,7 @@ const PatientsList = ({
       headerName: 'SEX',
       renderHeader: renderColumnHeader,
       width: 100,
-      valueFormatter: ({ value }) => genderBirthOptionHash[value],
+      valueFormatter: (value) => genderBirthOptionHash[value],
       editable: true,
       renderEditCell: (params) => (
         <GenderSelectCell options={GENDER_OPTIONS_BIRTH} {...params} />
@@ -513,7 +513,7 @@ const PatientsList = ({
       headerName: 'GENDER',
       renderHeader: renderColumnHeader,
       width: 150,
-      valueFormatter: ({ value }) => genderIdentityOptionsHash[value],
+      valueFormatter: (value) => genderIdentityOptionsHash[value],
       editable: true,
       renderEditCell: (params) => (
         <GenderSelectCell options={genderIdentityOptions} {...params} />
@@ -921,8 +921,8 @@ const PatientsList = ({
       ) : (
         <>
           {patients?.length > 0 && formattedPatients ? (
-            <Grid container xs={12} item justifyContent="center">
-              <Grid item xs={12} xl={11} md={12} lg={11}>
+            <Grid container size={12} item justifyContent="center">
+              <Grid item size={12} xl={11} md={12} lg={11}>
                 <NonEmptyListTable listLength={patients?.length ?? 0}>
                   <StyledDataGrid
                     apiRef={apiRef}

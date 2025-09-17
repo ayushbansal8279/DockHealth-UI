@@ -1,5 +1,4 @@
 import React, { useCallback, useRef } from 'react';
-import { Grid } from '@mui/material';
 import { useParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 
@@ -11,6 +10,7 @@ import { applyTemplate } from 'actions/template-bundle-actions';
 import TaskTemplateApplicator from 'components/task-template/TaskTemplateApplicator/TaskTemplateApplicator';
 import QuickAddTaskInput from 'components/tasklist/QuickAddTaskInput/QuickAddTaskInput';
 import { useIsWorkspaceScopedPatient } from '@/app/hooks/useIsWorkspaceScopedPatient';
+import { TasksToolbarContainer, TaskToolbarAddTask } from './styled';
 
 const TasksToolbar = (props) => {
   const {
@@ -57,8 +57,8 @@ const TasksToolbar = (props) => {
   );
 
   return (
-    <Grid container direction="row">
-      <Grid item xs>
+    <TasksToolbarContainer>
+      <TaskToolbarAddTask>
         <QuickAddTaskInput
           ref={quickAddTaskInputReference}
           taskListIdentifier={taskListIdentifier}
@@ -74,14 +74,14 @@ const TasksToolbar = (props) => {
           }}
           iconColorActive={iconColorActive}
         />
-      </Grid>
+      </TaskToolbarAddTask>
       <TaskTemplateApplicator
         onTemplateSelect={handleApplyTemplate}
         iconColorActive={iconColorActive}
         isWorkflowSearch
         workspaceIdentifier={workspaceIdentifier}
       />
-    </Grid>
+    </TasksToolbarContainer>
   );
 };
 
