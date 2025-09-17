@@ -37,7 +37,7 @@ const MemberForm = ({ initialValues, closeInviteForm, onSubmit, disabled }) => {
             alignItems="flex-end"
             spacing={2}
           >
-            <Grid item xs={6}>
+            <Grid item size={6}>
               <FormInput
                 autoFocus={!initialValues.firstName}
                 required
@@ -45,7 +45,7 @@ const MemberForm = ({ initialValues, closeInviteForm, onSubmit, disabled }) => {
                 label="First name"
               />
             </Grid>
-            <Grid item xs={6}>
+            <Grid item size={6}>
               <FormInput
                 autoFocus={initialValues.firstName && !initialValues.lastName}
                 required
@@ -86,7 +86,7 @@ const MemberForm = ({ initialValues, closeInviteForm, onSubmit, disabled }) => {
             justifyContent="center"
             spacing={2}
           >
-            <Grid item xs={4}>
+            <Grid item size={4}>
               <Button
                 fullWidth
                 variant="secondary"
@@ -96,7 +96,7 @@ const MemberForm = ({ initialValues, closeInviteForm, onSubmit, disabled }) => {
                 Cancel
               </Button>
             </Grid>
-            <Grid item xs={4}>
+            <Grid item size={4}>
               <Button fullWidth type="submit" disabled={disabled}>
                 Invite
               </Button>

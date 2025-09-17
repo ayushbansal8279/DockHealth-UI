@@ -146,8 +146,8 @@ const UserActivity = () => {
         </UserName>
         </BackButtonContainer>
         <EventDurationContainer>*Activity events from last 30 days</EventDurationContainer>
-        <Grid container xs={12} item justifyContent="center" sx={{ paddingTop:'5px'}}>
-            <Grid item xs={12} xl={11} md={12} lg={11} sx={{ display: 'flex', justifyContent: 'center' }}>
+        <Grid container size={12} item justifyContent="center" sx={{ paddingTop:'5px'}}>
+            <Grid item size={12} xl={11} md={12} lg={11} sx={{ display: 'flex', justifyContent: 'center' }}>
                 <StyledDataGrid
                     columns={defaultColumns}
                     getRowId={(row) => row.id}

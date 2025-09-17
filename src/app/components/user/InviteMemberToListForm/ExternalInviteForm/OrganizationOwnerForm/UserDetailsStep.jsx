@@ -84,7 +84,7 @@ const UserDetailsStep = ({
           alignItems="flex-start"
           spacing={3}
         >
-          <Grid item xs={12}>
+          <Grid item size={12}>
             <TextField
               sx={sx}
               InputLabelProps={inputStyle}
@@ -97,7 +97,7 @@ const UserDetailsStep = ({
               onChange={(event) => setValue('firstName', event.target.value)}
             />
           </Grid>
-          <Grid item xs={12}>
+          <Grid item size={12}>
             <TextField
               sx={sx}
               InputLabelProps={inputStyle}
@@ -145,7 +145,7 @@ const UserDetailsStep = ({
           justifyContent="center"
           spacing={2}
         >
-          <Grid item xs={5}>
+          <Grid item size={5}>
             <CancelButton
               fullWidth
               variant="secondary"
@@ -155,7 +155,7 @@ const UserDetailsStep = ({
               Cancel
             </CancelButton>
           </Grid>
-          <Grid item xs={5}>
+          <Grid item size={5}>
             <ConfirmButton
               fullWidth
               disabled={!isValid || disabled}

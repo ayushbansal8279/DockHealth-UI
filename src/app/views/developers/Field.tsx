@@ -34,10 +34,10 @@ export default function Field({ label, value, ellipsis }: Props) {
 
   return (
     <Grid container>
-      <Grid item xs={12} md={4}>
+      <Grid item size={12} md={4}>
         <Typography>{label}</Typography>
       </Grid>
-      <Grid item xs={12} md={8}>
+      <Grid item size={12} md={8}>
         <Tooltip
           title={copied ? 'Copied!' : 'Click to Copy'}
           placement="top"

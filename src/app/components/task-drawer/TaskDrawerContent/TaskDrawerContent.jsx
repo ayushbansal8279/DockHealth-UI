@@ -310,7 +310,7 @@ const TaskDrawerContent = (props) => {
         <Grid
           container
           item
-          xs={12}
+          size={12}
           alignItems="center"
           justify="space-between"
           style={{
@@ -374,7 +374,7 @@ const TaskDrawerContent = (props) => {
           </Grid>
         </Box>
         {isSubtask && (
-          <Grid item xs={12} style={styleFullRowThin(isMobile)}>
+          <Grid item size={12} style={styleFullRowThin(isMobile)}>
             <Spacing vertical={2} />
             <Typography
               sx={{ fontWeight: 'bold', verticalAlign: 'top' }}
@@ -408,7 +408,7 @@ const TaskDrawerContent = (props) => {
             )}
           </Grid>
         )}
-        <Grid item xs={12} style={styleFullRow(isMobile)}>
+        <Grid item size={12} style={styleFullRow(isMobile)}>
           <TaskDescription
             readOnly={restrictions?.description === READ_ONLY}
             disableMentions={restrictMentions}
@@ -416,11 +416,11 @@ const TaskDrawerContent = (props) => {
           />
         </Grid>
         {selectedTask?.sourceMessage && (
-          <Grid item xs={12} style={styleEmailRow(isMobile)}>
+          <Grid item size={12} style={styleEmailRow(isMobile)}>
             <TaskDrawerEmailBodyContainer />
           </Grid>
         )}
-        <Grid item xs={12} mb={1} style={styleFullRow(isMobile)}>
+        <Grid item size={12} mb={1} style={styleFullRow(isMobile)}>
           <TaskDetails
             readOnly={restrictions?.description === READ_ONLY}
             disableMentions={restrictMentions}
@@ -428,7 +428,7 @@ const TaskDrawerContent = (props) => {
         </Grid>
         <Grid
           item
-          xs={12}
+          size={12}
           ml={isMobile ? 1 : 3}
           mb={1}
           style={styleRightColumn(isMobile)}
@@ -439,7 +439,7 @@ const TaskDrawerContent = (props) => {
             selectedTask={selectedTask}
           />
         </Grid>
-        <Grid item xs={12} mb={1} style={styleLeftColumn(isMobile)}>
+        <Grid item size={12} mb={1} style={styleLeftColumn(isMobile)}>
           <PatientSection
             selectedPatient={
               selectedTask?.patient || selectedParentTask?.patient || null
@@ -457,7 +457,7 @@ const TaskDrawerContent = (props) => {
             quickAddPatientEnabled={quickAddPatientEnabled}
           />
         </Grid>
-        <Grid item xs={12} mb={1} style={styleLeftColumn(isMobile)}>
+        <Grid item size={12} mb={1} style={styleLeftColumn(isMobile)}>
           <div>
             <StartDateSection
               disabled={restrictions?.startDate === DISABLED}
@@ -465,7 +465,7 @@ const TaskDrawerContent = (props) => {
             />
           </div>
         </Grid>
-        <Grid item xs={12} style={styleLeftColumn(isMobile)}>
+        <Grid item size={12} style={styleLeftColumn(isMobile)}>
           <div>
             <DueDateSection
               disabled={restrictions?.dueDate === DISABLED}
@@ -474,7 +474,7 @@ const TaskDrawerContent = (props) => {
           </div>
         </Grid>
         {!isTaskDueDateOverdue && !isDueDateDisabled && (
-          <Grid item xs={12} style={styleRightColumn(isMobile)}>
+          <Grid item size={12} style={styleRightColumn(isMobile)}>
             {!isTemplateTask && (
               <ReminderSection
                 onSave={handleUpdateTask}
@@ -484,7 +484,7 @@ const TaskDrawerContent = (props) => {
             )}
           </Grid>
         )}
-        <Grid item xs={12} style={styleLeftColumn(isMobile)}>
+        <Grid item size={12} style={styleLeftColumn(isMobile)}>
           <PrioritySection
             onTaskUpdate={onTaskUpdate}
             disabled={restrictions?.priority === DISABLED}
@@ -493,7 +493,7 @@ const TaskDrawerContent = (props) => {
         </Grid>
         <Grid
           item
-          xs={12}
+          size={12}
           ml={isMobile ? 1 : 3}
           style={styleRightColumn(isMobile)}
         >
@@ -507,13 +507,13 @@ const TaskDrawerContent = (props) => {
         </Grid>
         {/* Put custom fields here */}
         {restrictions?.customFields !== DISABLED && (
-          <Grid item xs={12}>
+          <Grid item size={12}>
             <CustomFieldsSection fieldCategoryType="TASK_CORE" />
           </Grid>
         )}
         {restrictions?.labels !== DISABLED &&
           taskLabelsLocation === 'default' && (
-            <Grid item xs={12} style={styleFullRow(isMobile)}>
+            <Grid item size={12} style={styleFullRow(isMobile)}>
               <div>
                 <LabelsSection
                   onTaskUpdate={onTaskUpdate}
@@ -524,7 +524,7 @@ const TaskDrawerContent = (props) => {
           )}
         <TaskDrawerDivider />
         {!taskAttachmentsDisabled && (
-          <Grid item xs={12} style={styleFullRow(isMobile)}>
+          <Grid item size={12} style={styleFullRow(isMobile)}>
             <AttachmentsSection
               restrictions={restrictions?.attachments}
               disabled={restrictions?.attachments === DISABLED}
@@ -534,13 +534,13 @@ const TaskDrawerContent = (props) => {
           </Grid>
         )}
         <TaskDrawerDivider />
-        <Grid item xs={12} style={styleCommentRow}>
+        <Grid item size={12} style={styleCommentRow}>
           <div>
             <CommentSection selectedTask={selectedTask} />
           </div>
         </Grid>
         {selectedTask && !isSubtask && !subTasksDisabled && (
-          <Grid item xs={12}>
+          <Grid item size={12}>
             <SubtasksSection
               restrictions={restrictions?.subtasks}
               taskRestrictions={restrictions}
@@ -553,18 +553,18 @@ const TaskDrawerContent = (props) => {
           selectedTask &&
           !isSubtask &&
           (isTemplateTask || checkIfBundleTask(selectedTask)) && (
-            <Grid item xs={12}>
+            <Grid item size={12}>
               <DependenciesSection selectedTask={selectedTask} />
             </Grid>
           )}
         {restrictions?.customFields !== DISABLED && (
-          <Grid item xs={12}>
+          <Grid item size={12}>
             <CustomFieldsSection fieldCategoryType="TASK_OTHER" />
           </Grid>
         )}
         {restrictions?.labels !== DISABLED &&
           taskLabelsLocation === 'bottom' && (
-            <Grid item xs={12} style={styleFullRow(isMobile)}>
+            <Grid item size={12} style={styleFullRow(isMobile)}>
               <div>
                 <LabelsSection onTaskUpdate={onTaskUpdate} />
               </div>
@@ -573,7 +573,7 @@ const TaskDrawerContent = (props) => {
       </Grid>
       <TaskDrawerDivider />
       {restrictions?.history !== DISABLED && (
-        <Grid container item xs={12} style={styleFullRow(isMobile)}>
+        <Grid container item size={12} style={styleFullRow(isMobile)}>
           <div>
             <Spacing horizontal={5} />
             <span />

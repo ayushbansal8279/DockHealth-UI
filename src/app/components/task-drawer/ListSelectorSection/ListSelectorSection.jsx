@@ -15,7 +15,7 @@ const ListSelectorSection = ({
   const CustomIcon = () => <ArrowDropDownIcon sx={{ marginRight: 2 }} />;
 
   return (
-    <Grid item xs={12}>
+    <Grid item size={12}>
       <ListSelectContainer>
         <ListTitle>List</ListTitle>
         <Select

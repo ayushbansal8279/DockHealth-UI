@@ -5,7 +5,7 @@ import { Title, Subtitle } from 'components/auth/Title';
 
 export default () => (
   <Grid container>
-    <Grid item xs={12}>
+    <Grid item size={12}>
       <Title>Reset your password</Title>
       <Spacing vertical={4} />
       <Subtitle>
