@@ -23,15 +23,15 @@ const WorkspaceUsers = () => {
   const workspaceIdentifier = workspace.workspaceIdentifier;
   const users = useSelector(workspaceUsersSelector);
   const isLoading = useSelector(isFetchingWorkspaceUsersSelector);
-  const [searchTerm, setSearchTerm] = useState('');
+  // const [searchTerm, setSearchTerm] = useState('');
   const workspaceLabel = useSelector(organizationWorkspaceLabelSelector);
 
-  const usersWithSelection	 = useMemo(() => {
+  const usersWithSelection = useMemo(() => {
     return users?.map((user) => ({
       isSelected: false,
       ...user,
     }));
-  }, [users]);  
+  }, [users]);
 
   useEffect(() => {
     if (workspaceIdentifier) {
@@ -42,28 +42,30 @@ const WorkspaceUsers = () => {
   const { setSelectableItems } = useContext(BulkEditContext);
 
   useEffect(() => {
-    if(workspaceIdentifier) {
+    if (workspaceIdentifier) {
       setSelectableItems(usersWithSelection);
     }
   }, [usersWithSelection, setSelectableItems, workspaceIdentifier]);
-  
+
   const openAddUserModal = () => {
-    dispatch(openModal('InviteToList', {
-      list: [],
-      title: `Add User to the ${workspaceLabel}`,
-      CustomForm: InviteUserToWorkspaceForm,
-      identifier: workspaceIdentifier,
-    }))
+    dispatch(
+      openModal('InviteToList', {
+        list: [],
+        title: `Add User to the ${workspaceLabel}`,
+        CustomForm: InviteUserToWorkspaceForm,
+        identifier: workspaceIdentifier,
+      }),
+    );
   };
 
   return (
     <WorkspaceContextProvider workspaceIdentifier={workspaceIdentifier}>
       <WorkspaceUsersContainer>
         <WorkspaceUsersHeader>
-          <SearchInput
+          {/* <SearchInput
             value={searchTerm}
             onValueChange={setSearchTerm}
-          />
+          /> */}
           <ToolbarButton
             icon={
               <span style={{ marginLeft: '-5px' }}>
@@ -81,12 +83,11 @@ const WorkspaceUsers = () => {
           </ListLoaderContainer>
         ) : (
           <WorkspaceUsersTableWrapper>
-            <WorkspaceUserTable searchTerm={searchTerm} />
+            <WorkspaceUserTable />
           </WorkspaceUsersTableWrapper>
         )}
         <BulkEditSection>
-          <BulkEditSectionContainer>
-          </BulkEditSectionContainer>
+          <BulkEditSectionContainer></BulkEditSectionContainer>
         </BulkEditSection>
       </WorkspaceUsersContainer>
     </WorkspaceContextProvider>

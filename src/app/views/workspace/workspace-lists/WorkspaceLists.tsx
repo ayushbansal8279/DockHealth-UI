@@ -17,8 +17,8 @@ import SearchInput from "@/app/components/common/SearchInput/SearchInput";
 const WorkspaceLists = () => {
   const dispatch = useDispatch();
 
-  const [searchTerm, setSearchTerm] = useState('');
-  
+  // const [searchTerm, setSearchTerm] = useState('');
+
   const workspace = useSelector(workspaceSelector);
   const workspaceIdentifier = workspace.workspaceIdentifier;
   const taskLists = useSelector(workspaceTaskListsSelector);
@@ -42,21 +42,23 @@ const WorkspaceLists = () => {
       setSelectableItems(allTaskLists);
     }
   }, [workspaceIdentifier, allTaskLists]);
-  
+
   const openAddListModal = () => {
-    dispatch(openModal('ListForm', {
-      showPrivacyOptions: true,
-      workspaceIdentifier
-    }));
-  }
+    dispatch(
+      openModal('ListForm', {
+        showPrivacyOptions: true,
+        workspaceIdentifier,
+      }),
+    );
+  };
 
   return (
     <WorkspaceListsContainer>
       <WorkspaceListsHeader>
-        <SearchInput
+        {/* <SearchInput
           value={searchTerm}
           onValueChange={setSearchTerm}
-        />
+        /> */}
         <ToolbarButton
           icon={
             <span style={{ marginLeft: '-5px' }}>
@@ -74,12 +76,11 @@ const WorkspaceLists = () => {
         </ListLoaderContainer>
       ) : (
         <WorkspaceListsTableWrapper>
-          <WorkspaceListTable searchTerm={searchTerm} />
+          <WorkspaceListTable />
         </WorkspaceListsTableWrapper>
       )}
       <BulkEditSection>
-        <BulkEditSectionContainer>
-        </BulkEditSectionContainer>
+        <BulkEditSectionContainer></BulkEditSectionContainer>
       </BulkEditSection>
     </WorkspaceListsContainer>
   );

@@ -4,13 +4,16 @@ export const WorkspaceListsContainer = styled.div`
   width: 100%;
   max-width: 1179px;
   margin: 0 auto;
-  padding: 0 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 24px 48px;
+  height: calc(100vh - 150px);
 `;
 
 export const WorkspaceListsHeader = styled.div`
   display: flex;
-  margin: 20px;
-  justify-content: space-between;
+  justify-content: flex-end;
 `;
 
 export const WorkspaceListsTableWrapper = styled.div`
