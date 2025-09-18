@@ -25,7 +25,7 @@ import { WorkspaceContainer } from "@/app/views/workspaces/workspace-home/styled
 import { AssignMemberIconContainer, BulkContainer, StyledListLink } from "./styled";
 import ReusableDataGrid from '@/app/components/custom-profile/CustomProfilesList/DataGrid/DataGrid';
 
-const WorkspaceListTable = ({ searchTerm }: { searchTerm: string }) => {
+const WorkspaceListTable = () => {
   const dispatch = useDispatch();
   const history = useHistory();
 
@@ -161,17 +161,12 @@ const WorkspaceListTable = ({ searchTerm }: { searchTerm: string }) => {
     },
   ];
 
-  const filteredRows = useMemo(
-    () => getFilteredRows(lists, searchTerm, ['listName']),
-    [lists, searchTerm],
-  );
-
   return (
     <WorkspaceContainer>
       <ReusableDataGrid
         columns={columns}
         getRowId={(row) => row.taskListIdentifier}
-        rows={filteredRows}
+        rows={lists ?? []}
         rowHeight={40}
         headerHeight={45}
         hideFooterSelectedRowCount

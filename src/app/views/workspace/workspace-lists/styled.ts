@@ -21,6 +21,7 @@ export const WorkspaceListsTableWrapper = styled.div`
   overflow-x: auto;
   display: flex;
   justify-content: center;
+  flex: 1;
 `;
 
 export const ListLoaderContainer = styled.div`

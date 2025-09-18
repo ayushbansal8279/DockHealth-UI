@@ -27,7 +27,7 @@ import ReusableDataGrid from '@/app/components/custom-profile/CustomProfilesList
 
 const TypedCheckbox = Checkbox as React.FC<CheckboxProps>;
 
-const WorkspaceUserTable = ({ searchTerm }: { searchTerm: string }) => {
+const WorkspaceUserTable = () => {
   const dispatch = useDispatch();
   const { identifier: workspaceIdentifier } = useParams<{
     identifier: string;
@@ -123,11 +123,6 @@ const WorkspaceUserTable = ({ searchTerm }: { searchTerm: string }) => {
     },
   ];
 
-  const filteredRows = useMemo(
-    () => getFilteredRows<IWorkspaceUser>(users, searchTerm, ['name', 'email']),
-    [users, searchTerm],
-  );
-
   return (
     <WorkspaceContainer>
       {isEmpty(users) ? (
@@ -143,7 +138,7 @@ const WorkspaceUserTable = ({ searchTerm }: { searchTerm: string }) => {
           <ReusableDataGrid
             columns={columns}
             getRowId={(row) => row.identifier}
-            rows={filteredRows}
+            rows={users ?? []}
             rowHeight={40}
             headerHeight={45}
             hideFooterSelectedRowCount

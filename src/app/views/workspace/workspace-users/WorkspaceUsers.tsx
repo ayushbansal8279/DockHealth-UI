@@ -9,13 +9,17 @@ import InviteUserToWorkspaceForm from "@/app/components/workspace/InviteUserToWo
 import { getWorkspaceUsers } from "@/app/actions/workspace-actions";
 import { isFetchingWorkspaceUsersSelector, workspaceSelector, workspaceUsersSelector } from "@/app/selectors/workspace-selectors";
 import ListSkeletonLoader from "@/app/components/common/ListSkeletonLoader/ListSkeletonLoader";
-import ToolbarButton from "@/app/components/tasklist/list-toolbar-buttons/ToolbarButton/ToolbarButton";
-import SearchInput from "@/app/components/common/SearchInput/SearchInput";
-import { BulkEditSectionContainer } from "../../user-group/styled";
-import { WorkspaceContextProvider } from "./WorkspaceContext";
-import WorkspaceUserTable from "./workspace-user-table";
-import { organizationWorkspaceLabelSelector } from "@/app/selectors/organization-selectors";
-import { WorkspaceUsersHeader, WorkspaceUsersTableWrapper, WorkspaceUsersContainer, ListLoaderContainer } from "./styled";
+import ToolbarButton from '@/app/components/tasklist/list-toolbar-buttons/ToolbarButton/ToolbarButton';
+import { BulkEditSectionContainer } from '../../user-group/styled';
+import { WorkspaceContextProvider } from './WorkspaceContext';
+import WorkspaceUserTable from './workspace-user-table';
+import { organizationWorkspaceLabelSelector } from '@/app/selectors/organization-selectors';
+import {
+  WorkspaceUsersHeader,
+  WorkspaceUsersTableWrapper,
+  WorkspaceUsersContainer,
+  ListLoaderContainer,
+} from './styled';
 
 const WorkspaceUsers = () => {
   const dispatch = useDispatch();
@@ -23,7 +27,6 @@ const WorkspaceUsers = () => {
   const workspaceIdentifier = workspace.workspaceIdentifier;
   const users = useSelector(workspaceUsersSelector);
   const isLoading = useSelector(isFetchingWorkspaceUsersSelector);
-  // const [searchTerm, setSearchTerm] = useState('');
   const workspaceLabel = useSelector(organizationWorkspaceLabelSelector);
 
   const usersWithSelection = useMemo(() => {
@@ -62,10 +65,6 @@ const WorkspaceUsers = () => {
     <WorkspaceContextProvider workspaceIdentifier={workspaceIdentifier}>
       <WorkspaceUsersContainer>
         <WorkspaceUsersHeader>
-          {/* <SearchInput
-            value={searchTerm}
-            onValueChange={setSearchTerm}
-          /> */}
           <ToolbarButton
             icon={
               <span style={{ marginLeft: '-5px' }}>
