@@ -989,13 +989,13 @@ const TaskItem = React.memo(
     const randerFirstColumnCoverIfNecessary = useCallback(
       (content, order, width) => {
         if (order !== 0) return content;
-        const indentSubTask =
-          !(
-            origin === TaskOrigin.DASHBOARD || origin === TaskOrigin.PERSON ||
-            (!!selectedFilters && Object.keys(selectedFilters).length > 0) ||
-            !!searchValue ||
-            !!sort.key
-          ) ?? false;
+        const indentSubTask = !(
+          origin === TaskOrigin.DASHBOARD ||
+          origin === TaskOrigin.PERSON ||
+          (!!selectedFilters && Object.keys(selectedFilters).length > 0) ||
+          !!searchValue ||
+          !!sort.key
+        );
         return (
           <StickyMainTaskItemCell
             isLastChild={isLastChild}
