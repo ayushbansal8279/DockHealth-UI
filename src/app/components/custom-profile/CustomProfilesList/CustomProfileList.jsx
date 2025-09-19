@@ -58,6 +58,10 @@ import { getProfileListPreferences } from '@/app/api/profile-type-api';
 import { StyledLink } from './styled';
 import DateLabel from '../../common/DateLabel/DateLabel';
 import ImportDataModal from '@/app/modal/components/ImportDataModal/ImportDataModal';
+import ToolbarSelect from '../../tasklist/ToolbarSelect/ToolbarSelect';
+import { ProfileStatus } from '@/app/helpers/profile-helpers';
+import TasksStatusSwitchIcon from 'img/tasks-status-switch-icon.svg';
+import { PatientsListImg } from 'components/patients/PatientsToolbar/styled';
 
 const CustomProfileList = ({
   profileTypeIdentifier,
@@ -98,11 +102,25 @@ const CustomProfileList = ({
   const [filters, setFilters] = useState([]);
   const [profiles, setProfiles] = useState([]);
   const [searchPhrase, setSearchPhrase] = useState('');
+  const [profileStatus, setProfileStatus] = useState(ProfileStatus.ALL);
+  const [loading, setLoading] = useState(false);
   const currentUser = useSelector(userProfileSelector);
   const [importPopupOpen, setImportPopupOpen] = useState(false);
 
   const isGuestOrDockLite = isUserGuestOrDockLite(currentUser);
   const isViewOnly = isUserViewOnly(currentUser);
+
+  const PROFILE_STATUS_OPTIONS = [
+    { value: 'ALL', label: 'All' },
+    { value: 'ACTIVE', label: 'Active' },
+    { value: 'ARCHIVED', label: 'Archived' },
+  ];
+
+  const PROFILE_STATUS_VALUES = {
+    [ProfileStatus.ALL]: 'ALL',
+    [ProfileStatus.ACTIVE]: 'ACTIVE',
+    [ProfileStatus.ARCHIVED]: 'ARCHIVED',
+  };
 
   useEffect(() => {
     if (showHeader) {
@@ -139,29 +157,35 @@ const CustomProfileList = ({
   }, [profileTypeIdentifier]);
 
   const fetchProfilesInternal = useCallback(() => {
-    if (fetchProfiles) {
-      fetchProfiles().then(setProfiles);
-    } else {
-      return getAllProfiles(profileTypeIdentifier)
-        .then(setProfiles)
-        .catch(() => {
-          dispatch(showGlobalErrorAlert());
-          setProfiles([]);
-        });
-    }
-  }, [fetchProfiles]);
+    setLoading(true);
+
+    const fetchPromise = fetchProfiles
+      ? fetchProfiles().then(setProfiles)
+      : getAllProfiles(profileTypeIdentifier, profileStatus)
+          .then(setProfiles)
+          .catch(() => {
+            dispatch(showGlobalErrorAlert());
+            setProfiles([]);
+          });
+
+    return fetchPromise.finally(() => {
+      setLoading(false);
+    });
+  }, [fetchProfiles, profileTypeIdentifier, profileStatus]);
 
   useEffect(() => {
     fetchProfileTypesInternal();
     fetchProfileTypeFieldsInternal();
-    fetchProfilesInternal();
     fetchFiltersInternal();
   }, [
     fetchProfileTypesInternal,
     fetchProfileTypeFieldsInternal,
-    fetchProfilesInternal,
     fetchFiltersInternal,
   ]);
+
+  useEffect(() => {
+    fetchProfilesInternal();
+  }, [fetchProfilesInternal]);
 
   const handleProfileAddClick = () => {
     setOpen(true);
@@ -263,6 +287,22 @@ const CustomProfileList = ({
           sx={{ m: !showHeader ? '0px 32px 0px 32px ' : '16px 32px 0px 32px ' }}
         >
           <Box display="flex" alignItems="start" my={!showHeader ? 0 : 2}>
+            <Box display="flex" alignItems="center" my={0.4} mr={2}>
+              <ToolbarSelect
+                options={PROFILE_STATUS_OPTIONS}
+                value={PROFILE_STATUS_VALUES[profileStatus]}
+                name="profile-status-filter"
+                onChange={(event) =>
+                  setProfileStatus(ProfileStatus[event?.target?.value])
+                }
+                icon={
+                  <PatientsListImg
+                    src={TasksStatusSwitchIcon}
+                    alt="profile status icon"
+                  />
+                }
+              />
+            </Box>
             <Toolbar>
               <div style={{ marginTop: '3px' }}>
                 <ToolbarButton
@@ -366,6 +406,7 @@ const CustomProfileList = ({
                 (value) => value && value?.includes(searchPhrase),
               ),
           )}
+          loading={loading}
           onRecordClick={handleRecordClick}
         >
           {profileTypeFields

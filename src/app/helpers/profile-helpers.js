@@ -36,3 +36,9 @@ export const ProfileAttachmentType = {
   FILE_LOCAL : 'FILE_LOCAL',
   FILE_GDRIVE : 'FILE_GDRIVE',
 };
+
+export const ProfileStatus = {
+  ALL: 'ALL',
+  ACTIVE: 'ACTIVE',
+  ARCHIVED: 'ARCHIVED',
+};
