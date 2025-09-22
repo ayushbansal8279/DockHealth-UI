@@ -38,6 +38,7 @@ const DueDatePicker = ({
   allSelectedTasksIdentifiers,
   allSelectedWorkflowIdentifiers,
   bulkEditDueDate = false,
+  onClearDateClick,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const [recurringSectionVisible, showRecurringSection, hideRecurringSection] =
@@ -129,6 +130,19 @@ const DueDatePicker = ({
     }
     const formattedDate = momentDate.format(DATE_ISO_FORMAT);
     handleDatePick(formattedDate);
+  };
+
+  const handleClearDateClick = () => {
+    if (onClearDateClick) {
+      onClearDateClick(() => {
+        onDateChange(null);
+        setTimeMaskValue(null);
+      });
+    } else {
+      // Fallback to direct clear if no callback provided
+      onDateChange(null);
+      setTimeMaskValue(null);
+    }
   };
 
   return (
