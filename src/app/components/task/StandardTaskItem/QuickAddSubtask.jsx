@@ -34,7 +34,6 @@ const QuickAddSubtask = ({
     setDisabled(false);
     setHasInputValue(false);
     setCurrentValue('');
-    // setValueReset(true);
     editorReference.current?.focus();
   };
 
@@ -72,7 +71,7 @@ const QuickAddSubtask = ({
         alignItems="flex-start"
         paddingLeft="huge"
         paddingRight="small"
-        
+
       >
         <CircleIcon src={Circle} />
         <Box flex={1} overflow="hidden">
@@ -80,7 +79,6 @@ const QuickAddSubtask = ({
             placeholder="Subtask description"
             ref={editorReference}
             value={currentValue}
-            // reset={isValueReset}
             onBlur={onBlurTextEditor}
             onChange={handleTextEditorChange}
             onKeyEnter={handleTextEditorKeyEnter}
