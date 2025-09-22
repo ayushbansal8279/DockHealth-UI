@@ -54,6 +54,7 @@ import ImportDataModal from '@/app/modal/components/ImportDataModal/ImportDataMo
 import ReusableDataGrid from './DataGrid/DataGrid';
 import DateLabel from '../../common/DateLabel/DateLabel';
 import { StyledLink } from './styled';
+import RelationshipLinks from '../RelationshipLinks';
 
 const CustomProfileList = ({
   profileTypeIdentifier,
@@ -238,6 +239,16 @@ const CustomProfileList = ({
                 );
               }
 
+              if (field.fieldType === 'RELATIONSHIP') {
+                const refs = params.row[field.name];
+                return (
+                  <RelationshipLinks
+                    refs={refs}
+                    relatedProfileType={field.relatedProfileType.identifier}
+                  />
+                );
+              }
+
               return value;
             },
           }
@@ -293,10 +304,7 @@ const CustomProfileList = ({
                   break;
 
                 case 'RELATIONSHIP':
-                  value =
-                    profileField.references
-                      ?.map((r) => r.displayValue)
-                      .join(', ') || '';
+                  value = profileField.references || [];
                   break;
 
                 case 'HYPERLINK':
