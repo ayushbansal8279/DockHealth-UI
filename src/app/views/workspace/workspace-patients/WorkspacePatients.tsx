@@ -53,21 +53,17 @@ const WorkspacePatients = () => {
       />
       {patientListIdentifier && patientListIdentifier.length === 36 && (
         <AddEntitiesContainer>
-          <AddButton onClick={onEditPatientList}>
-            Manage Patient List
-          </AddButton>
+          <AddButton onClick={onEditPatientList}>Manage Patient List</AddButton>
           <Spacing horizontal={5} />
         </AddEntitiesContainer>
       )}
-      <WorkspacePatientsTableWrapper>
-        <PatientsList
-          patients={patients}
-          importPopoverOpen={importPopoverOpen}
-          setImportPopoverOpen={setImportPopoverOpen}
-          searchValue={searchValue}
-          refreshPatients={refreshPatients}
-        />
-      </WorkspacePatientsTableWrapper>
+      <PatientsList
+        patients={patients}
+        importPopoverOpen={importPopoverOpen}
+        setImportPopoverOpen={setImportPopoverOpen}
+        searchValue={searchValue}
+        refreshPatients={refreshPatients}
+      />
     </WorkspacePatientsContainer>
   );
 };

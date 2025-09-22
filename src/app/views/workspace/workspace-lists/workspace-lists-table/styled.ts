@@ -16,7 +16,6 @@ export const StyledListLink = styled(Link)({
   overflow: 'hidden',
   fontWeight: fontWeights.light,
   fontSize: '0.65 rem',
-  textDecoration: 'underline',
 });
 
 export const AssignMemberIconContainer = styled.div`

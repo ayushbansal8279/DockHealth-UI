@@ -94,14 +94,24 @@ const ReusableDataGrid = ({
       columns={columns}
       rows={rows}
       getRowId={getRowId}
-      rowCount={rowCount ?? rows.length}
+      rowCount={rowCount ?? rows?.length}
       headerHeight={35}
       pagination
       showColumnRightBorder
       showCellRightBorders
       filterMode="client"
-      slots={
-        showToolbar
+      slots={{
+        noRowsOverlay: () => (
+          <Box
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            height="100%"
+          >
+            No records found
+          </Box>
+        ),
+        ...(showToolbar
           ? {
               toolbar: () => (
                 <Toolbar
@@ -113,8 +123,8 @@ const ReusableDataGrid = ({
                 />
               ),
             }
-          : {}
-      }
+          : {}),
+      }}
       slotProps={showToolbar ? { panel: { disablePortal: true } } : {}}
       disableColumnMenu
       disableSelectionOnClick
@@ -122,7 +132,7 @@ const ReusableDataGrid = ({
       disableColumnResize
       disableColumnFilter={false}
       disableDensitySelector
-      loading={loading ?? rows.length === 0}
+      loading={loading}
       onRowClick={onRecordClick}
       {...props}
     />
