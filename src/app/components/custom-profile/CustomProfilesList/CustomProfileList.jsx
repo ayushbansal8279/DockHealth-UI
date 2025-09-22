@@ -59,9 +59,11 @@ import { StyledLink } from './styled';
 import DateLabel from '../../common/DateLabel/DateLabel';
 import ImportDataModal from '@/app/modal/components/ImportDataModal/ImportDataModal';
 import ToolbarSelect from '../../tasklist/ToolbarSelect/ToolbarSelect';
-import { ProfileStatus } from '@/app/helpers/profile-helpers';
+import { ProfileStatus, ProfileQueryType } from '@/app/helpers/profile-helpers';
 import TasksStatusSwitchIcon from 'img/tasks-status-switch-icon.svg';
 import { PatientsListImg } from 'components/patients/PatientsToolbar/styled';
+
+const DATASET_SIZE_THRESHOLD = 100;
 
 const CustomProfileList = ({
   profileTypeIdentifier,
@@ -101,9 +103,11 @@ const CustomProfileList = ({
   const [currentProfileType, setCurrentProfileType] = useState('');
   const [filters, setFilters] = useState([]);
   const [profiles, setProfiles] = useState([]);
+  const [allProfiles, setAllProfiles] = useState([]);
   const [searchPhrase, setSearchPhrase] = useState('');
   const [profileStatus, setProfileStatus] = useState(ProfileStatus.ALL);
   const [loading, setLoading] = useState(false);
+  const [useLocalFiltering, setUseLocalFiltering] = useState(true);
   const currentUser = useSelector(userProfileSelector);
   const [importPopupOpen, setImportPopupOpen] = useState(false);
 
@@ -153,12 +157,21 @@ const CustomProfileList = ({
     setLoading(true);
 
     const fetchPromise = fetchProfiles
-      ? fetchProfiles().then(setProfiles)
+      ? fetchProfiles().then((data) => {
+          setAllProfiles(data);
+          setProfiles(data);
+          setUseLocalFiltering(data.length <= DATASET_SIZE_THRESHOLD);
+        })
       : getAllProfiles(profileTypeIdentifier)
-          .then(setProfiles)
+          .then((data) => {
+            setAllProfiles(data);
+            setProfiles(data);
+            setUseLocalFiltering(data.length <= DATASET_SIZE_THRESHOLD);
+          })
           .catch(() => {
             dispatch(showGlobalErrorAlert());
             setProfiles([]);
+            setAllProfiles([]);
           });
 
     return fetchPromise.finally(() => {
@@ -180,11 +193,41 @@ const CustomProfileList = ({
     fetchProfilesInternal();
   }, [fetchProfilesInternal]);
 
-  useEffect(() => {
-    if (profileStatus === ProfileStatus.ALL) {
-      fetchProfilesInternal();
-    }
-  }, [profileStatus, fetchProfilesInternal]);
+  const handleProfileStatusChange = useCallback(
+    (newStatus) => {
+      setProfileStatus(newStatus);
+
+      if (useLocalFiltering) {
+        if (newStatus === ProfileStatus.ALL) {
+          setProfiles(allProfiles);
+        } else {
+          const filteredProfiles = allProfiles.filter(
+            (profile) => profile.profileStatus === newStatus,
+          );
+          setProfiles(filteredProfiles);
+        }
+      } else {
+        setLoading(true);
+        const queryType =
+          newStatus === ProfileStatus.ACTIVE
+            ? ProfileQueryType.ACTIVE_PROFILES
+            : newStatus === ProfileStatus.ARCHIVED
+            ? ProfileQueryType.ARCHIVED_PROFILES
+            : ProfileQueryType.ALL_PROFILES;
+
+        getAllProfiles(profileTypeIdentifier, queryType)
+          .then(setProfiles)
+          .catch(() => {
+            dispatch(showGlobalErrorAlert());
+            setProfiles([]);
+          })
+          .finally(() => {
+            setLoading(false);
+          });
+      }
+    },
+    [useLocalFiltering, allProfiles, profileTypeIdentifier, dispatch],
+  );
 
   const handleProfileAddClick = () => {
     setOpen(true);
@@ -291,7 +334,9 @@ const CustomProfileList = ({
                 options={PROFILE_STATUS_OPTIONS}
                 value={profileStatus}
                 name="profile-status-filter"
-                onChange={(event) => setProfileStatus(event?.target?.value)}
+                onChange={(event) =>
+                  handleProfileStatusChange(event?.target?.value)
+                }
                 icon={
                   <PatientsListImg
                     src={TasksStatusSwitchIcon}
@@ -403,9 +448,10 @@ const CustomProfileList = ({
                 (value) => value && value?.includes(searchPhrase),
               );
 
-            const matchesStatus =
-              profileStatus === ProfileStatus.ALL ||
-              profile.profileStatus === profileStatus;
+            const matchesStatus = useLocalFiltering
+              ? true
+              : profileStatus === ProfileStatus.ALL ||
+                profile.profileStatus === profileStatus;
 
             return matchesSearch && matchesStatus;
           })}

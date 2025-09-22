@@ -42,3 +42,9 @@ export const ProfileStatus = {
   ACTIVE: 'ACTIVE',
   ARCHIVED: 'ARCHIVED',
 };
+
+export const ProfileQueryType = {
+  ALL_PROFILES: 'ALL_PROFILES',
+  ACTIVE_PROFILES: 'ACTIVE_PROFILES',
+  ARCHIVED_PROFILES: 'ARCHIVED_PROFILES',
+};
