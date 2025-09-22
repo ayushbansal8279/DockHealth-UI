@@ -154,8 +154,24 @@ const ProfileDrawer = ({
     }
   };
 
-  const menu = useMemo(
-    () => [
+  const menu = useMemo(() => {
+    const openArchiveModal = (nextStatus, confirmText, successMessage) => {
+      dispatch(
+        openModal('DeleteConfirmation', {
+          description: `Are you sure you want to ${confirmText.toLowerCase()} this object?`,
+          confirm: () => {
+            archiveProfile(profile.identifier, nextStatus).then(() => {
+              dispatch(showGlobalAlert(successMessage));
+              history.push(`/custom-objects/${profileTypeIdentifier}`);
+            });
+            dispatch(closeModal());
+          },
+          confirmButtonText: confirmText,
+        }),
+      );
+    };
+
+    return [
       { name: 'Edit', onClick: () => setEditMode(true) },
       {
         name: 'Merge',
@@ -169,26 +185,31 @@ const ProfileDrawer = ({
           onClose();
         },
       },
-      {
-        name: 'Archive',
-        onClick: () => {
-          dispatch(
-            openModal('DeleteConfirmation', {
-              description: 'Are you sure to archive this object?',
-              confirm: () => {
-                archiveProfile(profile.identifier, ProfileStatus.ARCHIVED).then(
-                  () => {
-                    dispatch(showGlobalAlert(AlertMessages.ARCHIVED));
-                    history.push(`/custom-objects/${profileTypeIdentifier}`);
-                  },
-                );
-                dispatch(closeModal());
-              },
-              confirmButtonText: 'Archive',
-            }),
-          );
-        },
-      },
+      ...(profile?.profileStatus === ProfileStatus.ACTIVE
+        ? [
+            {
+              name: 'Archive',
+              onClick: () =>
+                openArchiveModal(
+                  ProfileStatus.ARCHIVED,
+                  'Archive',
+                  AlertMessages.ARCHIVED,
+                ),
+            },
+          ]
+        : profile?.profileStatus === ProfileStatus.ARCHIVED
+        ? [
+            {
+              name: 'Unarchive',
+              onClick: () =>
+                openArchiveModal(
+                  ProfileStatus.ACTIVE,
+                  'Unarchive',
+                  AlertMessages.PATIENT_UNARCHIVED,
+                ),
+            },
+          ]
+        : []),
       {
         name: 'Delete',
         onClick: () => {
@@ -206,9 +227,8 @@ const ProfileDrawer = ({
           );
         },
       },
-    ],
-    [dispatch, history, profile, profileTypeIdentifier],
-  );
+    ];
+  }, [dispatch, history, profile, profileTypeIdentifier]);
 
   return (
     <Drawer open={open} onClickAway={handleClose}>
