@@ -152,7 +152,7 @@ const TaskItemPatient = ({
                   },
                 }}
                 onClick={() => {
-                  localStorage.setItem(
+                  sessionStorage.setItem(
                     'navigation-from',
                     search ? pathname + search : pathname,
                   );
@@ -206,7 +206,7 @@ const TaskItemPatient = ({
                   },
                 }}
                 onClick={() => {
-                  localStorage.setItem(
+                  sessionStorage.setItem(
                     'navigation-from',
                     search ? pathname + search : pathname,
                   );
