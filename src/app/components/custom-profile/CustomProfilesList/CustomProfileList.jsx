@@ -110,17 +110,10 @@ const CustomProfileList = ({
   const isGuestOrDockLite = isUserGuestOrDockLite(currentUser);
   const isViewOnly = isUserViewOnly(currentUser);
 
-  const PROFILE_STATUS_OPTIONS = [
-    { value: 'ALL', label: 'All' },
-    { value: 'ACTIVE', label: 'Active' },
-    { value: 'ARCHIVED', label: 'Archived' },
-  ];
-
-  const PROFILE_STATUS_VALUES = {
-    [ProfileStatus.ALL]: 'ALL',
-    [ProfileStatus.ACTIVE]: 'ACTIVE',
-    [ProfileStatus.ARCHIVED]: 'ARCHIVED',
-  };
+  const PROFILE_STATUS_OPTIONS = Object.values(ProfileStatus).map((status) => ({
+    value: status,
+    label: status.charAt(0) + status.slice(1).toLowerCase(),
+  }));
 
   useEffect(() => {
     if (showHeader) {
@@ -296,11 +289,9 @@ const CustomProfileList = ({
             <Box display="flex" alignItems="center" my={0.4} mr={2}>
               <ToolbarSelect
                 options={PROFILE_STATUS_OPTIONS}
-                value={PROFILE_STATUS_VALUES[profileStatus]}
+                value={profileStatus}
                 name="profile-status-filter"
-                onChange={(event) =>
-                  setProfileStatus(ProfileStatus[event?.target?.value])
-                }
+                onChange={(event) => setProfileStatus(event?.target?.value)}
                 icon={
                   <PatientsListImg
                     src={TasksStatusSwitchIcon}
@@ -414,7 +405,7 @@ const CustomProfileList = ({
 
             const matchesStatus =
               profileStatus === ProfileStatus.ALL ||
-              profile.profileStatus === PROFILE_STATUS_VALUES[profileStatus];
+              profile.profileStatus === profileStatus;
 
             return matchesSearch && matchesStatus;
           })}
