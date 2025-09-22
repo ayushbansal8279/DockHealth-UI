@@ -8,7 +8,13 @@ import { getProfileRelationships } from '@/app/api/profile-api';
 
 const ProfileRelationship = () => {
   const dispatch = useDispatch();
-  const { profileIdentifier, relationshipProfileIdentifier } = useParams();
+  const {
+    profileIdentifier,
+    relationshipProfileIdentifier,
+    patientIdentifier,
+  } = useParams();
+
+  const identifier = profileIdentifier || patientIdentifier;
 
   const fetchProfileTypeFields = useCallback(() => {
     return getAllProfileFieldTypes(relationshipProfileIdentifier)
@@ -22,7 +28,7 @@ const ProfileRelationship = () => {
   }, [dispatch, relationshipProfileIdentifier]);
 
   const fetchRelationships = useCallback(() => {
-    return getProfileRelationships(relationshipProfileIdentifier, profileIdentifier)
+    return getProfileRelationships(identifier, relationshipProfileIdentifier)
       .then((data) => {
         return data;
       })
@@ -30,7 +36,7 @@ const ProfileRelationship = () => {
         dispatch(showGlobalErrorAlert());
         return [];
       });
-  }, [dispatch, profileIdentifier, relationshipProfileIdentifier]);
+  }, [dispatch, identifier, relationshipProfileIdentifier]);
 
   useEffect(() => {
     fetchProfileTypeFields();

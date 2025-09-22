@@ -308,14 +308,34 @@ const EditCustomFieldModal = ({
 
   useEffect(() => {
     async function fetchData() {
-      // You can await here
-      const response = await getAllProfileTypes();
-      const profileTypes = response.map(({ identifier, name }) => ({
-        label: name,
-        value: identifier,
-      }));
-      setProfileTypeOptions(profileTypes);
+      try {
+        const [allProfileTypes, predefinedProfileTypes] = await Promise.all([
+          getAllProfileTypes(),
+          getAllProfileTypes('PREDEFINED'),
+        ]);
+
+        const combinedProfileTypes = [
+          ...allProfileTypes,
+          ...predefinedProfileTypes,
+        ];
+
+        const sortedProfileTypes = combinedProfileTypes.sort((a, b) =>
+          a.name.localeCompare(b.name),
+        );
+
+        const profileTypeOptions = sortedProfileTypes.map(
+          ({ identifier, name }) => ({
+            label: name,
+            value: identifier,
+          }),
+        );
+
+        setProfileTypeOptions(profileTypeOptions);
+      } catch (err) {
+        console.error('Error fetching profile types:', err);
+      }
     }
+
     fetchData();
   }, []);
 
