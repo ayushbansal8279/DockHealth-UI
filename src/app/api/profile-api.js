@@ -8,13 +8,8 @@ import {
 import { noop, showAlert } from '../helpers/utility-functions';
 import axios from './axios-heydoc';
 
-// TODO
-export function getAllProfiles(identifier, status = null) {
-  const url =
-    status && status !== 'ALL'
-      ? `profile/getAll/${identifier}/${status}`
-      : `profile/getAll/${identifier}`;
-  return axios.get(url).then(({ data }) => data);
+export function getAllProfiles(identifier) {
+  return axios.get(`profile/getAll/${identifier}`).then(({ data }) => data);
 }
 
 export function getProfileDetails(identifier) {
@@ -44,9 +39,12 @@ export function deleteProfile(identifier) {
   return axios.delete(`profile/${identifier}`).then(({ data }) => data);
 }
 
-// TODO
-export function archiveProfile(identifier) {
-  return axios.patch(`profile/archive/${identifier}`).then(({ data }) => data);
+export function archiveProfile(identifier, status) {
+  return axios
+    .patch(`profile/archiveProfile/${identifier}`, null, {
+      params: { status },
+    })
+    .then(({ data }) => data);
 }
 
 export function getProfileFilterOptions(profileTypeIdentifier) {

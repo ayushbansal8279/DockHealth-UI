@@ -161,7 +161,7 @@ const CustomProfileList = ({
 
     const fetchPromise = fetchProfiles
       ? fetchProfiles().then(setProfiles)
-      : getAllProfiles(profileTypeIdentifier, profileStatus)
+      : getAllProfiles(profileTypeIdentifier)
           .then(setProfiles)
           .catch(() => {
             dispatch(showGlobalErrorAlert());
@@ -171,7 +171,7 @@ const CustomProfileList = ({
     return fetchPromise.finally(() => {
       setLoading(false);
     });
-  }, [fetchProfiles, profileTypeIdentifier, profileStatus]);
+  }, [fetchProfiles, profileTypeIdentifier]);
 
   useEffect(() => {
     fetchProfileTypesInternal();
@@ -186,6 +186,12 @@ const CustomProfileList = ({
   useEffect(() => {
     fetchProfilesInternal();
   }, [fetchProfilesInternal]);
+
+  useEffect(() => {
+    if (profileStatus === ProfileStatus.ALL) {
+      fetchProfilesInternal();
+    }
+  }, [profileStatus, fetchProfilesInternal]);
 
   const handleProfileAddClick = () => {
     setOpen(true);
@@ -399,13 +405,19 @@ const CustomProfileList = ({
             },
           }}
           controller={controller}
-          dataset={profiles.filter(
-            (profile) =>
+          dataset={profiles.filter((profile) => {
+            const matchesSearch =
               profile.fields &&
               getValues(profile).some(
                 (value) => value && value?.includes(searchPhrase),
-              ),
-          )}
+              );
+
+            const matchesStatus =
+              profileStatus === ProfileStatus.ALL ||
+              profile.profileStatus === PROFILE_STATUS_VALUES[profileStatus];
+
+            return matchesSearch && matchesStatus;
+          })}
           loading={loading}
           onRecordClick={handleRecordClick}
         >

@@ -16,6 +16,7 @@ import {
   deleteProfile,
   archiveProfile,
 } from 'api/profile-api';
+import { ProfileStatus } from 'helpers/profile-helpers';
 import { FormProvider, useForm } from 'react-hook-form';
 import {
   ContentWrapper,
@@ -175,10 +176,12 @@ const ProfileDrawer = ({
             openModal('DeleteConfirmation', {
               description: 'Are you sure to archive this object?',
               confirm: () => {
-                archiveProfile(profile.identifier).then(() => {
-                  dispatch(showGlobalAlert(AlertMessages.ARCHIVED));
-                  history.push(`/custom-objects/${profileTypeIdentifier}`);
-                });
+                archiveProfile(profile.identifier, ProfileStatus.ARCHIVED).then(
+                  () => {
+                    dispatch(showGlobalAlert(AlertMessages.ARCHIVED));
+                    history.push(`/custom-objects/${profileTypeIdentifier}`);
+                  },
+                );
                 dispatch(closeModal());
               },
               confirmButtonText: 'Archive',
