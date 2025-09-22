@@ -103,17 +103,17 @@ const GroupIntoSection = () => {
             />
             <Spacing vertical={5} />
           </Grid>
-          <Grid item xs={6} />
+          <Grid item size={6} />
           <Grid
             mt={6}
             ml={20}
-            xs={9}
+            size={9}
             spacing={0}
             container
             alignItems="center"
             justifyContent="flex-end"
           >
-            <Grid item xs={2}>
+            <Grid item size={2}>
               <OutfitTypography weight="400" align="center">
                 <div
                   style={{ cursor: 'pointer', fontSize: '17px' }}
@@ -123,7 +123,7 @@ const GroupIntoSection = () => {
                 </div>
               </OutfitTypography>
             </Grid>
-            <Grid item xs={6}>
+            <Grid item size={6}>
               <Button
                 uppercase={false}
                 id="loginButton"

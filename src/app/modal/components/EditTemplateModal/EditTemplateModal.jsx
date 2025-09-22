@@ -189,7 +189,7 @@ const EditTemplateModal = ({ closeModal, template, onAdded, onUpdated }) => {
             <FormScrollingContainer>
               <Box>
                 <Grid container spacing={2}>
-                  <Grid item xs={12}>
+                  <Grid item size={12}>
                     <FormInput
                       required
                       autoFocus
@@ -197,7 +197,7 @@ const EditTemplateModal = ({ closeModal, template, onAdded, onUpdated }) => {
                       label="Template name"
                     />
                   </Grid>
-                  <Grid item xs={12}>
+                  <Grid item size={12}>
                     <FormSelect
                       readOnly={!!template}
                       required
@@ -207,7 +207,7 @@ const EditTemplateModal = ({ closeModal, template, onAdded, onUpdated }) => {
                     />
                   </Grid>
                   {templateTypeValue === TEMPLATE_TYPES.SMS && (
-                    <Grid item xs={4} style={{ marginLeft: 'auto' }}>
+                    <Grid item size={4} style={{ marginLeft: 'auto' }}>
                       <Select
                         fullWidth
                         variant="standard"
@@ -233,7 +233,7 @@ const EditTemplateModal = ({ closeModal, template, onAdded, onUpdated }) => {
                   )}
                   {(templateTypeValue === TEMPLATE_TYPES.EMAIL ||
                     templateTypeValue === TEMPLATE_TYPES.SMS) && (
-                    <Grid item xs={12}>
+                    <Grid item size={12}>
                       <FormInput
                         required
                         autoFocus
@@ -252,7 +252,7 @@ const EditTemplateModal = ({ closeModal, template, onAdded, onUpdated }) => {
                     </Grid>
                   )}
                   {templateTypeValue !== TEMPLATE_TYPES.SMS && (
-                    <Grid item xs={12}>
+                    <Grid item size={12}>
                       <CustomTextEditor label="Message">
                         <RichTextEditor
                           value={currentValue}

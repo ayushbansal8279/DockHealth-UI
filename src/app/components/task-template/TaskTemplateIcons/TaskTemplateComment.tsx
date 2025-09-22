@@ -47,7 +47,7 @@ export default function TaskTemplateComment({
   return (
     <CommentsContainer>
       <Grid container>
-        <GridImg item xs={12} matched={matchComments}>
+        <GridImg item size={12} matched={matchComments}>
           <Tooltip placement="top" title={tooltipTitle}>
             <button type="button" onClick={onCommentClick}>
               <CommentsWrapper

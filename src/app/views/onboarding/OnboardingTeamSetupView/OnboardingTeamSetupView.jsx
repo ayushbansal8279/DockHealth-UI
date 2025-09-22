@@ -243,7 +243,7 @@ const OnboardingTeamSetupView = () => {
                   alignItems="flex-start"
                   spacing={2}
                 >
-                  <Grid item xs={3}>
+                  <Grid item size={3}>
                     <Input
                       inputRef={(element) => {
                         if (!firstFirstNameFieldReference.current) {
@@ -267,7 +267,7 @@ const OnboardingTeamSetupView = () => {
                       )}
                     />
                   </Grid>
-                  <Grid item xs={3}>
+                  <Grid item size={3}>
                     <Input
                       name={`organizationMembers[${item.index}].lastName`}
                       label="Last name"
@@ -282,7 +282,7 @@ const OnboardingTeamSetupView = () => {
                       )}
                     />
                   </Grid>
-                  <Grid item xs={fieldState ? 5 : 6}>
+                  <Grid item size={fieldState ? 5 : 6}>
                     <Input
                       type="text"
                       name={`organizationMembers[${item.index}].email`}
@@ -300,7 +300,7 @@ const OnboardingTeamSetupView = () => {
                     <Grid
                       container
                       item
-                      xs={1}
+                      size={1}
                       justifyContent={
                         fieldState.loading ? 'center' : 'flex-start'
                       }
@@ -338,12 +338,12 @@ const OnboardingTeamSetupView = () => {
           </AddPersonButton>
           <Spacing vertical={5} />
           <Grid container spacing={3}>
-            <Grid item xs={4}>
+            <Grid item size={4}>
               <Button fullWidth type="submit" disabled={isSaving}>
                 Send invite
               </Button>
             </Grid>
-            <Grid item xs={4}>
+            <Grid item size={4}>
               <Button
                 fullWidth
                 type="button"

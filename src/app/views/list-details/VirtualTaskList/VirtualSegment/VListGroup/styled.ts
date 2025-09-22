@@ -1,6 +1,6 @@
-import styled from '@mui/styled-engine';
+import styled from 'styled-components';
 
-export const VListGroup = styled('div')`
+export const VListGroup = styled.div`
   display: block;
   font-weight: bold;
   text-transform: uppercase;

@@ -123,12 +123,12 @@ const ListPickerModal = ({
         </Container>
         <Spacing vertical={4} />
         <Grid container direction="row" spacing={2}>
-          <Grid item xs={6}>
+          <Grid item size={6}>
             <CancelButton onClick={handleCancel}>
               {step === STEPS[1] ? 'Cancel' : 'Back'}
             </CancelButton>
           </Grid>
-          <Grid item xs={6}>
+          <Grid item size={6}>
             <ConfirmButton
               disabled={isSavingList || isFetchingLists || !selectedList}
               onClick={handleSave}

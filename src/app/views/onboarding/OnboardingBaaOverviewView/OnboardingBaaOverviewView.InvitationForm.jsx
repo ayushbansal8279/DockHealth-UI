@@ -98,7 +98,7 @@ const InvitationForm = ({ hideInvitationForm }) => {
         </Grid>
         <Spacing vertical={4} />
         <Grid container spacing={2}>
-          <Grid item xs={12} md={6}>
+          <Grid item size={12} md={6}>
             <FormInput
               label="First Name"
               name="firstName"
@@ -106,7 +106,7 @@ const InvitationForm = ({ hideInvitationForm }) => {
               autoComplete={uuid()}
             />
           </Grid>
-          <Grid item xs={12} md={6}>
+          <Grid item size={12} md={6}>
             <FormInput
               label="Last Name"
               name="lastName"
@@ -114,7 +114,7 @@ const InvitationForm = ({ hideInvitationForm }) => {
               autoComplete={uuid()}
             />
           </Grid>
-          <Grid item xs={12} md={6}>
+          <Grid item size={12} md={6}>
             <FormInput
               label="His/Her Email"
               name="email"
@@ -122,7 +122,7 @@ const InvitationForm = ({ hideInvitationForm }) => {
               autoComplete={uuid()}
             />
           </Grid>
-          <Grid item xs={12} md={6}>
+          <Grid item size={12} md={6}>
             <FormPhoneNumberInput
               required
               label="His/Her Mobile Phone Number"
@@ -131,12 +131,12 @@ const InvitationForm = ({ hideInvitationForm }) => {
             />
           </Grid>
           <Spacing vertical={4} />
-          <Grid item xs={6}>
+          <Grid item size={6}>
             <Button fullWidth variant="secondary" onClick={hideInvitationForm}>
               Cancel
             </Button>
           </Grid>
-          <Grid item xs={6}>
+          <Grid item size={6}>
             <Button fullWidth variant="primary" type="submit">
               Send invite
             </Button>

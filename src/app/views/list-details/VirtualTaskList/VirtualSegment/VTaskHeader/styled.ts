@@ -1,7 +1,7 @@
 import palette from '@/app/styles/palette';
-import styled from '@mui/styled-engine';
+import styled from 'styled-components';
 
-export const VTaskHeader = styled('div')`
+export const VTaskHeader = styled.div`
   display: flex;
   font-size: 13px;
   line-height: 36px;

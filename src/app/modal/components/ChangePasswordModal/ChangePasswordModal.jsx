@@ -101,7 +101,7 @@ const ChangePasswordModal = ({ closeModal }) => {
           />
           <Spacing vertical={5} />
           <Grid container justifyContent="flex-end">
-            <Grid item xs={7}>
+            <Grid item size={7}>
               <Button fullWidth type="submit">
                 Change password
               </Button>

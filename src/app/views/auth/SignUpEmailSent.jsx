@@ -70,11 +70,11 @@ export default () => {
 
   return (
     <Grid container style={{ height: '100%' }}>
-      <Grid item xs={12}>
+      <Grid item size={12}>
         <DockLogoImage />
         <Spacing vertical={6} />
       </Grid>
-      <Grid item xs={12}>
+      <Grid item size={12}>
         <OutfitTypography
           align="center"
           textDecoration={{
@@ -98,7 +98,7 @@ export default () => {
           You received an email from support@dock.health <br /> Please verify
           your email address.
         </OutfitTypography>
-        <Grid item xs={12}>
+        <Grid item size={12}>
           <Spacing vertical={8} />
           <OutfitTypography
             weight="500"

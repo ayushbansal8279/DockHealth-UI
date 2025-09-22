@@ -4,17 +4,18 @@ import {
   GridRenderEditCellParams,
 } from '@mui/x-data-grid-premium';
 
+// @ts-ignore
 import Input from '../Input/Input';
 import { INameExtends } from '@/app/types/EditCell';
 import { getFirstAndLastNameFromFullName } from '@/app/helpers/user-helper';
 
 type Params = GridRenderEditCellParams<INameExtends, string>;
 
-export const getFullName = ({ row: { firstName, lastName } }: Params) => {
-  return `${lastName ?? ''}, ${firstName ?? ''}`;
+export const getFullName = (value: any, row: { firstName?: string; lastName?: string }) => {
+  return `${row.lastName ?? ''}, ${row.firstName ?? ''}`;
 };
 
-export const setFullName = ({ value, row }: Params) => {
+export const setFullName = (value: string, row: any) => {
   const { firstName, lastName } = getFirstAndLastNameFromFullName(value);
   return {
     ...row,
@@ -53,6 +54,7 @@ export default function FullNameEditCell({ id, error, field, value }: Params) {
       onChange={handleChange}
       required
       error={errorMessage}
+      {...({} as any)}
     />
   );
 }

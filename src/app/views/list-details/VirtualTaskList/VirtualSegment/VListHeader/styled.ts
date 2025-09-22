@@ -1,6 +1,6 @@
-import styled from '@mui/styled-engine';
+import styled from 'styled-components';
 
-export const VListHeader = styled('div')`
+export const VListHeader = styled.div`
   display: flex;
   font-size: 13px;
   line-height: 40px;

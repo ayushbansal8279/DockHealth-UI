@@ -144,7 +144,7 @@ const CustomFieldsSection = ({ disabled, fieldCategoryType }) => {
         alwaysVisible || isFocused || emptyVisible || hasValue || isRequired;
       return (
         <HidableContainer key={field.identifier} visible={!visible}>
-          <Grid item xs={12} style={styleFullRow(isMobile, alwaysVisible)}>
+          <Grid item size={12} style={styleFullRow(isMobile, alwaysVisible)}>
             <CustomField
               readOnly={disabled}
               field={field}
