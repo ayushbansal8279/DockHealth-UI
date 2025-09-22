@@ -44,6 +44,7 @@ import {
   BulkContainer,
   Text,
   PatientCell,
+  Label,
 } from './styled';
 import { StyledDataGrid } from './DataGridStyles';
 import FullNameEditCell, {
@@ -72,6 +73,7 @@ import NumberEditCell from '../../common/DataGridEditCells/NumberEditCell';
 import DateTimeEditCell from '../../common/DataGridEditCells/DateTimeEditCell';
 import CustomFieldLongTextEditor from '../../common/DataGridEditCells/CustomFieldLongTextEditor';
 import PatientListLabels from '../../common/PatientListLabels/PatientListLabels';
+import ReusableDataGrid from '../../custom-profile/CustomProfilesList/DataGrid/DataGrid';
 
 const renderColumnHeader = (props) => {
   const { colDef } = props;
@@ -417,7 +419,7 @@ const PatientsList = ({
                   from: pathname,
                 },
               });
-              localStorage.setItem('navigation-from', pathname);
+              sessionStorage.setItem('navigation-from', pathname);
             } else {
               history.push({
                 pathname: `/core/patient/${patientIdentifier}`,
@@ -425,15 +427,15 @@ const PatientsList = ({
                   from: pathname,
                 },
               });
-              localStorage.setItem('navigation-from', pathname);
+              sessionStorage.setItem('navigation-from', pathname);
             }
           }}
           className="patient-cell"
         >
           <Tooltip placement="top" title={`${row.lastName}, ${row.firstName}`}>
-            <Text width="180">
+            <Label width="180">
               {row.lastName}, {row.firstName}
-            </Text>
+            </Label>
           </Tooltip>
         </PatientCell>
       ),
@@ -921,43 +923,35 @@ const PatientsList = ({
       ) : (
         <>
           {patients?.length > 0 && formattedPatients ? (
-            <Grid container xs={12} item justifyContent="center">
-              <Grid item xs={12} xl={11} md={12} lg={11}>
-                <NonEmptyListTable listLength={patients?.length ?? 0}>
-                  <StyledDataGrid
-                    apiRef={apiRef}
-                    getRowId={(row) => row.patientIdentifier}
-                    columns={orderedColumns}
-                    editMode="row"
-                    rows={formattedPatients}
-                    headerHeight={45}
-                    getRowHeight={() => 'auto'}
-                    hideFooterSelectedRowCount
-                    disableColumnMenu
-                    disableSelectionOnClick
-                    showColumnRightBorder
-                    showCellRightBorder
-                    rowModesModel={rowModesModel}
-                    onRowModesModelChange={handleRowModesModelChange}
-                    onRowEditStop={handleRowEditStop}
-                    onSortModelChange={handleSortChange}
-                    processRowUpdate={processRowUpdate}
-                    sortModel={
-                      dataGridSortModel &&
-                      columns.some(
-                        (column) =>
-                          column?.field === dataGridSortModel[0]?.field,
-                      )
-                        ? dataGridSortModel
-                        : undefined
-                    }
-                    pinnedColumns={pinnedColumns}
-                    onPinnedColumnsChange={handlePinnedColumnsChange}
-                    onColumnOrderChange={handleColumnOrderChange}
-                  />
-                </NonEmptyListTable>
-              </Grid>
-            </Grid>
+            <NonEmptyListTable listLength={patients?.length ?? 0}>
+              <ReusableDataGrid
+                columns={orderedColumns}
+                rows={formattedPatients}
+                apiRef={apiRef}
+                getRowId={(row) => row.patientIdentifier}
+                headerHeight={45}
+                rowHeight={70}
+                editMode="row"
+                rowModesModel={rowModesModel}
+                onRowModesModelChange={handleRowModesModelChange}
+                onRowEditStop={handleRowEditStop}
+                onSortModelChange={handleSortChange}
+                processRowUpdate={processRowUpdate}
+                sortModel={
+                  dataGridSortModel &&
+                  columns.some(
+                    (column) => column?.field === dataGridSortModel[0]?.field,
+                  )
+                    ? dataGridSortModel
+                    : undefined
+                }
+                pinnedColumns={pinnedColumns}
+                onPinnedColumnsChange={handlePinnedColumnsChange}
+                onColumnOrderChange={handleColumnOrderChange}
+                hideFooterSelectedRowCount
+                placeholder="Filter Results"
+              />
+            </NonEmptyListTable>
           ) : (
             <>
               {!isDynamicPatientList && (

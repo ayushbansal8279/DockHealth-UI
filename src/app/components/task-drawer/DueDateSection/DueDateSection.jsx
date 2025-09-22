@@ -100,6 +100,17 @@ const DueDateSection = ({
     [dispatch, selectedTask],
   );
 
+  const handleClearDateClick = useCallback(
+    (clearCallback) => {
+      dispatch(
+        openModal('ClearDueDateConfirmation', {
+          confirm: clearCallback,
+        }),
+      );
+    },
+    [dispatch],
+  );
+
   useEffect(() => {
     setMomentDueDate(dueDate ? moment(dueDate) : null);
     setIsOverdue(isDueDateOverdue(selectedTask));
@@ -208,6 +219,7 @@ const DueDateSection = ({
                     : defaultDueDateIntent
                 }
                 dateType="dueDate"
+                onClearDateClick={handleClearDateClick}
               />
             </Box>
           </PopoverCard>

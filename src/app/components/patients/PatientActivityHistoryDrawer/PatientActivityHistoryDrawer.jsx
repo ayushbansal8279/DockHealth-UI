@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Divider, IconButton, InputAdornment, TextField } from '@mui/material';
+import { Box, Divider, IconButton, InputAdornment } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import {
   DrawerWrapper,
@@ -13,47 +13,48 @@ import ActivityTimeline from './ActivityTimeline/ActivityTimeline';
 import SearchIcon from '@mui/icons-material/Search';
 import { getPatientActivity } from '@/app/api/patient-api';
 
-
-const PatientActivityHistoryDrawer = ({  patient, title,  isOpen, onClose }) => {
-
-  const [searchText, setSearchText] = useState("");
+const PatientActivityHistoryDrawer = ({ patient, title, isOpen, onClose }) => {
+  const [searchText, setSearchText] = useState('');
   const [showSearch, setShowSearch] = useState(false);
   const [patientActivities, setPatientActivities] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSearchToggle = () => {
     setShowSearch((prev) => {
-      if (prev) setSearchText("");
-      return !prev; 
+      if (prev) setSearchText('');
+      return !prev;
     });
   };
-  
 
   const handleClearSearch = () => {
-    setSearchText("");
+    setSearchText('');
   };
-  
+
   const fetchPatientActivities = async () => {
+    setIsLoading(true);
     try {
-      const response = await getPatientActivity(patient?.patientIdentifier)
+      const response = await getPatientActivity(patient?.patientIdentifier);
       setPatientActivities(response);
     } catch (error) {
       console.error('Failed to fetch patient activities:', error);
+    } finally {
+      setIsLoading(false);
     }
   };
-  
+
   useEffect(() => {
     if (isOpen) {
       fetchPatientActivities();
     }
-  }, [isOpen]);  
+  }, [isOpen]);
 
   return (
     <DrawerWrapper open={isOpen} anchor="right" onClose={onClose}>
-        <Box py={0.5} />
+      <Box py={0.5} />
       <StickyHeader>
-          <TitleName>{title}</TitleName>
+        <TitleName>{title}</TitleName>
         <MoreActinsWrapper>
-        {showSearch ? (
+          {showSearch ? (
             <Searchbar
               variant="standard"
               size="small"
@@ -65,7 +66,10 @@ const PatientActivityHistoryDrawer = ({  patient, title,  isOpen, onClose }) => 
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
-                    <SearchIcon onClick={handleSearchToggle} style={{ cursor: 'pointer' }} />
+                    <SearchIcon
+                      onClick={handleSearchToggle}
+                      style={{ cursor: 'pointer' }}
+                    />
                   </InputAdornment>
                 ),
                 endAdornment: searchText && (
@@ -89,10 +93,13 @@ const PatientActivityHistoryDrawer = ({  patient, title,  isOpen, onClose }) => 
       </StickyHeader>
       <Divider></Divider>
       <ContentWrapper>
-        <ActivityTimeline activities={patientActivities}></ActivityTimeline>
+        <ActivityTimeline
+          activities={patientActivities}
+          isLoading={isLoading}
+        ></ActivityTimeline>
       </ContentWrapper>
     </DrawerWrapper>
   );
 };
 
-export default PatientActivityHistoryDrawer
+export default PatientActivityHistoryDrawer;

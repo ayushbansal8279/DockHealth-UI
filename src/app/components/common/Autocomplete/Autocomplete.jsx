@@ -112,6 +112,7 @@ const Autocomplete = ({
   isOptionEqualToValue,
   limitTags,
   required,
+  name,
 }) => {
   const textFieldReference = useRef(null);
 
@@ -144,6 +145,7 @@ const Autocomplete = ({
           textFieldReference={textFieldReference}
           CustomInputProps={InputProps}
           required={required}
+          name={name}
         />
       ) : (
         <StandardInput
@@ -156,6 +158,7 @@ const Autocomplete = ({
           textFieldReference={textFieldReference}
           CustomInputProps={InputProps}
           required={required}
+          name={name}
         />
       ),
     [
@@ -166,6 +169,7 @@ const Autocomplete = ({
       onBlurInput,
       onFocusInput,
       placeholder,
+      name,
     ],
   );
 
@@ -198,6 +202,7 @@ const Autocomplete = ({
       disableClearable={disableClearable}
       limitTags={limitTags}
       required={required}
+      name={name}
     />
   );
 };
@@ -236,6 +241,7 @@ Autocomplete.propTypes = {
     propTypes.arrayOf(propTypes.string),
     propTypes.arrayOf(propTypes.object),
   ]),
+  name: propTypes.string,
 };
 
 export default Autocomplete;

@@ -26,7 +26,6 @@ export const WorkspaceTabsContainer = styled.div`
 `;
 
 export const WorkspaceDetailsContainer = styled.div`
-  min-height: 100vh;
 `;
 
 export const WorkspaceTitle = styled.div`

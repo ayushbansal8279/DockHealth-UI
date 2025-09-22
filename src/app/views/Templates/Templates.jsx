@@ -3,6 +3,7 @@ import ViewLayout from 'components/template/ViewLayout/ViewLayout';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
+import { Typography } from '@mui/material';
 import {
   getAllTemplates,
   deleteTemplate,
@@ -26,6 +27,7 @@ import { getTemplateColumns } from './helpers';
 import { ViewContainer } from './styled';
 import { AddIcon } from '../smart-flow-builder/TaskNodeHandles/styled';
 import ToolbarButton from '@/app/components/tasklist/list-toolbar-buttons/ToolbarButton/ToolbarButton';
+import ReusableDataGrid from '@/app/components/custom-profile/CustomProfilesList/DataGrid/DataGrid';
 
 // const PAGE_SIZE = 30;
 
@@ -138,33 +140,24 @@ const Templates = () => {
     <ViewLayout header={<BasicLayoutHeader title="Templates" />}>
       <ViewContainer>
         <AddEntitiesContainer>
-          <div style={{ marginBottom: '4px' }}>
-            <ToolbarButton
-              icon={
-                <span style={{ marginLeft: '-5px' }}>
-                  <AddIcon />
-                </span>
-              }
-              onClick={onAddTemplate}
-            >
-              Create Template
-            </ToolbarButton>
-          </div>
+          <ToolbarButton
+            icon={
+              <Typography sx={{ ml: '-5px' }}>
+                <AddIcon />
+              </Typography>
+            }
+            onClick={onAddTemplate}
+          >
+            Create Template
+          </ToolbarButton>
         </AddEntitiesContainer>
-        <StyledDataGrid
+        <ReusableDataGrid
           columns={columns}
           rows={templates.map((t) => ({ ...t, id: t.identifier }))}
           rowHeight={35}
           headerHeight={45}
-          // page={page}
-          // onPageChange={({ page: p }) => setPage(p)}
-          // pageSize={PAGE_SIZE}
-          hideFooterSelectedRowCount
-          autoHeight
-          disableColumnMenu
           disableSelectionOnClick
-          showColumnRightBorder
-          showCellRightBorder
+          showExport={false}
         />
       </ViewContainer>
     </ViewLayout>

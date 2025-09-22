@@ -1,16 +1,23 @@
 import styled from 'styled-components';
 import { fontSizes } from 'styles/font';
-import palette, { typography } from 'styles/palette';
+import palette from 'styles/palette';
 
+// modularize with objects
 export const ViewContainer = styled.div`
   max-width: 800px;
   width: 100%;
   margin: 0 auto;
-  padding: 50px 20px;
   color: ${palette.mediumGrey};
   font-family: inherit;
+  padding: 32px 0px;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  min-height: 0;
+  gap: 32px;
 `;
 
+// not used?
 export const AddTemplateWrapper = styled.div`
   text-transform: none;
   color: ${palette.mediumGrey};

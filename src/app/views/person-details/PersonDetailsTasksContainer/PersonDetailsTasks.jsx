@@ -132,7 +132,7 @@ const PersonDetailsTasks = ({
   const bulkEditTasks = useSelector(selectedTasksSelector);
   const bulkEditIsDisabled = false;
 
-  if (isFetchingTasks && !tasks) {
+  if (isFetchingTasks) {
     return <GroupedListSkeletonLoader numberOfGroups={1} />;
   }
 
