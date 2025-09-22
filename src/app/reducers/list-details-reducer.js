@@ -1008,9 +1008,6 @@ const ListDetailsReducer = (state = initialState, action) => {
         };
       }
 
-      if (existingTask && existingTask?.subtaskQuickAddOpen) {
-        task.subtaskQuickAddOpen = existingTask?.subtaskQuickAddOpen;
-      }
 
       const { taskGroupIdentifier } =
         task?.taskGroups?.find(

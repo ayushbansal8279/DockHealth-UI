@@ -116,7 +116,9 @@ const PatientDetailsHeader = () => {
   }, [cameFrom, history]);
 
   useEffect(() => {
-    setCameFrom(location?.state?.from || localStorage.getItem('navigation-from'));
+    setCameFrom(
+      location?.state?.from || sessionStorage.getItem('navigation-from'),
+    );
   }, [location]);
 
   return (

@@ -1,9 +1,4 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import DataGrid, {
-  Data,
-  useController,
-  getValues,
-} from 'ui-toolkit/Composite/DataGrid';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { getUserGroupIdentifierByUrlParameter } from 'helpers/user-groups-helper';
@@ -21,6 +16,7 @@ import {
   Switch,
   Typography,
 } from '@mui/material';
+import { useGridApiRef } from '@mui/x-data-grid-premium';
 import { getAllProfileTypes } from 'api/profile-type-api';
 import { getAllProfileFieldTypes } from 'api/profile-type-field-api';
 import { showGlobalErrorAlert } from 'alert/actions';
@@ -33,7 +29,6 @@ import Toolbar from 'ui-toolkit/Composite/Toolbar';
 import { Paper } from 'ui-toolkit/Element';
 import CustomizeIcon from 'img/customize-icon.svg';
 import { CustomizeImg } from 'components/patients/CustomizeToolbarButton/styled';
-import Checkbox from 'components/common/Checkbox/Checkbox';
 import ToolbarButton from '../../tasklist/list-toolbar-buttons/ToolbarButton/ToolbarButton';
 import { AddIcon } from '@/app/views/smart-flow-builder/TaskNodeHandles/styled';
 import ProfileFilter from '../ProfileFilter/ProfileFilter';
@@ -55,9 +50,11 @@ import {
   updateProfileListPreferences,
 } from '@/app/actions/profile-actions';
 import { getProfileListPreferences } from '@/app/api/profile-type-api';
-import { StyledLink } from './styled';
-import DateLabel from '../../common/DateLabel/DateLabel';
 import ImportDataModal from '@/app/modal/components/ImportDataModal/ImportDataModal';
+import ReusableDataGrid from './DataGrid/DataGrid';
+import DateLabel from '../../common/DateLabel/DateLabel';
+import { StyledLink } from './styled';
+import RelationshipLinks from '../RelationshipLinks';
 
 const CustomProfileList = ({
   profileTypeIdentifier,
@@ -82,7 +79,7 @@ const CustomProfileList = ({
     }
   }, [dispatch, groupIdentifier]);
 
-  const handleRecordClick = (event, { id }) => {
+  const handleRecordClick = ({ id }, event) => {
     history.push(`/custom-objects/${profileTypeIdentifier}/${id}`);
   };
 
@@ -100,6 +97,7 @@ const CustomProfileList = ({
   const [searchPhrase, setSearchPhrase] = useState('');
   const currentUser = useSelector(userProfileSelector);
   const [importPopupOpen, setImportPopupOpen] = useState(false);
+  const apiRef = useGridApiRef();
 
   const isGuestOrDockLite = isUserGuestOrDockLite(currentUser);
   const isViewOnly = isUserViewOnly(currentUser);
@@ -171,7 +169,6 @@ const CustomProfileList = ({
     setSearchPhrase(value);
   };
 
-  const controller = useController();
   const buttonReference = useRef(null);
   const [isPopoverOpen, setPopoverOpen] = useState(false);
 
@@ -204,6 +201,136 @@ const CustomProfileList = ({
     const filename = `Dock ${currentProfileType?.name}.csv`;
     downloadProfileData(profileTypeIdentifier, filename);
   };
+
+  const columns = filters
+    .map((filterIdentifier) => {
+      const field = profileTypeFields.find(
+        (field) => field.identifier === filterIdentifier,
+      );
+      return field
+        ? {
+            field: field.identifier,
+            headerName: field.name,
+            flex: 1,
+            filterable: true,
+            sortable: true,
+            valueGetter: (params) => {
+              return params.row[field.name] ?? '';
+            },
+            renderCell: (params) => {
+              const value = params.row[field.name];
+
+              if (field.fieldType === 'DATE' && value) {
+                return (
+                  <DateLabel date={value.date} dueDateIntent={value.intent} />
+                );
+              }
+
+              if (field.fieldType === 'HYPERLINK') {
+                if (!value) return '';
+                return (
+                  <StyledLink
+                    href={value.startsWith('http') ? value : `//${value}`}
+                    target="_blank"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    {value}
+                  </StyledLink>
+                );
+              }
+
+              if (field.fieldType === 'RELATIONSHIP') {
+                const refs = params.row[field.name];
+                return (
+                  <RelationshipLinks
+                    refs={refs}
+                    relatedProfileType={field.relatedProfileType.identifier}
+                  />
+                );
+              }
+
+              return value;
+            },
+          }
+        : null;
+    })
+    .filter(Boolean);
+
+  const rows =
+    profiles
+      ?.filter((profile) =>
+        profile.fields?.some((field) =>
+          (field.values || []).some(
+            (val) =>
+              typeof val === 'string' &&
+              val.toLowerCase().includes(searchPhrase.toLowerCase()),
+          ),
+        ),
+      )
+      .map((profile) => {
+        const rowData = {
+          id: profile.identifier,
+        };
+
+        filters.forEach((filterIdentifier) => {
+          const fieldConfig = profileTypeFields.find(
+            (field) => field.identifier === filterIdentifier,
+          );
+
+          if (fieldConfig) {
+            const profileField = profile.fields?.find(
+              (field) => field.profileTypeFieldIdentifier === filterIdentifier,
+            );
+
+            if (profileField) {
+              let value = '';
+
+              switch (profileField.profileTypeFieldType) {
+                case 'TEXT':
+                case 'NUMBER':
+                case 'BOOLEAN':
+                case 'LONG_TEXT':
+                  value = profileField.values?.[0] || '';
+                  break;
+
+                case 'MULTI_SELECT':
+                case 'PICK_LIST':
+                  value =
+                    profileField.references
+                      ?.map((r) => r.displayValue)
+                      .join(', ') ||
+                    profileField.values?.join(', ') ||
+                    '';
+                  break;
+
+                case 'RELATIONSHIP':
+                  value = profileField.references || [];
+                  break;
+
+                case 'HYPERLINK':
+                  value = profileField.values?.[0] || '';
+                  break;
+
+                case 'DATE':
+                  value = {
+                    date: profileField.values?.[0] || '',
+                    intent: profileField.dateTimeIntents?.[0] || null,
+                  };
+                  break;
+
+                default:
+                  value = '';
+              }
+
+              rowData[fieldConfig.name] = value;
+            } else {
+              rowData[fieldConfig.name] = '';
+            }
+          }
+        });
+
+        return rowData;
+      }) || [];
 
   return (
     <>
@@ -346,104 +473,23 @@ const CustomProfileList = ({
             </ToolbarButton>
           </Box>
         </Stack>
-        <DataGrid
-          fluid
+        <Box
           sx={{
-            minHeight: 300,
-            '& .MuiDataGrid-virtualScroller': {
-              minHeight: 300,
-              overflow: 'hidden',
-            },
-            '& .MuiTablePagination-select': {
-              paddingLeft: '1rem',
-            },
+            display: 'flex',
+            flexDirection: 'column',
+            flexGrow: 1,
+            m: '16px 32px 48px 32px ',
+            minHeight: 0,
           }}
-          controller={controller}
-          dataset={profiles.filter(
-            (profile) =>
-              profile.fields &&
-              getValues(profile).some(
-                (value) => value && value?.includes(searchPhrase),
-              ),
-          )}
-          onRecordClick={handleRecordClick}
         >
-          {profileTypeFields
-            .filter((profileTypeField) =>
-              filters.includes(profileTypeField.identifier),
-            )
-            .map((field) => (
-              <Data
-                key={field.identifier}
-                name={field.name}
-                value={(data) => {
-                  const record = data.fields?.find(
-                    (profileField) =>
-                      field.identifier ===
-                      profileField.profileTypeFieldIdentifier,
-                  );
-
-                  if (record) {
-                    switch (field.fieldType) {
-                      case 'TEXT':
-                      case 'NUMBER':
-                      case 'BOOLEAN':
-                      case 'LONG_TEXT': {
-                        return (
-                          record.values?.[0] || record.values?.[0]?.value || ''
-                        );
-                      }
-                      case 'MULTI_SELECT':
-                      case 'PICK_LIST': {
-                        return (
-                          record.references
-                            ?.map((item) => item.displayValue)
-                            .join(', ') ||
-                          record.values?.join(', ') ||
-                          ''
-                        );
-                      }
-                      case 'RELATIONSHIP': {
-                        return record.references
-                          ?.map((item) => item.displayValue)
-                          .join(', ');
-                      }
-                      case 'HYPERLINK': {
-                        const link =
-                          record.values?.[0] || record.values?.[0]?.value || '';
-                        if (!link) return '';
-                        return (
-                          <StyledLink
-                            href={link.startsWith('http') ? link : `//${link}`}
-                            target="_blank"
-                            onClick={(event) => event.stopPropagation()}
-                          >
-                            {link}
-                          </StyledLink>
-                        );
-                      }
-                      case 'DATE': {
-                        const date =
-                          record.values?.[0] || record.values?.[0]?.value || '';
-                        if (!date) return '';
-                        return (
-                          <DateLabel
-                            date={date}
-                            dueDateIntent={record.dateTimeIntents[0]}
-                          />
-                        );
-                      }
-                      default: {
-                        return '';
-                      }
-                    }
-                  }
-
-                  return '';
-                }}
-              />
-            ))}
-        </DataGrid>
+          <ReusableDataGrid
+            columns={columns}
+            rows={rows}
+            apiRef={apiRef}
+            onRecordClick={handleRecordClick}
+            showSearch={false}
+          />
+        </Box>
       </ViewLayout>
       <Dialog
         open={importPopupOpen}

@@ -131,7 +131,7 @@ const CreateProfileModal = ({
               <CancelButton onClick={closeModal}>Cancel</CancelButton>
               <Box m={1} />
               <ConfirmButton type="submit" disabled={false}>
-                {isCreatingNewField ? `Create` : 'Update'}
+                Save
               </ConfirmButton>
             </Grid>
           </TemplateForm>

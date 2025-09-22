@@ -38,6 +38,7 @@ import {
   useSensors,
 } from '@dnd-kit/core';
 import { TaskScrollVericleLine } from '../../task/styled';
+import { snapCenterToCursor } from '@dnd-kit/modifiers';
 
 const TasksHeader = ({
   bulkEditEnabled,
@@ -55,14 +56,11 @@ const TasksHeader = ({
     useSensor(KeyboardSensor),
     useSensor(TouchSensor),
   );
-  const dropDirectionRef = useRef(null);
   const taskList = useSelector(currentTaskListSelector);
   const currentUser = useSelector(userProfileSelector);
   const currentOrganization = useSelector(selectedUserOrganizationSelector);
   const [activeTaskHeader, setActiveTaskHeader] = useState(null);
   const [dragDropDisabled, setDragDropDisabled] = useState(false);
-  const [isHoveringFirstColumnRightZone, setIsHoveringFirstColumnRightZone] =
-    useState(false);
   const [hoveredIndex, setHoveredIndex] = useState(null);
   const {
     columns,
@@ -107,37 +105,25 @@ const TasksHeader = ({
   };
   const onDragMove = (column) => {
     setHoveredIndex(column.over?.data?.current?.index);
-    if (dropDirectionRef?.current) {
-      setIsHoveringFirstColumnRightZone(
-        dropDirectionRef?.current === 'right' ? true : false,
-      );
-    } else {
-      setIsHoveringFirstColumnRightZone(false);
-    }
   };
 
   const onDragEnd = useCallback(
     (column) => {
       setActiveTaskHeader(null);
-      setIsHoveringFirstColumnRightZone(false);
       setHoveredIndex(null);
+      const activeIndex = column.active?.data?.current?.index;
+      const overIndex = column.over?.data?.current?.index;
       if (
         !column.over ||
         !column.over?.data?.current ||
-        column.active?.data?.current?.index ===
-          column.over?.data?.current?.index
+        activeIndex === overIndex
       ) {
         return;
       }
       const newOrder = reorderColumns(
         columns.filter((f) => f.isChecked),
-        column.active?.data?.current?.index,
-        dropDirectionRef?.current === 'left'
-          ? 0
-          : column.active?.data?.current?.index <=
-            column.over?.data?.current?.index
-          ? column.over?.data?.current?.index
-          : column.over?.data?.current?.index + 1,
+        activeIndex,
+        overIndex,
       );
       if (newOrder) {
         setColumns([
@@ -207,8 +193,8 @@ const TasksHeader = ({
           tasksHeaderTextColor={tasksHeaderTextColorItem?.value}
           dragDropDisabled={dragDropDisabled}
           setDragDropDisabled={setDragDropDisabled}
-          dropDirectionRef={dropDirectionRef}
           hoveredIndex={hoveredIndex}
+          activeIndex={activeTaskHeader?.current?.index}
         />
       );
     },
@@ -222,8 +208,8 @@ const TasksHeader = ({
       handleResizeColumn,
       dragDropDisabled,
       setDragDropDisabled,
-      dropDirectionRef,
       hoveredIndex,
+      activeTaskHeader,
     ],
   );
 
@@ -275,7 +261,10 @@ const TasksHeader = ({
           )}
           <Box ml="1px" />
           <TaskScrollVericleLine
-            isHoveringFirstColumnRightZone={isHoveringFirstColumnRightZone}
+            highlightFirstColumnRightBorder={
+              activeTaskHeader?.current?.index > hoveredIndex &&
+              hoveredIndex === 1
+            }
             style={{ marginLeft: '-1.0px' }}
           >
             &nbsp;
@@ -296,7 +285,7 @@ const TasksHeader = ({
           )
           .map((c, index) => renderColumn(c, index + 1))}
       </SortHeaderRow>
-      <DragOverlay>
+      <DragOverlay modifiers={[snapCenterToCursor]}>
         {activeTaskHeader && (
           <ColumnSortHeader
             label={activeTaskHeader?.current?.label}
@@ -308,6 +297,7 @@ const TasksHeader = ({
             dragDropDisabled={dragDropDisabled}
             setDragDropDisabled={setDragDropDisabled}
             hoveredIndex={hoveredIndex}
+            activeIndex={activeTaskHeader?.current?.index}
           />
         )}
       </DragOverlay>

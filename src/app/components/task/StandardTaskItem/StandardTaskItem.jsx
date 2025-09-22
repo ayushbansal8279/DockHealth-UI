@@ -15,6 +15,7 @@ import { openDrawer } from 'actions/task-drawer-actions';
 import { storeAsCurrentTask, loadSubTasks } from 'actions/task-actions';
 import TaskComments from 'components/tasklist/TaskComments/TaskComments';
 import { taskLookupSelector } from 'selectors/task-details-selectors';
+import { useSubtaskQuickAddState } from 'hooks/useSubtaskQuickAdd';
 import * as TaskActions from 'actions/task-actions';
 // import { taskDetailsSelector } from 'selectors/list-details-selectors';
 import { CollapseContext } from 'views/list-details/VirtualTaskList/VirtualTaskList';
@@ -92,8 +93,9 @@ const Task = React.memo(
       searchMetaData = {},
       subTasksCount = 0,
       taskList,
-      subtaskQuickAddOpen,
     } = task || {};
+
+    const subtaskQuickAddOpen = useSubtaskQuickAddState(taskIdentifier);
 
     const { innerRef, draggableProps, dragHandleProps } = draggableProvided;
     const { highlightedValue } = restProps;
@@ -277,6 +279,7 @@ const Task = React.memo(
             updateWorkflowStatus={taskActions.updateWorkflowStatus}
             isCompletedGroup={isCompletedGroup}
             subtasksDisabled={subtasksDisabled}
+            subtaskQuickAddOpen={subtaskQuickAddOpen}
             origin={origin}
             isSelectedByHighlighted={
               highlightedTasksParentIdentifier &&

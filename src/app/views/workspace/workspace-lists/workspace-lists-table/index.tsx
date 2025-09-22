@@ -23,8 +23,9 @@ import Tooltip from "@/app/components/common/Tooltip/Tooltip";
 import { createTaskListPath } from "@/app/routing/helpers/paths";
 import { WorkspaceContainer } from "@/app/views/workspaces/workspace-home/styled";
 import { AssignMemberIconContainer, BulkContainer, StyledListLink } from "./styled";
+import ReusableDataGrid from '@/app/components/custom-profile/CustomProfilesList/DataGrid/DataGrid';
 
-const WorkspaceListTable = ({ searchTerm }: { searchTerm: string }) => {
+const WorkspaceListTable = () => {
   const dispatch = useDispatch();
   const history = useHistory();
 
@@ -36,26 +37,25 @@ const WorkspaceListTable = ({ searchTerm }: { searchTerm: string }) => {
     selectableItems: lists,
     isListChecked,
     toggleItem,
-    toggleAllItems
+    toggleAllItems,
   } = listContext;
 
   const renderCheckboxColumnHeader = ({ isListChecked, onListSelect }) => (
     <BulkContainer>
-      <Checkbox 
-        isChecked={isListChecked} 
-        onClick={onListSelect} 
-      />
+      <Checkbox isChecked={isListChecked} onClick={onListSelect} />
     </BulkContainer>
   );
 
-  const refreshMembers = () => {}
+  const refreshMembers = () => {};
 
   const openAddUserModal = (list) => {
-    dispatch(openModal('InviteToList', {
-      list,
-      onMembersRefresh: refreshMembers,
-      workspaceIdentifier,
-    }))
+    dispatch(
+      openModal('InviteToList', {
+        list,
+        onMembersRefresh: refreshMembers,
+        workspaceIdentifier,
+      }),
+    );
   };
 
   const columns = [
@@ -87,15 +87,13 @@ const WorkspaceListTable = ({ searchTerm }: { searchTerm: string }) => {
         return (
           <StyledListLink
             onClick={() => {
-              history.push(
-                createTaskListPath(taskListIdentifier),
-              );
+              history.push(createTaskListPath(taskListIdentifier));
             }}
-          > 
+          >
             {listName}
           </StyledListLink>
-        )
-      }
+        );
+      },
     },
     {
       field: 'listType',
@@ -157,26 +155,20 @@ const WorkspaceListTable = ({ searchTerm }: { searchTerm: string }) => {
       flex: 0.5,
       renderCell: ({ row }) => (
         <ListOptionsMenu list={row} workspaceIdentifier={workspaceIdentifier}>
-          <MoreVert color="primary" /> 
+          <MoreVert color="primary" />
         </ListOptionsMenu>
-      )
+      ),
     },
   ];
 
-  const filteredRows = useMemo(
-    () => getFilteredRows(lists, searchTerm, ['listName']),
-    [lists, searchTerm],
-  );
-
   return (
     <WorkspaceContainer>
-      <StyledDataGrid
+      <ReusableDataGrid
         columns={columns}
         getRowId={(row) => row.taskListIdentifier}
-        rows={filteredRows}
+        rows={lists ?? []}
         rowHeight={40}
         headerHeight={45}
-        autoHeight
         hideFooterSelectedRowCount
       />
     </WorkspaceContainer>

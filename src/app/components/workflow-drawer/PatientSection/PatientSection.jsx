@@ -239,7 +239,10 @@ const PatientSection = ({
       pathname: `/core/patient/${selectedPatient.patientIdentifier}`,
       state: { from: search ? pathname + search : pathname },
     });
-    localStorage.setItem('navigation-from', search ? pathname + search : pathname);
+    sessionStorage.setItem(
+      'navigation-from',
+      search ? pathname + search : pathname,
+    );
   };
 
   return (
