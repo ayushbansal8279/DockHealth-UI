@@ -156,23 +156,6 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
       return updateStateCallback(state, updateTaskFromAction);
     }
 
-    case ActionTypes.OPEN_QUICK_ADD_SUBTASK_INPUT: {
-      const { taskIdentifier } = action;
-
-      return updateStateCallback(state, {
-        identifier: taskIdentifier,
-        subtaskQuickAddOpen: true,
-      });
-    }
-
-    case ActionTypes.CLOSE_QUICK_ADD_SUBTASK_INPUT: {
-      const { taskIdentifier } = action;
-
-      return updateStateCallback(state, {
-        identifier: taskIdentifier,
-        subtaskQuickAddOpen: false,
-      });
-    }
 
     case ActionTypes.TASK_ATTACHMENT_ADDED: {
       const { taskAttachment, taskIdentifier } = action;
