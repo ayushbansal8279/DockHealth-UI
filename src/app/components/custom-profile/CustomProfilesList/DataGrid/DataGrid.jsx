@@ -94,7 +94,7 @@ const ReusableDataGrid = ({
       columns={columns}
       rows={rows}
       getRowId={getRowId}
-      rowCount={rowCount ?? rows.length}
+      rowCount={rowCount ?? rows?.length}
       headerHeight={35}
       pagination
       showColumnRightBorder
