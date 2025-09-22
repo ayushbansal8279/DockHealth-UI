@@ -75,7 +75,7 @@ const TaskItemIcons = ({
           )
         ) : (
           <LabelContainer>
-            <GridImg item xs={12} matched={matchLabels}>
+            <GridImg item size={12} matched={matchLabels}>
               <Tooltip
                 hideTooltip={
                   restrictions?.labels ===
@@ -107,7 +107,7 @@ const TaskItemIcons = ({
       ) : null}
       {attachments ? (
         <FilesContainer>
-          <GridImg item xs={12} matched={matchAttachments}>
+          <GridImg item size={12} matched={matchAttachments}>
             <Tooltip
               placement="top"
               title={

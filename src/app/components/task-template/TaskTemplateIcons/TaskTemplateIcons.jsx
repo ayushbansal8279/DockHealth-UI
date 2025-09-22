@@ -80,7 +80,7 @@ const TaskTemplateIcons = ({
           )
         ) : (
           <LabelContainer>
-            <GridImg item xs={12} matched={matchLabels}>
+            <GridImg item size={12} matched={matchLabels}>
               <Tooltip placement="top" title="Add Label">
                 <button
                   disabled={
@@ -101,7 +101,7 @@ const TaskTemplateIcons = ({
       ) : null}
       {attachments ? (
         <FilesContainer>
-          <GridImg item xs={12} matched={matchAttachments}>
+          <GridImg item size={12} matched={matchAttachments}>
             <Tooltip
               placement="top"
               title={

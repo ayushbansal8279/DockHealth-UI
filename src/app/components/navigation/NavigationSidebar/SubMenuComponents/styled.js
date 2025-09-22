@@ -114,13 +114,6 @@ export const SpacingContainer = styled.div`
 
 // Profile submenu
 export const ProfileSubmenuContainer = styled.div`
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
-  height: 100%;
-  width: 100%;
   padding: ${spacing.regular} 0;
 `;
 

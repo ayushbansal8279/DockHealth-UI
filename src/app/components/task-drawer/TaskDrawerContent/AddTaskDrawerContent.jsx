@@ -191,7 +191,7 @@ const AddTaskDrawerContent = (props) => {
     return (
       <Grid
         item
-        xs={12}
+        size={12}
         style={{
           display: 'flex',
           justifyContent: 'space-between',
@@ -237,7 +237,7 @@ const AddTaskDrawerContent = (props) => {
             groups={groups}
             slectedListIdentifier={slectedListIdentifier}
           />
-          <Grid item xs={12} style={styleFullRow(isMobile)}>
+          <Grid item size={12} style={styleFullRow(isMobile)}>
             <TaskDescription
               addTaskDrawer
               isClicked={isClicked}
@@ -246,18 +246,18 @@ const AddTaskDrawerContent = (props) => {
             />
           </Grid>
           {selectedTask?.sourceMessage && (
-            <Grid item xs={12} style={styleEmailRow(isMobile)}>
+            <Grid item size={12} style={styleEmailRow(isMobile)}>
               <TaskDrawerEmailBodyContainer />
             </Grid>
           )}
-          <Grid item xs={12} mb={3} style={styleFullRow(isMobile)}>
+          <Grid item size={12} mb={3} style={styleFullRow(isMobile)}>
             <TaskDetails
               addTaskDrawer
               taskDetail={details}
               setTaskDetail={setDetails}
             />
           </Grid>
-          <Grid item xs={12} ml={3} mb={1} style={styleRightColumn(isMobile)}>
+          <Grid item size={12} ml={3} mb={1} style={styleRightColumn(isMobile)}>
             <AssignedToSection
               addTaskDrawer
               setAddTaskAssignees={setAddTaskAssignees}
@@ -265,14 +265,14 @@ const AddTaskDrawerContent = (props) => {
               disabled={slectedListIdentifier === ''}
             />
           </Grid>
-          <Grid item xs={12} mb={1} style={styleLeftColumn(isMobile)}>
+          <Grid item size={12} mb={1} style={styleLeftColumn(isMobile)}>
             <PatientSection
               addTaskDrawer
               setPatientIdentifier={setPatientIdentifier}
               quickAddPatientEnabled={quickAddPatientEnabled}
             />
           </Grid>
-          <Grid item xs={12} mb={1} style={styleLeftColumn(isMobile)}>
+          <Grid item size={12} mb={1} style={styleLeftColumn(isMobile)}>
             <div>
               <StartDateSection
                 addTaskDrawer
@@ -282,7 +282,7 @@ const AddTaskDrawerContent = (props) => {
               />
             </div>
           </Grid>
-          <Grid item xs={12} style={styleLeftColumn(isMobile)}>
+          <Grid item size={12} style={styleLeftColumn(isMobile)}>
             <div>
               <DueDateSection
                 addTaskDrawer
@@ -292,10 +292,10 @@ const AddTaskDrawerContent = (props) => {
               />
             </div>
           </Grid>
-          <Grid item xs={12} style={styleLeftColumn(isMobile)}>
+          <Grid item size={12} style={styleLeftColumn(isMobile)}>
             <PrioritySection addTaskDrawer setPriority={setPriority} />
           </Grid>
-          <Grid item xs={12} ml={3} style={styleRightColumn(isMobile)}>
+          <Grid item size={12} ml={3} style={styleRightColumn(isMobile)}>
             <div>
               <StatusSection
                 addTaskDrawer

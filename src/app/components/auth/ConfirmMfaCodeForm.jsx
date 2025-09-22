@@ -57,11 +57,11 @@ const ConfirmMFACodeForm = (props) => {
   return (
     <>
       <Grid container>
-        <Grid item xs={12} alignItems="center" alignContent="center">
+        <Grid item size={12} alignItems="center" alignContent="center">
           <DockLogoImage />
           <Spacing vertical={6} />
         </Grid>
-        <Grid item xs={12}>
+        <Grid item size={12}>
           <form
             style={{ width: '100%' }}
             onSubmit={formMethods.handleSubmit(onSubmit)}

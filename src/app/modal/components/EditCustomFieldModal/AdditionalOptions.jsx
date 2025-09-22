@@ -18,7 +18,7 @@ const AdditionalOptions = ({ options }) => {
           />
         </CheckboxContainer>
       </Grid>
-      <Grid item xs={6}>
+      <Grid item size={6}>
         <Box alignItems="center" display="flex" height="100%">
           <AdditionalOptionLabel>{label}</AdditionalOptionLabel>
         </Box>

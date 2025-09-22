@@ -33,10 +33,10 @@ export default function IntegrationFields({
 
   return (
     <Grid container spacing={2} alignItems="center" sx={{ mb: 0.5 }}>
-      <Grid item xs={12} md={4}>
+      <Grid item size={12} md={4}>
         <Typography>{label}</Typography>
       </Grid>
-      <Grid item xs={12} md={8}>
+      <Grid item size={12} md={8}>
         {editable ? (
           <TextField
             value={value}

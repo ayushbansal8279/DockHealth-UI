@@ -40,7 +40,7 @@ const AddExternalUser = (props) => {
     <form onSubmit={handleSubmit(onAdd)}>
       <FormProvider {...formContext}>
         <Grid container spacing={2}>
-          <Grid item xs={6}>
+          <Grid item size={6}>
             <FormInput
               required
               label="First"
@@ -48,7 +48,7 @@ const AddExternalUser = (props) => {
               autoFocus={!initialValues.firstName}
             />
           </Grid>
-          <Grid item xs={6}>
+          <Grid item size={6}>
             <FormInput
               required
               label="Last"
@@ -56,7 +56,7 @@ const AddExternalUser = (props) => {
               autoFocus={!initialValues.lastName && initialValues.firstName}
             />
           </Grid>
-          <Grid item xs={12}>
+          <Grid item size={12}>
             <FormInput
               required
               label="Email Address"
