@@ -4,7 +4,12 @@ import { fontWeights, fontSizes } from 'styles/font';
 import palette from 'styles/palette';
 
 export const UsersTableContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: 32px;
   width: 100%;
+  height: 100%;
 
   && {
     &.MuiDataGrid-sortIcon {
@@ -16,15 +21,20 @@ export const UsersTableContainer = styled.div`
   }
 `;
 
+export const TableHeaderContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 16px;
+  width: 100%;
+`;
+
 export const StyledUsersTable = styled.div`
   display: flex;
   flex-direction: column;
-  margin-top: 12px;
-
-  & > div {
-    height: initial !important;
-    width: initial !important;
-  }
+  flex: 1;
+  min-height: 0;
 `;
 
 export const ListLoaderContainer = styled.div`

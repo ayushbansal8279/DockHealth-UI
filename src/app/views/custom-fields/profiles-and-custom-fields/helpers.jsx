@@ -87,20 +87,3 @@ export const getTemplateColumns = ({
   },
 ];
 
-export const textFieldSx = {
-  border: 'none',
-  height: '100%',
-  padding: 0,
-  width: '100%',
-  marginTop: 1,
-  '&::after, &::before': {
-    border: '0 !important',
-  },
-  '& .MuiInputBase-input': {
-    border: 'none',
-    boxShadow: 'none',
-    background: 'white',
-    fontSize: '0.875rem',
-    padding: '8px 8px 8px 12px',
-  },
-};
