@@ -41,9 +41,8 @@ const CustomFieldAutoComplete = ({
         required: 'This field is required',
         validate: (value) => {
           if (multiple) {
-            return value && Array.isArray(value) && value.length > 0
-              ? true
-              : 'This field is required';
+            const arr = Array.isArray(value) ? value : value ? [value] : [];
+            return arr.length > 0 ? true : 'This field is required';
           } else {
             return value ? true : 'This field is required';
           }
@@ -160,7 +159,11 @@ const CustomFieldAutoComplete = ({
     if (!profiles || !currentValue) return multiple ? [] : null;
 
     if (multiple) {
-      const valueArray = Array.isArray(currentValue) ? currentValue : [];
+      const valueArray = Array.isArray(currentValue)
+        ? currentValue
+        : currentValue
+        ? [currentValue]
+        : [];
       return profiles.filter((profile) =>
         valueArray.includes(profile.profile.identifier),
       );
