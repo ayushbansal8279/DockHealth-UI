@@ -160,12 +160,12 @@ const CustomProfileList = ({
 
     const fetchPromise = fetchProfiles
       ? fetchProfiles()
-          .then(removeDuplicatesByIdentifier)  
+          .then(removeDuplicatesByIdentifier)
           .then((data) => {
-              setAllProfiles(data);
-              setProfiles(data);
-              setUseLocalFiltering(data.length <= DATASET_SIZE_THRESHOLD);
-            })
+            setAllProfiles(data);
+            setProfiles(data);
+            setUseLocalFiltering(data.length <= DATASET_SIZE_THRESHOLD);
+          })
       : getAllProfiles(profileTypeIdentifier)
           .then(removeDuplicatesByIdentifier)
           .then((data) => {
@@ -329,8 +329,26 @@ const CustomProfileList = ({
     })
     .filter(Boolean);
 
+  const filteredProfiles =
+    profiles?.filter((profile) => {
+      const matchesSearch = profile.fields?.some((field) =>
+        (field.values || []).some(
+          (val) =>
+            typeof val === 'string' &&
+            val.toLowerCase().includes(searchPhrase.toLowerCase()),
+        ),
+      );
+
+      const matchesStatus = useLocalFiltering
+        ? true
+        : profileStatus === ProfileStatus.ALL ||
+          profile.profileStatus === profileStatus;
+
+      return matchesSearch && matchesStatus;
+    }) || [];
+
   const rows =
-    profiles
+    filteredProfiles
       ?.filter((profile) =>
         profile.fields?.some((field) =>
           (field.values || []).some(
@@ -460,7 +478,9 @@ const CustomProfileList = ({
         <Stack
           direction="row"
           justifyContent="space-between"
-          sx={{ m: !showHeader ? '0px 32px 0px 32px ' : '16px 32px 0px 32px ' }}
+          sx={{
+            m: !showHeader ? '0px 32px 0px 32px ' : '16px 32px 0px 32px ',
+          }}
         >
           <Box display="flex" alignItems="start" my={!showHeader ? 0 : 2}>
             <Box display="flex" alignItems="center" my={0.4} mr={2}>
@@ -573,20 +593,7 @@ const CustomProfileList = ({
         >
           <ReusableDataGrid
             columns={columns}
-            rows={profiles.filter((profile) => {
-              const matchesSearch =
-                profile.fields &&
-                getValues(profile).some(
-                  (value) => value && value?.includes(searchPhrase),
-                );
-          
-              const matchesStatus = useLocalFiltering
-                ? true
-                : profileStatus === ProfileStatus.ALL ||
-                  profile.profileStatus === profileStatus;
-          
-              return matchesSearch && matchesStatus;
-            })}
+            rows={rows}
             loading={loading}
             apiRef={apiRef}
             onRecordClick={handleRecordClick}
