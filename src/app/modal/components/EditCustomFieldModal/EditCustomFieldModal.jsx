@@ -160,7 +160,12 @@ const EditCustomFieldModal = ({
     defaultValues: useMemo(() => {
       const baseCustomField = isCreatingNewField
         ? {
-            fieldCategoryType: type === 'PATIENT' ? Category.OTHER_INFO : '',
+            fieldCategoryType:
+              type === 'PATIENT'
+                ? Category.OTHER_INFO
+                : type === 'PROVIDER'
+                ? 'PROVIDER_OTHER'
+                : '',
           }
         : {
             ...customField,
