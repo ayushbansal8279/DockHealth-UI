@@ -213,7 +213,7 @@ const TaskItemDescription = ({
                         className="fr-deletable fr-tribute"
                       >
                         <span data={currentMention.identifier}>
-                          @{currentMention.name}{' '}
+                          #{currentMention.name}{' '}
                         </span>
                       </PatientMention>
                     );

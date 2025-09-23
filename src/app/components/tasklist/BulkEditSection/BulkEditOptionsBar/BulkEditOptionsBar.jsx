@@ -607,7 +607,12 @@ const BulkEditOptionsBar = ({
         includeAttachmentsForDuplication,
         includePatientForDuplication: true,
       }).then(({ transactionIdentifier, tasks: duplicatedTasks }) => {
-        dispatch(bulkEditDuplicateTasksSuccess(duplicatedTasks));
+        dispatch(
+          bulkEditDuplicateTasksSuccess(
+            duplicatedTasks,
+            allSelectedTasksIdentifiers,
+          ),
+        );
 
         if (refreshTasks && typeof refreshTasks === 'function') {
           refreshTasks();

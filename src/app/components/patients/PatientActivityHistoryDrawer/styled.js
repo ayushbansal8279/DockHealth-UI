@@ -2,9 +2,7 @@
 import styled from 'styled-components';
 import { fontWeights, fontSizes } from 'styles/font';
 import palette from 'styles/palette';
-import spacing from 'styles/spacing';
-import Drawer from '@mui/material/Drawer';
-import { TextField } from '@mui/material';
+import { TextField, Drawer } from '@mui/material';
 
 export const MoreActinsWrapper = styled.div`
   display: flex;
@@ -21,7 +19,6 @@ export const TitleName = styled.p`
   font-size: ${fontSizes.regular};
   font-weight: ${fontWeights.regularPlus};
   font-family: 'Outfit', sans-serif;
-  // text-transform: uppercase;
   padding: 5px 0 5px 10px;
 `;
 

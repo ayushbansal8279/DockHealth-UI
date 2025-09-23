@@ -16,6 +16,7 @@ import {
   SectionWrapper,
   Label,
   AddSectionWrapper,
+  DisabledRepeatHint,
 } from './styled';
 import RecurringSection from './RecurringSection';
 import { DueDateIntent } from '@/app/helpers/task-helpers';
@@ -37,9 +38,11 @@ const DueDatePicker = ({
   allSelectedTasksIdentifiers,
   allSelectedWorkflowIdentifiers,
   bulkEditDueDate = false,
+  onClearDateClick,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
-  const [recurringSectionVisible, showRecurringSection] = useBoolean(recurring);
+  const [recurringSectionVisible, showRecurringSection, hideRecurringSection] =
+    useBoolean(recurring);
   const [dateMaskValue, setDateMaskValue] = useState(
     selectedDate ? moment(selectedDate).format(DATE_MASK_FORMAT) : null,
   );
@@ -129,6 +132,19 @@ const DueDatePicker = ({
     handleDatePick(formattedDate);
   };
 
+  const handleClearDateClick = () => {
+    if (onClearDateClick) {
+      onClearDateClick(() => {
+        onDateChange(null);
+        setTimeMaskValue(null);
+      });
+    } else {
+      // Fallback to direct clear if no callback provided
+      onDateChange(null);
+      setTimeMaskValue(null);
+    }
+  };
+
   return (
     <ContentWrapper>
       <QuickAddSectionWrapper>
@@ -198,9 +214,18 @@ const DueDatePicker = ({
           ) : (
             <>
               <SectionWrapper>
-                <PlusButton type="button" onClick={handleShowRecurringSection}>
+                <PlusButton
+                  type="button"
+                  onClick={handleShowRecurringSection}
+                  disabled={!selectedDate}
+                >
                   Repeat
                 </PlusButton>
+                {!selectedDate && (
+                  <DisabledRepeatHint>
+                    Select a date to enable repeating options
+                  </DisabledRepeatHint>
+                )}
               </SectionWrapper>
             </>
           )}
@@ -213,7 +238,10 @@ const DueDatePicker = ({
             onClick={() => {
               onDateChange(null);
               setTimeMaskValue(null);
+              hideRecurringSection();
             }}
+            disabled={!selectedDate}
+            theme={!selectedDate ? 'light' : ''}
           >
             Clear Date
           </PopoverBottomBar.Button>

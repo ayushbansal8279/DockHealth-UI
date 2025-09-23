@@ -23,12 +23,15 @@ import { getFilteredRows } from "@/app/helpers/workspace-helpers";
 import { WorkspaceContainer } from "@/app/views/workspaces/workspace-home/styled";
 import { organizationWorkspaceLabelSelector } from "@/app/selectors/organization-selectors";
 import { BulkContainer, ListContainer, ListEntryContainer } from "./styled";
+import ReusableDataGrid from '@/app/components/custom-profile/CustomProfilesList/DataGrid/DataGrid';
 
 const TypedCheckbox = Checkbox as React.FC<CheckboxProps>;
 
-const WorkspaceUserTable = ({ searchTerm }: { searchTerm: string }) => {
+const WorkspaceUserTable = () => {
   const dispatch = useDispatch();
-  const { identifier: workspaceIdentifier } = useParams<{ identifier: string }>();
+  const { identifier: workspaceIdentifier } = useParams<{
+    identifier: string;
+  }>();
   const workspaceLabel = useSelector(organizationWorkspaceLabelSelector);
 
   const userContext = useContext(BulkEditContext);
@@ -36,21 +39,23 @@ const WorkspaceUserTable = ({ searchTerm }: { searchTerm: string }) => {
     selectableItems: users,
     isListChecked,
     toggleItem,
-    toggleAllItems
+    toggleAllItems,
   } = userContext;
 
-  const renderCheckboxColumnHeader = ({ isListChecked, onListSelect }: CheckboxHeaderProps) => (
+  const renderCheckboxColumnHeader = ({
+    isListChecked,
+    onListSelect,
+  }: CheckboxHeaderProps) => (
     <BulkContainer>
-      <TypedCheckbox 
-        isChecked={isListChecked} 
-        onClick={onListSelect} 
-      />
+      <TypedCheckbox isChecked={isListChecked} onClick={onListSelect} />
     </BulkContainer>
   );
 
   const changeUserRole = ({ userIdentifier, role }) => {
-    dispatch(changeWorkspaceUserRole({ workspaceIdentifier, userIdentifier, role }));
-  }
+    dispatch(
+      changeWorkspaceUserRole({ workspaceIdentifier, userIdentifier, role }),
+    );
+  };
 
   const columns: GridColDef<IWorkspaceUser>[] = [
     // {
@@ -115,13 +120,8 @@ const WorkspaceUserTable = ({ searchTerm }: { searchTerm: string }) => {
           />
         );
       },
-    }
+    },
   ];
-
-  const filteredRows = useMemo(
-    () => getFilteredRows<IWorkspaceUser>(users, searchTerm, ['name', 'email']),
-    [users, searchTerm],
-  );
 
   return (
     <WorkspaceContainer>
@@ -135,19 +135,18 @@ const WorkspaceUserTable = ({ searchTerm }: { searchTerm: string }) => {
         </ListContainer>
       ) : (
         <RoleContextProvider contextType="workspace">
-          <StyledDataGrid
+          <ReusableDataGrid
             columns={columns}
             getRowId={(row) => row.identifier}
-            rows={filteredRows}
+            rows={users ?? []}
             rowHeight={40}
             headerHeight={45}
-            autoHeight
             hideFooterSelectedRowCount
           />
         </RoleContextProvider>
       )}
     </WorkspaceContainer>
-  )
-}
+  );
+};
 
 export default WorkspaceUserTable;

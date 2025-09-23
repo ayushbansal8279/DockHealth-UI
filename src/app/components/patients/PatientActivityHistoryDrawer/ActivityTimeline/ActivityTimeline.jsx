@@ -19,7 +19,6 @@ import {
   Container,
   DateAndTime,
   FilterIcons,
-  MembersContainer,
   NotesHistoryContainer,
   PatientNoteDescription,
   TimelineCenterIcon,
@@ -28,6 +27,7 @@ import {
   TitleName,
   WorkflowIconContainer,
   PatientNoteTooltipText,
+  ActivityLoader,
 } from './styled';
 import TaskAltIcon from '@mui/icons-material/TaskAlt';
 import { OutfitTypography } from '@/app/styles/theme';
@@ -39,7 +39,7 @@ import TemplatesIcon from 'img/navigation/TemplatesIcon';
 import { useActivityTimeline } from './hooks';
 import InfoIcon from '@mui/icons-material/Info';
 
-const ActivityTimeline = ({ activities }) => {
+const ActivityTimeline = ({ activities, isLoading }) => {
   const {
     sortedActivities,
     selectedFilters,
@@ -149,304 +149,314 @@ const ActivityTimeline = ({ activities }) => {
       </Box>
 
       <Timeline sx={{ padding: 0, ml: '-15px' }}>
-        {sortedActivities.map((activity, index) => (
-          <TimelineItem key={index} sx={{ height: 'auto' }}>
-            <TimelineLeftSideContent>
-              <DateAndTime>
-                {format(parseISO(activity.activityDateTime), 'MMM dd, yyyy')}
-              </DateAndTime>
-              <DateAndTime>
-                {format(parseISO(activity.activityDateTime), '@ h:mma')}
-              </DateAndTime>
-            </TimelineLeftSideContent>
+        {isLoading &&
+          new Array(10)
+            .fill(1)
+            .map((_, index) => <ActivityLoader key={index} />)}
+        {!isLoading &&
+          sortedActivities.map((activity, index) => (
+            <TimelineItem key={index} sx={{ height: 'auto' }}>
+              <TimelineLeftSideContent>
+                <DateAndTime>
+                  {format(parseISO(activity.activityDateTime), 'MMM dd, yyyy')}
+                </DateAndTime>
+                <DateAndTime>
+                  {format(parseISO(activity.activityDateTime), '@ h:mma')}
+                </DateAndTime>
+              </TimelineLeftSideContent>
 
-            <TimelineSeparator>
-              <TimelineCenterIcon>
-                {iconMapping[activity.targetType] || <Assignment />}
-              </TimelineCenterIcon>
-              {index !== sortedActivities.length - 1 && <TimelineCenterLine />}
-            </TimelineSeparator>
+              <TimelineSeparator>
+                <TimelineCenterIcon>
+                  {iconMapping[activity.targetType] || <Assignment />}
+                </TimelineCenterIcon>
+                {index !== sortedActivities.length - 1 && (
+                  <TimelineCenterLine />
+                )}
+              </TimelineSeparator>
 
-            <TimelineContent sx={{ flex: 0.83, mt: '-13px', ml: '-12px' }}>
-              <ActivityWrapper>
-                <CardContent sx={{ p: 1, '&:last-child': { pb: 2 } }}>
-                  {activity.targetType === 'ATTACHMENT' && (
-                    <>
-                      <ActivityName>
-                        {activityLabels[activity?.actionType] || ''}
-                      </ActivityName>
-                      <Box mb={0.5} />
-                      {(activity.isGroupedAttachment
-                        ? activity.groupedAttachments
-                        : [activity]
-                      ).map((attachment, index) => (
-                        <Tooltip
-                          title={
-                            attachment?.description ||
-                            `${
-                              attachment?.contextualData?.state?.current || 'NA'
-                            } (current) ⟵
+              <TimelineContent sx={{ flex: 0.83, mt: '-13px', ml: '-12px' }}>
+                <ActivityWrapper>
+                  <CardContent sx={{ p: 1, '&:last-child': { pb: 2 } }}>
+                    {activity.targetType === 'ATTACHMENT' && (
+                      <>
+                        <ActivityName>
+                          {activityLabels[activity?.actionType] || ''}
+                        </ActivityName>
+                        <Box mb={0.5} />
+                        {(activity.isGroupedAttachment
+                          ? activity.groupedAttachments
+                          : [activity]
+                        ).map((attachment, index) => (
+                          <Tooltip
+                            title={
+                              attachment?.description ||
+                              `${
+                                attachment?.contextualData?.state?.current ||
+                                'NA'
+                              } (current) ⟵
                          ${
                            attachment?.contextualData?.state?.previous || 'NA'
                          } (previous)`
-                          }
-                        >
-                          <Container
-                            key={attachment.targetTypeIdentifier || index}
-                            onClick={() => {
-                              if (attachment.contextualData?.contentType) {
-                                openPreview(
-                                  attachment.contextualData,
-                                  attachment,
-                                );
-                              }
-                            }}
+                            }
                           >
-                            <AttachmentIcon
-                              contentType={
-                                attachment.contextualData?.contentType
-                              }
-                              fileType={attachment.contextualData?.fileType}
-                            />
-                            <OutfitTypography
-                              condensed
-                              variant="h4"
-                              weight="500"
-                              noWrap
+                            <Container
+                              key={attachment.targetTypeIdentifier || index}
+                              onClick={() => {
+                                if (attachment.contextualData?.contentType) {
+                                  openPreview(
+                                    attachment.contextualData,
+                                    attachment,
+                                  );
+                                }
+                              }}
                             >
-                              {attachment?.description ||
-                                attachment?.contextualData?.state?.current}
-                            </OutfitTypography>
-                          </Container>
-                        </Tooltip>
-                      ))}
-
-                      <ActivityDescription>
-                        <span>
-                          <strong>
-                            {activityPerformedType(activity?.actionType)}
-                          </strong>
-                          {activity.activityPerformedBy?.userName}
-                        </span>
-                      </ActivityDescription>
-                    </>
-                  )}
-                  {(activity.targetType === 'TASK' ||
-                    activity.targetType === 'TASK_GROUP') && (
-                    <>
-                      <ActivityName>
-                        {activityLabels[activity?.actionType] || ''}
-                      </ActivityName>
-                      <ActivityDescription>
-                        <Tooltip title={activity?.description}>
-                          <span>
-                            <strong>
-                              {activity?.targetType === 'TASK'
-                                ? 'Task Name: '
-                                : 'Workflow Name: '}
-                            </strong>
-                            {activity?.description}
-                          </span>
-                        </Tooltip>
-                        <Tooltip
-                          title={activity.contextualData?.taskListName || 'N/A'}
-                        >
-                          <span>
-                            <strong>List:</strong>{' '}
-                            {activity.contextualData?.taskListName || 'N/A'}
-                          </span>
-                        </Tooltip>
-                      </ActivityDescription>
-                      {activity?.contextualData?.assignedToName && (
-                        <ActivityDescription>
-                          <Tooltip
-                            title={activity?.contextualData?.assignedToName}
-                          >
-                            <span>
-                              <strong>Assigned To: </strong>
-                              {activity?.contextualData?.assignedToName}
-                            </span>
+                              <AttachmentIcon
+                                contentType={
+                                  attachment.contextualData?.contentType
+                                }
+                                fileType={attachment.contextualData?.fileType}
+                              />
+                              <OutfitTypography
+                                condensed
+                                variant="h4"
+                                weight="500"
+                                noWrap
+                              >
+                                {attachment?.description ||
+                                  attachment?.contextualData?.state?.current}
+                              </OutfitTypography>
+                            </Container>
                           </Tooltip>
-                          <span>
-                            <strong>Assigned By: </strong>
-                            {activity?.activityPerformedBy?.userName}
-                          </span>
-                        </ActivityDescription>
-                      )}
-                      {!activity?.contextualData?.assignedToName && (
+                        ))}
+
                         <ActivityDescription>
                           <span>
                             <strong>
                               {activityPerformedType(activity?.actionType)}
+                            </strong>
+                            {activity.activityPerformedBy?.userName}
+                          </span>
+                        </ActivityDescription>
+                      </>
+                    )}
+                    {(activity.targetType === 'TASK' ||
+                      activity.targetType === 'TASK_GROUP') && (
+                      <>
+                        <ActivityName>
+                          {activityLabels[activity?.actionType] || ''}
+                        </ActivityName>
+                        <ActivityDescription>
+                          <Tooltip title={activity?.description}>
+                            <span>
+                              <strong>
+                                {activity?.targetType === 'TASK'
+                                  ? 'Task Name: '
+                                  : 'Workflow Name: '}
+                              </strong>
+                              {activity?.description}
+                            </span>
+                          </Tooltip>
+                          <Tooltip
+                            title={
+                              activity.contextualData?.taskListName || 'N/A'
+                            }
+                          >
+                            <span>
+                              <strong>List:</strong>{' '}
+                              {activity.contextualData?.taskListName || 'N/A'}
+                            </span>
+                          </Tooltip>
+                        </ActivityDescription>
+                        {activity?.contextualData?.assignedToName && (
+                          <ActivityDescription>
+                            <Tooltip
+                              title={activity?.contextualData?.assignedToName}
+                            >
+                              <span>
+                                <strong>Assigned To: </strong>
+                                {activity?.contextualData?.assignedToName}
+                              </span>
+                            </Tooltip>
+                            <span>
+                              <strong>Assigned By: </strong>
+                              {activity?.activityPerformedBy?.userName}
+                            </span>
+                          </ActivityDescription>
+                        )}
+                        {!activity?.contextualData?.assignedToName && (
+                          <ActivityDescription>
+                            <span>
+                              <strong>
+                                {activityPerformedType(activity?.actionType)}
+                              </strong>{' '}
+                              {activity?.activityPerformedBy?.userName}
+                            </span>
+                          </ActivityDescription>
+                        )}
+                      </>
+                    )}
+                    {activity?.targetType === 'PATIENT_NOTE' && (
+                      <>
+                        <ActivityName>
+                          {activityLabels[activity?.actionType] || ''}
+                        </ActivityName>
+                        {activity?.actionType === 'UPDATE_PATIENT_NOTE' && (
+                          <ActivityDescription>
+                            <NotesHistoryContainer>
+                              <Tooltip
+                                placement={'left-start'}
+                                title={
+                                  <PatientNoteTooltipText>
+                                    {processMarkdownValue(
+                                      activity?.contextualData?.state?.current,
+                                    ) || 'N/A'}
+                                  </PatientNoteTooltipText>
+                                }
+                              >
+                                <PatientNoteDescription>
+                                  {processMarkdownValue(
+                                    activity?.contextualData?.state?.current,
+                                  )}
+                                </PatientNoteDescription>
+                              </Tooltip>
+                              <Tooltip title="More Info">
+                                <IconButton
+                                  sx={{ padding: '1px' }}
+                                  onClick={(e) =>
+                                    handleClick(e, activity?.contextualData)
+                                  }
+                                >
+                                  <InfoIcon fontSize="small" />
+                                </IconButton>
+                              </Tooltip>
+                            </NotesHistoryContainer>
+                            <Popover
+                              open={open}
+                              anchorEl={anchorEl}
+                              onClose={handleClose}
+                              anchorOrigin={{
+                                vertical: 'bottom',
+                                horizontal: 'center',
+                              }}
+                              transformOrigin={{
+                                vertical: 'top',
+                                horizontal: 'center',
+                              }}
+                              PaperProps={{
+                                sx: {
+                                  width: '475px',
+                                  maxWidth: '100%',
+                                },
+                              }}
+                            >
+                              <CommentContainer>
+                                <CommentDetails>
+                                  <strong>Current:</strong>
+                                  <CommentTextWrapper>
+                                    <CommentText>
+                                      {processMarkdownValue(
+                                        selectedData?.state?.current,
+                                      )}
+                                    </CommentText>
+                                  </CommentTextWrapper>
+                                </CommentDetails>
+                                <Divider />
+                                <CommentDetails>
+                                  <strong>Previous:</strong>
+                                  <CommentTextWrapper>
+                                    <CommentText>
+                                      {processMarkdownValue(
+                                        selectedData?.state?.previous,
+                                      )}
+                                    </CommentText>
+                                  </CommentTextWrapper>
+                                </CommentDetails>
+                              </CommentContainer>
+                            </Popover>
+                          </ActivityDescription>
+                        )}
+                        <ActivityDescription>
+                          <Tooltip
+                            placement={'left-start'}
+                            title={
+                              <PatientNoteTooltipText>
+                                {processMarkdownValue(activity.description) ||
+                                  'N/A'}
+                              </PatientNoteTooltipText>
+                            }
+                          >
+                            <PatientNoteDescription>
+                              {processMarkdownValue(activity.description)}
+                            </PatientNoteDescription>
+                          </Tooltip>
+                        </ActivityDescription>
+                        <ActivityDescription>
+                          <span>
+                            <strong>
+                              {activityPerformedType(activity?.actionType)}
+                            </strong>
+                            {activity?.activityPerformedBy?.userName}
+                          </span>
+                        </ActivityDescription>
+                      </>
+                    )}
+                    {activity.activityType === 'PATIENT' && (
+                      <>
+                        <ActivityName>
+                          {activity.description
+                            ? 'Patient Created'
+                            : 'Patient Updated'}
+                        </ActivityName>
+                        {activity.description && (
+                          <ActivityDescription>
+                            <Tooltip title={activity.description}>
+                              <span>
+                                <strong>Patient Name:</strong>{' '}
+                                {activity.description}
+                              </span>
+                            </Tooltip>
+                          </ActivityDescription>
+                        )}
+                        {Object.entries(activity.contextualData || {}).map(
+                          ([key, value]) =>
+                            value && (
+                              <>
+                                <ActivityDescription key={key}>
+                                  <Tooltip
+                                    title={`${key}: ${
+                                      value.current
+                                    } (current) ⟵ ${
+                                      value.previous || 'NA'
+                                    } (previous)`}
+                                  >
+                                    <span>
+                                      <strong>{key}:</strong> {value.current}
+                                    </span>
+                                  </Tooltip>
+                                </ActivityDescription>
+                              </>
+                            ),
+                        )}
+                        <ActivityDescription>
+                          <span>
+                            <strong>
+                              {[
+                                'UPDATE_PATIENT',
+                                'SAVE_PATIENT_META_DATA',
+                              ].includes(activity.actionType)
+                                ? 'Updated By:'
+                                : 'Created By:'}
                             </strong>{' '}
                             {activity?.activityPerformedBy?.userName}
                           </span>
                         </ActivityDescription>
-                      )}
-                    </>
-                  )}
-                  {activity?.targetType === 'PATIENT_NOTE' && (
-                    <>
-                      <ActivityName>
-                        {activityLabels[activity?.actionType] || ''}
-                      </ActivityName>
-                      {activity?.actionType === 'UPDATE_PATIENT_NOTE' && (
-                        <ActivityDescription>
-                          <NotesHistoryContainer>
-                            <Tooltip
-                              placement={'left-start'}
-                              title={
-                                <PatientNoteTooltipText>
-                                  {processMarkdownValue(
-                                    activity?.contextualData?.state?.current,
-                                  ) || 'N/A'}
-                                </PatientNoteTooltipText>
-                              }
-                            >
-                              <PatientNoteDescription>
-                                {processMarkdownValue(
-                                  activity?.contextualData?.state?.current,
-                                )}
-                              </PatientNoteDescription>
-                            </Tooltip>
-                            <Tooltip title="More Info">
-                              <IconButton
-                                sx={{ padding: '1px' }}
-                                onClick={(e) =>
-                                  handleClick(e, activity?.contextualData)
-                                }
-                              >
-                                <InfoIcon fontSize="small" />
-                              </IconButton>
-                            </Tooltip>
-                          </NotesHistoryContainer>
-                          <Popover
-                            open={open}
-                            anchorEl={anchorEl}
-                            onClose={handleClose}
-                            anchorOrigin={{
-                              vertical: 'bottom',
-                              horizontal: 'center',
-                            }}
-                            transformOrigin={{
-                              vertical: 'top',
-                              horizontal: 'center',
-                            }}
-                            PaperProps={{
-                              sx: {
-                                width: '475px',
-                                maxWidth: '100%',
-                              },
-                            }}
-                          >
-                            <CommentContainer>
-                              <CommentDetails>
-                                <strong>Current:</strong>
-                                <CommentTextWrapper>
-                                  <CommentText>
-                                    {processMarkdownValue(
-                                      selectedData?.state?.current,
-                                    )}
-                                  </CommentText>
-                                </CommentTextWrapper>
-                              </CommentDetails>
-                              <Divider />
-                              <CommentDetails>
-                                <strong>Previous:</strong>
-                                <CommentTextWrapper>
-                                  <CommentText>
-                                    {processMarkdownValue(
-                                      selectedData?.state?.previous,
-                                    )}
-                                  </CommentText>
-                                </CommentTextWrapper>
-                              </CommentDetails>
-                            </CommentContainer>
-                          </Popover>
-                        </ActivityDescription>
-                      )}
-                      <ActivityDescription>
-                        <Tooltip
-                          placement={'left-start'}
-                          title={
-                            <PatientNoteTooltipText>
-                              {processMarkdownValue(activity.description) ||
-                                'N/A'}
-                            </PatientNoteTooltipText>
-                          }
-                        >
-                          <PatientNoteDescription>
-                            {processMarkdownValue(activity.description)}
-                          </PatientNoteDescription>
-                        </Tooltip>
-                      </ActivityDescription>
-                      <ActivityDescription>
-                        <span>
-                          <strong>
-                            {activityPerformedType(activity?.actionType)}
-                          </strong>
-                          {activity?.activityPerformedBy?.userName}
-                        </span>
-                      </ActivityDescription>
-                    </>
-                  )}
-                  {activity.activityType === 'PATIENT' && (
-                    <>
-                      <ActivityName>
-                        {activity.description
-                          ? 'Patient Created'
-                          : 'Patient Updated'}
-                      </ActivityName>
-                      {activity.description && (
-                        <ActivityDescription>
-                          <Tooltip title={activity.description}>
-                            <span>
-                              <strong>Patient Name:</strong>{' '}
-                              {activity.description}
-                            </span>
-                          </Tooltip>
-                        </ActivityDescription>
-                      )}
-                      {Object.entries(activity.contextualData || {}).map(
-                        ([key, value]) =>
-                          value && (
-                            <>
-                              <ActivityDescription key={key}>
-                                <Tooltip
-                                  title={`${key}: ${
-                                    value.current
-                                  } (current) ⟵ ${
-                                    value.previous || 'NA'
-                                  } (previous)`}
-                                >
-                                  <span>
-                                    <strong>{key}:</strong> {value.current}
-                                  </span>
-                                </Tooltip>
-                              </ActivityDescription>
-                            </>
-                          ),
-                      )}
-                      <ActivityDescription>
-                        <span>
-                          <strong>
-                            {[
-                              'UPDATE_PATIENT',
-                              'SAVE_PATIENT_META_DATA',
-                            ].includes(activity.actionType)
-                              ? 'Updated By:'
-                              : 'Created By:'}
-                          </strong>{' '}
-                          {activity?.activityPerformedBy?.userName}
-                        </span>
-                      </ActivityDescription>
-                    </>
-                  )}
-                </CardContent>
-              </ActivityWrapper>
-            </TimelineContent>
-          </TimelineItem>
-        ))}
+                      </>
+                    )}
+                  </CardContent>
+                </ActivityWrapper>
+              </TimelineContent>
+            </TimelineItem>
+          ))}
       </Timeline>
       {isAttachmentPreviewOpen && (
         <AttachmentPreview

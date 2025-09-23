@@ -72,7 +72,12 @@ const OPTIONS = [
   },
 ];
 
-const PatientsToolbar = ({ searchValue, setSearchValue, workspaceIdentifier = null }) => {
+const PatientsToolbar = ({
+  searchValue,
+  setSearchValue,
+  workspaceIdentifier = null,
+  placeholder = 'Search',
+}) => {
   const [isSidebarOpen, setIsSidebarOpen, unsetIsSidebarOpen] =
     useBoolean(false);
   const [finalFilter, setFinalFilter] = useState({});
@@ -130,14 +135,11 @@ const PatientsToolbar = ({ searchValue, setSearchValue, workspaceIdentifier = nu
     (event) => {
       const { value } = event.target;
       const { url } = OPTIONS.find((o) => o.value === value);
-      
+
       if (!url) return;
 
       const updatedUrl = workspaceIdentifier
-        ? url.replace(
-            '/core',
-            `/core/workspace/${workspaceIdentifier}`
-          )
+        ? url.replace('/core', `/core/workspace/${workspaceIdentifier}`)
         : url;
 
       history.push(updatedUrl);
@@ -169,7 +171,7 @@ const PatientsToolbar = ({ searchValue, setSearchValue, workspaceIdentifier = nu
 
   return (
     <>
-      <Box p="16px">
+      <Box>
         <Box display="flex" width="100%">
           <Box
             display="flex"
@@ -261,6 +263,7 @@ const PatientsToolbar = ({ searchValue, setSearchValue, workspaceIdentifier = nu
               onValueChange={handleSearchChange}
               onKeyEnter={handleSearch}
               isPatientSearchInput
+              placeholder={placeholder}
             />
             // </Box>
           )}
@@ -313,8 +316,8 @@ const PatientsToolbar = ({ searchValue, setSearchValue, workspaceIdentifier = nu
         <>
           <SearchHelperText>
             Search by first name, last name or medical record number. You may
-            filter to retrieve specific {pluralize(customerTypeLabel).toLowerCase()} in
-            Dock.
+            filter to retrieve specific{' '}
+            {pluralize(customerTypeLabel).toLowerCase()} in Dock.
           </SearchHelperText>
         </>
       )}

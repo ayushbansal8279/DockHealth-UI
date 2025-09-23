@@ -92,6 +92,7 @@ const AutoCompleteFormSelect = React.forwardRef(
       <>
         <Autocomplete
           disabled={readOnly}
+          name={name}
           multiple={multiple}
           ref={reference}
           options={options}
@@ -110,6 +111,7 @@ const AutoCompleteFormSelect = React.forwardRef(
           )}
           renderInput={(params) => (
             <TextField
+              name={name}
               {...params}
               variant="standard"
               sx={{

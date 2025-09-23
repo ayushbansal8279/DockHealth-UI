@@ -385,7 +385,7 @@ const TaskTemplate = ({
     const currentPath = location.pathname + location.search;
     const builderPath = createWorkflowBuilderPath(identifier);
     const returnToParam = encodeURIComponent(currentPath);
-    history.push(`${builderPath}?returnTo=${returnToParam}`);
+    history.push(`${builderPath}`);
   };
 
   const onChangeName = (event) => {
