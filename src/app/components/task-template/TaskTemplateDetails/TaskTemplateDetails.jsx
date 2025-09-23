@@ -115,6 +115,7 @@ const TaskTemplateDetails = ({ workflow, readOnly }) => {
                 onBlur={handleBlur(closePopover)}
                 initOnClick={false}
                 showCharCount
+                mentions={workflow?.taskMentions}
               />
             </CustomTextEditor>
             <Divider />
@@ -148,7 +149,7 @@ const TaskTemplateDetails = ({ workflow, readOnly }) => {
             title={
               <pre
                 style={{
-                  fontFamily: "Outfit, sans-serif",
+                  fontFamily: 'Outfit, sans-serif',
                   fontSize: '16px',
                   whiteSpace: 'pre-wrap',
                   wordBreak: 'keep-all',
