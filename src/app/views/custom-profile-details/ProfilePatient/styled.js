@@ -24,11 +24,11 @@ export const ViewContainer = styled.div`
   flex-direction: column;
   flex-grow: 1;
   height: 100%;
-  max-height: 100%;
   overflow: hidden;
   padding: 0 24px;
   gap: 24px;
 `;
 
 export const TableWrapper = styled.div`
+  height: calc(100vh - 300px);
 `;

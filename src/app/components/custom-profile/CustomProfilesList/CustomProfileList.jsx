@@ -246,10 +246,20 @@ const CustomProfileList = ({
 
               if (field.fieldType === 'RELATIONSHIP') {
                 const refs = params.row[field.name];
+                const relatedField = field;
+                const isPatientRelationship =
+                  relatedField.relatedProfileType.contextType ===
+                    'PREDEFINED' &&
+                  relatedField.relatedProfileType.name.toLowerCase() ===
+                    'patients'
+                    ? true
+                    : false;
+
                 return (
                   <RelationshipLinks
                     refs={refs}
                     relatedProfileType={field.relatedProfileType.identifier}
+                    isPatientRelationship={isPatientRelationship}
                   />
                 );
               }
@@ -483,8 +493,13 @@ const CustomProfileList = ({
             display: 'flex',
             flexDirection: 'column',
             flexGrow: 1,
-            m: '16px 32px 48px 32px ',
+            m: profileTypeFields.some((field) => field.relatedProfileType)
+              ? '16px 32px 48px 32px'
+              : '16px 32px 16px 32px',
             minHeight: 0,
+            ...(profileTypeFields.some((field) => field.relatedProfileType) && {
+              height: 'calc(100vh - 360px)',
+            }),
           }}
         >
           <ReusableDataGrid

@@ -147,6 +147,11 @@ const EditCustomFieldModal = ({
           }),
         )
         .nullable(),
+      relatedProfileType: string().when('fieldType', {
+        is: FieldType.RELATIONSHIP,
+        then: (schema) => schema.required(REQUIRED_MESSAGE),
+        otherwise: (schema) => schema.nullable(),
+      }),
 
       ...(type === 'PROFILE'
         ? {}
