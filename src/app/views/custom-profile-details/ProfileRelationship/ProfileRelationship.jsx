@@ -5,6 +5,7 @@ import { getAllProfileFieldTypes } from 'api/profile-type-field-api';
 import { showGlobalErrorAlert } from 'alert/actions';
 import CustomProfileList from '@/app/components/custom-profile/CustomProfilesList/CustomProfileList';
 import { getProfileRelationships } from '@/app/api/profile-api';
+import { ProfileRelationsContainer } from './styled';
 
 const ProfileRelationship = () => {
   const dispatch = useDispatch();
@@ -44,12 +45,14 @@ const ProfileRelationship = () => {
   }, [fetchProfileTypeFields, fetchRelationships]);
 
   return (
-    <CustomProfileList
-      profileTypeIdentifier={relationshipProfileIdentifier}
-      fetchProfileTypeFields={fetchProfileTypeFields}
-      fetchProfiles={fetchRelationships}
-      showHeader={false}
-    />
+    <ProfileRelationsContainer>
+      <CustomProfileList
+        profileTypeIdentifier={relationshipProfileIdentifier}
+        fetchProfileTypeFields={fetchProfileTypeFields}
+        fetchProfiles={fetchRelationships}
+        showHeader={false}
+      />
+    </ProfileRelationsContainer>
   );
 };
 
