@@ -115,3 +115,20 @@ export function initializeProfileAttachmentsFolder(folderIdentifier) {
     folderIdentifier,
   };
 }
+
+export function profileBulkArchive(profileIdentifiers, profileTypeIdentifier, status) {
+  return {
+    type: ActionTypes.PROFILE_BULK_ARCHIVE,
+    profileIdentifiers,
+    profileTypeIdentifier,
+    status,
+  };
+}
+
+export function profileBulkDelete(profileIdentifiers, profileTypeIdentifier) {
+  return {
+    type: ActionTypes.PROFILE_BULK_DELETE,
+    profileIdentifiers,
+    profileTypeIdentifier,
+  };
+}
