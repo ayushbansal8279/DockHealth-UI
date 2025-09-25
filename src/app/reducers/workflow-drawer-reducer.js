@@ -1,6 +1,7 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import * as ActionTypes from 'actions/action-types';
 import { reorderTasksForWorkflow } from 'helpers/workflow-helpers';
+import TaskBaseReducer from './task-base-reducer';
 
 const initialState = {
   open: false,
@@ -276,6 +277,45 @@ const WorkflowDrawerReducer = (state = initialState, action) => {
     }
 
     default: {
+      if (
+        state?.open &&
+        action?.task?.taskGroups?.find(
+          (tg) => tg?.taskGroupIdentifier === state?.workflowIdentifier,
+        )
+      ) {
+        return TaskBaseReducer(state, action, (reducerState, taskData) => {
+          const taskItem = taskData;
+          if (
+            state?.workflow?.tasks?.find(
+              (workflowTask) =>
+                workflowTask?.identifier === taskItem?.taskIdentifier,
+            )
+          ) {
+            const updateWorkflowTasks = state?.workflow?.tasks.map(
+              (workflowTask) =>
+                workflowTask?.identifier === taskItem?.taskIdentifier
+                  ? {
+                      ...workflowTask,
+                      ...taskItem,
+                    }
+                  : workflowTask,
+            );
+
+            const updatedState = {
+              ...reducerState,
+              workflow: {
+                ...state.workflow,
+                tasks: updateWorkflowTasks,
+              },
+            };
+            return updatedState;
+          }
+          return {
+            ...reducerState,
+          };
+        });
+      }
+
       return state;
     }
   }
