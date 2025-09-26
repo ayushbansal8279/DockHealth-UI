@@ -16,6 +16,7 @@ const initialState = {
   profilesError: null,
   filteredProfiles: [],
   isFilteringProfiles: false,
+  undoOperation: null,
 };
 
 const ProfileReducer = (state = initialState, action) => {
@@ -166,6 +167,34 @@ const ProfileReducer = (state = initialState, action) => {
       return {
         ...state,
         filteredProfiles: [],
+      };
+    }
+
+    case ActionTypes.SHOW_PROFILE_UNDO: {
+      return {
+        ...state,
+        undoOperation: {
+          operationType: action.operationType,
+          profileIdentifiers: action.profileIdentifiers,
+          profileTypeIdentifier: action.profileTypeIdentifier,
+          profileStatus: action.profileStatus,
+          timestamp: Date.now(),
+        },
+      };
+    }
+
+    case ActionTypes.HIDE_PROFILE_UNDO: {
+      return {
+        ...state,
+        undoOperation: null,
+      };
+    }
+
+    case ActionTypes.PROFILE_BULK_UNARCHIVE_SUCCESS:
+    case ActionTypes.PROFILE_BULK_RECOVER_SUCCESS: {
+      return {
+        ...state,
+        undoOperation: null,
       };
     }
 

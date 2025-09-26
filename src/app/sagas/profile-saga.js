@@ -414,6 +414,79 @@ function* profileBulkEditCustomFields({
   }
 }
 
+function* profileBulkUnarchive({
+  profileIdentifiers,
+  profileTypeIdentifier,
+  profileStatus,
+}) {
+  try {
+    yield call(
+      ProfileApi.bulkUnarchiveProfiles,
+      profileIdentifiers,
+      profileTypeIdentifier,
+      'ACTIVE',
+    );
+    yield all([
+      put(showGlobalAlert(AlertMessages.UNARCHIVED)),
+      put({
+        type: ActionTypes.PROFILE_BULK_UNARCHIVE_SUCCESS,
+        profileIdentifiers,
+        profileTypeIdentifier,
+      }),
+      put({
+        type: ActionTypes.GET_PROFILES,
+        profileTypeIdentifier,
+        profileStatus: profileStatus || 'ALL',
+      }),
+    ]);
+  } catch {
+    yield all([
+      put({
+        type: ActionTypes.PROFILE_BULK_UNARCHIVE_FAILURE,
+        profileIdentifiers,
+        profileTypeIdentifier,
+      }),
+      put(AlertActions.showGlobalErrorAlert()),
+    ]);
+  }
+}
+
+function* profileBulkRecover({
+  profileIdentifiers,
+  profileTypeIdentifier,
+  profileStatus,
+}) {
+  try {
+    yield call(
+      ProfileApi.bulkRestoreProfiles,
+      profileIdentifiers,
+      profileTypeIdentifier,
+    );
+    yield all([
+      put(showGlobalAlert(AlertMessages.RECOVERED)),
+      put({
+        type: ActionTypes.PROFILE_BULK_RECOVER_SUCCESS,
+        profileIdentifiers,
+        profileTypeIdentifier,
+      }),
+      put({
+        type: ActionTypes.GET_PROFILES,
+        profileTypeIdentifier,
+        profileStatus: profileStatus || 'ALL',
+      }),
+    ]);
+  } catch {
+    yield all([
+      put({
+        type: ActionTypes.PROFILE_BULK_RECOVER_FAILURE,
+        profileIdentifiers,
+        profileTypeIdentifier,
+      }),
+      put(AlertActions.showGlobalErrorAlert()),
+    ]);
+  }
+}
+
 export default function* watchProfileDetail() {
   yield takeEvery(
     ActionTypes.GET_CURRENT_PROFILE_FILTER_OPTIONS,
@@ -446,6 +519,8 @@ export default function* watchProfileDetail() {
   yield takeEvery(ActionTypes.PROFILE_BULK_ARCHIVE, profileBulkArchive);
   yield takeEvery(ActionTypes.PROFILE_BULK_DELETE, profileBulkDelete);
   yield takeEvery(ActionTypes.PROFILE_BULK_EDIT_CUSTOM_FIELDS, profileBulkEditCustomFields);
+  yield takeEvery(ActionTypes.PROFILE_BULK_UNARCHIVE, profileBulkUnarchive);
+  yield takeEvery(ActionTypes.PROFILE_BULK_RECOVER, profileBulkRecover);
   yield takeEvery(ActionTypes.GET_PROFILES, getProfiles);
   yield takeEvery(ActionTypes.FILTER_PROFILES, filterProfiles);
 }

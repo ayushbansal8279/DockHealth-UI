@@ -21,6 +21,8 @@ const AlertMessages = {
   PATIENT_ARCHIVED: 'Archived',
   SHARED: 'Shared',
   PATIENT_UNARCHIVED: 'Restored',
+  UNARCHIVED: 'Restored',
+  RECOVERED: 'Recovered',
   WORKFLOW_CREATED: 'Workflow created',
   LABEL_CREATED: 'Label created',
   LABEL_DELETED: 'Label deleted',

@@ -32,6 +32,7 @@ import { useGridApiRef } from '@mui/x-data-grid-premium';
 import { getAllProfileTypes } from 'api/profile-type-api';
 import { getAllProfileFieldTypes } from 'api/profile-type-field-api';
 import { showGlobalErrorAlert } from 'alert/actions';
+import ProfileUndoAlert from '../ProfileUndoAlert/ProfileUndoAlert';
 import LayoutHeader from 'components/template/LayoutHeader/LayoutHeader';
 import ViewLayout from 'components/template/ViewLayout/ViewLayout';
 import ProfileDrawer from 'components/custom-profile/CustomProfilesList/ProfileDrawer';
@@ -69,6 +70,9 @@ import {
   profileBulkArchive,
   profileBulkDelete,
   getProfiles,
+  profileBulkUnarchive,
+  profileBulkRecover,
+  showProfileUndo,
 } from '@/app/actions/profile-actions';
 import { openModal, closeModal } from 'modal/actions';
 import { getProfileListPreferences } from '@/app/api/profile-type-api';
@@ -133,7 +137,6 @@ const CustomProfileListContent = ({
   const isFilteringProfiles = useSelector(
     (state) => state.profile?.isFilteringProfiles || false,
   );
-  const [allProfiles, setAllProfiles] = useState([]);
   const [searchPhrase, setSearchPhrase] = useState('');
   const [profileStatus, setProfileStatus] = useState(ProfileStatus.ALL);
   const loading = isFetchingProfiles || isFilteringProfiles;
@@ -220,6 +223,31 @@ const CustomProfileListContent = ({
           await dispatch(
             action(profileIdentifiers, profileTypeIdentifier, profileStatus),
           );
+          dispatch(
+            showProfileUndo(
+              'DELETE',
+              profileIdentifiers,
+              profileTypeIdentifier,
+              profileStatus,
+            ),
+          );
+        } else if (action === profileBulkArchive) {
+          await dispatch(
+            action(
+              profileIdentifiers,
+              profileTypeIdentifier,
+              status,
+              profileStatus,
+            ),
+          );
+          dispatch(
+            showProfileUndo(
+              'ARCHIVE',
+              profileIdentifiers,
+              profileTypeIdentifier,
+              profileStatus,
+            ),
+          );
         } else {
           await dispatch(
             action(
@@ -272,6 +300,38 @@ const CustomProfileListContent = ({
     profileStatus,
     resetOptions,
   ]);
+
+  const handleUndo = useCallback(
+    (undoOperation) => {
+      if (!undoOperation) return;
+
+      const {
+        operationType,
+        profileIdentifiers,
+        profileTypeIdentifier,
+        profileStatus,
+      } = undoOperation;
+
+      if (operationType === 'ARCHIVE') {
+        dispatch(
+          profileBulkUnarchive(
+            profileIdentifiers,
+            profileTypeIdentifier,
+            profileStatus,
+          ),
+        );
+      } else if (operationType === 'DELETE') {
+        dispatch(
+          profileBulkRecover(
+            profileIdentifiers,
+            profileTypeIdentifier,
+            profileStatus,
+          ),
+        );
+      }
+    },
+    [dispatch],
+  );
 
   const openBulkArchiveConfirmationModal = useCallback(() => {
     const selectedProfilesCount = selectedItems?.length;
@@ -826,6 +886,7 @@ const CustomProfileListContent = ({
           identifier={profileTypeIdentifier}
         />
       </Dialog>
+      <ProfileUndoAlert onUndo={handleUndo} />
     </>
   );
 };

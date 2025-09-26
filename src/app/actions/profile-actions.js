@@ -171,3 +171,50 @@ export function clearFilteredProfiles() {
     type: ActionTypes.CLEAR_FILTERED_PROFILES,
   };
 }
+
+export function showProfileUndo(
+  operationType,
+  profileIdentifiers,
+  profileTypeIdentifier,
+  profileStatus,
+) {
+  return {
+    type: ActionTypes.SHOW_PROFILE_UNDO,
+    operationType,
+    profileIdentifiers,
+    profileTypeIdentifier,
+    profileStatus,
+  };
+}
+
+export function hideProfileUndo() {
+  return {
+    type: ActionTypes.HIDE_PROFILE_UNDO,
+  };
+}
+
+export function profileBulkUnarchive(
+  profileIdentifiers,
+  profileTypeIdentifier,
+  profileStatus,
+) {
+  return {
+    type: ActionTypes.PROFILE_BULK_UNARCHIVE,
+    profileIdentifiers,
+    profileTypeIdentifier,
+    profileStatus,
+  };
+}
+
+export function profileBulkRecover(
+  profileIdentifiers,
+  profileTypeIdentifier,
+  profileStatus,
+) {
+  return {
+    type: ActionTypes.PROFILE_BULK_RECOVER,
+    profileIdentifiers,
+    profileTypeIdentifier,
+    profileStatus,
+  };
+}
