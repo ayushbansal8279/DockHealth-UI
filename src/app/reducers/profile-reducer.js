@@ -11,6 +11,11 @@ const initialState = {
   profileTaskAttachments: null,
   isFetchingAttachments: false,
   currentFolderIdentifier: null,
+  profiles: [],
+  isFetchingProfiles: false,
+  profilesError: null,
+  filteredProfiles: [],
+  isFilteringProfiles: false,
 };
 
 const ProfileReducer = (state = initialState, action) => {
@@ -107,6 +112,63 @@ const ProfileReducer = (state = initialState, action) => {
         currentFolderIdentifier: action.folderIdentifier,
       };
     }
+
+    case ActionTypes.GET_PROFILES: {
+      return {
+        ...state,
+        isFetchingProfiles: true,
+        profilesError: null,
+      };
+    }
+
+    case ActionTypes.GET_PROFILES_SUCCESS: {
+      return {
+        ...state,
+        isFetchingProfiles: false,
+        profiles: action.profiles,
+        profilesError: null,
+      };
+    }
+
+    case ActionTypes.GET_PROFILES_FAILURE: {
+      return {
+        ...state,
+        isFetchingProfiles: false,
+        profiles: [],
+        profilesError: action.error,
+      };
+    }
+
+    case ActionTypes.FILTER_PROFILES: {
+      return {
+        ...state,
+        isFilteringProfiles: true,
+      };
+    }
+
+    case ActionTypes.FILTER_PROFILES_SUCCESS: {
+      return {
+        ...state,
+        isFilteringProfiles: false,
+        filteredProfiles: action.filteredProfiles,
+      };
+    }
+
+    case ActionTypes.FILTER_PROFILES_FAILURE: {
+      return {
+        ...state,
+        isFilteringProfiles: false,
+        filteredProfiles: [],
+      };
+    }
+
+    case ActionTypes.CLEAR_FILTERED_PROFILES: {
+      return {
+        ...state,
+        filteredProfiles: [],
+      };
+    }
+
     default: {
       return state;
     }

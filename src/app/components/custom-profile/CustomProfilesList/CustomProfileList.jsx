@@ -45,7 +45,12 @@ import ToolbarButton from '../../tasklist/list-toolbar-buttons/ToolbarButton/Too
 import { AddIcon } from '@/app/views/smart-flow-builder/TaskNodeHandles/styled';
 import ProfileFilter from '../ProfileFilter/ProfileFilter';
 import OptionsMenu from '../../common/OptionsMenu/OptionsMenu';
-import { MoreVert, Archive, Delete } from '@mui/icons-material';
+import {
+  MoreVert,
+  Archive,
+  Delete,
+  AppRegistration,
+} from '@mui/icons-material';
 import Checkbox from 'components/common/Checkbox/Checkbox';
 import { userProfileSelector } from '@/app/selectors/user-selectors';
 import {
@@ -63,6 +68,7 @@ import {
   updateProfileListPreferences,
   profileBulkArchive,
   profileBulkDelete,
+  getProfiles,
 } from '@/app/actions/profile-actions';
 import { openModal, closeModal } from 'modal/actions';
 import { getProfileListPreferences } from '@/app/api/profile-type-api';
@@ -117,11 +123,20 @@ const CustomProfileListContent = ({
   const [profileTypeFields, setProfileTypeFields] = useState([]);
   const [currentProfileType, setCurrentProfileType] = useState('');
   const [filters, setFilters] = useState([]);
-  const [profiles, setProfiles] = useState([]);
+  const profiles = useSelector((state) => state.profile?.profiles || []);
+  const filteredProfilesFromRedux = useSelector(
+    (state) => state.profile?.filteredProfiles || [],
+  );
+  const isFetchingProfiles = useSelector(
+    (state) => state.profile?.isFetchingProfiles || false,
+  );
+  const isFilteringProfiles = useSelector(
+    (state) => state.profile?.isFilteringProfiles || false,
+  );
   const [allProfiles, setAllProfiles] = useState([]);
   const [searchPhrase, setSearchPhrase] = useState('');
   const [profileStatus, setProfileStatus] = useState(ProfileStatus.ALL);
-  const [loading, setLoading] = useState(false);
+  const loading = isFetchingProfiles || isFilteringProfiles;
   const [useLocalFiltering, setUseLocalFiltering] = useState(true);
   const currentUser = useSelector(userProfileSelector);
   const [importPopupOpen, setImportPopupOpen] = useState(false);
@@ -149,29 +164,9 @@ const CustomProfileListContent = ({
 
   const fetchProfilesInternal = useCallback(
     (status = ProfileStatus.ALL) => {
-      setLoading(true);
-
-      const queryType =
-        status === ProfileStatus.ACTIVE
-          ? ProfileQueryType.ACTIVE_PROFILES
-          : status === ProfileStatus.ARCHIVED
-          ? ProfileQueryType.ARCHIVED_PROFILES
-          : ProfileQueryType.ALL_PROFILES;
-
-      const fetchPromise = fetchProfiles
-        ? fetchProfiles(queryType)
-        : getAllProfiles(profileTypeIdentifier, queryType);
-
-      return fetchPromise
-        .then(removeDuplicatesByIdentifier)
-        .then(setProfiles)
-        .catch(() => {
-          dispatch(showGlobalErrorAlert());
-          setProfiles([]);
-        })
-        .finally(() => setLoading(false));
+      dispatch(getProfiles(profileTypeIdentifier, status));
     },
-    [fetchProfiles, profileTypeIdentifier, dispatch],
+    [dispatch, profileTypeIdentifier],
   );
 
   const fetchProfileTypesInternal = useCallback(() => {
@@ -224,20 +219,12 @@ const CustomProfileListContent = ({
         await dispatch(
           action(profileIdentifiers, profileTypeIdentifier, status),
         );
-        await fetchProfilesInternal(profileStatus);
         resetOptions();
       } catch (err) {
         console.error('Bulk action failed:', err);
       }
     },
-    [
-      dispatch,
-      selectedItems,
-      profileTypeIdentifier,
-      fetchProfilesInternal,
-      resetOptions,
-      profileStatus,
-    ],
+    [dispatch, selectedItems, profileTypeIdentifier, resetOptions],
   );
 
   const handleBulkArchive = useCallback(() => {
@@ -247,6 +234,27 @@ const CustomProfileListContent = ({
   const handleBulkDelete = useCallback(() => {
     handleBulkAction(profileBulkDelete);
   }, [handleBulkAction]);
+
+  const handleBulkEditCustomFields = useCallback(() => {
+    const profileIdentifiers = selectedItems?.map((p) => p.identifier) ?? [];
+    dispatch(
+      openModal('ProfileCustomFieldsBulkEditModal', {
+        profileIdentifiers,
+        profileTypeIdentifier,
+        profileStatus,
+        onCloseModal: () => {
+          resetOptions?.();
+          dispatch(closeModal());
+        },
+      }),
+    );
+  }, [
+    dispatch,
+    selectedItems,
+    profileTypeIdentifier,
+    profileStatus,
+    resetOptions,
+  ]);
 
   const openBulkArchiveConfirmationModal = useCallback(() => {
     const selectedProfilesCount = selectedItems?.length;
@@ -293,6 +301,12 @@ const CustomProfileListContent = ({
   const bulkOptions = useMemo(
     () => [
       {
+        key: 'editFields',
+        title: 'Edit Fields',
+        icon: AppRegistration,
+        onClick: handleBulkEditCustomFields,
+      },
+      {
         key: 'archive',
         title: 'Archive',
         icon: Archive,
@@ -305,7 +319,11 @@ const CustomProfileListContent = ({
         onClick: openBulkDeleteConfirmationModal,
       },
     ],
-    [openBulkArchiveConfirmationModal, openBulkDeleteConfirmationModal],
+    [
+      openBulkArchiveConfirmationModal,
+      openBulkDeleteConfirmationModal,
+      handleBulkEditCustomFields,
+    ],
   );
 
   useEffect(() => {
@@ -462,9 +480,22 @@ const CustomProfileListContent = ({
       .filter(Boolean),
   ];
 
+  // TODO: fix filter
   const filteredProfiles = useMemo(() => {
+    let profilesToFilter = profiles;
+
+    if (filteredProfilesFromRedux.length > 0) {
+      profilesToFilter = filteredProfilesFromRedux.filter((profile) => {
+        if (useLocalFiltering) return true;
+        return (
+          profileStatus === ProfileStatus.ALL ||
+          profile.profileStatus === profileStatus
+        );
+      });
+    }
+
     return (
-      profiles?.filter((profile) => {
+      profilesToFilter?.filter((profile) => {
         const matchesSearch = profile.fields?.some((field) =>
           (field.values || []).some(
             (val) =>
@@ -473,15 +504,16 @@ const CustomProfileListContent = ({
           ),
         );
 
-        const matchesStatus = useLocalFiltering
-          ? true
-          : profileStatus === ProfileStatus.ALL ||
-            profile.profileStatus === profileStatus;
-
-        return matchesSearch && matchesStatus;
+        return matchesSearch;
       }) || []
     );
-  }, [profiles, searchPhrase, useLocalFiltering, profileStatus]);
+  }, [
+    profiles,
+    filteredProfilesFromRedux,
+    searchPhrase,
+    useLocalFiltering,
+    profileStatus,
+  ]);
 
   const profilesWithSelection = useMemo(() => {
     return (
@@ -706,7 +738,6 @@ const CustomProfileListContent = ({
               <ProfileFilter
                 profileTypeIdentifier={profileTypeIdentifier}
                 fetchProfiles={fetchProfilesInternal}
-                setProfiles={setProfiles}
               />
             </Box>
             <Box display="flex" alignItems="center" width="400px" my={0.4}>

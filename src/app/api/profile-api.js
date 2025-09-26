@@ -270,9 +270,14 @@ export const getProfileRelationships = (
 export const ProfileBulkActions = {
   ARCHIVE_PROFILE: 'ARCHIVE_PROFILE',
   DELETE_PROFILE: 'DELETE_PROFILE',
+  EDIT_FIELDS: 'EDIT_FIELDS',
 };
 
-export function bulkArchiveProfiles(profileIdentifiers, profileTypeIdentifier, status) {
+export function bulkArchiveProfiles(
+  profileIdentifiers,
+  profileTypeIdentifier,
+  status,
+) {
   const body = {
     bulkOperationType: ProfileBulkActions.ARCHIVE_PROFILE,
     profileIdentifiers,
@@ -288,6 +293,19 @@ export function bulkDeleteProfiles(profileIdentifiers, profileTypeIdentifier) {
   const body = {
     bulkOperationType: ProfileBulkActions.DELETE_PROFILE,
     profileIdentifiers,
+  };
+
+  return axios
+    .put(`profile/bulkEdit/${profileTypeIdentifier}`, body)
+    .then(({ data }) => data);
+}
+
+export function bulkEditProfilesCustomFields(payload) {
+  const { fields, profileIdentifiers, profileTypeIdentifier } = payload;
+  const body = {
+    bulkOperationType: ProfileBulkActions.EDIT_FIELDS,
+    profileIdentifiers,
+    fields,
   };
 
   return axios

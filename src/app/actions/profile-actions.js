@@ -132,3 +132,40 @@ export function profileBulkDelete(profileIdentifiers, profileTypeIdentifier) {
     profileTypeIdentifier,
   };
 }
+
+export function profileBulkEditCustomFields(
+  profileIdentifiers,
+  profileTypeIdentifier,
+  fields,
+  profileStatus,
+) {
+  return {
+    type: ActionTypes.PROFILE_BULK_EDIT_CUSTOM_FIELDS,
+    profileIdentifiers,
+    profileTypeIdentifier,
+    fields,
+    profileStatus,
+  };
+}
+
+export function getProfiles(profileTypeIdentifier, profileStatus) {
+  return {
+    type: ActionTypes.GET_PROFILES,
+    profileTypeIdentifier,
+    profileStatus,
+  };
+}
+
+export function filterProfiles(profileTypeIdentifier, filter) {
+  return {
+    type: ActionTypes.FILTER_PROFILES,
+    profileTypeIdentifier,
+    filter,
+  };
+}
+
+export function clearFilteredProfiles() {
+  return {
+    type: ActionTypes.CLEAR_FILTERED_PROFILES,
+  };
+}

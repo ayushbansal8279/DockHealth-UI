@@ -83,6 +83,7 @@ import DeleteArchivePatientModal from './components/DeleteArchivePatientModal/De
 import DeleteOrganizationModal from './components/DeleteOrganizationModal';
 import PatientCustomFieldsBulkEditModal from './components/PatientCustomFieldsBulkEditModal';
 import TaskListCustomFieldsBulkEditModal from './components/TaskListCustomFieldsBulkEditModal';
+import ProfileCustomFieldsBulkEditModal from './components/ProfileCustomFieldsBulkEditModal';
 import AISummaryModal from './components/AISummaryModal/AISummaryModal';
 import DateWarningModal from './components/DateWarningModal/DateWarningModal';
 import AlertModal from './components/AlertModal/AlertModal';
@@ -160,6 +161,7 @@ const MODAL_MAP = {
   DeleteTaskConfirmation: DeleteTaskConfirmationModal,
   DeleteCredentialConfirm: DeleteCredentialConfirmModal,
   TaskListCustomFieldsBulkEdit: TaskListCustomFieldsBulkEditModal,
+  ProfileCustomFieldsBulkEditModal: ProfileCustomFieldsBulkEditModal,
   EditUserGroup: EditUserGroupModal,
   AddUserToGroup: AddUserToGroupModal,
   Information: InformationModal,
