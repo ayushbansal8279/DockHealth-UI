@@ -8,9 +8,14 @@ export const ViewContainer = styled.div`
   max-width: 800px;
   width: 100%;
   margin: 0 auto;
-  padding: 50px 20px;
+  padding: 32px 0px;
   color: ${palette.mediumGrey};
   font-family: inherit;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  min-height: 0;
+  gap: 32px;
 `;
 
 export const AddTemplateWrapper = styled.div`
@@ -30,8 +35,7 @@ export const AddTemplateWrapper = styled.div`
 `;
 
 export const AddButton = styled(Button)`
-  margin-top: 10px;
-  border-radius: 6px;
+  border-radius: 4px;
   background: ${palette.newDarkBlue};
   color: ${palette.white};
   height: 32px;
@@ -41,8 +45,8 @@ export const AddButton = styled(Button)`
 `;
 
 export const AddButtonWrapper = styled.div`
-  position: absolute;
-  right: 100px;
+  display: flex;
+  justify-content: flex-end;
 `;
 
 export const PlusIcon = styled(AddIcon)`

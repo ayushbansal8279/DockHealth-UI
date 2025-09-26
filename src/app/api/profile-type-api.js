@@ -1,8 +1,12 @@
 import axios from './axios-heydoc';
 import { showAlert } from '../helpers/utility-functions';
 
-export function getAllProfileTypes() {
-  return axios.get('profile/type/getAll').then(({ data }) => data);
+export function getAllProfileTypes(contextType) {
+  const url = contextType
+    ? `profile/type/getAll?contextType=${encodeURIComponent(contextType)}`
+    : 'profile/type/getAll';
+
+  return axios.get(url).then(({ data }) => data);
 }
 
 export function getProfileDetailsType(identifier) {

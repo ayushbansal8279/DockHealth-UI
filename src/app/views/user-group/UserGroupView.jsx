@@ -7,7 +7,10 @@ import { Link, useParams, useLocation, useHistory } from 'react-router-dom';
 import { USERS_SETTINGS_PATH } from 'routing/helpers/paths';
 import { useBoolean } from 'hooks/useBoolean';
 import { getCurrentUserGroupDetailsSelector } from 'selectors/user-groups-selectors';
-import { selectedUserOrganizationSelector, userProfileSelector } from 'selectors/user-selectors';
+import {
+  selectedUserOrganizationSelector,
+  userProfileSelector,
+} from 'selectors/user-selectors';
 import { getUserGroupIdentifierByUrlParameter } from 'helpers/user-groups-helper';
 import {
   checkIfUserIsOrganizationAdmin,
@@ -41,8 +44,13 @@ import {
   SearchInputWrapper,
   TaskTemplateApplicatorContainer,
   BulkEditSectionContainer,
+  ListContainer,
+  PageWrapper,
 } from './styled';
-import { UserEditContext, UserEditProvider } from '@/app/context-api/user-edit-context';
+import {
+  UserEditContext,
+  UserEditProvider,
+} from '@/app/context-api/user-edit-context';
 import TaskTemplateApplicator from '@/app/components/task-template/TaskTemplateApplicator/TaskTemplateApplicator';
 import BulkEditCreateTask from '../../components/user/BulkEditSection/BulkEditCreateTask';
 import BulkEditSection from '../../components/user/BulkEditSection/BulkEditSection';
@@ -126,7 +134,9 @@ function UserGroupView() {
 
   const handleTemplateSelect = useCallback(
     (template) => {
-      const assignedEntities = selectableUsers?.filter(item => item.isSelected).map(item => item.identifier);
+      const assignedEntities = selectableUsers
+        ?.filter((item) => item.isSelected)
+        .map((item) => item.identifier);
       dispatch(
         openModal('ListPicker', {
           enableSelectingGroupStep: true,
@@ -140,12 +150,12 @@ function UserGroupView() {
                 taskGroupIdentifier,
               }),
             ),
-            renderDescription: () => (
-              <ModalMessage type="warning">
-                This action will fail if any selected user is not part of the selected list. 
-                Please ensure all selected users are in the list.
-              </ModalMessage>
-            )
+          renderDescription: () => (
+            <ModalMessage type="warning">
+              This action will fail if any selected user is not part of the
+              selected list. Please ensure all selected users are in the list.
+            </ModalMessage>
+          ),
         }),
       );
 
@@ -158,8 +168,8 @@ function UserGroupView() {
   return (
     <>
       <ViewLayout header={<BasicLayoutHeader title={name} />}>
-        <Grid container justifyContent="center">
-          <PageContentHeader>
+        <PageWrapper>
+          {/* <PageContentHeader>
             <Grid container wrap="nowrap">
               <Grid
                 container
@@ -170,14 +180,12 @@ function UserGroupView() {
                 lg={4}
                 justifyContent="flex-start"
               >
-                {/* <SearchInputWrapper fullWidth={isSearchFocused || searchTerm}> */}
                 <SearchInput
                   value={searchTerm}
                   onValueChange={handleSearchTermChange}
                   onFocus={setSearchFocused}
                   onBlur={unsetSearchFocused}
                 />
-                {/* </SearchInputWrapper> */}
               </Grid>
               {groupIdentifier && groupIdentifier !== 'ALL' && (
                 <AddEntitiesContainer>
@@ -189,45 +197,57 @@ function UserGroupView() {
                 </AddEntitiesContainer>
               )}
             </Grid>
-          </PageContentHeader>
-          <Grid container size={12} item justifyContent="center">
-            <Grid item size={12} sm={12} md={8}>
-              <Spacing vertical={4} />
-              {isOrganizationAdmin && groupIdentifier === 'ALL' && (
-                <ManageUsersContainer>
-                  <Grid item size={12} sm={12} md={8}>
-                    <HeaderMessageContainer>
-                      <img alt="lightbulb" src={LightbulbBig} />
-                      <HeaderMessage>
-                        <HeaderMessageTitle>
-                          Manage people in the Subscription and Users section.
-                        </HeaderMessageTitle>
-                        <HeaderMessageDescription>
-                          Invite, remove, and change roles for people within your
-                          organization.
-                        </HeaderMessageDescription>
-                      </HeaderMessage>
-                    </HeaderMessageContainer>
-                  </Grid>
-                  <Grid item size={12} sm={12} md={4}>
-                    <Link to={USERS_SETTINGS_PATH}>
-                      <Button fullWidth>Manage Users</Button>
-                    </Link>
-                  </Grid>
-                </ManageUsersContainer>
-              )}
-              {isNil(users) ? (
-                <ListLoaderContainer>
-                  <ListSkeletonLoader header />
-                </ListLoaderContainer>
-              ) : (
-                // <UserEditProvider>
-                  <UsersList users={users} searchTerm={searchTerm} />
-                // </UserEditProvider>
-              )}
-            </Grid>
-          </Grid>
-        </Grid>
+          </PageContentHeader> */}
+          {groupIdentifier && groupIdentifier !== 'ALL' && (
+            <PageContentHeader>
+              <Grid container wrap="nowrap">
+                <AddEntitiesContainer>
+                  {isOrganizationAdmin && !isViewOnly && (
+                    <AddButton onClick={onEditUserGroup}>
+                      Manage User Group
+                    </AddButton>
+                  )}
+                </AddEntitiesContainer>
+              </Grid>
+            </PageContentHeader>
+          )}
+
+          {isOrganizationAdmin && groupIdentifier === 'ALL' && (
+            <ManageUsersContainer>
+              <Grid item size={12} sm={12} md={8}>
+                <HeaderMessageContainer>
+                  <img alt="lightbulb" src={LightbulbBig} />
+                  <HeaderMessage>
+                    <HeaderMessageTitle>
+                      Manage people in the Subscription and Users section.
+                    </HeaderMessageTitle>
+                    <HeaderMessageDescription>
+                      Invite, remove, and change roles for people within your
+                      organization.
+                    </HeaderMessageDescription>
+                  </HeaderMessage>
+                </HeaderMessageContainer>
+              </Grid>
+              <Grid item size={12} sm={12} md={4}>
+                <Link to={USERS_SETTINGS_PATH}>
+                  <Button fullWidth>Manage Users</Button>
+                </Link>
+              </Grid>
+            </ManageUsersContainer>
+          )}
+
+          <ListContainer>
+            {isNil(users) ? (
+              <ListLoaderContainer>
+                <ListSkeletonLoader header />
+              </ListLoaderContainer>
+            ) : (
+              // <UserEditProvider>
+              <UsersList users={users} searchTerm={searchTerm} />
+              // </UserEditProvider>
+            )}
+          </ListContainer>
+        </PageWrapper>
       </ViewLayout>
       <BulkEditSection>
         <BulkEditSectionContainer>

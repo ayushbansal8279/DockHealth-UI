@@ -283,8 +283,12 @@ const BulkEditOptionsBar = ({
 
   const handleChangeWorkflowStatusTasks = useCallback(
     (workflowStatus) => {
+      const allSelectedIdentifiers = [
+        ...allSelectedTasksIdentifiers,
+        ...allSelectedWorkflowIdentifiers,
+      ];
       bulkEditWorkflowStatus(
-        allSelectedTasksIdentifiers,
+        allSelectedIdentifiers,
         workflowStatus,
         filters,
         searchValue,
@@ -352,7 +356,11 @@ const BulkEditOptionsBar = ({
 
   const handleChangeDateTasks = useCallback(
     (dueDate) => {
-      bulkEditDueDate(allSelectedTasksIdentifiers, dueDate, filters)(dispatch);
+      const allSelectedIdentifiers = [
+        ...allSelectedTasksIdentifiers,
+        ...allSelectedWorkflowIdentifiers,
+      ];
+      bulkEditDueDate(allSelectedIdentifiers, dueDate, filters)(dispatch);
 
       const dueDateIntent = checkDateTimeIntent(dueDate);
 
@@ -607,7 +615,12 @@ const BulkEditOptionsBar = ({
         includeAttachmentsForDuplication,
         includePatientForDuplication: true,
       }).then(({ transactionIdentifier, tasks: duplicatedTasks }) => {
-        dispatch(bulkEditDuplicateTasksSuccess(duplicatedTasks));
+        dispatch(
+          bulkEditDuplicateTasksSuccess(
+            duplicatedTasks,
+            allSelectedTasksIdentifiers,
+          ),
+        );
 
         if (refreshTasks && typeof refreshTasks === 'function') {
           refreshTasks();

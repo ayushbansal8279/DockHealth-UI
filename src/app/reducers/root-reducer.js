@@ -31,6 +31,7 @@ import TaskItemsReducer from './task-items-reducer';
 import ProfileReducer from './profile-reducer';
 import WorkspaceReducer from './workspace-reducer';
 import workspaceListReducer from './workspace-list-reducer';
+import UIStateReducer from './ui-state-reducer';
 import AgentDrawerReducer from './agent-drawer-reducer';
 
 // function createNamedWrapperReducer(reducerFunction, reducerName) {
@@ -75,6 +76,7 @@ const appReducer = combineReducers({
   taskItems: TaskItemsReducer,
   workspace: WorkspaceReducer,
   workspaceList: workspaceListReducer,
+  uiState: UIStateReducer,
   agentDrawer: AgentDrawerReducer,
 });
 

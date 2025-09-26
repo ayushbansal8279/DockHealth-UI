@@ -77,6 +77,17 @@ const TaskItemDueDate = ({
     [dispatch, task],
   );
 
+  const handleClearDateClick = useCallback(
+    (clearCallback) => {
+      dispatch(
+        openModal('ClearDueDateConfirmation', {
+          confirm: clearCallback,
+        }),
+      );
+    },
+    [dispatch],
+  );
+
   return (
     <DueDatesContainer>
       <TaskItemPopover
@@ -93,6 +104,7 @@ const TaskItemDueDate = ({
             onCloseClick={closePopover}
             dueDateIntent={dueDateIntent}
             dateType="dueDate"
+            onClearDateClick={handleClearDateClick}
           />
         )}
       >

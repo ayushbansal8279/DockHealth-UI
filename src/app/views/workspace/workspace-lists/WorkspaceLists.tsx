@@ -11,14 +11,13 @@ import { archivedWorkspaceTaskListsSelector, isFetchingWorkspaceTaskListsSelecto
 import ToolbarButton from "@/app/components/tasklist/list-toolbar-buttons/ToolbarButton/ToolbarButton";
 import ListSkeletonLoader from "@/app/components/common/ListSkeletonLoader/ListSkeletonLoader";
 import { ListLoaderContainer, WorkspaceListsContainer, WorkspaceListsHeader, WorkspaceListsTableWrapper } from "./styled";
-import { getArchivedWorkspaceTaskLists, getWorkspaceTaskLists } from "@/app/actions/workspace-actions";
-import SearchInput from "@/app/components/common/SearchInput/SearchInput";
+import {
+  getArchivedWorkspaceTaskLists,
+  getWorkspaceTaskLists,
+} from '@/app/actions/workspace-actions';
 
 const WorkspaceLists = () => {
   const dispatch = useDispatch();
-
-  const [searchTerm, setSearchTerm] = useState('');
-  
   const workspace = useSelector(workspaceSelector);
   const workspaceIdentifier = workspace.workspaceIdentifier;
   const taskLists = useSelector(workspaceTaskListsSelector);
@@ -42,21 +41,19 @@ const WorkspaceLists = () => {
       setSelectableItems(allTaskLists);
     }
   }, [workspaceIdentifier, allTaskLists]);
-  
+
   const openAddListModal = () => {
-    dispatch(openModal('ListForm', {
-      showPrivacyOptions: true,
-      workspaceIdentifier
-    }));
-  }
+    dispatch(
+      openModal('ListForm', {
+        showPrivacyOptions: true,
+        workspaceIdentifier,
+      }),
+    );
+  };
 
   return (
     <WorkspaceListsContainer>
       <WorkspaceListsHeader>
-        <SearchInput
-          value={searchTerm}
-          onValueChange={setSearchTerm}
-        />
         <ToolbarButton
           icon={
             <span style={{ marginLeft: '-5px' }}>
@@ -74,12 +71,11 @@ const WorkspaceLists = () => {
         </ListLoaderContainer>
       ) : (
         <WorkspaceListsTableWrapper>
-          <WorkspaceListTable searchTerm={searchTerm} />
+          <WorkspaceListTable />
         </WorkspaceListsTableWrapper>
       )}
       <BulkEditSection>
-        <BulkEditSectionContainer>
-        </BulkEditSectionContainer>
+        <BulkEditSectionContainer></BulkEditSectionContainer>
       </BulkEditSection>
     </WorkspaceListsContainer>
   );

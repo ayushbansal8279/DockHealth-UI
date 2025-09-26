@@ -939,13 +939,6 @@ const SmartFlowBuilderView = () => {
           <HeaderBreadcrumb>
             <Link
               to={(() => {
-                const urlParams = new URLSearchParams(location.search);
-                const returnToParam = urlParams.get('returnTo');
-
-                if (returnToParam) {
-                  return decodeURIComponent(returnToParam);
-                }
-
                 return parentTaskWorkflowIdentifier
                   ? createWorkflowFolderPath(parentTaskWorkflowIdentifier)
                   : WORKFLOW_LIBRARY_PATH;

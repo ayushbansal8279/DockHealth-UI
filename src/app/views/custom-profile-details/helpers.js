@@ -1,6 +1,6 @@
 import ProfileAttachments from './ProfileAttachments/ProfileAttachments';
 import ProfileNotes from './ProfileNotes/ProfileNotes';
-import ProfilePatientList from './ProfilePatientList/ProfilePatientList';
+import ProfilePatientView from './ProfilePatient/ProfilePatientView';
 import ProfileTasksListView from './ProfileTasksList/ProfileTasksList';
 
 export const ListViewType = {
@@ -65,7 +65,7 @@ export const TABS_CONFIG = [
   {
     label: 'Patients',
     mainPath: 'patients',
-    RouteComponent: ProfilePatientList,
+    RouteComponent: ProfilePatientView,
   },
   {
     label: 'Files',

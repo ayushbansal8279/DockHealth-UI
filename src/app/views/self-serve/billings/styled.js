@@ -35,15 +35,21 @@ export const Title = styled(H1)`
 export const BillingsViewContainer = styled.div`
   background-color: ${palette.white};
   display: flex;
-  justify-content: center;
-  min-height: 100%;
-  padding: 2.625rem 4.625rem;
-  width: 100%;
+  flex-direction: column;
+  flex-grow: 1;
+  height: 100%;
+  max-height: 100%;
+  overflow: hidden;
+  padding: 0px 96px 32px 96px;
+  gap: 16px;
 `;
 
-export const BillingsViewInnerContainer = styled.div`
-  max-width: 60rem;
-  width: 100%;
+export const ListContainer = styled('div')`
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
 `;
 
 export const StyledCollapse = styled(Collapse)`
