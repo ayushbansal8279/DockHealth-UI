@@ -256,6 +256,7 @@ function* profileBulkArchive({
   profileIdentifiers,
   profileTypeIdentifier,
   status,
+  profileStatus,
 }) {
   try {
     yield call(
@@ -275,7 +276,7 @@ function* profileBulkArchive({
       put({
         type: ActionTypes.GET_PROFILES,
         profileTypeIdentifier,
-        profileStatus: 'ALL',
+        profileStatus: profileStatus || 'ALL',
       }),
     ]);
   } catch {
@@ -291,7 +292,11 @@ function* profileBulkArchive({
   }
 }
 
-function* profileBulkDelete({ profileIdentifiers, profileTypeIdentifier }) {
+function* profileBulkDelete({
+  profileIdentifiers,
+  profileTypeIdentifier,
+  profileStatus,
+}) {
   try {
     yield call(
       ProfileApi.bulkDeleteProfiles,
@@ -308,7 +313,7 @@ function* profileBulkDelete({ profileIdentifiers, profileTypeIdentifier }) {
       put({
         type: ActionTypes.GET_PROFILES,
         profileTypeIdentifier,
-        profileStatus: 'ALL',
+        profileStatus: profileStatus || 'ALL',
       }),
     ]);
   } catch {

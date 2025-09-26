@@ -216,15 +216,32 @@ const CustomProfileListContent = ({
       const profileIdentifiers = selectedItems?.map((p) => p.identifier) ?? [];
 
       try {
-        await dispatch(
-          action(profileIdentifiers, profileTypeIdentifier, status),
-        );
+        if (action === profileBulkDelete) {
+          await dispatch(
+            action(profileIdentifiers, profileTypeIdentifier, profileStatus),
+          );
+        } else {
+          await dispatch(
+            action(
+              profileIdentifiers,
+              profileTypeIdentifier,
+              status,
+              profileStatus,
+            ),
+          );
+        }
         resetOptions();
       } catch (err) {
         console.error('Bulk action failed:', err);
       }
     },
-    [dispatch, selectedItems, profileTypeIdentifier, resetOptions],
+    [
+      dispatch,
+      selectedItems,
+      profileTypeIdentifier,
+      profileStatus,
+      resetOptions,
+    ],
   );
 
   const handleBulkArchive = useCallback(() => {
