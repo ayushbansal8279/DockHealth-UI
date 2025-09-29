@@ -44,6 +44,7 @@ const OnboardingNewOrganizationInfoView = () => {
             secondaryColor={palette.oPlusRed}
             onClick={() => {
               sessionStorage.setItem('NEW_ORG_SETUP', true);
+              sessionStorage.setItem('ADDITIONAL_ORG_SETUP', true);
               history.push('/onboarding/eula');
             }}
           >
