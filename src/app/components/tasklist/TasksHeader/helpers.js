@@ -100,6 +100,7 @@ export const getTaskHeaderOptions = (
         .charAt(0)
         .toUpperCase()}${customerTypeLabel.slice(1)} Home Phone`,
       draggable: true,
+      sortDisabled: true,
     },
     {
       identifier: TaskHeaderColumn.PATIENT_MOBILE_PHONE,
@@ -107,6 +108,7 @@ export const getTaskHeaderOptions = (
         .charAt(0)
         .toUpperCase()}${customerTypeLabel.slice(1)} Mobile Phone`,
       draggable: true,
+      sortDisabled: true,
     },
     {
       identifier: TaskHeaderColumn.WORKFLOW_STATUS,
