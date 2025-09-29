@@ -56,7 +56,7 @@ export const StyledInput = styled.input`
   font-weight: 400;
   line-height: 18.75px;
   font-size: ${fontSizes.regular};
-  width: 80px;
+  // width: 80px;
   height: 19px;
   background: transparent;
 
