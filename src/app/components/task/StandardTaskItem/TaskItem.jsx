@@ -2038,6 +2038,7 @@ const TaskItem = React.memo(
                               readOnly={
                                 restrictions?.customFields === READ_ONLY
                               }
+                              origin={origin}
                             />
                           )}
                         </TaskItemCell>,
