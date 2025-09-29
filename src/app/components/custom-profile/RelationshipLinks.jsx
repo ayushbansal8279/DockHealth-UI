@@ -1,7 +1,11 @@
 import { Link, useLocation } from 'react-router-dom';
 import Tooltip from '../common/Tooltip/Tooltip';
 
-const RelationshipLinks = ({ refs = [], relatedProfileType }) => {
+const RelationshipLinks = ({
+  refs = [],
+  relatedProfileType,
+  isPatientRelationship = false,
+}) => {
   const location = useLocation();
 
   if (!refs || refs.length === 0) return null;
@@ -12,7 +16,9 @@ const RelationshipLinks = ({ refs = [], relatedProfileType }) => {
         <Link
           key={ref.identifier}
           to={{
-            pathname: `/core/custom-objects/${relatedProfileType}/${ref.identifier}`,
+            pathname: isPatientRelationship
+              ? `/core/patient/${ref.identifier}`
+              : `/core/custom-objects/${relatedProfileType}/${ref.identifier}`,
             state: { from: location.pathname },
           }}
           onClick={(e) => e.stopPropagation()}
@@ -36,7 +42,9 @@ const RelationshipLinks = ({ refs = [], relatedProfileType }) => {
           <Link
             key={ref.identifier}
             to={{
-              pathname: `/core/custom-objects/${relatedProfileType}/${ref.identifier}`,
+              pathname: isPatientRelationship
+                ? `/core/patient/${ref.identifier}`
+                : `/core/custom-objects/${relatedProfileType}/${ref.identifier}`,
               state: { from: location.pathname },
             }}
             onClick={(e) => e.stopPropagation()}

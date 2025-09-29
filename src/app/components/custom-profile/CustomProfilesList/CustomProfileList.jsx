@@ -53,7 +53,7 @@ import { getProfileListPreferences } from '@/app/api/profile-type-api';
 import ImportDataModal from '@/app/modal/components/ImportDataModal/ImportDataModal';
 import ReusableDataGrid from './DataGrid/DataGrid';
 import DateLabel from '../../common/DateLabel/DateLabel';
-import { StyledLink } from './styled';
+import { DataGridWrapper, StyledLink } from './styled';
 import RelationshipLinks from '../RelationshipLinks';
 
 const CustomProfileList = ({
@@ -246,10 +246,20 @@ const CustomProfileList = ({
 
               if (field.fieldType === 'RELATIONSHIP') {
                 const refs = params.row[field.name];
+                const relatedField = field;
+                const isPatientRelationship =
+                  relatedField.relatedProfileType.contextType ===
+                    'PREDEFINED' &&
+                  relatedField.relatedProfileType.name.toLowerCase() ===
+                    'patients'
+                    ? true
+                    : false;
+
                 return (
                   <RelationshipLinks
                     refs={refs}
                     relatedProfileType={field.relatedProfileType.identifier}
+                    isPatientRelationship={isPatientRelationship}
                   />
                 );
               }
@@ -478,15 +488,7 @@ const CustomProfileList = ({
             </ToolbarButton>
           </Box>
         </Stack>
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            flexGrow: 1,
-            m: '16px 32px 48px 32px ',
-            minHeight: 0,
-          }}
-        >
+        <DataGridWrapper>
           <ReusableDataGrid
             columns={columns}
             rows={rows}
@@ -494,7 +496,7 @@ const CustomProfileList = ({
             onRecordClick={handleRecordClick}
             showSearch={false}
           />
-        </Box>
+        </DataGridWrapper>
       </ViewLayout>
       <Dialog
         open={importPopupOpen}
