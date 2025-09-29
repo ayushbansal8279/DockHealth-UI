@@ -453,12 +453,12 @@ const CustomProfileList = ({
                 setProfiles={setProfiles}
               />
             </Box>
-            {/* <Box display="flex" alignItems="center" width="400px" my={0.4}>
+            <Box display="flex" alignItems="center" width="400px" my={0.4}>
               <SearchInput
                 value={searchPhrase}
                 onValueChange={handleSearchInputChange}
               />
-            </Box> */}
+            </Box>
           </Box>
           <Box m={1} />
           <Box display="flex" alignItems="center">

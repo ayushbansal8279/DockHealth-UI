@@ -439,10 +439,10 @@ const UsersTable = ({
                 getAllUsers={getAllUsers}
                 fullWidth={isSmallScreen}
               />
-              {/* <SearchInput
+              <SearchInput
                 value={currentSearch}
                 onValueChange={setCurrentSearch}
-              /> */}
+              />
             </TableHeaderContainer>
           )}
           <StyledUsersTable isSmallScreen={isSmallScreen}>
