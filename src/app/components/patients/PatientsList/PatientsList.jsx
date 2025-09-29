@@ -74,6 +74,7 @@ import DateTimeEditCell from '../../common/DataGridEditCells/DateTimeEditCell';
 import CustomFieldLongTextEditor from '../../common/DataGridEditCells/CustomFieldLongTextEditor';
 import PatientListLabels from '../../common/PatientListLabels/PatientListLabels';
 import ReusableDataGrid from '../../custom-profile/CustomProfilesList/DataGrid/DataGrid';
+import { convertToSimpleString } from '@/app/helpers/markdown-helper';
 
 const renderColumnHeader = (props) => {
   const { colDef } = props;
@@ -790,6 +791,8 @@ const PatientsList = ({
                 displayValue = selectedOption
                   ? selectedOption.name
                   : displayValue;
+              } else if (column.fieldType === 'LONG_TEXT') {
+                displayValue = convertToSimpleString(displayValue);
               }
 
               return (
