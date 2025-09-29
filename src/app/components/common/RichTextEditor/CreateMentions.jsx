@@ -58,7 +58,7 @@ export function createMentionsFromTokenizedDescription(
             className="fr-deletable fr-tribute"
           >
             <span data={currentMention.identifier}>
-              @{currentMention.name}{' '}
+              #{currentMention.name}{' '}
             </span>
           </PatientMention>
         );
@@ -77,9 +77,11 @@ export function createMentionsFromTokenizedDescription(
 }
 
 export function traverseNodes(nodes, mentions) {
-  return nodes && nodes.length > 0 ? nodes.map((node) => {
-      return traverseNode(node, mentions);
-  }) : nodes;
+  return nodes && nodes.length > 0
+    ? nodes.map((node) => {
+        return traverseNode(node, mentions);
+      })
+    : nodes;
 }
 
 export function traverseNode(node, mentions) {

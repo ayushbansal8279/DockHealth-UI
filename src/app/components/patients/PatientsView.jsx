@@ -61,6 +61,7 @@ import {
   BulkEditSectionContainer,
   TaskTemplateApplicatorContainer,
   ContentWrapper,
+  GridWrapper,
 } from './styled';
 import localStorageHelper from '@/app/helpers/local-storage-helper';
 import sessionStorageHelper from '@/app/helpers/session-storage-helper';
@@ -558,6 +559,7 @@ const PatientsView = () => {
               setSearchValue={setSearchValue}
               refreshPatientListOnUpload={refreshPatientListOnUpload}
               setImportPopoverOpen={setImportPopoverOpen}
+              placeholder="Search All Patients"
             />
             <PatientsListContainer>
               {listIdentifier && listIdentifier.length === 36 && (
@@ -576,7 +578,7 @@ const PatientsView = () => {
                   <Spacing horizontal={5} />
                 </AddEntitiesContainer>
               )} */}
-              <Grid>
+              <GridWrapper>
                 {listIdentifier === DefaultPatientsListType.ALL_PATIENTS &&
                   patients?.length >= MAX_PATIENT_ALL_RESULTS && (
                     <RefineSearchText>
@@ -596,7 +598,7 @@ const PatientsView = () => {
                   isDynamicPatientList={isDynamicPatientList}
                   searchValue={searchValue}
                 />
-              </Grid>
+              </GridWrapper>
             </PatientsListContainer>
           </PatientsViewContainer>
         </ViewLayout>

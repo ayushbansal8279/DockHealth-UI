@@ -5,14 +5,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { openModal, closeModal } from 'modal/actions';
 import { userProfileSelector } from 'selectors/user-selectors';
 import { getAllContacts, deleteContact } from 'api/contacts-api';
-import AddButton, {
-  AddEntitiesContainer,
-} from 'components/common/AddButton/AddButton';
-import { StyledDataGrid } from './DataGridStyles';
+import { AddEntitiesContainer } from 'components/common/AddButton/AddButton';
 import { getContactColumns } from './helpers';
 import { ViewContainer } from './styled';
 import ToolbarButton from '@/app/components/tasklist/list-toolbar-buttons/ToolbarButton/ToolbarButton';
 import { AddIcon } from '../smart-flow-builder/TaskNodeHandles/styled';
+import ReusableDataGrid from '@/app/components/custom-profile/CustomProfilesList/DataGrid/DataGrid';
 
 // const PAGE_SIZE = 30;
 
@@ -89,42 +87,28 @@ const Contacts = () => {
   return (
     <ViewLayout header={<BasicLayoutHeader title="Contacts" />}>
       <ViewContainer>
-        <div style={{ marginBottom: '5px' }}>
-          <AddEntitiesContainer>
-            {/* <AddButton onClick={onAddContact}> */}
-            <ToolbarButton
-              // ref={buttonReference}
-              icon={
-                <span style={{ marginLeft: '-5px' }}>
-                  <AddIcon />
-                </span>
-              }
-              onClick={onAddContact}
-              // isOpen={open}
-              // active={open}
-              // hasPopover
-            >
-              <span style={{ marginLeft: '-5px' }}>Create Contact</span>
-            </ToolbarButton>
-            {/* </AddButton> */}
-          </AddEntitiesContainer>
-        </div>
-        <StyledDataGrid
+        <AddEntitiesContainer>
+          {/* <AddButton onClick={onAddContact}> */}
+          <ToolbarButton
+            // ref={buttonReference}
+            icon={
+              <span style={{ marginLeft: '-5px' }}>
+                <AddIcon />
+              </span>
+            }
+            onClick={onAddContact}
+            // isOpen={open}
+            // active={open}
+            // hasPopover
+          >
+            <span style={{ marginLeft: '-5px' }}>Create Contact</span>
+          </ToolbarButton>
+          {/* </AddButton> */}
+        </AddEntitiesContainer>
+        <ReusableDataGrid
           columns={columns}
           rows={contacts.map((t) => ({ ...t, id: t.identifier }))}
           rowHeight={35}
-          headerHeight={45}
-          // page={page}
-          // onPageChange={(p) => {
-          //   setPage(p);
-          // }}
-          // pageSize={PAGE_SIZE}
-          hideFooterSelectedRowCount
-          autoHeight
-          disableSelectionOnClick
-          disableColumnMenu
-          showColumnRightBorder
-          showCellRightBorder
         />
       </ViewContainer>
     </ViewLayout>
