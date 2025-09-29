@@ -30,7 +30,7 @@ const md = new MarkdownIt({
 md.linkify.set({ fuzzyEmail: false, fuzzyLink: false });
 
 const FROALA_PRODUCT_KEY =
-  'MZC1rE1D4D3I4A16B11D8jF1QUg1Xc2OZE1ABVJRDRNGGUH1ITrA1C7A6D5E1D4D4E1B10D7==';
+  'bMA6aC5D6B2D2H3C2H2yQNDMIJg1IQNSEa1EUAi1XVFQd1EaG3C2A5C3C4E3F3D4E2I2==';
 
 const fetchPatientsWithDebounce = debounce(
   (mentionString, setPatientSuggestions) => {
