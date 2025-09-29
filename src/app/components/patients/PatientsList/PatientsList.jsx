@@ -949,7 +949,6 @@ const PatientsList = ({
                 onPinnedColumnsChange={handlePinnedColumnsChange}
                 onColumnOrderChange={handleColumnOrderChange}
                 hideFooterSelectedRowCount
-                placeholder="Filter Results"
               />
             </NonEmptyListTable>
           ) : (
