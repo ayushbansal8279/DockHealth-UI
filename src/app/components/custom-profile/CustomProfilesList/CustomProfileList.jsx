@@ -14,7 +14,6 @@ import {
   MenuItem,
   Stack,
   Switch,
-  Typography,
 } from '@mui/material';
 import { useGridApiRef } from '@mui/x-data-grid-premium';
 import { getAllProfileTypes } from 'api/profile-type-api';
@@ -51,10 +50,16 @@ import {
 } from '@/app/actions/profile-actions';
 import { getProfileListPreferences } from '@/app/api/profile-type-api';
 import ImportDataModal from '@/app/modal/components/ImportDataModal/ImportDataModal';
+import ToolbarSelect from '../../tasklist/ToolbarSelect/ToolbarSelect';
+import { ProfileStatus, ProfileQueryType } from '@/app/helpers/profile-helpers';
+import StatusSwitchIcon from 'img/status-switch-icon.svg';
+import { ToolbarIconImg } from 'components/patients/PatientsToolbar/styled';
 import ReusableDataGrid from './DataGrid/DataGrid';
 import DateLabel from '../../common/DateLabel/DateLabel';
 import { DataGridWrapper, StyledLink } from './styled';
 import RelationshipLinks from '../RelationshipLinks';
+
+const DATASET_SIZE_THRESHOLD = 100;
 
 const CustomProfileList = ({
   profileTypeIdentifier,
@@ -94,13 +99,22 @@ const CustomProfileList = ({
   const [currentProfileType, setCurrentProfileType] = useState('');
   const [filters, setFilters] = useState([]);
   const [profiles, setProfiles] = useState([]);
+  const [allProfiles, setAllProfiles] = useState([]);
   const [searchPhrase, setSearchPhrase] = useState('');
+  const [profileStatus, setProfileStatus] = useState(ProfileStatus.ALL);
+  const [loading, setLoading] = useState(false);
+  const [useLocalFiltering, setUseLocalFiltering] = useState(true);
   const currentUser = useSelector(userProfileSelector);
   const [importPopupOpen, setImportPopupOpen] = useState(false);
   const apiRef = useGridApiRef();
 
   const isGuestOrDockLite = isUserGuestOrDockLite(currentUser);
   const isViewOnly = isUserViewOnly(currentUser);
+
+  const PROFILE_STATUS_OPTIONS = Object.values(ProfileStatus).map((status) => ({
+    value: status,
+    label: status.charAt(0) + status.slice(1).toLowerCase(),
+  }));
 
   useEffect(() => {
     if (showHeader) {
@@ -141,30 +155,83 @@ const CustomProfileList = ({
   };
 
   const fetchProfilesInternal = useCallback(() => {
-    if (fetchProfiles) {
-      fetchProfiles().then(removeDuplicatesByIdentifier).then(setProfiles);
-    } else {
-      return getAllProfiles(profileTypeIdentifier)
-        .then(removeDuplicatesByIdentifier)
-        .then(setProfiles)
-        .catch(() => {
-          dispatch(showGlobalErrorAlert());
-          setProfiles([]);
-        });
-    }
-  }, [fetchProfiles]);
+    setLoading(true);
+
+    const fetchPromise = fetchProfiles
+      ? fetchProfiles()
+          .then(removeDuplicatesByIdentifier)
+          .then((data) => {
+            setAllProfiles(data);
+            setProfiles(data);
+            setUseLocalFiltering(data.length <= DATASET_SIZE_THRESHOLD);
+          })
+      : getAllProfiles(profileTypeIdentifier)
+          .then(removeDuplicatesByIdentifier)
+          .then((data) => {
+            setAllProfiles(data);
+            setProfiles(data);
+            setUseLocalFiltering(data.length <= DATASET_SIZE_THRESHOLD);
+          })
+          .catch(() => {
+            dispatch(showGlobalErrorAlert());
+            setProfiles([]);
+            setAllProfiles([]);
+          });
+
+    return fetchPromise.finally(() => {
+      setLoading(false);
+    });
+  }, [fetchProfiles, profileTypeIdentifier]);
 
   useEffect(() => {
     fetchProfileTypesInternal();
     fetchProfileTypeFieldsInternal();
-    fetchProfilesInternal();
     fetchFiltersInternal();
   }, [
     fetchProfileTypesInternal,
     fetchProfileTypeFieldsInternal,
-    fetchProfilesInternal,
     fetchFiltersInternal,
   ]);
+
+  useEffect(() => {
+    fetchProfilesInternal();
+  }, [fetchProfilesInternal]);
+
+  const handleProfileStatusChange = useCallback(
+    (newStatus) => {
+      setProfileStatus(newStatus);
+
+      if (useLocalFiltering) {
+        if (newStatus === ProfileStatus.ALL) {
+          setProfiles(allProfiles);
+        } else {
+          const filteredProfiles = allProfiles.filter(
+            (profile) => profile.profileStatus === newStatus,
+          );
+          setProfiles(filteredProfiles);
+        }
+      } else {
+        setLoading(true);
+        const queryType =
+          newStatus === ProfileStatus.ACTIVE
+            ? ProfileQueryType.ACTIVE_PROFILES
+            : newStatus === ProfileStatus.ARCHIVED
+            ? ProfileQueryType.ARCHIVED_PROFILES
+            : ProfileQueryType.ALL_PROFILES;
+
+        getAllProfiles(profileTypeIdentifier, queryType)
+          .then(setProfiles)
+          .catch(() => {
+            dispatch(showGlobalErrorAlert());
+            setProfiles([]);
+          })
+          .finally(() => {
+            setLoading(false);
+          });
+      }
+    },
+    [useLocalFiltering, allProfiles, profileTypeIdentifier, dispatch],
+  );
 
   const handleProfileAddClick = () => {
     setOpen(true);
@@ -271,8 +338,26 @@ const CustomProfileList = ({
     })
     .filter(Boolean);
 
+  const filteredProfiles =
+    profiles?.filter((profile) => {
+      const matchesSearch = profile.fields?.some((field) =>
+        (field.values || []).some(
+          (val) =>
+            typeof val === 'string' &&
+            val.toLowerCase().includes(searchPhrase.toLowerCase()),
+        ),
+      );
+
+      const matchesStatus = useLocalFiltering
+        ? true
+        : profileStatus === ProfileStatus.ALL ||
+          profile.profileStatus === profileStatus;
+
+      return matchesSearch && matchesStatus;
+    }) || [];
+
   const rows =
-    profiles
+    filteredProfiles
       ?.filter((profile) =>
         profile.fields?.some((field) =>
           (field.values || []).some(
@@ -402,9 +487,27 @@ const CustomProfileList = ({
         <Stack
           direction="row"
           justifyContent="space-between"
-          sx={{ m: !showHeader ? '0px 32px 0px 32px ' : '16px 32px 0px 32px ' }}
+          sx={{
+            m: !showHeader ? '0px 32px 0px 32px ' : '16px 32px 0px 32px ',
+          }}
         >
           <Box display="flex" alignItems="start" my={!showHeader ? 0 : 2}>
+            <Box display="flex" alignItems="center" my={0.4} mr={2}>
+              <ToolbarSelect
+                options={PROFILE_STATUS_OPTIONS}
+                value={profileStatus}
+                name="profile-status-filter"
+                onChange={(event) =>
+                  handleProfileStatusChange(event?.target?.value)
+                }
+                icon={
+                  <ToolbarIconImg
+                    src={StatusSwitchIcon}
+                    alt="profile status icon"
+                  />
+                }
+              />
+            </Box>
             <Toolbar>
               <div style={{ marginTop: '3px' }}>
                 <ToolbarButton
@@ -492,6 +595,7 @@ const CustomProfileList = ({
           <ReusableDataGrid
             columns={columns}
             rows={rows}
+            loading={loading}
             apiRef={apiRef}
             onRecordClick={handleRecordClick}
             showSearch={false}

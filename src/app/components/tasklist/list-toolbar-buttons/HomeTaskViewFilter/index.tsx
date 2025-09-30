@@ -1,6 +1,6 @@
 import React, { useCallback, useRef, useState } from 'react';
 import { Box, Popover } from '@mui/material';
-import TasksStatusSwitchIcon from 'img/tasks-status-switch-icon.svg';
+import StatusSwitchIcon from 'img/status-switch-icon.svg';
 import {
   BoxContainer,
   ButtonContainer,
@@ -49,7 +49,7 @@ export default function HomeTaskViewFilter({ filter, onChange }: Props) {
           size="large"
         >
           <SelectIcon>
-            <ViewTypeImg src={TasksStatusSwitchIcon} />
+            <ViewTypeImg src={StatusSwitchIcon} />
           </SelectIcon>
           <ButtonLabel variant="body1">Task View</ButtonLabel>
         </ButtonContainer>
