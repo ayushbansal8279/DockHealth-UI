@@ -31,6 +31,7 @@ import {
 import { useGridApiRef } from '@mui/x-data-grid-premium';
 import { getAllProfileTypes } from 'api/profile-type-api';
 import { getAllProfileFieldTypes } from 'api/profile-type-field-api';
+import { FieldType } from 'helpers/field-type-helpers';
 import { showGlobalErrorAlert } from 'alert/actions';
 import ProfileUndoAlert from '../ProfileUndoAlert/ProfileUndoAlert';
 import LayoutHeader from 'components/template/LayoutHeader/LayoutHeader';
@@ -520,13 +521,13 @@ const CustomProfileListContent = ({
               renderCell: (params) => {
                 const value = params.row[field.name];
 
-                if (field.fieldType === 'DATE' && value) {
+                if (field.fieldType === FieldType.DATE && value) {
                   return (
                     <DateLabel date={value.date} dueDateIntent={value.intent} />
                   );
                 }
 
-                if (field.fieldType === 'HYPERLINK') {
+                if (field.fieldType === FieldType.HYPERLINK) {
                   if (!value) return '';
                   return (
                     <StyledLink
@@ -539,7 +540,7 @@ const CustomProfileListContent = ({
                   );
                 }
 
-                if (field.fieldType === 'RELATIONSHIP') {
+                if (field.fieldType === FieldType.RELATIONSHIP) {
                   const refs = params.row[field.name];
                   return (
                     <RelationshipLinks
@@ -638,15 +639,15 @@ const CustomProfileListContent = ({
               let value = '';
 
               switch (profileField.profileTypeFieldType) {
-                case 'TEXT':
-                case 'NUMBER':
-                case 'BOOLEAN':
-                case 'LONG_TEXT':
+                case FieldType.TEXT:
+                case FieldType.NUMBER:
+                case FieldType.BOOL:
+                case FieldType.LONG_TEXT:
                   value = profileField.values?.[0] || '';
                   break;
 
-                case 'MULTI_SELECT':
-                case 'PICK_LIST':
+                case FieldType.DROPDOWN_MULTI:
+                case FieldType.DROPDOWN:
                   value =
                     profileField.references
                       ?.map((r) => r.displayValue)
@@ -655,15 +656,15 @@ const CustomProfileListContent = ({
                     '';
                   break;
 
-                case 'RELATIONSHIP':
+                case FieldType.RELATIONSHIP:
                   value = profileField.references || [];
                   break;
 
-                case 'HYPERLINK':
+                case FieldType.HYPERLINK:
                   value = profileField.values?.[0] || '';
                   break;
 
-                case 'DATE':
+                case FieldType.DATE:
                   value = {
                     date: profileField.values?.[0] || '',
                     intent: profileField.dateTimeIntents?.[0] || null,
