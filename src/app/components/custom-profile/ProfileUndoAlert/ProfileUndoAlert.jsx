@@ -8,6 +8,7 @@ import {
   showGlobalErrorAlert as showGlobalErrorAlertAction,
 } from '@/app/alert/actions';
 import { hideProfileUndo } from '@/app/actions/profile-actions';
+import { OperationType } from '@/app/helpers/profile-helpers';
 
 import {
   ChipContainer,
@@ -54,7 +55,7 @@ const ProfileUndoAlert = ({ onUndo, backgroundColor }) => {
 
   const handleUndoClick = useCallback(async () => {
     handleCloseAlert();
-    
+
     try {
       onUndo(undoOperation);
     } catch {
@@ -89,14 +90,13 @@ const ProfileUndoAlert = ({ onUndo, backgroundColor }) => {
     return null;
   }
 
-  const getMessage = () => {
-    if (undoOperation.operationType === 'ARCHIVE') {
-      return 'Archived';
-    } else if (undoOperation.operationType === 'DELETE') {
-      return 'Deleted';
-    }
-    return 'Operation completed';
+  const OperationMessage = {
+    [OperationType.ARCHIVE]: 'Archived',
+    [OperationType.DELETE]: 'Deleted',
   };
+
+  const getMessage = () =>
+    OperationMessage[undoOperation.operationType] ?? 'Operation completed';
 
   return ReactDOM.createPortal(
     <ChipContainer

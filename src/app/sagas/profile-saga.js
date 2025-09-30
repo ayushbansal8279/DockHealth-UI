@@ -18,6 +18,7 @@ import {
 import { showGlobalAlert, showGlobalErrorAlert } from '../alert/actions';
 import AlertMessages from 'alert/AlertMessages';
 import { closeModal } from 'modal/actions';
+import { ProfileStatus, ProfileQueryType } from 'helpers/profile-helpers';
 
 function* getCurrentProfileFilterOptions() {
   try {
@@ -276,7 +277,7 @@ function* profileBulkArchive({
       put({
         type: ActionTypes.GET_PROFILES,
         profileTypeIdentifier,
-        profileStatus: profileStatus || 'ALL',
+        profileStatus: profileStatus || ProfileStatus.ALL,
       }),
     ]);
   } catch {
@@ -313,7 +314,7 @@ function* profileBulkDelete({
       put({
         type: ActionTypes.GET_PROFILES,
         profileTypeIdentifier,
-        profileStatus: profileStatus || 'ALL',
+        profileStatus: profileStatus || ProfileStatus.ALL,
       }),
     ]);
   } catch {
@@ -331,11 +332,11 @@ function* profileBulkDelete({
 function* getProfiles({ profileTypeIdentifier, profileStatus }) {
   try {
     const queryType =
-      profileStatus === 'ACTIVE'
-        ? 'ACTIVE_PROFILES'
-        : profileStatus === 'ARCHIVED'
-        ? 'ARCHIVED_PROFILES'
-        : 'ALL_PROFILES';
+      profileStatus === ProfileStatus.ACTIVE
+        ? ProfileQueryType.ACTIVE_PROFILES
+        : profileStatus === ProfileStatus.ARCHIVED
+        ? ProfileQueryType.ARCHIVED_PROFILES
+        : ProfileQueryType.ALL_PROFILES;
 
     const profiles = yield call(
       ProfileApi.getAllProfiles,
@@ -398,7 +399,7 @@ function* profileBulkEditCustomFields({
       put({
         type: ActionTypes.GET_PROFILES,
         profileTypeIdentifier,
-        profileStatus: profileStatus || 'ALL',
+        profileStatus: profileStatus || ProfileStatus.ALL,
       }),
     ]);
   } catch {
@@ -424,7 +425,7 @@ function* profileBulkUnarchive({
       ProfileApi.bulkUnarchiveProfiles,
       profileIdentifiers,
       profileTypeIdentifier,
-      'ACTIVE',
+      ProfileStatus.ACTIVE,
     );
     yield all([
       put(showGlobalAlert(AlertMessages.UNARCHIVED)),
@@ -436,7 +437,7 @@ function* profileBulkUnarchive({
       put({
         type: ActionTypes.GET_PROFILES,
         profileTypeIdentifier,
-        profileStatus: profileStatus || 'ALL',
+        profileStatus: profileStatus || ProfileStatus.ALL,
       }),
     ]);
   } catch {
@@ -472,7 +473,7 @@ function* profileBulkRecover({
       put({
         type: ActionTypes.GET_PROFILES,
         profileTypeIdentifier,
-        profileStatus: profileStatus || 'ALL',
+        profileStatus: profileStatus || ProfileStatus.ALL,
       }),
     ]);
   } catch {

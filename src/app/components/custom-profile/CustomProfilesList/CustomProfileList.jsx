@@ -78,7 +78,7 @@ import { openModal, closeModal } from 'modal/actions';
 import { getProfileListPreferences } from '@/app/api/profile-type-api';
 import ImportDataModal from '@/app/modal/components/ImportDataModal/ImportDataModal';
 import ToolbarSelect from '../../tasklist/ToolbarSelect/ToolbarSelect';
-import { ProfileStatus, ProfileQueryType } from '@/app/helpers/profile-helpers';
+import { ProfileStatus, OperationType } from '@/app/helpers/profile-helpers';
 import TasksStatusSwitchIcon from 'img/tasks-status-switch-icon.svg';
 import { PatientsListImg } from 'components/patients/PatientsToolbar/styled';
 import ReusableDataGrid from './DataGrid/DataGrid';
@@ -225,7 +225,7 @@ const CustomProfileListContent = ({
           );
           dispatch(
             showProfileUndo(
-              'DELETE',
+              OperationType.DELETE,
               profileIdentifiers,
               profileTypeIdentifier,
               profileStatus,
@@ -242,7 +242,7 @@ const CustomProfileListContent = ({
           );
           dispatch(
             showProfileUndo(
-              'ARCHIVE',
+              OperationType.ARCHIVE,
               profileIdentifiers,
               profileTypeIdentifier,
               profileStatus,
@@ -312,7 +312,7 @@ const CustomProfileListContent = ({
         profileStatus,
       } = undoOperation;
 
-      if (operationType === 'ARCHIVE') {
+      if (operationType === OperationType.ARCHIVE) {
         dispatch(
           profileBulkUnarchive(
             profileIdentifiers,
@@ -320,7 +320,7 @@ const CustomProfileListContent = ({
             profileStatus,
           ),
         );
-      } else if (operationType === 'DELETE') {
+      } else if (operationType === OperationType.DELETE) {
         dispatch(
           profileBulkRecover(
             profileIdentifiers,
