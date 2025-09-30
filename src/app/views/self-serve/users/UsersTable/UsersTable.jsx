@@ -1,11 +1,10 @@
 import React, { useMemo, useState } from 'react';
-import { Box } from '@mui/material';
-import TasksStatusSwitchIcon from 'img/tasks-status-switch-icon.svg';
+import StatusSwitchIcon from 'img/status-switch-icon.svg';
 import ToolbarSelect from 'components/tasklist/ToolbarSelect/ToolbarSelect';
 import SearchInput from 'components/common/SearchInput/SearchInput';
 import { useHistory } from 'react-router-dom';
 import moment from 'moment';
-import { PatientsListImg } from 'components/patients/PatientsToolbar/styled';
+import { ToolbarIconImg } from 'components/patients/PatientsToolbar/styled';
 import filter from 'ramda/src/filter';
 import includes from 'ramda/src/includes';
 import isEmpty from 'ramda/src/isEmpty';
@@ -429,10 +428,7 @@ const UsersTable = ({
                   )
                 }
                 icon={
-                  <PatientsListImg
-                    src={TasksStatusSwitchIcon}
-                    alt="list type icon"
-                  />
+                  <ToolbarIconImg src={StatusSwitchIcon} alt="list type icon" />
                 }
               />
               <InviteButton

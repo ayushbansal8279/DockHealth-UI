@@ -14,7 +14,6 @@ import {
   MenuItem,
   Stack,
   Switch,
-  Typography,
 } from '@mui/material';
 import { useGridApiRef } from '@mui/x-data-grid-premium';
 import { getAllProfileTypes } from 'api/profile-type-api';
@@ -53,8 +52,8 @@ import { getProfileListPreferences } from '@/app/api/profile-type-api';
 import ImportDataModal from '@/app/modal/components/ImportDataModal/ImportDataModal';
 import ToolbarSelect from '../../tasklist/ToolbarSelect/ToolbarSelect';
 import { ProfileStatus, ProfileQueryType } from '@/app/helpers/profile-helpers';
-import TasksStatusSwitchIcon from 'img/tasks-status-switch-icon.svg';
-import { PatientsListImg } from 'components/patients/PatientsToolbar/styled';
+import StatusSwitchIcon from 'img/status-switch-icon.svg';
+import { ToolbarIconImg } from 'components/patients/PatientsToolbar/styled';
 import ReusableDataGrid from './DataGrid/DataGrid';
 import DateLabel from '../../common/DateLabel/DateLabel';
 import { StyledLink } from './styled';
@@ -492,8 +491,8 @@ const CustomProfileList = ({
                   handleProfileStatusChange(event?.target?.value)
                 }
                 icon={
-                  <PatientsListImg
-                    src={TasksStatusSwitchIcon}
+                  <ToolbarIconImg
+                    src={StatusSwitchIcon}
                     alt="profile status icon"
                   />
                 }

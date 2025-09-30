@@ -26,11 +26,9 @@ import {
 } from 'components/patients/PatientDrawer/styled';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import CloseIcon from '@mui/icons-material/Close';
-// import Input from 'components/common/Input/Input';
 import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
 import LabeledCollapse from 'components/common/LabeledCollapse/LabeledCollapse';
 import Button from 'components/common/Button/Button';
-// import Select from 'components/common/Select/Select';
 import CustomField from 'components/common/CustomField/CustomField';
 import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
@@ -155,9 +153,15 @@ const ProfileDrawer = ({
   };
 
   const menu = useMemo(() => {
-    const openArchiveModal = (nextStatus, confirmText, successMessage) => {
+    const openArchiveModal = (
+      title,
+      nextStatus,
+      confirmText,
+      successMessage,
+    ) => {
       dispatch(
         openModal('DeleteConfirmation', {
+          title,
           description: `Are you sure you want to ${confirmText.toLowerCase()} this object?`,
           confirm: () => {
             archiveProfile(profile.identifier, nextStatus).then(() => {
@@ -191,6 +195,7 @@ const ProfileDrawer = ({
               name: 'Archive',
               onClick: () =>
                 openArchiveModal(
+                  'Archive Object',
                   ProfileStatus.ARCHIVED,
                   'Archive',
                   AlertMessages.ARCHIVED,
@@ -200,12 +205,13 @@ const ProfileDrawer = ({
         : profile?.profileStatus === ProfileStatus.ARCHIVED
         ? [
             {
-              name: 'Unarchive',
+              name: 'Restore',
               onClick: () =>
                 openArchiveModal(
+                  'Restore Object',
                   ProfileStatus.ACTIVE,
-                  'Unarchive',
-                  AlertMessages.PATIENT_UNARCHIVED,
+                  'Restore',
+                  AlertMessages.UNARCHIVED,
                 ),
             },
           ]
