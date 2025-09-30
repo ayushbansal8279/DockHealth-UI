@@ -2,6 +2,7 @@ const AlertMessages = {
   SAVED: 'Saved',
   CREATED: 'Created',
   UPDATED: 'Updated',
+  ARCHIVED: 'Archived',
   DELETED: 'Deleted',
   INVITED: 'Invited',
   DUPLICATED: 'Duplicated',

@@ -266,3 +266,31 @@ export const getProfileRelationships = (
     )
     .then(({ data }) => data);
 };
+
+export const ProfileBulkActions = {
+  ARCHIVE_PROFILE: 'ARCHIVE_PROFILE',
+  DELETE_PROFILE: 'DELETE_PROFILE',
+};
+
+export function bulkArchiveProfiles(profileIdentifiers, profileTypeIdentifier, status) {
+  const body = {
+    bulkOperationType: ProfileBulkActions.ARCHIVE_PROFILE,
+    profileIdentifiers,
+    status,
+  };
+
+  return axios
+    .put(`profile/bulkEdit/${profileTypeIdentifier}`, body)
+    .then(({ data }) => data);
+}
+
+export function bulkDeleteProfiles(profileIdentifiers, profileTypeIdentifier) {
+  const body = {
+    bulkOperationType: ProfileBulkActions.DELETE_PROFILE,
+    profileIdentifiers,
+  };
+
+  return axios
+    .put(`profile/bulkEdit/${profileTypeIdentifier}`, body)
+    .then(({ data }) => data);
+}
