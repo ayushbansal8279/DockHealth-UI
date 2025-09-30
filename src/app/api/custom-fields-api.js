@@ -37,6 +37,21 @@ export function getAllProviderCustomFields() {
     });
 }
 
+export function getAllProfileCustomFields(
+  profileTypeIdentifier,
+  active = true,
+) {
+  return axios
+    .get(`profile/type/field/getAll/${profileTypeIdentifier}`, {
+      params: { active },
+    })
+    .then(({ data }) => data)
+    .catch((error) => {
+      log(error);
+      throw new Error(error?.response?.data?.errorMessage);
+    });
+}
+
 export function getAllTaskCustomFields(targetIdentifier, taskListIdentifier) {
   return axios
     .get(`custom/field/getAll/TASK`, {
