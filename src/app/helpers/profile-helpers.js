@@ -48,3 +48,8 @@ export const ProfileQueryType = {
   ACTIVE_PROFILES: 'ACTIVE_PROFILES',
   ARCHIVED_PROFILES: 'ARCHIVED_PROFILES',
 };
+
+export const OperationType = {
+  ARCHIVE: 'ARCHIVE',
+  DELETE: 'DELETE',
+};

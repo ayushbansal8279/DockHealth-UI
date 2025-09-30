@@ -33,6 +33,7 @@ import { getAllProfileTypes } from 'api/profile-type-api';
 import { getAllProfileFieldTypes } from 'api/profile-type-field-api';
 import { FieldType } from 'helpers/field-type-helpers';
 import { showGlobalErrorAlert } from 'alert/actions';
+import ProfileUndoAlert from '../ProfileUndoAlert/ProfileUndoAlert';
 import LayoutHeader from 'components/template/LayoutHeader/LayoutHeader';
 import ViewLayout from 'components/template/ViewLayout/ViewLayout';
 import ProfileDrawer from 'components/custom-profile/CustomProfilesList/ProfileDrawer';
@@ -46,7 +47,12 @@ import ToolbarButton from '../../tasklist/list-toolbar-buttons/ToolbarButton/Too
 import { AddIcon } from '@/app/views/smart-flow-builder/TaskNodeHandles/styled';
 import ProfileFilter from '../ProfileFilter/ProfileFilter';
 import OptionsMenu from '../../common/OptionsMenu/OptionsMenu';
-import { MoreVert, Archive, Delete } from '@mui/icons-material';
+import {
+  MoreVert,
+  Archive,
+  Delete,
+  AppRegistration,
+} from '@mui/icons-material';
 import Checkbox from 'components/common/Checkbox/Checkbox';
 import { userProfileSelector } from '@/app/selectors/user-selectors';
 import {
@@ -64,12 +70,16 @@ import {
   updateProfileListPreferences,
   profileBulkArchive,
   profileBulkDelete,
+  getProfiles,
+  profileBulkUnarchive,
+  profileBulkRecover,
+  showProfileUndo,
 } from '@/app/actions/profile-actions';
 import { openModal, closeModal } from 'modal/actions';
 import { getProfileListPreferences } from '@/app/api/profile-type-api';
 import ImportDataModal from '@/app/modal/components/ImportDataModal/ImportDataModal';
 import ToolbarSelect from '../../tasklist/ToolbarSelect/ToolbarSelect';
-import { ProfileStatus, ProfileQueryType } from '@/app/helpers/profile-helpers';
+import { ProfileStatus, OperationType } from '@/app/helpers/profile-helpers';
 import TasksStatusSwitchIcon from 'img/tasks-status-switch-icon.svg';
 import { PatientsListImg } from 'components/patients/PatientsToolbar/styled';
 import ReusableDataGrid from './DataGrid/DataGrid';
@@ -118,10 +128,19 @@ const CustomProfileListContent = ({
   const [profileTypeFields, setProfileTypeFields] = useState([]);
   const [currentProfileType, setCurrentProfileType] = useState('');
   const [filters, setFilters] = useState([]);
-  const [profiles, setProfiles] = useState([]);
+  const profiles = useSelector((state) => state.profile?.profiles || []);
+  const filteredProfilesFromRedux = useSelector(
+    (state) => state.profile?.filteredProfiles || [],
+  );
+  const isFetchingProfiles = useSelector(
+    (state) => state.profile?.isFetchingProfiles || false,
+  );
+  const isFilteringProfiles = useSelector(
+    (state) => state.profile?.isFilteringProfiles || false,
+  );
   const [searchPhrase, setSearchPhrase] = useState('');
   const [profileStatus, setProfileStatus] = useState(ProfileStatus.ALL);
-  const [loading, setLoading] = useState(false);
+  const loading = isFetchingProfiles || isFilteringProfiles;
   const [useLocalFiltering, setUseLocalFiltering] = useState(true);
   const currentUser = useSelector(userProfileSelector);
   const [importPopupOpen, setImportPopupOpen] = useState(false);
@@ -149,29 +168,9 @@ const CustomProfileListContent = ({
 
   const fetchProfilesInternal = useCallback(
     (status = ProfileStatus.ALL) => {
-      setLoading(true);
-
-      const queryType =
-        status === ProfileStatus.ACTIVE
-          ? ProfileQueryType.ACTIVE_PROFILES
-          : status === ProfileStatus.ARCHIVED
-          ? ProfileQueryType.ARCHIVED_PROFILES
-          : ProfileQueryType.ALL_PROFILES;
-
-      const fetchPromise = fetchProfiles
-        ? fetchProfiles(queryType)
-        : getAllProfiles(profileTypeIdentifier, queryType);
-
-      return fetchPromise
-        .then(removeDuplicatesByIdentifier)
-        .then(setProfiles)
-        .catch(() => {
-          dispatch(showGlobalErrorAlert());
-          setProfiles([]);
-        })
-        .finally(() => setLoading(false));
+      dispatch(getProfiles(profileTypeIdentifier, status));
     },
-    [fetchProfiles, profileTypeIdentifier, dispatch],
+    [dispatch, profileTypeIdentifier],
   );
 
   const fetchProfileTypesInternal = useCallback(() => {
@@ -221,10 +220,45 @@ const CustomProfileListContent = ({
       const profileIdentifiers = selectedItems?.map((p) => p.identifier) ?? [];
 
       try {
-        await dispatch(
-          action(profileIdentifiers, profileTypeIdentifier, status),
-        );
-        await fetchProfilesInternal(profileStatus);
+        if (action === profileBulkDelete) {
+          await dispatch(
+            action(profileIdentifiers, profileTypeIdentifier, profileStatus),
+          );
+          dispatch(
+            showProfileUndo(
+              OperationType.DELETE,
+              profileIdentifiers,
+              profileTypeIdentifier,
+              profileStatus,
+            ),
+          );
+        } else if (action === profileBulkArchive) {
+          await dispatch(
+            action(
+              profileIdentifiers,
+              profileTypeIdentifier,
+              status,
+              profileStatus,
+            ),
+          );
+          dispatch(
+            showProfileUndo(
+              OperationType.ARCHIVE,
+              profileIdentifiers,
+              profileTypeIdentifier,
+              profileStatus,
+            ),
+          );
+        } else {
+          await dispatch(
+            action(
+              profileIdentifiers,
+              profileTypeIdentifier,
+              status,
+              profileStatus,
+            ),
+          );
+        }
         resetOptions();
       } catch (err) {
         console.error('Bulk action failed:', err);
@@ -234,9 +268,8 @@ const CustomProfileListContent = ({
       dispatch,
       selectedItems,
       profileTypeIdentifier,
-      fetchProfilesInternal,
-      resetOptions,
       profileStatus,
+      resetOptions,
     ],
   );
 
@@ -247,6 +280,59 @@ const CustomProfileListContent = ({
   const handleBulkDelete = useCallback(() => {
     handleBulkAction(profileBulkDelete);
   }, [handleBulkAction]);
+
+  const handleBulkEditCustomFields = useCallback(() => {
+    const profileIdentifiers = selectedItems?.map((p) => p.identifier) ?? [];
+    dispatch(
+      openModal('ProfileCustomFieldsBulkEditModal', {
+        profileIdentifiers,
+        profileTypeIdentifier,
+        profileStatus,
+        onCloseModal: () => {
+          resetOptions?.();
+          dispatch(closeModal());
+        },
+      }),
+    );
+  }, [
+    dispatch,
+    selectedItems,
+    profileTypeIdentifier,
+    profileStatus,
+    resetOptions,
+  ]);
+
+  const handleUndo = useCallback(
+    (undoOperation) => {
+      if (!undoOperation) return;
+
+      const {
+        operationType,
+        profileIdentifiers,
+        profileTypeIdentifier,
+        profileStatus,
+      } = undoOperation;
+
+      if (operationType === OperationType.ARCHIVE) {
+        dispatch(
+          profileBulkUnarchive(
+            profileIdentifiers,
+            profileTypeIdentifier,
+            profileStatus,
+          ),
+        );
+      } else if (operationType === OperationType.DELETE) {
+        dispatch(
+          profileBulkRecover(
+            profileIdentifiers,
+            profileTypeIdentifier,
+            profileStatus,
+          ),
+        );
+      }
+    },
+    [dispatch],
+  );
 
   const openBulkArchiveConfirmationModal = useCallback(() => {
     const selectedProfilesCount = selectedItems?.length;
@@ -293,6 +379,12 @@ const CustomProfileListContent = ({
   const bulkOptions = useMemo(
     () => [
       {
+        key: 'editFields',
+        title: 'Edit Fields',
+        icon: AppRegistration,
+        onClick: handleBulkEditCustomFields,
+      },
+      {
         key: 'archive',
         title: 'Archive',
         icon: Archive,
@@ -305,7 +397,11 @@ const CustomProfileListContent = ({
         onClick: openBulkDeleteConfirmationModal,
       },
     ],
-    [openBulkArchiveConfirmationModal, openBulkDeleteConfirmationModal],
+    [
+      openBulkArchiveConfirmationModal,
+      openBulkDeleteConfirmationModal,
+      handleBulkEditCustomFields,
+    ],
   );
 
   useEffect(() => {
@@ -462,9 +558,22 @@ const CustomProfileListContent = ({
       .filter(Boolean),
   ];
 
+  // TODO: fix filter
   const filteredProfiles = useMemo(() => {
+    let profilesToFilter = profiles;
+
+    if (filteredProfilesFromRedux.length > 0) {
+      profilesToFilter = filteredProfilesFromRedux.filter((profile) => {
+        if (useLocalFiltering) return true;
+        return (
+          profileStatus === ProfileStatus.ALL ||
+          profile.profileStatus === profileStatus
+        );
+      });
+    }
+
     return (
-      profiles?.filter((profile) => {
+      profilesToFilter?.filter((profile) => {
         const matchesSearch = profile.fields?.some((field) =>
           (field.values || []).some(
             (val) =>
@@ -473,15 +582,16 @@ const CustomProfileListContent = ({
           ),
         );
 
-        const matchesStatus = useLocalFiltering
-          ? true
-          : profileStatus === ProfileStatus.ALL ||
-            profile.profileStatus === profileStatus;
-
-        return matchesSearch && matchesStatus;
+        return matchesSearch;
       }) || []
     );
-  }, [profiles, searchPhrase, useLocalFiltering, profileStatus]);
+  }, [
+    profiles,
+    filteredProfilesFromRedux,
+    searchPhrase,
+    useLocalFiltering,
+    profileStatus,
+  ]);
 
   const profilesWithSelection = useMemo(() => {
     return (
@@ -706,7 +816,6 @@ const CustomProfileListContent = ({
               <ProfileFilter
                 profileTypeIdentifier={profileTypeIdentifier}
                 fetchProfiles={fetchProfilesInternal}
-                setProfiles={setProfiles}
               />
             </Box>
             <Box display="flex" alignItems="center" width="400px" my={0.4}>
@@ -778,6 +887,7 @@ const CustomProfileListContent = ({
           identifier={profileTypeIdentifier}
         />
       </Dialog>
+      <ProfileUndoAlert onUndo={handleUndo} />
     </>
   );
 };

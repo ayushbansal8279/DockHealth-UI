@@ -1,5 +1,4 @@
 import { useCallback } from 'react';
-import { getProfileDetailByFilter } from '@/app/api/profile-api';
 import { convertToPayload } from './helper';
 import MegaFilter from '../../tasklist/list-toolbar-buttons/MegaFilter/MegaFilter';
 import {
@@ -21,14 +20,12 @@ import {
 import {
   selectedProfileFilters,
   getProfileFilterOptions,
+  filterProfiles,
+  clearFilteredProfiles,
 } from '@/app/actions/profile-actions';
 import React from 'react';
 
-const ProfileFilter = ({
-  profileTypeIdentifier,
-  fetchProfiles,
-  setProfiles,
-}) => {
+const ProfileFilter = ({ profileTypeIdentifier, fetchProfiles }) => {
   const dispatch = useDispatch();
   const selectedQuickFilter = useSelector(selectedQuickFilterSelector);
   const addQuickFilterOption = useSelector(addQuickFilterOptionSelector);
@@ -44,11 +41,7 @@ const ProfileFilter = ({
 
   const handleFilterSelect = async (newFilters) => {
     const payload = convertToPayload(newFilters);
-    const result = await getProfileDetailByFilter(
-      profileTypeIdentifier,
-      payload,
-    );
-    setProfiles(result);
+    dispatch(filterProfiles(profileTypeIdentifier, payload));
     dispatch(selectedProfileFilters(newFilters));
   };
 
@@ -61,14 +54,10 @@ const ProfileFilter = ({
     async (id, filtersSetup) => {
       dispatch(selectQuickFilter(id));
       const payload = convertToPayload(filtersSetup);
-      const result = await getProfileDetailByFilter(
-        profileTypeIdentifier,
-        payload,
-      );
-      setProfiles(result);
+      dispatch(filterProfiles(profileTypeIdentifier, payload));
       dispatch(selectedProfileFilters(filtersSetup, id));
     },
-    [dispatch],
+    [dispatch, profileTypeIdentifier],
   );
 
   const handleQuickFilterCreate = useCallback(
@@ -105,6 +94,7 @@ const ProfileFilter = ({
 
   const clearFilter = () => {
     dispatch(clearFiltersForMegaFilter());
+    dispatch(clearFilteredProfiles());
     fetchProfiles();
   };
 
