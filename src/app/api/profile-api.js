@@ -270,9 +270,16 @@ export const getProfileRelationships = (
 export const ProfileBulkActions = {
   ARCHIVE_PROFILE: 'ARCHIVE_PROFILE',
   DELETE_PROFILE: 'DELETE_PROFILE',
+  EDIT_FIELDS: 'EDIT_FIELDS',
+  UNARCHIVE_PROFILE: 'UNARCHIVE_PROFILE',
+  RESTORE_PROFILE: 'RESTORE_PROFILE',
 };
 
-export function bulkArchiveProfiles(profileIdentifiers, profileTypeIdentifier, status) {
+export function bulkArchiveProfiles(
+  profileIdentifiers,
+  profileTypeIdentifier,
+  status,
+) {
   const body = {
     bulkOperationType: ProfileBulkActions.ARCHIVE_PROFILE,
     profileIdentifiers,
@@ -287,6 +294,46 @@ export function bulkArchiveProfiles(profileIdentifiers, profileTypeIdentifier, s
 export function bulkDeleteProfiles(profileIdentifiers, profileTypeIdentifier) {
   const body = {
     bulkOperationType: ProfileBulkActions.DELETE_PROFILE,
+    profileIdentifiers,
+  };
+
+  return axios
+    .put(`profile/bulkEdit/${profileTypeIdentifier}`, body)
+    .then(({ data }) => data);
+}
+
+export function bulkEditProfilesCustomFields(payload) {
+  const { fields, profileIdentifiers, profileTypeIdentifier } = payload;
+  const body = {
+    bulkOperationType: ProfileBulkActions.EDIT_FIELDS,
+    profileIdentifiers,
+    fields,
+  };
+
+  return axios
+    .put(`profile/bulkEdit/${profileTypeIdentifier}`, body)
+    .then(({ data }) => data);
+}
+
+export function bulkUnarchiveProfiles(
+  profileIdentifiers,
+  profileTypeIdentifier,
+  status,
+) {
+  const body = {
+    bulkOperationType: ProfileBulkActions.UNARCHIVE_PROFILE,
+    profileIdentifiers,
+    status,
+  };
+
+  return axios
+    .put(`profile/bulkEdit/${profileTypeIdentifier}`, body)
+    .then(({ data }) => data);
+}
+
+export function bulkRestoreProfiles(profileIdentifiers, profileTypeIdentifier) {
+  const body = {
+    bulkOperationType: ProfileBulkActions.RESTORE_PROFILE,
     profileIdentifiers,
   };
 

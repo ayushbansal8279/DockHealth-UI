@@ -21,6 +21,8 @@ const AlertMessages = {
   ATTACHMENT_REMOVED: 'Attachment removed',
   TASK_DUPLICATED: 'Task duplicated',
   SHARED: 'Shared',
+  UNARCHIVED: 'Restored',
+  RECOVERED: 'Recovered',
   WORKFLOW_CREATED: 'Workflow created',
   LABEL_CREATED: 'Label created',
   LABEL_DELETED: 'Label deleted',
