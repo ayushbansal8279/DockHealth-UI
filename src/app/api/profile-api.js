@@ -4,12 +4,18 @@ import { handleMixedResponse } from '../helpers/handle-mixed-response';
 import {
   getTransformedProfileFields,
   ProfileAttachmentType,
+  ProfileQueryType,
 } from '../helpers/profile-helpers';
 import { noop, showAlert } from '../helpers/utility-functions';
 import axios from './axios-heydoc';
 
-export function getAllProfiles(identifier) {
-  return axios.get(`profile/getAll/${identifier}`).then(({ data }) => data);
+export function getAllProfiles(
+  identifier,
+  status = ProfileQueryType.ALL_PROFILES,
+) {
+  const url = `profile/getAll/${identifier}`;
+  const params = status !== ProfileQueryType.ALL_PROFILES ? { status } : {};
+  return axios.get(url, { params }).then(({ data }) => data);
 }
 
 export function getProfileDetails(identifier) {
@@ -37,6 +43,14 @@ export function editProfileDetails(identifier, details, types) {
 
 export function deleteProfile(identifier) {
   return axios.delete(`profile/${identifier}`).then(({ data }) => data);
+}
+
+export function archiveProfile(identifier, status) {
+  return axios
+    .patch(`profile/archiveProfile/${identifier}`, null, {
+      params: { status },
+    })
+    .then(({ data }) => data);
 }
 
 export function getProfileFilterOptions(profileTypeIdentifier) {
@@ -252,3 +266,78 @@ export const getProfileRelationships = (
     )
     .then(({ data }) => data);
 };
+
+export const ProfileBulkActions = {
+  ARCHIVE_PROFILE: 'ARCHIVE_PROFILE',
+  DELETE_PROFILE: 'DELETE_PROFILE',
+  EDIT_FIELDS: 'EDIT_FIELDS',
+  UNARCHIVE_PROFILE: 'UNARCHIVE_PROFILE',
+  RESTORE_PROFILE: 'RESTORE_PROFILE',
+};
+
+export function bulkArchiveProfiles(
+  profileIdentifiers,
+  profileTypeIdentifier,
+  status,
+) {
+  const body = {
+    bulkOperationType: ProfileBulkActions.ARCHIVE_PROFILE,
+    profileIdentifiers,
+    status,
+  };
+
+  return axios
+    .put(`profile/bulkEdit/${profileTypeIdentifier}`, body)
+    .then(({ data }) => data);
+}
+
+export function bulkDeleteProfiles(profileIdentifiers, profileTypeIdentifier) {
+  const body = {
+    bulkOperationType: ProfileBulkActions.DELETE_PROFILE,
+    profileIdentifiers,
+  };
+
+  return axios
+    .put(`profile/bulkEdit/${profileTypeIdentifier}`, body)
+    .then(({ data }) => data);
+}
+
+export function bulkEditProfilesCustomFields(payload) {
+  const { fields, profileIdentifiers, profileTypeIdentifier } = payload;
+  const body = {
+    bulkOperationType: ProfileBulkActions.EDIT_FIELDS,
+    profileIdentifiers,
+    fields,
+  };
+
+  return axios
+    .put(`profile/bulkEdit/${profileTypeIdentifier}`, body)
+    .then(({ data }) => data);
+}
+
+export function bulkUnarchiveProfiles(
+  profileIdentifiers,
+  profileTypeIdentifier,
+  status,
+) {
+  const body = {
+    bulkOperationType: ProfileBulkActions.UNARCHIVE_PROFILE,
+    profileIdentifiers,
+    status,
+  };
+
+  return axios
+    .put(`profile/bulkEdit/${profileTypeIdentifier}`, body)
+    .then(({ data }) => data);
+}
+
+export function bulkRestoreProfiles(profileIdentifiers, profileTypeIdentifier) {
+  const body = {
+    bulkOperationType: ProfileBulkActions.RESTORE_PROFILE,
+    profileIdentifiers,
+  };
+
+  return axios
+    .put(`profile/bulkEdit/${profileTypeIdentifier}`, body)
+    .then(({ data }) => data);
+}

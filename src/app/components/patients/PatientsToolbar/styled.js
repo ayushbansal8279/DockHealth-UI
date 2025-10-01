@@ -30,7 +30,7 @@ export const SearchHelperText = styled.p`
   font-family: 'Outfit', sans-serif;
 `;
 
-export const PatientsListImg = styled.img`
+export const ToolbarIconImg = styled.img`
   width: 21px;
   ${({ iconColorFilterActive }) =>
     iconColorFilterActive

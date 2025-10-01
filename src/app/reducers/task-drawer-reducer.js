@@ -249,6 +249,30 @@ const TaskReducer = (state = initialState, action) => {
             };
             return updatedState;
           }
+          if (
+            state.selectedTask?.taskDependencies.find(
+              (td) => td.identifier === taskItem?.taskIdentifier,
+            )
+          ) {
+            const updateTaskDependencies =
+              state.selectedTask?.taskDependencies.map((td) =>
+                td?.identifier === taskItem?.taskIdentifier
+                  ? {
+                      ...td,
+                      ...taskItem,
+                    }
+                  : td,
+              );
+            // eslint-disable-next-line sonarjs/prefer-immediate-return
+            const updatedState = {
+              ...reducerState,
+              selectedTask: {
+                ...state.selectedTask,
+                taskDependencies: updateTaskDependencies,
+              },
+            };
+            return updatedState;
+          }
           // donot update selected task for another task not already selected
           return {
             ...reducerState,

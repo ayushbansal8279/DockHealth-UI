@@ -1,10 +1,5 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import React, {
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useState,
-} from 'react';
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useBoolean } from 'hooks/useBoolean';
 import { updateTaskDescription } from 'actions/task-actions';
@@ -21,9 +16,7 @@ const TaskDescription = ({
   setTaskDescription,
   isClicked = false,
 }) => {
-  const {
-    tokenizedDescription,
-  } = selectedTask || {};
+  const { tokenizedDescription } = selectedTask || {};
 
   const dispatch = useDispatch();
   const firstRender = useRef(true);
@@ -73,6 +66,7 @@ const TaskDescription = ({
             key={selectedTask?.identifier}
             focused={isFocused}
             richTextEnabled
+            addExtraPaddingOnTop
           >
             <RichTextEditor
               value={addTaskDrawer ? taskDescription : descriptionState}
@@ -82,6 +76,7 @@ const TaskDescription = ({
               disableToolbar
               showToolbarInline
               multiline={false}
+              initOnClick
               taskListIdentifier={selectedTask?.taskList?.taskListIdentifier}
               mentions={selectedTask?.taskMentions}
               readonly={readOnly}

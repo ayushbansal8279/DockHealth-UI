@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { TaskOrigin, TaskStatus, TaskStatusLabel } from 'helpers/task-helpers';
+import { TaskStatus, TaskStatusLabel } from 'helpers/task-helpers';
 import { Box, Popover } from '@mui/material';
-import TasksStatusSwitchIcon from 'img/tasks-status-switch-icon.svg';
+import StatusSwitchIcon from 'img/status-switch-icon.svg';
 import {
   ViewTypeImg,
   SelectWrapper,
@@ -74,7 +74,7 @@ export default function TaskStatusToolbarSelect({
         >
           <SelectIcon>
             <ViewTypeImg
-              src={TasksStatusSwitchIcon}
+              src={StatusSwitchIcon}
               alt="view type icon"
               iconColorFilterActive={iconColorFilterActive}
             />
