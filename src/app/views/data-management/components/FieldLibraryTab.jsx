@@ -12,7 +12,10 @@ import ToolbarButton from '@/app/components/tasklist/list-toolbar-buttons/Toolba
 import { openModal } from '@/app/modal/actions';
 import { showGlobalErrorAlert, showGlobalAlert } from '@/app/alert/actions';
 import AlertMessages from '@/app/alert/AlertMessages';
-import { getAllCustomFields } from '@/app/api/custom-fields-api';
+import {
+  deleteCustomField,
+  getAllCustomFields,
+} from '@/app/api/custom-fields-api';
 import { fieldTypes } from '@/app/components/profile-builder/helper';
 
 const FieldLibraryTab = () => {
@@ -24,41 +27,43 @@ const FieldLibraryTab = () => {
   const apiRef = useGridApiRef();
 
   const getFieldTypeInfo = (fieldType) => {
-    return fieldTypes.find(ft => ft.fieldType === fieldType) || {
-      placeholder: fieldType,
-      img: null
-    };
+    return (
+      fieldTypes.find((ft) => ft.fieldType === fieldType) || {
+        placeholder: fieldType,
+        img: null,
+      }
+    );
   };
 
   const formatObjectCase = (objectType) => {
     if (!objectType) return '';
-    
+
     const specialCases = {
-      'PATIENT': 'Patient',
-      'USER': 'User',
-      'CAREGIVER': 'Caregiver',
-      'PHARMACY': 'Pharmacy',
-      'EQUIPMENT': 'Equipment',
-      'INSURANCE_COMPANY': 'Insurance Company',
-      'PROVIDER': 'Provider',
-      'TASK': 'Task',
-      'PROFILE': 'Profile'
+      PATIENT: 'Patient',
+      USER: 'User',
+      CAREGIVER: 'Caregiver',
+      PHARMACY: 'Pharmacy',
+      EQUIPMENT: 'Equipment',
+      INSURANCE_COMPANY: 'Insurance Company',
+      PROVIDER: 'Provider',
+      TASK: 'Task',
+      PROFILE: 'Profile',
     };
-    
+
     if (specialCases[objectType]) {
       return specialCases[objectType];
     }
-    
+
     return objectType
       .toLowerCase()
       .split('_')
-      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
       .join(' ');
   };
 
   const getProfileTypeNames = (profileTypeDetails) => {
     if (!profileTypeDetails || !Array.isArray(profileTypeDetails)) return [];
-    return profileTypeDetails.map(detail => detail.name || 'Unknown');
+    return profileTypeDetails.map((detail) => detail.name || 'Unknown');
   };
 
   const getCategoryFromTargetType = (targetType) => {
@@ -132,7 +137,7 @@ const FieldLibraryTab = () => {
           'Are you sure you want to delete this field from the library? This action cannot be undone.',
         confirm: async () => {
           try {
-            // await deleteCustomField(field.identifier);
+            await deleteCustomField(field.identifier);
             dispatch(showGlobalAlert(AlertMessages.DELETED));
             const fields = await getAllCustomFields();
             setFieldLibrary(fields || []);
@@ -173,7 +178,7 @@ const FieldLibraryTab = () => {
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    border: '1px solid #e0e0e0'
+                    border: '1px solid #e0e0e0',
                   }}
                 >
                   {fieldTypeInfo.img ? (
@@ -183,7 +188,7 @@ const FieldLibraryTab = () => {
                       style={{
                         width: '20px',
                         height: '20px',
-                        objectFit: 'contain'
+                        objectFit: 'contain',
                       }}
                     />
                   ) : (
@@ -191,7 +196,7 @@ const FieldLibraryTab = () => {
                       sx={{
                         fontSize: '12px',
                         color: '#666',
-                        fontWeight: 'bold'
+                        fontWeight: 'bold',
                       }}
                     >
                       ?
@@ -226,13 +231,19 @@ const FieldLibraryTab = () => {
         flex: 1.5,
         renderCell: (params) => {
           const profileTypeNames = getProfileTypeNames(params.value);
-          
+
           if (profileTypeNames.length === 0) {
             return '';
           }
-          
+
           return (
-            <Box display="flex" alignItems="center" height="100%" gap={0.5} flexWrap="wrap">
+            <Box
+              display="flex"
+              alignItems="center"
+              height="100%"
+              gap={0.5}
+              flexWrap="wrap"
+            >
               {profileTypeNames.slice(0, 2).map((name, index) => (
                 <Chip
                   key={index}
@@ -247,8 +258,8 @@ const FieldLibraryTab = () => {
                     height: '24px',
                     '& .MuiChip-label': {
                       padding: '0 8px',
-                      fontWeight: 500
-                    }
+                      fontWeight: 500,
+                    },
                   }}
                 />
               ))}
@@ -265,8 +276,8 @@ const FieldLibraryTab = () => {
                     height: '24px',
                     '& .MuiChip-label': {
                       padding: '0 8px',
-                      fontWeight: 500
-                    }
+                      fontWeight: 500,
+                    },
                   }}
                 />
               )}
@@ -310,33 +321,48 @@ const FieldLibraryTab = () => {
         ),
       },
     ],
-    [getFieldTypeInfo, formatObjectCase, getProfileTypeNames, getCategoryFromTargetType]
+    [
+      getFieldTypeInfo,
+      formatObjectCase,
+      getProfileTypeNames,
+      getCategoryFromTargetType,
+    ],
   );
 
   const filteredFields = useMemo(() => {
     if (!searchPhrase) return fieldLibrary;
-    return fieldLibrary.filter(
-      (field) => {
-        const searchLower = searchPhrase.toLowerCase();
-        const profileTypeNames = getProfileTypeNames(field.profileTypeDetails);
-        const category = getCategoryFromTargetType(field.targetType);
-        
-        return (
-          field.name?.toLowerCase().includes(searchLower) ||
-          category?.toLowerCase().includes(searchLower) ||
-          field.targetType?.toLowerCase().includes(searchLower) ||
-          field.fieldType?.toLowerCase().includes(searchLower) ||
-          field.validationRegexDescription?.toLowerCase().includes(searchLower) ||
-          profileTypeNames.some(name => name.toLowerCase().includes(searchLower))
-        );
-      }
-    );
-  }, [fieldLibrary, searchPhrase, getProfileTypeNames, getCategoryFromTargetType]);
+    return fieldLibrary.filter((field) => {
+      const searchLower = searchPhrase.toLowerCase();
+      const profileTypeNames = getProfileTypeNames(field.profileTypeDetails);
+      const category = getCategoryFromTargetType(field.targetType);
+
+      return (
+        field.name?.toLowerCase().includes(searchLower) ||
+        category?.toLowerCase().includes(searchLower) ||
+        field.targetType?.toLowerCase().includes(searchLower) ||
+        field.fieldType?.toLowerCase().includes(searchLower) ||
+        field.validationRegexDescription?.toLowerCase().includes(searchLower) ||
+        profileTypeNames.some((name) =>
+          name.toLowerCase().includes(searchLower),
+        )
+      );
+    });
+  }, [
+    fieldLibrary,
+    searchPhrase,
+    getProfileTypeNames,
+    getCategoryFromTargetType,
+  ]);
 
   if (loading) {
     return (
       <TabContent>
-        <Box display="flex" justifyContent="center" alignItems="center" minHeight="400px">
+        <Box
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          minHeight="400px"
+        >
           <CircularProgress />
         </Box>
       </TabContent>
@@ -346,7 +372,12 @@ const FieldLibraryTab = () => {
   if (error) {
     return (
       <TabContent>
-        <Box display="flex" justifyContent="center" alignItems="center" minHeight="400px">
+        <Box
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          minHeight="400px"
+        >
           <Box textAlign="center">
             <p>Error loading field library: {error}</p>
             <Button onClick={() => window.location.reload()}>Retry</Button>
@@ -382,7 +413,7 @@ const FieldLibraryTab = () => {
         <ReusableDataGrid
           columns={columns}
           rows={filteredFields}
-          getRowId={row => row.identifier}
+          getRowId={(row) => row.identifier}
           apiRef={apiRef}
         />
       </DataGridContainer>
