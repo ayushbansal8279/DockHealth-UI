@@ -13,6 +13,7 @@ export const PERMISSIONS = {
   CAN_ACCESS_PROFILE_PAGE: 'canAccessProfilePage',
   CAN_ACCESS_EDUCATION_CENTER_PAGE: 'canAccessEducationCenterPage',
   CAN_ACCESS_WORKSPACE_PAGE: 'canAccessWorkspacePage',
+  CAN_ACCESS_DATA_MANAGEMENT_PAGE: 'canAccessDataManagementPage',
 };
 
 export default {
@@ -29,6 +30,7 @@ export default {
     canAccessProfilePage: true,
     canAccessEducationCenterPage: true,
     canAccessWorkspacePage: true,
+    canAccessDataManagementPage: true,
   },
   [UserOrganizationRole.ADMIN]: {
     canAccessHomePage: true,
@@ -43,6 +45,7 @@ export default {
     canAccessProfilePage: true,
     canAccessEducationCenterPage: true,
     canAccessWorkspacePage: true,
+    canAccessDataManagementPage: true,
   },
   [UserOrganizationRole.MEMBER]: {
     canAccessHomePage: true,
@@ -57,6 +60,7 @@ export default {
     canAccessProfilePage: true,
     canAccessEducationCenterPage: true,
     canAccessWorkspacePage: true,
+    canAccessDataManagementPage: true,
   },
   [UserOrganizationRole.GUEST]: {
     canAccessHomePage: true,
@@ -71,6 +75,7 @@ export default {
     canAccessProfilePage: true,
     canAccessEducationCenterPage: true,
     canAccessWorkspacePage: true,
+    canAccessDataManagementPage: true,
   },
   [UserOrganizationRole.DOCK_LITE]: {
     canAccessHomePage: true,
@@ -85,6 +90,7 @@ export default {
     canAccessProfilePage: true,
     canAccessEducationCenterPage: true,
     canAccessWorkspacePage: true,
+    canAccessDataManagementPage: true,
   },
   [UserOrganizationRole.EXTERNAL]: {
     canAccessHomePage: true,
@@ -99,6 +105,7 @@ export default {
     canAccessProfilePage: true,
     canAccessEducationCenterPage: true,
     canAccessWorkspacePage: true,
+    canAccessDataManagementPage: true,
   },
   [UserOrganizationRole.DOCK_PRO]: {
     canAccessHomePage: true,
@@ -113,6 +120,7 @@ export default {
     canAccessProfilePage: true,
     canAccessEducationCenterPage: true,
     canAccessWorkspacePage: true,
+    canAccessDataManagementPage: true,
   },
   [UserOrganizationRole.VIEW_ONLY]: {
     canAccessHomePage: true,
@@ -127,5 +135,6 @@ export default {
     canAccessProfilePage: true,
     canAccessEducationCenterPage: true,
     canAccessWorkspacePage: true,
+    canAccessDataManagementPage: true,
   },
 };

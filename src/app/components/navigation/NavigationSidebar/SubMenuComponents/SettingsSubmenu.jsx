@@ -95,6 +95,11 @@ const SettingsSubmenu = () => {
           <SubMenuLink to="/settings/workspaces">Workspaces</SubMenuLink>
         </AccessRestrictor>
       )}
+      <AccessRestrictor allowedToRoles={[ADMIN, OWNER]}>
+        <SubMenuLink to="/settings/data-management">
+          Data Management
+        </SubMenuLink>
+      </AccessRestrictor>
       {configIntegrationsAvailable && (
         <AccessRestrictor allowedToRoles={[ADMIN, OWNER]}>
           <SubMenuLink to={INTEGRATIONS_PATH}>Integrations</SubMenuLink>
