@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import BasicLayoutHeader from 'components/template/BasicLayoutHeader/BasicLayoutHeader';
 import ViewLayout from 'components/template/ViewLayout/ViewLayout';
-import { Tabs, Grid, Box } from '@mui/material';
+import { Tabs, Grid, Box, Tab } from '@mui/material';
 import {
   Redirect,
   Switch,
@@ -14,7 +14,7 @@ import ObjectsTab from './components/ObjectsTab';
 import FieldLibraryTab from './components/FieldLibraryTab';
 import {
   DataManagementTabsContainer,
-  DataManagementDetailsContainer, 
+  DataManagementDetailsContainer,
 } from './styled';
 
 const TABS_CONFIG = [
@@ -53,27 +53,37 @@ const DataManagement = () => {
 
   return (
     <ViewLayout header={<BasicLayoutHeader title="Data Management" />}>
-      <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%', padding: '16px 32px' }}>
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          height: '100%',
+          padding: '16px 32px',
+        }}
+      >
         <DataManagementTabsContainer>
           <Grid container>
             <Tabs value={activeTabPath} onChange={handleTabChange}>
               {TABS_CONFIG.map((t) => (
-                <Box
+                <Tab
                   key={t.mainPath}
-                  component="div"
+                  value={t.mainPath}
+                  label={t.label}
                   sx={{
+                    textTransform: 'none',
                     px: 3,
                     py: 1,
                     borderBottom: t.mainPath === activeTabPath ? 2 : 0,
                     borderColor: 'primary.main',
                     cursor: 'pointer',
-                    color: t.mainPath === activeTabPath ? 'primary.main' : 'text.primary',
+                    color:
+                      t.mainPath === activeTabPath
+                        ? 'primary.main'
+                        : 'text.primary',
                     fontWeight: t.mainPath === activeTabPath ? 600 : 400,
+                    fontSize: '18px',
                   }}
-                  onClick={() => handleTabChange(null, t.mainPath)}
-                >
-                  {t.label}
-                </Box>
+                />
               ))}
             </Tabs>
           </Grid>
