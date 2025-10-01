@@ -418,7 +418,6 @@ const EditCustomFieldModal = ({
   };
 
   const handleAddSubmit = (data) => {
-    console.log('here?');
     setIsSaving(true);
     if (type === 'PROFILE') {
       ProfileTypeFieldsApi.createProfileFieldType({
@@ -544,16 +543,6 @@ const EditCustomFieldModal = ({
     ? handleEditSubmit
     : handleAddSubmit;
 
-  // const onSubmit = handleSubmit(
-  //   (values) => {
-  //     console.log('✅ Valid values', values);
-  //     finalSubmitHandler(values);
-  //   },
-  //   (errors) => {
-  //     console.log('❌ Validation errors', errors);
-  //   },
-  // );
-
   const finalSubmitHandler =
     fieldTypeValue === FieldType.DROPDOWN ||
     fieldTypeValue === FieldType.DROPDOWN_MULTI
@@ -573,8 +562,6 @@ const EditCustomFieldModal = ({
         ) : (
           <FormProvider {...formMethods}>
             <FieldForm onSubmit={handleSubmit(finalSubmitHandler)}>
-              {/* <FieldForm onSubmit={finalSubmitHandler}> */}
-              {/* <FieldForm onSubmit={onSubmit}> */}
               <FormScrollingContainer>
                 <Box overflow="hidden">
                   <Grid container spacing={2}>
