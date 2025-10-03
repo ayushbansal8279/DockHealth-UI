@@ -4,6 +4,9 @@ import { showGlobalAlert, showGlobalErrorAlert } from '../alert/actions';
 import * as ActionTypes from 'actions/action-types';
 import * as WorkspaceListApi from '../api/workspace-list-api';
 import AlertMessages from '../alert/AlertMessages';
+import pluck from 'ramda/src/pluck';
+import { sortTasksListsForUser } from '../api/task-list-api';
+
 
 function* getAllUserWorkspacesSaga(): any {
   try {
@@ -46,8 +49,21 @@ function* deleteWorkspaceSaga(action: any): any {
   }
 }
 
+function* reorderWorkspaceTaskLists({ payload }) {
+  try {
+    if (!payload) return;
+    const { activeLists, workspaceIdentifier} = payload;
+    const identifiers = pluck('taskListIdentifier', activeLists);
+    yield call(sortTasksListsForUser, identifiers, workspaceIdentifier);
+    yield put(showGlobalAlert(AlertMessages.UPDATED));
+  } catch {
+    yield put(showGlobalErrorAlert());
+  }
+}
+
 export default function* watchWorkspaceList() {
   yield takeEvery(ActionTypes.GET_ALL_USER_WORKSPACES, getAllUserWorkspacesSaga);
   yield takeEvery(ActionTypes.UPDATE_WORKSPACE, updateWorkspaceSaga);
   yield takeEvery(ActionTypes.DELETE_WORKSPACE, deleteWorkspaceSaga);
+  yield takeEvery(ActionTypes.REORDER_WORKSPACE_TASKLISTS, reorderWorkspaceTaskLists);
 }

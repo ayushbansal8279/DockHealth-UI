@@ -80,7 +80,7 @@ import {
 } from '@dnd-kit/modifiers';
 import move from 'ramda/src/move';
 import DraggableDroppableListItem from './DraggableDroppableListItem';
-import * as TaskListActions from 'actions/task-list-actions';
+import { reorderWorkspaceTaskLists } from '@/app/actions/workspace-list-actions';
 
 const WorkspaceSubmenuStepTwo = ({
   setShowStepTwo,
@@ -151,8 +151,10 @@ const WorkspaceSubmenuStepTwo = ({
         over?.data?.current?.index,
         localTaskLists,
       );
+      
       setLocalTaskLists(reorderedLists);
-      dispatch(TaskListActions.reorderTaskLists(reorderedLists) as any);
+      dispatch(reorderWorkspaceTaskLists(reorderedLists, workspaceIdentifier) as any);
+     
     },
     [localTaskLists, dispatch],
   );
