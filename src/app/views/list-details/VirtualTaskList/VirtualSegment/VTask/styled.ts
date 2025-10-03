@@ -80,8 +80,8 @@ export const VTask = styled('div')`
   background: ${({ bgColor }) => (bgColor ? palette.aliceBlue : '')};
 
   & > * > * > * > * {
-    left: ${({ isTaskTemplate }: boolean) =>
-      isTaskTemplate ? ' 50.4px' : '51px'};
+    left: ${({ isTaskTemplate, origin }: any) =>
+      origin === 'PATIENT' ? '' : isTaskTemplate ? ' 50.4px' : '51px'};
   }
 `;
 

@@ -13,6 +13,7 @@ export const VSubtask = styled('div')`
     searchValue,
     isFilterApply,
     isSortApplied,
+    origin,
   }) =>
     isWorkflowSubtask
       ? searchValue || isFilterApply || isSortApplied
@@ -20,6 +21,8 @@ export const VSubtask = styled('div')`
         : '87px'
       : searchValue || isFilterApply || isSortApplied
       ? '54.5px'
+      : origin === 'PATIENT'
+      ? '36px'
       : '87px'};
   margin-bottom: -5px;
   background: ${({ bgColor }) => (bgColor ? palette.aliceBlue : '')};

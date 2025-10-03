@@ -44,6 +44,7 @@ export interface Props extends Segment {
   isFirstTaskOfWorkflow: boolean;
   isTopLevelTaskOrWorkflowHeader: boolean;
   isWorkflowTask: boolean;
+  origin: any;
 }
 
 export const VTaskContext = createContext({
@@ -65,6 +66,7 @@ function VTask(
     isFirstTaskOfWorkflow,
     isTopLevelTaskOrWorkflowHeader,
     isWorkflowTask,
+    origin,
     ...record
   }: Props,
   // eslint-disable-next-line unicorn/prevent-abbreviations, @typescript-eslint/no-unused-vars
@@ -153,7 +155,7 @@ function VTask(
         $template={isTaskTemplate && isLastChild}
         isTaskTemplate={isTaskTemplate}
         isLastChild={isLastChild || false}
-        origin={TaskOrigin.LIST}
+        origin={origin}
         bgColor={bgColor}
         isLastTaskOfGroup={isLastTaskOfGroup}
         virtualListWorkflowOpen={get(identifier)}
@@ -174,7 +176,7 @@ function VTask(
             // isDragging={snapshot.isDragging}
             isTaskTemplate={isTaskTemplate}
             isLastChild={isLastChild && !addWorkflowTask}
-            origin={TaskOrigin.LIST}
+            origin={origin}
             pageBackground={bgColor ? palette.aliceBlue : ''}
             isNestedTask
             isVirtualTask
@@ -279,7 +281,7 @@ function VTask(
 
                     return null;
                   }}
-                  origin={TaskOrigin.LIST}
+                  origin={origin}
                   // iconColorActive={iconColorActive}
                 />
               </QuickAddInputWrapper>

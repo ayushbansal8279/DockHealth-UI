@@ -12,7 +12,7 @@ export const VTaskHeader = styled('div')`
   margin-bottom: -3px;
   background: ${({ bgColor }) => (bgColor ? palette.aliceBlue : '')};
   & > * > * {
-    left: 54px;
+    left: ${({ origin }) => (origin === 'PATIENT' ? '0px' : '54.5px')};
   }
   margin-right: 15.5px;
 `;

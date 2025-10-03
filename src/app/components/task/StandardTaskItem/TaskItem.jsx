@@ -433,7 +433,7 @@ const TaskItem = React.memo(
             name === `list.taskgroup.highlight.color-${taskGroupIdentifier}`,
         ) || {};
       return customHighlightItem?.value || '';
-    }, [selectedOrganization, taskGroupIdentifier]);
+    }, [selectedOrganization?.themeSettings, taskGroupIdentifier]);
 
     const hasPriorityHighlight = useMemo(() => {
       const hasPriorityHighlightItem =
@@ -443,7 +443,7 @@ const TaskItem = React.memo(
       return (
         hasPriorityHighlightItem && hasPriorityHighlightItem?.value === 'true'
       );
-    }, [selectedOrganization]);
+    }, [selectedOrganization?.themeSettings]);
 
     const userSortingSupportDisabled = useMemo(() => {
       const disabledSettingItem =
@@ -451,7 +451,7 @@ const TaskItem = React.memo(
           ({ name: themeName }) => themeName === 'list.tasks.user.sort.enabled',
         ) || {};
       return disabledSettingItem && disabledSettingItem?.value === 'false';
-    }, [selectedOrganization]);
+    }, [selectedOrganization?.themeSettings]);
 
     const isDragAndDropEnabled =
       origin === 'LIST' ? !userSortingSupportDisabled : true;
@@ -883,7 +883,8 @@ const TaskItem = React.memo(
 
     const showSubtaskIcon =
       isSubtask &&
-      (origin === TaskOrigin.DASHBOARD || origin === TaskOrigin.PERSON ||
+      (origin === TaskOrigin.DASHBOARD ||
+        origin === TaskOrigin.PERSON ||
         !!selectedFilters ||
         !!searchValue ||
         !!sort.key);
@@ -991,7 +992,8 @@ const TaskItem = React.memo(
         if (order !== 0) return content;
         const indentSubTask =
           !(
-            origin === TaskOrigin.DASHBOARD || origin === TaskOrigin.PERSON ||
+            origin === TaskOrigin.DASHBOARD ||
+            origin === TaskOrigin.PERSON ||
             (!!selectedFilters && Object.keys(selectedFilters).length > 0) ||
             !!searchValue ||
             !!sort.key
@@ -2062,6 +2064,27 @@ const TaskItem = React.memo(
           />
         )}
       </>
+    );
+  },
+  (prevProps, nextProps) => {
+    // Custom comparison function for better performance
+    return (
+      prevProps.taskItemIdentifier === nextProps.taskItemIdentifier &&
+      prevProps.isOpen === nextProps.isOpen &&
+      prevProps.isCompletedGroup === nextProps.isCompletedGroup &&
+      prevProps.isDragging === nextProps.isDragging &&
+      prevProps.origin === nextProps.origin &&
+      prevProps.viewType === nextProps.viewType &&
+      prevProps.isTopLevelTaskOrWorkflowHeader ===
+        nextProps.isTopLevelTaskOrWorkflowHeader &&
+      prevProps.taskItemDragAndDropDisabled ===
+        nextProps.taskItemDragAndDropDisabled &&
+      prevProps.isSelectedByHighlighted === nextProps.isSelectedByHighlighted &&
+      prevProps.isTaskTemplate === nextProps.isTaskTemplate &&
+      prevProps.isWorkflowSubtask === nextProps.isWorkflowSubtask &&
+      prevProps.isLastChild === nextProps.isLastChild &&
+      prevProps.isFirstTaskOfGroup === nextProps.isFirstTaskOfGroup &&
+      prevProps.isLastTaskOfGroup === nextProps.isLastTaskOfGroup
     );
   },
 );

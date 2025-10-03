@@ -288,6 +288,7 @@ const ListDetailsTasks = ({
         <VirtualTaskList
           showClearSortFiltersModal={showClearSortFiltersModal}
           groupedTasks={groupedTasks}
+          origin={TaskOrigin.LIST}
         />
       </div>
     );

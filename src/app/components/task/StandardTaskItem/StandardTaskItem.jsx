@@ -349,6 +349,23 @@ const Task = React.memo(
       </ParentTaskContainer>
     );
   },
+  (prevProps, nextProps) => {
+    // Custom comparison function for better performance
+    return (
+      prevProps.taskIdentifier === nextProps.taskIdentifier &&
+      prevProps.isCompletedGroup === nextProps.isCompletedGroup &&
+      prevProps.isFullView === nextProps.isFullView &&
+      prevProps.isDragging === nextProps.isDragging &&
+      prevProps.origin === nextProps.origin &&
+      prevProps.viewType === nextProps.viewType &&
+      prevProps.isTopLevelTaskOrWorkflowHeader ===
+        nextProps.isTopLevelTaskOrWorkflowHeader &&
+      prevProps.taskItemDragAndDropDisabled ===
+        nextProps.taskItemDragAndDropDisabled &&
+      prevProps.addingNewSubtask === nextProps.addingNewSubtask &&
+      prevProps.multipleAssigneesContext === nextProps.multipleAssigneesContext
+    );
+  },
 );
 
 export default Task;

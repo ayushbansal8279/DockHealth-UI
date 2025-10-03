@@ -45,6 +45,7 @@ export interface Props extends Segment {
   isFirstSubTaskOfParentTask: boolean;
   isSubtaskOfTask: boolean;
   isFirstSubtaskOfWorkflowTask: boolean;
+  origin: any;
 }
 
 function VSubtask(
@@ -61,6 +62,7 @@ function VSubtask(
     isFirstSubTaskOfParentTask,
     isSubtaskOfTask,
     isFirstSubtaskOfWorkflowTask,
+    origin,
     ...record
   }: Props,
   // eslint-disable-next-line unicorn/prevent-abbreviations
@@ -177,6 +179,7 @@ function VSubtask(
           }
           isSortApplied={!!sort.key}
           bgColor={bgColor}
+          origin={origin}
         >
           <div
             style={{
@@ -190,7 +193,7 @@ function VSubtask(
                 ? Object.keys(selectedFilters).length > 0
                 : !!selectedFilters) ||
               !!sort.key ||
-              getSubtaskStylingLink(isLast())}
+              getSubtaskStylingLink(isLast(), origin)}
           </div>
           <StandardTaskItem
             // @ts-ignore
@@ -200,7 +203,7 @@ function VSubtask(
             // isDragging={snapshot.isDragging}
             isWorkflowSubtask={isWorkflowSubTask}
             isSubtask
-            origin={TaskOrigin.LIST}
+            origin={origin}
             pageBackground={bgColor ? palette.aliceBlue : ''}
             isVirtualTask
             isVirtualSubtask
@@ -299,7 +302,7 @@ function VSubtask(
 
                   return null;
                 }}
-                origin={TaskOrigin.LIST}
+                origin={origin}
                 // iconColorActive={iconColorActive}
               />
             </QuickAddInputWrapper>

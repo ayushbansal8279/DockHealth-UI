@@ -26,6 +26,7 @@ export interface Props extends Segment {
   groupWithZeroTask: boolean;
   isLastGroupOfList: boolean;
   isLoadingGroup: boolean;
+  origin: string;
 }
 
 function VTaskHeader(
@@ -37,6 +38,7 @@ function VTaskHeader(
     isLastGroupOfList,
     bgColor,
     isLoadingGroup,
+    origin,
   }: Props,
   // eslint-disable-next-line unicorn/prevent-abbreviations
   ref: ForwardedRef<HTMLDivElement>,
@@ -86,6 +88,7 @@ function VTaskHeader(
           $template={isTaskTemplate}
           bgColor={bgColor}
           groupWithZeroTask={groupWithZeroTask}
+          origin={origin}
         >
           {/* @ts-ignore */}
           {groupWithZeroTask ? (

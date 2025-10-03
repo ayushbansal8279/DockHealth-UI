@@ -14,11 +14,11 @@ export const getMatchedComments = (comments, matchingCommentIdentifiers) =>
       )
     : comments;
 
-export const getSubtaskStylingLink = (isLast) => {
-  if (isLast) return <SubtaskStylingLastLink />;
+export const getSubtaskStylingLink = (isLast, origin) => {
+  if (isLast) return <SubtaskStylingLastLink origin={origin} />;
 
   return (
-    <SubtaskStylingLinkContainer>
+    <SubtaskStylingLinkContainer origin={origin}>
       <SubtaskStylingVerticalPart />
       <SubtaskStylingHorizontalPart />
     </SubtaskStylingLinkContainer>

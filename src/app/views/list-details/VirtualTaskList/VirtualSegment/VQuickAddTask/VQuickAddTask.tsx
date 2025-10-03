@@ -28,6 +28,7 @@ export interface Props extends Segment {
   groupWithZeroTask: boolean;
   bgColor: boolean;
   isLoadingGroup: boolean;
+  origin: string;
 }
 
 function VQuickAddTask(
@@ -38,6 +39,7 @@ function VQuickAddTask(
     groupWithZeroTask,
     bgColor,
     isLoadingGroup,
+    origin,
   }: Props,
   // eslint-disable-next-line unicorn/prevent-abbreviations
   ref: ForwardedRef<HTMLDivElement>,
@@ -127,12 +129,20 @@ function VQuickAddTask(
       <Sc.VQuickAddTaskContainer
         // $width={droppableHeaderWidth ? `${droppableHeaderWidth}px` : '100%'}
         $width={percentage > 100 ? `${droppableHeaderWidth}px` : '100%'}
+        origin={origin}
       >
         <Sc.VQuickAddTask
           ref={ref}
           {...register}
-          $width={visibleWidth ? `${visibleWidth - 87}px` : '100%'}
+          $width={
+            visibleWidth
+              ? `${
+                  origin === 'PATIENT' ? visibleWidth - 27 : visibleWidth - 87
+                }px`
+              : '100%'
+          }
           // $width={visibleWidth ? `${visibleWidth - 60}px` : '100%'}
+          origin={origin}
         >
           <QuickAddTaskInput
             // @ts-ignore

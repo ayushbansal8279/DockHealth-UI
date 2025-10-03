@@ -20,6 +20,7 @@ export interface Props extends Segment {
   bgColor: boolean;
   groupTaskCounts: boolean;
   tasksCount: boolean;
+  origin: string;
 }
 
 function VListGroup(
@@ -32,6 +33,7 @@ function VListGroup(
     groupTaskCounts,
     tasksCount,
     register,
+    origin,
   }: Props,
   ref: ForwardedRef<HTMLDivElement>,
 ) {
@@ -76,7 +78,7 @@ function VListGroup(
         moveGroupUp={() => moveGroup(metadata.sameLevelIndex, 'up')}
         moveGroupDown={() => moveGroup(metadata.sameLevelIndex, 'down')}
         onTaskGroupRefresh={loadTasksForTaskGroup}
-        origin={TaskOrigin.LIST}
+        origin={origin}
         bgColor={bgColor}
       >
         {() => null}
