@@ -180,6 +180,10 @@ const Integrations = lazy(() =>
   import('views/Integrations/IntegrationsHeader'),
 );
 
+const EscalationPolicies = lazy(() =>
+  import('views/EscalationPolicies/EscalationPolicies'),
+);
+
 const {
   CAN_ACCESS_HOME_PAGE,
   CAN_ACCESS_SEARCH_PAGE,
@@ -291,6 +295,11 @@ export const SETTINGS_ROUTES = [
   {
     path: '/integrations',
     RouteComponent: Integrations,
+    permissions: [CAN_ACCESS_SETTINGS_PAGE],
+  },
+  {
+    path: '/escalation-policies',
+    RouteComponent: EscalationPolicies,
     permissions: [CAN_ACCESS_SETTINGS_PAGE],
   },
 ];

@@ -95,6 +95,7 @@ import AddWorkspaceModal from '../components/workspace/AddWorkspaceModal/AddWork
 import DeveloperScopeModal from './components/DeveloperScopeModal/DeveloperScopeModal';
 import DockIntegrationsModal from './components/DockIntegrationsModal/DockIntegrationsModal';
 import ClearDueDateConfirmationModal from './components/ClearDueDateConfirmationModal/ClearDueDateConfirmationModal';
+import CreateEscalationPolicyModal from './components/CreateEscalationPolicy/CreateEscalationPolicy';
 
 const MODAL_MAP = {
   CompleteAllTasks: CompleteAllTasksModal,
@@ -194,6 +195,7 @@ const MODAL_MAP = {
   DeveloperScopeList: DeveloperScopeModal,
   DockIntegrations: DockIntegrationsModal,
   ClearDueDateConfirmation: ClearDueDateConfirmationModal,
+  CreateEscalationPolicy: CreateEscalationPolicyModal,
 };
 
 export default MODAL_MAP;

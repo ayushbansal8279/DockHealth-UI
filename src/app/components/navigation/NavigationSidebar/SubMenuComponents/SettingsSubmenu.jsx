@@ -10,6 +10,7 @@ import {
   TASK_CUSTOMIZATIONS_PATH,
   DEVELOPERS_PATH,
   INTEGRATIONS_PATH,
+  ESCALATION_POLICIES_PATH,
 } from 'routing/helpers/paths';
 import {
   userHasPatientCustomFieldsFeatureSelector,
@@ -98,6 +99,13 @@ const SettingsSubmenu = () => {
       {configIntegrationsAvailable && (
         <AccessRestrictor allowedToRoles={[ADMIN, OWNER]}>
           <SubMenuLink to={INTEGRATIONS_PATH}>Integrations</SubMenuLink>
+        </AccessRestrictor>
+      )}
+      {configIntegrationsAvailable && (
+        <AccessRestrictor allowedToRoles={[ADMIN, OWNER]}>
+          <SubMenuLink to={ESCALATION_POLICIES_PATH}>
+            Escalation Policies
+          </SubMenuLink>
         </AccessRestrictor>
       )}
     </Box>
