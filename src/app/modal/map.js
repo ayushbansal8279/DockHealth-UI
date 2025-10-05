@@ -95,7 +95,7 @@ import AddWorkspaceModal from '../components/workspace/AddWorkspaceModal/AddWork
 import DeveloperScopeModal from './components/DeveloperScopeModal/DeveloperScopeModal';
 import DockIntegrationsModal from './components/DockIntegrationsModal/DockIntegrationsModal';
 import ClearDueDateConfirmationModal from './components/ClearDueDateConfirmationModal/ClearDueDateConfirmationModal';
-import CreateEscalationPolicyModal from './components/CreateEscalationPolicy/CreateEscalationPolicy';
+import CreateEscalationPolicyModal from './components/CreateEscalationPolicyModal/CreateEscalationPolicyModal';
 
 const MODAL_MAP = {
   CompleteAllTasks: CompleteAllTasksModal,
