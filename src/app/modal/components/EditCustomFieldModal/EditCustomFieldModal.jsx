@@ -170,6 +170,8 @@ const EditCustomFieldModal = ({
                 ? Category.OTHER_INFO
                 : type === 'PROVIDER'
                 ? 'PROVIDER_OTHER'
+                : type === 'GLOBAL'
+                ? Category.GLOBAL
                 : '',
           }
         : {
