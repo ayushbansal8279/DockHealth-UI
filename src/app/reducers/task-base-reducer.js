@@ -156,7 +156,6 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
       return updateStateCallback(state, updateTaskFromAction);
     }
 
-
     case ActionTypes.TASK_ATTACHMENT_ADDED: {
       const { taskAttachment, taskIdentifier } = action;
 
@@ -290,7 +289,7 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
       return updateStateCallback(state, {
         ...task,
         startDate,
-        startDateIntent
+        startDateIntent,
       });
     }
 
@@ -302,7 +301,7 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
       return updateStateCallback(state, {
         ...task,
         dueDate,
-        dueDateIntent
+        dueDateIntent,
       });
     }
 
@@ -423,6 +422,20 @@ const TaskBaseReducer = (state, action, updateStateCallback) => {
     }
 
     case ActionTypes.UPDATE_TASKS: {
+      const { tasksToUpdate, fields: dataToUpdate } = action;
+      let updatedState = state;
+      for (const taskId of tasksToUpdate) {
+        updatedState = updateStateCallback(updatedState, (tasksMap) => {
+          return {
+            ...tasksMap[taskId],
+            ...dataToUpdate,
+          };
+        });
+      }
+      return updatedState;
+    }
+
+    case ActionTypes.UPDATE_WORKFLOWS: {
       const { tasksToUpdate, fields: dataToUpdate } = action;
       let updatedState = state;
       for (const taskId of tasksToUpdate) {
