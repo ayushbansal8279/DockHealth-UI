@@ -52,6 +52,9 @@ import {
 import { PATIENTS_LIST_ALL } from '../routing/helpers/paths';
 import localStorageHelper from '../helpers/local-storage-helper';
 import sessionStorageHelper from '../helpers/session-storage-helper';
+import { UserPreferenceContextType } from '../helpers/user-prefrence-helper';
+import { userPreferenceStatusSelector } from '@/app/selectors/user-preference-selectors';
+import * as UserPreferenceApi from '@/app/api/user-preference-api';
 
 export const DO_TOGGLE_PATIENT_TASK_STATUS = 'DO_TOGGLE_PATIENT_TASK_STATUS';
 export const DO_REASSIGN_TASK = 'DO_REASSIGN_TASK';
@@ -288,14 +291,26 @@ function* getCurrentPatientAttachments() {
   }
 }
 
-function* getCurrentPatientTasks({ payload }) {
-  const { taskStatus } = payload;
+function* getCurrentPatientTasks({payload}) {
   try {
+    const {taskStatus} = payload;
     const selectedFilters = yield select(selectedFiltersInMegaFilterSelector);
-    const selectedTaskStatus = yield select(currentListTasksStatusSelector);
-    let status = taskStatus || selectedTaskStatus;
+    
+
     const sort = yield select(patientTasksSortSelector);
     const patientIdentifier = yield select(currentPatientIdentifierSelector);
+
+    const preferences = yield call(
+      UserPreferenceApi.getUserPreference,
+      UserPreferenceContextType.PATIENT_LIST,
+      patientIdentifier,
+    );
+    yield put({
+      type: ActionTypes.UPDATE_USER_PREFERENCES_SUCCESS,
+      preferences,
+    });
+    const savedStatus = yield select(userPreferenceStatusSelector);
+    const status = taskStatus || savedStatus;
 
     const lists = yield selectedFilters && !isEmpty(selectedFilters)
       ? call(
@@ -916,13 +931,16 @@ function* updatePatientAttachment({ attachment, dataToUpdate }) {
   }
 }
 
-function* updatePatientTaskAttachment({ attachmentIdentifier, updatedFileName }) { 
+function* updatePatientTaskAttachment({
+  attachmentIdentifier,
+  updatedFileName,
+}) {
   try {
     const updatedTaskAttachment = yield call(
       TaskApi.updateTaskAttachment,
       attachmentIdentifier,
-      updatedFileName, 
-    )
+      updatedFileName,
+    );
     yield all([
       put({
         type: ActionTypes.UPDATE_PATIENT_TASK_ATTACHMENT_SUCCESS,
@@ -932,18 +950,13 @@ function* updatePatientTaskAttachment({ attachmentIdentifier, updatedFileName })
       put(closeModal()),
     ]);
   } catch {
-    yield all([
-      put(showGlobalErrorAlert()),
-    ]);
+    yield all([put(showGlobalErrorAlert())]);
   }
 }
 
-function* deletePatientTaskAttachment({ identifier }) { 
+function* deletePatientTaskAttachment({ identifier }) {
   try {
-    yield call(
-      TaskApi.removeTaskAttachment,
-      identifier,
-    )
+    yield call(TaskApi.removeTaskAttachment, identifier);
     yield all([
       put({
         type: ActionTypes.DELETE_PATIENT_TASK_ATTACHMENT_SUCCESS,
@@ -953,9 +966,7 @@ function* deletePatientTaskAttachment({ identifier }) {
       put(closeModal()),
     ]);
   } catch {
-    yield all([
-      put(showGlobalErrorAlert()),
-    ]);
+    yield all([put(showGlobalErrorAlert())]);
   }
 }
 
