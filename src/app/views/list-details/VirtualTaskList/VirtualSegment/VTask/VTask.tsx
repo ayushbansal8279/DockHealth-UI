@@ -31,6 +31,7 @@ import { useVirtualTaskListScrollContext } from '../../VirtualTaskListScrollCont
 import { TaskViewContext } from '@/app/context-api/task-view-context';
 import { CSS } from '@dnd-kit/utilities';
 import { useDraggable, useDroppable } from '@dnd-kit/core';
+import { originConfig } from '@/app/components/task/StandardTaskItem/helpers';
 
 export interface Props extends Segment {
   isTaskTemplate: boolean;
@@ -155,7 +156,7 @@ function VTask(
         $template={isTaskTemplate && isLastChild}
         isTaskTemplate={isTaskTemplate}
         isLastChild={isLastChild || false}
-        origin={origin}
+        disableLeftOffset={originConfig[origin]?.disableLeftOffset ?? false}
         bgColor={bgColor}
         isLastTaskOfGroup={isLastTaskOfGroup}
         virtualListWorkflowOpen={get(identifier)}

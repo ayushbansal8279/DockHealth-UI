@@ -94,9 +94,6 @@ const TasksGroup = ({
   tasksCount,
   bgColor,
 }) => {
-  if (origin === TaskOrigin.PATIENT) {
-    return;
-  }
   const addingNewSubtaskParentId = useSelector(
     addingNewSubtaskParentIdSelector,
   );

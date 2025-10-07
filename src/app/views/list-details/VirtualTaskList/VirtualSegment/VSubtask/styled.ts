@@ -13,24 +13,24 @@ export const VSubtask = styled('div')`
     searchValue,
     isFilterApply,
     isSortApplied,
-    origin,
-  }) =>
+    hasCustomOffset,
+  }: any) =>
     isWorkflowSubtask
       ? searchValue || isFilterApply || isSortApplied
         ? '53.5px'
         : '87px'
       : searchValue || isFilterApply || isSortApplied
       ? '54.5px'
-      : origin === 'PATIENT'
+      : hasCustomOffset
       ? '36px'
       : '87px'};
   margin-bottom: -5px;
-  background: ${({ bgColor }) => (bgColor ? palette.aliceBlue : '')};
+  background: ${({ bgColor }: any) => (bgColor ? palette.aliceBlue : '')};
 `;
 
 export const QuickAddContainer = styled('div')`
   border-left: 1px solid ${palette.coolGrey3};
-  width: ${({ $width }) => $width};
+  width: ${({ $width }: any) => $width};
   position: sticky;
   left: 89.5px;
 
@@ -42,9 +42,9 @@ export const QuickAddContainer = styled('div')`
 export const WorkflowQuickAddTaskContainer = styled('div')`
   border-left: 1px solid ${palette.coolGrey3};
   // width: 90%;
-  width: ${({ $width }) => $width};
+  width: ${({ $width }: any) => $width};
   left: 54.5px;
-  margin-top: ${({ subtaskQuickAddOpen }) =>
+  margin-top: ${({ subtaskQuickAddOpen }: any) =>
     subtaskQuickAddOpen ? '1px' : ''};
   position: sticky;
   &:hover {

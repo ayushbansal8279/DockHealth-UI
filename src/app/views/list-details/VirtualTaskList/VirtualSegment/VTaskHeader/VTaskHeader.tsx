@@ -19,6 +19,7 @@ import palette from '@/app/styles/palette';
 import { TaskOrigin } from '@/app/helpers/task-helpers';
 import { useVirtualTaskListScrollContext } from '../../VirtualTaskListScrollContext';
 import TasksSkeletonLoader from '@/app/components/task/TasksSkeletonLoader/TasksSkeletonLoader';
+import { originConfig } from '@/app/components/task/StandardTaskItem/helpers';
 
 export interface Props extends Segment {
   isTaskTemplate: boolean;
@@ -88,7 +89,7 @@ function VTaskHeader(
           $template={isTaskTemplate}
           bgColor={bgColor}
           groupWithZeroTask={groupWithZeroTask}
-          origin={origin}
+          disableLeftOffset={originConfig[origin]?.disableLeftOffset ?? false}
         >
           {/* @ts-ignore */}
           {groupWithZeroTask ? (

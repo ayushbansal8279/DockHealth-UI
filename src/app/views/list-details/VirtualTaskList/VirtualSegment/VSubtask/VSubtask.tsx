@@ -8,7 +8,10 @@ import React, {
 } from 'react';
 import { Segment } from 'views/list-details/modules/Virtualized';
 import StandardTaskItem from 'components/task/StandardTaskItem/StandardTaskItem';
-import { getSubtaskStylingLink } from 'components/task/StandardTaskItem/helpers';
+import {
+  getSubtaskStylingLink,
+  originConfig,
+} from 'components/task/StandardTaskItem/helpers';
 import QuickAddSubtask from '@/app/components/task/StandardTaskItem/QuickAddSubtask';
 import {
   Draggable,
@@ -179,7 +182,7 @@ function VSubtask(
           }
           isSortApplied={!!sort.key}
           bgColor={bgColor}
-          origin={origin}
+          hasCustomOffset={originConfig[origin]?.hasCustomOffset ?? false}
         >
           <div
             style={{

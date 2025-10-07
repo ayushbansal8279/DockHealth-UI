@@ -22,6 +22,7 @@ import { Draggable } from 'react-beautiful-dnd';
 import palette from '@/app/styles/palette';
 import { useDroppable } from '@dnd-kit/core';
 import { useIsWorkspaceScopedList } from '@/app/hooks/useIsWorkspaceScopedList';
+import { originConfig } from '@/app/components/task/StandardTaskItem/helpers';
 
 export interface Props extends Segment {
   taskGroupIdentifier: string;
@@ -55,6 +56,9 @@ function VQuickAddTask(
   const percentage = ((!!number ? number : 0) / screenWidth) * 100;
   const taskGroupIdentifierRef = useRef(taskGroupIdentifier);
   const { workspaceIdentifier } = useIsWorkspaceScopedList();
+  const computedWidth = visibleWidth
+    ? `${(visibleWidth ?? 0) - (originConfig[origin]?.widthOffset ?? 0)}px`
+    : '100%';
 
   useEffect(() => {
     taskGroupIdentifierRef.current = taskGroupIdentifier;
@@ -129,20 +133,14 @@ function VQuickAddTask(
       <Sc.VQuickAddTaskContainer
         // $width={droppableHeaderWidth ? `${droppableHeaderWidth}px` : '100%'}
         $width={percentage > 100 ? `${droppableHeaderWidth}px` : '100%'}
-        origin={origin}
+        disableLeftOffset={originConfig[origin]?.disableLeftOffset ?? false}
       >
         <Sc.VQuickAddTask
           ref={ref}
           {...register}
-          $width={
-            visibleWidth
-              ? `${
-                  origin === 'PATIENT' ? visibleWidth - 27 : visibleWidth - 87
-                }px`
-              : '100%'
-          }
+          $width={computedWidth}
           // $width={visibleWidth ? `${visibleWidth - 60}px` : '100%'}
-          origin={origin}
+          disableLeftOffset={originConfig[origin]?.disableLeftOffset ?? false}
         >
           <QuickAddTaskInput
             // @ts-ignore

@@ -719,7 +719,7 @@ export const SubtaskStylingLinkContainer = styled.div`
   height: calc(2px + 100%);
   width: 18px;
   position: absolute;
-  left: ${({ origin }) => (origin === 'PATIENT' ? '-72px' : '-19px')};
+  left: ${({ hasCustomOffset }) => (hasCustomOffset ? '-72px' : '-19px')};
   top: -1px;
   display: flex;
   align-items: center;
@@ -751,7 +751,7 @@ export const SubtaskStylingLastLink = styled.div`
   border-radius: 0 0 0 4px;
   position: absolute;
   padding: 1px 0;
-  left: ${({ origin }) => (origin === 'PATIENT' ? '-72px' : '-19px')};
+  left: ${({ hasCustomOffset }) => (hasCustomOffset ? '-72px' : '-19px')};
   top: -1px;
   z-index: 999;
   pointer-events: none;
