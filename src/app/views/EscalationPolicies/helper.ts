@@ -1,5 +1,14 @@
 import { EscalationPolicy } from "@/app/types/escalationPolicy";
+import { TaskPriority } from "@/app/helpers/task-helpers";
 
+export const EscalationActionType = {
+  AddAssignee: 'AddAssignee',
+  CreateTask: 'CreateTask',
+  UpdateTask: 'UpdateTask',
+  SendEmail: 'SendEmail',
+  SendSlack: 'SendSlack',
+  ScheduleEscalation: 'ScheduleEscalation',
+} as const;
 
 export const timestampFieldOptions = [
   { value: 'createdDate', label: 'Task Created Date' },
@@ -40,12 +49,19 @@ export const scopeOptions = [
 ];
 
 export const actionTypeOptions = [
-  { value: 'AddAssignee', label: 'Add Assignee' },
-  { value: 'CreateTask', label: 'Create Task' },
-  { value: 'UpdateTask', label: 'Update Task' },
-  { value: 'SendEmail', label: 'Send Email' },
-  { value: 'SendSlack', label: 'Send Slack' },
-  { value: 'ScheduleEscalation', label: 'Schedule Escalation' }
+  { value: EscalationActionType.AddAssignee, label: 'Add Assignee' },
+  { value: EscalationActionType.CreateTask, label: 'Create Task' },
+  { value: EscalationActionType.UpdateTask, label: 'Update Task' },
+  { value: EscalationActionType.SendEmail, label: 'Send Email' },
+  { value: EscalationActionType.SendSlack, label: 'Send Slack' },
+  { value: EscalationActionType.ScheduleEscalation, label: 'Schedule Escalation' }
+];
+
+export const priorityOptions = [
+  { value: TaskPriority.NONE, label: 'None' },
+  { value: TaskPriority.LOW, label: 'Low' },
+  { value: TaskPriority.MEDIUM, label: 'Medium' },
+  { value: TaskPriority.HIGH, label: 'High' },
 ];
 
 export const formatFilterDetails = (scopeFilter: any, references?: EscalationPolicy['references']) => {
@@ -149,7 +165,7 @@ export const formatActionDetails = (actions: any[], references?: EscalationPolic
     const result: ActionDetail = { main: actionType, subItems: [] };
 
     switch (action.type) {
-      case 'AddAssignee':
+      case EscalationActionType.AddAssignee:
         const assigneeUsers = action.params?.addAssigneeUsers?.length > 0 
           ? getNames(action.params.addAssigneeUsers, references?.users)
           : [];
@@ -169,7 +185,7 @@ export const formatActionDetails = (actions: any[], references?: EscalationPolic
         }
         break;
         
-      case 'SendEmail':
+      case EscalationActionType.SendEmail:
         if (action.params?.subject) {
           result.subItems!.push(`Subject: "${action.params.subject}"`);
         }
@@ -181,7 +197,7 @@ export const formatActionDetails = (actions: any[], references?: EscalationPolic
         }
         break;
         
-      case 'SendSlack':
+      case EscalationActionType.SendSlack:
         if (action.params?.channel) {
           result.subItems!.push(`Channel: ${action.params.channel}`);
         }
@@ -190,7 +206,7 @@ export const formatActionDetails = (actions: any[], references?: EscalationPolic
         }
         break;
         
-      case 'CreateTask':
+      case EscalationActionType.CreateTask:
         if (action.params?.title) {
           result.subItems!.push(`Title: "${action.params.title}"`);
         }
@@ -211,7 +227,7 @@ export const formatActionDetails = (actions: any[], references?: EscalationPolic
         }
         break;
         
-      case 'UpdateTask':
+      case EscalationActionType.UpdateTask:
         if (action.params?.priority) {
           result.subItems!.push(`Priority: ${action.params.priority}`);
         }
@@ -223,7 +239,7 @@ export const formatActionDetails = (actions: any[], references?: EscalationPolic
         }
         break;
         
-      case 'ScheduleEscalation':
+      case EscalationActionType.ScheduleEscalation:
         if (action.params?.delay) {
           result.subItems!.push(`Delay: ${action.params.delay}`);
         }

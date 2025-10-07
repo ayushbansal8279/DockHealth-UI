@@ -51,6 +51,8 @@ import {
   timestampFieldOptions,
   timeUnitOptions,
   delayOptions,
+  EscalationActionType,
+  priorityOptions,
 } from '@/app/views/EscalationPolicies/helper';
 import {
   createEscalationPolicy,
@@ -224,7 +226,7 @@ const CreateEscalationPolicy: React.FC<CreateEscalationPolicyProps> = ({
 
     for (const action of formData.actions) {
       switch (action.type) {
-        case 'AddAssignee':
+        case EscalationActionType.AddAssignee:
           if (
             (!action.params.addAssigneeUsers ||
               action.params.addAssigneeUsers.length === 0) &&
@@ -234,12 +236,12 @@ const CreateEscalationPolicy: React.FC<CreateEscalationPolicyProps> = ({
             return false;
           }
           break;
-        case 'CreateTask':
+        case EscalationActionType.CreateTask:
           if (!action.params.title) {
             return false;
           }
           break;
-        case 'SendEmail':
+        case EscalationActionType.SendEmail:
           if (
             !action.params.recipients ||
             action.params.recipients.length === 0 ||
@@ -249,12 +251,12 @@ const CreateEscalationPolicy: React.FC<CreateEscalationPolicyProps> = ({
             return false;
           }
           break;
-        case 'SendSlack':
+        case EscalationActionType.SendSlack:
           if (!action.params.channel || !action.params.message) {
             return false;
           }
           break;
-        case 'ScheduleEscalation':
+        case EscalationActionType.ScheduleEscalation:
           if (!action.params.delay || !action.params.nextLevel) {
             return false;
           }
@@ -310,7 +312,7 @@ const CreateEscalationPolicy: React.FC<CreateEscalationPolicyProps> = ({
   const addAction = () => {
     setFormData({
       ...formData,
-      actions: [...formData.actions, { type: 'AddAssignee', params: {} }],
+      actions: [...formData.actions, { type: EscalationActionType.AddAssignee, params: {} }],
     });
   };
 
@@ -755,7 +757,7 @@ const CreateEscalationPolicy: React.FC<CreateEscalationPolicyProps> = ({
                     }
                     onChange={(event, newValue) => {
                       updateAction(index, {
-                        type: newValue?.value || 'AddAssignee',
+                        type: newValue?.value || EscalationActionType.AddAssignee,
                         params: {}, // Reset params when action type changes
                       });
                     }}
@@ -775,7 +777,7 @@ const CreateEscalationPolicy: React.FC<CreateEscalationPolicyProps> = ({
 
                   <ActionSpacerBox />
 
-                  {action.type === 'AddAssignee' && (
+                  {action.type === EscalationActionType.AddAssignee && (
                     <>
                       <SelectWrapper>
                         {renderCompactSelect(
@@ -783,7 +785,7 @@ const CreateEscalationPolicy: React.FC<CreateEscalationPolicyProps> = ({
                           action.params.addAssigneeUsers || [],
                           (users: string[]) =>
                             updateAction(index, {
-                              type: 'AddAssignee',
+                              type: EscalationActionType.AddAssignee,
                               params: {
                                 ...action.params,
                                 addAssigneeUsers: users,
@@ -805,7 +807,7 @@ const CreateEscalationPolicy: React.FC<CreateEscalationPolicyProps> = ({
                           action.params.addAssigneeGroups || [],
                           (groups: string[]) =>
                             updateAction(index, {
-                              type: 'AddAssignee',
+                              type: EscalationActionType.AddAssignee,
                               params: {
                                 ...action.params,
                                 addAssigneeGroups: groups,
@@ -838,7 +840,7 @@ const CreateEscalationPolicy: React.FC<CreateEscalationPolicyProps> = ({
                     </>
                   )}
 
-                  {action.type === 'SendEmail' && (
+                  {action.type === EscalationActionType.SendEmail && (
                     <>
                       <SelectWrapper>
                         <EscalationPolicyTextField
@@ -886,7 +888,7 @@ const CreateEscalationPolicy: React.FC<CreateEscalationPolicyProps> = ({
                     </>
                   )}
 
-                  {action.type === 'SendSlack' && (
+                  {action.type === EscalationActionType.SendSlack && (
                     <SelectWrapper>
                       <EscalationPolicyTextField
                         label="Channel"
@@ -915,7 +917,7 @@ const CreateEscalationPolicy: React.FC<CreateEscalationPolicyProps> = ({
                     </SelectWrapper>
                   )}
 
-                  {action.type === 'CreateTask' && (
+                  {action.type === EscalationActionType.CreateTask && (
                     <>
                       <SelectWrapper>
                         <EscalationPolicyTextField
@@ -930,29 +932,15 @@ const CreateEscalationPolicy: React.FC<CreateEscalationPolicyProps> = ({
                         />
 
                         <Autocomplete
-                          options={[
-                            { value: 'LOW', label: 'Low' },
-                            { value: 'MEDIUM', label: 'Medium' },
-                            { value: 'HIGH', label: 'High' },
-                            { value: 'CRITICAL', label: 'Critical' },
-                          ]}
+                          options={priorityOptions}
                           value={
-                            action.params.priority
-                              ? {
-                                  value: action.params.priority,
-                                  label:
-                                    action.params.priority
-                                      .charAt(0)
-                                      .toUpperCase() +
-                                    action.params.priority
-                                      .slice(1)
-                                      .toLowerCase(),
-                                }
-                              : null
+                            priorityOptions.find(
+                              (opt) => opt.value === action.params.priority
+                            ) || null
                           }
                           onChange={(event, newValue) =>
                             updateAction(index, {
-                              type: 'CreateTask',
+                              type: EscalationActionType.CreateTask,
                               params: {
                                 ...action.params,
                                 priority: newValue?.value || '',
@@ -980,7 +968,7 @@ const CreateEscalationPolicy: React.FC<CreateEscalationPolicyProps> = ({
                           action.params.assignee || [],
                           (assignees: string[]) =>
                             updateAction(index, {
-                              type: 'CreateTask',
+                              type: EscalationActionType.CreateTask,
                               params: { ...action.params, assignee: assignees },
                             }),
                           userOptions,
@@ -991,7 +979,7 @@ const CreateEscalationPolicy: React.FC<CreateEscalationPolicyProps> = ({
                     </>
                   )}
 
-                  {action.type === 'UpdateTask' && (
+                  {action.type === EscalationActionType.UpdateTask && (
                     <>
                       <SelectWrapper>
                         <Autocomplete
@@ -1003,7 +991,7 @@ const CreateEscalationPolicy: React.FC<CreateEscalationPolicyProps> = ({
                           }
                           onChange={(event, newValue) =>
                             updateAction(index, {
-                              type: 'UpdateTask',
+                              type: EscalationActionType.UpdateTask,
                               params: {
                                 ...action.params,
                                 status: newValue?.id || '',
@@ -1025,29 +1013,15 @@ const CreateEscalationPolicy: React.FC<CreateEscalationPolicyProps> = ({
                         />
 
                         <Autocomplete
-                          options={[
-                            { value: 'LOW', label: 'Low' },
-                            { value: 'MEDIUM', label: 'Medium' },
-                            { value: 'HIGH', label: 'High' },
-                            { value: 'CRITICAL', label: 'Critical' },
-                          ]}
+                          options={priorityOptions}
                           value={
-                            action.params.priority
-                              ? {
-                                  value: action.params.priority,
-                                  label:
-                                    action.params.priority
-                                      .charAt(0)
-                                      .toUpperCase() +
-                                    action.params.priority
-                                      .slice(1)
-                                      .toLowerCase(),
-                                }
-                              : null
+                            priorityOptions.find(
+                              (opt) => opt.value === action.params.priority
+                            ) || null
                           }
                           onChange={(event, newValue) =>
                             updateAction(index, {
-                              type: 'UpdateTask',
+                              type: EscalationActionType.UpdateTask,
                               params: {
                                 ...action.params,
                                 priority: newValue?.value || '',
@@ -1084,7 +1058,7 @@ const CreateEscalationPolicy: React.FC<CreateEscalationPolicyProps> = ({
                     </>
                   )}
 
-                  {action.type === 'ScheduleEscalation' && (
+                  {action.type === EscalationActionType.ScheduleEscalation && (
                     <SelectWrapper>
                       <Autocomplete
                         options={delayOptions}
@@ -1095,7 +1069,7 @@ const CreateEscalationPolicy: React.FC<CreateEscalationPolicyProps> = ({
                         }
                         onChange={(event, newValue) =>
                           updateAction(index, {
-                            type: 'ScheduleEscalation',
+                            type: EscalationActionType.ScheduleEscalation,
                             params: {
                               ...action.params,
                               delay: newValue?.value || '',

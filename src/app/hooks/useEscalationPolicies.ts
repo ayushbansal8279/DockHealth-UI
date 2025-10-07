@@ -1,5 +1,4 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useDispatch } from 'react-redux';
 import {
   getAllEscalationPolicies,
   createEscalationPolicy,
@@ -51,7 +50,6 @@ export interface EscalationPoliciesState {
   workflowOptions: SelectOption[];
   statusOptions: SelectOption[];
   loading: boolean;
-  error: string | null;
 }
 
 export interface EscalationPoliciesActions {
@@ -66,14 +64,11 @@ export interface EscalationPoliciesActions {
     policyData: Partial<any>,
   ) => Promise<EscalationPolicy>;
   deletePolicy: (identifier: string) => Promise<void>;
-  clearError: () => void;
 }
 
 export const useEscalationPolicies = (
   workspaceIdentifier?: string,
 ): EscalationPoliciesState & EscalationPoliciesActions => {
-  const dispatch = useDispatch();
-
   const [policies, setPolicies] = useState<EscalationPolicy[]>([]);
   const [userOptions, setUserOptions] = useState<SelectOption[]>([]);
   const [groupOptions, setGroupOptions] = useState<SelectOption[]>([]);
@@ -81,17 +76,13 @@ export const useEscalationPolicies = (
   const [workflowOptions, setWorkflowOptions] = useState<SelectOption[]>([]);
   const [statusOptions, setStatusOptions] = useState<SelectOption[]>([]);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
   const loadPolicies = useCallback(async () => {
     try {
       setLoading(true);
-      setError(null);
       const data = await getAllEscalationPolicies();
       setPolicies(data);
     } catch (err) {
-      const errorMessage = 'Failed to load escalation policies';
-      setError(errorMessage);
       console.error(err);
     } finally {
       setLoading(false);
@@ -101,7 +92,6 @@ export const useEscalationPolicies = (
   const loadTaskLists = useCallback(
     async (workspaceId?: string) => {
       try {
-        setError(null);
         const data = await getTaskListForUser(
           workspaceId || workspaceIdentifier,
         );
@@ -115,8 +105,6 @@ export const useEscalationPolicies = (
 
         setListOptions(formattedLists);
       } catch (err) {
-        const errorMessage = 'Failed to load task lists';
-        setError(errorMessage);
         console.error(err);
       }
     },
@@ -125,7 +113,6 @@ export const useEscalationPolicies = (
 
   const loadUsersAndGroups = useCallback(async () => {
     try {
-      setError(null);
       const data = await getOrganizationUsersAndUserGroups();
 
       const formattedUsers = (data || [])
@@ -145,15 +132,12 @@ export const useEscalationPolicies = (
       setUserOptions(formattedUsers);
       setGroupOptions(formattedGroups);
     } catch (err) {
-      const errorMessage = 'Failed to load users and groups';
-      setError(errorMessage);
       console.error(err);
     }
   }, []);
 
   const loadWorkflows = useCallback(async () => {
     try {
-      setError(null);
       const data = await getTemplates(true);
 
       const formattedWorkflows = (data || [])
@@ -165,15 +149,12 @@ export const useEscalationPolicies = (
 
       setWorkflowOptions(formattedWorkflows);
     } catch (err) {
-      const errorMessage = 'Failed to load workflows';
-      setError(errorMessage);
       console.error(err);
     }
   }, []);
 
   const loadStatuses = useCallback(async () => {
     try {
-      setError(null);
       const data = await getOrganizationStatuses();
 
       const formattedStatuses = (data || []).map((item: any) => ({
@@ -183,8 +164,6 @@ export const useEscalationPolicies = (
 
       setStatusOptions(formattedStatuses);
     } catch (err) {
-      const errorMessage = 'Failed to load statuses';
-      setError(errorMessage);
       console.error(err);
     }
   }, []);
@@ -192,13 +171,10 @@ export const useEscalationPolicies = (
   const createPolicy = useCallback(
     async (policyData: any): Promise<EscalationPolicy> => {
       try {
-        setError(null);
         const newPolicy = await createEscalationPolicy(policyData);
         await loadPolicies();
         return newPolicy;
       } catch (err) {
-        const errorMessage = 'Failed to create escalation policy';
-        setError(errorMessage);
         throw err;
       }
     },
@@ -211,7 +187,6 @@ export const useEscalationPolicies = (
       policyData: Partial<any>,
     ): Promise<EscalationPolicy> => {
       try {
-        setError(null);
         const updatedPolicy = await updateEscalationPolicy(
           identifier,
           policyData,
@@ -219,8 +194,6 @@ export const useEscalationPolicies = (
         await loadPolicies();
         return updatedPolicy;
       } catch (err) {
-        const errorMessage = 'Failed to update escalation policy';
-        setError(errorMessage);
         throw err;
       }
     },
@@ -230,21 +203,14 @@ export const useEscalationPolicies = (
   const deletePolicy = useCallback(
     async (identifier: string): Promise<void> => {
       try {
-        setError(null);
         await deleteEscalationPolicy(identifier);
         await loadPolicies();
       } catch (err) {
-        const errorMessage = 'Failed to delete escalation policy';
-        setError(errorMessage);
         throw err;
       }
     },
     [loadPolicies],
   );
-
-  const clearError = useCallback(() => {
-    setError(null);
-  }, []);
 
   useEffect(() => {
     loadPolicies();
@@ -268,7 +234,6 @@ export const useEscalationPolicies = (
     workflowOptions,
     statusOptions,
     loading,
-    error,
     loadPolicies,
     loadTaskLists,
     loadUsersAndGroups,
@@ -277,7 +242,6 @@ export const useEscalationPolicies = (
     createPolicy,
     updatePolicy,
     deletePolicy,
-    clearError,
   };
 };
 

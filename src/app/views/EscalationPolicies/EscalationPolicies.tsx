@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import BasicLayoutHeader from '@/app/components/template/BasicLayoutHeader/BasicLayoutHeader';
 import ViewLayout from '@/app/components/template/ViewLayout/ViewLayout';
@@ -58,7 +59,6 @@ import {
   ActionDetail,
 } from '@/app/views/EscalationPolicies/helper';
 import { Add } from '@mui/icons-material';
-import { useState } from 'react';
 import { useEscalationPolicies } from '@/app/hooks/useEscalationPolicies';
 import { getEscalationPolicyById } from '@/app/api/escalation-policy-api';
 import { EscalationPolicy } from '@/app/types/escalationPolicy';
@@ -73,7 +73,6 @@ const EscalationPolicies = () => {
     workflowOptions,
     statusOptions,
     loading,
-    error,
     loadPolicies,
     deletePolicy,
   } = useEscalationPolicies();
@@ -123,29 +122,34 @@ const EscalationPolicies = () => {
     );
   };
 
-  const handleDeletePolicy = async (identifier: string) => {
-    if (
-      window.confirm('Are you sure you want to delete this escalation policy?')
-    ) {
-      try {
-        await deletePolicy(identifier);
+  const handleDeletePolicy = (identifier: string) => {
+    dispatch(
+      openModal('DeleteConfirmation', {
+        title: 'Delete Escalation Policy',
+        description:
+          'Are you sure you want to delete this escalation policy? This action cannot be undone.',
+        confirm: async () => {
+          try {
+            await deletePolicy(identifier);
 
-        setExpandedPolicies((prev) => {
-          const { [identifier]: removed, ...rest } = prev;
-          return rest;
-        });
-        setPolicyDetails((prev) => {
-          const { [identifier]: removed, ...rest } = prev;
-          return rest;
-        });
-        setLoadingDetails((prev) => {
-          const { [identifier]: removed, ...rest } = prev;
-          return rest;
-        });
-      } catch (err) {
-        console.error('Failed to delete policy:', err);
-      }
-    }
+            setExpandedPolicies((prev) => {
+              const { [identifier]: removed, ...rest } = prev;
+              return rest;
+            });
+            setPolicyDetails((prev) => {
+              const { [identifier]: removed, ...rest } = prev;
+              return rest;
+            });
+            setLoadingDetails((prev) => {
+              const { [identifier]: removed, ...rest } = prev;
+              return rest;
+            });
+          } catch (err) {
+            console.error('Failed to delete policy:', err);
+          }
+        },
+      }),
+    );
   };
 
   const handleAccordionChange = async (identifier: string) => {
@@ -186,8 +190,6 @@ const EscalationPolicies = () => {
   return (
     <ViewLayout header={<BasicLayoutHeader title="Escalation Policies" />}>
       <MainContainer>
-        {error && <ErrorAlert severity="error">{error}</ErrorAlert>}
-
         <HeaderBox>
           <PolicyHeaderBox>
             <AddTaskButtonWrapper onClick={handleNewPolicy}>
