@@ -3,7 +3,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import * as ListDetailsActions from 'actions/list-details-actions';
 import {
   currentTaskListSelector,
-  currentTaskListTasksStatusSelector,
 } from 'selectors/task-list-selectors';
 import {
   groupTasksSelector,
@@ -21,6 +20,7 @@ import { createTask } from 'sagas/list-details-saga';
 import { getTemplates } from 'api/task-template-api';
 
 import { BOARD_CONTEXTS } from './helpers';
+import { userPreferenceStatusSelector } from '@/app/selectors/user-preference-selectors';
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const BoardContextProvider = ({ contextName, children }) => {
@@ -28,7 +28,7 @@ const BoardContextProvider = ({ contextName, children }) => {
   const groupList = useSelector(listDetailsGroupsSelector);
   const taskList = useSelector(currentTaskListSelector);
   const groupTasks = useSelector(groupTasksSelector);
-  const currentStatus = useSelector(currentTaskListTasksStatusSelector);
+  const currentStatus = useSelector(userPreferenceStatusSelector);
 
   const handleDeleteTask = useCallback(
     (task) => {
