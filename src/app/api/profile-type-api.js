@@ -9,6 +9,18 @@ export function getAllProfileTypes(contextType) {
   return axios.get(url).then(({ data }) => data);
 }
 
+export function getAllProfileTypesWithPredefined() {
+  return axios
+    .get('profile/type/getAll?includePredefinedProfileTypes=true')
+    .then(({ data }) => data)
+    .catch((error) => {
+      console.error('Error fetching profile types:', error);
+      throw new Error(
+        error?.response?.data?.errorMessage || 'Failed to fetch profile types',
+      );
+    });
+}
+
 export function getProfileDetailsType(identifier) {
   return axios.get(`profile/type/${identifier}`).then(({ data }) => data);
 }

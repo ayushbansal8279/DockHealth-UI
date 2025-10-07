@@ -3,6 +3,16 @@ import { log } from '../helpers/log';
 import { blobFileDownload } from '../helpers/blob-file-download';
 import { noop, showAlert } from '../helpers/utility-functions';
 
+export function getAllCustomFields() {
+  return axios
+    .get(`custom/field`)
+    .then(({ data }) => data)
+    .catch((error) => {
+      log(error);
+      throw new Error(error?.response?.data?.errorMessage);
+    });
+}
+
 export function getAllPatientCustomFields(active = true, patientIdentifier) {
   return axios
     .get(`custom/field/getAll/PATIENT`, {

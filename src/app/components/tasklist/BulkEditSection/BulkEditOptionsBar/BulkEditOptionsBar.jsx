@@ -42,6 +42,7 @@ import {
   bulkEditDueDateSuccess,
   bulkEditDuplicateTasksSuccess,
   refreshTaskBundle,
+  bulkEditDueDateWorkflow,
 } from 'actions/task-actions';
 import * as ActionTypes from 'actions/action-types';
 import {
@@ -356,11 +357,12 @@ const BulkEditOptionsBar = ({
 
   const handleChangeDateTasks = useCallback(
     (dueDate) => {
-      const allSelectedIdentifiers = [
-        ...allSelectedTasksIdentifiers,
-        ...allSelectedWorkflowIdentifiers,
-      ];
-      bulkEditDueDate(allSelectedIdentifiers, dueDate, filters)(dispatch);
+      bulkEditDueDate(allSelectedTasksIdentifiers, dueDate, filters)(dispatch);
+      bulkEditDueDateWorkflow(
+        allSelectedWorkflowIdentifiers,
+        dueDate,
+        filters,
+      )(dispatch);
 
       const dueDateIntent = checkDateTimeIntent(dueDate);
 
