@@ -36,8 +36,8 @@ import debounce from 'lodash.debounce';
 import { getFilteredCountsForList } from '@/app/api/list-details-api';
 import {
   currentTaskListSelector,
-  currentTaskListTasksStatusSelector,
 } from '@/app/selectors/task-list-selectors';
+import { userPreferenceStatusSelector } from '@/app/selectors/user-preference-selectors';
 
 const NewFilterContainer = ({
   filters,
@@ -63,7 +63,7 @@ const NewFilterContainer = ({
 
   const currentUser = useSelector(userProfileSelector);
   const taskList = useSelector(currentTaskListSelector);
-  const taskListStatus = useSelector(currentTaskListTasksStatusSelector);
+  const taskListStatus = useSelector(userPreferenceStatusSelector);
   const customerTypeLabel = getCustomerTypeLabel(currentUser);
   const customerTypeLabelMixedCase = capitalizeWords(customerTypeLabel);
   const sanitizedFilters = filters?.map((item) => {
