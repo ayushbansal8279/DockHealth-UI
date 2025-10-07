@@ -183,6 +183,10 @@ const DataManagement = lazy(() =>
   import('views/data-management/DataManagement'),
 );
 
+const EscalationPolicies = lazy(() =>
+  import('views/EscalationPolicies/EscalationPolicies'),
+);
+
 const {
   CAN_ACCESS_HOME_PAGE,
   CAN_ACCESS_SEARCH_PAGE,
@@ -297,6 +301,11 @@ export const SETTINGS_ROUTES = [
     RouteComponent: Integrations,
     permissions: [CAN_ACCESS_SETTINGS_PAGE],
   },
+  {
+    path: '/escalation-policies',
+    RouteComponent: EscalationPolicies,
+    permissions: [CAN_ACCESS_SETTINGS_PAGE],
+  },   
   {
     path: '/data-management',
     RouteComponent: DataManagement,
