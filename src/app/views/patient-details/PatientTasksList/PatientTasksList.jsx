@@ -77,6 +77,7 @@ import TaskListGroupCollapse from '../TaskListGroupCollapse/TaskListGroupCollaps
 import TasksToolbar from '../TasksToolbar/TasksToolbar';
 import VirtualTaskList from 'views/list-details/VirtualTaskList/VirtualTaskList';
 import localStorageHelper from '@/app/helpers/local-storage-helper';
+import { TaskViewContext } from '@/app/context-api/task-view-context';
 
 const PATIENT_SPECIFIC_LIST_VIEW_COLUMNS_CONFIG = {
   ...TASK_ITEM_BASE_COLUMN_CONFIG,
@@ -123,6 +124,7 @@ const PatientTasksListView = React.memo(() => {
   const patient = useSelector(patientSelector);
   const isAllTasksView = taskListIdentifierParameter === ListViewType.ALL_TASKS;
   const [viewType, setViewType] = useState('SLIM_VIEW');
+  const [tasks, setTasks] = useState([]);
   const storageKey = patientViewTypeStorageKey;
 
   const handlePatientView = useCallback(
@@ -136,6 +138,14 @@ const PatientTasksListView = React.memo(() => {
     },
     [storageKey],
   );
+
+  const handleAddTask = useCallback((newTask) => {
+    setTasks((oldTasks) => [...oldTasks, newTask]);
+  }, []);
+
+  const handleRemoveAllTasks = useCallback(() => {
+    setTasks([]);
+  }, []);
 
   useEffect(() => {
     const storedViewType = localStorageHelper.getItem(storageKey);
@@ -531,6 +541,7 @@ const PatientTasksListView = React.memo(() => {
                     isPatientView
                     patientViewType={viewType}
                     handlePatientView={handlePatientView}
+                    handleRemoveAllTasks={handleRemoveAllTasks}
                   />
                   <Box py={0.5} />
                   <ListDetailsContainer style={{ height: '100%' }}>
@@ -540,11 +551,30 @@ const PatientTasksListView = React.memo(() => {
                       disabled={bulkEditIsDisabled}
                       searchValue={taskSearch}
                     >
-                      <VirtualTaskList
-                        groupedTasks={virtualTaskListData}
-                        showClearSortFiltersModal={false}
-                        origin={TaskOrigin.PATIENT}
-                      />
+                      <TaskViewContext.Provider
+                        value={{
+                          addNewGroup: false,
+                          handleAddNewGroup: () => {},
+                          changeViewType: viewType,
+                          handleSetChangeViewType: handlePatientView,
+                          showShadow: false,
+                          handleScroll: () => {},
+                          tasks: tasks,
+                          handleAddTask: handleAddTask,
+                          handleRemoveAllTasks: handleRemoveAllTasks,
+                          workflowPopoverOpen: false,
+                          handleWorkflowPopoverOpen: () => {},
+                          patientPopoverOpen: false,
+                          handlePatientPopoverOpen: () => {},
+                          handleScrollToAddGroupName: () => {},
+                        }}
+                      >
+                        <VirtualTaskList
+                          groupedTasks={virtualTaskListData}
+                          showClearSortFiltersModal={false}
+                          origin={TaskOrigin.PATIENT}
+                        />
+                      </TaskViewContext.Provider>
                     </BulkEditSection>
                   </ListDetailsContainer>
                 </>

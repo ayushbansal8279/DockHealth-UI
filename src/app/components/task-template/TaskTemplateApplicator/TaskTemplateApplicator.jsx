@@ -36,7 +36,7 @@ import {
   TaskTemplateApplicatorRotatableChevronWrapper,
   TaskTemplateApplicatorRotatableChevronLabel,
 } from './styled';
-import { ListPageContext } from '@/app/views/list-details/ListDetailsView';
+import { TaskViewContext } from '@/app/context-api/task-view-context';
 import palette from '@/app/styles/palette';
 
 const { DISABLED } = TASK_LIST_RESTRICTIONS_OPTIONS;
@@ -55,7 +55,7 @@ const TaskTemplateApplicator = ({
   const [parentList, setParentList] = useState([]);
   const [taskTemplatesList, setTaskTemplatesList] = useState(null);
   const [taskTemplatesIsLoading, setTaskTemplatesIsLoading] = useState(null);
-  const { handleWorkflowPopoverOpen } = useContext(ListPageContext);
+  const { handleWorkflowPopoverOpen } = useContext(TaskViewContext);
 
   const currentUser = useSelector(userProfileSelector);
   const taskListRestrictions =

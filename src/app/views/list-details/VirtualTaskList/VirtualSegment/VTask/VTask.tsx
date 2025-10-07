@@ -28,7 +28,7 @@ import QuickAddTaskInput from '@/app/components/tasklist/QuickAddTaskInput/Quick
 import { CollapseContext } from '../../VirtualTaskList';
 import palette from '@/app/styles/palette';
 import { useVirtualTaskListScrollContext } from '../../VirtualTaskListScrollContext';
-import { ListPageContext } from '../../../ListDetailsView';
+import { TaskViewContext } from '@/app/context-api/task-view-context';
 import { CSS } from '@dnd-kit/utilities';
 import { useDraggable, useDroppable } from '@dnd-kit/core';
 
@@ -76,7 +76,7 @@ function VTask(
   const parentTaskReference = useRef(null);
   const { get, workflowIdentifierMap, handleRemoveWorkflowIdentifier } =
     useContext(CollapseContext);
-  const { changeViewType } = useContext(ListPageContext);
+  const { changeViewType } = useContext(TaskViewContext);
   const pulledTask = useSelector((state) => {
     // @ts-ignore
     return taskLookupSelector(state, origin, metadata.id);
