@@ -13,7 +13,6 @@ import TaskListHeader from 'views/patient-details/TaskListHeader/TaskListHeader'
 import {
   getPatientFilterOptions,
   getCurrentPatientTasks,
-  setCurrentListTasksStatus,
 } from 'actions/patient-details-actions';
 import { openModal } from 'modal/actions';
 import { PatientTasksSagaActions } from 'sagas/patient-details-saga';
@@ -31,7 +30,6 @@ import {
   selectedTasksSelector,
 } from 'selectors/patient-details-selectors';
 import { addingNewSubtaskParentIdSelector } from 'selectors/task-drawer-selectors';
-// import { organizationCustomFieldsSelector } from 'selectors/organization-selectors';
 import {
   hasFiltersAppliedSelector,
   selectedFiltersInMegaFilterSelector,
@@ -69,7 +67,6 @@ import { ListViewType } from '../helpers';
 import {
   checkIfSelectedListIsPresent,
   groupTasks,
-  patientTaskViewStatusStorageKey,
   patientViewTypeStorageKey,
   searchTaskInPatientLists,
 } from './helpers';
@@ -208,11 +205,6 @@ const PatientTasksListView = () => {
   }, [activeList, currentList, isAllTasksView, setCurrentList]);
   useEffect(() => {
     if (patientIdentifier) {
-      const savedStatus = localStorageHelper.getItem(
-        patientTaskViewStatusStorageKey,
-      );
-
-      dispatch(setCurrentListTasksStatus(savedStatus ?? TaskStatus.INCOMPLETE));
       initializeSavedFilters(patientIdentifier);
       dispatch(getCurrentPatientTasks());
     }
