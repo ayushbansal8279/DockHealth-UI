@@ -91,7 +91,6 @@ const ListDetailsTableView = () => {
   const pusher = useRef(initializePusher());
   const [channel, setChannel] = useState(null);
   const [clearSearch, setClearSearch] = useState(false);
-  const [clearFilter, setClearFilter] = useState(false);
 
   const dispatch = useDispatch();
   const { taskListIdentifier, tabName } = params;
@@ -488,8 +487,6 @@ const ListDetailsTableView = () => {
               : taskCounters.complete
           }
           additionalOptions={additionalToolbarOptions}
-          clearFilter={clearFilter}
-          setClearFilter={setClearFilter}
         />
       }
     >
@@ -502,7 +499,6 @@ const ListDetailsTableView = () => {
         <TaskViewContainer>
           <TasksView
             setClearSearch={setClearSearch}
-            setClearFilter={setClearFilter}
             viewSetup={displayListPreferences}
             onTaskUpdate={handleTaskUpdate}
             updateWorkflowStatus={handleUpdateWorkflowStatus}

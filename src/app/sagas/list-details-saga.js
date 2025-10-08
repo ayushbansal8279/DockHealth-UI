@@ -49,8 +49,7 @@ import {
   currentTaskListIdentifierSelector,
 } from 'selectors/task-list-selectors';
 import {
-  getFiltersStorageKey,
-  getQuickFilterStorageKey,
+  cleanedSelectedFilters,
   getSortStorageKey,
 } from 'helpers/mega-filter-helper';
 import { calendarDateRangeSelector } from 'selectors/calendar-tasks-selectors';
@@ -68,12 +67,15 @@ import { getTasksForWorkflow } from 'actions/template-bundle-actions';
 import { log } from 'helpers/log';
 import store from '../store';
 import localStorageHelper from '../helpers/local-storage-helper';
-import sessionStorageHelper from '../helpers/session-storage-helper';
 import {
   extractAllTasksFromGroupsDetail,
   filterDataForCalender,
 } from '../helpers/list-details-helper';
-import { userPreferenceStatusSelector } from '../selectors/user-preference-selectors';
+import {
+  userPreferenceSelectedFiltersSelector,
+  userPreferenceSelectedQuickFilterSelector,
+  userPreferenceStatusSelector,
+} from '../selectors/user-preference-selectors';
 import * as UserPreferenceApi from 'api/user-preference-api';
 import { UserPreferenceContextType } from '@/app/helpers/user-prefrence-helper';
 
@@ -477,25 +479,12 @@ function* initializeListDetailsTableState() {
     });
 
     const status = yield select(userPreferenceStatusSelector);
+    const selectedFilters = yield select(userPreferenceSelectedFiltersSelector);
+    const selectedQuickFilter = yield select(
+      userPreferenceSelectedQuickFilterSelector,
+    );
 
     if (taskListIdentifier) {
-      let filters = localStorageHelper.getItem(
-        getFiltersStorageKey(taskListIdentifier, status),
-      );
-      if (!filters) {
-        filters = sessionStorageHelper.getItem(
-          getFiltersStorageKey(taskListIdentifier, status),
-        );
-      }
-      let selectedQuickFilter = localStorageHelper.getItem(
-        getQuickFilterStorageKey(taskListIdentifier, status),
-      );
-      if (!selectedQuickFilter) {
-        selectedQuickFilter = sessionStorageHelper.getItem(
-          getQuickFilterStorageKey(taskListIdentifier, status),
-        );
-      }
-
       let sort = localStorageHelper.getItem(
         getSortStorageKey(taskListIdentifier, status),
       );
@@ -506,10 +495,10 @@ function* initializeListDetailsTableState() {
         );
       }
 
-      if (filters) {
+      if (selectedFilters) {
         yield put(
           MegaFilterActions.selectFiltersForMegaFilter(
-            filters,
+            selectedFilters,
             taskListIdentifier,
             status,
             selectedQuickFilter,
@@ -646,10 +635,28 @@ function* filterListDetailsTasks({ payload }) {
 
   const taskListIdentifier = yield select(currentTaskListIdentifierSelector);
   const status = yield select(userPreferenceStatusSelector);
+  const selectedFilters = cleanedSelectedFilters(filters);
+
+  const partialDetails = {
+    selectedFilters,
+    selectedQuickFilter,
+  };  
+
+  const preferences = yield call(
+    UserPreferenceApi.updateUserPreference,
+    UserPreferenceContextType.TASK_LIST,
+    taskListIdentifier,
+    partialDetails,
+  );
+
+  yield put({
+    type: ActionTypes.UPDATE_USER_PREFERENCES_SUCCESS,
+    preferences,
+  });
 
   yield put(
     MegaFilterActions.selectFiltersForMegaFilter(
-      filters,
+      selectedFilters,
       taskListIdentifier,
       status,
       selectedQuickFilter,
@@ -657,7 +664,6 @@ function* filterListDetailsTasks({ payload }) {
   );
 
   yield all([
-    // put(ListDetailsActions.getCurrentTaskListFilterOptions()),
     put(ListDetailsActions.refreshListDetailsGroupedTasks()),
   ]);
 }

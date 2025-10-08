@@ -25,7 +25,6 @@ const ListDetailsCalendarView = () => {
   const { taskListIdentifier } = taskList || {};
   const { startDate, endDate } = useSelector(calendarDateRangeSelector);
   const { handleScroll } = useContext(ListPageContext);
-  const [clearFilter, setClearFilter] = useState(false);
 
   useEffect(() => {
     if (currentTaskListIdentifier && status && startDate && endDate) {
@@ -37,7 +36,6 @@ const ListDetailsCalendarView = () => {
     status,
     startDate,
     endDate,
-    clearFilter,
   ]);
 
   useEffect(() => {
@@ -51,8 +49,6 @@ const ListDetailsCalendarView = () => {
     <ViewLayout
       header={
         <ListDetailsHeader
-          clearFilter={clearFilter}
-          setClearFilter={setClearFilter}
           calendarView
         />
       }

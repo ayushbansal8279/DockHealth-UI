@@ -74,8 +74,6 @@ const ListDetailsHeader = (props) => {
     searchValue,
     onSearchChange,
     additionalOptions,
-    clearFilter,
-    setClearFilter,
     calendarView = false,
   } = props;
   const dispatch = useDispatch();
@@ -348,8 +346,6 @@ const ListDetailsHeader = (props) => {
           onQuickFilterUpdate={handleQuickFilterUpdate}
           onQuickFilterDelete={handleQuickFilterDelete}
           isDefaultDateFilterApplied={isDefaultDateFilterApplied}
-          clearFilter={clearFilter}
-          setClearFilter={setClearFilter}
           showFilterCount
         />
         {restrictions?.editSettings !== DISABLED &&
