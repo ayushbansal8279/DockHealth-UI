@@ -78,8 +78,6 @@ import { TaskOrigin } from '@/app/helpers/task-helpers';
 const DashboardHeader = ({
   clearSearch,
   setClearSearch,
-  clearFilter,
-  setClearFilter,
   setAddTaskDrawer,
 }) => {
   const { search } = useLocation();
@@ -412,8 +410,6 @@ const DashboardHeader = ({
                 onQuickFilterCreate={handleQuickFilterCreate}
                 onQuickFilterUpdate={handleQuickFilterUpdate}
                 onQuickFilterDelete={handleQuickFilterDelete}
-                clearFilter={clearFilter}
-                setClearFilter={setClearFilter}
                 origin={TaskOrigin.DASHBOARD}
               />
               {viewType !== ViewType.CALENDAR_VIEW && (

@@ -70,8 +70,6 @@ const DashboardList = ({
   tourModalIsOpen,
   openTourModal,
   setClearSearch,
-  clearFilter,
-  setClearFilter,
   isAddTaskDrawer,
   setAddTaskDrawer,
 }) => {
@@ -196,7 +194,6 @@ const DashboardList = ({
         confirm: () => {
           if (isSortApplied) clearSort();
           if (isSearchApplied) setClearSearch(true);
-          if (areFiltersApplied) setClearFilter(true);
         },
         closeOnConfirm: true,
       });
@@ -206,7 +203,6 @@ const DashboardList = ({
     isSearchApplied,
     isSortApplied,
     openModal,
-    setClearFilter,
     setClearSearch,
     clearSort,
   ]);
@@ -359,7 +355,7 @@ const DashboardList = ({
         </StickyContainer>
         <Spacing vertical={1} />
         {viewType === ViewType.CALENDAR_VIEW && (
-          <DashboardCalendar clearFilter={clearFilter} />
+          <DashboardCalendar />
         )}
         {viewType === ViewType.LIST_VIEW && (
           <VerticalScrollContainer>
