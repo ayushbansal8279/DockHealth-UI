@@ -45,6 +45,7 @@ import { closeModal } from 'modal/actions';
 import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
 import { log } from 'helpers/log';
 import {
+  cleanedSelectedFilters,
   getFiltersStorageKey,
   getQuickFilterStorageKey,
   getSortStorageKey,
@@ -53,7 +54,11 @@ import { PATIENTS_LIST_ALL } from '../routing/helpers/paths';
 import localStorageHelper from '../helpers/local-storage-helper';
 import sessionStorageHelper from '../helpers/session-storage-helper';
 import { UserPreferenceContextType } from '../helpers/user-prefrence-helper';
-import { userPreferenceStatusSelector } from '@/app/selectors/user-preference-selectors';
+import {
+  userPreferenceSelectedFiltersSelector,
+  userPreferenceSelectedQuickFilterSelector,
+  userPreferenceStatusSelector,
+} from '@/app/selectors/user-preference-selectors';
 import * as UserPreferenceApi from '@/app/api/user-preference-api';
 
 export const DO_TOGGLE_PATIENT_TASK_STATUS = 'DO_TOGGLE_PATIENT_TASK_STATUS';
@@ -291,11 +296,10 @@ function* getCurrentPatientAttachments() {
   }
 }
 
-function* getCurrentPatientTasks({payload}) {
+function* getCurrentPatientTasks({ payload }) {
   try {
-    const {taskStatus} = payload;
+    const { taskStatus } = payload;
     const selectedFilters = yield select(selectedFiltersInMegaFilterSelector);
-    
 
     const sort = yield select(patientTasksSortSelector);
     const patientIdentifier = yield select(currentPatientIdentifierSelector);
@@ -303,13 +307,14 @@ function* getCurrentPatientTasks({payload}) {
     const preferences = yield call(
       UserPreferenceApi.getUserPreference,
       UserPreferenceContextType.PATIENT_LIST,
-      patientIdentifier,
+      'patient',
     );
     yield put({
       type: ActionTypes.UPDATE_USER_PREFERENCES_SUCCESS,
       preferences,
     });
     const savedStatus = yield select(userPreferenceStatusSelector);
+    
     const status = taskStatus || savedStatus;
 
     const lists = yield selectedFilters && !isEmpty(selectedFilters)
@@ -455,9 +460,28 @@ function* changePatientTasksFilters({ selectedFilters, selectedQuickFilter }) {
     const completeTasksVisible = yield select(completeTasksVisibilitySelector);
     const status = completeTasksVisible ? 'ALL' : 'INCOMPLETE';
 
+    const newFilters = cleanedSelectedFilters(selectedFilters);
+
+    const partialDetails = {
+      selectedFilters: newFilters,
+      selectedQuickFilter,
+    };
+
+    const preferences = yield call(
+      UserPreferenceApi.updateUserPreference,
+      UserPreferenceContextType.PATIENT_LIST,
+      'patient',
+      partialDetails,
+    );
+
+    yield put({
+      type: ActionTypes.UPDATE_USER_PREFERENCES_SUCCESS,
+      preferences,
+    });
+
     yield put(
       MegaFilterActions.selectFiltersForMegaFilter(
-        selectedFilters,
+        newFilters,
         'patient',
         status,
         selectedQuickFilter,
@@ -474,22 +498,20 @@ function* doInitializeSavedFiltersForPatient({ patientIdentifier }) {
     const completeTasksVisible = yield select(completeTasksVisibilitySelector);
     const status = completeTasksVisible ? 'ALL' : 'INCOMPLETE';
 
-    let filters = localStorageHelper.getItem(
-      getFiltersStorageKey('patient', status),
+    const preferences = yield call(
+      UserPreferenceApi.getUserPreference,
+      UserPreferenceContextType.PATIENT_LIST,
+      'patient',
     );
-    if (!filters) {
-      filters = sessionStorageHelper.getItem(
-        getFiltersStorageKey('patient', status),
-      );
-    }
-    let selectedQuickFilter = localStorageHelper.getItem(
-      getQuickFilterStorageKey('patient', status),
+    yield put({
+      type: ActionTypes.UPDATE_USER_PREFERENCES_SUCCESS,
+      preferences,
+    });
+
+    const selectedFilters = yield select(userPreferenceSelectedFiltersSelector);
+    const selectedQuickFilter = yield select(
+      userPreferenceSelectedQuickFilterSelector,
     );
-    if (!selectedQuickFilter) {
-      selectedQuickFilter = sessionStorageHelper.getItem(
-        getQuickFilterStorageKey('patient', status),
-      );
-    }
 
     let sort = localStorageHelper.getItem(getSortStorageKey('patient', status));
 
@@ -505,7 +527,7 @@ function* doInitializeSavedFiltersForPatient({ patientIdentifier }) {
 
     yield put(
       MegaFilterActions.selectFiltersForMegaFilter(
-        filters,
+        selectedFilters,
         'patient',
         status,
         selectedQuickFilter,
