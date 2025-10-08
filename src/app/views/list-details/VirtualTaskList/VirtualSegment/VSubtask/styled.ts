@@ -16,7 +16,9 @@ export const VSubtask = styled('div')`
     hasCustomOffset,
   }: any) =>
     isWorkflowSubtask
-      ? searchValue || isFilterApply || isSortApplied
+      ? hasCustomOffset
+        ? '37px'
+        : searchValue || isFilterApply || isSortApplied
         ? '53.5px'
         : '87px'
       : searchValue || isFilterApply || isSortApplied
