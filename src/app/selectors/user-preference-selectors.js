@@ -18,7 +18,7 @@ export const userPreferenceStatusSelector = createSelector(
   ({ status }) => (status === '' ? '' : status || 'INCOMPLETE'),
 );
 
-export const userPreferenceSelectedQuickfilterSelector = createSelector(
+export const userPreferenceSelectedQuickFilterSelector = createSelector(
   userPreferenceContextStateSelector,
-  ({ selectedQuickfilter }) => selectedQuickfilter || {},
+  ({ selectedQuickFilter }) => selectedQuickFilter || {},
 );

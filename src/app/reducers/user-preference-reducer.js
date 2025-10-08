@@ -2,13 +2,12 @@ import * as ActionTypes from '../actions/action-types';
 
 const initialState = {
   status: 'INCOMPLETE',
-  selectedFilters: null,
-  selectedQuickfilter: null,
+  selectedFilters: {},
+  selectedQuickFilter: {},
 };
 
 const UserPreferenceReducer = (state = initialState, action) => {
   switch (action.type) {
-
     case ActionTypes.GET_USER_PREFERENCES_SUCCESS: {
       const { preferences } = action;
       const { details } = preferences;
@@ -28,8 +27,9 @@ const UserPreferenceReducer = (state = initialState, action) => {
     case ActionTypes.UPDATE_USER_PREFERENCES_SUCCESS: {
       const { preferences } = action;
       const { details } = preferences;
-      
+
       return {
+        ...state,
         ...details,
       };
     }
