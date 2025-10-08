@@ -23,6 +23,11 @@ import palette from '@/app/styles/palette';
 import { useDroppable } from '@dnd-kit/core';
 import { useIsWorkspaceScopedList } from '@/app/hooks/useIsWorkspaceScopedList';
 import { originConfig } from '@/app/components/task/StandardTaskItem/helpers';
+import { openModal } from '@/app/modal/actions';
+import { getTaskListForUser } from '@/app/api/task-list-api';
+import { applyTemplate } from 'actions/template-bundle-actions';
+import { addTask } from '@/app/actions/task-actions';
+import { getCurrentPatientTasks } from '@/app/actions/patient-details-actions';
 
 export interface Props extends Segment {
   taskGroupIdentifier: string;
@@ -30,6 +35,11 @@ export interface Props extends Segment {
   bgColor: boolean;
   isLoadingGroup: boolean;
   origin: string;
+}
+
+interface RouteParams {
+  taskListIdentifier?: string;
+  patientIdentifier?: string;
 }
 
 function VQuickAddTask(
@@ -47,7 +57,7 @@ function VQuickAddTask(
 ) {
   const dispatch = useDispatch();
   const taskCounters = useSelector(taskCountersSelector);
-  const { taskListIdentifier } = useParams();
+  const { taskListIdentifier, patientIdentifier } = useParams<RouteParams>();
   const currentOrganization = useSelector(selectedUserOrganizationSelector);
   const { visibleWidth, droppableHeaderWidth } =
     useVirtualTaskListScrollContext();
@@ -76,13 +86,33 @@ function VQuickAddTask(
 
   const quickAddTask = useCallback(
     (task: any) => {
-      if (task?.description) {
-        const payload = {
-          ...task,
-          autoOpenDrawer: taskCounters?.incomplete === 0,
-        };
+      if (originConfig[origin]?.showListPickerModal) {
+        dispatch(
+          openModal('ListPicker', {
+            enableSelectingGroupStep: true,
+            fetchMethod: getTaskListForUser,
+            confirm: (listId: any, taskGroupId: any) => {
+              dispatch(
+                addTask({
+                  description: task?.description,
+                  taskListIdentifier: listId,
+                  patientIdentifier,
+                  taskGroupIdentifier: taskGroupId,
+                }),
+              );
+              setTimeout(() => dispatch(getCurrentPatientTasks()), 1500);
+            },
+          }),
+        );
+      } else {
+        if (task?.description) {
+          const payload = {
+            ...task,
+            autoOpenDrawer: taskCounters?.incomplete === 0,
+          };
 
-        dispatch(createTask(payload));
+          dispatch(createTask(payload));
+        }
       }
     },
     [dispatch, taskCounters],
@@ -116,15 +146,35 @@ function VQuickAddTask(
 
   const isDragAndDropEnabled = !userSortingSupportDisabled;
 
-  const applyTemplate = useCallback(
-    (template) =>
-      dispatch(
-        applyTaskTemplate({
-          taskTemplateIdentifier: template?.identifier,
-          taskListIdentifier,
-          taskGroupIdentifier,
-        }),
-      ),
+  const addTemplate = useCallback(
+    (template: any) => {
+      if (originConfig[origin]?.showListPickerModal) {
+        dispatch(
+          openModal('ListPicker', {
+            enableSelectingGroupStep: true,
+            fetchMethod: getTaskListForUser,
+            confirm: (listId: any, taskGroupId: any) =>
+              dispatch(
+                applyTemplate({
+                  taskTemplateIdentifier: template?.identifier,
+                  taskListIdentifier: listId,
+                  patientIdentifier,
+                  taskGroupIdentifier: taskGroupId,
+                  profileIdentifier: undefined,
+                }),
+              ),
+          }),
+        );
+      } else {
+        dispatch(
+          applyTaskTemplate({
+            taskTemplateIdentifier: template?.identifier,
+            taskListIdentifier,
+            taskGroupIdentifier,
+          }),
+        );
+      }
+    },
     [dispatch, taskListIdentifier],
   );
 
@@ -151,7 +201,7 @@ function VQuickAddTask(
           />
           <Sc.TaskTemplateApplicatorContainer>
             <TaskTemplateApplicator
-              onTemplateSelect={applyTemplate}
+              onTemplateSelect={addTemplate}
               bulkApply={false}
               isWorkflowSearch
               origin={TaskOrigin.LIST}

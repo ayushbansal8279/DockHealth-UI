@@ -20,12 +20,14 @@ export const originConfig = {
     disableLeftOffset: true,
     enableTaskGroup: false,
     widthOffset: 27,
+    showListPickerModal: true,
   },
   LIST: {
     hasCustomOffset: false,
     disableLeftOffset: false,
     enableTaskGroup: true,
     widthOffset: 87,
+    showListPickerModal: false,
   },
 };
 
