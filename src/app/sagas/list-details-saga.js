@@ -50,7 +50,6 @@ import {
 } from 'selectors/task-list-selectors';
 import {
   cleanedSelectedFilters,
-  getSortStorageKey,
 } from 'helpers/mega-filter-helper';
 import { calendarDateRangeSelector } from 'selectors/calendar-tasks-selectors';
 import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
@@ -66,7 +65,6 @@ import * as CustomFieldsApi from 'api/custom-fields-api';
 import { getTasksForWorkflow } from 'actions/template-bundle-actions';
 import { log } from 'helpers/log';
 import store from '../store';
-import localStorageHelper from '../helpers/local-storage-helper';
 import {
   extractAllTasksFromGroupsDetail,
   filterDataForCalender,
@@ -74,6 +72,7 @@ import {
 import {
   userPreferenceSelectedFiltersSelector,
   userPreferenceSelectedQuickFilterSelector,
+  userPreferenceSortSelector,
   userPreferenceStatusSelector,
 } from '../selectors/user-preference-selectors';
 import * as UserPreferenceApi from 'api/user-preference-api';
@@ -483,11 +482,9 @@ function* initializeListDetailsTableState() {
     const selectedQuickFilter = yield select(
       userPreferenceSelectedQuickFilterSelector,
     );
+    const sort = yield select(userPreferenceSortSelector);
 
     if (taskListIdentifier) {
-      let sort = localStorageHelper.getItem(
-        getSortStorageKey(taskListIdentifier, status),
-      );
 
       if (sort) {
         yield put(
@@ -609,18 +606,40 @@ function* sortListDetailsTasks({ payload }) {
   onSortChanged(order ? key : null, order);
 
   const taskListIdentifier = yield select(currentTaskListIdentifierSelector);
-  const status = yield select(userPreferenceStatusSelector);
 
   const sortToSave = order ? { key, order } : null;
   if (sortToSave) {
-    localStorageHelper.setItem(
-      getSortStorageKey(taskListIdentifier, status),
-      sortToSave,
+    const partialDetails = {
+      sort: sortToSave,
+    };
+
+    const preferences = yield call(
+      UserPreferenceApi.updateUserPreference,
+      UserPreferenceContextType.TASK_LIST,
+      taskListIdentifier,
+      partialDetails,
     );
+
+    yield put({
+      type: ActionTypes.UPDATE_USER_PREFERENCES_SUCCESS,
+      preferences,
+    });
   } else {
-    localStorageHelper.removeItem(
-      getSortStorageKey(taskListIdentifier, status),
+    const partialDetails = {
+      sort: null,
+    };
+
+    const preferences = yield call(
+      UserPreferenceApi.updateUserPreference,
+      UserPreferenceContextType.TASK_LIST,
+      taskListIdentifier,
+      partialDetails,
     );
+
+    yield put({
+      type: ActionTypes.UPDATE_USER_PREFERENCES_SUCCESS,
+      preferences,
+    });
   }
 
   yield all([
@@ -640,7 +659,7 @@ function* filterListDetailsTasks({ payload }) {
   const partialDetails = {
     selectedFilters,
     selectedQuickFilter,
-  };  
+  };
 
   const preferences = yield call(
     UserPreferenceApi.updateUserPreference,
@@ -663,9 +682,7 @@ function* filterListDetailsTasks({ payload }) {
     ),
   );
 
-  yield all([
-    put(ListDetailsActions.refreshListDetailsGroupedTasks()),
-  ]);
+  yield all([put(ListDetailsActions.refreshListDetailsGroupedTasks())]);
 }
 
 function* applyTaskTemplateFailure({

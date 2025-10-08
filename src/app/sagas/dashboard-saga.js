@@ -37,7 +37,6 @@ import { showGlobalErrorAlert } from 'alert/actions';
 import { selectedFiltersInMegaFilterSelector } from 'selectors/mega-filter-selectors';
 import {
   getMultipleSelectedQuickFilterStorageKey,
-  getSortStorageKey,
   cleanedSelectedFilters,
 } from 'helpers/mega-filter-helper';
 import { log } from 'helpers/log';
@@ -51,6 +50,7 @@ import { UserPreferenceContextType } from '@/app/helpers/user-prefrence-helper';
 import {
   userPreferenceSelectedQuickFilterSelector,
   userPreferenceSelectedFiltersSelector,
+  userPreferenceSortSelector,
 } from '@/app/selectors/user-preference-selectors';
 
 function* initializeDashboardView() {
@@ -68,14 +68,10 @@ function* initializeDashboardView() {
     });
 
     const selectedFilters = yield select(userPreferenceSelectedFiltersSelector);
-
     const selectedQuickFilter = yield select(
       userPreferenceSelectedQuickFilterSelector,
     );
-
-    let sort = localStorageHelper.getItem(
-      getSortStorageKey('dashboard', tabName),
-    );
+    const sort = yield select(userPreferenceSortSelector);
 
     if (sort && sort.key && sort.order) {
       yield put({
@@ -248,9 +244,7 @@ function* getDashboardGroups() {
 function* getDashboardGroupsSuccess({ tasksList }) {
   const tabName = yield select(dashboardTabNameSelector);
 
-  let sort = localStorageHelper.getItem(
-    getSortStorageKey('dashboard', tabName),
-  );
+  const sort = yield select(userPreferenceSortSelector);
 
   const { key, order } = sort || { key: null, order: null };
 
@@ -463,15 +457,36 @@ function* getDashboardCalendarTasks() {
 
 function* sortDashboardTasks({ key, order }) {
   try {
-    const tabName = yield select(dashboardTabNameSelector);
+    const sortToSave = order ? { key, order } : null;
 
-    if (order) {
-      localStorageHelper.setItem(getSortStorageKey('dashboard', tabName), {
-        key,
-        order,
+    const partialDetails = {
+      sort: sortToSave,
+    };
+
+    if (sortToSave) {
+      const preferences = yield call(
+        UserPreferenceApi.updateUserPreference,
+        UserPreferenceContextType.HOME,
+        'dashboard',
+        partialDetails,
+      );
+
+      yield put({
+        type: ActionTypes.UPDATE_USER_PREFERENCES_SUCCESS,
+        preferences,
       });
-    } else if (order === null) {
-      localStorageHelper.removeItem(getSortStorageKey('dashboard', tabName));
+    } else {
+      const preferences = yield call(
+        UserPreferenceApi.updateUserPreference,
+        UserPreferenceContextType.HOME,
+        'dashboard',
+        partialDetails,
+      );
+
+      yield put({
+        type: ActionTypes.UPDATE_USER_PREFERENCES_SUCCESS,
+        preferences,
+      });
     }
   } catch (error) {
     log(error);

@@ -4,6 +4,7 @@ const initialState = {
   status: 'INCOMPLETE',
   selectedFilters: {},
   selectedQuickFilter: {},
+  sort: null,
 };
 
 const UserPreferenceReducer = (state = initialState, action) => {

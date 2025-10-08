@@ -26,7 +26,6 @@ import {
   patientTasksSortSelector,
   currentPatientIdentifierSelector,
   currentFolderIdentifierSelector,
-  currentListTasksStatusSelector,
 } from 'selectors/patient-details-selectors';
 import { selectedFiltersInMegaFilterSelector } from 'selectors/mega-filter-selectors';
 import {
@@ -46,17 +45,13 @@ import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
 import { log } from 'helpers/log';
 import {
   cleanedSelectedFilters,
-  getFiltersStorageKey,
-  getQuickFilterStorageKey,
-  getSortStorageKey,
 } from 'helpers/mega-filter-helper';
 import { PATIENTS_LIST_ALL } from '../routing/helpers/paths';
-import localStorageHelper from '../helpers/local-storage-helper';
-import sessionStorageHelper from '../helpers/session-storage-helper';
 import { UserPreferenceContextType } from '../helpers/user-prefrence-helper';
 import {
   userPreferenceSelectedFiltersSelector,
   userPreferenceSelectedQuickFilterSelector,
+  userPreferenceSortSelector,
   userPreferenceStatusSelector,
 } from '@/app/selectors/user-preference-selectors';
 import * as UserPreferenceApi from '@/app/api/user-preference-api';
@@ -314,7 +309,7 @@ function* getCurrentPatientTasks({ payload }) {
       preferences,
     });
     const savedStatus = yield select(userPreferenceStatusSelector);
-    
+
     const status = taskStatus || savedStatus;
 
     const lists = yield selectedFilters && !isEmpty(selectedFilters)
@@ -512,8 +507,7 @@ function* doInitializeSavedFiltersForPatient({ patientIdentifier }) {
     const selectedQuickFilter = yield select(
       userPreferenceSelectedQuickFilterSelector,
     );
-
-    let sort = localStorageHelper.getItem(getSortStorageKey('patient', status));
+    const sort = yield select(userPreferenceSortSelector);
 
     if (sort && sort.key && sort.order) {
       yield put({
@@ -611,16 +605,40 @@ function* doSortPatientTasks({ payload }) {
     const { key, order } = payload;
     onSortChanged(order ? key : null, order);
 
-    const completeTasksVisible = yield select(completeTasksVisibilitySelector);
-    const status = completeTasksVisible ? 'ALL' : 'INCOMPLETE';
+    const sortToSave = order ? { key, order } : null;
 
-    if (order) {
-      localStorageHelper.setItem(getSortStorageKey('patient', status), {
-        key,
-        order,
+    if (sortToSave) {
+      const partialDetails = {
+        sort: sortToSave,
+      };
+
+      const preferences = yield call(
+        UserPreferenceApi.updateUserPreference,
+        UserPreferenceContextType.PATIENT_LIST,
+        'patient',
+        partialDetails,
+      );
+
+      yield put({
+        type: ActionTypes.UPDATE_USER_PREFERENCES_SUCCESS,
+        preferences,
       });
-    } else if (order === null) {
-      localStorageHelper.removeItem(getSortStorageKey('patient', status));
+    } else {
+      const partialDetails = {
+        sort: null,
+      };
+
+      const preferences = yield call(
+        UserPreferenceApi.updateUserPreference,
+        UserPreferenceContextType.PATIENT_LIST,
+        'patient',
+        partialDetails,
+      );
+
+      yield put({
+        type: ActionTypes.UPDATE_USER_PREFERENCES_SUCCESS,
+        preferences,
+      });
     }
 
     yield put({
