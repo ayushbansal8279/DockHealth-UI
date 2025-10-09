@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { Box, Button, CircularProgress, Tooltip, Chip, IconButton } from '@mui/material';
+import { Box, Button, Tooltip, Chip, IconButton } from '@mui/material';
 import { useGridApiRef } from '@mui/x-data-grid-premium';
 import { useDispatch } from 'react-redux';
 import EditIcon from '@mui/icons-material/Edit';
@@ -18,7 +18,7 @@ import {
 } from '@/app/api/custom-fields-api';
 import { fieldTypes } from '@/app/components/profile-builder/helper';
 
-const FieldLibraryTab = () => {
+const FieldLibraryTab = ({ workspaceIdentifier, isWorkspace = false }) => {
   const dispatch = useDispatch();
   const [searchPhrase, setSearchPhrase] = useState('');
   const [fieldLibrary, setFieldLibrary] = useState([]);
@@ -75,7 +75,7 @@ const FieldLibraryTab = () => {
       try {
         setLoading(true);
         setError(null);
-        const fields = await getAllCustomFields();
+        const fields = await getAllCustomFields(workspaceIdentifier);
         setFieldLibrary(fields || []);
       } catch (err) {
         setError(err.message);
@@ -85,8 +85,10 @@ const FieldLibraryTab = () => {
       }
     };
 
-    fetchFields();
-  }, [dispatch]);
+    if (!isWorkspace || workspaceIdentifier) {
+      fetchFields();
+    }
+  }, [dispatch, isWorkspace, workspaceIdentifier]);
 
   const handleSearchInputChange = (value) => {
     setSearchPhrase(value);
@@ -98,13 +100,9 @@ const FieldLibraryTab = () => {
         options: {
           type: 'GLOBAL',
         },
-        onAdded: async (customField) => {
-          try {
-            const fields = await getAllCustomFields();
-            setFieldLibrary(fields || []);
-          } catch (err) {
-            dispatch(showGlobalErrorAlert());
-          }
+        workspaceIdentifier,
+        onAdded: (customField) => {
+          setFieldLibrary((prev) => [...prev, customField]);
         },
       }),
     );
@@ -117,13 +115,15 @@ const FieldLibraryTab = () => {
           type: 'GLOBAL',
         },
         customField: field,
-        onUpdated: async (updatedField) => {
-          try {
-            const fields = await getAllCustomFields();
-            setFieldLibrary(fields || []);
-          } catch (err) {
-            dispatch(showGlobalErrorAlert());
-          }
+        workspaceIdentifier,
+        onUpdated: (updatedField) => {
+          setFieldLibrary((prev) =>
+            prev.map((field) =>
+              field.identifier === updatedField.identifier
+                ? updatedField
+                : field,
+            ),
+          );
         },
       }),
     );
@@ -139,8 +139,9 @@ const FieldLibraryTab = () => {
           try {
             await deleteCustomField(field.identifier);
             dispatch(showGlobalAlert(AlertMessages.DELETED));
-            const fields = await getAllCustomFields();
-            setFieldLibrary(fields || []);
+            setFieldLibrary((prev) =>
+              prev.filter((f) => f.identifier !== field.identifier),
+            );
           } catch (err) {
             dispatch(showGlobalErrorAlert());
           }
@@ -354,21 +355,6 @@ const FieldLibraryTab = () => {
     getCategoryFromTargetType,
   ]);
 
-  if (loading) {
-    return (
-      <TabContent>
-        <Box
-          display="flex"
-          justifyContent="center"
-          alignItems="center"
-          minHeight="400px"
-        >
-          <CircularProgress />
-        </Box>
-      </TabContent>
-    );
-  }
-
   if (error) {
     return (
       <TabContent>
@@ -415,6 +401,7 @@ const FieldLibraryTab = () => {
           rows={filteredFields}
           getRowId={(row) => row.identifier}
           apiRef={apiRef}
+          loading={loading}
         />
       </DataGridContainer>
     </TabContent>

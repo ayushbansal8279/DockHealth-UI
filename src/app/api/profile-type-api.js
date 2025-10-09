@@ -1,17 +1,23 @@
 import axios from './axios-heydoc';
 import { showAlert } from '../helpers/utility-functions';
+import { withWorkspaceHeaders } from '../helpers/api-helpers';
 
-export function getAllProfileTypes(contextType) {
+export function getAllProfileTypes(contextType, workspaceIdentifier) {
   const url = contextType
     ? `profile/type/getAll?contextType=${encodeURIComponent(contextType)}`
     : 'profile/type/getAll';
 
-  return axios.get(url).then(({ data }) => data);
+  return axios
+    .get(url, withWorkspaceHeaders(workspaceIdentifier))
+    .then(({ data }) => data);
 }
 
-export function getAllProfileTypesWithPredefined() {
+export function getAllProfileTypesWithPredefined(workspaceIdentifier) {
   return axios
-    .get('profile/type/getAll?includePredefinedProfileTypes=true')
+    .get(
+      'profile/type/getAll?includePredefinedProfileTypes=true',
+      withWorkspaceHeaders(workspaceIdentifier),
+    )
     .then(({ data }) => data)
     .catch((error) => {
       console.error('Error fetching profile types:', error);
@@ -25,9 +31,9 @@ export function getProfileDetailsType(identifier) {
   return axios.get(`profile/type/${identifier}`).then(({ data }) => data);
 }
 
-export function createProfileType(profile) {
+export function createProfileType(profile, workspaceIdentifier) {
   return axios
-    .post('profile/type', profile)
+    .post('profile/type', profile, withWorkspaceHeaders(workspaceIdentifier))
     .then(({ data }) => data)
     .catch((error) => {
       showAlert({

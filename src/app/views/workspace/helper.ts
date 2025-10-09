@@ -2,6 +2,8 @@ import WorkspaceLists from './workspace-lists';
 import WorkspacePatients from './workspace-patients';
 import WorkspaceUsers from './workspace-users';
 import WorkspaceWorkflowLibrary from './workspace-worlkflow-library/WorkspaceWorkflowLibrary';
+import ObjectsTab from '../data-management/components/ObjectsTab';
+import FieldLibraryTab from '../data-management/components/FieldLibraryTab';
 
 export const TABS_CONFIG = (customerTypeLabel: string) => [
   {
@@ -26,6 +28,18 @@ export const TABS_CONFIG = (customerTypeLabel: string) => [
     mainPath: 'workflowLibrary',
     additionalPath: ':folderIdentifier?',
     RouteComponent: WorkspaceWorkflowLibrary,
+  },
+  {
+    label: 'Objects',
+    mainPath: 'objects',
+    RouteComponent: ObjectsTab,
+    isWorkspace: true,
+  },
+  {
+    label: 'Field Library',
+    mainPath: 'field-library',
+    RouteComponent: FieldLibraryTab,
+    isWorkspace: true,
   },
 ];
 
