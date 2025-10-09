@@ -839,7 +839,7 @@ export const ParentTaskContainer = styled.div`
         ? '0px'
         : '66.5px'
       : ''};
-
+`;
 
 export const TaskContainer = styled.div``;
 
