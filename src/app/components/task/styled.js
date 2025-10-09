@@ -840,18 +840,6 @@ export const ParentTaskContainer = styled.div`
         : '66.5px'
       : ''};
 
-  margin-bottom: ${({
-    origin,
-    isLastChild,
-    isNextTaskItemTypeBundle,
-    isAddingTask,
-  }) =>
-    origin === 'PATIENT'
-      ? isLastChild && !isNextTaskItemTypeBundle && !isAddingTask
-        ? '10px'
-        : ''
-      : ''};
-`;
 
 export const TaskContainer = styled.div``;
 
