@@ -54,7 +54,7 @@ const PatientSection = ({
   isSubtask,
   quickAddPatientEnabled,
   addTaskDrawer,
-  setPatientIdentifier,
+  setPatient,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const dispatch = useDispatch();
@@ -266,7 +266,7 @@ const PatientSection = ({
     async (clearInput) => {
       if (addTaskDrawer) {
         setAssignedPatient(null);
-        setPatientIdentifier('');
+        setPatient(null);
       } else {
         setAssignedPatient(null);
         setPatients([]);
@@ -279,7 +279,7 @@ const PatientSection = ({
   const handlePatientSelect = useCallback(
     async (selectedOption) => {
       if (addTaskDrawer) {
-        setPatientIdentifier(selectedOption.key);
+        setPatient(selectedOption.patient);
         setAssignedPatient(selectedOption);
       } else {
         const [lastName, names] = selectedOption.displayLabel.split(', ');
