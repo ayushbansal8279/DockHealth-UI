@@ -36,6 +36,7 @@ import { CollapseContext } from '../../VirtualTaskList';
 import { useVirtualTaskListScrollContext } from '../../VirtualTaskListScrollContext';
 import { CSS } from '@dnd-kit/utilities';
 import { useDraggable, useDroppable } from '@dnd-kit/core';
+import { getAddTaskWidths } from '../../helpers';
 
 export interface Props extends Segment {
   task: any;
@@ -142,6 +143,20 @@ function VSubtask(
     ],
   );
 
+  const {
+    addSubtaskVisibleWidth,
+    addSubtaskDroppableHeaderWidth,
+    addSubtaskPaddingRight,
+    addWorkflowTaskVisibleWidth,
+    addWorkflowTaskDroppableHeaderWidth,
+    addWorkflowTaskPaddingRight,
+  } = getAddTaskWidths({
+    origin,
+    percentage,
+    visibleWidth: visibleWidth || 0,
+    droppableHeaderWidth: droppableHeaderWidth || 0,
+    componentType: 'VSUBTASK',
+  });
   return (
     <>
       <div
@@ -221,8 +236,8 @@ function VSubtask(
       {metadata.sameLevelIndex === noOfSubtask && subtaskQuickAddOpen && (
         <div
           style={{
-            width: percentage > 90 ? `${droppableHeaderWidth + 70}` : '100%',
-            paddingRight: percentage > 90 ? '17px' : '15px',
+            width: addSubtaskDroppableHeaderWidth,
+            paddingRight: addSubtaskPaddingRight,
             background: bgColor ? palette.aliceBlue : '',
             paddingBottom:
               isLastTaskOfGroup &&
@@ -245,13 +260,8 @@ function VSubtask(
           }}
         >
           <Sc.QuickAddContainer
-            $width={
-              percentage > 90
-                ? visibleWidth
-                  ? `${visibleWidth - 100}px`
-                  : '100%'
-                : `${visibleWidth - 120}px`
-            }
+            $width={addSubtaskVisibleWidth}
+            hasCustomOffset={originConfig[origin]?.hasCustomOffset ?? false}
           >
             <QuickAddSubtask
               taskListIdentifier={parentTask?.taskList?.taskListIdentifier}
@@ -263,8 +273,8 @@ function VSubtask(
       {isLastSubtaskParentTask && addWorkflowTask && (
         <div
           style={{
-            width: percentage > 90 ? `${droppableHeaderWidth + 70}` : '100%',
-            paddingRight: percentage > 90 ? '16px' : '15px',
+            width: addWorkflowTaskDroppableHeaderWidth,
+            paddingRight: addWorkflowTaskPaddingRight,
             background: bgColor ? palette.aliceBlue : '',
             paddingBottom:
               isLastTaskOfGroup && !isNextVirtualTaskItemTypeBundle
@@ -281,14 +291,9 @@ function VSubtask(
           }}
         >
           <Sc.WorkflowQuickAddTaskContainer
-            $width={
-              percentage > 90
-                ? visibleWidth
-                  ? `${visibleWidth - 70}px`
-                  : '100%'
-                : `${visibleWidth - 85}px`
-            }
+            $width={addWorkflowTaskVisibleWidth}
             subtaskQuickAddOpen={subtaskQuickAddOpen}
+            disableLeftOffset={originConfig[origin]?.disableLeftOffset ?? false}
           >
             <QuickAddInputWrapper>
               <QuickAddTaskInput

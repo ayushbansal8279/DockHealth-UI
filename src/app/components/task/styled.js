@@ -820,12 +820,23 @@ export const ParentTaskContainer = styled.div`
       noMargin ? -1 : origin === 'PATIENT' || origin === 'GLOBAL' ? 2 : 0}px;
   }
   width: ${({ $width }) => ($width ? '100%' : '')};
-  padding-right: ${({ $width, $isVirtualSubtask, $isWorkflowTask }) =>
+  padding-right: ${({
+    $width,
+    $isVirtualSubtask,
+    $isWorkflowTask,
+    disableRightOffset,
+  }) =>
     $width
       ? $isVirtualSubtask
-        ? '15.5px'
+        ? disableRightOffset
+          ? '0px'
+          : '15.5px'
         : $isWorkflowTask
-        ? '66px'
+        ? disableRightOffset
+          ? '0px'
+          : '66px'
+        : disableRightOffset
+        ? '0px'
         : '66.5px'
       : ''};
 

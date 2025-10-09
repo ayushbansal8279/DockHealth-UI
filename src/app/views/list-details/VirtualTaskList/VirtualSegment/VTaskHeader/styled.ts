@@ -15,5 +15,6 @@ export const VTaskHeader = styled('div')`
     left: ${({ disableLeftOffset }: any) =>
       disableLeftOffset ? '0px' : '54.5px'};
   }
-  margin-right: 15.5px;
+  margin-right: ${({ disableRightOffset }: any) =>
+    disableRightOffset ? '0px' : '15.5px'};
 `;

@@ -67,7 +67,9 @@ function VQuickAddTask(
   const taskGroupIdentifierRef = useRef(taskGroupIdentifier);
   const { workspaceIdentifier } = useIsWorkspaceScopedList();
   const computedWidth = visibleWidth
-    ? `${(visibleWidth ?? 0) - (originConfig[origin]?.widthOffset ?? 0)}px`
+    ? `${
+        (visibleWidth ?? 0) - (originConfig[origin]?.quickAddWidthOffset ?? 0)
+      }px`
     : '100%';
 
   useEffect(() => {

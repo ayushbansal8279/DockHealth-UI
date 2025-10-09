@@ -34,7 +34,7 @@ export const QuickAddContainer = styled('div')`
   border-left: 1px solid ${palette.coolGrey3};
   width: ${({ $width }: any) => $width};
   position: sticky;
-  left: 89.5px;
+  left: ${({ hasCustomOffset }: any) => (hasCustomOffset ? '37px' : '89.5px')};
 
   &:hover {
     border-left: 1px solid ${palette.coolGrey2};
@@ -45,7 +45,8 @@ export const WorkflowQuickAddTaskContainer = styled('div')`
   border-left: 1px solid ${palette.coolGrey3};
   // width: 90%;
   width: ${({ $width }: any) => $width};
-  left: 54.5px;
+  left: ${({ disableLeftOffset }: any) =>
+    disableLeftOffset ? '0px' : '54.5px'};
   margin-top: ${({ subtaskQuickAddOpen }: any) =>
     subtaskQuickAddOpen ? '1px' : ''};
   position: sticky;

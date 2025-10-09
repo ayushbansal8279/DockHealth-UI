@@ -88,7 +88,7 @@ export const VTask = styled('div')`
 export const QuickAddContainer = styled('div')`
   border-left: 1px solid ${palette.coolGrey3};
   ${({ $width }: any) => (isNil($width) ? '' : `width: ${$width};`)}
-  left: 89.5px;
+  left: ${({ hasCustomOffset }: any) => (hasCustomOffset ? '37px' : '89.5px')};
   padding-bottom: ${({ addWorkflowTask, isTaskTemplate }: any) =>
     addWorkflowTask || isTaskTemplate ? '0px' : '2px'};
   position: sticky;
@@ -101,7 +101,8 @@ export const QuickAddContainer = styled('div')`
 export const WorkflowQuickAddTaskContainer = styled('div')`
   border-left: 1px solid ${palette.coolGrey3};
   width: ${({ $width }: any) => $width};
-  left: 54.5px;
+  left: ${({ disableLeftOffset }: any) =>
+    disableLeftOffset ? '0px' : '54.5px'};
   margin-top: 1px;
   position: sticky;
   &:hover {

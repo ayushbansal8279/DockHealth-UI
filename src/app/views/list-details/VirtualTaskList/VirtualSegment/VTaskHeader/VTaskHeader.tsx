@@ -90,6 +90,7 @@ function VTaskHeader(
           bgColor={bgColor}
           groupWithZeroTask={groupWithZeroTask}
           disableLeftOffset={originConfig[origin]?.disableLeftOffset ?? false}
+          disableRightOffset={originConfig[origin]?.disableRightOffset ?? false}
         >
           {/* @ts-ignore */}
           {groupWithZeroTask ? (
