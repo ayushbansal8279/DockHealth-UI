@@ -2066,27 +2066,6 @@ const TaskItem = React.memo(
       </>
     );
   },
-  (prevProps, nextProps) => {
-    // Custom comparison function for better performance
-    return (
-      prevProps.taskItemIdentifier === nextProps.taskItemIdentifier &&
-      prevProps.isOpen === nextProps.isOpen &&
-      prevProps.isCompletedGroup === nextProps.isCompletedGroup &&
-      prevProps.isDragging === nextProps.isDragging &&
-      prevProps.origin === nextProps.origin &&
-      prevProps.viewType === nextProps.viewType &&
-      prevProps.isTopLevelTaskOrWorkflowHeader ===
-        nextProps.isTopLevelTaskOrWorkflowHeader &&
-      prevProps.taskItemDragAndDropDisabled ===
-        nextProps.taskItemDragAndDropDisabled &&
-      prevProps.isSelectedByHighlighted === nextProps.isSelectedByHighlighted &&
-      prevProps.isTaskTemplate === nextProps.isTaskTemplate &&
-      prevProps.isWorkflowSubtask === nextProps.isWorkflowSubtask &&
-      prevProps.isLastChild === nextProps.isLastChild &&
-      prevProps.isFirstTaskOfGroup === nextProps.isFirstTaskOfGroup &&
-      prevProps.isLastTaskOfGroup === nextProps.isLastTaskOfGroup
-    );
-  },
 );
 
 export default TaskItem;
