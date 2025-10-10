@@ -119,6 +119,7 @@ const TaskItemDetails = ({ task, onClick, readOnly }) => {
                 onBlur={handleBlur(closePopover)}
                 initOnClick={false}
                 showCharCount
+                mentions={task?.taskMentions}
               />
             </CustomTextEditor>
             <Divider />
@@ -150,7 +151,7 @@ const TaskItemDetails = ({ task, onClick, readOnly }) => {
             title={
               <pre
                 style={{
-                  fontFamily: "Outfit, sans-serif",
+                  fontFamily: 'Outfit, sans-serif',
                   fontSize: '16px',
                   whiteSpace: 'pre-wrap',
                   wordBreak: 'keep-all',

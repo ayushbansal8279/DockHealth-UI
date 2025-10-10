@@ -54,7 +54,7 @@ const PatientSection = ({
   isSubtask,
   quickAddPatientEnabled,
   addTaskDrawer,
-  setPatientIdentifier,
+  setPatient,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const dispatch = useDispatch();
@@ -224,10 +224,12 @@ const PatientSection = ({
 
   const fetchPatients = useCallback(
     (value) =>
-      getPatientsByCriteria(value, null, workspaceIdentifier).then((fetchedPatients) => {
-        setPatients(fetchedPatients);
-        return fetchedPatients;
-      }),
+      getPatientsByCriteria(value, null, workspaceIdentifier).then(
+        (fetchedPatients) => {
+          setPatients(fetchedPatients);
+          return fetchedPatients;
+        },
+      ),
     [],
   );
 
@@ -264,7 +266,7 @@ const PatientSection = ({
     async (clearInput) => {
       if (addTaskDrawer) {
         setAssignedPatient(null);
-        setPatientIdentifier('');
+        setPatient(null);
       } else {
         setAssignedPatient(null);
         setPatients([]);
@@ -277,7 +279,7 @@ const PatientSection = ({
   const handlePatientSelect = useCallback(
     async (selectedOption) => {
       if (addTaskDrawer) {
-        setPatientIdentifier(selectedOption.key);
+        setPatient(selectedOption.patient);
         setAssignedPatient(selectedOption);
       } else {
         const [lastName, names] = selectedOption.displayLabel.split(', ');
@@ -341,6 +343,10 @@ const PatientSection = ({
       pathname: `/core/patient/${selectedPatient.patientIdentifier}`,
       state: { from: search ? pathname + search : pathname },
     });
+    sessionStorage.setItem(
+      'navigation-from',
+      search ? pathname + search : pathname,
+    );
   };
 
   return (

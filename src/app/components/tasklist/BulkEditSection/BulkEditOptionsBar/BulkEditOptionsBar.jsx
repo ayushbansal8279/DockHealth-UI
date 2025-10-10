@@ -42,6 +42,7 @@ import {
   bulkEditDueDateSuccess,
   bulkEditDuplicateTasksSuccess,
   refreshTaskBundle,
+  bulkEditDueDateWorkflow,
 } from 'actions/task-actions';
 import * as ActionTypes from 'actions/action-types';
 import {
@@ -283,8 +284,12 @@ const BulkEditOptionsBar = ({
 
   const handleChangeWorkflowStatusTasks = useCallback(
     (workflowStatus) => {
+      const allSelectedIdentifiers = [
+        ...allSelectedTasksIdentifiers,
+        ...allSelectedWorkflowIdentifiers,
+      ];
       bulkEditWorkflowStatus(
-        allSelectedTasksIdentifiers,
+        allSelectedIdentifiers,
         workflowStatus,
         filters,
         searchValue,
@@ -353,6 +358,11 @@ const BulkEditOptionsBar = ({
   const handleChangeDateTasks = useCallback(
     (dueDate) => {
       bulkEditDueDate(allSelectedTasksIdentifiers, dueDate, filters)(dispatch);
+      bulkEditDueDateWorkflow(
+        allSelectedWorkflowIdentifiers,
+        dueDate,
+        filters,
+      )(dispatch);
 
       const dueDateIntent = checkDateTimeIntent(dueDate);
 
@@ -607,7 +617,12 @@ const BulkEditOptionsBar = ({
         includeAttachmentsForDuplication,
         includePatientForDuplication: true,
       }).then(({ transactionIdentifier, tasks: duplicatedTasks }) => {
-        dispatch(bulkEditDuplicateTasksSuccess(duplicatedTasks));
+        dispatch(
+          bulkEditDuplicateTasksSuccess(
+            duplicatedTasks,
+            allSelectedTasksIdentifiers,
+          ),
+        );
 
         if (refreshTasks && typeof refreshTasks === 'function') {
           refreshTasks();
@@ -1084,6 +1099,8 @@ const BulkEditOptionsBar = ({
               handleChangeDateTasks={handleChangeDateTasks}
               isDisabled={isDisabled}
               selectedDate={bulkTasksDueDate}
+              allSelectedTasksIdentifiers={allSelectedTasksIdentifiers}
+              allSelectedWorkflowIdentifiers={allSelectedWorkflowIdentifiers}
             />
           </AccessRestrictor>
         )}

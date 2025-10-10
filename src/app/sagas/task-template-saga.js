@@ -144,7 +144,11 @@ function* getWorkflowFolder({ searchPhrase, workspaceIdentifier }) {
       const searchPhraseExist =
         searchPhrase && searchPhrase !== '' && searchPhrase !== ' ';
       const api = searchPhraseExist
-        ? TaskTemplateApi.searchTemplates.bind(null, searchPhrase)
+        ? TaskTemplateApi.searchTemplates.bind(
+            null,
+            searchPhrase,
+            workspaceIdentifier,
+          )
         : TaskTemplateApi.getTemplates.bind(null, true, workspaceIdentifier);
       workflows = yield call(api, searchPhrase);
     }
@@ -258,12 +262,10 @@ function* addTemplate({
 
     try {
       if (history) {
-        const currentPath = location.pathname + location.search;
         const builderPath = createWorkflowBuilderPath(
           createdTemplate.identifier,
         );
-        const returnToParam = encodeURIComponent(currentPath);
-        yield call(history.push, `${builderPath}?returnTo=${returnToParam}`);
+        yield call(history.push, `${builderPath}`);
       }
     } catch (error) {
       // eslint-disable-next-line no-console
@@ -949,41 +951,54 @@ function* removeLabel({ labelIdentifier }) {
   }
 }
 
-// eslint-disable-next-line sonarjs/cognitive-complexity
-function* bulkEditDuplicateTasksSuccess({ duplicatedTasks }) {
+function* bulkEditDuplicateTasksSuccess({
+  duplicatedTasks,
+  allSelectedTasksIdentifiers,
+}) {
   try {
     const currentTaskTemplateIdentifier = yield select(
       currentTaskTemplateIdentifierSelector,
     );
 
-    if (currentTaskTemplateIdentifier) {
-      const { layout } = yield select(
-        taskTemplateDetailsSelector(currentTaskTemplateIdentifier),
-      );
+    if (!currentTaskTemplateIdentifier) return;
 
-      let xStart = null;
-      let yStart = null;
+    const { layout } = yield select(
+      taskTemplateDetailsSelector(currentTaskTemplateIdentifier),
+    );
 
-      for (const { position } of layout) {
-        if (position) {
-          if (xStart === null || position.x > xStart) {
-            xStart = position.x;
-          }
-          if (yStart === null || position.y < yStart) {
-            yStart = position.y;
-          }
-        }
-      }
+    // Find originals
+    const originals = allSelectedTasksIdentifiers
+      .map((id) => layout.find((n) => n.id === id))
+      .filter(Boolean);
 
-      const autoLayout = yield getAutoLayout(
-        duplicatedTasks,
-        xStart + 430,
-        yStart,
+    if (originals.length === 0) return;
+
+    // Find bounding box of originals
+    const minX = Math.min(...originals.map((n) => n.position.x));
+    const maxX = Math.max(...originals.map((n) => n.position.x));
+
+    // Horizontal shift (place duplicates to the right of the group)
+    const shiftX = maxX - minX + 300;
+    const shiftY = 0; // keep same Y alignment
+
+    // Map duplicates with same relative pattern
+    const autoLayout = duplicatedTasks?.map((dup) => {
+      const original = originals?.find(
+        (orig) => orig?.id === dup?.referenceTaskIdentifier,
       );
-      yield put(
-        TaskTemplateActions.saveTaskTemplateLayout([...layout, ...autoLayout]),
-      );
-    }
+      if (!original) return null; // skip if not found
+      return {
+        id: dup.identifier,
+        position: {
+          x: original.position.x + shiftX,
+          y: original.position.y + shiftY,
+        },
+      };
+    });
+
+    yield put(
+      TaskTemplateActions.saveTaskTemplateLayout([...layout, ...autoLayout]),
+    );
   } catch {
     yield put(showGlobalErrorAlert());
   }

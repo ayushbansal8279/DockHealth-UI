@@ -5,7 +5,11 @@ import TaskItemPopover from '@/app/components/task/TaskItemPopover/TaskItemPopov
 import PopoverBottomBar from '@/app/components/task/PopoverBottomBar/PopoverBottomBar';
 import RichTextEditor from '@/app/components/common/RichTextEditor/RichTextEditor';
 import { convertToSimpleString } from '@/app/helpers/markdown-helper.js';
-import { Text, LongTextBox, Divider } from '@/app/components/task/StandardTaskItem/customFieldsTaskItemComponents/TaskItemLongText/styled.js';
+import {
+  Text,
+  LongTextBox,
+  Divider,
+} from '@/app/components/task/StandardTaskItem/customFieldsTaskItemComponents/TaskItemLongText/styled.js';
 import { useGridApiContext } from '@mui/x-data-grid-premium';
 import { TooltipPre } from './styled';
 
@@ -18,7 +22,9 @@ const CustomTextEditorWithPopover = ({
 }) => {
   const apiRef = useGridApiContext();
   const [rawDetails, setRawDetails] = useState(value);
-  const [unformattedDetails, setUnformattedDetails] = useState(convertToSimpleString(value));
+  const [unformattedDetails, setUnformattedDetails] = useState(
+    convertToSimpleString(value),
+  );
 
   useEffect(() => {
     setRawDetails(value);
@@ -61,7 +67,12 @@ const CustomTextEditorWithPopover = ({
         disabled={readOnly}
         fullWidth
         content={({ closePopover, onClose }) => (
-          <Box width="550px" height="100%" alignItems="center" style={{ padding: '5px' }}>
+          <Box
+            width="550px"
+            height="100%"
+            alignItems="center"
+            style={{ padding: '5px' }}
+          >
             <RichTextEditor
               value={rawDetails}
               onChange={handleChange}
@@ -98,7 +109,7 @@ const CustomTextEditorWithPopover = ({
             placement="top"
             title={<TooltipPre>{unformattedDetails}</TooltipPre>}
           >
-            <Text style={{paddingInline: '8px'}}>{unformattedDetails}</Text>
+            <Text style={{ paddingInline: '8px' }}>{unformattedDetails}</Text>
           </Tooltip>
         </LongTextBox>
       </TaskItemPopover>

@@ -5,6 +5,7 @@ export const Category = {
   CONTACT_INFO: 'PATIENT_CONTACT',
   OTHER_INFO: 'PATIENT_OTHER',
   PROFILE: 'PROFILE',
+  GLOBAL: 'GLOBAL',
 };
 
 export const CategoryLabel = {

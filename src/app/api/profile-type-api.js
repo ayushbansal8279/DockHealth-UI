@@ -1,8 +1,24 @@
 import axios from './axios-heydoc';
 import { showAlert } from '../helpers/utility-functions';
 
-export function getAllProfileTypes() {
-  return axios.get('profile/type/getAll').then(({ data }) => data);
+export function getAllProfileTypes(contextType) {
+  const url = contextType
+    ? `profile/type/getAll?contextType=${encodeURIComponent(contextType)}`
+    : 'profile/type/getAll';
+
+  return axios.get(url).then(({ data }) => data);
+}
+
+export function getAllProfileTypesWithPredefined() {
+  return axios
+    .get('profile/type/getAll?includePredefinedProfileTypes=true')
+    .then(({ data }) => data)
+    .catch((error) => {
+      console.error('Error fetching profile types:', error);
+      throw new Error(
+        error?.response?.data?.errorMessage || 'Failed to fetch profile types',
+      );
+    });
 }
 
 export function getProfileDetailsType(identifier) {
@@ -62,3 +78,8 @@ export function updateProfileListPreferences(setup, profileTypeIdentifier) {
     .put(`profile/type/list/updateUserPreferences/${profileTypeIdentifier}`, setup)
     .then(({ data }) => data);
 }
+
+export const getRelationshipTypes = (customProfileIdentifier) =>
+  axios
+    .get(`/profile/type/getAll/relationshipTypes/${customProfileIdentifier}`)
+    .then(({ data }) => data);

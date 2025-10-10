@@ -4,45 +4,51 @@ export const BulkEditContext = createContext();
 
 export const BulkEditProvider = ({ children, bulkOptions = [], viewType = "" }) => {
   const [selectableItems, setSelectableItems] = useState([]);
+  const [currentBulkOptions, setCurrentBulkOptions] = useState(bulkOptions);
 
   const [selectedOptions, setSelectedOptions] = useState(() =>
-    Object.fromEntries(bulkOptions.map(({ key }) => [key, false]))
+    Object.fromEntries(currentBulkOptions.map(({ key }) => [key, false])),
   );
 
   const toggleItem = useCallback((itemId) => {
-    setSelectableItems(prev =>
-      prev.map(item =>
+    setSelectableItems((prev) =>
+      prev.map((item) =>
         item.identifier === itemId
           ? { ...item, isSelected: !item.isSelected }
-          : item
-      )
+          : item,
+      ),
     );
   }, []);
 
   const toggleAllItems = useCallback(() => {
-    setSelectableItems(prevItems => {
-      const allSelected = prevItems.every(item => item.isSelected);
-      return prevItems.map(item => ({
+    setSelectableItems((prevItems) => {
+      const allSelected = prevItems.every((item) => item.isSelected);
+      return prevItems.map((item) => ({
         ...item,
-        isSelected: !allSelected
+        isSelected: !allSelected,
       }));
     });
   }, []);
 
   const unselectAllItems = useCallback(() => {
-    setSelectableItems(prevItems =>
-      prevItems.map(item => ({ ...item, isSelected: false }))
+    setSelectableItems((prevItems) =>
+      prevItems.map((item) => ({ ...item, isSelected: false })),
     );
   }, []);
 
   const selectedItems = useMemo(() => {
-    return selectableItems?.filter(item => item.isSelected);
+    return selectableItems?.filter((item) => item.isSelected);
   }, [selectableItems]);
 
-  const bulkEditIsActive = useMemo(() => selectedItems?.length > 0, [selectedItems]);
+  const bulkEditIsActive = useMemo(
+    () => selectedItems?.length > 0,
+    [selectedItems],
+  );
 
   const isListChecked = useMemo(() => {
-    const selectedCount = selectableItems?.filter(item => item.isSelected).length;
+    const selectedCount = selectableItems?.filter(
+      (item) => item.isSelected,
+    ).length;
     return (
       selectableItems?.length > 0 &&
       selectedCount > 0 &&
@@ -51,54 +57,71 @@ export const BulkEditProvider = ({ children, bulkOptions = [], viewType = "" }) 
   }, [selectableItems]);
 
   const toggleOption = useCallback((optionName) => {
-    setSelectedOptions(prev =>
+    setSelectedOptions((prev) =>
       Object.keys(prev).reduce((acc, key) => {
         acc[key] = key === optionName ? !prev[key] : false;
         return acc;
-      }, {})
+      }, {}),
     );
   }, []);
 
   const resetOptions = useCallback(() => {
-    setSelectedOptions(prev =>
-      Object.fromEntries(Object.keys(prev).map(key => [key, false]))
+    setSelectedOptions((prev) =>
+      Object.fromEntries(Object.keys(prev).map((key) => [key, false])),
     );
   }, []);
 
   const isOptionActive = useCallback(
     (optionName) => !!selectedOptions[optionName],
-    [selectedOptions]
+    [selectedOptions],
   );
 
-  const providerValue = useMemo(() => ({
-    selectableItems,
-    setSelectableItems,
-    toggleItem,
-    toggleAllItems,
-    unselectAllItems,
-    selectedItems,
-    bulkEditIsActive,
-    isListChecked,
-    selectedOptions,
-    bulkOptions,
-    viewType,
-    selectedOptionsHandler: {
+  const setBulkOptions = useCallback((newBulkOptions) => {
+    setCurrentBulkOptions(newBulkOptions);
+    setSelectedOptions(
+      Object.fromEntries(newBulkOptions.map(({ key }) => [key, false])),
+    );
+  }, []);
+
+  const setSelectableItemsStable = useCallback((items) => {
+    setSelectableItems(items);
+  }, []);
+
+  const providerValue = useMemo(
+    () => ({
+      selectableItems,
+      setSelectableItems: setSelectableItemsStable,
+      toggleItem,
+      toggleAllItems,
+      unselectAllItems,
+      selectedItems,
+      bulkEditIsActive,
+      isListChecked,
+      selectedOptions,
+      bulkOptions: currentBulkOptions,
+      setBulkOptions,
+      viewType,
+      selectedOptionsHandler: {
+        toggleOption,
+        resetOptions,
+        isOptionActive,
+      },
+    }),
+    [
+      selectableItems,
+      selectedItems,
+      bulkEditIsActive,
+      isListChecked,
+      selectedOptions,
+      currentBulkOptions,
+      setBulkOptions,
+      setSelectableItemsStable,
+      viewType,
       toggleOption,
       resetOptions,
-      isOptionActive
-    }
-  }), [
-    selectableItems,
-    selectedItems,
-    bulkEditIsActive,
-    isListChecked,
-    selectedOptions,
-    bulkOptions,
-    viewType,
-    toggleOption,
-    resetOptions,
-    isOptionActive
-  ]);
+      isOptionActive,
+    ],
+  );
 
   return (
     <BulkEditContext.Provider value={providerValue}>

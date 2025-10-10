@@ -62,8 +62,8 @@ const TaskItemDueDate = ({
   const handleDueDateChange = useCallback(
     (newDueDate) => {
       const isDateValid = isDueDateValid(startDate, newDueDate);
-      setMomentDueDate(newDueDate ? moment(newDueDate) : null);
       if (isDateValid) {
+        setMomentDueDate(newDueDate ? moment(newDueDate) : null);
         handleSave(newDueDate);
       } else {
         dispatch(
@@ -75,6 +75,17 @@ const TaskItemDueDate = ({
       }
     },
     [dispatch, task],
+  );
+
+  const handleClearDateClick = useCallback(
+    (clearCallback) => {
+      dispatch(
+        openModal('ClearDueDateConfirmation', {
+          confirm: clearCallback,
+        }),
+      );
+    },
+    [dispatch],
   );
 
   return (
@@ -93,6 +104,7 @@ const TaskItemDueDate = ({
             onCloseClick={closePopover}
             dueDateIntent={dueDateIntent}
             dateType="dueDate"
+            onClearDateClick={handleClearDateClick}
           />
         )}
       >

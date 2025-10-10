@@ -158,6 +158,10 @@ export const getAdditionalOptions = ({
       });
     }
 
+    case 'GLOBAL': {
+      return [];
+    }
+
     default: {
       return null;
     }

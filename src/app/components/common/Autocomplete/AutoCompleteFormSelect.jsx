@@ -8,7 +8,6 @@ import {
   ListItemText,
   MenuItem,
 } from '@mui/material';
-import { none } from 'ramda';
 import { ColorIndicator } from '../Select/styled';
 
 const AutoCompleteFormSelect = React.forwardRef(
@@ -76,7 +75,7 @@ const AutoCompleteFormSelect = React.forwardRef(
           shouldDirty: true,
         });
       } else {
-        setValue(name, newValue?.value || none, {
+        setValue(name, newValue?.value || null, {
           shouldValidate: true,
           shouldDirty: true,
         });
@@ -93,6 +92,7 @@ const AutoCompleteFormSelect = React.forwardRef(
       <>
         <Autocomplete
           disabled={readOnly}
+          name={name}
           multiple={multiple}
           ref={reference}
           options={options}
@@ -111,6 +111,7 @@ const AutoCompleteFormSelect = React.forwardRef(
           )}
           renderInput={(params) => (
             <TextField
+              name={name}
               {...params}
               variant="standard"
               sx={{

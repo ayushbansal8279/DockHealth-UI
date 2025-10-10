@@ -883,7 +883,7 @@ const TaskItem = React.memo(
 
     const showSubtaskIcon =
       isSubtask &&
-      (origin === 'DASHBOARD' ||
+      (origin === TaskOrigin.DASHBOARD || origin === TaskOrigin.PERSON ||
         !!selectedFilters ||
         !!searchValue ||
         !!sort.key);
@@ -991,7 +991,7 @@ const TaskItem = React.memo(
         if (order !== 0) return content;
         const indentSubTask =
           !(
-            origin === TaskOrigin.DASHBOARD ||
+            origin === TaskOrigin.DASHBOARD || origin === TaskOrigin.PERSON ||
             (!!selectedFilters && Object.keys(selectedFilters).length > 0) ||
             !!searchValue ||
             !!sort.key
@@ -2038,6 +2038,7 @@ const TaskItem = React.memo(
                               readOnly={
                                 restrictions?.customFields === READ_ONLY
                               }
+                              origin={origin}
                             />
                           )}
                         </TaskItemCell>,

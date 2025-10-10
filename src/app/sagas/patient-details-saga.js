@@ -43,11 +43,11 @@ import {
 } from 'helpers/ga-event-helper';
 import { closeModal } from 'modal/actions';
 import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
-import { TaskStatus } from 'helpers/task-helpers';
 import { log } from 'helpers/log';
 import {
   getFiltersStorageKey,
   getQuickFilterStorageKey,
+  getSortStorageKey,
 } from 'helpers/mega-filter-helper';
 import { PATIENTS_LIST_ALL } from '../routing/helpers/paths';
 import localStorageHelper from '../helpers/local-storage-helper';
@@ -272,7 +272,7 @@ function* getCurrentPatientAttachments() {
       const patientTaskAttachments = yield call(
         PatientAttachmentApi.getTaskAndWorkflowAttachmentsForPatient,
         patientIdentifier,
-      )
+      );
       yield put({
         type: ActionTypes.GET_CURRENT_PATIENT_ATTACHMENTS_SUCCESS,
         attachments,
@@ -437,14 +437,13 @@ function* doUpdatePatientTaskInList({ payload }) {
 
 function* changePatientTasksFilters({ selectedFilters, selectedQuickFilter }) {
   try {
-    const patientIdentifier = yield select(currentPatientIdentifierSelector);
     const completeTasksVisible = yield select(completeTasksVisibilitySelector);
     const status = completeTasksVisible ? 'ALL' : 'INCOMPLETE';
 
     yield put(
       MegaFilterActions.selectFiltersForMegaFilter(
         selectedFilters,
-        patientIdentifier,
+        'patient',
         status,
         selectedQuickFilter,
       ),
@@ -461,26 +460,38 @@ function* doInitializeSavedFiltersForPatient({ patientIdentifier }) {
     const status = completeTasksVisible ? 'ALL' : 'INCOMPLETE';
 
     let filters = localStorageHelper.getItem(
-      getFiltersStorageKey(patientIdentifier, status),
+      getFiltersStorageKey('patient', status),
     );
     if (!filters) {
       filters = sessionStorageHelper.getItem(
-        getFiltersStorageKey(patientIdentifier, status),
+        getFiltersStorageKey('patient', status),
       );
     }
     let selectedQuickFilter = localStorageHelper.getItem(
-      getQuickFilterStorageKey(patientIdentifier, status),
+      getQuickFilterStorageKey('patient', status),
     );
     if (!selectedQuickFilter) {
       selectedQuickFilter = sessionStorageHelper.getItem(
-        getQuickFilterStorageKey(patientIdentifier, status),
+        getQuickFilterStorageKey('patient', status),
       );
+    }
+
+    let sort = localStorageHelper.getItem(getSortStorageKey('patient', status));
+
+    if (sort && sort.key && sort.order) {
+      yield put({
+        type: ActionTypes.SORT_PATIENT_TASKS,
+        payload: {
+          key: sort.key,
+          order: sort.order,
+        },
+      });
     }
 
     yield put(
       MegaFilterActions.selectFiltersForMegaFilter(
         filters,
-        patientIdentifier,
+        'patient',
         status,
         selectedQuickFilter,
       ),
@@ -562,6 +573,18 @@ function* doSortPatientTasks({ payload }) {
   try {
     const { key, order } = payload;
     onSortChanged(order ? key : null, order);
+
+    const completeTasksVisible = yield select(completeTasksVisibilitySelector);
+    const status = completeTasksVisible ? 'ALL' : 'INCOMPLETE';
+
+    if (order) {
+      localStorageHelper.setItem(getSortStorageKey('patient', status), {
+        key,
+        order,
+      });
+    } else if (order === null) {
+      localStorageHelper.removeItem(getSortStorageKey('patient', status));
+    }
 
     yield put({
       type: ActionTypes.SORT_PATIENT_TASKS,
@@ -683,7 +706,7 @@ function* doArchivePatient({ payload: { patientIdentifier, history } }) {
   try {
     yield call(PatientApi.archivePatient, patientIdentifier);
     yield put(closeModal());
-    yield put(showGlobalAlert(AlertMessages.PATIENT_ARCHIVED));
+    yield put(showGlobalAlert(AlertMessages.ARCHIVED));
     history.push(PATIENTS_LIST_ALL);
   } catch {
     yield put(showGlobalErrorAlert());
@@ -695,7 +718,7 @@ function* doDeletePatientArchive({ payload: { patientIdentifier, history } }) {
   try {
     yield call(PatientApi.deletePatientArchive, patientIdentifier);
     yield put(closeModal());
-    yield put(showGlobalAlert(AlertMessages.PATIENT_ARCHIVED));
+    yield put(showGlobalAlert(AlertMessages.ARCHIVED));
     history.push(PATIENTS_LIST_ALL);
   } catch {
     yield put(showGlobalErrorAlert());
@@ -707,7 +730,7 @@ function* doUnarchivePatient({ payload: { patientIdentifier, history } }) {
   try {
     yield call(PatientApi.unarchivePatient, patientIdentifier);
     yield put(closeModal());
-    yield put(showGlobalAlert(AlertMessages.PATIENT_UNARCHIVED));
+    yield put(showGlobalAlert(AlertMessages.UNARCHIVED));
     history.push(PATIENTS_LIST_ALL);
   } catch {
     yield put(showGlobalErrorAlert());

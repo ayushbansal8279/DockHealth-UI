@@ -22,8 +22,8 @@ import BillingData from './BillingData/BillingData';
 import InvoicesList from './InvoicesList/InvoicesList';
 import {
   BillingsViewContainer,
-  BillingsViewInnerContainer,
   ErrorContainer,
+  ListContainer,
   StyledCollapse,
 } from './styled';
 
@@ -114,39 +114,39 @@ const BillingsView = () => {
   return (
     <ViewLayout header={<BasicLayoutHeader title="Billing &amp; Invoices" />}>
       <BillingsViewContainer>
-        <BillingsViewInnerContainer>
-          <StyledCollapse in={Boolean(error)} timeout={250}>
-            <ErrorContainer>
-              <MontserratTypography weight="600" variant="h4">
-                {error}
-              </MontserratTypography>
-            </ErrorContainer>
-            <Spacing vertical={4} />
-          </StyledCollapse>
-          <Elements
-            stripe={stripePromise}
-            locale="en-US"
-            fonts={[
-              {
-                cssSrc:
-                  'https://fonts.googleapis.com/css?family=Montserrat&display=swap',
-              },
-            ]}
-          >
-            <BillingData
-              isUpdatingBilling={isUpdatingBilling}
-              setUpdatingBilling={setUpdatingBilling}
-              unsetUpdatingBilling={unsetUpdatingBilling}
-              cancelUpdateBilling={cancelUpdateBilling}
-              onSubmit={onSubmit({
-                setError,
-                dispatch,
-                organizationIdentifier,
-              })}
-            />
-          </Elements>
+        <StyledCollapse in={Boolean(error)} timeout={250}>
+          <ErrorContainer>
+            <MontserratTypography weight="600" variant="h4">
+              {error}
+            </MontserratTypography>
+          </ErrorContainer>
+          <Spacing vertical={4} />
+        </StyledCollapse>
+        <Elements
+          stripe={stripePromise}
+          locale="en-US"
+          fonts={[
+            {
+              cssSrc:
+                'https://fonts.googleapis.com/css?family=Montserrat&display=swap',
+            },
+          ]}
+        >
+          <BillingData
+            isUpdatingBilling={isUpdatingBilling}
+            setUpdatingBilling={setUpdatingBilling}
+            unsetUpdatingBilling={unsetUpdatingBilling}
+            cancelUpdateBilling={cancelUpdateBilling}
+            onSubmit={onSubmit({
+              setError,
+              dispatch,
+              organizationIdentifier,
+            })}
+          />
+        </Elements>
+        <ListContainer>
           <InvoicesList />
-        </BillingsViewInnerContainer>
+        </ListContainer>
       </BillingsViewContainer>
     </ViewLayout>
   );

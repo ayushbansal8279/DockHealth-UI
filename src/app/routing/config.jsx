@@ -144,7 +144,9 @@ const GlobalSearchView = lazy(() =>
 const TaskTourView = lazy(() => import('views/TaskTour/TaskTourView'));
 const PatientsView = lazy(() => import('components/patients/PatientsView'));
 const CustomProfileList = lazy(() =>
-  import('components/custom-profile/CustomProfilesList/CustomProfileList'),
+  import(
+    'components/custom-profile/CustomProfilesList/CustomProfileListContainer'
+  ),
 );
 const CustomProfileView = lazy(() =>
   import('components/custom-profile/CustomProfilesList/CustomProfileView'),
@@ -177,6 +179,13 @@ const UserActivity = lazy(() =>
 const Integrations = lazy(() =>
   import('views/Integrations/IntegrationsHeader'),
 );
+const DataManagement = lazy(() =>
+  import('views/data-management/DataManagement'),
+);
+
+const EscalationPolicies = lazy(() =>
+  import('views/EscalationPolicies/EscalationPolicies'),
+);
 
 const {
   CAN_ACCESS_HOME_PAGE,
@@ -190,6 +199,7 @@ const {
   CAN_ACCESS_SETTINGS_PAGE,
   CAN_ACCESS_PROFILE_PAGE,
   CAN_ACCESS_WORKSPACE_PAGE,
+  CAN_ACCESS_DATA_MANAGEMENT_PAGE,
 } = PERMISSIONS;
 
 export const SETTINGS_ROUTES = [
@@ -290,6 +300,16 @@ export const SETTINGS_ROUTES = [
     path: '/integrations',
     RouteComponent: Integrations,
     permissions: [CAN_ACCESS_SETTINGS_PAGE],
+  },
+  {
+    path: '/escalation-policies',
+    RouteComponent: EscalationPolicies,
+    permissions: [CAN_ACCESS_SETTINGS_PAGE],
+  },   
+  {
+    path: '/data-management',
+    RouteComponent: DataManagement,
+    permissions: [CAN_ACCESS_DATA_MANAGEMENT_PAGE],
   },
 ];
 

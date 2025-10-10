@@ -83,6 +83,7 @@ import DeleteArchivePatientModal from './components/DeleteArchivePatientModal/De
 import DeleteOrganizationModal from './components/DeleteOrganizationModal';
 import PatientCustomFieldsBulkEditModal from './components/PatientCustomFieldsBulkEditModal';
 import TaskListCustomFieldsBulkEditModal from './components/TaskListCustomFieldsBulkEditModal';
+import ProfileCustomFieldsBulkEditModal from './components/ProfileCustomFieldsBulkEditModal';
 import AISummaryModal from './components/AISummaryModal/AISummaryModal';
 import DateWarningModal from './components/DateWarningModal/DateWarningModal';
 import AlertModal from './components/AlertModal/AlertModal';
@@ -93,7 +94,8 @@ import PatientAttachmentReferenceModal from './components/PatientAttachmentRefer
 import AddWorkspaceModal from '../components/workspace/AddWorkspaceModal/AddWorkspaceModal';
 import DeveloperScopeModal from './components/DeveloperScopeModal/DeveloperScopeModal';
 import DockIntegrationsModal from './components/DockIntegrationsModal/DockIntegrationsModal';
-
+import ClearDueDateConfirmationModal from './components/ClearDueDateConfirmationModal/ClearDueDateConfirmationModal';
+import CreateEscalationPolicyModal from './components/CreateEscalationPolicyModal/CreateEscalationPolicyModal';
 
 const MODAL_MAP = {
   CompleteAllTasks: CompleteAllTasksModal,
@@ -160,6 +162,7 @@ const MODAL_MAP = {
   DeleteTaskConfirmation: DeleteTaskConfirmationModal,
   DeleteCredentialConfirm: DeleteCredentialConfirmModal,
   TaskListCustomFieldsBulkEdit: TaskListCustomFieldsBulkEditModal,
+  ProfileCustomFieldsBulkEditModal: ProfileCustomFieldsBulkEditModal,
   EditUserGroup: EditUserGroupModal,
   AddUserToGroup: AddUserToGroupModal,
   Information: InformationModal,
@@ -190,7 +193,9 @@ const MODAL_MAP = {
   PatientAttachmentReference: PatientAttachmentReferenceModal,
   AddWorkspace: AddWorkspaceModal,
   DeveloperScopeList: DeveloperScopeModal,
-  DockIntegrations: DockIntegrationsModal
+  DockIntegrations: DockIntegrationsModal,
+  ClearDueDateConfirmation: ClearDueDateConfirmationModal,
+  CreateEscalationPolicy: CreateEscalationPolicyModal,
 };
 
 export default MODAL_MAP;

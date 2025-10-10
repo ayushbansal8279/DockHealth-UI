@@ -1,13 +1,16 @@
-import { Link } from "@mui/material";
-import { fontSizes, fontWeights } from "@/app/styles/font";
-import { CloseIconButton, ModalWrapperWithPadding } from "@/app/modal/components/styled";
-import palette from "@/app/styles/palette";
-import spacing from "@/app/styles/spacing";
-import styled from "styled-components";
+import { Box, Link } from '@mui/material';
+import { fontSizes, fontWeights } from '@/app/styles/font';
+import {
+  CloseIconButton,
+  ModalWrapperWithPadding,
+} from '@/app/modal/components/styled';
+import palette from '@/app/styles/palette';
+import spacing from '@/app/styles/spacing';
+import styled from 'styled-components';
 
 export const StyledLink = styled(Link)`
   color: ${palette.blueOcean};
-  font-family: "Outfit", sans-serif;
+  font-family: 'Outfit', sans-serif;
   text-decoration: none;
   z-index: 1000;
 
@@ -64,9 +67,17 @@ export const SearchProfilesResultList = styled.div`
   overflow-y: auto;
   overflow-x: hidden;
   height: 250px;
-`
+`;
 
 export const NoResultText = styled.div`
   padding: ${spacing.smallPlus};
   color: ${palette.coolGrey1};
-`
+`;
+
+export const DataGridWrapper = styled(Box)({
+  display: 'flex',
+  flexDirection: 'column',
+  flexGrow: 1,
+  minHeight: 0,
+  margin: '16px 32px 48px 32px',
+});

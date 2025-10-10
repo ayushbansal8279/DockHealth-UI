@@ -993,9 +993,8 @@ const ListDetailsReducer = (state = initialState, action) => {
 
       const isSubTask = Boolean(task?.parentTaskIdentifier);
 
+      const existingTask = state.tasksMap[task?.identifier];
       if (isTaskOfTemplate || isSubTask) {
-        const existingTask = state.tasksMap[task?.identifier];
-
         if (!existingTask) {
           return state;
         }
@@ -1008,6 +1007,7 @@ const ListDetailsReducer = (state = initialState, action) => {
           },
         };
       }
+
 
       const { taskGroupIdentifier } =
         task?.taskGroups?.find(
