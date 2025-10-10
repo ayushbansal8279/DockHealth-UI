@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { MoreVert } from '@mui/icons-material';
 import { Box } from '@mui/material';
@@ -63,8 +63,28 @@ import AddButton from '@/app/components/common/AddButton/AddButton';
 import { hideSubMenu } from '@/app/actions/template-actions';
 import { isUserViewOnly } from '@/app/helpers/user-helper';
 import HomeIcon from '@/app/img/navigation/HomeIcon';
+import {
+  DndContext,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
+import {
+  SortableContext,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
+import {
+  restrictToFirstScrollableAncestor,
+  restrictToVerticalAxis,
+} from '@dnd-kit/modifiers';
+import move from 'ramda/src/move';
+import DraggableDroppableListItem from './DraggableDroppableListItem';
+import { reorderWorkspaceTaskLists } from '@/app/actions/workspace-list-actions';
 
-const WorkspaceSubmenuStepTwo = ({ setShowStepTwo }) => {
+const WorkspaceSubmenuStepTwo = ({
+  setShowStepTwo,
+}: WorkspaceSubmenuStepTwoProps) => {
   const dispatch = useDispatch();
   const workspace = useSelector(workspaceSelector);
   const workspaceLabel = useSelector(organizationWorkspaceLabelSelector);
@@ -77,7 +97,6 @@ const WorkspaceSubmenuStepTwo = ({ setShowStepTwo }) => {
   const parts = location.pathname.split('/');
   const activeTaskListIdentifier = parts[3];
 
-  // TODO: get task lists, Users and Patients from workspace
   const taskLists = useSelector(workspaceTaskListsSelector);
   const defaultPatientsLists = useSelector(defaultPatientsListsSelector);
   const customPatientsLists = useSelector(customPatientsListsSelector);
@@ -89,6 +108,13 @@ const WorkspaceSubmenuStepTwo = ({ setShowStepTwo }) => {
   const [activeCollapse, setActiveCollapse] = useState('list');
   const [isSidebarOpen, setIsSidebarOpen, unsetIsSidebarOpen] =
     useBoolean(false);
+  const [dragActiveId, setDragActiveId] = useState<string | null>(null);
+  const [localTaskLists, setLocalTaskLists] = useState<any[]>([]);
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 3 } }),
+    useSensor(KeyboardSensor),
+  );
 
   const handleCollapse = (section: string) => {
     setActiveCollapse((current) => (current === section ? '' : section));
@@ -110,6 +136,28 @@ const WorkspaceSubmenuStepTwo = ({ setShowStepTwo }) => {
     dispatch(getWorkspaceUsers(workspaceIdentifier));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    setLocalTaskLists(taskLists ?? []);
+  }, [taskLists]);
+
+  const handleDragEnd = useCallback(
+    ({ active, over }: any) => {
+      if (!over || active?.data?.current?.index === over?.data?.current?.index)
+        return;
+
+      const reorderedLists = move(
+        active?.data?.current?.index,
+        over?.data?.current?.index,
+        localTaskLists,
+      );
+      
+      setLocalTaskLists(reorderedLists);
+      dispatch(reorderWorkspaceTaskLists(reorderedLists, workspaceIdentifier) as any);
+     
+    },
+    [localTaskLists, dispatch],
+  );
 
   const openAddListModal = () => {
     dispatch(
@@ -170,42 +218,86 @@ const WorkspaceSubmenuStepTwo = ({ setShowStepTwo }) => {
             addButtonClick={openAddListModal}
           >
             <WorkspaceListItems>
-              {taskLists?.map((list: any) => (
-                <DrawerListsItem key={list.taskListIdentifier} $isDraggable>
-                  <MenuWrapper>
-                    <ListOptionsMenu list={list}>
-                      <MoreVert color="primary" />
-                    </ListOptionsMenu>
-                  </MenuWrapper>
-                  {list.color && (
-                    <Box mr={1}>
-                      <ColorIndicator color={list.color} />
-                    </Box>
+              <DndContext
+                sensors={sensors}
+                onDragEnd={handleDragEnd}
+                modifiers={[
+                  restrictToVerticalAxis,
+                  restrictToFirstScrollableAncestor,
+                ]}
+              >
+                <SortableContext
+                  items={(localTaskLists ?? [])?.map(
+                    (list: any) => list?.taskListIdentifier,
                   )}
-                  {/* @ts-ignore */}
-                  <Tooltip placement="top" title={list?.listName || ''}>
-                    <ListNameText
-                      isActive={
-                        activeTaskListIdentifier === list?.taskListIdentifier
-                      }
-                      onClick={() => {
-                        history.push(
-                          createTaskListPath(list.taskListIdentifier),
-                        );
-                      }}
+                  strategy={verticalListSortingStrategy}
+                >
+                  {localTaskLists?.map((list: any, index: number) => (
+                    <DraggableDroppableListItem
+                      list={list}
+                      index={index}
+                      key={list.taskListIdentifier}
+                      setDragActiveId={setDragActiveId}
+                      searchValue={''}
                     >
-                      {/* @ts-ignore */}
-                      <ListNameLabel
-                        isNewList={
-                          list.hasUpdatesForMember || list?.status === 'PENDING'
-                        }
+                      <DrawerListsItem
+                        key={list.taskListIdentifier}
+                        style={{ paddingBottom: '10px' }}
+                        {...({
+                          $isDraggable: true,
+                          $isDragging:
+                            dragActiveId === list?.taskListIdentifier,
+                        } as any)}
                       >
-                        {list?.listName}
-                      </ListNameLabel>
-                    </ListNameText>
-                  </Tooltip>
-                </DrawerListsItem>
-              ))}
+                        <MenuWrapper>
+                          <ListOptionsMenu list={list}>
+                            <MoreVert
+                              color="primary"
+                              style={{
+                                cursor:
+                                  dragActiveId === list?.taskListIdentifier
+                                    ? 'grabbing'
+                                    : 'pointer',
+                              }}
+                            />
+                          </ListOptionsMenu>
+                        </MenuWrapper>
+                        {list.color && (
+                          <Box mr={1}>
+                            <ColorIndicator color={list.color} />
+                          </Box>
+                        )}
+                        <Tooltip placement="top" title={list?.listName || ''}>
+                          <ListNameText
+                            {...({
+                              isActive:
+                                activeTaskListIdentifier ===
+                                list?.taskListIdentifier,
+                              $isDragging:
+                                dragActiveId === list?.taskListIdentifier,
+                            } as any)}
+                            onClick={() => {
+                              history.push(
+                                createTaskListPath(list.taskListIdentifier),
+                              );
+                            }}
+                          >
+                            <ListNameLabel
+                              {...({
+                                isNewList:
+                                  list.hasUpdatesForMember ||
+                                  list?.status === 'PENDING',
+                              } as any)}
+                            >
+                              {list?.listName}
+                            </ListNameLabel>
+                          </ListNameText>
+                        </Tooltip>
+                      </DrawerListsItem>
+                    </DraggableDroppableListItem>
+                  ))}
+                </SortableContext>
+              </DndContext>
             </WorkspaceListItems>
           </NewLabeledCollapse>
         </WorkspaceListWrapper>
@@ -223,7 +315,7 @@ const WorkspaceSubmenuStepTwo = ({ setShowStepTwo }) => {
                 ))
               ) : (
                 <>
-                  {userGroups?.map(({ identifier, name, usersCount }) => (
+                  {userGroups?.map(({ identifier, name, usersCount }: any) => (
                     <DrawerListsItem key={identifier}>
                       <ListNameText
                         onClick={() => {

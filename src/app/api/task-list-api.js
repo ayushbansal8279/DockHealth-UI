@@ -360,9 +360,13 @@ export function updateUserCustomFieldsOptionsListViewSetup(
     .then(({ data }) => data);
 }
 
-export function sortTasksListsForUser(sortedTaskLists) {
+export function sortTasksListsForUser(sortedTaskLists, workspaceIdentifier) {
   return axios
-    .put(`/list/sortTaskListsForUser`, { taskListIdentifiers: sortedTaskLists })
+    .put(`/list/sortTaskListsForUser`, { taskListIdentifiers: sortedTaskLists }, {
+      headers: workspaceIdentifier
+        ? { CurrentWorkspaceIdentifier: workspaceIdentifier }
+        : undefined,
+    })
     .then(({ data }) => data);
 }
 
