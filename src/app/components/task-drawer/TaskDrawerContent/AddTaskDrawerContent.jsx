@@ -293,7 +293,11 @@ const AddTaskDrawerContent = (props) => {
             </div>
           </Grid>
           <Grid item xs={12} style={styleLeftColumn(isMobile)}>
-            <PrioritySection addTaskDrawer setPriority={setPriority} />
+            <PrioritySection
+              addTaskDrawer
+              priority={priority}
+              setPriority={setPriority}
+            />
           </Grid>
           <Grid item xs={12} ml={3} style={styleRightColumn(isMobile)}>
             <div>
