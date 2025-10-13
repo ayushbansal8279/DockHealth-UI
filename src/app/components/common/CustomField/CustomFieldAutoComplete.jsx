@@ -156,14 +156,16 @@ const CustomFieldAutoComplete = ({
   );
 
   const [searchValue, setSearchValue] = useState('');
-  const handleInputChange = (newInputValue) => {
-    setSearchValue(newInputValue);
-    if (isPatientMode) {
-      debouncedFetchPatients(newInputValue);
+  const handleInputChange = (event, newInputValue, reason) => {
+    if (reason === 'input') {
+      setSearchValue(newInputValue);
+      if (isPatientMode) {
+        debouncedFetchPatients(newInputValue);
+      }
     }
 
     if (typeof onChange === 'function') {
-      onChange(newInputValue);
+      onChange(event, newInputValue, reason);
     }
   };
 
