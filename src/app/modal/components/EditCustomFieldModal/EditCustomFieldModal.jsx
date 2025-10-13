@@ -838,7 +838,7 @@ const EditCustomFieldModal = ({
             uploadFunction={uploadCustomFieldOptions}
             identifier={customField?.identifier}
             type={type}
-            importFileTypeHint={"Drag & drop your CSV file here or Browse your local files."}
+            importFileTypeHint={"Drag & drop your CSV/Excel file here"}
           />
         </Dialog>
       </Box>
