@@ -646,6 +646,7 @@ const PatientsView = () => {
             step={1}
             label="patient"
             uploadFunction={uploadPatientData}
+            importFileTypeHint={"Drag & drop your CSV/Excel file here or Browse your local files."}
           />
         </Dialog>
         {/* <FilterPopover open={filterOpen} onClose={closeFilter}>
