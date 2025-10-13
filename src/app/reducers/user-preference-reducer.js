@@ -5,6 +5,7 @@ const initialState = {
   selectedFilters: {},
   selectedQuickFilter: {},
   sort: null,
+  multipleSelectedQuickFilters: [],
 };
 
 const UserPreferenceReducer = (state = initialState, action) => {
@@ -32,6 +33,14 @@ const UserPreferenceReducer = (state = initialState, action) => {
       return {
         ...state,
         ...details,
+      };
+    }
+
+    case ActionTypes.UPDATE_MULTIPLE_SELECTED_QUICK_FILTERS: {
+      const { multipleSelectedQuickFilters } = action;
+      return {
+        ...state,
+        multipleSelectedQuickFilters,
       };
     }
 

@@ -52,7 +52,6 @@ import { updateCurrentUserPreferences } from 'actions/user-actions';
 import { Context } from 'components/common/HorizontalScroll/HorizontalScrollContainer';
 import useActions from 'hooks/use-actions';
 import BulkEditSection from 'components/tasklist/BulkEditSection/BulkEditSection';
-import { getMultipleSelectedQuickFilterStorageKey } from 'helpers/mega-filter-helper';
 import DashboardTasksGroup from './DashboardTasksGroup';
 import DashboardToolbar from '../DashboardToolbar/DashboardToolbar';
 import {
@@ -62,8 +61,8 @@ import {
   DashboardTaskGroupsWrapper,
 } from './styled';
 import DashboardCalendar from '../DashboardCalendar/DashboardCalendar';
-import localStorageHelper from '@/app/helpers/local-storage-helper';
 import { move } from 'ramda';
+import { updateMultipleSelectedQuickFilters } from 'actions/user-preference-actions';
 
 const DashboardList = ({
   currentUser,
@@ -287,10 +286,8 @@ const DashboardList = ({
         groupOrder,
       );
 
-      localStorageHelper.setItem(
-        getMultipleSelectedQuickFilterStorageKey('dashboard', tabName),
-        JSON.stringify(newOrder),
-      );
+      dispatch(updateMultipleSelectedQuickFilters(newOrder));
+
       dispatch(
         reorderDashboardTaskGroups(
           elementToMoveWholeListIndex,
@@ -315,10 +312,8 @@ const DashboardList = ({
         groupOrder,
       );
 
-      localStorageHelper.setItem(
-        getMultipleSelectedQuickFilterStorageKey('dashboard', tabName),
-        JSON.stringify(newOrder),
-      );
+      dispatch(updateMultipleSelectedQuickFilters(newOrder));
+
       dispatch(
         reorderDashboardTaskGroups(
           elementToMoveWholeListIndex,

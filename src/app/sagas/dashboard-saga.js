@@ -36,11 +36,9 @@ import * as MegaFilterActions from 'actions/mega-filter-actions';
 import { showGlobalErrorAlert } from 'alert/actions';
 import { selectedFiltersInMegaFilterSelector } from 'selectors/mega-filter-selectors';
 import {
-  getMultipleSelectedQuickFilterStorageKey,
   cleanedSelectedFilters,
 } from 'helpers/mega-filter-helper';
 import { log } from 'helpers/log';
-import localStorageHelper from '../helpers/local-storage-helper';
 import {
   extractAllTasksFromGroupsDetail,
   filterDataForCalender,
@@ -51,6 +49,7 @@ import {
   userPreferenceSelectedQuickFilterSelector,
   userPreferenceSelectedFiltersSelector,
   userPreferenceSortSelector,
+  userPreferenceMultipleSelectedQuickFiltersSelector,
 } from '@/app/selectors/user-preference-selectors';
 
 function* initializeDashboardView() {
@@ -219,16 +218,14 @@ function* loadMoreDashboardTasksForGroup({
 function* getDashboardGroups() {
   try {
     const tabName = yield select(dashboardTabNameSelector);
-    const savedDashboardSelectedQuickFilters = localStorageHelper.getItem(
-      getMultipleSelectedQuickFilterStorageKey('dashboard', tabName),
+    const savedDashboardSelectedQuickFilters = yield select(
+      userPreferenceMultipleSelectedQuickFiltersSelector,
     );
 
     const dashboardGroups = yield call(
       getDashboardTaskStasForImplicitGroups,
       tabName,
-      savedDashboardSelectedQuickFilters
-        ? JSON.parse(savedDashboardSelectedQuickFilters)
-        : [],
+      savedDashboardSelectedQuickFilters,
     );
 
     yield put({
@@ -326,8 +323,8 @@ function* reorderDashboardTasks({
 
 function* updateTaskDueDateSuccess({ task: taskToChange, dueDate }) {
   const tabName = yield select(dashboardTabNameSelector);
-  const savedDashboardSelectedQuickFilters = localStorageHelper.getItem(
-    getMultipleSelectedQuickFilterStorageKey('dashboard', tabName),
+  const savedDashboardSelectedQuickFilters = yield select(
+    userPreferenceMultipleSelectedQuickFiltersSelector,
   );
 
   const task = { ...taskToChange, dueDate };
@@ -352,9 +349,7 @@ function* updateTaskDueDateSuccess({ task: taskToChange, dueDate }) {
     const dashboardGroups = yield call(
       getDashboardTaskStasForImplicitGroups,
       tabName,
-      savedDashboardSelectedQuickFilters
-        ? JSON.parse(savedDashboardSelectedQuickFilters)
-        : [],
+      savedDashboardSelectedQuickFilters,
     );
     yield put({
       type: ActionTypes.GET_DASHBOARD_GROUP_STATS_SUCCESS,

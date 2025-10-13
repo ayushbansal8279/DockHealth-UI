@@ -28,13 +28,14 @@ export function updateUserPreferencesSuccess(preferences) {
   };
 }
 
+export function updateMultipleSelectedQuickFilters(multipleSelectedQuickFilters) {
+  return {
+    type: ActionTypes.UPDATE_MULTIPLE_SELECTED_QUICK_FILTERS,
+    multipleSelectedQuickFilters,
+  };
+}
+
 export function updateTaskListStatus(contextType, contextIdentifier, status) {
-  console.log(
-    'updateTaskListStatus action',
-    contextType,
-    contextIdentifier,
-    status,
-  );
   return {
     type: ActionTypes.UPDATE_TASK_LIST_STATUS,
     contextType,

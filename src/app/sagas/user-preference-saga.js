@@ -3,6 +3,7 @@ import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
 import * as ActionTypes from 'actions/action-types';
 import * as UserPreferenceApi from 'api/user-preference-api';
+import { UserPreferenceContextType } from '@/app/helpers/user-prefrence-helper';
 
 function* getUserPreferences({ contextType, contextIdentifier }) {
   try {
@@ -56,10 +57,22 @@ function* updateTaskListStatus({ contextType, contextIdentifier, status }) {
   });
 }
 
+function* updateMultipleSelectedQuickFilters({multipleSelectedQuickFilters}) {
+  yield* updateUserPreferences({
+    contextType: UserPreferenceContextType.HOME,
+    contextIdentifier: 'dashboard',
+    partialDetails: { multipleSelectedQuickFilters },
+  });
+}
+
 export default function* watchUserPreferences() {
   yield all([
     takeEvery(ActionTypes.GET_USER_PREFERENCES, getUserPreferences),
     takeEvery(ActionTypes.UPDATE_USER_PREFERENCES, updateUserPreferences),
     takeEvery(ActionTypes.UPDATE_TASK_LIST_STATUS, updateTaskListStatus),
+    takeLatest(
+      ActionTypes.UPDATE_MULTIPLE_SELECTED_QUICK_FILTERS,
+      updateMultipleSelectedQuickFilters,
+    ),
   ]);
 }

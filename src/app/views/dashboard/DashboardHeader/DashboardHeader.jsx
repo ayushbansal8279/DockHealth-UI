@@ -55,7 +55,6 @@ import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined
 import Spacing from 'components/common/Spacing';
 import { updateCurrentUserPreferences } from 'actions/user-actions';
 import { Add } from '@mui/icons-material';
-import { getMultipleSelectedQuickFilterStorageKey } from 'helpers/mega-filter-helper';
 import CustomizeToolbarButton from '@/app/components/tasklist/list-toolbar-buttons/CustomizeToolbarButton/CustomizeToolbarButton';
 import MegaFilter from '@/app/components/tasklist/list-toolbar-buttons/MegaFilter/MegaFilter';
 import {
@@ -74,12 +73,10 @@ import localStorageHelper, {
 } from '@/app/helpers/local-storage-helper';
 import { openAddTaskTaskDrawer } from '@/app/actions/task-drawer-actions';
 import { TaskOrigin } from '@/app/helpers/task-helpers';
+import { updateMultipleSelectedQuickFilters } from 'actions/user-preference-actions';
+import { userPreferenceMultipleSelectedQuickFiltersSelector } from '@/app/selectors/user-preference-selectors';
 
-const DashboardHeader = ({
-  clearSearch,
-  setClearSearch,
-  setAddTaskDrawer,
-}) => {
+const DashboardHeader = ({ clearSearch, setClearSearch, setAddTaskDrawer }) => {
   const { search } = useLocation();
   const history = useHistory();
   const groupList = useSelector(dashboardTasksSelector);
@@ -96,8 +93,8 @@ const DashboardHeader = ({
   const quickFiltersList = useSelector(quickFiltersSelector);
   const addQuickFilterOption = useSelector(addQuickFilterOptionSelector);
   const selectedQuickFilter = useSelector(selectedQuickFilterSelector);
-  const savedDashboardSelectedQuickFilters = localStorageHelper.getItem(
-    getMultipleSelectedQuickFilterStorageKey('dashboard', tabName),
+  const savedDashboardSelectedQuickFilters = useSelector(
+    userPreferenceMultipleSelectedQuickFiltersSelector,
   );
   const [multipleSelectedQuickFilters, setMultipleSelectedQuickFilters] =
     useState([]);
@@ -325,9 +322,7 @@ const DashboardHeader = ({
 
   useEffect(() => {
     if (savedDashboardSelectedQuickFilters !== undefined) {
-      setMultipleSelectedQuickFilters(
-        JSON.parse(savedDashboardSelectedQuickFilters),
-      );
+      setMultipleSelectedQuickFilters(savedDashboardSelectedQuickFilters);
     }
   }, [savedDashboardSelectedQuickFilters]);
 
@@ -345,10 +340,7 @@ const DashboardHeader = ({
           quickFiltersArray.splice(index, 1);
         }
       }
-      localStorageHelper.setItem(
-        getMultipleSelectedQuickFilterStorageKey('dashboard', tabName),
-        JSON.stringify(quickFiltersArray),
-      );
+      dispatch(updateMultipleSelectedQuickFilters(quickFiltersArray));
 
       setMultipleSelectedQuickFilters(quickFiltersArray);
       setTimeout(() => dispatch(getDashboardGroups()), 10); // time delay results in better home view refresh

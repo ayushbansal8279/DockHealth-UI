@@ -27,3 +27,8 @@ export const userPreferenceSortSelector = createSelector(
   userPreferenceContextStateSelector,
   ({ sort }) => sort,
 );
+
+export const userPreferenceMultipleSelectedQuickFiltersSelector = createSelector(
+  userPreferenceContextStateSelector,
+  ({ multipleSelectedQuickFilters }) => multipleSelectedQuickFilters || [],
+);
