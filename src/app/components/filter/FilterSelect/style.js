@@ -1,10 +1,6 @@
 import { keyframes } from '@mui/material';
-import React from 'react';
 import styled from 'styled-components';
-import palette, { typography } from 'styles/palette';
-import spacing from 'styles/spacing';
-
-export const Container = styled.div``;
+import palette from 'styles/palette';
 
 export const FilterButtonWrapper = styled.div`
   display: flex;
@@ -36,15 +32,6 @@ export const OptionHolder = styled.div`
   align-items: center;
 `;
 
-export const OptionInput = styled.div`
-  width: 100px;
-  margin: 3px 12px;
-  &:active,
-  &:focus {
-    outline: none;
-  }
-`;
-
 export const OptionItem = styled.div`
   margin-right: 15px;
   border-radius: 8px;
@@ -65,20 +52,7 @@ export const OptionItem = styled.div`
     background: #daefff;
   }
 `;
-export const OptionDropDown = styled.div`
-  animation: {drop} 2s 1s ease-in;
-  display: flex;
-  flex-direction: column;
-`;
-export const OptionDropDownItem = styled.div`
-  padding: 5px 5px;
-  tranition: 0.8s;
 
-  &:hover {
-    background-color: #cfcccc;
-    tranition: 0.8s;
-  }
-`;
 
 export const dropDown = keyframes` 
 from{
@@ -132,15 +106,3 @@ export const CloseIconContainer = styled.div`
   cursor: pointer;
 `;
 
-export const PopupContainer = styled.div`
-  width: 515px;
-  padding: 0;
-  position: absolute;
-  background-color: ${palette.white};
-  overflow: auto;
-  max-height: 200px;
-  border-radius: 4px;
-  padding: 2px 0 0 10px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-  z-index: 10;
-}`;

@@ -81,19 +81,27 @@ const NewFilterContainer = ({
         const options = [];
         let dateStart = '';
         let dateEnd = '';
+        let date = '';
         finalFilter[key].forEach((item) => {
           if (item?.key?.includes('DATE_RANGE')) {
             dateStart = item?.dateStart;
             dateEnd = item?.dateEnd;
             options.push(item?.key);
+          } else if (item?.key?.includes('DATE_SINGLE')) {
+            date = item?.date;
+            options.push(item?.key);
           } else {
             options.push(item?.key || '');
           }
         });
-        data[key] =
-          dateStart !== '' && dateEnd !== ''
-            ? { options, dateStart, dateEnd }
-            : { options };
+        data[key] = { options };
+        if (dateStart !== '' && dateEnd !== '') {
+          data[key].dateStart = dateStart;
+          data[key].dateEnd = dateEnd;
+        }
+        if (date !== '') {
+          data[key].date = date;
+        }
       }
     }
     setDisable(hasItems);

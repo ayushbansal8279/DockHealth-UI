@@ -57,13 +57,21 @@ const MegaFilter = ({
 
           const options = selectedFilters[key].options.map((item) => {
             if (item?.includes('DATE_RANGE')) {
-              let aa = users.find((user) => user.key === item);
-              aa = {
-                ...aa,
+              let foundOption = users.find((user) => user.key === item);
+              foundOption = {
+                ...foundOption,
                 dateStart: selectedFilters[key].dateStart,
                 dateEnd: selectedFilters[key].dateEnd,
               };
-              return aa;
+              return foundOption;
+            }
+            if (item?.includes('DATE_SINGLE')) {
+              let foundOption = users.find((user) => user.key === item);
+              foundOption = {
+                ...foundOption,
+                date: selectedFilters[key].date,
+              };
+              return foundOption;
             }
             return users.find((user) => user.key === item);
           });
