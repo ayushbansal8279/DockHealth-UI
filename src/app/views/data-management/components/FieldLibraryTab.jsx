@@ -137,7 +137,7 @@ const FieldLibraryTab = ({ workspaceIdentifier, isWorkspace = false }) => {
           'Are you sure you want to delete this field from the library? This action cannot be undone.',
         confirm: async () => {
           try {
-            await deleteCustomField(field.identifier);
+            await deleteCustomField(field.identifier, workspaceIdentifier);
             dispatch(showGlobalAlert(AlertMessages.DELETED));
             setFieldLibrary((prev) =>
               prev.filter((f) => f.identifier !== field.identifier),

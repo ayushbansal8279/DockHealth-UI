@@ -108,14 +108,19 @@ export function updateCustomField(
   customField,
   targetType,
   taskListIdentifier,
+  workspaceIdentifier,
 ) {
   return axios
-    .put(`custom/field`, {
-      ...customField,
-      contextType: 'CUSTOM',
-      targetType,
-      taskListIdentifier,
-    })
+    .put(
+      `custom/field`,
+      {
+        ...customField,
+        contextType: 'CUSTOM',
+        targetType,
+        taskListIdentifier,
+      },
+      withWorkspaceHeaders(workspaceIdentifier),
+    )
     .then(({ data }) => data)
     .catch((error) => {
       log(error);
@@ -123,9 +128,12 @@ export function updateCustomField(
     });
 }
 
-export function deleteCustomField(identifier) {
+export function deleteCustomField(identifier, workspaceIdentifier) {
   return axios
-    .delete(`custom/field/${identifier}`)
+    .delete(
+      `custom/field/${identifier}`,
+      withWorkspaceHeaders(workspaceIdentifier),
+    )
     .then(({ data }) => data)
     .catch((error) => {
       log(error);
