@@ -2,7 +2,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { HOME_PATH } from 'routing/helpers/paths';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { Box } from '@mui/material';
 import ActivityAlerts from 'components/activity-alerts/ActivityAlerts';
 import { UserOrganizationRole } from 'helpers/user-helper';
@@ -24,6 +24,9 @@ const { ADMIN, OWNER, MEMBER, GUEST, DOCK_LITE, EXTERNAL } =
 
 const LayoutHeader = (props) => {
   const { children, horizontalSticky } = props;
+  const location = useLocation();
+  const isIframe =
+    window.self !== window.top && location.pathname.includes('/core/patient');
 
   const currentOrganization = useSelector(selectedUserOrganizationSelector);
   const whiteLabelEnabled = currentOrganization?.whiteLabelEnabled || false;
@@ -46,13 +49,15 @@ const LayoutHeader = (props) => {
         <AccessRestrictor
           allowedToRoles={[ADMIN, OWNER, MEMBER, GUEST, DOCK_LITE, EXTERNAL]}
         >
-          <ActivityAlerts
-            patientIdentifier={patientDetails?.patientIdentifier}
-          />
+          {!isIframe && (
+            <ActivityAlerts
+              patientIdentifier={patientDetails?.patientIdentifier}
+            />
+          )}
         </AccessRestrictor>
         <Box mx={1} />
         {!whiteLabelEnabled && (
-          <Link to={HOME_PATH}>
+          <Link to={isIframe ? location.pathname : HOME_PATH}>
             <DockHeaderImage />
           </Link>
         )}

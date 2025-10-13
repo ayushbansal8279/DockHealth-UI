@@ -55,8 +55,10 @@ const { DISABLED } = TASK_LIST_RESTRICTIONS_OPTIONS;
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const PatientDetailsHeader = () => {
-  const history = useHistory();
   const location = useLocation();
+  const isIframe =
+    window.self !== window.top && location.pathname.includes('/core/patient');
+  const history = useHistory();
   const [isDrawerOpen, setIsDrawerOpen, unsetIsDrawerOpen] = useBoolean(false);
   const [isProfileOpen, setIsProfileOpen, unsetIsProfileOpen] =
     useBoolean(false);
@@ -133,7 +135,7 @@ const PatientDetailsHeader = () => {
             <Box flex="1 0 0" display="flex" alignItems="center">
               <Grid container alignItems="center">
                 <Box flexBasis={30}>
-                  {(!embeddedMode || cameFrom) && (
+                  {(!embeddedMode || cameFrom) && !isIframe && (
                     <button type="button" onClick={goBack}>
                       <img
                         src={ArrowLeftIcon}
