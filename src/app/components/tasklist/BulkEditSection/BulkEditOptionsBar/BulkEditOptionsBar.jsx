@@ -935,8 +935,7 @@ const BulkEditOptionsBar = ({
           ? 'Are you sure you want to delete these tasks? This action cannot be undone.'
           : 'Deleting these tasks will also delete related subtasks. This action cannot be undone.',
         confirm: () => {
-          bulkEditDelete(allSelectedTasksIdentifiers)(dispatch);
-
+          dispatch(bulkEditDelete(allSelectedTasksIdentifiers));
           bulkEditTasksApi({
             bulkEditType: 'DELETE',
             taskIdentifiers: allSelectedTasksIdentifiers,
