@@ -854,7 +854,7 @@ export function bulkEditDueDateSuccess(tasksToUpdate, dueDate) {
   };
 }
 
-export const bulkEditDelete = (tasksToDelete) => (dispatch, getState) => {
+export const bulkEditDelete = (tasksToDelete) => (dispatch) => {
   dispatch({
     type: ActionTypes.DELETE_TASKS_SUCCESS,
     tasksToDelete,
