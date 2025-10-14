@@ -14,14 +14,28 @@ import { MoreActionsWrapper } from 'views/person-details/PersonDetailsDrawer/sty
 import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import palette from 'styles/palette';
+import { useHistory } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import {
+  userHasProfileBuilderFeatureSelector,
+  userProfileSelector,
+} from 'selectors/user-selectors';
+import { getCustomerTypeLabel } from '@/app/helpers/customer-type-helper';
+import { ContextType } from '@/app/helpers/custom-fields-helpers';
 
 const ObjectsTab = () => {
   const dispatch = useDispatch();
+  const history = useHistory();
   const [searchPhrase, setSearchPhrase] = useState('');
   const [objects, setObjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const apiRef = useGridApiRef();
+  const userProfile = useSelector(userProfileSelector);
+  const profileBuilderFeatureAvailable = useSelector(
+    userHasProfileBuilderFeatureSelector,
+  );
+  const customerTypeLabel = getCustomerTypeLabel(userProfile);
 
   useEffect(() => {
     const fetchObjects = async () => {
@@ -29,7 +43,10 @@ const ObjectsTab = () => {
         setLoading(true);
         setError(null);
         const profileTypes = await getAllProfileTypesWithPredefined();
-        const typeList = profileTypes.map((type) => ({ ...type, id: type.identifier }));
+        const typeList = profileTypes.map((type) => ({
+          ...type,
+          id: type.identifier,
+        }));
         setObjects(typeList || []);
       } catch (err) {
         setError(err.message);
@@ -78,6 +95,17 @@ const ObjectsTab = () => {
       );
     },
     [dispatch],
+  );
+
+  const onOpenProfileBuilder = useCallback(
+    ({ row: { id, name, identifier } }) => {
+      if (id.toLowerCase() === `${customerTypeLabel}s`) {
+        history.push(`/settings/object-builder/${id.toLowerCase()}`);
+        return;
+      }
+      history.push(`/settings/object-builder/objects/${identifier}`);
+    },
+    [history, customerTypeLabel],
   );
 
   const onDeleteProfile = useCallback(
@@ -132,7 +160,9 @@ const ObjectsTab = () => {
         flex: 0.2,
         renderHeader: renderColumnHeader,
         renderCell: (params) => {
-          return params.value || '';
+          return params.value
+            ? params.value.charAt(0) + params.value.slice(1).toLowerCase()
+            : '';
         },
       },
       {
@@ -144,7 +174,17 @@ const ObjectsTab = () => {
         renderCell: (data) => {
           const contextMenuOptions = [];
 
-          if (data.row.contextType !== 'PREDEFINED') {
+          if (
+            profileBuilderFeatureAvailable &&
+            data.row.contextType !== ContextType.PREDEFINED
+          ) {
+            contextMenuOptions.push({
+              name: 'Open Object Builder',
+              onClick: () => onOpenProfileBuilder(data),
+            });
+          }
+
+          if (data.row.contextType !== ContextType.PREDEFINED) {
             contextMenuOptions.push(
               {
                 name: 'Edit',
@@ -171,22 +211,52 @@ const ObjectsTab = () => {
         },
       },
     ],
-    [onEditProfile, onDeleteProfile]
+    [
+      onEditProfile,
+      onDeleteProfile,
+      onOpenProfileBuilder,
+      profileBuilderFeatureAvailable,
+    ],
   );
 
   const filteredObjects = useMemo(() => {
-    if (!searchPhrase) return objects;
-    return objects.filter((obj) =>
-      obj.name?.toLowerCase().includes(searchPhrase.toLowerCase()) ||
-      obj.description?.toLowerCase().includes(searchPhrase.toLowerCase()) ||
-      obj.contextType?.toLowerCase().includes(searchPhrase.toLowerCase())
-    );
+    const filtered = !searchPhrase
+      ? objects
+      : objects.filter(
+          (obj) =>
+            obj.name?.toLowerCase().includes(searchPhrase.toLowerCase()) ||
+            obj.description
+              ?.toLowerCase()
+              .includes(searchPhrase.toLowerCase()) ||
+            obj.contextType?.toLowerCase().includes(searchPhrase.toLowerCase()),
+        );
+
+    return [...filtered].sort((a, b) => {
+      if (
+        a.contextType === ContextType.PREDEFINED &&
+        b.contextType !== ContextType.PREDEFINED
+      ) {
+        return -1;
+      }
+      if (
+        a.contextType !== ContextType.PREDEFINED &&
+        b.contextType === ContextType.PREDEFINED
+      ) {
+        return 1;
+      }
+      return 0;
+    });
   }, [objects, searchPhrase]);
 
   if (loading) {
     return (
       <TabContent>
-        <Box display="flex" justifyContent="center" alignItems="center" minHeight="400px">
+        <Box
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          minHeight="400px"
+        >
           <CircularProgress />
         </Box>
       </TabContent>
@@ -196,7 +266,12 @@ const ObjectsTab = () => {
   if (error) {
     return (
       <TabContent>
-        <Box display="flex" justifyContent="center" alignItems="center" minHeight="400px">
+        <Box
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          minHeight="400px"
+        >
           <Box textAlign="center">
             <p>Error loading objects: {error}</p>
             <Button onClick={() => window.location.reload()}>Retry</Button>
@@ -232,7 +307,7 @@ const ObjectsTab = () => {
         <ReusableDataGrid
           columns={columns}
           rows={filteredObjects}
-          getRowId={row => row.identifier}
+          getRowId={(row) => row.identifier}
           apiRef={apiRef}
         />
       </DataGridContainer>
