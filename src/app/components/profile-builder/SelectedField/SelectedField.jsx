@@ -159,6 +159,9 @@ const SelectedField = ({ field, category, id }) => {
         name: value,
         contextType: 'CUSTOM',
         targetType: TargetType.GLOBAL,
+        profileType: {
+          identifier,
+        },
       };
 
       if (
@@ -178,7 +181,7 @@ const SelectedField = ({ field, category, id }) => {
         newlyAddedField =
           context === 'PATIENT'
             ? await addCustomField(patientPayload, context)
-            : await addCustomField(profilePayload, TargetType.GLOBAL);
+            : await createProfileFieldType(profilePayload);
       } catch (errorMessage) {
         showAlert({
           status: 'error',
