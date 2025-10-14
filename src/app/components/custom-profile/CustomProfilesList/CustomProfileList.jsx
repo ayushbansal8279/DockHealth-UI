@@ -859,7 +859,6 @@ const CustomProfileListContent = ({
             loading={loading}
             apiRef={apiRef}
             onRecordClick={handleRecordClick}
-            showSearch={false}
           />
         </DataGridWrapper>
       </ViewLayout>
