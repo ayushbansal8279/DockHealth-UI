@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { Box, Button, Tooltip, Chip, IconButton } from '@mui/material';
 import { useGridApiRef } from '@mui/x-data-grid-premium';
 import { useDispatch } from 'react-redux';
@@ -70,25 +70,25 @@ const FieldLibraryTab = ({ workspaceIdentifier, isWorkspace = false }) => {
     return formatObjectCase(targetType);
   };
 
-  useEffect(() => {
-    const fetchFields = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        const fields = await getAllCustomFields(workspaceIdentifier);
-        setFieldLibrary(fields || []);
-      } catch (err) {
-        setError(err.message);
-        dispatch(showGlobalErrorAlert());
-      } finally {
-        setLoading(false);
-      }
-    };
+  const fetchFields = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const fields = await getAllCustomFields(workspaceIdentifier);
+      setFieldLibrary(fields || []);
+    } catch (err) {
+      setError(err.message);
+      dispatch(showGlobalErrorAlert());
+    } finally {
+      setLoading(false);
+    }
+  }, [workspaceIdentifier, dispatch]);
 
+  useEffect(() => {
     if (!isWorkspace || workspaceIdentifier) {
       fetchFields();
     }
-  }, [dispatch, isWorkspace, workspaceIdentifier]);
+  }, [workspaceIdentifier]);
 
   const handleSearchInputChange = (value) => {
     setSearchPhrase(value);

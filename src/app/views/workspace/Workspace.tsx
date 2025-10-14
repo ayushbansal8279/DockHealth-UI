@@ -128,14 +128,18 @@ const Workspace = () => {
       <WorkspaceDetailsContainer>
         <Switch>
           {tabsConfiguration?.map((route) => {
-            const WrappedComponent = route.isWorkspace
-              ? () => (
+            const WrappedComponent = useMemo(() => {
+              if (route.isWorkspace) {
+                return (props: any) => (
                   <route.RouteComponent
+                    {...props}
                     workspaceIdentifier={workspaceIdentifier}
-                    isWorkspace={true}
+                    isWorkspace
                   />
-                )
-              : route.RouteComponent;
+                );
+              }
+              return route.RouteComponent;
+            }, [route.RouteComponent, route.isWorkspace, workspaceIdentifier]);
 
             return (
               <RouteWrapper
