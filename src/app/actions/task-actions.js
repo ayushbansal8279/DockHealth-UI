@@ -3,10 +3,7 @@ import * as TaskApi from 'api/task-api';
 import * as AlertActions from 'alert/actions';
 import { getTasksGroupsList } from 'actions/list-details-actions';
 import { openDrawer } from 'actions/task-drawer-actions';
-import {
-  getParentTasksFromDeletedSubtasks,
-  TASK_DISAPPEAR_DELAY,
-} from 'helpers/task-update-helper';
+import { TASK_DISAPPEAR_DELAY } from 'helpers/task-update-helper';
 import * as ListDetailsApi from 'api/list-details-api';
 import {
   CommunicationType,
@@ -861,20 +858,6 @@ export const bulkEditDelete = (tasksToDelete) => (dispatch, getState) => {
   dispatch({
     type: ActionTypes.DELETE_TASKS_SUCCESS,
     tasksToDelete,
-  });
-
-  const tasksMap = getTasksMap(getState());
-
-  const parentTasks = getParentTasksFromDeletedSubtasks(
-    tasksToDelete,
-    tasksMap,
-  );
-
-  parentTasks.forEach((parentId) => {
-    dispatch({
-      type: ActionTypes.CLOSE_QUICK_ADD_SUBTASK_INPUT,
-      taskIdentifier: parentId,
-    });
   });
 };
 

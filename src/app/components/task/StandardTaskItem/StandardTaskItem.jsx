@@ -127,13 +127,13 @@ const Task = React.memo(
       },
       [
         subTasksCount,
-        renderedSubtasks,
+        // renderedSubtasks,
         subtasksDisabled,
         isFullView,
         collapse,
         taskIdentifier,
         dispatch,
-        task,
+        // task,
       ],
     );
 
@@ -184,11 +184,14 @@ const Task = React.memo(
 
     useEffect(() => {
       if (!areSubtasksOpen && subtaskQuickAddOpen && !subtasksDisabled) {
-        handleSetSubtasksOpen(true);
+        const timer = setTimeout(() => {
+          handleSetSubtasksOpen(true);
+        }, 0);
+        return () => clearTimeout(timer);
       }
     }, [
       handleSetSubtasksOpen,
-      areSubtasksOpen,
+      // areSubtasksOpen,
       subtaskQuickAddOpen,
       isFullView,
       subtasksDisabled,

@@ -50,16 +50,3 @@ export const setWorkflowStatus = (task, workflowStatus) => ({
   ...task,
   workflowStatus,
 });
-
-export const getParentTasksFromDeletedSubtasks = (tasksToDelete, tasksMap) => {
-  const parentTasks = new Set();
-
-  tasksToDelete.forEach((taskId) => {
-    const deletedTask = tasksMap[taskId];
-    if (deletedTask?.parentTaskIdentifier) {
-      parentTasks.add(deletedTask.parentTaskIdentifier);
-    }
-  });
-
-  return Array.from(parentTasks);
-};
