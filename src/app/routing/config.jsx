@@ -1,7 +1,6 @@
 import React, { lazy } from 'react';
 import ErrorPage from 'views/ErrorPage';
 import PageNotFound from 'views/PageNotFound';
-import ChatView from 'views/chat/ChatView';
 import { DashboardTasksTab } from 'helpers/dashboard-helpers';
 import { PERMISSIONS } from 'helpers/permission-mapper';
 import { onLeaveGlobalSearch } from './TemplateCoreSubscriptionPlan/GlobalSearch';
@@ -188,7 +187,6 @@ const {
   CAN_ACCESS_MEMBER_LIST_PAGE,
   CAN_ACCESS_WORKFLOW_LIST_PAGE,
   CAN_ACCESS_ANALYTICS_PAGE,
-  CAN_ACCESS_CHAT_PAGE,
   CAN_ACCESS_SETTINGS_PAGE,
   CAN_ACCESS_PROFILE_PAGE,
   CAN_ACCESS_WORKSPACE_PAGE,
@@ -424,11 +422,6 @@ export const TEMPLATE_CORE_SUBSCRIPTION_PLAN_ROUTES = [
     path: '/analytics',
     RouteComponent: AnalyticsView,
     permissions: [CAN_ACCESS_ANALYTICS_PAGE],
-  },
-  {
-    path: '/chat',
-    RouteComponent: ChatView,
-    permissions: [CAN_ACCESS_CHAT_PAGE],
   },
   {
     path: '/workspace/:workspaceIdentifier',

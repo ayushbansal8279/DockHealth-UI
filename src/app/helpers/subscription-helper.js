@@ -46,7 +46,7 @@ export const SUBSCRIPTION_PLANS = [
     key: SubscriptionPlan.PREMIUM,
     label: 'Premium',
     description:
-      'For teams that need configurable functionality, secure chat and intelligent SmartFlows™ ',
+      'For teams that need configurable functionality, and intelligent SmartFlows™ ',
     annualMonthlyPrice: 30,
     monthlyPrice: 35,
     monthlyPlanDescriptions: ['Per user per month'],
@@ -63,7 +63,6 @@ export const SUBSCRIPTION_PLANS = [
       'Teams & multi-user groups',
       'Dock Analytics dashboard',
       'Calendar view',
-      'Dock Chat',
     ],
     issupportAndServicesAvailable: true,
     supportAndServices: [],
@@ -93,7 +92,6 @@ export const SUBSCRIPTION_PLANS = [
     mostPopular: true,
     featuresDescription: 'Everything in Premium, plus',
     features: [
-      'Dock Chat',
       'Advanced integrations and automations',
       'Email from tasks',
       'Fax from a task*',
@@ -166,7 +164,6 @@ export const DockLite = {
     'HIPAA-compliant task-management for outside collaborators and limited-use colleagues',
     'Limited experience for organization members and outside collaborators who are not full members of Dock',
     'Access to a single shared list and a personal task list',
-    'Complete with Dock Chat for Pro users on web and iOS',
   ],
 };
 

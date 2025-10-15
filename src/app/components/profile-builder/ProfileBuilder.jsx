@@ -20,7 +20,7 @@ import { useParams } from 'react-router-dom';
 import { showGlobalErrorAlert } from 'alert/actions';
 import * as CustomFieldApi from 'api/custom-fields-api';
 import { useDispatch, useSelector } from 'react-redux';
-import uuidv4 from '@/app/views/chat/channel-settings/uuid';
+import { v4 as uuidv4 } from 'uuid';
 import { getAllProfileFieldTypes } from '@/app/api/profile-type-field-api';
 import { getProfileDetailsType } from '@/app/api/profile-type-api';
 import { showGlobalAlert } from 'alert/actions';
