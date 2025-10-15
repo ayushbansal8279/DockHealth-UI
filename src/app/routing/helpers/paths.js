@@ -42,8 +42,6 @@ export const PATIENTS_LIST = '/core/patients/list';
 export const PATIENTS_LIST_CUSTOM = '/core/patients/list/custom';
 export const WORKSPACE_PATH = '/core/workspaces';
 
-export const CHAT_PATH = '/core/chat';
-
 export const createSingleTaskPath = (taskIdentifier) =>
   `${SINGLE_TASK_PATH}/${taskIdentifier}`;
 

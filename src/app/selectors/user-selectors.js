@@ -165,18 +165,6 @@ export const userHasShareTaskFeatureSelector = createSelector(
     ),
 );
 
-export const userHasDockChatFeatureSelector = createSelector(
-  userProfileSelector,
-  () =>
-    // ({ organizationAvailableFeatures, userAvailableFeatures }) =>
-    //   featureSelector(
-    //     organizationAvailableFeatures,
-    //     userAvailableFeatures,
-    //     'DOCK_CHAT',
-    //   )
-    false,
-);
-
 export const userHasBoardViewFeatureSelector = createSelector(
   userProfileSelector,
   ({ organizationAvailableFeatures, userAvailableFeatures }) =>
