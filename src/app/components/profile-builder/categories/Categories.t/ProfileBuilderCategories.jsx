@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import TEXT from 'img/profile-builder/ShortText.svg';
 import LONG_TEXT from 'img/profile-builder/RichText.svg';
 import DATE from 'img/profile-builder/Calender.svg';
@@ -13,7 +13,7 @@ import {
   SingleFieldWrapper,
   CategoryWrapper,
 } from './styled';
-import { Box } from '@mui/material';
+import { Box, Pagination, Typography } from '@mui/material';
 import { FieldType, fieldTypes } from '../../helper';
 import Spacing from '@/app/components/common/Spacing';
 import TextField from '../../TextField';
@@ -62,6 +62,14 @@ const ProfileBuilderCategories = ({ allCustomFields }) => {
     id: 'add-existing-fields-area-source',
   });
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 8;
+
+  const paginatedFields = useMemo(() => {
+    const start = (currentPage - 1) * itemsPerPage;
+    return searchedCustomField.slice(start, start + itemsPerPage);
+  }, [searchedCustomField, currentPage]);
+
   return (
     <CategoryContainer>
       <CategoryWrapper isDragging={!!activeDragItem}>
@@ -69,7 +77,7 @@ const ProfileBuilderCategories = ({ allCustomFields }) => {
           <CategoryTitle>Add Category</CategoryTitle>
           <AddCategory />
         </Box>
-        <Box mt={4}>
+        <Box mt={3}>
           <CategoryTitle>Add New Fields</CategoryTitle>
           <SingleFieldWrapper ref={addNewFieldsDropRef}>
             {fieldTypes.map((item) => {
@@ -85,32 +93,64 @@ const ProfileBuilderCategories = ({ allCustomFields }) => {
             })}
           </SingleFieldWrapper>
         </Box>
-        <Spacing vertical={6} />
-        <CategoryTitle>Add Existing Fields</CategoryTitle>
-        <Box>
-          <TextField
-            border
-            size="small"
-            placeholder="Search Existing Field"
-            width="48%"
-            value={searchTextValue}
-            onChange={handleTextChange}
-          />
-          <Spacing vertical={4} />
+        <Box mt={3}>
+          <CategoryTitle>Add Existing Fields</CategoryTitle>
           <Box>
-            <SingleFieldWrapper ref={addExistingFieldsDropRef}>
-              {searchedCustomField?.slice(0, 8).map((item, index) => {
-                const isTrauncated = item.name.length >= 15;
-                return (
+            <TextField
+              border
+              size="small"
+              placeholder="Search Existing Field"
+              width="48%"
+              value={searchTextValue}
+              onChange={handleTextChange}
+            />
+            <Spacing vertical={4} />
+            <Box
+              sx={{
+                maxHeight: '210px',
+                overflowY: 'auto',
+                pr: 1,
+              }}
+            >
+              <SingleFieldWrapper>
+                {paginatedFields.map((item, index) => (
                   <AddExistingFieldsCategory
+                    key={item.id}
                     item={item}
-                    isTrauncated={isTrauncated}
+                    isTrauncated={item.name.length >= 15}
                     fieldTypeImages={FieldTypeImages}
                     index={index}
                   />
-                );
-              })}
-            </SingleFieldWrapper>
+                ))}
+              </SingleFieldWrapper>
+            </Box>
+
+            {searchedCustomField.length > itemsPerPage && (
+              <Box
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  mt: 2,
+                }}
+              >
+                <Typography>
+                  {currentPage * itemsPerPage - itemsPerPage + 1} -{' '}
+                  {Math.min(
+                    currentPage * itemsPerPage,
+                    searchedCustomField.length,
+                  )}{' '}
+                  of {searchedCustomField.length}
+                </Typography>
+
+                <Pagination
+                  count={Math.ceil(searchedCustomField.length / itemsPerPage)}
+                  page={currentPage}
+                  onChange={(_, val) => setCurrentPage(val)}
+                  size="small"
+                />
+              </Box>
+            )}
           </Box>
         </Box>
       </CategoryWrapper>
