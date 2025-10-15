@@ -883,7 +883,8 @@ const TaskItem = React.memo(
 
     const showSubtaskIcon =
       isSubtask &&
-      (origin === TaskOrigin.DASHBOARD || origin === TaskOrigin.PERSON ||
+      (origin === TaskOrigin.DASHBOARD ||
+        origin === TaskOrigin.PERSON ||
         !!selectedFilters ||
         !!searchValue ||
         !!sort.key);
@@ -991,7 +992,8 @@ const TaskItem = React.memo(
         if (order !== 0) return content;
         const indentSubTask =
           !(
-            origin === TaskOrigin.DASHBOARD || origin === TaskOrigin.PERSON ||
+            origin === TaskOrigin.DASHBOARD ||
+            origin === TaskOrigin.PERSON ||
             (!!selectedFilters && Object.keys(selectedFilters).length > 0) ||
             !!searchValue ||
             !!sort.key
@@ -1398,7 +1400,11 @@ const TaskItem = React.memo(
                     order={getColumnOrder(TaskItemColumn.PRIORITY)}
                   >
                     <TaskItemDropdown
-                      value={task?.priority}
+                      value={
+                        task?.priority === TaskPriority.LOW
+                          ? ''
+                          : task?.priority
+                      }
                       onChange={handlePriorityChange}
                       field={{
                         options: [
