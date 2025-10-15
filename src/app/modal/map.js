@@ -1,4 +1,3 @@
-import InviteUsersToChannelModal from 'views/chat/add-channel/CustomInviteUsers';
 import CompleteAllTasksModal from './components/CompleteAllTasksModal/CompleteAllTasksModal';
 import CompleteAllFieldsModal from './components/ComplateAllFieldsModal/CompleteAllFieldsModal';
 import AttachmentsDuplicateModal from './components/AttachmentsDuplicateModal/AttachmentsDuplicateModal';
@@ -181,7 +180,6 @@ const MODAL_MAP = {
   EditContact: EditContactModal,
   AnchorDateChangeConfirmation: AnchorDateChangeConfirmationModal,
   EditPatient: EditPatientModal,
-  InviteUsersToChannel: InviteUsersToChannelModal,
   AISummary: AISummaryModal,
   DateWarning: DateWarningModal,
   Alert: AlertModal,
