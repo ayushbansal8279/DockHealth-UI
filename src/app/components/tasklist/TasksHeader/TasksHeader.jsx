@@ -1,11 +1,11 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 /* eslint-disable no-underscore-dangle */
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useRef, useState, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { Box } from '@mui/material';
 import Checkbox from 'components/common/Checkbox/Checkbox';
 import { SortHeaderRow } from 'components/tasklist/ColumnSortHeader/styled';
-import { TaskItemColumnWidth } from 'helpers/task-helpers';
+import { TaskItemColumnWidth, limitColumnsForView } from 'helpers/task-helpers';
 import {
   getCustomerTypeLabel,
   getCustomerUniqueIDShortLabel,
@@ -213,6 +213,10 @@ const TasksHeader = ({
     ],
   );
 
+  const filteredColumns = useMemo(() => {
+    return limitColumnsForView(currentOrganization, columns, origin);
+  }, [currentOrganization, columns, origin]);
+
   return (
     <DndContext
       sensors={sensors}
@@ -226,7 +230,7 @@ const TasksHeader = ({
         isWidthGreaterThanHundredPercent={isWidthGreaterThanHundredPercent}
         $width={
           !window.disabledVirtualTaskList
-            ? columns
+            ? filteredColumns
                 .filter((f) => f.isChecked)
                 .reduce(
                   (accumulator, column) => accumulator + column.columnWidth,
@@ -270,7 +274,7 @@ const TasksHeader = ({
             &nbsp;
           </TaskScrollVericleLine>
         </StickyColumnContainer>
-        {columns
+        {filteredColumns
           .filter((f) => f.isChecked)
           .filter((_, index) => index !== 0)
           .map((c) =>

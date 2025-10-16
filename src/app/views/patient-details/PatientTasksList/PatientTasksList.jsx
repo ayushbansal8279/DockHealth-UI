@@ -384,6 +384,7 @@ const PatientTasksListView = () => {
                 groupHasMultipleAssignees={groupHasMultipleAssignees}
                 isGroupSelected={isGroupSelected}
                 onGroupSelect={handleGroupSelect}
+                origin={TaskOrigin.PATIENT}
               />
             )}
             {tasks?.map((task, index) => {

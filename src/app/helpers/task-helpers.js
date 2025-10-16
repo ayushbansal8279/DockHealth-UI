@@ -750,3 +750,35 @@ export const getDNDMetaData = ({
     groupId: isTopLevelTaskOrWorkflowHeader ? taskGroupIdentifier : null,
   };
 };
+
+export const limitColumnsForView = (selectedOrganization, columns, origin) => {
+  if (!selectedOrganization) return columns;
+  const patientViewColumnsLimitItem =
+    selectedOrganization?.themeSettings?.find(
+      ({ name }) => name === 'patient.view.columns.limit',
+    ) || {};
+
+  if (!patientViewColumnsLimitItem?.value) return columns;
+
+  return origin === 'PATIENT'
+    ? columns
+        .filter((f) => f.isChecked)
+        .reduce((acc, column) => {
+          // Keep all undefined and TASK columns, limit PATIENT to first 3
+          if (column.targetType === 'PATIENT') {
+            const patientColumns = acc.filter(
+              (c) => c.targetType === 'PATIENT',
+            );
+            if (
+              patientColumns.length <
+              Number.parseInt(patientViewColumnsLimitItem?.value || 5, 10)
+            ) {
+              acc.push(column);
+            }
+          } else {
+            acc.push(column);
+          }
+          return acc;
+        }, [])
+    : columns;
+};
