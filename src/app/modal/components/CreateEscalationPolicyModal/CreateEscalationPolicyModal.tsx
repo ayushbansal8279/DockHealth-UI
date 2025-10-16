@@ -224,6 +224,14 @@ const CreateEscalationPolicy: React.FC<CreateEscalationPolicyProps> = ({
       return false;
     }
 
+    if (formData.scope === 'LIST' && selectedLists.length === 0) {
+      return false;
+    }
+
+    if (formData.scope === 'WORKFLOW' && selectedWorkflows.length === 0) {
+      return false;
+    }
+
     for (const action of formData.actions) {
       switch (action.type) {
         case EscalationActionType.AddAssignee:
@@ -241,26 +249,26 @@ const CreateEscalationPolicy: React.FC<CreateEscalationPolicyProps> = ({
             return false;
           }
           break;
-        case EscalationActionType.SendEmail:
-          if (
-            !action.params.recipients ||
-            action.params.recipients.length === 0 ||
-            !action.params.subject ||
-            !action.params.body
-          ) {
-            return false;
-          }
-          break;
-        case EscalationActionType.SendSlack:
-          if (!action.params.channel || !action.params.message) {
-            return false;
-          }
-          break;
-        case EscalationActionType.ScheduleEscalation:
-          if (!action.params.delay || !action.params.nextLevel) {
-            return false;
-          }
-          break;
+        // case EscalationActionType.SendEmail:
+        //   if (
+        //     !action.params.recipients ||
+        //     action.params.recipients.length === 0 ||
+        //     !action.params.subject ||
+        //     !action.params.body
+        //   ) {
+        //     return false;
+        //   }
+        //   break;
+        // case EscalationActionType.SendSlack:
+        //   if (!action.params.channel || !action.params.message) {
+        //     return false;
+        //   }
+        //   break;
+        // case EscalationActionType.ScheduleEscalation:
+        //   if (!action.params.delay || !action.params.nextLevel) {
+        //     return false;
+        //   }
+        //   break;
       }
     }
 
@@ -535,6 +543,12 @@ const CreateEscalationPolicy: React.FC<CreateEscalationPolicyProps> = ({
                 }
                 onChange={(event, newValue) => {
                   setFormData({ ...formData, scope: newValue?.value || '' });
+                  if (newValue?.value !== 'LIST') {
+                    setSelectedLists([]);
+                  }
+                  if (newValue?.value !== 'WORKFLOW') {
+                    setSelectedWorkflows([]);
+                  }
                 }}
                 getOptionLabel={(option) => option.label}
                 renderInput={(params) => (
@@ -551,6 +565,36 @@ const CreateEscalationPolicy: React.FC<CreateEscalationPolicyProps> = ({
                 sx={ScopeAutocompleteSx}
               />
             </SelectWrapperOne>
+
+            {formData.scope === 'LIST' && (
+              <SelectWrapper>
+                {renderCompactSelect(
+                  'Task Lists *',
+                  selectedLists,
+                  setSelectedLists,
+                  listOptions,
+                  (list) => list?.name || '',
+                  (list) => list?.id || '',
+                  undefined,
+                  showValidation && selectedLists.length === 0,
+                )}
+              </SelectWrapper>
+            )}
+
+            {formData.scope === 'WORKFLOW' && (
+              <SelectWrapper>
+                {renderCompactSelect(
+                  'Workflows *',
+                  selectedWorkflows,
+                  setSelectedWorkflows,
+                  workflowOptions,
+                  (workflow) => workflow?.name || '',
+                  (workflow) => workflow?.id || '',
+                  undefined,
+                  showValidation && selectedWorkflows.length === 0,
+                )}
+              </SelectWrapper>
+            )}
 
             <EscalationPolicyTextField
               label="Policy Details"
@@ -572,7 +616,7 @@ const CreateEscalationPolicy: React.FC<CreateEscalationPolicyProps> = ({
 
               <SelectWrapper>
                 {renderCompactSelect(
-                  'Users',
+                  'Assigned Users',
                   selectedAssignees,
                   setSelectedAssignees,
                   userOptions,
@@ -592,7 +636,7 @@ const CreateEscalationPolicy: React.FC<CreateEscalationPolicyProps> = ({
 
               <SelectWrapper>
                 {renderPatientSelect(
-                  'Patients',
+                  'Assigned Patients',
                   selectedPatients,
                   setSelectedPatients,
                   patientOptions,
@@ -607,29 +651,6 @@ const CreateEscalationPolicy: React.FC<CreateEscalationPolicyProps> = ({
                   (status) => status?.id || '',
                 )}
               </SelectWrapper>
-
-              {(formData.scope === 'LIST' || formData.scope === 'WORKFLOW') && (
-                <SelectWrapper>
-                  {formData.scope === 'LIST' &&
-                    renderCompactSelect(
-                      'Lists',
-                      selectedLists,
-                      setSelectedLists,
-                      listOptions,
-                      (list) => list?.name || '',
-                      (list) => list?.id || '',
-                    )}
-                  {formData.scope === 'WORKFLOW' &&
-                    renderCompactSelect(
-                      'Workflows',
-                      selectedWorkflows,
-                      setSelectedWorkflows,
-                      workflowOptions,
-                      (workflow) => workflow?.name || '',
-                      (workflow) => workflow?.id || '',
-                    )}
-                </SelectWrapper>
-              )}
             </FilterSection>
           )}
 
@@ -840,7 +861,7 @@ const CreateEscalationPolicy: React.FC<CreateEscalationPolicyProps> = ({
                     </>
                   )}
 
-                  {action.type === EscalationActionType.SendEmail && (
+                  {/* {action.type === EscalationActionType.SendEmail && (
                     <>
                       <SelectWrapper>
                         <EscalationPolicyTextField
@@ -915,7 +936,7 @@ const CreateEscalationPolicy: React.FC<CreateEscalationPolicyProps> = ({
                         error={showValidation && !action.params.message}
                       />
                     </SelectWrapper>
-                  )}
+                  )} */}
 
                   {action.type === EscalationActionType.CreateTask && (
                     <>
@@ -979,7 +1000,7 @@ const CreateEscalationPolicy: React.FC<CreateEscalationPolicyProps> = ({
                     </>
                   )}
 
-                  {action.type === EscalationActionType.UpdateTask && (
+                  {/* {action.type === EscalationActionType.UpdateTask && (
                     <>
                       <SelectWrapper>
                         <Autocomplete
@@ -1102,7 +1123,7 @@ const CreateEscalationPolicy: React.FC<CreateEscalationPolicyProps> = ({
                         error={showValidation && !action.params.nextLevel}
                       />
                     </SelectWrapper>
-                  )}
+                  )} */}
                 </ActionContainer>
               ))}
             </ActionSection>
