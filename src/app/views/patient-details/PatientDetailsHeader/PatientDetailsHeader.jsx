@@ -79,6 +79,9 @@ const PatientDetailsHeader = () => {
     gender,
     genderIdentity,
     patientStatus,
+    sourceEhr,
+    sourceLastSyncDt,
+    sourceStatus,
   } = patient || {};
   const isFetchingPatient = useSelector(isFetchingPatientSelector);
   const currentUser = useSelector(userProfileSelector);
@@ -168,7 +171,27 @@ const PatientDetailsHeader = () => {
                   </ButtonContainer>
                 )}
                 <Box mx={1} />
-                <Chip label={patientStatus} />
+                <Chip label={patientStatus} />   
+                {(sourceEhr || sourceLastSyncDt || sourceStatus) && (
+                  <Box display="flex" justifyContent="flex-end"  sx={{ ml: '128px' }}>
+                    {sourceEhr && (
+                      <PatientInfo>
+                        <strong>Source:&nbsp;&nbsp;&nbsp;</strong> {sourceEhr}
+                      </PatientInfo>
+                    )}
+                    {sourceLastSyncDt && (
+                      <PatientInfo>
+                        <strong>Last Sync:&nbsp;&nbsp;&nbsp; </strong>{' '}
+                        {moment(sourceLastSyncDt).format('MMM D, YYYY h:mm A')}
+                      </PatientInfo>
+                    )}
+                    {sourceStatus && (
+                      <PatientInfo>
+                        <strong>EHR Status:&nbsp;&nbsp;&nbsp; </strong> {sourceStatus}
+                      </PatientInfo>
+                    )}
+                  </Box>
+                )}
                 <Box flex="500px 0 0">
                   {patient?.patientLabels?.map(
                     ({ labelIdentifier, labelName }) => (
