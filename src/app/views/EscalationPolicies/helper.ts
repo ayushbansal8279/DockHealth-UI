@@ -87,7 +87,7 @@ export const formatFilterDetails = (scopeFilter: any, references?: EscalationPol
 
   if (scopeFilter?.assignee?.in?.group?.length > 0) {
     const groupNames = getNames(scopeFilter.assignee.in.group, references?.groups);
-    details.push(`<strong>User Groups:</strong> ${groupNames.join(', ')}`);
+    details.push(`<strong>Assigned User Groups:</strong> ${groupNames.join(', ')}`);
   }
 
   if (scopeFilter?.patients?.in?.length > 0) {
@@ -208,6 +208,15 @@ export const formatActionDetails = (actions: any[], references?: EscalationPolic
       //   break;
         
       case EscalationActionType.CreateTask:
+        if (action.params?.taskList) {
+          const listName = references?.lists?.find((list: any) => list.identifier === action.params.taskList)?.name || action.params.taskList;
+          result.subItems!.push(`<strong>Task List:</strong> ${listName}`);
+        }
+        if (action.params?.taskGroup) {
+          const taskGroups = (references as any)?.taskGroups;
+          const groupName = taskGroups?.find((group: any) => group.identifier === action.params.taskGroup)?.name || action.params.taskGroup;
+          result.subItems!.push(`<strong>Group:</strong> ${groupName}`);
+        }
         if (action.params?.title) {
           result.subItems!.push(`<strong>Title:</strong> "${action.params.title}"`);
         }
