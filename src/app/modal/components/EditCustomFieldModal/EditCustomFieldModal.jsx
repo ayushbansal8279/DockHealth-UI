@@ -80,6 +80,7 @@ const EditCustomFieldModal = ({
   profileTypeIdentifier,
   fetchUserCustomFields,
   fieldCategoryDisabled = false,
+  workspaceIdentifier,
 }) => {
   const [displayOptionsState, setDisplayOptionsState] = useState({
     displayOptions: customField?.displayOptions || [],
@@ -404,7 +405,12 @@ const EditCustomFieldModal = ({
         },
       };
       delete updatedField.validationRegexSelector;
-      CustomFieldsApi.updateCustomField(updatedField, type, taskListIdentifier)
+      CustomFieldsApi.updateCustomField(
+        updatedField,
+        type,
+        taskListIdentifier,
+        workspaceIdentifier,
+      )
         .then(() => {
           onUpdated({ ...updatedField, selectedProfileType });
           setIsSaving(false);
@@ -458,6 +464,7 @@ const EditCustomFieldModal = ({
         },
         type,
         taskListIdentifier,
+        workspaceIdentifier,
       )
         .then((addedField) => {
           onAdded(addedField);

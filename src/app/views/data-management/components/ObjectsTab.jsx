@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect, useCallback } from 'react';
-import { Box, Stack, Button, IconButton, CircularProgress } from '@mui/material';
+import { Box, Button, IconButton } from '@mui/material';
 import { useGridApiRef } from '@mui/x-data-grid-premium';
 import { useDispatch } from 'react-redux';
 import SearchInput from 'components/common/SearchInput/SearchInput';
@@ -9,7 +9,10 @@ import ReusableDataGrid from 'components/custom-profile/CustomProfilesList/DataG
 import { TabContent, ToolbarStack, DataGridContainer } from '../styled';
 import { openModal, closeModal } from '@/app/modal/actions';
 import { showGlobalErrorAlert } from '@/app/alert/actions';
-import { getAllProfileTypesWithPredefined, deleteProfileType } from '@/app/api/profile-type-api';
+import {
+  getAllProfileTypesWithPredefined,
+  deleteProfileType,
+} from '@/app/api/profile-type-api';
 import { MoreActionsWrapper } from 'views/person-details/PersonDetailsDrawer/styled';
 import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
@@ -23,7 +26,7 @@ import {
 import { getCustomerTypeLabel } from '@/app/helpers/customer-type-helper';
 import { ContextType } from '@/app/helpers/custom-fields-helpers';
 
-const ObjectsTab = () => {
+const ObjectsTab = ({ workspaceIdentifier, isWorkspace = false }) => {
   const dispatch = useDispatch();
   const history = useHistory();
   const [searchPhrase, setSearchPhrase] = useState('');
@@ -42,7 +45,9 @@ const ObjectsTab = () => {
       try {
         setLoading(true);
         setError(null);
-        const profileTypes = await getAllProfileTypesWithPredefined();
+        const profileTypes = await getAllProfileTypesWithPredefined(
+          workspaceIdentifier,
+        );
         const typeList = profileTypes.map((type) => ({
           ...type,
           id: type.identifier,
@@ -56,8 +61,10 @@ const ObjectsTab = () => {
       }
     };
 
-    fetchObjects();
-  }, [dispatch]);
+    if (!isWorkspace || workspaceIdentifier) {
+      fetchObjects();
+    }
+  }, [dispatch, isWorkspace, workspaceIdentifier]);
 
   const handleSearchInputChange = (value) => {
     setSearchPhrase(value);
@@ -67,25 +74,27 @@ const ObjectsTab = () => {
     dispatch(
       openModal('CreateProfile', {
         onAdded: (newTemplate) => {
-          const { identifier } = newTemplate;
-          setObjects((s) => [...s, { id: identifier, ...newTemplate }]);
+          setObjects((prev) => [
+            ...prev,
+            { ...newTemplate, id: newTemplate.identifier },
+          ]);
         },
         isCreatingNewField: true,
+        workspaceIdentifier,
       }),
     );
-  }, [dispatch]);
+  }, [dispatch, isWorkspace, workspaceIdentifier]);
 
   const onEditProfile = useCallback(
     ({ row: { name, description, id } }) => {
       dispatch(
         openModal('CreateProfile', {
           onUpdated: (newTemplate) => {
-            const { identifier } = newTemplate;
-            setObjects((s) =>
-              s.map((profile) =>
-                profile.identifier === identifier
-                  ? { ...profile, ...newTemplate }
-                  : profile,
+            setObjects((prev) =>
+              prev.map((obj) =>
+                obj.identifier === newTemplate.identifier
+                  ? { ...newTemplate, id: newTemplate.identifier }
+                  : obj,
               ),
             );
           },
@@ -94,7 +103,7 @@ const ObjectsTab = () => {
         }),
       );
     },
-    [dispatch],
+    [dispatch, isWorkspace, workspaceIdentifier],
   );
 
   const onOpenProfileBuilder = useCallback(
@@ -114,15 +123,19 @@ const ObjectsTab = () => {
         title: 'Delete Object',
         description:
           'Are you sure you want to delete this object? This action cannot be undone.',
-        confirm: () => {
+        confirm: async () => {
           dispatch(closeModal());
-          deleteProfileType(id);
-          setObjects((s) => s.filter((t) => t.identifier !== id));
+          try {
+            await deleteProfileType(id, workspaceIdentifier);
+            setObjects((prev) => prev.filter((obj) => obj.identifier !== id));
+          } catch (err) {
+            dispatch(showGlobalErrorAlert());
+          }
         },
       };
       dispatch(openModal('DeleteConfirmation', modalProps));
     },
-    [dispatch],
+    [dispatch, isWorkspace, workspaceIdentifier],
   );
 
   const renderColumnHeader = (props) => {
@@ -309,6 +322,7 @@ const ObjectsTab = () => {
           rows={filteredObjects}
           getRowId={(row) => row.identifier}
           apiRef={apiRef}
+          loading={loading}
         />
       </DataGridContainer>
     </TabContent>
