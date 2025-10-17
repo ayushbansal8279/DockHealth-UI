@@ -262,6 +262,7 @@ function VSubtask(
           <Sc.QuickAddContainer
             $width={addSubtaskVisibleWidth}
             hasCustomOffset={originConfig[origin]?.hasCustomOffset ?? false}
+            isNarrowView={percentage > 90}
           >
             <QuickAddSubtask
               taskListIdentifier={parentTask?.taskList?.taskListIdentifier}
@@ -294,6 +295,7 @@ function VSubtask(
             $width={addWorkflowTaskVisibleWidth}
             subtaskQuickAddOpen={subtaskQuickAddOpen}
             disableLeftOffset={originConfig[origin]?.disableLeftOffset ?? false}
+            isNarrowView={percentage > 90}
           >
             <QuickAddInputWrapper>
               <QuickAddTaskInput

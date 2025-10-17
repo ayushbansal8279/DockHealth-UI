@@ -13,7 +13,7 @@ export const VTaskHeader = styled('div')`
   background: ${({ bgColor }: any) => (bgColor ? palette.aliceBlue : '')};
   & > * > * {
     left: ${({ disableLeftOffset }: any) =>
-      disableLeftOffset ? '0px' : '54.5px'};
+      disableLeftOffset ? '24px' : '54.5px'};
   }
   margin-right: ${({ disableRightOffset }: any) =>
     disableRightOffset ? '0px' : '15.5px'};
