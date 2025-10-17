@@ -719,7 +719,7 @@ const EditCustomFieldModal = ({
                                   <SelectOptionColor
                                     required
                                     name={`selectOptionColor[${identifier}]`}
-                                    value={color}
+                                    value={color || ''}
                                     onChange={handleOptionColorChange(
                                       identifier,
                                     )}
@@ -741,7 +741,7 @@ const EditCustomFieldModal = ({
                                   <SelectParentDropdown
                                     label="Parent Dropdown"
                                     name={`selectParentDropdown[${identifier}]`}
-                                    value={linkedCustomFieldIdentifier}
+                                    value={linkedCustomFieldIdentifier || ''}
                                     onChange={handleParentDropdownChange(
                                       identifier,
                                     )}
@@ -758,7 +758,9 @@ const EditCustomFieldModal = ({
                                   <SelectParentOption
                                     label="Parent Option"
                                     name={`selectParentOption[${identifier}]`}
-                                    value={linkedCustomFieldOptionIdentifier}
+                                    value={
+                                      linkedCustomFieldOptionIdentifier || ''
+                                    }
                                     onChange={handleParentOptionChange(
                                       identifier,
                                     )}
@@ -843,6 +845,7 @@ const EditCustomFieldModal = ({
             uploadFunction={uploadCustomFieldOptions}
             identifier={customField?.identifier}
             type={type}
+            importFileTypeHint={"Drag & drop your CSV/Excel file here"}
           />
         </Dialog>
       </Box>

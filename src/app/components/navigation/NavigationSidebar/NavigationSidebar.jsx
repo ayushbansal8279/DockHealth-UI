@@ -13,14 +13,9 @@ import {
 import Spacing from 'components/common/Spacing';
 import {
   userProfileSelector,
-  userHasDockChatFeatureSelector,
   selectedUserOrganizationSelector,
   userHasWorkspacesFeatureSelector,
 } from 'selectors/user-selectors';
-import {
-  showChatPopoverSelector,
-  selectedChatChannelSelector,
-} from 'selectors/sendbird-selectors';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import { capitalize } from 'helpers/capitalize';
 import { selectCurrentOrganization } from 'api/organization-api';
@@ -41,7 +36,6 @@ import OrganizationTile from 'components/org/OrganizationTile/OrganizationTile';
 // import { openModal } from 'modal/actions';
 import AccessRestrictor, {
   CAN_ACCESS_ANALYTICS_PAGE,
-  CAN_ACCESS_CHAT_PAGE,
   CAN_ACCESS_EDUCATION_CENTER_PAGE,
   CAN_ACCESS_HOME_PAGE,
   CAN_ACCESS_MEMBER_LIST_PAGE,
@@ -52,9 +46,6 @@ import AccessRestrictor, {
   CAN_ACCESS_WORKFLOW_LIST_PAGE,
   CAN_ACCESS_WORKSPACE_PAGE,
 } from 'components/access/AccessRestrictor/AccessRestrictor';
-import ChatPopover from 'views/chat/ChatPopover';
-import ChatIcon from 'views/chat/Icons/ChatIcon';
-import { openPopover } from 'actions/sendbird-actions';
 import OrganizationSubmenu from './SubMenuComponents/OrganizationSubmenu';
 import ProfileSubmenu from './SubMenuComponents/ProfileSubmenu';
 import CustomProfilesSubmenu from './SubMenuComponents/CustomProfilesSubmenu';
@@ -94,7 +85,6 @@ export const SubmenuKey = {
   WORKSPACES: 'WORKSPACES',
   EDUCATION_CENTER: 'EDUCATION_CENTER',
   DOCKCOIN: 'DOCKCOIN',
-  DOCKCHAT: 'DOCKCHAT',
 };
 
 const SubmenuComponents = {
@@ -119,9 +109,7 @@ const NavigationSidebar = () => {
   const workspaceLabel = useSelector(organizationWorkspaceLabelSelector);
   const workspace = useSelector(workspaceSelector);
 
-  const showChatPopover = useSelector(showChatPopoverSelector);
   const openedSubMenuKey = useSelector(subMenuKeySelector);
-  const selectedChannel = useSelector(selectedChatChannelSelector);
   const [isOnboardingPage, setIsOnboardingPage] = useState(false);
 
   const { orgUserRole } = currentUser || {};
@@ -131,7 +119,6 @@ const NavigationSidebar = () => {
     'currentOrganizationIdentifier',
   );
 
-  const dockChatAvailable = useSelector(userHasDockChatFeatureSelector);
   const workspacesAvailable = useSelector(userHasWorkspacesFeatureSelector);
   const embeddedMode = sessionStorage.getItem('EmbeddedMode') || false;
 
@@ -194,13 +181,6 @@ const NavigationSidebar = () => {
     },
     [dispatch, history, openedSubMenuKey, closeSubMenu],
   );
-
-  const handleDockChatClick = useCallback(() => {
-    if (location.pathname !== '/core/chat') {
-      dispatch(openPopover(selectedChannel ?? null));
-      dispatch(TemplateActions.hideSubMenu());
-    }
-  }, [dispatch, location.pathname, selectedChannel]);
 
   const handleEducationCenterClick = useCallback(() => {
     window.open('https://help.dock.health', '_blank');
@@ -360,21 +340,6 @@ const NavigationSidebar = () => {
                 />
               </AccessRestrictor>
             )}
-            {dockChatAvailable && !isOnboardingPage && (
-              <AccessRestrictor required={[CAN_ACCESS_CHAT_PAGE]}>
-                <NavigationIconContainer>
-                  <IconNavigationItem
-                    name="Dock Chat"
-                    icon={() => {
-                      return <ChatIcon />;
-                    }}
-                    path=""
-                    onItemClick={handleDockChatClick}
-                    navSelectedColor={navSelectedColorItem?.value}
-                  />
-                </NavigationIconContainer>
-              </AccessRestrictor>
-            )}
           </Grid>
           <Grid container direction="column">
             {!isOnboardingPage && (
@@ -447,7 +412,6 @@ const NavigationSidebar = () => {
           )}
         </SubMenuContainer>
         {renderMenuTourPopover()}
-        {showChatPopover && <ChatPopover />}
       </DrawerContentContainer>
     </ClickAwayListener>
   );

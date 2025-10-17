@@ -859,7 +859,6 @@ const CustomProfileListContent = ({
             loading={loading}
             apiRef={apiRef}
             onRecordClick={handleRecordClick}
-            showSearch={false}
           />
         </DataGridWrapper>
       </ViewLayout>
@@ -886,6 +885,7 @@ const CustomProfileListContent = ({
           label="object"
           uploadFunction={uploadProfileData}
           identifier={profileTypeIdentifier}
+          importFileTypeHint={"Drag & drop your CSV file here"}
         />
       </Dialog>
       <ProfileUndoAlert onUndo={handleUndo} />

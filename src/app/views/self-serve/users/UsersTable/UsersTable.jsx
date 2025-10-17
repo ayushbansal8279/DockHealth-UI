@@ -449,7 +449,6 @@ const UsersTable = ({
                 columns={columns}
                 rows={filteredOrganizationUsersWithId}
                 rowHeight={35}
-                showSearch={false}
               />
             )}
           </StyledUsersTable>

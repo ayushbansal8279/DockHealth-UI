@@ -39,7 +39,6 @@ import * as UserAuthApi from 'api/user-auth-api';
 import WorkflowDrawer from 'components/workflow-drawer/WorkflowDrawer/WorkflowDrawer';
 import Notification from 'components/common/Notification/Notification';
 import ActivityAlertsToasts from 'components/activity-alerts/ActivityAlertsToasts';
-import SendbirdProvider from '@sendbird/uikit-react/SendbirdProvider';
 import palette, { featurePalette } from 'styles/palette';
 // import { useMobile, useSmallScreen } from 'helpers/utility-functions';
 import { useMobile } from 'helpers/utility-functions';
@@ -47,7 +46,6 @@ import { IdleTimer } from './IdleTimer';
 import Modal from '../modal/Modal';
 import RotateScreen from './RotateScreen';
 import MobileSmallScreen from './MobileSmallScreen';
-import ChatActivityAlertsToasts from './chat/alerts/ChatActivityAlertsToasts';
 import './App.css';
 import { ampli } from '@/app/amplitude/ampli';
 
@@ -87,14 +85,6 @@ const MainContainer = styled.main`
   }
 `;
 
-const sendbirdColorSet = {
-  '--sendbird-light-primary-500': '#00487c',
-  '--sendbird-light-primary-400': '#4bb3fd',
-  '--sendbird-light-primary-300': palette.midnightBlue,
-  '--sendbird-light-primary-200': '#0496ff',
-  '--sendbird-light-primary-100': 'rgb(2, 123, 206, 0.12)',
-};
-
 ReactModal.setAppElement('#app');
 
 class App extends PureComponent {
@@ -107,8 +97,6 @@ class App extends PureComponent {
   presenceChannelName = null;
 
   logoutTimeout = null;
-
-  appId = import.meta.env.VITE_SENDBIRD_APP_ID;
 
   componentDidMount() {
     const redirectToHome = JSON.parse(sessionStorage.getItem('redirectToHome'));
@@ -307,8 +295,6 @@ class App extends PureComponent {
     };
     const organizationAvailableFeatures =
       userProfile?.organizationAvailableFeatures;
-    const dockChatAvailable =
-      organizationAvailableFeatures?.includes('DOCK_CHAT');
 
     return (
       <AppContainer id="appHome">
@@ -318,25 +304,11 @@ class App extends PureComponent {
           <RotateScreen />
         ) : (
           <>
-            {/* <SendbirdProvider
-              appId={dockChatAvailable ? this.appId : ''}
-              userId={dockChatAvailable ? userProfile?.identifier : ''}
-              nickname={dockChatAvailable ? userProfile?.name : ''}
-              profileUrl={
-                dockChatAvailable
-                  ? `${
-                      import.meta.env.VITE_HEYDOC_SERVICES_BASE_URL
-                    }user/profileThumbnail/${userProfile?.identifier}`
-                  : ''
-              }
-              colorSet={sendbirdColorSet}
-            > */}
               <div id="portal" />
               <Modal />
               <WorkflowDrawer />
               <ActivityAlertsToasts />
 
-              <ChatActivityAlertsToasts />
               <div className="new-task" />
               {mountIdleTimer && (
                 <IdleTimer
@@ -361,7 +333,6 @@ class App extends PureComponent {
               />
               <MainContainer>{children}</MainContainer>
               <Notification />
-            {/* </SendbirdProvider> */}
           </>
         )}
       </AppContainer>

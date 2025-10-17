@@ -96,7 +96,6 @@ const InvoicesList = () => {
               sortModel: [{ field: 'chargeDate', sort: 'desc' }],
             },
           }}
-          showSearch={false}
         />
       </InvoicesListContainer>
     </InvoicesListContainer>

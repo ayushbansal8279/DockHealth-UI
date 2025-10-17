@@ -37,7 +37,7 @@ function SendEmrNoteFromTaskModal({ source, identifier, generatedSummary }) {
   const taskMentions = selectedTask?.taskMentions;
 
   const dispatch = useDispatch();
-  const [noteType, setNoteType] = useState(null);
+  const [noteType, setNoteType] = useState('');
   const [isTaskDescriptionIncluded, setIsTaskDescriptionIncluded] =
     useState(false);
   const [isTaskDetailsIncluded, setIsTaskDetailsIncluded] = useState(false);
@@ -111,7 +111,7 @@ function SendEmrNoteFromTaskModal({ source, identifier, generatedSummary }) {
         </InputContainerStyled>
         {!fromAiSummary && (
           <>
-            <InputContainerStyled styled={{"textAlign": "left"}}>
+            <InputContainerStyled styled={{ textAlign: 'left' }}>
               <TemplateAutoComplete
                 type={CommunicationType.EMR}
                 placeholder="Pick template"

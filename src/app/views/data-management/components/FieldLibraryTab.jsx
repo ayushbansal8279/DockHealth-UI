@@ -17,6 +17,7 @@ import {
   getAllCustomFields,
 } from '@/app/api/custom-fields-api';
 import { fieldTypes } from '@/app/components/profile-builder/helper';
+import { TargetType, ContextType } from '@/app/helpers/custom-fields-helpers';
 
 const FieldLibraryTab = ({ workspaceIdentifier, isWorkspace = false }) => {
   const dispatch = useDispatch();
@@ -66,8 +67,15 @@ const FieldLibraryTab = ({ workspaceIdentifier, isWorkspace = false }) => {
     return profileTypeDetails.map((detail) => detail.name || 'Unknown');
   };
 
-  const getCategoryFromTargetType = (targetType) => {
-    return formatObjectCase(targetType);
+  const getCategoryFromContextType = (contextType) => {
+    if (!contextType) return '';
+
+    const contextTypeMap = {
+      [ContextType.PREDEFINED]: 'Predefined',
+      [ContextType.CUSTOM]: 'Custom',
+    };
+
+    return contextTypeMap[contextType] || contextType;
   };
 
   const fetchFields = useCallback(async () => {
@@ -216,12 +224,12 @@ const FieldLibraryTab = ({ workspaceIdentifier, isWorkspace = false }) => {
         flex: 1.25,
       },
       {
-        field: 'targetType',
+        field: 'contextType',
         headerName: 'Category',
         width: 150,
         flex: 1,
         renderCell: (params) => {
-          const category = getCategoryFromTargetType(params.value);
+          const category = getCategoryFromContextType(params.value);
           return category || '';
         },
       },
@@ -326,33 +334,68 @@ const FieldLibraryTab = ({ workspaceIdentifier, isWorkspace = false }) => {
       getFieldTypeInfo,
       formatObjectCase,
       getProfileTypeNames,
-      getCategoryFromTargetType,
+      getCategoryFromContextType,
     ],
   );
 
   const filteredFields = useMemo(() => {
-    if (!searchPhrase) return fieldLibrary;
-    return fieldLibrary.filter((field) => {
-      const searchLower = searchPhrase.toLowerCase();
-      const profileTypeNames = getProfileTypeNames(field.profileTypeDetails);
-      const category = getCategoryFromTargetType(field.targetType);
+    if (!searchPhrase) {
+      return [...fieldLibrary].sort((a, b) => {
+        if (
+          a.contextType === ContextType.PREDEFINED &&
+          b.contextType !== ContextType.PREDEFINED
+        ) {
+          return -1;
+        }
+        if (
+          a.contextType !== ContextType.PREDEFINED &&
+          b.contextType === ContextType.PREDEFINED
+        ) {
+          return 1;
+        }
+        return 0;
+      });
+    }
 
-      return (
-        field.name?.toLowerCase().includes(searchLower) ||
-        category?.toLowerCase().includes(searchLower) ||
-        field.targetType?.toLowerCase().includes(searchLower) ||
-        field.fieldType?.toLowerCase().includes(searchLower) ||
-        field.validationRegexDescription?.toLowerCase().includes(searchLower) ||
-        profileTypeNames.some((name) =>
-          name.toLowerCase().includes(searchLower),
-        )
-      );
-    });
+    return fieldLibrary
+      .filter((field) => {
+        const searchLower = searchPhrase.toLowerCase();
+        const profileTypeNames = getProfileTypeNames(field.profileTypeDetails);
+        const category = getCategoryFromContextType(field.contextType);
+
+        return (
+          field.name?.toLowerCase().includes(searchLower) ||
+          category?.toLowerCase().includes(searchLower) ||
+          field.contextType?.toLowerCase().includes(searchLower) ||
+          field.fieldType?.toLowerCase().includes(searchLower) ||
+          field.validationRegexDescription
+            ?.toLowerCase()
+            .includes(searchLower) ||
+          profileTypeNames.some((name) =>
+            name.toLowerCase().includes(searchLower),
+          )
+        );
+      })
+      .sort((a, b) => {
+        if (
+          a.contextType === ContextType.PREDEFINED &&
+          b.contextType !== ContextType.PREDEFINED
+        ) {
+          return -1;
+        }
+        if (
+          a.contextType !== ContextType.PREDEFINED &&
+          b.contextType === ContextType.PREDEFINED
+        ) {
+          return 1;
+        }
+        return 0;
+      });
   }, [
     fieldLibrary,
     searchPhrase,
     getProfileTypeNames,
-    getCategoryFromTargetType,
+    getCategoryFromContextType,
   ]);
 
   if (error) {
