@@ -19,3 +19,10 @@ export function deleteWorkspaceAction(workspaceIdentifier: string) {
     workspaceIdentifier,
   };
 }
+
+export function reorderWorkspaceTaskLists(activeLists, workspaceIdentifier) {
+  return {  
+    type: ActionTypes.REORDER_WORKSPACE_TASKLISTS,
+    payload: { activeLists , workspaceIdentifier},
+  }
+}

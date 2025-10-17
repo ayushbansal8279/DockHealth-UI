@@ -10,6 +10,7 @@ import {
   TASK_CUSTOMIZATIONS_PATH,
   DEVELOPERS_PATH,
   INTEGRATIONS_PATH,
+  ESCALATION_POLICIES_PATH,
 } from 'routing/helpers/paths';
 import {
   userHasPatientCustomFieldsFeatureSelector,
@@ -22,6 +23,8 @@ import {
   userHasAutomationMeteringFeatureSelector,
   userHasWorkspacesFeatureSelector,
   userHasConfigIntegrationsFeatureSelector,
+  userHasEscalationsFeatureSelector,
+  userHasDataManagementFeatureSelector,
 } from 'selectors/user-selectors';
 import { organizationSelector } from 'selectors/organization-selectors';
 import { isPlanTrial } from 'helpers/subscription-helper';
@@ -49,6 +52,10 @@ const SettingsSubmenu = () => {
   const workspacesAvailable = useSelector(userHasWorkspacesFeatureSelector);
   const configIntegrationsAvailable = useSelector(
     userHasConfigIntegrationsFeatureSelector,
+  );
+  const escalationsAvailable = useSelector(userHasEscalationsFeatureSelector);
+  const dataManagementAvailable = useSelector(
+    userHasDataManagementFeatureSelector,
   );
 
   const organization = useSelector(organizationSelector);
@@ -95,14 +102,23 @@ const SettingsSubmenu = () => {
           <SubMenuLink to="/settings/workspaces">Workspaces</SubMenuLink>
         </AccessRestrictor>
       )}
-      <AccessRestrictor allowedToRoles={[ADMIN, OWNER]}>
-        <SubMenuLink to="/settings/data-management">
-          Data Management
-        </SubMenuLink>
-      </AccessRestrictor>
+      {dataManagementAvailable && (
+        <AccessRestrictor allowedToRoles={[ADMIN, OWNER]}>
+          <SubMenuLink to="/settings/data-management">
+            Data Management
+          </SubMenuLink>
+        </AccessRestrictor>
+      )}
       {configIntegrationsAvailable && (
         <AccessRestrictor allowedToRoles={[ADMIN, OWNER]}>
           <SubMenuLink to={INTEGRATIONS_PATH}>Integrations</SubMenuLink>
+        </AccessRestrictor>
+      )}
+      {escalationsAvailable && (
+        <AccessRestrictor allowedToRoles={[ADMIN, OWNER]}>
+          <SubMenuLink to={ESCALATION_POLICIES_PATH}>
+            Escalation Policies
+          </SubMenuLink>
         </AccessRestrictor>
       )}
     </Box>

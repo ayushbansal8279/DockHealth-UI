@@ -1,4 +1,4 @@
-import { CHAT_PATH, SINGLE_TASK_PATH } from 'routing/helpers/paths';
+import { SINGLE_TASK_PATH } from 'routing/helpers/paths';
 
 // eslint-disable-next-line unicorn/prevent-abbreviations
 const getInterpolatedText = (tpl, args) =>
@@ -21,17 +21,6 @@ function sendNotification(message, taskIdentifier) {
   };
 }
 
-function sendChatNotification(message) {
-  const notification = new Notification('Dock Notification', {
-    icon: `${window.location.origin.toString()}/assets/img/dock-logo-mini.png`,
-    body: `${message}`,
-  });
-  notification.onclick = function (event) {
-    event.preventDefault(); // prevent the browser from focusing the Notification's tab
-    window.open(`${window.location.origin.toString()}/#${CHAT_PATH}`, '_blank');
-  };
-}
-
 export function triggerDesktopNotification(message, taskIdentifier) {
   if (!('Notification' in window)) {
     alert('This browser does not support system notifications!');
@@ -41,20 +30,6 @@ export function triggerDesktopNotification(message, taskIdentifier) {
     Notification.requestPermission((permission) => {
       if (permission === 'granted') {
         sendNotification(message, taskIdentifier);
-      }
-    });
-  }
-}
-
-export function triggerChatDesktopNotification(message) {
-  if (!('Notification' in window)) {
-    alert('This browser does not support system notifications!');
-  } else if (Notification.permission === 'granted') {
-    sendChatNotification(message);
-  } else if (Notification.permission !== 'denied') {
-    Notification.requestPermission((permission) => {
-      if (permission === 'granted') {
-        sendChatNotification(message);
       }
     });
   }

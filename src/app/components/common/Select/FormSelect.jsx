@@ -6,7 +6,16 @@ import { getRegexLabelByValue } from '@/app/helpers/field-type-helpers';
 
 const FormSelect = React.forwardRef(
   (
-    { name, label, onChange, required, readOnly, formMethods, ...restProps },
+    {
+      name,
+      label,
+      onChange,
+      required,
+      readOnly,
+      formMethods,
+      options,
+      ...restProps
+    },
     reference,
   ) => {
     const formContext = useFormContext();
@@ -62,11 +71,29 @@ const FormSelect = React.forwardRef(
       }
     };
 
+    if (!options || options.length === 0) {
+      return (
+        <Select
+          name={name}
+          label={label}
+          value=""
+          options={[]}
+          onChange={() => {}}
+          error={error}
+          ref={reference}
+          required={required}
+          readOnly={readOnly}
+          {...restProps}
+        />
+      );
+    }
+
     return (
       <Select
         name={name}
         label={label}
         value={value}
+        options={options}
         onChange={handleChange}
         error={error}
         ref={reference}

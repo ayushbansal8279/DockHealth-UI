@@ -26,7 +26,6 @@ export const CAN_ACCESS_PEOPLE_LIST_PAGE = 'canAccessPeopleListPage';
 export const CAN_ACCESS_MEMBER_LIST_PAGE = 'canAccessMemberListPage';
 export const CAN_ACCESS_WORKFLOW_LIST_PAGE = 'canAccessWorkflowListPage';
 export const CAN_ACCESS_ANALYTICS_PAGE = 'canAccessAnalyticsPage';
-export const CAN_ACCESS_CHAT_PAGE = 'canAccessChatPage';
 export const CAN_ACCESS_SETTINGS_PAGE = 'canAccessSettingsPage';
 export const CAN_ACCESS_PROFILE_PAGE = 'canAccessProfilePage';
 export const CAN_ACCESS_EDUCATION_CENTER_PAGE = 'canAccessEducationCenterPage';

@@ -165,18 +165,6 @@ export const userHasShareTaskFeatureSelector = createSelector(
     ),
 );
 
-export const userHasDockChatFeatureSelector = createSelector(
-  userProfileSelector,
-  () =>
-    // ({ organizationAvailableFeatures, userAvailableFeatures }) =>
-    //   featureSelector(
-    //     organizationAvailableFeatures,
-    //     userAvailableFeatures,
-    //     'DOCK_CHAT',
-    //   )
-    false,
-);
-
 export const userHasBoardViewFeatureSelector = createSelector(
   userProfileSelector,
   ({ organizationAvailableFeatures, userAvailableFeatures }) =>
@@ -310,6 +298,26 @@ export const userHasConfigInboundEmailsFeatureSelector = createSelector(
       organizationAvailableFeatures,
       userAvailableFeatures,
       'CONFIG_INBOUND_EMAILS',
+    ),
+);
+
+export const userHasEscalationsFeatureSelector = createSelector(
+  userProfileSelector,
+  ({ organizationAvailableFeatures, userAvailableFeatures }) =>
+    featureSelector(
+      organizationAvailableFeatures,
+      userAvailableFeatures,
+      'ESCALATIONS',
+    ),
+);
+
+export const userHasDataManagementFeatureSelector = createSelector(
+  userProfileSelector,
+  ({ organizationAvailableFeatures, userAvailableFeatures }) =>
+    featureSelector(
+      organizationAvailableFeatures,
+      userAvailableFeatures,
+      'DATA_MANAGEMENT',
     ),
 );
 

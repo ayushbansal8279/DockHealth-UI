@@ -26,7 +26,6 @@ import PatientsReducer from './patients-reducer';
 import AnalyticsReducer from './analytics-reducer';
 import WorkflowDrawerReducer from './workflow-drawer-reducer';
 import CalendarTasksReducer from './calendar-tasks-reducer';
-import SendbirdReducer from './sendbird-reducer';
 import TaskItemsReducer from './task-items-reducer';
 import ProfileReducer from './profile-reducer';
 import WorkspaceReducer from './workspace-reducer';
@@ -71,7 +70,6 @@ const appReducer = combineReducers({
   analytics: AnalyticsReducer,
   workflowDrawer: WorkflowDrawerReducer,
   calendarTasks: CalendarTasksReducer,
-  sendbird: SendbirdReducer,
   // taskItemList: createNamedWrapperReducer(TaskItemReducer, TaskOrigin.LIST),
   taskItems: TaskItemsReducer,
   workspace: WorkspaceReducer,

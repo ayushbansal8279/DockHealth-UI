@@ -130,13 +130,7 @@ const UsersList = (props) => {
           </ListEntryContainer>
         </ListContainer>
       ) : (
-        <ReusableDataGrid
-          rows={selectableUsers}
-          columns={columns}
-          showExport={false}
-          showColumns={false}
-          showFilter={false}
-        />
+        <ReusableDataGrid rows={selectableUsers} columns={columns} />
       )}
     </UsersListContainer>
   );

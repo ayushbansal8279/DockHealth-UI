@@ -2,10 +2,12 @@ import axios from './axios-heydoc';
 import { log } from '../helpers/log';
 import { blobFileDownload } from '../helpers/blob-file-download';
 import { noop, showAlert } from '../helpers/utility-functions';
+import { withWorkspaceHeaders } from '../helpers/api-helpers';
 
-export function getAllCustomFields() {
+
+export function getAllCustomFields(workspaceIdentifier) {
   return axios
-    .get(`custom/field`)
+    .get(`custom/field`, withWorkspaceHeaders(workspaceIdentifier))
     .then(({ data }) => data)
     .catch((error) => {
       log(error);
@@ -13,9 +15,14 @@ export function getAllCustomFields() {
     });
 }
 
-export function getAllPatientCustomFields(active = true, patientIdentifier) {
+export function getAllPatientCustomFields(
+  active = true,
+  patientIdentifier,
+  workspaceIdentifier,
+) {
   return axios
     .get(`custom/field/getAll/PATIENT`, {
+      ...withWorkspaceHeaders(workspaceIdentifier),
       params: { active, targetIdentifier: patientIdentifier },
     })
     .then(({ data }) => data)
@@ -74,14 +81,23 @@ export function getAllTaskCustomFields(targetIdentifier, taskListIdentifier) {
     });
 }
 
-export function addCustomField(customField, targetType, taskListIdentifier) {
+export function addCustomField(
+  customField,
+  targetType,
+  taskListIdentifier,
+  workspaceIdentifier,
+) {
   return axios
-    .post(`custom/field`, {
-      ...customField,
-      contextType: 'CUSTOM',
-      targetType,
-      taskListIdentifier,
-    })
+    .post(
+      `custom/field`,
+      {
+        ...customField,
+        contextType: 'CUSTOM',
+        targetType,
+        taskListIdentifier,
+      },
+      withWorkspaceHeaders(workspaceIdentifier),
+    )
     .then(({ data }) => data)
     .catch((error) => {
       log(error);
@@ -89,23 +105,36 @@ export function addCustomField(customField, targetType, taskListIdentifier) {
     });
 }
 
-export function updateCustomField(customField, targetType, taskListIdentifier) {
+export function updateCustomField(
+  customField,
+  targetType,
+  taskListIdentifier,
+  workspaceIdentifier,
+) {
   return axios
-    .put(`custom/field`, {
-      ...customField,
-      contextType: 'CUSTOM',
-      targetType,
-      taskListIdentifier,
-    })
+    .put(
+      `custom/field`,
+      {
+        ...customField,
+        contextType: 'CUSTOM',
+        targetType,
+        taskListIdentifier,
+      },
+      withWorkspaceHeaders(workspaceIdentifier),
+    )
+    .then(({ data }) => data)
     .catch((error) => {
       log(error);
       throw new Error(error?.response?.data?.errorMessage);
     });
 }
 
-export function deleteCustomField(identifier) {
+export function deleteCustomField(identifier, workspaceIdentifier) {
   return axios
-    .delete(`custom/field/${identifier}`)
+    .delete(
+      `custom/field/${identifier}`,
+      withWorkspaceHeaders(workspaceIdentifier),
+    )
     .then(({ data }) => data)
     .catch((error) => {
       log(error);

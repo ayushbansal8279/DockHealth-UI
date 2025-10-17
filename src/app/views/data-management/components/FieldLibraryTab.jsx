@@ -1,5 +1,5 @@
-import React, { useState, useMemo, useEffect } from 'react';
-import { Box, Button, CircularProgress, Tooltip, Chip, IconButton } from '@mui/material';
+import React, { useState, useMemo, useEffect, useCallback } from 'react';
+import { Box, Button, Tooltip, Chip, IconButton } from '@mui/material';
 import { useGridApiRef } from '@mui/x-data-grid-premium';
 import { useDispatch } from 'react-redux';
 import EditIcon from '@mui/icons-material/Edit';
@@ -17,8 +17,9 @@ import {
   getAllCustomFields,
 } from '@/app/api/custom-fields-api';
 import { fieldTypes } from '@/app/components/profile-builder/helper';
+import { TargetType, ContextType } from '@/app/helpers/custom-fields-helpers';
 
-const FieldLibraryTab = () => {
+const FieldLibraryTab = ({ workspaceIdentifier, isWorkspace = false }) => {
   const dispatch = useDispatch();
   const [searchPhrase, setSearchPhrase] = useState('');
   const [fieldLibrary, setFieldLibrary] = useState([]);
@@ -66,27 +67,36 @@ const FieldLibraryTab = () => {
     return profileTypeDetails.map((detail) => detail.name || 'Unknown');
   };
 
-  const getCategoryFromTargetType = (targetType) => {
-    return formatObjectCase(targetType);
-  };
+  const getCategoryFromContextType = (contextType) => {
+    if (!contextType) return '';
 
-  useEffect(() => {
-    const fetchFields = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        const fields = await getAllCustomFields();
-        setFieldLibrary(fields || []);
-      } catch (err) {
-        setError(err.message);
-        dispatch(showGlobalErrorAlert());
-      } finally {
-        setLoading(false);
-      }
+    const contextTypeMap = {
+      [ContextType.PREDEFINED]: 'Predefined',
+      [ContextType.CUSTOM]: 'Custom',
     };
 
-    fetchFields();
-  }, [dispatch]);
+    return contextTypeMap[contextType] || contextType;
+  };
+
+  const fetchFields = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const fields = await getAllCustomFields(workspaceIdentifier);
+      setFieldLibrary(fields || []);
+    } catch (err) {
+      setError(err.message);
+      dispatch(showGlobalErrorAlert());
+    } finally {
+      setLoading(false);
+    }
+  }, [workspaceIdentifier, dispatch]);
+
+  useEffect(() => {
+    if (!isWorkspace || workspaceIdentifier) {
+      fetchFields();
+    }
+  }, [workspaceIdentifier]);
 
   const handleSearchInputChange = (value) => {
     setSearchPhrase(value);
@@ -98,13 +108,9 @@ const FieldLibraryTab = () => {
         options: {
           type: 'GLOBAL',
         },
-        onAdded: async (customField) => {
-          try {
-            const fields = await getAllCustomFields();
-            setFieldLibrary(fields || []);
-          } catch (err) {
-            dispatch(showGlobalErrorAlert());
-          }
+        workspaceIdentifier,
+        onAdded: (customField) => {
+          setFieldLibrary((prev) => [...prev, customField]);
         },
       }),
     );
@@ -117,13 +123,15 @@ const FieldLibraryTab = () => {
           type: 'GLOBAL',
         },
         customField: field,
-        onUpdated: async (updatedField) => {
-          try {
-            const fields = await getAllCustomFields();
-            setFieldLibrary(fields || []);
-          } catch (err) {
-            dispatch(showGlobalErrorAlert());
-          }
+        workspaceIdentifier,
+        onUpdated: (updatedField) => {
+          setFieldLibrary((prev) =>
+            prev.map((field) =>
+              field.identifier === updatedField.identifier
+                ? updatedField
+                : field,
+            ),
+          );
         },
       }),
     );
@@ -137,10 +145,11 @@ const FieldLibraryTab = () => {
           'Are you sure you want to delete this field from the library? This action cannot be undone.',
         confirm: async () => {
           try {
-            await deleteCustomField(field.identifier);
+            await deleteCustomField(field.identifier, workspaceIdentifier);
             dispatch(showGlobalAlert(AlertMessages.DELETED));
-            const fields = await getAllCustomFields();
-            setFieldLibrary(fields || []);
+            setFieldLibrary((prev) =>
+              prev.filter((f) => f.identifier !== field.identifier),
+            );
           } catch (err) {
             dispatch(showGlobalErrorAlert());
           }
@@ -215,12 +224,12 @@ const FieldLibraryTab = () => {
         flex: 1.25,
       },
       {
-        field: 'targetType',
+        field: 'contextType',
         headerName: 'Category',
         width: 150,
         flex: 1,
         renderCell: (params) => {
-          const category = getCategoryFromTargetType(params.value);
+          const category = getCategoryFromContextType(params.value);
           return category || '';
         },
       },
@@ -325,49 +334,69 @@ const FieldLibraryTab = () => {
       getFieldTypeInfo,
       formatObjectCase,
       getProfileTypeNames,
-      getCategoryFromTargetType,
+      getCategoryFromContextType,
     ],
   );
 
   const filteredFields = useMemo(() => {
-    if (!searchPhrase) return fieldLibrary;
-    return fieldLibrary.filter((field) => {
-      const searchLower = searchPhrase.toLowerCase();
-      const profileTypeNames = getProfileTypeNames(field.profileTypeDetails);
-      const category = getCategoryFromTargetType(field.targetType);
+    if (!searchPhrase) {
+      return [...fieldLibrary].sort((a, b) => {
+        if (
+          a.contextType === ContextType.PREDEFINED &&
+          b.contextType !== ContextType.PREDEFINED
+        ) {
+          return -1;
+        }
+        if (
+          a.contextType !== ContextType.PREDEFINED &&
+          b.contextType === ContextType.PREDEFINED
+        ) {
+          return 1;
+        }
+        return 0;
+      });
+    }
 
-      return (
-        field.name?.toLowerCase().includes(searchLower) ||
-        category?.toLowerCase().includes(searchLower) ||
-        field.targetType?.toLowerCase().includes(searchLower) ||
-        field.fieldType?.toLowerCase().includes(searchLower) ||
-        field.validationRegexDescription?.toLowerCase().includes(searchLower) ||
-        profileTypeNames.some((name) =>
-          name.toLowerCase().includes(searchLower),
-        )
-      );
-    });
+    return fieldLibrary
+      .filter((field) => {
+        const searchLower = searchPhrase.toLowerCase();
+        const profileTypeNames = getProfileTypeNames(field.profileTypeDetails);
+        const category = getCategoryFromContextType(field.contextType);
+
+        return (
+          field.name?.toLowerCase().includes(searchLower) ||
+          category?.toLowerCase().includes(searchLower) ||
+          field.contextType?.toLowerCase().includes(searchLower) ||
+          field.fieldType?.toLowerCase().includes(searchLower) ||
+          field.validationRegexDescription
+            ?.toLowerCase()
+            .includes(searchLower) ||
+          profileTypeNames.some((name) =>
+            name.toLowerCase().includes(searchLower),
+          )
+        );
+      })
+      .sort((a, b) => {
+        if (
+          a.contextType === ContextType.PREDEFINED &&
+          b.contextType !== ContextType.PREDEFINED
+        ) {
+          return -1;
+        }
+        if (
+          a.contextType !== ContextType.PREDEFINED &&
+          b.contextType === ContextType.PREDEFINED
+        ) {
+          return 1;
+        }
+        return 0;
+      });
   }, [
     fieldLibrary,
     searchPhrase,
     getProfileTypeNames,
-    getCategoryFromTargetType,
+    getCategoryFromContextType,
   ]);
-
-  if (loading) {
-    return (
-      <TabContent>
-        <Box
-          display="flex"
-          justifyContent="center"
-          alignItems="center"
-          minHeight="400px"
-        >
-          <CircularProgress />
-        </Box>
-      </TabContent>
-    );
-  }
 
   if (error) {
     return (
@@ -415,6 +444,7 @@ const FieldLibraryTab = () => {
           rows={filteredFields}
           getRowId={(row) => row.identifier}
           apiRef={apiRef}
+          loading={loading}
         />
       </DataGridContainer>
     </TabContent>

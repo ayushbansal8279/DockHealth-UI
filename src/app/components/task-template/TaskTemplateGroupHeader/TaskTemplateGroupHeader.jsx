@@ -104,7 +104,6 @@ import { CSS } from '@dnd-kit/utilities';
 import { useDropDirection } from '@/app/context-api/DropDirectionContext';
 import TaskItemProfile from '../../task/StandardTaskItem/TaskItemComponents/TaskItemProfile/TaskItemProfile';
 
-
 const TaskTemplateGroupHeader = ({
   templateGroup = {},
   patient: parentPatient,
@@ -1050,7 +1049,7 @@ const TaskTemplateGroupHeader = ({
                 order={getColumnOrder(TaskItemColumn.PRIORITY)}
               >
                 <TaskItemDropdown
-                  value={taskPriority}
+                  value={taskPriority === TaskPriority.LOW ? '' : taskPriority}
                   onChange={handleUpdateTaskPriority}
                   field={{
                     options: [
