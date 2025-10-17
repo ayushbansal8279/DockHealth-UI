@@ -12,7 +12,6 @@ export const EscalationActionType = {
 
 export const timestampFieldOptions = [
   { value: 'createdDate', label: 'Task Created Date' },
-  { value: 'assignedDate', label: 'Task Assigned Date' },
   { value: 'dueDate', label: 'Task Due Date' },
   { value: 'updatedDate', label: 'Task Updated Date' },
   { value: 'startDate', label: 'Task Start Date' },
@@ -59,8 +58,6 @@ export const actionTypeOptions = [
 
 export const priorityOptions = [
   { value: TaskPriority.NONE, label: 'None' },
-  { value: TaskPriority.LOW, label: 'Low' },
-  { value: TaskPriority.MEDIUM, label: 'Medium' },
   { value: TaskPriority.HIGH, label: 'High' },
 ];
 
@@ -218,7 +215,7 @@ export const formatActionDetails = (actions: any[], references?: EscalationPolic
           result.subItems!.push(`<strong>Group:</strong> ${groupName}`);
         }
         if (action.params?.title) {
-          result.subItems!.push(`<strong>Title:</strong> "${action.params.title}"`);
+          result.subItems!.push(`<strong>Description:</strong> "${action.params.title}"`);
         }
         if (action.params?.assignee?.length > 0) {
           const assigneeNames = getNames(action.params.assignee, references?.users);

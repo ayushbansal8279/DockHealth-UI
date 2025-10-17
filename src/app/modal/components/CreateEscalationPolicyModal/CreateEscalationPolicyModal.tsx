@@ -816,12 +816,6 @@ const CreateEscalationPolicy: React.FC<CreateEscalationPolicyProps> = ({
               {formData.actions.map((action: any, index: number) => (
                 <ActionContainer key={index}>
                   <ActionHeaderBox>
-                    <ActionTypography variant="caption">
-                      {actionTypeOptions.find(
-                        (opt: any) => opt.value === action.type,
-                      )?.label || 'Action'}{' '}
-                      {index + 1}
-                    </ActionTypography>
                     <DeletIcon onClick={() => removeAction(index)} />
                   </ActionHeaderBox>
 
@@ -859,7 +853,7 @@ const CreateEscalationPolicy: React.FC<CreateEscalationPolicyProps> = ({
                     <>
                       <SelectWrapper>
                         {renderCompactSelect(
-                          'Add Users',
+                          'Select Users',
                           action.params.addAssigneeUsers || [],
                           (users: string[]) =>
                             updateAction(index, {
@@ -881,7 +875,7 @@ const CreateEscalationPolicy: React.FC<CreateEscalationPolicyProps> = ({
                         )}
 
                         {renderCompactSelect(
-                          'Add User Groups',
+                          'Select User Groups',
                           action.params.addAssigneeGroups || [],
                           (groups: string[]) =>
                             updateAction(index, {
@@ -901,19 +895,6 @@ const CreateEscalationPolicy: React.FC<CreateEscalationPolicyProps> = ({
                             (!action.params.addAssigneeGroups ||
                               action.params.addAssigneeGroups.length === 0),
                         )}
-                      </SelectWrapper>
-
-                      <SelectWrapper>
-                        <EscalationPolicyTextField
-                          label="Comment (optional)"
-                          fieldName="comment"
-                          actionType="AddAssignee"
-                          actionIndex={index}
-                          actionParams={action.params}
-                          updateAction={updateAction}
-                          multiline
-                          rows={1}
-                        />
                       </SelectWrapper>
                     </>
                   )}
@@ -1073,7 +1054,7 @@ const CreateEscalationPolicy: React.FC<CreateEscalationPolicyProps> = ({
 
                       <SelectWrapper>
                         <EscalationPolicyTextField
-                          label="Task Title"
+                          label="Task Description"
                           fieldName="title"
                           actionType="CreateTask"
                           actionIndex={index}
@@ -1108,7 +1089,7 @@ const CreateEscalationPolicy: React.FC<CreateEscalationPolicyProps> = ({
                               label="Priority"
                               variant="outlined"
                               size="small"
-                              placeholder="Select priority..."
+                              placeholder="Select priority"
                               sx={TextFieldStyles}
                             />
                           )}

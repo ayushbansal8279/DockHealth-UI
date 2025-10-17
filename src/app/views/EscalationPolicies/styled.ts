@@ -56,7 +56,7 @@ export const HeaderBox = styled.div`
 `;
 
 export const HeaderTitle = styled.div`
-  font-size: 16px;
+  font-size: 20px;
   font-weight: 500;
   margin-left: 16px;
 `;
