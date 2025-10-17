@@ -18,6 +18,7 @@ import {
   Description,
   ColorIndicator,
 } from './styled';
+import { PATIENT_DETAILS_PATH } from '@/app/routing/helpers/paths';
 
 const { ADMIN, OWNER, MEMBER, GUEST, DOCK_LITE, EXTERNAL } =
   UserOrganizationRole;
@@ -26,7 +27,7 @@ const LayoutHeader = (props) => {
   const { children, horizontalSticky } = props;
   const location = useLocation();
   const isIframe =
-    window.self !== window.top && location.pathname.includes('/core/patient');
+    window.self !== window.top && location.pathname.includes(PATIENT_DETAILS_PATH);
 
   const currentOrganization = useSelector(selectedUserOrganizationSelector);
   const whiteLabelEnabled = currentOrganization?.whiteLabelEnabled || false;

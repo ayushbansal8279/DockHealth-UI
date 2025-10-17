@@ -50,6 +50,7 @@ import { SummaryType } from '@/app/helpers/ai-helper';
 import PatientMetaDataField from './PatientMetaDataField';
 import ProfileDetailsDrawer from '../../profile-details/ProfileDetailsDrawer/ProfileDetailsDrawer';
 import PatientActivityHistoryDrawer from '@/app/components/patients/PatientActivityHistoryDrawer/PatientActivityHistoryDrawer';
+import { PATIENT_DETAILS_PATH } from '@/app/routing/helpers/paths';
 
 const { DISABLED } = TASK_LIST_RESTRICTIONS_OPTIONS;
 
@@ -57,7 +58,7 @@ const { DISABLED } = TASK_LIST_RESTRICTIONS_OPTIONS;
 const PatientDetailsHeader = () => {
   const location = useLocation();
   const isIframe =
-    window.self !== window.top && location.pathname.includes('/core/patient');
+    window.self !== window.top && location.pathname.includes(PATIENT_DETAILS_PATH);
   const history = useHistory();
   const [isDrawerOpen, setIsDrawerOpen, unsetIsDrawerOpen] = useBoolean(false);
   const [isProfileOpen, setIsProfileOpen, unsetIsProfileOpen] =

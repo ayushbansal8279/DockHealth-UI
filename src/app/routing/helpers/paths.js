@@ -35,6 +35,7 @@ export const USERS_PATH = '/core/people';
 export const SINGLE_TASK_PATH = '/core/task';
 
 export const TASK_LIST_PATH = '/core/tasks';
+export const PATIENT_DETAILS_PATH = '/core/patient';
 export const PATIENTS_LIST_ALL = '/core/patients/list/all';
 export const PATIENTS_LIST_WITH_TASKS = '/core/patients/list/active';
 export const PATIENTS_LIST_ARCHIVED = '/core/patients/list/archived';
