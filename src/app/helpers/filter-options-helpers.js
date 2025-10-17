@@ -99,6 +99,7 @@ export function mapSelectedOptionsToRequestPayload(selectedFilters) {
           dateEnd: v.dateEnd || null,
           dateStart: v.dateStart || null,
           dateOptions: v.options,
+          date: v.date || null,
         },
       };
     }
@@ -110,7 +111,7 @@ export function mapSelectedOptionsToRequestPayload(selectedFilters) {
       };
     }
 
-    if (v.dateStart || v.dateEnd) {
+    if (v.dateStart || v.dateEnd || v.date) {
       return {
         ...accumulator,
         customFields: [
@@ -120,6 +121,7 @@ export function mapSelectedOptionsToRequestPayload(selectedFilters) {
             selectedOptionIdentifiers: v.options,
             dateStart: v.dateStart || null,
             dateEnd: v.dateEnd || null,
+            date: v.date || null,
           },
         ],
       };
@@ -150,6 +152,7 @@ export function mapRequestSelectedOptionsToStore(selectedOptions) {
           dateEnd: v.dateEnd ? moment.utc(v.dateEnd).format("YYYY-MM-DD") : null,
           dateStart: v.dateStart ? moment.utc(v.dateStart).format("YYYY-MM-DD") : null,
           options: v.dateOptions,
+          date: v.date || null,
         },
       };
     }
