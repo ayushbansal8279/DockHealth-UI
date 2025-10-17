@@ -27,6 +27,7 @@ const ImportDataModal = ({
   identifier,
   setImportResponse,
   type,
+  importFileTypeHint
 }) => {
   const inputFileReference = useRef(null);
   const [modalStep, setModalStep] = useState(step);
@@ -125,7 +126,7 @@ const ImportDataModal = ({
                 <span>Drop the files here ...</span>
               ) : (
                 <>
-                  Drag & drop your CSV/Excel file here or
+                  {importFileTypeHint} or
                   <span style={{ cursor: 'pointer', color: 'blue' }}> Browse </span>
                   your local files.
                 </>

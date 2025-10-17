@@ -885,6 +885,7 @@ const CustomProfileListContent = ({
           label="object"
           uploadFunction={uploadProfileData}
           identifier={profileTypeIdentifier}
+          importFileTypeHint={"Drag & drop your CSV file here"}
         />
       </Dialog>
       <ProfileUndoAlert onUndo={handleUndo} />
