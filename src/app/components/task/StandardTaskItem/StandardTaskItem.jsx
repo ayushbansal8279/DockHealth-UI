@@ -127,13 +127,13 @@ const Task = React.memo(
       },
       [
         subTasksCount,
-        // renderedSubtasks,
+        renderedSubtasks,
         subtasksDisabled,
         isFullView,
         collapse,
         taskIdentifier,
         dispatch,
-        // task,
+        task,
       ],
     );
 
@@ -191,7 +191,7 @@ const Task = React.memo(
       }
     }, [
       handleSetSubtasksOpen,
-      // areSubtasksOpen,
+      areSubtasksOpen,
       subtaskQuickAddOpen,
       isFullView,
       subtasksDisabled,
