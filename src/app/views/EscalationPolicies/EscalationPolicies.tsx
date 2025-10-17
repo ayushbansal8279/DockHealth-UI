@@ -51,6 +51,7 @@ import {
   PolicyTitleTypography,
   PolicyDescriptionTypography,
   ErrorAlert,
+  HeaderTitle,
 } from './styled';
 import {
   formatFilterDetails,
@@ -191,6 +192,7 @@ const EscalationPolicies = () => {
     <ViewLayout header={<BasicLayoutHeader title="Escalation Policies" />}>
       <MainContainer>
         <HeaderBox>
+        <HeaderTitle>Task Escalation Policies</HeaderTitle>
           <PolicyHeaderBox>
             <AddTaskButtonWrapper onClick={handleNewPolicy}>
               <Add />
@@ -286,6 +288,48 @@ const EscalationPolicies = () => {
                                 </TriggerBadge>
                               </DetailItem>
 
+                              {policyDetails[policy.identifier!]?.config?.scope === 'LIST' &&
+                                policyDetails[policy.identifier!]?.config?.scopeFilter?.lists?.in && (
+                                  <DetailItem>
+                                    <StrongLabel>Task Lists</StrongLabel>
+                                    <FilterBulletList>
+                                      {policyDetails[policy.identifier!]?.config?.scopeFilter?.lists?.in
+                                        .map((listId: string) => {
+                                          const listRef = policyDetails[policy.identifier!]?.references?.lists?.find(
+                                            (list: any) => list.identifier === listId
+                                          );
+                                          return listRef?.name || listId;
+                                        })
+                                        .map((listName: string, idx: number) => (
+                                          <FilterBulletItem key={idx}>
+                                            {listName}
+                                          </FilterBulletItem>
+                                        ))}
+                                    </FilterBulletList>
+                                  </DetailItem>
+                                )}
+
+                              {policyDetails[policy.identifier!]?.config?.scope === 'WORKFLOW' &&
+                                policyDetails[policy.identifier!]?.config?.scopeFilter?.workflows?.in && (
+                                  <DetailItem>
+                                    <StrongLabel>Workflows</StrongLabel>
+                                    <FilterBulletList>
+                                      {policyDetails[policy.identifier!]?.config?.scopeFilter?.workflows?.in
+                                        .map((workflowId: string) => {
+                                          const workflowRef = policyDetails[policy.identifier!]?.references?.workflows?.find(
+                                            (workflow: any) => workflow.identifier === workflowId
+                                          );
+                                          return workflowRef?.name || workflowId;
+                                        })
+                                        .map((workflowName: string, idx: number) => (
+                                          <FilterBulletItem key={idx}>
+                                            {workflowName}
+                                          </FilterBulletItem>
+                                        ))}
+                                    </FilterBulletList>
+                                  </DetailItem>
+                                )}
+
                               <DetailItem>
                                 <StrongLabel>Trigger</StrongLabel>
                                 <TriggerBadge>
@@ -305,9 +349,7 @@ const EscalationPolicies = () => {
                                     policyDetails[policy.identifier!]
                                       ?.references,
                                   ).map((filter, idx) => (
-                                    <FilterBulletItem key={idx}>
-                                      {filter}
-                                    </FilterBulletItem>
+                                    <FilterBulletItem key={idx} dangerouslySetInnerHTML={{ __html: filter }} />
                                   ))}
                                 </FilterBulletList>
                               </DetailItem>
@@ -339,9 +381,7 @@ const EscalationPolicies = () => {
                                               <ul>
                                                 {action.subItems.map(
                                                   (subItem, subIdx) => (
-                                                    <li key={subIdx}>
-                                                      {subItem}
-                                                    </li>
+                                                    <li key={subIdx} dangerouslySetInnerHTML={{ __html: subItem }} />
                                                   ),
                                                 )}
                                               </ul>
