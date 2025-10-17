@@ -93,6 +93,7 @@ import PatientAttachmentReferenceModal from './components/PatientAttachmentRefer
 import AddWorkspaceModal from '../components/workspace/AddWorkspaceModal/AddWorkspaceModal';
 import DeveloperScopeModal from './components/DeveloperScopeModal/DeveloperScopeModal';
 import DockIntegrationsModal from './components/DockIntegrationsModal/DockIntegrationsModal';
+import ScopeChangeModal from './components/ScopeChangeModal/ScopeChangeModal';
 import ClearDueDateConfirmationModal from './components/ClearDueDateConfirmationModal/ClearDueDateConfirmationModal';
 import CreateEscalationPolicyModal from './components/CreateEscalationPolicyModal/CreateEscalationPolicyModal';
 
@@ -194,6 +195,7 @@ const MODAL_MAP = {
   DockIntegrations: DockIntegrationsModal,
   ClearDueDateConfirmation: ClearDueDateConfirmationModal,
   CreateEscalationPolicy: CreateEscalationPolicyModal,
+  ScopeChange: ScopeChangeModal,
 };
 
 export default MODAL_MAP;
