@@ -25,6 +25,19 @@ export const CUSTOM_FIELD_TYPES = {
   PATIENT: 'PATIENT',
 };
 
+export const TargetType = {
+  GLOBAL: 'GLOBAL',
+  PATIENT: 'PATIENT',
+  PROFILE: 'PROFILE',
+  PROVIDER: 'PROVIDER',
+  TASK: 'TASK',
+};
+
+export const ContextType = {
+  PREDEFINED: 'PREDEFINED',
+  CUSTOM: 'CUSTOM',
+};
+
 export const sortAlphabetical = (array, propertyName = 'name') =>
   sort((a, b) => a?.[propertyName].localeCompare(b?.[propertyName]), array);
 

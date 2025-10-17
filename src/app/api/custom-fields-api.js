@@ -3,9 +3,11 @@ import { log } from '../helpers/log';
 import { blobFileDownload } from '../helpers/blob-file-download';
 import { noop, showAlert } from '../helpers/utility-functions';
 
-export function getAllCustomFields() {
+export function getAllCustomFields(targetType) {
+  // const url = targetType ? `custom/field/${targetType}` : `custom/field`;
+  const url = `custom/field`;
   return axios
-    .get(`custom/field`)
+    .get(url)
     .then(({ data }) => data)
     .catch((error) => {
       log(error);

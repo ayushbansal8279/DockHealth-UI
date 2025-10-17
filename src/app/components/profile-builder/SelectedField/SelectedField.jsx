@@ -23,6 +23,7 @@ import { showAlert } from 'helpers/utility-functions';
 import { showGlobalAlert } from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
 import { addCustomField } from '@/app/api/custom-fields-api';
+import { TargetType } from '@/app/helpers/custom-fields-helpers';
 import {
   FieldArea,
   FieldIconContainer,
@@ -153,11 +154,11 @@ const SelectedField = ({ field, category, id }) => {
       };
 
       const profilePayload = {
-        fieldCategoryType: context,
+        fieldCategoryType: 'GLOBAL',
         fieldType: field.fieldType,
         name: value,
         contextType: 'CUSTOM',
-        targetType: context,
+        targetType: TargetType.GLOBAL,
         profileType: {
           identifier,
         },
