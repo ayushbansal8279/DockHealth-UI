@@ -11,7 +11,7 @@ import * as Sc from './styled';
 import { TaskOrigin } from '@/app/helpers/task-helpers';
 import { hasFiltersAppliedSelector } from '@/app/selectors/mega-filter-selectors';
 import { searchTermSelector } from '@/app/selectors/list-details-selectors';
-import { currentTaskListTasksStatusSelector } from '@/app/selectors/task-list-selectors';
+import { userPreferenceStatusSelector } from '@/app/selectors/user-preference-selectors';
 
 export interface Props extends Segment {
   name: string;
@@ -37,7 +37,7 @@ function VListGroup(
 ) {
   const dispatch = useDispatch();
 
-  const taskListStatus = useSelector(currentTaskListTasksStatusSelector);
+  const taskListStatus = useSelector(userPreferenceStatusSelector);
 
   const moveGroup = useCallback(
     // @ts-ignore

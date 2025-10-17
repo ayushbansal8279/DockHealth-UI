@@ -17,8 +17,6 @@ import {
   getDashboardTaskStasForImplicitGroups,
   getTasksAssignedToUserByImplicitGroup,
   getTasksForOrganizationByImplicitGroup,
-  // searchTasksByAssignedToUserGroupedByImplicitGroups,
-  // searchTasksForOrganizationGroupedByImplicitGroups,
   getCalendarTasks,
 } from 'api/dashboard-api';
 import {
@@ -38,43 +36,41 @@ import * as MegaFilterActions from 'actions/mega-filter-actions';
 import { showGlobalErrorAlert } from 'alert/actions';
 import { selectedFiltersInMegaFilterSelector } from 'selectors/mega-filter-selectors';
 import {
-  getFiltersStorageKey,
-  getQuickFilterStorageKey,
-  getMultipleSelectedQuickFilterStorageKey,
-  getSortStorageKey,
+  cleanedSelectedFilters,
 } from 'helpers/mega-filter-helper';
 import { log } from 'helpers/log';
-import localStorageHelper from '../helpers/local-storage-helper';
-import sessionStorageHelper from '../helpers/session-storage-helper';
 import {
   extractAllTasksFromGroupsDetail,
   filterDataForCalender,
 } from '../helpers/list-details-helper';
+import * as UserPreferenceApi from '@/app/api/user-preference-api';
+import { UserPreferenceContextType } from '@/app/helpers/user-prefrence-helper';
+import {
+  userPreferenceSelectedQuickFilterSelector,
+  userPreferenceSelectedFiltersSelector,
+  userPreferenceSortSelector,
+  userPreferenceMultipleSelectedQuickFiltersSelector,
+} from '@/app/selectors/user-preference-selectors';
 
 function* initializeDashboardView() {
   try {
     const tabName = yield select(dashboardTabNameSelector);
 
-    let filters = localStorageHelper.getItem(
-      getFiltersStorageKey('dashboard', tabName),
+    const preferences = yield call(
+      UserPreferenceApi.getUserPreference,
+      UserPreferenceContextType.HOME,
+      'dashboard',
     );
-    if (!filters) {
-      filters = sessionStorageHelper.getItem(
-        getFiltersStorageKey('dashboard', tabName),
-      );
-    }
-    let selectedQuickFilter = localStorageHelper.getItem(
-      getQuickFilterStorageKey('dashboard', tabName),
-    );
-    if (!selectedQuickFilter) {
-      selectedQuickFilter = sessionStorageHelper.getItem(
-        getQuickFilterStorageKey('dashboard', tabName),
-      );
-    }
+    yield put({
+      type: ActionTypes.UPDATE_USER_PREFERENCES_SUCCESS,
+      preferences,
+    });
 
-    let sort = localStorageHelper.getItem(
-      getSortStorageKey('dashboard', tabName),
+    const selectedFilters = yield select(userPreferenceSelectedFiltersSelector);
+    const selectedQuickFilter = yield select(
+      userPreferenceSelectedQuickFilterSelector,
     );
+    const sort = yield select(userPreferenceSortSelector);
 
     if (sort && sort.key && sort.order) {
       yield put({
@@ -86,7 +82,7 @@ function* initializeDashboardView() {
 
     yield put(
       MegaFilterActions.selectFiltersForMegaFilter(
-        filters,
+        selectedFilters,
         'dashboard',
         tabName,
         selectedQuickFilter,
@@ -222,16 +218,14 @@ function* loadMoreDashboardTasksForGroup({
 function* getDashboardGroups() {
   try {
     const tabName = yield select(dashboardTabNameSelector);
-    const savedDashboardSelectedQuickFilters = localStorageHelper.getItem(
-      getMultipleSelectedQuickFilterStorageKey('dashboard', tabName),
+    const savedDashboardSelectedQuickFilters = yield select(
+      userPreferenceMultipleSelectedQuickFiltersSelector,
     );
 
     const dashboardGroups = yield call(
       getDashboardTaskStasForImplicitGroups,
       tabName,
-      savedDashboardSelectedQuickFilters
-        ? JSON.parse(savedDashboardSelectedQuickFilters)
-        : [],
+      savedDashboardSelectedQuickFilters,
     );
 
     yield put({
@@ -246,13 +240,11 @@ function* getDashboardGroups() {
 
 function* getDashboardGroupsSuccess({ tasksList }) {
   const tabName = yield select(dashboardTabNameSelector);
-  
-  let sort = localStorageHelper.getItem(
-    getSortStorageKey('dashboard', tabName),
-  );
-  
+
+  const sort = yield select(userPreferenceSortSelector);
+
   const { key, order } = sort || { key: null, order: null };
-  
+
   yield all(
     tasksList
       .filter(({ defaultOpen }) => defaultOpen)
@@ -331,8 +323,8 @@ function* reorderDashboardTasks({
 
 function* updateTaskDueDateSuccess({ task: taskToChange, dueDate }) {
   const tabName = yield select(dashboardTabNameSelector);
-  const savedDashboardSelectedQuickFilters = localStorageHelper.getItem(
-    getMultipleSelectedQuickFilterStorageKey('dashboard', tabName),
+  const savedDashboardSelectedQuickFilters = yield select(
+    userPreferenceMultipleSelectedQuickFiltersSelector,
   );
 
   const task = { ...taskToChange, dueDate };
@@ -357,9 +349,7 @@ function* updateTaskDueDateSuccess({ task: taskToChange, dueDate }) {
     const dashboardGroups = yield call(
       getDashboardTaskStasForImplicitGroups,
       tabName,
-      savedDashboardSelectedQuickFilters
-        ? JSON.parse(savedDashboardSelectedQuickFilters)
-        : [],
+      savedDashboardSelectedQuickFilters,
     );
     yield put({
       type: ActionTypes.GET_DASHBOARD_GROUP_STATS_SUCCESS,
@@ -371,10 +361,29 @@ function* updateTaskDueDateSuccess({ task: taskToChange, dueDate }) {
 function* selectDashboardFilters({ selectedFilters, selectedQuickFilter }) {
   const tabName = yield select(dashboardTabNameSelector);
 
+  const newFilters = cleanedSelectedFilters(selectedFilters);
+
+  const partialDetails = {
+    selectedFilters: newFilters,
+    selectedQuickFilter,
+  };
+
+  const preferences = yield call(
+    UserPreferenceApi.updateUserPreference,
+    UserPreferenceContextType.HOME,
+    'dashboard',
+    partialDetails,
+  );
+
+  yield put({
+    type: ActionTypes.UPDATE_USER_PREFERENCES_SUCCESS,
+    preferences,
+  });
+
   if (tabName) {
     yield put(
       MegaFilterActions.selectFiltersForMegaFilter(
-        selectedFilters,
+        newFilters,
         'dashboard',
         tabName,
         selectedQuickFilter,
@@ -443,15 +452,36 @@ function* getDashboardCalendarTasks() {
 
 function* sortDashboardTasks({ key, order }) {
   try {
-    const tabName = yield select(dashboardTabNameSelector);
+    const sortToSave = order ? { key, order } : null;
 
-    if (order) {
-      localStorageHelper.setItem(
-        getSortStorageKey('dashboard', tabName),
-        { key, order },
+    const partialDetails = {
+      sort: sortToSave,
+    };
+
+    if (sortToSave) {
+      const preferences = yield call(
+        UserPreferenceApi.updateUserPreference,
+        UserPreferenceContextType.HOME,
+        'dashboard',
+        partialDetails,
       );
-    } else if (order === null) {
-      localStorageHelper.removeItem(getSortStorageKey('dashboard', tabName));
+
+      yield put({
+        type: ActionTypes.UPDATE_USER_PREFERENCES_SUCCESS,
+        preferences,
+      });
+    } else {
+      const preferences = yield call(
+        UserPreferenceApi.updateUserPreference,
+        UserPreferenceContextType.HOME,
+        'dashboard',
+        partialDetails,
+      );
+
+      yield put({
+        type: ActionTypes.UPDATE_USER_PREFERENCES_SUCCESS,
+        preferences,
+      });
     }
   } catch (error) {
     log(error);

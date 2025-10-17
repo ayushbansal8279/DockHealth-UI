@@ -4,7 +4,6 @@ import ViewLayout from 'components/template/ViewLayout/ViewLayout';
 import TaskDrawer from 'components/task-drawer/TaskDrawer/TaskDrawer';
 import {
   currentTaskListIdentifierSelector,
-  currentTaskListTasksStatusSelector,
   currentTaskListSelector,
 } from 'selectors/task-list-selectors';
 import { calendarDateRangeSelector } from 'selectors/calendar-tasks-selectors';
@@ -14,25 +13,30 @@ import * as CalendarTasksActions from 'actions/calendar-tasks-actions';
 import Calendar from 'components/common/Calendar/Calendar';
 import ListDetailsHeader from '../ListDetailsHeader/ListDetailsHeader';
 import { ListPageContext } from '../ListDetailsView';
+import { userPreferenceStatusSelector } from '@/app/selectors/user-preference-selectors';
 
 const ListDetailsCalendarView = () => {
   const dispatch = useDispatch();
   const currentTaskListIdentifier = useSelector(
     currentTaskListIdentifierSelector,
   );
-  const status = useSelector(currentTaskListTasksStatusSelector);
+  const status = useSelector(userPreferenceStatusSelector);
   const taskList = useSelector(currentTaskListSelector);
-  const { taskListIdentifier, listName, listDescription, color } =
-    taskList || {};
+  const { taskListIdentifier } = taskList || {};
   const { startDate, endDate } = useSelector(calendarDateRangeSelector);
   const { handleScroll } = useContext(ListPageContext);
-  const [clearFilter, setClearFilter] = useState(false);
 
   useEffect(() => {
     if (currentTaskListIdentifier && status && startDate && endDate) {
       dispatch(ListDetailsActions.getListCalendarTasks());
     }
-  }, [dispatch, currentTaskListIdentifier, status, startDate, endDate,clearFilter]);
+  }, [
+    dispatch,
+    currentTaskListIdentifier,
+    status,
+    startDate,
+    endDate,
+  ]);
 
   useEffect(() => {
     return () => {
@@ -45,8 +49,6 @@ const ListDetailsCalendarView = () => {
     <ViewLayout
       header={
         <ListDetailsHeader
-          clearFilter={clearFilter}
-          setClearFilter={setClearFilter}
           calendarView
         />
       }

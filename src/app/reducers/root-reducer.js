@@ -31,6 +31,7 @@ import ProfileReducer from './profile-reducer';
 import WorkspaceReducer from './workspace-reducer';
 import workspaceListReducer from './workspace-list-reducer';
 import UIStateReducer from './ui-state-reducer';
+import UserPreferenceReducer from './user-preference-reducer';
 
 // function createNamedWrapperReducer(reducerFunction, reducerName) {
 //   return (state, action) => {
@@ -74,6 +75,7 @@ const appReducer = combineReducers({
   workspace: WorkspaceReducer,
   workspaceList: workspaceListReducer,
   uiState: UIStateReducer,
+  userPreferenceState: UserPreferenceReducer,
 });
 
 export default function rootReducer(state, action) {

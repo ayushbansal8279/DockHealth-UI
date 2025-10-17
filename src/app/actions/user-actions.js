@@ -81,3 +81,11 @@ export function userBulkCreateWorkflow(payload) {
     payload,
   };
 }
+
+export function filterUserDetailsTasks(filters,userIdentifier) {
+  return {
+    type: ActionTypes.FILTER_USER_DETAILS_TASKS,
+    filters,
+    userIdentifier,
+  };
+}

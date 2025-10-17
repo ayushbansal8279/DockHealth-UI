@@ -1,4 +1,3 @@
-import { currentTaskListTasksStatusSelector } from 'selectors/task-list-selectors';
 import React, { ForwardedRef, forwardRef, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import * as ListDetailsActions from 'actions/list-details-actions';
@@ -12,6 +11,7 @@ import { taskDetailsSortSelector } from '@/app/selectors/list-details-selectors'
 import { TaskOrigin } from '@/app/helpers/task-helpers';
 import * as Sc from './styled';
 import { useVirtualTaskListScrollContext } from '../../VirtualTaskListScrollContext';
+import { userPreferenceStatusSelector } from '@/app/selectors/user-preference-selectors';
 
 export interface Props extends Segment {}
 
@@ -27,7 +27,7 @@ function VLoadMoreTasks(
   const screenWidth = typeof window !== 'undefined' ? window.innerWidth : 1920;
   const number = droppableHeaderWidth;
   const percentage = ((!!number ? number : 0) / screenWidth) * 100;
-  const currentStatus = useSelector(currentTaskListTasksStatusSelector);
+  const currentStatus = useSelector(userPreferenceStatusSelector);
 
   const loadTasksForTaskGroup = useCallback(
     ({ taskGroupIdentifier, startPosition, viewMode, refresh }) => {

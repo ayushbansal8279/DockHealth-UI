@@ -4,15 +4,12 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Box } from '@mui/material';
 import { useSelector, useDispatch } from 'react-redux';
 import { useParams, useHistory } from 'react-router-dom';
-// import { useBoolean } from 'hooks/useBoolean';
 import { onPrint, onSearchChanged } from 'helpers/ga-event-helper';
 import { createPatientDetailsListPath } from 'routing/helpers/paths';
 import ToolbarSelect from 'components/tasklist/ToolbarSelect/ToolbarSelect';
-import { currentListTasksStatusSelector } from 'selectors/patient-details-selectors';
 import { isUserViewOnly } from 'helpers/user-helper';
 import {
   getCurrentPatientTasks,
-  setCurrentListTasksStatus,
   getPatientFilterOptions,
 } from 'actions/patient-details-actions';
 import { updateUserPageViewSetup } from 'actions/task-list-actions';
@@ -23,12 +20,9 @@ import {
 } from 'selectors/user-selectors';
 import Spacing from 'components/common/Spacing';
 import { TaskOrigin } from 'helpers/task-helpers';
-// import { printTaskPdf } from 'components/task-pdf/TaskPdfDocument';
 import ViewTypeIcon from 'img/view-type-icon.svg';
 import * as PatientDetailsActions from 'actions/patient-details-actions';
-import compose from 'ramda/src/compose';
 import equals from 'ramda/src/equals';
-import ToolbarButton from '@/app/components/tasklist/list-toolbar-buttons/ToolbarButton/ToolbarButton';
 import CustomizeToolbarButton from '@/app/components/tasklist/list-toolbar-buttons/CustomizeToolbarButton/CustomizeToolbarButton';
 import TaskStatusToolbarSelect from '@/app/components/tasklist/list-toolbar-buttons/TaskStatusToolbarSelect/TaskStatusToolbarSelect';
 import {
@@ -39,10 +33,9 @@ import {
   GridItemFullView,
   GridItemSlimView,
 } from './styled';
-import { ListViewType, LIST_TYPE_OPTIONS } from '../helpers';
+import { ListViewType } from '../helpers';
 import HeaderSearch from '@/app/components/template/HeaderSearch/HeaderSearch';
 import MegaFilter from '@/app/components/tasklist/list-toolbar-buttons/MegaFilter/MegaFilter';
-// import { getPatientFilterOptions } from 'actions/patient-details-actions';
 
 import {
   addQuickFilterOptionSelector,
@@ -63,18 +56,19 @@ import {
 import { setPatientTaskSearch } from '@/app/sagas/patient-details-saga';
 import FullViewIcon from '@/app/img/list/FullViewIcon';
 import SlimViewIcon from '@/app/img/list/SlimViewIcon';
+import { UserPreferenceContextType } from '@/app/helpers/user-prefrence-helper';
+import * as UserPreferenceActions from '@/app/actions/user-preference-actions';
+import { userPreferenceStatusSelector } from '@/app/selectors/user-preference-selectors';
 
 const TaskListToolbar = (props) => {
   const { lists, patientViewType, handlePatientView } = props;
-  // const tasksToPrint = currentList?.tasks ? currentList?.tasks : [];
-  // const listUsers = currentList?.listUsers ? currentList?.listUsers : [];
   const {
     patientIdentifier,
     taskListIdentifier: taskListIdentifierParameter = ListViewType.ALL_TASKS,
   } = useParams();
   const history = useHistory();
   const dispatch = useDispatch();
-  const tasksStatus = useSelector(currentListTasksStatusSelector);
+  const tasksStatus = useSelector(userPreferenceStatusSelector);
   const viewSetup = useSelector(userSetupClientViewSelector);
   // const [closeMorePopover] = useBoolean(false);
   const isAllTasksView = taskListIdentifierParameter === ListViewType.ALL_TASKS;
@@ -161,10 +155,9 @@ const TaskListToolbar = (props) => {
     );
   };
 
-  const handleFilterSelect = compose(
-    dispatch,
-    PatientDetailsActions.changePatientTasksFilters,
-  );
+  const handleFilterSelect = (newFilters) => {
+    dispatch(PatientDetailsActions.changePatientTasksFilters(newFilters));
+  };
 
   const handleSelectQuickFilter = useCallback(
     (id, filtersSetup) => {
@@ -194,7 +187,9 @@ const TaskListToolbar = (props) => {
 
   const handleQuickFilterCreate = useCallback(
     (name, scope) =>
-      dispatch(createQuickFilter(name, { patientIdentifier }, selectedFilters, scope)),
+      dispatch(
+        createQuickFilter(name, { patientIdentifier }, selectedFilters, scope),
+      ),
     [dispatch, patientIdentifier, selectedFilters],
   );
 
@@ -217,10 +212,13 @@ const TaskListToolbar = (props) => {
     [dispatch],
   );
 
-  const performSearch = useCallback((value) => {
-    dispatch(setPatientTaskSearch(value));
-    onSearchChanged();
-  }, [setPatientTaskSearch, onSearchChanged]);
+  const performSearch = useCallback(
+    (value) => {
+      dispatch(setPatientTaskSearch(value));
+      onSearchChanged();
+    },
+    [setPatientTaskSearch, onSearchChanged],
+  );
 
   const handleSearchValueChange = (newValue) => {
     setSearchValue(newValue);
@@ -255,7 +253,13 @@ const TaskListToolbar = (props) => {
 
   const handleChangeTasksStatus = useCallback(
     (status) => {
-      dispatch(setCurrentListTasksStatus(status));
+      dispatch(
+        UserPreferenceActions.updateTaskListStatus(
+          UserPreferenceContextType.PATIENT_LIST,
+          'patient',
+          status,
+        ),
+      );
       dispatch(getCurrentPatientTasks(status));
     },
     [dispatch],
@@ -264,18 +268,6 @@ const TaskListToolbar = (props) => {
   const onPrintClick = useCallback(() => {
     onPrint();
     window.print();
-    // closeMorePopover();
-    // const title = isAllTasksView
-    //   ? 'All Tasks'
-    //   : listOptions.find(
-    //       (element) => element.value === taskListIdentifierParameter,
-    //     )?.label;
-
-    // return printTaskPdf({
-    //   title,
-    //   tasks: tasksToPrint,
-    //   taskListMembers: listUsers,
-    // });
   }, []);
 
   useEffect(() => {
@@ -295,25 +287,6 @@ const TaskListToolbar = (props) => {
               {...props}
             />
           )}
-          {/* <Spacing horizontal={3} /> */}
-          {/* <ToolbarSelect
-          options={LIST_TYPE_OPTIONS}
-          value={
-            isAllTasksView ? ListViewType.ALL_TASKS : ListViewType.LIST_VIEW
-          }
-          name="listType"
-          onChange={handleListViewTypeChange}
-          icon={
-            <ListSelectionImg
-            src={ViewTypeIcon}
-            alt="list type icon"
-              iconColorFilterActive={iconColorFilterActiveItem?.value}
-              />
-            }
-            iconColorActive={iconColorActiveItem?.value}
-            width={170}
-          /> */}
-          {/* <Box px={2} /> */}
           {taskListIdentifierParameter !== ListViewType.ALL_TASKS && (
             <ToolbarSelect
               options={listOptions}
@@ -389,30 +362,6 @@ const TaskListToolbar = (props) => {
           </GridItemSlimView>
         </GridContainer>
       </ListsTabsContainer>
-      {/* {viewOnlyArchivedTasksEnabled && (
-        <>
-          <Spacing horizontal={4} />
-          <TaskStatusToolbarSelect
-            value={tasksStatus}
-            onChange={handleChangeTasksStatus}
-            iconColorFilterActive={iconColorFilterActiveItem?.value}
-            iconColorActive={iconColorActiveItem?.value}
-          />
-        </>
-      )} */}
-      {/* {viewOnlyCustomizeEnabled && (
-        <>
-          <Spacing horizontal={3} />
-          <CustomizeToolbarButton
-            showCustomColumnCreate={false}
-            additionalOptions={OPTIONS}
-            iconColorFilterActive={iconColorFilterActiveItem?.value}
-            {...props}
-          />
-          <Spacing horizontal={3} />
-          <ToolbarButton onClick={onPrintClick}>Print</ToolbarButton>
-        </>
-      )} */}
     </ListsToolbarContainer>
   );
 };

@@ -45,14 +45,11 @@ import {
   searchTermSelector,
 } from 'selectors/list-details-selectors';
 import {
-  currentTaskListTasksStatusSelector,
   currentTaskListSelector,
   currentTaskListIdentifierSelector,
 } from 'selectors/task-list-selectors';
 import {
-  getFiltersStorageKey,
-  getQuickFilterStorageKey,
-  getSortStorageKey,
+  cleanedSelectedFilters,
 } from 'helpers/mega-filter-helper';
 import { calendarDateRangeSelector } from 'selectors/calendar-tasks-selectors';
 import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
@@ -68,12 +65,18 @@ import * as CustomFieldsApi from 'api/custom-fields-api';
 import { getTasksForWorkflow } from 'actions/template-bundle-actions';
 import { log } from 'helpers/log';
 import store from '../store';
-import localStorageHelper from '../helpers/local-storage-helper';
-import sessionStorageHelper from '../helpers/session-storage-helper';
 import {
   extractAllTasksFromGroupsDetail,
   filterDataForCalender,
 } from '../helpers/list-details-helper';
+import {
+  userPreferenceSelectedFiltersSelector,
+  userPreferenceSelectedQuickFilterSelector,
+  userPreferenceSortSelector,
+  userPreferenceStatusSelector,
+} from '../selectors/user-preference-selectors';
+import * as UserPreferenceApi from 'api/user-preference-api';
+import { UserPreferenceContextType } from '@/app/helpers/user-prefrence-helper';
 
 export const DO_CREATE_TASK = 'DO_CREATE_TASK';
 export const DEFAULT_TASK_GROUPS_TO_LOAD = 3;
@@ -138,7 +141,7 @@ function* getTasksGroupsList() {
     if (!taskListIdentifier) {
       return;
     }
-    const status = yield select(currentTaskListTasksStatusSelector);
+    const status = yield select(userPreferenceStatusSelector);
     const groups = yield call(getGroupsByListId, taskListIdentifier, status);
     yield put({
       type: ActionTypes.GET_TASKS_GROUPS_LIST_SUCCESS,
@@ -153,7 +156,7 @@ function* getTasksGroupsList() {
 function* getCurrentListTasks() {
   try {
     const sort = yield select(taskDetailsSortSelector);
-    const status = yield select(currentTaskListTasksStatusSelector);
+    const status = yield select(userPreferenceStatusSelector);
 
     let groups = yield select(listDetailsGroupsSelector);
     if (!groups || isEmpty(groups)) {
@@ -188,7 +191,7 @@ function* getCurrentListTasks() {
 function* getCurrentTaskListFilterOptions() {
   try {
     const taskListIdentifier = yield select(currentTaskListIdentifierSelector);
-    const status = yield select(currentTaskListTasksStatusSelector);
+    const status = yield select(userPreferenceStatusSelector);
 
     const currentFilters = yield select(selectedFiltersInMegaFilterSelector);
 
@@ -462,38 +465,37 @@ function* initializeListDetailsTableState() {
   try {
     const { taskIdentifier } = yield select(locationParametersSelector);
     const taskListIdentifier = yield select(currentTaskListIdentifierSelector);
-    const status = yield select(currentTaskListTasksStatusSelector);
+
+    const preferences = yield call(
+      UserPreferenceApi.getUserPreference,
+      UserPreferenceContextType.TASK_LIST,
+      taskListIdentifier,
+    );
+
+    yield put({
+      type: ActionTypes.UPDATE_USER_PREFERENCES_SUCCESS,
+      preferences,
+    });
+
+    const status = yield select(userPreferenceStatusSelector);
+    const selectedFilters = yield select(userPreferenceSelectedFiltersSelector);
+    const selectedQuickFilter = yield select(
+      userPreferenceSelectedQuickFilterSelector,
+    );
+    const sort = yield select(userPreferenceSortSelector);
 
     if (taskListIdentifier) {
-      let filters = localStorageHelper.getItem(
-        getFiltersStorageKey(taskListIdentifier, status),
-      );
-      if (!filters) {
-        filters = sessionStorageHelper.getItem(
-          getFiltersStorageKey(taskListIdentifier, status),
-        );
-      }
-      let selectedQuickFilter = localStorageHelper.getItem(
-        getQuickFilterStorageKey(taskListIdentifier, status),
-      );
-      if (!selectedQuickFilter) {
-        selectedQuickFilter = sessionStorageHelper.getItem(
-          getQuickFilterStorageKey(taskListIdentifier, status),
-        );
-      }
-
-      let sort = localStorageHelper.getItem(
-        getSortStorageKey(taskListIdentifier, status),
-      );
 
       if (sort) {
-        yield put(ListDetailsActions.setListDetailsTasksSort(sort.key, sort.order));
+        yield put(
+          ListDetailsActions.setListDetailsTasksSort(sort.key, sort.order),
+        );
       }
 
-      if (filters) {
+      if (selectedFilters) {
         yield put(
           MegaFilterActions.selectFiltersForMegaFilter(
-            filters,
+            selectedFilters,
             taskListIdentifier,
             status,
             selectedQuickFilter,
@@ -533,7 +535,7 @@ function* doCreateTask(payload) {
       autoOpenDrawer,
     } = payload;
     const { taskListIdentifier } = yield select(locationParametersSelector);
-    const status = yield select(currentTaskListTasksStatusSelector);
+    const status = yield select(userPreferenceStatusSelector);
 
     if (taskListIdentifier) {
       const createdTask = yield call(createTaskApi, {
@@ -602,18 +604,42 @@ function* searchCurrentListTasks() {
 function* sortListDetailsTasks({ payload }) {
   const { key, order } = payload;
   onSortChanged(order ? key : null, order);
-  
+
   const taskListIdentifier = yield select(currentTaskListIdentifierSelector);
-  const status = yield select(currentTaskListTasksStatusSelector);
 
   const sortToSave = order ? { key, order } : null;
   if (sortToSave) {
-    localStorageHelper.setItem(
-      getSortStorageKey(taskListIdentifier, status),
-      sortToSave,
+    const partialDetails = {
+      sort: sortToSave,
+    };
+
+    const preferences = yield call(
+      UserPreferenceApi.updateUserPreference,
+      UserPreferenceContextType.TASK_LIST,
+      taskListIdentifier,
+      partialDetails,
     );
+
+    yield put({
+      type: ActionTypes.UPDATE_USER_PREFERENCES_SUCCESS,
+      preferences,
+    });
   } else {
-    localStorageHelper.removeItem(getSortStorageKey(taskListIdentifier, status));
+    const partialDetails = {
+      sort: null,
+    };
+
+    const preferences = yield call(
+      UserPreferenceApi.updateUserPreference,
+      UserPreferenceContextType.TASK_LIST,
+      taskListIdentifier,
+      partialDetails,
+    );
+
+    yield put({
+      type: ActionTypes.UPDATE_USER_PREFERENCES_SUCCESS,
+      preferences,
+    });
   }
 
   yield all([
@@ -627,21 +653,36 @@ function* filterListDetailsTasks({ payload }) {
   const { filters, selectedQuickFilter } = payload;
 
   const taskListIdentifier = yield select(currentTaskListIdentifierSelector);
-  const status = yield select(currentTaskListTasksStatusSelector);
+  const status = yield select(userPreferenceStatusSelector);
+  const selectedFilters = cleanedSelectedFilters(filters);
+
+  const partialDetails = {
+    selectedFilters,
+    selectedQuickFilter,
+  };
+
+  const preferences = yield call(
+    UserPreferenceApi.updateUserPreference,
+    UserPreferenceContextType.TASK_LIST,
+    taskListIdentifier,
+    partialDetails,
+  );
+
+  yield put({
+    type: ActionTypes.UPDATE_USER_PREFERENCES_SUCCESS,
+    preferences,
+  });
 
   yield put(
     MegaFilterActions.selectFiltersForMegaFilter(
-      filters,
+      selectedFilters,
       taskListIdentifier,
       status,
       selectedQuickFilter,
     ),
   );
 
-  yield all([
-    // put(ListDetailsActions.getCurrentTaskListFilterOptions()),
-    put(ListDetailsActions.refreshListDetailsGroupedTasks()),
-  ]);
+  yield all([put(ListDetailsActions.refreshListDetailsGroupedTasks())]);
 }
 
 function* applyTaskTemplateFailure({
@@ -823,7 +864,8 @@ function* reorderTaskListGroups({ newIndex, oldIndex }) {
 function* getListCalendarTasks() {
   try {
     const taskListIdentifier = yield select(currentTaskListIdentifierSelector);
-    const status = yield select(currentTaskListTasksStatusSelector);
+    const status = yield select(userPreferenceStatusSelector);
+
     const { startDate, endDate } = yield select(calendarDateRangeSelector);
     const selectedFilters = yield select(selectedFiltersInMegaFilterSelector);
     const groups = yield call(getGroupsByListId, taskListIdentifier, status);
