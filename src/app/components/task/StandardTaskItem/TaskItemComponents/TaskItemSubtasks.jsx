@@ -66,7 +66,11 @@ const TaskItemSubtasks = ({
         >
           <SubtasksCellContentButton
             isOpen={isOpen}
-            disabled={origin === 'LIST' ? !isNestedTask : isNestedTask}
+            disabled={
+              origin === 'LIST' || origin === 'PATIENT'
+                ? !isNestedTask
+                : isNestedTask
+            }
             isGreyedOut={subtasksDisabled}
             onClick={onSubtaskLabelClick}
             subtasksDisabled={subtasksDisabled}

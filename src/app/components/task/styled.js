@@ -719,7 +719,7 @@ export const SubtaskStylingLinkContainer = styled.div`
   height: calc(2px + 100%);
   width: 18px;
   position: absolute;
-  left: -19px;
+  left: ${({ hasCustomOffset }) => (hasCustomOffset ? '-72px' : '-19px')};
   top: -1px;
   display: flex;
   align-items: center;
@@ -751,7 +751,7 @@ export const SubtaskStylingLastLink = styled.div`
   border-radius: 0 0 0 4px;
   position: absolute;
   padding: 1px 0;
-  left: -19px;
+  left: ${({ hasCustomOffset }) => (hasCustomOffset ? '-72px' : '-19px')};
   top: -1px;
   z-index: 999;
   pointer-events: none;
@@ -820,25 +820,24 @@ export const ParentTaskContainer = styled.div`
       noMargin ? -1 : origin === 'PATIENT' || origin === 'GLOBAL' ? 2 : 0}px;
   }
   width: ${({ $width }) => ($width ? '100%' : '')};
-  padding-right: ${({ $width, $isVirtualSubtask, $isWorkflowTask }) =>
+  padding-right: ${({
+    $width,
+    $isVirtualSubtask,
+    $isWorkflowTask,
+    disableRightOffset,
+  }) =>
     $width
       ? $isVirtualSubtask
-        ? '15.5px'
+        ? disableRightOffset
+          ? '0px'
+          : '15.5px'
         : $isWorkflowTask
-        ? '66px'
+        ? disableRightOffset
+          ? '0px'
+          : '66px'
+        : disableRightOffset
+        ? '0px'
         : '66.5px'
-      : ''};
-
-  margin-bottom: ${({
-    origin,
-    isLastChild,
-    isNextTaskItemTypeBundle,
-    isAddingTask,
-  }) =>
-    origin === 'PATIENT'
-      ? isLastChild && !isNextTaskItemTypeBundle && !isAddingTask
-        ? '10px'
-        : ''
       : ''};
 `;
 

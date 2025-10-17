@@ -19,7 +19,7 @@ import * as ListDetailsActions from 'actions/list-details-actions';
 import { userProfileSelector } from 'selectors/user-selectors';
 import { currentTaskListSelector } from 'selectors/task-list-selectors';
 import * as Sc from './styled';
-import { ListPageContext } from 'views/list-details/ListDetailsView';
+import { TaskViewContext } from '@/app/context-api/task-view-context';
 import {
   GroupOpenContainer,
   GroupOptionsContainer,
@@ -47,7 +47,7 @@ function VAddGroup(
   );
   const isListAdmin = isMemberAdmin(currentUserMember);
   const restrictCustomizationFeatures = restrictCustomization && !isListAdmin;
-  const { addNewGroup, handleAddNewGroup } = useContext(ListPageContext);
+  const { addNewGroup, handleAddNewGroup } = useContext(TaskViewContext);
   const { visibleWidth, droppableHeaderWidth } =
     useVirtualTaskListScrollContext();
 
