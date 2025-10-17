@@ -7,7 +7,7 @@ export const PatientNotesWrapper = styled.div`
   width: 100%;
   max-width: 800px;
   background: ${palette.white};
-  padding: 12px;
+  padding: 12px 12px 12px ${spacing.giga};
 `;
 
 export const PinnedNotesWrapper = styled.div`

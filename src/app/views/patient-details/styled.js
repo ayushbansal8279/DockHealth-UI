@@ -16,6 +16,7 @@ export const PatientDetailsContainer = styled.div`
   margin-bottom: 25px;
   background-color: ${palette.coolGrey4};
   height: 100vh;
+  ${({ enableScroll }) => (enableScroll ? 'overflow-y: scroll' : '')};
 `;
 
 export const MainTab = styled(Tab)`
