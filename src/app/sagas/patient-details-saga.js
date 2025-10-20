@@ -43,9 +43,7 @@ import {
 import { closeModal } from 'modal/actions';
 import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
 import { log } from 'helpers/log';
-import {
-  cleanedSelectedFilters,
-} from 'helpers/mega-filter-helper';
+import { cleanedSelectedFilters } from 'helpers/mega-filter-helper';
 import { PATIENTS_LIST_ALL } from '../routing/helpers/paths';
 import { UserPreferenceContextType } from '../helpers/user-prefrence-helper';
 import {
@@ -749,6 +747,13 @@ function* doUpdatePatientDetails({ payload: { patientIdentifier, details } }) {
     yield put({
       type: ActionTypes.UPDATE_PATIENT_DETAILS_SUCCESS,
       payload: { details: { ...updatedPatientDetails } },
+    });
+    yield put({
+      type: ActionTypes.UPDATE_PATIENT_IN_CURRENT_PATIENTS_LIST,
+      payload: {
+        patientIdentifier,
+        dataToUpdate: { ...updatedPatientDetails },
+      },
     });
     yield put(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
   } catch {
