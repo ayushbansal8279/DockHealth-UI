@@ -294,7 +294,7 @@ const PatientDetailsView = () => {
             </Grid>
           </PatientDetailsTabsContainer>
         </StickyContainer>
-        <PatientDetailsContainer>
+        <PatientDetailsContainer enableScroll={activeTabPath !== 'tasks'}>
           <Switch>
             {tabsConfiguration?.map((route) => (
               <RouteWrapper

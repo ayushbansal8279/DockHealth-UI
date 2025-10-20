@@ -201,6 +201,10 @@ function VTask(
             viewType={changeViewType}
             isTopLevelTaskOrWorkflowHeader={isTopLevelTaskOrWorkflowHeader}
             isWorkflowTask={isWorkflowTask}
+            taskItemDragAndDropDisabled={
+              originConfig[origin]?.dragAndDropDisabled &&
+              isTopLevelTaskOrWorkflowHeader
+            }
           />
         </VTaskContext.Provider>
       </Sc.VTask>
@@ -230,6 +234,7 @@ function VTask(
             addWorkflowTask={addWorkflowTask}
             isTaskTemplate={isTaskTemplate}
             hasCustomOffset={originConfig[origin]?.hasCustomOffset ?? false}
+            isNarrowView={percentage > 90}
           >
             <QuickAddSubtask
               taskListIdentifier={task?.taskList?.taskListIdentifier}
@@ -268,6 +273,7 @@ function VTask(
               disableLeftOffset={
                 originConfig[origin]?.disableLeftOffset ?? false
               }
+              isNarrowView={percentage > 90}
             >
               <QuickAddInputWrapper>
                 <QuickAddTaskInput
