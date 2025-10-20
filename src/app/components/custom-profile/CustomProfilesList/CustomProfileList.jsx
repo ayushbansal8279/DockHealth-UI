@@ -138,9 +138,10 @@ const CustomProfileListContent = ({
     (state) => state.profile?.isFilteringProfiles || false,
   );
   const [searchPhrase, setSearchPhrase] = useState('');
-  const [profileStatus, setProfileStatus] = useState(ProfileStatus.ALL);
+  const [profileStatus, setProfileStatus] = useState(ProfileStatus.ACTIVE);
   const loading = isFetchingProfiles || isFilteringProfiles;
   const [useLocalFiltering, setUseLocalFiltering] = useState(true);
+  const [showStatusColumn, setShowStatusColumn] = useState(true);
   const currentUser = useSelector(userProfileSelector);
   const [importPopupOpen, setImportPopupOpen] = useState(false);
   const apiRef = useGridApiRef();
@@ -166,10 +167,10 @@ const CustomProfileListContent = ({
   );
 
   const fetchProfilesInternal = useCallback(
-    (status = ProfileStatus.ALL) => {
+    (status = profileStatus) => {
       dispatch(getProfiles(profileTypeIdentifier, status));
     },
-    [dispatch, profileTypeIdentifier],
+    [dispatch, profileTypeIdentifier, profileStatus],
   );
 
   const fetchProfileTypesInternal = useCallback(() => {
@@ -468,6 +469,10 @@ const CustomProfileListContent = ({
     );
   };
 
+  const handleStatusColumnToggle = () => {
+    setShowStatusColumn(!showStatusColumn);
+  };
+
   const handleDownloadProfileData = () => {
     const filename = `Dock ${currentProfileType?.name}.csv`;
     downloadProfileData(profileTypeIdentifier, filename);
@@ -565,6 +570,33 @@ const CustomProfileListContent = ({
           : null;
       })
       .filter(Boolean),
+    ...(profileStatus === ProfileStatus.ALL && showStatusColumn
+      ? [
+          {
+            field: 'profileStatus',
+            headerName: 'Status',
+            flex: 0.2,
+            sortable: true,
+            filterable: true,
+            valueGetter: (params) => {
+              return params.row.profileStatus || '';
+            },
+            renderCell: ({ row }) => {
+              const status = row.profileStatus;
+              if (!status) return '';
+
+              const displayStatus =
+                status === 'ACTIVE'
+                  ? 'Active'
+                  : status === 'ARCHIVED'
+                  ? 'Archived'
+                  : status;
+
+              return displayStatus;
+            },
+          },
+        ]
+      : []),
   ];
 
   // TODO: fix filter
@@ -806,6 +838,13 @@ const CustomProfileListContent = ({
               >
                 <strong>Custom Columns</strong>
                 <FormGroup>
+                  {profileStatus === ProfileStatus.ALL && (
+                    <MenuItem onClick={handleStatusColumnToggle}>
+                      <Switch checked={showStatusColumn} />
+                      <Box mx={0.5} />
+                      <ListItemText>Status</ListItemText>
+                    </MenuItem>
+                  )}
                   {profileTypeFields.map((field) => {
                     return (
                       <MenuItem

@@ -184,7 +184,10 @@ const Task = React.memo(
 
     useEffect(() => {
       if (!areSubtasksOpen && subtaskQuickAddOpen && !subtasksDisabled) {
-        handleSetSubtasksOpen(true);
+        const timer = setTimeout(() => {
+          handleSetSubtasksOpen(true);
+        }, 0);
+        return () => clearTimeout(timer);
       }
     }, [
       handleSetSubtasksOpen,

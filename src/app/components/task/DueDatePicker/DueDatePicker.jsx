@@ -240,8 +240,8 @@ const DueDatePicker = ({
               setTimeMaskValue(null);
               hideRecurringSection();
             }}
-            disabled={!selectedDate}
-            theme={!selectedDate ? 'light' : ''}
+            disabled={!selectedDate && !bulkEditDueDate}
+            theme={!selectedDate && !bulkEditDueDate ? 'light' : ''}
           >
             Clear Date
           </PopoverBottomBar.Button>

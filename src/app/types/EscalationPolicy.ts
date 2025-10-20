@@ -23,6 +23,7 @@ export interface EscalationPolicy {
     workflows?: Array<{ identifier: string; name: string }>;
     patients?: Array<{ identifier: string; name: string }>;
     statuses?: Array<{ identifier: string; name: string }>;
+    taskGroups?: Array<{ identifier: string; name: string }>;
   };
   organizationIdentifier?: string;
   organizationName?: string;

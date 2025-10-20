@@ -76,6 +76,7 @@ import TasksToolbar from '../TasksToolbar/TasksToolbar';
 import VirtualTaskList from 'views/list-details/VirtualTaskList/VirtualTaskList';
 import localStorageHelper from '@/app/helpers/local-storage-helper';
 import { TaskViewContext } from '@/app/context-api/task-view-context';
+import spacing from '@/app/styles/spacing';
 
 const PATIENT_SPECIFIC_LIST_VIEW_COLUMNS_CONFIG = {
   ...TASK_ITEM_BASE_COLUMN_CONFIG,
@@ -527,17 +528,26 @@ const PatientTasksListView = React.memo(() => {
                       ))}
                     </>
                   )} */}
-
-                  <TaskListToolbar
-                    lists={filteredLists}
-                    currentList={activeList}
-                    isPatientView
-                    patientViewType={viewType}
-                    handlePatientView={handlePatientView}
-                    handleRemoveAllTasks={handleRemoveAllTasks}
-                  />
+                  <div
+                    style={{
+                      paddingLeft: `${spacing.large}`,
+                    }}
+                  >
+                    <TaskListToolbar
+                      lists={filteredLists}
+                      currentList={activeList}
+                      isPatientView
+                      patientViewType={viewType}
+                      handlePatientView={handlePatientView}
+                      handleRemoveAllTasks={handleRemoveAllTasks}
+                    />
+                  </div>
                   <Box py={0.5} />
-                  <ListDetailsContainer style={{ height: '100%' }}>
+                  <ListDetailsContainer
+                    style={{
+                      height: '100%',
+                    }}
+                  >
                     <BulkEditSection
                       allTasks={bulkEditTasks}
                       refreshTasks={handleTaskUpdate}

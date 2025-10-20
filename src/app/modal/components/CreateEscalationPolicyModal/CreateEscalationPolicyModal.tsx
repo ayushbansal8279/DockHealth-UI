@@ -59,6 +59,7 @@ import {
   updateEscalationPolicy,
 } from '@/app/api/escalation-policy-api';
 import { getPatientsByCriteria } from '@/app/api/patients-api';
+import { getGroupsForTaskList } from '@/app/api/task-group-list-api';
 import { Add } from '@mui/icons-material';
 import { CancelButton, ConfirmButton } from '../ModalButton/ModalButtons';
 import { userProfileSelector } from '@/app/selectors/user-selectors';
@@ -133,6 +134,11 @@ const CreateEscalationPolicy: React.FC<CreateEscalationPolicyProps> = ({
   // Patient search state
   const [patientOptions, setPatientOptions] = useState<any[]>([]);
 
+  // Task group state for CreateTask actions
+  const [taskGroupOptions, setTaskGroupOptions] = useState<{
+    [key: number]: any[];
+  }>({});
+
   useEffect(() => {
     if (editingPolicy?.config) {
       const filter = editingPolicy.config.scopeFilter;
@@ -195,6 +201,20 @@ const CreateEscalationPolicy: React.FC<CreateEscalationPolicyProps> = ({
     }
   }, [editingPolicy]);
 
+  // Load groups for actions that already have a task list selected (when editing)
+  useEffect(() => {
+    if (formData.actions && formData.actions.length > 0) {
+      formData.actions.forEach((action: any, index: number) => {
+        if (
+          action.type === EscalationActionType.CreateTask &&
+          action.params?.taskList
+        ) {
+          fetchGroupsForTaskList(action.params.taskList, index);
+        }
+      });
+    }
+  }, [formData.actions.length]);
+
   const buildScopeFilter = () => {
     const filter: any = {};
 
@@ -245,7 +265,7 @@ const CreateEscalationPolicy: React.FC<CreateEscalationPolicyProps> = ({
           }
           break;
         case EscalationActionType.CreateTask:
-          if (!action.params.title) {
+          if (!action.params.taskList || !action.params.title) {
             return false;
           }
           break;
@@ -320,7 +340,10 @@ const CreateEscalationPolicy: React.FC<CreateEscalationPolicyProps> = ({
   const addAction = () => {
     setFormData({
       ...formData,
-      actions: [...formData.actions, { type: EscalationActionType.AddAssignee, params: {} }],
+      actions: [
+        ...formData.actions,
+        { type: EscalationActionType.AddAssignee, params: {} },
+      ],
     });
   };
 
@@ -335,6 +358,39 @@ const CreateEscalationPolicy: React.FC<CreateEscalationPolicyProps> = ({
     const newActions = [...formData.actions];
     newActions[index] = actionData;
     setFormData({ ...formData, actions: newActions });
+  };
+
+  const fetchGroupsForTaskList = async (
+    taskListId: string,
+    actionIndex: number,
+  ) => {
+    if (!taskListId) {
+      setTaskGroupOptions((prev) => ({
+        ...prev,
+        [actionIndex]: [],
+      }));
+      return;
+    }
+
+    try {
+      const groups = await getGroupsForTaskList(taskListId);
+      const formattedGroups = (groups || []).map((group: any) => ({
+        id: group.taskGroupIdentifier,
+        name: group.groupName,
+        type: group.groupType,
+        taskListIdentifier: group.taskListIdentifier,
+      }));
+      setTaskGroupOptions((prev) => ({
+        ...prev,
+        [actionIndex]: formattedGroups,
+      }));
+    } catch (error) {
+      console.error('Failed to fetch groups for task list:', error);
+      setTaskGroupOptions((prev) => ({
+        ...prev,
+        [actionIndex]: [],
+      }));
+    }
   };
 
   const fetchPatientsWithDebounce = useRef(
@@ -625,7 +681,7 @@ const CreateEscalationPolicy: React.FC<CreateEscalationPolicyProps> = ({
                 )}
 
                 {renderCompactSelect(
-                  'User Groups',
+                  'Assigned User Groups',
                   selectedAssigneeGroups,
                   setSelectedAssigneeGroups,
                   groupOptions,
@@ -760,12 +816,6 @@ const CreateEscalationPolicy: React.FC<CreateEscalationPolicyProps> = ({
               {formData.actions.map((action: any, index: number) => (
                 <ActionContainer key={index}>
                   <ActionHeaderBox>
-                    <ActionTypography variant="caption">
-                      {actionTypeOptions.find(
-                        (opt: any) => opt.value === action.type,
-                      )?.label || 'Action'}{' '}
-                      {index + 1}
-                    </ActionTypography>
                     <DeletIcon onClick={() => removeAction(index)} />
                   </ActionHeaderBox>
 
@@ -778,7 +828,8 @@ const CreateEscalationPolicy: React.FC<CreateEscalationPolicyProps> = ({
                     }
                     onChange={(event, newValue) => {
                       updateAction(index, {
-                        type: newValue?.value || EscalationActionType.AddAssignee,
+                        type:
+                          newValue?.value || EscalationActionType.AddAssignee,
                         params: {}, // Reset params when action type changes
                       });
                     }}
@@ -802,7 +853,7 @@ const CreateEscalationPolicy: React.FC<CreateEscalationPolicyProps> = ({
                     <>
                       <SelectWrapper>
                         {renderCompactSelect(
-                          'Add Users',
+                          'Select Users',
                           action.params.addAssigneeUsers || [],
                           (users: string[]) =>
                             updateAction(index, {
@@ -824,7 +875,7 @@ const CreateEscalationPolicy: React.FC<CreateEscalationPolicyProps> = ({
                         )}
 
                         {renderCompactSelect(
-                          'Add User Groups',
+                          'Select User Groups',
                           action.params.addAssigneeGroups || [],
                           (groups: string[]) =>
                             updateAction(index, {
@@ -844,19 +895,6 @@ const CreateEscalationPolicy: React.FC<CreateEscalationPolicyProps> = ({
                             (!action.params.addAssigneeGroups ||
                               action.params.addAssigneeGroups.length === 0),
                         )}
-                      </SelectWrapper>
-
-                      <SelectWrapper>
-                        <EscalationPolicyTextField
-                          label="Comment (optional)"
-                          fieldName="comment"
-                          actionType="AddAssignee"
-                          actionIndex={index}
-                          actionParams={action.params}
-                          updateAction={updateAction}
-                          multiline
-                          rows={1}
-                        />
                       </SelectWrapper>
                     </>
                   )}
@@ -941,8 +979,82 @@ const CreateEscalationPolicy: React.FC<CreateEscalationPolicyProps> = ({
                   {action.type === EscalationActionType.CreateTask && (
                     <>
                       <SelectWrapper>
+                        <Autocomplete
+                          options={listOptions}
+                          value={
+                            listOptions.find(
+                              (opt: any) => opt.id === action.params.taskList,
+                            ) || null
+                          }
+                          onChange={(event, newValue) => {
+                            const taskListId = newValue?.id || '';
+                            updateAction(index, {
+                              type: EscalationActionType.CreateTask,
+                              params: {
+                                ...action.params,
+                                taskList: taskListId,
+                                taskGroup: '',
+                              },
+                            });
+                            if (taskListId) {
+                              fetchGroupsForTaskList(taskListId, index);
+                            } else {
+                              setTaskGroupOptions((prev) => ({
+                                ...prev,
+                                [index]: [],
+                              }));
+                            }
+                          }}
+                          getOptionLabel={(option: any) => option?.name || ''}
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              label="Task List *"
+                              variant="outlined"
+                              size="small"
+                              placeholder="Select task list..."
+                              error={showValidation && !action.params.taskList}
+                              sx={TextFieldStyles}
+                            />
+                          )}
+                          sx={SingleAutocompleteStyles}
+                        />
+
+                        <Autocomplete
+                          options={taskGroupOptions[index] || []}
+                          value={
+                            (taskGroupOptions[index] || []).find(
+                              (opt: any) => opt.id === action.params.taskGroup,
+                            ) || null
+                          }
+                          onChange={(event, newValue) =>
+                            updateAction(index, {
+                              type: EscalationActionType.CreateTask,
+                              params: {
+                                ...action.params,
+                                taskGroup: newValue?.id || '',
+                              },
+                            })
+                          }
+                          getOptionLabel={(option: any) => option?.name || ''}
+                          disabled={!action.params.taskList}
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              label="Select Group"
+                              variant="outlined"
+                              size="small"
+                              placeholder="Select group..."
+                              sx={TextFieldStyles}
+                            />
+                          )}
+                          sx={SingleAutocompleteStyles}
+                        />
+                      </SelectWrapper>
+
+                      <SelectWrapper>
                         <EscalationPolicyTextField
-                          label="Task Title"
+                          label="Task Description"
                           fieldName="title"
                           actionType="CreateTask"
                           actionIndex={index}
@@ -951,12 +1063,14 @@ const CreateEscalationPolicy: React.FC<CreateEscalationPolicyProps> = ({
                           required
                           error={showValidation && !action.params.title}
                         />
+                      </SelectWrapper>
 
+                      <SelectWrapper>
                         <Autocomplete
                           options={priorityOptions}
                           value={
                             priorityOptions.find(
-                              (opt) => opt.value === action.params.priority
+                              (opt) => opt.value === action.params.priority,
                             ) || null
                           }
                           onChange={(event, newValue) =>
@@ -975,15 +1089,13 @@ const CreateEscalationPolicy: React.FC<CreateEscalationPolicyProps> = ({
                               label="Priority"
                               variant="outlined"
                               size="small"
-                              placeholder="Select priority..."
+                              placeholder="Select priority"
                               sx={TextFieldStyles}
                             />
                           )}
                           sx={SingleAutocompleteStyles}
                         />
-                      </SelectWrapper>
 
-                      <SelectWrapper>
                         {renderCompactSelect(
                           'Assign To',
                           action.params.assignee || [],

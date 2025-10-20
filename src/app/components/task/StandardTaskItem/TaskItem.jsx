@@ -1163,6 +1163,7 @@ const TaskItem = React.memo(
           isFirstTaskOfGroup={isFirstTaskOfGroup}
           viewType={viewType}
           taskGroupIdentifier={taskGroupIdentifier}
+          groupDragAndDropDisabled={taskItemDragAndDropDisabled}
         />
       );
     }

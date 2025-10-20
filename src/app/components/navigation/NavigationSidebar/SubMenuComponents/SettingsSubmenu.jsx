@@ -1,6 +1,6 @@
 import { Box } from '@mui/material';
 import AccessRestrictor from 'components/access/AccessRestrictor/AccessRestrictor';
-import { UserOrganizationRole } from 'helpers/user-helper';
+import { isUserDockPro, UserOrganizationRole } from 'helpers/user-helper';
 import React from 'react';
 import { useSelector } from 'react-redux';
 import {
@@ -25,6 +25,7 @@ import {
   userHasConfigIntegrationsFeatureSelector,
   userHasEscalationsFeatureSelector,
   userHasDataManagementFeatureSelector,
+  userProfileSelector,
 } from 'selectors/user-selectors';
 import { organizationSelector } from 'selectors/organization-selectors';
 import { isPlanTrial } from 'helpers/subscription-helper';
@@ -39,6 +40,8 @@ const SettingsSubmenu = () => {
   const taskCustomFieldsAvailable = useSelector(
     userHasTaskCustomFieldsFeatureSelector,
   );
+  const currentUser = useSelector(userProfileSelector);
+  const isUserDockCrew = isUserDockPro(currentUser);
   const sendEmailAvailable = useSelector(userHasSendEmailFeatureSelector);
   const sendFaxAvailable = useSelector(userHasSendFaxFeatureSelector);
   const sendSmsAvailable = useSelector(userHasSendSmsFeatureSelector);
@@ -114,7 +117,7 @@ const SettingsSubmenu = () => {
           <SubMenuLink to={INTEGRATIONS_PATH}>Integrations</SubMenuLink>
         </AccessRestrictor>
       )}
-      {escalationsAvailable && (
+      {escalationsAvailable && isUserDockCrew && (
         <AccessRestrictor allowedToRoles={[ADMIN, OWNER]}>
           <SubMenuLink to={ESCALATION_POLICIES_PATH}>
             Escalation Policies

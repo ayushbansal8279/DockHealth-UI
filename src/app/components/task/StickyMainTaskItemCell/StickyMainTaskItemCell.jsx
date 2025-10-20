@@ -30,8 +30,8 @@ const StickyMainTaskItemCell = styled.div`
   }) =>
     origin === 'PATIENT'
       ? isSubtask || isWorkflowSubtask
-        ? '36px'
-        : '0px'
+        ? '60px'
+        : '24px'
       : origin === 'LIST'
       ? isSubtask || isWorkflowSubtask
         ? searchValue || isFilterApply || isSortApplied

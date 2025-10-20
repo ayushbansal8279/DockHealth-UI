@@ -19,9 +19,10 @@ export const originConfig = {
     hasCustomOffset: true,
     disableLeftOffset: true,
     enableTaskGroup: false,
-    quickAddWidthOffset: 0,
+    quickAddWidthOffset: 20,
     disableRightOffset: true,
     showListPickerModal: true,
+    dragAndDropDisabled: true,
   },
   LIST: {
     hasCustomOffset: false,
@@ -30,6 +31,7 @@ export const originConfig = {
     quickAddWidthOffset: 87,
     disableRightOffset: false,
     showListPickerModal: false,
+    dragAndDropDisabled: false,
   },
 };
 

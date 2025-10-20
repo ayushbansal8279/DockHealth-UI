@@ -202,7 +202,7 @@ export const ActionsTypography = styled(Typography)`
 
 export const ActionHeaderBox = styled(Box)`
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: center;
   margin-bottom: 8px;
 `;
