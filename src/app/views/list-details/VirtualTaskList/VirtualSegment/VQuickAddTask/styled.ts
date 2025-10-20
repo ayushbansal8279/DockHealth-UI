@@ -3,16 +3,18 @@ import spacing from 'styles/spacing';
 
 export const VQuickAddTaskContainer = styled('div')<{ $width: string }>`
   display: flex;
-  margin-left: 54.5px;
+  margin-left: ${({ disableLeftOffset }: any) =>
+    disableLeftOffset ? '0px' : '54.5px'};
   margin-bottom: 1px;
   margin-top: 10px;
-  width: ${({ $width }) => $width};
+  width: ${({ $width }: any) => $width};
 `;
 
 export const VQuickAddTask = styled('div')<{ $width: string }>`
-  width: ${({ $width }) => $width};
+  width: ${({ $width }: any) => $width};
   position: sticky;
-  left: 54.5px;
+  left: ${({ disableLeftOffset }: any) =>
+    disableLeftOffset ? '0px' : '54.5px'};
   font-weight: bold;
   line-height: 40px;
 `;

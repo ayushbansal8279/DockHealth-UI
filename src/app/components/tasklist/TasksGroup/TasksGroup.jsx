@@ -59,6 +59,7 @@ import {
 } from './styled';
 import TasksHeader from '../TasksHeader/TasksHeader';
 import { useVirtualTaskListScrollContext } from '@/app/views/list-details/VirtualTaskList/VirtualTaskListScrollContext';
+import { TaskOrigin } from '@/app/helpers/task-helpers';
 
 const TasksGroup = ({
   isDefaultGroup,

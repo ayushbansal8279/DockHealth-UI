@@ -16,7 +16,10 @@ import {
   addQuickFilterOptionSelector,
   selectedQuickFilterSelector,
 } from 'selectors/mega-filter-selectors';
-import { selectedUserOrganizationSelector, userProfileSelector } from 'selectors/user-selectors';
+import {
+  selectedUserOrganizationSelector,
+  userProfileSelector,
+} from 'selectors/user-selectors';
 import {
   currentTaskListSelector,
   taskListMembersSelector,
@@ -59,7 +62,7 @@ import {
   MainHeaderContainer,
   HeaderSearchContainer,
 } from './styled';
-import { ListPageContext } from '../ListDetailsView';
+import { TaskViewContext } from '@/app/context-api/task-view-context';
 import InboxTips from '@/app/components/tasklist/list-toolbar-buttons/InboxTips/InboxTips';
 import { useIsWorkspaceScopedList } from '@/app/hooks/useIsWorkspaceScopedList';
 import { getWorkspaceByIdentifier } from '@/app/api/workspace-api';
@@ -114,7 +117,7 @@ const ListDetailsHeader = (props) => {
     handleAddNewGroup,
     handleScrollToAddGroupName,
     showShadow,
-  } = useContext(ListPageContext);
+  } = useContext(TaskViewContext);
   const [isListOpen, openList] = useState(false);
   const [focused, setFocused, unsetFocused] = useBoolean(false);
   const [shownUsers, hiddenUsers] = splitAt(4, sortedUsers);
@@ -122,12 +125,12 @@ const ListDetailsHeader = (props) => {
   const currentOrganization = useSelector(selectedUserOrganizationSelector);
   const [workspace, setWorkspace] = useState();
 
-  const isWorkspaceList = organizationIdentifier !== currentOrganization?.organizationIdentifier;
+  const isWorkspaceList =
+    organizationIdentifier !== currentOrganization?.organizationIdentifier;
 
   useEffect(() => {
     if (isWorkspaceList && organizationIdentifier) {
-      getWorkspaceByIdentifier(organizationIdentifier)
-        .then(setWorkspace)
+      getWorkspaceByIdentifier(organizationIdentifier).then(setWorkspace);
     }
   }, [organizationIdentifier, isWorkspaceList]);
 
@@ -311,7 +314,7 @@ const ListDetailsHeader = (props) => {
                               'ALL',
                             ),
                           ),
-                        workspaceIdentifier: workspaceIdentifier
+                        workspaceIdentifier: workspaceIdentifier,
                       }),
                     )
                   }

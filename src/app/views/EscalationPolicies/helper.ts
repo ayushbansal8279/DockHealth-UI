@@ -4,10 +4,10 @@ import { TaskPriority } from "@/app/helpers/task-helpers";
 export const EscalationActionType = {
   AddAssignee: 'AddAssignee',
   CreateTask: 'CreateTask',
-  UpdateTask: 'UpdateTask',
-  SendEmail: 'SendEmail',
-  SendSlack: 'SendSlack',
-  ScheduleEscalation: 'ScheduleEscalation',
+  // UpdateTask: 'UpdateTask',
+  // SendEmail: 'SendEmail',
+  // SendSlack: 'SendSlack',
+  // ScheduleEscalation: 'ScheduleEscalation',
 } as const;
 
 export const timestampFieldOptions = [
@@ -43,18 +43,18 @@ export const delayOptions = [
 export const scopeOptions = [
   { value: 'ORGANIZATION', label: 'Organization' },
   { value: 'LIST', label: 'List' },
-  { value: 'GROUP', label: 'Group' },
   { value: 'WORKFLOW', label: 'Workflow' },
-  { value: 'TASK', label: 'Task' }
+  // { value: 'GROUP', label: 'Group' },
+  // { value: 'TASK', label: 'Task' }
 ];
 
 export const actionTypeOptions = [
   { value: EscalationActionType.AddAssignee, label: 'Add Assignee' },
   { value: EscalationActionType.CreateTask, label: 'Create Task' },
-  { value: EscalationActionType.UpdateTask, label: 'Update Task' },
-  { value: EscalationActionType.SendEmail, label: 'Send Email' },
-  { value: EscalationActionType.SendSlack, label: 'Send Slack' },
-  { value: EscalationActionType.ScheduleEscalation, label: 'Schedule Escalation' }
+  // { value: EscalationActionType.UpdateTask, label: 'Update Task' },
+  // { value: EscalationActionType.SendEmail, label: 'Send Email' },
+  // { value: EscalationActionType.SendSlack, label: 'Send Slack' },
+  // { value: EscalationActionType.ScheduleEscalation, label: 'Schedule Escalation' }
 ];
 
 export const priorityOptions = [
@@ -82,41 +82,42 @@ export const formatFilterDetails = (scopeFilter: any, references?: EscalationPol
 
   if (scopeFilter?.assignee?.in?.user?.length > 0) {
     const userNames = getNames(scopeFilter.assignee.in.user, references?.users);
-    details.push(`Users: ${userNames.join(', ')}`);
+    details.push(`<strong>Assigned Users:</strong> ${userNames.join(', ')}`);
   }
 
   if (scopeFilter?.assignee?.in?.group?.length > 0) {
     const groupNames = getNames(scopeFilter.assignee.in.group, references?.groups);
-    details.push(`User Groups: ${groupNames.join(', ')}`);
+    details.push(`<strong>User Groups:</strong> ${groupNames.join(', ')}`);
   }
 
   if (scopeFilter?.patients?.in?.length > 0) {
     const patientNames = getNames(scopeFilter.patients.in, references?.patients);
-    details.push(`Patients: ${patientNames.join(', ')}`);
+    details.push(`<strong>Assigned Patients:</strong> ${patientNames.join(', ')}`);
   }
 
   if (scopeFilter?.patientLabels?.in?.length > 0) {
-    details.push(`Patient Labels: ${scopeFilter.patientLabels.in.join(', ')}`);
+    details.push(`<strong>Patient Labels:</strong> ${scopeFilter.patientLabels.in.join(', ')}`);
   }
 
   if (scopeFilter?.taskLabels?.in?.length > 0) {
-    details.push(`Task Labels: ${scopeFilter.taskLabels.in.join(', ')}`);
+    details.push(`<strong>Task Labels:</strong> ${scopeFilter.taskLabels.in.join(', ')}`);
   }
 
   if (scopeFilter?.status?.in?.length > 0) {
     const statusNames = getNames(scopeFilter.status.in, references?.statuses || references?.workflows);
-    details.push(`Task Status: ${statusNames.join(', ')}`);
+    details.push(`<strong>Task Status:</strong> ${statusNames.join(', ')}`);
   }
 
-  if (scopeFilter?.lists?.in?.length > 0) {
-    const listNames = getNames(scopeFilter.lists.in, references?.lists);
-    details.push(`Lists: ${listNames.join(', ')}`);
-  }
+  // Lists and Workflows are now displayed separately in the scope section, not in filters
+  // if (scopeFilter?.lists?.in?.length > 0) {
+  //   const listNames = getNames(scopeFilter.lists.in, references?.lists);
+  //   details.push(`Lists: ${listNames.join(', ')}`);
+  // }
 
-  if (scopeFilter?.workflows?.in?.length > 0) {
-    const workflowNames = getNames(scopeFilter.workflows.in, references?.workflows);
-    details.push(`Workflows: ${workflowNames.join(', ')}`);
-  }
+  // if (scopeFilter?.workflows?.in?.length > 0) {
+  //   const workflowNames = getNames(scopeFilter.workflows.in, references?.workflows);
+  //   details.push(`Workflows: ${workflowNames.join(', ')}`);
+  // }
 
   return details.length > 0 ? details : ['No filters applied'];
 };
@@ -178,75 +179,75 @@ export const formatActionDetails = (actions: any[], references?: EscalationPolic
         
         const allAssignees = [...assigneeUsers, ...assigneeGroups, ...assigneeIds];
         if (allAssignees.length > 0) {
-          result.subItems!.push(`Assignees: ${allAssignees.join(', ')}`);
+          result.subItems!.push(`<strong>Assignees:</strong> ${allAssignees.join(', ')}`);
         }
         if (action.params?.comment) {
-          result.subItems!.push(`Comment: "${action.params.comment}"`);
+          result.subItems!.push(`<strong>Comment:</strong> "${action.params.comment}"`);
         }
         break;
         
-      case EscalationActionType.SendEmail:
-        if (action.params?.subject) {
-          result.subItems!.push(`Subject: "${action.params.subject}"`);
-        }
-        if (action.params?.recipients?.length > 0) {
-          result.subItems!.push(`Recipients: ${action.params.recipients.join(', ')}`);
-        }
-        if (action.params?.body) {
-          result.subItems!.push(`Body: ${action.params.body}`);
-        }
-        break;
+      // case EscalationActionType.SendEmail:
+      //   if (action.params?.subject) {
+      //     result.subItems!.push(`<strong>Subject:</strong> "${action.params.subject}"`);
+      //   }
+      //   if (action.params?.recipients?.length > 0) {
+      //     result.subItems!.push(`<strong>Recipients:</strong> ${action.params.recipients.join(', ')}`);
+      //   }
+      //   if (action.params?.body) {
+      //     result.subItems!.push(`<strong>Body:</strong> ${action.params.body}`);
+      //   }
+      //   break;
         
-      case EscalationActionType.SendSlack:
-        if (action.params?.channel) {
-          result.subItems!.push(`Channel: ${action.params.channel}`);
-        }
-        if (action.params?.message) {
-          result.subItems!.push(`Message: ${action.params.message}`);
-        }
-        break;
+      // case EscalationActionType.SendSlack:
+      //   if (action.params?.channel) {
+      //     result.subItems!.push(`<strong>Channel:</strong> ${action.params.channel}`);
+      //   }
+      //   if (action.params?.message) {
+      //     result.subItems!.push(`<strong>Message:</strong> ${action.params.message}`);
+      //   }
+      //   break;
         
       case EscalationActionType.CreateTask:
         if (action.params?.title) {
-          result.subItems!.push(`Title: "${action.params.title}"`);
+          result.subItems!.push(`<strong>Title:</strong> "${action.params.title}"`);
         }
         if (action.params?.assignee?.length > 0) {
           const assigneeNames = getNames(action.params.assignee, references?.users);
           if (assigneeNames.length > 0) {
-            result.subItems!.push(`Assignees: ${assigneeNames.join(', ')}`);
+            result.subItems!.push(`<strong>Assignees:</strong> ${assigneeNames.join(', ')}`);
           }
         }
         if (action.params?.description) {
-          result.subItems!.push(`Description: ${action.params.description}`);
+          result.subItems!.push(`<strong>Description:</strong> ${action.params.description}`);
         }
         if (action.params?.dueDate) {
-          result.subItems!.push(`Due Date: ${action.params.dueDate}`);
+          result.subItems!.push(`<strong>Due Date:</strong> ${action.params.dueDate}`);
         }
         if (action.params?.priority) {
-          result.subItems!.push(`Priority: ${action.params.priority}`);
+          result.subItems!.push(`<strong>Priority:</strong> ${action.params.priority}`);
         }
         break;
         
-      case EscalationActionType.UpdateTask:
-        if (action.params?.priority) {
-          result.subItems!.push(`Priority: ${action.params.priority}`);
-        }
-        if (action.params?.status) {
-          result.subItems!.push(`Status: ${action.params.status}`);
-        }
-        if (action.params?.assignee) {
-          result.subItems!.push(`Assignee: ${action.params.assignee}`);
-        }
-        break;
+      // case EscalationActionType.UpdateTask:
+      //   if (action.params?.priority) {
+      //     result.subItems!.push(`<strong>Priority:</strong> ${action.params.priority}`);
+      //   }
+      //   if (action.params?.status) {
+      //     result.subItems!.push(`<strong>Status:</strong> ${action.params.status}`);
+      //   }
+      //   if (action.params?.assignee) {
+      //     result.subItems!.push(`<strong>Assignee:</strong> ${action.params.assignee}`);
+      //   }
+      //   break;
         
-      case EscalationActionType.ScheduleEscalation:
-        if (action.params?.delay) {
-          result.subItems!.push(`Delay: ${action.params.delay}`);
-        }
-        if (action.params?.escalateTo) {
-          result.subItems!.push(`Escalate To: ${action.params.escalateTo}`);
-        }
-        break;
+      // case EscalationActionType.ScheduleEscalation:
+      //   if (action.params?.delay) {
+      //     result.subItems!.push(`<strong>Delay:</strong> ${action.params.delay}`);
+      //   }
+      //   if (action.params?.escalateTo) {
+      //     result.subItems!.push(`<strong>Escalate To:</strong> ${action.params.escalateTo}`);
+      //   }
+      //   break;
     }
 
     return result;

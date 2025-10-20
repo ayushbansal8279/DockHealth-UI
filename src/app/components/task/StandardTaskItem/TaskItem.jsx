@@ -433,7 +433,7 @@ const TaskItem = React.memo(
             name === `list.taskgroup.highlight.color-${taskGroupIdentifier}`,
         ) || {};
       return customHighlightItem?.value || '';
-    }, [selectedOrganization, taskGroupIdentifier]);
+    }, [selectedOrganization?.themeSettings, taskGroupIdentifier]);
 
     const hasPriorityHighlight = useMemo(() => {
       const hasPriorityHighlightItem =
@@ -443,7 +443,7 @@ const TaskItem = React.memo(
       return (
         hasPriorityHighlightItem && hasPriorityHighlightItem?.value === 'true'
       );
-    }, [selectedOrganization]);
+    }, [selectedOrganization?.themeSettings]);
 
     const userSortingSupportDisabled = useMemo(() => {
       const disabledSettingItem =
@@ -451,7 +451,7 @@ const TaskItem = React.memo(
           ({ name: themeName }) => themeName === 'list.tasks.user.sort.enabled',
         ) || {};
       return disabledSettingItem && disabledSettingItem?.value === 'false';
-    }, [selectedOrganization]);
+    }, [selectedOrganization?.themeSettings]);
 
     const isDragAndDropEnabled =
       origin === 'LIST' ? !userSortingSupportDisabled : true;

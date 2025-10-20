@@ -39,7 +39,10 @@ import {
   PatientDetailsTabsContainer,
   MainTab,
 } from './styled';
-import { patientOrgIdSelector, patientSelector } from '@/app/selectors/patient-details-selectors';
+import {
+  patientOrgIdSelector,
+  patientSelector,
+} from '@/app/selectors/patient-details-selectors';
 import { selectCurrentOrganizationWithRedirection } from '@/app/api/organization-api';
 import { useIsWorkspaceScopedPatient } from '@/app/hooks/useIsWorkspaceScopedPatient';
 import { getWorkspaceByIdentifier } from '@/app/api/workspace-api';
@@ -254,6 +257,7 @@ const PatientDetailsView = () => {
 
   return (
     <HorizontallyScrolledViewLayout
+      noOuterScroll
       header={
         <LayoutHeader>
           <LayoutHeader.Title title={patientTitle} />

@@ -50,9 +50,14 @@ export const PolicyListContainer = styled.div`
 
 export const HeaderBox = styled.div`
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   align-items: center;
   margin-bottom: 24px;
+`;
+
+export const HeaderTitle = styled.div`
+  font-size: 40px;
+  margin-left: 16px;
 `;
 
 export const NoPoliciesText = styled(Typography)`
@@ -60,7 +65,6 @@ export const NoPoliciesText = styled(Typography)`
   color: ${palette.coolGrey1};
   padding: 32px 0;
 `;
-
 
 export const DetailItem = styled.div`
   margin-bottom: 6px;
@@ -82,21 +86,15 @@ export const StrongLabel = styled.div`
   font-size: ${fontSizes.smallPlus};
   color: ${palette.midnightBlue};
   font-weight: 600;
-  margin-top:2px;
+  margin-top: 2px;
 `;
-
-
-
-
-
-
 
 export const PolicyItemDetails = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 16px;
   font-family: ${typography.text};
-  
+
   @media (max-width: 768px) {
     grid-template-columns: 1fr;
     gap: 12px;
@@ -106,12 +104,17 @@ export const PolicyItemDetails = styled.div`
 export const ScopeAndTrigger = styled.div`
   display: flex;
   flex-direction: column;
+  flex: 0 0 60%;
+  max-width: 60%;
 `;
 
 export const FiltersAndActions = styled.div`
   display: flex;
   flex-direction: column;
   gap: 12px;
+  flex: 0 0 40%;
+  max-width: 40%;
+  padding-left: 16px;
 `;
 
 export const TriggerBadge = styled.div`
@@ -128,12 +131,11 @@ export const TriggerBadge = styled.div`
   text-transform: capitalize;
 `;
 
-
 export const FilterBulletList = styled.ul`
   margin: 2px 0 0 0;
   padding-left: 12px;
   list-style-type: disc;
-  
+
   li {
     color: ${palette.coolGrey1};
     font-size: ${fontSizes.small};
@@ -150,7 +152,7 @@ export const ActionBulletList = styled.ul`
   margin: 2px 0 0 0;
   padding-left: 12px;
   list-style-type: disc;
-  
+
   li {
     color: ${palette.coolGrey1};
     font-size: ${fontSizes.small};
@@ -163,13 +165,13 @@ export const ActionBulletList = styled.ul`
 
 export const ActionBulletItem = styled.li`
   font-weight: 500;
-  
+
   ul {
     margin-top: 4px;
     margin-bottom: 0;
-    padding-left: 20px;
+    padding-left: 12px;
     list-style-type: circle;
-    
+
     li {
       font-weight: 400;
       margin-bottom: 2px;
@@ -180,12 +182,12 @@ export const ActionBulletItem = styled.li`
   }
 `;
 
-
 export const StatusIndicator = styled.div<{ isActive?: boolean }>`
   display: inline-flex;
   align-items: center;
   padding: 2px 6px;
-  background-color: ${props => props.isActive ? palette.memberGreen : '#dc3545'};
+  background-color: ${(props) =>
+    props.isActive ? palette.memberGreen : '#dc3545'};
   color: ${palette.white};
   border-radius: 4px;
   font-size: 12px;
@@ -196,16 +198,14 @@ export const EditIcon = styled(Edit)`
   cursor: pointer;
   color: ${palette.coolGrey1};
   font-size: 20px;
-
 `;
 
 export const DeletIcon = styled(Delete)`
   cursor: pointer;
   color: ${palette.coolGrey1};
   font-size: 20px;
-
 `;
-  
+
 export const IconWrapper = styled.div`
   display: flex;
   align-items: center;
@@ -245,9 +245,9 @@ export const PolicyMetadataBox = styled.div`
 
 export const PolicyDetailsBox = styled.div`
   display: flex;
-  justify-content: space-between;
+  gap: 16px;
+  align-items: flex-start;
 `;
-
 
 export const PolicyFooterBox = styled.div`
   border-top: 1px solid #e0e0e0;

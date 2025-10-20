@@ -61,7 +61,10 @@ import * as UserPreferenceActions from '@/app/actions/user-preference-actions';
 import { userPreferenceStatusSelector } from '@/app/selectors/user-preference-selectors';
 
 const TaskListToolbar = (props) => {
-  const { lists, patientViewType, handlePatientView } = props;
+  const { lists, patientViewType, handlePatientView, handleRemoveAllTasks } =
+    props;
+  // const tasksToPrint = currentList?.tasks ? currentList?.tasks : [];
+  // const listUsers = currentList?.listUsers ? currentList?.listUsers : [];
   const {
     patientIdentifier,
     taskListIdentifier: taskListIdentifierParameter = ListViewType.ALL_TASKS,
@@ -348,6 +351,7 @@ const TaskListToolbar = (props) => {
             active={patientViewType === 'FULL_VIEW'}
             onClick={() => {
               handlePatientView('FULL_VIEW');
+              handleRemoveAllTasks();
             }}
           >
             <FullViewIcon />
@@ -356,6 +360,7 @@ const TaskListToolbar = (props) => {
             active={patientViewType === 'SLIM_VIEW'}
             onClick={() => {
               handlePatientView('SLIM_VIEW');
+              handleRemoveAllTasks();
             }}
           >
             <SlimViewIcon />
