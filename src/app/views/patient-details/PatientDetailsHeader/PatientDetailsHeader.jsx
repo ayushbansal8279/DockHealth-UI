@@ -50,13 +50,16 @@ import { SummaryType } from '@/app/helpers/ai-helper';
 import PatientMetaDataField from './PatientMetaDataField';
 import ProfileDetailsDrawer from '../../profile-details/ProfileDetailsDrawer/ProfileDetailsDrawer';
 import PatientActivityHistoryDrawer from '@/app/components/patients/PatientActivityHistoryDrawer/PatientActivityHistoryDrawer';
+import { PATIENT_DETAILS_PATH } from '@/app/routing/helpers/paths';
 
 const { DISABLED } = TASK_LIST_RESTRICTIONS_OPTIONS;
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const PatientDetailsHeader = () => {
-  const history = useHistory();
   const location = useLocation();
+  const isIframe =
+    window.self !== window.top && location.pathname.includes(PATIENT_DETAILS_PATH);
+  const history = useHistory();
   const [isDrawerOpen, setIsDrawerOpen, unsetIsDrawerOpen] = useBoolean(false);
   const [isProfileOpen, setIsProfileOpen, unsetIsProfileOpen] =
     useBoolean(false);
@@ -136,7 +139,7 @@ const PatientDetailsHeader = () => {
             <Box flex="1 0 0" display="flex" alignItems="center">
               <Grid container alignItems="center">
                 <Box flexBasis={30}>
-                  {(!embeddedMode || cameFrom) && (
+                  {(!embeddedMode || cameFrom) && !isIframe && (
                     <button type="button" onClick={goBack}>
                       <img
                         src={ArrowLeftIcon}
