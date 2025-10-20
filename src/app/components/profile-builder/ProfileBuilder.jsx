@@ -21,7 +21,7 @@ import { showGlobalErrorAlert } from 'alert/actions';
 import * as CustomFieldApi from 'api/custom-fields-api';
 import { useDispatch, useSelector } from 'react-redux';
 import { v4 as uuidv4 } from 'uuid';
-import { getAllProfileFieldTypes } from '@/app/api/profile-type-field-api';
+import { createProfileFieldType } from '@/app/api/profile-type-field-api';
 import { getProfileDetailsType } from '@/app/api/profile-type-api';
 import { showGlobalAlert } from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
@@ -65,7 +65,7 @@ const ProfileBuilder = () => {
     try {
       const [customGroups, allCustomFields, defaultFields] = await Promise.all([
         CustomFieldApi.searchCustomFiledGroups(context),
-        CustomFieldApi.getAllPatientCustomFields(),
+        CustomFieldApi.getAllCustomFields(),
         CustomFieldApi.getDefauldFields(context),
       ]);
 
@@ -117,7 +117,7 @@ const ProfileBuilder = () => {
     try {
       const [customGroups, allCustomFields] = await Promise.all([
         CustomFieldApi.searchCustomFiledGroups(context, identifier),
-        getAllProfileFieldTypes(identifier),
+        CustomFieldApi.getAllCustomFields(),
       ]);
 
       setAllCustomFields(allCustomFields);
@@ -236,6 +236,16 @@ const ProfileBuilder = () => {
         CustomFieldApi.updateCustomFiledGroup(category.identifier, {
           fields: updatedSavedFields,
         });
+
+        if (context === 'PROFILETYPE') {
+          const profileTypeFieldPayload = {
+            customFieldIdentifier: draggableId,
+            profileType: {
+              identifier: identifier,
+            },
+          };
+          createProfileFieldType(profileTypeFieldPayload);
+        }
 
         const newField = allCustomFields.find(
           (item) => item.identifier === draggableId,
