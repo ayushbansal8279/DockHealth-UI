@@ -4,6 +4,7 @@ import React, {
   useCallback,
   useContext,
   useEffect,
+  useMemo,
   useState,
 } from 'react';
 import { Segment } from 'views/list-details/modules/Virtualized';
@@ -99,19 +100,28 @@ function VSubtask(
   const { workflowIdentifierMap, handleRemoveWorkflowIdentifier } =
     useContext(CollapseContext);
 
-  const taskGroup = !!taskGroups
-    ? taskGroups.filter((taskGroup) =>
+  const taskGroup = useMemo(
+    () =>
+      taskGroups?.filter((taskGroup: any) =>
         taskGroup?.groupType === 'TASK_BUNDLE' ? taskGroup : '',
-      )
-    : '';
+      ) || '',
+    [taskGroups],
+  );
 
   useEffect(() => {
-    workflowIdentifierMap.some(
+    const shouldAddWorkflowTask = workflowIdentifierMap.some(
       (identifier) => identifier === taskGroup[0]?.taskGroupIdentifier,
-    )
-      ? setAddWorkflowTask(true)
-      : setAddWorkflowTask(false);
-  }, [parentTask, workflowIdentifierMap]);
+    );
+
+    if (shouldAddWorkflowTask !== addWorkflowTask) {
+      setAddWorkflowTask(shouldAddWorkflowTask);
+    }
+  }, [
+    parentTask?.identifier,
+    workflowIdentifierMap,
+    taskGroup,
+    addWorkflowTask,
+  ]);
 
   // @ts-ignore
   const noOfSubtask = metadata.parent?.children.length - 1;

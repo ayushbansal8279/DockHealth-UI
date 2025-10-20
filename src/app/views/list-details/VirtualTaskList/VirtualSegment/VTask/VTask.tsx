@@ -5,6 +5,7 @@ import React, {
   useCallback,
   useContext,
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from 'react';
@@ -94,19 +95,23 @@ function VTask(
   const patient = task?.patient;
 
   const [addWorkflowTask, setAddWorkflowTask] = useState(false);
-  const taskGroup = !!taskGroups
-    ? taskGroups.filter((taskGroup) =>
+  const taskGroup = useMemo(
+    () =>
+      taskGroups?.filter((taskGroup: any) =>
         taskGroup?.groupType === 'TASK_BUNDLE' ? taskGroup : '',
-      )
-    : '';
+      ) || '',
+    [taskGroups],
+  );
 
   useEffect(() => {
-    workflowIdentifierMap.some(
+    const shouldAddWorkflowTask = workflowIdentifierMap.some(
       (identifier) => identifier === taskGroup[0]?.taskGroupIdentifier,
-    )
-      ? setAddWorkflowTask(true)
-      : setAddWorkflowTask(false);
-  }, [task, workflowIdentifierMap]);
+    );
+
+    if (shouldAddWorkflowTask !== addWorkflowTask) {
+      setAddWorkflowTask(shouldAddWorkflowTask);
+    }
+  }, [task?.identifier, workflowIdentifierMap, taskGroup, addWorkflowTask]);
 
   const handleQuickAddOnFocus = () => {
     setTimeout(() => {
