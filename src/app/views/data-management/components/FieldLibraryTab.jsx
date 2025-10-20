@@ -1,9 +1,21 @@
 import React, { useState, useMemo, useEffect, useCallback } from 'react';
-import { Box, Button, Tooltip, Chip, IconButton } from '@mui/material';
+import {
+  Box,
+  Button,
+  Tooltip,
+  Chip,
+  IconButton,
+  Menu,
+  MenuItem,
+  ListItemIcon,
+  ListItemText,
+} from '@mui/material';
 import { useGridApiRef } from '@mui/x-data-grid-premium';
 import { useDispatch } from 'react-redux';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
 import SearchInput from 'components/common/SearchInput/SearchInput';
 import { AddIcon } from '@/app/views/smart-flow-builder/TaskNodeHandles/styled';
 import ReusableDataGrid from 'components/custom-profile/CustomProfilesList/DataGrid/DataGrid';
@@ -25,6 +37,8 @@ const FieldLibraryTab = ({ workspaceIdentifier, isWorkspace = false }) => {
   const [fieldLibrary, setFieldLibrary] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [selectedField, setSelectedField] = useState(null);
   const apiRef = useGridApiRef();
 
   const getFieldTypeInfo = (fieldType) => {
@@ -156,6 +170,29 @@ const FieldLibraryTab = ({ workspaceIdentifier, isWorkspace = false }) => {
         },
       }),
     );
+  };
+
+  const handleMenuClick = (event, field) => {
+    setAnchorEl(event.currentTarget);
+    setSelectedField(field);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+    setSelectedField(null);
+  };
+
+  const handleChangeScopeClick = () => {
+    dispatch(
+      openModal('ScopeChange', {
+        customField: selectedField,
+        workspaceIdentifier,
+        onScopeChanged: () => {
+          fetchFields();
+        },
+      }),
+    );
+    handleMenuClose();
   };
 
   const columns = useMemo(
@@ -306,7 +343,7 @@ const FieldLibraryTab = ({ workspaceIdentifier, isWorkspace = false }) => {
       {
         field: 'actions',
         headerName: 'Actions',
-        width: 120,
+        width: 80,
         flex: 0,
         sortable: false,
         filterable: false,
@@ -314,17 +351,10 @@ const FieldLibraryTab = ({ workspaceIdentifier, isWorkspace = false }) => {
           <Box display="flex" alignItems="center" height="100%">
             <IconButton
               size="small"
-              onClick={() => handleEditFieldClick(params.row)}
+              onClick={(e) => handleMenuClick(e, params.row)}
               sx={{ padding: '4px' }}
             >
-              <EditIcon fontSize="small" />
-            </IconButton>
-            <IconButton
-              size="small"
-              onClick={() => handleDeleteFieldClick(params.row)}
-              sx={{ padding: '4px' }}
-            >
-              <DeleteIcon fontSize="small" />
+              <MoreVertIcon fontSize="small" />
             </IconButton>
           </Box>
         ),
@@ -447,6 +477,49 @@ const FieldLibraryTab = ({ workspaceIdentifier, isWorkspace = false }) => {
           loading={loading}
         />
       </DataGridContainer>
+
+      <Menu
+        anchorEl={anchorEl}
+        open={Boolean(anchorEl)}
+        onClose={handleMenuClose}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'right',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+      >
+        <MenuItem
+          onClick={() => {
+            handleEditFieldClick(selectedField);
+            handleMenuClose();
+          }}
+        >
+          <ListItemIcon>
+            <EditIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText>Edit</ListItemText>
+        </MenuItem>
+        <MenuItem onClick={handleChangeScopeClick}>
+          <ListItemIcon>
+            <SwapHorizIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText>Change Scope</ListItemText>
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
+            handleDeleteFieldClick(selectedField);
+            handleMenuClose();
+          }}
+        >
+          <ListItemIcon>
+            <DeleteIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText>Delete</ListItemText>
+        </MenuItem>
+      </Menu>
     </TabContent>
   );
 };

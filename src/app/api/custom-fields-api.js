@@ -316,3 +316,25 @@ export function uploadCustomFieldOptions(fileData, additionalConfig = {}, custom
       throw error;
     });
 }
+
+export function updateCustomFieldScope(customFieldIdentifier, payload) {
+  return axios
+    .patch(`custom/field/updateScope/${customFieldIdentifier}`, payload)
+    .then(({ data }) => {
+      if (data.statusCode === 'SUCCESS') {
+        return data;
+      } else {
+        throw new Error(
+          data.errorMessage || 'Failed to update custom field scope',
+        );
+      }
+    })
+    .catch((error) => {
+      log(error);
+      throw new Error(
+        error?.response?.data?.errorMessage ||
+          error?.message ||
+          'Failed to update custom field scope',
+      );
+    });
+}
