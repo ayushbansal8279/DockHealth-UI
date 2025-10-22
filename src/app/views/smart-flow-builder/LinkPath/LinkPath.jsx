@@ -1,5 +1,10 @@
 import React from 'react';
-import { BaseEdge, getSmoothStepPath, Position, useReactFlow } from 'reactflow';
+import {
+  BaseEdge,
+  getSmoothStepPath,
+  Position,
+  useReactFlow,
+} from '@xyflow/react';
 import palette from 'styles/palette';
 import './AnimatedEdge.css';
 import { getEdgeParams } from './helpers';

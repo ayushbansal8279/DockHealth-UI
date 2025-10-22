@@ -1,6 +1,6 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import React, { useState, useRef, useEffect } from 'react';
-import 'reactflow/dist/style.css';
+import '@xyflow/react/dist/style.css';
 import { useBoolean } from 'hooks/useBoolean';
 import SubtaskIcon from 'img/SubtaskIcon';
 import { Box, Fab, IconButton, Typography } from '@mui/material';
@@ -33,7 +33,10 @@ import { DrawerFieldEnum } from 'helpers/task-drawer-helpers';
 import { openModal, closeModal } from 'modal/actions';
 import VoiceAgentNodeDrawer from '../NodeDrawers/VoiceAgentNodeDrawer';
 import MissingRecordsAgentNodeDrawer from '../NodeDrawers/MissingRecordsAgentNodeDrawer';
-import { openAgentDrawer, closeAgentDrawer } from 'actions/agent-drawer-actions';
+import {
+  openAgentDrawer,
+  closeAgentDrawer,
+} from 'actions/agent-drawer-actions';
 import {
   deleteTask,
   partialUpdateTask,
@@ -128,7 +131,7 @@ const TaskNode = React.memo(({ data, isConnectable, selected, type }) => {
     if (subType === 'AGENT') {
       // Extract agent type from description or task data
       const agentType = determineAgentType(description);
-      
+
       switch (agentType) {
         case 'voice':
           // Open Voice Agent specific drawer
@@ -165,9 +168,9 @@ const TaskNode = React.memo(({ data, isConnectable, selected, type }) => {
 
   const determineAgentType = (taskDescription) => {
     if (!taskDescription) return null;
-    
+
     const description = taskDescription.toLowerCase();
-    
+
     if (description.includes('voice') || description.includes('call')) {
       return 'voice';
     }
@@ -180,10 +183,14 @@ const TaskNode = React.memo(({ data, isConnectable, selected, type }) => {
     if (description.includes('eligibility')) {
       return 'eligibility';
     }
-    if (description.includes('medical') && description.includes('record') && description.includes('gathering')) {
+    if (
+      description.includes('medical') &&
+      description.includes('record') &&
+      description.includes('gathering')
+    ) {
       return 'medical-record-gathering';
     }
-    
+
     return null;
   };
 
@@ -272,10 +279,10 @@ const TaskNode = React.memo(({ data, isConnectable, selected, type }) => {
           >
             <DeleteIcon fontSize="small" color="inherit" />
           </Fab>,
-          <Fab 
-            key="edit" 
-            aria-label="edit" 
-            size="small" 
+          <Fab
+            key="edit"
+            aria-label="edit"
+            size="small"
             onClick={subType === 'AGENT' ? openAgentSpecificDrawer : handleEdit}
           >
             <EditIcon fontSize="small" color="inherit" />

@@ -1,4 +1,4 @@
-import { BaseEdge, getBezierPath } from 'reactflow';
+import { BaseEdge, getBezierPath } from '@xyflow/react';
 import React from 'react';
 
 const ConnectionLineComponent = ({

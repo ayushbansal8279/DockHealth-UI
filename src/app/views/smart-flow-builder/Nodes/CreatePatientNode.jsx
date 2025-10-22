@@ -1,5 +1,5 @@
 import React from 'react';
-import { Position } from 'reactflow';
+import { Position } from '@xyflow/react';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import {
   NodeContainer,

@@ -12,7 +12,7 @@ import { useBoolean } from 'hooks/useBoolean';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
-import { useStore, getSmoothStepPath } from 'reactflow';
+import { useStore, getSmoothStepPath } from '@xyflow/react';
 import { useDispatch } from 'react-redux';
 import { openModal } from 'modal/actions';
 import LinkPath from '../LinkPath/LinkPath';

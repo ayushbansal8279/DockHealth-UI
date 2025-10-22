@@ -1,5 +1,5 @@
 import React from 'react';
-import { Position } from 'reactflow';
+import { Position } from '@xyflow/react';
 import EventAvailableIcon from '@mui/icons-material/EventAvailable';
 import {
   NodeContainer,

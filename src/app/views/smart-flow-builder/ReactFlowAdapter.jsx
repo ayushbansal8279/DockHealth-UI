@@ -1,10 +1,11 @@
 import React, { useCallback, useMemo } from 'react';
-import ReactFlow, {
+import {
+  ReactFlow,
   applyEdgeChanges,
   applyNodeChanges,
   Controls,
   MiniMap,
-} from 'reactflow';
+} from '@xyflow/react';
 import {
   getMiniMapNodeColor,
   NodeType,

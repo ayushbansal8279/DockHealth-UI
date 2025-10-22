@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import { Box } from '@mui/material';
 import { useBoolean } from 'hooks/useBoolean';
-import { Handle, Position, useNodeId, useReactFlow } from 'reactflow';
+import { Handle, Position, useNodeId, useReactFlow } from '@xyflow/react';
 import palette from 'styles/palette';
 import {
   NodeSourceHandle,
