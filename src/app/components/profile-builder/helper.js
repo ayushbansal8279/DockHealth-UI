@@ -91,7 +91,7 @@ export const DROPTYPE = {
   ExistingField: 'add-existing-fields-area-source',
 };
 
-const desiredDefaultFieldsOrder = [
+const desiredPatientFieldsOrder = [
   'FIRST_NAME',
   'MIDDLE_NAME',
   'LAST_NAME',
@@ -103,12 +103,39 @@ const desiredDefaultFieldsOrder = [
   'PHONE_HOME',
 ];
 
-export const getDefaultsRefrenceIds = (defaulFields) => {
-  const rearrangedArray = desiredDefaultFieldsOrder.map((columnName) => {
+const desiredTaskFieldsOrder = [
+  'DESCRIPTION',
+  'DETAILS',
+  'DUE_DATE',
+  'START_DT',
+];
+
+const getFieldOrderForContext = (context) => {
+  if (context === 'PATIENT') {
+    return desiredPatientFieldsOrder;
+  }
+  if (context === 'TASK') {
+    return desiredTaskFieldsOrder;
+  }
+  // TODO
+  if (context === 'PROVIDER') {
+    return [];
+  }
+  return [];
+};
+
+export const getDefaultsRefrenceIds = (defaulFields, context) => {
+  const desiredOrder = getFieldOrderForContext(context);
+
+  if (desiredOrder.length === 0) {
+    return [];
+  }
+
+  const rearrangedArray = desiredOrder.map((columnName) => {
     const field = defaulFields.find((f) => f.columnName === columnName);
     return field ? { fieldReferenceId: field.identifier } : null;
   });
-  return rearrangedArray;
+  return rearrangedArray.filter(Boolean); // Remove null entries
 };
 
 const toCamelCaseWithSpaces = (fieldName) => {
@@ -124,6 +151,10 @@ const toCamelCaseWithSpaces = (fieldName) => {
     mrn: 'MRN',
     phoneMobile: 'Mobile Phone',
     phoneHome: 'Home Phone',
+    description: 'Description',
+    details: 'Details',
+    dueDate: 'Due Date',
+    startDate: 'Start Date',
   };
 
   if (nameMap[fieldName]) {
@@ -142,6 +173,10 @@ export const convertDefaultFields = (defaultFields) => {
       field.fieldName === 'gender'
     ) {
       fieldType = FieldType.DROPDOWN;
+    }
+
+    if (field.fieldName === 'dueDate' || field.fieldName === 'startDt') {
+      fieldType = FieldType.DATE;
     }
 
     return {
