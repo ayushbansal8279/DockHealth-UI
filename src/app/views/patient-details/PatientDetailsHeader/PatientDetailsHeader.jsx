@@ -44,6 +44,7 @@ import {
   AISummaryWrapper,
   ActivityHistoryButton,
   ActivityHistoryText,
+  EHRInfo,
 } from './styled';
 import AISummaryModalOpenerHelper from '@/app/modal/components/AISummaryModal/AISummaryModalOpenerHelper';
 import { SummaryType } from '@/app/helpers/ai-helper';
@@ -58,7 +59,8 @@ const { DISABLED } = TASK_LIST_RESTRICTIONS_OPTIONS;
 const PatientDetailsHeader = () => {
   const location = useLocation();
   const isIframe =
-    window.self !== window.top && location.pathname.includes(PATIENT_DETAILS_PATH);
+    window.self !== window.top &&
+    location.pathname.includes(PATIENT_DETAILS_PATH);
   const history = useHistory();
   const [isDrawerOpen, setIsDrawerOpen, unsetIsDrawerOpen] = useBoolean(false);
   const [isProfileOpen, setIsProfileOpen, unsetIsProfileOpen] =
@@ -135,10 +137,10 @@ const PatientDetailsHeader = () => {
         </Box>
       ) : (
         <>
-          <Box display="flex" alignItems="center">
-            <Box flex="1 0 0" display="flex" alignItems="center">
-              <Grid container alignItems="center">
-                <Box flexBasis={30}>
+          <Box display="flex" alignItems="center" flexWrap="wrap" gap={1}>
+            <Box flex="1" display="flex" alignItems="center">
+              <Grid container alignItems="center" wrap="wrap">
+                <Box mr={2}>
                   {(!embeddedMode || cameFrom) && !isIframe && (
                     <button type="button" onClick={goBack}>
                       <img
@@ -174,28 +176,8 @@ const PatientDetailsHeader = () => {
                   </ButtonContainer>
                 )}
                 <Box mx={1} />
-                <Chip label={patientStatus} />   
-                {(sourceEhr || sourceLastSyncDt || sourceStatus) && (
-                  <Box display="flex" justifyContent="flex-end"  sx={{ ml: '128px' }}>
-                    {sourceEhr && (
-                      <PatientInfo>
-                        <strong>Source:&nbsp;&nbsp;&nbsp;</strong> {sourceEhr}
-                      </PatientInfo>
-                    )}
-                    {sourceLastSyncDt && (
-                      <PatientInfo>
-                        <strong>Last Sync:&nbsp;&nbsp;&nbsp; </strong>{' '}
-                        {moment(sourceLastSyncDt).format('MMM D, YYYY h:mm A')}
-                      </PatientInfo>
-                    )}
-                    {sourceStatus && (
-                      <PatientInfo>
-                        <strong>EHR Status:&nbsp;&nbsp;&nbsp; </strong> {sourceStatus}
-                      </PatientInfo>
-                    )}
-                  </Box>
-                )}
-                <Box flex="500px 0 0">
+                <Chip label={patientStatus} />
+                <Box display="flex" flexWrap="wrap">
                   {patient?.patientLabels?.map(
                     ({ labelIdentifier, labelName }) => (
                       <Box
@@ -211,6 +193,24 @@ const PatientDetailsHeader = () => {
               </Grid>
             </Box>
             <ContactContainer>
+              <Box display="flex" alignItems="center" sx={{ mr: 2 }}>
+                {sourceEhr && (
+                  <EHRInfo>
+                    <strong>Source:&nbsp;</strong> {sourceEhr}
+                  </EHRInfo>
+                )}
+                {sourceLastSyncDt && (
+                  <EHRInfo>
+                    <strong>Last Sync:&nbsp;</strong>{' '}
+                    {moment(sourceLastSyncDt).format('MMM D, YYYY h:mm A')}
+                  </EHRInfo>
+                )}
+                {sourceStatus && (
+                  <EHRInfo>
+                    <strong>EHR Status:&nbsp;</strong> {sourceStatus}
+                  </EHRInfo>
+                )}
+              </Box>
               {patientTimelineFeatureAvailable && (
                 <ActivityHistoryButton onClick={setIsactivityHistoryDrawerOpen}>
                   <ActivityHistoryText>Timeline</ActivityHistoryText>
