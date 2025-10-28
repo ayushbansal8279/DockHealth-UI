@@ -21,7 +21,9 @@ export default ({ mode }) => {
           data: {
             mode,
             ...process.env,
-            injectScript: `<script src="${process.env.VITE_DYNATRACE_SCRIPT}"></script>`,
+            injectScript: process.env.VITE_DYNATRACE_SCRIPT 
+              ? `<script src="${process.env.VITE_DYNATRACE_SCRIPT}"></script>` 
+              : '',
           },
         },
       }),
