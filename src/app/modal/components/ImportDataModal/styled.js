@@ -70,3 +70,19 @@ export const FileInputImage = styled.img`
   position: center;
   margin: 20px;
 `;
+
+export const ProcessingArea = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 348px;
+  height: 142px;
+  background-color: ${palette.blueGrey};
+`;
+
+export const ProcessingContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+`;
