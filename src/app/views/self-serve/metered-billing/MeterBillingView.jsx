@@ -74,8 +74,8 @@ const MeterBillingView = () => {
       const aggregationsPayload = {
         aggregationEvent: {
           organizationIdentifier: organizationIdentifier,
-          start: startDate.format("YYYY-MM-DD")+'T00:00:00.000Z',
-          end: endDate.format("YYYY-MM-DD")+'T00:00:00.000Z',
+          start: startDate.toISOString(),
+          end: endDate.toISOString(),
           eventIdentifier: null,
           duration: days > 1 || months >= 1 ? 'DAILY' : 'HOURLY',
           ts: null

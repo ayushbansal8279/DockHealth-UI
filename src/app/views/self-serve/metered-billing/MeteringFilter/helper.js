@@ -25,12 +25,8 @@ export function convertFilterToPayload(
         const eventDateOptions = filter[key];
 
         if (eventDateOptions.dateStart && eventDateOptions.dateEnd) {
-          payload.start = `${moment(eventDateOptions.dateStart).format(
-            'YYYY-MM-DD',
-          )}T00:00:00.000Z`;
-          payload.end = `${moment(eventDateOptions.dateEnd).format(
-            'YYYY-MM-DD',
-          )}T00:00:00.000Z`;
+          payload.start = moment(eventDateOptions.dateStart).toISOString();
+          payload.end = moment(eventDateOptions.dateEnd).toISOString();
         }
       }
     }
