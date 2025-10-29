@@ -42,8 +42,6 @@ export const BaseNodeWrapper = styled.div`
       NodeType.NEW_AUTOMATION,
     ].includes(type) && `border: 2px solid ${palette.coolGrey3};`}
 
-  ${({ selected }) => selected && `background-color: #ddedf8;`}
-
   &:hover {
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
     transform: translateY(-2px);
