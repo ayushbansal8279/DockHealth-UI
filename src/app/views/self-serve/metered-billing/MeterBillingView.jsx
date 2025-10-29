@@ -78,7 +78,7 @@ const MeterBillingView = () => {
           end: endDate.toISOString(),
           eventIdentifier: null,
           duration: days > 1 || months >= 1 ? 'DAILY' : 'HOURLY',
-          type: filterOptions?.eventTypes?.options?.[0] || 'AGGREGATION',
+          type: filterOptions?.eventTypes?.options?.length > 1 ? null : filterOptions?.eventTypes?.options?.[0],
           ts: null
         },
       };
