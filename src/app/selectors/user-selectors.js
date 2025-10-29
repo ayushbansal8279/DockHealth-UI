@@ -313,6 +313,16 @@ export const userHasConfigInboundEmailsFeatureSelector = createSelector(
     ),
 );
 
+export const userHasSmartflowAgentFeatureSelector = createSelector(
+  userProfileSelector,
+  ({ organizationAvailableFeatures, userAvailableFeatures }) =>
+    featureSelector(
+      organizationAvailableFeatures,
+      userAvailableFeatures,
+      'SMARTFLOW_AGENTS',
+    ),
+);
+
 export const userSetupClientViewSelector = createSelector(
   userViewSetupSelector,
   ({ mainSetup }) => mainSetup,
