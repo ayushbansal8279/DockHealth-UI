@@ -34,7 +34,6 @@ const ImportDataModal = ({
   const inputFileReference = useRef(null);
   const [modalStep, setModalStep] = useState(step);
   const [isUploading, setIsUploading] = useState(false);
-  const [uploadProgress, setUploadProgress] = useState(0);
 
   const handleFileUpload = useCallback(
     (file) => {
@@ -43,17 +42,7 @@ const ImportDataModal = ({
       if (!isPatientImport) {
         setIsUploading(true);
         setModalStep(3);
-        setUploadProgress(0);
       }
-
-      const progressCallback = (progressEvent) => {
-        if (progressEvent.total && !isPatientImport) {
-          const percentCompleted = Math.round(
-            (progressEvent.loaded * 100) / progressEvent.total,
-          );
-          setUploadProgress(percentCompleted);
-        }
-      };
 
       const closeModalAfterResponse = () => {
         if (isPatientImport) {
@@ -70,12 +59,7 @@ const ImportDataModal = ({
         }
       };
 
-      uploadFunction(
-        file,
-        { onUploadProgress: progressCallback },
-        identifier,
-        type,
-      )
+      uploadFunction(file, {}, identifier, type)
         .then((response) => {
           setImportResponse?.(response);
           if (isPatientImport) {
@@ -217,13 +201,9 @@ const ImportDataModal = ({
           <ProcessingArea>
             <ProcessingContainer>
               <CircularProgress size={60} />
-              {uploadProgress > 0 && (
-                <ContentMessage style={{ marginTop: '20px' }}>
-                  {uploadProgress < 100
-                    ? `${uploadProgress}% uploaded`
-                    : 'Processing...'}
-                </ContentMessage>
-              )}
+              <ContentMessage style={{ marginTop: '20px' }}>
+                Processing...
+              </ContentMessage>
             </ProcessingContainer>
           </ProcessingArea>
           {!isUploading && (
