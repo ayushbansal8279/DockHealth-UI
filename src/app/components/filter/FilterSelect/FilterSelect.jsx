@@ -22,6 +22,8 @@ import { getCustomerTypeLabel } from '@/app/helpers/customer-type-helper';
 import { useSelector } from 'react-redux';
 import { organizationSelector } from '@/app/selectors/organization-selectors';
 import SingleDateOption from '../DateRangeOptions/SingleDateOption';
+import NumberRangeOptions from '../NumberRangeOptions/NumberRangeOptions';
+import SingleNumberOption from '../NumberRangeOptions/SingleNumberOption';
 
 const FilterSelect = ({
   finalFilter,
@@ -40,6 +42,12 @@ const FilterSelect = ({
   const [dateEnd, setDateEnd] = useState('');
   const [date, setDate] = useState('');
   const [dateValue, setDateValue] = useState('');
+  const [minNumber, setMinNumber] = useState(null);
+  const [maxNumber, setMaxNumber] = useState(null);
+  const [minValue, setMinValue] = useState(null);
+  const [maxValue, setMaxValue] = useState(null);
+  const [singleNumber, setSingleNumber] = useState(null);
+  const [numberValue, setNumberValue] = useState(null);
   const currentUser = useSelector(userProfileSelector);
   const customerTypeLabel = getCustomerTypeLabel(currentUser);
   const { emrIntegrationType } = useSelector(organizationSelector) || {};
@@ -100,6 +108,38 @@ const FilterSelect = ({
   }, [finalFilter, filter]);
 
   useEffect(() => {
+    let foundNumberRange = false;
+    let foundSingleNumber = false;
+
+    finalFilter[filter].forEach((item) => {
+      if (item?.key?.includes('NUMBER_RANGE')) {
+        foundNumberRange = true;
+        if (item?.minValue !== undefined && item?.maxValue !== undefined) {
+          setMinValue(item?.minValue);
+          setMaxValue(item?.maxValue);
+        }
+      }
+
+      if (item?.key?.includes('SINGLE_NUMBER')) {
+        foundSingleNumber = true;
+        if (item?.value !== undefined) {
+          setNumberValue(item?.value);
+        } else {
+          setNumberValue(null);
+        }
+      }
+    });
+
+    if (!foundNumberRange) {
+      setMinValue(null);
+      setMaxValue(null);
+    }
+    if (!foundSingleNumber) {
+      setNumberValue(null);
+    }
+  }, [finalFilter, filter]);
+
+  useEffect(() => {
     if (dueDate !== null && startDate !== null) {
       let currentFinalFilter = { ...finalFilter };
       currentFinalFilter[filter]?.map((item, index) => {
@@ -130,6 +170,37 @@ const FilterSelect = ({
       setFinalFilter({ ...currentFinalFilter });
     }
   }, [date, setDate]);
+
+  useEffect(() => {
+    if (minNumber !== null || maxNumber !== null) {
+      let currentFinalFilter = { ...finalFilter };
+      currentFinalFilter[filter]?.map((item, index) => {
+        if (item?.key?.includes('NUMBER_RANGE')) {
+          currentFinalFilter[filter][index] = {
+            ...currentFinalFilter[filter][index],
+            minValue: minNumber,
+            maxValue: maxNumber,
+          };
+        }
+      });
+      setFinalFilter({ ...currentFinalFilter });
+    }
+  }, [minNumber, maxNumber, setMinNumber, setMaxNumber]);
+
+  useEffect(() => {
+    if (singleNumber !== null) {
+      let currentFinalFilter = { ...finalFilter };
+      currentFinalFilter[filter]?.map((item, index) => {
+        if (item?.key?.includes('SINGLE_NUMBER')) {
+          currentFinalFilter[filter][index] = {
+            ...currentFinalFilter[filter][index],
+            value: singleNumber,
+          };
+        }
+      });
+      setFinalFilter({ ...currentFinalFilter });
+    }
+  }, [singleNumber, setSingleNumber]);
 
   const handleSelectOption = (item) => {
     setOptions((v) => v.filter((option) => option?.key !== item?.key));
@@ -214,10 +285,14 @@ const FilterSelect = ({
               value.map((item, index) => {
                 const isDateRangeItem = item?.key?.includes('DATE_RANGE');
                 const isSingleDateItem = item?.key?.includes('DATE_SINGLE');
+                const isNumberRangeItem = item?.key?.includes('NUMBER_RANGE');
+                const isSingleNumberItem = item?.key?.includes('SINGLE_NUMBER');
                 const isDateItem = isDateRangeItem || isSingleDateItem;
+                const isNumberItem = isNumberRangeItem || isSingleNumberItem;
+                const isSpecialItem = isDateItem || isNumberItem;
                 const tagProps = getTagProps({ index });
 
-                const itemProps = isDateItem
+                const itemProps = isSpecialItem
                   ? {
                       key: tagProps.key,
                       onMouseDown: (e) => {
@@ -248,6 +323,24 @@ const FilterSelect = ({
                           <SingleDateOption
                             date={dateValue}
                             setDate={setDate}
+                          />
+                        </div>
+                      ) : isNumberRangeItem ? (
+                        <div style={{ paddingLeft: '15px' }}>
+                          <NumberRangeOptions
+                            minNumber={minNumber}
+                            setMinNumber={setMinNumber}
+                            maxNumber={maxNumber}
+                            setMaxNumber={setMaxNumber}
+                            minValue={minValue}
+                            maxValue={maxValue}
+                          />
+                        </div>
+                      ) : isSingleNumberItem ? (
+                        <div style={{ paddingLeft: '15px' }}>
+                          <SingleNumberOption
+                            value={numberValue}
+                            setNumber={setSingleNumber}
                           />
                         </div>
                       ) : (
