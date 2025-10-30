@@ -46,6 +46,8 @@ import CircleCompleted from 'img/circle-completed.svg';
 import CircleCompletedHover from 'img/circle-completed-hover.svg';
 import TaskAutomationPending from 'img/task-automation-pending.svg';
 import TaskAutomationComplete from 'img/task-automation-complete.svg';
+import { userHasSmartflowAgentFeatureSelector } from '@/app/selectors/user-selectors';
+import { useSelector } from 'react-redux';
 
 const SmartflowSidebar = ({
   isDockProUser,
@@ -249,7 +251,8 @@ const SmartflowSidebar = ({
     {
       id: NodeType.NEW_MISSING_RECORDS_AGENT,
       title: 'Missing Records Agent',
-      description: 'Intelligent missing records identification and gap analysis',
+      description:
+        'Intelligent missing records identification and gap analysis',
       icon: () => <MissingRecordsIcon fontSize="small" />,
       iconClass: 'missing-records',
       category: 'agents',
@@ -299,22 +302,33 @@ const SmartflowSidebar = ({
     event.dataTransfer.effectAllowed = 'move';
   };
 
-  const categories = [
-    {
+  const smartflowAgentAvailable = useSelector(
+    userHasSmartflowAgentFeatureSelector,
+  );
+
+  const SMARTFLOW_CATEGORIES = {
+    BASIC: {
       id: 'basic',
       title: 'Basic Elements',
       description: 'Core workflow building blocks',
     },
-    {
+    COMMUNICATION: {
       id: 'communication',
       title: 'Automations',
       description: 'External integrations and messaging',
     },
-    {
+    AGENTS: {
       id: 'agents',
       title: 'AI Agents',
       description: 'Intelligent automation assistants',
     },
+  };
+
+  const categories = [
+    SMARTFLOW_CATEGORIES.BASIC,
+    ...(smartflowAgentAvailable
+      ? [SMARTFLOW_CATEGORIES.COMMUNICATION, SMARTFLOW_CATEGORIES.AGENTS]
+      : []),
   ];
 
   const utilityActions = toolkitActions.filter((action) =>
@@ -383,10 +397,7 @@ const SmartflowSidebar = ({
                   ? // Render sub-categories for communication
                     Object.entries(communicationSubCategories).map(
                       ([subKey, subCategory]) => (
-                        <div
-                          key={subCategory.id}
-                          style={{ marginTop: '20px' }}
-                        >
+                        <div key={subCategory.id} style={{ marginTop: '20px' }}>
                           <CategoryTitle
                             onClick={() => toggleSubCategory(subCategory.id)}
                             style={{
