@@ -96,6 +96,7 @@ import DockIntegrationsModal from './components/DockIntegrationsModal/DockIntegr
 import ScopeChangeModal from './components/ScopeChangeModal/ScopeChangeModal';
 import ClearDueDateConfirmationModal from './components/ClearDueDateConfirmationModal/ClearDueDateConfirmationModal';
 import CreateEscalationPolicyModal from './components/CreateEscalationPolicyModal/CreateEscalationPolicyModal';
+import EditIntegrationModal from './components/EditIntegrationModal/EditIntegrationModal';
 
 const MODAL_MAP = {
   CompleteAllTasks: CompleteAllTasksModal,
@@ -195,6 +196,7 @@ const MODAL_MAP = {
   DockIntegrations: DockIntegrationsModal,
   ClearDueDateConfirmation: ClearDueDateConfirmationModal,
   CreateEscalationPolicy: CreateEscalationPolicyModal,
+  EditIntegration: EditIntegrationModal,
   ScopeChange: ScopeChangeModal,
 };
 
