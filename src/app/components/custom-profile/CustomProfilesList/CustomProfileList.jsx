@@ -87,8 +87,9 @@ import { DataGridWrapper, StyledLink } from './styled';
 import RelationshipLinks from '../RelationshipLinks';
 import TaskItemBulkEdit from '../../task/StandardTaskItem/TaskItemComponents/TaskItemBulkEdit';
 import { BulkEditSectionContainer } from '@/app/views/user-group/styled';
-
-const DATASET_SIZE_THRESHOLD = 100;
+import { DueDateIntent } from '@/app/helpers/task-helpers';
+import moment from 'moment';
+import Tooltip from '../../common/Tooltip/Tooltip';
 
 const CustomProfileListContent = ({
   profileTypeIdentifier,
@@ -478,6 +479,25 @@ const CustomProfileListContent = ({
     downloadProfileData(profileTypeIdentifier, filename);
   };
 
+  const renderTruncatedCell = (content, tooltipText) => (
+    <Tooltip
+      placement="top"
+      title={tooltipText || (typeof content === 'string' ? content : '')}
+    >
+      <span
+        style={{
+          display: 'inline-block',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          whiteSpace: 'nowrap',
+          width: '100%',
+        }}
+      >
+        {content}
+      </span>
+    </Tooltip>
+  );
+
   const columns = [
     ...(isGuestOrDockLite || isViewOnly
       ? []
@@ -526,21 +546,42 @@ const CustomProfileListContent = ({
                 const value = params.row[field.name];
 
                 if (field.fieldType === FieldType.DATE && value) {
+                  const m =
+                    value.intent === DueDateIntent.DATE
+                      ? moment(value.date).utc()
+                      : moment(value.date);
+
+                  const dateFormat = m.isSame(moment(), 'year')
+                    ? 'MMM DD, YYYY'
+                    : 'MMM DD, YYYY';
+                  const hasTime = m.isValid() && m.format('HH:mm') !== '00:00';
+                  const tooltipText = m.isValid()
+                    ? `${m.format(dateFormat)}${
+                        hasTime ? ' @ ' + m.format('hh:mm a') : ''
+                      }`
+                    : String(value.date);
                   return (
-                    <DateLabel date={value.date} dueDateIntent={value.intent} />
+                    <DateLabel
+                      date={value.date}
+                      dueDateIntent={value.intent}
+                      tootipTitle={tooltipText}
+                    />
                   );
                 }
 
                 if (field.fieldType === FieldType.HYPERLINK) {
                   if (!value) return '';
-                  return (
+                  const href = value.startsWith('http') ? value : `//${value}`;
+
+                  return renderTruncatedCell(
                     <StyledLink
-                      href={value.startsWith('http') ? value : `//${value}`}
+                      href={href}
                       target="_blank"
                       onClick={(e) => e.stopPropagation()}
                     >
                       {value}
-                    </StyledLink>
+                    </StyledLink>,
+                    value,
                   );
                 }
 
@@ -564,7 +605,7 @@ const CustomProfileListContent = ({
                   );
                 }
 
-                return value;
+                return renderTruncatedCell(value);
               },
             }
           : null;
@@ -592,7 +633,7 @@ const CustomProfileListContent = ({
                   ? 'Archived'
                   : status;
 
-              return displayStatus;
+              return renderTruncatedCell(displayStatus);
             },
           },
         ]
@@ -924,7 +965,7 @@ const CustomProfileListContent = ({
           label="object"
           uploadFunction={uploadProfileData}
           identifier={profileTypeIdentifier}
-          importFileTypeHint={"Drag & drop your CSV file here"}
+          importFileTypeHint={'Drag & drop your CSV file here'}
         />
       </Dialog>
       <ProfileUndoAlert onUndo={handleUndo} />
