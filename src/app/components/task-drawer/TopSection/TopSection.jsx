@@ -7,6 +7,8 @@ import { checkIfTemplateTask, TaskStatus } from 'helpers/task-helpers';
 import palette from 'styles/palette';
 import Circle from 'img/circle.svg';
 import CircleCompleted from 'img/circle-completed.svg';
+import TaskAutomationPending from 'img/task-automation-pending.svg';
+import TaskAutomationComplete from 'img/task-automation-complete.svg';
 import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
 import { markTaskAsUnRead } from 'actions/task-actions';
 import { SINGLE_TASK_RESTRICTIONS_OPTIONS } from 'restrictions/task-restrictions';
@@ -226,8 +228,8 @@ const TopSection = ({
               <CircleIcon
                 src={
                   selectedTask?.status === TaskStatus.COMPLETE
-                    ? CircleCompleted
-                    : Circle
+                    ? selectedTask?.systemTask ? TaskAutomationComplete : CircleCompleted
+                    : selectedTask?.systemTask ? TaskAutomationPending : Circle
                 }
                 isClickable={
                   !isTaskStatusTogglingDisabled &&
@@ -236,7 +238,7 @@ const TopSection = ({
                 }
                 isCompleted={selectedTask?.status === TaskStatus.COMPLETE}
                 onClick={
-                  taskListRestrictions?.completeTask !== DISABLED
+                  taskListRestrictions?.completeTask !== DISABLED && !selectedTask?.systemTask
                     ? onCompleteToggle
                     : () => {}
                 }

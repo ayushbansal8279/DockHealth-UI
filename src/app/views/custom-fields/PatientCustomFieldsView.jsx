@@ -2,14 +2,13 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import map from 'ramda/src/map';
 import pluck from 'ramda/src/pluck';
-import move from 'ramda/src/move';
 import { Box, IconButton } from '@mui/material';
 import Skeleton from '@mui/material/Skeleton';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import { showGlobalErrorAlert } from 'alert/actions';
 import * as CustomFieldsApi from 'api/custom-fields-api';
-import { FieldType, FieldTypeLabel } from 'helpers/field-type-helpers';
+import { DisplayOption, FieldType, FieldTypeLabel } from 'helpers/field-type-helpers';
 import { CategoryLabel } from 'helpers/patient-details-helpers';
 import { openModal } from 'modal/actions';
 import AddButton from 'components/common/AddButton/AddButton';
@@ -32,6 +31,7 @@ import {
   DragHandle,
   CenterBox,
 } from './styled';
+import { getSortedFields, handleDragAndSort } from '@/app/helpers/custom-fields-helpers';
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
   const PatientCustomFieldsView = ({}) => { 
@@ -101,35 +101,19 @@ import {
     );
   };
 
-  const moveElementByIDs = (originID, destinationID, fields) => {
-    if (!originID || !destinationID) return fields;
-    const idents = pluck('identifier', fields);
-    const indexFrom = idents.indexOf(originID);
-    const indexTo = idents.indexOf(destinationID);
-    return move(indexFrom, indexTo, fields).map((field, index) => ({
-      ...field,
-      sortIndex: index,
-    }));
-  };
-
-  const sortedFields = useMemo(() => {
-    return customFields?.slice().sort((a, b) => {
-      return a?.sortIndex - b?.sortIndex;
-    });
-  }, [customFields]);
+  const sortedFields = useMemo(() => getSortedFields(customFields), [customFields]);
 
   const handleOnDragEnd = async (originID, destinationID) => {
-    const result = moveElementByIDs(originID, destinationID, sortedFields);
-    const lastWorkingOrder = [...customFields];
-    setCustomFields(result);
-    try {
-      await CustomFieldsApi.sortPatientCustomFields(
-        pluck('identifier', result),
-      );
-    } catch {
-      dispatch(showGlobalErrorAlert());
-      setCustomFields(lastWorkingOrder);
-    }
+    await handleDragAndSort({
+      originID,
+      destinationID,
+      sortedFields,
+      customFields,
+      setCustomFields,
+      dispatch,
+      apiMethod: CustomFieldsApi.sortPatientCustomFields,
+      apiParams: (identifiers) => [identifiers]
+    });
   };
 
   const handleAddFieldClick = () => {
@@ -192,13 +176,18 @@ import {
                   <CustomFieldHeaderText>Show on Header</CustomFieldHeaderText>
                 </CustomFieldCell>
                 <CustomFieldCell>
-                  <CustomFieldHeaderText>Include in Search</CustomFieldHeaderText>
+                  <CustomFieldHeaderText>
+                    Include in Search
+                  </CustomFieldHeaderText>
                 </CustomFieldCell>
                 <CustomFieldCell>
                   <CustomFieldHeaderText>Readonly</CustomFieldHeaderText>
                 </CustomFieldCell>
                 <CustomFieldCell>
                   <CustomFieldHeaderText>Hidden</CustomFieldHeaderText>
+                </CustomFieldCell>
+                <CustomFieldCell>
+                  <CustomFieldHeaderText>Required</CustomFieldHeaderText>
                 </CustomFieldCell>
                 <CustomFieldCell>
                   <Box width="68px" />
@@ -220,7 +209,7 @@ import {
                       >
                         {({ dragHandleProps }) => (
                           <div>
-                             <CustomFieldItem type="PATIENT">
+                            <CustomFieldItem type="PATIENT">
                               <DragHandle {...dragHandleProps}>
                                 <DragHandleIcon />
                               </DragHandle>
@@ -230,7 +219,13 @@ import {
                               <CustomFieldCell>
                                 <CustomFieldText>
                                   {field.fieldType === FieldType.RELATIONSHIP
-                                    ? `${FieldTypeLabel[field.fieldType]} - ${
+                                    ? `${FieldTypeLabel[field.fieldType]} (${
+                                        field.displayOptions?.includes(
+                                          DisplayOption.SINGLE_SELECT,
+                                        )
+                                          ? 'Single'
+                                          : 'Multiple'
+                                      }) - ${
                                         field.selectedProfileType?.label ??
                                         field.relatedProfileType?.name ??
                                         ''
@@ -246,7 +241,9 @@ import {
                               <CustomFieldCell>
                                 <CustomFieldText>
                                   {field.displayOptions &&
-                                  field.displayOptions?.includes('PATIENT_HEADER')
+                                  field.displayOptions?.includes(
+                                    'PATIENT_HEADER',
+                                  )
                                     ? 'Yes'
                                     : ''}
                                 </CustomFieldText>
@@ -254,27 +251,39 @@ import {
                               <CustomFieldCell>
                                 <CustomFieldText>
                                   {field.displayOptions &&
-                                  field.displayOptions?.includes('PATIENT_SEARCH')
+                                  field.displayOptions?.includes(
+                                    'PATIENT_SEARCH',
+                                  )
                                     ? 'Yes'
                                     : ''}
                                 </CustomFieldText>
                               </CustomFieldCell>
                               <CustomFieldCell>
-                              <CustomFieldText>
-                                {field.displayOptions &&
-                                field.displayOptions?.includes('READONLY')
-                                  ? 'Yes'
-                                  : ''}
-                              </CustomFieldText>
-                            </CustomFieldCell>
-                            <CustomFieldCell>
-                              <CustomFieldText>
-                                {field.displayOptions &&
-                                field.displayOptions?.includes('HIDDEN')
-                                  ? 'Yes'
-                                  : ''}
-                              </CustomFieldText>
-                            </CustomFieldCell>
+                                <CustomFieldText>
+                                  {field.displayOptions &&
+                                  field.displayOptions?.includes('READONLY')
+                                    ? 'Yes'
+                                    : ''}
+                                </CustomFieldText>
+                              </CustomFieldCell>
+                              <CustomFieldCell>
+                                <CustomFieldText>
+                                  {field.displayOptions &&
+                                  field.displayOptions?.includes('HIDDEN')
+                                    ? 'Yes'
+                                    : ''}
+                                </CustomFieldText>
+                              </CustomFieldCell>
+                              <CustomFieldCell>
+                                <CustomFieldText>
+                                  {field.displayOptions &&
+                                  field.displayOptions?.includes(
+                                    DisplayOption.TASK_REQUIRED,
+                                  )
+                                    ? 'Yes'
+                                    : ''}
+                                </CustomFieldText>
+                              </CustomFieldCell>
                               <CustomFieldCell>
                                 <IconButton
                                   size="small"

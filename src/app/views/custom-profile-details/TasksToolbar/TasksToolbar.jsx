@@ -20,7 +20,7 @@ const TasksToolbar = (props) => {
   } = props;
   const quickAddTaskInputReference = useRef(null);
   const dispatch = useDispatch();
-  const { patientIdentifier } = useParams();
+  const { profileIdentifier } = useParams();
 
   const handleApplyTemplate = useCallback(
     ({ identifier }) => {
@@ -30,7 +30,7 @@ const TasksToolbar = (props) => {
             taskTemplateIdentifier: identifier,
             taskListIdentifier,
             taskGroupIdentifier,
-            patientIdentifier,
+            profileIdentifier,
           }),
         );
       } else {
@@ -43,7 +43,7 @@ const TasksToolbar = (props) => {
                 applyTemplate({
                   taskTemplateIdentifier: identifier,
                   taskListIdentifier: listId,
-                  patientIdentifier,
+                  profileIdentifier,
                   taskGroupIdentifier: taskGroupId,
                 }),
               ),
@@ -51,7 +51,7 @@ const TasksToolbar = (props) => {
         );
       }
     },
-    [dispatch, taskGroupIdentifier, taskListIdentifier, patientIdentifier],
+    [dispatch, taskGroupIdentifier, taskListIdentifier, profileIdentifier],
   );
 
   return (

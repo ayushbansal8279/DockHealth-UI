@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import moment from 'moment';
 import Datepicker from 'components/common/Datepicker/Datepicker';
 import TimeDropdownInput from 'components/common/TimeDropdownInput/TimeDropdownInput';
@@ -19,9 +19,17 @@ const DatePicker = ({
   onDateChange,
   onCloseClick,
   hideDateTime = false,
+  showTime
 }) => {
-  const momentSelectedDate = selectedDate ? moment(selectedDate) : null;
-  const selectedTime = momentSelectedDate?.format(TIME_12H_FORMAT) || null;
+  const momentSelectedDate = showTime === true || showTime === undefined
+    ? (selectedDate ? moment(selectedDate) : null)
+    : (selectedDate ? moment.utc(selectedDate).startOf('day') : null);
+  
+  const selectedTime = showTime === true 
+    ? momentSelectedDate?.format(TIME_12H_FORMAT) || null
+    : showTime === false 
+      ? null
+      : momentSelectedDate?.format(TIME_12H_FORMAT) || null;
 
   const handleDatePick = (pickedDate) => {
     onDateChange(
@@ -35,7 +43,7 @@ const DatePicker = ({
   const handleTimePick = (pickedTime) => {
     onDateChange(
       moment(
-        `${moment(selectedDate).format(DATE_ISO_FORMAT)} ${pickedTime}`,
+        `${moment(momentSelectedDate).format(DATE_ISO_FORMAT)} ${pickedTime}`,
         `${DATE_ISO_FORMAT} ${TIME_12H_FORMAT}`,
       ),
     );
@@ -72,7 +80,7 @@ const DatePicker = ({
         )}
       </QuickAddSectionWrapper>
       <Divider />
-      <Datepicker selectedDate={selectedDate} onDateChange={handleDatePick} />
+      <Datepicker selectedDate={selectedDate} showTime={showTime} onDateChange={handleDatePick} />
       <>
         <Divider />
         <PopoverBottomBar align="spread">

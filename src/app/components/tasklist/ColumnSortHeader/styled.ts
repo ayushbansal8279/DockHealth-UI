@@ -71,6 +71,10 @@ export const SortButton = styled.button<{
   width?: number;
   flex?: number;
   tasksHeaderTextTransform?: string;
+  isDragActive: Boolean;
+  isDraggedOver: Boolean;
+  hoveredIndex: number;
+  hoverBorderSide: string;
 }>`
   position: relative;
   ${({ width }) => {
@@ -82,7 +86,8 @@ export const SortButton = styled.button<{
   height: 35px;
   text-align: left;
   font-family: inherit;
-  background-color: ${palette.white};
+  background: ${({ isDragActive }) =>
+    isDragActive ? palette.brightBlueWithAlpha : palette.white};
   font-size: ${fontSizes.smallPlus};
   font-weight: ${fontWeights.regularPlus};
   ${({ tasksHeaderTextTransform }) =>
@@ -90,6 +95,20 @@ export const SortButton = styled.button<{
       ? `text-transform: ${tasksHeaderTextTransform};`
       : 'text-transform: uppercase;'};
   ${({ flex }) => (flex ? `flex: ${flex};` : '')};
+  ${({ isDraggedOver, hoverBorderSide, hoveredIndex }) => {
+    if (!isDraggedOver) return '';
+    if (hoveredIndex === 1 && hoverBorderSide === 'left')
+      return `background-color: ${palette.coolGrey3};`;
+    if (hoverBorderSide === 'left') {
+      return `border-left: 3px solid ${palette.azureBlue};
+      background-color: ${palette.coolGrey3};
+      `;
+    }
+
+    return `border-right: 3px solid ${palette.azureBlue};
+    background-color: ${palette.coolGrey3};`;
+  }};
+
   &:hover {
     background-color: ${palette.coolGrey3};
   }
@@ -102,6 +121,35 @@ export const SortButton = styled.button<{
       max-width: ${printWidth}px;
   `};
   }
+`;
+
+export const DragPreviewWrapper = styled.div`
+  display: inline-flex;
+  align-items: center;
+  background-color: ${palette.white};
+  color: black;
+  padding: 6px 12px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  position: relative;
+  width: 200px;
+  height: 35px;
+  cursor: grabbing;
+  user-select: none;
+  opacity: 0.6;
+`;
+
+export const DragPreviewText = styled.div`
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  font-weight: bold;
+  ${({ tasksHeaderTextTransform }) =>
+    tasksHeaderTextTransform
+      ? `text-transform: ${tasksHeaderTextTransform};`
+      : 'text-transform: uppercase;'};
+  font-family: inherit;
+  font-size: ${fontSizes.smallPlus};
+  font-weight: ${fontWeights.regularPlus};
 `;
 
 export const ThreeDots = styled.img<{ hideIcon: boolean }>`

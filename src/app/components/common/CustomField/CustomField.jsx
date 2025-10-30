@@ -7,15 +7,22 @@ import React, {
   useState,
 } from 'react';
 import propTypes from 'prop-types';
-import { FieldCharacterLimit, FieldType } from 'helpers/field-type-helpers';
-import { BOOL_SELECT_OPTIONS } from 'helpers/custom-fields-helpers';
+import {
+  DisplayOption,
+  FieldCharacterLimit,
+  FieldType,
+} from 'helpers/field-type-helpers';
+import {
+  BOOL_SELECT_OPTIONS,
+  stringToRegex,
+} from 'helpers/custom-fields-helpers';
 import FormInput from 'components/common/Input/FormInput';
 import FormSelect from 'components/common/Select/FormSelect';
 import DateInput from 'components/common/DateInput/DateInput';
 import { useFormContext } from 'react-hook-form';
 import { taskDrawerFocusFieldSelector } from 'selectors/task-drawer-selectors';
 import { useSelector } from 'react-redux';
-import { TaskItemType } from 'helpers/task-helpers';
+import { checkDateTimeIntent, TaskItemType } from 'helpers/task-helpers';
 import { workflowAutofocusFieldSelector } from 'selectors/workflow-drawer-selectors';
 import { Box, Link } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
@@ -25,6 +32,7 @@ import CustomFieldErrorContext from './CustomFieldErrorContext';
 import CustomFieldAutoComplete from './CustomFieldAutoComplete';
 import AutoCompleteFormSelect from '../Autocomplete/AutoCompleteFormSelect';
 import palette from '@/app/styles/palette';
+import { validateAndSetError } from '../../patients/PatientForm/helpers';
 
 const CustomField = ({
   readOnly,
@@ -36,15 +44,27 @@ const CustomField = ({
   taskIdentifier,
   task,
   popoverZindex,
+  formMethods,
 }) => {
   const containerReference = useRef(null);
-  const { identifier, name, placeholder, fieldType, options, displayOptions } =
-    field;
-  const isRequired = displayOptions?.includes('TASK_REQUIRED') || displayOptions?.includes('PROFILE_NAME');
+  const {
+    identifier,
+    name,
+    placeholder,
+    fieldType,
+    options,
+    displayOptions,
+    validationRegex,
+    validationRegexDescription,
+  } = field;
+  const isRequired =
+    displayOptions?.includes('TASK_REQUIRED') ||
+    displayOptions?.includes('PROFILE_NAME');
   const isReadOnly = displayOptions?.includes('READONLY') || readOnly;
   const inputReference = useRef(null);
   const componentReference = useRef(null);
-  const { setValue, watch, setError, clearErrors } = useFormContext();
+  const formContext = useFormContext();
+  const { setValue, watch, setError, clearErrors } = formMethods || formContext;
   const [wasChanged, setWasChanged] = useState(false);
   const [isEditable, setIsEditable] = useState(false);
   const [descriptionErrorState, setDescriptionErrorState] = useState(false);
@@ -57,6 +77,9 @@ const CustomField = ({
     }),
     [descriptionErrorState, identifier, isRequired],
   );
+
+  const validationDescription =
+    validationRegexDescription || 'Not satisfying validation regex';
 
   const handleEditClick = () => {
     setIsEditable(true);
@@ -102,6 +125,8 @@ const CustomField = ({
   );
 
   const fieldName = `${fieldsGroupKey}.${identifier}`;
+  const isPatientCustomField = fieldsGroupKey === 'patientMetaData';
+
   useEffect(() => {
     if (initialValue) setValue(fieldName, initialValue);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -121,6 +146,54 @@ const CustomField = ({
     }
   }, [fieldType, identifier, taskDrawerFocusField]);
 
+  const validateWithRegex = useCallback(
+    (value) => {
+      if (!validationRegex) return true;
+
+      const regex = stringToRegex(validationRegex);
+      if (!value) {
+        return true;
+      }
+      if (!(regex instanceof RegExp)) {
+        return true;
+      }
+      const isMatch = regex.test(value);
+      const result = isMatch
+        ? true
+        : validationDescription || 'Validation failed';
+      return result;
+    },
+    [validationRegex, validationDescription],
+  );
+
+  const handleCustomFieldChange = useCallback(
+    (event) => {
+      if (isPatientCustomField && validateWithRegex) {
+        const newValue = event.target.value;
+        validateAndSetError(
+          fieldName,
+          newValue,
+          validateWithRegex,
+          setError,
+          clearErrors,
+        );
+      }
+      setWasChanged(true);
+    },
+    [isPatientCustomField, validateWithRegex, fieldName, setError, clearErrors],
+  );
+
+  const getChangeHandler = useCallback(() => {
+    return isPatientCustomField
+      ? handleCustomFieldChange
+      : () => setWasChanged(true);
+  }, [isPatientCustomField, handleCustomFieldChange]);
+
+  const getValidateFunction = useCallback(() => {
+    if (isPatientCustomField) return undefined;
+    return validationRegex ? validateWithRegex : undefined;
+  }, [isPatientCustomField, validationRegex, validateWithRegex]);
+
   const renderCustomField = useCallback(() => {
     switch (fieldType) {
       case FieldType.TEXT: {
@@ -134,9 +207,12 @@ const CustomField = ({
             onBlur={handleBlur}
             inputRef={inputReference}
             ref={componentReference}
-            onChange={() => setWasChanged(true)}
+            onChange={getChangeHandler()}
             required={isRequired}
             characterLimit={FieldCharacterLimit.TEXT}
+            validate={getValidateFunction()}
+            disableClearErrorOnKeyUp
+            formMethods={formMethods}
           />
         );
       }
@@ -146,13 +222,14 @@ const CustomField = ({
             readOnly={isReadOnly}
             label={name}
             name={fieldName}
-            placeholder={placeholder}
             onBlur={handleBlur}
             inputRef={inputReference}
             ref={componentReference}
             onChange={() => setWasChanged(true)}
             required={isRequired}
             relatedProfileType={field.relatedProfileType}
+            multiple={!displayOptions?.includes(DisplayOption.SINGLE_SELECT)}
+            formMethods={formMethods}
           />
         );
       }
@@ -171,6 +248,7 @@ const CustomField = ({
             inputRef={inputReference}
             onChange={() => setWasChanged(true)}
             enableRichText
+            formMethods={formMethods}
           />
         );
       }
@@ -185,8 +263,11 @@ const CustomField = ({
             onBlur={handleBlur}
             inputRef={inputReference}
             ref={componentReference}
-            onChange={() => setWasChanged(true)}
+            onChange={getChangeHandler()}
             required={isRequired}
+            validate={getValidateFunction()}
+            disableClearErrorOnKeyUp
+            formMethods={formMethods}
           />
         );
       }
@@ -203,10 +284,13 @@ const CustomField = ({
             ref={componentReference}
             onChange={() => setWasChanged(true)}
             required={isRequired}
+            formMethods={formMethods}
           />
         );
       }
       case FieldType.DATE: {
+        const value = watch(fieldName) || '';
+        const dateIntent = checkDateTimeIntent(value);
         return (
           <FormInput
             readOnly={isReadOnly}
@@ -224,6 +308,8 @@ const CustomField = ({
             setError={setError}
             clearErrors={clearErrors}
             required={isRequired}
+            dateIntent={dateIntent}
+            formMethods={formMethods}
           />
         );
       }
@@ -265,6 +351,7 @@ const CustomField = ({
               ref={componentReference}
               onChange={() => setWasChanged(true)}
               required={isRequired}
+              formMethods={formMethods}
             />
           </Box>
         );
@@ -283,6 +370,7 @@ const CustomField = ({
               onChange={() => setWasChanged(true)}
               required={isRequired}
               multiple={true}
+              formMethods={formMethods}
             />
           </Box>
         );
@@ -307,8 +395,9 @@ const CustomField = ({
             onBlur={handleBlur}
             inputRef={inputReference}
             ref={componentReference}
-            onChange={() => setWasChanged(true)}
+            onChange={getChangeHandler()}
             required={isRequired}
+            formMethods={formMethods}
             startAdornment={
               customFieldHasValue && !isEditable ? (
                 <Link
@@ -374,6 +463,8 @@ const CustomField = ({
     popoverZindex,
     isEditable,
     isReadOnly,
+    getChangeHandler,
+    getValidateFunction,
   ]);
 
   return (
@@ -388,13 +479,14 @@ const CustomField = ({
 CustomField.propTypes = {
   readOnly: propTypes.bool,
   field: propTypes.object.isRequired,
-  selected: propTypes.bool,
+  selected: propTypes.object,
   initialValue: propTypes.oneOfType([propTypes.string, propTypes.number]),
   onBlur: propTypes.func,
   fieldsGroupKey: propTypes.string.isRequired,
   taskIdentifier: propTypes.string,
   task: propTypes.object,
   popoverZindex: propTypes.number,
+  formMethods: propTypes.object,
 };
 
 export default CustomField;

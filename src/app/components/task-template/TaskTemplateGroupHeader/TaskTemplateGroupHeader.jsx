@@ -91,7 +91,7 @@ import {
   AISummaryWrapper,
 } from './styled';
 import TaskTemplateDetails from '../TaskTemplateDetails/TaskTemplateDetails';
-import { ListPageContext } from '@/app/views/list-details/ListDetailsView';
+import { TaskViewContext } from '@/app/context-api/task-view-context';
 import { VTaskContext } from '@/app/views/list-details/VirtualTaskList/VirtualSegment/VTask/VTask';
 import { TaskScrollVericleLine } from '../../task/styled';
 import TaskTemplateComment from '../TaskTemplateIcons/TaskTemplateComment';
@@ -99,6 +99,10 @@ import palette from '@/app/styles/palette';
 import TaskTemplateContextMenu from '../TaskTemplateContextMenu/TaskTemplateContextMenu';
 import AISummaryModalOpenerHelper from '@/app/modal/components/AISummaryModal/AISummaryModalOpenerHelper';
 import { SummaryType } from '@/app/helpers/ai-helper';
+import { useDraggable, useDroppable } from '@dnd-kit/core';
+import { CSS } from '@dnd-kit/utilities';
+import { useDropDirection } from '@/app/context-api/DropDirectionContext';
+import TaskItemProfile from '../../task/StandardTaskItem/TaskItemComponents/TaskItemProfile/TaskItemProfile';
 
 const TaskTemplateGroupHeader = ({
   templateGroup = {},
@@ -123,8 +127,10 @@ const TaskTemplateGroupHeader = ({
   origin,
   isNextVirtualTaskItemTypeBundle,
   isLastTaskOfGroup,
+  isFirstTaskOfGroup,
   isNextTaskItemTypeBundle,
   tasksStatus,
+  taskGroupIdentifier,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const {
@@ -137,14 +143,39 @@ const TaskTemplateGroupHeader = ({
     creator,
   } = templateGroup;
 
+  const { attributes, listeners, setNodeRef, transform, transition } =
+    useDraggable({
+      id: identifier,
+      data: {
+        level: 'top',
+        groupId: taskGroupIdentifier,
+      },
+    });
+
+  const {
+    setNodeRef: setDroppableRef,
+    isOver,
+    active,
+    over,
+  } = useDroppable({
+    id: identifier,
+    data: {
+      level: 'top',
+      groupId: taskGroupIdentifier,
+    },
+  });
+
   const { bulkEditIsActive } = useContext(BulkEditContext);
   const { bulkEditEnabled } = useContext(BulkEditContext);
-  const { changeViewType, tasks, handleAddTask } = useContext(ListPageContext);
+  const dropDirectionRef = useDropDirection();
+  const { changeViewType, tasks, handleAddTask } = useContext(TaskViewContext);
   const [isEditing, setIsEditing] = useState(false);
   const [nameInputValue, setNameInputValue] = useState(name);
   const [nameInputError, setNameInputError] = useState(false);
   const [contextMenu, setContextMenu] = useState(null);
   const isDateHover = false;
+  const elementRef = useRef(null);
+  const [hoverBorder, setHoverBorder] = useState(null);
   const nameInputReference = useRef(null);
   const currentUser = useSelector(userProfileSelector);
   const currentList = useSelector(currentTaskListSelector);
@@ -158,6 +189,31 @@ const TaskTemplateGroupHeader = ({
       f.columnWidth,
     ),
   }));
+
+  useEffect(() => {
+    if (!isFirstTaskOfGroup || !active || !isOver) {
+      setHoverBorder(null);
+      if (dropDirectionRef) {
+        dropDirectionRef.current = null;
+      }
+      return;
+    }
+
+    const handlePointerMove = (e) => {
+      const rect = elementRef?.current?.getBoundingClientRect();
+      if (!rect) return;
+
+      const isTop = e?.clientY < rect?.top + rect?.height / 2;
+      const direction = isTop ? 'top' : 'bottom';
+      if (dropDirectionRef) {
+        dropDirectionRef.current = direction;
+      }
+      setHoverBorder(direction);
+    };
+
+    window.addEventListener('pointermove', handlePointerMove);
+    return () => window.removeEventListener('pointermove', handlePointerMove);
+  }, [active?.id, over?.id, isFirstTaskOfGroup, origin, taskGroupIdentifier]);
 
   useEffect(() => {
     setNameInputValue(name);
@@ -260,6 +316,16 @@ const TaskTemplateGroupHeader = ({
   if (workflowAddTaskDisabled) {
     taskListRestrictions.workflowAddTask = DISABLED;
   }
+  const userSortingSupportDisabled = useMemo(() => {
+    const disabledSettingItem =
+      selectedOrganization?.themeSettings?.find(
+        ({ name: themeName }) => themeName === 'list.tasks.user.sort.enabled',
+      ) || {};
+    return disabledSettingItem && disabledSettingItem?.value === 'false';
+  }, [selectedOrganization]);
+
+  const isDragAndDropEnabled =
+    origin === 'LIST' ? !userSortingSupportDisabled : true;
 
   const [completedTasksAmount, allTasksAmount] = useMemo(() => {
     if (templateTasks?.length === 0) {
@@ -276,6 +342,8 @@ const TaskTemplateGroupHeader = ({
               accumulator[0] += 1;
             }
           });
+        } else {
+          accumulator[0] += currentTask?.subTasksCompletedCount || 0;
         }
         accumulator[1] = accumulator[1] + (currentTask?.subTasksCount || 0) + 1;
 
@@ -530,8 +598,8 @@ const TaskTemplateGroupHeader = ({
   const [isPatientDataReadOnly] = useState(true);
   const collapse = useContext(CollapseContext);
 
-  const [isWorkflowExpanded, setIsWorkflowExpanded] = useState(() => 
-    collapse.get(identifier) === undefined ? false : !collapse.get(identifier)
+  const [isWorkflowExpanded, setIsWorkflowExpanded] = useState(() =>
+    collapse.get(identifier) === undefined ? false : !collapse.get(identifier),
   );
 
   const { isVirtualListWorkflowOpen } = useContext(VTaskContext);
@@ -564,7 +632,7 @@ const TaskTemplateGroupHeader = ({
       return (
         <StickyMainTaskItemCell
           isTamplateGroup
-          isOpen={origin === 'PATIENT' ? isOpen : !isVirtualListWorkflowOpen}
+          isOpen={!isVirtualListWorkflowOpen}
           customWidthExists
           backgroundColor={pageBackground}
           isSelected={isBundleSelected}
@@ -572,15 +640,19 @@ const TaskTemplateGroupHeader = ({
           order={0}
           width={width + 25 + 56}
           origin={origin}
+          isDragActive={!!active && active?.id === identifier}
         >
           {!groupDragAndDropDisabled &&
             !bulkEditIsActive &&
+            isDragAndDropEnabled &&
             taskListRestrictions?.completeTask !== DISABLED && (
-              <TemplateHandle
-                src={ThreeDotsIcon}
-                alt="Handle"
-                {...dragHandleProps}
-              />
+              <div {...attributes} {...listeners}>
+                <TemplateHandle
+                  src={ThreeDotsIcon}
+                  alt="Handle"
+                  {...dragHandleProps}
+                />
+              </div>
             )}
           <ActionIconsContainer isOpen={!isVirtualListWorkflowOpen}>
             {taskListRestrictions?.completeTask !== DISABLED &&
@@ -593,11 +665,7 @@ const TaskTemplateGroupHeader = ({
             <ChevronContainer>
               {showTasksWithGroup && origin !== 'DASHBOARD' && (
                 <RotatableChevron
-                  rotated={
-                    origin === 'PATIENT' || origin === 'DASHBOARD'
-                      ? isOpen
-                      : isWorkflowExpanded
-                  }
+                  rotated={origin === 'DASHBOARD' ? isOpen : isWorkflowExpanded}
                   onClick={handleOpen}
                   color={palette.crystalBlue}
                 />
@@ -651,11 +719,23 @@ const TaskTemplateGroupHeader = ({
       <TaskTemplateGroupHeaderContainer
         onContextMenu={handleTaskItemRightClick}
         isSelected={isBundleSelected}
-        isOpen={origin === 'PATIENT' ? isOpen : isWorkflowExpanded}
+        isOpen={isWorkflowExpanded}
         isNextVirtualTaskItemTypeBundle={isNextVirtualTaskItemTypeBundle}
         isLastTaskOfGroup={isLastTaskOfGroup}
         origin={origin}
         isNextTaskItemTypeBundle={isNextTaskItemTypeBundle}
+        ref={(node) => {
+          setNodeRef(node);
+          setDroppableRef(node);
+          elementRef.current = node;
+        }}
+        isDraggedOver={
+          isOver &&
+          active?.id !== identifier &&
+          active?.data?.current?.level === 'top'
+        }
+        hoverBorder={hoverBorder === 'top'}
+        isDragActive={!!active && active?.id === identifier}
       >
         {randerFirstColumnCoverIfNecessary(
           <>
@@ -740,6 +820,24 @@ const TaskTemplateGroupHeader = ({
               columns?.find(
                 ({ identifier: id }) => id === TaskItemColumn.PATIENT,
               ).columnWidth,
+            )}
+          </>
+        )}
+        {isColumnChecked(columns, TaskItemColumn.PROFILE) && (
+          <>
+            {randerFirstColumnCoverIfNecessary(
+              <TaskItemCell
+                key={`profile_${identifier}`}
+                width={
+                  columns?.find(
+                    ({ identifier: id }) => id === TaskItemColumn.PROFILE,
+                  ).columnWidth
+                }
+                order={getColumnOrder(TaskItemColumn.PROFILE)}
+              >
+                <TaskItemProfile task={templateGroup} />
+              </TaskItemCell>,
+              getColumnOrder(TaskItemColumn.PROFILE),
             )}
           </>
         )}
@@ -947,7 +1045,7 @@ const TaskTemplateGroupHeader = ({
                 order={getColumnOrder(TaskItemColumn.PRIORITY)}
               >
                 <TaskItemDropdown
-                  value={taskPriority}
+                  value={taskPriority === TaskPriority.LOW ? '' : taskPriority}
                   onChange={handleUpdateTaskPriority}
                   field={{
                     options: [
@@ -1096,6 +1194,7 @@ const TaskTemplateGroupHeader = ({
                   multipleAssigneesContext={groupHasMultipleAssignees}
                   workflow={templateGroup}
                   onWorkflowUpdate={compose(dispatch, updatePartialWorkflow)}
+                  maxIconDisplay={2}
                 />
               </TaskItemCell>,
               getColumnOrder(TaskItemColumn.ASSIGNED),

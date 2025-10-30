@@ -9,6 +9,7 @@ import Spacing from 'components/common/Spacing';
 import { CloseIconButton, CloseIcon } from '../styled';
 import { ListFormModalWrapper, Header, Title, StyledForm } from './styled';
 import { CancelButton, ConfirmButton } from '../ModalButton/ModalButtons';
+import { useLocation } from 'react-router-dom';
 
 const TEMPLATE_NAME_FIELD_NAME = 'name';
 
@@ -26,22 +27,31 @@ function createSubmit({
   event,
   dispatch,
   history,
+  workspaceIdentifier,
+  location,
 }) {
   return function onSubmit(data) {
     event.preventDefault();
-    dispatch(TaskTemplateActions.addSmartFlow(data, history));
+    dispatch(
+      TaskTemplateActions.addSmartFlow(data, history, workspaceIdentifier, location),
+    );
     if (typeof onCreateSuccess === 'function') onCreateSuccess(data);
     closeModal();
   };
 }
 
-const CreateSmartFlowModal = ({ closeModal, onCreateSuccess }) => {
+const CreateSmartFlowModal = ({
+  closeModal,
+  onCreateSuccess,
+  workspaceIdentifier,
+}) => {
   const dispatch = useDispatch();
   const history = useHistory();
   const formMethods = useForm({
     mode: 'onSubmit',
   });
   const { handleSubmit } = formMethods;
+  const location = useLocation();
 
   return (
     <ListFormModalWrapper>
@@ -60,6 +70,8 @@ const CreateSmartFlowModal = ({ closeModal, onCreateSuccess }) => {
               closeModal,
               dispatch,
               history,
+              workspaceIdentifier,
+              location,
             }),
           )(event)
         }
@@ -74,15 +86,9 @@ const CreateSmartFlowModal = ({ closeModal, onCreateSuccess }) => {
             validate={validateTemplateName}
           />
           <Grid container direction="row" justifyContent="center">
-            <CancelButton
-              onClick={closeModal}
-            >
-              Cancel
-            </CancelButton>
+            <CancelButton onClick={closeModal}>Cancel</CancelButton>
             <Spacing horizontal={3} />
-            <ConfirmButton type="submit">
-              Save
-            </ConfirmButton>
+            <ConfirmButton type="submit">Save</ConfirmButton>
           </Grid>
         </FormProvider>
       </StyledForm>

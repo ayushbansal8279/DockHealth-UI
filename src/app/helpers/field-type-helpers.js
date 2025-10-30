@@ -3,7 +3,8 @@ import FieldTypeNumberImg from 'img/patient/field-type-number.svg';
 import FieldTypeDateImg from 'img/patient/field-type-date.svg';
 import FieldTypeTextImg from 'img/patient/field-type-text.svg';
 import FieldTypeDropdownImg from 'img/patient/field-type-dropdown.svg';
-import FieldTypeLink from 'img/patient/field-type-link.svg';
+import FieldTypeLinkImg from 'img/patient/field-type-link.svg';
+import FieldTypeRelationshipImg from 'img/patient/field-type-relationship.svg';
 
 export const FieldType = {
   DATE: 'DATE',
@@ -15,6 +16,14 @@ export const FieldType = {
   DROPDOWN_MULTI: 'MULTI_SELECT',
   HYPERLINK: 'HYPERLINK',
   RELATIONSHIP: 'RELATIONSHIP',
+};
+
+export const DisplayOption = {
+  SINGLE_SELECT: 'SINGLE_SELECT',
+  PROFILE_NAME: 'PROFILE_NAME',
+  PROFILE_HEADER: 'PROFILE_HEADER',
+  TASK_REQUIRED: 'TASK_REQUIRED',
+  REQUIRED: 'REQUIRED',
 };
 
 export const FieldCharacterLimit = {
@@ -101,7 +110,7 @@ export const FIELD_TYPES = [
   },
   {
     key: FieldType.HYPERLINK,
-    image: FieldTypeLink,
+    image: FieldTypeLinkImg,
     title: FieldTypeLabel[FieldType.HYPERLINK],
     description: 'Add a named link for a website',
   },
@@ -139,8 +148,44 @@ export const FIELD_TYPES = [
   },
   {
     key: FieldType.RELATIONSHIP,
-    image: FieldTypeLink,
+    image: FieldTypeRelationshipImg,
     title: FieldTypeLabel[FieldType.RELATIONSHIP],
-    description: 'Link to other custom profiles',
+    description: 'Link to other custom objects',
   },
 ];
+
+export const REGEX_OPTIONS = [
+  {
+    label: 'Custom regex',
+    value: '',
+  },
+  {
+    label: 'Only letters',
+    value: '/^[A-Za-z]+$/',
+  },
+  {
+    label: 'Letters & spaces',
+    value: '/^[A-Za-z\\s]+$/',
+  },
+  {
+    label: 'Alphanumeric',
+    value: '/^[A-Za-z0-9]+$/',
+  },
+  {
+    label: 'Length limited (3-30 characters)',
+    value: '/^.{3,30}$/',
+  },
+  {
+    label: 'Email address',
+    value: '/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/',
+  },
+  {
+    label: 'Numbers only (1-100 Only)',
+    value: '/^(?:[1-9][0-9]?|100)$/',
+  },
+];
+
+export function getRegexLabelByValue(value) {
+  const match = REGEX_OPTIONS.find((option) => option.value === value);
+  return match.label === 'Custom Regex' ? '' : match.label;
+}

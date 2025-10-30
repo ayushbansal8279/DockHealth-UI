@@ -182,6 +182,24 @@ function* updateSubscriptionPlan({ newPlan }) {
   }
 }
 
+function* updateOrganizationWorkspaceLabel({ workspaceLabel }) {
+  try {
+    yield call(
+      OrganizationApi.updateOrganizationWorkspaceLabel,
+      workspaceLabel,
+    );
+    yield put({
+      type: ActionTypes.UPDATE_ORGANIZATION_WORKSPACE_LABEL_SUCCESS,
+      workspaceLabel,
+    });
+  } catch {
+    yield put({
+      type: ActionTypes.UPDATE_ORGANIZATION_WORKSPACE_LABEL_FAILURE,
+    });
+    yield put(showGlobalErrorAlert());
+  }
+}
+
 export default function* watchOrganization() {
   yield takeLatest(GET_ORGANIZATION_STATUSES, doGetOrganizationStatuses);
   yield takeLatest(DELETE_ORGANIZATION_STATUS, doDeleteOrganizationStatus);
@@ -206,5 +224,9 @@ export default function* watchOrganization() {
   yield takeLatest(
     ActionTypes.UPDATE_SUBSCRIPTION_PLAN,
     updateSubscriptionPlan,
+  );
+  yield takeLatest(
+    ActionTypes.UPDATE_ORGANIZATION_WORKSPACE_LABEL,
+    updateOrganizationWorkspaceLabel,
   );
 }

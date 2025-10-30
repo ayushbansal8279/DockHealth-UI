@@ -14,7 +14,7 @@ export const StyledPopover = styled(Popover)`
   }
 `;
 
-export const StyledButton = styled.button`
+export const StyledButton = styled.div`
   width: 100%;
 `;
 

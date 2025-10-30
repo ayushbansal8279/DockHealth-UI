@@ -2,15 +2,12 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useLocation, useParams } from 'react-router-dom';
 import ArrowLeftIcon from 'img/arrow-left.svg';
-import { Box, Chip, Grid, Typography } from '@mui/material';
-// import Tooltip from 'components/common/Tooltip/Tooltip';
+import { Box, Grid, Typography } from '@mui/material';
 import {
+  userHasProfileBuilderFeatureSelector,
   userProfileSelector,
-  // selectedUserOrganizationSelector,
 } from 'selectors/user-selectors';
 import { CUSTOM_PROFILES_PATH } from 'routing/helpers/paths';
-// import { organizationSelector } from 'selectors/organization-selectors';
-// import { FieldType } from 'helpers/field-type-helpers';
 import {
   TASK_LIST_RESTRICTIONS_OPTIONS,
   TASK_LIST_RESTRICTIONS_PROFILES,
@@ -31,6 +28,9 @@ import {
   ProfileDetailsLabel,
   ButtonContainer,
 } from './styled';
+import ProfileDetailsDrawer from '../../profile-details/ProfileDetailsDrawer/ProfileDetailsDrawer';
+import { useBoolean } from 'hooks/useBoolean';
+import DateLabel from '@/app/components/common/DateLabel/DateLabel';
 
 const { DISABLED } = TASK_LIST_RESTRICTIONS_OPTIONS;
 
@@ -62,29 +62,6 @@ const ProfileDetailsHeader = () => {
       });
   };
 
-  // const profile = useMemo(
-  //   () => profiles.find(({ identifier }) => identifier === profileIdentifier),
-  //   [profiles, profileIdentifier],
-  // );
-
-  // const profileHeader = useMemo(
-  //   () =>
-  //     Object.fromEntries(
-  //       profile?.fields
-  //         .filter((field) =>
-  //           field?.profileTypeField?.displayOptions?.includes('PROFILE_HEADER'),
-  //         )
-  //         .map((field) => {
-  //           return [
-  //             field.profileTypeField.name,
-  //             field.values?.[0].value ||
-  //               field.values?.[0]?.customFieldOption.name,
-  //           ];
-  //         }) || [],
-  //     ),
-  //   [profile],
-  // );
-
   useEffect(() => {
     fetchProfileTypeFields();
     fetchProfile();
@@ -98,15 +75,17 @@ const ProfileDetailsHeader = () => {
 
   const history = useHistory();
   const location = useLocation();
-  // const [isDrawerOpen, setIsDrawerOpen, unsetIsDrawerOpen] = useBoolean(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [isProfileOpen, setIsProfileOpen, unsetIsProfileOpen] =
+    useBoolean(false);
   const currentUser = useSelector(userProfileSelector);
-  // const currentOrganization = useSelector(selectedUserOrganizationSelector);
-  // const organization = useSelector(organizationSelector);
   const [cameFrom, setCameFrom] = useState();
   const taskListRestrictions =
     TASK_LIST_RESTRICTIONS_PROFILES[currentUser?.orgUserRole];
   const embeddedMode = sessionStorage.getItem('EmbeddedMode') || false;
+  const profileBuilderFeatureAvailable = useSelector(
+    userHasProfileBuilderFeatureSelector,
+  );
 
   const goBack = useCallback(() => {
     if (cameFrom) {
@@ -144,12 +123,17 @@ const ProfileDetailsHeader = () => {
                 </Box>
                 <ProfileName>
                   {[
-                    `${profileName?.[1] ? profileName?.[1]+',' : ''}`,
+                    `${profileName?.[1] ? profileName?.[1] + ',' : ''}`,
                     profileName?.[0],
                     profileName?.[2],
                   ].join(' ')}
                 </ProfileName>
                 <Box mx={1} />
+                {profileBuilderFeatureAvailable && (
+                  <ButtonContainer onClick={setIsProfileOpen}>
+                    <ProfileDetailsLabel>View object</ProfileDetailsLabel>
+                  </ButtonContainer>
+                )}
                 {taskListRestrictions?.createTask !== DISABLED && (
                   <ButtonContainer onClick={() => setIsDrawerOpen(true)}>
                     <ProfileDetailsLabel>View details</ProfileDetailsLabel>
@@ -176,18 +160,40 @@ const ProfileDetailsHeader = () => {
                       <ProfileInfo>
                         <Typography>{field.profileTypeFieldName}: </Typography>
                         <Box ml={1} />
-                        {field.profileTypeFieldType === FieldType.DROPDOWN_MULTI ||
-                          field.profileTypeFieldType === FieldType.DROPDOWN ||
-                          field.profileTypeFieldType === FieldType.RELATIONSHIP
-                          ? `${
+                        {field.profileTypeFieldType === FieldType.HYPERLINK && (
+                          <a href={field.value} target="_blank" rel="noreferrer">
+                            {field.profileTypeFieldName}
+                          </a>
+                        )}
+                        {(field.profileTypeFieldType === FieldType.DATE || field.profileTypeFieldType === FieldType.DATE_TIME) && (
+                          <>
+                            <DateLabel date={field.value} dueDateIntent={field.dateTimeIntent} />
+                          </>
+                        )}
+                        {(field.profileTypeFieldType === FieldType.DROPDOWN_MULTI 
+                          || field.profileTypeFieldType === FieldType.DROPDOWN 
+                          || field.profileTypeFieldType === FieldType.RELATIONSHIP) && (
+                          <>
+                            <Box ml={1} />
+                            {`${
                               field.references
                                 ?.map((item) => item.displayValue)
                                 .join(', ') ||
                               field.values?.join(',') ||
                               field.value ||
                               ''
-                            }`
-                          : `${field.values?.join(',') || field.value || ''}`}
+                            }`}
+                          </>
+                        )}
+                        {(field.profileTypeFieldType === FieldType.TEXT 
+                          || field.profileTypeFieldType === FieldType.LONG_TEXT 
+                          || field.profileTypeFieldType === FieldType.NUMBER 
+                          || field.profileTypeFieldType === FieldType.BOOL) && (
+                          <>
+                            <Box ml={1} />
+                            {`${field.values?.join(',') || field.value || ''}`}
+                          </>
+                        )}
                       </ProfileInfo>
                       <ProfileInfoDivider />
                     </React.Fragment>
@@ -197,7 +203,7 @@ const ProfileDetailsHeader = () => {
           </Box>
           <ProfileDrawer
             title={[
-              `${profileName?.[1] ? profileName?.[1]+',' : ''}`,
+              `${profileName?.[1] ? profileName?.[1] + ',' : ''}`,
               profileName?.[0],
               profileName?.[2],
             ].join(' ')}
@@ -212,6 +218,13 @@ const ProfileDetailsHeader = () => {
             onUpdate={() => {
               fetchProfile();
             }}
+          />
+          <ProfileDetailsDrawer
+            isOpenedDetails={isProfileOpen}
+            closeDrawer={unsetIsProfileOpen}
+            context={'PROFILETYPE'}
+            profileTypeIdentifier={profileTypeIdentifier}
+            profileIdentifier={profileIdentifier}
           />
         </>
       )}

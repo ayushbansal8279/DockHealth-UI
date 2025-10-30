@@ -67,3 +67,25 @@ export function removeOrganizationFromOrganizations(orgId) {
     payload: { orgId },
   };
 }
+
+export function userBulkCreateTask(payload) {
+  return {
+    type: ActionTypes.USER_BULK_CREATE_TASK,
+    payload,
+  };
+}
+
+export function userBulkCreateWorkflow(payload) {
+  return {
+    type: ActionTypes.USER_BULK_CREATE_WORKFLOW,
+    payload,
+  };
+}
+
+export function filterUserDetailsTasks(filters,userIdentifier) {
+  return {
+    type: ActionTypes.FILTER_USER_DETAILS_TASKS,
+    filters,
+    userIdentifier,
+  };
+}

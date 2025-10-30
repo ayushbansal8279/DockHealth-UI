@@ -3,7 +3,10 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { Grid, IconButton, useMediaQuery } from '@mui/material';
 import TaskDescription from 'components/task-drawer/TaskDescription/TaskDescription';
 import { useSelector, useDispatch } from 'react-redux';
-import { userProfileSelector } from 'selectors/user-selectors';
+import {
+  selectedUserOrganizationSelector,
+  userProfileSelector,
+} from 'selectors/user-selectors';
 import PrioritySection from '../PrioritySection/PrioritySection';
 import StatusSection from '../StatusSection/StatusSection';
 import TaskDrawerEmailBodyContainer from '../EmailBody/EmailBody';
@@ -81,14 +84,20 @@ const AddTaskDrawerContent = (props) => {
   const [dueDate, setDueDate] = useState('');
   const [dueDateIntent, setDueDateIntent] = useState('');
   const [workflowStatusIdentifier, setWorkflowStatusIdentifier] = useState('');
-  const [patientIdentifier, setPatientIdentifier] = useState('');
+  const [patient, setPatient] = useState(null);
   const [searchedKeyword, setSearchedKeyword] = useState();
   const [searchedLists, setSearchedLists] = useState([]);
   const [lists, setLists] = useState([]);
   const currentUser = useSelector(userProfileSelector);
+  const currentOrganization = useSelector(selectedUserOrganizationSelector);
   const { userIdentifier } = currentUser;
   const dispatch = useDispatch();
   const isMobile = useMediaQuery((theme) => theme.breakpoints.down('sm'));
+  const quickAddPatientEnabledItem =
+    currentOrganization?.themeSettings?.find(
+      ({ name }) => name === 'patient.quickadd.enabled',
+    ) || {};
+  const quickAddPatientEnabled = quickAddPatientEnabledItem?.value !== 'false';
 
   useEffect(() => {
     const fetchList = async () => {
@@ -155,7 +164,7 @@ const AddTaskDrawerContent = (props) => {
         assignedToIdentifiers: [
           ...new Set([...(assignedToIdentifiers || []), userIdentifier]),
         ],
-        patientIdentifier,
+        patientIdentifier: patient?.patientIdentifier,
         startDate,
         startDateIntent,
         dueDate,
@@ -259,7 +268,9 @@ const AddTaskDrawerContent = (props) => {
           <Grid item xs={12} mb={1} style={styleLeftColumn(isMobile)}>
             <PatientSection
               addTaskDrawer
-              setPatientIdentifier={setPatientIdentifier}
+              setPatient={setPatient}
+              selectedPatient={patient}
+              quickAddPatientEnabled={quickAddPatientEnabled}
             />
           </Grid>
           <Grid item xs={12} mb={1} style={styleLeftColumn(isMobile)}>
@@ -283,7 +294,11 @@ const AddTaskDrawerContent = (props) => {
             </div>
           </Grid>
           <Grid item xs={12} style={styleLeftColumn(isMobile)}>
-            <PrioritySection addTaskDrawer setPriority={setPriority} />
+            <PrioritySection
+              addTaskDrawer
+              priority={priority}
+              setPriority={setPriority}
+            />
           </Grid>
           <Grid item xs={12} ml={3} style={styleRightColumn(isMobile)}>
             <div>

@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Box, Grid } from '@mui/material';
+import { Box, Grid, Select, MenuItem } from '@mui/material';
 import { useDispatch } from 'react-redux';
 import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
 import FormInput from 'components/common/Input/FormInput';
-import Button from 'components/common/Button/Button';
 import FormSelect from 'components/common/Select/FormSelect';
 import { createTemplate, editTemplate } from 'api/template-api';
 import CustomTextEditor from 'components/common/CustomTextEditor/CustomTextEditor';
@@ -21,9 +20,18 @@ import {
 import {
   TEMPLATE_TYPES,
   TEMPLATE_TYPE_OPTIONS,
+  convertToKeyValueArray,
+  defaultPlaceHolderOptions,
+  generatePlaceholderObject,
+  menuProps,
+  selectSx,
   validationSchema,
 } from './helpers';
 import { CancelButton, ConfirmButton } from '../ModalButton/ModalButtons';
+import {
+  getAllPatientCustomFields,
+  getAllTaskListCustomFields,
+} from '@/app/api/custom-fields-api';
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const EditTemplateModal = ({ closeModal, template, onAdded, onUpdated }) => {
@@ -38,6 +46,21 @@ const EditTemplateModal = ({ closeModal, template, onAdded, onUpdated }) => {
   });
 
   const { register, unregister, handleSubmit, setValue, watch } = formMethods;
+  const [currentValue, setCurrentValue] = useState(template?.details);
+  const [templatePlaceholderOptions, setTemplatePlaceholderOptions] = useState(
+    {},
+  );
+  const [selectedPlaceholder, setSelectedPlaceholder] = useState('');
+  const [cursorPosition, setCursorPosition] = useState(0);
+
+  const placeholderOptions = useMemo(
+    () => convertToKeyValueArray(templatePlaceholderOptions),
+    [templatePlaceholderOptions],
+  );
+
+  const handleTextEditorChange = (value) => {
+    setCurrentValue(value);
+  };
 
   useEffect(() => {
     register('type');
@@ -91,6 +114,64 @@ const EditTemplateModal = ({ closeModal, template, onAdded, onUpdated }) => {
       });
   };
 
+  const fetchTemplatePlaceholders = async () => {
+    const defaultPlaceHolders = generatePlaceholderObject(
+      defaultPlaceHolderOptions,
+      'patient',
+    );
+
+    const customFields = await getAllPatientCustomFields();
+    const customFieldOptions = customFields.map((f) => f.name);
+    const patientPlaceholders = generatePlaceholderObject(
+      customFieldOptions,
+      'patient',
+      true,
+    );
+
+    const customtaskFieldsResponse = await getAllTaskListCustomFields();
+    const customTaskFieldsOptions = customtaskFieldsResponse.map((f) => f.name);
+    const taskPlaceholders = generatePlaceholderObject(
+      customTaskFieldsOptions,
+      'task',
+      true,
+    );
+
+    const allPlaceholders = {
+      ...defaultPlaceHolders,
+      ...patientPlaceholders,
+      ...taskPlaceholders,
+    };
+
+    setTemplatePlaceholderOptions(allPlaceholders);
+  };
+
+  useEffect(() => {
+    fetchTemplatePlaceholders();
+  }, []);
+
+  useEffect(() => {
+    const currentShortMessage = watch('shortMessage');
+    if (currentShortMessage) {
+      setCursorPosition(currentShortMessage.length);
+    }
+  }, [watch]);
+
+  const handleCursorPositionChange = (event) => {
+    setCursorPosition(event.target.selectionStart);
+  };
+
+  const handleShortTextPlaceholderSelect = (value) => {
+    const previousValue = watch('shortMessage') || '';
+    const beforeCursor = previousValue.substring(0, cursorPosition);
+    const afterCursor = previousValue.substring(cursorPosition);
+    const newValue = beforeCursor + value + afterCursor;
+
+    setValue('shortMessage', newValue);
+
+    const newCursorPosition = cursorPosition + value.length;
+    setCursorPosition(newCursorPosition);
+  };
+
   return (
     <AddPatientFieldModalWrapper>
       <CloseIconButton onClick={closeModal} size="small" color="secondary">
@@ -125,6 +206,31 @@ const EditTemplateModal = ({ closeModal, template, onAdded, onUpdated }) => {
                       options={TEMPLATE_TYPE_OPTIONS}
                     />
                   </Grid>
+                  {templateTypeValue === TEMPLATE_TYPES.SMS && (
+                    <Grid item xs={4} style={{ marginLeft: 'auto' }}>
+                      <Select
+                        fullWidth
+                        variant="standard"
+                        disableUnderline
+                        value={selectedPlaceholder}
+                        displayEmpty
+                        renderValue={() => 'Insert placeholder'}
+                        MenuProps={menuProps}
+                        placeholder="SelectPlaceHolder"
+                        onChange={(e) => {
+                          setSelectedPlaceholder(e.target.value);
+                          handleShortTextPlaceholderSelect(e.target.value);
+                        }}
+                        sx={selectSx}
+                      >
+                        {placeholderOptions.map((option) => (
+                          <MenuItem key={option.value} value={option.value}>
+                            {option.label}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </Grid>
+                  )}
                   {(templateTypeValue === TEMPLATE_TYPES.EMAIL ||
                     templateTypeValue === TEMPLATE_TYPES.SMS) && (
                     <Grid item xs={12}>
@@ -137,6 +243,11 @@ const EditTemplateModal = ({ closeModal, template, onAdded, onUpdated }) => {
                             ? 'Subject'
                             : 'Message'
                         }
+                        onSelect={handleCursorPositionChange}
+                        onKeyUp={(e) => {
+                          handleCursorPositionChange(e);
+                        }}
+                        onClick={handleCursorPositionChange}
                       />
                     </Grid>
                   )}
@@ -144,10 +255,15 @@ const EditTemplateModal = ({ closeModal, template, onAdded, onUpdated }) => {
                     <Grid item xs={12}>
                       <CustomTextEditor label="Message">
                         <RichTextEditor
-                          value={template?.details}
+                          value={currentValue}
                           onBlur={(value) => setValue('details', value)}
+                          onChange={handleTextEditorChange}
                           initOnClick
                           showCharCount
+                          templatePlaceholders={true}
+                          templatePlaceholderOptions={
+                            templatePlaceholderOptions
+                          }
                         />
                       </CustomTextEditor>
                     </Grid>

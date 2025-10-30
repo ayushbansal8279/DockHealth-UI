@@ -1,7 +1,14 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 /* eslint-disable no-underscore-dangle */
 import React, { useState, useRef, useCallback, useEffect } from 'react';
-import { Box, List, ListItemText, MenuItem, Popover, Switch } from '@mui/material';
+import {
+  Box,
+  List,
+  ListItemText,
+  MenuItem,
+  Popover,
+  Switch,
+} from '@mui/material';
 import CustomizeIcon from 'img/customize-icon.svg';
 import Checkbox from 'components/common/Checkbox/Checkbox';
 import { usePatientListColumnsConfig } from 'context-api/patients-columns-config-context';
@@ -26,8 +33,8 @@ import Search from 'components/task-view/Search/Search';
 import ToolbarButton from '@/app/components/tasklist/list-toolbar-buttons/ToolbarButton/ToolbarButton';
 import {
   SearchContainer,
-  WorkflowSearchHorizontalLine,
-  WorkflowSearchHorizontalLineContainer,
+  HorizontalLine,
+  HorizontalLineContainer,
 } from '@/app/components/task-template/TaskTemplateApplicator/styled';
 import {
   PlusIcon,
@@ -65,9 +72,16 @@ const CustomizeToolbarButton = ({
     setSearchValue('');
   }, [open]);
 
+  const customerTypeLabel = capitalize(getCustomerTypeLabel(userProfile));
+
+  const uniqueIdentifierLabel =
+    customerTypeLabel === 'Patient'
+      ? 'Unique Identifier (MRN)'
+      : 'Unique Identifier';
+
   const ColumnOptionNames = {
-    [PatientHeaderColumn.PATIENT]: 'Name',
-    [PatientHeaderColumn.UNIQUE_ID]: 'Unique Identifier',
+    [PatientHeaderColumn.PATIENT]: null,
+    [PatientHeaderColumn.UNIQUE_ID]: uniqueIdentifierLabel,
     [PatientHeaderColumn.DOB]: 'DOB',
     [PatientHeaderColumn.AGE]: 'Age',
     [PatientHeaderColumn.GENDER_AT_BIRTH]: 'Sex at birth',
@@ -75,9 +89,11 @@ const CustomizeToolbarButton = ({
     [PatientHeaderColumn.EMAIL]: 'Email',
     [PatientHeaderColumn.MOBILE]: 'Mobile Phone',
     [PatientHeaderColumn.HOME]: 'Home Phone',
+    [PatientHeaderColumn.LABELS]: 'Labels',
+    [PatientHeaderColumn.SOURCE_EHR]: 'EHR Source',
+    [PatientHeaderColumn.EHR_LAST_SYNCED]: 'EHR Patient Last Synced',
+    [PatientHeaderColumn.EHR_STATUS]: 'EHR Patient Status',
   };
-
-  const customerTypeLabel = capitalize(getCustomerTypeLabel(userProfile));
 
   const onClickCheckbox = useCallback(
     (column) => {
@@ -155,9 +171,9 @@ const CustomizeToolbarButton = ({
               isWorkFlowSearch
             />
           </SearchContainer>
-          <WorkflowSearchHorizontalLineContainer>
-            <WorkflowSearchHorizontalLine />
-          </WorkflowSearchHorizontalLineContainer>
+          <HorizontalLineContainer>
+            <HorizontalLine />
+          </HorizontalLineContainer>
           <Box display="flex" justifyContent="space-between" mt={1}>
             <Box mx={0.5} />
             <ListItemText>

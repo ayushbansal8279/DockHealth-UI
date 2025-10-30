@@ -1,8 +1,11 @@
+import { transformMetaData } from "./date-intent-helpers";
+
 export const Category = {
   PERSONAL_INFO: 'PATIENT_PERSONAL',
   CONTACT_INFO: 'PATIENT_CONTACT',
   OTHER_INFO: 'PATIENT_OTHER',
   PROFILE: 'PROFILE',
+  GLOBAL: 'GLOBAL',
 };
 
 export const CategoryLabel = {
@@ -34,3 +37,20 @@ export const PatientAttachmentType = {
 
 export const WorkflowCompletedTasksKey =
   'patient-show-workflow-completed-tasks';
+
+export const transformPatientDetails = (details) => {
+  let transformedDetails;
+
+  if (Array.isArray(details)) {
+    transformedDetails = transformMetaData(details);
+  } else if (details && Array.isArray(details.patientMetaData)) {
+    transformedDetails = {
+      ...details,
+      patientMetaData: transformMetaData(details.patientMetaData),
+    };
+  } else {
+    transformedDetails = details;
+  }
+
+  return transformedDetails;
+}

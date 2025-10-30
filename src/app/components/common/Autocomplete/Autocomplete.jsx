@@ -36,18 +36,31 @@ const StandardInput = ({
 
   return (
     <TextField
-      size="small"
+      variant="standard"
       sx={{
-        backgroundColor: '#f8f8f9',
-        '& .MuiOutlinedInput-root': {
-          minHeight: '40px',
-          padding: '5px 3px 2px 5px  !important',
-          '& .MuiOutlinedInput-notchedOutline': {
-            borderColor: 'transparent',
-          },
-          '& .Mui-disabled': {
-            opacity: '0.7',
-          },
+        backgroundColor: '#f5f8fa',
+        borderRadius: '4px',
+        '& .MuiInputLabel-root': {
+          color: '#7d91a2',
+          paddingLeft: '10px',
+          textTransform: 'none',
+        },
+        '& .MuiInputLabel-shrink': {
+          color: '#7d91a2',
+          paddingTop: '15px',
+          paddingLeft: '15px',
+          textTransform: 'none',
+        },
+        '& .MuiInputBase-root': {
+          borderRadius: '4px',
+          padding: '8px 10px',
+        },
+        '& .MuiAutocomplete-popupIndicator': {
+          color: '#ffac33',
+          marginRight: '6px',
+        },
+        '& .MuiInput-underline:before': {
+          display: 'none',
         },
       }}
       label={label}
@@ -59,7 +72,6 @@ const StandardInput = ({
       disabled={isInputDisabled}
       InputProps={{
         ...InputPropsParams,
-        disableUnderline: true,
         ...CustomInputProps,
       }}
       {...restParams}
@@ -99,6 +111,8 @@ const Autocomplete = ({
   disableClearable,
   isOptionEqualToValue,
   limitTags,
+  required,
+  name,
 }) => {
   const textFieldReference = useRef(null);
 
@@ -130,6 +144,8 @@ const Autocomplete = ({
           placeholder={placeholder}
           textFieldReference={textFieldReference}
           CustomInputProps={InputProps}
+          required={required}
+          name={name}
         />
       ) : (
         <StandardInput
@@ -141,6 +157,8 @@ const Autocomplete = ({
           placeholder={placeholder}
           textFieldReference={textFieldReference}
           CustomInputProps={InputProps}
+          required={required}
+          name={name}
         />
       ),
     [
@@ -151,6 +169,7 @@ const Autocomplete = ({
       onBlurInput,
       onFocusInput,
       placeholder,
+      name,
     ],
   );
 
@@ -168,7 +187,13 @@ const Autocomplete = ({
       noOptionsText={noOptionsText}
       onChange={(_, value_, reason) => onChange(value_, reason)}
       onClose={onClose}
-      onInputChange={(_, value_) => onInputChange(value_)}
+      onInputChange={(event, value_, reason) => {
+        if (onInputChange.length === 1) {
+          onInputChange(value_);
+        } else {
+          onInputChange(event, value_, reason);
+        }
+      }}
       onOpen={onOpen}
       open={isOpen}
       openOnFocus={autoFocus}
@@ -180,6 +205,8 @@ const Autocomplete = ({
       isOptionEqualToValue={isOptionEqualToValue}
       disableClearable={disableClearable}
       limitTags={limitTags}
+      required={required}
+      name={name}
     />
   );
 };
@@ -218,6 +245,7 @@ Autocomplete.propTypes = {
     propTypes.arrayOf(propTypes.string),
     propTypes.arrayOf(propTypes.object),
   ]),
+  name: propTypes.string,
 };
 
 export default Autocomplete;

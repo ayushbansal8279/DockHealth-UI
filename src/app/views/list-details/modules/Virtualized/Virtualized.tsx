@@ -1,4 +1,10 @@
-import React, { useCallback, useMemo } from 'react';
+import React, {
+  createContext,
+  useCallback,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { DragDropContext, Droppable, DropResult } from 'react-beautiful-dnd';
 import { Virtuoso } from 'react-virtuoso';
 import { useDispatch } from 'react-redux';
@@ -11,6 +17,18 @@ import { reorderSubtasks } from 'actions/task-actions';
 import { reorderWorkflowTasks } from 'actions/workflow-actions';
 import VSegment from './VSegment';
 import { FlatNode, Node } from './types';
+import {
+  DndContext,
+  DragEndEvent,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragOverlay,
+  DragStartEvent,
+  MouseSensor,
+  TouchSensor,
+} from '@dnd-kit/core';
+import { DropDirectionContext } from '@/app/context-api/DropDirectionContext';
 
 export interface Props {
   nodes?: Node[];
@@ -35,22 +53,31 @@ function Virtualized({
   const dispatch = useDispatch();
 
   const flatNodes = useMemo(() => walk(nodes), [nodes]);
+  const [activeId, setActiveId] = useState<string | number | null>(null);
+  const dropDirectionRef = useRef(null);
+  const sensors = useSensors(useSensor(MouseSensor), useSensor(TouchSensor));
+
+  const handleDragStart = (event: DragStartEvent) => {
+    setActiveId(event?.active?.id);
+  };
 
   const handleDragEnd = useCallback(
-    (drop: DropResult) => {
-      if (drop.destination && drop.source) {
+    (drop: DragEndEvent) => {
+      if (drop?.over && drop?.active) {
         const destination = flatNodes.find(
-          (node) => node.index === drop.destination?.index,
+          (node) => node?.id === drop?.over?.id,
         )!;
-        const source = flatNodes.find(
-          (node) => node.index === drop.source?.index,
-        )!;
+
+        const source = flatNodes.find((node) => node?.id === drop?.active?.id)!;
+
         const destinationParentFirstChild = flatNodes.find(
           (node) => node.id === destination.parent?.children[0],
         );
+
         const sourceParentFirstChild = flatNodes.find(
           (node) => node.id === source.parent?.children[0],
         );
+
         // const destinationOffsetIndex =
         //   (destination.index as number) -
         //   (destinationParentFirstChild?.index as number);
@@ -91,7 +118,9 @@ function Virtualized({
                     index:
                       destination?.kind === 'QuickAddTask'
                         ? 0
-                        : destinationOffsetIndexTask,
+                        : dropDirectionRef?.current === 'top'
+                        ? 0
+                        : destinationOffsetIndexTask + 1,
                     droppableId: destination?.parent?.id,
                   },
                   source: {
@@ -100,25 +129,40 @@ function Virtualized({
                   },
                 }),
               );
+            } else {
+              dispatch(
+                reorderTasksInGroup({
+                  destination: {
+                    index:
+                      dropDirectionRef?.current === 'top'
+                        ? 0
+                        : sourceOffsetIndexTask <= destinationOffsetIndexTask
+                        ? destinationOffsetIndexTask
+                        : destinationOffsetIndexTask + 1,
+
+                    droppableId: destination?.parent?.id,
+                  },
+                  source: {
+                    index: sourceOffsetIndexTask,
+                  },
+                }),
+              );
             }
-            dispatch(
-              reorderTasksInGroup({
-                destination: {
-                  index: destinationOffsetIndexTask,
-                  droppableId: destination?.parent?.id,
-                },
-                source: {
-                  index: sourceOffsetIndexTask,
-                },
-              }),
-            );
             break;
           }
           case 'Subtask': {
             dispatch(
               reorderSubtasks({
                 source: { index: sourceOffsetIndexSubtask },
-                destination: { index: destinationOffsetIndexSubtask },
+                destination: {
+                  index:
+                    dropDirectionRef?.current === 'top'
+                      ? 0
+                      : sourceOffsetIndexSubtask <=
+                        destinationOffsetIndexSubtask
+                      ? destinationOffsetIndexSubtask
+                      : destinationOffsetIndexSubtask + 1,
+                },
                 parentTask: tasksMap[source?.parent?.id!],
               }),
             );
@@ -128,7 +172,15 @@ function Virtualized({
             dispatch(
               reorderWorkflowTasks({
                 source: { index: sourceOffsetIndexTaskOfBundle },
-                destination: { index: destinationOffsetIndexTaskOfBundle },
+                destination: {
+                  index:
+                    dropDirectionRef?.current === 'top'
+                      ? 0
+                      : sourceOffsetIndexTaskOfBundle <=
+                        destinationOffsetIndexTaskOfBundle
+                      ? destinationOffsetIndexTaskOfBundle
+                      : destinationOffsetIndexTaskOfBundle + 1,
+                },
                 workflow: tasksMap[destination.parent?.id!],
                 completedTasksShown:
                   ['COMPLETE', ''].includes(currentTaskListTasksStatus) ||
@@ -146,32 +198,31 @@ function Virtualized({
           }
         }
       }
+      setActiveId(null);
     },
     [flatNodes, dispatch, tasksMap],
   );
 
   return (
-    <DragDropContext
-      onBeforeDragStart={showClearSortFiltersModal}
-      onDragEnd={handleDragEnd}
-    >
-      <Droppable
-        mode="virtual"
-        droppableId={'nodes[0].id'}
-        renderClone={(provided, snapshot, rubric) => (
-          <div
-            {...provided.draggableProps}
-            {...provided.dragHandleProps}
-            ref={provided.innerRef}
-          >
-            <Placeholder id={rubric.draggableId} />
-          </div>
-        )}
-      >
-        {(provided) => (
+    <>
+      <DropDirectionContext.Provider value={dropDirectionRef}>
+        <DndContext
+          onDragStart={handleDragStart}
+          onDragEnd={handleDragEnd}
+          sensors={
+            sensors
+            // useSensors(
+            //   useSensor(PointerSensor, {
+            //     activationConstraint: {
+            //       distance: 3,
+            //     },
+            //   }),
+            // )
+          }
+        >
           <Virtuoso
             // @ts-ignore
-            scrollerRef={provided.innerRef}
+            // scrollerRef={provided.innerRef}
             style={{ height: '100%' }}
             data={flatNodes}
             context={context}
@@ -180,9 +231,12 @@ function Virtualized({
             }}
             {...props}
           />
-        )}
-      </Droppable>
-    </DragDropContext>
+          <DragOverlay>
+            {activeId ? <Placeholder id={activeId} /> : null}
+          </DragOverlay>
+        </DndContext>
+      </DropDirectionContext.Provider>
+    </>
   );
 }
 
@@ -245,7 +299,7 @@ const walk = (
 const Placeholder = ({ id }: any) => {
   return (
     // @ts-ignore
-    <StandardTaskItem taskIdentifier={id} />
+    <StandardTaskItem taskIdentifier={id} isDragPreview />
   );
 };
 

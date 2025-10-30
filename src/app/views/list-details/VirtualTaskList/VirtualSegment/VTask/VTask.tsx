@@ -5,29 +5,30 @@ import React, {
   useCallback,
   useContext,
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from 'react';
 
 import { Segment } from 'views/list-details/modules/Virtualized';
 import StandardTaskItem from 'components/task/StandardTaskItem/StandardTaskItem';
-import {
-  Draggable,
-  DraggableProvided,
-  DraggableStateSnapshot,
-} from 'react-beautiful-dnd';
 import * as TaskActions from 'actions/task-actions';
 import { useDispatch, useSelector } from 'react-redux';
 import * as Sc from './styled';
 import { TaskOrigin } from '@/app/helpers/task-helpers';
 import { taskLookupSelector } from '@/app/selectors/task-details-selectors';
+import { useSubtaskQuickAddState } from '@/app/hooks/useSubtaskQuickAdd';
 import QuickAddSubtask from '@/app/components/task/StandardTaskItem/QuickAddSubtask';
 import { QuickAddInputWrapper } from '@/app/components/task-template/TaskTemplateGroup/styled';
 import QuickAddTaskInput from '@/app/components/tasklist/QuickAddTaskInput/QuickAddTaskInput';
 import { CollapseContext } from '../../VirtualTaskList';
 import palette from '@/app/styles/palette';
 import { useVirtualTaskListScrollContext } from '../../VirtualTaskListScrollContext';
-import { ListPageContext } from '../../../ListDetailsView';
+import { TaskViewContext } from '@/app/context-api/task-view-context';
+import { CSS } from '@dnd-kit/utilities';
+import { useDraggable, useDroppable } from '@dnd-kit/core';
+import { originConfig } from '@/app/components/task/StandardTaskItem/helpers';
+import { getAddTaskWidths } from '../../helpers';
 
 export interface Props extends Segment {
   isTaskTemplate: boolean;
@@ -37,6 +38,11 @@ export interface Props extends Segment {
   isLastGroupOfList: boolean;
   isNextVirtualTaskItemTypeBundle: boolean;
   taskGroupIdentifier: string;
+  isFirstTaskOfGroup: boolean;
+  isFirstTaskOfWorkflow: boolean;
+  isTopLevelTaskOrWorkflowHeader: boolean;
+  isWorkflowTask: boolean;
+  origin: any;
 }
 
 export const VTaskContext = createContext({
@@ -54,6 +60,11 @@ function VTask(
     isLastGroupOfList,
     isNextVirtualTaskItemTypeBundle,
     taskGroupIdentifier,
+    isFirstTaskOfGroup,
+    isFirstTaskOfWorkflow,
+    isTopLevelTaskOrWorkflowHeader,
+    isWorkflowTask,
+    origin,
     ...record
   }: Props,
   // eslint-disable-next-line unicorn/prevent-abbreviations, @typescript-eslint/no-unused-vars
@@ -61,10 +72,9 @@ function VTask(
 ) {
   const dispatch = useDispatch();
   const parentTaskReference = useRef(null);
-  const [subtaskQuickAddOpen, setSubtaskQuickAddOpen] = useState(false);
   const { get, workflowIdentifierMap, handleRemoveWorkflowIdentifier } =
     useContext(CollapseContext);
-  const { changeViewType } = useContext(ListPageContext);
+  const { changeViewType } = useContext(TaskViewContext);
   const pulledTask = useSelector((state) => {
     // @ts-ignore
     return taskLookupSelector(state, origin, metadata.id);
@@ -75,22 +85,33 @@ function VTask(
 
   const percentage = ((droppableHeaderWidth || 0) / screenWidth) * 100;
   const task = pulledTask;
-  const { taskList, taskGroups, identifier, subTasksCount, patient } = task;
+  // const { taskList, taskGroups, identifier, subTasksCount, patient } = task;
+  const taskList = task?.taskList;
+
+  const subtaskQuickAddOpen = useSubtaskQuickAddState(task?.identifier);
+  const taskGroups = task?.taskGroups || [];
+  const identifier = task?.identifier || '0';
+  const subTasksCount = task?.subTasksCount || 0;
+  const patient = task?.patient;
+
   const [addWorkflowTask, setAddWorkflowTask] = useState(false);
-  const taskGroup = !!taskGroups
-    ? taskGroups.filter((taskGroup) =>
+  const taskGroup = useMemo(
+    () =>
+      taskGroups?.filter((taskGroup: any) =>
         taskGroup?.groupType === 'TASK_BUNDLE' ? taskGroup : '',
-      )
-    : '';
+      ) || '',
+    [taskGroups],
+  );
 
   useEffect(() => {
-    setSubtaskQuickAddOpen(task?.subtaskQuickAddOpen);
-    workflowIdentifierMap.some(
+    const shouldAddWorkflowTask = workflowIdentifierMap.some(
       (identifier) => identifier === taskGroup[0]?.taskGroupIdentifier,
-    )
-      ? setAddWorkflowTask(true)
-      : setAddWorkflowTask(false);
-  }, [task, workflowIdentifierMap]);
+    );
+
+    if (shouldAddWorkflowTask !== addWorkflowTask) {
+      setAddWorkflowTask(shouldAddWorkflowTask);
+    }
+  }, [task?.identifier, workflowIdentifierMap, taskGroup, addWorkflowTask]);
 
   const handleQuickAddOnFocus = () => {
     setTimeout(() => {
@@ -126,160 +147,164 @@ function VTask(
   const contextValue = {
     isVirtualListWorkflowOpen: get(identifier),
   };
-  return (
-    <Draggable
-      draggableId={metadata.id}
-      index={metadata.index}
-      key={metadata.id}
-    >
-      {(provided: DraggableProvided, snapshot: DraggableStateSnapshot) => (
-        <>
-          <Sc.VTask
-            {...register}
-            ref={parentTaskReference}
-            $subitem={metadata.level > 1}
-            // @ts-ignore
-            $workflow={record.itemType === 'BUNDLE'}
-            $template={isTaskTemplate && isLastChild}
-            isTaskTemplate={isTaskTemplate}
-            isLastChild={isLastChild || false}
-            origin={TaskOrigin.LIST}
-            bgColor={bgColor}
-            isLastTaskOfGroup={isLastTaskOfGroup}
-            virtualListWorkflowOpen={get(identifier)}
-            subtaskQuickAddOpen={subtaskQuickAddOpen}
-            addWorkflowTask={addWorkflowTask}
-            subTaskExpanded={!metadata.collapsed && subTasksCount}
-            isLastGroupOfList={isLastGroupOfList}
-            isNextVirtualTaskItemTypeBundle={isNextVirtualTaskItemTypeBundle}
-            $width={percentage > 90 ? `${droppableHeaderWidth + 70}` : '100%'}
-          >
-            <VTaskContext.Provider value={contextValue}>
-              <StandardTaskItem
-                // @ts-ignore
-                taskIdentifier={metadata.id}
-                taskGroupIdentifier={taskGroupIdentifier}
-                draggableProvided={provided}
-                isDraggable
-                isDragging={snapshot.isDragging}
-                isTaskTemplate={isTaskTemplate}
-                isLastChild={isLastChild && !addWorkflowTask}
-                origin={TaskOrigin.LIST}
-                pageBackground={bgColor ? palette.aliceBlue : ''}
-                isNestedTask
-                isVirtualTask
-                $width={percentage < 90}
-                isNextVirtualTaskItemTypeBundle={
-                  isNextVirtualTaskItemTypeBundle
-                }
-                isLastTaskOfGroup={isLastTaskOfGroup}
-                viewType={changeViewType}
-              />
-            </VTaskContext.Provider>
-          </Sc.VTask>
-          {subtaskQuickAddOpen && subTasksCount === 0 && (
-            <div
-              style={{
-                width:
-                  percentage > 90 ? `${droppableHeaderWidth + 70}` : '100%',
-                paddingRight: percentage > 90 ? '16px' : '15px',
-                background: bgColor ? palette.aliceBlue : '',
-                paddingBottom: !addWorkflowTask
-                  ? isLastTaskOfGroup
-                    ? bgColor
-                      ? '24px'
-                      : isLastGroupOfList
-                      ? '24px'
-                      : '0px'
-                    : isTaskTemplate &&
-                      isLastChild &&
-                      !isNextVirtualTaskItemTypeBundle
-                    ? '10px'
-                    : ''
-                  : '',
-              }}
-            >
-              <Sc.QuickAddContainer
-                $width={
-                  percentage > 90
-                    ? visibleWidth
-                      ? `${visibleWidth - 103}px`
-                      : '100%'
-                    : `${visibleWidth - 120}px`
-                }
-                addWorkflowTask={addWorkflowTask}
-                isTaskTemplate={isTaskTemplate}
-              >
-                <QuickAddSubtask
-                  taskListIdentifier={task?.taskList?.taskListIdentifier}
-                  parentTaskIdentifier={metadata.id}
-                  onFocus={handleQuickAddOnFocus}
-                />
-              </Sc.QuickAddContainer>
-            </div>
-          )}
-          {isTaskTemplate &&
-            isLastChild &&
-            addWorkflowTask &&
-            (subTasksCount === 0 || metadata?.collapsed) && (
-              <div
-                style={{
-                  width:
-                    percentage > 90 ? `${droppableHeaderWidth + 70}` : '100%',
-                  paddingRight: percentage > 90 ? '16px' : '15px',
-                  background: bgColor ? palette.aliceBlue : '',
-                  paddingBottom: addWorkflowTask
-                    ? isLastTaskOfGroup
-                      ? bgColor
-                        ? '24px'
-                        : isLastGroupOfList
-                        ? '24px'
-                        : '0px'
-                      : isTaskTemplate &&
-                        isLastChild &&
-                        !isNextVirtualTaskItemTypeBundle
-                      ? '10px'
-                      : ''
-                    : '0px',
-                }}
-              >
-                <Sc.WorkflowQuickAddTaskContainer
-                  $width={
-                    percentage > 90
-                      ? visibleWidth
-                        ? `${visibleWidth - 69.5}px`
-                        : '100%'
-                      : `${visibleWidth - 85}px`
-                  }
-                >
-                  <QuickAddInputWrapper>
-                    <QuickAddTaskInput
-                      // autofocus
-                      disableMentions
-                      quickAddTask={handleAddBundleTask}
-                      onBlur={() => {
-                        handleRemoveWorkflowIdentifier(
-                          taskGroup[0]?.taskGroupIdentifier,
-                        );
-                      }}
-                      validator={(value) => {
-                        if (
-                          [...value]?.filter((char) => char !== ' ').length < 2
-                        )
-                          return 'The task description is too short (min. 2 characters)';
 
-                        return null;
-                      }}
-                      origin={TaskOrigin.LIST}
-                      // iconColorActive={iconColorActive}
-                    />
-                  </QuickAddInputWrapper>
-                </Sc.WorkflowQuickAddTaskContainer>
-              </div>
-            )}
-        </>
+  const {
+    addSubtaskVisibleWidth,
+    addSubtaskDroppableHeaderWidth,
+    addSubtaskPaddingRight,
+    addWorkflowTaskVisibleWidth,
+    addWorkflowTaskDroppableHeaderWidth,
+    addWorkflowTaskPaddingRight,
+  } = getAddTaskWidths({
+    origin,
+    percentage,
+    visibleWidth: visibleWidth || 0,
+    droppableHeaderWidth: droppableHeaderWidth || 0,
+    componentType: 'VTASK',
+  });
+
+  return (
+    <>
+      <Sc.VTask
+        {...register}
+        $subitem={metadata.level > 1}
+        // @ts-ignore
+        $workflow={record.itemType === 'BUNDLE'}
+        $template={isTaskTemplate && isLastChild}
+        isTaskTemplate={isTaskTemplate}
+        isLastChild={isLastChild || false}
+        disableLeftOffset={originConfig[origin]?.disableLeftOffset ?? false}
+        bgColor={bgColor}
+        isLastTaskOfGroup={isLastTaskOfGroup}
+        virtualListWorkflowOpen={get(identifier)}
+        subtaskQuickAddOpen={subtaskQuickAddOpen}
+        addWorkflowTask={addWorkflowTask}
+        subTaskExpanded={!metadata.collapsed && subTasksCount}
+        isLastGroupOfList={isLastGroupOfList}
+        isNextVirtualTaskItemTypeBundle={isNextVirtualTaskItemTypeBundle}
+        $width={percentage > 90 ? `${droppableHeaderWidth + 70}` : '100%'}
+      >
+        <VTaskContext.Provider value={contextValue}>
+          <StandardTaskItem
+            // @ts-ignore
+            taskIdentifier={metadata.id}
+            taskGroupIdentifier={taskGroupIdentifier}
+            // draggableProvided={provided}
+            isDraggable
+            // isDragging={snapshot.isDragging}
+            isTaskTemplate={isTaskTemplate}
+            isLastChild={isLastChild && !addWorkflowTask}
+            origin={origin}
+            pageBackground={bgColor ? palette.aliceBlue : ''}
+            isNestedTask
+            isVirtualTask
+            $width={percentage < 90}
+            isNextVirtualTaskItemTypeBundle={isNextVirtualTaskItemTypeBundle}
+            isLastTaskOfGroup={isLastTaskOfGroup}
+            isFirstTaskOfGroup={isFirstTaskOfGroup}
+            isFirstTaskOfWorkflow={isFirstTaskOfWorkflow}
+            viewType={changeViewType}
+            isTopLevelTaskOrWorkflowHeader={isTopLevelTaskOrWorkflowHeader}
+            isWorkflowTask={isWorkflowTask}
+            taskItemDragAndDropDisabled={
+              originConfig[origin]?.dragAndDropDisabled &&
+              isTopLevelTaskOrWorkflowHeader
+            }
+          />
+        </VTaskContext.Provider>
+      </Sc.VTask>
+      {subtaskQuickAddOpen && subTasksCount === 0 && (
+        <div
+          style={{
+            width: addSubtaskDroppableHeaderWidth,
+            paddingRight: addSubtaskPaddingRight,
+            background: bgColor ? palette.aliceBlue : '',
+            paddingBottom: !addWorkflowTask
+              ? isLastTaskOfGroup
+                ? bgColor
+                  ? '24px'
+                  : isLastGroupOfList
+                  ? '24px'
+                  : '0px'
+                : isTaskTemplate &&
+                  isLastChild &&
+                  !isNextVirtualTaskItemTypeBundle
+                ? '10px'
+                : ''
+              : '',
+          }}
+        >
+          <Sc.QuickAddContainer
+            $width={addSubtaskVisibleWidth}
+            addWorkflowTask={addWorkflowTask}
+            isTaskTemplate={isTaskTemplate}
+            hasCustomOffset={originConfig[origin]?.hasCustomOffset ?? false}
+            isNarrowView={percentage > 90}
+          >
+            <QuickAddSubtask
+              taskListIdentifier={task?.taskList?.taskListIdentifier}
+              parentTaskIdentifier={metadata.id}
+              onFocus={handleQuickAddOnFocus}
+            />
+          </Sc.QuickAddContainer>
+        </div>
       )}
-    </Draggable>
+      {isTaskTemplate &&
+        isLastChild &&
+        addWorkflowTask &&
+        (subTasksCount === 0 || metadata?.collapsed) && (
+          <div
+            style={{
+              width: addWorkflowTaskDroppableHeaderWidth,
+              paddingRight: addWorkflowTaskPaddingRight,
+              background: bgColor ? palette.aliceBlue : '',
+              paddingBottom: addWorkflowTask
+                ? isLastTaskOfGroup
+                  ? bgColor
+                    ? '24px'
+                    : isLastGroupOfList
+                    ? '24px'
+                    : '0px'
+                  : isTaskTemplate &&
+                    isLastChild &&
+                    !isNextVirtualTaskItemTypeBundle
+                  ? '10px'
+                  : ''
+                : '0px',
+            }}
+          >
+            <Sc.WorkflowQuickAddTaskContainer
+              $width={addWorkflowTaskVisibleWidth}
+              disableLeftOffset={
+                originConfig[origin]?.disableLeftOffset ?? false
+              }
+              isNarrowView={percentage > 90}
+            >
+              <QuickAddInputWrapper>
+                <QuickAddTaskInput
+                  // autofocus
+                  disableMentions
+                  quickAddTask={handleAddBundleTask}
+                  onBlur={() => {
+                    handleRemoveWorkflowIdentifier(
+                      taskGroup[0]?.taskGroupIdentifier,
+                    );
+                  }}
+                  validator={(value) => {
+                    if ([...value]?.filter((char) => char !== ' ').length < 2) {
+                      return 'The task description is too short (min. 2 characters)';
+                    }
+
+                    return null;
+                  }}
+                  origin={origin}
+                  // iconColorActive={iconColorActive}
+                />
+              </QuickAddInputWrapper>
+            </Sc.WorkflowQuickAddTaskContainer>
+          </div>
+        )}
+    </>
   );
 }
 

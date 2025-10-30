@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState, useMemo } from 'react';
-import { useParams , useHistory } from 'react-router-dom';
+import { useParams, useHistory, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { Grid, Box, Dialog } from '@mui/material';
 import {
@@ -61,6 +61,7 @@ import {
   BulkEditSectionContainer,
   TaskTemplateApplicatorContainer,
   ContentWrapper,
+  GridWrapper,
 } from './styled';
 import localStorageHelper from '@/app/helpers/local-storage-helper';
 import sessionStorageHelper from '@/app/helpers/session-storage-helper';
@@ -105,6 +106,7 @@ const PatientsView = () => {
     currentOrganization?.themeSettings?.find(
       ({ name }) => name === 'icon.active.color',
     ) || {};
+  const location = useLocation();
 
   const isGuestOrDockLite = isUserGuestOrDockLite(currentUser);
   const isViewOnly = isUserViewOnly(currentUser);
@@ -132,12 +134,18 @@ const PatientsView = () => {
 
   useEffect(() => {
     const patientListIdentifier = listIdentifier;
-    if (!isDynamicPatientList) {
+    const cameFromPatientProfile =
+      location?.state?.from?.includes('/core/patient');
+
+    if (
+      (!isDynamicPatientList && !cameFromPatientProfile) ||
+      (cameFromPatientProfile && !listDetails)
+    ) {
       dispatch(
         PatientsActions.initializePatientsListState(patientListIdentifier),
       );
     }
-  }, [dispatch, isDynamicPatientList, listIdentifier]);
+  }, [dispatch, isDynamicPatientList, listIdentifier, location?.state]);
 
   useEffect(() => {
     if (isDynamicPatientList && selectedQuickFilter) {
@@ -449,18 +457,12 @@ const PatientsView = () => {
           getPatientsListFiltersStorageKey(listIdentifier),
         );
       }
-      const { data } = await downloadPatientListData(
+      await downloadPatientListData(
         listIdentifier,
         selectedFilters,
         filename,
         includeAllAttributes,
       );
-      const url = window.URL.createObjectURL(new Blob([data]));
-      const link = document.createElement('a');
-      link.href = url;
-      link.setAttribute('download', filename);
-      document.body.append(link);
-      link.click();
     },
     [listIdentifier, listName],
   );
@@ -508,14 +510,15 @@ const PatientsView = () => {
                             setImportPopupOpen(true);
                           },
                         },
-                        !isGuestOrDockLite &&
+                      !isGuestOrDockLite &&
                         !isViewOnly &&
                         !emrIntegrationEnabled &&
                         listIdentifier ===
-                          DefaultPatientsListType.ALL_PATIENTS &&
-                        {
+                          DefaultPatientsListType.ALL_PATIENTS && {
                           name: 'View Import Status',
-                          onClick: () => {patientImportStatus()}
+                          onClick: () => {
+                            patientImportStatus();
+                          },
                         },
                       !isGuestOrDockLite &&
                         !isViewOnly && {
@@ -556,6 +559,7 @@ const PatientsView = () => {
               setSearchValue={setSearchValue}
               refreshPatientListOnUpload={refreshPatientListOnUpload}
               setImportPopoverOpen={setImportPopoverOpen}
+              placeholder="Search all patients"
             />
             <PatientsListContainer>
               {listIdentifier && listIdentifier.length === 36 && (
@@ -574,7 +578,7 @@ const PatientsView = () => {
                   <Spacing horizontal={5} />
                 </AddEntitiesContainer>
               )} */}
-              <Grid>
+              <GridWrapper>
                 {listIdentifier === DefaultPatientsListType.ALL_PATIENTS &&
                   patients?.length >= MAX_PATIENT_ALL_RESULTS && (
                     <RefineSearchText>
@@ -594,7 +598,7 @@ const PatientsView = () => {
                   isDynamicPatientList={isDynamicPatientList}
                   searchValue={searchValue}
                 />
-              </Grid>
+              </GridWrapper>
             </PatientsListContainer>
           </PatientsViewContainer>
         </ViewLayout>
@@ -642,6 +646,7 @@ const PatientsView = () => {
             step={1}
             label="patient"
             uploadFunction={uploadPatientData}
+            importFileTypeHint={"Drag & drop your CSV/Excel file here"}
           />
         </Dialog>
         {/* <FilterPopover open={filterOpen} onClose={closeFilter}>

@@ -1,4 +1,3 @@
-import InviteUsersToChannelModal from 'views/chat/add-channel/CustomInviteUsers';
 import CompleteAllTasksModal from './components/CompleteAllTasksModal/CompleteAllTasksModal';
 import CompleteAllFieldsModal from './components/ComplateAllFieldsModal/CompleteAllFieldsModal';
 import AttachmentsDuplicateModal from './components/AttachmentsDuplicateModal/AttachmentsDuplicateModal';
@@ -65,7 +64,7 @@ import MergeDataModal from './components/MergeDataModal/MergeDataModal';
 import SelectDestinationGroupModal from './components/SelectDestinationGroupModal/SelectDestinationGroupModal';
 import ShareTaskModal from './components/ShareTaskModal/ShareTaskModal';
 import PatientFolderModal from './components/PatientFolderModal/PatientFolderModal';
-import SelectPatientFolderModal from './components/SelectPatientFolderModal/SelectPatientFolderModal';
+import SelectFileFolderModal from './components/SelectFileFolderModal/SelectFileFolderModal';
 import SmartFlowListModal from './components/SmartFlowListModal/SmartFlowListModal';
 import UnarchivePatientModal from './components/UnarchivePatientModal/UnarchivePatientModal';
 import SendEmailFromTaskModal from './components/SendMessageFromTaskModals/SendEmailFromTaskModal/SendEmailFromTaskModal';
@@ -83,6 +82,7 @@ import DeleteArchivePatientModal from './components/DeleteArchivePatientModal/De
 import DeleteOrganizationModal from './components/DeleteOrganizationModal';
 import PatientCustomFieldsBulkEditModal from './components/PatientCustomFieldsBulkEditModal';
 import TaskListCustomFieldsBulkEditModal from './components/TaskListCustomFieldsBulkEditModal';
+import ProfileCustomFieldsBulkEditModal from './components/ProfileCustomFieldsBulkEditModal';
 import AISummaryModal from './components/AISummaryModal/AISummaryModal';
 import DateWarningModal from './components/DateWarningModal/DateWarningModal';
 import AlertModal from './components/AlertModal/AlertModal';
@@ -90,7 +90,13 @@ import SavePatientModal from './components/SavePatientModal/SavePatientModal';
 import ShareWorkflowModal from './components/ShareWorkflowModal/ShareWorkflowModal';
 import ProfilePickerModal from './components/ProfilePickerModal/ProfilePickerModal';
 import PatientAttachmentReferenceModal from './components/PatientAttachmentReferenceModal/PatientAttachmentReferenceModal';
-
+import AddWorkspaceModal from '../components/workspace/AddWorkspaceModal/AddWorkspaceModal';
+import DeveloperScopeModal from './components/DeveloperScopeModal/DeveloperScopeModal';
+import DockIntegrationsModal from './components/DockIntegrationsModal/DockIntegrationsModal';
+import ScopeChangeModal from './components/ScopeChangeModal/ScopeChangeModal';
+import ClearDueDateConfirmationModal from './components/ClearDueDateConfirmationModal/ClearDueDateConfirmationModal';
+import CreateEscalationPolicyModal from './components/CreateEscalationPolicyModal/CreateEscalationPolicyModal';
+import EditIntegrationModal from './components/EditIntegrationModal/EditIntegrationModal';
 
 const MODAL_MAP = {
   CompleteAllTasks: CompleteAllTasksModal,
@@ -157,6 +163,7 @@ const MODAL_MAP = {
   DeleteTaskConfirmation: DeleteTaskConfirmationModal,
   DeleteCredentialConfirm: DeleteCredentialConfirmModal,
   TaskListCustomFieldsBulkEdit: TaskListCustomFieldsBulkEditModal,
+  ProfileCustomFieldsBulkEditModal: ProfileCustomFieldsBulkEditModal,
   EditUserGroup: EditUserGroupModal,
   AddUserToGroup: AddUserToGroupModal,
   Information: InformationModal,
@@ -165,7 +172,7 @@ const MODAL_MAP = {
   MergeData: MergeDataModal,
   ShareTask: ShareTaskModal,
   PatientFolder: PatientFolderModal,
-  SelectPatientFolder: SelectPatientFolderModal,
+  SelectPatientFolder: SelectFileFolderModal,
   SmartFlowList: SmartFlowListModal,
   SendFaxFromTask: SendFaxFromTaskModal,
   SendEmailFromTask: SendEmailFromTaskModal,
@@ -178,13 +185,19 @@ const MODAL_MAP = {
   EditContact: EditContactModal,
   AnchorDateChangeConfirmation: AnchorDateChangeConfirmationModal,
   EditPatient: EditPatientModal,
-  InviteUsersToChannel: InviteUsersToChannelModal,
   AISummary: AISummaryModal,
   DateWarning: DateWarningModal,
   Alert: AlertModal,
   SavePatient: SavePatientModal,
   ProfilePicker: ProfilePickerModal,
-  PatientAttachmentReference: PatientAttachmentReferenceModal
+  PatientAttachmentReference: PatientAttachmentReferenceModal,
+  AddWorkspace: AddWorkspaceModal,
+  DeveloperScopeList: DeveloperScopeModal,
+  DockIntegrations: DockIntegrationsModal,
+  ClearDueDateConfirmation: ClearDueDateConfirmationModal,
+  CreateEscalationPolicy: CreateEscalationPolicyModal,
+  EditIntegration: EditIntegrationModal,
+  ScopeChange: ScopeChangeModal,
 };
 
 export default MODAL_MAP;

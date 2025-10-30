@@ -63,6 +63,28 @@ import Tooltip from '@/app/components/common/Tooltip/Tooltip';
 import RotatableChevron from '@/app/components/common/RotatableChevron/RotatableChevron';
 import ToolbarButton from '@/app/components/tasklist/list-toolbar-buttons/ToolbarButton/ToolbarButton';
 import { organizationSelector } from '@/app/selectors/organization-selectors';
+import {
+  DndContext,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
+import DraggableDroppableListItem from './DraggableDroppableListItem';
+import {
+  SortableContext,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
+import {
+  restrictToFirstScrollableAncestor,
+  restrictToVerticalAxis,
+} from '@dnd-kit/modifiers';
+import {
+  SearchContainer,
+  HorizontalLine,
+  HorizontalLineContainer,
+} from '@/app/components/task-template/TaskTemplateApplicator/styled';
+import Search from '@/app/components/task-view/Search/Search';
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const ListsSubmenu = () => {
@@ -76,6 +98,10 @@ const ListsSubmenu = () => {
   const archivedTaskLists = useSelector(archivedTaskListsSelector);
   const organization = useSelector(organizationSelector);
   const { subscriptionDetails } = organization;
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 3 } }),
+    useSensor(KeyboardSensor),
+  );
 
   const dispatch = useDispatch();
 
@@ -83,6 +109,8 @@ const ListsSubmenu = () => {
   const [popoverLabel, setPopoverLabel] = useState(null);
   const [myLists, setMyLists] = useState([]);
   const [orgLevelLists, setOrgLevelLists] = useState([]);
+  const [dragActiveId, setDragActiveId] = useState(null);
+  const [searchValue, setSearchValue] = useState('');
   const { 0: orgListsVisible, 3: toggleOrgLists } = useBoolean(true);
   const { 0: archivedVisible, 3: toggleArchived } = useBoolean(false);
   const { 0: myListsVisible, 3: toggleMyLists } = useBoolean(true);
@@ -106,9 +134,16 @@ const ListsSubmenu = () => {
         : null;
     const myLevelLists = lists?.filter((list) => list.listType !== 'PUBLIC');
     const orgLists = lists?.filter((list) => list.listType === 'PUBLIC');
-    setMyLists(myLevelLists);
+    if (searchValue) {
+      const filterMyList = myLevelLists?.filter((list) =>
+        list?.listName?.toLowerCase()?.includes(searchValue?.toLowerCase()),
+      );
+      setMyLists(filterMyList);
+    } else {
+      setMyLists(myLevelLists);
+    }
     setOrgLevelLists(orgLists);
-  }, [taskLists, pendingTaskLists]);
+  }, [taskLists, pendingTaskLists, searchValue]);
 
   const [isOverflowing, setIsOverflowing] = useState(false);
 
@@ -124,6 +159,17 @@ const ListsSubmenu = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const handleSearch = useCallback(
+    (searchPhrase) => {
+      setSearchValue(searchPhrase);
+    },
+    [setSearchValue],
+  );
+
+  useEffect(() => {
+    setSearchValue('');
+  }, []);
+
   const handleMouseEnter = (event, listName) => {
     const { target } = event;
     const { scrollWidth, offsetWidth } = target;
@@ -136,8 +182,15 @@ const ListsSubmenu = () => {
   };
 
   const handleDragEnd = useCallback(
-    ({ destination, source }) => {
-      const reorderedLists = move(source.index, destination.index, myLists);
+    ({ active, over }) => {
+      if (!over || active?.data?.current?.index === over?.data?.current?.index)
+        return;
+
+      const reorderedLists = move(
+        active?.data?.current?.index,
+        over?.data?.current?.index,
+        myLists,
+      );
       setMyLists(reorderedLists);
       dispatch(TaskListActions.reorderTaskLists(reorderedLists));
     },
@@ -153,7 +206,13 @@ const ListsSubmenu = () => {
 
   const renderLists = useCallback(
     // eslint-disable-next-line sonarjs/cognitive-complexity
-    (listsList, archived = true, isTextOverflowing) => {
+    (
+      listsList,
+      archived = true,
+      isTextOverflowing,
+      dragActiveId,
+      searchPhrase,
+    ) => {
       if (archived) {
         return listsList
           ? listsList.map((list) => (
@@ -162,6 +221,17 @@ const ListsSubmenu = () => {
                 data-list-id={list.taskListIdentifier}
                 className="drawer-menu-list-item"
                 $isSubMenu
+                onClick={() => {
+                  if (activeTaskListIdentifier === list?.taskListIdentifier)
+                    return;
+
+                  if (list?.status === 'PENDING') {
+                    onTaskListInvitationAccepted();
+                    dispatch(TaskListActions.acceptInviteToTaskList(list));
+                  }
+                  history.push(createTaskListPath(list.taskListIdentifier));
+                }}
+                style={{ cursor: 'pointer' }}
               >
                 <ListOptionsMenu list={list}>
                   <MoreVert color="primary" />
@@ -184,16 +254,6 @@ const ListsSubmenu = () => {
                       handleMouseEnter(event, list?.listName)
                     }
                     onMouseLeave={() => setIsOverflowing(false)}
-                    onClick={() => {
-                      if (activeTaskListIdentifier === list?.taskListIdentifier)
-                        return;
-
-                      if (list?.status === 'PENDING') {
-                        onTaskListInvitationAccepted();
-                        dispatch(TaskListActions.acceptInviteToTaskList(list));
-                      }
-                      history.push(createTaskListPath(list.taskListIdentifier));
-                    }}
                     $isSubMenu
                   >
                     <ListNameLabel
@@ -243,6 +303,18 @@ const ListsSubmenu = () => {
                       : `drawer-menu-list-item`
                   }
                   $isSubMenu
+                  onClick={() => {
+                    if (activeTaskListIdentifier === list?.taskListIdentifier) {
+                      return;
+                    }
+
+                    if (list?.status === 'PENDING') {
+                      onTaskListInvitationAccepted();
+                      dispatch(TaskListActions.acceptInviteToTaskList(list));
+                    }
+                    history.push(createTaskListPath(list.taskListIdentifier));
+                  }}
+                  style={{ cursor: 'pointer' }}
                 >
                   <Box ml={1} />
                   {['INBOX', 'PUBLIC'].includes(list?.listType) ? (
@@ -272,24 +344,6 @@ const ListsSubmenu = () => {
                         handleMouseEnter(event, list?.listName)
                       }
                       onMouseLeave={() => setIsOverflowing(false)}
-                      // eslint-disable-next-line sonarjs/no-identical-functions
-                      onClick={() => {
-                        if (
-                          activeTaskListIdentifier === list?.taskListIdentifier
-                        ) {
-                          return;
-                        }
-
-                        if (list?.status === 'PENDING') {
-                          onTaskListInvitationAccepted();
-                          dispatch(
-                            TaskListActions.acceptInviteToTaskList(list),
-                          );
-                        }
-                        history.push(
-                          createTaskListPath(list.taskListIdentifier),
-                        );
-                      }}
                       $isSubMenu
                     >
                       <ListNameLabel
@@ -323,106 +377,102 @@ const ListsSubmenu = () => {
               );
             }
             return (
-              <Draggable
-                key={list.taskListIdentifier}
-                draggableId={list.taskListIdentifier}
+              <DraggableDroppableListItem
+                list={list}
                 index={index}
+                key={list.taskListIdentifier}
+                setDragActiveId={setDragActiveId}
+                searchValue={searchPhrase}
               >
-                {(provided, snapshot) => (
-                  <DrawerListsItem
-                    key={`listsubmenu_${list.taskListIdentifier}`}
-                    data-list-id={list.taskListIdentifier}
-                    className={
-                      list.listType === 'INBOX'
-                        ? 'drawer-menu-list-inbox'
-                        : `drawer-menu-list-item`
+                <DrawerListsItem
+                  key={`listsubmenu_${list.taskListIdentifier}`}
+                  data-list-id={list.taskListIdentifier}
+                  className={
+                    list.listType === 'INBOX'
+                      ? 'drawer-menu-list-inbox'
+                      : `drawer-menu-list-item`
+                  }
+                  $isSubMenu
+                  $isDraggable
+                  $isDragging={dragActiveId === list?.taskListIdentifier}
+                  onClick={() => {
+                    if (activeTaskListIdentifier === list?.taskListIdentifier)
+                      return;
+                    if (list?.status === 'PENDING') {
+                      onTaskListInvitationAccepted();
+                      dispatch(TaskListActions.acceptInviteToTaskList(list));
                     }
-                    $isSubMenu
-                    $isDraggable
-                    $isDragging={snapshot?.isDragging}
-                    ref={provided.innerRef}
-                    {...provided.draggableProps}
-                    {...provided.dragHandleProps}
+                    history.push(createTaskListPath(list.taskListIdentifier));
+                  }}
+                >
+                  <Box ml={1} />
+                  {['INBOX', 'PUBLIC'].includes(list?.listType) ? (
+                    <Box ml={3} />
+                  ) : (
+                    <MenuWrapper>
+                      <ListOptionsMenu list={list}>
+                        <MoreVert
+                          color="primary"
+                          style={{
+                            cursor:
+                              dragActiveId === list?.taskListIdentifier
+                                ? 'grabbing'
+                                : 'pointer',
+                          }}
+                        />
+                      </ListOptionsMenu>
+                    </MenuWrapper>
+                  )}
+                  {list.color && (
+                    <Box mr={1}>
+                      <ColorIndicator color={list.color} />
+                    </Box>
+                  )}
+                  <Tooltip
+                    placement="top"
+                    title={isTextOverflowing ? list?.listName : ''}
                   >
-                    <Box ml={1} />
-                    {['INBOX', 'PUBLIC'].includes(list?.listType) ? (
-                      <Box ml={3} />
-                    ) : (
-                      <MenuWrapper>
-                        <ListOptionsMenu list={list}>
-                          <MoreVert color="primary" />
-                        </ListOptionsMenu>
-                      </MenuWrapper>
-                    )}
-                    {list.color && (
-                      <Box mr={1}>
-                        <ColorIndicator color={list.color} />
-                      </Box>
-                    )}
-                    <Tooltip
-                      placement="top"
-                      title={isTextOverflowing ? list?.listName : ''}
+                    <ListNameText
+                      color={archived ? palette.coolGrey2 : undefined}
+                      isActive={
+                        activeTaskListIdentifier === list?.taskListIdentifier
+                      }
+                      onMouseEnter={(event) =>
+                        handleMouseEnter(event, list?.listName)
+                      }
+                      onMouseLeave={() => setIsOverflowing(false)}
+                      $isSubMenu
+                      $isDragging={dragActiveId === list?.taskListIdentifier}
                     >
-                      <ListNameText
-                        color={archived ? palette.coolGrey2 : undefined}
-                        isActive={
-                          activeTaskListIdentifier === list?.taskListIdentifier
+                      <ListNameLabel
+                        isNewList={
+                          list.hasUpdatesForMember || list?.status === 'PENDING'
                         }
-                        onMouseEnter={(event) =>
-                          handleMouseEnter(event, list?.listName)
-                        }
-                        onMouseLeave={() => setIsOverflowing(false)}
-                        // eslint-disable-next-line sonarjs/no-identical-functions
-                        onClick={() => {
-                          if (
-                            activeTaskListIdentifier ===
-                            list?.taskListIdentifier
-                          )
-                            return;
-                          if (list?.status === 'PENDING') {
-                            onTaskListInvitationAccepted();
-                            dispatch(
-                              TaskListActions.acceptInviteToTaskList(list),
-                            );
-                          }
-                          history.push(
-                            createTaskListPath(list.taskListIdentifier),
-                          );
-                        }}
-                        $isSubMenu
                       >
-                        <ListNameLabel
-                          isNewList={
-                            list.hasUpdatesForMember ||
-                            list?.status === 'PENDING'
-                          }
-                        >
-                          {list?.listName}
-                        </ListNameLabel>
-                      </ListNameText>
-                    </Tooltip>
-                    <DrawerItemOptions>
-                      <div style={{ marginRight: '9px', marginTop: '-3px' }}>
-                        <NumericalBadgeContainer
+                        {list?.listName}
+                      </ListNameLabel>
+                    </ListNameText>
+                  </Tooltip>
+                  <DrawerItemOptions>
+                    <div style={{ marginRight: '9px', marginTop: '-3px' }}>
+                      <NumericalBadgeContainer
+                        $hasUpdates={
+                          list.hasUpdatesForMember || list?.status === 'PENDING'
+                        }
+                      >
+                        <TaskCount
                           $hasUpdates={
                             list.hasUpdatesForMember ||
                             list?.status === 'PENDING'
                           }
                         >
-                          <TaskCount
-                            $hasUpdates={
-                              list.hasUpdatesForMember ||
-                              list?.status === 'PENDING'
-                            }
-                          >
-                            {list?.numberOfTasks ?? 0}
-                          </TaskCount>
-                        </NumericalBadgeContainer>
-                      </div>
-                    </DrawerItemOptions>
-                  </DrawerListsItem>
-                )}
-              </Draggable>
+                          {list?.numberOfTasks ?? 0}
+                        </TaskCount>
+                      </NumericalBadgeContainer>
+                    </div>
+                  </DrawerItemOptions>
+                </DrawerListsItem>
+              </DraggableDroppableListItem>
             );
           })
         : Array.from({ length: 6 })
@@ -474,6 +524,19 @@ const ListsSubmenu = () => {
             )}
         </div>
       </DrawerMyListsLabel>
+      <SearchContainer isWorkFlowSearch>
+        <Search
+          fullWidth
+          noBackground
+          value={searchValue}
+          onChange={(event) => handleSearch(event?.target?.value)}
+          placeholder="Search"
+          isWorkFlowSearch
+        />
+      </SearchContainer>
+      <HorizontalLineContainer>
+        <HorizontalLine />
+      </HorizontalLineContainer>
       <DrawerListsList $isSubMenu $isOpen={myListsVisible}>
         <Collapse in={myListsVisible}>
           {hasAnyPendingList && (
@@ -481,15 +544,32 @@ const ListsSubmenu = () => {
               Hooray you have a new list!
             </DrawerListsNewLabel>
           )}
-          <DragDropContext onDragEnd={handleDragEnd}>
-            <Droppable droppableId="droppable">
-              {(provided) => (
-                <div {...provided.droppableProps} ref={provided.innerRef}>
-                  {renderLists(myLists, false, isOverflowing)}
-                </div>
+          {searchValue && myLists?.length === 0 && (
+            <div style={{ textAlign: 'center', padding: '10px' }}>
+              No lists found
+            </div>
+          )}
+          <DndContext
+            sensors={sensors}
+            onDragEnd={handleDragEnd}
+            modifiers={[
+              restrictToVerticalAxis,
+              restrictToFirstScrollableAncestor,
+            ]}
+          >
+            <SortableContext
+              items={(myLists ?? [])?.map((list) => list?.taskListIdentifier)}
+              strategy={verticalListSortingStrategy}
+            >
+              {renderLists(
+                myLists,
+                false,
+                isOverflowing,
+                dragActiveId,
+                searchValue,
               )}
-            </Droppable>
-          </DragDropContext>
+            </SortableContext>
+          </DndContext>
         </Collapse>
       </DrawerListsList>
       <Spacing vertical={myListsVisible ? 4 : 0} />

@@ -1,7 +1,10 @@
 /* eslint-disable no-unused-expressions */
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { userHasAiSummaryViewFeatureSelector, userProfileSelector } from 'selectors/user-selectors';
+import {
+  userHasAiSummaryViewFeatureSelector,
+  userProfileSelector,
+} from 'selectors/user-selectors';
 import { organizationSelector } from 'selectors/organization-selectors';
 import debounce from 'lodash.debounce';
 // import { openModal } from 'modal/actions';
@@ -23,6 +26,7 @@ import {
   getFormattedPatients,
   hasRestrictedPatientLookup,
 } from 'components/task-drawer/PatientSection/helpers';
+import { useHistory, useLocation } from 'react-router-dom';
 import {
   PatientMainContainer,
   PatientContainer,
@@ -35,6 +39,8 @@ import {
 import PatientSelectItem from '../../patients/PatientSelectItem/PatientSelectItem';
 import AISummaryModalOpenerHelper from '@/app/modal/components/AISummaryModal/AISummaryModalOpenerHelper';
 import { SummaryType } from '@/app/helpers/ai-helper';
+import { openModal } from '@/app/modal/actions';
+import { useIsWorkspaceScopedList } from '@/app/hooks/useIsWorkspaceScopedList';
 
 const PATIENT_IDENTIFIER_FIELD_NAME = 'patientIdentifier';
 const MAX_PATIENT_RESULTS = 200;
@@ -45,6 +51,8 @@ const PatientSection = ({
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const dispatch = useDispatch();
+  const { pathname, search } = useLocation();
+  const history = useHistory();
   const patientInputReference = useRef(null);
   const [patients, setPatients] = useState([]);
   const [assignedPatient, setAssignedPatient] = useState(null);
@@ -80,6 +88,7 @@ const PatientSection = ({
   const { emrIntegrationType } = useSelector(organizationSelector) || {};
   const restrictedLookup = hasRestrictedPatientLookup(emrIntegrationType);
   const aiSummaryAvailable = useSelector(userHasAiSummaryViewFeatureSelector);
+  const { workspaceIdentifier } = useIsWorkspaceScopedList();
 
   useEffect(() => {
     if (
@@ -117,10 +126,12 @@ const PatientSection = ({
 
   const fetchPatients = useCallback(
     (value) =>
-      getPatientsByCriteria(value).then((fetchedPatients) => {
-        setPatients(fetchedPatients);
-        return fetchedPatients;
-      }),
+      getPatientsByCriteria(value, null, workspaceIdentifier).then(
+        (fetchedPatients) => {
+          setPatients(fetchedPatients);
+          return fetchedPatients;
+        },
+      ),
     [],
   );
 
@@ -180,6 +191,7 @@ const PatientSection = ({
       };
       setAssignedPatient(patient);
       savePatient(patient);
+      setSelectedPatient(patient);
       // eslint-disable-next-line no-unused-expressions
       patientInputReference.current?.querySelector('input')?.blur();
     },
@@ -201,21 +213,36 @@ const PatientSection = ({
         data = { firstName, lastName: lastNames.join(' ') };
       }
 
-      addPatient(data)
-        .then(async ({ patientIdentifier, firstName, lastName }) => {
-          await fetchPatients(patient);
-          await handlePatientSelect({
-            value: patientIdentifier,
-            displayLabel: `${lastName}, ${firstName} `,
-          });
-        })
-        .catch(noop);
+      dispatch(
+        openModal('EditPatient', {
+          patient: data,
+          onAdded: (newPatientData) => {
+            addPatient(newPatientData, workspaceIdentifier)
+              .then(async ({ patientIdentifier, firstName, lastName }) => {
+                await fetchPatients(patient);
+                await handlePatientSelect({
+                  value: patientIdentifier,
+                  displayLabel: `${lastName}, ${firstName} `,
+                });
+              })
+              .catch(noop);
+          },
+          mode: 'add',
+        }),
+      );
     },
-    [patientAddEnabled, fetchPatients, handlePatientSelect],
+    [patientAddEnabled, fetchPatients, dispatch, handlePatientSelect],
   );
 
   const patientProfile = () => {
-    history.push(`/core/patient/${selectedPatient.patientIdentifier}`);
+    history.push({
+      pathname: `/core/patient/${selectedPatient.patientIdentifier}`,
+      state: { from: search ? pathname + search : pathname },
+    });
+    sessionStorage.setItem(
+      'navigation-from',
+      search ? pathname + search : pathname,
+    );
   };
 
   return (
@@ -225,7 +252,10 @@ const PatientSection = ({
         <PatientLableContainer>
           <PatientContainer>
             {' '}
-            <PatientName status={selectedPatient.patientStatus} onClick={patientProfile}>
+            <PatientName
+              status={selectedPatient.patientStatus}
+              onClick={patientProfile}
+            >
               {selectedPatient.patientName}{' '}
               {selectedPatient.mrn && selectedPatient.mrn !== ''
                 ? `(${selectedPatient.mrn})`

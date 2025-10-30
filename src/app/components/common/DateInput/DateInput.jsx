@@ -1,5 +1,5 @@
 /* eslint-disable unicorn/consistent-function-scoping */
-import React, { useRef, useCallback, useEffect, useState } from 'react';
+import React, { useRef, useCallback, useEffect, useState, useMemo } from 'react';
 import moment from 'moment';
 import InputMask from 'react-input-mask';
 import Input from 'components/common/Input/Input';
@@ -8,7 +8,9 @@ import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import CloseIcon from '@mui/icons-material/Close';
 import { useBoolean } from 'hooks/useBoolean';
 import DatePicker from '../../task/DatePicker/DatePicker';
-import { DEFAULT_DATE_TIME_FORMAT, getMomenDateFromString } from './helpers';
+import { DEFAULT_DATE_FORMAT, DEFAULT_DATE_TIME_FORMAT, getMomenDateFromString, isValidDateInput } from './helpers';
+import { DueDateIntent } from '@/app/helpers/task-helpers';
+import { convertForIntent, normalizeDateOnlyIntent } from '@/app/helpers/date-intent-helpers';
 
 const CustomDateInput = ({ inputRef, ...otherProps }) => (
   <InputMask
@@ -63,6 +65,7 @@ const DateInput = React.forwardRef(
       showCalanderIcon = true,
       popoverZindex,
       timeEnabled = false,
+      dateIntent,
       ...otherProps
     },
     reference,
@@ -70,6 +73,7 @@ const DateInput = React.forwardRef(
   ) => {
     const [open, setOpen, unsetOpen] = useBoolean(false);
     const [isTime, setTime] = useState(timeEnabled);
+    const [isFocused, setIsFocused] = useState(false);
     const innerReference = useRef(null);
     const textFieldReference = reference || innerReference;
     const innerTextInputReference = useRef(null);
@@ -87,7 +91,9 @@ const DateInput = React.forwardRef(
         : undefined;
     const dateValue =
       value && value !== '' && !value.includes('_')
-        ? momentDate?.format(DEFAULT_DATE_TIME_FORMAT)
+        ? dateIntent === DueDateIntent.DATE
+          ? momentDate?.utc().format(DEFAULT_DATE_FORMAT)
+          : momentDate?.format(DEFAULT_DATE_TIME_FORMAT)
         : value;
 
     const handleChange = ({ target: { value: date } }) => {
@@ -100,11 +106,16 @@ const DateInput = React.forwardRef(
 
     const handleBlur = ({ target: { value: date } }) => {
       if (typeof onBlur === 'function') {
+        const isValid = isValidDateInput(date);
+    
         const standardizedDate =
-          date && date !== '' && !date.includes('_')
-            ? moment(date).toISOString()
-            : date;
-        onBlur({ target: { value: standardizedDate } }, true);
+          isValid ? moment(date, ['MM/DD/YYYY hh:mm A', 'MM/DD/YYYY']).toISOString() : date;
+    
+        const finalDate = normalizeDateOnlyIntent(standardizedDate);
+
+        finalDate && onChange({ target: { value: finalDate } });
+        onBlur({ target: { value: finalDate } }, true);
+        setIsFocused(false);
       }
     };
 
@@ -118,7 +129,7 @@ const DateInput = React.forwardRef(
     };
 
     const handleDatepickerChange = (isoDate) => {
-      const date = moment(isoDate).toISOString();
+      const date = convertForIntent(isoDate);
       handleChange({ target: { value: date } });
       handleBlur({ target: { value: date } });
       setTimeout(() => {
@@ -128,17 +139,24 @@ const DateInput = React.forwardRef(
     };
 
     useEffect(() => {
-      if (value?.trim() === '' || value === '__/__/____ __:__ _M') {
+      const isEmpty = value?.trim() === '' || value === '__/__/____ __:__ _M';
+    
+      if (isEmpty) {
         clearErrors?.(name);
-      } else if (
-        (name && dateValue === 'Invalid date') ||
-        value.includes('_')
-      ) {
-        if (typeof setError === 'function')
-          setError(name, { type: 'custom', message: 'Invalid date format' });
-      } else if (typeof clearErrors === 'function') clearErrors?.(name);
-    }, [clearErrors, dateValue, name, setError, value]);
+      } else if (!isValidDateInput(value)) {
+        setError?.(name, { type: 'custom', message: 'Invalid date format' });
+      } else {
+        clearErrors?.(name);
+      }
+    }, [clearErrors, name, setError, value]);
 
+    const shouldShowTimeInput = useMemo(() => {
+      const isTimeValueNonMidnight =
+        moment(dateValue).format('HH:mm') !== '00:00';
+    
+      return isTime && (isTimeValueNonMidnight || isFocused);
+    }, [isTime, dateValue, isFocused]);    
+                
     return (
       <>
         <Input
@@ -147,6 +165,7 @@ const DateInput = React.forwardRef(
           value={dateValue}
           onChange={handleChange}
           onBlur={handleBlur}
+          onFocus={() => setIsFocused(true)}
           readOnly={readOnly}
           disabled={disabled}
           shrink={!!value}
@@ -169,7 +188,7 @@ const DateInput = React.forwardRef(
             </Box>
           }
           {...otherProps}
-          customInputComponent={isTime ? CustomDateTimeInput : CustomDateInput}
+          customInputComponent={shouldShowTimeInput ? CustomDateTimeInput : CustomDateInput}
         />
         <Popover
           anchorOrigin={{
@@ -190,6 +209,8 @@ const DateInput = React.forwardRef(
               momentDate?.isValid() ? momentDate?.toISOString() : undefined
             }
             onDateChange={handleDatepickerChange}
+            showTime={shouldShowTimeInput}
+            onCloseClick={handleClose}
           />
         </Popover>
       </>

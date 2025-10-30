@@ -3,11 +3,11 @@ import VerticalScrollContainer from 'components/common/HorizontalScroll/Horizont
 import { Container } from './styled';
 
 const HorizontallyScrolledViewLayout = React.memo((props) => {
-  const { header, children } = props;
+  const { header, children, noOuterScroll } = props;
   return (
     <>
       {header}
-      <VerticalScrollContainer>
+      <VerticalScrollContainer noOuterScroll={noOuterScroll}>
         <Container>{children}</Container>
       </VerticalScrollContainer>
     </>

@@ -2,8 +2,12 @@ import React from 'react';
 import { useFormContext } from 'react-hook-form';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
-import { Checkbox, ListItemText, MenuItem } from '@mui/material';
-import { none } from 'ramda';
+import {
+  Checkbox,
+  FormHelperText,
+  ListItemText,
+  MenuItem,
+} from '@mui/material';
 import { ColorIndicator } from '../Select/styled';
 
 const AutoCompleteFormSelect = React.forwardRef(
@@ -16,10 +20,12 @@ const AutoCompleteFormSelect = React.forwardRef(
       readOnly,
       onChange,
       multiple = false,
+      formMethods,
       ...restProps
     },
     reference,
   ) => {
+    const formContext = useFormContext();
     const {
       register,
       setValue,
@@ -27,94 +33,129 @@ const AutoCompleteFormSelect = React.forwardRef(
       formState: { errors },
       clearErrors,
       unregister,
-    } = useFormContext();
+    } = formMethods || formContext;
+
+    const isNested = name?.includes('.');
+    const nestedParts = name?.split('.');
+
+    const error = isNested
+      ? errors?.[nestedParts[0]]?.[nestedParts[1]]?.message
+      : errors?.[name]?.message;
     const value = watch(name) || (multiple ? [] : '');
-    const error = errors?.[name]?.message;
 
     React.useEffect(() => {
-      register(name);
+      if (required) {
+        register(name, {
+          required: 'This field is required',
+          validate: (value) => {
+            if (multiple) {
+              return value && Array.isArray(value) && value.length > 0
+                ? true
+                : 'This field is required';
+            } else {
+              return value && value !== '' ? true : 'This field is required';
+            }
+          },
+        });
+      } else {
+        register(name);
+      }
       return () => unregister(name);
-    }, [register, unregister, name]);
+    }, [register, unregister, name, required, multiple]);
 
     const handleChange = (_, newValue) => {
       if (error) clearErrors(name);
+
       if (multiple) {
-        setValue(
-          name,
-          newValue?.length ? newValue.map((option) => option.value) : [],
-        );
+        const newArrayValue = newValue?.length
+          ? newValue.map((option) => option.value)
+          : [];
+        setValue(name, newArrayValue, {
+          shouldValidate: true,
+          shouldDirty: true,
+        });
       } else {
-        setValue(name, newValue?.value || none);
+        setValue(name, newValue?.value || null, {
+          shouldValidate: true,
+          shouldDirty: true,
+        });
       }
+
       if (typeof onChange === 'function') onChange(newValue);
     };
+
     const selectedOptions = multiple
       ? options.filter((option) => value.includes(option.value))
       : options.find((option) => option.value === value) || null;
 
     return (
-      <Autocomplete
-        disabled={readOnly}
-        multiple={multiple}
-        ref={reference}
-        options={options}
-        getOptionLabel={(option) => option.label}
-        value={selectedOptions}
-        onChange={handleChange}
-        disableCloseOnSelect={multiple}
-        renderOption={(props, option, { selected }) => (
-          <MenuItem {...props} key={option.value} value={option.value}>
-            {multiple && (
-              <Checkbox style={{ marginRight: 8 }} checked={selected} />
-            )}
-            {option.color && <ColorIndicator color={option.color} />}
-            <ListItemText>{option.label}</ListItemText>
-          </MenuItem>
-        )}
-        renderInput={(params) => (
-          <TextField
-            {...params}
-            variant="standard"
-            sx={{
-              backgroundColor: '#f5f8fa',
-              borderRadius: '4px',
-              '& .MuiInputLabel-root': {
-                color: '#7d91a2',
-                paddingLeft: '10px',
-                textTransform: 'none',
-              },
-              '& .MuiInputLabel-shrink': {
-                color: '#7d91a2',
-                paddingTop: '15px',
-                paddingLeft: '15px',
-                textTransform: 'none',
-              },
-              '& .MuiInputBase-root': {
+      <>
+        <Autocomplete
+          disabled={readOnly}
+          name={name}
+          multiple={multiple}
+          ref={reference}
+          options={options}
+          getOptionLabel={(option) => option.label}
+          value={selectedOptions}
+          onChange={handleChange}
+          disableCloseOnSelect={multiple}
+          renderOption={(props, option, { selected }) => (
+            <MenuItem {...props} key={option.value} value={option.value}>
+              {multiple && (
+                <Checkbox style={{ marginRight: 8 }} checked={selected} />
+              )}
+              {option.color && <ColorIndicator color={option.color} />}
+              <ListItemText>{option.label}</ListItemText>
+            </MenuItem>
+          )}
+          renderInput={(params) => (
+            <TextField
+              name={name}
+              {...params}
+              variant="standard"
+              sx={{
+                backgroundColor: '#f5f8fa',
                 borderRadius: '4px',
-                padding: '8px 10px',
-              },
-              '& .MuiAutocomplete-popupIndicator': {
-                color: '#ffac33', // dropdown arrow color
-                marginRight: '6px'
-               },
-               '& .MuiInput-underline:before': {
-                display: 'none', // Remove the underline
-              },
-                    
-            }}
-            label={label}
-            error={!!error}
-            helperText={error}
-            required={required}
-            inputRef={reference}
-            InputProps={{
-              ...params.InputProps,
-              readOnly,
-            }}
-            {...restProps}
-          />
+                '& .MuiInputLabel-root': {
+                  color: '#7d91a2',
+                  paddingLeft: '10px',
+                  textTransform: 'none',
+                },
+                '& .MuiInputLabel-shrink': {
+                  color: '#7d91a2',
+                  paddingTop: '15px',
+                  paddingLeft: '15px',
+                  textTransform: 'none',
+                },
+                '& .MuiInputBase-root': {
+                  borderRadius: '4px',
+                  padding: '8px 10px',
+                },
+                '& .MuiAutocomplete-popupIndicator': {
+                  color: '#ffac33',
+                  marginRight: '6px',
+                },
+                '& .MuiInput-underline:before': {
+                  display: 'none',
+                },
+              }}
+              label={label}
+              inputRef={reference}
+              InputProps={{
+                ...params.InputProps,
+                readOnly,
+              }}
+              {...restProps}
+            />
+          )}
+        />
+        {error && (
+          <FormHelperText error sx={{ pl: 1.5 }}>
+            {error}
+          </FormHelperText>
         )}
-      />
+      </>
     );
   },
 );

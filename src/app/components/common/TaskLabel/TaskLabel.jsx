@@ -10,11 +10,13 @@ import {
 } from './styled';
 import Tooltip from '../Tooltip/Tooltip';
 import { useTaskListColumnsConfig } from '@/app/context-api/columns-config-context';
+import { getBorderColumnLabelTooltip } from '@/app/helpers/task-helpers';
 
 const TaskLabel = ({
   labels,
   getLabelsIconTooltipTitle,
   onClick,
+  isBorderColumnItem,
   ...props
 }) => {
   const { columns } = useTaskListColumnsConfig();
@@ -32,17 +34,27 @@ const TaskLabel = ({
     return Math.floor(width) > 160 ? 135 : width;
   };
 
-  useEffect(() => {
-    let totalWidth = 0;
-    labels.forEach((label, index) => {
-      const text = label?.labelName;
-      const width = getWidthOfString(text, font);
-      totalWidth += Math.floor(width) + 30;
-      totalWidth > labelColumn[0]?.columnWidth
-        ? setAddBadgeLength((cur) => (cur === labels?.length ? cur : cur + 1))
-        : setAddBadgeLength((cur) => (cur === 0 ? 0 : cur - 1));
-    });
-  }, [labels, labelColumn[0]?.columnWidth]);
+  useEffect(
+    () => {
+      if (isBorderColumnItem) {
+        setAddBadgeLength(labels?.length);
+      } else {
+        let totalWidth = 0;
+        labels.forEach((label, index) => {
+          const text = label?.labelName;
+          const width = getWidthOfString(text, font);
+          totalWidth += Math.floor(width) + 30;
+          totalWidth > labelColumn[0]?.columnWidth
+            ? setAddBadgeLength((cur) =>
+                cur === labels?.length ? cur : cur + 1,
+              )
+            : setAddBadgeLength((cur) => (cur === 0 ? 0 : cur - 1));
+        });
+      }
+    },
+    [labels, labelColumn[0]?.columnWidth],
+    isBorderColumnItem,
+  );
 
   const additionalLabelbadge = labels.slice(labels?.length - addBadgeLength);
 
@@ -79,12 +91,17 @@ const TaskLabel = ({
           >
             <Tooltip
               placement="top"
-              title={getLabelsIconTooltipTitle(additionalLabelbadge)}
+              title={
+                isBorderColumnItem
+                  ? getBorderColumnLabelTooltip(additionalLabelbadge)
+                  : getLabelsIconTooltipTitle(additionalLabelbadge)
+              }
             >
               <button onClick={onClick} type="button">
                 <AdditionalTaskLabelContainer>
                   <AdditionalTaskLabelText>
-                    {'+' + additionalLabelbadge?.length}
+                    {`${isBorderColumnItem ? '' : '+'}` +
+                      additionalLabelbadge?.length}
                   </AdditionalTaskLabelText>
                 </AdditionalTaskLabelContainer>
               </button>

@@ -26,6 +26,7 @@ import {
 } from 'selectors/mega-filter-selectors';
 import NewFilterContainer from '../../filter/NewFilterContainer/NewFilterContainer';
 import SaveFilterPopup from '../../filter/SaveFilterPopup/SaveFilterPopup';
+import { useParams } from 'react-router-dom';
 
 const PatientsFilter = ({
   closeFilter,
@@ -114,14 +115,16 @@ const PatientsFilter = ({
     [dispatch],
   );
 
+  const { workspaceIdentifier } = useParams();
+
   const handleSelectQuickFilter = useCallback(
     (id, filtersSetup) => {
       // dispatch(selectQuickFilter(id));
       // dispatch(filterListDetailsTasks(filtersSetup));
       dispatch(selectQuickFilter(id));
-      dispatch(PatientsActions.setPatientsSelectedFilters(filtersSetup));
+      dispatch(PatientsActions.setPatientsSelectedFilters(filtersSetup, workspaceIdentifier));
     },
-    [dispatch],
+    [dispatch, workspaceIdentifier],
   );
 
   const handleQuickFilterCreate = useCallback(

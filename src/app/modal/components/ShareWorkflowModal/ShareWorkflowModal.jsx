@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { Grid } from '@mui/material';
 import Spacing from 'components/common/Spacing';
 import InviteUserOrGroupToListForm from 'components/user/InviteMemberToListForm/InviteUserOrGroupToListForm';
@@ -16,20 +16,33 @@ import {
 import OrganizationsSelect from './OrganizationsSelect/OrganizationsSelect';
 
 const ShareWorkflowModal = (props) => {
-  const { closeModal } = props;
-  // useEffect(() => {
-  //   if (!list) {
-  //     closeModal();
-  //   }
-  // }, [closeModal, list]);
-  const [selectedOrganizations, setSelectedOrganizations] = useState([]);
-  const addSelectedOrganization = (organization) => {
+  const { closeModal, confirm, sharedWithOrganizations = []} = props;
+
+  const [selectedOrganizations, setSelectedOrganizations] = useState(sharedWithOrganizations);
+
+  const handleConfirm = useCallback(() => {
+
+    const orgIdentifiers = selectedOrganizations.map((o) => o.organizationIdentifier);
+
+    const responseData = {
+      organizations: orgIdentifiers,
+    };
+
+    if (typeof confirm === 'function') {
+      confirm(responseData);
+      closeModal();
+    } else {
+      console.warn('You have to provide confirm callback');
+    }
+  }, [selectedOrganizations, confirm, closeModal]);
+
+  const selectOrganization = (organization) => {
     if (organization) {
       setSelectedOrganizations((o) => [...o, organization]);
     }
   };
 
-  const deleteSelectedOrganization = (orgId) => {
+  const unselectOrganization = (orgId) => {
     setSelectedOrganizations((previousSelectedOrganizations) =>
       previousSelectedOrganizations?.filter(
         (se) => se?.organizationIdentifier !== orgId,
@@ -52,14 +65,13 @@ const ShareWorkflowModal = (props) => {
         /> */}
         <OrganizationsSelect
           selectedOrganizations={selectedOrganizations}
-          onAdd={addSelectedOrganization}
-          onDelete={deleteSelectedOrganization}
-          // onMoveToExternalUserForm={handleMoveToExternalForm}
+          onAdd={selectOrganization}
+          onDelete={unselectOrganization}
         />
         <Spacing vertical={6} />
         <ButtonWrapper>
           <CancelButton onClick={closeModal}>Cancel</CancelButton>
-          <ConfirmButton onClick={closeModal}>Share</ConfirmButton>
+          <ConfirmButton onClick={handleConfirm}>Share</ConfirmButton>
         </ButtonWrapper>
       </Grid>
     </InviteToListModalWrapper>

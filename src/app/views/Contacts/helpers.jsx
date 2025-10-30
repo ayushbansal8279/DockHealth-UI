@@ -20,38 +20,38 @@ export const getContactColumns = ({ onEditContact, onDeteleContact }) => [
   {
     field: 'type',
     headerName: 'Contact Type',
-    width: 150,
+    flex: 1,
     renderHeader: renderColumnHeader,
   },
   {
     field: 'name',
     headerName: 'Name',
-    flex: 1,
+    flex: 1.5,
     renderHeader: renderColumnHeader,
   },
   {
     field: 'email',
     headerName: 'Email',
-    width: 250,
+    flex: 2,
     renderHeader: renderColumnHeader,
   },
   {
     field: 'mobilePhoneNumber',
     headerName: 'Phone',
-    width: 120,
+    flex: 1,
     renderHeader: renderColumnHeader,
   },
   {
     field: 'faxPhoneNumber',
     headerName: 'Fax',
-    width: 120,
+    flex: 1,
     renderHeader: renderColumnHeader,
   },
   {
     field: '-',
     type: 'actions',
-    headerName: 'Option',
-    width: 60,
+    headerName: 'Options',
+    flex: 0.5,
     renderHeader: renderColumnHeader,
     renderCell: (data) => {
       const contextMenuOptions = [

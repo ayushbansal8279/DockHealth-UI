@@ -3,7 +3,7 @@ import { Input, ListItemText, MenuItem, Select } from '@mui/material';
 import { ColorIndicator, DropdownBox } from './styled';
 
 const TaskItemDropdown = ({
-  value: initialValue,
+  value: initialValue = '',
   onChange,
   field: { options: initialOptions = [], displayOptions = [] },
   readOnly = false,
@@ -20,7 +20,7 @@ const TaskItemDropdown = ({
 
   const filteredOptions = useMemo(() => {
     return initialOptions.filter(({ name }) =>
-      name.toLowerCase().includes(searchTerm.toLowerCase())
+      name.toLowerCase().includes(searchTerm.toLowerCase()),
     );
   }, [initialOptions, searchTerm]);
 
@@ -44,7 +44,7 @@ const TaskItemDropdown = ({
 
   const handleChange = useCallback(
     (event) => {
-      setValue(event.target.value);
+      setValue(event.target.value || '');
       onChange(event.target.value);
     },
     [onChange],
@@ -56,10 +56,13 @@ const TaskItemDropdown = ({
     }
   };
 
-  const menuProps = useMemo(() => ({
-    PaperProps: {},
-    MenuListProps: {disablePadding: !withSearch,},
-  }), [withSearch]);
+  const menuProps = useMemo(
+    () => ({
+      PaperProps: {},
+      MenuListProps: { disablePadding: !withSearch },
+    }),
+    [withSearch],
+  );
 
   const handleDropdownClose = () => {
     setIsOpen(false);
@@ -97,8 +100,14 @@ const TaskItemDropdown = ({
           name="dropdownCustomField"
           value={value}
           renderValue={(selectedValue) => {
-            const option = options.find((option) => option.value === selectedValue);
-            return option ? (option.tag !== '' ? option.label : option.tag) : '';
+            const option = options.find(
+              (option) => option.value === selectedValue,
+            );
+            return option
+              ? option.tag !== ''
+                ? option.label
+                : option.tag
+              : '';
           }}
           onChange={handleChange}
           IconComponent={() => <></>}
@@ -108,26 +117,26 @@ const TaskItemDropdown = ({
           onOpen={handleDropdownOpen}
         >
           {withSearch && isOpen && (
-              <Input
-                sx={{
-                  '& .MuiOutlinedInput-notchedOutline': {
-                    borderColor: 'transparent',
-                  },
-                  '&:hover .MuiOutlinedInput-notchedOutline': {
-                    borderColor: 'transparent',
-                  },
-                  '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                    borderColor: 'transparent',
-                  },
-                  height: '35px',
-                  padding: '5px 10px 5px 15px',
-                }}
-                fullWidth
-                placeholder="Search"
-                value={searchTerm}
-                onChange={handleSearchChange}
-                onKeyDown={handleKeyDown}
-              />   
+            <Input
+              sx={{
+                '& .MuiOutlinedInput-notchedOutline': {
+                  borderColor: 'transparent',
+                },
+                '&:hover .MuiOutlinedInput-notchedOutline': {
+                  borderColor: 'transparent',
+                },
+                '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                  borderColor: 'transparent',
+                },
+                height: '35px',
+                padding: '5px 10px 5px 15px',
+              }}
+              fullWidth
+              placeholder="Search"
+              value={searchTerm}
+              onChange={handleSearchChange}
+              onKeyDown={handleKeyDown}
+            />
           )}
           {options.map((option) => {
             const { OptionIcon } = option;

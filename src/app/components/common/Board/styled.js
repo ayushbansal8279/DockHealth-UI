@@ -36,7 +36,7 @@ export const BoardContainer = styled.div`
 
 export const BoardColumnContainer = styled.div`
   width: 245px;
-  margin: 15px 25px 0 25px;
+  margin: 15px 0 0 25px;
   display: flex;
   flex-direction: column;
 `;
@@ -57,7 +57,7 @@ export const TaskContainer = styled.div`
   padding: 12px;
   margin-top: 20px;
   width: 245px;
-  height: 140px;
+  height: 170px;
 `;
 
 export const BoardColumnTasksContainer = styled.div`
@@ -75,6 +75,8 @@ export const ColumnName = styled.div`
 `;
 
 export const TaskName = styled.div`
+  color: ${({ isWorkflow }) =>
+    isWorkflow ? palette.blueOcean : palette.black};
   overflow: hidden;
   width: 100%;
   max-height: 50px;
@@ -113,12 +115,15 @@ export const OptionsContainer = styled.div`
 export const TaskActionsContainer = styled.div`
   padding: 12px 0;
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  gap: 10px;
 `;
 
 export const WorkflowActionsContainer = styled.div`
   display: flex;
-  align-items: center;
+  padding: 12px 0;
+  flex-direction: column;
+  gap: 10px;
 `;
 
 export const LoaderRow = styled.div`

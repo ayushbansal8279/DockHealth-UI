@@ -1,6 +1,11 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { userHasAiSummaryViewFeatureSelector, userHasDockGuestFeatureSelector, userHasViewOnlyFeatureSelector, userProfileSelector } from 'selectors/user-selectors';
+import {
+  userHasAiSummaryViewFeatureSelector,
+  userHasDockGuestFeatureSelector,
+  userHasViewOnlyFeatureSelector,
+  userProfileSelector,
+} from 'selectors/user-selectors';
 import { organizationSelector } from 'selectors/organization-selectors';
 import {
   onTaskDrawerPatientAdded,
@@ -16,7 +21,7 @@ import { changePatientForTemplateBundle } from 'actions/template-bundle-actions'
 import { noop } from 'helpers/utility-functions';
 import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import { selectedTaskSelector } from 'selectors/task-drawer-selectors';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import SelectDropdown from '../SelectDropdown/SelectDropdown';
 import {
   getFormattedPatient,
@@ -35,6 +40,7 @@ import {
 import { updatePartialWorkflow } from '@/app/actions/task-template-actions';
 import AISummaryModalOpenerHelper from '@/app/modal/components/AISummaryModal/AISummaryModalOpenerHelper';
 import { SummaryType } from '@/app/helpers/ai-helper';
+import { useIsWorkspaceScopedList } from '@/app/hooks/useIsWorkspaceScopedList';
 
 const PATIENT_IDENTIFIER_FIELD_NAME = 'patientIdentifier';
 const MAX_PATIENT_RESULTS = 200;
@@ -48,10 +54,11 @@ const PatientSection = ({
   isSubtask,
   quickAddPatientEnabled,
   addTaskDrawer,
-  setPatientIdentifier,
+  setPatient,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const dispatch = useDispatch();
+  const { pathname, search } = useLocation();
   const patientInputReference = useRef(null);
   const [patients, setPatients] = useState([]);
   const [assignedPatient, setAssignedPatient] = useState(null);
@@ -93,6 +100,7 @@ const PatientSection = ({
   const formattedPatients = getFormattedPatients({ patients });
   const customerTypeLabel = getCustomerTypeLabel(currentUser);
   // const customerTypeLabelCapitalized = customerTypeLabel;
+  const { workspaceIdentifier } = useIsWorkspaceScopedList();
 
   useEffect(() => {
     if (patientInputReference?.current && autofocus)
@@ -216,10 +224,12 @@ const PatientSection = ({
 
   const fetchPatients = useCallback(
     (value) =>
-      getPatientsByCriteria(value).then((fetchedPatients) => {
-        setPatients(fetchedPatients);
-        return fetchedPatients;
-      }),
+      getPatientsByCriteria(value, null, workspaceIdentifier).then(
+        (fetchedPatients) => {
+          setPatients(fetchedPatients);
+          return fetchedPatients;
+        },
+      ),
     [],
   );
 
@@ -256,7 +266,7 @@ const PatientSection = ({
     async (clearInput) => {
       if (addTaskDrawer) {
         setAssignedPatient(null);
-        setPatientIdentifier('');
+        setPatient(null);
       } else {
         setAssignedPatient(null);
         setPatients([]);
@@ -269,7 +279,7 @@ const PatientSection = ({
   const handlePatientSelect = useCallback(
     async (selectedOption) => {
       if (addTaskDrawer) {
-        setPatientIdentifier(selectedOption.key);
+        setPatient(selectedOption.patient);
         setAssignedPatient(selectedOption);
       } else {
         const [lastName, names] = selectedOption.displayLabel.split(', ');
@@ -305,23 +315,38 @@ const PatientSection = ({
         data = { firstName, lastName: lastNames.join(' ') };
       }
 
-      onTaskDrawerPatientAdded();
+      dispatch(
+        openModal('EditPatient', {
+          patient: data,
+          onAdded: (newPatientData) => {
+            onTaskDrawerPatientAdded();
 
-      addPatient(data)
-        .then(async ({ patientIdentifier, firstName, lastName }) => {
-          await fetchPatients(patient);
-          await handlePatientSelect({
-            value: patientIdentifier,
-            displayLabel: `${lastName}, ${firstName} `,
-          });
-        })
-        .catch(noop);
+            addPatient(newPatientData, workspaceIdentifier)
+              .then(async ({ patientIdentifier, firstName, lastName }) => {
+                await fetchPatients(patient);
+                await handlePatientSelect({
+                  value: patientIdentifier,
+                  displayLabel: `${lastName}, ${firstName} `,
+                });
+              })
+              .catch(noop);
+          },
+          mode: 'add',
+        }),
+      );
     },
-    [patientAddEnabled, fetchPatients, handlePatientSelect],
+    [patientAddEnabled, dispatch, fetchPatients, handlePatientSelect],
   );
 
   const patientProfile = () => {
-    history.push(`/core/patient/${selectedPatient.patientIdentifier}`);
+    history.push({
+      pathname: `/core/patient/${selectedPatient.patientIdentifier}`,
+      state: { from: search ? pathname + search : pathname },
+    });
+    sessionStorage.setItem(
+      'navigation-from',
+      search ? pathname + search : pathname,
+    );
   };
 
   return (
@@ -331,7 +356,10 @@ const PatientSection = ({
         <PatientLableContainer>
           <PatientContainer>
             {' '}
-            <PatientName status={selectedPatient.patientStatus} onClick={patientProfile}>
+            <PatientName
+              status={selectedPatient.patientStatus}
+              onClick={patientProfile}
+            >
               {selectedPatient.patientName}{' '}
             </PatientName>
             <button

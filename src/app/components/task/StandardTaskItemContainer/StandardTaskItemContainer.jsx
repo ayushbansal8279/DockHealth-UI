@@ -27,6 +27,8 @@ const StandardTaskItemContainer = ({
   isAddingTask,
   origin,
   viewType,
+  isDragPreview,
+  isWorkflowTask,
   ...restProps
 }) => {
   const organizationCustomFields = useSelector(
@@ -41,7 +43,7 @@ const StandardTaskItemContainer = ({
       taskActions
         .partialUpdateTask(taskId, dataToUpdate)
         .then(() => {
-          if (typeof onTaskChenged === 'function') onTaskChanged();
+          if (typeof onTaskChanged === 'function') onTaskChanged();
           alertActions.showGlobalAlert(AlertMessages.UPDATED);
         })
         .catch(() => {
@@ -56,7 +58,7 @@ const StandardTaskItemContainer = ({
       taskActions
         .updateWorkflowStatus(task, workflowStatus)
         .then(() => {
-          if (typeof onTaskChenged === 'function') onTaskChanged();
+          if (typeof onTaskChanged === 'function') onTaskChanged();
           alertActions.showGlobalAlert(AlertMessages.UPDATED);
         })
         .catch(() => {
@@ -134,6 +136,8 @@ const StandardTaskItemContainer = ({
       isLastChild={isLastChild}
       isAddingTask={isAddingTask}
       isNextTaskItemTypeBundle={isNextTaskItemTypeBundle}
+      isDragPreview={isDragPreview}
+      isWorkflowTask={isWorkflowTask}
       {...restProps}
       viewType={viewType}
     />

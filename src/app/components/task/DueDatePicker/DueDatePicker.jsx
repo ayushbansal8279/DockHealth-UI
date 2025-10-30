@@ -16,6 +16,7 @@ import {
   SectionWrapper,
   Label,
   AddSectionWrapper,
+  DisabledRepeatHint,
 } from './styled';
 import RecurringSection from './RecurringSection';
 import { DueDateIntent } from '@/app/helpers/task-helpers';
@@ -33,10 +34,15 @@ const DueDatePicker = ({
   onCloseClick,
   disableClearDate,
   dueDateIntent,
-  dateType=null
+  dateType = null,
+  allSelectedTasksIdentifiers,
+  allSelectedWorkflowIdentifiers,
+  bulkEditDueDate = false,
+  onClearDateClick,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
-  const [recurringSectionVisible, showRecurringSection] = useBoolean(recurring);
+  const [recurringSectionVisible, showRecurringSection, hideRecurringSection] =
+    useBoolean(recurring);
   const [dateMaskValue, setDateMaskValue] = useState(
     selectedDate ? moment(selectedDate).format(DATE_MASK_FORMAT) : null,
   );
@@ -51,12 +57,14 @@ const DueDatePicker = ({
         setTimeMaskValue(moment(selectedDate).format(TIME_12H_FORMAT));
       }
 
-      if(!selectedDate) {
+      if (!selectedDate) {
         setDateMaskValue(null);
         setDateValue(null);
-      }
-      else {
-        if (dateType === 'dueDate' && (dueDateIntent === DueDateIntent.DATE || !dueDateIntent)) {
+      } else {
+        if (
+          dateType === 'dueDate' &&
+          (dueDateIntent === DueDateIntent.DATE || !dueDateIntent)
+        ) {
           const adjustedDate = adjustDateForTimeZone(selectedDate);
           const formattedDate = adjustedDate?.utc().format(DATE_ISO_FORMAT);
           setDateMaskValue(moment(formattedDate).format(DATE_MASK_FORMAT));
@@ -74,8 +82,13 @@ const DueDatePicker = ({
     setDateValue(pickedDate);
     setDateMaskValue(formattedToMask);
 
-    if (dateType === 'dueDate' && (dueDateIntent === DueDateIntent.DATE || !dueDateIntent)) {
-      const dateOnlyISO = moment(`${pickedDate}T00:00:00.000+00:00`).toISOString();
+    if (
+      dateType === 'dueDate' &&
+      (dueDateIntent === DueDateIntent.DATE || !dueDateIntent)
+    ) {
+      const dateOnlyISO = moment(
+        `${pickedDate}T00:00:00.000+00:00`,
+      ).toISOString();
       onDateChange(dateOnlyISO);
     } else {
       onDateChange(
@@ -119,6 +132,19 @@ const DueDatePicker = ({
     handleDatePick(formattedDate);
   };
 
+  const handleClearDateClick = () => {
+    if (onClearDateClick) {
+      onClearDateClick(() => {
+        onDateChange(null);
+        setTimeMaskValue(null);
+      });
+    } else {
+      // Fallback to direct clear if no callback provided
+      onDateChange(null);
+      setTimeMaskValue(null);
+    }
+  };
+
   return (
     <ContentWrapper>
       <QuickAddSectionWrapper>
@@ -126,7 +152,7 @@ const DueDatePicker = ({
           <Label>Date</Label>
           <SecondaryDateInput
             popoverDisabled
-            value={dateMaskValue || ""}
+            value={dateMaskValue || ''}
             onChange={setDateMaskValue}
             onEnter={handleInsertDateAsText}
             onBlur={handleInsertDateAsText}
@@ -181,13 +207,25 @@ const DueDatePicker = ({
               selectedDueDate={selectedDate}
               recurring={recurring}
               onClose={onCloseClick}
+              allSelectedTasksIdentifiers={allSelectedTasksIdentifiers}
+              allSelectedWorkflowIdentifiers={allSelectedWorkflowIdentifiers}
+              bulkEditDueDate={bulkEditDueDate}
             />
           ) : (
             <>
               <SectionWrapper>
-                <PlusButton type="button" onClick={handleShowRecurringSection}>
+                <PlusButton
+                  type="button"
+                  onClick={handleShowRecurringSection}
+                  disabled={!selectedDate}
+                >
                   Repeat
                 </PlusButton>
+                {!selectedDate && (
+                  <DisabledRepeatHint>
+                    Select a date to enable repeating options
+                  </DisabledRepeatHint>
+                )}
               </SectionWrapper>
             </>
           )}
@@ -200,7 +238,10 @@ const DueDatePicker = ({
             onClick={() => {
               onDateChange(null);
               setTimeMaskValue(null);
+              hideRecurringSection();
             }}
+            disabled={!selectedDate && !bulkEditDueDate}
+            theme={!selectedDate && !bulkEditDueDate ? 'light' : ''}
           >
             Clear Date
           </PopoverBottomBar.Button>

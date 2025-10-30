@@ -4,9 +4,10 @@ import { openModal } from 'modal/actions';
 import { selectedUserOrganizationSelector } from 'selectors/user-selectors';
 import PatientList from './PatientList';
 import { StyledPopover } from './styled';
-import { ListPageContext } from '@/app/views/list-details/ListDetailsView';
+import { TaskViewContext } from '@/app/context-api/task-view-context';
 import { updatePartialWorkflow } from '@/app/actions/task-template-actions';
 import { changePatientForTemplateBundle } from '@/app/actions/template-bundle-actions';
+import { useIsWorkspaceScopedList } from '@/app/hooks/useIsWorkspaceScopedList';
 
 const PatientDropdown = ({
   children,
@@ -20,16 +21,18 @@ const PatientDropdown = ({
   hasSubtasks,
   taskWorkflow,
   origin,
+  openAddPatientModal,
 }) => {
   const popoverReference = useRef(null);
   const dispatch = useDispatch();
-  const { handlePatientPopoverOpen } = useContext(ListPageContext);
+  const { handlePatientPopoverOpen } = useContext(TaskViewContext);
   const currentOrganization = useSelector(selectedUserOrganizationSelector);
   const quickAddPatientEnabledItem =
     currentOrganization?.themeSettings?.find(
       ({ name }) => name === 'patient.quickadd.enabled',
     ) || {};
   const quickAddPatientEnabled = quickAddPatientEnabledItem?.value !== 'false';
+  const { workspaceIdentifier } = useIsWorkspaceScopedList();
 
   useEffect(() => {
     origin === 'LIST' && handlePatientPopoverOpen(isPopoverOpen);
@@ -126,6 +129,9 @@ const PatientDropdown = ({
           onSelect={handlePatientSelect}
           selectedPatientIdentifier={selectedPatientIdentifier}
           disableAdding={!quickAddPatientEnabled}
+          closePopover={closePopover}
+          openAddPatientModal={openAddPatientModal}
+          workspaceIdentifier={workspaceIdentifier}
         />
       </StyledPopover>
     </>

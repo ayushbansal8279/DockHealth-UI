@@ -28,6 +28,7 @@ const ListPickerModal = ({
   fetchMethod,
   listCreationPayload = {},
   enableSelectingGroupStep = false,
+  renderDescription
 }) => {
   const [selectedList, setSelectedList] = useState(null);
   const [selectedGroup, setSelectedGroup] = useState(null);
@@ -105,6 +106,7 @@ const ListPickerModal = ({
               setLists={setLists}
               onAddList={handleAddNewList}
               savingList={isFetchingLists}
+              renderDescription={renderDescription}
             />
             {enableSelectingGroupStep && (
               <GroupSelectSection

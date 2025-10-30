@@ -1,11 +1,17 @@
 import prop from 'ramda/src/prop';
 import { createSelector } from 'reselect';
+import { ensureSingular } from '../helpers/workspace-helpers';
 
 export const organizationStateSelector = (state) => state.organizationState;
 
 export const organizationSelector = createSelector(
   organizationStateSelector,
   ({ organization }) => organization,
+);
+
+export const organizationWorkspaceLabelSelector = createSelector(
+  organizationStateSelector,
+  ({ organization }) => ensureSingular(organization?.workspaceLabel) || 'Workspace',
 );
 
 export const isFetchingOrganizationSelector = createSelector(

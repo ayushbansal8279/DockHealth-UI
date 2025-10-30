@@ -1,6 +1,27 @@
+import * as Yup from 'yup';
+import { DisplayOption } from '@/app/helpers/field-type-helpers';
+
 const commonOptions = (displayOptionsState, handleDisplayOptionChange) => [
   {
-    label: 'Readonly',
+    label: 'Required',
+    key: DisplayOption.REQUIRED,
+    value: !!displayOptionsState?.displayOptions?.includes(
+      DisplayOption.TASK_REQUIRED,
+    ),
+    onChange: (value) =>
+      handleDisplayOptionChange(value, DisplayOption.TASK_REQUIRED),
+  },
+  {
+    label: 'Single Select',
+    key: DisplayOption.SINGLE_SELECT,
+    value: !!displayOptionsState?.displayOptions?.find(
+      (option) => option === DisplayOption.SINGLE_SELECT,
+    ),
+    onChange: (value) =>
+      handleDisplayOptionChange(value, DisplayOption.SINGLE_SELECT),
+  },
+  {
+    label: 'Read only',
     key: 'READONLY',
     value: !!displayOptionsState?.displayOptions?.find(
       (option) => option === 'READONLY',
@@ -16,7 +37,6 @@ const commonOptions = (displayOptionsState, handleDisplayOptionChange) => [
     onChange: (value) => handleDisplayOptionChange(value, 'HIDDEN'),
   },
 ];
-
 
 export const getAdditionalPatientOptions = ({
   displayOptionsState,
@@ -67,10 +87,9 @@ export const getAdditionalUserOptions = ({
 export const getAdditionalTaskOptions = ({
   displayOptionsState,
   handleDisplayOptionChange,
-}) => 
- [
+}) => [
   {
-    label: 'Required for Task completion',
+    label: 'Required for task completion',
     key: 'TASK_REQUIRED',
     value: !!displayOptionsState?.displayOptions?.find(
       (option) => option === 'TASK_REQUIRED',
@@ -85,7 +104,7 @@ export const getAdditionalProfileOptions = ({
   handleDisplayOptionChange,
 }) => [
   {
-    label: 'Profile Name',
+    label: 'Object Name',
     key: 'PROFILE_NAME',
     value: !!displayOptionsState?.displayOptions?.find(
       (option) => option === 'PROFILE_NAME',
@@ -93,7 +112,7 @@ export const getAdditionalProfileOptions = ({
     onChange: (value) => handleDisplayOptionChange(value, 'PROFILE_NAME'),
   },
   {
-    label: 'Profile Header',
+    label: 'Object Header',
     key: 'PROFILE_HEADER',
     value: !!displayOptionsState?.displayOptions?.find(
       (option) => option === 'PROFILE_HEADER',
@@ -124,10 +143,12 @@ export const getAdditionalOptions = ({
     }
 
     case 'TASK': {
-      return getAdditionalTaskOptions({
+      let options = getAdditionalTaskOptions({
         displayOptionsState,
         handleDisplayOptionChange,
       });
+      options = options.filter((opt) => opt.key !== DisplayOption.REQUIRED);
+      return options;
     }
 
     case 'PROFILE': {
@@ -137,8 +158,31 @@ export const getAdditionalOptions = ({
       });
     }
 
+    case 'GLOBAL': {
+      return [];
+    }
+
     default: {
       return null;
     }
   }
+};
+
+export const regexValidator = () => {
+  const INVALID_REGEX_MESSAGE =
+    'Enter a valid regular expression (e.g. /^[a-z]+$/i)';
+
+  return Yup.string()
+    .nullable()
+    .test('is-valid-regex', INVALID_REGEX_MESSAGE, (value) => {
+      if (!value) return true;
+      const match = value.match(/^\/(.+)\/([a-z]*)$/i);
+      if (!match) return false;
+      try {
+        new RegExp(match[1], match[2]);
+        return true;
+      } catch {
+        return false;
+      }
+    });
 };

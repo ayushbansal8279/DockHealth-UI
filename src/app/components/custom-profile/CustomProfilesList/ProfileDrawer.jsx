@@ -14,7 +14,9 @@ import {
   createProfile,
   editProfileDetails,
   deleteProfile,
+  archiveProfile,
 } from 'api/profile-api';
+import { ProfileStatus } from 'helpers/profile-helpers';
 import { FormProvider, useForm } from 'react-hook-form';
 import {
   ContentWrapper,
@@ -24,17 +26,13 @@ import {
 } from 'components/patients/PatientDrawer/styled';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import CloseIcon from '@mui/icons-material/Close';
-// import Input from 'components/common/Input/Input';
 import OptionsMenu from 'components/common/OptionsMenu/OptionsMenu';
 import LabeledCollapse from 'components/common/LabeledCollapse/LabeledCollapse';
 import Button from 'components/common/Button/Button';
-// import Select from 'components/common/Select/Select';
 import CustomField from 'components/common/CustomField/CustomField';
 import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
 import { closeModal, openModal } from 'modal/actions';
-import { FieldType } from '@/app/helpers/field-type-helpers';
-import { normalizeHyperlink } from '@/app/helpers/custom-fields-helpers';
 import { getProfileName } from '@/app/views/custom-profile-details/helpers';
 
 const ProfileDrawer = ({
@@ -53,7 +51,11 @@ const ProfileDrawer = ({
   const formMethods = useForm({
     reValidateMode: 'onSubmit',
   });
-  const { handleSubmit, getValues, formState: { errors } } = formMethods;
+  const {
+    handleSubmit,
+    getValues,
+    formState: { errors },
+  } = formMethods;
   const formReference = useRef(null);
 
   const hasErrors = Object.keys(errors).length > 0;
@@ -73,27 +75,7 @@ const ProfileDrawer = ({
 
   const editProfile = useCallback(
     (data) => {
-      editProfileDetails(profile?.identifier, {
-        fields: Object.entries(data?.profileMetaData)?.map(
-          ([identifier, value]) => {
-            const type = types.find(
-              (fieldType) => fieldType.identifier === identifier,
-            );
-            return {
-              profileTypeField: { identifier },
-              values: Array.isArray(value)
-                ? value?.map((selectedValue) => ({ value: selectedValue }))
-                : [
-                    type.fieldType === FieldType.DROPDOWN
-                      ? { customFieldOption: { identifier: value } }
-                      : { value: type.fieldType === FieldType.HYPERLINK ? normalizeHyperlink(value) : value },
-                  ],
-            };
-            
-          },
-        ),
-        // eslint-disable-next-line no-shadow
-      })
+      editProfileDetails(profile?.identifier, data?.profileMetaData, types)
         // eslint-disable-next-line no-shadow
         .then((data) => {
           setEditMode(false);
@@ -109,40 +91,14 @@ const ProfileDrawer = ({
     [dispatch, onUpdate, profile, types],
   );
 
-  const onSubmit = (data) => {
+  const submitProfile = async (data) => {
     if (profile && editMode) {
       editProfile(data);
     } else {
-      createProfile({
-        fields: Object.entries(data?.profileMetaData)?.map(
-          ([identifier, value]) => {
-            return {
-              profileTypeField: {
-                identifier,
-              },
-              values: Array.isArray(value)
-                ? value?.map((selectedValue) => {
-                    return {
-                      value: selectedValue,
-                    };
-                  })
-                : [
-                    {
-                      value,
-                    },
-                  ],
-            };
-          },
-        ),
-        profileType: {
-          identifier: profileTypeIdentifier,
-        },
-        // eslint-disable-next-line no-shadow
-      })
-        // eslint-disable-next-line no-shadow
-        .then((data) => {
+      return createProfile(profileTypeIdentifier, data?.profileMetaData, types)
+        .then((res) => {
           dispatch(showGlobalAlert(AlertMessages.SAVED));
-          onUpdate(data);
+          onUpdate(res);
         })
         .catch((error) => {
           dispatch(
@@ -150,6 +106,10 @@ const ProfileDrawer = ({
           );
         });
     }
+  };
+
+  const onSubmit = (data) => {
+    submitProfile(data);
     onClose();
   };
 
@@ -162,11 +122,13 @@ const ProfileDrawer = ({
       dispatch(
         openModal('InterruptEdit', {
           description: 'You have unsaved',
-          profileTypeName: getProfileName(types, profile)?.[0],
+          profileTypeName: getProfileName(types, profile)?.[0] || title,
           confirm: async () => {
             const isValid = await formMethods.trigger();
-            if(isValid) {
-              editProfile(getValues());
+            if (isValid) {
+              const data = getValues();
+              await submitProfile(data);
+
               if (!addMode && profile) {
                 setEditMode(false);
               }
@@ -190,30 +152,80 @@ const ProfileDrawer = ({
     }
   };
 
-  const menu = useMemo(
-    () => [
+  const menu = useMemo(() => {
+    const openArchiveModal = (
+      title,
+      nextStatus,
+      confirmText,
+      successMessage,
+    ) => {
+      dispatch(
+        openModal('DeleteConfirmation', {
+          title,
+          description: `Are you sure you want to ${confirmText.toLowerCase()} this object?`,
+          confirm: () => {
+            archiveProfile(profile.identifier, nextStatus).then(() => {
+              dispatch(showGlobalAlert(successMessage));
+              history.push(`/custom-objects/${profileTypeIdentifier}`);
+            });
+            dispatch(closeModal());
+          },
+          confirmButtonText: confirmText,
+        }),
+      );
+    };
+
+    return [
       { name: 'Edit', onClick: () => setEditMode(true) },
-      { name: 'Merge', 
+      {
+        name: 'Merge',
         onClick: () => {
           dispatch(
             openModal('ProfilePicker', {
               profileTypeIdentifier: profileTypeIdentifier,
               profile: profile,
-            })
+            }),
           );
           onClose();
         },
       },
+      ...(profile?.profileStatus === ProfileStatus.ACTIVE
+        ? [
+            {
+              name: 'Archive',
+              onClick: () =>
+                openArchiveModal(
+                  'Archive Object',
+                  ProfileStatus.ARCHIVED,
+                  'Archive',
+                  AlertMessages.ARCHIVED,
+                ),
+            },
+          ]
+        : profile?.profileStatus === ProfileStatus.ARCHIVED
+        ? [
+            {
+              name: 'Restore',
+              onClick: () =>
+                openArchiveModal(
+                  'Restore Object',
+                  ProfileStatus.ACTIVE,
+                  'Restore',
+                  AlertMessages.UNARCHIVED,
+                ),
+            },
+          ]
+        : []),
       {
         name: 'Delete',
         onClick: () => {
           dispatch(
             openModal('DeleteConfirmation', {
-              description: 'Are you sure to delete this profile?',
+              description: 'Are you sure to delete this object?',
               confirm: () => {
                 deleteProfile(profile.identifier).then(() => {
                   dispatch(showGlobalAlert(AlertMessages.DELETED));
-                  history.push(`/custom-profiles/${profileTypeIdentifier}`);
+                  history.push(`/custom-objects/${profileTypeIdentifier}`);
                 });
                 dispatch(closeModal());
               },
@@ -221,18 +233,19 @@ const ProfileDrawer = ({
           );
         },
       },
-    ],
-    [dispatch, history, profile, profileTypeIdentifier],
-  );
+    ];
+  }, [dispatch, history, profile, profileTypeIdentifier]);
 
   return (
     <Drawer open={open} onClickAway={handleClose}>
       <StickyHeader>
         <TitleName>{title}</TitleName>
         <MoreActinsWrapper>
-          <OptionsMenu options={menu} customButtonComponent={IconButton}>
-            <MoreVertIcon />
-          </OptionsMenu>
+          {!addMode && (
+            <OptionsMenu options={menu} customButtonComponent={IconButton}>
+              <MoreVertIcon />
+            </OptionsMenu>
+          )}
           <IconButton onClick={handleClose}>
             <CloseIcon />
           </IconButton>

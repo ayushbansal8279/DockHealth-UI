@@ -15,7 +15,7 @@ import UserCustomFieldsView from './UserCustomFieldsView';
 import ProfilesCustomFieldsView from './ProfilesCustomFieldView';
 
 const TABS = {
-  0: 'patients',
+  0: ['patients', 'customers', 'clients', 'members'],
   1: 'task',
   2: 'users',
 };
@@ -25,8 +25,9 @@ const CustomFieldsView = () => {
   const history = useHistory();
   const { tabName, identifier } = useParams();
   const [profileType, setProfileType] = useState([]);
-
-  const initial = Object.entries(TABS).find(([, name]) => name === tabName);
+  const initial = Object.entries(TABS).find(([, name]) =>
+    Array.isArray(name) ? name?.includes(tabName) : name === tabName,
+  );
 
   const [selectedTab] = useState(initial ? Number(initial[0]) : null);
 
@@ -59,7 +60,7 @@ const CustomFieldsView = () => {
           />
         }
       >
-        <ViewContainer isPatient={selectedTab === 0}>
+        <ViewContainer isUser={selectedTab === 2}>
           <Box p={1} />
           {selectedTab === 0 && <PatientCustomFieldsView />}
           {selectedTab === 1 && <TaskCustomFieldsView editable />}

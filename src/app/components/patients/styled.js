@@ -4,15 +4,17 @@ import palette from 'styles/palette';
 export const PatientsViewContainer = styled.div`
   display: flex;
   flex-direction: column;
+  flex-grow: 1;
   height: 100%;
   max-height: 100%;
   overflow: hidden;
+  padding: 32px 52px;
+  gap: 16px;
 `;
 
-export const PatientsListContainer = styled.div`
-  flex: 1;
-  overflow-y: auto;
-`;
+export const PatientsListContainer = styled.div``;
+
+export const GridWrapper = styled.div``;
 
 export const SidebarInnerContainer = styled.div`
   max-height: ${(props) => props.height ?? 0}px;

@@ -18,11 +18,21 @@ export const MeterBillingViewContainer = styled.div`
   flex-direction: column;
   padding: 1rem 1rem;
   width: 100%;
+  margin-bottom: 20px;
 `;
 
 export const MeterBillingSecondHeader = styled.div`
   display: flex;
-  width: 100%;
-  padding: 0 0 20px 0;
-  gap: 30px;
+  justify-content: space-between;
+  margin-bottom: 24px;
+`;
+
+export const StatsHeader = styled.div`
+  margin-bottom: 16px;
+  h2 {
+    font-size: 20px;
+    font-weight: 600;
+    color: #333;
+    margin: 0;
+  }
 `;

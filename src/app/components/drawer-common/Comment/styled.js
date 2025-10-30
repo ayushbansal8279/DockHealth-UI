@@ -8,7 +8,7 @@ export const CommentWrapper = styled.div`
   width: 100%;
   font-family: inherit;
   margin-bottom: 1px solid red;
-  ${({ $showPointer }) => ($showPointer ? 'cursor: pointer' : '')}
+  ${({ $showPointer }) => ($showPointer ? 'cursor: pointer' : '')};
 `;
 
 export const CommentContainer = styled.div`
@@ -36,6 +36,9 @@ export const CommentText = styled.div`
   & p {
     margin-bottom: 2px;
   }
+  word-break: break-word;
+  white-space: normal;
+  overflow-wrap: anywhere;
 `;
 
 export const CommentDetails = styled.div`

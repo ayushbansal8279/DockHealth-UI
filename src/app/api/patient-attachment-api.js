@@ -49,6 +49,14 @@ export function getPatientAttachments(patientIdentifier, folderIdentifier) {
     .then(({ data }) => data);
 }
 
+export function getTaskAndWorkflowAttachmentsForPatient(patientIdentifier) {
+  return axios
+    .get(
+      `task/attachment/getTaskAndWorkflowAttachmentsForPatient/${patientIdentifier}`,
+    )
+    .then(({ data }) => data?.filter((file) => file?.type !== 'PATIENT'))
+}
+
 export function createAttachmentFolder(
   patientIdentifier,
   name,

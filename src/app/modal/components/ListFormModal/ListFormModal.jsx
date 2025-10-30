@@ -12,7 +12,7 @@ const ModalSteps = {
   INVITE_PEOPLE: 1,
 };
 
-const ListFormModal = ({ closeModal, onListCreationSuccess, list = null }) => {
+const ListFormModal = ({ closeModal, onListCreationSuccess, list = null, ...restProps }) => {
   const currentUser = useSelector(userProfileSelector);
   const isGuestOrDockLite = isUserGuestOrDockLite(currentUser);
   const [editedList, setEditedList] = useState(list);
@@ -35,6 +35,7 @@ const ListFormModal = ({ closeModal, onListCreationSuccess, list = null }) => {
                 : () => setCurrentStep(ModalSteps.INVITE_PEOPLE)
             }
             onListCreationSuccess={onListCreationSuccess}
+            {...restProps}
           />
         );
 

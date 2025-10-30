@@ -27,7 +27,6 @@ import {
 import TaskDrawer from 'components/task-drawer/TaskDrawer/TaskDrawer';
 import BulkEditSection from 'components/tasklist/BulkEditSection/BulkEditSection';
 import StandardTaskItem from 'components/task/StandardTaskItem/StandardTaskItem';
-import EmptyListViewWithQuickAddTask from 'components/tasklist/EmptyListView/EmptyListViewWithQuickAddTask';
 import GroupedListSkeletonLoader from 'components/tasklist/GroupedListSkeletonLoader/GroupedListSkeletonLoader';
 import { getTaskListForUser } from 'api/task-list-api';
 import NoFilterResultsView from 'components/tasklist/EmptyListView/NoFilterResultsView';
@@ -55,6 +54,8 @@ import { groupTasks } from './helpers';
 import TaskListToolbar from '../TaskListToolbar/TaskListToolbar';
 import TaskListGroupCollapse from '../TaskListGroupCollapse/TaskListGroupCollapse';
 import TasksToolbar from '../TasksToolbar/TasksToolbar';
+import useActions from '@/app/hooks/use-actions';
+import { CustomProfileDetailsActions } from '@/app/actions/custom-profile-details-action';
 
 const SPECIFIC_LIST_VIEW_COLUMNS_CONFIG = {
   ...TASK_ITEM_BASE_COLUMN_CONFIG,
@@ -68,8 +69,11 @@ const ALL_JOINED_LISTS_VIEW_COLUMNS_CONFIG = {
   [TaskItemColumn.LIST_NAME]: true,
 };
 
-const ProfileTasksListView = ({ profileIdentifier }) => {
+const ProfileTasksListView = () => {
+  const { updateProfileTaskInList, updateProfileTaskWorkflowStatus } =
+    useActions(CustomProfileDetailsActions);
   const {
+    profileIdentifier,
     taskListIdentifier: taskListIdentifierParameter = ListViewType.ALL_TASKS,
   } = useParams();
   const viewSetup = useSelector(userSetupClientViewSelector);
@@ -191,12 +195,13 @@ const ProfileTasksListView = ({ profileIdentifier }) => {
   const renderEmptyListView = () => {
     if (areFiltersApplied) return <NoFilterResultsView />;
     return (
-      <EmptyListViewWithQuickAddTask
-        quickAddTask={quickAddTask}
-        iconColorActive={iconColorActiveItem?.value}
-      >
+      <>
+        <TasksToolbar
+          onQuickAddTask={quickAddTask}
+          iconColorActive={iconColorActiveItem?.value}
+        />
         <EmptyListView title="No tasks" description="Add tasks above." />
-      </EmptyListViewWithQuickAddTask>
+      </>
     );
   };
 
@@ -217,6 +222,8 @@ const ProfileTasksListView = ({ profileIdentifier }) => {
     const taskIdentifiers = activeList?.tasks;
     dispatch(changeTasksSelectedState(!isTaskGroupSelected, taskIdentifiers));
   }, [activeList?.tasks, dispatch, isTaskGroupSelected]);
+
+  window.disabledVirtualTaskList = true;
 
   const renderTasks = useCallback(
     (tasks, { isFullView, taskGroupIdentifier }) => {
@@ -257,6 +264,8 @@ const ProfileTasksListView = ({ profileIdentifier }) => {
                   isFullView={isFullView}
                   taskIdentifier={task.identifier}
                   taskGroupIdentifier={taskGroupIdentifier}
+                  onTaskUpdate={updateProfileTaskInList}
+                  updateWorkflowStatus={updateProfileTaskWorkflowStatus}
                   dragAndDropDisabled
                   addingNewSubtask={
                     addingNewSubtaskParentId === task.identifier
@@ -264,6 +273,8 @@ const ProfileTasksListView = ({ profileIdentifier }) => {
                   multipleAssigneesContext={groupHasMultipleAssignees}
                   iconColorActive={iconColorActiveItem?.value}
                   origin={TaskOrigin.CUSTOM_PROFILE}
+                  isTopLevelTaskOrWorkflowHeader
+                  taskItemDragAndDropDisabled
                 />
               ) : (
                 <TaskTemplateGroup
@@ -276,7 +287,7 @@ const ProfileTasksListView = ({ profileIdentifier }) => {
                   disablePatientAssignment
                   iconColorActive={iconColorActiveItem?.value}
                   isCompletedTab={tasksStatus !== TaskStatus.INCOMPLETE}
-                  origin={TaskOrigin.PATIENT}
+                  origin={TaskOrigin.CUSTOM_PROFILE}
                 />
               );
             })}
@@ -326,7 +337,7 @@ const ProfileTasksListView = ({ profileIdentifier }) => {
                       />
                     </StickyContainer>
                     {isAllTasksView ? (
-                      renderTasks(profileTasks, {
+                      renderTasks(activeList.tasks, {
                         isFullView: false,
                         profileIdentifier,
                       })

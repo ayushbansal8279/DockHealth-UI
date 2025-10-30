@@ -23,6 +23,7 @@ const PrioritySection = ({
   selectedTask,
   disabled = false,
   addTaskDrawer,
+  priority: addTaskDrawerPriority,
   setPriority,
 }) => {
   const dispatch = useDispatch();
@@ -104,7 +105,7 @@ const PrioritySection = ({
             size="small"
             variant="outlined"
             open={open}
-            value={priority}
+            value={priority || addTaskDrawerPriority || ''}
             onChange={handleOptionChange}
             disabled={disabled}
             renderValue={(selectedValue) =>

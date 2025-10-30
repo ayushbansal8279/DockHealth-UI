@@ -26,7 +26,6 @@ import {
   patientTasksSortSelector,
   currentPatientIdentifierSelector,
   currentFolderIdentifierSelector,
-  currentListTasksStatusSelector,
 } from 'selectors/patient-details-selectors';
 import { selectedFiltersInMegaFilterSelector } from 'selectors/mega-filter-selectors';
 import {
@@ -43,15 +42,19 @@ import {
 } from 'helpers/ga-event-helper';
 import { closeModal } from 'modal/actions';
 import { showGlobalAlert, showGlobalErrorAlert } from 'alert/actions';
-import { TaskStatus } from 'helpers/task-helpers';
 import { log } from 'helpers/log';
 import {
-  getFiltersStorageKey,
-  getQuickFilterStorageKey,
+  cleanedSelectedFilters,
 } from 'helpers/mega-filter-helper';
 import { PATIENTS_LIST_ALL } from '../routing/helpers/paths';
-import localStorageHelper from '../helpers/local-storage-helper';
-import sessionStorageHelper from '../helpers/session-storage-helper';
+import { UserPreferenceContextType } from '../helpers/user-prefrence-helper';
+import {
+  userPreferenceSelectedFiltersSelector,
+  userPreferenceSelectedQuickFilterSelector,
+  userPreferenceSortSelector,
+  userPreferenceStatusSelector,
+} from '@/app/selectors/user-preference-selectors';
+import * as UserPreferenceApi from '@/app/api/user-preference-api';
 
 export const DO_TOGGLE_PATIENT_TASK_STATUS = 'DO_TOGGLE_PATIENT_TASK_STATUS';
 export const DO_REASSIGN_TASK = 'DO_REASSIGN_TASK';
@@ -269,9 +272,14 @@ function* getCurrentPatientAttachments() {
         patientIdentifier,
         folderIdentifier,
       );
+      const patientTaskAttachments = yield call(
+        PatientAttachmentApi.getTaskAndWorkflowAttachmentsForPatient,
+        patientIdentifier,
+      );
       yield put({
         type: ActionTypes.GET_CURRENT_PATIENT_ATTACHMENTS_SUCCESS,
         attachments,
+        patientTaskAttachments,
       });
     }
   } catch {
@@ -284,13 +292,25 @@ function* getCurrentPatientAttachments() {
 }
 
 function* getCurrentPatientTasks({ payload }) {
-  const { taskStatus } = payload;
   try {
+    const { taskStatus } = payload;
     const selectedFilters = yield select(selectedFiltersInMegaFilterSelector);
-    const selectedTaskStatus = yield select(currentListTasksStatusSelector);
-    let status = taskStatus || selectedTaskStatus;
+
     const sort = yield select(patientTasksSortSelector);
     const patientIdentifier = yield select(currentPatientIdentifierSelector);
+
+    const preferences = yield call(
+      UserPreferenceApi.getUserPreference,
+      UserPreferenceContextType.PATIENT_LIST,
+      'patient',
+    );
+    yield put({
+      type: ActionTypes.UPDATE_USER_PREFERENCES_SUCCESS,
+      preferences,
+    });
+    const savedStatus = yield select(userPreferenceStatusSelector);
+
+    const status = taskStatus || savedStatus;
 
     const lists = yield selectedFilters && !isEmpty(selectedFilters)
       ? call(
@@ -432,14 +452,32 @@ function* doUpdatePatientTaskInList({ payload }) {
 
 function* changePatientTasksFilters({ selectedFilters, selectedQuickFilter }) {
   try {
-    const patientIdentifier = yield select(currentPatientIdentifierSelector);
     const completeTasksVisible = yield select(completeTasksVisibilitySelector);
     const status = completeTasksVisible ? 'ALL' : 'INCOMPLETE';
 
+    const newFilters = cleanedSelectedFilters(selectedFilters);
+
+    const partialDetails = {
+      selectedFilters: newFilters,
+      selectedQuickFilter,
+    };
+
+    const preferences = yield call(
+      UserPreferenceApi.updateUserPreference,
+      UserPreferenceContextType.PATIENT_LIST,
+      'patient',
+      partialDetails,
+    );
+
+    yield put({
+      type: ActionTypes.UPDATE_USER_PREFERENCES_SUCCESS,
+      preferences,
+    });
+
     yield put(
       MegaFilterActions.selectFiltersForMegaFilter(
-        selectedFilters,
-        patientIdentifier,
+        newFilters,
+        'patient',
         status,
         selectedQuickFilter,
       ),
@@ -455,27 +493,36 @@ function* doInitializeSavedFiltersForPatient({ patientIdentifier }) {
     const completeTasksVisible = yield select(completeTasksVisibilitySelector);
     const status = completeTasksVisible ? 'ALL' : 'INCOMPLETE';
 
-    let filters = localStorageHelper.getItem(
-      getFiltersStorageKey(patientIdentifier, status),
+    const preferences = yield call(
+      UserPreferenceApi.getUserPreference,
+      UserPreferenceContextType.PATIENT_LIST,
+      'patient',
     );
-    if (!filters) {
-      filters = sessionStorageHelper.getItem(
-        getFiltersStorageKey(patientIdentifier, status),
-      );
-    }
-    let selectedQuickFilter = localStorageHelper.getItem(
-      getQuickFilterStorageKey(patientIdentifier, status),
+    yield put({
+      type: ActionTypes.UPDATE_USER_PREFERENCES_SUCCESS,
+      preferences,
+    });
+
+    const selectedFilters = yield select(userPreferenceSelectedFiltersSelector);
+    const selectedQuickFilter = yield select(
+      userPreferenceSelectedQuickFilterSelector,
     );
-    if (!selectedQuickFilter) {
-      selectedQuickFilter = sessionStorageHelper.getItem(
-        getQuickFilterStorageKey(patientIdentifier, status),
-      );
+    const sort = yield select(userPreferenceSortSelector);
+
+    if (sort && sort.key && sort.order) {
+      yield put({
+        type: ActionTypes.SORT_PATIENT_TASKS,
+        payload: {
+          key: sort.key,
+          order: sort.order,
+        },
+      });
     }
 
     yield put(
       MegaFilterActions.selectFiltersForMegaFilter(
-        filters,
-        patientIdentifier,
+        selectedFilters,
+        'patient',
         status,
         selectedQuickFilter,
       ),
@@ -557,6 +604,42 @@ function* doSortPatientTasks({ payload }) {
   try {
     const { key, order } = payload;
     onSortChanged(order ? key : null, order);
+
+    const sortToSave = order ? { key, order } : null;
+
+    if (sortToSave) {
+      const partialDetails = {
+        sort: sortToSave,
+      };
+
+      const preferences = yield call(
+        UserPreferenceApi.updateUserPreference,
+        UserPreferenceContextType.PATIENT_LIST,
+        'patient',
+        partialDetails,
+      );
+
+      yield put({
+        type: ActionTypes.UPDATE_USER_PREFERENCES_SUCCESS,
+        preferences,
+      });
+    } else {
+      const partialDetails = {
+        sort: null,
+      };
+
+      const preferences = yield call(
+        UserPreferenceApi.updateUserPreference,
+        UserPreferenceContextType.PATIENT_LIST,
+        'patient',
+        partialDetails,
+      );
+
+      yield put({
+        type: ActionTypes.UPDATE_USER_PREFERENCES_SUCCESS,
+        preferences,
+      });
+    }
 
     yield put({
       type: ActionTypes.SORT_PATIENT_TASKS,
@@ -678,7 +761,7 @@ function* doArchivePatient({ payload: { patientIdentifier, history } }) {
   try {
     yield call(PatientApi.archivePatient, patientIdentifier);
     yield put(closeModal());
-    yield put(showGlobalAlert(AlertMessages.PATIENT_ARCHIVED));
+    yield put(showGlobalAlert(AlertMessages.ARCHIVED));
     history.push(PATIENTS_LIST_ALL);
   } catch {
     yield put(showGlobalErrorAlert());
@@ -690,7 +773,7 @@ function* doDeletePatientArchive({ payload: { patientIdentifier, history } }) {
   try {
     yield call(PatientApi.deletePatientArchive, patientIdentifier);
     yield put(closeModal());
-    yield put(showGlobalAlert(AlertMessages.PATIENT_ARCHIVED));
+    yield put(showGlobalAlert(AlertMessages.ARCHIVED));
     history.push(PATIENTS_LIST_ALL);
   } catch {
     yield put(showGlobalErrorAlert());
@@ -702,7 +785,7 @@ function* doUnarchivePatient({ payload: { patientIdentifier, history } }) {
   try {
     yield call(PatientApi.unarchivePatient, patientIdentifier);
     yield put(closeModal());
-    yield put(showGlobalAlert(AlertMessages.PATIENT_UNARCHIVED));
+    yield put(showGlobalAlert(AlertMessages.UNARCHIVED));
     history.push(PATIENTS_LIST_ALL);
   } catch {
     yield put(showGlobalErrorAlert());
@@ -888,6 +971,45 @@ function* updatePatientAttachment({ attachment, dataToUpdate }) {
   }
 }
 
+function* updatePatientTaskAttachment({
+  attachmentIdentifier,
+  updatedFileName,
+}) {
+  try {
+    const updatedTaskAttachment = yield call(
+      TaskApi.updateTaskAttachment,
+      attachmentIdentifier,
+      updatedFileName,
+    );
+    yield all([
+      put({
+        type: ActionTypes.UPDATE_PATIENT_TASK_ATTACHMENT_SUCCESS,
+        attachment: updatedTaskAttachment,
+      }),
+      put(showGlobalAlert(AlertMessages.UPDATED)),
+      put(closeModal()),
+    ]);
+  } catch {
+    yield all([put(showGlobalErrorAlert())]);
+  }
+}
+
+function* deletePatientTaskAttachment({ identifier }) {
+  try {
+    yield call(TaskApi.removeTaskAttachment, identifier);
+    yield all([
+      put({
+        type: ActionTypes.DELETE_PATIENT_TASK_ATTACHMENT_SUCCESS,
+        identifier: identifier,
+      }),
+      put(showGlobalAlert(AlertMessages.DELETED)),
+      put(closeModal()),
+    ]);
+  } catch {
+    yield all([put(showGlobalErrorAlert())]);
+  }
+}
+
 function* movePatientAttachment({ attachment, destinationFolderIdentifier }) {
   try {
     const updatedAttachment = yield call(
@@ -991,6 +1113,14 @@ export default function* watchPatientDetails() {
   yield takeEvery(
     ActionTypes.UPDATE_PATIENT_ATTACHMENT,
     updatePatientAttachment,
+  );
+  yield takeEvery(
+    ActionTypes.UPDATE_PATIENT_TASK_ATTACHMENT,
+    updatePatientTaskAttachment,
+  );
+  yield takeEvery(
+    ActionTypes.DELETE_PATIENT_TASK_ATTACHMENT,
+    deletePatientTaskAttachment,
   );
   yield takeEvery(ActionTypes.MOVE_PATIENT_ATTACHMENT, movePatientAttachment);
   yield takeEvery(ActionTypes.ADD_PATIENT_ATTACHMENT, createPatientAttachment);

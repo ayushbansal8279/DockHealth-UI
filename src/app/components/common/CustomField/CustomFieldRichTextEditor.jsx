@@ -7,10 +7,11 @@ import { TaskItemType } from 'helpers/task-helpers';
 import { showGlobalAlert } from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
 import { formatMetaDataOutput } from 'components/task-drawer/CustomFieldsSection/helpers';
-import CustomTextEditor from 'components/common/CustomTextEditor/CustomTextEditor';
 import RichTextEditor from 'components/common/RichTextEditor/RichTextEditor';
 import { CustomTextEditorContainer } from './styled';
 import CustomFieldErrorContext from './CustomFieldErrorContext';
+import { FormHelperText } from '@mui/material';
+import CustomFieldTextEditor from '../CustomFieldTextEditor/CustomFieldTextEditor';
 
 const CustomFieldRichTextEditor = React.forwardRef(
   (
@@ -23,6 +24,8 @@ const CustomFieldRichTextEditor = React.forwardRef(
       identifier,
       task,
       fieldsGroupKey,
+      onChange,
+      formMethods,
       // inputRef,
       // characterLimit,
       // oneline,
@@ -31,8 +34,15 @@ const CustomFieldRichTextEditor = React.forwardRef(
     reference,
   ) => {
     const dispatch = useDispatch();
-    const { getValues, watch, register, unregister, setValue } =
-      useFormContext();
+    const formContext = useFormContext();
+    const {
+      getValues,
+      watch,
+      register,
+      unregister,
+      setValue,
+      formState: { errors },
+    } = formMethods || formContext;
     const value = watch(name);
     const [isFocused, setIsFocused] = useState(false);
     const [updatedValue, setUpdatedValue] = useState(value);
@@ -40,8 +50,27 @@ const CustomFieldRichTextEditor = React.forwardRef(
     const { descriptionErrorState, setDescriptionErrorState, isRequired } =
       useContext(CustomFieldErrorContext);
 
+    const isNested = name?.includes('.');
+    const nestedParts = name?.split('.');
+
+    const error = isNested
+      ? errors?.[nestedParts[0]]?.[nestedParts[1]]?.message
+      : errors?.[name]?.message;
+
     useEffect(() => {
-      register(name);
+      if (isRequired) {
+        register(name, {
+          required: 'This field is required',
+          validate: (value) => {
+            if (!value || value.trim().length === 0) {
+              return 'This field is required';
+            }
+            return true;
+          },
+        });
+      } else {
+        register(name);
+      }
       return () => {
         unregister(name);
       };
@@ -111,37 +140,51 @@ const CustomFieldRichTextEditor = React.forwardRef(
 
     const handleBlur = (textValue) => {
       updateCustomFields(textValue);
-      setIsFocused(false);
     };
 
     const changeData = (textValue) => {
       setUpdatedValue(textValue);
+
+      setValue(name, textValue, { shouldValidate: true });
+
+      if (onChange) {
+        onChange(textValue);
+      }
+    };
+
+    const handleFocus = () => {
+      setIsFocused(true);
     };
 
     return (
-      <CustomTextEditor
-        hasError={descriptionErrorState}
-        empty={value?.length > 0}
-        focused={isFocused}
-        label={label}
-        required={isRequired}
-      >
-        <CustomTextEditorContainer>
-          <RichTextEditor
-            ref={reference}
-            value={updatedValue}
-            readonly={readOnly}
-            placeholder={placeholder}
-            onBlur={handleBlur}
-            onChange={changeData}
-            initOnClick
-            showCharCount
-            taskListIdentifier={task?.taskList?.taskListIdentifier}
-            mentions={task?.taskMentions}
-            disableMentions
-          />
-        </CustomTextEditorContainer>
-      </CustomTextEditor>
+      <>
+        <CustomFieldTextEditor
+          empty={!value || value?.length === 0}
+          focused={isFocused}
+          label={label}
+        >
+          <CustomTextEditorContainer>
+            <RichTextEditor
+              ref={reference}
+              value={updatedValue}
+              readonly={readOnly}
+              onBlur={handleBlur}
+              onChange={changeData}
+              onFocus={handleFocus}
+              initOnClick
+              showCharCount
+              taskListIdentifier={task?.taskList?.taskListIdentifier}
+              mentions={task?.taskMentions}
+              disableMentions
+            />
+          </CustomTextEditorContainer>
+        </CustomFieldTextEditor>
+        {error && (
+          <FormHelperText error sx={{ pl: 1.5 }}>
+            {error}
+          </FormHelperText>
+        )}
+      </>
     );
   },
 );

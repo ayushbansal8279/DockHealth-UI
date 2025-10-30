@@ -15,16 +15,17 @@ import { openDrawer } from 'actions/task-drawer-actions';
 import { storeAsCurrentTask, loadSubTasks } from 'actions/task-actions';
 import TaskComments from 'components/tasklist/TaskComments/TaskComments';
 import { taskLookupSelector } from 'selectors/task-details-selectors';
+import { useSubtaskQuickAddState } from 'hooks/useSubtaskQuickAdd';
 import * as TaskActions from 'actions/task-actions';
 // import { taskDetailsSelector } from 'selectors/list-details-selectors';
 import { CollapseContext } from 'views/list-details/VirtualTaskList/VirtualTaskList';
 import useActions from 'hooks/use-actions';
 import TaskItem from './TaskItem';
 import Subtasks from './Subtasks';
-import { getMatchedComments } from './helpers';
+import { getMatchedComments, originConfig } from './helpers';
 import { ParentTaskContainer, SubtasksWrapper, TaskContainer } from '../styled';
 import QuickAddSubtask from './QuickAddSubtask';
-import { ListPageContext } from '@/app/views/list-details/ListDetailsView';
+import { TaskViewContext } from '@/app/context-api/task-view-context';
 
 const Task = React.memo(
   ({
@@ -58,9 +59,18 @@ const Task = React.memo(
     $width,
     isNextVirtualTaskItemTypeBundle,
     isLastTaskOfGroup,
+    isFirstTaskOfGroup,
     isNextTaskItemTypeBundle,
     isAddingTask,
     viewType,
+    isDragPreview,
+    isFirstTaskOfWorkflow,
+    isFirstSubTaskOfParentTask,
+    isTopLevelTaskOrWorkflowHeader,
+    isWorkflowTask,
+    isSubtaskOfTask,
+    isFirstSubtaskOfWorkflowTask,
+    taskItemDragAndDropDisabled,
     ...restProps
   }) => {
     const parentTaskReference = useRef(null);
@@ -83,13 +93,14 @@ const Task = React.memo(
       searchMetaData = {},
       subTasksCount = 0,
       taskList,
-      subtaskQuickAddOpen,
     } = task || {};
+
+    const subtaskQuickAddOpen = useSubtaskQuickAddState(taskIdentifier);
 
     const { innerRef, draggableProps, dragHandleProps } = draggableProvided;
     const { highlightedValue } = restProps;
     const { matchingCommentIdentifiers = [] } = searchMetaData;
-    const { tasks, handleAddTask } = useContext(ListPageContext);
+    const { tasks, handleAddTask } = useContext(TaskViewContext);
     const taskActions = useActions(TaskActions);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -173,7 +184,10 @@ const Task = React.memo(
 
     useEffect(() => {
       if (!areSubtasksOpen && subtaskQuickAddOpen && !subtasksDisabled) {
-        handleSetSubtasksOpen(true);
+        const timer = setTimeout(() => {
+          handleSetSubtasksOpen(true);
+        }, 0);
+        return () => clearTimeout(timer);
       }
     }, [
       handleSetSubtasksOpen,
@@ -250,6 +264,7 @@ const Task = React.memo(
         isAddingTask={isAddingTask}
         $isVirtualSubtask={isVirtualSubtask}
         $isWorkflowTask={isTaskTemplate}
+        disableRightOffset={originConfig[origin]?.disableRightOffset ?? false}
       >
         <TaskContainer ref={innerRef}>
           <TaskItem
@@ -268,6 +283,7 @@ const Task = React.memo(
             updateWorkflowStatus={taskActions.updateWorkflowStatus}
             isCompletedGroup={isCompletedGroup}
             subtasksDisabled={subtasksDisabled}
+            subtaskQuickAddOpen={subtaskQuickAddOpen}
             origin={origin}
             isSelectedByHighlighted={
               highlightedTasksParentIdentifier &&
@@ -283,7 +299,16 @@ const Task = React.memo(
             {...restProps}
             isNextVirtualTaskItemTypeBundle={isNextVirtualTaskItemTypeBundle}
             isLastTaskOfGroup={isLastTaskOfGroup}
+            isFirstTaskOfGroup={isFirstTaskOfGroup}
             viewType={viewType}
+            isDragPreview={isDragPreview}
+            isFirstTaskOfWorkflow={isFirstTaskOfWorkflow}
+            isFirstSubTaskOfParentTask={isFirstSubTaskOfParentTask}
+            isTopLevelTaskOrWorkflowHeader={isTopLevelTaskOrWorkflowHeader}
+            isWorkflowTask={isWorkflowTask}
+            isSubtaskOfTask={isSubtaskOfTask}
+            isFirstSubtaskOfWorkflowTask={isFirstSubtaskOfWorkflowTask}
+            taskItemDragAndDropDisabled={taskItemDragAndDropDisabled}
           />
         </TaskContainer>
         {showComments && window.disabledVirtualTaskList && (
@@ -310,6 +335,8 @@ const Task = React.memo(
               showClearSortFiltersModal={showClearSortFiltersModal}
               shouldShowBlockModalOnDrag={shouldShowBlockModalOnDrag}
               origin={origin}
+              isWorkflowSubtask={isWorkflowTask}
+              isSubtaskOfTask={isTopLevelTaskOrWorkflowHeader}
               {...restProps}
             />
             {subtaskQuickAddOpen &&

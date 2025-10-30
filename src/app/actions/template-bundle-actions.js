@@ -44,6 +44,7 @@ export function applyTemplate({
   taskListIdentifier,
   taskGroupIdentifier,
   patientIdentifier,
+  profileIdentifier,
   unassign = false,
 }) {
   return {
@@ -52,6 +53,7 @@ export function applyTemplate({
     taskListIdentifier,
     taskGroupIdentifier,
     patientIdentifier,
+    profileIdentifier,
     options: {
       unassign,
     },

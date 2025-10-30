@@ -4,6 +4,8 @@ import { noop, showAlert } from 'helpers/utility-functions';
 import { mapSelectedOptionsToRequestPayload } from 'helpers/filter-options-helpers';
 import axios from './axios-heydoc';
 import { blobFileDownload } from '../helpers/blob-file-download';
+import { transformPatientDetails } from '../helpers/patient-details-helpers';
+import { withWorkspaceHeaders } from '../helpers/api-helpers';
 
 export function getAllPatients() {
   return axios
@@ -103,9 +105,10 @@ export function removePatient(patientIdentifier) {
     });
 }
 
-export function addPatient(patient) {
+export function addPatient(details, workspaceIdentifier) {
+  const patient = transformPatientDetails(details);
   return axios
-    .post('patient', patient)
+    .post('patient', patient, withWorkspaceHeaders(workspaceIdentifier))
     .then((response) => response.data)
     .catch((error) => {
       log(error);
@@ -245,7 +248,7 @@ export const archivePatient = (patientNoteIdentifier) =>
 
 export const deletePatientArchive = (patientNoteIdentifier) =>
   axios
-    .delete(`/patient/archivePatient/${patientNoteIdentifier}`)
+    .delete(`/patient/${patientNoteIdentifier}`)
     .then((response) => response.data)
     .catch((error) => {
       showAlert({
@@ -399,3 +402,12 @@ export function getPatientImportStatus() {
       throw new Error(error?.response?.data?.errorMessage);
     });
 }
+
+export const getPatientActivity = (patientIdentifier) =>
+  axios
+    .post(`/patient/activities/${patientIdentifier}`)
+    .then((response) => response.data)
+    .catch((error) => {
+      error(error);
+      throw new Error(error?.response?.data?.errorMessage);
+    });

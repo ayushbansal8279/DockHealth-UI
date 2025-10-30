@@ -42,9 +42,10 @@ const TaskItemPatient = ({
   currentUser,
   readOnly,
   origin,
+  width,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
-  const { pathname } = useLocation();
+  const { pathname, search } = useLocation();
   const [isPopoverOpen, setPopoverOpen] = useState(false);
   const isCompleted = taskStatus === 'COMPLETE';
   const isTemplateTask = checkIfTemplateTask(task);
@@ -108,6 +109,7 @@ const TaskItemPatient = ({
               taskWorkflow={taskWorkflow}
               hasSubtasks={hasSubtasks}
               origin={origin}
+              openAddPatientModal
             >
               <PatientWrapper>
                 <PlaceholderText>
@@ -146,8 +148,14 @@ const TaskItemPatient = ({
                 to={{
                   pathname: `/core/patient/${patient.patientIdentifier}`,
                   state: {
-                    from: pathname,
+                    from: search ? pathname + search : pathname,
                   },
+                }}
+                onClick={() => {
+                  sessionStorage.setItem(
+                    'navigation-from',
+                    search ? pathname + search : pathname,
+                  );
                 }}
               >
                 <PatientLabelComponent>
@@ -194,8 +202,14 @@ const TaskItemPatient = ({
                 to={{
                   pathname: `/core/patient/${patient.patientIdentifier}`,
                   state: {
-                    from: pathname,
+                    from: search ? pathname + search : pathname,
                   },
+                }}
+                onClick={() => {
+                  sessionStorage.setItem(
+                    'navigation-from',
+                    search ? pathname + search : pathname,
+                  );
                 }}
               >
                 <PatientLabelComponent>
@@ -211,7 +225,14 @@ const TaskItemPatient = ({
                       textToHighlight={`${patient.patientName}`}
                     />
                   ) : (
-                    `${patientName}`
+                    <div
+                      style={{
+                        width: width ? `${width - 50}px` : '180px',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        whiteSpace: 'nowrap',
+                      }}
+                    >{`${patientName}`}</div>
                   )}
                   <PatientPrintAdditionalInfo>
                     {patient.mrn && (

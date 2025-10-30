@@ -1,190 +1,103 @@
-import { Grid } from '@mui/material';
-import moment from 'moment';
-import ascend from 'ramda/src/ascend';
-import descend from 'ramda/src/descend';
-import head from 'ramda/src/head';
-import isEmpty from 'ramda/src/isEmpty';
-import prop from 'ramda/src/prop';
-import sort from 'ramda/src/sort';
-import React, { useState } from 'react';
+import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import ListSkeletonLoader from 'components/common/ListSkeletonLoader/ListSkeletonLoader';
-import SortingIcon from 'img/sorting-icon.svg';
 import { MontserratTypography } from 'styles/theme-montserrat';
-import Spacing from 'components/common/Spacing';
 import { invoiceDetailsSelector } from 'selectors/organization-selectors';
-import {
-  ChargeDetailsLink,
-  InvoiceColumn,
-  InvoiceColumnInnerContainer,
-  InvoicesListContainer,
-  InvoicesTable,
-  SortingIconContainer,
-  SortingIconImage,
-  ListLoaderContainer,
-} from './styled';
-
-const columnDefinitions = [
-  {
-    sortingKey: 'chargeDate',
-    label: 'Date',
-  },
-  {
-    sortingKey: 'invoiceNumber',
-    label: 'Invoice Number',
-  },
-  {
-    sortingKey: 'receiptNumber',
-    label: 'Receipt Number',
-  },
-  {
-    sortingKey: 'chargeAmount',
-    label: 'Amount',
-  },
-];
-
-const renderInvoiceRow = ({
-  chargeDate,
-  invoiceNumber,
-  receiptNumber,
-  chargeAmount,
-  currency,
-  invoicePDFUrl,
-  receiptUrl,
-}) => {
-  return (
-    <tr key={invoiceNumber}>
-      <td>{moment(chargeDate).format('L')}</td>
-      <td>
-        {invoicePDFUrl ? (
-          <ChargeDetailsLink
-            href={invoicePDFUrl}
-            target="_blank"
-            title="Download invoice"
-          >
-            {invoiceNumber ?? 'Invoice'}
-          </ChargeDetailsLink>
-        ) : (
-          'N/A'
-        )}
-      </td>
-      <td>
-        {receiptUrl ? (
-          <ChargeDetailsLink
-            href={receiptUrl}
-            target="_blank"
-            title="Preview receipt"
-          >
-            {receiptNumber ?? 'Receipt'}
-          </ChargeDetailsLink>
-        ) : (
-          'N/A'
-        )}
-      </td>
-      <td>
-        ${chargeAmount} {currency?.toUpperCase()}
-      </td>
-    </tr>
-  );
-};
-
-const renderColumn =
-  ({ currentSorting, setCurrentSorting }) =>
-  ({ sortingKey, label }) => {
-    return (
-      <InvoiceColumn
-        key={sortingKey}
-        onClick={() => setCurrentSorting({ newSortingKey: sortingKey })}
-      >
-        <InvoiceColumnInnerContainer>
-          <MontserratTypography variant="h4">
-            {label?.toUpperCase()}
-          </MontserratTypography>
-          {currentSorting.sortingKey === sortingKey && (
-            <SortingIconContainer>
-              <SortingIconImage
-                rotated={currentSorting.order === 'asc'}
-                src={SortingIcon}
-                alt="sorting icon"
-              />
-            </SortingIconContainer>
-          )}
-        </InvoiceColumnInnerContainer>
-      </InvoiceColumn>
-    );
-  };
-
-const defaultSorting = { ...head(columnDefinitions), order: 'desc' };
-
-const setCurrentSortingWithKey =
-  ({ currentSorting, setCurrentSorting }) =>
-  ({ newSortingKey }) => {
-    const newSorting = columnDefinitions.find(
-      ({ sortingKey }) => newSortingKey === sortingKey,
-    );
-
-    if (newSorting) {
-      if (newSorting.sortingKey === currentSorting.sortingKey) {
-        newSorting.order = currentSorting.order === 'desc' ? 'asc' : 'desc';
-      } else {
-        newSorting.order = 'desc';
-      }
-
-      setCurrentSorting({ ...newSorting });
-    } else {
-      setCurrentSorting({ ...defaultSorting });
-    }
-  };
+import ReusableDataGrid from 'components/custom-profile/CustomProfilesList/DataGrid/DataGrid';
+import { InvoicesListContainer, ChargeDetailsLink } from './styled';
+import moment from 'moment';
 
 const InvoicesList = () => {
-  const [currentSorting, setCurrentSorting] = useState(defaultSorting);
-
   const invoiceDetails = useSelector(invoiceDetailsSelector);
 
-  const invoiceOrderMethod = currentSorting.order === 'asc' ? ascend : descend;
-  const sortedInvoicesData = invoiceDetails
-    ? sort(invoiceOrderMethod(prop(currentSorting.sortingKey)), invoiceDetails)
-    : [];
+  const columns = useMemo(
+    () => [
+      {
+        field: 'chargeDate',
+        headerName: 'DATE',
+        flex: 1,
+        sortable: true,
+        renderCell: (params) => moment(params.value).format('L'),
+      },
+      {
+        field: 'invoiceNumber',
+        headerName: 'INVOICE NUMBER',
+        flex: 1,
+
+        sortable: true,
+        renderCell: (params) => {
+          const { invoicePDFUrl, invoiceNumber } = params.row;
+          return invoicePDFUrl ? (
+            <ChargeDetailsLink
+              href={invoicePDFUrl}
+              target="_blank"
+              title="Download invoice"
+            >
+              {invoiceNumber ?? 'Invoice'}
+            </ChargeDetailsLink>
+          ) : (
+            'N/A'
+          );
+        },
+      },
+      {
+        field: 'receiptNumber',
+        headerName: 'RECEIPT NUMBER',
+        flex: 1,
+
+        sortable: true,
+        renderCell: (params) => {
+          const { receiptUrl, receiptNumber } = params.row;
+          return receiptUrl ? (
+            <ChargeDetailsLink
+              href={receiptUrl}
+              target="_blank"
+              title="Preview receipt"
+            >
+              {receiptNumber ?? 'Receipt'}
+            </ChargeDetailsLink>
+          ) : (
+            'N/A'
+          );
+        },
+      },
+      {
+        field: 'chargeAmount',
+        headerName: 'AMOUNT',
+        flex: 1,
+        sortable: true,
+        renderCell: (params) => {
+          const { chargeAmount, currency } = params.row;
+          return `$${chargeAmount} ${currency?.toUpperCase()}`;
+        },
+      },
+    ],
+    [],
+  );
+
+  const rows = useMemo(() => {
+    if (!invoiceDetails) return [];
+
+    return invoiceDetails.map((invoice, index) => ({
+      id: invoice.invoiceNumber || `invoice-${index}`,
+      ...invoice,
+    }));
+  }, [invoiceDetails]);
 
   return (
     <InvoicesListContainer>
-      <Spacing vertical={4} />
       <MontserratTypography variant="h3">INVOICES</MontserratTypography>
-      <Spacing vertical={4} />
-      {invoiceDetails ? (
-        <InvoicesTable>
-          <thead>
-            <tr>
-              {columnDefinitions.map(
-                renderColumn({
-                  currentSorting,
-                  setCurrentSorting: setCurrentSortingWithKey({
-                    setCurrentSorting,
-                    currentSorting,
-                  }),
-                }),
-              )}
-            </tr>
-          </thead>
-          <tbody>
-            {isEmpty(sortedInvoicesData) ? (
-              <tr>
-                <td colSpan={columnDefinitions.length}>
-                  <Grid container justifyContent="center" alignItems="center">
-                    No invoices found
-                  </Grid>
-                </td>
-              </tr>
-            ) : (
-              sortedInvoicesData.map(renderInvoiceRow)
-            )}
-          </tbody>
-        </InvoicesTable>
-      ) : (
-        <ListLoaderContainer>
-          <ListSkeletonLoader header rows={10} />
-        </ListLoaderContainer>
-      )}
+      <InvoicesListContainer>
+        <ReusableDataGrid
+          columns={columns}
+          rows={rows}
+          loading={!invoiceDetails}
+          initialState={{
+            sorting: {
+              sortModel: [{ field: 'chargeDate', sort: 'desc' }],
+            },
+          }}
+        />
+      </InvoicesListContainer>
     </InvoicesListContainer>
   );
 };

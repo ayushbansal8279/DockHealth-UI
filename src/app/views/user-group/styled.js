@@ -12,7 +12,8 @@ export const ManageUsersContainer = styled.div`
   display: flex;
   flex-flow: row wrap;
   justify-content: space-between;
-  width: 100%;
+  width: 90%;
+  margin: auto;
   border: 1px solid ${palette.blueOcean};
   padding: 0.5rem 1rem 0.5rem 1rem;
   background-color: ${palette.white};
@@ -46,4 +47,34 @@ export const HeaderMessageDescription = styled.p`
 export const SearchInputWrapper = styled.div`
   width: ${({ fullWidth }) => (fullWidth ? '100%' : '300px')};
   transition: all 0.25s ease-in-out;
+`;
+
+export const BulkEditSectionContainer = styled.div`
+  width: 90%;
+  margin-left: auto;
+  margin-right: auto;
+`;
+
+export const TaskTemplateApplicatorContainer = styled.div`
+  margin-bottom: 60px;
+  justify-content: center;
+  display: flex;
+  padding-top: 10px;
+`;
+
+export const ListContainer = styled('div')`
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+`;
+
+export const PageWrapper = styled('div')`
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  height: 100%;
+  max-height: 100%;
+  overflow: hidden;
+  padding: 32px 64px;
+  gap: 16px;
 `;

@@ -8,7 +8,11 @@ import localStorageHelper from 'helpers/local-storage-helper';
 import { Box, IconButton } from '@mui/material';
 import ViewModuleIcon from '@mui/icons-material/ViewModule';
 import ViewHeadlineIcon from '@mui/icons-material/ViewHeadline';
-import { isFetchingPatientAttachmentsSelector } from 'selectors/patient-details-selectors';
+import {
+  currentFolderIdentifierSelector,
+  currentPatientIdentifierSelector,
+  isFetchingPatientAttachmentsSelector,
+} from 'selectors/patient-details-selectors';
 import AttachmentsBreadcrumbs from 'views/patient-details/AttachmentsBreadcrumbs/AttachmentsBreadcrumbs';
 import AddButton from 'components/common/AddButton/AddButton';
 import AttachmentPreview from 'components/attachments/AttachmentPreview/AttachmentPreview';
@@ -37,7 +41,8 @@ import {
 } from './styled';
 import initializeAttachmentsSectionHooks from './hooks';
 import { FilesViewType, PATIENT_FILES_VIEW_TYPE, ScanStatus } from './helpers';
-
+import { getPatientFolderStructureHierarchy } from '@/app/api/patient-attachment-api';
+import { createPatientAttachmentsPath } from '@/app/routing/helpers/paths';
 const PatientAttachments = () => {
   const [activeViewType, setActiveViewType] = useState(
     localStorageHelper.getItem(PATIENT_FILES_VIEW_TYPE) || FilesViewType.GRID,
@@ -74,11 +79,17 @@ const PatientAttachments = () => {
     handleAttachmentClick,
     dropzone: { getRootProps, getInputProps, isDragActive },
     downloadAllFiles,
-    downloadAttachment
+    downloadAllTaskFiles,
+    downloadAttachment,
+    patientTaskAttachments,
+    renamePatientTaskAttachment,
+    deletePatientTaskAttachment,
+    downloadPatientTaskAttachment,
   } = initializeAttachmentsSectionHooks();
 
   const [foldersList, setFoldersList] = useState([]);
   const [filesList, setFilesList] = useState([]);
+  const [taskFileList, setTaskFilelist] = useState([]);
 
   useEffect(() => {
     setFoldersList(folders);
@@ -88,6 +99,10 @@ const PatientAttachments = () => {
     setFilesList(currentPatientAttachments);
   }, [currentPatientAttachments]);
 
+  useEffect(() => {
+    setTaskFilelist(patientTaskAttachments);
+  }, [patientTaskAttachments]);
+
   const dispatch = useDispatch();
 
   const [didDragFile, setDidDragFile] = useState(false);
@@ -95,8 +110,14 @@ const PatientAttachments = () => {
 
   const isFetching = useSelector(isFetchingPatientAttachmentsSelector);
 
+  const currentFolderIdentifier = useSelector(currentFolderIdentifierSelector);
+
   const downloadDisabled = currentPatientAttachments?.some(
-    ({ scanStatus }) => scanStatus && scanStatus !== ScanStatus.CLEAN,
+    ({ scanStatus }) =>
+      scanStatus &&
+      !(
+        scanStatus === ScanStatus.CLEAN || scanStatus === ScanStatus.UNSUPPORTED
+      ),
   );
 
   const FileItemComponent =
@@ -107,14 +128,25 @@ const PatientAttachments = () => {
 
   const getFileOptions = useCallback(
     (file) => [
-      ...(file.scanStatus && file.scanStatus !== 'IN_PROGRESS' 
-        ? [{name: 'Preview', onClick: () => openAttachmentPreview(file)},
-          {name: 'Download', onClick: () => {downloadAttachment(file)}} ] 
-        : []
-      ),
-      { 
-        name: 'Rename', 
-        onClick: () => renameAttachment(file) 
+      ...(!file.scanStatus ||
+      file.scanStatus === ScanStatus.CLEAN ||
+      file.scanStatus === ScanStatus.UNSUPPORTED
+        ? [
+            {
+              name: 'Preview',
+              onClick: () => openAttachmentPreview(file, 'patient'),
+            },
+            {
+              name: 'Download',
+              onClick: () => {
+                downloadAttachment(file);
+              },
+            },
+          ]
+        : []),
+      {
+        name: 'Rename',
+        onClick: () => renameAttachment(file),
       },
       {
         name: 'Move',
@@ -131,7 +163,44 @@ const PatientAttachments = () => {
       renameAttachment,
       moveFileOrFolder,
       deleteAttachment,
-      downloadAttachment
+      downloadAttachment,
+    ],
+  );
+
+  const getTaskFileOptions = useCallback(
+    (file) => [
+      ...(!file.scanStatus ||
+      file.scanStatus === ScanStatus.CLEAN ||
+      file.scanStatus === ScanStatus.UNSUPPORTED
+        ? [
+            {
+              name: 'Preview',
+              onClick: () => openAttachmentPreview(file, 'task'),
+            },
+            {
+              name: 'Download',
+              onClick: () => {
+                downloadPatientTaskAttachment(file);
+              },
+            },
+          ]
+        : []),
+      // {
+      //   name: 'Rename',
+      //   onClick: () => renamePatientTaskAttachment(file),
+      // },
+      // {
+      //   name: 'Delete',
+      //   onClick: () => deletePatientTaskAttachment(file.attachmentIdentifier),
+      //   color: palette.oPlusRed,
+      // },
+    ],
+    [
+      openAttachmentPreview,
+      renamePatientTaskAttachment,
+      moveFileOrFolder,
+      deletePatientTaskAttachment,
+      downloadPatientTaskAttachment,
     ],
   );
 
@@ -244,7 +313,11 @@ const PatientAttachments = () => {
           alignItems="center"
           overflow="hidden"
         >
-          <AttachmentsBreadcrumbs />
+          <AttachmentsBreadcrumbs
+            entityIdentifierSelector={currentPatientIdentifierSelector}
+            currentFolderIdentifier={currentFolderIdentifier}
+            getFolderStructureHierarchy={getPatientFolderStructureHierarchy}
+          />
         </Box>
         <Box display="flex" alignItems="center" flex="0 0 auto">
           {import.meta.env.VITE_GOOGLE_DRIVE_API_CLIENT_ID &&
@@ -350,13 +423,13 @@ const PatientAttachments = () => {
               ))}
             </NamedCollapse>
           )}
-          <NamedCollapse name="Files"> 
+          <NamedCollapse name="Files">
             {activeViewType === FilesViewType.LIST && <FileListHeader />}
             {filesList.length > 0 ? (
               filesList.map((file, index) => (
                 <FileItemComponent
                   key={file.attachmentIdentifier}
-                  onClick={() => handleAttachmentClick(file)}
+                  onClick={() => handleAttachmentClick(file, 'patient')}
                   file={file}
                   options={getFileOptions(file)}
                   onDragStart={(event) => dragStart(event, index, true)}
@@ -391,6 +464,49 @@ const PatientAttachments = () => {
               </div>
             )}
           </NamedCollapse>
+          {!currentFolderIdentifier && (
+            <NamedCollapse name="Task Files">
+              {activeViewType === FilesViewType.LIST && <FileListHeader />}
+              {taskFileList.length > 0 ? (
+                taskFileList.map((file, index) => (
+                  <FileItemComponent
+                    key={file.attachmentIdentifier}
+                    onClick={() => handleAttachmentClick(file, 'task')}
+                    file={file}
+                    options={getTaskFileOptions(file)}
+                    onDragStart={(event) => dragStart(event, index, true)}
+                    onDragEnter={(event) => dragEnter(event, index, true)}
+                    onDragEnd={drop}
+                    draggable
+                  />
+                ))
+              ) : (
+                // eslint-disable-next-line react/jsx-no-useless-fragment
+                <>
+                  {!currentlyUploadedAttachment && (
+                    <EmptyListText>List of files is empty</EmptyListText>
+                  )}
+                </>
+              )}
+              {currentlyUploadedAttachment && (
+                // eslint-disable-next-line react/jsx-no-useless-fragment
+                <>
+                  {activeViewType === FilesViewType.LIST ? (
+                    <FileListItemProgressBar value={uploadProgress} />
+                  ) : (
+                    <FileGridItemProgressBar value={uploadProgress} />
+                  )}
+                </>
+              )}
+              {!downloadDisabled && currentPatientAttachments.length > 0 && (
+                <div>
+                  <DownloadAllLink onClick={downloadAllTaskFiles}>
+                    Download All
+                  </DownloadAllLink>
+                </div>
+              )}
+            </NamedCollapse>
+          )}
           <AttachmentPreview
             attachment={previewedAttachment}
             attachmentsSources={attachmentsSources}

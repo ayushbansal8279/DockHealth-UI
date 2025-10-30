@@ -1,11 +1,9 @@
-import React, { useCallback } from 'react';
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import React, { useCallback, useRef, useState } from 'react';
 import ReactDOM from 'react-dom';
 import * as TaskActions from 'actions/task-actions';
 import { useSelector, useDispatch } from 'react-redux';
 import { onSubtaskOrderChanged } from 'helpers/ga-event-helper';
 import { userProfileSelector } from 'selectors/user-selectors';
-import DrawerTask from 'components/drawer-common/DrawerTask/DrawerTask';
 import DrawerTaskLoader from 'components/drawer-common/DrawerTaskLoader/DrawerTaskLoader';
 import {
   SINGLE_TASK_RESTRICTIONS_OPTIONS,
@@ -14,6 +12,15 @@ import {
 } from 'restrictions/task-restrictions';
 import { Container, Title } from './styled';
 import QuickAddSubtask from '../QuickAddSubtask/QuickAddSubtask';
+import {
+  DndContext,
+  DragOverlay,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
+import DraggableTaskItem from '../DraggableTaskItem/DraggableTaskItem';
 
 const { READ_ONLY } = SINGLE_TASK_RESTRICTIONS_OPTIONS;
 
@@ -24,17 +31,41 @@ const SubtasksSection = ({
   taskListRestrictions,
 }) => {
   const dispatch = useDispatch();
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 3 } }),
+    useSensor(KeyboardSensor),
+  );
 
   const currentUser = useSelector(userProfileSelector);
   const subtasks = selectedTask?.subtasks;
   const tasksCount = selectedTask.subTasksCount;
   const readOnly = isReadOnly === READ_ONLY;
+  const [activeTask, setActiveTask] = useState(null);
+  const dropDirectionRef = useRef(null);
+
+  const handleDragStart = (event) => {
+    setActiveTask(event?.active?.data?.current?.task);
+  };
 
   const handleDragEnd = useCallback(
-    ({ destination, source }) => {
+    ({ active, over }) => {
+      setActiveTask(null);
+      const activeIndex = active?.data?.current?.index;
+      const overIndex = over?.data?.current?.index;
+      if (!over || activeIndex === overIndex) return;
+
       onSubtaskOrderChanged();
 
-      if (destination) {
+      if (over) {
+        const source = { index: activeIndex };
+        const destination = {
+          index:
+            dropDirectionRef?.current === 'top'
+              ? 0
+              : activeIndex <= overIndex
+              ? overIndex
+              : overIndex + 1,
+        };
         dispatch(
           TaskActions.reorderSubtasks({
             source,
@@ -51,28 +82,6 @@ const SubtasksSection = ({
     TASK_LIST_RESTRICTIONS_PROFILES[currentUser?.orgUserRole];
   const { DISABLED } = TASK_LIST_RESTRICTIONS_OPTIONS;
 
-  const renderDraggableItem = ({
-    task,
-    // eslint-disable-next-line no-shadow
-    taskRestrictions,
-    // eslint-disable-next-line no-shadow
-    taskListRestrictions,
-    draggableInnerReference,
-    draggableProps,
-    dragHandleProps,
-  }) => (
-    <div ref={draggableInnerReference} {...draggableProps}>
-      <DrawerTask
-        key={task.taskIdentifier}
-        task={task}
-        taskRestrictions={taskRestrictions}
-        taskListRestrictions={taskListRestrictions}
-        currentUser={currentUser}
-        dragHandleProps={dragHandleProps}
-      />
-    </div>
-  );
-
   return (
     <Container>
       <Title>Subtasks</Title>
@@ -80,57 +89,38 @@ const SubtasksSection = ({
         <DrawerTaskLoader rows={tasksCount || 4} />
       ) : (
         <>
-          <DragDropContext onDragEnd={handleDragEnd}>
-            <Droppable droppableId={selectedTask.identifier}>
-              {(provided) => (
-                <div ref={provided.innerRef} {...provided.droppableProps}>
-                  {subtasks?.map((task, index) => (
-                    <Draggable
-                      key={task.identifier}
-                      draggableId={String(task.identifier)}
-                      index={index}
-                      isDragDisabled={restrictions?.createTask === DISABLED}
-                    >
-                      {(
-                        {
-                          innerRef: draggableInnerReference,
-                          draggableProps,
-                          dragHandleProps,
-                        },
-                        { isDragging },
-                      ) =>
-                        isDragging
-                          ? ReactDOM.createPortal(
-                              renderDraggableItem({
-                                task,
-                                taskRestrictions,
-                                taskListRestrictions,
-                                draggableInnerReference,
-                                draggableProps,
-                                dragHandleProps,
-                              }),
-                              document.querySelector('body'),
-                            )
-                          : renderDraggableItem({
-                              task,
-                              taskRestrictions,
-                              taskListRestrictions,
-                              draggableInnerReference,
-                              draggableProps,
-                              dragHandleProps,
-                            })
-                      }
-                    </Draggable>
-                  ))}
-                  {provided.placeholder}
-                </div>
-              )}
-            </Droppable>
-          </DragDropContext>
+          <DndContext
+            sensors={sensors}
+            onDragStart={handleDragStart}
+            onDragEnd={handleDragEnd}
+          >
+            {(subtasks ?? [])?.map((task, index) => (
+              <DraggableTaskItem
+                key={task?.taskIdentifier}
+                task={task}
+                taskRestrictions={taskRestrictions}
+                taskListRestrictions={taskListRestrictions}
+                currentUser={currentUser}
+                isDragDisabled={restrictions?.createTask === DISABLED}
+                index={index}
+                dropDirectionRef={dropDirectionRef}
+              />
+            ))}
+            <DragOverlay>
+              {activeTask ? <Placeholder task={activeTask} /> : null}
+            </DragOverlay>
+          </DndContext>
         </>
       )}
       {!readOnly && <QuickAddSubtask />}
     </Container>
+  );
+};
+
+const Placeholder = ({ task }) => {
+  return (
+    // @ts-ignore
+    <DraggableTaskItem key={task.identifier} task={task} isDragPreview />
   );
 };
 

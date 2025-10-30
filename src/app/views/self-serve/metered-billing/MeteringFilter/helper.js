@@ -1,11 +1,18 @@
 import moment from 'moment';
 
-export function convertFilterToPayload(filter, organizationIdentifier) {
+export function convertFilterToPayload(
+  filter,
+  organizationIdentifier,
+  offset,
+  limit,
+) {
   const payload = {
     meteringEventQuery: {
-      organizationIdentifier: organizationIdentifier,
+      organizationIdentifier,
       properties: {},
     },
+    offset,
+    limit,
   };
 
   for (const key in filter) {
@@ -18,40 +25,64 @@ export function convertFilterToPayload(filter, organizationIdentifier) {
         const eventDateOptions = filter[key];
 
         if (eventDateOptions.dateStart && eventDateOptions.dateEnd) {
-          payload.start = moment(eventDateOptions.dateStart).toISOString();
-          payload.end = moment(eventDateOptions.dateEnd).toISOString();
-        } else {
-          const dateOption =
-            eventDateOptions.options[filter[key].options.length - 1];
-          const now = moment();
-
-          switch (dateOption) {
-            case 'TODAY':
-              payload.start = now.startOf('day').toISOString();
-              payload.end = now.endOf('day').toISOString();
-              break;
-            case 'YESTERDAY':
-              payload.start = now
-                .subtract(1, 'day')
-                .startOf('day')
-                .toISOString();
-              payload.end = now.subtract(0, 'day').endOf('day').toISOString();
-              break;
-            case 'THIS_WEEK':
-              payload.start = now.startOf('week').toISOString();
-              payload.end = now.endOf('week').toISOString();
-              break;
-            case 'THIS_MONTH':
-              payload.start = now.startOf('month').toISOString();
-              payload.end = now.endOf('month').toISOString();
-              break;
-            default:
-              break;
-          }
+          payload.start = `${moment(eventDateOptions.dateStart).format(
+            'YYYY-MM-DD',
+          )}T00:00:00.000Z`;
+          payload.end = `${moment(eventDateOptions.dateEnd).format(
+            'YYYY-MM-DD',
+          )}T00:00:00.000Z`;
         }
       }
     }
   }
-
   return payload;
+}
+
+export function determineDateOptions(filter) {
+  if (filter?.eventDateOptions) {
+    const eventDateOptions = filter?.eventDateOptions;
+    const dateOption = eventDateOptions.options?.[0];
+    let startDate = null;
+    let endDate = null;
+    switch (dateOption) {
+      case 'TODAY':
+        startDate = moment().startOf('day').toISOString();
+        endDate = moment().startOf('day').add(1, 'day').toISOString();
+        break;
+      case 'YESTERDAY':
+        startDate = moment().startOf('day').subtract(1, 'day').toISOString();
+        endDate = moment().startOf('day').toISOString();
+        break;
+      case 'THIS_WEEK':
+        startDate = moment().startOf('week').toISOString();
+        endDate = moment().startOf('week').add(1, 'week').toISOString();
+        break;
+      case 'PREVIOUS_WEEK':
+        startDate = moment().startOf('week').subtract(1, 'week').toISOString();
+        endDate = moment().startOf('week').toISOString();
+        break;
+      case 'THIS_MONTH':
+        startDate = moment().startOf('month').toISOString();
+        endDate = moment().startOf('month').add(1, 'month').toISOString();
+        break;
+      case 'PREVIOUS_MONTH':
+        startDate = moment()
+          .startOf('month')
+          .subtract(1, 'month')
+          .toISOString();
+        endDate = moment().startOf('month').toISOString();
+        break;
+      default:
+        break;
+    }
+    return {
+      ...filter,
+      eventDateOptions: {
+        ...filter.eventDateOptions,
+        dateStart: startDate,
+        dateEnd: endDate,
+      },
+    };
+  }
+  return filter;
 }

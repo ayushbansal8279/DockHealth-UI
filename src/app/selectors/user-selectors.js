@@ -165,16 +165,6 @@ export const userHasShareTaskFeatureSelector = createSelector(
     ),
 );
 
-export const userHasDockChatFeatureSelector = createSelector(
-  userProfileSelector,
-  ({ organizationAvailableFeatures, userAvailableFeatures }) =>
-    featureSelector(
-      organizationAvailableFeatures,
-      userAvailableFeatures,
-      'DOCK_CHAT',
-    ),
-);
-
 export const userHasBoardViewFeatureSelector = createSelector(
   userProfileSelector,
   ({ organizationAvailableFeatures, userAvailableFeatures }) =>
@@ -241,6 +231,26 @@ export const userHasAiSummaryViewFeatureSelector = createSelector(
     ),
 );
 
+export const userHasProfileBuilderFeatureSelector = createSelector(
+  userProfileSelector,
+  ({ organizationAvailableFeatures, userAvailableFeatures }) =>
+    featureSelector(
+      organizationAvailableFeatures,
+      userAvailableFeatures,
+      'PROFILE_BUILDER',
+    ),
+);
+
+export const userHasPatientTimelineFeatureSelector = createSelector(
+  userProfileSelector,
+  ({ organizationAvailableFeatures, userAvailableFeatures }) =>
+    featureSelector(
+      organizationAvailableFeatures,
+      userAvailableFeatures,
+      'PATIENT_TIMELINE',
+    ),
+);
+
 export const userHasShareTaskWorkflowFeatureSelector = createSelector(
   userProfileSelector,
   ({ organizationAvailableFeatures, userAvailableFeatures }) =>
@@ -248,6 +258,66 @@ export const userHasShareTaskWorkflowFeatureSelector = createSelector(
       organizationAvailableFeatures,
       userAvailableFeatures,
       'SHARE_WORKFLOW',
+    ),
+);
+
+export const userHasAutomationMeteringFeatureSelector = createSelector(
+  userProfileSelector,
+  ({ organizationAvailableFeatures, userAvailableFeatures }) =>
+    featureSelector(
+      organizationAvailableFeatures,
+      userAvailableFeatures,
+      'AUTOMATION_METERING',
+    ),
+);
+
+export const userHasWorkspacesFeatureSelector = createSelector(
+  userProfileSelector,
+  ({ organizationAvailableFeatures, userAvailableFeatures }) =>
+    featureSelector(
+      organizationAvailableFeatures,
+      userAvailableFeatures,
+      'WORKSPACES',
+    ),
+);
+
+export const userHasConfigIntegrationsFeatureSelector = createSelector(
+  userProfileSelector,
+  ({ organizationAvailableFeatures, userAvailableFeatures }) =>
+    featureSelector(
+      organizationAvailableFeatures,
+      userAvailableFeatures,
+      'CONFIG_INTEGRATIONS',
+    ),
+);
+
+export const userHasConfigInboundEmailsFeatureSelector = createSelector(
+  userProfileSelector,
+  ({ organizationAvailableFeatures, userAvailableFeatures }) =>
+    featureSelector(
+      organizationAvailableFeatures,
+      userAvailableFeatures,
+      'CONFIG_INBOUND_EMAILS',
+    ),
+);
+
+export const userHasEscalationsFeatureSelector = createSelector(
+  userProfileSelector,
+  ({ organizationAvailableFeatures, userAvailableFeatures }) =>
+    featureSelector(
+      organizationAvailableFeatures,
+      userAvailableFeatures,
+      'ESCALATIONS',
+    ),
+);
+
+export const userHasDataManagementFeatureSelector = createSelector(
+  userProfileSelector,
+  ({ organizationAvailableFeatures, userAvailableFeatures }) =>
+    featureSelector(
+      organizationAvailableFeatures,
+      userAvailableFeatures,
+      'DATA_MANAGEMENT',
     ),
 );
 

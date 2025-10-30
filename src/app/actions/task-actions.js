@@ -5,7 +5,11 @@ import { getTasksGroupsList } from 'actions/list-details-actions';
 import { openDrawer } from 'actions/task-drawer-actions';
 import { TASK_DISAPPEAR_DELAY } from 'helpers/task-update-helper';
 import * as ListDetailsApi from 'api/list-details-api';
-import { CommunicationType, TaskItemType } from 'helpers/task-helpers';
+import {
+  CommunicationType,
+  TaskItemType,
+  transformTaskMetadata,
+} from 'helpers/task-helpers';
 import * as ActionTypes from './action-types';
 import AlertMessages from '../alert/AlertMessages';
 
@@ -177,19 +181,21 @@ export function saveTask(newTask, shouldReloadGroups = false) {
 }
 
 export function partialUpdateTask(taskIdentifier, dataToUpdate) {
+  const transformedDataToUpdate = transformTaskMetadata(dataToUpdate);
+
   return (dispatch) => {
     dispatch({
       type: ActionTypes.UPDATE_TASK_SUCCESS,
       task: {
-        ...dataToUpdate,
+        ...transformedDataToUpdate,
         taskIdentifier,
       },
     });
     return (
-      TaskApi.partialUpdateTask(taskIdentifier, dataToUpdate)
+      TaskApi.partialUpdateTask(taskIdentifier, transformedDataToUpdate)
         // eslint-disable-next-line sonarjs/no-identical-functions
         .then((task) => {
-          if (dataToUpdate.details) {
+          if (transformedDataToUpdate.details) {
             dispatch({
               type: ActionTypes.UPDATE_TASK_SUCCESS,
               task,
@@ -261,7 +267,7 @@ export const moveTask =
       refiled: true,
       ...shapeTask(task),
       taskList,
-      taskListIdentifier: taskList.taskListIdentifier,
+      taskListIdentifier: taskList?.taskListIdentifier,
     };
 
     if (taskGroupIdentifier) {
@@ -315,9 +321,7 @@ export const moveTask =
             },
           ),
         );
-        
-      }
-    )
+      })
       .catch((error) => {
         throw error;
       });
@@ -556,16 +560,16 @@ export function updateTaskStartDate(task, startDate, startDateIntent = null) {
     type: ActionTypes.UPDATE_TASK_START_DATE,
     task,
     startDate,
-    ...(startDateIntent && {startDateIntent})
+    ...(startDateIntent && { startDateIntent }),
   };
 }
 
-export function updateTaskDueDate(task, dueDate, dueDateIntent=null) {
+export function updateTaskDueDate(task, dueDate, dueDateIntent = null) {
   return {
     type: ActionTypes.UPDATE_TASK_DUE_DATE,
     task,
     dueDate,
-    ...(dueDateIntent && {dueDateIntent})
+    ...(dueDateIntent && { dueDateIntent }),
   };
 }
 
@@ -680,8 +684,8 @@ export const removeTaskAttachment =
       });
 
 export const renameTaskAttachment =
-  (taskIdentifier, attachmentIdentifier ,fileName ) => (dispatch) => {
-    return TaskApi.updateTaskAttachment(attachmentIdentifier,fileName)
+  (taskIdentifier, attachmentIdentifier, fileName) => (dispatch) => {
+    return TaskApi.updateTaskAttachment(attachmentIdentifier, fileName)
       .then(() => {
         dispatch({
           type: ActionTypes.UPDATE_TASK_ATTACHMENT,
@@ -689,9 +693,7 @@ export const renameTaskAttachment =
           attachmentIdentifier,
           fileName,
         });
-        dispatch(
-          AlertActions.showGlobalAlert(AlertMessages.UPDATED),
-        );
+        dispatch(AlertActions.showGlobalAlert(AlertMessages.UPDATED));
       })
       .catch((error) => {
         throw error;
@@ -699,8 +701,12 @@ export const renameTaskAttachment =
   };
 
 export const addPatientReferenceAttachment =
-  (taskIdentifier, attachmentIdentifier, type ) => (dispatch) => {
-    return TaskApi.addPatientReferenceAttachment(taskIdentifier, attachmentIdentifier, type)
+  (taskIdentifier, attachmentIdentifier, type) => (dispatch) => {
+    return TaskApi.addPatientReferenceAttachment(
+      taskIdentifier,
+      attachmentIdentifier,
+      type,
+    )
       .then((response) => {
         dispatch({
           type: ActionTypes.PATIENT_REFERENCE_ATTACHMENT_ADDED,
@@ -713,8 +719,8 @@ export const addPatientReferenceAttachment =
       .catch((error) => {
         throw error;
       });
-  };  
-  
+  };
+
 export function refreshTask(taskIdentifier) {
   return {
     type: ActionTypes.REFRESH_TASK,
@@ -837,6 +843,14 @@ export const bulkEditDueDate = (tasksToUpdate, dueDate) => (dispatch) => {
     type: ActionTypes.UPDATE_TASKS,
     tasksToUpdate,
     fields: { dueDate },
+  });
+};
+
+export const bulkEditDueDateWorkflow = (tasksToUpdate, dueDateTime) => (dispatch) => {
+  dispatch({
+    type: ActionTypes.UPDATE_WORKFLOWS,
+    tasksToUpdate,
+    fields: { dueDateTime },
   });
 };
 
@@ -1052,11 +1066,11 @@ export function markTaskAsUnRead(taskIdentifier) {
 }
 
 export function deleteTasksLink(sourceTaskIdentifier, targetTaskIdentifier) {
-  if(sourceTaskIdentifier === 'START_INDICATOR') {
-    sourceTaskIdentifier = targetTaskIdentifier
+  if (sourceTaskIdentifier === 'START_INDICATOR') {
+    sourceTaskIdentifier = targetTaskIdentifier;
   }
-  if(targetTaskIdentifier === 'END_INDICATOR') {
-    targetTaskIdentifier = sourceTaskIdentifier
+  if (targetTaskIdentifier === 'END_INDICATOR') {
+    targetTaskIdentifier = sourceTaskIdentifier;
   }
   return {
     type: ActionTypes.DELETE_TASKS_LINK,
@@ -1128,10 +1142,14 @@ export function changeTaskPriority(task, priority) {
   };
 }
 
-export function bulkEditDuplicateTasksSuccess(duplicatedTasks) {
+export function bulkEditDuplicateTasksSuccess(
+  duplicatedTasks,
+  allSelectedTasksIdentifiers,
+) {
   return {
     type: ActionTypes.BULK_EDIT_DUPLICATE_TASKS_SUCCESS,
     duplicatedTasks,
+    allSelectedTasksIdentifiers,
   };
 }
 export function getTasksForProfile(profileIdentifier) {

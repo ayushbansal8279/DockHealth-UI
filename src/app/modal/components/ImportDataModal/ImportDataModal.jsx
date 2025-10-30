@@ -25,7 +25,9 @@ const ImportDataModal = ({
   uploadFunction,
   label,
   identifier,
-  setImportResponse
+  setImportResponse,
+  type,
+  importFileTypeHint
 }) => {
   const inputFileReference = useRef(null);
   const [modalStep, setModalStep] = useState(step);
@@ -34,24 +36,19 @@ const ImportDataModal = ({
     (file) => {
       uploadFunction(
         file,
-        {
-          onUploadProgress: () => {
-            closeModal();
-          },
-        },
-        identifier
+        { onUploadProgress: closeModal },
+        identifier,
+        type
       )
         .then((response) => {
-          if (setImportResponse) {
-            setImportResponse(response);
-          }
+          setImportResponse?.(response);
         })
         .catch((error) => {
-          setImportResponse(null);
           console.error("File upload failed:", error);
+          setImportResponse?.(null);
         })
         .finally(() => {
-          setImportPopoverOpen(true);
+          setImportPopoverOpen?.(true);
         });
     },
     [closeModal, uploadFunction, identifier, setImportPopoverOpen]
@@ -129,7 +126,7 @@ const ImportDataModal = ({
                 <span>Drop the files here ...</span>
               ) : (
                 <>
-                  Drag & drop your CSV/Excel file here or
+                  {importFileTypeHint} or
                   <span style={{ cursor: 'pointer', color: 'blue' }}> Browse </span>
                   your local files.
                 </>

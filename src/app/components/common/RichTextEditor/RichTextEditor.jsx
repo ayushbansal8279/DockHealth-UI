@@ -19,6 +19,7 @@ import './styles.css';
 import { mapPatientsToSuggestions } from '../TextEditor/helpers';
 import turndownService from './TurndownServiceSingleton';
 import { dateFormatter } from '@/app/helpers/date-formatter';
+import FroalaEditorComponent from 'froala-editor';
 
 const md = new MarkdownIt({
   html: true,
@@ -29,7 +30,7 @@ const md = new MarkdownIt({
 md.linkify.set({ fuzzyEmail: false, fuzzyLink: false });
 
 const FROALA_PRODUCT_KEY =
-  'MZC1rE1D4D3I4A16B11D8jF1QUg1Xc2OZE1ABVJRDRNGGUH1ITrA1C7A6D5E1D4D4E1B10D7==';
+  'bMA6aC5D6B2D2H3C2H2yQNDMIJg1IQNSEa1EUAi1XVFQd1EaG3C2A5C3C4E3F3D4E2I2==';
 
 const fetchPatientsWithDebounce = debounce(
   (mentionString, setPatientSuggestions) => {
@@ -76,7 +77,7 @@ const toolbarOptions = [
   // 'indent',
   'insertLink',
   // 'lineHeight',
-  '|',
+
   // 'emoticons',
   // 'undo',
   // 'redo',
@@ -105,6 +106,9 @@ const RichTextEditor = ({
   taskListIdentifier,
   mentions,
   disableMentions = false,
+  templatePlaceholders = false,
+  expandEditorHeight = false,
+  templatePlaceholderOptions,
 }) => {
   const [rawTextState, setRawTextState] = useState(initialValue);
   const [editor, setEditor] = useState(null);
@@ -115,9 +119,24 @@ const RichTextEditor = ({
         return value;
       }
       let mdValue = value.replace(/\\+\*/g, '*');
-      mdValue = mdValue.replace(/\n {2}\n/g, '<p><br/></p>');
+      mdValue = mdValue.replace(/((?:\n[ \t]*){2,})/g, (match) => {
+        const blankLineCount = (match.match(/\n[ \t]*\n/g) || []).length;
+
+        return blankLineCount > 1
+          ? '<p><br/></p>'.repeat(blankLineCount - 1)
+          : '\n';
+      });
+
       const htmlValue = md.render(mdValue || '');
       let processedValue = htmlValue;
+      processedValue = processedValue.replace(
+        /href="(.*?)"/gi,
+        (match, url) => {
+          const decodedUrl = url.replace(/%7B/gi, '{').replace(/%7D/gi, '}');
+          return `href="${decodedUrl}"`;
+        },
+      );
+
       if (mentions && value !== '') {
         for (const mentionInfo of mentions) {
           processedValue = processedValue.replace(
@@ -272,17 +291,40 @@ const RichTextEditor = ({
     });
   }, []);
 
+  if (templatePlaceholderOptions) {
+    FroalaEditorComponent.DefineIcon('placeholders', {
+      template: 'text',
+      NAME: 'Placeholder',
+    });
+    FroalaEditorComponent.RegisterCommand('placeholders', {
+      title: 'Insert Placeholder',
+      type: 'dropdown',
+      focus: true,
+      options: templatePlaceholderOptions,
+      callback: function (cmd, val) {
+        this.html.insert(val);
+      },
+    });
+  }
+
   const config = useMemo(
     () => ({
       key: FROALA_PRODUCT_KEY,
       attribution: false,
       placeholderText: placeholder,
       multiLine: multiline,
-      charCounterCount: false,
+      charCounterCount: showCharCount || !!showToolbar,
+      charCounterMax: characterLimit,
       toolbarInline: showToolbarInline,
       toolbarVisibleWithoutSelection: true,
       heightMax: multiline ? 150 : 500,
-      toolbarButtons: disableToolbar ? [] : toolbarOptions,
+      heightMin: expandEditorHeight ? 150 : 0,
+      toolbarButtons: disableToolbar
+        ? []
+        : [
+            ...toolbarOptions,
+            ...(templatePlaceholders ? ['placeholders'] : []),
+          ],
       events: {
         initialized() {
           if (readonly) {
@@ -314,14 +356,70 @@ const RichTextEditor = ({
           if (onBlur) {
             event.preventDefault();
             event.stopPropagation();
-            const markdown = turndownService.turndown(value);
+            let finalValue = value.replace(
+              /<a\s+[^>]*?href="([^"]+)"[^>]*?>(.*?)<\/a>/gi,
+              (match, href, text) => {
+                let trimmedText = text.trim();
+
+                //Link text starts with www
+                if (trimmedText.startsWith('www')) {
+                  return `<a href="//${trimmedText}">${trimmedText}</a>`;
+                }
+
+                // If text is a full URL and doesn't match href, fix the href
+                if (
+                  (trimmedText.startsWith('http://') ||
+                    trimmedText.startsWith('https://')) &&
+                  trimmedText !== href
+                ) {
+                  return `<a href="${trimmedText}">${trimmedText}</a>`;
+                }
+
+                return match;
+              },
+            );
+
+            finalValue = finalValue.replace(
+              /(<span class="fr-deletable fr-tribute"[^>]*>.*?<\/a>)([^<]*)(<\/span>)/g,
+              '$1</span>$2',
+            );
+
+            const markdown = turndownService.turndown(finalValue);
             onBlur(markdown);
           }
         },
         contentChanged() {
           const value = this.html.get();
           if (onChange) {
-            const markdown = turndownService.turndown(value);
+            let finalValue = value.replace(
+              /<a\s+[^>]*?href="([^"]+)"[^>]*?>(.*?)<\/a>/gi,
+              (match, href, text) => {
+                let trimmedText = text.trim();
+
+                //Link text starts with www
+                if (trimmedText.startsWith('www')) {
+                  return `<a href="//${trimmedText}">${trimmedText}</a>`;
+                }
+
+                // If text is a full URL and doesn't match href, fix the href
+                if (
+                  (trimmedText.startsWith('http://') ||
+                    trimmedText.startsWith('https://')) &&
+                  trimmedText !== href
+                ) {
+                  return `<a href="${trimmedText}">${trimmedText}</a>`;
+                }
+
+                return match;
+              },
+            );
+
+            finalValue = finalValue.replace(
+              /(<span class="fr-deletable fr-tribute"[^>]*>.*?<\/a>)([^<]*)(<\/span>)/g,
+              '$1</span>$2',
+            );
+
+            const markdown = turndownService.turndown(finalValue);
             onChange(markdown);
           }
         },
@@ -334,7 +432,34 @@ const RichTextEditor = ({
               keydownEvent.preventDefault();
               keydownEvent.stopPropagation();
               const value = this.html.get();
-              const markdown = turndownService.turndown(value);
+              let finalValue = value.replace(
+                /<a\s+[^>]*?href="([^"]+)"[^>]*?>(.*?)<\/a>/gi,
+                (match, href, text) => {
+                  let trimmedText = text.trim();
+
+                  //Link text starts with www
+                  if (trimmedText.startsWith('www')) {
+                    return `<a href="//${trimmedText}">${trimmedText}</a>`;
+                  }
+
+                  // If text is a full URL and doesn't match href, fix the href
+                  if (
+                    (trimmedText.startsWith('http://') ||
+                      trimmedText.startsWith('https://')) &&
+                    trimmedText !== href
+                  ) {
+                    return `<a href="${trimmedText}">${trimmedText}</a>`;
+                  }
+
+                  return match;
+                },
+              );
+
+              finalValue = finalValue.replace(
+                /(<span class="fr-deletable fr-tribute"[^>]*>.*?<\/a>)([^<]*)(<\/span>)/g,
+                '$1</span>$2',
+              );
+              const markdown = turndownService.turndown(finalValue);
               setEditorState('');
               this.html.set('');
               onKeyEnter(markdown);
@@ -393,6 +518,7 @@ const RichTextEditor = ({
       patientsTribute,
       onFocus,
       onKeyEscape,
+      templatePlaceholders,
     ],
   );
 

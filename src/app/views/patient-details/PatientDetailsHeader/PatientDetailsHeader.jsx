@@ -14,6 +14,8 @@ import {
   userProfileSelector,
   selectedUserOrganizationSelector,
   userHasAiSummaryViewFeatureSelector,
+  userHasProfileBuilderFeatureSelector,
+  userHasPatientTimelineFeatureSelector,
 } from 'selectors/user-selectors';
 import { PATIENTS_LIST_ALL } from 'routing/helpers/paths';
 import { organizationSelector } from 'selectors/organization-selectors';
@@ -21,7 +23,6 @@ import {
   patientSelector,
   isFetchingPatientSelector,
 } from 'selectors/patient-details-selectors';
-import { FieldType } from 'helpers/field-type-helpers';
 import {
   TASK_LIST_RESTRICTIONS_OPTIONS,
   TASK_LIST_RESTRICTIONS_PROFILES,
@@ -41,18 +42,32 @@ import {
   ContactContainer,
   PatientMRNAnchor,
   AISummaryWrapper,
+  ActivityHistoryButton,
+  ActivityHistoryText,
 } from './styled';
 import AISummaryModalOpenerHelper from '@/app/modal/components/AISummaryModal/AISummaryModalOpenerHelper';
 import { SummaryType } from '@/app/helpers/ai-helper';
 import PatientMetaDataField from './PatientMetaDataField';
+import ProfileDetailsDrawer from '../../profile-details/ProfileDetailsDrawer/ProfileDetailsDrawer';
+import PatientActivityHistoryDrawer from '@/app/components/patients/PatientActivityHistoryDrawer/PatientActivityHistoryDrawer';
+import { PATIENT_DETAILS_PATH } from '@/app/routing/helpers/paths';
 
 const { DISABLED } = TASK_LIST_RESTRICTIONS_OPTIONS;
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const PatientDetailsHeader = () => {
-  const history = useHistory();
   const location = useLocation();
+  const isIframe =
+    window.self !== window.top && location.pathname.includes(PATIENT_DETAILS_PATH);
+  const history = useHistory();
   const [isDrawerOpen, setIsDrawerOpen, unsetIsDrawerOpen] = useBoolean(false);
+  const [isProfileOpen, setIsProfileOpen, unsetIsProfileOpen] =
+    useBoolean(false);
+  const [
+    isactivityHistoryDrawerOpen,
+    setIsactivityHistoryDrawerOpen,
+    unsetIsactivityHistoryDrawerOpen,
+  ] = useBoolean(false);
   const patient = useSelector(patientSelector);
   const {
     firstName,
@@ -66,7 +81,10 @@ const PatientDetailsHeader = () => {
     mrn,
     gender,
     genderIdentity,
-    patientStatus
+    patientStatus,
+    sourceEhr,
+    sourceLastSyncDt,
+    sourceStatus,
   } = patient || {};
   const isFetchingPatient = useSelector(isFetchingPatientSelector);
   const currentUser = useSelector(userProfileSelector);
@@ -85,17 +103,28 @@ const PatientDetailsHeader = () => {
   const genderIdentityDisabled =
     currentOrganization?.disabledFeatures?.includes('PATIENT_GENDER') || false;
   const embeddedMode = sessionStorage.getItem('EmbeddedMode') || false;
+  const profileBuilderFeatureAvailable = useSelector(
+    userHasProfileBuilderFeatureSelector,
+  );
+  const patientTimelineFeatureAvailable = useSelector(
+    userHasPatientTimelineFeatureSelector,
+  );
 
   const goBack = useCallback(() => {
     if (cameFrom) {
-      history.push(cameFrom);
+      history.push({ pathname: cameFrom, state: { from: location?.pathname } });
     } else {
-      history.push(PATIENTS_LIST_ALL);
+      history.push({
+        pathname: PATIENTS_LIST_ALL,
+        state: { from: location?.pathname },
+      });
     }
   }, [cameFrom, history]);
 
   useEffect(() => {
-    if (location?.state?.from) setCameFrom(location.state.from);
+    setCameFrom(
+      location?.state?.from || sessionStorage.getItem('navigation-from'),
+    );
   }, [location]);
 
   return (
@@ -110,7 +139,7 @@ const PatientDetailsHeader = () => {
             <Box flex="1 0 0" display="flex" alignItems="center">
               <Grid container alignItems="center">
                 <Box flexBasis={30}>
-                  {(!embeddedMode || cameFrom) && (
+                  {(!embeddedMode || cameFrom) && !isIframe && (
                     <button type="button" onClick={goBack}>
                       <img
                         src={ArrowLeftIcon}
@@ -133,13 +162,39 @@ const PatientDetailsHeader = () => {
                   </AISummaryWrapper>
                 )}
                 <Box mx={1} />
+                {profileBuilderFeatureAvailable && (
+                  <ButtonContainer onClick={setIsProfileOpen}>
+                    <PatientDetailsLabel>View object</PatientDetailsLabel>
+                  </ButtonContainer>
+                )}
+                <Box mx={1} />
                 {taskListRestrictions?.createTask !== DISABLED && (
                   <ButtonContainer onClick={setIsDrawerOpen}>
                     <PatientDetailsLabel>View details</PatientDetailsLabel>
                   </ButtonContainer>
                 )}
                 <Box mx={1} />
-                <Chip label={patientStatus} />
+                <Chip label={patientStatus} />   
+                {(sourceEhr || sourceLastSyncDt || sourceStatus) && (
+                  <Box display="flex" justifyContent="flex-end"  sx={{ ml: '128px' }}>
+                    {sourceEhr && (
+                      <PatientInfo>
+                        <strong>Source:&nbsp;&nbsp;&nbsp;</strong> {sourceEhr}
+                      </PatientInfo>
+                    )}
+                    {sourceLastSyncDt && (
+                      <PatientInfo>
+                        <strong>Last Sync:&nbsp;&nbsp;&nbsp; </strong>{' '}
+                        {moment(sourceLastSyncDt).format('MMM D, YYYY h:mm A')}
+                      </PatientInfo>
+                    )}
+                    {sourceStatus && (
+                      <PatientInfo>
+                        <strong>EHR Status:&nbsp;&nbsp;&nbsp; </strong> {sourceStatus}
+                      </PatientInfo>
+                    )}
+                  </Box>
+                )}
                 <Box flex="500px 0 0">
                   {patient?.patientLabels?.map(
                     ({ labelIdentifier, labelName }) => (
@@ -152,10 +207,15 @@ const PatientDetailsHeader = () => {
                       </Box>
                     ),
                   )}
-                </Box> 
+                </Box>
               </Grid>
             </Box>
             <ContactContainer>
+              {patientTimelineFeatureAvailable && (
+                <ActivityHistoryButton onClick={setIsactivityHistoryDrawerOpen}>
+                  <ActivityHistoryText>Timeline</ActivityHistoryText>
+                </ActivityHistoryButton>
+              )}
               {email && (
                 <Tooltip title={email} placement="bottom">
                   <IconWrapper href={`mailto:${email}`}>
@@ -245,6 +305,7 @@ const PatientDetailsHeader = () => {
                     displayNames,
                     fieldType,
                     customFieldIdentifier,
+                    dateTimeIntent,
                   }) => {
                     return (
                       <React.Fragment key={customFieldIdentifier}>
@@ -254,6 +315,7 @@ const PatientDetailsHeader = () => {
                           value={value}
                           displayNames={displayNames}
                           displayName={displayName}
+                          dueDateIntent={dateTimeIntent}
                         />
                         <PatientInfoDivider />
                       </React.Fragment>
@@ -290,6 +352,18 @@ const PatientDetailsHeader = () => {
             patient={patient}
             isOpenedDetails={isDrawerOpen}
             closeDetails={unsetIsDrawerOpen}
+          />
+          <ProfileDetailsDrawer
+            patient={patient}
+            isOpenedDetails={isProfileOpen}
+            closeDrawer={unsetIsProfileOpen}
+            context={'PATIENT'}
+          />
+          <PatientActivityHistoryDrawer
+            patient={patient}
+            title="Timeline"
+            isOpen={isactivityHistoryDrawerOpen}
+            onClose={unsetIsactivityHistoryDrawerOpen}
           />
         </>
       )}

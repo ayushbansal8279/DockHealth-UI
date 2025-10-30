@@ -19,6 +19,7 @@ import {
   dashboardTabNameSelector,
   dashboardSearchValueSelector,
   selectedTasksSelector,
+  dashboardSortTasksSelector,
 } from 'selectors/dashboard-selectors';
 import DashboardNewUserInfo from 'views/dashboard/DashboardNewUserInfo/DashboardNewUserInfo';
 import NoSearchResultsView from 'components/tasklist/EmptyListView/NoSearchResultsView';
@@ -51,7 +52,6 @@ import { updateCurrentUserPreferences } from 'actions/user-actions';
 import { Context } from 'components/common/HorizontalScroll/HorizontalScrollContainer';
 import useActions from 'hooks/use-actions';
 import BulkEditSection from 'components/tasklist/BulkEditSection/BulkEditSection';
-import { getMultipleSelectedQuickFilterStorageKey } from 'helpers/mega-filter-helper';
 import DashboardTasksGroup from './DashboardTasksGroup';
 import DashboardToolbar from '../DashboardToolbar/DashboardToolbar';
 import {
@@ -61,16 +61,14 @@ import {
   DashboardTaskGroupsWrapper,
 } from './styled';
 import DashboardCalendar from '../DashboardCalendar/DashboardCalendar';
-import localStorageHelper from '@/app/helpers/local-storage-helper';
 import { move } from 'ramda';
+import { updateMultipleSelectedQuickFilters } from 'actions/user-preference-actions';
 
 const DashboardList = ({
   currentUser,
   tourModalIsOpen,
   openTourModal,
   setClearSearch,
-  clearFilter,
-  setClearFilter,
   isAddTaskDrawer,
   setAddTaskDrawer,
 }) => {
@@ -92,6 +90,7 @@ const DashboardList = ({
   const dashboardTasks = useSelector(dashboardTasksSelector);
   const dashboardTasksIsLoading = useSelector(dashboardTasksIsLoadingSelector);
   const areFiltersApplied = useSelector(hasFiltersAppliedSelector);
+  const storedSort = useSelector(dashboardSortTasksSelector);
 
   const [currentSort, setCurrentSort] = useState({
     key: null,
@@ -122,6 +121,14 @@ const DashboardList = ({
     });
   }
 
+  const clearSort = useCallback(() => {
+    setCurrentSort({
+      key: null,
+      order: null,
+    });
+    dispatch(updateSortDashboardTasks(null, null));
+  }, [dispatch]);
+
   useEffect(() => {
     if (currentUser) {
       if (tabName === DashboardTasksTab.MY_TASKS) {
@@ -143,6 +150,15 @@ const DashboardList = ({
   useEffect(() => {
     resetSort();
   }, [tabName]);
+
+  useEffect(() => {
+    if (storedSort && (storedSort.key || storedSort.order)) {
+      setCurrentSort({
+        key: storedSort.key,
+        order: storedSort.order,
+      });
+    }
+  }, [storedSort]);
 
   const handleSortChange = useCallback(
     (key, order) => {
@@ -175,9 +191,8 @@ const DashboardList = ({
     if (isSortApplied || areFiltersApplied || isSearchApplied) {
       openModal('ClearSortFilters', {
         confirm: () => {
-          if (isSortApplied) resetSort();
+          if (isSortApplied) clearSort();
           if (isSearchApplied) setClearSearch(true);
-          if (areFiltersApplied) setClearFilter(true);
         },
         closeOnConfirm: true,
       });
@@ -187,8 +202,8 @@ const DashboardList = ({
     isSearchApplied,
     isSortApplied,
     openModal,
-    setClearFilter,
     setClearSearch,
+    clearSort,
   ]);
 
   const renderEmptyState = () => {
@@ -271,10 +286,8 @@ const DashboardList = ({
         groupOrder,
       );
 
-      localStorageHelper.setItem(
-        getMultipleSelectedQuickFilterStorageKey('dashboard', tabName),
-        JSON.stringify(newOrder),
-      );
+      dispatch(updateMultipleSelectedQuickFilters(newOrder));
+
       dispatch(
         reorderDashboardTaskGroups(
           elementToMoveWholeListIndex,
@@ -299,10 +312,8 @@ const DashboardList = ({
         groupOrder,
       );
 
-      localStorageHelper.setItem(
-        getMultipleSelectedQuickFilterStorageKey('dashboard', tabName),
-        JSON.stringify(newOrder),
-      );
+      dispatch(updateMultipleSelectedQuickFilters(newOrder));
+
       dispatch(
         reorderDashboardTaskGroups(
           elementToMoveWholeListIndex,
@@ -339,7 +350,7 @@ const DashboardList = ({
         </StickyContainer>
         <Spacing vertical={1} />
         {viewType === ViewType.CALENDAR_VIEW && (
-          <DashboardCalendar clearFilter={clearFilter} />
+          <DashboardCalendar />
         )}
         {viewType === ViewType.LIST_VIEW && (
           <VerticalScrollContainer>

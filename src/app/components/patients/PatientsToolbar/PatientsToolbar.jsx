@@ -1,15 +1,18 @@
-import React, { useRef, useCallback, useMemo, useState } from 'react';
+import React, {
+  useRef,
+  useCallback,
+  useMemo,
+  useState,
+  useEffect,
+} from 'react';
 import { Box } from '@mui/material';
 import { useBoolean } from 'hooks/useBoolean';
 import { useHistory, useParams } from 'react-router-dom';
-import AddButton, {
-  AddEntitiesContainer,
-} from 'components/common/AddButton/AddButton';
+import { AddEntitiesContainer } from 'components/common/AddButton/AddButton';
 import { useDispatch, useSelector } from 'react-redux';
 import * as PatientsActions from 'actions/patients-actions';
-// import { isUserGuestOrDockLite, isUserViewOnly } from 'helpers/user-helper';
 import ToolbarSelect from 'components/tasklist/ToolbarSelect/ToolbarSelect';
-import TasksStatusSwitchIcon from 'img/tasks-status-switch-icon.svg';
+import StatusSwitchIcon from 'img/status-switch-icon.svg';
 import {
   PATIENTS_LIST_ALL,
   PATIENTS_LIST_WITH_TASKS,
@@ -27,7 +30,7 @@ import {
 } from 'selectors/user-selectors';
 import {
   currentPatientsListIdentifierSelector,
-  // patientsListSearchTermSelector,
+  patientsListSearchTermSelector,
   filtersActiveSelector,
 } from 'selectors/patients-selectors';
 
@@ -38,14 +41,10 @@ import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import CustomizeToolbarButton from 'components/patients/CustomizeToolbarButton/CustomizeToolbarButton';
 import CreatePatientDrawer from '../CreatePatientDrawer/CreatePatientDrawer';
 import PatientsFilter from '../PatientsFilter/PatientsFilter';
-import {
-  // InputWrapper,
-  SearchHelperText,
-  PatientsListImg,
-  ButtonWrapper,
-} from './styled';
+import { SearchHelperText, ToolbarIconImg } from './styled';
 import ToolbarButton from '../../tasklist/list-toolbar-buttons/ToolbarButton/ToolbarButton';
 import { AddIcon } from '@/app/views/smart-flow-builder/TaskNodeHandles/styled';
+import pluralize from 'pluralize';
 
 const OPTIONS = [
   {
@@ -65,7 +64,12 @@ const OPTIONS = [
   },
 ];
 
-const PatientsToolbar = ({ searchValue, setSearchValue }) => {
+const PatientsToolbar = ({
+  searchValue,
+  setSearchValue,
+  workspaceIdentifier = null,
+  placeholder = 'Search',
+}) => {
   const [isSidebarOpen, setIsSidebarOpen, unsetIsSidebarOpen] =
     useBoolean(false);
   const [finalFilter, setFinalFilter] = useState({});
@@ -78,18 +82,13 @@ const PatientsToolbar = ({ searchValue, setSearchValue }) => {
   const filterButtonReference = useRef(null);
   const history = useHistory();
   const dispatch = useDispatch();
-  // const searchValue = useSelector(patientsListSearchTermSelector);
+  const searchText = useSelector(patientsListSearchTermSelector);
   const filtersActive = useSelector(filtersActiveSelector);
   const listIdentifier = useSelector(currentPatientsListIdentifierSelector);
   const currentUser = useSelector(userProfileSelector);
   const currentOrganization = useSelector(selectedUserOrganizationSelector);
   const customerTypeLabel = getCustomerTypeLabel(currentUser);
   const { listIdentifier: listIdentifierParameter } = useParams();
-
-  // const isGuestOrDockLite = isUserGuestOrDockLite(currentUser);
-  // const isViewOnly = isUserViewOnly(currentUser);
-
-  // const [importPopupOpen, setImportPopupOpen] = useState(false);
 
   const iconColorFilterActiveItem =
     currentOrganization?.themeSettings?.find(
@@ -108,8 +107,8 @@ const PatientsToolbar = ({ searchValue, setSearchValue }) => {
   };
 
   const handleSearch = useCallback(() => {
-    dispatch(PatientsActions.searchPatients(searchValue));
-  }, [dispatch, searchValue]);
+    dispatch(PatientsActions.searchPatients(searchValue, workspaceIdentifier));
+  }, [dispatch, searchValue, workspaceIdentifier]);
 
   const optionBasedUrl = useMemo(
     () =>
@@ -123,9 +122,16 @@ const PatientsToolbar = ({ searchValue, setSearchValue }) => {
     (event) => {
       const { value } = event.target;
       const { url } = OPTIONS.find((o) => o.value === value);
-      if (url) history.push(url);
+
+      if (!url) return;
+
+      const updatedUrl = workspaceIdentifier
+        ? url.replace('/core', `/core/workspace/${workspaceIdentifier}`)
+        : url;
+
+      history.push(updatedUrl);
     },
-    [history],
+    [history, workspaceIdentifier],
   );
 
   const { emrIntegrationEnabled, emrIntegrationType } =
@@ -146,9 +152,13 @@ const PatientsToolbar = ({ searchValue, setSearchValue }) => {
     listIdentifierParameter?.toUpperCase() ===
     PatientsListType.DYNAMIC.toUpperCase();
 
+  useEffect(() => {
+    setSearchValue(searchText);
+  }, [searchText]);
+
   return (
     <>
-      <Box p="16px">
+      <Box>
         <Box display="flex" width="100%">
           <Box
             display="flex"
@@ -170,8 +180,8 @@ const PatientsToolbar = ({ searchValue, setSearchValue }) => {
                   name="patient-list-type"
                   onChange={onListTypeChange}
                   icon={
-                    <PatientsListImg
-                      src={TasksStatusSwitchIcon}
+                    <ToolbarIconImg
+                      src={StatusSwitchIcon}
                       alt="list type icon"
                       iconColorFilterActive={iconColorFilterActiveItem?.value}
                     />
@@ -206,7 +216,7 @@ const PatientsToolbar = ({ searchValue, setSearchValue }) => {
                   onChange={onListTypeChange}
                   icon={
                     <PatientsListImg
-                      src={TasksStatusSwitchIcon}
+                      src={StatusSwitchIcon }
                       alt="list type icon"
                       iconColorFilterActive={iconColorFilterActiveItem?.value}
                     />
@@ -233,15 +243,13 @@ const PatientsToolbar = ({ searchValue, setSearchValue }) => {
             )} */}
           </Box>
           {!isDynamicPatientList && (
-            // <HeaderSearch value={searchValue} onChange={handleSearchChange} />
-            // <Box width="300px">
             <SearchInput
               value={searchValue}
               onValueChange={handleSearchChange}
               onKeyEnter={handleSearch}
               isPatientSearchInput
+              placeholder={placeholder}
             />
-            // </Box>
           )}
           {!isDynamicPatientList &&
             patientAddEnabled &&
@@ -249,21 +257,13 @@ const PatientsToolbar = ({ searchValue, setSearchValue }) => {
             (listIdentifier === DefaultPatientsListType.ALL_PATIENTS ||
               listIdentifier === DefaultPatientsListType.ACTIVE_PATIENTS) && (
               <AddEntitiesContainer>
-                {/* <AddButton onClick={setIsSidebarOpen}>
-                  Add a {customerTypeLabel}
-                </AddButton> */}
-
                 <ToolbarButton
-                  // ref={invitePeopleButtonReference}
                   icon={
                     <span style={{ marginLeft: '-5px' }}>
                       <AddIcon />
                     </span>
                   }
                   onClick={setIsSidebarOpen}
-                  // isOpen={isPopoverOpen}
-                  // active={isPopoverOpen}
-                  // hasPopover
                 >
                   <span style={{ marginLeft: '-5px' }}>
                     Add a {customerTypeLabel}
@@ -292,8 +292,8 @@ const PatientsToolbar = ({ searchValue, setSearchValue }) => {
         <>
           <SearchHelperText>
             Search by first name, last name or medical record number. You may
-            filter to retrieve specific {customerTypeLabel.toLowerCase()}s in
-            Dock.
+            filter to retrieve specific{' '}
+            {pluralize(customerTypeLabel).toLowerCase()} in Dock.
           </SearchHelperText>
         </>
       )}

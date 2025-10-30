@@ -1,5 +1,6 @@
 import { showAlert } from 'helpers/utility-functions';
 import axios from './axios-heydoc';
+import { withWorkspaceHeaders } from '../helpers/api-helpers';
 
 export function moveTemplateToFolder(identifier, parentTaskWorkflowIdentifier) {
   return axios
@@ -64,17 +65,21 @@ export function getAllTemplatesForOrganization() {
     .then((response) => response.data);
 }
 
-export function getTemplates(includeAll) {
+export function getTemplates(includeAll, workspaceIdentifier) {
+  const url = workspaceIdentifier
+    ? `task/template/getRootWorkflowTemplates?includeAll=${includeAll}`
+    : `task/template/getRootTemplatesForOrganization?includeAll=${includeAll}`;
+
   return axios
-    .get(
-      `task/template/getRootTemplatesForOrganization?includeAll=${includeAll}`,
-    )
+    .get(url, withWorkspaceHeaders(workspaceIdentifier))
     .then((response) => response.data);
 }
 
-export function searchTemplates(searchPhrase) {
+export function searchTemplates(searchPhrase, workspaceIdentifier) {
+  const url = `task/template/searchTemplatesByName?searchTerm=${searchPhrase}`;
+
   return axios
-    .get(`task/template/searchTemplatesByName?searchTerm=${searchPhrase}`)
+    .get(url, withWorkspaceHeaders(workspaceIdentifier))
     .then((response) => response.data);
 }
 
@@ -100,7 +105,21 @@ export function getTemplateBasicDetails(identifier) {
     .then(({ data }) => data);
 }
 
-export function addTemplate(newTemplate, parentTaskWorkflowIdentifier) {
+export function addTemplate(
+  newTemplate,
+  parentTaskWorkflowIdentifier,
+  workspaceIdentifier,
+) {
+  if (workspaceIdentifier) {
+    return axios
+      .post(
+        `task/workflow`,
+        { ...newTemplate, parentTaskWorkflowIdentifier },
+        { headers: { CurrentWorkspaceIdentifier: workspaceIdentifier } },
+      )
+      .then((response) => response.data);
+  }
+
   return axios
     .post(`task/workflow`, { ...newTemplate, parentTaskWorkflowIdentifier })
     .then((response) => response.data);

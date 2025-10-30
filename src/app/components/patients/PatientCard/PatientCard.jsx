@@ -46,6 +46,8 @@ import {
 import PatientCardDetailsLoader from './PatientCardDetailsLoader';
 import PatientCardNotesLoader from './PatientCardNotesLoader';
 import PatientCardNote from './PatientCardNote';
+import DateLabel from '../../common/DateLabel/DateLabel';
+import { calculateDateTimeIntent } from '@/app/helpers/date-intent-helpers';
 
 const renderPatientNotes = (
   unpinnedNotes,
@@ -182,6 +184,7 @@ const PatientCard = ({
         onAdded: (newPatientData) => {
           setPatientData(newPatientData);
         },
+        mode: 'edit',
       }),
     );
   }, [dispatch, patientData]);
@@ -317,9 +320,18 @@ const PatientCard = ({
                                   <Typography>{customFieldName}: </Typography>
                                   <Box ml={1} />
                                   {fieldType === FieldType.DROPDOWN_MULTI ||
-                                  fieldType === FieldType.RELATIONSHIP
-                                    ? `${displayNames?.join(', ') || ''}`
-                                    : `${displayName || value}`}
+                                  fieldType === FieldType.RELATIONSHIP ? (
+                                    `${displayNames?.join(', ') || ''}`
+                                  ) : fieldType === FieldType.DATE ? (
+                                    <DateLabel
+                                      date={value}
+                                      dueDateIntent={calculateDateTimeIntent(
+                                        value,
+                                      )}
+                                    />
+                                  ) : (
+                                    `${displayName || value}`
+                                  )}
                                 </CustomFieldPatientInfo>
                               )}
                           </>

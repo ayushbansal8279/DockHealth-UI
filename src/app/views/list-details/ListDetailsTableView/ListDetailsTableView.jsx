@@ -6,15 +6,11 @@ import React, {
   useMemo,
   useRef,
 } from 'react';
-import {
-  getTaskListStatusStorageKey,
-  TaskListTabName,
-} from 'helpers/tasklist-helpers';
+import { TaskListTabName } from 'helpers/tasklist-helpers';
 import * as ListDetailsActions from 'actions/list-details-actions';
 import TaskDrawer from 'components/task-drawer/TaskDrawer/TaskDrawer';
 import BulkEditSection from 'components/tasklist/BulkEditSection/BulkEditSection';
 import HorizontallyScrolledViewLayout from 'components/template/HorizontallyScrolledViewLayout/HorizontallyScrolledViewLayout';
-import StickyContainer from 'components/common/HorizontalScroll/StickyContainer';
 import { useHistory, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import isEmpty from 'ramda/src/isEmpty';
@@ -23,10 +19,7 @@ import { initializePusher } from 'helpers/pusher-instance';
 import useActions from 'hooks/use-actions';
 import usePrevious from 'hooks/use-previous';
 import localStorageHelper from 'helpers/local-storage-helper';
-import {
-  updateTaskStatusToFilter,
-  updateUserListViewSetup,
-} from 'actions/task-list-actions';
+import { updateUserListViewSetup } from 'actions/task-list-actions';
 import { checkIfTaskMatchesFilters } from 'helpers/filters-helpers';
 import {
   completedTasksIsFetchingSelector,
@@ -40,7 +33,6 @@ import {
 } from 'selectors/list-details-selectors';
 import {
   currentTaskListIdentifierSelector,
-  currentTaskListTasksStatusSelector,
   currentTaskListSelector,
   pendingTaskListsSelector,
   archivedTaskListsSelector,
@@ -48,14 +40,13 @@ import {
 import { userProfileSelector } from 'selectors/user-selectors';
 import { selectedFiltersInMegaFilterSelector } from 'selectors/mega-filter-selectors';
 import { useTaskListColumnsConfig } from 'context-api/columns-config-context';
-import { TaskOrigin, TaskStatus } from 'helpers/task-helpers';
+import { TaskOrigin } from 'helpers/task-helpers';
 import * as TaskActions from 'actions/task-actions';
 import * as UserAuthApi from 'api/user-auth-api';
 import { TaskViewContainer } from './styled';
-import ListDetailsToolbar from '../ListDetailsToolbar/ListDetailsToolbar';
 import ListDetailsHeader from '../ListDetailsHeader/ListDetailsHeader';
-// import TasksView from '../ListDetailsTasksContainer/ListDetailsTasksContainer';
 import TasksView from '../ListDetailsTasks/ListDetailsTasks';
+import { userPreferenceStatusSelector } from '@/app/selectors/user-preference-selectors';
 
 const VIEW_LIST_OPTIONS_CONFIG = {
   SHOW_WORKFLOW_DETAILS: false,
@@ -72,7 +63,6 @@ const ListDetailsTableView = () => {
     currentTaskListIdentifierSelector,
   );
   const taskList = useSelector(currentTaskListSelector);
-  const currentStatus = useSelector(currentTaskListTasksStatusSelector);
   const { setCurrentList } = useTaskListColumnsConfig();
   const currentUser = useSelector(userProfileSelector);
   const { userIdentifier: currentUserIdentifier } = currentUser || {};
@@ -86,7 +76,7 @@ const ListDetailsTableView = () => {
   const completedGroupedTasks = useSelector(groupCompletedTasksSelector);
   const taskCounters = useSelector(taskCountersSelector);
   const selectedFilters = useSelector(selectedFiltersInMegaFilterSelector);
-  const taskListStatus = useSelector(currentTaskListTasksStatusSelector);
+  const taskListStatus = useSelector(userPreferenceStatusSelector);
 
   const actions = useActions(TaskActions);
 
@@ -101,21 +91,15 @@ const ListDetailsTableView = () => {
   const pusher = useRef(initializePusher());
   const [channel, setChannel] = useState(null);
   const [clearSearch, setClearSearch] = useState(false);
-  const [clearFilter, setClearFilter] = useState(false);
 
   const dispatch = useDispatch();
   const { taskListIdentifier, tabName } = params;
 
   useEffect(() => {
     if (currentTaskListIdentifier) {
-      const savedStatus = localStorageHelper.getItem(
-        getTaskListStatusStorageKey(currentTaskListIdentifier),
-      );
-
-      dispatch(updateTaskStatusToFilter(savedStatus ?? TaskStatus.INCOMPLETE));
       dispatch(ListDetailsActions.initializeListDetailsTableState());
     }
-  }, [dispatch, currentTaskListIdentifier, currentStatus]);
+  }, [dispatch, currentTaskListIdentifier]);
 
   useEffect(() => {
     if (taskListIdentifier) {
@@ -265,7 +249,7 @@ const ListDetailsTableView = () => {
   useEffect(() => {
     if (
       taskCounters?.complete === 0 &&
-      params.taskListIdentifier === prevParams?.taskListIdentifier &&
+      params?.taskListIdentifier === prevParams?.taskListIdentifier &&
       params.tabName === TaskListTabName.COMPLETE
     ) {
       navigateToTab(TaskListTabName.OPEN);
@@ -372,8 +356,8 @@ const ListDetailsTableView = () => {
     const taskBundleCallback = (data) => {
       // eslint-disable-next-line sonarjs/no-collapsible-if
       if (
-        data.taskListIdentifier &&
-        data.taskListIdentifier === taskListIdentifier &&
+        data?.taskListIdentifier &&
+        data?.taskListIdentifier === taskListIdentifier &&
         (data.eventType?.startsWith('CREATE_TASK_BUNDLE') ||
           data.eventType?.startsWith('UPDATE_TASK_BUNDLE') ||
           data.eventType?.startsWith('DUPLICATE_TASK_BUNDLE') ||
@@ -503,8 +487,6 @@ const ListDetailsTableView = () => {
               : taskCounters.complete
           }
           additionalOptions={additionalToolbarOptions}
-          clearFilter={clearFilter}
-          setClearFilter={setClearFilter}
         />
       }
     >
@@ -517,7 +499,6 @@ const ListDetailsTableView = () => {
         <TaskViewContainer>
           <TasksView
             setClearSearch={setClearSearch}
-            setClearFilter={setClearFilter}
             viewSetup={displayListPreferences}
             onTaskUpdate={handleTaskUpdate}
             updateWorkflowStatus={handleUpdateWorkflowStatus}

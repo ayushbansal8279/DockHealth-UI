@@ -5,4 +5,5 @@ export interface Credential {
   domain: string;
   orgDeveloperIdentifier: string;
   organizationIdentifier: string;
+  scopes: string[]
 }

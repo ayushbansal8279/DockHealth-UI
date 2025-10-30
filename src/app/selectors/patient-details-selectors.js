@@ -113,6 +113,11 @@ export const patientAttachmentsSelector = createSelector(
     null,
 );
 
+export const patientTaskAttachementSelector = createSelector(
+  patientDetailsStateSelector,
+  ({patientTaskAttachments}) => patientTaskAttachments
+)
+
 export const patientFoldersSelector = createSelector(
   patientDetailsStateSelector,
   ({ attachments }) =>

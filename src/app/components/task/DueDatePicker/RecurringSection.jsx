@@ -26,6 +26,7 @@ import {
   RowLabel,
   SelectWrapper,
 } from './styled';
+import * as AlertActions from 'alert/actions';
 import {
   RECURRING_OPTIONS,
   FORM_DEFAULT_VALUES,
@@ -37,12 +38,17 @@ import {
   REPEAT_UNIT_OPTIONS,
   RepeatUnitOption,
 } from './helpers';
+import { bulkEditRecurringSchedule } from '@/app/api/task-api';
+import { bulkEditTasks as bulkEditTasksApi } from '@/app/api/task-api';
 
 const RecurringSection = ({
   taskIdentifier,
   selectedDueDate,
   recurring,
   onClose,
+  allSelectedTasksIdentifiers,
+  allSelectedWorkflowIdentifiers,
+  bulkEditDueDate,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const [endDateError, setEndDateError] = useState(false);
@@ -148,31 +154,80 @@ const RecurringSection = ({
       }
 
       setIsSaving(true);
-      saveTaskRecurringSchedule(taskIdentifier, requestData)
-        .then(() => {
-          setIsSaving(false);
-
-          const hasRecurringScheduleAfterSave =
-            requestData[FormField.RECURRING_OPTION] !==
-            RecurringOption.DO_NOT_REPEAT;
-
-          if (recurring !== hasRecurringScheduleAfterSave) {
+      if (bulkEditDueDate) {
+        bulkEditTasksApi({
+          bulkEditType: 'RECURRING_SCHEDULE',
+          recurringSchedule: { ...requestData },
+          taskIdentifiers: allSelectedTasksIdentifiers,
+          taskWorkflowIdentifiers: allSelectedWorkflowIdentifiers,
+        })
+          .then(({ transactionIdentifier }) => {
+            setIsSaving(false);
+            const hasRecurringScheduleAfterSave =
+              requestData[FormField.RECURRING_OPTION] !==
+              RecurringOption.DO_NOT_REPEAT;
             dispatch(
-              setRecurringScheduleFlag(
-                taskIdentifier,
-                hasRecurringScheduleAfterSave,
+              AlertActions.showGlobalAlertWithUndo(
+                allSelectedTasksIdentifiers.length > 1
+                  ? `${allSelectedTasksIdentifiers.length} TASKS RECURRING SCHEDULE UPDATED`
+                  : `${allSelectedTasksIdentifiers.length} TASK RECURRING SCHEDULE UPDATED`,
+                transactionIdentifier,
+                () => {
+                  allSelectedTasksIdentifiers.forEach((taskIdentifier) => {
+                    if (recurring !== hasRecurringScheduleAfterSave) {
+                      dispatch(
+                        setRecurringScheduleFlag(
+                          taskIdentifier,
+                          hasRecurringScheduleAfterSave,
+                        ),
+                      );
+                    }
+                  });
+                },
               ),
             );
-          }
-          dispatch(showGlobalAlert(AlertMessages.UPDATED));
-          onClose();
-        })
-        .catch(() => {
-          setIsSaving(false);
-          dispatch(showGlobalErrorAlert());
-        });
+
+            onClose();
+          })
+          .catch(() => {
+            setIsSaving(false);
+            dispatch(showGlobalErrorAlert());
+          });
+      } else {
+        saveTaskRecurringSchedule(taskIdentifier, requestData)
+          .then(() => {
+            setIsSaving(false);
+
+            const hasRecurringScheduleAfterSave =
+              requestData[FormField.RECURRING_OPTION] !==
+              RecurringOption.DO_NOT_REPEAT;
+
+            if (recurring !== hasRecurringScheduleAfterSave) {
+              dispatch(
+                setRecurringScheduleFlag(
+                  taskIdentifier,
+                  hasRecurringScheduleAfterSave,
+                ),
+              );
+            }
+            dispatch(showGlobalAlert(AlertMessages.UPDATED));
+            onClose();
+          })
+          .catch(() => {
+            setIsSaving(false);
+            dispatch(showGlobalErrorAlert());
+          });
+      }
     },
-    [dispatch, onClose, recurring, taskIdentifier],
+    [
+      dispatch,
+      onClose,
+      recurring,
+      taskIdentifier,
+      bulkEditDueDate,
+      allSelectedTasksIdentifiers,
+      allSelectedWorkflowIdentifiers,
+    ],
   );
 
   const handleRecurringOptionSelect = (newValue) => {

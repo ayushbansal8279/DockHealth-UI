@@ -28,6 +28,7 @@ const CreateProfileModal = ({
   onAdded,
   onUpdated,
   isCreatingNewField,
+  workspaceIdentifier,
 }) => {
   // const isCreatingNewField = !template;
   const [, setIsSaving] = useState(false);
@@ -78,7 +79,7 @@ const CreateProfileModal = ({
 
   const handleAddSubmit = (data) => {
     setIsSaving(true);
-    createProfileType(data)
+    createProfileType(data, workspaceIdentifier)
       .then((addedField) => {
         dispatch(showGlobalAlert(AlertMessages.CREATED));
         if (typeof onAdded === 'function') onAdded(addedField);
@@ -100,7 +101,7 @@ const CreateProfileModal = ({
       <CloseIconButton onClick={closeModal} size="small" color="secondary">
         <CloseIcon />
       </CloseIconButton>
-      <Title>{isCreatingNewField ? 'Add' : 'Edit'} Profile</Title>
+      <Title>{isCreatingNewField ? 'Add' : 'Edit'} Object</Title>
       <Box m={2} />
       <Box display="flex" flex={1} width="100%">
         <FormProvider {...formMethods}>
@@ -117,7 +118,7 @@ const CreateProfileModal = ({
                       required
                       autoFocus
                       name="name"
-                      label="Profile name"
+                      label="Object name"
                     />
                   </Grid>
                   <Grid item xs={12}>
@@ -128,12 +129,10 @@ const CreateProfileModal = ({
             </FormScrollingContainer>
             <Box m={2} />
             <Grid container justifyContent="flex-end">
-              <CancelButton onClick={closeModal}>
-                Cancel
-              </CancelButton>
+              <CancelButton onClick={closeModal}>Cancel</CancelButton>
               <Box m={1} />
               <ConfirmButton type="submit" disabled={false}>
-                {isCreatingNewField ? `Create` : 'Update'}
+                Save
               </ConfirmButton>
             </Grid>
           </TemplateForm>

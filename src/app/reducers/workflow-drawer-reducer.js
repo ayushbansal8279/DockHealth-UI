@@ -1,6 +1,7 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import * as ActionTypes from 'actions/action-types';
 import { reorderTasksForWorkflow } from 'helpers/workflow-helpers';
+import TaskBaseReducer from './task-base-reducer';
 
 const initialState = {
   open: false,
@@ -171,17 +172,18 @@ const WorkflowDrawerReducer = (state = initialState, action) => {
 
     case ActionTypes.UPDATE_WORKFLOW_ATTACHMENT_SUCCESS: {
       const { taskWorkflowIdentifier, attachmentIdentifier, fileName } = action;
-    
+
       if (taskWorkflowIdentifier !== state.workflowIdentifier) return state;
       return {
         ...state,
         workflow: {
           ...state.workflow,
-          attachments: state.workflow.attachments?.map((attachment) =>
-            attachment.attachmentIdentifier === attachmentIdentifier
-              ? { ...attachment, fileName }
-              : attachment
-          ) || null,
+          attachments:
+            state.workflow.attachments?.map((attachment) =>
+              attachment.attachmentIdentifier === attachmentIdentifier
+                ? { ...attachment, fileName }
+                : attachment,
+            ) || null,
         },
       };
     }
@@ -230,11 +232,25 @@ const WorkflowDrawerReducer = (state = initialState, action) => {
         workflow.tasks,
       );
 
+      const isArrayOfObjects =
+        Array.isArray(state?.workflow?.tasks) &&
+        state?.workflow?.tasks?.every(
+          (item) => typeof item === 'object' && item !== null,
+        );
+
+      const reorderedTaskObjects = isArrayOfObjects
+        ? reorderedTasks
+            ?.map((id) =>
+              state?.workflow?.tasks?.find((task) => task?.identifier === id),
+            )
+            .filter(Boolean) // Remove undefined if any ID doesn't match
+        : state.workflow.tasks;
+
       return {
         ...state,
         workflow: {
           ...state.workflow,
-          tasks: reorderedTasks,
+          tasks: reorderedTaskObjects,
         },
       };
     }
@@ -261,6 +277,45 @@ const WorkflowDrawerReducer = (state = initialState, action) => {
     }
 
     default: {
+      if (
+        state?.open &&
+        action?.task?.taskGroups?.find(
+          (tg) => tg?.taskGroupIdentifier === state?.workflowIdentifier,
+        )
+      ) {
+        return TaskBaseReducer(state, action, (reducerState, taskData) => {
+          const taskItem = taskData;
+          if (
+            state?.workflow?.tasks?.find(
+              (workflowTask) =>
+                workflowTask?.identifier === taskItem?.taskIdentifier,
+            )
+          ) {
+            const updateWorkflowTasks = state?.workflow?.tasks.map(
+              (workflowTask) =>
+                workflowTask?.identifier === taskItem?.taskIdentifier
+                  ? {
+                      ...workflowTask,
+                      ...taskItem,
+                    }
+                  : workflowTask,
+            );
+
+            const updatedState = {
+              ...reducerState,
+              workflow: {
+                ...state.workflow,
+                tasks: updateWorkflowTasks,
+              },
+            };
+            return updatedState;
+          }
+          return {
+            ...reducerState,
+          };
+        });
+      }
+
       return state;
     }
   }

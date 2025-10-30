@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { TaskOrigin, TaskStatus, TaskStatusLabel } from 'helpers/task-helpers';
+import { TaskStatus, TaskStatusLabel } from 'helpers/task-helpers';
 import { Box, Popover } from '@mui/material';
-import TasksStatusSwitchIcon from 'img/tasks-status-switch-icon.svg';
+import StatusSwitchIcon from 'img/status-switch-icon.svg';
 import {
   ViewTypeImg,
   SelectWrapper,
@@ -15,8 +15,6 @@ import {
 import RotatableChevron from '@/app/components/common/RotatableChevron/RotatableChevron';
 import palette from '@/app/styles/palette';
 import TaskStatusSelectForm from './TaskStatusSelectForm';
-import localStorageHelper from '@/app/helpers/local-storage-helper';
-import { getStatusStorageKey } from '@/app/helpers/tasklist-helpers';
 
 interface Props {
   value: string;
@@ -35,16 +33,14 @@ export default function TaskStatusToolbarSelect({
 }: Props) {
   const [isOpen, setIsOpen] = useState(false);
   const [status, setStatus] = useState(TaskStatus.INCOMPLETE);
-  const storageKey = getStatusStorageKey(origin, taskListIdentifier);
 
   useEffect(() => {
-    const savedStatus = localStorageHelper.getItem(storageKey);
-    if (savedStatus !== null) {
-      setStatus(savedStatus);
+    if (value !== null) {
+      setStatus(value);
     } else {
       setStatus(TaskStatus.INCOMPLETE);
     }
-  }, [taskListIdentifier]);
+  }, [taskListIdentifier, value]);
 
   const buttonRef = useRef(null);
 
@@ -58,7 +54,6 @@ export default function TaskStatusToolbarSelect({
 
   const handleSubmit = (status: string) => {
     setStatus(status);
-    localStorageHelper.setItem(storageKey, status);
     onChange(status);
     handleClose();
   };
@@ -74,7 +69,7 @@ export default function TaskStatusToolbarSelect({
         >
           <SelectIcon>
             <ViewTypeImg
-              src={TasksStatusSwitchIcon}
+              src={StatusSwitchIcon}
               alt="view type icon"
               iconColorFilterActive={iconColorFilterActive}
             />

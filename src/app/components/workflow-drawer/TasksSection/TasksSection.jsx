@@ -1,6 +1,5 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import ReactDOM from 'react-dom';
 import * as WorkflowActions from 'actions/workflow-actions';
 import {
@@ -10,18 +9,50 @@ import {
 import { userProfileSelector } from 'selectors/user-selectors';
 import DrawerSection from 'components/drawer-common/DrawerSection/DrawerSection';
 import DrawerTaskLoader from 'components/drawer-common/DrawerTaskLoader/DrawerTaskLoader';
-import DrawerTask from 'components/drawer-common/DrawerTask/DrawerTask';
+import {
+  DndContext,
+  DragOverlay,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
+import DraggableTaskItem from '../../task-drawer/DraggableTaskItem/DraggableTaskItem';
 
 const TasksSection = () => {
   const dispatch = useDispatch();
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 3 } }),
+    useSensor(KeyboardSensor),
+  );
   const workflow = useSelector(workflowSelector);
   const { tasks } = workflow || {};
   const isFetching = useSelector(isFetchingWorkflowDetailsSelector);
   const currentUser = useSelector(userProfileSelector);
+  const [activeTask, setActiveTask] = useState(null);
+  const dropDirectionRef = useRef(null);
+
+  const handleDragStart = (event) => {
+    setActiveTask(event?.active?.data?.current?.task);
+  };
 
   const handleDragEnd = useCallback(
-    ({ destination, source }) => {
-      if (destination) {
+    ({ active, over }) => {
+      setActiveTask(null);
+      const activeIndex = active?.data?.current?.index;
+      const overIndex = over?.data?.current?.index;
+      if (!over || activeIndex === overIndex) return;
+
+      if (over) {
+        const source = { index: activeIndex };
+        const destination = {
+          index:
+            dropDirectionRef?.current === 'top'
+              ? 0
+              : activeIndex <= overIndex
+              ? overIndex
+              : overIndex + 1,
+        };
         dispatch(
           WorkflowActions.reorderWorkflowTasks({
             destination,
@@ -36,22 +67,6 @@ const TasksSection = () => {
     [dispatch, workflow],
   );
 
-  const renderDraggableItem = ({
-    task,
-    draggableInnerReference,
-    draggableProps,
-    dragHandleProps,
-  }) => (
-    <div ref={draggableInnerReference} {...draggableProps}>
-      <DrawerTask
-        key={task.taskIdentifier}
-        task={task}
-        currentUser={currentUser}
-        dragHandleProps={dragHandleProps}
-      />
-    </div>
-  );
-
   return (
     <DrawerSection title="Tasks">
       {!tasks && isFetching ? (
@@ -61,50 +76,33 @@ const TasksSection = () => {
           <DrawerTaskLoader />
         </>
       ) : (
-        <DragDropContext onDragEnd={handleDragEnd}>
-          <Droppable droppableId={workflow?.identifier}>
-            {(provided) => (
-              <div ref={provided.innerRef} {...provided.droppableProps}>
-                {tasks?.map((task, index) => (
-                  <Draggable
-                    key={task.identifier}
-                    draggableId={String(task.identifier)}
-                    index={index}
-                  >
-                    {(
-                      {
-                        innerRef: draggableInnerReference,
-                        draggableProps,
-                        dragHandleProps,
-                      },
-                      { isDragging },
-                    ) =>
-                      isDragging
-                        ? ReactDOM.createPortal(
-                            renderDraggableItem({
-                              task,
-                              draggableInnerReference,
-                              draggableProps,
-                              dragHandleProps,
-                            }),
-                            document.querySelector('body'),
-                          )
-                        : renderDraggableItem({
-                            task,
-                            draggableInnerReference,
-                            draggableProps,
-                            dragHandleProps,
-                          })
-                    }
-                  </Draggable>
-                ))}
-                {provided.placeholder}
-              </div>
-            )}
-          </Droppable>
-        </DragDropContext>
+        <DndContext
+          sensors={sensors}
+          onDragStart={handleDragStart}
+          onDragEnd={handleDragEnd}
+        >
+          {(tasks ?? [])?.map((task, index) => (
+            <DraggableTaskItem
+              key={task.identifier}
+              task={task}
+              currentUser={currentUser}
+              index={index}
+              dropDirectionRef={dropDirectionRef}
+            />
+          ))}
+          <DragOverlay>
+            {activeTask ? <Placeholder task={activeTask} /> : null}
+          </DragOverlay>
+        </DndContext>
       )}
     </DrawerSection>
+  );
+};
+
+const Placeholder = ({ task }) => {
+  return (
+    // @ts-ignore
+    <DraggableTaskItem key={task.identifier} task={task} isDragPreview />
   );
 };
 

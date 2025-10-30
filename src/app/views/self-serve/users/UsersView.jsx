@@ -13,7 +13,6 @@ import { Box, Dialog } from '@mui/material';
 import { MoreVert } from '@mui/icons-material';
 import ImportDataModal from '@/app/modal/components/ImportDataModal/ImportDataModal';
 import { bulkInviteUser, downloadUserInviteTemplate } from '@/app/api/organization-api';
-import FileImportPopover from '@/app/components/common/FileImportPopover/FileImportPopover';
 
 const UsersView = () => {
   const history = useHistory();
@@ -23,9 +22,6 @@ const UsersView = () => {
   const isOwnerOrAdmin = checkIfUserIsOrganizationAdmin(currentUser);
 
   const [importPopupOpen, setImportPopupOpen] = useState(false);
-  const [importPopoverOpen, setImportPopoverOpen] = useState(false);
-  const [importResponse, setImportResponse] = useState(null);
-
 
   useEffect(() => {
     if (!checkIfUserIsOrganizationAdmin(currentUser)) {
@@ -83,24 +79,11 @@ const UsersView = () => {
             setImportPopupOpen(false);
           }}
           downloadTemplate={downloadUserInviteTemplate}
-          setImportPopoverOpen={setImportPopoverOpen}
           step={1}
           label="user"
           uploadFunction={bulkInviteUser}
-          setImportResponse={setImportResponse}
         />
       </Dialog>
-      {importPopoverOpen &&
-        importResponse && (
-          <FileImportPopover
-            type="User"
-            closePopover={() => {
-              setImportPopoverOpen(false);
-            }}
-            uploadResponse={importResponse}
-          />
-        )
-      }
   </>
   );
 };

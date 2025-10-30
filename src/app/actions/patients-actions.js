@@ -20,9 +20,10 @@ export function getCurrentPatientsListDetails() {
   };
 }
 
-export function getCurrentPatients() {
+export function getCurrentPatients(workspaceIdentifier = null) {
   return {
     type: ActionTypes.GET_CURRENT_PATIENTS,
+    payload: { workspaceIdentifier },
   };
 }
 
@@ -44,10 +45,11 @@ export function getCurrentPatientsListFilterOptions() {
   };
 }
 
-export function searchPatients(searchTerm) {
+export function searchPatients(searchTerm, workspaceIdentifier = null) {
   return {
     type: ActionTypes.SEARCH_PATIENTS,
     searchTerm,
+    workspaceIdentifier
   };
 }
 
@@ -65,10 +67,11 @@ export function changePatientsSearchTerm(searchTerm) {
   };
 }
 
-export function setPatientsSelectedFilters(selectedFilters) {
+export function setPatientsSelectedFilters(selectedFilters, workspaceIdentifier) {
   return {
     type: ActionTypes.SET_PATIENTS_SELECTED_FILTERS,
     selectedFilters,
+    workspaceIdentifier
   };
 }
 
@@ -85,9 +88,10 @@ export function clearPatientsFilters() {
   };
 }
 
-export function getPatientsLists() {
+export function getPatientsLists(workspaceIdentifier = null) {
   return {
     type: ActionTypes.GET_PATIENTS_LISTS,
+    payload: { workspaceIdentifier }
   };
 }
 
@@ -173,9 +177,10 @@ export const updateListPreferences = (
   setup,
   patientListIdentifier,
   currentUserIdentifier,
+  workspaceIdentifier = null
 ) => ({
   type: ActionTypes.UPDATE_PATIENTS_LIST_PREFERENCES,
-  payload: { setup, patientListIdentifier, currentUserIdentifier },
+  payload: { setup, patientListIdentifier, currentUserIdentifier, workspaceIdentifier },
 });
 
 export const selectDynamicPatientListFilter = (

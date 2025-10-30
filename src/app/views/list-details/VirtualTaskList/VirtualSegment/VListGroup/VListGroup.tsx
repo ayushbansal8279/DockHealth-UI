@@ -12,6 +12,8 @@ import { TaskOrigin } from '@/app/helpers/task-helpers';
 import { hasFiltersAppliedSelector } from '@/app/selectors/mega-filter-selectors';
 import { searchTermSelector } from '@/app/selectors/list-details-selectors';
 import { currentTaskListTasksStatusSelector } from '@/app/selectors/task-list-selectors';
+import { originConfig } from '@/app/components/task/StandardTaskItem/helpers';
+import { userPreferenceStatusSelector } from '@/app/selectors/user-preference-selectors';
 
 export interface Props extends Segment {
   name: string;
@@ -20,6 +22,7 @@ export interface Props extends Segment {
   bgColor: boolean;
   groupTaskCounts: boolean;
   tasksCount: boolean;
+  origin: string;
 }
 
 function VListGroup(
@@ -32,12 +35,13 @@ function VListGroup(
     groupTaskCounts,
     tasksCount,
     register,
+    origin,
   }: Props,
   ref: ForwardedRef<HTMLDivElement>,
 ) {
   const dispatch = useDispatch();
 
-  const taskListStatus = useSelector(currentTaskListTasksStatusSelector);
+  const taskListStatus = useSelector(userPreferenceStatusSelector);
 
   const moveGroup = useCallback(
     // @ts-ignore
@@ -49,6 +53,7 @@ function VListGroup(
   );
   const areFiltersApplied = useSelector(hasFiltersAppliedSelector);
   const searchValue = useSelector(searchTermSelector);
+  const enableTaskGroup = originConfig[origin]?.enableTaskGroup ?? false;
 
   const loadTasksForTaskGroup = useCallback(() => {
     const payload = {
@@ -63,24 +68,33 @@ function VListGroup(
   }, [dispatch, taskGroupIdentifier, taskListStatus]);
 
   return (
-    <Sc.VListGroup ref={ref} {...register} bgColor={bgColor}>
-      {/* @ts-ignore */}
-      <TasksGroup
-        isDefaultGroup={name === 'DEFAULT'}
-        taskGroupIdentifier={taskGroupIdentifier}
-        groupName={name}
-        groupTaskCounts={groupTaskCounts}
-        tasksCount={tasksCount}
-        areFiltersApplied={areFiltersApplied}
-        isSearchApplied={searchValue}
-        moveGroupUp={() => moveGroup(metadata.sameLevelIndex, 'up')}
-        moveGroupDown={() => moveGroup(metadata.sameLevelIndex, 'down')}
-        onTaskGroupRefresh={loadTasksForTaskGroup}
-        origin={TaskOrigin.LIST}
-        bgColor={bgColor}
-      >
-        {() => null}
-      </TasksGroup>
+    <Sc.VListGroup
+      ref={ref}
+      {...register}
+      bgColor={bgColor}
+      enableTaskGroup={enableTaskGroup}
+    >
+      {enableTaskGroup && (
+        <>
+          {/* @ts-ignore */}
+          <TasksGroup
+            isDefaultGroup={name === 'DEFAULT'}
+            taskGroupIdentifier={taskGroupIdentifier}
+            groupName={name}
+            groupTaskCounts={groupTaskCounts}
+            tasksCount={tasksCount}
+            areFiltersApplied={areFiltersApplied}
+            isSearchApplied={searchValue}
+            moveGroupUp={() => moveGroup(metadata.sameLevelIndex, 'up')}
+            moveGroupDown={() => moveGroup(metadata.sameLevelIndex, 'down')}
+            onTaskGroupRefresh={loadTasksForTaskGroup}
+            origin={origin}
+            bgColor={bgColor}
+          >
+            {() => null}
+          </TasksGroup>
+        </>
+      )}
     </Sc.VListGroup>
   );
 }

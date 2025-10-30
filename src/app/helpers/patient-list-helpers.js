@@ -47,6 +47,10 @@ export const PatientColumn = {
   EMAIL: 'email',
   MOBILE: 'phoneMobile',
   HOME: 'phoneHome',
+  LABELS: 'patientLabels',
+  SOURCE_EHR: 'sourceEhr',
+  EHR_LAST_SYNCED: 'sourceLastSyncDt',
+  EHR_STATUS: 'sourceStatus',
 };
 
 export const PatientHeaderColumn = {
@@ -59,6 +63,10 @@ export const PatientHeaderColumn = {
   EMAIL: 'EMAIL',
   MOBILE: 'MOBILE',
   HOME: 'HOME',
+  LABELS: 'LABELS',
+  SOURCE_EHR: 'SOURCE_EHR',
+  EHR_LAST_SYNCED: 'EHR_LAST_SYNCED',
+  EHR_STATUS: 'EHR_STATUS',
 };
 
 export const PATIENT_BASE_COLUMN_CONFIG = {
@@ -71,16 +79,26 @@ export const PATIENT_BASE_COLUMN_CONFIG = {
   [PatientHeaderColumn.EMAIL]: true,
   [PatientHeaderColumn.MOBILE]: true,
   [PatientHeaderColumn.HOME]: true,
+  [PatientHeaderColumn.LABELS]: true,
+  [PatientHeaderColumn.SOURCE_EHR]: true,
+  [PatientHeaderColumn.EHR_LAST_SYNCED]: true,
+  [PatientHeaderColumn.EHR_STATUS]: true,
 };
 
-export const patientHeaderMap = {
-  PATIENT: "PATIENT",
-  AGE: "AGE",
-  MOBILE: "MOBILE",
-  HOME: "HOME",
-  GENDER_IDENTITY: "GENDER",
-  GENDER_AT_BIRTH: "SEX",
-  UNIQUE_ID: "MRN",
-  DOB: "DOB",
-  EMAIL: "EMAIL"
+export const patientHeaderMap = (uniqueIdentifierLabel) => {
+  return {
+    PATIENT: 'PATIENT',
+    AGE: 'AGE',
+    MOBILE: 'MOBILE',
+    HOME: 'HOME',
+    GENDER_IDENTITY: 'GENDER',
+    GENDER_AT_BIRTH: 'SEX',
+    UNIQUE_ID: uniqueIdentifierLabel,
+    DOB: 'DOB',
+    EMAIL: 'EMAIL',
+    LABELS: 'LABELS',
+    SOURCE_EHR: 'SOURCE EHR',
+    EHR_LAST_SYNCED: 'EHR LAST SYNCED',
+    EHR_STATUS: 'EHR STATUS',
+  };
 };

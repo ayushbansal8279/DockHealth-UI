@@ -4,10 +4,12 @@ import prop from 'ramda/src/prop';
 import { noop, showAlert } from 'helpers/utility-functions';
 import axios from './axios-heydoc';
 import { blobFileDownload } from '../helpers/blob-file-download';
+import { handleMixedResponse } from '../helpers/handle-mixed-response';
+import { withWorkspaceHeaders } from '../helpers/api-helpers';
 
-export function getOrganizationUsersAndUserGroups() {
+export function getOrganizationUsersAndUserGroups(workspaceIdentifier = null) {
   return axios
-    .get('user/findAllUsersByOrganizationId?includeGroups=true')
+    .get('user/findAllUsersByOrganizationId?includeGroups=true', withWorkspaceHeaders(workspaceIdentifier))
     .then((response) => response.data)
     .catch((error) => error?.response?.data);
 }
@@ -465,7 +467,10 @@ export function downloadUserInviteTemplate() {
     },
   })
     .then((response) => {
-        blobFileDownload(new Blob([response.data]), 'Bulk_Invite_User_Template.csv');
+      blobFileDownload(
+        new Blob([response.data]),
+        'Bulk_Invite_User_Template.csv',
+      );
     })
     .catch(noop);
 }
@@ -475,18 +480,13 @@ export function bulkInviteUser(fileData, additionalConfig = {}) {
   formData.append('file', fileData, encodeURIComponent(fileData.name));
 
   return axios
-    .post(`/organization/bulkInviteUsers`,  formData, {
+    .post(`/organization/bulkInviteUsers`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
       ...additionalConfig,
     })
-    .then((response) => {
-      if (Array.isArray(response.data) && response.data.length === 0) {
-        throw new Error('File upload failed. Please check the template and try again.');
-      }
-      return response.data;
-    })
+    .then((response) => handleMixedResponse(response))
     .catch((error) => {
       if (error.response && error.response.status === 413) {
         showAlert({
@@ -499,11 +499,17 @@ export function bulkInviteUser(fileData, additionalConfig = {}) {
           status: 'error',
           title: 'Error',
           text:
-            error?.response?.data?.errorMessage ?? 
+            error?.response?.data?.errorMessage ??
             error?.message ??
             'Invitation could not be sent, please try again later.',
         });
       }
       throw error;
     });
+}
+
+export function updateOrganizationWorkspaceLabel(workspaceLabel) {
+  return axios
+    .patch(`/organization`, { workspaceLabel })
+    .then(({ data }) => data);
 }

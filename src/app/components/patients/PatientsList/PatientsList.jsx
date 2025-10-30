@@ -1,7 +1,7 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useHistory, useLocation, useParams } from 'react-router-dom';
 import { ascend, compose, propOr, sortWith, toLower } from 'ramda';
 import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';
@@ -44,6 +44,7 @@ import {
   BulkContainer,
   Text,
   PatientCell,
+  Label,
 } from './styled';
 import { StyledDataGrid } from './DataGridStyles';
 import FullNameEditCell, {
@@ -71,6 +72,9 @@ import MultiDropdownEditCell from '../../common/DataGridEditCells/MultiDropDownE
 import NumberEditCell from '../../common/DataGridEditCells/NumberEditCell';
 import DateTimeEditCell from '../../common/DataGridEditCells/DateTimeEditCell';
 import CustomFieldLongTextEditor from '../../common/DataGridEditCells/CustomFieldLongTextEditor';
+import PatientListLabels from '../../common/PatientListLabels/PatientListLabels';
+import ReusableDataGrid from '../../custom-profile/CustomProfilesList/DataGrid/DataGrid';
+import { convertToSimpleString } from '@/app/helpers/markdown-helper';
 
 const renderColumnHeader = (props) => {
   const { colDef } = props;
@@ -128,8 +132,9 @@ const PatientsList = ({
   const [dataGridSortModel, setDataGridSortModel] = useState();
   const [pinnedColumns, setPinnedColumns] = useState({
     left: ['isSelected', 'patient'],
-    right: ['actions']
+    right: ['actions'],
   });
+  const [errors, setErrors] = useState([]);
 
   const selectedPatientsCount = patients?.filter((p) => p.isSelected).length;
   const patientsCount = patients?.length;
@@ -148,10 +153,12 @@ const PatientsList = ({
   const apiRef = useGridApiRef();
   const [rowModesModel, setRowModesModel] = useState({});
 
-  const pinnedColumnsStart = ["isSelected", "PATIENT"];
-  const pinnedColumnsEnd = ["actions"];
+  const pinnedColumnsStart = ['isSelected', 'PATIENT'];
+  const pinnedColumnsEnd = ['actions'];
 
   const [columnOrder, setColumnOrder] = useState([]);
+
+  const { workspaceIdentifier } = useParams();
 
   const genderIdentityOptions = useMemo(
     () =>
@@ -205,10 +212,14 @@ const PatientsList = ({
   useEffect(() => {
     if (patientsList?.listDetails?.listDisplayColumns) {
       const filteredOrder = patientsList.listDetails.listDisplayColumns.filter(
-        (col) => !pinnedColumnsStart.includes(col)
+        (col) => !pinnedColumnsStart.includes(col),
       );
 
-      setColumnOrder([...pinnedColumnsStart, ...filteredOrder, ...pinnedColumnsEnd]);
+      setColumnOrder([
+        ...pinnedColumnsStart,
+        ...filteredOrder,
+        ...pinnedColumnsEnd,
+      ]);
     }
   }, [patientsList]);
 
@@ -305,7 +316,9 @@ const PatientsList = ({
     async (newRow, oldRow) => {
       try {
         const customColumnIdentifiers = columnsDataSorted
-          .filter((column) => column.targetType === 'PATIENT' && column.isChecked)
+          .filter(
+            (column) => column.targetType === 'PATIENT' && column.isChecked,
+          )
           .map((column) => column.identifier);
 
         const updatedMetaData = [...(oldRow.patientMetaData || [])];
@@ -313,17 +326,22 @@ const PatientsList = ({
         customColumnIdentifiers.forEach((identifier) => {
           if (newRow[identifier] !== undefined) {
             const index = updatedMetaData.findIndex(
-              (meta) => meta.customFieldIdentifier === identifier
+              (meta) => meta.customFieldIdentifier === identifier,
             );
 
             if (index !== -1) {
               updatedMetaData[index].value = newRow[identifier];
               if (typeof newRow[identifier] === 'object') {
-                updatedMetaData[index].values = updatedMetaData[index].value.values;
+                updatedMetaData[index].values =
+                  updatedMetaData[index].value.values;
                 delete updatedMetaData[index].value;
               }
             } else {
-              if (typeof newRow[identifier] === 'object' && newRow[identifier] !== null && 'values' in newRow[identifier]) {
+              if (
+                typeof newRow[identifier] === 'object' &&
+                newRow[identifier] !== null &&
+                'values' in newRow[identifier]
+              ) {
                 updatedMetaData.push({
                   customFieldIdentifier: identifier,
                   values: newRow[identifier].values,
@@ -341,9 +359,8 @@ const PatientsList = ({
         newRow.patientMetaData = updatedMetaData;
 
         if (newRow.dob) {
-          newRow.dob = moment(newRow.dob).format('MM/DD/YYYY')
-        }
-        else {
+          newRow.dob = moment(newRow.dob).format('MM/DD/YYYY');
+        } else {
           newRow.dob = null;
         }
 
@@ -403,6 +420,7 @@ const PatientsList = ({
                   from: pathname,
                 },
               });
+              sessionStorage.setItem('navigation-from', pathname);
             } else {
               history.push({
                 pathname: `/core/patient/${patientIdentifier}`,
@@ -410,14 +428,15 @@ const PatientsList = ({
                   from: pathname,
                 },
               });
+              sessionStorage.setItem('navigation-from', pathname);
             }
           }}
           className="patient-cell"
         >
           <Tooltip placement="top" title={`${row.lastName}, ${row.firstName}`}>
-            <Text width="180">
+            <Label width="180">
               {row.lastName}, {row.firstName}
-            </Text>
+            </Label>
           </Tooltip>
         </PatientCell>
       ),
@@ -431,7 +450,7 @@ const PatientsList = ({
     {
       field: 'mrn',
       headerName: uniqueIdentifierLabel.toUpperCase(),
-      // renderHeader: renderColumnHeader,
+      renderHeader: renderColumnHeader,
       width: 100,
       renderCell: ({ row }) => (
         <Tooltip placement="top" title={row.mrn}>
@@ -445,7 +464,8 @@ const PatientsList = ({
       headerName: 'DOB',
       renderHeader: renderColumnHeader,
       width: 150,
-      valueGetter: ({ value }) => value ? moment(value).format('MM/DD/YYYY') : '',
+      valueGetter: ({ value }) =>
+        value ? moment(value).format('MM/DD/YYYY') : '',
       valueSetter: ({ value, row }) => {
         const formattedDate = value ? moment(value).format('MM/DD/YYYY') : null;
         return { ...row, dob: formattedDate };
@@ -542,6 +562,50 @@ const PatientsList = ({
       preProcessEditCellProps: preProcessPhoneEditCellProps,
       renderEditCell: (params) => <PhoneEditCell {...params} />,
     },
+    {
+      field: 'patientLabels',
+      headerName: 'LABELS',
+      renderHeader: renderColumnHeader,
+      renderCell: (params) => (
+        <PatientListLabels
+          labels={params?.row?.patientLabels}
+          width={params?.colDef?.width || 140}
+        />
+      ),
+      width: 140,
+    },
+    {
+      field: 'sourceEhr',
+      headerName: 'SOURCE EHR',
+      renderHeader: renderColumnHeader,
+      renderCell: ({ row }) => (
+        <Tooltip placement="top" title={row.sourceEhr}>
+          <Text>{row.sourceEhr}</Text>
+        </Tooltip>
+      ),
+      width: 140,
+    },
+    {
+      field: 'sourceLastSyncDt',
+      headerName: 'EHR LAST SYNCED',
+      renderHeader: renderColumnHeader,
+      renderCell: (params) => {
+        const date = params.value;
+        return <span>{date ? moment(date).format('MM/DD/YYYY') : ''}</span>;
+      },
+      width: 140,
+    },
+    {
+      field: 'sourceStatus',
+      headerName: 'EHR STATUS',
+      renderHeader: renderColumnHeader,
+      renderCell: ({ row }) => (
+        <Tooltip placement="top" title={row.sourceStatus}>
+          <Text>{row.sourceStatus}</Text>
+        </Tooltip>
+      ),
+      width: 140,
+    },
   ];
 
   function confirmSave(id) {
@@ -562,23 +626,46 @@ const PatientsList = ({
     );
   }
 
-  const getRenderEditCell = (fieldType, options = [], name) => {
+  const getRenderEditCell = (column) => {
+    const { fieldType, options, name } = column;
     switch (fieldType) {
       case 'PICK_LIST':
-        return (params) => <DropDownEditCell {...params} options={options} name={name} />;
+        return (params) => (
+          <DropDownEditCell {...params} options={options} name={name} />
+        );
       case 'MULTI_SELECT':
-        return (params) => <MultiDropdownEditCell {...params} options={options} name={name} />;
+        return (params) => (
+          <MultiDropdownEditCell {...params} options={options} name={name} />
+        );
       case 'DATE':
         return (params) => <DateTimeEditCell {...params} />;
       case 'LONG_TEXT':
-        return (params) => <CustomFieldLongTextEditor {...params} name={name} />;
+        return (params) => (
+          <CustomFieldLongTextEditor {...params} name={name} />
+        );
       case 'TEXT':
       case 'HYPERLINK':
-        return (params) => <TextEditCell {...params} name={name} />;
+        return (params) => (
+          <TextEditCell
+            {...params}
+            name={name}
+            column={column}
+            errors={errors}
+            setErrors={setErrors}
+          />
+        );
       case 'BOOLEAN':
         return (params) => <BooleanEditCell {...params} name={name} />;
       case 'NUMBER':
-        return (params) => <NumberEditCell {...params} name={name} />;
+        return (params) => (
+          <NumberEditCell
+            {...params}
+            name={name}
+            column={column}
+            errors={errors}
+            setErrors={setErrors}
+          />
+        );
       default:
         return null;
     }
@@ -619,9 +706,16 @@ const PatientsList = ({
       if (isInEditMode) {
         return [
           <GridActionsCellItem
-            icon={<SaveIcon sx={{ color: palette.lightBlue }} />}
+            icon={
+              <SaveIcon
+                sx={{
+                  color: errors.length > 0 ? palette.grey : palette.lightBlue,
+                }}
+              />
+            }
             label="Save"
             onClick={handleSaveClick(id)}
+            disabled={errors.length > 0}
           />,
           <GridActionsCellItem
             icon={<CloseIcon sx={{ color: palette.unknownGrey1 }} />}
@@ -661,7 +755,7 @@ const PatientsList = ({
           renderCell: (params) => {
             const { row } = params;
             if (column.fieldType === 'HYPERLINK') {
-              const link = row[column.identifier]
+              const link = row[column.identifier];
               return (
                 <Tooltip placement="top" title={row[column.identifier]}>
                   <Link
@@ -682,19 +776,23 @@ const PatientsList = ({
               );
             }
             if (column.fieldType === 'DATE') {
-              return (<DateTimeEditCell {...params} readOnly />)
-            }
-            else {
+              return <DateTimeEditCell {...params} readOnly />;
+            } else {
               let displayValue = row[column.identifier];
 
               if (column.fieldType === 'MULTI_SELECT') {
                 if (typeof displayValue === 'object' && displayValue !== null) {
-                  displayValue = row[column.identifier].value
+                  displayValue = row[column.identifier].value;
                 }
-              }
-              else if (column.fieldType === 'PICK_LIST') {
-                const selectedOption = column.options?.find(option => option.identifier === displayValue);
-                displayValue = selectedOption ? selectedOption.name : displayValue;
+              } else if (column.fieldType === 'PICK_LIST') {
+                const selectedOption = column.options?.find(
+                  (option) => option.identifier === displayValue,
+                );
+                displayValue = selectedOption
+                  ? selectedOption.name
+                  : displayValue;
+              } else if (column.fieldType === 'LONG_TEXT') {
+                displayValue = convertToSimpleString(displayValue);
               }
 
               return (
@@ -705,7 +803,7 @@ const PatientsList = ({
             }
           },
           editable: true,
-          renderEditCell: getRenderEditCell(column.fieldType, column.options, column.name),
+          renderEditCell: getRenderEditCell(column),
           width: getColumnWidth(column.fieldType, column),
           sortComparator: (v1, v2, parameters1, parameters2) => {
             const { api } = parameters2;
@@ -759,29 +857,31 @@ const PatientsList = ({
       setDataGridSortModel(
         defaultSortAvailable
           ? [
-            {
-              field: defaultSortField,
-              sort: defaultSortOrder,
-            },
-          ]
+              {
+                field: defaultSortField,
+                sort: defaultSortOrder,
+              },
+            ]
           : undefined,
       );
     }
   }, [columns, dataGridSortModel]);
+
+  const patientHeaders = patientHeaderMap(uniqueIdentifierLabel.toUpperCase());
 
   const orderedColumns = columnOrder
     ?.map((field) =>
       columns.find(
         (col) =>
           col.field?.toUpperCase() === field?.toUpperCase() ||
-        col.headerName === (patientHeaderMap[field] || field || ''),
-      )
+          col.headerName === (patientHeaders[field] || field || ''),
+      ),
     )
     .filter(Boolean);
 
   const pinnedColumnsAtEnd = pinnedColumnsEnd
     ?.map((field) =>
-      columns.find((col) => col.field === field || col.headerName === field)
+      columns.find((col) => col.field === field || col.headerName === field),
     )
     .filter(Boolean);
 
@@ -799,13 +899,19 @@ const PatientsList = ({
       newOrder.splice(targetIndex, 0, movedColumn);
 
       const setup = newOrder.filter(
-        (item) => !pinnedColumnsStart.includes(item) && !pinnedColumnsEnd.includes(item)
+        (item) =>
+          !pinnedColumnsStart.includes(item) &&
+          !pinnedColumnsEnd.includes(item),
       );
 
-      dispatch(PatientsActions.updatePatientsListPreferences({
-        patientListIdentifier: patientsList?.listDetails?.patientListIdentifier,
-        setup: {listDisplayColumns: setup}
-      }))
+      dispatch(
+        PatientsActions.updatePatientsListPreferences({
+          patientListIdentifier:
+            patientsList?.listDetails?.patientListIdentifier,
+          setup: { listDisplayColumns: setup },
+          workspaceIdentifier,
+        }),
+      );
 
       return newOrder;
     });
@@ -820,43 +926,34 @@ const PatientsList = ({
       ) : (
         <>
           {patients?.length > 0 && formattedPatients ? (
-            <Grid container xs={12} item justifyContent="center" >
-              <Grid item xs={12} xl={11} md={12} lg={11} >
-                <NonEmptyListTable listLength={patients?.length ?? 0}>
-                  <StyledDataGrid
-                    apiRef={apiRef}
-                    getRowId={(row) => row.patientIdentifier}
-                    columns={orderedColumns}
-                    editMode="row"
-                    rows={formattedPatients}
-                    headerHeight={45}
-                    getRowHeight={() => 'auto'}
-                    hideFooterSelectedRowCount
-                    disableColumnMenu
-                    disableSelectionOnClick
-                    showColumnRightBorder
-                    showCellRightBorder
-                    rowModesModel={rowModesModel}
-                    onRowModesModelChange={handleRowModesModelChange}
-                    onRowEditStop={handleRowEditStop}
-                    onSortModelChange={handleSortChange}
-                    processRowUpdate={processRowUpdate}
-                    sortModel={
-                      dataGridSortModel &&
-                        columns.some(
-                          (column) =>
-                            column?.field === dataGridSortModel[0]?.field,
-                        )
-                        ? dataGridSortModel
-                        : undefined
-                    }
-                    pinnedColumns={pinnedColumns}
-                    onPinnedColumnsChange={handlePinnedColumnsChange}
-                    onColumnOrderChange={handleColumnOrderChange}
-                  />
-                </NonEmptyListTable>
-              </Grid>
-            </Grid>
+            <NonEmptyListTable listLength={patients?.length ?? 0}>
+              <ReusableDataGrid
+                columns={orderedColumns}
+                rows={formattedPatients}
+                apiRef={apiRef}
+                getRowId={(row) => row.patientIdentifier}
+                headerHeight={45}
+                rowHeight={70}
+                editMode="row"
+                rowModesModel={rowModesModel}
+                onRowModesModelChange={handleRowModesModelChange}
+                onRowEditStop={handleRowEditStop}
+                onSortModelChange={handleSortChange}
+                processRowUpdate={processRowUpdate}
+                sortModel={
+                  dataGridSortModel &&
+                  columns.some(
+                    (column) => column?.field === dataGridSortModel[0]?.field,
+                  )
+                    ? dataGridSortModel
+                    : undefined
+                }
+                pinnedColumns={pinnedColumns}
+                onPinnedColumnsChange={handlePinnedColumnsChange}
+                onColumnOrderChange={handleColumnOrderChange}
+                hideFooterSelectedRowCount
+              />
+            </NonEmptyListTable>
           ) : (
             <>
               {!isDynamicPatientList && (

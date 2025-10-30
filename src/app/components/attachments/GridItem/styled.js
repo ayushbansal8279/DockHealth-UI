@@ -43,13 +43,15 @@ export const DetailsContainer = styled.div`
 
 export const FileNameText = styled.p`
   display: block;
-  height: 40px;
+  height : 40px;
   width: 100%;
   margin-bottom: 0;
   font-size: ${fontSizes.smallPlus};
   font-weight: ${fontWeights.bold};
   font-family: inherit;
   color: inherit;
+  word-break: break-word;
+  white-space: normal;
 `;
 
 export const CreatedText = styled.p`
@@ -71,4 +73,10 @@ export const OptionsContainer = styled.div`
   bottom: 4px;
   right: 4px;
   color: ${palette.coolGrey2};
+`;
+
+export const AttachmentStatusMessage = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
 `;

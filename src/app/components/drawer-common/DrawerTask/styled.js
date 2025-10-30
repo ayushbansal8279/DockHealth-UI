@@ -12,7 +12,19 @@ export const Container = styled.div`
   padding: 0 ${spacing.regular};
   cursor: pointer;
   border: 1px solid ${palette.coolGrey3};
-  background: ${palette.white};
+  background: ${({ isDragActive }) =>
+    isDragActive ? palette.brightBlueWithAlpha : palette.white};
+
+  ${({ isDraggedOver, hoverBorder }) =>
+    isDraggedOver
+      ? hoverBorder
+        ? `
+        border-top: 3px solid ${palette.azureBlue};
+        `
+        : `
+        border-bottom: 3px solid ${palette.azureBlue};
+        `
+      : ''}
 
   &:last-child {
     margin-bottom: 0;
@@ -104,4 +116,5 @@ export const DragHandleContainer = styled.div`
   width: 12px;
   transform: translateY(-50%);
   padding-right: 6px;
+  cursor: ${({ isDragging }) => (isDragging ? `grabbing` : `grab`)};
 `;

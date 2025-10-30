@@ -60,6 +60,15 @@ import {
   NumericalBadgeContainer,
   TaskCount,
 } from './styled';
+import {
+  DndContext,
+  DragOverlay,
+  MouseSensor,
+  TouchSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
+import { DropDirectionContext } from '@/app/context-api/DropDirectionContext';
 
 const DashboardTasksGroup = ({
   dashboardTasksGroup,
@@ -94,7 +103,6 @@ const DashboardTasksGroup = ({
     tasks: dashboardTasks,
   } = dashboardTasksGroup;
   const { userIdentifier } = currentUser;
-
   const lastCreatedTaskId = useSelector(
     dashboardLastCreatedTaskIdentifierSelector,
   );
@@ -109,6 +117,9 @@ const DashboardTasksGroup = ({
   const quickAddTaskInputReference = useRef(null);
   const parentContainerReference = useRef(null);
   const dispatch = useDispatch();
+  const dropDirectionRef = useRef(null);
+  const sensors = useSensors(useSensor(MouseSensor), useSensor(TouchSensor));
+  const [activeId, setActiveId] = useState(null);
 
   const currentTaskLength = dashboardTasks?.length || 0;
   const previousTaskLength = usePrevious(currentTaskLength) || 0;
@@ -127,6 +138,50 @@ const DashboardTasksGroup = ({
 
   const isGroupSelected = useSelector(
     isTaskItemsSelectedSelector(tasksIdentifiers),
+  );
+
+  const handleDragStart = (event) => {
+    showClearSortFiltersModal();
+    setActiveId(event?.active?.id);
+  };
+
+  const onDragEnd = useCallback(
+    (event) => {
+      const { active, over } = event;
+      if (!isSortApplied) {
+        if (over) {
+          const sourceIndex = tasks?.findIndex((id) => id === active?.id);
+          const destinationIndex = tasks?.findIndex((id) => id === over?.id);
+          const newTaskIdentifiers = [...tasks];
+
+          newTaskIdentifiers.splice(
+            dropDirectionRef?.current === 'top'
+              ? 0
+              : sourceIndex <= destinationIndex
+              ? destinationIndex
+              : destinationIndex + 1,
+            0,
+            newTaskIdentifiers.splice(sourceIndex, 1)[0],
+          );
+
+          setNewTasks(newTaskIdentifiers);
+          setActiveId(null);
+          const newTasksOrder = newTaskIdentifiers.map(
+            (taskIdentifier) => taskIdentifier,
+          );
+          dispatch(
+            reorderDashboardTasks(
+              groupType,
+              taskGroupIdentifier,
+              newTasksOrder,
+            ),
+          );
+        } else {
+          openModal('HomeScreenDragDrop');
+        }
+      }
+    },
+    [dispatch, tasks, isSortApplied],
   );
 
   const handleGroupSelect = useCallback(() => {
@@ -246,7 +301,7 @@ const DashboardTasksGroup = ({
     <DashboardTasksGroupContainer
       ref={parentContainerReference}
       backgroundColor={backgroundColor}
-      height={150 + tasks?.length * 40}
+      $height={150 + tasks?.length * 40}
     >
       <StickyContainer left={24} decreaseWidth={2 * 24}>
         {showHeader && (
@@ -336,100 +391,46 @@ const DashboardTasksGroup = ({
               groupHasMultipleAssignees={groupHasMultipleAssignees}
               origin={TaskOrigin.DASHBOARD}
             />
-            <DragDropContext
-              onBeforeDragStart={showClearSortFiltersModal}
-              onDragEnd={({ destination, source }) => {
-                if (!isSortApplied) {
-                  if (destination) {
-                    const { index: destinationIndex } = destination;
-                    const { index: sourceIndex } = source;
-                    const newTaskIdentifiers = [...tasks];
-                    newTaskIdentifiers.splice(
-                      destinationIndex,
-                      0,
-                      newTaskIdentifiers.splice(sourceIndex, 1)[0],
-                    );
-
-                    setNewTasks(newTaskIdentifiers);
-
-                    const newTasksOrder = newTaskIdentifiers.map(
-                      (taskIdentifier) => taskIdentifier,
-                    );
-                    dispatch(
-                      reorderDashboardTasks(
-                        groupType,
-                        taskGroupIdentifier,
-                        newTasksOrder,
-                      ),
-                    );
-                  } else {
-                    openModal('HomeScreenDragDrop');
-                  }
-                }
-              }}
-            >
-              <Droppable droppableId={groupName} key={groupName}>
-                {(providedDroppable) => {
-                  return (
-                    <DroppableBox
-                      ref={providedDroppable.innerRef}
-                      {...providedDroppable.droppableProps}
-                    >
-                      {tasks &&
-                        tasks.map((task, index) => (
-                          <Draggable
-                            key={task?.taskIdentifier || task}
-                            draggableId={String(task?.taskIdentifier || task)}
-                            index={index}
-                            isDragDisabled={isDragAndDropDisabled}
-                          >
-                            {(draggableProvided, { isDragging }) => (
-                              <div
-                                ref={draggableProvided.innerRef}
-                                {...draggableProvided.draggableProps}
-                              >
-                                <DashboardTaskItemContainer>
-                                  <TaskItem
-                                    parentContainerReference={
-                                      parentContainerReference
-                                    }
-                                    newlyCreated={
-                                      (task?.taskIdentifier || task) ===
-                                      lastCreatedTaskId
-                                    }
-                                    pageBackground={
-                                      backgroundColor
-                                        ? palette.aliceBlue
-                                        : palette.white
-                                    }
-                                    taskItemIdentifier={task}
-                                    isCompletedGroup={isCompletedGroup}
-                                    isDragging={isDragging}
-                                    dragHandleProps={
-                                      draggableProvided.dragHandleProps
-                                    }
-                                    isDraggable={!isDragAndDropDisabled}
-                                    onTaskUpdate={handleUpdateTask}
-                                    updateWorkflowStatus={updateWorkflowStatus}
-                                    multipleAssigneesContext={
-                                      groupHasMultipleAssignees
-                                    }
-                                    subtasksDisabled
-                                    isDashboardTask
-                                    iconColorActive={iconColorActive}
-                                    origin={TaskOrigin.DASHBOARD}
-                                  />
-                                </DashboardTaskItemContainer>
-                              </div>
-                            )}
-                          </Draggable>
-                        ))}
-                      {providedDroppable.placeholder}
-                    </DroppableBox>
-                  );
-                }}
-              </Droppable>
-            </DragDropContext>
+            <DropDirectionContext.Provider value={dropDirectionRef}>
+              <DndContext
+                onDragStart={handleDragStart}
+                onDragEnd={onDragEnd}
+                sensors={sensors}
+              >
+                {tasks &&
+                  tasks.map((task, index) => (
+                    <DashboardTaskItemContainer key={task}>
+                      <TaskItem
+                        parentContainerReference={parentContainerReference}
+                        newlyCreated={
+                          (task?.taskIdentifier || task) === lastCreatedTaskId
+                        }
+                        pageBackground={
+                          backgroundColor ? palette.aliceBlue : palette.white
+                        }
+                        taskItemIdentifier={task}
+                        isCompletedGroup={isCompletedGroup}
+                        isDraggable={!isDragAndDropDisabled}
+                        onTaskUpdate={handleUpdateTask}
+                        updateWorkflowStatus={updateWorkflowStatus}
+                        multipleAssigneesContext={groupHasMultipleAssignees}
+                        subtasksDisabled
+                        isDashboardTask
+                        iconColorActive={iconColorActive}
+                        origin={TaskOrigin.DASHBOARD}
+                        isTopLevelTaskOrWorkflowHeader
+                        isFirstTaskOfWorkflow={index === 0}
+                        isFirstTaskOfGroup={index === 0}
+                      />
+                    </DashboardTaskItemContainer>
+                  ))}
+                <DragOverlay>
+                  {activeId ? (
+                    <Placeholder taskItemIdentifier={activeId} />
+                  ) : null}
+                </DragOverlay>
+              </DndContext>
+            </DropDirectionContext.Provider>
             {!isLoadingMore && dashboardTasksGroup?.hasMore && (
               <StickyContainer left={24} decreaseWidth={2 * 24}>
                 <LoadMoreSection>
@@ -460,6 +461,17 @@ const DashboardTasksGroup = ({
         </Collapse>
       )}
     </DashboardTasksGroupContainer>
+  );
+};
+
+const Placeholder = ({ taskItemIdentifier }) => {
+  return (
+    // @ts-ignore
+    <TaskItem
+      taskItemIdentifier={taskItemIdentifier}
+      isDragPreview
+      origin={TaskOrigin.DASHBOARD}
+    />
   );
 };
 

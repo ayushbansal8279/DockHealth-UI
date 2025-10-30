@@ -24,6 +24,8 @@ const FilterDateInput = ({
   setStartDate,
   start,
   due,
+  singleDate,
+  setSingleDateInput,
 }) => {
   const inputReference = useRef(null);
   const [isCalendarOpen, openCalendar, closeCalendar] = useBoolean(false);
@@ -49,7 +51,10 @@ const FilterDateInput = ({
     if (start) {
       setStartDate(inputValueIso);
     }
-  }, [inputValue]);
+    if (singleDate) {
+      setSingleDateInput(inputValueIso);
+    }
+  }, [due, start, date, inputValueIso]);
 
   const hasError = useMemo(() => {
     if (minDate) {

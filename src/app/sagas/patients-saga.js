@@ -23,9 +23,10 @@ import {
 } from 'helpers/patient-list-helpers';
 import AlertMessages from 'alert/AlertMessages';
 
-function* getPatientsLists() {
+function* getPatientsLists({ payload }) {
   try {
-    const lists = yield call(PatientsApi.getPatientsLists);
+    const { workspaceIdentifier } = payload || {};
+    const lists = yield call(PatientsApi.getPatientsLists, workspaceIdentifier);
 
     const defaultPatientsLists = lists.filter(
       ({ listType }) => listType === PatientsListType.DEFAULT,
@@ -87,11 +88,12 @@ function* updatePatientsList({ identifier, dataToUpdate }) {
 
 function* updatePatientsListPreferences({ payload }) {
   try {
-    const { setup, patientListIdentifier } = payload;
+    const { setup, patientListIdentifier, workspaceIdentifier } = payload;
     yield call(
       PatientsApi.updatePatientListPreferences,
       setup,
       patientListIdentifier,
+      workspaceIdentifier
     );
     yield put({
       type: ActionTypes.UPDATE_PATIENTS_LIST_PREFERENCES_SUCCESS,
@@ -192,7 +194,7 @@ function* getCurrentPatientsListDetails() {
   }
 }
 
-function* fetchCurrentPatients() {
+function* fetchCurrentPatients(workspaceIdentifier) {
   try {
     const currentPatientsListIdentifier = yield select(
       currentPatientsListIdentifierSelector,
@@ -219,17 +221,20 @@ function* fetchCurrentPatients() {
         PatientsApi.getPatientsByFilterCriteria,
         currentPatientsListIdentifier,
         selectedFilters,
+        workspaceIdentifier
       );
     } else if (searchTerm) {
       patients = yield call(
         PatientsApi.getPatientsByCriteria,
         searchTerm,
         currentPatientsListIdentifier,
+        workspaceIdentifier
       );
     } else {
       patients = yield call(
         PatientsApi.getPatientsByListId,
         currentPatientsListIdentifier,
+        workspaceIdentifier
       );
     }
 
@@ -242,9 +247,10 @@ function* fetchCurrentPatients() {
   }
 }
 
-function* getCurrentPatients() {
+function* getCurrentPatients({ payload }) {
   try {
-    const patients = yield call(fetchCurrentPatients);
+    const { workspaceIdentifier } = payload || {};
+    const patients = yield call(fetchCurrentPatients, workspaceIdentifier);
     if (patients) {
       yield put({
         type: ActionTypes.GET_CURRENT_PATIENTS_SUCCESS,
@@ -270,19 +276,19 @@ function* silentlyGetCurrentPatients() {
   }
 }
 
-function* searchPatients({ searchTerm }) {
+function* searchPatients({ searchTerm, workspaceIdentifier }) {
   yield put({
     type: ActionTypes.CHANGE_PATIENTS_SEARCH_TERM,
     searchTerm,
   });
   yield put({
     type: ActionTypes.GET_CURRENT_PATIENTS,
-    searchTerm,
+    payload: { workspaceIdentifier },
   });
 }
 
-function* filtersChange() {
-  yield put(PatientsActions.getCurrentPatients());
+function* filtersChange({ workspaceIdentifier }) {
+  yield put(PatientsActions.getCurrentPatients(workspaceIdentifier));
   // yield put(PatientsActions.getCurrentPatientsListFilterOptions());
 }
 

@@ -13,6 +13,7 @@ import isNil from 'ramda/src/isNil';
 import unless from 'ramda/src/unless';
 
 import palette from 'styles/palette';
+import { transformMetaData } from './date-intent-helpers';
 
 export const TaskStatus = {
   ALL: '',
@@ -122,6 +123,17 @@ export function getLabelsIconTooltipTitle(labels) {
   return toolTipMultiLabelDetails;
 }
 
+export function getBorderColumnLabelTooltip(labels) {
+  let toolTipMultiLabelDetails = '';
+
+  toolTipMultiLabelDetails = labels?.map((label, index) =>
+    index === labels.length - 1
+      ? `${label?.labelName}`
+      : `${label?.labelName}, `,
+  );
+  return toolTipMultiLabelDetails;
+}
+
 export function getAttachmentsIconTooltipTitle(attachments) {
   let attachmentLabelDetails = '';
   if (attachments.length === 1) {
@@ -218,6 +230,7 @@ export const TaskItemColumn = {
   LABELS: 'LABELS',
   FILES: 'FILES',
   PRIORITY: 'PRIORITY',
+  PROFILE: 'PROFILE',
 };
 
 export const PatientTaskItemColumn = {
@@ -296,6 +309,7 @@ export const TaskItemColumnWidth = {
   [TaskItemColumn.SUBTASKS_COUNT]: 60,
   [TaskItemColumn.WORKFLOW_STATUS]: 120,
   [TaskItemColumn.PRIORITY]: 120,
+  [TaskItemColumn.PROFILE]: 164,
 };
 
 export const TASK_ITEM_BASE_COLUMN_CONFIG = {
@@ -326,6 +340,7 @@ export const TASK_ITEM_BASE_COLUMN_CONFIG = {
   [TaskItemColumn.LIST_NAME]: false,
   [TaskItemColumn.ORG_NAME]: false,
   [TaskItemColumn.PRIORITY]: true,
+  [TaskItemColumn.PROFILE]: true,
 };
 
 export const SHOW_COLUMNS_CONFIG = {
@@ -354,6 +369,7 @@ export const SHOW_COLUMNS_CONFIG = {
   [PatientTaskItemColumn.MRN]: true,
   [PatientTaskItemColumn.HOME_PHONE]: true,
   [PatientTaskItemColumn.MOBILE_PHONE]: true,
+  [TaskItemColumn.PROFILE]: true,
 };
 
 export const TASK_ITEM_SORT_METHODS = {
@@ -657,3 +673,80 @@ export function findIncompleteRequiredFields(customFields, task, taskBundle) {
 
   return incompleteCustomFields;
 }
+
+export const validateAssigneeCompleteDisabled = (
+  selectedOrganization,
+  selectedTask,
+  currentUser,
+  isListAdmin,
+  isCreator,
+) => {
+  const nonAssigneeCompleteDisabledItem =
+    selectedOrganization?.themeSettings?.find(
+      ({ name }) => name === 'list.tasks.non-assignee.complete.enabled',
+    ) || {};
+  return (
+    nonAssigneeCompleteDisabledItem &&
+    nonAssigneeCompleteDisabledItem?.value === 'false' &&
+    selectedTask?.assignedToUsers?.filter((user) =>
+      user.itemType === 'USER'
+        ? user.identifier === currentUser.identifier
+        : user?.users?.filter((u) => u.identifier === currentUser.identifier)
+            .length !== 0,
+    ).length === 0 &&
+    !isListAdmin &&
+    !isCreator
+  );
+};
+
+export const transformTaskMetadata = (data) => {
+  if (!data?.taskMetaData || !Array.isArray(data.taskMetaData)) return data;
+
+  return {
+    ...data,
+    taskMetaData: transformMetaData(data.taskMetaData),
+  };
+};
+
+export const getWorkflowTaskGroup = (taskItem) => {
+  if (!taskItem?.taskGroups?.length) return null;
+
+  const filteredGroups = taskItem.taskGroups.filter(
+    (group) => group?.groupType === 'TASK_BUNDLE',
+  );
+
+  return filteredGroups.length > 0 ? filteredGroups[0] : null;
+};
+
+export const getDNDMetaData = ({
+  isTopLevelTaskOrWorkflowHeader,
+  isSubtaskOfTask,
+  isWorkflowTask,
+  isWorkflowSubtask,
+  task,
+  taskGroupIdentifier,
+}) => {
+  let level = null;
+
+  if (isTopLevelTaskOrWorkflowHeader) {
+    level = 'top';
+  } else if (isSubtaskOfTask) {
+    level = 'subtask';
+  } else if (isWorkflowTask) {
+    level = 'workflowTask';
+  } else if (isWorkflowSubtask) {
+    level = 'workflowSubtask';
+  }
+
+  return {
+    level,
+    parentId: isWorkflowTask
+      ? (getWorkflowTaskGroup(task)?.taskGroupIdentifier ||
+          task?.taskTemplateIdentifier) ??
+        null
+      : isSubtaskOfTask || isWorkflowSubtask
+      ? task?.parentTaskIdentifier ?? null
+      : null,
+    groupId: isTopLevelTaskOrWorkflowHeader ? taskGroupIdentifier : null,
+  };
+};

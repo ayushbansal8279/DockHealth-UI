@@ -10,12 +10,18 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { string, object, array } from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import partial from 'ramda/src/partial';
-import { Box, Grid, IconButton } from '@mui/material';
+import { Box, Dialog, Grid, IconButton } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useDispatch } from 'react-redux';
 import { showGlobalErrorAlert } from 'alert/actions';
+import AlertMessages from 'alert/AlertMessages';
 import * as CustomFieldsApi from 'api/custom-fields-api';
-import { FieldType, FIELD_TYPE_OPTIONS } from 'helpers/field-type-helpers';
+import {
+  FieldType,
+  FIELD_TYPE_OPTIONS,
+  REGEX_OPTIONS,
+  DisplayOption,
+} from 'helpers/field-type-helpers';
 import { CATEGORY_OPTIONS, Category } from 'helpers/patient-details-helpers';
 import { CATEGORY_OPTIONS as TASK_CATEGORY_OPTIONS } from 'helpers/task-details-helpers';
 import FormInput from 'components/common/Input/FormInput';
@@ -35,16 +41,34 @@ import {
   FieldForm,
   FormScrollingContainer,
   InfoText,
+  ErrorMessage,
 } from './styled';
 import AdditionalOptions from './AdditionalOptions';
-import { getAdditionalOptions } from './helpers';
+import { getAdditionalOptions, regexValidator } from './helpers';
 import {
   SelectOptionColor,
   SelectParentDropdown,
   SelectParentOption,
 } from '../../customModals/styled';
+import { CancelButton, ConfirmButton } from '../ModalButton/ModalButtons';
+import ImportDataModal from '../ImportDataModal/ImportDataModal';
+import {
+  downloadCustomFieldImportTemplate,
+  uploadCustomFieldOptions,
+} from '@/app/api/custom-fields-api';
+import { showGlobalAlert } from '@/app/alert/actions';
 
 const REQUIRED_MESSAGE = 'This field is required';
+
+const filterAdditionalOptionsByFieldType = (
+  additionalOptions,
+  fieldTypeValue,
+) => {
+  return additionalOptions.filter((option) => {
+    if (option.key !== DisplayOption.SINGLE_SELECT) return true;
+    return fieldTypeValue === FieldType.RELATIONSHIP;
+  });
+};
 
 const EditCustomFieldModal = ({
   closeModal,
@@ -55,6 +79,8 @@ const EditCustomFieldModal = ({
   taskListIdentifier,
   profileTypeIdentifier,
   fetchUserCustomFields,
+  fieldCategoryDisabled = false,
+  workspaceIdentifier,
 }) => {
   const [displayOptionsState, setDisplayOptionsState] = useState({
     displayOptions: customField?.displayOptions || [],
@@ -65,18 +91,24 @@ const EditCustomFieldModal = ({
       let updatedOptions = displayOptionsState?.displayOptions || [];
 
       if (value) {
-        const isRequired = displayOption.endsWith('_REQUIRED')
+        const isRequired = displayOption.endsWith('_REQUIRED');
         if (displayOption === 'READONLY' || displayOption === 'HIDDEN') {
-          updatedOptions = updatedOptions.filter((item) => !item.endsWith('_REQUIRED'));
+          updatedOptions = updatedOptions.filter(
+            (item) => !item.endsWith('_REQUIRED'),
+          );
         }
         if (isRequired) {
-          updatedOptions = updatedOptions.filter((item) => item !== 'READONLY' && item !== 'HIDDEN');
+          updatedOptions = updatedOptions.filter(
+            (item) => item !== 'READONLY' && item !== 'HIDDEN',
+          );
         }
         if (!updatedOptions.includes(displayOption)) {
           updatedOptions.push(displayOption);
         }
       } else {
-        updatedOptions = updatedOptions.filter((item) => item !== displayOption);
+        updatedOptions = updatedOptions.filter(
+          (item) => item !== displayOption,
+        );
       }
       setDisplayOptionsState((s) => ({
         ...s,
@@ -86,7 +118,7 @@ const EditCustomFieldModal = ({
     [displayOptionsState],
   );
 
-  const ADDITIONAL_OPTIONS = useMemo(
+  const availableAdditionalOptions = useMemo(
     () =>
       getAdditionalOptions({
         type,
@@ -106,13 +138,21 @@ const EditCustomFieldModal = ({
       name: string().required(REQUIRED_MESSAGE),
       placeholder: string().nullable(),
       fieldType: string().required(REQUIRED_MESSAGE),
+      validationRegex: regexValidator(),
       options: array()
         .of(
           object().shape({
-            name: string().required(REQUIRED_MESSAGE),
+            name: string()
+              .required(REQUIRED_MESSAGE)
+              .max(255, 'Option name must be at most 255 characters'),
           }),
         )
         .nullable(),
+      relatedProfileType: string().when('fieldType', {
+        is: FieldType.RELATIONSHIP,
+        then: (schema) => schema.required(REQUIRED_MESSAGE),
+        otherwise: (schema) => schema.nullable(),
+      }),
 
       ...(type === 'PROFILE'
         ? {}
@@ -126,7 +166,14 @@ const EditCustomFieldModal = ({
     defaultValues: useMemo(() => {
       const baseCustomField = isCreatingNewField
         ? {
-            fieldCategoryType: type === 'PATIENT' ? Category.OTHER_INFO : '',
+            fieldCategoryType:
+              type === 'PATIENT'
+                ? Category.OTHER_INFO
+                : type === 'PROVIDER'
+                ? 'PROVIDER_OTHER'
+                : type === 'GLOBAL'
+                ? Category.GLOBAL
+                : '',
           }
         : {
             ...customField,
@@ -142,10 +189,17 @@ const EditCustomFieldModal = ({
       return baseCustomField;
     }, [customField, isCreatingNewField, type]),
   });
-  const { register, unregister, handleSubmit, setValue, watch, errors } =
-    formMethods;
+  const {
+    register,
+    unregister,
+    handleSubmit,
+    setValue,
+    watch,
+    formState: { errors },
+  } = formMethods;
 
   const [customFields, setCustomFields] = useState([]);
+  const [importPopupOpen, setImportPopupOpen] = useState(false);
 
   useEffect(() => {
     getAllTaskListCustomFields(taskListIdentifier ? 'ALL' : null).then(
@@ -169,10 +223,20 @@ const EditCustomFieldModal = ({
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  const fieldNameValue = watch('name'); // Track the "Field label name" input check here for changes
+
+  const fieldNameValue = watch('name');
   const fieldTypeValue = watch('fieldType');
   const optionsValue = watch('options');
   const numberOfOptions = optionsValue?.length;
+
+  const filteredAdditionalOptions = useMemo(
+    () =>
+      filterAdditionalOptionsByFieldType(
+        availableAdditionalOptions,
+        fieldTypeValue,
+      ),
+    [availableAdditionalOptions, fieldTypeValue],
+  );
 
   useEffect(() => {
     if (numberOfOptions) {
@@ -186,27 +250,22 @@ const EditCustomFieldModal = ({
         fieldTypeValue === FieldType.DROPDOWN ||
         fieldTypeValue === FieldType.DROPDOWN_MULTI
       ) {
-        setValue('options', [
-          {
-            identifier: optionsValue?.length || 0,
-            name: '',
-          },
-        ]);
+        setValue(
+          'options',
+          [
+            {
+              identifier: optionsValue?.length || 0,
+              name: '',
+            },
+          ],
+          { shouldValidate: false },
+        );
       } else {
-        setValue('options', null);
+        setValue('options', null, { shouldValidate: false });
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fieldTypeValue]);
-
-  const handleOptionValueChange = (optionId, event) => {
-    setValue(
-      'options',
-      optionsValue.map((o) =>
-        o.identifier === optionId ? { ...o, name: event.target.value } : o,
-      ),
-    );
-  };
 
   // eslint-disable-next-line unicorn/consistent-function-scoping,sonarjs/no-identical-functions
   const handleOptionColorChange = (optionId) => (event) => {
@@ -262,14 +321,34 @@ const EditCustomFieldModal = ({
 
   useEffect(() => {
     async function fetchData() {
-      // You can await here
-      const response = await getAllProfileTypes();
-      const profileTypes = response.map(({ identifier, name }) => ({
-        label: name,
-        value: identifier,
-      }));
-      setProfileTypeOptions(profileTypes);
+      try {
+        const [allProfileTypes, predefinedProfileTypes] = await Promise.all([
+          getAllProfileTypes(),
+          getAllProfileTypes('PREDEFINED'),
+        ]);
+
+        const combinedProfileTypes = [
+          ...allProfileTypes,
+          ...predefinedProfileTypes,
+        ];
+
+        const sortedProfileTypes = combinedProfileTypes.sort((a, b) =>
+          a.name.localeCompare(b.name),
+        );
+
+        const profileTypeOptions = sortedProfileTypes.map(
+          ({ identifier, name }) => ({
+            label: name,
+            value: identifier,
+          }),
+        );
+
+        setProfileTypeOptions(profileTypeOptions);
+      } catch (err) {
+        console.error('Error fetching profile types:', err);
+      }
     }
+
     fetchData();
   }, []);
 
@@ -294,6 +373,7 @@ const EditCustomFieldModal = ({
       delete updatedField.createdDateTime;
       delete updatedField.identifier;
       delete updatedField.sortIndex;
+      delete updatedField.validationRegexSelector;
 
       ProfileTypeFieldsApi.editProfileFieldType(data.identifier, updatedField)
         .then(() => {
@@ -302,12 +382,12 @@ const EditCustomFieldModal = ({
             relatedProfileTypeName: selectedProfileType,
           });
           fetchUserCustomFields();
+          dispatch(showGlobalAlert(AlertMessages.UPDATED));
           setIsSaving(false);
           closeModal();
         })
         .catch((error) => {
           console.error(error);
-          dispatch(showGlobalErrorAlert());
           setIsSaving(false);
         });
     } else {
@@ -324,7 +404,13 @@ const EditCustomFieldModal = ({
           identifier: data.relatedProfileType,
         },
       };
-      CustomFieldsApi.updateCustomField(updatedField, type, taskListIdentifier)
+      delete updatedField.validationRegexSelector;
+      CustomFieldsApi.updateCustomField(
+        updatedField,
+        type,
+        taskListIdentifier,
+        workspaceIdentifier,
+      )
         .then(() => {
           onUpdated({ ...updatedField, selectedProfileType });
           setIsSaving(false);
@@ -355,11 +441,11 @@ const EditCustomFieldModal = ({
       })
         .then((addedField) => {
           onAdded({ ...addedField, selectedProfileType });
+          dispatch(showGlobalAlert(AlertMessages.CREATED));
           setIsSaving(false);
           closeModal();
         })
         .catch(() => {
-          dispatch(showGlobalErrorAlert());
           setIsSaving(false);
         });
     } else {
@@ -378,6 +464,7 @@ const EditCustomFieldModal = ({
         },
         type,
         taskListIdentifier,
+        workspaceIdentifier,
       )
         .then((addedField) => {
           onAdded(addedField);
@@ -391,6 +478,84 @@ const EditCustomFieldModal = ({
     }
   };
 
+  const handleImportModalClose = () => {
+    setImportPopupOpen(false);
+    fetchUserCustomFields();
+    closeModal();
+  };
+
+  const inputStyle = {
+    '& .MuiOutlinedInput-root': {
+      borderRadius: '10px',
+      '&.Mui-focused fieldset': {
+        borderColor: 'black',
+        borderWidth: '1px',
+      },
+    },
+    '& .MuiInputLabel-root.Mui-focused': {
+      color: 'grey',
+    },
+  };
+
+  const getDuplicateOptionIndices = (options = []) => {
+    const nameToIndices = {};
+
+    options.forEach((option, index) => {
+      const key = option.name?.trim().toLowerCase();
+      if (!key) return;
+      if (!nameToIndices[key]) nameToIndices[key] = [];
+      nameToIndices[key].push(index);
+    });
+
+    return Object.values(nameToIndices)
+      .filter((arr) => arr.length > 1)
+      .flat();
+  };
+
+  const setDuplicateOptionErrors = (options = []) => {
+    const duplicates = getDuplicateOptionIndices(options);
+
+    options.forEach((_, index) =>
+      formMethods.clearErrors(`options.${index}.name`),
+    );
+
+    duplicates.forEach((i) => {
+      formMethods.setError(`options.${i}.name`, {
+        type: 'manual',
+        message: 'Duplicate option name',
+      });
+    });
+
+    return duplicates.length > 0;
+  };
+
+  useEffect(() => {
+    const subscription = formMethods.watch((value, { name }) => {
+      if (!name?.startsWith('options')) return;
+
+      setDuplicateOptionErrors(value?.options ?? []);
+    });
+
+    return () => subscription.unsubscribe();
+  }, [formMethods]);
+
+  const withDuplicateValidation = (handler) => (data) => {
+    const hasDuplicates = setDuplicateOptionErrors(data.options);
+    if (hasDuplicates) return;
+
+    handler(data);
+  };
+
+  const submitHandler = customField?.identifier
+    ? handleEditSubmit
+    : handleAddSubmit;
+
+  const finalSubmitHandler =
+    fieldTypeValue === FieldType.DROPDOWN ||
+    fieldTypeValue === FieldType.DROPDOWN_MULTI
+      ? withDuplicateValidation(submitHandler)
+      : submitHandler;
+
   return (
     <AddPatientFieldModalWrapper>
       <CloseIconButton onClick={closeModal} size="small" color="secondary">
@@ -403,16 +568,14 @@ const EditCustomFieldModal = ({
           <FiledTypeStep onSelect={partial(setValue, ['fieldType'])} />
         ) : (
           <FormProvider {...formMethods}>
-            <FieldForm
-              onSubmit={handleSubmit(
-                customField?.identifier ? handleEditSubmit : handleAddSubmit,
-              )}
-            >
+            <FieldForm onSubmit={handleSubmit(finalSubmitHandler)}>
               <FormScrollingContainer>
                 <Box overflow="hidden">
                   <Grid container spacing={2}>
-                    <Grid item xs={12}>
+                    <Grid item mt={1} xs={15}>
                       <FormInput
+                        variant="outlined"
+                        sx={inputStyle}
                         required
                         autoFocus
                         name="name"
@@ -423,25 +586,58 @@ const EditCustomFieldModal = ({
                       fieldTypeValue !== FieldType.HYPERLINK && (
                         <Grid item xs={12}>
                           <FormInput
+                            variant="outlined"
+                            sx={inputStyle}
                             name="placeholder"
                             label="Field label placeholder"
                           />
                         </Grid>
                       )}
+                    {(fieldTypeValue === FieldType.TEXT ||
+                      fieldTypeValue === FieldType.NUMBER) && (
+                      <Grid item xs={12} style={{ display: 'flex', gap: 10 }}>
+                        <FormSelect
+                          variant="outlined"
+                          name="validationRegexSelector"
+                          label="Data validation"
+                          options={REGEX_OPTIONS}
+                        />
+                        <FormInput
+                          variant="outlined"
+                          sx={inputStyle}
+                          name="validationRegex"
+                          label="Field validation regex"
+                        />
+                      </Grid>
+                    )}
+                    {(fieldTypeValue === FieldType.TEXT ||
+                      fieldTypeValue === FieldType.NUMBER) && (
+                      <Grid item xs={12}>
+                        <FormInput
+                          variant="outlined"
+                          sx={inputStyle}
+                          name="validationRegexDescription"
+                          label="Validation description"
+                        />
+                      </Grid>
+                    )}
                     <Grid item xs={6}>
                       <FormSelect
                         readOnly={!!customField}
                         required
-                        label="Field type"
+                        variant="outlined"
                         name="fieldType"
+                        label="Field type"
                         options={FIELD_TYPE_OPTIONS}
                       />
                     </Grid>
                     {type === 'PATIENT' && (
                       <Grid item xs={6}>
                         <FormSelect
+                          variant="outlined"
                           required
-                          label="Category"
+                          disabled={fieldCategoryDisabled}
+                          label="Field Category Type"
                           name="fieldCategoryType"
                           options={CATEGORY_OPTIONS}
                         />
@@ -464,7 +660,7 @@ const EditCustomFieldModal = ({
                       <Grid item xs={6}>
                         <FormSelect
                           required
-                          label="Profile Type"
+                          label="Object Type"
                           name="relatedProfileType"
                           options={profileTypeOptions}
                           onChange={(event) =>
@@ -497,11 +693,7 @@ const EditCustomFieldModal = ({
                               <Input
                                 required
                                 label={`Option ${index + 1}`}
-                                name={`options[${identifier}]`}
-                                value={name}
-                                onChange={partial(handleOptionValueChange, [
-                                  identifier,
-                                ])}
+                                {...register(`options.${index}.name`)}
                                 error={errors?.options?.[index]?.name?.message}
                                 endAdornment={
                                   optionsValue.length > 1 ? (
@@ -527,7 +719,7 @@ const EditCustomFieldModal = ({
                                   <SelectOptionColor
                                     required
                                     name={`selectOptionColor[${identifier}]`}
-                                    value={color}
+                                    value={color || ''}
                                     onChange={handleOptionColorChange(
                                       identifier,
                                     )}
@@ -549,7 +741,7 @@ const EditCustomFieldModal = ({
                                   <SelectParentDropdown
                                     label="Parent Dropdown"
                                     name={`selectParentDropdown[${identifier}]`}
-                                    value={linkedCustomFieldIdentifier}
+                                    value={linkedCustomFieldIdentifier || ''}
                                     onChange={handleParentDropdownChange(
                                       identifier,
                                     )}
@@ -566,7 +758,9 @@ const EditCustomFieldModal = ({
                                   <SelectParentOption
                                     label="Parent Option"
                                     name={`selectParentOption[${identifier}]`}
-                                    value={linkedCustomFieldOptionIdentifier}
+                                    value={
+                                      linkedCustomFieldOptionIdentifier || ''
+                                    }
                                     onChange={handleParentOptionChange(
                                       identifier,
                                     )}
@@ -596,29 +790,64 @@ const EditCustomFieldModal = ({
                         >
                           <span style={{ color: 'orange' }}>+</span> Add option
                         </Button>
+                        {!isCreatingNewField && (
+                          <Button
+                            variant="text"
+                            width="auto"
+                            onClick={() => setImportPopupOpen(true)}
+                          >
+                            <span style={{ color: 'orange' }}>+</span> Add
+                            options using File
+                          </Button>
+                        )}
                       </>
                     )}
                   </Grid>
-                  {(ADDITIONAL_OPTIONS?.length > 0) && (
-                      <Box m={2}>
-                        <AdditionalOptions options={ADDITIONAL_OPTIONS} />
-                      </Box>
-                    )}
+                  {filteredAdditionalOptions?.length > 0 && (
+                    <Box m={2}>
+                      <AdditionalOptions options={filteredAdditionalOptions} />
+                    </Box>
+                  )}
                 </Box>
               </FormScrollingContainer>
               <Box m={2} />
               <Grid container justifyContent="flex-end">
-                <Button width="auto" variant="secondary" onClick={closeModal}>
+                <CancelButton
+                  width="auto"
+                  variant="secondary"
+                  onClick={closeModal}
+                >
                   Cancel
-                </Button>
+                </CancelButton>
                 <Box m={1} />
-                <Button type="submit" width="auto" disabled={isSaving}>
+                <ConfirmButton type="submit" width="auto" disabled={isSaving}>
                   Save custom field
-                </Button>
+                </ConfirmButton>
               </Grid>
             </FieldForm>
           </FormProvider>
         )}
+        <Dialog
+          open={importPopupOpen}
+          onClose={() => setImportPopupOpen(false)}
+          style={{ zIndex: 5001 }}
+          PaperProps={{
+            elevation: 0,
+            square: true,
+            style: {},
+          }}
+        >
+          <ImportDataModal
+            closeModal={handleImportModalClose}
+            downloadTemplate={downloadCustomFieldImportTemplate}
+            step={1}
+            label="option"
+            uploadFunction={uploadCustomFieldOptions}
+            identifier={customField?.identifier}
+            type={type}
+            importFileTypeHint={"Drag & drop your CSV/Excel file here"}
+          />
+        </Dialog>
       </Box>
     </AddPatientFieldModalWrapper>
   );

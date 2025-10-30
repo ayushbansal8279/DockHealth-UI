@@ -16,10 +16,12 @@ import {
   addQuickFilterOptionSelector,
   selectedQuickFilterSelector,
 } from 'selectors/mega-filter-selectors';
-import { userProfileSelector } from 'selectors/user-selectors';
+import {
+  selectedUserOrganizationSelector,
+  userProfileSelector,
+} from 'selectors/user-selectors';
 import {
   currentTaskListSelector,
-  currentTaskListTasksStatusSelector,
   taskListMembersSelector,
 } from 'selectors/task-list-selectors';
 import { openModal } from 'modal/actions';
@@ -60,8 +62,12 @@ import {
   MainHeaderContainer,
   HeaderSearchContainer,
 } from './styled';
-import { ListPageContext } from '../ListDetailsView';
+import { TaskViewContext } from '@/app/context-api/task-view-context';
 import InboxTips from '@/app/components/tasklist/list-toolbar-buttons/InboxTips/InboxTips';
+import { useIsWorkspaceScopedList } from '@/app/hooks/useIsWorkspaceScopedList';
+import { getWorkspaceByIdentifier } from '@/app/api/workspace-api';
+import { getWorkspaceTitle } from '../../workspaces/workspace-title-helpers';
+import { userPreferenceStatusSelector } from '@/app/selectors/user-preference-selectors';
 
 const ListDetailsHeader = (props) => {
   const {
@@ -71,12 +77,10 @@ const ListDetailsHeader = (props) => {
     searchValue,
     onSearchChange,
     additionalOptions,
-    clearFilter,
-    setClearFilter,
     calendarView = false,
   } = props;
   const dispatch = useDispatch();
-  const currentTasksStatus = useSelector(currentTaskListTasksStatusSelector);
+  const currentTasksStatus = useSelector(userPreferenceStatusSelector);
   const listUsers = useSelector(taskListMembersSelector);
   const taskList = useSelector(currentTaskListSelector);
   const {
@@ -86,7 +90,10 @@ const ListDetailsHeader = (props) => {
     taskListIdentifier,
     color,
     restrictCustomization,
+    organizationIdentifier,
   } = taskList || {};
+  const { workspaceIdentifier } = useIsWorkspaceScopedList();
+
   const megaFilter = useSelector(megaFilterSelector);
   const { filters, selectedFilters } = megaFilter || {};
   const currentUser = useSelector(userProfileSelector);
@@ -110,10 +117,28 @@ const ListDetailsHeader = (props) => {
     handleAddNewGroup,
     handleScrollToAddGroupName,
     showShadow,
-  } = useContext(ListPageContext);
+  } = useContext(TaskViewContext);
   const [isListOpen, openList] = useState(false);
   const [focused, setFocused, unsetFocused] = useBoolean(false);
   const [shownUsers, hiddenUsers] = splitAt(4, sortedUsers);
+
+  const currentOrganization = useSelector(selectedUserOrganizationSelector);
+  const [workspace, setWorkspace] = useState();
+
+  const isWorkspaceList =
+    organizationIdentifier !== currentOrganization?.organizationIdentifier;
+
+  useEffect(() => {
+    if (isWorkspaceList && organizationIdentifier) {
+      getWorkspaceByIdentifier(organizationIdentifier).then(setWorkspace);
+    }
+  }, [organizationIdentifier, isWorkspaceList]);
+
+  const listTitle = getWorkspaceTitle({
+    isWorkspaceScoped: isWorkspaceList,
+    workspace,
+    titleText: listName,
+  });
 
   const handleFilterOpen = () => {
     dispatch(getCurrentTaskListFilterOptions());
@@ -229,7 +254,7 @@ const ListDetailsHeader = (props) => {
       <LayoutHeader horizontalSticky>
         {taskList && (
           <LayoutHeader.Title
-            title={listName}
+            title={listTitle}
             description={listDescription}
             colorIndicator={color}
           >
@@ -289,6 +314,7 @@ const ListDetailsHeader = (props) => {
                               'ALL',
                             ),
                           ),
+                        workspaceIdentifier: workspaceIdentifier,
                       }),
                     )
                   }
@@ -323,8 +349,6 @@ const ListDetailsHeader = (props) => {
           onQuickFilterUpdate={handleQuickFilterUpdate}
           onQuickFilterDelete={handleQuickFilterDelete}
           isDefaultDateFilterApplied={isDefaultDateFilterApplied}
-          clearFilter={clearFilter}
-          setClearFilter={setClearFilter}
           showFilterCount
         />
         {restrictions?.editSettings !== DISABLED &&
@@ -349,6 +373,7 @@ const ListDetailsHeader = (props) => {
             focused={focused}
             setFocused={setFocused}
             unsetFocused={unsetFocused}
+            needEnterToSearch
           />
         )}
         <Box mx={0.5} />
@@ -361,6 +386,7 @@ const ListDetailsHeader = (props) => {
             focused={focused}
             setFocused={setFocused}
             unsetFocused={unsetFocused}
+            needEnterToSearch
           />
         </HeaderSearchContainer>
       )}

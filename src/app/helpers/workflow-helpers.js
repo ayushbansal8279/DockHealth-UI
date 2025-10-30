@@ -15,6 +15,8 @@ export const TaskTemplateItemColumn = {
   CREATED_BY: 'CREATED_BY',
   CREATED: 'CREATED',
   PERMISSIONS: 'PERMISSIONS',
+  SHARED_WITH: 'SHARED_WITH',
+  SHARED_BY: 'SHARED_BY',
 };
 
 export function checkIfTemplateWorkflow(workflow) {
@@ -26,6 +28,8 @@ export const TASK_TEMPLATE_ITEM_BASE_COLUMN_CONFIG = {
   [TaskTemplateItemColumn.CREATED_BY]: true,
   [TaskTemplateItemColumn.CREATED]: true,
   [TaskTemplateItemColumn.PERMISSIONS]: true,
+  [TaskTemplateItemColumn.SHARED_WITH]: true,
+  [TaskTemplateItemColumn.SHARED_BY]: true,
 };
 
 export const TEMPLATE_TASK_ITEM_SORT_METHODS = {

@@ -31,6 +31,7 @@ import {
   UPDATE_SUBSCRIPTION_PLAN_SUCCESS,
   UPDATE_SUBSCRIPTION_PLAN,
   UPDATE_SUBSCRIPTION_PLAN_FAILURE,
+  UPDATE_ORGANIZATION_WORKSPACE_LABEL_SUCCESS,
 } from 'actions/action-types';
 
 const initialState = {
@@ -109,6 +110,17 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         organization: action.payload,
+        isFetching: false,
+        requestError: null,
+      };
+    }
+
+    case UPDATE_ORGANIZATION_WORKSPACE_LABEL_SUCCESS: {
+      const { workspaceLabel } = action;
+
+      return {
+        ...state,
+        organization: { ...state.organization, workspaceLabel },
         isFetching: false,
         requestError: null,
       };

@@ -10,7 +10,11 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import { showGlobalErrorAlert } from 'alert/actions';
 import * as CustomFieldsApi from 'api/custom-fields-api';
-import { FieldType, FieldTypeLabel } from 'helpers/field-type-helpers';
+import {
+  DisplayOption,
+  FieldType,
+  FieldTypeLabel,
+} from 'helpers/field-type-helpers';
 import { CategoryLabel } from 'helpers/task-details-helpers';
 import { openModal } from 'modal/actions';
 import AddButton from 'components/common/AddButton/AddButton';
@@ -37,7 +41,11 @@ import {
   CenterBox,
 } from './styled';
 
-const TaskCustomFieldsView = ({ taskListIdentifier, editable = false }) => {
+const TaskCustomFieldsView = ({
+  taskListIdentifier,
+  editable = false,
+  fullWidth,
+}) => {
   const dispatch = useDispatch();
   const [customFields, setCustomFields] = useState(null);
   const [isFetching, setIsFetching] = useState(true);
@@ -210,7 +218,7 @@ const TaskCustomFieldsView = ({ taskListIdentifier, editable = false }) => {
             <>
               <div
                 style={{
-                  maxHeight: '400px',
+                  ...(fullWidth ? {} : { maxHeight: '400px' }),
                   overflowY: 'auto',
                   position: 'relative',
                   paddingLeft: '12px',
@@ -266,9 +274,13 @@ const TaskCustomFieldsView = ({ taskListIdentifier, editable = false }) => {
                               <CustomFieldCell>
                                 <CustomFieldText>
                                   {field.fieldType === FieldType.RELATIONSHIP
-                                    ? `${FieldTypeLabel[field.fieldType]} - ${
-                                        field.relatedProfileType?.name
-                                      }`
+                                    ? `${FieldTypeLabel[field.fieldType]} (${
+                                        field.displayOptions?.includes(
+                                          DisplayOption.SINGLE_SELECT,
+                                        )
+                                          ? 'Single'
+                                          : 'Multiple'
+                                      }) - ${field.relatedProfileType?.name}`
                                     : FieldTypeLabel[field.fieldType]}
                                 </CustomFieldText>
                               </CustomFieldCell>

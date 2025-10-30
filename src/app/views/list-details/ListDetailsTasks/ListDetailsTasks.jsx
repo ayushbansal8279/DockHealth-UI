@@ -58,7 +58,7 @@ import { hasFiltersAppliedSelector } from 'selectors/mega-filter-selectors';
 import VirtualTaskList from 'views/list-details/VirtualTaskList/VirtualTaskList';
 import { Typography } from '@mui/material';
 import messages from '@/app/components/tasklist/list-toolbar-buttons/AddGroupNameButton/messages';
-import { ListPageContext } from '../ListDetailsView';
+import { TaskViewContext } from '@/app/context-api/task-view-context';
 import {
   TaskGroupsContainer,
   DroppablePlaceholder,
@@ -71,7 +71,6 @@ const ListDetailsTasks = ({
   updateWorkflowStatus,
   loadTasksForTaskGroup,
   setClearSearch,
-  setClearFilter,
 }) => {
   window.disabledVirtualTaskList = false;
   const isVirtualizedList = useIsVirtualizedList();
@@ -218,7 +217,7 @@ const ListDetailsTasks = ({
 
   const { bulkEditIsActive } = useContext(BulkEditContext);
   const { handleScroll, workflowPopoverOpen, patientPopoverOpen } =
-    useContext(ListPageContext);
+    useContext(TaskViewContext);
   const dragAndDropDisabled = bulkEditIsActive || !userSortingSupportEnabled;
 
   const isSortApplied = !!sort?.key && !!sort?.order;
@@ -231,7 +230,6 @@ const ListDetailsTasks = ({
           confirm: () => {
             if (isSortApplied) resetSort();
             if (isSearchApplied) setClearSearch(true);
-            if (areFiltersApplied) setClearFilter(true);
           },
           closeOnConfirm: true,
         }),
@@ -243,7 +241,6 @@ const ListDetailsTasks = ({
     isSearchApplied,
     isSortApplied,
     resetSort,
-    setClearFilter,
     setClearSearch,
   ]);
 
@@ -288,6 +285,7 @@ const ListDetailsTasks = ({
         <VirtualTaskList
           showClearSortFiltersModal={showClearSortFiltersModal}
           groupedTasks={groupedTasks}
+          origin={TaskOrigin.LIST}
         />
       </div>
     );

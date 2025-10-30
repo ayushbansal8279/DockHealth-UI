@@ -1,13 +1,16 @@
 import { Grid } from '@mui/material';
 import queryString from 'query-string';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import isNil from 'ramda/src/isNil';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useParams, useLocation, useHistory } from 'react-router-dom';
 import { USERS_SETTINGS_PATH } from 'routing/helpers/paths';
 import { useBoolean } from 'hooks/useBoolean';
 import { getCurrentUserGroupDetailsSelector } from 'selectors/user-groups-selectors';
-import { userProfileSelector } from 'selectors/user-selectors';
+import {
+  selectedUserOrganizationSelector,
+  userProfileSelector,
+} from 'selectors/user-selectors';
 import { getUserGroupIdentifierByUrlParameter } from 'helpers/user-groups-helper';
 import {
   checkIfUserIsOrganizationAdmin,
@@ -39,7 +42,21 @@ import {
   HeaderMessageTitle,
   HeaderMessageDescription,
   SearchInputWrapper,
+  TaskTemplateApplicatorContainer,
+  BulkEditSectionContainer,
+  ListContainer,
+  PageWrapper,
 } from './styled';
+import {
+  UserEditContext,
+  UserEditProvider,
+} from '@/app/context-api/user-edit-context';
+import TaskTemplateApplicator from '@/app/components/task-template/TaskTemplateApplicator/TaskTemplateApplicator';
+import BulkEditCreateTask from '../../components/user/BulkEditSection/BulkEditCreateTask';
+import BulkEditSection from '../../components/user/BulkEditSection/BulkEditSection';
+import * as UsersActions from 'actions/user-actions';
+import { getTaskListForUser } from '@/app/api/task-list-api';
+import ModalMessage from '@/app/modal/components/ModalMessage/ModalMessage';
 
 function UserGroupView() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -48,16 +65,32 @@ function UserGroupView() {
 
   const { groupIdentifier: groupIdentifierUrlParameter } = useParams();
   const history = useHistory();
+  const dispatch = useDispatch();
   const { search } = useLocation();
   const currentUser = useSelector(userProfileSelector);
   const { users, name } = useSelector(getCurrentUserGroupDetailsSelector) || {};
-  const dispatch = useDispatch();
+  const currentOrganization = useSelector(selectedUserOrganizationSelector);
 
   const groupIdentifier = getUserGroupIdentifierByUrlParameter(
     groupIdentifierUrlParameter,
   );
   const isOrganizationAdmin = checkIfUserIsOrganizationAdmin(currentUser);
   const isViewOnly = isUserViewOnly(currentUser);
+
+  const iconColorActiveItem =
+    currentOrganization?.themeSettings?.find(
+      ({ name }) => name === 'icon.active.color',
+    ) || {};
+
+  const userContext = useContext(UserEditContext);
+  const {
+    selectableUsers,
+    unselectAllUser,
+    selectedOptions,
+    selectedOptionsHandler,
+  } = userContext;
+  const { createTaskOption, createWorkflowOption } = selectedOptions;
+  const { turnOffAllOptions } = selectedOptionsHandler;
 
   useEffect(() => {
     dispatch(setCurrentUserGroup(groupIdentifier));
@@ -99,77 +132,144 @@ function UserGroupView() {
     );
   }, [dispatch, groupIdentifier]);
 
+  const handleTemplateSelect = useCallback(
+    (template) => {
+      const assignedEntities = selectableUsers
+        ?.filter((item) => item.isSelected)
+        .map((item) => item.identifier);
+      dispatch(
+        openModal('ListPicker', {
+          enableSelectingGroupStep: true,
+          fetchMethod: getTaskListForUser,
+          confirm: (listId, taskGroupIdentifier) =>
+            dispatch(
+              UsersActions.userBulkCreateWorkflow({
+                workflowIdentifier: template.identifier,
+                taskListIdentifier: listId,
+                assignedToUsers: assignedEntities,
+                taskGroupIdentifier,
+              }),
+            ),
+          renderDescription: () => (
+            <ModalMessage type="warning">
+              This action will fail if any selected user is not part of the
+              selected list. Please ensure all selected users are in the list.
+            </ModalMessage>
+          ),
+        }),
+      );
+
+      unselectAllUser();
+      turnOffAllOptions();
+    },
+    [dispatch, selectableUsers],
+  );
+
   return (
-    <ViewLayout header={<BasicLayoutHeader title={name} />}>
-      <Grid container justifyContent="center">
-        <PageContentHeader>
-          <Grid container wrap="nowrap">
-            <Grid
-              container
-              item
-              xs={6}
-              xl={6}
-              md={5}
-              lg={4}
-              justifyContent="flex-start"
-            >
-              {/* <SearchInputWrapper fullWidth={isSearchFocused || searchTerm}> */}
-              <SearchInput
-                value={searchTerm}
-                onValueChange={handleSearchTermChange}
-                onFocus={setSearchFocused}
-                onBlur={unsetSearchFocused}
-              />
-              {/* </SearchInputWrapper> */}
+    <>
+      <ViewLayout header={<BasicLayoutHeader title={name} />}>
+        <PageWrapper>
+          {/* <PageContentHeader>
+            <Grid container wrap="nowrap">
+              <Grid
+                container
+                item
+                xs={6}
+                xl={6}
+                md={5}
+                lg={4}
+                justifyContent="flex-start"
+              >
+                <SearchInput
+                  value={searchTerm}
+                  onValueChange={handleSearchTermChange}
+                  onFocus={setSearchFocused}
+                  onBlur={unsetSearchFocused}
+                />
+              </Grid>
+              {groupIdentifier && groupIdentifier !== 'ALL' && (
+                <AddEntitiesContainer>
+                  {isOrganizationAdmin && !isViewOnly && (
+                    <AddButton onClick={onEditUserGroup}>
+                      Manage User Group
+                    </AddButton>
+                  )}
+                </AddEntitiesContainer>
+              )}
             </Grid>
-            {groupIdentifier && groupIdentifier !== 'ALL' && (
-              <AddEntitiesContainer>
-                {isOrganizationAdmin && !isViewOnly && (
-                  <AddButton onClick={onEditUserGroup}>
-                    Manage User Group
-                  </AddButton>
-                )}
-              </AddEntitiesContainer>
-            )}
-          </Grid>
-        </PageContentHeader>
-        <Grid container xs={12} item justifyContent="center">
-          <Grid item xs={12} sm={12} md={8}>
-            <Spacing vertical={4} />
-            {isOrganizationAdmin && groupIdentifier === 'ALL' && (
-              <ManageUsersContainer>
-                <Grid item xs={12} sm={12} md={8}>
-                  <HeaderMessageContainer>
-                    <img alt="lightbulb" src={LightbulbBig} />
-                    <HeaderMessage>
-                      <HeaderMessageTitle>
-                        Manage people in the Subscription and Users section.
-                      </HeaderMessageTitle>
-                      <HeaderMessageDescription>
-                        Invite, remove, and change roles for people within your
-                        organization.
-                      </HeaderMessageDescription>
-                    </HeaderMessage>
-                  </HeaderMessageContainer>
-                </Grid>
-                <Grid item xs={12} sm={12} md={4}>
-                  <Link to={USERS_SETTINGS_PATH}>
-                    <Button fullWidth>Manage Users</Button>
-                  </Link>
-                </Grid>
-              </ManageUsersContainer>
-            )}
+          </PageContentHeader> */}
+          {groupIdentifier && groupIdentifier !== 'ALL' && (
+            <PageContentHeader>
+              <Grid container wrap="nowrap">
+                <AddEntitiesContainer>
+                  {isOrganizationAdmin && !isViewOnly && (
+                    <AddButton onClick={onEditUserGroup}>
+                      Manage User Group
+                    </AddButton>
+                  )}
+                </AddEntitiesContainer>
+              </Grid>
+            </PageContentHeader>
+          )}
+
+          {isOrganizationAdmin && groupIdentifier === 'ALL' && (
+            <ManageUsersContainer>
+              <Grid item xs={12} sm={12} md={8}>
+                <HeaderMessageContainer>
+                  <img alt="lightbulb" src={LightbulbBig} />
+                  <HeaderMessage>
+                    <HeaderMessageTitle>
+                      Manage people in the Subscription and Users section.
+                    </HeaderMessageTitle>
+                    <HeaderMessageDescription>
+                      Invite, remove, and change roles for people within your
+                      organization.
+                    </HeaderMessageDescription>
+                  </HeaderMessage>
+                </HeaderMessageContainer>
+              </Grid>
+              <Grid item xs={12} sm={12} md={4}>
+                <Link to={USERS_SETTINGS_PATH}>
+                  <Button fullWidth>Manage Users</Button>
+                </Link>
+              </Grid>
+            </ManageUsersContainer>
+          )}
+
+          <ListContainer>
             {isNil(users) ? (
               <ListLoaderContainer>
                 <ListSkeletonLoader header />
               </ListLoaderContainer>
             ) : (
+              // <UserEditProvider>
               <UsersList users={users} searchTerm={searchTerm} />
+              // </UserEditProvider>
             )}
-          </Grid>
-        </Grid>
-      </Grid>
-    </ViewLayout>
+          </ListContainer>
+        </PageWrapper>
+      </ViewLayout>
+      <BulkEditSection>
+        <BulkEditSectionContainer>
+          {createTaskOption && (
+            <BulkEditCreateTask
+              iconColorActive={iconColorActiveItem?.value}
+              context={UserEditContext}
+              createTaskAction={UsersActions.userBulkCreateTask}
+            />
+          )}
+          {createWorkflowOption && (
+            <TaskTemplateApplicatorContainer>
+              <TaskTemplateApplicator
+                onTemplateSelect={handleTemplateSelect}
+                bulkApply
+                iconColorActive={iconColorActiveItem?.value}
+              />
+            </TaskTemplateApplicatorContainer>
+          )}
+        </BulkEditSectionContainer>
+      </BulkEditSection>
+    </>
   );
 }
 

@@ -46,15 +46,10 @@ export const DecisionSelect = styled(Select)`
 `;
 
 export const ListItemLink = styled(Link)`
-  color: ${palette.mediumGrey};
+  color: ${palette.brightBlue};
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
-
-  &:hover {
-    color: ${palette.brightBlue};
-    text-decoration: underline;
-  }
 `;
 
 export const PublicInfoWrapper = styled.span`
@@ -162,7 +157,7 @@ export const BulkContainer = styled.div`
 
 export const AddPlaceholder = styled.div`
   color: ${palette.lightGrey};
-  opacity: 0;
+  opacity: ${({ isBorderColumnItem }) => (isBorderColumnItem ? 1 : 0)};
 
   &::first-letter {
     color: ${palette.lightGrey};
@@ -440,10 +435,33 @@ export const ClickablePatient = styled.span`
   overflow: hidden;
 `;
 
+export const DragPreviewWrapper = styled.div`
+  display: inline-flex;
+  align-items: center;
+  background-color: rgba(155, 217, 236, 0.6);
+  color: black;
+  padding: 6px 12px;
+  margin-left: ${({ shouldOffsetLeft }) => (shouldOffsetLeft ? '-50px' : '0')};
+  font-size: 13px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  position: relative;
+  width: 350px;
+  height: 34px;
+  cursor: grabbing;
+  user-select: none;
+`;
+
+export const DragPreviewText = styled.div`
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  font-weight: bold;
+`;
+
 export const StandardTaskItemContainer = styled.div`
   position: relative;
   background-color: ${(props) =>
-    props.isSelected
+    props.isSelected || props.isDragActive
       ? palette.brightBlueWithAlpha
       : // eslint-disable-next-line unicorn/no-nested-ternary
       props.hasEscalations
@@ -474,6 +492,19 @@ export const StandardTaskItemContainer = styled.div`
         `
       : ''};
 
+  ${({ isDraggedOver, hoverBorder }) =>
+    isDraggedOver
+      ? hoverBorder
+        ? `
+      border-top: 3px solid ${palette.azureBlue};
+      `
+        : `
+      border-bottom: 3px solid ${palette.azureBlue};
+      `
+      : ''}
+
+  // ${({ isDragActive }) => (isDragActive ? 'opacity: 0;' : 'opacity: 1;')}
+
   ${({ isTaskTemplate }) =>
     isTaskTemplate
       ? `
@@ -491,9 +522,13 @@ export const StandardTaskItemContainer = styled.div`
   `
       : ''}
 
-  ${({ isLastChild }) =>
+  ${({ isLastChild, isDraggedOver }) =>
     isLastChild
-      ? `
+      ? isDraggedOver
+        ? `
+      border-bottom: 3px solid ${palette.azureBlue};
+      `
+        : `
     border-bottom: 1px solid rgba(75, 179, 253, 1);
   `
       : ''}
@@ -571,6 +606,7 @@ export const StandardTaskThreeDots = styled(ThreeDots)`
   background-color: ${palette.coolGrey4};
   padding: 2px 1px 2px 2px;
   z-index: 12;
+  cursor: grab;
 `;
 
 export const StandardTaskItemPanel = styled.div`
@@ -683,7 +719,7 @@ export const SubtaskStylingLinkContainer = styled.div`
   height: calc(2px + 100%);
   width: 18px;
   position: absolute;
-  left: -19px;
+  left: ${({ hasCustomOffset }) => (hasCustomOffset ? '-48px' : '-19px')};
   top: -1px;
   display: flex;
   align-items: center;
@@ -715,7 +751,7 @@ export const SubtaskStylingLastLink = styled.div`
   border-radius: 0 0 0 4px;
   position: absolute;
   padding: 1px 0;
-  left: -19px;
+  left: ${({ hasCustomOffset }) => (hasCustomOffset ? '-48px' : '-19px')};
   top: -1px;
   z-index: 999;
   pointer-events: none;
@@ -784,25 +820,24 @@ export const ParentTaskContainer = styled.div`
       noMargin ? -1 : origin === 'PATIENT' || origin === 'GLOBAL' ? 2 : 0}px;
   }
   width: ${({ $width }) => ($width ? '100%' : '')};
-  padding-right: ${({ $width, $isVirtualSubtask, $isWorkflowTask }) =>
+  padding-right: ${({
+    $width,
+    $isVirtualSubtask,
+    $isWorkflowTask,
+    disableRightOffset,
+  }) =>
     $width
       ? $isVirtualSubtask
-        ? '15.5px'
+        ? disableRightOffset
+          ? '0px'
+          : '15.5px'
         : $isWorkflowTask
-        ? '66px'
+        ? disableRightOffset
+          ? '0px'
+          : '66px'
+        : disableRightOffset
+        ? '0px'
         : '66.5px'
-      : ''};
-
-  margin-bottom: ${({
-    origin,
-    isLastChild,
-    isNextTaskItemTypeBundle,
-    isAddingTask,
-  }) =>
-    origin === 'PATIENT'
-      ? isLastChild && !isNextTaskItemTypeBundle && !isAddingTask
-        ? '10px'
-        : ''
       : ''};
 `;
 
@@ -831,14 +866,9 @@ export const TaskItemDescriptionIndicators = styled.div`
 `;
 
 export const PatientLabel = styled.span`
-  color: ${palette.mediumGrey};
+  color: ${palette.brightBlue};
   font-weight: ${fontWeights.light};
   font-size: 0.65 rem;
-
-  &:hover {
-    color: ${palette.brightBlue};
-    text-decoration: underline;
-  }
 `;
 
 export const DisabledPatientLabel = styled(PatientLabel)`
@@ -899,7 +929,8 @@ export const PatientMRNAnchor = styled.a`
 `;
 
 export const TaskScrollVericleLine = styled.div`
-  background: #48bbb3;
+  background: ${({ highlightFirstColumnRightBorder }) =>
+    highlightFirstColumnRightBorder ? palette.azureBlue : '#48bbb3'};
   line-height: 36px;
   height: 100%;
   width: 2.5px;
@@ -941,7 +972,7 @@ export const ParentTaskLink = styled.div`
 `;
 
 export const AssigneeWrapper = styled.div`
-  opacity: 0;
+  opacity: ${({ isBorderColumnItem }) => (isBorderColumnItem ? 1 : 0)};
 `;
 
 export const AssigneeContainer = styled.div`
@@ -978,7 +1009,7 @@ width: 100%;
 `;
 export const LabelWrapper = styled.div`
   width: fit-content;
-  opacity: 0;
+  opacity: ${({ isBorderColumnItem }) => (isBorderColumnItem ? 1 : 0)};
 `;
 
 export const LabelContainer = styled.div`
@@ -990,7 +1021,8 @@ width: 100%;
 `;
 export const FilesWrapper = styled.div`
   width: fit-content;
-  opacity: ${({ attachments }) => (attachments ? 1 : 0)};
+  opacity: ${({ attachments, isBorderColumnItem }) =>
+    attachments || isBorderColumnItem ? 1 : 0};
 `;
 
 export const FilesContainer = styled.div`
@@ -1014,7 +1046,7 @@ width: 100%;
 `;
 export const DueDateWrapper = styled.div`
   width: fit-content;
-  opacity: 0;
+  opacity: ${({ isBorderColumnItem }) => (isBorderColumnItem ? 1 : 0)};
 `;
 
 export const DueDatesContainer = styled.div`
@@ -1038,7 +1070,8 @@ width: 100%;
 `;
 export const CommentsWrapper = styled.div`
   width: fit-content;
-  opacity: ${({ hasComments }) => (hasComments ? 1 : 0)};
+  opacity: ${({ hasComments, isBorderColumnItem }) =>
+    hasComments || isBorderColumnItem ? 1 : 0};
 `;
 
 export const CommentsContainer = styled.div`

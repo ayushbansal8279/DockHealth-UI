@@ -15,6 +15,7 @@ import { getCustomerTypeLabel } from 'helpers/customer-type-helper';
 import { capitalize } from 'helpers/capitalize';
 import { userProfileSelector } from 'selectors/user-selectors';
 import { createPatientListPath } from 'routing/helpers/paths';
+import pluralize from 'pluralize';
 import { CloseIconButton, CloseIcon } from '../styled';
 import {
   AddPatientModalWrapper,
@@ -36,6 +37,7 @@ import {
 const AddPatientToListModal = ({
   closeModal,
   patientsList,
+  workspaceIdentifier
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const [fetchingPatients, setFetchingPatients] = useState(false);
@@ -150,13 +152,13 @@ const AddPatientToListModal = ({
         <Spacing vertical={5} />
         <PatientsSection>
           <Column width={320}>
-            <Header>Add {customerTypeLabel}s</Header>
+            <Header>Add {pluralize(customerTypeLabel)}</Header>
             <Spacing vertical={4} />
-            <PatientList onSelect={handleSelectPatient} />
+            <PatientList onSelect={handleSelectPatient} workspaceIdentifier={workspaceIdentifier} />
           </Column>
           <Spacing horizontal={4} />
           <Column maxHeight={325}>
-            <Header>Included {customerTypeLabel}s in list</Header>
+            <Header>Included {pluralize(customerTypeLabel)} in list</Header>
             <Spacing vertical={4} />
             <SelectedPatientsWrapper>
               {!fetchingPatients ? (

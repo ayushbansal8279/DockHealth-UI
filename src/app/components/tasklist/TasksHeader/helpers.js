@@ -29,6 +29,7 @@ export const TaskHeaderColumn = {
   PATIENT_MRN: 'PATIENT_MRN',
   PATIENT_HOME_PHONE: 'PATIENT_HOME_PHONE',
   PATIENT_MOBILE_PHONE: 'PATIENT_MOBILE_PHONE',
+  PROFILE: 'PROFILE'
 };
 
 const { DISABLED } = SINGLE_TASK_RESTRICTIONS_OPTIONS;
@@ -59,6 +60,11 @@ export const getTaskHeaderOptions = (
       identifier: TaskHeaderColumn.PATIENT,
       label:
         customerTypeLabel.charAt(0).toUpperCase() + customerTypeLabel.slice(1),
+      draggable: true,
+    },
+    {
+      identifier: TaskHeaderColumn.PROFILE,
+      label: 'Object',
       draggable: true,
     },
     {
@@ -94,6 +100,7 @@ export const getTaskHeaderOptions = (
         .charAt(0)
         .toUpperCase()}${customerTypeLabel.slice(1)} Home Phone`,
       draggable: true,
+      sortDisabled: true,
     },
     {
       identifier: TaskHeaderColumn.PATIENT_MOBILE_PHONE,
@@ -101,6 +108,7 @@ export const getTaskHeaderOptions = (
         .charAt(0)
         .toUpperCase()}${customerTypeLabel.slice(1)} Mobile Phone`,
       draggable: true,
+      sortDisabled: true,
     },
     {
       identifier: TaskHeaderColumn.WORKFLOW_STATUS,

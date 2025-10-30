@@ -39,7 +39,7 @@ const PatientDrawer = ({ children, title, options, isOpen, onClose }) => {
         <UpgradePlanContainer>
           <UpgradePlan
             title="Custom Patient Fields"
-            description="Need to customize the patient profile? Create unlimited, personalized fields with Dock Premium."
+            description="Need to customize the patient object? Create unlimited, personalized fields with Dock Premium."
             iconImage={
               <img src={CustomFieldsIcon} alt="Custom Patient Fields" />
             }

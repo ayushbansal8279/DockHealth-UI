@@ -12,13 +12,14 @@ import { updatePartialWorkflow } from 'actions/task-template-actions';
 import { partialUpdateTask, storeAsCurrentTask } from 'actions/task-actions';
 import { TaskItemType } from 'helpers/task-helpers';
 import { openDrawer } from 'actions/task-drawer-actions';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { updatePatientDetails } from 'actions/patient-details-actions';
 import TaskItemMultiDropdown from 'components/task/StandardTaskItem/customFieldsTaskItemComponents/TaskItemMultiDropdown/TaskItemMultiDropdown';
 import {
   createMetaDataObjectToSend,
   CUSTOM_FIELD_TYPES,
 } from 'helpers/custom-fields-helpers';
+import { taskLookupSelector } from '@/app/selectors/task-details-selectors';
 
 const TaskItemCustomField = ({
   readOnly,
@@ -27,7 +28,14 @@ const TaskItemCustomField = ({
   task,
   taskWorkflow,
   onClick,
+  origin,
 }) => {
+  const parentTask = useSelector((state) => {
+    if (task?.parentTaskIdentifier) {
+      return taskLookupSelector(state, origin, task?.parentTaskIdentifier);
+    }
+  });
+
   const { value, values } = customFieldValue || {};
   const { taskMetaData } = task;
   const { options } = field;
@@ -51,10 +59,11 @@ const TaskItemCustomField = ({
 
   const handleChange = async (newValue) => {
     if (patientType) {
-      if (task?.patient) {
+      const taskWithPatient = task?.parentTaskIdentifier ? parentTask : task;
+      if (taskWithPatient?.patient) {
         const patientMetaData =
           (
-            task?.patient?.patientMetaData ||
+            taskWithPatient?.patient?.patientMetaData ||
             taskWorkflow?.patient?.patientMetaData ||
             []
           )
@@ -75,8 +84,13 @@ const TaskItemCustomField = ({
             value: newValue,
           });
         }
-        const patientIdentifier = task?.patient?.patientIdentifier;
-        dispatch(updatePatientDetails(patientIdentifier, { patientMetaData }));
+
+        const patientIdentifier = taskWithPatient?.patient?.patientIdentifier;
+        dispatch(
+          updatePatientDetails(patientIdentifier, {
+            patientMetaData: patientMetaData,
+          }),
+        );
       }
     } else {
       const taskMetaData =
@@ -121,6 +135,7 @@ const TaskItemCustomField = ({
       return (
         <TaskItemDate
           value={value}
+          dateTimeIntent={customFieldValue?.dateTimeIntent}
           onChange={handleChange}
           field={field}
           readOnly={isReadOnly}
@@ -171,6 +186,8 @@ const TaskItemCustomField = ({
           value={value}
           onChange={handleChange}
           field={field}
+          validationRegex={field.validationRegex}
+          validationRegexDescription={field.validationRegexDescription}
         />
       );
     }
@@ -192,6 +209,8 @@ const TaskItemCustomField = ({
           value={value}
           onChange={handleChange}
           field={field}
+          validationRegex={field.validationRegex}
+          validationRegexDescription={field.validationRegexDescription}
         />
       );
     }

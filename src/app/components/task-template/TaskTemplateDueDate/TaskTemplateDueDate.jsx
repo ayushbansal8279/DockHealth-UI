@@ -5,7 +5,11 @@ import TaskItemPopover from 'components/task/TaskItemPopover/TaskItemPopover';
 import TaskIcon from 'components/task/TaskIcon/TaskIcon';
 import DateLabel from 'components/common/DateLabel/DateLabel';
 import { updatePartialWorkflow } from 'actions/task-template-actions';
-import { checkDateTimeIntent, DueDateIntent, ReminderType } from 'helpers/task-helpers';
+import {
+  checkDateTimeIntent,
+  DueDateIntent,
+  ReminderType,
+} from 'helpers/task-helpers';
 import { isWorkflowDueDateOverdue } from 'helpers/workflow-helpers';
 import { useDispatch } from 'react-redux';
 import { AddPlaceholder, DueDatesContainer, DueDateWrapper } from './styled';
@@ -15,7 +19,15 @@ import { adjustUTCDateForDateIntent } from '../../task/DueDatePicker/helpers';
 import moment from 'moment';
 
 const TaskTemplateDueDate = (props) => {
-  const { workflow, disabled = false } = props;
+  const {
+    workflow,
+    disabled = false,
+    format,
+    showTime,
+    showReminder,
+    showRecurring,
+    isBorderColumnItem,
+  } = props;
   const { identifier, dueDateTime, reminderType, startDateTime } =
     workflow || {};
   const dispatch = useDispatch();
@@ -56,6 +68,17 @@ const TaskTemplateDueDate = (props) => {
     [dispatch, identifier],
   );
 
+  const handleClearDateClick = useCallback(
+    (clearCallback) => {
+      dispatch(
+        openModal('ClearDueDateConfirmation', {
+          confirm: clearCallback,
+        }),
+      );
+    },
+    [dispatch],
+  );
+
   return (
     <DueDatesContainer>
       <TaskItemPopover
@@ -63,12 +86,16 @@ const TaskTemplateDueDate = (props) => {
         content={({ closePopover }) => (
           <DueDatePicker
             taskIdentifier={identifier}
-            selectedDate={adjustUTCDateForDateIntent(dueDateTime ? moment(dueDateTime).local() : null, checkDateTimeIntent(dueDateTime))}
+            selectedDate={adjustUTCDateForDateIntent(
+              dueDateTime ? moment(dueDateTime).local() : null,
+              checkDateTimeIntent(dueDateTime),
+            )}
             disableRecurring
             onDateChange={handleDueDateChange}
             onCloseClick={closePopover}
             dueDateIntent={checkDateTimeIntent(dueDateTime)}
             dateType="dueDate"
+            onClearDateClick={handleClearDateClick}
           />
         )}
       >
@@ -79,11 +106,15 @@ const TaskTemplateDueDate = (props) => {
             hasReminder={reminderType && reminderType !== ReminderType.NONE}
             tootipTitle="Edit Due Date"
             dueDateIntent={checkDateTimeIntent(dueDateTime)}
+            format={format}
+            showTime={showTime}
+            showReminder={showReminder}
+            showRecurring={showRecurring}
           />
         ) : (
-          <DueDateWrapper>
+          <DueDateWrapper isBorderColumnItem={isBorderColumnItem}>
             <Tooltip placement="top" title="Add Due Date">
-              <AddPlaceholder>
+              <AddPlaceholder isBorderColumnItem={isBorderColumnItem}>
                 <div style={{ display: 'flex' }}>
                   <TaskIcon type="calendar" isActive />
                 </div>

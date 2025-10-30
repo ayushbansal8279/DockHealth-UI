@@ -1,16 +1,17 @@
 import React, { lazy } from 'react';
 import ErrorPage from 'views/ErrorPage';
 import PageNotFound from 'views/PageNotFound';
-import ChatView from 'views/chat/ChatView';
 import { DashboardTasksTab } from 'helpers/dashboard-helpers';
 import { PERMISSIONS } from 'helpers/permission-mapper';
 import { onLeaveGlobalSearch } from './TemplateCoreSubscriptionPlan/GlobalSearch';
 import DrChronoLaunch from '../views/auth/DrChronoLaunch';
 import MCPLaunch from '../views/auth/MCPLaunch';
+import SMARTLaunch from '../views/auth/SMARTLaunch';
 import {
   onEnterListDetailsView,
   onLeaveListDetailsView,
 } from './TemplateCoreSubscriptionPlan/ListDetails';
+import WorkspaceHome from '../views/workspaces/workspace-home';
 
 const UsersView = lazy(() => import('views/self-serve/users/UsersView'));
 const Contacts = lazy(() => import('views/Contacts/Contacts'));
@@ -51,7 +52,9 @@ const MeterBillingView = lazy(() =>
 const PersonDetailsView = lazy(() =>
   import('views/person-details/PersonDetailsView'),
 );
-const UserGroupView = lazy(() => import('views/user-group/UserGroupView'));
+const UserGroupView = lazy(() =>
+  import('views/user-group/UserGroupViewWrapper'),
+);
 const PatientDetailsView = lazy(() =>
   import('views/patient-details/PatientDetailsView'),
 );
@@ -140,7 +143,9 @@ const GlobalSearchView = lazy(() =>
 const TaskTourView = lazy(() => import('views/TaskTour/TaskTourView'));
 const PatientsView = lazy(() => import('components/patients/PatientsView'));
 const CustomProfileList = lazy(() =>
-  import('components/custom-profile/CustomProfilesList/CustomProfileList'),
+  import(
+    'components/custom-profile/CustomProfilesList/CustomProfileListContainer'
+  ),
 );
 const CustomProfileView = lazy(() =>
   import('components/custom-profile/CustomProfilesList/CustomProfileView'),
@@ -153,11 +158,33 @@ const TaskCustomizationsView = lazy(() =>
   import('views/custom-fields/task-customizations/TaskCustomizationsView'),
 );
 
+const ProfileBuilderView = lazy(() =>
+  import('components/profile-builder/ProfileBuilder'),
+);
+
 const CreateList = lazy(() =>
   import('views/OnboardingTutorial/CreateList/CreateList'),
 );
 const Developers = lazy(() => import('views/developers'));
-const PatientImportStatus = lazy(() => import('views/patient-details/PatientImportStatus/PatientImportStatus'));
+const Workspaces = lazy(() => import('views/workspaces/Workspaces'));
+const Workspace = lazy(() => import('views/workspace/Workspace'));
+const PatientImportStatus = lazy(() =>
+  import('views/patient-details/PatientImportStatus/PatientImportStatus'),
+);
+
+const UserActivity = lazy(() =>
+  import('views/self-serve/users/UserActivity/UserActivity'),
+);
+const Integrations = lazy(() =>
+  import('views/Integrations/IntegrationsHeader'),
+);
+const DataManagement = lazy(() =>
+  import('views/data-management/DataManagement'),
+);
+
+const EscalationPolicies = lazy(() =>
+  import('views/EscalationPolicies/EscalationPolicies'),
+);
 
 const {
   CAN_ACCESS_HOME_PAGE,
@@ -167,9 +194,10 @@ const {
   CAN_ACCESS_MEMBER_LIST_PAGE,
   CAN_ACCESS_WORKFLOW_LIST_PAGE,
   CAN_ACCESS_ANALYTICS_PAGE,
-  CAN_ACCESS_CHAT_PAGE,
   CAN_ACCESS_SETTINGS_PAGE,
   CAN_ACCESS_PROFILE_PAGE,
+  CAN_ACCESS_WORKSPACE_PAGE,
+  CAN_ACCESS_DATA_MANAGEMENT_PAGE,
 } = PERMISSIONS;
 
 export const SETTINGS_ROUTES = [
@@ -227,8 +255,13 @@ export const SETTINGS_ROUTES = [
     permissions: [CAN_ACCESS_SETTINGS_PAGE],
   },
   {
-    path: '/profiles',
+    path: '/objects',
     RouteComponent: ProfilesAndCustomFieldsView,
+    permissions: [CAN_ACCESS_SETTINGS_PAGE],
+  },
+  {
+    path: '/object-builder/:tabName/:identifier?',
+    RouteComponent: ProfileBuilderView,
     permissions: [CAN_ACCESS_SETTINGS_PAGE],
   },
   {
@@ -250,6 +283,31 @@ export const SETTINGS_ROUTES = [
     path: '/developers',
     RouteComponent: Developers,
     permissions: [CAN_ACCESS_SETTINGS_PAGE],
+  },
+  {
+    path: '/workspaces',
+    RouteComponent: Workspaces,
+    permissions: [CAN_ACCESS_WORKSPACE_PAGE],
+  },
+  {
+    path: '/user-activity/:userIdentifier',
+    RouteComponent: UserActivity,
+    permissions: [CAN_ACCESS_SETTINGS_PAGE],
+  },
+  {
+    path: '/integrations',
+    RouteComponent: Integrations,
+    permissions: [CAN_ACCESS_SETTINGS_PAGE],
+  },
+  {
+    path: '/escalation-policies',
+    RouteComponent: EscalationPolicies,
+    permissions: [CAN_ACCESS_SETTINGS_PAGE],
+  },   
+  {
+    path: '/data-management',
+    RouteComponent: DataManagement,
+    permissions: [CAN_ACCESS_DATA_MANAGEMENT_PAGE],
   },
 ];
 
@@ -303,12 +361,12 @@ export const TEMPLATE_CORE_SUBSCRIPTION_PLAN_ROUTES = [
     permissions: [CAN_ACCESS_SEARCH_PAGE],
   },
   {
-    path: '/custom-profiles/:profileTypeIdentifier/:profileIdentifier',
+    path: '/custom-objects/:profileTypeIdentifier/:profileIdentifier',
     RouteComponent: CustomProfileView,
     permissions: [CAN_ACCESS_SEARCH_PAGE],
   },
   {
-    path: '/custom-profiles/:profileTypeIdentifier',
+    path: '/custom-objects/:profileTypeIdentifier',
     RouteComponent: CustomProfileList,
     permissions: [CAN_ACCESS_SEARCH_PAGE],
   },
@@ -365,7 +423,7 @@ export const TEMPLATE_CORE_SUBSCRIPTION_PLAN_ROUTES = [
     permissions: [CAN_ACCESS_TASK_LIST_PAGE],
   },
   {
-    path: '/workflows/library/:identifier?',
+    path: '/workflows/library/:folderIdentifier?',
     RouteComponent: React.lazy(() =>
       import('views/task-template/TaskTemplateView'),
     ),
@@ -384,9 +442,14 @@ export const TEMPLATE_CORE_SUBSCRIPTION_PLAN_ROUTES = [
     permissions: [CAN_ACCESS_ANALYTICS_PAGE],
   },
   {
-    path: '/chat',
-    RouteComponent: ChatView,
-    permissions: [CAN_ACCESS_CHAT_PAGE],
+    path: '/workspace/:workspaceIdentifier',
+    RouteComponent: Workspace,
+    permissions: [CAN_ACCESS_WORKSPACE_PAGE],
+  },
+  {
+    path: '/workspaces',
+    RouteComponent: WorkspaceHome,
+    permissions: [CAN_ACCESS_WORKSPACE_PAGE],
   },
 ];
 
@@ -531,6 +594,10 @@ export const AUTH_ROUTES = [
   {
     path: '/mcp',
     RouteComponent: MCPLaunch,
+  },
+  {
+    path: '/smart-launch',
+    RouteComponent: SMARTLaunch,
   },
   {
     path: '/signupEmailSent',

@@ -6,7 +6,6 @@ import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined
 import ViewColumn from '@mui/icons-material/ViewColumn';
 import { ViewType, getViewTypeFromQueryString } from 'helpers/view-type-helper';
 import { useLocation, useHistory } from 'react-router-dom';
-import { updateTaskStatusToFilter } from 'actions/task-list-actions';
 import { checkIfUserIsOrganizationAdmin } from 'helpers/user-helper';
 import {
   userProfileSelector,
@@ -14,10 +13,7 @@ import {
   userHasBoardViewFeatureSelector,
 } from 'selectors/user-selectors';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  currentTaskListSelector,
-  currentTaskListTasksStatusSelector,
-} from 'selectors/task-list-selectors';
+import { currentTaskListSelector } from 'selectors/task-list-selectors';
 import { isMemberAdmin } from 'helpers/list-members-helper';
 import TaskCustomFieldsModal from 'modal/customModals/TaskCustomFieldsModal';
 import queryString from 'query-string';
@@ -29,11 +25,14 @@ import {
   GridItemSlimView,
   ToolbarContainer,
 } from './styled';
-import { ListPageContext } from '../ListDetailsView';
+import { TaskViewContext } from '@/app/context-api/task-view-context';
 import { getCurrentListTasks } from '@/app/actions/list-details-actions';
 import CustomizeToolbarButton from '@/app/components/tasklist/list-toolbar-buttons/CustomizeToolbarButton/CustomizeToolbarButton';
 import TaskStatusToolbarSelect from '@/app/components/tasklist/list-toolbar-buttons/TaskStatusToolbarSelect/TaskStatusToolbarSelect';
 import localStorageHelper from '@/app/helpers/local-storage-helper';
+import { UserPreferenceContextType } from '@/app/helpers/user-prefrence-helper';
+import * as UserPreferenceActions from 'actions/user-preference-actions';
+import { userPreferenceStatusSelector } from '@/app/selectors/user-preference-selectors';
 
 const ListDetailsToolbar = ({
   additionalOptions,
@@ -48,7 +47,7 @@ const ListDetailsToolbar = ({
   const [customFieldsModalOpened, setCustomFieldsModalOpened] = useState(false);
   const currentUser = useSelector(userProfileSelector);
   const currentOrganization = useSelector(selectedUserOrganizationSelector);
-  const tasksStatus = useSelector(currentTaskListTasksStatusSelector);
+  const tasksStatus = useSelector(userPreferenceStatusSelector);
   const isOrganizationAdmin = checkIfUserIsOrganizationAdmin(currentUser);
   const taskList = useSelector(currentTaskListSelector);
   const { taskListIdentifier, restrictCustomization } = taskList || {};
@@ -67,20 +66,39 @@ const ListDetailsToolbar = ({
     ) || {};
 
   const { changeViewType, handleSetChangeViewType, handleRemoveAllTasks } =
-    useContext(ListPageContext);
+    useContext(TaskViewContext);
   const [calendarView, setCalendarView] = useState(false);
   const [boardView, setBoardView] = useState(false);
   const [slimView, setSlimView] = useState(false);
   const [fullView, setFullView] = useState(false);
 
   useEffect(() => {
-    if (viewType === ViewType.LIST_VIEW && changeViewType === 'SLIM_VIEW')
-      setSlimView(true);
-    if (viewType === ViewType.LIST_VIEW && changeViewType === 'FULL_VIEW')
-      setFullView(true);
-    if (queryViewType === ViewType.BOARD_VIEW) setBoardView(true);
-    if (queryViewType === ViewType.CALENDAR_VIEW) setCalendarView(true);
-  }, [viewType, queryViewType, changeViewType]);
+    const viewType = localStorageHelper.getItem(`view${taskListIdentifier}`);
+
+    if (queryViewType === ViewType.LIST_VIEW) {
+      if (viewType === 'FULL_VIEW') {
+        setFullView(true);
+        setSlimView(false);
+        setCalendarView(false);
+        setBoardView(false);
+      } else {
+        setFullView(false);
+        setSlimView(true);
+        setCalendarView(false);
+        setBoardView(false);
+      }
+    } else if (queryViewType === ViewType.BOARD_VIEW) {
+      setBoardView(true);
+      setFullView(false);
+      setSlimView(false);
+      setCalendarView(false);
+    } else if (queryViewType === ViewType.CALENDAR_VIEW) {
+      setCalendarView(true);
+      setBoardView(false);
+      setFullView(false);
+      setSlimView(false);
+    }
+  }, [taskListIdentifier, viewType, queryViewType, changeViewType]);
 
   const handleChangeViewType = useCallback(
     (newViewType) => {
@@ -95,22 +113,17 @@ const ListDetailsToolbar = ({
 
   const handleChangeTasksStatus = useCallback(
     (status) => {
-      dispatch(updateTaskStatusToFilter(status));
+      dispatch(
+        UserPreferenceActions.updateTaskListStatus(
+          UserPreferenceContextType.TASK_LIST,
+          taskListIdentifier,
+          status,
+        ),
+      );
       dispatch(getCurrentListTasks());
     },
-    [dispatch],
+    [dispatch, taskListIdentifier],
   );
-
-  useEffect(() => {
-    const viewType = localStorageHelper.getItem(`view${taskListIdentifier}`);
-    if (viewType === 'FULL_VIEW') {
-      setFullView(true);
-      setSlimView(false);
-    } else if (!boardView && !calendarView) {
-      setFullView(false);
-      setSlimView(true);
-    }
-  }, [taskListIdentifier]);
 
   const boardViewAvailable = useSelector(userHasBoardViewFeatureSelector);
 
@@ -206,8 +219,6 @@ const ListDetailsToolbar = ({
             handleChangeViewType(ViewType.LIST_VIEW);
             handleSetChangeViewType('FULL_VIEW');
             handleRemoveAllTasks();
-            setSlimView(false);
-            setFullView(true);
           }}
         >
           <FullViewIcon />
@@ -218,8 +229,6 @@ const ListDetailsToolbar = ({
             handleChangeViewType(ViewType.LIST_VIEW);
             handleSetChangeViewType('SLIM_VIEW');
             handleRemoveAllTasks();
-            setFullView(false);
-            setSlimView(true);
           }}
         >
           <SlimViewIcon />

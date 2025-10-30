@@ -42,10 +42,13 @@ import {
 import { getLabels } from 'actions/workflow-drawer-actions';
 import { log } from 'helpers/log';
 
-function* initializeWorkflowLibraryState({ folderIdentifier }) {
+function* initializeWorkflowLibraryState({
+  folderIdentifier,
+  workspaceIdentifier,
+}) {
   yield all([
     folderIdentifier && put(TaskTemplateActions.getFolderBreadcrumbs()),
-    put(TaskTemplateActions.getWorkflowFolder()),
+    put(TaskTemplateActions.getWorkflowFolder(null, workspaceIdentifier)),
   ]);
 }
 
@@ -114,7 +117,7 @@ function* shareWorkflowWithOrganization({
       type: ActionTypes.SHARE_WORKFLOW_WITH_ORGANIZATION_SUCCESS,
       identifier,
     });
-    yield put(showGlobalAlert(AlertMessages.COPIED));
+    yield put(showGlobalAlert(AlertMessages.SHARED));
   } catch {
     yield all([
       put({
@@ -127,7 +130,7 @@ function* shareWorkflowWithOrganization({
   }
 }
 
-function* getWorkflowFolder({ searchPhrase }) {
+function* getWorkflowFolder({ searchPhrase, workspaceIdentifier }) {
   try {
     const folderIdentifier = yield select(currentFolderIdentifierSelector);
     let workflows;
@@ -141,8 +144,12 @@ function* getWorkflowFolder({ searchPhrase }) {
       const searchPhraseExist =
         searchPhrase && searchPhrase !== '' && searchPhrase !== ' ';
       const api = searchPhraseExist
-        ? TaskTemplateApi.searchTemplates.bind(null, searchPhrase)
-        : TaskTemplateApi.getTemplates.bind(null, true);
+        ? TaskTemplateApi.searchTemplates.bind(
+            null,
+            searchPhrase,
+            workspaceIdentifier,
+          )
+        : TaskTemplateApi.getTemplates.bind(null, true, workspaceIdentifier);
       workflows = yield call(api, searchPhrase);
     }
 
@@ -217,13 +224,20 @@ function* getWorkflowDetails({ taskWorkflowIdentifier }) {
   }
 }
 
-function* addTemplate({ template, parentIdentifier = null, history }) {
+function* addTemplate({
+  template,
+  parentIdentifier = null,
+  history,
+  workspaceIdentifier,
+  location,
+}) {
   try {
     const folderIdentifier = yield select(currentFolderIdentifierSelector);
     const createdTemplate = yield call(
       TaskTemplateApi.addTemplate,
       template,
       parentIdentifier || folderIdentifier,
+      workspaceIdentifier,
     );
     yield put({
       type: ActionTypes.ADD_TASK_TEMPLATE_SUCCESS,
@@ -237,7 +251,7 @@ function* addTemplate({ template, parentIdentifier = null, history }) {
     yield put(
       TaskTemplateActions.toggleTemplateOpen(createdTemplate.identifier),
     );
-    const layout = []
+    const layout = [];
     yield call(
       TaskTemplateApi.saveTemplateLayout,
       createdTemplate.identifier,
@@ -248,10 +262,10 @@ function* addTemplate({ template, parentIdentifier = null, history }) {
 
     try {
       if (history) {
-        yield call(
-          history.push,
-          createWorkflowBuilderPath(createdTemplate.identifier),
+        const builderPath = createWorkflowBuilderPath(
+          createdTemplate.identifier,
         );
+        yield call(history.push, `${builderPath}`);
       }
     } catch (error) {
       // eslint-disable-next-line no-console
@@ -937,41 +951,54 @@ function* removeLabel({ labelIdentifier }) {
   }
 }
 
-// eslint-disable-next-line sonarjs/cognitive-complexity
-function* bulkEditDuplicateTasksSuccess({ duplicatedTasks }) {
+function* bulkEditDuplicateTasksSuccess({
+  duplicatedTasks,
+  allSelectedTasksIdentifiers,
+}) {
   try {
     const currentTaskTemplateIdentifier = yield select(
       currentTaskTemplateIdentifierSelector,
     );
 
-    if (currentTaskTemplateIdentifier) {
-      const { layout } = yield select(
-        taskTemplateDetailsSelector(currentTaskTemplateIdentifier),
-      );
+    if (!currentTaskTemplateIdentifier) return;
 
-      let xStart = null;
-      let yStart = null;
+    const { layout } = yield select(
+      taskTemplateDetailsSelector(currentTaskTemplateIdentifier),
+    );
 
-      for (const { position } of layout) {
-        if (position) {
-          if (xStart === null || position.x > xStart) {
-            xStart = position.x;
-          }
-          if (yStart === null || position.y < yStart) {
-            yStart = position.y;
-          }
-        }
-      }
+    // Find originals
+    const originals = allSelectedTasksIdentifiers
+      .map((id) => layout.find((n) => n.id === id))
+      .filter(Boolean);
 
-      const autoLayout = yield getAutoLayout(
-        duplicatedTasks,
-        xStart + 430,
-        yStart,
+    if (originals.length === 0) return;
+
+    // Find bounding box of originals
+    const minX = Math.min(...originals.map((n) => n.position.x));
+    const maxX = Math.max(...originals.map((n) => n.position.x));
+
+    // Horizontal shift (place duplicates to the right of the group)
+    const shiftX = maxX - minX + 300;
+    const shiftY = 0; // keep same Y alignment
+
+    // Map duplicates with same relative pattern
+    const autoLayout = duplicatedTasks?.map((dup) => {
+      const original = originals?.find(
+        (orig) => orig?.id === dup?.referenceTaskIdentifier,
       );
-      yield put(
-        TaskTemplateActions.saveTaskTemplateLayout([...layout, ...autoLayout]),
-      );
-    }
+      if (!original) return null; // skip if not found
+      return {
+        id: dup.identifier,
+        position: {
+          x: original.position.x + shiftX,
+          y: original.position.y + shiftY,
+        },
+      };
+    });
+
+    yield put(
+      TaskTemplateActions.saveTaskTemplateLayout([...layout, ...autoLayout]),
+    );
   } catch {
     yield put(showGlobalErrorAlert());
   }

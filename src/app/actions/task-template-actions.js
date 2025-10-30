@@ -1,9 +1,14 @@
 import * as ActionTypes from 'actions/action-types';
+import { transformTaskMetadata } from '../helpers/task-helpers';
 
-export function initializeWorkflowLibraryState(folderIdentifier) {
+export function initializeWorkflowLibraryState(
+  folderIdentifier,
+  workspaceIdentifier,
+) {
   return {
     type: ActionTypes.INITIALIZE_WORKFLOW_LIBRARY_STATE,
     folderIdentifier,
+    workspaceIdentifier,
   };
 }
 
@@ -43,25 +48,33 @@ export function shareWorkflowWithOrganization(
   };
 }
 
-export function addTemplate(template) {
+export function addTemplate(template, workspaceIdentifier) {
   return {
     type: ActionTypes.ADD_TASK_TEMPLATE,
     template: { ...template, templateType: 'WORKFLOW' },
+    workspaceIdentifier,
   };
 }
 
-export function addSmartFlow(template, history) {
+export function addSmartFlow(template, history, workspaceIdentifier, location) {
   return {
     type: ActionTypes.ADD_TASK_TEMPLATE,
     template: { ...template, templateType: 'SMARTFLOW' },
     history,
+    workspaceIdentifier,
+    location,
   };
 }
 
-export function addTemplateFolder(template, parentIdentifier = null) {
+export function addTemplateFolder(
+  template,
+  parentIdentifier = null,
+  workspaceIdentifier,
+) {
   return {
     type: ActionTypes.ADD_TASK_TEMPLATE_FOLDER,
     template: { ...template, parentIdentifier, templateType: 'FOLDER' },
+    workspaceIdentifier,
   };
 }
 
@@ -74,17 +87,20 @@ export function switchTemplatePublic(taskTemplateIdentifier, flagPublic) {
 }
 
 export function updatePartialWorkflow(taskWorkflowIdentifier, dataToUpdate) {
+  const transformedDataToUpdate = transformTaskMetadata(dataToUpdate);
+
   return {
     type: ActionTypes.UPDATE_PARTIAL_WORKFLOW,
     taskWorkflowIdentifier,
-    dataToUpdate,
+    dataToUpdate: transformedDataToUpdate,
   };
 }
 
-export function getWorkflowFolder(searchPhrase = null) {
+export function getWorkflowFolder(searchPhrase = null, workspaceIdentifier) {
   return {
     type: ActionTypes.GET_WORKFLOW_FOLDER,
     searchPhrase,
+    workspaceIdentifier,
   };
 }
 
@@ -270,7 +286,7 @@ export function addTemporaryLink(
   targetId,
   sourceHandle,
   targetHandle,
-  indicatorType
+  indicatorType,
 ) {
   return {
     type: ActionTypes.ADD_TEMPORARY_LINK,
@@ -279,7 +295,7 @@ export function addTemporaryLink(
     targetId,
     sourceHandle,
     targetHandle,
-    indicatorType
+    indicatorType,
   };
 }
 

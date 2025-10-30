@@ -71,17 +71,13 @@ export const RotatableChevronButtonWrapper = styled(Button)`
   }
 `;
 
-export const RotatableChevronButtonLabel = styled(Typography)`
-  &&& {
-    &.MuiTypography-root {
-      color: ${palette.white};
-      font-size: ${fontSizes.small};
-      font-weight: ${fontWeights.regular};
-      display: flex-start;
-      margin-right: ${spacing.largePlus};
-      align-items: center;
-    }
-  }
+export const RotatableChevronButtonLabel = styled.div`
+  color: ${palette.white};
+  font-size: ${fontSizes.small};
+  font-weight: ${fontWeights.regular};
+  display: flex-start;
+  margin-right: ${spacing.largePlus};
+  align-items: center;
 `;
 
 export const BoxContainer = styled.div`

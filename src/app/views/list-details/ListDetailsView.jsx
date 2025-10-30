@@ -15,23 +15,8 @@ import localStorageHelper from '@/app/helpers/local-storage-helper';
 import { currentTaskListSelector } from '@/app/selectors/task-list-selectors';
 import { selectedUserOrganizationSelector } from '@/app/selectors/user-selectors';
 import { selectCurrentOrganizationWithRedirection } from '@/app/api/organization-api';
-
-export const ListPageContext = createContext({
-  addNewGroup: false,
-  handleAddNewGroup: (value) => {},
-  changeViewType: '',
-  handleSetChangeViewType: (value) => {},
-  showShadow: false,
-  handleScroll: (event) => {},
-  tasks: [],
-  handleAddTask: (newTask) => {},
-  handleRemoveAllTasks: () => {},
-  workflowPopoverOpen: false,
-  handleWorkflowPopoverOpen: (isPopoveOpen) => {},
-  patientPopoverOpen: false,
-  handlePatientPopoverOpen: (isPopoveOpen) => {},
-  handleScrollToAddGroupName: () => {},
-});
+import { useIsWorkspaceScopedList } from '@/app/hooks/useIsWorkspaceScopedList';
+import { TaskViewContext } from '@/app/context-api/task-view-context';
 const ListDetailsView = () => {
   const parameters = useParams();
   const { taskListIdentifier, tabName, taskIdentifier } = parameters;
@@ -47,8 +32,12 @@ const ListDetailsView = () => {
   const [tasks, setTasks] = useState([]);
   const taskList = useSelector(currentTaskListSelector);
   const currentOrganization = useSelector(selectedUserOrganizationSelector);
+  const { workspaceIdentifier } = useIsWorkspaceScopedList();
 
   useEffect(() => {
+    if (workspaceIdentifier) {
+      return;
+    }
     const organizationsExist = taskList && currentOrganization;
     const organizationsDiffer =
       taskList?.organizationIdentifier !==
@@ -65,7 +54,7 @@ const ListDetailsView = () => {
         redirectUrl,
       );
     }
-  }, [taskList, currentOrganization]);
+  }, [taskList, currentOrganization, workspaceIdentifier]);
 
   useEffect(() => {
     dispatch(initializeTaskListState(taskListIdentifier));
@@ -151,7 +140,7 @@ const ListDetailsView = () => {
     }
   };
 
-  const ListPageContextValue = {
+  const TaskViewContextValue = {
     addNewGroup,
     handleAddNewGroup,
     changeViewType,
@@ -170,7 +159,7 @@ const ListDetailsView = () => {
 
   return (
     <>
-      <ListPageContext.Provider value={ListPageContextValue}>
+      <TaskViewContext.Provider value={TaskViewContextValue}>
         {viewType === ViewType.LIST_VIEW && (
           <ColumnsConfigProvider>
             <ListDetailsTableView />
@@ -178,7 +167,7 @@ const ListDetailsView = () => {
         )}
         {viewType === ViewType.CALENDAR_VIEW && <ListDetailsCalendarView />}
         {viewType === ViewType.BOARD_VIEW && <ListDetailsBoardView />}
-      </ListPageContext.Provider>
+      </TaskViewContext.Provider>
     </>
   );
 };

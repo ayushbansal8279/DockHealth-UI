@@ -85,9 +85,9 @@ export const InfoText = styled.p`
 export const BlueCheckbox = styled(Checkbox)`
   &&& {
     &.MuiCheckbox-root {
-      color: ${palette.brightBlue};
+      color: ${palette.oPlusRed};
       & .checked {
-        color: ${palette.brightBlue};
+        color: ${palette.oPlusRed};
       }
     }
   }
@@ -99,4 +99,10 @@ export const CheckboxContainer = styled.div`
   height: 100%;
   justify-content: center;
   align-items: center;
+`;
+
+export const ErrorMessage = styled.p`
+  color: ${palette.red}; 
+  font-size: 0.875rem;
+  margin: 10px 0 0 0;
 `;

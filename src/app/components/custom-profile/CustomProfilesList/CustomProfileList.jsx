@@ -1,21 +1,38 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import DataGrid, {
-  Data,
-  useController,
-  getValues,
-} from 'ui-toolkit/Composite/DataGrid';
+import React, {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  useContext,
+  useMemo,
+} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useParams, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { getUserGroupIdentifierByUrlParameter } from 'helpers/user-groups-helper';
 import {
   setCurrentUserGroup,
   unsetCurrentUserGroup,
 } from 'actions/user-groups-actions';
-import { Box, Dialog, FormGroup, ListItemText, MenuItem, Stack, Switch } from '@mui/material';
+import {
+  BulkEditProvider,
+  BulkEditContext,
+} from 'context-api/bulk-edit-context';
+import BulkEditSection from 'components/workspace/BulkEditSection/BulkEditSection';
+import {
+  Box,
+  Dialog,
+  FormGroup,
+  ListItemText,
+  MenuItem,
+  Stack,
+  Switch,
+} from '@mui/material';
+import { useGridApiRef } from '@mui/x-data-grid-premium';
 import { getAllProfileTypes } from 'api/profile-type-api';
-import { getAllProfiles } from 'api/profile-api';
 import { getAllProfileFieldTypes } from 'api/profile-type-field-api';
+import { FieldType } from 'helpers/field-type-helpers';
 import { showGlobalErrorAlert } from 'alert/actions';
+import ProfileUndoAlert from '../ProfileUndoAlert/ProfileUndoAlert';
 import LayoutHeader from 'components/template/LayoutHeader/LayoutHeader';
 import ViewLayout from 'components/template/ViewLayout/ViewLayout';
 import ProfileDrawer from 'components/custom-profile/CustomProfilesList/ProfileDrawer';
@@ -25,47 +42,79 @@ import Toolbar from 'ui-toolkit/Composite/Toolbar';
 import { Paper } from 'ui-toolkit/Element';
 import CustomizeIcon from 'img/customize-icon.svg';
 import { CustomizeImg } from 'components/patients/CustomizeToolbarButton/styled';
-import Checkbox from 'components/common/Checkbox/Checkbox';
 import ToolbarButton from '../../tasklist/list-toolbar-buttons/ToolbarButton/ToolbarButton';
 import { AddIcon } from '@/app/views/smart-flow-builder/TaskNodeHandles/styled';
 import ProfileFilter from '../ProfileFilter/ProfileFilter';
 import OptionsMenu from '../../common/OptionsMenu/OptionsMenu';
-import { MoreVert } from '@mui/icons-material';
+import {
+  MoreVert,
+  Archive,
+  Delete,
+  AppRegistration,
+} from '@mui/icons-material';
+import Checkbox from 'components/common/Checkbox/Checkbox';
 import { userProfileSelector } from '@/app/selectors/user-selectors';
-import { isUserGuestOrDockLite, isUserViewOnly } from '@/app/helpers/user-helper';
-import { downloadProfileData, downloadProfileImportTemplate, uploadProfileData } from '@/app/api/profile-api';
-import { initializeProfileState, updateProfileListPreferences } from '@/app/actions/profile-actions';
+import {
+  isUserGuestOrDockLite,
+  isUserViewOnly,
+} from '@/app/helpers/user-helper';
+import {
+  downloadProfileData,
+  downloadProfileImportTemplate,
+  getAllProfiles,
+  uploadProfileData,
+} from '@/app/api/profile-api';
+import {
+  initializeProfileTypeState,
+  updateProfileListPreferences,
+  profileBulkArchive,
+  profileBulkDelete,
+  getProfiles,
+  profileBulkUnarchive,
+  profileBulkRecover,
+  showProfileUndo,
+} from '@/app/actions/profile-actions';
+import { openModal, closeModal } from 'modal/actions';
 import { getProfileListPreferences } from '@/app/api/profile-type-api';
-import { StyledLink } from './styled';
-import DateLabel from '../../common/DateLabel/DateLabel';
 import ImportDataModal from '@/app/modal/components/ImportDataModal/ImportDataModal';
-import FileImportPopover from '../../common/FileImportPopover/FileImportPopover';
+import ToolbarSelect from '../../tasklist/ToolbarSelect/ToolbarSelect';
+import { ProfileStatus, OperationType } from '@/app/helpers/profile-helpers';
+import StatusSwitchIcon from 'img/status-switch-icon.svg';
+import { ToolbarIconImg } from 'components/patients/PatientsToolbar/styled';
+import ReusableDataGrid from './DataGrid/DataGrid';
+import DateLabel from '../../common/DateLabel/DateLabel';
+import { DataGridWrapper, StyledLink } from './styled';
+import RelationshipLinks from '../RelationshipLinks';
+import TaskItemBulkEdit from '../../task/StandardTaskItem/TaskItemComponents/TaskItemBulkEdit';
+import { BulkEditSectionContainer } from '@/app/views/user-group/styled';
 
-const CustomProfileList = () => {
+const DATASET_SIZE_THRESHOLD = 100;
+
+const CustomProfileListContent = ({
+  profileTypeIdentifier,
+  groupIdentifier: groupIdentifierProp,
+  fetchProfiles,
+  showHeader = true,
+}) => {
   const dispatch = useDispatch();
   const history = useHistory();
-  const {
-    groupIdentifier: groupIdentifierUrlParameter,
-    profileTypeIdentifier,
-  } = useParams();
-  const groupIdentifier = getUserGroupIdentifierByUrlParameter(
-    groupIdentifierUrlParameter,
-  );
+
+  const groupIdentifier =
+    groupIdentifierProp ||
+    getUserGroupIdentifierByUrlParameter(groupIdentifierProp);
 
   useEffect(() => {
-    dispatch(initializeProfileState(profileTypeIdentifier));
-  }, [dispatch, profileTypeIdentifier]);
+    if (groupIdentifier) {
+      dispatch(setCurrentUserGroup(groupIdentifier));
 
-  useEffect(() => {
-    dispatch(setCurrentUserGroup(groupIdentifier));
-
-    return () => {
-      dispatch(unsetCurrentUserGroup());
-    };
+      return () => {
+        dispatch(unsetCurrentUserGroup());
+      };
+    }
   }, [dispatch, groupIdentifier]);
 
-  const handleRecordClick = (event, { id }) => {
-    history.push(`/custom-profiles/${profileTypeIdentifier}/${id}`);
+  const handleRecordClick = ({ id }, event) => {
+    history.push(`/custom-objects/${profileTypeIdentifier}/${id}`);
   };
 
   const [open, setOpen] = useState(null);
@@ -78,18 +127,53 @@ const CustomProfileList = () => {
   const [profileTypeFields, setProfileTypeFields] = useState([]);
   const [currentProfileType, setCurrentProfileType] = useState('');
   const [filters, setFilters] = useState([]);
-  const [profiles, setProfiles] = useState([]);
+  const profiles = useSelector((state) => state.profile?.profiles || []);
+  const filteredProfilesFromRedux = useSelector(
+    (state) => state.profile?.filteredProfiles || [],
+  );
+  const isFetchingProfiles = useSelector(
+    (state) => state.profile?.isFetchingProfiles || false,
+  );
+  const isFilteringProfiles = useSelector(
+    (state) => state.profile?.isFilteringProfiles || false,
+  );
   const [searchPhrase, setSearchPhrase] = useState('');
-  // console.log(profiles);
+  const [profileStatus, setProfileStatus] = useState(ProfileStatus.ACTIVE);
+  const loading = isFetchingProfiles || isFilteringProfiles;
+  const [useLocalFiltering, setUseLocalFiltering] = useState(true);
+  const [showStatusColumn, setShowStatusColumn] = useState(true);
   const currentUser = useSelector(userProfileSelector);
   const [importPopupOpen, setImportPopupOpen] = useState(false);
-  const [importPopoverOpen, setImportPopoverOpen] = useState(false);
-  const [importResponse, setImportResponse] = useState(null);
-  
+  const apiRef = useGridApiRef();
+
   const isGuestOrDockLite = isUserGuestOrDockLite(currentUser);
   const isViewOnly = isUserViewOnly(currentUser);
 
-  const fetchProfileTypes = useCallback(() => {
+  const bulkEditContext = useContext(BulkEditContext);
+  const {
+    selectedItems,
+    selectableItems,
+    setSelectableItems,
+    toggleItem,
+    toggleAllItems,
+    isListChecked,
+    resetOptions,
+  } = bulkEditContext;
+
+  const renderCheckboxColumnHeader = ({ isListChecked, onListSelect }) => (
+    <Box>
+      <Checkbox isChecked={isListChecked} onClick={onListSelect} />
+    </Box>
+  );
+
+  const fetchProfilesInternal = useCallback(
+    (status = profileStatus) => {
+      dispatch(getProfiles(profileTypeIdentifier, status));
+    },
+    [dispatch, profileTypeIdentifier, profileStatus],
+  );
+
+  const fetchProfileTypesInternal = useCallback(() => {
     getAllProfileTypes()
       .then((data) => {
         setProfileTypes(data);
@@ -103,7 +187,7 @@ const CustomProfileList = () => {
       });
   }, [dispatch, profileTypeIdentifier]);
 
-  const fetchProfileTypeFields = useCallback(() => {
+  const fetchProfileTypeFieldsInternal = useCallback(() => {
     getAllProfileFieldTypes(profileTypeIdentifier)
       .then((data) => {
         setProfileTypeFields(data);
@@ -113,28 +197,241 @@ const CustomProfileList = () => {
       });
   }, [dispatch, profileTypeIdentifier]);
 
-  const fetchFilters = () => {
-    getProfileListPreferences(profileTypeIdentifier)
-      .then(setFilters);
-  }
-
-  const fetchProfiles = useCallback(() => {
-    getAllProfiles(profileTypeIdentifier)
-      .then((data) => {
-        setProfiles(data);
-      })
-      .catch(() => {
-        dispatch(showGlobalErrorAlert());
-      });
-  }, [dispatch, profileTypeIdentifier]);
+  const fetchFiltersInternal = useCallback(() => {
+    getProfileListPreferences(profileTypeIdentifier).then(setFilters);
+  }, [profileTypeIdentifier]);
 
   useEffect(() => {
-    fetchProfileTypes();
-    fetchProfileTypeFields();
-    fetchProfiles();
-    fetchFilters();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    fetchProfileTypesInternal();
+    fetchProfileTypeFieldsInternal();
+    fetchFiltersInternal();
+  }, [
+    fetchProfileTypesInternal,
+    fetchProfileTypeFieldsInternal,
+    fetchFiltersInternal,
+  ]);
+
+  useEffect(() => {
+    fetchProfilesInternal();
+  }, [fetchProfilesInternal]);
+
+  const handleBulkAction = useCallback(
+    async (action, status) => {
+      const profileIdentifiers = selectedItems?.map((p) => p.identifier) ?? [];
+
+      try {
+        if (action === profileBulkDelete) {
+          await dispatch(
+            action(profileIdentifiers, profileTypeIdentifier, profileStatus),
+          );
+          dispatch(
+            showProfileUndo(
+              OperationType.DELETE,
+              profileIdentifiers,
+              profileTypeIdentifier,
+              profileStatus,
+            ),
+          );
+        } else if (action === profileBulkArchive) {
+          await dispatch(
+            action(
+              profileIdentifiers,
+              profileTypeIdentifier,
+              status,
+              profileStatus,
+            ),
+          );
+          dispatch(
+            showProfileUndo(
+              OperationType.ARCHIVE,
+              profileIdentifiers,
+              profileTypeIdentifier,
+              profileStatus,
+            ),
+          );
+        } else {
+          await dispatch(
+            action(
+              profileIdentifiers,
+              profileTypeIdentifier,
+              status,
+              profileStatus,
+            ),
+          );
+        }
+        resetOptions();
+      } catch (err) {
+        console.error('Bulk action failed:', err);
+      }
+    },
+    [
+      dispatch,
+      selectedItems,
+      profileTypeIdentifier,
+      profileStatus,
+      resetOptions,
+    ],
+  );
+
+  const handleBulkArchive = useCallback(() => {
+    handleBulkAction(profileBulkArchive, ProfileStatus.ARCHIVED);
+  }, [handleBulkAction]);
+
+  const handleBulkDelete = useCallback(() => {
+    handleBulkAction(profileBulkDelete);
+  }, [handleBulkAction]);
+
+  const handleBulkEditCustomFields = useCallback(() => {
+    const profileIdentifiers = selectedItems?.map((p) => p.identifier) ?? [];
+    dispatch(
+      openModal('ProfileCustomFieldsBulkEditModal', {
+        profileIdentifiers,
+        profileTypeIdentifier,
+        profileStatus,
+        onCloseModal: () => {
+          resetOptions?.();
+          dispatch(closeModal());
+        },
+      }),
+    );
+  }, [
+    dispatch,
+    selectedItems,
+    profileTypeIdentifier,
+    profileStatus,
+    resetOptions,
+  ]);
+
+  const handleUndo = useCallback(
+    (undoOperation) => {
+      if (!undoOperation) return;
+
+      const {
+        operationType,
+        profileIdentifiers,
+        profileTypeIdentifier,
+        profileStatus,
+      } = undoOperation;
+
+      if (operationType === OperationType.ARCHIVE) {
+        dispatch(
+          profileBulkUnarchive(
+            profileIdentifiers,
+            profileTypeIdentifier,
+            profileStatus,
+          ),
+        );
+      } else if (operationType === OperationType.DELETE) {
+        dispatch(
+          profileBulkRecover(
+            profileIdentifiers,
+            profileTypeIdentifier,
+            profileStatus,
+          ),
+        );
+      }
+    },
+    [dispatch],
+  );
+
+  const openBulkArchiveConfirmationModal = useCallback(() => {
+    const selectedProfilesCount = selectedItems?.length;
+    const modalProps = {
+      title: `You want to archive ${selectedProfilesCount} profile${
+        selectedProfilesCount > 1 ? 's' : ''
+      }`,
+      description: `Are you sure you want to archive ${selectedProfilesCount} profile${
+        selectedProfilesCount > 1 ? 's' : ''
+      }?`,
+      confirmButtonText: 'Archive',
+      confirm: () => {
+        handleBulkArchive();
+        dispatch(closeModal());
+      },
+      onClose: () => {
+        dispatch(closeModal());
+      },
+    };
+    dispatch(openModal('DeleteConfirmation', modalProps));
+  }, [dispatch, handleBulkArchive, selectedItems]);
+
+  const openBulkDeleteConfirmationModal = useCallback(() => {
+    const selectedProfilesCount = selectedItems?.length;
+    const modalProps = {
+      title: `You want to delete ${selectedProfilesCount} profile${
+        selectedProfilesCount > 1 ? 's' : ''
+      }`,
+      description: `Are you sure you want to delete ${selectedProfilesCount} profile${
+        selectedProfilesCount > 1 ? 's' : ''
+      }? This action cannot be undone.`,
+      confirmButtonText: 'Delete',
+      confirm: () => {
+        handleBulkDelete();
+        dispatch(closeModal());
+      },
+      onClose: () => {
+        dispatch(closeModal());
+      },
+    };
+    dispatch(openModal('DeleteConfirmation', modalProps));
+  }, [dispatch, handleBulkDelete, selectedItems]);
+
+  const bulkOptions = useMemo(
+    () => [
+      {
+        key: 'editFields',
+        title: 'Edit Fields',
+        icon: AppRegistration,
+        onClick: handleBulkEditCustomFields,
+      },
+      {
+        key: 'archive',
+        title: 'Archive',
+        icon: Archive,
+        onClick: openBulkArchiveConfirmationModal,
+      },
+      {
+        key: 'delete',
+        title: 'Delete',
+        icon: Delete,
+        onClick: openBulkDeleteConfirmationModal,
+      },
+    ],
+    [
+      openBulkArchiveConfirmationModal,
+      openBulkDeleteConfirmationModal,
+      handleBulkEditCustomFields,
+    ],
+  );
+
+  useEffect(() => {
+    if (bulkEditContext.setBulkOptions) {
+      bulkEditContext.setBulkOptions(bulkOptions);
+    }
+  }, [bulkOptions]);
+
+  const PROFILE_STATUS_OPTIONS = Object.values(ProfileStatus).map((status) => ({
+    value: status,
+    label: status.charAt(0) + status.slice(1).toLowerCase(),
+  }));
+
+  useEffect(() => {
+    if (showHeader) {
+      dispatch(initializeProfileTypeState(currentProfileType));
+    }
+  }, [dispatch, profileTypeIdentifier, currentProfileType, showHeader]);
+
+  const removeDuplicatesByIdentifier = (profiles) => {
+    return Array.from(new Map(profiles.map((p) => [p.identifier, p])).values());
+  };
+
+  const handleProfileStatusChange = useCallback(
+    (newStatus) => {
+      setProfileStatus(newStatus);
+      fetchProfilesInternal(newStatus);
+    },
+    [fetchProfilesInternal],
+  );
 
   const handleProfileAddClick = () => {
     setOpen(true);
@@ -144,7 +441,6 @@ const CustomProfileList = () => {
     setSearchPhrase(value);
   };
 
-  const controller = useController();
   const buttonReference = useRef(null);
   const [isPopoverOpen, setPopoverOpen] = useState(false);
 
@@ -158,8 +454,8 @@ const CustomProfileList = () => {
 
   const handleFilterChange = (field) => () => {
     const updatedFilters = filters.includes(field.identifier)
-        ? filters.filter((filter) => filter !== field.identifier)
-        : [...filters, field.identifier];
+      ? filters.filter((filter) => filter !== field.identifier)
+      : [...filters, field.identifier];
 
     setFilters(updatedFilters);
 
@@ -168,53 +464,307 @@ const CustomProfileList = () => {
         {
           listDisplayColumns: updatedFilters,
         },
-        profileTypeIdentifier
+        profileTypeIdentifier,
       ),
     );
-};
+  };
+
+  const handleStatusColumnToggle = () => {
+    setShowStatusColumn(!showStatusColumn);
+  };
 
   const handleDownloadProfileData = () => {
     const filename = `Dock ${currentProfileType?.name}.csv`;
     downloadProfileData(profileTypeIdentifier, filename);
-};
-  
+  };
+
+  const columns = [
+    ...(isGuestOrDockLite || isViewOnly
+      ? []
+      : [
+          {
+            field: 'isSelected',
+            headerName: 'SELECT',
+            flex: 0.1,
+            sortable: false,
+            headerClassName: 'no-sort-icon',
+            renderHeader: () =>
+              renderCheckboxColumnHeader({
+                isListChecked,
+                onListSelect: toggleAllItems,
+              }),
+            renderCell: ({ row }) => {
+              return (
+                <TaskItemBulkEdit
+                  isChecked={row?.isSelected}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    toggleItem(row.id);
+                  }}
+                  isDisabled={false}
+                />
+              );
+            },
+          },
+        ]),
+    ...filters
+      .map((filterIdentifier) => {
+        const field = profileTypeFields.find(
+          (field) => field.identifier === filterIdentifier,
+        );
+        return field
+          ? {
+              field: field.identifier,
+              headerName: field.name,
+              flex: 1,
+              filterable: true,
+              sortable: true,
+              valueGetter: (params) => {
+                return params.row[field.name] ?? '';
+              },
+              renderCell: (params) => {
+                const value = params.row[field.name];
+
+                if (field.fieldType === FieldType.DATE && value) {
+                  return (
+                    <DateLabel date={value.date} dueDateIntent={value.intent} />
+                  );
+                }
+
+                if (field.fieldType === FieldType.HYPERLINK) {
+                  if (!value) return '';
+                  return (
+                    <StyledLink
+                      href={value.startsWith('http') ? value : `//${value}`}
+                      target="_blank"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      {value}
+                    </StyledLink>
+                  );
+                }
+
+                if (field.fieldType === FieldType.RELATIONSHIP) {
+                  const refs = params.row[field.name];
+                  const relatedField = field;
+                  const isPatientRelationship =
+                    relatedField.relatedProfileType.contextType ===
+                      'PREDEFINED' &&
+                    relatedField.relatedProfileType.name.toLowerCase() ===
+                      'patients'
+                      ? true
+                      : false;
+
+                  return (
+                    <RelationshipLinks
+                      refs={refs}
+                      relatedProfileType={field.relatedProfileType.identifier}
+                      isPatientRelationship={isPatientRelationship}
+                    />
+                  );
+                }
+
+                return value;
+              },
+            }
+          : null;
+      })
+      .filter(Boolean),
+    ...(profileStatus === ProfileStatus.ALL && showStatusColumn
+      ? [
+          {
+            field: 'profileStatus',
+            headerName: 'Status',
+            flex: 0.2,
+            sortable: true,
+            filterable: true,
+            valueGetter: (params) => {
+              return params.row.profileStatus || '';
+            },
+            renderCell: ({ row }) => {
+              const status = row.profileStatus;
+              if (!status) return '';
+
+              const displayStatus =
+                status === 'ACTIVE'
+                  ? 'Active'
+                  : status === 'ARCHIVED'
+                  ? 'Archived'
+                  : status;
+
+              return displayStatus;
+            },
+          },
+        ]
+      : []),
+  ];
+
+  // TODO: fix filter
+  const filteredProfiles = useMemo(() => {
+    let profilesToFilter = profiles;
+
+    if (filteredProfilesFromRedux.length > 0) {
+      profilesToFilter = filteredProfilesFromRedux.filter((profile) => {
+        if (useLocalFiltering) return true;
+        return (
+          profileStatus === ProfileStatus.ALL ||
+          profile.profileStatus === profileStatus
+        );
+      });
+    }
+
+    return (
+      profilesToFilter?.filter((profile) => {
+        const matchesSearch = profile.fields?.some((field) =>
+          (field.values || []).some(
+            (val) =>
+              typeof val === 'string' &&
+              val.toLowerCase().includes(searchPhrase.toLowerCase()),
+          ),
+        );
+
+        return matchesSearch;
+      }) || []
+    );
+  }, [
+    profiles,
+    filteredProfilesFromRedux,
+    searchPhrase,
+    useLocalFiltering,
+    profileStatus,
+  ]);
+
+  const profilesWithSelection = useMemo(() => {
+    return (
+      filteredProfiles?.map((profile) => ({
+        isSelected: false,
+        ...profile,
+      })) || []
+    );
+  }, [filteredProfiles]);
+
+  useEffect(() => {
+    if (filteredProfiles) {
+      setSelectableItems(profilesWithSelection);
+    }
+  }, [filteredProfiles, setSelectableItems]);
+
+  const rows =
+    selectableItems
+      ?.filter((profile) =>
+        profile.fields?.some((field) =>
+          (field.values || []).some(
+            (val) =>
+              typeof val === 'string' &&
+              val.toLowerCase().includes(searchPhrase.toLowerCase()),
+          ),
+        ),
+      )
+      .map((profile) => {
+        const rowData = {
+          id: profile.identifier,
+          ...profile,
+        };
+
+        filters.forEach((filterIdentifier) => {
+          const fieldConfig = profileTypeFields.find(
+            (field) => field.identifier === filterIdentifier,
+          );
+
+          if (fieldConfig) {
+            const profileField = profile.fields?.find(
+              (field) => field.profileTypeFieldIdentifier === filterIdentifier,
+            );
+
+            if (profileField) {
+              let value = '';
+
+              switch (profileField.profileTypeFieldType) {
+                case FieldType.TEXT:
+                case FieldType.NUMBER:
+                case FieldType.BOOL:
+                case FieldType.LONG_TEXT:
+                  value = profileField.values?.[0] || '';
+                  break;
+
+                case FieldType.DROPDOWN_MULTI:
+                case FieldType.DROPDOWN:
+                  value =
+                    profileField.references
+                      ?.map((r) => r.displayValue)
+                      .join(', ') ||
+                    profileField.values?.join(', ') ||
+                    '';
+                  break;
+
+                case FieldType.RELATIONSHIP:
+                  value = profileField.references || [];
+                  break;
+
+                case FieldType.HYPERLINK:
+                  value = profileField.values?.[0] || '';
+                  break;
+
+                case FieldType.DATE:
+                  value = {
+                    date: profileField.values?.[0] || '',
+                    intent: profileField.dateTimeIntents?.[0] || null,
+                  };
+                  break;
+
+                default:
+                  value = '';
+              }
+
+              rowData[fieldConfig.name] = value;
+            } else {
+              rowData[fieldConfig.name] = '';
+            }
+          }
+        });
+
+        return rowData;
+      }) || [];
+
   return (
     <>
       <ViewLayout
         header={
-          <LayoutHeader> 
-            <Box
-              position="absolute"
-              top={currentProfileType?.description ? 17 : 27}
-              left={10}
-            >
-              <OptionsMenu
-                disablePortal
-                options={[
-                  !isGuestOrDockLite &&
-                    !isViewOnly && {
-                      name: 'Import from CSV',
-                      onClick: () => {
-                        setImportPopupOpen(true);
-                      },
-                    },
-                  !isGuestOrDockLite &&
-                    !isViewOnly && {
-                      name: 'Export to CSV',
-                      onClick: () => {
-                        handleDownloadProfileData();
-                      },
-                    }
-                ]}
+          showHeader && (
+            <LayoutHeader>
+              <Box
+                position="absolute"
+                top={currentProfileType?.description ? 17 : 27}
+                left={10}
               >
-                <MoreVert color="primary" />
-              </OptionsMenu>
-            </Box>
-            <LayoutHeader.Title
-              title={currentProfileType?.name}
-              description={currentProfileType?.description}
-            />
-          </LayoutHeader>
+                <OptionsMenu
+                  disablePortal
+                  options={[
+                    !isGuestOrDockLite &&
+                      !isViewOnly && {
+                        name: 'Import from CSV',
+                        onClick: () => {
+                          setImportPopupOpen(true);
+                        },
+                      },
+                    !isGuestOrDockLite &&
+                      !isViewOnly && {
+                        name: 'Export to CSV',
+                        onClick: () => {
+                          handleDownloadProfileData();
+                        },
+                      },
+                  ]}
+                >
+                  <MoreVert color="primary" />
+                </OptionsMenu>
+              </Box>
+              <LayoutHeader.Title
+                title={currentProfileType?.name}
+                description={currentProfileType?.description}
+              />
+            </LayoutHeader>
+          )
         }
       >
         <ProfileDrawer
@@ -224,16 +774,34 @@ const CustomProfileList = () => {
           types={profileTypeFields}
           onClose={handleClose}
           onUpdate={() => {
-            fetchProfiles();
+            fetchProfilesInternal();
           }}
           addMode
         />
         <Stack
           direction="row"
           justifyContent="space-between"
-          sx={{ m: '16px 32px 0px 32px ' }}
+          sx={{
+            m: !showHeader ? '0px 32px 0px 32px ' : '16px 32px 0px 32px ',
+          }}
         >
-          <Box display="flex" alignItems="start" my={2}>
+          <Box display="flex" alignItems="start" my={!showHeader ? 0 : 2}>
+            <Box display="flex" alignItems="center" my={0.4} mr={2}>
+              <ToolbarSelect
+                options={PROFILE_STATUS_OPTIONS}
+                value={profileStatus}
+                name="profile-status-filter"
+                onChange={(event) =>
+                  handleProfileStatusChange(event?.target?.value)
+                }
+                icon={
+                  <ToolbarIconImg
+                    src={StatusSwitchIcon}
+                    alt="profile status icon"
+                  />
+                }
+              />
+            </Box>
             <Toolbar>
               <div style={{ marginTop: '3px' }}>
                 <ToolbarButton
@@ -270,15 +838,20 @@ const CustomProfileList = () => {
               >
                 <strong>Custom Columns</strong>
                 <FormGroup>
+                  {profileStatus === ProfileStatus.ALL && (
+                    <MenuItem onClick={handleStatusColumnToggle}>
+                      <Switch checked={showStatusColumn} />
+                      <Box mx={0.5} />
+                      <ListItemText>Status</ListItemText>
+                    </MenuItem>
+                  )}
                   {profileTypeFields.map((field) => {
                     return (
                       <MenuItem
                         key={field.identifier}
                         onClick={handleFilterChange(field)}
                       >
-                        <Switch
-                          checked={filters.includes(field.identifier)}
-                        />
+                        <Switch checked={filters.includes(field.identifier)} />
                         <Box mx={0.5} />
                         <ListItemText>{field.name}</ListItemText>
                       </MenuItem>
@@ -290,8 +863,7 @@ const CustomProfileList = () => {
             <Box display="flex" alignItems="center" my={0.4} mx={2}>
               <ProfileFilter
                 profileTypeIdentifier={profileTypeIdentifier}
-                fetchProfiles={fetchProfiles}
-                setProfiles={setProfiles}
+                fetchProfiles={fetchProfilesInternal}
               />
             </Box>
             <Box display="flex" alignItems="center" width="400px" my={0.4}>
@@ -319,93 +891,19 @@ const CustomProfileList = () => {
             </ToolbarButton>
           </Box>
         </Stack>
-        <DataGrid
-          fluid
-          sx={{
-            '& .MuiTablePagination-select': {
-              paddingLeft: '1rem',
-            },
-          }}
-          controller={controller}
-          dataset={profiles.filter(
-            (profile) =>
-              profile.fields &&
-              getValues(profile).some(
-                (value) => value && value?.includes(searchPhrase),
-              ),
-          )}
-          onRecordClick={handleRecordClick}
-        >
-          {profileTypeFields
-            .filter((profileTypeField) =>
-              filters.includes(profileTypeField.identifier),
-            )
-            .map((field) => (
-              <Data
-                key={field.identifier}
-                name={field.name}
-                value={(data) => {
-                  const record = data.fields?.find(
-                    (profileField) =>
-                      field.identifier ===
-                      profileField.profileTypeFieldIdentifier,
-                  );
-
-                  if (record) {
-                    switch (field.fieldType) {
-                      case 'TEXT':
-                      case 'NUMBER':
-                      case 'BOOLEAN':
-                      case 'LONG_TEXT': {
-                        return (
-                          record.values?.[0] || record.values?.[0]?.value || ''
-                        );
-                      }
-                      case 'MULTI_SELECT':
-                      case 'PICK_LIST': {
-                        return (
-                          record.references
-                            ?.map((item) => item.displayValue)
-                            .join(', ') ||
-                          record.values?.join(', ') ||
-                          ''
-                        );
-                      }
-                      case 'RELATIONSHIP': {
-                        return record.references
-                          ?.map((item) => item.displayValue)
-                          .join(', ');
-                      }
-                      case 'HYPERLINK': {
-                        const link = record.values?.[0] || record.values?.[0]?.value || '';
-                        if(!link) return '';
-                        return (
-                          <StyledLink
-                            href={link.startsWith("http") ? link : `//${link}`} 
-                            target="_blank"
-                            onClick={(event) => event.stopPropagation()}
-                          >
-                            {link}
-                          </StyledLink>
-                        );
-                      }
-                      case 'DATE': {
-                        const date = record.values?.[0] || record.values?.[0]?.value || ''
-                        if(!date) return '';
-                        return <DateLabel date={date} />
-                      }
-                      default: {
-                        return '';
-                      }
-                    }
-                  }
-
-                  return '';
-                }}
-              />
-            ))}
-        </DataGrid>
+        <DataGridWrapper>
+          <ReusableDataGrid
+            columns={columns}
+            rows={rows}
+            loading={loading}
+            apiRef={apiRef}
+            onRecordClick={handleRecordClick}
+          />
+        </DataGridWrapper>
       </ViewLayout>
+      <BulkEditSection>
+        <BulkEditSectionContainer></BulkEditSectionContainer>
+      </BulkEditSection>
       <Dialog
         open={importPopupOpen}
         onClose={() => setImportPopupOpen(false)}
@@ -419,25 +917,26 @@ const CustomProfileList = () => {
           closeModal={() => {
             setImportPopupOpen(false);
           }}
-          downloadTemplate={() => downloadProfileImportTemplate(profileTypeIdentifier)}
-          setImportPopoverOpen={setImportPopoverOpen}
+          downloadTemplate={() =>
+            downloadProfileImportTemplate(profileTypeIdentifier)
+          }
           step={1}
-          label="profile"
+          label="object"
           uploadFunction={uploadProfileData}
           identifier={profileTypeIdentifier}
-          setImportResponse={setImportResponse}
+          importFileTypeHint={"Drag & drop your CSV file here"}
         />
       </Dialog>
-      {importPopoverOpen && (
-        <FileImportPopover
-          type="Profile"
-          closePopover={() => {
-            setImportPopoverOpen(false);
-          }}
-          uploadResponse={importResponse}
-        />
-      )}
+      <ProfileUndoAlert onUndo={handleUndo} />
     </>
+  );
+};
+
+const CustomProfileList = (props) => {
+  return (
+    <BulkEditProvider viewType="profiles">
+      <CustomProfileListContent {...props} />
+    </BulkEditProvider>
   );
 };
 

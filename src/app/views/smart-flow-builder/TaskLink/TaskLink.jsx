@@ -128,7 +128,6 @@ const TaskLink = (props) => {
     dispatch(
       updateTasksLink({
         ...link,
-        isDependent: true,
         ...delayPeriodData,
       }),
     );

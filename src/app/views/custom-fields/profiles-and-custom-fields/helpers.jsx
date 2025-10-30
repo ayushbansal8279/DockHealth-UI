@@ -36,8 +36,8 @@ export const getTemplateColumns = ({
   {
     field: '-',
     type: 'actions',
-    headerName: 'Option',
-    width: 60,
+    headerName: 'Options',
+    width: 100,
     renderHeader: renderColumnHeader,
     renderCell: (data) => {
       const contextMenuOptions = [
@@ -47,7 +47,10 @@ export const getTemplateColumns = ({
         },
       ];
 
-      if (data.id !== 'users' && data.id !== 'patient') {
+      if (
+        data.id !== 'users' &&
+        !['patient', 'client', 'member', 'customer']?.includes(data.id)
+      ) {
         contextMenuOptions.push(
           {
             name: 'Edit',
@@ -75,20 +78,3 @@ export const getTemplateColumns = ({
   },
 ];
 
-export const textFieldSx = {
-  border: 'none',
-  height: '100%',
-  padding: 0,
-  width: '100%',
-  marginTop: 1,
-  '&::after, &::before': {
-    border: '0 !important',
-  },
-  '& .MuiInputBase-input': {
-    border: 'none',
-    boxShadow: 'none',
-    background: 'white',
-    fontSize: '0.875rem',
-    padding: '8px 8px 8px 12px',
-  },
-};

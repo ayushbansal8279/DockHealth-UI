@@ -1,21 +1,39 @@
 import React from 'react';
 import { Container, TasksText, CloseButton, CloseIcon } from './styled';
+import { useSelector } from 'react-redux';
+import { getCustomerTypeLabel } from '@/app/helpers/customer-type-helper';
+import { userProfileSelector } from '@/app/selectors/user-selectors';
 
 const BulkEditBar = (props) => {
   const {
     numberOfSelectedItems,
     onClose,
     children,
-    patientView,
+    viewType = 'task',
     isDisabled,
     includedWorkflow,
   } = props;
+
+  const currentUser = useSelector(userProfileSelector); 
+  const customerTypeLabel = getCustomerTypeLabel(currentUser);
+
+  const getLabel = () => {
+    if (viewType === 'user') return 'User';
+    if (viewType === 'list') return 'List';
+    if (viewType === 'patient') return customerTypeLabel.charAt(0).toUpperCase() + customerTypeLabel.slice(1);
+    if (viewType === 'task') return `Task${includedWorkflow ? '/Workflow' : ''}`;
+    if (viewType === 'profiles') return 'Object';
+    return '';
+  };
+
+  const pluralize = (word, count) => `${word}${count !== 1 ? 's' : ''}`;
+
+  const label = getLabel();
+
   return (
     <Container>
       <TasksText>
-        {`${numberOfSelectedItems} ${
-          patientView ? `Patient` : `Task${includedWorkflow ? '/Workflow' : ''}`
-        }${numberOfSelectedItems > 1 ? 's' : ''} Selected`}
+        {`${numberOfSelectedItems} ${pluralize(label, numberOfSelectedItems)} Selected`}
       </TasksText>
       {children}
       <CloseButton type="button" onClick={onClose} isDisabled={isDisabled}>

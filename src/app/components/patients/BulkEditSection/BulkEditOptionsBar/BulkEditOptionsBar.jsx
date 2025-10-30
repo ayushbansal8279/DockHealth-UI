@@ -86,7 +86,7 @@ const BulkEditOptionsBar = ({ selectedPatients = [], onClose }) => {
     <BulkEditBar
       numberOfSelectedItems={selectedPatients?.length}
       onClose={onClose}
-      patientView
+      viewType="patient"
     >
       <Button type="button" onClick={createTaskHandler} disabled={false}>
         <BulkEditOption

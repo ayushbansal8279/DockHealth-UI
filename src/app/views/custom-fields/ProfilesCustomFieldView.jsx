@@ -8,8 +8,14 @@ import Skeleton from '@mui/material/Skeleton';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import { showGlobalErrorAlert } from 'alert/actions';
+import AlertMessages from 'alert/AlertMessages';
 import * as ProfileTypeFieldApi from 'api/profile-type-field-api';
-import { FieldType, FieldTypeLabel } from 'helpers/field-type-helpers';
+import * as CustomFieldsApi from 'api/custom-fields-api';
+import {
+  DisplayOption,
+  FieldType,
+  FieldTypeLabel,
+} from 'helpers/field-type-helpers';
 import { openModal } from 'modal/actions';
 import AddButton from 'components/common/AddButton/AddButton';
 import {
@@ -32,6 +38,11 @@ import {
   DragHandle,
   CenterBox,
 } from './styled';
+import {
+  getSortedFields,
+  handleDragAndSort,
+} from '@/app/helpers/custom-fields-helpers';
+import { showGlobalAlert } from '@/app/alert/actions';
 
 const ProfilesCustomFieldsView = ({ profileTypeIdentifier }) => {
   const dispatch = useDispatch();
@@ -64,7 +75,7 @@ const ProfilesCustomFieldsView = ({ profileTypeIdentifier }) => {
           type: 'PROFILE',
         },
         customField: field,
-        fetchUserCustomFields : () => fetchUserCustomFields(),
+        fetchUserCustomFields: () => fetchUserCustomFields(),
         onUpdated: (updatedField) => {
           setColumnsToState(
             columns.map((f) =>
@@ -93,25 +104,21 @@ const ProfilesCustomFieldsView = ({ profileTypeIdentifier }) => {
           'Are you sure you want to delete this custom field? This action cannot be undone.',
         confirm: () => {
           setColumnsToState(columns.filter((f) => f.identifier !== id));
-          ProfileTypeFieldApi.deleteProfileFieldType(id)
-            .then(() =>
-              setCustomFields((previousValue) =>
-                previousValue.filter(({ identifier }) => id !== identifier),
-              ),
-            )
-            .catch(() => {
-              dispatch(showGlobalErrorAlert());
-            });
+          ProfileTypeFieldApi.deleteProfileFieldType(id).then(() => {
+            setCustomFields((previousValue) =>
+              previousValue.filter(({ identifier }) => id !== identifier),
+            );
+            dispatch(showGlobalAlert(AlertMessages.DELETED));
+          });
         },
       }),
     );
   };
 
-  const sortedFields = useMemo(() => {
-    return customFields?.slice().sort((a, b) => {
-      return a?.sortIndex - b?.sortIndex;
-    });
-  }, [customFields]);
+  const sortedFields = useMemo(
+    () => getSortedFields(customFields),
+    [customFields],
+  );
 
   const handleAddFieldClick = () => {
     dispatch(
@@ -131,6 +138,19 @@ const ProfilesCustomFieldsView = ({ profileTypeIdentifier }) => {
         },
       }),
     );
+  };
+
+  const handleOnDragEnd = async (originID, destinationID) => {
+    await handleDragAndSort({
+      originID,
+      destinationID,
+      sortedFields,
+      customFields,
+      setCustomFields,
+      dispatch,
+      apiMethod: CustomFieldsApi.sortProfileCustomFields,
+      apiParams: (identifiers) => [identifiers, profileTypeIdentifier],
+    });
   };
 
   return (
@@ -162,7 +182,9 @@ const ProfilesCustomFieldsView = ({ profileTypeIdentifier }) => {
                   <CustomFieldHeaderText>Field type</CustomFieldHeaderText>
                 </CustomFieldCell>
                 <CustomFieldCell>
-                  <CustomFieldHeaderText>Included in Name</CustomFieldHeaderText>
+                  <CustomFieldHeaderText>
+                    Included in Name
+                  </CustomFieldHeaderText>
                 </CustomFieldCell>
                 <CustomFieldCell>
                   <CustomFieldHeaderText>Show on Header</CustomFieldHeaderText>
@@ -174,6 +196,9 @@ const ProfilesCustomFieldsView = ({ profileTypeIdentifier }) => {
                   <CustomFieldHeaderText>Hidden</CustomFieldHeaderText>
                 </CustomFieldCell>
                 <CustomFieldCell>
+                  <CustomFieldHeaderText>Required</CustomFieldHeaderText>
+                </CustomFieldCell>
+                <CustomFieldCell>
                   <Box width="68px" />
                 </CustomFieldCell>
               </CustomFieldItem>
@@ -181,8 +206,9 @@ const ProfilesCustomFieldsView = ({ profileTypeIdentifier }) => {
                 sensors={sensors}
                 onDragEnd={
                   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                  ({ active, over }) => {}
-                  // handleOnDragEnd(active.id, over.id)
+                  ({ active, over }) => {
+                    handleOnDragEnd(active.id, over.id);
+                  }
                 }
               >
                 <SortableContext items={pluck('identifier', sortedFields)}>
@@ -203,9 +229,13 @@ const ProfilesCustomFieldsView = ({ profileTypeIdentifier }) => {
                             <CustomFieldCell>
                               <CustomFieldText>
                                 {field.fieldType === FieldType.RELATIONSHIP
-                                  ? `${FieldTypeLabel[field.fieldType]} - ${
-                                      field.relatedProfileType?.name
-                                    }`
+                                  ? `${FieldTypeLabel[field.fieldType]} (${
+                                      field.displayOptions?.includes(
+                                        DisplayOption.SINGLE_SELECT,
+                                      )
+                                        ? 'Single'
+                                        : 'Multiple'
+                                    }) - ${field.relatedProfileType?.name}`
                                   : FieldTypeLabel[field.fieldType]}
                               </CustomFieldText>
                             </CustomFieldCell>
@@ -244,6 +274,14 @@ const ProfilesCustomFieldsView = ({ profileTypeIdentifier }) => {
                               <CustomFieldText>
                                 {field.displayOptions &&
                                 field.displayOptions?.includes('HIDDEN')
+                                  ? 'Yes'
+                                  : ''}
+                              </CustomFieldText>
+                            </CustomFieldCell>
+                            <CustomFieldCell>
+                              <CustomFieldText>
+                                {field.displayOptions &&
+                                field.displayOptions?.includes(DisplayOption.TASK_REQUIRED)
                                   ? 'Yes'
                                   : ''}
                               </CustomFieldText>

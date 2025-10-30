@@ -1,6 +1,6 @@
 import { Box } from '@mui/material';
 import AccessRestrictor from 'components/access/AccessRestrictor/AccessRestrictor';
-import { UserOrganizationRole } from 'helpers/user-helper';
+import { isUserDockPro, UserOrganizationRole } from 'helpers/user-helper';
 import React from 'react';
 import { useSelector } from 'react-redux';
 import {
@@ -9,6 +9,8 @@ import {
   POFILES_SETTINGS_PATH,
   TASK_CUSTOMIZATIONS_PATH,
   DEVELOPERS_PATH,
+  INTEGRATIONS_PATH,
+  ESCALATION_POLICIES_PATH,
 } from 'routing/helpers/paths';
 import {
   userHasPatientCustomFieldsFeatureSelector,
@@ -18,6 +20,12 @@ import {
   userHasSendSmsFeatureSelector,
   userHasSendSecureMessageFeatureSelector,
   userHasPostEMRNoteFeatureSelector,
+  userHasAutomationMeteringFeatureSelector,
+  userHasWorkspacesFeatureSelector,
+  userHasConfigIntegrationsFeatureSelector,
+  userHasEscalationsFeatureSelector,
+  userHasDataManagementFeatureSelector,
+  userProfileSelector,
 } from 'selectors/user-selectors';
 import { organizationSelector } from 'selectors/organization-selectors';
 import { isPlanTrial } from 'helpers/subscription-helper';
@@ -32,6 +40,8 @@ const SettingsSubmenu = () => {
   const taskCustomFieldsAvailable = useSelector(
     userHasTaskCustomFieldsFeatureSelector,
   );
+  const currentUser = useSelector(userProfileSelector);
+  const isUserDockCrew = isUserDockPro(currentUser);
   const sendEmailAvailable = useSelector(userHasSendEmailFeatureSelector);
   const sendFaxAvailable = useSelector(userHasSendFaxFeatureSelector);
   const sendSmsAvailable = useSelector(userHasSendSmsFeatureSelector);
@@ -39,6 +49,17 @@ const SettingsSubmenu = () => {
     userHasSendSecureMessageFeatureSelector,
   );
   const postToEMRAvailable = useSelector(userHasPostEMRNoteFeatureSelector);
+  const automationMeteringAvailable = useSelector(
+    userHasAutomationMeteringFeatureSelector,
+  );
+  const workspacesAvailable = useSelector(userHasWorkspacesFeatureSelector);
+  const configIntegrationsAvailable = useSelector(
+    userHasConfigIntegrationsFeatureSelector,
+  );
+  const escalationsAvailable = useSelector(userHasEscalationsFeatureSelector);
+  const dataManagementAvailable = useSelector(
+    userHasDataManagementFeatureSelector,
+  );
 
   const organization = useSelector(organizationSelector);
   const subscription = organization?.subscriptionDetails;
@@ -53,12 +74,14 @@ const SettingsSubmenu = () => {
         <SubMenuLink to="/settings/billing">Billing &amp; Invoices</SubMenuLink>
       )}
       <SubMenuLink to={SUBS_SETTINGS_PATH}>Subscriptions</SubMenuLink>
-      {patientCustomFieldsAvailable && (
-        <SubMenuLink to={POFILES_SETTINGS_PATH}>Profiles</SubMenuLink>
+      {automationMeteringAvailable && (
+        <AccessRestrictor allowedToRoles={[ADMIN, OWNER]}>
+          <SubMenuLink to="/settings/metering">Metering</SubMenuLink>
+        </AccessRestrictor>
       )}
-      <AccessRestrictor allowedToRoles={[ADMIN, OWNER]}>
-        <SubMenuLink to="/settings/metering">Metering</SubMenuLink>
-      </AccessRestrictor>
+      {patientCustomFieldsAvailable && (
+        <SubMenuLink to={POFILES_SETTINGS_PATH}>Objects</SubMenuLink>
+      )}
       <SubMenuLink to={USERS_SETTINGS_PATH}>Users</SubMenuLink>
       {(sendEmailAvailable ||
         sendFaxAvailable ||
@@ -75,6 +98,30 @@ const SettingsSubmenu = () => {
       {isApiAllowed && (
         <AccessRestrictor allowedToRoles={[ADMIN, OWNER]}>
           <SubMenuLink to={DEVELOPERS_PATH}>Developers</SubMenuLink>
+        </AccessRestrictor>
+      )}
+      {workspacesAvailable && (
+        <AccessRestrictor allowedToRoles={[ADMIN, OWNER]}>
+          <SubMenuLink to="/settings/workspaces">Workspaces</SubMenuLink>
+        </AccessRestrictor>
+      )}
+      {dataManagementAvailable && (
+        <AccessRestrictor allowedToRoles={[ADMIN, OWNER]}>
+          <SubMenuLink to="/settings/data-management">
+            Data Management
+          </SubMenuLink>
+        </AccessRestrictor>
+      )}
+      {configIntegrationsAvailable && (
+        <AccessRestrictor allowedToRoles={[ADMIN, OWNER]}>
+          <SubMenuLink to={INTEGRATIONS_PATH}>Integrations</SubMenuLink>
+        </AccessRestrictor>
+      )}
+      {escalationsAvailable && isUserDockCrew && (
+        <AccessRestrictor allowedToRoles={[ADMIN, OWNER]}>
+          <SubMenuLink to={ESCALATION_POLICIES_PATH}>
+            Escalation Policies
+          </SubMenuLink>
         </AccessRestrictor>
       )}
     </Box>

@@ -51,8 +51,8 @@ import { limitToConfigurableKeys } from './helpers';
 import ToolbarButton from '../ToolbarButton/ToolbarButton';
 import {
   SearchContainer,
-  WorkflowSearchHorizontalLine,
-  WorkflowSearchHorizontalLineContainer,
+  HorizontalLine,
+  HorizontalLineContainer,
 } from '@/app/components/task-template/TaskTemplateApplicator/styled';
 
 const CustomizeToolbarButton = ({
@@ -114,6 +114,7 @@ const CustomizeToolbarButton = ({
     [TaskItemColumn.TASK_DETAILS]: 'Details',
     [TaskItemColumn.PRIORITY]: 'Priority',
     [TaskItemColumn.PATIENT]: customerTypeLabel,
+    [TaskItemColumn.PROFILE]: 'Object',
   };
 
   const PatientColumnOptionNames = {
@@ -272,9 +273,9 @@ const CustomizeToolbarButton = ({
                   isWorkFlowSearch
                 />
               </SearchContainer>
-              <WorkflowSearchHorizontalLineContainer>
-                <WorkflowSearchHorizontalLine />
-              </WorkflowSearchHorizontalLineContainer>
+              <HorizontalLineContainer>
+                <HorizontalLine />
+              </HorizontalLineContainer>
               <Box display="flex" justifyContent="space-between" mt={1}>
                 <Box mx={0.5} />
                 <ListItemText>
@@ -335,9 +336,9 @@ const CustomizeToolbarButton = ({
                       isWorkFlowSearch
                     />
                   </SearchContainer>
-                  <WorkflowSearchHorizontalLineContainer>
-                    <WorkflowSearchHorizontalLine />
-                  </WorkflowSearchHorizontalLineContainer>
+                  <HorizontalLineContainer>
+                    <HorizontalLine />
+                  </HorizontalLineContainer>
                   <Box display="flex" justifyContent="space-between" mt={1}>
                     <Box mx={0.5} />
                     <ListItemText>
@@ -405,9 +406,9 @@ const CustomizeToolbarButton = ({
                     isWorkFlowSearch
                   />
                 </SearchContainer>
-                <WorkflowSearchHorizontalLineContainer>
-                  <WorkflowSearchHorizontalLine />
-                </WorkflowSearchHorizontalLineContainer>
+                <HorizontalLineContainer>
+                  <HorizontalLine />
+                </HorizontalLineContainer>
                 <Box display="flex" justifyContent="space-between" mt={1}>
                   <Box mx={0.5} />
                   <ListItemText>
@@ -512,9 +513,9 @@ const CustomizeToolbarButton = ({
                   isWorkFlowSearch
                 />
               </SearchContainer>
-              <WorkflowSearchHorizontalLineContainer>
-                <WorkflowSearchHorizontalLine />
-              </WorkflowSearchHorizontalLineContainer>
+              <HorizontalLineContainer>
+                <HorizontalLine />
+              </HorizontalLineContainer>
               <Box display="flex" justifyContent="space-between" mt={1}>
                 <Box mx={0.5} />
                 <ListItemText>

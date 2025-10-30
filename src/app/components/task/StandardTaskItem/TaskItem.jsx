@@ -62,6 +62,8 @@ import {
   findIncompleteRequiredFields,
   PatientTaskItemColumn,
   TaskOrigin,
+  validateAssigneeCompleteDisabled,
+  getDNDMetaData,
 } from 'helpers/task-helpers';
 import { isMemberAdmin } from 'helpers/list-members-helper';
 import { checkIfUserIsOrganizationAdmin } from 'helpers/user-helper';
@@ -123,6 +125,8 @@ import {
   ChildTaskTitle,
   ParentTaskLink,
   WorkflowTitle,
+  DragPreviewWrapper,
+  DragPreviewText,
 } from '../styled';
 import TaskItemText from './customFieldsTaskItemComponents/TaskItemText/TaskItemText';
 import TaskItemDropdown from './customFieldsTaskItemComponents/TaskItemDropdown/TaskItemDropdown';
@@ -132,6 +136,10 @@ import TaskItemComments from './TaskItemComponents/TaskItemComments';
 import { megaFilterSelector } from '@/app/selectors/mega-filter-selectors';
 import SubtaskIcon from '@/app/img/SubtaskIcon';
 import { getTaskDetails } from '@/app/api/task-api';
+import { useDraggable, useDroppable } from '@dnd-kit/core';
+import { CSS } from '@dnd-kit/utilities';
+import { useDropDirection } from '@/app/context-api/DropDirectionContext';
+import TaskItemProfile from './TaskItemComponents/TaskItemProfile/TaskItemProfile';
 
 const { DISABLED, READ_ONLY } = SINGLE_TASK_RESTRICTIONS_OPTIONS;
 
@@ -183,8 +191,18 @@ const TaskItem = React.memo(
     isLastChild,
     isNextVirtualTaskItemTypeBundle,
     isLastTaskOfGroup,
+    isFirstTaskOfGroup,
     viewType,
+    isDragPreview,
+    isFirstTaskOfWorkflow,
+    isFirstSubTaskOfParentTask,
+    isTopLevelTaskOrWorkflowHeader,
+    isWorkflowTask,
+    isSubtaskOfTask,
+    isFirstSubtaskOfWorkflowTask,
+    taskItemDragAndDropDisabled,
   }) => {
+    const elementRef = useRef(null);
     const dependencyIconReference = useRef(null);
     const task = useSelector((state) => {
       return taskLookupSelector(state, origin, taskItemIdentifier);
@@ -220,6 +238,80 @@ const TaskItem = React.memo(
       hasEscalations,
       priority,
     } = task || {};
+
+    const [hoverBorder, setHoverBorder] = useState(null);
+    const dragMetaData = getDNDMetaData({
+      isTopLevelTaskOrWorkflowHeader,
+      isSubtaskOfTask,
+      isWorkflowTask,
+      isWorkflowSubtask,
+      task,
+      taskGroupIdentifier,
+    });
+
+    const overMetaData = getDNDMetaData({
+      isTopLevelTaskOrWorkflowHeader,
+      isSubtaskOfTask,
+      isWorkflowTask,
+      isWorkflowSubtask,
+      task,
+      taskGroupIdentifier,
+    });
+
+    const { attributes, listeners, setNodeRef, transform, transition } =
+      useDraggable({
+        id: taskIdentifier,
+        data: dragMetaData,
+      });
+
+    const {
+      setNodeRef: setDroppableRef,
+      isOver,
+      active,
+      over,
+    } = useDroppable({
+      id: taskIdentifier,
+      data: overMetaData,
+    });
+
+    const isDraggedOver = useMemo(() => {
+      if (!isOver || !active || active?.id === taskIdentifier) return false;
+
+      const dragged = active?.data?.current;
+      const hoveredItem = over?.data?.current;
+      if (!dragged) return false;
+
+      // 🧱 Rule 1: Top-level(workflowHeaders and Tasks) items should only hover over other top-level items
+      if (dragged.level === 'top') {
+        return hoveredItem?.level === 'top';
+      }
+
+      // 🧱 Rule 2: Subtasks of regular tasks can only hover over sibling subtasks
+      if (dragged.level === 'subtask') {
+        return (
+          hoveredItem?.level === 'subtask' &&
+          dragged.parentId === hoveredItem?.parentId
+        );
+      }
+
+      // 🧱 Rule 3: Workflow tasks (inside a workflow) should only hover inside same workflow
+      if (dragged.level === 'workflowTask') {
+        return (
+          hoveredItem?.level === 'workflowTask' &&
+          dragged.parentId === hoveredItem?.parentId
+        );
+      }
+
+      // 🧱 Rule 4: Subtasks of workflow tasks must stay within their workflow task
+      if (dragged.level === 'workflowSubtask') {
+        return (
+          hoveredItem?.level === 'workflowSubtask' &&
+          dragged.parentId === hoveredItem?.parentId
+        );
+      }
+
+      return false;
+    }, [isOver, active, taskIdentifier, over]);
 
     const patient = parentPatient ?? taskPatient ?? parentTask?.patient;
 
@@ -322,7 +414,8 @@ const TaskItem = React.memo(
       false,
     );
 
-    const { bulkEditEnabled } = useContext(BulkEditContext);
+    const { bulkEditEnabled, bulkEditIsActive } = useContext(BulkEditContext);
+    const dropDirectionRef = useDropDirection();
 
     const selectedOrganization = useSelector(selectedUserOrganizationSelector);
     const currentTasklist = useSelector(currentTaskListSelector);
@@ -340,7 +433,7 @@ const TaskItem = React.memo(
             name === `list.taskgroup.highlight.color-${taskGroupIdentifier}`,
         ) || {};
       return customHighlightItem?.value || '';
-    }, [selectedOrganization, taskGroupIdentifier]);
+    }, [selectedOrganization?.themeSettings, taskGroupIdentifier]);
 
     const hasPriorityHighlight = useMemo(() => {
       const hasPriorityHighlightItem =
@@ -350,7 +443,18 @@ const TaskItem = React.memo(
       return (
         hasPriorityHighlightItem && hasPriorityHighlightItem?.value === 'true'
       );
-    }, [selectedOrganization]);
+    }, [selectedOrganization?.themeSettings]);
+
+    const userSortingSupportDisabled = useMemo(() => {
+      const disabledSettingItem =
+        selectedOrganization?.themeSettings?.find(
+          ({ name: themeName }) => themeName === 'list.tasks.user.sort.enabled',
+        ) || {};
+      return disabledSettingItem && disabledSettingItem?.value === 'false';
+    }, [selectedOrganization?.themeSettings]);
+
+    const isDragAndDropEnabled =
+      origin === 'LIST' ? !userSortingSupportDisabled : true;
 
     const getTaskGroupForWorkflow = (taskItem) => {
       if (
@@ -358,7 +462,7 @@ const TaskItem = React.memo(
         taskItem?.itemType === 'TASK' &&
         taskItem?.taskGroups
       ) {
-        const filteredGroups = taskItem.taskGroups?.filter(
+        const filteredGroups = taskItem?.taskGroups?.filter(
           (taskGroup) => taskGroup?.groupType === 'TASK_BUNDLE',
         );
 
@@ -369,7 +473,7 @@ const TaskItem = React.memo(
         !!searchValue ||
         !!sort.key
       ) {
-        const filteredGroups = taskItem.taskGroups?.filter(
+        const filteredGroups = taskItem?.taskGroups?.filter(
           (taskGroup) => taskGroup?.groupType === 'TASK_BUNDLE',
         );
         return filteredGroups?.length > 0 ? filteredGroups[0] : null;
@@ -378,6 +482,44 @@ const TaskItem = React.memo(
     };
 
     const workflowTaskGroup = getTaskGroupForWorkflow(task);
+
+    useEffect(() => {
+      const isFirstValidTarget =
+        isFirstTaskOfGroup ||
+        isFirstTaskOfWorkflow ||
+        isFirstSubTaskOfParentTask ||
+        isFirstSubtaskOfWorkflowTask;
+      if (!isFirstValidTarget || !active || !isOver) {
+        setHoverBorder(null);
+        if (dropDirectionRef) {
+          dropDirectionRef.current = null;
+        }
+        return;
+      }
+
+      const handlePointerMove = (e) => {
+        const rect = elementRef?.current?.getBoundingClientRect();
+        if (!rect) return;
+
+        const isTop = e?.clientY < rect?.top + rect?.height / 2;
+        const direction = isTop ? 'top' : 'bottom';
+        if (dropDirectionRef) {
+          dropDirectionRef.current = direction;
+        }
+        setHoverBorder(direction);
+      };
+
+      window.addEventListener('pointermove', handlePointerMove);
+      return () => window.removeEventListener('pointermove', handlePointerMove);
+    }, [
+      active?.id,
+      over?.id,
+      isFirstTaskOfGroup,
+      isFirstTaskOfWorkflow,
+      isFirstSubTaskOfParentTask,
+      isFirstSubtaskOfWorkflowTask,
+      origin,
+    ]);
 
     useEffect(() => {
       if (task?.status === 'COMPLETE') {
@@ -497,30 +639,14 @@ const TaskItem = React.memo(
     );
 
     const nonAssigneeCompleteDisabled = useMemo(() => {
-      const nonAssigneeCompleteDisabledItem =
-        selectedOrganization?.themeSettings?.find(
-          ({ name }) => name === 'list.tasks.non-assignee.complete.enabled',
-        ) || {};
-      return (
-        nonAssigneeCompleteDisabledItem &&
-        nonAssigneeCompleteDisabledItem?.value === 'false' &&
-        assignedToUsers?.filter((user) =>
-          user.itemType === 'USER'
-            ? user.identifier === currentUser.identifier
-            : user?.users?.filter(
-                (u) => u.identifier === currentUser.identifier,
-              ).length !== 0,
-        ).length === 0 &&
-        !isListAdmin &&
-        !isCreator
+      return validateAssigneeCompleteDisabled(
+        selectedOrganization,
+        task,
+        currentUser,
+        isListAdmin,
+        isCreator,
       );
-    }, [
-      assignedToUsers,
-      currentUser,
-      selectedOrganization,
-      isListAdmin,
-      isCreator,
-    ]);
+    }, [task, currentUser, selectedOrganization, isListAdmin, isCreator]);
     if (nonAssigneeCompleteDisabled) {
       taskListRestrictions.completeTask = DISABLED;
     }
@@ -757,7 +883,8 @@ const TaskItem = React.memo(
 
     const showSubtaskIcon =
       isSubtask &&
-      (origin === 'DASHBOARD' ||
+      (origin === TaskOrigin.DASHBOARD ||
+        origin === TaskOrigin.PERSON ||
         !!selectedFilters ||
         !!searchValue ||
         !!sort.key);
@@ -823,12 +950,50 @@ const TaskItem = React.memo(
       [dispatch, task, taskCustomFields],
     );
 
+    const onParentLabelClick = useCallback(
+      (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        dispatch(openTaskDrawerWithContent(parent));
+      },
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      [parent, dispatch],
+    );
+
+    const fetchParentTask = async () => {
+      if (!parent?.identifier) {
+        setParent(await getTaskDetails(parentTaskIdentifier));
+      }
+    };
+
+    if (isDragPreview) {
+      return (
+        <DragPreviewWrapper
+          shouldOffsetLeft={
+            task?.itemType === TaskItemType.BUNDLE ||
+            !!task?.subTaskSortIndex ||
+            origin === 'TEMPLATE' ||
+            origin === 'DASHBOARD' ||
+            origin === 'PATIENT' ||
+            origin === 'CUSTOM_PROFILE'
+          }
+        >
+          <DragPreviewText>
+            {task?.itemType === TaskItemType.BUNDLE
+              ? task?.name
+              : task?.description}
+          </DragPreviewText>
+        </DragPreviewWrapper>
+      );
+    }
+
     const randerFirstColumnCoverIfNecessary = useCallback(
       (content, order, width) => {
         if (order !== 0) return content;
         const indentSubTask =
           !(
             origin === TaskOrigin.DASHBOARD ||
+            origin === TaskOrigin.PERSON ||
             (!!selectedFilters && Object.keys(selectedFilters).length > 0) ||
             !!searchValue ||
             !!sort.key
@@ -857,13 +1022,18 @@ const TaskItem = React.memo(
             isSortApplied={!!sort.key}
             width={width + 25 + 56}
             isTaskOfTemplate={!!workflowTaskGroup}
+            isDragActive={!!active && active?.id === taskIdentifier}
           >
-            {taskListRestrictions?.createTask !== DISABLED && (
-              <DotsContainer
-                showDraggableDots
-                dragHandleProps={dragHandleProps}
-              />
-            )}
+            {taskListRestrictions?.createTask !== DISABLED &&
+              isDragAndDropEnabled &&
+              !taskItemDragAndDropDisabled && (
+                <div {...attributes} {...listeners}>
+                  <DotsContainer
+                    showDraggableDots
+                    dragHandleProps={dragHandleProps}
+                  />
+                </div>
+              )}
             {showPriority && (
               <PriorityIndicator color={getPriorityColor(task?.priority)} />
             )}
@@ -990,26 +1160,13 @@ const TaskItem = React.memo(
           pageBackground={pageBackground}
           isNextVirtualTaskItemTypeBundle={isNextVirtualTaskItemTypeBundle}
           isLastTaskOfGroup={isLastTaskOfGroup}
+          isFirstTaskOfGroup={isFirstTaskOfGroup}
           viewType={viewType}
+          taskGroupIdentifier={taskGroupIdentifier}
+          groupDragAndDropDisabled={taskItemDragAndDropDisabled}
         />
       );
     }
-
-    const onParentLabelClick = useCallback(
-      (event) => {
-        event.preventDefault();
-        event.stopPropagation();
-        dispatch(openTaskDrawerWithContent(parent));
-      },
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-      [parent, dispatch],
-    );
-
-    const fetchParentTask = async () => {
-      if (!parent?.identifier) {
-        setParent(await getTaskDetails(parentTaskIdentifier));
-      }
-    };
 
     return (
       <>
@@ -1017,6 +1174,11 @@ const TaskItem = React.memo(
           onContextMenu={handleTaskItemRightClick}
           origin={origin}
           $isDragging={isDragging}
+          ref={(node) => {
+            setNodeRef(node);
+            setDroppableRef(node);
+            elementRef.current = node;
+          }}
         >
           <StandardTaskItemContainer
             isTaskTemplate={isTaskTemplate}
@@ -1037,6 +1199,9 @@ const TaskItem = React.memo(
             isVirtualSubtask={isVirtualSubtask}
             isWorkflowSubtask={isWorkflowSubtask}
             isTaskOfTemplate={!!workflowTaskGroup}
+            isDraggedOver={isDraggedOver}
+            hoverBorder={hoverBorder === 'top'}
+            isDragActive={!!active && active?.id === taskIdentifier}
           >
             {randerFirstColumnCoverIfNecessary(
               <>
@@ -1219,6 +1384,7 @@ const TaskItem = React.memo(
                       currentUser={currentUser}
                       readOnly={restrictions?.patient === READ_ONLY}
                       origin={origin}
+                      width={getWidth(TaskItemColumn.PATIENT)}
                     />
                   </TaskItemCell>,
                   getColumnOrder(TaskItemColumn.PATIENT),
@@ -1235,7 +1401,11 @@ const TaskItem = React.memo(
                     order={getColumnOrder(TaskItemColumn.PRIORITY)}
                   >
                     <TaskItemDropdown
-                      value={task?.priority}
+                      value={
+                        task?.priority === TaskPriority.LOW
+                          ? ''
+                          : task?.priority
+                      }
                       onChange={handlePriorityChange}
                       field={{
                         options: [
@@ -1253,6 +1423,21 @@ const TaskItem = React.memo(
                     />
                   </TaskItemCell>,
                   getColumnOrder(TaskItemColumn.PRIORITY),
+                )}
+              </>
+            )}
+            {isColumnChecked(columns, TaskItemColumn.PROFILE) && (
+              <>
+                {randerFirstColumnCoverIfNecessary(
+                  <TaskItemCell
+                    isSubtask={isSubtask}
+                    key={`profile_${taskIdentifier}`}
+                    width={getWidth(TaskItemColumn.PROFILE)}
+                    order={getColumnOrder(TaskItemColumn.PROFILE)}
+                  >
+                    <TaskItemProfile task={task} />
+                  </TaskItemCell>,
+                  getColumnOrder(TaskItemColumn.PROFILE),
                 )}
               </>
             )}
@@ -1570,6 +1755,7 @@ const TaskItem = React.memo(
                       handleReasignTask={handleReasignTask}
                       matchAssignedTo={matchAssignedTo}
                       additionalUsers={sharedWithUsers || []}
+                      maxIconDisplay={2}
                     />
                   </TaskItemCell>,
                   getColumnOrder(TaskItemColumn.ASSIGNED),
@@ -1859,6 +2045,7 @@ const TaskItem = React.memo(
                               readOnly={
                                 restrictions?.customFields === READ_ONLY
                               }
+                              origin={origin}
                             />
                           )}
                         </TaskItemCell>,

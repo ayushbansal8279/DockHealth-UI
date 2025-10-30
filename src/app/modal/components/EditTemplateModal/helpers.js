@@ -37,3 +37,74 @@ export const validationSchema = object().shape({
   shortMessage: string(),
   details: string(),
 });
+
+export const defaultPlaceHolderOptions = [
+  'Name',
+  'First Name',
+  'Last Name',
+  'Middle Name',
+  'DOB',
+  'Gender',
+  'Mobile Phone',
+  'Home Phone',
+  'Email',
+  'MRN',
+  'Full Address',
+];
+
+export function generatePlaceholderObject(fields, origin, sort = false) {
+  const toCamelCase = (str) => {
+    return str
+      .replace(/[{}]/g, '')
+      .split(' ')
+      .filter(Boolean)
+      .map((word, index) =>
+        index === 0
+          ? word.toLowerCase()
+          : word.charAt(0).toUpperCase() + word.slice(1).toLowerCase(),
+      )
+      .join('');
+  };
+
+  const capitalize = (str) => str[0].toUpperCase() + str.slice(1);
+
+  return Object.fromEntries(
+    (sort ? [...fields].sort((a, b) => a.localeCompare(b)) : fields).map(
+      (label) => {
+        const key = `{{${origin}.${toCamelCase(label)}}}`;
+        const value = `${capitalize(origin)} : ${label}`;
+        return [key, value];
+      },
+    ),
+  );
+}
+
+export function convertToKeyValueArray(obj) {
+  return Object.entries(obj).map(([key, value]) => ({
+    label: value,
+    value: key,
+  }));
+}
+
+export const menuProps = {
+  disablePortal: true,
+  anchorOrigin: {
+    vertical: 'bottom',
+    horizontal: 'left',
+  },
+  transformOrigin: {
+    vertical: 'top',
+    horizontal: 'left',
+  },
+  PaperProps: {
+    style: {
+      maxHeight: 250,
+    },
+  },
+};
+
+export const selectSx = {
+  backgroundColor: '#f9fbfc',
+  borderRadius: '8px',
+  padding: '8px 12px',
+};
