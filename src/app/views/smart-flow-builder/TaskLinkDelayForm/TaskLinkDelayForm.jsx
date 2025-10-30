@@ -14,10 +14,12 @@ import {
   TIME_REFERENCE_OPTIONS,
 } from './helpers';
 import { DelayPeriodForm, Title, CheckboxLabel } from './styled';
-import { getPatientCustomField, getWorkflowCustomField } from '@/app/api/task-template-api';
+import {
+  getPatientCustomField,
+  getWorkflowCustomField,
+} from '@/app/api/task-template-api';
 
 const TaskLinkDelayForm = (props) => {
-  
   const { link, onSubmit, onClose } = props;
   const formMethods = useForm({
     mode: 'onSubmit',
@@ -27,7 +29,7 @@ const TaskLinkDelayForm = (props) => {
       delayIsBusinessDays: link?.delayIsBusinessDays || false,
       timeRelative: link?.timeRelative || TIME_TYPE.AFTER,
       timeReference: link?.timeReference || Object.keys(TIME_REFERENCE)[0],
-      customFieldIdentifier: link?.customFieldIdentifier || null
+      customFieldIdentifier: link?.customFieldIdentifier || null,
     },
   });
 
@@ -52,11 +54,16 @@ const TaskLinkDelayForm = (props) => {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  const [delayPeriodValue, delayPeriodUnit, delayIsBusinessDaysValue, timeReferenceValue] = watch([
+  const [
+    delayPeriodValue,
+    delayPeriodUnit,
+    delayIsBusinessDaysValue,
+    timeReferenceValue,
+  ] = watch([
     'delayPeriod',
     'delayPeriodUnit',
     'delayIsBusinessDays',
-    'timeReference'
+    'timeReference',
   ]);
   const [customFieldOptions, setCustomFieldOptions] = useState([]);
 
@@ -65,34 +72,34 @@ const TaskLinkDelayForm = (props) => {
       const isCustomDate =
         timeReferenceValue === 'WORKFLOW_CUSTOM_FIELD_DATE' ||
         timeReferenceValue === 'PATIENT_CUSTOM_FIELD_DATE';
-  
+
       if (!isCustomDate) {
         setCustomFieldOptions([]);
         setValue('customFieldIdentifier', null);
         return;
       }
-  
+
       const options =
         timeReferenceValue === 'WORKFLOW_CUSTOM_FIELD_DATE'
           ? await getWorkflowCustomField()
           : await getPatientCustomField();
-  
+
       const filteredOptions = options
         .filter((field) => field.fieldType === 'DATE')
         .map((field) => ({
           value: field.identifier,
           label: field.name,
         }));
-  
+
       setCustomFieldOptions(filteredOptions);
-  
+
       const currentValue = watch('customFieldIdentifier');
-  
+
       if (!currentValue && filteredOptions.length > 0) {
         setValue('customFieldIdentifier', filteredOptions[0].value);
       }
     }
-  
+
     fetchOptions();
   }, [timeReferenceValue, setValue, watch]);
 
@@ -146,20 +153,24 @@ const TaskLinkDelayForm = (props) => {
               onSelect={(newValue) => {
                 setValue('timeReference', newValue);
                 setValue('customFieldIdentifier', null);
-                setValue('customFieldName', null);}}
+                setValue('customFieldName', null);
+              }}
               options={TIME_REFERENCE_OPTIONS}
             />
           </Box>
-          {['WORKFLOW_CUSTOM_FIELD_DATE', 'PATIENT_CUSTOM_FIELD_DATE'].includes(timeReferenceValue) && (
+          {['WORKFLOW_CUSTOM_FIELD_DATE', 'PATIENT_CUSTOM_FIELD_DATE'].includes(
+            timeReferenceValue,
+          ) && (
             <>
               <Box p={1} />
               <Box width="100%">
                 <SecondaryDropdownInput
-                  name='customFieldIdentifier'
+                  name="customFieldIdentifier"
                   width={275}
                   value={watch('customFieldIdentifier')}
-                  onSelect={(newValue) => 
-                    setValue('customFieldIdentifier', newValue)}
+                  onSelect={(newValue) =>
+                    setValue('customFieldIdentifier', newValue)
+                  }
                   options={customFieldOptions}
                 />
               </Box>
