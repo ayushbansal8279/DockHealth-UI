@@ -17,6 +17,12 @@ const saveEditedAttachment = (
     return;
   }
 
+  const onAttachmentFileInputChange = () => {
+    hideAttachmentPreview();
+  };
+
+  const setCurrentlyUploadedAttachment = () => null;
+
   switch (context) {
     case FileContext.TASK:
       dispatch(addTaskAttachment(contextIdentifier, file, {}));
@@ -35,10 +41,11 @@ const saveEditedAttachment = (
           '',
           file,
           {},
-          null,
-          hideAttachmentPreview,
+          setCurrentlyUploadedAttachment,
+          onAttachmentFileInputChange,
         ),
       );
+     
       break;
 
     case FileContext.OBJECT:
@@ -48,10 +55,11 @@ const saveEditedAttachment = (
           '',
           file,
           {},
-          null,
-          hideAttachmentPreview,
+          setCurrentlyUploadedAttachment,
+          onAttachmentFileInputChange,
         ),
       );
+      
       break;
 
     default:

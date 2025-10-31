@@ -43,6 +43,7 @@ import {
 } from './styled';
 import { useDispatch } from 'react-redux';
 import saveEditedAttachment from './helper';
+import { updatePatientAttachment } from '@/app/actions/patient-details-actions';
 
 const PREVIEW_DISPLAY_TYPES = {
   AUDIO: 'AUDIO',
@@ -189,7 +190,18 @@ const AttachmentPreview = React.memo((props) => {
       const canvas = cropperRef.current.getCanvas();
       canvas.toBlob((blob) => {
         const originalFileName = fileName || 'edited.png';
-        const file = new File([blob], originalFileName, { type: 'image/png' });
+         const renamedFileName = originalFileName.replace(
+        /(\.[\w\d_-]+)$/i,
+        '_original$1'
+      );
+
+      dispatch(
+        updatePatientAttachment(attachment, {
+          fileName: renamedFileName,
+        })
+      );
+
+      const file = new File([blob], originalFileName, { type: 'image/png' });
 
         saveEditedAttachment(
           dispatch,

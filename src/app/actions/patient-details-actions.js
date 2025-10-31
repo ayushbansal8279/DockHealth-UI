@@ -124,14 +124,6 @@ export function updatePatientAttachment(attachment, dataToUpdate) {
   };
 }
 
-// export function updatePatientFileAttachment(attachment, dataToUpdate) {
-//   return {
-//     type: ActionTypes.UPDATE_PATIENT_ATTACHMENT,
-//     attachment,
-//     dataToUpdate,
-//   };
-// }
-
 export function updatePatientTaskAttachment(attachmentIdentifier, updatedFileName)
 {
   return{
