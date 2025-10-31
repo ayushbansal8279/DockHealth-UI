@@ -7,7 +7,7 @@ import { deleteTasksLink, updateTasksLink } from 'actions/task-actions';
 import HardDependencyIcon from 'img/template/hard-dependency';
 import CalendarIcon from 'img/template/calendar-icon';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
-import { getSmoothStepPath, useStore } from 'reactflow';
+import { getSmoothStepPath, useStore } from '@xyflow/react';
 import { openModal } from 'modal/actions';
 import LinkPath from '../LinkPath/LinkPath';
 import { LabelsWrapper, HardDependencyLabel } from './styled';

@@ -79,7 +79,7 @@ import {
   MarkerType,
   useNodesInitialized,
   useReactFlow,
-} from 'reactflow';
+} from '@xyflow/react';
 import TaskDrawer from 'components/task-drawer/TaskDrawer/TaskDrawer';
 import {
   NodeType,
@@ -164,7 +164,8 @@ export const createNodeTypes = (handleNodeDrawerOpen) => {
     [NodeType.NEW_AI_ASSISTANT]: withExtraProps(AIAssistantNode),
     [NodeType.NEW_DOCUMENT_PARSING_AGENT]: DocumentParsingAgentNode,
     [NodeType.NEW_ELIGIBILITY_AGENT]: EligibilityAgentNode,
-    [NodeType.NEW_MEDICAL_RECORD_GATHERING_AGENT]: MedicalRecordGatheringAgentNode,
+    [NodeType.NEW_MEDICAL_RECORD_GATHERING_AGENT]:
+      MedicalRecordGatheringAgentNode,
     [NodeType.NEW_MISSING_RECORDS_AGENT]: MissingRecordsAgentNode,
     [NodeType.NEW_VOICE_AGENT]: VoiceAgentNode,
     [NodeType.NEW_SEND_SMS]: withExtraProps(SMSNode),
@@ -357,7 +358,7 @@ const SmartFlowBuilderView = () => {
       ),
     );
   };
-  
+
   const handleNodeDrawerOpen = useCallback((node) => {
     setSelectedNode(node);
     setIsNodeDrawerOpen(true);

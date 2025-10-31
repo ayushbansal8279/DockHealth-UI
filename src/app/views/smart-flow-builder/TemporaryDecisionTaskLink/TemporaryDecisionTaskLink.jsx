@@ -5,7 +5,7 @@ import {
   editTemporaryElement,
 } from 'actions/task-template-actions';
 import { useBoolean } from 'hooks/useBoolean';
-import { getSmoothStepPath } from 'reactflow';
+import { getSmoothStepPath } from '@xyflow/react';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import LinkPath from '../LinkPath/LinkPath';
 import TaskLinkOptions from '../TaskLinkOptions/TaskLinkOptions';

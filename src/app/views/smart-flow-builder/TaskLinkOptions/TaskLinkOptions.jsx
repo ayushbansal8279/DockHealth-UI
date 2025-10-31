@@ -9,7 +9,7 @@ import {
   Tooltip,
   Grow,
 } from '@mui/material';
-import { useStore } from 'reactflow';
+import { useStore } from '@xyflow/react';
 import { MenuItemIconWrapper, MenuList } from './styled';
 
 const TaskLinkOptions = (props) => {

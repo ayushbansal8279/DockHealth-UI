@@ -1,5 +1,5 @@
 import React from 'react';
-import { Position } from 'reactflow';
+import { Position } from '@xyflow/react';
 import EventIcon from '@mui/icons-material/Event';
 import {
   NodeContainer,
@@ -12,7 +12,8 @@ import {
 import palette from '@/app/styles/palette';
 
 const UpdateAppointmentNode = ({ data, selected }) => {
-  const { label, description, status, appointmentId, updateType, newDateTime } = data || {};
+  const { label, description, status, appointmentId, updateType, newDateTime } =
+    data || {};
 
   return (
     <NodeContainer

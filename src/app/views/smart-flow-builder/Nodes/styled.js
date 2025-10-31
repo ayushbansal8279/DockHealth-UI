@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Handle } from 'reactflow';
+import { Handle } from '@xyflow/react';
 import palette from '@/app/styles/palette';
 import { NodeType } from '@/app/helpers/smart-flow-builder-helpers';
 
