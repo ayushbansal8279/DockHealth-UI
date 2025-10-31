@@ -14,11 +14,12 @@ import { useDispatch } from 'react-redux';
 import { showGlobalErrorAlert, showGlobalAlert } from 'alert/actions';
 import AlertMessages from 'alert/AlertMessages';
 import * as CustomFieldsApi from 'api/custom-fields-api';
+import { updatePatientScope } from 'api/patient-api';
 import { getAllUserWorkspaces } from 'api/workspace-list-api';
 import { getWorkspaceByIdentifier } from 'api/workspace-api';
-import { 
-  CloseIconButton, 
-  CloseIcon, 
+import {
+  CloseIconButton,
+  CloseIcon,
   ModalWrapperWithPadding,
   ModalHeader,
 } from '../styled';
@@ -43,33 +44,21 @@ const ScopeChangeModal = ({
   const [isUpdating, setIsUpdating] = useState(false);
   const [currentWorkspace, setCurrentWorkspace] = useState(null);
 
-  const organizationIdentifier = sessionStorage.getItem('currentOrganizationIdentifier');
+  const organizationIdentifier = sessionStorage.getItem(
+    'currentOrganizationIdentifier',
+  );
 
-  const currentScope = workspaceIdentifier ? ScopeType.WORKSPACE : ScopeType.ORGANIZATION;
+  const currentScope = workspaceIdentifier
+    ? ScopeType.WORKSPACE
+    : ScopeType.ORGANIZATION;
 
-  useEffect(() => {
-    if (currentScope === ScopeType.WORKSPACE) {
-      setScope('workspace');
-      setSelectedWorkspace(workspaceIdentifier);
-      if (workspaceIdentifier) {
-        getWorkspaceByIdentifier(workspaceIdentifier)
-          .then((workspace) => {
-            setCurrentWorkspace(workspace);
-            setWorkspaces([workspace]);
-            setWorkspacesLoaded(true);
-          })
-          .catch((error) => {
-            console.error('Error fetching workspace details:', error);
-          });
-      }
-    } else {
-      setScope('organization');
-    }
-  }, [currentScope, workspaceIdentifier]);
-
+  const isPatient = customField?.patientIdentifier !== undefined;
+  const entityIdentifier = isPatient
+    ? customField?.patientIdentifier
+    : customField?.identifier;
 
   const fetchWorkspaces = useCallback(async () => {
-    if (workspacesLoaded || workspaceIdentifier) return;
+    if (workspacesLoaded) return;
 
     try {
       const workspaceData = await getAllUserWorkspaces();
@@ -79,7 +68,17 @@ const ScopeChangeModal = ({
       console.error('Error fetching workspaces:', error);
       dispatch(showGlobalErrorAlert());
     }
-  }, [workspacesLoaded, dispatch, workspaceIdentifier]);
+  }, [workspacesLoaded, dispatch]);
+
+  useEffect(() => {
+    if (currentScope === ScopeType.WORKSPACE) {
+      setScope('workspace');
+      setSelectedWorkspace(workspaceIdentifier);
+      fetchWorkspaces();
+    } else {
+      setScope('organization');
+    }
+  }, [currentScope, workspaceIdentifier]);
 
   const handleScopeChange = useCallback(
     async (newScope) => {
@@ -102,10 +101,12 @@ const ScopeChangeModal = ({
   }, []);
 
   const handleUpdateScope = useCallback(async () => {
-    if (!customField?.identifier) return;
+    if (!entityIdentifier) return;
 
-    const newScopeType = scope === 'workspace' ? ScopeType.WORKSPACE : ScopeType.ORGANIZATION;
-    const scopeIdentifier = scope === 'workspace' ? selectedWorkspace : organizationIdentifier;
+    const newScopeType =
+      scope === 'workspace' ? ScopeType.WORKSPACE : ScopeType.ORGANIZATION;
+    const scopeIdentifier =
+      scope === 'workspace' ? selectedWorkspace : organizationIdentifier;
 
     if (
       newScopeType === currentScope &&
@@ -115,35 +116,37 @@ const ScopeChangeModal = ({
       return;
     }
 
-    if (
-      workspaceIdentifier &&
-      scope === 'workspace' &&
-      selectedWorkspace !== workspaceIdentifier
-    ) {
-      return;
-    }
-
     setIsUpdating(true);
 
     try {
-      await CustomFieldsApi.updateCustomFieldScope(customField.identifier, {
+      const payload = {
         scopeIdentifier,
         scopeType: newScopeType,
-      });
+      };
+
+      if (isPatient) {
+        await updatePatientScope(entityIdentifier, payload);
+      } else {
+        await CustomFieldsApi.updateCustomFieldScope(entityIdentifier, payload);
+      }
 
       dispatch(showGlobalAlert(AlertMessages.UPDATED));
-      
-      onScopeChanged?.();
-      
+
+      onScopeChanged?.(newScopeType, scopeIdentifier);
+
       closeModal();
     } catch (error) {
-      console.error('Error updating field scope:', error);
+      console.error(
+        `Error updating ${isPatient ? 'patient' : 'field'} scope:`,
+        error,
+      );
       dispatch(showGlobalErrorAlert());
     } finally {
       setIsUpdating(false);
     }
   }, [
-    customField?.identifier,
+    entityIdentifier,
+    isPatient,
     scope,
     selectedWorkspace,
     currentScope,
@@ -159,14 +162,16 @@ const ScopeChangeModal = ({
       <CloseIconButton onClick={closeModal} size="small" color="secondary">
         <CloseIcon />
       </CloseIconButton>
-      
+
       <ModalHeader>
-        Change Field Scope
+        {isPatient ? 'Change Patient Scope' : 'Change Field Scope'}
       </ModalHeader>
 
       <Box sx={{ mt: 3 }}>
         <FormControl component="fieldset" size="small" fullWidth>
-          <FormLabel component="legend">Field Scope</FormLabel>
+          <FormLabel component="legend">
+            {isPatient ? 'Patient Scope' : 'Field Scope'}
+          </FormLabel>
           <RadioGroup
             row
             value={scope}
@@ -194,10 +199,11 @@ const ScopeChangeModal = ({
                   value={selectedWorkspace}
                   onChange={(e) => handleWorkspaceChange(e.target.value)}
                   displayEmpty
-                  disabled={!!workspaceIdentifier}
                   renderValue={(value) => {
                     if (!value) return 'Choose a workspace';
-                    const workspace = workspaces.find(ws => ws.workspaceIdentifier === value);
+                    const workspace = workspaces.find(
+                      (ws) => ws.workspaceIdentifier === value,
+                    );
                     return workspace ? workspace.workspaceName : '';
                   }}
                   sx={{
@@ -238,7 +244,6 @@ const ScopeChangeModal = ({
               </FormControl>
             </Box>
           )}
-
         </FormControl>
       </Box>
 

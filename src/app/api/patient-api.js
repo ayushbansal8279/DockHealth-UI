@@ -411,3 +411,12 @@ export const getPatientActivity = (patientIdentifier) =>
       error(error);
       throw new Error(error?.response?.data?.errorMessage);
     });
+
+export const updatePatientScope = (patientIdentifier, payload) =>
+  axios
+    .patch(`patient/updateScope/${patientIdentifier}`, payload)
+    .then((response) => response.data)
+    .catch((error) => {
+      log(error);
+      throw new Error(error?.response?.data?.errorMessage);
+    });

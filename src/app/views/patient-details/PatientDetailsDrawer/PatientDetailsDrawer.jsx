@@ -55,6 +55,10 @@ const PatientDetailsDrawer = ({ patient, isOpenedDetails, closeDetails }) => {
     userHasPatientCustomFieldsFeatureSelector,
   );
 
+  const isWorkspaceScoped = patient?.organizationIdentifier && 
+    patient.organizationIdentifier !== currentOrganization?.organizationIdentifier;
+  const workspaceId = isWorkspaceScoped ? patient.organizationIdentifier : null;
+
   const [isActive, setActive, unsetActive] = useBoolean(false);
   const formMethods = useForm({
     defaultValues: patientValues,
@@ -165,6 +169,25 @@ const PatientDetailsDrawer = ({ patient, isOpenedDetails, closeDetails }) => {
     history.push(`${CUSTOM_FIELDS_SETTINGS_PATH}/patients`);
   }, [history]);
 
+  const handleChangeScopeClick = useCallback(() => {
+    dispatch(
+      openModal('ScopeChange', {
+        customField: {
+          ...patient,
+          patientIdentifier: patient.patientIdentifier,
+        },
+        workspaceIdentifier: workspaceId,
+        onScopeChanged: () => {
+          if (workspaceId) {
+            history.push(`/core/workspace/${workspaceId}/patients/list/all`);
+          } else {
+            history.push('/core/patients/list/all');
+          }
+        },
+      }),
+    );
+  }, [dispatch, patient, workspaceId]);
+
   const contextMenuOptions = useMemo(
     () => [
       !isActive && {
@@ -202,6 +225,10 @@ const PatientDetailsDrawer = ({ patient, isOpenedDetails, closeDetails }) => {
           name: 'Edit Object Details',
           onClick: handleAddButtonClick,
         },
+      isAdmin && {
+        name: 'Change Scope',
+        onClick: handleChangeScopeClick,
+      },
     ],
     [
       isActive,
@@ -216,6 +243,7 @@ const PatientDetailsDrawer = ({ patient, isOpenedDetails, closeDetails }) => {
       closeDetails,
       history,
       handleAddButtonClick,
+      handleChangeScopeClick,
       isAdmin,
       patientCustomFieldsAvailable,
     ],
