@@ -1,4 +1,7 @@
 import * as ActionTypes from 'actions/action-types';
+import * as WorkflowApi from 'api/workflow-api';
+import * as AlertActions from 'alert/actions';
+import AlertMessages from '../alert/AlertMessages';
 
 export function duplicateWorkflow(identifier, includeAttachments) {
   return {
@@ -105,6 +108,27 @@ export function deleteWorkflowCommentFailure(
   };
 }
 
+export function addWorkflowAttachment(
+  workflowIdentifier,
+  fileData,
+  additionalConfig = {},
+) {
+  return (dispatch) =>
+    WorkflowApi.addWorkflowAttachment(
+      workflowIdentifier,
+      fileData,
+      additionalConfig?.onUploadProgress,
+    )
+      .then((attachment) => {
+        dispatch(addWorkflowAttachmentSuccess(workflowIdentifier, attachment));
+        dispatch(AlertActions.showGlobalAlert(AlertMessages.ATTACHMENT_ADDED));
+        return attachment;
+      })
+      .catch((error) => {
+        throw error;
+      });
+}
+
 export function addWorkflowAttachmentSuccess(workflowIdentifier, attachment) {
   return {
     type: ActionTypes.ADD_WORKFLOW_ATTACHMENT_SUCCESS,
@@ -116,39 +140,39 @@ export function addWorkflowAttachmentSuccess(workflowIdentifier, attachment) {
 export function updateWorkflowAttachment(
   taskWorkflowIdentifier,
   attachmentIdentifier,
-  fileName
+  fileName,
 ) {
   return {
     type: ActionTypes.UPDATE_WORKFLOW_ATTACHMENT,
     taskWorkflowIdentifier,
     attachmentIdentifier,
-    fileName
+    fileName,
   };
 }
 
 export function updateWorkflowAttachmentSuccess(
   taskWorkflowIdentifier,
   attachmentIdentifier,
-  fileName
+  fileName,
 ) {
   return {
     type: ActionTypes.UPDATE_WORKFLOW_ATTACHMENT_SUCCESS,
     taskWorkflowIdentifier,
     attachmentIdentifier,
-    fileName
+    fileName,
   };
 }
 
 export function updateWorkflowAttachmentFailure(
   taskWorkflowIdentifier,
   attachmentIdentifier,
-  fileName
+  fileName,
 ) {
   return {
     type: ActionTypes.UPDATE_WORKFLOW_ATTACHMENT_FAILURE,
     taskWorkflowIdentifier,
     attachmentIdentifier,
-    fileName
+    fileName,
   };
 }
 
