@@ -99,7 +99,6 @@ export const getProfileNameDisplayAndIds = (profileTypeFields, profile) => {
   const get = (arr, idx) => (arr[idx] ? arr[idx].display : '');
   const getId = (arr, idx) => (arr[idx] ? arr[idx].id : null);
 
-  // We want parts in order: [1, 0, 2] relative to the "firstThree" array
   const parts = [
     get(firstThree, 1) || '',
     get(firstThree, 0) || '',
