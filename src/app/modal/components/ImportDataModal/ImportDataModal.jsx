@@ -1,6 +1,6 @@
 import React, { useRef, useState, useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { Box } from '@mui/material';
+import { Box, CircularProgress } from '@mui/material';
 import Spacing from 'components/common/Spacing';
 import UploadFileIcon from 'img/upload-file.svg';
 import { CloseIconButton, CloseIcon } from '../styled';
@@ -13,6 +13,8 @@ import {
   FileInputArea,
   FileInputMessage,
   FileInputImage,
+  ProcessingArea,
+  ProcessingContainer,
 } from './styled';
 import { CancelButton, ConfirmButton } from '../ModalButton/ModalButtons';
 
@@ -27,33 +29,71 @@ const ImportDataModal = ({
   identifier,
   setImportResponse,
   type,
-  importFileTypeHint
+  importFileTypeHint,
 }) => {
   const inputFileReference = useRef(null);
   const [modalStep, setModalStep] = useState(step);
+  const [isUploading, setIsUploading] = useState(false);
 
   const handleFileUpload = useCallback(
     (file) => {
-      uploadFunction(
-        file,
-        { onUploadProgress: closeModal },
-        identifier,
-        type
-      )
+      const isPatientImport = label?.toLowerCase().includes('patient');
+
+      if (!isPatientImport) {
+        setIsUploading(true);
+        setModalStep(3);
+      }
+
+      const closeModalAfterResponse = () => {
+        if (isPatientImport) {
+          setTimeout(() => {
+            closeModal();
+          }, 100);
+        } else {
+          setIsUploading(false);
+          requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+              closeModal();
+            });
+          });
+        }
+      };
+
+      uploadFunction(file, {}, identifier, type)
         .then((response) => {
           setImportResponse?.(response);
+          if (isPatientImport) {
+            setIsUploading(false);
+          }
+          closeModalAfterResponse();
         })
         .catch((error) => {
-          console.error("File upload failed:", error);
+          console.error('File upload failed:', error);
           setImportResponse?.(null);
+          if (isPatientImport) {
+            setIsUploading(false);
+          }
+          closeModalAfterResponse();
         })
         .finally(() => {
           setImportPopoverOpen?.(true);
         });
     },
-    [closeModal, uploadFunction, identifier, setImportPopoverOpen]
+    [
+      closeModal,
+      uploadFunction,
+      identifier,
+      type,
+      setImportPopoverOpen,
+      setImportResponse,
+      label,
+    ],
   );
-  
+
+  const handleClose = useCallback(() => {
+    closeModal();
+  }, [closeModal]);
+
   const onFileInputChange = useCallback(() => {
     const fileInputElement = inputFileReference.current;
     if (fileInputElement) {
@@ -63,37 +103,41 @@ const ImportDataModal = ({
       }
     }
   }, [handleFileUpload]);
-  
+
   const onDrop = useCallback(
     (acceptedFiles) => {
       acceptedFiles.forEach(handleFileUpload);
     },
-    [handleFileUpload]
+    [handleFileUpload],
   );
-  
+
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
+
+  const isPatientImport = label?.toLowerCase().includes('patient');
+  const totalSteps = isPatientImport ? 2 : 3;
 
   return (
     <ImportDataModalWrapper>
-      <CloseIconButton onClick={closeModal} size="small" color="secondary">
+      <CloseIconButton onClick={handleClose} size="small" color="secondary">
         <CloseIcon />
       </CloseIconButton>
       {modalStep === 1 && (
         <>
-          <Description>Step 1 of 2</Description>
+          <Description>Step 1 of {totalSteps}</Description>
           <Title>Import {label} list</Title>
           <Spacing vertical={1} />
           <ContentMessage>
-            Download our template to ensure your {label} list is properly formatted.
+            Download our template to ensure your {label} list is properly
+            formatted.
           </ContentMessage>
           <ContentMessage style={{ marginBottom: '50px' }}>
-              Copy and paste your {label}s into the template,
-              then upload to Dock here.
+            Copy and paste your {label}s into the template, then upload to Dock
+            here.
           </ContentMessage>
           <Spacing vertical={5} />
           <Spacing vertical={5} />
           <Box display={'flex'}>
-            <CancelButton onClick={closeModal}>Cancel</CancelButton>
+            <CancelButton onClick={handleClose}>Cancel</CancelButton>
             <Spacing horizontal={4} />
             <ConfirmButton
               onClick={() => {
@@ -112,12 +156,12 @@ const ImportDataModal = ({
       )}
       {modalStep === 2 && (
         <>
-          <Description>Step 2 of 2</Description>
+          <Description>Step 2 of {totalSteps}</Description>
           <Title>Import {label} list</Title>
           <Spacing vertical={1} />
           <ContentMessage style={{ marginBottom: '50px' }}>
-            Copy and paste your {label}s into the template, then
-            upload to Dock here.
+            Copy and paste your {label}s into the template, then upload to Dock
+            here.
           </ContentMessage>
           <FileInputArea {...getRootProps()}>
             <FileInputImage src={UploadFileIcon} alt="file upload icon" />
@@ -127,7 +171,10 @@ const ImportDataModal = ({
               ) : (
                 <>
                   {importFileTypeHint} or
-                  <span style={{ cursor: 'pointer', color: 'blue' }}> Browse </span>
+                  <span style={{ cursor: 'pointer', color: 'blue' }}>
+                    {' '}
+                    Browse{' '}
+                  </span>
                   your local files.
                 </>
               )}
@@ -140,6 +187,34 @@ const ImportDataModal = ({
               {...getInputProps()}
             />
           </FileInputArea>
+        </>
+      )}
+      {modalStep === 3 && (
+        <>
+          <Description>Step 3 of 3</Description>
+          <Title>Processing your {label} list</Title>
+          <Spacing vertical={1} />
+          <ContentMessage style={{ marginBottom: '50px' }}>
+            Please wait while we process your upload. This may take a few
+            moments.
+          </ContentMessage>
+          <ProcessingArea>
+            <ProcessingContainer>
+              <CircularProgress size={60} />
+              <ContentMessage style={{ marginTop: '20px' }}>
+                Processing...
+              </ContentMessage>
+            </ProcessingContainer>
+          </ProcessingArea>
+          {!isUploading && (
+            <Box
+              display={'flex'}
+              justifyContent="center"
+              style={{ marginTop: '20px' }}
+            >
+              <CancelButton onClick={handleClose}>Close</CancelButton>
+            </Box>
+          )}
         </>
       )}
     </ImportDataModalWrapper>
