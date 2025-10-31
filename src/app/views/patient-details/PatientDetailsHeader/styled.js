@@ -46,6 +46,11 @@ export const PatientInfo = styled.div`
   display: flex;
 `;
 
+export const EHRInfo = styled.div`
+  padding: 2px ${spacing.smallPlus};
+  color: ${palette.mediumGrey};
+`;
+
 export const PatientInfoDivider = styled.div`
   height: 13px; // per design
   width: 2px; // per design
