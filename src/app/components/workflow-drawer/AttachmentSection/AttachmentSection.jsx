@@ -34,6 +34,7 @@ import { AttachmentFileInput } from './styled';
 import { AttachmentStatusMessage } from '../../task-drawer/AttachmentsSection/styled';
 import Tooltip from '../../common/Tooltip/Tooltip';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import { FileContext } from '@/app/helpers/task-helpers';
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const AttachmentSection = ({ disabled }) => {
@@ -185,6 +186,8 @@ const AttachmentSection = ({ disabled }) => {
         hideAttachmentPreview={hideAttachmentPreview}
         isAttachmentPreviewOpen={isAttachmentPreviewOpen}
         attachmentsLoading={attachmentLoading}
+        context={FileContext.WORKFLOW}
+        contextIdentifier={workflowIdentifier}
       />
       {!disabled && (
         <AttachmentsDropzoneContainer

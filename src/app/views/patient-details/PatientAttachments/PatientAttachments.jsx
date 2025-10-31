@@ -43,6 +43,7 @@ import initializeAttachmentsSectionHooks from './hooks';
 import { FilesViewType, PATIENT_FILES_VIEW_TYPE, ScanStatus } from './helpers';
 import { getPatientFolderStructureHierarchy } from '@/app/api/patient-attachment-api';
 import { createPatientAttachmentsPath } from '@/app/routing/helpers/paths';
+import { FileContext } from '@/app/helpers/task-helpers';
 const PatientAttachments = () => {
   const [activeViewType, setActiveViewType] = useState(
     localStorageHelper.getItem(PATIENT_FILES_VIEW_TYPE) || FilesViewType.GRID,
@@ -111,6 +112,7 @@ const PatientAttachments = () => {
   const isFetching = useSelector(isFetchingPatientAttachmentsSelector);
 
   const currentFolderIdentifier = useSelector(currentFolderIdentifierSelector);
+  const currentPatientIdentifier = useSelector(currentPatientIdentifierSelector);
 
   const downloadDisabled = currentPatientAttachments?.some(
     ({ scanStatus }) =>
@@ -513,6 +515,8 @@ const PatientAttachments = () => {
             hideAttachmentPreview={hideAttachmentPreview}
             isAttachmentPreviewOpen={isAttachmentPreviewOpen}
             attachmentsLoading={attachmentsLoading}
+            context={FileContext.PATIENT}
+            contextIdentifier={currentPatientIdentifier}
           />
         </DropzoneContainer>
       )}

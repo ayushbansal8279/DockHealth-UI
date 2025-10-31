@@ -27,6 +27,7 @@ import { openModal } from '@/app/modal/actions';
 import { getPatientAttachments } from '@/app/api/patient-attachment-api';
 import Tooltip from '../../common/Tooltip/Tooltip';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import { FileContext } from '@/app/helpers/task-helpers';
 
 const AttachmentsSection = ({
   selectedTask,
@@ -113,6 +114,8 @@ const AttachmentsSection = ({
         hideAttachmentPreview={hideAttachmentPreview}
         isAttachmentPreviewOpen={isAttachmentPreviewOpen}
         attachmentsLoading={attachmentsLoading}
+        context={FileContext.TASK}
+        contextIdentifier={selectedTask?.taskIdentifier}
       />
       <AttachmentFileInput
         disabled={disabled}
