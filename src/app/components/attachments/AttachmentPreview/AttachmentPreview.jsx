@@ -39,7 +39,6 @@ import {
   CropperContainer,
   CropperControlsContainer,
   CropperButton,
-  AttachmentPreviewFooter,
   SaveButton,
 } from './styled';
 import { useSelector, useDispatch } from 'react-redux';
@@ -91,19 +90,14 @@ const AttachmentPreview = React.memo((props) => {
     console.log('Cropper is ready');
     setIsCropperReady(true);
 
-    // Set cropper to cover 100% of the image
     if (cropperRef.current) {
       const cropper = cropperRef.current;
-
-      // Use setTimeout to ensure the cropper is fully initialized
       setTimeout(() => {
         try {
-          // Get the image element to determine its rendered size
           const image = cropper.getImage();
           console.log('Image element:', image);
 
           if (image) {
-            // Get the image's rendered dimensions in the cropper
             const { width, height } = image;
 
             cropper.setCoordinates({
@@ -112,63 +106,40 @@ const AttachmentPreview = React.memo((props) => {
               width,
               height,
             });
-            // console.log('Set coordinates to:', {
-            //   left: 0,
-            //   top: 0,
-            //   width: image.clientWidth || image.offsetWidth,
-            //   height: image.clientHeight || image.offsetHeight,
-            // });
           }
         } catch (error) {
           console.error('Error setting full image coordinates:', error);
-
-          // Fallback: try to use default coordinates that cover more area
           try {
             const currentCoords = cropper.getCoordinates();
-            console.log('Current coordinates as fallback:', currentCoords);
-
-            // Try to expand current coordinates to maximum possible
             if (currentCoords) {
               cropper.setCoordinates({
                 left: 0,
                 top: 0,
-                width: currentCoords.width * 2, // Try doubling the size
+                width: currentCoords.width * 2, 
                 height: currentCoords.height * 2,
               });
             }
           } catch (fallbackError) {
-            console.error('Fallback also failed:', fallbackError);
+            // console.error('Fallback also failed:', fallbackError);
           }
         }
-      }, 300); // Increased timeout to 300ms for better initialization
+      }, 100);
     }
   }, []);
 
   const handleCrop = useCallback(() => {
-    console.log('Crop button clicked, cropper ready:', isCropperReady);
     if (!isCropperReady) {
-      console.warn('Cropper is not ready yet');
       return;
     }
 
     if (cropperRef.current) {
-      console.log('Cropper ref exists');
       try {
-        // First try to get canvas
         const canvas = cropperRef.current.getCanvas();
-        console.log('Canvas:', canvas);
         if (canvas) {
           const croppedDataUrl = canvas.toDataURL('image/png', 1.0);
-          console.log(
-            'Cropped data URL generated, length:',
-            croppedDataUrl.length,
-          );
           setCroppedImage(croppedDataUrl);
-          // Automatically switch to view mode to show the cropped result
           setIsCropperMode(false);
         } else {
-          console.error('Canvas is null or undefined');
-          // Alternative approach: try with options
           const canvasWithOptions = cropperRef.current.getCanvas({
             width: 512,
             height: 512,
@@ -180,12 +151,7 @@ const AttachmentPreview = React.memo((props) => {
               'image/png',
               1.0,
             );
-            console.log(
-              'Cropped data URL generated with options, length:',
-              croppedDataUrl.length,
-            );
             setCroppedImage(croppedDataUrl);
-            // Automatically switch to view mode to show the cropped result
             setIsCropperMode(false);
           }
         }
@@ -220,25 +186,33 @@ const AttachmentPreview = React.memo((props) => {
   const patient = useSelector(patientSelector);
   const patientIdentifier = patient?.patientIdentifier;
   const [currentlyUploadedAttachment, setCurrentlyUploadedAttachment] =
-      useState(null);
-  console.log(patientIdentifier);
+    useState(null);
 
   const handleEditSave = useCallback(() => {
     if (cropperRef.current) {
       const canvas = cropperRef.current.getCanvas();
       canvas.toBlob((blob) => {
         const timestamp = new Date().toISOString().replace(/[-:.TZ]/g, '');
-        const uniqueFileName = `cropped_${timestamp}_rotated.png`;
+        const uniqueFileName = `edited_${timestamp}.png`;
 
         const file = new File([blob], uniqueFileName, { type: 'image/png' });
 
-        dispatch(createPatientAttachment(patientIdentifier, '', file,{},setCurrentlyUploadedAttachment,onAttachmentFileInputChange));
+        dispatch(
+          createPatientAttachment(
+            patientIdentifier,
+            '',
+            file,
+            {},
+            setCurrentlyUploadedAttachment,
+            onAttachmentFileInputChange,
+          ),
+        );
       });
     }
   }, []);
-  const onAttachmentFileInputChange=(files)=>{
-    hideAttachmentPreview()
-  }
+  const onAttachmentFileInputChange = (files) => {
+    hideAttachmentPreview();
+  };
 
   const handleZoomIn = useCallback(() => {
     if (cropperRef.current) {
