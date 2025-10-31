@@ -41,9 +41,8 @@ import {
   CropperButton,
   SaveButton,
 } from './styled';
-import { useSelector, useDispatch } from 'react-redux';
-import { createPatientAttachment } from '@/app/actions/patient-details-actions';
-import { patientSelector } from '@/app/selectors/patient-details-selectors';
+import { useDispatch } from 'react-redux';
+import saveEditedAttachment from './helper';
 
 const PREVIEW_DISPLAY_TYPES = {
   AUDIO: 'AUDIO',
@@ -60,6 +59,8 @@ const AttachmentPreview = React.memo((props) => {
     hideAttachmentPreview,
     isAttachmentPreviewOpen,
     attachmentsLoading,
+    context,
+    contextIdentifier,
   } = props;
 
   const {
@@ -120,7 +121,6 @@ const AttachmentPreview = React.memo((props) => {
               });
             }
           } catch (fallbackError) {
-            // console.error('Fallback also failed:', fallbackError);
           }
         }
       }, 100);
@@ -183,36 +183,26 @@ const AttachmentPreview = React.memo((props) => {
   }, []);
 
   const dispatch = useDispatch();
-  const patient = useSelector(patientSelector);
-  const patientIdentifier = patient?.patientIdentifier;
-  const [currentlyUploadedAttachment, setCurrentlyUploadedAttachment] =
-    useState(null);
 
   const handleEditSave = useCallback(() => {
     if (cropperRef.current) {
       const canvas = cropperRef.current.getCanvas();
       canvas.toBlob((blob) => {
-        const timestamp = new Date().toISOString().replace(/[-:.TZ]/g, '');
-        const uniqueFileName = `edited_${timestamp}.png`;
+        const originalFileName = fileName || 'edited.png';
+        const file = new File([blob], originalFileName, { type: 'image/png' });
 
-        const file = new File([blob], uniqueFileName, { type: 'image/png' });
-
-        dispatch(
-          createPatientAttachment(
-            patientIdentifier,
-            '',
-            file,
-            {},
-            setCurrentlyUploadedAttachment,
-            onAttachmentFileInputChange,
-          ),
+        saveEditedAttachment(
+          dispatch,
+          context,
+          file,
+          originalFileName,
+          contextIdentifier,
+          hideAttachmentPreview,
+          hideAttachmentPreview
         );
       });
     }
-  }, []);
-  const onAttachmentFileInputChange = (files) => {
-    hideAttachmentPreview();
-  };
+  }, [dispatch, context, fileName, contextIdentifier, hideAttachmentPreview]);
 
   const handleZoomIn = useCallback(() => {
     if (cropperRef.current) {
@@ -225,17 +215,6 @@ const AttachmentPreview = React.memo((props) => {
       cropperRef.current.zoomImage(0.8);
     }
   }, []);
-
-  // const handleDownloadCropped = useCallback(() => {
-  //   if (croppedImage) {
-  //     const link = document.createElement('a');
-  //     link.download = `cropped_${fileName || 'image.png'}`;
-  //     link.href = croppedImage;
-  //     document.body.appendChild(link);
-  //     link.click();
-  //     document.body.removeChild(link);
-  //   }
-  // }, [croppedImage, fileName]);
 
   const displayType = cond([
     [startsWith('audio/'), always(PREVIEW_DISPLAY_TYPES.AUDIO)],
