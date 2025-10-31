@@ -97,6 +97,12 @@ export function updatePatientAttachment(attachment) {
   return axios.put(`patient/attachment`, attachment).then(({ data }) => data);
 }
 
+export function updatePatientFileAttachment(formData){
+ return axios.put('patient/attachment', formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  }).then(({ data }) => data);
+}
+
 export function getPatientFolderStructureHierarchy(identifier) {
   return axios
     .get(`patient/attachment/${identifier}`, {

@@ -128,7 +128,7 @@ const PatientAttachments = () => {
 
   const getFileOptions = useCallback(
     (file) => [
-      ...(!file.scanStatus ||
+      ...(file.scanStatus ||
       file.scanStatus === ScanStatus.CLEAN ||
       file.scanStatus === ScanStatus.UNSUPPORTED
         ? [

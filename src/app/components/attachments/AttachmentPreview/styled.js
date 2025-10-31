@@ -12,12 +12,12 @@ export const AttachmentPreviewDialog = styled(Dialog)`
 `;
 
 export const AttachmentPreviewContent = styled.div`
-  max-height: 59rem;
-  min-height: 6rem;
+  max-height: 50rem;
+  min-height: 2rem;
   overflow-y: auto;
 
   && > * {
-    min-height: 6rem;
+    min-height: 2rem;
   }
 `;
 
@@ -95,7 +95,7 @@ export const AttachmentPreviewHeaderSmallLabel = styled(
 
 export const AttachmentPreviewImage = styled.img`
   box-sizing: border-box;
-  margin: 1.5rem;
+  margin: 0.5rem;
   max-height: 55.5rem;
   object-fit: contain;
 `;
@@ -127,4 +127,98 @@ export const UnsupportedFileContainer = styled.div`
   height: 13.5rem;
   justify-content: center;
   padding: 1rem;
+`;
+
+export const CropperContainer = styled.div`
+  margin: 0.5rem;
+  max-height: 55.5rem;
+  position: relative;
+`;
+
+export const CropperControlsContainer = styled.div`
+  align-items: center;
+  background-color: ${palette.veryDarkBlue};
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: flex-start;
+  padding: 0.75rem 1rem;
+  min-height: auto;
+  margin-top: -0.5rem;
+`;
+
+export const CropperButton = styled.button`
+  align-items: center;
+  background-color: ${palette.primaryBlue};
+  border: none;
+  border-radius: 4px;
+  color: ${palette.white};
+  cursor: pointer;
+  display: flex;
+  font-size: 1rem;
+  justify-content: center;
+  padding: -0.5rem 1rem;
+  transition: background-color 0.25s ease-out;
+  white-space: nowrap;
+
+  &:hover {
+    background-color: ${palette.primaryBlueDark || palette.primaryBlue};
+  }
+
+  &:disabled {
+    background-color: ${palette.unknownGrey6};
+    cursor: not-allowed;
+  }
+`;
+
+export const CropperToggleContainer = styled.div`
+  align-items: center;
+  display: flex;
+  gap: 0.5rem;
+`;
+
+export const CropperToggleLabel = styled.label`
+  color: ${palette.white};
+  cursor: pointer;
+  font-size: 0.875rem;
+  vertical-align: middle;
+`;
+
+export const CropperToggleInput = styled.input`
+  cursor: pointer;
+  margin: 0;
+  vertical-align: middle;
+`;
+
+export const AttachmentPreviewFooter = styled.div`
+  align-items: center;
+  background-color: ${palette.veryDarkBlue};
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  padding: 1rem;
+  border-top: 1px solid ${palette.unknownGrey6};
+`;
+
+export const SaveButton = styled.button`
+  background-color: ${palette.primaryBlue};
+  border: none;
+  border-radius: 4px;
+  color: ${palette.white};
+  cursor: pointer;
+  font-size: 0.875rem;
+  padding: 0.5rem 1.5rem;
+  transition: background-color 0.25s ease-out;
+
+  &:hover {
+    background-color: ${palette.primaryBlueDark || palette.primaryBlue};
+  }
+
+  &.cancel {
+    background-color: ${palette.unknownGrey6};
+    
+    &:hover {
+      background-color: ${palette.unknownGrey5 || palette.unknownGrey6};
+    }
+  }
 `;
