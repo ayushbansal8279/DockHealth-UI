@@ -42,12 +42,12 @@ const FilterSelect = ({
   const [dateEnd, setDateEnd] = useState('');
   const [date, setDate] = useState('');
   const [dateValue, setDateValue] = useState('');
-  const [minNumber, setMinNumber] = useState(null);
-  const [maxNumber, setMaxNumber] = useState(null);
-  const [minValue, setMinValue] = useState(null);
-  const [maxValue, setMaxValue] = useState(null);
+  const [numberStart, setNumberStart] = useState(null);
+  const [numberEnd, setNumberEnd] = useState(null);
+  const [numberStartValue, setNumberStartValue] = useState(null);
+  const [numberEndValue, setNumberEndValue] = useState(null);
   const [singleNumber, setSingleNumber] = useState(null);
-  const [numberValue, setNumberValue] = useState(null);
+  const [singleNumberValue, setSingleNumberValue] = useState(null);
   const currentUser = useSelector(userProfileSelector);
   const customerTypeLabel = getCustomerTypeLabel(currentUser);
   const { emrIntegrationType } = useSelector(organizationSelector) || {};
@@ -114,28 +114,28 @@ const FilterSelect = ({
     finalFilter[filter].forEach((item) => {
       if (item?.key?.includes('NUMBER_RANGE')) {
         foundNumberRange = true;
-        if (item?.minValue !== undefined && item?.maxValue !== undefined) {
-          setMinValue(item?.minValue);
-          setMaxValue(item?.maxValue);
+        if (item?.numberStart !== undefined && item?.numberEnd !== undefined) {
+          setNumberStartValue(item?.numberStart);
+          setNumberEndValue(item?.numberEnd);
         }
       }
 
       if (item?.key?.includes('SINGLE_NUMBER')) {
         foundSingleNumber = true;
-        if (item?.value !== undefined) {
-          setNumberValue(item?.value);
+        if (item?.singleNumber !== undefined) {
+          setSingleNumberValue(item?.singleNumber);
         } else {
-          setNumberValue(null);
+          setSingleNumberValue(null);
         }
       }
     });
 
     if (!foundNumberRange) {
-      setMinValue(null);
-      setMaxValue(null);
+      setNumberStartValue(null);
+      setNumberEndValue(null);
     }
     if (!foundSingleNumber) {
-      setNumberValue(null);
+      setSingleNumberValue(null);
     }
   }, [finalFilter, filter]);
 
@@ -172,20 +172,20 @@ const FilterSelect = ({
   }, [date, setDate]);
 
   useEffect(() => {
-    if (minNumber !== null || maxNumber !== null) {
+    if (numberStart !== null || numberEnd !== null) {
       let currentFinalFilter = { ...finalFilter };
       currentFinalFilter[filter]?.map((item, index) => {
         if (item?.key?.includes('NUMBER_RANGE')) {
           currentFinalFilter[filter][index] = {
             ...currentFinalFilter[filter][index],
-            minValue: minNumber,
-            maxValue: maxNumber,
+            numberStart: numberStart,
+            numberEnd: numberEnd,
           };
         }
       });
       setFinalFilter({ ...currentFinalFilter });
     }
-  }, [minNumber, maxNumber, setMinNumber, setMaxNumber]);
+  }, [numberStart, numberEnd, setNumberStart, setNumberEnd]);
 
   useEffect(() => {
     if (singleNumber !== null) {
@@ -194,7 +194,7 @@ const FilterSelect = ({
         if (item?.key?.includes('SINGLE_NUMBER')) {
           currentFinalFilter[filter][index] = {
             ...currentFinalFilter[filter][index],
-            value: singleNumber,
+            singleNumber: singleNumber,
           };
         }
       });
@@ -328,18 +328,18 @@ const FilterSelect = ({
                       ) : isNumberRangeItem ? (
                         <div style={{ paddingLeft: '15px' }}>
                           <NumberRangeOptions
-                            minNumber={minNumber}
-                            setMinNumber={setMinNumber}
-                            maxNumber={maxNumber}
-                            setMaxNumber={setMaxNumber}
-                            minValue={minValue}
-                            maxValue={maxValue}
+                            minNumber={numberStart}
+                            setMinNumber={setNumberStart}
+                            maxNumber={numberEnd}
+                            setMaxNumber={setNumberEnd}
+                            minValue={numberStartValue}
+                            maxValue={numberEndValue}
                           />
                         </div>
                       ) : isSingleNumberItem ? (
                         <div style={{ paddingLeft: '15px' }}>
                           <SingleNumberOption
-                            value={numberValue}
+                            value={singleNumberValue}
                             setNumber={setSingleNumber}
                           />
                         </div>

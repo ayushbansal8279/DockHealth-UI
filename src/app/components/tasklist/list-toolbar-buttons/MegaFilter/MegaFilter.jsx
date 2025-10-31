@@ -73,6 +73,23 @@ const MegaFilter = ({
               };
               return foundOption;
             }
+            if (item?.includes('NUMBER_RANGE')) {
+              let foundOption = users.find((user) => user.key === item);
+              foundOption = {
+                ...foundOption,
+                numberStart: selectedFilters[key].numberStart,
+                numberEnd: selectedFilters[key].numberEnd,
+              };
+              return foundOption;
+            }
+            if (item?.includes('SINGLE_NUMBER')) {
+              let foundOption = users.find((user) => user.key === item);
+              foundOption = {
+                ...foundOption,
+                singleNumber: selectedFilters[key].singleNumber,
+              };
+              return foundOption;
+            }
             return users.find((user) => user.key === item);
           });
           data[key] = options;

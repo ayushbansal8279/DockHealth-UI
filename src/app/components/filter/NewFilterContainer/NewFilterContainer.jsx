@@ -82,6 +82,9 @@ const NewFilterContainer = ({
         let dateStart = '';
         let dateEnd = '';
         let date = '';
+        let numberStart = null;
+        let numberEnd = null;
+        let singleNumber = null;
         finalFilter[key].forEach((item) => {
           if (item?.key?.includes('DATE_RANGE')) {
             dateStart = item?.dateStart;
@@ -89,6 +92,13 @@ const NewFilterContainer = ({
             options.push(item?.key);
           } else if (item?.key?.includes('DATE_SINGLE')) {
             date = item?.date;
+            options.push(item?.key);
+          } else if (item?.key?.includes('NUMBER_RANGE')) {
+            numberStart = item?.numberStart;
+            numberEnd = item?.numberEnd;
+            options.push(item?.key);
+          } else if (item?.key?.includes('SINGLE_NUMBER')) {
+            singleNumber = item?.singleNumber;
             options.push(item?.key);
           } else {
             options.push(item?.key || '');
@@ -101,6 +111,13 @@ const NewFilterContainer = ({
         }
         if (date !== '') {
           data[key].date = date;
+        }
+        if (numberStart !== null && numberEnd !== null) {
+          data[key].numberStart = numberStart;
+          data[key].numberEnd = numberEnd;
+        }
+        if (singleNumber !== null) {
+          data[key].singleNumber = singleNumber;
         }
       }
     }
