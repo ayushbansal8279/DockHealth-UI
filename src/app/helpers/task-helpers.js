@@ -771,7 +771,7 @@ export const limitColumnsForView = (selectedOrganization, columns, origin) => {
             );
             if (
               patientColumns.length <
-              Number.parseInt(patientViewColumnsLimitItem?.value || 5, 10)
+              Number.parseInt(patientViewColumnsLimitItem?.value || 10, 10)
             ) {
               acc.push(column);
             }
